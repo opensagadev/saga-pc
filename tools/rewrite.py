@@ -8,7 +8,6 @@ marked safe only when it preserves C semantics without aliasing assumptions
 beyond "distinct named objects do not overlap"; permute.py keeps an unsafe
 candidate only when it makes the function byte-exact.
 """
-from dataclasses import dataclass
 import re
 
 try:
@@ -19,6 +18,8 @@ except ImportError as error:  # Only the rewrite search needs libclang.
 from tools.check import analysis_configuration, analysis_language
 from tools.lib import ROOT
 
+# Bump when rules change materially: batch runs retry functions searched with older rules.
+VERSION = 2
 K = ci.CursorKind
 FLOATS = {ci.TypeKind.FLOAT, ci.TypeKind.DOUBLE, ci.TypeKind.LONGDOUBLE}
 NEGATE = {"==": "!=", "!=": "==", "<": ">=", ">=": "<", ">": "<=", "<=": ">"}
@@ -28,12 +29,23 @@ _index = None
 _flags = None
 
 
-@dataclass
 class Candidate:
-    text: str
-    kind: str
-    note: str
-    safe: bool
+    """A rewrite; its full source text is built only when it is compiled."""
+
+    def __init__(self, edit, kind, note, safe):
+        self._edit, self.kind, self.note, self.safe = edit, kind, note, safe
+        self._text = None
+
+    @property
+    def key(self):
+        return self._edit[1]
+
+    @property
+    def text(self):
+        if self._text is None:
+            source, edits = self._edit
+            self._text = source.apply(edits)
+        return self._text
 
 
 def function_name(symbol):
@@ -61,6 +73,9 @@ class Source:
         self.data = text.encode("latin-1")
         self.tu, self.name = _parse(text, unit)
         self.c = str(unit).endswith(".c")
+        self._operators = {}
+        self._children = {}
+        self._walks = {}
         self.function = None
         # Definitions may sit inside extern "C" blocks or namespaces.
         pending = list(self.tu.cursor.get_children())
@@ -90,30 +105,50 @@ class Source:
         a, b = self.span(cursor)
         return self.data[a:b].decode("latin-1")
 
+    def children(self, cursor):
+        """Children inside this file, cached: libclang traversal dominates rewrite time."""
+        key = (cursor.hash, cursor.kind, cursor.extent.start.offset, cursor.extent.end.offset)
+        if key not in self._children:
+            self._children[key] = [c for c in cursor.get_children() if self.mine(c)]
+        return self._children[key]
+
     def walk(self, cursor=None):
         cursor = cursor or self.body
-        for child in cursor.get_children():
-            if not self.mine(child):
-                continue
-            yield child
-            yield from self.walk(child)
+        key = (cursor.hash, cursor.kind, cursor.extent.start.offset, cursor.extent.end.offset)
+        if key not in self._walks:
+            nodes = []
+            for child in self.children(cursor):
+                nodes.append(child)
+                nodes.extend(self.walk(child))
+            self._walks[key] = nodes
+        return self._walks[key]
 
     def edit(self, edits):
+        """Describe a rewrite without materializing the whole file."""
+        return (self, tuple(sorted(edits, key=lambda e: -e[0])))
+
+    def apply(self, edits):
         data = self.data
-        for a, b, replacement in sorted(edits, key=lambda e: -e[0]):
+        for a, b, replacement in edits:
             data = data[:a] + replacement.encode("latin-1") + data[b:]
         return data.decode("latin-1")
 
     def operator(self, cursor):
         """Spelling of a binary operator: first token after the left operand."""
+        span = (cursor.extent.start.offset, cursor.extent.end.offset, cursor.kind)
+        if span not in self._operators:
+            self._operators[span] = self._operator(cursor)
+        return self._operators[span]
+
+    def _operator(self, cursor):
         children = list(cursor.get_children())
         if len(children) != 2:
             return None
         end = children[0].extent.end.offset
-        for token in cursor.get_tokens():
-            if token.extent.start.offset >= end:
-                return token.spelling
-        return None
+        # Skip whitespace and comments after the left operand; read the operator text.
+        match = re.match(rb"(?:\s|/\*.*?\*/|//[^\n]*\n)*(<<=|>>=|&&|\|\||==|!=|<=|>=|<<|>>|\+=|-=|\*=|/=|%=|&=|\|=|\^=|[-+*/%<>&|^=,])",
+                         self.data[end:end + 64], re.S)
+        return match.group(1).decode() if match else None
 
 
 def strip(cursor):
@@ -172,8 +207,8 @@ def candidates(text, unit, function):
             continue
     seen, unique = set(), []
     for candidate in out:
-        if candidate.text != text and candidate.text not in seen:
-            seen.add(candidate.text)
+        if candidate.key and candidate.key not in seen:
+            seen.add(candidate.key)
             unique.append(candidate)
     return unique
 
@@ -530,5 +565,226 @@ def rule_ternary(source):
                         f"line {stmt.location.line}", True)
 
 
+def _with_semicolon(source, stmt):
+    """Statement text including its terminating semicolon, or None if absent."""
+    text = source.src(stmt)
+    if text.rstrip().endswith(";"):
+        return text
+    end = source.span(stmt)[1]
+    return text + ";" if source.data[end:end + 1] == b";" else None
+
+
+def _decl_names(source, stmt):
+    return [d for d in stmt.get_children() if d.kind == K.VAR_DECL]
+
+
+def _initializer_refs(source, decl):
+    return {n.referenced for n in source.walk(decl) if n.kind == K.DECL_REF_EXPR}
+
+
+def rule_swap_decls(source):
+    """Swap adjacent declarations: VC8 assigns stack slots in declaration order."""
+    for compound in [source.body, *source.walk()]:
+        if compound.kind != K.COMPOUND_STMT:
+            continue
+        stmts = list(compound.get_children())
+        for first, second in zip(stmts, stmts[1:]):
+            if first.kind != K.DECL_STMT or second.kind != K.DECL_STMT:
+                continue
+            a_vars, b_vars = _decl_names(source, first), _decl_names(source, second)
+            if not a_vars or not b_vars:
+                continue
+            if any(set(a_vars) & _initializer_refs(source, d) for d in b_vars):
+                continue  # the second initializer reads the first variable
+            a, _ = source.span(first)
+            _, b = source.span(second)
+            first_text, second_text = _with_semicolon(source, first), _with_semicolon(source, second)
+            if first_text is None or second_text is None:
+                continue
+            b = source.span(second)[1] + (0 if source.src(second).rstrip().endswith(";") else 1)
+            replacement = second_text + "\n" + first_text
+            yield Candidate(source.edit([(a, b, replacement)]), "swap_decls",
+                            f"{a_vars[0].spelling}/{b_vars[0].spelling}", True)
+
+
+def _blocks(source):
+    return [source.body, *(c for c in source.walk() if c.kind == K.COMPOUND_STMT)]
+
+
+def _first_statement_offset(source, compound):
+    """Offset just after the opening brace of a compound statement."""
+    return source.span(compound)[0] + 1
+
+
+def rule_move_decls(source):
+    """Sink a top-level declaration into the innermost block using it, or hoist one up."""
+    names = [d.spelling for d in source.walk() if d.kind == K.VAR_DECL]
+    blocks = _blocks(source)
+    for stmt in source.walk():
+        if stmt.kind != K.DECL_STMT:
+            continue
+        decls = _decl_names(source, stmt)
+        if len(decls) != 1 or [c for c in decls[0].get_children() if c.kind != K.TYPE_REF]:
+            continue  # only plain declarations without initializers move freely
+        decl = decls[0]
+        text = _with_semicolon(source, stmt)
+        if text is None:
+            continue
+        a, b = source.span(stmt)
+        b = b if source.src(stmt).rstrip().endswith(";") else b + 1
+        refs = _references(source, decl, source.body)
+        if not refs:
+            continue
+        home = min((c for c in blocks if source.span(c)[0] < a < source.span(c)[1]),
+                   key=lambda c: source.span(c)[1] - source.span(c)[0])
+        if home == source.body:
+            inner = [c for c in blocks if c != source.body
+                     and all(source.span(c)[0] < r.extent.start.offset < source.span(c)[1] for r in refs)]
+            if inner:
+                target = min(inner, key=lambda c: source.span(c)[1] - source.span(c)[0])
+                at = _first_statement_offset(source, target)
+                yield Candidate(source.edit([(a, b, ""), (at, at, "\n" + text)]), "sink_decl",
+                                decl.spelling, True)
+        elif names.count(decl.spelling) == 1:
+            at = _first_statement_offset(source, source.body)
+            yield Candidate(source.edit([(a, b, ""), (at, at, "\n" + text)]), "hoist_decl",
+                            decl.spelling, True)
+
+
+def rule_drop_cast(source):
+    """(f32)int_expr inside float arithmetic converts implicitly; VC8 may then use FIADD/FIMUL."""
+    float_operands = {}
+    for node in source.walk():
+        if node.kind == K.BINARY_OPERATOR and source.operator(node) in ("+", "-", "*", "/"):
+            operands = [strip(c) for c in node.get_children()]
+            if len(operands) == 2:
+                for mine, other in ((operands[0], operands[1]), (operands[1], operands[0])):
+                    if is_float(other):
+                        float_operands[source.span(mine)] = True
+    for node in source.walk():
+        if node.kind != K.CSTYLE_CAST_EXPR or not is_float(node) or source.span(node) not in float_operands:
+            continue
+        inner = [c for c in node.get_children() if c.kind != K.TYPE_REF]
+        if len(inner) != 1 or is_float(inner[0]) or inner[0].type.get_canonical().kind == ci.TypeKind.POINTER:
+            continue
+        a, b = source.span(node)
+        yield Candidate(source.edit([(a, b, paren(source.src(inner[0])))]), "drop_cast",
+                        f"line {node.location.line}", True)
+
+
+def _tail_returns(source, stmt):
+    """Return statements ending every path of a switch case list or if/else chain, or None."""
+    if stmt.kind == K.RETURN_STMT:
+        return [stmt] if list(stmt.get_children()) else None
+    if stmt.kind == K.COMPOUND_STMT:
+        children = source.children(stmt)
+        return _tail_returns(source, children[-1]) if children else None
+    if stmt.kind == K.IF_STMT:
+        parts = source.children(stmt)
+        if len(parts) != 3:
+            return None
+        then, other = _tail_returns(source, parts[1]), _tail_returns(source, parts[2])
+        return then + other if then is not None and other is not None else None
+    return None
+
+
+def rule_result_variable(source):
+    """Turn returns in switch cases or an if/else chain into one result variable and return."""
+    if source.returns_void:
+        return
+    stmts = source.children(source.body)
+    if len(stmts) < 2 or stmts[-1].kind != K.RETURN_STMT or not source.children(stmts[-1]):
+        return
+    final = stmts[-1]
+    default = source.src(source.children(final)[0])
+    result_type = source.function.result_type.spelling
+    names = {d.spelling for d in source.walk() if d.kind == K.VAR_DECL}
+    name = next(n for n in ("result", "value", "ret", "res") if n not in names)
+    body_start = source.span(source.body)[0] + 1
+    for stmt in stmts[:-1]:
+        edits = []
+        if stmt.kind == K.SWITCH_STMT:
+            compound = source.children(stmt)[-1]
+            cases = source.children(compound)
+            # Returns that end a case: the statement right before the next case label.
+            for node in source.walk(compound):
+                if node.kind != K.RETURN_STMT or not source.children(node):
+                    continue
+                inside = [c for c in source.walk(compound)
+                          if c.kind in (K.FOR_STMT, K.WHILE_STMT, K.DO_STMT, K.SWITCH_STMT)
+                          and source.span(c)[0] < source.span(node)[0] < source.span(c)[1]]
+                if inside:
+                    edits = None
+                    break
+                a, b = source.span(node)
+                semicolon = 0 if source.src(node).rstrip().endswith(";") else 1
+                expr = source.src(source.children(node)[0])
+                edits.append((a, b + semicolon, f"{name} = {expr};\nbreak;"))
+            if not edits:
+                continue
+        elif stmt.kind == K.IF_STMT:
+            returns = _tail_returns(source, stmt)
+            if not returns:
+                continue
+            for node in returns:
+                a, b = source.span(node)
+                semicolon = 0 if source.src(node).rstrip().endswith(";") else 1
+                edits.append((a, b + semicolon, f"{name} = {source.src(source.children(node)[0])};"))
+        else:
+            continue
+        fa, fb = source.span(final)
+        semicolon = 0 if source.src(final).rstrip().endswith(";") else 1
+        for initialized in (True, False):
+            if initialized:
+                extra = [(body_start, body_start, f"\n{result_type} {name} = {default};"),
+                         (fa, fb + semicolon, f"return {name};")]
+            else:
+                extra = [(body_start, body_start, f"\n{result_type} {name};"),
+                         (source.span(stmt)[0], source.span(stmt)[0], f"{name} = {default};\n"),
+                         (fa, fb + semicolon, f"return {name};")]
+            yield Candidate(source.edit(edits + extra), "result_variable",
+                            f"line {stmt.location.line}{' init' if initialized else ''}", True)
+
+
+def rule_forward_temp(source):
+    """x = E; y = F(x);  ->  y = F(E);  when the local x is dead afterwards."""
+    loops = [c for c in source.walk() if c.kind in (K.FOR_STMT, K.WHILE_STMT, K.DO_STMT)]
+    for compound in _blocks(source):
+        stmts = source.children(compound)
+        for first, second in zip(stmts, stmts[1:]):
+            one, two = strip(first), strip(second)
+            if (one.kind != K.BINARY_OPERATOR or two.kind != K.BINARY_OPERATOR
+                    or source.operator(one) != "=" or source.operator(two) != "="):
+                continue
+            lhs, rhs = source.children(one)
+            lhs = strip(lhs)
+            if lhs.kind != K.DECL_REF_EXPR or lhs.referenced.semantic_parent.kind == K.TRANSLATION_UNIT:
+                continue
+            variable = lhs.referenced
+            target, value = source.children(two)
+            uses = [n for n in [value, *source.walk(value)] if n.kind == K.DECL_REF_EXPR and n.referenced == variable]
+            if len(uses) != 1 or any(n.kind == K.DECL_REF_EXPR and n.referenced == variable
+                                     for n in [target, *source.walk(target)]):
+                continue
+            if any(source.span(l)[0] < source.span(first)[0] < source.span(l)[1] for l in loops):
+                continue
+            end = source.span(second)[1]
+            later = sorted((n for n in source.walk() if n.kind == K.DECL_REF_EXPR and n.referenced == variable
+                            and n.extent.start.offset > end), key=lambda n: n.extent.start.offset)
+            if later and not _assigned(source, later[0]):
+                continue
+            if not (pure(source, rhs) or pure(source, value)):
+                continue
+            ua, ub = source.span(uses[0])
+            va, vb = source.span(value)
+            new_value = (source.data[va:ua] + paren(source.src(rhs)).encode("latin-1")
+                         + source.data[ub:vb]).decode("latin-1")
+            a, _ = source.span(first)
+            b = end + (0 if source.src(second).rstrip().endswith(";") else 1)
+            yield Candidate(source.edit([(a, b, f"{source.src(target)} = {new_value};")]), "forward_temp",
+                            f"line {first.location.line}", True)
+
+
 RULES = [rule_inline_local, rule_invert_if, rule_guard_to_else, rule_compare, rule_merge_assign,
-         rule_commute, rule_swap_statements, rule_compound_assign, rule_index, rule_ternary]
+         rule_commute, rule_swap_statements, rule_compound_assign, rule_index, rule_ternary,
+         rule_swap_decls, rule_move_decls, rule_drop_cast, rule_result_variable, rule_forward_temp]
