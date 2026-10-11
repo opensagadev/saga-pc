@@ -341,11 +341,11 @@ extern "C" i32 __cdecl NuInitHardwarePc(VARIPTR *buffer, VARIPTR *end, i32 alloc
     NuAnimInit(animation_count, buffer, *end);
     NuTexAnimInitMutex();
     if (audio_enabled) {
-        STUBBED_NAMED(0x006951f0); /* (buffer,*end,video_parameter,1,audio_gate,2,
-                                     audio_buffer_size,3,audio_channels,4,audio_capacity,0) */
+        NuSound3InitV(buffer, *end, video_parameter, 1, (SFX_FILE_INFO_PC *)audio_gate, 2, audio_buffer_size, 3,
+                      audio_channels, 4, audio_capacity, 0);
     }
     if (audio_gate && audio_names && audio_parameter) {
-        STUBBED_NAMED(0x00698710);
+        NuSound3SetRequestTable((u16 *)audio_names, (i32)audio_parameter);
     }
     NuSound3Update();
     NuPrimSetCoordinateSystem(0);

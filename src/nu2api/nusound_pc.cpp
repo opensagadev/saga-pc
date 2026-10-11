@@ -1,5 +1,8 @@
 #include "saga.h"
 #include <stdio.h>
+#include <math.h>
+#include <float.h>
+#include <stdarg.h>
 
 #include <string.h>
 
@@ -552,4 +555,152 @@ i32 SoundVoiceManagerPC::LoadWavSamplePc(const char *name, i32 index) {
     reader.Close();
     samples[index].valid_byte = 1;
     return 1;
+}
+
+void __thiscall SoundVoiceManagerPC::ClearSamplesPc(void) {
+    i32 i;
+    EnterCriticalSection(&SoundSampleCriticalSectionPc);
+    for (i = 0; i < 64; ++i) {
+        if (voices[i].voice != NULL) {
+            voices[i].voice->vtable->release(voices[i].voice);
+            voices[i].voice = NULL;
+        }
+    }
+    for (i = 0; i < PCSoundSampleLimitPc; ++i) {
+        if (samples[i].buffer != NULL) {
+            samples[i].buffer->vtable->release(samples[i].buffer);
+            samples[i].buffer = NULL;
+        }
+        samples[i].valid_byte = 0;
+        samples[i].failed_byte = 0;
+    }
+    active_count = 0;
+    state_000 = 0;
+    LeaveCriticalSection(&SoundSampleCriticalSectionPc);
+}
+void __cdecl NuSound3SetSampleTable(SFX_FILE_INFO_PC *info, VARIPTR *cursor, VARIPTR end) {
+    char directory[0x800];
+    char filename[0x800];
+    i32 count = 0;
+    i32 i;
+    f32 value;
+    if (PCStereoSampleMetadata == NULL)
+        SoundVoiceManager.Init(0, 0, 1);
+    else
+        SoundVoiceManager.ClearSamplesPc();
+    PCStereoSampleMetadata = (PC_STEREO_SAMPLE_METADATA *)info;
+    SoundSampleCountPc = 0;
+    while (info[count].index != -1) {
+        if (count >= PCSoundSampleLimitPc) {
+            SoundSampleCountPc = count;
+            PCSoundFailure();
+            break;
+        }
+        ++count;
+    }
+    SoundSampleCountPc = count;
+    for (i = 0; i <= 0x3fff; ++i) {
+        if (i == 0)
+            NuSound3VolumeTable[i] = -10000.0f;
+        else {
+            value = (f32)(i / 16383.0);
+            value = (f32)log10((f64)value);
+            NuSound3VolumeTable[i] = (f32)(value * 2000.0);
+        }
+    }
+    for (i = 0; i < SoundSampleCountPc; ++i) {
+        NuStrLen(((SFX_FILE_INFO_PC *)PCStereoSampleMetadata)[i].filename);
+        NuFileGetCurrentDirectory(directory);
+        sprintf(filename, "%s%s", directory, ((SFX_FILE_INFO_PC *)PCStereoSampleMetadata)[i].filename);
+        if (((SFX_FILE_INFO_PC *)PCStereoSampleMetadata)[i].index < 0x1000)
+            SoundVoiceManager.SetSampleName(filename, i);
+    }
+}
+void __cdecl NuSound3SetRequestTable(u16 *request_bits, i32 short_count) {
+    if (PCSoundMixSampleCount != short_count) {
+        if (PCSoundMixDestination != NULL)
+            PCSoundAlreadyPlayingHook();
+        PCSoundMixDestination = (u16 *)NuAlloc(short_count * 2, ".\\pc\\nusound.cpp", 0x8c4);
+        memset(PCSoundMixDestination, 0, short_count * 2);
+    }
+    PCSoundMixSampleCount = short_count;
+    PCSoundMixSource = request_bits;
+}
+
+extern "C" {
+    static DWORD WINAPI PCSoundSampleWorkerPc(void *unused) {
+        char directory[0x104];
+        char filename[0x104];
+        i32 i;
+        u8 requested, loaded;
+        SFX_FILE_INFO_PC *info;
+        for (;;) {
+            WaitForSingleObject(PCSoundMixEvent, INFINITE);
+            if (PCSoundSampleWorkerStopPc != 0)
+                break;
+            if (PCSoundMixDestination != NULL) {
+                EnterCriticalSection(&SoundSampleCriticalSectionPc);
+                for (i = 0; i < SoundSampleCountPc; ++i) {
+                    if (PCSoundSampleWorkerStopPc != 0)
+                        break;
+                    requested = (((u16 *)PCSoundMixDestination)[i / 16] & (1 << (i & 15))) != 0;
+                    loaded = SoundVoiceManager.samples != NULL ? SoundVoiceManager.samples[i].valid_byte : 0;
+                    if (requested == loaded)
+                        continue;
+                    info = (SFX_FILE_INFO_PC *)PCStereoSampleMetadata;
+                    if (requested != 0) {
+                        if (SoundVoiceManager.samples != NULL && SoundVoiceManager.samples[i].failed_byte != 0)
+                            continue;
+                        NuFileGetCurrentDirectory(directory);
+                        sprintf(filename, "%s%s", directory, info[i].filename);
+                        if (info[i].index < 0x1000)
+                            continue;
+                        if (NuStrICmp(NuFileExt_wav_PC, PCSampleFilenameExtensionPc) == 0)
+                            SoundVoiceManager.LoadWavSamplePc(info[i].filename, i);
+                        else
+                            PCSoundAlreadyPlayingHook(PCSampleFilenameExtensionPc);
+                        if (SoundVoiceManager.samples != NULL && SoundVoiceManager.samples[i].failed_byte != 0)
+                            PCSoundFailure(i);
+                    } else if (info[i].index >= 0x1000) {
+                        SoundVoiceManager.UnloadSample(i);
+                    }
+                }
+                LeaveCriticalSection(&SoundSampleCriticalSectionPc);
+            }
+            if (PCSoundSampleWorkerStopPc != 0)
+                break;
+        }
+        PCSoundSampleWorkerHandlePc = NULL;
+        return 0;
+    }
+    i32 __cdecl PCSoundInitializePc(PC_SOUND_INIT_CONFIG *config) {
+        VARIPTR zero;
+        SoundVoiceManager.samples = (SoundSamplePC *)((config->cursor->addr + 3) & ~3u);
+        config->cursor->addr = (config->cursor->addr + 3) & ~3u;
+        config->cursor->addr += config->sample_capacity * sizeof(SoundSamplePC);
+        if (config->cursor->addr > config->end.addr)
+            PCSoundAlreadyPlayingHook();
+        memset(SoundVoiceManager.samples, 0, config->sample_capacity * sizeof(SoundSamplePC));
+        PCSoundSampleLimitPc = config->sample_capacity;
+        zero.addr = 0;
+        if (config->sample_table != NULL)
+            NuSound3SetSampleTable(config->sample_table, NULL, zero);
+        InitializeCriticalSection(&SoundVoiceCriticalSection);
+        InitializeCriticalSection(&SoundSampleCriticalSectionPc);
+        PCSoundMixEvent = CreateEventA(NULL, FALSE, FALSE, "SpotManager Event");
+        if (PCSoundMixEvent != NULL) {
+            PCSoundSampleWorkerHandlePc = CreateThread(NULL, 0, PCSoundSampleWorkerPc, NULL, CREATE_SUSPENDED, NULL);
+            if (PCSoundSampleWorkerHandlePc == NULL) {
+                PCSoundFailure();
+                DeleteObject((HGDIOBJ)PCSoundMixEvent);
+                PCSoundMixEvent = NULL;
+            }
+            SetThreadPriority(PCSoundSampleWorkerHandlePc, THREAD_PRIORITY_LOWEST);
+            ResumeThread(PCSoundSampleWorkerHandlePc);
+        } else {
+            PCSoundFailure();
+        }
+        NuSound3Initialized = 1;
+        return 1;
+    }
 }

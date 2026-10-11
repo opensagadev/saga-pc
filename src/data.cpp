@@ -8648,7 +8648,9 @@ extern "C" {
     HWND PCInputInstance_candidate;
     NuKeyboardOwner_PC nu_keyboard_owner;
     u8 nu_keyboard_pages[0x200];
+#pragma bss_seg(".bss$nu_keyboard_page_index")
     u8 nu_keyboard_page_index;
+#pragma bss_seg()
     i32 nu_keyboard_device_flags;
     i32 nu_keyboard_key_index;
     i32 nu_keyboard_repeat_countdown;
@@ -28208,4 +28210,27 @@ extern "C" {
 extern "C" {
     i32 PcStartupCriticalSectionInitialized;
     CRITICAL_SECTION PcStartupCriticalSection;
+}
+
+extern "C" {
+    FRAME_PAD_PC *GamePadsActivePadPc;
+}
+
+extern "C" {
+    SFX_FILE_INFO_PC *SfxFileInfoPc;
+    SFX_RECORD_PC *SfxRevertInfoPc;
+    i32 NumSfx;
+    i32 NumSfxNames;
+    i32 NumSfxInst;
+    char SfxNameSlotsPc[1601][32];
+    char SfxFilenameSlotsPc[1601][64];
+    i32 SfxRefCountsPc[1601];
+    char SfxConfigFilenamePc[256] = "Audio/audio.cfg";
+    const char *SfxMusicExtensionPc = NuFileExt_vag_PC;
+    f32 SfxAudioVersionPc;
+    i32 SoundSampleCountPc;
+    CRITICAL_SECTION SoundSampleCriticalSectionPc;
+    HANDLE PCSoundSampleWorkerHandlePc;
+    volatile u8 PCSoundSampleWorkerStopPc;
+    char *PCSampleFilenameExtensionPc = (char *)NuFileExt_wav_PC;
 }

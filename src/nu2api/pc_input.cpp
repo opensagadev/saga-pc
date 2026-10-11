@@ -400,3 +400,8 @@ void PC_INPUT_RUNTIME_PC::AutoConfigurePadsPc(i32 count) {
 extern "C" void __cdecl NuPadAutoConfigurePc(i32 count) {
     ((PC_INPUT_RUNTIME_PC *)nu_input_state)->AutoConfigurePadsPc(count);
 }
+
+extern "C" i32 __cdecl GamePadReadBackendPc(FRAME_PAD_PC *pad, i32 ignored) {
+    (void)ignored;
+    return NuPadRead(pad);
+}

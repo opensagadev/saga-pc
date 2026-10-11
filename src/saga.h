@@ -183,7 +183,8 @@ STATIC_ASSERT(offsetof(SoundVoiceSlotPC, volume_index) == 0x24);
 STATIC_ASSERT(offsetof(SoundVoiceSlotPC, parameter) == 0x30);
 
 typedef struct SoundVoiceManagerPC {
-    u8 unknown_000[5];
+    u32 state_000;
+    u8 unknown_004;
     u8 option5;
     u8 option6;
     u8 unknown_007[5];
@@ -207,6 +208,7 @@ typedef struct SoundVoiceManagerPC {
     i32 __thiscall LoadWavSamplePc(const char *, i32);
     SoundVoiceManagerPC *__thiscall ResetStoragePc(void);
     void __thiscall UnloadSample(i32);
+    void __thiscall ClearSamplesPc(void);
     void __thiscall SetOptionD14Pc(u8);
     IDirectSound8 *__thiscall GetFactory(void);
     void __thiscall SetSampleName(const char *name, i32 sample_index);
@@ -220,6 +222,8 @@ typedef struct SoundVoiceManagerPC {
     void __thiscall Setup3DVoice(i32, const NUVEC *, i32);
 #endif
 } SoundVoiceManagerPC;
+STATIC_ASSERT(offsetof(SoundVoiceManagerPC, state_000) == 0);
+STATIC_ASSERT(offsetof(SoundSamplePC, failed_byte) == 0x405);
 STATIC_ASSERT(offsetof(SoundVoiceManagerPC, voices) == 0xc);
 STATIC_ASSERT(offsetof(SoundVoiceManagerPC, samples) == 0xd0c);
 STATIC_ASSERT(offsetof(SoundVoiceManagerPC, active_count) == 0xd10);
@@ -4173,9 +4177,10 @@ typedef struct sfx_record_pc_s {
     i32 rumble_strength;
     f32 rumble_sustain;
     f32 rumble_release;
-    u8 unknown_003c[4];
+    const char *filename;
 } SFX_RECORD_PC;
 STATIC_ASSERT(sizeof(SFX_RECORD_PC) == 0x40);
+STATIC_ASSERT(offsetof(SFX_RECORD_PC, filename) == 0x3c);
 STATIC_ASSERT(offsetof(SFX_RECORD_PC, sample_id_flags) == 0x04);
 STATIC_ASSERT(offsetof(SFX_RECORD_PC, next) == 0x10);
 STATIC_ASSERT(offsetof(SFX_RECORD_PC, pitch) == 0x8);
@@ -4195,10 +4200,16 @@ STATIC_ASSERT(offsetof(SFX_RECORD_PC, rumble_release) == 0x38);
 
 typedef struct sfx_file_info_pc_s {
     const char *filename;
-    u32 unknown_04[6];
+    i32 pitch;
+    i32 static_sample;
+    i32 index;
+    u32 unknown_10[3];
 } SFX_FILE_INFO_PC;
 STATIC_ASSERT(sizeof(SFX_FILE_INFO_PC) == 0x1c);
 STATIC_ASSERT(offsetof(SFX_FILE_INFO_PC, filename) == 0);
+STATIC_ASSERT(offsetof(SFX_FILE_INFO_PC, pitch) == 4);
+STATIC_ASSERT(offsetof(SFX_FILE_INFO_PC, static_sample) == 8);
+STATIC_ASSERT(offsetof(SFX_FILE_INFO_PC, index) == 0xc);
 
 typedef struct apicharactermodellist_s {
     i16 model_id;
@@ -14004,7 +14015,7 @@ void __cdecl PCSoundAlreadyPlayingHook(void);
     extern SFX_RECORD_PC *SfxInfo;
     extern u32 *SfxCRCTable;
     extern i32 SfxCRCTableInitialized;
-    void __cdecl SfxBuildCRCTable(VARIPTR *buffer_cursor);
+    void __cdecl SfxBuildCRCTable(VARIPTR *buffer_cursor, VARIPTR end);
     u32 __cdecl SfxNameHashN(const char *name, u32 limit);
     extern SFX_FILE_INFO_PC *SfxFileTable;
     extern i32 SfxFileCount;
@@ -20098,5 +20109,68 @@ extern "C" {
 STATIC_ASSERT(sizeof(CRITICAL_SECTION) == 24);
 STATIC_ASSERT(sizeof(DWORD_PTR) == 4);
 STATIC_ASSERT(sizeof(LARGE_INTEGER) == 8);
+
+#ifdef __cplusplus
+extern "C" {
+#endif
+    i32 __cdecl ReadPad(i32 port);
+    void __cdecl ReadPads(void);
+    i32 __cdecl GamePadReadBackendPc(FRAME_PAD_PC *pad, i32 ignored);
+    extern FRAME_PAD_PC *GamePadsActivePadPc;
+#ifdef __cplusplus
+}
+#endif
+
+typedef struct PC_SOUND_INIT_CONFIG {
+    VARIPTR *cursor;
+    VARIPTR end;
+    i32 device_parameter;
+    SFX_FILE_INFO_PC *sample_table;
+    i32 sample_capacity;
+    i32 option_14;
+    i32 option_18;
+    i32 option_1c;
+    i32 option_20;
+    i32 option_24;
+} PC_SOUND_INIT_CONFIG;
+STATIC_ASSERT(sizeof(PC_SOUND_INIT_CONFIG) == 0x28);
+STATIC_ASSERT(offsetof(PC_SOUND_INIT_CONFIG, sample_table) == 0xc);
+STATIC_ASSERT(offsetof(PC_SOUND_INIT_CONFIG, sample_capacity) == 0x10);
+STATIC_ASSERT(offsetof(PC_SOUND_INIT_CONFIG, cursor) == 0x0);
+STATIC_ASSERT(offsetof(PC_SOUND_INIT_CONFIG, end) == 0x4);
+STATIC_ASSERT(offsetof(PC_SOUND_INIT_CONFIG, device_parameter) == 0x8);
+STATIC_ASSERT(offsetof(PC_SOUND_INIT_CONFIG, option_14) == 0x14);
+STATIC_ASSERT(offsetof(PC_SOUND_INIT_CONFIG, option_18) == 0x18);
+STATIC_ASSERT(offsetof(PC_SOUND_INIT_CONFIG, option_1c) == 0x1c);
+STATIC_ASSERT(offsetof(PC_SOUND_INIT_CONFIG, option_20) == 0x20);
+STATIC_ASSERT(offsetof(PC_SOUND_INIT_CONFIG, option_24) == 0x24);
+
+#ifdef __cplusplus
+extern "C" {
+#endif
+    extern SFX_FILE_INFO_PC *SfxFileInfoPc;
+    extern SFX_RECORD_PC *SfxRevertInfoPc;
+    extern i32 NumSfx, NumSfxNames, NumSfxInst;
+    extern char SfxNameSlotsPc[1601][32];
+    extern char SfxFilenameSlotsPc[1601][64];
+    extern i32 SfxRefCountsPc[1601];
+    extern char SfxConfigFilenamePc[256];
+    extern const char *SfxMusicExtensionPc;
+    extern f32 SfxAudioVersionPc;
+    extern i32 SoundSampleCountPc;
+    extern CRITICAL_SECTION SoundSampleCriticalSectionPc;
+    extern HANDLE PCSoundSampleWorkerHandlePc;
+    extern volatile u8 PCSoundSampleWorkerStopPc;
+    extern char *PCSampleFilenameExtensionPc;
+    void __cdecl AudioGroup_Parse(NUFPAR_PC *);
+    void __cdecl InitSfx(VARIPTR *cursor, VARIPTR end, const char *file);
+    void __cdecl NuSound3SetSampleTable(SFX_FILE_INFO_PC *, VARIPTR *, VARIPTR);
+    void __cdecl NuSound3SetRequestTable(u16 *, i32);
+    i32 __cdecl NuSound3InitV(VARIPTR *, VARIPTR, i32, i32, ...);
+    i32 __cdecl PCSoundInitializePc(PC_SOUND_INIT_CONFIG *);
+    struct nusound_filename_info_s *__cdecl ConfigureMusic(char *, VARIPTR *, VARIPTR *);
+#ifdef __cplusplus
+}
+#endif
 
 #endif

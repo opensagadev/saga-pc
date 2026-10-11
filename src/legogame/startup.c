@@ -131,8 +131,8 @@ void __cdecl LoadPerm(void) {
         NuFrameBegin();
         NuCameraSet(&global_camera);
         readpads_always = 1;
-        STUBBED_NAMED("LoadPerm: ReadPads()");
-        STUBBED_NAMED("LoadPerm: UpdateGameMenu(GamePad, 0)");
+        ReadPads();
+        UpdateGameMenu((GAMEPAD_PC *)&GamePadStorage[0], 0);
         UpdateTimer(&GlobalTimer);
         menu_flash = NuFmod(GlobalTimer.time_elapsed_mod_seconds, 0.2f) < 0.1f;
 
@@ -292,8 +292,9 @@ void __cdecl LoadPermData(void *process) {
     }
 
     STUBBED_NAMED("LoadPermData: string filter load (badwords.txt at 0x4fe390)");
-    STUBBED_NAMED("LoadPermData: ConfigureMusic(audio\\music.txt) into MusicInfo + SfxSetFileTable");
-    STUBBED_NAMED("LoadPermData: sound configuration from Audio\\Audio.cfg (0x6521b0)");
+    MusicInfo = ConfigureMusic("audio\\music.txt", &permbuffer_ptr, &permbuffer_end);
+    SfxSetFileTable((SFX_FILE_INFO_PC *)MusicInfo);
+    InitSfx(&permbuffer_ptr, permbuffer_end, "Audio\\Audio.cfg");
     STUBBED_NAMED("LoadPermData: still-render initialization (0x565820)");
 
     OldLevelHackData = GameBufferAlloc(&permbuffer_ptr, &permbuffer_end, 0x80);

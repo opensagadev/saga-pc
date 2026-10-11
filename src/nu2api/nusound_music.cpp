@@ -1,6 +1,8 @@
 #include "saga.h"
 
 #include <string.h>
+#include <float.h>
+#include <stdarg.h>
 
 void NuMusic::SetFader(f32 target, f32 fade_seconds) {
     if (this == NULL || the_music_player == NULL) {
@@ -1344,4 +1346,58 @@ i32 NuMusic::PlayTrack(u32 class_mask, u32 prepare_only) {
 
 i32 NuMusic::PlayTrack(u32 class_mask) {
     return PlayTrack(class_mask, 0);
+}
+
+extern "C" i32 __cdecl NuSound3InitV(VARIPTR *cursor, VARIPTR end, i32 device_parameter, i32 token, ...) {
+    PC_SOUND_INIT_CONFIG config;
+    va_list args;
+    i32 i;
+    if (NuSound3Initialized != 0)
+        return 1;
+    for (i = 0; i < 5; ++i) {
+        nusound_special_positions[i].x = FLT_MAX;
+        nusound_special_positions[i].y = FLT_MAX;
+        nusound_special_positions[i].z = FLT_MAX;
+    }
+    config.cursor = cursor;
+    config.end = end;
+    config.device_parameter = device_parameter;
+    config.sample_table = NULL;
+    config.sample_capacity = 64;
+    config.option_14 = 0;
+    config.option_18 = 0x1fff;
+    config.option_1c = 1;
+    config.option_20 = 0;
+    config.option_24 = 0;
+    va_start(args, token);
+    while (token != 0) {
+        switch (token) {
+            case 1:
+                config.sample_table = va_arg(args, SFX_FILE_INFO_PC *);
+                break;
+            case 2:
+                config.sample_capacity = va_arg(args, i32) + 16;
+                break;
+            case 3:
+                config.option_14 = va_arg(args, i32);
+                break;
+            case 4:
+                config.option_18 = va_arg(args, i32);
+                break;
+            case 5:
+                config.option_1c = va_arg(args, i32);
+                break;
+            case 6:
+                config.option_20 = va_arg(args, i32);
+                /* Native case6 consumes two consecutive values. */
+                config.option_24 = va_arg(args, i32);
+                break;
+            case 11:
+                config.option_24 = va_arg(args, i32);
+                break;
+        }
+        token = va_arg(args, i32);
+    }
+    va_end(args);
+    return PCSoundInitializePc(&config);
 }

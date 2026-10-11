@@ -127,3 +127,109 @@ void __cdecl GamePad_InitButtons(void) {
     GAMEPAD_MENUSELECT = 0x40;
     GAMEPAD_MENUCANCEL = 0x120;
 }
+
+typedef struct GAMEPAD_RUNTIME_INPUT_PC {
+    FRAME_PAD_PC *bound_pad;
+    u32 held, pressed;
+    u32 left_held, left_pressed, left_previous;
+    u32 right_held, right_pressed, right_previous;
+    u8 input_ready;
+    u8 unknown25[0x60 - 0x25];
+} GAMEPAD_RUNTIME_INPUT_PC;
+STATIC_ASSERT(sizeof(GAMEPAD_RUNTIME_INPUT_PC) == 0x60);
+STATIC_ASSERT(sizeof(GAMEPAD_INIT_RECORD) == 0x60);
+STATIC_ASSERT(offsetof(GAMEPAD_RUNTIME_INPUT_PC, bound_pad) == 0);
+STATIC_ASSERT(offsetof(GAMEPAD_RUNTIME_INPUT_PC, held) == 4);
+STATIC_ASSERT(offsetof(GAMEPAD_RUNTIME_INPUT_PC, pressed) == 8);
+STATIC_ASSERT(offsetof(GAMEPAD_RUNTIME_INPUT_PC, left_held) == 0xc);
+STATIC_ASSERT(offsetof(GAMEPAD_RUNTIME_INPUT_PC, left_pressed) == 0x10);
+STATIC_ASSERT(offsetof(GAMEPAD_RUNTIME_INPUT_PC, left_previous) == 0x14);
+STATIC_ASSERT(offsetof(GAMEPAD_RUNTIME_INPUT_PC, right_held) == 0x18);
+STATIC_ASSERT(offsetof(GAMEPAD_RUNTIME_INPUT_PC, right_pressed) == 0x1c);
+STATIC_ASSERT(offsetof(GAMEPAD_RUNTIME_INPUT_PC, right_previous) == 0x20);
+STATIC_ASSERT(offsetof(GAMEPAD_RUNTIME_INPUT_PC, input_ready) == 0x24);
+STATIC_ASSERT(offsetof(WORLDINFO, current_level) == 0x128);
+STATIC_ASSERT(offsetof(LEVELDATA_PC, flags) == 0x64);
+STATIC_ASSERT(offsetof(GAMEOBJECT, flags_1fc) == 0x1fc);
+STATIC_ASSERT(offsetof(FRAME_PAD_PC, digital_buttons) == 0x70);
+STATIC_ASSERT(offsetof(FRAME_PAD_PC, digital_buttons_pressed) == 0x78);
+STATIC_ASSERT(offsetof(FRAME_PAD_PC, analog_right_x) == 0x90);
+STATIC_ASSERT(offsetof(FRAME_PAD_PC, analog_right_y) == 0x91);
+STATIC_ASSERT(offsetof(FRAME_PAD_PC, analog_left_x) == 0x92);
+STATIC_ASSERT(offsetof(FRAME_PAD_PC, analog_left_y) == 0x93);
+
+i32 __cdecl ReadPad(i32 port) {
+    GAMEPAD_RUNTIME_INPUT_PC *gamepad = (GAMEPAD_RUNTIME_INPUT_PC *)&GamePadStorage[port];
+    FRAME_PAD_PC *pad = gamepad->bound_pad;
+    WORLDINFO *world = WorldInfo_CurrentlyActive();
+    i32 mode;
+    f32 axis_x, axis_y;
+    u32 directions;
+    if (GamePads_IgnoreInputFn != NULL && GamePads_IgnoreInputFn() != 0) {
+        mode = 1;
+    } else if (readpads_always != 0 || world == NULL || world->current_level == NULL ||
+               world->current_level == TITLES_LDATA || world->current_level == CREDITS_LDATA ||
+               (world->current_level->flags & 0x400) != 0) {
+        mode = 2;
+    } else if (port >= PLAYERCOUNT || Player[port] == NULL) {
+        mode = 1;
+    } else if ((((GAMEOBJECT *)Player[port])->flags_1fc & 0x80) != 0) {
+        mode = 2;
+    } else {
+        mode = 3;
+    }
+    gamepad->left_held = 0;
+    gamepad->left_pressed = 0;
+    gamepad->right_held = 0;
+    gamepad->right_pressed = 0;
+    gamepad->held = 0;
+    gamepad->pressed = 0;
+    if (pad == NULL || GamePadReadBackendPc(pad, 0) == 0)
+        return mode == 1 ? 1 : 0;
+    if (mode == 1)
+        return 1;
+    if (mode == 3) {
+        gamepad->pressed |= pad->digital_buttons_pressed & GAMEPAD_START;
+        return 3;
+    }
+    axis_x = (f32)pad->analog_left_x - 127.5f;
+    axis_y = (f32)pad->analog_left_y - 127.5f;
+    directions = 0;
+    if (axis_x < -85.0f)
+        directions = GAMEPAD_DLEFT;
+    else if (axis_x > 85.0f)
+        directions = GAMEPAD_DRIGHT;
+    if (axis_y < -85.0f)
+        directions |= GAMEPAD_DUP;
+    else if (axis_y > 85.0f)
+        directions |= GAMEPAD_DDOWN;
+    gamepad->left_held = directions;
+    gamepad->left_pressed = directions & ~gamepad->left_previous;
+    gamepad->left_previous = directions;
+    axis_x = (f32)pad->analog_right_x - 127.5f;
+    axis_y = (f32)pad->analog_right_y - 127.5f;
+    directions = 0;
+    if (axis_x < -85.0f)
+        directions = GAMEPAD_DLEFT;
+    else if (axis_x > 85.0f)
+        directions = GAMEPAD_DRIGHT;
+    if (axis_y < -85.0f)
+        directions |= GAMEPAD_DUP;
+    else if (axis_y > 85.0f)
+        directions |= GAMEPAD_DDOWN;
+    gamepad->right_held = directions;
+    gamepad->right_pressed = directions & ~gamepad->right_previous;
+    gamepad->right_previous = directions;
+    gamepad->input_ready = 1;
+    gamepad->held = pad->digital_buttons;
+    gamepad->pressed = pad->digital_buttons_pressed;
+    GamePadsActivePadPc = gamepad->bound_pad;
+    return mode;
+}
+
+void __cdecl ReadPads(void) {
+    i32 port;
+    for (port = 0; port < 2; ++port)
+        ReadPad(port);
+    readpads_always = 0;
+}

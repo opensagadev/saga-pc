@@ -10,67 +10,46 @@ and [transfer-checkpoint.json](transfer-checkpoint.json).
 
 ## Published baseline and runtime
 
-Verified source baseline DDD is [be647b8](https://github.com/opensagadev/saga-pc/commit/be647b859b259502f46569294b0cff7680ab7703), with [all 13 CI steps passing](https://github.com/opensagadev/saga-pc/actions/runs/38136446273). EEE exact-revision CI will be checked after publication.
+Verified baseline EEE is [9143206](https://github.com/opensagadev/saga-pc/commit/91432069da26694dfd12a63d4d8fbb2d55e554b0), with [all 13 CI steps passing](https://github.com/opensagadev/saga-pc/actions/runs/38138778480). FFF exact-revision CI is pending publication.
 
-Checkpoint EEE restores two genuine startup providers / 132 complete PC bytes:
-the guarded critical-section initializer `0x4ff100` (31 bytes) and performance timing `0x4ffbb0` (101 bytes).
-Both match all native bytes. Hardware calls use the original order and real SDK
-imports. Timing preserves affinity-mask query/failure defaults, temporary pin,
-counter/frequency queries and restoration; no timer value or return is fabricated.
+Checkpoint FFF restores the genuine sound configuration, SFX table producer,
+backend initialization and loading-time pad reads: 15 functions / 6,052 complete
+PC bytes, including 440 newly exact code bytes. Hardware and permanent-data
+call sites now invoke these real providers in native order. This addresses the
+missing producer behind EEE's attributed null-SfxInfo fault in GetSfxIdN; it does
+not establish that the current runtime passed that fault.
 
-The critical-section pool starts at native `0x91efa8`, rather than arithmetic bias `0x91ef90`.
-Source indices subtract one; native creation permits 13 while enter/leave permit
-only 1–12. Both prior exact 30-byte enter/leave bodies remain exact. The 13-slot working
-cohort has unknown original owning extent. Correcting the old false 312-byte claim
-retires 304 exact-data/mapping bytes while preserving the canonical eight-byte frequency.
-New startup critical/guard views also have unknown original extents and zero credit.
+The current unchanged source executable was observed under WineDbg for 60.20
+seconds with empty arguments and installed assets. A four-byte write watch on the
+current source SfxInfo pointer was verified installed, but captured no write and
+no fault before the deadline. The test did not capture the final wait stack, so
+it does not identify where startup waited or prove sound initialization completed.
+The debugger was explicitly stopped, not naturally exited. All 344 objects and
+frozen source/input pins remained unchanged; owned game/debugger processes and
+sampled crash/game windows were absent after cleanup. Crash-dialog suppression
+was set and queried before launch.
 
-The declaration cache now has a 256-record inferred working backing. This is the
-strongest converging reconstruction: PC `0x808` gap before the independently identified
-water table, Mac same inline eight-byte record and 2,048-byte spacing, and Android's authentic 256-entry pool.
-The complete 2,048-byte loader initializer is native-equal, and the former 32-byte
-prefix survives. Original PC capacity/owning extent remains unproved; 257 or a
-smaller object plus unnamed storage is not mathematically excluded. Map extent
-stays blank and receives no data/allocation credit. Counter, lookup, copy,
-insertion, lifecycle and failure behavior are unchanged. This replaces arbitrary
-incremental minimum growth with an explicitly qualified architectural inference.
+No completed nontrivial rendering, loaded world or playable recurring loop is
+established. EEE's earlier cache-write/fault and separate black-window observations
+remain historical evidence, not results of this new executable. Next, attribute
+the actual startup wait and recover the earliest verified missing native provider.
+In parallel, close real per-frame input polling and its cache reset before
+claiming responsive menus or gameplay. Preserve native behavior and matching;
+never substitute a null guard, fake table, success return or forced configuration.
 
-Whole-PC fuzzy coverage is 29.591752%, a change of
-+0.003031 percentage points.
-Exact code is 235,010/3,471,246 bytes; exact data is
-637,537 bytes. The data decrease is the explicit false
-pool-extent retirement, separately from source gains. Complete prior outputs and
-all legitimate exact contracts are independently reviewed; no masks or trimming.
+Whole-PC fuzzy coverage is 29.732275% (+0.140523 percentage points from EEE).
+Exact code is 235,450/3,471,246 bytes (+440), exact data is 637,561 bytes (+24),
+and compared PC code is 1,485,614 bytes (+6,052). Mapping covers code
+1,517,547/3,471,246, data 646,738/36,018,966, and combined code/data
+2,164,285/39,490,212 bytes (5.480561%). Unknown original data extents earn zero
+allocation or coverage credit. Similarity and mapping do not measure playability.
 
-The rebuilt source was tested with empty arguments and installed assets, first
-under a correctly installed four-byte WineDbg write watch, then normally for
-60 seconds. The debugger captured genuine declaration-count writes 1 and 2;
-at a later fault the count was 13 and the cache contained real records. This run
-passed the formerly observed four-record storage failure. It does not prove the
-original cache capacity or establish a bound for every startup/gameplay path.
-
-The new attributed fault is source `0x005347d5`, inside exact `GetSfxIdN`
-(native `0x650e40`, 77 complete bytes), reading null `SfxInfo`. The recorded return
-chain passes through particle loading. Current source omits the preceding native
-sound configuration provider at `0x6521b0`, and never assigns `SfxInfo`.
-Recovering that real producer and its consumed dependencies is the next priority;
-a null guard or dummy table would hide the missing reconstruction.
-
-The separate normal run reached its 60-second deadline without a logged source
-fault; its PID-attributed window remained black in samples at 5.79, 21.44 and
-55.81 seconds. Debugger timing changes scheduling, so these are distinct results.
-No completed nontrivial rendering, world activation or playable game is established.
-Both runs preserve all frozen inputs and objects, set and query crash-dialog
-suppression, and leave no owned game/debugger process or sampled game/crash window.
-The debugger was explicitly killed/quit after capture; the normal run was stopped
-at its deadline. Neither is reported as a natural successful game exit.
-
-Reconstruction follows the measured executable frontier: fix the earliest
-attributed native failure or missing consumed provider, then rerun the unchanged
-entry path against installed assets. Device/window invocation, completed presentation,
-world activation and playable recurring updates are separate milestones. Prepare
-connected independent source families in parallel where they help these milestones.
-Do not introduce success returns, assets, vtables, guards or graphics workarounds.
+All 16,682 prior complete outputs were reviewed, preserving 6,274 legitimate exact
+rows and 8,182 exact owner copies. The final local run passed 796 tests (three
+existing skips), LLVM 18 formatting/tidy, source build/link and object validation,
+and authoritative full retail matching. The immutable report describes the source
+snapshot before explanatory publication edits; no source, map, tool, member or
+object changes followed that comparison.
 
 ## Ownership and continuous work
 

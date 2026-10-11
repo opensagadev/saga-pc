@@ -1,44 +1,59 @@
 # Current work plan
 
 The [whole-project mandate](../SOL_IMPLEMENTATION_PLAN.md) remains active.
-Verified source baseline DDD is [be647b8](https://github.com/opensagadev/saga-pc/commit/be647b859b259502f46569294b0cff7680ab7703), with [all 13 CI steps passing](https://github.com/opensagadev/saga-pc/actions/runs/38136446273). EEE exact-revision CI will be checked after publication.
+Verified baseline EEE is [9143206](https://github.com/opensagadev/saga-pc/commit/91432069da26694dfd12a63d4d8fbb2d55e554b0), with [all 13 CI steps passing](https://github.com/opensagadev/saga-pc/actions/runs/38138778480). FFF exact-revision CI is pending publication.
 
-The rebuilt source was tested with empty arguments and installed assets, first
-under a correctly installed four-byte WineDbg write watch, then normally for
-60 seconds. The debugger captured genuine declaration-count writes 1 and 2;
-at a later fault the count was 13 and the cache contained real records. This run
-passed the formerly observed four-record storage failure. It does not prove the
-original cache capacity or establish a bound for every startup/gameplay path.
+Checkpoint FFF restores the genuine sound configuration, SFX table producer,
+backend initialization and loading-time pad reads: 15 functions / 6,052 complete
+PC bytes, including 440 newly exact code bytes. Hardware and permanent-data
+call sites now invoke these real providers in native order. This addresses the
+missing producer behind EEE's attributed null-SfxInfo fault in GetSfxIdN; it does
+not establish that the current runtime passed that fault.
 
-The new attributed fault is source `0x005347d5`, inside exact `GetSfxIdN`
-(native `0x650e40`, 77 complete bytes), reading null `SfxInfo`. The recorded return
-chain passes through particle loading. Current source omits the preceding native
-sound configuration provider at `0x6521b0`, and never assigns `SfxInfo`.
-Recovering that real producer and its consumed dependencies is the next priority;
-a null guard or dummy table would hide the missing reconstruction.
+The current unchanged source executable was observed under WineDbg for 60.20
+seconds with empty arguments and installed assets. A four-byte write watch on the
+current source SfxInfo pointer was verified installed, but captured no write and
+no fault before the deadline. The test did not capture the final wait stack, so
+it does not identify where startup waited or prove sound initialization completed.
+The debugger was explicitly stopped, not naturally exited. All 344 objects and
+frozen source/input pins remained unchanged; owned game/debugger processes and
+sampled crash/game windows were absent after cleanup. Crash-dialog suppression
+was set and queried before launch.
 
-The separate normal run reached its 60-second deadline without a logged source
-fault; its PID-attributed window remained black in samples at 5.79, 21.44 and
-55.81 seconds. Debugger timing changes scheduling, so these are distinct results.
-No completed nontrivial rendering, world activation or playable game is established.
-Both runs preserve all frozen inputs and objects, set and query crash-dialog
-suppression, and leave no owned game/debugger process or sampled game/crash window.
-The debugger was explicitly killed/quit after capture; the normal run was stopped
-at its deadline. Neither is reported as a natural successful game exit.
+No completed nontrivial rendering, loaded world or playable recurring loop is
+established. EEE's earlier cache-write/fault and separate black-window observations
+remain historical evidence, not results of this new executable. Next, attribute
+the actual startup wait and recover the earliest verified missing native provider.
+In parallel, close real per-frame input polling and its cache reset before
+claiming responsive menus or gameplay. Preserve native behavior and matching;
+never substitute a null guard, fake table, success return or forced configuration.
 
-1. Follow the latest attributed source failure recorded in the runtime evidence.
-   Preserve genuine native behavior and recover its storage/providers with explicit
-   confidence and extent qualifications. The inferred cache backing receives zero
-   original allocation credit; validate each observed usage domain separately.
-2. Close real device/resource/presentation dependencies and verify completed frames.
-3. Close permanent/area/world loading and character/camera activation, then recurring
-   updates, movement, collision, menus, audio, saves and transitions.
-4. Integrate coherent source/layout/data waves, preserve legitimate prior exacts,
-   run full checks and retail matching, publish validated checkpoints and verify CI.
+1. Capture the actual startup wait or first fault with the unchanged source entry,
+   installed assets and bounded, automatically cleaned diagnostic runs. Reconstruct
+   the earliest attributed native dependency; verify the resulting path again.
+2. Close the connected frame input producer at 0x4fb130, its genuine backend,
+   mouse/math/record dependencies and native per-frame cache reset at 0x6d9610.
+   Loading-time ReadPads alone does not establish live input. Preserve real
+   DirectInput/XInput state, frame ordering and native reset conditions.
+3. Close device/resource/presentation dependencies and verify completed real frames,
+   then permanent/area/world loading and player/camera activation.
+4. Complete recurring updates, movement, collision, menus, audio, saves and
+   transitions. Release coherent source subsets, preserve prior exact results,
+   validate against retail, push authorized checkpoints and verify their exact CI.
 
-EEE adds 132 exact PC code bytes, restores real timing/critical startup calls and
-corrects native lock indexing. It explicitly retires 304 falsely credited data bytes.
-The declaration backing of 256 records is an architectural inference with unknown original
-owning extent, rather than an established PC allocation size.
-See [execution evidence and contracts](transfer-execution.md),
-[strategy](strategy.md) and [runnable milestones](../docs/roadmap.md).
+Whole-PC fuzzy coverage is 29.732275% (+0.140523 percentage points from EEE).
+Exact code is 235,450/3,471,246 bytes (+440), exact data is 637,561 bytes (+24),
+and compared PC code is 1,485,614 bytes (+6,052). Mapping covers code
+1,517,547/3,471,246, data 646,738/36,018,966, and combined code/data
+2,164,285/39,490,212 bytes (5.480561%). Unknown original data extents earn zero
+allocation or coverage credit. Similarity and mapping do not measure playability.
+
+All 16,682 prior complete outputs were reviewed, preserving 6,274 legitimate exact
+rows and 8,182 exact owner copies. The final local run passed 796 tests (three
+existing skips), LLVM 18 formatting/tidy, source build/link and object validation,
+and authoritative full retail matching. The immutable report describes the source
+snapshot before explanatory publication edits; no source, map, tool, member or
+object changes followed that comparison.
+
+See [execution evidence](transfer-execution.md), [strategy](strategy.md) and
+[runnable milestones](../docs/roadmap.md).

@@ -1,42 +1,38 @@
 # NuMain investigation queue
 
-Current whole-project status and source contracts are recorded in
-[transfer-execution.md](transfer-execution.md). Decompilation order follows the
-measured runtime frontier before independent broad source waves.
+Current contracts are in [transfer-execution.md](transfer-execution.md).
+Decompilation follows the earliest attributed runtime gap and its real dependency
+closure, with connected independent work prepared in parallel.
 
-The rebuilt source was tested with empty arguments and installed assets, first
-under a correctly installed four-byte WineDbg write watch, then normally for
-60 seconds. The debugger captured genuine declaration-count writes 1 and 2;
-at a later fault the count was 13 and the cache contained real records. This run
-passed the formerly observed four-record storage failure. It does not prove the
-original cache capacity or establish a bound for every startup/gameplay path.
+Verified baseline EEE is [9143206](https://github.com/opensagadev/saga-pc/commit/91432069da26694dfd12a63d4d8fbb2d55e554b0), with [all 13 CI steps passing](https://github.com/opensagadev/saga-pc/actions/runs/38138778480). FFF exact-revision CI is pending publication.
 
-The new attributed fault is source `0x005347d5`, inside exact `GetSfxIdN`
-(native `0x650e40`, 77 complete bytes), reading null `SfxInfo`. The recorded return
-chain passes through particle loading. Current source omits the preceding native
-sound configuration provider at `0x6521b0`, and never assigns `SfxInfo`.
-Recovering that real producer and its consumed dependencies is the next priority;
-a null guard or dummy table would hide the missing reconstruction.
+Checkpoint FFF restores the genuine sound configuration, SFX table producer,
+backend initialization and loading-time pad reads: 15 functions / 6,052 complete
+PC bytes, including 440 newly exact code bytes. Hardware and permanent-data
+call sites now invoke these real providers in native order. This addresses the
+missing producer behind EEE's attributed null-SfxInfo fault in GetSfxIdN; it does
+not establish that the current runtime passed that fault.
 
-The separate normal run reached its 60-second deadline without a logged source
-fault; its PID-attributed window remained black in samples at 5.79, 21.44 and
-55.81 seconds. Debugger timing changes scheduling, so these are distinct results.
-No completed nontrivial rendering, world activation or playable game is established.
-Both runs preserve all frozen inputs and objects, set and query crash-dialog
-suppression, and leave no owned game/debugger process or sampled game/crash window.
-The debugger was explicitly killed/quit after capture; the normal run was stopped
-at its deadline. Neither is reported as a natural successful game exit.
+The current unchanged source executable was observed under WineDbg for 60.20
+seconds with empty arguments and installed assets. A four-byte write watch on the
+current source SfxInfo pointer was verified installed, but captured no write and
+no fault before the deadline. The test did not capture the final wait stack, so
+it does not identify where startup waited or prove sound initialization completed.
+The debugger was explicitly stopped, not naturally exited. All 344 objects and
+frozen source/input pins remained unchanged; owned game/debugger processes and
+sampled crash/game windows were absent after cleanup. Crash-dialog suppression
+was set and queried before launch.
 
-The DDD debugger observation reached hardware/window/adapter/device/shader startup
-and LoadPerm, then NuFrameEnd9 times and NuRndrSwapScreen10 times. Wine's own window
-inventory established TTalesWindow, titled TitleNotSet. A later source fault at
-00549a34 maps to exact native PCVertexDeclarationFindSlot741934+0x24. The counter
-occupied cache+32 in our source while native places it eight bytes before the cache.
-A subsequent watch command failed installation; it supplies no write chronology.
-The new256 working backing uses explicit convergent inference, keeps original size
-unknown/zero-credit, and preserves lookup/insertion/count behavior. Timing and lock
-corrections are real native dependencies, not substitutes for this storage review.
-Dated notes below retain historical limits; use the current source and work plan.
+No completed nontrivial rendering, loaded world or playable recurring loop is
+established. EEE's earlier cache-write/fault and separate black-window observations
+remain historical evidence, not results of this new executable. Next, attribute
+the actual startup wait and recover the earliest verified missing native provider.
+In parallel, close real per-frame input polling and its cache reset before
+claiming responsive menus or gameplay. Preserve native behavior and matching;
+never substitute a null guard, fake table, success return or forced configuration.
+
+Dated notes below retain historical observations and partial-source limitations;
+use the current source, checkpoint and work plan for present status.
 
 The original PC `NuMain` is at `0x00492b40`, with a complete 4,332-byte extent.
 [Identification notes](identification.md) explain its entry chain and implemented

@@ -3,7 +3,7 @@
   "recipe_pins": [
     {
       "path": "Makefile",
-      "sha256": "52f78a776978a0edb11a500a35d4c73b8b057f79316236444698919b479d0abf"
+      "sha256": "71a9dbb1aecd7d91ab26e6a98fbf2c2216bc534d6a949542716ec60c413377eb"
     },
     {
       "path": "tools/cc.py",
@@ -15,7 +15,7 @@
     },
     {
       "path": "src/saga.h",
-      "sha256": "995caa014426a71e99ec431cbe7b2758637f1a9d5a0e71835d423fdf0963a276"
+      "sha256": "078ab35da4d112a8666f14b17b250d742b0f6ad7d089241929177345f5155755"
     },
     {
       "path": "src/externals.h",

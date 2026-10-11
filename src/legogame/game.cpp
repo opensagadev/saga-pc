@@ -1751,3 +1751,31 @@ void __cdecl InitGameAfterConfig(void) {
 }
 
 #undef GAME_PUBLISHER_ASSERT
+
+struct MUSIC_PAIR_ARENA_PC {
+    i32 prefix_word;
+    u8 unknown_004[0x18];
+    i16 action_first;
+    u8 unknown_01e[0x1a];
+    i16 ambient_first;
+    u8 unknown_03a[2];
+};
+STATIC_ASSERT(sizeof(MUSIC_PAIR_ARENA_PC) == 0x3c);
+STATIC_ASSERT(offsetof(MUSIC_PAIR_ARENA_PC, action_first) == 0x1c);
+STATIC_ASSERT(offsetof(MUSIC_PAIR_ARENA_PC, ambient_first) == 0x38);
+
+extern "C" nusound_filename_info_s *__cdecl ConfigureMusic(char *ignored_file, VARIPTR *cursor, VARIPTR *end) {
+    nusound_filename_info_s *files;
+    MUSIC_PAIR_ARENA_PC *arena;
+    music_man.Initialise("audio\\music.cfg", NULL, cursor, *end);
+    music_man.GetSoundFiles(&files, NULL);
+    SfxMusicExtensionPc = ".mib";
+    arena = (MUSIC_PAIR_ARENA_PC *)((cursor->addr + 3) & ~3u);
+    arena->prefix_word = 0;
+    arena->action_first = -1;
+    ActionPairTab = (PC_MUSIC_ACTION_PAIR_PC *)&arena->action_first;
+    arena->ambient_first = -1;
+    AmbientPairTab = &arena->ambient_first;
+    cursor->void_ptr = arena + 1;
+    return files;
+}

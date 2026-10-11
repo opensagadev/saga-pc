@@ -20,17 +20,17 @@
   },
   "progress": {
     "text_bytes": 3471246,
-    "mapped_code_bytes": 1510441,
-    "matched_code_bytes": 235010,
-    "matching_percent": 6.770191452867357,
-    "fuzzy_coverage_percent": 29.59175186792561,
-    "mapped_functions": 5379,
-    "matched_functions": 2460,
-    "objdiff_fuzzy_percent": 69.46679,
-    "objdiff_total_code": 1479562,
+    "mapped_code_bytes": 1516353,
+    "matched_code_bytes": 235450,
+    "matching_percent": 6.782867016627459,
+    "fuzzy_coverage_percent": 29.732274707497616,
+    "mapped_functions": 5392,
+    "matched_functions": 2465,
+    "objdiff_fuzzy_percent": 69.512115,
+    "objdiff_total_code": 1485614,
     "image_bytes": 40067072,
-    "mapped_bytes": 2158349,
-    "mapping_percent": 5.3868398469446435,
+    "mapped_bytes": 2164285,
+    "mapping_percent": 5.401655004887804,
     "mapping_denominator": "code_and_data_section_virtual_sizes",
     "mapping_sections": [
       {
@@ -38,14 +38,14 @@
         "kind": "code",
         "address": "0x401000",
         "size": 3471246,
-        "mapped_bytes": 1511635
+        "mapped_bytes": 1517547
       },
       {
         "name": ".rdata",
         "kind": "data",
         "address": "0x751000",
         "size": 646766,
-        "mapped_bytes": 30186
+        "mapped_bytes": 30210
       },
       {
         "name": ".data",
@@ -55,18 +55,18 @@
         "mapped_bytes": 616528
       }
     ],
-    "mapping_known_size_symbols": 9666,
-    "mapping_unknown_size_symbols": 5656,
-    "mapping_code_bytes": 1511635,
+    "mapping_known_size_symbols": 9683,
+    "mapping_unknown_size_symbols": 5696,
+    "mapping_code_bytes": 1517547,
     "mapping_code_total_bytes": 3471246,
-    "mapping_code_percent": 43.54733141932321,
-    "mapping_data_bytes": 646714,
+    "mapping_code_percent": 43.71764490329985,
+    "mapping_data_bytes": 646738,
     "mapping_data_total_bytes": 36018966,
-    "mapping_data_percent": 1.795481858085543,
-    "mapping_code_data_bytes": 2158349,
+    "mapping_data_percent": 1.7955484896484812,
+    "mapping_code_data_bytes": 2164285,
     "mapping_code_data_total_bytes": 39490212,
-    "mapping_code_data_percent": 5.465529027800611,
-    "matched_data_region_bytes": 637537
+    "mapping_code_data_percent": 5.480560600687583,
+    "matched_data_region_bytes": 637561
   },
   "newly_compared": [
     {
@@ -38390,7 +38390,7 @@
       "date": "2026-10-11",
       "scope": "Measured startup frontier; genuine critical/timing132, lock first-slot correction and inferred256 declaration working backing",
       "baseline_commit": "be647b859b259502f46569294b0cff7680ab7703",
-      "publication": "Exact pushed revision CI pending at commit",
+      "publication": "Verified 91432069da26694dfd12a63d4d8fbb2d55e554b0; CI 38138778480, all 13 steps successful",
       "new_functions": 2,
       "new_unique_compared_PC_bytes": 132,
       "new_exact_functions": 2,
@@ -38543,8 +38543,246 @@
       "next_connected_wave": "Restore genuine InitSfx native0x6521b0 sound-configuration/table producer and real consumed dependencies before particle GetSfxIdN; independently prepare true ReadPad/ReadPads and menu-input callsites. Then verify loaded permanent data and interactive menus before world activation.",
       "ongoing_goal": "active",
       "human_journal": "4f05ff4f1128afb40285ee57c6d99b0ca6f1fdf1d338dc50f9ab872287b083a7",
-      "report_publication_note": "Retail report describes immutable source/input snapshot before this explanatory documentation publication. No source/map/tool/member change after frozen comparison; full results and sourceEXE preserved."
+      "report_publication_note": "Retail report describes immutable source/input snapshot before this explanatory documentation publication. No source/map/tool/member change after frozen comparison; full results and sourceEXE preserved.",
+      "exact_revision_CI": {
+        "path": "build/analysis/thread-timer-core-main-v1/exact-CI-final.json",
+        "sha256": "8d0024d8e6892b2e1468d8649392309024f0a537d1ed77b7afa71b3a04893139"
+      }
+    },
+    {
+      "checkpoint": "FFF",
+      "date": "2026-10-11",
+      "scope": "Genuine sound initialization/SFX table producer and loading-time pad reads; runnable-first dependency closure",
+      "baseline_commit": "91432069da26694dfd12a63d4d8fbb2d55e554b0",
+      "publication": "Exact pushed revision CI pending at commit",
+      "new_functions": 15,
+      "new_unique_compared_PC_bytes": 6052,
+      "new_exact_functions": 5,
+      "new_exact_code_bytes": 440,
+      "new_exact_data_bytes": 24,
+      "newly_compared": [
+        {
+          "symbol": "_ConfigureMusic",
+          "address": "0x00548a70",
+          "complete_PC_bytes": 108,
+          "exact_match": false
+        },
+        {
+          "symbol": "_ReadPad",
+          "address": "0x0054ae40",
+          "complete_PC_bytes": 591,
+          "exact_match": false
+        },
+        {
+          "symbol": "_ReadPads",
+          "address": "0x0054b090",
+          "complete_PC_bytes": 32,
+          "exact_match": true
+        },
+        {
+          "symbol": "_InitSoundInfo",
+          "address": "0x00651530",
+          "complete_PC_bytes": 328,
+          "exact_match": false
+        },
+        {
+          "symbol": "_fnAudioAudio",
+          "address": "0x00651680",
+          "complete_PC_bytes": 20,
+          "exact_match": true
+        },
+        {
+          "symbol": "_fnAudioSample",
+          "address": "0x006516a0",
+          "complete_PC_bytes": 2408,
+          "exact_match": false
+        },
+        {
+          "symbol": "_LoadSfx",
+          "address": "0x006520b0",
+          "complete_PC_bytes": 245,
+          "exact_match": false
+        },
+        {
+          "symbol": "_InitSfx",
+          "address": "0x006521b0",
+          "complete_PC_bytes": 583,
+          "exact_match": false
+        },
+        {
+          "symbol": "_NuSound3InitV",
+          "address": "0x006951f0",
+          "complete_PC_bytes": 364,
+          "exact_match": false
+        },
+        {
+          "symbol": "?ClearSamplesPc@SoundVoiceManagerPC@@QAEXXZ",
+          "address": "0x006973c0",
+          "complete_PC_bytes": 167,
+          "exact_match": false
+        },
+        {
+          "symbol": "_NuSound3SetSampleTable",
+          "address": "0x00697a50",
+          "complete_PC_bytes": 354,
+          "exact_match": false
+        },
+        {
+          "symbol": "_PCSoundSampleWorkerPc@4",
+          "address": "0x00697bc0",
+          "complete_PC_bytes": 464,
+          "exact_match": false
+        },
+        {
+          "symbol": "_PCSoundInitializePc",
+          "address": "0x00697d90",
+          "complete_PC_bytes": 274,
+          "exact_match": true
+        },
+        {
+          "symbol": "_NuSound3SetRequestTable",
+          "address": "0x00698710",
+          "complete_PC_bytes": 100,
+          "exact_match": true
+        },
+        {
+          "symbol": "_GamePadReadBackendPc",
+          "address": "0x006d6020",
+          "complete_PC_bytes": 14,
+          "exact_match": true
+        }
+      ],
+      "progress": {
+        "text_bytes": 3471246,
+        "mapped_code_bytes": 1516353,
+        "matched_code_bytes": 235450,
+        "matching_percent": 6.782867016627459,
+        "fuzzy_coverage_percent": 29.732274707497616,
+        "mapped_functions": 5392,
+        "matched_functions": 2465,
+        "objdiff_fuzzy_percent": 69.512115,
+        "objdiff_total_code": 1485614,
+        "image_bytes": 40067072,
+        "mapped_bytes": 2164285,
+        "mapping_percent": 5.401655004887804,
+        "mapping_denominator": "code_and_data_section_virtual_sizes",
+        "mapping_sections": [
+          {
+            "name": ".text",
+            "kind": "code",
+            "address": "0x401000",
+            "size": 3471246,
+            "mapped_bytes": 1517547
+          },
+          {
+            "name": ".rdata",
+            "kind": "data",
+            "address": "0x751000",
+            "size": 646766,
+            "mapped_bytes": 30210
+          },
+          {
+            "name": ".data",
+            "kind": "data",
+            "address": "0x7ef000",
+            "size": 35372200,
+            "mapped_bytes": 616528
+          }
+        ],
+        "mapping_known_size_symbols": 9683,
+        "mapping_unknown_size_symbols": 5696,
+        "mapping_code_bytes": 1517547,
+        "mapping_code_total_bytes": 3471246,
+        "mapping_code_percent": 43.71764490329985,
+        "mapping_data_bytes": 646738,
+        "mapping_data_total_bytes": 36018966,
+        "mapping_data_percent": 1.7955484896484812,
+        "mapping_code_data_bytes": 2164285,
+        "mapping_code_data_total_bytes": 39490212,
+        "mapping_code_data_percent": 5.480560600687583,
+        "matched_data_region_bytes": 637561
+      },
+      "fuzzy_delta_pp": 0.14052283957200729,
+      "runtime": {
+        "public_observation": "Checkpoint FFF restores the genuine sound configuration, SFX table producer,\nbackend initialization and loading-time pad reads: 15 functions / 6,052 complete\nPC bytes, including 440 newly exact code bytes. Hardware and permanent-data\ncall sites now invoke these real providers in native order. This addresses the\nmissing producer behind EEE's attributed null-SfxInfo fault in GetSfxIdN; it does\nnot establish that the current runtime passed that fault.\n\nThe current unchanged source executable was observed under WineDbg for 60.20\nseconds with empty arguments and installed assets. A four-byte write watch on the\ncurrent source SfxInfo pointer was verified installed, but captured no write and\nno fault before the deadline. The test did not capture the final wait stack, so\nit does not identify where startup waited or prove sound initialization completed.\nThe debugger was explicitly stopped, not naturally exited. All 344 objects and\nfrozen source/input pins remained unchanged; owned game/debugger processes and\nsampled crash/game windows were absent after cleanup. Crash-dialog suppression\nwas set and queried before launch.\n\nNo completed nontrivial rendering, loaded world or playable recurring loop is\nestablished. EEE's earlier cache-write/fault and separate black-window observations\nremain historical evidence, not results of this new executable. Next, attribute\nthe actual startup wait and recover the earliest verified missing native provider.\nIn parallel, close real per-frame input polling and its cache reset before\nclaiming responsive menus or gameplay. Preserve native behavior and matching;\nnever substitute a null guard, fake table, success return or forced configuration.\n",
+        "receipt": {
+          "path": "build/analysis/startup-sound-input-main-v1/runtime-debugger-v1/observation/receipt.json",
+          "sha256": "a221055382772b9b681abd38cb53bbfbfc334b0e16334433df8e0a508442ad31"
+        },
+        "source_exe_sha256": "e5da9072ea578c3593ba642158048af0d607761dff5a11ce0c804554ab8a9a25",
+        "elapsed_seconds": 60.197536319028586,
+        "deadline_stopped": true,
+        "watch_installed": true,
+        "captured_stops": [],
+        "startup_wait_attributed": false,
+        "sound_initialization_completed": false,
+        "playable": false,
+        "cleanup_verified": true,
+        "next_native_target": "Attribute the actual startup wait; recover the earliest verified native dependency. Close real frame pad polling at 0x4fb130 and native per-frame cache reset at 0x6d9610 with genuine mouse/math/record/backend providers, then verify permanent loading and responsive menus before world activation."
+      },
+      "accepted_proof": {
+        "accepted": true,
+        "remaining_holds": [],
+        "reviews": {
+          "prior": {
+            "path": "build/analysis/thread-timer-native-owner-independent-v1/EEE-prior-output-v1/sealed-final-prior-review.json",
+            "sha256": "151511ad5038c4fdf1ad2a3b2e711c8461a33de9d22949def99ad5dd2bd0f08c"
+          },
+          "input637": {
+            "path": "build/analysis/thread-timer-native-owner-independent-v1/EEE-prior-output-v1/sealed-final-input637-rebind.json",
+            "sha256": "598064f2cadbce09a486da3d34ba3268a649c2a0531dde06242a3a802d5edcd7"
+          },
+          "sound5415": {
+            "path": "build/analysis/sound-table-producer-next-v1/sealed-final-frozen-sound-review.json",
+            "sha256": "c51659cdc97408c777c3b94a9d2627a340fdbfd27a1ebb223809572396430b33"
+          },
+          "data16": {
+            "path": "build/analysis/sfx-table-data-owner-next-v1/final-frozen-review-v1/complete-new16-proof.json",
+            "sha256": "5c427d29ad1a062adf0d2c4c238f28940b9b5aacdb1f71820772b5105a03def5"
+          }
+        },
+        "normal_manifest_sha256": "407dfaa64fe056b6a3ff0ca3790bbef2613d0f5546f5a633072a9832cb0e803f",
+        "normal_report_sha256": "de601cb111646bbae2fa429eefefd4ba586dc18dee8cdf58febe88321f797a4d",
+        "source_exe_sha256": "e5da9072ea578c3593ba642158048af0d607761dff5a11ce0c804554ab8a9a25",
+        "prior_complete_outputs": 16682,
+        "prior_legitimate_exact_rows_preserved": 6274,
+        "prior_exact_owner_copies_preserved": 8182,
+        "new_PC_code_bytes": 6052,
+        "new_exact_PC_code_bytes": 440,
+        "inferred_sound_owning_extents": null,
+        "new_sound_data_allocation_credit": 0
+      },
+      "evidence": [
+        {
+          "path": "build/analysis/startup-sound-input-main-v1/accepted-final-proof.json",
+          "sha256": "7e6b43f3a52714723bf7da4480549b974cd22fccb5755c7e2074d46e9e2a9b23"
+        },
+        {
+          "path": "build/analysis/startup-sound-input-main-v1/check-final-v3.log",
+          "sha256": "80d27f0b3c25720a5cfc88eebe9b59db29146b3ba1256f05d32ade4223c483db"
+        },
+        {
+          "path": "build/analysis/startup-sound-input-main-v1/normal-build-v3.log",
+          "sha256": "5bae76eb7eb69045b6cd900a3cb868c8f763847f9aca934e163f1bdb99c5e7d2"
+        },
+        {
+          "path": "build/analysis/startup-sound-input-main-v1/retail-match-v3.log",
+          "sha256": "1ee65c360fe4fa2d5823853dab4fd6d8946c251581861e7b4a270f1fe7e4f4eb"
+        }
+      ],
+      "required_checks": "PASS: 796 tests, three existing skips; LLVM18 format371/tidy344; source build/link5220functions11443data344objects; full authoritative retail match",
+      "normal_manifest_sha256": "407dfaa64fe056b6a3ff0ca3790bbef2613d0f5546f5a633072a9832cb0e803f",
+      "normal_report_sha256": "de601cb111646bbae2fa429eefefd4ba586dc18dee8cdf58febe88321f797a4d",
+      "source_exe_sha256": "e5da9072ea578c3593ba642158048af0d607761dff5a11ce0c804554ab8a9a25",
+      "source_contracts": "### Native sound activation and loading input FFF (2026-10-11)\n\nThis connected wave reconstructs 15 functions / 6,052 complete PC bytes: ConfigureMusic548a70/108, ReadPad54ae40/591, ReadPads54b090/32, SFX defaults651530/328, Audio callback651680/20, Sample callback6516a0/2408, LoadSfx6520b0/245, InitSfx6521b0/583, NuSound3InitV6951f0/364 including44 owned switch-table bytes, ClearSamples6973c0/167, SetSampleTable697a50/354, worker697bc0/464, initializer697d90/274, SetRequestTable698710/100 and pad adapter6d6020/14. Native arguments, named field offsets, complete extents and consumed providers are retained. The source keeps real cross-unit calls where ordinary VC8 optimization would otherwise change the physical ABI. Worker buffers each have native260-byte capacity.\n\nHardware uses the real variadic sound configuration and conditional request-table call. InitializeCriticalSection voice2972bec and sample2972bd0 precede event/thread creation at the native points; optional initial sample-table dispatch remains before the locks, as in retail. The thread-creation failure branch genuinely invokes GDI DeleteObject(event), rather than replacing that native quirk with CloseHandle. The added GDI32 SDK import library supplies the real API; compiler/linker optimization flags are unchanged. No sound-disabled override, extra initializer, success return or table guard is invented.\n\nPermanent loading now calls ConfigureMusic, publishes MusicInfo, calls SfxSetFileTable and then InitSfx in native order. The authentic NuMusic parser/files supplier is reused. Full Sample parsing/defaults/hash chains/filenames/request bits and sound backend are present together; a fabricated empty sound table does not substitute for the loader. Loading iterations now call ReadPads and UpdateGameMenu with original arguments. The live frame-polling producer at4fb130 remains a separate explicit missing dependency, so these input calls do not yet establish interactive menus.\n\nCanonical metadata/sample/voice/request/event state is reused. No duplicate sample array is added at2973974, which is SoundVoiceManager.samples. New sound state views, callback table and active-pad pointer keep original owning extents blank and receive zero allocation credit. Working filenames1601x64, names1601x32, reference counts1601 and configfilename256 are supported by PC access stride/successor anchors plus retained Android declarations. Smaller objects plus padding remain alternatives; Mac exports corroborate behavior but contain no DWARF/STABS private declaration proof. Native unbounded malformed-input behavior is retained, not claimed safe. The existing exact one-byte keyboard scalar is isolated as a complete BSS definition to preserve its true emitted extent, without trimming comparison data.\n",
+      "new_sound_original_owning_extents": null,
+      "new_sound_allocation_credit": 0,
+      "previous_exact_functions_lost": [],
+      "next_connected_wave": "Attribute the actual startup wait; recover the earliest verified native dependency. Close real frame pad polling at 0x4fb130 and native per-frame cache reset at 0x6d9610 with genuine mouse/math/record/backend providers, then verify permanent loading and responsive menus before world activation.",
+      "ongoing_goal": "active",
+      "human_journal": "4f05ff4f1128afb40285ee57c6d99b0ca6f1fdf1d338dc50f9ab872287b083a7",
+      "report_publication_note": "Retail report describes immutable source/input snapshot before explanatory documentation publication. Source, map, tools, candidate/member configuration, source EXE, complete objects and report remain identical; only named explanatory documents changed."
     }
   ],
-  "latest_checkpoint": "EEE"
+  "latest_checkpoint": "FFF"
 }

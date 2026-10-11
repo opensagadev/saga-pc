@@ -2531,3 +2531,21 @@ complete getter (1,684 bytes), search (82) and copy (84) outputs/references are 
 algorithms, source sections, failure behavior and lifecycle remain unchanged.
 No counter reset, capacity guard or success provider is added. Actual runtime
 outcome and limitations are recorded in the current execution policy.
+
+### Sound initialization and SFX producer FFF (2026-10-11)
+
+Sixteen new canonical sound states have full working initializer evidence, while
+original owning extents remain unknown and blank in the map. Complete emitted
+COFF regions total 160,421 bytes; this is working storage, not proved original
+allocation coverage. Filename slots use 1,601 x 64, name slots 1,601 x 32, reference
+counts 1,601 and configuration filename 256. PC strides/successor anchors and
+Android declarations converge on these capacities; smaller original objects plus
+padding remain possible. Mac exports give no private DWARF/STABS extent proof.
+
+Existing metadata, request/event state and SoundVoiceManager.samples at 0x2973974
+are reused without duplicate allocations. The worker-stop flag is a volatile byte;
+its two buffers are native 260 bytes. The initial music/sample extensions point
+to genuine .vag/.wav literals. All sixteen complete initializers/relocations and
+prior exact data were independently reviewed. The canonical one-byte keyboard
+scalar at 0x29755c1 remains a complete one-byte exact BSS definition. No data
+trimming, constructor substitute or artificial runtime initialization was added.

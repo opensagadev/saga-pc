@@ -320,7 +320,7 @@ void __cdecl SfxSetFileTable(SFX_FILE_INFO_PC *records) {
     }
 }
 
-void __cdecl SfxBuildCRCTable(VARIPTR *buffer_cursor) {
+void __cdecl SfxBuildCRCTable(VARIPTR *buffer_cursor, VARIPTR end) {
     u32 *table;
     i32 index;
 
@@ -650,4 +650,249 @@ i32 __cdecl GameAudio_GetSfxId(i32 sfx) {
     if ((u32)sfx <= 0x53)
         return GameAudio->sfx_ids[sfx];
     return -1;
+}
+
+/* Integration fragment: declarations below must precede callback definitions. */
+void __cdecl InitSoundInfo(i32);
+void __cdecl LoadSfx(const char *, VARIPTR *, VARIPTR);
+static void fnAudioSample(NUFPAR_PC *fpar) {
+    SFX_FILE_INFO_PC *finfo = NULL;
+    char *str;
+    u32 hash;
+    i16 *id;
+    i32 i;
+    u32 filename_index;
+    f32 pan, pitch_rnd, volume_rnd, falloff_near, falloff_far;
+    f32 buzz_timer, rumble_sustain, rumble_release;
+    i32 priority, volume, rumble_strength, category;
+    InitSoundInfo(NumSfxInst);
+    while (1) {
+        if (NuFParGetWord(fpar) == 0) {
+            SFX_RECORD_PC *sinfo = &SfxInfo[NumSfxInst];
+            sinfo->sample_id_flags &= ~0x100000u;
+            sinfo->sample_id_flags |= 0x200000u;
+            PCByteCopy_candidate(&SfxRevertInfoPc[NumSfxInst], sinfo, sizeof(SFX_RECORD_PC));
+            NumSfxInst++;
+            return;
+        }
+
+        if (NuStrICmp(fpar->word_buffer_ptr, "disable") == 0) {
+            SfxInfo[NumSfxInst].sample_id_flags |= 0x40000u;
+        } else if (NuStrICmp(fpar->word_buffer_ptr, "comment") == 0) {
+            SfxInfo[NumSfxInst].sample_id_flags |= 0x80000u;
+        } else if (NuStrICmp(fpar->word_buffer_ptr, "name") == 0) {
+            NuFParGetWord(fpar);
+            NuStrNCpy(SfxNameSlotsPc[NumSfxInst], fpar->word_buffer_ptr, 0x20);
+
+            str = SfxNameSlotsPc[NumSfxInst];
+            SfxInfo[NumSfxInst].name = str;
+            hash = SfxNameHash(str);
+
+            id = &SfxHashHeads[hash & 0xff];
+            if (*id == -1) {
+                *id = NumSfxInst;
+                SfxInfo[NumSfxInst].next = -1;
+            } else {
+                SfxInfo[NumSfxInst].next = *id;
+                *id = NumSfxInst;
+            }
+        } else if (NuStrICmp(fpar->word_buffer_ptr, "fname") == 0) {
+            NuFParGetWord(fpar);
+            NuStrCat(fpar->word_buffer_ptr, NuFileExt_wav_PC);
+
+            if ((SfxInfo[NumSfxInst].sample_id_flags & 0xc0000u) == 0) {
+                i = 0;
+                for (; i < NumSfx; i++) {
+                    if (NuStrICmp(SfxFileInfoPc[i].filename, fpar->word_buffer_ptr) == 0) {
+                        finfo = &SfxFileInfoPc[i];
+                        SfxInfo[NumSfxInst].sample_id_flags =
+                            (SfxInfo[NumSfxInst].sample_id_flags & ~0x7fffu) | ((i) & 0x7fff);
+                        SfxInfo[NumSfxInst].filename = finfo->filename;
+                        SfxRefCountsPc[i]++;
+                        break;
+                    }
+                }
+                if (i == NumSfx) {
+                    finfo = &SfxFileInfoPc[i];
+                    finfo->filename = SfxFilenameSlotsPc[NumSfxNames];
+                    finfo->pitch = 0x75a;
+                    finfo->static_sample = 0;
+                    finfo->index = i + 0x1000 - SfxFileCount;
+                    NuStrNCpy(SfxFilenameSlotsPc[NumSfxNames++], fpar->word_buffer_ptr, 0x40);
+                    SfxRefCountsPc[NumSfx] = 1;
+                    SfxInfo[NumSfxInst].filename = SfxFileInfoPc[NumSfx].filename;
+                    SfxInfo[NumSfxInst].sample_id_flags =
+                        (SfxInfo[NumSfxInst].sample_id_flags & ~0x7fffu) | ((NumSfx) & 0x7fff);
+                    NumSfx++;
+                }
+            } else {
+                SfxInfo[NumSfxInst].sample_id_flags =
+                    (SfxInfo[NumSfxInst].sample_id_flags & ~0x7fffu) | ((-1) & 0x7fff);
+                i = 0;
+                for (; i < NumSfx; i++) {
+                    if (NuStrICmp(SfxFileInfoPc[i].filename, fpar->word_buffer_ptr) == 0) {
+                        SfxRefCountsPc[i]++;
+                        SfxInfo[NumSfxInst].filename = SfxFileInfoPc[i].filename;
+                        break;
+                    }
+                }
+                if (i == NumSfx) {
+                    filename_index = NumSfxNames++;
+                    NuStrNCpy(SfxFilenameSlotsPc[filename_index], fpar->word_buffer_ptr, 0x40);
+                    SfxInfo[NumSfxInst].filename = SfxFilenameSlotsPc[NumSfxNames - 1];
+                }
+            }
+        } else if (NuStrICmp(fpar->word_buffer_ptr, "pitch") == 0) {
+            SfxInfo[NumSfxInst].pitch = NuFParGetInt(fpar);
+        } else if (NuStrICmp(fpar->word_buffer_ptr, "pan") == 0) {
+            pan = NuFParGetFloat(fpar);
+            SfxInfo[NumSfxInst].pan = pan < -1.0f ? -1.0f : pan > 1.0f ? 1.0f : pan;
+        } else if (NuStrICmp(fpar->word_buffer_ptr, "pri") == 0) {
+            priority = NuFParGetInt(fpar);
+            SfxInfo[NumSfxInst].priority = priority < -128 ? -128 : priority > 127 ? 127 : priority;
+        } else if (NuStrICmp(fpar->word_buffer_ptr, "loop") == 0) {
+            SfxInfo[NumSfxInst].sample_id_flags |= 0x8000u;
+        } else if (NuStrICmp(fpar->word_buffer_ptr, "pitch_rnd") == 0) {
+            pitch_rnd = NuFParGetFloat(fpar);
+            SfxInfo[NumSfxInst].pitch_rnd = pitch_rnd < 0.0f ? 0.0f : pitch_rnd > 1.0f ? 1.0f : pitch_rnd;
+        } else if (NuStrICmp(fpar->word_buffer_ptr, "volume") == 0) {
+            volume = NuFParGetInt(fpar);
+            SfxInfo[NumSfxInst].volume = volume < 0 ? 0 : volume > 0x3fff ? 0x3fff : volume;
+        } else if (NuStrICmp(fpar->word_buffer_ptr, "nofade") == 0) {
+            SfxInfo[NumSfxInst].sample_id_flags |= 0x400000u;
+        } else if (NuStrICmp(fpar->word_buffer_ptr, "volume_rnd") == 0) {
+            volume_rnd = NuFParGetFloat(fpar);
+            SfxInfo[NumSfxInst].volume_rnd = volume_rnd < -1.0f ? -1.0f : volume_rnd > 0.0f ? 0.0f : volume_rnd;
+        } else if (NuStrICmp(fpar->word_buffer_ptr, "near") == 0) {
+            falloff_near = NuFParGetFloat(fpar);
+            SfxInfo[NumSfxInst].falloff_near = falloff_near < 0.0f     ? 0.0f
+                                               : falloff_near > 250.0f ? 250.0f
+                                                                       : falloff_near;
+        } else if (NuStrICmp(fpar->word_buffer_ptr, "far") == 0) {
+            falloff_far = NuFParGetFloat(fpar);
+            SfxInfo[NumSfxInst].falloff_far = falloff_far < 0.0f ? 0.0f : falloff_far > 250.0f ? 250.0f : falloff_far;
+        } else if (NuStrICmp(fpar->word_buffer_ptr, "global") == 0) {
+            SfxInfo[NumSfxInst].sample_id_flags |= 0x20000u;
+        } else if (NuStrICmp(fpar->word_buffer_ptr, "rumble") == 0) {
+            buzz_timer = NuFParGetFloat(fpar);
+            rumble_strength = NuFParGetInt(fpar);
+            SfxInfo[NumSfxInst].buzz_timer = buzz_timer < 0.0f ? 0.0f : buzz_timer > 5.0f ? 5.0f : buzz_timer;
+            SfxInfo[NumSfxInst].rumble_strength = rumble_strength < 0      ? 0
+                                                  : rumble_strength > 0xff ? 0xff
+                                                                           : rumble_strength;
+            rumble_sustain = NuFParGetFloat(fpar);
+            SfxInfo[NumSfxInst].rumble_sustain = rumble_sustain < 0.0f   ? 0.0f
+                                                 : rumble_sustain > 5.0f ? 5.0f
+                                                                         : rumble_sustain;
+            rumble_release = NuFParGetFloat(fpar);
+            SfxInfo[NumSfxInst].rumble_release = rumble_release < 0.0f   ? 0.0f
+                                                 : rumble_release > 5.0f ? 5.0f
+                                                                         : rumble_release;
+        } else if (NuStrICmp(fpar->word_buffer_ptr, "fcat") == 0) {
+            category = NuFParGetInt(fpar);
+            SfxInfo[NumSfxInst].category = category < 0 ? 0 : category > 0xffff ? 0xffff : category;
+        }
+    }
+}
+
+static void __cdecl fnAudioAudio(NUFPAR_PC *parser) {
+    SfxAudioVersionPc = NuFParGetFloat(parser);
+}
+static NUFPCOMJMP audioComPc[] = {
+    {"Audio", fnAudioAudio}, {"Sample", fnAudioSample}, {"Group", AudioGroup_Parse}, {NULL, NULL}};
+void __cdecl InitSoundInfo(i32 index) {
+    SFX_RECORD_PC *info = &SfxInfo[index];
+    info->sample_id_flags |= 0x7fff;
+    info->name = SfxNameSlotsPc[NumSfxInst];
+    info->pitch = 0x5622;
+    info->priority = 0;
+    info->pan = 0.0f;
+    info->sample_id_flags &= ~0x400000u;
+    info->volume = 0x3fff;
+    info->pitch_rnd = 0.0f;
+    info->volume_rnd = 0.0f;
+    info->group = -1;
+    info->sample_id_flags &= ~0x8000u;
+    info->sample_id_flags &= ~0x10000u;
+    info->sample_id_flags &= ~0x20000u;
+    info->sample_id_flags &= ~0x40000u;
+    info->sample_id_flags &= ~0x100000u;
+    info->falloff_near = 0.0f;
+    info->falloff_far = 0.0f;
+    info->buzz_timer = 0.0f;
+    info->rumble_strength = 0;
+    info->rumble_sustain = 0.0f;
+    info->rumble_release = 0.0f;
+    info->category = 0;
+    info->sample_id_flags &= ~0x200000u;
+    SfxRevertInfoPc[index] = *info;
+}
+void __cdecl LoadSfx(const char *file, VARIPTR *cursor, VARIPTR end) {
+    NUFPAR_PC *parser = NuFParCreate((char *)file);
+    SFX_FILE_INFO_PC *last;
+    if (parser != NULL) {
+        NuFParPushCom(parser, audioComPc);
+        while (NuFParGetLine(parser)) {
+            NuFParGetWord(parser);
+            if (*parser->word_buffer_ptr != 0)
+                NuFParInterpretWord(parser);
+        }
+        NuFParDestroy(parser);
+    }
+    last = &SfxFileInfoPc[NumSfx];
+    last->filename = NULL;
+    last->pitch = 0;
+    last->static_sample = 0;
+    last->index = -1;
+    NuSound3SetSampleTable(SfxFileInfoPc, cursor, end);
+    memset(SfxBits, 0, 200);
+    if (NOSOUND == 0)
+        NuSound3SetRequestTable(SfxBits, 100);
+    NuSound3Update();
+}
+void __cdecl InitSfx(VARIPTR *cursor, VARIPTR end, const char *file) {
+    i32 i;
+    i32 sample;
+    cursor->addr = (cursor->addr + 3) & ~3u;
+    SfxHashHeads = (i16 *)cursor->void_ptr;
+    cursor->addr += 0x200;
+    cursor->addr = (cursor->addr + 3) & ~3u;
+    SfxFileInfoPc = (SFX_FILE_INFO_PC *)cursor->void_ptr;
+    cursor->addr += 1600 * sizeof(SFX_FILE_INFO_PC);
+    memset(SfxFileInfoPc, 0, 1600 * sizeof(SFX_FILE_INFO_PC));
+    cursor->addr = (cursor->addr + 3) & ~3u;
+    SfxInfo = (SFX_RECORD_PC *)cursor->void_ptr;
+    cursor->addr += 1600 * sizeof(SFX_RECORD_PC);
+    memset(SfxInfo, 0, 1600 * sizeof(SFX_RECORD_PC));
+    cursor->addr = (cursor->addr + 3) & ~3u;
+    SfxRevertInfoPc = (SFX_RECORD_PC *)cursor->void_ptr;
+    cursor->addr += 1600 * sizeof(SFX_RECORD_PC);
+    memset(SfxRevertInfoPc, 0, 1600 * sizeof(SFX_RECORD_PC));
+    SfxBuildCRCTable(cursor, end);
+    for (i = 0; i < 256; ++i)
+        SfxHashHeads[i] = -1;
+    NumSfx = 0;
+    NumSfxInst = 0;
+    for (i = 0; i < SfxFileCount; ++i) {
+        SfxFileInfoPc[i] = SfxFileTable[i];
+        SfxFileInfoPc[i].index = i;
+        NuStrCpy(SfxFilenameSlotsPc[i], SfxFileInfoPc[i].filename);
+        SfxFileInfoPc[i].filename = SfxFilenameSlotsPc[i];
+        ++NumSfx;
+        ++NumSfxNames;
+    }
+    SfxFileInfoPc[i].filename = NULL;
+    SfxFileInfoPc[i].pitch = 0;
+    SfxFileInfoPc[i].static_sample = 0;
+    SfxFileInfoPc[i].index = -1;
+    NuStrCpy(SfxConfigFilenamePc, file);
+    LoadSfx(file, cursor, end);
+    memset(GlobalSfxBits, 0, 200);
+    for (i = 0; i < NumSfxInst; ++i) {
+        if (SfxInfo[i].sample_id_flags & 0x20000) {
+            sample = ((i32)(SfxInfo[i].sample_id_flags << 17)) >> 17;
+            GlobalSfxBits[sample >> 4] |= (u16)(1 << (sample & 15));
+        }
+    }
+    PCByteCopy_candidate(SfxBits, GlobalSfxBits, 200);
 }
