@@ -225,7 +225,7 @@ void __cdecl DebReAlloc2(DEBRISKEY_PC *key) {
     DEBRIS_INFO_PC *effect = debtab[key->effect_index];
     i32 old_count = key->allocated_chunk_count;
     i32 extra = key->previous_allocated_chunk_count - old_count;
-    i32 glass = effect->particle_type == 7;
+    i32 glass = 7 == effect->particle_type;
     i32 i, j, render_count = debrischunks + debrischunksglass;
     DEBRIS_RENDER_CHUNK_PC *render;
     if (extra == 0) {
@@ -235,7 +235,7 @@ void __cdecl DebReAlloc2(DEBRISKEY_PC *key) {
         i32 *free_count = glass ? &freedebchkptrg : &freedebchkptr;
         i32 capacity = glass ? debrischunksglass : debrischunks;
         DEBRIS_PARTICLE_CHUNK_PC **chunks = glass ? freedebchunksglass : freedebchunks;
-        if (capacity <= *free_count + extra) {
+        if (*free_count + extra >= capacity) {
             return;
         }
         for (i = 0; i < extra; ++i) {
@@ -245,7 +245,7 @@ void __cdecl DebReAlloc2(DEBRISKEY_PC *key) {
                 key->particle_chunks[key->allocated_chunk_count + i]->particles[j].inverse_lifetime = 32768.0f;
             }
         }
-        if (key->allocated_chunk_count == 0) {
+        if (0 == key->allocated_chunk_count) {
             for (i = 0; i < render_count; ++i) {
                 if (ParticleChunkToRender[i].particle_chunk == NULL) {
                     render = &ParticleChunkToRender[i];
@@ -280,8 +280,8 @@ void __cdecl DebReAlloc2(DEBRISKEY_PC *key) {
         i32 panel_time;
         control->particle_chunk = key->particle_chunks[key->allocated_chunk_count + i];
         control->active = effect->particle_type == 7 ? 7 : 0;
-        panel_time = effect->time_group == 4;
         current_effect = debtab[key->effect_index];
+        panel_time = effect->time_group == 4;
         control->expiry_time = current_effect->particle_lifetime + (panel_time ? panelglobaltime : globaltime) +
                                (i8)current_effect->trail_count * current_effect->trail_time;
         AddChunkControlToStack(control, &debris_chunk_control_stack[panel_time]);
@@ -295,22 +295,22 @@ void __cdecl DebReAlloc2(DEBRISKEY_PC *key) {
                 render->effect = debtab[key->effect_index];
                 render->key = NULL;
                 render->effect_orientation = key->effect_orientation;
-                render->position = key->position;
                 render->render_priority = key->render_priority;
+                render->position = key->position;
                 break;
             }
         }
     } else {
-        LinkDmaParticalSets(&key->particle_chunks[key->allocated_chunk_count + extra], -extra);
+        LinkDmaParticalSets(&key->particle_chunks[extra + key->allocated_chunk_count], -extra);
         for (i = 0; i < render_count; ++i) {
             if (ParticleChunkToRender[i].particle_chunk == NULL) {
                 render = &ParticleChunkToRender[i];
                 render->particle_chunk = key->particle_chunks[key->allocated_chunk_count + extra];
                 render->effect = debtab[key->effect_index];
                 render->key = NULL;
+                render->render_priority = key->render_priority;
                 render->effect_orientation = key->effect_orientation;
                 render->position = key->position;
-                render->render_priority = key->render_priority;
                 if (key->field_2f6 != 0) {
                     AddChunkToRenderStack(render, &ParticleChunkRenderStack[render->effect->time_group]);
                 }
@@ -318,11 +318,11 @@ void __cdecl DebReAlloc2(DEBRISKEY_PC *key) {
             }
         }
     }
-    for (i = extra; 0 > i; ++i) {
+    for (i = extra; i < 0; ++i) {
         key->particle_chunks[key->allocated_chunk_count + i] = NULL;
     }
-    key->allocated_chunk_count = key->previous_allocated_chunk_count;
     key->particle_count = key->previous_particle_count;
+    key->allocated_chunk_count = key->previous_allocated_chunk_count;
     if (key->previous_particle_count != 0) {
         LinkDmaParticalSets(key->particle_chunks, key->previous_allocated_chunk_count);
     }

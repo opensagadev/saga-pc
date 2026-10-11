@@ -71,3 +71,4 @@
 {"symbol": "_ZipUp_MoveCode", "unit": "src/legoapi/zipup.c", "size": 3774, "start": 59.559963, "best": 59.62128, "exact": false, "seconds": 359.0, "instructions": [49.5, 50.05], "rules": 3, "applied": true}
 {"symbol": "_LoadAreaCharacters", "unit": "src/legoapi/areas.cpp", "size": 3370, "start": 55.838993, "best": 62.26725, "exact": false, "seconds": 360.2, "instructions": [59.99, 63.22], "rules": 3, "applied": true}
 {"symbol": "_KillGameObject", "unit": "src/legoapi/gameobjects.c", "size": 3750, "start": 27.594963, "best": 27.726128, "exact": false, "seconds": 376.1, "instructions": [32.84, 33.28], "rules": 3, "applied": true}
+{"symbol": "_DebReAlloc2", "unit": "src/legoapi/debris_engine.c", "size": 2337, "start": 38.21229, "best": 39.41527, "exact": false, "seconds": 357.4, "instructions": [25.9, 21.96], "rules": 3, "applied": true}
