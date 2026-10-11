@@ -1,0 +1,6 @@
+{"symbol": "_ScanTerrain", "unit": "src/nu2api/terrain_scan.cpp", "error": "ScanTerrain: definition not found in unit"}
+{"symbol": "_FixUpLevels", "unit": "src/legoapi/level_fixup.cpp", "error": "FixUpLevels: definition not found in unit"}
+{"symbol": "_NewScanRot", "unit": "src/nu2api/nuterrain.c", "size": 4748, "start": 9.219463, "best": 25.962416, "exact": false, "seconds": 165.8, "applied": true}
+{"symbol": "_FixUpLevels", "unit": "src/legoapi/level_fixup.cpp", "size": 6860, "start": 37.77964, "best": 37.77964, "exact": false, "seconds": 105.8, "instructions": [33.5, 33.5]}
+{"symbol": "_DrawAlphaGrid", "unit": "src/legoapi/render.c", "size": 5964, "start": 33.79316, "best": 37.001087, "exact": false, "seconds": 226.0, "instructions": [25.86, 25.95], "applied": true}
+{"symbol": "_JumpCode", "unit": "src/legoapi/move.c", "size": 6473, "start": 36.581318, "best": 40.78447, "exact": false, "seconds": 449.3, "instructions": [46.56, 48.42], "applied": true}
