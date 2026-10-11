@@ -77,3 +77,4 @@
 {"symbol": "_Grapple_MoveCode", "unit": "src/legoapi/grapples.cpp", "size": 3392, "start": 59.191277, "best": 60.11745, "exact": false, "seconds": 326.8, "instructions": [61.23, 61.91], "rules": 3, "applied": true}
 {"symbol": "_NuTimeBarSetRender", "unit": "src/nu2api/nutimebar.c", "size": 2130, "start": 35.630157, "best": 35.639683, "exact": false, "seconds": 295.9, "instructions": [28.6, 28.8], "rules": 3, "applied": true}
 {"symbol": "?Configure@ShaderBuilderGen@@UAEXPAUPC_SHADER_MATERIAL_FILTER_VIEW@@PAUShaderCompilerDictionaryPc@@@Z", "unit": "src/nu2api/shader_compiler.cpp", "size": 4642, "start": 70.71589, "best": 71.1889, "exact": false, "seconds": 281.6, "instructions": [63.45, 63.45], "rules": 3, "applied": true}
+{"symbol": "_MovePlayer_VEHICLEDIRECTIONAL", "unit": "src/legoapi/move.c", "size": 6146, "start": 78.62071, "best": 79.37508, "exact": false, "seconds": 239.3, "instructions": [68.65, 69.11], "rules": 3, "applied": true}
