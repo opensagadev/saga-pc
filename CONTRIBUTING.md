@@ -117,6 +117,14 @@ two callers, or by one caller with anchors on both sides. Extents follow the
 retail control flow, and sizes far from the Android size are rejected. Rerun
 until it finds nothing new; each round's names anchor the next.
 
+`python3 tools/calleemap.py --android ../saga --write` works the other way
+round: it names an unmapped retail function by the mapped functions it calls.
+Their order is compared with each unmapped Android definition's callees
+(longest common subsequence); a pairing must be the best for both sides, have
+at least three anchors, clearly beat the runner-up and fit the Android size.
+In hold-out tests (hiding 15% of mapped functions) it re-derived 129 names with
+no wrong ones. Alternate both tools until neither finds anything.
+
 ## Transferring struct fields
 
 `python3 tools/typexfer.py --android ../saga --write` fills opaque padding in

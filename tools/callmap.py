@@ -211,6 +211,12 @@ def align(names, targets, known, unknown_name):
     return pairs, anchors
 
 
+# Pairings the alignment accepts but the retail code refutes.
+REJECTED = {
+    (0x4C15E0, "CRC_ProcessStringIgnoreCase"),  # retail body copies a table; no CRC loop
+}
+
+
 def main():
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--android", type=Path, default=ROOT.parent / "saga", help="Android decompilation checkout")
@@ -285,7 +291,8 @@ def main():
         rivals = by_address[address].most_common()
         if rivals[0][0] != callee or (len(rivals) > 1 and rivals[1][1] * 3 > count):
             continue
-        accepted[address] = (callee, count)
+        if (address, callee[1]) not in REJECTED:
+            accepted[address] = (callee, count)
 
     every_start = sorted(starts | {t for ts in retail_targets.values() for t in ts} | set(accepted))
     rows = []
