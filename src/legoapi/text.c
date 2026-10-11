@@ -648,7 +648,7 @@ void __cdecl Text3DEx(char *text, f32 x, f32 y, f32 z, f32 x_scale, f32 y_scale,
             button_scale = 0.5f * (draw_x_scale + draw_y_scale);
 
         normal_count = 0;
-button_count = 0;
+        button_count = 0;
         for (i = 0; decoded[i] != 0;) {
             is_button = decoded[i] == 0xd4 && decoded[i + 1] >= 0xb1 && decoded[i + 1] <= 0xbf;
             output = is_button ? buttons : normal;
@@ -678,8 +678,8 @@ button_count = 0;
             button_scale = draw_x_scale;
             if (smarttext_fwn == 2) {
                 button_scale = draw_y_scale;
-scaled_width = draw_y_scale * width;
-width = scaled_width / draw_x_scale;
+                scaled_width = draw_y_scale * width;
+                width = scaled_width / draw_x_scale;
             }
         }
     }
@@ -706,8 +706,8 @@ width = scaled_width / draw_x_scale;
                 if (red != 0 || green != 0 || blue != 0) {
                     preset = decoded[i + 1] - '0';
                     if (apitext_half_rgb == 0)
-                        colour |= (((u32)((text_preset_g[preset] * 2) & 255) << 8)) | ((u8)(text_preset_r[preset] * 2)) |
-                                  ((u32)((2 * text_preset_b[preset]) & 255) << 16);
+                        colour |= (((u32)((text_preset_g[preset] * 2) & 255) << 8)) |
+                                  ((u8)(text_preset_r[preset] * 2)) | ((u32)((2 * text_preset_b[preset]) & 255) << 16);
                     else
                         colour |= text_preset_r[preset] | ((u32)(text_preset_g[preset]) << 8) |
                                   ((u32)(text_preset_b[preset]) << 16);

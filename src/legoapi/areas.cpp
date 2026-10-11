@@ -805,7 +805,7 @@ extern "C" void __cdecl Area_Configure(i32 area, i32 param, AREA_EXTRA_MODEL_PC 
             for (i32 swap = 0; swap < count * 3; ++swap) {
                 const i32 first = qrand() / (1 + (0xffff / count));
                 const i32 second = (qrand() / (0xffff / (count - 1) + 1) + first) % count;
-                
+
                 mission_characters[first] = mission_characters[second];
                 mission_characters[second] = ((const i16)mission_characters[first]);
             }

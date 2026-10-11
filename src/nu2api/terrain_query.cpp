@@ -549,9 +549,10 @@ extern "C" {
             TERRAIN_INDEX_LEVEL_PC &candidate = ((TERRAIN_SET_PC *)CurrentTerrain)->index_levels[i];
             const i32 age = candidate.cache_age;
             if (age > 0) {
-                
+
                 const f64 dz = ((f64)position->z + 1.0f) - candidate.center_z;
-                if (((const f64)(((f64)position->x + 1.0f) - candidate.center_x)) > 0.0f && ((const f64)((1.0f + ((f64)position->x)) - candidate.center_x)) < 2.0f && dz > 0.0f && dz < 2.0f) {
+                if (((const f64)(((f64)position->x + 1.0f) - candidate.center_x)) > 0.0f &&
+                    ((const f64)((1.0f + ((f64)position->x)) - candidate.center_x)) < 2.0f && dz > 0.0f && dz < 2.0f) {
                     cache_index = i;
                     cache_hit = true;
                     break;
@@ -559,7 +560,7 @@ extern "C" {
             }
             if (age < oldest_age) {
                 cache_index = i;
-oldest_age = age;
+                oldest_age = age;
             }
         }
 
@@ -1656,12 +1657,16 @@ i16 *NewScanHandelSubsetPc(i16 *subset, NUVEC *position, NUVEC *movement, f32 ra
         }
         const bool rotating = matrix != NULL && (TERRAIN_PLATFORM_FLAG_ROTATING & platform->flags) != 0;
         if (rotating) {
-            
-            
+
             const f64 z = (static_cast<f64>(bounds.min_z) + bounds.max_z) * 0.5 - group.origin.z;
-            const f32 distance_squared = ((const f64)((static_cast<f64>(bounds.min_x) + bounds.max_x) * 0.5 - group.origin.x)) * ((const f64)((static_cast<f64>(bounds.min_x) + bounds.max_x) * 0.5 - group.origin.x)) + ((const f64)(((static_cast<f64>(bounds.min_y) + bounds.max_y) * 0.5 - group.origin.y) *
-                          static_cast<TerrainQuery_s *>(TerI)->inverse_object_scale)) * ((const f64)(((static_cast<f64>(bounds.min_y) + bounds.max_y) * 0.5 - group.origin.y) *
-                          static_cast<TerrainQuery_s *>(TerI)->inverse_object_scale)) + z * z;
+            const f32 distance_squared =
+                ((const f64)((static_cast<f64>(bounds.min_x) + bounds.max_x) * 0.5 - group.origin.x)) *
+                    ((const f64)((static_cast<f64>(bounds.min_x) + bounds.max_x) * 0.5 - group.origin.x)) +
+                ((const f64)(((static_cast<f64>(bounds.min_y) + bounds.max_y) * 0.5 - group.origin.y) *
+                             static_cast<TerrainQuery_s *>(TerI)->inverse_object_scale)) *
+                    ((const f64)(((static_cast<f64>(bounds.min_y) + bounds.max_y) * 0.5 - group.origin.y) *
+                                 static_cast<TerrainQuery_s *>(TerI)->inverse_object_scale)) +
+                z * z;
             const f64 reach = static_cast<f64>(scan_radius_squared) + group.radius;
             if (!(reach * reach > distance_squared))
                 continue;

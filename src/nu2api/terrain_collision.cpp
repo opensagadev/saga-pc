@@ -2291,9 +2291,8 @@ extern "C" {
                         }
                         if (quad) {
                             NUVEC *normal = &source->normals[1];
-                            f32 length =
-                                NuFsqrt(((normal->y * normal->y) * query->object_scale_sq) + (normal->x * normal->x) +
-                                        normal->z * normal->z);
+                            f32 length = NuFsqrt(((normal->y * normal->y) * query->object_scale_sq) +
+                                                 (normal->x * normal->x) + normal->z * normal->z);
                             f32 inverse = length == 0.0f ? 0.0f : 1.0f / length;
                             surface->normals[1].x = normal->x * inverse;
                             surface->normals[1].y = (normal->y * query->object_scale) * inverse;
@@ -2333,7 +2332,7 @@ extern "C" {
             NuScratchRelease();
             TerrainScaledShapeCursorPc = static_cast<TERRAIN_SHAPE *>(ScaleTerrainT1);
             curSphereter = saved_sphere;
-TerI = old_query;
+            TerI = old_query;
             return 1;
         }
         query->start_position = query->position;
