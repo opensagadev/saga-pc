@@ -117,6 +117,17 @@ two callers, or by one caller with anchors on both sides. Extents follow the
 retail control flow, and sizes far from the Android size are rejected. Rerun
 until it finds nothing new; each round's names anchor the next.
 
+## Transferring struct fields
+
+`python3 tools/typexfer.py --android ../saga --write` fills opaque padding in
+`src/saga.h` (`unknown_*`, `opaque_*`, `reserved*`, `padding*` byte arrays)
+with named fields from the matching Android structs. Structs are paired by
+shared field names; Android layouts are computed with MSVC rules, and a field's
+PC offset comes from the shift between layouts, which must agree on both sides.
+Existing PC fields are never changed, padding that sources name or that sits in
+brace-initialized structs stays, and the rewrite is refused unless every struct
+keeps its size and existing offsets.
+
 ## Measures
 
 `matching.json` records, per function, exact equality and objdiff similarity.
