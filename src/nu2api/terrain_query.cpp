@@ -1572,12 +1572,14 @@ i16 *NewScanHandelSubsetPc(i16 *subset, NUVEC *position, NUVEC *movement, f32 ra
     TerrainScanWriter writer;
     writer.group_header = TempStackPtrPc;
     writer.cursor = reinterpret_cast<TERRAIN_SHAPE **>(TempStackPtrPc + 4);
-    u8 *scale_base = reinterpret_cast<u8 *>(TerrainScaleWorkBasePc);
-    if (reinterpret_cast<usize>(writer.cursor) > reinterpret_cast<usize>(scale_base + 0x63c18))
+
+    if (reinterpret_cast<usize>(writer.cursor) >
+        reinterpret_cast<usize>((reinterpret_cast<u8 *>(TerrainScaleWorkBasePc)) + 0x63c18))
         return NULL;
     writer.limit = reinterpret_cast<u8 *>(writer.cursor) + 0x7f0;
-    if (reinterpret_cast<usize>(writer.limit) > reinterpret_cast<usize>(scale_base + 0x63da8))
-        writer.limit = scale_base + 0x63da8;
+    if (reinterpret_cast<usize>(writer.limit) >
+        reinterpret_cast<usize>((reinterpret_cast<u8 *>(TerrainScaleWorkBasePc)) + 0x63da8))
+        writer.limit = (reinterpret_cast<u8 *>(TerrainScaleWorkBasePc)) + 0x63da8;
     writer.group_shape_count = 0;
     writer.scaled_shape_count = 0;
     i16 *result = reinterpret_cast<i16 *>(writer.group_header);
@@ -1598,7 +1600,7 @@ i16 *NewScanHandelSubsetPc(i16 *subset, NUVEC *position, NUVEC *movement, f32 ra
     }
     if (0.0f < movement->z) {
         bounds.min_z = static_cast<f64>(position->z) - TerrainScanMargin02Pc - radius;
-        bounds.max_z = static_cast<f64>(position->z) + movement->z + TerrainScanMargin02Pc + radius;
+        bounds.max_z = radius + (static_cast<f64>(position->z) + movement->z + TerrainScanMargin02Pc);
     } else {
         bounds.min_z = static_cast<f64>(position->z) + movement->z - TerrainScanMargin02Pc - radius;
         bounds.max_z = static_cast<f64>(position->z) + TerrainScanMargin02Pc + radius;
@@ -1612,7 +1614,7 @@ i16 *NewScanHandelSubsetPc(i16 *subset, NUVEC *position, NUVEC *movement, f32 ra
         const i32 count = subset[0];
         const i32 group_index = subset[1];
         TERRAIN_SHAPE **shapes = reinterpret_cast<TERRAIN_SHAPE **>(subset + 2);
-        subset = reinterpret_cast<i16 *>(shapes + count);
+        subset = reinterpret_cast<i16 *>(count + shapes);
         TERRAIN_GROUP_PC &group = static_cast<TERRAIN_SET_PC *>(CurrentTerrain)->groups[group_index];
         TERRAIN_PLATFORM_PC *platform =
             group.chunk_type == 1
@@ -1620,7 +1622,7 @@ i16 *NewScanHandelSubsetPc(i16 *subset, NUVEC *position, NUVEC *movement, f32 ra
                 : NULL;
         NUMTX *matrix = platform != NULL ? static_cast<NUMTX *>(platform->scene_object) : NULL;
         TerrainScanBounds local;
-        if (matrix != NULL) {
+        if (NULL != matrix) {
             if (matrix->m30 > platform->previous_matrix.m30) {
                 local.min_x = bounds.min_x - group.origin.x;
                 local.max_x = (static_cast<f64>(matrix->m30) - platform->previous_matrix.m30) * 1.5 + bounds.max_x -
@@ -1654,8 +1656,8 @@ i16 *NewScanHandelSubsetPc(i16 *subset, NUVEC *position, NUVEC *movement, f32 ra
                 continue;
             }
             local.min_x = bounds.min_x - group.origin.x;
-            local.max_x = bounds.max_x - group.origin.x;
             local.min_y = bounds.min_y - group.origin.y;
+            local.max_x = bounds.max_x - group.origin.x;
             local.max_y = bounds.max_y - group.origin.y;
             local.min_z = bounds.min_z - group.origin.z;
             local.max_z = bounds.max_z - group.origin.z;
@@ -1684,12 +1686,12 @@ i16 *NewScanHandelSubsetPc(i16 *subset, NUVEC *position, NUVEC *movement, f32 ra
     TERRAIN_SCAN_WORD_PC *terminator = reinterpret_cast<TERRAIN_SCAN_WORD_PC *>(writer.group_header);
     terminator->header.shape_count = 0;
     terminator->header.terrain_group = 0;
-    bounds.min_x -= TerrainScanMargin02Pc;
+    bounds.min_x = bounds.min_x - TerrainScanMargin02Pc;
     bounds.max_x += TerrainScanMargin02Pc;
     bounds.min_z -= TerrainScanMargin02Pc;
     bounds.max_z += TerrainScanMargin02Pc;
-    TERRAIN_HANDLE_WALL_PAIR_PC *source = reinterpret_cast<TERRAIN_HANDLE_WALL_PAIR_PC *>(subset + 2);
     TERRAIN_HANDLE_WALL_PAIR_PC *walls = reinterpret_cast<TERRAIN_HANDLE_WALL_PAIR_PC *>(terminator + 1);
+    TERRAIN_HANDLE_WALL_PAIR_PC *source = reinterpret_cast<TERRAIN_HANDLE_WALL_PAIR_PC *>(subset + 2);
     while (static_cast<i32>(reinterpret_cast<usize>(source->first)) > 0) {
         TERRAIN_WALL_POINT *wall = source->first;
         if (TERRAIN_HANDLE_WALL_OVERLAP(bounds, wall) &&
