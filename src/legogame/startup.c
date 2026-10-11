@@ -167,7 +167,8 @@ void __cdecl LoadPerm(void) {
                 if (legal_tid == 0) {
                     legal_timer = 5.8f;
                 } else {
-                    STUBBED_NAMED("LoadPerm: LoadPermCreateLegalMtl(legal_tid) into legal_mtl");
+                    if (LoadPermCreateLegalMtl(&legal_mtl, legal_tid) == 0)
+                        legal_timer = 5.8f;
                 }
             } else {
                 legal_timer += FRAMETIME;
@@ -221,12 +222,18 @@ void __cdecl LoadPerm(void) {
                 }
                 half = (1.0f - 1.3333334f / aspect) * 0.5f;
                 NuRndrClear(0xb00, 0, 1.0f);
-                STUBBED_NAMED("LoadPerm: legal 2D quad"
-                              " (NuPrimCSPos push 2, NuPrimSetCoordinateSystem(2),"
-                              " NuPrim2DBegin(0x10, 7, legal_mtl),"
-                              " colour (legal_alpha * 255.0f) << 24 | 0x808080,"
-                              " NuPrim2DSetColor, vertices half/1-half, NuPrim2DEnd,"
-                              " NuPrimCoordSystemStack pop)");
+                ++NuPrimCSPos;
+                NuPrimSetCoordinateSystem(2);
+                NuPrim2DBegin(0x10, 7, legal_mtl);
+                NuPrim2DSetColor((i32)(((u32)(i32)(legal_alpha * 255.0) << 24) | 0x808080));
+                NuPrim2DSetUV(0.0f, 0.0f);
+                NuPrim2DAddXYZ(half + 0.0f, 0.0f, 0.0f);
+                NuPrim2DSetColor((i32)(((u32)(i32)(legal_alpha * 255.0) << 24) | 0x808080));
+                NuPrim2DSetUV(1.0f, 1.0f);
+                NuPrim2DAddXYZ(1.0f - half, 1.0f, 0.0f);
+                NuPrim2DEnd();
+                --NuPrimCSPos;
+                NuPrimSetCoordinateSystem(NuPrimCoordSystemStack[NuPrimCSPos]);
             }
 
             intro_alpha = LoadPermFadeAlpha(intro_timer, 3.0f);
@@ -288,7 +295,7 @@ void __cdecl LoadPermData(void *process) {
     LoadPerm_StringsLoaded = 1;
 
     if (process != NULL) {
-        STUBBED_NAMED("LoadPermData: LoadPermLoadLegalTexture");
+        LoadPermLoadLegalTexture();
     }
 
     STUBBED_NAMED("LoadPermData: string filter load (badwords.txt at 0x4fe390)");

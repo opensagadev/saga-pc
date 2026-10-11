@@ -374,6 +374,48 @@
       "original_size": 4,
       "ctype": "i32",
       "qualification": "Root-selected actual named4-byte signed coordinate field; native independent DWORD accesses, canonical offset assertion, full loaderzero comparison. Replaces incorrect whole-parent16 ownership claim; parent extent stays unknown."
+    },
+    {
+      "id": "PCDisplayList2dPc.state",
+      "kind": "data_member",
+      "owner_symbol": "_PCDisplayList2dPc",
+      "owner_identifier": "PCDisplayList2dPc",
+      "owner_unit": "src/nu2api/nurndr.c",
+      "owner_type": "NUDISPLAYLIST",
+      "member_path": "state",
+      "original_address": "0x00973e98",
+      "original_size": 4,
+      "ctype": "NURNDRLIBSTATE *",
+      "historical_symbol": "_displaylist_2d_state",
+      "qualification": "Canonical native fallback display list; existing Init/CreateDynMtlList/AddRenderScene writers and Begin/LinkMtl readers establish named fields. Preserve three original four-byte field extents; parent owning extent remains unknown, with no new allocation credit."
+    },
+    {
+      "id": "PCDisplayList2dPc.first",
+      "kind": "data_member",
+      "owner_symbol": "_PCDisplayList2dPc",
+      "owner_identifier": "PCDisplayList2dPc",
+      "owner_unit": "src/nu2api/nurndr.c",
+      "owner_type": "NUDISPLAYLIST",
+      "member_path": "first",
+      "original_address": "0x00973ea0",
+      "original_size": 4,
+      "ctype": "NUDISPLAYLISTITEM *",
+      "historical_symbol": "_displaylist_2d_first",
+      "qualification": "Canonical native fallback display list; existing Init/CreateDynMtlList/AddRenderScene writers and Begin/LinkMtl readers establish named fields. Preserve three original four-byte field extents; parent owning extent remains unknown, with no new allocation credit."
+    },
+    {
+      "id": "PCDisplayList2dPc.mtl_last",
+      "kind": "data_member",
+      "owner_symbol": "_PCDisplayList2dPc",
+      "owner_identifier": "PCDisplayList2dPc",
+      "owner_unit": "src/nu2api/nurndr.c",
+      "owner_type": "NUDISPLAYLIST",
+      "member_path": "mtl_last",
+      "original_address": "0x00973ea4",
+      "original_size": 4,
+      "ctype": "NUDISPLAYLISTITEM *",
+      "historical_symbol": "_displaylist_2d_mtl_last",
+      "qualification": "Canonical native fallback display list; existing Init/CreateDynMtlList/AddRenderScene writers and Begin/LinkMtl readers establish named fields. Preserve three original four-byte field extents; parent owning extent remains unknown, with no new allocation credit."
     }
   ]
 }

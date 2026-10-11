@@ -1086,3 +1086,177 @@ void __cdecl PcGetGeometryPerspectivePc(NUMTX *matrix, f32 *fovy, f32 *aspect, f
     radians = (f32)((f64)(i32)NuAtan2D(reciprocal_y, 1.0f) * PCAtan2RadianScale);
     *fovy = (f32)((f64)radians * 360.0 / (f64)3.1415927410125732);
 }
+
+void __cdecl NuMtxInvRSSH(NUMTX *inv, NUMTX *T) {
+    NUMTX gm;
+
+    f32 tx = -T->m30;
+    f32 ty = -T->m31;
+    f32 tz = -T->m32;
+    f32 det = T->m00 * (T->m11 * T->m22 - T->m12 * T->m21) - T->m01 * (T->m22 * T->m10 - T->m12 * T->m20) +
+              T->m02 * (T->m10 * T->m21 - T->m11 * T->m20);
+    f32 invdet = 1.0f / det;
+
+    gm.m00 = (T->m11 * T->m22 - T->m12 * T->m21) * invdet;
+    gm.m10 = (T->m22 * T->m10 - T->m12 * T->m20) * -invdet;
+    gm.m20 = (T->m10 * T->m21 - T->m11 * T->m20) * invdet;
+    gm.m01 = (T->m22 * T->m01 - T->m21 * T->m02) * -invdet;
+    gm.m11 = (T->m00 * T->m22 - T->m20 * T->m02) * invdet;
+    gm.m21 = (T->m00 * T->m21 - T->m01 * T->m20) * -invdet;
+    gm.m02 = (T->m01 * T->m12 - T->m11 * T->m02) * invdet;
+    gm.m12 = (T->m00 * T->m12 - T->m10 * T->m02) * -invdet;
+    gm.m22 = (T->m00 * T->m11 - T->m01 * T->m10) * invdet;
+    gm.m30 = gm.m00 * tx + gm.m10 * ty + gm.m20 * tz;
+    gm.m31 = gm.m01 * tx + gm.m11 * ty + gm.m21 * tz;
+    gm.m32 = gm.m02 * tx + gm.m12 * ty + gm.m22 * tz;
+    gm.m03 = 0.0f;
+    gm.m13 = 0.0f;
+    gm.m23 = 0.0f;
+    gm.m33 = 1.0f;
+    *inv = gm;
+}
+
+void __cdecl NuMtxAlignX(NUMTX *m, NUVEC *v) {
+    f32 s;
+    m->m00 = v->x;
+    m->m01 = v->y;
+    m->m02 = v->z;
+    m->m20 = m->m01 * m->m12 - m->m02 * m->m11;
+    m->m21 = m->m02 * m->m10 - m->m00 * m->m12;
+    m->m22 = m->m11 * m->m00 - m->m01 * m->m10;
+
+    s = NuFsqrt(m->m20 * m->m20 + m->m21 * m->m21 + m->m22 * m->m22);
+    s = s == 0.0f ? 0.0f : 1.0f / s;
+
+    m->m20 = m->m20 * s;
+    m->m21 = m->m21 * s;
+    m->m22 = m->m22 * s;
+    m->m10 = m->m21 * m->m02 - m->m22 * m->m01;
+    m->m11 = m->m22 * m->m00 - m->m20 * m->m02;
+    m->m12 = m->m20 * m->m01 - m->m21 * m->m00;
+}
+
+void __cdecl NuMtxLookAtX(NUMTX *m, NUVEC *pnt) {
+    NUVEC v;
+
+    v.x = pnt->x - m->m30;
+    v.y = pnt->y - m->m31;
+    v.z = pnt->z - m->m32;
+
+    NuVecNorm(&v, &v);
+    NuMtxAlignX(m, &v);
+}
+
+void __cdecl NuMtxInvLookAtX(NUMTX *m, NUVEC *pnt) {
+    NUVEC v;
+
+    v.x = m->m30 - pnt->x;
+    v.y = m->m31 - pnt->y;
+    v.z = m->m32 - pnt->z;
+
+    NuVecNorm(&v, &v);
+    NuMtxAlignX(m, &v);
+}
+
+void __cdecl NuMtxInvLookAtY(NUMTX *m, NUVEC *pnt) {
+    NUVEC v;
+
+    v.x = m->m30 - pnt->x;
+    v.y = m->m31 - pnt->y;
+    v.z = m->m32 - pnt->z;
+
+    NuVecNorm(&v, &v);
+    NuMtxAlignY(m, &v);
+}
+
+void __cdecl NuMtxInvLookAtZ(NUMTX *m, NUVEC *pnt) {
+    NUVEC v;
+
+    v.x = m->m30 - pnt->x;
+    v.y = m->m31 - pnt->y;
+    v.z = m->m32 - pnt->z;
+
+    NuVecNorm(&v, &v);
+    NuMtxAlignZ(m, &v);
+}
+
+void __cdecl NuMtxAddR(NUMTX *m, NUMTX *m0, NUMTX *m1) {
+    m->m00 = m0->m00 + m1->m00;
+    m->m01 = m0->m01 + m1->m01;
+    m->m02 = m0->m02 + m1->m02;
+    m->m03 = 0.0f;
+    m->m10 = m0->m10 + m1->m10;
+    m->m11 = m0->m11 + m1->m11;
+    m->m12 = m0->m12 + m1->m12;
+    m->m13 = 0.0f;
+    m->m20 = m0->m20 + m1->m20;
+    m->m21 = m0->m21 + m1->m21;
+    m->m22 = m0->m22 + m1->m22;
+    m->m23 = 0.0f;
+    m->m30 = 0.0f;
+    m->m31 = 0.0f;
+    m->m32 = 0.0f;
+    m->m33 = 1.0f;
+}
+
+void __cdecl NuMtxSubR(NUMTX *m, NUMTX *m0, NUMTX *m1) {
+    m->m00 = m0->m00 - m1->m00;
+    m->m01 = m0->m01 - m1->m01;
+    m->m02 = m0->m02 - m1->m02;
+    m->m03 = 0.0f;
+    m->m10 = m0->m10 - m1->m10;
+    m->m11 = m0->m11 - m1->m11;
+    m->m12 = m0->m12 - m1->m12;
+    m->m13 = 0.0f;
+    m->m20 = m0->m20 - m1->m20;
+    m->m21 = m0->m21 - m1->m21;
+    m->m22 = m0->m22 - m1->m22;
+    m->m23 = 0.0f;
+    m->m30 = 0.0f;
+    m->m31 = 0.0f;
+    m->m32 = 0.0f;
+    m->m33 = 1.0f;
+}
+
+void __cdecl NuMtxSkewSymmetric(NUMTX *m, NUVEC *v) {
+    m->m00 = 0.0;
+    m->m01 = -v->z;
+    m->m02 = v->y;
+    m->m03 = 0.0;
+    m->m10 = v->z;
+    m->m11 = 0.0;
+    m->m12 = -v->x;
+    m->m13 = 0.0;
+    m->m20 = -v->y;
+    m->m21 = v->x;
+    m->m22 = 0.0;
+    m->m23 = 0.0;
+    m->m30 = 0.0;
+    m->m31 = 0.0;
+    m->m32 = 0.0;
+    m->m33 = 1.0;
+}
+
+f32 __cdecl NuMtxDet3(NUMTX *m) {
+    return m->m00 * (m->m11 * m->m22 - m->m12 * m->m21) - m->m01 * (m->m10 * m->m22 - m->m12 * m->m20) +
+           m->m02 * (m->m10 * m->m21 - m->m11 * m->m20);
+}
+
+i32 __cdecl NuMtxCompare(NUMTX *a, NUMTX *b) {
+    i32 i;
+    f32 *aa = &a->m00;
+    f32 *bb = &b->m00;
+
+    for (i = 0; i < 16; i++) {
+        if (*aa < *bb) {
+            return -1;
+        }
+        if (*aa > *bb) {
+            return 1;
+        }
+        aa += 1;
+        bb += 1;
+    }
+
+    return 0;
+}

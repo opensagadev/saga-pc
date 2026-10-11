@@ -5518,3 +5518,80 @@ the user. Their referenced audit files are missing; the records are archived
 locally and the journal is restored to its committed version. The report's
 identification metadata is refreshed. Source, full code/data comparisons and
 all exact results are unchanged; this correction adds zero reconstructed bytes.
+
+## Save startup, legal primitives, AI locators and matrices (2026-10-11)
+
+The supported PC image is the authority for this batch. All extents below include
+final returns and internal branches, excluding only following alignment. Source
+candidates come from the Android project's `gameframework/saveload.c`,
+`legogame/game.cpp`, `legoapi/gizmo/gizmos/gizmos_gizactions.cpp` and
+`nu2api/numath/numtx.cpp`; PC-specific paths, flags and calling conventions take
+precedence. Full compiler output is compared without cropping or masking.
+
+The save startup closure is `PcRegisterSaveFolderPc` at `6ddd50/49`,
+`fullslotname` at `5436e0/224`, `saveload_getinfo` at `543880/135`, and
+`saveloadInit` at `543e80/26`. All four are ordinary cdecl and match complete
+native bytes. Hardware's conditional call at `6dbf16` publishes the actual
+company/product/default-folder parameters. `InitOnce`'s call at `4015bd`
+preserves all seven arguments, although this PC callee ignores them. The real
+folder provider constructs the Windows path; enumeration opens six slots in
+`rb` mode and reads each trailing four-byte code. Only after that enumeration
+does native initialization publish readiness and reset autosave to -1. Save
+writes, deletion and asynchronous save operations remain separate gaps.
+
+The legal family adds `LoadPermLoadLegalTexture` at `4c9bd0/309`,
+`LoadPermCreateLegalMtl` at `4c9d10/97`, `NuPrim2DSetColor` at `4c9a40/108`
+and `NuPrim2DSetUV` at `4c9ab0/22`. The loader uses a 128-byte path and a
+64-byte name, the real texture reader, and the native language/PC fallback
+branches. The material helper receives its output pointer in EDI and its texture
+ID on the stack: the old one-argument inventory signature was wrong. The source
+uses a structural two-argument cdecl interface and remains nonexact. Likewise,
+color is signed (native SAR operations) and arrives in EAX in the original;
+its public source wrapper is nonexact. UV matches the full 22 bytes. Startup
+now calls the real loader/material helper and emits the reviewed legal quad,
+including native coordinate-system push/pop and two opposite-corner vertices.
+
+The null-material-list branch of `NuPrim2DBegin` uses the actual fallback list
+at `973e90`. Its existing init/create/capture routines already produce and reset
+the state, first-item and last-item fields. Consolidating their old standalone
+storage into `PCDisplayList2dPc` lets Begin call the existing `NuDisplayListLinkMtl`
+and publish its stream pointers. Native `5de345` also establishes that LinkMtl's
+untextured/reused-texture branch saves the command pointer **before** advancing
+the cursor by 64 bytes; the reversed source order was corrected. The existing
+missing camera-packet action remains explicit, so this closure alone does not
+establish completed rendering.
+
+The AI closure is `Action_AssignLocator` at `4538a0/502`,
+`Action_GetLocatorFromSet` at `453aa0/1159`, and its private next-locator helper
+at `440660/424`. Strings, existing locator-assignment callees and the asserted
+AISYS/APIOBJECT/locator-set fields corroborate identity. Both public actions use
+the existing seven-argument cdecl ABI. The native private helper receives the
+object in EDI and five stack arguments; ordinary same-unit VC8 optimization
+chooses a different private ABI, which remains nonexact. Native behavior is
+preserved when a named character is absent and when an unmatched locator writes
+`assigned[locator_count]`; this does not establish that array's full capacity or
+bounds safety. Android-only null guards and traversal behavior were not carried
+across. All three complete functions are nonexact.
+
+The matrix additions require only existing NUMTX/NUVEC layouts and providers:
+
+| Function | PC entry/bytes | Full-byte result |
+| --- | --- | --- |
+| NuMtxInvRSSH | `5b5cf0/411` | Nonexact multiply operand order |
+| NuMtxAlignX | `5b6380/268` | Nonexact x87 reciprocal scheduling |
+| NuMtxLookAtX | `5b69e0/75` | Exact |
+| NuMtxInvLookAtX | `5b6ad0/75` | Exact |
+| NuMtxInvLookAtY | `5b6b20/75` | Exact |
+| NuMtxInvLookAtZ | `5b6b70/75` | Exact |
+| NuMtxAddR | `5b6bc0/116` | Exact |
+| NuMtxSubR | `5b6c40/116` | Exact |
+| NuMtxSkewSymmetric | `5b6cc0/82` | Exact |
+| NuMtxDet3 | `5b6f50/67` | Exact |
+| NuMtxCompare | `5b6fa0/71` | Exact |
+
+The inverse retains native division without inventing a singular-matrix fallback.
+The nonexact arithmetic is reviewed for finite representable inputs; exceptional
+NaN payload/status behavior is not asserted equal. All 60 previously compiled
+matrix functions preserve their complete relocated output. Projection builders
+are the next bounded math target; scene texture restoration remains held on its
+real unresolved-texture provider and native DDS backing.

@@ -28257,3 +28257,42 @@ extern "C" {
     i8 PcMouseSampleIndexPc;
     f32 PcMouseInterpolationPc;
 }
+
+extern "C" {
+    extern const char PermLegalDirectoryPc[] = "stuff\\legal\\";
+    extern const char PermLegalPcPrefixPc[] = "pc\\pc_";
+}
+
+extern "C" {
+    char SaveFolderPathPc[256];
+    char SaveFullSlotPathPc[256];
+    char SaveSlotNamePc[256];
+    i32 saveload_slotcode[6];
+}
+i32 PcSaveFolderRegisteredPc;
+
+extern "C" {
+    char SaveProductCodePc[12];
+    extern const char SaveIconFilenamePc[9] = "lego.ico";
+    const char *SaveIconNamePc = SaveIconFilenamePc;
+    char SaveUnicodeNamePc[20] = "LEGO Star Wars Saga";
+}
+
+extern "C" {
+    extern const char GizActionLiteral758274[] = "reserve";
+    extern const char GizActionLiteral75827c[] = "set";
+    extern const char GizActionLiteral758280[] = "locator";
+    extern const char GizActionLiteral758288[] = "locator=mylocator";
+    extern const char GizActionLiteral75829c[] = "nearest_either_player";
+    extern const char GizActionLiteral7582b4[] = "furthest_from_either_player";
+    extern const char GizActionLiteral7582d0[] = "furthest_from_opponent";
+    extern const char GizActionLiteral7582e8[] = "ignore_assigned=FALSE";
+    extern const char GizActionLiteral758300[] = "ignore_assigned=TRUE";
+    extern const char GizActionLiteral758318[] = "finish_at_end";
+    extern const char GizActionLiteral758328[] = "first";
+    extern const char GizActionLiteral758330[] = "next";
+    extern const char GizActionLiteral758338[] = "off_screen_radius=";
+    extern const char GizActionLiteral75834c[] = "max_opponent_range=";
+    extern const char GizActionLiteral758360[] = "max_player_range=";
+    extern const char GizActionLiteral758374[] = "max_range=";
+}

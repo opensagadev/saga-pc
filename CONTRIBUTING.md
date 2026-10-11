@@ -8,7 +8,8 @@ sound startup calls are connected, including per-frame input polling and cache r
 bounded debugger run observed genuine SFX initialization returning and downstream
 lookup entry. GGG's ordinary runtime observation is recorded in the execution
 policy. Recurring rendered frames, a loaded world and playability remain unproved;
-save-folder registration and save readiness are the next native dependencies.
+save-folder registration, slot enumeration and the legal primitive path are now connected.
+Startup text-table backing and remaining permanent/world loaders are the next dependencies.
 There are no host or WebAssembly game targets.
 
 ## Requirements and setup

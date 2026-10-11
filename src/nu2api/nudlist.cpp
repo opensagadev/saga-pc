@@ -1350,16 +1350,16 @@ extern "C" void __cdecl NuDisplayListCreateDynMtlList_candidate(VARIPTR *buffer,
     PCDisplayMaterialStreamStart = *buffer;
     buffer->addr += 0x12c00;
     PCDisplayMaterialStreamEnd = *buffer;
-    displaylist_2d_first->type = 0x8d;
-    displaylist_2d_first->id = 1;
-    displaylist_2d_first->next = NULL;
-    displaylist_2d_mtl_last = displaylist_2d_first;
+    PCDisplayList2dPc.first->type = 0x8d;
+    PCDisplayList2dPc.first->id = 1;
+    PCDisplayList2dPc.first->next = NULL;
+    PCDisplayList2dPc.mtl_last = PCDisplayList2dPc.first;
     buffer->addr = (buffer->addr + 3) & ~3u;
-    displaylist_2d_state = (NURNDRLIBSTATE *)buffer->void_ptr;
+    PCDisplayList2dPc.state = (NURNDRLIBSTATE *)buffer->void_ptr;
     buffer->addr += sizeof(NURNDRLIBSTATE);
-    NuDisplayListResetStateCache((NURNDRLIBSTATE *)displaylist_2d_state);
+    NuDisplayListResetStateCache((NURNDRLIBSTATE *)PCDisplayList2dPc.state);
     PCDynamicDisplayScene.render_flags |= 0x10;
-    displaylist_2d_mtl_last = displaylist_2d_first;
+    PCDisplayList2dPc.mtl_last = PCDisplayList2dPc.first;
 }
 
 extern "C" void __cdecl NuDisplayListExecute(NUDISPLAYLISTITEM *item, void(__cdecl **handlers)(void *)) {

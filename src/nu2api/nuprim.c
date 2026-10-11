@@ -366,8 +366,8 @@ void __cdecl NuDisplayListLinkMtl(NUDISPLAYLIST_PC *list, NUMTL *material) {
         state->texture_id = texture_id;
         commands += 2;
     } else {
-        NuDisplayListStreamCursor->addr += 0x40;
         commands = (NUPRIM_COMMAND_PC *)NuDisplayListStreamCursor->void_ptr;
+        NuDisplayListStreamCursor->addr += 0x40;
     }
 
     commands[0].type = 0x80;
@@ -431,8 +431,8 @@ void __cdecl NuPrim2DBegin(u32 primitive_type, u32 vertex_format, NUMTL *materia
         material_id = list->material_id;
         material_used[material_id / 8] |= (u8)(1 << (material_id % 8));
     } else {
-        STUBBED_NAMED(0x00973e90);
-        return;
+        list = (NUDISPLAYLIST_PC *)&PCDisplayList2dPc;
+        NuDisplayListLinkMtl(list, material);
     }
 
     render_state.counter_001e++;
@@ -633,4 +633,21 @@ i32 __cdecl NuRndrSetAmbientLightSpecular(const NUVEC4 *colour) {
     PCGlobalLightingState.ambient.z = colour->z;
     NuRndrSetAmbientLightPS((const NUVEC *)colour);
     return 0;
+}
+
+void __cdecl NuPrim2DSetColor(i32 colour) {
+    u32 converted;
+    if (NuPrimNeedsOverbrightening != 0) {
+        converted = ((colour >> 16) & 0xff) + ((colour & 0xff) << 16) + (colour & 0xff000000u) + (colour & 0xff00);
+    } else {
+        converted =
+            ((colour >> 1) & 0x7f00) + ((colour & 0xfe) << 15) + ((colour >> 17) & 0x7f) + (colour & 0xff000000u);
+    }
+    ((NUPRIMVERTEX_PC *)NuPrimStreamBufferPointer->void_ptr)->colour = converted;
+}
+
+void __cdecl NuPrim2DSetUV(f32 u, f32 v) {
+    NUPRIMVERTEX_PC *vertex = (NUPRIMVERTEX_PC *)NuPrimStreamBufferPointer->void_ptr;
+    vertex->u = u;
+    vertex->v = v;
 }

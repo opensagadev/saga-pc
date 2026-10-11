@@ -50,6 +50,5 @@ extern "C" void __cdecl InitOnce(i32 argc, char **argv) {
     Game.options_save.master_volume = (u8)PcWindowOptions.mastervolume;
     GameSetSoundVolume(&Game.options_save);
     GameSetMusicVolume(&Game.options_save);
-    STUBBED_NAMED(0x00543e80); /* (&permbuffer_base, level92489c, 0x7e4c,
-                                  output87b4e0, parameter7fabb4, table7fabb8, 4), 4015bd */
+    saveloadInit(&permbuffer_base, permbuffer_end, 0x7e4c, SaveProductCodePc, SaveIconNamePc, SaveUnicodeNamePc, 4);
 }

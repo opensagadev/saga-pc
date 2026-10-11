@@ -39102,7 +39102,396 @@
           "sha256": "11ae6ab65f1115486dd0e7796b6157ce0654d9de6ef91c5005a91faa7a3ac793"
         }
       }
+    },
+    {
+      "checkpoint": "HHH",
+      "date": "2026-10-11",
+      "scope": "Save startup, legal fallback primitive path, AI locator actions and matrix family",
+      "baseline_commit": "56ec5131472982c587c7faf80ab9b092e76782c2",
+      "publication": {
+        "status": "pending exact-revision CI"
+      },
+      "new_functions": 22,
+      "new_unique_compared_PC_bytes": 4486,
+      "new_exact_functions": 14,
+      "new_exact_code_bytes": 1208,
+      "new_exact_data_bytes": 106,
+      "newly_compared": [
+        {
+          "symbol": "?GizActionNextLocator@@YAXPAUAISYS_PC@@PAUAILOCATORSET_PC@@HHHPAUAPIOBJECT_PC@@@Z",
+          "address": "0x00440660",
+          "size": 424,
+          "exact": false,
+          "score": 86.132355
+        },
+        {
+          "symbol": "_Action_AssignLocator",
+          "address": "0x004538a0",
+          "size": 502,
+          "exact": false,
+          "score": 67.37255
+        },
+        {
+          "symbol": "_Action_GetLocatorFromSet",
+          "address": "0x00453aa0",
+          "size": 1159,
+          "exact": false,
+          "score": 77.00271
+        },
+        {
+          "symbol": "_NuPrim2DSetColor",
+          "address": "0x004c9a40",
+          "size": 108,
+          "exact": false,
+          "score": 56.545456
+        },
+        {
+          "symbol": "_NuPrim2DSetUV",
+          "address": "0x004c9ab0",
+          "size": 22,
+          "exact": true,
+          "score": 100.0
+        },
+        {
+          "symbol": "_LoadPermLoadLegalTexture",
+          "address": "0x004c9bd0",
+          "size": 309,
+          "exact": false,
+          "score": 81.02469
+        },
+        {
+          "symbol": "_LoadPermCreateLegalMtl",
+          "address": "0x004c9d10",
+          "size": 97,
+          "exact": false,
+          "score": 84.0625
+        },
+        {
+          "symbol": "_fullslotname",
+          "address": "0x005436e0",
+          "size": 224,
+          "exact": true,
+          "score": 100.0
+        },
+        {
+          "symbol": "_saveload_getinfo",
+          "address": "0x00543880",
+          "size": 135,
+          "exact": true,
+          "score": 100.0
+        },
+        {
+          "symbol": "_saveloadInit",
+          "address": "0x00543e80",
+          "size": 26,
+          "exact": true,
+          "score": 100.0
+        },
+        {
+          "symbol": "_NuMtxInvRSSH",
+          "address": "0x005b5cf0",
+          "size": 411,
+          "exact": false,
+          "score": 99.918365
+        },
+        {
+          "symbol": "_NuMtxAlignX",
+          "address": "0x005b6380",
+          "size": 268,
+          "exact": false,
+          "score": 92.47475
+        },
+        {
+          "symbol": "_NuMtxLookAtX",
+          "address": "0x005b69e0",
+          "size": 75,
+          "exact": true,
+          "score": 100.0
+        },
+        {
+          "symbol": "_NuMtxInvLookAtX",
+          "address": "0x005b6ad0",
+          "size": 75,
+          "exact": true,
+          "score": 100.0
+        },
+        {
+          "symbol": "_NuMtxInvLookAtY",
+          "address": "0x005b6b20",
+          "size": 75,
+          "exact": true,
+          "score": 100.0
+        },
+        {
+          "symbol": "_NuMtxInvLookAtZ",
+          "address": "0x005b6b70",
+          "size": 75,
+          "exact": true,
+          "score": 100.0
+        },
+        {
+          "symbol": "_NuMtxAddR",
+          "address": "0x005b6bc0",
+          "size": 116,
+          "exact": true,
+          "score": 100.0
+        },
+        {
+          "symbol": "_NuMtxSubR",
+          "address": "0x005b6c40",
+          "size": 116,
+          "exact": true,
+          "score": 100.0
+        },
+        {
+          "symbol": "_NuMtxSkewSymmetric",
+          "address": "0x005b6cc0",
+          "size": 82,
+          "exact": true,
+          "score": 100.0
+        },
+        {
+          "symbol": "_NuMtxDet3",
+          "address": "0x005b6f50",
+          "size": 67,
+          "exact": true,
+          "score": 100.0
+        },
+        {
+          "symbol": "_NuMtxCompare",
+          "address": "0x005b6fa0",
+          "size": 71,
+          "exact": true,
+          "score": 100.0
+        },
+        {
+          "symbol": "_PcRegisterSaveFolderPc",
+          "address": "0x006ddd50",
+          "size": 49,
+          "exact": true,
+          "score": 100.0
+        }
+      ],
+      "progress": {
+        "text_bytes": 3471246,
+        "mapped_code_bytes": 1527545,
+        "matched_code_bytes": 237351,
+        "matching_percent": 6.837631213690992,
+        "fuzzy_coverage_percent": 30.053395625033286,
+        "mapped_functions": 5436,
+        "matched_functions": 2487,
+        "objdiff_fuzzy_percent": 69.63588,
+        "objdiff_total_code": 1498981,
+        "image_bytes": 40067072,
+        "mapped_bytes": 2175820,
+        "mapping_percent": 5.4304442311132695,
+        "mapping_denominator": "code_and_data_section_virtual_sizes",
+        "mapping_sections": [
+          {
+            "name": ".text",
+            "kind": "code",
+            "address": "0x401000",
+            "size": 3471246,
+            "mapped_bytes": 1528739
+          },
+          {
+            "name": ".rdata",
+            "kind": "data",
+            "address": "0x751000",
+            "size": 646766,
+            "mapped_bytes": 30553
+          },
+          {
+            "name": ".data",
+            "kind": "data",
+            "address": "0x7ef000",
+            "size": 35372200,
+            "mapped_bytes": 616528
+          }
+        ],
+        "mapping_known_size_symbols": 9755,
+        "mapping_unknown_size_symbols": 5723,
+        "mapping_code_bytes": 1528739,
+        "mapping_code_total_bytes": 3471246,
+        "mapping_code_percent": 44.04006515239773,
+        "mapping_data_bytes": 647081,
+        "mapping_data_total_bytes": 36018966,
+        "mapping_data_percent": 1.796500765735474,
+        "mapping_code_data_bytes": 2175820,
+        "mapping_code_data_total_bytes": 39490212,
+        "mapping_code_data_percent": 5.509770370440148,
+        "matched_data_region_bytes": 637733
+      },
+      "fuzzy_delta_pp": 0.12131568408576854,
+      "previous_exact_functions_lost": 0,
+      "named_data_migrations": [
+        {
+          "retired_coff_symbol": "_displaylist_2d_state",
+          "member_id": "PCDisplayList2dPc.state",
+          "address": "0x00973e98",
+          "complete_original_size": 4,
+          "historical_exact_preserved": true,
+          "retired_physical_definition": true,
+          "member_is_not_new_definition": true
+        },
+        {
+          "retired_coff_symbol": "_displaylist_2d_first",
+          "member_id": "PCDisplayList2dPc.first",
+          "address": "0x00973ea0",
+          "complete_original_size": 4,
+          "historical_exact_preserved": true,
+          "retired_physical_definition": true,
+          "member_is_not_new_definition": true
+        },
+        {
+          "retired_coff_symbol": "_displaylist_2d_mtl_last",
+          "member_id": "PCDisplayList2dPc.mtl_last",
+          "address": "0x00973ea4",
+          "complete_original_size": 4,
+          "historical_exact_preserved": true,
+          "retired_physical_definition": true,
+          "member_is_not_new_definition": true
+        }
+      ],
+      "changed_existing_functions": [
+        {
+          "symbol": "_InitOnce",
+          "old_score": 58.958508,
+          "new_score": 63.360996,
+          "old_size": [
+            927
+          ],
+          "new_size": [
+            967
+          ]
+        },
+        {
+          "symbol": "_InitGameAfterConfig",
+          "old_score": 76.5141,
+          "new_score": 76.510254,
+          "old_size": [
+            4437
+          ],
+          "new_size": [
+            4437
+          ]
+        },
+        {
+          "symbol": "_LoadPermData",
+          "old_score": 39.04969,
+          "new_score": 38.962734,
+          "old_size": [
+            804
+          ],
+          "new_size": [
+            819
+          ]
+        },
+        {
+          "symbol": "_LoadPerm",
+          "old_score": 56.973404,
+          "new_score": 67.17553,
+          "old_size": [
+            1317
+          ],
+          "new_size": [
+            1655
+          ]
+        },
+        {
+          "symbol": "_GameCameraMakeMiniCut3",
+          "old_score": 62.798756,
+          "new_score": 62.1556,
+          "old_size": [
+            1789
+          ],
+          "new_size": [
+            1709
+          ]
+        },
+        {
+          "symbol": "_NuDisplayListLinkMtl",
+          "old_score": 52.092308,
+          "new_score": 54.923077,
+          "old_size": [
+            175
+          ],
+          "new_size": [
+            170
+          ]
+        },
+        {
+          "symbol": "_NuPrim2DBegin",
+          "old_score": 50.26168,
+          "new_score": 61.121494,
+          "old_size": [
+            322
+          ],
+          "new_size": [
+            335
+          ]
+        },
+        {
+          "symbol": "_NuRndrParticleGroup",
+          "old_score": 88.419685,
+          "new_score": 88.32124,
+          "old_size": [
+            713
+          ],
+          "new_size": [
+            719
+          ]
+        },
+        {
+          "symbol": "_DebReAlloc2",
+          "old_score": 36.482307,
+          "new_score": 36.482307,
+          "old_size": [
+            1458
+          ],
+          "new_size": [
+            1458
+          ]
+        },
+        {
+          "symbol": "_NuInitHardwarePc",
+          "old_score": 71.02889,
+          "new_score": 73.66111,
+          "old_size": [
+            2422
+          ],
+          "new_size": [
+            2570
+          ]
+        }
+      ],
+      "accepted_proof": {
+        "all_old_central_data_regions_unchanged": true,
+        "all_new_full_working_initializers_equal_native": true,
+        "candidate_only_change": "Header recipe pin refreshed; no admitted output or exemption changed; fresh normal link/complete library proof passes.",
+        "unchanged_source_output_review": "Old-header recompiles reproduce prior full hashes; new header changes scheduling/tail merging in camera, particles, initialization and debris. Complete branch/call/value review found no removed behavior; all previous exact functions survive."
+      },
+      "runtime": {
+        "seconds": 30.301157752983272,
+        "termination": "configured deadline",
+        "visible_window": true,
+        "captures_5_and_15_seconds": "black",
+        "capture_30_seconds": "failed",
+        "fault_logged": false,
+        "graphics_warnings": "Mesa EGL driver initialization warnings",
+        "remaining_owned_processes": 0,
+        "rendered_frame_proved": false,
+        "playable": false
+      },
+      "required_checks": {
+        "make_check": "797 tests passed, three existing skips; LLVM18 format/tidy passed",
+        "build_check_objects": "347 objects,5269 function and11529 data definitions;30 typed members",
+        "make_match": "passed against supported original",
+        "primitive_regression": "passes; old pointer ordering mutation fails"
+      },
+      "next_connected_wave": "Bulk Android source-family transfer via caller frontier, AI actions/combat, projection/vector helpers and startup text tables",
+      "ongoing_goal": true
     }
   ],
-  "latest_checkpoint": "GGG"
+  "latest_checkpoint": "HHH"
 }

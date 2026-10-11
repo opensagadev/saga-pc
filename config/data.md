@@ -2560,3 +2560,28 @@ remain unknown/blank with zero original allocation credit. The existing four-byt
 endian scalar is reused. Actual CRT initializer pointer has its proved four-byte
 extent and exact relocation; all previous data outputs, including natural
 alignment-tail changes, are reviewed completely without cropping or masking.
+
+### Save startup and canonical 2D display-list storage (2026-10-11)
+
+Save-path scratch views are three 256-byte arrays at `924410`, `924610` and
+`924718`, plus six four-byte slot codes at `2989340`. Their complete initializers
+are zero; original owning extents remain unknown. The registered-folder flag at
+`2975c58` is also loader zero with unknown extent. The product-code working view
+at `87b4e0` is twelve bytes, justified by native writes of the eleven-character
+regional codes plus NUL; the earlier producer remains unreconstructed. The
+native icon pointer at `7fabb4` references `lego.ico` at `75ad64/9`. The title at
+`7fabb8` needs **20** bytes including NUL. Pointer/title owning extents remain
+unknown. No save success or filesystem contents are synthesized.
+
+Legal path literals at `75d024` and `75d01c` use minimum views of 13 and 7 bytes,
+with original extents blank. Sixteen AI parameter strings use their actual
+NUL-terminated extents, confirmed against the PC image.
+
+`PCDisplayList2dPc` at `973e90` is one canonical `NUDISPLAYLIST` working view
+(56 loader-zero bytes), replacing separate allocations at `973e98`, `973ea0`
+and `973ea4`. Its three named four-byte member contracts preserve their existing
+12 physical bytes of known coverage and exact initializer evidence. The parent
+owning extent stays blank; neither the working type size nor successor spacing
+claims an original allocation. The actual existing init/create/capture routines
+write and reset these fields. No duplicate backing, guard bypass or synthetic
+initialization is introduced.

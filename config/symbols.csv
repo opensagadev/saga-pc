@@ -223,6 +223,7 @@ address    , symbol                                                         , si
 0x43ff30,_AIPathCnxControlSysCreate,97,"void * __cdecl (VARIPTR *, VARIPTR *, i32)"
 0x00440120 , _GetNamedGameObject                                            , 34    , "GAMEOBJECT *__cdecl (void *, char *)"
 0x440150   , _PartyMemberInWay                                              , 312   , "i32 __cdecl (GAMEOBJECT *, GAMEOBJECT *)"
+0x440660,?GizActionNextLocator@@YAXPAUAISYS_PC@@PAUAILOCATORSET_PC@@HHHPAUAPIOBJECT_PC@@@Z,424,
 0x443fc0   , _Action_SetTakeOverTarget                                       , 739   , "i32 __cdecl (AISYS_PC *, AISCRIPTPROCESS_PC *, AIPACKET_PC *, char **, i32, i32, f32)"
 0x4442b0   , _Action_ClearTakeOverTarget                                     , 52    , "i32 __cdecl (AISYS_PC *, AISCRIPTPROCESS_PC *, AIPACKET_PC *, char **, i32, i32, f32)"
 0x4442f0,_Action_Activate,412,"i32 __cdecl (AISYS_PC *, AISCRIPTPROCESS_PC *, AIPACKET_PC *, char **, i32, i32, f32)"
@@ -847,10 +848,11 @@ address    , symbol                                                         , si
 0x4c0c80,_Shards_HandleLostObj,82,"void __cdecl(WORLDINFO *,GAMEOBJECT *)"
 0x4c91e0,_ObjIsTargetSpeeder,47,i32 __cdecl(GAMEOBJECT*)
 0x004c99b0 , _SpeederChaseATATInOutMul                                      , 85    , f32 __cdecl (GAMEOBJECT *)
-0x004c9a40 , _NuPrim2DSetColor                                              , 108   , void (u32)
+0x004c9a40,_NuPrim2DSetColor,108,void __cdecl (i32)
+0x4c9ab0,_NuPrim2DSetUV,22,"void __cdecl (f32, f32)"
 0x004c9b20 , _LoadPermBuildLegalTextureName                                 , 169   , void (char *)
 0x004c9bd0 , _LoadPermLoadLegalTexture                                      , 309   , void (void)
-0x004c9d10 , _LoadPermCreateLegalMtl                                        , 97    , i32 (i32)
+0x004c9d10,_LoadPermCreateLegalMtl,97,"i32 __cdecl (NUMTL **, i32)"
 0x004c9d80 , _LoadPermDestroyLegalMtl                                       , 29    , void (void)
 0x004c9db0 , _LoadPermLoadFonts                                             , 93    , void (void)
 0x004c9e10 , _LoadPermLoadSaveIconScene                                     , 81    , void (void)
@@ -1701,6 +1703,9 @@ address    , symbol                                                         , si
 0x00540d20 , _SockRotationMatrix                                            , 1804  , "void __cdecl (SOCKSYS_PC *, SOCKPOSITION_PC *, NUMTX *, i32, i32)"
 0x5414f0   , _SockSys_GenerateData                                          , 1742  , "void __cdecl (SOCKSYS_PC *, VARIPTR *, VARIPTR)"
 0x541bc0   , _ComplexSockPosition                                           , 663   , "void __cdecl (SOCKSYS_PC *, NUVEC *, i32, i32, SOCKPOSITION_PC *)"
+0x5436e0,_fullslotname,224,char * __cdecl (i32)
+0x543880,_saveload_getinfo,135,i32 __cdecl (void)
+0x543e80,_saveloadInit,26,"void __cdecl (VARIPTR *, VARIPTR, i32, const char *, const char *, const char *, i32)"
 0x00543f30 , _NuBridgeInit                                                  , 149   , void __cdecl (void)
 0x00543fd0 , _NuBridgeRemove                                                , 144   , void __cdecl (i32)
 0x00544070 , _NuBridgeCreate                                                , 939   , "i32 __cdecl (NUGSCN *, NUSPECIALHANDLE *, NUSPECIALHANDLE *, NUVEC *, NUVEC *, f32, i16, f32, f32, f32, f32, i32, f32, f32, i32, u32)"
@@ -3125,17 +3130,28 @@ address    , symbol                                                         , si
 0x005b5a40 , _NuMtxInv                                                      , 212   , "void __cdecl (NUMTX *, NUMTX *)"
 0x005b5b20 , _NuMtxInvR                                                     , 110   , "void __cdecl (NUMTX *, NUMTX *)"
 0x005b5b90 , _NuMtxInvRSS                                                   , 351   , "void __cdecl (NUMTX *, NUMTX *)"
+0x5b5cf0,_NuMtxInvRSSH,411,"void __cdecl (NUMTX *, NUMTX *)"
 0x5b5e90,_NuMtxInvH,1251,"void __cdecl(NUMTX*,NUMTX*)"
+0x5b6380,_NuMtxAlignX,268,"void __cdecl (NUMTX *, NUVEC *)"
 0x5b6490,_NuMtxAlignY,269,"void __cdecl NuMtxAlignY(NUMTX *m, NUVEC *v)"
 0x5b65a0,_NuMtxAlignZ,1074,"void __cdecl NuMtxAlignZ(NUMTX *m, NUVEC *v)"
+0x5b69e0,_NuMtxLookAtX,75,"void __cdecl (NUMTX *, NUVEC *)"
 0x5b6a30,_NuMtxLookAtY,75,"void __cdecl NuMtxLookAtY(NUMTX *m, NUVEC *point)"
 0x5b6a80,_NuMtxLookAtZ,75,"void __cdecl NuMtxLookAtZ(NUMTX *m, NUVEC *point)"
+0x5b6ad0,_NuMtxInvLookAtX,75,"void __cdecl (NUMTX *, NUVEC *)"
+0x5b6b20,_NuMtxInvLookAtY,75,"void __cdecl (NUMTX *, NUVEC *)"
+0x5b6b70,_NuMtxInvLookAtZ,75,"void __cdecl (NUMTX *, NUVEC *)"
+0x5b6bc0,_NuMtxAddR,116,"void __cdecl (NUMTX *, NUMTX *, NUMTX *)"
+0x5b6c40,_NuMtxSubR,116,"void __cdecl (NUMTX *, NUMTX *, NUMTX *)"
+0x5b6cc0,_NuMtxSkewSymmetric,82,"void __cdecl (NUMTX *, NUVEC *)"
 0x005b6d20 , _NuMtxOrth                                                     , 308   , void __cdecl (NUMTX *)
 0x005b6e60 , _NuMtxGetXAxis                                                 , 25    , "void __cdecl (NUMTX *, NUVEC *)"
 0x005b6e80 , _NuMtxGetYAxis                                                 , 26    , "void __cdecl (NUMTX *, NUVEC *)"
 0x005b6ea0 , _NuMtxGetZAxis                                                 , 26    , "void __cdecl (NUMTX *, NUVEC *)"
 0x005b6ec0 , _NuMtxGetTranslation                                           , 26    , "void __cdecl (NUMTX *, NUVEC *)"
 0x005b6ee0 , _NuMtxRotateAng                                                , 101   , "void __cdecl (NUANG, f32, f32, f32 *, f32 *)"
+0x5b6f50,_NuMtxDet3,67,f32 __cdecl (NUMTX *)
+0x5b6fa0,_NuMtxCompare,71,"i32 __cdecl (NUMTX *, NUMTX *)"
 0x005b6ff0 , _NuMtxSSE                                                      , 391   , "f32 __cdecl (NUMTX *, NUMTX *)"
 0x005b7390 , _NuMtxLookAtD3D                                                , 400   , "void __cdecl (NUMTX *matrix, NUVEC *eye, NUVEC *target, NUVEC *up)"
 0x005b7670 , _NuMtxSetPerspectiveD3D                                        , 186   , "void __cdecl (NUMTX *matrix, f32 fov, f32 aspect, f32 near_plane, f32 far_plane)"
@@ -5046,6 +5062,7 @@ address    , symbol                                                         , si
 0x6dd420,_PcGetUserFolder,56,"char *__cdecl PcGetUserFolder(const char *, const char *)"
 0x6dd8c0,_PCOptionsBuildFolder,284,void __cdecl(char*)
 0x6dd9e0,_PcOpenPlatformFile,841,"FILE *__cdecl PcOpenPlatformFile(const char *, const char *, i32, const char *)"
+0x6ddd50,_PcRegisterSaveFolderPc,49,"void __cdecl (const char *, const char *, const char *, i32)"
 0x6de060,_PcShutdown,122,void __cdecl(void)
 0x6de0e0,_WinMain@16,200,"i32 __stdcall(HINSTANCE,HINSTANCE,LPSTR,i32)"
 0x6de1c0,_WindowProcPc@16,751,"LRESULT __stdcall(HWND,UINT,WPARAM,LPARAM)"
@@ -6751,7 +6768,23 @@ address    , symbol                                                         , si
 0x00758244 , _AIGameRandomTurnDirectionName                                 , 14    , const char[14]
 0x00758254 , _AIGameMaximumTurnName                                         , 9     , const char[9]
 0x00758260 , _AIGameMinimumTurnName                                         , 9     , const char[9]
+0x758274,_GizActionLiteral758274,8,const char[]
+0x75827c,_GizActionLiteral75827c,4,const char[]
 0x758280   , ??_C@_07PAIKCKMF@locator?$AA@                                  , 8     , const char[8]
+0x758280,_GizActionLiteral758280,8,const char[]
+0x758288,_GizActionLiteral758288,18,const char[]
+0x75829c,_GizActionLiteral75829c,22,const char[]
+0x7582b4,_GizActionLiteral7582b4,28,const char[]
+0x7582d0,_GizActionLiteral7582d0,23,const char[]
+0x7582e8,_GizActionLiteral7582e8,22,const char[]
+0x758300,_GizActionLiteral758300,21,const char[]
+0x758318,_GizActionLiteral758318,14,const char[]
+0x758328,_GizActionLiteral758328,6,const char[]
+0x758330,_GizActionLiteral758330,5,const char[]
+0x758338,_GizActionLiteral758338,19,const char[]
+0x75834c,_GizActionLiteral75834c,20,const char[]
+0x758360,_GizActionLiteral758360,18,const char[]
+0x758374,_GizActionLiteral758374,11,const char[]
 0x758380,??_C@_0BB@GOEGIECJ@fireinterval?51?45?$AA@,,const char[17]
 0x758394,??_C@_0N@PCJHFP@firerange?515?$AA@,,const char[13]
 0x7583a4,??_C@_0N@IECPJGHP@goalrange?510?$AA@,,const char[13]
@@ -7465,6 +7498,7 @@ address    , symbol                                                         , si
 0x75ac48,??_C@_0N@HBKFFHGC@Down?$CIGoodie?$CJ?$AA@,,const char[]
 0x75ac58,??_C@_0N@DLNNCJI@Down?$CIBaddie?$CJ?$AA@,,const char[]
 0x75ac68,??_C@_05HKDEIBIJ@Lever?$AA@,,const char[6]
+0x75ad64,_SaveIconFilenamePc,9,const char[9]
 0x75ad70,__real@3f91111120000000,8,const f64
 0x0075ad8c , _EpisodeVIDat                                                  , 15    , const char[15]
 0x0075ad9c , _EpisodeVDat                                                   , 14    , const char[14]
@@ -8021,6 +8055,8 @@ address    , symbol                                                         , si
 0x0075d004 , _PermLegalFrench                                               , 10    , const char[10]
 0x0075d010 , _PermLegalUS                                                   , 4     , const char[4]
 0x75d014,_NuFileExt_dds_PC,5,const char[5]
+0x75d01c,_PermLegalPcPrefixPc,,const char[7]
+0x75d024,_PermLegalDirectoryPc,,const char[13]
 0x75d034,??_C@_0BH@IGCMLKCB@stuff?2text?2batman_font?$AA@,,const char[]
 0x75d04c,??_C@_0BJ@EEJPJHNF@stuff?2text?2starwars_font?$AA@,,const char[]
 0x75d068,??_C@_0BL@GKNGJJIC@stuff?2text?2starwars_font_j?$AA@,,const char[]
@@ -8511,6 +8547,8 @@ address    , symbol                                                         , si
 0x7614f4   , ??_C@_08PEBNBIBF@sock_end?$AA@                                 , 9     , const char[]
 0x761500   , ??_C@_0L@PAPOBEAE@sock_start?$AA@                              , 11    , const char[]
 0x76150c   , ??_C@_05LBOKJHLG@socks?$AA@                                    , 6     , const char[]
+0x761518,??_C@_0BI@PANEOMLK@SaveGame?$CFd?4?$CFs_SavedGame?$AA@,24,const char[24]
+0x761530,??_C@_0L@BKAHIOAH@SavedGames?$AA@,11,const char[11]
 0x761548,??_C@_02JDPG@rb?$AA@,3,const char[3]
 0x761584,__real@cb189680,4,const f32
 0x761588,__real@4b189680,4,const f32
@@ -12023,6 +12061,8 @@ address    , symbol                                                         , si
 0x7faaa8,_TechnoDefaultObjectPc,,i16
 0x7faaac,_LeverOutputDownNamePtrPc,,char *
 0x7fab10,_LeverTypeNamePtrPc,,char *
+0x7fabb4,_SaveIconNamePc,,const char *
+0x7fabb8,_SaveUnicodeNamePc,,char[20]
 0x007fac04 , _BGLOAD                                                        , 4     , i32
 0x007fac20 , _PlayTrailer                                                   , 4     , i32
 0x7facbc,_AlternateHudColourBytesPc,,u8[8]
@@ -13554,6 +13594,7 @@ address    , symbol                                                         , si
 0x87b310,_CreditsPictureBaseYPc,,f32
 0x87b318,?LeversAddTypePc@?1??Levers_RegisterGizmo@@9@9,,ADD_GIZMO_CONFIG_TYPE_PC
 0x87b390,_HubAiMusicStatePc,,HUB_AI_MUSIC_VIEW_PC
+0x87b4e0,_SaveProductCodePc,,char[12]
 0x0087b4f0 , _pFadeInfo                                                      ,        ,
 0x87b4f8,_editor_active,,i32
 0x0087b4fc , _peak_poly_count                                               , 4     , i32
@@ -14024,6 +14065,9 @@ address    , symbol                                                         , si
 0x9242f0   , _temp_sockmidpos                                               , 12    , NUVEC
 0x009242fc , _sockpar_buffer_end                                            , 4     , VARIPTR *
 0x924300   , _temp_sockcampos                                               , 12    , NUVEC
+0x924410,_SaveFolderPathPc,,char[256]
+0x924610,_SaveFullSlotPathPc,,char[256]
+0x924718,_SaveSlotNamePc,,char[256]
 0x00924820 , _saveload_status                                               , 4     , i32
 0x924824,_saveload_error,,i32
 0x924828,_saveload_cardchanged,,i32
@@ -14803,9 +14847,7 @@ address    , symbol                                                         , si
 0x973e84,_PCDisplayMaterialStreamStart,,VARIPTR
 0x973e88,_PCDisplayMaterialStreamEnd,,VARIPTR
 0x973e8c,_PCDisplayMaterialStreamUsed,,u8 *
-0x00973e98 , _displaylist_2d_state                                          , 4     , NURNDRLIBSTATE *
-0x00973ea0 , _displaylist_2d_first                                          , 4     , NUDISPLAYLISTITEM *
-0x00973ea4 , _displaylist_2d_mtl_last                                       , 4     , NUDISPLAYLISTITEM *
+0x973e90,_PCDisplayList2dPc,,NUDISPLAYLIST
 0x00973ed4 , _nudlist_2d_static                                             , 16    , NUDISPLAYLISTITEM
 0x00973ee8 , _nused_sort_pris                                               , 4     , i32
 0x00973eec , _sort_list                                                     , 4     , NUSORTPRI *
@@ -15321,6 +15363,7 @@ address    , symbol                                                         , si
 0x02975a94 , _win_message                                                   , 28    , MSG
 0x2975ab0,_PcArgv,,char *[2]
 0x2975c44,_PcNoFocusPolicy,,i32
+0x2975c58,?PcSaveFolderRegisteredPc@@3HA,,i32
 0x2975c5c,_PcRelaunchMce,,i32
 0x2975c60,_PcMouseX,,f32
 0x2975c64,_PcMouseY,,f32
@@ -15426,6 +15469,7 @@ address    , symbol                                                         , si
 0x2983a78,_NuFadeObjDir2,,i32
 0x02983a80 , _Bridges                                                       , 22624 , NUBRIDGE_PC[8]
 0x029892e0 , _NuBridgeProc                                                  , 4     , i32
+0x2989340,_saveload_slotcode,,i32[6]
 0x2989560,_saveload_slotused,,i32[6]
 0x29895a0,_PcExecutableFilename,,char[260]
 0x029899c0 , _NuTrigTable                                                   , 131072, f32[32768]

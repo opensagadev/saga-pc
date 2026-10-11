@@ -195,7 +195,7 @@ extern "C" i32 __cdecl NuInitHardwarePc(VARIPTR *buffer, VARIPTR *end, i32 alloc
     } while (selector != 0);
     va_end(args);
     if (parameter_30 != NULL && parameter_31 != NULL) {
-        STUBBED_NAMED(0x006ddd50); /* (parameter_30, parameter_31, parameter_2e, 0), 6dbf16 */
+        PcRegisterSaveFolderPc((const char *)parameter_30, (const char *)parameter_31, parameter_2e, 0);
     }
     PCDeviceBackend.InitializeFactory();
     PcWindowOptions.InitializePath();

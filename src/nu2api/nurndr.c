@@ -5,9 +5,7 @@
 NURNDRLIBSCENE currentScene;
 NUVPCURRENT vpCurrent;
 i32 sceneParametersCount;
-NURNDRLIBSTATE *displaylist_2d_state;
-NUDISPLAYLISTITEM *displaylist_2d_first;
-NUDISPLAYLISTITEM *displaylist_2d_mtl_last;
+NUDISPLAYLIST PCDisplayList2dPc;
 i32 nused_sort_pris;
 NUSORTPRI *sort_list;
 i32 render_scene_index;
@@ -158,7 +156,7 @@ i32 __cdecl NuDisplayListAddRenderScene(void) {
         }
     }
 
-    if (count == 0 && displaylist_2d_mtl_last == displaylist_2d_first) {
+    if (count == 0 && PCDisplayList2dPc.mtl_last == PCDisplayList2dPc.first) {
         return -1;
     }
 
@@ -168,14 +166,14 @@ i32 __cdecl NuDisplayListAddRenderScene(void) {
     render_scene_ptrs[render_scene_index]->nsort_pris = count;
     render_scene_ptrs[render_scene_index]->sort_pris = pris;
 
-    if (displaylist_2d_mtl_last != displaylist_2d_first) {
-        *(u8 *)displaylist_2d_mtl_last = 0x84;
-        *(u32 *)((u8 *)displaylist_2d_mtl_last + 4) = 0;
-        *((u8 *)displaylist_2d_mtl_last + 1) = 4;
-        item = displaylist_2d_first;
+    if (PCDisplayList2dPc.mtl_last != PCDisplayList2dPc.first) {
+        PCDisplayList2dPc.mtl_last->type = 0x84;
+        PCDisplayList2dPc.mtl_last->next = NULL;
+        PCDisplayList2dPc.mtl_last->id = 4;
+        item = PCDisplayList2dPc.first;
         *(NUDISPLAYLISTITEM *)((u8 *)render_scene_ptrs[render_scene_index] + 8) = *item;
-        NuDisplayListResetStateCache(displaylist_2d_state);
-        displaylist_2d_mtl_last = displaylist_2d_first;
+        NuDisplayListResetStateCache(PCDisplayList2dPc.state);
+        PCDisplayList2dPc.mtl_last = PCDisplayList2dPc.first;
     } else {
         item = (NUDISPLAYLISTITEM *)((u8 *)render_scene_ptrs[render_scene_index] + 8);
         *(u8 *)item = 0x84;
@@ -240,7 +238,7 @@ void __cdecl NuDisplayListInit(VARIPTR *cursor, i32 arg2) {
     nudlist_field_e80 = 0;
     sort_list = NULL;
     nudlist_field_fc8 = 0;
-    displaylist_2d_first = &nudlist_2d_static;
+    PCDisplayList2dPc.first = &nudlist_2d_static;
     {
         VARIPTR end;
         end.addr = (u32)arg2;

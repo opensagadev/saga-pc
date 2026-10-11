@@ -1,0 +1,276 @@
+#include "saga.h"
+
+extern "C" const char GizActionLiteral758274[];
+extern "C" const char GizActionLiteral75827c[];
+extern "C" const char GizActionLiteral758280[];
+extern "C" const char GizActionLiteral758288[];
+extern "C" const char GizActionLiteral75829c[];
+extern "C" const char GizActionLiteral7582b4[];
+extern "C" const char GizActionLiteral7582d0[];
+extern "C" const char GizActionLiteral7582e8[];
+extern "C" const char GizActionLiteral758300[];
+extern "C" const char GizActionLiteral758318[];
+extern "C" const char GizActionLiteral758328[];
+extern "C" const char GizActionLiteral758330[];
+extern "C" const char GizActionLiteral758338[];
+extern "C" const char GizActionLiteral75834c[];
+extern "C" const char GizActionLiteral758360[];
+extern "C" const char GizActionLiteral758374[];
+extern "C" const char AITransferLiteral757824[], AITransferLiteral757a7c[];
+
+static void GizActionNextLocator(AISYS_PC *sys, AILOCATORSET_PC *set, i32 looping, i32 finish_at_end,
+                                 i32 ignore_assigned, APIOBJECT_PC *object) {
+    i32 passed_start = 0;
+    i32 current;
+    i32 direction;
+    i32 candidate;
+    AILOCATOR_PC *locator;
+    if (set == NULL || set->locator_count <= 1 || object == NULL)
+        return;
+    if (ignore_assigned != 0)
+        AILocatorSet_CheckLocatorsStillAssigned(sys, set);
+    locator = object->ai->locator;
+    direction = (object->flags_low & 0x100000) == 0 ? 1 : -1;
+    current = set->locator_count;
+    if (locator != NULL) {
+        for (i32 index = 0; index < set->locator_count; ++index) {
+            if (locator == &sys->locators[set->locator_entries[index]]) {
+                set->assigned[index] = 0xff;
+                current = index;
+                break;
+            }
+        }
+    }
+    if (current == set->locator_count)
+        current = qrand() / (0xffff / set->locator_count + 1);
+    candidate = current;
+    for (;;) {
+        candidate += direction;
+        if (candidate >= set->locator_count) {
+            if (finish_at_end != 0) {
+                object->ai->locator = NULL;
+                return;
+            }
+            if (looping != 0)
+                candidate = 0;
+            else {
+                direction = -1;
+                object->flags_low |= 0x100000;
+                candidate = set->locator_count - 2;
+            }
+        } else if (candidate < 0) {
+            if (looping != 0)
+                candidate = set->locator_count - 1;
+            else {
+                object->flags_low &= ~0x100000;
+                direction = 1;
+                candidate = 1;
+            }
+        }
+        if (candidate == current) {
+            if (looping != 0 || ++passed_start > 1)
+                break;
+        } else if (ignore_assigned == 0 || set->assigned[candidate] == 0xff)
+            break;
+    }
+    object->ai->locator = &sys->locators[set->locator_entries[candidate]];
+    set->assigned[candidate] = object->object_id;
+}
+
+extern "C" {
+    i32 __cdecl Action_GetLocatorFromSet(AISYS_PC *sys, AISCRIPTPROCESS_PC *processor, AIPACKET_PC *packet,
+                                         char **params, i32 param_count, i32 first_time, float) {
+        if (first_time == 0) {
+            return 1;
+        }
+
+        APIOBJECT_PC *named;
+        GAMEOBJECT *object =
+            packet != NULL && packet->owner != NULL ? (GAMEOBJECT *)((APIOBJECT_PC *)packet->owner)->owner : NULL;
+        AILOCATORSET_PC *locator_set = processor->locator_set;
+        i32 ignore_assigned = -1;
+        i32 next = 0;
+        char *set_name = NULL;
+        i32 use_player = 0;
+        i32 use_opponent = 0;
+        i32 use_second_player = 0;
+        i32 first = 0;
+        i32 looping = 0;
+        i32 finish_at_end = 0;
+        i32 random = 0;
+        i32 furthest = 0;
+        f32 max_range = 0.0f;
+        f32 off_screen_radius = 0.0f;
+
+        for (i32 index = 0; index < param_count; ++index) {
+            char *value = NuStrIStr(params[index], (char *)AIGameCharacterName);
+            if (value != NULL) {
+                object =
+                    (GetNamedGameObjectCallback != NULL && (named = GetNamedGameObjectCallback(sys, value + 10)) != NULL
+                         ? (GAMEOBJECT *)named->owner
+                         : NULL);
+                continue;
+            }
+            value = NuStrIStr(params[index], (char *)GizActionLiteral758374);
+            if (value != NULL) {
+                max_range = AIParamToFloat(processor, value + 10);
+                continue;
+            }
+            value = NuStrIStr(params[index], (char *)GizActionLiteral758360);
+            if (value != NULL) {
+                max_range = AIParamToFloat(processor, value + 17);
+                use_player = 1;
+                continue;
+            }
+            value = NuStrIStr(params[index], (char *)GizActionLiteral75834c);
+            if (value != NULL) {
+                max_range = AIParamToFloat(processor, value + 19);
+                use_opponent = 1;
+                continue;
+            }
+            value = NuStrIStr(params[index], (char *)GizActionLiteral758338);
+            if (value != NULL) {
+                off_screen_radius = AIParamToFloat(processor, value + 18);
+                continue;
+            }
+            value = NuStrIStr(params[index], (char *)AIScriptActionNameArgPrefix);
+            if (value != NULL) {
+                set_name = value + 5;
+                continue;
+            }
+
+            if (NuStrICmp(params[index], AITransferLiteral757824) == 0) {
+                random = 1;
+            } else if (NuStrICmp(params[index], GizActionLiteral758330) == 0) {
+                next = 1;
+            } else if (NuStrICmp(params[index], GizActionLiteral758328) == 0) {
+                first = 1;
+            } else if (NuStrICmp(params[index], AITransferLiteral757a7c) == 0) {
+                looping = 1;
+            } else if (NuStrICmp(params[index], GizActionLiteral758318) == 0) {
+                finish_at_end = 1;
+            } else if (NuStrICmp(params[index], GizActionLiteral758300) == 0) {
+                ignore_assigned = 1;
+            } else if (NuStrICmp(params[index], GizActionLiteral7582e8) == 0) {
+                ignore_assigned = 0;
+            } else if (NuStrICmp(params[index], GizActionLiteral7582d0) == 0) {
+                furthest = 1;
+                use_opponent = 1;
+            } else if (NuStrICmp(params[index], GizActionLiteral7582b4) == 0) {
+                furthest = 1;
+                use_player = 1;
+                use_second_player = 1;
+            } else if (NuStrICmp(params[index], GizActionLiteral75829c) == 0) {
+                use_player = 1;
+                use_second_player = 1;
+            }
+        }
+
+        if (ignore_assigned == -1) {
+            ignore_assigned = next ^ 1;
+        }
+        if (object == NULL) {
+            return 1;
+        }
+        if (set_name != NULL) {
+            locator_set = AIPathFindLocatorSet(WORLD->ai_sys, set_name);
+        }
+        if (locator_set == NULL) {
+            return 1;
+        }
+
+        APIOBJECT_PC *target = (APIOBJECT_PC *)object;
+        NUVEC *reference_position;
+        if (use_player) {
+            reference_position = &player->position;
+        } else if (use_opponent && object->ai_packet.opponent != NULL) {
+            reference_position = &((APIOBJECT_PC *)object->ai_packet.opponent)->position;
+        } else {
+            reference_position = &target->position;
+        }
+        NUVEC *second_position = use_second_player && player2 != NULL ? &player2->position : NULL;
+
+        if (first) {
+            if (locator_set->locator_count != 0) {
+                ((APIOBJECT_PC *)object)->ai->locator = &sys->locators[locator_set->locator_entries[0]];
+                locator_set->assigned[0] = target->object_id;
+            }
+            return 1;
+        }
+
+        if (next) {
+            GizActionNextLocator(sys, locator_set, looping, finish_at_end, ignore_assigned, target);
+        } else {
+            if (!random) {
+                if (furthest) {
+                    AILocatorSet_AssignFurthestLocator(sys, locator_set, target, max_range, reference_position,
+                                                       second_position, off_screen_radius, ignore_assigned);
+                } else {
+                    AILocatorSet_AssignNearestLocator(sys, locator_set, target, max_range, reference_position,
+                                                      second_position, off_screen_radius, ignore_assigned);
+                }
+            } else {
+                AILocatorSet_AssignRandomLocator(sys, locator_set, target, max_range, reference_position,
+                                                 off_screen_radius, ignore_assigned);
+            }
+        }
+        return 1;
+    }
+
+    i32 __cdecl Action_AssignLocator(AISYS_PC *sys, AISCRIPTPROCESS_PC *processor, AIPACKET_PC *packet, char **params,
+                                     i32 param_count, i32 first_time, float) {
+        if (first_time == 0) {
+            return 1;
+        }
+
+        APIOBJECT_PC *named;
+        GAMEOBJECT *object =
+            packet != NULL && packet->owner != NULL ? (GAMEOBJECT *)((APIOBJECT_PC *)packet->owner)->owner : NULL;
+        AILOCATOR_PC *locator = NULL;
+        AILOCATORSET_PC *locator_set = NULL;
+        i32 assignment = packet != NULL && packet->owner != NULL ? ((APIOBJECT_PC *)object)->object_id : -1;
+
+        for (i32 index = 0; index < param_count; ++index) {
+            char *param = params[index];
+            if (NuStrICmp(param, GizActionLiteral758288) == 0) {
+                locator = object != NULL ? object->ai_packet.locator : NULL;
+                continue;
+            }
+            char *value = NuStrIStr(param, (char *)GizActionLiteral758280);
+            if (value != NULL) {
+                locator = AIPathFindLocator(sys, value + NuStrLen(GizActionLiteral758280) + 1);
+                continue;
+            }
+            value = NuStrIStr(param, "character");
+            if (value != NULL) {
+                object = (GetNamedGameObjectCallback != NULL &&
+                                  (named = GetNamedGameObjectCallback(sys, value + NuStrLen("character") + 1)) != NULL
+                              ? (GAMEOBJECT *)named->owner
+                              : NULL);
+                assignment = ((APIOBJECT_PC *)object)->object_id;
+                continue;
+            }
+            value = NuStrIStr(param, (char *)GizActionLiteral75827c);
+            if (value != NULL) {
+                locator_set = AIPathFindLocatorSet(sys, value + NuStrLen(GizActionLiteral75827c) + 1);
+                continue;
+            }
+            if (NuStrICmp(param, GizActionLiteral758274) == 0) {
+                assignment = 0x80;
+            }
+        }
+
+        if (locator == NULL || locator_set == NULL) {
+            return 1;
+        }
+        i32 index;
+        for (index = 0; index < locator_set->locator_count; ++index) {
+            if (&sys->locators[locator_set->locator_entries[index]] != locator) {
+                continue;
+            }
+            break;
+        }
+        locator_set->assigned[index] = assignment;
+        return 1;
+    }
+}
