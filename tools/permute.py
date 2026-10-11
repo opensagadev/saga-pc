@@ -195,12 +195,24 @@ def batch(count, iterations, jobs, apply, minimum, maximum, seed=1):
     if journal.is_file():
         done = {json.loads(line)["symbol"] for line in journal.read_text().splitlines() if line.strip()}
     OUT.mkdir(parents=True, exist_ok=True)
-    for row in [r for r in rows if r["symbol"] not in done][:count]:
+    todo = [r for r in rows if r["symbol"] not in done]
+    for position, row in enumerate(todo[:count], 1):
+        name = row["name"]
+        stamp = lambda: time.strftime("%H:%M:%S")
+        print(f"{stamp()} [{position}/{min(count, len(todo))}, {len(todo)} left] {name} "
+              f"({row['units'][0]}, {row['target_size']} bytes, {row['objdiff_percent']:.1f}%)", flush=True)
+        log = lambda message: print(f"{stamp()}     {message}", flush=True)
         try:
-            summary = run_one(row["symbol"], row["units"][0], iterations, jobs, seed, apply, lambda m: None)
+            summary = run_one(row["symbol"], row["units"][0], iterations, jobs, seed, apply, log)
         except Exception as error:  # Keep going; record why this function was skipped.
             summary = {"symbol": row["symbol"], "unit": row["units"][0], "error": str(error)[:300]}
-        print(json.dumps(summary), flush=True)
+        if "error" in summary:
+            print(f"{stamp()}   skipped: {summary['error']}", flush=True)
+        else:
+            gained = summary["size"] * (summary["best"] - summary["start"]) / 100
+            result = "EXACT" if summary["exact"] else f"{summary['best']:.1f}%"
+            print(f"{stamp()}   {summary['start']:.1f}% -> {result} (+{gained:.0f} weighted bytes, "
+                  f"{summary['seconds']:.0f}s){', applied' if summary.get('applied') else ''}", flush=True)
         with journal.open("a") as stream:
             stream.write(json.dumps(summary) + "\n")
 
