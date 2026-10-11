@@ -69,3 +69,4 @@
 {"symbol": "_CutScene_DrawCharacter", "unit": "src/legoapi/cutscene_runtime.cpp", "size": 3767, "start": 60.029865, "best": 60.029865, "exact": false, "seconds": 249.6, "instructions": [44.74, 44.74], "rules": 3}
 {"symbol": "_UpdatePushBlocks", "unit": "src/legoapi/gizpushblocks.cpp", "size": 4366, "start": 63.92, "best": 63.9325, "exact": false, "seconds": 373.3, "instructions": [47.88, 48.06], "rules": 3, "applied": true}
 {"symbol": "_ZipUp_MoveCode", "unit": "src/legoapi/zipup.c", "size": 3774, "start": 59.559963, "best": 59.62128, "exact": false, "seconds": 359.0, "instructions": [49.5, 50.05], "rules": 3, "applied": true}
+{"symbol": "_LoadAreaCharacters", "unit": "src/legoapi/areas.cpp", "size": 3370, "start": 55.838993, "best": 62.26725, "exact": false, "seconds": 360.2, "instructions": [59.99, 63.22], "rules": 3, "applied": true}

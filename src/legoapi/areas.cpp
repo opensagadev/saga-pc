@@ -1339,7 +1339,7 @@ void __cdecl LoadAreaCharacters(void) {
     if (!(Area != -1 && Area != last_area && (ADataList[Area].flags & 2) == 0 && new_level_from_menu == 0 &&
           ((HUB_ADATA != NULL && last_area == HUB_ADATA->index) || netnewgame != 0 ||
            (GAMEDEMO != 0 && (LastLData == TITLES_LDATA || LastLData == STATUS_LDATA))))) {
-        if (SuperStory != 0 && (ADataList[Area].flags & 2) != 0)
+        if (0 != SuperStory && (ADataList[Area].flags & 2) != 0)
             load_type = 1;
         else if (last_area != -1 && LastLData != NULL && (LastLData->flags & 0x400) != 0 &&
                  ADataList[Area].flags != 2 && HUB_ADATA != NULL && Area != HUB_ADATA->index)
@@ -1373,7 +1373,7 @@ void __cdecl LoadAreaCharacters(void) {
     SetBackgroundMusic(1);
     if (load_type == 2 && AreaCrawlMusicEnabledPc != 0 && Game.options_save.music_enabled != 0 && NOSOUND == 0 &&
         0 == NOMUSIC) {
-        if (Arcade == 0 && Area != -1 && (i8)ADataList[Area].episode_index != -1) {
+        if (Arcade == 0 && Area != -1 && -1 != ((i8)ADataList[Area].episode_index)) {
             i32 handle = music_man.GetTrackHandle(1, crawl_music[(i8)ADataList[Area].episode_index]);
             music_man.SelectTrackByHandle(1, handle);
             if (music_man.GetTrackHandle(1, NULL) != -1)
@@ -1411,20 +1411,20 @@ void __cdecl LoadAreaCharacters(void) {
             ((AREA_LOADING_CLOCK_READER_PC *)&Game)->elapsed_time + FRAMETIME;
         LoadTime += FRAMETIME;
         if (icon_stage == 0) {
-            if (CharacterDataLoad == 2 || (CharacterDataLoad != 0 && APICharacterLoaded(PlayerID[0]) != NULL &&
+            if (CharacterDataLoad == 2 || (CharacterDataLoad != 0 && NULL != APICharacterLoaded(PlayerID[0]) &&
                                            APICharacterLoaded(PlayerID[1]) != NULL))
                 icon_stage = 1;
         } else if (icon_stage == 1) {
             icon_time += FRAMETIME;
-            if (icon_time > 0.6f && 2 != CharacterDataLoad)
+            if (0.6f < icon_time && 2 != CharacterDataLoad)
                 icon_time = 0.6f;
             if ((f64)icon_time >= (f64)3.9499998092651367f) {
-                icon_time = 3.9499998092651367f;
                 icon_stage = 2;
+                icon_time = 3.9499998092651367f;
             }
         }
         if (load_type != 2) {
-            if (AreaDataLoaded != 0 && icon_stage == 2 && LoadWait > 0.0f) {
+            if (0 != AreaDataLoaded && icon_stage == 2 && LoadWait > 0.0f) {
                 LoadWait -= FRAMETIME;
                 if (LoadWait < 0.0f)
                     LoadWait = 0.0f;
@@ -1436,7 +1436,7 @@ void __cdecl LoadAreaCharacters(void) {
                 if (LoadWait < 0.0f)
                     LoadWait = 0.0f;
             }
-            legoSetMusicVolume((LoadWait / LOADWAITTIME) * music_volume);
+            legoSetMusicVolume(music_volume * ((LoadWait / LOADWAITTIME)));
             BackDrop_Update((AreaDataLoaded != 0 ? LoadWait / LOADWAITTIME : 1.0f) * FRAMETIME);
             BackDrop_UpdateColours(1);
         }
@@ -1453,7 +1453,7 @@ void __cdecl LoadAreaCharacters(void) {
             if (LoadWait == LOADWAITTIME) {
                 if (HUB_ADATA != NULL && Area == HUB_ADATA->index) {
                     if (CharacterDataLoad != 0 && icon_time > 0.0f && (f64)icon_time < (f64)3.9499998092651367f) {
-                        for (i32 player = 0; player <= 1; ++player) {
+                        for (i32 player = 0; 1 >= player; ++player) {
 
                             if ((f64)((f32)(player == 0 ? icon_time : icon_time - 0.25f)) > 0.0 &&
                                 (f64)((f32)(player == 0 ? icon_time : icon_time - 0.25f)) < (f64)3.6999998092651367f) {
@@ -1470,7 +1470,7 @@ void __cdecl LoadAreaCharacters(void) {
         } else {
             u32 top = 0x80000000u | ((u32)(i32)RenderBackdropTopBPc & 255) << 16 |
                       ((u32)(i32)RenderBackdropTopGPc & 255) << 8 | ((u32)(i32)RenderBackdropTopRPc & 255);
-            u32 bottom = 0x80000000u | ((u32)(i32)RenderBackdropBottomBPc & 255) << 16 |
+            u32 bottom = 0x80000000u | (255 & ((u32)(i32)RenderBackdropBottomBPc)) << 16 |
                          ((u32)(i32)RenderBackdropBottomGPc & 255) << 8 | ((u32)(i32)RenderBackdropBottomRPc & 255);
             f32 alpha = loadareacharacters_no_backdrop_reset == 0 && LoadTime < 0.5f ? LoadTime * 2.0f : 1.0f;
             NuRndrGradClear(0xf00, (i32)top, (i32)bottom, 1.0f);
