@@ -173,8 +173,8 @@ void __cdecl FindAnglesZX(NUVEC *normal, u16 *x_rotation, u16 *z_rotation) {
 
 void __cdecl GameObjectRotation(GAMEOBJECT *object, i32 mode) {
     PLAYERCHARACTERCONFIG_PC *game = object->character_data->game_character;
-    u32 flags = game->flags_090;
     u16 x;
+    u32 flags = game->flags_090;
     u16 z;
     i32 sliding;
     i32 magnet;
@@ -207,7 +207,7 @@ void __cdecl GameObjectRotation(GAMEOBJECT *object, i32 mode) {
     flags = game->flags_090;
     sliding = (flags & 0x200) != 0 && object->character_context == 0x33;
     magnet = !sliding && (flags & 0x10000000) != 0 && object->character_context == 0x44;
-    grapple = !sliding && object->character_context == 0x46 && object->field_7a3 == 0;
+    grapple = !sliding && object->character_context == 0x46 && 0 == object->field_7a3;
 
     if (object->flags_107a == 2 &&
         ((object->character_data->model_flags & 0x100) != 0 || (flags & 0x200000) != 0 || sliding)) {
@@ -215,10 +215,7 @@ void __cdecl GameObjectRotation(GAMEOBJECT *object, i32 mode) {
             (object->character_data->model_flags & 0x2000) != 0 ? GetVehicleHoverHeight(object, NULL) : game->field_028;
         if (hover > 0.0f) {
             alignment = 2;
-            if ((f64)object->floor_height == GameObjectNearFloorNoFloorHeight) {
-                x = 0;
-                z = 0;
-            } else {
+            if (!(GameObjectNearFloorNoFloorHeight == ((f64)object->floor_height))) {
                 f32 height = object->collision_min.y - object->floor_height;
                 f32 fraction;
                 if (hover > height) {
@@ -230,12 +227,15 @@ void __cdecl GameObjectRotation(GAMEOBJECT *object, i32 mode) {
                 }
                 x = (u16)((f32)RotDiff(0, temp_zrot) * fraction);
                 z = (u16)((f32)RotDiff(0, temp_xrot) * fraction);
+            } else {
+                x = 0;
+                z = 0;
             }
         } else {
             alignment = 1;
             if (object->field_281 == 0 && (flags & 0x200000) == 0 && !sliding) {
                 alignment = 0;
-                if ((object->character_data->model_flags & 0x100) != 0 && game->field_028 == 0.0f &&
+                if ((object->character_data->model_flags & 0x100) != 0 && 0.0f == game->field_028 &&
                     (flags & 0x100) != 0 && (f64)object->floor_height != GameObjectNearFloorNoFloorHeight) {
                     alignment = object->bounds_half_height > object->collision_min.y - object->floor_height;
                 }
@@ -248,7 +248,7 @@ void __cdecl GameObjectRotation(GAMEOBJECT *object, i32 mode) {
         }
     }
 
-    reflection = (object->character_data->model_flags & 0x2000) != 0 && game->field_028 > 0.0f &&
+    reflection = 0 != (object->character_data->model_flags & 0x2000) && game->field_028 > 0.0f &&
                  (object->field_283 == 0x10 || object->field_283 == 7) && object->field_280 == 0xff;
 
     if (mode == 1) {
@@ -264,18 +264,18 @@ void __cdecl GameObjectRotation(GAMEOBJECT *object, i32 mode) {
                 object->roll_angle = object->field_7a8;
             }
         } else if (grapple) {
-            NUVEC direction;
             GRAPPLE_ROTATION_PC *hook = (GRAPPLE_ROTATION_PC *)object->grapple;
+            NUVEC direction;
             NuVecSub(&direction, &hook->hook_position, &object->collision_position);
             FindAnglesZX(&direction, &object->pitch_angle, &object->roll_angle);
         } else if (reflection) {
             object->pitch_angle = object->reflection_x;
             object->roll_angle = object->reflection_z;
-        } else if (alignment == 2 || object->surface_normal.y > NuTrigTable[0x3000]) {
+        } else if (!(alignment == 2 || object->surface_normal.y > NuTrigTable[0x3000])) {
+            object->pitch_angle = object->roll_angle = 0;
+        } else {
             object->pitch_angle = x;
             object->roll_angle = z;
-        } else {
-            object->pitch_angle = object->roll_angle = 0;
         }
     } else if (mode == 2) {
         if (object->field_1052 != object->field_1056) {
@@ -289,14 +289,14 @@ void __cdecl GameObjectRotation(GAMEOBJECT *object, i32 mode) {
         }
 
         if (magnet) {
-            if ((u16)(object->field_7aa - 5) <= 1) {
+            if ((u16)(object->field_7aa - 5) > 1) {
+                x = object->field_7a4;
+                z = object->field_7a8;
+            } else {
                 object->pitch_angle = 0;
                 object->roll_angle = 0;
                 x = 0;
                 z = 0;
-            } else {
-                x = object->field_7a4;
-                z = object->field_7a8;
             }
         } else if (grapple) {
             NUVEC direction;
@@ -313,7 +313,7 @@ void __cdecl GameObjectRotation(GAMEOBJECT *object, i32 mode) {
 
         {
             f32 speed = object->id == GameObjectRotationAtstId && VehicleArea == 0 ? 3.0f : 8.0f;
-            if (object->pitch_angle != x) {
+            if (x != object->pitch_angle) {
                 object->pitch_angle = SeekRot(object->pitch_angle, x, speed);
             }
             if (object->roll_angle != z) {
@@ -1386,7 +1386,7 @@ i32 __cdecl KillGameObject(GAMEOBJECT *object, i32 requested_reason, i32 unused)
             STUBBED_NAMED("KillGameObject: one-second GameCam_Blend PC54a3e0");
         if ((object->flags_1f8 & 0x40000) == 0) {
             if ((object->takeover_owner != NULL &&
-                (object->takeover_owner->rider == NULL || object == object->takeover_owner->rider))) {
+                 (object->takeover_owner->rider == NULL || object == object->takeover_owner->rider))) {
                 STUBBED_NAMED(
                     "KillGameObject: real GetTakeOverPos output-dependent position/start/AI position writes PC4871a0");
             } else {
@@ -2962,7 +2962,7 @@ void __cdecl UpdateGameObjects(WORLDINFO *world) {
     CurrentSpeed = 0.0f;
     for (i = 0; i <= 7; ++i) {
         player_flags = 1 | 0x1000;
-object = Player[i];
+        object = Player[i];
         if (object == NULL || (object->flags_1fc_word & player_flags) != player_flags) {
             continue;
         }
