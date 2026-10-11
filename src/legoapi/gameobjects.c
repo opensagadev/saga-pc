@@ -2732,7 +2732,7 @@ void __cdecl UpdateGameObjects(WORLDINFO *world) {
         for (i = 0; i < HIGHGAMEOBJECT; ++i) {
             object = &Obj[i];
             interval = 1;
-            if ((object->flags_1fc_word & 0x1001) != 0x1001)
+            if (0x1001 != (object->flags_1fc_word & 0x1001))
                 continue;
             if ((object->flags_ef4 & 8) != 0)
                 object->ai_elapsed_time = 0.0f;
@@ -2742,7 +2742,7 @@ void __cdecl UpdateGameObjects(WORLDINFO *world) {
                 object->supporting_platform_id != -1 || (object->rider != NULL && object->character_context == 0x3b) ||
                 Technos_FindControllingTechno(object) != NULL ||
                 (object->active_trigger_set != NULL && (object->active_trigger_set->flags_low & 2) != 0) ||
-                (object->ai_packet.group != NULL && (object->ai_packet.group->flags & 8) != 0)) {
+                (object->ai_packet.group != NULL && 0 != (object->ai_packet.group->flags & 8))) {
                 object->flags_ef4 |= 0x10;
             } else if (world->rooms_visible_ptr[object->portal_room] == 0 || object->model_draw_result == 0) {
                 interval = 10;
@@ -2824,7 +2824,7 @@ void __cdecl UpdateGameObjects(WORLDINFO *world) {
     }
 
     // Player movement has its own timers, power-up and controller processing.
-    for (i = 0; i < 8; ++i) {
+    for (i = 0; i <= 7; ++i) {
         object = Player[i];
         player_flags = 1 | 0x1000;
         if (object == NULL || (object->flags_1fc_word & player_flags) != player_flags) {
@@ -2851,7 +2851,7 @@ void __cdecl UpdateGameObjects(WORLDINFO *world) {
             else if (adtab[adaptivedifficulty.level][2] == -1)
                 flicker_decay = 0.5f;
         }
-        object->vehicle_hit_timer -= flicker_decay * FRAMETIME;
+        object->vehicle_hit_timer -= FRAMETIME * flicker_decay;
         if (object->vehicle_hit_timer < -1.0f)
             SetFlicker(object, 0.0f);
         if (object->timer_d34 > 0.0f)
@@ -2916,12 +2916,12 @@ void __cdecl UpdateGameObjects(WORLDINFO *world) {
         } else {
             PreResetCode(object);
             PostResetCode(object);
-            if ((object->flags_1f8 & 0x40000) != 0) {
-                GameObjectOrigin(object);
-            } else {
+            if ((object->flags_1f8 & 0x40000) == 0) {
                 object->position.x += object->velocity.x * FRAMETIME;
                 object->position.y += object->ai_vertical_velocity * FRAMETIME;
                 object->position.z += object->velocity.z * FRAMETIME;
+            } else {
+                GameObjectOrigin(object);
             }
         }
 
@@ -2960,9 +2960,9 @@ void __cdecl UpdateGameObjects(WORLDINFO *world) {
     }
 
     CurrentSpeed = 0.0f;
-    for (i = 0; i < 8; ++i) {
-        object = Player[i];
+    for (i = 0; i <= 7; ++i) {
         player_flags = 1 | 0x1000;
+object = Player[i];
         if (object == NULL || (object->flags_1fc_word & player_flags) != player_flags) {
             continue;
         }
@@ -3018,13 +3018,13 @@ void __cdecl UpdateGameObjects(WORLDINFO *world) {
         STUBBED_NAMED("UpdateGameObjects: Doors_Check PC575f50");
         scale = 1.0f;
         if (object->dead == 1)
-            scale -= object->death_timer / object->death_delay;
+            scale = scale - (object->death_timer / object->death_delay);
         object->collision_scale = scale;
         if (FreePlay != 0 && WORLD->area != NULL && WORLD->area == PODSPRINT_ADATA && object->id != id_ANAKINSNEWPOD &&
             object->id != id_ANAKINSNEWPODGREEN && object->id != id_SEBULBASPOD) {
             object->collision_scale = scale * 0.55f;
         }
-        if (object->collision_scale_override != 1000000000.0f)
+        if (1000000000.0f != object->collision_scale_override)
             object->collision_scale = object->collision_scale_override;
         object->origin_scale = object->collision_scale * object->character_data->model_scale;
         ScaleGameObject(object);
@@ -3080,7 +3080,7 @@ void __cdecl UpdateGameObjects(WORLDINFO *world) {
         if (player_tag_to != NULL && player_tag_from != NULL && player_tag_to != player_tag_from &&
             (player_tag_to->flags_1fc_word & 0x1001) == 0x1001 && player_tag_to->dead == 0 &&
             (player_tag_to->tag_flags & 2) == 0 && (player_tag_from->flags_1fc_word & 0x1001) == 0x1001 &&
-            player_tag_from->dead == 0 && (player_tag_from->tag_flags & 2) == 0) {
+            player_tag_from->dead == 0 && (2 & player_tag_from->tag_flags) == 0) {
             result = TagCode(player_tag_to, player_tag_from, 0, 0, 1);
             if (result == 1) {
                 GameAudio_PlaySfx(0x22, &player_tag_to->collision_position, 0, 0);

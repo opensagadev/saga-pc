@@ -14,3 +14,4 @@
 {"symbol": "_TerrainInitEx", "unit": "src/nu2api/nuterrain.c", "size": 3491, "start": 40.10222, "best": 40.320156, "exact": false, "seconds": 224.8, "instructions": [27.15, 27.55], "applied": true}
 {"symbol": "_Area_Configure", "unit": "src/legoapi/areas.cpp", "size": 4017, "start": 44.795776, "best": 67.50805, "exact": false, "seconds": 348.2, "instructions": [38.47, 36.59], "applied": true}
 {"symbol": "_Text3DEx", "unit": "src/legoapi/text.c", "size": 2616, "start": 21.147446, "best": 35.97518, "exact": false, "seconds": 252.6, "instructions": [23.66, 21.38], "applied": true}
+{"symbol": "_UpdateGameObjects", "unit": "src/legoapi/gameobjects.c", "size": 6847, "start": 54.096188, "best": 55.446335, "exact": false, "seconds": 762.5, "instructions": [57.17, 57.3], "applied": true}
