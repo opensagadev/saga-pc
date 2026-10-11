@@ -62,9 +62,16 @@ class Source:
         self.tu, self.name = _parse(text, unit)
         self.c = str(unit).endswith(".c")
         self.function = None
-        for cursor in self.tu.cursor.get_children():
-            if (cursor.kind in (K.FUNCTION_DECL, K.CXX_METHOD) and cursor.spelling == function
-                    and cursor.is_definition() and self.mine(cursor)):
+        # Definitions may sit inside extern "C" blocks or namespaces.
+        pending = list(self.tu.cursor.get_children())
+        while pending:
+            cursor = pending.pop()
+            if not self.mine(cursor):
+                continue
+            if cursor.kind in (K.LINKAGE_SPEC, K.NAMESPACE, K.UNEXPOSED_DECL):
+                pending.extend(cursor.get_children())
+            elif (cursor.kind in (K.FUNCTION_DECL, K.CXX_METHOD) and cursor.spelling == function
+                    and cursor.is_definition()):
                 self.function = cursor
         if self.function is None:
             raise ValueError(f"{function}: definition not found in unit")
