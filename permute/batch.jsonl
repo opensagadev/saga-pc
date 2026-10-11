@@ -68,3 +68,4 @@
 {"symbol": "_TerrainPlatformEmbedded", "unit": "src/nu2api/terrain_collision.cpp", "size": 4252, "start": 61.663395, "best": 63.603775, "exact": false, "seconds": 390.4, "instructions": [30.13, 29.5], "rules": 3, "applied": true}
 {"symbol": "_CutScene_DrawCharacter", "unit": "src/legoapi/cutscene_runtime.cpp", "size": 3767, "start": 60.029865, "best": 60.029865, "exact": false, "seconds": 249.6, "instructions": [44.74, 44.74], "rules": 3}
 {"symbol": "_UpdatePushBlocks", "unit": "src/legoapi/gizpushblocks.cpp", "size": 4366, "start": 63.92, "best": 63.9325, "exact": false, "seconds": 373.3, "instructions": [47.88, 48.06], "rules": 3, "applied": true}
+{"symbol": "_ZipUp_MoveCode", "unit": "src/legoapi/zipup.c", "size": 3774, "start": 59.559963, "best": 59.62128, "exact": false, "seconds": 359.0, "instructions": [49.5, 50.05], "rules": 3, "applied": true}

@@ -202,6 +202,7 @@ static i32 __cdecl ZipUpArcSinePc(f32 value) {
 #define NU_COS_LUT(a) NuTrigTable[(((i32)(a) + 0x4000) >> 1) & 0x7fff]
 
 void ZipUp_MoveCode(GAMEOBJECT *object, i32 special_pressed) {
+    NUVEC delta;
     ZIPUP_TRANSPORT_VIEW_PC *transport;
     i32 endpoint;
     ZIPUP_PC *zipup;
@@ -222,8 +223,8 @@ void ZipUp_MoveCode(GAMEOBJECT *object, i32 special_pressed) {
     if (object->character_context == 0x47) {
         ZIPUP_PC *zipup;
         NUVEC *hook;
-        NUVEC *destination;
         u16 start_angle;
+        NUVEC *destination;
         NUVEC end_offset;
         u16 end_angle;
         i32 difference;
@@ -238,7 +239,6 @@ void ZipUp_MoveCode(GAMEOBJECT *object, i32 special_pressed) {
         if (object->action_movement_state == 1) {
             void *info;
             f32 *playing;
-            NUVEC delta;
 
             info = api->character_model->model_data_b[object->field_7aa];
             playing = NULL;
@@ -246,7 +246,7 @@ void ZipUp_MoveCode(GAMEOBJECT *object, i32 special_pressed) {
                 playing = AnimPlaying(&api->anim_packet, object->field_7aa, 1, 0);
             if (info == NULL || playing != NULL) {
                 object->context_timer += FRAMETIME;
-                if (object->context_timer >= object->context_duration)
+                if (object->context_duration <= object->context_timer)
                     object->context_timer = object->context_duration;
             }
             api->velocity = v000;
@@ -349,12 +349,12 @@ void ZipUp_MoveCode(GAMEOBJECT *object, i32 special_pressed) {
         if ((zipup->flags & 0xc0) != 0xc0 || (zipup->runtime_flags & 1) == 0 ||
             (object->context_variant_flags & 0x20) == 0) {
             object->character_context = -1;
-            object->context_variant_flags &= ~0x20;
+            object->context_variant_flags = object->context_variant_flags & (~0x20);
             zipup->runtime_flags &= ~1;
             object->grapple = NULL;
             return;
         }
-        if ((zipup->flags & 1) == 0) {
+        if ((1 & zipup->flags) == 0) {
             object->context_timer += FRAMETIME;
             PlaySfx((char *)PlayerGrappleWindSoundPc, &api->collision_position);
             return;
@@ -367,7 +367,7 @@ void ZipUp_MoveCode(GAMEOBJECT *object, i32 special_pressed) {
             ((ZIPUP_PC *)(object->grapple))->runtime_flags &= ~1;
             transport->detach_fall_delay = 0.2f;
             api->velocity.x = object->target_velocity.x = v000.x;
-            api->velocity.y = object->target_velocity.y = -1.0f;
+            object->target_velocity.y = api->velocity.y = -1.0f;
             api->velocity.z = object->target_velocity.z = v000.z;
             object->grapple = NULL;
             object->field_7a4 = 0;
@@ -407,7 +407,7 @@ void ZipUp_MoveCode(GAMEOBJECT *object, i32 special_pressed) {
         return;
     if ((api->flags_1fc_word & 0x80) != 0) {
         if ((api->character_data->model_flags & 0x100000) == 0 && !SuperWeirdo(object)) {
-            if ((api->character_data->model_flags & 8) == 0 ||
+            if ((8 & api->character_data->model_flags) == 0 ||
                 (api->character_data->game_character->flags_094_bytes[1] & 0x80) != 0 || !Cheat_IsOn(13))
                 return;
         }
@@ -459,8 +459,8 @@ void ZipUp_MoveCode(GAMEOBJECT *object, i32 special_pressed) {
             object->context_duration = 0.5f;
         transport->entry = api->position;
         current = ((ZIPUP_PC *)(object->grapple));
-        transport->start = endpoint == 0 ? current->lower_position : current->upper_position;
         transport->landing = endpoint == 0 ? current->upper_position : current->lower_position;
+        transport->start = endpoint == 0 ? current->lower_position : current->upper_position;
         transport->landing.y = endpoint == 0 ? zipup->upper_ground_height : zipup->lower_ground_height;
 
         NuVecSub(&offset, &transport->landing, &transport->start);
@@ -493,7 +493,7 @@ void ZipUp_MoveCode(GAMEOBJECT *object, i32 special_pressed) {
     dx = hook->x - start->x;
     dz = hook->z - start->z;
     angle = NuAtan2D(hook->y - start->y, NuFsqrt(dx * dx + dz * dz));
-    pitch = 0x4000 - (angle < 0 ? -angle : angle);
+    pitch = 0x4000 - (0 > angle ? -angle : angle);
     object->field_7a4 = angle < 0 ? -pitch : pitch;
     zipup = ((ZIPUP_PC *)(object->grapple));
     if ((zipup->flags & 1) == 0)
@@ -514,7 +514,7 @@ void ZipUp_MoveCode(GAMEOBJECT *object, i32 special_pressed) {
     NuVecNorm(&start_offset, &start_offset);
     NuVecNorm(&end_offset, &end_offset);
     ((ZIPUP_PC *)(object->grapple))->pitch_adjustment =
-        0x4000 - ZipUpArcSinePc(start_offset.y * end_offset.y + start_offset.z * end_offset.z);
+        0x4000 - ZipUpArcSinePc(start_offset.y * end_offset.y + end_offset.z * start_offset.z);
     zipup = ((ZIPUP_PC *)(object->grapple));
     zipup->rider_target_position = zipup->rider_start_offset;
     NuVecAdd(&zipup->rider_target_position, hook, &zipup->rider_target_position);
