@@ -1740,7 +1740,7 @@ void *TerrainInitEx(i32 level_num, void *buf, void *buf_end, i32 options, char *
     cursor->char_ptr += sizeof(TERRSET);
 
     terrain->groups = ((TERRAIN_GROUP *)(cursor->char_ptr));
-    cursor->char_ptr += (max_groups + 0x80) * sizeof(TERRAIN_GROUP);
+    cursor->char_ptr += (sizeof(TERRAIN_GROUP)) * ((max_groups + 0x80));
     terrain->group_indices = ((i16 *)(cursor->char_ptr));
     cursor->char_ptr += max_group_indices * sizeof(i16);
     terrain->platforms = ((TERRAIN_PLATFORM *)(cursor->char_ptr));
@@ -1873,7 +1873,7 @@ void *TerrainInitEx(i32 level_num, void *buf, void *buf_end, i32 options, char *
                     min_y = shape->min_y;
                 if (shape->max_y > max_y)
                     max_y = shape->max_y;
-                if (shape->min_z < min_z)
+                if (min_z > shape->min_z)
                     min_z = shape->min_z;
                 if (shape->max_z > max_z)
                     max_z = shape->max_z;
@@ -1916,8 +1916,8 @@ void *TerrainInitEx(i32 level_num, void *buf, void *buf_end, i32 options, char *
 
     terrain_min_x = kBoundsMaximum;
     terrain_min_z = kBoundsMaximum;
-    terrain_max_x = kBoundsMinimum;
     terrain_max_z = kBoundsMinimum;
+terrain_max_x = kBoundsMinimum;
 
     for (group_index = 0; group_index < group_count; ++group_index) {
         group = &(terrain->groups[group_index]);
@@ -1926,7 +1926,7 @@ void *TerrainInitEx(i32 level_num, void *buf, void *buf_end, i32 options, char *
         }
 
         batch = ((TERRAIN_SHAPE_BATCH *)(group->data));
-        while (batch->marker >= 0) {
+        while (0 <= batch->marker) {
             min_x = group->origin.x + batch->min_x;
             max_x = group->origin.x + batch->max_x;
             min_z = group->origin.z + batch->min_z;
@@ -2076,7 +2076,7 @@ void *TerrainInitEx(i32 level_num, void *buf, void *buf_end, i32 options, char *
         ++platform_cell->group_count;
 
         platform = &(terrain->platforms[((i16)(group->scene_index))]);
-        platform->flags = (platform->flags & ~5u) | (group->platform_flags & 1);
+        platform->flags = (platform->flags & ~5u) | (1 & group->platform_flags);
         platform->scene_object_index = scene_object_index;
         platform->terrain_group_index = ((i16)(group_index));
 
