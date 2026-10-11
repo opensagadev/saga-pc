@@ -258,7 +258,9 @@ def publish(unit, message):
         if git("push", "-q", "origin", "HEAD").returncode == 0:
             return
         # Someone else pushed: merge it, keeping this machine's side of conflicting hunks.
-        if git("pull", "-q", "--no-rebase", "--no-edit", "-X", "ours", "origin", "HEAD").returncode:
+        if (git("fetch", "-q", "origin").returncode
+                or git("merge", "-q", "-X", "ours", "-m", "Merge upstream changes\n\n[skip ci]",
+                       "@{upstream}").returncode):
             git("merge", "--abort")
         time.sleep(2 ** attempt)
     print(f"{time.strftime('%H:%M:%S')} push failed; the commit stays local until the next push", flush=True)
