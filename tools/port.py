@@ -222,6 +222,30 @@ def translate(context, function, target_is_c):
             edits.append((begin, node.extent.end.offset, replacement))
     if target_is_c:
         hoist_declarations(context, function, data, edits, unresolved)
+    if target_is_c:
+        parents = {}
+        for node in function.walk_preorder():
+            for child in node.get_children():
+                parents[child.hash] = node
+        for node in function.walk_preorder():
+            kind = node.type.get_canonical().kind if node.kind in (K.VAR_DECL, K.PARM_DECL) else None
+            if kind in (T.LVALUEREFERENCE, T.RVALUEREFERENCE):
+                unresolved.append(f"C++ reference {node.spelling}")
+            elif node.kind == K.INIT_LIST_EXPR:
+                parent = parents.get(node.hash)
+                # C89 allows brace lists only to initialize a declaration that stays in place.
+                if parent is None or parent.kind not in (K.VAR_DECL, K.INIT_LIST_EXPR):
+                    unresolved.append("C++ brace expression")
+        # C requires parameter names in a definition.
+        for index, argument in enumerate(function.get_arguments()):
+            if not argument.spelling:
+                at = argument.extent.end.offset
+                edits.append((at, at, f" unused{index}"))
+    # An edit inside a range another edit replaces would be applied with stale offsets.
+    replaced = [(a, b) for a, b, _ in set(edits) if a < b]
+    edits = [e for e in set(edits)
+             if not any(a <= e[0] and e[1] <= b and (a, b) != (e[0], e[1]) and not (e[0] == e[1] == a or e[0] == e[1] == b)
+                        for a, b in replaced)]
     text = bytearray(data[start:end])
     for a, b, replacement in sorted(set(edits), key=lambda e: -e[0]):
         if start <= a and b <= end:
@@ -230,6 +254,8 @@ def translate(context, function, target_is_c):
     # GCC/clang-only attributes (and the Android __used__/__unused__ shorthands) have no VC8 meaning.
     source = re.sub(r"__attribute__\s*\(\((?:[^()]|\([^()]*\))*\)\)\s*", "", source)
     source = re.sub(r"\b__(used|unused|noinline|always_inline)__\s*", "", source)
+    source = re.sub(r"\busize\b", "size_t", source)
+    source = re.sub(r"\bisize\b", "i32", source)
     if target_is_c:
         source = re.sub(r"\b(static_cast|reinterpret_cast|const_cast)<([^<>]+)>\(", r"(\2)(", source)
         source = re.sub(r"\bnullptr\b", "NULL", source)
@@ -271,7 +297,9 @@ def hoist_declarations(context, function, data, edits, unresolved):
             assignments = []
             for variable in variables:
                 initializer = [c for c in variable.get_children() if c.kind not in (K.TYPE_REF, K.NAMESPACE_REF)]
-                if variable.type.get_canonical().kind == T.CONSTANTARRAY and initializer:
+                if (variable.type.get_canonical().kind in (T.CONSTANTARRAY, T.RECORD) and initializer
+                        and initializer[-1].kind == K.INIT_LIST_EXPR or
+                        variable.type.get_canonical().kind == T.CONSTANTARRAY and initializer):
                     unresolved.append(f"C89 array initializer {variable.spelling}")
                     break
                 names.add(variable.spelling)

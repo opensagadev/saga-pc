@@ -59,7 +59,10 @@ def compile_unit(unit, output):
 
 
 def undeclared(log):
-    return sorted(set(re.findall(r"error C2065: '(\w+)' : undeclared identifier", log)))
+    """Undeclared variables, and functions called without a prototype (C++ error, C warning)."""
+    return sorted(set(re.findall(r"error C2065: '(\w+)' : undeclared identifier", log)
+                      + re.findall(r"error C3861: '(\w+)': identifier not found", log)
+                      + re.findall(r"warning C4013: '(\w+)' undefined; assuming extern", log)))
 
 
 class Android:
@@ -67,19 +70,26 @@ class Android:
 
     def __init__(self, root, context=None):
         unit = typexfer.android_unit(root)
-        self.globals, self.constants = {}, {}
+        self.globals, self.constants, self.functions = {}, {}, {}
         for cursor in unit.cursor.walk_preorder():
-            if cursor.kind == K.VAR_DECL and cursor.semantic_parent.kind in (K.TRANSLATION_UNIT, K.LINKAGE_SPEC, K.UNEXPOSED_DECL):
-                self.globals.setdefault(cursor.spelling, cursor)
-            elif cursor.kind == K.ENUM_CONSTANT_DECL:
-                self.constants.setdefault(cursor.spelling, cursor.enum_value)
+            self.add(cursor)
         self.context = context
         self.root = Path(root)
         self._parsed = set()
 
+    def add(self, cursor):
+        file_scope = cursor.semantic_parent is not None and cursor.semantic_parent.kind in (
+            K.TRANSLATION_UNIT, K.LINKAGE_SPEC, K.UNEXPOSED_DECL)
+        if cursor.kind == K.VAR_DECL and file_scope:
+            self.globals.setdefault(cursor.spelling, cursor)
+        elif cursor.kind == K.ENUM_CONSTANT_DECL:
+            self.constants.setdefault(cursor.spelling, cursor.enum_value)
+        elif cursor.kind == K.FUNCTION_DECL and file_scope:
+            self.functions.setdefault(cursor.spelling, cursor)
+
     def find(self, name):
         """Look for a file-scope definition in the .cpp files that mention the name."""
-        if name in self.globals or name in self.constants:
+        if name in self.globals or name in self.constants or name in self.functions:
             return
         pattern = re.compile(rb"\b" + re.escape(name.encode()) + rb"\b")
         for path in sorted(self.root.joinpath("src").rglob("*.cpp")):
@@ -91,11 +101,8 @@ class Android:
                 "-fms-extensions", "-fms-compatibility", "-isystem", "/usr/lib/llvm-18/lib/clang/18/include",
                 "-D__ANDROID__", "-w"])
             for cursor in unit.cursor.walk_preorder():
-                if cursor.kind == K.VAR_DECL and cursor.semantic_parent.kind in (K.TRANSLATION_UNIT, K.LINKAGE_SPEC, K.UNEXPOSED_DECL):
-                    self.globals.setdefault(cursor.spelling, cursor)
-                elif cursor.kind == K.ENUM_CONSTANT_DECL:
-                    self.constants.setdefault(cursor.spelling, cursor.enum_value)
-            if name in self.globals or name in self.constants:
+                self.add(cursor)
+            if name in self.globals or name in self.constants or name in self.functions:
                 return
 
 
@@ -103,6 +110,56 @@ def defined_elsewhere(name):
     pattern = re.compile(r"\b" + re.escape(name) + r"\s*(=|,|\})")
     return any(pattern.search(path.read_text(encoding="latin-1"))
                for path in (ROOT / "src").rglob("*") if path.suffix in (".c", ".cpp", ".h") and path != HEADER)
+
+
+def spell_variable(type_, name, translator):
+    """Declarator text for a global; function pointers (and arrays of them) keep their signature."""
+    canonical = type_.get_canonical()
+    suffix = ""
+    while canonical.kind == T.CONSTANTARRAY:
+        suffix += f"[{canonical.get_array_size()}]"
+        canonical = canonical.get_array_element_type().get_canonical()
+    if canonical.kind == T.POINTER and canonical.get_pointee().get_canonical().kind in (T.FUNCTIONPROTO,
+                                                                                          T.FUNCTIONNOPROTO):
+        function = canonical.get_pointee().get_canonical()
+        ret = function.get_result()
+        if ret.kind == T.VOID:
+            ret_text = "void"
+        else:
+            spelled = translator.spell(ret, "RESULT_", 10 ** 9)
+            if spelled is None:
+                return None
+            ret_text = spelled.rsplit("RESULT_", 1)[0].rstrip()
+        params = []
+        if function.kind == T.FUNCTIONPROTO:
+            for index, argument in enumerate(function.argument_types()):
+                spelled = translator.spell(argument, f"arg{index}", 10 ** 9)
+                if spelled is None:
+                    return None
+                params.append(spelled)
+        return f"{ret_text} (__cdecl *{name}{suffix})({', '.join(params) or 'void'})"
+    return translator.spell(type_, name, 10 ** 9)
+
+
+def function_prototype(cursor, translator):
+    """`RET __cdecl NAME(PARAMS);` in PC types, or None."""
+    result = cursor.result_type
+    if result.kind == T.VOID:
+        ret = "void"
+    else:
+        spelled = translator.spell(result, "RESULT_", 10 ** 9)
+        if spelled is None:
+            return None
+        ret = spelled.rsplit("RESULT_", 1)[0].rstrip()
+    params = []
+    for index, argument in enumerate(cursor.get_arguments()):
+        spelled = translator.spell(argument.type, argument.spelling or f"arg{index}", 10 ** 9)
+        if spelled is None:
+            return None
+        params.append(spelled)
+    if cursor.type.kind == T.FUNCTIONPROTO and cursor.type.is_function_variadic():
+        params.append("...")
+    return f"{ret} __cdecl {cursor.spelling}({', '.join(params) or 'void'});"
 
 
 def declare(names, android, translator):
@@ -118,8 +175,14 @@ def declare(names, android, translator):
                 missing.append(name)  # a unit defines it locally; a global copy would collide
                 continue
             constants.append(f"enum {{ {name} = {android.constants[name]} }};")
+        elif name in android.functions and name not in android.globals:
+            prototype = function_prototype(android.functions[name], translator)
+            if prototype is None:
+                missing.append(name)
+                continue
+            externs.append(f"    {prototype}")
         elif name in android.globals:
-            spelled = translator.spell(android.globals[name].type, name, 10 ** 9)
+            spelled = spell_variable(android.globals[name].type, name, translator)
             if spelled is None:
                 missing.append(name)
                 continue
@@ -218,7 +281,7 @@ def loose(instruction):
 def define(symbol, address, cursor, translator, pe, sections):
     """data.cpp definition text and CSV type for one global, with the retail initial value."""
     name = symbol.lstrip("_")
-    spelled = translator.spell(cursor.type, name, 10 ** 9)
+    spelled = spell_variable(cursor.type, name, translator)
     size = cursor.type.get_size()
     canonical = cursor.type.get_canonical()
     raw_end = sections[".data"]
@@ -263,11 +326,13 @@ def main():
         for _ in range(3):
             ok, log = compile_unit(unit, output)
             names = undeclared(log)
-            if ok or not names:
+            if not names:
                 break
             missing = declare(names, android, translator)
             if missing:
                 print(f"{unit}: not found in Android sources: {', '.join(missing)}")
+            if set(missing) == set(names):
+                break
         if not ok:
             print(f"{unit}: still does not compile:\n" + "\n".join(l for l in log.splitlines() if "error" in l)[:3000])
             continue
@@ -284,6 +349,18 @@ def main():
             alias = next((r["symbol"] for r in records if r["address"] == address and r["symbol"] != symbol), None)
             if alias:
                 print(f"{unit}: {symbol} resolves to 0x{address:x}, already mapped as {alias}; use that name")
+                continue
+            if symbol.startswith("__real@"):
+                # Floating-point constant: its name spells its bytes.
+                raw = bytes.fromhex(symbol[len("__real@"):])[::-1]
+                if pe.read_va(address, len(raw)) == raw:
+                    rows.append((address, symbol, len(raw), "const f32" if len(raw) == 4 else "const f64"))
+                else:
+                    print(f"{unit}: constant {symbol} differs at 0x{address:x}")
+                continue
+            if re.match(r"\?\w+@\?\d+\?\?", symbol):
+                # Function-local static: the compiler defines it; map its address only.
+                rows.append((address, symbol, "", ""))
                 continue
             if symbol.startswith("??_C@"):
                 # String literal: the compiler defines it; map it with its emitted size.
