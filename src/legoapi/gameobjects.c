@@ -1386,7 +1386,7 @@ i32 __cdecl KillGameObject(GAMEOBJECT *object, i32 requested_reason, i32 unused)
             STUBBED_NAMED("KillGameObject: one-second GameCam_Blend PC54a3e0");
         if ((object->flags_1f8 & 0x40000) == 0) {
             if ((object->takeover_owner != NULL &&
-                (object->takeover_owner->rider == NULL || object == object->takeover_owner->rider))) {
+                 (object->takeover_owner->rider == NULL || object == object->takeover_owner->rider))) {
                 STUBBED_NAMED(
                     "KillGameObject: real GetTakeOverPos output-dependent position/start/AI position writes PC4871a0");
             } else {
@@ -2962,7 +2962,7 @@ void __cdecl UpdateGameObjects(WORLDINFO *world) {
     CurrentSpeed = 0.0f;
     for (i = 0; i <= 7; ++i) {
         player_flags = 1 | 0x1000;
-object = Player[i];
+        object = Player[i];
         if (object == NULL || (object->flags_1fc_word & player_flags) != player_flags) {
             continue;
         }

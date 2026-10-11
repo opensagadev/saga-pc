@@ -248,7 +248,7 @@ extern "C" void __cdecl UpdatePushBlocks(void *world_ptr, void *, f32) {
                     f32 y = target->y - position->y;
                     f32 z = target->z - position->z;
                     f32 y_squared = y * y;
-                    
+
                     if (!(static_cast<f64>(x) * x + y_squared + static_cast<f64>(z) * z <
                           static_cast<f64>(p->snap_distance) * p->snap_distance))
                         continue;

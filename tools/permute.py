@@ -231,7 +231,8 @@ def publish(unit, message):
     record.parent.mkdir(exist_ok=True)
     shutil.copyfile(OUT / "batch.jsonl", record)
     git("add", unit, str(record.relative_to(ROOT)))
-    if git("commit", "-q", "-m", message).returncode:
+    # Each automated commit would otherwise start a full CI build.
+    if git("commit", "-q", "-m", message + "\n\n[skip ci]").returncode:
         return
     for attempt in range(4):
         if git("push", "-q", "origin", "HEAD").returncode == 0:
