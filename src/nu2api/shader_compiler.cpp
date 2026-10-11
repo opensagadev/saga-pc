@@ -9,9 +9,9 @@ void ShaderCompilerBasePc::Prepare(const PC_SHADER_FILTER_DESC_VIEW *descriptor,
     Configure(&filter, dictionary);
 }
 void ShaderCompilerBasePc::Configure(PC_SHADER_MATERIAL_FILTER_VIEW *filter, ShaderCompilerDictionaryPc *definitions) {
+    u8 used_uvs[4] = {0, 0, 0, 0};
     const PC_SHADER_FILTER_DESC_VIEW *descriptor = filter->descriptor;
     const i32 profile = definitions->profile;
-    u8 used_uvs[4] = {0, 0, 0, 0};
     const char *uv_functions[4] = {"FUNC_UVSET_0", "FUNC_UVSET_1", "FUNC_UVSET_2", "FUNC_UVSET_3"};
     const char *uv_names[4] = {"varying_uvSet0", "varying_uvSet1", "varying_uvSet2", "varying_uvSet3"};
     const char *vertex_uvs[4] = {"vs_uvSet0", "vs_uvSet1", "vs_uvSet2", "vs_uvSet3"};
@@ -22,14 +22,14 @@ void ShaderCompilerBasePc::Configure(PC_SHADER_MATERIAL_FILTER_VIEW *filter, Sha
     definitions->AddDefinition("VERTEX_SHADER_VERSION", version, 0);
     definitions->AddDefinition("PIXEL_SHADER_VERSION", version, 0);
     definitions->AddDefinition("BUILD_EFFECT", NULL, 0);
-    bool nvidia_profile = profile == 4 && PCDeviceBackend.identifier.vendor == 0x10de;
+    bool nvidia_profile = profile == 4 && 0x10de == PCDeviceBackend.identifier.vendor;
     if (filter->variant == 0 && (filter->descriptor->layer_flags & 0x4000)) {
         used_uvs[descriptor->sampler_indices[5] - 1] = 1;
         definitions->AddDefinition(uv_functions[descriptor->sampler_indices[5] - 1], "UVSET_ANIMATION", 0);
         definitions->AddDefinition("VTF_NORMAL_UVSET", uv_names[descriptor->sampler_indices[5] - 1], 1);
         definitions->AddDefinition("FUNC_fs_computeVTFNormal", "VTF_SURFACE_NORMAL_MAP", 0);
     }
-    if (filter->variant == 0 && (filter->descriptor->layer_flags & 0x40000000))
+    if (0 == filter->variant && (filter->descriptor->layer_flags & 0x40000000))
         definitions->AddDefinition("LEGO", NULL, 0);
     if (nvidia_profile) {
         if ((filter->descriptor->layer_flags & 0x400000) && (filter->descriptor->vertex_format & 0x2000000)) {
@@ -53,7 +53,7 @@ void ShaderCompilerBasePc::Configure(PC_SHADER_MATERIAL_FILTER_VIEW *filter, Sha
             definitions->AddDefinition("FUNC_pipePosition", "VERTEX_FETCH_DISPLACEMENT", 0);
         }
     } else {
-        if (filter->variant == 0 && (filter->descriptor->layer_flags & 0x20000000) &&
+        if (0 == filter->variant && (filter->descriptor->layer_flags & 0x20000000) &&
             (filter->descriptor->vertex_format & 0x30000) && !(filter->descriptor->vertex_format & 0x400000)) {
             definitions->AddDefinition("FUNC_pipePosition", "VERTEX_TRANSFORM_REFRACTED_GLASS_SKINNING", 0);
             definitions->AddDefinition("FUNC_computeNormal", "VERTEX_TRANSFORM_SKINNING", 0);
@@ -122,7 +122,7 @@ void ShaderCompilerBasePc::Configure(PC_SHADER_MATERIAL_FILTER_VIEW *filter, Sha
     }
     if (filter->HasLayer(2) && profile != 1) {
         definitions->AddDefinition("COMBINE_OP_2", combine[descriptor->blend_ops[1]], 1);
-        if ((filter->variant == 0 || filter->descriptor->override_mode != 0) &&
+        if ((0 == filter->variant || filter->descriptor->override_mode != 0) &&
             ((filter->descriptor->vertex_format >> 9) & 3) >= 2) {
             definitions->AddDefinition("LAYER2_ALPHA", NULL, 0);
             definitions->AddDefinition("LAYER1_COLORSET", "varying_colorSet1", 1);
@@ -136,7 +136,7 @@ void ShaderCompilerBasePc::Configure(PC_SHADER_MATERIAL_FILTER_VIEW *filter, Sha
     if (filter->HasLayer(3) && profile != 1) {
         definitions->AddDefinition("COMBINE_OP_3", combine[descriptor->blend_ops[2]], 1);
         if ((filter->variant == 0 || filter->descriptor->override_mode != 0) &&
-            ((filter->descriptor->vertex_format >> 9) & 3) >= 3) {
+            ((filter->descriptor->vertex_format >> 9) & 3) > 2) {
             definitions->AddDefinition("LAYER3_ALPHA", NULL, 0);
             definitions->AddDefinition("LAYER1_COLORSET", "varying_colorSet1", 1);
         }
@@ -275,7 +275,7 @@ void ShaderCompilerBasePc::Configure(PC_SHADER_MATERIAL_FILTER_VIEW *filter, Sha
         definitions->AddDefinition("FOG_STAGE", "FOG_VERTEX_CLAMP_EXPONENTIAL2", 0);
     if (filter->variant == 0 && (filter->descriptor->layer_flags & 0x200000) && profile != 1)
         definitions->AddDefinition("DAPPLE", NULL, 0);
-    if (filter->variant == 0 && (filter->descriptor->layer_flags & 0x10000000))
+    if (filter->variant == 0 && (0x10000000 & filter->descriptor->layer_flags))
         definitions->AddDefinition("FRACTAL", NULL, 0);
     if (filter->variant == 0 && (filter->descriptor->layer_flags & 0x8000000))
         definitions->AddDefinition("EDGE_LIGHTING", NULL, 0);
