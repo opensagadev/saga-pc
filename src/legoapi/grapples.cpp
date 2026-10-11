@@ -285,7 +285,7 @@ extern "C" void __cdecl Grapple_MoveCode(GAMEOBJECT *object) {
             GameCam_Blend(NULL, 0.5f, 0.0f, 1);
             return;
         }
-        if ((GRAPPLE_CURRENT->flags & 3) != 3 ||
+        if (3 != ((GRAPPLE_CURRENT->flags & 3)) ||
             (0 != GRAPPLE_CURRENT->has_terrain_platform &&
              (GRAPPLE_CURRENT->attached_object == NULL || GRAPPLE_CURRENT->ground_position.y == 2000000.0f))) {
             GRAPPLE_CURRENT->activation_progress = 0.0f;
@@ -384,7 +384,7 @@ extern "C" void __cdecl Grapple_MoveCode(GAMEOBJECT *object) {
                         object->flags_e24 |= 0x80;
                     }
                     object->context_duration = 0.0f;
-                    if (Grapple_RopeSwingRotate != 0 && (GRAPPLE_CURRENT->flags & 4) != 0)
+                    if (0 != Grapple_RopeSwingRotate && (GRAPPLE_CURRENT->flags & 4) != 0)
                         object->movement_facing_angle +=
                             static_cast<i32>(FRAMETIME * (static_cast<u16>(Grapple_RopeSwingRotate)));
                 } else {
@@ -405,7 +405,7 @@ extern "C" void __cdecl Grapple_MoveCode(GAMEOBJECT *object) {
                 angle += 0x8000;
             i32 difference;
             object->takeover_start_angle =
-                TurnRot(static_cast<u16>(old_angle * 2), static_cast<u16>(angle * 2), 0x2000, &difference) >> 1;
+                TurnRot(static_cast<u16>(old_angle * 2), static_cast<u16>(2 * angle), 0x2000, &difference) >> 1;
             if ((difference > 0 && object->takeover_start_angle < old_angle) ||
                 (difference < 0 && old_angle < object->takeover_start_angle))
                 object->field_7a8 += 0x8000;
@@ -438,7 +438,7 @@ extern "C" void __cdecl Grapple_MoveCode(GAMEOBJECT *object) {
             const i32 swing_mode = PlayerGrappleSwingModePc;
             if ((swing_mode == 0 && abs(RotDiff(angle, input_angle)) < 0x4000) || (swing_mode != 0 && swing)) {
                 const u8 increased_degrees = static_cast<u8>(object->big_jump_animation + 10);
-                object->big_jump_animation = increased_degrees <= 60 ? increased_degrees : 60;
+                object->big_jump_animation = 60 >= increased_degrees ? increased_degrees : 60;
                 return;
             }
             change = -20;
@@ -450,7 +450,7 @@ extern "C" void __cdecl Grapple_MoveCode(GAMEOBJECT *object) {
             return;
         if (static_cast<i8>(object->flags_1fc) >= 0 && object->field_f00 != 1)
             return;
-        if (ObjLandReady(object) == 0 && (LEGOCONTEXT_JUMP == -1 || object->character_context != LEGOCONTEXT_JUMP)) {
+        if (ObjLandReady(object) == 0 && (-1 == LEGOCONTEXT_JUMP || object->character_context != LEGOCONTEXT_JUMP)) {
             if (LEGOCONTEXT_GLIDE == -1 || object->character_context != LEGOCONTEXT_GLIDE || -1 == LEGOACT_GLIDE ||
                 object->field_7aa != LEGOACT_GLIDE || object->grapple != NULL)
                 return;
@@ -463,7 +463,7 @@ extern "C" void __cdecl Grapple_MoveCode(GAMEOBJECT *object) {
             return;
         if ((grapple->flags & 4) == 0) {
             if ((object->pad->buttons_pressed & GAMEPAD_SPECIAL) == 0 &&
-                (((OBJECT_GRAPPLE_MOTION_VIEW_PC *)object)->panel_use_request != 4 ||
+                (4 != (((OBJECT_GRAPPLE_MOTION_VIEW_PC *)object)->panel_use_request) ||
                  ((OBJECT_GRAPPLE_MOTION_VIEW_PC *)object)->tube_entry_data == NULL)) {
                 SetHeadTarget(object, &grapple->hook_position, 4, 2.0f, 1.0f, 2.0f);
                 return;
@@ -480,12 +480,12 @@ extern "C" void __cdecl Grapple_MoveCode(GAMEOBJECT *object) {
         object->field_7b3 = 0;
         object->field_7aa = LEGOACT_GRAPPLE_IDLE;
         object->context_hover_target_y = (f32)fabs((f64)grapple->shadow_probe_position.y - object->upper_position.y);
-        if ((grapple->flags & 4) == 0) {
-            object->context_variant_flags |= 0x100;
-            object->movement_facing_angle = static_cast<u16>(grapple->y_rotation + 0x8000);
-        } else {
+        if ((grapple->flags & 4) != 0) {
             object->context_variant_flags &= ~0x100;
             SetWeaponIn(object);
+        } else {
+            object->context_variant_flags |= 0x100;
+            object->movement_facing_angle = static_cast<u16>(grapple->y_rotation + 0x8000);
         }
         GameCam_Blend(NULL, 0.5f, 0.0f, 1);
         Grapple_InitializeSwingAnglePc(object);
