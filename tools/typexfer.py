@@ -53,15 +53,22 @@ class Struct:
         self.size = cursor.type.get_size()
         self.align = cursor.type.get_align()
         self.tag = cursor.spelling
-        self.fields = []  # (offset, size, name, cursor)
-        for field in cursor.get_children():
+        self.fields = []  # (offset, size, name, cursor, bitfield), anonymous members flattened
+        self._collect(cursor)
+        self.fields.sort(key=lambda f: f[0])
+
+    def _collect(self, record):
+        for field in record.get_children():
+            if field.kind in (K.UNION_DECL, K.STRUCT_DECL) and field.is_anonymous():
+                self._collect(field)
+                continue
             if field.kind != K.FIELD_DECL or not field.spelling:
                 continue
-            offset = cursor.type.get_offset(field.spelling)
+            offset = self.type.get_offset(field.spelling)
             if offset < 0:
                 continue
-            bitfield = field.is_bitfield()
-            self.fields.append((offset // 8, max(field.type.get_size(), 0), field.spelling, field, bitfield))
+            self.fields.append((offset // 8, max(field.type.get_size(), 0), field.spelling, field,
+                                field.is_bitfield()))
 
 
 def parse_structs(unit, prefix):
@@ -119,11 +126,18 @@ def pair(android, pc):
             for akey in by_field.get(name, ()):
                 candidates[akey] += 1
         best = None
-        for akey, common in candidates.most_common(8):
+        pc_name = re.sub(r"[^a-z0-9]", "", (pstruct.tag or "").lower())
+        for akey, common in sorted(candidates.items(), key=lambda item: (-item[1], android[item[0]].tag)):
             astruct = android[akey]
-            anchors = sorted((f[0], names[f[2]] - f[0]) for f in astruct.fields if f[2] in names)
+            anchors = clean_anchors(sorted((f[0], names[f[2]] - f[0]) for f in astruct.fields
+                                           if f[2] in names and not ANDROID_PLACEHOLDER.match(f[2])))
             same = sum(1 for _, delta in anchors if delta == 0)
-            score = common + same - abs(astruct.size - pstruct.size) / 64
+            android_name = re.sub(r"[^a-z0-9]", "", astruct.tag.lower())
+            # Deterministic: score, then exact size, similar name, named over anonymous.
+            score = (common + same - abs(astruct.size - pstruct.size) / 64,
+                     astruct.size == pstruct.size,
+                     bool(pc_name) and (android_name.startswith(pc_name[:6]) or pc_name.startswith(android_name[:6])),
+                     not astruct.cursor.is_anonymous(), astruct.tag)
             if best is None or score > best[0]:
                 best = (score, akey, anchors)
         if best and len(best[2]) >= 3:
@@ -131,8 +145,28 @@ def pair(android, pc):
     return result
 
 
+def clean_anchors(anchors):
+    """Drop anchors whose shift disagrees with both neighbours (same name, different field)."""
+    changed = True
+    while changed and len(anchors) > 2:
+        changed = False
+        for i, (offset, delta) in enumerate(anchors):
+            previous = anchors[i - 1][1] if i else None
+            following = anchors[i + 1][1] if i + 1 < len(anchors) else None
+            neighbours = [d for d in (previous, following) if d is not None]
+            if neighbours and all(d != delta for d in neighbours) and (
+                    previous is None or following is None or previous == following):
+                del anchors[i]
+                changed = True
+                break
+    return anchors
+
+
 def shift(anchors, offset, android_size, pc_size):
     """PC-minus-Android offset shift at this Android offset, or None when ambiguous."""
+    exact = [d for o, d in anchors if o == offset]
+    if exact:
+        return exact[0]  # the field is itself a shared anchor
     before = [d for o, d in anchors if o <= offset]
     after = [d for o, d in anchors if o > offset]
     if before and after:
@@ -198,7 +232,7 @@ class Translator:
 
 
 def initialized_structs(pc, typedefs):
-    """Structs with brace initializers anywhere in src/, and every struct embedded in them.
+    """Structs with brace initializers or by-value locals in src/, and every struct embedded in them.
 
     Aggregate initializers are positional, so splitting a padding array would
     shift the values that follow it.
@@ -210,9 +244,12 @@ def initialized_structs(pc, typedefs):
                 names[name] = key
     used = set()
     pattern = re.compile(r"\b([A-Za-z_]\w*)\s+\**\s*[A-Za-z_]\w*(?:\[[^\]]*\])*\s*=\s*\{")
+    # Locals held by value: VC8 code generation for them depends on member types.
+    local = re.compile(r"^\s+(?:const\s+)?([A-Za-z_]\w*)\s+[A-Za-z_]\w*(?:\[[^\]]*\])*\s*[;=,]", re.M)
     for path in (ROOT / "src").rglob("*"):
         if path.suffix in (".c", ".cpp", ".h", ".inc"):
-            for match in pattern.finditer(path.read_text(encoding="latin-1")):
+            text = path.read_text(encoding="latin-1")
+            for match in [*pattern.finditer(text), *(local.finditer(text) if path.suffix != ".h" else [])]:
                 if match.group(1) in names:
                     used.add(names[match.group(1)])
     pending = list(used)
@@ -344,12 +381,14 @@ def verify(before, text):
     structs, typedefs = parse_structs(unit, str(HEADER))
     after = layout(structs, typedefs)
     problems = [str(e) for e in errors[:5]]
+    verify.changed = []
     if len(after) != len(before):
         problems.append(f"struct count changed: {len(before)} -> {len(after)}")
         return problems
-    for (size, fields, name), (new_size, new_fields, _) in zip(before, after):
+    for index, ((size, fields, name), (new_size, new_fields, _)) in enumerate(zip(before, after)):
         if size != new_size or any(new_fields.get(n) != o for n, o in fields.items() if not PADDING.match(n)):
             problems.append(f"layout changed: {name}")
+            verify.changed.append(index)
     return problems
 
 
@@ -372,8 +411,20 @@ def main():
         return 0
     text = HEADER.read_text(encoding="latin-1")
     before = layout(pc, pc_typedefs)
-    new_text = apply(edits, text)
-    problems = verify(before, new_text)
+    order = sorted(pc.values(), key=lambda st: st.cursor.extent.start.offset)
+    for _ in range(10):
+        new_text = apply(edits, text)
+        problems = verify(before, new_text)
+        if not problems or not verify.changed:
+            break
+        # Drop the edits of structs whose layout would change (and of structs containing them), retry.
+        bad = [order[i] for i in verify.changed]
+        spans = [(b.cursor.extent.start.offset, b.cursor.extent.end.offset) for b in bad]
+        kept = [e for e in edits if not any(a <= e[1][3].extent.start.offset < z for a, z in spans)]
+        print(f"Skipping {len(edits) - len(kept)} edits in {len(bad)} structs whose layout would change")
+        if len(kept) == len(edits):
+            break
+        edits = kept
     if problems:
         print("Not written; verification failed:\n  " + "\n  ".join(problems[:20]))
         return 1

@@ -125,8 +125,17 @@ with named fields from the matching Android structs. Structs are paired by
 shared field names; Android layouts are computed with MSVC rules, and a field's
 PC offset comes from the shift between layouts, which must agree on both sides.
 Existing PC fields are never changed, padding that sources name or that sits in
-brace-initialized structs stays, and the rewrite is refused unless every struct
-keeps its size and existing offsets.
+brace-initialized or locally instantiated structs stays (VC8 code generation for
+local struct instances depends on member types), and edits are dropped for any
+struct whose size or existing offsets would change.
+
+`python3 tools/port.py NAME --android ../saga` drafts a PC port of an Android
+function: struct types become their PC pairs, each field access (including
+`a.b.c` chains through embedded and anonymous members) becomes the PC member at
+the corresponding offset, declarations are hoisted for C units, and anything it
+cannot translate is listed. `--insert` places the draft after its address
+neighbour. Globals and constants the PC sources do not declare yet still need
+to be added by hand.
 
 ## Measures
 
