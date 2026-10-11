@@ -152,6 +152,7 @@ def search(scorer, text, function, iterations, jobs, seed, log):
     log(f"start {best[0]:.3f}% (instructions {best[3]:.1f}%)")
     attempts = 0
     stale = 0
+    visited = {text}
     while attempts < iterations and not best[1]:
         candidates = rewrite.candidates(best_text, scorer.unit, function)
         if not candidates:
@@ -173,6 +174,7 @@ def search(scorer, text, function, iterations, jobs, seed, log):
                 continue
             if key(value) > key(best):
                 best_text, best = candidate.text, value
+                visited.add(best_text)
                 log(f"{attempts:5} {value[0]:.3f}% (instructions {value[3]:.1f}%)  {candidate.kind}: {candidate.note}")
                 improved = True
                 break
@@ -182,10 +184,11 @@ def search(scorer, text, function, iterations, jobs, seed, log):
         stale += 1
         # Accept a neutral safe rewrite occasionally to escape plateaus.
         neutral = [c for c, v in zip(batch, scores)
-                   if v is not None and c.safe and key(v) == key(best) and c.text != best_text]
+                   if v is not None and c.safe and key(v) == key(best) and c.text not in visited]
         if neutral and stale <= 3:
             choice = rng.choice(neutral)
             best_text = choice.text
+            visited.add(best_text)
             log(f"{attempts:5} {best[0]:.3f}%  (neutral) {choice.kind}: {choice.note}")
         elif stale > 6:
             break
