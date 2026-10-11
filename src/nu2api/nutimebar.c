@@ -493,10 +493,10 @@ void __cdecl NuTimeBarSetRender(i32 set) {
     i32 engine_enabled = NuTimeBar_EngineEnabled;
     i32 slot;
 
-    if (set == -1) {
+    if (-1 == set) {
         if (NuTimeBar_GpuFrameOutEnabled != 0) {
             u32 gpu_time = (u32)timebar->accumulators[timebar->toggle_flags[1]][1];
-            gpu_frames = (f32)((f64)gpu_time * nuapi.fps / NuTime_MicroScale);
+            gpu_frames = (f32)(gpu_time * nuapi.fps / NuTime_MicroScale);
         }
         if (engine_enabled == 0 && gpu_frames <= 1.0f) {
             return;
@@ -528,7 +528,7 @@ void __cdecl NuTimeBarSetRender(i32 set) {
                 f32 screen_height = (f32)(PS2_VREZ_H << 4);
                 i32 x = (i32)(left * screen_width);
                 i32 y = (i32)(NuTimeBarTop * screen_height);
-                i32 width = (i32)((right - left) * screen_width);
+                i32 width = (i32)(screen_width * ((right - left)));
                 i32 height = (i32)((bottom - NuTimeBarTop) * screen_height);
                 i32 text_x;
                 i32 text_y;
@@ -564,7 +564,7 @@ void __cdecl NuTimeBarSetRender(i32 set) {
                     system_qfont->platform_data->colour = 0xe0e0e0e0;
                 }
                 text_x = (i32)(PS2_VREZ_W * NuTimeBarSlotWidth * NuQFntHalfScale) -
-                         (i32)(PS2_VREZ_W * NuTimeBarNegativeSlotWidth) * (slot + 1) * 3;
+                         ((slot + 1)) * ((i32)(PS2_VREZ_W * NuTimeBarNegativeSlotWidth)) * 3;
                 if (0 != timebar->field_18[slot]) {
                     f32 lines = (f32)((f64)(u32)timebar->field_18[slot] * NuTimeBarLinesPerSecond / NuTime_MicroScale);
                     i32 digits = (i32)lines;
@@ -590,13 +590,13 @@ void __cdecl NuTimeBarSetRender(i32 set) {
                              (i32)(PS2_VREZ_W * NuTimeBarNegativeSlotWidth) * (slot + 1) * 3;
                     text_y = (PS2_VREZ_H << 4) - (i32)NuQFntHeight(system_qfont) * 2;
                     text_y += (i32)NuQFntBaseline(system_qfont);
-                    if (0 != (slot & 1)) {
+                    if ((slot & 1) != 0) {
                         text_y -= 320;
                     }
                     lines = (f32)((f64)(u32)timebar->field_14[slot] * NuTimeBarLinesPerSecond / NuTime_MicroScale);
                     NuQFntPrintEx(system_qfont, text_x * 16, text_y, 0x40, NuTimeBarValueFormat, (i32)lines);
                 }
-                if (timebar->slot_names[slot] != NULL) {
+                if (NULL != timebar->slot_names[slot]) {
                     text_x = (i32)(PS2_VREZ_W * NuTimeBarSlotWidth * NuQFntHalfScale) -
                              (i32)(PS2_VREZ_W * NuTimeBarNegativeSlotWidth) * (slot + 1) * 3;
                     text_y = (PS2_VREZ_H << 4) - (i32)NuQFntHeight(system_qfont);

@@ -75,3 +75,4 @@
 {"symbol": "_ScanTerrainHandel", "unit": "src/nu2api/terrain_query.cpp", "size": 3427, "start": 41.845455, "best": 42.349586, "exact": false, "seconds": 397.3, "instructions": [22.98, 23.15], "rules": 3, "applied": true}
 {"symbol": "_AISysLoadPathsPc", "unit": "src/gameapi/aisys.c", "size": 2967, "start": 53.67087, "best": 53.67087, "exact": false, "seconds": 248.1, "instructions": [34.7, 34.7], "rules": 3}
 {"symbol": "_Grapple_MoveCode", "unit": "src/legoapi/grapples.cpp", "size": 3392, "start": 59.191277, "best": 60.11745, "exact": false, "seconds": 326.8, "instructions": [61.23, 61.91], "rules": 3, "applied": true}
+{"symbol": "_NuTimeBarSetRender", "unit": "src/nu2api/nutimebar.c", "size": 2130, "start": 35.630157, "best": 35.639683, "exact": false, "seconds": 295.9, "instructions": [28.6, 28.8], "rules": 3, "applied": true}
