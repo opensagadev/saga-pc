@@ -3,13 +3,12 @@
 This project reconstructs the GOG PC executable with MSVC 2005 and compares the
 resulting x86 COFF objects against the original. The default build also links
 our current sources into a Windows executable using the original MSVC linker
-and libraries. Genuine hardware/window/input, API, animation, particle, shader,
-frame/render and material-list startup calls are connected. The latest bounded
-debugger run reached its 60-second deadline without a fault or watched SfxInfo
-write; its final wait location is unobserved. Genuine sound-table producers are
-now connected, but initialization completion, recurring frames and a loaded world
-remain unproved. Original cache capacity and resource/device lifetimes remain
-unresolved; the source is not playable.
+and libraries. Genuine hardware/window/input, shader, frame/render, material and
+sound startup calls are connected, including per-frame input polling and cache reset. FFF's
+bounded debugger run observed genuine SFX initialization returning and downstream
+lookup entry. GGG's ordinary runtime observation is recorded in the execution
+policy. Recurring rendered frames, a loaded world and playability remain unproved;
+save-folder registration and save readiness are the next native dependencies.
 There are no host or WebAssembly game targets.
 
 ## Requirements and setup
@@ -65,7 +64,8 @@ for the real `d3d9.dll` export `Direct3DCreate9`. This import supplies no graphi
 implementation; the bundled Platform SDK does not include that import library.
 Input producers generate `build/dinput8.lib` and `build/xinput1_3.lib` from their
 export declarations for real DirectInput creation and XINPUT1_3 ordinal 4
-(capabilities). The link also uses bundled Shell32, Ole32 and OleAut32 import
+(capabilities), ordinal 2 (state reads) and ordinal 3 (vibration). The link also
+uses bundled Shell32, Ole32 and OleAut32 import
 libraries for actual folder and COM services, and bundled GDI32 for the native
 sound initializer's DeleteObject failure path. These libraries supply no replacement
 implementation or bundled DLL contents.
@@ -131,7 +131,7 @@ no code in matching builds and do not imply a byte match. Keep the original call
 order, document the skipped work, and replace markers down the dependency tree.
 The source-only executable connects real startup providers and partial frame/render
 callers. Its latest bounded run has no recorded fault before the deadline; this
-does not establish playability or completed sound-table initialization. See [the execution policy](config/transfer-execution.md).
+does not establish playability or loaded-world completion. See [the execution policy](config/transfer-execution.md).
 Automated Wine tests suppress the debugger dialog in their own prefix, retain
 genuine observations and clean only their identity-bound process group. Record
 deadline termination and debugger termination separately from natural game exit.

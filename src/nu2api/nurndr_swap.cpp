@@ -148,8 +148,8 @@ extern "C" i32 __cdecl NuRndrSwapScreen(i32 mode) {
     if (RenderFrameCallbackPc != NULL)
         RenderFrameCallbackPc();
     NuRndrEndSceneEx(0);
-    PCDeviceEndScenePc();      /* Genuine native10-byte wrapper6e4a10; result unused. */
-    STUBBED_NAMED(0x006d9610); /* native60b56e */
+    PCDeviceEndScenePc(); /* Genuine native10-byte wrapper6e4a10; result unused. */
+    PcInputEndFramePc();
     PCFramePresentNativePc(mode, 1);
     PCFrameCriticalSectionLeave_candidate();
     NuTimeBarSlotReset(-1, 0);

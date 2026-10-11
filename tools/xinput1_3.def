@@ -1,4 +1,6 @@
-; Actual native XINPUT1_3 ordinal4, with the reviewed SDK alias and x86 ABI.
+; Actual native XINPUT1_3 ordinals 2/3/4, with reviewed SDK aliases and x86 ABIs.
 LIBRARY XINPUT1_3.dll
 EXPORTS
+    XInputGetState@8 @2 NONAME
+    XInputSetState@8 @3 NONAME
     XInputGetCapabilities@12 @4 NONAME

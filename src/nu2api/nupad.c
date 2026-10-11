@@ -467,3 +467,121 @@ void __cdecl NuPadMapPlayerToPort(i32 player, i32 port) {
     TextInputDeviceLinksPc[player].available = 1;
     NuKeyboardApplyActionKeys_candidate(PlayerLastPort, 8);
 }
+
+// Uncompiled nupad.c append; Save133 belongs to peer material_review.
+void NuPadUpdatePads(void) {
+    i32 count = NuPad_Interface_GetMaxDevices();
+    i32 max_pads = FramePadMaxGamePadsPc;
+    i32 i, j, selected = -1;
+    for (i = 0; i < count; ++i) {
+        FRAME_SCANNED_PAD_PC *pad = &g_nupadScannedPads[i];
+        pad->is_valid =
+            (u8)NuPadReadOutputsPc(i, &pad->analog_left_x, &pad->analog_left_y, &pad->analog_right_x,
+                                   &pad->analog_right_y, &pad->analog_l1, &pad->analog_l2, &pad->analog_r1,
+                                   &pad->analog_r2, &pad->digital_buttons, &pad->unknown_7c, &pad->analog_button_flags);
+        NuPadRecordPlay(pad);
+        if (pad->is_valid)
+            pad->deadzone = PcInputDeadzonePc(i);
+        NuPadProcessReadData(pad);
+    }
+    if (nuapi.pad_record.should_end == 1) {
+        if (nuapi.pad_record.mode == NUPAD_PLAY) {
+            nuapi.pad_record.mode = NUPAD_NORM;
+            nuapi.pad_record.record.u8_ptr = nuapi.pad_record.buf_start;
+        } else if (nuapi.pad_record.mode == NUPAD_RECORD)
+            NuPadRecordSave(nuapi.pad_record.filepath);
+        nuapi.pad_record.should_end = 0;
+    }
+    for (i = 0; i < count; ++i) {
+        i32 active = 0;
+        for (j = 0; j < max_pads; ++j)
+            if (TextInputDeviceLinksPc[j].available && TextInputDeviceLinksPc[j].device == i)
+                active = 1;
+        if (!active)
+            g_nupadScannedPads[i].mapped_to_pad = -1;
+    }
+    if (!FramePadActivatedPc) {
+        i32 initial = -1;
+        TextInputDeviceLinksPc[0].device = -1;
+        for (j = 0; j < count; ++j) {
+            FRAME_SCANNED_PAD_PC *pad = &g_nupadScannedPads[j];
+            if (!pad->is_valid)
+                continue;
+            if (initial == -1) {
+                initial = j;
+                pad->mapped_to_pad = 0;
+            }
+            if (pad->digital_buttons || pad->analog_left_x != 128 || pad->analog_left_y != 128 ||
+                pad->analog_right_x != 128 || pad->analog_right_y != 128) {
+                initial = j;
+                pad->mapped_to_pad = 0;
+                if (pad->digital_buttons_pressed & 0x840)
+                    break;
+            }
+        }
+        TextInputDeviceLinksPc[0].device = initial;
+        return;
+    }
+    for (i = 0; i < max_pads; ++i) {
+        i32 active = TextInputDeviceLinksPc[i].available;
+        if (active == 1 && !g_nupadScannedPads[TextInputDeviceLinksPc[i].device].is_valid) {
+            for (j = 0; j < count; ++j) {
+                FRAME_SCANNED_PAD_PC *pad = &g_nupadScannedPads[j];
+                if (pad->is_valid && (pad->digital_buttons_pressed & 0x800) &&
+                    (pad->mapped_to_pad == -1 || !TextInputDeviceLinksPc[pad->mapped_to_pad].available)) {
+                    TextInputDeviceLinksPc[i].device = j;
+                    pad->mapped_to_pad = i;
+                    pad->digital_buttons_pressed = 0;
+                    break;
+                }
+            }
+            if (j < count)
+                continue;
+        }
+        if (active)
+            continue;
+        TextInputDeviceLinksPc[i].device = -1;
+        if (TextInputDeviceLinksPc[0].available + TextInputDeviceLinksPc[1].available != 0 || i == 0)
+            for (j = 0; j < count; ++j) {
+                FRAME_SCANNED_PAD_PC *pad = &g_nupadScannedPads[j];
+                if (pad->mapped_to_pad == -1 || TextInputDeviceLinksPc[pad->mapped_to_pad].available != 1)
+                    pad->mapped_to_pad = -1;
+            }
+        for (j = 0; j < count; ++j) {
+            FRAME_SCANNED_PAD_PC *pad = &g_nupadScannedPads[j];
+            if (pad->mapped_to_pad != -1 || !pad->is_valid)
+                continue;
+            TextInputDeviceLinksPc[i].device = j;
+            pad->mapped_to_pad = i;
+            if (selected >= 0)
+                g_nupadScannedPads[selected].mapped_to_pad = -1;
+            selected = j;
+            if (pad->digital_buttons || pad->analog_left_x != 128 || pad->analog_left_y != 128 ||
+                pad->analog_right_x != 128 || pad->analog_right_x != 128 || (pad->digital_buttons_pressed & 0x840))
+                break;
+        }
+    }
+}
+
+/* Append to existing nupad.c; genuine NUAPI.pad_record layout is already asserted. */
+void __cdecl NuPadRecordSave(char *filepath) {
+    NUFILE file;
+    u32 size;
+    u8 *start;
+    FRAME_PAD_RECORD_PC *record = &nuapi.pad_record;
+    if (record->mode == NUPAD_RECORD && record->record.u8_ptr != record->buf_start) {
+        if (filepath != NULL) {
+            file = NuFileOpenDF(filepath, 1, curr_dat, 0);
+            if (file != 0) {
+                start = record->buf_start;
+                size = (u32)(record->record.u8_ptr - start);
+                NuFileWriteInt(file, (i32)size);
+                NuFileWrite(file, start, (i32)size);
+                NuFileWriteUnsignedInt(file, 0xe0fu);
+                NuFileClose(file);
+            }
+        }
+        record->should_end = 0;
+        record->mode = NUPAD_NORM;
+    }
+}

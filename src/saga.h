@@ -1819,13 +1819,22 @@ typedef struct NuKeyboardOwner_PC {
     PC_DI_FACTORY_PC *factory;
     i32 mouse_axes;
     i32 mouse_buttons;
+    i32 mouse_cooperative;
+    u8 mouse_enabled;
+    u8 unknown_41[3];
 #ifdef __cplusplus
+    NuKeyboardOwner_PC();
+    ~NuKeyboardOwner_PC();
+    void __thiscall SetMouseEnabledPc(u8 enabled);
+    const struct PC_DI_MOUSE_STATE_PC *PollMousePc();
+    i32 SetMouseCooperativePc(i32 value);
+    void RescanDevicesPc();
     void Setup(HWND window, HINSTANCE instance);
     void ScheduleRescan(f32 interval, i32 repetitions);
     void Shutdown();
 #endif
 } NuKeyboardOwner_PC;
-STATIC_ASSERT(sizeof(NuKeyboardOwner_PC) == 0x3c);
+STATIC_ASSERT(sizeof(NuKeyboardOwner_PC) == 0x44);
 STATIC_ASSERT(offsetof(NuKeyboardOwner_PC, device_count) == 0x0c);
 STATIC_ASSERT(offsetof(NuKeyboardOwner_PC, mouse) == 0x20);
 STATIC_ASSERT(offsetof(NuKeyboardOwner_PC, device) == 0x24);
@@ -16410,7 +16419,7 @@ STATIC_ASSERT(offsetof(PC_DI_DEVICE_METHODS_PC, set_cooperative_level) == 0x34);
 STATIC_ASSERT(offsetof(PC_DI_DEVICE_METHODS_PC, poll) == 0x64);
 STATIC_ASSERT(offsetof(PC_DI_FACTORY_METHODS_PC, create_device) == 0xc);
 STATIC_ASSERT(offsetof(PC_DI_FACTORY_METHODS_PC, enum_devices) == 0x10);
-STATIC_ASSERT(sizeof(NuKeyboardOwner_PC) == 0x3c);
+STATIC_ASSERT(sizeof(NuKeyboardOwner_PC) == 0x44);
 STATIC_ASSERT(offsetof(NuKeyboardOwner_PC, mouse) == 0x20);
 STATIC_ASSERT(offsetof(NuKeyboardOwner_PC, key_count) == 0x2c);
 STATIC_ASSERT(offsetof(NuKeyboardOwner_PC, factory) == 0x30);
@@ -16433,6 +16442,49 @@ STATIC_ASSERT(offsetof(PC_DI_DATA_FORMAT_PC, object_count) == 0x10);
 STATIC_ASSERT(offsetof(PC_DI_DEVICE_METHODS_PC, release) == 0x8);
 STATIC_ASSERT(offsetof(PC_DI_DEVICE_METHODS_PC, unacquire) == 0x20);
 STATIC_ASSERT(offsetof(PC_DI_DEVICE_METHODS_PC, get_state) == 0x24);
+
+struct PC_INPUT_SAMPLE_PC {
+    u8 analog[8];
+    u32 buttons;
+};
+struct PC_INPUT_RAW_SAMPLE_PC {
+    i16 axes[32];
+    u8 buttons[132];
+};
+struct PC_DI_MOUSE_STATE_PC {
+    i32 axes[3];
+    u8 buttons[8];
+};
+struct PC_INPUT_CAPTURE_PC {
+    u8 kind[3], unknown_03;
+    i16 value[3];
+};
+struct PC_INPUT_MOUSE_RUNTIME_PC {
+    i16 current[3], previous[3];
+    f32 accumulated[3], delta[3];
+    u8 unknown_24[12];
+    f32 position[2];
+    u8 buttons[16];
+    u8 unknown_48, port_activity[14], unknown_57;
+    i32 field_58;
+};
+STATIC_ASSERT(sizeof(PC_INPUT_SAMPLE_PC) == 12);
+STATIC_ASSERT(offsetof(PC_INPUT_SAMPLE_PC, buttons) == 8);
+STATIC_ASSERT(sizeof(PC_INPUT_RAW_SAMPLE_PC) == 196);
+STATIC_ASSERT(offsetof(PC_INPUT_RAW_SAMPLE_PC, buttons) == 0x40);
+STATIC_ASSERT(sizeof(PC_DI_MOUSE_STATE_PC) == 20);
+STATIC_ASSERT(offsetof(PC_DI_MOUSE_STATE_PC, buttons) == 12);
+STATIC_ASSERT(sizeof(PC_INPUT_CAPTURE_PC) == 10);
+STATIC_ASSERT(offsetof(PC_INPUT_CAPTURE_PC, value) == 4);
+STATIC_ASSERT(sizeof(PC_INPUT_MOUSE_RUNTIME_PC) == 0x5c);
+STATIC_ASSERT(offsetof(PC_INPUT_MOUSE_RUNTIME_PC, previous) == 6);
+STATIC_ASSERT(offsetof(PC_INPUT_MOUSE_RUNTIME_PC, accumulated) == 0xc);
+STATIC_ASSERT(offsetof(PC_INPUT_MOUSE_RUNTIME_PC, delta) == 0x18);
+STATIC_ASSERT(offsetof(PC_INPUT_MOUSE_RUNTIME_PC, position) == 0x30);
+STATIC_ASSERT(offsetof(PC_INPUT_MOUSE_RUNTIME_PC, buttons) == 0x38);
+STATIC_ASSERT(offsetof(PC_INPUT_MOUSE_RUNTIME_PC, port_activity) == 0x49);
+STATIC_ASSERT(offsetof(NuKeyboardOwner_PC, mouse_cooperative) == 0x3c);
+STATIC_ASSERT(offsetof(NuKeyboardOwner_PC, mouse_enabled) == 0x40);
 
 struct PC_INPUT_CONFIG_PC {
     char name[64];
@@ -16480,13 +16532,27 @@ struct PC_INPUT_DEVICE_PC {
     struct {
         u16 first, second;
     } reset_pairs[32];
-    u8 unknown_16e[0x17c - 0x16e];
+    u8 unknown_16e[2];
+    PC_INPUT_SAMPLE_PC sample;
 };
 struct PC_XINPUT_GAMEPAD_PC {
     u16 buttons;
     u8 left_trigger, right_trigger;
     i16 thumb_lx, thumb_ly, thumb_rx, thumb_ry;
 };
+struct PC_XINPUT_STATE_PC {
+    u32 packet_number;
+    PC_XINPUT_GAMEPAD_PC gamepad;
+};
+STATIC_ASSERT(sizeof(PC_XINPUT_STATE_PC) == 16);
+STATIC_ASSERT(offsetof(PC_XINPUT_STATE_PC, gamepad) == 4);
+STATIC_ASSERT(sizeof(PC_XINPUT_GAMEPAD_PC) == 12);
+STATIC_ASSERT(offsetof(PC_XINPUT_GAMEPAD_PC, left_trigger) == 2);
+STATIC_ASSERT(offsetof(PC_XINPUT_GAMEPAD_PC, right_trigger) == 3);
+STATIC_ASSERT(offsetof(PC_XINPUT_GAMEPAD_PC, thumb_lx) == 4);
+STATIC_ASSERT(offsetof(PC_XINPUT_GAMEPAD_PC, thumb_ly) == 6);
+STATIC_ASSERT(offsetof(PC_XINPUT_GAMEPAD_PC, thumb_rx) == 8);
+STATIC_ASSERT(offsetof(PC_XINPUT_GAMEPAD_PC, thumb_ry) == 10);
 struct PC_XINPUT_CAPABILITIES_PC {
     u8 type, subtype;
     u16 flags;
@@ -16495,14 +16561,44 @@ struct PC_XINPUT_CAPABILITIES_PC {
 };
 struct PC_INPUT_RUNTIME_PC {
     PC_INPUT_CONFIG_PC primary[64], secondary[64];
-    u8 unknown_4e00[0x34];
+    union {
+        u8 unknown_4e00[0x34];
+        struct {
+            i32 field_4e00;
+            u32 read_mask, action_mask, completed_mask;
+            u8 keyboard_polled, mouse_polled, suppress_key_1, field_4e13;
+            u8 unknown_4e14[0x20];
+        };
+    };
     PC_INPUT_DEVICE_PC devices[14];
-    u8 unknown_62fc[0x5c];
+    union {
+        u8 unknown_62fc[0x5c];
+        PC_INPUT_MOUSE_RUNTIME_PC mouse;
+    };
     PC_INPUT_BINDING_PC auxiliary_bindings[4][32];
     i32 auxiliary_ports[4];
-    u8 unknown_6568[0x9c];
+    union {
+        u8 unknown_6568[0x9c];
+        struct {
+            i32 axis_threshold, motion_threshold;
+            f32 ramp_seconds;
+            u8 capture_available, unknown_6575;
+            PC_INPUT_CAPTURE_PC staged_capture[14];
+            u8 unknown_6602[2];
+        };
+    };
     i32 preferred_key;
-    u8 unknown_6608[0x1dc];
+    union {
+        u8 unknown_6608[0x1dc];
+        struct {
+            i32 captured_port;
+            PC_INPUT_CAPTURE_PC captures[14];
+            u8 unknown_6698[0x82];
+            u8 first_mouse, unknown_671b;
+            PC_INPUT_RAW_SAMPLE_PC raw_sample;
+            u8 keyboard_ui_override, unknown_67e1, unknown_67e2[2];
+        };
+    };
     i32 shutdown_state;
     u8 unknown_67e8[8];
     PC_INPUT_COMMAND_PC commands[32];
@@ -16515,6 +16611,17 @@ struct PC_INPUT_RUNTIME_PC {
     void BindPreferredConfig(i32 mask, i32 port);
     void InitKeyboardProfiles();
     void AutoConfigurePadsPc(i32 count);
+    void ServicePendingCapturePc();
+    void AdvanceCaptureRecordsPc();
+    i32 ReadSamplePc(i32 port, u8 *, u8 *, u8 *, u8 *, u8 *, u8 *, u8 *, u8 *, u32 *, u8 *, i32 *);
+    i32 SampleDevicePc(i32 port, PC_INPUT_RAW_SAMPLE_PC *sample);
+    i32 UpdateMousePc();
+    void CaptureBindingPc(i32 port);
+    i32 TranslateBindingsPc(i32 port, PC_INPUT_SAMPLE_PC *, i32 valid, PC_INPUT_RAW_SAMPLE_PC *,
+                            PC_INPUT_MOUSE_RUNTIME_PC *, u8 **keys);
+    void ApplyMouseAxisPc(PC_INPUT_SAMPLE_PC *sample);
+    u32 CombineUiButtonsPc(i32 port, u32 buttons);
+    void NormalizeAxisPairPc(i16 *x, i16 *y);
     void InitXInputCaps(const PC_XINPUT_CAPABILITIES_PC *, PC_INPUT_DEVICE_PC *);
 };
 extern PC_INPUT_CONFIG_PC PcStaticInputConfigs[15];
@@ -16568,6 +16675,25 @@ STATIC_ASSERT(offsetof(PC_INPUT_BINDING_PC, kind) == 0x0);
 STATIC_ASSERT(offsetof(PC_INPUT_BINDING_PC, value) == 0x2);
 STATIC_ASSERT(offsetof(PC_INPUT_RUNTIME_PC, primary) == 0x0);
 STATIC_ASSERT(offsetof(PC_INPUT_RUNTIME_PC, keyboard_state) == 0x68b0);
+STATIC_ASSERT(offsetof(PC_INPUT_DEVICE_PC, sample) == 0x170);
+STATIC_ASSERT(offsetof(PC_INPUT_RUNTIME_PC, read_mask) == 0x4e04);
+STATIC_ASSERT(offsetof(PC_INPUT_RUNTIME_PC, action_mask) == 0x4e08);
+STATIC_ASSERT(offsetof(PC_INPUT_RUNTIME_PC, completed_mask) == 0x4e0c);
+STATIC_ASSERT(offsetof(PC_INPUT_RUNTIME_PC, keyboard_polled) == 0x4e10);
+STATIC_ASSERT(offsetof(PC_INPUT_RUNTIME_PC, mouse_polled) == 0x4e11);
+STATIC_ASSERT(offsetof(PC_INPUT_RUNTIME_PC, suppress_key_1) == 0x4e12);
+STATIC_ASSERT(offsetof(PC_INPUT_RUNTIME_PC, mouse) == 0x62fc);
+STATIC_ASSERT(offsetof(PC_INPUT_RUNTIME_PC, axis_threshold) == 0x6568);
+STATIC_ASSERT(offsetof(PC_INPUT_RUNTIME_PC, motion_threshold) == 0x656c);
+STATIC_ASSERT(offsetof(PC_INPUT_RUNTIME_PC, ramp_seconds) == 0x6570);
+STATIC_ASSERT(offsetof(PC_INPUT_RUNTIME_PC, capture_available) == 0x6574);
+STATIC_ASSERT(offsetof(PC_INPUT_RUNTIME_PC, staged_capture) == 0x6576);
+STATIC_ASSERT(offsetof(PC_INPUT_RUNTIME_PC, captured_port) == 0x6608);
+STATIC_ASSERT(offsetof(PC_INPUT_RUNTIME_PC, captures) == 0x660c);
+STATIC_ASSERT(offsetof(PC_INPUT_RUNTIME_PC, first_mouse) == 0x671a);
+STATIC_ASSERT(offsetof(PC_INPUT_RUNTIME_PC, raw_sample) == 0x671c);
+STATIC_ASSERT(offsetof(PC_INPUT_RUNTIME_PC, keyboard_ui_override) == 0x67e0);
+
 STATIC_ASSERT(offsetof(PC_XINPUT_CAPABILITIES_PC, motor_right) == 0x12);
 STATIC_ASSERT(offsetof(PC_XINPUT_GAMEPAD_PC, buttons) == 0x0);
 
@@ -20169,6 +20295,39 @@ extern "C" {
     i32 __cdecl NuSound3InitV(VARIPTR *, VARIPTR, i32, i32, ...);
     i32 __cdecl PCSoundInitializePc(PC_SOUND_INIT_CONFIG *);
     struct nusound_filename_info_s *__cdecl ConfigureMusic(char *, VARIPTR *, VARIPTR *);
+#ifdef __cplusplus
+}
+#endif
+
+#ifdef __cplusplus
+extern "C" {
+#endif
+    i32 __cdecl PcInputDeadzonePc(i32 port);
+    i32 __cdecl NuPadReadOutputsPc(i32 port, u8 *, u8 *, u8 *, u8 *, u8 *, u8 *, u8 *, u8 *, u32 *, u8 *, i32 *);
+    f32 __cdecl PcInputAspectRatioPc(void);
+    void __cdecl NuPadUpdatePads(void);
+    void __cdecl PcInputEndFramePc(void);
+    extern const u8 PcInputPovBitsPc[8];
+    extern u8 PcMouseAxisModesPc[3];
+    extern u32 PcMouseButtonsMaskPc, PcMousePressedMaskPc;
+    extern f32 PcMouseAxisIdlePc[3];
+    extern i32 PcMouseCurrentAnglePc, PcMouseTargetAnglePc;
+    extern f32 PcMouseRadiusPc, PcMouseInterpolationPc;
+    extern i8 PcMouseSampleIndexPc;
+#ifdef __cplusplus
+    extern PC_DI_MOUSE_STATE_PC PcMouseSamplesPc[2];
+}
+#endif
+
+#ifdef __cplusplus
+extern "C" {
+#endif
+    f32 __cdecl NuPow(f32 base, f32 exponent);
+    void __cdecl NuPadRecordSave(char *filepath);
+    i32 __cdecl NuFileWriteInt(NUFILE file, i32 value);
+    u32 __cdecl NuFileWriteUnsignedInt(NUFILE file, u32 value);
+    extern i32 NuPowFirstTimePc, NuPowCacheIndexPc, NuFile_SwapEndianOnWrite;
+    extern f32 NuPowBasesPc[32], NuPowExponentsPc[32], NuPowResultsPc[32];
 #ifdef __cplusplus
 }
 #endif

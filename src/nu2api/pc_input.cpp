@@ -405,3 +405,106 @@ extern "C" i32 __cdecl GamePadReadBackendPc(FRAME_PAD_PC *pad, i32 ignored) {
     (void)ignored;
     return NuPadRead(pad);
 }
+
+// Native NuKeyboardOwner_PC cohort, append to pc_input.cpp.
+i32 NuKeyboardOwner_PC::SetMouseCooperativePc(i32 value) {
+    i32 previous = mouse_cooperative;
+    if (previous == value)
+        return value;
+    mouse_cooperative = value;
+    if (mouse != NULL) {
+        mouse->methods->unacquire(mouse);
+        mouse->methods->set_cooperative_level(mouse, PCInputInstance_candidate, value ? 5 : 6);
+        mouse->methods->acquire(mouse);
+    }
+    return previous;
+}
+
+const PC_DI_MOUSE_STATE_PC *NuKeyboardOwner_PC::PollMousePc() {
+    if ((nu_keyboard_device_flags & 1) || mouse == NULL || !mouse_enabled)
+        return NULL;
+    if (mouse->methods->poll(mouse) < 0) {
+        mouse->methods->acquire(mouse);
+        i32 old = mouse_cooperative;
+        mouse_cooperative = old == 0;
+        SetMouseCooperativePc(old);
+        return NULL;
+    }
+    PcMouseSampleIndexPc ^= 1;
+    mouse->methods->get_state(mouse, 20, &PcMouseSamplesPc[PcMouseSampleIndexPc]);
+    return &PcMouseSamplesPc[PcMouseSampleIndexPc];
+}
+
+void NuKeyboardOwner_PC::RescanDevicesPc() {
+    PC_INPUT_RUNTIME_PC *runtime = (PC_INPUT_RUNTIME_PC *)nu_input_state;
+    device_count = 0;
+    PcXInputDeviceCount = 0;
+    for (i32 port = 0; port < 4; ++port) {
+        PC_XINPUT_CAPABILITIES_PC caps;
+        PC_INPUT_DEVICE_PC *record = &runtime->devices[port];
+        if (XInputGetCapabilities(port, 1, (XINPUT_CAPABILITIES *)&caps) == 0) {
+            record->capabilities_valid = 1;
+            runtime->InitXInputCaps(&caps, record);
+            record->config_dirty = 1;
+            ++device_count;
+        } else {
+            record->kind = 0;
+            record->capabilities_valid = 0;
+            record->device = NULL;
+        }
+    }
+    for (i32 port = 4; port < 10; ++port) {
+        PC_INPUT_DEVICE_PC *record = &runtime->devices[port];
+        if (record->device != NULL) {
+            record->device->methods->unacquire(record->device);
+            if (record->device != NULL) {
+                record->device->methods->release(record->device);
+                record->device = NULL;
+            }
+        }
+        record->kind = 0;
+        record->capabilities_valid = 0;
+    }
+    if (device != NULL) {
+        device->methods->unacquire(device);
+        if (device != NULL) {
+            device->methods->release(device);
+            device = NULL;
+        }
+        for (i32 port = 10; port < 14; ++port) {
+            runtime->devices[port].device = NULL;
+            runtime->devices[port].kind = 0;
+            runtime->devices[port].capabilities_valid = 0;
+        }
+    }
+    device_count = 0;
+    PcXInputDeviceCount = 0;
+    factory->methods->enum_devices(factory, 3, InputEnumDevicesPc, NULL, 1);
+    factory->methods->enum_devices(factory, 2, InputEnumDevicesPc, NULL, 1);
+    factory->methods->enum_devices(factory, 4, InputEnumDevicesPc, NULL, 1);
+}
+
+/* Add out-of-line definitions to existing pc_input.cpp. The actual global
+   nu_keyboard_owner in data.cpp then uses genuine VC8 CRT construction/destruction. */
+NuKeyboardOwner_PC::NuKeyboardOwner_PC() {
+    unknown_0000 = 0.0f;
+    unknown_0008 = 0.0f;
+    mouse_enabled = 1;
+    unknown_0004 = 0;
+    device_count = 0;
+    mouse_cooperative = 1;
+    poll_status = 0;
+    device = NULL;
+    nu_keyboard_page_index = 0;
+    memset(nu_keyboard_pages, 0, 256);
+    memset(nu_keyboard_pages + 256, 0, 256);
+}
+NuKeyboardOwner_PC::~NuKeyboardOwner_PC() {
+    unknown_0000 = 0.0f;
+    unknown_0004 = 0;
+    unknown_0008 = 0.0f;
+    device_count = 0;
+}
+void __thiscall NuKeyboardOwner_PC::SetMouseEnabledPc(u8 enabled) {
+    mouse_enabled = enabled;
+}

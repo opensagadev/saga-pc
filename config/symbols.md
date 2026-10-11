@@ -5491,3 +5491,22 @@ Hardware uses the real variadic sound configuration and conditional request-tabl
 Permanent loading now calls ConfigureMusic, publishes MusicInfo, calls SfxSetFileTable and then InitSfx in native order. The authentic NuMusic parser/files supplier is reused. Full Sample parsing/defaults/hash chains/filenames/request bits and sound backend are present together; a fabricated empty sound table does not substitute for the loader. Loading iterations now call ReadPads and UpdateGameMenu with original arguments. The live frame-polling producer at4fb130 remains a separate explicit missing dependency, so these input calls do not yet establish interactive menus.
 
 Canonical metadata/sample/voice/request/event state is reused. No duplicate sample array is added at2973974, which is SoundVoiceManager.samples. New sound state views, callback table and active-pad pointer keep original owning extents blank and receive zero allocation credit. Working filenames1601x64, names1601x32, reference counts1601 and configfilename256 are supported by PC access stride/successor anchors plus retained Android declarations. Smaller objects plus padding remain alternatives; Mac exports corroborate behavior but contain no DWARF/STABS private declaration proof. Native unbounded malformed-input behavior is retained, not claimed safe. The existing exact one-byte keyboard scalar is isolated as a complete BSS definition to preserve its true emitted extent, without trimming comparison data.
+
+### Native frame input and lifecycle GGG (2026-10-11)
+
+27 complete functions / 8,881 newly compared PC bytes close the real frame input
+producer and cache-reset callers. PC runtime view is 0x68b4, device stride0x17c,
+sample offset0x170; XInput state16/gamepad+4, mouse20 and raw sample196 have
+named asserted fields. Existing canonical device active_aspect is reused, with
+native cases1/2/3/default. The idle decay boundary is strictly greater than0.5.
+Original owning capacities remain qualified; source/ABI acceptance applies to
+initialized native-width records, finite representable arithmetic and real
+provider lifecycle domains. Complete switch tails and outputs remain retained.
+
+NuPow preserves the genuine32-entry cache and sentinel behavior. Record save
+uses genuine file writers; the compiled zero-return memory-card path is native
+NuMcWrite inlining. Keyboard activation is the actual C++ CRT constructor and
+atexit destructor, with the native one-byte mouse flags and page resets. No
+manual enable or synthetic initialization is added. XINPUT1_3 ordinals2/3/4 are
+actual DLL imports, without replacement implementations. Full PC boundaries,
+new outputs and finite nonexact qualifications are pinned in transfer-checkpoint.json.

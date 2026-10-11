@@ -20,17 +20,17 @@
   },
   "progress": {
     "text_bytes": 3471246,
-    "mapped_code_bytes": 1516353,
-    "matched_code_bytes": 235450,
-    "matching_percent": 6.782867016627459,
-    "fuzzy_coverage_percent": 29.732274707497616,
-    "mapped_functions": 5392,
-    "matched_functions": 2465,
-    "objdiff_fuzzy_percent": 69.512115,
-    "objdiff_total_code": 1485614,
+    "mapped_code_bytes": 1525234,
+    "matched_code_bytes": 236143,
+    "matching_percent": 6.80283102954962,
+    "fuzzy_coverage_percent": 29.932079940947517,
+    "mapped_functions": 5419,
+    "matched_functions": 2473,
+    "objdiff_fuzzy_percent": 69.56312,
+    "objdiff_total_code": 1494495,
     "image_bytes": 40067072,
-    "mapped_bytes": 2164285,
-    "mapping_percent": 5.401655004887804,
+    "mapped_bytes": 2173226,
+    "mapping_percent": 5.423970086958189,
     "mapping_denominator": "code_and_data_section_virtual_sizes",
     "mapping_sections": [
       {
@@ -38,14 +38,14 @@
         "kind": "code",
         "address": "0x401000",
         "size": 3471246,
-        "mapped_bytes": 1517547
+        "mapped_bytes": 1526428
       },
       {
         "name": ".rdata",
         "kind": "data",
         "address": "0x751000",
         "size": 646766,
-        "mapped_bytes": 30210
+        "mapped_bytes": 30270
       },
       {
         "name": ".data",
@@ -55,18 +55,18 @@
         "mapped_bytes": 616528
       }
     ],
-    "mapping_known_size_symbols": 9683,
-    "mapping_unknown_size_symbols": 5696,
-    "mapping_code_bytes": 1517547,
+    "mapping_known_size_symbols": 9722,
+    "mapping_unknown_size_symbols": 5712,
+    "mapping_code_bytes": 1526428,
     "mapping_code_total_bytes": 3471246,
-    "mapping_code_percent": 43.71764490329985,
-    "mapping_data_bytes": 646738,
+    "mapping_code_percent": 43.97348963455774,
+    "mapping_data_bytes": 646798,
     "mapping_data_total_bytes": 36018966,
-    "mapping_data_percent": 1.7955484896484812,
-    "mapping_code_data_bytes": 2164285,
+    "mapping_data_percent": 1.795715068555827,
+    "mapping_code_data_bytes": 2173226,
     "mapping_code_data_total_bytes": 39490212,
-    "mapping_code_data_percent": 5.480560600687583,
-    "matched_data_region_bytes": 637561
+    "mapping_code_data_percent": 5.50320165412128,
+    "matched_data_region_bytes": 637627
   },
   "newly_compared": [
     {
@@ -38554,7 +38554,7 @@
       "date": "2026-10-11",
       "scope": "Genuine sound initialization/SFX table producer and loading-time pad reads; runnable-first dependency closure",
       "baseline_commit": "91432069da26694dfd12a63d4d8fbb2d55e554b0",
-      "publication": "Exact pushed revision CI pending at commit",
+      "publication": "Verified a803b6f0973efced1b6d8e00885ff1f675f9aa53; CI38141919062 all13steps successful",
       "new_functions": 15,
       "new_unique_compared_PC_bytes": 6052,
       "new_exact_functions": 5,
@@ -38781,8 +38781,311 @@
       "next_connected_wave": "Attribute the actual startup wait; recover the earliest verified native dependency. Close real frame pad polling at 0x4fb130 and native per-frame cache reset at 0x6d9610 with genuine mouse/math/record/backend providers, then verify permanent loading and responsive menus before world activation.",
       "ongoing_goal": "active",
       "human_journal": "4f05ff4f1128afb40285ee57c6d99b0ca6f1fdf1d338dc50f9ab872287b083a7",
-      "report_publication_note": "Retail report describes immutable source/input snapshot before explanatory documentation publication. Source, map, tools, candidate/member configuration, source EXE, complete objects and report remain identical; only named explanatory documents changed."
+      "report_publication_note": "Retail report describes immutable source/input snapshot before explanatory documentation publication. Source, map, tools, candidate/member configuration, source EXE, complete objects and report remain identical; only named explanatory documents changed.",
+      "exact_revision_CI": {
+        "path": "build/analysis/startup-sound-input-main-v1/exact-CI-final.json",
+        "sha256": "e6a780e31d451d53a958e8f05272d0a059fb98b6a71037918c9b24b6d83b1e36"
+      },
+      "subsequent_runtime_evidence": [
+        {
+          "path": "build/analysis/startup-sound-input-main-v1/runtime-sfx-return-v1/observation/receipt.json",
+          "sha256": "5cde00fdc0cbf9eb8c276a3e0455c71c662fc0aff240e529203f3e57aa8dc5b7"
+        },
+        {
+          "path": "build/analysis/runtime-progress-independent-v1/accepted-sfx-return-evidence-review.json",
+          "sha256": "2a5778831bbd40eddbe0908d3d1613173d7c32a9ca2e9e990b95d40dac180bb9"
+        }
+      ]
+    },
+    {
+      "checkpoint": "GGG",
+      "date": "2026-10-11",
+      "scope": "Native frame input polling/reset and genuine keyboard lifecycle; runnable-first dependency order",
+      "baseline_commit": "a803b6f0973efced1b6d8e00885ff1f675f9aa53",
+      "publication": "Exact pushed revision CI pending at commit",
+      "new_functions": 27,
+      "new_unique_compared_PC_bytes": 8881,
+      "new_exact_functions": 8,
+      "new_exact_code_bytes": 693,
+      "new_exact_data_bytes": 66,
+      "newly_compared": [
+        {
+          "address": "0x004f04b0",
+          "symbol": "_NuFileWriteInt",
+          "complete_PC_bytes": 126,
+          "exact_match": false
+        },
+        {
+          "address": "0x004f0530",
+          "symbol": "_NuFileWriteUnsignedInt",
+          "complete_PC_bytes": 126,
+          "exact_match": false
+        },
+        {
+          "address": "0x004fadd0",
+          "symbol": "_NuPadRecordSave",
+          "complete_PC_bytes": 133,
+          "exact_match": false
+        },
+        {
+          "address": "0x004fb130",
+          "symbol": "_NuPadUpdatePads",
+          "complete_PC_bytes": 854,
+          "exact_match": false
+        },
+        {
+          "address": "0x005be630",
+          "symbol": "_NuPow",
+          "complete_PC_bytes": 341,
+          "exact_match": true
+        },
+        {
+          "address": "0x006d4880",
+          "symbol": "?NormalizeAxisPairPc@PC_INPUT_RUNTIME_PC@@QAEXPAF0@Z",
+          "complete_PC_bytes": 364,
+          "exact_match": false
+        },
+        {
+          "address": "0x006d4c10",
+          "symbol": "?AdvanceCaptureRecordsPc@PC_INPUT_RUNTIME_PC@@QAEXXZ",
+          "complete_PC_bytes": 127,
+          "exact_match": true
+        },
+        {
+          "address": "0x006d56b0",
+          "symbol": "??0NuKeyboardOwner_PC@@QAE@XZ",
+          "complete_PC_bytes": 82,
+          "exact_match": false
+        },
+        {
+          "address": "0x006d5710",
+          "symbol": "??1NuKeyboardOwner_PC@@QAE@XZ",
+          "complete_PC_bytes": 16,
+          "exact_match": true
+        },
+        {
+          "address": "0x006d5760",
+          "symbol": "?SetMouseCooperativePc@NuKeyboardOwner_PC@@QAEHH@Z",
+          "complete_PC_bytes": 89,
+          "exact_match": false
+        },
+        {
+          "address": "0x006d57c0",
+          "symbol": "?SetMouseEnabledPc@NuKeyboardOwner_PC@@QAEXE@Z",
+          "complete_PC_bytes": 10,
+          "exact_match": true
+        },
+        {
+          "address": "0x006d57d0",
+          "symbol": "?PollMousePc@NuKeyboardOwner_PC@@QAEPBUPC_DI_MOUSE_STATE_PC@@XZ",
+          "complete_PC_bytes": 131,
+          "exact_match": true
+        },
+        {
+          "address": "0x006d6460",
+          "symbol": "?ApplyMouseAxisPc@PC_INPUT_RUNTIME_PC@@QAEXPAUPC_INPUT_SAMPLE_PC@@@Z",
+          "complete_PC_bytes": 615,
+          "exact_match": false
+        },
+        {
+          "address": "0x006d74e0",
+          "symbol": "?SampleDevicePc@PC_INPUT_RUNTIME_PC@@QAEHHPAUPC_INPUT_RAW_SAMPLE_PC@@@Z",
+          "complete_PC_bytes": 1140,
+          "exact_match": false
+        },
+        {
+          "address": "0x006d7990",
+          "symbol": "?UpdateMousePc@PC_INPUT_RUNTIME_PC@@QAEHXZ",
+          "complete_PC_bytes": 998,
+          "exact_match": false
+        },
+        {
+          "address": "0x006d7d80",
+          "symbol": "?TranslateBindingsPc@PC_INPUT_RUNTIME_PC@@QAEHHPAUPC_INPUT_SAMPLE_PC@@HPAUPC_INPUT_RAW_SAMPLE_PC@@PAUPC_INPUT_MOUSE_RUNTIME_PC@@PAPAE@Z",
+          "complete_PC_bytes": 1360,
+          "exact_match": false
+        },
+        {
+          "address": "0x006d8370",
+          "symbol": "?CombineUiButtonsPc@PC_INPUT_RUNTIME_PC@@QAEIHI@Z",
+          "complete_PC_bytes": 285,
+          "exact_match": false
+        },
+        {
+          "address": "0x006d8490",
+          "symbol": "?CaptureBindingPc@PC_INPUT_RUNTIME_PC@@QAEXH@Z",
+          "complete_PC_bytes": 706,
+          "exact_match": false
+        },
+        {
+          "address": "0x006d8760",
+          "symbol": "?ServicePendingCapturePc@PC_INPUT_RUNTIME_PC@@QAEXXZ",
+          "complete_PC_bytes": 135,
+          "exact_match": false
+        },
+        {
+          "address": "0x006d9370",
+          "symbol": "_PcInputDeadzonePc",
+          "complete_PC_bytes": 36,
+          "exact_match": true
+        },
+        {
+          "address": "0x006d9610",
+          "symbol": "_PcInputEndFramePc",
+          "complete_PC_bytes": 49,
+          "exact_match": false
+        },
+        {
+          "address": "0x006da200",
+          "symbol": "?RescanDevicesPc@NuKeyboardOwner_PC@@QAEXXZ",
+          "complete_PC_bytes": 338,
+          "exact_match": false
+        },
+        {
+          "address": "0x006daa40",
+          "symbol": "?ReadSamplePc@PC_INPUT_RUNTIME_PC@@QAEHHPAE0000000PAI0PAH@Z",
+          "complete_PC_bytes": 617,
+          "exact_match": false
+        },
+        {
+          "address": "0x006dae50",
+          "symbol": "_NuPadReadOutputsPc",
+          "complete_PC_bytes": 79,
+          "exact_match": false
+        },
+        {
+          "address": "0x006df290",
+          "symbol": "_PcInputAspectRatioPc",
+          "complete_PC_bytes": 92,
+          "exact_match": false
+        },
+        {
+          "address": "0x007502a0",
+          "symbol": "??__Enu_keyboard_owner@@YAXXZ",
+          "complete_PC_bytes": 22,
+          "exact_match": true
+        },
+        {
+          "address": "0x00750760",
+          "symbol": "??__Fnu_keyboard_owner@@YAXXZ",
+          "complete_PC_bytes": 10,
+          "exact_match": true
+        }
+      ],
+      "progress": {
+        "text_bytes": 3471246,
+        "mapped_code_bytes": 1525234,
+        "matched_code_bytes": 236143,
+        "matching_percent": 6.80283102954962,
+        "fuzzy_coverage_percent": 29.932079940947517,
+        "mapped_functions": 5419,
+        "matched_functions": 2473,
+        "objdiff_fuzzy_percent": 69.56312,
+        "objdiff_total_code": 1494495,
+        "image_bytes": 40067072,
+        "mapped_bytes": 2173226,
+        "mapping_percent": 5.423970086958189,
+        "mapping_denominator": "code_and_data_section_virtual_sizes",
+        "mapping_sections": [
+          {
+            "name": ".text",
+            "kind": "code",
+            "address": "0x401000",
+            "size": 3471246,
+            "mapped_bytes": 1526428
+          },
+          {
+            "name": ".rdata",
+            "kind": "data",
+            "address": "0x751000",
+            "size": 646766,
+            "mapped_bytes": 30270
+          },
+          {
+            "name": ".data",
+            "kind": "data",
+            "address": "0x7ef000",
+            "size": 35372200,
+            "mapped_bytes": 616528
+          }
+        ],
+        "mapping_known_size_symbols": 9722,
+        "mapping_unknown_size_symbols": 5712,
+        "mapping_code_bytes": 1526428,
+        "mapping_code_total_bytes": 3471246,
+        "mapping_code_percent": 43.97348963455774,
+        "mapping_data_bytes": 646798,
+        "mapping_data_total_bytes": 36018966,
+        "mapping_data_percent": 1.795715068555827,
+        "mapping_code_data_bytes": 2173226,
+        "mapping_code_data_total_bytes": 39490212,
+        "mapping_code_data_percent": 5.50320165412128,
+        "matched_data_region_bytes": 637627
+      },
+      "fuzzy_delta_pp": 0.19980523344990075,
+      "accepted_proof": {
+        "accepted": true,
+        "remaining_holds": [],
+        "reviews": {
+          "prior": {
+            "path": "build/analysis/input-poll-prior-output-review-v1/sealed-final-v2-prior-review.json",
+            "sha256": "c262391b92f5cdb13d92f977c87b3e191bae7df029d3c26f7fd230c031f17df5"
+          },
+          "input18": {
+            "path": "build/analysis/input-poll-actual18-independent-v1/successor-v2/accepted-actual18-packet.json",
+            "sha256": "5b1eca4cd7ec56cdd6366eb7761e7273fb5927bdfccd055ca1b932e2e72518d7"
+          },
+          "math_record_lifecycle9": {
+            "path": "build/analysis/input-math-record-lifecycle-review-v1/sealed-nine-review.json",
+            "sha256": "cbf955e9a101dd38ba338db47ce289420a9b26e79050d0fd899ff1ca8fb8af48"
+          },
+          "data17": {
+            "path": "build/analysis/input-poll-data-owner-next-v1/actual-review-v1/complete-proof.json",
+            "sha256": "4bba3b1ddded1892c3f6216ebfbd6bca0218ccc79bcbbf0735304045325c798e"
+          }
+        },
+        "normal_manifest_sha256": "4989ed168b90acb6f34b17438c23e5a63382f2e23211cb15754ee4aeda201228",
+        "normal_report_sha256": "e48520ec6f732550345638a492c5077a41ce2ea614c77a22a9cc5a5ed3631c7b",
+        "source_exe_sha256": "af1976e59903b491c182b0a65d9d8a3c7150245e978d67226d7852ca667fb9a2",
+        "prior_complete_outputs": 16752,
+        "prior_legitimate_exact_rows_preserved": 6283,
+        "prior_exact_owner_copies_preserved": 8199,
+        "new_PC_code_bytes": 8881,
+        "new_exact_PC_code_bytes": 693,
+        "new_exact_data_bytes": 66,
+        "owning_extent_qualification": "Unknown new original data extents stay blank; no original allocation credit",
+        "native_parent_calls": "NuFrameEnd before tick reads; swap EndScene/inputreset/Present/leave",
+        "required_checks": "PASS796tests3skips/LLVM18format371tidy344/fullbuildlink5247functions11490data344objects/fullretailmatch"
+      },
+      "runtime": {
+        "receipt": {
+          "path": "build/analysis/input-poll-main-v1/runtime-normal-v1/observation/receipt.json",
+          "sha256": "6d936b513d868f0a310e6f45617d6699ad17e7dde746b4ac42793842f546b83a"
+        },
+        "summary": "The unchanged GGG source executable ran under Wine for 60.70 seconds before the\nconfigured deadline stopped it. The PID-attributed window captures at 6.31,\n20.83 and 58.83 seconds are identical black images. No fault was logged; no final\nwait stack or completed frame was captured. This establishes a persistent game\nwindow during the observation, not responsive input, completed rendering, loaded\nworld or playability. The actual wait remains unattributed by this ordinary run.\nAll 344 source objects and frozen input pins were unchanged. Crash-dialog\nsuppression was set and queried before launch; all owned game processes and\nsampled game/crash windows were absent after identity-bound cleanup. Termination\nwas by the test deadline, not natural game exit.\n",
+        "playable": false,
+        "cleanup_verified": true
+      },
+      "evidence": [
+        {
+          "path": "build/analysis/input-poll-main-v1/check-final-v2.log",
+          "sha256": "3a65ac6cebc4e02ae139846a412f4a54ab8d5dab36fe0ce74ce4db764968e010"
+        },
+        {
+          "path": "build/analysis/input-poll-main-v1/normal-build-final.log",
+          "sha256": "0ac9f3da2953628d24779764778f99e0765ce7741628dbb8189f3c281e62821d"
+        },
+        {
+          "path": "build/analysis/input-poll-main-v1/retail-match-final-v2.log",
+          "sha256": "aa83e89b51d67844ab195022a11b86c429f176f535e6025608f23962250c5f59"
+        }
+      ],
+      "required_checks": "PASS: 796 tests, three existing skips; LLVM18format371/tidy344; sourcebuild/link5247functions11490data344objects; fullretailmatch",
+      "next_connected_wave": "The next runnable dependency wave is the genuine save-folder registration\n(49 bytes) and save initialization/slot enumeration (385 bytes), restoring the\nconditional hardware call and original InitOnce arguments. Current startup skips\nboth producers; the permanent loader waits for saveload_status. Restore actual\nfolder publication and six-slot file enumeration before readiness is produced.\nThen connect the reviewed legal texture/material/color/vertex family (514 bytes),\nfont/text-table backing and the remaining permanent/world loaders. Keep native\nfailure behavior, caller order and matching; no forced readiness or substitute\nproviders. Research proposals remain local and uncompiled.\n\nWork is paused at the user's request after this validated checkpoint is pushed.\nResume only on the user's instruction, using the retained proposals and current\nsource; the recurring automation is paused.\n",
+      "ongoing_goal": "paused by user after publication",
+      "human_journal": "4f05ff4f1128afb40285ee57c6d99b0ca6f1fdf1d338dc50f9ab872287b083a7",
+      "report_publication_note": "Immutable source/input measurement precedes explanatory publication edits. Full source/objects/report/EXE unchanged; only named explanatory documents changed."
     }
   ],
-  "latest_checkpoint": "FFF"
+  "latest_checkpoint": "GGG"
 }

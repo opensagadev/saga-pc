@@ -61,7 +61,7 @@ f32 __cdecl NuFrameEnd(void) {
     STUBBED_NAMED(0x029803e0); /* PC accumulated frame time. */
     STUBBED_NAMED(0x006df270); /* PC FPS counter reads. */
     STUBBED_NAMED(0x004ff0c0); /* PC timing finalizer. */
-    STUBBED_NAMED(0x004fb130); /* PC frame-time finalizer. */
+    NuPadUpdatePads();
     NuTimeGetTicksPS(&nuapi.time.low, &nuapi.time.high);
     NuTimeGetTicksPS(&nuapi.time2.low, &nuapi.time2.high);
 

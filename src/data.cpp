@@ -28234,3 +28234,26 @@ extern "C" {
     volatile u8 PCSoundSampleWorkerStopPc;
     char *PCSampleFilenameExtensionPc = (char *)NuFileExt_wav_PC;
 }
+
+extern "C" {
+    i32 NuPowFirstTimePc = 1;
+    f32 NuPowBasesPc[32];
+    f32 NuPowExponentsPc[32];
+    f32 NuPowResultsPc[32];
+    i32 NuPowCacheIndexPc;
+    i32 NuFile_SwapEndianOnWrite;
+}
+
+extern "C" {
+    extern const u8 PcInputPovBitsPc[8] = {1, 3, 2, 6, 4, 12, 8, 9};
+    u8 PcMouseAxisModesPc[3];
+    u32 PcMouseButtonsMaskPc;
+    PC_DI_MOUSE_STATE_PC PcMouseSamplesPc[2];
+    u32 PcMousePressedMaskPc;
+    f32 PcMouseAxisIdlePc[3];
+    i32 PcMouseCurrentAnglePc;
+    i32 PcMouseTargetAnglePc;
+    f32 PcMouseRadiusPc;
+    i8 PcMouseSampleIndexPc;
+    f32 PcMouseInterpolationPc;
+}

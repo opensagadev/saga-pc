@@ -1512,3 +1512,34 @@ void *__cdecl NuFilePakLoadKey(char *filepath, VARIPTR *buffer, VARIPTR end, i32
 void *__cdecl NuFilePakLoad(char *filepath, VARIPTR *buffer, VARIPTR end, i32 alignment) {
     return NuFilePakLoadKey(filepath, buffer, end, alignment, NULL, 0);
 }
+
+/* Append to nufile.c: real existing NuFileWrite is intentionally in this TU. */
+typedef union PC_FILE_WRITE_WORD32 {
+    u32 value;
+    u8 bytes[4];
+} PC_FILE_WRITE_WORD32;
+STATIC_ASSERT(sizeof(PC_FILE_WRITE_WORD32) == 4);
+i32 __cdecl NuFileWriteInt(NUFILE file, i32 value) {
+    PC_FILE_WRITE_WORD32 input, output;
+    input.value = (u32)value;
+    output.value = input.value;
+    if (NuFile_SwapEndianOnWrite != 0) {
+        output.bytes[0] = input.bytes[3];
+        output.bytes[1] = input.bytes[2];
+        output.bytes[2] = input.bytes[1];
+        output.bytes[3] = input.bytes[0];
+    }
+    return NuFileWrite(file, &output.value, 4);
+}
+u32 __cdecl NuFileWriteUnsignedInt(NUFILE file, u32 value) {
+    PC_FILE_WRITE_WORD32 input, output;
+    input.value = value;
+    output.value = input.value;
+    if (NuFile_SwapEndianOnWrite != 0) {
+        output.bytes[0] = input.bytes[3];
+        output.bytes[1] = input.bytes[2];
+        output.bytes[2] = input.bytes[1];
+        output.bytes[3] = input.bytes[0];
+    }
+    return (u32)NuFileWrite(file, &output.value, 4);
+}

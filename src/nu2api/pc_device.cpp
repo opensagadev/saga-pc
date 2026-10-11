@@ -1450,3 +1450,23 @@ extern "C" void __cdecl NuPs2GetViewport(NUVPCURRENT *viewport) {
         memcpy(&viewport->max_z, &PCDeviceBackend.requested_viewport.max_z, sizeof(viewport->max_z));
     }
 }
+
+// Native platform aspect supplier, append to pc_device.cpp.
+extern "C" f32 __cdecl PcInputAspectRatioPc(void) {
+    f32 value;
+    switch (PcWindowOptions.aspect_mode) {
+        case 1:
+            value = 1.7777777910232544f;
+            break;
+        case 2:
+            value = 1.600000023841858f;
+            break;
+        case 3:
+            value = PCDeviceBackend.active_aspect;
+            break;
+        default:
+            value = 1.3333333730697632f;
+            break;
+    }
+    return value;
+}

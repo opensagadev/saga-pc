@@ -2549,3 +2549,14 @@ to genuine .vag/.wav literals. All sixteen complete initializers/relocations and
 prior exact data were independently reviewed. The canonical one-byte keyboard
 scalar at 0x29755c1 remains a complete one-byte exact BSS definition. No data
 trimming, constructor substitute or artificial runtime initialization was added.
+
+### Input/math working state GGG (2026-10-11)
+
+17 canonical input/math/file states retain complete native initializer evidence.
+The aspect reader reuses PCDeviceBackend.active_aspect+0x630 without duplicate
+storage. Keyboard's named working view grows from0x3c to0x44 for real cooperative
+and enabled fields; original allocation extent remains blank. New owning extents
+remain unknown/blank with zero original allocation credit. The existing four-byte
+endian scalar is reused. Actual CRT initializer pointer has its proved four-byte
+extent and exact relocation; all previous data outputs, including natural
+alignment-tail changes, are reviewed completely without cropping or masking.

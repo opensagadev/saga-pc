@@ -90,16 +90,21 @@ def write_fixtures(directory):
 
 
 def write_file_constants(directory):
-    """Reuse actual source literals without pulling the whole game data TU into a test."""
+    """Reuse production file literals and writer state in the isolated fixture."""
+    production = (ROOT / "src/data.cpp").read_text()
     definitions = re.findall(
         r'extern const char ((?:NuFileExt_\w+|NuFileSourcePathPC|SceneFileExtensionPc))'
         r'\[(\d+)\]\s*=\s*("(?:\\.|[^"\\])*")\s*;',
-        (ROOT / "src/data.cpp").read_text())
+        production)
     required = {"NuFileSourcePathPC", "SceneFileExtensionPc"}
     if not required.issubset({name for name, _, _ in definitions}):
         raise ValueError("DAT fixture is missing the production file source literals")
+    writer_state = re.findall(r"^\s*i32 NuFile_SwapEndianOnWrite;\s*$",
+                              production, re.MULTILINE)
+    if len(writer_state) != 1:
+        raise ValueError("DAT fixture needs the production file-writer endian state")
     source = directory / "file_constants.c"
-    source.write_text("/* Source constants for the isolated file-I/O fixture. */\n" + "".join(
+    source.write_text('#include "saga.h"\n' + writer_state[0].strip() + "\n" + "".join(
         f"const char {name}[{size}] = {value};\n" for name, size, value in definitions))
     return source
 
