@@ -25,12 +25,14 @@ import time
 if __package__:
     from .binary import COFF, BinaryError, relocate_function, write_function
     from .cc import environment, windows
+    from .check import clang_tool
     from .lib import ROOT, bindings_for, load_symbols, project, retail
     from . import rewrite
 else:
     sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
     from tools.binary import COFF, BinaryError, relocate_function, write_function
     from tools.cc import environment, windows
+    from tools.check import clang_tool
     from tools.lib import ROOT, bindings_for, load_symbols, project, retail
     from tools import rewrite
 
@@ -211,6 +213,9 @@ def run_one(symbol, unit, iterations, jobs, seed, apply, log, worker=None):
         (OUT / f"{symbol.strip('?@_')[:80]}.patch").write_text(patch)
         if apply:
             path.write_text(best_text, encoding="latin-1")
+            # Rewrites insert unformatted text; formatting never changes generated code.
+            subprocess.run([clang_tool("clang-format"), "-i", "--style=file", str(path)],
+                           cwd=ROOT, check=True)
             summary["applied"] = True
     return summary
 
@@ -230,8 +235,8 @@ def publish(unit, message):
     for attempt in range(4):
         if git("push", "-q", "origin", "HEAD").returncode == 0:
             return
-        # Someone else pushed: merge it (a conflict is left for the next attempt).
-        if git("pull", "-q", "--no-rebase", "--no-edit", "origin", "HEAD").returncode:
+        # Someone else pushed: merge it, keeping this machine's side of conflicting hunks.
+        if git("pull", "-q", "--no-rebase", "--no-edit", "-X", "ours", "origin", "HEAD").returncode:
             git("merge", "--abort")
         time.sleep(2 ** attempt)
     print(f"{time.strftime('%H:%M:%S')} push failed; the commit stays local until the next push", flush=True)
