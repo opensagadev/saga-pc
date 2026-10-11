@@ -61,3 +61,4 @@
 {"symbol": "_ObjHitObj", "unit": "src/legoapi/hits.c", "size": 5764, "start": 62.635956, "best": 62.65195, "exact": false, "seconds": 371.6, "instructions": [64.68, 64.68], "rules": 3, "applied": true}
 {"symbol": "_PushCode", "unit": "src/legoapi/pushing.cpp", "size": 3127, "start": 36.350243, "best": 36.554348, "exact": false, "seconds": 383.1, "instructions": [31.72, 44.57], "rules": 3, "applied": true}
 {"symbol": "_AddVariableShotDebrisEffectTimed5", "unit": "src/legoapi/parts.c", "size": 2846, "start": 39.913105, "best": 40.545586, "exact": false, "seconds": 374.8, "instructions": [42.29, 45.01], "rules": 3, "applied": true}
+{"symbol": "_GameObjectStuffAfterAnimation", "unit": "src/legoapi/gameobjects.c", "size": 3904, "start": 27.10863, "best": 27.280203, "exact": false, "seconds": 383.3, "instructions": [23.74, 23.74], "rules": 3, "applied": true}

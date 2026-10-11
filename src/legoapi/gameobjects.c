@@ -1176,17 +1176,17 @@ void __cdecl GameObjectStuffAfterAnimation(void) {
                     NuVecMtxRotate(&velocity, &velocity, &matrix);
                     {
                         ADDPART_PC part = Default_ADDPART;
-                        part.matrix = &matrix;
                         part.velocity = &velocity;
+                        part.matrix = &matrix;
                         part.part_id = 90;
-                        part.gravity = -10.0f;
                         part.flags = 0x10;
+                        part.gravity = -10.0f;
                         part.field_14 = 0.05f;
                         part.field_18 = 0.05f;
                         part.special = &WORLD->level_objects[90].special;
+                        part.stop_fn = PartStop_Flickerer;
                         part.update_fn = PartUpdate_Basketball;
                         part.impact_fn = PartImpact_Basketball;
-                        part.stop_fn = PartStop_Flickerer;
                         part.draw_fn = PartDraw_Flickerer;
                         part.time_step = FRAMETIME;
                         AddPart(&part);
@@ -1232,11 +1232,11 @@ void __cdecl GameObjectStuffAfterAnimation(void) {
             NUMTX matrix;
             NUVEC velocity;
             i32 joint = drawn ? data->rocket_joint : -1;
-            if (joint != -1 && model->points_of_interest[joint] != NULL)
+            if (-1 != joint && model->points_of_interest[joint] != NULL)
                 matrix = object->locator_matrices[joint];
             else {
                 NuMtxSetRotationX(&matrix, 0x1555);
-                NuMtxRotateY(&matrix, (u16)(object->field_0x276 + 0x8000));
+                NuMtxRotateY(&matrix, (u16)(0x8000 + object->field_0x276));
                 matrix.m30 = object->collision_position.x;
                 matrix.m31 = object->collision_position.y;
                 matrix.m32 = object->collision_position.z;
@@ -1255,15 +1255,15 @@ void __cdecl GameObjectStuffAfterAnimation(void) {
                 part.velocity = &velocity;
                 part.field_14 = 0.1f;
                 part.field_18 = 0.1f;
-                part.special = &WORLD->level_objects[232].special;
                 part.part_id = 232;
+                part.special = &WORLD->level_objects[232].special;
                 part.flags = player ? 0xc11b : 0xc31b;
                 part.owner = object;
                 part.hostility_group = object->hostility_group;
-                part.kill_fn = BobaRocket_Kill;
                 part.move_fn = BobaRocket_Move;
-                part.deflect_fn = BobaRocket_Deflect;
+                part.kill_fn = BobaRocket_Kill;
                 part.collision_fn = PartCollide_3D;
+                part.deflect_fn = BobaRocket_Deflect;
                 part.time_step = FRAMETIME;
                 part.gravity = 0.0f;
                 part.field_a4 = player ? (f32)(4.0 + 2.0 * ((f64)qrand() * (f64)(1.0f / 65535.0f))) : 10.0f;
