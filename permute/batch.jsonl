@@ -16,3 +16,4 @@
 {"symbol": "_Text3DEx", "unit": "src/legoapi/text.c", "size": 2616, "start": 21.147446, "best": 35.97518, "exact": false, "seconds": 252.6, "instructions": [23.66, 21.38], "applied": true}
 {"symbol": "_UpdateGameObjects", "unit": "src/legoapi/gameobjects.c", "size": 6847, "start": 54.096188, "best": 55.446335, "exact": false, "seconds": 762.5, "instructions": [57.17, 57.3], "applied": true}
 {"symbol": "_ScanTerrain", "unit": "src/nu2api/terrain_scan.cpp", "size": 7479, "start": 22.225605, "best": 27.209938, "exact": false, "seconds": 796.0, "instructions": [9.04, 20.2], "applied": true}
+{"symbol": "_TerrainPlayer", "unit": "src/legoapi/terrain_player_pc.c", "size": 7994, "start": 53.880543, "best": 55.268314, "exact": false, "seconds": 857.3, "instructions": [60.77, 61.28], "applied": true}

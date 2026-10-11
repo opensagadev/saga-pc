@@ -124,8 +124,8 @@ void __cdecl TerrainPlayer(GAMEOBJECT *object) {
     TERRAIN_PLAYER_IMPACT_PC impact_records[8];
     i32 impact_count;
 
-    entry_pad = object->pad;
     entry_underwater = object->is_underwater;
+entry_pad = object->pad;
     entry_intersects_water = object->water_intersects;
     entry_menu_id = GetMenuID();
     entry_platform = object->supporting_platform_id;
@@ -202,8 +202,8 @@ void __cdecl TerrainPlayer(GAMEOBJECT *object) {
                 shadow_grounding = 1;
                 retain_floor = (api->flags_1fc_word & 0x10) != 0;
             } else {
-                retain_floor = !ai_controlled && (api->flags_1fc_word & 0x10) != 0;
-                if ((object->flags_ef4 & 0x40) != 0) {
+                retain_floor = !ai_controlled && (0x10 & api->flags_1fc_word) != 0;
+                if (0 != (object->flags_ef4 & 0x40)) {
                     object->flags_ef4 &= ~0x40u;
                     shadow_grounding = 1;
                 } else {
@@ -224,7 +224,7 @@ void __cdecl TerrainPlayer(GAMEOBJECT *object) {
 
             walkable_floor = api->floor_height != 2000000.0f && object->surface_normal.y > NuTrigTable[0x238e];
             probe_edge =
-                walkable_floor ? (player_edge_probe || (CInfo[object->character_context].parameter & 1) != 0) : 0;
+                walkable_floor ? (player_edge_probe || 0 != ((CInfo[object->character_context].parameter & 1))) : 0;
             if (probe_edge && api->movement_direction_x == 0.0f && api->movement_direction_z == 0.0f &&
                 (api->velocity.x != 0.0f || api->velocity.z != 0.0f)) {
                 NUVEC next_position;
@@ -249,7 +249,7 @@ void __cdecl TerrainPlayer(GAMEOBJECT *object) {
 
             surface = ((i8)(api->jump_animation_state));
             slippery =
-                api->field_281 != 0 && surface >= 0 && surface <= 31 && 1.0f > TerSurface[surface].movement_scale;
+                api->field_281 != 0 && surface >= 0 && surface <= 31 && TerSurface[surface].movement_scale < 1.0f;
             if (!slippery && AnimSpeed(api->character_model, CurrentAnim(&api->anim_packet)) == 0.0f &&
                 (api->character_data->model_flags & 0x800) == 0) {
                 movement_threshold = api->character_data->game_character->stop_speed * api->origin_scale;
@@ -283,7 +283,7 @@ void __cdecl TerrainPlayer(GAMEOBJECT *object) {
             api->position.x += api->velocity.x * FRAMETIME;
             api->position.y += api->velocity.y * FRAMETIME;
             api->position.z += api->velocity.z * FRAMETIME;
-        } else if (shadow_grounding || retain_floor || (WORLD->current_level->flags & 0x10) != 0) {
+        } else if (shadow_grounding || retain_floor || 0 != (WORLD->current_level->flags & 0x10)) {
 
             api->respawn_timer = 0.0f;
             if (!skip_motion) {
@@ -647,7 +647,7 @@ void __cdecl TerrainPlayer(GAMEOBJECT *object) {
                 const PLAYERCHARACTERCONFIG_PC *data;
 
                 data = platform_owner->character_data->game_character;
-                if ((data->flags_090 & 0x1000) != 0 && platform_owner->position.y > api->position.y &&
+                if ((data->flags_090 & 0x1000) != 0 && api->position.y < platform_owner->position.y &&
                     platform_owner->horizontal_velocity_magnitude > 0.5f * data->run_speed) {
                     StartFlatten(platform_owner, object);
                 }
@@ -693,9 +693,9 @@ void __cdecl TerrainPlayer(GAMEOBJECT *object) {
                         i32 surface;
                         NUVEC *normal;
 
-                        surface =
-                            ((i8)(impact_count == -1 ? object->contact_material_word : impact_records[i].material[0]));
                         normal = impact_count == -1 ? &object->contact_normal : &impact_records[i].normal;
+surface =
+                            ((i8)(impact_count == -1 ? object->contact_material_word : impact_records[i].material[0]));
                         if (((u32)(surface)) > 31) {
                             continue;
                         }
