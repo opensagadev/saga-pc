@@ -391,7 +391,7 @@ void __cdecl NuLgtArcLaserDraw(i32 paused) {
         vertices[5].z = laser->end.z;
         vertices[5].w = 1.0f;
         NuVec4MtxTransformVU0(&vertices[5], &vertices[5], clip);
-        if (!(vertices[4].w >= 0.5f) && !(vertices[5].w >= 0.5f))
+        if (!(vertices[4].w >= 0.5f) && !(0.5f <= vertices[5].w))
             continue;
         if (vertices[4].w < 0.5f) {
 
@@ -399,8 +399,8 @@ void __cdecl NuLgtArcLaserDraw(i32 paused) {
 
             denominator = vertices[5].w - vertices[4].w;
             vertices[6].x = (laser->start.x - laser->end.x) * numerator / denominator + laser->end.x;
-            vertices[6].y = (laser->start.y - laser->end.y) * numerator / denominator + laser->end.y;
-            vertices[6].z = (laser->start.z - laser->end.z) * numerator / denominator + laser->end.z;
+            vertices[6].y = laser->end.y + (numerator * ((laser->start.y - laser->end.y)) / denominator);
+            vertices[6].z = laser->end.z + ((laser->start.z - laser->end.z) * numerator / denominator);
         } else {
             vertices[6].x = laser->start.x;
             vertices[6].y = laser->start.y;
@@ -445,13 +445,13 @@ void __cdecl NuLgtArcLaserDraw(i32 paused) {
         vertices[7].w -= vertices[6].w;
 
         length = NuFsqrt(vertices[7].x * vertices[7].x + vertices[7].y * vertices[7].y + vertices[7].z * vertices[7].z);
-        if (!(length > 0.0f))
+        if (!(0.0f < length))
             continue;
         vertices[10].x = laser->bend.x;
         vertices[10].y = laser->bend.y;
         vertices[10].z = laser->bend.z;
 
-        factor = vertices[10].x * vertices[10].x + vertices[10].y * vertices[10].y + vertices[10].z * vertices[10].z;
+        factor = (vertices[10].y * vertices[10].y) + (vertices[10].x * vertices[10].x) + vertices[10].z * vertices[10].z;
         if (factor > 0.0f)
             factor = laser->bend_amount / NuFsqrt(factor);
         vertices[10].x *= factor;
@@ -460,7 +460,7 @@ void __cdecl NuLgtArcLaserDraw(i32 paused) {
         NuLgtSeed = laser->seed;
 
         step = laser->segment_length / length;
-        step = 1.0f < step ? 1.0f : step;
+        step = step > 1.0f ? 1.0f : step;
 
         u = NuLgtArcMtl[0].u0;
         u1 = NuLgtArcMtl[0].u1;
@@ -486,7 +486,7 @@ void __cdecl NuLgtArcLaserDraw(i32 paused) {
             } else {
 
                 angle = ((i32)(32768.0f * next) >> 1) & 0x7fff;
-                vertices[5].x = next * vertices[7].x + vertices[6].x + vertices[10].x * NuTrigTable[angle];
+                vertices[5].x = vertices[7].x * next + vertices[6].x + vertices[10].x * NuTrigTable[angle];
                 vertices[5].y = next * vertices[7].y + vertices[6].y + vertices[10].y * NuTrigTable[angle];
                 vertices[5].z = next * vertices[7].z + vertices[6].z + vertices[10].z * NuTrigTable[angle];
             }
@@ -501,14 +501,14 @@ void __cdecl NuLgtArcLaserDraw(i32 paused) {
             if (1.0f - 1.5f * step > progress && NuLgtSeed != 0) {
 
                 random = (f32)((NU_LGT_RAND() & 0xff) - 128);
-                jitter_x = perpendicular.x * random * laser->wobble * reciprocal;
+                jitter_x = laser->wobble * (perpendicular.x * random) * reciprocal;
                 jitter_y = perpendicular.y * random * laser->wobble * reciprocal;
             }
             vertices[0].x = vertices[5].x - perpendicular.x * reciprocal + jitter_x;
             vertices[0].y = vertices[5].y - perpendicular.y * reciprocal + jitter_y;
             vertices[0].z = vertices[5].z;
             vertices[2].x = perpendicular.x * reciprocal + vertices[5].x + jitter_x;
-            vertices[2].y = perpendicular.y * reciprocal + vertices[5].y + jitter_y;
+            vertices[2].y = jitter_y + (perpendicular.y * reciprocal + vertices[5].y);
             vertices[2].z = vertices[5].z;
             if (!(vertices[0].x < -50.0f && vertices[1].x < 50.0f) &&
                 !(vertices[0].x > 700.0f && vertices[1].x > 700.0f) &&

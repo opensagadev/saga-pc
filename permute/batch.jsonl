@@ -23,3 +23,10 @@
 {"symbol": "_GameObjectStuffAfterAnimation", "unit": "src/legoapi/gameobjects.c", "size": 3904, "start": 27.10863, "best": 27.10863, "exact": false, "seconds": 224.0, "instructions": [23.74, 23.74]}
 {"symbol": "?NewScanHandelSubsetPc@@YAPAFPAFPAUnuvec_s@@1MH@Z", "unit": "src/nu2api/terrain_query.cpp", "size": 3290, "start": 27.961832, "best": 29.578457, "exact": false, "seconds": 671.4, "instructions": [20.68, 20.09], "applied": true}
 {"symbol": "_CutScene_DrawCharacter", "unit": "src/legoapi/cutscene_runtime.cpp", "size": 3767, "start": 56.142082, "best": 60.029865, "exact": false, "seconds": 424.2, "instructions": [44.37, 44.74], "applied": true}
+{"symbol": "_DebReAlloc2", "unit": "src/legoapi/debris_engine.c", "size": 2337, "start": 36.482307, "best": 38.21229, "exact": false, "seconds": 274.4, "instructions": [25.76, 25.9], "applied": true}
+{"symbol": "_ApplyGravity", "unit": "src/legoapi/move.c", "size": 2543, "start": 37.686356, "best": 56.475388, "exact": false, "seconds": 412.7, "instructions": [57.39, 57.24], "applied": true}
+{"symbol": "_UpdatePushBlocks", "unit": "src/legoapi/gizpushblocks.cpp", "size": 4366, "start": 63.5025, "best": 63.92, "exact": false, "seconds": 485.2, "instructions": [47.95, 47.88], "applied": true}
+{"symbol": "_LoadAreaCharacters", "unit": "src/legoapi/areas.cpp", "size": 3370, "start": 55.391018, "best": 55.838993, "exact": false, "seconds": 379.6, "instructions": [59.7, 59.99], "applied": true}
+{"symbol": "_NuLgtArcLaserDraw", "unit": "src/nu2api/nulgtlaser.c", "size": 2506, "start": 44.053764, "best": 69.696236, "exact": false, "seconds": 339.1, "instructions": [49.63, 50.0], "applied": true}
+{"symbol": "_KillGameObject", "unit": "src/legoapi/gameobjects.c", "size": 3750, "start": 27.113327, "best": 27.594963, "exact": false, "seconds": 366.9, "instructions": [32.99, 32.84], "applied": true}
+{"symbol": "_NuTimeBarSetRender", "unit": "src/nu2api/nutimebar.c", "size": 2130, "start": 34.684128, "best": 35.630157, "exact": false, "seconds": 280.3, "instructions": [28.4, 28.6], "applied": true}

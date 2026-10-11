@@ -549,7 +549,7 @@ void __cdecl ApplyGravity(GAMEOBJECT *object, f32 *gravity, f32 hover_height, f3
             return;
         }
     } else if (context == 0x4b) {
-        if (object->suit == NULL || (((MOVEMENT_SUIT_PC *)object->suit)->store_flag & 0x10) == 0) {
+        if (object->suit == NULL || 0 == ((((MOVEMENT_SUIT_PC *)object->suit)->store_flag & 0x10))) {
             return;
         }
         acceleration = -1.0f;
@@ -594,7 +594,7 @@ void __cdecl ApplyGravity(GAMEOBJECT *object, f32 *gravity, f32 hover_height, f3
                 seek_rate = 8.0f;
             }
         }
-    } else if (context == 0x5d && object->context_hover_target_y != 1.0e9f) {
+    } else if (context == 0x5d && 1.0e9f != object->context_hover_target_y) {
         target_velocity = (object->position.y - object->context_hover_target_y) * character->game_character->gravity *
                           ApplyGravityVelocityFactor;
         object->velocity.y = SeekValF(object->velocity.y, target_velocity, 8.0f);
@@ -642,7 +642,7 @@ void __cdecl ApplyGravity(GAMEOBJECT *object, f32 *gravity, f32 hover_height, f3
                 return;
             }
             if ((object->field_283 == 0x10 || object->field_283 == 7) &&
-                (VehicleArea != 0 || (character->game_character->flags_090 & 0x40) == 0 ||
+                (0 != VehicleArea || (character->game_character->flags_090 & 0x40) == 0 ||
                  object->takeover_source != NULL)) {
 
                 GetVehicleHoverHeight(object, &separation);
@@ -663,7 +663,7 @@ void __cdecl ApplyGravity(GAMEOBJECT *object, f32 *gravity, f32 hover_height, f3
                 object->velocity.y = SeekValF(object->velocity.y, target_velocity, seek_rate);
                 return;
             }
-            if (PODSPRINT_ADATA != NULL && PODSPRINT_ADATA == world->area && (i8)flags < 0) {
+            if (PODSPRINT_ADATA != NULL && world->area == PODSPRINT_ADATA && (i8)flags <= -1) {
                 tube = Tube_InAnyCylinder(world, object, 1);
                 if (tube != NULL) {
                     ground_height = &tube->top;
@@ -680,10 +680,10 @@ void __cdecl ApplyGravity(GAMEOBJECT *object, f32 *gravity, f32 hover_height, f3
             floor_height += offset;
             height += offset;
             data = character->game_character;
-            if ((data->flags_094 & 0x20) != 0 || (PODSPRINT_ADATA != NULL && PODSPRINT_ADATA == WORLD->area) ||
+            if ((data->flags_094 & 0x20) != 0 || (PODSPRINT_ADATA != NULL && WORLD->area == PODSPRINT_ADATA) ||
                 !(GamePlayTimer.time_elapsed >= 1.0f) || !(object->collision_origin.y > height * 5.0f + floor_height)) {
                 object->terrain_origin_floor_offset = height;
-                pull = PODSPRINT_ADATA != NULL && PODSPRINT_ADATA == WORLD->area ? PODSPRINT_GRAVITY : data->gravity;
+                pull = PODSPRINT_ADATA != NULL && WORLD->area == PODSPRINT_ADATA ? PODSPRINT_GRAVITY : data->gravity;
 
                 if (object->model_draw_result != 0 || FRAMETIME < ApplyGravityMinimumFrameTime) {
                     target_velocity =
@@ -738,8 +738,8 @@ void __cdecl ApplyGravity(GAMEOBJECT *object, f32 *gravity, f32 hover_height, f3
             }
         }
         middle = (object->position.y - object->character_bottom * object->origin_scale) +
-                 (object->character_top - object->character_bottom) * 0.5f * object->origin_scale;
-        if ((object->field_281 == 0 && object->contact_count != 0 && object->contact_position.y < middle &&
+                 0.5f * ((object->character_top - object->character_bottom)) * object->origin_scale;
+        if ((object->field_281 == 0 && object->contact_count != 0 && middle > object->contact_position.y &&
              object->anim_blending == 0 &&
              ((MOVEMENT_MODEL_PC *)object->character_model)->model_data_b[object->animation_index] != NULL &&
              IsAFallAnim(object->animation_index) != 0) ||
@@ -752,7 +752,7 @@ void __cdecl ApplyGravity(GAMEOBJECT *object, f32 *gravity, f32 hover_height, f3
     }
     previous_velocity = object->velocity.y;
     if ((object->field_281 & 0xfd) == 0 || object->id == id_DRAGBOMB) {
-        object->velocity.y = acceleration * FRAMETIME + previous_velocity;
+        object->velocity.y = previous_velocity + (acceleration * FRAMETIME);
     }
     if (object->character_context == 0x2b) {
         if (object->wall_run_state == 3) {
@@ -6848,7 +6848,7 @@ void __cdecl JumpCode(GAMEOBJECT *object, i32 jump_pressed, i32 jump_held, u32 a
     world = WorldInfo_CurrentlyActive();
 
     flip_kind = 0;
-    player_flag = object->flags_1fc & 0x80;
+player_flag = object->flags_1fc & 0x80;
     force_flip = 0;
     if (player_flag != 0 || (object->portal_flags & 0x100) != 0) {
         if (JumpBackFlipActionPc != -1 && object->character_model->model_data_b[JumpBackFlipActionPc] != NULL)

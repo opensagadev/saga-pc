@@ -214,7 +214,7 @@ extern "C" void __cdecl UpdatePushBlocks(void *world_ptr, void *, f32) {
             if ((p->packed_state_flags & 0x200u) != 0) {
                 if (p->snap_timer <= snap_time) {
                     f32 fraction = p->snap_timer / snap_time;
-                    i32 angle = static_cast<i32>(static_cast<f64>(fraction) * 16384.0 + 49152.0 + 16384.0);
+                    i32 angle = static_cast<i32>(16384.0 + (static_cast<f64>(fraction) * 16384.0 + 49152.0));
                     fraction = NuTrigTable[(angle >> 1) & 0x7fff];
                     NUVEC *position = p->position;
                     position->x =
@@ -248,9 +248,9 @@ extern "C" void __cdecl UpdatePushBlocks(void *world_ptr, void *, f32) {
                     f32 y = target->y - position->y;
                     f32 z = target->z - position->z;
                     f32 y_squared = y * y;
-                    f32 radius = p->snap_distance;
+                    
                     if (!(static_cast<f64>(x) * x + y_squared + static_cast<f64>(z) * z <
-                          static_cast<f64>(radius) * radius))
+                          static_cast<f64>(p->snap_distance) * p->snap_distance))
                         continue;
                     if (SnapPosTaken(reinterpret_cast<WORLDINFO *>(world), reinterpret_cast<PUSH_BLOCK_PC *>(p), target,
                                      index) != 0)
@@ -279,7 +279,7 @@ extern "C" void __cdecl UpdatePushBlocks(void *world_ptr, void *, f32) {
                 }
             }
         }
-        if ((p->packed_state_flags & 0x40u) == 0 &&
+        if (0 == (p->packed_state_flags & 0x40u) &&
             ((p->packed_state_flags & 3u) == 2u || p->position->x != p->snap_origin.x ||
              p->position->z != p->snap_origin.z)) {
             p->target_velocity.z = p->target_velocity.x = p->velocity.z = p->velocity.x = 0.0f;
@@ -384,7 +384,7 @@ extern "C" void __cdecl UpdatePushBlocks(void *world_ptr, void *, f32) {
         absolute_y.bits &= 0x7fffffffu;
         f32 y = (corners[0].y - absolute_y.value) - PushGroundOffsetPc;
         for (i32 j = 0; j < 4; ++j)
-            corners[j].y = static_cast<f64>(y) + static_cast<f64>(0.025f);
+            corners[j].y = (static_cast<f64>(0.025f)) + (static_cast<f64>(y));
         corners[0].x -= left;
         corners[0].z -= back;
         corners[1].x += right;
@@ -420,7 +420,7 @@ extern "C" void __cdecl UpdatePushBlocks(void *world_ptr, void *, f32) {
         f64 low = static_cast<f64>(p->ground_height) - PushBlockGapEpsilonPc;
         f64 high = static_cast<f64>(p->ground_height) + PushBlockGapEpsilonPc;
         if ((heights[0] < low && heights[1] < low && heights[2] < low && heights[3] < low) ||
-            (heights[0] > high && heights[1] > high && heights[2] > high && heights[3] > high)) {
+            (heights[0] > high && high < heights[1] && heights[2] > high && heights[3] > high)) {
             p->ground_height =
                 ((static_cast<f64>(heights[0]) + heights[1]) + heights[2] + heights[3]) * 0.25 + PushBlockGapEpsilonPc;
             p->packed_state_flags |= 8u;
@@ -460,7 +460,7 @@ extern "C" void __cdecl UpdatePushBlocks(void *world_ptr, void *, f32) {
                 p->target_velocity.x = p->target_velocity.z = p->velocity.x = p->velocity.z = 0.0f;
                 NuSpecialUpdate(&p->special);
                 for (i32 j = 0; j < p->end_position_count; ++j) {
-                    if (NuSpecialExistsFn(&p->end_position_specials[j]) != 0) {
+                    if (0 != NuSpecialExistsFn(&p->end_position_specials[j])) {
                         NUMTX *matrix = NuSpecialGetInstanceMtx(&p->end_position_specials[j]);
                         if (reinterpret_cast<u32>(matrix) != 0xffffffd0u) {
                             matrix->m30 = p->snap_origin.x;
@@ -489,7 +489,7 @@ extern "C" void __cdecl UpdatePushBlocks(void *world_ptr, void *, f32) {
                 Hint_SetComplete(PushBlockHintIdPc);
         }
     }
-    for (i32 index = 0; index < world->count; ++index) {
+    for (i32 index = 0; world->count > index; ++index) {
         PUSH_RUNTIME_BLOCK_VIEW_PC *p = &world->blocks[index];
         if ((p->packed_state_flags & 0x40000u) == 0)
             continue;
@@ -512,7 +512,7 @@ extern "C" void __cdecl UpdatePushBlocks(void *world_ptr, void *, f32) {
             }
         }
         p->packed_state_flags = (p->packed_state_flags & ~2u) | ((p->packed_state_flags & 1u) << 1);
-        p->packed_state_flags = (p->packed_state_flags & ~0x15u) | ((p->packed_state_flags & 8u) << 1);
+        p->packed_state_flags = (p->packed_state_flags & ~0x15u) | ((8u & p->packed_state_flags) << 1);
         p->pushing_object = NULL;
     }
 }
