@@ -63,9 +63,12 @@ SEED=$(cat permute/seed 2>/dev/null || echo 1)
 
 while true; do
     sync
+    # Alternate between the most lost bytes and the functions closest to exact.
+    ROUND=$(( ${ROUND:-0} + 1 ))
+    ORDER=$([ $((ROUND % 2)) -eq 0 ] && echo near || echo lost)
     before=$(wc -l < "$JOURNAL")
     python3 tools/permute.py --batch "$CHUNK" --iterations "$ITERATIONS" --jobs "$JOBS" --workers "$WORKERS" \
-        --max-size "$MAX_SIZE" --seed "$SEED" --apply --push 2>&1 | tee -a build/permute/loop.log
+        --max-size "$MAX_SIZE" --seed "$SEED" --order "$ORDER" --apply --push 2>&1 | tee -a build/permute/loop.log
     after=$(wc -l < "$JOURNAL")
     summary=$(tail -n $((after - before)) "$JOURNAL" | python3 -c '
 import json, sys
