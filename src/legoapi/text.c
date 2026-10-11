@@ -618,10 +618,10 @@ void __cdecl Text3DEx(char *text, f32 x, f32 y, f32 z, f32 x_scale, f32 y_scale,
     text3d_width = text3d_height = 0.0f;
     font = SmartTextFont != NULL ? SmartTextFont : QFont2D;
     if (font == NULL || text == NULL || text[0] == '\0' || MenuStopDraw != 0 ||
-        (x < -2.0f || x > 2.0f || y < -2.0f || y > 2.0f))
+        (x < -2.0f || 2.0f < x || y < -2.0f || y > 2.0f))
         return;
     draw_x_scale = TextScaleX_candidate * x_scale;
-    draw_y_scale = TextScaleY_candidate * y_scale;
+    draw_y_scale = y_scale * TextScaleY_candidate;
     NuQFntPushPrintMode(TextPrintModePc == 0 ? 2 : 3);
 
     TextDecode(text, decoded);
@@ -635,11 +635,11 @@ void __cdecl Text3DEx(char *text, f32 x, f32 y, f32 z, f32 x_scale, f32 y_scale,
     text3d_width = width;
     height = NuQFntHeight(font);
     text3d_height = height;
-    half_height = (f64)height * 0.5;
+    half_height = 0.5 * ((f64)height);
     baseline_y = y + NuQFntBaseline(font);
     draw_y = (f32)((f64)baseline_y - half_height);
     button_scale = draw_x_scale;
-    if (draw_x_scale != draw_y_scale) {
+    if (draw_y_scale != draw_x_scale) {
         if (smarttext_fwn == 1)
             button_scale = draw_x_scale;
         else if (smarttext_fwn == 2)
@@ -647,8 +647,8 @@ void __cdecl Text3DEx(char *text, f32 x, f32 y, f32 z, f32 x_scale, f32 y_scale,
         else
             button_scale = 0.5f * (draw_x_scale + draw_y_scale);
 
-        button_count = 0;
         normal_count = 0;
+button_count = 0;
         for (i = 0; decoded[i] != 0;) {
             is_button = decoded[i] == 0xd4 && decoded[i + 1] >= 0xb1 && decoded[i + 1] <= 0xbf;
             output = is_button ? buttons : normal;
@@ -677,9 +677,9 @@ void __cdecl Text3DEx(char *text, f32 x, f32 y, f32 z, f32 x_scale, f32 y_scale,
         } else {
             button_scale = draw_x_scale;
             if (smarttext_fwn == 2) {
-                scaled_width = draw_y_scale * width;
-                width = scaled_width / draw_x_scale;
                 button_scale = draw_y_scale;
+scaled_width = draw_y_scale * width;
+width = scaled_width / draw_x_scale;
             }
         }
     }
@@ -706,8 +706,8 @@ void __cdecl Text3DEx(char *text, f32 x, f32 y, f32 z, f32 x_scale, f32 y_scale,
                 if (red != 0 || green != 0 || blue != 0) {
                     preset = decoded[i + 1] - '0';
                     if (apitext_half_rgb == 0)
-                        colour |= (u8)(text_preset_r[preset] * 2) | ((u32)((text_preset_g[preset] * 2) & 255) << 8) |
-                                  ((u32)((text_preset_b[preset] * 2) & 255) << 16);
+                        colour |= (((u32)((text_preset_g[preset] * 2) & 255) << 8)) | ((u8)(text_preset_r[preset] * 2)) |
+                                  ((u32)((2 * text_preset_b[preset]) & 255) << 16);
                     else
                         colour |= text_preset_r[preset] | ((u32)(text_preset_g[preset]) << 8) |
                                   ((u32)(text_preset_b[preset]) << 16);
