@@ -12,3 +12,4 @@
 {"symbol": "_ObjHitObj", "unit": "src/legoapi/hits.c", "size": 5764, "start": 58.612286, "best": 62.635956, "exact": false, "seconds": 414.7, "instructions": [59.72, 64.68], "applied": true}
 {"symbol": "_TerrainPlatformEmbedded", "unit": "src/nu2api/terrain_collision.cpp", "size": 4252, "start": 44.720757, "best": 61.663395, "exact": false, "seconds": 450.8, "instructions": [28.39, 30.13], "applied": true}
 {"symbol": "_TerrainInitEx", "unit": "src/nu2api/nuterrain.c", "size": 3491, "start": 40.10222, "best": 40.320156, "exact": false, "seconds": 224.8, "instructions": [27.15, 27.55], "applied": true}
+{"symbol": "_Area_Configure", "unit": "src/legoapi/areas.cpp", "size": 4017, "start": 44.795776, "best": 67.50805, "exact": false, "seconds": 348.2, "instructions": [38.47, 36.59], "applied": true}

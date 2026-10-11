@@ -803,11 +803,11 @@ extern "C" void __cdecl Area_Configure(i32 area, i32 param, AREA_EXTRA_MODEL_PC 
                              count * sizeof(i16));
         if (count > 2) {
             for (i32 swap = 0; swap < count * 3; ++swap) {
-                const i32 first = qrand() / (0xffff / count + 1);
+                const i32 first = qrand() / (1 + (0xffff / count));
                 const i32 second = (qrand() / (0xffff / (count - 1) + 1) + first) % count;
-                const i16 character = mission_characters[first];
+                
                 mission_characters[first] = mission_characters[second];
-                mission_characters[second] = character;
+                mission_characters[second] = ((const i16)mission_characters[first]);
             }
         }
         APICHARACTERMODELLIST *player_models = reinterpret_cast<APICHARACTERMODELLIST *>(AreaPlayerModelsPc);
@@ -817,7 +817,7 @@ extern "C" void __cdecl Area_Configure(i32 area, i32 param, AREA_EXTRA_MODEL_PC 
                 Area_MissionModelList[Area_MissionModelCount].count = (i16)(1);
                 ++Area_MissionModelCount;
             }
-            if (Area_PlayerModelCount < 8) {
+            if (Area_PlayerModelCount <= 7) {
                 player_models[Area_PlayerModelCount].model_id = (i16)(mission_characters[index]);
                 player_models[Area_PlayerModelCount].count = (i16)(1);
                 ++Area_PlayerModelCount;
@@ -834,14 +834,14 @@ extern "C" void __cdecl Area_Configure(i32 area, i32 param, AREA_EXTRA_MODEL_PC 
 
     char path[128];
     NuStrCpy(path, "levels\\");
-    if (area == -1) {
-        NuStrCat(path, LDataList[param].dir);
-        NuStrCat(path, "\\");
-        NuStrCat(path, LDataList[param].name);
-    } else {
+    if (area != -1) {
         NuStrCat(path, ADataList[area].dir);
         NuStrCat(path, "\\");
         NuStrCat(path, ADataList[area].file);
+    } else {
+        NuStrCat(path, LDataList[param].dir);
+        NuStrCat(path, "\\");
+        NuStrCat(path, LDataList[param].name);
     }
     NuStrCat(path, ".txt");
 
@@ -874,7 +874,49 @@ extern "C" void __cdecl Area_Configure(i32 area, i32 param, AREA_EXTRA_MODEL_PC 
             if (NuFParGetWord(fp) == 0 || fp->word_buffer_ptr[0] == '\0') {
                 break;
             }
-            if (!in_counter) {
+            if (in_counter) {
+
+                if (NuStrICmp(fp->word_buffer_ptr, "supercounter_end") == 0) {
+                    if (counter->pickup_count != 0) {
+                        ++counter_count;
+                        in_counter = false;
+                    }
+                } else if (NuStrICmp(fp->word_buffer_ptr, "pickup") == 0) {
+                    if (counter->pickup_count >= 10 || NuFParGetWord(fp) == 0 || NuStrLen(fp->word_buffer_ptr) > 7)
+                        break;
+                    AREA_SUPERCOUNTER_PICKUP_PC *pickup = &counter->pickups[counter->pickup_count];
+                    NuStrCpy(pickup->name, fp->word_buffer_ptr);
+                    pickup->level_index = -1;
+                    pickup->position_name[0] = '\0';
+                    pickup->use_special = 1;
+                    while (NuFParGetWord(fp) != 0) {
+                        if (NuStrICmp(fp->word_buffer_ptr, "in_level") == 0) {
+                            i32 level_index;
+                            if (NuFParGetWord(fp) != 0 && Level_FindByName(fp->word_buffer_ptr, &level_index) != NULL)
+                                pickup->level_index = static_cast<i16>(level_index);
+                        } else if (NuStrICmp(fp->word_buffer_ptr, "draw_at_gizmo") == 0) {
+                            if (NuFParGetWord(fp) != 0 && NuStrLen(fp->word_buffer_ptr) < 16) {
+                                NuStrCpy(pickup->position_name, fp->word_buffer_ptr);
+                                pickup->use_special = 0;
+                            }
+                        } else if (NuStrICmp(fp->word_buffer_ptr, "draw_at_obj") == 0) {
+                            if (NuFParGetWord(fp) != 0 && NuStrLen(fp->word_buffer_ptr) <= 15) {
+                                NuStrCpy(pickup->position_name, fp->word_buffer_ptr);
+                                pickup->use_special = 1;
+                            }
+                        }
+                    }
+                    if (pickup->level_index != -1)
+                        ++counter->pickup_count;
+                } else if (NuStrICmp(fp->word_buffer_ptr, "colour") == 0) {
+                    counter->red = static_cast<u8>(NuFParGetInt(fp));
+                    counter->green = static_cast<u8>(NuFParGetInt(fp));
+                    counter->blue = static_cast<u8>(NuFParGetInt(fp));
+                } else if (NuStrICmp(fp->word_buffer_ptr, "all_together") == 0) {
+                    counter->processed_flags |= 1;
+                }
+                break;
+            } else {
                 if (NuStrICmp(fp->word_buffer_ptr, "supercounter_start") == 0) {
                     if (counter_count < 10) {
                         counter = &counters[counter_count];
@@ -920,7 +962,7 @@ extern "C" void __cdecl Area_Configure(i32 area, i32 param, AREA_EXTRA_MODEL_PC 
                     AREA_LEVEL_LOAD_PC *load = &LevelLoad[LevelLoadCount];
                     bool story_token = false;
                     if (NuStrICmp(fp->word_buffer_ptr, "story_only") == 0) {
-                        load->flags = (load->flags & ~2) | 1;
+                        load->flags = ((~2) & load->flags) | 1;
                         story_token = NuFParGetWord(fp) != 0;
                     }
                     if (NuStrICmp(fp->word_buffer_ptr, "freeplay_only") == 0) {
@@ -934,10 +976,10 @@ extern "C" void __cdecl Area_Configure(i32 area, i32 param, AREA_EXTRA_MODEL_PC 
                     }
                     i32 level_index;
                     Level_FindByName(fp->word_buffer_ptr, &level_index);
-                    if (level_index == -1 || LDataList[level_index].area_index != area)
+                    if (-1 == level_index || LDataList[level_index].area_index != area)
                         break;
                     i32 existing = 0;
-                    while (existing < LevelLoadCount && LevelLoad[existing].level != level_index)
+                    while (LevelLoadCount > existing && LevelLoad[existing].level != level_index)
                         ++existing;
                     if (existing != LevelLoadCount)
                         break;
@@ -1011,48 +1053,6 @@ extern "C" void __cdecl Area_Configure(i32 area, i32 param, AREA_EXTRA_MODEL_PC 
                     }
                     break;
                 }
-            } else {
-
-                if (NuStrICmp(fp->word_buffer_ptr, "supercounter_end") == 0) {
-                    if (counter->pickup_count != 0) {
-                        ++counter_count;
-                        in_counter = false;
-                    }
-                } else if (NuStrICmp(fp->word_buffer_ptr, "pickup") == 0) {
-                    if (counter->pickup_count >= 10 || NuFParGetWord(fp) == 0 || NuStrLen(fp->word_buffer_ptr) > 7)
-                        break;
-                    AREA_SUPERCOUNTER_PICKUP_PC *pickup = &counter->pickups[counter->pickup_count];
-                    NuStrCpy(pickup->name, fp->word_buffer_ptr);
-                    pickup->level_index = -1;
-                    pickup->position_name[0] = '\0';
-                    pickup->use_special = 1;
-                    while (NuFParGetWord(fp) != 0) {
-                        if (NuStrICmp(fp->word_buffer_ptr, "in_level") == 0) {
-                            i32 level_index;
-                            if (NuFParGetWord(fp) != 0 && Level_FindByName(fp->word_buffer_ptr, &level_index) != NULL)
-                                pickup->level_index = static_cast<i16>(level_index);
-                        } else if (NuStrICmp(fp->word_buffer_ptr, "draw_at_gizmo") == 0) {
-                            if (NuFParGetWord(fp) != 0 && NuStrLen(fp->word_buffer_ptr) < 16) {
-                                NuStrCpy(pickup->position_name, fp->word_buffer_ptr);
-                                pickup->use_special = 0;
-                            }
-                        } else if (NuStrICmp(fp->word_buffer_ptr, "draw_at_obj") == 0) {
-                            if (NuFParGetWord(fp) != 0 && NuStrLen(fp->word_buffer_ptr) < 16) {
-                                NuStrCpy(pickup->position_name, fp->word_buffer_ptr);
-                                pickup->use_special = 1;
-                            }
-                        }
-                    }
-                    if (pickup->level_index != -1)
-                        ++counter->pickup_count;
-                } else if (NuStrICmp(fp->word_buffer_ptr, "colour") == 0) {
-                    counter->red = static_cast<u8>(NuFParGetInt(fp));
-                    counter->green = static_cast<u8>(NuFParGetInt(fp));
-                    counter->blue = static_cast<u8>(NuFParGetInt(fp));
-                } else if (NuStrICmp(fp->word_buffer_ptr, "all_together") == 0) {
-                    counter->processed_flags |= 1;
-                }
-                break;
             }
 
             break;
@@ -1090,7 +1090,7 @@ extern "C" void __cdecl Area_Configure(i32 area, i32 param, AREA_EXTRA_MODEL_PC 
         Area_PlayerIDList[i] = player_models[i].model_id;
     }
     Area_PlayerIDList[Area_PlayerModelCount] = -1;
-    if (counter_count > 0) {
+    if (counter_count >= 1) {
         characterbuffer_ptr.addr = (characterbuffer_ptr.addr + 3) & ~3u;
         ADataList[area].super_counters = (AREA_SUPERCOUNTER_PC *)characterbuffer_ptr.addr;
         PCByteCopy_candidate(ADataList[area].super_counters, counters, counter_count * sizeof(AREA_SUPERCOUNTER_PC));
