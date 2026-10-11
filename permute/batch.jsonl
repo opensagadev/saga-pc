@@ -46,3 +46,5 @@
 {"symbol": "_JumpCode", "unit": "src/legoapi/move.c", "size": 6473, "start": 40.78447, "best": 46.32921, "exact": false, "seconds": 458.4, "instructions": [48.42, 47.85], "rules": 2, "applied": true}
 {"symbol": "_TerrainPlayer", "unit": "src/legoapi/terrain_player_pc.c", "size": 7994, "start": 55.268314, "best": 58.194588, "exact": false, "seconds": 481.8, "instructions": [61.28, 62.37], "rules": 2, "applied": true}
 {"symbol": "_ScanTerrain", "unit": "src/nu2api/terrain_scan.cpp", "size": 7479, "start": 27.209938, "best": 27.51701, "exact": false, "seconds": 535.2, "instructions": [20.2, 22.96], "rules": 2, "applied": true}
+{"symbol": "_GameObjectStuffAfterAnimation", "unit": "src/legoapi/gameobjects.c", "size": 3904, "start": 27.10863, "best": 27.10863, "exact": false, "seconds": 256.7, "instructions": [23.74, 23.74], "rules": 2}
+{"symbol": "_NewCast", "unit": "src/nu2api/nuterrain.c", "size": 3407, "start": 34.758812, "best": 36.94434, "exact": false, "seconds": 412.2, "instructions": [17.52, 24.04], "rules": 2, "applied": true}

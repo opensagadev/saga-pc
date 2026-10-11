@@ -1196,13 +1196,15 @@ void NewScanRot(NUVEC *position, i32 terrain_mask) {
 }
 
 f32 NewCast(NUVEC *position, f32 height_above, f32 roof_range) {
+    i16 group_index;
+    f32 z;
     TERRAIN_SET_PC *terrain;
     TERRAIN_SHADOW_QUERY_VIEW_PC *query;
     i32 remaining;
     volatile f32 plane_quotient;
     TERRAIN_SCAN_WORD_PC *scan;
-    TERRAIN_POLYGON_INFO_PC *ordinary_above;
     TERRAIN_POLYGON_INFO_PC *ordinary_floor;
+    TERRAIN_POLYGON_INFO_PC *ordinary_above;
     TERRAIN_POLYGON_INFO_PC *extended_above;
     TERRAIN_POLYGON_INFO_PC *extended_floor;
     f32 ordinary_floor_y;
@@ -1239,9 +1241,9 @@ f32 NewCast(NUVEC *position, f32 height_above, f32 roof_range) {
      * height strictly below +2000000; exact-sentinel first ties remain held. */
     shape_count = scan->header.shape_count;
     for (;;) {
-        i16 group_index;
+
         f32 x;
-        f32 z;
+
         TERRAIN_SCAN_WORD_PC *surfaces;
         TERRAIN_SCAN_WORD_PC *entry;
 
@@ -1261,7 +1263,7 @@ f32 NewCast(NUVEC *position, f32 height_above, f32 roof_range) {
                 TerrainCastAuxPolygonPc = NULL;
                 TerrainShadowHeightPc = LevelConfigFarDistance;
             }
-            if (!(LevelConfigFarDistance > extended_above_y) || !(extended_above_normal.y > 0.0f) ||
+            if (!(extended_above_y < LevelConfigFarDistance) || !(extended_above_normal.y > 0.0f) ||
                 !(roof_range + position->y > extended_above_y)) {
                 if (extended_floor_y <= TerrainCastLowerSentinel ||
                     (TerrainCastLowerSentinel < ordinary_floor_y && extended_floor_y < ordinary_floor_y)) {
@@ -1356,7 +1358,7 @@ f32 NewCast(NUVEC *position, f32 height_above, f32 roof_range) {
                         }
                     }
                 } else {
-                    if (CAST_LINE(2, 1) == 0) {
+                    if (CAST_LINE(2, 1) == CAST_LINE(2, 1) == 0) {
                         if (CAST_LINE(3, 1) != 0 && CAST_LINE(2, 3) != 0) {
                             winding = 1;
                         second_plane:
@@ -1368,10 +1370,11 @@ f32 NewCast(NUVEC *position, f32 height_above, f32 roof_range) {
                             plane_quotient =
                                 ((x - surface->vertices[3].x) * normal_x + (z - surface->vertices[3].z) * normal_z) /
                                 -normal_y;
-                            plane_y = (terrain->groups[group_index].origin.y + surface->vertices[3].y) + plane_quotient;
+                            plane_y =
+                                (((terrain->groups[group_index].origin.y + surface->vertices[3].y))) + plane_quotient;
                             goto record_plane;
                         }
-                    } else if (CAST_LINE(1, 0) != 0 && 0 != (CAST_LINE(0, 2))) {
+                    } else if ((CAST_LINE(1, 0)) != (CAST_LINE(1, 0)) != 0 && 0 != (CAST_LINE(0, 2))) {
                         winding = 1;
                     first_plane:
                         normal_z = surface->normals[0].z;
@@ -1390,7 +1393,7 @@ f32 NewCast(NUVEC *position, f32 height_above, f32 roof_range) {
                                 ordinary_floor = surface;
                                 ordinary_floor_y = plane_y;
                                 TerrainShadowGroupIndexPc = group_index;
-                            } else if (position->y < plane_y && plane_y <= ordinary_above_y &&
+                            } else if (position->y < plane_y && ordinary_above_y >= plane_y &&
                                        (plane_y != ordinary_above_y || normal_y < ordinary_above_normal.y)) {
                                 ordinary_above_normal.x = normal_x;
                                 ordinary_above_normal.y = normal_y;
@@ -1400,7 +1403,7 @@ f32 NewCast(NUVEC *position, f32 height_above, f32 roof_range) {
                                 ordinary_above_group = group_index;
                             }
                         } else {
-                            if (plane_y <= position->y && extended_floor_y < plane_y && winding == 1) {
+                            if (plane_y <= position->y && plane_y > extended_floor_y && winding == 1) {
                                 extended_floor_normal.x = normal_x;
                                 extended_floor_normal.y = normal_y;
                                 extended_floor_normal.z = normal_z;
