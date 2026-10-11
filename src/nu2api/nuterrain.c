@@ -1197,10 +1197,10 @@ void NewScanRot(NUVEC *position, i32 terrain_mask) {
 
 f32 NewCast(NUVEC *position, f32 height_above, f32 roof_range) {
     i16 group_index;
-    f32 z;
+
     TERRAIN_SET_PC *terrain;
-    TERRAIN_SHADOW_QUERY_VIEW_PC *query;
     i32 remaining;
+    TERRAIN_SHADOW_QUERY_VIEW_PC *query;
     volatile f32 plane_quotient;
     TERRAIN_SCAN_WORD_PC *scan;
     TERRAIN_POLYGON_INFO_PC *ordinary_floor;
@@ -1241,6 +1241,7 @@ f32 NewCast(NUVEC *position, f32 height_above, f32 roof_range) {
      * height strictly below +2000000; exact-sentinel first ties remain held. */
     shape_count = scan->header.shape_count;
     for (;;) {
+        f32 z;
 
         f32 x;
 
@@ -1252,7 +1253,7 @@ f32 NewCast(NUVEC *position, f32 height_above, f32 roof_range) {
                 !(roof_range + position->y > extended_above_y)) {
                 TerrainCastAuxPolygonPc = NULL;
                 TerrainShadowHeightPc = LevelConfigFarDistance;
-            } else if (!(LevelConfigFarDistance > ordinary_above_y) || !(ordinary_above_normal.y < 0.0f) ||
+            } else if (!(ordinary_above_y < LevelConfigFarDistance) || !(ordinary_above_normal.y < 0.0f) ||
                        !(roof_range + position->y > ordinary_above_y) || !(extended_above_y > ordinary_above_y)) {
                 TerrainCastAuxPolygonPc = extended_above;
                 TerrainShadowHeightPc = extended_above_y;
@@ -1290,7 +1291,7 @@ f32 NewCast(NUVEC *position, f32 height_above, f32 roof_range) {
                 GetSurfaceInfoWaterNormalPc.y = 1.0f;
                 EShadowPolygonPc = NULL;
             }
-            if (!(LevelConfigFarDistance > ordinary_above_y) || !(ordinary_above_normal.y < 0.0f) ||
+            if (!(ordinary_above_y < LevelConfigFarDistance) || !(ordinary_above_normal.y < 0.0f) ||
                 !(ordinary_above_y < roof_range + position->y)) {
                 ShadowRoofPolygonPc = NULL;
                 GetSurfaceInfoRoofHeightPc = LevelConfigFarDistance;
@@ -1328,7 +1329,7 @@ f32 NewCast(NUVEC *position, f32 height_above, f32 roof_range) {
         z = position->z - terrain->groups[group_index].origin.z;
         surfaces = scan + 1;
         entry = surfaces;
-        for (remaining = shape_count; remaining != 0; --remaining, ++entry) {
+        for (remaining = shape_count; 0 != remaining; --remaining, ++entry) {
             TERRAIN_POLYGON_INFO_PC *surface;
             f32 normal_y;
             f32 normal_x;
@@ -1367,9 +1368,9 @@ f32 NewCast(NUVEC *position, f32 height_above, f32 roof_range) {
                                 goto first_plane;
                             normal_z = surface->normals[1].z;
                             normal_x = surface->normals[1].x;
-                            plane_quotient =
-                                ((x - surface->vertices[3].x) * normal_x + (z - surface->vertices[3].z) * normal_z) /
-                                -normal_y;
+                            plane_quotient = (((z - surface->vertices[3].z) * normal_z) +
+                                              ((x - surface->vertices[3].x) * normal_x)) /
+                                             -normal_y;
                             plane_y =
                                 (((terrain->groups[group_index].origin.y + surface->vertices[3].y))) + plane_quotient;
                             goto record_plane;
@@ -1423,7 +1424,7 @@ f32 NewCast(NUVEC *position, f32 height_above, f32 roof_range) {
                     }
                 }
             } else if (!(normal_y > 0.0f)) {
-                if (0.0f > normal_y && CAST_LINE(0, 1) != 0 && CAST_LINE(2, 0) != 0 && CAST_LINE(1, 2) != 0) {
+                if (0.0f > normal_y && CAST_LINE(0, 1) != 0 && CAST_LINE(2, 0) != 0 && 0 != (CAST_LINE(1, 2))) {
                     winding = 2;
                     goto first_plane;
                 }

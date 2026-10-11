@@ -57,3 +57,4 @@
 {"symbol": "_JumpCode", "unit": "src/legoapi/move.c", "size": 6473, "start": 46.32921, "best": 46.330894, "exact": false, "seconds": 386.6, "instructions": [47.85, 48.13], "rules": 3, "applied": true}
 {"symbol": "_NewScan", "unit": "src/nu2api/terrain_query.cpp", "size": 4361, "start": 36.90133, "best": 37.26802, "exact": false, "seconds": 403.6, "instructions": [15.24, 19.04], "rules": 3, "applied": true}
 {"symbol": "_ScanTerrain", "unit": "src/nu2api/terrain_scan.cpp", "size": 7479, "start": 27.51701, "best": 27.547895, "exact": false, "seconds": 513.3, "instructions": [22.96, 23.09], "rules": 3, "applied": true}
+{"symbol": "_NewCast", "unit": "src/nu2api/nuterrain.c", "size": 3407, "start": 36.94434, "best": 37.0436, "exact": false, "seconds": 387.5, "instructions": [24.04, 24.74], "rules": 3, "applied": true}
