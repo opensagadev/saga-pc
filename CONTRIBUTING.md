@@ -265,6 +265,31 @@ comparisons. The workflow only reads report data through GitHub's API and does
 not execute PR code with its write token. It becomes active once the workflow
 is on the default branch.
 
+## Automated source-shape search
+
+Android sources were shaped until clang reproduced the Android binary. Clang
+canonicalizes heavily (cached loads, range-folded comparisons, reordered
+blocks), while VC8 compiles source almost literally, so a copied Android body
+often scores 50-70% for reasons of spelling alone. `tools/permute.py` searches
+rewrites of one function and scores every candidate with the pinned VC8
+compiler, the matcher's relocation code and objdiff. No model is involved.
+
+```sh
+python3 -m pip install libclang          # once; parses sources with the lint flags
+python3 tools/permute.py transposeClipPlanes            # one function, report only
+python3 tools/permute.py --batch 50 --apply --jobs 16   # worst functions by lost bytes
+```
+
+Rewrites live in `tools/rewrite.py`: inline single-use locals, invert if/else,
+turn a void tail guard into if/else, mirror comparisons, move constant bounds,
+merge assignments, commute operands, swap statements and convert compound
+assignments. A rewrite marked unsafe (for example statement reordering or `==`
+to `<` without a proven guard) is kept only when it makes the function
+byte-exact. Each improvement is written to `build/permute/<symbol>.patch`;
+`--apply` also writes it into `src/`. Batch runs record results in
+`build/permute/batch.jsonl` and skip functions already recorded there. Run
+`make match` afterwards and review the patches before committing.
+
 ## Symbol map and comparison
 
 The stripped executable has no useful function names. The map is independent
