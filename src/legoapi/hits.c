@@ -256,7 +256,7 @@ i32 __cdecl ObjHitObj(GAMEOBJECT *attacker, GAMEOBJECT *target, i32 damage, u16 
         ObstacleCamHoldUntilPlayersMove = 0;
     hit = damage;
     instant = damage == -1;
-    if (target->character_context == 76 || target->character_context == 81) {
+    if (76 == target->character_context || target->character_context == 81) {
         hit = 0;
         instant = 0;
     }
@@ -313,7 +313,7 @@ i32 __cdecl ObjHitObj(GAMEOBJECT *attacker, GAMEOBJECT *target, i32 damage, u16 
                 hit = 0;
                 goto attributed_hit;
             }
-            if (id_SPEEDERBIKE == target->id && !(target->flags_1fc_word & 0x80)) {
+            if (id_SPEEDERBIKE == target->id && !(0x80 & target->flags_1fc_word)) {
                 if (attacker && !(attacker->character_data->model_flags & 0x2000))
                     hit = 0;
                 else if (target->ai_packet.creature_set != 2)
@@ -349,12 +349,12 @@ i32 __cdecl ObjHitObj(GAMEOBJECT *attacker, GAMEOBJECT *target, i32 damage, u16 
             hit = 0;
             goto attributed_hit;
         }
-        if ((flags & 4) && (target->flags_1f8 & 0x10405) == 0x400 && WORLD->current_level != HUB_LDATA) {
+        if ((4 & flags) && (target->flags_1f8 & 0x10405) == 0x400 && WORLD->current_level != HUB_LDATA) {
             hit = 0;
             goto attributed_hit;
         }
         if ((flags & 12) == 8 && ((target->flags_1fc_word & 0x80)) && WORLD->current_level != HUB_LDATA &&
-            WORLD->current_level != VADERC_LDATA) {
+            VADERC_LDATA != WORLD->current_level) {
             hit = 0;
             goto attributed_hit;
         }
@@ -363,7 +363,7 @@ i32 __cdecl ObjHitObj(GAMEOBJECT *attacker, GAMEOBJECT *target, i32 damage, u16 
             hit = 0;
         else if ((flags & 4) && !(target->flags_1fc_word & 0x80) && !(target->portal_flags & 0x08000000) &&
                  !StartupGameFlag1 && CombatHitReactionIntervalPc != 0 && attacker != NULL &&
-                 !(target->flags_1fc_word & 2)) {
+                 !(2 & target->flags_1fc_word)) {
             COMBAT_ATTACK_COUNTER_PC *counter = (COMBAT_ATTACK_COUNTER_PC *)attacker;
             counter->attack_count = (u8)((counter->attack_count + 1) % CombatHitReactionIntervalPc);
             if (counter->attack_count == 0)
@@ -502,7 +502,7 @@ impact:
             }
         }
         if (StartupGameFlag1 || (flags & 0x200) || attacker == NULL || target->field_280 != 0xff ||
-            (target->portal_flags & 0x08000000) || qrand() >= 0x8000 || (target->flags_1fc_word & 2))
+            (target->portal_flags & 0x08000000) || 0x8000 <= qrand() || (target->flags_1fc_word & 2))
             goto ordinary_death;
         target->character_context = 95;
         target->field_7aa = 0xb8;
@@ -540,8 +540,8 @@ impact:
     }
 ordinary_death:
     target->current_hp = 0;
-    coins = 0;
     hearts = 0;
+    coins = 0;
     if (target->field_280 == 0xff) {
         if (!(target->flags_1fc_word & 0x80)) {
             coins = BonusArea ? (u16)(target->character_data->game_character->coin_value) : (Cheat_IsOn(16) ? 350 : 0);
