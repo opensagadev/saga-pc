@@ -193,8 +193,8 @@ extern i32 techno_gizmotype_id;
 
 static void Techno_ResetFields(TECHNO_CALLBACK_PC *techno) {
     f32 floor_height;
-    techno->ground_position.x = 0.0f;
     techno->ground_position.y = 0.0f;
+    techno->ground_position.x = 0.0f;
     techno->ground_position.z = TechnoSysPc.interaction_time;
     NuVecRotateY(&techno->ground_position, &techno->ground_position, techno->y_rotation);
     NuVecAdd(&techno->ground_position, &techno->ground_position, &techno->position);
