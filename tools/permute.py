@@ -107,7 +107,7 @@ class Scorer:
         try:
             report = json.loads((slot / "r.json").read_text())
             functions = [f for u in report["units"] for f in u.get("functions", [])]
-            percent = functions[0]["fuzzy_match_percent"] if functions else 0.0
+            percent = functions[0].get("fuzzy_match_percent", 0.0) if functions else 0.0
         except (OSError, ValueError, KeyError, IndexError):
             return None
         return (min(percent, 99.999), False, len(base))
@@ -183,7 +183,7 @@ def run_one(symbol, unit, iterations, jobs, seed, apply, log):
     return summary
 
 
-def batch(count, iterations, jobs, apply, minimum, maximum):
+def batch(count, iterations, jobs, apply, minimum, maximum, seed=1):
     """Work through the functions losing the most bytes, one at a time."""
     report = json.loads((ROOT / "matching.json").read_text())
     rows = [r for r in report["functions"]
@@ -197,7 +197,7 @@ def batch(count, iterations, jobs, apply, minimum, maximum):
     OUT.mkdir(parents=True, exist_ok=True)
     for row in [r for r in rows if r["symbol"] not in done][:count]:
         try:
-            summary = run_one(row["symbol"], row["units"][0], iterations, jobs, 1, apply, lambda m: None)
+            summary = run_one(row["symbol"], row["units"][0], iterations, jobs, seed, apply, lambda m: None)
         except Exception as error:  # Keep going; record why this function was skipped.
             summary = {"symbol": row["symbol"], "unit": row["units"][0], "error": str(error)[:300]}
         print(json.dumps(summary), flush=True)
@@ -220,7 +220,7 @@ def main():
     parser.add_argument("--quiet", action="store_true")
     args = parser.parse_args()
     if args.batch:
-        batch(args.batch, args.iterations, args.jobs, args.apply, args.min_size, args.max_size)
+        batch(args.batch, args.iterations, args.jobs, args.apply, args.min_size, args.max_size, args.seed)
         return 0
     if not args.symbol:
         parser.error("Name a function or use --batch")

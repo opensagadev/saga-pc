@@ -290,6 +290,11 @@ byte-exact. Each improvement is written to `build/permute/<symbol>.patch`;
 `build/permute/batch.jsonl` and skip functions already recorded there. Run
 `make match` afterwards and review the patches before committing.
 
+`tools/permute_loop.sh` runs batches indefinitely on a spare machine. Each
+round merges the tool branch, searches the next functions, and commits and
+pushes applied improvements and the journal to `permute/<host>`. After a full
+pass it re-measures with `make match` and starts another pass with a new seed.
+
 ## Symbol map and comparison
 
 The stripped executable has no useful function names. The map is independent
