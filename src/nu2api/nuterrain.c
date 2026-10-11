@@ -1917,7 +1917,7 @@ void *TerrainInitEx(i32 level_num, void *buf, void *buf_end, i32 options, char *
     terrain_min_x = kBoundsMaximum;
     terrain_min_z = kBoundsMaximum;
     terrain_max_z = kBoundsMinimum;
-terrain_max_x = kBoundsMinimum;
+    terrain_max_x = kBoundsMinimum;
 
     for (group_index = 0; group_index < group_count; ++group_index) {
         group = &(terrain->groups[group_index]);

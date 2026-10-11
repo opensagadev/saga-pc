@@ -125,7 +125,7 @@ void __cdecl TerrainPlayer(GAMEOBJECT *object) {
     i32 impact_count;
 
     entry_underwater = object->is_underwater;
-entry_pad = object->pad;
+    entry_pad = object->pad;
     entry_intersects_water = object->water_intersects;
     entry_menu_id = GetMenuID();
     entry_platform = object->supporting_platform_id;
@@ -694,7 +694,7 @@ entry_pad = object->pad;
                         NUVEC *normal;
 
                         normal = impact_count == -1 ? &object->contact_normal : &impact_records[i].normal;
-surface =
+                        surface =
                             ((i8)(impact_count == -1 ? object->contact_material_word : impact_records[i].material[0]));
                         if (((u32)(surface)) > 31) {
                             continue;

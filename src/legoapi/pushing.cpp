@@ -434,7 +434,7 @@ interaction_timer_expired: {
         goto start_end_of_jump;
     }
     {
-        
+
         if (object->character_model->model_data_b[LEGOACT_LUNGE] == NULL) {
             goto start_end_of_jump;
         }

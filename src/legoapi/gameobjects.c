@@ -2962,7 +2962,7 @@ void __cdecl UpdateGameObjects(WORLDINFO *world) {
     CurrentSpeed = 0.0f;
     for (i = 0; i <= 7; ++i) {
         player_flags = 1 | 0x1000;
-object = Player[i];
+        object = Player[i];
         if (object == NULL || (object->flags_1fc_word & player_flags) != player_flags) {
             continue;
         }

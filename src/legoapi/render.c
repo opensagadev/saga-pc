@@ -361,7 +361,7 @@ void DrawAlphaGrid(i32 rows, i32 cols, RENDER_POST_BLOOM_READER_PC *parameters) 
         f32 half_fov = 0.5f * camera.fov;
         saved_fov = camera.fov;
         first = 0;
-adjacent = 1.0f / GRID_TAN_HALF_FOV(half_fov);
+        adjacent = 1.0f / GRID_TAN_HALF_FOV(half_fov);
     }
     if (saved_fov != camera.fov) {
         f32 half_fov = camera.fov * 0.5f;
