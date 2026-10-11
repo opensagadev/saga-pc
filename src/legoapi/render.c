@@ -338,12 +338,12 @@ void DrawAlphaGrid(i32 rows, i32 cols, RENDER_POST_BLOOM_READER_PC *parameters) 
     f32 inv_col = 1.0f / (cols - 1);
     f32 inv_row = 1.0f / (rows - 1);
     f32 x0 = 0.0f * inv_row * 2.0f - 1.0f;
-    f32 y_start = 0.0f * inv_col * 2.0f - 1.0f;
+    f32 y_start = 2.0f * (0.0f * inv_col) - 1.0f;
     f32 x1 = inv_row * 2.0f - 1.0f;
     f32 y_next = inv_col * 2.0f - 1.0f;
-    f32 step_x = inv_row * 2.0f;
+    f32 step_x = 2.0f * inv_row;
     f32 step_y = inv_col * 2.0f;
-    f32 near_scale = parameters->near_scale * 128.0f;
+    f32 near_scale = 128.0f * parameters->near_scale;
     f32 far_scale = parameters->far_scale * 128.0f;
     f32 near_angle = parameters->near_angle / 180.0f;
     f32 far_angle = parameters->far_angle / 180.0f;
@@ -358,12 +358,12 @@ void DrawAlphaGrid(i32 rows, i32 cols, RENDER_POST_BLOOM_READER_PC *parameters) 
     static i32 row, col;
     NuCameraGet(&camera);
     if (first) {
-        f32 half_fov = camera.fov * 0.5f;
+        f32 half_fov = 0.5f * camera.fov;
         saved_fov = camera.fov;
-        adjacent = 1.0f / GRID_TAN_HALF_FOV(half_fov);
         first = 0;
+adjacent = 1.0f / GRID_TAN_HALF_FOV(half_fov);
     }
-    if (camera.fov != saved_fov) {
+    if (saved_fov != camera.fov) {
         f32 half_fov = camera.fov * 0.5f;
         adjacent = 1.0f / GRID_TAN_HALF_FOV(half_fov);
         // The original writes the saved FOV back into this camera copy.
@@ -383,7 +383,7 @@ void DrawAlphaGrid(i32 rows, i32 cols, RENDER_POST_BLOOM_READER_PC *parameters) 
         for (col = 0; col < cols; ++col) {
             ALPHA_GRID_VERTEX(x0, y0);
             ALPHA_GRID_VERTEX(x1, y0);
-            if (col != cols - 1) {
+            if ((cols - 1) != col) {
                 ALPHA_GRID_VERTEX(x0, y0);
                 ALPHA_GRID_VERTEX(x0, y1);
                 ALPHA_GRID_VERTEX(x1, y0);
