@@ -41,3 +41,4 @@
 {"symbol": "_FixUpLevels", "unit": "src/legoapi/level_fixup.cpp", "size": 6860, "start": 37.77964, "best": 37.77964, "exact": false, "seconds": 281.3, "instructions": [33.5, 33.5], "rules": 2}
 {"symbol": "_UpdateGameObjects", "unit": "src/legoapi/gameobjects.c", "size": 6847, "start": 55.446335, "best": 55.446335, "exact": false, "seconds": 290.4, "instructions": [57.3, 57.3], "rules": 2}
 {"symbol": "_Grapple_MoveCode", "unit": "src/legoapi/grapples.cpp", "size": 3392, "start": 58.895973, "best": 59.191277, "exact": false, "seconds": 373.9, "instructions": [61.39, 61.23], "rules": 2, "applied": true}
+{"symbol": "_NewScan", "unit": "src/nu2api/terrain_query.cpp", "size": 4361, "start": 36.20644, "best": 36.90133, "exact": false, "seconds": 417.0, "instructions": [15.32, 15.24], "rules": 2, "applied": true}
