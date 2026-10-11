@@ -22,6 +22,19 @@ EXPLOSION_PC *__cdecl Detonate(NUVEC *position, u16 flags) {
     return AddExplosion(position, radius, duration, NULL, -1, (u32)flags | 0x67);
 }
 
+f32 DropInOutScale(GAMEOBJECT *object) {
+    const u8 context = (u8)(object->character_context);
+    if (context == CHARACTER_CONTEXT_DROP_IN) {
+        const f32 angle = object->context_timer / object->context_duration * 16384.0f;
+        return NuTrigTable[((i32)(angle) >> 1) & 0x7fff];
+    }
+    if (context == CHARACTER_CONTEXT_DROP_OUT) {
+        const f32 angle = object->context_timer / object->context_duration * 16384.0f + 16384.0f;
+        return NuTrigTable[((i32)(angle) >> 1) & 0x7fff];
+    }
+    return 1.0f;
+}
+
 STATIC_ASSERT(offsetof(GAMEOBJECT, context_timer) == 0x77c);
 STATIC_ASSERT(offsetof(GAMEOBJECT, context_variant_flags) == 0x7bc);
 STATIC_ASSERT(offsetof(GAMEOBJECT, field_7aa) == 0x7aa);

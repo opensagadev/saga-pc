@@ -2930,6 +2930,10 @@ extern "C" void NewTerrainScaleYMask(NUVEC *position, NUVEC *movement, u8 *hit_f
     TerImpactData = 0;
 }
 
+extern "C" i32 NewRayCastScaleY(NUVEC *position, NUVEC *movement, f32 radius, f32 scale_y, i32 scan_flags) {
+    return NewRayCastScaleYMask(position, movement, radius, scale_y, scan_flags, 0);
+}
+
 extern "C" void __cdecl FullReflect(NUVEC *normal, NUVEC *movement, NUVEC *result) {
     f32 reflection = (-movement->y * normal->y + -movement->x * normal->x) + -movement->z * normal->z;
     result->x = movement->x + 2.0 * (normal->x * reflection);

@@ -45,7 +45,7 @@ T = ci.TypeKind
 HEADER = ROOT / "src/saga.h"
 DATA = ROOT / "src/data.cpp"
 SECTION_START = "/* Globals and constants transferred from the Android sources (tools/globals.py). */"
-CFLAGS = ["/nologo", "/c", "/O2", "/Gy", "/GS", "/MT"]
+CFLAGS = ["/nologo", "/c", "/O2", "/Gy", "/GS", "/MT", "/W3"]  # /W3 reports C4013 (no prototype)
 
 
 def compile_unit(unit, output):
@@ -162,6 +162,12 @@ def function_prototype(cursor, translator):
     return f"{ret} __cdecl {cursor.spelling}({', '.join(params) or 'void'});"
 
 
+def function_defined(name):
+    pattern = re.compile(r"\b" + re.escape(name) + r"\s*\([^;{}]*\)\s*\{")
+    return any(pattern.search(path.read_text(encoding="latin-1"))
+               for path in (ROOT / "src").rglob("*") if path.suffix in (".c", ".cpp"))
+
+
 def declare(names, android, translator):
     """Add externs and enum constants to the transferred section of saga.h."""
     text = HEADER.read_text(encoding="latin-1")
@@ -176,6 +182,9 @@ def declare(names, android, translator):
                 continue
             constants.append(f"enum {{ {name} = {android.constants[name]} }};")
         elif name in android.functions and name not in android.globals:
+            if function_defined(name):
+                missing.append(name)  # a later definition in the unit is its declaration
+                continue
             prototype = function_prototype(android.functions[name], translator)
             if prototype is None:
                 missing.append(name)

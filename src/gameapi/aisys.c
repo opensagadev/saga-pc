@@ -6108,6 +6108,32 @@ i32 __cdecl Action_CameraShake(AISYS_PC *sys, AISCRIPTPROCESS_PC *processor, AIP
     return 1;
 }
 
+static i32 Action_ResetGameCamera(AISYS_PC *sys, AISCRIPTPROCESS_PC *processor, AIPACKET_PC *packet, char **params,
+                                  i32 param_4, i32 param_5, f32 param_6) {
+    if (param_5 != 0) {
+        GameCam_Reset(GameCam);
+    }
+    return 1;
+}
+
+i32 Action_PlayCutScene(AISYS_PC *unused0, AISCRIPTPROCESS_PC *unused1, AIPACKET_PC *unused2, char **params,
+                        i32 param_count, i32 first_time, float unused6) {
+    if (first_time != 0) {
+        i32 i;
+        char *name = NULL;
+        for (i = 0; i < param_count; ++i) {
+            char *value = NuStrIStr(params[i], "name");
+            if (value != NULL) {
+                name = value + 5;
+            }
+        }
+        if (name != NULL) {
+            NewCutScene(NULL, WORLD->cutscene_sys, name, 0);
+        }
+    }
+    return 1;
+}
+
 i32 __cdecl Action_SetZeroAcceleration(AISYS_PC *system, AISCRIPTPROCESS_PC *processor, AIPACKET_PC *packet,
                                        char **params, i32 param_count, i32 first_time, f32 elapsed) {
     i32 index;
@@ -6840,6 +6866,28 @@ i32 __cdecl Action_PlayGizSpecial(AISYS_PC *sys, AISCRIPTPROCESS_PC *processor, 
             GameAnimSet_JumpToStart(special->anim_set);
         }
         GameAnimSet_Play(special->anim_set, 1.0f, 1);
+    }
+    return 1;
+}
+
+static i32 Action_SetObstacleToEnd(AISYS_PC *sys, AISCRIPTPROCESS_PC *processor, AIPACKET_PC *packet, char **params,
+                                   i32 param_4, i32 param_5, f32 param_6) {
+    (void)sys;
+    (void)processor;
+    (void)packet;
+    (void)param_6;
+    if (param_5 != 0 && param_4 != 0) {
+        i32 index;
+        GIZOBSTACLE *obstacle = NULL;
+        for (index = 0; index < param_4; ++index) {
+            char *value = NuStrIStr(params[index], "name=");
+            if (value != NULL) {
+                obstacle = GizObstacle_FindByName(WORLD->giz_obstacle_sys, value + 5);
+            }
+        }
+        if (obstacle != NULL) {
+            GizObstacle_JumpToEnd(obstacle);
+        }
     }
     return 1;
 }
@@ -7810,6 +7858,43 @@ i32 __cdecl Action_SetLevelPath(AISYS_PC *sys, AISCRIPTPROCESS_PC *processor, AI
     return 1;
 }
 
+static i32 Action_SetHint(AISYS_PC *sys, AISCRIPTPROCESS_PC *processor, AIPACKET_PC *packet, char **params, i32 param_4,
+                          i32 param_5, f32 param_6) {
+    (void)sys;
+    (void)processor;
+    (void)packet;
+    (void)params;
+    (void)param_4;
+    (void)param_5;
+    (void)param_6;
+    return 1;
+}
+
+static i32 Action_SetHintComplete(AISYS_PC *sys, AISCRIPTPROCESS_PC *processor, AIPACKET_PC *packet, char **params,
+                                  i32 param_4, i32 param_5, f32 param_6) {
+    (void)sys;
+    (void)processor;
+    (void)packet;
+    (void)params;
+    (void)param_4;
+    (void)param_5;
+    (void)param_6;
+    return 1;
+}
+
+static i32 Action_CancelHint(AISYS_PC *sys, AISCRIPTPROCESS_PC *processor, AIPACKET_PC *packet, char **params,
+                             i32 param_4, i32 param_5, f32 param_6) {
+    (void)sys;
+    (void)processor;
+    (void)packet;
+    (void)params;
+    (void)param_4;
+    (void)param_5;
+    (void)param_6;
+    Hint_CancelCurrent();
+    return 1;
+}
+
 i32 __cdecl Action_LinkTurretToController(AISYS_PC *system, AISCRIPTPROCESS_PC *processor, AIPACKET_PC *packet,
                                           char **params, i32 param_count, i32 first_time, f32 elapsed) {
     i32 index;
@@ -8732,6 +8817,42 @@ i32 __cdecl Action_SetShieldHitPoints(AISYS_PC *system, AISCRIPTPROCESS_PC *proc
     return 1;
 }
 
+static i32 Action_SetMessage(AISYS_PC *unused0, AISCRIPTPROCESS_PC *processor, AIPACKET_PC *unused2, char **params,
+                             i32 num_params, i32 first_time, f32 unused6) {
+    if (first_time && gizaimessagesys != NULL && num_params != 0) {
+        i32 i;
+        char *name = NULL;
+        i32 operation = 0;
+        f32 amount = 0.0f;
+        for (i = 0; i < num_params; i++) {
+            char *value = NuStrIStr(params[i], "name=");
+            if (value != NULL)
+                name = value + 5;
+            else if ((value = NuStrIStr(params[i], "value=")) != NULL)
+                amount = AIParamToFloat(processor, value + 6);
+            else if ((value = NuStrIStr(params[i], "increment=")) != NULL) {
+                amount = AIParamToFloat(processor, value + 10);
+                operation = 1;
+            } else if ((value = NuStrIStr(params[i], "decrement=")) != NULL) {
+                amount = AIParamToFloat(processor, value + 10);
+                operation = -1;
+            }
+        }
+        if (name != NULL) {
+            GIZAIMESSAGE *message = CheckGizAIMessage(gizaimessagesys, name, NULL);
+            if (message != NULL) {
+                if (operation == 0)
+                    message->value = amount;
+                else if (operation == 1)
+                    message->value = amount + message->value;
+                else if (operation == -1)
+                    message->value -= amount;
+            }
+        }
+    }
+    return 1;
+}
+
 i32 __cdecl Action_SetForceBack(AISYS_PC *sys, AISCRIPTPROCESS_PC *processor, AIPACKET_PC *packet, char **params,
                                 i32 param_4, i32 param_5, f32 param_6) {
     i32 index;
@@ -9101,6 +9222,37 @@ i32 __cdecl Action_AddDebris(AISYS_PC *sys, AISCRIPTPROCESS_PC *processor, AIPAC
             debris_position = &position;
         }
         AddFiniteShotDebrisEffect(&handle, WORLD->game_debris_sys->entries[debris_type].effect, debris_position, 1);
+    }
+    return 1;
+}
+
+static i32 Action_JudderGameCamera(AISYS_PC *sys, AISCRIPTPROCESS_PC *processor, AIPACKET_PC *packet, char **params,
+                                   i32 param_4, i32 param_5, f32 param_6) {
+    (void)sys;
+    (void)packet;
+    (void)param_6;
+    if (param_5 != 0) {
+        i32 index;
+        i32 axis = 0;
+        f32 time = 0.1f;
+        for (index = 0; index < param_4; ++index) {
+            if (NuStrIStr(params[index], "axis=x") != NULL) {
+                axis = 0;
+            } else if (NuStrIStr(params[index], "axis=y") != NULL) {
+                axis = 1;
+            } else if (NuStrIStr(params[index], "axis=z") != NULL) {
+                axis = 2;
+            } else {
+                char *parameter = NuStrIStr(params[index], "time");
+                if (parameter != NULL) {
+                    time = AIParamToFloat(processor, parameter + 5);
+                }
+            }
+        }
+        if (axis == 2 && qrand() < 0x8000) {
+            time = -time;
+        }
+        GameCam_Judder(GameCam, time, axis, NULL);
     }
     return 1;
 }

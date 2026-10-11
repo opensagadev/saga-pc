@@ -42,6 +42,19 @@ i32 __cdecl Cheat_PowerUpActive(i32 index) {
     return Cheat_PowerUpTime > 0.0f;
 }
 
+void Cheats_Update() {
+    if (ONEPLAYERPOWERUPS == 0 && Cheat_PowerUpTime > 0.0f) {
+        Cheat_PowerUpTime -= FRAMETIME;
+        if (Cheat_PowerUpTime <= 0.0f) {
+            GameAudio_PlaySfx(0x52, NULL, 0, 0);
+        } else {
+            GameAudio_PlaySfx(0x51, NULL, 0, 0);
+            ConstantRumble(NULL, qrand() * 1.5259021893143654e-05f * 0.5f, 0.0f);
+        }
+    }
+    Cheats_SetFlags();
+}
+
 void __cdecl Cheat_StartPowerUp(NUVEC *position, GAMEOBJECT *object) {
     GAME_MESSAGE_PC *display;
     if (ONEPLAYERPOWERUPS != 0) {

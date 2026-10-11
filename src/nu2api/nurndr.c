@@ -55,6 +55,13 @@ void __cdecl NuRndrClear(i32 clear_flags, i32 bg_colour, f32 alpha) {
     currentScene.calc_20 = (f32)(0.0625 * vpCurrent.height / ((f64)DebrisGlassTextureHeight / PS2_VREZ_H));
 }
 
+void NuRndrAxisArrows(NUVEC *position, void *unused1, f32 length, NUMTL *material) {
+    NUMTX matrix;
+    NuMtxSetIdentity(&matrix);
+    NuMtxTranslate(&matrix, position);
+    NuRndrAxisArrowsMtx(&matrix, length, material);
+}
+
 void __cdecl NuRndrGradClear(i32 clear_flags, i32 top_colour, i32 bottom_colour, f32 alpha) {
     NuRndrClear(clear_flags, bottom_colour, alpha);
 }

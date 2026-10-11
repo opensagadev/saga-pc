@@ -2111,6 +2111,14 @@ void __cdecl SetCoinType(i32 model, GIZMOPICKUP_PC *pickup) {
     count = GizmoPickupType[pickup->type_index].random_model_count;
     pickup->model_variant = count ? pickup->model_variant % count : 0;
 }
+
+i32 GetRandomCoinType() {
+    i32 random_value = qrand();
+    if (random_value < 0) {
+        random_value += 0x3fff;
+    }
+    return CoinTab[random_value >> 14];
+}
 void __cdecl PowerUp_Particles(WORLDINFO *world, NUVEC *position) {
     if (VehicleArea == 0 && ParticlesPerSecond(10.0f, FRAMETIME) > 0)
         AddGameDebris(world->game_debris_sys, GizBuilditGDeb[qrand() / 10923], position);

@@ -1822,6 +1822,17 @@ static void InitCreatureModelFlagsPc(GAMEOBJECT *object) {
         object->flags_1f8 &= ~0x20000u;
 }
 
+void ClearAICreatures() {
+    i32 i;
+    GAMEOBJECT *object = Obj;
+    for (i = 0; i < HIGHGAMEOBJECT; ++i, ++object) {
+        if ((object->flags_1fc & 1) != 0 && (object->flags_1f8 & 0x400) != 0) {
+            FreeTorpedoPacket(&object->torpedo);
+            RemoveGameObject(object, 1);
+        }
+    }
+}
+
 i32 __cdecl InitCreature(GAMEOBJECT *object, i32 id, i32 parameter) {
     CHARACTERDATA_PC *character;
     PLAYERCHARACTERCONFIG_PC *config;
@@ -2184,6 +2195,14 @@ void __cdecl Players_Init(void) {
         }
     }
     RememberPlayerIDs(0, players[0] != NULL ? (i16)players[0]->id : -1, players[1] != NULL ? (i16)players[1]->id : -1);
+}
+
+static i32 Customise_FindLetter(char character) {
+    i32 letter = 0;
+    for (; letter != 38; ++letter)
+        if (character == CustomiseLetter[letter])
+            break;
+    return letter == 38 ? 0 : letter;
 }
 
 typedef struct player_position_record_pc_s {

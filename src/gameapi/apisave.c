@@ -291,6 +291,11 @@ void __cdecl loadsaveCallEachFrame(void) {
     }
 }
 
+void Text3D(char *text, f32 x, f32 y, f32 z, f32 x_scale, f32 y_scale, f32 z_scale, u32 alignment, u8 red, u8 green,
+            u8 blue) {
+    Text3DEx(text, x, y, z, x_scale, y_scale, z_scale, alignment, red, green, blue, 128);
+}
+
 typedef struct SAVE_MENU_VIEW_PC {
     f32 menu_time;
     f32 time_04;

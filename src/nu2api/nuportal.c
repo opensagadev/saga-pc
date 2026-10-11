@@ -10,6 +10,27 @@ void NuPortalInit(void) {
     fstack_limit.void_ptr = fstackmem + NU_PORTAL_STACK_SIZE;
 }
 
+void NuPortalSetActive(NUGSCN *scene, i32 portal_id, i32 active) {
+    if (scene->max_portals != 0) {
+        NUPORTAL *portal = scene->portals;
+        if (active == 0) {
+            u32 index;
+            for (index = 0; index < scene->max_portals; index++, portal++) {
+                if (portal->id == portal_id) {
+                    portal->flags = 0;
+                }
+            }
+        } else {
+            u32 index;
+            for (index = 0; index < scene->max_portals; index++, portal++) {
+                if (portal->id == portal_id) {
+                    portal->flags |= NUPORTAL_FLAG_ACTIVE;
+                }
+            }
+        }
+    }
+}
+
 i16 __cdecl NuPortalWhichRoom(NUGSCN *scene, NUVEC *position) {
     i16 candidates[4];
     i16 candidate_count = 0;
@@ -689,6 +710,7 @@ i32 __cdecl NuPortalVisibility(NUGSCN *scene) {
     drawSceneSphere(scene, NuPortalDebugDrawPc);
     return 1;
 }
+
 typedef NURND_VERTEX2D_PC PORTAL_LINE_VERTEX_PC;
 STATIC_ASSERT(sizeof(PORTAL_LINE_VERTEX_PC) == 28);
 STATIC_ASSERT(offsetof(PORTAL_LINE_VERTEX_PC, x) == 0);

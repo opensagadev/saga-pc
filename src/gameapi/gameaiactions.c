@@ -422,6 +422,66 @@ static __declspec(noinline) i32 __cdecl PartyMemberInWay(GAMEOBJECT *object, GAM
     return 0;
 }
 
+AILOCATOR_PC *LocalGetRandomLocator(AILOCATOR_PC **locators, i32 count, f32 clip_radius, NUVEC *position,
+                                    f32 max_distance, i32 outside_camera, f32 max_delta_y, f32 min_delta_y) {
+    i32 candidate_count;
+    i32 i;
+    i32 selected;
+    struct AILOCATOR_PC *result;
+    i32 candidates[64];
+    if (count > 64) {
+        count = 64;
+    }
+    candidate_count = 0;
+    for (i = 0; i < count; ++i) {
+        u8 valid;
+        if (locators[i] == NULL) {
+            continue;
+        }
+        valid = 0;
+        if (outside_camera != 0) {
+            if (NuCameraClipTestSphere(&locators[i]->position, 0.0f, &numtx_identity) == 0) {
+                valid = 1;
+            }
+        } else {
+            valid = 1;
+            if (clip_radius > 0.0f) {
+                if (NuCameraClipTestSphere(&locators[i]->position, clip_radius, &numtx_identity) == 0) {
+                    const i16 room = (i16)(NuPortalWhichRoom(WORLD->current_gscn, &locators[i]->position));
+                    valid = 0;
+                    if (room >= 0 && WORLD->rooms_visible_ptr[room] == 0) {
+                        valid = 1;
+                    }
+                }
+            }
+        }
+        if (valid != 0) {
+            if (max_distance == 1000000000.0f) {
+                candidates[candidate_count++] = i;
+            } else {
+                NUVEC delta;
+                const f32 distance = NuVecDistSqr(position, &locators[i]->position, &delta);
+                if (min_delta_y != 1000000000.0f && min_delta_y > delta.y) {
+                    continue;
+                }
+                if (max_delta_y != 1000000000.0f && delta.y > max_delta_y) {
+                    continue;
+                }
+                if (max_distance * max_distance > distance) {
+                    candidates[candidate_count++] = i;
+                }
+            }
+        }
+    }
+    if (candidate_count == 0) {
+        return NULL;
+    }
+    selected = qrand() / (65535 / candidate_count + 1);
+    result = locators[candidates[selected]];
+    locators[candidates[selected]] = NULL;
+    return result;
+}
+
 i32 __cdecl Action_EngageOpponent(AISYS_PC *sys, AISCRIPTPROCESS_PC *processor, AIPACKET_PC *packet, char **params,
                                   i32 param_4, i32 param_5, f32 param_6) {
     GAMEOBJECT *object;
@@ -1104,6 +1164,63 @@ i32 __cdecl Action_RaceOpponent(AISYS_PC *system, AISCRIPTPROCESS_PC *processor,
 
     AIMoveInstruction(packet, &destination, 0.0f, NULL, 1, 0.0f);
     return 0;
+}
+
+static void GizAction_ActivateEffect(GIZFLOW_PC *unused0, FLOWBOX_PC *unused1, char **params, int count) {
+    char *name;
+    i32 visible;
+    i32 index;
+    if (count <= 0) {
+        return;
+    }
+    name = NULL;
+    visible = 1;
+    for (index = 0; index < count; ++index) {
+        char *value = NuStrIStr(params[index], "effect");
+        if (value != NULL) {
+            name = value + NuStrLen("effect") + 1;
+        } else if (NuStrICmp(params[index], "FALSE") == 0) {
+            visible = 0;
+        }
+    }
+    if (name != NULL) {
+        SetEffectVisibility(name, visible);
+        EffectOffProgress_Update(WorldInfo_CurrentlyActive()->level_progress, name, visible);
+    }
+}
+
+static void GizAction_SetAIMessage(GIZFLOW_PC *unused0, FLOWBOX_PC *unused1, char **params, int count) {
+    i32 index;
+    struct gizaimessage_s *message;
+    f32 value = 0.0f;
+    i32 mode = 0;
+    char *name = NULL;
+    for (index = 0; index < count; ++index) {
+        char *argument = NuStrIStr(params[index], "Name");
+        if (argument != NULL)
+            name = argument + NuStrLen("Name") + 1;
+        else if ((argument = NuStrIStr(params[index], "Val")) != NULL)
+            value = NuAToF(argument + NuStrLen("Val") + 1);
+        else if ((argument = NuStrIStr(params[index], "increment=")) != NULL) {
+            value = NuAToF(argument + 10);
+            mode = 1;
+        } else if ((argument = NuStrIStr(params[index], "decrement=")) != NULL) {
+            value = NuAToF(argument + 10);
+            mode = -1;
+        }
+    }
+    message = CheckGizAIMessage(gizaimessagesys, name, NULL);
+    switch (mode) {
+        case 0:
+            message->value = value;
+            break;
+        case 1:
+            message->value = value + message->value;
+            break;
+        case -1:
+            message->value = message->value - value;
+            break;
+    }
 }
 
 i32 __cdecl Action_SetAnimSpeedMul(AISYS_PC *system, AISCRIPTPROCESS_PC *processor, AIPACKET_PC *packet, char **params,

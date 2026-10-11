@@ -100,6 +100,21 @@ void __cdecl EmperorFightA_Reset(WORLDINFO *world) {
         LevGizObst[3] = (GIZOBSTACLE *)gizmo->object;
 }
 
+void SarlaccPitA_Draw(WORLDINFO *unused0) {
+    GIZAIMESSAGE *message = NULL;
+    if (gizaimessagesys != NULL)
+        message = CheckGizAIMessage(gizaimessagesys, "Boba_Dead", NULL);
+    if (message == NULL || message->value != 0.0f) {
+        DrawBossHitPoints(NULL);
+    } else {
+        GAMEOBJECT *boba = FindGameObject(id_BOBAFETT, 1, 1, 1, 0);
+        if (gizaimessagesys != NULL)
+            message = CheckGizAIMessage(gizaimessagesys, "BobaFightStarted", NULL);
+        if (message != NULL && boba != NULL && message->value == 1.0f)
+            DrawBossHitPoints(boba);
+    }
+}
+
 typedef struct sarlacc_world_pc_s {
     u8 unknown_0000[0x50cc];
     i32 blowup_target_count;

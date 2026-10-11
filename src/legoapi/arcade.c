@@ -17,6 +17,17 @@ void Arcade_ResetPanel() {
     Arcade_NeedTwoPlayers_Scale = 1.0f;
 }
 
+void Arcade_UpdatePanel(i32 paused) {
+    if (Arcade == 0 || paused != 0 || Arcade_BothPlayersActive()) {
+        Arcade_NeedTwoPlayers_Scale = 1.0f;
+    } else {
+        Arcade_NeedTwoPlayers_Scale = SeekLinearF(Arcade_NeedTwoPlayers_Scale, 1.0f, FRAMETIME);
+        if ((i32)(GameTimer.time_elapsed * 2.0f) != (i32)(GameTimer.last_time_elapsed * 2.0f)) {
+            GameAudio_PlaySfx(0x35, NULL, 0, 0);
+        }
+    }
+}
+
 typedef struct ARCADE_COIN_PACKET_PC {
     u32 coins;
     f32 scale;

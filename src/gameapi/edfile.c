@@ -209,6 +209,24 @@ void __cdecl EdFileReadNuVec(NUVEC *out) {
     out->z = EdFileReadFloat();
 }
 
+i32 FS_GetPadWithRepeat(FRAME_PAD_PC *pad, float repeat, float elapsed) {
+    static i32 LastPad;
+    static float PadRepeat;
+
+    if (pad->digital_buttons != LastPad) {
+        LastPad = pad->digital_buttons;
+        PadRepeat = 0.5f;
+        return LastPad;
+    }
+
+    PadRepeat -= elapsed;
+    if (PadRepeat < 0.0f) {
+        PadRepeat += repeat;
+        return LastPad;
+    }
+    return 0;
+}
+
 char __cdecl EdFileReadChar(void) {
     char character;
     EdFileRead(&character, sizeof(character));

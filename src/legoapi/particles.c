@@ -46,3 +46,11 @@ void Particles_LoadAreaPage(char *path) {
         DEBPAGE_AREA = edppLoadPage(path, 1, 0);
     }
 }
+
+void Particles_DumpAreaPage() {
+    if (DEBPAGE_AREA != -1) {
+        edppStopPage((i8)(DEBPAGE_AREA));
+        edppClearPage((i8)(DEBPAGE_AREA));
+        DEBPAGE_AREA = -1;
+    }
+}

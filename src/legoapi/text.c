@@ -370,6 +370,31 @@ next_character:
     goto check_character;
 }
 
+void MatrixTextStringEncode(void *font, unsigned char *source, u16 *destination) {
+    u16 character;
+    while (*source != '\0') {
+        source = NuUnicodeCharFromUTF8(&character, source);
+        if (character == '~') {
+            if (*source == '\0') {
+                break;
+            }
+            source = NuUnicodeCharFromUTF8(&character, source);
+            continue;
+        }
+
+        *destination = NuQFntEncodeUnicodeChar(font, character);
+        if (*destination == 0xffff) {
+            NuUnicodeCharFromUTF8(&character, (unsigned char *)((char *)("\xe2\x96\xa1")));
+            *destination = NuQFntEncodeUnicodeChar(font, character);
+            if (*destination == 0xffff) {
+                *destination = NuQFntEncodeUnicodeChar(font, '?');
+            }
+        }
+        ++destination;
+    }
+    *destination = 0;
+}
+
 void FixUpButtonsInFont(VUFNT *game_font, VUFNT *button_font) {
     if (game_font == NULL) {
         game_font = QFont2D;

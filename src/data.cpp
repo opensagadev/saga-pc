@@ -28526,3 +28526,123 @@ extern "C" {
 #pragma data_seg(".data$id_RIDDLER_GOON")
     i16 id_RIDDLER_GOON = -1;
 }
+
+extern "C" {
+#pragma bss_seg(".bss$FS_CurrentPosFileNum")
+    i32 FS_CurrentPosFileNum;
+
+#pragma bss_seg(".bss$FS_NumFiles")
+    i32 FS_NumFiles;
+
+#pragma bss_seg(".bss$FS_FileList")
+    char FS_FileList[65536];
+
+#pragma bss_seg(".bss$FS_Active")
+    u8 FS_Active;
+
+#pragma bss_seg(".bss$FS_Path")
+    char FS_Path[256];
+
+#pragma data_seg(".data$FS_Width")
+    f32 FS_Width = 248.0f;
+
+#pragma data_seg(".data$FS_SortMode")
+    i32 FS_SortMode = 3;
+
+#pragma bss_seg(".bss$FS_ShowVolumes")
+    u8 FS_ShowVolumes;
+
+#pragma bss_seg(".bss$FS_Callback")
+    void(__cdecl *FS_Callback)(char *arg0, char *arg1);
+}
+
+extern "C" {}
+
+extern "C" {}
+
+extern "C" {
+#pragma bss_seg(".bss$gunship_bolts")
+    i16 gunship_bolts[2];
+
+#pragma bss_seg(".bss$gunship_flags")
+    u8 gunship_flags[10];
+}
+
+extern "C" {
+#pragma bss_seg(".bss$fireSplinePos")
+    SPLINEPOS fireSplinePos;
+
+#pragma bss_seg(".bss$fireBackPos")
+    SPLINEPOS fireBackPos;
+
+#pragma bss_seg(".bss$runningTotalPos")
+    f32 runningTotalPos;
+
+#pragma bss_seg(".bss$fireSpeedScale")
+    f32 fireSpeedScale;
+}
+
+extern "C" {
+#pragma bss_seg(".bss$FadeLoop_ObjScene")
+    struct NUGSCN_s *FadeLoop_ObjScene;
+}
+
+extern "C" {}
+
+extern "C" {}
+
+extern "C" {
+#pragma data_seg(".data$gizmopickup_typeid")
+    i32 gizmopickup_typeid = -1;
+
+#pragma bss_seg(".bss$hothtroopers")
+    void *hothtroopers;
+}
+
+extern "C" {}
+
+extern "C" {
+#pragma bss_seg(".bss$drawptr")
+    void(__cdecl *drawptr)(void);
+
+#pragma bss_seg(".bss$picked")
+    i32 picked;
+}
+
+extern "C" {}
+
+extern "C" {}
+
+extern "C" {
+#pragma bss_seg(".bss$edpp_rotz")
+    i32 edpp_rotz;
+
+#pragma bss_seg(".bss$edpp_facroty")
+    i32 edpp_facroty;
+
+#pragma bss_seg(".bss$edpp_refroty")
+    i32 edpp_refroty;
+
+#pragma bss_seg(".bss$edpp_refrotz")
+    i32 edpp_refrotz;
+}
+
+extern "C" {
+#pragma bss_seg(".bss$CustomiseMode")
+    i32 CustomiseMode[2];
+
+#pragma bss_seg(".bss$makeplayerlist_freeplay")
+    i32 makeplayerlist_freeplay;
+}
+
+extern "C" {}
+
+extern "C" {}
+
+extern "C" {}
+
+extern "C" {}
+
+extern "C" {}
+
+extern "C" {}

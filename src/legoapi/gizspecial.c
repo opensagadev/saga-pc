@@ -433,3 +433,10 @@ ADD_GIZMO_CONFIG_TYPE_PC *__cdecl GizSpecial_RegisterGizmo(i32 type_id) {
     gizspecial_gizmotype_id = type_id;
     return &addtype;
 }
+
+i32 GetAnimDirection(NUINSTANIM_TIME_VIEW *animation) {
+    if (animation == NULL || animation->tfactor == 0.0f) {
+        return -1;
+    }
+    return animation->tfactor < 0.0f ? 1 : 0;
+}

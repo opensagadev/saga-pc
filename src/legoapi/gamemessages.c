@@ -232,6 +232,19 @@ i32 __cdecl FindGameMsgsWithID(i32 id, i32 remove, i32 player, GAME_MESSAGE_PC *
     return count;
 }
 
+void AddGameMsgCount(NUVEC *position, i32 count, i32 total, unsigned char red, unsigned char green, unsigned char blue,
+                     float field_0xd4) {
+    void *message;
+    char text[32];
+    sprintf(text, "%i/%i", count, total);
+
+    message = position != NULL ? AddGameMessage(text, position, 0.6f, NULL, 0.8f, red, green, blue, 0x4023, 1.0f)
+                               : AddGameMessage(text, &v001, 0.6f, NULL, 0.8f, red, green, blue, 0x4020, 1.0f);
+    if (message != NULL) {
+        *(float *)((char *)(message) + 0xd4) = field_0xd4;
+    }
+}
+
 GAME_MESSAGE_PC *__cdecl AddGameMessage(char *text, NUVEC *position, f32 scale, NUVEC *target_position,
                                         f32 target_scale, u8 red, u8 green, u8 blue, u32 flags, f32 duration) {
     ADD_GAME_MESSAGE_PC message = AddGameMsg_Default;

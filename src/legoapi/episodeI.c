@@ -217,6 +217,47 @@ i32 __cdecl Action_CreatePod(void *system, void *process, void *packet, char **p
     return 1;
 }
 
+static i32 JediBInitLocator(WORLDINFO *world, NUVEC *position, i32 angle, AILOCATOR_PC *locator, f32 radius) {
+    f32 floor_y;
+    if (netclient != 0) {
+        return 0;
+    }
+    if (world->ai_sys != NULL) {
+        i32 index;
+        i32 count = world->ai_sys->antinode_count;
+        AIANTINODE_PC *node = world->ai_sys->antinodes;
+        for (index = 0; index < count; index++, node++) {
+            if (node->radius != 0.0f) {
+                f32 dx = position->x - node->position.x;
+                f32 dz = position->z - node->position.z;
+                f32 dist_sqr = dx * dx + dz * dz;
+                f32 r = node->radius + 1.0f;
+                if (dist_sqr < r * r) {
+                    f32 scale = r / NuFsqrt(dist_sqr);
+                    position->x = node->position.x + dx * scale;
+                    position->z = node->position.z + dz * scale;
+                    break;
+                }
+            }
+        }
+    }
+    memset(locator, 0, sizeof(AILOCATOR_PC));
+    if (!(position->x * position->x + position->z * position->z < radius * radius)) {
+        return 0;
+    }
+    floor_y = GameShadow(NULL, position, 5.0f, 0);
+    if (floor_y != 2000000.0f) {
+        position->y = floor_y;
+    }
+    AISysGetPathPos(world->ai_sys, position, &locator->path_info, NULL, 0xff);
+    if ((locator->path_info.flags & AIPATHINFO_FLAG_ON_PATH) == 0) {
+        return 0;
+    }
+    locator->position = *position;
+    locator->rotation = angle;
+    return 1;
+}
+
 STATIC_ASSERT(offsetof(PODRACE_RESOURCE_PC, max_lap_time) == 0xb010);
 STATIC_ASSERT(offsetof(PODRACE_RESOURCE_PC, lap_time_increment) == 0xb014);
 STATIC_ASSERT(offsetof(PODRACE_RESOURCE_PC, attempts_per_increment) == 0xb018);

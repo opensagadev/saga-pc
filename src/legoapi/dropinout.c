@@ -23,3 +23,16 @@ void __cdecl DropInOutCode(GAMEOBJECT *object) {
         object->velocity.y = -0.1f;
     }
 }
+
+void StartDropOut(GAMEOBJECT *object) {
+    i16 animation;
+    if (WORLD->current_level == PODSPRINTA_LDATA || (PODRACE_ADATA != NULL && PODRACE_ADATA == WORLD->area)) {
+        return;
+    }
+
+    object->character_context = CHARACTER_CONTEXT_DROP_OUT;
+    animation = CurrentAnim(&object->anim_packet);
+    object->context_timer = 0.0f;
+    object->context_duration = 0.5f;
+    object->field_7aa = animation;
+}

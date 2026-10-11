@@ -496,6 +496,31 @@ void __cdecl GameAnimSet_SetAnimPos(GAMEANIMOBJ *object, f32 position) {
     object->instance_animation->ltime = (object->end_frame - object->start_frame) * position + object->start_frame;
 }
 
+void GameAnimSet_SetOffset(GAMEANIMSET *set, NUVEC *offset) {
+    struct gameanimobj_s *object;
+    if (set == NULL) {
+        return;
+    }
+
+    for (object = set->objects; object != NULL; object = object->next) {
+        struct numtx_s *source;
+        NUMTX matrix;
+        if ((object->serialized_flags & 4) != 0) {
+            continue;
+        }
+        source = NuSpecialGetMtx(&object->special);
+        if (source == NULL) {
+            continue;
+        }
+
+        matrix = *source;
+        matrix.m30 += offset->x;
+        matrix.m31 += offset->y;
+        matrix.m32 += offset->z;
+        NuSpecialSetDrawMtx(&object->special, &matrix);
+    }
+}
+
 f32 __cdecl GameAnimSet_GetCompletionRatio(GAMEANIMSET *set) {
     GAMEANIMOBJ *object;
     f32 ratio;

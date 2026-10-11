@@ -70,6 +70,7 @@ extern "C" {
             sys->socks[index].flags |= 0x100;
     }
 }
+
 static i32 NuSpecialFindMultiDisplayPc(NUGSCN *scene, NUSPECIALHANDLE *dest, char *name, i32 capacity, i32 flags) {
     i32 count = 0;
     NUDISPLAY_SPECIAL_PC *special = scene->display_list->specials;

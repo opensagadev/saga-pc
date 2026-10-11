@@ -790,6 +790,27 @@ static i32 GetBladeJoints(GAMEOBJECT *object, i32 blade, i32 joints[2], i32 *str
     return 1;
 }
 
+i32 LightSabre_ColourFromObj(i32 model, i32 *glow_model) {
+    i32 colour = -1;
+    i32 glow = -1;
+    if (model == 0x65) {
+        colour = 0;
+        glow = 0x66;
+    } else if (model == 0x67) {
+        colour = 1;
+        glow = 0x68;
+    } else if (model == 0x69) {
+        colour = 2;
+        glow = 0x6a;
+    } else if (model == 0x6b) {
+        colour = 3;
+        glow = 0x6c;
+    }
+    if (glow_model != NULL)
+        *glow_model = glow;
+    return colour;
+}
+
 static void LightSabreStreakCode(GAMEOBJECT *object, i32 blade, i32 effect) {
     i8 context;
     i32 joints[2];
@@ -2381,6 +2402,16 @@ void __cdecl DeactivateGameObject(GAMEOBJECT *object) {
         WORLD->ai_sys->creatures[object->ai_packet.creature_index].activation_type = 2;
     } else {
         object->ai_packet.reset_mode = 4;
+    }
+}
+
+void DeactivateCharacter(char *name) {
+    struct gameobject_s *object;
+    if (Mission_Active(NULL) != NULL || name == NULL)
+        return;
+    object = GetNamedGameObject(WORLD->ai_sys, name);
+    if (object != NULL && (FreePlay == 0 || (object->flags_1f8 & 0x400) != 0)) {
+        DeactivateGameObject(object);
     }
 }
 

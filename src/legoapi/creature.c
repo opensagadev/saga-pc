@@ -26,6 +26,15 @@ void __cdecl StoreProgressAICharacter(LEVEL_PROGRESS *progress) {
     }
 }
 
+void AICreatureResumeScript(GAMEOBJECT *object) {
+    AISCRIPT_PC *script = object->ai_packet.script_processor.base_script;
+    if (script != NULL) {
+        AIScriptProcessorInit(WORLD->ai_sys, &object->ai_packet, &object->ai_packet.script_processor, NULL, NULL, NULL,
+                              0, script, script->base_state);
+        object->ai_packet.script_processor.active_ref_count = 0;
+    }
+}
+
 extern NUVEC alert_pos;
 extern f32 alert_time;
 void __cdecl AlertSurroundingCreatures(GAMEOBJECT *object, NUVEC *position) {

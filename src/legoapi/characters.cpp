@@ -14,6 +14,23 @@ i32 __cdecl TakeOverYodaSeekDistanceHack(GAMEOBJECT *object, GAMEOBJECT *luke, N
     return offset->z > 0.0f;
 }
 
+extern "C" void DagobahB_Reset(WORLDINFO *world) {
+    LevSafePlatID[1] = -1;
+    LevSafePlatID[0] = -1;
+
+    if (NuSpecialFind(world->current_gscn, &LevHSpecial[0], "pad_2_base_2", 1) != 0) {
+        if (world->terrain != NULL) {
+            LevSafePlatID[0] = FindPlatInst(NuSpecialGetInstanceix(&LevHSpecial[0]));
+        }
+    }
+
+    if (NuSpecialFind(world->current_gscn, &LevHSpecial[1], "pad_4_base_2", 1) != 0) {
+        if (world->terrain != NULL) {
+            LevSafePlatID[1] = FindPlatInst(NuSpecialGetInstanceix(&LevHSpecial[1]));
+        }
+    }
+}
+
 void __cdecl CharScene_Draw(WORLDINFO *world, i32 character_id, NUMTX *matrix, NUMTX *reflection_matrix) {
     NUSPECIALHANDLE *special = CharScene_FindHSpecial(world, character_id);
     if (special != NULL) {

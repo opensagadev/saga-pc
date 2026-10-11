@@ -4056,6 +4056,13 @@ static __declspec(noinline) void ShootThisFrame(GAMEOBJECT *object, i32 bolt_id,
     if (state->weapon.type != NULL && state->weapon.type->type == 2 && state->weapon.ammo != 0)
         --state->weapon.ammo;
 }
+
+void StartBallooning(GAMEOBJECT *object, i32 movement_state) {
+    object->field_7b3 = movement_state;
+    object->character_context = 0x5d;
+    object->field_7aa = object->character_model->model_data_b[0xb1] != NULL ? 0xb1 : 1;
+    object->context_hover_target_y = 1000000000.0f;
+}
 static __declspec(noinline) void FireCode(GAMEOBJECT *object, i32 pressed, i32 held, f32 fire_delay,
                                           i32 delay_pressed) {
     BOLTTYPE_PC *bolt;
