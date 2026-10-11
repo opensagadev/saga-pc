@@ -3863,6 +3863,186 @@ extern AREA_DATA_PC *BATTLEOVERCORUSCANT_ADATA;
 extern i16 id_REPUBLICGUNSHIP;
 extern i32 VehicleGunshipAngleADefaultPc, VehicleGunshipAngleAPlayer1Pc, VehicleGunshipAngleAPlayer2Pc;
 extern i32 VehicleGunshipAngleBDefaultPc, VehicleGunshipAngleBPlayer1Pc, VehicleGunshipAngleBPlayer2Pc;
+static void ZapCode(GAMEOBJECT *object, i32 pressed, i32 retract_weapon) {
+    NUVEC forward, delta, hit_position, direction, colour, midpoint;
+    f32 nearest_distance, distance, hit_frame, duration, animation_end, lightning_start, lightning_end;
+    i32 index, sfx_bits, deactivated;
+    u32 angle;
+    GAMEOBJECT *candidate, *target;
+    NUVEC *origin;
+    f32 *frame;
+    if (object->character_context == 0x16) {
+        frame = AnimPlaying(&object->anim_packet, object->field_7aa, 1, 0);
+        if (frame == NULL) {
+            return;
+        }
+
+        target = object->force_target;
+        origin = GetZapOrigin(object);
+        if ((object->context_variant_flags & 0x40) == 0) {
+            hit_frame = AnimListFrame(object->character_model, object->field_7aa, 0);
+            if (hit_frame < 1.0f || hit_frame <= *frame) {
+                object->context_variant_flags |= 0x40;
+            }
+            if ((object->context_variant_flags & 0x40) != 0) {
+                AddGameDebris(WORLD->game_debris_sys, object->id == id_R2Q5 ? 1 : 3, origin);
+                NewBuzz(object->pad->bound_pad, 0.1f, 0);
+                sfx_bits = GameAudio_GetPlrSfxBits(object);
+                GameAudio_PlaySfxById(object->character_data->game_character->shoot_sfx == -1
+                                          ? GetSfxId("R2Zap")
+                                          : object->character_data->game_character->shoot_sfx,
+                                      &object->collision_position, sfx_bits, 1);
+
+                if (target == NULL) {
+                    AddGameDebris(WORLD->game_debris_sys, 0x58, origin);
+                } else {
+                    angle = NuAtan2D(object->collision_position.x - target->collision_position.x,
+                                     object->collision_position.z - target->collision_position.z);
+                    hit_position.x =
+                        NuTrigTable[(angle >> 1) & 0x7fff] * target->collision_radius + target->collision_position.x;
+                    hit_position.y = target->collision_position.y;
+                    hit_position.z =
+                        NuTrigTable[(((angle & 0xffff) + 0x4000) >> 1) & 0x7fff] * target->collision_radius +
+                        target->collision_position.z;
+                    AddGameDebris(WORLD->game_debris_sys, object->id == id_R2Q5 ? 1 : 3, &hit_position);
+
+                    if ((i8)(object->flags_1fc) < 0 && Cheat_IsOn(0x26) != 0 &&
+                        (target->character_data->model_flags & 0x10) != 0) {
+                        objhitobj_noimpactsfx = 1;
+                        if (ObjHitObj(object, target, -1, 0x401, 0, 1) == 2) {
+                            deactivated = 0;
+                        } else {
+                            deactivated = DeactivatePlayer(target, DEACTIVATEDTIME, NULL);
+                        }
+                    } else {
+                        deactivated = DeactivatePlayer(target, DEACTIVATEDTIME, object);
+                    }
+                    if (deactivated != 0 && (i8)(object->flags_1fc) < 0) {
+                        GameCam_HitJudder();
+                        if (Cheat_IsOn(0x15) != 0 && (target->character_data->model_flags & 0x10) != 0 &&
+                            (target->character_data->game_character->flags_090 & 0x40) == 0) {
+                            target->action_movement_state = 2;
+                            duration = (f32)(qrand()) * (1.0f / 65535.0f) * 0.3f + 0.2f;
+                            target->context_hover_target_y = duration;
+                            target->context_variant_flags =
+                                (target->context_variant_flags & ~0x100) | (object->id == id_R2Q5 ? 0x100 : 0);
+                        }
+                    }
+                }
+            }
+        }
+
+        if (target != NULL) {
+            animation_end = NuAnimEndFrame(object->character_model->model_data_b[object->field_7aa]);
+            lightning_start = AnimListFrame(object->character_model, object->field_7aa, 1);
+            if (lightning_start >= 1.0f && lightning_start < animation_end) {
+                lightning_end = AnimListFrame(object->character_model, object->field_7aa, 2);
+                if (lightning_start < lightning_end) {
+                    if (lightning_end > animation_end) {
+                        lightning_end = animation_end;
+                    }
+                    if (lightning_start <= *frame && *frame <= lightning_end) {
+                        object->flags_e20 |= 0x02000000;
+                        PlaySfx("ForceLightningLp", &target->collision_position);
+                        if (object->dynamic_light_id != -1) {
+                            rtlDynamicEnable(object->dynamic_light_id, 1);
+                            distance = NuVecDist(&target->collision_position, &object->collision_position, &direction);
+                            rtlDynamicSetRadii(object->dynamic_light_id, distance * 0.5f, distance * 0.5f + 0.5f);
+                            qrand();
+                            if (object->id == id_R2Q5) {
+                                colour.x = qrand() < 0x8000 ? 2.0f : 0.25f;
+                                colour.y = 0.0f;
+                                colour.z = 0.0f;
+                            } else {
+                                colour.x = 0.0f;
+                                colour.y = qrand() < 0x8000 ? 2.0f : 0.25f;
+                                colour.z = colour.y;
+                            }
+                            rtlDynamicSetColours(object->dynamic_light_id, &colour, NULL);
+                            midpoint.x = object->collision_position.x + direction.x * 0.5f;
+                            midpoint.y = object->collision_position.y + direction.y * 0.5f;
+                            midpoint.z = object->collision_position.z + direction.z * 0.5f;
+                            rtlDynamicSetPos(object->dynamic_light_id, &midpoint);
+                        }
+                    }
+                }
+            }
+        }
+
+        SetObjAsHeadTarget(object, target, 2, 1.0f, 0.0f, 0.0f);
+        object->context_timer -= FRAMETIME;
+        if (object->context_timer <= 0.0f) {
+            object->character_context = -1;
+        }
+    } else {
+        if (pressed != 0 && (object->character_data->game_character->flags_098[0] & 1) != 0) {
+            i16 animation;
+            if (object->jump_variant_state == 1) {
+                if (object->character_context != -1) {
+                    return;
+                }
+                animation = 0x3c;
+            } else {
+                animation = 0x16;
+            }
+            if (object->character_model->model_data_b[animation] == NULL) {
+                return;
+            }
+            if (object->jump_variant_state != 1 && (object->field_281 == 0 || ObjLandReady(object) == 0)) {
+                return;
+            }
+
+            object->force_target = NULL;
+            NuVecRotateY(&forward, &v001, object->movement_facing_angle);
+            nearest_distance = 0.36f;
+            for (index = 0; index < HIGHGAMEOBJECT; ++index) {
+                candidate = &Obj[index];
+                if (candidate == object) {
+                    continue;
+                }
+                if (ZapTarget(candidate) == 0 &&
+                    !((i8)(object->flags_1fc) < 0 && (candidate->flags_1fc_word & 0x1001) == 0x1001 &&
+                      candidate->dead == 0 && candidate->character_context != 0x17 &&
+                      (((object->character_data->model_flags & 0x40) != 0 &&
+                        candidate->character_data->game_character->weapon_action == 1) ||
+                       (Cheat_IsOn(0x26) != 0 && candidate->character_model->model_data_b[0x41] != NULL)))) {
+                    continue;
+                }
+                distance = NuVecDistSqr(&candidate->collision_position, &object->collision_position, &delta);
+                if (distance < nearest_distance && delta.x * forward.x + delta.z * forward.z > 0.0f) {
+                    nearest_distance = distance;
+                    object->force_target = candidate;
+                }
+            }
+
+            object->character_context = 0x16;
+            object->field_7aa = animation;
+            object->context_timer = AnimDuration(object->id, animation, 0.0f, 0.0f, 1);
+            object->context_variant_flags &= ~0x40;
+            SetWeaponOut(object);
+            return;
+        }
+
+        if (retract_weapon != 0 && (object->id == id_JAWA || object->id == id_UGNAUGHT) &&
+            (object->flags_e20 & 0x10000) != 0 && object->field_e33 == 0 && object->character_context != 6 &&
+            object->character_context != 7) {
+            if (object->field_281 != 0 && object->pad->input_magnitude == 0.0f) {
+                i32 animation = 0x10;
+                if (object->character_data->game_character->weapon_action == 0 &&
+                    (object->character_data->model_flags & 0x80) != 0) {
+                    animation = 0x7e;
+                }
+                if (object->character_model->model_data_b[animation] != NULL &&
+                    (object->character_context == -1 || (CInfo[object->character_context].flags & 4) != 0)) {
+                    SlowWeaponIn(object);
+                    return;
+                }
+            }
+            FastWeaponIn(object, 1);
+        }
+    }
+}
+
 static __declspec(noinline) void ShootThisFrame(GAMEOBJECT *object, i32 bolt_id, i32 flags) {
     VEHICLE_SHOOT_STATE_PC *state = (VEHICLE_SHOOT_STATE_PC *)object;
     if ((object->flags_1f8 & 0x40000) != 0 && object->field_280 != 0xff)
