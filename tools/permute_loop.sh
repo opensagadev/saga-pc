@@ -2,7 +2,7 @@
 # Run the source-shape search indefinitely and push results to main.
 #
 #   tools/permute_loop.sh                 # uses all cores
-#   JOBS=16 CHUNK=20 tools/permute_loop.sh
+#   WORKERS=4 JOBS=4 CHUNK=20 tools/permute_loop.sh
 #
 # Each round pulls main (picking up tool changes), searches the next CHUNK
 # functions losing the most bytes, applies improvements to src/, and commits
@@ -12,8 +12,12 @@
 set -u
 cd "$(dirname "$0")/.."
 BRANCH=${BRANCH:-main}
-JOBS=${JOBS:-$(nproc)}
-CHUNK=${CHUNK:-10}
+# One worker per four cores: each has its own Wine prefix (~1.3 GB, created once
+# under build/tools/wine-workers/) because a single wineserver limits throughput.
+CORES=$(nproc)
+WORKERS=${WORKERS:-$(( CORES >= 8 ? CORES / 4 : 1 ))}
+JOBS=${JOBS:-$(( (CORES + WORKERS - 1) / WORKERS ))}
+CHUNK=${CHUNK:-$(( WORKERS * 4 ))}
 ITERATIONS=${ITERATIONS:-300}
 MAX_SIZE=${MAX_SIZE:-8000}
 JOURNAL=build/permute/batch.jsonl
@@ -58,7 +62,7 @@ SEED=$(cat permute/seed 2>/dev/null || echo 1)
 while true; do
     sync
     before=$(wc -l < "$JOURNAL")
-    python3 tools/permute.py --batch "$CHUNK" --iterations "$ITERATIONS" --jobs "$JOBS" \
+    python3 tools/permute.py --batch "$CHUNK" --iterations "$ITERATIONS" --jobs "$JOBS" --workers "$WORKERS" \
         --max-size "$MAX_SIZE" --seed "$SEED" --apply 2>&1 | tee -a build/permute/loop.log
     after=$(wc -l < "$JOURNAL")
     summary=$(tail -n $((after - before)) "$JOURNAL" | python3 -c '
@@ -71,7 +75,7 @@ print(f"{len(rows)} functions, +{gain:.0f} weighted bytes, {exact} exact")')
     publish "Source-shape search: $summary"
     if [ "$after" -eq "$before" ]; then
         log "pass $SEED finished; re-measuring"
-        if make -j"$JOBS" match >> build/permute/loop.log 2>&1; then
+        if make -j"$CORES" match >> build/permute/loop.log 2>&1; then
             mv "$JOURNAL" "build/permute/batch-pass$SEED.jsonl"
             SEED=$((SEED + 1))
             : > "$JOURNAL"

@@ -37,10 +37,22 @@ OUT = ROOT / "build/permute"
 CFLAGS = ["/nologo", "/c", "/O2", "/Gy", "/GS", "/MT"]
 
 
+def prepare_prefix(prefix, env):
+    """Initialize a worker's Wine prefix once."""
+    prefix = prefix.resolve()
+    if not (prefix / ".ready").is_file():
+        prefix.mkdir(parents=True, exist_ok=True)
+        subprocess.run(["wineboot", "-i"], capture_output=True, timeout=600,
+                       env=dict(env, WINEPREFIX=str(prefix),
+                                WINEDLLOVERRIDES="mscoree,mshtml=;winemenubuilder.exe=d"))
+        (prefix / ".ready").touch()
+    return prefix
+
+
 class Scorer:
     """Compile one translation unit and score one function in it."""
 
-    def __init__(self, unit, symbol):
+    def __init__(self, unit, symbol, wineprefix=None):
         self.unit = Path(unit)
         records = load_symbols()
         matches = [r for r in records if r["symbol"] == symbol and r["address"] is not None]
@@ -50,8 +62,11 @@ class Scorer:
         self.bindings = bindings_for(records)
         self.target = retail(project()["target"]).read_va(self.va, self.size)
         self.compiler, self.wine, self.env = environment()
+        if wineprefix:
+            # Separate prefixes give parallel workers separate wineservers.
+            self.env["WINEPREFIX"] = str(prepare_prefix(Path(wineprefix), self.env))
         self.objdiff = ROOT / "build/tools/bin/objdiff-cli"
-        self.work = OUT / "work"
+        self.work = OUT / "work" / (Path(wineprefix).name if wineprefix else "main")
         self.work.mkdir(parents=True, exist_ok=True)
         self.includes = ["/I" + windows(ROOT / "src"), "/I" + windows((ROOT / self.unit).parent),
                          "/I" + windows(self.compiler.parent / "include"),
@@ -164,8 +179,8 @@ def search(scorer, text, function, iterations, jobs, seed, log):
     return start, best, best_text
 
 
-def run_one(symbol, unit, iterations, jobs, seed, apply, log):
-    scorer = Scorer(unit, symbol)
+def run_one(symbol, unit, iterations, jobs, seed, apply, log, wineprefix=None):
+    scorer = Scorer(unit, symbol, wineprefix)
     path = ROOT / unit
     text = path.read_text(encoding="latin-1")
     began = time.time()
@@ -183,8 +198,12 @@ def run_one(symbol, unit, iterations, jobs, seed, apply, log):
     return summary
 
 
-def batch(count, iterations, jobs, apply, minimum, maximum, seed=1):
-    """Work through the functions losing the most bytes, one at a time."""
+def batch(count, iterations, jobs, apply, minimum, maximum, seed=1, workers=1):
+    """Work through the functions losing the most bytes, several at a time.
+
+    Each worker is a separate process with its own Wine prefix (and so its own
+    wineserver). Two workers never edit the same source unit at once.
+    """
     report = json.loads((ROOT / "matching.json").read_text())
     rows = [r for r in report["functions"]
             if r.get("objdiff_percent") is not None and r["objdiff_percent"] < 100
@@ -195,26 +214,83 @@ def batch(count, iterations, jobs, apply, minimum, maximum, seed=1):
     if journal.is_file():
         done = {json.loads(line)["symbol"] for line in journal.read_text().splitlines() if line.strip()}
     OUT.mkdir(parents=True, exist_ok=True)
-    todo = [r for r in rows if r["symbol"] not in done]
-    for position, row in enumerate(todo[:count], 1):
-        name = row["name"]
-        stamp = lambda: time.strftime("%H:%M:%S")
-        print(f"{stamp()} [{position}/{min(count, len(todo))}, {len(todo)} left] {name} "
-              f"({row['units'][0]}, {row['target_size']} bytes, {row['objdiff_percent']:.1f}%)", flush=True)
-        log = lambda message: print(f"{stamp()}     {message}", flush=True)
-        try:
-            summary = run_one(row["symbol"], row["units"][0], iterations, jobs, seed, apply, log)
-        except Exception as error:  # Keep going; record why this function was skipped.
-            summary = {"symbol": row["symbol"], "unit": row["units"][0], "error": str(error)[:300]}
-        if "error" in summary:
-            print(f"{stamp()}   skipped: {summary['error']}", flush=True)
-        else:
-            gained = summary["size"] * (summary["best"] - summary["start"]) / 100
-            result = "EXACT" if summary["exact"] else f"{summary['best']:.1f}%"
-            print(f"{stamp()}   {summary['start']:.1f}% -> {result} (+{gained:.0f} weighted bytes, "
-                  f"{summary['seconds']:.0f}s){', applied' if summary.get('applied') else ''}", flush=True)
-        with journal.open("a") as stream:
-            stream.write(json.dumps(summary) + "\n")
+    todo = [r for r in rows if r["symbol"] not in done][:count]
+    remaining = len([r for r in rows if r["symbol"] not in done])
+    stamp = lambda: time.strftime("%H:%M:%S")
+    output = threading.Lock()
+
+    def say(message):
+        with output:
+            print(f"{stamp()} {message}", flush=True)
+
+    queue, busy, started = list(todo), set(), [0]
+    condition = threading.Condition()
+
+    def take():
+        with condition:
+            while True:
+                if not queue:
+                    return None
+                for index, row in enumerate(queue):
+                    if row["units"][0] not in busy:
+                        busy.add(row["units"][0])
+                        started[0] += 1
+                        return started[0], queue.pop(index)
+                condition.wait()
+
+    def release(unit):
+        with condition:
+            busy.discard(unit)
+            condition.notify_all()
+
+    def worker(number):
+        prefix = ROOT / f"build/tools/wine-workers/w{number}"
+        tag = f"w{number}"
+        while (item := take()) is not None:
+            position, row = item
+            unit = row["units"][0]
+            say(f"[{tag}] start {position}/{len(todo)} ({remaining - position + 1} left overall): {row['name']} "
+                f"({unit}, {row['target_size']} bytes, {row['objdiff_percent']:.1f}%)")
+            command = [sys.executable, str(Path(__file__).resolve()), row["symbol"], "--unit", unit,
+                       "--iterations", str(iterations), "--jobs", str(jobs), "--seed", str(seed),
+                       "--wineprefix", str(prefix)] + (["--apply"] if apply else [])
+            summary = None
+            try:
+                process = subprocess.Popen(command, cwd=ROOT, stdout=subprocess.PIPE,
+                                           stderr=subprocess.STDOUT, text=True, errors="replace")
+                for line in process.stdout:
+                    line = line.rstrip()
+                    if line.startswith("{"):
+                        try:
+                            summary = json.loads(line)
+                            continue
+                        except ValueError:
+                            pass
+                    if line:
+                        say(f"[{tag}]     {line.split('] ', 1)[-1]}")
+                process.wait()
+            except OSError as error:
+                summary = {"error": str(error)}
+            if summary is None:
+                summary = {"error": f"worker exited with status {process.returncode}"}
+            summary = {"symbol": row["symbol"], "unit": unit, **summary}
+            if "error" in summary:
+                say(f"[{tag}] skipped {row['name']}: {summary['error'][:200]}")
+            else:
+                gained = summary["size"] * (summary["best"] - summary["start"]) / 100
+                result = "EXACT" if summary["exact"] else f"{summary['best']:.1f}%"
+                say(f"[{tag}] done {row['name']}: {summary['start']:.1f}% -> {result} "
+                    f"(+{gained:.0f} weighted bytes, {summary['seconds']:.0f}s)"
+                    f"{', applied' if summary.get('applied') else ''}")
+            with output, journal.open("a") as stream:
+                stream.write(json.dumps(summary) + "\n")
+            release(unit)
+
+    threads = [threading.Thread(target=worker, args=(n + 1,)) for n in range(max(1, workers))]
+    for thread in threads:
+        thread.start()
+    for thread in threads:
+        thread.join()
 
 
 def main():
@@ -229,10 +305,14 @@ def main():
                         help="Process the N functions losing the most bytes in matching.json")
     parser.add_argument("--min-size", type=int, default=16)
     parser.add_argument("--max-size", type=int, default=6000)
+    parser.add_argument("--workers", type=int, default=1,
+                        help="Batch: functions searched at once, each with its own Wine prefix")
+    parser.add_argument("--wineprefix", help=argparse.SUPPRESS)
     parser.add_argument("--quiet", action="store_true")
     args = parser.parse_args()
     if args.batch:
-        batch(args.batch, args.iterations, args.jobs, args.apply, args.min_size, args.max_size, args.seed)
+        batch(args.batch, args.iterations, args.jobs, args.apply, args.min_size, args.max_size, args.seed,
+              args.workers)
         return 0
     if not args.symbol:
         parser.error("Name a function or use --batch")
@@ -245,7 +325,12 @@ def main():
         args.symbol, unit = rows[0]["symbol"], rows[0]["units"][0]
     log = (lambda message: None) if args.quiet else (
         lambda message: print(f"[{args.symbol}] {message}", flush=True))
-    print(json.dumps(run_one(args.symbol, unit, args.iterations, args.jobs, args.seed, args.apply, log)))
+    try:
+        summary = run_one(args.symbol, unit, args.iterations, args.jobs, args.seed, args.apply, log,
+                          args.wineprefix)
+    except (ValueError, OSError, subprocess.SubprocessError) as error:
+        summary = {"symbol": args.symbol, "unit": unit, "error": str(error)[:300]}
+    print(json.dumps(summary), flush=True)
     return 0
 
 
