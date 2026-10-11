@@ -23,12 +23,12 @@ import sys
 if __package__:
     from .binary import COFF, BinaryError, relocate_function
     from .lib import (ROOT, archive_members, bindings_for, compiled_objects, library_entries,
-                      library_member_path, load_symbols, project, retail)
+                      library_member_path, load_symbols, localize_statics, project, retail)
 else:
     sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
     from tools.binary import COFF, BinaryError, relocate_function
     from tools.lib import (ROOT, archive_members, bindings_for, compiled_objects, library_entries,
-                           library_member_path, load_symbols, project, retail)
+                           library_member_path, load_symbols, localize_statics, project, retail)
 
 ARCHIVES = ("libcmt.lib", "libcpmt.lib")
 CONFIG = ROOT / "config/library-objects.json"
@@ -96,12 +96,14 @@ def main():
         for index, member, body in archive_members(path):
             file = library_member_path(archive, index, body)
             try:
-                obj = COFF(file)
+                obj = localize_statics(COFF(file), archive, index)
                 symbols = obj.defined_symbols()
             except BinaryError:
                 continue
             for symbol in symbols:
-                defined.setdefault(symbol["name"], set()).add((archive, index))
+                comdat = bool(obj.sections[symbol["section"] - 1]["characteristics"] & 0x1000) \
+                    if symbol["section"] > 0 else False
+                defined.setdefault(symbol["name"], set()).add((archive, index, comdat))
             for symbol in symbols:
                 if not symbol["type"] & 0x20:
                     continue
@@ -126,8 +128,18 @@ def main():
                                    "obj": obj, "symbol": symbol["name"], "va": va, "region": region})
 
     # Names must identify one definition: skip duplicates and anything our sources define.
-    candidates = [c for c in candidates
-                  if len(defined[c["symbol"]]) == 1 and c["symbol"] not in ours and c["symbol"] not in bindings]
+    def single(name):
+        """One definition, or COMDAT copies that the linker folds into one."""
+        owners = defined.get(name, set())
+        return len(owners) <= 1 or all(comdat for _, _, comdat in owners)
+    seen = set()
+    unique = []
+    for c in candidates:
+        if single(c["symbol"]) and c["symbol"] not in ours and c["symbol"] not in bindings \
+                and c["symbol"] not in seen:
+            seen.add(c["symbol"])
+            unique.append(c)
+    candidates = unique
     # Pass 2: derive relocation targets from retail bytes; drop conflicting names.
     derived = {}
     for c in candidates:
@@ -152,7 +164,7 @@ def main():
             owners.setdefault(address, set()).add(name)
     new_bindings = dict(bindings)
     for name, addresses in derived.items():
-        if name in bindings or len(addresses) != 1 or len(defined.get(name, ())) > 1:
+        if name in bindings or len(addresses) != 1 or not single(name):
             continue
         address = next(iter(addresses))
         if name.startswith("__imp__"):

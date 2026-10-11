@@ -14,7 +14,7 @@
    "index": 6,
    "member": "build\\intel\\mt_obj\\xtoas.obj",
    "symbols": [
-    "_xtoa_s@20",
+    "libcmt#00006:_xtoa_s@20",
     "__itoa_s",
     "__ltoa_s",
     "__ultoa_s"
@@ -25,16 +25,29 @@
    "index": 9,
    "member": "build\\intel\\mt_obj\\cpp_obj\\_ctype.obj",
    "symbols": [
+    "??0_LocaleUpdate@@QAE@PAUlocaleinfo_struct@@@Z",
+    "??1_LocaleUpdate@@QAE@XZ",
+    "__isalpha_l",
     "_isalpha",
+    "__isupper_l",
     "_isupper",
+    "__islower_l",
     "_islower",
+    "__isdigit_l",
     "_isdigit",
+    "__isxdigit_l",
     "_isxdigit",
+    "__isspace_l",
     "_isspace",
+    "__ispunct_l",
     "_ispunct",
+    "__isalnum_l",
     "_isalnum",
+    "__isprint_l",
     "_isprint",
+    "__isgraph_l",
     "_isgraph",
+    "__iscntrl_l",
     "_iscntrl",
     "___isascii",
     "___toascii",
@@ -47,6 +60,7 @@
    "index": 12,
    "member": "build\\intel\\mt_obj\\cpp_obj\\_wctype.obj",
    "symbols": [
+    "__isleadbyte_l",
     "__iswalpha_l",
     "__iswupper_l",
     "__iswlower_l",
@@ -65,6 +79,14 @@
   },
   {
    "archive": "libcmt.lib",
+   "index": 17,
+   "member": "build\\intel\\mt_obj\\cpp_obj\\iswctype.obj",
+   "symbols": [
+    "__iswctype_l"
+   ]
+  },
+  {
+   "archive": "libcmt.lib",
    "index": 18,
    "member": "build\\intel\\mt_obj\\cpp_obj\\isctype.obj",
    "symbols": [
@@ -73,9 +95,34 @@
   },
   {
    "archive": "libcmt.lib",
+   "index": 21,
+   "member": "build\\intel\\mt_obj\\cpp_obj\\mbtowc.obj",
+   "symbols": [
+    "__mbtowc_l"
+   ]
+  },
+  {
+   "archive": "libcmt.lib",
+   "index": 24,
+   "member": "build\\intel\\mt_obj\\cpp_obj\\strtol.obj",
+   "symbols": [
+    "libcmt#00024:?strtoxl@@YAKPAUlocaleinfo_struct@@PBDPAPBDHH@Z"
+   ]
+  },
+  {
+   "archive": "libcmt.lib",
+   "index": 25,
+   "member": "build\\intel\\mt_obj\\cpp_obj\\strtoq.obj",
+   "symbols": [
+    "libcmt#00025:?strtoxq@@YA_KPAUlocaleinfo_struct@@PBDPAPBDHH@Z"
+   ]
+  },
+  {
+   "archive": "libcmt.lib",
    "index": 26,
    "member": "build\\intel\\mt_obj\\cpp_obj\\tolower.obj",
    "symbols": [
+    "__tolower_l",
     "_tolower"
    ]
   },
@@ -84,7 +131,8 @@
    "index": 27,
    "member": "build\\intel\\mt_obj\\cpp_obj\\toupper.obj",
    "symbols": [
-    "__toupper"
+    "__toupper",
+    "__toupper_l"
    ]
   },
   {
@@ -92,7 +140,8 @@
    "index": 34,
    "member": "build\\intel\\mt_obj\\cpp_obj\\wcstombs.obj",
    "symbols": [
-    "?wcsncnt@@YAIPB_WI@Z",
+    "libcmt#00034:?wcsncnt@@YAIPB_WI@Z",
+    "__wcstombs_l_helper",
     "__wcstombs_s_l"
    ]
   },
@@ -101,7 +150,17 @@
    "index": 35,
    "member": "build\\intel\\mt_obj\\cpp_obj\\wctomb.obj",
    "symbols": [
+    "__wctomb_s_l",
+    "__wctomb_l",
     "_wctomb"
+   ]
+  },
+  {
+   "archive": "libcmt.lib",
+   "index": 39,
+   "member": "build\\intel\\mt_obj\\findfile.obj",
+   "symbols": [
+    "__invoke_watson_if_error"
    ]
   },
   {
@@ -121,7 +180,7 @@
     "___TypeMatch",
     "___FrameUnwindFilter",
     "___FrameUnwindToState",
-    "?ExFilterRethrow@@YAHPAU_EXCEPTION_POINTERS@@@Z",
+    "libcmt#00085:?ExFilterRethrow@@YAHPAU_EXCEPTION_POINTERS@@@Z",
     "___DestructExceptionObject",
     "___AdjustPointer",
     "?__uncaught_exception@@YA_NXZ",
@@ -131,16 +190,16 @@
     "___CxxCallUnwindDelDtor",
     "___CxxCallUnwindStdDelDtor",
     "___CxxCallUnwindVecDtor",
-    "?IsInExceptionSpec@@YAEPAUEHExceptionRecord@@PBU_s_ESTypeList@@@Z",
-    "?Is_bad_exception_allowed@@YAEPBU_s_ESTypeList@@@Z",
+    "libcmt#00085:?IsInExceptionSpec@@YAEPAUEHExceptionRecord@@PBU_s_ESTypeList@@@Z",
+    "libcmt#00085:?Is_bad_exception_allowed@@YAEPBU_s_ESTypeList@@@Z",
     "?_is_exception_typeof@@YAHABVtype_info@@PAU_EXCEPTION_POINTERS@@@Z",
-    "?CallCatchBlock@@YAPAXPAUEHExceptionRecord@@PAUEHRegistrationNode@@PAU_CONTEXT@@PBU_s_FuncInfo@@PAXHK@Z",
+    "libcmt#00085:?CallCatchBlock@@YAPAXPAUEHExceptionRecord@@PAUEHRegistrationNode@@PAU_CONTEXT@@PBU_s_FuncInfo@@PAXHK@Z",
     "___BuildCatchObjectHelper",
     "___BuildCatchObject",
     "___CxxExceptionFilter",
-    "?CatchIt@@YAXPAUEHExceptionRecord@@PAUEHRegistrationNode@@PAU_CONTEXT@@PAXPBU_s_FuncInfo@@PBU_s_HandlerType@@PBU_s_CatchableType@@PBU_s_TryBlockMapEntry@@H1E@Z",
-    "?FindHandlerForForeignException@@YAXPAUEHExceptionRecord@@PAUEHRegistrationNode@@PAU_CONTEXT@@PAXPBU_s_FuncInfo@@HH1@Z",
-    "?FindHandler@@YAXPAUEHExceptionRecord@@PAUEHRegistrationNode@@PAU_CONTEXT@@PAXPBU_s_FuncInfo@@EH1@Z",
+    "libcmt#00085:?CatchIt@@YAXPAUEHExceptionRecord@@PAUEHRegistrationNode@@PAU_CONTEXT@@PAXPBU_s_FuncInfo@@PBU_s_HandlerType@@PBU_s_CatchableType@@PBU_s_TryBlockMapEntry@@H1E@Z",
+    "libcmt#00085:?FindHandlerForForeignException@@YAXPAUEHExceptionRecord@@PAUEHRegistrationNode@@PAU_CONTEXT@@PAXPBU_s_FuncInfo@@HH1@Z",
+    "libcmt#00085:?FindHandler@@YAXPAUEHExceptionRecord@@PAUEHRegistrationNode@@PAU_CONTEXT@@PAXPBU_s_FuncInfo@@EH1@Z",
     "___InternalCxxFrameHandler"
    ]
   },
@@ -169,7 +228,6 @@
    "index": 90,
    "member": "..\\build\\intel\\mt_obj\\typinfo.obj",
    "symbols": [
-    "??1type_info@@UAE@XZ",
     "??8type_info@@QBE_NABV0@@Z",
     "??9type_info@@QBE_NABV0@@Z",
     "?before@type_info@@QBEHABV1@@Z"
@@ -238,9 +296,9 @@
     "??0pDNameNode@@QAE@PAVDName@@@Z",
     "??0DNameStatusNode@@QAE@W4DNameStatus@@@Z",
     "?getLastChar@DNameStatusNode@@UBEDXZ",
-    "?und_strlen@@YAIPBD@Z",
-    "?und_strncpy@@YAPADPADPBDI@Z",
-    "?und_strncmp@@YAIPBD0I@Z",
+    "libcmt#00093:?und_strlen@@YAIPBD@Z",
+    "libcmt#00093:?und_strncpy@@YAPADPADPBDI@Z",
+    "libcmt#00093:?und_strncmp@@YAIPBD0I@Z",
     "?getDataIndirectType@UnDecorator@@CA?AVDName@@XZ",
     "?getThisType@UnDecorator@@CA?AVDName@@XZ",
     "??2@YAPAXIAAVHeapManager@@H@Z",
@@ -288,6 +346,7 @@
     "?getVdispMapType@UnDecorator@@CA?AVDName@@ABV2@@Z",
     "?getDimension@UnDecorator@@CA?AVDName@@_N@Z",
     "?getEnumType@UnDecorator@@CA?AVDName@@XZ",
+    "?getArgumentTypes@UnDecorator@@CA?AVDName@@XZ",
     "?getThrowTypes@UnDecorator@@CA?AVDName@@XZ",
     "?getExtendedDataIndirectType@UnDecorator@@CA?AVDName@@AADAA_NH@Z",
     "?getArrayType@UnDecorator@@CA?AVDName@@ABV2@@Z",
@@ -354,14 +413,22 @@
     "?_JumpToContinuation@@YGXPAXPAUEHRegistrationNode@@@Z",
     "?_UnwindNestedFrames@@YGXPAUEHRegistrationNode@@PAUEHExceptionRecord@@@Z",
     "___CxxLongjmpUnwind@4",
-    "?CatchGuardHandler@@YA?AW4_EXCEPTION_DISPOSITION@@PAUEHExceptionRecord@@PAUCatchGuardRN@@PAX2@Z",
+    "libcmt#00102:?CatchGuardHandler@@YA?AW4_EXCEPTION_DISPOSITION@@PAUEHExceptionRecord@@PAUCatchGuardRN@@PAX2@Z",
     "?_CallSETranslator@@YAHPAUEHExceptionRecord@@PAUEHRegistrationNode@@PAX2PBU_s_FuncInfo@@H1@Z",
-    "?TranslatorGuardHandler@@YA?AW4_EXCEPTION_DISPOSITION@@PAUEHExceptionRecord@@PAUTranslatorGuardRN@@PAX2@Z",
+    "libcmt#00102:?TranslatorGuardHandler@@YA?AW4_EXCEPTION_DISPOSITION@@PAUEHExceptionRecord@@PAUTranslatorGuardRN@@PAX2@Z",
     "?_GetRangeOfTrysToCheck@@YAPBU_s_TryBlockMapEntry@@PBU_s_FuncInfo@@HHPAI1@Z",
     "__CreateFrameInfo",
     "__IsExceptionObjectToBeDestroyed",
     "__FindAndUnlinkFrame",
     "?_CallCatchBlock2@@YAPAXPAUEHRegistrationNode@@PBU_s_FuncInfo@@PAXHK@Z"
+   ]
+  },
+  {
+   "archive": "libcmt.lib",
+   "index": 103,
+   "member": "build\\intel\\mt_obj\\cenvarg.obj",
+   "symbols": [
+    "__invoke_watson_if_oneof"
    ]
   },
   {
@@ -382,6 +449,14 @@
     "__calloc_crt",
     "__realloc_crt",
     "__recalloc_crt"
+   ]
+  },
+  {
+   "archive": "libcmt.lib",
+   "index": 150,
+   "member": "build\\intel\\mt_obj\\freea.obj",
+   "symbols": [
+    "__freea"
    ]
   },
   {
@@ -437,6 +512,14 @@
    "symbols": [
     "?_set_new_handler@@YAP6AHI@ZP6AHI@Z@Z",
     "__callnewh"
+   ]
+  },
+  {
+   "archive": "libcmt.lib",
+   "index": 169,
+   "member": "build\\intel\\mt_obj\\new.obj",
+   "symbols": [
+    "??0bad_alloc@std@@QAE@XZ"
    ]
   },
   {
@@ -500,6 +583,14 @@
   },
   {
    "archive": "libcmt.lib",
+   "index": 219,
+   "member": "build\\intel\\mt_obj\\getch.obj",
+   "symbols": [
+    "__MarkAllocaS"
+   ]
+  },
+  {
+   "archive": "libcmt.lib",
    "index": 222,
    "member": "build\\intel\\mt_obj\\putwch.obj",
    "symbols": [
@@ -513,6 +604,7 @@
    "index": 235,
    "member": "build\\intel\\mt_obj\\cpp_obj\\ismbbyte.obj",
    "symbols": [
+    "libcmt#00235:?x_ismbbtype_l@@YAHPAUlocaleinfo_struct@@IHH@Z",
     "__ismbbkalnum_l",
     "__ismbbkalnum",
     "__ismbbkprint_l",
@@ -532,7 +624,8 @@
     "__ismbblead_l",
     "__ismbblead",
     "__ismbbtrail_l",
-    "__ismbbtrail"
+    "__ismbbtrail",
+    "__ismbbkana_l"
    ]
   },
   {
@@ -540,11 +633,29 @@
    "index": 261,
    "member": "build\\intel\\mt_obj\\cpp_obj\\mbctype.obj",
    "symbols": [
-    "?CPtoLCID@@YAHH@Z",
-    "?setSBCS@@YAXPAUthreadmbcinfostruct@@@Z",
+    "libcmt#00261:?CPtoLCID@@YAHH@Z",
+    "libcmt#00261:?setSBCS@@YAXPAUthreadmbcinfostruct@@@Z",
     "___updatetmbcinfo",
+    "libcmt#00261:?getSystemCP@@YAHH@Z",
+    "__getmbcp",
     "__setmbcp",
     "___initmbctable"
+   ]
+  },
+  {
+   "archive": "libcmt.lib",
+   "index": 264,
+   "member": "build\\intel\\mt_obj\\cpp_obj\\mbschr.obj",
+   "symbols": [
+    "__mbschr_l"
+   ]
+  },
+  {
+   "archive": "libcmt.lib",
+   "index": 283,
+   "member": "build\\intel\\mt_obj\\cpp_obj\\mbsnbico.obj",
+   "symbols": [
+    "__mbsnbicoll_l"
    ]
   },
   {
@@ -552,7 +663,16 @@
    "index": 313,
    "member": "build\\intel\\mt_obj\\chandler4.obj",
    "symbols": [
-    "_ValidateLocalCookies"
+    "libcmt#00313:_ValidateLocalCookies"
+   ]
+  },
+  {
+   "archive": "libcmt.lib",
+   "index": 332,
+   "member": "build\\intel\\mt_obj\\cpp_obj\\a_cmp.obj",
+   "symbols": [
+    "libcmt#00332:?__crtCompareStringA_stat@@YAHPAUlocaleinfo_struct@@KKPBDH1HH@Z",
+    "___crtCompareStringA"
    ]
   },
   {
@@ -561,6 +681,23 @@
    "member": "build\\intel\\mt_obj\\a_env.obj",
    "symbols": [
     "___crtGetEnvironmentStringsA"
+   ]
+  },
+  {
+   "archive": "libcmt.lib",
+   "index": 334,
+   "member": "build\\intel\\mt_obj\\cpp_obj\\a_loc.obj",
+   "symbols": [
+    "libcmt#00334:?__crtGetLocaleInfoA_stat@@YAHPAUlocaleinfo_struct@@KKPADHH@Z"
+   ]
+  },
+  {
+   "archive": "libcmt.lib",
+   "index": 335,
+   "member": "build\\intel\\mt_obj\\cpp_obj\\a_map.obj",
+   "symbols": [
+    "libcmt#00335:?__crtLCMapStringA_stat@@YAHPAUlocaleinfo_struct@@KKPBDHPADHHH@Z",
+    "___crtLCMapStringA"
    ]
   },
   {
@@ -593,15 +730,15 @@
    "index": 360,
    "member": "build\\intel\\mt_obj\\getqloc.obj",
    "symbols": [
-    "_GetLcidFromDefault",
-    "_ProcessCodePage",
-    "_TestDefaultCountry",
-    "_LcidFromHexString",
-    "_GetPrimaryLen",
-    "_TestDefaultLanguage",
-    "_GetLcidFromCountry",
-    "_GetLcidFromLangCountry",
-    "_GetLcidFromLanguage",
+    "libcmt#00360:_GetLcidFromDefault",
+    "libcmt#00360:_ProcessCodePage",
+    "libcmt#00360:_TestDefaultCountry",
+    "libcmt#00360:_LcidFromHexString",
+    "libcmt#00360:_GetPrimaryLen",
+    "libcmt#00360:_TestDefaultLanguage",
+    "libcmt#00360:_GetLcidFromCountry",
+    "libcmt#00360:_GetLcidFromLangCountry",
+    "libcmt#00360:_GetLcidFromLanguage",
     "___get_qualified_locale"
    ]
   },
@@ -626,7 +763,8 @@
    "index": 366,
    "member": "build\\intel\\mt_obj\\initcrit.obj",
    "symbols": [
-    "___crtInitCritSecNoSpinCount@8"
+    "libcmt#00366:___crtInitCritSecNoSpinCount@8",
+    "___crtInitCritSecAndSpinCount"
    ]
   },
   {
@@ -672,7 +810,7 @@
    "index": 371,
    "member": "build\\intel\\mt_obj\\inittime.obj",
    "symbols": [
-    "__get_lc_time",
+    "libcmt#00371:__get_lc_time",
     "___free_lc_time",
     "___init_time"
    ]
@@ -705,6 +843,14 @@
   },
   {
    "archive": "libcmt.lib",
+   "index": 388,
+   "member": "build\\intel\\mt_obj\\perror.obj",
+   "symbols": [
+    "__get_sys_err_msg"
+   ]
+  },
+  {
+   "archive": "libcmt.lib",
    "index": 389,
    "member": "build\\intel\\mt_obj\\pesect.obj",
    "symbols": [
@@ -725,7 +871,15 @@
    "index": 392,
    "member": "build\\intel\\mt_obj\\qsort.obj",
    "symbols": [
-    "_shortsort"
+    "libcmt#00392:_shortsort"
+   ]
+  },
+  {
+   "archive": "libcmt.lib",
+   "index": 395,
+   "member": "build\\intel\\mt_obj\\rand_s.obj",
+   "symbols": [
+    "_rand_s"
    ]
   },
   {
@@ -733,7 +887,7 @@
    "index": 399,
    "member": "build\\intel\\mt_obj\\setenv.obj",
    "symbols": [
-    "_findenv"
+    "libcmt#00399:_findenv"
    ]
   },
   {
@@ -744,17 +898,18 @@
     "___freetlocinfo",
     "___addlocaleref",
     "___removelocaleref",
-    "__copytlocinfo_nolock",
-    "__updatetlocinfoEx_nolock",
+    "libcmt#00400:__copytlocinfo_nolock",
+    "libcmt#00400:__updatetlocinfoEx_nolock",
     "___updatetlocinfo",
     "__configthreadlocale",
-    "_sync_legacy_variables_lk",
+    "libcmt#00400:_sync_legacy_variables_lk",
     "__free_locale",
     "__get_current_locale",
     "__strcats",
     "___lc_strtolc",
     "___lc_lctostr",
-    "__setlocale_get_all",
+    "libcmt#00400:__setlocale_get_all",
+    "__expandlocale",
     "__create_locale",
     "_setlocale"
    ]
@@ -764,7 +919,25 @@
    "index": 406,
    "member": "build\\intel\\mt_obj\\convrtcp.obj",
    "symbols": [
-    "___ansicp"
+    "___ansicp",
+    "___convertcp"
+   ]
+  },
+  {
+   "archive": "libcmt.lib",
+   "index": 410,
+   "member": "build\\intel\\mt_obj\\cpp_obj\\w_loc.obj",
+   "symbols": [
+    "libcmt#00410:?__crtGetLocaleInfoW_stat@@YAHPAUlocaleinfo_struct@@KKPA_WHH@Z"
+   ]
+  },
+  {
+   "archive": "libcmt.lib",
+   "index": 412,
+   "member": "build\\intel\\mt_obj\\cpp_obj\\w_str.obj",
+   "symbols": [
+    "libcmt#00412:?__crtGetStringTypeW_stat@@YAHPAUlocaleinfo_struct@@KPB_WHPAGHH@Z",
+    "___crtGetStringTypeW"
    ]
   },
   {
@@ -773,8 +946,8 @@
    "member": "build\\intel\\mt_obj\\winsig.obj",
    "symbols": [
     "__initp_misc_winsig",
-    "_ctrlevent_capture@4",
-    "_siglookup",
+    "libcmt#00416:_ctrlevent_capture@4",
+    "libcmt#00416:_siglookup",
     "___fpecode",
     "___pxcptinfoptrs",
     "_signal"
@@ -785,7 +958,7 @@
    "index": 417,
    "member": "build\\intel\\mt_obj\\winxfltr.obj",
    "symbols": [
-    "_xcptlookup",
+    "libcmt#00417:_xcptlookup",
     "___CppXcptFilter"
    ]
   },
@@ -805,7 +978,7 @@
     "__amsg_exit",
     "___crtCorExitProcess",
     "___crtExitProcess",
-    "__initterm",
+    "libcmt#00449:__initterm",
     "__initterm_e",
     "__cexit",
     "__c_exit",
@@ -831,6 +1004,14 @@
     "__lockerr_exit",
     "__mtinitlocknum",
     "__lock"
+   ]
+  },
+  {
+   "archive": "libcmt.lib",
+   "index": 456,
+   "member": "build\\intel\\mt_obj\\stdargv.obj",
+   "symbols": [
+    "libcmt#00456:_parse_cmdline"
    ]
   },
   {
@@ -928,7 +1109,7 @@
    "symbols": [
     "__flush",
     "__fflush_nolock",
-    "_flsall",
+    "libcmt#00502:_flsall",
     "_fflush"
    ]
   },
@@ -959,6 +1140,22 @@
   },
   {
    "archive": "libcmt.lib",
+   "index": 538,
+   "member": "build\\intel\\mt_obj\\sscanf.obj",
+   "symbols": [
+    "libcmt#00538:_vscan_fn"
+   ]
+  },
+  {
+   "archive": "libcmt.lib",
+   "index": 543,
+   "member": "build\\intel\\mt_obj\\swscanf.obj",
+   "symbols": [
+    "libcmt#00543:_vscan_fn"
+   ]
+  },
+  {
+   "archive": "libcmt.lib",
    "index": 546,
    "member": "build\\intel\\mt_obj\\ungetc.obj",
    "symbols": [
@@ -984,6 +1181,23 @@
   },
   {
    "archive": "libcmt.lib",
+   "index": 569,
+   "member": "build\\intel\\mt_obj\\cpp_obj\\cscanf.obj",
+   "symbols": [
+    "__INTRN_LOCALE_CONV"
+   ]
+  },
+  {
+   "archive": "libcmt.lib",
+   "index": 573,
+   "member": "build\\intel\\mt_obj\\cpp_obj\\cprintf.obj",
+   "symbols": [
+    "_get_int_arg",
+    "_get_short_arg"
+   ]
+  },
+  {
+   "archive": "libcmt.lib",
    "index": 582,
    "member": "build\\intel\\mt_obj\\cpp_obj\\outputp.obj",
    "symbols": [
@@ -995,7 +1209,7 @@
    "index": 590,
    "member": "build\\intel\\mt_obj\\p4_memcpy.obj",
    "symbols": [
-    "_fastcopy_I",
+    "libcmt#00590:_fastcopy_I",
     "__VEC_memcpy"
    ]
   },
@@ -1004,11 +1218,11 @@
    "index": 593,
    "member": "build\\intel\\mt_obj\\memcmp.obj",
    "symbols": [
-    "_cmpResult",
-    "_cmpBYTE",
-    "_cmpWORD",
-    "_cmpDWORD",
-    "_unaligned_memcmp",
+    "libcmt#00593:_cmpResult",
+    "libcmt#00593:_cmpBYTE",
+    "libcmt#00593:_cmpWORD",
+    "libcmt#00593:_cmpDWORD",
+    "libcmt#00593:_unaligned_memcmp",
     "_memcmp"
    ]
   },
@@ -1017,7 +1231,7 @@
    "index": 599,
    "member": "build\\intel\\mt_obj\\p4_memset.obj",
    "symbols": [
-    "_fastzero_I",
+    "libcmt#00599:_fastzero_I",
     "__VEC_memzero"
    ]
   },
@@ -1114,9 +1328,13 @@
    "index": 804,
    "member": "build\\intel\\mt_obj\\cpp_obj\\strftime.obj",
    "symbols": [
-    "?_store_str@@YAXPADPAPADPAI@Z",
-    "?_store_number@@YAXHPAPADPAI@Z",
-    "?_store_num@@YAXHHPAPADPAII@Z",
+    "__Getdays_l",
+    "__Getmonths_l",
+    "__Gettnames_l",
+    "libcmt#00804:?_store_str@@YAXPADPAPADPAI@Z",
+    "libcmt#00804:?_store_number@@YAXHPAPADPAI@Z",
+    "libcmt#00804:?_store_num@@YAXHHPAPADPAII@Z",
+    "__Strftime_l",
     "_strftime"
    ]
   },
@@ -1133,7 +1351,7 @@
    "index": 809,
    "member": "build\\intel\\mt_obj\\tzset.obj",
    "symbols": [
-    "_cvtdate",
+    "libcmt#00809:_cvtdate",
     "___tzset",
     "__tzset",
     "__isindst"
@@ -1153,10 +1371,15 @@
    "index": 832,
    "member": "..\\build\\intel\\mt_obj\\cpp_obj\\cvt.obj",
    "symbols": [
+    "__forcdecpt_l",
+    "__cropzeros_l",
     "__positive",
     "__fassign_l",
-    "__shift",
+    "libcmt#00832:__shift",
+    "libcmt#00832:__cftoe2_l",
     "__cftoe_l",
+    "__cftoa_l",
+    "libcmt#00832:__cftof2_l",
     "__cftof_l",
     "__cftog_l",
     "__cfltcvt_l"
@@ -1176,6 +1399,7 @@
    "index": 834,
    "member": "..\\build\\intel\\mt_obj\\intrncvt.obj",
    "symbols": [
+    "___addl",
     "__ZeroTail",
     "__IncMan",
     "__RoundMan",
@@ -1192,7 +1416,34 @@
    "index": 835,
    "member": "..\\build\\intel\\mt_obj\\mantold.obj",
    "symbols": [
+    "___add_12",
+    "___shl_12",
     "___mtold12"
+   ]
+  },
+  {
+   "archive": "libcmt.lib",
+   "index": 836,
+   "member": "..\\build\\intel\\mt_obj\\strgtold.obj",
+   "symbols": [
+    "___shr_12",
+    "___ld12mul"
+   ]
+  },
+  {
+   "archive": "libcmt.lib",
+   "index": 854,
+   "member": "..\\build\\intel\\mt_obj\\ceil.obj",
+   "symbols": [
+    "__ceil_default"
+   ]
+  },
+  {
+   "archive": "libcmt.lib",
+   "index": 859,
+   "member": "..\\build\\intel\\mt_obj\\floor.obj",
+   "symbols": [
+    "__floor_default"
    ]
   },
   {
@@ -1220,15 +1471,15 @@
    "index": 869,
    "member": "..\\build\\intel\\mt_obj\\ieee87.obj",
    "symbols": [
-    "__abstract_cw",
-    "__hw_cw",
-    "___abstract_cw_sse2",
-    "___hw_cw_sse2",
-    "___fpreset_sse2",
+    "libcmt#00869:__abstract_cw",
+    "libcmt#00869:__hw_cw",
+    "libcmt#00869:___abstract_cw_sse2",
+    "libcmt#00869:___hw_cw_sse2",
+    "libcmt#00869:___fpreset_sse2",
     "__fpreset",
-    "___statusfp_sse2",
-    "___clearfp_sse2",
-    "___control87_sse2",
+    "libcmt#00869:___statusfp_sse2",
+    "libcmt#00869:___clearfp_sse2",
+    "libcmt#00869:___control87_sse2",
     "__statusfp2"
    ]
   },
@@ -1263,8 +1514,72 @@
    "index": 886,
    "member": "..\\build\\intel\\mt_obj\\cpu_disp.obj",
    "symbols": [
-    "_has_osfxsr_set",
+    "libcmt#00886:_has_osfxsr_set",
     "__get_sse2_info"
+   ]
+  },
+  {
+   "archive": "libcmt.lib",
+   "index": 890,
+   "member": "..\\build\\intel\\mt_obj\\atan_pentium4.obj",
+   "symbols": [
+    "__CIatan_pentium4"
+   ]
+  },
+  {
+   "archive": "libcmt.lib",
+   "index": 892,
+   "member": "..\\build\\intel\\mt_obj\\exp_pentium4.obj",
+   "symbols": [
+    "__CIexp_pentium4"
+   ]
+  },
+  {
+   "archive": "libcmt.lib",
+   "index": 893,
+   "member": "..\\build\\intel\\mt_obj\\log_pentium4.obj",
+   "symbols": [
+    "__CIlog_pentium4"
+   ]
+  },
+  {
+   "archive": "libcmt.lib",
+   "index": 894,
+   "member": "..\\build\\intel\\mt_obj\\log10_pentium4.obj",
+   "symbols": [
+    "__CIlog10_pentium4"
+   ]
+  },
+  {
+   "archive": "libcmt.lib",
+   "index": 895,
+   "member": "..\\build\\intel\\mt_obj\\pow_pentium4.obj",
+   "symbols": [
+    "__CIpow_pentium4"
+   ]
+  },
+  {
+   "archive": "libcmt.lib",
+   "index": 896,
+   "member": "..\\build\\intel\\mt_obj\\acos_pentium4.obj",
+   "symbols": [
+    "__CIacos_pentium4"
+   ]
+  },
+  {
+   "archive": "libcmt.lib",
+   "index": 898,
+   "member": "..\\build\\intel\\mt_obj\\cos_pentium4.obj",
+   "symbols": [
+    "__CIcos_pentium4"
+   ]
+  },
+  {
+   "archive": "libcmt.lib",
+   "index": 899,
+   "member": "..\\build\\intel\\mt_obj\\sin_pentium4.obj",
+   "symbols": [
+    "__CIsin_pentium4"
    ]
   },
   {
@@ -1272,7 +1587,8 @@
    "index": 901,
    "member": "..\\build\\intel\\mt_obj\\libm_error.obj",
    "symbols": [
-    "___libm_setusermatherr"
+    "___libm_setusermatherr",
+    "___libm_error_support"
    ]
   },
   {
@@ -1292,7 +1608,7 @@
     "__raise_excf",
     "__handle_exc",
     "__set_errno_from_matherr",
-    "__get_fname",
+    "libcmt#00927:__get_fname",
     "__errcode",
     "__umatherr"
    ]
