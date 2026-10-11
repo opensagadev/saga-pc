@@ -371,9 +371,9 @@ def main():
                 continue
             if symbol.startswith("__real@"):
                 # Floating-point constant: its name spells its bytes.
-                raw = bytes.fromhex(symbol[len("__real@"):])[::-1]
-                if pe.read_va(address, len(raw)) == raw:
-                    rows.append((address, symbol, len(raw), "const f32" if len(raw) == 4 else "const f64"))
+                value = bytes.fromhex(symbol[len("__real@"):])[::-1]
+                if pe.read_va(address, len(value)) == value:
+                    rows.append((address, symbol, len(value), "const f32" if len(value) == 4 else "const f64"))
                 else:
                     print(f"{unit}: constant {symbol} differs at 0x{address:x}")
                 continue
