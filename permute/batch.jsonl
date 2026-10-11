@@ -45,3 +45,4 @@
 {"symbol": "?UpdateGeometry@PC_NATIVE_DEBUG_STATE_PC@@QAEXXZ", "unit": "src/nu2api/nudebug_pc.cpp", "size": 5091, "start": 50.97553, "best": 50.97553, "exact": false, "seconds": 151.8, "instructions": [35.83, 35.83], "rules": 2}
 {"symbol": "_JumpCode", "unit": "src/legoapi/move.c", "size": 6473, "start": 40.78447, "best": 46.32921, "exact": false, "seconds": 458.4, "instructions": [48.42, 47.85], "rules": 2, "applied": true}
 {"symbol": "_TerrainPlayer", "unit": "src/legoapi/terrain_player_pc.c", "size": 7994, "start": 55.268314, "best": 58.194588, "exact": false, "seconds": 481.8, "instructions": [61.28, 62.37], "rules": 2, "applied": true}
+{"symbol": "_ScanTerrain", "unit": "src/nu2api/terrain_scan.cpp", "size": 7479, "start": 27.209938, "best": 27.51701, "exact": false, "seconds": 535.2, "instructions": [20.2, 22.96], "rules": 2, "applied": true}

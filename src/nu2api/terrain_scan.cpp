@@ -425,7 +425,7 @@ extern "C" void ScanTerrain(i32 scan_type, i32 terrain_mask, i32 scan_flags) {
             }
             if (scan_query.movement.y <= 0.0f) {
                 scan_bounds.min_y = scan_query.position.y + scan_query.movement.y - TerrainScanMargin02Pc - radius;
-                scan_bounds.max_y = scan_query.position.y + TerrainScanMargin02Pc + radius;
+                scan_bounds.max_y = TerrainScanMargin02Pc + scan_query.position.y + radius;
             } else {
                 scan_bounds.min_y = scan_query.position.y - TerrainScanMargin02Pc - radius;
                 scan_bounds.max_y = scan_query.position.y + scan_query.movement.y + TerrainScanMargin02Pc + radius;
@@ -469,9 +469,9 @@ extern "C" void ScanTerrain(i32 scan_type, i32 terrain_mask, i32 scan_flags) {
             }
 
             TerrainScanBounds group_bounds = bounds;
-            group_bounds.min_x -= group.origin.x;
+            group_bounds.min_x = group_bounds.min_x - group.origin.x;
             group_bounds.max_x -= group.origin.x;
-            group_bounds.min_y -= group.origin.y;
+            group_bounds.min_y = group_bounds.min_y - group.origin.y;
             group_bounds.max_y -= group.origin.y;
             group_bounds.min_z -= group.origin.z;
             group_bounds.max_z -= group.origin.z;
@@ -479,9 +479,9 @@ extern "C" void ScanTerrain(i32 scan_type, i32 terrain_mask, i32 scan_flags) {
             TERRAIN_SHAPE_BATCH *batch = ((TERRAIN_SHAPE_BATCH *)(group.data));
             while (batch->marker >= 0) {
                 TERRAIN_SHAPE *shapes = ((TERRAIN_SHAPE *)(batch + 1));
-                if (group_bounds.max_x >= batch->min_x && batch->max_x > group_bounds.min_x &&
+                if (group_bounds.max_x >= batch->min_x && group_bounds.min_x < batch->max_x &&
                     group_bounds.max_z >= batch->min_z && batch->max_z > group_bounds.min_z) {
-                    for (i32 shape_index = 0; shape_index < batch->shape_count; ++shape_index) {
+                    for (i32 shape_index = 0; batch->shape_count > shape_index; ++shape_index) {
                         TERRAIN_SHAPE *candidate = &shapes[shape_index];
                         if (!(((group_bounds)).max_x >= ((*candidate)).min_x &&
                               ((*candidate)).max_x > ((group_bounds)).min_x &&
@@ -576,9 +576,9 @@ extern "C" void ScanTerrain(i32 scan_type, i32 terrain_mask, i32 scan_flags) {
 
     for (i32 pick_index = 0; pick_index < curPickInst; ++pick_index) {
         const i32 group_index = ((TERRAIN_SET_PC *)CurrentTerrain)->max_groups + pick_index;
-        TERRAIN_GROUP &group = ((TERRAIN_SET_PC *)CurrentTerrain)->groups[group_index];
         TerrainScanBounds local_bounds = bounds;
-        local_bounds.min_x -= group.origin.x;
+        TERRAIN_GROUP &group = ((TERRAIN_SET_PC *)CurrentTerrain)->groups[group_index];
+        local_bounds.min_x = local_bounds.min_x - group.origin.x;
         local_bounds.max_x -= group.origin.x;
         local_bounds.min_y -= group.origin.y;
         local_bounds.max_y -= group.origin.y;
@@ -720,8 +720,10 @@ extern "C" void ScanTerrain(i32 scan_type, i32 terrain_mask, i32 scan_flags) {
                 const f32 x = (platform_bounds.min_x + platform_bounds.max_x) * 0.5f - group.origin.x;
                 const f32 y = (platform_bounds.min_y + platform_bounds.max_y) * 0.5f - group.origin.y;
                 const f32 z = (platform_bounds.min_z + platform_bounds.max_z) * 0.5f - group.origin.z;
-                const f32 reach = scan_radius + group.radius;
-                if (!(x * x + y * y + z * z < reach * reach) || platform.scene_object == NULL)
+
+                if (!(x * x + y * y + z * z <
+                      ((const f32)(scan_radius + group.radius)) * ((const f32)(scan_radius + group.radius))) ||
+                    platform.scene_object == NULL)
                     continue;
             }
             {
@@ -734,8 +736,8 @@ extern "C" void ScanTerrain(i32 scan_type, i32 terrain_mask, i32 scan_flags) {
                     if ((((TERRAIN_SCENE_STATE_VIEW_PC *)(platform.scene_transform))->low_flags & visible_mask) == 0)
                         continue;
                 }
-                TerrainScanBounds local = (platform_bounds);
                 NUMTX *matrix = ((NUMTX *)(platform.scene_object));
+                TerrainScanBounds local = (platform_bounds);
                 if (matrix != NULL) {
                     const f32 dx = (matrix->m30 - platform.previous_matrix.m30) * (1.0f);
                     const f32 dy = (matrix->m31 - platform.previous_matrix.m31) * (1.0f);
@@ -779,7 +781,7 @@ extern "C" void ScanTerrain(i32 scan_type, i32 terrain_mask, i32 scan_flags) {
                                 continue;
                             if (((u8 *)((&writer)->cursor)) >= (&writer)->limit ||
                                 (shape->material[1] != 0 && (shape->material[1] & (terrain_mask)) == 0) ||
-                                (shape->flags & (scan_flags)) == 0x40)
+                                0x40 == ((shape->flags & (scan_flags))))
                                 continue;
                             if (rotating) {
                                 NUVEC4 vertices[4];
