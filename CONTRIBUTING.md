@@ -107,6 +107,16 @@ compare byte-exact. It adds them and their references to `config/symbols.csv`
 and records the members in `config/library-objects.json`; `match.py` compares
 those members like compiled sources. Rerun it after mapping changes.
 
+## Mapping with call-site alignment
+
+`python3 tools/callmap.py --android ../saga --write` names unmapped retail
+functions from the public Android decompilation. For each mapped function with
+an Android definition, it aligns the Android callee order with the retail call
+targets (mapped callees anchor the alignment) and accepts names supported by
+two callers, or by one caller with anchors on both sides. Extents follow the
+retail control flow, and sizes far from the Android size are rejected. Rerun
+until it finds nothing new; each round's names anchor the next.
+
 ## Measures
 
 `matching.json` records, per function, exact equality and objdiff similarity.
