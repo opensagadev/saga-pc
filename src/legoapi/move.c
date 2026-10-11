@@ -6848,7 +6848,7 @@ void __cdecl JumpCode(GAMEOBJECT *object, i32 jump_pressed, i32 jump_held, u32 a
     world = WorldInfo_CurrentlyActive();
 
     flip_kind = 0;
-player_flag = object->flags_1fc & 0x80;
+    player_flag = object->flags_1fc & 0x80;
     force_flip = 0;
     if (player_flag != 0 || (object->portal_flags & 0x100) != 0) {
         if (JumpBackFlipActionPc != -1 && object->character_model->model_data_b[JumpBackFlipActionPc] != NULL)

@@ -549,9 +549,10 @@ extern "C" {
             TERRAIN_INDEX_LEVEL_PC &candidate = ((TERRAIN_SET_PC *)CurrentTerrain)->index_levels[i];
             const i32 age = candidate.cache_age;
             if (age > 0) {
-                
+
                 const f64 dz = ((f64)position->z + 1.0f) - candidate.center_z;
-                if (((const f64)(((f64)position->x + 1.0f) - candidate.center_x)) > 0.0f && ((const f64)((1.0f + ((f64)position->x)) - candidate.center_x)) < 2.0f && dz > 0.0f && dz < 2.0f) {
+                if (((const f64)(((f64)position->x + 1.0f) - candidate.center_x)) > 0.0f &&
+                    ((const f64)((1.0f + ((f64)position->x)) - candidate.center_x)) < 2.0f && dz > 0.0f && dz < 2.0f) {
                     cache_index = i;
                     cache_hit = true;
                     break;
@@ -559,7 +560,7 @@ extern "C" {
             }
             if (age < oldest_age) {
                 cache_index = i;
-oldest_age = age;
+                oldest_age = age;
             }
         }
 
@@ -773,7 +774,7 @@ oldest_age = age;
                               ((TerrainQuery_s *)TerI)->movement.y * ((TerrainQuery_s *)TerI)->movement.y +
                               ((TerrainQuery_s *)TerI)->movement.z * ((TerrainQuery_s *)TerI)->movement.z;
             f32 reach = TerrainScanMargin02Pc + ((TerrainQuery_s *)TerI)->collision_radius_sq + movement_sq;
-            
+
             bounds.min_x = ((TerrainQuery_s *)TerI)->position.x - reach;
             bounds.max_x = ((TerrainQuery_s *)TerI)->position.x + reach;
             bounds.min_y = ((TerrainQuery_s *)TerI)->position.y - (((TerrainQuery_s *)TerI)->object_scale * reach);
@@ -784,35 +785,41 @@ oldest_age = age;
         } else {
             {
                 const NUVEC &position = ((TerrainQuery_s *)TerI)->position;
-                
+
                 const f32 radius = ((TerrainQuery_s *)TerI)->collision_radius;
 
                 if (((const NUVEC &)(((TerrainQuery_s *)TerI)->movement)).x > 0.0f) {
                     bounds.min_x = position.x - TerrainScanMargin02Pc - radius;
-                    bounds.max_x = ((const NUVEC &)(((TerrainQuery_s *)TerI)->movement)).x + position.x + TerrainScanMargin02Pc + radius;
+                    bounds.max_x = ((const NUVEC &)(((TerrainQuery_s *)TerI)->movement)).x + position.x +
+                                   TerrainScanMargin02Pc + radius;
                 } else {
-                    bounds.min_x = ((const NUVEC &)(((TerrainQuery_s *)TerI)->movement)).x + position.x - TerrainScanMargin02Pc - radius;
+                    bounds.min_x = ((const NUVEC &)(((TerrainQuery_s *)TerI)->movement)).x + position.x -
+                                   TerrainScanMargin02Pc - radius;
                     bounds.max_x = position.x + TerrainScanMargin02Pc + radius;
                 }
                 if (((const NUVEC &)(((TerrainQuery_s *)TerI)->movement)).y > 0.0f) {
                     bounds.min_y = position.y - TerrainScanMargin02Pc - radius;
-                    bounds.max_y = ((const NUVEC &)(((TerrainQuery_s *)TerI)->movement)).y + position.y + TerrainScanMargin02Pc + radius;
+                    bounds.max_y = ((const NUVEC &)(((TerrainQuery_s *)TerI)->movement)).y + position.y +
+                                   TerrainScanMargin02Pc + radius;
                 } else {
-                    bounds.min_y = ((const NUVEC &)(((TerrainQuery_s *)TerI)->movement)).y + position.y - TerrainScanMargin02Pc - radius;
+                    bounds.min_y = ((const NUVEC &)(((TerrainQuery_s *)TerI)->movement)).y + position.y -
+                                   TerrainScanMargin02Pc - radius;
                     bounds.max_y = position.y + TerrainScanMargin02Pc + radius;
                 }
                 if (((const NUVEC &)(((TerrainQuery_s *)TerI)->movement)).z > 0.0f) {
                     bounds.min_z = position.z - TerrainScanMargin02Pc - radius;
-                    bounds.max_z = ((const NUVEC &)(((TerrainQuery_s *)TerI)->movement)).z + position.z + TerrainScanMargin02Pc + radius;
+                    bounds.max_z = ((const NUVEC &)(((TerrainQuery_s *)TerI)->movement)).z + position.z +
+                                   TerrainScanMargin02Pc + radius;
                 } else {
-                    bounds.min_z = ((const NUVEC &)(((TerrainQuery_s *)TerI)->movement)).z + position.z - TerrainScanMargin02Pc - radius;
+                    bounds.min_z = ((const NUVEC &)(((TerrainQuery_s *)TerI)->movement)).z + position.z -
+                                   TerrainScanMargin02Pc - radius;
                     bounds.max_z = position.z + TerrainScanMargin02Pc + radius;
                 }
             }
-            
-            
-            
-            scan_radius_sq = (bounds.min_x - bounds.max_x) * (bounds.min_x - bounds.max_x) + ((bounds.min_y - bounds.max_y)) * ((bounds.min_y - bounds.max_y)) + (bounds.min_z - bounds.max_z) * (bounds.min_z - bounds.max_z) + 1.02f;
+
+            scan_radius_sq = (bounds.min_x - bounds.max_x) * (bounds.min_x - bounds.max_x) +
+                             ((bounds.min_y - bounds.max_y)) * ((bounds.min_y - bounds.max_y)) +
+                             (bounds.min_z - bounds.max_z) * (bounds.min_z - bounds.max_z) + 1.02f;
         }
         f32 scan_radius = NuFsqrt(scan_radius_sq);
         i32 disabled_platform = TerrPlatDis;
@@ -1656,12 +1663,16 @@ i16 *NewScanHandelSubsetPc(i16 *subset, NUVEC *position, NUVEC *movement, f32 ra
         }
         const bool rotating = matrix != NULL && (TERRAIN_PLATFORM_FLAG_ROTATING & platform->flags) != 0;
         if (rotating) {
-            
-            
+
             const f64 z = (static_cast<f64>(bounds.min_z) + bounds.max_z) * 0.5 - group.origin.z;
-            const f32 distance_squared = ((const f64)((static_cast<f64>(bounds.min_x) + bounds.max_x) * 0.5 - group.origin.x)) * ((const f64)((static_cast<f64>(bounds.min_x) + bounds.max_x) * 0.5 - group.origin.x)) + ((const f64)(((static_cast<f64>(bounds.min_y) + bounds.max_y) * 0.5 - group.origin.y) *
-                          static_cast<TerrainQuery_s *>(TerI)->inverse_object_scale)) * ((const f64)(((static_cast<f64>(bounds.min_y) + bounds.max_y) * 0.5 - group.origin.y) *
-                          static_cast<TerrainQuery_s *>(TerI)->inverse_object_scale)) + z * z;
+            const f32 distance_squared =
+                ((const f64)((static_cast<f64>(bounds.min_x) + bounds.max_x) * 0.5 - group.origin.x)) *
+                    ((const f64)((static_cast<f64>(bounds.min_x) + bounds.max_x) * 0.5 - group.origin.x)) +
+                ((const f64)(((static_cast<f64>(bounds.min_y) + bounds.max_y) * 0.5 - group.origin.y) *
+                             static_cast<TerrainQuery_s *>(TerI)->inverse_object_scale)) *
+                    ((const f64)(((static_cast<f64>(bounds.min_y) + bounds.max_y) * 0.5 - group.origin.y) *
+                                 static_cast<TerrainQuery_s *>(TerI)->inverse_object_scale)) +
+                z * z;
             const f64 reach = static_cast<f64>(scan_radius_squared) + group.radius;
             if (!(reach * reach > distance_squared))
                 continue;

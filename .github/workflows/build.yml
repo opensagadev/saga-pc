@@ -8,6 +8,11 @@ on:
 permissions:
   contents: read
 
+# A newer push supersedes a running build of the same branch.
+concurrency:
+  group: build-${{ github.ref }}
+  cancel-in-progress: true
+
 jobs:
   compile:
     name: MSVC 2005 x86

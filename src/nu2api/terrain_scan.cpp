@@ -1070,11 +1070,13 @@ extern "C" void ScanWallSplineTerrain(i32 unused_first, i32 terrain_mask, i32 un
             if (mask != 0 && (mask & wall_mask) == 0)
                 continue;
             for (i32 first = 0; first < node->point_count; first += 16) {
-                
+
                 i32 end = node->point_count;
                 if ((node->points + first)[0].y != 2147483648.0f) {
-                    if ((node->points + first)[1].y < wall_bounds.min_x || (node->points + first)[0].y > wall_bounds.max_x ||
-                        (node->points + first)[3].y < wall_bounds.min_z || (node->points + first)[2].y > wall_bounds.max_z)
+                    if ((node->points + first)[1].y < wall_bounds.min_x ||
+                        (node->points + first)[0].y > wall_bounds.max_x ||
+                        (node->points + first)[3].y < wall_bounds.min_z ||
+                        (node->points + first)[2].y > wall_bounds.max_z)
                         continue;
                     end = MIN(end, first + 16);
                 }

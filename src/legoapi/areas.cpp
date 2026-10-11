@@ -805,7 +805,7 @@ extern "C" void __cdecl Area_Configure(i32 area, i32 param, AREA_EXTRA_MODEL_PC 
             for (i32 swap = 0; swap < count * 3; ++swap) {
                 const i32 first = qrand() / (1 + (0xffff / count));
                 const i32 second = (qrand() / (0xffff / (count - 1) + 1) + first) % count;
-                
+
                 mission_characters[first] = mission_characters[second];
                 mission_characters[second] = ((const i16)mission_characters[first]);
             }
@@ -1361,7 +1361,7 @@ void __cdecl LoadAreaCharacters(void) {
     LOADWAITTIME = load_type == 2 ? 1.0f : 0.1f;
     LoadWait = LOADWAITTIME;
     FRAMETIME = DEFAULTFRAMETIME;
-CutBorderScale = 1.0f;
+    CutBorderScale = 1.0f;
     music_volume = GameSetMusicVolume(&Game.options_save);
     if (loadareacharacters_no_backdrop_reset == 0) {
         BackDrop_ResetColours();
@@ -1407,7 +1407,8 @@ CutBorderScale = 1.0f;
             touch_prompt_time += FRAMETIME;
         }
         UpdateTimer(&GlobalTimer);
-        ((AREA_LOADING_CLOCK_READER_PC *)&Game)->elapsed_time = ((AREA_LOADING_CLOCK_READER_PC *)&Game)->elapsed_time + FRAMETIME;
+        ((AREA_LOADING_CLOCK_READER_PC *)&Game)->elapsed_time =
+            ((AREA_LOADING_CLOCK_READER_PC *)&Game)->elapsed_time + FRAMETIME;
         LoadTime += FRAMETIME;
         if (icon_stage == 0) {
             if (CharacterDataLoad == 2 || (CharacterDataLoad != 0 && APICharacterLoaded(PlayerID[0]) != NULL &&
@@ -1453,8 +1454,9 @@ CutBorderScale = 1.0f;
                 if (HUB_ADATA != NULL && Area == HUB_ADATA->index) {
                     if (CharacterDataLoad != 0 && icon_time > 0.0f && (f64)icon_time < (f64)3.9499998092651367f) {
                         for (i32 player = 0; player <= 1; ++player) {
-                            
-                            if ((f64)((f32)(player == 0 ? icon_time : icon_time - 0.25f)) > 0.0 && (f64)((f32)(player == 0 ? icon_time : icon_time - 0.25f)) < (f64)3.6999998092651367f) {
+
+                            if ((f64)((f32)(player == 0 ? icon_time : icon_time - 0.25f)) > 0.0 &&
+                                (f64)((f32)(player == 0 ? icon_time : icon_time - 0.25f)) < (f64)3.6999998092651367f) {
                                 DrawCharIconFindPc = 1;
                                 STUBBED_NAMED(DrawCharIcon); /* Native48bed6: PlayerID[player], native
                                                                 XY/scale, alpha, brightness,1,NULL. */
@@ -1511,7 +1513,7 @@ CutBorderScale = 1.0f;
         edGraDisableTerrainSwap();
     }
     MainRenderTime = 1.0f;
-CutBorderScale = 0.0f;
+    CutBorderScale = 0.0f;
     music_man.StopAll(0);
     STUBBED_NAMED(MusicClearAll); /* Native48c204->548e90. */
     SoundKillAll();
@@ -1519,7 +1521,7 @@ CutBorderScale = 0.0f;
     textcrawlactive = 0;
     if (loadareadata_loadlevel != 0) {
         loadareacharacters_loadedlevel = 1;
-loadareadata_loadlevel = 0;
+        loadareadata_loadlevel = 0;
     }
     TextInputSetKeyboardOverridePc(saved_override);
 }

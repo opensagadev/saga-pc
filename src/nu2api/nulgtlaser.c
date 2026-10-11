@@ -451,7 +451,8 @@ void __cdecl NuLgtArcLaserDraw(i32 paused) {
         vertices[10].y = laser->bend.y;
         vertices[10].z = laser->bend.z;
 
-        factor = (vertices[10].y * vertices[10].y) + (vertices[10].x * vertices[10].x) + vertices[10].z * vertices[10].z;
+        factor =
+            (vertices[10].y * vertices[10].y) + (vertices[10].x * vertices[10].x) + vertices[10].z * vertices[10].z;
         if (factor > 0.0f)
             factor = laser->bend_amount / NuFsqrt(factor);
         vertices[10].x *= factor;

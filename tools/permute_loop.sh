@@ -47,7 +47,7 @@ publish() {
     echo "$SEED" > permute/seed
     git add -A src permute matching.json README.md
     git diff --cached --quiet && return
-    git commit -q -m "$1"
+    git commit -q -m "$1" -m "[skip ci]"
     for delay in 2 4 8 16; do
         git push -q origin "HEAD:$BRANCH" && return
         sleep "$delay"
