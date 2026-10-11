@@ -823,8 +823,8 @@ static void LightSabreStreakCode(GAMEOBJECT *object, i32 blade, i32 effect) {
         return;
     if (!GetBladeJoints(object, blade, joints, &streak_blade))
         return;
-    model = (CHARACTER_MODEL_LAYERS_PC *)object->character_model;
     data = object->character_data->game_character;
+    model = (CHARACTER_MODEL_LAYERS_PC *)object->character_model;
     joint_a = joints[0];
     joint_b = joints[1];
     object->blade_states[blade] = -1;
@@ -847,7 +847,7 @@ static void LightSabreStreakCode(GAMEOBJECT *object, i32 blade, i32 effect) {
         else
             colour = GCDataList[(i16)object->id].blade_colour;
         object->blade_states[blade] = colour;
-        if (object->model_draw_result != 0) {
+        if (0 != object->model_draw_result) {
             const u8 *rgb = BladeTab[colour].colour;
             const u32 packed = 0xff000000u | rgb[0] | (rgb[1] << 8) | (rgb[2] << 16);
             STUBBED_NAMED("LightSabre: emit direct streak PC5a3730");
@@ -872,7 +872,7 @@ static void LightSabreStreakCode(GAMEOBJECT *object, i32 blade, i32 effect) {
         effect = 4;
     else if (object->id == id_GRIEVOUS)
         effect = (blade == 3 || blade == 0) ? 3 : 2;
-    if (data->weapon_action == 12 && context == 5 && object->combo_stage == 2 && object->field_7aa == 52 &&
+    if (data->weapon_action == 12 && context == 5 && 2 == object->combo_stage && object->field_7aa == 52 &&
         model->points_of_interest[4] != NULL) {
         points[0].x = object->locator_matrices[4].m30;
         points[0].y = object->locator_matrices[4].m31;
@@ -910,7 +910,7 @@ static void LightSabreStreakCode(GAMEOBJECT *object, i32 blade, i32 effect) {
         points[2].x = difference.x * 0.5f + points[1].x;
         points[2].y = difference.y * 0.5f + points[1].y;
         points[2].z = difference.z * 0.5f + points[1].z;
-        object->sabre_collision_radius = length * 0.25f;
+        object->sabre_collision_radius = 0.25f * length;
         extent = length * 1.5f;
         minimum.x = points[2].x - extent;
         minimum.y = points[2].y - extent;
@@ -933,7 +933,7 @@ static void LightSabreStreakCode(GAMEOBJECT *object, i32 blade, i32 effect) {
             (CInfo[target->character_context].flags & 0x8000) != 0)
             continue;
         target_data = target->character_data->game_character;
-        if ((target_data->flags_090 & 0x8000) != 0 || target->collision_min.x > maximum.x ||
+        if ((target_data->flags_090 & 0x8000) != 0 || maximum.x < target->collision_min.x ||
             target->collision_max.x < minimum.x || target->collision_min.z > maximum.z ||
             target->collision_max.z < minimum.z || target->collision_min.y > maximum.y ||
             target->collision_max.y < minimum.y)
@@ -944,7 +944,7 @@ static void LightSabreStreakCode(GAMEOBJECT *object, i32 blade, i32 effect) {
                                            target->bounds_half_height, &points[point], object->sabre_collision_radius,
                                            object->sabre_collision_radius))
                 continue;
-            if ((object->sabre_flags & 1) != 0) {
+            if (0 != (object->sabre_flags & 1)) {
                 if ((target->flags_1fc_word & 2) == 0 && (target_data->flags_090 & 0x1040) == 0) {
                     NUVEC reaction;
                     f32 maximum_speed = target_data->run_speed;
@@ -956,7 +956,7 @@ static void LightSabreStreakCode(GAMEOBJECT *object, i32 blade, i32 effect) {
                     }
                     NuVecNorm(&reaction, &reaction);
                     target->movement_direction_x = target_data->walk_speed * reaction.x + target->velocity.x;
-                    target->movement_direction_z = target_data->walk_speed * reaction.z + target->velocity.z;
+                    target->movement_direction_z = target->velocity.z + (target_data->walk_speed * reaction.z);
                     magnitude_squared = target->movement_direction_x * target->movement_direction_x +
                                         target->movement_direction_z * target->movement_direction_z;
                     if (magnitude_squared > maximum_speed * maximum_speed) {
@@ -970,7 +970,7 @@ static void LightSabreStreakCode(GAMEOBJECT *object, i32 blade, i32 effect) {
                     object->character_context != 16 && object->character_context != 13 &&
                     object->character_context != 14 && (CInfo[object->character_context].flags & 0x04000000) == 0 &&
                     ((CInfo[object->character_context].flags & 0x08000000) == 0 ||
-                     (object->context_variant_flags & 0x20000) == 0) &&
+                     (0x20000 & object->context_variant_flags) == 0) &&
                     target->character_context != 5 && target->character_context != 16 &&
                     target->character_context != 13 && target->character_context != 14 &&
                     (CInfo[target->character_context].flags & 0x04000000) == 0 &&

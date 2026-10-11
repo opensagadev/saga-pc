@@ -79,3 +79,4 @@
 {"symbol": "?Configure@ShaderBuilderGen@@UAEXPAUPC_SHADER_MATERIAL_FILTER_VIEW@@PAUShaderCompilerDictionaryPc@@@Z", "unit": "src/nu2api/shader_compiler.cpp", "size": 4642, "start": 70.71589, "best": 71.1889, "exact": false, "seconds": 281.6, "instructions": [63.45, 63.45], "rules": 3, "applied": true}
 {"symbol": "_MovePlayer_VEHICLEDIRECTIONAL", "unit": "src/legoapi/move.c", "size": 6146, "start": 78.62071, "best": 79.37508, "exact": false, "seconds": 239.3, "instructions": [68.65, 69.11], "rules": 3, "applied": true}
 {"symbol": "_GameAIProcess", "unit": "src/legoapi/gameobjects.c", "size": 6245, "start": 68.315025, "best": 68.40834, "exact": false, "seconds": 237.2, "instructions": [56.87, 57.0], "rules": 3, "applied": true}
+{"symbol": "_LightSabreStreakCode", "unit": "src/legoapi/gameobjects.c", "size": 3747, "start": 55.791706, "best": 56.42251, "exact": false, "seconds": 146.8, "instructions": [47.16, 47.27], "rules": 3, "applied": true}
