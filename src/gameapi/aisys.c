@@ -3020,7 +3020,7 @@ void AIMoveToDestination(AISYS_PC *system, AIPACKET_PC *packet, APIOBJECT_PC *ob
             packet->movement_stopping_distance = 0.0f;
             return;
         }
-        if ((packet->navigation_flags & 4) != 0) {
+        if (0 != ((packet->navigation_flags & 4))) {
             packet->fallback_destination = saved_destination;
             packet->fallback_stopping_distance = saved_stopping_distance;
             packet->movement_parameter = saved_parameter;
@@ -3070,10 +3070,10 @@ void AIMoveToDestination(AISYS_PC *system, AIPACKET_PC *packet, APIOBJECT_PC *ob
                     (f32)fabs((1.0f - packet->fallback_path_info.distance) * destination_connection->distance);
                 if (packet->current_route != 0xff &&
                     (((u64)1 << packet->current_route) & (destination_connection->route_mask)) == 0) {
-                    for (end = 0; end < 2; ++end) {
+                    for (end = 0; 2 > end; ++end) {
                         node = &path->nodes[destination_connection->node_indices[end]];
-                        if ((((u64)1 << packet->current_route) &
-                             (node->route_membership_mask & ~node->route_boundary_mask)) != 0) {
+                        if (0 != (((u64)1 << packet->current_route) &
+                             (node->route_membership_mask & ~node->route_boundary_mask))) {
                             destination_distances[end] = FLT_MAX;
                         }
                     }
@@ -3082,7 +3082,7 @@ void AIMoveToDestination(AISYS_PC *system, AIPACKET_PC *packet, APIOBJECT_PC *ob
                     {
                         candidate = FLT_MAX;
                         if (destination_distances[0] != FLT_MAX &&
-                            endpoint_distances[packet->path_info.direction == 0] != FLT_MAX) {
+                            endpoint_distances[0 == packet->path_info.direction] != FLT_MAX) {
                             candidate = AIPathNodeDistanceToPathNode(
                                 packet->path_info.path, connection->node_indices[packet->path_info.direction == 0],
                                 destination_connection->node_indices[0], packet->current_route, 0);
@@ -3093,8 +3093,8 @@ void AIMoveToDestination(AISYS_PC *system, AIPACKET_PC *packet, APIOBJECT_PC *ob
                         }
                         if (candidate < best_distance) {
                             best_distance = candidate;
-                            goal_index = destination_connection->node_indices[0];
                             direction = packet->path_info.direction;
+goal_index = destination_connection->node_indices[0];
                             packet->flags &= ~0x00100000u;
                         }
                     }
@@ -3118,7 +3118,7 @@ void AIMoveToDestination(AISYS_PC *system, AIPACKET_PC *packet, APIOBJECT_PC *ob
                         }
                     }
                 }
-                if ((connection->traversal_flags[packet->path_info.direction == 0] & 0x40000000) == 0) {
+                if ((connection->traversal_flags[0 == packet->path_info.direction] & 0x40000000) == 0) {
                     {
                         candidate_3 = FLT_MAX;
                         if (destination_distances[0] != FLT_MAX &&
@@ -3133,8 +3133,8 @@ void AIMoveToDestination(AISYS_PC *system, AIPACKET_PC *packet, APIOBJECT_PC *ob
                         }
                         if (candidate_3 < best_distance) {
                             best_distance = candidate_3;
-                            goal_index = destination_connection->node_indices[0];
                             direction = packet->path_info.direction == 0;
+goal_index = destination_connection->node_indices[0];
                             packet->flags &= ~0x00100000u;
                         }
                     }
@@ -3146,14 +3146,13 @@ void AIMoveToDestination(AISYS_PC *system, AIPACKET_PC *packet, APIOBJECT_PC *ob
                                 packet->path_info.path, connection->node_indices[packet->path_info.direction],
                                 destination_connection->node_indices[1], packet->current_route, 0);
                             if (candidate_4 != FLT_MAX) {
-                                candidate_4 +=
-                                    destination_distances[1] + endpoint_distances[packet->path_info.direction];
+                                candidate_4 = candidate_4 + (destination_distances[1] + endpoint_distances[packet->path_info.direction]);
                             }
                         }
                         if (candidate_4 < best_distance) {
                             best_distance = candidate_4;
-                            goal_index = destination_connection->node_indices[1];
                             direction = packet->path_info.direction == 0;
+goal_index = destination_connection->node_indices[1];
                             packet->flags &= ~0x00100000u;
                         }
                     }
@@ -3253,7 +3252,7 @@ void AIMoveToDestination(AISYS_PC *system, AIPACKET_PC *packet, APIOBJECT_PC *ob
         return;
     }
     shared = NULL;
-    if (current_2->node_indices[0] == destination_connection->node_indices[0]) {
+    if (destination_connection->node_indices[0] == current_2->node_indices[0]) {
         shared = &path->nodes[destination_connection->node_indices[0]];
         direction = 0;
     } else if (current_2->node_indices[0] == destination_connection->node_indices[1]) {
