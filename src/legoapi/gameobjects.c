@@ -176,8 +176,8 @@ void __cdecl GameObjectRotation(GAMEOBJECT *object, i32 mode) {
     u16 x;
     u32 flags = game->flags_090;
     u16 z;
-    i32 sliding;
     i32 magnet;
+    i32 sliding;
     i32 grapple;
     i32 alignment = 0;
     i32 reflection;
@@ -187,15 +187,15 @@ void __cdecl GameObjectRotation(GAMEOBJECT *object, i32 mode) {
                       "suspension springs, and reconstruct suspension normal (PC terrain helper at 0x5506f0)");
     }
 
-    if ((object->flags_1fc & 4) == 0) {
-        if ((flags & 0x200000) != 0) {
+    if (0 == ((object->flags_1fc & 4))) {
+        if (0 != ((flags & 0x200000))) {
             FindAnglesZX(&object->suspension_normal, &object->field_1056, &object->field_1058);
         } else if (object->surface_normal.x != 0.0f || object->surface_normal.y != 1.0f ||
                    object->surface_normal.z != 0.0f) {
             FindAnglesZX(&object->surface_normal, &object->field_1056, &object->field_1058);
         } else {
-            object->field_1056 = 0;
             object->field_1058 = 0;
+            object->field_1056 = 0;
         }
     }
 
@@ -205,7 +205,7 @@ void __cdecl GameObjectRotation(GAMEOBJECT *object, i32 mode) {
     z = object->field_1058;
     game = object->character_data->game_character;
     flags = game->flags_090;
-    sliding = (flags & 0x200) != 0 && object->character_context == 0x33;
+    sliding = (0x200 & flags) != 0 && object->character_context == 0x33;
     magnet = !sliding && (flags & 0x10000000) != 0 && object->character_context == 0x44;
     grapple = !sliding && object->character_context == 0x46 && 0 == object->field_7a3;
 
@@ -248,7 +248,7 @@ void __cdecl GameObjectRotation(GAMEOBJECT *object, i32 mode) {
         }
     }
 
-    reflection = 0 != (object->character_data->model_flags & 0x2000) && game->field_028 > 0.0f &&
+    reflection = 0 != (0x2000 & object->character_data->model_flags) && game->field_028 > 0.0f &&
                  (object->field_283 == 0x10 || object->field_283 == 7) && object->field_280 == 0xff;
 
     if (mode == 1) {
@@ -274,8 +274,8 @@ void __cdecl GameObjectRotation(GAMEOBJECT *object, i32 mode) {
         } else if (!(alignment == 2 || object->surface_normal.y > NuTrigTable[0x3000])) {
             object->pitch_angle = object->roll_angle = 0;
         } else {
-            object->pitch_angle = x;
             object->roll_angle = z;
+            object->pitch_angle = x;
         }
     } else if (mode == 2) {
         if (object->field_1052 != object->field_1056) {
