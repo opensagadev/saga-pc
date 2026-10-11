@@ -18,6 +18,8 @@ except ImportError as error:  # Only the rewrite search needs libclang.
 from tools.check import analysis_configuration, analysis_language
 from tools.lib import ROOT
 
+# Bump when rules change materially: batch runs retry functions searched with older rules.
+VERSION = 2
 K = ci.CursorKind
 FLOATS = {ci.TypeKind.FLOAT, ci.TypeKind.DOUBLE, ci.TypeKind.LONGDOUBLE}
 NEGATE = {"==": "!=", "!=": "==", "<": ">=", ">=": "<", ">": "<=", "<=": ">"}

@@ -206,6 +206,7 @@ def run_one(symbol, unit, iterations, jobs, seed, apply, log, worker=None):
     summary = {"symbol": symbol, "unit": unit, "size": scorer.size, "start": start[0],
                "best": best[0], "exact": best[1], "seconds": round(time.time() - began, 1)}
     summary["instructions"] = [round(start[3], 2), round(best[3], 2)]
+    summary["rules"] = rewrite.VERSION
     if best_text != text and key(best) > key(start):
         OUT.mkdir(parents=True, exist_ok=True)
         patch = "".join(difflib.unified_diff(text.splitlines(True), best_text.splitlines(True),
@@ -258,7 +259,7 @@ def batch(count, iterations, jobs, apply, minimum, maximum, seed=1, workers=1, m
     done = set()
     if journal.is_file():
         entries = [json.loads(line) for line in journal.read_text().splitlines() if line.strip()]
-        done = {e["symbol"] for e in entries if "error" not in e}
+        done = {e["symbol"] for e in entries if "error" not in e and e.get("rules") == rewrite.VERSION}
     OUT.mkdir(parents=True, exist_ok=True)
     todo = [r for r in rows if r["symbol"] not in done][:count]
     remaining = len([r for r in rows if r["symbol"] not in done])
