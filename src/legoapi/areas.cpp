@@ -805,7 +805,7 @@ extern "C" void __cdecl Area_Configure(i32 area, i32 param, AREA_EXTRA_MODEL_PC 
             for (i32 swap = 0; swap < count * 3; ++swap) {
                 const i32 first = qrand() / (1 + (0xffff / count));
                 const i32 second = (qrand() / (0xffff / (count - 1) + 1) + first) % count;
-
+                
                 mission_characters[first] = mission_characters[second];
                 mission_characters[second] = ((const i16)mission_characters[first]);
             }
@@ -1329,7 +1329,7 @@ void __cdecl LoadAreaCharacters(void) {
         Area_Configure(Area, Level, ExtraModelList, id_DEFAULTCHARACTER);
     saved_override = AreaGetKeyboardOverridePc();
     VehicleArea = Area != -1 && (ADataList[Area].flags & 1) != 0;
-    BonusArea = Area != -1 && (ADataList[Area].flags & 4) != 0;
+    BonusArea = -1 != Area && (ADataList[Area].flags & 4) != 0;
     AreaGlobals_PC.field_04 = VehicleArea != 0 && BonusArea == 0;
     AreaDataLoaded = 0;
     loadareadata_loadlevel = 0;
@@ -1360,8 +1360,8 @@ void __cdecl LoadAreaCharacters(void) {
     LoadTime = 0.0f;
     LOADWAITTIME = load_type == 2 ? 1.0f : 0.1f;
     LoadWait = LOADWAITTIME;
-    CutBorderScale = 1.0f;
     FRAMETIME = DEFAULTFRAMETIME;
+CutBorderScale = 1.0f;
     music_volume = GameSetMusicVolume(&Game.options_save);
     if (loadareacharacters_no_backdrop_reset == 0) {
         BackDrop_ResetColours();
@@ -1372,7 +1372,7 @@ void __cdecl LoadAreaCharacters(void) {
     WorldInfo_ReArrangeBuffers(Area, last_area);
     SetBackgroundMusic(1);
     if (load_type == 2 && AreaCrawlMusicEnabledPc != 0 && Game.options_save.music_enabled != 0 && NOSOUND == 0 &&
-        NOMUSIC == 0) {
+        0 == NOMUSIC) {
         if (Arcade == 0 && Area != -1 && (i8)ADataList[Area].episode_index != -1) {
             i32 handle = music_man.GetTrackHandle(1, crawl_music[(i8)ADataList[Area].episode_index]);
             music_man.SelectTrackByHandle(1, handle);
@@ -1407,7 +1407,7 @@ void __cdecl LoadAreaCharacters(void) {
             touch_prompt_time += FRAMETIME;
         }
         UpdateTimer(&GlobalTimer);
-        ((AREA_LOADING_CLOCK_READER_PC *)&Game)->elapsed_time += FRAMETIME;
+        ((AREA_LOADING_CLOCK_READER_PC *)&Game)->elapsed_time = ((AREA_LOADING_CLOCK_READER_PC *)&Game)->elapsed_time + FRAMETIME;
         LoadTime += FRAMETIME;
         if (icon_stage == 0) {
             if (CharacterDataLoad == 2 || (CharacterDataLoad != 0 && APICharacterLoaded(PlayerID[0]) != NULL &&
@@ -1415,7 +1415,7 @@ void __cdecl LoadAreaCharacters(void) {
                 icon_stage = 1;
         } else if (icon_stage == 1) {
             icon_time += FRAMETIME;
-            if (icon_time > 0.6f && CharacterDataLoad != 2)
+            if (icon_time > 0.6f && 2 != CharacterDataLoad)
                 icon_time = 0.6f;
             if ((f64)icon_time >= (f64)3.9499998092651367f) {
                 icon_time = 3.9499998092651367f;
@@ -1450,11 +1450,11 @@ void __cdecl LoadAreaCharacters(void) {
             if (load_type == 1)
                 BackDrop_Draw(1.0f, 1);
             if (LoadWait == LOADWAITTIME) {
-                if (HUB_ADATA != NULL && HUB_ADATA->index == Area) {
+                if (HUB_ADATA != NULL && Area == HUB_ADATA->index) {
                     if (CharacterDataLoad != 0 && icon_time > 0.0f && (f64)icon_time < (f64)3.9499998092651367f) {
-                        for (i32 player = 0; player < 2; ++player) {
-                            f32 player_time = player == 0 ? icon_time : icon_time - 0.25f;
-                            if ((f64)player_time > 0.0 && (f64)player_time < (f64)3.6999998092651367f) {
+                        for (i32 player = 0; player <= 1; ++player) {
+                            
+                            if ((f64)((f32)(player == 0 ? icon_time : icon_time - 0.25f)) > 0.0 && (f64)((f32)(player == 0 ? icon_time : icon_time - 0.25f)) < (f64)3.6999998092651367f) {
                                 DrawCharIconFindPc = 1;
                                 STUBBED_NAMED(DrawCharIcon); /* Native48bed6: PlayerID[player], native
                                                                 XY/scale, alpha, brightness,1,NULL. */
@@ -1510,16 +1510,16 @@ void __cdecl LoadAreaCharacters(void) {
         FRAMETIME = NuFrameEnd();
         edGraDisableTerrainSwap();
     }
-    CutBorderScale = 0.0f;
     MainRenderTime = 1.0f;
+CutBorderScale = 0.0f;
     music_man.StopAll(0);
     STUBBED_NAMED(MusicClearAll); /* Native48c204->548e90. */
     SoundKillAll();
     legoSetMusicVolume(music_volume);
     textcrawlactive = 0;
     if (loadareadata_loadlevel != 0) {
-        loadareadata_loadlevel = 0;
         loadareacharacters_loadedlevel = 1;
+loadareadata_loadlevel = 0;
     }
     TextInputSetKeyboardOverridePc(saved_override);
 }
