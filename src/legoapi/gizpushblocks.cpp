@@ -232,14 +232,14 @@ extern "C" void __cdecl UpdatePushBlocks(void *world_ptr, void *, f32) {
                         NUVEC *target = &p->snap_positions[(p->packed_state_flags >> 15) & 7];
                         f32 z_product = (target->z - p->end_position_origins[j].z) * fraction;
                         f32 x_product = (target->x - p->end_position_origins[j].x) * fraction;
-                        matrix->m30 = x_product + p->end_position_origins[j].x;
+                        matrix->m30 = p->end_position_origins[j].x + x_product;
                         matrix->m32 = z_product + p->end_position_origins[j].z;
                         NuSpecialUpdate(&p->end_position_specials[j]);
                     }
                     p->snap_timer += FRAMETIME;
                     continue;
                 }
-                PushSeekComplete(reinterpret_cast<PUSH_BLOCK_PC *>(p), (p->packed_state_flags >> 15) & 7);
+                PushSeekComplete(reinterpret_cast<PUSH_BLOCK_PC *>(p), 7 & ((p->packed_state_flags >> 15)));
             } else {
                 for (i32 j = 1; j < static_cast<i32>((p->packed_state_flags >> 12) & 7); ++j) {
                     NUVEC *target = &p->snap_positions[j];
@@ -280,9 +280,9 @@ extern "C" void __cdecl UpdatePushBlocks(void *world_ptr, void *, f32) {
             }
         }
         if (0 == (p->packed_state_flags & 0x40u) &&
-            ((p->packed_state_flags & 3u) == 2u || p->position->x != p->snap_origin.x ||
-             p->position->z != p->snap_origin.z)) {
-            p->target_velocity.z = p->target_velocity.x = p->velocity.z = p->velocity.x = 0.0f;
+            (2u == (p->packed_state_flags & 3u) || p->position->x != p->snap_origin.x ||
+             p->snap_origin.z != p->position->z)) {
+            p->target_velocity.x = p->velocity.z = p->target_velocity.z = p->velocity.x = 0.0f;
         }
         if ((p->packed_state_flags & 0x49u) == 0)
             continue;
@@ -333,7 +333,7 @@ extern "C" void __cdecl UpdatePushBlocks(void *world_ptr, void *, f32) {
                 absolute_x.value = p->velocity.x;
                 absolute_x.bits &= 0x7fffffffu;
                 if (absolute_x.value <= stop_speed) {
-                    p->velocity.x = p->target_velocity.x = 0.0f;
+                    p->target_velocity.x = p->velocity.x = 0.0f;
                     p->packed_state_flags &= ~0xc0u;
                 }
             }
@@ -388,7 +388,7 @@ extern "C" void __cdecl UpdatePushBlocks(void *world_ptr, void *, f32) {
         corners[0].x -= left;
         corners[0].z -= back;
         corners[1].x += right;
-        corners[1].z -= back;
+        corners[1].z = corners[1].z - back;
         corners[2].x += right;
         corners[2].z += front;
         corners[3].x -= left;

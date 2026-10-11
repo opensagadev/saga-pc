@@ -66,3 +66,5 @@
 {"symbol": "?NewScanHandelSubsetPc@@YAPAFPAFPAUnuvec_s@@1MH@Z", "unit": "src/nu2api/terrain_query.cpp", "size": 3290, "start": 29.578457, "best": 29.60051, "exact": false, "seconds": 375.5, "instructions": [20.09, 20.09], "rules": 3, "applied": true}
 {"symbol": "_TerrainInitEx", "unit": "src/nu2api/nuterrain.c", "size": 3491, "start": 40.320156, "best": 40.320156, "exact": false, "seconds": 264.8, "instructions": [27.55, 27.55], "rules": 3}
 {"symbol": "_TerrainPlatformEmbedded", "unit": "src/nu2api/terrain_collision.cpp", "size": 4252, "start": 61.663395, "best": 63.603775, "exact": false, "seconds": 390.4, "instructions": [30.13, 29.5], "rules": 3, "applied": true}
+{"symbol": "_CutScene_DrawCharacter", "unit": "src/legoapi/cutscene_runtime.cpp", "size": 3767, "start": 60.029865, "best": 60.029865, "exact": false, "seconds": 249.6, "instructions": [44.74, 44.74], "rules": 3}
+{"symbol": "_UpdatePushBlocks", "unit": "src/legoapi/gizpushblocks.cpp", "size": 4366, "start": 63.92, "best": 63.9325, "exact": false, "seconds": 373.3, "instructions": [47.88, 48.06], "rules": 3, "applied": true}
