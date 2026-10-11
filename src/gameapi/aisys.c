@@ -3073,7 +3073,7 @@ void AIMoveToDestination(AISYS_PC *system, AIPACKET_PC *packet, APIOBJECT_PC *ob
                     for (end = 0; 2 > end; ++end) {
                         node = &path->nodes[destination_connection->node_indices[end]];
                         if (0 != (((u64)1 << packet->current_route) &
-                             (node->route_membership_mask & ~node->route_boundary_mask))) {
+                                  (node->route_membership_mask & ~node->route_boundary_mask))) {
                             destination_distances[end] = FLT_MAX;
                         }
                     }
@@ -3094,7 +3094,7 @@ void AIMoveToDestination(AISYS_PC *system, AIPACKET_PC *packet, APIOBJECT_PC *ob
                         if (candidate < best_distance) {
                             best_distance = candidate;
                             direction = packet->path_info.direction;
-goal_index = destination_connection->node_indices[0];
+                            goal_index = destination_connection->node_indices[0];
                             packet->flags &= ~0x00100000u;
                         }
                     }
@@ -3134,7 +3134,7 @@ goal_index = destination_connection->node_indices[0];
                         if (candidate_3 < best_distance) {
                             best_distance = candidate_3;
                             direction = packet->path_info.direction == 0;
-goal_index = destination_connection->node_indices[0];
+                            goal_index = destination_connection->node_indices[0];
                             packet->flags &= ~0x00100000u;
                         }
                     }
@@ -3146,13 +3146,14 @@ goal_index = destination_connection->node_indices[0];
                                 packet->path_info.path, connection->node_indices[packet->path_info.direction],
                                 destination_connection->node_indices[1], packet->current_route, 0);
                             if (candidate_4 != FLT_MAX) {
-                                candidate_4 = candidate_4 + (destination_distances[1] + endpoint_distances[packet->path_info.direction]);
+                                candidate_4 = candidate_4 + (destination_distances[1] +
+                                                             endpoint_distances[packet->path_info.direction]);
                             }
                         }
                         if (candidate_4 < best_distance) {
                             best_distance = candidate_4;
                             direction = packet->path_info.direction == 0;
-goal_index = destination_connection->node_indices[1];
+                            goal_index = destination_connection->node_indices[1];
                             packet->flags &= ~0x00100000u;
                         }
                     }
