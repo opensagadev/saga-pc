@@ -1779,3 +1779,19 @@ extern "C" nusound_filename_info_s *__cdecl ConfigureMusic(char *ignored_file, V
     cursor->void_ptr = arena + 1;
     return files;
 }
+
+extern "C" void MusicClearAll() {
+    MusicPlrsUnderAttack = 0;
+    MusicActive = -1;
+    sticky_attack_time = 0.0f;
+    MusicActiveReset = 0;
+    MusicSwapDelay = 0.0f;
+    MusicSeekIndex = 0;
+    PlayersUnderAttack = 0;
+    MusicInside = 0;
+    MusicFindCut = 0;
+    MusicRestoreTrack = 0;
+    MusicOnFlag = 1;
+    MusicPlrsHoldAttack = 0;
+    CurrentMusicPair_Quiet = -1;
+}

@@ -32,3 +32,7 @@ void __cdecl FinishLoop(i32 frames) {
         edGraDisableTerrainSwap();
     } while (--frames > 0);
 }
+
+void SetLevelExBlowupFlags(u32 flags) {
+    EXBLOWUPFLAGS = flags;
+}

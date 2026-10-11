@@ -134,8 +134,16 @@ function: struct types become their PC pairs, each field access (including
 `a.b.c` chains through embedded and anonymous members) becomes the PC member at
 the corresponding offset, declarations are hoisted for C units, and anything it
 cannot translate is listed. `--insert` places the draft after its address
-neighbour. Globals and constants the PC sources do not declare yet still need
-to be added by hand.
+neighbour.
+
+`python3 tools/globals.py UNIT...` then makes the unit compile and link: it
+declares the globals and enum constants the draft uses (from the Android
+sources, in a section of `src/saga.h`), infers each unmapped global's, string
+literal's and callee's retail address by aligning the compiled function with
+retail, maps them in `config/symbols.csv` and defines globals in
+`src/data.cpp` with their retail initial values. Callees it maps still need an
+implementation (port them the same way); ambiguous addresses are reported and
+left to you.
 
 ## Measures
 

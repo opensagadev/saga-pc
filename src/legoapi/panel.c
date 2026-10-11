@@ -76,6 +76,27 @@ i32 __cdecl InDoubleScoreZone(GAMEOBJECT *object) {
     return 0;
 }
 
+void Panel_Clear() {
+    statstime = 0.0f;
+    DrawMiniKitTime = 0.0f;
+    MiniKitScale = 1.0f;
+    DrawBuildUpTime = 0.0f;
+    builduptime = 0.0f;
+    BuildUpScale = 1.0f;
+    DrawRedBrickTime = 0.0f;
+    RedBrickScale = 1.0f;
+    DrawCoinTotalTime = 0.0f;
+    cointotaltime = 0.0f;
+    CoinTotalScale = 1.0f;
+    redbrickslidetime = 0.0f;
+    goldbricktime = 0.0f;
+    Arcade_ResetPanel();
+}
+
+void DrawBossHitPoints(GAMEOBJECT *object) {
+    drawbosshitpoints = object;
+}
+
 i32 __cdecl CoinsGoToMainTotal(void) {
     WORLDINFO *world = WorldInfo_CurrentlyActive();
     if ((HUB_ADATA != NULL && world->area == HUB_ADATA) || SuperStory != 0 ||

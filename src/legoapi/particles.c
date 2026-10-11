@@ -39,3 +39,10 @@ void __cdecl Particles_Load(WORLDINFO *world, char **names, i32 count, i32 named
         world->page_pp = edppLoadPage(path, 1, world->current_gscn);
     world->game_debris_sys = InitGameDebris(&world->giz_buffer, end, count, named_count, names, (i8)world->page_pp);
 }
+
+void Particles_LoadAreaPage(char *path) {
+    DEBPAGE_AREA = -1;
+    if (NuFileExists(path) != 0) {
+        DEBPAGE_AREA = edppLoadPage(path, 1, 0);
+    }
+}

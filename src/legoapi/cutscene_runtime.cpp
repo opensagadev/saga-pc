@@ -30,6 +30,21 @@ CUTINFO *__cdecl NewCutScene(CUTINFO *cutscene, CUTSYS_PC *system, char *name, i
     return cutscene;
 }
 
+extern "C" i32 CutScene_PlayingOrRequested(CUTINFO *cut) {
+    if (cut == NULL) {
+        if (CutStopInfo != NULL || NewCutInfoCount != 0)
+            return 1;
+        return 0;
+    }
+    if (cut == CutStopInfo)
+        return 1;
+    for (i32 i = 0; i < NewCutInfoCount; ++i) {
+        if (NewCutInfo[i] == cut)
+            return 1;
+    }
+    return 0;
+}
+
 typedef struct cut_record_cleanup_pc_s {
     void *scene;
     INSTNUGCUTSCENE *instance;
@@ -2099,6 +2114,28 @@ extern "C" {
                 GizmoSysDraw(world->gizmo_sys, world, FRAMETIME);
         }
     }
+}
+
+extern "C" {
+    static void bgAckStreamCutScene(BGPROCINFO *) {
+        stream_cut_issued = 0;
+    }
+}
+
+extern "C" {
+    static void bgLoadStreamCutScene(BGPROCINFO *) {
+        if (cutscene_load_instance != NULL) {
+            instNuGCutSceneServiceLoad();
+        }
+    }
+}
+
+extern "C" void CutScenes_BGLoadManager() {
+    if (cutscene_load_instance != NULL && stream_cut_issued == 0) {
+        stream_cut_issued = 1;
+        bgPostRequest(bgLoadStreamCutScene, bgAckStreamCutScene, NULL, 0);
+    }
+    NuGCutSceneSysPostBackgroundLoad();
 }
 
 extern "C" {

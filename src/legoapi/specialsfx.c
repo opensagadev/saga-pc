@@ -657,6 +657,16 @@ void FileLoadSingleEffectType(DEBRIS_INFO_PC *destination, i32 version, i8 categ
     effect->base_effect_index = 0;
 }
 
+void ParticleReset(void) {
+    i32 i;
+    for (i = 0; i < 512; ++i) {
+        edpp_ptls[i].instance_id = -1;
+    }
+    memset(edpp_page_used, 0, sizeof(edpp_page_used));
+    memset(edpp_page_on, 0, sizeof(edpp_page_on));
+    edpp_instances_used = 0;
+}
+
 i32 __cdecl SpecialSfxLoad(char *path, void *world_ptr) {
     SPECIAL_RESOURCE_WORLD_PC *world = world_ptr;
     i32 version, count, i, j;

@@ -26,6 +26,10 @@ STATIC_ASSERT(offsetof(SCENE_FILE_TEXTURE_HEADER_PC, height) == 4);
 STATIC_ASSERT(offsetof(SCENE_FILE_TEXTURE_HEADER_PC, flags) == 0x10);
 STATIC_ASSERT(offsetof(SCENE_FILE_TEXTURE_HEADER_PC, size) == 0x14);
 
+void __cdecl NuGScnRndr3(NUGSCN *scene) {
+    NuDisplaySceneRndr(scene->display_list);
+}
+
 i32 __cdecl NuGScnUploadGfxDataFromFilePS(VARIPTR *cursor, VARIPTR end, NUFILE file) {
     i32 section_size, bytes_read, i;
     u32 size;

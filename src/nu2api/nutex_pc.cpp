@@ -64,6 +64,10 @@ void __cdecl NuTexInitExPS(VARIPTR *buffer) {
     PCDeviceCreateCubeTextureFromFile((char *)NuTexturePhongCubePathPc, &NuTexturePhongCubePc);
 }
 
+extern "C" i32 NuTexGetUnresolvedTextureTIDPS() {
+    return 0;
+}
+
 void __cdecl PCGraphicsDestroyRenderTexture(GRAPHICS_RENDER_TEXTURE_PC *texture) {
     i32 i;
     i32 memory_delta;

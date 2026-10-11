@@ -13,6 +13,10 @@ i32 __cdecl Arcade_GetMode(u32 *flags) {
     return ArcadeItem.mode;
 }
 
+void Arcade_ResetPanel() {
+    Arcade_NeedTwoPlayers_Scale = 1.0f;
+}
+
 typedef struct ARCADE_COIN_PACKET_PC {
     u32 coins;
     f32 scale;

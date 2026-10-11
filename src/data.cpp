@@ -28394,3 +28394,135 @@ extern "C" {
     i16 id_WATTO = -1;
     u8 DroidCheat32EnabledPc = 0;
 }
+
+extern "C" {
+#pragma bss_seg(".bss$stream_cut_issued")
+    i32 stream_cut_issued;
+
+#pragma bss_seg(".bss$cutscene_load_instance")
+    void *cutscene_load_instance;
+}
+
+extern "C" {
+#pragma bss_seg(".bss$EXBLOWUPFLAGS")
+    u32 EXBLOWUPFLAGS;
+}
+
+extern "C" {
+#pragma bss_seg(".bss$statstime")
+    f32 statstime;
+
+#pragma bss_seg(".bss$cointotaltime")
+    f32 cointotaltime;
+
+#pragma bss_seg(".bss$redbrickslidetime")
+    f32 redbrickslidetime;
+
+#pragma bss_seg(".bss$goldbricktime")
+    f32 goldbricktime;
+
+#pragma bss_seg(".bss$drawbosshitpoints")
+    struct gameobject_s *drawbosshitpoints;
+}
+
+extern "C" {
+#pragma bss_seg(".bss$GameFogSnap")
+    i32 GameFogSnap;
+
+#pragma bss_seg(".bss$GameFogDuration")
+    f32 GameFogDuration;
+
+#pragma bss_seg(".bss$GameFogSet")
+    void *GameFogSet;
+
+#pragma bss_seg(".bss$GameFogTime")
+    f32 GameFogTime;
+}
+
+extern "C" {}
+
+extern "C" {}
+
+extern "C" {}
+
+extern "C" {
+
+#pragma bss_seg(".bss$back_rgba")
+    i32 back_rgba[2];
+
+#pragma bss_seg(".bss$pause_rt")
+    i32 pause_rt;
+
+#pragma bss_seg(".bss$old_pause_state")
+    i32 old_pause_state;
+}
+
+extern "C" {
+#pragma bss_seg(".bss$edbits_things_scene")
+    struct NUGSCN_s *edbits_things_scene;
+}
+
+extern "C" {
+#pragma bss_seg(".bss$sticky_attack_time")
+    f32 sticky_attack_time;
+
+#pragma bss_seg(".bss$MusicSwapDelay")
+    f32 MusicSwapDelay;
+
+#pragma bss_seg(".bss$MusicPlrsUnderAttack")
+    i32 MusicPlrsUnderAttack;
+
+#pragma data_seg(".data$MusicActive")
+    i32 MusicActive = -1;
+
+#pragma bss_seg(".bss$MusicActiveReset")
+    i32 MusicActiveReset;
+#pragma bss_seg(".bss$MusicSeekIndex")
+    i32 MusicSeekIndex;
+
+#pragma bss_seg(".bss$PlayersUnderAttack")
+    i32 PlayersUnderAttack;
+
+#pragma bss_seg(".bss$MusicInside")
+    i32 MusicInside;
+
+#pragma bss_seg(".bss$MusicFindCut")
+    i32 MusicFindCut;
+
+#pragma bss_seg(".bss$MusicRestoreTrack")
+    i32 MusicRestoreTrack;
+
+#pragma data_seg(".data$MusicOnFlag")
+    i32 MusicOnFlag = 1;
+
+#pragma bss_seg(".bss$MusicPlrsHoldAttack")
+    i32 MusicPlrsHoldAttack;
+
+#pragma data_seg(".data$CurrentMusicPair_Quiet")
+    i32 CurrentMusicPair_Quiet = -1;
+}
+
+extern "C" {
+#pragma data_seg(".data$id_ROBIN")
+    i16 id_ROBIN = -1;
+}
+
+extern "C" {
+#pragma data_seg(".data$id_PENGUIN_GOON_GUN")
+    i16 id_PENGUIN_GOON_GUN = -1;
+
+#pragma data_seg(".data$id_JOKER_GOON_GUN")
+    i16 id_JOKER_GOON_GUN = -1;
+
+#pragma data_seg(".data$id_RIDDLER_GOON_GUN")
+    i16 id_RIDDLER_GOON_GUN = -1;
+
+#pragma data_seg(".data$id_PENGUIN_GOON")
+    i16 id_PENGUIN_GOON = -1;
+
+#pragma data_seg(".data$id_JOKER_GOON")
+    i16 id_JOKER_GOON = -1;
+
+#pragma data_seg(".data$id_RIDDLER_GOON")
+    i16 id_RIDDLER_GOON = -1;
+}

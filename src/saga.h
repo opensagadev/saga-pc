@@ -20599,4 +20599,53 @@ extern "C" {
 }
 #endif
 
+/* Globals and constants transferred from the Android sources (tools/globals.py). */
+#ifdef __cplusplus
+extern "C" {
+#endif
+    extern i16 id_ROBIN;
+    void __cdecl NuGScnRndr3(NUGSCN *);
+    extern void *cutscene_load_instance;
+    extern i32 stream_cut_issued;
+    extern u32 EXBLOWUPFLAGS;
+    extern f32 cointotaltime;
+    extern struct gameobject_s *drawbosshitpoints;
+    extern f32 goldbricktime;
+    extern f32 redbrickslidetime;
+    extern f32 statstime;
+    extern f32 GameFogDuration;
+    extern void *GameFogSet;
+    extern i32 GameFogSnap;
+    extern f32 GameFogTime;
+    extern i32 back_rgba[2];
+    extern i32 old_pause_state;
+    extern i32 pause_rt;
+    extern struct NUGSCN_s *edbits_things_scene;
+    extern i32 CurrentMusicPair_Quiet;
+    extern i32 MusicActive;
+    extern i32 MusicActiveReset;
+    extern i32 MusicFindCut;
+    extern i32 MusicInside;
+    extern i32 MusicOnFlag;
+    extern i32 MusicPlrsHoldAttack;
+    extern i32 MusicPlrsUnderAttack;
+    extern i32 MusicRestoreTrack;
+    extern i32 MusicSeekIndex;
+    extern f32 MusicSwapDelay;
+    extern i32 PlayersUnderAttack;
+    extern f32 sticky_attack_time;
+    extern i16 id_JOKER_GOON;
+    extern i16 id_JOKER_GOON_GUN;
+    extern i16 id_PENGUIN_GOON;
+    extern i16 id_PENGUIN_GOON_GUN;
+    extern i16 id_RIDDLER_GOON;
+    extern i16 id_RIDDLER_GOON_GUN;
+#ifdef __cplusplus
+}
+#endif
+enum { MUSIC_PLAYBACK_DUAL_STREAM = 11 };
+enum { MUSIC_PLAYBACK_DUAL_STREAM_PENDING = 13 };
+enum { NUPORTAL_FLAG_ACTIVE = 1 };
+enum { AREAFLAG_SINGLE_BUFFER = 8 };
+
 #endif

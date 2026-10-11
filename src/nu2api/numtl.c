@@ -178,6 +178,12 @@ NUMTL *__cdecl NuMtlCreateEx3D(i32 count, u32 plane) {
     return NuMtlCreatePoolPC(plane, count, 1);
 }
 
+i32 NuMtlSetCurrentRenderPlane(i32 render_plane) {
+    i32 previous_render_plane = numtl_renderplane;
+    numtl_renderplane = render_plane;
+    return previous_render_plane;
+}
+
 static NUMTL *__cdecl NuMtlLookupVariantPC(NUMTL *original, u32 descriptor) {
     NULNKHDR *node;
     for (node = NuLstGetNext(g_overrideList, NULL); node != NULL; node = NuLstGetNext(g_overrideList, node)) {

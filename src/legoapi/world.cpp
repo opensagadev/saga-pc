@@ -597,6 +597,29 @@ extern "C" {
         }
     }
 }
+
+extern "C" void SetTexAnimSignals() {
+    NuTexAnimSetSignals(texanimbits);
+}
+
+extern "C" void WorldInfo_DrawScene(WORLDINFO *world) {
+    if (world->current_gscn == NULL) {
+        return;
+    }
+    if (CUTCAM == 0 && world->current_gscn->display_list == NULL) {
+        NuPortalInit();
+        NuPortalVisibility(world->current_gscn);
+        WorldInfo_UpdateRoomVisibility(world, 0);
+    }
+    NuGScnRndr3(world->current_gscn);
+    if (world->current_gscn->display_list != NULL) {
+        WorldInfo_UpdateRoomVisibility(world, 0);
+    }
+}
+
+extern "C" void edbitsRegisterThingsScene(NUGSCN *scene) {
+    edbits_things_scene = scene;
+}
 typedef struct world_initial_progress_pc_s {
     SCENEPROGRESS scene;
     u32 initialized_flags;
@@ -741,6 +764,16 @@ void __cdecl WorldInfo_Init(WORLDINFO *world) {
         WorldInfo_InitLastFn(world);
     if (NOSOUND == 0)
         NuSound3Update();
+}
+
+extern "C" void WorldInfo_ClearAllIfScreenFaded(void) {
+    if (LastLData == TITLES_LDATA || new_level_from_menu != 0 || Area != last_area || BGLOAD == 0) {
+        WorldInfo_Reset(&WorldInfo[0], -1);
+        if (last_area == -1 || (ADataList[last_area].flags & AREAFLAG_SINGLE_BUFFER) == 0) {
+            WorldInfo_Reset(&WorldInfo[1], -1);
+        }
+        level_already_loaded = -1;
+    }
 }
 
 typedef struct world_resource_icons_reader_pc_s {

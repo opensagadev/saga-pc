@@ -114,6 +114,20 @@ void __cdecl oneAtOnce_SetNumAttackers(i32 attackers) {
     AtOnce_maxAttackers = attackers;
 }
 
+#define MAX(a, b) ((a) > (b) ? (a) : (b))
+
+void oneAtOnce_SetAttackersPerRow(i32 attackers) {
+    AtOnce_attackersPerRow = MAX(0, attackers);
+}
+
+void oneAtOnce_SetDistPerRow(float distance) {
+    AtOnce_RowDist = MAX(0.0f, distance);
+}
+
+void oneAtOnce_SetInitDistPerRow(float distance) {
+    AtOnce_InitialRowDist = MAX(0.0f, distance);
+}
+
 void __cdecl oneAtOnce_MaintainArray(void) {
     GAMEOBJECT *previous_attackers[8][4];
     i32 previous_count[8] = {0};

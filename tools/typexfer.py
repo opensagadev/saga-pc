@@ -182,9 +182,11 @@ class Translator:
     """Android field types to PC spellings usable at a given point of saga.h."""
 
     def __init__(self, pairs, android, pc, typedefs_pc, typedefs_android):
-        self.record = {}  # android struct hash -> pc Struct
+        self.record = {}  # android struct hash or tag -> pc Struct
         for pkey, (akey, _) in pairs.items():
             self.record.setdefault(akey, pc[pkey])
+            if android[akey].tag:
+                self.record.setdefault(android[akey].tag, pc[pkey])
         self.typedefs_pc = typedefs_pc
 
     def pc_name(self, struct, line):
@@ -210,7 +212,8 @@ class Translator:
             if pointee.kind in BUILTIN:
                 return f"{BUILTIN[pointee.kind]} *{name}"
             if pointee.kind == T.RECORD:
-                struct = self.record.get(pointee.get_declaration().hash)
+                declaration = pointee.get_declaration()
+                struct = self.record.get(declaration.hash) or self.record.get(declaration.spelling)
                 if struct is not None:
                     if struct.tag:
                         return f"struct {struct.tag} *{name}"
@@ -219,7 +222,7 @@ class Translator:
                         return f"{spelled} *{name}"
             return f"void *{name}"
         if c.kind == T.RECORD:
-            struct = self.record.get(c.get_declaration().hash)
+            struct = self.record.get(c.get_declaration().hash) or self.record.get(c.get_declaration().spelling)
             if struct is not None and struct.size == c.get_size():
                 spelled = self.pc_name(struct, line)
                 if spelled:

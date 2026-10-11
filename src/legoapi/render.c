@@ -143,6 +143,13 @@ void __cdecl BackDrop_Draw(f32 alpha, i32 flags) {
     }
 }
 
+void GameFog_Reset() {
+    GameFogSnap = 1;
+    GameFogDuration = 0.0f;
+    GameFogSet = 0;
+    GameFogTime = 0.0f;
+}
+
 STATIC_ASSERT(sizeof(CUT_DRAW_SETTINGS_PC) == 8);
 extern CUT_DRAW_SETTINGS_PC *CutSceneSys;
 extern i32 dco_id, dco_wearinghat, dco_reflectaxis;

@@ -88,6 +88,21 @@ void __cdecl Batarangs_CheckLostData(void *data) {
     } while (batarang != end);
 }
 
+extern "C" void Batarang_GetSightInfo(i32 character, i32 *red, i32 *green, i32 *blue, char *text) {
+    *red = 255;
+    if (character == id_ROBIN) {
+        *green = 0;
+        *blue = 31;
+        if (text != NULL)
+            NuStrCpy(text, "\xc2\xb1");
+    } else {
+        *green = 223;
+        *blue = 0;
+        if (text != NULL)
+            NuStrCpy(text, "\xc2\xa7");
+    }
+}
+
 void __cdecl Batarangs_Reset(void) {
     BATARANG_LOST_READER_PC *slot = (BATARANG_LOST_READER_PC *)BatarangPacketsPc;
     i32 i;

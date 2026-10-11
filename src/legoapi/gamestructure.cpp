@@ -5,6 +5,11 @@ void ClearPause(void) {
     NetPaused = 0;
 }
 
+extern "C" void NewGameMode() {
+    NewMode = 1;
+    reset_load = 1;
+}
+
 extern "C" void __cdecl NuGCutSceneUpdateMtx(NUMTX *matrix) {
     STUBBED_NAMED("NuGCutSceneUpdateMtx: matrix-dependent recalculation"
                   " (retail passes the operand in EDI)");

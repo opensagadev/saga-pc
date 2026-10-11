@@ -7686,6 +7686,31 @@ void __cdecl JetPackCode(GAMEOBJECT *object, i32 jump_pressed, i32 fall, i32 unu
     object->fall_hover_height = 2000000.0f;
 }
 
+void ComboRotateCode(GAMEOBJECT *object, i32 action_held) {
+    i32 rotation;
+    u16 angle;
+    if (object->character_context != 9) {
+        return;
+    }
+    object->context_timer += FRAMETIME;
+
+    if (object->context_timer != object->context_timer) {
+        rotation = (i32)(object->context_timer / object->context_duration * 32768.0f);
+    } else {
+        if (action_held == 0) {
+            object->character_context = -1;
+        } else {
+            StartHold(object);
+        }
+        rotation = -0x8000;
+    }
+    angle =
+        object->unknown_07af == 1 ? object->takeover_start_angle + rotation : object->takeover_start_angle - rotation;
+    object->field_0x276 = angle;
+    object->movement_facing_angle = angle;
+    object->facing_angle = angle;
+}
+
 extern i32 LEGOCONTEXT_CLIMB;
 extern i32 LEGOCONTEXT_HANG;
 extern i16 LEGOACT_IDLE;

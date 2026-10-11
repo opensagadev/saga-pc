@@ -139,6 +139,13 @@ void __cdecl NewRumbleAllPlayers(f32 strength, f32 duration, i32 frames, f32 pri
     }
 }
 
+void DieRumble(GAMEOBJECT *object) {
+    if (object != NULL && object->flags_1fc) {
+        NewRumble(object->pad->bound_pad, 1.0f, 0);
+        NewBuzz(object->pad->bound_pad, 0.3f, 0);
+    }
+}
+
 void __cdecl GameCam_NewShake(GAMECAMERA *camera, f32 intensity, f32 decay, f32 freq) {
     if (camera == NULL) {
         camera = GameCam;

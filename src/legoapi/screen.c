@@ -51,3 +51,7 @@ void __cdecl GrabStillScreen(void) {
         ScreenPauseFadePc = 0.0f;
     }
 }
+
+void NeedScreenGrab(i32 needed) {
+    ScreenGrabNeededPc = needed != 0;
+}
