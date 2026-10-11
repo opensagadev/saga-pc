@@ -549,17 +549,17 @@ extern "C" {
             TERRAIN_INDEX_LEVEL_PC &candidate = ((TERRAIN_SET_PC *)CurrentTerrain)->index_levels[i];
             const i32 age = candidate.cache_age;
             if (age > 0) {
-                const f64 dx = ((f64)position->x + 1.0f) - candidate.center_x;
+                
                 const f64 dz = ((f64)position->z + 1.0f) - candidate.center_z;
-                if (dx > 0.0f && dx < 2.0f && dz > 0.0f && dz < 2.0f) {
+                if (((const f64)(((f64)position->x + 1.0f) - candidate.center_x)) > 0.0f && ((const f64)((1.0f + ((f64)position->x)) - candidate.center_x)) < 2.0f && dz > 0.0f && dz < 2.0f) {
                     cache_index = i;
                     cache_hit = true;
                     break;
                 }
             }
             if (age < oldest_age) {
-                oldest_age = age;
                 cache_index = i;
+oldest_age = age;
             }
         }
 
@@ -576,7 +576,7 @@ extern "C" {
         f32 min_x = position->x - extent;
         f32 max_x = position->x + extent;
         f32 min_z = position->z - extent;
-        f32 max_z = position->z + extent;
+        f32 max_z = extent + position->z;
 
         if (!cache_hit) {
             for (i32 cell_index = 0; cell_index < ((TERRAIN_SET_PC *)CurrentTerrain)->used_cell_count; ++cell_index) {
@@ -599,7 +599,7 @@ extern "C" {
                     if (group.scene_index < 0)
                         TerrainSkinAllocate(&group);
                     TERRAIN_SHAPE_BATCH *batch = reinterpret_cast<TERRAIN_SHAPE_BATCH *>(group.data);
-                    while (batch->marker >= 0) {
+                    while (batch->marker > -1) {
                         TERRAIN_SHAPE *shape = reinterpret_cast<TERRAIN_SHAPE *>(batch + 1);
                         const i32 count = batch->shape_count;
                         if (local_max_x >= batch->min_x && batch->max_x > local_min_x && local_max_z >= batch->min_z &&
@@ -668,7 +668,7 @@ extern "C" {
                         shape->max_z <= local_min_z) {
                         continue;
                     }
-                    if (shape->material[1] != 0 && (shape->material[1] & terrain_mask) == 0) {
+                    if (shape->material[1] != 0 && (((shape->material[1] & terrain_mask))) == 0) {
                         continue;
                     }
                     if (reinterpret_cast<u8 *>(writer.cursor) >= writer.limit) {
@@ -734,7 +734,7 @@ extern "C" {
                                 local_max_z < shape->min_z || shape->max_z <= local_min_z) {
                                 continue;
                             }
-                            if (reinterpret_cast<u8 *>(writer.cursor) >= writer.limit) {
+                            if (writer.limit <= reinterpret_cast<u8 *>(writer.cursor)) {
                                 continue;
                             }
                             if (shape->material[1] != 0 && (shape->material[1] & terrain_mask) == 0) {
