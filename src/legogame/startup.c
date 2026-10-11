@@ -284,10 +284,10 @@ void __cdecl LoadPermData(void *process) {
     Text_InitStringTable(0x70d, &permbuffer_ptr, &permbuffer_end);
 
     if (StartupGameFlag1 == 0 && StartupGameFlag0 == 0) {
-        STUBBED_NAMED("LoadPermData: Text_InitTable(Text_TableMenu, 0, 0x31f)");
-        STUBBED_NAMED("LoadPermData: Text_InitTable(Text_TableGame, 0x320, 0x70c)");
+        Text_InitTable(Text_TableMenu, 0, 0x31f);
+        Text_InitTable(Text_TableGame, 0x320, 0x70c);
     } else {
-        STUBBED_NAMED("LoadPermData: Text_InitTable(Text_TableMain, 0, 0x70c)");
+        Text_InitTable(Text_TableMain, 0, 0x70c);
     }
 
     Text_LoadStrings(&permbuffer_ptr, &permbuffer_end);

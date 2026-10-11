@@ -2585,3 +2585,30 @@ owning extent stays blank; neither the working type size nor successor spacing
 claims an original allocation. The actual existing init/create/capture routines
 write and reset these fields. No duplicate backing, guard bypass or synthetic
 initialization is introduced.
+
+## Bulk transfer checkpoint III
+
+The startup text tables now have real mutable `TEXTENTRY` initializers: menu at
+`0x7fd2c8` (167 records), game at `0x7fd800` (347), and main at `0x7fe2d8`
+(706), including their terminal records. All 9,760 emitted bytes and 1,217 pointer
+relocations equal retail. Their 715 distinct ID slots reuse 46 canonical existing
+definitions and introduce 669 named PC-only `i16` values. The complete emitted
+zero initializer for each new ID also agrees with retail. Consumed
+records and compiler padding do not establish original allocation boundaries:
+all 672 new owning extents remain blank, earning no new allocation credit.
+
+`ResumeGame_ExtraCodeFn` (`0x93b354`) and `PlayerOpponent_Range2` (`0x87b8ac`)
+retain genuine zero initial state. Four mutable laser floats at `0x7fb0a8..b4`
+are 0.02, 0.1, 0.01 and 0.1; the laser type at `0x87b8e4` starts at zero.
+The five platform AI-path flags at `0x950d88..98` also begin at zero; their
+platform initialization producers remain unreconstructed, rather than being
+replaced with guessed flag constants. These new owning extents stay unknown.
+The controller/fake-animation research and its proposed storage were excluded.
+
+Restored movement calls also retain two native globals that their former omitted
+actions allowed the compiler to discard: `id_WATTO` is the signed word -1 at
+`0x7f18e0`; `DroidCheat32EnabledPc` is the zero enabled byte of static
+`Cheat[32]` (the selfdestruct record) at `0x7f41a0`. The latter follows the
+existing isolated cheat-field reconstruction; the full static table remains
+incomplete. Owning extents stay blank. Ordinary compiler padding is retained
+and compared in full, even where the native neighboring bytes differ.

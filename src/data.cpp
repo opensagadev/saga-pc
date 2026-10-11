@@ -28296,3 +28296,29 @@ extern "C" {
     extern const char GizActionLiteral758360[] = "max_player_range=";
     extern const char GizActionLiteral758374[] = "max_range=";
 }
+
+extern "C" {
+    void(__cdecl *ResumeGame_ExtraCodeFn)(void) = NULL;
+    f32 PlayerOpponent_Range2 = 0.0f;
+}
+
+extern "C" {
+    f32 testlaser_sizew = 0.02f;
+    f32 testlaser_sizel = 0.1f;
+    f32 testlaser_sizewab = 0.01f;
+    f32 testlaser_endw = 0.1f;
+    i32 testlaser_type = 0;
+}
+
+extern "C" {
+    u32 LEGO_AIPATHCNX_BIGJUMP;
+    u32 LEGO_AIPATHCNX_REQUIRESPERMISSION;
+    u32 LEGO_AIPATHCNX_NO_DESTINATION_CHECK;
+    u32 LEGO_AIPATHCNX_JUMP_NOW;
+    u32 LEGO_AIPATHCNX_DONT_JUMP_NOW;
+}
+
+extern "C" {
+    i16 id_WATTO = -1;
+    u8 DroidCheat32EnabledPc = 0;
+}

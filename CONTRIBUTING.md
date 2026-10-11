@@ -9,7 +9,8 @@ bounded debugger run observed genuine SFX initialization returning and downstrea
 lookup entry. GGG's ordinary runtime observation is recorded in the execution
 policy. Recurring rendered frames, a loaded world and playability remain unproved;
 save-folder registration, slot enumeration and the legal primitive path are now connected.
-Startup text-table backing and remaining permanent/world loaders are the next dependencies.
+Startup text tables and their loader tail are now connected. Remaining permanent/world
+loaders and completed rendering are still unproved.
 There are no host or WebAssembly game targets.
 
 ## Requirements and setup

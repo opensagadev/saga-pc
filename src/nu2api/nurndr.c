@@ -1192,3 +1192,56 @@ void __cdecl NuRndrInitStartupMaterialsPc(void) {
     material->sort_priority = 0x100;
     NuMtlUpdate(PCStartupMaterial2Pc);
 }
+
+void __cdecl NuRndrRect2di(i32 x, i32 y, i32 width, i32 height, i32 colour, NUMTL *material) {
+    f32 sx = (f32)((f64)x * 0.0625);
+    f32 sy = (f32)((f64)y * 0.0625);
+    f32 sw;
+    f32 sh;
+    LOCATOR_PRIM_VERTEX_PC *vertex;
+    ++NuPrimCSPos;
+    NuPrimSetCoordinateSystem(0);
+    NuPrim2DBegin(16, 7, material);
+    NuRndrPrimSetColourPrivate(colour);
+    vertex = (LOCATOR_PRIM_VERTEX_PC *)NuPrimStreamBufferPointer->void_ptr;
+    vertex->u = 0.0f;
+    vertex->v = 0.0f;
+    NuPrim2DAddXYZ(sx, sy, 0.0f);
+    NuRndrPrimSetColourPrivate(colour);
+    vertex = (LOCATOR_PRIM_VERTEX_PC *)NuPrimStreamBufferPointer->void_ptr;
+    vertex->u = 1.0f;
+    vertex->v = 1.0f;
+    sw = (f32)((f64)width * 0.0625);
+    sh = (f32)((f64)height * 0.0625);
+    NuPrim2DAddXYZ(sx + sw, sy + sh, 0.0f);
+    NuPrim2DEnd();
+    --NuPrimCSPos;
+    NuPrimSetCoordinateSystem(NuPrimCoordSystemStack[NuPrimCSPos]);
+}
+
+void __cdecl NuRndrRectUV2di(i32 x, i32 y, i32 width, i32 height, f32 u0, f32 v0, f32 u1, f32 v1, i32 colour,
+                             NUMTL *material) {
+    f32 sx = (f32)((f64)x * 0.0625);
+    f32 sy = (f32)((f64)y * 0.0625);
+    f32 sw;
+    f32 sh;
+    LOCATOR_PRIM_VERTEX_PC *vertex;
+    ++NuPrimCSPos;
+    NuPrimSetCoordinateSystem(0);
+    NuPrim2DBegin(16, 7, material);
+    vertex = (LOCATOR_PRIM_VERTEX_PC *)NuPrimStreamBufferPointer->void_ptr;
+    vertex->u = u0;
+    vertex->v = v0;
+    NuRndrPrimSetColourPrivate(colour);
+    NuPrim2DAddXYZ(sx, sy, 0.0f);
+    vertex = (LOCATOR_PRIM_VERTEX_PC *)NuPrimStreamBufferPointer->void_ptr;
+    vertex->u = u1;
+    vertex->v = v1;
+    NuRndrPrimSetColourPrivate(colour);
+    sw = (f32)((f64)width * 0.0625);
+    sh = (f32)((f64)height * 0.0625);
+    NuPrim2DAddXYZ(sx + sw, sy + sh, 0.0f);
+    NuPrim2DEnd();
+    --NuPrimCSPos;
+    NuPrimSetCoordinateSystem(NuPrimCoordSystemStack[NuPrimCSPos]);
+}

@@ -15,6 +15,7 @@ address    , symbol                                                         , si
 0x404e30,_Batarangs_CheckLostData,220,void __cdecl(void *)
 0x404fa0,_Batarang_StartTargetting,288,i32 __cdecl(GAMEOBJECT *)
 0x407b60,_PlayerInitCapabilitiesDefaultPc,403,void __cdecl(GAMEOBJECT *)
+0x407d00,_AIPathParseBatmanFlagPc,285,
 0x00407e40,_BoltType_FindIDByCreature,1317,"i32 __cdecl(GAMEOBJECT*,i32)"
 0x00408800 , _InitCables                                                    , 127   , void __cdecl (WORLDINFO *)
 0x408880,_CreateCable,147,"CABLE_RECORD_PC *__cdecl(GAMEOBJECT*,GAMEOBJECT*,i32)"
@@ -313,6 +314,7 @@ address    , symbol                                                         , si
 0x44d570   , _Action_CancelHint                                              , 11    , "i32 __cdecl (AISYS_PC *, AISCRIPTPROCESS_PC *, AIPACKET_PC *, char **, i32, i32, f32)"
 0x44d580   , _Action_DisableNarrowSocks                                      , 61    , "i32 __cdecl (AISYS_PC *, AISCRIPTPROCESS_PC *, AIPACKET_PC *, char **, i32, i32, f32)"
 0x0044d5c0 , _Action_CycleCharacter                                         , 674   , "i32 __cdecl (AISYS_PC *, AISCRIPTPROCESS_PC *, AIPACKET_PC *, char **, i32, i32, f32)"
+0x44d870,?ParseAIPathCnxFlagPc@@YAIPAD@Z,144,
 0x0044d900 , _Action_CnxController                                          , 1581  , "i32 __cdecl (AISYS_PC *, AISCRIPTPROCESS_PC *, AIPACKET_PC *, char **, i32, i32, f32)"
 0x0044df30 , _Action_CnxHelper                                              , 445   , "i32 __cdecl (AISYS_PC *, AISCRIPTPROCESS_PC *, AIPACKET_PC *, char **, i32, i32, f32)"
 0x44e160,_Action_SetPath,388,"i32 __cdecl (AISYS_PC *, AISCRIPTPROCESS_PC *, AIPACKET_PC *, char **, i32, i32, f32)"
@@ -458,6 +460,7 @@ address    , symbol                                                         , si
 0x46cf10,_AddCoinsToPanel,854,"void __cdecl (i32, NUVEC *, i32, f32, GAMEOBJECT *, i32)"
 0x46d270,_AddPickups,1284,"void __cdecl (i32, i32, i32, i32, NUVEC *, NUVEC *, f32, i32, f32, f32, GAMEOBJECT *, i32, i32)"
 0x46dc10,_GizPanel_GetAbsTargetPos,195,"void __cdecl(void *,NUVEC *,i32)"
+0x46dce0,_GizPanel_CanUsePanel,264,
 0x46fad0,_GizTorpMachine_FindNearest,171,"void *__cdecl(WORLDINFO*,NUVEC*,f32*)"
 0x4701d0,_Grab_radius,26,
 0x4701f0,_Grab_speed,26,
@@ -519,6 +522,7 @@ address    , symbol                                                         , si
 0x0047aad0,_Hub_PanelBusy,44,i32 __cdecl(void)
 0x47cab0,_Hub_Init,787,void __cdecl(WORLDINFO *)
 0x481740,_PlayerInitCapabilitiesVariant0Pc,152,void __cdecl(GAMEOBJECT *)
+0x4817e0,_AIPathParseIndyFlagPc,310,
 0x482290,?LedgeSetAttachPositionPc@@YAXPAUnuvec_s@@GPAUgameobject_s@@@Z,124,
 0x482310,?LedgeAttachPointPc@@YAPAULEDGE_MOTION_PC@@PAUWORLDINFO_s@@PAUnuvec_s@@11PAG@Z,1165,
 0x4827a0,_Ledge_MoveCode,1105,"void __cdecl(WORLDINFO *, GAMEOBJECT *)"
@@ -711,6 +715,8 @@ address    , symbol                                                         , si
 0x0049ca10 , _EatVictim                                                     , 108   ,
 0x49ca80,_ObjOpponent,1179,"GAMEOBJECT *__cdecl(GAMEOBJECT *,f32,f32,i32,i32,i32)"
 0x49cf20,_PunchSelectOpponentPc,189,
+0x49cfe0,_PlayerOpponent,531,"GAMEOBJECT *__cdecl(GAMEOBJECT*,f32,i32)"
+0x49d200,_SetComboOpponent,547,
 0x49d430,_ShootThisFrame,160,"static void(GAMEOBJECT*,i32,i32)"
 0x49d520,_SetBallooningHeight,24,"void __cdecl(GAMEOBJECT *, f32)"
 0x49d540,_LetGoOfBalloon,373,void __cdecl(GAMEOBJECT*)
@@ -729,6 +735,8 @@ address    , symbol                                                         , si
 0x49f850,_LightSabreDebris,512,void __cdecl(GAMEOBJECT*)
 0x0049fa50 , _LightSabreStreakCode                                          , 3747  , "void (GAMEOBJECT *, i32, i32) [private EDI object; two stack arguments]"
 0x004a0900 , _AfterAnimationSabreCode                                       , 635   , "void (GAMEOBJECT *, i32) [private EAX object; one stack argument]"
+0x4a0bc0,_JediLightCode,1249,
+0x4a1c70,_SwipeCode,724,
 0x4a1f50,_EndForce,86,"void __cdecl(GAMEOBJECT*,i32)"
 0x4a1fb0,_ForceGlowTargetPc,187,
 0x4a2070,_ForceCode,1109,
@@ -753,7 +761,9 @@ address    , symbol                                                         , si
 0x4a5ec0,_SetObjTarget,161,"i32 __cdecl(GAMEOBJECT*,GAMEOBJECT*)"
 0x4a5f70,_SetGizmoBlowUpTarget,107,"i32 __cdecl(GAMEOBJECT*,GIZMOBLOWUP_PC*)"
 0x4a5fe0,_SetPartTarget,107,"i32 __cdecl(GAMEOBJECT*,PART_PC*)"
+0x4a6050,_GetZapOrigin,83,NUVEC *__cdecl(GAMEOBJECT*)
 0x4a60b0,_ZapTarget,173,i32 __cdecl(GAMEOBJECT*)
+0x4a6160,_ZapCode,2162,
 0x4a6c30,_FireCode,1460,"static void(GAMEOBJECT*,i32,i32,f32,i32)"
 0x4a71f0,_CableCode,362,"void __cdecl(GAMEOBJECT*,i32,f32)"
 0x4a7360,_JumpAnimCode,289,
@@ -862,6 +872,7 @@ address    , symbol                                                         , si
 0x004c9fb0 , _LoadPermData                                                  , 1532  , void __cdecl (void *)
 0x004ca5b0 , _LoadPerm                                                      , 2004  , void __cdecl (void)
 0x4cbe50,_PlayerInitCapabilitiesVariant1Pc,283,void __cdecl(GAMEOBJECT *)
+0x4cbf70,_AIPathParseStarWarsFlagPc,485,
 0x4cc8e0,_Suits_Init,51,void __cdecl(void)
 0x4cc920,_Suit_GetIndex,42,i32 __cdecl(SUIT_LAYERS_PC *)
 0x004cc9a0,_Suit_GetLast,87,"SUIT_LAYERS_PC * __cdecl(i32,i32)"
@@ -873,6 +884,7 @@ address    , symbol                                                         , si
 0x4cd040,_Techno_SetVisibility,30,
 0x4cd060,_Techno_Activate,28,
 0x4cd080,_Technos_Reset,132,
+0x4cd110,_GizTechno_CanUseTechno,6,
 0x4cd1e0,_Technos_EarlyUpdate,50,
 0x4cd220,_Technos_LateUpdate,120,
 0x4cd2a0,_Technos_Draw,785,
@@ -910,7 +922,7 @@ address    , symbol                                                         , si
 0x004cf2d0 , _Text_SetLanguage_Game                                         , 228   , void __cdecl (i32)
 0x004cf3c0 , _Text_InitDefaultStrings                                       , 177   , void __cdecl (void)
 0x004cf480 , _Text_DecodeButtons                                            , 41    , "void __cdecl (char *, char *)"
-0x004cf4c0 , _Text_LoadStrings                                              , 397   , "void __cdecl (VARIPTR *, VARIPTR *)"
+0x004cf4c0 , _Text_LoadStrings                                              , 403   , "void __cdecl (VARIPTR *, VARIPTR *)"
 0x4d0290,_ThermalDetonator_MoveCode,727,i32 __cdecl(GAMEOBJECT *)
 0x4d09a0,_TightRope_InRange,477,"TIGHTROPE_MOTION_PC * __cdecl(GAMEOBJECT *, WORLDINFO *, NUVEC *)"
 0x4d12a0,?TightRopeSetPositionPc@@YAHPAUTIGHTROPE_MOTION_PC@@PAUnuvec_s@@PAUgameobject_s@@@Z,183,
@@ -1642,6 +1654,7 @@ address    , symbol                                                         , si
 0x53f380   , _ComplexSockAngles                                             , 696   , void __cdecl (SOCKROT_PC *)
 0x0053f640 , _SetSockPostion                                                , 241   ,
 0x53f7a0   , _MidDistanceFromSockStart                                      , 64    , "f32 __cdecl (SOCKSYS_PC *, SOCKPOSITION_PC *)"
+0x53f7e0,_FindSock,71,
 0x53f940   , _SockParCircuit                                                , 10    , "void __cdecl (NUFPAR_PC *, void *)"
 0x53f950   , _SockParCurSpeed                                               , 23    , "void __cdecl (NUFPAR_PC *, void *)"
 0x53f970   , _SockParMidRangeInner                                          , 23    , "void __cdecl (NUFPAR_PC *, void *)"
@@ -1701,6 +1714,8 @@ address    , symbol                                                         , si
 0x540380   , _SockTerrainCamInActive                                        , 16    , "void __cdecl (NUFPAR_PC *, void *)"
 0x5404f0   , _SockSys_Configure                                             , 254   , "void __cdecl (SOCKSYS_PC *, char *, i32, VARIPTR *, VARIPTR *, NUGSCN *)"
 0x00540d20 , _SockRotationMatrix                                            , 1804  , "void __cdecl (SOCKSYS_PC *, SOCKPOSITION_PC *, NUMTX *, i32, i32)"
+0x541430,_SockOn,44,
+0x541460,_SockOff,44,
 0x5414f0   , _SockSys_GenerateData                                          , 1742  , "void __cdecl (SOCKSYS_PC *, VARIPTR *, VARIPTR)"
 0x541bc0   , _ComplexSockPosition                                           , 663   , "void __cdecl (SOCKSYS_PC *, NUVEC *, i32, i32, SOCKPOSITION_PC *)"
 0x5436e0,_fullslotname,224,char * __cdecl (i32)
@@ -1967,6 +1982,7 @@ address    , symbol                                                         , si
 0x55b830,_DrawCharIcon,641,"void __cdecl (i32,f32,f32,f32,f32,i32,f32,f32,i32,NUSPECIALHANDLE *)"
 0x0055bac0 , _LayerFromName                                                 , 98    , i32 __cdecl (PLAYERCHARACTERCONFIG_PC *; const char *)
 0x0055bb30 , _MakeLayerList_Name                                            , 187   , i32 __cdecl (CHARACTER_MODEL_LAYERS_PC *; i16 *; u32)
+0x55bc20,_CharCategory_FindByName,81,
 0x55bc80,_CharCategory_IsCategory,115,"i32 __cdecl(GAMEOBJECT *, i32)"
 0x55bd00,_SetMoveAndAnimateFunctions,187,"void __cdecl SetMoveAndAnimateFunctions(u32, u32, u32, u32, i32, CHARACTER_UPDATE_CALLBACK_PC, CHARACTER_UPDATE_CALLBACK_PC, CHARACTER_UPDATE_CALLBACK_PC)"
 0x55bdc0,_GameLoadCharacterModels,82,"void __cdecl(APICHARACTERMODELLIST *,i32,VARIPTR *,VARIPTR *,i32,i32)"
@@ -1974,6 +1990,7 @@ address    , symbol                                                         , si
 0x55bef0,_RandomIDFromFlags,396,"i32 __cdecl(u32,u32,i32,APICHARACTERMODELLIST*,i32)"
 0x55c080,_CharVariants_Init,28,"void __cdecl(char **,i32)"
 0x55c0a0,_CharVariant_Find,76,i32 __cdecl(char *)
+0x0055c560,_ResumeGame,126,void __cdecl(i32)
 0x0055c5e0 , ?ClearPause@@YAXXZ                                             , 13    , void __cdecl (void)
 0x0055c600 , _RestoreOptions                                                , 79    , void __cdecl (void)
 0x0055c690,_InStory,49,i32 __cdecl(void)
@@ -2361,6 +2378,7 @@ address    , symbol                                                         , si
 0x57c0c0,_CutScene_FindCharacters,74,
 0x57c110,_CutScenesLoadListedPc,720,
 0x57c3e0,_CutScenes_Load,1333,"CUT_LOAD_SYS_PC *__cdecl(char *, NUGSCN *, NUGSCN *, i32, VARIPTR *, VARIPTR *, i32, i32, WORLDINFO *)"
+0x57c920,_CutScene_FindInst,80,
 0x0057c970 , _CutScene_Find                                                 , 77    ,
 0x57c9c0,_CutSceneRebindPlayerCharactersPrivatePc,216,
 0x57caa0,_CutSceneResetTextureAnimationsPrivatePc,105,
@@ -2973,6 +2991,7 @@ address    , symbol                                                         , si
 0x005ab020 , _GetGizAIMessage                                               , 34    , "f32 __cdecl (GIZAIMESSAGESYS *, const char *, GIZAIMESSAGE *)"
 0x005ab050 , _SetGizAIMessage                                               , 35    , "GIZAIMESSAGE *__cdecl (GIZAIMESSAGESYS *, const char *, f32, GIZAIMESSAGE *)"
 0x5ab0a0,_AIPathCnxHelperSysCreate,73,"void * __cdecl (VARIPTR *, VARIPTR *, i32)"
+0x5ab140,_AIPathCnxHelperSys_AddHelper,153,
 0x005ace90,_GizTurretPointWithinBoundsPc,160,
 0x005acf30,_GizTurrets_OpponentSelection,493,"void __cdecl(AI_TURRET_SYSTEM_PC *,i32,APIOBJECT_PC **,i32,APIOBJECT_PC **)"
 0x5ae130,_GizSpecial_GetMaxGizmos,18,
@@ -3068,13 +3087,25 @@ address    , symbol                                                         , si
 0x005b2e20 , _NuASin                                                        , 320   , i32 __cdecl (f32)
 0x005b30a0 , _NuVecMtxTransform                                             , 108   , "void __cdecl (NUVEC *, NUVEC *, NUMTX *)"
 0x5b3110,_NuVecMtxTransformH,183,"f32 __cdecl(NUVEC*,NUVEC*,NUMTX*)"
+0x5b31d0,_NuVecMtxTranslate,38,"void __cdecl (NUVEC *out, NUVEC *v, NUMTX *m)"
 0x005b3200 , _NuVecMtxRotate                                                , 99    , "void __cdecl (NUVEC *, NUVEC *, NUMTX *)"
+0x5b3270,_NuVecMtxRotateValX,37,"void __cdecl (NUVEC *out, f32 value, NUMTX *matrix)"
+0x5b32a0,_NuVecMtxRotateValY,38,"void __cdecl (NUVEC *out, f32 value, NUMTX *matrix)"
+0x5b32d0,_NuVecMtxRotateValZ,38,"void __cdecl (NUVEC *out, f32 value, NUMTX *matrix)"
+0x5b3300,_NuVecMtxRotateH,142,"void __cdecl (NUVEC *out, NUVEC *v, NUMTX *m)"
+0x5b3390,_NuVecMtxScale,37,"void __cdecl (NUVEC *out, NUVEC *v, NUMTX *m)"
 0x005b33c0 , _NuVecInvMtxTransform                                          , 128   , "void __cdecl (NUVEC *, NUVEC *, NUMTX *)"
+0x5b3440,_NuVecInvMtxTranslate,38,"void __cdecl (NUVEC *out, NUVEC *v, NUMTX *matrix)"
 0x005b3470 , _NuVecInvMtxRotate                                             , 99    , "void __cdecl (NUVEC *, NUVEC *, NUMTX *)"
+0x5b34e0,_NuVecInvMtxRotateValX,37,"void __cdecl (NUVEC *out, f32 unused, NUMTX *matrix)"
+0x5b3510,_NuVecInvMtxRotateValY,40,"void __cdecl (NUVEC *out, f32 unused, NUMTX *matrix)"
+0x5b3540,_NuVecInvMtxRotateValZ,35,"void __cdecl (NUVEC *out, f32 unused, NUMTX *matrix)"
+0x5b3570,_NuVecInvMtxScale,37,"void __cdecl (NUVEC *out, NUVEC *v, NUMTX *matrix)"
 0x005b35a0 , _NuVecRotateX                                                  , 115   , "void __cdecl (NUVEC *out, NUVEC *input, NUANG angle)"
 0x005b3620 , _NuVecRotateY                                                  , 111   , "void __cdecl (NUVEC *out, NUVEC *input, NUANG angle)"
 0x005b3690 , _NuVecRotateZ                                                  , 115   , "void __cdecl (NUVEC *out, NUVEC *input, NUANG angle)"
 0x005b3710 , _NuVecRotateYValZ                                              , 72    , "void __cdecl (NUVEC *out, f32 magnitude, NUANG angle)"
+0x5b3760,_NuVecRotateYValX,75,"void __cdecl (NUVEC *out, f32 value, NUANG angle)"
 0x005b37b0 , _NuVecNeg                                                      , 31    , "void __cdecl (NUVEC *, NUVEC *)"
 0x005b37d0 , _NuVecAdd                                                      , 37    , "void __cdecl (NUVEC *, NUVEC *, NUVEC *)"
 0x005b3800 , _NuVecSub                                                      , 37    , "void __cdecl (NUVEC *, NUVEC *, NUVEC *)"
@@ -3095,9 +3126,21 @@ address    , symbol                                                         , si
 0x005b3cf0 , _NuVecXZDistSqr                                                , 133   , "f32 __cdecl (NUVEC *v0, NUVEC *v1, NUVEC *delta)"
 0x005b3d80 , _NuVecLerp                                                     , 61    , "void __cdecl (NUVEC *, NUVEC *, NUVEC *, f32)"
 0x5b3dc0,_NuVec4Add,46,"void __cdecl(NUVEC4*,NUVEC4*,NUVEC4*)"
+0x5b3df0,_NuVec4Dot,45,"f32 __cdecl (NUVEC4 *v0, NUVEC4 *v1)"
 0x005b3e20,_NuVec4Scale,45,"void __cdecl(NUVEC4 *, NUVEC4 *, f32)"
+0x5b3e50,_NuVec4ScaleAccum,58,"void __cdecl (NUVEC4 *out, NUVEC4 *v, f32 scale)"
+0x5b3e90,_NuVec4Sub,46,"void __cdecl (NUVEC4 *out, NUVEC4 *a, NUVEC4 *b)"
 0x005b3ec0 , _NuVec4MtxTransform                                            , 143   , "void __cdecl (NUVEC4 *, NUVEC *, NUMTX *)"
 0x5b3f50,_NuVec4MtxTransformH,163,"void __cdecl(NUVEC4*,NUVEC4*,NUMTX*)"
+0x5b4000,_NuVec4Max,117,"void __cdecl (NUVEC4 *out, NUVEC4 *a, NUVEC4 *b)"
+0x5b4080,_NuVec4Min,117,"void __cdecl (NUVEC4 *out, NUVEC4 *a, NUVEC4 *b)"
+0x5b4100,_NuVec4Mag,56,f32 __cdecl (NUVEC4 *v)
+0x5b4140,_NuVec4MagSqr,44,f32 __cdecl (NUVEC4 *v)
+0x5b4170,_NuVec4Lerp,75,"void __cdecl (NUVEC4 *out, NUVEC4 *a, NUVEC4 *b, f32 t)"
+0x5b41c0,_NuFloatToHalf,76,i16 __cdecl (f32 value)
+0x5b4210,_NuHalfToFloat,66,f32 __cdecl (i16 value)
+0x5b4260,_NuVec4ToNuHalfVec4,296,"void __cdecl (NUVEC4 *v, NUHALFVEC4 *out)"
+0x5b4390,_NuHalfVec4ToNuVec4,302,"void __cdecl (NUHALFVEC4 *v, NUVEC4 *out)"
 0x5b44c0,_VisibilityZeroMatrixPc,21,
 0x005b44e0 , _NuMtxSetIdentity                                              , 21    , void __cdecl (NUMTX *)
 0x005b4500 , _NuMtxSetTranslation                                           , 68    , "void __cdecl (NUMTX *, NUVEC *)"
@@ -3110,16 +3153,21 @@ address    , symbol                                                         , si
 0x005b4900 , _NuMtxTranslate                                                , 35    , "void __cdecl (NUMTX *, NUVEC *)"
 0x005b4930 , _NuMtxTranslateNeg                                             , 35    , "void __cdecl (NUMTX *, NUVEC *)"
 0x005b4960 , _NuMtxPreTranslate                                             , 89    , "void __cdecl (NUMTX *, NUVEC *)"
+0x5b49c0,_NuMtxPreTranslateX,45,"void __cdecl (NUMTX *m, f32 tx)"
+0x5b49f0,_NuMtxPreTranslateNeg,95,"void __cdecl (NUMTX *m, NUVEC *t)"
 0x005b4a50 , _NuMtxScale                                                    , 111   , "void __cdecl (NUMTX *, NUVEC *)"
 0x005b4ac0 , _NuMtxScaleU                                                   , 105   , "void __cdecl (NUMTX *, f32)"
 0x005b4b30 , _NuMtxPreScaleU                                                , 81    , "void __cdecl (NUMTX *, f32)"
 0x005b4b90 , _NuMtxGetScale                                                 , 149   , "NUVEC *__cdecl (NUVEC *, NUMTX *)"
 0x005b4c30 , _NuMtxPreScale                                                 , 85    , "void __cdecl (NUMTX *, NUVEC *)"
 0x005b4c90 , _NuMtxPreScaleX                                                , 33    , "void __cdecl (NUMTX *, f32)"
+0x5b4cc0,_NuMtxPreSkewYX,44,"void __cdecl (NUMTX *Mtx, f32 SkewVal)"
 0x005b4cf0 , _NuMtxRotateX                                                  , 224   , "void __cdecl (NUMTX *, NUANG)"
 0x005b4dd0 , _NuMtxPreRotateX                                               , 191   , "void __cdecl (NUMTX *, NUANG)"
+0x5b4e90,_NuMtxPreRotateY180X,215,"void __cdecl (NUMTX *m, NUANG a)"
 0x005b4f70 , _NuMtxRotateY                                                  , 226   , "void __cdecl (NUMTX *, NUANG)"
 0x005b5060 , _NuMtxPreRotateY                                               , 187   , "void __cdecl (NUMTX *, NUANG)"
+0x5b5120,_NuMtxPreRotateY180,51,void __cdecl (NUMTX *m)
 0x005b5160 , _NuMtxRotateZ                                                  , 222   , "void __cdecl (NUMTX *, NUANG)"
 0x005b5240 , _NuMtxPreRotateZ                                               , 189   , "void __cdecl (NUMTX *, NUANG)"
 0x005b5300 , _NuMtxSetRotateXYZ                                             , 304   , "void __cdecl (NUMTX *, NUANGVEC *)"
@@ -3153,11 +3201,16 @@ address    , symbol                                                         , si
 0x5b6f50,_NuMtxDet3,67,f32 __cdecl (NUMTX *)
 0x5b6fa0,_NuMtxCompare,71,"i32 __cdecl (NUMTX *, NUMTX *)"
 0x005b6ff0 , _NuMtxSSE                                                      , 391   , "f32 __cdecl (NUMTX *, NUMTX *)"
+0x5b7180,_NuMtxTruncate24Bit,198,"void __cdecl (NUMTX *, NUMTX *)"
+0x5b7250,_NuMtx24BitCorrection,316,"void __cdecl (NUMTX *correction, NUMTX *matrix)"
 0x005b7390 , _NuMtxLookAtD3D                                                , 400   , "void __cdecl (NUMTX *matrix, NUVEC *eye, NUVEC *target, NUVEC *up)"
+0x5b7520,_NuMtxLookAtInverseD3D,334,"void __cdecl (NUMTX *mtx, NUVEC *eye, NUVEC *center, NUVEC *up)"
 0x005b7670 , _NuMtxSetPerspectiveD3D                                        , 186   , "void __cdecl (NUMTX *matrix, f32 fov, f32 aspect, f32 near_plane, f32 far_plane)"
+0x5b7730,_NuMtxSetPerspectiveBlend,192,"void __cdecl (NUMTX *mtx, f32 fovy, f32 aspect, f32 zNear, f32 zFar)"
 0x005b7890 , _NuMtxSetFrustumD3D                                            , 158   , "void __cdecl (NUMTX *matrix, f32 left, f32 right, f32 bottom, f32 top, f32 near_plane, f32 far_plane)"
 0x005b79d0 , _NuMtxSetFrustumBlend                                          , 160   , "void __cdecl (NUMTX *matrix, f32 left, f32 right, f32 bottom, f32 top, f32 near_plane, f32 far_plane)"
 0x005b7a70 , _NuMtxGetFrustumD3D                                            , 172   , "void __cdecl (NUMTX *matrix, f32 *left, f32 *right, f32 *bottom, f32 *top, f32 *near_plane, f32 *far_plane)"
+0x5b7b20,_NuMtxGetFrustumBlend,178,"void __cdecl (NUMTX *mtx, f32 *l, f32 *r, f32 *b, f32 *t, f32 *n, f32 *f)"
 0x005b7c20 , _NuFsign                                                       , 36    , f32 __cdecl (f32)
 0x005b7cc0 , _NuFloor                                                       , 18    , f32 __cdecl (f32)
 0x005b7d30 , _NuFmod                                                        , 36    , "f32 __cdecl (f32, f32)"
@@ -3308,6 +3361,8 @@ address    , symbol                                                         , si
 0x005ceee0,_PCBuildLegacySkeletalJoint,1400,
 0x005cf510 , _NuSpecialFindDisplay                                          , 149   , "i32 __cdecl (NUGSCN *, NUSPECIALHANDLE *, char *, i32)"
 0x005cf5b0 , _NuSpecialFind                                                 , 157   , "i32 __cdecl (NUGSCN *, NUSPECIALHANDLE *, char *, i32)"
+0x5cf810,?NuSpecialFindMultiDisplayPc@@YAHPAUNUGSCN_s@@PAUnuspecial_handle_s@@PADHH@Z,144,
+0x5cf8a0,_NuSpecialFindMulti,210,
 0x005cf980 , _NuSpecialTestAnim                                             , 57    , i32 __cdecl (NUSPECIALHANDLE *)
 0x005cf9c0 , _NuSpecialGetPos                                               , 23    , NUVEC *__cdecl (NUSPECIALHANDLE *)
 0x005cf9e0 , _NuSpecialGetDrawPos                                           , 58    , NUVEC *__cdecl (NUSPECIALHANDLE *)
@@ -3521,6 +3576,8 @@ address    , symbol                                                         , si
 0x5daef0,_NuVpGetSize2,63,"void __cdecl(f32 *, f32 *)"
 0x005db100, _NuVpSetIdentityPc, 25,
 0x5db310,_RenderPostViewportResetPc,78,void __cdecl(void)
+0x005db880,_NuRndrRect2di,246,"void __cdecl(i32,i32,i32,i32,i32,NUMTL *)"
+0x005dba30,_NuRndrRectUV2di,260,"void __cdecl(i32,i32,i32,i32,f32,f32,f32,f32,i32,NUMTL *)"
 0x005dbb40,_NuRndrLineStrip2d,175,"i32 __cdecl(NURND_VERTEX2D_PC *,NUMTL *,i32)"
 0x5dbed0,_NuRndrLine3d,222,"i32 __cdecl(NURND_VERTEX3D_PC *,NUMTL *,NUMTX *)"
 0x005dc050,_NuRndrLine3dDbg,144,"void __cdecl(f32,f32,f32,f32,f32,f32,i32)"
@@ -5928,6 +5985,17 @@ address    , symbol                                                         , si
 0x007517b8 , __real@40000000                                                , 4     , const f32
 0x007517c0 , _NuTimeBarTop                                                  , 8     , const f64
 0x007517c0 , __real@3fa99999a0000000                                         , 8     , const f64
+0x7517d8,??_C@_0O@IFBKLDMO@DONT_JUMP_NOW?$AA@,14,const char[]
+0x7517e8,??_C@_08CJGKPFFO@JUMP_NOW?$AA@,9,const char[]
+0x7517f4,??_C@_08OOPLBCBC@OBSTACLE?$AA@,9,const char[]
+0x751800,??_C@_0L@CIDFPDMH@FORBADDIES?$AA@,11,const char[]
+0x75180c,??_C@_0L@FKCNHGDN@FORGOODIES?$AA@,11,const char[]
+0x751818,??_C@_09JLFPGBBN@HOVERTUBE?$AA@,10,const char[]
+0x751824,??_C@_08GECCNGAK@USEHATCH?$AA@,9,const char[]
+0x751830,??_C@_07MOFLMFLI@GRAPPLE?$AA@,8,const char[]
+0x751838,??_C@_08EIOAMJHA@BATGLIDE?$AA@,9,const char[]
+0x751844,??_C@_0L@CBINNIFB@COMBATROLL?$AA@,11,const char[]
+0x751850,??_C@_04BFLEPEFN@JUMP?$AA@,5,const char[]
 0x751858,??_C@_0N@EBMKNCBE@wpn_bib_stab?$AA@,13,const char[13]
 0x751880,??_C@_0BB@IJKIODOI@PodX_TuskenBlast?$AA@,17,const char[17]
 0x7518a0,??_C@_0BA@LKLLKNOA@imp_proton_torp?$AA@,16,const char[16]
@@ -6585,6 +6653,7 @@ address    , symbol                                                         , si
 0x007577d4 , _AILocatorIndexedFormat                                        , 6     , const char[6]
 0x7577dc,_AITransferLiteral7577dc,8,const char[8]
 0x007577e4 , _AIGameNearestName                                             , 8     , const char[8]
+0x7577e4,??_C@_07NHJEPDMH@nearest?$AA@,8,const char[]
 0x007577ec , _AIActionIndexedName                                           , 8     , const char[8]
 0x007577f4 , _AIActionPersonalName                                          , 9     , const char[9]
 0x757800,??_C@_05DFCJAACA@name?$DN?$AA@,,const char[6]
@@ -6623,6 +6692,7 @@ address    , symbol                                                         , si
 0x00757920 , _AICombatDroidName                                             , 15    , const char[15]
 0x00757930 , _AIGameShootName                                               , 6     , const char[6]
 0x00757938 , _AIGameBlockName                                               , 6     , const char[6]
+0x757938,??_C@_05DDIIKNEP@BLOCK?$AA@,6,const char[]
 0x00757940 , _AIGamePunchSpecialName                                        , 14    , const char[14]
 0x00757950 , _AIGamePunchBehindName                                         , 13    , const char[13]
 0x00757960 , _AIGamePunch3Name                                              , 8     , const char[8]
@@ -6633,7 +6703,9 @@ address    , symbol                                                         , si
 0x00757994 , _AIPathGoalRangeName                                           , 10    , const char[10]
 0x007579a0 , __real@461c3f9a                                                , 4     , const f32
 0x007579a4 , _AICombatInstantName                                           , 8     , const char[8]
+0x7579a4,??_C@_07IFJEFPGA@instant?$AA@,8,const char[]
 0x007579ac , _AIGameFireIntervalName                                        , 13    , const char[13]
+0x7579ac,??_C@_0N@ECECOIJF@fireinterval?$AA@,13,const char[]
 0x7579bc,??_C@_06EPAGOIP@circle?$AA@,7,char[7]
 0x007579bc , _AICombatCircleName                                            , 7     , const char[7]
 0x007579c4 , _AICombatNoFireInMiniCutName                                   , 19    , const char[19]
@@ -6642,6 +6714,7 @@ address    , symbol                                                         , si
 0x007579ec , _AICombatMinimumRangeName                                      , 10    , const char[10]
 0x007579f8 , _AIGameFireRangeName                                           , 10    , const char[10]
 0x00757a04 , _AICombatFrontArcOnlyName                                      , 13    , const char[13]
+0x757a14,??_C@_0L@EIHHCCKL@predictive?$AA@,11,const char[]
 0x757a20,_AITransferLiteral757a20,8,const char[8]
 0x00757a28 , _AIGameEndName                                                 , 5     , const char[5]
 0x00757a30 , _AIGameStartName                                               , 7     , const char[7]
@@ -6669,6 +6742,9 @@ address    , symbol                                                         , si
 0x757c20,_AITransferLiteral757c20,12,const char[12]
 0x757c38,_PodRaceIncrementKeywordPc,,char[11]
 0x00757c44 , _AIAnimSpeedValueName                                          ,       ,
+0x757c4c,??_C@_03KIJPOJDM@ix?$DN?$AA@,4,const char[]
+0x757c50,??_C@_03BDIFNDIL@to?$DN?$AA@,4,const char[]
+0x757c54,??_C@_05FKCAPGCM@from?$DN?$AA@,6,const char[]
 0x757c5c,_AITransferLiteral757c5c,4,const char[4]
 0x757c60,_AITransferLiteral757c60,4,const char[4]
 0x757c64,_AITransferLiteral757c64,4,const char[4]
@@ -6684,9 +6760,19 @@ address    , symbol                                                         , si
 0x757cd0,_AITransferLiteral757cd0,6,const char[6]
 0x757cd8,_AITransferLiteral757cd8,5,const char[5]
 0x00757cf4 , _AIActionIDName                                                , 3     , const char[3]
+0x757cf8,??_C@_0N@HBCFLCHB@SingleSwitch?$AA@,13,const char[]
+0x757d08,??_C@_0L@JENDBCPD@min_speed?$DN?$AA@,11,const char[]
+0x757d14,??_C@_08EDGJCMOO@Category?$AA@,9,const char[]
+0x757d20,??_C@_0BF@FNCBDGIL@NO_DESTINATION_CHECK?$AA@,21,const char[]
+0x757d38,??_C@_0BD@IGGPPCDP@REQUIRESPERMISSION?$AA@,19,const char[]
+0x757d4c,??_C@_07BOMCBDMH@BIGJUMP?$AA@,8,const char[]
 0x00757d6c , _AIActionToName                                                , 3     , const char[3]
 0x00757df0 , _CompleteLevelCutscenePrefix                                   ,       ,
 0x00757e18 , _AIActionBothWaysName                                          , 9     , const char[9]
+0x757e18,??_C@_08JHCFMDI@bothways?$AA@,9,const char[]
+0x757e34,??_C@_09EKHDEEGC@pathname?$DN?$AA@,10,const char[]
+0x757e4c,??_C@_08EFLEDCEA@grapple?$DN?$AA@,9,const char[]
+0x757e58,??_C@_0N@LIODCHEB@jump_off_dy?$DN?$AA@,13,const char[]
 0x757e68,_AITransferLiteral757e68,5,const char[5]
 0x757e70,_AITransferLiteral757e70,15,const char[15]
 0x00757e80 , _AIPathFaceName                                                , 5     , const char[5]
@@ -6756,7 +6842,10 @@ address    , symbol                                                         , si
 0x7581a0,_AITransferLiteral7581a0,8,const char[8]
 0x007581a8 , _AIPathLocatorName                                             , 9     , const char[9]
 0x007581b4 , _AIActionMaxTimeName                                           , 8     , const char[8]
+0x7581b4,??_C@_07JHKGEBG@maxtime?$AA@,8,const char[]
 0x007581bc , _AIActionMinTimeName                                           , 8     , const char[8]
+0x7581bc,??_C@_07OPBKMLPH@mintime?$AA@,8,const char[]
+0x7581c4,??_C@_0P@EOPIABCA@look_at_camera?$AA@,15,const char[]
 0x7581d4,_AITransferLiteral7581d4,10,const char[10]
 0x7581e0,_AITransferLiteral7581e0,9,const char[9]
 0x7581ec,_AITransferLiteral7581ec,9,const char[9]
@@ -6768,6 +6857,7 @@ address    , symbol                                                         , si
 0x00758244 , _AIGameRandomTurnDirectionName                                 , 14    , const char[14]
 0x00758254 , _AIGameMaximumTurnName                                         , 9     , const char[9]
 0x00758260 , _AIGameMinimumTurnName                                         , 9     , const char[9]
+0x75826c,??_C@_06DBELHOCH@lever?$DN?$AA@,7,const char[]
 0x758274,_GizActionLiteral758274,8,const char[]
 0x75827c,_GizActionLiteral75827c,4,const char[]
 0x758280   , ??_C@_07PAIKCKMF@locator?$AA@                                  , 8     , const char[8]
@@ -7149,6 +7239,10 @@ address    , symbol                                                         , si
 0x75985c,??_C@_0L@OKLIAMIE@lock_4_off?$AA@,,const char[11]
 0x759868,??_C@_0O@OIAOOABH@mini_cam_e1_1?$AA@,,const char[14]
 0x759878,??_C@_0O@NJOLFMEP@conveyor_test?$AA@,,const char[14]
+0x759890,??_C@_09BEPJJMOL@WHIPSWING?$AA@,10,const char[]
+0x75989c,??_C@_0O@NIMHMOA@NO_DEST_CHECK?$AA@,14,const char[]
+0x7598ac,??_C@_05GODLHHF@CLIMB?$AA@,6,const char[]
+0x7598b4,??_C@_07LAGNLOHJ@DBLJUMP?$AA@,8,const char[]
 0x7598d0,__real@c479c000,,
 0x7598d4,__real@4479c000,,
 0x7598d8   , _PCContextName_Ledge                                           , 6     , const char [6]
@@ -7849,6 +7943,8 @@ address    , symbol                                                         , si
 0x75bdb0,__real@bec00000,4,const f32
 0x75bdb4,??_C@_09PPJPILBG@WhipSwish?$AA@,10,compiler literal
 0x0075bdc0 , _SaberSparksName                                               , 12    , const char [12]
+0x75bdcc,__real@3c008081,4,f32
+0x75bdd0,__real@3b808081,4,f32
 0x0075bdec , __real@3a83126f                                                , 4     , const f32
 0x75bdf0,??_C@_0L@GAFGMFNG@Jawa_Dizzy?$AA@,11,const char[11]
 0x75bdfc,??_C@_0BB@MDDPNKNA@ForceChokeCrunch?$AA@,17,const char[17]
@@ -8069,6 +8165,16 @@ address    , symbol                                                         , si
 0x75d168,__real@3ff5555560000000,8,const f64
 0x0075d170 , __real@400e666660000000                                        , 8     , const f64
 0x0075d178 , __real@40b9999a                                                , 4     , const f32
+0x75d1a4,??_C@_0M@BIGODEPC@FULLTERRAIN?$AA@,12,const char[]
+0x75d1b0,??_C@_0L@GLGOADNO@DONTTOGGLE?$AA@,11,const char[]
+0x75d1bc,??_C@_08FIHPBMCF@BLOCKAGE?$AA@,9,const char[]
+0x75d1c8,??_C@_05EGOIIAAK@PARTY?$AA@,6,const char[]
+0x75d1d0,??_C@_07NEGAAKAH@VEHICLE?$AA@,8,const char[]
+0x75d1d8,??_C@_08PPGMBP@TAKEOVER?$AA@,9,const char[]
+0x75d1e4,??_C@_05KPEFELEB@SWAMP?$AA@,6,const char[]
+0x75d1ec,??_C@_0L@LKENPPLN@JARJARJUMP?$AA@,11,const char[]
+0x75d1f8,??_C@_05KNAKPBFI@ZIPUP?$AA@,6,const char[]
+0x75d200,??_C@_09KAKHFHLD@R2D2GLIDE?$AA@,10,const char[]
 0x75d20c,_SuitMetadataName0075d20cPc,,char[14]
 0x75d21c,_SuitMetadataName0075d21cPc,,char[13]
 0x75d22c,_SuitMetadataName0075d22cPc,,char[17]
@@ -8221,8 +8327,8 @@ address    , symbol                                                         , si
 0x75eb10,??_C@_04HCJEIKPL@?4an3?$AA@,5,const char[5]
 0x75eb10,_NuFileExt_an3_PC,5,const char[5]
 0x75eb18,_NuFileExt_pam_PC,5,const char[5]
-0x75eb20,_NuFileExt_mib_PC,5,const char[5]
 0x75eb20,??_C@_04JOKNEPND@?4mib?$AA@,,const char[5]
+0x75eb20,_NuFileExt_mib_PC,5,const char[5]
 0x75eb28,_NuFileExt_msf_PC,5,const char[5]
 0x75eb30,_NuFileExt_ps3_tex_PC,9,const char[9]
 0x75eb3c,_NuFileExt_ps3_gsc_PC,9,const char[9]
@@ -11762,6 +11868,7 @@ address    , symbol                                                         , si
 0x7f18d4,_id_CANTINAALIEN,,i16
 0x7f18d8,_id_CLOUDCITYCITIZEN,,i16
 0x007f18dc , _id_GEONOSIAN                                                  , 2     , i16
+0x7f18e0,_id_WATTO,,i16
 007f18e4,_PermanentWeirdo1IdPc,,i16
 007f18e8,_PermanentWeirdo2IdPc,,i16
 0x007f18ec , _id_CHEWBACCA                                                  , 2     , i16
@@ -11944,6 +12051,7 @@ address    , symbol                                                         , si
 0x7f3e20,_CheatC3poBitsEnabledPc,,u8
 0x7f3ec0,_CheatPooCoinsEnabledPc,,u8
 0x7f4140,_TractorBeamEnabledPc,,u8
+0x7f41a0,_DroidCheat32EnabledPc,,u8
 0x007f4358 , _LevelSplinesTable                                             , 4     , LEVELSPLINE_PC *
 0x007f5c74 , __real@42de0000                                                , 4     , const f32
 0x007f5cf8 , _PodAvalanchePeakPos                                           , 12    , NUVEC
@@ -12086,6 +12194,10 @@ address    , symbol                                                         , si
 0x7fb09c   , _ForcePush_Speed                                               , 4     , f32
 0x7fb0a0,_SHIELDFLICKERTIME,,f32
 0x7fb0a4,_PlayerBackwardMomentumScalePc,,f32
+0x7fb0a8,_testlaser_sizew,,f32
+0x7fb0ac,_testlaser_sizel,,f32
+0x7fb0b0,_testlaser_sizewab,,f32
+0x7fb0b4,_testlaser_endw,,f32
 0x7fb0b8,_PlayerSecondBackwardMomentumScalePc,,f32
 0x007fb0bc , _VEHICLE_TUBE_UPSPEED                                          , 4     , f32
 0x007fb0c0 , _PODSPRINT_SLOWSPEED                                           , 4     , f32
@@ -12193,6 +12305,9 @@ address    , symbol                                                         , si
 0x7fd1d0,_TechnoRegistrationNamePc,,const char *
 0x7fd1e4,_TeleportConfigDataPc,,
 0x7fd2b4,_TextCrawlLswPc,,struct text_crawl_view_pc_s
+0x007fd2c8,_Text_TableMenu,,TEXTENTRY[167]
+0x007fd800,_Text_TableGame,,TEXTENTRY[347]
+0x007fe2d8,_Text_TableMain,,TEXTENTRY[706]
 0x007ff950 , _Game_LanguageList                                             , 56    , LANGUAGEDATA[7]
 0x7ffa84,_TorpedoStealTimerPc,,f32
 0x7ffa88,_TorpedoStealRangePc,,f32
@@ -13624,6 +13739,7 @@ address    , symbol                                                         , si
 0x87b8a0,_MissionsAlphaPc,,f32
 0x87b8a4,_MissionMenuSelectionPc,,i32
 0x0087b8a8 , _avg_currentspeed_mul                                          , 4     , f32
+0x87b8ac,_PlayerOpponent_Range2,,f32
 0x0087b8b0,_ForceBackRadiusPc,,f32
 0x0087b8b4,_ForceBackRadius2Pc,,f32
 0x87b8b8,_ComboOpponent_Behind,,i32
@@ -13632,6 +13748,7 @@ address    , symbol                                                         , si
 0x0087b8d8 , _VehicleAreaRememberSpeed                                      , 4     , f32
 0x0087b8dc , _IDLESPEEDINNARROWSOCKSONLY                                    , 4     , i32
 0x0087b8e0 , _SaberSparksTimer                                              , 4     , f32
+0x87b8e4,_testlaser_type,,i32
 0x0087b8e8,_ForceBackObjPc,,GAMEOBJECT *
 0x0087b8ec,_ForceBackPosPc,,NUVEC *
 0x0087b8f0,_ForceBackTypePc,,i32
@@ -13691,26 +13808,167 @@ address    , symbol                                                         , si
 0x008806d0 , _tITALIAN                                                      , 2     , i16
 0x008806d4 , _tSPANISH                                                      , 2     , i16
 0x008806d8 , _tDANISH                                                       , 2     , i16
+0x008806dc,_TextIdPc8806dc,,i16
+0x008806e0,_TextIdPc8806e0,,i16
+0x008806e4,_TextIdPc8806e4,,i16
+0x008806e8,_TextIdPc8806e8,,i16
+0x008806ec,_TextIdPc8806ec,,i16
+0x008806f4,_TextIdPc8806f4,,i16
+0x008806f8,_TextIdPc8806f8,,i16
+0x008806fc,_TextIdPc8806fc,,i16
+0x00880700,_TextIdPc880700,,i16
+0x00880704,_TextIdPc880704,,i16
+0x00880708,_TextIdPc880708,,i16
+0x0088070c,_TextIdPc88070c,,i16
+0x00880710,_TextIdPc880710,,i16
+0x00880714,_TextIdPc880714,,i16
+0x00880718,_TextIdPc880718,,i16
+0x0088071c,_TextIdPc88071c,,i16
+0x00880720,_TextIdPc880720,,i16
+0x00880724,_TextIdPc880724,,i16
+0x00880728,_TextIdPc880728,,i16
+0x0088072c,_TextIdPc88072c,,i16
+0x00880730,_TextIdPc880730,,i16
+0x00880734,_TextIdPc880734,,i16
+0x00880738,_TextIdPc880738,,i16
+0x0088073c,_TextIdPc88073c,,i16
+0x00880740,_TextIdPc880740,,i16
+0x00880744,_TextIdPc880744,,i16
+0x00880748,_TextIdPc880748,,i16
+0x0088074c,_TextIdPc88074c,,i16
+0x00880750,_TextIdPc880750,,i16
+0x00880754,_TextIdPc880754,,i16
+0x00880758,_TextIdPc880758,,i16
+0x0088075c,_TextIdPc88075c,,i16
+0x00880760,_TextIdPc880760,,i16
+0x00880764,_TextIdPc880764,,i16
+0x00880768,_TextIdPc880768,,i16
+0x0088076c,_TextIdPc88076c,,i16
+0x00880770,_TextIdPc880770,,i16
+0x00880774,_TextIdPc880774,,i16
+0x00880778,_TextIdPc880778,,i16
+0x0088077c,_TextIdPc88077c,,i16
+0x00880780,_TextIdPc880780,,i16
+0x00880784,_TextIdPc880784,,i16
+0x00880788,_TextIdPc880788,,i16
+0x0088078c,_TextIdPc88078c,,i16
+0x00880790,_TextIdPc880790,,i16
+0x00880794,_TextIdPc880794,,i16
+0x00880798,_TextIdPc880798,,i16
+0x0088079c,_TextIdPc88079c,,i16
+0x008807a0,_TextIdPc8807a0,,i16
+0x008807a4,_TextIdPc8807a4,,i16
 008807a8,_PermanentBountyTitleIdPc,,i16
 0x008807ac , _PCArcadeModeText0                                             , 2     , i16
 0x008807b0 , _PCArcadeModeText1                                             , 2     , i16
 0x008807b4 , _PCArcadeModeText2                                             , 2     , i16
+0x008807b8,_TextIdPc8807b8,,i16
+0x008807bc,_TextIdPc8807bc,,i16
+0x008807c0,_TextIdPc8807c0,,i16
+0x008807c4,_TextIdPc8807c4,,i16
+0x008807c8,_TextIdPc8807c8,,i16
+0x008807cc,_TextIdPc8807cc,,i16
+0x008807d0,_TextIdPc8807d0,,i16
+0x008807d4,_TextIdPc8807d4,,i16
 008807d8,_PermanentAllTitleIdPc,,i16
 008807dc,_PermanentBlasterTitleIdPc,,i16
 0x008807e0 , _PCArcadeModeText                                              , 2     , i16
+0x008807e4,_TextIdPc8807e4,,i16
+0x008807e8,_TextIdPc8807e8,,i16
+0x008807ec,_TextIdPc8807ec,,i16
+0x008807f0,_TextIdPc8807f0,,i16
+0x008807f4,_TextIdPc8807f4,,i16
 0x008807f8 , _PCArcadePlayText                                              , 2     , i16
+0x008807fc,_TextIdPc8807fc,,i16
+0x00880800,_TextIdPc880800,,i16
 0x880804,_tCLIPi,,i16
 0x880808,_tINTRO,,i16
 0x88080c,_tMIDTRO,,i16
 0x880810,_tOUTRO,,i16
 0x880814,_tENDING,,i16
+0x00880818,_TextIdPc880818,,i16
+0x0088081c,_TextIdPc88081c,,i16
+0x00880820,_TextIdPc880820,,i16
+0x00880824,_TextIdPc880824,,i16
+0x00880828,_TextIdPc880828,,i16
+0x0088082c,_TextIdPc88082c,,i16
+0x00880830,_TextIdPc880830,,i16
+0x00880834,_TextIdPc880834,,i16
+0x00880838,_TextIdPc880838,,i16
+0x0088083c,_TextIdPc88083c,,i16
+0x00880840,_TextIdPc880840,,i16
+0x00880844,_TextIdPc880844,,i16
+0x00880848,_TextIdPc880848,,i16
+0x0088084c,_TextIdPc88084c,,i16
+0x00880850,_TextIdPc880850,,i16
+0x00880854,_TextIdPc880854,,i16
+0x00880858,_TextIdPc880858,,i16
+0x0088085c,_TextIdPc88085c,,i16
+0x00880860,_TextIdPc880860,,i16
+0x00880864,_TextIdPc880864,,i16
+0x00880868,_TextIdPc880868,,i16
+0x0088086c,_TextIdPc88086c,,i16
+0x00880870,_TextIdPc880870,,i16
+0x00880874,_TextIdPc880874,,i16
 0x00880878 , _tON                                                           , 2     , i16
 0x0088087c , _tOFF                                                          , 2     , i16
+0x00880880,_TextIdPc880880,,i16
 0x00880884 , _tACCEPT                                                       , 2     , i16
+0x00880888,_TextIdPc880888,,i16
 0x0088088c , _tBACK                                                         , 2     , i16
+0x00880890,_TextIdPc880890,,i16
+0x00880894,_TextIdPc880894,,i16
+0x00880898,_TextIdPc880898,,i16
+0x0088089c,_TextIdPc88089c,,i16
+0x008808a0,_TextIdPc8808a0,,i16
+0x008808a4,_TextIdPc8808a4,,i16
+0x008808a8,_TextIdPc8808a8,,i16
+0x008808ac,_TextIdPc8808ac,,i16
+0x008808b0,_TextIdPc8808b0,,i16
+0x008808b4,_TextIdPc8808b4,,i16
+0x008808b8,_TextIdPc8808b8,,i16
+0x008808bc,_TextIdPc8808bc,,i16
+0x008808c0,_TextIdPc8808c0,,i16
+0x008808c4,_TextIdPc8808c4,,i16
+0x008808c8,_TextIdPc8808c8,,i16
+0x008808cc,_TextIdPc8808cc,,i16
+0x008808d0,_TextIdPc8808d0,,i16
+0x008808d4,_TextIdPc8808d4,,i16
+0x008808d8,_TextIdPc8808d8,,i16
 0x008808dc , _PCArcadeLevelText                                             , 2     , i16
+0x008808e0,_TextIdPc8808e0,,i16
+0x008808e4,_TextIdPc8808e4,,i16
+0x008808e8,_TextIdPc8808e8,,i16
+0x008808ec,_TextIdPc8808ec,,i16
+0x008808f0,_TextIdPc8808f0,,i16
+0x008808f4,_TextIdPc8808f4,,i16
+0x008808f8,_TextIdPc8808f8,,i16
+0x008808fc,_TextIdPc8808fc,,i16
+0x00880900,_TextIdPc880900,,i16
+0x00880904,_TextIdPc880904,,i16
+0x00880908,_TextIdPc880908,,i16
+0x0088090c,_TextIdPc88090c,,i16
+0x00880910,_TextIdPc880910,,i16
+0x00880914,_TextIdPc880914,,i16
 0x00880918 , _tAUDIOVOLUME                                                  , 2     , i16
+0x0088091c,_TextIdPc88091c,,i16
+0x00880920,_TextIdPc880920,,i16
+0x00880924,_TextIdPc880924,,i16
+0x00880928,_TextIdPc880928,,i16
+0x0088092c,_TextIdPc88092c,,i16
+0x00880930,_TextIdPc880930,,i16
+0x00880934,_TextIdPc880934,,i16
+0x00880938,_TextIdPc880938,,i16
 0x0088093c , _tMUSIC                                                        , 2     , i16
+0x00880940,_TextIdPc880940,,i16
+0x00880944,_TextIdPc880944,,i16
+0x00880948,_TextIdPc880948,,i16
+0x0088094c,_TextIdPc88094c,,i16
+0x00880950,_TextIdPc880950,,i16
+0x00880954,_TextIdPc880954,,i16
+0x00880958,_TextIdPc880958,,i16
+0x0088095c,_TextIdPc88095c,,i16
+0x00880960,_TextIdPc880960,,i16
 0x880964,_tBATMANSUIT,,i16
 0x880968,_tSHADOWSUIT,,i16
 0x88096c,_tGLIDESUIT,,i16
@@ -13721,11 +13979,539 @@ address    , symbol                                                         , si
 0x880980,_tTECHNOLOGYSUIT,,i16
 0x880984,_tMAGNETSUIT,,i16
 0x880988,_tATTRACTSUIT,,i16
+0x0088098c,_TextIdPc88098c,,i16
+0x00880990,_TextIdPc880990,,i16
+0x00880994,_TextIdPc880994,,i16
+0x00880998,_TextIdPc880998,,i16
+0x0088099c,_TextIdPc88099c,,i16
+0x008809a0,_TextIdPc8809a0,,i16
+0x008809a4,_TextIdPc8809a4,,i16
+0x008809a8,_TextIdPc8809a8,,i16
+0x008809ac,_TextIdPc8809ac,,i16
+0x008809b0,_TextIdPc8809b0,,i16
+0x008809b4,_TextIdPc8809b4,,i16
+0x008809b8,_TextIdPc8809b8,,i16
+0x008809bc,_TextIdPc8809bc,,i16
+0x008809c0,_TextIdPc8809c0,,i16
+0x008809c4,_TextIdPc8809c4,,i16
+0x008809c8,_TextIdPc8809c8,,i16
+0x008809cc,_TextIdPc8809cc,,i16
+0x008809d0,_TextIdPc8809d0,,i16
+0x008809d4,_TextIdPc8809d4,,i16
+0x008809d8,_TextIdPc8809d8,,i16
+0x008809dc,_TextIdPc8809dc,,i16
+0x008809e0,_TextIdPc8809e0,,i16
+0x008809e4,_TextIdPc8809e4,,i16
+0x008809e8,_TextIdPc8809e8,,i16
+0x008809ec,_TextIdPc8809ec,,i16
+0x008809f0,_TextIdPc8809f0,,i16
+0x008809f4,_TextIdPc8809f4,,i16
+0x008809f8,_TextIdPc8809f8,,i16
+0x008809fc,_TextIdPc8809fc,,i16
+0x00880a00,_TextIdPc880a00,,i16
+0x00880a04,_TextIdPc880a04,,i16
+0x00880a08,_TextIdPc880a08,,i16
+0x00880a0c,_TextIdPc880a0c,,i16
+0x00880a10,_TextIdPc880a10,,i16
+0x00880a14,_TextIdPc880a14,,i16
+0x00880a18,_TextIdPc880a18,,i16
+0x00880a1c,_TextIdPc880a1c,,i16
+0x00880a20,_TextIdPc880a20,,i16
+0x00880a24,_TextIdPc880a24,,i16
+0x00880a28,_TextIdPc880a28,,i16
+0x00880a2c,_TextIdPc880a2c,,i16
+0x00880a30,_TextIdPc880a30,,i16
+0x00880a34,_TextIdPc880a34,,i16
+0x00880a38,_TextIdPc880a38,,i16
+0x00880a3c,_TextIdPc880a3c,,i16
+0x00880a40,_TextIdPc880a40,,i16
+0x00880a44,_TextIdPc880a44,,i16
+0x00880a48,_TextIdPc880a48,,i16
+0x00880a4c,_TextIdPc880a4c,,i16
+0x00880a50,_TextIdPc880a50,,i16
+0x00880a54,_TextIdPc880a54,,i16
+0x00880a58,_TextIdPc880a58,,i16
+0x00880a5c,_TextIdPc880a5c,,i16
+0x00880a60,_TextIdPc880a60,,i16
+0x00880a64,_TextIdPc880a64,,i16
+0x00880a68,_TextIdPc880a68,,i16
+0x00880a6c,_TextIdPc880a6c,,i16
+0x00880a70,_TextIdPc880a70,,i16
+0x00880a74,_TextIdPc880a74,,i16
+0x00880a78,_TextIdPc880a78,,i16
+0x00880a7c,_TextIdPc880a7c,,i16
+0x00880a80,_TextIdPc880a80,,i16
+0x00880a84,_TextIdPc880a84,,i16
+0x00880a88,_TextIdPc880a88,,i16
+0x00880a8c,_TextIdPc880a8c,,i16
+0x00880a90,_TextIdPc880a90,,i16
+0x00880a94,_TextIdPc880a94,,i16
+0x00880a98,_TextIdPc880a98,,i16
+0x00880a9c,_TextIdPc880a9c,,i16
+0x00880aa0,_TextIdPc880aa0,,i16
+0x00880aa4,_TextIdPc880aa4,,i16
+0x00880aa8,_TextIdPc880aa8,,i16
+0x00880aac,_TextIdPc880aac,,i16
+0x00880ab0,_TextIdPc880ab0,,i16
+0x00880ab4,_TextIdPc880ab4,,i16
+0x00880ab8,_TextIdPc880ab8,,i16
+0x00880abc,_TextIdPc880abc,,i16
+0x00880ac0,_TextIdPc880ac0,,i16
+0x00880ac4,_TextIdPc880ac4,,i16
+0x00880ac8,_TextIdPc880ac8,,i16
+0x00880acc,_TextIdPc880acc,,i16
+0x00880ad0,_TextIdPc880ad0,,i16
+0x00880ad4,_TextIdPc880ad4,,i16
+0x00880ad8,_TextIdPc880ad8,,i16
+0x00880adc,_TextIdPc880adc,,i16
+0x00880ae0,_TextIdPc880ae0,,i16
+0x00880ae4,_TextIdPc880ae4,,i16
+0x00880ae8,_TextIdPc880ae8,,i16
+0x00880aec,_TextIdPc880aec,,i16
+0x00880af0,_TextIdPc880af0,,i16
+0x00880af4,_TextIdPc880af4,,i16
+0x00880af8,_TextIdPc880af8,,i16
+0x00880afc,_TextIdPc880afc,,i16
+0x00880b00,_TextIdPc880b00,,i16
+0x00880b04,_TextIdPc880b04,,i16
+0x00880b08,_TextIdPc880b08,,i16
+0x00880b0c,_TextIdPc880b0c,,i16
+0x00880b10,_TextIdPc880b10,,i16
+0x00880b14,_TextIdPc880b14,,i16
+0x00880b18,_TextIdPc880b18,,i16
+0x00880b1c,_TextIdPc880b1c,,i16
+0x00880b20,_TextIdPc880b20,,i16
+0x00880b24,_TextIdPc880b24,,i16
+0x00880b28,_TextIdPc880b28,,i16
+0x00880b2c,_TextIdPc880b2c,,i16
+0x00880b30,_TextIdPc880b30,,i16
+0x00880b34,_TextIdPc880b34,,i16
+0x00880b38,_TextIdPc880b38,,i16
+0x00880b3c,_TextIdPc880b3c,,i16
+0x00880b40,_TextIdPc880b40,,i16
+0x00880b44,_TextIdPc880b44,,i16
+0x00880b48,_TextIdPc880b48,,i16
+0x00880b4c,_TextIdPc880b4c,,i16
+0x00880b50,_TextIdPc880b50,,i16
+0x00880b54,_TextIdPc880b54,,i16
+0x00880b58,_TextIdPc880b58,,i16
+0x00880b5c,_TextIdPc880b5c,,i16
+0x00880b60,_TextIdPc880b60,,i16
+0x00880b64,_TextIdPc880b64,,i16
+0x00880b68,_TextIdPc880b68,,i16
+0x00880b6c,_TextIdPc880b6c,,i16
+0x00880b70,_TextIdPc880b70,,i16
+0x00880b74,_TextIdPc880b74,,i16
+0x00880b78,_TextIdPc880b78,,i16
+0x00880b7c,_TextIdPc880b7c,,i16
+0x00880b80,_TextIdPc880b80,,i16
+0x00880b84,_TextIdPc880b84,,i16
+0x00880b88,_TextIdPc880b88,,i16
+0x00880b8c,_TextIdPc880b8c,,i16
+0x00880b90,_TextIdPc880b90,,i16
+0x00880b94,_TextIdPc880b94,,i16
+0x00880b98,_TextIdPc880b98,,i16
+0x00880b9c,_TextIdPc880b9c,,i16
+0x00880ba0,_TextIdPc880ba0,,i16
+0x00880ba4,_TextIdPc880ba4,,i16
+0x00880ba8,_TextIdPc880ba8,,i16
+0x00880bac,_TextIdPc880bac,,i16
+0x00880bb0,_TextIdPc880bb0,,i16
+0x00880bb4,_TextIdPc880bb4,,i16
+0x00880bb8,_TextIdPc880bb8,,i16
+0x00880bbc,_TextIdPc880bbc,,i16
+0x00880bc0,_TextIdPc880bc0,,i16
+0x00880bc4,_TextIdPc880bc4,,i16
+0x00880bc8,_TextIdPc880bc8,,i16
+0x00880bcc,_TextIdPc880bcc,,i16
+0x00880bd0,_TextIdPc880bd0,,i16
+0x00880bd4,_TextIdPc880bd4,,i16
+0x00880bd8,_TextIdPc880bd8,,i16
+0x00880bdc,_TextIdPc880bdc,,i16
+0x00880be0,_TextIdPc880be0,,i16
+0x00880be4,_TextIdPc880be4,,i16
+0x00880be8,_TextIdPc880be8,,i16
+0x00880bec,_TextIdPc880bec,,i16
+0x00880bf0,_TextIdPc880bf0,,i16
+0x00880bf4,_TextIdPc880bf4,,i16
+0x00880bf8,_TextIdPc880bf8,,i16
+0x00880bfc,_TextIdPc880bfc,,i16
+0x00880c00,_TextIdPc880c00,,i16
+0x00880c04,_TextIdPc880c04,,i16
+0x00880c08,_TextIdPc880c08,,i16
+0x00880c0c,_TextIdPc880c0c,,i16
+0x00880c10,_TextIdPc880c10,,i16
+0x00880c14,_TextIdPc880c14,,i16
+0x00880c18,_TextIdPc880c18,,i16
+0x00880c1c,_TextIdPc880c1c,,i16
+0x00880c20,_TextIdPc880c20,,i16
+0x00880c24,_TextIdPc880c24,,i16
+0x00880c34,_TextIdPc880c34,,i16
+0x00880c38,_TextIdPc880c38,,i16
+0x00880c3c,_TextIdPc880c3c,,i16
+0x00880c40,_TextIdPc880c40,,i16
+0x00880c44,_TextIdPc880c44,,i16
+0x00880c48,_TextIdPc880c48,,i16
+0x00880c4c,_TextIdPc880c4c,,i16
+0x00880c50,_TextIdPc880c50,,i16
+0x00880c54,_TextIdPc880c54,,i16
+0x00880c58,_TextIdPc880c58,,i16
+0x00880c5c,_TextIdPc880c5c,,i16
+0x00880c60,_TextIdPc880c60,,i16
+0x00880c64,_TextIdPc880c64,,i16
+0x00880c68,_TextIdPc880c68,,i16
+0x00880c6c,_TextIdPc880c6c,,i16
+0x00880c70,_TextIdPc880c70,,i16
+0x00880c74,_TextIdPc880c74,,i16
+0x00880c78,_TextIdPc880c78,,i16
+0x00880c7c,_TextIdPc880c7c,,i16
+0x00880c80,_TextIdPc880c80,,i16
+0x00880c84,_TextIdPc880c84,,i16
 0x880c88,_tTOUCHTOSTART,,i16
+0x00880c8c,_TextIdPc880c8c,,i16
+0x00880c90,_TextIdPc880c90,,i16
+0x00880c94,_TextIdPc880c94,,i16
+0x00880c98,_TextIdPc880c98,,i16
+0x00880c9c,_TextIdPc880c9c,,i16
+0x00880ca0,_TextIdPc880ca0,,i16
+0x00880ca4,_TextIdPc880ca4,,i16
+0x00880ca8,_TextIdPc880ca8,,i16
+0x00880cac,_TextIdPc880cac,,i16
+0x00880cb0,_TextIdPc880cb0,,i16
+0x00880cb4,_TextIdPc880cb4,,i16
+0x00880cb8,_TextIdPc880cb8,,i16
+0x00880cbc,_TextIdPc880cbc,,i16
+0x00880cc0,_TextIdPc880cc0,,i16
+0x00880cc4,_TextIdPc880cc4,,i16
+0x00880cc8,_TextIdPc880cc8,,i16
+0x00880ccc,_TextIdPc880ccc,,i16
+0x00880cd0,_TextIdPc880cd0,,i16
+0x00880cd4,_TextIdPc880cd4,,i16
+0x00880cd8,_TextIdPc880cd8,,i16
+0x00880cdc,_TextIdPc880cdc,,i16
+0x00880ce0,_TextIdPc880ce0,,i16
+0x00880ce4,_TextIdPc880ce4,,i16
+0x00880ce8,_TextIdPc880ce8,,i16
+0x00880cec,_TextIdPc880cec,,i16
+0x00880cf0,_TextIdPc880cf0,,i16
+0x00880cf4,_TextIdPc880cf4,,i16
+0x00880cf8,_TextIdPc880cf8,,i16
+0x00880cfc,_TextIdPc880cfc,,i16
+0x00880d00,_TextIdPc880d00,,i16
+0x00880d04,_TextIdPc880d04,,i16
+0x00880d08,_TextIdPc880d08,,i16
+0x00880d0c,_TextIdPc880d0c,,i16
+0x00880d10,_TextIdPc880d10,,i16
+0x00880d14,_TextIdPc880d14,,i16
+0x00880d18,_TextIdPc880d18,,i16
+0x00880d1c,_TextIdPc880d1c,,i16
+0x00880d20,_TextIdPc880d20,,i16
+0x00880d24,_TextIdPc880d24,,i16
+0x00880d28,_TextIdPc880d28,,i16
+0x00880d2c,_TextIdPc880d2c,,i16
+0x00880d30,_TextIdPc880d30,,i16
+0x00880d34,_TextIdPc880d34,,i16
+0x00880d38,_TextIdPc880d38,,i16
+0x00880d3c,_TextIdPc880d3c,,i16
+0x00880d40,_TextIdPc880d40,,i16
+0x00880d44,_TextIdPc880d44,,i16
+0x00880d48,_TextIdPc880d48,,i16
+0x00880d4c,_TextIdPc880d4c,,i16
+0x00880d50,_TextIdPc880d50,,i16
+0x00880d54,_TextIdPc880d54,,i16
+0x00880d58,_TextIdPc880d58,,i16
+0x00880d5c,_TextIdPc880d5c,,i16
+0x00880d60,_TextIdPc880d60,,i16
+0x00880d64,_TextIdPc880d64,,i16
+0x00880d68,_TextIdPc880d68,,i16
+0x00880d6c,_TextIdPc880d6c,,i16
+0x00880d70,_TextIdPc880d70,,i16
+0x00880d74,_TextIdPc880d74,,i16
+0x00880d78,_TextIdPc880d78,,i16
+0x00880d7c,_TextIdPc880d7c,,i16
+0x00880d80,_TextIdPc880d80,,i16
+0x00880d84,_TextIdPc880d84,,i16
+0x00880d88,_TextIdPc880d88,,i16
+0x00880d8c,_TextIdPc880d8c,,i16
+0x00880d90,_TextIdPc880d90,,i16
+0x00880d94,_TextIdPc880d94,,i16
+0x00880d98,_TextIdPc880d98,,i16
+0x00880d9c,_TextIdPc880d9c,,i16
+0x00880da0,_TextIdPc880da0,,i16
+0x00880da4,_TextIdPc880da4,,i16
+0x00880da8,_TextIdPc880da8,,i16
+0x00880dac,_TextIdPc880dac,,i16
+0x00880db0,_TextIdPc880db0,,i16
+0x00880db4,_TextIdPc880db4,,i16
+0x00880db8,_TextIdPc880db8,,i16
+0x00880dbc,_TextIdPc880dbc,,i16
+0x00880dc0,_TextIdPc880dc0,,i16
+0x00880dc4,_TextIdPc880dc4,,i16
+0x00880dc8,_TextIdPc880dc8,,i16
+0x00880dcc,_TextIdPc880dcc,,i16
+0x00880dd0,_TextIdPc880dd0,,i16
+0x00880dd4,_TextIdPc880dd4,,i16
+0x00880dd8,_TextIdPc880dd8,,i16
+0x00880ddc,_TextIdPc880ddc,,i16
+0x00880de0,_TextIdPc880de0,,i16
+0x00880de4,_TextIdPc880de4,,i16
+0x00880de8,_TextIdPc880de8,,i16
+0x00880dec,_TextIdPc880dec,,i16
+0x00880df0,_TextIdPc880df0,,i16
+0x00880df4,_TextIdPc880df4,,i16
+0x00880df8,_TextIdPc880df8,,i16
+0x00880dfc,_TextIdPc880dfc,,i16
+0x00880e00,_TextIdPc880e00,,i16
+0x00880e04,_TextIdPc880e04,,i16
+0x00880e08,_TextIdPc880e08,,i16
+0x00880e0c,_TextIdPc880e0c,,i16
+0x00880e10,_TextIdPc880e10,,i16
+0x00880e14,_TextIdPc880e14,,i16
+0x00880e18,_TextIdPc880e18,,i16
+0x00880e1c,_TextIdPc880e1c,,i16
+0x00880e20,_TextIdPc880e20,,i16
+0x00880e24,_TextIdPc880e24,,i16
+0x00880e28,_TextIdPc880e28,,i16
+0x00880e2c,_TextIdPc880e2c,,i16
+0x00880e30,_TextIdPc880e30,,i16
+0x00880e34,_TextIdPc880e34,,i16
+0x00880e38,_TextIdPc880e38,,i16
+0x00880e3c,_TextIdPc880e3c,,i16
+0x00880e40,_TextIdPc880e40,,i16
+0x00880e44,_TextIdPc880e44,,i16
+0x00880e48,_TextIdPc880e48,,i16
+0x00880e4c,_TextIdPc880e4c,,i16
+0x00880e50,_TextIdPc880e50,,i16
+0x00880e54,_TextIdPc880e54,,i16
+0x00880e58,_TextIdPc880e58,,i16
+0x00880e5c,_TextIdPc880e5c,,i16
+0x00880e60,_TextIdPc880e60,,i16
+0x00880e64,_TextIdPc880e64,,i16
+0x00880e68,_TextIdPc880e68,,i16
+0x00880e6c,_TextIdPc880e6c,,i16
+0x00880e70,_TextIdPc880e70,,i16
+0x00880e74,_TextIdPc880e74,,i16
+0x00880e78,_TextIdPc880e78,,i16
+0x00880e7c,_TextIdPc880e7c,,i16
+0x00880e80,_TextIdPc880e80,,i16
+0x00880e84,_TextIdPc880e84,,i16
+0x00880e88,_TextIdPc880e88,,i16
+0x00880e8c,_TextIdPc880e8c,,i16
+0x00880e90,_TextIdPc880e90,,i16
+0x00880e94,_TextIdPc880e94,,i16
+0x00880e98,_TextIdPc880e98,,i16
+0x00880e9c,_TextIdPc880e9c,,i16
+0x00880ea0,_TextIdPc880ea0,,i16
+0x00880ea4,_TextIdPc880ea4,,i16
+0x00880ea8,_TextIdPc880ea8,,i16
+0x00880eac,_TextIdPc880eac,,i16
+0x00880eb0,_TextIdPc880eb0,,i16
+0x00880eb4,_TextIdPc880eb4,,i16
+0x00880eb8,_TextIdPc880eb8,,i16
+0x00880ebc,_TextIdPc880ebc,,i16
+0x00880ec0,_TextIdPc880ec0,,i16
+0x00880ec4,_TextIdPc880ec4,,i16
+0x00880ec8,_TextIdPc880ec8,,i16
+0x00880ecc,_TextIdPc880ecc,,i16
+0x00880ed0,_TextIdPc880ed0,,i16
+0x00880ed4,_TextIdPc880ed4,,i16
+0x00880ed8,_TextIdPc880ed8,,i16
+0x00880edc,_TextIdPc880edc,,i16
+0x00880ee0,_TextIdPc880ee0,,i16
+0x00880ee4,_TextIdPc880ee4,,i16
+0x00880ee8,_TextIdPc880ee8,,i16
+0x00880eec,_TextIdPc880eec,,i16
+0x00880ef0,_TextIdPc880ef0,,i16
+0x00880ef4,_TextIdPc880ef4,,i16
+0x00880ef8,_TextIdPc880ef8,,i16
+0x00880efc,_TextIdPc880efc,,i16
+0x00880f00,_TextIdPc880f00,,i16
+0x00880f04,_TextIdPc880f04,,i16
+0x00880f08,_TextIdPc880f08,,i16
+0x00880f0c,_TextIdPc880f0c,,i16
+0x00880f10,_TextIdPc880f10,,i16
+0x00880f14,_TextIdPc880f14,,i16
+0x00880f18,_TextIdPc880f18,,i16
+0x00880f1c,_TextIdPc880f1c,,i16
+0x00880f20,_TextIdPc880f20,,i16
+0x00880f24,_TextIdPc880f24,,i16
+0x00880f28,_TextIdPc880f28,,i16
+0x00880f2c,_TextIdPc880f2c,,i16
+0x00880f30,_TextIdPc880f30,,i16
+0x00880f34,_TextIdPc880f34,,i16
+0x00880f38,_TextIdPc880f38,,i16
+0x00880f3c,_TextIdPc880f3c,,i16
+0x00880f40,_TextIdPc880f40,,i16
+0x00880f44,_TextIdPc880f44,,i16
+0x00880f48,_TextIdPc880f48,,i16
+0x00880f4c,_TextIdPc880f4c,,i16
+0x00880f50,_TextIdPc880f50,,i16
+0x00880f64,_TextIdPc880f64,,i16
+0x00880f68,_TextIdPc880f68,,i16
+0x00880f6c,_TextIdPc880f6c,,i16
+0x00880f70,_TextIdPc880f70,,i16
+0x00880f74,_TextIdPc880f74,,i16
+0x00880f78,_TextIdPc880f78,,i16
+0x00880f7c,_TextIdPc880f7c,,i16
+0x00880f80,_TextIdPc880f80,,i16
+0x00880f84,_TextIdPc880f84,,i16
+0x00880f88,_TextIdPc880f88,,i16
+0x00880f8c,_TextIdPc880f8c,,i16
 0x00880f90 , _tALONGTIMEAGO                                                 , 2     , i16
+0x00880f94,_TextIdPc880f94,,i16
+0x00880f98,_TextIdPc880f98,,i16
+0x00880f9c,_TextIdPc880f9c,,i16
+0x00880fa0,_TextIdPc880fa0,,i16
+0x00880fa4,_TextIdPc880fa4,,i16
+0x00880fa8,_TextIdPc880fa8,,i16
+0x00880fac,_TextIdPc880fac,,i16
+0x00880fb0,_TextIdPc880fb0,,i16
+0x00880fb4,_TextIdPc880fb4,,i16
+0x00880fb8,_TextIdPc880fb8,,i16
+0x00880fbc,_TextIdPc880fbc,,i16
+0x00880fc0,_TextIdPc880fc0,,i16
+0x00880fc4,_TextIdPc880fc4,,i16
+0x00880fc8,_TextIdPc880fc8,,i16
+0x00880fcc,_TextIdPc880fcc,,i16
+0x00880fd0,_TextIdPc880fd0,,i16
+0x00880fd4,_TextIdPc880fd4,,i16
+0x00880fd8,_TextIdPc880fd8,,i16
+0x00880fdc,_TextIdPc880fdc,,i16
+0x00880fe0,_TextIdPc880fe0,,i16
+0x00880fe4,_TextIdPc880fe4,,i16
+0x00880fe8,_TextIdPc880fe8,,i16
+0x00880fec,_TextIdPc880fec,,i16
+0x00880ff0,_TextIdPc880ff0,,i16
+0x00880ff4,_TextIdPc880ff4,,i16
+0x00880ff8,_TextIdPc880ff8,,i16
+0x00880ffc,_TextIdPc880ffc,,i16
+0x00881000,_TextIdPc881000,,i16
+0x00881004,_TextIdPc881004,,i16
+0x00881008,_TextIdPc881008,,i16
+0x0088100c,_TextIdPc88100c,,i16
 0x881010,_MissionMenuInstructionTextPc,,i16
+0x00881014,_TextIdPc881014,,i16
+0x00881018,_TextIdPc881018,,i16
+0x0088101c,_TextIdPc88101c,,i16
+0x00881020,_TextIdPc881020,,i16
+0x00881024,_TextIdPc881024,,i16
+0x00881028,_TextIdPc881028,,i16
+0x0088102c,_TextIdPc88102c,,i16
+0x00881030,_TextIdPc881030,,i16
+0x00881034,_TextIdPc881034,,i16
+0x00881038,_TextIdPc881038,,i16
+0x0088103c,_TextIdPc88103c,,i16
+0x00881040,_TextIdPc881040,,i16
+0x00881044,_TextIdPc881044,,i16
+0x00881048,_TextIdPc881048,,i16
+0x0088104c,_TextIdPc88104c,,i16
+0x00881050,_TextIdPc881050,,i16
+0x00881054,_TextIdPc881054,,i16
+0x00881058,_TextIdPc881058,,i16
+0x0088105c,_TextIdPc88105c,,i16
+0x00881060,_TextIdPc881060,,i16
+0x00881064,_TextIdPc881064,,i16
+0x00881068,_TextIdPc881068,,i16
+0x0088106c,_TextIdPc88106c,,i16
+0x00881070,_TextIdPc881070,,i16
+0x00881074,_TextIdPc881074,,i16
+0x00881078,_TextIdPc881078,,i16
+0x0088107c,_TextIdPc88107c,,i16
+0x00881080,_TextIdPc881080,,i16
+0x00881084,_TextIdPc881084,,i16
+0x00881088,_TextIdPc881088,,i16
+0x0088108c,_TextIdPc88108c,,i16
+0x00881090,_TextIdPc881090,,i16
+0x00881094,_TextIdPc881094,,i16
+0x00881098,_TextIdPc881098,,i16
+0x0088109c,_TextIdPc88109c,,i16
+0x008810a0,_TextIdPc8810a0,,i16
+0x008810a4,_TextIdPc8810a4,,i16
+0x008810a8,_TextIdPc8810a8,,i16
+0x008810ac,_TextIdPc8810ac,,i16
+0x008810b0,_TextIdPc8810b0,,i16
+0x008810b4,_TextIdPc8810b4,,i16
+0x008810b8,_TextIdPc8810b8,,i16
 0x8810bc,_tPOWERUP,,i16
+0x008810c0,_TextIdPc8810c0,,i16
+0x008810c4,_TextIdPc8810c4,,i16
+0x008810c8,_TextIdPc8810c8,,i16
+0x008810cc,_TextIdPc8810cc,,i16
+0x008810d0,_TextIdPc8810d0,,i16
+0x008810d4,_TextIdPc8810d4,,i16
+0x008810d8,_TextIdPc8810d8,,i16
+0x008810dc,_TextIdPc8810dc,,i16
+0x008810e0,_TextIdPc8810e0,,i16
+0x008810e4,_TextIdPc8810e4,,i16
+0x008810e8,_TextIdPc8810e8,,i16
+0x008810ec,_TextIdPc8810ec,,i16
+0x008810f0,_TextIdPc8810f0,,i16
+0x008810f4,_TextIdPc8810f4,,i16
+0x008810f8,_TextIdPc8810f8,,i16
+0x008810fc,_TextIdPc8810fc,,i16
+0x00881100,_TextIdPc881100,,i16
+0x00881104,_TextIdPc881104,,i16
+0x00881108,_TextIdPc881108,,i16
+0x0088110c,_TextIdPc88110c,,i16
+0x00881110,_TextIdPc881110,,i16
+0x00881114,_TextIdPc881114,,i16
+0x00881118,_TextIdPc881118,,i16
+0x0088111c,_TextIdPc88111c,,i16
+0x00881120,_TextIdPc881120,,i16
+0x00881124,_TextIdPc881124,,i16
+0x00881128,_TextIdPc881128,,i16
+0x0088112c,_TextIdPc88112c,,i16
+0x00881130,_TextIdPc881130,,i16
+0x00881134,_TextIdPc881134,,i16
+0x00881138,_TextIdPc881138,,i16
+0x0088113c,_TextIdPc88113c,,i16
+0x00881140,_TextIdPc881140,,i16
+0x00881144,_TextIdPc881144,,i16
+0x00881148,_TextIdPc881148,,i16
+0x0088114c,_TextIdPc88114c,,i16
 00881150,_PermanentJediTitleIdPc,,i16
+0x00881154,_TextIdPc881154,,i16
+0x00881158,_TextIdPc881158,,i16
+0x0088115c,_TextIdPc88115c,,i16
+0x00881160,_TextIdPc881160,,i16
+0x00881164,_TextIdPc881164,,i16
+0x00881168,_TextIdPc881168,,i16
+0x0088116c,_TextIdPc88116c,,i16
+0x00881170,_TextIdPc881170,,i16
+0x00881174,_TextIdPc881174,,i16
+0x00881178,_TextIdPc881178,,i16
+0x0088117c,_TextIdPc88117c,,i16
+0x00881180,_TextIdPc881180,,i16
+0x00881184,_TextIdPc881184,,i16
+0x00881188,_TextIdPc881188,,i16
+0x0088118c,_TextIdPc88118c,,i16
+0x00881190,_TextIdPc881190,,i16
+0x00881194,_TextIdPc881194,,i16
+0x00881198,_TextIdPc881198,,i16
+0x0088119c,_TextIdPc88119c,,i16
+0x008811a0,_TextIdPc8811a0,,i16
+0x008811a4,_TextIdPc8811a4,,i16
+0x008811a8,_TextIdPc8811a8,,i16
+0x008811ac,_TextIdPc8811ac,,i16
+0x008811b0,_TextIdPc8811b0,,i16
+0x008811b4,_TextIdPc8811b4,,i16
+0x008811b8,_TextIdPc8811b8,,i16
+0x008811bc,_TextIdPc8811bc,,i16
+0x008811c0,_TextIdPc8811c0,,i16
+0x008811c4,_TextIdPc8811c4,,i16
+0x008811c8,_TextIdPc8811c8,,i16
+0x008811cc,_TextIdPc8811cc,,i16
+0x008811d0,_TextIdPc8811d0,,i16
+0x008811d4,_TextIdPc8811d4,,i16
+0x008811d8,_TextIdPc8811d8,,i16
+0x008811dc,_TextIdPc8811dc,,i16
+0x008811e0,_TextIdPc8811e0,,i16
+0x008811e4,_TextIdPc8811e4,,i16
+0x008811e8,_TextIdPc8811e8,,i16
+0x008811ec,_TextIdPc8811ec,,i16
+0x008811f0,_TextIdPc8811f0,,i16
+0x008811f4,_TextIdPc8811f4,,i16
+0x008811f8,_TextIdPc8811f8,,i16
 0x881278,_PlayerTorpedoCount,,u8[8]
 0x881280,_TorpedoPackets,,TORPEDO_PACKET_ALLOC_PC[16]
 0x881b00,_TorpedoFillEnabledPc,,u8
@@ -14248,6 +15034,7 @@ address    , symbol                                                         , si
 0x0093b348 , _Paused                                                        , 4     , i32
 0x0093b34c , ?NetPaused@@3HA                                                , 4     , i32
 0x93b350,_PauseGame_ExtraCodeFn,,void (__cdecl *)(void)
+0x0093b354,_ResumeGame_ExtraCodeFn,,void (__cdecl *)(void)
 0x0093b358 , _GAMEDEMO                                                      , 4     , i32
 0x93b364,_Game_100PercentFn,,void (__cdecl *)(void)
 0x93b368,_Game_AllGoldBricksFn,,void (__cdecl *)(void)
@@ -14347,6 +15134,11 @@ address    , symbol                                                         , si
 0x950d7c,_LEGO_AIPATHCNX_R2D2GLIDE,,i32
 0x00950d80 , _LEGO_AIPATHCNX_FORGOODIES                                     , 4     , u32
 0x00950d84 , _LEGO_AIPATHCNX_FORBADDIES                                     , 4     , u32
+0x950d88,_LEGO_AIPATHCNX_BIGJUMP,,u32
+0x950d8c,_LEGO_AIPATHCNX_REQUIRESPERMISSION,,u32
+0x950d90,_LEGO_AIPATHCNX_NO_DESTINATION_CHECK,,u32
+0x950d94,_LEGO_AIPATHCNX_JUMP_NOW,,u32
+0x950d98,_LEGO_AIPATHCNX_DONT_JUMP_NOW,,u32
 0x950d9c,_LEGO_AIPATHCNX_DONTTOGGLE,,i32
 0x950da0,_LEGO_AIPATHCNX_FULLTERRAIN,,i32
 0x00950da4 , _CheatSystem                                                   ,       , CHEATSYSTEM_PC [12-byte reviewed prefix; full extent unknown]

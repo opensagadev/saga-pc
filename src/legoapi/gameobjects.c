@@ -1278,8 +1278,14 @@ void __cdecl GameObjectStuffAfterAnimation(void) {
         }
         if ((object->flags_e24 & 0x4000) != 0)
             STUBBED_NAMED("AfterAnimation: ThermalDetonator_Throw PC4cfbb0");
-        if ((object->flags_e20 & 0x02000000) != 0 && object->force_target != NULL)
-            STUBBED_NAMED("AfterAnimation: GetZapOrigin pointer-dependent NuLgtLaser PC4a6050/6018c0");
+        if ((object->flags_e20 & 0x02000000) != 0 && object->force_target != NULL) {
+            GAMEOBJECT *target = object->force_target;
+            NUVEC *origin = GetZapOrigin(object);
+            NUVEC delta;
+            f32 distance = NuVecDist(&target->collision_position, origin, &delta);
+            NuLgtLaser(testlaser_type, testlaser_sizew, testlaser_sizel, testlaser_sizewab, origin, &delta,
+                       object->id == (u16)id_R2Q5 ? 0xff202080u : 0xff808040u, testlaser_endw, distance);
+        }
         if (drawn && (object->character_data->model_flags & 8) != 0 && object->weapon_scale == 1.0f) {
             i32 blade;
             for (blade = 0; blade < 4; ++blade) {

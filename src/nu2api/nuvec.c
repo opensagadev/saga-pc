@@ -588,3 +588,83 @@ f32 __cdecl NuVecMtxTransformH(NUVEC *out, NUVEC *v, NUMTX *m) {
     out->z = z;
     return reciprocal_w;
 }
+
+void __cdecl NuVecMtxTranslate(NUVEC *out, NUVEC *v, NUMTX *m) {
+    out->x = v->x + m->m30;
+    out->y = v->y + m->m31;
+    out->z = v->z + m->m32;
+}
+
+void __cdecl NuVecMtxRotateValX(NUVEC *out, f32 value, NUMTX *matrix) {
+    out->x = matrix->m00 * value;
+    out->y = matrix->m01 * value;
+    out->z = matrix->m02 * value;
+}
+
+void __cdecl NuVecMtxRotateValY(NUVEC *out, f32 value, NUMTX *matrix) {
+    out->x = matrix->m10 * value;
+    out->y = matrix->m11 * value;
+    out->z = matrix->m12 * value;
+}
+
+void __cdecl NuVecMtxRotateValZ(NUVEC *out, f32 value, NUMTX *matrix) {
+    out->x = matrix->m20 * value;
+    out->y = matrix->m21 * value;
+    out->z = matrix->m22 * value;
+}
+
+void __cdecl NuVecMtxRotateH(NUVEC *out, NUVEC *v, NUMTX *m) {
+    f32 reciprocal_w = 1.0f / (v->x * m->m03 + v->y * m->m13 + v->z * m->m23);
+    f32 y = (v->x * m->m01 + v->y * m->m11 + v->z * m->m21) * reciprocal_w;
+    f32 z = (v->x * m->m02 + v->y * m->m12 + v->z * m->m22) * reciprocal_w;
+    out->x = (v->x * m->m00 + v->y * m->m10 + v->z * m->m20) * reciprocal_w;
+    out->y = y;
+    out->z = z;
+}
+
+void __cdecl NuVecMtxScale(NUVEC *out, NUVEC *v, NUMTX *m) {
+    out->x = v->x * m->m00;
+    out->y = v->y * m->m11;
+    out->z = v->z * m->m22;
+}
+
+void __cdecl NuVecInvMtxTranslate(NUVEC *out, NUVEC *v, NUMTX *matrix) {
+    out->x = v->x - matrix->m30;
+    out->y = v->y - matrix->m31;
+    out->z = v->z - matrix->m32;
+}
+
+void __cdecl NuVecInvMtxRotateValX(NUVEC *out, f32 unused, NUMTX *matrix) {
+    (void)unused;
+    out->x = out->x * matrix->m00;
+    out->y = out->x * matrix->m10;
+    out->z = out->x * matrix->m20;
+}
+
+void __cdecl NuVecInvMtxRotateValY(NUVEC *out, f32 unused, NUMTX *matrix) {
+    (void)unused;
+    out->x = out->y * matrix->m01;
+    out->y = out->y * matrix->m11;
+    out->z = out->y * matrix->m21;
+}
+
+void __cdecl NuVecInvMtxRotateValZ(NUVEC *out, f32 unused, NUMTX *matrix) {
+    (void)unused;
+    out->x = out->z * matrix->m02;
+    out->y = out->z * matrix->m12;
+    out->z = out->z * matrix->m22;
+}
+
+void __cdecl NuVecInvMtxScale(NUVEC *out, NUVEC *v, NUMTX *matrix) {
+    out->x = v->x / matrix->m00;
+    out->y = v->y / matrix->m11;
+    out->z = v->z / matrix->m22;
+}
+
+void __cdecl NuVecRotateYValX(NUVEC *out, f32 value, NUANG angle) {
+    f32 cosine = NuTrigTable[((angle + 0x4000) >> 1) & 0x7fff];
+    f32 sine = NuTrigTable[(angle >> 1) & 0x7fff];
+    out->x = value * cosine;
+    out->y = 0.0f;
+    out->z = -value * sine;
+}

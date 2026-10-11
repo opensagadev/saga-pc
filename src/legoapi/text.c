@@ -18,6 +18,7 @@ extern const char TextLoadPermTextDirectory[12];
 extern const char TextLoadPermAPIExtension[9];
 extern const char TextLoadPermTRCPath[19];
 extern i16 tALONGTIMEAGO;
+extern i16 TextIdPc880894, TextIdPc880898;
 
 void Text_InitLanguageList(LANGUAGEDATA *language_list) {
     if (language_list != NULL) {
@@ -261,7 +262,13 @@ void __cdecl Text_LoadStrings(VARIPTR *buffer, VARIPTR *buffer_end) {
 
     buffer->addr = ((u32)string_buffer + 3U) & ~3U;
 
-    STUBBED_NAMED("Text_LoadStrings: intro-label fixups and trc.csv lookup setup");
+    if (TTab[TextIdPc880894] != NULL)
+        NuStrCpy(Game.customiser_start[0].name, TTab[TextIdPc880894]);
+    if (TTab[TextIdPc880898] != NULL)
+        NuStrCpy(Game.customiser_start[1].name, TTab[TextIdPc880898]);
+    FinishWeirdoNames(-1);
+    Customiser_InitNames(CharacterCustomiser);
+    MenuLoadTechnicalStrings((char *)TextLoadPermTRCPath, language, buffer, *buffer_end);
 }
 
 void Text_DecodeButtons(char *source, char *destination) {

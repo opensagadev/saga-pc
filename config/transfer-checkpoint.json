@@ -39109,7 +39109,9 @@
       "scope": "Save startup, legal fallback primitive path, AI locator actions and matrix family",
       "baseline_commit": "56ec5131472982c587c7faf80ab9b092e76782c2",
       "publication": {
-        "status": "pending exact-revision CI"
+        "commit": "a774cd3d94d2abd699e19bff15ced690b675942e",
+        "status": "CI success",
+        "url": "https://github.com/opensagadev/saga-pc/actions/runs/38147589059"
       },
       "new_functions": 22,
       "new_unique_compared_PC_bytes": 4486,
@@ -39491,7 +39493,704 @@
       },
       "next_connected_wave": "Bulk Android source-family transfer via caller frontier, AI actions/combat, projection/vector helpers and startup text tables",
       "ongoing_goal": true
+    },
+    {
+      "checkpoint": "III",
+      "date": "2026-10-11",
+      "scope": "Bulk Android AI, combat, math, render, menu and text-table transfer",
+      "baseline_commit": "a774cd3d94d2abd699e19bff15ced690b675942e",
+      "publication": {
+        "status": "pending exact-revision CI"
+      },
+      "new_functions": 68,
+      "new_unique_compared_PC_bytes": 17037,
+      "corrected_existing_boundary_bytes": 6,
+      "new_exact_functions": 38,
+      "new_exact_code_bytes": 4138,
+      "new_exact_data_bytes": 400,
+      "newly_compared": [
+        {
+          "symbol": "_AIPathParseBatmanFlagPc",
+          "address": "0x00407d00",
+          "size": 285,
+          "exact": true,
+          "score": 100.0
+        },
+        {
+          "symbol": "_AISysGetPathPos2",
+          "address": "0x0043e040",
+          "size": 321,
+          "exact": false,
+          "score": 96.25974
+        },
+        {
+          "symbol": "_Action_EngageObject",
+          "address": "0x00448bf0",
+          "size": 735,
+          "exact": false,
+          "score": 78.839195
+        },
+        {
+          "symbol": "_Action_SetVisibility",
+          "address": "0x0044cd40",
+          "size": 187,
+          "exact": false,
+          "score": 85.27941
+        },
+        {
+          "symbol": "_Action_EnableSock",
+          "address": "0x0044ce00",
+          "size": 288,
+          "exact": false,
+          "score": 60.276596
+        },
+        {
+          "symbol": "_Action_CycleCharacter",
+          "address": "0x0044d5c0",
+          "size": 674,
+          "exact": false,
+          "score": 89.91747
+        },
+        {
+          "symbol": "?ParseAIPathCnxFlagPc@@YAIPAD@Z",
+          "address": "0x0044d870",
+          "size": 144,
+          "exact": true,
+          "score": 100.0
+        },
+        {
+          "symbol": "_Action_CnxHelper",
+          "address": "0x0044df30",
+          "size": 445,
+          "exact": false,
+          "score": 64.574326
+        },
+        {
+          "symbol": "_Action_SetPathCnxFlag",
+          "address": "0x004505d0",
+          "size": 480,
+          "exact": false,
+          "score": 59.897434
+        },
+        {
+          "symbol": "_Action_FaceCamera",
+          "address": "0x00451f20",
+          "size": 456,
+          "exact": false,
+          "score": 94.84869
+        },
+        {
+          "symbol": "_Action_PullLever",
+          "address": "0x00453180",
+          "size": 568,
+          "exact": false,
+          "score": 79.13295
+        },
+        {
+          "symbol": "_Action_UsePanel",
+          "address": "0x004533c0",
+          "size": 530,
+          "exact": false,
+          "score": 78.41317
+        },
+        {
+          "symbol": "_Action_UseTechno",
+          "address": "0x004535e0",
+          "size": 546,
+          "exact": false,
+          "score": 75.35
+        },
+        {
+          "symbol": "_GizPanel_CanUsePanel",
+          "address": "0x0046dce0",
+          "size": 264,
+          "exact": false,
+          "score": 52.864864
+        },
+        {
+          "symbol": "_AIPathParseIndyFlagPc",
+          "address": "0x004817e0",
+          "size": 310,
+          "exact": true,
+          "score": 100.0
+        },
+        {
+          "symbol": "_PlayerOpponent",
+          "address": "0x0049cfe0",
+          "size": 531,
+          "exact": false,
+          "score": 77.24342
+        },
+        {
+          "symbol": "_SetComboOpponent",
+          "address": "0x0049d200",
+          "size": 547,
+          "exact": false,
+          "score": 60.635296
+        },
+        {
+          "symbol": "_JediLightCode",
+          "address": "0x004a0bc0",
+          "size": 1249,
+          "exact": false,
+          "score": 65.37574
+        },
+        {
+          "symbol": "_SwipeCode",
+          "address": "0x004a1c70",
+          "size": 724,
+          "exact": false,
+          "score": 91.237206
+        },
+        {
+          "symbol": "_GetZapOrigin",
+          "address": "0x004a6050",
+          "size": 83,
+          "exact": false,
+          "score": 78.958336
+        },
+        {
+          "symbol": "_ZapCode",
+          "address": "0x004a6160",
+          "size": 2162,
+          "exact": false,
+          "score": 0.0
+        },
+        {
+          "symbol": "_AIPathParseStarWarsFlagPc",
+          "address": "0x004cbf70",
+          "size": 485,
+          "exact": true,
+          "score": 100.0
+        },
+        {
+          "symbol": "_GizTechno_CanUseTechno",
+          "address": "0x004cd110",
+          "size": 6,
+          "exact": true,
+          "score": 100.0
+        },
+        {
+          "symbol": "_FindSock",
+          "address": "0x0053f7e0",
+          "size": 71,
+          "exact": true,
+          "score": 100.0
+        },
+        {
+          "symbol": "_SockOn",
+          "address": "0x00541430",
+          "size": 44,
+          "exact": false,
+          "score": 95.30769
+        },
+        {
+          "symbol": "_SockOff",
+          "address": "0x00541460",
+          "size": 44,
+          "exact": false,
+          "score": 95.30769
+        },
+        {
+          "symbol": "_CharCategory_FindByName",
+          "address": "0x0055bc20",
+          "size": 81,
+          "exact": false,
+          "score": 85.29412
+        },
+        {
+          "symbol": "_ResumeGame",
+          "address": "0x0055c560",
+          "size": 126,
+          "exact": true,
+          "score": 100.0
+        },
+        {
+          "symbol": "_CutScene_FindInst",
+          "address": "0x0057c920",
+          "size": 80,
+          "exact": false,
+          "score": 72.5
+        },
+        {
+          "symbol": "_AIPathCnxHelperSys_AddHelper",
+          "address": "0x005ab140",
+          "size": 153,
+          "exact": false,
+          "score": 62.80645
+        },
+        {
+          "symbol": "_NuVecMtxTranslate",
+          "address": "0x005b31d0",
+          "size": 38,
+          "exact": true,
+          "score": 100.0
+        },
+        {
+          "symbol": "_NuVecMtxRotateValX",
+          "address": "0x005b3270",
+          "size": 37,
+          "exact": true,
+          "score": 100.0
+        },
+        {
+          "symbol": "_NuVecMtxRotateValY",
+          "address": "0x005b32a0",
+          "size": 38,
+          "exact": true,
+          "score": 100.0
+        },
+        {
+          "symbol": "_NuVecMtxRotateValZ",
+          "address": "0x005b32d0",
+          "size": 38,
+          "exact": true,
+          "score": 100.0
+        },
+        {
+          "symbol": "_NuVecMtxRotateH",
+          "address": "0x005b3300",
+          "size": 142,
+          "exact": true,
+          "score": 100.0
+        },
+        {
+          "symbol": "_NuVecMtxScale",
+          "address": "0x005b3390",
+          "size": 37,
+          "exact": true,
+          "score": 100.0
+        },
+        {
+          "symbol": "_NuVecInvMtxTranslate",
+          "address": "0x005b3440",
+          "size": 38,
+          "exact": true,
+          "score": 100.0
+        },
+        {
+          "symbol": "_NuVecInvMtxRotateValX",
+          "address": "0x005b34e0",
+          "size": 37,
+          "exact": true,
+          "score": 100.0
+        },
+        {
+          "symbol": "_NuVecInvMtxRotateValY",
+          "address": "0x005b3510",
+          "size": 40,
+          "exact": true,
+          "score": 100.0
+        },
+        {
+          "symbol": "_NuVecInvMtxRotateValZ",
+          "address": "0x005b3540",
+          "size": 35,
+          "exact": true,
+          "score": 100.0
+        },
+        {
+          "symbol": "_NuVecInvMtxScale",
+          "address": "0x005b3570",
+          "size": 37,
+          "exact": true,
+          "score": 100.0
+        },
+        {
+          "symbol": "_NuVecRotateYValX",
+          "address": "0x005b3760",
+          "size": 75,
+          "exact": true,
+          "score": 100.0
+        },
+        {
+          "symbol": "_NuVec4Dot",
+          "address": "0x005b3df0",
+          "size": 45,
+          "exact": true,
+          "score": 100.0
+        },
+        {
+          "symbol": "_NuVec4ScaleAccum",
+          "address": "0x005b3e50",
+          "size": 58,
+          "exact": true,
+          "score": 100.0
+        },
+        {
+          "symbol": "_NuVec4Sub",
+          "address": "0x005b3e90",
+          "size": 46,
+          "exact": true,
+          "score": 100.0
+        },
+        {
+          "symbol": "_NuVec4Max",
+          "address": "0x005b4000",
+          "size": 117,
+          "exact": true,
+          "score": 100.0
+        },
+        {
+          "symbol": "_NuVec4Min",
+          "address": "0x005b4080",
+          "size": 117,
+          "exact": true,
+          "score": 100.0
+        },
+        {
+          "symbol": "_NuVec4Mag",
+          "address": "0x005b4100",
+          "size": 56,
+          "exact": true,
+          "score": 100.0
+        },
+        {
+          "symbol": "_NuVec4MagSqr",
+          "address": "0x005b4140",
+          "size": 44,
+          "exact": true,
+          "score": 100.0
+        },
+        {
+          "symbol": "_NuVec4Lerp",
+          "address": "0x005b4170",
+          "size": 75,
+          "exact": true,
+          "score": 100.0
+        },
+        {
+          "symbol": "_NuFloatToHalf",
+          "address": "0x005b41c0",
+          "size": 76,
+          "exact": true,
+          "score": 100.0
+        },
+        {
+          "symbol": "_NuHalfToFloat",
+          "address": "0x005b4210",
+          "size": 66,
+          "exact": true,
+          "score": 100.0
+        },
+        {
+          "symbol": "_NuVec4ToNuHalfVec4",
+          "address": "0x005b4260",
+          "size": 296,
+          "exact": false,
+          "score": 94.64646
+        },
+        {
+          "symbol": "_NuHalfVec4ToNuVec4",
+          "address": "0x005b4390",
+          "size": 302,
+          "exact": true,
+          "score": 100.0
+        },
+        {
+          "symbol": "_NuMtxPreTranslateX",
+          "address": "0x005b49c0",
+          "size": 45,
+          "exact": true,
+          "score": 100.0
+        },
+        {
+          "symbol": "_NuMtxPreTranslateNeg",
+          "address": "0x005b49f0",
+          "size": 95,
+          "exact": true,
+          "score": 100.0
+        },
+        {
+          "symbol": "_NuMtxPreSkewYX",
+          "address": "0x005b4cc0",
+          "size": 44,
+          "exact": true,
+          "score": 100.0
+        },
+        {
+          "symbol": "_NuMtxPreRotateY180X",
+          "address": "0x005b4e90",
+          "size": 215,
+          "exact": false,
+          "score": 93.01316
+        },
+        {
+          "symbol": "_NuMtxPreRotateY180",
+          "address": "0x005b5120",
+          "size": 51,
+          "exact": true,
+          "score": 100.0
+        },
+        {
+          "symbol": "_NuMtxTruncate24Bit",
+          "address": "0x005b7180",
+          "size": 198,
+          "exact": true,
+          "score": 100.0
+        },
+        {
+          "symbol": "_NuMtx24BitCorrection",
+          "address": "0x005b7250",
+          "size": 316,
+          "exact": false,
+          "score": 88.41414
+        },
+        {
+          "symbol": "_NuMtxLookAtInverseD3D",
+          "address": "0x005b7520",
+          "size": 334,
+          "exact": false,
+          "score": 99.7563
+        },
+        {
+          "symbol": "_NuMtxSetPerspectiveBlend",
+          "address": "0x005b7730",
+          "size": 192,
+          "exact": false,
+          "score": 82.29508
+        },
+        {
+          "symbol": "_NuMtxGetFrustumBlend",
+          "address": "0x005b7b20",
+          "size": 178,
+          "exact": true,
+          "score": 100.0
+        },
+        {
+          "symbol": "?NuSpecialFindMultiDisplayPc@@YAHPAUNUGSCN_s@@PAUnuspecial_handle_s@@PADHH@Z",
+          "address": "0x005cf810",
+          "size": 144,
+          "exact": false,
+          "score": 93.87755
+        },
+        {
+          "symbol": "_NuSpecialFindMulti",
+          "address": "0x005cf8a0",
+          "size": 210,
+          "exact": false,
+          "score": 68.88608
+        },
+        {
+          "symbol": "_NuRndrRect2di",
+          "address": "0x005db880",
+          "size": 246,
+          "exact": true,
+          "score": 100.0
+        },
+        {
+          "symbol": "_NuRndrRectUV2di",
+          "address": "0x005dba30",
+          "size": 260,
+          "exact": true,
+          "score": 100.0
+        }
+      ],
+      "progress": {
+        "text_bytes": 3471246,
+        "mapped_code_bytes": 1539358,
+        "matched_code_bytes": 241489,
+        "matching_percent": 6.956839129234862,
+        "fuzzy_coverage_percent": 30.42834648936873,
+        "mapped_functions": 5493,
+        "matched_functions": 2525,
+        "objdiff_fuzzy_percent": 69.71157,
+        "objdiff_total_code": 1516024,
+        "image_bytes": 40067072,
+        "mapped_bytes": 2188033,
+        "mapping_percent": 5.460925619920517,
+        "mapping_denominator": "code_and_data_section_virtual_sizes",
+        "mapping_sections": [
+          {
+            "name": ".text",
+            "kind": "code",
+            "address": "0x401000",
+            "size": 3471246,
+            "mapped_bytes": 1540552
+          },
+          {
+            "name": ".rdata",
+            "kind": "data",
+            "address": "0x751000",
+            "size": 646766,
+            "mapped_bytes": 30953
+          },
+          {
+            "name": ".data",
+            "kind": "data",
+            "address": "0x7ef000",
+            "size": 35372200,
+            "mapped_bytes": 616528
+          }
+        ],
+        "mapping_known_size_symbols": 9861,
+        "mapping_unknown_size_symbols": 6409,
+        "mapping_code_bytes": 1540552,
+        "mapping_code_total_bytes": 3471246,
+        "mapping_code_percent": 44.38037523125702,
+        "mapping_data_bytes": 647481,
+        "mapping_data_total_bytes": 36018966,
+        "mapping_data_percent": 1.797611291784445,
+        "mapping_code_data_bytes": 2188033,
+        "mapping_code_data_total_bytes": 39490212,
+        "mapping_code_data_percent": 5.540697021327715,
+        "matched_data_region_bytes": 638133
+      },
+      "fuzzy_delta_pp": 0.374950864335446,
+      "previous_exact_functions_lost": [],
+      "previous_exact_data_lost": [],
+      "changed_existing_functions": [
+        {
+          "symbol": "_InitGameAfterConfig",
+          "old_score": 76.510254,
+          "new_score": 76.51282,
+          "old_size": [
+            4437
+          ],
+          "new_size": [
+            4437
+          ]
+        },
+        {
+          "symbol": "_GameObjectStuffAfterAnimation",
+          "old_score": 23.817259,
+          "new_score": 27.10863,
+          "old_size": [
+            1403
+          ],
+          "new_size": [
+            1582
+          ]
+        },
+        {
+          "symbol": "_Move_JEDI",
+          "old_score": 72.49015,
+          "new_score": 75.039406,
+          "old_size": [
+            1130
+          ],
+          "new_size": [
+            1147
+          ]
+        },
+        {
+          "symbol": "_Move_JAWA",
+          "old_score": 84.72789,
+          "new_score": 87.72789,
+          "old_size": [
+            380
+          ],
+          "new_size": [
+            408
+          ]
+        },
+        {
+          "symbol": "_Move_WEIRDO",
+          "old_score": 52.274883,
+          "new_score": 53.48815,
+          "old_size": [
+            822
+          ],
+          "new_size": [
+            863
+          ]
+        },
+        {
+          "symbol": "_Move_DROIDGENERIC",
+          "old_score": 74.59609,
+          "new_score": 82.69055,
+          "old_size": [
+            800
+          ],
+          "new_size": [
+            861
+          ]
+        },
+        {
+          "symbol": "_Move_GEONOSIAN",
+          "old_score": 81.01163,
+          "new_score": 82.77907,
+          "old_size": [
+            434
+          ],
+          "new_size": [
+            462
+          ]
+        },
+        {
+          "symbol": "_LoadPermData",
+          "old_score": 38.962734,
+          "new_score": 44.68323,
+          "old_size": [
+            819
+          ],
+          "new_size": [
+            902
+          ]
+        },
+        {
+          "symbol": "_Text_LoadStrings",
+          "old_score": 57.20354,
+          "new_score": 89.08772,
+          "old_size": [
+            299
+          ],
+          "new_size": [
+            423
+          ]
+        },
+        {
+          "symbol": "_NuRndrParticleGroup",
+          "old_score": 88.32124,
+          "new_score": 88.419685,
+          "old_size": [
+            719
+          ],
+          "new_size": [
+            713
+          ]
+        },
+        {
+          "symbol": "_DebReAlloc2",
+          "old_score": 36.482307,
+          "new_score": 36.482307,
+          "old_size": [
+            1458
+          ],
+          "new_size": [
+            1458
+          ]
+        }
+      ],
+      "accepted_proof": {
+        "text_table_payload_native_equal_bytes": 9760,
+        "new_text_IDs": 669,
+        "canonical_IDs_reused": 46,
+        "unknown_owning_extents_credited": false,
+        "data_ownership": "text_tables.cpp owns coherent table/ID family; canonical existing IDs retain original data.cpp definitions; two old nonexact zero-padding extents changed naturally and both remain native-equal",
+        "candidate_only_change": "Only header recipe pin updated; normal fresh link and complete library/object proof pass",
+        "three_unchanged_source_outputs": "Reviewed only x87/register scheduling or commutative integer operand order; no branch/store/call behavior loss"
+      },
+      "runtime": {
+        "executable_sha256": "829d78162b28d3db6f3a8bd8520ab717b2c633991905cb4efcf953afeddbc392",
+        "seconds": 30.259900685865432,
+        "termination": "configured deadline",
+        "visible_window": true,
+        "capture": "black",
+        "fault_logged": false,
+        "graphics_warnings": "Mesa EGL driver initialization warnings",
+        "remaining_owned_processes": 0,
+        "rendered_frame_proved": false,
+        "playable": false
+      },
+      "required_checks": {
+        "make_check": "797 tests passed, three existing skips; LLVM18 format/tidy passed",
+        "build_check_objects": "350 objects,5337 function and12301 data definitions;30 typed members",
+        "make_match": "passed against supported original"
+      },
+      "next_connected_wave": "AI connection controllers plus real animation producer; remaining combat provider closure; runtime startup/permanent world-loading gaps",
+      "ongoing_goal": true
     }
   ],
-  "latest_checkpoint": "HHH"
+  "latest_checkpoint": "III"
 }

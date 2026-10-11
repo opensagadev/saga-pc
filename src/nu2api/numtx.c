@@ -1,4 +1,5 @@
 #include "saga.h"
+#include <string.h>
 #include <math.h>
 
 void __cdecl NuMtxSetIdentity(NUMTX *matrix) {
@@ -1259,4 +1260,228 @@ i32 __cdecl NuMtxCompare(NUMTX *a, NUMTX *b) {
     }
 
     return 0;
+}
+
+void __cdecl NuMtxPreTranslateX(NUMTX *m, f32 tx) {
+    m->m30 = m->m30 + m->m00 * tx;
+    m->m31 = m->m31 + m->m01 * tx;
+    m->m32 = m->m32 + m->m02 * tx;
+}
+
+void __cdecl NuMtxPreTranslateNeg(NUMTX *m, NUVEC *t) {
+    m->m30 -= t->x * m->m00 + t->y * m->m10 + t->z * m->m20;
+    m->m31 -= t->x * m->m01 + t->y * m->m11 + t->z * m->m21;
+    m->m32 -= t->x * m->m02 + t->y * m->m12 + t->z * m->m22;
+}
+
+void __cdecl NuMtxPreSkewYX(NUMTX *Mtx, f32 SkewVal) {
+    Mtx->m00 = Mtx->m00 + Mtx->m10 * SkewVal;
+    Mtx->m01 = Mtx->m01 + Mtx->m11 * SkewVal;
+    Mtx->m02 = Mtx->m02 + Mtx->m12 * SkewVal;
+}
+
+void __cdecl NuMtxPreRotateY180X(NUMTX *m, NUANG a) {
+    f32 cosx = NuTrigTable[((a + 0x4000) >> 1) & 0x7fff];
+    f32 sinx = NuTrigTable[(a >> 1) & 0x7fff];
+    f32 m10 = m->m10;
+    f32 m11 = m->m11;
+    f32 m12 = m->m12;
+
+    m->m00 = -m->m00;
+    m->m01 = -m->m01;
+    m->m02 = -m->m02;
+    m->m10 = cosx * m10 - m->m20 * sinx;
+    m->m11 = cosx * m11 - m->m21 * sinx;
+    m->m12 = cosx * m12 - m->m22 * sinx;
+    m->m20 = -(m->m20 * cosx) - sinx * m10;
+    m->m21 = -(m->m21 * cosx) - sinx * m11;
+    m->m22 = -(m->m22 * cosx) - sinx * m12;
+}
+
+void __cdecl NuMtxPreRotateY180(NUMTX *m) {
+    m->m00 = -m->m00;
+    m->m01 = -m->m01;
+    m->m02 = -m->m02;
+    m->m20 = -m->m20;
+    m->m21 = -m->m21;
+    m->m22 = -m->m22;
+}
+
+void __cdecl NuMtxLookAtInverseD3D(NUMTX *mtx, NUVEC *eye, NUVEC *center, NUVEC *up) {
+    NUVEC ax;
+    NUVEC ay;
+    NUVEC az;
+
+    az.x = center->x - eye->x;
+    az.y = center->y - eye->y;
+    az.z = center->z - eye->z;
+    NuVecNorm(&az, &az);
+    ax.x = up->y * az.z - up->z * az.y;
+    ax.y = up->z * az.x - up->x * az.z;
+    ax.z = up->x * az.y - up->y * az.x;
+    NuVecNorm(&ax, &ax);
+    ay.x = az.y * ax.z - az.z * ax.y;
+    ay.y = az.z * ax.x - az.x * ax.z;
+    ay.z = az.x * ax.y - az.y * ax.x;
+    NuVecNorm(&ay, &ay);
+
+    mtx->m00 = ax.x;
+    mtx->m01 = ax.y;
+    mtx->m02 = ax.z;
+    mtx->m03 = 0.0f;
+    mtx->m10 = ay.x;
+    mtx->m11 = ay.y;
+    mtx->m12 = ay.z;
+    mtx->m13 = 0.0f;
+    mtx->m20 = az.x;
+    mtx->m21 = az.y;
+    mtx->m22 = az.z;
+    mtx->m23 = 0.0f;
+    mtx->m30 = eye->x;
+    mtx->m31 = eye->y;
+    mtx->m32 = eye->z;
+    mtx->m33 = 1.0f;
+}
+
+void __cdecl NuMtxSetPerspectiveBlend(NUMTX *mtx, f32 fovy, f32 aspect, f32 zNear, f32 zFar) {
+    i32 angle = (i32)((fovy / 2.0f) * (65536.0f / 360.0f));
+    f32 tanFovy2 = NuTrigTable[(angle >> 1) & 0x7fff] / NuTrigTable[((angle + 0x4000) >> 1) & 0x7fff];
+    mtx->m00 = 1.0f / (aspect * tanFovy2);
+    mtx->m01 = 0.0f;
+    mtx->m02 = 0.0f;
+    mtx->m03 = 0.0f;
+    mtx->m10 = 0.0f;
+    mtx->m11 = 1.0f / tanFovy2;
+    mtx->m12 = 0.0f;
+    mtx->m13 = 0.0f;
+    mtx->m20 = 0.0f;
+    mtx->m21 = 0.0f;
+    mtx->m22 = (zFar + zNear) / (zFar - zNear);
+    mtx->m23 = 1.0f;
+    mtx->m30 = 0.0f;
+    mtx->m31 = 0.0f;
+    mtx->m32 = (zFar * -2.0f * zNear) / (zFar - zNear);
+    mtx->m33 = 0.0f;
+}
+
+void __cdecl NuMtxGetFrustumBlend(NUMTX *mtx, f32 *l, f32 *r, f32 *b, f32 *t, f32 *n, f32 *f) {
+    f32 Q = (mtx->m22 + 1.0f) * 0.5f;
+    f32 zNear = -(mtx->m32 * 0.5f) / Q;
+
+    if (f != NULL) {
+        *f = (Q * zNear) / (Q - 1.0f);
+    }
+    if (l != NULL) {
+        *l = ((-1.0f - mtx->m20) * zNear) / mtx->m00;
+    }
+    if (r != NULL) {
+        *r = ((1.0f - mtx->m20) * zNear) / mtx->m00;
+    }
+    if (b != NULL) {
+        *b = ((-1.0f - mtx->m21) * zNear) / mtx->m11;
+    }
+    if (t != NULL) {
+        *t = ((1.0f - mtx->m21) * zNear) / mtx->m11;
+    }
+    if (n != NULL) {
+        *n = zNear;
+    }
+}
+
+void __cdecl NuMtxTruncate24Bit(NUMTX *out, NUMTX *input) {
+    union {
+        f32 value;
+        u32 bits;
+    } packed;
+    memcpy(&packed.bits, &input->m00, 4);
+    packed.bits &= 0xffffff00u;
+    memcpy(&out->m00, &packed.bits, 4);
+    memcpy(&packed.bits, &input->m01, 4);
+    packed.bits &= 0xffffff00u;
+    memcpy(&out->m01, &packed.bits, 4);
+    memcpy(&packed.bits, &input->m02, 4);
+    packed.bits &= 0xffffff00u;
+    memcpy(&out->m02, &packed.bits, 4);
+    memcpy(&packed.bits, &input->m03, 4);
+    packed.bits &= 0xffffff00u;
+    memcpy(&out->m03, &packed.bits, 4);
+    memcpy(&packed.bits, &input->m10, 4);
+    packed.bits &= 0xffffff00u;
+    memcpy(&out->m10, &packed.bits, 4);
+    memcpy(&packed.bits, &input->m11, 4);
+    packed.bits &= 0xffffff00u;
+    memcpy(&out->m11, &packed.bits, 4);
+    memcpy(&packed.bits, &input->m12, 4);
+    packed.bits &= 0xffffff00u;
+    memcpy(&out->m12, &packed.bits, 4);
+    memcpy(&packed.bits, &input->m13, 4);
+    packed.bits &= 0xffffff00u;
+    memcpy(&out->m13, &packed.bits, 4);
+    memcpy(&packed.bits, &input->m20, 4);
+    packed.bits &= 0xffffff00u;
+    memcpy(&out->m20, &packed.bits, 4);
+    memcpy(&packed.bits, &input->m21, 4);
+    packed.bits &= 0xffffff00u;
+    memcpy(&out->m21, &packed.bits, 4);
+    memcpy(&packed.bits, &input->m22, 4);
+    packed.bits &= 0xffffff00u;
+    memcpy(&out->m22, &packed.bits, 4);
+    memcpy(&packed.bits, &input->m23, 4);
+    packed.bits &= 0xffffff00u;
+    memcpy(&out->m23, &packed.bits, 4);
+    memcpy(&packed.bits, &input->m30, 4);
+    packed.bits &= 0xffffff00u;
+    memcpy(&out->m30, &packed.bits, 4);
+    memcpy(&packed.bits, &input->m31, 4);
+    packed.bits &= 0xffffff00u;
+    memcpy(&out->m31, &packed.bits, 4);
+    memcpy(&packed.bits, &input->m32, 4);
+    packed.bits &= 0xffffff00u;
+    memcpy(&out->m32, &packed.bits, 4);
+    memcpy(&packed.bits, &input->m33, 4);
+    packed.bits &= 0xffffff00u;
+    memcpy(&out->m33, &packed.bits, 4);
+}
+
+void __cdecl NuMtx24BitCorrection(NUMTX *correction, NUMTX *matrix) {
+    f32 best_error = 3.4028234663852886e+38f;
+    i32 element, pass;
+    f32 step = 1.0f;
+    NUMTX truncated, product;
+    NuMtxTruncate24Bit(&truncated, matrix);
+    *correction = NuMtxSetIdentityTemplate;
+    for (pass = 0; pass < 100; ++pass) {
+        for (element = 0; element < 16; ++element) {
+            f32 previous, error;
+            f32 *value;
+            union {
+                f32 value;
+                u32 bits;
+            } packed;
+            if (element % 4 == 3)
+                continue;
+            value = &correction->m00 + element;
+            previous = *value;
+            packed.value = *value + step;
+            packed.bits &= 0xffffff00u;
+            *value = packed.value;
+            NuMtxMulH(&product, correction, &truncated);
+            error = NuMtxSSE(&product, matrix);
+            if (error >= best_error)
+                *value = previous;
+            else
+                best_error = error;
+            previous = *value;
+            packed.value = *value - step;
+            packed.bits &= 0xffffff00u;
+            *value = packed.value;
+            NuMtxMulH(&product, correction, &truncated);
+            error = NuMtxSSE(&product, matrix);
+            if (error >= best_error)
+                *value = previous;
+            else
+                best_error = error;
+        }
+        step *= 0.8999999761581421;
+    }
 }

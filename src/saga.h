@@ -85,6 +85,15 @@ typedef struct NUVEC4 {
 STATIC_ASSERT(sizeof(NUVEC4) == 16);
 STATIC_ASSERT(offsetof(NUVEC4, w) == 12);
 
+typedef struct NUHALFVEC4 {
+    i16 x, y, z, w;
+} NUHALFVEC4;
+STATIC_ASSERT(sizeof(NUHALFVEC4) == 8);
+STATIC_ASSERT(offsetof(NUHALFVEC4, x) == 0);
+STATIC_ASSERT(offsetof(NUHALFVEC4, y) == 2);
+STATIC_ASSERT(offsetof(NUHALFVEC4, z) == 4);
+STATIC_ASSERT(offsetof(NUHALFVEC4, w) == 6);
+
 typedef struct numtx_s {
     f32 m00, m01, m02, m03;
     f32 m10, m11, m12, m13;
@@ -4870,7 +4879,7 @@ typedef struct gameobject_s {
     f32 pre_terrain_speed;
     f32 post_terrain_speed;
     NUVEC reset_velocity;
-    u8 unknown_0e04[4];
+    i32 dynamic_light_id;
     u16 delayed_turn_target_angle;
     u16 force_heading;
     u16 current_input_angle;
@@ -20350,6 +20359,63 @@ extern "C" {
     u32 __cdecl NuFileWriteUnsignedInt(NUFILE file, u32 value);
     extern i32 NuPowFirstTimePc, NuPowCacheIndexPc, NuFile_SwapEndianOnWrite;
     extern f32 NuPowBasesPc[32], NuPowExponentsPc[32], NuPowResultsPc[32];
+    void __cdecl NuMtxPreTranslateX(NUMTX *m, f32 tx);
+    void __cdecl NuMtxPreTranslateNeg(NUMTX *m, NUVEC *t);
+    void __cdecl NuMtxPreSkewYX(NUMTX *Mtx, f32 SkewVal);
+    void __cdecl NuMtxPreRotateY180X(NUMTX *m, NUANG a);
+    void __cdecl NuMtxPreRotateY180(NUMTX *m);
+    void __cdecl NuMtxTruncate24Bit(NUMTX *, NUMTX *);
+    void __cdecl NuMtx24BitCorrection(NUMTX *correction, NUMTX *matrix);
+    void __cdecl NuMtxLookAtInverseD3D(NUMTX *mtx, NUVEC *eye, NUVEC *center, NUVEC *up);
+    void __cdecl NuMtxSetPerspectiveBlend(NUMTX *mtx, f32 fovy, f32 aspect, f32 zNear, f32 zFar);
+    void __cdecl NuMtxGetFrustumBlend(NUMTX *mtx, f32 *l, f32 *r, f32 *b, f32 *t, f32 *n, f32 *f);
+    void __cdecl NuVecMtxTranslate(NUVEC *out, NUVEC *v, NUMTX *m);
+    void __cdecl NuVecMtxRotateValX(NUVEC *out, f32 value, NUMTX *matrix);
+    void __cdecl NuVecMtxRotateValY(NUVEC *out, f32 value, NUMTX *matrix);
+    void __cdecl NuVecMtxRotateValZ(NUVEC *out, f32 value, NUMTX *matrix);
+    void __cdecl NuVecMtxRotateH(NUVEC *out, NUVEC *v, NUMTX *m);
+    void __cdecl NuVecMtxScale(NUVEC *out, NUVEC *v, NUMTX *m);
+    void __cdecl NuVecInvMtxTranslate(NUVEC *out, NUVEC *v, NUMTX *matrix);
+    void __cdecl NuVecInvMtxRotateValX(NUVEC *out, f32 unused, NUMTX *matrix);
+    void __cdecl NuVecInvMtxRotateValY(NUVEC *out, f32 unused, NUMTX *matrix);
+    void __cdecl NuVecInvMtxRotateValZ(NUVEC *out, f32 unused, NUMTX *matrix);
+    void __cdecl NuVecInvMtxScale(NUVEC *out, NUVEC *v, NUMTX *matrix);
+    void __cdecl NuVecRotateYValX(NUVEC *out, f32 value, NUANG angle);
+    f32 __cdecl NuVec4Dot(NUVEC4 *v0, NUVEC4 *v1);
+    void __cdecl NuVec4ScaleAccum(NUVEC4 *out, NUVEC4 *v, f32 scale);
+    void __cdecl NuVec4Sub(NUVEC4 *out, NUVEC4 *a, NUVEC4 *b);
+    void __cdecl NuVec4Max(NUVEC4 *out, NUVEC4 *a, NUVEC4 *b);
+    void __cdecl NuVec4Min(NUVEC4 *out, NUVEC4 *a, NUVEC4 *b);
+    f32 __cdecl NuVec4Mag(NUVEC4 *v);
+    f32 __cdecl NuVec4MagSqr(NUVEC4 *v);
+    void __cdecl NuVec4Lerp(NUVEC4 *out, NUVEC4 *a, NUVEC4 *b, f32 t);
+    i16 __cdecl NuFloatToHalf(f32 value);
+    f32 __cdecl NuHalfToFloat(i16 value);
+    void __cdecl NuVec4ToNuHalfVec4(NUVEC4 *v, NUHALFVEC4 *out);
+    void __cdecl NuHalfVec4ToNuVec4(NUHALFVEC4 *v, NUVEC4 *out);
+
+    /* Pause callbacks and immediate rectangle rendering. */
+    extern void(__cdecl *ResumeGame_ExtraCodeFn)(void);
+    void __cdecl ResumeGame(i32 play_sound);
+    void __cdecl NuRndrRect2di(i32 x, i32 y, i32 width, i32 height, i32 colour, NUMTL *material);
+    void __cdecl NuRndrRectUV2di(i32 x, i32 y, i32 width, i32 height, f32 u0, f32 v0, f32 u1, f32 v1, i32 colour,
+                                 NUMTL *material);
+
+    /* Source stack interfaces; native private register ABIs are documented in config/symbols.md. */
+    GAMEOBJECT *__cdecl PlayerOpponent(GAMEOBJECT *, f32, i32);
+    u8 __cdecl SetComboOpponent(GAMEOBJECT *, f32, i32, i32);
+    void __cdecl JediLightCode(GAMEOBJECT *);
+    void __cdecl SwipeCode(GAMEOBJECT *, i32, i32);
+    NUVEC *__cdecl GetZapOrigin(GAMEOBJECT *);
+    void __cdecl ZapCode(GAMEOBJECT *, i32, i32);
+    extern f32 PlayerOpponent_Range2;
+
+    extern TEXTENTRY Text_TableMenu[167], Text_TableGame[347], Text_TableMain[706];
+    STATIC_ASSERT(offsetof(GAMEOBJECT, dynamic_light_id) == 0xe04);
+    void __cdecl NuLgtLaser(i32 type, f32 width, f32 segment_length, f32 width_wobble, NUVEC *start, NUVEC *delta,
+                            u32 colour, f32 end_width, f32 length);
+    extern f32 testlaser_sizew, testlaser_sizel, testlaser_sizewab, testlaser_endw;
+    extern i32 testlaser_type;
 #ifdef __cplusplus
 }
 #endif

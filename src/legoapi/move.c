@@ -8163,7 +8163,7 @@ void __cdecl Move_GEONOSIAN(GAMEOBJECT *object) {
         (object->character_data->game_character->flags_094_bytes[0] & 8) == 0)
         ShootCode(object, action_pressed, special_pressed, 0, 1, 0);
     else if (object->id == (u16)id_WATTO)
-        STUBBED_NAMED(0x004a6160); /* Native4b67a3: ZapCode(object,action_pressed,0), ignored action. */
+        ZapCode(object, action_pressed, 0);
     if ((i8)object->character_data->game_character->flags_094_bytes[0] < 0)
         STUBBED_NAMED(0x004b29f0); /* Native4b67be: CommunicateCode(object,special_pressed,0), ignored action. */
     BeastStartFallCodePc(object);
@@ -8209,7 +8209,7 @@ void __cdecl Move_JAWA(GAMEOBJECT *object) {
     WeaponOutCode(object);
     WeaponInCode(object);
     WeaponScalingCode(object);
-    STUBBED_NAMED(0x004a6160); /* Native4b3d0b: ZapCode(object,action_pressed,special_pressed), ignored action. */
+    ZapCode(object, action_pressed, special_pressed);
     (void)action_pressed;
     BeastStartFallCodePc(object);
     STUBBED_NAMED(0x0058cef0); /* Native4b3d16: HeadMovement(object), ignored action. */
@@ -8320,7 +8320,7 @@ void __cdecl Move_DROIDGENERIC(GAMEOBJECT *object) {
 zap:
     if (object->id == (u16)id_BUZZDROID)
         PunchCode(object, object->pad->buttons_pressed & GAMEPAD_ACTION, 0, 0, 1, 0.0f);
-    STUBBED_NAMED(0x004a6160); /* Native4b6150: private ZapCode(object ESI,zap_pressed,0). */
+    ZapCode(object, zap_pressed, 0);
     (void)zap_pressed;
     DeactivatedCode(object);
     BeastStartFallCodePc(object);
@@ -8440,10 +8440,10 @@ void __cdecl Move_JEDI(GAMEOBJECT *object) {
     WeaponScalingCode(object);
     HoldCode(object);
     STUBBED_NAMED(0x0049e450); /* Native4b374e: BlockCode(object EAX,action_pressed,action_held,jump_pressed,0). */
-    STUBBED_NAMED(0x004a1c70); /* Native4b3757: SwipeCode(object EAX,action_pressed,action_held). */
+    SwipeCode(object, action_pressed, action_held);
     STUBBED_NAMED(0x004a10c0); /* Native4b3766: LightSabreComboCode(object
                                   EAX,action_pressed,action_held,jump_pressed,special_pressed). */
-    STUBBED_NAMED(0x004a0bc0); /* Native4b376e: JediLightCode(object ESI), ignored action. */
+    JediLightCode(object);
     if ((object->character_data->game_character->flags_090 & 0x8000) != 0) {
         effect = WORLD->game_debris_sys->entries[124].effect;
         if (effect != -1)
@@ -8562,12 +8562,12 @@ void __cdecl Move_WEIRDO(GAMEOBJECT *object) {
     STUBBED_NAMED(0x004bdaf0); /* Native4b5c11: SecurityDoor_MoveCode(WORLD,object). */
     if (has_sabre) {
         STUBBED_NAMED(0x0049e450); /* Native4b5c2f: BlockCode(object EAX,action_pressed,action_held,jump_pressed,0). */
-        STUBBED_NAMED(0x004a1c70); /* Native4b5c3c: SwipeCode(object EAX,action_pressed,action_held). */
+        SwipeCode(object, action_pressed, action_held);
         if (detonator_used == 1)
             special_pressed = 0;
         STUBBED_NAMED(0x004a10c0); /* Native4b5c58: LightSabreComboCode(object
                                       EAX,action_pressed,action_held,jump_pressed,special_pressed). */
-        STUBBED_NAMED(0x004a0bc0); /* Native4b5c60: JediLightCode(object ESI). */
+        JediLightCode(object);
     } else {
         STUBBED_NAMED(0x0049e450); /* Native4b5c71: BlockCode(object EAX,action_pressed,action_held,0,0). */
         PunchCode(object, action_pressed, action_held, 1, 0, 0.0f);

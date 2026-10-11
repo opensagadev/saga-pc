@@ -1,45 +1,46 @@
 # Reconstruction roadmap
 
-The source build is **not playable**.
+Checkpoint III transfers 68 additional functions from connected Android source
+families, covering **17,037 original PC bytes**. These include AI actions and
+providers, player combat, matrix/vector/half conversion, rectangle rendering and
+pause resumption. Thirty-eight new functions match **4,138 bytes** exactly.
+Seven real movement calls and the after-animation laser path are restored.
 
-Checkpoint HHH restores real save-folder registration and six-slot enumeration,
-legal texture/material loading and the legal quad's fallback display-list path.
-It also transfers the AI locator-action family and eleven matrix routines from
-Android source with PC-specific contracts. The 22 new functions cover **4,486 PC
-bytes**; fourteen match **1,208 bytes** exactly. The pointer-before-allocation
-correction in `NuDisplayListLinkMtl` has an original-free regression that also
-rejects the former buggy ordering.
+Startup now uses three real PC text tables and the complete reconstructed
+Text_LoadStrings tail. All **9,760 emitted table bytes** and their pointer
+relocations match native memory. The tables reuse 46 canonical ID definitions
+and provide 669 new IDs. Unknown owning extents receive no allocation credit.
+The loader's old boundary ended inside an instruction; its complete PC extent
+is corrected from 397 to 403 bytes, accounting for six additional compared bytes.
 
-Whole-PC fuzzy coverage is **30.053396%**
-(+0.121316 percentage points).
-Exact code is **237,351/3,471,246 bytes**;
-compared PC code is **1,498,981 bytes**. No previous exact
-function was lost. Three exact four-byte globals migrated to verified named
-members of the canonical fallback list, preserving their physical coverage.
-Full old central-data initializers are unchanged, including unknown-size regions.
-Unknown owning extents still earn no allocation credit.
+Whole-PC fuzzy coverage is **30.428346%**
+(+0.374951 percentage points over HHH).
+Exact code is **241,489/3,471,246 bytes**;
+compared PC code is **1,516,024 bytes**.
+No previous exact function or data match was lost. Dedicated text-table ownership
+preserves canonical data definitions. Two older nonexact central regions change
+only in emitted zero padding; all their typed values and full initializers remain
+native-equal. Unchanged-source compiler scheduling differences were reviewed.
 
 Local validation passes: 797 tests (three existing skips), LLVM 18 formatting
-and static analysis, source EXE build/link, 347-object coverage checks and full
-retail matching. The starting revision `56ec513` has passing
-[CI](https://github.com/opensagadev/saga-pc/actions/runs/38144893214);
-HHH's exact-revision CI is checked after publication.
+and static analysis, source EXE build/link, 350-object checks and full retail
+matching. HHH revision `a774cd3` passed
+[CI](https://github.com/opensagadev/saga-pc/actions/runs/38147589059).
+III's exact-revision CI is verified after its direct push to main.
 
-A bounded ordinary run in an isolated Wine prefix held the game window for
-30.30 seconds. The 5- and 15-second window captures are entirely black. The
-30-second screenshot command failed; no frame or gameplay is inferred from it.
-No game fault was logged, but Mesa reported EGL/driver initialization warnings.
-Termination was by the deadline, not natural exit. Crash-dialog suppression was
-set and queried; no prefix-owned processes remained after cleanup. This run does
-not establish responsiveness, completed rendering, a loaded world or playability.
+A bounded ordinary run with installed assets in an isolated Wine prefix held a
+visible game window for about 30 seconds; the captured image remains entirely
+black. No game fault was logged, but Mesa reported EGL/driver warnings. The run
+ended at its deadline and left no prefix-owned processes. This does not prove
+completed rendering, a loaded world or playability. The source is **not playable**.
 
-The user resumed work and prioritized **bulk Android source transfer**. The next
-wave uses named Android callers and existing PC anchors to expose unmapped
-callee families, then transfers whole source families with shared field/data
-contracts. Current drafts cover AI actions, combat/force code, projection/vector
-helpers and startup text-table backing. Candidate graph spans are research only;
-only complete reviewed, compiled and compared bodies count as progress. Avoid
-instruction scheduling work unless it reveals a behavior/type error.
+Continue bulk source transfer through named Android callers and existing PC
+anchors. The retained direct-call frontier contains 56,502 bytes of candidate
+spans; those are research only. The next connected target is the AI connection
+controller family with its genuine fake-animation producer, followed by the
+remaining player combat dependencies. For runtime, attribute the earliest
+startup wait and close actual permanent/world-loading providers. Avoid register
+and instruction-order tuning unless comparison reveals a behavior/type error.
 
 Work proceeds through connected source families and verified PC contracts:
 

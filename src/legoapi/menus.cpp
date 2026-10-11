@@ -383,3 +383,20 @@ extern "C" void __cdecl MenuDrawMissions(MENU *menu) {
        Genuine void provider is not yet implemented; no fake prompt/font success. */
     STUBBED_NAMED("MenuDrawMissions: DrawPlayerIconPrompts at 49751b");
 }
+
+extern "C" {
+    extern void(__cdecl *ResumeGame_ExtraCodeFn)(void);
+    void __cdecl ResumeGame(i32 play_sound) {
+        Paused = 0;
+        NetPaused = 0;
+        NuPause(0);
+        MenuRememberCursor(&GameMenu[GameMenuLevel]);
+        MenuReset();
+        music_man.SetFader(1.0f, 0.5f);
+        music_man.ResumeTrack(0x10);
+        if (play_sound != 0)
+            GameAudio_PlaySfx(0x37, NULL, 0, 0);
+        if (ResumeGame_ExtraCodeFn != NULL)
+            ResumeGame_ExtraCodeFn();
+    }
+}

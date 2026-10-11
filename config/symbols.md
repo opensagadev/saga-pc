@@ -5595,3 +5595,187 @@ NaN payload/status behavior is not asserted equal. All 60 previously compiled
 matrix functions preserve their complete relocated output. Projection builders
 are the next bounded math target; scene texture restoration remains held on its
 real unresolved-texture provider and native DDS backing.
+
+## Checkpoint III: connected Android source transfers
+
+This wave transfers portable source families from `/home/fabian/git/saga/src`
+into the existing PC subsystem translation units. The configured GOG PC retail
+image remains authoritative for every identity, accessed field, argument, constant
+and complete extent. Android `res/libTTapp.so` supplies named x86 anchors; its
+source is a behavior reference, not a PC layout or boundary authority. No named
+Mac identity is claimed for this wave. Family totals below describe accepted
+implementation subsets; aggregate fuzzy/exact progress is established separately
+by the refreshed whole-project report.
+
+### Math and projection closure
+
+The math subset adds 34 functions covering 3,558 complete original PC bytes in
+`numtx.c`, `nuvec.c` and `nuvec4.c`. Android references are
+`nu2api/numath/{numtx.cpp,nuvec.cpp,nuvec4.c,numaths_plain.cpp}`. All 34 entries
+have ordinary stack cdecl interfaces. Existing NUMTX/NUVEC layouts suffice;
+NUHALFVEC4 adds four signed 16-bit components at offsets 0, 2, 4 and 6 with
+size 8. No new owning data or backend is required.
+
+Representative connected entries are `NuVecInvMtxTranslate` at `0x005b3440`,
+`NuMtx24BitCorrection` at `0x005b7250/316`, inverse look-at at
+`0x005b7520/334`, perspective blend at `0x005b7730/192`, and the nullable-output
+frustum blend getter at `0x005b7b20/178`. The inverse-translation entry directly
+follows the existing inverse-transform return at `0x005b343f`; the latter's
+128-byte extent remains complete. Entry-to-final-return control flow and early
+returns were reviewed, excluding subsequent INT3 padding.
+
+Half conversion retains the native clamped exponent/truncated mantissa behavior,
+including its actual zero handling, rather than substituting IEEE half rounding.
+Raw float truncation uses four-byte integer-bit copies. Matrix correction retains
+100 passes, native positive/negative trials, low-eight-bit clearing, best-error
+comparison and restore-on-no-improvement. Its double multiplier is the native
+`0.8999999761581421` at `0x00751960`, not mathematical `0.9`.
+
+The consolidated bounded comparison found 29 exact functions covering 2,205
+original bytes; five remain nonexact: PreRotateY180X, 24BitCorrection,
+LookAtInverseD3D, SetPerspectiveBlend and Vec4ToNuHalfVec4. Nonexact arithmetic
+is qualified to initialized finite representable inputs; NaN payload/status and
+exception equality are not asserted. All 116 prior complete relocated outputs
+in the three owning units retained their previous hashes in the bounded review.
+
+### Text table backing and loader completion
+
+Three mutable PC TEXTENTRY tables now supply real startup backing: Menu at
+`0x007fd2c8`, Game at `0x007fd800`, and Main at `0x007fe2d8`. Native startup
+pushes at `0x004c9ffa`, `0x004ca00e` and `0x004ca023` establish their consumed
+identities. Actual calls initialize Menu over `0..0x31f`, Game over
+`0x320..0x70c`, or Main over `0..0x70c`, preserving the original startup branch.
+
+The compiler-generated working table payloads total 9,760 bytes: 1,336 Menu,
+2,776 Game and 5,648 Main, with 166, 346 and 705 genuine pointer relocations.
+Their complete emitted payloads equal native memory after relocation. Their
+original owning allocation extents remain **unknown**: a consumed sentinel does
+not prove an allocation boundary. Accordingly these rows retain blank sizes and
+claim no exact-allocation or data-coverage credit.
+
+The semantic initializers reuse 46 existing canonical i16 definitions and add
+669 neutral PC text-ID backing definitions. Their native views are zero BSS;
+VC8's four-byte physical padding of an emitted i16 does not establish an
+original four-byte extent. These new scalar rows also retain unknown extents.
+No canonical font/string state is duplicated, and neutral names do not assert
+unproved Android identities.
+
+`Text_LoadStrings` at `0x004cf4c0` has a corrected complete extent of **403**
+bytes. Its final ADD ESP occupies `0x004cf64c..0x004cf651`, RET is at
+`0x004cf652`, and INT3 padding begins at `0x004cf653`. The former 397-byte
+extent stopped inside that stack-adjustment instruction. The real loader tail
+now performs the two conditional customiser-name copies, FinishWeirdoNames,
+Customiser_InitNames and technical-string loading through existing providers.
+The complete loader remains nonexact; other LoadPermData gaps remain explicit.
+Android `legoapi/menus/core/text.cpp` corroborates the flow, but its 713-entry
+LSW_Text table is not the PC 706-entry Main table. PC paths, counts, branches
+and semantic initializers govern the transfer. Existing font/material/texture
+providers are reused; this does not establish successful complete GPU rendering.
+
+### Player actions and restored movement calls
+
+The player subset adds six complete functions totaling 5,296 original bytes:
+
+| Function | PC entry/bytes | Native interface |
+| --- | --- | --- |
+| PlayerOpponent | `0x0049cfe0/531` | cdecl object/range/arc |
+| SetComboOpponent | `0x0049d200/547` | object in ESI; range/update/mode on stack |
+| JediLightCode | `0x004a0bc0/1249` | object in ESI |
+| SwipeCode | `0x004a1c70/724` | object in EAX; pressed/held on stack |
+| GetZapOrigin | `0x004a6050/83` | cdecl object |
+| ZapCode | `0x004a6160/2162` | object in ESI; pressed/retract on stack |
+
+Android references are `legoapi/characters/motion/move.cpp` and
+`legoapi/gizmo/object/gizforce.cpp`. Complete native bodies end at their final
+RET before INT3 padding. Structural C interfaces intentionally differ from
+private original register ABIs; their inventory ctypes remain blank rather
+than claiming public cdecl evidence. All reconstruction callers use consistent
+source declarations.
+
+The shared field cohort establishes dynamic-light ID at GAMEOBJECT `+0xe04`
+and a typed target-reference view at `+0x39c`. PlayerOpponent's range-squared
+cell at `0x0087b8ac` is four-byte zero BSS. Native ZapCode uses mode bytes
+`+0xe32/+0xe33`, dead byte `+0x28b`, target-distance threshold `0.36f`, hover
+state at `+0x778`, engine flags at `+0xe20`, and retract action indices
+`0x10/0x7e`; Android values are not interchangeable. JediLightCode retains
+native dynamic-light and blade/joint flags and configuration accesses.
+
+Seven movement call sites now invoke the reviewed ZapCode, SwipeCode and
+JediLightCode implementations. The after-animation laser closure calls
+GetZapOrigin, computes the real target delta/distance, and invokes NuLgtLaser
+with native size/type/colour parameters. Other untransferred combat actions
+remain explicit gaps; retained candidate disassemblies do not imply source
+coverage.
+
+### Rectangle rendering and pause resumption
+
+`ResumeGame` at `0x0055c560/126`, `NuRndrRect2di` at `0x005db880/246` and
+`NuRndrRectUV2di` at `0x005dba30/260` total 632 original bytes. All three
+matched complete relocated native bytes on their first pinned VC8 compilation.
+The final instructions are RET at `0x0055c5dd`, `0x005db975` and `0x005dbb33`,
+respectively; following INT3 padding is excluded.
+
+ResumeGame takes **one** cdecl play-sound argument, unlike Android's two-argument
+reference in `legoapi/menus/screens/gamestructure.cpp`. PC always resumes music
+class `0x10`, clears both pause cells, calls NuPause(0), remembers/resets the
+menu, sets the music fader, conditionally plays SFX `0x37`, and invokes the
+optional callback. The callback at `0x0093b354` is verified four-byte zero BSS.
+
+The rectangle references are `nu2api/nu3d/nurndr_plain.cpp`. PC uses primitive
+mode `0x10`, six stack arguments for Rect2di and ten for RectUV2di, native
+1/16 coordinate scaling, two opposite-corner vertices and coordinate-context
+save/restore. Keeping both in the existing renderer unit preserves the
+established private colour helper's compiler-generated ABI. No placeholder
+rendering provider is introduced.
+
+### AI provider and parser closure
+
+The connected AI transfer restores action bodies together with actual category,
+sock, special-search, panel and path-position providers. Android references
+are the corresponding `legoapi/gizmo`, AI-path and `nu2api/nu3d/nuspecial.cpp`
+source families. Public action entries use the established seven-argument
+cdecl action interface; private helper ctypes remain unresolved where native
+register arguments differ from structural source interfaces.
+
+Reviewed providers include CharCategory_FindByName `0x0055bc20/81`, FindSock
+`0x0053f7e0/71`, SockOn/SockOff `0x00541430/44` and `0x00541460/44`,
+NuSpecialFindMulti `0x005cf8a0/210` with its display helper
+`0x005cf810/144`, AIPathCnxControllerCreate `0x0043cca0/712`,
+AIPathCnxControllerSetOnRange `0x0043cfb0/272`, CutScene_FindInst
+`0x0057c920/80`, and panel predicates at `0x0046dce0/264` and
+`0x004cd110/6`. Special search preserves the native scene `+0x110` display
+branch, `0x4c` legacy stride and 12-byte output handles; its early RET does not
+truncate the 210-byte body. Platform flag parsers at `0x00407d00/285`,
+`0x004817e0/310` and `0x004cbf70/485` preserve native token/bit assignments.
+The fake-animation-end-frame array's owning extent remains unknown and carries
+no allocation coverage. Final integrated AI counts and results belong to the
+aggregate checkpoint report, not this provisional family inventory.
+
+### Fresh-input candidate method
+
+A bounded direct-call frontier used named Android functions and already-mapped
+PC callers, retaining crossed alternatives, shared caller/callee evidence and
+recursive-CFG extent hypotheses under ignored `build/analysis/bulk-map/`.
+It produced a 45-entry, **56,502-byte candidate wave**. That number is research
+scope only: candidates do not authorize CSV insertion or count as compared,
+exact or fuzzy progress. Common callees and ambiguous movement alternatives
+remain candidates until actual PC body, ABI, fields and full boundaries are
+reviewed. The concrete rectangle and player subsets above were released only
+after those reviews and real VC8 compilation/comparison; no candidate count was
+substituted for transferred code.
+
+The final admitted AI subset contains 25 complete functions and 7,551 PC bytes,
+including six exact bodies (1,301 bytes) in isolated comparison. It excludes the
+connection-controller family and all fake-animation storage. `GizTechno_CanUseTechno`
+is the genuine six-byte native constant-return predicate, not a success fallback.
+The five zero-initialized platform flags retain their original state; their
+initialization producers are still missing from the partial reconstruction.
+
+The new text tables and their neutral ID definitions form one coherent
+`src/legoapi/text_tables.cpp` owner, with external references to canonical
+existing IDs in `data.cpp`. This also preserves the original VC8 section
+selection of those established definitions: redeclaring them in the central
+owner reset its explicit section choices. No padding masks, synthetic tail
+objects or new per-symbol sections were used. Two existing nonexact central
+regions changed only in ordinary emitted zero padding; their typed values and
+complete emitted initializers still agree with native memory.
