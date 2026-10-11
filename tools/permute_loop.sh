@@ -65,7 +65,7 @@ while true; do
     sync
     before=$(wc -l < "$JOURNAL")
     python3 tools/permute.py --batch "$CHUNK" --iterations "$ITERATIONS" --jobs "$JOBS" --workers "$WORKERS" \
-        --max-size "$MAX_SIZE" --seed "$SEED" --apply 2>&1 | tee -a build/permute/loop.log
+        --max-size "$MAX_SIZE" --seed "$SEED" --apply --push 2>&1 | tee -a build/permute/loop.log
     after=$(wc -l < "$JOURNAL")
     summary=$(tail -n $((after - before)) "$JOURNAL" | python3 -c '
 import json, sys

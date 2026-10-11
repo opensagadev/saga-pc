@@ -110,6 +110,8 @@ class Scorer:
                 value = None
             else:
                 value = self._compare(COFF(obj), slot)
+        except subprocess.TimeoutExpired:
+            value = None
         finally:
             shutil.rmtree(slot, ignore_errors=True)
         self.cache[text] = value
@@ -129,7 +131,7 @@ class Scorer:
             "build_target": False, "build_base": False,
             "units": [{"name": "u", "target_path": "t.obj", "base_path": "b.obj"}]}))
         subprocess.run([str(self.objdiff), "report", "generate", "-p", str(slot), "-o",
-                        str(slot / "r.json")], capture_output=True, timeout=120)
+                        str(slot / "r.json")], capture_output=True, timeout=60)
         try:
             report = json.loads((slot / "r.json").read_text())
             functions = [f for u in report["units"] for f in u.get("functions", [])]
@@ -210,7 +212,30 @@ def run_one(symbol, unit, iterations, jobs, seed, apply, log, worker=None):
     return summary
 
 
-def batch(count, iterations, jobs, apply, minimum, maximum, seed=1, workers=1, min_percent=20.0):
+def git(*args):
+    return subprocess.run(["git", *args], cwd=ROOT, capture_output=True, text=True)
+
+
+def publish(unit, message):
+    """Commit one applied function and the journal, then push to the current branch."""
+    record = ROOT / "permute/batch.jsonl"
+    record.parent.mkdir(exist_ok=True)
+    shutil.copyfile(OUT / "batch.jsonl", record)
+    git("add", unit, str(record.relative_to(ROOT)))
+    if git("commit", "-q", "-m", message).returncode:
+        return
+    for attempt in range(4):
+        if git("push", "-q", "origin", "HEAD").returncode == 0:
+            return
+        # Someone else pushed: merge it (a conflict is left for the next attempt).
+        if git("pull", "-q", "--no-rebase", "--no-edit", "origin", "HEAD").returncode:
+            git("merge", "--abort")
+        time.sleep(2 ** attempt)
+    print(f"{time.strftime('%H:%M:%S')} push failed; the commit stays local until the next push", flush=True)
+
+
+def batch(count, iterations, jobs, apply, minimum, maximum, seed=1, workers=1, min_percent=20.0,
+          push=False):
     """Work through the functions losing the most bytes, several at a time.
 
     Each worker is a separate process; all share the build's Wine prefix. Two
@@ -296,8 +321,12 @@ def batch(count, iterations, jobs, apply, minimum, maximum, seed=1, workers=1, m
                     f"(instructions {steps[0]:.0f}% -> {steps[1]:.0f}%, "
                     f"+{gained:.0f} weighted bytes, {summary['seconds']:.0f}s)"
                     f"{', applied' if summary.get('applied') else ''}")
-            with output, journal.open("a") as stream:
-                stream.write(json.dumps(summary) + "\n")
+            with output:
+                with journal.open("a") as stream:
+                    stream.write(json.dumps(summary) + "\n")
+                if push and summary.get("applied"):
+                    publish(unit, f"Source-shape search: {row['name']} {summary['start']:.1f}% -> "
+                                  f"{'exact' if summary['exact'] else format(summary['best'], '.1f') + '%'}")
             release(unit)
 
     threads = [threading.Thread(target=worker, args=(n + 1,)) for n in range(max(1, workers))]
@@ -324,11 +353,13 @@ def main():
     parser.add_argument("--workers", type=int, default=1,
                         help="Batch: functions searched at once, in separate processes")
     parser.add_argument("--worker", help=argparse.SUPPRESS)
+    parser.add_argument("--push", action="store_true",
+                        help="Batch with --apply: commit and push each improved function")
     parser.add_argument("--quiet", action="store_true")
     args = parser.parse_args()
     if args.batch:
         batch(args.batch, args.iterations, args.jobs, args.apply, args.min_size, args.max_size, args.seed,
-              args.workers, args.min_percent)
+              args.workers, args.min_percent, args.push)
         return 0
     if not args.symbol:
         parser.error("Name a function or use --batch")
