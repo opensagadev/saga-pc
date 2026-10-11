@@ -37,3 +37,4 @@
 {"symbol": "_AISysLoadPathsPc", "unit": "src/gameapi/aisys.c", "size": 2967, "start": 53.67087, "best": 53.67087, "exact": false, "seconds": 84.5, "instructions": [34.7, 34.7], "rules": 2}
 {"symbol": "_GameAIProcess", "unit": "src/legoapi/gameobjects.c", "size": 6245, "start": 68.315025, "best": 68.315025, "exact": false, "seconds": 392.1, "instructions": [56.87, 56.87]}
 {"symbol": "_GameObjectRotation", "unit": "src/legoapi/gameobjects.c", "size": 2650, "start": 33.22466, "best": 50.02329, "exact": false, "seconds": 98.6, "instructions": [38.59, 43.31], "rules": 2, "applied": true}
+{"symbol": "_DrawAlphaGrid", "unit": "src/legoapi/render.c", "size": 5964, "start": 37.001087, "best": 37.10369, "exact": false, "seconds": 253.2, "instructions": [25.95, 26.09], "rules": 2, "applied": true}
