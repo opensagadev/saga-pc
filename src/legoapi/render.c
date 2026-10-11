@@ -335,22 +335,22 @@ i32 __cdecl RenderPostASinPc(f32);
     } while (0)
 
 void DrawAlphaGrid(i32 rows, i32 cols, RENDER_POST_BLOOM_READER_PC *parameters) {
-    f32 inv_col = 1.0f / (cols - 1);
     f32 inv_row = 1.0f / (rows - 1);
+    f32 inv_col = 1.0f / (cols - 1);
     f32 x0 = 0.0f * inv_row * 2.0f - 1.0f;
     f32 y_start = 2.0f * (0.0f * inv_col) - 1.0f;
     f32 x1 = inv_row * 2.0f - 1.0f;
     f32 y_next = inv_col * 2.0f - 1.0f;
     f32 step_x = 2.0f * inv_row;
-    f32 step_y = inv_col * 2.0f;
+    f32 step_y = 2.0f * inv_col;
     f32 near_scale = 128.0f * parameters->near_scale;
     f32 far_scale = parameters->far_scale * 128.0f;
     f32 near_angle = parameters->near_angle / 180.0f;
     f32 far_angle = parameters->far_angle / 180.0f;
     f32 angle_delta = far_angle - near_angle;
+    NUVEC direction;
     f32 scale_delta = far_scale - near_scale;
     NUCAMERA camera;
-    NUVEC direction;
     f32 brightness;
     static i32 first = 1;
     static f32 saved_fov;
