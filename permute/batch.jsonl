@@ -18,3 +18,4 @@
 {"symbol": "_ScanTerrain", "unit": "src/nu2api/terrain_scan.cpp", "size": 7479, "start": 22.225605, "best": 27.209938, "exact": false, "seconds": 796.0, "instructions": [9.04, 20.2], "applied": true}
 {"symbol": "_TerrainPlayer", "unit": "src/legoapi/terrain_player_pc.c", "size": 7994, "start": 53.880543, "best": 55.268314, "exact": false, "seconds": 857.3, "instructions": [60.77, 61.28], "applied": true}
 {"symbol": "_PushCode", "unit": "src/legoapi/pushing.cpp", "size": 3127, "start": 34.981884, "best": 36.350243, "exact": false, "seconds": 472.4, "instructions": [30.03, 31.72], "applied": true}
+{"symbol": "_ZipUp_MoveCode", "unit": "src/legoapi/zipup.c", "size": 3774, "start": 48.30388, "best": 59.559963, "exact": false, "seconds": 357.9, "instructions": [49.86, 49.5], "applied": true}

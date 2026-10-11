@@ -256,7 +256,7 @@ void ZipUp_MoveCode(GAMEOBJECT *object, i32 special_pressed) {
                 i32 animation_fraction;
 
                 animation_fraction = 0;
-                if (playing != NULL && *playing > 0.0f) {
+                if (NULL != playing && 0.0f < *playing) {
                     f32 frame;
 
                     frame = AnimListFrame(api->character_model, object->field_7aa, 0);
@@ -285,7 +285,7 @@ void ZipUp_MoveCode(GAMEOBJECT *object, i32 special_pressed) {
                         object->context_duration = 1.0f;
                     GameAudio_PlaySfx(0x4d, &api->collision_position, GameAudio_GetPlrSfxBits(object), 0);
                 }
-            } else if (object->field_7b3 == 1) {
+            } else if (1 == object->field_7b3) {
                 f32 fraction;
 
                 fraction = object->context_timer / object->context_duration;
@@ -383,10 +383,10 @@ void ZipUp_MoveCode(GAMEOBJECT *object, i32 special_pressed) {
         end_offset.y += ZipUpRiderHeightPc;
         end_angle = NuAtan2D(end_offset.x, end_offset.z);
         difference = 0x8000 - ((u16)(RotDiff(start_angle, end_angle)));
-        if (difference < 0)
+        if (difference <= -1)
             difference = -difference;
         half = ((i32)(difference * 0.5f));
-        axis = start_angle > 0x8000 ? start_angle + half : start_angle - half;
+        axis = start_angle >= 32769 ? start_angle + half : start_angle - half;
         offset = zipup->rider_start_offset;
         NuVecRotateY(&offset, &offset, ((u16)(-axis)));
         normalized_time = object->context_timer / ZipUpSwingDurationPc;
@@ -398,7 +398,7 @@ void ZipUp_MoveCode(GAMEOBJECT *object, i32 special_pressed) {
         NuVecAdd(&zipup->rider_target_position, hook, &zipup->rider_target_position);
         old_time = object->context_timer;
         object->context_timer += FRAMETIME;
-        if (old_time < (f32)(ZipUpSwingDurationPc * 0.5 - (f64)0.2f) &&
+        if ((f32)(ZipUpSwingDurationPc * 0.5 - (f64)0.2f) > old_time &&
             object->context_timer >= (f32)(ZipUpSwingDurationPc * 0.5 - (f64)0.2f))
             PlaySfx(GrapSwing_text, &api->collision_position);
         return;
@@ -417,13 +417,13 @@ void ZipUp_MoveCode(GAMEOBJECT *object, i32 special_pressed) {
 
     zipup = ZipUp_FindNearest(WORLD, &api->lower_position, api->collision_radius, NULL, &endpoint, object);
     if (objInNetWaitContext(object, 0x47)) {
-        object->context_timer -= FRAMETIME;
+        object->context_timer = object->context_timer - FRAMETIME;
         if (object->context_timer <= 0.0f)
             object->character_context = -1;
     }
     if (zipup == NULL)
         return;
-    if ((special_pressed == 0 && !objInNetWaitContext(object, 0x47)) ||
+    if ((0 == special_pressed && !objInNetWaitContext(object, 0x47)) ||
         ((zipup->flags & 1) != 0 && (zipup->runtime_flags & 1) != 0)) {
         SetHeadTarget(object, &zipup->hook_origin, 4, 2.0f, 1.0f, 2.0f);
         return;
@@ -481,7 +481,7 @@ void ZipUp_MoveCode(GAMEOBJECT *object, i32 special_pressed) {
     start = endpoint == 0 ? &zipup->lower_position : &zipup->upper_position;
     destination = endpoint == 0 ? &zipup->upper_position : &zipup->lower_position;
     object->field_7b3 = endpoint == 0 ? 0 : 1;
-    heading = start->x == hook->x && start->z == hook->z ? destination : hook;
+    heading = hook->x == start->x && hook->z == start->z ? destination : hook;
     api->movement_facing_angle = NuAtan2D(heading->x - start->x, heading->z - start->z);
     api->velocity.y = 0.0f;
     if (api->character_data->game_character->hover_fall_mode == 2)
