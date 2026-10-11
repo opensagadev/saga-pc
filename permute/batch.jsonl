@@ -72,3 +72,4 @@
 {"symbol": "_LoadAreaCharacters", "unit": "src/legoapi/areas.cpp", "size": 3370, "start": 55.838993, "best": 62.26725, "exact": false, "seconds": 360.2, "instructions": [59.99, 63.22], "rules": 3, "applied": true}
 {"symbol": "_KillGameObject", "unit": "src/legoapi/gameobjects.c", "size": 3750, "start": 27.594963, "best": 27.726128, "exact": false, "seconds": 376.1, "instructions": [32.84, 33.28], "rules": 3, "applied": true}
 {"symbol": "_DebReAlloc2", "unit": "src/legoapi/debris_engine.c", "size": 2337, "start": 38.21229, "best": 39.41527, "exact": false, "seconds": 357.4, "instructions": [25.9, 21.96], "rules": 3, "applied": true}
+{"symbol": "_ScanTerrainHandel", "unit": "src/nu2api/terrain_query.cpp", "size": 3427, "start": 41.845455, "best": 42.349586, "exact": false, "seconds": 397.3, "instructions": [22.98, 23.15], "rules": 3, "applied": true}

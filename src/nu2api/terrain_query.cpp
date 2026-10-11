@@ -768,16 +768,16 @@ extern "C" {
         ((TerrainQuery_s *)TerI)->scan_group_index = -1;
         TerrainScanBounds bounds;
         f32 scan_radius_sq;
-        if (((TerrainQuery_s *)TerI)->scan_result != 1) {
+        if (1 != ((TerrainQuery_s *)TerI)->scan_result) {
             f32 movement_sq = ((TerrainQuery_s *)TerI)->movement.x * ((TerrainQuery_s *)TerI)->movement.x +
                               ((TerrainQuery_s *)TerI)->movement.y * ((TerrainQuery_s *)TerI)->movement.y +
                               ((TerrainQuery_s *)TerI)->movement.z * ((TerrainQuery_s *)TerI)->movement.z;
             f32 reach = TerrainScanMargin02Pc + ((TerrainQuery_s *)TerI)->collision_radius_sq + movement_sq;
 
             bounds.min_x = ((TerrainQuery_s *)TerI)->position.x - reach;
-            bounds.max_x = ((TerrainQuery_s *)TerI)->position.x + reach;
-            bounds.min_y = ((TerrainQuery_s *)TerI)->position.y - (((TerrainQuery_s *)TerI)->object_scale * reach);
+            bounds.max_x = reach + (((TerrainQuery_s *)TerI)->position.x);
             bounds.max_y = ((TerrainQuery_s *)TerI)->position.y + (((TerrainQuery_s *)TerI)->object_scale * reach);
+            bounds.min_y = ((TerrainQuery_s *)TerI)->position.y - (((TerrainQuery_s *)TerI)->object_scale * reach);
             bounds.min_z = ((TerrainQuery_s *)TerI)->position.z - reach;
             bounds.max_z = ((TerrainQuery_s *)TerI)->position.z + reach;
             scan_radius_sq = reach + 1.0f;
@@ -812,7 +812,7 @@ extern "C" {
                 } else {
                     bounds.min_z = ((const NUVEC &)(((TerrainQuery_s *)TerI)->movement)).z + position.z -
                                    TerrainScanMargin02Pc - radius;
-                    bounds.max_z = position.z + TerrainScanMargin02Pc + radius;
+                    bounds.max_z = TerrainScanMargin02Pc + position.z + radius;
                 }
             }
 
@@ -820,17 +820,17 @@ extern "C" {
                              ((bounds.min_y - bounds.max_y)) * ((bounds.min_y - bounds.max_y)) +
                              (bounds.min_z - bounds.max_z) * (bounds.min_z - bounds.max_z) + 1.02f;
         }
-        f32 scan_radius = NuFsqrt(scan_radius_sq);
         i32 disabled_platform = TerrPlatDis;
+        f32 scan_radius = NuFsqrt(scan_radius_sq);
         TerrainQuery_s *query = (TerrainQuery_s *)TerI;
         while (0 < handle[0]) {
-            i32 count = handle[0];
             i32 group_index = handle[1];
+            i32 count = handle[0];
             TERRAIN_SHAPE **shapes =
                 reinterpret_cast<TERRAIN_SHAPE **>(reinterpret_cast<u8 *>(handle) + sizeof(TERRAIN_SHAPE *));
             handle = reinterpret_cast<i16 *>(shapes + count);
-            TERRAIN_GROUP_PC &group = ((TERRAIN_SET_PC *)CurrentTerrain)->groups[group_index];
             TerrainScanBounds local = bounds;
+            TERRAIN_GROUP_PC &group = ((TERRAIN_SET_PC *)CurrentTerrain)->groups[group_index];
             TERRAIN_PLATFORM_PC *platform =
                 group.chunk_type == 1 ? &((TERRAIN_SET_PC *)CurrentTerrain)->platforms[group.scene_index] : NULL;
             NUMTX *matrix = platform != NULL ? static_cast<NUMTX *>(platform->scene_object) : NULL;
@@ -838,7 +838,7 @@ extern "C" {
                 if (!TERRAIN_BOUNDS_OVERLAP(bounds, group.bounds_min, group.bounds_max))
                     continue;
                 local.min_x -= group.origin.x;
-                local.max_x -= group.origin.x;
+                local.max_x = local.max_x - group.origin.x;
                 local.min_y -= group.origin.y;
                 local.max_y -= group.origin.y;
                 local.min_z -= group.origin.z;
@@ -878,7 +878,7 @@ extern "C" {
                 continue;
             }
             f32 dx = (bounds.min_x + bounds.max_x) * 0.5f - group.origin.x;
-            f32 dy = ((bounds.min_y + bounds.max_y) * 0.5f - group.origin.y) * query->inverse_object_scale;
+            f32 dy = query->inverse_object_scale * (((bounds.min_y + bounds.max_y) * 0.5f - group.origin.y));
             f32 dz = (bounds.min_z + bounds.max_z) * 0.5f - group.origin.z;
             f32 radius = scan_radius + group.radius;
             if (!(dx * dx + dy * dy + dz * dz < radius * radius))
@@ -893,7 +893,7 @@ extern "C" {
         bounds.min_x -= TerrainScanMargin02Pc;
         bounds.max_x += TerrainScanMargin02Pc;
         bounds.min_z -= TerrainScanMargin02Pc;
-        bounds.max_z += TerrainScanMargin02Pc;
+        bounds.max_z = bounds.max_z + TerrainScanMargin02Pc;
         TERRAIN_WALL_POINT **walls =
             reinterpret_cast<TERRAIN_WALL_POINT **>(reinterpret_cast<u8 *>(handle) + sizeof(TERRAIN_WALL_POINT *));
         while (NULL != (*walls)) {
