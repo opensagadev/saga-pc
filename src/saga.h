@@ -20401,7 +20401,7 @@ extern "C" {
     void __cdecl NuRndrRectUV2di(i32 x, i32 y, i32 width, i32 height, f32 u0, f32 v0, f32 u1, f32 v1, i32 colour,
                                  NUMTL *material);
 
-    /* Source stack interfaces; native private register ABIs are documented in config/symbols.md. */
+    /* Source stack interfaces. */
     GAMEOBJECT *__cdecl PlayerOpponent(GAMEOBJECT *, f32, i32);
     u8 __cdecl SetComboOpponent(GAMEOBJECT *, f32, i32, i32);
     void __cdecl JediLightCode(GAMEOBJECT *);

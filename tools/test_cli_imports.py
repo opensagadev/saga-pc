@@ -32,7 +32,7 @@ from tools.test_binary import coff_bytes,object_data
 Path('build/obj/one.obj').write_bytes(coff_bytes(b'\\xc3'))
 ns=runpy.run_path('tools/{entry}.py',run_name='standalone_import_probe')
 objects=ns['compiled_objects']()
-from tools.candidate_link import relocate_function
+from tools.binary import relocate_function
 from tools.binary import COFF,relocate_data
 from tools.lib import COFF as LibraryCOFF
 assert isinstance(objects['src/one.c'],COFF)
@@ -49,7 +49,7 @@ from tools.test_binary import coff_bytes
 Path('build/obj/one.obj').write_bytes(coff_bytes(b'\\xc3'))
 from tools import check,match
 from tools.binary import COFF
-from tools.candidate_link import relocate_function
+from tools.binary import relocate_function
 for module in (check,match):
  obj=module.compiled_objects()['src/one.c']
  assert isinstance(obj,COFF)
@@ -74,22 +74,7 @@ with tempfile.TemporaryDirectory() as temp:
  with patch.dict(globals,environment=lambda:(Path('build/tools/msvc8/bin'),'mock-wine',{})),patch('subprocess.run',side_effect=link),patch.object(sys,'argv',['cc.py','--link',str(out),str(obj),'--','/nologo']):
   assert fn()==0
  assert out.is_file()
- assert not out.with_suffix('.candidate.json').exists()
 ''')
-    def test_normal_recorder_scoped_to_exact_configured_output(self):
-        self.probe('''
-import runpy
-from pathlib import Path
-ns=runpy.run_path('tools/cc.py',run_name='standalone_import_probe');scope=ns['candidate_link_enabled'];root=Path.cwd()
-config={'candidate_only':'config/candidate-only.json'}
-assert scope(config,root/'build/LEGOStarWarsSaga.exe')
-assert not scope(config,root/'build/fixture.exe')
-assert not scope({},root/'build/LEGOStarWarsSaga.exe')
-custom=dict(config,source_executable='build/custom.exe')
-assert scope(custom,root/'build/custom.exe')
-assert not scope(custom,root/'build/LEGOStarWarsSaga.exe')
-''')
-
     def test_standalone_cli_typed_members_and_reviewed_migrations(self):
         for entry in ('check','match'):
             with self.subTest(entry=entry):
@@ -140,7 +125,7 @@ if '{entry}'=='match':
         self.probe('''
 import ast
 from pathlib import Path
-siblings={'binary','lib','data_members','source_graph','identification','identification_coverage','candidate_only','candidate_link'}
+siblings={'binary','lib','data_members','candidate_only'}
 for name in ('cc','check','match'):
  tree=ast.parse(Path('tools/'+name+'.py').read_text())
  for node in ast.walk(tree):

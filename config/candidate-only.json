@@ -1,3583 +1,450 @@
 {
-  "schema_version": 1,
-  "recipe_pins": [
-    {
-      "path": "Makefile",
-      "sha256": "71a9dbb1aecd7d91ab26e6a98fbf2c2216bc534d6a949542716ec60c413377eb"
-    },
-    {
-      "path": "tools/cc.py",
-      "sha256": "06c1730599f4c39e129e8ed583d27c5008ab0a1b94a60cc93f6ac31e80f75d1c"
-    },
-    {
-      "path": "config/toolchain.json",
-      "sha256": "489d0782638d8033137cdb2834462416111945cbfa073147820e314b8576b95b"
-    },
-    {
-      "path": "src/saga.h",
-      "sha256": "d428a59d803b93892e94c012a52d6ef393c0645c921836fddeac7ef6c62b7f88"
-    },
-    {
-      "path": "src/externals.h",
-      "sha256": "5b08276a7759c01921ac2a5239bf0978accdd38d2533b458c25d1b16f8a4402d"
-    }
-  ],
-  "entries": [
-    {
-      "unit": "src/nu2api/nushadermanager.cpp",
-      "symbol": "__bad_alloc_Message",
-      "kind": "data",
-      "coff_type": 0,
-      "storage_class": 3,
-      "raw_size": 4,
-      "raw_sha256": "df3f619804a92fdb4057192dc43dd748ea778adc52bc498ce80524c014b81119",
-      "section_contract": {
-        "name": ".data",
-        "characteristics": 3224371264,
-        "raw_size": 4,
-        "COMDAT_selection": 0
-      },
-      "ordered_named_relocations": [
-        {
-          "offset": 0,
-          "type": 6,
-          "symbol": "??_C@_0P@GHFPNOJB@bad?5allocation?$AA@"
-        }
-      ],
-      "source": {
-        "path": "src/nu2api/nushadermanager.cpp",
-        "sha256": "75a63331e062524afaa8c752ea5696c1d1b7f485c5cd7e783e741d2735f0b945"
-      },
-      "definitions": [
-        {
-          "file": "build/tools/msvc8/include/exception",
-          "file_sha256": "a956cb4e6f4e668a23e86ffba8e0293576ef7842fa4a053399bb09214f12177b",
-          "line": 331,
-          "end_line": 331,
-          "definition_text_sha256": "b7dfea423eb15f7f980bb3859db34f33c831826de6b6ef5293f8797eed4f616e"
-        },
-        {
-          "file": "build/tools/msvc8/include/xstddef",
-          "file_sha256": "d6632868d18f44c132711c1cad14224fc316e5cbd532bc66412d7980b24db9e9",
-          "line": 61,
-          "end_line": 61,
-          "definition_text_sha256": "37aa87b7c55d5e1930dd0f5a38e02e8eec6defc96298a1b2712c9e37c5d2e3e0"
-        }
-      ],
-      "source_invocation_cause": "private_scalar",
-      "subtype": "private_SDK_header_scalar",
-      "original_binding": null,
-      "original_extent": null,
-      "PC_credit": 0,
-      "original_status": "unproved"
-    },
-    {
-      "unit": "src/nu2api/nushadermanager.cpp",
-      "symbol": "??2@YAPAXIPAX@Z",
-      "kind": "function",
-      "coff_type": 32,
-      "storage_class": 2,
-      "raw_size": 5,
-      "raw_sha256": "99712f5745d56904d51e658eeac81bb39a7a2acb4c8834e9af91b4ef58557a0d",
-      "section_contract": {
-        "name": ".text",
-        "characteristics": 1615859744,
-        "raw_size": 5,
-        "COMDAT_selection": 2
-      },
-      "ordered_named_relocations": [],
-      "source": {
-        "path": "src/nu2api/nushadermanager.cpp",
-        "sha256": "75a63331e062524afaa8c752ea5696c1d1b7f485c5cd7e783e741d2735f0b945"
-      },
-      "definitions": [
-        {
-          "file": "build/tools/msvc8/include/new",
-          "file_sha256": "d75258db5828a4d598b429563d76c51be15863eeb82702ae9215eefb86e5cbdc",
-          "line": 58,
-          "end_line": 61,
-          "definition_text_sha256": "b278d0b9b3283cd6711ed43f70f59eccb8262f07e1af67f99acf72faf6adc7da"
-        }
-      ],
-      "source_invocation_cause": "placement_new",
-      "subtype": "natural_outline",
-      "original_binding": null,
-      "original_extent": null,
-      "PC_credit": 0,
-      "original_status": "unproved"
-    },
-    {
-      "unit": "src/nu2api/shader_compiler.cpp",
-      "symbol": "__bad_alloc_Message",
-      "kind": "data",
-      "coff_type": 0,
-      "storage_class": 3,
-      "raw_size": 4,
-      "raw_sha256": "df3f619804a92fdb4057192dc43dd748ea778adc52bc498ce80524c014b81119",
-      "section_contract": {
-        "name": ".data",
-        "characteristics": 3224371264,
-        "raw_size": 4,
-        "COMDAT_selection": 0
-      },
-      "ordered_named_relocations": [
-        {
-          "offset": 0,
-          "type": 6,
-          "symbol": "??_C@_0P@GHFPNOJB@bad?5allocation?$AA@"
-        }
-      ],
-      "source": {
-        "path": "src/nu2api/shader_compiler.cpp",
-        "sha256": "78de791f8c255b6b58599763f20f4f2dbf00245adce5b3f42c4db8721264f60a"
-      },
-      "definitions": [
-        {
-          "file": "build/tools/msvc8/include/exception",
-          "file_sha256": "a956cb4e6f4e668a23e86ffba8e0293576ef7842fa4a053399bb09214f12177b",
-          "line": 331,
-          "end_line": 331,
-          "definition_text_sha256": "b7dfea423eb15f7f980bb3859db34f33c831826de6b6ef5293f8797eed4f616e"
-        },
-        {
-          "file": "build/tools/msvc8/include/xstddef",
-          "file_sha256": "d6632868d18f44c132711c1cad14224fc316e5cbd532bc66412d7980b24db9e9",
-          "line": 61,
-          "end_line": 61,
-          "definition_text_sha256": "37aa87b7c55d5e1930dd0f5a38e02e8eec6defc96298a1b2712c9e37c5d2e3e0"
-        }
-      ],
-      "source_invocation_cause": "private_scalar",
-      "subtype": "private_SDK_header_scalar",
-      "original_binding": null,
-      "original_extent": null,
-      "PC_credit": 0,
-      "original_status": "unproved"
-    },
-    {
-      "unit": "src/nu2api/shader_lexical.cpp",
-      "symbol": "__bad_alloc_Message",
-      "kind": "data",
-      "coff_type": 0,
-      "storage_class": 3,
-      "raw_size": 4,
-      "raw_sha256": "df3f619804a92fdb4057192dc43dd748ea778adc52bc498ce80524c014b81119",
-      "section_contract": {
-        "name": ".data",
-        "characteristics": 3224371264,
-        "raw_size": 4,
-        "COMDAT_selection": 0
-      },
-      "ordered_named_relocations": [
-        {
-          "offset": 0,
-          "type": 6,
-          "symbol": "??_C@_0P@GHFPNOJB@bad?5allocation?$AA@"
-        }
-      ],
-      "source": {
-        "path": "src/nu2api/shader_lexical.cpp",
-        "sha256": "99804ebf31170cee98e41a47497ee55f4d9bdef3569f68b3a7719f869cccec77"
-      },
-      "definitions": [
-        {
-          "file": "build/tools/msvc8/include/exception",
-          "file_sha256": "a956cb4e6f4e668a23e86ffba8e0293576ef7842fa4a053399bb09214f12177b",
-          "line": 331,
-          "end_line": 331,
-          "definition_text_sha256": "b7dfea423eb15f7f980bb3859db34f33c831826de6b6ef5293f8797eed4f616e"
-        },
-        {
-          "file": "build/tools/msvc8/include/xstddef",
-          "file_sha256": "d6632868d18f44c132711c1cad14224fc316e5cbd532bc66412d7980b24db9e9",
-          "line": 61,
-          "end_line": 61,
-          "definition_text_sha256": "37aa87b7c55d5e1930dd0f5a38e02e8eec6defc96298a1b2712c9e37c5d2e3e0"
-        }
-      ],
-      "source_invocation_cause": "private_scalar",
-      "subtype": "private_SDK_header_scalar",
-      "original_binding": null,
-      "original_extent": null,
-      "PC_credit": 0,
-      "original_status": "unproved"
-    },
-    {
-      "unit": "src/nu2api/shader_parser.cpp",
-      "symbol": "__bad_alloc_Message",
-      "kind": "data",
-      "coff_type": 0,
-      "storage_class": 3,
-      "raw_size": 4,
-      "raw_sha256": "df3f619804a92fdb4057192dc43dd748ea778adc52bc498ce80524c014b81119",
-      "section_contract": {
-        "name": ".data",
-        "characteristics": 3224371264,
-        "raw_size": 4,
-        "COMDAT_selection": 0
-      },
-      "ordered_named_relocations": [
-        {
-          "offset": 0,
-          "type": 6,
-          "symbol": "??_C@_0P@GHFPNOJB@bad?5allocation?$AA@"
-        }
-      ],
-      "source": {
-        "path": "src/nu2api/shader_parser.cpp",
-        "sha256": "91e89cdfcdb84c8e9fa5e3224960bdc624b89eb158f49c85b6957efd17410bde"
-      },
-      "definitions": [
-        {
-          "file": "build/tools/msvc8/include/exception",
-          "file_sha256": "a956cb4e6f4e668a23e86ffba8e0293576ef7842fa4a053399bb09214f12177b",
-          "line": 331,
-          "end_line": 331,
-          "definition_text_sha256": "b7dfea423eb15f7f980bb3859db34f33c831826de6b6ef5293f8797eed4f616e"
-        },
-        {
-          "file": "build/tools/msvc8/include/xstddef",
-          "file_sha256": "d6632868d18f44c132711c1cad14224fc316e5cbd532bc66412d7980b24db9e9",
-          "line": 61,
-          "end_line": 61,
-          "definition_text_sha256": "37aa87b7c55d5e1930dd0f5a38e02e8eec6defc96298a1b2712c9e37c5d2e3e0"
-        }
-      ],
-      "source_invocation_cause": "private_scalar",
-      "subtype": "private_SDK_header_scalar",
-      "original_binding": null,
-      "original_extent": null,
-      "PC_credit": 0,
-      "original_status": "unproved"
-    },
-    {
-      "unit": "src/nu2api/shader_parser.cpp",
-      "symbol": "?assign@?$char_traits@D@std@@SAXAADABD@Z",
-      "kind": "function",
-      "coff_type": 32,
-      "storage_class": 2,
-      "raw_size": 13,
-      "raw_sha256": "c84ec9e087d8b3a02f63c1d1803b4c64ebbabc8414152f017182235fece91110",
-      "section_contract": {
-        "name": ".text",
-        "characteristics": 1615859744,
-        "raw_size": 13,
-        "COMDAT_selection": 2
-      },
-      "ordered_named_relocations": [],
-      "source": {
-        "path": "src/nu2api/shader_parser.cpp",
-        "sha256": "91e89cdfcdb84c8e9fa5e3224960bdc624b89eb158f49c85b6957efd17410bde"
-      },
-      "definitions": [
-        {
-          "file": "build/tools/msvc8/include/iosfwd",
-          "file_sha256": "4f09c870a2c3de3d5928e6da28c707fa72ff2edbb2c4592d0eacb8d6338a98ab",
-          "line": 416,
-          "end_line": 419,
-          "definition_text_sha256": "3ad4825bbabc30dbdf8a7a0c6f1de51b81096589468fb3bc06a55371b3a698ce"
-        }
-      ],
-      "source_invocation_cause": "string_exception",
-      "subtype": "natural_outline",
-      "original_binding": null,
-      "original_extent": null,
-      "PC_credit": 0,
-      "original_status": "unproved"
-    },
-    {
-      "unit": "src/nu2api/shader_parser.cpp",
-      "symbol": "?length@?$char_traits@D@std@@SAIPBD@Z",
-      "kind": "function",
-      "coff_type": 32,
-      "storage_class": 2,
-      "raw_size": 19,
-      "raw_sha256": "a6f9039f90e795c5f2e11eda6a24ca5336db3aa00c2c0dc29add2c415daa83e3",
-      "section_contract": {
-        "name": ".text",
-        "characteristics": 1615859744,
-        "raw_size": 19,
-        "COMDAT_selection": 2
-      },
-      "ordered_named_relocations": [],
-      "source": {
-        "path": "src/nu2api/shader_parser.cpp",
-        "sha256": "91e89cdfcdb84c8e9fa5e3224960bdc624b89eb158f49c85b6957efd17410bde"
-      },
-      "definitions": [
-        {
-          "file": "build/tools/msvc8/include/iosfwd",
-          "file_sha256": "4f09c870a2c3de3d5928e6da28c707fa72ff2edbb2c4592d0eacb8d6338a98ab",
-          "line": 439,
-          "end_line": 443,
-          "definition_text_sha256": "71487894286bdfaa50991119765b02aea6502a4d635023b2962b285214a52a5e"
-        }
-      ],
-      "source_invocation_cause": "string_exception",
-      "subtype": "natural_outline",
-      "original_binding": null,
-      "original_extent": null,
-      "PC_credit": 0,
-      "original_status": "unproved"
-    },
-    {
-      "unit": "src/nu2api/shader_parser.cpp",
-      "symbol": "?_Copy_s@?$char_traits@D@std@@SAPADPADIPBDI@Z",
-      "kind": "function",
-      "coff_type": 32,
-      "storage_class": 2,
-      "raw_size": 33,
-      "raw_sha256": "40c8ae2b535e1536a8849ae5dd06d80c0370efb7ff88ccb54495f4c593f902d2",
-      "section_contract": {
-        "name": ".text",
-        "characteristics": 1615859744,
-        "raw_size": 33,
-        "COMDAT_selection": 2
-      },
-      "ordered_named_relocations": [
-        {
-          "offset": 22,
-          "type": 20,
-          "symbol": "_memcpy_s"
-        }
-      ],
-      "source": {
-        "path": "src/nu2api/shader_parser.cpp",
-        "sha256": "91e89cdfcdb84c8e9fa5e3224960bdc624b89eb158f49c85b6957efd17410bde"
-      },
-      "definitions": [
-        {
-          "file": "build/tools/msvc8/include/iosfwd",
-          "file_sha256": "4f09c870a2c3de3d5928e6da28c707fa72ff2edbb2c4592d0eacb8d6338a98ab",
-          "line": 453,
-          "end_line": 460,
-          "definition_text_sha256": "455d2f26eab4dd6d32f2411896f9c05a7da4a681d74c8f77d93d6b7921bd7190"
-        }
-      ],
-      "source_invocation_cause": "string_exception",
-      "subtype": "natural_outline",
-      "original_binding": null,
-      "original_extent": null,
-      "PC_credit": 0,
-      "original_status": "unproved"
-    },
-    {
-      "unit": "src/nu2api/shader_parser.cpp",
-      "symbol": "?_Move_s@?$char_traits@D@std@@SAPADPADIPBDI@Z",
-      "kind": "function",
-      "coff_type": 32,
-      "storage_class": 2,
-      "raw_size": 33,
-      "raw_sha256": "40c8ae2b535e1536a8849ae5dd06d80c0370efb7ff88ccb54495f4c593f902d2",
-      "section_contract": {
-        "name": ".text",
-        "characteristics": 1615859744,
-        "raw_size": 33,
-        "COMDAT_selection": 2
-      },
-      "ordered_named_relocations": [
-        {
-          "offset": 22,
-          "type": 20,
-          "symbol": "_memmove_s"
-        }
-      ],
-      "source": {
-        "path": "src/nu2api/shader_parser.cpp",
-        "sha256": "91e89cdfcdb84c8e9fa5e3224960bdc624b89eb158f49c85b6957efd17410bde"
-      },
-      "definitions": [
-        {
-          "file": "build/tools/msvc8/include/iosfwd",
-          "file_sha256": "4f09c870a2c3de3d5928e6da28c707fa72ff2edbb2c4592d0eacb8d6338a98ab",
-          "line": 477,
-          "end_line": 484,
-          "definition_text_sha256": "8e1cffbd7d650fbab01fc622f0f421e40639122c144cb5df074e26e45a1827fa"
-        }
-      ],
-      "source_invocation_cause": "string_exception",
-      "subtype": "natural_outline",
-      "original_binding": null,
-      "original_extent": null,
-      "PC_credit": 0,
-      "original_status": "unproved"
-    },
-    {
-      "unit": "src/nu2api/shader_parser.cpp",
-      "symbol": "??0_Iterator_base@std@@QAE@XZ",
-      "kind": "function",
-      "coff_type": 32,
-      "storage_class": 2,
-      "raw_size": 9,
-      "raw_sha256": "cda72abcdbb1efdc80edc8549a889c40e93418986336d31914aa9a2d9e967cc7",
-      "section_contract": {
-        "name": ".text",
-        "characteristics": 1615859744,
-        "raw_size": 9,
-        "COMDAT_selection": 2
-      },
-      "ordered_named_relocations": [],
-      "source": {
-        "path": "src/nu2api/shader_parser.cpp",
-        "sha256": "91e89cdfcdb84c8e9fa5e3224960bdc624b89eb158f49c85b6957efd17410bde"
-      },
-      "definitions": [
-        {
-          "file": "build/tools/msvc8/include/xutility",
-          "file_sha256": "1b709f8918c201d0223cca2b736a46e34ca4b1519e5e22da1ca89c6c82e7869a",
-          "line": 400,
-          "end_line": 404,
-          "definition_text_sha256": "7f5919212c87da580ac7cc4274b2ae6da44ed970ffc9713993f68a31c022e657"
-        }
-      ],
-      "source_invocation_cause": "vector",
-      "subtype": "natural_outline",
-      "original_binding": null,
-      "original_extent": null,
-      "PC_credit": 0,
-      "original_status": "unproved"
-    },
-    {
-      "unit": "src/nu2api/shader_parser.cpp",
-      "symbol": "??0bad_alloc@std@@QAE@PBD@Z",
-      "kind": "function",
-      "coff_type": 32,
-      "storage_class": 2,
-      "raw_size": 25,
-      "raw_sha256": "8777259499eb82b10a5248b7d2d47ca0067d7775dec5a6e19b1387d304fb4e99",
-      "section_contract": {
-        "name": ".text",
-        "characteristics": 1615859744,
-        "raw_size": 25,
-        "COMDAT_selection": 2
-      },
-      "ordered_named_relocations": [
-        {
-          "offset": 9,
-          "type": 20,
-          "symbol": "??0exception@std@@QAE@ABQBD@Z"
-        },
-        {
-          "offset": 15,
-          "type": 6,
-          "symbol": "??_7bad_alloc@std@@6B@"
-        }
-      ],
-      "source": {
-        "path": "src/nu2api/shader_parser.cpp",
-        "sha256": "91e89cdfcdb84c8e9fa5e3224960bdc624b89eb158f49c85b6957efd17410bde"
-      },
-      "definitions": [
-        {
-          "file": "build/tools/msvc8/include/exception",
-          "file_sha256": "a956cb4e6f4e668a23e86ffba8e0293576ef7842fa4a053399bb09214f12177b",
-          "line": 337,
-          "end_line": 340,
-          "definition_text_sha256": "96b28c0327366dea2f1811dc07b17a84b26405811645f1af3235be9f21dee62b"
-        }
-      ],
-      "source_invocation_cause": "string_exception",
-      "subtype": "natural_outline",
-      "original_binding": null,
-      "original_extent": null,
-      "PC_credit": 0,
-      "original_status": "unproved"
-    },
-    {
-      "unit": "src/nu2api/shader_parser.cpp",
-      "symbol": "??0ShaderParserIncludePc@@AAE@PBDH@Z",
-      "kind": "function",
-      "coff_type": 32,
-      "storage_class": 2,
-      "raw_size": 39,
-      "raw_sha256": "a0cbf134ad24146b72014c91f61e2d20d798dab044b8b9c8e730c15aee85cc71",
-      "section_contract": {
-        "name": ".text",
-        "characteristics": 1615859744,
-        "raw_size": 39,
-        "COMDAT_selection": 2
-      },
-      "ordered_named_relocations": [
-        {
-          "offset": 9,
-          "type": 20,
-          "symbol": "__strdup"
-        },
-        {
-          "offset": 29,
-          "type": 20,
-          "symbol": "??0ShaderCompilerBufferAllocatorPc@@QAE@H_N@Z"
-        }
-      ],
-      "source": {
-        "path": "src/nu2api/shader_parser.cpp",
-        "sha256": "91e89cdfcdb84c8e9fa5e3224960bdc624b89eb158f49c85b6957efd17410bde"
-      },
-      "definitions": [
-        {
-          "file": "src/nu2api/shader_parser.cpp",
-          "file_sha256": "91e89cdfcdb84c8e9fa5e3224960bdc624b89eb158f49c85b6957efd17410bde",
-          "line": 523,
-          "end_line": 524,
-          "definition_text_sha256": "810ec2c841dbe39a97b56ce8d2e46d687c2ba722636e394ee26860ad316a8d6b"
-        }
-      ],
-      "source_invocation_cause": "record",
-      "subtype": "natural_outline",
-      "original_binding": null,
-      "original_extent": null,
-      "PC_credit": 0,
-      "original_status": "unproved"
-    },
-    {
-      "unit": "src/nu2api/shader_parser.cpp",
-      "symbol": "??1ShaderParserIncludePc@@AAE@XZ",
-      "kind": "function",
-      "coff_type": 32,
-      "storage_class": 2,
-      "raw_size": 33,
-      "raw_sha256": "c9dce5edcf38eec96248995733f801b27b63382e1cedc0cc07f845af93d3534d",
-      "section_contract": {
-        "name": ".text",
-        "characteristics": 1615859744,
-        "raw_size": 33,
-        "COMDAT_selection": 2
-      },
-      "ordered_named_relocations": [
-        {
-          "offset": 11,
-          "type": 20,
-          "symbol": "??_V@YAXPAX@Z"
-        },
-        {
-          "offset": 29,
-          "type": 20,
-          "symbol": "??1ShaderCompilerBufferAllocatorPc@@QAE@XZ"
-        }
-      ],
-      "source": {
-        "path": "src/nu2api/shader_parser.cpp",
-        "sha256": "91e89cdfcdb84c8e9fa5e3224960bdc624b89eb158f49c85b6957efd17410bde"
-      },
-      "definitions": [
-        {
-          "file": "src/nu2api/shader_parser.cpp",
-          "file_sha256": "91e89cdfcdb84c8e9fa5e3224960bdc624b89eb158f49c85b6957efd17410bde",
-          "line": 525,
-          "end_line": 530,
-          "definition_text_sha256": "510364b11243e9667c54071d16aa5966595894eef43210c62df1a809bfefe58d"
-        }
-      ],
-      "source_invocation_cause": "record",
-      "subtype": "natural_outline",
-      "original_binding": null,
-      "original_extent": null,
-      "PC_credit": 0,
-      "original_status": "unproved"
-    },
-    {
-      "unit": "src/nu2api/shader_parser.cpp",
-      "symbol": "??_GShaderParserIncludePc@@AAEPAXI@Z",
-      "kind": "function",
-      "coff_type": 32,
-      "storage_class": 2,
-      "raw_size": 54,
-      "raw_sha256": "da388871def033a52307b1eaa1b651a24b53e7f165855c65d711c6789e28d40f",
-      "section_contract": {
-        "name": ".text",
-        "characteristics": 1615859744,
-        "raw_size": 54,
-        "COMDAT_selection": 2
-      },
-      "ordered_named_relocations": [
-        {
-          "offset": 11,
-          "type": 20,
-          "symbol": "??_V@YAXPAX@Z"
-        },
-        {
-          "offset": 28,
-          "type": 20,
-          "symbol": "??1ShaderCompilerBufferAllocatorPc@@QAE@XZ"
-        },
-        {
-          "offset": 41,
-          "type": 20,
-          "symbol": "??3@YAXPAX@Z"
-        }
-      ],
-      "source": {
-        "path": "src/nu2api/shader_parser.cpp",
-        "sha256": "91e89cdfcdb84c8e9fa5e3224960bdc624b89eb158f49c85b6957efd17410bde"
-      },
-      "definitions": [
-        {
-          "file": "src/nu2api/shader_parser.cpp",
-          "file_sha256": "91e89cdfcdb84c8e9fa5e3224960bdc624b89eb158f49c85b6957efd17410bde",
-          "line": 525,
-          "end_line": 530,
-          "definition_text_sha256": "510364b11243e9667c54071d16aa5966595894eef43210c62df1a809bfefe58d"
-        },
-        {
-          "file": "src/nu2api/shader_parser.cpp",
-          "file_sha256": "91e89cdfcdb84c8e9fa5e3224960bdc624b89eb158f49c85b6957efd17410bde",
-          "line": 517,
-          "end_line": 531,
-          "definition_text_sha256": "184e4523dc60cd7af5a27ca5d1dfce7b914516316ff3d63f5b2df8214e8adb57"
-        }
-      ],
-      "source_invocation_cause": "record",
-      "subtype": "natural_outline",
-      "original_binding": null,
-      "original_extent": null,
-      "PC_credit": 0,
-      "original_status": "unproved"
-    },
-    {
-      "unit": "src/nu2api/shader_parser.cpp",
-      "symbol": "?_Myptr@?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@std@@IBEPBDXZ",
-      "kind": "function",
-      "coff_type": 32,
-      "storage_class": 2,
-      "raw_size": 14,
-      "raw_sha256": "ef96cd9c00eb12f1ac2dfd13b8b7fa3359327a1dd9836f81879f156439638fc0",
-      "section_contract": {
-        "name": ".text",
-        "characteristics": 1615859744,
-        "raw_size": 14,
-        "COMDAT_selection": 2
-      },
-      "ordered_named_relocations": [],
-      "source": {
-        "path": "src/nu2api/shader_parser.cpp",
-        "sha256": "91e89cdfcdb84c8e9fa5e3224960bdc624b89eb158f49c85b6957efd17410bde"
-      },
-      "definitions": [
-        {
-          "file": "build/tools/msvc8/include/xstring",
-          "file_sha256": "2abad3cfe7378e4cb4baae0c80b2d154b346dfb986de4ebb42c5827d37ef93eb",
-          "line": 2053,
-          "end_line": 2056,
-          "definition_text_sha256": "9043bee60210788966cbe2f9bbe3c02d3593f3fc852b66e382aba8282cb08753"
-        }
-      ],
-      "source_invocation_cause": "string_exception",
-      "subtype": "natural_outline",
-      "original_binding": null,
-      "original_extent": null,
-      "PC_credit": 0,
-      "original_status": "unproved"
-    },
-    {
-      "unit": "src/nu2api/shader_parser.cpp",
-      "symbol": "??0?$allocator@D@std@@QAE@ABV01@@Z",
-      "kind": "function",
-      "coff_type": 32,
-      "storage_class": 2,
-      "raw_size": 5,
-      "raw_sha256": "e58773679e693e79ccf3a079b2d7c66b6103cf65bb691bf2e5991ab2eaa2769d",
-      "section_contract": {
-        "name": ".text",
-        "characteristics": 1615859744,
-        "raw_size": 5,
-        "COMDAT_selection": 2
-      },
-      "ordered_named_relocations": [],
-      "source": {
-        "path": "src/nu2api/shader_parser.cpp",
-        "sha256": "91e89cdfcdb84c8e9fa5e3224960bdc624b89eb158f49c85b6957efd17410bde"
-      },
-      "definitions": [
-        {
-          "file": "build/tools/msvc8/include/xmemory",
-          "file_sha256": "f9da85fbb9d393ad80e3981340c160a89f655a763ca6a3decc43f8515b29677e",
-          "line": 124,
-          "end_line": 126,
-          "definition_text_sha256": "60a6d3202860a375057cbdd235d44807817a485eb8b87c3ff3172ba10abf91d9"
-        }
-      ],
-      "source_invocation_cause": "string_exception",
-      "subtype": "natural_outline",
-      "original_binding": null,
-      "original_extent": null,
-      "PC_credit": 0,
-      "original_status": "unproved"
-    },
-    {
-      "unit": "src/nu2api/shader_parser.cpp",
-      "symbol": "?capacity@?$vector@PAUShaderParserIncludePc@@V?$allocator@PAUShaderParserIncludePc@@@std@@@std@@QBEIXZ",
-      "kind": "function",
-      "coff_type": 32,
-      "storage_class": 2,
-      "raw_size": 19,
-      "raw_sha256": "3b529c27393bf32d90704541df446aa4120c4bfead1cdd7bf5292527aa203841",
-      "section_contract": {
-        "name": ".text",
-        "characteristics": 1615859744,
-        "raw_size": 19,
-        "COMDAT_selection": 2
-      },
-      "ordered_named_relocations": [],
-      "source": {
-        "path": "src/nu2api/shader_parser.cpp",
-        "sha256": "91e89cdfcdb84c8e9fa5e3224960bdc624b89eb158f49c85b6957efd17410bde"
-      },
-      "definitions": [
-        {
-          "file": "build/tools/msvc8/include/vector",
-          "file_sha256": "6dfba811b28e061b9f493227463758cff60a9b51627e763371ec6996216aa695",
-          "line": 620,
-          "end_line": 623,
-          "definition_text_sha256": "0373b6a443df3abaec744e0c95f088123155489bfe9354ef65f9a972a615d41d"
-        }
-      ],
-      "source_invocation_cause": "vector",
-      "subtype": "natural_outline",
-      "original_binding": null,
-      "original_extent": null,
-      "PC_credit": 0,
-      "original_status": "unproved"
-    },
-    {
-      "unit": "src/nu2api/shader_parser.cpp",
-      "symbol": "?size@?$vector@PAUShaderParserIncludePc@@V?$allocator@PAUShaderParserIncludePc@@@std@@@std@@QBEIXZ",
-      "kind": "function",
-      "coff_type": 32,
-      "storage_class": 2,
-      "raw_size": 19,
-      "raw_sha256": "ae43e511423ed41f29d85edaf2f02b5a752e32ebbe45dd99456242b3c196c50d",
-      "section_contract": {
-        "name": ".text",
-        "characteristics": 1615859744,
-        "raw_size": 19,
-        "COMDAT_selection": 2
-      },
-      "ordered_named_relocations": [],
-      "source": {
-        "path": "src/nu2api/shader_parser.cpp",
-        "sha256": "91e89cdfcdb84c8e9fa5e3224960bdc624b89eb158f49c85b6957efd17410bde"
-      },
-      "definitions": [
-        {
-          "file": "build/tools/msvc8/include/vector",
-          "file_sha256": "6dfba811b28e061b9f493227463758cff60a9b51627e763371ec6996216aa695",
-          "line": 701,
-          "end_line": 704,
-          "definition_text_sha256": "d844e1fb87078358f2600b7315a8bac9e8179ac90fbec40f3fef7dcfad32ea61"
-        }
-      ],
-      "source_invocation_cause": "vector",
-      "subtype": "natural_outline",
-      "original_binding": null,
-      "original_extent": null,
-      "PC_credit": 0,
-      "original_status": "unproved"
-    },
-    {
-      "unit": "src/nu2api/shader_parser.cpp",
-      "symbol": "??0?$allocator@PAUShaderParserIncludePc@@@std@@QAE@XZ",
-      "kind": "function",
-      "coff_type": 32,
-      "storage_class": 2,
-      "raw_size": 3,
-      "raw_sha256": "58367ffa2a0179375018fa0f5c26da24391e42ebe0ed8fdda35a21fc7bdc396f",
-      "section_contract": {
-        "name": ".text",
-        "characteristics": 1615859744,
-        "raw_size": 3,
-        "COMDAT_selection": 2
-      },
-      "ordered_named_relocations": [],
-      "source": {
-        "path": "src/nu2api/shader_parser.cpp",
-        "sha256": "91e89cdfcdb84c8e9fa5e3224960bdc624b89eb158f49c85b6957efd17410bde"
-      },
-      "definitions": [
-        {
-          "file": "build/tools/msvc8/include/xmemory",
-          "file_sha256": "f9da85fbb9d393ad80e3981340c160a89f655a763ca6a3decc43f8515b29677e",
-          "line": 120,
-          "end_line": 122,
-          "definition_text_sha256": "11b09deda747467875751a88665da45f6e30da8712aa4e929f0e8d1b50b5119a"
-        }
-      ],
-      "source_invocation_cause": "vector",
-      "subtype": "natural_outline",
-      "original_binding": null,
-      "original_extent": null,
-      "PC_credit": 0,
-      "original_status": "unproved"
-    },
-    {
-      "unit": "src/nu2api/shader_parser.cpp",
-      "symbol": "??D?$_Vector_const_iterator@PAUShaderParserIncludePc@@V?$allocator@PAUShaderParserIncludePc@@@std@@@std@@QBEABQAUShaderParserIncludePc@@XZ",
-      "kind": "function",
-      "coff_type": 32,
-      "storage_class": 2,
-      "raw_size": 37,
-      "raw_sha256": "2fb28bdb47d8969aee42e7fd86a6c55a7e6162fab5c6b7e178e43e7065046cc3",
-      "section_contract": {
-        "name": ".text",
-        "characteristics": 1615859744,
-        "raw_size": 37,
-        "COMDAT_selection": 2
-      },
-      "ordered_named_relocations": [
-        {
-          "offset": 9,
-          "type": 20,
-          "symbol": "__invalid_parameter_noinfo"
-        },
-        {
-          "offset": 24,
-          "type": 20,
-          "symbol": "__invalid_parameter_noinfo"
-        }
-      ],
-      "source": {
-        "path": "src/nu2api/shader_parser.cpp",
-        "sha256": "91e89cdfcdb84c8e9fa5e3224960bdc624b89eb158f49c85b6957efd17410bde"
-      },
-      "definitions": [
-        {
-          "file": "build/tools/msvc8/include/vector",
-          "file_sha256": "6dfba811b28e061b9f493227463758cff60a9b51627e763371ec6996216aa695",
-          "line": 91,
-          "end_line": 108,
-          "definition_text_sha256": "ed1f4c36516c6e8e207485876dbdf2b05f74e36b7658c96b89dd46e98d2e61cc"
-        }
-      ],
-      "source_invocation_cause": "vector",
-      "subtype": "natural_outline",
-      "original_binding": null,
-      "original_extent": null,
-      "PC_credit": 0,
-      "original_status": "unproved"
-    },
-    {
-      "unit": "src/nu2api/shader_parser.cpp",
-      "symbol": "??E?$_Vector_const_iterator@PAUShaderParserIncludePc@@V?$allocator@PAUShaderParserIncludePc@@@std@@@std@@QAEAAV01@XZ",
-      "kind": "function",
-      "coff_type": 32,
-      "storage_class": 2,
-      "raw_size": 36,
-      "raw_sha256": "0c5655f76b17706711669fd3b8435d6df01ed6f224e68d4aad12ad46a78cd2be",
-      "section_contract": {
-        "name": ".text",
-        "characteristics": 1615859744,
-        "raw_size": 36,
-        "COMDAT_selection": 2
-      },
-      "ordered_named_relocations": [
-        {
-          "offset": 9,
-          "type": 20,
-          "symbol": "__invalid_parameter_noinfo"
-        },
-        {
-          "offset": 24,
-          "type": 20,
-          "symbol": "__invalid_parameter_noinfo"
-        }
-      ],
-      "source": {
-        "path": "src/nu2api/shader_parser.cpp",
-        "sha256": "91e89cdfcdb84c8e9fa5e3224960bdc624b89eb158f49c85b6957efd17410bde"
-      },
-      "definitions": [
-        {
-          "file": "build/tools/msvc8/include/vector",
-          "file_sha256": "6dfba811b28e061b9f493227463758cff60a9b51627e763371ec6996216aa695",
-          "line": 115,
-          "end_line": 121,
-          "definition_text_sha256": "b2c217b076cd376b9c5a3f95d740bab02790b97b6035533ab68742ca467f5c32"
-        }
-      ],
-      "source_invocation_cause": "vector",
-      "subtype": "natural_outline",
-      "original_binding": null,
-      "original_extent": null,
-      "PC_credit": 0,
-      "original_status": "unproved"
-    },
-    {
-      "unit": "src/nu2api/shader_parser.cpp",
-      "symbol": "??8?$_Vector_const_iterator@PAUShaderParserIncludePc@@V?$allocator@PAUShaderParserIncludePc@@@std@@@std@@QBE_NABV01@@Z",
-      "kind": "function",
-      "coff_type": 32,
-      "storage_class": 2,
-      "raw_size": 41,
-      "raw_sha256": "f5cc39f59fc7df046ae6b4f6a7b6395b7d5be0659aebc23773fad220cc49dc3f",
-      "section_contract": {
-        "name": ".text",
-        "characteristics": 1615859744,
-        "raw_size": 41,
-        "COMDAT_selection": 2
-      },
-      "ordered_named_relocations": [
-        {
-          "offset": 19,
-          "type": 20,
-          "symbol": "__invalid_parameter_noinfo"
-        }
-      ],
-      "source": {
-        "path": "src/nu2api/shader_parser.cpp",
-        "sha256": "91e89cdfcdb84c8e9fa5e3224960bdc624b89eb158f49c85b6957efd17410bde"
-      },
-      "definitions": [
-        {
-          "file": "build/tools/msvc8/include/vector",
-          "file_sha256": "6dfba811b28e061b9f493227463758cff60a9b51627e763371ec6996216aa695",
-          "line": 189,
-          "end_line": 199,
-          "definition_text_sha256": "4248efb575436bd6a0adf8ae9058d93956bfd181f2c98920e1cb0ecbbbdfb400"
-        }
-      ],
-      "source_invocation_cause": "vector",
-      "subtype": "natural_outline",
-      "original_binding": null,
-      "original_extent": null,
-      "PC_credit": 0,
-      "original_status": "unproved"
-    },
-    {
-      "unit": "src/nu2api/shader_parser.cpp",
-      "symbol": "?size@?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@std@@QBEIXZ",
-      "kind": "function",
-      "coff_type": 32,
-      "storage_class": 2,
-      "raw_size": 4,
-      "raw_sha256": "01d3abacb68aac3537badfe563d0e21d0244fb61db1d805bcef8f455407fad96",
-      "section_contract": {
-        "name": ".text",
-        "characteristics": 1615859744,
-        "raw_size": 4,
-        "COMDAT_selection": 2
-      },
-      "ordered_named_relocations": [],
-      "source": {
-        "path": "src/nu2api/shader_parser.cpp",
-        "sha256": "91e89cdfcdb84c8e9fa5e3224960bdc624b89eb158f49c85b6957efd17410bde"
-      },
-      "definitions": [
-        {
-          "file": "build/tools/msvc8/include/xstring",
-          "file_sha256": "2abad3cfe7378e4cb4baae0c80b2d154b346dfb986de4ebb42c5827d37ef93eb",
-          "line": 1597,
-          "end_line": 1600,
-          "definition_text_sha256": "54c03fa0941364f689d5ba46ea76e1736bb47de73342428a9b3a2934ad008116"
-        }
-      ],
-      "source_invocation_cause": "string_exception",
-      "subtype": "natural_outline",
-      "original_binding": null,
-      "original_extent": null,
-      "PC_credit": 0,
-      "original_status": "unproved"
-    },
-    {
-      "unit": "src/nu2api/shader_parser.cpp",
-      "symbol": "?_Myptr@?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@std@@IAEPADXZ",
-      "kind": "function",
-      "coff_type": 32,
-      "storage_class": 2,
-      "raw_size": 14,
-      "raw_sha256": "ef96cd9c00eb12f1ac2dfd13b8b7fa3359327a1dd9836f81879f156439638fc0",
-      "section_contract": {
-        "name": ".text",
-        "characteristics": 1615859744,
-        "raw_size": 14,
-        "COMDAT_selection": 2
-      },
-      "ordered_named_relocations": [],
-      "source": {
-        "path": "src/nu2api/shader_parser.cpp",
-        "sha256": "91e89cdfcdb84c8e9fa5e3224960bdc624b89eb158f49c85b6957efd17410bde"
-      },
-      "definitions": [
-        {
-          "file": "build/tools/msvc8/include/xstring",
-          "file_sha256": "2abad3cfe7378e4cb4baae0c80b2d154b346dfb986de4ebb42c5827d37ef93eb",
-          "line": 2048,
-          "end_line": 2051,
-          "definition_text_sha256": "de14e2726fdac4d5674b6751e06d947bae29fff8d0a14ad1c24a27ccf2bcc0e0"
-        }
-      ],
-      "source_invocation_cause": "string_exception",
-      "subtype": "natural_outline",
-      "original_binding": null,
-      "original_extent": null,
-      "PC_credit": 0,
-      "original_status": "unproved"
-    },
-    {
-      "unit": "src/nu2api/shader_parser.cpp",
-      "symbol": "?deallocate@?$allocator@D@std@@QAEXPADI@Z",
-      "kind": "function",
-      "coff_type": 32,
-      "storage_class": 2,
-      "raw_size": 14,
-      "raw_sha256": "89fc80cdc74232716c53b9f1921ac2f87b5c2f6eb8390628a39f5fc81c1b1caa",
-      "section_contract": {
-        "name": ".text",
-        "characteristics": 1615859744,
-        "raw_size": 14,
-        "COMDAT_selection": 2
-      },
-      "ordered_named_relocations": [
-        {
-          "offset": 6,
-          "type": 20,
-          "symbol": "??3@YAXPAX@Z"
-        }
-      ],
-      "source": {
-        "path": "src/nu2api/shader_parser.cpp",
-        "sha256": "91e89cdfcdb84c8e9fa5e3224960bdc624b89eb158f49c85b6957efd17410bde"
-      },
-      "definitions": [
-        {
-          "file": "build/tools/msvc8/include/xmemory",
-          "file_sha256": "f9da85fbb9d393ad80e3981340c160a89f655a763ca6a3decc43f8515b29677e",
-          "line": 139,
-          "end_line": 142,
-          "definition_text_sha256": "105bd4761ea6d6b2000222a399256468d41b16cc4bb8032e012e9fc58da824bf"
-        }
-      ],
-      "source_invocation_cause": "string_exception",
-      "subtype": "natural_outline",
-      "original_binding": null,
-      "original_extent": null,
-      "PC_credit": 0,
-      "original_status": "unproved"
-    },
-    {
-      "unit": "src/nu2api/shader_parser.cpp",
-      "symbol": "??0?$allocator@PAUShaderParserIncludePc@@@std@@QAE@ABV01@@Z",
-      "kind": "function",
-      "coff_type": 32,
-      "storage_class": 2,
-      "raw_size": 5,
-      "raw_sha256": "e58773679e693e79ccf3a079b2d7c66b6103cf65bb691bf2e5991ab2eaa2769d",
-      "section_contract": {
-        "name": ".text",
-        "characteristics": 1615859744,
-        "raw_size": 5,
-        "COMDAT_selection": 2
-      },
-      "ordered_named_relocations": [],
-      "source": {
-        "path": "src/nu2api/shader_parser.cpp",
-        "sha256": "91e89cdfcdb84c8e9fa5e3224960bdc624b89eb158f49c85b6957efd17410bde"
-      },
-      "definitions": [
-        {
-          "file": "build/tools/msvc8/include/xmemory",
-          "file_sha256": "f9da85fbb9d393ad80e3981340c160a89f655a763ca6a3decc43f8515b29677e",
-          "line": 124,
-          "end_line": 126,
-          "definition_text_sha256": "60a6d3202860a375057cbdd235d44807817a485eb8b87c3ff3172ba10abf91d9"
-        }
-      ],
-      "source_invocation_cause": "vector",
-      "subtype": "natural_outline",
-      "original_binding": null,
-      "original_extent": null,
-      "PC_credit": 0,
-      "original_status": "unproved"
-    },
-    {
-      "unit": "src/nu2api/shader_parser.cpp",
-      "symbol": "?deallocate@?$allocator@PAUShaderParserIncludePc@@@std@@QAEXPAPAUShaderParserIncludePc@@I@Z",
-      "kind": "function",
-      "coff_type": 32,
-      "storage_class": 2,
-      "raw_size": 14,
-      "raw_sha256": "89fc80cdc74232716c53b9f1921ac2f87b5c2f6eb8390628a39f5fc81c1b1caa",
-      "section_contract": {
-        "name": ".text",
-        "characteristics": 1615859744,
-        "raw_size": 14,
-        "COMDAT_selection": 2
-      },
-      "ordered_named_relocations": [
-        {
-          "offset": 6,
-          "type": 20,
-          "symbol": "??3@YAXPAX@Z"
-        }
-      ],
-      "source": {
-        "path": "src/nu2api/shader_parser.cpp",
-        "sha256": "91e89cdfcdb84c8e9fa5e3224960bdc624b89eb158f49c85b6957efd17410bde"
-      },
-      "definitions": [
-        {
-          "file": "build/tools/msvc8/include/xmemory",
-          "file_sha256": "f9da85fbb9d393ad80e3981340c160a89f655a763ca6a3decc43f8515b29677e",
-          "line": 139,
-          "end_line": 142,
-          "definition_text_sha256": "105bd4761ea6d6b2000222a399256468d41b16cc4bb8032e012e9fc58da824bf"
-        }
-      ],
-      "source_invocation_cause": "vector",
-      "subtype": "natural_outline",
-      "original_binding": null,
-      "original_extent": null,
-      "PC_credit": 0,
-      "original_status": "unproved"
-    },
-    {
-      "unit": "src/nu2api/shader_parser.cpp",
-      "symbol": "??0?$_Ranit@PAUShaderParserIncludePc@@HPBQAU1@ABQAU1@@std@@QAE@XZ",
-      "kind": "function",
-      "coff_type": 32,
-      "storage_class": 2,
-      "raw_size": 9,
-      "raw_sha256": "cda72abcdbb1efdc80edc8549a889c40e93418986336d31914aa9a2d9e967cc7",
-      "section_contract": {
-        "name": ".text",
-        "characteristics": 1615859744,
-        "raw_size": 9,
-        "COMDAT_selection": 2
-      },
-      "ordered_named_relocations": [],
-      "source": {
-        "path": "src/nu2api/shader_parser.cpp",
-        "sha256": "91e89cdfcdb84c8e9fa5e3224960bdc624b89eb158f49c85b6957efd17410bde"
-      },
-      "definitions": [
-        {
-          "file": "build/tools/msvc8/include/xutility",
-          "file_sha256": "1b709f8918c201d0223cca2b736a46e34ca4b1519e5e22da1ca89c6c82e7869a",
-          "line": 526,
-          "end_line": 539,
-          "definition_text_sha256": "1aaf696031c7d7a252e12a77b6c606772e197eb74fe954b1bf85bcfbd90c17ed"
-        },
-        {
-          "file": "build/tools/msvc8/include/xutility",
-          "file_sha256": "1b709f8918c201d0223cca2b736a46e34ca4b1519e5e22da1ca89c6c82e7869a",
-          "line": 400,
-          "end_line": 404,
-          "definition_text_sha256": "7f5919212c87da580ac7cc4274b2ae6da44ed970ffc9713993f68a31c022e657"
-        }
-      ],
-      "source_invocation_cause": "vector",
-      "subtype": "natural_outline",
-      "original_binding": null,
-      "original_extent": null,
-      "PC_credit": 0,
-      "original_status": "unproved"
-    },
-    {
-      "unit": "src/nu2api/shader_parser.cpp",
-      "symbol": "?max_size@?$allocator@PAUShaderParserIncludePc@@@std@@QBEIXZ",
-      "kind": "function",
-      "coff_type": 32,
-      "storage_class": 2,
-      "raw_size": 6,
-      "raw_sha256": "434f7919bac3efab5a655616a8c94f122b2769202c36c57019e6b9f2e206b0c8",
-      "section_contract": {
-        "name": ".text",
-        "characteristics": 1615859744,
-        "raw_size": 6,
-        "COMDAT_selection": 2
-      },
-      "ordered_named_relocations": [],
-      "source": {
-        "path": "src/nu2api/shader_parser.cpp",
-        "sha256": "91e89cdfcdb84c8e9fa5e3224960bdc624b89eb158f49c85b6957efd17410bde"
-      },
-      "definitions": [
-        {
-          "file": "build/tools/msvc8/include/xmemory",
-          "file_sha256": "f9da85fbb9d393ad80e3981340c160a89f655a763ca6a3decc43f8515b29677e",
-          "line": 164,
-          "end_line": 168,
-          "definition_text_sha256": "c71a05b34c6ccf5b9c6143ec713e90af8fb929254f10993ed4621f20c3cf8a9f"
-        }
-      ],
-      "source_invocation_cause": "vector",
-      "subtype": "natural_outline",
-      "original_binding": null,
-      "original_extent": null,
-      "PC_credit": 0,
-      "original_status": "unproved"
-    },
-    {
-      "unit": "src/nu2api/shader_parser.cpp",
-      "symbol": "??G?$_Vector_const_iterator@PAUShaderParserIncludePc@@V?$allocator@PAUShaderParserIncludePc@@@std@@@std@@QBEHABV01@@Z",
-      "kind": "function",
-      "coff_type": 32,
-      "storage_class": 2,
-      "raw_size": 37,
-      "raw_sha256": "c258c0eb5074883155fc91f6d2b8116a45c099e6c691af7bfcee9a6ee83f8204",
-      "section_contract": {
-        "name": ".text",
-        "characteristics": 1615859744,
-        "raw_size": 37,
-        "COMDAT_selection": 2
-      },
-      "ordered_named_relocations": [
-        {
-          "offset": 19,
-          "type": 20,
-          "symbol": "__invalid_parameter_noinfo"
-        }
-      ],
-      "source": {
-        "path": "src/nu2api/shader_parser.cpp",
-        "sha256": "91e89cdfcdb84c8e9fa5e3224960bdc624b89eb158f49c85b6957efd17410bde"
-      },
-      "definitions": [
-        {
-          "file": "build/tools/msvc8/include/vector",
-          "file_sha256": "6dfba811b28e061b9f493227463758cff60a9b51627e763371ec6996216aa695",
-          "line": 172,
-          "end_line": 182,
-          "definition_text_sha256": "3440ee0c42147cc032cc61cc2f894ea536d098314211c0a14db5ec78de009922"
-        }
-      ],
-      "source_invocation_cause": "vector",
-      "subtype": "natural_outline",
-      "original_binding": null,
-      "original_extent": null,
-      "PC_credit": 0,
-      "original_status": "unproved"
-    },
-    {
-      "unit": "src/nu2api/shader_parser.cpp",
-      "symbol": "??0?$allocator@D@std@@QAE@XZ",
-      "kind": "function",
-      "coff_type": 32,
-      "storage_class": 2,
-      "raw_size": 3,
-      "raw_sha256": "58367ffa2a0179375018fa0f5c26da24391e42ebe0ed8fdda35a21fc7bdc396f",
-      "section_contract": {
-        "name": ".text",
-        "characteristics": 1615859744,
-        "raw_size": 3,
-        "COMDAT_selection": 2
-      },
-      "ordered_named_relocations": [],
-      "source": {
-        "path": "src/nu2api/shader_parser.cpp",
-        "sha256": "91e89cdfcdb84c8e9fa5e3224960bdc624b89eb158f49c85b6957efd17410bde"
-      },
-      "definitions": [
-        {
-          "file": "build/tools/msvc8/include/xmemory",
-          "file_sha256": "f9da85fbb9d393ad80e3981340c160a89f655a763ca6a3decc43f8515b29677e",
-          "line": 120,
-          "end_line": 122,
-          "definition_text_sha256": "11b09deda747467875751a88665da45f6e30da8712aa4e929f0e8d1b50b5119a"
-        }
-      ],
-      "source_invocation_cause": "string_exception",
-      "subtype": "natural_outline",
-      "original_binding": null,
-      "original_extent": null,
-      "PC_credit": 0,
-      "original_status": "unproved"
-    },
-    {
-      "unit": "src/nu2api/shader_parser.cpp",
-      "symbol": "?max_size@?$allocator@D@std@@QBEIXZ",
-      "kind": "function",
-      "coff_type": 32,
-      "storage_class": 2,
-      "raw_size": 4,
-      "raw_sha256": "031a1d90a8a2c46993613c8b2828efd0c52f20f2852d5f2ff930bc6acc0090c8",
-      "section_contract": {
-        "name": ".text",
-        "characteristics": 1615859744,
-        "raw_size": 4,
-        "COMDAT_selection": 2
-      },
-      "ordered_named_relocations": [],
-      "source": {
-        "path": "src/nu2api/shader_parser.cpp",
-        "sha256": "91e89cdfcdb84c8e9fa5e3224960bdc624b89eb158f49c85b6957efd17410bde"
-      },
-      "definitions": [
-        {
-          "file": "build/tools/msvc8/include/xmemory",
-          "file_sha256": "f9da85fbb9d393ad80e3981340c160a89f655a763ca6a3decc43f8515b29677e",
-          "line": 164,
-          "end_line": 168,
-          "definition_text_sha256": "c71a05b34c6ccf5b9c6143ec713e90af8fb929254f10993ed4621f20c3cf8a9f"
-        }
-      ],
-      "source_invocation_cause": "string_exception",
-      "subtype": "natural_outline",
-      "original_binding": null,
-      "original_extent": null,
-      "PC_credit": 0,
-      "original_status": "unproved"
-    },
-    {
-      "unit": "src/nu2api/shader_parser.cpp",
-      "symbol": "??Y?$_Vector_const_iterator@PAUShaderParserIncludePc@@V?$allocator@PAUShaderParserIncludePc@@@std@@@std@@QAEAAV01@H@Z",
-      "kind": "function",
-      "coff_type": 32,
-      "storage_class": 2,
-      "raw_size": 54,
-      "raw_sha256": "fa656762e8848e8b050c3c4ca57bc3fc88e120aaf6ea2c40be304deacb6d5fc2",
-      "section_contract": {
-        "name": ".text",
-        "characteristics": 1615859744,
-        "raw_size": 54,
-        "COMDAT_selection": 2
-      },
-      "ordered_named_relocations": [
-        {
-          "offset": 10,
-          "type": 20,
-          "symbol": "__invalid_parameter_noinfo"
-        },
-        {
-          "offset": 40,
-          "type": 20,
-          "symbol": "__invalid_parameter_noinfo"
-        }
-      ],
-      "source": {
-        "path": "src/nu2api/shader_parser.cpp",
-        "sha256": "91e89cdfcdb84c8e9fa5e3224960bdc624b89eb158f49c85b6957efd17410bde"
-      },
-      "definitions": [
-        {
-          "file": "build/tools/msvc8/include/vector",
-          "file_sha256": "6dfba811b28e061b9f493227463758cff60a9b51627e763371ec6996216aa695",
-          "line": 145,
-          "end_line": 153,
-          "definition_text_sha256": "dd615fdcde2e41fc45cdfa986c48847617e5a5919e4ac271f310900ae40a5c81"
-        }
-      ],
-      "source_invocation_cause": "vector",
-      "subtype": "natural_outline",
-      "original_binding": null,
-      "original_extent": null,
-      "PC_credit": 0,
-      "original_status": "unproved"
-    },
-    {
-      "unit": "src/nu2api/shader_parser.cpp",
-      "symbol": "?_Inside@?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@std@@IAE_NPBD@Z",
-      "kind": "function",
-      "coff_type": 32,
-      "storage_class": 2,
-      "raw_size": 57,
-      "raw_sha256": "bb33247c545f25e804b6579d71da8ce1a0c578d43dbd07222306bcaa20f44d3b",
-      "section_contract": {
-        "name": ".text",
-        "characteristics": 1615859744,
-        "raw_size": 57,
-        "COMDAT_selection": 2
-      },
-      "ordered_named_relocations": [],
-      "source": {
-        "path": "src/nu2api/shader_parser.cpp",
-        "sha256": "91e89cdfcdb84c8e9fa5e3224960bdc624b89eb158f49c85b6957efd17410bde"
-      },
-      "definitions": [
-        {
-          "file": "build/tools/msvc8/include/xstring",
-          "file_sha256": "2abad3cfe7378e4cb4baae0c80b2d154b346dfb986de4ebb42c5827d37ef93eb",
-          "line": 2011,
-          "end_line": 2018,
-          "definition_text_sha256": "26b3ca6dcc6f832e6afdde6ac5b459410fa9385daf2c75032d4c4998027371a5"
-        }
-      ],
-      "source_invocation_cause": "string_exception",
-      "subtype": "natural_outline",
-      "original_binding": null,
-      "original_extent": null,
-      "PC_credit": 0,
-      "original_status": "unproved"
-    },
-    {
-      "unit": "src/nu2api/shader_parser.cpp",
-      "symbol": "??$_Iter_random@PAPAUShaderParserIncludePc@@PAPAU1@@std@@YA?AUrandom_access_iterator_tag@0@ABQAPAUShaderParserIncludePc@@0@Z",
-      "kind": "function",
-      "coff_type": 32,
-      "storage_class": 2,
-      "raw_size": 5,
-      "raw_sha256": "6d072d11a5144359746b0e9d2eaf5a06531a0162b9f7d07a44dd01f51006e142",
-      "section_contract": {
-        "name": ".text",
-        "characteristics": 1615859744,
-        "raw_size": 5,
-        "COMDAT_selection": 2
-      },
-      "ordered_named_relocations": [],
-      "source": {
-        "path": "src/nu2api/shader_parser.cpp",
-        "sha256": "91e89cdfcdb84c8e9fa5e3224960bdc624b89eb158f49c85b6957efd17410bde"
-      },
-      "definitions": [
-        {
-          "file": "build/tools/msvc8/include/xutility",
-          "file_sha256": "1b709f8918c201d0223cca2b736a46e34ca4b1519e5e22da1ca89c6c82e7869a",
-          "line": 800,
-          "end_line": 806,
-          "definition_text_sha256": "7591dd214b272090df2e024e308f8927e0d0e898ed8e5d5059891e41be3050ce"
-        }
-      ],
-      "source_invocation_cause": "vector",
-      "subtype": "natural_outline",
-      "original_binding": null,
-      "original_extent": null,
-      "PC_credit": 0,
-      "original_status": "unproved"
-    },
-    {
-      "unit": "src/nu2api/shader_parser.cpp",
-      "symbol": "??$_Ptr_cat@PAPAUShaderParserIncludePc@@PAPAU1@@std@@YA?AU_Scalar_ptr_iterator_tag@0@AAPAPAUShaderParserIncludePc@@0@Z",
-      "kind": "function",
-      "coff_type": 32,
-      "storage_class": 2,
-      "raw_size": 7,
-      "raw_sha256": "2bbb3e38ef43bdf1871f14c1e4471e9c59dd620d6d7e2895485e96ef5e898f98",
-      "section_contract": {
-        "name": ".text",
-        "characteristics": 1615859744,
-        "raw_size": 7,
-        "COMDAT_selection": 2
-      },
-      "ordered_named_relocations": [],
-      "source": {
-        "path": "src/nu2api/shader_parser.cpp",
-        "sha256": "91e89cdfcdb84c8e9fa5e3224960bdc624b89eb158f49c85b6957efd17410bde"
-      },
-      "definitions": [
-        {
-          "file": "build/tools/msvc8/include/xutility",
-          "file_sha256": "1b709f8918c201d0223cca2b736a46e34ca4b1519e5e22da1ca89c6c82e7869a",
-          "line": 1290,
-          "end_line": 1294,
-          "definition_text_sha256": "d6e51d4ad22ea7517663797b4a452a0e30fe0abb6eb72c60593405ac2d462cd4"
-        }
-      ],
-      "source_invocation_cause": "vector",
-      "subtype": "natural_outline",
-      "original_binding": null,
-      "original_extent": null,
-      "PC_credit": 0,
-      "original_status": "unproved"
-    },
-    {
-      "unit": "src/nu2api/shader_parser.cpp",
-      "symbol": "??$_Copy_opt@PAPAUShaderParserIncludePc@@PAPAU1@Urandom_access_iterator_tag@std@@@std@@YAPAPAUShaderParserIncludePc@@PAPAU1@00Urandom_access_iterator_tag@0@U_Scalar_ptr_iterator_tag@0@U_Range_checked_iterator_tag@0@@Z",
-      "kind": "function",
-      "coff_type": 32,
-      "storage_class": 2,
-      "raw_size": 50,
-      "raw_sha256": "0b22ca3b28f2fb0203e6aa3d56820a57705e3c076c90996cf6b0c3974e051adc",
-      "section_contract": {
-        "name": ".text",
-        "characteristics": 1615859744,
-        "raw_size": 50,
-        "COMDAT_selection": 2
-      },
-      "ordered_named_relocations": [
-        {
-          "offset": 38,
-          "type": 20,
-          "symbol": "_memmove_s"
-        }
-      ],
-      "source": {
-        "path": "src/nu2api/shader_parser.cpp",
-        "sha256": "91e89cdfcdb84c8e9fa5e3224960bdc624b89eb158f49c85b6957efd17410bde"
-      },
-      "definitions": [
-        {
-          "file": "build/tools/msvc8/include/xutility",
-          "file_sha256": "1b709f8918c201d0223cca2b736a46e34ca4b1519e5e22da1ca89c6c82e7869a",
-          "line": 2248,
-          "end_line": 2264,
-          "definition_text_sha256": "482483eee72ead585f05543c3ba44c95cfc3ce644e6b7a00a446f0d2c18bac6e"
-        }
-      ],
-      "source_invocation_cause": "vector",
-      "subtype": "natural_outline",
-      "original_binding": null,
-      "original_extent": null,
-      "PC_credit": 0,
-      "original_status": "unproved"
-    },
-    {
-      "unit": "src/nu2api/shader_parser.cpp",
-      "symbol": "??$_Char_traits_cat@U?$char_traits@D@std@@@std@@YA?AU_Secure_char_traits_tag@0@XZ",
-      "kind": "function",
-      "coff_type": 32,
-      "storage_class": 2,
-      "raw_size": 7,
-      "raw_sha256": "2bbb3e38ef43bdf1871f14c1e4471e9c59dd620d6d7e2895485e96ef5e898f98",
-      "section_contract": {
-        "name": ".text",
-        "characteristics": 1615859744,
-        "raw_size": 7,
-        "COMDAT_selection": 2
-      },
-      "ordered_named_relocations": [],
-      "source": {
-        "path": "src/nu2api/shader_parser.cpp",
-        "sha256": "91e89cdfcdb84c8e9fa5e3224960bdc624b89eb158f49c85b6957efd17410bde"
-      },
-      "definitions": [
-        {
-          "file": "build/tools/msvc8/include/iosfwd",
-          "file_sha256": "4f09c870a2c3de3d5928e6da28c707fa72ff2edbb2c4592d0eacb8d6338a98ab",
-          "line": 567,
-          "end_line": 571,
-          "definition_text_sha256": "202008a016d8555244ba20e7d648624265da793d04891fb073c8289db6003456"
-        }
-      ],
-      "source_invocation_cause": "string_exception",
-      "subtype": "natural_outline",
-      "original_binding": null,
-      "original_extent": null,
-      "PC_credit": 0,
-      "original_status": "unproved"
-    },
-    {
-      "unit": "src/nu2api/shader_parser.cpp",
-      "symbol": "??$copy_s@U?$char_traits@D@std@@@_Traits_helper@std@@YAPADPADIPBDIU_Secure_char_traits_tag@1@@Z",
-      "kind": "function",
-      "coff_type": 32,
-      "storage_class": 2,
-      "raw_size": 33,
-      "raw_sha256": "40c8ae2b535e1536a8849ae5dd06d80c0370efb7ff88ccb54495f4c593f902d2",
-      "section_contract": {
-        "name": ".text",
-        "characteristics": 1615859744,
-        "raw_size": 33,
-        "COMDAT_selection": 2
-      },
-      "ordered_named_relocations": [
-        {
-          "offset": 22,
-          "type": 20,
-          "symbol": "_memcpy_s"
-        }
-      ],
-      "source": {
-        "path": "src/nu2api/shader_parser.cpp",
-        "sha256": "91e89cdfcdb84c8e9fa5e3224960bdc624b89eb158f49c85b6957efd17410bde"
-      },
-      "definitions": [
-        {
-          "file": "build/tools/msvc8/include/iosfwd",
-          "file_sha256": "4f09c870a2c3de3d5928e6da28c707fa72ff2edbb2c4592d0eacb8d6338a98ab",
-          "line": 587,
-          "end_line": 591,
-          "definition_text_sha256": "409668ea932c59844bb7727f5d56c235810c15ba9dba2b9050a26f725934506c"
-        }
-      ],
-      "source_invocation_cause": "string_exception",
-      "subtype": "natural_outline",
-      "original_binding": null,
-      "original_extent": null,
-      "PC_credit": 0,
-      "original_status": "unproved"
-    },
-    {
-      "unit": "src/nu2api/shader_parser.cpp",
-      "symbol": "??$_Destroy_range@PAUShaderParserIncludePc@@V?$allocator@PAUShaderParserIncludePc@@@std@@@std@@YAXPAPAUShaderParserIncludePc@@0AAV?$allocator@PAUShaderParserIncludePc@@@0@U_Scalar_ptr_iterator_tag@0@@Z",
-      "kind": "function",
-      "coff_type": 32,
-      "storage_class": 2,
-      "raw_size": 1,
-      "raw_sha256": "ae3f4619b0413d70d3004b9131c3752153074e45725be13b9a148978895e359e",
-      "section_contract": {
-        "name": ".text",
-        "characteristics": 1615859744,
-        "raw_size": 1,
-        "COMDAT_selection": 2
-      },
-      "ordered_named_relocations": [],
-      "source": {
-        "path": "src/nu2api/shader_parser.cpp",
-        "sha256": "91e89cdfcdb84c8e9fa5e3224960bdc624b89eb158f49c85b6957efd17410bde"
-      },
-      "definitions": [
-        {
-          "file": "build/tools/msvc8/include/xmemory",
-          "file_sha256": "f9da85fbb9d393ad80e3981340c160a89f655a763ca6a3decc43f8515b29677e",
-          "line": 240,
-          "end_line": 243,
-          "definition_text_sha256": "99b4fdebba5520fe1735df3b13d9a8762cfe84bc73341f5b524ba6a6c31480ab"
-        }
-      ],
-      "source_invocation_cause": "vector",
-      "subtype": "natural_outline",
-      "original_binding": null,
-      "original_extent": null,
-      "PC_credit": 0,
-      "original_status": "unproved"
-    },
-    {
-      "unit": "src/nu2api/shader_parser.cpp",
-      "symbol": "??$move_s@U?$char_traits@D@std@@@_Traits_helper@std@@YAPADPADIPBDIU_Secure_char_traits_tag@1@@Z",
-      "kind": "function",
-      "coff_type": 32,
-      "storage_class": 2,
-      "raw_size": 33,
-      "raw_sha256": "40c8ae2b535e1536a8849ae5dd06d80c0370efb7ff88ccb54495f4c593f902d2",
-      "section_contract": {
-        "name": ".text",
-        "characteristics": 1615859744,
-        "raw_size": 33,
-        "COMDAT_selection": 2
-      },
-      "ordered_named_relocations": [
-        {
-          "offset": 22,
-          "type": 20,
-          "symbol": "_memmove_s"
-        }
-      ],
-      "source": {
-        "path": "src/nu2api/shader_parser.cpp",
-        "sha256": "91e89cdfcdb84c8e9fa5e3224960bdc624b89eb158f49c85b6957efd17410bde"
-      },
-      "definitions": [
-        {
-          "file": "build/tools/msvc8/include/iosfwd",
-          "file_sha256": "4f09c870a2c3de3d5928e6da28c707fa72ff2edbb2c4592d0eacb8d6338a98ab",
-          "line": 614,
-          "end_line": 618,
-          "definition_text_sha256": "a92261e42b30793d4f0a24848a0c3e46911db172a53ab77177e8acdf8af4416c"
-        }
-      ],
-      "source_invocation_cause": "string_exception",
-      "subtype": "natural_outline",
-      "original_binding": null,
-      "original_extent": null,
-      "PC_credit": 0,
-      "original_status": "unproved"
-    },
-    {
-      "unit": "src/nu2api/shader_parser.cpp",
-      "symbol": "??$_Fill@PAPAUShaderParserIncludePc@@PAU1@@std@@YAXPAPAUShaderParserIncludePc@@0ABQAU1@@Z",
-      "kind": "function",
-      "coff_type": 32,
-      "storage_class": 2,
-      "raw_size": 30,
-      "raw_sha256": "fe5e96b5969e5ae6c7b3311b02a5760fbe387efaa07f367300af69fce91960e0",
-      "section_contract": {
-        "name": ".text",
-        "characteristics": 1615859744,
-        "raw_size": 30,
-        "COMDAT_selection": 2
-      },
-      "ordered_named_relocations": [],
-      "source": {
-        "path": "src/nu2api/shader_parser.cpp",
-        "sha256": "91e89cdfcdb84c8e9fa5e3224960bdc624b89eb158f49c85b6957efd17410bde"
-      },
-      "definitions": [
-        {
-          "file": "build/tools/msvc8/include/xutility",
-          "file_sha256": "1b709f8918c201d0223cca2b736a46e34ca4b1519e5e22da1ca89c6c82e7869a",
-          "line": 2722,
-          "end_line": 2727,
-          "definition_text_sha256": "c67116e6a6040a5a665c06625d759eebd7a1a1ba33111ff4e63c1af74986ace2"
-        }
-      ],
-      "source_invocation_cause": "vector",
-      "subtype": "natural_outline",
-      "original_binding": null,
-      "original_extent": null,
-      "PC_credit": 0,
-      "original_status": "unproved"
-    },
-    {
-      "unit": "src/nu2api/shader_parser.cpp",
-      "symbol": "??$_Move_cat@PAPAUShaderParserIncludePc@@@std@@YA?AU_Undefined_move_tag@0@ABQAPAUShaderParserIncludePc@@@Z",
-      "kind": "function",
-      "coff_type": 32,
-      "storage_class": 2,
-      "raw_size": 7,
-      "raw_sha256": "2bbb3e38ef43bdf1871f14c1e4471e9c59dd620d6d7e2895485e96ef5e898f98",
-      "section_contract": {
-        "name": ".text",
-        "characteristics": 1615859744,
-        "raw_size": 7,
-        "COMDAT_selection": 2
-      },
-      "ordered_named_relocations": [],
-      "source": {
-        "path": "src/nu2api/shader_parser.cpp",
-        "sha256": "91e89cdfcdb84c8e9fa5e3224960bdc624b89eb158f49c85b6957efd17410bde"
-      },
-      "definitions": [
-        {
-          "file": "build/tools/msvc8/include/xutility",
-          "file_sha256": "1b709f8918c201d0223cca2b736a46e34ca4b1519e5e22da1ca89c6c82e7869a",
-          "line": 1007,
-          "end_line": 1011,
-          "definition_text_sha256": "1505440fb0048fc36be28fcf99bee8201ae52b86ecdc7921a6c4113f407e9836"
-        }
-      ],
-      "source_invocation_cause": "vector",
-      "subtype": "natural_outline",
-      "original_binding": null,
-      "original_extent": null,
-      "PC_credit": 0,
-      "original_status": "unproved"
-    },
-    {
-      "unit": "src/nu2api/shader_parser.cpp",
-      "symbol": "??$_Checked_base@PAPAUShaderParserIncludePc@@@std@@YAPAPAUShaderParserIncludePc@@AAPAPAU1@U_Unchanged_checked_iterator_base_type_tag@0@@Z",
-      "kind": "function",
-      "coff_type": 32,
-      "storage_class": 2,
-      "raw_size": 7,
-      "raw_sha256": "70d1bff2376999b64365e947e0c0a8bab942f981962111fc8728487516761fc8",
-      "section_contract": {
-        "name": ".text",
-        "characteristics": 1615859744,
-        "raw_size": 7,
-        "COMDAT_selection": 2
-      },
-      "ordered_named_relocations": [],
-      "source": {
-        "path": "src/nu2api/shader_parser.cpp",
-        "sha256": "91e89cdfcdb84c8e9fa5e3224960bdc624b89eb158f49c85b6957efd17410bde"
-      },
-      "definitions": [
-        {
-          "file": "build/tools/msvc8/include/xutility",
-          "file_sha256": "1b709f8918c201d0223cca2b736a46e34ca4b1519e5e22da1ca89c6c82e7869a",
-          "line": 953,
-          "end_line": 956,
-          "definition_text_sha256": "93fbdbbc381ddabd62d95b72a510416b88e8b0f1e6b336460542eb91a9a8ecda"
-        }
-      ],
-      "source_invocation_cause": "vector",
-      "subtype": "natural_outline",
-      "original_binding": null,
-      "original_extent": null,
-      "PC_credit": 0,
-      "original_status": "unproved"
-    },
-    {
-      "unit": "src/nu2api/shader_parser.cpp",
-      "symbol": "??$_Copy_backward_opt@PAPAUShaderParserIncludePc@@PAPAU1@Urandom_access_iterator_tag@std@@@std@@YAPAPAUShaderParserIncludePc@@PAPAU1@00Urandom_access_iterator_tag@0@U_Scalar_ptr_iterator_tag@0@U_Range_checked_iterator_tag@0@@Z",
-      "kind": "function",
-      "coff_type": 32,
-      "storage_class": 2,
-      "raw_size": 47,
-      "raw_sha256": "e2bcf6a37680753a3e1b09e9dbac7c17eb7531d48a786e76824147bf50e8dcde",
-      "section_contract": {
-        "name": ".text",
-        "characteristics": 1615859744,
-        "raw_size": 47,
-        "COMDAT_selection": 2
-      },
-      "ordered_named_relocations": [
-        {
-          "offset": 36,
-          "type": 20,
-          "symbol": "_memmove_s"
-        }
-      ],
-      "source": {
-        "path": "src/nu2api/shader_parser.cpp",
-        "sha256": "91e89cdfcdb84c8e9fa5e3224960bdc624b89eb158f49c85b6957efd17410bde"
-      },
-      "definitions": [
-        {
-          "file": "build/tools/msvc8/include/xutility",
-          "file_sha256": "1b709f8918c201d0223cca2b736a46e34ca4b1519e5e22da1ca89c6c82e7869a",
-          "line": 2367,
-          "end_line": 2385,
-          "definition_text_sha256": "45598d53835f35ecc4375fa202cc853ecb6531304db54fb8e780c10203dab230"
-        }
-      ],
-      "source_invocation_cause": "vector",
-      "subtype": "natural_outline",
-      "original_binding": null,
-      "original_extent": null,
-      "PC_credit": 0,
-      "original_status": "unproved"
-    },
-    {
-      "unit": "src/nu2api/shader_parser.cpp",
-      "symbol": "??$_Iter_cat@PAPAUShaderParserIncludePc@@@std@@YA?AUrandom_access_iterator_tag@0@ABQAPAUShaderParserIncludePc@@@Z",
-      "kind": "function",
-      "coff_type": 32,
-      "storage_class": 2,
-      "raw_size": 5,
-      "raw_sha256": "6d072d11a5144359746b0e9d2eaf5a06531a0162b9f7d07a44dd01f51006e142",
-      "section_contract": {
-        "name": ".text",
-        "characteristics": 1615859744,
-        "raw_size": 5,
-        "COMDAT_selection": 2
-      },
-      "ordered_named_relocations": [],
-      "source": {
-        "path": "src/nu2api/shader_parser.cpp",
-        "sha256": "91e89cdfcdb84c8e9fa5e3224960bdc624b89eb158f49c85b6957efd17410bde"
-      },
-      "definitions": [
-        {
-          "file": "build/tools/msvc8/include/xutility",
-          "file_sha256": "1b709f8918c201d0223cca2b736a46e34ca4b1519e5e22da1ca89c6c82e7869a",
-          "line": 759,
-          "end_line": 763,
-          "definition_text_sha256": "874054a93474d021abbc5c2cc00d838775a4a52d2476d605daf42b991331e0b2"
-        }
-      ],
-      "source_invocation_cause": "vector",
-      "subtype": "natural_outline",
-      "original_binding": null,
-      "original_extent": null,
-      "PC_credit": 0,
-      "original_status": "unproved"
-    },
-    {
-      "unit": "src/nu2api/shader_parser.cpp",
-      "symbol": "??$_Fill_n@PAPAUShaderParserIncludePc@@IPAU1@@std@@YAXPAPAUShaderParserIncludePc@@IABQAU1@U_Range_checked_iterator_tag@0@@Z",
-      "kind": "function",
-      "coff_type": 32,
-      "storage_class": 2,
-      "raw_size": 33,
-      "raw_sha256": "2abfffa00432b0baae81be9404ac442fbb68edfe288f725e8af430ea33d03d01",
-      "section_contract": {
-        "name": ".text",
-        "characteristics": 1615859744,
-        "raw_size": 33,
-        "COMDAT_selection": 2
-      },
-      "ordered_named_relocations": [],
-      "source": {
-        "path": "src/nu2api/shader_parser.cpp",
-        "sha256": "91e89cdfcdb84c8e9fa5e3224960bdc624b89eb158f49c85b6957efd17410bde"
-      },
-      "definitions": [
-        {
-          "file": "build/tools/msvc8/include/xutility",
-          "file_sha256": "1b709f8918c201d0223cca2b736a46e34ca4b1519e5e22da1ca89c6c82e7869a",
-          "line": 2761,
-          "end_line": 2766,
-          "definition_text_sha256": "f3754406ea433ec6a317260230f62ee54e844acf217c89be6a5dd473de3d38d1"
-        }
-      ],
-      "source_invocation_cause": "vector",
-      "subtype": "natural_outline",
-      "original_binding": null,
-      "original_extent": null,
-      "PC_credit": 0,
-      "original_status": "unproved"
-    },
-    {
-      "unit": "src/nu2api/shader_parser.cpp",
-      "symbol": "??$_Uninit_copy@PAPAUShaderParserIncludePc@@PAPAU1@V?$allocator@PAUShaderParserIncludePc@@@std@@@std@@YAPAPAUShaderParserIncludePc@@PAPAU1@00AAV?$allocator@PAUShaderParserIncludePc@@@0@U_Scalar_ptr_iterator_tag@0@U_Range_checked_iterator_tag@0@@Z",
-      "kind": "function",
-      "coff_type": 32,
-      "storage_class": 2,
-      "raw_size": 46,
-      "raw_sha256": "78bd19ddf2f4e1bf237621b7f2227db081e63c78d0c698b6f26445d2d134b1f7",
-      "section_contract": {
-        "name": ".text",
-        "characteristics": 1615859744,
-        "raw_size": 46,
-        "COMDAT_selection": 2
-      },
-      "ordered_named_relocations": [
-        {
-          "offset": 35,
-          "type": 20,
-          "symbol": "_memmove_s"
-        }
-      ],
-      "source": {
-        "path": "src/nu2api/shader_parser.cpp",
-        "sha256": "91e89cdfcdb84c8e9fa5e3224960bdc624b89eb158f49c85b6957efd17410bde"
-      },
-      "definitions": [
-        {
-          "file": "build/tools/msvc8/include/memory",
-          "file_sha256": "8cd8316787e2cd8866815a5f2d4918867892778e5932c3760aa7d60f3085abcb",
-          "line": 121,
-          "end_line": 131,
-          "definition_text_sha256": "ea24a787900c359392ea2811f53f702783e73f0bf0dfe24d398550783e1d2e2d"
-        }
-      ],
-      "source_invocation_cause": "vector",
-      "subtype": "natural_outline",
-      "original_binding": null,
-      "original_extent": null,
-      "PC_credit": 0,
-      "original_status": "unproved"
-    },
-    {
-      "unit": "src/nu2api/shader_parser.cpp",
-      "symbol": "??D?$_Vector_iterator@PAUShaderParserIncludePc@@V?$allocator@PAUShaderParserIncludePc@@@std@@@std@@QBEAAPAUShaderParserIncludePc@@XZ",
-      "kind": "function",
-      "coff_type": 32,
-      "storage_class": 2,
-      "raw_size": 37,
-      "raw_sha256": "2fb28bdb47d8969aee42e7fd86a6c55a7e6162fab5c6b7e178e43e7065046cc3",
-      "section_contract": {
-        "name": ".text",
-        "characteristics": 1615859744,
-        "raw_size": 37,
-        "COMDAT_selection": 2
-      },
-      "ordered_named_relocations": [
-        {
-          "offset": 9,
-          "type": 20,
-          "symbol": "__invalid_parameter_noinfo"
-        },
-        {
-          "offset": 24,
-          "type": 20,
-          "symbol": "__invalid_parameter_noinfo"
-        }
-      ],
-      "source": {
-        "path": "src/nu2api/shader_parser.cpp",
-        "sha256": "91e89cdfcdb84c8e9fa5e3224960bdc624b89eb158f49c85b6957efd17410bde"
-      },
-      "definitions": [
-        {
-          "file": "build/tools/msvc8/include/vector",
-          "file_sha256": "6dfba811b28e061b9f493227463758cff60a9b51627e763371ec6996216aa695",
-          "line": 324,
-          "end_line": 327,
-          "definition_text_sha256": "71ca8bc1903d3c6aae56212629013970037418c4613aa38f800d592acff77eee"
-        }
-      ],
-      "source_invocation_cause": "vector",
-      "subtype": "natural_outline",
-      "original_binding": null,
-      "original_extent": null,
-      "PC_credit": 0,
-      "original_status": "unproved"
-    },
-    {
-      "unit": "src/nu2api/shader_parser.cpp",
-      "symbol": "??E?$_Vector_iterator@PAUShaderParserIncludePc@@V?$allocator@PAUShaderParserIncludePc@@@std@@@std@@QAEAAV01@XZ",
-      "kind": "function",
-      "coff_type": 32,
-      "storage_class": 2,
-      "raw_size": 36,
-      "raw_sha256": "0c5655f76b17706711669fd3b8435d6df01ed6f224e68d4aad12ad46a78cd2be",
-      "section_contract": {
-        "name": ".text",
-        "characteristics": 1615859744,
-        "raw_size": 36,
-        "COMDAT_selection": 2
-      },
-      "ordered_named_relocations": [
-        {
-          "offset": 9,
-          "type": 20,
-          "symbol": "__invalid_parameter_noinfo"
-        },
-        {
-          "offset": 24,
-          "type": 20,
-          "symbol": "__invalid_parameter_noinfo"
-        }
-      ],
-      "source": {
-        "path": "src/nu2api/shader_parser.cpp",
-        "sha256": "91e89cdfcdb84c8e9fa5e3224960bdc624b89eb158f49c85b6957efd17410bde"
-      },
-      "definitions": [
-        {
-          "file": "build/tools/msvc8/include/vector",
-          "file_sha256": "6dfba811b28e061b9f493227463758cff60a9b51627e763371ec6996216aa695",
-          "line": 334,
-          "end_line": 338,
-          "definition_text_sha256": "8eb85ed8d412b1b0af5ae17d4dc39424870d40fd93fb886345aa234409c2629e"
-        }
-      ],
-      "source_invocation_cause": "vector",
-      "subtype": "natural_outline",
-      "original_binding": null,
-      "original_extent": null,
-      "PC_credit": 0,
-      "original_status": "unproved"
-    },
-    {
-      "unit": "src/nu2api/shader_parser.cpp",
-      "symbol": "??9?$_Vector_const_iterator@PAUShaderParserIncludePc@@V?$allocator@PAUShaderParserIncludePc@@@std@@@std@@QBE_NABV01@@Z",
-      "kind": "function",
-      "coff_type": 32,
-      "storage_class": 2,
-      "raw_size": 41,
-      "raw_sha256": "9f8351d2af1bc88f8a39ac146e6514cf779a82f4386161c757f5a919807bfff8",
-      "section_contract": {
-        "name": ".text",
-        "characteristics": 1615859744,
-        "raw_size": 41,
-        "COMDAT_selection": 2
-      },
-      "ordered_named_relocations": [
-        {
-          "offset": 19,
-          "type": 20,
-          "symbol": "__invalid_parameter_noinfo"
-        }
-      ],
-      "source": {
-        "path": "src/nu2api/shader_parser.cpp",
-        "sha256": "91e89cdfcdb84c8e9fa5e3224960bdc624b89eb158f49c85b6957efd17410bde"
-      },
-      "definitions": [
-        {
-          "file": "build/tools/msvc8/include/vector",
-          "file_sha256": "6dfba811b28e061b9f493227463758cff60a9b51627e763371ec6996216aa695",
-          "line": 201,
-          "end_line": 204,
-          "definition_text_sha256": "76d767f6bbf41ea368ad96732becd9b9ab69565acd46b90c2e7b721bb45c6b9e"
-        }
-      ],
-      "source_invocation_cause": "vector",
-      "subtype": "natural_outline",
-      "original_binding": null,
-      "original_extent": null,
-      "PC_credit": 0,
-      "original_status": "unproved"
-    },
-    {
-      "unit": "src/nu2api/shader_parser.cpp",
-      "symbol": "??0?$_String_val@DV?$allocator@D@std@@@std@@IAE@V?$allocator@D@1@@Z",
-      "kind": "function",
-      "coff_type": 32,
-      "storage_class": 2,
-      "raw_size": 5,
-      "raw_sha256": "e58773679e693e79ccf3a079b2d7c66b6103cf65bb691bf2e5991ab2eaa2769d",
-      "section_contract": {
-        "name": ".text",
-        "characteristics": 1615859744,
-        "raw_size": 5,
-        "COMDAT_selection": 2
-      },
-      "ordered_named_relocations": [],
-      "source": {
-        "path": "src/nu2api/shader_parser.cpp",
-        "sha256": "91e89cdfcdb84c8e9fa5e3224960bdc624b89eb158f49c85b6957efd17410bde"
-      },
-      "definitions": [
-        {
-          "file": "build/tools/msvc8/include/xstring",
-          "file_sha256": "2abad3cfe7378e4cb4baae0c80b2d154b346dfb986de4ebb42c5827d37ef93eb",
-          "line": 468,
-          "end_line": 471,
-          "definition_text_sha256": "d21736da261bff6ad06208a84145f6e0f6581c2ad04bf0f44f78df17739d5731"
-        }
-      ],
-      "source_invocation_cause": "string_exception",
-      "subtype": "natural_outline",
-      "original_binding": null,
-      "original_extent": null,
-      "PC_credit": 0,
-      "original_status": "unproved"
-    },
-    {
-      "unit": "src/nu2api/shader_parser.cpp",
-      "symbol": "??0?$_Vector_val@PAUShaderParserIncludePc@@V?$allocator@PAUShaderParserIncludePc@@@std@@@std@@IAE@V?$allocator@PAUShaderParserIncludePc@@@1@@Z",
-      "kind": "function",
-      "coff_type": 32,
-      "storage_class": 2,
-      "raw_size": 5,
-      "raw_sha256": "e58773679e693e79ccf3a079b2d7c66b6103cf65bb691bf2e5991ab2eaa2769d",
-      "section_contract": {
-        "name": ".text",
-        "characteristics": 1615859744,
-        "raw_size": 5,
-        "COMDAT_selection": 2
-      },
-      "ordered_named_relocations": [],
-      "source": {
-        "path": "src/nu2api/shader_parser.cpp",
-        "sha256": "91e89cdfcdb84c8e9fa5e3224960bdc624b89eb158f49c85b6957efd17410bde"
-      },
-      "definitions": [
-        {
-          "file": "build/tools/msvc8/include/vector",
-          "file_sha256": "6dfba811b28e061b9f493227463758cff60a9b51627e763371ec6996216aa695",
-          "line": 410,
-          "end_line": 413,
-          "definition_text_sha256": "147ed5e9741f73f642e660639e9688261cd8c8746bcf13d75ca45d8606c14bfa"
-        }
-      ],
-      "source_invocation_cause": "vector",
-      "subtype": "natural_outline",
-      "original_binding": null,
-      "original_extent": null,
-      "PC_credit": 0,
-      "original_status": "unproved"
-    },
-    {
-      "unit": "src/nu2api/shader_parser.cpp",
-      "symbol": "?_Eos@?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@std@@IAEXI@Z",
-      "kind": "function",
-      "coff_type": 32,
-      "storage_class": 2,
-      "raw_size": 31,
-      "raw_sha256": "f9675efcd5d1c06ce92cae43d72b9465fdbf5538b08dad31614b56e37bc1fa56",
-      "section_contract": {
-        "name": ".text",
-        "characteristics": 1615859744,
-        "raw_size": 31,
-        "COMDAT_selection": 2
-      },
-      "ordered_named_relocations": [],
-      "source": {
-        "path": "src/nu2api/shader_parser.cpp",
-        "sha256": "91e89cdfcdb84c8e9fa5e3224960bdc624b89eb158f49c85b6957efd17410bde"
-      },
-      "definitions": [
-        {
-          "file": "build/tools/msvc8/include/xstring",
-          "file_sha256": "2abad3cfe7378e4cb4baae0c80b2d154b346dfb986de4ebb42c5827d37ef93eb",
-          "line": 1991,
-          "end_line": 1994,
-          "definition_text_sha256": "ad63f61a7eb992af9f2dbf5fb2836823b4bd48cc87c215065264a977c30e1660"
-        }
-      ],
-      "source_invocation_cause": "string_exception",
-      "subtype": "natural_outline",
-      "original_binding": null,
-      "original_extent": null,
-      "PC_credit": 0,
-      "original_status": "unproved"
-    },
-    {
-      "unit": "src/nu2api/shader_parser.cpp",
-      "symbol": "?max_size@?$vector@PAUShaderParserIncludePc@@V?$allocator@PAUShaderParserIncludePc@@@std@@@std@@QBEIXZ",
-      "kind": "function",
-      "coff_type": 32,
-      "storage_class": 2,
-      "raw_size": 6,
-      "raw_sha256": "434f7919bac3efab5a655616a8c94f122b2769202c36c57019e6b9f2e206b0c8",
-      "section_contract": {
-        "name": ".text",
-        "characteristics": 1615859744,
-        "raw_size": 6,
-        "COMDAT_selection": 2
-      },
-      "ordered_named_relocations": [],
-      "source": {
-        "path": "src/nu2api/shader_parser.cpp",
-        "sha256": "91e89cdfcdb84c8e9fa5e3224960bdc624b89eb158f49c85b6957efd17410bde"
-      },
-      "definitions": [
-        {
-          "file": "build/tools/msvc8/include/vector",
-          "file_sha256": "6dfba811b28e061b9f493227463758cff60a9b51627e763371ec6996216aa695",
-          "line": 706,
-          "end_line": 709,
-          "definition_text_sha256": "a1107c8596ddb99c69b7ad6b7e626f892b636ad1e5e41d2083202d8fa31ea56d"
-        }
-      ],
-      "source_invocation_cause": "vector",
-      "subtype": "natural_outline",
-      "original_binding": null,
-      "original_extent": null,
-      "PC_credit": 0,
-      "original_status": "unproved"
-    },
-    {
-      "unit": "src/nu2api/shader_parser.cpp",
-      "symbol": "?allocate@?$allocator@PAUShaderParserIncludePc@@@std@@QAEPAPAUShaderParserIncludePc@@I@Z",
-      "kind": "function",
-      "coff_type": 32,
-      "storage_class": 2,
-      "raw_size": 18,
-      "raw_sha256": "6f66a8d25b185da586ca997ecb774ba6e777a28c40e0a451e723ee9bddeff095",
-      "section_contract": {
-        "name": ".text",
-        "characteristics": 1615859744,
-        "raw_size": 18,
-        "COMDAT_selection": 2
-      },
-      "ordered_named_relocations": [
-        {
-          "offset": 8,
-          "type": 20,
-          "symbol": "??$_Allocate@PAUShaderParserIncludePc@@@std@@YAPAPAUShaderParserIncludePc@@IPAPAU1@@Z"
-        }
-      ],
-      "source": {
-        "path": "src/nu2api/shader_parser.cpp",
-        "sha256": "91e89cdfcdb84c8e9fa5e3224960bdc624b89eb158f49c85b6957efd17410bde"
-      },
-      "definitions": [
-        {
-          "file": "build/tools/msvc8/include/xmemory",
-          "file_sha256": "f9da85fbb9d393ad80e3981340c160a89f655a763ca6a3decc43f8515b29677e",
-          "line": 144,
-          "end_line": 147,
-          "definition_text_sha256": "492e8f535a3ea7cadfaf961a20b0a2c723d1478264bce3a5ab1d1348ffc316b9"
-        }
-      ],
-      "source_invocation_cause": "vector",
-      "subtype": "natural_outline",
-      "original_binding": null,
-      "original_extent": null,
-      "PC_credit": 0,
-      "original_status": "unproved"
-    },
-    {
-      "unit": "src/nu2api/shader_parser.cpp",
-      "symbol": "??G?$_Vector_iterator@PAUShaderParserIncludePc@@V?$allocator@PAUShaderParserIncludePc@@@std@@@std@@QBEHABV?$_Vector_const_iterator@PAUShaderParserIncludePc@@V?$allocator@PAUShaderParserIncludePc@@@std@@@1@@Z",
-      "kind": "function",
-      "coff_type": 32,
-      "storage_class": 2,
-      "raw_size": 37,
-      "raw_sha256": "c258c0eb5074883155fc91f6d2b8116a45c099e6c691af7bfcee9a6ee83f8204",
-      "section_contract": {
-        "name": ".text",
-        "characteristics": 1615859744,
-        "raw_size": 37,
-        "COMDAT_selection": 2
-      },
-      "ordered_named_relocations": [
-        {
-          "offset": 19,
-          "type": 20,
-          "symbol": "__invalid_parameter_noinfo"
-        }
-      ],
-      "source": {
-        "path": "src/nu2api/shader_parser.cpp",
-        "sha256": "91e89cdfcdb84c8e9fa5e3224960bdc624b89eb158f49c85b6957efd17410bde"
-      },
-      "definitions": [
-        {
-          "file": "build/tools/msvc8/include/vector",
-          "file_sha256": "6dfba811b28e061b9f493227463758cff60a9b51627e763371ec6996216aa695",
-          "line": 383,
-          "end_line": 386,
-          "definition_text_sha256": "c2af927751a7e85af21f9ea0def780314d2cb2e2599323e96e637982e0c74021"
-        }
-      ],
-      "source_invocation_cause": "vector",
-      "subtype": "natural_outline",
-      "original_binding": null,
-      "original_extent": null,
-      "PC_credit": 0,
-      "original_status": "unproved"
-    },
-    {
-      "unit": "src/nu2api/shader_parser.cpp",
-      "symbol": "??0?$_Vector_const_iterator@PAUShaderParserIncludePc@@V?$allocator@PAUShaderParserIncludePc@@@std@@@std@@QAE@PAPAUShaderParserIncludePc@@PBU_Container_base@1@@Z",
-      "kind": "function",
-      "coff_type": 32,
-      "storage_class": 2,
-      "raw_size": 51,
-      "raw_sha256": "98362e92e5274ae7811a93171e0258b5970e1e883d50f08cee2b2b3e7d830680",
-      "section_contract": {
-        "name": ".text",
-        "characteristics": 1615859744,
-        "raw_size": 51,
-        "COMDAT_selection": 2
-      },
-      "ordered_named_relocations": [
-        {
-          "offset": 34,
-          "type": 20,
-          "symbol": "__invalid_parameter_noinfo"
-        }
-      ],
-      "source": {
-        "path": "src/nu2api/shader_parser.cpp",
-        "sha256": "91e89cdfcdb84c8e9fa5e3224960bdc624b89eb158f49c85b6957efd17410bde"
-      },
-      "definitions": [
-        {
-          "file": "build/tools/msvc8/include/vector",
-          "file_sha256": "6dfba811b28e061b9f493227463758cff60a9b51627e763371ec6996216aa695",
-          "line": 77,
-          "end_line": 82,
-          "definition_text_sha256": "d86656c33ecd25f8387ab69f9421586c907af5f3a3b381655c7c105b96148236"
-        }
-      ],
-      "source_invocation_cause": "vector",
-      "subtype": "natural_outline",
-      "original_binding": null,
-      "original_extent": null,
-      "PC_credit": 0,
-      "original_status": "unproved"
-    },
-    {
-      "unit": "src/nu2api/shader_parser.cpp",
-      "symbol": "?max_size@?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@std@@QBEIXZ",
-      "kind": "function",
-      "coff_type": 32,
-      "storage_class": 2,
-      "raw_size": 6,
-      "raw_sha256": "cc0396016dff9c9146f4d08238cd0a29e9d49e16b1f5012b76c387ea7c044fe4",
-      "section_contract": {
-        "name": ".text",
-        "characteristics": 1615859744,
-        "raw_size": 6,
-        "COMDAT_selection": 2
-      },
-      "ordered_named_relocations": [],
-      "source": {
-        "path": "src/nu2api/shader_parser.cpp",
-        "sha256": "91e89cdfcdb84c8e9fa5e3224960bdc624b89eb158f49c85b6957efd17410bde"
-      },
-      "definitions": [
-        {
-          "file": "build/tools/msvc8/include/xstring",
-          "file_sha256": "2abad3cfe7378e4cb4baae0c80b2d154b346dfb986de4ebb42c5827d37ef93eb",
-          "line": 1602,
-          "end_line": 1606,
-          "definition_text_sha256": "3410ed2ed165439f0ea414535d4f486c46ce9e65e2a77917627ebe239ead0ab3"
-        }
-      ],
-      "source_invocation_cause": "string_exception",
-      "subtype": "natural_outline",
-      "original_binding": null,
-      "original_extent": null,
-      "PC_credit": 0,
-      "original_status": "unproved"
-    },
-    {
-      "unit": "src/nu2api/shader_parser.cpp",
-      "symbol": "??Y?$_Vector_iterator@PAUShaderParserIncludePc@@V?$allocator@PAUShaderParserIncludePc@@@std@@@std@@QAEAAV01@H@Z",
-      "kind": "function",
-      "coff_type": 32,
-      "storage_class": 2,
-      "raw_size": 54,
-      "raw_sha256": "fa656762e8848e8b050c3c4ca57bc3fc88e120aaf6ea2c40be304deacb6d5fc2",
-      "section_contract": {
-        "name": ".text",
-        "characteristics": 1615859744,
-        "raw_size": 54,
-        "COMDAT_selection": 2
-      },
-      "ordered_named_relocations": [
-        {
-          "offset": 10,
-          "type": 20,
-          "symbol": "__invalid_parameter_noinfo"
-        },
-        {
-          "offset": 40,
-          "type": 20,
-          "symbol": "__invalid_parameter_noinfo"
-        }
-      ],
-      "source": {
-        "path": "src/nu2api/shader_parser.cpp",
-        "sha256": "91e89cdfcdb84c8e9fa5e3224960bdc624b89eb158f49c85b6957efd17410bde"
-      },
-      "definitions": [
-        {
-          "file": "build/tools/msvc8/include/vector",
-          "file_sha256": "6dfba811b28e061b9f493227463758cff60a9b51627e763371ec6996216aa695",
-          "line": 360,
-          "end_line": 364,
-          "definition_text_sha256": "f33f73179681c4e6acc2220660c07f93bd4cd802d753dd41c1c74d53eb38667d"
-        }
-      ],
-      "source_invocation_cause": "vector",
-      "subtype": "natural_outline",
-      "original_binding": null,
-      "original_extent": null,
-      "PC_credit": 0,
-      "original_status": "unproved"
-    },
-    {
-      "unit": "src/nu2api/shader_parser.cpp",
-      "symbol": "??$copy_s@U?$char_traits@D@std@@@_Traits_helper@std@@YAPADPADIPBDI@Z",
-      "kind": "function",
-      "coff_type": 32,
-      "storage_class": 2,
-      "raw_size": 33,
-      "raw_sha256": "40c8ae2b535e1536a8849ae5dd06d80c0370efb7ff88ccb54495f4c593f902d2",
-      "section_contract": {
-        "name": ".text",
-        "characteristics": 1615859744,
-        "raw_size": 33,
-        "COMDAT_selection": 2
-      },
-      "ordered_named_relocations": [
-        {
-          "offset": 22,
-          "type": 20,
-          "symbol": "_memcpy_s"
-        }
-      ],
-      "source": {
-        "path": "src/nu2api/shader_parser.cpp",
-        "sha256": "91e89cdfcdb84c8e9fa5e3224960bdc624b89eb158f49c85b6957efd17410bde"
-      },
-      "definitions": [
-        {
-          "file": "build/tools/msvc8/include/iosfwd",
-          "file_sha256": "4f09c870a2c3de3d5928e6da28c707fa72ff2edbb2c4592d0eacb8d6338a98ab",
-          "line": 579,
-          "end_line": 583,
-          "definition_text_sha256": "d85486698b5ba51ca2b44017ed81abc4c10fcf8f58800120296ac5d9248cd227"
-        }
-      ],
-      "source_invocation_cause": "string_exception",
-      "subtype": "natural_outline",
-      "original_binding": null,
-      "original_extent": null,
-      "PC_credit": 0,
-      "original_status": "unproved"
-    },
-    {
-      "unit": "src/nu2api/shader_parser.cpp",
-      "symbol": "??$_Destroy_range@PAUShaderParserIncludePc@@V?$allocator@PAUShaderParserIncludePc@@@std@@@std@@YAXPAPAUShaderParserIncludePc@@0AAV?$allocator@PAUShaderParserIncludePc@@@0@@Z",
-      "kind": "function",
-      "coff_type": 32,
-      "storage_class": 2,
-      "raw_size": 1,
-      "raw_sha256": "ae3f4619b0413d70d3004b9131c3752153074e45725be13b9a148978895e359e",
-      "section_contract": {
-        "name": ".text",
-        "characteristics": 1615859744,
-        "raw_size": 1,
-        "COMDAT_selection": 2
-      },
-      "ordered_named_relocations": [],
-      "source": {
-        "path": "src/nu2api/shader_parser.cpp",
-        "sha256": "91e89cdfcdb84c8e9fa5e3224960bdc624b89eb158f49c85b6957efd17410bde"
-      },
-      "definitions": [
-        {
-          "file": "build/tools/msvc8/include/xmemory",
-          "file_sha256": "f9da85fbb9d393ad80e3981340c160a89f655a763ca6a3decc43f8515b29677e",
-          "line": 224,
-          "end_line": 227,
-          "definition_text_sha256": "7f31f0c179fdb569fe751a135229023a01fe8ac0cb34f83b39348c44a2c224ca"
-        }
-      ],
-      "source_invocation_cause": "vector",
-      "subtype": "natural_outline",
-      "original_binding": null,
-      "original_extent": null,
-      "PC_credit": 0,
-      "original_status": "unproved"
-    },
-    {
-      "unit": "src/nu2api/shader_parser.cpp",
-      "symbol": "??$move_s@U?$char_traits@D@std@@@_Traits_helper@std@@YAPADPADIPBDI@Z",
-      "kind": "function",
-      "coff_type": 32,
-      "storage_class": 2,
-      "raw_size": 33,
-      "raw_sha256": "40c8ae2b535e1536a8849ae5dd06d80c0370efb7ff88ccb54495f4c593f902d2",
-      "section_contract": {
-        "name": ".text",
-        "characteristics": 1615859744,
-        "raw_size": 33,
-        "COMDAT_selection": 2
-      },
-      "ordered_named_relocations": [
-        {
-          "offset": 22,
-          "type": 20,
-          "symbol": "_memmove_s"
-        }
-      ],
-      "source": {
-        "path": "src/nu2api/shader_parser.cpp",
-        "sha256": "91e89cdfcdb84c8e9fa5e3224960bdc624b89eb158f49c85b6957efd17410bde"
-      },
-      "definitions": [
-        {
-          "file": "build/tools/msvc8/include/iosfwd",
-          "file_sha256": "4f09c870a2c3de3d5928e6da28c707fa72ff2edbb2c4592d0eacb8d6338a98ab",
-          "line": 606,
-          "end_line": 610,
-          "definition_text_sha256": "5f1460cfe35808e7e1627ebc9fad1b00e04b673e62557949a03593d30299474d"
-        }
-      ],
-      "source_invocation_cause": "string_exception",
-      "subtype": "natural_outline",
-      "original_binding": null,
-      "original_extent": null,
-      "PC_credit": 0,
-      "original_status": "unproved"
-    },
-    {
-      "unit": "src/nu2api/shader_parser.cpp",
-      "symbol": "??$_Checked_base@PAPAUShaderParserIncludePc@@@std@@YAPAPAUShaderParserIncludePc@@AAPAPAU1@@Z",
-      "kind": "function",
-      "coff_type": 32,
-      "storage_class": 2,
-      "raw_size": 7,
-      "raw_sha256": "70d1bff2376999b64365e947e0c0a8bab942f981962111fc8728487516761fc8",
-      "section_contract": {
-        "name": ".text",
-        "characteristics": 1615859744,
-        "raw_size": 7,
-        "COMDAT_selection": 2
-      },
-      "ordered_named_relocations": [],
-      "source": {
-        "path": "src/nu2api/shader_parser.cpp",
-        "sha256": "91e89cdfcdb84c8e9fa5e3224960bdc624b89eb158f49c85b6957efd17410bde"
-      },
-      "definitions": [
-        {
-          "file": "build/tools/msvc8/include/xutility",
-          "file_sha256": "1b709f8918c201d0223cca2b736a46e34ca4b1519e5e22da1ca89c6c82e7869a",
-          "line": 970,
-          "end_line": 974,
-          "definition_text_sha256": "5fc169efc573c0f65a7834df23430f53396db9b7fccf67fdc59e7555c6f2bad5"
-        }
-      ],
-      "source_invocation_cause": "vector",
-      "subtype": "natural_outline",
-      "original_binding": null,
-      "original_extent": null,
-      "PC_credit": 0,
-      "original_status": "unproved"
-    },
-    {
-      "unit": "src/nu2api/shader_parser.cpp",
-      "symbol": "??$_Move_backward_opt@PAPAUShaderParserIncludePc@@PAPAU1@Urandom_access_iterator_tag@std@@U_Undefined_move_tag@3@@std@@YAPAPAUShaderParserIncludePc@@PAPAU1@00Urandom_access_iterator_tag@0@U_Undefined_move_tag@0@U_Range_checked_iterator_tag@0@@Z",
-      "kind": "function",
-      "coff_type": 32,
-      "storage_class": 2,
-      "raw_size": 47,
-      "raw_sha256": "e2bcf6a37680753a3e1b09e9dbac7c17eb7531d48a786e76824147bf50e8dcde",
-      "section_contract": {
-        "name": ".text",
-        "characteristics": 1615859744,
-        "raw_size": 47,
-        "COMDAT_selection": 2
-      },
-      "ordered_named_relocations": [
-        {
-          "offset": 36,
-          "type": 20,
-          "symbol": "_memmove_s"
-        }
-      ],
-      "source": {
-        "path": "src/nu2api/shader_parser.cpp",
-        "sha256": "91e89cdfcdb84c8e9fa5e3224960bdc624b89eb158f49c85b6957efd17410bde"
-      },
-      "definitions": [
-        {
-          "file": "build/tools/msvc8/include/xutility",
-          "file_sha256": "1b709f8918c201d0223cca2b736a46e34ca4b1519e5e22da1ca89c6c82e7869a",
-          "line": 2410,
-          "end_line": 2415,
-          "definition_text_sha256": "a8b350374eba168db8a7be64693f8a18b45b53fab878d8e6c6bef849bf73ced5"
-        }
-      ],
-      "source_invocation_cause": "vector",
-      "subtype": "natural_outline",
-      "original_binding": null,
-      "original_extent": null,
-      "PC_credit": 0,
-      "original_status": "unproved"
-    },
-    {
-      "unit": "src/nu2api/shader_parser.cpp",
-      "symbol": "??$_Fill_n@PAPAUShaderParserIncludePc@@IPAU1@@std@@YAXPAPAUShaderParserIncludePc@@IABQAU1@Urandom_access_iterator_tag@0@U_Range_checked_iterator_tag@0@@Z",
-      "kind": "function",
-      "coff_type": 32,
-      "storage_class": 2,
-      "raw_size": 33,
-      "raw_sha256": "00aac5f6a520372792155e4e2b7f9cf20dbf29f9b6273f4ea78ba8e042833fbd",
-      "section_contract": {
-        "name": ".text",
-        "characteristics": 1615859744,
-        "raw_size": 33,
-        "COMDAT_selection": 2
-      },
-      "ordered_named_relocations": [],
-      "source": {
-        "path": "src/nu2api/shader_parser.cpp",
-        "sha256": "91e89cdfcdb84c8e9fa5e3224960bdc624b89eb158f49c85b6957efd17410bde"
-      },
-      "definitions": [
-        {
-          "file": "build/tools/msvc8/include/xutility",
-          "file_sha256": "1b709f8918c201d0223cca2b736a46e34ca4b1519e5e22da1ca89c6c82e7869a",
-          "line": 2815,
-          "end_line": 2822,
-          "definition_text_sha256": "20023d28c92e019c876b06be793e7ab629ea87c738588de2cd4334df0c27c524"
-        }
-      ],
-      "source_invocation_cause": "vector",
-      "subtype": "natural_outline",
-      "original_binding": null,
-      "original_extent": null,
-      "PC_credit": 0,
-      "original_status": "unproved"
-    },
-    {
-      "unit": "src/nu2api/shader_parser.cpp",
-      "symbol": "??$unchecked_uninitialized_copy@PAPAUShaderParserIncludePc@@PAPAU1@V?$allocator@PAUShaderParserIncludePc@@@std@@@stdext@@YAPAPAUShaderParserIncludePc@@PAPAU1@00AAV?$allocator@PAUShaderParserIncludePc@@@std@@@Z",
-      "kind": "function",
-      "coff_type": 32,
-      "storage_class": 2,
-      "raw_size": 46,
-      "raw_sha256": "78bd19ddf2f4e1bf237621b7f2227db081e63c78d0c698b6f26445d2d134b1f7",
-      "section_contract": {
-        "name": ".text",
-        "characteristics": 1615859744,
-        "raw_size": 46,
-        "COMDAT_selection": 2
-      },
-      "ordered_named_relocations": [
-        {
-          "offset": 35,
-          "type": 20,
-          "symbol": "_memmove_s"
-        }
-      ],
-      "source": {
-        "path": "src/nu2api/shader_parser.cpp",
-        "sha256": "91e89cdfcdb84c8e9fa5e3224960bdc624b89eb158f49c85b6957efd17410bde"
-      },
-      "definitions": [
-        {
-          "file": "build/tools/msvc8/include/memory",
-          "file_sha256": "8cd8316787e2cd8866815a5f2d4918867892778e5932c3760aa7d60f3085abcb",
-          "line": 670,
-          "end_line": 675,
-          "definition_text_sha256": "a17719d72b526e1b829b8cdf500ce71346e97019b36b52ee6e0b7b2f6114c06b"
-        }
-      ],
-      "source_invocation_cause": "vector",
-      "subtype": "natural_outline",
-      "original_binding": null,
-      "original_extent": null,
-      "PC_credit": 0,
-      "original_status": "unproved"
-    },
-    {
-      "unit": "src/nu2api/shader_parser.cpp",
-      "symbol": "?_Tidy@?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@std@@IAEX_NI@Z",
-      "kind": "function",
-      "coff_type": 32,
-      "storage_class": 2,
-      "raw_size": 74,
-      "raw_sha256": "3b7b62d502cb6be4f9e2eadbb6bdafbeebcbeab22205f983fba3f4f68fc120f8",
-      "section_contract": {
-        "name": ".text",
-        "characteristics": 1615859744,
-        "raw_size": 74,
-        "COMDAT_selection": 2
-      },
-      "ordered_named_relocations": [
-        {
-          "offset": 37,
-          "type": 20,
-          "symbol": "_memcpy_s"
-        },
-        {
-          "offset": 46,
-          "type": 20,
-          "symbol": "??3@YAXPAX@Z"
-        }
-      ],
-      "source": {
-        "path": "src/nu2api/shader_parser.cpp",
-        "sha256": "91e89cdfcdb84c8e9fa5e3224960bdc624b89eb158f49c85b6957efd17410bde"
-      },
-      "definitions": [
-        {
-          "file": "build/tools/msvc8/include/xstring",
-          "file_sha256": "2abad3cfe7378e4cb4baae0c80b2d154b346dfb986de4ebb42c5827d37ef93eb",
-          "line": 2026,
-          "end_line": 2040,
-          "definition_text_sha256": "3a68fdc441c303370f3d67703e64e599a3b3eed22e7d30d6cfc7728cbde6c3d5"
-        }
-      ],
-      "source_invocation_cause": "string_exception",
-      "subtype": "natural_outline",
-      "original_binding": null,
-      "original_extent": null,
-      "PC_credit": 0,
-      "original_status": "unproved"
-    },
-    {
-      "unit": "src/nu2api/shader_parser.cpp",
-      "symbol": "?_Destroy@?$vector@PAUShaderParserIncludePc@@V?$allocator@PAUShaderParserIncludePc@@@std@@@std@@IAEXPAPAUShaderParserIncludePc@@0@Z",
-      "kind": "function",
-      "coff_type": 32,
-      "storage_class": 2,
-      "raw_size": 3,
-      "raw_sha256": "1d10894625976bca9d8906f3ecf1e766b94e9219ec3bf1c30e02feea5e18e45a",
-      "section_contract": {
-        "name": ".text",
-        "characteristics": 1615859744,
-        "raw_size": 3,
-        "COMDAT_selection": 2
-      },
-      "ordered_named_relocations": [],
-      "source": {
-        "path": "src/nu2api/shader_parser.cpp",
-        "sha256": "91e89cdfcdb84c8e9fa5e3224960bdc624b89eb158f49c85b6957efd17410bde"
-      },
-      "definitions": [
-        {
-          "file": "build/tools/msvc8/include/vector",
-          "file_sha256": "6dfba811b28e061b9f493227463758cff60a9b51627e763371ec6996216aa695",
-          "line": 1081,
-          "end_line": 1084,
-          "definition_text_sha256": "56f9df12c387cb65835f0278e8b077d159a331fe299f1aec2f1e89b1731ae5a5"
-        }
-      ],
-      "source_invocation_cause": "vector",
-      "subtype": "natural_outline",
-      "original_binding": null,
-      "original_extent": null,
-      "PC_credit": 0,
-      "original_status": "unproved"
-    },
-    {
-      "unit": "src/nu2api/shader_parser.cpp",
-      "symbol": "?_Tidy@?$vector@PAUShaderParserIncludePc@@V?$allocator@PAUShaderParserIncludePc@@@std@@@std@@IAEXXZ",
-      "kind": "function",
-      "coff_type": 32,
-      "storage_class": 2,
-      "raw_size": 42,
-      "raw_sha256": "8d190b99f3d745f3d64b0a568d8694656971dac5480015166e206d50c937117f",
-      "section_contract": {
-        "name": ".text",
-        "characteristics": 1615859744,
-        "raw_size": 42,
-        "COMDAT_selection": 2
-      },
-      "ordered_named_relocations": [
-        {
-          "offset": 12,
-          "type": 20,
-          "symbol": "??3@YAXPAX@Z"
-        }
-      ],
-      "source": {
-        "path": "src/nu2api/shader_parser.cpp",
-        "sha256": "91e89cdfcdb84c8e9fa5e3224960bdc624b89eb158f49c85b6957efd17410bde"
-      },
-      "definitions": [
-        {
-          "file": "build/tools/msvc8/include/vector",
-          "file_sha256": "6dfba811b28e061b9f493227463758cff60a9b51627e763371ec6996216aa695",
-          "line": 1086,
-          "end_line": 1099,
-          "definition_text_sha256": "1974105607bf1a6ed9c753d5167521bb6da8c09dae3097a326f585b9731cb7e0"
-        }
-      ],
-      "source_invocation_cause": "vector",
-      "subtype": "natural_outline",
-      "original_binding": null,
-      "original_extent": null,
-      "PC_credit": 0,
-      "original_status": "unproved"
-    },
-    {
-      "unit": "src/nu2api/shader_parser.cpp",
-      "symbol": "??0?$_Vector_iterator@PAUShaderParserIncludePc@@V?$allocator@PAUShaderParserIncludePc@@@std@@@std@@QAE@PAPAUShaderParserIncludePc@@PBU_Container_base@1@@Z",
-      "kind": "function",
-      "coff_type": 32,
-      "storage_class": 2,
-      "raw_size": 51,
-      "raw_sha256": "98362e92e5274ae7811a93171e0258b5970e1e883d50f08cee2b2b3e7d830680",
-      "section_contract": {
-        "name": ".text",
-        "characteristics": 1615859744,
-        "raw_size": 51,
-        "COMDAT_selection": 2
-      },
-      "ordered_named_relocations": [
-        {
-          "offset": 34,
-          "type": 20,
-          "symbol": "__invalid_parameter_noinfo"
-        }
-      ],
-      "source": {
-        "path": "src/nu2api/shader_parser.cpp",
-        "sha256": "91e89cdfcdb84c8e9fa5e3224960bdc624b89eb158f49c85b6957efd17410bde"
-      },
-      "definitions": [
-        {
-          "file": "build/tools/msvc8/include/vector",
-          "file_sha256": "6dfba811b28e061b9f493227463758cff60a9b51627e763371ec6996216aa695",
-          "line": 312,
-          "end_line": 315,
-          "definition_text_sha256": "55309809216bfdbbe4ac10317236556fdee16ca195151242e9fe92f1aad65283"
-        }
-      ],
-      "source_invocation_cause": "vector",
-      "subtype": "natural_outline",
-      "original_binding": null,
-      "original_extent": null,
-      "PC_credit": 0,
-      "original_status": "unproved"
-    },
-    {
-      "unit": "src/nu2api/shader_parser.cpp",
-      "symbol": "??H?$_Vector_iterator@PAUShaderParserIncludePc@@V?$allocator@PAUShaderParserIncludePc@@@std@@@std@@QBE?AV01@H@Z",
-      "kind": "function",
-      "coff_type": 32,
-      "storage_class": 2,
-      "raw_size": 52,
-      "raw_sha256": "3cf57a767268bb134973d79eb5eb93cc8c4c2a6efdb15783d5e4aa6c8a0b459d",
-      "section_contract": {
-        "name": ".text",
-        "characteristics": 1615859744,
-        "raw_size": 52,
-        "COMDAT_selection": 2
-      },
-      "ordered_named_relocations": [
-        {
-          "offset": 12,
-          "type": 20,
-          "symbol": "__invalid_parameter_noinfo"
-        },
-        {
-          "offset": 34,
-          "type": 20,
-          "symbol": "__invalid_parameter_noinfo"
-        }
-      ],
-      "source": {
-        "path": "src/nu2api/shader_parser.cpp",
-        "sha256": "91e89cdfcdb84c8e9fa5e3224960bdc624b89eb158f49c85b6957efd17410bde"
-      },
-      "definitions": [
-        {
-          "file": "build/tools/msvc8/include/vector",
-          "file_sha256": "6dfba811b28e061b9f493227463758cff60a9b51627e763371ec6996216aa695",
-          "line": 366,
-          "end_line": 370,
-          "definition_text_sha256": "2cb11eafeecdcba6470416259537c8232be44240d8c12be595be19cb638aab86"
-        }
-      ],
-      "source_invocation_cause": "vector",
-      "subtype": "natural_outline",
-      "original_binding": null,
-      "original_extent": null,
-      "PC_credit": 0,
-      "original_status": "unproved"
-    },
-    {
-      "unit": "src/nu2api/shader_parser.cpp",
-      "symbol": "??$unchecked_copy@PAPAUShaderParserIncludePc@@PAPAU1@@stdext@@YAPAPAUShaderParserIncludePc@@PAPAU1@00@Z",
-      "kind": "function",
-      "coff_type": 32,
-      "storage_class": 2,
-      "raw_size": 50,
-      "raw_sha256": "0b22ca3b28f2fb0203e6aa3d56820a57705e3c076c90996cf6b0c3974e051adc",
-      "section_contract": {
-        "name": ".text",
-        "characteristics": 1615859744,
-        "raw_size": 50,
-        "COMDAT_selection": 2
-      },
-      "ordered_named_relocations": [
-        {
-          "offset": 38,
-          "type": 20,
-          "symbol": "_memmove_s"
-        }
-      ],
-      "source": {
-        "path": "src/nu2api/shader_parser.cpp",
-        "sha256": "91e89cdfcdb84c8e9fa5e3224960bdc624b89eb158f49c85b6957efd17410bde"
-      },
-      "definitions": [
-        {
-          "file": "build/tools/msvc8/include/xutility",
-          "file_sha256": "1b709f8918c201d0223cca2b736a46e34ca4b1519e5e22da1ca89c6c82e7869a",
-          "line": 2973,
-          "end_line": 2977,
-          "definition_text_sha256": "9d788e987e96837d88f9f644ac3b2c2e6e74e4361dff934f2d6bfc50c2413898"
-        }
-      ],
-      "source_invocation_cause": "vector",
-      "subtype": "natural_outline",
-      "original_binding": null,
-      "original_extent": null,
-      "PC_credit": 0,
-      "original_status": "unproved"
-    },
-    {
-      "unit": "src/nu2api/shader_parser.cpp",
-      "symbol": "??$unchecked_fill_n@PAPAUShaderParserIncludePc@@IPAU1@@stdext@@YAXPAPAUShaderParserIncludePc@@IABQAU1@@Z",
-      "kind": "function",
-      "coff_type": 32,
-      "storage_class": 2,
-      "raw_size": 33,
-      "raw_sha256": "00aac5f6a520372792155e4e2b7f9cf20dbf29f9b6273f4ea78ba8e042833fbd",
-      "section_contract": {
-        "name": ".text",
-        "characteristics": 1615859744,
-        "raw_size": 33,
-        "COMDAT_selection": 2
-      },
-      "ordered_named_relocations": [],
-      "source": {
-        "path": "src/nu2api/shader_parser.cpp",
-        "sha256": "91e89cdfcdb84c8e9fa5e3224960bdc624b89eb158f49c85b6957efd17410bde"
-      },
-      "definitions": [
-        {
-          "file": "build/tools/msvc8/include/xutility",
-          "file_sha256": "1b709f8918c201d0223cca2b736a46e34ca4b1519e5e22da1ca89c6c82e7869a",
-          "line": 3038,
-          "end_line": 3041,
-          "definition_text_sha256": "e892041b92fbbe9137e5c439dd771c561ed653d9b054fc73fc2081efdbc26179"
-        }
-      ],
-      "source_invocation_cause": "vector",
-      "subtype": "natural_outline",
-      "original_binding": null,
-      "original_extent": null,
-      "PC_credit": 0,
-      "original_status": "unproved"
-    },
-    {
-      "unit": "src/nu2api/shader_parser.cpp",
-      "symbol": "??$_Uninit_move@PAPAUShaderParserIncludePc@@PAPAU1@V?$allocator@PAUShaderParserIncludePc@@@std@@U_Undefined_move_tag@3@@std@@YAPAPAUShaderParserIncludePc@@PAPAU1@00AAV?$allocator@PAUShaderParserIncludePc@@@0@U_Undefined_move_tag@0@U_Range_checked_iterator_tag@0@@Z",
-      "kind": "function",
-      "coff_type": 32,
-      "storage_class": 2,
-      "raw_size": 46,
-      "raw_sha256": "78bd19ddf2f4e1bf237621b7f2227db081e63c78d0c698b6f26445d2d134b1f7",
-      "section_contract": {
-        "name": ".text",
-        "characteristics": 1615859744,
-        "raw_size": 46,
-        "COMDAT_selection": 2
-      },
-      "ordered_named_relocations": [
-        {
-          "offset": 35,
-          "type": 20,
-          "symbol": "_memmove_s"
-        }
-      ],
-      "source": {
-        "path": "src/nu2api/shader_parser.cpp",
-        "sha256": "91e89cdfcdb84c8e9fa5e3224960bdc624b89eb158f49c85b6957efd17410bde"
-      },
-      "definitions": [
-        {
-          "file": "build/tools/msvc8/include/memory",
-          "file_sha256": "8cd8316787e2cd8866815a5f2d4918867892778e5932c3760aa7d60f3085abcb",
-          "line": 157,
-          "end_line": 161,
-          "definition_text_sha256": "2c18e9b4c1af4eca582e81cdd49c7792e6876e75719327514eebf5e822917d4b"
-        }
-      ],
-      "source_invocation_cause": "vector",
-      "subtype": "natural_outline",
-      "original_binding": null,
-      "original_extent": null,
-      "PC_credit": 0,
-      "original_status": "unproved"
-    },
-    {
-      "unit": "src/nu2api/shader_parser.cpp",
-      "symbol": "??1?$vector@PAUShaderParserIncludePc@@V?$allocator@PAUShaderParserIncludePc@@@std@@@std@@QAE@XZ",
-      "kind": "function",
-      "coff_type": 32,
-      "storage_class": 2,
-      "raw_size": 42,
-      "raw_sha256": "8d190b99f3d745f3d64b0a568d8694656971dac5480015166e206d50c937117f",
-      "section_contract": {
-        "name": ".text",
-        "characteristics": 1615859744,
-        "raw_size": 42,
-        "COMDAT_selection": 2
-      },
-      "ordered_named_relocations": [
-        {
-          "offset": 12,
-          "type": 20,
-          "symbol": "??3@YAXPAX@Z"
-        }
-      ],
-      "source": {
-        "path": "src/nu2api/shader_parser.cpp",
-        "sha256": "91e89cdfcdb84c8e9fa5e3224960bdc624b89eb158f49c85b6957efd17410bde"
-      },
-      "definitions": [
-        {
-          "file": "build/tools/msvc8/include/vector",
-          "file_sha256": "6dfba811b28e061b9f493227463758cff60a9b51627e763371ec6996216aa695",
-          "line": 544,
-          "end_line": 547,
-          "definition_text_sha256": "d6208325c32a20777b1cfe25804bd051fdcf7c5c7f3792a3415807a9c916a3b0"
-        }
-      ],
-      "source_invocation_cause": "vector",
-      "subtype": "natural_outline",
-      "original_binding": null,
-      "original_extent": null,
-      "PC_credit": 0,
-      "original_status": "unproved"
-    },
-    {
-      "unit": "src/nu2api/shader_parser.cpp",
-      "symbol": "?begin@?$vector@PAUShaderParserIncludePc@@V?$allocator@PAUShaderParserIncludePc@@@std@@@std@@QAE?AV?$_Vector_iterator@PAUShaderParserIncludePc@@V?$allocator@PAUShaderParserIncludePc@@@std@@@2@XZ",
-      "kind": "function",
-      "coff_type": 32,
-      "storage_class": 2,
-      "raw_size": 41,
-      "raw_sha256": "7dde2794ae226c19436879f9f28f68563ae13b9bccda19300ba829b5bbc610aa",
-      "section_contract": {
-        "name": ".text",
-        "characteristics": 1615859744,
-        "raw_size": 41,
-        "COMDAT_selection": 2
-      },
-      "ordered_named_relocations": [
-        {
-          "offset": 24,
-          "type": 20,
-          "symbol": "__invalid_parameter_noinfo"
-        }
-      ],
-      "source": {
-        "path": "src/nu2api/shader_parser.cpp",
-        "sha256": "91e89cdfcdb84c8e9fa5e3224960bdc624b89eb158f49c85b6957efd17410bde"
-      },
-      "definitions": [
-        {
-          "file": "build/tools/msvc8/include/vector",
-          "file_sha256": "6dfba811b28e061b9f493227463758cff60a9b51627e763371ec6996216aa695",
-          "line": 626,
-          "end_line": 629,
-          "definition_text_sha256": "26b4b3ace07e2eea735e632405e44faa3098e5424ba6159e8585fe31c47f02cd"
-        }
-      ],
-      "source_invocation_cause": "vector",
-      "subtype": "natural_outline",
-      "original_binding": null,
-      "original_extent": null,
-      "PC_credit": 0,
-      "original_status": "unproved"
-    },
-    {
-      "unit": "src/nu2api/shader_parser.cpp",
-      "symbol": "?end@?$vector@PAUShaderParserIncludePc@@V?$allocator@PAUShaderParserIncludePc@@@std@@@std@@QAE?AV?$_Vector_iterator@PAUShaderParserIncludePc@@V?$allocator@PAUShaderParserIncludePc@@@std@@@2@XZ",
-      "kind": "function",
-      "coff_type": 32,
-      "storage_class": 2,
-      "raw_size": 41,
-      "raw_sha256": "d3749e81d6a44f4d908a7624b0aae9d2d87c5af463808f89cb2f66ac483f1c31",
-      "section_contract": {
-        "name": ".text",
-        "characteristics": 1615859744,
-        "raw_size": 41,
-        "COMDAT_selection": 2
-      },
-      "ordered_named_relocations": [
-        {
-          "offset": 24,
-          "type": 20,
-          "symbol": "__invalid_parameter_noinfo"
-        }
-      ],
-      "source": {
-        "path": "src/nu2api/shader_parser.cpp",
-        "sha256": "91e89cdfcdb84c8e9fa5e3224960bdc624b89eb158f49c85b6957efd17410bde"
-      },
-      "definitions": [
-        {
-          "file": "build/tools/msvc8/include/vector",
-          "file_sha256": "6dfba811b28e061b9f493227463758cff60a9b51627e763371ec6996216aa695",
-          "line": 636,
-          "end_line": 639,
-          "definition_text_sha256": "2657937fb026e57a5923cfdf5392ac554e91a07b7d532fc50d19a67040f9b6ca"
-        }
-      ],
-      "source_invocation_cause": "vector",
-      "subtype": "natural_outline",
-      "original_binding": null,
-      "original_extent": null,
-      "PC_credit": 0,
-      "original_status": "unproved"
-    },
-    {
-      "unit": "src/nu2api/shader_parser.cpp",
-      "symbol": "?erase@?$vector@PAUShaderParserIncludePc@@V?$allocator@PAUShaderParserIncludePc@@@std@@@std@@QAE?AV?$_Vector_iterator@PAUShaderParserIncludePc@@V?$allocator@PAUShaderParserIncludePc@@@std@@@2@V32@0@Z",
-      "kind": "function",
-      "coff_type": 32,
-      "storage_class": 2,
-      "raw_size": 90,
-      "raw_sha256": "f41875378f93968ddc4c75bb532cc0502649af26b84f1d2adbb0787c5ceb1d2e",
-      "section_contract": {
-        "name": ".text",
-        "characteristics": 1615859744,
-        "raw_size": 90,
-        "COMDAT_selection": 2
-      },
-      "ordered_named_relocations": [
-        {
-          "offset": 20,
-          "type": 20,
-          "symbol": "__invalid_parameter_noinfo"
-        },
-        {
-          "offset": 64,
-          "type": 20,
-          "symbol": "_memmove_s"
-        }
-      ],
-      "source": {
-        "path": "src/nu2api/shader_parser.cpp",
-        "sha256": "91e89cdfcdb84c8e9fa5e3224960bdc624b89eb158f49c85b6957efd17410bde"
-      },
-      "definitions": [
-        {
-          "file": "build/tools/msvc8/include/vector",
-          "file_sha256": "6dfba811b28e061b9f493227463758cff60a9b51627e763371ec6996216aa695",
-          "line": 1005,
-          "end_line": 1031,
-          "definition_text_sha256": "ff80039743e1de9d67c3aa84b7ef44e2ee46d2e21f90cfabba596d5e1165a4a8"
-        }
-      ],
-      "source_invocation_cause": "vector",
-      "subtype": "natural_outline",
-      "original_binding": null,
-      "original_extent": null,
-      "PC_credit": 0,
-      "original_status": "unproved"
-    },
-    {
-      "unit": "src/nu2api/shader_parser.cpp",
-      "symbol": "?_Grow@?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@std@@IAE_NI_N@Z",
-      "kind": "function",
-      "coff_type": 32,
-      "storage_class": 2,
-      "raw_size": 188,
-      "raw_sha256": "3371745dabe08537c5a2dabc0be38d27d5998b7beff3e71c403f9ed176aa04ab",
-      "section_contract": {
-        "name": ".text",
-        "characteristics": 1615859744,
-        "raw_size": 188,
-        "COMDAT_selection": 2
-      },
-      "ordered_named_relocations": [
-        {
-          "offset": 14,
-          "type": 20,
-          "symbol": "?_Xlen@_String_base@std@@SAXXZ"
-        },
-        {
-          "offset": 33,
-          "type": 20,
-          "symbol": "?_Copy@?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@std@@IAEXII@Z"
-        },
-        {
-          "offset": 93,
-          "type": 20,
-          "symbol": "_memcpy_s"
-        },
-        {
-          "offset": 102,
-          "type": 20,
-          "symbol": "??3@YAXPAX@Z"
-        }
-      ],
-      "source": {
-        "path": "src/nu2api/shader_parser.cpp",
-        "sha256": "91e89cdfcdb84c8e9fa5e3224960bdc624b89eb158f49c85b6957efd17410bde"
-      },
-      "definitions": [
-        {
-          "file": "build/tools/msvc8/include/xstring",
-          "file_sha256": "2abad3cfe7378e4cb4baae0c80b2d154b346dfb986de4ebb42c5827d37ef93eb",
-          "line": 1996,
-          "end_line": 2009,
-          "definition_text_sha256": "14050f8765f8b1935e9362ec667857c5d3cb2326ab69671a7d24080b9f7dcfdf"
-        }
-      ],
-      "source_invocation_cause": "string_exception",
-      "subtype": "natural_outline",
-      "original_binding": null,
-      "original_extent": null,
-      "PC_credit": 0,
-      "original_status": "unproved"
-    },
-    {
-      "unit": "src/nu2api/shader_parser.cpp",
-      "symbol": "??$_Uninit_fill_n@PAPAUShaderParserIncludePc@@IPAU1@V?$allocator@PAUShaderParserIncludePc@@@std@@@std@@YAXPAPAUShaderParserIncludePc@@IABQAU1@AAV?$allocator@PAUShaderParserIncludePc@@@0@U_Scalar_ptr_iterator_tag@0@U_Range_checked_iterator_tag@0@@Z",
-      "kind": "function",
-      "coff_type": 32,
-      "storage_class": 2,
-      "raw_size": 33,
-      "raw_sha256": "00aac5f6a520372792155e4e2b7f9cf20dbf29f9b6273f4ea78ba8e042833fbd",
-      "section_contract": {
-        "name": ".text",
-        "characteristics": 1615859744,
-        "raw_size": 33,
-        "COMDAT_selection": 2
-      },
-      "ordered_named_relocations": [],
-      "source": {
-        "path": "src/nu2api/shader_parser.cpp",
-        "sha256": "91e89cdfcdb84c8e9fa5e3224960bdc624b89eb158f49c85b6957efd17410bde"
-      },
-      "definitions": [
-        {
-          "file": "build/tools/msvc8/include/memory",
-          "file_sha256": "8cd8316787e2cd8866815a5f2d4918867892778e5932c3760aa7d60f3085abcb",
-          "line": 325,
-          "end_line": 329,
-          "definition_text_sha256": "4aeb12ed5c2e35865153c6ef37c330cacb670f98e3dbb9f7406727fc7cb427d7"
-        }
-      ],
-      "source_invocation_cause": "vector",
-      "subtype": "natural_outline",
-      "original_binding": null,
-      "original_extent": null,
-      "PC_credit": 0,
-      "original_status": "unproved"
-    },
-    {
-      "unit": "src/nu2api/shader_parser.cpp",
-      "symbol": "??$_Unchecked_uninitialized_move@PAPAUShaderParserIncludePc@@PAPAU1@V?$allocator@PAUShaderParserIncludePc@@@std@@@stdext@@YAPAPAUShaderParserIncludePc@@PAPAU1@00AAV?$allocator@PAUShaderParserIncludePc@@@std@@@Z",
-      "kind": "function",
-      "coff_type": 32,
-      "storage_class": 2,
-      "raw_size": 46,
-      "raw_sha256": "78bd19ddf2f4e1bf237621b7f2227db081e63c78d0c698b6f26445d2d134b1f7",
-      "section_contract": {
-        "name": ".text",
-        "characteristics": 1615859744,
-        "raw_size": 46,
-        "COMDAT_selection": 2
-      },
-      "ordered_named_relocations": [
-        {
-          "offset": 35,
-          "type": 20,
-          "symbol": "_memmove_s"
-        }
-      ],
-      "source": {
-        "path": "src/nu2api/shader_parser.cpp",
-        "sha256": "91e89cdfcdb84c8e9fa5e3224960bdc624b89eb158f49c85b6957efd17410bde"
-      },
-      "definitions": [
-        {
-          "file": "build/tools/msvc8/include/memory",
-          "file_sha256": "8cd8316787e2cd8866815a5f2d4918867892778e5932c3760aa7d60f3085abcb",
-          "line": 690,
-          "end_line": 695,
-          "definition_text_sha256": "cb91e9553d72da311878dbd1fab74eddc49cf7325b12cdc74241f03ea4f37e9b"
-        }
-      ],
-      "source_invocation_cause": "vector",
-      "subtype": "natural_outline",
-      "original_binding": null,
-      "original_extent": null,
-      "PC_credit": 0,
-      "original_status": "unproved"
-    },
-    {
-      "unit": "src/nu2api/shader_parser.cpp",
-      "symbol": "?c_str@?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@std@@QBEPBDXZ",
-      "kind": "function",
-      "coff_type": 32,
-      "storage_class": 2,
-      "raw_size": 14,
-      "raw_sha256": "ef96cd9c00eb12f1ac2dfd13b8b7fa3359327a1dd9836f81879f156439638fc0",
-      "section_contract": {
-        "name": ".text",
-        "characteristics": 1615859744,
-        "raw_size": 14,
-        "COMDAT_selection": 2
-      },
-      "ordered_named_relocations": [],
-      "source": {
-        "path": "src/nu2api/shader_parser.cpp",
-        "sha256": "91e89cdfcdb84c8e9fa5e3224960bdc624b89eb158f49c85b6957efd17410bde"
-      },
-      "definitions": [
-        {
-          "file": "build/tools/msvc8/include/xstring",
-          "file_sha256": "2abad3cfe7378e4cb4baae0c80b2d154b346dfb986de4ebb42c5827d37ef93eb",
-          "line": 1582,
-          "end_line": 1585,
-          "definition_text_sha256": "f19229e522391736b63e4ebe5705e25d82c475d86de3795a9701c11bf20daf9b"
-        }
-      ],
-      "source_invocation_cause": "string_exception",
-      "subtype": "natural_outline",
-      "original_binding": null,
-      "original_extent": null,
-      "PC_credit": 0,
-      "original_status": "unproved"
-    },
-    {
-      "unit": "src/nu2api/shader_parser.cpp",
-      "symbol": "??$unchecked_uninitialized_fill_n@PAPAUShaderParserIncludePc@@IPAU1@V?$allocator@PAUShaderParserIncludePc@@@std@@@stdext@@YAXPAPAUShaderParserIncludePc@@IABQAU1@AAV?$allocator@PAUShaderParserIncludePc@@@std@@@Z",
-      "kind": "function",
-      "coff_type": 32,
-      "storage_class": 2,
-      "raw_size": 33,
-      "raw_sha256": "00aac5f6a520372792155e4e2b7f9cf20dbf29f9b6273f4ea78ba8e042833fbd",
-      "section_contract": {
-        "name": ".text",
-        "characteristics": 1615859744,
-        "raw_size": 33,
-        "COMDAT_selection": 2
-      },
-      "ordered_named_relocations": [],
-      "source": {
-        "path": "src/nu2api/shader_parser.cpp",
-        "sha256": "91e89cdfcdb84c8e9fa5e3224960bdc624b89eb158f49c85b6957efd17410bde"
-      },
-      "definitions": [
-        {
-          "file": "build/tools/msvc8/include/memory",
-          "file_sha256": "8cd8316787e2cd8866815a5f2d4918867892778e5932c3760aa7d60f3085abcb",
-          "line": 727,
-          "end_line": 732,
-          "definition_text_sha256": "6dbfb44ecbf742dafeda9d4af5470a5356dca26d62676d5290ab2e6413564347"
-        }
-      ],
-      "source_invocation_cause": "vector",
-      "subtype": "natural_outline",
-      "original_binding": null,
-      "original_extent": null,
-      "PC_credit": 0,
-      "original_status": "unproved"
-    },
-    {
-      "unit": "src/nu2api/shader_parser.cpp",
-      "symbol": "??0?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@std@@QAE@ABV01@@Z",
-      "kind": "function",
-      "coff_type": 32,
-      "storage_class": 2,
-      "raw_size": 37,
-      "raw_sha256": "bb3010c7baabde0c173cff92a402b65b736c720f518fd5f12d1f8b7cf90d61ad",
-      "section_contract": {
-        "name": ".text",
-        "characteristics": 1615859744,
-        "raw_size": 37,
-        "COMDAT_selection": 2
-      },
-      "ordered_named_relocations": [
-        {
-          "offset": 27,
-          "type": 20,
-          "symbol": "?assign@?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@std@@QAEAAV12@ABV12@II@Z"
-        }
-      ],
-      "source": {
-        "path": "src/nu2api/shader_parser.cpp",
-        "sha256": "91e89cdfcdb84c8e9fa5e3224960bdc624b89eb158f49c85b6957efd17410bde"
-      },
-      "definitions": [
-        {
-          "file": "build/tools/msvc8/include/xstring",
-          "file_sha256": "2abad3cfe7378e4cb4baae0c80b2d154b346dfb986de4ebb42c5827d37ef93eb",
-          "line": 592,
-          "end_line": 597,
-          "definition_text_sha256": "5423db8a17d2683c33629a7520e075f80b65d0afea569977976ea6e02708f333"
-        }
-      ],
-      "source_invocation_cause": "string_exception",
-      "subtype": "natural_outline",
-      "original_binding": null,
-      "original_extent": null,
-      "PC_credit": 0,
-      "original_status": "unproved"
-    },
-    {
-      "unit": "src/nu2api/shader_parser.cpp",
-      "symbol": "?assign@?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@std@@QAEAAV12@PBD@Z",
-      "kind": "function",
-      "coff_type": 32,
-      "storage_class": 2,
-      "raw_size": 39,
-      "raw_sha256": "17b7ff6744b7260c48a878c6d6c29e6cc8c2068b31ccbfc1841f72ab06f8cc8d",
-      "section_contract": {
-        "name": ".text",
-        "characteristics": 1615859744,
-        "raw_size": 39,
-        "COMDAT_selection": 2
-      },
-      "ordered_named_relocations": [
-        {
-          "offset": 30,
-          "type": 20,
-          "symbol": "?assign@?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@std@@QAEAAV12@PBDI@Z"
-        }
-      ],
-      "source": {
-        "path": "src/nu2api/shader_parser.cpp",
-        "sha256": "91e89cdfcdb84c8e9fa5e3224960bdc624b89eb158f49c85b6957efd17410bde"
-      },
-      "definitions": [
-        {
-          "file": "build/tools/msvc8/include/xstring",
-          "file_sha256": "2abad3cfe7378e4cb4baae0c80b2d154b346dfb986de4ebb42c5827d37ef93eb",
-          "line": 1030,
-          "end_line": 1033,
-          "definition_text_sha256": "b44f9fceb1889f59f4e3188c4ca461e55c6ef964bb3ac4a2eea2f13b99f5de11"
-        }
-      ],
-      "source_invocation_cause": "string_exception",
-      "subtype": "natural_outline",
-      "original_binding": null,
-      "original_extent": null,
-      "PC_credit": 0,
-      "original_status": "unproved"
-    },
-    {
-      "unit": "src/nu2api/shader_parser.cpp",
-      "symbol": "??0length_error@std@@QAE@ABV?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@1@@Z",
-      "kind": "function",
-      "coff_type": 32,
-      "storage_class": 2,
-      "raw_size": 57,
-      "raw_sha256": "9e8ead52d9fcaca4c8ab869909680cf856c97c9889a6ecb35bd4f81adfaef015",
-      "section_contract": {
-        "name": ".text",
-        "characteristics": 1615859744,
-        "raw_size": 57,
-        "COMDAT_selection": 2
-      },
-      "ordered_named_relocations": [
-        {
-          "offset": 4,
-          "type": 20,
-          "symbol": "??0exception@std@@QAE@XZ"
-        },
-        {
-          "offset": 15,
-          "type": 6,
-          "symbol": "??_7logic_error@std@@6B@"
-        },
-        {
-          "offset": 41,
-          "type": 20,
-          "symbol": "?assign@?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@std@@QAEAAV12@ABV12@II@Z"
-        },
-        {
-          "offset": 47,
-          "type": 6,
-          "symbol": "??_7length_error@std@@6B@"
-        }
-      ],
-      "source": {
-        "path": "src/nu2api/shader_parser.cpp",
-        "sha256": "91e89cdfcdb84c8e9fa5e3224960bdc624b89eb158f49c85b6957efd17410bde"
-      },
-      "definitions": [
-        {
-          "file": "build/tools/msvc8/include/stdexcept",
-          "file_sha256": "09e227c422d4cf1495e7d6705fab34ac82dbb515e0196708a847bc10736cd822",
-          "line": 104,
-          "end_line": 107,
-          "definition_text_sha256": "22980edd9743ed7fb4620fecd90153065decfa24f06b3af8344bfcf6b9b641fd"
-        }
-      ],
-      "source_invocation_cause": "string_exception",
-      "subtype": "natural_outline",
-      "original_binding": null,
-      "original_extent": null,
-      "PC_credit": 0,
-      "original_status": "unproved"
-    },
-    {
-      "unit": "src/nu2api/shader_parser.cpp",
-      "symbol": "?_Buy@?$vector@PAUShaderParserIncludePc@@V?$allocator@PAUShaderParserIncludePc@@@std@@@std@@IAE_NI@Z",
-      "kind": "function",
-      "coff_type": 32,
-      "storage_class": 2,
-      "raw_size": 72,
-      "raw_sha256": "b214944e37afc2608a106d4d6927a7fdea96e7e9c1bd7e9a0c01056ccc2af408",
-      "section_contract": {
-        "name": ".text",
-        "characteristics": 1615859744,
-        "raw_size": 72,
-        "COMDAT_selection": 2
-      },
-      "ordered_named_relocations": [
-        {
-          "offset": 39,
-          "type": 20,
-          "symbol": "?_Xlen@?$vector@PAUShaderParserIncludePc@@V?$allocator@PAUShaderParserIncludePc@@@std@@@std@@KAXXZ"
-        },
-        {
-          "offset": 46,
-          "type": 20,
-          "symbol": "??$_Allocate@PAUShaderParserIncludePc@@@std@@YAPAPAUShaderParserIncludePc@@IPAPAU1@@Z"
-        }
-      ],
-      "source": {
-        "path": "src/nu2api/shader_parser.cpp",
-        "sha256": "91e89cdfcdb84c8e9fa5e3224960bdc624b89eb158f49c85b6957efd17410bde"
-      },
-      "definitions": [
-        {
-          "file": "build/tools/msvc8/include/vector",
-          "file_sha256": "6dfba811b28e061b9f493227463758cff60a9b51627e763371ec6996216aa695",
-          "line": 1065,
-          "end_line": 1079,
-          "definition_text_sha256": "c3340f210896838756e880ed5b6d27b491196e73e07b326be6dd449be010e2af"
-        }
-      ],
-      "source_invocation_cause": "vector",
-      "subtype": "natural_outline",
-      "original_binding": null,
-      "original_extent": null,
-      "PC_credit": 0,
-      "original_status": "unproved"
-    },
-    {
-      "unit": "src/nu2api/shader_parser.cpp",
-      "symbol": "??0?$vector@PAUShaderParserIncludePc@@V?$allocator@PAUShaderParserIncludePc@@@std@@@std@@QAE@XZ",
-      "kind": "function",
-      "coff_type": 32,
-      "storage_class": 2,
-      "raw_size": 14,
-      "raw_sha256": "4a1d018163bfff9ec6fd6634cd8743d9501ae9e10e0583e0d522a82fed53424e",
-      "section_contract": {
-        "name": ".text",
-        "characteristics": 1615859744,
-        "raw_size": 14,
-        "COMDAT_selection": 2
-      },
-      "ordered_named_relocations": [],
-      "source": {
-        "path": "src/nu2api/shader_parser.cpp",
-        "sha256": "91e89cdfcdb84c8e9fa5e3224960bdc624b89eb158f49c85b6957efd17410bde"
-      },
-      "definitions": [
-        {
-          "file": "build/tools/msvc8/include/vector",
-          "file_sha256": "6dfba811b28e061b9f493227463758cff60a9b51627e763371ec6996216aa695",
-          "line": 455,
-          "end_line": 459,
-          "definition_text_sha256": "18e2bf45923f6e7c0d373f35415c6bdf17b8f2e1a18dbb6a2a92a073004cb7ff"
-        }
-      ],
-      "source_invocation_cause": "vector",
-      "subtype": "natural_outline",
-      "original_binding": null,
-      "original_extent": null,
-      "PC_credit": 0,
-      "original_status": "unproved"
-    }
-  ]
+ "description": "Compiler-generated definitions with no original PC address (STL/CRT helpers, private SDK scalars). They may stay unmapped and earn no credit.",
+ "entries": [
+  {
+   "unit": "src/nu2api/nushadermanager.cpp",
+   "symbol": "??2@YAPAXIPAX@Z",
+   "kind": "function"
+  },
+  {
+   "unit": "src/nu2api/nushadermanager.cpp",
+   "symbol": "__bad_alloc_Message",
+   "kind": "data"
+  },
+  {
+   "unit": "src/nu2api/shader_compiler.cpp",
+   "symbol": "__bad_alloc_Message",
+   "kind": "data"
+  },
+  {
+   "unit": "src/nu2api/shader_lexical.cpp",
+   "symbol": "__bad_alloc_Message",
+   "kind": "data"
+  },
+  {
+   "unit": "src/nu2api/shader_parser.cpp",
+   "symbol": "??$_Char_traits_cat@U?$char_traits@D@std@@@std@@YA?AU_Secure_char_traits_tag@0@XZ",
+   "kind": "function"
+  },
+  {
+   "unit": "src/nu2api/shader_parser.cpp",
+   "symbol": "??$_Checked_base@PAPAUShaderParserIncludePc@@@std@@YAPAPAUShaderParserIncludePc@@AAPAPAU1@@Z",
+   "kind": "function"
+  },
+  {
+   "unit": "src/nu2api/shader_parser.cpp",
+   "symbol": "??$_Checked_base@PAPAUShaderParserIncludePc@@@std@@YAPAPAUShaderParserIncludePc@@AAPAPAU1@U_Unchanged_checked_iterator_base_type_tag@0@@Z",
+   "kind": "function"
+  },
+  {
+   "unit": "src/nu2api/shader_parser.cpp",
+   "symbol": "??$_Copy_backward_opt@PAPAUShaderParserIncludePc@@PAPAU1@Urandom_access_iterator_tag@std@@@std@@YAPAPAUShaderParserIncludePc@@PAPAU1@00Urandom_access_iterator_tag@0@U_Scalar_ptr_iterator_tag@0@U_Range_checked_iterator_tag@0@@Z",
+   "kind": "function"
+  },
+  {
+   "unit": "src/nu2api/shader_parser.cpp",
+   "symbol": "??$_Copy_opt@PAPAUShaderParserIncludePc@@PAPAU1@Urandom_access_iterator_tag@std@@@std@@YAPAPAUShaderParserIncludePc@@PAPAU1@00Urandom_access_iterator_tag@0@U_Scalar_ptr_iterator_tag@0@U_Range_checked_iterator_tag@0@@Z",
+   "kind": "function"
+  },
+  {
+   "unit": "src/nu2api/shader_parser.cpp",
+   "symbol": "??$_Destroy_range@PAUShaderParserIncludePc@@V?$allocator@PAUShaderParserIncludePc@@@std@@@std@@YAXPAPAUShaderParserIncludePc@@0AAV?$allocator@PAUShaderParserIncludePc@@@0@@Z",
+   "kind": "function"
+  },
+  {
+   "unit": "src/nu2api/shader_parser.cpp",
+   "symbol": "??$_Destroy_range@PAUShaderParserIncludePc@@V?$allocator@PAUShaderParserIncludePc@@@std@@@std@@YAXPAPAUShaderParserIncludePc@@0AAV?$allocator@PAUShaderParserIncludePc@@@0@U_Scalar_ptr_iterator_tag@0@@Z",
+   "kind": "function"
+  },
+  {
+   "unit": "src/nu2api/shader_parser.cpp",
+   "symbol": "??$_Fill@PAPAUShaderParserIncludePc@@PAU1@@std@@YAXPAPAUShaderParserIncludePc@@0ABQAU1@@Z",
+   "kind": "function"
+  },
+  {
+   "unit": "src/nu2api/shader_parser.cpp",
+   "symbol": "??$_Fill_n@PAPAUShaderParserIncludePc@@IPAU1@@std@@YAXPAPAUShaderParserIncludePc@@IABQAU1@U_Range_checked_iterator_tag@0@@Z",
+   "kind": "function"
+  },
+  {
+   "unit": "src/nu2api/shader_parser.cpp",
+   "symbol": "??$_Fill_n@PAPAUShaderParserIncludePc@@IPAU1@@std@@YAXPAPAUShaderParserIncludePc@@IABQAU1@Urandom_access_iterator_tag@0@U_Range_checked_iterator_tag@0@@Z",
+   "kind": "function"
+  },
+  {
+   "unit": "src/nu2api/shader_parser.cpp",
+   "symbol": "??$_Iter_cat@PAPAUShaderParserIncludePc@@@std@@YA?AUrandom_access_iterator_tag@0@ABQAPAUShaderParserIncludePc@@@Z",
+   "kind": "function"
+  },
+  {
+   "unit": "src/nu2api/shader_parser.cpp",
+   "symbol": "??$_Iter_random@PAPAUShaderParserIncludePc@@PAPAU1@@std@@YA?AUrandom_access_iterator_tag@0@ABQAPAUShaderParserIncludePc@@0@Z",
+   "kind": "function"
+  },
+  {
+   "unit": "src/nu2api/shader_parser.cpp",
+   "symbol": "??$_Move_backward_opt@PAPAUShaderParserIncludePc@@PAPAU1@Urandom_access_iterator_tag@std@@U_Undefined_move_tag@3@@std@@YAPAPAUShaderParserIncludePc@@PAPAU1@00Urandom_access_iterator_tag@0@U_Undefined_move_tag@0@U_Range_checked_iterator_tag@0@@Z",
+   "kind": "function"
+  },
+  {
+   "unit": "src/nu2api/shader_parser.cpp",
+   "symbol": "??$_Move_cat@PAPAUShaderParserIncludePc@@@std@@YA?AU_Undefined_move_tag@0@ABQAPAUShaderParserIncludePc@@@Z",
+   "kind": "function"
+  },
+  {
+   "unit": "src/nu2api/shader_parser.cpp",
+   "symbol": "??$_Ptr_cat@PAPAUShaderParserIncludePc@@PAPAU1@@std@@YA?AU_Scalar_ptr_iterator_tag@0@AAPAPAUShaderParserIncludePc@@0@Z",
+   "kind": "function"
+  },
+  {
+   "unit": "src/nu2api/shader_parser.cpp",
+   "symbol": "??$_Unchecked_uninitialized_move@PAPAUShaderParserIncludePc@@PAPAU1@V?$allocator@PAUShaderParserIncludePc@@@std@@@stdext@@YAPAPAUShaderParserIncludePc@@PAPAU1@00AAV?$allocator@PAUShaderParserIncludePc@@@std@@@Z",
+   "kind": "function"
+  },
+  {
+   "unit": "src/nu2api/shader_parser.cpp",
+   "symbol": "??$_Uninit_copy@PAPAUShaderParserIncludePc@@PAPAU1@V?$allocator@PAUShaderParserIncludePc@@@std@@@std@@YAPAPAUShaderParserIncludePc@@PAPAU1@00AAV?$allocator@PAUShaderParserIncludePc@@@0@U_Scalar_ptr_iterator_tag@0@U_Range_checked_iterator_tag@0@@Z",
+   "kind": "function"
+  },
+  {
+   "unit": "src/nu2api/shader_parser.cpp",
+   "symbol": "??$_Uninit_fill_n@PAPAUShaderParserIncludePc@@IPAU1@V?$allocator@PAUShaderParserIncludePc@@@std@@@std@@YAXPAPAUShaderParserIncludePc@@IABQAU1@AAV?$allocator@PAUShaderParserIncludePc@@@0@U_Scalar_ptr_iterator_tag@0@U_Range_checked_iterator_tag@0@@Z",
+   "kind": "function"
+  },
+  {
+   "unit": "src/nu2api/shader_parser.cpp",
+   "symbol": "??$_Uninit_move@PAPAUShaderParserIncludePc@@PAPAU1@V?$allocator@PAUShaderParserIncludePc@@@std@@U_Undefined_move_tag@3@@std@@YAPAPAUShaderParserIncludePc@@PAPAU1@00AAV?$allocator@PAUShaderParserIncludePc@@@0@U_Undefined_move_tag@0@U_Range_checked_iterator_tag@0@@Z",
+   "kind": "function"
+  },
+  {
+   "unit": "src/nu2api/shader_parser.cpp",
+   "symbol": "??$copy_s@U?$char_traits@D@std@@@_Traits_helper@std@@YAPADPADIPBDI@Z",
+   "kind": "function"
+  },
+  {
+   "unit": "src/nu2api/shader_parser.cpp",
+   "symbol": "??$copy_s@U?$char_traits@D@std@@@_Traits_helper@std@@YAPADPADIPBDIU_Secure_char_traits_tag@1@@Z",
+   "kind": "function"
+  },
+  {
+   "unit": "src/nu2api/shader_parser.cpp",
+   "symbol": "??$move_s@U?$char_traits@D@std@@@_Traits_helper@std@@YAPADPADIPBDI@Z",
+   "kind": "function"
+  },
+  {
+   "unit": "src/nu2api/shader_parser.cpp",
+   "symbol": "??$move_s@U?$char_traits@D@std@@@_Traits_helper@std@@YAPADPADIPBDIU_Secure_char_traits_tag@1@@Z",
+   "kind": "function"
+  },
+  {
+   "unit": "src/nu2api/shader_parser.cpp",
+   "symbol": "??$unchecked_copy@PAPAUShaderParserIncludePc@@PAPAU1@@stdext@@YAPAPAUShaderParserIncludePc@@PAPAU1@00@Z",
+   "kind": "function"
+  },
+  {
+   "unit": "src/nu2api/shader_parser.cpp",
+   "symbol": "??$unchecked_fill_n@PAPAUShaderParserIncludePc@@IPAU1@@stdext@@YAXPAPAUShaderParserIncludePc@@IABQAU1@@Z",
+   "kind": "function"
+  },
+  {
+   "unit": "src/nu2api/shader_parser.cpp",
+   "symbol": "??$unchecked_uninitialized_copy@PAPAUShaderParserIncludePc@@PAPAU1@V?$allocator@PAUShaderParserIncludePc@@@std@@@stdext@@YAPAPAUShaderParserIncludePc@@PAPAU1@00AAV?$allocator@PAUShaderParserIncludePc@@@std@@@Z",
+   "kind": "function"
+  },
+  {
+   "unit": "src/nu2api/shader_parser.cpp",
+   "symbol": "??$unchecked_uninitialized_fill_n@PAPAUShaderParserIncludePc@@IPAU1@V?$allocator@PAUShaderParserIncludePc@@@std@@@stdext@@YAXPAPAUShaderParserIncludePc@@IABQAU1@AAV?$allocator@PAUShaderParserIncludePc@@@std@@@Z",
+   "kind": "function"
+  },
+  {
+   "unit": "src/nu2api/shader_parser.cpp",
+   "symbol": "??0?$_Ranit@PAUShaderParserIncludePc@@HPBQAU1@ABQAU1@@std@@QAE@XZ",
+   "kind": "function"
+  },
+  {
+   "unit": "src/nu2api/shader_parser.cpp",
+   "symbol": "??0?$_String_val@DV?$allocator@D@std@@@std@@IAE@V?$allocator@D@1@@Z",
+   "kind": "function"
+  },
+  {
+   "unit": "src/nu2api/shader_parser.cpp",
+   "symbol": "??0?$_Vector_const_iterator@PAUShaderParserIncludePc@@V?$allocator@PAUShaderParserIncludePc@@@std@@@std@@QAE@PAPAUShaderParserIncludePc@@PBU_Container_base@1@@Z",
+   "kind": "function"
+  },
+  {
+   "unit": "src/nu2api/shader_parser.cpp",
+   "symbol": "??0?$_Vector_iterator@PAUShaderParserIncludePc@@V?$allocator@PAUShaderParserIncludePc@@@std@@@std@@QAE@PAPAUShaderParserIncludePc@@PBU_Container_base@1@@Z",
+   "kind": "function"
+  },
+  {
+   "unit": "src/nu2api/shader_parser.cpp",
+   "symbol": "??0?$_Vector_val@PAUShaderParserIncludePc@@V?$allocator@PAUShaderParserIncludePc@@@std@@@std@@IAE@V?$allocator@PAUShaderParserIncludePc@@@1@@Z",
+   "kind": "function"
+  },
+  {
+   "unit": "src/nu2api/shader_parser.cpp",
+   "symbol": "??0?$allocator@D@std@@QAE@ABV01@@Z",
+   "kind": "function"
+  },
+  {
+   "unit": "src/nu2api/shader_parser.cpp",
+   "symbol": "??0?$allocator@D@std@@QAE@XZ",
+   "kind": "function"
+  },
+  {
+   "unit": "src/nu2api/shader_parser.cpp",
+   "symbol": "??0?$allocator@PAUShaderParserIncludePc@@@std@@QAE@ABV01@@Z",
+   "kind": "function"
+  },
+  {
+   "unit": "src/nu2api/shader_parser.cpp",
+   "symbol": "??0?$allocator@PAUShaderParserIncludePc@@@std@@QAE@XZ",
+   "kind": "function"
+  },
+  {
+   "unit": "src/nu2api/shader_parser.cpp",
+   "symbol": "??0?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@std@@QAE@ABV01@@Z",
+   "kind": "function"
+  },
+  {
+   "unit": "src/nu2api/shader_parser.cpp",
+   "symbol": "??0?$vector@PAUShaderParserIncludePc@@V?$allocator@PAUShaderParserIncludePc@@@std@@@std@@QAE@XZ",
+   "kind": "function"
+  },
+  {
+   "unit": "src/nu2api/shader_parser.cpp",
+   "symbol": "??0ShaderParserIncludePc@@AAE@PBDH@Z",
+   "kind": "function"
+  },
+  {
+   "unit": "src/nu2api/shader_parser.cpp",
+   "symbol": "??0_Iterator_base@std@@QAE@XZ",
+   "kind": "function"
+  },
+  {
+   "unit": "src/nu2api/shader_parser.cpp",
+   "symbol": "??0bad_alloc@std@@QAE@PBD@Z",
+   "kind": "function"
+  },
+  {
+   "unit": "src/nu2api/shader_parser.cpp",
+   "symbol": "??0length_error@std@@QAE@ABV?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@1@@Z",
+   "kind": "function"
+  },
+  {
+   "unit": "src/nu2api/shader_parser.cpp",
+   "symbol": "??1?$vector@PAUShaderParserIncludePc@@V?$allocator@PAUShaderParserIncludePc@@@std@@@std@@QAE@XZ",
+   "kind": "function"
+  },
+  {
+   "unit": "src/nu2api/shader_parser.cpp",
+   "symbol": "??1ShaderParserIncludePc@@AAE@XZ",
+   "kind": "function"
+  },
+  {
+   "unit": "src/nu2api/shader_parser.cpp",
+   "symbol": "??8?$_Vector_const_iterator@PAUShaderParserIncludePc@@V?$allocator@PAUShaderParserIncludePc@@@std@@@std@@QBE_NABV01@@Z",
+   "kind": "function"
+  },
+  {
+   "unit": "src/nu2api/shader_parser.cpp",
+   "symbol": "??9?$_Vector_const_iterator@PAUShaderParserIncludePc@@V?$allocator@PAUShaderParserIncludePc@@@std@@@std@@QBE_NABV01@@Z",
+   "kind": "function"
+  },
+  {
+   "unit": "src/nu2api/shader_parser.cpp",
+   "symbol": "??D?$_Vector_const_iterator@PAUShaderParserIncludePc@@V?$allocator@PAUShaderParserIncludePc@@@std@@@std@@QBEABQAUShaderParserIncludePc@@XZ",
+   "kind": "function"
+  },
+  {
+   "unit": "src/nu2api/shader_parser.cpp",
+   "symbol": "??D?$_Vector_iterator@PAUShaderParserIncludePc@@V?$allocator@PAUShaderParserIncludePc@@@std@@@std@@QBEAAPAUShaderParserIncludePc@@XZ",
+   "kind": "function"
+  },
+  {
+   "unit": "src/nu2api/shader_parser.cpp",
+   "symbol": "??E?$_Vector_const_iterator@PAUShaderParserIncludePc@@V?$allocator@PAUShaderParserIncludePc@@@std@@@std@@QAEAAV01@XZ",
+   "kind": "function"
+  },
+  {
+   "unit": "src/nu2api/shader_parser.cpp",
+   "symbol": "??E?$_Vector_iterator@PAUShaderParserIncludePc@@V?$allocator@PAUShaderParserIncludePc@@@std@@@std@@QAEAAV01@XZ",
+   "kind": "function"
+  },
+  {
+   "unit": "src/nu2api/shader_parser.cpp",
+   "symbol": "??G?$_Vector_const_iterator@PAUShaderParserIncludePc@@V?$allocator@PAUShaderParserIncludePc@@@std@@@std@@QBEHABV01@@Z",
+   "kind": "function"
+  },
+  {
+   "unit": "src/nu2api/shader_parser.cpp",
+   "symbol": "??G?$_Vector_iterator@PAUShaderParserIncludePc@@V?$allocator@PAUShaderParserIncludePc@@@std@@@std@@QBEHABV?$_Vector_const_iterator@PAUShaderParserIncludePc@@V?$allocator@PAUShaderParserIncludePc@@@std@@@1@@Z",
+   "kind": "function"
+  },
+  {
+   "unit": "src/nu2api/shader_parser.cpp",
+   "symbol": "??H?$_Vector_iterator@PAUShaderParserIncludePc@@V?$allocator@PAUShaderParserIncludePc@@@std@@@std@@QBE?AV01@H@Z",
+   "kind": "function"
+  },
+  {
+   "unit": "src/nu2api/shader_parser.cpp",
+   "symbol": "??Y?$_Vector_const_iterator@PAUShaderParserIncludePc@@V?$allocator@PAUShaderParserIncludePc@@@std@@@std@@QAEAAV01@H@Z",
+   "kind": "function"
+  },
+  {
+   "unit": "src/nu2api/shader_parser.cpp",
+   "symbol": "??Y?$_Vector_iterator@PAUShaderParserIncludePc@@V?$allocator@PAUShaderParserIncludePc@@@std@@@std@@QAEAAV01@H@Z",
+   "kind": "function"
+  },
+  {
+   "unit": "src/nu2api/shader_parser.cpp",
+   "symbol": "??_GShaderParserIncludePc@@AAEPAXI@Z",
+   "kind": "function"
+  },
+  {
+   "unit": "src/nu2api/shader_parser.cpp",
+   "symbol": "?_Buy@?$vector@PAUShaderParserIncludePc@@V?$allocator@PAUShaderParserIncludePc@@@std@@@std@@IAE_NI@Z",
+   "kind": "function"
+  },
+  {
+   "unit": "src/nu2api/shader_parser.cpp",
+   "symbol": "?_Copy_s@?$char_traits@D@std@@SAPADPADIPBDI@Z",
+   "kind": "function"
+  },
+  {
+   "unit": "src/nu2api/shader_parser.cpp",
+   "symbol": "?_Destroy@?$vector@PAUShaderParserIncludePc@@V?$allocator@PAUShaderParserIncludePc@@@std@@@std@@IAEXPAPAUShaderParserIncludePc@@0@Z",
+   "kind": "function"
+  },
+  {
+   "unit": "src/nu2api/shader_parser.cpp",
+   "symbol": "?_Eos@?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@std@@IAEXI@Z",
+   "kind": "function"
+  },
+  {
+   "unit": "src/nu2api/shader_parser.cpp",
+   "symbol": "?_Grow@?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@std@@IAE_NI_N@Z",
+   "kind": "function"
+  },
+  {
+   "unit": "src/nu2api/shader_parser.cpp",
+   "symbol": "?_Inside@?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@std@@IAE_NPBD@Z",
+   "kind": "function"
+  },
+  {
+   "unit": "src/nu2api/shader_parser.cpp",
+   "symbol": "?_Move_s@?$char_traits@D@std@@SAPADPADIPBDI@Z",
+   "kind": "function"
+  },
+  {
+   "unit": "src/nu2api/shader_parser.cpp",
+   "symbol": "?_Myptr@?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@std@@IAEPADXZ",
+   "kind": "function"
+  },
+  {
+   "unit": "src/nu2api/shader_parser.cpp",
+   "symbol": "?_Myptr@?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@std@@IBEPBDXZ",
+   "kind": "function"
+  },
+  {
+   "unit": "src/nu2api/shader_parser.cpp",
+   "symbol": "?_Tidy@?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@std@@IAEX_NI@Z",
+   "kind": "function"
+  },
+  {
+   "unit": "src/nu2api/shader_parser.cpp",
+   "symbol": "?_Tidy@?$vector@PAUShaderParserIncludePc@@V?$allocator@PAUShaderParserIncludePc@@@std@@@std@@IAEXXZ",
+   "kind": "function"
+  },
+  {
+   "unit": "src/nu2api/shader_parser.cpp",
+   "symbol": "?allocate@?$allocator@PAUShaderParserIncludePc@@@std@@QAEPAPAUShaderParserIncludePc@@I@Z",
+   "kind": "function"
+  },
+  {
+   "unit": "src/nu2api/shader_parser.cpp",
+   "symbol": "?assign@?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@std@@QAEAAV12@PBD@Z",
+   "kind": "function"
+  },
+  {
+   "unit": "src/nu2api/shader_parser.cpp",
+   "symbol": "?assign@?$char_traits@D@std@@SAXAADABD@Z",
+   "kind": "function"
+  },
+  {
+   "unit": "src/nu2api/shader_parser.cpp",
+   "symbol": "?begin@?$vector@PAUShaderParserIncludePc@@V?$allocator@PAUShaderParserIncludePc@@@std@@@std@@QAE?AV?$_Vector_iterator@PAUShaderParserIncludePc@@V?$allocator@PAUShaderParserIncludePc@@@std@@@2@XZ",
+   "kind": "function"
+  },
+  {
+   "unit": "src/nu2api/shader_parser.cpp",
+   "symbol": "?c_str@?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@std@@QBEPBDXZ",
+   "kind": "function"
+  },
+  {
+   "unit": "src/nu2api/shader_parser.cpp",
+   "symbol": "?capacity@?$vector@PAUShaderParserIncludePc@@V?$allocator@PAUShaderParserIncludePc@@@std@@@std@@QBEIXZ",
+   "kind": "function"
+  },
+  {
+   "unit": "src/nu2api/shader_parser.cpp",
+   "symbol": "?deallocate@?$allocator@D@std@@QAEXPADI@Z",
+   "kind": "function"
+  },
+  {
+   "unit": "src/nu2api/shader_parser.cpp",
+   "symbol": "?deallocate@?$allocator@PAUShaderParserIncludePc@@@std@@QAEXPAPAUShaderParserIncludePc@@I@Z",
+   "kind": "function"
+  },
+  {
+   "unit": "src/nu2api/shader_parser.cpp",
+   "symbol": "?end@?$vector@PAUShaderParserIncludePc@@V?$allocator@PAUShaderParserIncludePc@@@std@@@std@@QAE?AV?$_Vector_iterator@PAUShaderParserIncludePc@@V?$allocator@PAUShaderParserIncludePc@@@std@@@2@XZ",
+   "kind": "function"
+  },
+  {
+   "unit": "src/nu2api/shader_parser.cpp",
+   "symbol": "?erase@?$vector@PAUShaderParserIncludePc@@V?$allocator@PAUShaderParserIncludePc@@@std@@@std@@QAE?AV?$_Vector_iterator@PAUShaderParserIncludePc@@V?$allocator@PAUShaderParserIncludePc@@@std@@@2@V32@0@Z",
+   "kind": "function"
+  },
+  {
+   "unit": "src/nu2api/shader_parser.cpp",
+   "symbol": "?length@?$char_traits@D@std@@SAIPBD@Z",
+   "kind": "function"
+  },
+  {
+   "unit": "src/nu2api/shader_parser.cpp",
+   "symbol": "?max_size@?$allocator@D@std@@QBEIXZ",
+   "kind": "function"
+  },
+  {
+   "unit": "src/nu2api/shader_parser.cpp",
+   "symbol": "?max_size@?$allocator@PAUShaderParserIncludePc@@@std@@QBEIXZ",
+   "kind": "function"
+  },
+  {
+   "unit": "src/nu2api/shader_parser.cpp",
+   "symbol": "?max_size@?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@std@@QBEIXZ",
+   "kind": "function"
+  },
+  {
+   "unit": "src/nu2api/shader_parser.cpp",
+   "symbol": "?max_size@?$vector@PAUShaderParserIncludePc@@V?$allocator@PAUShaderParserIncludePc@@@std@@@std@@QBEIXZ",
+   "kind": "function"
+  },
+  {
+   "unit": "src/nu2api/shader_parser.cpp",
+   "symbol": "?size@?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@std@@QBEIXZ",
+   "kind": "function"
+  },
+  {
+   "unit": "src/nu2api/shader_parser.cpp",
+   "symbol": "?size@?$vector@PAUShaderParserIncludePc@@V?$allocator@PAUShaderParserIncludePc@@@std@@@std@@QBEIXZ",
+   "kind": "function"
+  },
+  {
+   "unit": "src/nu2api/shader_parser.cpp",
+   "symbol": "__bad_alloc_Message",
+   "kind": "data"
+  }
+ ]
 }

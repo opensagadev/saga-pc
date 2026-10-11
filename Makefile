@@ -83,11 +83,6 @@ check-core:
 	$(PYTHON) tools/check.py
 	$(PYTHON) -m unittest discover -s tools -p 'test_*.py'
 
-CANDIDATE_INVENTORY := $(shell $(PYTHON) -c 'import json; print(json.load(open("config/project.json")).get("candidate_only", ""))')
-ifneq ($(CANDIDATE_INVENTORY),)
-$(EXE): config/project.json $(CANDIDATE_INVENTORY) $(wildcard tools/candidate*.py)
-check-objects: $(EXE)
-endif
 
 check-objects: objects
 	$(PYTHON) tools/check.py --objects

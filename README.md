@@ -1,50 +1,21 @@
 # saga-pc
 
-**Runtime status: not playable.** The source reaches genuine hardware/window/device
-startup, permanent-data loading and repeated frame/swap entries. Completed rendering
-and a loaded playable world remain unverified. Work follows the measured source
-failure and real provider dependencies; see the [current roadmap](docs/roadmap.md).
-
 <!-- matching-badge -->
 ![fuzzy code](https://img.shields.io/badge/fuzzy%20code-30.428%25-yellow)<!-- /matching-badge --> <!-- mapping-badge -->![mapped code](https://img.shields.io/badge/mapped%20code-44.380%25-yellow) ![mapped data](https://img.shields.io/badge/mapped%20data-1.798%25-red) ![mapped code+data](https://img.shields.io/badge/mapped%20code%2Bdata-5.541%25-red)<!-- /mapping-badge --> [![Build](https://github.com/opensagadev/saga-pc/actions/workflows/build.yml/badge.svg)](https://github.com/opensagadev/saga-pc/actions/workflows/build.yml)
 
 **saga-pc** is a matching decompilation of the GOG PC release of
-*LEGO Star Wars: The Complete Saga*.
+*LEGO Star Wars: The Complete Saga*: C/C++ source that compiles with the original
+compiler (MSVC 2005) into the same x86 code as the retail executable. Most game
+code comes from the [Android decompilation](https://github.com/opensagadev/saga)
+and is adapted to the PC build.
 
-The goal is readable C/C++ that compiles into the exact same x86 machine code as
-the original game, building on the [Android decompilation](https://github.com/opensagadev/saga).
+**Status:** not playable yet. The source EXE starts the window, devices and
+permanent-data loading; rendering a loaded world is not reached. Of the original
+`.text` (3,471,246 bytes), about 44% is mapped, 30% is covered by objdiff-weighted
+similarity and 7% matches byte for byte. See the [roadmap](docs/roadmap.md).
 
-This project is at an early stage. Our sources build a Windows executable and
-reconstructed functions are compared with the original; the game is still incomplete.
-The first badge tracks objdiff-weighted coverage of the original code: compared
-functions contribute their fuzzy similarity, and unimplemented code contributes
-zero. It is an estimate of code similarity, not a percentage of working game
-features or an exact byte match. The mapping badges count known symbol extents,
-including unimplemented symbols, against the original code/data section sizes.
-Aliases count once; unknown sizes contribute zero. Native objdiff similarity among compared
-functions and exact code coverage are recorded in [matching.json](matching.json).
-The report also records identified code as the union of known inventory extents
-and complete reviewed function ranges. It shows reviewed bytes outside the
-inventory separately; those identities can still lack a usable signature or
-source implementation. This code measure uses the retail `.text` denominator.
-
-| Mapping denominator | Original bytes |
-| --- | ---: |
-| Code (`.text`) | 3,471,246 |
-| Data (`.rdata` + `.data`, including zero-initialized storage) | 36,018,966 |
-| Combined code and data | 39,490,212 |
-
-These denominators measure section storage, rather than the unknown sum of all
-original symbol sizes. They exclude resources, image headers and section gaps,
-but retain padding within code/data sections. The large zero-initialized data
-area contributes to data coverage even though it occupies little space on disk.
-The [Mac linked-symbol estimate](config/symbols.md#mac-linked-symbol-span-estimate-2026-10-08)
-also reports named code/data counts, estimated spans and PC name overlap. It is
-separate from verified PC coverage because Mac symbols do not supply PC sizes.
-
-See [CONTRIBUTING.md](CONTRIBUTING.md) for setup, the symbol map, and the build
-and matching workflow, and the [documentation index](docs/README.md) for technical
-guides and historical investigations.
+See [CONTRIBUTING.md](CONTRIBUTING.md) for setup, the workflow and the automated
+source-shape search (`tools/permute.py`).
 
 ## License
 

@@ -45,8 +45,6 @@ def check_objects(objects, records, target, code_groups=(), candidate_only=None)
     Unimplemented inventory entries and different rebuilt sizes are allowed.
     This proves mapping/relocation coverage only, never matching against retail.
     """
-    if candidate_only is not None:
-        candidate_only.check_fresh(objects, records)
     errors = map_errors(records, target)
     objects = prepare_code_group_objects(objects, code_groups, records)
     rows_by_name = {}
@@ -361,71 +359,8 @@ def main():
     mode.add_argument("--format", action="store_true", help="Check C/C++ source and header formatting")
     mode.add_argument("--tidy", action="store_true", help="Analyze C/C++ using the original Windows x86 SDK")
     mode.add_argument("--editor", action="store_true", help="Prepare VS Code headers and clang-tidy compilation database")
-    mode.add_argument("--identify", action="store_true", help="Rank Android-to-PC call/reference graph hypotheses from local analysis exports")
-    mode.add_argument("--extract-source-graph", action="store_true", help="Extract a cached Android source AST graph for identification")
-    parser.add_argument("--analysis-dir", type=Path, help="With --identify, atomically publish research outputs here")
-    parser.add_argument("--memory-limit-mb", type=int, default=1024,
-                        help="With --identify, bound process address space in MiB (default: 1024)")
-    parser.add_argument("--reviewed-wrapper-anchors", type=Path, help="With --identify --joint-graph, explicitly use pinned reviewed one-hop forwarder contracts")
-    parser.add_argument("--max-rounds", type=int, default=4,
-                        help="With --identify, propagate up to this many rounds, stopping when no pairs are added (1–64; default: 4)")
-    parser.add_argument("--tentative-data-feedback", action="store_true",
-                        help="With --identify --joint-graph, publish separate data hypotheses from inferred function ancestry")
-    parser.add_argument("--symbols", type=Path, help="With --identify, freeze this reviewed symbol map")
-    parser.add_argument("--joint-graph", type=Path, help="With --identify, use a hash-verified original code/data graph pair")
-    parser.add_argument("--reviewed-pairs", type=Path, help="With --identify, freeze a reviewed decision journal")
-    parser.add_argument("--registry-descriptors", type=Path, help="With --identify --joint-graph, diagnose reviewed original registry records separately from scoring")
-    parser.add_argument("--similarity-candidates", type=Path, action="append", help="With --identify, add advisory BSim/BinDiff candidates")
-    parser.add_argument("--holdout-mode", choices=("pair", "family", "data"), default="pair", help="With --identify --holdout, choose a label split")
-    parser.add_argument("--holdout-selection", type=Path, help="With --identify --holdout, freeze an explicit evaluation selection")
-    parser.add_argument("--holdout", action="store_true", help="With --identify, test recovery of hidden existing mappings")
-    parser.add_argument("--source-graph", type=Path, help="With --identify, add a diagnostics-clean Android AST graph")
-    parser.add_argument("--refresh-features", action="store_true", help="With --identify, regenerate ELF/PE data references before scoring")
-    parser.add_argument("--android-root", type=Path, default=ROOT.parent / "saga", help="Read-only Android reference for --refresh-features")
-    parser.add_argument("--ndk-root", type=Path, help="Existing Android NDK r8e extraction for --extract-source-graph")
-    parser.add_argument("--jobs", type=int, default=8, help="Bounded AST extraction or clang-tidy workers (default: 8)")
-    parser.add_argument("--input", type=Path, action="append", help="Limit AST extraction to these translation units")
+    parser.add_argument("--jobs", type=int, default=8, help="Parallel clang-tidy workers (default: 8)")
     args = parser.parse_args()
-    if args.extract_source_graph:
-        if not args.ndk_root:
-            parser.error("--extract-source-graph requires --ndk-root")
-        if __package__:
-            from .source_graph import extract
-        else:
-            from tools.source_graph import extract
-        extract(args.android_root, args.ndk_root,
-                args.source_graph or ROOT / "build/analysis/source-graph/android-source-graph.json",
-                inputs=args.input or (), all_source=args.input is None, jobs=args.jobs)
-        return
-    if (args.holdout or args.source_graph or args.refresh_features or args.analysis_dir or args.symbols
-            or args.joint_graph or args.reviewed_pairs or args.registry_descriptors or args.similarity_candidates or args.holdout_selection
-            or args.holdout_mode != "pair" or args.memory_limit_mb != 1024 or args.max_rounds != 4
-            or args.tentative_data_feedback or args.reviewed_wrapper_anchors) and not args.identify:
-        parser.error("Identification options require --identify")
-    if args.identify:
-        if args.memory_limit_mb < 128:
-            parser.error("--memory-limit-mb must be at least 128")
-        if not 1 <= args.max_rounds <= 64:
-            parser.error("--max-rounds must be between 1 and 64")
-        if args.registry_descriptors and not args.joint_graph:
-            parser.error("--registry-descriptors requires --joint-graph")
-        if args.tentative_data_feedback and not args.joint_graph:
-            parser.error("--tentative-data-feedback requires --joint-graph")
-        if __package__:
-            from .identification import generate
-        else:
-            from tools.identification import generate
-        generate(holdout=args.holdout, source_graph=args.source_graph,
-                 refresh=args.refresh_features, android_root=args.android_root,
-                 analysis_dir=args.analysis_dir, symbols=args.symbols, joint_graph=args.joint_graph,
-                 reviewed_pairs=args.reviewed_pairs, holdout_mode=args.holdout_mode,
-                 holdout_selection=args.holdout_selection, similarity_candidates=args.similarity_candidates,
-                 registry_descriptors=args.registry_descriptors,
-                 max_rounds=args.max_rounds,
-                 tentative_data_feedback=args.tentative_data_feedback,
-                 memory_limit_mb=args.memory_limit_mb,
-                 reviewed_wrapper_anchors=args.reviewed_wrapper_anchors)
-        return
     if args.format:
         check_format()
         return

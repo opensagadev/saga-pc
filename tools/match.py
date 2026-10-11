@@ -9,13 +9,11 @@ import subprocess
 import sys
 
 if __package__:
-    from .identification_coverage import reviewed_identification_file
     from .binary import compare_data, relocate_function, write_function
     from .lib import (ROOT, DefinitionIndex, bindings_for, compiled_objects, covered_bytes,
                       digest, external_symbols, load_code_groups, prepare_code_group_objects, load_json, load_symbols, mapping_progress, number, object_path, project, retail, section_mapping_progress, sha256)
 else:
     sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
-    from tools.identification_coverage import reviewed_identification_file
     from tools.binary import compare_data, relocate_function, write_function
     from tools.lib import (ROOT, DefinitionIndex, bindings_for, compiled_objects, covered_bytes,
                      digest, external_symbols, load_code_groups, prepare_code_group_objects, load_json, load_symbols, mapping_progress, number, object_path, project, retail, section_mapping_progress, sha256)
@@ -319,7 +317,6 @@ def main():
               "inlined": inlined}
     if candidate_only is not None:
         result["candidate_only"] = candidate_only.rows
-        result["candidate_only_proof"] = candidate_only.public_proof(OUT / "candidate-only-proof.json")
     if code_components:
         result["code_components"] = code_components
     if not args.function:
@@ -336,12 +333,6 @@ def main():
             result["progress"]["matched_data_region_bytes"] = covered_bytes(
                 [(number(r["address"]), r["target_size"]) for r in data + members
                  if r["exact_match"] and r["target_size"] is not None])
-        coverage = reviewed_identification_file(
-            ROOT / "config/identification-decisions.jsonl", target, inventory_functions=functions)
-        if coverage.get("journal_status") == "present" and (
-                result["inputs"].get("config/identification-decisions.jsonl") != coverage["journal_sha256"]):
-            raise ValueError("Review journal changed after report input hashing")
-        result["reviewed_identification"] = coverage
     (OUT / "summary.json").write_text(json.dumps(result, indent=2) + "\n")
     if args.update:
         update_badge(result["progress"])
@@ -358,13 +349,6 @@ def main():
             print(f"Mapped {kind.replace('_', '+')}: {stats[f'mapping_{kind}_bytes']}/"
                   f"{stats[f'mapping_{kind}_total_bytes']} bytes "
                   f"({stats[f'mapping_{kind}_percent']:.3f}% of original section storage)")
-    if args.update:
-        reviewed = result["reviewed_identification"]
-        print(f"Identified/inventory code union: {reviewed['combined_identified_code_bytes']} bytes "
-              f"({reviewed['combined_identified_code_percent']:.3f}% of original .text); "
-              f"{reviewed['additional_reviewed_code_bytes_outside_inventory']} reviewed bytes outside inventory")
-        print(f"Explicit journal identities: {reviewed['journal_reviewed_identity_functions']} functions; "
-              f"complete extent union {reviewed['journal_reviewed_code_bytes']} bytes")
     if args.function and units:
         for unit in units:
             diff_path = OUT / (unit["name"] + ".diff.json")
