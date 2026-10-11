@@ -1100,7 +1100,7 @@ void __cdecl AddVariableShotDebrisEffectTimed5(i32 effect_index, NUVEC *position
     DEBRIS_PARTICLE_CHUNK_PC *last_chunk;
 
     if (debris_suspended != 0 || update_debris_enabled == 0 || effect_index == -1 || effect_index == 0 ||
-        effect_index >= debinf_count)
+        debinf_count <= effect_index)
         return;
     effect = debtab[effect_index];
     if (effect == NULL || effect->disabled != 0 || count < 1)
@@ -1128,7 +1128,7 @@ void __cdecl AddVariableShotDebrisEffectTimed5(i32 effect_index, NUVEC *position
     elapsed_intervals = (f32)(i32)DebrisDivide(now, emission_interval);
     emission_epoch = elapsed_intervals * emission_interval;
     emission_time = emission_interval + emission_epoch;
-    if (end_time < emission_time)
+    if (emission_time > end_time)
         return;
     emission_count = 0;
     next_emission_time = emission_time;
@@ -1173,17 +1173,17 @@ void __cdecl AddVariableShotDebrisEffectTimed5(i32 effect_index, NUVEC *position
         return;
     required_particles = key->particle_count + particle_count;
     allocated_chunks = key->allocated_chunk_count;
-    if (required_particles > allocated_chunks * particles_per_chunk) {
+    if (allocated_chunks * particles_per_chunk < required_particles) {
         if (allocated_chunks < 0) {
             key->allocated_chunk_count = 0;
             allocated_chunks = 0;
         }
         required_chunks = (required_particles + particles_per_chunk - 1) / particles_per_chunk;
         new_chunk_count = required_chunks - allocated_chunks;
-        free_chunk_count = effect->particle_type == 7 ? &freedebchkptrg : &freedebchkptr;
-        available_chunk_count = effect->particle_type == 7 ? debrischunksglass : debrischunks;
         free_chunks = effect->particle_type == 7 ? freedebchunksglass : freedebchunks;
-        if (*free_chunk_count + new_chunk_count >= available_chunk_count || required_chunks > 32)
+free_chunk_count = effect->particle_type == 7 ? &freedebchkptrg : &freedebchkptr;
+available_chunk_count = effect->particle_type == 7 ? debrischunksglass : debrischunks;
+        if (available_chunk_count <= *free_chunk_count + new_chunk_count || required_chunks > 32)
             return;
         for (i = 0; i < new_chunk_count; ++i) {
             chunk = free_chunks[(*free_chunk_count)++];
@@ -1215,7 +1215,7 @@ void __cdecl AddVariableShotDebrisEffectTimed5(i32 effect_index, NUVEC *position
         }
     }
     key->particle_count += (i16)particle_count;
-    if (momentum == NULL) {
+    if (NULL == momentum) {
         key->momentum.x = 0.0f;
         key->momentum.y = 0.0f;
         key->momentum.z = 0.0f;
@@ -1241,15 +1241,15 @@ void __cdecl AddVariableShotDebrisEffectTimed5(i32 effect_index, NUVEC *position
             control->particle_chunk = key->particle_chunks[chunk_index];
             control->active = 1;
             control->owner = key;
-            control->expiry_time = now + effect->particle_lifetime + (f32)effect->trail_count * effect->trail_time;
+            control->expiry_time = now + effect->particle_lifetime + effect->trail_time * ((f32)effect->trail_count);
             AddChunkControlToStack(control, &debris_chunk_control_stack[panel_time ? 1 : 0]);
             ++freechunkcontrolsptr;
             ++key->controlled_chunk_count;
         }
     }
-    if (key->controlled_chunk_count == key->allocated_chunk_count) {
-        stack = &debris_chunk_control_stack[panel_time ? 1 : 0];
+    if (key->allocated_chunk_count == key->controlled_chunk_count) {
         last_chunk = key->particle_chunks[key->controlled_chunk_count - 1];
+stack = &debris_chunk_control_stack[panel_time ? 1 : 0];
         for (control = *stack; control != NULL; control = control->next) {
             if (control->particle_chunk == last_chunk) {
                 RemoveChunkControlFromStack(control, stack);
