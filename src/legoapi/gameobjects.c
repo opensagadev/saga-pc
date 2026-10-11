@@ -4566,8 +4566,8 @@ void __cdecl GameAIProcess(void) {
             (AI_PACKET(&object->ai_packet)->selection_flags & 0x40) != 0 ? draw_attention_distance : 0.0f;
         mini_cut_cam = MiniCutCam;
         if (mini_cut_cam != 0 && (object->flags_1fc_word & 0x100) != 0) {
-            gamepad_start = GAMEPAD_START;
             pad = object->pad;
+            gamepad_start = GAMEPAD_START;
             pad->buttons_held &= gamepad_start;
             pad->buttons_pressed &= gamepad_start;
         }
@@ -4589,7 +4589,7 @@ void __cdecl GameAIProcess(void) {
         object = player_slots[index];
         if (object != NULL && (object->flags_1fc_word & 0x1001) == 0x1001 &&
             (object->dead == 0 || object->field_1010 > 0.0f) && (AI_OBJECT(object)->party_flags & 1) == 0 &&
-            StartupGameFlag1 != 0 && (VADER_ADATA == NULL || WORLD->area != VADER_ADATA) &&
+            StartupGameFlag1 != 0 && (NULL == VADER_ADATA || WORLD->area != VADER_ADATA) &&
             party_cant_be_under_cover == 0) {
             if (object->helmet == 5 ||
                 ((FreePlay != 0 || WORLD->current_level == HUB_LDATA) &&
@@ -4615,13 +4615,13 @@ void __cdecl GameAIProcess(void) {
     neutral_count = 0;
     interactive_count = 0;
     goody_count = 0;
-    baddy_count = 0;
     active_player = player;
+    baddy_count = 0;
     neutral_cursor = neutral_objects;
     goody_cursor = goodies;
     for (index = 0; index < 8; ++index) {
 
-        if (index < 2 && (object = Player[1]) == active_player) {
+        if (index < 2 && active_player == (object = Player[1])) {
             if (index != 0)
                 object = player_slots[0];
         } else {
@@ -4656,7 +4656,7 @@ void __cdecl GameAIProcess(void) {
         }
         object = Player[index];
         if (object != NULL && (object->flags_1fc_word & 0x1001) == 0x1001 &&
-            (object->dead == 0 || object->field_1010 > 0.0f) && (AI_OBJECT(object)->party_flags & 1) == 0 &&
+            (object->dead == 0 || object->field_1010 > 0.0f) && 0 == (AI_OBJECT(object)->party_flags & 1) &&
             (object->flags_1fc_word & 0x80) == 0) {
             party_follow_offsets[(i8)object->field_280] = follow_offset;
             follow_offset += GameAiPartyFollowSpacingPc;
@@ -4671,7 +4671,7 @@ void __cdecl GameAIProcess(void) {
 
         const u16 character_flags = 0x1001;
         object->active_trigger_set = NULL;
-        if ((object->flags_1fc_word & character_flags) != character_flags || object->dead != 0 ||
+        if (character_flags != (object->flags_1fc_word & character_flags) || object->dead != 0 ||
             object->character_context == 0x3b) {
             goto interaction;
         }
@@ -4724,7 +4724,8 @@ void __cdecl GameAIProcess(void) {
             } else {
                 object->ai_packet.nearest_opponent = NULL;
                 object->ai_packet.opponent = NULL;
-                AI_PACKET(&object->ai_packet)->selection_flags &= ~0x20;
+                AI_PACKET(&object->ai_packet)->selection_flags =
+                    AI_PACKET(&object->ai_packet)->selection_flags & (~0x20);
             }
             if (object->opponent != NULL && (((APIOBJECT_PC *)object->opponent)->flags_low & 1) == 0)
                 object->opponent = NULL;
@@ -4825,7 +4826,7 @@ void __cdecl GameAIProcess(void) {
                     AI_OBJECT(object)->combat_flags4 &= ~0x20;
                 }
             }
-            if ((AI_OBJECT(object)->combat_flags & 8) != 0 &&
+            if (0 != (AI_OBJECT(object)->combat_flags & 8) &&
                 (defend || (AI_OBJECT(object)->combat_flags & 0x30) != 0 ||
                  ((object->id == (u16)id_YODA || object->id == (u16)id_YODAGHOST) &&
                   (object->flags_1fc_word & 0x80) == 0 && object->field_280 != 0xff))) {
@@ -4939,7 +4940,7 @@ void __cdecl GameAIProcess(void) {
                     object->ai_packet.current_route = 0xff;
                     AI_OBJECT(object)->route_character_id = -1;
                     AI_OBJECT(object)->route_frame_state = 0;
-                } else if ((AI_PACKET(&object->ai_packet)->route_flags & 1) != 0 &&
+                } else if ((1 & (AI_PACKET(&object->ai_packet)->route_flags)) != 0 &&
                            ((AI_PACKET(&object->ai_packet)->route_flags & 0x40) != 0 ||
                             (object->ai_packet.path_info.connection != NULL &&
                              object->ai_packet.path_info.connection->route_mask != 0))) {
@@ -4979,7 +4980,7 @@ void __cdecl GameAIProcess(void) {
                                 object->ai_packet.next_route = AI_OBJECT(object)->route_search_index;
                                 AISysFindRoute(&object->ai_packet);
                                 AI_OBJECT(object)->route_search_index = object->ai_packet.next_route;
-                                if (AI_OBJECT(object)->route_search_index == AI_OBJECT(object)->route_start_index)
+                                if ((AI_OBJECT(object)->route_start_index) == (AI_OBJECT(object)->route_search_index))
                                     object->flags_ef0 |= 0x40;
                             }
                         }
