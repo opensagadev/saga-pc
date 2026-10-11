@@ -7,3 +7,4 @@
 {"symbol": "?UpdateGeometry@PC_NATIVE_DEBUG_STATE_PC@@QAEXXZ", "unit": "src/nu2api/nudebug_pc.cpp", "error": "worker exited with status 1"}
 {"symbol": "?UpdateGeometry@PC_NATIVE_DEBUG_STATE_PC@@QAEXXZ", "unit": "src/nu2api/nudebug_pc.cpp", "size": 5091, "start": 50.97553, "best": 50.97553, "exact": false, "seconds": 172.0, "instructions": [35.83, 35.83]}
 {"symbol": "_NewCast", "unit": "src/nu2api/nuterrain.c", "size": 3407, "start": 26.593693, "best": 34.758812, "exact": false, "seconds": 310.3, "instructions": [17.95, 17.52], "applied": true}
+{"symbol": "_Grapple_MoveCode", "unit": "src/legoapi/grapples.cpp", "size": 3392, "start": 24.450783, "best": 58.895973, "exact": false, "seconds": 352.3, "instructions": [46.24, 61.39], "applied": true}
