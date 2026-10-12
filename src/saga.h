@@ -25463,4 +25463,25 @@ enum { MUSIC_PLAYBACK_DUAL_STREAM_PENDING = 13 };
 enum { NUPORTAL_FLAG_ACTIVE = 1 };
 enum { AREAFLAG_SINGLE_BUFFER = 8 };
 
+// Runtime build only (make runtime): log each reached unported site once; see runtime/saga_runtime.c.
+// Kept at the end so the matching build's line numbers are unchanged.
+#ifdef SAGA_RUNTIME
+#ifdef __cplusplus
+extern "C"
+#endif
+    void __cdecl SagaRuntime_Stub(const char *file, int line, const char *name);
+#define SAGA_RUNTIME_STUB(text)                                                                                        \
+    do {                                                                                                               \
+        static int saga_stub_seen;                                                                                     \
+        if (!saga_stub_seen) {                                                                                         \
+            saga_stub_seen = 1;                                                                                        \
+            SagaRuntime_Stub(__FILE__, __LINE__, text);                                                                \
+        }                                                                                                              \
+    } while (0)
+#undef STUBBED
+#undef STUBBED_NAMED
+#define STUBBED() SAGA_RUNTIME_STUB("")
+#define STUBBED_NAMED(name) SAGA_RUNTIME_STUB(#name)
+#endif
+
 #endif
