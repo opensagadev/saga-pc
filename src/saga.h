@@ -781,22 +781,15 @@ struct AISCRIPTPROCESS_PC {
     NUVEC action_pos;
     AIPATHINFO_PC path_info;
     f32 action_timer;
-    u8 unknown_a0[4];
+    u32 unknown_a0;
     struct AILOCATOR_PC *locator;
+    struct AILOCATORSET_PC *locator_set;
     union {
-        u8 unknown_a8[8];
-        struct {
-            struct AILOCATORSET_PC *locator_set;
-            union {
-                u32 field_ac;
-                struct nugspline_s *myspline;
-            };
-        };
+        u32 field_ac;
+        struct nugspline_s *myspline;
     };
-    union {
-        u8 unknown_b0[2];
-        u8 creature_set;
-    };
+    u8 creature_set;
+    u8 unknown_b1;
     u16 unknown_b2;
     u8 interrupt_priority;
     u8 interrupt_id;
@@ -8790,6 +8783,13 @@ extern "C" {
                                    i32 button_font);
     void __cdecl Text3DEx(char *text, f32 x, f32 y, f32 z, f32 x_scale, f32 y_scale, f32 z_scale, u32 alignment, u8 red,
                           u8 green, u8 blue, i32 alpha);
+    void Text3D(char *text, f32 x, f32 y, f32 z, f32 x_scale, f32 y_scale, f32 z_scale, u32 alignment, u8 red, u8 green,
+                u8 blue);
+    void FadeLoop_DrawObj(f32 alpha);
+    void EdFileWriteFloat(f32 value);
+    void AddGameMsgCount(NUVEC *position, i32 count, i32 total, u8 red, u8 green, u8 blue, f32 field_0xd4);
+    void AddFancyMessage(char *text, f32 x, f32 y, f32 scale, f32 duration, i32 message_id, i32 colour_type);
+    void __cdecl DebrisEmitterPos(i32 handle, f32 x, f32 y, f32 z);
     void __cdecl NuQFntMove(VUFNT *font, f32 x, f32 y, f32 z);
     void __cdecl NuQFntPrintW(VUFNT *font, u16 *text);
     void __cdecl DrawGameMessage_Targets(GAME_MESSAGE_PC *message, NUVEC *position, f32 scale);
@@ -20906,6 +20906,7 @@ extern "C" {
 struct eduimenu_s;
 struct eduiitem_s;
 struct nuhspecial_s;
+f32 NuSpecialGetAnimPos(struct nuhspecial_s *special);
 typedef void(__cdecl *EdUiMenuCallback)(struct eduimenu_s *menu, struct eduimenu_s *parent);
 typedef void(__cdecl *EdUiItemCallback)(struct eduimenu_s *menu, struct eduiitem_s *item, u32 value);
 typedef i32 AIFINDALTERNATIVESPECIALOBJECT(AISYS_PC *system, struct nuhspecial_s *special);
