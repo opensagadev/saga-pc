@@ -6,6 +6,12 @@ i32 __cdecl MosEisleyC_PastBarrier(GAMEOBJECT *object) {
     return 0;
 }
 
+void MosEisleyE_Update(WORLDINFO *unused0) {
+    if ((texanimbits & 2) == 0 && LevGizmo[0] != NULL && LevGizmo[0]->object != NULL &&
+        GizForce_Complete(((GIZFORCE_s *)(LevGizmo[0]->object))))
+        texanimbits |= 2;
+}
+
 void DeathStarEscapeC_Reset(WORLDINFO *unused0) {
     LevAIMessage[0] = CheckGizAIMessage(gizaimessagesys, "RescuedDroids", NULL);
 }
@@ -145,6 +151,64 @@ void AsteroidChaseD_Update(WORLDINFO *unused0) {
             }
         }
     }
+}
+
+void CloudCityTrapA_Update(WORLDINFO *world) {
+    struct gizmo_pc_s *gizmo;
+    static NUVEC pos = {33.0f, -0.75f, -3.0f};
+    if (netclient == 0) {
+        ResetTrooperCannons(world, id_SNOWTROOPER);
+        UpdateTrooperCannons(world);
+    }
+    if (LevGameObject[0] == NULL)
+        LevGameObject[0] = FindGameObject(FreePlayId007f199cPc, 1, 1, 1, 0);
+    if (netclient == 0) {
+        if (LevAIMessage[0] != NULL && LevAIMessage[0]->value == 1.0f)
+            DrawBossHitPoints(LevGameObject[0]);
+        else
+            DrawBossHitPoints(NULL);
+    }
+    gizmo = LevGizmo[0];
+    if (gizmo != NULL && gizmo->object != NULL &&
+        ((GIZFORCE_s *)(gizmo->object))->anim_set->state == GAMEANIMSET_STATE_AT_END)
+        AIAntinodeCreateSingleFrame(&pos, 0.5f);
+}
+
+void CloudCityTrapB_Update(WORLDINFO *unused0) {
+    struct gameobject_s *vader;
+    if (LevGameObject[0] == NULL)
+        LevGameObject[0] = FindGameObject(FreePlayId007f199cPc, 1, 1, 1, 0);
+    if (netclient != 0)
+        return;
+    if (LevAIMessage[0] != NULL && LevAIMessage[0]->value == 1.0f)
+        DrawBossHitPoints(LevGameObject[0]);
+    else
+        DrawBossHitPoints(NULL);
+    if (LevAIMessage[1] == NULL || LevAIMessage[1]->value != 1.0f || LevGameObject[0] == NULL)
+        return;
+    vader = LevGameObject[0];
+    if (vader->dead != 0 || vader->current_hp == 0) {
+        if (FreePlay != 0)
+            CompleteLevel(WORLD);
+        else if (LevelFixupSlotPc0087b250 != NULL)
+            GoToNewLevel(LevelFixupSlotPc0087b250->index);
+    }
+}
+
+void CloudCityTrapC_Reset(WORLDINFO *world) {
+    struct gizmo_pc_s *gizmo;
+    LevGameObject[0] = FindGameObject(FreePlayId007f199cPc, 1, 1, 0, 0);
+    LevAIMessage[0] = CheckGizAIMessage(gizaimessagesys, "ShowHearts", NULL);
+    LevPathCnx[0] =
+        AIPAthFindPathCnx(world->ai_sys, world->ai_sys->path_sys->active_path, "gap1_a", "gap1_b", &LevPathCnxDir);
+    gizmo = GizmoFindByName(world->gizmo_sys, obstacle_gizmotype_id, "obstacle3");
+    LevGizmo[0] = gizmo;
+    if (gizmo != NULL && gizmo->object != NULL)
+        LevGizObst[0] = ((GIZOBSTACLE *)(gizmo->object));
+    gizmo = GizmoFindByName(world->gizmo_sys, obstacle_gizmotype_id, "???");
+    LevGizmo[1] = gizmo;
+    if (gizmo != NULL && gizmo->object != NULL)
+        LevGizObst[1] = ((GIZOBSTACLE *)(gizmo->object));
 }
 
 static void DrawFalconSpotLights(GAMEOBJECT *object) {

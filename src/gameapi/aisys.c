@@ -394,6 +394,283 @@ void DrawAreaBox(NUVEC *position, NUVEC *size, i32 rotation, i32 colour) {
 #undef DRAW_AREA_BOX_EDGE
 }
 
+void locatorEditorSaveData(AIPATHSYS_PC *path_system) {
+    i32 locator_count = 0;
+    EDLOCATOR_s *locator = (EDLOCATOR_s *)NuLinkedListGetHead(&aieditor->locators);
+    while (locator != NULL) {
+        locator->runtime_index = 0xff;
+        if (locator->path != NULL) {
+            locator->runtime_index = locator_count++;
+        }
+        locator = (EDLOCATOR_s *)NuLinkedListGetNext(&aieditor->locators, &locator->link);
+    }
+    EdFileWriteInt(locator_count);
+    locator = (EDLOCATOR_s *)NuLinkedListGetHead(&aieditor->locators);
+    while (locator != NULL) {
+        if (locator->path != NULL) {
+            i32 connection_index;
+            i32 connection_direction;
+            struct AIPATH_PC *path;
+            i32 index;
+            EdFileWrite(locator->name, 16);
+            EdFileWriteFloat(locator->position.x);
+            EdFileWriteFloat(locator->position.y);
+            EdFileWriteFloat(locator->position.z);
+            EdFileWriteShort(locator->direction);
+            EdFileWriteChar(locator->path->draw_index);
+            connection_index = 0;
+            connection_direction = 0;
+            path = path_system->paths[locator->path->draw_index];
+            for (index = 0; index < path->connection_count; ++index) {
+                AIPATHCNX_PC *connection = &path->connections[index];
+                i32 first = locator->first_node->index;
+                i32 second = locator->second_node->index;
+                if (connection->node_indices[0] == first && connection->node_indices[1] == second) {
+                    i32 angle;
+                    i32 magnitude;
+                    connection_index = index;
+                    angle = locator->path_angle;
+                    magnitude = angle < 0 ? -angle : angle;
+                    if (magnitude > 0x3fff) {
+                        connection_direction = 1;
+                    } else {
+                        connection_direction = 0;
+                    }
+                    break;
+                }
+                if (connection->node_indices[0] == second && connection->node_indices[1] == first) {
+                    i32 angle;
+                    i32 magnitude;
+                    connection_index = index;
+                    angle = locator->path_angle;
+                    magnitude = angle < 0 ? -angle : angle;
+                    if (magnitude > 0x3fff) {
+                        connection_direction = 0;
+                    } else {
+                        connection_direction = 1;
+                    }
+                    break;
+                }
+            }
+            EdFileWriteChar(connection_direction);
+            EdFileWriteShort(connection_index);
+            EdFileWriteFloat(locator->path_fraction);
+            EdFileWriteFloat(locator->path_width);
+            if (aidata_version > 14) {
+                EdFileWriteInt(locator->path_angle);
+            }
+        }
+        locator = (EDLOCATOR_s *)NuLinkedListGetNext(&aieditor->locators, &locator->link);
+    }
+    if (aidata_version > 17) {
+        i32 set_count = 0;
+        EDLOCATORSET_s *set = (EDLOCATORSET_s *)NuLinkedListGetHead(&aieditor->locator_sets);
+        while (set != NULL) {
+            ++set_count;
+            set = (EDLOCATORSET_s *)NuLinkedListGetNext(&aieditor->locator_sets, &set->link);
+        }
+        EdFileWriteInt(set_count);
+        set = (EDLOCATORSET_s *)NuLinkedListGetHead(&aieditor->locator_sets);
+        while (set != NULL) {
+            i32 member_count = 0;
+            i32 index = 0;
+            while (1) {
+                EDLOCATOR_s *member = set->locators[index];
+                if (member == NULL) {
+                    break;
+                }
+                if (member->runtime_index != 0xff) {
+                    ++member_count;
+                }
+                ++index;
+                if (index == 64) {
+                    break;
+                }
+            }
+            EdFileWrite(set->name, 16);
+            EdFileWriteInt(member_count);
+            if (member_count != 0) {
+                index = 0;
+                while (1) {
+                    EDLOCATOR_s *member = set->locators[index];
+                    if (member == NULL) {
+                        break;
+                    }
+                    if (member->runtime_index != 0xff) {
+                        EdFileWriteChar(member->runtime_index);
+                    }
+                    ++index;
+                    if (index == 64) {
+                        break;
+                    }
+                }
+            }
+            set = (EDLOCATORSET_s *)NuLinkedListGetNext(&aieditor->locator_sets, &set->link);
+        }
+    }
+}
+
+void locatorEditorDrawLocators(void) {
+    AIEDITOR_RENDER_STATE *const *state = &aieditor;
+    EDLOCATOR_s *locator = (EDLOCATOR_s *)NuLinkedListGetHead(&(*state)->locators);
+    while (locator != NULL) {
+        locator->drawn = 0;
+        locator = (EDLOCATOR_s *)NuLinkedListGetNext(&(*state)->locators, &locator->link);
+    }
+    if ((*state)->current_locator_set != NULL) {
+        i32 index;
+        for (index = 0; index < 64; ++index) {
+            i32 colour;
+            locator = (*state)->current_locator_set->locators[index];
+            if (locator == NULL)
+                break;
+
+            if (locator == (*state)->current_locator) {
+                colour = locator == (*state)->nearest_locator ? 0xff0000ff : 0x800000ff;
+            } else {
+                colour = locator == (*state)->nearest_locator ? -1 : 0x32323232;
+            }
+            DrawLocator(&locator->position, aiEditor_LocatorWidth, locator->direction, colour);
+            locator->drawn = 1;
+        }
+    }
+    locator = (EDLOCATOR_s *)NuLinkedListGetHead(&(*state)->locators);
+    while (locator != NULL) {
+        if (!locator->drawn) {
+            i32 colour;
+            if ((*state)->current_locator_set != NULL) {
+                if (locator == (*state)->current_locator) {
+                    colour = locator == (*state)->nearest_locator ? 0x50 : 0x28;
+                } else {
+                    colour = locator == (*state)->nearest_locator ? 0x64646464 : 0x32323232;
+                }
+            } else if (locator == (*state)->current_locator) {
+                colour = locator == (*state)->nearest_locator ? 0xff0000ff : 0x800000ff;
+            } else {
+                colour = locator == (*state)->nearest_locator ? -1 : 0x32323232;
+            }
+            DrawLocator(&locator->position, aiEditor_LocatorWidth, locator->direction, colour);
+            locator->drawn = 1;
+        }
+        locator = (EDLOCATOR_s *)NuLinkedListGetNext(&(*state)->locators, &locator->link);
+    }
+}
+
+void pathEditor_UpdateNodesOnPlatforms(void) {
+    EDAIPATH_s *path = (EDAIPATH_s *)NuLinkedListGetHead(&aieditor->paths);
+    while (path != NULL) {
+        EDAIPATHNODE_s *node = (EDAIPATHNODE_s *)NuLinkedListGetHead(&path->nodes);
+        while (node != NULL) {
+            if (NuSpecialExistsFn(&node->special)) {
+                NuVecMtxTransform(&node->position, &node->special_position, NuSpecialGetDrawMtx(&node->special));
+            }
+            node = (EDAIPATHNODE_s *)NuLinkedListGetNext(&path->nodes, &node->link);
+        }
+        path = (EDAIPATH_s *)NuLinkedListGetNext(&aieditor->paths, &path->link);
+    }
+}
+
+static i32 TestPointPathCheck(NUVEC *point, EDAIPATHNODE_s *first, EDAIPATHNODE_s *second, f32 *fraction, f32 *width,
+                              i32 *angle, f32 tolerance) {
+    NUVEC horizontal;
+    f32 distance;
+    NUVEC direction;
+    NUVEC relative;
+    f32 along;
+    NUVEC nearest;
+    f32 radius;
+    NUVEC radial;
+    f32 distance_squared;
+    AIPATH_PC path;
+    AIPATHCNX_PC connection;
+    AIPATHNODE_PC nodes[2];
+    AIPATHINFO_PC info;
+    memset(&path, 0, sizeof(path));
+    memset(&connection, 0, sizeof(connection));
+    memset(nodes, 0, sizeof(nodes));
+    memset(&info, 0, sizeof(info));
+    nodes[0].position = first->position;
+    nodes[0].radius = first->radius + tolerance;
+    nodes[0].min_height = first->position.y + first->lower_height - tolerance;
+    nodes[0].max_height = first->position.y + first->upper_height + tolerance;
+    nodes[1].position = second->position;
+    nodes[1].radius = second->radius + tolerance;
+    nodes[1].min_height = second->position.y + second->lower_height - tolerance;
+    nodes[1].max_height = second->position.y + second->upper_height + tolerance;
+    path.nodes = nodes;
+    path.connections = &connection;
+    path.node_count = 2;
+    path.connection_count = 1;
+    connection.node_indices[0] = 1;
+    horizontal = horizontal;
+    distance = NuVecXZDist(&first->position, &second->position, &horizontal);
+    connection.horizontal_distance = distance != 0.0f ? distance : 0.0001f;
+    connection.rotation = (i16)(NuAtan2(horizontal.x, horizontal.z) * 10430.378f);
+    if (!WithinConnection(NULL, point, &path, &connection, 1, NULL, 0xff, 0xff, &info, 0.0f, 0)) {
+        return 0;
+    }
+
+    direction = direction;
+    NuVecSub(&direction, &second->position, &first->position);
+    distance = NuVecMag(&direction);
+    NuVecScale(&direction, &direction, 1.0f / distance);
+    relative = relative;
+    NuVecSub(&relative, point, &first->position);
+    along = NuVecDot(&direction, &relative);
+    *fraction = along / distance;
+    nearest = nearest;
+
+    if (*fraction <= 0.0f) {
+        nearest = first->position;
+        radius = first->radius;
+    } else if (*fraction >= 1.0f) {
+        nearest = second->position;
+        radius = second->radius;
+    } else {
+        NuVecScale(&nearest, &direction, along);
+        NuVecAdd(&nearest, &nearest, &first->position);
+        radius = second->radius * *fraction + first->radius * (1.0f - *fraction);
+    }
+    radial = radial;
+    distance_squared = NuVecXZDistSqr(&nearest, point, &radial);
+    radius += tolerance;
+    *angle = (i32)(NuAtan2(direction.x, direction.z) * 10430.378f);
+    NuVecRotateY(&relative, &relative, -*angle);
+    if (*fraction <= 0.0f) {
+        f32 beyond = -*fraction * distance;
+        *width = distance_squared - beyond * beyond;
+        *width = NuFsqrt(*width) / radius;
+    } else if (*fraction >= 1.0f) {
+        f32 beyond = (*fraction - 1.0f) * distance;
+        *width = distance_squared - beyond * beyond;
+        *width = NuFsqrt(*width) / radius;
+    } else {
+        *width = NuFsqrt(distance_squared) / radius;
+    }
+    if (relative.x < 0.0f) {
+        *width = -*width;
+    }
+    return 1;
+}
+
+void antinodeEditor_UpdateAntiNodesOnPlatforms(void) {
+    struct EDANTINODE_s *node;
+    NULISTHDR *list = ((NULISTHDR *)(((u8 *)(aieditor)) + 0x42e94));
+    NUVEC rotated;
+    NUVEC forward = {0.0f, 0.0f, 1.0f};
+    for (node = ((EDANTINODE_s *)(NuLinkedListGetHead(list))); node != NULL;
+         node = ((EDANTINODE_s *)(NuLinkedListGetNext(((NULISTHDR *)(((u8 *)(aieditor)) + 0x42e94)), &node->link)))) {
+        struct numtx_s *matrix;
+        if (!NuSpecialExistsFn(&node->special))
+            continue;
+        matrix = NuSpecialGetDrawMtx(&node->special);
+        NuVecMtxTransform(&node->position, &node->special_position, matrix);
+        NuVecMtxRotate(&rotated, &forward, matrix);
+        node->flags = NuAtan2D(rotated.x, rotated.z);
+        node->flags = NuAngAdd(node->flags, node->rotation_offset);
+    }
+}
+
 void __cdecl AISysCharacterSetPath(AIPACKET_PC *packet, AIPATH_PC *path) {
     AIPACKET_PC *path_packet = packet;
     u8 route;
@@ -1533,6 +1810,34 @@ void __cdecl AIMoveDirectlyToDestination(AISYS_PC *system, AIPACKET_PC *packet, 
     packet->movement_stopping_distance = 0.0f;
 }
 
+void LocaledbitsDrawSolidCircleXY(NUVEC *centre, f32 radius, f32 lower_y, f32 upper_y, u32 colour, i32 unused5,
+                                  i32 segments) {
+    i32 i;
+    f32 previous_x = centre->x;
+    f32 previous_z = centre->z + radius;
+    for (i = 1; i <= segments; ++i) {
+        i32 angle = (i * 65536) / segments;
+        f32 next_x = centre->x + radius * NU_SIN_LUT(angle);
+        f32 next_z = centre->z + NU_COS_LUT(angle) * radius;
+        AiRndrLine3dDbg(previous_x, lower_y, previous_z, next_x, lower_y, next_z, colour);
+        AiRndrLine3dDbg(previous_x, upper_y, previous_z, next_x, upper_y, next_z, colour);
+        AiRndrLine3dDbg(next_x, lower_y, next_z, next_x, upper_y, next_z, colour);
+        previous_x = next_x;
+        previous_z = next_z;
+    }
+}
+
+void LocaledbitsDrawCircleXY(NUVEC *centre, f32 radius, u32 colour, i32 unused3, i32 segments) {
+    i32 i;
+    NUVEC previous = {centre->x, centre->y, centre->z + radius};
+    for (i = 1; i <= segments; ++i) {
+        i32 angle = (i * 65536) / segments;
+        NUVEC next = {centre->x + NU_SIN_LUT(angle) * radius, centre->y, centre->z + NU_COS_LUT(angle) * radius};
+        AiRndrLine3dDbg(previous.x, previous.y, previous.z, next.x, next.y, next.z, colour);
+        previous = next;
+    }
+}
+
 void __cdecl AISysProcess(AISYS_PC *system, APIOBJECT_PC *player_1, APIOBJECT_PC *player_2) {
     i32 index;
     if (system == NULL) {
@@ -2592,6 +2897,10 @@ void __cdecl AddToAIGroup(AIGROUP_PC *group, APIOBJECT_PC *object) {
 
 void __cdecl InitFn_GetCharacterGoalSpeedFn(AI_CHARACTER_GOAL_SPEED_PC callback) {
     GetCharacterGoalSpeedFn = callback;
+}
+
+void InitFn_FindAlternativeSpecialObjectFn(AIFINDALTERNATIVESPECIALOBJECT *function) {
+    AISysSpecialNodeCallback = (AISYS_SPECIAL_NODE_CALLBACK_PC)function;
 }
 
 void AIRetreatFromDestination2(AISYS_PC *, AIPACKET_PC *, APIOBJECT_PC *, i32);
@@ -3765,6 +4074,43 @@ void __cdecl AISysCharacterMovement(AISYS_PC *system, AIPACKET_PC *packet, APIOB
     packet->flags &= ~7u;
 }
 
+static void pathEditor_PathNodeMoved(EDAIPATHNODE_s *node) {
+    if (!(node->flags & 0x80) && NuSpecialExistsFn(&aieditor->cursor_platform)) {
+        node->platform = aieditor->cursor_platform;
+        NuVecInvMtxTransform(&node->platform_position, &node->position,
+                             NuSpecialGetDrawMtx(&aieditor->cursor_platform));
+    } else {
+        node->special.scene = NULL;
+        node->special.special = NULL;
+        node->special.display_special = NULL;
+    }
+    creatureEditor_PathNodeMoved(node);
+    locatorEditor_PathNodeMoved(node);
+    if (AIPathNodeDeletedFn != NULL)
+        AIPathNodeDeletedFn(aieditor->current_path->current_node);
+    if (node->shared_node != NULL) {
+        struct EDAIPATH_s *path;
+        for (path = ((EDAIPATH_s *)(NuLinkedListGetHead(&aieditor->paths))); path != NULL;
+             path = ((EDAIPATH_s *)(NuLinkedListGetNext(&aieditor->paths, &path->link)))) {
+            struct EDAIPATHNODE_s *other;
+            for (other = ((EDAIPATHNODE_s *)(NuLinkedListGetHead(&path->nodes))); other != NULL;
+                 other = ((EDAIPATHNODE_s *)(NuLinkedListGetNext(&path->nodes, &other->link)))) {
+                if (other != node && other->shared_node == node->shared_node) {
+                    other->radius = node->radius;
+                    other->height_min = node->height_min;
+                    other->height_max = node->height_max;
+                    other->position = node->position;
+                    other->platform = node->platform;
+                    other->platform_position = node->platform_position;
+                    creatureEditor_PathNodeMoved(other);
+                    locatorEditor_PathNodeMoved(other);
+                    break;
+                }
+            }
+        }
+    }
+}
+
 void __cdecl AISysProcessCharacter(AISYS_PC *system, APIOBJECT_PC *object, AIPACKET_PC *packet, i32 ground, f32 elapsed,
                                    i32 use_three_dimensions, i32 process_ai) {
     AISCRIPTPROCESS_PC *primary = &packet->script_processor;
@@ -4226,6 +4572,49 @@ i32 __cdecl Action_SetMoveRadius(AISYS_PC *sys, AISCRIPTPROCESS_PC *processor, A
             packet->mover_height = AIParamToFloatEx(packet, processor, params[0]);
         }
     }
+    return 1;
+}
+
+static i32 Action_OverrideAnimation(AISYS_PC *unused0, AISCRIPTPROCESS_PC *processor, AIPACKET_PC *packet,
+                                    char **params, i32 param_count, i32 first_time, f32 unused6) {
+    i16 from;
+    i16 to;
+    i32 index;
+    if (packet == NULL || packet->owner == NULL || packet->owner->objptr == NULL || first_time == 0) {
+        return 1;
+    }
+
+    from = -1;
+    to = -1;
+    for (index = 0; index < param_count; ++index) {
+        char *value;
+        if (NuStrICmp(params[index], "from=All") == 0) {
+            from = ((i16)(apicharsys->model_id_capacity));
+            continue;
+        }
+
+        value = NuStrIStr(params[index], "from=");
+        if (value != NULL) {
+            from = ((i16)(FindAnimIX(packet->owner->character_data, value + 5)));
+            continue;
+        }
+
+        value = NuStrIStr(params[index], "to=");
+        if (value != NULL) {
+            to = ((i16)(FindAnimIX(packet->owner->character_data, value + 3)));
+            continue;
+        }
+
+        if (processor != NULL) {
+            processor->action_timer = AIParamToFloatEx(packet, processor, params[0]);
+        }
+    }
+
+    if (to == -1) {
+        from = -1;
+    }
+    packet->animation_override_from = from;
+    packet->animation_override_to = to;
     return 1;
 }
 
@@ -5688,6 +6077,51 @@ i32 __cdecl Action_CircleLocator(AISYS_PC *sys, AISCRIPTPROCESS_PC *processor, A
     return locator == NULL;
 }
 
+static i32 Action_GizmoActivate(AISYS_PC *sys, AISCRIPTPROCESS_PC *processor, AIPACKET_PC *packet, char **params,
+                                i32 param_4, i32 param_5, f32 param_6) {
+    if (param_5 != 0 && param_4 > 0) {
+        i32 index;
+        GIZMO_PC *gizmo = NULL;
+        i32 enabled = 1;
+        for (index = 0; index < param_4; ++index) {
+            char *value = NuStrIStr(params[index], "name=");
+            if (value != NULL) {
+                gizmo = GizmoFindByName(WORLD->gizmo_sys, -1, value + NuStrLen("name="));
+            } else if (NuStrICmp(params[index], "FALSE") == 0) {
+                enabled = 0;
+            }
+        }
+        if (gizmo != NULL) {
+            GizmoActivate(WORLD->gizmo_sys, gizmo, enabled, 1);
+        }
+    }
+    return 1;
+}
+
+static i32 Action_GizmoSetVisibility(AISYS_PC *unused0, AISCRIPTPROCESS_PC *unused1, AIPACKET_PC *unused2,
+                                     char **params, i32 param_count, i32 first_time, f32 unused6) {
+    struct gizmo_pc_s *gizmo;
+    i32 visible;
+    i32 index;
+    if (first_time == 0) {
+        return 1;
+    }
+    gizmo = NULL;
+    visible = 1;
+    for (index = 0; index < param_count; ++index) {
+        char *value = NuStrIStr(params[index], "name=");
+        if (value != NULL) {
+            gizmo = GizmoFindByName(WORLD->gizmo_sys, -1, value + NuStrLen("name="));
+        } else if (NuStrICmp(params[index], "FALSE") == 0) {
+            visible = 0;
+        }
+    }
+    if (gizmo != NULL) {
+        GizmoSetVisibility(WORLD->gizmo_sys, gizmo, visible, 1);
+    }
+    return 1;
+}
+
 i32 __cdecl Action_GoToOriginalPath(AISYS_PC *sys, AISCRIPTPROCESS_PC *processor, AIPACKET_PC *packet, char **params,
                                     i32 param_count, i32 first_time, f32 elapsed) {
     NUVEC difference;
@@ -5768,6 +6202,21 @@ i32 __cdecl Action_GoToOriginalPath(AISYS_PC *sys, AISCRIPTPROCESS_PC *processor
     }
     AIMoveInstruction(packet, &node->position, 0.0f, &processor->path_info, 1, packet->movement_instruction_parameter);
     return 0;
+}
+
+static i32 Action_SetAnimation(AISYS_PC *sys, AISCRIPTPROCESS_PC *processor, AIPACKET_PC *packet, char **params,
+                               i32 param_4, i32 param_5, f32 param_6) {
+    (void)sys;
+    (void)processor;
+    (void)param_6;
+    if (packet != NULL && packet->owner != NULL && packet->owner->objptr != NULL && param_5 != 0 && param_4 == 1) {
+        GAMEOBJECT *object = packet->owner->objptr;
+        const i32 animation = FindAnimIX(object->character_data, params[0]);
+        if (animation != -1) {
+            ResetAnimPacket(&object->anim_packet, animation);
+        }
+    }
+    return 1;
 }
 
 i32 __cdecl Action_BigJump(AISYS_PC *sys, AISCRIPTPROCESS_PC *processor, AIPACKET_PC *packet, char **params,
@@ -6991,6 +7440,35 @@ i32 __cdecl Action_SetUseOneAtOnce(AISYS_PC *sys, AISCRIPTPROCESS_PC *processor,
     return 1;
 }
 
+static i32 Action_SetTechnoComplete(AISYS_PC *unused0, AISCRIPTPROCESS_PC *unused1, AIPACKET_PC *packet, char **params,
+                                    i32 param_count, i32 first_time, f32 unused6) {
+    GAMEOBJECT *object = packet != NULL && packet->owner != NULL ? packet->owner->objptr : NULL;
+    if (first_time) {
+        i32 index;
+        TECHNO_s *techno = NULL;
+        i32 complete = 1;
+        for (index = 0; index < param_count; ++index) {
+            char *value = NuStrIStr(params[index], "techno");
+            if (value != NULL) {
+                char *name = value + NuStrLen("techno") + 1;
+                i32 type = GizmoGetTypeIDByName(WORLD->gizmo_sys, "Techno");
+                GIZMO_PC *gizmo = GizmoFindByName(WORLD->gizmo_sys, type, name);
+                if (gizmo != NULL && gizmo->object != NULL)
+                    techno = ((TECHNO_s *)(gizmo->object));
+            } else if (NuStrICmp(params[index], "FALSE") == 0) {
+                complete = 0;
+            } else if ((value = NuStrIStr(params[index], "controlling")) != NULL) {
+                object = GetNamedGameObject(WORLD->ai_sys, value + NuStrLen("controlling") + 1);
+            }
+        }
+        if (object != NULL)
+            techno = Technos_FindControllingTechno(object);
+        if (techno != NULL)
+            techno->complete = complete;
+    }
+    return 1;
+}
+
 i32 __cdecl Action_NoIdleSpeed(AISYS_PC *sys, AISCRIPTPROCESS_PC *processor, AIPACKET_PC *packet, char **params,
                                i32 param_4, i32 param_5, f32 param_6) {
     i32 index;
@@ -8019,6 +8497,72 @@ i32 __cdecl Action_WalkBackwards(AISYS_PC *sys, AISCRIPTPROCESS_PC *processor, A
     return 0;
 }
 
+static i32 Action_ForceLightning(AISYS_PC *sys, AISCRIPTPROCESS_PC *processor, AIPACKET_PC *packet, char **params,
+                                 i32 param_4, i32 param_5, f32 param_6) {
+    struct gameobject_s *object;
+    NUVEC target;
+    NUVEC direction;
+    NUVEC primary;
+    NUVEC secondary;
+    (void)param_6;
+    object = NULL;
+    if (packet != NULL && packet->owner != NULL) {
+        object = packet->owner->objptr;
+    }
+
+    if (param_5 != 0) {
+        if (param_4 != 0) {
+            i32 index;
+            for (index = 0; index < param_4; ++index) {
+                char *value = NuStrIStr(params[index], "locator=");
+                if (value != NULL) {
+                    AILOCATOR_PC *locator = AIPathFindLocator(sys, value + 8);
+                    if (locator != NULL) {
+                        processor->action_pos = locator->position;
+                        processor->action_data_1 = 1;
+                    }
+                } else {
+                    value = NuStrIStr(params[index], "randxz=");
+                    if (value != NULL) {
+                        processor->action_data_4 = AIParamToFloat(processor, value + 7);
+                    }
+                }
+            }
+        }
+    }
+
+    if (object == NULL || processor->action_data_1 == 0) {
+        return 0;
+    }
+
+    target = target;
+    direction = direction;
+    primary = primary;
+    secondary = secondary;
+    ForceLightning_Origin(object, &primary, &secondary);
+
+    target = processor->action_pos;
+    if (processor->action_data_4 > 0.0f) {
+        target.x += processor->action_data_4 - NuRandFloat() * (processor->action_data_4 + processor->action_data_4);
+        target.z += processor->action_data_4 - NuRandFloat() * (processor->action_data_4 + processor->action_data_4);
+    }
+
+    if (primary.y != 1000000000.0f) {
+        f32 distance = NuVecDist(&target, &primary, &direction);
+        NuLgtLaser(lightning_type, lightning_sizew[0], lightning_sizel[0], lightning_sizewab[0], &primary, &direction,
+                   lightning_col[0], lightning_endw[0], distance);
+        PlaySfx("ForceLightningLp", &processor->action_pos);
+    }
+    if (secondary.y != 1000000000.0f) {
+        f32 distance = NuVecDist(&target, &secondary, &direction);
+        NuLgtLaser(lightning_type, lightning_sizew[0], lightning_sizel[0], lightning_sizewab[0], &secondary, &direction,
+                   lightning_col[0], lightning_endw[0], distance);
+        PlaySfx("ForceLightningLp", &processor->action_pos);
+    }
+    packet->movement_look_target = &processor->action_pos;
+    return 0;
+}
+
 i32 __cdecl Action_AlwaysTriggerObstacle(AISYS_PC *sys, AISCRIPTPROCESS_PC *processor, AIPACKET_PC *packet,
                                          char **params, i32 param_count, i32 first_time, f32 elapsed) {
     i32 index;
@@ -8846,6 +9390,29 @@ i32 __cdecl Action_SetShieldHitPoints(AISYS_PC *system, AISCRIPTPROCESS_PC *proc
     return 1;
 }
 
+static i32 Action_CopyMessage(AISYS_PC *unused0, AISCRIPTPROCESS_PC *unused1, AIPACKET_PC *unused2, char **params,
+                              i32 num_params, i32 first_time, f32 unused6) {
+    if (first_time && gizaimessagesys != NULL && num_params != 0) {
+        i32 i;
+        char *from = NULL;
+        char *to = NULL;
+        for (i = 0; i < num_params; i++) {
+            char *value = NuStrIStr(params[i], "from=");
+            if (value != NULL)
+                from = value + 5;
+            else if ((value = NuStrIStr(params[i], "to=")) != NULL)
+                to = value + 3;
+        }
+        if (to != NULL && from != NULL) {
+            GIZAIMESSAGE *source = CheckGizAIMessage(gizaimessagesys, from, NULL);
+            GIZAIMESSAGE *destination = CheckGizAIMessage(gizaimessagesys, to, NULL);
+            if (destination != NULL && source != NULL)
+                destination->value = source->value;
+        }
+    }
+    return 1;
+}
+
 static i32 Action_SetMessage(AISYS_PC *unused0, AISCRIPTPROCESS_PC *processor, AIPACKET_PC *unused2, char **params,
                              i32 num_params, i32 first_time, f32 unused6) {
     if (first_time && gizaimessagesys != NULL && num_params != 0) {
@@ -9275,6 +9842,14 @@ i32 __cdecl Action_AddPartDebris(AISYS_PC *sys, AISCRIPTPROCESS_PC *processor, A
         }
     }
     return 1;
+}
+
+void GuidedMissile_Kill(PART_PC *part, i32 reason) {
+    AddGameDebris(WORLD->game_debris_sys, 0x7d, &part->position);
+    AddGameDebris(WORLD->game_debris_sys, 0x21, &part->position);
+    GameCam_Judder(GameCam, 0.2f, 0, NULL);
+    Game_KillPart(part, reason);
+    NewRumbleAllPlayers(0.7f, 0.1f, 0, 0);
 }
 
 i32 __cdecl Action_TakeOver(AISYS_PC *sys, AISCRIPTPROCESS_PC *processor, AIPACKET_PC *packet, char **params,
@@ -10706,6 +11281,78 @@ i32 __cdecl Action_CanBeCarried(AISYS_PC *system, AISCRIPTPROCESS_PC *processor,
     return 1;
 }
 
+static i32 Action_AddMiscPickups(AISYS_PC *sys, AISCRIPTPROCESS_PC *processor, AIPACKET_PC *packet, char **params,
+                                 i32 param_4, i32 param_5, f32 param_6) {
+    (void)param_6;
+    if (param_5 != 0) {
+        i32 value;
+        i32 torpedo;
+        i32 index;
+        struct nuvec_s *position;
+        GAMEOBJECT *object = NULL;
+        if (packet != NULL && packet->owner != NULL) {
+            object = packet->owner->objptr;
+        }
+        value = 0;
+        torpedo = 0;
+        for (index = 0; index < param_4; ++index) {
+            char *parameter = NuStrIStr(params[index], "character=");
+            if (parameter != NULL) {
+                object = GetNamedGameObject(sys, parameter + 10);
+            } else if ((parameter = NuStrIStr(params[index], "value=")) != NULL) {
+                value = ((i32)(AIParamToFloat(processor, parameter + 6)));
+            } else if ((parameter = NuStrIStr(params[index], "torpedo=")) != NULL) {
+                torpedo = ((i32)(AIParamToFloat(processor, parameter + 8)));
+            }
+        }
+        if (object == NULL) {
+            return 1;
+        }
+        position = &object->collision_position;
+        if (value != 0 || torpedo != 0) {
+            AddMiscPickups(position, -1, value, torpedo);
+        }
+    }
+    return 1;
+}
+
+static i32 Action_CreateRider(AISYS_PC *sys, AISCRIPTPROCESS_PC *processor, AIPACKET_PC *packet, char **params,
+                              i32 param_4, i32 param_5, f32 param_6) {
+    struct gameobject_s *vehicle;
+    (void)sys;
+    (void)processor;
+    (void)param_6;
+    vehicle = packet != NULL && packet->owner != NULL ? packet->owner->objptr : NULL;
+    if (param_5 != 0 && param_4 > 0) {
+        i32 index;
+        i32 model = -1;
+        char *script = NULL;
+        for (index = 0; index < param_4; ++index) {
+            char *value = NuStrIStr(params[index], "type");
+            if (value != NULL) {
+                if (LevelCharacterTypeIDFn != NULL && LevelCharacterGlobalIDFn != NULL) {
+                    model = ((u8)(LevelCharacterTypeIDFn(value + 5)));
+                    if (model != 0xff) {
+                        model = LevelCharacterGlobalIDFn(model);
+                    }
+                }
+            } else if ((value = NuStrIStr(params[index], "script")) != NULL) {
+                script = value + 7;
+            }
+        }
+
+        if (model != -1 && vehicle != NULL && vehicle->batarang == NULL) {
+            GAMEOBJECT *rider =
+                AddDynamicCreature(model, &vehicle->collision_position, 0,
+                                   script != NULL ? script : ((char *)("default")), NULL, NULL, 0, NULL, NULL, 0, 0);
+            if (rider != NULL) {
+                TakeOverGameObject(rider, vehicle, 0, 1);
+            }
+        }
+    }
+    return 1;
+}
+
 i32 __cdecl Action_TakeDamage(AISYS_PC *system, AISCRIPTPROCESS_PC *processor, AIPACKET_PC *packet, char **params,
                               i32 count, i32 first_time, f32 delta) {
     GAMEOBJECT *object, *hitter = NULL, *candidate;
@@ -10895,6 +11542,13 @@ i32 __cdecl Action_RemoveThrownForceObjects(AISYS_PC *system, AISCRIPTPROCESS_PC
     for (index = 0; index < MAXPARTS; ++index, ++part)
         if ((part->active & 1) && part->kill_fn == PartKill_ForceThrow)
             KillPart(part, 0);
+    return 1;
+}
+
+static i32 Action_Launch(AISYS_PC *unused0, AISCRIPTPROCESS_PC *unused1, AIPACKET_PC *packet, char **unused3,
+                         i32 unused4, i32 first_time, f32 unused6) {
+    if (first_time && packet != NULL && packet->owner != NULL && packet->owner->objptr != NULL)
+        StartLaunch(packet->owner->objptr);
     return 1;
 }
 
@@ -11249,5 +11903,75 @@ i32 __cdecl Action_RegisterTakeOverObject(AISYS_PC *system, AISCRIPTPROCESS_PC *
     }
     if (object != NULL)
         RegisterTakeOverObject(object);
+    return 1;
+}
+
+static i32 Action_AddGameMsgCount(AISYS_PC *sys, AISCRIPTPROCESS_PC *processor, AIPACKET_PC *packet, char **params,
+                                  i32 param_4, i32 param_5, f32 param_6) {
+    (void)sys;
+    (void)param_6;
+    if (param_5 != 0) {
+        GAMEOBJECT *object = NULL;
+        if (packet != NULL && packet->owner != NULL) {
+            object = packet->owner->objptr;
+        }
+        if (param_4 > 0) {
+            i32 index;
+            NUVEC *position = NULL;
+            i32 total = 0;
+            i32 count = 0;
+            u8 red = 0;
+            u8 green = 0;
+            u8 blue = 0;
+
+            for (index = 0; index < param_4; ++index) {
+                if (NuStrICmp("mypos", params[index]) == 0) {
+                    if (object != NULL) {
+                        position = &object->collision_position;
+                    }
+                } else {
+                    char *value = NuStrIStr(params[index], "count=");
+                    if (value != NULL) {
+                        count = ((i32)(AIParamToFloat(processor, value + 6)));
+                    } else {
+                        value = NuStrIStr(params[index], "total=");
+                        if (value != NULL) {
+                            total = ((i32)(AIParamToFloat(processor, value + 6)));
+                        } else {
+                            value = NuStrIStr(params[index], "messageval=");
+                            if (value != NULL) {
+                                GIZAIMESSAGE *message = CheckGizAIMessage(gizaimessagesys, value + 11, NULL);
+                                if (message != NULL) {
+                                    total = ((i32)(message->value));
+                                }
+                            } else {
+                                value = NuStrIStr(params[index], "Red=");
+                                if (value != NULL) {
+                                    red = ((u8)(AIParamToFloat(processor, value + 4)));
+                                } else {
+                                    value = NuStrIStr(params[index], "Green=");
+                                    if (value != NULL) {
+                                        green = ((u8)(AIParamToFloat(processor, value + 6)));
+                                    } else {
+                                        value = NuStrIStr(params[index], "Blue=");
+                                        if (value != NULL) {
+                                            blue = ((u8)(AIParamToFloat(processor, value + 5)));
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+            if (total > count) {
+                return 1;
+            }
+            if (total == 0) {
+                return 1;
+            }
+            AddGameMsgCount(position, count, total, red, green, blue, 0.75f);
+        }
+    }
     return 1;
 }

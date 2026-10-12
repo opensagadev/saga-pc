@@ -12,6 +12,27 @@ void HothBattleB_Init(WORLDINFO *world) {
     NuSpecialFind(world->current_gscn, &LevHSpecial[3], "snow_ball_4", 1);
 }
 
+void HothBattleC_Reset(WORLDINFO *world) {
+    struct gizmo_pc_s *gizmo;
+    struct GIZMOPICKUP_PC *pickup;
+    GIZMO_PC *bomb_generator = GizmoFindByName(world->gizmo_sys, bombgen_gizmotype_id, "bomb_generator1");
+    if (bomb_generator != NULL && bomb_generator->object != NULL) {
+        HothBattleC_BombGenerator = ((GIZBOMBGEN_s *)(bomb_generator->object));
+    }
+
+    gizmo = LevGizmo[1];
+    if (gizmo == NULL || gizmo->object == NULL) {
+        return;
+    }
+
+    pickup = ((GIZMOPICKUP_PC *)(gizmo->object));
+    if (minikitCounter_C == 10 && (pickup->flags & 8) == 0) {
+        GizmoActivate(world->gizmo_sys, gizmo, 1, 1);
+        return;
+    }
+    GizmoSetVisibility(world->gizmo_sys, gizmo, 0, 1);
+}
+
 void HothBattleC_Update(WORLDINFO *world) {
     if (netclient == 0 && HothBattleC_BombGenerator != NULL && !HothBattleC_BombGenerator->active &&
         LevAIMessage[0] != NULL && LevAIMessage[0]->value > 0.0f) {
@@ -82,6 +103,60 @@ i32 HothBattle_StartNewWave() {
     for (type = 0; type < melee.creature_count; ++type)
         SpawnMeleeCreatureType(type);
     return 1;
+}
+
+void DeathStar2BattleFire_Draw(WORLDINFO *world) {
+    u16 yaw = 0;
+    u16 pitch = 0;
+    NUVEC point = v000;
+    NUMTX matrix;
+    NUVEC difference;
+    NUVEC average;
+    SPLINEPOS position;
+    if (Paused != 0)
+        return;
+
+    position = fireSplinePos;
+    while (position.normalized_position > 0.0f) {
+        NuMtxSetIdentity(&matrix);
+        PointAlongSpline(LevelCodeSpline[0], position.normalized_position, &point, &yaw, &pitch, 0);
+        Players_AveragePos(&average, NULL);
+        difference.x = average.x - position.position.x;
+        difference.y = average.y - position.position.y;
+        difference.z = average.z - position.position.z;
+        if (NuVecMagSqr(&difference) < fire_clip_dist)
+            AddVariableShotDebrisEffectTimed1(world->game_debris_sys->entries[121].effect, &position.position, 33,
+                                              FRAMETIME, pitch, yaw, NULL);
+        MoveSplinePosition(&position, -40.0f);
+    }
+
+    position = fireBackPos;
+    while (position.normalized_position < fireSplinePos.normalized_position) {
+        NuMtxSetIdentity(&matrix);
+        PointAlongSpline(LevelCodeSpline[0], position.normalized_position, &point, &yaw, &pitch, 0);
+        Players_AveragePos(&average, NULL);
+        difference.x = average.x - position.position.x;
+        difference.y = average.y - position.position.y;
+        difference.z = average.z - position.position.z;
+        if (NuVecMagSqr(&difference) < fire_clip_dist)
+            AddVariableShotDebrisEffectTimed1(world->game_debris_sys->entries[121].effect, &position.position, 67,
+                                              FRAMETIME, pitch, yaw, NULL);
+        MoveSplinePosition(&position, 40.0f);
+    }
+
+    position = fireBackPos;
+    while (position.normalized_position > 0.0f) {
+        NuMtxSetIdentity(&matrix);
+        PointAlongSpline(LevelCodeSpline[0], position.normalized_position, &point, &yaw, &pitch, 0);
+        Players_AveragePos(&average, NULL);
+        difference.x = average.x - position.position.x;
+        difference.y = average.y - position.position.y;
+        difference.z = average.z - position.position.z;
+        if (NuVecMagSqr(&difference) < fire_clip_dist)
+            AddVariableShotDebrisEffectTimed1(world->game_debris_sys->entries[121].effect, &position.position, 33,
+                                              FRAMETIME, pitch, yaw, NULL);
+        MoveSplinePosition(&position, -40.0f);
+    }
 }
 
 void __cdecl MiniKit_GameMsg_Update(GAME_MESSAGE_PC *message) {

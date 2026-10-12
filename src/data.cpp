@@ -29459,3 +29459,53 @@ extern "C" {
 #pragma bss_seg(".bss$MaxRadialCamY")
     f32 MaxRadialCamY;
 }
+
+extern "C" {}
+
+extern "C" {}
+
+extern "C" {
+#pragma bss_seg(".bss$FS_LastFileName")
+    char FS_LastFileName[64];
+
+#pragma bss_seg(".bss$default_active_menu")
+    struct eduimenu_s *default_active_menu;
+
+#pragma data_seg(".data$edmain_menu_scale")
+    f32 edmain_menu_scale = 1.0f;
+
+#pragma data_seg(".data$edmain_default_camera_speed")
+    f32 edmain_default_camera_speed = 1.0f;
+
+#pragma bss_seg(".bss$edmain_auto_speed")
+    i32 edmain_auto_speed;
+
+#pragma data_seg(".data$ed_main_menu_w")
+    i32 ed_main_menu_w = 50;
+
+#pragma data_seg(".data$ed_main_menu_y")
+    i32 ed_main_menu_y = 220;
+
+#pragma bss_seg(".bss$ed_main_menu")
+    struct eduimenu_s *ed_main_menu;
+
+#pragma bss_seg(".bss$ed_list")
+    struct ed_module_s *ed_list;
+
+#pragma bss_seg(".bss$ed_curr")
+    struct ed_module_s *ed_curr;
+
+#pragma bss_seg(".bss$submenu1")
+    struct eduimenu_s *submenu1;
+
+#pragma bss_seg(".bss$testmenu0")
+    struct eduimenu_s *testmenu0;
+}
+
+extern "C" {
+#pragma data_seg(".data$aidata_version")
+    i32 aidata_version = 20;
+
+#pragma data_seg(".data$aiEditor_LocatorWidth")
+    f32 aiEditor_LocatorWidth = 0.25f;
+}

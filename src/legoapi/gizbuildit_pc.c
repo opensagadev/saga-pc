@@ -324,6 +324,38 @@ void GizBuildit_Reset(GIZBUILDIT_s *buildit, void *world_ptr) {
     }
 }
 
+void GizBuildIt_KillParts(GIZBUILDIT_s *buildit) {
+    NUVEC velocity;
+    struct gameanimobj_s *object;
+    if (buildit == NULL)
+        return;
+    velocity = v000;
+    if (buildit->anim_set == NULL)
+        return;
+    for (object = buildit->anim_set->objects; object != NULL; object = object->next) {
+        struct PART_PC *part;
+        ADDPART_PC params = Default_ADDPART;
+        NUMTX matrix = ((GIZBUILDITANIMDATA_s *)(object->object_data))->end_mtx;
+        params.matrix = &matrix;
+        params.velocity = &velocity;
+        params.special = &object->special;
+        params.stop_fn = PartStop_Flickerer;
+        params.draw_fn = PartDraw_Flickerer;
+        params.impact_fn = PartImpact_Brick;
+        params.field_14 = 0.2f;
+        params.field_18 = 0.2f;
+        params.gravity = -4.0f;
+        params.flags = 0x90;
+        params.field_c4 = 1;
+        params.time_step = FRAMETIME;
+        part = AddPart(&params);
+        if (part != NULL) {
+            f32 random = ((f32)(qrand())) * 1.5259021893143654e-05f;
+            part->time_remaining = random + random + 7.0f;
+        }
+    }
+}
+
 void GizBuildIt_SetStepTime(GIZBUILDIT_s *buildit, GAMEOBJECT *player) {
     buildit->step_duration = 0.3f;
     if (player != NULL) {

@@ -24617,11 +24617,11 @@ extern "C" {
     struct eduiitem_s *__cdecl eduiItemSelCreate(u32 data, void *colours, i32 selected, i32 group, void *callback,
                                                  char *text);
     struct eduiitem_s *__cdecl eduiItemTextPickCreate(u32 data, void *colours, void *callback, char *text);
-    struct eduiitem_s *__cdecl eduiItemToggleCreate(u32 data, void *colours, i32 selected, i32 group, void *callback,
-                                                    char *text);
+    struct eduiitem_s *__cdecl eduiItemToggleCreate(size_t data, const void *colours, i32 selected, i32 group,
+                                                    EdUiItemCallback callback, char *text);
     void __cdecl eduiCreateMessageMenu(struct eduimenu_s *parent, char *message, i32 highlighted);
-    struct eduiitem_s *__cdecl eduiItemCheckCreate(u32 data, void *colours, i32 selected, i32 group, void *callback,
-                                                   char *text);
+    struct eduiitem_s *__cdecl eduiItemCheckCreate(size_t data, const void *colours, i32 selected, i32 group,
+                                                   EdUiItemCallback callback, char *text);
     i32 __cdecl eduiMenuAttach(struct eduimenu_s *menu, struct eduimenu_s *child);
     struct eduiitem_s *__cdecl eduiItemSliderCreateInt(u32 data, void *colours, i32 group, void *callback, i32 minimum,
                                                        i32 maximum, i32 value, char *text);

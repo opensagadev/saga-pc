@@ -1346,6 +1346,8 @@ address    , symbol                                                         , si
 0x4e5770,_TrenchMove,946,
 0x4e5ba0,_DeathStarBattleDUpdate,762,
 0x4e5f10,_KilledTrooperCannon,198,
+0x4e6000,_ResetTrooperCannons,600,
+0x4e6260,_UpdateTrooperCannons,250,
 0x4e63b0,_HothEscapeB_Init,90,
 0x4e6410,_HothEscapeB_Reset,81,
 0x4e6600,_Asteroid_PartKill,181,
@@ -4756,6 +4758,9 @@ address    , symbol                                                         , si
 0x61d990,_eduicbProcessSlider,915,
 0x61dd30,_eduicbInteractSlider,661,
 0x0061e6b0 , _NuKeyToAscii                                                  , 50    , "i32 __cdecl (u32, i32)"
+0x61f070,_eduiGetUsingMenuFocus,20,
+0x61f180,_cbSel,14,
+0x61f190,_cbGradChange,1,
 0x61f1a0,_cbInteractMenuTitle,135,
 0x61f260,_cbInteractMenuScrollUp,33,
 0x61f310,_cbInteractMenuCancelChild,35,
@@ -4812,7 +4817,9 @@ address    , symbol                                                         , si
 0x623280,_FS_GetPadWithRepeat,88,
 0x6232e0,_ProcessFileSel3,880,
 0x6236e0,_FS_SetFileSelPathFromName,219,
+0x6240d0,_cbmcfgCameraSpeed,59,
 0x624180,_eduicbItemDestroy,77,
+0x6241d0,_eduiMenuDestroyItems,68,
 0x624220,_eduiMenuDestroy,133,
 0x6242b0,_eduiMenuFitWidth,704,
 0x624590,_eduicbProcessSel,89,
@@ -4823,6 +4830,7 @@ address    , symbol                                                         , si
 0x626b30,_eduicbCancelMessageMenu,25,
 0x626b50,_eduiMenuRender,1602,
 0x6271a0,_eduiSetActiveMenu,68,
+0x627320,_eduiProcessInteracts,125,
 0x627670,_eduiItemColourSliderCreate,243,
 0x627930,_eduiMenuFitOnScreen,118,
 0x6279b0,_eduiMenuAttach,58,
@@ -4838,8 +4846,14 @@ address    , symbol                                                         , si
 0x628970,_eduicbProcessGradPick,671,
 0x628d80,_eduiCreateMessageMenu,228,
 0x628e70,_eduiCreate3LineMessageMenu,443,
+0x629080,_eduiMenuProcessInput,948,
+0x629440,_cbSubMenu,57,
 0x6297f0,_CreateColourPicker,427,
+0x629a30,_cbMMEditorConfig,73,
+0x629a80,_cbmcfgCancel,12,
 0x629a90,_edmainInit,620,
+0x629d00,_eduiItemGradPickCreate,146,
+0x629d00,_eduiItemGreyGradPickCreate,146,
 0x629e20,_eduiMenuProcessAux,163,
 0x629ed0,_CreateTestMenu,1018,
 0x62a400,_eduiMenuProcess,116,
@@ -10226,7 +10240,10 @@ address    , symbol                                                         , si
 0x75e250,??_C@_0L@NCDPHOJ@transport3?$AA@,11,char []
 0x75e25c,??_C@_0O@KBHELHN@rebelcruiser2?$AA@,14,char []
 0x75e27c,??_C@_0O@NFAJCHNC@TrapBEndFight?$AA@,14,char []
+0x75e28c,??_C@_03BBKEAIF@?$DP?$DP?$DP?$AA@,4,char []
 0x75e290,??_C@_09KCEJPGDP@obstacle3?$AA@,10,char []
+0x75e29c,??_C@_06EFGJMCHF@gap1_a?$AA@,7,char []
+0x75e2a4,??_C@_06GOEEJBLG@gap1_b?$AA@,7,char []
 0x75e2b0,__real@c1a00000,,
 0x75e2d4,??_C@_0BB@GFEMDJAG@BobaFightStarted?$AA@,17,char []
 0x75e314,??_C@_0N@HKLABEEJ@gas_3_animin?$AA@,13,char []
@@ -11285,6 +11302,7 @@ address    , symbol                                                         , si
 0x763734,??_C@_0O@BFBECABL@CharPlatforms?$AA@,14,
 0x763748,__real@c0c45f3060000000,8,const f64
 0x763750,_PlayerStepOuterActionPc,8,const f64
+0x763758,__real@c0800000,4,const f32
 0x763770,??_C@_03MLOLJMPD@leg?$AA@,4,const char[4]
 0x763774,??_C@_0M@OMBCCEKN@under_pants?$AA@,12,const char[12]
 0x763780,??_C@_04IEJGKNJ@body?$AA@,5,const char[5]
@@ -11577,7 +11595,23 @@ address    , symbol                                                         , si
 0x76af08,__real@43700000,4,const f32
 0x76af3c,??_C@_08OJFIKKMI@?$CI?$CF1?403f?$CJ?$AA@,9,char []
 0x76af90,??_C@_09GMFECJDN@?$DMno?5name?$DO?$AA@,10,char []
+0x76af9c,??_C@_0L@GFIMNMGP@Enter?5Text?$AA@,11,char []
 0x76afa8,_PcInputText76afa8, ,char[2]
+0x76b090,??_C@_0O@HLDALIGL@Return?5To?5App?$AA@,14,char []
+0x76b0b0,??_C@_0BK@ENMLBOJE@Proportional?5Cursor?5Speed?$AA@,26,char []
+0x76b0cc,??_C@_0N@NCKBDIFB@Camera?5Speed?$AA@,13,char []
+0x76b0dc,??_C@_0O@GPLACL@Editor?5Config?$AA@,14,char []
+0x76b0ec,??_C@_03IAFHKNMP@Sel?$AA@,4,char []
+0x76b0f0,??_C@_0N@ILFMOHKE@GreyGradPick?$AA@,13,char []
+0x76b10c,??_C@_0N@IAEJGMCJ@Sub?5Menu?50?4?4?$AA@,13,char []
+0x76b11c,??_C@_09JDDCPHDA@Main?5Menu?$AA@,10,char []
+0x76b128,??_C@_0N@DIPFALEM@Sub?5Menu?51?4?4?$AA@,13,char []
+0x76b138,??_C@_07CFDFCHEG@Sub?5Sel?$AA@,8,char []
+0x76b140,??_C@_08BOCBKJCN@SubMenu0?$AA@,9,char []
+0x76b14c,??_C@_09NGBEGKEM@Sub?5Sel?52?$AA@,10,char []
+0x76b158,??_C@_09PNDJDJIP@Sub?5Sel?51?$AA@,10,char []
+0x76b164,??_C@_09OECCAIMO@Sub?5Sel?50?$AA@,10,char []
+0x76b170,??_C@_08HDKJIGM@SubMenu1?$AA@,9,char []
 0x76b180,__real@3ff6db6dc845a8fa,,const f64
 0x76b188,_APIObjectPakExtension,5,const char[5]
 0x0076b190 , __real@3fa1111120000000                                        , 8     , const f64
@@ -14889,6 +14923,7 @@ address    , symbol                                                         , si
 0x007fffec , _GUNSHIPAHACK                                                  , 4     , i32
 0x8000ac,_TempleC_StreamStatusPos,,
 0x800224,_melee_wavePhase,1,i8
+0x80029c,?pos@?1??CloudCityTrapA_Update@@9@9,,
 0x8002c4,_fire_clip_dist,4,i32
 0x00800444 , _NuAllocHeaderMetadata                                         , 12    , u32[3]
 0x00800454 , _NuAllocTailMetadata                                           , 12    , u32[3]
@@ -15026,6 +15061,7 @@ address    , symbol                                                         , si
 0x8015ec,_apitext_half_rgb,,i32
 0x008015f0 , _STCOORDSCALE                                                  , 4     , f32
 0x8015f4,_MenuPromptPositionScalePc,,f32
+0x80171c,_aidata_version,4,i32
 0x801720,_AIScriptCommandsPc,,NUFPCOMJMP[9]
 0x00801c58 , _default_path_heighttol                                        , 4     , f32
 0x801c5c,_AiLoadActivationDifficultyPc,,u8
@@ -15039,6 +15075,7 @@ address    , symbol                                                         , si
 0x00801c8c , _AIMovementInstructionPositiveThreshold                        , 4     , f32
 0x00801c90 , _AIMovementInstructionNegativeThreshold                        , 4     , f32
 0x00801c94 , _new_retreat                                                   , 4     , i32
+0x801cc4,_aiEditor_LocatorWidth,4,f32
 0x801d54   , _AIPathDefaultChecks                                           , 4     , i32
 0x00801dd0 , ??_R0?AVNetListenerInterface@@@8                               , 35    ,
 0x00801df4 , ??_R0?AVAINet@@@8                                              , 20    ,
@@ -15601,11 +15638,20 @@ address    , symbol                                                         , si
 0x0080f3c8 , ??_R0?AVNetReplicator@@@8                                      , 28    ,
 0x0080f3e4 , ??_R0?AV?$CSListLink@VNetReplicator@@@@@8                      , 44    ,
 0x0080f480 , ??_R0?AVNetFtpManager@@@8                                      , 28    ,
+0x80f510,_edmain_menu_scale,4,f32
+0x80f514,_ed_attr,,
+0x80f524,_ed_main_menu_y,4,i32
+0x80f528,_ed_main_menu_w,4,i32
+0x80f534,_edmain_default_camera_speed,4,f32
 0x80f558,_edui_font_scale_x,4,f32
 0x80f55c,_edui_font_scale_y,4,f32
 0x0080f5a0 , _NuKeyChar                                                     , 520   , NUKEYCHAR[65]
 0x80f7ec,_gp_cam,,
 0x80f884   , _edfile_handle                                                 , 4     , i32
+0x80f8c8,_FS_Filter,,
+0x80f9c8,_FS_FilterOut,,
+0x80fac8,_FS_FileListEnd,,
+0x80facc,_FS_CurrentPos,,
 0x80fad4,_FS_Width,4,f32
 0x80faf0,_FS_SortMode,4,i32
 0x80fb88,_MINFORCEAPART,,f32
@@ -18545,14 +18591,22 @@ address    , symbol                                                         , si
 0x2900c90,_uimtls,20,struct PC_SCENE_MTL_VIEW *[5]
 0x2900ca4,_edui_last_item,4,struct eduiitem_s *
 0x2900ca8,_FS_FileList,65536,char[65536]
+0x2910cb4,_submenu1,4,struct eduimenu_s *
 0x2910cbc  , _edfile_lock                                                   , 8     , i32[2]
 0x29110d8  , _edfile_buffer                                                 , 4096  , char[4096]
+0x291214c,_testmenu0,4,struct eduimenu_s *
+0x2912154,_submenu0,,
 0x2912b58,_edui_font,4,void *
 0x2912e70,_ed_remap_mtx,4,struct numtx_s *
+0x2912e80,_ed_list,4,struct ed_module_s *
+0x2912e84,_ed_curr,4,struct ed_module_s *
+0x2912e8c,_ed_main_menu,4,struct eduimenu_s *
+0x2912e90,_edmain_auto_speed,4,i32
 0x2912ea0,_ed_fnt,4,void *
 0x2912eac,_eduiInteractLocked,4,struct edui_interact_s *
 0x2912ecc,_active_menu,4,struct eduimenu_s *
 0x2912ed0,_processing_menu,4,struct eduimenu_s *
+0x2912ed4,_default_active_menu,4,struct eduimenu_s *
 0x2912ed8,_edui_donotdraw,4,i32
 0x2912ee4,_edui_cursor_buttons,4,u32
 0x2912f58,_PadFlyMode,4,i32
@@ -18563,14 +18617,17 @@ address    , symbol                                                         , si
 0x2912f6c,_FS_ShowVolumes,1,u8
 0x2912f6d,_FS_Active,1,u8
 0x2912f70,_FS_Path,256,char[256]
+0x2913070,_FS_CursorLine,,
 0x2913074,_FS_CurrentPosFileNum,4,i32
 0x2913078,_FS_NumFiles,4,i32
 0x291307c,_FS_Callback,4,"void (__cdecl *)(char *arg0, char *arg1)"
+0x2913080,_FS_LastFileName,64,char[64]
 0x29130d0,?offsety@?1??cbInteractMenuTitle@@9@9,,
 0x29130d4,?offsetx@?1??cbInteractMenuTitle@@9@9,,
 0x29130dc,?TargetAng@?1??do_maya_mouse_camera@@9@9,,
 0x29130e4,?PadRepeat@?1??FS_GetPadWithRepeat@@9@9,,
 0x29130e8,?LastPad@?1??FS_GetPadWithRepeat@@9@9,,
+0x29130ec,?tpent@?1??eduiAddTextPickEntEx@@9@9,,
 0x02913104 , _apicharsys                                                    , 4     , APICHARSYS *
 0x2913108,_append,,i32
 0x291310c  , _apiloadcharactermodels_nopakfile                               , 4     , i32
