@@ -316,7 +316,8 @@ def initialized_structs(pc, typedefs):
             if name:
                 names[name] = key
     used = set()
-    pattern = re.compile(r"\b([A-Za-z_]\w*)\s+\**\s*[A-Za-z_]\w*(?:\[[^\]]*\])*\s*=\s*\{")
+    # A zero initializer ({0}) does not depend on the member layout.
+    pattern = re.compile(r"\b([A-Za-z_]\w*)\s+\**\s*[A-Za-z_]\w*(?:\[[^\]]*\])*\s*=\s*\{(?!\s*0?\s*\})")
     # Locals held by value: VC8 code generation for them depends on member types.
     local = re.compile(r"^\s+(?:const\s+)?([A-Za-z_]\w*)\s+[A-Za-z_]\w*(?:\[[^\]]*\])*\s*[;=,]", re.M)
     for path in (ROOT / "src").rglob("*"):
@@ -386,7 +387,7 @@ def plan(android_root, only=None):
                     and sole_declarator(header_bytes, f[3]) and f[2] not in referenced]
         inserts = collections.defaultdict(list)
         for offset, size, name, cursor, bitfield in astruct.fields:
-            placeholder = re.match(r"field_0x([0-9a-f]+)$", name)
+            placeholder = re.match(r"field_(?:0x)?([0-9a-f]+)$", name)
             if bitfield or size <= 0 or ANDROID_PLACEHOLDER.match(name) and not placeholder:
                 continue
             delta = shift(anchors, offset, astruct.size, pstruct.size)
@@ -478,7 +479,7 @@ def main():
     parser.add_argument("--only", nargs="+", help="Limit the transfer to these PC structs (tag or typedef)")
     args = parser.parse_args()
     (ROOT / "build/typexfer").mkdir(parents=True, exist_ok=True)
-    edits, report, (pc, pc_typedefs) = plan(args.android, args.only)
+    edits, report, (pc, pc_typedefs) = plan(args.android.resolve(), args.only)
     print(f"{len(report)} padding ranges gain {sum(r[1] for r in report)} fields "
           f"({sum(r[2] for r in report)} bytes) in "
           f"{len({r[0] for r in report})} structs")
