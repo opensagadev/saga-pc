@@ -140,6 +140,7 @@ def pair(android, pc):
     result = {}
     for pkey, pstruct in pc.items():
         names = {f[2]: f[0] for f in pstruct.fields if not PADDING.match(f[2])}
+        top_names = dict(names)
         # Members of embedded PC structs whose name occurs once, unless a top-level member has it.
         deep_count = collections.Counter(f[2] for f in pstruct.deep)
         for f in pstruct.deep:
@@ -165,20 +166,26 @@ def pair(android, pc):
             same = sum(1 for _, delta in anchors if delta == 0)
             android_name = re.sub(r"[^a-z0-9]", "", astruct.tag.lower())
             # Deterministic: score, then exact size, similar name, named over anonymous.
+            # Top-level members named alike at the same offset beat names found only inside embedded structs.
+            top_same = sum(
+                1 for f in astruct.fields if f[2] in top_names and top_names[f[2]] == f[0] and not ANDROID_PLACEHOLDER.match(f[2]))
             score = (bool(pstruct.tag) and astruct.tag == pstruct.tag,  # the same tag (imported types) wins
+                     top_same,
                      common + same - abs(astruct.size - pstruct.size) / 64,
                      astruct.size == pstruct.size,
                      bool(pc_name) and (android_name.startswith(pc_name[:6]) or pc_name.startswith(android_name[:6])),
                      not astruct.cursor.is_anonymous(), astruct.tag)
+            # Very different sizes need many shared names (a few x/y/scale names match anything).
+            if not 0.5 <= pstruct.size / max(astruct.size, 1) <= 2 and len(anchors) < 8:
+                continue
+            # Small structs have few members to agree on: equal size and every named member but one is enough.
+            small = pstruct.size == astruct.size and len(anchors) >= 2 and len(anchors) >= sum(
+                1 for f in astruct.fields if not ANDROID_PLACEHOLDER.match(f[2])) - 1
+            if len(anchors) < 3 and not small:
+                continue
             if best is None or score > best[0]:
                 best = (score, akey, anchors)
-        # Very different sizes need many shared names (a few x/y/scale names match anything).
-        if best and not 0.5 <= pstruct.size / max(android[best[1]].size, 1) <= 2 and len(best[2]) < 8:
-            best = None
-        # Small structs have few members to agree on: equal size and every named member but one is enough.
-        small = best and pstruct.size == android[best[1]].size and len(best[2]) >= 2 and len(best[2]) >= sum(
-            1 for f in android[best[1]].fields if not ANDROID_PLACEHOLDER.match(f[2])) - 1
-        if best and (len(best[2]) >= 3 or small):
+        if best:
             result[pkey] = (best[1], offset_name_anchors(android[best[1]], pstruct, best[2]))
     return result
 
