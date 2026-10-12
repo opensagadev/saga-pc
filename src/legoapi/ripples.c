@@ -547,24 +547,27 @@ void __cdecl UpdateRippleSet(RIPPLE_SET_PC *set) {
     RippleEraseCountPc = 0;
 }
 
-static void DrawRipplePc(RIPPLE_NODE_PC *node) {
+void __cdecl DrawRipplePc(RIPPLE_NODE_PC *node) {
     NURND_VERTEX3D_PC vertices[4];
     NUMTX matrix;
     f32 size = node->initial_size;
-    /* Native writes only the named position/colour/UV fields; the existing
-     * record's opaque twelve-byte lane is not initialized here. */
-    vertices[0].position.x = 0;
-    vertices[0].position.y = size;
-    vertices[0].position.z = 0;
-    vertices[1].position.x = -size;
-    vertices[1].position.y = 0;
-    vertices[1].position.z = 0;
-    vertices[2].position.x = size;
-    vertices[2].position.y = -0.0f;
-    vertices[2].position.z = 0;
-    vertices[3].position.x = -0.0f;
-    vertices[3].position.y = -size;
-    vertices[3].position.z = 0;
+    NUVEC top, left, right, bottom;
+    top.x = 0;
+    top.y = size;
+    top.z = 0;
+    vertices[0].position = top;
+    left.x = -size;
+    left.y = 0;
+    left.z = 0;
+    vertices[1].position = left;
+    right.x = size;
+    right.y = -0.0f;
+    right.z = 0;
+    vertices[2].position = right;
+    bottom.x = -0.0f;
+    bottom.y = -size;
+    bottom.z = 0;
+    vertices[3].position = bottom;
     vertices[0].u = vertices[2].u = vertices[3].u = 1;
     vertices[1].u = 0;
     vertices[0].v = vertices[1].v = vertices[3].v = 0;

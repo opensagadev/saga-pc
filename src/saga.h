@@ -110,7 +110,7 @@ typedef struct numtx_s {
 
 typedef struct nurnd_vertex3d_pc_s {
     NUVEC position;
-    u8 unknown_0c[12];
+    NUVEC normal;
     u32 colour;
     f32 u;
     f32 v;
@@ -5685,7 +5685,6 @@ typedef struct ADDPART_PC {
     u32 field_a8[6];
     f32 field_c0;
     u8 field_c4;
-    u8 padding_c5[3];
 } ADDPART_PC;
 STATIC_ASSERT(sizeof(ADDPART_PC) == 0xc8);
 STATIC_ASSERT(offsetof(ADDPART_PC, matrix) == 0);
@@ -9192,9 +9191,9 @@ extern "C" {
         NUVEC previous_shadow_direction;
         f32 previous_shadow_value, shadow_blend;
         u16 cached_light_uid;
-        u8 unknown_76[2];
+        u16 unknown_76;
         NUVEC intensity_vectors[3], direction[3], ambient;
-        u8 unknown_cc[0x54];
+        u32 unknown_cc[0x15];
         f32 field_120;
         NUVEC blended_shadow_direction;
         f32 blended_shadow_value;
@@ -15088,6 +15087,7 @@ void __cdecl PCSoundAlreadyPlayingHook(void);
     void __cdecl GizObstacles_StoreProgress(void *, void *, void *);
     i32 __cdecl GizmoObstacle_ActivateRev(GIZMO_PC *, i32, i32);
     i32 __cdecl NuTexResolveReference(NUGSCN *, i32);
+    i32 __cdecl NuGScnFixupTID(NUGSCN *, i32);
     i32 __cdecl NuTexReadPc(char *, VARIPTR *, VARIPTR);
     void __cdecl NuApiSetEndFrameCallbackPc(void(__cdecl *)(void));
     void __cdecl DebrisSetup2(VARIPTR *, VARIPTR, VARIPTR *, VARIPTR, char *, i32, i32, i32, i32);

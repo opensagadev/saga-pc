@@ -11185,7 +11185,6 @@ extern "C" {
         {0x0u, 0x0u, 0x0u, 0x0u, 0x0u, 0x0u}, // field_a8
         1.0f,                                 // field_c0
         0,                                    // field_c4
-        {0, 0, 0},                            // padding_c5
     };
 #pragma data_seg()
 
