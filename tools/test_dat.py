@@ -122,12 +122,15 @@ def write_clock_provider(directory):
     bodies = production[start:end]
     if len(re.findall(r"^.*void __cdecl NuTime\w+\(", bodies, re.MULTILINE)) != 2:
         raise ValueError("DAT clock provider no longer contains exactly the two production routines")
-    definition = re.search(r"^\s*i64 NuTime_TickBase;\s*$",
-                           (ROOT / "src/data.cpp").read_text(), re.MULTILINE)
-    if definition is None:
-        raise ValueError("DAT clock provider is missing the production tick-base definition")
+    data = (ROOT / "src/data.cpp").read_text()
+    definitions = []
+    for name in ("NuTime_TickBase", "NuTime_PerformanceFrequency"):
+        definition = re.search(rf"^\s*i64 {name};\s*$", data, re.MULTILINE)
+        if definition is None:
+            raise ValueError(f"DAT clock provider is missing the production {name} definition")
+        definitions.append(definition.group().strip())
     source = directory / "clock_provider.c"
-    source.write_text('#include "saga.h"\n' + definition.group().strip() + "\n" + bodies)
+    source.write_text('#include "saga.h"\n' + "\n".join(definitions) + "\n" + bodies)
     return source
 
 
