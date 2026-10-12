@@ -259,8 +259,12 @@ def main():
         if rivals[0][1] != start or (len(rivals) > 1 and rivals[1][0] * 3 > score * 2):
             continue  # another retail function fits this name as well
         size, sequence = retail_side[start]
-        length = max(sum(WEIGHT[f[0]] for f in sequence), sum(WEIGHT[f[0]] for f in android_side[key]))
-        if score * 2 < length:
+        retail_length = sum(WEIGHT[f[0]] for f in sequence)
+        android_length = sum(WEIGHT[f[0]] for f in android_side[key])
+        length = max(retail_length, android_length)
+        # Android bodies carry callees clang inlined that VC8 may keep out of line, so only
+        # most of the retail calls must agree.
+        if score * 2 < retail_length or score * 4 < android_length:
             continue  # most calls disagree
         android_size = symbols.get(key[1])
         if android_size and not 0.3 <= size / android_size <= 3:
