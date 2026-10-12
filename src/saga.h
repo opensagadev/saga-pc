@@ -2597,7 +2597,9 @@ STATIC_ASSERT(offsetof(TERRAIN_SURFACE_PC, field_08) == 8);
 
 typedef struct edanim_param_pc_s {
     i32 instance_id;
-    u8 unknown_004[0x2cc];
+    i32 effect_count;
+    i32 sound_count;
+    u8 unknown_00c[0x2c4];
     i8 page;
     u8 unknown_2d1[3];
 } EDANIM_PARAM_PC;
@@ -10417,7 +10419,6 @@ extern OCCLUSIONMANAGER g_OcclusionManager;
     extern NUDISPLAYLISTRENDERSCENE *PCSafeRenderScenes[24];
     extern f32 debris_render_global_time;
     extern f32 debris_render_panel_time;
-    extern f32 BossKillDelayTimePc;
     extern const f64 TerrainSkinSampleCountPc;
     extern i32 obstacle_gizmotype_id;
     extern i32 PCVertexDeclarationCountPC;
@@ -18254,7 +18255,6 @@ extern "C" {
     extern i32 HubEpisodePc;
     extern i32 HubMiniKitAreaPc;
     extern void(__cdecl *HubInitAIFnPc)(WORLDINFO *);
-    extern f32 HubSecondLevelTimePc;
     extern f32 HubHologramTargetAlphaPc;
     extern void *HubBuildItPc;
     extern void(__cdecl *HubResetAIFnPc)(WORLDINFO *);
@@ -19035,9 +19035,9 @@ extern "C" {
     extern LEVELDATA_PC *LevelFixupSlotPc0087b210;
     extern LEVELDATA_PC *LevelFixupSlotPc0087b218;
     extern LEVELDATA_PC *LevelFixupSlotPc0087b220;
-    extern LEVELDATA_PC *LevelFixupSlotPc0087b224;
+    extern LEVELDATA_PC *ASTEROIDCHASEA_LDATA;
     extern LEVELDATA_PC *LevelFixupSlotPc0087b228;
-    extern LEVELDATA_PC *LevelFixupSlotPc0087b234;
+    extern LEVELDATA_PC *ASTEROIDCHASEMITRO_LDATA;
     extern LEVELDATA_PC *LevelFixupSlotPc0087b250;
     extern LEVELDATA_PC *LevelFixupSlotPc0087b258;
     extern LEVELDATA_PC *LevelFixupSlotPc0087b264;
@@ -19388,7 +19388,6 @@ extern "C" {
     extern char *LeverTypeNamePtrPc;
     extern char *LeverOutputDownNamePtrPc;
     extern MISSION_MENU_PACKET_PC MissionMenuPacketPc;
-    extern f32 MissionMenuReturnDelayPc;
     extern TIMER JoinInTimer;
     extern f32 MissionIconGapPc;
     extern f32 MissionIconStepPc;
@@ -25117,6 +25116,19 @@ extern "C" {
     void __cdecl AiRndrLine3dDbg(f32 x0, f32 y0, f32 z0, f32 x1, f32 y1, f32 z1, u32 colour);
     void __cdecl DrawWeapon_SetSabreObjects(struct gameobject_s *object, i32 red, i32 green, i32 blue, i32 purple,
                                             i32 *models, i32 *hilt);
+    extern i32 edanim_emitroty;
+    extern i32 edanim_emitrotz;
+    extern struct PC_SCENE_MTL_VIEW *edanim_mtl_zoff;
+    void __cdecl AsteroidChaseD_SetTurretTarget(i32 index, struct nuvec_s *position);
+    extern struct GIZTURRET_s *StarDestroyerTurrets[16];
+    extern nuhspecial_s escape[8];
+    extern f32 melee_waveDelay;
+    extern i8 melee_wavePhase;
+    extern u8 turretAliveCount;
+    void __cdecl GuidedMissile_Deflect(struct PART_PC *part);
+    void __cdecl GuidedMissile_Kill(struct PART_PC *part, i32 reason);
+    void __cdecl GuidedMissile_Move(struct PART_PC *part, f32 time);
+    extern f32 test_missile_scale;
 #ifdef __cplusplus
 }
 #endif

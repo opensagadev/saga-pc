@@ -445,6 +445,11 @@
    "unit": "src/nu2api/shader_parser.cpp",
    "symbol": "__bad_alloc_Message",
    "kind": "data"
+  },
+  {
+   "unit": "src/legoapi/episodeIV.c",
+   "symbol": "_AsteroidChaseD_SetTurretTarget",
+   "kind": "function"
   }
  ]
 }

@@ -110,11 +110,11 @@ extern "C" {
     extern LEVELDATA_PC *LevelFixupSlotPc0087b218;
     extern LEVELDATA_PC *HOTHESCAPEC_LDATA;
     extern LEVELDATA_PC *LevelFixupSlotPc0087b220;
-    extern LEVELDATA_PC *LevelFixupSlotPc0087b224;
+    extern LEVELDATA_PC *ASTEROIDCHASEA_LDATA;
     extern LEVELDATA_PC *LevelFixupSlotPc0087b228;
     extern LEVELDATA_PC *ASTEROIDCHASEC_LDATA;
     extern LEVELDATA_PC *ASTEROIDCHASED_LDATA;
-    extern LEVELDATA_PC *LevelFixupSlotPc0087b234;
+    extern LEVELDATA_PC *ASTEROIDCHASEMITRO_LDATA;
     extern LEVELDATA_PC *LevelFixupSlotPc0087b258;
     extern LEVELDATA_PC *LevelFixupSlotPc0087b264;
     extern LEVELDATA_PC *LevelFixupSlotPc0087b268;
@@ -750,7 +750,7 @@ extern "C" void __cdecl FixUpLevels(struct level_fixup_pc_s *fixup) {
                 STUBBED_NAMED(FixUpLevels_Callback_4e6560); /* Native 0x48ee0d: callbacks[2] = entry 0x4e6560. */
             }
             level = Level_FindByName("AsteroidChase_A", NULL); /* Native call 0x48ee1b. */
-            LevelFixupSlotPc0087b224 = level;                  /* Native store 0x48ee25. */
+            ASTEROIDCHASEA_LDATA = level;                      /* Native store 0x48ee25. */
             if (level != NULL) {
                 STUBBED_NAMED(FixUpLevels_Callback_4e6f40); /* Native 0x48ee2c: callbacks[1] = entry 0x4e6f40. */
                 STUBBED_NAMED(FixUpLevels_Callback_4e6f50); /* Native 0x48ee38: callbacks[2] = entry 0x4e6f50. */
@@ -778,7 +778,7 @@ extern "C" void __cdecl FixUpLevels(struct level_fixup_pc_s *fixup) {
                 STUBBED_NAMED(FixUpLevels_Callback_4e7c60); /* Native 0x48eeee: callbacks[5] = entry 0x4e7c60. */
             }
             level = Level_FindByName("AsteroidChase_Midtro", NULL); /* Native call 0x48eefc. */
-            LevelFixupSlotPc0087b234 = level;                       /* Native store 0x48ef08. */
+            ASTEROIDCHASEMITRO_LDATA = level;                       /* Native store 0x48ef08. */
             level = Level_FindByName("dagobah_a", NULL);            /* Native call 0x48ef0d. */
             LevelFixupSlotPc0087b258 = level;                       /* Native store 0x48ef19. */
             level = Level_FindByName("dagobah_d", NULL);            /* Native call 0x48ef1e. */

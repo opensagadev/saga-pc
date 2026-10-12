@@ -1630,8 +1630,8 @@ static void PicturesFixUpPc(WORLDINFO *world) {
         NuSpecialFind(world->secondary_gscn, &LevHSpecial[20 + PicturesNumLevelsPc], "new_town", 1);
         ++PicturesNumLevelsPc;
     }
-    HubSecondLevelTimePc = 0.0f;
-    BossKillDelayTimePc = 0.0f;
+    LevTime[1] = 0.0f;
+    LevTime[0] = 0.0f;
 }
 
 extern "C" void __cdecl Titles_Init(WORLDINFO *world) {
@@ -1677,9 +1677,9 @@ extern "C" void __cdecl Titles_Update(WORLDINFO *world) {
     }
     f32 step = FRAMETIME + FRAMETIME;
     TitlesAlpha = SeekLinearF(TitlesAlpha, 1.0f, step);
-    HubSecondLevelTimePc = (GetMenuID() == 0 && GameTimer.time_elapsed >= 4.0f) ? 1.0f : 0.0f;
+    LevTime[1] = (GetMenuID() == 0 && GameTimer.time_elapsed >= 4.0f) ? 1.0f : 0.0f;
     step = FRAMETIME + FRAMETIME;
-    BossKillDelayTimePc = SeekLinearF(BossKillDelayTimePc, HubSecondLevelTimePc, step);
+    LevTime[0] = SeekLinearF(LevTime[0], LevTime[1], step);
 }
 
 extern "C" void __cdecl Titles_Draw(WORLDINFO *world) {
@@ -1699,7 +1699,7 @@ extern "C" void __cdecl Titles_Draw(WORLDINFO *world) {
                              (f32)((f64)TitlesAlpha * newgamealpha *
                                    (1.0 - NuTrigTable[((i32)((f64)LevAlpha * 16384.0 + 16384.0) >> 1) & 0x7fff])));
     }
-    if (!(BossKillDelayTimePc > 0.0f) || !(newgamealpha > 0.0f)) {
+    if (!(LevTime[0] > 0.0f) || !(newgamealpha > 0.0f)) {
         return;
     }
     f32 time = GameTimer.time_elapsed;
@@ -1725,7 +1725,7 @@ extern "C" void __cdecl Titles_Draw(WORLDINFO *world) {
             if (alpha > 0.0f && NuSpecialExistsFn(&LevHSpecial[10 + index]) != 0) {
                 matrix.m31 = TitlePictureYPc;
                 NuSpecialDrawAtAlpha(&LevHSpecial[10 + index], &matrix,
-                                     (f32)((f64)newgamealpha * 0.5 * alpha * BossKillDelayTimePc));
+                                     (f32)((f64)newgamealpha * 0.5 * alpha * LevTime[0]));
             }
         }
     }
@@ -1775,18 +1775,18 @@ extern "C" void __cdecl Credits_Init_Game(WORLDINFO *world) {
 extern "C" void __cdecl Credits_Update_Game(WORLDINFO *world) {
     i32 finished;
     Credits_GetInfo(NULL, &finished, NULL);
-    HubSecondLevelTimePc = finished == 0 ? 1.0f : 0.0f;
+    LevTime[1] = finished == 0 ? 1.0f : 0.0f;
     f32 step = FRAMETIME + FRAMETIME;
-    BossKillDelayTimePc = SeekLinearF(BossKillDelayTimePc, HubSecondLevelTimePc, step);
+    LevTime[0] = SeekLinearF(LevTime[0], LevTime[1], step);
 }
 
 extern "C" void __cdecl Credits_Draw_Game(WORLDINFO *world) {
-    if (BossKillDelayTimePc > 0.0f) {
+    if (LevTime[0] > 0.0f) {
         f32 time = CreditsTime;
         f32 duration;
         f32 alpha;
         Credits_GetInfo(&duration, NULL, &alpha);
-        alpha = (f32)((f64)CreditsPictureAlphaPc * BossKillDelayTimePc * alpha);
+        alpha = (f32)((f64)CreditsPictureAlphaPc * LevTime[0] * alpha);
         duration -= 1.0f;
         f32 interval = (f32)(((f64)duration - 1.0) / PicturesNumLevelsPc);
         f32 picture_duration = interval + 1.0f;

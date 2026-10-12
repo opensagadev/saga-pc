@@ -331,7 +331,6 @@ extern "C" {
     i32 HubEpisodePc = 0;
     i32 HubMiniKitAreaPc = 0;
     void(__cdecl *HubInitAIFnPc)(WORLDINFO *) = NULL;
-    f32 HubSecondLevelTimePc = 0.0f;
     f32 HubHologramTargetAlphaPc = 0.0f;
     void *HubBuildItPc = NULL;
     void(__cdecl *HubResetAIFnPc)(WORLDINFO *) = NULL;
@@ -424,9 +423,9 @@ extern "C" {
     LEVELDATA_PC *LevelFixupSlotPc0087b210 = NULL;
     LEVELDATA_PC *LevelFixupSlotPc0087b218 = NULL;
     LEVELDATA_PC *LevelFixupSlotPc0087b220 = NULL;
-    LEVELDATA_PC *LevelFixupSlotPc0087b224 = NULL;
+    LEVELDATA_PC *ASTEROIDCHASEA_LDATA = NULL;
     LEVELDATA_PC *LevelFixupSlotPc0087b228 = NULL;
-    LEVELDATA_PC *LevelFixupSlotPc0087b234 = NULL;
+    LEVELDATA_PC *ASTEROIDCHASEMITRO_LDATA = NULL;
     LEVELDATA_PC *LevelFixupSlotPc0087b250 = NULL;
     LEVELDATA_PC *LevelFixupSlotPc0087b258 = NULL;
     LEVELDATA_PC *LevelFixupSlotPc0087b264 = NULL;
@@ -7478,6 +7477,8 @@ extern "C" {
     i32 LevPathNodes[8];
 #pragma bss_seg()
 
+#pragma bss_seg(".bss$LevTime")
+    f32 LevTime[5];
 #pragma bss_seg(".bss$LevPathCnx")
     void *LevPathCnx[16];
 #pragma bss_seg()
@@ -14127,8 +14128,6 @@ extern "C" {
 #pragma bss_seg(".bss$debris_render_panel_time")
     f32 debris_render_panel_time;
 #pragma bss_seg()
-#pragma bss_seg(".bss$BossKillDelayTimePc")
-    f32 BossKillDelayTimePc;
 #pragma bss_seg()
 }
 
@@ -19345,7 +19344,6 @@ extern "C" {
     char *LeverTypeNamePtrPc = "Lever";
     char *LeverOutputDownNamePtrPc = TextInputKeyNameTextPc75ac34;
     MISSION_MENU_PACKET_PC MissionMenuPacketPc = {0};
-    f32 MissionMenuReturnDelayPc = 0.0f;
     TIMER JoinInTimer = {0};
     f32 MissionIconGapPc = 0.035000000149011612f;
     f32 MissionIconStepPc = 0.11999999731779099f;
@@ -28927,3 +28925,47 @@ extern "C" {
 }
 
 extern "C" {}
+
+extern "C" {
+#pragma data_seg(".data$melee_wavePhase")
+    i8 melee_wavePhase = -1;
+
+#pragma bss_seg(".bss$escape")
+    nuhspecial_s escape[8];
+
+#pragma bss_seg(".bss$StarDestroyerTurrets")
+    struct GIZTURRET_s *StarDestroyerTurrets[16];
+
+#pragma bss_seg(".bss$turretAliveCount")
+    u8 turretAliveCount;
+
+#pragma bss_seg(".bss$melee_waveDelay")
+    f32 melee_waveDelay;
+}
+
+extern "C" {
+#pragma data_seg(".data$test_missile_scale")
+    f32 test_missile_scale = 8.0f;
+}
+
+extern "C" {
+#pragma data_seg(".data$PodRace_sniper_start_fire_radius")
+    f32 PodRace_sniper_start_fire_radius = 90.0f;
+
+#pragma data_seg(".data$PodRace_sniper_fire_radius")
+    f32 PodRace_sniper_fire_radius = 2.5f;
+
+#pragma data_seg(".data$PodRace_sniper_fire_range_time")
+    f32 PodRace_sniper_fire_range_time = 2.0f;
+
+#pragma bss_seg(".bss$PodRace_snipers")
+    SNIPER_s PodRace_snipers[10];
+}
+
+extern "C" {
+#pragma bss_seg(".bss$edanim_mtl_zoff")
+    struct PC_SCENE_MTL_VIEW *edanim_mtl_zoff;
+
+#pragma bss_seg(".bss$edanim_sound_mode")
+    i32 edanim_sound_mode;
+}

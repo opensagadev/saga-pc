@@ -1,6 +1,4 @@
 #include "saga.h"
-
-extern f32 BossKillDelayTimePc;
 GAMEOBJECT *__cdecl BossKilled(i32);
 
 i32 __cdecl KillBoss(i32 character_id, i32 flag_index, f32 delay) {
@@ -16,8 +14,8 @@ i32 __cdecl KillBoss(i32 character_id, i32 flag_index, f32 delay) {
             }
             break;
         case 1:
-            BossKillDelayTimePc += FRAMETIME;
-            if (BossKillDelayTimePc >= delay) {
+            LevTime[0] += FRAMETIME;
+            if (LevTime[0] >= delay) {
                 flags[flag_index] = 2;
                 return 1;
             }

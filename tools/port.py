@@ -47,7 +47,8 @@ class Context:
         self.by_android = {}
         for pkey, (akey, anchors) in pairs.items():
             astruct = self.android[akey]
-            score = (len(anchors), pstruct_key(self.pc[pkey]))
+            # Prefer the PC struct of the same size (an enclosing struct shares all member names).
+            score = (self.pc[pkey].size == astruct.size, len(anchors), pstruct_key(self.pc[pkey]))
             current = self.by_android.get(astruct.tag)
             if current is None or score > current[2]:
                 self.by_android[astruct.tag] = (self.pc[pkey], astruct, score, anchors)
@@ -277,6 +278,9 @@ def translate(context, function, target_is_c):
     source = re.sub(r"\bisize\b", "i32", source)
     if target_is_c:
         source = c_casts(source)
+        # C has no direct-list-initialization (T x{...}) and no empty initializer ({}).
+        source = re.sub(r"(\b[A-Za-z_]\w*\s+\**[A-Za-z_]\w*(?:\[[^\]]*\])?)\{(?=[^;]*\};)", r"\1 = {", source)
+        source = re.sub(r"=\s*\{\s*\}", "= {0}", source)
         source = re.sub(r"\bnullptr\b", "NULL", source)
         source = re.sub(r"\bbool\b", "i32", source)
         source = re.sub(r"\btrue\b", "1", source)

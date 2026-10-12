@@ -195,7 +195,6 @@ STATIC_ASSERT(offsetof(MISSION_MENU_PACKET_PC, selected) == 8);
 
 extern "C" {
     extern MISSION_MENU_PACKET_PC MissionMenuPacketPc;
-    extern f32 MissionMenuReturnDelayPc;
     extern TIMER JoinInTimer;
     extern f32 MissionIconGapPc, MissionIconStepPc;
 }
@@ -225,7 +224,7 @@ static void MissionIconPositionsPc(MISSION_SYSTEM_READER_PC *system, i32 initial
 extern "C" {
     void __cdecl EndMissionsMenu(void) {
         LevLock[3] = 1;
-        MissionMenuReturnDelayPc = 0.6f;
+        LevTime[3] = 0.6f;
         MenuRememberCursor(&GameMenu[GameMenuLevel]);
         MenuReset();
         ResetTimer(&JoinInTimer, 0.0f);

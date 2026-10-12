@@ -8426,8 +8426,10 @@ address    , symbol                                                         , si
 0x757c50,??_C@_03BDIFNDIL@to?$DN?$AA@,4,const char[]
 0x757c54,??_C@_05FKCAPGCM@from?$DN?$AA@,6,const char[]
 0x757c5c,_AITransferLiteral757c5c,4,const char[4]
+0x757c5c,??_C@_03FJHBOFIP@dz?$DN?$AA@,4,char []
 0x757c60,_AITransferLiteral757c60,4,const char[4]
 0x757c64,_AITransferLiteral757c64,4,const char[4]
+0x757c64,??_C@_03FKPFDBOB@dx?$DN?$AA@,4,char []
 0x00757c68 , _AIUseCurrentSpeedSnapName                                     ,       ,
 0x00757c74 , _AIUseCurrentSpeedMultiplierName                               ,       ,
 0x00757c80 , _AIControlLocatorName                                          , 8     , const char[8]
@@ -9979,6 +9981,12 @@ address    , symbol                                                         , si
 0x75e08c,??_C@_0O@NDAEILHC@RescuedDroids?$AA@,14,char []
 0x75e0b0,??_C@_08FLIECBAD@bigbang1?$AA@,,const char[9]
 0x75e0bc,_EpisodeVI_ffieldoff,10,const char[10]
+0x75e21c,??_C@_0L@ECGCGBCO@transport4?$AA@,11,char []
+0x75e228,??_C@_0O@CBDKBILO@rebelcruiser1?$AA@,14,char []
+0x75e238,??_C@_0L@DPBFJFGL@transport1?$AA@,11,char []
+0x75e244,??_C@_0L@BEDIMGKI@transport2?$AA@,11,char []
+0x75e250,??_C@_0L@NCDPHOJ@transport3?$AA@,11,char []
+0x75e25c,??_C@_0O@KBHELHN@rebelcruiser2?$AA@,14,char []
 0x75e27c,??_C@_0O@NFAJCHNC@TrapBEndFight?$AA@,14,char []
 0x75e290,??_C@_09KCEJPGDP@obstacle3?$AA@,10,char []
 0x75e2b0,__real@c1a00000,,
@@ -10299,6 +10307,7 @@ address    , symbol                                                         , si
 0x00760078 , _AIActionStateName                                             , 6     , const char[6]
 0x760080,__real@ff7fffff,4,const f32
 0x760084,__real@3727c5ac,4,const f32
+0x760088,??_C@_05CEDINIPN@?$CF5?42f?$AA@,6,char []
 0x760098,__real@38d1b717,,
 0x007603f8 , ??_C@_07DKPOBDJL@OnMacro?$AA@                                  , 8     , const char[8]
 0x760400,??_C@_02FDNJECIE@?$CB?$DN?$AA@,,
@@ -11392,6 +11401,14 @@ address    , symbol                                                         , si
 0x76e1c8,__real@497423f0,4,const f32
 0x76e1cc,_DebrisTimeBarName,4,const char [4]
 0x0076e1d0,__real@40f869f000000000,8,const f64
+0x76e1d8,??_C@_0BE@LOEFCJKG@Sounds?3?5?$CFd?5?$CIMax?5?$CFd?$CJ?$AA@,20,char []
+0x76e1ec,??_C@_0BA@DBDFKNGA@Select?5Type?3?5?$CFs?$AA@,16,char []
+0x76e1fc,??_C@_0BE@JLCFEBPO@Select?5Type?3?5?$DMnone?$DO?$AA@,20,char []
+0x76e210,??_C@_0BH@GCJHLLCP@Particles?3?5?$CFd?5?$CIMax?5?$CFd?$CJ?$AA@,23,char []
+0x76e228,??_C@_0M@JOOKPNOD@Params?3?5Yes?$AA@,12,char []
+0x76e234,??_C@_0L@KEOCDNPO@Params?3?5No?$AA@,11,char []
+0x76e240,??_C@_0O@MGPFLIFB@Curr?5Spcl?3?5?$CFs?$AA@,14,char []
+0x76e250,??_C@_0BC@CBHMAPFA@Curr?5Spcl?3?5?$DMnone?$DO?$AA@,18,char []
 0x76e7d8,_TerrainOpposingContactThresholdPc,,const f64
 0x76e7e0,__real@bbe56042,4,const f32
 0x76e7e8,__real@3f689374c0000000,8,const f64
@@ -14185,6 +14202,7 @@ address    , symbol                                                         , si
 0x007f6828 , _engagefiretime                                                , 4     , f32
 0x007f682c , _aitol                                                         , 4     , f32
 0x007f6830 , _direction_scale                                               , 4     , f32
+0x7f6844,_test_missile_scale,4,f32
 0x7f8cc4,_force_gizmotype_id,,i32
 0x7f8cc8,_GizForceSFX_load_version,,
 0x007f8cc8 , _GizForceSfxLoadVersionPc                                      ,       ,
@@ -14418,6 +14436,9 @@ address    , symbol                                                         , si
 0x7ffcb0,?ropedif@?1??DrawRopeSingle@@9@9,,u32
 0x7ffcb4,_ZipUpRopeCheatColourPc,,u32
 0x7ffccc,_PodRace_sniper_fire_time,4,f32
+0x7ffcd0,_PodRace_sniper_fire_range_time,4,f32
+0x7ffcd4,_PodRace_sniper_fire_radius,4,f32
+0x7ffcd8,_PodRace_sniper_start_fire_radius,4,f32
 0x7ffd2c,_mushroom0_along,4,f32
 0x7ffd30,_mushroom2_along,4,f32
 0x7ffd40,_mushroom_time_increment,4,f32
@@ -14426,6 +14447,7 @@ address    , symbol                                                         , si
 0x7ffd64,_PodDustHeightScalePc,,f32
 0x7ffd68,_PodRaceKeyPc,,i32[8]
 0x007fffec , _GUNSHIPAHACK                                                  , 4     , i32
+0x800224,_melee_wavePhase,1,i8
 0x00800444 , _NuAllocHeaderMetadata                                         , 12    , u32[3]
 0x00800454 , _NuAllocTailMetadata                                           , 12    , u32[3]
 0x00800464 , _nufile_blkcnt                                                 , 4     , i32
@@ -15620,9 +15642,7 @@ address    , symbol                                                         , si
 0x87a9c0,_LevHSpecialExists,,u64
 0x87a9c8,_LevGamePart,,PART_PC *[8]
 0x0087a9e8 , _makefreeplaymodellist                                         , 4     , i32
-0x87a9ec,_BossKillDelayTimePc,,f32
-0x87a9f0,_HubSecondLevelTimePc,,f32
-0x87a9f8,_MissionMenuReturnDelayPc,,f32
+0x87a9ec,_LevTime,20,f32 [5]
 0x87aa00,_LevPathCnx,,void *[16]
 0x0087aa40 , _LevFlag                                                       , 16    , i32[4]
 0x87aa50,_CharacterDataLoad,,i32
@@ -15807,11 +15827,11 @@ address    , symbol                                                         , si
 0x0087b218,_LevelFixupSlotPc0087b218,,LEVELDATA_PC *
 0x87b21c,_HOTHESCAPEC_LDATA,,LEVELDATA_PC *
 0x0087b220,_LevelFixupSlotPc0087b220,,LEVELDATA_PC *
-0x0087b224,_LevelFixupSlotPc0087b224,,LEVELDATA_PC *
+0x0087b224,_ASTEROIDCHASEA_LDATA,,LEVELDATA_PC *
 0x0087b228,_LevelFixupSlotPc0087b228,,LEVELDATA_PC *
 0x87b22c,_ASTEROIDCHASEC_LDATA,,LEVELDATA_PC *
 0x87b230   , _ASTEROIDCHASED_LDATA                                          , 4     , LEVELDATA_PC *
-0x0087b234,_LevelFixupSlotPc0087b234,,LEVELDATA_PC *
+0x0087b234,_ASTEROIDCHASEMITRO_LDATA,,LEVELDATA_PC *
 0x87b238,_CLOUDCITYESCAPEA_LDATA,,LEVELDATA_PC *
 0x0087b23c,_LevelFixupSlotPc0087b23c,,LEVELDATA_PC *
 0x87b240,_CLOUDCITYESCAPEC_LDATA,,LEVELDATA_PC *
@@ -16700,6 +16720,7 @@ address    , symbol                                                         , si
 0x882434,_PodRace_nsnipers,4,i32
 0x00882438 , _podsprint                                                     , 148   , PODSPRINT_PC
 0x882924,_mushroom_nattempts_per_increment,4,i32
+0x882928,_PodRace_snipers,320,SNIPER_s[10]
 0x882a78,_podsprint_netpacket,4,struct PODSPRINTNETPACKET_s *
 0x882a88,_PodPacemakerPc,,GAMEOBJECT *
 0x882a8c,_PodRacePc,,void *
@@ -16707,6 +16728,7 @@ address    , symbol                                                         , si
 0x882a98,_mushroom_collapse,4,i32
 0x882aac,_Maul_obj,4,struct gameobject_s *
 0x882ab0,_MaulA_ai_message,4,struct gizaimessage_s *
+0x882ab8,?player_ix@?1??PodRaceSnipersUpdate@@9@9,,
 0x882ae8,_LevForce,4,i32
 0x882be4,_GunshipANorm,,NUVEC
 0x888fe0,_kaminoe_netpacket,4,void *
@@ -16731,8 +16753,12 @@ address    , symbol                                                         , si
 0x00889634 , _CarWashHack                                                   , 4     , GAMEOBJECT *
 0x88a2a8,_minikitCounter_A,1,u8
 0x88a2a9,_minikitCounter_C,1,u8
+0x88a2b0,_escape,96,nuhspecial_s[8]
 0x88a320,_melee,200,HOTHBATTLE_MELEE_s
+0x88a3e8,_StarDestroyerTurrets,64,struct GIZTURRET_s *[16]
 0x88a550,_troopercannons_beenReset,1,u8
+0x88a552,_turretAliveCount,1,u8
+0x88a568,_melee_waveDelay,4,f32
 0x0088a56c , _dagobah_training                                              , 4     , i32
 0x88a578,_HothBattleC_BombGenerator,4,struct GIZBOMBGEN_s *
 0x88a588,_runningTotalPos,4,f32
@@ -18131,6 +18157,7 @@ address    , symbol                                                         , si
 0x029211a8 , _TerrainCastAuxValidPc                                         ,       ,
 0x29211ab,_edpp_effect_list,1,u8
 0x29211ac,_cntrots,,i32
+0x29211b0,_edanim_mtl_zoff,4,struct PC_SCENE_MTL_VIEW *
 0x29211b4,_TerrainCrashDataPc,,u8 *
 0x29211bc,_platinrange,,i32
 0x29211c8,_edgra_page_on,,i32[8]
@@ -18166,6 +18193,7 @@ address    , symbol                                                         , si
 0x2924ad8,_WallSplCount,,i32
 0x2924adc,_edbri_cam_pos,,NUVEC
 0x2924b14,_PickupTerrainPc,,TERRAIN_PICKUP_SET_PC *
+0x2924b18,_edanim_sound_mode,4,i32
 0x02924b28 , _TerrainShadowHeightPc                                         ,       ,
 0x02924b2c , _TerrainRoofValidPc                                            ,       ,
 0x02924b30 , _edpp_page_used                                                , 32    , i32[8]

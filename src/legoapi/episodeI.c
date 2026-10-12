@@ -92,16 +92,16 @@ static void PodMatrixCopyPrivatePc(NUMTX *destination, const NUMTX *source) {
     destination->m33 = source->m33;
 }
 
-static void PodRaceSnipersUpdate(void) {
+void PodRaceSnipersUpdate(void) {
     i32 i;
     NUVEC direction;
     static i32 player_ix;
     i32 bolttype = (WORLD->current_level == PODSPRINTA_LDATA) ? 0x29 : 0x28;
-    INIT_BOLT_CONFIG_PC *type = BoltType_FindByID(bolttype, WORLD);
+    BOLTTYPE_PC *type = BoltType_FindByID(bolttype, WORLD);
     i32 n = PodRace_nsnipers;
-    if (n <= 0 || max_nsnipers <= 0)
+    if (n <= 0)
         return;
-    for (i = 0; i < n && i < max_nsnipers; i++) {
+    for (i = 0; i < n; i++) {
         i32 j;
         SNIPER_s *s = &PodRace_snipers[i];
         i32 in_range = 0;
@@ -140,7 +140,7 @@ static void PodRaceSnipersUpdate(void) {
                         target = player;
                     if (target == NULL || type == NULL)
                         continue;
-                    CalculateInterceptVector(&s->prev, &target->collision_position, &target->velocity, type->speed,
+                    CalculateInterceptVector(&s->prev, &target->collision_position, &target->velocity, type->field_10,
                                              &aim, NULL);
                     NuVecAdd(&aim, &aim, &s->prev);
                     s->state -= FRAMETIME;
