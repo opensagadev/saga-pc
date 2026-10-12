@@ -4938,6 +4938,7 @@ typedef struct gameobject_s {
         u8 unknown_c58[0x4];
         f32 head_target_facing;
         u8 unknown_c60[0x14];
+        NUVEC weapon_trail_offset;
         struct {
             u8 targeting_reserved_c50[12];
             NUVEC camera_screen_position;
@@ -25113,6 +25114,9 @@ extern "C" {
                                                         i32 arg5, f32 arg6, f32 arg7);
     u32 __cdecl ParseAIPathCnxFlag(char *name);
     void __cdecl PodSprint_GetIAlongVals(struct nugspline_s *spline, i16 *first_point, i16 *last_point);
+    void __cdecl AiRndrLine3dDbg(f32 x0, f32 y0, f32 z0, f32 x1, f32 y1, f32 z1, u32 colour);
+    void __cdecl DrawWeapon_SetSabreObjects(struct gameobject_s *object, i32 red, i32 green, i32 blue, i32 purple,
+                                            i32 *models, i32 *hilt);
 #ifdef __cplusplus
 }
 #endif

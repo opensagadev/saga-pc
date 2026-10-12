@@ -364,6 +364,36 @@ void __cdecl AILocatorSet_AssignRandomLocator(AISYS_PC *system, AILOCATORSET_PC 
     }
 }
 
+void DrawAreaBox(NUVEC *position, NUVEC *size, i32 rotation, i32 colour) {
+    i32 i;
+    f32 local_x[4] = {-size->x, -size->x, size->x, size->x};
+    f32 rotated_x[4];
+    f32 local_z[4] = {-size->z, size->z, size->z, -size->z};
+    f32 rotated_z[4];
+    const f32 cosine = NU_COS_LUT(rotation);
+    const f32 sine = NU_SIN_LUT(rotation);
+    for (i = 0; i < 4; ++i) {
+        rotated_x[i] = cosine * local_x[i] + sine * local_z[i];
+        rotated_z[i] = cosine * local_z[i] - sine * local_x[i];
+    }
+#define DRAW_AREA_BOX_EDGE(a, b, y0, y1)                                                                               \
+    AiRndrLine3dDbg(position->x + rotated_x[a], y0, position->z + rotated_z[a], position->x + rotated_x[b], y1,        \
+                    position->z + rotated_z[b], colour)
+    DRAW_AREA_BOX_EDGE(0, 1, position->y, position->y);
+    DRAW_AREA_BOX_EDGE(1, 2, position->y, position->y);
+    DRAW_AREA_BOX_EDGE(2, 3, position->y, position->y);
+    DRAW_AREA_BOX_EDGE(3, 0, position->y, position->y);
+    DRAW_AREA_BOX_EDGE(0, 0, position->y, position->y + size->y);
+    DRAW_AREA_BOX_EDGE(1, 1, position->y, position->y + size->y);
+    DRAW_AREA_BOX_EDGE(2, 2, position->y, position->y + size->y);
+    DRAW_AREA_BOX_EDGE(3, 3, position->y, position->y + size->y);
+    DRAW_AREA_BOX_EDGE(0, 1, position->y + size->y, position->y + size->y);
+    DRAW_AREA_BOX_EDGE(1, 2, position->y + size->y, position->y + size->y);
+    DRAW_AREA_BOX_EDGE(2, 3, position->y + size->y, position->y + size->y);
+    DRAW_AREA_BOX_EDGE(3, 0, position->y + size->y, position->y + size->y);
+#undef DRAW_AREA_BOX_EDGE
+}
+
 void __cdecl AISysCharacterSetPath(AIPACKET_PC *packet, AIPATH_PC *path) {
     AIPACKET_PC *path_packet = packet;
     u8 route;

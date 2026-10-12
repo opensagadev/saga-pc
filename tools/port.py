@@ -130,6 +130,21 @@ def find_definition(unit, name, root):
     return None
 
 
+def c_casts(source):
+    """static_cast<T>(x) -> ((T)(x)), parenthesized so a following -> or . applies to the cast."""
+    pattern = re.compile(r"\b(?:static_cast|reinterpret_cast|const_cast)<([^<>]+)>\(")
+    while True:
+        match = pattern.search(source)
+        if match is None:
+            return source
+        depth, i = 1, match.end()
+        while depth and i < len(source):
+            depth += {"(": 1, ")": -1}.get(source[i], 0)
+            i += 1
+        inner = source[match.end():i - 1]
+        source = source[:match.start()] + f"(({match.group(1)})({inner}))" + source[i:]
+
+
 def translate(context, function, target_is_c):
     source_file = function.location.file.name
     data = Path(source_file).read_bytes()
@@ -144,6 +159,8 @@ def translate(context, function, target_is_c):
             canonical = node.type.get_canonical()
             tag = canonical.get_declaration().spelling if canonical.kind == T.RECORD else spelled
             pc = context.pc_type(tag) or context.pc_type(spelled)
+            if pc and data[a:b].decode("latin-1").strip() != spelled.split()[-1] and spelled not in data[a:b].decode("latin-1"):
+                pc = None  # expanded from a macro
             if pc:
                 if pc != spelled:
                     edits.append((a, b, pc))
@@ -217,6 +234,8 @@ def translate(context, function, target_is_c):
             # Replace from just after the base expression to the end of the chain.
             begin = base.extent.end.offset if base is not None else first.extent.start.offset
             between = data[begin:node.extent.end.offset].decode("latin-1")
+            if not between.rstrip().endswith(node.spelling):
+                continue  # expanded from a macro: the source text does not spell this access
             arrow = "->" if between.lstrip().startswith("->") else "."
             replacement = (arrow + path) if base is not None else path
             edits.append((begin, node.extent.end.offset, replacement))
@@ -257,7 +276,7 @@ def translate(context, function, target_is_c):
     source = re.sub(r"\busize\b", "size_t", source)
     source = re.sub(r"\bisize\b", "i32", source)
     if target_is_c:
-        source = re.sub(r"\b(static_cast|reinterpret_cast|const_cast)<([^<>]+)>\(", r"(\2)(", source)
+        source = c_casts(source)
         source = re.sub(r"\bnullptr\b", "NULL", source)
         source = re.sub(r"\bbool\b", "i32", source)
         source = re.sub(r"\btrue\b", "1", source)
