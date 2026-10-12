@@ -275,7 +275,7 @@ def translate(context, function, target_is_c):
              if not any(a <= e[0] and e[1] <= b and (a, b) != (e[0], e[1]) and not (e[0] == e[1] == a or e[0] == e[1] == b)
                         for a, b in replaced)]
     text = bytearray(data[start:end])
-    for a, b, replacement in sorted(set(edits), key=lambda e: -e[0]):
+    for a, b, replacement in sorted(set(edits), key=lambda e: (-e[0], -e[1])):  # replacements before insertions at their start
         if start <= a and b <= end:
             text[a - start:b - start] = replacement.encode("latin-1")
     source = text.decode("latin-1")
