@@ -99,6 +99,32 @@ void __cdecl NuVisiOcclusion(VISIBILITY_RESULT_READER_PC *result) {
     }
 }
 
+void NuHtmlBitmap(char *filename, i32 width, i32 height, char *caption, char *source) {
+    char tag[256];
+    NuHtmlWrite("<P>");
+    if (height != 0 && width != 0) {
+        sprintf(tag, "<IMG ALIGN=\"left\" HEIGHT=\"%d\" WIDTH=\"%d\" SRC=\"%s\">", height, width, filename);
+    } else {
+        sprintf(tag, "<IMG ALIGN=\"left\" SRC=\"%s\">", filename);
+    }
+    NuHtmlWrite(tag);
+    if (caption != NULL) {
+        NuHtmlWrite(caption);
+    }
+    NuHtmlWrite("<BR CLEAR=\"all\"> <P>&nbsp;<P>");
+    if (!(source != NULL && NuStrCmp(filename, source) != 0)) {
+        return;
+    }
+    NuFileCopy(filename, source);
+}
+
+void NuHtmlTitle(char *title) {
+    NuHtmlWrite("<HR><Center><B>");
+    NuHtmlWrite(title);
+    NuHtmlWrite("</B></Center><HR>");
+    NuHtmlWrite("<P><P>");
+}
+
 VISIBILITY_RESULT_READER_PC *__cdecl NuVisiEvaluate(NUGSCN *scene, void *context) {
     VISIBILITY_SCENE_READER_PC *view = (VISIBILITY_SCENE_READER_PC *)scene;
     VISIBILITY_RESULT_READER_PC *result;

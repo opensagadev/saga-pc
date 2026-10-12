@@ -19,6 +19,23 @@ void __cdecl edppPtlShelve(i32 index) {
         particle->instance_id = 99999;
     }
 }
+static void cbChangeNameMenu(eduimenu_s *menu, eduiitem_s *unused1, u32 unused2) {
+    struct debris_info_pc_s *effect;
+    u32 colours[4] = {0x80000000, 0x80ff0000, 0x80808080, 0x80404040};
+    if (edpp_create_type == -1) {
+        return;
+    }
+    effect = debtab[edpp_create_type];
+    namemenu = eduiMenuCreate(70, 70, 250, 250, ed_fnt, cbCancelChangeNameMenu, "Type Name");
+    if (namemenu != NULL) {
+        eduiMenuAddItem(namemenu, eduiItemTextPickCreate(0, colours, cbChangeName, "Type Name"));
+        strcpy(((edui_textpicker_s *)(edui_last_item))->value, effect->name);
+        ((edui_textpicker_s *)(edui_last_item))->max_length = 15;
+        eduiMenuAttach(menu, namemenu);
+        namemenu->x = menu->x + 10;
+        namemenu->y = menu->y + 40;
+    }
+}
 static i32 edppProc(f32 delta_time, FRAME_PAD_PC *pad) {
     edptl_count += 5;
     if (edpp_active_menu != NULL) {
@@ -165,21 +182,83 @@ void __cdecl edppDetermineNearest(f32 max_distance_squared) {
         }
     }
 }
-static void cbPtlSelType(eduimenu_s *menu, eduiitem_s *item, u32 unused2) {
+static void cbSelEffectList(eduimenu_s *menu, eduiitem_s *item, u32 unused2) {
+    struct eduimenu_s *parent;
+    if (item->data != ((i8)(edpp_effect_list))) {
+        i32 index;
+        edpp_effect_list = ((i8)(item->data));
+        edpp_create_type = -1;
+        for (index = 1; index < debinf_count; ++index) {
+            if (debtab[index] != NULL && debtab[index]->category == edpp_effect_list) {
+                edpp_create_type = index;
+                break;
+            }
+        }
+    }
+    parent = menu->parent;
+    if (parent != NULL)
+        eduiMenuDetach(menu);
+    if (menu->callback != NULL)
+        menu->callback(menu, parent);
+}
+
+void cbCancelEffectListMenu(eduimenu_s *unused0, eduimenu_s *unused1) {
+    eduiMenuDestroy(effectlistmenu);
+    effectlistmenu = NULL;
+}
+
+void edptlcbSetDebrisThinning(eduimenu_s *unused0, eduiitem_s *item, u32 unused2) {
+    debris_thinning_level = ((edui_slider_s *)(item))->value;
+}
+
+void edptlcbSetDebrisDetail(eduimenu_s *unused0, eduiitem_s *item, u32 unused2) {
+    debris_detail_level = item->data;
+}
+
+void edptlcbCancelTestDetailMenu(eduimenu_s *unused0, eduimenu_s *unused1) {
+    eduiMenuDestroy(edptl_testdetail_menu);
+    edptl_testdetail_menu = NULL;
+}
+
+void edptlcbSetDpadMode(eduimenu_s *unused0, eduiitem_s *item, u32 unused2) {
+    edpp_dpad_mode = item->data;
+}
+
+void edptlcbCancelDpadModeMenu(eduimenu_s *unused0, eduimenu_s *unused1) {
+    eduiMenuDestroy(dpadmodemenu);
+    dpadmodemenu = NULL;
+}
+
+void edptlcbCancelOrphanListMenu(eduimenu_s *unused0, eduimenu_s *unused1) {
+    eduiMenuDestroy(edptl_orphanlist_menu);
+    edptl_orphanlist_menu = NULL;
+}
+
+void cbPtlCancelQuickDeleteMenu(eduimenu_s *unused0, eduimenu_s *unused1) {
+    eduiMenuDestroy(edptl_quickdel_menu);
+    edptl_quickdel_menu = NULL;
+}
+
+void cbPtlCancelDamageMenu(eduimenu_s *unused0, eduimenu_s *unused1) {
+    eduiMenuDestroy(edptl_damage_menu);
+    edptl_damage_menu = NULL;
+}
+
+void cbPtlSelType(eduimenu_s *menu, eduiitem_s *item, u32 unused2) {
     ptltypemenu = NULL;
     edpp_active_menu = NULL;
     edpp_create_type = item->data;
     eduiMenuDetach(menu);
     eduiMenuDestroy(menu);
 }
-static void edppRender() {
+void edppRender() {
     edcamSet();
     edppDrawCursor();
     edppHighlightNearest();
     if (edpp_active_menu != NULL)
         eduiMenuRender(edpp_active_menu);
 }
-static void cbEffectListMenu(eduimenu_s *parent, eduiitem_s *unused1, u32 unused2) {
+void cbEffectListMenu(eduimenu_s *parent, eduiitem_s *unused1, u32 unused2) {
     u32 colours[4] = {0x80000000, 0x80ff0000, 0x80808080, 0x80404040};
     effectlistmenu = eduiMenuCreate(70, 70, 180, 250, ed_fnt, cbCancelEffectListMenu, "Effect List");
     if (effectlistmenu != NULL) {
@@ -210,7 +289,7 @@ static void edptlcbTestDetailMenu(eduimenu_s *parent, eduiitem_s *unused1, u32 u
     edptl_testdetail_menu->x = parent->x + 10;
     edptl_testdetail_menu->y = parent->y + 40;
 }
-static void edptlcbDpadModeMenu(eduimenu_s *parent, eduiitem_s *unused1, u32 unused2) {
+void edptlcbDpadModeMenu(eduimenu_s *parent, eduiitem_s *unused1, u32 unused2) {
     u32 colours[4] = {0x80000000, 0x80ff0000, 0x80808080, 0x80404040};
     dpadmodemenu = eduiMenuCreate(70, 70, 180, 250, ed_fnt, edptlcbCancelDpadModeMenu, "Dpad Mode");
     if (dpadmodemenu == NULL)
@@ -296,7 +375,7 @@ void __cdecl edppDeleteEffect(i32 index) {
     --edpp_types_used;
     edppDetermineNearest(1.0f);
 }
-static void cbPtlDeleteEffect(eduimenu_s *menu, eduiitem_s *unused1, u32 unused2) {
+void cbPtlDeleteEffect(eduimenu_s *menu, eduiitem_s *unused1, u32 unused2) {
     struct eduimenu_s *parent;
     edppDeleteEffect(edpp_create_type);
     edpp_create_type = -1;
@@ -308,7 +387,7 @@ static void cbPtlDeleteEffect(eduimenu_s *menu, eduiitem_s *unused1, u32 unused2
         menu->callback(menu, parent);
     }
 }
-static void cbPtlQuickDeleteType(eduimenu_s *menu, eduiitem_s *item, u32 unused2) {
+void cbPtlQuickDeleteType(eduimenu_s *menu, eduiitem_s *item, u32 unused2) {
     struct eduimenu_s *parent;
     edppDeleteEffect(item->data);
     parent = menu->parent;
@@ -319,7 +398,7 @@ static void cbPtlQuickDeleteType(eduimenu_s *menu, eduiitem_s *item, u32 unused2
         menu->callback(menu, parent);
     }
 }
-static void edptlcbEmptyClipboard(eduimenu_s *menu, eduiitem_s *unused1, u32 unused2) {
+void edptlcbEmptyClipboard(eduimenu_s *menu, eduiitem_s *unused1, u32 unused2) {
     struct eduimenu_s *parent;
     i32 create_type = edpp_create_type;
     edpp_create_type = edptl_clipboard_entry;

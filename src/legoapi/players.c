@@ -1692,6 +1692,17 @@ void __cdecl InitPlayerAI(GAMEOBJECT *object) {
     ResetPlayerAI(object);
 }
 
+void SetPlayerGroupPosition(f32 x, f32 y, f32 z) {
+    i32 i;
+    NUVEC offset = {0.0f, 0.0f, 0.2f};
+    for (i = 0; i < PLAYERCOUNT; i++) {
+        NUVEC position = {x, y, z};
+        NuVecAdd(&position, &position, &offset);
+        ResetPlayer(Player[i], 1, &position, 1);
+        NuVecRotateY(&offset, &offset, 0x2000);
+    }
+}
+
 GAMEOBJECT *__cdecl AddCreature(i32 id, i32 parameter) {
     GAMEOBJECT *object;
     if ((u32)id > 0x153 || apicharsys->playermodelids[id] == -1)
@@ -2139,6 +2150,20 @@ void DrawWeapons(GAMEOBJECT *object, i32 reflection, f32 weapon_scale) {
             return;
         }
     }
+}
+
+void DrawGameObjects() {
+    const f32 saved_far_clip = global_camera.unknown_64;
+    const f32 object_far_clip = VehicleArea != 0 ? 50.0f : 20.0f;
+    if (object_far_clip <= global_camera.unknown_64) {
+        global_camera.unknown_64 = object_far_clip;
+    }
+
+    NuCameraSet(&global_camera);
+    DrawGameObjectsDraw(0);
+
+    global_camera.unknown_64 = saved_far_clip;
+    NuCameraSet(&global_camera);
 }
 
 typedef struct PLAYER_CHARACTER_CHANGE_VIEW_PC {

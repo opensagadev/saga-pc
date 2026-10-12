@@ -12,6 +12,14 @@ void HothBattleB_Init(WORLDINFO *world) {
     NuSpecialFind(world->current_gscn, &LevHSpecial[3], "snow_ball_4", 1);
 }
 
+void HothBattleC_Update(WORLDINFO *world) {
+    if (netclient == 0 && HothBattleC_BombGenerator != NULL && !HothBattleC_BombGenerator->active &&
+        LevAIMessage[0] != NULL && LevAIMessage[0]->value > 0.0f) {
+        HothBattleC_BombGenerator->active = 1;
+    }
+    UpdateMiniSnowTroopers(world);
+}
+
 void __cdecl MiniKit_GameMsg_Update(GAME_MESSAGE_PC *message) {
     i32 angle = (i32)((f64)NuFmod(GlobalTimer.time_elapsed, 4.0f) * 0.25 * 65536.0);
     message->parameter_e2 = (u16)angle;

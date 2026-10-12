@@ -1260,7 +1260,7 @@ void GizActions_CompleteLevel(GIZFLOW_PC *unused0, FLOWBOX_PC *unused1, char **p
         CompleteLevel(WORLD);
     }
 }
-static void GizActions_GoThroughDoor(GIZFLOW_PC *unused0, FLOWBOX_PC *unused1, char **params, int param_count) {
+void GizActions_GoThroughDoor(GIZFLOW_PC *unused0, FLOWBOX_PC *unused1, char **params, int param_count) {
     i32 param_index;
     char *door_name = NULL;
 

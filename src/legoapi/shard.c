@@ -109,10 +109,30 @@ void DrawArrow(nuhspecial_s *special, float scale_value) {
     }
 }
 
+void DrawShop3D(WORLDINFO *world) {
+    if (drawptr != NULL) {
+        drawptr();
+    }
+    DrawTopShelf(picked);
+    SetLevelLights(world->rtl_set, 1.0f);
+}
+
 i32 SpeederBlowupHack(GIZMOBLOWUP_PC *blowup, i32 unused1) {
     if (blowup == NULL) {
         return 1;
     }
     return NuStrCmp(blowup->name, "thermocrate_011") != 0 && NuStrCmp(blowup->name, "thermocrate_021") != 0 &&
            NuStrCmp(blowup->name, "thermocrate_031") != 0 && NuStrCmp(blowup->name, "minikit101") != 0;
+}
+
+void SpeederChaseA_Reset(WORLDINFO *unused0) {
+    troopercannons_beenReset = 0;
+    InitBikeParts();
+    LevAIMessage[0] = CheckGizAIMessage(gizaimessagesys, "SpeedersToKill", NULL);
+    LevAIMessage[1] = CheckGizAIMessage(gizaimessagesys, "SpeedersKilled", NULL);
+    LevAIMessage[2] = CheckGizAIMessage(gizaimessagesys, "Stage", NULL);
+    LevAIMessage[3] = CheckGizAIMessage(gizaimessagesys, "Phase", NULL);
+    LevAIMessage[4] = CheckGizAIMessage(gizaimessagesys, "KeepPlayersOnSpeeders", NULL);
+    LevAIMessage[5] = CheckGizAIMessage(gizaimessagesys, "SpeederMode", NULL);
+    players_going_forward = 1;
 }

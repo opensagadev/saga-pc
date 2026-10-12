@@ -29258,3 +29258,91 @@ extern "C" {
 #pragma bss_seg(".bss$edui_messagemenu")
     struct eduimenu_s *edui_messagemenu;
 }
+
+extern "C" {}
+
+extern "C" {}
+
+extern "C" {
+#pragma bss_seg(".bss$edui_cursor_buttons")
+    u32 edui_cursor_buttons;
+
+#pragma bss_seg(".bss$eduiInteractLocked")
+    struct edui_interact_s *eduiInteractLocked;
+}
+
+extern "C" {}
+
+extern "C" {
+#pragma bss_seg(".bss$edgra_nearest_instance")
+    i32 edgra_nearest_instance;
+}
+
+extern "C" {}
+
+extern "C" {}
+
+extern "C" {}
+
+extern "C" {
+#pragma bss_seg(".bss$goldbrickmsgcount")
+    i32 goldbrickmsgcount;
+}
+
+extern "C" {
+#pragma bss_seg(".bss$edanim_bouncy_menu")
+    struct eduimenu_s *edanim_bouncy_menu;
+
+#pragma bss_seg(".bss$edanim_localsoundtype_menu")
+    struct eduimenu_s *edanim_localsoundtype_menu;
+
+#pragma bss_seg(".bss$edanim_nearest_sound")
+    i32 edanim_nearest_sound;
+}
+
+extern "C" {
+#pragma bss_seg(".bss$edgra_clumpdist_menu")
+    struct eduimenu_s *edgra_clumpdist_menu;
+
+#pragma bss_seg(".bss$edgra_clumpterrain_menu")
+    struct eduimenu_s *edgra_clumpterrain_menu;
+}
+
+extern "C" {
+#pragma bss_seg(".bss$edpart_instorient_menu")
+    struct eduimenu_s *edpart_instorient_menu;
+}
+
+extern "C" {
+#pragma bss_seg(".bss$namemenu")
+    struct eduimenu_s *namemenu;
+}
+
+extern "C" {}
+
+extern "C" {
+#pragma bss_seg(".bss$edanim_localparticletype_menu")
+    struct eduimenu_s *edanim_localparticletype_menu;
+
+#pragma bss_seg(".bss$edanim_nearest_particle")
+    i32 edanim_nearest_particle;
+
+#pragma bss_seg(".bss$edanim_localparticle_menu")
+    struct eduimenu_s *edanim_localparticle_menu;
+
+#pragma bss_seg(".bss$edanim_particle_menu")
+    struct eduimenu_s *edanim_particle_menu;
+
+#pragma bss_seg(".bss$edanim_sound_menu")
+    struct eduimenu_s *edanim_sound_menu;
+}
+
+extern "C" {
+#pragma bss_seg(".bss$edpart_name_menu")
+    struct eduimenu_s *edpart_name_menu;
+}
+
+extern "C" {
+#pragma bss_seg(".bss$lightning_type")
+    i32 lightning_type;
+}

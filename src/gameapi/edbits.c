@@ -13,6 +13,20 @@ i32 __cdecl edbitsLookupInstance(char *name, NUGSCN *scene) {
     return -1;
 }
 
+void edbitsDoSingleDump(i32 face) {
+    char filename[32];
+    i32 index;
+    for (index = 0; index < 1000; ++index) {
+        sprintf(filename, "pictures\\cub%03d_%d.bmp", index, face);
+        if (NuFileSize(filename) <= 0)
+            break;
+        if (index == 999)
+            break;
+    }
+    sprintf(filename, "pictures\\cub%03d_", index);
+    NuPs2VideoScreenDump(filename, 1, 1.0f, 1.0f, face, 0, 0);
+}
+
 void edgraCalculatePage(i8 page, i32 calculate_vectors) {
     typedef struct Sample {
         NUVEC position;
@@ -194,6 +208,51 @@ void edgraCalculatePage(i8 page, i32 calculate_vectors) {
         max_clumps = EDGRA_MAX_CLUMPS;
     }
 }
+
+void edgracbSetInstanceType(eduimenu_s *unused0, eduiitem_s *item, u32 unused2) {
+    edgra_instance_type = item->data;
+}
+
+void edgracbToggleClumpReactive(eduimenu_s *unused0, eduiitem_s *item, u32 unused2) {
+    if (edgra_nearest != -1)
+        GrassClumps[edgra_nearest].flags = item->flags & EDUI_ITEM_HIGHLIGHTED;
+}
+
+void edgracbCancelInstanceMenu(eduimenu_s *unused0, eduimenu_s *unused1) {
+    eduiMenuDestroy(edgra_instance_menu);
+    edgra_instance_menu = NULL;
+}
+
+void edgracbCancelClumpAreaMenu(eduimenu_s *unused0, eduimenu_s *unused1) {
+    eduiMenuDestroy(edgra_clumparea_menu);
+    edgra_clumparea_menu = NULL;
+}
+
+void edgracbCancelClumpFadeMenu(eduimenu_s *unused0, eduimenu_s *unused1) {
+    eduiMenuDestroy(edgra_clumpfade_menu);
+    edgra_clumpfade_menu = NULL;
+    fadeoutitem = NULL;
+    fadeinitem = NULL;
+}
+
+void edgracbCancelClumpPropertiesMenu(eduimenu_s *unused0, eduimenu_s *unused1) {
+    eduiMenuDestroy(edgra_clumpproperties_menu);
+    edgra_clumpproperties_menu = NULL;
+}
+
+void edgracbCancelClumpModeMenu(eduimenu_s *unused0, eduimenu_s *unused1) {
+    eduiMenuDestroy(edgra_clumpmode_menu);
+    edgra_clumpmode_menu = NULL;
+}
+
+void edgracbSetDpadMode(eduimenu_s *unused0, eduiitem_s *item, u32 unused2) {
+    edgra_dpadmode = item->data;
+}
+
+void edgracbCancelDpadModeMenu(eduimenu_s *unused0, eduimenu_s *unused1) {
+    eduiMenuDestroy(edgra_dpadmode_menu);
+    edgra_dpadmode_menu = NULL;
+}
 static void edgracbInstanceMenu(eduimenu_s *parent, eduiitem_s *unused1, u32 unused2) {
     i32 selected_found;
     i32 added;
@@ -240,7 +299,7 @@ static void edgracbInstanceMenu(eduimenu_s *parent, eduiitem_s *unused1, u32 unu
     if (selected_found)
         edgra_instance_menu->field_0c = edgra_instance_menu->selected;
 }
-static void edgracbDpadModeMenu(eduimenu_s *parent, eduiitem_s *unused1, u32 unused2) {
+void edgracbDpadModeMenu(eduimenu_s *parent, eduiitem_s *unused1, u32 unused2) {
     u32 colours[4] = {0x80000000, 0x80ff0000, 0x80808080, 0x80404040};
     edgra_dpadmode_menu = eduiMenuCreate(70, 70, 180, 250, ed_fnt, edgracbCancelDpadModeMenu, "Dpad Mode");
     if (edgra_dpadmode_menu) {

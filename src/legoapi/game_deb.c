@@ -1,5 +1,6 @@
 #include "saga.h"
 
+struct nuvec_s *edmainQueryLocVec(void);
 extern void *debris_cutoff_camera_vec;
 extern i32 debris_render_group;
 
@@ -138,6 +139,18 @@ void DebrisSetCutSceneMode(i32 enabled) {
     DebrisCutSceneMode = enabled;
 }
 
+float edanimPlayerAnimDistance(i32 parameter_index) {
+    if (edmainQueryLocVec() != NULL) {
+        struct nuvec_s *position;
+        nuhspecial_s special;
+        NuGScnGetSpecial(&special, edanim_page_scene[AnimParams[parameter_index].page],
+                         AnimParams[parameter_index].instance_id);
+        position = edmainQueryLocVec();
+        return NuVecDist(NuSpecialGetPos(&special), position, NULL);
+    }
+    return 0.0f;
+}
+
 void DebrisRegisterCutoffCameraVec(void *position) {
     debris_cutoff_camera_vec = position;
 }
@@ -236,7 +249,6 @@ i32 __cdecl AddFiniteShotPART(i32 effect, NUVEC *position, i32 count) {
     return index;
 }
 
-#include "saga.h"
 extern void *debkeydata;
 #define DEBRIS_KEYS_PC ((DEBRISKEY_PC *)debkeydata)
 i32 DebAlloc(void) {

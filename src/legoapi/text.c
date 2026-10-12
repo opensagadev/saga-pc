@@ -271,6 +271,28 @@ void __cdecl Text_LoadStrings(VARIPTR *buffer, VARIPTR *buffer_end) {
     MenuLoadTechnicalStrings((char *)TextLoadPermTRCPath, language, buffer, *buffer_end);
 }
 
+void PartKill_ThermalDetonator(PART_PC *part, i32 unused1) {
+    u16 flags;
+    struct EXPLOSION *explosion;
+    if (part == NULL) {
+        return;
+    }
+
+    if (part->owner != NULL) {
+        AlertSurroundingCreatures(part->owner, &part->position);
+    }
+
+    flags = 0x200;
+    if (part->owner != NULL && part->owner->flags_1fc && Cheat_IsOn(0x17) != 0) {
+        flags = 0x1200;
+    }
+
+    explosion = Detonate(&part->position, flags);
+    if (explosion != NULL && part->owner != NULL && ((u8)(part->owner->field_280)) <= 1) {
+        explosion->field_0x33 = ((u8)(part->owner->field_280));
+    }
+}
+
 void Text_DecodeButtons(char *source, char *destination) {
     if (NuStrICmp(source, Text_WibbleCodeword) == 0) {
         NuStrCpy(destination, Text_CrossCodeword);
@@ -460,6 +482,57 @@ void Text_MakeTime(f32 time, i32 show_hours, i32 show_minutes, i32 show_centisec
     } else {
         sprintf(text, Text_TimeS, seconds);
     }
+}
+
+void Text_ExpandAllButtonStrings(char *input, char *output) {
+    char token[256];
+    char expanded[64];
+
+    *output = '\0';
+    while (*input != '\0') {
+        i32 token_length;
+        char literal;
+        if (*input != '[') {
+            *output = *input;
+            output[1] = '\0';
+            ++input;
+            ++output;
+            continue;
+        }
+
+        token[0] = '[';
+        token_length = 1;
+        while (input[token_length] != ']' && input[token_length] != '\0') {
+            token[token_length] = input[token_length];
+            ++token_length;
+        }
+
+        literal = '[';
+        if (input[token_length] != '\0') {
+            token[token_length] = ']';
+            token[token_length + 1] = '\0';
+            token_length = NuStrLen(token);
+            if (token_length > 0 && Text_ExpandButtonString(token, expanded) != 0) {
+                char *character = expanded;
+                while (*character != '\0') {
+                    *output = *character;
+                    output[1] = '\0';
+                    ++character;
+                    ++output;
+                }
+                NuStrCat(output, expanded);
+                input += token_length;
+                continue;
+            }
+            literal = *input;
+        }
+
+        *output = literal;
+        output[1] = '\0';
+        ++input;
+        ++output;
+    }
+    *output = '\0';
 }
 
 void Text_SetLanguage(i32 language) {

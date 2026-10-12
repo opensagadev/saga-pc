@@ -77,25 +77,20 @@ static void GizActionNextLocator(AISYS_PC *sys, AILOCATORSET_PC *set, i32 loopin
     set->assigned[candidate] = object->object_id;
 }
 
-extern "C" {}
+extern "C" {
+    extern "C" f32 Condition_PlayerCategoryIs(AISYS_PC *, AISCRIPTPROCESS_PC *, AIPACKET_PC *, char *, void *argument) {
+        const i32 category = reinterpret_cast<i32>(argument);
+        return category != -1 && player != NULL && CharCategory_IsCategory(player, static_cast<i32>(category)) != 0
+                   ? 1.0f
+                   : 0.0f;
+    }
+}
 
-extern "C" {}
-
-extern "C" {}
-
-extern "C" {}
-
-extern "C" {}
-
-extern "C" {}
-
-extern "C" {}
-
-extern "C" {}
-
-extern "C" {}
-
-extern "C" {}
+extern "C" {
+    extern "C" void *Condition_AngleAboutMyLocatorToPlayerInit(AISYS_PC *, char *name, AISCRIPT_PC *) {
+        return (void *)(intptr_t)(name != NULL && NuStrICmp(name, "player1") == 0 ? 1 : -1);
+    }
+}
 
 extern "C" {
     static f32 Condition_EitherPlayerLocatorRangeXZ(AISYS_PC *, AISCRIPTPROCESS_PC *processor, AIPACKET_PC *packet,
@@ -159,10 +154,6 @@ extern "C" {
         return reinterpret_cast<void *>(static_cast<i32>(-1));
     }
 }
-
-extern "C" {}
-
-extern "C" {}
 
 extern "C" {
     i32 __cdecl Action_GetLocatorFromSet(AISYS_PC *sys, AISCRIPTPROCESS_PC *processor, AIPACKET_PC *packet,

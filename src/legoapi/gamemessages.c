@@ -246,6 +246,13 @@ void AddGameMsgCount(NUVEC *position, i32 count, i32 total, unsigned char red, u
     }
 }
 
+void AddFancyMessage(char *text, float x, float y, float scale, float duration, i32 message_id, i32 colour_type) {
+    const i32 red = 0xff;
+    const i32 green = 0xff - ((((u32)(colour_type)) < 1) << 6);
+    const i32 blue = ~(-((i32)(((u32)(colour_type)) < 1))) & 0xff;
+    AddFancyMessageRGB(text, x, y, scale, duration, message_id, red, green, blue);
+}
+
 GAME_MESSAGE_PC *__cdecl AddGameMessage(char *text, NUVEC *position, f32 scale, NUVEC *target_position,
                                         f32 target_scale, u8 red, u8 green, u8 blue, u32 flags, f32 duration) {
     ADD_GAME_MESSAGE_PC message = AddGameMsg_Default;

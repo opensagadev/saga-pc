@@ -480,6 +480,24 @@ i32 __cdecl PermanentCustomPieceAvailablePc(CUSTOMPIECE_LAYERS_PC *input) {
     return 1;
 }
 
+void CustomiserMenu_End() {
+    LevLock[1] = 1;
+    LevTime[1] = 2.0f;
+    MenuRememberCursor(&GameMenu[GameMenuLevel]);
+    MenuReset();
+    ResetTimer(&JoinInTimer, 0.0f);
+    CustomiseMode[0] = 2;
+    CustomiseMode[1] = 2;
+    if (GAMEDEMO != 0) {
+        GAMEDEMO = 2;
+        NewLData = HUB_LDATA;
+        NextArea_FreePlay = 1;
+        FreePlay = 1;
+        makeplayerlist_freeplay = 1;
+        makefreeplaymodellist = 1;
+    }
+}
+
 typedef struct custom_accessory_resource_pc_s {
     NUGSCN *scene;
     NUSPECIALHANDLE special;

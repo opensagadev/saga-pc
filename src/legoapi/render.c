@@ -106,6 +106,15 @@ void NewStatusRumbleBuzz(i32 player, float amount, float buzz, i32 priority) {
     }
 }
 
+i32 AddGoldBrickMessage(STATUSPACKET_s *packet, i16 brick) {
+    if (goldbrickmsgcount < 16) {
+        ((i16 *)(packet->field_0x12c))[goldbrickmsgcount] = brick;
+        ++goldbrickmsgcount;
+    }
+    AddToGoldBricks();
+    return 1;
+}
+
 void AddStatusStage(STATUSPACKET_s *packet, i32 type, i32 gold_brick_enabled) {
     const u8 index = packet->stage_count;
     packet->stage_types[index] = (i8)(type);

@@ -4917,6 +4917,8 @@ address    , symbol                                                         , si
 0x644000,_edpartDetermineNearest,311,void __cdecl edpartDetermineNearest(f32 distance)
 0x644140,_edpartHighlightNearest,548,
 0x644370,_edpartRender,32,
+0x644390,_edpartChangeName,85,
+0x6443f0,_edpartCancelChangeNameMenu,25,
 0x644410,_edpartChangeNameMenu,208,
 0x6445d0,_edpartCopyType,296,
 0x644700,_edpartChangeCutOff,23,
@@ -4938,6 +4940,9 @@ address    , symbol                                                         , si
 0x6462e0,_edpartInstanceMenu,522,
 0x646c30,_edpartCancelCutOffMenu,25,
 0x646c50,_edpartCutOffMenu,203,
+0x646f00,_edpartChangeInstanceRot,98,
+0x646f70,_edpartChangeInstanceVarRot,98,
+0x646fe0,_edpartCancelInstanceOrientMenu,25,
 0x647000,_edpartInstanceOrientMenu,1041,
 0x6476e0,_edpartChangeInstanceFlag,41,
 0x647b00,_edpartChangeGrav,25,
@@ -5131,16 +5136,22 @@ address    , symbol                                                         , si
 0x0065a5c0 , _edanimStopPage                                                , 16    , void __cdecl (i32)
 0x0065a5d0 , _edanimClearPage                                               , 99    , void __cdecl (i32)
 0x0065a640 , _edanimStartAllPages                                           , 47    , void __cdecl (void)
+0x65a670,_edanimcbCancelBouncyMenu,25,
 0x65a700,_edanimcbSetSoundType,61,
+0x65a760,_edanimcbToggleParticleSwitch,48,
 0x65a790,_edanimcbSetParticleType,58,
 0x65a7d0,_edanimcbSetLocalParticleType,117,
+0x65a850,_edanimcbSetParticleRate,38,
 0x65a880,_edanimcbCancelParticleTypeMenu,25,
 0x65a8a0,_edanimcbParticleTypeMenu,308,
+0x65a9e0,_edanimcbCancelLocalParticleTypeMenu,25,
 0x65aa00,_edanimcbLocalParticleTypeMenu,267,
+0x65ab10,_edanimcbCancelLocalParticleMenu,25,
 0x65ab30,_edanimcbLocalParticleMenu,326,
 0x65ac80,_edanimcbCancelParticleMenu,25,
 0x65aca0,_edanimcbParticleMenu,248,
 0x65ada0,_edanimcbCancelSoundTypeMenu,25,
+0x65adc0,_edanimcbCancelLocalSoundTypeMenu,25,
 0x65ae00,_edanimcbCancelSoundMenu,25,
 0x65af60,_edanimcbMCTBCardPresent,51,
 0x65afa0,_edanimcbMCTBCardType,51,
@@ -5183,7 +5194,9 @@ address    , symbol                                                         , si
 0x65ea50,_edgracbCancelInstanceMenu,25,
 0x65ea70,_edgracbInstanceMenu,492,
 0x65eca0,_edgracbCancelClumpAreaMenu,25,
+0x65ecc0,_edgracbCancelClumpDistMenu,25,
 0x65ece0,_edgracbCancelClumpFadeMenu,32,
+0x65ed00,_edgracbCancelClumpTerrainMenu,25,
 0x65ed20,_edgracbCancelClumpPropertiesMenu,25,
 0x65ed40,_edgracbCancelClumpModeMenu,25,
 0x65ed60,_edgracbSetDpadMode,14,
@@ -5396,7 +5409,11 @@ address    , symbol                                                         , si
 0x6871c0,_edanimDoInput,1665,
 0x687850,_edanimLoadPage,1489,"i32 __cdecl(char *, NUGSCN *)"
 0x687e30,_edanimDrawCursor,1321,
+0x688390,_edanimcbSetBouncyPlayerGrav,91,
+0x6883f0,_edanimcbSetBouncyTension,91,
+0x688450,_edanimcbSetBouncyDamping,91,
 0x6884b0,_edanimcbBouncyMenu,383,
+0x688630,_edanimcbSetLocalSoundType,109,
 0x6886a0,_edanimcbSoundTypeMenu,295,
 0x6887d0,_edanimcbLocalSoundTypeMenu,252,
 0x6888d0,_edanimcbLocalSoundMenu,555,
@@ -5424,10 +5441,14 @@ address    , symbol                                                         , si
 0x68a2d0,_edgracbClumpSizesMenu,436,
 0x68a490,_edgracbSetClumpArea,38,
 0x68a4c0,_edgracbClumpAreaMenu,442,
+0x68a680,_edgracbSetClumpDist,38,
 0x68a6b0,_edgracbClumpDistMenu,442,
 0x68a870,_edgracbSetClumpFadeIn,108,
 0x68a8e0,_edgracbSetClumpFadeOut,108,
 0x68a950,_edgracbClumpFadeMenu,424,
+0x68ab00,_edgracbToggleClumpTerrain,41,
+0x68ab30,_edgracbToggleClumpTilt,41,
+0x68ab60,_edgracbSetClumpTerrainOffset,38,
 0x68ab90,_edgracbClumpTerrainMenu,356,
 0x68ad00,_edgracbClumpPropertiesMenu,620,
 0x68af70,_edgracbSetClumpMode,46,
@@ -5443,6 +5464,7 @@ address    , symbol                                                         , si
 0x68c520,_edppMultipleCopyPaste,205,
 0x68c5f0,_edppDoInput,1383,
 0x68cb60,_edppProc,121,
+0x68cbe0,_cbCancelChangeNameMenu,78,
 0x68cc30,_cbChangeNameMenu,110,
 0x68cdb0,_edppDeleteEffect,296,void __cdecl(i32)
 0x68cee0,_cbPtlDeleteEffect,67,
@@ -8383,6 +8405,7 @@ address    , symbol                                                         , si
 0x7576b8,_AITransferLiteral7576b8,7,const char[7]
 0x7576c0,_AITransferLiteral7576c0,6,const char[6]
 0x7576c8   , _ActionSnapPlayer1Name                                          ,        ,
+0x7576c8,??_C@_07NACBHFGL@player1?$AA@,8,char []
 0x7576d0,_AITransferLiteral7576d0,14,const char[14]
 0x7576e0,_AITransferLiteral7576e0,10,const char[10]
 0x007576ec , _AICombatOpponentName                                          , 10    , const char[10]
@@ -9407,6 +9430,8 @@ address    , symbol                                                         , si
 0x0075addc , _EpisodeIDat                                                   , 14    , const char[14]
 0x0075adec , _Menu_OptionsVolumeFormat                                      , 10    , const char[10]
 0x75ae08,__real@3f80000000000000,8,const f64
+0x75ae10,??_C@_06FMEEHHCF@?$FL?$FLrb?$FN?$FN?$AA@,7,char []
+0x75ae18,??_C@_06IDJEFOMG@?$FL?$FLlb?$FN?$FN?$AA@,7,char []
 0x75ae20,??_C@_0L@ONAOABPC@?$HO0?$CI?$HO2?$CFs?$HO0?$CJ?$AA@,,const char[]
 0x75ae2c,__real@3f066666,,const f32
 0x75afb4,_PlayerActionNamePc_232,4,const char[4]
@@ -10052,6 +10077,7 @@ address    , symbol                                                         , si
 0x75d4b0,??_C@_08CNLHJKBO@Sniper?$CFd?$AA@,9,char []
 0x0075d4f0 , __real@3fefd70a40000000                                        , 8     , const f64
 0x75d52c,_PodRaceAttemptsKeywordPc,,char[25]
+0x75d52c,??_C@_0BJ@CFBACOKC@nattempts_per_increment?$DN?$AA@,25,char []
 0x75d548,??_C@_0BA@PLLIHCPB@time_increment?$DN?$AA@,16,char []
 0x75d558,??_C@_0BA@JNLCAPCH@time_available?$DN?$AA@,16,char []
 0x75d568,??_C@_0BE@JELMGDD@max_time_available?$DN?$AA@,20,char []
@@ -10071,6 +10097,7 @@ address    , symbol                                                         , si
 0x75d788,??_C@_0O@EBBACJEM@throw_object2?$AA@,14,char []
 0x75d798,??_C@_0O@GKDNHKIP@throw_object1?$AA@,14,char []
 0x75d7a8,_EpisodeVI_ShowHearts,11,const char[11]
+0x75d7a8,??_C@_0L@IPAIBOOK@ShowHearts?$AA@,11,char []
 0x75d7b4,??_C@_0M@FKKEKLHM@minifig_1_3?$AA@,12,char []
 0x75d7c0,??_C@_0M@EDLPJKDN@minifig_1_2?$AA@,12,char []
 0x75d7cc,??_C@_0M@GIJCMJPO@minifig_1_1?$AA@,12,char []
@@ -10084,6 +10111,10 @@ address    , symbol                                                         , si
 0x0075da40 , __real@c066c16c20000000                                        , 8     , const f64
 0x75dbfc,??_C@_0N@GEECAJGO@endblock_b08?$AA@,13,char []
 0x75dc90,__real@4076800000000000,,f64
+0x75dcc0,??_C@_09JKMJFKLL@power_b21?$AA@,10,char []
+0x75dccc,??_C@_09IIHMPFFF@power_a21?$AA@,10,char []
+0x75dcd8,??_C@_09JIIPOEOC@power_b11?$AA@,10,char []
+0x75dce4,??_C@_09IKDKELAM@power_a11?$AA@,10,char []
 0x75dcf0,??_C@_0O@GKOJGIHA@trooper_green?$AA@,14,char []
 0x75dd00,??_C@_07CDOIBGJA@gun_d21?$AA@,8,char []
 0x75dd08,??_C@_07CBKOKIMJ@gun_d11?$AA@,8,char []
@@ -10127,6 +10158,8 @@ address    , symbol                                                         , si
 0x75e40c,??_C@_05KIKKDJAJ@ice_a?$AA@,6,char []
 0x75e414,??_C@_05IDIHGKMK@ice_b?$AA@,6,char []
 0x75e41c,??_C@_0BE@OFBNHBFL@BombGen_ATAT_Killed?$AA@,20,char []
+0x75e448,??_C@_05PBDNICPN@Probe?$AA@,6,char []
+0x75e450,??_C@_05BDADGJGG@spawn?$AA@,6,char []
 0x75e464,??_C@_04LHKOJOEJ@ATAT?$AA@,5,char []
 0x75e4b0,_EpisodeVI_doton12,10,const char[10]
 0x75e4bc,_EpisodeVI_doton11,10,const char[10]
@@ -11395,6 +11428,9 @@ address    , symbol                                                         , si
 0x7654b0,__real@40119999a0000000,8,const f64
 0x7654b8,__real@4002666660000000,8,const f64
 0x7654c0,__real@400922d0e0000000,8,const f64
+0x7654d0,??_C@_0L@LJGGLKGH@?$CFs?$CF03d?4bmp?$AA@,11,char []
+0x7654dc,??_C@_06PCEOMGLN@?$CFs?4bmp?$AA@,7,char []
+0x7654e4,??_C@_08HNEBGONB@?$CFs?$CFd?4bmp?$AA@,9,char []
 0x7654f0,_GHGSceneFormatWarningPC,87,const char[87]
 0x7654f0,_SceneIngestSceneVersionWarningPc,87,const char[87]
 0x765548,_GHGJointFormatWarningPC,95,const char[95]
@@ -11474,6 +11510,8 @@ address    , symbol                                                         , si
 0x76c5b8,__real@bccccccd,4,const f32
 0x76c5bc,__real@bd4ccccd,4,const f32
 0x76c5c0,__real@3f0ccccd,4,const f32
+0x76c5c4,??_C@_06GECNACHD@Name?3?5?$AA@,7,char []
+0x76c5cc,??_C@_09LOCEICAO@Type?5Name?$AA@,10,char []
 0x76c5d8,??_C@_06KMBGOEGK@?$CFs?$CF03d?$AA@,7,const char[7]
 0x76c6b8,??_C@_0BE@MPEJAHM@Apply?5Scale?5to?5Type?$AA@,20,char []
 0x76c6cc,__real@411e6666,4,const f32
@@ -11488,7 +11526,15 @@ address    , symbol                                                         , si
 0x76c90c,??_C@_0BA@PKAAPCH@Attached?5Sounds?$AA@,16,char []
 0x76c91c,??_C@_0L@EIMKEPLI@CutOff?5Rad?$AA@,11,char []
 0x76c928,??_C@_05OMFEOJEI@Radii?$AA@,6,char []
+0x76c968,??_C@_0BF@ONOJAGNJ@Rotation?5Variation?5Z?$AA@,21,char []
+0x76c980,??_C@_0BF@MGMEFFBK@Rotation?5Variation?5Y?$AA@,21,char []
+0x76c998,??_C@_0BF@NPNPGEFL@Rotation?5Variation?5X?$AA@,21,char []
+0x76c9b0,??_C@_0BA@OCNCONMP@Base?5Rotation?5Z?$AA@,16,char []
+0x76c9c0,??_C@_0BA@MJPPLOAM@Base?5Rotation?5Y?$AA@,16,char []
 0x76c9d0,??_C@_08EDFBGCED@?$CI?$CF1?401f?$CJ?$AA@,9,char []
+0x76c9e0,__real@c066800000000000,8,const f64
+0x76c9e8,??_C@_0BA@NAOEIPEN@Base?5Rotation?5X?$AA@,16,char []
+0x76c9f8,??_C@_0BF@OJINMGJC@Instance?5Orientation?$AA@,21,char []
 0x76cacc,??_C@_06PAHFPMEK@Bounce?$AA@,7,char []
 0x76cad4,??_C@_07JMGDFJEK@Gravity?$AA@,8,char []
 0x76cbc0,??_C@_0BB@PEMOALIG@Can?5Damage?5Owner?$AA@,17,char []
@@ -11543,6 +11589,11 @@ address    , symbol                                                         , si
 0x0076d290,__real@41d6666660000000,8,const f64
 0x76d29c,__real@501502f9,4,const f32
 0x76d37c,??_C@_0O@NKAFEAJA@Particle?5Type?$AA@,14,char []
+0x76d38c,??_C@_0BK@KLMHEOPA@Highlighted?5Particle?5Type?$AA@,26,char []
+0x76d3a8,??_C@_0P@NMHOLCJB@Only?5On?5Moving?$AA@,15,char []
+0x76d3b8,??_C@_0BC@PMHOEKKJ@Particles?5Per?5Sec?$AA@,18,char []
+0x76d3cc,??_C@_0BN@KHAHPMCI@Highlighted?5Particle?5Type?4?4?4?$AA@,29,char []
+0x76d3ec,??_C@_0BO@EMDMFDJI@Highlighted?5Particle?5Settings?$AA@,30,char []
 0x76d40c,??_C@_0BM@DODCDHDB@Highlighted?5Ptl?5Settings?4?4?4?$AA@,28,char []
 0x76d428,??_C@_0BB@EDJLJGL@Particle?5Type?4?4?4?$AA@,17,char []
 0x76d43c,??_C@_0BD@GBFCKKFM@Attached?5Particles?$AA@,19,char []
@@ -11564,6 +11615,7 @@ address    , symbol                                                         , si
 0x76d530,??_C@_09PJMHMCO@Format?5OK?$AA@,10,char []
 0x76d53c,??_C@_0BD@JKJENIDO@KeyCard?5Write?5Fail?$AA@,19,char []
 0x76d550,??_C@_0BB@ILAGDNIN@KeyCard?5Write?5OK?$AA@,17,char []
+0x76d6b0,??_C@_0BC@OEFPIKCK@pictures?2cub?$CF03d_?$AA@,18,char []
 0x76d6c4,??_C@_0BI@OOOKDNPE@pictures?2cub?$CF03d_?$CFd?4bmp?$AA@,24,char []
 0x76d704,??_C@_0O@MIOLJHDM@Post?5Interval?$AA@,14,char []
 0x76d714,??_C@_0M@MNHCEFEC@Plank?5Count?$AA@,12,char []
@@ -11635,8 +11687,12 @@ address    , symbol                                                         , si
 0x76e234,??_C@_0L@KEOCDNPO@Params?3?5No?$AA@,11,char []
 0x76e240,??_C@_0O@MGPFLIFB@Curr?5Spcl?3?5?$CFs?$AA@,14,char []
 0x76e250,??_C@_0BC@CBHMAPFA@Curr?5Spcl?3?5?$DMnone?$DO?$AA@,18,char []
+0x76e264,??_C@_07HJKIPEFI@Damping?$AA@,8,char []
 0x76e26c,??_C@_07OAGIDIGA@Tension?$AA@,8,char []
+0x76e274,??_C@_0M@HPHPIEGB@Player?5Grav?$AA@,12,char []
+0x76e280,??_C@_0L@KIBPLPBI@Bounciness?$AA@,11,char []
 0x76e28c,??_C@_0L@MFBHICLH@Sound?5Type?$AA@,11,char []
+0x76e298,??_C@_0BH@FCGFCAMD@Highlighted?5Sound?5Type?$AA@,23,char []
 0x76e31c,??_C@_0BM@HMOHPKM@Highlighted?5Snd?5Settings?4?4?4?$AA@,28,char []
 0x76e338,??_C@_0O@DDEOCNJF@Sound?5Type?4?4?4?$AA@,14,char []
 0x76e348,??_C@_0BA@JIKLNEGI@File?5Load?5Error?$AA@,16,char []
@@ -11650,9 +11706,15 @@ address    , symbol                                                         , si
 0x76e4a0,??_C@_06ENIHNBMK@Square?$AA@,7,char []
 0x76e4a8,??_C@_06KFOFCNJI@Legacy?$AA@,7,char []
 0x76e4b0,??_C@_0BA@BMGIGJFE@Clump?5Area?5Type?$AA@,16,char []
+0x76e4c0,??_C@_0L@OOACCLLL@Bell?5Curve?$AA@,11,char []
+0x76e4cc,??_C@_06LACFBFGA@Linear?$AA@,7,char []
+0x76e4d4,??_C@_0BD@KPKBLLGF@Clump?5Distribution?$AA@,19,char []
 0x76e4e8,??_C@_0M@JBMJGNII@End?5of?5Fade?$AA@,12,char []
 0x76e4f4,??_C@_0O@ICPFBNBH@Start?5of?5Fade?$AA@,14,char []
 0x76e504,??_C@_0N@NJDHFLJB@Clump?5Fading?$AA@,13,char []
+0x76e514,??_C@_0BC@MHIEPMC@Terraining?5Offset?$AA@,18,char []
+0x76e528,??_C@_0O@EGDJMDLA@Clump?5Tilting?$AA@,14,char []
+0x76e538,??_C@_0BB@MPPMDNFE@Clump?5Terraining?$AA@,17,char []
 0x76e54c,??_C@_0BE@OPGICDDN@Collide?5with?5Player?$AA@,20,char []
 0x76e560,__real@3ffeb852,4,const f32
 0x76e564,??_C@_04LGBIOLDJ@Wind?$AA@,5,char []
@@ -15885,6 +15947,7 @@ address    , symbol                                                         , si
 0x879b98,_HubBuildItsResetPc,,i32
 0x879b9c,_HubStatsLowColourPc,,u8
 0x87a1f0,_iconalphaoverride,4,f32
+0x87a1f4,_goldbrickmsgcount,4,i32
 0x87a620,_StatusStages,4,struct STATUS_STAGE_s *
 0x87a624,_status_prompt,4,i32
 0x87a648,_StatusPacket,332,STATUSPACKET_s
@@ -16207,6 +16270,7 @@ address    , symbol                                                         , si
 0x0087b8ec,_ForceBackPosPc,,NUVEC *
 0x0087b8f0,_ForceBackTypePc,,i32
 0x87b8f4,_VehicleSlowdownCallbackPc,,void (__cdecl *)(GAMEOBJECT *)
+0x87b8f8,_lightning_type,4,i32
 0x87b8fc   , _applygravity_extrahoveroffset                                 , 4     , f32
 0x0087b900 , _getvehiclehoverheight_hothbattlehack                          , 4     , i32
 0x0087b904 , _TwistScaleLean                                                , 4     , i32
@@ -18356,9 +18420,11 @@ address    , symbol                                                         , si
 0x2912b58,_edui_font,4,void *
 0x2912e70,_ed_remap_mtx,4,struct numtx_s *
 0x2912ea0,_ed_fnt,4,void *
+0x2912eac,_eduiInteractLocked,4,struct edui_interact_s *
 0x2912ecc,_active_menu,4,struct eduimenu_s *
 0x2912ed0,_processing_menu,4,struct eduimenu_s *
 0x2912ed8,_edui_donotdraw,4,i32
+0x2912ee4,_edui_cursor_buttons,4,u32
 0x2912f58,_PadFlyMode,4,i32
 0x2912f5c  , _edfile_media                                                  , 4     , i32
 0x2912f60  , _edfile_pakfile                                                , 4     , void *
@@ -18370,6 +18436,8 @@ address    , symbol                                                         , si
 0x2913074,_FS_CurrentPosFileNum,4,i32
 0x2913078,_FS_NumFiles,4,i32
 0x291307c,_FS_Callback,4,"void (__cdecl *)(char *arg0, char *arg1)"
+0x29130d0,?offsety@?1??cbInteractMenuTitle@@9@9,,
+0x29130d4,?offsetx@?1??cbInteractMenuTitle@@9@9,,
 0x29130dc,?TargetAng@?1??do_maya_mouse_camera@@9@9,,
 0x29130e4,?PadRepeat@?1??FS_GetPadWithRepeat@@9@9,,
 0x29130e8,?LastPad@?1??FS_GetPadWithRepeat@@9@9,,
@@ -18412,6 +18480,7 @@ address    , symbol                                                         , si
 0x291f734,_PartEditorCameraPosPc,,NUVEC
 0x291f7a0,_part_platimpactcnt,,i32
 0x291f7a8,_edpart_nearest_duplicates,4,i32
+0x291f7b8,_edpart_name_menu,4,struct eduimenu_s *
 0x291f7c8,_part_emits,4320,PART_EMIT_PC[40]
 0x29208a8,_PartNearestEmitterPc,,i32
 0x029208bc , _part_page_used                                                , 32    , i32[8]
@@ -18431,6 +18500,7 @@ address    , symbol                                                         , si
 0x29209c8,_edpart_type_menu,4,struct eduimenu_s *
 0x29209dc,_edpart_thingsinstance_menu,4,struct eduimenu_s *
 0x29209e4,_edpart_instanceflags_menu,4,struct eduimenu_s *
+0x29209e8,_edpart_instorient_menu,4,struct eduimenu_s *
 0x29209f0,_edpart_debrissettings_menu,4,struct eduimenu_s *
 0x2920a20,_edpart_debrisscale_menu,4,struct eduimenu_s *
 0x2920a24,_edpart_scaletype_menu,4,struct eduimenu_s *
@@ -18450,8 +18520,10 @@ address    , symbol                                                         , si
 0x2920ab8,_part_emits_used,,i32
 0x2920abc,_PartCleanupCursorPrivate,,i32
 0x2920ac0,_PartCleanupFramesPrivate,,i32
+0x2920ac8,_edanim_nearest_sound,4,i32
 0x2920acc,_numtoruscolldata,,i32
 0x02920ad0 , _TerrainCastAuxPolygonPc                                       ,       ,
+0x2920ad4,_edgra_nearest_instance,4,i32
 0x2920adc,_edpp_cam_pos,,NUVEC
 0x02920ae8 , _DebrisGlassV1                                                 , 4     , f32
 0x2920aec,_edgra_page_used,,i32[8]
@@ -18507,6 +18579,7 @@ address    , symbol                                                         , si
 0x02924b28 , _TerrainShadowHeightPc                                         ,       ,
 0x02924b2c , _TerrainRoofValidPc                                            ,       ,
 0x02924b30 , _edpp_page_used                                                , 32    , i32[8]
+0x2924b50,_namemenu,4,struct eduimenu_s *
 0x02924b54 , _TerrainScaledShapeCursorPc                                    ,       ,
 0x2924b60,_TerrWallTab,,u8[4]
 0x2924b64,_freeDmaDebType,,i32
@@ -18535,6 +18608,7 @@ address    , symbol                                                         , si
 0x292fc94,_edptl_quickdel_menu,4,struct eduimenu_s *
 0x292fc98,_PlatImpactTer,,TERRAIN_POLYGON_INFO_PC
 0x292fd08,_edgra_page_matrix_stack,,NUMTX*[8]
+0x292fd28,_edanim_nearest_particle,4,i32
 0x292fd2c,_numspherecolldata,,i32
 0x292fd30,_edgra_page_vectors_valid,,i32[8]
 0x0292fd50,_ParticleChunkRenderStack,,DEBRIS_RENDER_CHUNK_PC *[5]
@@ -18652,8 +18726,14 @@ address    , symbol                                                         , si
 0x029620e8 , _DebrisGlassCopyMaterial                                       , 4     , void *
 0x029620ec , _DebrisGlassInitialized                                        , 4     , i32
 0x29620f0,_edanim_active_menu,4,struct eduimenu_s *
+0x29620f8,_edanim_particle_menu,4,struct eduimenu_s *
 0x29620fc,_edanim_particletype_menu,4,struct eduimenu_s *
+0x2962100,_edanim_localparticletype_menu,4,struct eduimenu_s *
+0x2962104,_edanim_localparticle_menu,4,struct eduimenu_s *
+0x2962110,_edanim_sound_menu,4,struct eduimenu_s *
 0x2962114,_edanim_soundtype_menu,4,struct eduimenu_s *
+0x2962118,_edanim_localsoundtype_menu,4,struct eduimenu_s *
+0x2962120,_edanim_bouncy_menu,4,struct eduimenu_s *
 0x02962128 , _edanim_params_used                                            , 4     , i32
 0x02962134 , _edbits_base_scene                                             , 4     , NUGSCN *
 0x2962538,_edbits_level_save_directory,256,char[256]
@@ -18676,7 +18756,9 @@ address    , symbol                                                         , si
 0x29629b0,_edgra_instance_menu,4,struct eduimenu_s *
 0x29629b8,_edgra_clumpproperties_menu,4,struct eduimenu_s *
 0x29629c0,_edgra_clumparea_menu,4,struct eduimenu_s *
+0x29629c4,_edgra_clumpdist_menu,4,struct eduimenu_s *
 0x29629c8,_edgra_clumpfade_menu,4,struct eduimenu_s *
+0x29629cc,_edgra_clumpterrain_menu,4,struct eduimenu_s *
 0x29629d0,_edgra_clumpmode_menu,4,struct eduimenu_s *
 0x29629d4,_edgra_dpadmode_menu,4,struct eduimenu_s *
 0x29629dc,_edgra_globals_menu,4,struct eduimenu_s *

@@ -70,6 +70,74 @@ void __cdecl ReleaseForce(GAMEOBJECT *object, i32 mode) {
         return;
     EndForce(object, mode);
 }
+static void DrawLightningBolts(GAMEOBJECT *object, GAMEOBJECT *target, i32 lightning_index) {
+    f32 height;
+    f32 distance;
+    NUVEC reflected_origin;
+    NUVEC primary;
+    NUVEC secondary;
+    NUVEC target_position;
+    NUVEC delta;
+    ForceLightning_Origin(object, &primary, &secondary);
+
+    if (primary.y != 1000000000.0f) {
+        f32 height;
+        f32 distance;
+        target_position.x = target->collision_position.x;
+        target_position.z = target->collision_position.z;
+        height = target->upper_position.y - target->lower_position.y;
+        target_position.y =
+            target->lower_position.y + height * 0.25f + height * (1.0f / 17.0f) * qrand() * 1.5259022e-05f;
+        distance = NuVecDist(&target_position, &primary, &delta);
+        NuLgtLaser(lightning_type, lightning_sizew[lightning_index], lightning_sizel[lightning_index],
+                   lightning_sizewab[lightning_index], &primary, &delta, lightning_col[lightning_index],
+                   lightning_endw[lightning_index], distance);
+        PlaySfx("ForceLightningLp", &target->collision_position);
+
+        if (object->field_1088 != 0 && object->field_1087 == 2 && NuIOS_IsLowEndDevice() == 0 && lightning_type != 0) {
+            NUVEC reflected_target;
+            f32 plane;
+            reflected_origin = primary;
+            reflected_target = target_position;
+            plane = WORLD->current_level->reflection_y;
+            if (plane == 2000000.0f)
+                plane = object->shadow_opacity;
+            reflected_origin.y = plane - (reflected_origin.y - plane);
+            reflected_target.y = plane - (reflected_target.y - plane);
+            distance = NuVecDist(&reflected_target, &reflected_origin, &delta);
+            NuLgtLaser(lightning_type, lightning_sizew[lightning_index], lightning_sizel[lightning_index],
+                       lightning_sizewab[lightning_index], &reflected_origin, &delta, lightning_col[lightning_index],
+                       lightning_endw[lightning_index], distance);
+        }
+    }
+
+    if (secondary.y == 1000000000.0f) {
+        return;
+    }
+    target_position.x = target->collision_position.x;
+    target_position.z = target->collision_position.z;
+    height = target->upper_position.y - target->lower_position.y;
+    target_position.y = target->lower_position.y + height * 0.25f + height * (1.0f / 17.0f) * qrand() * 1.5259022e-05f;
+    distance = NuVecDist(&target_position, &secondary, &delta);
+    NuLgtLaser(lightning_type, lightning_sizew[lightning_index], lightning_sizel[lightning_index],
+               lightning_sizewab[lightning_index], &secondary, &delta, lightning_col[lightning_index],
+               lightning_endw[lightning_index], distance);
+    PlaySfx("ForceLightningLp", &target->collision_position);
+
+    if (object->field_1088 != 0 && object->field_1087 == 2 && NuIOS_IsLowEndDevice() == 0 && lightning_type != 0) {
+        NUVEC reflected_origin = secondary;
+        NUVEC reflected_target = target_position;
+        f32 plane = WORLD->current_level->reflection_y;
+        if (plane == 2000000.0f)
+            plane = object->shadow_opacity;
+        reflected_origin.y = plane - (reflected_origin.y - plane);
+        reflected_target.y = plane - (reflected_target.y - plane);
+        distance = NuVecDist(&reflected_target, &reflected_origin, &delta);
+        NuLgtLaser(lightning_type, lightning_sizew[lightning_index], lightning_sizel[lightning_index],
+                   lightning_sizewab[lightning_index], &reflected_origin, &delta, lightning_col[lightning_index],
+                   lightning_endw[lightning_index], distance);
+    }
+}
 
 typedef struct force_glow_packet_pc_s {
     u8 unknown000[0x650];

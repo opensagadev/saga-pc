@@ -335,6 +335,23 @@ void __cdecl NuAnimCurve2SetApplyToMatrix_3(ANI3_HEADER_PC *animation, i32 node,
     matrix->m32 = -matrix->m32;
 }
 
+void NuSpecialBurstDrawAt(nuhspecial_s *special, u32 count, NUMTX *matrices, i32 clip) {
+    struct NuSpecialLegacyRuntimeLayout *runtime;
+    NUSPECIALHANDLE *handle = ((NUSPECIALHANDLE *)(special));
+    if (handle == NULL || handle->scene == NULL) {
+        return;
+    }
+
+    runtime = ((NuSpecialLegacyRuntimeLayout *)(handle->special));
+    if (runtime != NULL && runtime->instance != NULL) {
+        return;
+    }
+    if (handle->display_special == NULL) {
+        return;
+    }
+    NuDisplayListBurstRndrSpecial(special, count, matrices, clip);
+}
+
 void __cdecl NuAnimData2CalcMatrix(ANI3_HEADER_PC *animation, i32 node, f32 frame, NUMTX *matrix) {
     NuAnimCurve2SetApplyToMatrix_3(animation, node, frame, matrix);
 }
@@ -1759,6 +1776,31 @@ void __cdecl NuAnimBuffEvaluate_3(ANI3_BUFFER_PC *buffer, NUHGOBJ_EVAL_PC *objec
     AnimBuffEvalCB = NULL;
     AnimBuffEvalData = NULL;
     AnimBuffEvalJoint = NULL;
+}
+
+void NuAnimBuffAccumulate_3(ANI3_BUFFER_PC *buffer, ANI3_HEADER_PC *animation, f32 time, i32 overwrite, f32 blend,
+                            i32 first_joint, NUHGOBJ_EVAL_PC *object, NUVEC *root_translation) {
+    i32 end_joint;
+    if (buffer == NULL) {
+        buffer = ((ANI3_BUFFER_PC *)(globalbuffer));
+    }
+    buffer->joint_count = object->joint_count;
+
+    end_joint = object->joint_count;
+    if (first_joint != 0) {
+        end_joint = findrange(((NUGSCN *)(object)), first_joint) + 1;
+    }
+    if (overwrite != 0) {
+        ANI_SimpleAni3PlayerV4Joint(animation, time - 1.0f, buffer, end_joint - first_joint, first_joint);
+        if (root_translation != NULL) {
+            root_translation->x = buffer->joints[0].translation.x;
+            root_translation->y = buffer->joints[0].translation.y;
+            root_translation->z = -buffer->joints[0].translation.z;
+        }
+    } else {
+        ANI_SimpleAni3PlayerV4Joint_Blend(animation, time - 1.0f, buffer, blend, end_joint - first_joint, first_joint,
+                                          root_translation);
+    }
 }
 
 /* Retains original scratch slot255. This path requires the additional

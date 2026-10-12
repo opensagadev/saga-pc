@@ -352,6 +352,25 @@ __declspec(noinline) void edpartStartPage(u8 page) {
 __declspec(noinline) void edpartStopPage(u8 page) {
     part_page_on[(i8)page] = 0;
 }
+
+void edpartCancelInstanceFlagsMenu(eduimenu_s *unused0, eduimenu_s *unused1) {
+    eduiMenuDestroy(edpart_instanceflags_menu);
+    edpart_instanceflags_menu = NULL;
+}
+static void edpartChangeDebrisScale(eduimenu_s *unused0, eduiitem_s *item, u32 unused2) {
+    if (edpart_nearest_type)
+        edpart_nearest_type->effect_scale = ((edui_slider_s *)(item))->value;
+}
+
+void edpartCancelDebrisScaleMenu(eduimenu_s *unused0, eduimenu_s *unused1) {
+    eduiMenuDestroy(edpart_debrisscale_menu);
+    edpart_debrisscale_menu = NULL;
+}
+
+void edpartCancelDebrisSettingsMenu(eduimenu_s *unused0, eduimenu_s *unused1) {
+    eduiMenuDestroy(edpart_debrissettings_menu);
+    edpart_debrissettings_menu = NULL;
+}
 static void edpartInstanceFlagsMenu(eduimenu_s *menu, eduiitem_s *unused1, u32 unused2) {
     if (edpart_nearest_type == NULL)
         return;
@@ -3321,7 +3340,29 @@ void __cdecl edpartDetermineNearest(f32 distance) {
             PartNearestTypePtrPc = &part_types[PartNearestEmitterPtrPc->effect_id];
     }
 }
-static void edpartCopyType(eduimenu_s *menu, eduiitem_s *unused1, u32 unused2) {
+static void edpartChangeNameMenu(eduimenu_s *menu, eduiitem_s *unused1, u32 unused2) {
+    if (edpart_create_type != -1) {
+        PARTTYPE_LOOKUP_PC *type = &part_types[edpart_create_type];
+        edpart_name_menu = eduiMenuCreate(70, 70, 180, 250, ed_fnt, edpartCancelChangeNameMenu, "Type Name");
+        if (edpart_name_menu != NULL) {
+            eduiMenuAddItem(edpart_name_menu, eduiItemTextPickCreate(0, edblack, edpartChangeName, "Name: "));
+            strcpy(((edui_textpicker_s *)(edui_last_item))->value, type->name);
+            ((edui_textpicker_s *)(edui_last_item))->max_length = 15;
+            eduiMenuAttach(menu, edpart_name_menu);
+            edpart_name_menu->x = menu->x + 10;
+            edpart_name_menu->y = menu->y + 40;
+        }
+    }
+}
+static void edpartChangeCutOff(eduimenu_s *unused0, eduiitem_s *item, u32 unused2) {
+    if (edpart_nearest_type)
+        edpart_nearest_type->maximum_distance = ((edui_slider_s *)(item))->value;
+}
+
+void edpartSetScaleFactor(eduimenu_s *unused0, eduiitem_s *item, u32 unused2) {
+    edpart_scale_factor = ((edui_slider_s *)(item))->value;
+}
+void edpartCopyType(eduimenu_s *menu, eduiitem_s *unused1, u32 unused2) {
     struct eduimenu_s *parent;
     if (part_types_used < 128 && edpart_create_type != -1) {
         i32 index;
@@ -3352,7 +3393,7 @@ static void edpartCopyType(eduimenu_s *menu, eduiitem_s *unused1, u32 unused2) {
     if (menu->callback)
         menu->callback(menu, parent);
 }
-static void edpartRender() {
+void edpartRender() {
     edcamSet();
     edpartDrawCursor();
     edpartHighlightNearest();
@@ -3786,6 +3827,14 @@ impact:
     part->impact_position.x = part->position.x + cast_movement.x;
     part->impact_position.y = part->position.y + cast_movement.y;
     part->impact_position.z = part->position.z + cast_movement.z;
+}
+
+void edpartPlace(i32 index, NUVEC *position) {
+    PART_EMIT_PC *emitter = &part_emits[index];
+    emitter->position = *position;
+    emitter->rotation_2c = ((i16)(edpart_emitrotz));
+    emitter->rotation_30 = ((i16)(edpart_emitrotx));
+    emitter->rotation_2e = ((i16)(edpart_emitroty));
 }
 
 void edpartDrawCursor(void) {
@@ -4267,7 +4316,7 @@ void AddScaledVariableShotPARTEffect(i32 effect, NUVEC *position, f32 rate, f32 
     if (scaled != -1)
         AddVariableShotPARTEffect(scaled, position, rate, time, orientation);
 }
-static i32 edpartProc(float delta_time, FRAME_PAD_PC *pad) {
+i32 edpartProc(float delta_time, FRAME_PAD_PC *pad) {
     edpart_count += 5;
     if (edpart_active_menu) {
         eduiMenuProcess(edpart_active_menu, delta_time, pad);

@@ -198,6 +198,29 @@ static i32 TightRope_Attach(GAMEOBJECT *object, WORLDINFO *world) {
     return 1;
 }
 
+extern "C" i32 TightRope_SnapTo(GAMEOBJECT *object, NUVEC *position) {
+    object->lower_position = *position;
+    object->upper_position = object->lower_position;
+    object->upper_position.y += object->bounds_half_height;
+    object->collision_position = object->lower_position;
+    object->lower_position.y -= object->bounds_half_height;
+    if (TightRope_Attach(object, WORLD) == 0) {
+        return 0;
+    }
+    object->position.x = object->collision_position.x;
+    object->position.z = object->collision_position.z;
+    if ((static_cast<PLAYERCHARACTERCONFIG_PC *>(object->character_data->game_character)->flags_090 & 0x80000) != 0) {
+        object->position.y = object->launch_origin.y - object->character_bottom * object->origin_scale;
+    } else {
+        object->position.y = object->launch_origin.y - object->character_top * object->origin_scale;
+    }
+    u8 origin_flag = (object->field_e24 >> 3) & 1;
+    object->field_e24 &= ~8;
+    GameObjectOrigin(object);
+    object->field_e24 = (object->field_e24 & ~8) | (origin_flag << 3);
+    return 1;
+}
+
 extern "C" void __cdecl TightRope_MoveCode(GAMEOBJECT *object, i32 jump_pressed) {
     if (object->character_context != 0x44) {
         if (object->field_281 != 0 || !(0.0f >= object->velocity.y) ||

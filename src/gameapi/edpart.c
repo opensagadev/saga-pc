@@ -98,6 +98,89 @@ void __cdecl edpartScaleType(i32 index, f32 scale) {
     type->velocity_random.z *= scale;
     type->maximum_distance *= scale;
 }
+static void edpartApplyScaleType(eduimenu_s *menu, eduiitem_s *unused1, u32 unused2) {
+    struct eduimenu_s *parent;
+    if (edpart_nearest_type)
+        edpartScaleType(edpart_nearest_emit->effect_id, edpart_scale_factor);
+    parent = menu->parent;
+    if (parent)
+        eduiMenuDetach(menu);
+    if (menu->callback)
+        menu->callback(menu, parent);
+}
+
+void edpartCancelScaleTypeMenu(eduimenu_s *unused0, eduimenu_s *unused1) {
+    eduiMenuDestroy(edpart_scaletype_menu);
+    edpart_scaletype_menu = NULL;
+}
+
+void edpartCancelTypeMenu(eduimenu_s *unused0, eduimenu_s *unused1) {
+    eduiMenuDestroy(edpart_type_menu);
+    edpart_type_menu = NULL;
+}
+
+void edpartCancelThingsInstanceMenu(eduimenu_s *unused0, eduimenu_s *unused1) {
+    eduiMenuDestroy(edpart_thingsinstance_menu);
+    edpart_thingsinstance_menu = NULL;
+}
+
+void edpartCancelCutOffMenu(eduimenu_s *unused0, eduimenu_s *unused1) {
+    eduiMenuDestroy(edpart_cutoff_menu);
+    edpart_cutoff_menu = NULL;
+}
+static void edpartInstanceOrientMenu(eduimenu_s *menu, eduiitem_s *unused1, u32 unused2) {
+    if (edpart_nearest_type == NULL)
+        return;
+    edpart_instorient_menu =
+        eduiMenuCreate(70, 70, 250, 250, ed_fnt, edpartCancelInstanceOrientMenu, "Instance Orientation");
+    if (edpart_instorient_menu == NULL)
+        return;
+#define EDPART_ORIENT_SLIDER(axis, field, callback, minimum, maximum, label)                                           \
+    do {                                                                                                               \
+        eduiMenuAddItem(edpart_instorient_menu,                                                                        \
+                        eduiItemSliderCreate(axis, edblack, 0, callback, minimum, maximum,                             \
+                                             edpart_nearest_type->field[axis] * (360.0f / 65536.0f), label));          \
+        eduiItemSliderSetFmt(((edui_slider_s *)(edui_last_item)), "(%1.01f)");                                         \
+        eduiItemSliderSetGranularity(((edui_slider_s *)(edui_last_item)), 0.1f);                                       \
+    } while (0)
+    EDPART_ORIENT_SLIDER(0, rotation, edpartChangeInstanceRot, edpart_superscale * -180.0f, edpart_superscale * 360.0f,
+                         "Base Rotation X");
+    EDPART_ORIENT_SLIDER(1, rotation, edpartChangeInstanceRot, edpart_superscale * -180.0f, edpart_superscale * 360.0f,
+                         "Base Rotation Y");
+    EDPART_ORIENT_SLIDER(2, rotation, edpartChangeInstanceRot, edpart_superscale * -180.0f, edpart_superscale * 360.0f,
+                         "Base Rotation Z");
+    EDPART_ORIENT_SLIDER(0, rotation_random, edpartChangeInstanceVarRot, 0.0f, edpart_superscale * 180.0f,
+                         "Rotation Variation X");
+    EDPART_ORIENT_SLIDER(1, rotation_random, edpartChangeInstanceVarRot, 0.0f, edpart_superscale * 180.0f,
+                         "Rotation Variation Y");
+    EDPART_ORIENT_SLIDER(2, rotation_random, edpartChangeInstanceVarRot, 0.0f, edpart_superscale * 180.0f,
+                         "Rotation Variation Z");
+#undef EDPART_ORIENT_SLIDER
+    eduiMenuAttach(menu, edpart_instorient_menu);
+    edpart_instorient_menu->x = menu->x + 10;
+    edpart_instorient_menu->y = menu->y + 40;
+}
+static void edpartChangeInstanceFlag(eduimenu_s *unused0, eduiitem_s *item, u32 unused2) {
+    if (edpart_nearest_type != NULL) {
+        if (item->highlighted)
+            edpart_nearest_type->flags |= item->data;
+        else
+            edpart_nearest_type->flags &= ~item->data;
+    }
+}
+static void edpartChangeGrav(eduimenu_s *unused0, eduiitem_s *item, u32 unused2) {
+    if (edpart_nearest_type)
+        edpart_nearest_type->gravity = ((edui_slider_s *)(item))->value * 2.0f;
+}
+static void edpartChangeBounce(eduimenu_s *unused0, eduiitem_s *item, u32 unused2) {
+    if (edpart_nearest_type)
+        edpart_nearest_type->bounce = ((edui_slider_s *)(item))->value;
+}
+
+void edpartCancelGravMenu(eduimenu_s *unused0, eduimenu_s *unused1) {
+    eduiMenuDestroy(edpart_grav_menu);
+    edpart_grav_menu = NULL;
+}
 static void edpartScaleTypeMenu(eduimenu_s *menu, eduiitem_s *unused1, u32 unused2) {
     if (edpart_nearest != -1) {
         edpart_scaletype_menu = eduiMenuCreate(70, 70, 180, 250, ed_fnt, edpartCancelScaleTypeMenu, "Scale Type");

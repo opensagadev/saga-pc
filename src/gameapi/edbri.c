@@ -40,6 +40,33 @@ void __cdecl edbriClearPage(i8 page) {
     edbri_page_used[page] = 0;
     edbri_page_scene[page] = NULL;
 }
+
+void edbricbSetPlankCount(eduimenu_s *unused0, eduiitem_s *item, u32 unused2) {
+    edbri_planks = ((i32)(((edui_slider_s *)(item))->value));
+}
+
+void edbricbSetPostInterval(eduimenu_s *unused0, eduiitem_s *item, u32 unused2) {
+    edbri_post_interval = ((i32)(((edui_slider_s *)(item))->value));
+}
+
+void edbricbCancelPlankCountMenu(eduimenu_s *unused0, eduimenu_s *unused1) {
+    eduiMenuDestroy(edbri_plankcount_menu);
+    edbri_plankcount_menu = NULL;
+}
+
+void edbricbCancelBridgePropertiesMenu(eduimenu_s *unused0, eduimenu_s *unused1) {
+    eduiMenuDestroy(edbri_bridgeproperties_menu);
+    edbri_bridgeproperties_menu = NULL;
+}
+
+void edbricbSetDpadMode(eduimenu_s *unused0, eduiitem_s *item, u32 unused2) {
+    edbri_mode = item->data;
+}
+
+void edbricbCancelDpadModeMenu(eduimenu_s *unused0, eduimenu_s *unused1) {
+    eduiMenuDestroy(edbri_dpadmode_menu);
+    edbri_dpadmode_menu = NULL;
+}
 static void edbricbPlankCountMenu(eduimenu_s *parent, eduiitem_s *unused1, u32 unused2) {
     edbri_plankcount_menu = eduiMenuCreate(70, 70, 180, 250, ed_fnt, edbricbCancelPlankCountMenu, "Plank Count");
     if (!edbri_plankcount_menu)
@@ -201,6 +228,36 @@ void __cdecl edbriStartPage(i32 page_number) {
                 edbriBridgeUpdate(index, edbri_page_scene[page]);
         }
     }
+}
+
+void edbricbSetBridgeTension(eduimenu_s *unused0, eduiitem_s *item, u32 unused2) {
+    edBridges[edbri_nearest].field_28 = ((edui_slider_s *)(item))->value;
+    edbriBridgeUpdate(edbri_nearest, edbits_base_scene);
+}
+
+void edbricbSetBridgeDamp(eduimenu_s *unused0, eduiitem_s *item, u32 unused2) {
+    edBridges[edbri_nearest].field_2c = ((edui_slider_s *)(item))->value;
+    edbriBridgeUpdate(edbri_nearest, edbits_base_scene);
+}
+
+void edbricbSetBridgeGravity(eduimenu_s *unused0, eduiitem_s *item, u32 unused2) {
+    edBridges[edbri_nearest].field_30 = ((edui_slider_s *)(item))->value;
+    edbriBridgeUpdate(edbri_nearest, edbits_base_scene);
+}
+
+void edbricbSetBridgePlrweight(eduimenu_s *unused0, eduiitem_s *item, u32 unused2) {
+    edBridges[edbri_nearest].field_34 = ((edui_slider_s *)(item))->value;
+    edbriBridgeUpdate(edbri_nearest, edbits_base_scene);
+}
+
+void edbricbSetBridgeRopeheight(eduimenu_s *unused0, eduiitem_s *item, u32 unused2) {
+    edBridges[edbri_nearest].field_38 = ((edui_slider_s *)(item))->value;
+    edbriBridgeUpdate(edbri_nearest, edbits_base_scene);
+}
+
+void edbricbSetBridgeStability(eduimenu_s *unused0, eduiitem_s *item, u32 unused2) {
+    edBridges[edbri_nearest].field_3c = ((edui_slider_s *)(item))->value;
+    edbriBridgeUpdate(edbri_nearest, edbits_base_scene);
 }
 static void edbricbBridgePropertiesMenu(eduimenu_s *parent, eduiitem_s *unused1, u32 unused2) {
     if (edbri_nearest == -1)

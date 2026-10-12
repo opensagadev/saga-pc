@@ -866,6 +866,17 @@ void __cdecl NuCameraTransformScreen(NUVEC *screen, NUVEC *world, i32 count, NUM
         NuVecMtxTransformH(screen++, world++, &transform);
 }
 
+void NuCameraTransformScreenVU0(NUVEC4 *screen, NUVEC4 *world, i32 count, NUMTX *matrix) {
+    NUMTX transform;
+    NUVEC4 *end = world + count;
+    if (matrix == NULL)
+        transform = vpsmtx;
+    else
+        NuMtxMulVU0(&transform, matrix, &vpsmtx);
+    while (world < end)
+        NuVec4MtxTransformHVU0(screen++, world++, &transform);
+}
+
 i32 __cdecl NuCameraSaveState(void) {
     CAMERA_SAVED_STATE_PC *state;
     if (CameraSavedStateCountPc >= 16)

@@ -1099,6 +1099,31 @@ extern "C" void __cdecl Area_Configure(i32 area, i32 param, AREA_EXTRA_MODEL_PC 
     }
 }
 
+extern "C" void DumpAreaData(i32 mode, i32) {
+    if (big_icon_scene != NULL) {
+        NuGScnRemove(big_icon_scene);
+    }
+    big_icon_scene = NULL;
+    if (area_scene != NULL) {
+        NuGScnRemove(area_scene);
+    }
+    area_scene = NULL;
+    if (vehicle_scene != NULL) {
+        NuGScnRemove(vehicle_scene);
+    }
+    vehicle_scene = NULL;
+    if (Customiser_AccessoriesLoaded == 2) {
+        Customiser_RestoreModelTextureIDs(Game_Customiser);
+    } else if (Customiser_AccessoriesLoaded == 1) {
+        Customiser_DumpAccessories(Game_Customiser);
+    }
+    Customiser_AccessoriesLoaded = 0;
+    IconScenes_Dump();
+    CharScenes_AreaDump();
+    APIDumpCharacterModels(mode);
+    Particles_DumpAreaPage();
+}
+
 extern "C" {
     extern APICHARACTERMODELLIST FreePlayModelList[];
     extern APICHARACTERMODELLIST Area_MissionModelList[];
@@ -1218,6 +1243,45 @@ extern "C" {
         }
         AreaDataLoaded = 1;
     }
+}
+
+extern "C" void ClearUpAreaData() {
+    i32 object_index;
+
+    if (HIGHGAMEOBJECT > 0) {
+        for (object_index = 0; object_index < HIGHGAMEOBJECT; object_index++) {
+            GAMEOBJECT *obj = &Obj[object_index];
+            if ((obj->flags_1fc_half & 1) != 0) {
+                FreeTorpedoPacket((TORPEDOPACKET_PC **)&obj->torpedo);
+                RemoveGameObject(&Obj[object_index], 1);
+            }
+        }
+    }
+    if (Area != -1 && Area == last_area) {
+        return;
+    }
+    if (Customiser_AccessoriesLoaded == 2) {
+        Customiser_RestoreModelTextureIDs(CharacterCustomiser);
+    } else if (Customiser_AccessoriesLoaded == 1) {
+        Customiser_DumpAccessories(CharacterCustomiser);
+    }
+    Customiser_AccessoriesLoaded = 0;
+    APIDumpCharacterModels(0);
+    IconScenes_Dump();
+    CharScenes_AreaDump();
+    if (big_icon_scene != NULL) {
+        NuGScnRemove(big_icon_scene);
+    }
+    big_icon_scene = NULL;
+    if (area_scene != NULL) {
+        NuGScnRemove(area_scene);
+    }
+    area_scene = NULL;
+    if (vehicle_scene != NULL) {
+        NuGScnRemove(vehicle_scene);
+    }
+    vehicle_scene = NULL;
+    Particles_DumpAreaPage();
 }
 
 enum FADETYPE_VALUE {

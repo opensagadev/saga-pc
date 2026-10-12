@@ -4043,6 +4043,31 @@ static void ZapCode(GAMEOBJECT *object, i32 pressed, i32 retract_weapon) {
     }
 }
 
+i32 FireBountyHunterRocket(GAMEOBJECT *object) {
+    if (object->character_context == -1) {
+        CHARACTERDATA_PC *data = object->character_data;
+        if ((data->model_flags & 0x01000000) != 0 || object->field_108e == 6) {
+            i32 locator = data->game_character->rocket_locator;
+            if (locator != -1 && object->character_model->points_of_interest[locator] != NULL &&
+                (object->field_280 == -1 || (object->flags_1fc && Cheat_IsOn(39)))) {
+                if (object->hud_icon_timer == 2.0f) {
+                    object->hud_icon_timer = 0.0f;
+                    FindGameMsgsWithID(2, 1, -1, NULL);
+                }
+                object->field_7aa = object->field_281 == 0 ? 77 : 2;
+                object->context_animation_timer =
+                    AnimDuration(object->id, object->field_281 == 0 ? 77 : 2, 0.0f, 0.0f, 1);
+                object->field_e22 &= ~4;
+                if (object->context_animation_timer > 0.0f) {
+                    object->character_context = 20;
+                }
+                return object->character_context == 20;
+            }
+        }
+    }
+    return 0;
+}
+
 static __declspec(noinline) void ShootThisFrame(GAMEOBJECT *object, i32 bolt_id, i32 flags) {
     VEHICLE_SHOOT_STATE_PC *state = (VEHICLE_SHOOT_STATE_PC *)object;
     if ((object->flags_1f8 & 0x40000) != 0 && object->field_280 != 0xff)
@@ -5373,6 +5398,20 @@ static __declspec(noinline) void BeastCrushCodePc(GAMEOBJECT *object) {
         object->flags_e24 &= ~1;
         object->context_variant_flags |= 0x40;
     }
+}
+
+void EatVictim(GAMEOBJECT *object) {
+    object->character_context = -1;
+    if (object->force_target == NULL || (object->field_e24 & 1) == 0) {
+        return;
+    }
+    object->field_7aa = 0x4e;
+    if (object->character_model->model_data_b[0x4e] == NULL) {
+        return;
+    }
+    object->character_context = 0x3f;
+    object->context_animation_timer = AnimDuration(object->id, 0x4e, 0.0f, 0.0f, 1);
+    object->context_flags_pc &= ~0x40;
 }
 
 void __cdecl Move_BEAST(GAMEOBJECT *object) {

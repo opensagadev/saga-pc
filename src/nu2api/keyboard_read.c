@@ -121,6 +121,43 @@ i32 NuKeyToAscii(u32 key, i32 shifted) {
     return 0;
 }
 
+i32 cbInteractMenuTitle(edui_interact_s *interact) {
+    static f32 offsetx;
+    static f32 offsety;
+    i32 result = (edui_cursor_buttons & EDUI_CURSOR_PRIMARY) != 0;
+    eduimenu_s *menu = interact->menu;
+    if (!(menu->flags & 1)) {
+        if (!eduiInteractLocked) {
+            offsetx = 0.0f - menu->x;
+            offsety = 0.0f - menu->y;
+        }
+        menu->x = ((i32)(0.0f - offsetx));
+        menu->y = ((i32)(0.0f - offsety));
+    }
+    return result;
+}
+
+i32 cbInteractMenuScrollUp(edui_interact_s *interact) {
+    eduimenu_s *menu = interact->menu;
+    if (menu->field_0c) {
+        if (menu->field_0c->previous)
+            menu->field_0c = menu->field_0c->previous;
+        menu->selected = menu->field_0c;
+    }
+    return 0;
+}
+
+i32 cbInteractMenuCancelChild(edui_interact_s *interact) {
+    eduimenu_s *menu = interact->menu;
+    if (menu && menu->child && menu->child->callback)
+        menu->child->callback(menu->child, menu);
+    return 0;
+}
+
+void edcamMove(FRAME_PAD_PC *pad) {
+    edcamMoveEx(pad, NuTimeGetFrameTime());
+}
+
 /* PC input startup remains structurally incomplete at the marked platform
  * dependencies; these candidates preserve the verified wrapper ABI/order. */
 extern HINSTANCE PCInputWindow_candidate;

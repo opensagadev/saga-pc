@@ -35,6 +35,15 @@ void MaulA_Reset(WORLDINFO *world) {
     Maul_obj = FindGameObject(id_DARTHMAUL, 1, 1, 0, 0);
 }
 
+void MaulF_Init(WORLDINFO *world) {
+    struct nuhspecial_s *slots;
+    MaulA_ai_message = CheckGizAIMessage(gizaimessagesys, "ShowHearts", NULL);
+    slots = LevHSpecial;
+    NuSpecialFind(world->current_gscn, &slots[0], "throw_object1", 1);
+    NuSpecialFind(world->current_gscn, &slots[1], "throw_object2", 1);
+    NuSpecialFind(world->current_gscn, &slots[2], "throw_object3", 1);
+}
+
 typedef struct racepod_resource_pc_s {
     NUMTX matrix;
     NUVEC4 previous_axis;
