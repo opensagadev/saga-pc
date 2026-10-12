@@ -2427,7 +2427,6 @@ void __cdecl Players_Init(void) {
     }
     RememberPlayerIDs(0, players[0] != NULL ? (i16)players[0]->id : -1, players[1] != NULL ? (i16)players[1]->id : -1);
 }
-
 static i32 Customise_FindLetter(char character) {
     i32 letter = 0;
     for (; letter != 38; ++letter)

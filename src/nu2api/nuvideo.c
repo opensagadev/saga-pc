@@ -118,7 +118,6 @@ void NuRegionSet(i32 region) {
 
 void __cdecl bgProcDataOversize(i32 size) {
 }
-
 static void NuDebugMsgFunction(char *format, ...) {
     char captxt[16384];
     if (!DisableDebugMsg) {

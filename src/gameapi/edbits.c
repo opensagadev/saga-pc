@@ -194,7 +194,6 @@ void edgraCalculatePage(i8 page, i32 calculate_vectors) {
         max_clumps = EDGRA_MAX_CLUMPS;
     }
 }
-
 static void edgracbInstanceMenu(eduimenu_s *parent, eduiitem_s *unused1, u32 unused2) {
     i32 selected_found;
     i32 added;
@@ -241,7 +240,6 @@ static void edgracbInstanceMenu(eduimenu_s *parent, eduiitem_s *unused1, u32 unu
     if (selected_found)
         edgra_instance_menu->field_0c = edgra_instance_menu->selected;
 }
-
 static void edgracbDpadModeMenu(eduimenu_s *parent, eduiitem_s *unused1, u32 unused2) {
     u32 colours[4] = {0x80000000, 0x80ff0000, 0x80808080, 0x80404040};
     edgra_dpadmode_menu = eduiMenuCreate(70, 70, 180, 250, ed_fnt, edgracbCancelDpadModeMenu, "Dpad Mode");

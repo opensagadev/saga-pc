@@ -3,7 +3,6 @@
 i32 __cdecl Hub_Outside(void) {
     return WORLD->current_level == HUB_LDATA && HubAiMusicStatePc.area == 7;
 }
-
 static void Hub_MakeListCharactersAvailable(i16 *characters) {
     i32 character;
     struct gameobject_s *object;

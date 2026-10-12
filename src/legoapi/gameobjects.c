@@ -4562,7 +4562,7 @@ i32 CheckPosAIArea(AIAREA_s *area, NUVEC *position, float tolerance) {
            local_position.y - tolerance <= area->height && local_position.z - tolerance <= area->half_depth;
 }
 
-static i32 GameAIActionParseSpeed(char *name, u8 *speed) {
+i32 GameAIActionParseSpeed(char *name, u8 *speed) {
     if (NuStrICmp(name, "RUN") == 0) {
         *speed = AI_ACTION_SPEED_RUN;
         return 1;

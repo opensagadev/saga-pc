@@ -104,7 +104,6 @@ void edgraClumpReseed(i32 index) {
     clump->seed = NuRand(NULL);
     edgraInitAllClumps();
 }
-
 static void edgracbClumpAreaMenu(eduimenu_s *parent, eduiitem_s *unused1, u32 unused2) {
     u32 colours[4] = {0x80000000, 0x80ff0000, 0x80808080, 0x80404040};
     if (edgra_nearest == -1 || !GrassClumps[edgra_nearest].element_count)
@@ -122,7 +121,6 @@ static void edgracbClumpAreaMenu(eduimenu_s *parent, eduiitem_s *unused1, u32 un
                                                               edgracbSetClumpArea, "Grid"));
     edgraAttachMenu(parent, edgra_clumparea_menu);
 }
-
 static void edgracbClumpFadeMenu(eduimenu_s *parent, eduiitem_s *unused1, u32 unused2) {
     if (!(edgra_nearest == -1 || !GrassClumps[edgra_nearest].element_count)) {
         edgra_clumpfade_menu = eduiMenuCreate(70, 70, 180, 250, ed_fnt, edgracbCancelClumpFadeMenu, "Clump Fading");
@@ -143,7 +141,6 @@ static void edgracbClumpFadeMenu(eduimenu_s *parent, eduiitem_s *unused1, u32 un
         }
     }
 }
-
 static void edgracbClumpPropertiesMenu(eduimenu_s *parent, eduiitem_s *unused1, u32 unused2) {
     u32 colours[4] = {0x80000000, 0x80ff0000, 0x80808080, 0x80404040};
     if (!(edgra_nearest == -1 || !GrassClumps[edgra_nearest].element_count)) {
@@ -177,7 +174,6 @@ static void edgracbClumpPropertiesMenu(eduimenu_s *parent, eduiitem_s *unused1, 
         edgraAttachMenu(parent, edgra_clumpproperties_menu);
     }
 }
-
 static void edgracbClumpModeMenu(eduimenu_s *parent, eduiitem_s *unused1, u32 unused2) {
     edgra_clumpmode_menu = eduiMenuCreate(70, 70, 200, 250, ed_fnt, edgracbCancelClumpModeMenu, "Clump Mode");
     if (!edgra_clumpmode_menu)
@@ -200,7 +196,6 @@ static void edgracbClumpModeMenu(eduimenu_s *parent, eduiitem_s *unused1, u32 un
                         eduiItemCheckCreate(3, edblack, edgra_mode == 3, 1, edgracbSetClumpMode, "Individual FS Mode"));
     edgraAttachMenu(parent, edgra_clumpmode_menu);
 }
-
 static void edgracbGlobalsMenu(eduimenu_s *parent, eduiitem_s *unused1, u32 unused2) {
     edgra_globals_menu =
         eduiMenuCreate(70, 70, 220, 300, ed_fnt, edgracbCancelGlobalsMenu, "Global Options (Take Care!)");
@@ -491,7 +486,6 @@ i32 __cdecl edgraLoadPage(char *path, void *scene, i32 terrain, VARIPTR *buffer,
     (void)buffer_end;
     return page;
 }
-
 static void edgracbFileLoad(eduimenu_s *menu, eduiitem_s *unused1, u32 unused2) {
     char path[256];
     char directory[256];
@@ -516,7 +510,6 @@ static void edgracbFileLoad(eduimenu_s *menu, eduiitem_s *unused1, u32 unused2) 
     edgraInitAllClumps();
     eduiCreateMessageMenu(menu, "Loaded OK", 1);
 }
-
 static i32 edgraProc(f32 delta_time, FRAME_PAD_PC *pad) {
     if (edgra_active_menu) {
         eduiMenuProcess(edgra_active_menu, delta_time, pad);

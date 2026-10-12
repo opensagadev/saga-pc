@@ -1166,7 +1166,7 @@ i32 __cdecl Action_RaceOpponent(AISYS_PC *system, AISCRIPTPROCESS_PC *processor,
     return 0;
 }
 
-static void GizAction_SetAIState(GIZFLOW_PC *unused0, FLOWBOX_PC *unused1, char **params, int count) {
+void GizAction_SetAIState(GIZFLOW_PC *unused0, FLOWBOX_PC *unused1, char **params, int count) {
     i32 index;
     i32 object_index;
     NUVEC origin = v000;
@@ -1234,7 +1234,7 @@ static void GizAction_SetAIState(GIZFLOW_PC *unused0, FLOWBOX_PC *unused1, char 
     }
 }
 
-static void GizActions_CompleteLevel(GIZFLOW_PC *unused0, FLOWBOX_PC *unused1, char **params, int count) {
+void GizActions_CompleteLevel(GIZFLOW_PC *unused0, FLOWBOX_PC *unused1, char **params, int count) {
     char *cutscene_name;
     struct level_data_pc_s *level;
     i32 index;
@@ -1260,7 +1260,6 @@ static void GizActions_CompleteLevel(GIZFLOW_PC *unused0, FLOWBOX_PC *unused1, c
         CompleteLevel(WORLD);
     }
 }
-
 static void GizActions_GoThroughDoor(GIZFLOW_PC *unused0, FLOWBOX_PC *unused1, char **params, int param_count) {
     i32 param_index;
     char *door_name = NULL;
@@ -1280,7 +1279,7 @@ static void GizActions_GoThroughDoor(GIZFLOW_PC *unused0, FLOWBOX_PC *unused1, c
     }
 }
 
-static void GizAction_ActivateEffect(GIZFLOW_PC *unused0, FLOWBOX_PC *unused1, char **params, int count) {
+void GizAction_ActivateEffect(GIZFLOW_PC *unused0, FLOWBOX_PC *unused1, char **params, int count) {
     char *name;
     i32 visible;
     i32 index;
@@ -1302,7 +1301,6 @@ static void GizAction_ActivateEffect(GIZFLOW_PC *unused0, FLOWBOX_PC *unused1, c
         EffectOffProgress_Update(WorldInfo_CurrentlyActive()->level_progress, name, visible);
     }
 }
-
 static void GizAction_SetAIMessage(GIZFLOW_PC *unused0, FLOWBOX_PC *unused1, char **params, int count) {
     i32 index;
     struct gizaimessage_s *message;

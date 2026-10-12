@@ -19,7 +19,6 @@ void __cdecl edppPtlShelve(i32 index) {
         particle->instance_id = 99999;
     }
 }
-
 static i32 edppProc(f32 delta_time, FRAME_PAD_PC *pad) {
     edptl_count += 5;
     if (edpp_active_menu != NULL) {
@@ -166,7 +165,6 @@ void __cdecl edppDetermineNearest(f32 max_distance_squared) {
         }
     }
 }
-
 static void cbPtlSelType(eduimenu_s *menu, eduiitem_s *item, u32 unused2) {
     ptltypemenu = NULL;
     edpp_active_menu = NULL;
@@ -174,7 +172,6 @@ static void cbPtlSelType(eduimenu_s *menu, eduiitem_s *item, u32 unused2) {
     eduiMenuDetach(menu);
     eduiMenuDestroy(menu);
 }
-
 static void edppRender() {
     edcamSet();
     edppDrawCursor();
@@ -182,7 +179,6 @@ static void edppRender() {
     if (edpp_active_menu != NULL)
         eduiMenuRender(edpp_active_menu);
 }
-
 static void cbEffectListMenu(eduimenu_s *parent, eduiitem_s *unused1, u32 unused2) {
     u32 colours[4] = {0x80000000, 0x80ff0000, 0x80808080, 0x80404040};
     effectlistmenu = eduiMenuCreate(70, 70, 180, 250, ed_fnt, cbCancelEffectListMenu, "Effect List");
@@ -198,7 +194,6 @@ static void cbEffectListMenu(eduimenu_s *parent, eduiitem_s *unused1, u32 unused
         effectlistmenu->y = parent->y + 40;
     }
 }
-
 static void edptlcbTestDetailMenu(eduimenu_s *parent, eduiitem_s *unused1, u32 unused2) {
     edptl_testdetail_menu = eduiMenuCreate(70, 70, 250, 250, ed_fnt, edptlcbCancelTestDetailMenu, "Detail Level Test");
     if (edptl_testdetail_menu == NULL)
@@ -215,7 +210,6 @@ static void edptlcbTestDetailMenu(eduimenu_s *parent, eduiitem_s *unused1, u32 u
     edptl_testdetail_menu->x = parent->x + 10;
     edptl_testdetail_menu->y = parent->y + 40;
 }
-
 static void edptlcbDpadModeMenu(eduimenu_s *parent, eduiitem_s *unused1, u32 unused2) {
     u32 colours[4] = {0x80000000, 0x80ff0000, 0x80808080, 0x80404040};
     dpadmodemenu = eduiMenuCreate(70, 70, 180, 250, ed_fnt, edptlcbCancelDpadModeMenu, "Dpad Mode");
@@ -235,7 +229,6 @@ static void edptlcbDpadModeMenu(eduimenu_s *parent, eduiitem_s *unused1, u32 unu
     dpadmodemenu->x = parent->x + 10;
     dpadmodemenu->y = parent->y + 40;
 }
-
 static void edptlcbOrphanListMenu(eduimenu_s *parent, eduiitem_s *unused1, u32 unused2) {
     i32 index;
     edptl_orphanlist_menu = eduiMenuCreate(70, 70, 180, 250, ed_fnt, edptlcbCancelOrphanListMenu, "Orphan List");
@@ -251,7 +244,6 @@ static void edptlcbOrphanListMenu(eduimenu_s *parent, eduiitem_s *unused1, u32 u
     edptl_orphanlist_menu->x = parent->x + 10;
     edptl_orphanlist_menu->y = parent->y + 40;
 }
-
 static void cbPtlDamageMenu(eduimenu_s *menu, eduiitem_s *unused1, u32 unused2) {
     if (edpp_nearest == -1 || edpp_ptls[edpp_nearest].instance_id == -1) {
         return;
@@ -304,7 +296,6 @@ void __cdecl edppDeleteEffect(i32 index) {
     --edpp_types_used;
     edppDetermineNearest(1.0f);
 }
-
 static void cbPtlDeleteEffect(eduimenu_s *menu, eduiitem_s *unused1, u32 unused2) {
     struct eduimenu_s *parent;
     edppDeleteEffect(edpp_create_type);
@@ -317,7 +308,6 @@ static void cbPtlDeleteEffect(eduimenu_s *menu, eduiitem_s *unused1, u32 unused2
         menu->callback(menu, parent);
     }
 }
-
 static void cbPtlQuickDeleteType(eduimenu_s *menu, eduiitem_s *item, u32 unused2) {
     struct eduimenu_s *parent;
     edppDeleteEffect(item->data);
@@ -329,7 +319,6 @@ static void cbPtlQuickDeleteType(eduimenu_s *menu, eduiitem_s *item, u32 unused2
         menu->callback(menu, parent);
     }
 }
-
 static void edptlcbEmptyClipboard(eduimenu_s *menu, eduiitem_s *unused1, u32 unused2) {
     struct eduimenu_s *parent;
     i32 create_type = edpp_create_type;

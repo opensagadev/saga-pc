@@ -28969,3 +28969,261 @@ extern "C" {
 #pragma bss_seg(".bss$edanim_sound_mode")
     i32 edanim_sound_mode;
 }
+
+extern "C" {
+#pragma bss_seg(".bss$DisableDebugMsg")
+    i32 DisableDebugMsg;
+
+#pragma bss_seg(".bss$err_msg_filter")
+    char err_msg_filter[32];
+
+#pragma bss_seg(".bss$nufile")
+    char *nufile;
+
+#pragma bss_seg(".bss$nuline")
+    i32 nuline;
+}
+
+extern "C" {
+#pragma bss_seg(".bss$ed_fnt")
+    void *ed_fnt;
+
+#pragma bss_seg(".bss$edanim_soundtype_menu")
+    struct eduimenu_s *edanim_soundtype_menu;
+
+#pragma bss_seg(".bss$edanim_sound_type")
+    i32 edanim_sound_type;
+
+#pragma bss_seg(".bss$edSfxAllCount")
+    i32 edSfxAllCount;
+
+#pragma bss_seg(".bss$edbits_level_save_directory")
+    char edbits_level_save_directory[256];
+
+#pragma bss_seg(".bss$edbits_level_save_name")
+    char edbits_level_save_name[256];
+
+#pragma bss_seg(".bss$edbits_level_save_extension")
+    char edbits_level_save_extension[256];
+
+#pragma bss_seg(".bss$edanim_mtl")
+    void *edanim_mtl;
+
+#pragma bss_seg(".bss$edanim_active_menu")
+    struct eduimenu_s *edanim_active_menu;
+}
+
+extern "C" {
+#pragma bss_seg(".bss$edptl_quickdel_menu")
+    struct eduimenu_s *edptl_quickdel_menu;
+}
+
+extern "C" {
+#pragma bss_seg(".bss$edgra_clumparea_menu")
+    struct eduimenu_s *edgra_clumparea_menu;
+
+#pragma bss_seg(".bss$edgra_clumpfade_menu")
+    struct eduimenu_s *edgra_clumpfade_menu;
+
+#pragma data_seg(".data$edgra_superscale")
+    i32 edgra_superscale = 1;
+
+#pragma bss_seg(".bss$edui_last_item")
+    struct eduiitem_s *edui_last_item;
+
+#pragma bss_seg(".bss$fadeinitem")
+    struct edui_slider_s *fadeinitem;
+
+#pragma bss_seg(".bss$fadeoutitem")
+    struct edui_slider_s *fadeoutitem;
+
+#pragma bss_seg(".bss$edgra_clumpproperties_menu")
+    struct eduimenu_s *edgra_clumpproperties_menu;
+
+#pragma bss_seg(".bss$edgra_clumpmode_menu")
+    struct eduimenu_s *edgra_clumpmode_menu;
+
+#pragma data_seg(".data$edgra_mode")
+    i32 edgra_mode = 1;
+
+#pragma bss_seg(".bss$edgra_globals_menu")
+    struct eduimenu_s *edgra_globals_menu;
+
+#pragma bss_seg(".bss$globalfadeinitem")
+    struct edui_slider_s *globalfadeinitem;
+
+#pragma bss_seg(".bss$globalfadeoutitem")
+    struct edui_slider_s *globalfadeoutitem;
+
+#pragma bss_seg(".bss$edgra_active_menu")
+    struct eduimenu_s *edgra_active_menu;
+
+#pragma bss_seg(".bss$edgra_editormode")
+    i32 edgra_editormode;
+}
+
+extern "C" {
+#pragma bss_seg(".bss$edpart_scaletype_menu")
+    struct eduimenu_s *edpart_scaletype_menu;
+
+#pragma data_seg(".data$edpart_scale_factor")
+    f32 edpart_scale_factor = 1.0f;
+
+#pragma bss_seg(".bss$edpart_type_menu")
+    struct eduimenu_s *edpart_type_menu;
+
+#pragma data_seg(".data$edpart_which_scene")
+    i32 edpart_which_scene = 1;
+
+#pragma bss_seg(".bss$edpart_thingsinstance_menu")
+    struct eduimenu_s *edpart_thingsinstance_menu;
+
+#pragma bss_seg(".bss$edpart_filter")
+    i32 edpart_filter;
+
+#pragma bss_seg(".bss$edpart_cutoff_menu")
+    struct eduimenu_s *edpart_cutoff_menu;
+
+#pragma data_seg(".data$edpart_superscale")
+    i32 edpart_superscale = 1;
+
+#pragma bss_seg(".bss$edpart_grav_menu")
+    struct eduimenu_s *edpart_grav_menu;
+}
+
+extern "C" {}
+
+extern "C" {
+#pragma bss_seg(".bss$ptltypemenu")
+    struct eduimenu_s *ptltypemenu;
+
+#pragma bss_seg(".bss$effectlistmenu")
+    struct eduimenu_s *effectlistmenu;
+
+#pragma bss_seg(".bss$edptl_testdetail_menu")
+    struct eduimenu_s *edptl_testdetail_menu;
+
+#pragma bss_seg(".bss$dpadmodemenu")
+    struct eduimenu_s *dpadmodemenu;
+
+#pragma bss_seg(".bss$edptl_orphanlist_menu")
+    struct eduimenu_s *edptl_orphanlist_menu;
+
+#pragma bss_seg(".bss$edptl_damage_menu")
+    struct eduimenu_s *edptl_damage_menu;
+
+#pragma data_seg(".data$edptl_clipboard_entry")
+    i32 edptl_clipboard_entry = -1;
+
+#pragma bss_seg(".bss$edptl_count")
+    i32 edptl_count;
+}
+
+extern "C" {
+#pragma bss_seg(".bss$edbri_plankcount_menu")
+    struct eduimenu_s *edbri_plankcount_menu;
+
+#pragma data_seg(".data$edbri_planks")
+    i32 edbri_planks = 11;
+
+#pragma data_seg(".data$edbri_post_interval")
+    i32 edbri_post_interval = 5;
+
+#pragma bss_seg(".bss$edbri_dpadmode_menu")
+    struct eduimenu_s *edbri_dpadmode_menu;
+
+#pragma bss_seg(".bss$edbri_mode")
+    i32 edbri_mode;
+
+#pragma bss_seg(".bss$edbri_bridgeproperties_menu")
+    struct eduimenu_s *edbri_bridgeproperties_menu;
+}
+
+extern "C" {}
+
+extern "C" {
+#pragma bss_seg(".bss$edgra_instance_menu")
+    struct eduimenu_s *edgra_instance_menu;
+
+#pragma bss_seg(".bss$edgra_filter")
+    i32 edgra_filter;
+
+#pragma bss_seg(".bss$edgra_instance_type")
+    i32 edgra_instance_type;
+
+#pragma bss_seg(".bss$edgra_dpadmode_menu")
+    struct eduimenu_s *edgra_dpadmode_menu;
+
+#pragma bss_seg(".bss$edgra_dpadmode")
+    i32 edgra_dpadmode;
+}
+
+extern "C" {}
+
+extern "C" {}
+
+extern "C" {
+#pragma data_seg(".data$MENUEXITG")
+    u8 MENUEXITG = 191;
+
+#pragma bss_seg(".bss$PauseMenus_Align")
+    i32 PauseMenus_Align;
+
+#pragma bss_seg(".bss$PauseMenus_X")
+    f32 PauseMenus_X;
+
+#pragma data_seg(".data$MENULOSTR1")
+    u8 MENULOSTR1 = 191;
+
+#pragma data_seg(".data$MENULOSTB1")
+    u8 MENULOSTB1 = 128;
+}
+
+extern "C" {
+#pragma bss_seg(".bss$iconback")
+    nuhspecial_s iconback;
+
+#pragma bss_seg(".bss$SHOPCHARCOUNT")
+    i32 SHOPCHARCOUNT;
+
+#pragma bss_seg(".bss$TopShelf")
+    shopitem_s TopShelf[6];
+}
+
+extern "C" {
+#pragma bss_seg(".bss$ptlreadoutmenu")
+    struct eduimenu_s *ptlreadoutmenu;
+
+#pragma bss_seg(".bss$edpp_readout")
+    i32 edpp_readout;
+}
+
+extern "C" {
+#pragma bss_seg(".bss$edanim_particletype_menu")
+    struct eduimenu_s *edanim_particletype_menu;
+
+#pragma bss_seg(".bss$edanim_particle_type")
+    i32 edanim_particle_type;
+}
+
+extern "C" {
+#pragma bss_seg(".bss$edpart_instanceflags_menu")
+    struct eduimenu_s *edpart_instanceflags_menu;
+
+#pragma bss_seg(".bss$edpart_debrisscale_menu")
+    struct eduimenu_s *edpart_debrisscale_menu;
+
+#pragma bss_seg(".bss$edpart_debrissettings_menu")
+    struct eduimenu_s *edpart_debrissettings_menu;
+
+#pragma bss_seg(".bss$edpart_active_menu")
+    struct eduimenu_s *edpart_active_menu;
+
+#pragma bss_seg(".bss$edpart_count")
+    i32 edpart_count;
+}
+
+extern "C" {
+#pragma bss_seg(".bss$edbri_active_menu")
+    struct eduimenu_s *edbri_active_menu;
+}

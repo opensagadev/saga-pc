@@ -42,7 +42,6 @@ __declspec(noinline) void __cdecl KillPartsByScene(NUGSCN *scene) {
         }
     }
 }
-
 static void edpartDeleteType(eduimenu_s *menu, eduiitem_s *unused1, u32 unused2) {
     i32 emitter;
     if (edpart_nearest_type == &part_types[edpart_create_type]) {
@@ -353,7 +352,6 @@ __declspec(noinline) void edpartStartPage(u8 page) {
 __declspec(noinline) void edpartStopPage(u8 page) {
     part_page_on[(i8)page] = 0;
 }
-
 static void edpartInstanceFlagsMenu(eduimenu_s *menu, eduiitem_s *unused1, u32 unused2) {
     if (edpart_nearest_type == NULL)
         return;
@@ -418,7 +416,6 @@ static void edpartInstanceFlagsMenu(eduimenu_s *menu, eduiitem_s *unused1, u32 u
         edpart_instanceflags_menu->y = menu->y + 40;
     }
 }
-
 static void edpartDebrisScaleMenu(eduimenu_s *menu, eduiitem_s *unused1, u32 unused2) {
     edpart_debrisscale_menu = eduiMenuCreate(70, 70, 180, 300, ed_fnt, edpartCancelDebrisScaleMenu, "Debris Scale");
     if (edpart_debrisscale_menu != NULL && edpart_nearest_type != NULL) {
@@ -430,7 +427,6 @@ static void edpartDebrisScaleMenu(eduimenu_s *menu, eduiitem_s *unused1, u32 unu
         edpart_debrisscale_menu->y = menu->y + 40;
     }
 }
-
 static void edpartDebrisSettingsMenu(eduimenu_s *menu, eduiitem_s *unused1, u32 unused2) {
     if (edpart_nearest_type != NULL) {
         edpart_debrissettings_menu =
@@ -3325,7 +3321,6 @@ void __cdecl edpartDetermineNearest(f32 distance) {
             PartNearestTypePtrPc = &part_types[PartNearestEmitterPtrPc->effect_id];
     }
 }
-
 static void edpartCopyType(eduimenu_s *menu, eduiitem_s *unused1, u32 unused2) {
     struct eduimenu_s *parent;
     if (part_types_used < 128 && edpart_create_type != -1) {
@@ -3357,7 +3352,6 @@ static void edpartCopyType(eduimenu_s *menu, eduiitem_s *unused1, u32 unused2) {
     if (menu->callback)
         menu->callback(menu, parent);
 }
-
 static void edpartRender() {
     edcamSet();
     edpartDrawCursor();
@@ -4273,7 +4267,6 @@ void AddScaledVariableShotPARTEffect(i32 effect, NUVEC *position, f32 rate, f32 
     if (scaled != -1)
         AddVariableShotPARTEffect(scaled, position, rate, time, orientation);
 }
-
 static i32 edpartProc(float delta_time, FRAME_PAD_PC *pad) {
     edpart_count += 5;
     if (edpart_active_menu) {

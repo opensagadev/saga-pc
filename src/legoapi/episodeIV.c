@@ -146,7 +146,6 @@ void AsteroidChaseD_Update(WORLDINFO *unused0) {
         }
     }
 }
-
 static void DrawFalconSpotLights(GAMEOBJECT *object) {
     NUMTX matrix;
     if ((u8)(object->field_280) > 1 || object->id != id_MILLENNIUMFALCON || WORLD->level_objects[0x127].active == 0)

@@ -123,7 +123,7 @@ static void UpdateTotalPtls(DEBRIS_INFO_PC *effect) {
     }
 }
 
-static void cbPtlSetFacing(eduimenu_s *unused0, eduiitem_s *item, u32 unused2) {
+void cbPtlSetFacing(eduimenu_s *unused0, eduiitem_s *item, u32 unused2) {
     EDPP_PARTICLE_PC *particle = &edpp_ptls[edpp_nearest];
     particle->facing_mode = item->highlighted;
     if (item->highlighted) {
@@ -136,7 +136,6 @@ static void cbPtlSetFacing(eduimenu_s *unused0, eduiitem_s *item, u32 unused2) {
         DebrisSetFacing(particle->instance_id, 0, 0, 0);
     }
 }
-
 static void cbPtlQuickDeleteMenu(eduimenu_s *menu, eduiitem_s *unused1, u32 unused2) {
     edptl_quickdel_menu = eduiMenuCreate(70, 70, 180, 250, ed_fnt, cbPtlCancelQuickDeleteMenu, "Quick Delete");
     if (edptl_quickdel_menu) {

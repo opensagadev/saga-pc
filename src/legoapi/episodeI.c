@@ -329,7 +329,7 @@ void KaminoE_Init(WORLDINFO *world) {
         LevForce = *(i32 *)g;
 }
 
-static i32 JediBInitLocator(WORLDINFO *world, NUVEC *position, i32 angle, AILOCATOR_PC *locator, f32 radius) {
+i32 JediBInitLocator(WORLDINFO *world, NUVEC *position, i32 angle, AILOCATOR_PC *locator, f32 radius) {
     f32 floor_y;
     if (netclient != 0) {
         return 0;

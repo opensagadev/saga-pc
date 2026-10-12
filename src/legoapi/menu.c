@@ -200,7 +200,7 @@ void MenuEnterTitles(MENU *menu) {
     STUBBED_NAMED(0x004f4920); /* NuPadInit() */
 }
 
-static void MenuUpdatePauseRestart(MENU_s *menu) {
+void MenuUpdatePauseRestart(MENU_s *menu) {
     if (menu->confirm_pressed != 0 && menu->selected_item == 0) {
         Door_Reset();
         Players_InitPositions(WORLD);
@@ -213,7 +213,6 @@ static void MenuUpdatePauseRestart(MENU_s *menu) {
         MenuSFX = GameAudio_GetSfxId(0x31);
     }
 }
-
 static void MenuDrawPauseRestart(MENU_s *menu) {
     if (MenuStopDraw == 0) {
         SmartTextEx(TTab[tRESTARTLEVEL], PauseMenus_X, menu->draw_y - MENUDY * 0.25f, 1.0f, MENUTEXTSCALE,
@@ -223,7 +222,6 @@ static void MenuDrawPauseRestart(MENU_s *menu) {
     GameDrawMenuEntry(menu, TTab[tYES]);
     GameDrawMenuEntry(menu, TTab[tNO]);
 }
-
 static void MenuDrawPauseExit(MENU_s *menu) {
     LEVELDATA_PC *save_level = CanSaveAndExit(WORLD);
     char *warning;
@@ -283,7 +281,7 @@ static void MenuDrawPauseExit(MENU_s *menu) {
     }
 }
 
-static void MenuDrawBonusWin(MENU_s *unused0) {
+void MenuDrawBonusWin(MENU_s *unused0) {
     if (MenuStopDraw == 0) {
         i32 green;
         i32 red;

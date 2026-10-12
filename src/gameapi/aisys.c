@@ -6138,8 +6138,8 @@ i32 __cdecl Action_CameraShake(AISYS_PC *sys, AISCRIPTPROCESS_PC *processor, AIP
     return 1;
 }
 
-static i32 Action_ResetGameCamera(AISYS_PC *sys, AISCRIPTPROCESS_PC *processor, AIPACKET_PC *packet, char **params,
-                                  i32 param_4, i32 param_5, f32 param_6) {
+i32 Action_ResetGameCamera(AISYS_PC *sys, AISCRIPTPROCESS_PC *processor, AIPACKET_PC *packet, char **params,
+                           i32 param_4, i32 param_5, f32 param_6) {
     if (param_5 != 0) {
         GameCam_Reset(GameCam);
     }
@@ -6900,8 +6900,8 @@ i32 __cdecl Action_PlayGizSpecial(AISYS_PC *sys, AISCRIPTPROCESS_PC *processor, 
     return 1;
 }
 
-static i32 Action_SetObstacleToEnd(AISYS_PC *sys, AISCRIPTPROCESS_PC *processor, AIPACKET_PC *packet, char **params,
-                                   i32 param_4, i32 param_5, f32 param_6) {
+i32 Action_SetObstacleToEnd(AISYS_PC *sys, AISCRIPTPROCESS_PC *processor, AIPACKET_PC *packet, char **params,
+                            i32 param_4, i32 param_5, f32 param_6) {
     (void)sys;
     (void)processor;
     (void)packet;
@@ -7888,8 +7888,8 @@ i32 __cdecl Action_SetLevelPath(AISYS_PC *sys, AISCRIPTPROCESS_PC *processor, AI
     return 1;
 }
 
-static i32 Action_SetHint(AISYS_PC *sys, AISCRIPTPROCESS_PC *processor, AIPACKET_PC *packet, char **params, i32 param_4,
-                          i32 param_5, f32 param_6) {
+i32 Action_SetHint(AISYS_PC *sys, AISCRIPTPROCESS_PC *processor, AIPACKET_PC *packet, char **params, i32 param_4,
+                   i32 param_5, f32 param_6) {
     (void)sys;
     (void)processor;
     (void)packet;
@@ -7900,8 +7900,8 @@ static i32 Action_SetHint(AISYS_PC *sys, AISCRIPTPROCESS_PC *processor, AIPACKET
     return 1;
 }
 
-static i32 Action_SetHintComplete(AISYS_PC *sys, AISCRIPTPROCESS_PC *processor, AIPACKET_PC *packet, char **params,
-                                  i32 param_4, i32 param_5, f32 param_6) {
+i32 Action_SetHintComplete(AISYS_PC *sys, AISCRIPTPROCESS_PC *processor, AIPACKET_PC *packet, char **params,
+                           i32 param_4, i32 param_5, f32 param_6) {
     (void)sys;
     (void)processor;
     (void)packet;
@@ -7912,8 +7912,8 @@ static i32 Action_SetHintComplete(AISYS_PC *sys, AISCRIPTPROCESS_PC *processor, 
     return 1;
 }
 
-static i32 Action_CancelHint(AISYS_PC *sys, AISCRIPTPROCESS_PC *processor, AIPACKET_PC *packet, char **params,
-                             i32 param_4, i32 param_5, f32 param_6) {
+i32 Action_CancelHint(AISYS_PC *sys, AISCRIPTPROCESS_PC *processor, AIPACKET_PC *packet, char **params, i32 param_4,
+                      i32 param_5, f32 param_6) {
     (void)sys;
     (void)processor;
     (void)packet;
@@ -8846,7 +8846,6 @@ i32 __cdecl Action_SetShieldHitPoints(AISYS_PC *system, AISCRIPTPROCESS_PC *proc
     }
     return 1;
 }
-
 static i32 Action_SetMessage(AISYS_PC *unused0, AISCRIPTPROCESS_PC *processor, AIPACKET_PC *unused2, char **params,
                              i32 num_params, i32 first_time, f32 unused6) {
     if (first_time && gizaimessagesys != NULL && num_params != 0) {
@@ -9410,8 +9409,8 @@ i32 __cdecl Action_AddDebris(AISYS_PC *sys, AISCRIPTPROCESS_PC *processor, AIPAC
     return 1;
 }
 
-static i32 Action_JudderGameCamera(AISYS_PC *sys, AISCRIPTPROCESS_PC *processor, AIPACKET_PC *packet, char **params,
-                                   i32 param_4, i32 param_5, f32 param_6) {
+i32 Action_JudderGameCamera(AISYS_PC *sys, AISCRIPTPROCESS_PC *processor, AIPACKET_PC *packet, char **params,
+                            i32 param_4, i32 param_5, f32 param_6) {
     (void)sys;
     (void)packet;
     (void)param_6;

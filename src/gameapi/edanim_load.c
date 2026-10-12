@@ -278,7 +278,6 @@ i32 __cdecl edanimLoadPage(char *path, NUGSCN *scene) {
     edanimDetermineNearestAnim(1.0f);
     return page;
 }
-
 static void edanimcbSoundTypeMenu(eduimenu_s *parent, eduiitem_s *unused1, u32 unused2) {
     i32 index;
     u32 colours[4] = {0x80000000, 0x80ff0000, 0x80808080, 0x80404040};
@@ -305,7 +304,6 @@ static void edanimcbSoundTypeMenu(eduimenu_s *parent, eduiitem_s *unused1, u32 u
     edanim_soundtype_menu->x = parent->x + 10;
     edanim_soundtype_menu->y = parent->y + 40;
 }
-
 static void edanimcbSoundMenu(eduimenu_s *parent, eduiitem_s *unused1, u32 unused2) {
     struct eduimenu_s *menu;
     u32 colours[4] = {0x80000000, 0x80ff0000, 0x80808080, 0x80404040};
@@ -329,7 +327,6 @@ static void edanimcbSoundMenu(eduimenu_s *parent, eduiitem_s *unused1, u32 unuse
     menu->x = parent->x + 10;
     menu->y = parent->y + 40;
 }
-
 static void edanimcbFileLoad(eduimenu_s *menu, eduiitem_s *unused1, u32 unused2) {
     i32 page;
     char path[256];
@@ -360,7 +357,6 @@ static void edanimcbFileLoad(eduimenu_s *menu, eduiitem_s *unused1, u32 unused2)
     else
         eduiCreateMessageMenu(menu, (char *)("Loaded OK"), 1);
 }
-
 static void edanimRender() {
     if (edbitsProcessCubemapDump()) {
         return;

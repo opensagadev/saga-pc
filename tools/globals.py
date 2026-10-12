@@ -321,6 +321,11 @@ def define(symbol, address, cursor, translator, pe, sections):
     """data.cpp definition text and CSV type for one global, with the retail initial value."""
     name = symbol.lstrip("_")
     spelled = spell_variable(cursor.type, name, translator)
+    # Define it exactly as saga.h declares it, when it does.
+    declared = re.search(r"^\s*extern\s+([^;\n]*?\b" + re.escape(name) + r"\b[^;\n]*);", HEADER.read_text(
+        encoding="latin-1"), re.M)
+    if declared and "," not in declared.group(1):
+        spelled = declared.group(1).strip()
     size = cursor.type.get_size()
     canonical = cursor.type.get_canonical()
     raw_end = sections[".data"]

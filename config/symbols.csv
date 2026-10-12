@@ -1091,6 +1091,7 @@ address    , symbol                                                         , si
 0x4bc810,_BountyHunterPursuitD_Reset,382,
 0x4bcaf0,_ResetRadios,31,
 0x4bcb10,_UpdateRadios,421,
+0x4bccc0,_PlayRadio,353,
 0x4bdaf0,_SecurityDoor_MoveCode,436,
 0x4bdcd0,_GameAudio_OverrideFootStep_LSW,243,
 0x4bde10,_SetLevelSfxBits,8845,void __cdecl(WORLDINFO*)
@@ -1098,6 +1099,7 @@ address    , symbol                                                         , si
 0x4c0740,_Shards_Draw,404,
 0x4c0c00,_Shard_Collect,123,
 0x4c0c80,_Shards_HandleLostObj,82,"void __cdecl(WORLDINFO *,GAMEOBJECT *)"
+0x4c0db0,_NuMtxRotateXInline,217,
 0x4c11c0,_LoadShelfSplines,464,
 0x4c1390,_InitExtraList,372,
 0x4c1630,_InitShop,4108,
@@ -2187,8 +2189,18 @@ address    , symbol                                                         , si
 0x541e60,_SockSysCamera,4858,
 0x5436e0,_fullslotname,224,char * __cdecl (i32)
 0x543880,_saveload_getinfo,135,i32 __cdecl (void)
+0x543920,_saveloadCheckCardPresent,6,
+0x543930,_saveloadCheckCardType,6,
+0x543940,_saveloadCheckCardFormatted,6,
+0x543950,_saveloadCheckCardFreeSpace,6,
+0x543960,_saveloadFormatCard,6,
+0x543970,_saveloadUnFormatCard,6,
+0x543990,_saveloadCheckSlotsUsed,55,
 0x5439d0,_PCSaveSlot,575,
+0x543c10,_saveloadSaveSlot,26,
 0x543c30,_saveloadLoadSlot,186,
+0x543cf0,_saveloadDeleteSlot,45,
+0x543d30,_saveloadWriteKeyCode,3,
 0x543d40,_saveloadASSave,74,
 0x543d90,_saveloadASLoad,69,
 0x543e80,_saveloadInit,26,"void __cdecl (VARIPTR *, VARIPTR, i32, const char *, const char *, const char *, i32)"
@@ -4670,6 +4682,7 @@ address    , symbol                                                         , si
 0x617f80,_edmainQueryLocVec,6,
 0x618310,_eduiFntPrintEx,197,
 0x618e10,_eduiMenuAddItem,54,
+0x618e50,_edgraAttachMenu,51,
 0x619060,_eduiMenuSortItemsByTxt,179,
 0x619250,_eduiMenuCreate,166,
 0x6193e0,_eduiMenuHighlight,79,
@@ -4891,23 +4904,37 @@ address    , symbol                                                         , si
 0x644370,_edpartRender,32,
 0x644410,_edpartChangeNameMenu,208,
 0x6445d0,_edpartCopyType,296,
+0x644700,_edpartChangeCutOff,23,
 0x644770,_edpartChangeGenRateMenu,187,
 0x644890,_edpartChangeMaxLifeMenu,290,
 0x644a40,_edpartTintMenu,333,
 0x644bd0,_edpartInstanceScaleMenu,197,
+0x645040,_edpartSetScaleFactor,14,
 0x645050,_edpartScaleType,176,"void __cdecl(i32, f32)"
+0x645100,_edpartApplyScaleType,78,
+0x645150,_edpartCancelScaleTypeMenu,25,
 0x645170,_edpartScaleTypeMenu,227,
+0x645390,_edpartGeneralTypeMenu,296,
+0x6455e0,_edpartLevelTypeMenu,296,
+0x645710,_edpartCancelTypeMenu,25,
 0x645730,_edpartTypeMenu,184,
+0x645b90,_edpartCancelThingsInstanceMenu,25,
 0x645bb0,_edpartThingsInstanceMenu,520,
 0x6462e0,_edpartInstanceMenu,522,
+0x646c30,_edpartCancelCutOffMenu,25,
 0x646c50,_edpartCutOffMenu,203,
 0x647000,_edpartInstanceOrientMenu,1041,
+0x6476e0,_edpartChangeInstanceFlag,41,
+0x647b00,_edpartChangeGrav,25,
+0x647b20,_edpartChangeBounce,23,
+0x647b40,_edpartCancelGravMenu,25,
 0x647b60,_edpartGravMenu,316,
 0x6488e0,_edpartLookupObjectInScene,179,"i32 __cdecl edpartLookupObjectInScene(char *name, NUGSCN *scene)"
 0x6489c0,_edpartSetParticlePage,10,void __cdecl(i32)
 0x6489d0,_edpartLookupObject,28,
 0x006489f0 , _edpartStartPage                                               , 57    , void __cdecl (u8)
 0x00648a30 , _edpartStopPage                                                , 17    , void __cdecl (u8)
+0x648ae0,_edpartCancelInstanceFlagsMenu,25,
 0x648b00,_edpartInstanceFlagsMenu,1156,
 0x649450,_edpartInstanceSettingsMenu,318,
 0x6495b0,_edpartTrail1DebrisMenu,329,
@@ -4916,7 +4943,10 @@ address    , symbol                                                         , si
 0x6499b0,_edpartImpactDebrisMenu,248,
 0x649ad0,_edpartImpactPartMenu,248,
 0x649bf0,_edpartDieDebrisMenu,248,
+0x649cf0,_edpartChangeDebrisScale,23,
+0x649d10,_edpartCancelDebrisScaleMenu,25,
 0x649d30,_edpartDebrisScaleMenu,197,
+0x649e00,_edpartCancelDebrisSettingsMenu,25,
 0x649e20,_edpartDebrisSettingsMenu,456,
 0x64a010,_edpartEmitMenu,398,
 0x64a440,_NuPartEnableRayCasts,10,void __cdecl NuPartEnableRayCasts(i32 enabled)
@@ -5086,11 +5116,17 @@ address    , symbol                                                         , si
 0x0065a5c0 , _edanimStopPage                                                , 16    , void __cdecl (i32)
 0x0065a5d0 , _edanimClearPage                                               , 99    , void __cdecl (i32)
 0x0065a640 , _edanimStartAllPages                                           , 47    , void __cdecl (void)
+0x65a700,_edanimcbSetSoundType,61,
+0x65a790,_edanimcbSetParticleType,58,
 0x65a7d0,_edanimcbSetLocalParticleType,117,
+0x65a880,_edanimcbCancelParticleTypeMenu,25,
 0x65a8a0,_edanimcbParticleTypeMenu,308,
 0x65aa00,_edanimcbLocalParticleTypeMenu,267,
 0x65ab30,_edanimcbLocalParticleMenu,326,
+0x65ac80,_edanimcbCancelParticleMenu,25,
 0x65aca0,_edanimcbParticleMenu,248,
+0x65ada0,_edanimcbCancelSoundTypeMenu,25,
+0x65ae00,_edanimcbCancelSoundMenu,25,
 0x65af60,_edanimcbMCTBCardPresent,51,
 0x65afa0,_edanimcbMCTBCardType,51,
 0x65afe0,_edanimcbMCTBCardCheckFormat,51,
@@ -5114,20 +5150,38 @@ address    , symbol                                                         , si
 0x65c8a0,_edbitsProcessCubemapDump,544,
 0x65ce60,_edbriStopPage,65,void __cdecl(i8)
 0x65ceb0,_edbriClearPage,81,void __cdecl(i8)
+0x65d1d0,_edbricbSetPlankCount,18,
+0x65d1f0,_edbricbSetPostInterval,18,
+0x65d210,_edbricbCancelPlankCountMenu,25,
 0x65d230,_edbricbPlankCountMenu,201,
+0x65d320,_edbricbCancelBridgePropertiesMenu,25,
+0x65d340,_edbricbSetDpadMode,14,
+0x65d350,_edbricbCancelDpadModeMenu,25,
 0x65d370,_edbricbDpadModeMenu,205,
 0x65d470,_edbriBridgesReset,159,void __cdecl(void)
 0x65d540,_edbriDetermineNearest,237,void __cdecl(f32)
 0x65d630,_edbriBridgeUpdate,408,"void __cdecl edbriBridgeUpdate(i32 index, NUGSCN *scene)"
 0x65e040,_edgraSetup,155,"void __cdecl(VARIPTR *, VARIPTR, i32, i32, i32)"
 0x65e0e0,_edgraCalculatePage,2340,"void __cdecl(i8, i32)"
+0x65ea10,_edgracbSetInstanceType,14,
+0x65ea20,_edgracbToggleClumpReactive,38,
+0x65ea50,_edgracbCancelInstanceMenu,25,
 0x65ea70,_edgracbInstanceMenu,492,
+0x65eca0,_edgracbCancelClumpAreaMenu,25,
+0x65ece0,_edgracbCancelClumpFadeMenu,32,
+0x65ed20,_edgracbCancelClumpPropertiesMenu,25,
+0x65ed40,_edgracbCancelClumpModeMenu,25,
+0x65ed60,_edgracbSetDpadMode,14,
+0x65ed70,_edgracbCancelDpadModeMenu,25,
 0x65ed90,_edgracbDpadModeMenu,241,
 0x65ee90,_edgraClumpsReset,202,void __cdecl(void)
 0x65efc0,_edgraDetermineNearestInstance,380,
 0x0065f4d0 , _edGraEnableTerrainSwap                                        , 1     , void __cdecl (void)
 0x0065f4e0 , _edGraDisableTerrainSwap                                       , 1     , void __cdecl (void)
 0x0065f4f0 , _edGraInitTerrainSwapProtection                                , 1     , void __cdecl (void)
+0x65f7c0,_edgracbSetGlobalFadeIn,69,
+0x65f810,_edgracbSetGlobalFadeOut,69,
+0x65f860,_edgracbCancelGlobalsMenu,25,
 0x65ff40,_edgraRender,536,
 0x6603c0,_edppMultipleCopyCopy,285,
 0x6608f0,_edppDrawCursor,5742,
@@ -5135,15 +5189,27 @@ address    , symbol                                                         , si
 0x662070,_edppHighlightNearest,673,
 0x662320,_edppRender,32,
 0x6638a0,_cbPtlSelType,47,
+0x663b60,_cbSelEffectList,131,
+0x663bf0,_cbCancelEffectListMenu,25,
 0x663c10,_cbEffectListMenu,290,
+0x6641f0,_edptlcbSetDebrisThinning,14,
+0x664200,_edptlcbSetDebrisDetail,14,
+0x664210,_edptlcbCancelTestDetailMenu,25,
 0x664230,_edptlcbTestDetailMenu,323,
 0x664450,_edptlcbDetailMenu,450,
+0x664640,_edptlcbSetDpadMode,14,
+0x664650,_edptlcbCancelDpadModeMenu,25,
 0x664670,_edptlcbDpadModeMenu,391,
+0x664830,_edptlcbCancelOrphanListMenu,25,
 0x664850,_edptlcbOrphanListMenu,166,
+0x664920,_cbPtlCancelQuickDeleteMenu,25,
 0x664c60,_cbPtlJibMenu,514,
 0x664e90,_edptlcbBounceMenu,356,
 0x665040,_edptlcbStarMenu,321,
+0x665ed0,_cbPtlCollMenu,485,
+0x666510,_cbPtlTorusMenu,844,
 0x6668e0,_cbPtlDamageFlagMenu,259,
+0x6669f0,_cbPtlCancelDamageMenu,25,
 0x666a10,_cbPtlDamageMenu,251,
 0x666ef0,_cbPtlRotMenu,617,
 0x667540,_cbPtlCutOffMenu,646,
@@ -5151,6 +5217,8 @@ address    , symbol                                                         , si
 0x6691f0,_edppSaveEffects,3025,
 0x669dd0,_cbFileSaveEffects,947,
 0x66a190,_FileLoadSingleEffectType,2460,"void __cdecl(DEBRIS_INFO_PC *,i32,i8)"
+0x66ab50,_cbPtlSelReadout,14,
+0x66ab60,_cbPtlCancelReadoutMenu,25,
 0x66ab80,_cbPtlReadoutMenu,237,
 0x66acf0,_cbPtlGSortMenu,621,
 0x66b040,_ParticleReset,120,
@@ -5320,20 +5388,37 @@ address    , symbol                                                         , si
 0x688b00,_edanimcbSoundMenu,248,
 0x688c00,_edanimcbFileLoad,359,
 0x688d70,_edanimInit,624,
+0x689060,_edanimRenderParticleEmitters,377,
+0x6891e0,_edanimRenderSoundEmitters,232,
 0x6892d0,_edanimRender,264,
 0x6893e0,_edbriLoadPage,646,"i32 __cdecl(char *, void *)"
 0x689670,_edbriStartPage,79,void __cdecl edbriStartPage(i32 page)
 0x6897d0,_edbricbRopeColourMenu,266,
+0x6898e0,_edbricbSetBridgeTension,43,
+0x689910,_edbricbSetBridgeDamp,43,
+0x689940,_edbricbSetBridgeGravity,43,
+0x689970,_edbricbSetBridgePlrweight,43,
+0x6899a0,_edbricbSetBridgeRopeheight,43,
+0x6899d0,_edbricbSetBridgeStability,43,
 0x689a00,_edbricbBridgePropertiesMenu,636,
 0x689c80,_edgraStartPage,483,void __cdecl(i8)
 0x689e70,_edgraStopPage,84,void __cdecl(i8)
 0x689ed0,_edgraClearPage,158,void __cdecl(i8)
 0x689f70,_edgraInitAllClumps,107,void __cdecl(void)
+0x68a010,_edgracbSetClumpWind,38,
+0x68a2d0,_edgracbClumpSizesMenu,436,
+0x68a490,_edgracbSetClumpArea,38,
 0x68a4c0,_edgracbClumpAreaMenu,442,
+0x68a6b0,_edgracbClumpDistMenu,442,
+0x68a870,_edgracbSetClumpFadeIn,108,
+0x68a8e0,_edgracbSetClumpFadeOut,108,
 0x68a950,_edgracbClumpFadeMenu,424,
+0x68ab90,_edgracbClumpTerrainMenu,356,
 0x68ad00,_edgracbClumpPropertiesMenu,620,
+0x68af70,_edgracbSetClumpMode,46,
 0x68afa0,_edgracbClumpModeMenu,451,
 0x68b380,_edgraClumpReseed,35,
+0x68b9d0,_edgracbApplyGlobalFade,118,
 0x68ba50,_edgracbGlobalsMenu,396,
 0x68bbe0,_edppPtlDestroy,56,void __cdecl (i32)
 0x68bc20,_edppPtlShelve,49,void __cdecl (i32)
@@ -8216,6 +8301,9 @@ address    , symbol                                                         , si
 0x00755d18 , _AIPathAngularScale                                            , 8     , const f64
 0x00755d18 , __real@40c45f3060000000                                        , 8     , f64
 0x00755d20 , __real@bfb99999a0000000                                        , 8     , const f64
+0x755d34,??_C@_06BHOKJAAC@TIPTOE?$AA@,7,char []
+0x755d3c,??_C@_04PKELMGAL@WALK?$AA@,5,char []
+0x755d44,??_C@_03LLDCGJBK@RUN?$AA@,4,char []
 0x00755d48 , _GameAIPlayerFormat                                            , 9     , const char[9]
 0x00755d54 , _GameAIPlayer2Name                                             , 9     , const char[9]
 0x755d60,??_C@_06BALNJMNP@player?$AA@,,const char[7]
@@ -8420,8 +8508,10 @@ address    , symbol                                                         , si
 0x00757c04 , _AIControlMultiplyName                                         , 10    , const char[10]
 0x757c10,_AITransferLiteral757c10,13,const char[13]
 0x757c20,_AITransferLiteral757c20,12,const char[12]
+0x757c2c,??_C@_0L@BGPPMAOI@decrement?$DN?$AA@,11,char []
 0x757c38,_PodRaceIncrementKeywordPc,,char[11]
 0x00757c44 , _AIAnimSpeedValueName                                          ,       ,
+0x757c44,??_C@_06KFEJCPI@value?$DN?$AA@,7,char []
 0x757c4c,??_C@_03KIJPOJDM@ix?$DN?$AA@,4,const char[]
 0x757c50,??_C@_03BDIFNDIL@to?$DN?$AA@,4,const char[]
 0x757c54,??_C@_05FKCAPGCM@from?$DN?$AA@,6,const char[]
@@ -8438,6 +8528,9 @@ address    , symbol                                                         , si
 0x00757ca0 , _AIScaleOverrideResetName                                      ,       ,
 0x757ca8,??_C@_04CLCEDBPF@time?$AA@,,const char[]
 0x00757ca8 , _AIActionTimeName                                              , 5     , const char[5]
+0x757cb0,??_C@_06LMOIBFIN@axis?$DNz?$AA@,7,char []
+0x757cb8,??_C@_06JHMFEGEO@axis?$DNy?$AA@,7,char []
+0x757cc0,??_C@_06IONOHHAP@axis?$DNx?$AA@,7,char []
 0x757cc8,_AITransferLiteral757cc8,7,const char[7]
 0x757cd0,_AITransferLiteral757cd0,6,const char[6]
 0x757cd8,_AITransferLiteral757cd8,5,const char[5]
@@ -8450,6 +8543,7 @@ address    , symbol                                                         , si
 0x757d4c,??_C@_07BOMCBDMH@BIGJUMP?$AA@,8,const char[]
 0x00757d6c , _AIActionToName                                                , 3     , const char[3]
 0x00757df0 , _CompleteLevelCutscenePrefix                                   ,       ,
+0x757df0,??_C@_09EJLELPDA@cutscene?$DN?$AA@,10,char []
 0x00757e18 , _AIActionBothWaysName                                          , 9     , const char[9]
 0x757e18,??_C@_08JHCFMDI@bothways?$AA@,9,const char[]
 0x757e34,??_C@_09EKHDEEGC@pathname?$DN?$AA@,10,const char[]
@@ -8573,6 +8667,7 @@ address    , symbol                                                         , si
 0x007584a8 , _AIExpressionMaxName                                           , 4     , const char [4]
 0x7584c4   , _PCContextName_Techno                                          , 7     , const char [7]
 0x007584d4 , _NewLevelPrefix                                                ,       ,
+0x7584d4,??_C@_09CGFKCPPE@newlevel?$DN?$AA@,10,char []
 0x007584e8,_AIActionCircleClockwiseName,10,const char[10]
 0x007584f4,_AIActionCircleAnticlockwiseName,14,const char[14]
 0x00758504,_AIActionCircleReverseName,8,const char[8]
@@ -8610,12 +8705,20 @@ address    , symbol                                                         , si
 0x00758828 , _GizAIMessage_NameFormat                                       , 3     , const char[3]
 0x758830,__real@4012000000000000,,f64
 0x758844,__real@bc75c28f,4,const f32
+0x758974,??_C@_06HOPIODND@effect?$AA@,7,char []
+0x758a5c,??_C@_03LAIAPFCB@Val?$AA@,4,char []
 0x00758a60,??_C@_04FABLJDN@Name?$AA@,,
 0x758a60,_GizObstacleActionNamePC,5,const char[5]
+0x758a68,??_C@_05JNKNAC@State?$AA@,6,char []
+0x758a70,??_C@_09EDIHJNKH@Character?$AA@,10,char []
+0x758a7c,??_C@_05DCIFAFBG@Name?$DN?$AA@,6,char []
 0x758a84,_GizObstacleActionStayShutPC,9,const char[9]
 0x758a90,_GizObstacleActionStayOpenPC,9,const char[9]
 0x758a9c,_GizObstacleActionForwardPC,8,const char[8]
 0x758aa4,_GizObstacleActionBackwardPC,9,const char[9]
+0x758ab0,??_C@_08JFAKOGGE@Special?$DN?$AA@,9,char []
+0x758abc,??_C@_07MNOJJNLJ@BlowUp?$DN?$AA@,8,char []
+0x758ad4,??_C@_0O@DHEPKDHM@BombGenerator?$AA@,14,char []
 0x758ae4,??_C@_09NMKJEINJ@returnsfx?$AA@,10,
 0x758af0,??_C@_0M@IBONIDMB@completesfx?$AA@,12,
 0x758afc,??_C@_0L@HNCEGNEE@processsfx?$AA@,11,
@@ -8885,6 +8988,7 @@ address    , symbol                                                         , si
 0x7596c0,_HubTableTextPc007596c0,,const char[12]
 0x7596cc,_HubTableTextPc007596cc,,const char[6]
 0x007596d4 , _AreaFixUpName_Negotiations                                    , 16    , char[16]
+0x7596e8,__real@bfc99999a0000000,8,const f64
 0x007596f8 , _NuBlankStringValue                                            , 2     , const char[2]
 0x7596f8,??_C@_01CLKCMJKC@?5?$AA@,,
 0x759700,??_C@_02LMMGGCAJ@?3?5?$AA@,,
@@ -10111,6 +10215,7 @@ address    , symbol                                                         , si
 0x75ec24,__real@42aa0000,4,const f32
 0x75ec30,??_C@_05EILEDKCG@LABEL?$AA@,6,const char[6]
 0x75ec48,_PCWarningSuffix,2,const char[2]
+0x75ec78,??_C@_0BG@EPJDAGPP@NuDebugMsg?5?9?5?$CFs?$CI?$CFd?$CJ?5?3?$AA@,22,char []
 0x0075ec90 , _bgproc_resume_event_name                                      , 9     , const char[9]
 0x0075ec9c , _bgproc_work_event_name                                        , 11    , const char[11]
 0x0075ece4 , __real@7f7fffff                                                , 4     , const f32
@@ -10262,6 +10367,7 @@ address    , symbol                                                         , si
 0x75f810,??_C@_07HNDKILBF@?$CFs?5?$HO0?$CFs?$AA@,,char[8]
 0x75f818,??_C@_0N@FBGNBHDM@?$FL?$FLpadright?$FN?$FN?$AA@,,char[13]
 0x75f828,??_C@_0M@PGNNLAGI@?$FL?$FLpadleft?$FN?$FN?$AA@,,char[12]
+0x75fb70,??_C@_06MLENFHBD@Circle?$AA@,7,char []
 0x0075feb8 , _AIActionRandomName                                            , 7     , const char[7]
 0x0075fec0,??_C@_05NHFJDMOA@Timer?$AA@,,
 0x0075ff14 , _AIScriptKeywordInclude                                        , 8     , const char[8]
@@ -10308,6 +10414,7 @@ address    , symbol                                                         , si
 0x760080,__real@ff7fffff,4,const f32
 0x760084,__real@3727c5ac,4,const f32
 0x760088,??_C@_05CEDINIPN@?$CF5?42f?$AA@,6,char []
+0x760090,??_C@_04OKGDLNCL@NONE?$AA@,5,char []
 0x760098,__real@38d1b717,,
 0x007603f8 , ??_C@_07DKPOBDJL@OnMacro?$AA@                                  , 8     , const char[8]
 0x760400,??_C@_02FDNJECIE@?$CB?$DN?$AA@,,
@@ -11306,6 +11413,7 @@ address    , symbol                                                         , si
 0x76a8c8,??_C@_0BD@OLBABOEK@vector?$DMT?$DO?5too?5long?$AA@,,const char[19]
 0x76aa2c,??_C@_02PCIJFNDE@?$AN?6?$AA@,3,
 0x76ada0,??_C@_05DNIIFBMG@?$CFs?5?$CFs?$AA@,6,char[6]
+0x76ae48,__real@c024000000000000,8,const f64
 0x76ae78,__real@3ff0ccccc0000000,8,const f64
 0x76ae90,__real@43600000,4,f32
 0x76aea0,__real@c030000000000000,8,const f64
@@ -11320,8 +11428,11 @@ address    , symbol                                                         , si
 0x76b780,__real@3f13b646,,
 0x76b784,__real@33d6bf95,4,const f32
 0x76b788,_RtlSearchTimebarNamePc,,const char[9]
+0x76b9e8,??_C@_08DNCCGPLP@Saved?5OK?$AA@,9,char []
+0x76b9f4,??_C@_08IEFAEBKE@?$CFs?2?$CFs?4?$CFs?$AA@,9,char []
 0x76bc20,??_C@_07DNODLGKM@INVALID?$AA@,,
 0x76bc20,_NuMusicDebugClassInvalid,8,const char[8]
+0x76c374,??_C@_09IEGDEKGI@Loaded?5OK?$AA@,10,char []
 0x76c43c,??_C@_0N@CAJCCICN@EmitRotY?3?5?$CFd?$AA@,13,char []
 0x76c44c,??_C@_0N@KGAGFKID@EmitRotZ?3?5?$CFd?$AA@,13,char []
 0x76c45c,??_C@_08LILLIAA@RotY?3?5?$CFd?$AA@,9,char []
@@ -11345,6 +11456,50 @@ address    , symbol                                                         , si
 0x76c5bc,__real@bd4ccccd,4,const f32
 0x76c5c0,__real@3f0ccccd,4,const f32
 0x76c5d8,??_C@_06KMBGOEGK@?$CFs?$CF03d?$AA@,7,const char[7]
+0x76c6b8,??_C@_0BE@MPEJAHM@Apply?5Scale?5to?5Type?$AA@,20,char []
+0x76c6cc,__real@411e6666,4,const f32
+0x76c6d0,??_C@_0N@CODKGGAC@Scale?5Factor?$AA@,13,char []
+0x76c6e0,??_C@_0L@MKFFHNIN@Scale?5Type?$AA@,11,char []
+0x76c730,??_C@_0O@GNMLKMKF@Level?5List?4?4?4?$AA@,14,char []
+0x76c740,??_C@_0BA@GNCAJPFI@General?5List?4?4?4?$AA@,16,char []
+0x76c750,??_C@_0N@OMCPPCOB@Emitter?5Type?$AA@,13,char []
+0x76c760,??_C@_0BH@FNOJJJOA@All?5Instances?5Filtered?$AA@,23,char []
+0x76c79c,??_C@_0N@CEICCIKN@Things?5Scene?$AA@,13,char []
+0x76c7ac,??_C@_0BI@FHNOJCNA@Things?5Scene?5?$CIFiltered?$CJ?$AA@,24,char []
+0x76c90c,??_C@_0BA@PKAAPCH@Attached?5Sounds?$AA@,16,char []
+0x76c91c,??_C@_0L@EIMKEPLI@CutOff?5Rad?$AA@,11,char []
+0x76c928,??_C@_05OMFEOJEI@Radii?$AA@,6,char []
+0x76c9d0,??_C@_08EDFBGCED@?$CI?$CF1?401f?$CJ?$AA@,9,char []
+0x76cacc,??_C@_06PAHFPMEK@Bounce?$AA@,7,char []
+0x76cad4,??_C@_07JMGDFJEK@Gravity?$AA@,8,char []
+0x76cbc0,??_C@_0BB@PEMOALIG@Can?5Damage?5Owner?$AA@,17,char []
+0x76cbd4,??_C@_06BLDJAMBE@Thrown?$AA@,7,char []
+0x76cbdc,??_C@_0BA@PNBENGJL@Ignore?5Creature?$AA@,16,char []
+0x76cbec,??_C@_0BD@POACCDAH@Real?5Time?5Lighting?$AA@,19,char []
+0x76cc00,??_C@_0N@PHMONHP@Disable?5Draw?$AA@,13,char []
+0x76cc10,??_C@_0BL@GAMDNFHL@Face?5Direction?5of?5Movement?$AA@,27,char []
+0x76cc2c,??_C@_0P@DCOPJBCK@Ignore?5Terrain?$AA@,15,char []
+0x76cc3c,??_C@_0BG@FIANMNED@Slot?5Cannot?5be?5Stolen?$AA@,22,char []
+0x76cc54,??_C@_09HEEMFAHC@No?5Bounce?$AA@,10,char []
+0x76cc60,??_C@_0BI@EFOAAFHN@Ordered?5Rotate?5Randomly?$AA@,24,char []
+0x76cc78,??_C@_0BA@EGCIOPOP@Rotate?5Randomly?$AA@,16,char []
+0x76cc88,??_C@_0BB@MNNGFCGG@Is?5a?5Collectible?$AA@,17,char []
+0x76cc9c,??_C@_0BK@DAFNMFGM@Don?8t?5die?5when?5off?9screen?$AA@,26,char []
+0x76ccb8,??_C@_0BC@CMCKBIOA@Damage?5Characters?$AA@,18,char []
+0x76cccc,??_C@_0CA@FMFJLAPA@Interact?5only?5with?5Active?5Chars?$AA@,32,char []
+0x76ccec,??_C@_0BI@KJEGPKHN@Collide?5with?5Characters?$AA@,24,char []
+0x76cd04,??_C@_0BB@NLAGJIFP@Die?5when?5stopped?$AA@,17,char []
+0x76cd18,??_C@_0P@NAGOKDLA@Instance?5Flags?$AA@,15,char []
+0x76ce58,??_C@_0N@FELNPBBA@Debris?5Scale?$AA@,13,char []
+0x76ce68,??_C@_0BA@NNGIAGCC@Debris?5Scale?4?4?4?$AA@,16,char []
+0x76ce78,??_C@_0BN@IJKBLAFE@Debris?5stops?5when?5Part?5stops?$AA@,29,char []
+0x76ce98,??_C@_0P@FJICIAHK@Impact?5Part?4?4?4?$AA@,15,char []
+0x76cea8,??_C@_0O@EJHGMBBI@Die?5Debris?4?4?4?$AA@,14,char []
+0x76ceb8,??_C@_0BB@LPKAGMDJ@Impact?5Debris?4?4?4?$AA@,17,char []
+0x76cecc,??_C@_0BC@OBAMFHKD@Emitter?5Debris?4?4?4?$AA@,18,char []
+0x76cee0,??_C@_0BC@PPHLNCOM@Trail?52?5Debris?4?4?4?$AA@,18,char []
+0x76cef4,??_C@_0BC@IIOFAABM@Trail?51?5Debris?4?4?4?$AA@,18,char []
+0x76cf08,??_C@_0BA@OPNOBMFA@Debris?5Settings?$AA@,16,char []
 0x76d128,__real@40f869fe60000000,8,const f64
 0x76d130,__real@408c200000000000,8,const f64
 0x76d138,__real@40b3880000000000,8,const f64
@@ -11368,9 +11523,61 @@ address    , symbol                                                         , si
 0x0076d288,__real@40159999a0000000,8,const f64
 0x0076d290,__real@41d6666660000000,8,const f64
 0x76d29c,__real@501502f9,4,const f32
+0x76d37c,??_C@_0O@NKAFEAJA@Particle?5Type?$AA@,14,char []
+0x76d40c,??_C@_0BM@DODCDHDB@Highlighted?5Ptl?5Settings?4?4?4?$AA@,28,char []
+0x76d428,??_C@_0BB@EDJLJGL@Particle?5Type?4?4?4?$AA@,17,char []
+0x76d43c,??_C@_0BD@GBFCKKFM@Attached?5Particles?$AA@,19,char []
+0x76d45c,??_C@_0M@COHPPDBK@Not?5Present?$AA@,12,char []
+0x76d468,??_C@_0P@DCBAIHHB@Not?5a?5PS2?5Card?$AA@,15,char []
+0x76d478,??_C@_08ECHAEPCN@PS2?5Card?$AA@,9,char []
+0x76d484,??_C@_0O@FMHFJGHH@Not?5Formatted?$AA@,14,char []
+0x76d494,??_C@_09GMDFBPIA@Formatted?$AA@,10,char []
+0x76d4a0,??_C@_0N@DAKKCDKJ@Space?5?$DN?5?$CF05d?$AA@,13,char []
+0x76d4b0,??_C@_0BC@DAJBEOG@Slots?5Used?5?$DN?5?$CF02d?$AA@,18,char []
+0x76d4c4,??_C@_0L@NMDNGAGK@Save?5Error?$AA@,11,char []
+0x76d4d0,??_C@_0BA@PBFNIIH@This?5is?5slot?5?$CFd?$AA@,16,char []
+0x76d4e0,??_C@_0L@PLPBEPPC@Load?5Error?$AA@,11,char []
+0x76d4ec,??_C@_0N@OJIEEAAH@Delete?5Error?$AA@,13,char []
+0x76d4fc,??_C@_09MKACGGOJ@Delete?5OK?$AA@,10,char []
+0x76d508,??_C@_0O@PLIHNFMG@Unformat?5Fail?$AA@,14,char []
+0x76d518,??_C@_0M@HOOEEBMF@Unformat?5OK?$AA@,12,char []
+0x76d524,??_C@_0M@BOGFMCII@Format?5Fail?$AA@,12,char []
+0x76d530,??_C@_09PJMHMCO@Format?5OK?$AA@,10,char []
+0x76d53c,??_C@_0BD@JKJENIDO@KeyCard?5Write?5Fail?$AA@,19,char []
+0x76d550,??_C@_0BB@ILAGDNIN@KeyCard?5Write?5OK?$AA@,17,char []
 0x76d6c4,??_C@_0BI@OOOKDNPE@pictures?2cub?$CF03d_?$CFd?4bmp?$AA@,24,char []
+0x76d704,??_C@_0O@MIOLJHDM@Post?5Interval?$AA@,14,char []
+0x76d714,??_C@_0M@MNHCEFEC@Plank?5Count?$AA@,12,char []
+0x76d720,??_C@_0M@KODMLEPP@Bridge?5Size?$AA@,12,char []
+0x76d72c,??_C@_0O@LIBNJHLD@Bridge?5Orient?$AA@,14,char []
+0x76d73c,??_C@_09ILOBLJNA@Dpad?5Mode?$AA@,10,char []
 0x76d7b8,__real@3ffc333340000000,8,const f64
+0x76d7c0,??_C@_0BF@NNEHJJON@Base?5Instance?5Select?$AA@,21,char []
+0x76d7d8,??_C@_0CA@PCNGCCFO@Base?5Instance?5Select?5?$CIFiltered?$CJ?$AA@,32,char []
+0x76d7f8,??_C@_0L@ILDEGMNK@Clump?5Tilt?$AA@,11,char []
+0x76d804,??_C@_0L@HCGGEMBI@Clump?5Size?$AA@,11,char []
+0x76d814,??_C@_05JOBLOEL@grass?$AA@,6,char []
+0x76da34,??_C@_04IMAAEPPE@Char?$AA@,5,char []
+0x76da3c,??_C@_07ECEMPDJM@General?$AA@,8,char []
+0x76da44,??_C@_0M@NJKACELL@Effect?5List?$AA@,12,char []
+0x76da50,??_C@_0L@OMIJJLGC@Low?5Detail?$AA@,11,char []
+0x76da5c,??_C@_0O@GGNHBAIC@Medium?5Detail?$AA@,14,char []
+0x76da6c,??_C@_0M@FNNBMDCO@High?5Detail?$AA@,12,char []
+0x76da78,??_C@_0P@JFGCDLHA@Thinning?5Level?$AA@,15,char []
+0x76da88,??_C@_0BC@JHPAPCAN@Detail?5Level?5Test?$AA@,18,char []
+0x76dae0,??_C@_0P@GFHNLGCE@Texture?5Facing?$AA@,15,char []
+0x76daf0,??_C@_0M@BAJNEIPI@Reflections?$AA@,12,char []
+0x76dafc,??_C@_06GEMKPBPA@Offset?$AA@,7,char []
+0x76db04,??_C@_0P@JCNKIOMJ@Gravity?5Rotate?$AA@,15,char []
+0x76db14,??_C@_0P@JDBJAHPH@Emitter?5Rotate?$AA@,15,char []
+0x76db24,??_C@_0M@HHMMKJJG@Orphan?5List?$AA@,12,char []
+0x76dd48,??_C@_0BD@FPLINHMD@Collision?5Torus?4?4?4?$AA@,19,char []
+0x76dd5c,??_C@_0BF@HIBEDCMH@Collision?5Spheres?4?4?4?$AA@,21,char []
+0x76dd74,??_C@_0BA@BNCPEHEG@Damage?5Flags?4?4?4?$AA@,16,char []
+0x76dd84,??_C@_0BA@MNMGILJE@Particle?5Damage?$AA@,16,char []
 0x76e018,__real@4120000000000000,8,const f64
+0x76e064,??_C@_06EFAGIKOH@Normal?$AA@,7,char []
+0x76e06c,??_C@_0P@MBAKGHDJ@Info?5Box?5Style?$AA@,15,char []
 0x76e0e0,_TerrainUnusedSpatialBlockPc,4,const f32
 0x76e0e0,__real@4f000000,4,const f32
 0x0076e0e4,??_C@_04PAGELMPD@?4ter?$AA@,5,const char[5]
@@ -11409,6 +11616,42 @@ address    , symbol                                                         , si
 0x76e234,??_C@_0L@KEOCDNPO@Params?3?5No?$AA@,11,char []
 0x76e240,??_C@_0O@MGPFLIFB@Curr?5Spcl?3?5?$CFs?$AA@,14,char []
 0x76e250,??_C@_0BC@CBHMAPFA@Curr?5Spcl?3?5?$DMnone?$DO?$AA@,18,char []
+0x76e26c,??_C@_07OAGIDIGA@Tension?$AA@,8,char []
+0x76e28c,??_C@_0L@MFBHICLH@Sound?5Type?$AA@,11,char []
+0x76e31c,??_C@_0BM@HMOHPKM@Highlighted?5Snd?5Settings?4?4?4?$AA@,28,char []
+0x76e338,??_C@_0O@DDEOCNJF@Sound?5Type?4?4?4?$AA@,14,char []
+0x76e348,??_C@_0BA@JIKLNEGI@File?5Load?5Error?$AA@,16,char []
+0x76e3e4,??_C@_0P@PFMKJEBH@Rope?5Colour?4?4?4?$AA@,15,char []
+0x76e3f4,??_C@_09HLGDLLJG@Stability?$AA@,10,char []
+0x76e400,??_C@_0M@JOBEOFMD@Rope?5Height?$AA@,12,char []
+0x76e40c,??_C@_09LPPBHJDM@Plrweight?$AA@,10,char []
+0x76e418,??_C@_04HIAEEHII@Damp?$AA@,5,char []
+0x76e420,??_C@_0BC@GDCOAEPE@Bridge?5Properties?$AA@,18,char []
+0x76e498,??_C@_04FEKPLKKA@Grid?$AA@,5,char []
+0x76e4a0,??_C@_06ENIHNBMK@Square?$AA@,7,char []
+0x76e4a8,??_C@_06KFOFCNJI@Legacy?$AA@,7,char []
+0x76e4b0,??_C@_0BA@BMGIGJFE@Clump?5Area?5Type?$AA@,16,char []
+0x76e4e8,??_C@_0M@JBMJGNII@End?5of?5Fade?$AA@,12,char []
+0x76e4f4,??_C@_0O@ICPFBNBH@Start?5of?5Fade?$AA@,14,char []
+0x76e504,??_C@_0N@NJDHFLJB@Clump?5Fading?$AA@,13,char []
+0x76e54c,??_C@_0BE@OPGICDDN@Collide?5with?5Player?$AA@,20,char []
+0x76e560,__real@3ffeb852,4,const f32
+0x76e564,??_C@_04LGBIOLDJ@Wind?$AA@,5,char []
+0x76e56c,??_C@_0BE@MMGPMKOB@Clump?5Terraining?4?4?4?$AA@,20,char []
+0x76e580,??_C@_0BA@GEBKEJEF@Clump?5Fading?4?4?4?$AA@,16,char []
+0x76e590,??_C@_0BG@JBMFFHKC@Clump?5Distribution?4?4?4?$AA@,22,char []
+0x76e5a8,??_C@_0BD@OFNKAFDP@Clump?5Area?5Type?4?4?4?$AA@,19,char []
+0x76e5bc,??_C@_0P@KGMKPHDB@Clump?5Sizes?4?4?4?$AA@,15,char []
+0x76e5cc,??_C@_0BB@DAAIBHMA@Clump?5Properties?$AA@,17,char []
+0x76e5e0,??_C@_0BD@GOGCMDFP@Individual?5FS?5Mode?$AA@,19,char []
+0x76e5f4,??_C@_0BC@BCMACKMC@Faded?5Static?5Mode?$AA@,18,char []
+0x76e608,??_C@_09JODLGFLN@Wind?5Mode?$AA@,10,char []
+0x76e614,??_C@_0L@JOGFLEFN@Clump?5Mode?$AA@,11,char []
+0x76e620,??_C@_0BK@HOHHMMCI@Apply?5Globally?5?$CICareful?$CB?$CJ?$AA@,26,char []
+0x76e63c,??_C@_0BD@CJAFLDHE@Global?5End?5of?5Fade?$AA@,19,char []
+0x76e650,??_C@_0BF@FLJHPELJ@Global?5Start?5of?5Fade?$AA@,21,char []
+0x76e668,??_C@_0BM@GKIEGFNH@Global?5Options?5?$CITake?5Care?$CB?$CJ?$AA@,28,char []
+0x76e6bc,??_C@_0N@FNECMGBM@Quick?5Delete?$AA@,13,char []
 0x76e7d8,_TerrainOpposingContactThresholdPc,,const f64
 0x76e7e0,__real@bbe56042,4,const f32
 0x76e7e8,__real@3f689374c0000000,8,const f64
@@ -14278,6 +14521,9 @@ address    , symbol                                                         , si
 0x007fac04 , _BGLOAD                                                        , 4     , i32
 0x007fac20 , _PlayTrailer                                                   , 4     , i32
 0x7facbc,_AlternateHudColourBytesPc,,u8[8]
+0x7facbd,_MENUEXITG,1,u8
+0x7facbe,_MENULOSTR1,1,u8
+0x7facc0,_MENULOSTB1,1,u8
 0x007faccc , _opts_sfx_wait                                                 , 4     , f32
 0x007facf0 , _GameMenuInfo                                                  , 644   , MENUFNINFO[23]
 0x7fafe4,_MissionIconBaseSizePc,,f32
@@ -15190,7 +15436,10 @@ address    , symbol                                                         , si
 0x00810164 , ??_R0?AVEdFloatControl@@@8                                     , 29    ,
 0x810194,_edpart_create_type,4,i32
 0x810198,_edpart_copy_size,4,f32
+0x81019c,_edpart_scale_factor,4,f32
+0x8101a4,_edpart_which_scene,4,i32
 0x8101b8,_PartLoadParticlePagePc,,i32
+0x8101bc,_edpart_superscale,4,i32
 0x8101c4,_PartNullInstanceNamePc,,char[14]
 0x0081020c , _MAXPARTS                                                      , 4     , i32
 0x00810210 , _Default_ADDPART                                               , 200   , ADDPART_PC
@@ -15226,13 +15475,18 @@ address    , symbol                                                         , si
 0x810968,_debris_render_scale,,f32
 0x8109d0,_PartLevelPagePc,,i32
 0x8109d4,_edbits_editor_enabled,,i32 *
+0x810a30,_edbri_planks,4,i32
+0x810a34,_edbri_post_interval,4,i32
 0x810a70,_edgra_clumpthin,,i32
 0x810a74,_edgra_elementthin,,i32
+0x810a88,_edgra_mode,4,i32
 0x810a8c,_edgra_last_clump_in_buffer,,i32
+0x810a94,_edgra_superscale,4,i32
 0x810a98,_edgra_global_fadein,,f32
 0x810a9c,_edgra_global_fadeout,,f32
 0x810ad8,_edpp_create_type,4,i32
 0x810adc,_edpp_copy_size,4,f32
+0x810aec,_edptl_clipboard_entry,4,i32
 0x810b28,_TerrainSkinOriginalGroupCountPc,,i32
 0x810b2c,_TerrPlatDis,,i32
 0x810b30,_TerConTol,,f32
@@ -15971,10 +16225,13 @@ address    , symbol                                                         , si
 0x0087bb10 , _ShadowMode                                                    , 4     , i32
 0x87bd98,_ShopNameAlpha,4,f32
 0x87bfac,_drawptr,4,void (__cdecl *)(void)
+0x87bfb8,_TopShelf,696,shopitem_s[6]
+0x87c27c,_iconback,12,nuhspecial_s
 0x87c598,_CutItems,14848,shopitem_s[128]
 0x87ffb0,_CutScenePlayCountPc,,i32
 0x8800d8,_shop_from_cutsceneplayer,,i32
 0x8800dc,_HintShelfIds,28,i32[7]
+0x8800f8,_SHOPCHARCOUNT,4,i32
 0x880170,_SHOPHINTCOUNT,,i32
 0x8801cc,_picked,4,i32
 0x880440,_SubShelfPos,84,NUVEC[7]
@@ -16845,12 +17102,16 @@ address    , symbol                                                         , si
 0x0091f1cc , _bgproc_resume_event                                           , 4     , HANDLE
 0x91f1d0,_PCWarningHandler,,void (__cdecl *)(char *)
 0x0091f1d4 , _bgproc_procinfo_pool                                          , 4     , NULSTHDR *
+0x9205dc,_nufile,4,char *
 0x9205e0,_PCWarningFormatBuffer,,char[1024]
+0x9209e0,_nuline,4,i32
 0x9209e4,_PcStartupCriticalSection,,CRITICAL_SECTION
 0x00920a00 , _NuTime_TickBase                                               , 8     , i64
 0x920a08,_PCWarningMessages,,char[1024]
 0x920e08,_PCWarningOutputBuffer,,char[1024]
 0x00921208 , _bgproc_critical_section                                       , 24    , CRITICAL_SECTION
+0x921224,_err_msg_filter,32,char[32]
+0x921244,_DisableDebugMsg,4,i32
 0x00921248 , _bHaveErr                                                      , 4     , i32
 0x00921250 , _bgproc_active                                                 , 4     , BGPROCINFO *
 0x00921254,_bgproc_thread_handle_pc,,HANDLE
@@ -17425,6 +17686,8 @@ address    , symbol                                                         , si
 0x95138c,_Game_AreaSave,,COLLECTION_AREA_SAVE_PC *
 0x951390,_CurrentCList,,APICHARACTERMODELLIST *
 0x951394,_CurrentStoryCList,,APICHARACTERMODELLIST *
+0x951398,_PauseMenus_Align,4,i32
+0x95139c,_PauseMenus_X,4,f32
 0x9513a0,_Door_CutCamWaitTime,4,f32
 0x009513a8 , _gone_through_door_to_new_level                                , 4     , i32
 0x9513ac,_DoorCutCameraPosition0Pc,,NUVEC
@@ -18062,10 +18325,12 @@ address    , symbol                                                         , si
 0x2857294,_RenderFrameShaderTimePc,,f32
 0x02868400,?sm_poolMessageData@NETMESSAGE_PC@@2PAUMessageData@1@A,,NETMESSAGE_PC::MessageData[512]
 0x2900a7c  , _edfile_buffer_pointer                                         , 4     , i32
+0x2900ca4,_edui_last_item,4,struct eduiitem_s *
 0x2900ca8,_FS_FileList,65536,char[65536]
 0x2910cbc  , _edfile_lock                                                   , 8     , i32[2]
 0x29110d8  , _edfile_buffer                                                 , 4096  , char[4096]
 0x2912e70,_ed_remap_mtx,4,struct numtx_s *
+0x2912ea0,_ed_fnt,4,void *
 0x2912f58,_PadFlyMode,4,i32
 0x2912f5c  , _edfile_media                                                  , 4     , i32
 0x2912f60  , _edfile_pakfile                                                , 4     , void *
@@ -18115,12 +18380,14 @@ address    , symbol                                                         , si
 0x291f68c,_edpart_nearest_orphans,4,i32
 0x291f69c,_PartImpactNormalPrivate,,NUVEC
 0x0291f6a8 , _part_scene_pageid                                             , 128   , i32[32]
+0x291f72c,_edpart_cutoff_menu,4,struct eduimenu_s *
 0x291f734,_PartEditorCameraPosPc,,NUVEC
 0x291f7a0,_part_platimpactcnt,,i32
 0x291f7a8,_edpart_nearest_duplicates,4,i32
 0x291f7c8,_part_emits,4320,PART_EMIT_PC[40]
 0x29208a8,_PartNearestEmitterPc,,i32
 0x029208bc , _part_page_used                                                , 32    , i32[8]
+0x29208ec,_edpart_grav_menu,4,struct eduimenu_s *
 0x29208f0,_part_scene,128,NUGSCN *[32]
 0x292097c,_PartPlatformImpactListPc,,i16[4]
 0x292098c,_PartNearestEmitterPtrPc,,PART_EMIT_PC*
@@ -18129,8 +18396,16 @@ address    , symbol                                                         , si
 0x292099c,_edpart_copy_mode,4,i32
 0x29209a0,_edpart_copy_enclosed,4,i32
 0x29209a8,_edpart_num_orphans,4,i32
+0x29209b4,_edpart_filter,4,i32
 0x29209b8,_edpart_dpad_mode,4,i32
 0x29209bc,_edpart_readout,4,i32
+0x29209c0,_edpart_active_menu,4,struct eduimenu_s *
+0x29209c8,_edpart_type_menu,4,struct eduimenu_s *
+0x29209dc,_edpart_thingsinstance_menu,4,struct eduimenu_s *
+0x29209e4,_edpart_instanceflags_menu,4,struct eduimenu_s *
+0x29209f0,_edpart_debrissettings_menu,4,struct eduimenu_s *
+0x2920a20,_edpart_debrisscale_menu,4,struct eduimenu_s *
+0x2920a24,_edpart_scaletype_menu,4,struct eduimenu_s *
 0x2920a60,_edpart_emitrotz,4,i32
 0x2920a64,_edpart_emitroty,4,i32
 0x2920a68,_edpart_emitrotx,4,i32
@@ -18140,6 +18415,7 @@ address    , symbol                                                         , si
 0x2920a7c,_edpart_refroty,4,i32
 0x2920a80,_edpart_copyrotz,4,i32
 0x2920a84,_edpart_copyroty,4,i32
+0x2920a88,_edpart_count,4,i32
 0x02920aac , _PartRTL                                                       , 4     , RTLSET_PC *
 0x2920ab0,_partglobaltime,,f32
 0x2920ab4,_part_types_used,,i32
@@ -18163,6 +18439,9 @@ address    , symbol                                                         , si
 0x29211c8,_edgra_page_on,,i32[8]
 0x29211e8,_edbri_page_used,,i32[8]
 0x2921208,_freedebkeyptr,,i32
+0x292120c,_edgra_instance_type,4,i32
+0x2921214,_edanim_mtl,4,struct PC_SCENE_MTL_VIEW *
+0x2921218,_ptlreadoutmenu,4,struct eduimenu_s *
 0x0292121c,_freedebchunksglass,,DEBRIS_PARTICLE_CHUNK_PC **
 0x02921220,_freedebchunks,,DEBRIS_PARTICLE_CHUNK_PC **
 0x02921228 , _TerrainCastAuxNormalPc                                        ,       ,
@@ -18192,8 +18471,11 @@ address    , symbol                                                         , si
 0x29231cc,_TerrWallNorm,,NUVEC
 0x2924ad8,_WallSplCount,,i32
 0x2924adc,_edbri_cam_pos,,NUVEC
+0x2924ae8,_edanim_particle_type,4,i32
+0x2924b10,_effectlistmenu,4,struct eduimenu_s *
 0x2924b14,_PickupTerrainPc,,TERRAIN_PICKUP_SET_PC *
 0x2924b18,_edanim_sound_mode,4,i32
+0x2924b1c,_edanim_sound_type,4,i32
 0x02924b28 , _TerrainShadowHeightPc                                         ,       ,
 0x02924b2c , _TerrainRoofValidPc                                            ,       ,
 0x02924b30 , _edpp_page_used                                                , 32    , i32[8]
@@ -18205,6 +18487,7 @@ address    , symbol                                                         , si
 0x2924b70,_edpp_ptls,45056,EDPP_PARTICLE_PC[512]
 0x292fb70,_WallSplList,,void *
 0x0292fb74 , _TerrainPlatformsOffPc                                         ,       ,
+0x292fb78,_edptl_damage_menu,4,struct eduimenu_s *
 0x292fb88,_plathitid,,i32
 0x292fb90,_debris_object_switches,,u8[128]
 0x0292fc10 , _ShadPoly                                                       ,        ,
@@ -18221,13 +18504,16 @@ address    , symbol                                                         , si
 0x0292fc88 , _CurTerr                                                       , 4     , TERRSET *
 0x0292fc88 , _CurrentTerrain                                                , 4     , void *
 0x292fc88,_PCGrassTerrainScene,,void *
+0x292fc94,_edptl_quickdel_menu,4,struct eduimenu_s *
 0x292fc98,_PlatImpactTer,,TERRAIN_POLYGON_INFO_PC
 0x292fd08,_edgra_page_matrix_stack,,NUMTX*[8]
 0x292fd2c,_numspherecolldata,,i32
 0x292fd30,_edgra_page_vectors_valid,,i32[8]
 0x0292fd50,_ParticleChunkRenderStack,,DEBRIS_RENDER_CHUNK_PC *[5]
 0x0292fd64 , _EShadowPolygonPc                                              ,       ,
+0x292fd68,_ptltypemenu,4,struct eduimenu_s *
 0x292fd6c,_DebMat,,NUMTL *[9]
+0x292fd9c,_dpadmodemenu,4,struct eduimenu_s *
 0x0292fda0 , _edanim_page_on                                                , 32    , i32[8]
 0x0292fdc0 , _SfxHashHeads                                                  , 4     , i16 *
 0x292fdc4,_SfxRevertInfoPc,,SFX_RECORD_PC *
@@ -18240,6 +18526,7 @@ address    , symbol                                                         , si
 0x292fdf0,_tertempmat,,NUMTX
 0x0292fe38 , _AnimParams                                                    , 46336 , EDANIM_PARAM_PC[64]
 0x293b338,_SfxNameSlotsPc,,char[1601][32]
+0x2947b58,_edSfxAllCount,4,i32
 0x2947b5c,_edpp_copy_source_vec,12,NUVEC
 0x2947b68,_debris_collide_pt,,NUVEC
 0x2947b74,_TerrainSkinArenaEndPc,,u8 *
@@ -18336,8 +18623,14 @@ address    , symbol                                                         , si
 0x29620e4,_g_renderingDebris,,i32
 0x029620e8 , _DebrisGlassCopyMaterial                                       , 4     , void *
 0x029620ec , _DebrisGlassInitialized                                        , 4     , i32
+0x29620f0,_edanim_active_menu,4,struct eduimenu_s *
+0x29620fc,_edanim_particletype_menu,4,struct eduimenu_s *
+0x2962114,_edanim_soundtype_menu,4,struct eduimenu_s *
 0x02962128 , _edanim_params_used                                            , 4     , i32
 0x02962134 , _edbits_base_scene                                             , 4     , NUGSCN *
+0x2962538,_edbits_level_save_directory,256,char[256]
+0x2962638,_edbits_level_save_name,256,char[256]
+0x2962738,_edbits_level_save_extension,256,char[256]
 0x2962938,_edbits_things_scene,4,struct NUGSCN_s *
 0x0296293c , _edbits_base_terrain                                           , 4     , void *
 0x2962944,_edbits_anim_page,,i32
@@ -18345,9 +18638,29 @@ address    , symbol                                                         , si
 0x296294c,_PartGeneralPagePc,,i32
 0x2962950,_edbits_editor_state,,i32
 0x296295c,_EdppTypesErrorPc,,i32
+0x2962974,_edbri_active_menu,4,struct eduimenu_s *
+0x296297c,_edbri_dpadmode_menu,4,struct eduimenu_s *
+0x2962988,_edbri_plankcount_menu,4,struct eduimenu_s *
+0x296298c,_edbri_bridgeproperties_menu,4,struct eduimenu_s *
 0x2962994,_edbri_bridges_used,,i32
+0x29629a4,_edbri_mode,4,i32
+0x29629a8,_edgra_active_menu,4,struct eduimenu_s *
+0x29629b0,_edgra_instance_menu,4,struct eduimenu_s *
+0x29629b8,_edgra_clumpproperties_menu,4,struct eduimenu_s *
+0x29629c0,_edgra_clumparea_menu,4,struct eduimenu_s *
+0x29629c8,_edgra_clumpfade_menu,4,struct eduimenu_s *
+0x29629d0,_edgra_clumpmode_menu,4,struct eduimenu_s *
+0x29629d4,_edgra_dpadmode_menu,4,struct eduimenu_s *
+0x29629dc,_edgra_globals_menu,4,struct eduimenu_s *
+0x29629e0,_fadeinitem,4,struct edui_colour_slider_s *
+0x29629e4,_fadeoutitem,4,struct edui_colour_slider_s *
+0x29629e8,_globalfadeinitem,4,struct edui_colour_slider_s *
+0x29629ec,_globalfadeoutitem,4,struct edui_colour_slider_s *
+0x29629f4,_edgra_filter,4,i32
 0x29629f8,_edgra_units_used,,i32
 0x2962a00,_edgra_clumps_used,,i32
+0x2962a14,_edgra_dpadmode,4,i32
+0x2962a18,_edgra_editormode,4,i32
 0x2962a1c,_edgra_free_vecbuffer,,void*
 0x2962a20,_edgra_mtxbuffer,,NUMTX*
 0x2962a24,_edgra_vecbuffer,,NUVEC*
@@ -18365,6 +18678,9 @@ address    , symbol                                                         , si
 0x2962a50,_edpp_copy_source_count,4,i32
 0x2962a5c,_EdppUnresolvedInstancesPc,,i32
 0x2962a64,_edpp_dpad_mode,4,i32
+0x2962a68,_edpp_readout,4,i32
+0x2962aa0,_edptl_orphanlist_menu,4,struct eduimenu_s *
+0x2962aac,_edptl_testdetail_menu,4,struct eduimenu_s *
 0x2962ac8,_edpp_rotz,4,i32
 0x2962ad0,_edpp_refroty,4,i32
 0x2962ad8,_edpp_refrotz,4,i32
@@ -18372,6 +18688,7 @@ address    , symbol                                                         , si
 0x2962aec,_edpp_copyroty,4,i32
 0x2962af0,_edpp_facrotx,4,i32
 0x2962af4,_edpp_facroty,4,i32
+0x2962af8,_edptl_count,4,i32
 0x2962b48,_IgnoreWallSplines,,i32
 0x2962b4c,_WallSplinesOnly,,i32
 0x02962b50 , _TerrainScaleWorkBasePc                                         ,       ,

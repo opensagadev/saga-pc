@@ -98,7 +98,6 @@ void __cdecl edpartScaleType(i32 index, f32 scale) {
     type->velocity_random.z *= scale;
     type->maximum_distance *= scale;
 }
-
 static void edpartScaleTypeMenu(eduimenu_s *menu, eduiitem_s *unused1, u32 unused2) {
     if (edpart_nearest != -1) {
         edpart_scaletype_menu = eduiMenuCreate(70, 70, 180, 250, ed_fnt, edpartCancelScaleTypeMenu, "Scale Type");
@@ -113,7 +112,6 @@ static void edpartScaleTypeMenu(eduimenu_s *menu, eduiitem_s *unused1, u32 unuse
         }
     }
 }
-
 static void edpartTypeMenu(eduimenu_s *menu, eduiitem_s *unused1, u32 unused2) {
     edpart_type_menu = eduiMenuCreate(70, 70, 250, 250, ed_fnt, edpartCancelTypeMenu, "Emitter Type");
     if (edpart_type_menu != NULL) {
@@ -125,7 +123,6 @@ static void edpartTypeMenu(eduimenu_s *menu, eduiitem_s *unused1, u32 unused2) {
         edpart_type_menu->y = menu->y + 40;
     }
 }
-
 static void edpartThingsInstanceMenu(eduimenu_s *parent, eduiitem_s *unused1, u32 unused2) {
     i32 group;
     i32 selected_first;
@@ -173,7 +170,6 @@ static void edpartThingsInstanceMenu(eduimenu_s *parent, eduiitem_s *unused1, u3
     edpart_thingsinstance_menu->x = parent->x + 10;
     edpart_thingsinstance_menu->y = parent->y + 40;
 }
-
 static void edpartCutOffMenu(eduimenu_s *menu, eduiitem_s *unused1, u32 unused2) {
     if (edpart_nearest_type != NULL) {
         edpart_cutoff_menu = eduiMenuCreate(70, 70, 250, 200, ed_fnt, edpartCancelCutOffMenu, "Radii");
@@ -187,7 +183,6 @@ static void edpartCutOffMenu(eduimenu_s *menu, eduiitem_s *unused1, u32 unused2)
         }
     }
 }
-
 static void edpartGravMenu(eduimenu_s *menu, eduiitem_s *unused1, u32 unused2) {
     if (edpart_nearest_type != NULL) {
         edpart_grav_menu = eduiMenuCreate(70, 70, 180, 250, ed_fnt, edpartCancelGravMenu, "Gravity");

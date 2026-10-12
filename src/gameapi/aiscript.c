@@ -869,7 +869,7 @@ f32 __cdecl Condition_Random(void *sys, AISCRIPTPROCESS_PC *processor, AIPACKET_
     return NuRandFloat();
 }
 
-static void *Condition_AlwaysTrueInit(AISYS_PC *sys, char *arg, AISCRIPT_PC *script) {
+void *Condition_AlwaysTrueInit(AISYS_PC *sys, char *arg, AISCRIPT_PC *script) {
     f32 value;
 
     if (arg != NULL && NuStrLen(arg) != 0) {

@@ -431,7 +431,7 @@ void __cdecl GizForceSFX_Configure(WORLDINFO *world_ptr, char *config) {
     NuFParDestroy(parser);
 }
 
-static void GizForces_Draw(void *world_ptr, void *data, float unused2) {
+void GizForces_Draw(void *world_ptr, void *data, float unused2) {
     struct GIZFORCE_s *force;
     u16 force_sys_count;
     i32 index;

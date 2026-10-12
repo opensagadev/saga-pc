@@ -1028,7 +1028,6 @@ void __cdecl edanimStartAllPages(void) {
         }
     }
 }
-
 static void edanimcbParticleTypeMenu(eduimenu_s *parent, eduiitem_s *unused1, u32 unused2) {
     i32 index;
     u32 colours[4] = {0x80000000, 0x80ff0000, 0x80808080, 0x80404040};
@@ -1058,7 +1057,6 @@ static void edanimcbParticleTypeMenu(eduimenu_s *parent, eduiitem_s *unused1, u3
     edanim_particletype_menu->x = parent->x + 10;
     edanim_particletype_menu->y = parent->y + 40;
 }
-
 static void edanimcbParticleMenu(eduimenu_s *parent, eduiitem_s *unused1, u32 unused2) {
     struct eduimenu_s *menu;
     u32 colours[4] = {0x80000000, 0x80ff0000, 0x80808080, 0x80404040};
@@ -1082,7 +1080,6 @@ static void edanimcbParticleMenu(eduimenu_s *parent, eduiitem_s *unused1, u32 un
     menu->x = parent->x + 10;
     menu->y = parent->y + 40;
 }
-
 static void edanimcbMCTBCardPresent(eduimenu_s *menu, eduiitem_s *unused1, u32 unused2) {
     if (saveloadCheckCardPresent()) {
         eduiCreateMessageMenu(menu, (char *)("Present"), 1);
@@ -1090,14 +1087,12 @@ static void edanimcbMCTBCardPresent(eduimenu_s *menu, eduiitem_s *unused1, u32 u
         eduiCreateMessageMenu(menu, (char *)("Not Present"), 0);
     }
 }
-
 static void edanimcbMCTBCardType(eduimenu_s *menu, eduiitem_s *unused1, u32 unused2) {
     if (saveloadCheckCardType())
         eduiCreateMessageMenu(menu, (char *)("PS2 Card"), 1);
     else
         eduiCreateMessageMenu(menu, (char *)("Not a PS2 Card"), 0);
 }
-
 static void edanimcbMCTBCardCheckFormat(eduimenu_s *menu, eduiitem_s *unused1, u32 unused2) {
     if (saveloadCheckCardFormatted()) {
         eduiCreateMessageMenu(menu, (char *)("Formatted"), 1);
@@ -1105,19 +1100,16 @@ static void edanimcbMCTBCardCheckFormat(eduimenu_s *menu, eduiitem_s *unused1, u
         eduiCreateMessageMenu(menu, (char *)("Not Formatted"), 0);
     }
 }
-
 static void edanimcbMCTBCardFreeSpace(eduimenu_s *menu, eduiitem_s *unused1, u32 unused2) {
     char message[32];
     sprintf(message, "Space = %05d", saveloadCheckCardFreeSpace(0));
     eduiCreateMessageMenu(menu, message, 1);
 }
-
 static void edanimcbMCTBCardSlotsUsed(eduimenu_s *menu, eduiitem_s *unused1, u32 unused2) {
     char message[32];
     sprintf(message, "Slots Used = %02d", saveloadCheckSlotsUsed());
     eduiCreateMessageMenu(menu, message, 1);
 }
-
 static void edanimcbMCTBCardSaveSlot(eduimenu_s *menu, eduiitem_s *item, u32 unused2) {
     char data[32];
     sprintf(data, "This is slot %d", item->data);
@@ -1126,7 +1118,6 @@ static void edanimcbMCTBCardSaveSlot(eduimenu_s *menu, eduiitem_s *item, u32 unu
     else
         eduiCreateMessageMenu(menu, (char *)("Save Error"), 0);
 }
-
 static void edanimcbMCTBCardLoadSlot(eduimenu_s *menu, eduiitem_s *item, u32 unused2) {
     char data[32];
     if (saveloadLoadSlot(item->data, data, sizeof(data))) {
@@ -1135,14 +1126,12 @@ static void edanimcbMCTBCardLoadSlot(eduimenu_s *menu, eduiitem_s *item, u32 unu
         eduiCreateMessageMenu(menu, (char *)("Load Error"), 0);
     }
 }
-
 static void edanimcbMCTBCardDeleteSlot(eduimenu_s *menu, eduiitem_s *item, u32 unused2) {
     if (saveloadDeleteSlot(item->data))
         eduiCreateMessageMenu(menu, (char *)("Delete OK"), 1);
     else
         eduiCreateMessageMenu(menu, (char *)("Delete Error"), 0);
 }
-
 static void edanimcbMCTBCardUnFormat(eduimenu_s *menu, eduiitem_s *unused1, u32 unused2) {
     if (saveloadUnFormatCard()) {
         eduiCreateMessageMenu(menu, (char *)("Unformat OK"), 1);
@@ -1150,7 +1139,6 @@ static void edanimcbMCTBCardUnFormat(eduimenu_s *menu, eduiitem_s *unused1, u32 
         eduiCreateMessageMenu(menu, (char *)("Unformat Fail"), 0);
     }
 }
-
 static void edanimcbMCTBCardFormat(eduimenu_s *menu, eduiitem_s *unused1, u32 unused2) {
     if (saveloadFormatCard()) {
         eduiCreateMessageMenu(menu, (char *)("Format OK"), 1);
@@ -1158,7 +1146,6 @@ static void edanimcbMCTBCardFormat(eduimenu_s *menu, eduiitem_s *unused1, u32 un
         eduiCreateMessageMenu(menu, (char *)("Format Fail"), 0);
     }
 }
-
 static void edanimcbMCTBCardWriteKeyCard(eduimenu_s *menu, eduiitem_s *unused1, u32 unused2) {
     if (saveloadWriteKeyCode(id_test, code_test)) {
         eduiCreateMessageMenu(menu, (char *)("KeyCard Write OK"), 1);

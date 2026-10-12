@@ -40,7 +40,6 @@ void __cdecl edbriClearPage(i8 page) {
     edbri_page_used[page] = 0;
     edbri_page_scene[page] = NULL;
 }
-
 static void edbricbPlankCountMenu(eduimenu_s *parent, eduiitem_s *unused1, u32 unused2) {
     edbri_plankcount_menu = eduiMenuCreate(70, 70, 180, 250, ed_fnt, edbricbCancelPlankCountMenu, "Plank Count");
     if (!edbri_plankcount_menu)
@@ -53,7 +52,6 @@ static void edbricbPlankCountMenu(eduimenu_s *parent, eduiitem_s *unused1, u32 u
     edbri_plankcount_menu->x = parent->x + 10;
     edbri_plankcount_menu->y = parent->y + 40;
 }
-
 static void edbricbDpadModeMenu(eduimenu_s *parent, eduiitem_s *unused1, u32 unused2) {
     edbri_dpadmode_menu = eduiMenuCreate(70, 70, 180, 250, ed_fnt, edbricbCancelDpadModeMenu, "Dpad Mode");
     if (!edbri_dpadmode_menu)
@@ -204,7 +202,6 @@ void __cdecl edbriStartPage(i32 page_number) {
         }
     }
 }
-
 static void edbricbBridgePropertiesMenu(eduimenu_s *parent, eduiitem_s *unused1, u32 unused2) {
     if (edbri_nearest == -1)
         return;

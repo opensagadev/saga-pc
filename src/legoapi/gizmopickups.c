@@ -248,7 +248,7 @@ void AddMiscPickups(NUVEC *position, i32 player_id, i32 coins, i32 torpedoes) {
     }
 }
 
-static void GizPanel_CreateTerrain(GIZPANEL_s *panel) {
+void GizPanel_CreateTerrain(GIZPANEL_s *panel) {
     if (panel == NULL) {
         return;
     }
