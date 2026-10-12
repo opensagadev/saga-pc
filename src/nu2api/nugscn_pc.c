@@ -315,58 +315,15 @@ void __cdecl NuGScnFixupTIDsPS(NUGSCN *scene) {
         if (item->type == 0xb0) {
             SCENE_TEXTURE_PACKET_B0_PC *packet = (SCENE_TEXTURE_PACKET_B0_PC *)item->next;
             if (packet->kind == 2) {
-                for (j = 0; j < 3; ++j) {
-                    i32 tid = packet->extra_texture_ids[j];
-                    if (tid == -1) {
-                        packet->extra_texture_ids[j] = 0;
-                    } else if ((tid & 0x4000) == 0) {
-                        packet->extra_texture_ids[j] = scene->texture_ids[tid];
-                    } else {
-                        i32 resolved = NuTexResolveReference(scene, tid);
-                        if (resolved != 0) {
-                            packet->extra_texture_ids[j] = resolved;
-                        } else {
-                            STUBBED_NAMED("Unresolved fallback and assignment held at native PS B0 extra-ID call "
-                                          "0x602405: no source-owned DDS value");
-                        }
-                    }
-                }
+                for (j = 0; j < 3; ++j)
+                    packet->extra_texture_ids[j] = NuGScnFixupTID(scene, packet->extra_texture_ids[j]);
             }
-            {
-                i32 tid = packet->texture_id;
-                if (tid == -1) {
-                    packet->texture_id = 0;
-                } else if ((tid & 0x4000) == 0) {
-                    packet->texture_id = scene->texture_ids[tid];
-                } else {
-                    i32 resolved = NuTexResolveReference(scene, tid);
-                    if (resolved != 0) {
-                        packet->texture_id = resolved;
-                    } else {
-                        STUBBED_NAMED("Unresolved fallback and assignment held at native PS B0 main-ID call 0x60241c: "
-                                      "no source-owned DDS value");
-                    }
-                }
-            }
+            packet->texture_id = NuGScnFixupTID(scene, packet->texture_id);
         } else if (item->type == 0xae || item->type == 0xaf) {
             SCENE_TEXTURE_PACKET_AE_PC *packet = (SCENE_TEXTURE_PACKET_AE_PC *)item->next;
             if (packet != NULL) {
-                for (j = 0; j < 3; ++j) {
-                    i32 tid = packet->texture_ids[j];
-                    if (tid == -1) {
-                        packet->texture_ids[j] = 0;
-                    } else if ((tid & 0x4000) == 0) {
-                        packet->texture_ids[j] = scene->texture_ids[tid];
-                    } else {
-                        i32 resolved = NuTexResolveReference(scene, tid);
-                        if (resolved != 0) {
-                            packet->texture_ids[j] = resolved;
-                        } else {
-                            STUBBED_NAMED("Unresolved fallback and assignment held at native PS AE/AF ID call "
-                                          "0x602445: no source-owned DDS value");
-                        }
-                    }
-                }
+                for (j = 0; j < 3; ++j)
+                    packet->texture_ids[j] = NuGScnFixupTID(scene, packet->texture_ids[j]);
             }
         }
     }

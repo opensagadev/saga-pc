@@ -217,269 +217,55 @@ STATIC_ASSERT(offsetof(NUGSCN, textures) == 8);
 STATIC_ASSERT(offsetof(NUGSCN, materials) == 0xc);
 STATIC_ASSERT(offsetof(NUGSCN, material_count) == 0x10);
 
-/* Partial native void caller. Successful native remap operations are expanded
- * in place; only a missing fallback value leaves its destination untouched.
- * The return-valued NuGScnFixupTID entry remains held with its true i32 ABI. */
+/* Retail returns the empty diagnostic's EAX, which still holds the fallback TID. */
+extern i32 __cdecl PCSpecialEmptyHandler_candidate();
+
+i32 __cdecl NuGScnFixupTID(NUGSCN *scene, i32 tid) {
+    i32 resolved;
+    if (tid == -1)
+        return 0;
+    if (tid & 0x4000) {
+        resolved = NuTexResolveReference(scene, tid);
+        if (resolved == 0) {
+            NUTEXDIM_PC *texture;
+            resolved = NuTexGetUnresolvedTextureTIDPS();
+            if (resolved > 0) {
+                texture = NuTextureDimensions[resolved - 1];
+                if (texture != NULL)
+                    ++texture->ref_count;
+            }
+            texture = scene->textures[tid & 0x3fff];
+            return PCSpecialEmptyHandler_candidate(
+                texture->checksum[0], texture->checksum[1], texture->checksum[2], texture->checksum[3],
+                texture->checksum[4], texture->checksum[5], texture->checksum[6], texture->checksum[7],
+                texture->checksum[8], texture->checksum[9], texture->checksum[10], texture->checksum[11],
+                texture->checksum[12], texture->checksum[13], texture->checksum[14], texture->checksum[15]);
+        }
+        return resolved;
+    }
+    return scene->texture_ids[tid];
+}
+
 void __cdecl NuGScnFixupTIDs(NUGSCN *scene) {
     i32 i;
     for (i = 0; i < scene->material_count; ++i) {
         PC_SCENE_MTL_VIEW *material = (PC_SCENE_MTL_VIEW *)scene->materials[i];
-        {
-            i32 tid = material->texture_id;
-            if (tid == -1) {
-                ((PC_SCENE_MTL_VIEW *)scene->materials[i])->texture_id = 0;
-            } else if ((tid & 0x4000) == 0) {
-                ((PC_SCENE_MTL_VIEW *)scene->materials[i])->texture_id = (i16)scene->texture_ids[tid];
-            } else {
-                i32 resolved = NuTexResolveReference(scene, tid);
-                if (resolved != 0) {
-                    ((PC_SCENE_MTL_VIEW *)scene->materials[i])->texture_id = (i16)resolved;
-                } else {
-                    STUBBED_NAMED(
-                        "Unresolved fallback and assignment held at native 0x5eee0e: no source-owned DDS value");
-                }
-            }
-        }
-        {
-            i32 tid = material->specular_map_tid;
-            if (tid == -1) {
-                material->specular_map_tid = 0;
-            } else if ((tid & 0x4000) == 0) {
-                material->specular_map_tid = scene->texture_ids[tid];
-            } else {
-                i32 resolved = NuTexResolveReference(scene, tid);
-                if (resolved != 0) {
-                    material->specular_map_tid = resolved;
-                } else {
-                    STUBBED_NAMED(
-                        "Unresolved fallback and assignment held at native 0x5eee25: no source-owned DDS value");
-                }
-            }
-        }
-        {
-            i32 tid = material->lightmap_tex_id[0];
-            if (tid == -1) {
-                material->lightmap_tex_id[0] = 0;
-            } else if ((tid & 0x4000) == 0) {
-                material->lightmap_tex_id[0] = scene->texture_ids[tid];
-            } else {
-                i32 resolved = NuTexResolveReference(scene, tid);
-                if (resolved != 0) {
-                    material->lightmap_tex_id[0] = resolved;
-                } else {
-                    STUBBED_NAMED(
-                        "Unresolved fallback and assignment held at native 0x5eee38: no source-owned DDS value");
-                }
-            }
-        }
-        {
-            i32 tid = material->normal_map_tid;
-            if (tid == -1) {
-                material->normal_map_tid = 0;
-            } else if ((tid & 0x4000) == 0) {
-                material->normal_map_tid = scene->texture_ids[tid];
-            } else {
-                i32 resolved = NuTexResolveReference(scene, tid);
-                if (resolved != 0) {
-                    material->normal_map_tid = resolved;
-                } else {
-                    STUBBED_NAMED(
-                        "Unresolved fallback and assignment held at native 0x5eee4b: no source-owned DDS value");
-                }
-            }
-        }
-        {
-            i32 tid = material->lightmap_tex_id[1];
-            if (tid == -1) {
-                material->lightmap_tex_id[1] = 0;
-            } else if ((tid & 0x4000) == 0) {
-                material->lightmap_tex_id[1] = scene->texture_ids[tid];
-            } else {
-                i32 resolved = NuTexResolveReference(scene, tid);
-                if (resolved != 0) {
-                    material->lightmap_tex_id[1] = resolved;
-                } else {
-                    STUBBED_NAMED(
-                        "Unresolved fallback and assignment held at native 0x5eee5e: no source-owned DDS value");
-                }
-            }
-        }
-        {
-            i32 tid = material->envmap_cubic_tid;
-            if (tid == -1) {
-                material->envmap_cubic_tid = 0;
-            } else if ((tid & 0x4000) == 0) {
-                material->envmap_cubic_tid = scene->texture_ids[tid];
-            } else {
-                i32 resolved = NuTexResolveReference(scene, tid);
-                if (resolved != 0) {
-                    material->envmap_cubic_tid = resolved;
-                } else {
-                    STUBBED_NAMED(
-                        "Unresolved fallback and assignment held at native 0x5eee71: no source-owned DDS value");
-                }
-            }
-        }
-        {
-            i32 tid = material->unknown_texture_24c;
-            if (tid == -1) {
-                material->unknown_texture_24c = 0;
-            } else if ((tid & 0x4000) == 0) {
-                material->unknown_texture_24c = scene->texture_ids[tid];
-            } else {
-                i32 resolved = NuTexResolveReference(scene, tid);
-                if (resolved != 0) {
-                    material->unknown_texture_24c = resolved;
-                } else {
-                    STUBBED_NAMED(
-                        "Unresolved fallback and assignment held at native 0x5eee84: no source-owned DDS value");
-                }
-            }
-        }
-        {
-            i32 tid = material->shine_map_tid;
-            if (tid == -1) {
-                material->shine_map_tid = 0;
-            } else if ((tid & 0x4000) == 0) {
-                material->shine_map_tid = scene->texture_ids[tid];
-            } else {
-                i32 resolved = NuTexResolveReference(scene, tid);
-                if (resolved != 0) {
-                    material->shine_map_tid = resolved;
-                } else {
-                    STUBBED_NAMED(
-                        "Unresolved fallback and assignment held at native 0x5eee97: no source-owned DDS value");
-                }
-            }
-        }
-        {
-            i32 tid = material->diffuse_map_tex_id[0];
-            if (tid == -1) {
-                material->diffuse_map_tex_id[0] = 0;
-            } else if ((tid & 0x4000) == 0) {
-                material->diffuse_map_tex_id[0] = scene->texture_ids[tid];
-            } else {
-                i32 resolved = NuTexResolveReference(scene, tid);
-                if (resolved != 0) {
-                    material->diffuse_map_tex_id[0] = resolved;
-                } else {
-                    STUBBED_NAMED(
-                        "Unresolved fallback and assignment held at native 0x5eeead: no source-owned DDS value");
-                }
-            }
-        }
-        {
-            i32 tid = material->diffuse_map_tex_id[1];
-            if (tid == -1) {
-                material->diffuse_map_tex_id[1] = 0;
-            } else if ((tid & 0x4000) == 0) {
-                material->diffuse_map_tex_id[1] = scene->texture_ids[tid];
-            } else {
-                i32 resolved = NuTexResolveReference(scene, tid);
-                if (resolved != 0) {
-                    material->diffuse_map_tex_id[1] = resolved;
-                } else {
-                    STUBBED_NAMED(
-                        "Unresolved fallback and assignment held at native 0x5eeec0: no source-owned DDS value");
-                }
-            }
-        }
-        {
-            i32 tid = material->diffuse_map_tex_id[2];
-            if (tid == -1) {
-                material->diffuse_map_tex_id[2] = 0;
-            } else if ((tid & 0x4000) == 0) {
-                material->diffuse_map_tex_id[2] = scene->texture_ids[tid];
-            } else {
-                i32 resolved = NuTexResolveReference(scene, tid);
-                if (resolved != 0) {
-                    material->diffuse_map_tex_id[2] = resolved;
-                } else {
-                    STUBBED_NAMED(
-                        "Unresolved fallback and assignment held at native 0x5eeed3: no source-owned DDS value");
-                }
-            }
-        }
-        {
-            i32 tid = material->diffuse_map_tex_id[3];
-            if (tid == -1) {
-                material->diffuse_map_tex_id[3] = 0;
-            } else if ((tid & 0x4000) == 0) {
-                material->diffuse_map_tex_id[3] = scene->texture_ids[tid];
-            } else {
-                i32 resolved = NuTexResolveReference(scene, tid);
-                if (resolved != 0) {
-                    material->diffuse_map_tex_id[3] = resolved;
-                } else {
-                    STUBBED_NAMED(
-                        "Unresolved fallback and assignment held at native 0x5eeee6: no source-owned DDS value");
-                }
-            }
-        }
-        {
-            i32 tid = material->vtf_height_map_tid;
-            if (tid == -1) {
-                material->vtf_height_map_tid = 0;
-            } else if ((tid & 0x4000) == 0) {
-                material->vtf_height_map_tid = scene->texture_ids[tid];
-            } else {
-                i32 resolved = NuTexResolveReference(scene, tid);
-                if (resolved != 0) {
-                    material->vtf_height_map_tid = resolved;
-                } else {
-                    STUBBED_NAMED(
-                        "Unresolved fallback and assignment held at native 0x5eeef9: no source-owned DDS value");
-                }
-            }
-        }
-        {
-            i32 tid = material->vtf_normal_map_tid;
-            if (tid == -1) {
-                material->vtf_normal_map_tid = 0;
-            } else if ((tid & 0x4000) == 0) {
-                material->vtf_normal_map_tid = scene->texture_ids[tid];
-            } else {
-                i32 resolved = NuTexResolveReference(scene, tid);
-                if (resolved != 0) {
-                    material->vtf_normal_map_tid = resolved;
-                } else {
-                    STUBBED_NAMED(
-                        "Unresolved fallback and assignment held at native 0x5eef0c: no source-owned DDS value");
-                }
-            }
-        }
-        {
-            i32 tid = material->unknown_texture_298;
-            if (tid == -1) {
-                material->unknown_texture_298 = 0;
-            } else if ((tid & 0x4000) == 0) {
-                material->unknown_texture_298 = scene->texture_ids[tid];
-            } else {
-                i32 resolved = NuTexResolveReference(scene, tid);
-                if (resolved != 0) {
-                    material->unknown_texture_298 = resolved;
-                } else {
-                    STUBBED_NAMED(
-                        "Unresolved fallback and assignment held at native 0x5eef1f: no source-owned DDS value");
-                }
-            }
-        }
-        {
-            i32 tid = material->unknown_texture_29c;
-            if (tid == -1) {
-                material->unknown_texture_29c = 0;
-            } else if ((tid & 0x4000) == 0) {
-                material->unknown_texture_29c = scene->texture_ids[tid];
-            } else {
-                i32 resolved = NuTexResolveReference(scene, tid);
-                if (resolved != 0) {
-                    material->unknown_texture_29c = resolved;
-                } else {
-                    STUBBED_NAMED(
-                        "Unresolved fallback and assignment held at native 0x5eef32: no source-owned DDS value");
-                }
-            }
-        }
+        ((PC_SCENE_MTL_VIEW *)scene->materials[i])->texture_id = (i16)NuGScnFixupTID(scene, material->texture_id);
+        material->specular_map_tid = NuGScnFixupTID(scene, material->specular_map_tid);
+        material->lightmap_tex_id[0] = NuGScnFixupTID(scene, material->lightmap_tex_id[0]);
+        material->normal_map_tid = NuGScnFixupTID(scene, material->normal_map_tid);
+        material->lightmap_tex_id[1] = NuGScnFixupTID(scene, material->lightmap_tex_id[1]);
+        material->envmap_cubic_tid = NuGScnFixupTID(scene, material->envmap_cubic_tid);
+        material->unknown_texture_24c = NuGScnFixupTID(scene, material->unknown_texture_24c);
+        material->shine_map_tid = NuGScnFixupTID(scene, material->shine_map_tid);
+        material->diffuse_map_tex_id[0] = NuGScnFixupTID(scene, material->diffuse_map_tex_id[0]);
+        material->diffuse_map_tex_id[1] = NuGScnFixupTID(scene, material->diffuse_map_tex_id[1]);
+        material->diffuse_map_tex_id[2] = NuGScnFixupTID(scene, material->diffuse_map_tex_id[2]);
+        material->diffuse_map_tex_id[3] = NuGScnFixupTID(scene, material->diffuse_map_tex_id[3]);
+        material->vtf_height_map_tid = NuGScnFixupTID(scene, material->vtf_height_map_tid);
+        material->vtf_normal_map_tid = NuGScnFixupTID(scene, material->vtf_normal_map_tid);
+        material->unknown_texture_298 = NuGScnFixupTID(scene, material->unknown_texture_298);
+        material->unknown_texture_29c = NuGScnFixupTID(scene, material->unknown_texture_29c);
         ((SCENE_MATERIAL_FLAGS_PC *)scene->materials[i])->flags &= ~0x400000u;
         material = (PC_SCENE_MTL_VIEW *)scene->materials[i];
         NuMtlUpdatePS((NUMTL *)material);

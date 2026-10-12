@@ -4452,7 +4452,7 @@ address    , symbol                                                         , si
 0x5ee750,_clipPartialPortal,484,
 0x5ee940,_roomRecursive,483,
 0x5eeb30,_NuPortalVisibility,506,i32 __cdecl NuPortalVisibility(NUGSCN *)
-0x5eed30,_NuGScnFixupTID,186,
+0x5eed30,_NuGScnFixupTID,186,"i32 __cdecl(NUGSCN *, i32)"
 0x5eedf0,_NuGScnFixupTIDs,397,void __cdecl(NUGSCN *)
 0x5eef80,_NuGScnRestoreTID,193,"i32 __cdecl(NUGSCN *,i32)"
 0x5ef050,_NuGScnRestoreTIDs,371,void __cdecl(NUGSCN *)
