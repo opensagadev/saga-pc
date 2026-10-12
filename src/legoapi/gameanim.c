@@ -1388,11 +1388,9 @@ GAMEANIMOBJ *__cdecl GameAnimSet_AddObjectByName(GAMEANIMSET *set, NUGSCN *scene
                                                  f32 end_frame, i32 append, void *gizmo_sys, char *prefix,
                                                  char *suffix) {
     NUSPECIALHANDLE special;
-    if (!set)
-        return NULL;
-    if (!Gizmo_FindNuSpecial(scene, &special, name, 1, gizmo_sys, prefix, suffix))
-        return NULL;
-    return GameAnimSet_AddObject(set, &special, start_frame, end_frame, append);
+    if (set && Gizmo_FindNuSpecial(scene, &special, name, 1, gizmo_sys, prefix, suffix))
+        return GameAnimSet_AddObject(set, &special, start_frame, end_frame, append);
+    return NULL;
 }
 
 void GameAnimSet_RemoveSpecial(GAMEANIMSET *set, nuhspecial_s *special) {
