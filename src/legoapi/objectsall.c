@@ -207,8 +207,8 @@ void __cdecl EquivalentObjects_Configure(WORLDINFO *world, char *config) {
             }
         }
         if (cursor->object_count > 0) {
-            ++view->equivalent_group_count;
             cursor = (EQUIVALENT_GROUP_PC *)((u8 *)cursor + cursor->byte_size);
+            ++view->equivalent_group_count;
         }
     }
     NuFParDestroy(parser);

@@ -523,7 +523,7 @@ i32 __cdecl BoundingBoxToLine(NUVEC *minimum, NUVEC *maximum, NUMTX *matrix, NUV
         return 1;
     if (!ca && !cb) {
         if (intersection)
-            intersection->x = intersection->y = intersection->z = 0.0f;
+            intersection->z = intersection->y = intersection->x = 0.0f;
         return 1;
     }
     if (ca & cb)

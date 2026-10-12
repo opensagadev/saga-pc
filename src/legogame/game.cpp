@@ -854,7 +854,7 @@ GAME_PUBLISHER_ASSERT(offsetof(GAMEOBJECT, id) == 0x1064);
 
 static void __cdecl GameMsg_EndDelay_Game(GAME_MESSAGE_PC *message) {
     i32 random;
-    if (message->score == 0)
+    if (message->score <= 0)
         return;
     if (VehicleArea != 0) {
         DrawBuildUpTime = (f32)((f64)COINMSGTIME + 1.0);

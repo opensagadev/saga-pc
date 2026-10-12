@@ -399,7 +399,7 @@ i32 NuPadRead(FRAME_PAD_PC *pad) {
     }
 
     pad->is_valid = 0;
-    pad->digital_buttons = pad->digital_buttons_pressed = pad->digital_buttons_released = pad->digital_buttons_prev = 0;
+    pad->digital_buttons_prev = pad->digital_buttons_released = pad->digital_buttons_pressed = pad->digital_buttons = 0;
 
     return 0;
 }

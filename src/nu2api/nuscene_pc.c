@@ -230,7 +230,7 @@ void __cdecl NuGScnFixupPS(NUGSCN *scene) {
         }
     }
     if (dynamic != 0) {
-        for (registry_index = 0; registry_index < 100; ++registry_index) {
+        for (registry_index = 0; registry_index != 100; ++registry_index) {
             if (PCRegisteredNativeScenes[registry_index] == NULL) {
                 PCRegisteredNativeScenes[registry_index] = scene;
                 break;

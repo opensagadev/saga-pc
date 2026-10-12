@@ -15452,6 +15452,7 @@ address    , symbol                                                         , si
 0x804dcc,_CanPunchGirls,,i32
 0x804e38,_GizBuilditGDeb,,i16[6]
 0x804ec8,_CustomiserSetDataPrivatePc,,CUSTOM_CATEGORY_CONFIG_PC[9]
+0x804fac,_PermCollectionScalePc,4,f32
 0x00805030 , _GhostLightMul                                                 , 4     , f32
 0x00805034 , _GhostLightTargetMul                                           , 4     , f32
 0x805038,_PanelLightingColoursPc,,NUVEC[3]

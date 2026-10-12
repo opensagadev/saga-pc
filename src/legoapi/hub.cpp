@@ -913,7 +913,7 @@ extern "C" void __cdecl Hub_InitMiniKits(WORLDINFO *world) {
             kit->scalar_10 = 0;
             kit->rotation = (u16)qrand();
             for (info = HubAreaInfoPc; info->area_name != NULL; ++info) {
-                if (info->area != NULL && i == info->area->index)
+                if (info->area != NULL && info->area->index == i)
                     break;
             }
             height = GameShadow(NULL, &kit->position, 5.0f, -1);

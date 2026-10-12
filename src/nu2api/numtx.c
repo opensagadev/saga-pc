@@ -827,7 +827,7 @@ void NuEulerXYZFromQuat(NUANG *x, NUANG *y, NUANG *z, NUQUAT *input) {
         sin_y = 1.0f;
     }
 
-    *y = NuASin(sin_y);
+    *y = (i16)NuASin(sin_y);
     *x = NuAtan2D(2.0f * (q.y * q.z + q.w * q.x), q.w * q.w - q.x * q.x - q.y * q.y + q.z * q.z);
     *z = NuAtan2D(2.0f * (q.x * q.y + q.w * q.z), q.w * q.w + q.x * q.x - q.y * q.y - q.z * q.z);
 }

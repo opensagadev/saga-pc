@@ -548,8 +548,8 @@ static void ZipUpResetSinglePc(ZIPUP_PC *zipup) {
     }
     zipup->facing_angle =
         NuAtan2D(zipup->upper_position.x - zipup->lower_position.x, zipup->upper_position.z - zipup->lower_position.z);
-    zipup->flags_word = (zipup->flags_word & ~0x100) | 0xc0;
     zipup->occupant = NULL;
+    zipup->flags_word = (zipup->flags_word & ~0x100) | 0xc0;
 }
 extern void ZipUps_Reset(WORLDINFO *world, void *unused, ZIPUP_PROGRESS_PC *progress) {
     ZIPUP_PC *zipup;

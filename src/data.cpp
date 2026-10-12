@@ -26,6 +26,7 @@ extern "C" {
     i32 AreaCrawlMusicEnabledPc = 1;
     f32 AreaCrawlPromptYPc = 0.745000005f;
     f32 AreaCrawlPromptScalePc = 0.400000006f;
+    f32 PermCollectionScalePc = 0.600000024f;
     APICHARACTERMODELLIST FreePlayModelList[49] = {0};
     i32 CharacterDataLoad = 0;
     i32 loadareacharacters_no_backdrop_reset = 0;

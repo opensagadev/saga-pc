@@ -270,7 +270,7 @@ void __cdecl Areas_ConfigureResidents(VARIPTR *buffer, VARIPTR *buffer_end) {
         }
         NuFParDestroy(parser);
 
-        if (resident_count != 0) {
+        if (resident_count > 0) {
             area->hub_player_ids[resident_count] = -1;
             buffer->void_ptr = &area->hub_player_ids[resident_count + 1];
         }
