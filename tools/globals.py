@@ -391,6 +391,9 @@ def main():
             if rest and rest[0][1] * 2 >= count:
                 print(f"{unit}: ambiguous address for {symbol}: {counter.most_common(3)}")
                 continue
+            if not pe.image_base <= address < pe.image_base + pe.image_size:
+                print(f"{unit}: {symbol} resolves to 0x{address:x}, outside the image")
+                continue
             alias = next((r["symbol"] for r in records if r["address"] == address and r["symbol"] != symbol), None)
             if alias:
                 print(f"{unit}: {symbol} resolves to 0x{address:x}, already mapped as {alias}; use that name")
