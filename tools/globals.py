@@ -299,6 +299,24 @@ def loose(instruction):
     return REGISTER.sub("R", skeleton(instruction))
 
 
+def literal_rows(obj, pe, bindings, votes):
+    """Unmapped string literals whose bytes occur exactly once in retail .rdata."""
+    rdata = next(s for s in pe.sections if s["name"] == ".rdata")
+    start = pe.image_base + rdata["virtual_address"]
+    data = pe.read_va(start, rdata["raw_size"])
+    rows = []
+    for symbol in obj.defined_symbols():
+        name = symbol["name"]
+        if not name.startswith("??_C@") or name in bindings:
+            continue
+        literal = obj.extract_data(name)
+        hits = [m.start() for m in re.finditer(re.escape(literal["bytes"]), data)]
+        if len(hits) == 1:
+            rows.append((start + hits[0], name, literal["size"], "char []"))
+            votes.pop(name, None)  # the exact bytes settle it
+    return rows
+
+
 def define(symbol, address, cursor, translator, pe, sections):
     """data.cpp definition text and CSV type for one global, with the retail initial value."""
     name = symbol.lstrip("_")
@@ -360,6 +378,7 @@ def main():
         records = load_symbols()
         votes = infer_addresses(COFF(output), pe, bindings_for(records), records)
         rows, definitions = [], []
+        rows += literal_rows(COFF(output), pe, bindings_for(records), votes)
         for symbol, counter in votes.items():
             if not counter:
                 continue

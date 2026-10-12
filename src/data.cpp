@@ -28851,3 +28851,63 @@ extern "C" {
 #pragma bss_seg(".bss$temp_yrot")
     i16 temp_yrot;
 }
+
+extern "C" {
+#pragma bss_seg(".bss$edpart_copy_mode")
+    i32 edpart_copy_mode;
+
+#pragma bss_seg(".bss$edpart_copyrotz")
+    i32 edpart_copyrotz;
+
+#pragma bss_seg(".bss$edpart_copyroty")
+    i32 edpart_copyroty;
+
+#pragma bss_seg(".bss$edpart_rotz")
+    i32 edpart_rotz;
+
+#pragma bss_seg(".bss$edpart_roty")
+    i32 edpart_roty;
+
+#pragma bss_seg(".bss$edpart_mtl")
+    struct PC_SCENE_MTL_VIEW *edpart_mtl;
+
+#pragma data_seg(".data$edpart_copy_size")
+    f32 edpart_copy_size = 0.20000000298023224f;
+
+#pragma bss_seg(".bss$edpart_dpad_mode")
+    i32 edpart_dpad_mode;
+
+#pragma bss_seg(".bss$edpart_refrotz")
+    i32 edpart_refrotz;
+
+#pragma bss_seg(".bss$edpart_refroty")
+    i32 edpart_refroty;
+
+#pragma bss_seg(".bss$edpart_boxmtl")
+    struct PC_SCENE_MTL_VIEW *edpart_boxmtl;
+
+#pragma bss_seg(".bss$edpart_readout")
+    i32 edpart_readout;
+
+#pragma bss_seg(".bss$edpart_num_orphans")
+    i32 edpart_num_orphans;
+
+#pragma data_seg(".data$edpart_create_type")
+    i32 edpart_create_type = -1;
+
+#pragma bss_seg(".bss$edpart_effect_list")
+    i8 edpart_effect_list;
+}
+
+extern "C" {}
+
+extern "C" {
+#pragma bss_seg(".bss$edpart_copy_enclosed")
+    i32 edpart_copy_enclosed;
+#pragma bss_seg(".bss$edpart_nearest_orphans")
+    i32 edpart_nearest_orphans;
+#pragma bss_seg(".bss$edpart_nearest_duplicates")
+    i32 edpart_nearest_duplicates;
+#pragma bss_seg(".bss$edpart_emitrotx")
+    i32 edpart_emitrotx;
+}

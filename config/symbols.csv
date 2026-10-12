@@ -7907,6 +7907,7 @@ address    , symbol                                                         , si
 0x7532b8   , __real@3ecccccd                                                , 4     , const f32
 0x7532c8,_TerrainScanMargin02Pc,,const f64
 0x7532d0,__real@3fb33333,4,f32
+0x7532d4,__real@3f266666,4,const f32
 0x7532e0,__real@3fe4ccccc0000000,8,const f64
 0x7532e8,??_C@_0BD@KBNGLIEH@stormtrooperhelmet?$AA@,19,const char[19]
 0x7532fc,??_C@_0O@IJKNNAGM@alreadygothat?$AA@,14,const char[14]
@@ -9662,6 +9663,7 @@ address    , symbol                                                         , si
 0x75c024,??_C@_0L@PPGNKBM@?$FL?$FLaccept?$FN?$FN?$AA@,,char[11]
 0x75c044,??_C@_01JLIPDDHJ@?3?$AA@,,
 0x75c044,_PcInputText75c044, ,char[2]
+0x75c048,__real@3ec00000,4,const f32
 0x75c050,__real@3ff028f5c0000000,8,const f64
 0x75c058,??_C@_02DPKJAMEF@?$CFd?$AA@,3,
 0x0075c058 , _NuTimeBarValueFormat                                          , 3     , const char[3]
@@ -11291,7 +11293,28 @@ address    , symbol                                                         , si
 0x76b788,_RtlSearchTimebarNamePc,,const char[9]
 0x76bc20,??_C@_07DNODLGKM@INVALID?$AA@,,
 0x76bc20,_NuMusicDebugClassInvalid,8,const char[8]
+0x76c43c,??_C@_0N@CAJCCICN@EmitRotY?3?5?$CFd?$AA@,13,char []
+0x76c44c,??_C@_0N@KGAGFKID@EmitRotZ?3?5?$CFd?$AA@,13,char []
+0x76c45c,??_C@_08LILLIAA@RotY?3?5?$CFd?$AA@,9,char []
+0x76c468,??_C@_08INBPMKKO@RotZ?3?5?$CFd?$AA@,9,char []
+0x76c474,??_C@_0BH@CHNAJDKL@XYZ?3?5?$CF0?42f?5?$CF0?42f?5?$CF0?42f?$AA@,23,char []
+0x76c48c,??_C@_0BL@MFMCIEJE@Types?3?5?$CFd?1?$CFd?$DL?5Emits?3?5?$CFd?1?$CFd?$AA@,27,char []
+0x76c4a8,??_C@_0CH@NHAKFDEB@Instances?3?5?$CFd?5of?5?$CFd?5?$CIOr?5?$DN?5?$CFd?0?5Du@,39,char []
+0x76c4d0,??_C@_0BE@NIAKCOBK@Instances?3?5?$CFd?5of?5?$CFd?$AA@,20,char []
+0x76c4e4,??_C@_0O@NLPHNLGC@Highlight?3?5?$CFs?$AA@,14,char []
+0x76c4f4,??_C@_0BC@NIEDCDDN@Highlight?3?5?$DMnone?$DO?$AA@,18,char []
+0x76c508,??_C@_0N@MPNODKN@Enclosed?3?5?$CFd?$AA@,13,char []
+0x76c518,??_C@_0BG@GAKOPHGD@Current?5List?3?5General?$AA@,22,char []
+0x76c530,??_C@_0BE@GJNKBGFM@Current?5List?3?5Level?$AA@,20,char []
+0x76c544,??_C@_0BF@BAPOLFCB@Current?5List?3?5?$DMnone?$DO?$AA@,21,char []
+0x76c55c,??_C@_0BB@LCPGMDDG@Current?5Type?3?5?$CFs?$AA@,17,char []
+0x76c570,??_C@_0BF@KDGMKBLN@Current?5Type?3?5?$DMnone?$DO?$AA@,21,char []
+0x76c588,??_C@_0N@GLMLECIK@Co?9ordinates?$AA@,13,char []
+0x76c598,??_C@_0BE@EHBBJAJM@WARNING?3?5?$CFd?5Orphans?$AA@,20,char []
+0x76c5ac,??_C@_08OLNDOIIF@Info?5Box?$AA@,9,char []
+0x76c5b8,__real@bccccccd,4,const f32
 0x76c5bc,__real@bd4ccccd,4,const f32
+0x76c5c0,__real@3f0ccccd,4,const f32
 0x76c5d8,??_C@_06KMBGOEGK@?$CFs?$CF03d?$AA@,7,const char[7]
 0x76d128,__real@40f869fe60000000,8,const f64
 0x76d130,__real@408c200000000000,8,const f64
@@ -15119,6 +15142,8 @@ address    , symbol                                                         , si
 0x00810124 , ??_R0?AV?$EdValueControl@M@@@8                                 , 33    ,
 0x00810148 , ??_R0?AVEdIntControl@@@8                                       , 27    ,
 0x00810164 , ??_R0?AVEdFloatControl@@@8                                     , 29    ,
+0x810194,_edpart_create_type,4,i32
+0x810198,_edpart_copy_size,4,f32
 0x8101b8,_PartLoadParticlePagePc,,i32
 0x8101c4,_PartNullInstanceNamePc,,char[14]
 0x0081020c , _MAXPARTS                                                      , 4     , i32
@@ -18033,12 +18058,16 @@ address    , symbol                                                         , si
 0x29139b0,_rtltimer1,,i32
 0x29139b4,_dbg_rtlindex,,RTL_INDEX_PC *
 0x02913a4c , _part_page_on                                                  , 32    , i32[8]
+0x2913a70,_edpart_boxmtl,4,struct PC_SCENE_MTL_VIEW *
+0x2913a74,_edpart_mtl,4,struct PC_SCENE_MTL_VIEW *
 0x02913a78,_part_types,48128,PARTTYPE_LOOKUP_PC[128]
 0x0291f684 , _Part                                                          , 4     , PART_PC *
+0x291f68c,_edpart_nearest_orphans,4,i32
 0x291f69c,_PartImpactNormalPrivate,,NUVEC
 0x0291f6a8 , _part_scene_pageid                                             , 128   , i32[32]
 0x291f734,_PartEditorCameraPosPc,,NUVEC
 0x291f7a0,_part_platimpactcnt,,i32
+0x291f7a8,_edpart_nearest_duplicates,4,i32
 0x291f7c8,_part_emits,4320,PART_EMIT_PC[40]
 0x29208a8,_PartNearestEmitterPc,,i32
 0x029208bc , _part_page_used                                                , 32    , i32[8]
@@ -18046,8 +18075,21 @@ address    , symbol                                                         , si
 0x292097c,_PartPlatformImpactListPc,,i16[4]
 0x292098c,_PartNearestEmitterPtrPc,,PART_EMIT_PC*
 0x2920990,_PartNearestTypePtrPc,,PARTTYPE_LOOKUP_PC*
+0x2920994,_edpart_effect_list,1,i8
+0x292099c,_edpart_copy_mode,4,i32
+0x29209a0,_edpart_copy_enclosed,4,i32
+0x29209a8,_edpart_num_orphans,4,i32
+0x29209b8,_edpart_dpad_mode,4,i32
+0x29209bc,_edpart_readout,4,i32
 0x2920a60,_edpart_emitrotz,4,i32
 0x2920a64,_edpart_emitroty,4,i32
+0x2920a68,_edpart_emitrotx,4,i32
+0x2920a6c,_edpart_rotz,4,i32
+0x2920a70,_edpart_roty,4,i32
+0x2920a78,_edpart_refrotz,4,i32
+0x2920a7c,_edpart_refroty,4,i32
+0x2920a80,_edpart_copyrotz,4,i32
+0x2920a84,_edpart_copyroty,4,i32
 0x02920aac , _PartRTL                                                       , 4     , RTLSET_PC *
 0x2920ab0,_partglobaltime,,f32
 0x2920ab4,_part_types_used,,i32

@@ -1208,6 +1208,26 @@ void __cdecl NuRndrInitStartupMaterialsPc(void) {
     NuMtlUpdate(PCStartupMaterial2Pc);
 }
 
+void __cdecl NuRndrLine2di(i32 x0, i32 y0, i32 x1, i32 y1, i32 colour, NUMTL *material) {
+    LOCATOR_PRIM_VERTEX_PC *vertex;
+    ++NuPrimCSPos;
+    NuPrimSetCoordinateSystem(0);
+    NuPrim2DBegin(14, 7, material);
+    NuRndrPrimSetColourPrivate(colour);
+    vertex = (LOCATOR_PRIM_VERTEX_PC *)NuPrimStreamBufferPointer->void_ptr;
+    vertex->u = 0.0f;
+    vertex->v = 0.0f;
+    NuPrim2DAddXYZ((f32)((f64)x0 * 0.0625), (f32)((f64)y0 * 0.0625), 0.0f);
+    NuRndrPrimSetColourPrivate(colour);
+    vertex = (LOCATOR_PRIM_VERTEX_PC *)NuPrimStreamBufferPointer->void_ptr;
+    vertex->u = 1.0f;
+    vertex->v = 1.0f;
+    NuPrim2DAddXYZ((f32)((f64)x1 * 0.0625), (f32)((f64)y1 * 0.0625), 0.0f);
+    NuPrim2DEnd();
+    --NuPrimCSPos;
+    NuPrimSetCoordinateSystem(NuPrimCoordSystemStack[NuPrimCSPos]);
+}
+
 void __cdecl NuRndrRect2di(i32 x, i32 y, i32 width, i32 height, i32 colour, NUMTL *material) {
     f32 sx = (f32)((f64)x * 0.0625);
     f32 sy = (f32)((f64)y * 0.0625);

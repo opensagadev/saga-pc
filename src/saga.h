@@ -25057,6 +25057,12 @@ extern "C" {
                                                     struct nuvec_s *target, struct nuvec_s *velocity, f32 speed,
                                                     struct nuvec_s *intercept, struct nuvec_s *intercept_velocity,
                                                     u32 fallback);
+    extern i32 edpart_copy_mode;
+    extern i32 edpart_copyroty;
+    extern i32 edpart_copyrotz;
+    extern i32 edpart_roty;
+    extern i32 edpart_rotz;
+    void __cdecl NuRndrLine2di(i32 x0, i32 y0, i32 x1, i32 y1, i32 colour, NUMTL *material);
 #ifdef __cplusplus
 }
 #endif
