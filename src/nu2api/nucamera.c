@@ -407,7 +407,7 @@ void __cdecl NuCameraSetEx(NUCAMERA *camera, i32 fast) {
 }
 
 i32 __cdecl NuCameraClipTestExtentsAxisAligned(NUVEC *center, NUVEC *extent, f32 far_clip) {
-    struct BoundProjection {
+    struct __declspec(align(16)) BoundProjection {
         NUVEC sides;
         f32 fourth;
         f32 far_plane;

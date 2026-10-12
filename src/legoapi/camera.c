@@ -30,9 +30,9 @@ void ChrisAnakinCUpdate() {
 
         // The retail transform temporaries require a 16-byte-aligned stack.
         {
-            NUVEC translation = {door->direction.x * door->offset, door->direction.y * door->offset,
-                                 door->direction.z * door->offset};
-            NUVEC position;
+            __declspec(align(16)) NUVEC translation = {
+                door->direction.x * door->offset, door->direction.y * door->offset, door->direction.z * door->offset};
+            __declspec(align(16)) NUVEC position;
             NuVecMtxTransform(&position, &translation, &door->original_matrix);
             memcpy(&door->matrix.m30, &position, sizeof(position));
             door->matrix.m33 = 1.0f;
