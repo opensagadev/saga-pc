@@ -1301,6 +1301,7 @@ void GizAction_ActivateEffect(GIZFLOW_PC *unused0, FLOWBOX_PC *unused1, char **p
         EffectOffProgress_Update(WorldInfo_CurrentlyActive()->level_progress, name, visible);
     }
 }
+
 static void GizAction_SetAIMessage(GIZFLOW_PC *unused0, FLOWBOX_PC *unused1, char **params, int count) {
     i32 index;
     struct gizaimessage_s *message;

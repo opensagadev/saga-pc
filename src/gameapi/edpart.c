@@ -128,6 +128,33 @@ void edpartCancelCutOffMenu(eduimenu_s *unused0, eduimenu_s *unused1) {
     eduiMenuDestroy(edpart_cutoff_menu);
     edpart_cutoff_menu = NULL;
 }
+
+static void edpartChangeInstanceRot(eduimenu_s *unused0, eduiitem_s *item, u32 unused2) {
+    if (edpart_nearest_type != NULL) {
+        if (item->data == 0)
+            edpart_nearest_type->rotation[0] = ((i32)(((edui_slider_s *)(item))->value * (65536.0f / 360.0f)));
+        else if (item->data == 1)
+            edpart_nearest_type->rotation[1] = ((i32)(((edui_slider_s *)(item))->value * (65536.0f / 360.0f)));
+        else if (item->data == 2)
+            edpart_nearest_type->rotation[2] = ((i32)(((edui_slider_s *)(item))->value * (65536.0f / 360.0f)));
+    }
+}
+
+static void edpartChangeInstanceVarRot(eduimenu_s *unused0, eduiitem_s *item, u32 unused2) {
+    if (edpart_nearest_type != NULL) {
+        if (item->data == 0)
+            edpart_nearest_type->rotation_random[0] = ((i32)(((edui_slider_s *)(item))->value * (65536.0f / 360.0f)));
+        else if (item->data == 1)
+            edpart_nearest_type->rotation_random[1] = ((i32)(((edui_slider_s *)(item))->value * (65536.0f / 360.0f)));
+        else if (item->data == 2)
+            edpart_nearest_type->rotation_random[2] = ((i32)(((edui_slider_s *)(item))->value * (65536.0f / 360.0f)));
+    }
+}
+
+static void edpartCancelInstanceOrientMenu(eduimenu_s *unused0, eduimenu_s *unused1) {
+    eduiMenuDestroy(edpart_instorient_menu);
+    edpart_instorient_menu = NULL;
+}
 static void edpartInstanceOrientMenu(eduimenu_s *menu, eduiitem_s *unused1, u32 unused2) {
     if (edpart_nearest_type == NULL)
         return;

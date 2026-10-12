@@ -8846,6 +8846,7 @@ i32 __cdecl Action_SetShieldHitPoints(AISYS_PC *system, AISCRIPTPROCESS_PC *proc
     }
     return 1;
 }
+
 static i32 Action_SetMessage(AISYS_PC *unused0, AISCRIPTPROCESS_PC *processor, AIPACKET_PC *unused2, char **params,
                              i32 num_params, i32 first_time, f32 unused6) {
     if (first_time && gizaimessagesys != NULL && num_params != 0) {

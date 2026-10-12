@@ -7,6 +7,15 @@ f32 __cdecl PodSprint_InStartCountdown(WORLDINFO *world) {
     return 0.0f;
 }
 
+float PodSprint_RollMul(GAMEOBJECT *object) {
+    i16 id = ((i16)(object->id));
+    if (id == FreePlayId007f1a98Pc || id == VehicleBoltId7f1a2cPc || id == VehicleBoltId7f1a9cPc)
+        return 0.6f;
+    if (id == id_XWING || id == VehicleBoltId7f1a24Pc || id == VehicleBoltId7f19a4Pc || id == id_NEW_REPUBLIC_GUNSHIP)
+        return 0.8f;
+    return 1.0f;
+}
+
 void PodSprint_GetIAlongVals(NUGSPLINE *spline, i16 *out1, i16 *out2) {
     i32 i;
     for (i = 0; i < 6; i++) {
@@ -42,6 +51,33 @@ void MaulF_Init(WORLDINFO *world) {
     NuSpecialFind(world->current_gscn, &slots[0], "throw_object1", 1);
     NuSpecialFind(world->current_gscn, &slots[1], "throw_object2", 1);
     NuSpecialFind(world->current_gscn, &slots[2], "throw_object3", 1);
+}
+
+void PodRaceCReset(WORLDINFO *world) {
+    void *cs;
+    PodRaceReset();
+    switch (Lap) {
+        case 1:
+            podrace_section = 2;
+            break;
+        case 2:
+            podrace_section = 5;
+            break;
+        case 3:
+            podrace_section = 8;
+            break;
+        default:
+            break;
+    }
+    PodPacemakerPc = 0;
+    PodRaceSnipersReset();
+    cs = CutScene_Find(world->cutscene_sys, "ep1_podrace_avalanche");
+    if (cs != NULL) {
+        if (Lap == 2)
+            NewCutScene(cs, world->cutscene_sys, 0, 1);
+        else if (Lap == 3)
+            CutScene_SnapToEnd(cs);
+    }
 }
 
 typedef struct racepod_resource_pc_s {

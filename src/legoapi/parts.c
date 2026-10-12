@@ -357,6 +357,7 @@ void edpartCancelInstanceFlagsMenu(eduimenu_s *unused0, eduimenu_s *unused1) {
     eduiMenuDestroy(edpart_instanceflags_menu);
     edpart_instanceflags_menu = NULL;
 }
+
 static void edpartChangeDebrisScale(eduimenu_s *unused0, eduiitem_s *item, u32 unused2) {
     if (edpart_nearest_type)
         edpart_nearest_type->effect_scale = ((edui_slider_s *)(item))->value;
@@ -371,6 +372,7 @@ void edpartCancelDebrisSettingsMenu(eduimenu_s *unused0, eduimenu_s *unused1) {
     eduiMenuDestroy(edpart_debrissettings_menu);
     edpart_debrissettings_menu = NULL;
 }
+
 static void edpartInstanceFlagsMenu(eduimenu_s *menu, eduiitem_s *unused1, u32 unused2) {
     if (edpart_nearest_type == NULL)
         return;
@@ -3393,12 +3395,30 @@ void edpartCopyType(eduimenu_s *menu, eduiitem_s *unused1, u32 unused2) {
     if (menu->callback)
         menu->callback(menu, parent);
 }
+
 void edpartRender() {
     edcamSet();
     edpartDrawCursor();
     edpartHighlightNearest();
     if (edpart_active_menu)
         eduiMenuRender(edpart_active_menu);
+}
+
+static void edpartChangeName(eduimenu_s *unused0, eduiitem_s *item, u32 unused2) {
+    if (edpart_create_type != -1) {
+        i32 index;
+        char *name = ((edui_textpicker_s *)(item))->value;
+        NuStrNCpy(part_types[edpart_create_type].name, name, 16);
+        for (index = 0; index < 40; ++index) {
+            if (part_emits[index].effect_id == edpart_create_type)
+                NuStrNCpy(part_emits[index].name, name, 16);
+        }
+    }
+}
+
+static void edpartCancelChangeNameMenu(eduimenu_s *unused0, eduimenu_s *unused1) {
+    eduiMenuDestroy(edpart_name_menu);
+    edpart_name_menu = NULL;
 }
 
 i32 __cdecl edpartLoadPageEx(char *path, i8 mode, NUGSCN **scenes, i32 scene_count) {

@@ -20,6 +20,70 @@ void HothBattleC_Update(WORLDINFO *world) {
     UpdateMiniSnowTroopers(world);
 }
 
+i32 HothBattle_StartNewWave() {
+    i32 type;
+    if (melee.field_0x2 != 0) {
+        switch (melee.field_0x1) {
+            case 1:
+                melee.waves[0].field_0x18 = 9;
+                melee.waves[0].field_0x19 = 9;
+                melee.waves[0].character_id = id_ATST_LOWRES;
+                NuStrCpy(melee.waves[0].name, "Probe");
+                melee.creature_count = 1;
+                if (g_lowEndLevelBehaviour != 0) {
+                    melee.waves[0].field_0x18 = 5;
+                    melee.waves[0].field_0x19 = 5;
+                }
+                break;
+            case 2:
+                melee.waves[0].field_0x18 = 9;
+                melee.waves[0].field_0x19 = 9;
+                melee.waves[0].character_id = id_ATST_LOWRES;
+                NuStrCpy(melee.waves[0].name, "rider");
+                melee.creature_count = 1;
+                if (g_lowEndLevelBehaviour != 0) {
+                    melee.waves[0].field_0x18 = 5;
+                    melee.waves[0].field_0x19 = 5;
+                }
+                break;
+            case 3:
+                melee.waves[0].field_0x18 = 2;
+                melee.waves[0].field_0x19 = 2;
+                melee.waves[0].character_id = id_ATAT;
+                NuStrCpy(melee.waves[0].name, "ATAT");
+                melee.creature_count = 1;
+                break;
+            case 4:
+                melee.waves[0].field_0x18 = 3;
+                melee.waves[0].field_0x19 = 3;
+                melee.waves[0].character_id = id_ATST_LOWRES;
+                NuStrCpy(melee.waves[0].name, "Probe");
+                melee.waves[1].field_0x18 = 5;
+                melee.waves[1].field_0x19 = 5;
+                melee.waves[1].character_id = id_ATST_LOWRES;
+                NuStrCpy(melee.waves[1].name, "rider");
+                melee.waves[2].field_0x18 = 1;
+                melee.waves[2].field_0x19 = 1;
+                melee.waves[2].character_id = id_ATAT;
+                NuStrCpy(melee.waves[2].name, "ATAT");
+                melee.creature_count = 3;
+                if (g_lowEndLevelBehaviour != 0) {
+                    melee.waves[0].field_0x18 = 2;
+                    melee.waves[0].field_0x19 = 2;
+                    melee.waves[1].field_0x18 = 2;
+                    melee.waves[1].field_0x19 = 2;
+                }
+                break;
+        }
+    }
+    melee.field_0x2 = 0;
+    if (MiniCutCam != 0)
+        return 0;
+    for (type = 0; type < melee.creature_count; ++type)
+        SpawnMeleeCreatureType(type);
+    return 1;
+}
+
 void __cdecl MiniKit_GameMsg_Update(GAME_MESSAGE_PC *message) {
     i32 angle = (i32)((f64)NuFmod(GlobalTimer.time_elapsed, 4.0f) * 0.25 * 65536.0);
     message->parameter_e2 = (u16)angle;

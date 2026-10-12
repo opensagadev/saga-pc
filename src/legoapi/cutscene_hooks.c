@@ -211,6 +211,30 @@ void __cdecl GizObstacle_SetDefaultSFXFn_LSW(void *world, GIZOBSTACLE *obstacle)
     }
 }
 
+void SpeedBlur_Apply(WORLDINFO *world) {
+    struct level_data_pc_s *level;
+    if (editor_active != 0 || CUTSTOPGAME != 0 || MiniCutCam != 0) {
+        return;
+    }
+    level = world->current_level;
+    if (level == PODRACEA_LDATA || level == PODRACEB_LDATA || level == LevelFixupSlotPc0087b0b4) {
+        if (PodRace_InStartCountdown(WORLD) != 0) {
+            return;
+        }
+    } else {
+        f32 countdown;
+        if (level != PODSPRINTA_LDATA) {
+            return;
+        }
+        countdown = PodSprint_InStartCountdown(WORLD);
+        if (!(countdown <= 0.0f)) {
+            return;
+        }
+    }
+    NuSpeedBlurSetMotionFactors(0.01f, -0.024f, 0.02f);
+    NuLightSpeedBlur(Paused, 0.5f);
+}
+
 void __cdecl instNuGCutSceneSetMtx(INSTNUGCUTSCENE *inst, NUMTX *mtx) {
     inst->flags_88 |= 0x80;
     inst->matrix = *mtx;

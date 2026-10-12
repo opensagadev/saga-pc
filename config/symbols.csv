@@ -8744,6 +8744,8 @@ address    , symbol                                                         , si
 0x00758828 , _GizAIMessage_NameFormat                                       , 3     , const char[3]
 0x758830,__real@4012000000000000,,f64
 0x758844,__real@bc75c28f,4,const f32
+0x758848,__real@bf2ccccd,,
+0x75884c,__real@3f2ccccd,,
 0x758974,??_C@_06HOPIODND@effect?$AA@,7,char []
 0x758a5c,??_C@_03LAIAPFCB@Val?$AA@,4,char []
 0x00758a60,??_C@_04FABLJDN@Name?$AA@,,
@@ -10158,6 +10160,7 @@ address    , symbol                                                         , si
 0x75e40c,??_C@_05KIKKDJAJ@ice_a?$AA@,6,char []
 0x75e414,??_C@_05IDIHGKMK@ice_b?$AA@,6,char []
 0x75e41c,??_C@_0BE@OFBNHBFL@BombGen_ATAT_Killed?$AA@,20,char []
+0x75e440,??_C@_05HLKEJFEB@rider?$AA@,,
 0x75e448,??_C@_05PBDNICPN@Probe?$AA@,6,char []
 0x75e450,??_C@_05BDADGJGG@spawn?$AA@,6,char []
 0x75e464,??_C@_04LHKOJOEJ@ATAT?$AA@,5,char []
@@ -10644,6 +10647,7 @@ address    , symbol                                                         , si
 0x761a70,__real@bfea666660000000,8,const f64
 0x761a78,__real@3fea666660000000,8,const f64
 0x761a80,__real@3f533333,4,const f32
+0x761a84,__real@bf533333,,
 0x761a88,__real@40d3880000000000,8,f64
 0x761a90   , ??_C@_09CKCBMNI@orientate?$AA@                                 , 10    , const char[10]
 0x761a9c,??_C@_0M@GHMALKMJ@draw_at_end?$AA@,12,
@@ -11385,6 +11389,7 @@ address    , symbol                                                         , si
 0x7641f8,??_C@_03JDBMONBN@tex?$AA@,4,const char[4]
 0x7641fc,??_C@_0L@JGMEENFC@scriptmask?$AA@,11,const char[11]
 0x00764258 , _KeyStructSizes                                                , 16    , const u8[16]
+0x764268,_kPRIM_COORD_LOOKUP,,
 0x764344,??_C@_1BE@LKNDAOAB@?$AA3?$AAD?$AA?5?$AAr?$AAe?$AAn?$AAd?$AAe?$AAr?$AA?$AA@,,wchar_t[10]
 0x76447c,__real@c9742400,4,const f32
 0x764480,??_C@_0DO@EGHNHOFM@d?3?2projects?2game_saga?2nu2api?4sag@,,const char[62]
@@ -14235,6 +14240,7 @@ address    , symbol                                                         , si
 0x7f105c,_cable_damping,4,f32
 0x7f1060,_cable_ground_damping,4,f32
 0x007f1114 , _ViewCam                                                       ,       , VIEWCAM_PC
+0x7f1310,_DoorSetupList,,
 0x7f15e0,_PodRaceSplineIncrementPc,,f32
 0x7f1724,_ConfigChar_GameKeywords,,NUFPCOMJMP[2]
 0x7f17a4,_PlayerHitPointsTwoHeartsPc,,i32
@@ -14774,6 +14780,7 @@ address    , symbol                                                         , si
 0x7ffd64,_PodDustHeightScalePc,,f32
 0x7ffd68,_PodRaceKeyPc,,i32[8]
 0x007fffec , _GUNSHIPAHACK                                                  , 4     , i32
+0x8000ac,_TempleC_StreamStatusPos,,
 0x800224,_melee_wavePhase,1,i8
 0x00800444 , _NuAllocHeaderMetadata                                         , 12    , u32[3]
 0x00800454 , _NuAllocTailMetadata                                           , 12    , u32[3]
@@ -15487,6 +15494,7 @@ address    , symbol                                                         , si
 0x80f558,_edui_font_scale_x,4,f32
 0x80f55c,_edui_font_scale_y,4,f32
 0x0080f5a0 , _NuKeyChar                                                     , 520   , NUKEYCHAR[65]
+0x80f7ec,_gp_cam,,
 0x80f884   , _edfile_handle                                                 , 4     , i32
 0x80fad4,_FS_Width,4,f32
 0x80faf0,_FS_SortMode,4,i32

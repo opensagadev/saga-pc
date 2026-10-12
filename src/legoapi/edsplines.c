@@ -571,6 +571,41 @@ void __cdecl CalcSplinePointFromDist(FLIGHT_SPLINE_RESOURCE_PC *spline, NUVEC4 *
     CalcSplinePoint(spline, result, distance);
 }
 
+void ChrisAnakinCReset() {
+    struct anakin_door_setup_s *setup;
+    anakin_door_s *door = AnakinC;
+    i32 count = 0;
+    for (setup = DoorSetupList; count < 12; ++setup) {
+        if (setup->name == NULL) {
+            for (; count < 12; ++count, ++door)
+                door->active = 0;
+            return;
+        }
+        if (!NuSpecialFind(WORLD->current_gscn, &door->special, setup->name, 1) || !NuSpecialExistsFn(&door->special))
+            continue;
+
+        if (NuSpecialFind(WORLD->current_gscn, &door->secondary_special, setup->secondary_name, 1))
+            door->has_secondary = ((i16)(NuSpecialExistsFn(&door->secondary_special)));
+
+        NuMtxSetIdentity(&door->original_matrix);
+        door->matrix = door->original_matrix = *NuSpecialGetMtx(&door->special);
+        if (door->has_secondary != 0) {
+            NuMtxSetIdentity(&door->original_secondary_matrix);
+            door->secondary_matrix = door->original_secondary_matrix = *NuSpecialGetMtx(&door->secondary_special);
+        }
+        door->platform_id = ((i16)(FindPlatInst(NuSpecialGetInstanceix(&door->special))));
+        door->active = 1;
+        door->flags = ((u8)(setup->flags));
+        door->direction = setup->direction;
+        door->offset = setup->initial_offset;
+        door->speed = setup->speed;
+        door->minimum_offset = setup->minimum_offset;
+        door->unknown_134 = setup->unknown_20;
+        ++door;
+        ++count;
+    }
+}
+
 void ChrisAnakinCInit() {
     NuSpecialList(WORLD->current_gscn);
     ChrisAnakinCReset();

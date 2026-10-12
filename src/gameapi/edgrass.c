@@ -193,6 +193,30 @@ void edgracbClumpAreaMenu(eduimenu_s *parent, eduiitem_s *unused1, u32 unused2) 
                                                               edgracbSetClumpArea, "Grid"));
     edgraAttachMenu(parent, edgra_clumparea_menu);
 }
+
+static void edgracbSetClumpDist(eduimenu_s *unused0, eduiitem_s *item, u32 unused2) {
+    if (edgra_nearest != -1)
+        GrassClumps[edgra_nearest].unknown_26 = item->data;
+    edgraInitAllClumps();
+}
+
+static void edgracbToggleClumpTerrain(eduimenu_s *unused0, eduiitem_s *item, u32 unused2) {
+    if (edgra_nearest != -1)
+        GrassClumps[edgra_nearest].field_42 = item->flags & EDUI_ITEM_HIGHLIGHTED;
+    edgraInitAllClumps();
+}
+
+static void edgracbToggleClumpTilt(eduimenu_s *unused0, eduiitem_s *item, u32 unused2) {
+    if (edgra_nearest != -1)
+        GrassClumps[edgra_nearest].field_43 = item->flags & EDUI_ITEM_HIGHLIGHTED;
+    edgraInitAllClumps();
+}
+
+static void edgracbSetClumpTerrainOffset(eduimenu_s *unused0, eduiitem_s *item, u32 unused2) {
+    if (edgra_nearest != -1)
+        GrassClumps[edgra_nearest].field_44 = ((edui_slider_s *)(item))->value;
+    edgraInitAllClumps();
+}
 static void edgracbClumpFadeMenu(eduimenu_s *parent, eduiitem_s *unused1, u32 unused2) {
     if (!(edgra_nearest == -1 || !GrassClumps[edgra_nearest].element_count)) {
         edgra_clumpfade_menu = eduiMenuCreate(70, 70, 180, 250, ed_fnt, edgracbCancelClumpFadeMenu, "Clump Fading");
@@ -583,6 +607,7 @@ void edgracbFileLoad(eduimenu_s *menu, eduiitem_s *unused1, u32 unused2) {
     edgraInitAllClumps();
     eduiCreateMessageMenu(menu, "Loaded OK", 1);
 }
+
 i32 edgraProc(f32 delta_time, FRAME_PAD_PC *pad) {
     if (edgra_active_menu) {
         eduiMenuProcess(edgra_active_menu, delta_time, pad);

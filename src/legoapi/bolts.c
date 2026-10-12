@@ -367,6 +367,25 @@ i32 __cdecl BoltType_FindIDByCreature(GAMEOBJECT *object, i32 fallback) {
     return fallback;
 }
 
+i32 Bolt_AlternateFire_LSW(GAMEOBJECT *object, i32 index) {
+    i16 id = object->id;
+    if (id == id_XWING || id == id_MINIXWING || id == VehicleBoltId7f1ad8Pc || id == id_MINIATAT ||
+        id == id_MINIROYALSTARSHIP || id == VehicleBoltId7f1aecPc) {
+        if (object->bolt_fire_phase == 0) {
+            if (index == 0 || index == 2)
+                return 0;
+        } else if (object->bolt_fire_phase == 1) {
+            if (index == 1 || index == 3)
+                return 0;
+        }
+    } else if (id == VehicleBoltId7f19a4Pc || id == VehicleBoltId7f1af0Pc || id == GameObjectRotationAtstId ||
+               id == VehicleBoltId7f19e8Pc || id == id_JEDISTARFIGHTERYELLOWEP3) {
+        if (object->bolt_fire_phase != index)
+            return 0;
+    }
+    return 1;
+}
+
 STATIC_ASSERT(offsetof(BOLT_PC, owner) == 4);
 STATIC_ASSERT(offsetof(BOLT_PC, position) == 0x88);
 STATIC_ASSERT(offsetof(BOLT_PC, active) == 0x100);

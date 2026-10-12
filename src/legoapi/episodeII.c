@@ -48,6 +48,13 @@ void KashyyykA_Reset(WORLDINFO *unused0) {
     KashyyykA_msg_WookiesToRescue = CheckGizAIMessage(gizaimessagesys, "WookiesToRescue", NULL);
 }
 
+void TempleC_AlwaysUpdate(WORLDINFO *unused0) {
+    NUVEC position;
+    if (LevelFixupSlotPc0087b150 != NULL && Players_AveragePos(&position, NULL) &&
+        NuVecXZDistSqr(&position, &TempleC_StreamStatusPos, NULL) < 100.0f)
+        other_level_override = LevelFixupSlotPc0087b150->index;
+}
+
 void VaderB_Reset(WORLDINFO *unused0) {
     vader_b_complete_msg = SetGizAIMessage(gizaimessagesys, "VaderBComplete", 0.0f, NULL);
     vader_b_playersDead = 0;

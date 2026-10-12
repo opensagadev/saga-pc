@@ -31,6 +31,7 @@ void __cdecl Shards_HandleLostObj(WORLDINFO *opaque_world, GAMEOBJECT *object) {
         }
     }
 }
+
 static void Shop_DrawCharacter(shopitem_s *item, NUVEC *position, f32 scale_value, f32 ypush, u16 xrot, u16 yrot,
                                u16 zrot) {
     if (!(!NuSpecialExistsFn(&iconback))) {

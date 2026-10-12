@@ -1029,11 +1029,22 @@ void __cdecl edanimStartAllPages(void) {
     }
 }
 
+static void edanimcbCancelBouncyMenu(eduimenu_s *unused0, eduimenu_s *unused1) {
+    eduiMenuDestroy(edanim_bouncy_menu);
+    edanim_bouncy_menu = NULL;
+}
+
 void edanimcbSetSoundType(eduimenu_s *menu, eduiitem_s *item, u32 unused2) {
     edanim_soundtype_menu = NULL;
     edanim_sound_type = item->data == 0x1869f ? -1 : item->data;
     eduiMenuDetach(menu);
     eduiMenuDestroy(menu);
+}
+
+static void edanimcbToggleParticleSwitch(eduimenu_s *unused0, eduiitem_s *item, u32 unused2) {
+    if (edanim_nearest_param_id == -1 || edanim_nearest_particle == -1)
+        return;
+    AnimParams[edanim_nearest_param_id].effect_flags[edanim_nearest_particle] = item->highlighted & 1;
 }
 
 void edanimcbSetParticleType(eduimenu_s *menu, eduiitem_s *item, u32 unused2) {
@@ -1050,6 +1061,11 @@ void edanimcbSetLocalParticleType(eduimenu_s *menu, eduiitem_s *item, u32 unused
     edanim_particle_type = item->data;
     eduiMenuDetach(menu);
     eduiMenuDestroy(menu);
+}
+
+static void edanimcbSetParticleRate(eduimenu_s *unused0, eduiitem_s *item, u32 unused2) {
+    AnimParams[edanim_nearest_param_id].effect_intervals[edanim_nearest_particle] =
+        ((i32)(((edui_slider_s *)(item))->value));
 }
 
 void edanimcbCancelParticleTypeMenu(eduimenu_s *unused0, eduimenu_s *unused1) {
@@ -1084,6 +1100,11 @@ static void edanimcbLocalParticleTypeMenu(eduimenu_s *parent, eduiitem_s *unused
     eduiMenuAttach(parent, edanim_localparticletype_menu);
     edanim_localparticletype_menu->x = parent->x + 10;
     edanim_localparticletype_menu->y = parent->y + 40;
+}
+
+static void edanimcbCancelLocalParticleMenu(eduimenu_s *unused0, eduimenu_s *unused1) {
+    eduiMenuDestroy(edanim_localparticle_menu);
+    edanim_localparticle_menu = NULL;
 }
 
 void edanimcbLocalParticleMenu(eduimenu_s *parent, eduiitem_s *unused1, u32 unused2) {
@@ -1123,6 +1144,11 @@ void edanimcbCancelSoundTypeMenu(eduimenu_s *unused0, eduimenu_s *unused1) {
     edanim_soundtype_menu = NULL;
 }
 
+static void edanimcbCancelLocalSoundTypeMenu(eduimenu_s *unused0, eduimenu_s *unused1) {
+    eduiMenuDestroy(edanim_localsoundtype_menu);
+    edanim_localsoundtype_menu = NULL;
+}
+
 void edanimcbCancelSoundMenu(eduimenu_s *unused0, eduimenu_s *unused1) {
     eduiMenuDestroy(edanim_sound_menu);
     edanim_sound_menu = NULL;
@@ -1155,6 +1181,11 @@ static void edanimcbParticleTypeMenu(eduimenu_s *parent, eduiitem_s *unused1, u3
     eduiMenuAttach(parent, edanim_particletype_menu);
     edanim_particletype_menu->x = parent->x + 10;
     edanim_particletype_menu->y = parent->y + 40;
+}
+
+static void edanimcbCancelLocalParticleTypeMenu(eduimenu_s *unused0, eduimenu_s *unused1) {
+    eduiMenuDestroy(edanim_localparticletype_menu);
+    edanim_localparticletype_menu = NULL;
 }
 void edanimcbParticleMenu(eduimenu_s *parent, eduiitem_s *unused1, u32 unused2) {
     struct eduimenu_s *menu;
@@ -1245,6 +1276,7 @@ void edanimcbMCTBCardFormat(eduimenu_s *menu, eduiitem_s *unused1, u32 unused2) 
         eduiCreateMessageMenu(menu, (char *)("Format Fail"), 0);
     }
 }
+
 static void edanimcbMCTBCardWriteKeyCard(eduimenu_s *menu, eduiitem_s *unused1, u32 unused2) {
     if (saveloadWriteKeyCode(id_test, code_test)) {
         eduiCreateMessageMenu(menu, (char *)("KeyCard Write OK"), 1);

@@ -19,6 +19,7 @@ void __cdecl edppPtlShelve(i32 index) {
         particle->instance_id = 99999;
     }
 }
+
 static void cbChangeNameMenu(eduimenu_s *menu, eduiitem_s *unused1, u32 unused2) {
     struct debris_info_pc_s *effect;
     u32 colours[4] = {0x80000000, 0x80ff0000, 0x80808080, 0x80404040};

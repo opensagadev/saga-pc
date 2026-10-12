@@ -514,6 +514,35 @@ void __cdecl ClearLinkedCutSceneMusic(void *context) {
     }
 }
 
+void PauseGameCut(void) {
+    struct music_playback_pc_s *music;
+    if (NOMUSIC != 0 || NOSOUND != 0 || PCStereoChannel1B == -1) {
+        return;
+    }
+
+    music = &Music;
+    if (music->state != MUSIC_PLAYBACK_DUAL_STREAM && music->state != MUSIC_PLAYBACK_DUAL_STREAM_PENDING) {
+        return;
+    }
+    NuSound3CancelCheckStereo();
+    NuSound3PauseStereoStream(1 - music->primary_stream);
+}
+
+void RestoreGameCut(void) {
+    MUSICPLAYBACK_PC *music = &Music;
+
+    if (NOMUSIC != 0 && NOSOUND != 0) {
+        return;
+    }
+    if (PCStereoChannel1B == -1) {
+        return;
+    }
+    if (music->state != MUSIC_PLAYBACK_DUAL_STREAM && music->state != MUSIC_PLAYBACK_DUAL_STREAM_PENDING) {
+        return;
+    }
+    NuSound3ResumeStereoStream(1 - music->primary_stream);
+}
+
 void __cdecl ResetSounds(void) {
     PCByteCopy_candidate(SfxBits, GlobalSfxBits, 0xc8);
 }

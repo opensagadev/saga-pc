@@ -278,6 +278,59 @@ i32 __cdecl edanimLoadPage(char *path, NUGSCN *scene) {
     edanimDetermineNearestAnim(1.0f);
     return page;
 }
+
+static void edanimcbBouncyMenu(eduimenu_s *parent, eduiitem_s *unused1, u32 unused2) {
+    u32 colours[4] = {0x80000000, 0x80ff0000, 0x80808080, 0x80404040};
+    if (edanim_nearest != -1) {
+        edanim_bouncy_menu =
+            eduiMenuCreate(70, 70, 250, 300, ed_fnt, edanimcbCancelBouncyMenu, ((char *)("Bounciness")));
+        if (!edanim_bouncy_menu) {
+            return;
+        }
+
+        eduiMenuAddItem(edanim_bouncy_menu,
+                        eduiItemSliderCreate(0, colours, 0, edanimcbSetBouncyPlayerGrav, -0.1f, 0.2f,
+                                             AnimParams[edanim_nearest_param_id].bounce_impulse,
+                                             ((char *)("Player Grav"))));
+        eduiMenuAddItem(edanim_bouncy_menu,
+                        eduiItemSliderCreate(0, colours, 0, edanimcbSetBouncyTension, 0.0f, 1.0f,
+                                             AnimParams[edanim_nearest_param_id].bounce_spring, ((char *)("Tension"))));
+        eduiMenuAddItem(edanim_bouncy_menu, eduiItemSliderCreate(0, colours, 0, edanimcbSetBouncyDamping, 0.0f, 1.0f,
+                                                                 AnimParams[edanim_nearest_param_id].bounce_damping,
+                                                                 ((char *)("Damping"))));
+
+        eduiMenuAttach(parent, edanim_bouncy_menu);
+        edanim_bouncy_menu->x = parent->x + 10;
+        edanim_bouncy_menu->y = parent->y + 40;
+    }
+}
+
+static void edanimcbLocalSoundTypeMenu(eduimenu_s *parent, eduiitem_s *unused1, u32 unused2) {
+    i32 index;
+    u32 colours[4] = {0x80000000, 0x80ff0000, 0x80808080, 0x80404040};
+    edanim_localsoundtype_menu = eduiMenuCreate(70, 70, 250, 200, ed_fnt, edanimcbCancelLocalSoundTypeMenu,
+                                                ((char *)("Highlighted Sound Type")));
+    if (!edanim_localsoundtype_menu) {
+        return;
+    }
+
+    for (index = 0; index < edSfxAllCount; ++index) {
+        if (AnimParams[edanim_nearest_param_id].sound_ids[edanim_nearest_sound] != index) {
+            eduiMenuAddItem(
+                edanim_localsoundtype_menu,
+                eduiItemCheckCreate(index, colours, 0, 1, edanimcbSetLocalSoundType, edbitsGetSoundName(index)));
+        } else {
+            eduiMenuAddItem(
+                edanim_localsoundtype_menu,
+                eduiItemCheckCreate(index, colours, 1, 1, edanimcbSetLocalSoundType, edbitsGetSoundName(index)));
+            edanim_localsoundtype_menu->selected = edui_last_item;
+        }
+    }
+
+    eduiMenuAttach(parent, edanim_localsoundtype_menu);
+    edanim_localsoundtype_menu->x = parent->x + 10;
+    edanim_localsoundtype_menu->y = parent->y + 40;
+}
 static void edanimcbSoundTypeMenu(eduimenu_s *parent, eduiitem_s *unused1, u32 unused2) {
     i32 index;
     u32 colours[4] = {0x80000000, 0x80ff0000, 0x80808080, 0x80404040};

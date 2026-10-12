@@ -40,6 +40,31 @@ void __cdecl SetForceBack(GAMEOBJECT *object, NUVEC *position, f32 radius, i32 t
     ForceBackTypePc = type;
 }
 
+void DrawForceBackEffect(nuhspecial_s *special) {
+    if (special == NULL || !NuSpecialExistsFn(special)) {
+        return;
+    }
+    if (ForceBackObjPc != NULL && ForceBackTypePc != 3) {
+        NUMTX matrix;
+        NUVEC position;
+        NUVEC scale;
+        NuSpecialSetVisibility(special, 1);
+        matrix = *NuSpecialGetDrawMtx(special);
+        position = position;
+        position.x = ForceBackObjPc->lower_position.x;
+        position.y = 0.005f + ForceBackObjPc->floor_height;
+        position.z = ForceBackObjPc->lower_position.z;
+        scale = scale;
+        scale.x = scale.y = scale.z = ForceBackRadiusPc;
+        NuMtxSetTranslation(&matrix, &position);
+        NuMtxPreScale(&matrix, &scale);
+        NuSpecialSetDrawMtx(special, &matrix);
+        NuSpecialUpdate(special);
+    } else {
+        NuSpecialSetVisibility(special, 0);
+    }
+}
+
 i32 __cdecl MovingBackwards(GAMEOBJECT *object) {
     GAMEPAD_PC *pad = object->pad;
     u16 camera_yaw;

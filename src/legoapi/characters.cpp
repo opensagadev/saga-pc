@@ -41,6 +41,19 @@ void __cdecl CharScene_Draw(WORLDINFO *world, i32 character_id, NUMTX *matrix, N
     }
 }
 
+extern "C" void CharScenes_AreaDump() {
+    if (KillPartsCharSceneAreaPc == NULL) {
+        return;
+    }
+    for (i32 i = 0; i < CHARCOUNT; ++i) {
+        KILLPARTS_CHARSCENE_PC &entry = KillPartsCharSceneAreaPc[i];
+        if (entry.scene != NULL) {
+            NuGScnRemove(entry.scene);
+        }
+        entry.scene = NULL;
+    }
+}
+
 typedef struct permanent_material_reader_pc_s {
     u8 unknown_0000[0x40];
     u32 attributes;

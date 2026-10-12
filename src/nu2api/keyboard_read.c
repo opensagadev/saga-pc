@@ -158,6 +158,52 @@ void edcamMove(FRAME_PAD_PC *pad) {
     edcamMoveEx(pad, NuTimeGetFrameTime());
 }
 
+void edcamSetAng(i32 pitch, i32 yaw) {
+    gp_cam.pitch = pitch;
+    gp_cam.yaw = yaw;
+}
+
+void edcamGetPosAng(NUVEC *position, i32 *pitch, i32 *yaw) {
+    if (position != NULL) {
+        *position = gp_cam.position;
+    }
+    if (pitch != NULL) {
+        *pitch = gp_cam.pitch;
+    }
+    if (yaw != NULL) {
+        *yaw = gp_cam.yaw;
+    }
+}
+
+void edcamGetPosAngSnap(NUVEC *position, i32 *pitch, i32 *yaw) {
+    if (position != NULL) {
+        *position = gp_cam.snapped_position;
+    }
+    if (pitch != NULL) {
+        *pitch = gp_cam.snapped_pitch;
+    }
+    if (yaw != NULL) {
+        *yaw = gp_cam.snapped_yaw;
+    }
+}
+
+void edcamSetDist(f32 distance) {
+    gp_cam.distance = distance;
+}
+
+void edcamMtx(NUMTX *matrix) {
+    NUVEC distance = {0.0f, 0.0f, gp_cam.distance};
+    NuMtxSetTranslation(matrix, &distance);
+    NuMtxRotateX(matrix, gp_cam.pitch);
+    NuMtxRotateY(matrix, gp_cam.yaw);
+    NuMtxTranslate(matrix, &gp_cam.position);
+    NuMtxTranslate(matrix, &gp_cam.offset);
+    if (ed_remap_mtx != NULL) {
+        NuMtxMul(matrix, matrix, ed_remap_mtx);
+        ed_remap_mtx = NULL;
+    }
+}
+
 /* PC input startup remains structurally incomplete at the marked platform
  * dependencies; these candidates preserve the verified wrapper ABI/order. */
 extern HINSTANCE PCInputWindow_candidate;
