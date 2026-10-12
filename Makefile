@@ -12,6 +12,9 @@ VORBIS_HEADERS := $(shell find src/audio/vorbis -type f \( -name '*.h' -o -name 
 ifneq ($(filter build/obj/audio/vorbis/%,$(OBJECTS)),)
 $(filter build/obj/audio/vorbis/%,$(OBJECTS)): $(VORBIS_HEADERS)
 endif
+# Retail libvorbis was built without /GS: none of its functions carry a security
+# cookie. vorbisfile keeps them, so it was built with the game's flags.
+$(filter-out build/obj/audio/vorbis/vorbisfile.obj,$(filter build/obj/audio/vorbis/% build/obj/audio/vorbis_%,$(OBJECTS))): CXXFLAGS += /GS-
 $(filter build/obj/nu2api/oggreader.obj build/obj/nu2api/nustream.obj,$(OBJECTS)): $(VORBIS_HEADERS)
 EXE := build/LEGOStarWarsSaga.exe
 D3DX_LIB := build/d3dx9_35.lib
