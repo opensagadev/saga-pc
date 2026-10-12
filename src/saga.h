@@ -1225,7 +1225,9 @@ typedef struct AIANTINODE_PC {
     u8 game_flags;
     u8 type;
     u8 has_special;
-    u8 unknown_4c[0x0c];
+    u8 unknown_4c_b[0x4];
+    u8 special_type;
+    u8 unknown_51[0x7];
 } AIANTINODE_PC;
 STATIC_ASSERT(sizeof(AIANTINODE_PC) == 0x58);
 STATIC_ASSERT(offsetof(AIANTINODE_PC, special_handle) == 0x20);
@@ -1793,7 +1795,8 @@ typedef struct parttype_lookup_pc_s {
     f32 gravity;
     f32 emission_rate;
     f32 bounce;
-    u8 unknown_d4[0x18];
+    NUVEC position_random;
+    NUVEC velocity_random;
     f32 emission_period, emission_period_random, emission_pause, emission_pause_random;
     i32 rotation[3];
     i32 rotation_random[3];
@@ -4801,13 +4804,20 @@ typedef struct gameobject_s {
             NUVEC ai_terrain_origin;
         };
     };
-    u8 unknown_04d4[0x19c];
+    u8 unknown_4d4[0x18d];
+    u8 field_661;
+    i16 sock_segment;
+    u8 unknown_664[0xc];
     union {
         SOCKPOSITION_PC sock_position;
         struct {
             u8 unknown_0670;
             u8 sock_index;
-            u8 unknown_0672[0x24];
+            u8 unknown_672[0x14];
+            u16 yrot;
+            u8 unknown_688[0x4];
+            f32 field_68c;
+            u8 unknown_690[0x6];
             u16 sock_heading;
             u8 unknown_0698[8];
         };
@@ -4826,7 +4836,9 @@ typedef struct gameobject_s {
     NUVEC external_force;
     NUVEC launch_origin;
     NUVEC context_position_offset;
-    u8 unknown_076c[0xc];
+    f32 context_animation_timer;
+    f32 field_770;
+    u8 unknown_774[0x4];
     f32 context_hover_target_y;
     f32 context_timer;
     f32 field_780;
@@ -4868,7 +4880,8 @@ typedef struct gameobject_s {
         struct {
             u8 context_flags_pc;
             i8 context_variant_bits_pc;
-            u8 unknown_07be[2];
+            u8 jump_flags;
+            u8 unknown_7bf[0x1];
         };
     };
     f32 tag_cooldown;
@@ -4883,7 +4896,10 @@ typedef struct gameobject_s {
             u16 sock_body_heading;
         };
     };
-    u8 unknown_07d0[0x2c];
+    u8 unknown_7d0[0x14];
+    u8 *field_7e4;
+    u8 field_7e8;
+    u8 unknown_7e9[0x13];
     void *coin_packet;
     void *gizforce_los_info;
     NUMTX locator_matrices[16];
@@ -4892,7 +4908,11 @@ typedef struct gameobject_s {
     f32 current_speed_bias;
     f32 socket_current_speed_pc;
     union {
-        u8 unknown_0c50[0x24];
+        u8 unknown_c50[0x4];
+        f32 field_c54;
+        u8 unknown_c58[0x4];
+        f32 head_target_facing;
+        u8 unknown_c60[0x14];
         struct {
             u8 targeting_reserved_c50[12];
             NUVEC camera_screen_position;
@@ -4920,7 +4940,7 @@ typedef struct gameobject_s {
     struct PART_PC *force_part;
     SUIT_LAYERS_PC *suit;
     union {
-        u8 unknown_0cc0[4];
+        struct gameobject_s *field_cc0;
         struct player_batarang_slot_pc_s *batarang;
     };
     struct TORPEDOPACKET_PC *torpedo;
@@ -4938,7 +4958,9 @@ typedef struct gameobject_s {
     BOLT *incoming_bolt;
     BOLT *blocked_bolt;
     union {
-        u8 unknown_0d0c[0x10];
+        u8 unknown_d0c[0x8];
+        u32 field_d14;
+        u8 unknown_d18[0x4];
         struct {
             u8 transform_reserved_d0c[8];
             void *transform_target;
@@ -4960,7 +4982,7 @@ typedef struct gameobject_s {
     u8 unknown_0d4c[0x8];
     f32 field_d54;
     f32 quick_shoot_timer;
-    u8 unknown_0d5c[4];
+    f32 torpedo_fire_cooldown;
     f32 hud_icon_timer;
     f32 jump_variant_timer;
     f32 jump_chain_timer;
@@ -4970,7 +4992,12 @@ typedef struct gameobject_s {
     f32 directional_seek_multiplier;
     f32 terrain_origin_floor_offset;
     union {
-        u8 unknown_0d80[0x18];
+        f32 field_d80;
+        f32 force_glow_target;
+        f32 force_glow_step;
+        f32 field_d8c;
+        f32 force_hold_time;
+        f32 force_use_volume;
         struct {
             f32 transform_alpha;
             u8 transform_reserved_d84[8];
@@ -4986,16 +5013,19 @@ typedef struct gameobject_s {
     f32 fall_animation_timer;
     f32 field_db0;
     f32 fall_hover_height;
-    u8 unknown_0db8[0x10];
+    f32 pre_reset_hover_height;
+    f32 field_dbc;
+    f32 sabre_contact_sfx_timer;
+    f32 field_dc4;
     f32 field_dc8;
-    u8 unknown_0dcc[4];
+    f32 thrust_effect_scale;
     f32 takeover_timer;
     f32 arrow_blend;
     f32 block_cooldown;
     f32 field_ddc;
-    u8 unknown_de0[0x4];
+    f32 field_de0;
     f32 hold_timer;
-    u8 unknown_de8[0x4];
+    f32 ai_jump_timer;
     f32 powerup_time;
     f32 pre_terrain_speed;
     f32 post_terrain_speed;
@@ -5006,15 +5036,26 @@ typedef struct gameobject_s {
     u16 current_input_angle;
     u16 previous_boundary_angle;
     i16 previous_block_animation;
-    u8 unknown_e12[0x2];
+    i16 field_e12;
     i16 held_movement_animation;
     i16 released_movement_animation;
     u16 movement_lean_angle;
     u16 secondary_lean_angle;
     u16 tertiary_lean_angle;
-    u8 unknown_0e1e[2];
-    u32 flags_e20;
-    u32 flags_e24;
+    i16 field_e1e;
+    union {
+        u32 flags_e20;
+        struct {
+            u8 field_e20;
+            u8 field_e21;
+            u8 field_e22;
+            u8 field_e23;
+        };
+    };
+    union {
+        u32 flags_e24;
+        u8 field_e24;
+    };
     u8 unknown_0e28[7];
     u8 block_latch;
     u8 quick_shoot_flags;
@@ -5068,10 +5109,11 @@ typedef struct gameobject_s {
     f32 field_ec4;
     f32 movement_speed_scale_pc;
     f32 timer_ecc;
-    u8 unknown_0ed0[4];
+    f32 alert_target_timer;
     f32 run_speed_override;
     f32 walk_speed_override;
-    u8 unknown_0edc[8];
+    f32 jump_destination_distance;
+    f32 field_ee0;
     f32 tag_reset_timer;
     f32 pause_context_state;
     u32 portal_flags;
@@ -5081,23 +5123,35 @@ typedef struct gameobject_s {
         u32 flags_ef8_word;
         struct {
             u8 field_ef8;
-            u8 unknown_0ef9[3];
+            u8 field_ef9;
+            u8 field_efa;
+            u8 field_efb;
         };
     };
     u8 field_efc;
-    u8 unknown_0efd[3];
+    u8 field_efd;
+    u8 field_efe;
+    u8 field_eff;
     u8 field_f00;
-    u8 unknown_0f01[0xb];
+    u8 field_f01;
+    u8 field_f02;
+    u8 field_f03;
+    u8 field_f04;
+    u8 edge_stop_requests;
+    u8 unknown_f06[0x2];
+    void *can_use_object;
     f32 big_jump_height;
     f32 field_f10;
     union {
-        u8 unknown_0f14[0x4];
+        u32 field_f14;
         AILOCATOR_PC *doomed_escape_locator;
     };
     NUVEC target_velocity;
     NUVEC surface_normal;
     NUVEC facing_direction;
-    u8 unknown_0f3c[0x9c];
+    u8 unknown_f3c[0xc];
+    u8 field_f48[104];
+    u8 unknown_fb0[0x28];
     NUVEC *head_target;
     NUVEC head_target_position;
     f32 head_target_timer;
@@ -5120,7 +5174,7 @@ typedef struct gameobject_s {
     f32 collision_scale_override;
     f32 terrain_impact_speed;
     f32 animation_speed_multiplier;
-    u8 unknown_1038[4];
+    f32 field_1038;
     f32 fall_acceleration_timer;
     void *cable;
     u32 flags_1044;
@@ -5138,7 +5192,7 @@ typedef struct gameobject_s {
     u16 field_105c;
     u16 field_105e;
     u16 previous_movement_angle;
-    u8 unknown_1062[0x2];
+    u16 field_1062;
     u16 id;
     u8 unknown_1066[2];
     u16 reflection_x;
@@ -5157,7 +5211,7 @@ typedef struct gameobject_s {
         i8 movement_mode;
     };
     u8 reflection_enabled;
-    u8 unknown_107c[2];
+    i16 field_107c;
     u8 field_107e;
     i8 current_hp;
     i8 head_target_priority;
@@ -5166,7 +5220,22 @@ typedef struct gameobject_s {
     u8 unknown_1083;
     u8 one_at_once_player;
     u8 attack_override;
-    u8 unknown_1086[0x1e];
+    u8 field_1086;
+    u8 field_1087;
+    u8 field_1088;
+    u8 field_1089;
+    u8 unknown_108a[0x4];
+    u8 field_108e;
+    u8 field_108f;
+    u8 unknown_1090[0x2];
+    u8 field_1092;
+    u8 field_1093;
+    u8 field_1094;
+    u8 route_search_index;
+    u8 unknown_1096[0x2];
+    u32 field_1098;
+    u32 field_109c;
+    u8 unknown_10a0[0x4];
     struct gameobject_s *opponent;
     struct gameobject_s *last_attacker;
     u8 unknown_10ac[4];
@@ -20819,7 +20888,9 @@ struct AITRIGGERSET_s {
     };
     i8 trigger_indices[8];
     union {
-        u8 pad_0x20c[8];
+        u8 unknown_20c[0x2];
+        u16 field_20e;
+        u8 unknown_210[0x4];
         struct {
             u8 trigger_count;
             u8 field_20d;

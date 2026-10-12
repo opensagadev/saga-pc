@@ -141,8 +141,32 @@ def pair(android, pc):
             if best is None or score > best[0]:
                 best = (score, akey, anchors)
         if best and len(best[2]) >= 3:
-            result[pkey] = (best[1], best[2])
+            result[pkey] = (best[1], offset_name_anchors(android[best[1]], pstruct, best[2]))
     return result
+
+
+def offset_name_anchors(astruct, pstruct, anchors):
+    """Add anchors from Android placeholders named after their PC offset (field_0xNNN).
+
+    Both decompilations named unknown members by the same PC offsets, so where a
+    struct's placeholder names agree with the PC members found at those offsets
+    (same start and size for at least 80% of them), each name pins its own shift.
+    """
+    pc_at = {f[0]: f[1] for f in pstruct.fields if not PADDING.match(f[2])}
+    named = []
+    for offset, size, name, _, _ in astruct.fields:
+        match = re.match(r"field_0x([0-9a-f]+)$", name)
+        if match:
+            named.append((offset, size, int(match.group(1), 16)))
+    checked = [(o, s, n) for o, s, n in named if n in pc_at]
+    agree = sum(1 for _, s, n in checked if pc_at[n] == s)
+    if len(checked) < 5 or agree < 0.8 * len(checked):
+        return anchors
+    merged = dict(anchors)
+    for offset, _, pc_offset in named:
+        if 0 <= pc_offset < pstruct.size:
+            merged[offset] = pc_offset - offset
+    return sorted(merged.items())
 
 
 def clean_anchors(anchors):
@@ -252,7 +276,9 @@ def initialized_structs(pc, typedefs):
     for path in (ROOT / "src").rglob("*"):
         if path.suffix in (".c", ".cpp", ".h", ".inc"):
             text = path.read_text(encoding="latin-1")
-            for match in [*pattern.finditer(text), *(local.finditer(text) if path.suffix != ".h" else [])]:
+            # data.cpp holds globals only; its indented definitions are not locals.
+            locals_ = local.finditer(text) if path.suffix != ".h" and path.name != "data.cpp" else []
+            for match in [*pattern.finditer(text), *locals_]:
                 if match.group(1) in names:
                     used.add(names[match.group(1)])
     pending = list(used)
@@ -314,13 +340,17 @@ def plan(android_root):
                     and sole_declarator(header_bytes, f[3]) and f[2] not in referenced]
         inserts = collections.defaultdict(list)
         for offset, size, name, cursor, bitfield in astruct.fields:
-            if bitfield or size <= 0 or ANDROID_PLACEHOLDER.match(name):
+            placeholder = re.match(r"field_0x([0-9a-f]+)$", name)
+            if bitfield or size <= 0 or ANDROID_PLACEHOLDER.match(name) and not placeholder:
                 continue
             delta = shift(anchors, offset, astruct.size, pstruct.size)
             if delta is None:
                 continue
             target = offset + delta
-            new_name = snake(name)
+            # Placeholders named after their PC offset keep the PC convention (field_e33).
+            new_name = f"field_{target:x}" if placeholder else snake(name)
+            if placeholder and target != int(placeholder.group(1), 16):
+                continue
             if new_name in names or not re.fullmatch(r"[a-z_][a-z0-9_]*", new_name):
                 continue
             declaration = translator.spell(cursor.type, new_name, line)
