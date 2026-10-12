@@ -414,7 +414,7 @@ extern "C" {
     LEVELDATA_PC *LevelFixupSlotPc0087b17c = NULL;
     LEVELDATA_PC *LevelFixupSlotPc0087b194 = NULL;
     LEVELDATA_PC *LevelFixupSlotPc0087b1a8 = NULL;
-    LEVELDATA_PC *LevelFixupSlotPc0087b1ac = NULL;
+    LEVELDATA_PC *TATOOINEE_LDATA = NULL;
     LEVELDATA_PC *LevelFixupSlotPc0087b1bc = NULL;
     LEVELDATA_PC *LevelFixupSlotPc0087b1c0 = NULL;
     LEVELDATA_PC *LevelFixupSlotPc0087b1d0 = NULL;
@@ -12296,8 +12296,8 @@ extern "C" {
 #pragma bss_seg(".bss$TerrainShadowGroupIndexPc")
     i16 TerrainShadowGroupIndexPc;
 #pragma bss_seg()
-#pragma bss_seg(".bss$GetSurfaceInfoWaterHeightPc")
-    f32 GetSurfaceInfoWaterHeightPc;
+#pragma bss_seg(".bss$EShadY")
+    f32 EShadY;
 #pragma bss_seg()
 #pragma bss_seg(".bss$GetSurfaceInfoRoofHeightPc")
     f32 GetSurfaceInfoRoofHeightPc;
@@ -12884,7 +12884,7 @@ extern "C" {
     void *Game_Customiser;
 #pragma bss_seg()
 #pragma bss_seg(".bss$CUTCAM")
-    void *CUTCAM;
+    i32 CUTCAM;
 #pragma bss_seg()
 }
 
@@ -29590,4 +29590,95 @@ extern "C" {
 
 #pragma bss_seg(".bss$edpart_copy_source_count")
     i32 edpart_copy_source_count;
+}
+
+extern "C" {
+#pragma bss_seg(".bss$netcamera")
+    i32 netcamera;
+
+#pragma data_seg(".data$movegamecamera_forcesock")
+    i32 movegamecamera_forcesock = -1;
+
+#pragma bss_seg(".bss$PodCamDist")
+    f32 PodCamDist;
+
+#pragma bss_seg(".bss$CustomisePos")
+    NUVEC CustomisePos[2];
+
+#pragma bss_seg(".bss$shopcampos")
+    struct nuvec_s *shopcampos;
+
+#pragma data_seg(".data$HUB_MINIKITVIEWER_CAMDY")
+    f32 HUB_MINIKITVIEWER_CAMDY = 0.30000001192092896f;
+
+#pragma data_seg(".data$CamStopBlend")
+    f32 CamStopBlend = 1.0f;
+}
+
+extern "C" {
+#pragma bss_seg(".bss$CutCamMtx")
+    NUMTX CutCamMtx;
+
+#pragma bss_seg(".bss$newgamecamtime")
+    f32 newgamecamtime;
+}
+
+extern "C" {
+#pragma bss_seg(".bss$SHOPACTIVE")
+    i32 SHOPACTIVE;
+
+#pragma bss_seg(".bss$shopcamlookat")
+    NUVEC *shopcamlookat;
+
+#pragma data_seg(".data$GunshipAOffset")
+    NUVEC GunshipAOffset = {12.0f, 22.5f, -12.0f};
+
+#pragma data_seg(".data$testmovef")
+    f32 testmovef = 0.005f;
+
+}
+
+extern "C" {
+#pragma data_seg(".data$CamTitlesSplineEndPc")
+    f32 CamTitlesSplineEndPc = 0.95f;
+
+#pragma data_seg(".data$CamTitlesBonusTimePc")
+    f32 CamTitlesBonusTimePc = 51.0f;
+
+#pragma data_seg(".data$CamShopBlendTimePc")
+    f32 CamShopBlendTimePc = 1.0f;
+
+#pragma data_seg(".data$CamNewGameDurationPc")
+    f32 CamNewGameDurationPc = 10.0f;
+
+#pragma data_seg(".data$CamPodSprintStartDistPc")
+    f32 CamPodSprintStartDistPc = 12.0f;
+
+#pragma data_seg(".data$CamPodSprintEndDistPc")
+    f32 CamPodSprintEndDistPc = 2.0f;
+
+#pragma data_seg(".data$CamPodSprintHeightPc")
+    f32 CamPodSprintHeightPc = 0.65f;
+
+#pragma data_seg(".data$CamPodSprintRollScalePc")
+    f32 CamPodSprintRollScalePc = 0.6f;
+
+#pragma data_seg(".data$CamPodSprintAngleSeekPc")
+    f32 CamPodSprintAngleSeekPc = 7.0f;
+
+#pragma data_seg(".data$CamPodShakeScalePc")
+    f32 CamPodShakeScalePc = 2.0f;
+
+#pragma data_seg(".data$CamWalkerRadiusPc")
+    f32 CamWalkerRadiusPc = 5.0f;
+
+#pragma data_seg(".data$CamWalkerLiftPc")
+    f32 CamWalkerLiftPc = 4.0f;
+
+#pragma data_seg(".data$CamDewbackRadiusPc")
+    f32 CamDewbackRadiusPc = 5.0f;
+
+#pragma data_seg(".data$CamDewbackLiftPc")
+    f32 CamDewbackLiftPc = 1.5f;
+#pragma data_seg()
 }

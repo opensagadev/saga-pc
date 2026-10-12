@@ -1917,7 +1917,7 @@ extern "C" {
         CUTCAMONLY = 0;
         CutStopInfo = NULL;
         CUTDRAWWORLD = 0;
-        CUTCAM = NULL;
+        CUTCAM = 0;
         CUTNOFOG = 0;
         CUTSKIPLOCK = 0;
         PCFrameSetLoadingYieldEnabled(0);

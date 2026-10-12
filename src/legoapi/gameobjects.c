@@ -693,7 +693,7 @@ GAMEOBJECT *__cdecl TargetGameObject(GAMEOBJECT *object, NUVEC *position, NUVEC 
             continue;
         }
         if (WORLD->current_level == DEATHSTARRESCUEA_LDATA && target->field_280 == 0xff && target->position.y < -1.5f &&
-            GameCam->sock == 2) {
+            GameCam->sock_position.sock_index == 2) {
             continue;
         }
         distance = NuVecDistSqr(&target->collision_position, position, &delta);
@@ -3293,7 +3293,7 @@ void __cdecl GetSurfaceInfo(GAMEOBJECT *object, i32 update_fields, f32 floor_hei
             object->surface_normal = GetSurfaceInfoSurfaceNormalPc;
     }
 
-    object->water_height = GetSurfaceInfoWaterHeightPc;
+    object->water_height = EShadY;
     if (object->water_height != GameObjectNearFloorNoFloorHeight) {
         material = (i8)EShadowInfo();
         object->field_283 = material;

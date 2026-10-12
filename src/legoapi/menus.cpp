@@ -1,7 +1,7 @@
 #include "saga.h"
 
 typedef struct MENU_INPUT_PAD_PC {
-    PAD_INPUT_PC *bound_pad;
+    FRAME_PAD_PC *bound_pad;
     u32 held, pressed, alternate_held, alternate_pressed;
     u8 unknown14[0x4c];
 } MENU_INPUT_PAD_PC;

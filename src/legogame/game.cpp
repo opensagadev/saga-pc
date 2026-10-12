@@ -631,7 +631,7 @@ GAME_PUBLISHER_ASSERT(offsetof(GAME_STATUS_RENDER_VIEW_PC, stage) == 0x74);
 GAME_PUBLISHER_ASSERT(offsetof(WORLDINFO, current_level) == 0x128);
 GAME_PUBLISHER_ASSERT(offsetof(WORLDINFO, area) == 0x12c);
 GAME_PUBLISHER_ASSERT(offsetof(LEVELDATA_PC, flags) == 0x64);
-GAME_PUBLISHER_ASSERT(offsetof(GAMECAMERA, sock) == 1);
+GAME_PUBLISHER_ASSERT(offsetof(GAMECAMERA, sock_position.sock_index) == 1);
 GAME_PUBLISHER_ASSERT(offsetof(GAMEOBJECT, ai_packet) + offsetof(AIPACKET_PC, nearest_opponent) == 0x39c);
 GAME_PUBLISHER_ASSERT(offsetof(GAMEOBJECT, ai_packet) + offsetof(AIPACKET_PC, nearest_opponent_metric) == 0x3a0);
 GAME_PUBLISHER_ASSERT(offsetof(GAMEOBJECT, ai_packet) + offsetof(AIPACKET_PC, opponent) == 0x3ac);
@@ -703,7 +703,8 @@ static i32 __cdecl PauseRenderOff(void) {
 }
 
 static i32 __cdecl MatrixReflection_CanOverride(void) {
-    if (WORLD->current_level == DEATHSTARESCAPEA_LDATA && GameCam->sock != 0 && GameCam->sock != 3)
+    if (WORLD->current_level == DEATHSTARESCAPEA_LDATA && GameCam->sock_position.sock_index != 0 &&
+        GameCam->sock_position.sock_index != 3)
         return 0;
     return 1;
 }
@@ -769,7 +770,7 @@ static i32 __cdecl CheckMusicOther(void) {
             return 1;
         }
     } else if (level == LevelFixupSlotPc0087b228) {
-        return GameCam->sock == 4;
+        return GameCam->sock_position.sock_index == 4;
     } else if (level == SARLACCPITB_LDATA) {
         return SarlaccPitDiscoActive(WORLD) != 0;
     }
@@ -814,7 +815,7 @@ static i32 __cdecl ActionMusicFn(void) {
 // build/analysis/next-world-loading-wave/game-init-after-MM/remaining22-contract-v1/game-private-three.cppfrag Same
 // original game.cpp private callback/publisher group. No retention references.
 GAME_PUBLISHER_ASSERT(offsetof(WORLDINFO, current_level) == 0x128);
-GAME_PUBLISHER_ASSERT(offsetof(GAMECAMERA, sock) == 0x1);
+GAME_PUBLISHER_ASSERT(offsetof(GAMECAMERA, sock_position.sock_index) == 0x1);
 
 // Genuine mutable source-owned state, pending sole-writer canonical overlap review.
 extern f32 minikittime;
@@ -827,13 +828,13 @@ static f32 __cdecl Hint_AlphaTarget(void) {
 
 static i32 __cdecl GizmoBlowUp_NoTarget(WORLDINFO *world, GAMEOBJECT *object) {
     if (world->current_level == DEATHSTARRESCUEA_LDATA)
-        return GameCam->sock == 2;
+        return GameCam->sock_position.sock_index == 2;
     return 0;
 }
 
 static i32 __cdecl Tag_NoHiddenIcon(GAMEOBJECT *object) {
     if (WorldInfo_CurrentlyActive()->current_level == DEATHSTARESCAPEB_LDATA)
-        return GameCam->sock == 5;
+        return GameCam->sock_position.sock_index == 5;
     return 0;
 }
 

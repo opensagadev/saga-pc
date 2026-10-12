@@ -39,12 +39,14 @@ address    , symbol                                                         , si
 0x408af0,_UpdateCables,3725,
 0x409980,_DrawCables,2326,
 0x40a2a0,_CableTargetGameObject,517,"GAMEOBJECT *__cdecl(GAMEOBJECT*,NUVEC*,f32)"
+0x40a520,@PCDeviceBackend_GetActiveAspectPc@4,45,f32 __fastcall (PC_DEVICE_BACKEND_PC *)
 0x40a570,_PlayerCamPos,1080,
 0x40aa00,_ViewCamSetActive,79,
 0x40aa50,_ViewCamGetMode,6,i32 __cdecl (void)
 0x0040aa60 , _ViewCamGetGamePad                                             , 6     , GAMEPAD_PC *__cdecl (void)
 0x40aa70,_ViewCamGetTgt,6,NUVEC *__cdecl (void)
-0x40b3c0,_MoveGameCamera,12173,
+0x40ab20,_UpdatePlayerCameraOcclusionPc,693,void __cdecl (void)
+0x40ade0,_MoveGameCamera,14452,
 0x40e690   , _GoingForwardsAlongNarrowSock                                  , 106   , i32 __cdecl (GAMEOBJECT *)
 0x40ea30,_ChrisAnakinCUpdate,319,
 0x40eff0,_CalcSplinePoint,1119,"void __cdecl (FLIGHT_SPLINE_RESOURCE_PC *,NUVEC4 *,f32)"
@@ -1047,6 +1049,7 @@ address    , symbol                                                         , si
 0x4ab790,_FindPodHoverHeight,258,f32 __cdecl(GAMEOBJECT*)
 0x4ab8a0,_SetPodMergeAnims,104,"void __cdecl(ANIMPACKET_PC *,i32)"
 0x4ab910,_Animate_POD,386,void __cdecl(GAMEOBJECT *)
+0x4abaa0,_getPodRoll,12,
 0x004abac0 , _ApplyGravity                                                  , 2543  , "void __cdecl (GAMEOBJECT *, f32 *, f32, f32, f32 *)"
 0x4ac4b0,_ApplyGravity_Network,358,
 0x004ac620 , _MovePlayer_DIRECTIONAL                                        , 10904 , void __cdecl (GAMEOBJECT *)
@@ -1121,6 +1124,7 @@ address    , symbol                                                         , si
 0x4c64f0,_DrawSubItemMenu2D,1776,
 0x4c6c20,_DrawShop3D,47,
 0x4c6c70,_DrawShopPrompts,384,
+0x4c7820,_GetShopCamLookPos,89,
 0x4c78b0,_Signals_Load,198,
 0x4c7a90,_Signal_SetGizmoVisibility,79,
 0x4c7b20,_Signals_Reset,319,
@@ -1177,6 +1181,7 @@ address    , symbol                                                         , si
 0x4cd7f0,_Technos_RegisterGizmo,293,TECHNO_REGISTRATION_PC * __cdecl (i32)
 0x4cd920,_Techno_isReady,113,
 0x004cd9a0 , _Techno_FindOperator                                           , 148   , "i32 __cdecl (void *, GAMEPAD_PC **, GAMEOBJECT **)"
+0x4cda40,_Technos_TgtPos,97,
 0x4cdab0,_Signal_MoveCode,604,
 0x4cdd60,_Tel_spline,200,
 0x4cde30,_Tel_duration,23,
@@ -2298,6 +2303,9 @@ address    , symbol                                                         , si
 0x549050,_GameTiming,987,
 0x00549430 , _ResetFrameCounters                                            , 30    , void __cdecl (void)
 0x00549450 , _UpdateFrameCounters                                           , 119   , void __cdecl (void)
+0x5495a0,_GameCam_ResetLookRot,,void __cdecl (GAMECAMERA *)
+0x5495e0,_GameCam_UpdateLookRot,974,
+0x549a30,_MakePlayPlanes,375,void __cdecl (GAMECAMERA *)
 0x00549bb0 , _GameCam_NewShake                                              , 43    , "void __cdecl (GAMECAMERA *, f32, f32, f32)"
 0x549be0,_GameCam_UpdateShake,498,
 0x00549de0,_GameCam_Judder,301,"void __cdecl(GAMECAMERA *, f32, i32, NUVEC *)"
@@ -4059,7 +4067,6 @@ address    , symbol                                                         , si
 0x5c6d20,_NuDynamicLightAddRenderScene,39,"void __cdecl(NURNDRLIGHTRECORD*,i32,i32)"
 0x5c6dc0,?TestBox@PCFrustumClipSet@@QAE_NPBUnuvec_s@@0H@Z,642,"bool __thiscall PCFrustumClipSet::TestBox(const NUVEC *,const NUVEC *,i32)"
 0x005c7050,?TestBoxes@PCFrustumClipSet@@QAEHPBUnuvec_s@@0@Z,69,"i32 __thiscall PCFrustumClipSet::TestBoxes(const NUVEC *,const NUVEC *)"
-0x5c79f0,_MakePlayPlanes,1451,
 0x5c8ed0,?isEnabled@NuDeferredFilterGen@@UAE_NXZ,30,bool __thiscall NuDeferredFilterGen::isEnabled(void)
 0x005c9130 , _NuPause                                                       , 11    , void __cdecl (i32)
 0x005c9140 , _buildBitCountTable                                            , 118   , void __cdecl (void)
@@ -7904,19 +7911,31 @@ address    , symbol                                                         , si
 0x7519b0,__real@3fe38e39,4,const f32
 0x007519b8 , _NuTimeBarColumnStep                                           , 8     , const f64
 0x007519b8 , __real@4008000000000000                                        , 8     , const f64
+0x7519c0,__real@c0d0000000000000,8,const f64
+0x7519c8,??_C@_0O@HKBFKPGD@window_frame1?$AA@,14,char []
 0x7519d8,__real@4081100000000000,,const f64
+0x7519e0,__real@bfd54fdf40000000,8,const f64
 0x007519e8 , _MoveSplineTurnRate                                            , 4     , const f32
 0x007519e8 , __real@41000000                                                , 4     , const f32
 0x007519f0 , __real@4059000000000000                                        , 8     , const f64
 0x007519f8,__real@40c00000,4,const f32
+0x751a00,__real@401cbb6460000000,8,const f64
+0x751a08,__real@40e5db23,4,const f32
 0x00751a10 , _NuTimeBarSlotWidth                                            , 8     , const f64
 0x751a10,__real@3f999999a0000000,8,const f64
+0x751a18,__real@40172b0200000000,8,const f64
+0x751a20,__real@40b95810,4,const f32
+0x751a28,__real@4022a45a20000000,8,const f64
+0x751a30,__real@411522d1,4,const f32
 0x751a38,__real@3fb3333340000000,,const f64
 0x00751a40 , _PCKeyboardDefaultValue_candidate                              , 4     , const f32
 0x00751a40 , __real@3dcccccd                                                , 4     , const f32
+0x751a48,__real@3fe54fdf40000000,8,const f64
 0x00751a50 , __real@3f19999a                                                , 4     , const f32
+0x751a58,__real@405f400000000000,8,const f64
 0x751a60,__real@40b0000000000000,8,const f64
 0x00751a68 , __real@3fb0000000000000                                        , 8     , const f64
+0x751a70,__real@3fe5581060000000,8,const f64
 0x00751a78 , _ApplyGravityVelocityFactor                                    , 8     , const f64
 0x00751a78 , __real@3fd54fdf40000000                                        , 8     , const f64
 0x751a80,__real@3eaa7efa,4,const f32
@@ -7924,6 +7943,7 @@ address    , symbol                                                         , si
 0x00751a90 , __real@3ff8000000000000                                        , 8     , const f64
 0x751a98   , __real@40c0000000000000                                        , 8     , const f64
 0x751aa0,__real@40b5550000000000,8,const f64
+0x751aa8,__real@42080000,4,const f32
 0x00751ab0 , __real@405fe00000000000                                        , 8     , const f64
 0x00751ab8 , __real@3fc00000                                                , 4     , const f32
 0x751ac0,_PlayerStepInnerPc,8,const f64
@@ -14405,7 +14425,25 @@ address    , symbol                                                         , si
 0x7f1058,_cable_gravity,4,f32
 0x7f105c,_cable_damping,4,f32
 0x7f1060,_cable_ground_damping,4,f32
+0x7f10d4,_CamStopBlend,4,f32
+0x7f10d8,_CamTitlesSplineEndPc,4,f32
+0x7f10dc,_GunshipAOffset,12,NUVEC
+0x7f10e8,_CamTitlesBonusTimePc,4,f32
+0x7f10ec,_CamShopBlendTimePc,4,f32
+0x7f10f0,_CamNewGameDurationPc,4,f32
+0x7f10f4,_movegamecamera_forcesock,4,i32
+0x7f10f8,_testmovef,4,f32
+0x7f10fc,_CamPodSprintStartDistPc,4,f32
+0x7f1100,_CamPodSprintEndDistPc,4,f32
+0x7f1104,_CamPodSprintHeightPc,4,f32
+0x7f1108,_CamPodSprintRollScalePc,4,f32
+0x7f110c,_CamPodSprintAngleSeekPc,4,f32
+0x7f1110,_CamPodShakeScalePc,4,f32
 0x007f1114 , _ViewCam                                                       ,       , VIEWCAM_PC
+0x7f113c,_CamWalkerRadiusPc,4,f32
+0x7f1140,_CamWalkerLiftPc,4,f32
+0x7f1144,_CamDewbackRadiusPc,4,f32
+0x7f1148,_CamDewbackLiftPc,4,f32
 0x7f1310,_DoorSetupList,,
 0x7f15e0,_PodRaceSplineIncrementPc,,f32
 0x7f1724,_ConfigChar_GameKeywords,,NUFPCOMJMP[2]
@@ -14726,6 +14764,7 @@ address    , symbol                                                         , si
 0x7f9334,_HubMiniKitViewerPositionPc,,NUVEC
 0x7f9340,_HubMiniKitViewerBaseYPc,,f32
 0x7f9344,_HubMiniKitViewerStepPc,,f32
+0x7f9348,_HUB_MINIKITVIEWER_CAMDY,4,f32
 0x7f934c,_HubMiniKitViewerReflectYPc,,f32
 0x7f9368,_HubAreaInfoPc,,HUB_AREA_INFO_PC[51]
 0x7f9f5c,_PCArcadePointGoals,,i32[5]
@@ -16034,6 +16073,7 @@ address    , symbol                                                         , si
 0x854838,_InitOnceEjectPc,,i32
 0x8548b8,_BatarangPacketsPc,,PLAYER_BATARANG_SLOT_PC[8]
 0x00854e58 , _cables                                                        , 3936  , u8[0xf60]
+0x855dc0,_CutCamMtx,64,NUMTX
 0x00855e00 , _MiniCutCam                                                    , 4     , i32
 0x855e04,_KEEPONSCREEN_SIDESONLY,,i32
 0x855e18,_MaxRadialCamY,4,f32
@@ -16056,6 +16096,7 @@ address    , symbol                                                         , si
 0x855f9c,_makeplayerlist_freeplay,4,i32
 0x855fa0,_addcreature_override_id_check,,i32
 0x856910,_CustomiseMode,8,i32[2]
+0x856924,_CustomisePos,24,NUVEC[2]
 0x008569a0 , _CharacterCustomiser                                           , 4     , CUSTOMISER_LAYERS_PC *
 0x8569d8,_Detonator,560,DETONATOR_s[10]
 0x856c10,_OldBonusScore,,i32[2]
@@ -16343,7 +16384,7 @@ address    , symbol                                                         , si
 0x87b1a0,_TATOOINEA_LDATA,,LEVELDATA_PC *
 0x87b1a4,_TATOOINEB_LDATA,,LEVELDATA_PC *
 0x0087b1a8,_LevelFixupSlotPc0087b1a8,,LEVELDATA_PC *
-0x0087b1ac,_LevelFixupSlotPc0087b1ac,,LEVELDATA_PC *
+0x0087b1ac,_TATOOINEE_LDATA,,LEVELDATA_PC *
 0x87b1b0,_MOSEISLEYA_LDATA,,LEVELDATA_PC *
 0x0087b1b4 , _MOSEISLEYB_LDATA                                              , 4     , LEVELDATA_PC *
 0x87b1b8,_MOSEISLEYC_LDATA,,LEVELDATA_PC *
@@ -16454,6 +16495,7 @@ address    , symbol                                                         , si
 0x0087b750 , _opts_sfx_i                                                    , 4     , i32
 0x87b754,_newgame_menudrawoff,,i32
 0x0087b758 , _newgamecam                                                    , 4     , i32
+0x87b75c,_newgamecamtime,4,f32
 0x0087b760 , _startnewgame_initiated                                        , 4     , i32
 0x0087b764 , _startnewgame                                                  , 4     , i32
 0x87b7ac,_MenuKeyboardOverrideActivePc,,u8
@@ -16519,10 +16561,12 @@ address    , symbol                                                         , si
 0x87bd98,_ShopNameAlpha,4,f32
 0x87bed4,_splcodes,4,struct nugspline_s *
 0x87bfac,_drawptr,4,void (__cdecl *)(void)
+0x87bfb4,_shopcamlookat,4,NUVEC *
 0x87bfb8,_TopShelf,696,shopitem_s[6]
 0x87c27c,_iconback,12,nuhspecial_s
 0x87c598,_CutItems,14848,shopitem_s[128]
 0x87ffb0,_CutScenePlayCountPc,,i32
+0x88000c,_shopcampos,4,struct nuvec_s *
 0x8800d8,_shop_from_cutsceneplayer,,i32
 0x8800dc,_HintShelfIds,28,i32[7]
 0x8800f8,_SHOPCHARCOUNT,4,i32
@@ -16532,6 +16576,7 @@ address    , symbol                                                         , si
 0x880178,_ShelfPos,72,NUVEC[6]
 0x8801cc,_picked,4,i32
 0x880440,_SubShelfPos,84,NUVEC[7]
+0x880494,_SHOPACTIVE,4,i32
 0x88049c,_HintItems,4,struct shopitem_s *
 0x8804c0,_shelfang,2,u16
 0x00880584 , _players_cannot_exit_speeder                                   , 4     , i32
@@ -17271,6 +17316,7 @@ address    , symbol                                                         , si
 0x881c60,_ZipUpAddTypePc,,ADD_GIZMO_CONFIG_TYPE_PC
 0x881cd8,_ZipUpRopeModulationPc,,i32
 0x881cdc,?ROPELEN@?1??DrawRopeSingle@@9@9,,f32
+0x881ce0,_PodCamDist,4,f32
 0x00882430 , _podrace_section                                               , 4     , i32
 0x882434,_PodRace_nsnipers,4,i32
 0x00882438 , _podsprint                                                     , 148   , PODSPRINT_PC
@@ -18039,6 +18085,7 @@ address    , symbol                                                         , si
 0x00951a14 , _OldLevelHackData                                              , 4     , void *
 0x00951b70 , _netclient                                                     , 4     , i32
 0x00951b74 , _nethost                                                       , 4     , i32
+0x951b78,_netcamera,4,i32
 0x951b80,_netnewgame,,i32
 0x951b90,_LevelHackSendTimer,,f32
 0x00951b94 , _levelconfig_ldata                                             , 4     , LEVELDATA_PC *
@@ -18775,7 +18822,7 @@ address    , symbol                                                         , si
 0x2920aec,_edgra_page_used,,i32[8]
 0x2920d90,_TerrImpactPos,,NUVEC
 0x2920da0,_edbri_plank_instance_type,4,i32
-0x02920da4 , _GetSurfaceInfoWaterHeightPc                                   ,       ,
+0x02920da4 , _EShadY                                   ,       ,
 0x02920da8 , _NuSound3Groups                                                , 1024  , SFX_GROUP_PC[128]
 0x029211a8 , _TerrainCastAuxValidPc                                         ,       ,
 0x29211ab,_edpp_effect_list,1,u8

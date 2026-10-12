@@ -2224,7 +2224,7 @@ extern "C" f32 NewShadowHandelEx(NUVEC *position, f32 unused, f32 height_above, 
     if (handle == NULL)
         return 0.0f;
     TerrainShadowHeightPc = LevelConfigFarDistance;
-    GetSurfaceInfoWaterHeightPc = LevelConfigFarDistance;
+    EShadY = LevelConfigFarDistance;
     GetSurfaceInfoWaterNormalPc.y = 1.0f;
     TerrainShadowStatusPc = -1;
     GetSurfaceInfoRoofHeightPc = LevelConfigFarDistance;
