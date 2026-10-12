@@ -10344,6 +10344,7 @@ address    , symbol                                                         , si
 0x0075e9f8 , _NuTime_ScanlineScale                                          , 8     , const f64
 0x75ea00,__real@405fc00000000000,,
 0x75ea08,??_C@_0DD@OFMMJBLL@d?3?2projects?2game_saga?2nu2api?4sag@,51,const char[51]
+0x75ea3c,??_C@_04DEAMPFFM@LZ2K?$AA@,5,const char[5]
 0x75ea44,??_C@_09KKLHMBCK@Bad?5table?$AA@,10,const char[10]
 0x75ea54,_NuFileExt_at3_PC,5,const char[5]
 0x75ea5c,_NuFileExt_psc_PC,5,const char[5]

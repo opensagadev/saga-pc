@@ -32,7 +32,7 @@ void NuPortalSetActive(NUGSCN *scene, i32 portal_id, i32 active) {
 }
 
 i16 __cdecl NuPortalWhichRoom(NUGSCN *scene, NUVEC *position) {
-    i16 candidates[4];
+    i32 candidates[4];
     i16 candidate_count = 0;
     i32 room_index;
 

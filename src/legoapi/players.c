@@ -2032,7 +2032,7 @@ static void DrawWeapon_SetSabreObjects(GAMEOBJECT *object, i32 red, i32 green, i
 
 void DrawWeapons(GAMEOBJECT *object, i32 reflection, f32 weapon_scale) {
     struct PLAYERCHARACTERCONFIG_PC *data;
-    u8 saved_matrix[sizeof(NUMTX)];
+    NUMTX saved_matrix;
     NUVEC reverse;
     i32 sabre;
     u16 rotation;
@@ -2157,7 +2157,7 @@ void DrawWeapons(GAMEOBJECT *object, i32 reflection, f32 weapon_scale) {
                 }
                 NuMtxPreScale(&blade_matrix, &scale);
 
-                memcpy(saved_matrix, &blade_matrix, sizeof(blade_matrix));
+                memcpy(&saved_matrix, &blade_matrix, sizeof(blade_matrix));
                 for (side = 0;; ++side) {
                     i32 part;
                     for (part = 0; part < 4; ++part) {
@@ -2189,7 +2189,7 @@ void DrawWeapons(GAMEOBJECT *object, i32 reflection, f32 weapon_scale) {
                         (!Cheat_IsOn(25) && (object->field_280 == -1 || !Player_HasPurpleForce(object)))) {
                         break;
                     }
-                    memcpy(&blade_matrix, saved_matrix, sizeof(blade_matrix));
+                    memcpy(&blade_matrix, &saved_matrix, sizeof(blade_matrix));
 
                     reverse.x = 1.0f;
                     reverse.y = -1.0f;
