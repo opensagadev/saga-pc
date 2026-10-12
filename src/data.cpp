@@ -13045,7 +13045,7 @@ extern "C" {
     extern const char GizmoSnapOptionNamePc[5] = "SNAP";
 #pragma const_seg()
 #pragma bss_seg(".bss$debkeydata")
-    void *debkeydata;
+    DEBRISKEY_PC *debkeydata;
 #pragma bss_seg()
 }
 

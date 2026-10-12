@@ -3548,7 +3548,7 @@ GAMEOBJECT *__cdecl AddGameObject(void) {
     object->water_height = 2000000.0f;
     object->floor_height = 2000000.0f;
     RecomputeHighGameObject();
-    object->ai_packet.owner = (AIOWNER_PC *)object;
+    object->ai_packet.owner = object;
     ((APIOBJECT_PC *)object)->owner = object;
     ((APIOBJECT_PC *)object)->ai = &object->ai_packet;
     ((GAMEOBJECT_COLLISION_RESET_PC *)object)->collision_overlap_low = 0;

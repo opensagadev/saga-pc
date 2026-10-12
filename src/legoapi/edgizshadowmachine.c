@@ -1,92 +1,6 @@
 #include "saga.h"
 #include <string.h>
 
-typedef struct gizmo_config_functions_pc_s {
-    i16 options;
-    u16 padding;
-    i32(__cdecl *get_max_gizmos)(void *world);
-    void *add_gizmos;
-    void(__cdecl *early_update)(void *world, void *data, f32 delta_time);
-    void(__cdecl *late_update)(void *world, void *data, f32 delta_time);
-    void(__cdecl *draw)(void *world, void *data, f32 delta_time);
-    void(__cdecl *panel_draw)(void *world, void *data, f32 delta_time);
-    void *get_gizmo_name;
-    void *get_output;
-    void *get_output_name;
-    void *get_num_outputs;
-    void *activate;
-    void *activate_reverse;
-    void *set_visibility;
-    void *get_visibility;
-    void *get_pos;
-    void *using_special;
-    void *bolt_hit_plat;
-    void *get_best_bolt_target;
-    void *bolt_hit;
-    void *(__cdecl *allocate_progress_data)(VARIPTR *buffer, VARIPTR *end);
-    void(__cdecl *clear_progress)(void *world, void *progress);
-    void(__cdecl *store_progress)(void *world, void *data, void *progress);
-    void(__cdecl *reset)(void *world, void *data, void *progress);
-    void *(__cdecl *reserve_buffer_space)(void *world);
-    i32(__cdecl *load)(void *world, void *data);
-    void(__cdecl *post_load)(void *world, void *data);
-    void *add_level_sfx;
-} GIZMO_CONFIG_FUNCTIONS_PC;
-STATIC_ASSERT(sizeof(GIZMO_CONFIG_FUNCTIONS_PC) == 0x70);
-STATIC_ASSERT(offsetof(GIZMO_CONFIG_FUNCTIONS_PC, get_max_gizmos) == 4);
-STATIC_ASSERT(offsetof(GIZMO_CONFIG_FUNCTIONS_PC, early_update) == 0xc);
-STATIC_ASSERT(offsetof(GIZMO_CONFIG_FUNCTIONS_PC, late_update) == 0x10);
-STATIC_ASSERT(offsetof(GIZMO_CONFIG_FUNCTIONS_PC, draw) == 0x14);
-STATIC_ASSERT(offsetof(GIZMO_CONFIG_FUNCTIONS_PC, panel_draw) == 0x18);
-STATIC_ASSERT(offsetof(GIZMO_CONFIG_FUNCTIONS_PC, activate) == 0x2c);
-STATIC_ASSERT(offsetof(GIZMO_CONFIG_FUNCTIONS_PC, activate_reverse) == 0x30);
-STATIC_ASSERT(offsetof(GIZMO_CONFIG_FUNCTIONS_PC, set_visibility) == 0x34);
-STATIC_ASSERT(offsetof(GIZMO_CONFIG_FUNCTIONS_PC, store_progress) == 0x58);
-STATIC_ASSERT(offsetof(GIZMO_CONFIG_FUNCTIONS_PC, reset) == 0x5c);
-STATIC_ASSERT(offsetof(GIZMO_CONFIG_FUNCTIONS_PC, allocate_progress_data) == 0x50);
-STATIC_ASSERT(offsetof(GIZMO_CONFIG_FUNCTIONS_PC, reserve_buffer_space) == 0x60);
-STATIC_ASSERT(offsetof(GIZMO_CONFIG_FUNCTIONS_PC, load) == 0x64);
-STATIC_ASSERT(offsetof(GIZMO_CONFIG_FUNCTIONS_PC, post_load) == 0x68);
-
-STATIC_ASSERT(offsetof(GIZMO_CONFIG_FUNCTIONS_PC, options) == 0x0);
-STATIC_ASSERT(offsetof(GIZMO_CONFIG_FUNCTIONS_PC, get_max_gizmos) == 0x4);
-STATIC_ASSERT(offsetof(GIZMO_CONFIG_FUNCTIONS_PC, add_gizmos) == 0x8);
-STATIC_ASSERT(offsetof(GIZMO_CONFIG_FUNCTIONS_PC, early_update) == 0xc);
-STATIC_ASSERT(offsetof(GIZMO_CONFIG_FUNCTIONS_PC, late_update) == 0x10);
-STATIC_ASSERT(offsetof(GIZMO_CONFIG_FUNCTIONS_PC, draw) == 0x14);
-STATIC_ASSERT(offsetof(GIZMO_CONFIG_FUNCTIONS_PC, panel_draw) == 0x18);
-STATIC_ASSERT(offsetof(GIZMO_CONFIG_FUNCTIONS_PC, get_gizmo_name) == 0x1c);
-STATIC_ASSERT(offsetof(GIZMO_CONFIG_FUNCTIONS_PC, get_output) == 0x20);
-STATIC_ASSERT(offsetof(GIZMO_CONFIG_FUNCTIONS_PC, get_output_name) == 0x24);
-STATIC_ASSERT(offsetof(GIZMO_CONFIG_FUNCTIONS_PC, get_num_outputs) == 0x28);
-STATIC_ASSERT(offsetof(GIZMO_CONFIG_FUNCTIONS_PC, activate) == 0x2c);
-STATIC_ASSERT(offsetof(GIZMO_CONFIG_FUNCTIONS_PC, activate_reverse) == 0x30);
-STATIC_ASSERT(offsetof(GIZMO_CONFIG_FUNCTIONS_PC, set_visibility) == 0x34);
-STATIC_ASSERT(offsetof(GIZMO_CONFIG_FUNCTIONS_PC, get_visibility) == 0x38);
-STATIC_ASSERT(offsetof(GIZMO_CONFIG_FUNCTIONS_PC, get_pos) == 0x3c);
-STATIC_ASSERT(offsetof(GIZMO_CONFIG_FUNCTIONS_PC, using_special) == 0x40);
-STATIC_ASSERT(offsetof(GIZMO_CONFIG_FUNCTIONS_PC, bolt_hit_plat) == 0x44);
-STATIC_ASSERT(offsetof(GIZMO_CONFIG_FUNCTIONS_PC, get_best_bolt_target) == 0x48);
-STATIC_ASSERT(offsetof(GIZMO_CONFIG_FUNCTIONS_PC, bolt_hit) == 0x4c);
-STATIC_ASSERT(offsetof(GIZMO_CONFIG_FUNCTIONS_PC, allocate_progress_data) == 0x50);
-STATIC_ASSERT(offsetof(GIZMO_CONFIG_FUNCTIONS_PC, clear_progress) == 0x54);
-STATIC_ASSERT(offsetof(GIZMO_CONFIG_FUNCTIONS_PC, store_progress) == 0x58);
-STATIC_ASSERT(offsetof(GIZMO_CONFIG_FUNCTIONS_PC, reset) == 0x5c);
-STATIC_ASSERT(offsetof(GIZMO_CONFIG_FUNCTIONS_PC, reserve_buffer_space) == 0x60);
-STATIC_ASSERT(offsetof(GIZMO_CONFIG_FUNCTIONS_PC, load) == 0x64);
-STATIC_ASSERT(offsetof(GIZMO_CONFIG_FUNCTIONS_PC, post_load) == 0x68);
-STATIC_ASSERT(offsetof(GIZMO_CONFIG_FUNCTIONS_PC, add_level_sfx) == 0x6c);
-
-typedef struct add_gizmo_config_type_pc_s {
-    const char *name;
-    const char *prefix;
-    GIZMO_CONFIG_FUNCTIONS_PC functions;
-} ADD_GIZMO_CONFIG_TYPE_PC;
-STATIC_ASSERT(sizeof(ADD_GIZMO_CONFIG_TYPE_PC) == 0x78);
-STATIC_ASSERT(offsetof(ADD_GIZMO_CONFIG_TYPE_PC, functions) == 8);
-
-extern ADD_GIZMO_CONFIG_TYPE_PC Default_ADDGIZMOTYPE;
-
 typedef struct edgizshadow_pc_s {
     NUVEC direction;
     f32 field_0c;
@@ -161,13 +75,13 @@ static void __cdecl Shadow_AddGizmos(void *system, i32 type_id, void *world_ptr,
     SHADOW_WORLD_VIEW_PC *world = (SHADOW_WORLD_VIEW_PC *)world_ptr;
     AddGizmo(system, type_id, NULL, &world->shadow_editor);
 }
-static const char *__cdecl Shadow_GetGizmoName(GIZMO_PC *gizmo) {
+static char *__cdecl Shadow_GetGizmoName(GIZMO_PC *gizmo) {
     return ShadowGizmoNamePc;
 }
 static i32 __cdecl Shadow_GetOutput(GIZMO_PC *gizmo, i32 output, i32 include_inactive) {
     return 0;
 }
-static const char *__cdecl Shadow_GetOutputName(GIZMO_PC *gizmo, i32 output) {
+static char *__cdecl Shadow_GetOutputName(GIZMO_PC *gizmo, i32 output) {
     return ShadowOutputNamePc;
 }
 static i32 __cdecl Shadow_GetNumOutputs(GIZMO_PC *gizmo) {
@@ -243,39 +157,39 @@ static i32 __cdecl Shadow_Load(void *world_ptr, void *data) {
     }
     return 1;
 }
-ADD_GIZMO_CONFIG_TYPE_PC *__cdecl EdGizShadowMachine_RegisterGizmo(i32 type_id) {
-    static ADD_GIZMO_CONFIG_TYPE_PC addtype;
+ADDGIZMOTYPE_PC *__cdecl EdGizShadowMachine_RegisterGizmo(i32 type_id) {
+    static ADDGIZMOTYPE_PC addtype;
     addtype = Default_ADDGIZMOTYPE;
     addtype.name = "ShadowEditor";
     addtype.prefix = "";
-    addtype.functions.options = 0;
-    addtype.functions.get_max_gizmos = Shadow_GetMaxGizmos;
-    addtype.functions.add_gizmos = Shadow_AddGizmos;
-    addtype.functions.early_update = NULL;
-    addtype.functions.late_update = NULL;
-    addtype.functions.draw = NULL;
-    addtype.functions.panel_draw = NULL;
-    addtype.functions.get_gizmo_name = Shadow_GetGizmoName;
-    addtype.functions.get_output = Shadow_GetOutput;
-    addtype.functions.get_output_name = Shadow_GetOutputName;
-    addtype.functions.get_num_outputs = Shadow_GetNumOutputs;
-    addtype.functions.activate = NULL;
-    addtype.functions.activate_reverse = NULL;
-    addtype.functions.set_visibility = NULL;
-    addtype.functions.get_visibility = NULL;
-    addtype.functions.get_pos = NULL;
-    addtype.functions.using_special = NULL;
-    addtype.functions.bolt_hit_plat = NULL;
-    addtype.functions.get_best_bolt_target = NULL;
-    addtype.functions.bolt_hit = NULL;
-    addtype.functions.allocate_progress_data = NULL;
-    addtype.functions.clear_progress = NULL;
-    addtype.functions.store_progress = NULL;
-    addtype.functions.reset = NULL;
-    addtype.functions.reserve_buffer_space = Shadow_ReserveBufferSpace;
-    addtype.functions.load = Shadow_Load;
-    addtype.functions.post_load = NULL;
-    addtype.functions.add_level_sfx = NULL;
+    addtype.fns.options = 0;
+    addtype.fns.get_max_gizmos_fn = Shadow_GetMaxGizmos;
+    addtype.fns.add_gizmos_fn = Shadow_AddGizmos;
+    addtype.fns.early_update_fn = NULL;
+    addtype.fns.late_update_fn = NULL;
+    addtype.fns.draw_fn = NULL;
+    addtype.fns.panel_draw_fn = NULL;
+    addtype.fns.get_gizmo_name_fn = Shadow_GetGizmoName;
+    addtype.fns.get_output_fn = Shadow_GetOutput;
+    addtype.fns.get_output_name_fn = Shadow_GetOutputName;
+    addtype.fns.get_num_outputs_fn = Shadow_GetNumOutputs;
+    addtype.fns.activate_fn = NULL;
+    addtype.fns.activate_rev_fn = NULL;
+    addtype.fns.set_visibility_fn = NULL;
+    addtype.fns.get_visibility_fn = NULL;
+    addtype.fns.get_pos_fn = NULL;
+    addtype.fns.using_special_fn = NULL;
+    addtype.fns.bolt_hit_plat_fn = NULL;
+    addtype.fns.get_best_bolt_target_fn = NULL;
+    addtype.fns.bolt_hit_fn = NULL;
+    addtype.fns.allocate_progress_data_fn = NULL;
+    addtype.fns.clear_progress_fn = NULL;
+    addtype.fns.store_progress_fn = NULL;
+    addtype.fns.reset_fn = NULL;
+    addtype.fns.reserve_buffer_space_fn = Shadow_ReserveBufferSpace;
+    addtype.fns.load_fn = Shadow_Load;
+    addtype.fns.post_load_fn = NULL;
+    addtype.fns.add_level_sfx_fn = NULL;
     edGizShadow_gizmotype_id = type_id;
     return &addtype;
 }

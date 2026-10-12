@@ -175,7 +175,10 @@ def pair(android, pc):
         # Very different sizes need many shared names (a few x/y/scale names match anything).
         if best and not 0.5 <= pstruct.size / max(android[best[1]].size, 1) <= 2 and len(best[2]) < 8:
             best = None
-        if best and len(best[2]) >= 3:
+        # Small structs have few members to agree on: equal size and every named member but one is enough.
+        small = best and pstruct.size == android[best[1]].size and len(best[2]) >= 2 and len(best[2]) >= sum(
+            1 for f in android[best[1]].fields if not ANDROID_PLACEHOLDER.match(f[2])) - 1
+        if best and (len(best[2]) >= 3 or small):
             result[pkey] = (best[1], offset_name_anchors(android[best[1]], pstruct, best[2]))
     return result
 

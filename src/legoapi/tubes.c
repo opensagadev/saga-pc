@@ -145,91 +145,6 @@ void __cdecl Tube_MoveCode(GAMEOBJECT *object, WORLDINFO *world) {
         return;
     }
 }
-typedef struct gizmo_config_functions_pc_s {
-    i16 options;
-    u16 padding;
-    i32(__cdecl *get_max_gizmos)(void *world);
-    void *add_gizmos;
-    void(__cdecl *early_update)(void *world, void *data, f32 delta_time);
-    void(__cdecl *late_update)(void *world, void *data, f32 delta_time);
-    void(__cdecl *draw)(void *world, void *data, f32 delta_time);
-    void(__cdecl *panel_draw)(void *world, void *data, f32 delta_time);
-    void *get_gizmo_name;
-    void *get_output;
-    void *get_output_name;
-    void *get_num_outputs;
-    void *activate;
-    void *activate_reverse;
-    void *set_visibility;
-    void *get_visibility;
-    void *get_pos;
-    void *using_special;
-    void *bolt_hit_plat;
-    void *get_best_bolt_target;
-    void *bolt_hit;
-    void *(__cdecl *allocate_progress_data)(VARIPTR *buffer, VARIPTR *end);
-    void(__cdecl *clear_progress)(void *world, void *progress);
-    void(__cdecl *store_progress)(void *world, void *data, void *progress);
-    void(__cdecl *reset)(void *world, void *data, void *progress);
-    void *(__cdecl *reserve_buffer_space)(void *world);
-    i32(__cdecl *load)(void *world, void *data);
-    void(__cdecl *post_load)(void *world, void *data);
-    void *add_level_sfx;
-} GIZMO_CONFIG_FUNCTIONS_PC;
-STATIC_ASSERT(sizeof(GIZMO_CONFIG_FUNCTIONS_PC) == 0x70);
-STATIC_ASSERT(offsetof(GIZMO_CONFIG_FUNCTIONS_PC, get_max_gizmos) == 4);
-STATIC_ASSERT(offsetof(GIZMO_CONFIG_FUNCTIONS_PC, early_update) == 0xc);
-STATIC_ASSERT(offsetof(GIZMO_CONFIG_FUNCTIONS_PC, late_update) == 0x10);
-STATIC_ASSERT(offsetof(GIZMO_CONFIG_FUNCTIONS_PC, draw) == 0x14);
-STATIC_ASSERT(offsetof(GIZMO_CONFIG_FUNCTIONS_PC, panel_draw) == 0x18);
-STATIC_ASSERT(offsetof(GIZMO_CONFIG_FUNCTIONS_PC, activate) == 0x2c);
-STATIC_ASSERT(offsetof(GIZMO_CONFIG_FUNCTIONS_PC, activate_reverse) == 0x30);
-STATIC_ASSERT(offsetof(GIZMO_CONFIG_FUNCTIONS_PC, set_visibility) == 0x34);
-STATIC_ASSERT(offsetof(GIZMO_CONFIG_FUNCTIONS_PC, store_progress) == 0x58);
-STATIC_ASSERT(offsetof(GIZMO_CONFIG_FUNCTIONS_PC, reset) == 0x5c);
-STATIC_ASSERT(offsetof(GIZMO_CONFIG_FUNCTIONS_PC, allocate_progress_data) == 0x50);
-STATIC_ASSERT(offsetof(GIZMO_CONFIG_FUNCTIONS_PC, reserve_buffer_space) == 0x60);
-STATIC_ASSERT(offsetof(GIZMO_CONFIG_FUNCTIONS_PC, load) == 0x64);
-STATIC_ASSERT(offsetof(GIZMO_CONFIG_FUNCTIONS_PC, post_load) == 0x68);
-
-STATIC_ASSERT(offsetof(GIZMO_CONFIG_FUNCTIONS_PC, options) == 0x0);
-STATIC_ASSERT(offsetof(GIZMO_CONFIG_FUNCTIONS_PC, get_max_gizmos) == 0x4);
-STATIC_ASSERT(offsetof(GIZMO_CONFIG_FUNCTIONS_PC, add_gizmos) == 0x8);
-STATIC_ASSERT(offsetof(GIZMO_CONFIG_FUNCTIONS_PC, early_update) == 0xc);
-STATIC_ASSERT(offsetof(GIZMO_CONFIG_FUNCTIONS_PC, late_update) == 0x10);
-STATIC_ASSERT(offsetof(GIZMO_CONFIG_FUNCTIONS_PC, draw) == 0x14);
-STATIC_ASSERT(offsetof(GIZMO_CONFIG_FUNCTIONS_PC, panel_draw) == 0x18);
-STATIC_ASSERT(offsetof(GIZMO_CONFIG_FUNCTIONS_PC, get_gizmo_name) == 0x1c);
-STATIC_ASSERT(offsetof(GIZMO_CONFIG_FUNCTIONS_PC, get_output) == 0x20);
-STATIC_ASSERT(offsetof(GIZMO_CONFIG_FUNCTIONS_PC, get_output_name) == 0x24);
-STATIC_ASSERT(offsetof(GIZMO_CONFIG_FUNCTIONS_PC, get_num_outputs) == 0x28);
-STATIC_ASSERT(offsetof(GIZMO_CONFIG_FUNCTIONS_PC, activate) == 0x2c);
-STATIC_ASSERT(offsetof(GIZMO_CONFIG_FUNCTIONS_PC, activate_reverse) == 0x30);
-STATIC_ASSERT(offsetof(GIZMO_CONFIG_FUNCTIONS_PC, set_visibility) == 0x34);
-STATIC_ASSERT(offsetof(GIZMO_CONFIG_FUNCTIONS_PC, get_visibility) == 0x38);
-STATIC_ASSERT(offsetof(GIZMO_CONFIG_FUNCTIONS_PC, get_pos) == 0x3c);
-STATIC_ASSERT(offsetof(GIZMO_CONFIG_FUNCTIONS_PC, using_special) == 0x40);
-STATIC_ASSERT(offsetof(GIZMO_CONFIG_FUNCTIONS_PC, bolt_hit_plat) == 0x44);
-STATIC_ASSERT(offsetof(GIZMO_CONFIG_FUNCTIONS_PC, get_best_bolt_target) == 0x48);
-STATIC_ASSERT(offsetof(GIZMO_CONFIG_FUNCTIONS_PC, bolt_hit) == 0x4c);
-STATIC_ASSERT(offsetof(GIZMO_CONFIG_FUNCTIONS_PC, allocate_progress_data) == 0x50);
-STATIC_ASSERT(offsetof(GIZMO_CONFIG_FUNCTIONS_PC, clear_progress) == 0x54);
-STATIC_ASSERT(offsetof(GIZMO_CONFIG_FUNCTIONS_PC, store_progress) == 0x58);
-STATIC_ASSERT(offsetof(GIZMO_CONFIG_FUNCTIONS_PC, reset) == 0x5c);
-STATIC_ASSERT(offsetof(GIZMO_CONFIG_FUNCTIONS_PC, reserve_buffer_space) == 0x60);
-STATIC_ASSERT(offsetof(GIZMO_CONFIG_FUNCTIONS_PC, load) == 0x64);
-STATIC_ASSERT(offsetof(GIZMO_CONFIG_FUNCTIONS_PC, post_load) == 0x68);
-STATIC_ASSERT(offsetof(GIZMO_CONFIG_FUNCTIONS_PC, add_level_sfx) == 0x6c);
-
-typedef struct add_gizmo_config_type_pc_s {
-    const char *name;
-    char *prefix;
-    GIZMO_CONFIG_FUNCTIONS_PC functions;
-} ADD_GIZMO_CONFIG_TYPE_PC;
-STATIC_ASSERT(sizeof(ADD_GIZMO_CONFIG_TYPE_PC) == 0x78);
-STATIC_ASSERT(offsetof(ADD_GIZMO_CONFIG_TYPE_PC, functions) == 8);
-
-extern ADD_GIZMO_CONFIG_TYPE_PC Default_ADDGIZMOTYPE;
 
 typedef struct tube_callbacks_pc_s {
     char name[16];
@@ -472,39 +387,39 @@ static void __cdecl Tubes_Update(void *world_ptr, void *data, f32 frame_time) {
     }
 }
 
-ADD_GIZMO_CONFIG_TYPE_PC *__cdecl Tubes_RegisterGizmo(i32 type_id) {
-    static ADD_GIZMO_CONFIG_TYPE_PC TubesAddTypePc;
+ADDGIZMOTYPE_PC *__cdecl Tubes_RegisterGizmo(i32 type_id) {
+    static ADDGIZMOTYPE_PC TubesAddTypePc;
     TubesAddTypePc = Default_ADDGIZMOTYPE;
     TubesAddTypePc.name = TubeGizmoNamePc;
     TubesAddTypePc.prefix = "";
-    TubesAddTypePc.functions.options = 8;
-    TubesAddTypePc.functions.get_max_gizmos = Tubes_GetMaxGizmos;
-    TubesAddTypePc.functions.add_gizmos = (void *)Tubes_AddGizmos;
-    TubesAddTypePc.functions.early_update = NULL;
-    TubesAddTypePc.functions.late_update = Tubes_Update;
-    TubesAddTypePc.functions.draw = Tubes_Draw;
-    TubesAddTypePc.functions.panel_draw = NULL;
-    TubesAddTypePc.functions.get_gizmo_name = (void *)Tube_GetGizmoName;
-    TubesAddTypePc.functions.get_output = (void *)Tube_GetOutput;
-    TubesAddTypePc.functions.get_output_name = (void *)Tube_GetOutputName;
-    TubesAddTypePc.functions.get_num_outputs = (void *)Tube_GetNumOutputs;
-    TubesAddTypePc.functions.activate = (void *)Tube_Activate;
-    TubesAddTypePc.functions.activate_reverse = (void *)Tube_ActivateRev;
-    TubesAddTypePc.functions.set_visibility = (void *)Tube_SetVisibility;
-    TubesAddTypePc.functions.get_visibility = NULL;
-    TubesAddTypePc.functions.get_pos = (void *)Tube_GetPos;
-    TubesAddTypePc.functions.using_special = NULL;
-    TubesAddTypePc.functions.bolt_hit_plat = NULL;
-    TubesAddTypePc.functions.get_best_bolt_target = NULL;
-    TubesAddTypePc.functions.bolt_hit = NULL;
-    TubesAddTypePc.functions.allocate_progress_data = Tubes_AllocateProgressData;
-    TubesAddTypePc.functions.clear_progress = Tubes_ClearProgress;
-    TubesAddTypePc.functions.store_progress = Tubes_StoreProgress;
-    TubesAddTypePc.functions.reset = Tubes_Reset;
-    TubesAddTypePc.functions.reserve_buffer_space = Tubes_ReserveBufferSpace;
-    TubesAddTypePc.functions.load = Tubes_Load;
-    TubesAddTypePc.functions.post_load = NULL;
-    TubesAddTypePc.functions.add_level_sfx = NULL;
+    TubesAddTypePc.fns.options = 8;
+    TubesAddTypePc.fns.get_max_gizmos_fn = Tubes_GetMaxGizmos;
+    TubesAddTypePc.fns.add_gizmos_fn = (void *)Tubes_AddGizmos;
+    TubesAddTypePc.fns.early_update_fn = NULL;
+    TubesAddTypePc.fns.late_update_fn = Tubes_Update;
+    TubesAddTypePc.fns.draw_fn = Tubes_Draw;
+    TubesAddTypePc.fns.panel_draw_fn = NULL;
+    TubesAddTypePc.fns.get_gizmo_name_fn = (void *)Tube_GetGizmoName;
+    TubesAddTypePc.fns.get_output_fn = (void *)Tube_GetOutput;
+    TubesAddTypePc.fns.get_output_name_fn = (void *)Tube_GetOutputName;
+    TubesAddTypePc.fns.get_num_outputs_fn = (void *)Tube_GetNumOutputs;
+    TubesAddTypePc.fns.activate_fn = (void *)Tube_Activate;
+    TubesAddTypePc.fns.activate_rev_fn = (void *)Tube_ActivateRev;
+    TubesAddTypePc.fns.set_visibility_fn = (void *)Tube_SetVisibility;
+    TubesAddTypePc.fns.get_visibility_fn = NULL;
+    TubesAddTypePc.fns.get_pos_fn = (void *)Tube_GetPos;
+    TubesAddTypePc.fns.using_special_fn = NULL;
+    TubesAddTypePc.fns.bolt_hit_plat_fn = NULL;
+    TubesAddTypePc.fns.get_best_bolt_target_fn = NULL;
+    TubesAddTypePc.fns.bolt_hit_fn = NULL;
+    TubesAddTypePc.fns.allocate_progress_data_fn = Tubes_AllocateProgressData;
+    TubesAddTypePc.fns.clear_progress_fn = Tubes_ClearProgress;
+    TubesAddTypePc.fns.store_progress_fn = Tubes_StoreProgress;
+    TubesAddTypePc.fns.reset_fn = Tubes_Reset;
+    TubesAddTypePc.fns.reserve_buffer_space_fn = Tubes_ReserveBufferSpace;
+    TubesAddTypePc.fns.load_fn = Tubes_Load;
+    TubesAddTypePc.fns.post_load_fn = NULL;
+    TubesAddTypePc.fns.add_level_sfx_fn = NULL;
     (void)type_id;
     return &TubesAddTypePc;
 }

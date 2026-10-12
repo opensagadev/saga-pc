@@ -82,7 +82,6 @@ STATIC_ASSERT(sizeof(((EDPP_FILE_PARTICLE_PC *)0)->facing_rotation_y) ==
 STATIC_ASSERT(sizeof(((EDPP_FILE_PARTICLE_PC *)0)->render_priority) == 2);
 STATIC_ASSERT(sizeof(((EDPP_FILE_PARTICLE_PC *)0)->dynamic_priority) == 1);
 
-extern void *debkeydata;
 static void UpdateTotalPtls(DEBRIS_INFO_PC *effect) {
     f32 elapsed = 0.0f, active = 0.0f;
     f64 emission;
@@ -116,7 +115,7 @@ static void UpdateTotalPtls(DEBRIS_INFO_PC *effect) {
     for (i = 0; i < 512; ++i) {
         i32 id = edpp_ptls[i].instance_id;
         if (id != -1 && id != 99999) {
-            DEBRISKEY_PC *key = &((DEBRISKEY_PC *)debkeydata)[id];
+            DEBRISKEY_PC *key = &debkeydata[id];
             if (debtab[key->effect_index] == effect)
                 DebReAlloc(key, effect->max_particles);
         }

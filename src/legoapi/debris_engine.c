@@ -344,7 +344,6 @@ void __cdecl DebReAlloc(DEBRISKEY_PC *key, i32 particle_count) {
     }
 }
 
-extern void *debkeydata;
 #define DEBRIS_ENGINE_KEYS_PC ((DEBRISKEY_PC *)debkeydata)
 
 void __cdecl RemoveDebrisEffectFromStack(DEBRISKEY_PC *key) {

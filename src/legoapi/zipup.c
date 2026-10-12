@@ -1115,90 +1115,6 @@ void ZipUps_DrawLines() {
     }
 }
 
-typedef struct gizmo_config_functions_pc_s {
-    i16 options;
-    u16 padding;
-    i32(__cdecl *get_max_gizmos)(void *world);
-    void *add_gizmos;
-    void(__cdecl *early_update)(void *world, void *data, f32 delta_time);
-    void(__cdecl *late_update)(void *world, void *data, f32 delta_time);
-    void(__cdecl *draw)(void *world, void *data, f32 delta_time);
-    void(__cdecl *panel_draw)(void *world, void *data, f32 delta_time);
-    void *get_gizmo_name;
-    void *get_output;
-    void *get_output_name;
-    void *get_num_outputs;
-    void *activate;
-    void *activate_reverse;
-    void *set_visibility;
-    void *get_visibility;
-    void *get_pos;
-    void *using_special;
-    void *bolt_hit_plat;
-    void *get_best_bolt_target;
-    void *bolt_hit;
-    void *(__cdecl *allocate_progress_data)(VARIPTR *buffer, VARIPTR *end);
-    void(__cdecl *clear_progress)(void *world, void *progress);
-    void(__cdecl *store_progress)(void *world, void *data, void *progress);
-    void(__cdecl *reset)(void *world, void *data, void *progress);
-    void *(__cdecl *reserve_buffer_space)(void *world);
-    i32(__cdecl *load)(void *world, void *data);
-    void(__cdecl *post_load)(void *world, void *data);
-    void *add_level_sfx;
-} GIZMO_CONFIG_FUNCTIONS_PC;
-STATIC_ASSERT(sizeof(GIZMO_CONFIG_FUNCTIONS_PC) == 0x70);
-STATIC_ASSERT(offsetof(GIZMO_CONFIG_FUNCTIONS_PC, get_max_gizmos) == 4);
-STATIC_ASSERT(offsetof(GIZMO_CONFIG_FUNCTIONS_PC, early_update) == 0xc);
-STATIC_ASSERT(offsetof(GIZMO_CONFIG_FUNCTIONS_PC, late_update) == 0x10);
-STATIC_ASSERT(offsetof(GIZMO_CONFIG_FUNCTIONS_PC, draw) == 0x14);
-STATIC_ASSERT(offsetof(GIZMO_CONFIG_FUNCTIONS_PC, panel_draw) == 0x18);
-STATIC_ASSERT(offsetof(GIZMO_CONFIG_FUNCTIONS_PC, activate) == 0x2c);
-STATIC_ASSERT(offsetof(GIZMO_CONFIG_FUNCTIONS_PC, activate_reverse) == 0x30);
-STATIC_ASSERT(offsetof(GIZMO_CONFIG_FUNCTIONS_PC, set_visibility) == 0x34);
-STATIC_ASSERT(offsetof(GIZMO_CONFIG_FUNCTIONS_PC, store_progress) == 0x58);
-STATIC_ASSERT(offsetof(GIZMO_CONFIG_FUNCTIONS_PC, reset) == 0x5c);
-STATIC_ASSERT(offsetof(GIZMO_CONFIG_FUNCTIONS_PC, allocate_progress_data) == 0x50);
-STATIC_ASSERT(offsetof(GIZMO_CONFIG_FUNCTIONS_PC, reserve_buffer_space) == 0x60);
-STATIC_ASSERT(offsetof(GIZMO_CONFIG_FUNCTIONS_PC, load) == 0x64);
-STATIC_ASSERT(offsetof(GIZMO_CONFIG_FUNCTIONS_PC, post_load) == 0x68);
-
-STATIC_ASSERT(offsetof(GIZMO_CONFIG_FUNCTIONS_PC, options) == 0x0);
-STATIC_ASSERT(offsetof(GIZMO_CONFIG_FUNCTIONS_PC, get_max_gizmos) == 0x4);
-STATIC_ASSERT(offsetof(GIZMO_CONFIG_FUNCTIONS_PC, add_gizmos) == 0x8);
-STATIC_ASSERT(offsetof(GIZMO_CONFIG_FUNCTIONS_PC, early_update) == 0xc);
-STATIC_ASSERT(offsetof(GIZMO_CONFIG_FUNCTIONS_PC, late_update) == 0x10);
-STATIC_ASSERT(offsetof(GIZMO_CONFIG_FUNCTIONS_PC, draw) == 0x14);
-STATIC_ASSERT(offsetof(GIZMO_CONFIG_FUNCTIONS_PC, panel_draw) == 0x18);
-STATIC_ASSERT(offsetof(GIZMO_CONFIG_FUNCTIONS_PC, get_gizmo_name) == 0x1c);
-STATIC_ASSERT(offsetof(GIZMO_CONFIG_FUNCTIONS_PC, get_output) == 0x20);
-STATIC_ASSERT(offsetof(GIZMO_CONFIG_FUNCTIONS_PC, get_output_name) == 0x24);
-STATIC_ASSERT(offsetof(GIZMO_CONFIG_FUNCTIONS_PC, get_num_outputs) == 0x28);
-STATIC_ASSERT(offsetof(GIZMO_CONFIG_FUNCTIONS_PC, activate) == 0x2c);
-STATIC_ASSERT(offsetof(GIZMO_CONFIG_FUNCTIONS_PC, activate_reverse) == 0x30);
-STATIC_ASSERT(offsetof(GIZMO_CONFIG_FUNCTIONS_PC, set_visibility) == 0x34);
-STATIC_ASSERT(offsetof(GIZMO_CONFIG_FUNCTIONS_PC, get_visibility) == 0x38);
-STATIC_ASSERT(offsetof(GIZMO_CONFIG_FUNCTIONS_PC, get_pos) == 0x3c);
-STATIC_ASSERT(offsetof(GIZMO_CONFIG_FUNCTIONS_PC, using_special) == 0x40);
-STATIC_ASSERT(offsetof(GIZMO_CONFIG_FUNCTIONS_PC, bolt_hit_plat) == 0x44);
-STATIC_ASSERT(offsetof(GIZMO_CONFIG_FUNCTIONS_PC, get_best_bolt_target) == 0x48);
-STATIC_ASSERT(offsetof(GIZMO_CONFIG_FUNCTIONS_PC, bolt_hit) == 0x4c);
-STATIC_ASSERT(offsetof(GIZMO_CONFIG_FUNCTIONS_PC, allocate_progress_data) == 0x50);
-STATIC_ASSERT(offsetof(GIZMO_CONFIG_FUNCTIONS_PC, clear_progress) == 0x54);
-STATIC_ASSERT(offsetof(GIZMO_CONFIG_FUNCTIONS_PC, store_progress) == 0x58);
-STATIC_ASSERT(offsetof(GIZMO_CONFIG_FUNCTIONS_PC, reset) == 0x5c);
-STATIC_ASSERT(offsetof(GIZMO_CONFIG_FUNCTIONS_PC, reserve_buffer_space) == 0x60);
-STATIC_ASSERT(offsetof(GIZMO_CONFIG_FUNCTIONS_PC, load) == 0x64);
-STATIC_ASSERT(offsetof(GIZMO_CONFIG_FUNCTIONS_PC, post_load) == 0x68);
-STATIC_ASSERT(offsetof(GIZMO_CONFIG_FUNCTIONS_PC, add_level_sfx) == 0x6c);
-
-typedef struct add_gizmo_config_type_pc_s {
-    char *name;
-    char *prefix;
-    GIZMO_CONFIG_FUNCTIONS_PC functions;
-} ADD_GIZMO_CONFIG_TYPE_PC;
-STATIC_ASSERT(sizeof(ADD_GIZMO_CONFIG_TYPE_PC) == 0x78);
-STATIC_ASSERT(offsetof(ADD_GIZMO_CONFIG_TYPE_PC, functions) == 8);
-
 static i32 ZipUp_ActivateRev(GIZMO_PC *gizmo, i32 active, i32 query) {
     ZIPUP_PC *zipup;
 
@@ -1290,42 +1206,41 @@ static char *ZipUp_GetOutputName(GIZMO_PC *gizmo, i32 output) {
 static i32 ZipUp_GetNumOutputs(GIZMO_PC *gizmo) {
     return 1;
 }
-extern ADD_GIZMO_CONFIG_TYPE_PC Default_ADDGIZMOTYPE;
 extern char *ZipUpTypeNamePtrPc;
 extern i32 zipup_gizmotype_id;
-static ADD_GIZMO_CONFIG_TYPE_PC ZipUpAddTypePc;
-extern ADD_GIZMO_CONFIG_TYPE_PC *ZipUps_RegisterGizmo(i32 type_id) {
+static ADDGIZMOTYPE_PC ZipUpAddTypePc;
+extern ADDGIZMOTYPE_PC *ZipUps_RegisterGizmo(i32 type_id) {
     ZipUpAddTypePc = Default_ADDGIZMOTYPE;
     ZipUpAddTypePc.name = ZipUpTypeNamePtrPc;
     ZipUpAddTypePc.prefix = "";
-    ZipUpAddTypePc.functions.options = 8;
-    ZipUpAddTypePc.functions.get_max_gizmos = ZipUps_GetMaxGizmos;
-    ZipUpAddTypePc.functions.add_gizmos = (void *)ZipUps_AddGizmos;
-    ZipUpAddTypePc.functions.early_update = NULL;
-    ZipUpAddTypePc.functions.late_update = (void(__cdecl *)(void *, void *, f32))ZipUps_Update;
-    ZipUpAddTypePc.functions.draw = (void(__cdecl *)(void *, void *, f32))ZipUps_Draw;
-    ZipUpAddTypePc.functions.panel_draw = NULL;
-    ZipUpAddTypePc.functions.get_gizmo_name = (void *)ZipUp_GetGizmoName;
-    ZipUpAddTypePc.functions.get_output = (void *)ZipUp_GetOutput;
-    ZipUpAddTypePc.functions.get_output_name = (void *)ZipUp_GetOutputName;
-    ZipUpAddTypePc.functions.get_num_outputs = (void *)ZipUp_GetNumOutputs;
-    ZipUpAddTypePc.functions.activate = (void *)ZipUp_Activate;
-    ZipUpAddTypePc.functions.activate_reverse = (void *)ZipUp_ActivateRev;
-    ZipUpAddTypePc.functions.set_visibility = (void *)ZipUp_SetVisibility;
-    ZipUpAddTypePc.functions.get_visibility = NULL;
-    ZipUpAddTypePc.functions.get_pos = NULL;
-    ZipUpAddTypePc.functions.using_special = NULL;
-    ZipUpAddTypePc.functions.bolt_hit_plat = NULL;
-    ZipUpAddTypePc.functions.get_best_bolt_target = NULL;
-    ZipUpAddTypePc.functions.bolt_hit = NULL;
-    ZipUpAddTypePc.functions.allocate_progress_data = ZipUps_AllocateProgressData;
-    ZipUpAddTypePc.functions.clear_progress = (void(__cdecl *)(void *, void *))ZipUps_ClearProgress;
-    ZipUpAddTypePc.functions.store_progress = (void(__cdecl *)(void *, void *, void *))ZipUps_StoreProgress;
-    ZipUpAddTypePc.functions.reset = (void(__cdecl *)(void *, void *, void *))ZipUps_Reset;
-    ZipUpAddTypePc.functions.reserve_buffer_space = (void *(__cdecl *)(void *))ZipUps_ReserveBufferSpace;
-    ZipUpAddTypePc.functions.load = (i32(__cdecl *)(void *, void *))ZipUps_Load;
-    ZipUpAddTypePc.functions.post_load = NULL;
-    ZipUpAddTypePc.functions.add_level_sfx = NULL;
+    ZipUpAddTypePc.fns.options = 8;
+    ZipUpAddTypePc.fns.get_max_gizmos_fn = ZipUps_GetMaxGizmos;
+    ZipUpAddTypePc.fns.add_gizmos_fn = (void *)ZipUps_AddGizmos;
+    ZipUpAddTypePc.fns.early_update_fn = NULL;
+    ZipUpAddTypePc.fns.late_update_fn = (void(__cdecl *)(void *, void *, f32))ZipUps_Update;
+    ZipUpAddTypePc.fns.draw_fn = (void(__cdecl *)(void *, void *, f32))ZipUps_Draw;
+    ZipUpAddTypePc.fns.panel_draw_fn = NULL;
+    ZipUpAddTypePc.fns.get_gizmo_name_fn = (void *)ZipUp_GetGizmoName;
+    ZipUpAddTypePc.fns.get_output_fn = (void *)ZipUp_GetOutput;
+    ZipUpAddTypePc.fns.get_output_name_fn = (void *)ZipUp_GetOutputName;
+    ZipUpAddTypePc.fns.get_num_outputs_fn = (void *)ZipUp_GetNumOutputs;
+    ZipUpAddTypePc.fns.activate_fn = (void *)ZipUp_Activate;
+    ZipUpAddTypePc.fns.activate_rev_fn = (void *)ZipUp_ActivateRev;
+    ZipUpAddTypePc.fns.set_visibility_fn = (void *)ZipUp_SetVisibility;
+    ZipUpAddTypePc.fns.get_visibility_fn = NULL;
+    ZipUpAddTypePc.fns.get_pos_fn = NULL;
+    ZipUpAddTypePc.fns.using_special_fn = NULL;
+    ZipUpAddTypePc.fns.bolt_hit_plat_fn = NULL;
+    ZipUpAddTypePc.fns.get_best_bolt_target_fn = NULL;
+    ZipUpAddTypePc.fns.bolt_hit_fn = NULL;
+    ZipUpAddTypePc.fns.allocate_progress_data_fn = ZipUps_AllocateProgressData;
+    ZipUpAddTypePc.fns.clear_progress_fn = (void(__cdecl *)(void *, void *))ZipUps_ClearProgress;
+    ZipUpAddTypePc.fns.store_progress_fn = (void(__cdecl *)(void *, void *, void *))ZipUps_StoreProgress;
+    ZipUpAddTypePc.fns.reset_fn = (void(__cdecl *)(void *, void *, void *))ZipUps_Reset;
+    ZipUpAddTypePc.fns.reserve_buffer_space_fn = (void *(__cdecl *)(void *))ZipUps_ReserveBufferSpace;
+    ZipUpAddTypePc.fns.load_fn = (i32(__cdecl *)(void *, void *))ZipUps_Load;
+    ZipUpAddTypePc.fns.post_load_fn = NULL;
+    ZipUpAddTypePc.fns.add_level_sfx_fn = NULL;
     zipup_gizmotype_id = type_id;
     return &ZipUpAddTypePc;
 }

@@ -850,7 +850,7 @@ address    , symbol                                                         , si
 0x491010,_Lever_Reset,284,
 0x491130,_Lever_Activate,59,
 0x491170,_Levers_Reset,207,
-0x491240,_Levers_RegisterGizmo,288,struct add_gizmo_config_type_pc_s * __cdecl(i32)
+0x491240,_Levers_RegisterGizmo,288,struct addgizmotype_pc_s * __cdecl(i32)
 0x491380,_LSW_Hub_InitAI,481,
 0x4915c0,_Hub_Outside,40,i32 __cdecl(void)
 0x491620,_Hub_MakeListCharactersAvailable,311,
@@ -1265,7 +1265,7 @@ address    , symbol                                                         , si
 0x4d76a0,_ZipUp_GetOutput,24,
 0x4d76c0,_ZipUp_GetOutputName,6,
 0x4d76d0,_ZipUp_GetNumOutputs,6,
-0x4d76e0,_ZipUps_RegisterGizmo,288,struct add_gizmo_config_type_pc_s *__cdecl(i32)
+0x4d76e0,_ZipUps_RegisterGizmo,288,struct addgizmotype_pc_s *__cdecl(i32)
 0x4d7800,_InitRopeMtl,300,"void __cdecl(char *,VARIPTR *,VARIPTR *)"
 0x4d7930,_DrawRopeSingle,1675,"void __cdecl(NUVEC *,NUVEC *,f32,NUMTL *,f32,f32,f32,f32)"
 0x4d7fc0,_ZipUps_DrawLines,453,void __cdecl(void)
@@ -3609,7 +3609,7 @@ address    , symbol                                                         , si
 0x5a7210,?Push_StoreProgress@@YAXPAX00@Z,458,
 0x5a73e0,?edpush_Load@@YAHPAX0@Z,734,
 0x5a76c0,?Pushblocks_BoltHitPlat@@YAHPAX0PAUbolt_s@@PAE@Z,402,
-0x5a7860,?Push_RegisterGizmo@@YAPAUadd_gizmo_config_type_pc_s@@H@Z,278,
+0x5a7860,?Push_RegisterGizmo@@YAPAUaddgizmotype_pc_s@@H@Z,278,
 0x5a7a00,_GizmoPushBlockInitAndReset,1634,
 0x5a8090,_Particles_Load,188,"void __cdecl(WORLDINFO *,char **,i32,i32)"
 0x5a8150,_Particles_LoadAreaPage,48,
@@ -15921,7 +15921,7 @@ address    , symbol                                                         , si
 0x879380,_PowerUp_PanelYRot,,u16[2]
 0x879384,_coinimpactwait,,f32
 0x879488,_GrabCurrentPc,,
-0x879490,?HatMachineAddTypePc@?1??HatMachine_RegisterGizmo@@9@4Uadd_gizmo_config_type_pc_s@@A,,ADD_GIZMO_CONFIG_TYPE_PC
+0x879490,?HatMachineAddTypePc@?1??HatMachine_RegisterGizmo@@9@4Uaddgizmotype_pc_s@@A,,ADD_GIZMO_CONFIG_TYPE_PC
 0x00879508 , _Hub_PadAngle                                                  ,       , u16[2]
 0x879528,_HubEpisodeTimePc,,f32
 0x87952c,_bonusmodearcade,,i32
@@ -18029,7 +18029,7 @@ address    , symbol                                                         , si
 0x0095deb4 , _RunOutOfPosTabSpacePc                                         ,       ,
 0x95dec0,_CanPushBlocksFn,,u32 (__cdecl *)(GAMEOBJECT *)
 0x95dec4,_PushBlockOverlapShrinkPc,,f32
-0x95dec8,?addtype@?1??Push_RegisterGizmo@@YAPAUadd_gizmo_config_type_pc_s@@H@Z@4U2@A,,
+0x95dec8,?addtype@?1??Push_RegisterGizmo@@YAPAUaddgizmotype_pc_s@@H@Z@4U2@A,,
 0x0095df40 , _CharPivot                                                     , 4     , struct CHARPIVOT_PC *
 0x95df44,_PlayerItemTypePc,,PLAYER_ITEM_TYPE_RESET_PC*
 0x95df48,_PlayerItemTypeCountPc,,i32

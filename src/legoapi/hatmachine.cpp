@@ -236,90 +236,6 @@ extern "C" void __cdecl HatMachine_MoveCode(WORLDINFO *world, GAMEOBJECT *object
     object->grapple = NULL;
 }
 
-typedef struct gizmo_config_functions_pc_s {
-    i16 options;
-    u16 padding;
-    i32(__cdecl *get_max_gizmos)(void *world);
-    void *add_gizmos;
-    void(__cdecl *early_update)(void *world, void *data, f32 delta_time);
-    void(__cdecl *late_update)(void *world, void *data, f32 delta_time);
-    void(__cdecl *draw)(void *world, void *data, f32 delta_time);
-    void(__cdecl *panel_draw)(void *world, void *data, f32 delta_time);
-    void *get_gizmo_name;
-    void *get_output;
-    void *get_output_name;
-    void *get_num_outputs;
-    void *activate;
-    void *activate_reverse;
-    void *set_visibility;
-    void *get_visibility;
-    void *get_pos;
-    void *using_special;
-    void *bolt_hit_plat;
-    void *get_best_bolt_target;
-    void *bolt_hit;
-    void *(__cdecl *allocate_progress_data)(VARIPTR *buffer, VARIPTR *end);
-    void(__cdecl *clear_progress)(void *world, void *progress);
-    void(__cdecl *store_progress)(void *world, void *data, void *progress);
-    void(__cdecl *reset)(void *world, void *data, void *progress);
-    void *(__cdecl *reserve_buffer_space)(void *world);
-    i32(__cdecl *load)(void *world, void *data);
-    void(__cdecl *post_load)(void *world, void *data);
-    void *add_level_sfx;
-} GIZMO_CONFIG_FUNCTIONS_PC;
-STATIC_ASSERT(sizeof(GIZMO_CONFIG_FUNCTIONS_PC) == 0x70);
-STATIC_ASSERT(offsetof(GIZMO_CONFIG_FUNCTIONS_PC, get_max_gizmos) == 4);
-STATIC_ASSERT(offsetof(GIZMO_CONFIG_FUNCTIONS_PC, early_update) == 0xc);
-STATIC_ASSERT(offsetof(GIZMO_CONFIG_FUNCTIONS_PC, late_update) == 0x10);
-STATIC_ASSERT(offsetof(GIZMO_CONFIG_FUNCTIONS_PC, draw) == 0x14);
-STATIC_ASSERT(offsetof(GIZMO_CONFIG_FUNCTIONS_PC, panel_draw) == 0x18);
-STATIC_ASSERT(offsetof(GIZMO_CONFIG_FUNCTIONS_PC, activate) == 0x2c);
-STATIC_ASSERT(offsetof(GIZMO_CONFIG_FUNCTIONS_PC, activate_reverse) == 0x30);
-STATIC_ASSERT(offsetof(GIZMO_CONFIG_FUNCTIONS_PC, set_visibility) == 0x34);
-STATIC_ASSERT(offsetof(GIZMO_CONFIG_FUNCTIONS_PC, store_progress) == 0x58);
-STATIC_ASSERT(offsetof(GIZMO_CONFIG_FUNCTIONS_PC, reset) == 0x5c);
-STATIC_ASSERT(offsetof(GIZMO_CONFIG_FUNCTIONS_PC, allocate_progress_data) == 0x50);
-STATIC_ASSERT(offsetof(GIZMO_CONFIG_FUNCTIONS_PC, reserve_buffer_space) == 0x60);
-STATIC_ASSERT(offsetof(GIZMO_CONFIG_FUNCTIONS_PC, load) == 0x64);
-STATIC_ASSERT(offsetof(GIZMO_CONFIG_FUNCTIONS_PC, post_load) == 0x68);
-
-STATIC_ASSERT(offsetof(GIZMO_CONFIG_FUNCTIONS_PC, options) == 0x0);
-STATIC_ASSERT(offsetof(GIZMO_CONFIG_FUNCTIONS_PC, get_max_gizmos) == 0x4);
-STATIC_ASSERT(offsetof(GIZMO_CONFIG_FUNCTIONS_PC, add_gizmos) == 0x8);
-STATIC_ASSERT(offsetof(GIZMO_CONFIG_FUNCTIONS_PC, early_update) == 0xc);
-STATIC_ASSERT(offsetof(GIZMO_CONFIG_FUNCTIONS_PC, late_update) == 0x10);
-STATIC_ASSERT(offsetof(GIZMO_CONFIG_FUNCTIONS_PC, draw) == 0x14);
-STATIC_ASSERT(offsetof(GIZMO_CONFIG_FUNCTIONS_PC, panel_draw) == 0x18);
-STATIC_ASSERT(offsetof(GIZMO_CONFIG_FUNCTIONS_PC, get_gizmo_name) == 0x1c);
-STATIC_ASSERT(offsetof(GIZMO_CONFIG_FUNCTIONS_PC, get_output) == 0x20);
-STATIC_ASSERT(offsetof(GIZMO_CONFIG_FUNCTIONS_PC, get_output_name) == 0x24);
-STATIC_ASSERT(offsetof(GIZMO_CONFIG_FUNCTIONS_PC, get_num_outputs) == 0x28);
-STATIC_ASSERT(offsetof(GIZMO_CONFIG_FUNCTIONS_PC, activate) == 0x2c);
-STATIC_ASSERT(offsetof(GIZMO_CONFIG_FUNCTIONS_PC, activate_reverse) == 0x30);
-STATIC_ASSERT(offsetof(GIZMO_CONFIG_FUNCTIONS_PC, set_visibility) == 0x34);
-STATIC_ASSERT(offsetof(GIZMO_CONFIG_FUNCTIONS_PC, get_visibility) == 0x38);
-STATIC_ASSERT(offsetof(GIZMO_CONFIG_FUNCTIONS_PC, get_pos) == 0x3c);
-STATIC_ASSERT(offsetof(GIZMO_CONFIG_FUNCTIONS_PC, using_special) == 0x40);
-STATIC_ASSERT(offsetof(GIZMO_CONFIG_FUNCTIONS_PC, bolt_hit_plat) == 0x44);
-STATIC_ASSERT(offsetof(GIZMO_CONFIG_FUNCTIONS_PC, get_best_bolt_target) == 0x48);
-STATIC_ASSERT(offsetof(GIZMO_CONFIG_FUNCTIONS_PC, bolt_hit) == 0x4c);
-STATIC_ASSERT(offsetof(GIZMO_CONFIG_FUNCTIONS_PC, allocate_progress_data) == 0x50);
-STATIC_ASSERT(offsetof(GIZMO_CONFIG_FUNCTIONS_PC, clear_progress) == 0x54);
-STATIC_ASSERT(offsetof(GIZMO_CONFIG_FUNCTIONS_PC, store_progress) == 0x58);
-STATIC_ASSERT(offsetof(GIZMO_CONFIG_FUNCTIONS_PC, reset) == 0x5c);
-STATIC_ASSERT(offsetof(GIZMO_CONFIG_FUNCTIONS_PC, reserve_buffer_space) == 0x60);
-STATIC_ASSERT(offsetof(GIZMO_CONFIG_FUNCTIONS_PC, load) == 0x64);
-STATIC_ASSERT(offsetof(GIZMO_CONFIG_FUNCTIONS_PC, post_load) == 0x68);
-STATIC_ASSERT(offsetof(GIZMO_CONFIG_FUNCTIONS_PC, add_level_sfx) == 0x6c);
-
-typedef struct add_gizmo_config_type_pc_s {
-    char *name;
-    char *prefix;
-    GIZMO_CONFIG_FUNCTIONS_PC functions;
-} ADD_GIZMO_CONFIG_TYPE_PC;
-STATIC_ASSERT(sizeof(ADD_GIZMO_CONFIG_TYPE_PC) == 0x78);
-STATIC_ASSERT(offsetof(ADD_GIZMO_CONFIG_TYPE_PC, functions) == 8);
-
 struct HATMACHINE_PROGRESS_PC {
     i32 preserved_state;
     u32 enabled_mask, visible_mask;
@@ -334,7 +250,7 @@ STATIC_ASSERT(offsetof(HATMACHINE_PC, terrain_pitch) == 0x7c);
 STATIC_ASSERT(offsetof(HATMACHINE_PC, terrain_roll) == 0x7e);
 STATIC_ASSERT(offsetof(HATMACHINE_PC, hat_delay) == 0x84);
 STATIC_ASSERT(offsetof(HATMACHINE_PC, animation_time) == 0x94);
-extern "C" ADD_GIZMO_CONFIG_TYPE_PC Default_ADDGIZMOTYPE;
+extern "C" ADDGIZMOTYPE_PC Default_ADDGIZMOTYPE;
 extern "C" i32 hatmachine_gizmotype_id;
 extern "C" void *__cdecl GizmoBufferAlloc(VARIPTR *, VARIPTR *, i32);
 // Genuine Draw callback is retained as an unresolved source dependency until its full body is transferred.
@@ -552,39 +468,39 @@ extern "C" {
         }
     }
 }
-extern "C" ADD_GIZMO_CONFIG_TYPE_PC *HatMachine_RegisterGizmo(i32 type_id) {
-    static ADD_GIZMO_CONFIG_TYPE_PC HatMachineAddTypePc;
+extern "C" ADDGIZMOTYPE_PC *HatMachine_RegisterGizmo(i32 type_id) {
+    static ADDGIZMOTYPE_PC HatMachineAddTypePc;
     HatMachineAddTypePc = Default_ADDGIZMOTYPE;
     HatMachineAddTypePc.name = (char *)"HatMachine";
     HatMachineAddTypePc.prefix = (char *)"";
-    HatMachineAddTypePc.functions.options = 12;
-    HatMachineAddTypePc.functions.get_max_gizmos = HatMachine_GetMaxGizmos;
-    HatMachineAddTypePc.functions.add_gizmos = (void *)HatMachine_AddGizmos;
-    HatMachineAddTypePc.functions.early_update = NULL;
-    HatMachineAddTypePc.functions.late_update = HatMachine_Update;
-    HatMachineAddTypePc.functions.draw = HatMachine_Draw;
-    HatMachineAddTypePc.functions.panel_draw = NULL;
-    HatMachineAddTypePc.functions.get_gizmo_name = (void *)HatMachine_GetGizmoName;
-    HatMachineAddTypePc.functions.get_output = (void *)HatMachine_GetOutput;
-    HatMachineAddTypePc.functions.get_output_name = (void *)HatMachine_GetOutputName;
-    HatMachineAddTypePc.functions.get_num_outputs = (void *)HatMachine_GetNumOutputs;
-    HatMachineAddTypePc.functions.activate = (void *)HatMachine_Activate;
-    HatMachineAddTypePc.functions.activate_reverse = NULL;
-    HatMachineAddTypePc.functions.set_visibility = (void *)HatMachine_SetVisibility;
-    HatMachineAddTypePc.functions.get_visibility = NULL;
-    HatMachineAddTypePc.functions.get_pos = NULL;
-    HatMachineAddTypePc.functions.using_special = NULL;
-    HatMachineAddTypePc.functions.bolt_hit_plat = NULL;
-    HatMachineAddTypePc.functions.get_best_bolt_target = NULL;
-    HatMachineAddTypePc.functions.bolt_hit = NULL;
-    HatMachineAddTypePc.functions.allocate_progress_data = HatMachines_AllocateProgressData;
-    HatMachineAddTypePc.functions.clear_progress = HatMachines_ClearProgress;
-    HatMachineAddTypePc.functions.store_progress = HatMachines_StoreProgress;
-    HatMachineAddTypePc.functions.reset = HatMachines_Reset;
-    HatMachineAddTypePc.functions.reserve_buffer_space = HatMachines_ReserveBufferSpace;
-    HatMachineAddTypePc.functions.load = HatMachine_Load;
-    HatMachineAddTypePc.functions.post_load = NULL;
-    HatMachineAddTypePc.functions.add_level_sfx = NULL;
+    HatMachineAddTypePc.fns.options = 12;
+    HatMachineAddTypePc.fns.get_max_gizmos_fn = HatMachine_GetMaxGizmos;
+    HatMachineAddTypePc.fns.add_gizmos_fn = (void *)HatMachine_AddGizmos;
+    HatMachineAddTypePc.fns.early_update_fn = NULL;
+    HatMachineAddTypePc.fns.late_update_fn = HatMachine_Update;
+    HatMachineAddTypePc.fns.draw_fn = HatMachine_Draw;
+    HatMachineAddTypePc.fns.panel_draw_fn = NULL;
+    HatMachineAddTypePc.fns.get_gizmo_name_fn = (char *(__cdecl *)(struct gizmo_pc_s *))HatMachine_GetGizmoName;
+    HatMachineAddTypePc.fns.get_output_fn = (i32(__cdecl *)(struct gizmo_pc_s *, i32, i32))HatMachine_GetOutput;
+    HatMachineAddTypePc.fns.get_output_name_fn = (char *(__cdecl *)(struct gizmo_pc_s *, i32))HatMachine_GetOutputName;
+    HatMachineAddTypePc.fns.get_num_outputs_fn = (void *)HatMachine_GetNumOutputs;
+    HatMachineAddTypePc.fns.activate_fn = (void(__cdecl *)(struct gizmo_pc_s *, i32))HatMachine_Activate;
+    HatMachineAddTypePc.fns.activate_rev_fn = NULL;
+    HatMachineAddTypePc.fns.set_visibility_fn = (void(__cdecl *)(struct gizmo_pc_s *, i32))HatMachine_SetVisibility;
+    HatMachineAddTypePc.fns.get_visibility_fn = NULL;
+    HatMachineAddTypePc.fns.get_pos_fn = NULL;
+    HatMachineAddTypePc.fns.using_special_fn = NULL;
+    HatMachineAddTypePc.fns.bolt_hit_plat_fn = NULL;
+    HatMachineAddTypePc.fns.get_best_bolt_target_fn = NULL;
+    HatMachineAddTypePc.fns.bolt_hit_fn = NULL;
+    HatMachineAddTypePc.fns.allocate_progress_data_fn = HatMachines_AllocateProgressData;
+    HatMachineAddTypePc.fns.clear_progress_fn = HatMachines_ClearProgress;
+    HatMachineAddTypePc.fns.store_progress_fn = HatMachines_StoreProgress;
+    HatMachineAddTypePc.fns.reset_fn = HatMachines_Reset;
+    HatMachineAddTypePc.fns.reserve_buffer_space_fn = HatMachines_ReserveBufferSpace;
+    HatMachineAddTypePc.fns.load_fn = HatMachine_Load;
+    HatMachineAddTypePc.fns.post_load_fn = NULL;
+    HatMachineAddTypePc.fns.add_level_sfx_fn = NULL;
     hatmachine_gizmotype_id = type_id;
     return &HatMachineAddTypePc;
 }

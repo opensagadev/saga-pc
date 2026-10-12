@@ -470,126 +470,6 @@ void __cdecl ResetGizFlow(GIZFLOW_PC *system, GIZFLOWPROGRESS_PC *progress) {
     }
 }
 
-typedef struct gizmo_config_functions_pc_s {
-    i16 options;
-    u16 padding;
-    i32(__cdecl *get_max_gizmos)(void *world);
-    void *add_gizmos;
-    void(__cdecl *early_update)(void *world, void *data, f32 delta_time);
-    void(__cdecl *late_update)(void *world, void *data, f32 delta_time);
-    void(__cdecl *draw)(void *world, void *data, f32 delta_time);
-    void(__cdecl *panel_draw)(void *world, void *data, f32 delta_time);
-    void *get_gizmo_name;
-    void *get_output;
-    void *get_output_name;
-    void *get_num_outputs;
-    void *activate;
-    void *activate_reverse;
-    void *set_visibility;
-    void *get_visibility;
-    void *get_pos;
-    void *using_special;
-    void *bolt_hit_plat;
-    void *get_best_bolt_target;
-    void *bolt_hit;
-    void *(__cdecl *allocate_progress_data)(VARIPTR *buffer, VARIPTR *end);
-    void(__cdecl *clear_progress)(void *world, void *progress);
-    void(__cdecl *store_progress)(void *world, void *data, void *progress);
-    void(__cdecl *reset)(void *world, void *data, void *progress);
-    void *(__cdecl *reserve_buffer_space)(void *world);
-    i32(__cdecl *load)(void *world, void *data);
-    void(__cdecl *post_load)(void *world, void *data);
-    void *add_level_sfx;
-} GIZMO_CONFIG_FUNCTIONS_PC;
-STATIC_ASSERT(sizeof(GIZMO_CONFIG_FUNCTIONS_PC) == 0x70);
-STATIC_ASSERT(offsetof(GIZMO_CONFIG_FUNCTIONS_PC, get_max_gizmos) == 4);
-STATIC_ASSERT(offsetof(GIZMO_CONFIG_FUNCTIONS_PC, early_update) == 0xc);
-STATIC_ASSERT(offsetof(GIZMO_CONFIG_FUNCTIONS_PC, late_update) == 0x10);
-STATIC_ASSERT(offsetof(GIZMO_CONFIG_FUNCTIONS_PC, draw) == 0x14);
-STATIC_ASSERT(offsetof(GIZMO_CONFIG_FUNCTIONS_PC, panel_draw) == 0x18);
-STATIC_ASSERT(offsetof(GIZMO_CONFIG_FUNCTIONS_PC, activate) == 0x2c);
-STATIC_ASSERT(offsetof(GIZMO_CONFIG_FUNCTIONS_PC, activate_reverse) == 0x30);
-STATIC_ASSERT(offsetof(GIZMO_CONFIG_FUNCTIONS_PC, set_visibility) == 0x34);
-STATIC_ASSERT(offsetof(GIZMO_CONFIG_FUNCTIONS_PC, store_progress) == 0x58);
-STATIC_ASSERT(offsetof(GIZMO_CONFIG_FUNCTIONS_PC, reset) == 0x5c);
-STATIC_ASSERT(offsetof(GIZMO_CONFIG_FUNCTIONS_PC, allocate_progress_data) == 0x50);
-STATIC_ASSERT(offsetof(GIZMO_CONFIG_FUNCTIONS_PC, reserve_buffer_space) == 0x60);
-STATIC_ASSERT(offsetof(GIZMO_CONFIG_FUNCTIONS_PC, load) == 0x64);
-STATIC_ASSERT(offsetof(GIZMO_CONFIG_FUNCTIONS_PC, post_load) == 0x68);
-
-STATIC_ASSERT(offsetof(GIZMO_CONFIG_FUNCTIONS_PC, options) == 0x0);
-STATIC_ASSERT(offsetof(GIZMO_CONFIG_FUNCTIONS_PC, get_max_gizmos) == 0x4);
-STATIC_ASSERT(offsetof(GIZMO_CONFIG_FUNCTIONS_PC, add_gizmos) == 0x8);
-STATIC_ASSERT(offsetof(GIZMO_CONFIG_FUNCTIONS_PC, early_update) == 0xc);
-STATIC_ASSERT(offsetof(GIZMO_CONFIG_FUNCTIONS_PC, late_update) == 0x10);
-STATIC_ASSERT(offsetof(GIZMO_CONFIG_FUNCTIONS_PC, draw) == 0x14);
-STATIC_ASSERT(offsetof(GIZMO_CONFIG_FUNCTIONS_PC, panel_draw) == 0x18);
-STATIC_ASSERT(offsetof(GIZMO_CONFIG_FUNCTIONS_PC, get_gizmo_name) == 0x1c);
-STATIC_ASSERT(offsetof(GIZMO_CONFIG_FUNCTIONS_PC, get_output) == 0x20);
-STATIC_ASSERT(offsetof(GIZMO_CONFIG_FUNCTIONS_PC, get_output_name) == 0x24);
-STATIC_ASSERT(offsetof(GIZMO_CONFIG_FUNCTIONS_PC, get_num_outputs) == 0x28);
-STATIC_ASSERT(offsetof(GIZMO_CONFIG_FUNCTIONS_PC, activate) == 0x2c);
-STATIC_ASSERT(offsetof(GIZMO_CONFIG_FUNCTIONS_PC, activate_reverse) == 0x30);
-STATIC_ASSERT(offsetof(GIZMO_CONFIG_FUNCTIONS_PC, set_visibility) == 0x34);
-STATIC_ASSERT(offsetof(GIZMO_CONFIG_FUNCTIONS_PC, get_visibility) == 0x38);
-STATIC_ASSERT(offsetof(GIZMO_CONFIG_FUNCTIONS_PC, get_pos) == 0x3c);
-STATIC_ASSERT(offsetof(GIZMO_CONFIG_FUNCTIONS_PC, using_special) == 0x40);
-STATIC_ASSERT(offsetof(GIZMO_CONFIG_FUNCTIONS_PC, bolt_hit_plat) == 0x44);
-STATIC_ASSERT(offsetof(GIZMO_CONFIG_FUNCTIONS_PC, get_best_bolt_target) == 0x48);
-STATIC_ASSERT(offsetof(GIZMO_CONFIG_FUNCTIONS_PC, bolt_hit) == 0x4c);
-STATIC_ASSERT(offsetof(GIZMO_CONFIG_FUNCTIONS_PC, allocate_progress_data) == 0x50);
-STATIC_ASSERT(offsetof(GIZMO_CONFIG_FUNCTIONS_PC, clear_progress) == 0x54);
-STATIC_ASSERT(offsetof(GIZMO_CONFIG_FUNCTIONS_PC, store_progress) == 0x58);
-STATIC_ASSERT(offsetof(GIZMO_CONFIG_FUNCTIONS_PC, reset) == 0x5c);
-STATIC_ASSERT(offsetof(GIZMO_CONFIG_FUNCTIONS_PC, reserve_buffer_space) == 0x60);
-STATIC_ASSERT(offsetof(GIZMO_CONFIG_FUNCTIONS_PC, load) == 0x64);
-STATIC_ASSERT(offsetof(GIZMO_CONFIG_FUNCTIONS_PC, post_load) == 0x68);
-STATIC_ASSERT(offsetof(GIZMO_CONFIG_FUNCTIONS_PC, add_level_sfx) == 0x6c);
-
-typedef struct gizmo_config_type_pc_s {
-    char name[32];
-    char prefix[8];
-    GIZMO_CONFIG_FUNCTIONS_PC functions;
-    void **progress;
-} GIZMO_CONFIG_TYPE_PC;
-STATIC_ASSERT(sizeof(GIZMO_CONFIG_TYPE_PC) == 0x9c);
-STATIC_ASSERT(offsetof(GIZMO_CONFIG_TYPE_PC, name) == 0);
-STATIC_ASSERT(offsetof(GIZMO_CONFIG_TYPE_PC, prefix) == 0x20);
-STATIC_ASSERT(offsetof(GIZMO_CONFIG_TYPE_PC, functions) == 0x28);
-STATIC_ASSERT(offsetof(GIZMO_CONFIG_TYPE_PC, progress) == 0x98);
-
-typedef struct gizmo_config_types_pc_s {
-    i32 count;
-    i32 max_levels;
-    GIZMO_CONFIG_TYPE_PC *types;
-} GIZMO_CONFIG_TYPES_PC;
-STATIC_ASSERT(sizeof(GIZMO_CONFIG_TYPES_PC) == 0xc);
-STATIC_ASSERT(offsetof(GIZMO_CONFIG_TYPES_PC, count) == 0);
-STATIC_ASSERT(offsetof(GIZMO_CONFIG_TYPES_PC, max_levels) == 4);
-STATIC_ASSERT(offsetof(GIZMO_CONFIG_TYPES_PC, types) == 8);
-
-typedef struct gizmo_config_set_pc_s {
-    GIZMO_CONFIG_TYPE_PC *type;
-    i32 count;
-    i32 capacity;
-    GIZMO_PC *gizmos;
-    void *data;
-} GIZMO_CONFIG_SET_PC;
-STATIC_ASSERT(sizeof(GIZMO_CONFIG_SET_PC) == 0x14);
-STATIC_ASSERT(offsetof(GIZMO_CONFIG_SET_PC, capacity) == 8);
-STATIC_ASSERT(offsetof(GIZMO_CONFIG_SET_PC, data) == 0x10);
-
-typedef struct gizmo_config_system_pc_s {
-    GIZMO_CONFIG_SET_PC *sets;
-    char *error_log;
-    u16 flags;
-    u16 padding;
-} GIZMO_CONFIG_SYSTEM_PC;
-STATIC_ASSERT(sizeof(GIZMO_CONFIG_SYSTEM_PC) == 0xc);
-STATIC_ASSERT(offsetof(GIZMO_CONFIG_SYSTEM_PC, sets) == 0);
-STATIC_ASSERT(offsetof(GIZMO_CONFIG_SYSTEM_PC, error_log) == 4);
-STATIC_ASSERT(offsetof(GIZMO_CONFIG_SYSTEM_PC, flags) == 8);
-
 void *__cdecl GizmoBufferAlloc(VARIPTR *, VARIPTR *, i32);
 i32 __cdecl GizmoGetTypeIDByName(void *, char *);
 
@@ -732,8 +612,7 @@ static void GizFlowConfigGizmoPc(NUFPAR_PC *parser) {
     NuFParPopCom(parser);
     if (load_gizmotype < 0 || NuStrLen(load_gizmoname) == 0)
         return;
-    name_size =
-        NuStrLen(load_gizmoname) + NuStrLen(((GIZMO_CONFIG_TYPES_PC *)gizmotypes)->types[load_gizmotype].prefix) + 1;
+    name_size = NuStrLen(load_gizmoname) + NuStrLen(((GIZMOTYPES_PC *)gizmotypes)->types[load_gizmotype].prefix) + 1;
     data->gizmos[data->gizmo_count] =
         (FLOWBOXGIZMOREF_PC *)(GizmoBufferAlloc(load_buff, load_endbuff, sizeof(FLOWBOXGIZMOREF_PC)));
     data->gizmos[data->gizmo_count]->name = (char *)(GizmoBufferAlloc(load_buff, load_endbuff, name_size));
@@ -747,9 +626,9 @@ static void GizFlowConfigGizmoPc(NUFPAR_PC *parser) {
         data->gizmos[data->gizmo_count]->gizmo = createGizSpecial(NULL, load_gizmoname);
         if (data->gizmos[data->gizmo_count]->gizmo != NULL) {
             NuStrCpy(data->gizmos[data->gizmo_count]->name,
-                     ((GIZMO_CONFIG_TYPES_PC *)gizmotypes)->types[load_gizmotype].prefix);
+                     ((GIZMOTYPES_PC *)gizmotypes)->types[load_gizmotype].prefix);
             NuStrNCat(data->gizmos[data->gizmo_count]->name, load_gizmoname,
-                      32 - NuStrLen(((GIZMO_CONFIG_TYPES_PC *)gizmotypes)->types[load_gizmotype].prefix));
+                      32 - NuStrLen(((GIZMOTYPES_PC *)gizmotypes)->types[load_gizmotype].prefix));
         }
     } else {
         data->gizmos[data->gizmo_count]->gizmo =

@@ -728,51 +728,30 @@ void __cdecl PartCollide_3D(PART_PC *part) {
     PartCollidePC(part, 1);
 }
 
-typedef struct DEBRIS_KEY_EMISSION_PC {
-    u8 unknown_000[0x190];
-    NUVEC emitter_position;
-    u8 unknown_19c[0xc];
-    NUVEC particle_momentum;
-    NUVEC emitter_momentum;
-    u8 unknown_1c0[0x140];
-    f32 position_reset_300;
-    u8 unknown_304[0x2c];
-} DEBRIS_KEY_EMISSION_PC;
-STATIC_ASSERT(sizeof(DEBRIS_KEY_EMISSION_PC) == 0x330);
-STATIC_ASSERT(offsetof(DEBRIS_KEY_EMISSION_PC, emitter_position) == 0x190);
-STATIC_ASSERT(offsetof(DEBRIS_KEY_EMISSION_PC, particle_momentum) == 0x1a8);
-STATIC_ASSERT(offsetof(DEBRIS_KEY_EMISSION_PC, emitter_momentum) == 0x1b4);
-STATIC_ASSERT(offsetof(DEBRIS_KEY_EMISSION_PC, position_reset_300) == 0x300);
-
-extern void *debkeydata;
-#define DEBRIS_EMISSION_KEYS_PC ((DEBRIS_KEY_EMISSION_PC *)debkeydata)
-
 void __cdecl DebrisEmitterPos(i32 handle, f32 x, f32 y, f32 z) {
     if (handle != -1) {
-        DEBRIS_EMISSION_KEYS_PC[handle].emitter_position.x = x;
-        DEBRIS_EMISSION_KEYS_PC[handle].emitter_position.y = y;
-        DEBRIS_EMISSION_KEYS_PC[handle].emitter_position.z = z;
-        DEBRIS_EMISSION_KEYS_PC[handle].position_reset_300 = 0.0f;
+        debkeydata[handle].position.x = x;
+        debkeydata[handle].position.y = y;
+        debkeydata[handle].position.z = z;
+        debkeydata[handle].orientation_dirty = 0.0f;
     }
 }
 
 void __cdecl DebrisEmitterMomentum(i32 handle, f32 x, f32 y, f32 z) {
     if (handle != -1) {
-        DEBRIS_EMISSION_KEYS_PC[handle].emitter_momentum.x = x;
-        DEBRIS_EMISSION_KEYS_PC[handle].emitter_momentum.y = y;
-        DEBRIS_EMISSION_KEYS_PC[handle].emitter_momentum.z = z;
+        debkeydata[handle].emitter_momentum.x = x;
+        debkeydata[handle].emitter_momentum.y = y;
+        debkeydata[handle].emitter_momentum.z = z;
     }
 }
 
 void __cdecl DebrisParticleMomentum(i32 handle, f32 x, f32 y, f32 z) {
     if (handle != -1) {
-        DEBRIS_EMISSION_KEYS_PC[handle].particle_momentum.x = x;
-        DEBRIS_EMISSION_KEYS_PC[handle].particle_momentum.y = y;
-        DEBRIS_EMISSION_KEYS_PC[handle].particle_momentum.z = z;
+        debkeydata[handle].momentum.x = x;
+        debkeydata[handle].momentum.y = y;
+        debkeydata[handle].momentum.z = z;
     }
 }
-
-#undef DEBRIS_EMISSION_KEYS_PC
 
 i32 __cdecl PARTLookupType(char *name) {
     i32 index;
@@ -786,9 +765,7 @@ i32 __cdecl PARTLookupType(char *name) {
 }
 
 #include "saga.h"
-extern void *debkeydata;
 #include <string.h>
-#define DEBRIS_KEYS_PC ((DEBRISKEY_PC *)debkeydata)
 static __declspec(noinline) void DebrisMtxCopyPrivate(NUMTX *destination, const NUMTX *source) {
     *destination = *source;
 }
@@ -868,25 +845,25 @@ static __declspec(noinline) void DebrisMtxRotateZPrivate(NUMTX *m, i32 a) {
 void __cdecl DebrisOrientation(i32 handle, i16 z, i16 y) {
     if (handle == -1)
         return;
-    DebrisMtxCopyPrivate(&DEBRIS_KEYS_PC[handle].effect_orientation, &ANI3_EVAL_IDENTITY_MATRIX);
-    DebrisMtxRotateZPrivate(&DEBRIS_KEYS_PC[handle].effect_orientation, z);
-    DebrisMtxRotateYPrivate(&DEBRIS_KEYS_PC[handle].effect_orientation, y);
-    DEBRIS_KEYS_PC[handle].orientation_dirty = 0.0f;
+    DebrisMtxCopyPrivate(&debkeydata[handle].effect_orientation, &ANI3_EVAL_IDENTITY_MATRIX);
+    DebrisMtxRotateZPrivate(&debkeydata[handle].effect_orientation, z);
+    DebrisMtxRotateYPrivate(&debkeydata[handle].effect_orientation, y);
+    debkeydata[handle].orientation_dirty = 0.0f;
 }
 void __cdecl DebrisEmitterOrientation(i32 handle, i16 z, i16 y, i16 x) {
     if (handle == -1)
         return;
-    DebrisMtxCopyPrivate(&DEBRIS_KEYS_PC[handle].emitter_orientation, &ANI3_EVAL_IDENTITY_MATRIX);
-    DebrisMtxRotateZPrivate(&DEBRIS_KEYS_PC[handle].emitter_orientation, z);
-    DebrisMtxRotateYPrivate(&DEBRIS_KEYS_PC[handle].emitter_orientation, y);
-    DebrisMtxRotateXPrivate(&DEBRIS_KEYS_PC[handle].emitter_orientation, x);
-    DEBRIS_KEYS_PC[handle].orientation_dirty = 0.0f;
+    DebrisMtxCopyPrivate(&debkeydata[handle].emitter_orientation, &ANI3_EVAL_IDENTITY_MATRIX);
+    DebrisMtxRotateZPrivate(&debkeydata[handle].emitter_orientation, z);
+    DebrisMtxRotateYPrivate(&debkeydata[handle].emitter_orientation, y);
+    DebrisMtxRotateXPrivate(&debkeydata[handle].emitter_orientation, x);
+    debkeydata[handle].orientation_dirty = 0.0f;
 }
 
 void DebrisReflectionOrientation(i32 handle, i16 x, i16 y, f32 plane, f32 scale) {
     DEBRISKEY_PC *key;
     if (handle != -1) {
-        key = &DEBRIS_KEYS_PC[handle];
+        key = &debkeydata[handle];
         key->collision_plane = plane;
         key->reflection_x = x;
         key->reflection_y = y;
@@ -896,7 +873,7 @@ void DebrisReflectionOrientation(i32 handle, i16 x, i16 y, f32 plane, f32 scale)
 
 void DebrisSetTrigger(i32 handle, i32 first, i32 second, f32 third) {
     if (handle != -1) {
-        DEBRISKEY_PC *key = &DEBRIS_KEYS_PC[handle];
+        DEBRISKEY_PC *key = &debkeydata[handle];
         key->switch_variable = third;
         key->trigger_first = first;
         key->trigger_second = second;
@@ -905,7 +882,7 @@ void DebrisSetTrigger(i32 handle, i32 first, i32 second, f32 third) {
 
 void DebrisStartOffset(i32 handle, f32 offset) {
 
-    DebrisStartOffsetEx(DEBRIS_KEYS_PC + handle, offset);
+    DebrisStartOffsetEx(debkeydata + handle, offset);
 }
 
 void AddDebrisEffect(i32 *handle, i32 effect_index, f32 x, f32 y, f32 z) {
@@ -937,56 +914,56 @@ void AddDebrisEffect(i32 *handle, i32 effect_index, f32 x, f32 y, f32 z) {
     }
 
     now = effect->time_group == 4 ? panelglobaltime : globaltime;
-    DEBRIS_KEYS_PC[key_index].finite = 0;
-    DEBRIS_KEYS_PC[key_index].effect_index = (i16)(effect_index);
+    debkeydata[key_index].finite = 0;
+    debkeydata[key_index].effect_index = (i16)(effect_index);
     DebrisStartOffset(key_index, effect->emission_start_offset);
-    DEBRIS_KEYS_PC[key_index].generator = gensorttab[(i8)(effect->generator_type)];
-    DEBRIS_KEYS_PC[key_index].momentum_adjuster = gencodetab[(i8)(effect->momentum_adjustment_type)];
-    DEBRIS_KEYS_PC[key_index].finite_count = 0;
-    DEBRIS_KEYS_PC[key_index].sphere_next_time = 0.0f;
-    DEBRIS_KEYS_PC[key_index].emitter_rotation_x = 0;
-    DEBRIS_KEYS_PC[key_index].emitter_rotation_y = 0;
-    DEBRIS_KEYS_PC[key_index].sphere_index = 0;
+    debkeydata[key_index].generator = gensorttab[(i8)(effect->generator_type)];
+    debkeydata[key_index].momentum_adjuster = gencodetab[(i8)(effect->momentum_adjustment_type)];
+    debkeydata[key_index].finite_count = 0;
+    debkeydata[key_index].sphere_next_time = 0.0f;
+    debkeydata[key_index].emitter_rotation_x = 0;
+    debkeydata[key_index].emitter_rotation_y = 0;
+    debkeydata[key_index].sphere_index = 0;
     for (i = 0; i < effect->process_spheres; ++i) {
-        DEBRIS_KEYS_PC[key_index].process_spheres[i].time = -1.0f;
+        debkeydata[key_index].process_spheres[i].time = -1.0f;
     }
-    memset(&DEBRIS_KEYS_PC[key_index].emission_position, 0, sizeof(DEBRIS_KEYS_PC[key_index].emission_position));
-    memset(&DEBRIS_KEYS_PC[key_index].momentum, 0, sizeof(DEBRIS_KEYS_PC[key_index].momentum));
-    memset(&DEBRIS_KEYS_PC[key_index].emitter_momentum, 0, sizeof(DEBRIS_KEYS_PC[key_index].emitter_momentum));
-    DEBRIS_KEYS_PC[key_index].orientation_dirty = 0.0f;
-    DEBRIS_KEYS_PC[key_index].cutoff_distance = 999999.0f;
-    DEBRIS_KEYS_PC[key_index].field_2f2 = -1;
-    DEBRIS_KEYS_PC[key_index].emission_disabled = 0;
-    DEBRIS_KEYS_PC[key_index].orientation_flags = 7;
-    DEBRIS_KEYS_PC[key_index].gscene = NULL;
-    DEBRIS_KEYS_PC[key_index].process_collision_sound = 0;
-    DEBRIS_KEYS_PC[key_index].last_update_time = now;
-    DEBRIS_KEYS_PC[key_index].field_2f9 = 1;
-    DEBRIS_KEYS_PC[key_index].user_data = NULL;
-    DEBRIS_KEYS_PC[key_index].field_2fa = 0;
-    DEBRIS_KEYS_PC[key_index].emission_epoch =
-        DEBRIS_KEYS_PC[key_index].emission_end_time < now ? DEBRIS_KEYS_PC[key_index].emission_end_time : now;
+    memset(&debkeydata[key_index].emission_position, 0, sizeof(debkeydata[key_index].emission_position));
+    memset(&debkeydata[key_index].momentum, 0, sizeof(debkeydata[key_index].momentum));
+    memset(&debkeydata[key_index].emitter_momentum, 0, sizeof(debkeydata[key_index].emitter_momentum));
+    debkeydata[key_index].orientation_dirty = 0.0f;
+    debkeydata[key_index].cutoff_distance = 999999.0f;
+    debkeydata[key_index].field_2f2 = -1;
+    debkeydata[key_index].emission_disabled = 0;
+    debkeydata[key_index].orientation_flags = 7;
+    debkeydata[key_index].gscene = NULL;
+    debkeydata[key_index].process_collision_sound = 0;
+    debkeydata[key_index].last_update_time = now;
+    debkeydata[key_index].field_2f9 = 1;
+    debkeydata[key_index].user_data = NULL;
+    debkeydata[key_index].field_2fa = 0;
+    debkeydata[key_index].emission_epoch =
+        debkeydata[key_index].emission_end_time < now ? debkeydata[key_index].emission_end_time : now;
 
     switch (effect->particle_type) {
         case 3:
-            DEBRIS_KEYS_PC[key_index].render_priority = (i16)(40000);
+            debkeydata[key_index].render_priority = (i16)(40000);
             break;
         case 7:
-            DEBRIS_KEYS_PC[key_index].render_priority = (i16)(20000);
+            debkeydata[key_index].render_priority = (i16)(20000);
             break;
         case 2:
-            DEBRIS_KEYS_PC[key_index].render_priority = (i16)(50000);
+            debkeydata[key_index].render_priority = (i16)(50000);
             break;
         default:
-            DEBRIS_KEYS_PC[key_index].render_priority = (i16)(30000);
+            debkeydata[key_index].render_priority = (i16)(30000);
             break;
     }
     for (i = 0; i < 4; ++i) {
-        DEBRIS_KEYS_PC[key_index].collision_timers[i] = 9999;
+        debkeydata[key_index].collision_timers[i] = 9999;
         if (effect->sound_data[i * 3] != -1) {
             if (effect->sound_data[i * 3 + 1] == 3 || effect->sound_data[i * 3 + 1] == 4)
-                DEBRIS_KEYS_PC[key_index].collision_timers[i] = 1;
-            DEBRIS_KEYS_PC[key_index].process_collision_sound = 1;
+                debkeydata[key_index].collision_timers[i] = 1;
+            debkeydata[key_index].process_collision_sound = 1;
         }
     }
     DebrisEmitterPos(key_index, x, y, z);
@@ -995,7 +972,7 @@ void AddDebrisEffect(i32 *handle, i32 effect_index, f32 x, f32 y, f32 z) {
     DebrisReflectionOrientation(key_index, 0, 0, 0, 0.9f);
     DebrisSetTrigger(key_index, 0, -1, 0);
     if (newly_allocated) {
-        key = DEBRIS_KEYS_PC + key_index;
+        key = debkeydata + key_index;
         if (debris_keystack != NULL)
             debris_keystack->next = key;
         key->previous = debris_keystack;
@@ -1015,31 +992,31 @@ void AddFiniteShotDebrisEffect2(i32 *handle, i32 effect, NUVEC *position, NUVEC 
     AddDebrisEffect(handle, effect, position->x, position->y, position->z);
     if (*handle == -1)
         return;
-    DEBRIS_KEYS_PC[*handle].finite_count = count;
+    debkeydata[*handle].finite_count = count;
     now = debtab[effect]->time_group == 4 ? panelglobaltime : globaltime;
-    DEBRIS_KEYS_PC[*handle].finite = 1;
-    DEBRIS_KEYS_PC[*handle].emission_disabled = 0;
-    offset = DEBRIS_KEYS_PC[*handle].emission_time - now;
-    DEBRIS_KEYS_PC[*handle].emission_time -= offset;
-    DEBRIS_KEYS_PC[*handle].emission_end_time -= offset;
-    DEBRIS_KEYS_PC[*handle].emission_epoch = DEBRIS_KEYS_PC[*handle].last_update_time;
-    DEBRIS_KEYS_PC[*handle].cutoff_distance =
+    debkeydata[*handle].finite = 1;
+    debkeydata[*handle].emission_disabled = 0;
+    offset = debkeydata[*handle].emission_time - now;
+    debkeydata[*handle].emission_time -= offset;
+    debkeydata[*handle].emission_end_time -= offset;
+    debkeydata[*handle].emission_epoch = debkeydata[*handle].last_update_time;
+    debkeydata[*handle].cutoff_distance =
         (debris_cutoff_camera_vec != NULL ? NuVecDist(position, (NUVEC *)debris_cutoff_camera_vec, NULL) : 0.0f);
-    if (DEBRIS_KEYS_PC[*handle].process_collision_sound != 0) {
+    if (debkeydata[*handle].process_collision_sound != 0) {
         range = debtab[effect]->sound_range_override;
         if (range == 0.0f)
             range = debtab[effect]->sound_range;
         if (range == 0.0f)
             range = debtab[effect]->clip_extent;
         volume = 0.0f;
-        if (DEBRIS_KEYS_PC[*handle].cutoff_distance < range) {
+        if (debkeydata[*handle].cutoff_distance < range) {
             for (sound = 0; sound < 4; ++sound) {
                 if (debtab[effect]->sound_data[sound * 3] != -1)
                     SetSfxBit_On(debtab[effect]->sound_data[sound * 3]);
             }
-            volume = (range - DEBRIS_KEYS_PC[*handle].cutoff_distance) / range;
+            volume = (range - debkeydata[*handle].cutoff_distance) / range;
         }
-        if (DEBRIS_KEYS_PC[*handle].cutoff_distance < range) {
+        if (debkeydata[*handle].cutoff_distance < range) {
             for (sound = 0; sound < 4; ++sound) {
                 if (debtab[effect]->sound_data[sound * 3] != -1 && debtab[effect]->sound_data[sound * 3 + 1] == 1)
                     PlaySfxByIdEx(debtab[effect]->sound_data[sound * 3], position, volume, 1.0f);
@@ -1058,9 +1035,6 @@ void AddFiniteShotDebrisEffect(i32 *handle, i32 effect, NUVEC *position, i32 cou
     AddFiniteShotDebrisEffect2(handle, effect, position, NULL, NULL, count);
 }
 
-#undef DEBRIS_KEYS_PC
-
-#define DEBRIS_KEYS_PC ((DEBRISKEY_PC *)debkeydata)
 i32 __cdecl DebrisNuASin(f32);
 DEBRISPARTICLE_PC *GenDebIndexSpheroid(DEBRISKEY_PC *key, DEBRIS_INFO_PC *effect, float time) {
     i32 trail;
@@ -1138,8 +1112,6 @@ DEBRISPARTICLE_PC *GenDebIndexSpheroid(DEBRISKEY_PC *key, DEBRIS_INFO_PC *effect
     }
     return particle;
 }
-
-#undef DEBRIS_KEYS_PC
 
 extern LEVELDATA_PC *CLOUDCITYTRAPB_LDATA;
 extern LEVELDATA_PC *MAULA_LDATA;
@@ -1227,7 +1199,6 @@ void GizmoBlowupCreateStuff(GIZMOBLOWUP_PC *blowup) {
     AddPickups(coins, ReleaseHearts(), 0, 0, &blowup->mid_position, &direction, 0.0f, -1, 1.5f, 2000000.0f, NULL, 1, 1);
 }
 
-#define DEBRIS_KEYS_PC ((DEBRISKEY_PC *)debkeydata)
 static __declspec(noinline) f32 DebrisDivide(f32 a, f32 b) {
     if (a == 0.0f || b == 0.0f)
         return 0.0f;
@@ -1236,7 +1207,7 @@ static __declspec(noinline) f32 DebrisDivide(f32 a, f32 b) {
 
 void __cdecl DebrisEmitterOrientationMtx(i32 handle, NUMTX *source) {
     if (handle != -1) {
-        DEBRISKEY_PC *key = &DEBRIS_KEYS_PC[handle];
+        DEBRISKEY_PC *key = &debkeydata[handle];
         key->emitter_orientation = *source;
         key->emitter_orientation.m30 = 0.0f;
         key->emitter_orientation.m31 = 0.0f;
@@ -1334,7 +1305,7 @@ void __cdecl AddVariableShotDebrisEffectTimed5(i32 effect_index, NUVEC *position
     key = NULL;
     for (i = 0; i < 8; ++i) {
         if (effect->particle_keys[i] != -1) {
-            key = &DEBRIS_KEYS_PC[effect->particle_keys[i]];
+            key = &debkeydata[effect->particle_keys[i]];
             if (key->particle_count + particle_count <= maximum_particles) {
                 particle_key_slot = i;
                 break;
@@ -1342,7 +1313,7 @@ void __cdecl AddVariableShotDebrisEffectTimed5(i32 effect_index, NUVEC *position
         } else if (freedebkeyptr < maxdebkeys) {
             new_key_index = DebAlloc();
             effect->particle_keys[i] = (i16)new_key_index;
-            key = &DEBRIS_KEYS_PC[(i16)new_key_index];
+            key = &debkeydata[(i16)new_key_index];
             key->effect_index = (i16)effect_index;
             key->finite_count = 0;
             key->generator = gensorttab[effect->generator_type];
@@ -1489,8 +1460,6 @@ i32 AddScaledVariableShotDebrisEffect(i32 effect, NUVEC *position, i32 count, f3
     return scaled;
 }
 
-#undef DEBRIS_KEYS_PC
-
 void __cdecl DebrisDrawCalculateClipBoxes(DEBRIS_INFO_PC *effect, DEBRISKEY_PC *key) {
     NUMTX matrix;
     f32 emission_time, lifetime, padding, horizontal, radius;
@@ -1582,7 +1551,7 @@ void __cdecl DebrisDraw(i32 unused, i32 pass) {
             i32 visible = 1;
             i32 i;
             for (i = 0; i < 8; ++i) {
-                if (effect->particle_keys[i] != -1 && &((DEBRISKEY_PC *)debkeydata)[effect->particle_keys[i]] == key) {
+                if (effect->particle_keys[i] != -1 && &debkeydata[effect->particle_keys[i]] == key) {
                     assigned = 1;
                     break;
                 }
@@ -2633,51 +2602,45 @@ PART_PC *__cdecl FindPart(NUVEC *position, i32 player, GAMEOBJECT *owner) {
     return result;
 }
 
-#define DEBRIS_KEYS_PC ((DEBRISKEY_PC *)debkeydata)
 void __cdecl DebrisSetFacing(i32 handle, u8 enabled, i16 x_angle, i16 y_angle) {
     if (handle != -1) {
-        DEBRIS_KEYS_PC[handle].field_2fa = enabled;
-        DebrisMtxCopyPrivate(&DEBRIS_KEYS_PC[handle].particle_orientation, &ANI3_EVAL_IDENTITY_MATRIX);
-        DebrisMtxRotateXPrivate(&DEBRIS_KEYS_PC[handle].particle_orientation, x_angle);
-        DebrisMtxRotateYPrivate(&DEBRIS_KEYS_PC[handle].particle_orientation, y_angle);
+        debkeydata[handle].field_2fa = enabled;
+        DebrisMtxCopyPrivate(&debkeydata[handle].particle_orientation, &ANI3_EVAL_IDENTITY_MATRIX);
+        DebrisMtxRotateXPrivate(&debkeydata[handle].particle_orientation, x_angle);
+        DebrisMtxRotateYPrivate(&debkeydata[handle].particle_orientation, y_angle);
     }
 }
 void __cdecl DebrisSetRoomID(i32 handle, NUGSCN *scene) {
     if (scene != NULL) {
-        DEBRIS_KEYS_PC[handle].field_2f2 = NuPortalWhichRoom(scene, &DEBRIS_KEYS_PC[handle].position);
-        DEBRIS_KEYS_PC[handle].gscene = DEBRIS_KEYS_PC[handle].field_2f2 != -1 ? scene : NULL;
+        debkeydata[handle].field_2f2 = NuPortalWhichRoom(scene, &debkeydata[handle].position);
+        debkeydata[handle].gscene = debkeydata[handle].field_2f2 != -1 ? scene : NULL;
     } else {
-        DEBRIS_KEYS_PC[handle].field_2f2 = -1;
-        DEBRIS_KEYS_PC[handle].gscene = NULL;
+        debkeydata[handle].field_2f2 = -1;
+        debkeydata[handle].gscene = NULL;
     }
 }
 
-#undef DEBRIS_KEYS_PC
-
-#define LOCATOR_DEBRIS_KEYS_PC ((DEBRISKEY_PC *)debkeydata)
 void __cdecl DebrisOrientationMtx(i32 handle, NUMTX *source) {
     if (handle != -1) {
-        LOCATOR_DEBRIS_KEYS_PC[handle].effect_orientation = *source;
-        LOCATOR_DEBRIS_KEYS_PC[handle].effect_orientation.m30 = 0.0f;
-        LOCATOR_DEBRIS_KEYS_PC[handle].effect_orientation.m31 = 0.0f;
-        LOCATOR_DEBRIS_KEYS_PC[handle].effect_orientation.m32 = 0.0f;
-        LOCATOR_DEBRIS_KEYS_PC[handle].orientation_dirty = 0.0f;
+        debkeydata[handle].effect_orientation = *source;
+        debkeydata[handle].effect_orientation.m30 = 0.0f;
+        debkeydata[handle].effect_orientation.m31 = 0.0f;
+        debkeydata[handle].effect_orientation.m32 = 0.0f;
+        debkeydata[handle].orientation_dirty = 0.0f;
     }
 }
 void __cdecl DebrisPosOrientationMtx(i32 handle, NUMTX *source) {
     if (handle != -1) {
-        LOCATOR_DEBRIS_KEYS_PC[handle].effect_orientation = *source;
-        LOCATOR_DEBRIS_KEYS_PC[handle].position.x = source->m30;
-        LOCATOR_DEBRIS_KEYS_PC[handle].position.y = source->m31;
-        LOCATOR_DEBRIS_KEYS_PC[handle].position.z = source->m32;
-        LOCATOR_DEBRIS_KEYS_PC[handle].effect_orientation.m30 = 0.0f;
-        LOCATOR_DEBRIS_KEYS_PC[handle].effect_orientation.m31 = 0.0f;
-        LOCATOR_DEBRIS_KEYS_PC[handle].effect_orientation.m32 = 0.0f;
-        LOCATOR_DEBRIS_KEYS_PC[handle].orientation_dirty = 0.0f;
+        debkeydata[handle].effect_orientation = *source;
+        debkeydata[handle].position.x = source->m30;
+        debkeydata[handle].position.y = source->m31;
+        debkeydata[handle].position.z = source->m32;
+        debkeydata[handle].effect_orientation.m30 = 0.0f;
+        debkeydata[handle].effect_orientation.m31 = 0.0f;
+        debkeydata[handle].effect_orientation.m32 = 0.0f;
+        debkeydata[handle].orientation_dirty = 0.0f;
     }
 }
-
-#undef LOCATOR_DEBRIS_KEYS_PC
 
 void __cdecl AddScaledFiniteShotDebrisEffect(i32 *key, i32 effect, NUVEC *position, NUVEC *orientation, NUVEC *momentum,
                                              i32 count, f32 scale) {
@@ -2831,7 +2794,7 @@ void __cdecl DebrisSetup2(VARIPTR *buffer, VARIPTR buffer_end, VARIPTR *trash_bu
     ParticleChunkToRender = (DEBRIS_RENDER_CHUNK_PC *)buffer->addr;
     buffer->addr += total_chunks * sizeof(DEBRIS_RENDER_CHUNK_PC);
     buffer->addr = (buffer->addr + 15) & ~15u;
-    debkeydata = (void *)buffer->addr;
+    debkeydata = (DEBRISKEY_PC *)buffer->addr;
     buffer->addr += maxdebkeys * sizeof(DEBRISKEY_PC);
     freedebkeys = (i16 *)buffer->addr;
     buffer->addr += maxdebkeys * sizeof(i16);
@@ -2925,7 +2888,7 @@ void __cdecl DebrisSetup2(VARIPTR *buffer, VARIPTR buffer_end, VARIPTR *trash_bu
     for (i = 0; i < maxdebkeys; ++i)
         freedebkeys[i] = (i16)i;
     for (i = 0; i < maxdebkeys; ++i) {
-        DEBRISKEY_PC *key = &((DEBRISKEY_PC *)debkeydata)[i];
+        DEBRISKEY_PC *key = &debkeydata[i];
         key->finite = 0;
         key->particle_cursor = 0;
         key->emitter_rotation_x = 0;

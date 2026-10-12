@@ -249,8 +249,6 @@ i32 __cdecl AddFiniteShotPART(i32 effect, NUVEC *position, i32 count) {
     return index;
 }
 
-extern void *debkeydata;
-#define DEBRIS_KEYS_PC ((DEBRISKEY_PC *)debkeydata)
 i32 DebAlloc(void) {
     i32 i;
     i32 slot;
@@ -260,7 +258,7 @@ i32 DebAlloc(void) {
     }
 
     slot = freedebkeys[freedebkeyptr++];
-    key = DEBRIS_KEYS_PC + slot;
+    key = debkeydata + slot;
     for (i = 0; i < 32; ++i) {
         key->particle_chunks[i] = NULL;
     }
@@ -320,8 +318,6 @@ void __cdecl DebrisStartOffsetEx(DEBRISKEY_PC *key, f32 offset) {
     key->previous_emission_time = -10.0f;
     key->emission_end_time = NuRandFloatSeeded(&debrisseed) * effect->emission_period_random + start + period;
 }
-
-#undef DEBRIS_KEYS_PC
 
 i32 __cdecl LookupDebrisEffect(char *name) {
     return LookupDebrisEffectPage(name, 0);

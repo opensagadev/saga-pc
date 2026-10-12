@@ -22,6 +22,7 @@ typedef signed char i8;
 typedef unsigned char u8;
 typedef signed short i16;
 typedef unsigned short u16;
+typedef u16 NUWCHAR;
 typedef signed int i32;
 typedef unsigned int u32;
 typedef signed __int64 i64;
@@ -317,47 +318,79 @@ STATIC_ASSERT(offsetof(GIZMO_PC, type_id) == 6);
 
 struct gizmoset_pc_s;
 struct gameobject_s;
+union variptr_u;
+typedef struct gizmofns_pc_s {
+    i16 options;
+    u16 padding;
+    i32(__cdecl *get_max_gizmos_fn)(void *world);
+    void *add_gizmos_fn;
+    void(__cdecl *early_update_fn)(void *world, void *data, f32 delta_time);
+    void(__cdecl *late_update_fn)(void *world, void *data, f32 delta_time);
+    void(__cdecl *draw_fn)(void *world, void *data, f32 delta_time);
+    void(__cdecl *panel_draw_fn)(void *world, void *data, f32 delta_time);
+    char *(__cdecl *get_gizmo_name_fn)(struct gizmo_pc_s *gizmo);
+    i32(__cdecl *get_output_fn)(struct gizmo_pc_s *gizmo, i32 output, i32 mode);
+    char *(__cdecl *get_output_name_fn)(struct gizmo_pc_s *gizmo, i32 output);
+    void *get_num_outputs_fn;
+    void(__cdecl *activate_fn)(struct gizmo_pc_s *gizmo, i32 active);
+    i32(__cdecl *activate_rev_fn)(struct gizmo_pc_s *gizmo, i32 reverse, i32 visibility);
+    void(__cdecl *set_visibility_fn)(struct gizmo_pc_s *gizmo, i32 visible);
+    i32(__cdecl *get_visibility_fn)(struct gizmo_pc_s *gizmo);
+    void *get_pos_fn;
+    void *using_special_fn;
+    void *bolt_hit_plat_fn;
+    struct gizmo_pc_s *(__cdecl *get_best_bolt_target_fn)(struct gizmoset_pc_s *, f32 *, NUVEC *, NUVEC *, void *,
+                                                          NUVEC *, NUVEC *, f32, f32, i32, i32, i32);
+    void *bolt_hit_fn;
+    void *(__cdecl *allocate_progress_data_fn)(union variptr_u *buffer, union variptr_u *end);
+    void(__cdecl *clear_progress_fn)(void *world, void *progress);
+    void(__cdecl *store_progress_fn)(void *world, void *data, void *progress);
+    void(__cdecl *reset_fn)(void *world, void *data, void *progress);
+    void *(__cdecl *reserve_buffer_space_fn)(void *world);
+    i32(__cdecl *load_fn)(void *world, void *data);
+    void(__cdecl *post_load_fn)(void *world, void *data);
+    void *add_level_sfx_fn;
+} GIZMOFNS_PC;
+STATIC_ASSERT(sizeof(GIZMOFNS_PC) == 0x70);
 typedef struct gizmotype_pc_s {
-    u8 unknown_00[0x44];
-    char *(__cdecl *get_gizmo_name)(void *gizmo);
-    i32(__cdecl *get_output)(void *gizmo, i32 output, i32 mode);
-    char *(__cdecl *get_output_name)(void *gizmo, i32 output);
-    u8 unknown_50[4];
-    void(__cdecl *activate)(void *gizmo, i32 active);
-    i32(__cdecl *activate_reverse)(void *gizmo, i32 reverse, i32 visibility);
-    void(__cdecl *set_visibility)(void *gizmo, i32 visible);
-    u8 unknown_60[0x10];
-    void *(__cdecl *get_best_bolt_target)(struct gizmoset_pc_s *, f32 *, NUVEC *, NUVEC *, struct gameobject_s *,
-                                          NUVEC *, NUVEC *, f32, f32, i32, i32, i32);
-    u8 unknown_74[0x28];
+    char name[32];
+    char prefix[8];
+    GIZMOFNS_PC fns;
+    void **progress;
 } GIZMOTYPE_PC;
 STATIC_ASSERT(sizeof(GIZMOTYPE_PC) == 0x9c);
-STATIC_ASSERT(offsetof(GIZMOTYPE_PC, get_gizmo_name) == 0x44);
-STATIC_ASSERT(offsetof(GIZMOTYPE_PC, get_output) == 0x48);
-STATIC_ASSERT(offsetof(GIZMOTYPE_PC, get_output_name) == 0x4c);
-STATIC_ASSERT(offsetof(GIZMOTYPE_PC, activate) == 0x54);
-STATIC_ASSERT(offsetof(GIZMOTYPE_PC, activate_reverse) == 0x58);
-STATIC_ASSERT(offsetof(GIZMOTYPE_PC, set_visibility) == 0x5c);
-STATIC_ASSERT(offsetof(GIZMOTYPE_PC, get_best_bolt_target) == 0x70);
-
 typedef struct gizmotypes_pc_s {
     i32 count;
     i32 max_levels;
     GIZMOTYPE_PC *types;
 } GIZMOTYPES_PC;
-STATIC_ASSERT(sizeof(GIZMOTYPES_PC) == 0xc);
-STATIC_ASSERT(offsetof(GIZMOTYPES_PC, types) == 8);
-
 typedef struct gizmoset_pc_s {
     GIZMOTYPE_PC *type;
     i32 count;
-    i32 capacity;
+    i32 max_count;
     GIZMO_PC *gizmos;
     void *data;
 } GIZMOSET_PC;
 STATIC_ASSERT(sizeof(GIZMOSET_PC) == 0x14);
-STATIC_ASSERT(offsetof(GIZMOSET_PC, count) == 4);
-STATIC_ASSERT(offsetof(GIZMOSET_PC, gizmos) == 0xc);
+typedef struct gizmosys_pc_s {
+    GIZMOSET_PC *sets;
+    char *error_log;
+    u16 flags;
+    u16 padding;
+} GIZMOSYS_PC;
+typedef struct addgizmotype_pc_s {
+    char *name;
+    char *prefix;
+    GIZMOFNS_PC fns;
+} ADDGIZMOTYPE_PC;
+STATIC_ASSERT(sizeof(ADDGIZMOTYPE_PC) == 0x78);
+typedef ADDGIZMOTYPE_PC *(__cdecl *REGISTER_GIZMO_CONFIG_TYPE_FN)(i32 type_id);
+#ifdef __cplusplus
+extern "C" ADDGIZMOTYPE_PC Default_ADDGIZMOTYPE;
+#else
+extern ADDGIZMOTYPE_PC Default_ADDGIZMOTYPE;
+#endif
+
 STATIC_ASSERT(offsetof(GIZMOSET_PC, data) == 0x10);
 
 typedef struct gizmosys_prefix_pc_s {
@@ -485,53 +518,6 @@ STATIC_ASSERT(offsetof(FLOWBOX_CALLBACKS_PC, reset) == 0);
 STATIC_ASSERT(offsetof(FLOWBOX_CALLBACKS_PC, process) == 4);
 STATIC_ASSERT(offsetof(FLOWBOX_CALLBACKS_PC, check_output) == 8);
 
-typedef struct AIOWNER_PC {
-    struct gameobject_s *game_object;
-    struct AIPACKET_PC *ai;
-    u8 unknown_8[0x48];
-    struct CHARACTER_MODEL_LAYERS_PC *character_model;
-    struct characterdata_pc_s *character_data;
-    u16 facing_angle;
-    u16 movement_facing_angle;
-    NUVEC position;
-    NUVEC velocity;
-    NUVEC previous_velocity;
-    NUVEC collision_position;
-    NUVEC start_position;
-    NUVEC initial_position;
-    f32 scaled_radius;
-    f32 field_a8;
-    f32 collision_radius;
-    f32 collision_height;
-    f32 scaled_height;
-    u8 unknown_b8[0xc0];
-    NUVEC collision_min;
-    NUVEC collision_max;
-    NUVEC upper_position;
-    NUVEC lower_position;
-    NUVEC collision_origin;
-    NUVEC last_safe_position;
-    NUVEC field_1c0;
-    NUVEC respawn_position;
-    f32 movement_stuck_time;
-    f32 field_1dc;
-    f32 field_1e0;
-    u8 unknown_1e4[0x4];
-    u64 collision_identity_mask;
-    u64 colliding_objects_mask;
-    u32 flags_1f8;
-    u32 flags_1fc;
-    NUVEC movement_direction;
-    u8 unknown_20c_b[0x14];
-    f32 water_height;
-    u8 unknown_224[0x4];
-    f32 velocity_magnitude;
-    f32 horizontal_velocity_magnitude;
-} AIOWNER_PC;
-STATIC_ASSERT(offsetof(AIOWNER_PC, flags_1f8) == 0x1f8);
-STATIC_ASSERT(offsetof(AIOWNER_PC, game_object) == 0);
-STATIC_ASSERT(offsetof(AIOWNER_PC, collision_position) == 0x80);
-STATIC_ASSERT(offsetof(AIOWNER_PC, flags_1fc) == 0x1fc);
 typedef struct repeat_sfx_entry_pc_s {
     i16 sfx_id;
     u8 state;
@@ -891,7 +877,7 @@ struct AIPACKET_PC {
             AISCRIPTPROCESS_PC *alternate_processor;
         };
     };
-    AIOWNER_PC *owner;
+    struct gameobject_s *owner;
     struct gameobject_s *nearest_opponent;
     f32 nearest_opponent_metric;
     struct gameobject_s *target_dc;
@@ -1078,7 +1064,6 @@ STATIC_ASSERT(offsetof(APIOBJECT_PC, position) == 0x5c);
 STATIC_ASSERT(offsetof(APIOBJECT_PC, object_id) == 0x28d);
 STATIC_ASSERT(offsetof(APIOBJECT_PC, locator_name_index) == 0x280);
 STATIC_ASSERT(offsetof(APIOBJECT_PC, grounded) == 0x281);
-STATIC_ASSERT(offsetof(AIOWNER_PC, position) == 0x5c);
 STATIC_ASSERT(offsetof(AIPATH_PC, inside_node_bits) == 0x58);
 STATIC_ASSERT(offsetof(AIPACKET_PC, inside_path_node) == 0x124);
 STATIC_ASSERT(offsetof(AIPACKET_PC, terrain_origin) == 0x14c);
@@ -11487,7 +11472,6 @@ typedef struct PC_SHADER_OBJECT_FULL_VIEW PC_SHADER_OBJECT_FULL_VIEW;
     STATIC_ASSERT(offsetof(APIOBJECT_PC, hear_distance) == 0x234);
     STATIC_ASSERT(offsetof(APIOBJECT_PC, max_view_height) == 0x238);
     STATIC_ASSERT(offsetof(APIOBJECT_PC, min_view_height) == 0x23c);
-    STATIC_ASSERT(offsetof(AIOWNER_PC, horizontal_velocity_magnitude) == 0x22c);
     STATIC_ASSERT(offsetof(AICREATURE_PC, y_rotation) == 0x2c);
     STATIC_ASSERT(offsetof(AICREATURE_PC, x_spacing) == 0x5c);
     STATIC_ASSERT(offsetof(AICREATURE_PC, z_spacing) == 0x60);
@@ -12079,6 +12063,7 @@ typedef struct PC_SHADER_OBJECT_FULL_VIEW PC_SHADER_OBJECT_FULL_VIEW;
     i32 __cdecl edgraLoadPage(char *path, void *scene, i32 terrain, VARIPTR *buffer, VARIPTR *end);
 
     typedef struct debris_key_pc_s DEBRISKEY_PC;
+    extern DEBRISKEY_PC *debkeydata;
     typedef struct debris_particle_pc_s DEBRISPARTICLE_PC;
     struct debris_particle_pc_s {
         NUVEC position;
@@ -13662,14 +13647,14 @@ typedef struct PC_SHADER_OBJECT_FULL_VIEW PC_SHADER_OBJECT_FULL_VIEW;
     void __cdecl NuMtxInvH(NUMTX *, NUMTX *);
     f32 __cdecl NuVecMtxTransformH(NUVEC *, NUVEC *, NUMTX *);
     void __cdecl NuVec4MtxTransformH(NUVEC4 *, NUVEC4 *, NUMTX *);
-    struct add_gizmo_config_type_pc_s;
+    struct addgizmotype_pc_s;
     struct zipup_progress_pc_s;
     i32 __cdecl ZipUps_Load(WORLDINFO *world);
     void *__cdecl ZipUps_ReserveBufferSpace(WORLDINFO *world);
     void __cdecl ZipUp_MoveCode(GAMEOBJECT *object, i32 special_pressed);
     void __cdecl ZipUps_Reset(WORLDINFO *world, void *unused, struct zipup_progress_pc_s *progress);
     void __cdecl ZipUps_Update(WORLDINFO *world, void *unused, f32 delta_time);
-    struct add_gizmo_config_type_pc_s *__cdecl ZipUps_RegisterGizmo(i32 type_id);
+    struct addgizmotype_pc_s *__cdecl ZipUps_RegisterGizmo(i32 type_id);
     void __cdecl InitRopeMtl(char *name, VARIPTR *buffer, VARIPTR *buffer_end);
     void __cdecl DrawRopeSingle(NUVEC *start, NUVEC *end, f32 amount, NUMTL *material, f32 time, f32 grow_time,
                                 f32 spacing, f32 scale);
@@ -14920,8 +14905,8 @@ void __cdecl PCSoundAlreadyPlayingHook(void);
     extern u16 RtlUidCounterPc;
 
     void __cdecl GizObstacles_AddLevelSfx(void *, void *, i32 *, i32 *, i32);
-    void __cdecl GizmoObstacle_Activate(void *, i32);
-    void __cdecl GizmoObstacle_SetVisibility(void *, i32);
+    void __cdecl GizmoObstacle_Activate(GIZMO_PC *, i32);
+    void __cdecl GizmoObstacle_SetVisibility(GIZMO_PC *, i32);
     NUVEC *__cdecl GizmoObstacle_GetPos(GIZMO_PC *);
     char *__cdecl GizmoObstacle_GetGizmoName(GIZMO_PC *);
     i32 __cdecl GizmoObstacle_GetOutput(GIZMO_PC *, i32, i32);
@@ -14929,7 +14914,7 @@ void __cdecl PCSoundAlreadyPlayingHook(void);
     void *__cdecl GizObstacles_AllocateProgressData(VARIPTR *, VARIPTR *);
     void __cdecl GizObstacles_ClearProgress(void *, void *);
     void __cdecl GizObstacles_StoreProgress(void *, void *, void *);
-    i32 __cdecl GizmoObstacle_ActivateRev(void *, i32, i32);
+    i32 __cdecl GizmoObstacle_ActivateRev(GIZMO_PC *, i32, i32);
     i32 __cdecl NuTexResolveReference(NUGSCN *, i32);
     i32 __cdecl NuTexReadPc(char *, VARIPTR *, VARIPTR);
     void __cdecl NuApiSetEndFrameCallbackPc(void(__cdecl *)(void));
@@ -19332,8 +19317,8 @@ extern "C" {
 #ifdef __cplusplus
 extern "C" {
 #endif
-    struct add_gizmo_config_type_pc_s;
-    struct add_gizmo_config_type_pc_s *__cdecl Levers_RegisterGizmo(i32 type_id);
+    struct addgizmotype_pc_s;
+    struct addgizmotype_pc_s *__cdecl Levers_RegisterGizmo(i32 type_id);
     extern char *LeverTypeNamePtrPc;
     extern char *LeverOutputDownNamePtrPc;
 #ifdef __cplusplus
@@ -19439,7 +19424,7 @@ extern "C" {
 #endif
     /* Within the existing extern C declaration block; current HATMACHINE_PC is already forward-declared. */
     void __cdecl HatMachine_MoveCode(WORLDINFO *, GAMEOBJECT *, i32);
-    struct add_gizmo_config_type_pc_s *__cdecl HatMachine_RegisterGizmo(i32);
+    struct addgizmotype_pc_s *__cdecl HatMachine_RegisterGizmo(i32);
 #ifdef __cplusplus
 }
 #endif
@@ -19466,13 +19451,13 @@ extern "C" {
 #ifdef __cplusplus
 extern "C" {
 #endif
-    struct add_gizmo_config_type_pc_s;
-    struct add_gizmo_config_type_pc_s *__cdecl GizObstacles_RegisterGizmo(i32 type_id);
-    struct add_gizmo_config_type_pc_s *__cdecl Tubes_RegisterGizmo(i32);
-    struct add_gizmo_config_type_pc_s *__cdecl Plugs_RegisterGizmo(i32);
+    struct addgizmotype_pc_s;
+    struct addgizmotype_pc_s *__cdecl GizObstacles_RegisterGizmo(i32 type_id);
+    struct addgizmotype_pc_s *__cdecl Tubes_RegisterGizmo(i32);
+    struct addgizmotype_pc_s *__cdecl Plugs_RegisterGizmo(i32);
 
-    struct add_gizmo_config_type_pc_s;
-    struct add_gizmo_config_type_pc_s *__cdecl MiniCut_RegisterGizmo(i32);
+    struct addgizmotype_pc_s;
+    struct addgizmotype_pc_s *__cdecl MiniCut_RegisterGizmo(i32);
 
 #ifdef __cplusplus
     extern "C" {
@@ -19543,8 +19528,8 @@ extern "C" {
 #ifdef __cplusplus
 extern "C" {
 #endif
-    struct add_gizmo_config_type_pc_s;
-    struct add_gizmo_config_type_pc_s *__cdecl GizSpecial_RegisterGizmo(i32 type_id);
+    struct addgizmotype_pc_s;
+    struct addgizmotype_pc_s *__cdecl GizSpecial_RegisterGizmo(i32 type_id);
 #ifdef __cplusplus
 }
 #endif
@@ -19589,9 +19574,9 @@ extern "C" {
 #ifdef __cplusplus
 extern "C" {
 #endif
-    typedef struct add_gizmo_config_type_pc_s TECHNO_REGISTRATION_PC;
-    typedef struct add_gizmo_config_type_pc_s PORTAL_REGISTRATION_PC;
-    typedef struct add_gizmo_config_type_pc_s SHADOW_REGISTRATION_PC;
+    typedef struct addgizmotype_pc_s TECHNO_REGISTRATION_PC;
+    typedef struct addgizmotype_pc_s PORTAL_REGISTRATION_PC;
+    typedef struct addgizmotype_pc_s SHADOW_REGISTRATION_PC;
     TECHNO_REGISTRATION_PC *__cdecl Technos_RegisterGizmo(i32 type_id);
     PORTAL_REGISTRATION_PC *__cdecl Portal_RegisterGizmo(i32 type_id);
     SHADOW_REGISTRATION_PC *__cdecl EdGizShadowMachine_RegisterGizmo(i32 type_id);
@@ -20759,12 +20744,9 @@ typedef struct AIAREA_s AIAREA_s;
 typedef struct AIEDITOR_RENDER_STATE AIEDITOR_RENDER_STATE;
 typedef struct AIPATHCNXCONTROLLER_s AIPATHCNXCONTROLLER_s;
 typedef struct AIPATHCNXCONTROLSYS_s AIPATHCNXCONTROLSYS_s;
-typedef struct AIPATHNODELINK_s AIPATHNODELINK_s;
-typedef struct AIPATHSPECIALROUTE_s AIPATHSPECIALROUTE_s;
 typedef struct AITRIGGERSETSYS_s AITRIGGERSETSYS_s;
 typedef struct AITRIGGERSET_TARGET AITRIGGERSET_TARGET;
 typedef struct AITRIGGERSET_s AITRIGGERSET_s;
-typedef struct APICHARACTERMODELLIST_s APICHARACTERMODELLIST_s;
 typedef struct AREASAVE_s AREASAVE_s;
 typedef struct AREA_GLOBAL_VALUES AREA_GLOBAL_VALUES;
 typedef struct ATTRACTO_s ATTRACTO_s;
@@ -20808,7 +20790,6 @@ typedef struct GIZFORCE_s GIZFORCE_s;
 typedef struct GIZMOFNS_s GIZMOFNS_s;
 typedef struct GIZMOPICKUPRUNTIMESYS_s GIZMOPICKUPRUNTIMESYS_s;
 typedef struct GIZMOSYS_s GIZMOSYS_s;
-typedef struct GIZMO_s GIZMO_s;
 typedef struct GIZOBSTACLESYS_s GIZOBSTACLESYS_s;
 typedef struct GIZPANELSYS_s GIZPANELSYS_s;
 typedef struct GIZPANEL_s GIZPANEL_s;
@@ -20881,7 +20862,6 @@ typedef struct ZIPUP_s ZIPUP_s;
 typedef struct _vuv_s _vuv_s;
 typedef struct anakin_door_s anakin_door_s;
 typedef struct anakin_door_setup_s anakin_door_setup_s;
-typedef struct debris_float_key_s debris_float_key_s;
 typedef struct ed_module_s ed_module_s;
 typedef struct edcam_s edcam_s;
 typedef struct edui_colour_pick_s edui_colour_pick_s;
@@ -20896,6 +20876,7 @@ typedef struct edui_sel_s edui_sel_s;
 typedef struct edui_slider_s edui_slider_s;
 typedef struct edui_textpicker_s edui_textpicker_s;
 typedef struct edui_texture_pick_s edui_texture_pick_s;
+typedef struct eduiiattr_s eduiiattr_s;
 typedef struct eduiitem_s eduiitem_s;
 typedef struct eduimenu_s eduimenu_s;
 typedef struct gizmotype_s gizmotype_s;
@@ -20935,8 +20916,8 @@ struct AITRIGGERSET_s {
                 struct FLOWBOX_PC *flowbox;
             };
             union {
-                struct GIZMO_s *triggers[8];
-                struct GIZMO_s *gizmos[8];
+                struct gizmo_pc_s *triggers[8];
+                struct gizmo_pc_s *gizmos[8];
             };
             union {
                 struct AITRIGGERSET_TARGET targets[8];
@@ -21072,13 +21053,6 @@ struct GIZFORCE_s {
     };
 };
 STATIC_ASSERT(sizeof(struct GIZFORCE_s) == 172);
-
-struct GIZMO_s {
-    void *object;
-    i16 unknown;
-    u8 type_id;
-};
-STATIC_ASSERT(sizeof(struct GIZMO_s) == 8);
 
 struct GIZSPINNERARM_s {
     NUMTX matrix;
@@ -21503,12 +21477,6 @@ struct anakin_door_setup_s {
     f32 minimum_offset;
 };
 STATIC_ASSERT(sizeof(struct anakin_door_setup_s) == 40);
-
-struct APICHARACTERMODELLIST_s {
-    i16 model_id;
-    i16 count;
-};
-STATIC_ASSERT(sizeof(struct APICHARACTERMODELLIST_s) == 4);
 
 struct storepack_s {
     char *name;
@@ -22029,16 +21997,16 @@ struct GIZMOFNS_s {
     void(__cdecl *draw_fn)(void *arg0, void *arg1, f32 arg2);
     void(__cdecl *panel_draw_fn)(void *arg0, void *arg1, f32 arg2);
     void *unknown_fn;
-    char *(__cdecl *get_gizmo_name_fn)(struct GIZMO_s *arg0);
-    i32(__cdecl *get_output_fn)(struct GIZMO_s *arg0, i32 arg1, i32 arg2);
-    char *(__cdecl *get_output_name_fn)(struct GIZMO_s *arg0, i32 arg1);
-    i32(__cdecl *get_num_outputs_fn)(struct GIZMO_s *arg0);
-    void(__cdecl *activate_fn)(struct GIZMO_s *arg0, i32 arg1);
-    i32(__cdecl *activate_rev_fn)(struct GIZMO_s *arg0, i32 arg1, i32 arg2);
-    void(__cdecl *set_visibility_fn)(struct GIZMO_s *arg0, i32 arg1);
-    i32(__cdecl *get_visibility_fn)(struct GIZMO_s *arg0);
-    struct nuvec_s *(__cdecl *get_pos_fn)(struct GIZMO_s *arg0);
-    i32(__cdecl *using_special_fn)(struct GIZMO_s **arg0, void *arg1, i32 arg2, char *arg3);
+    char *(__cdecl *get_gizmo_name_fn)(struct gizmo_pc_s *arg0);
+    i32(__cdecl *get_output_fn)(struct gizmo_pc_s *arg0, i32 arg1, i32 arg2);
+    char *(__cdecl *get_output_name_fn)(struct gizmo_pc_s *arg0, i32 arg1);
+    i32(__cdecl *get_num_outputs_fn)(struct gizmo_pc_s *arg0);
+    void(__cdecl *activate_fn)(struct gizmo_pc_s *arg0, i32 arg1);
+    i32(__cdecl *activate_rev_fn)(struct gizmo_pc_s *arg0, i32 arg1, i32 arg2);
+    void(__cdecl *set_visibility_fn)(struct gizmo_pc_s *arg0, i32 arg1);
+    i32(__cdecl *get_visibility_fn)(struct gizmo_pc_s *arg0);
+    struct nuvec_s *(__cdecl *get_pos_fn)(struct gizmo_pc_s *arg0);
+    i32(__cdecl *using_special_fn)(struct gizmo_pc_s **arg0, void *arg1, i32 arg2, char *arg3);
     i32(__cdecl *bolt_hit_plat_fn)(void *arg0, void *arg1, struct bolt_s *arg2, u8 *arg3);
     i32 *(__cdecl *get_best_bolt_target_fn)(struct gizmoset_pc_s *arg0, f32 *arg1, struct nuvec_s *arg2,
                                             struct nuvec_s *arg3, void *arg4, struct nuvec_s *arg5,
@@ -22390,7 +22358,7 @@ STATIC_ASSERT(sizeof(struct GIZFORCEGROUP_s) == 40);
 struct GIZFORCESYS_s {
     struct GIZFORCE_s *forces;
     struct GIZFORCE_s **visible_forces;
-    struct GIZMO_s **hit_test_gizmos;
+    struct gizmo_pc_s **hit_test_gizmos;
     u16 capacity;
     u16 count;
     u16 visible_force_count;
@@ -22631,7 +22599,7 @@ struct MISSIONSYS_s {
     struct MISSIONDATA_s *missions;
     struct MISSIONDATA_s *mission;
     TIMER timer;
-    struct MISSIONSAVE_s *mission_save;
+    struct MISSION_SAVE_READER_PC *mission_save;
     u8 count;
     u8 field8_0x1d;
     u8 flags;
@@ -23230,20 +23198,6 @@ struct EDAIPATHWALL_s {
 };
 STATIC_ASSERT(sizeof(struct EDAIPATHWALL_s) == 12);
 
-struct AIPATHNODELINK_s {
-    u8 node_index;
-    u8 padding_0x01;
-    i16 special_route_index;
-};
-STATIC_ASSERT(sizeof(struct AIPATHNODELINK_s) == 4);
-
-struct AIPATHSPECIALROUTE_s {
-    u8 path_count;
-    u8 padding_0x01[3];
-    struct AIPATH_PC **paths;
-};
-STATIC_ASSERT(sizeof(struct AIPATHSPECIALROUTE_s) == 8);
-
 struct eduiitem_s {
     struct eduiitem_s *next;
     struct eduiitem_s *previous;
@@ -23356,7 +23310,7 @@ STATIC_ASSERT(sizeof(struct nufile_info_s) == 24);
 
 struct GIZOBSTACLESYS_s {
     struct gizobstacle_s *obstacles;
-    struct GIZMO_s **active_gizmos;
+    struct gizmo_pc_s **active_gizmos;
     u16 count;
     u16 capacity;
     u16 active_gizmo_count;
@@ -23445,8 +23399,8 @@ struct SPECIALMINIKIT_s {
     f32 end_frame;
     char special_name[16];
     char pickup_name[8];
-    struct GIZMO_s *special_gizmo;
-    struct GIZMO_s *pickup_gizmo;
+    struct gizmo_pc_s *special_gizmo;
+    struct gizmo_pc_s *pickup_gizmo;
     u8 flags;
 };
 STATIC_ASSERT(sizeof(struct SPECIALMINIKIT_s) == 60);
@@ -23905,12 +23859,6 @@ struct nutex_s {
 };
 STATIC_ASSERT(sizeof(struct nutex_s) == 12);
 
-struct debris_float_key_s {
-    f32 time;
-    f32 value;
-};
-STATIC_ASSERT(sizeof(struct debris_float_key_s) == 8);
-
 struct NuLegacyInstanceLayout {
     u8 pad_00[68];
     union {
@@ -23966,6 +23914,14 @@ struct nugraph_s {
     f32 y_offset;
 };
 STATIC_ASSERT(sizeof(struct nugraph_s) == 92);
+
+struct eduiiattr_s {
+    u32 background;
+    u32 text;
+    u32 highlight;
+    u32 disabled;
+};
+STATIC_ASSERT(sizeof(struct eduiiattr_s) == 16);
 
 /* Globals and constants transferred from the Android sources (tools/globals.py). */
 #ifdef __cplusplus

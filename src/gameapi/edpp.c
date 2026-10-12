@@ -1,8 +1,5 @@
 #include "saga.h"
 
-extern void *debkeydata;
-#define EDPP_DEBRIS_KEYS_PC ((DEBRISKEY_PC *)debkeydata)
-
 __declspec(noinline) void __cdecl edppPtlDestroy(i32 index) {
     if (edpp_ptls[index].instance_id != -1) {
         if (edpp_ptls[index].instance_id != 99999)
@@ -70,7 +67,7 @@ void __cdecl edppStopPage(i8 page) {
         if (debtab[index] == NULL || debtab[index]->page != (u8)page)
             continue;
         for (key = 0; key < maxdebkeys; ++key) {
-            if (EDPP_DEBRIS_KEYS_PC[key].effect_index == index) {
+            if (debkeydata[key].effect_index == index) {
                 handle = key;
                 DebFreeInstantly(&handle);
             }
@@ -96,7 +93,7 @@ void __cdecl edppClearPage(i8 page) {
             continue;
         debtab[index]->disabled = 1;
         for (key = 0; key < maxdebkeys; ++key) {
-            if (EDPP_DEBRIS_KEYS_PC[key].effect_index == index) {
+            if (debkeydata[key].effect_index == index) {
                 handle = key;
                 DebFreeInstantly(&handle);
             }
@@ -122,20 +119,20 @@ void __cdecl edppStartSingleEffect(i32 index) {
                     particle->position.z);
     if (particle->instance_id == -1)
         return;
-    EDPP_DEBRIS_KEYS_PC[particle->instance_id].field_2f9 = 0;
+    debkeydata[particle->instance_id].field_2f9 = 0;
     DebrisOrientation(particle->instance_id, particle->rotation_z, particle->rotation_y);
     DebrisEmitterOrientation(particle->instance_id, particle->emitter_rotation_z, particle->emitter_rotation_y,
                              particle->emitter_rotation_x);
-    DebrisStartOffsetEx(&EDPP_DEBRIS_KEYS_PC[particle->instance_id], particle->start_offset);
+    DebrisStartOffsetEx(&debkeydata[particle->instance_id], particle->start_offset);
     DebrisSetTrigger(particle->instance_id, particle->switch_type, particle->switch_id, particle->switch_variable);
     DebrisReflectionOrientation(particle->instance_id, particle->reflection_rotation_z, particle->reflection_rotation_y,
                                 particle->reflection_offset, particle->reflection_bounce);
     DebrisSetFacing(particle->instance_id, particle->facing_mode, particle->facing_rotation_x,
                     particle->facing_rotation_y);
     if (particle->instance_id != -1)
-        EDPP_DEBRIS_KEYS_PC[particle->instance_id].render_group = particle->render_group;
+        debkeydata[particle->instance_id].render_group = particle->render_group;
     DebrisSetRoomID(particle->instance_id, EdppPageScenesPc[particle->page]);
-    EDPP_DEBRIS_KEYS_PC[particle->instance_id].orientation_flags = (u8)particle->detail_levels;
+    debkeydata[particle->instance_id].orientation_flags = (u8)particle->detail_levels;
 }
 void __cdecl edppStartPage(i32 page) {
     i32 index;
@@ -359,17 +356,17 @@ void __cdecl edppDeleteEffect(i32 index) {
         } else {
             i32 handle = particle->instance_id;
             if (handle != 99999 && handle != -1)
-                EDPP_DEBRIS_KEYS_PC[handle].effect_index = (i16)replacement;
+                debkeydata[handle].effect_index = (i16)replacement;
             particle->effect_index = replacement;
         }
     }
     for (i = 0; i < maxdebkeys; ++i) {
-        if (EDPP_DEBRIS_KEYS_PC[i].effect_index == index) {
+        if (debkeydata[i].effect_index == index) {
             if (replacement == -1) {
                 i32 handle = i;
                 DebFreeInstantly(&handle);
             } else
-                EDPP_DEBRIS_KEYS_PC[i].effect_index = (i16)replacement;
+                debkeydata[i].effect_index = (i16)replacement;
         }
     }
     debtab[index] = NULL;
