@@ -56,6 +56,25 @@ class Struct:
         self.fields = []  # (offset, size, name, cursor, bitfield), anonymous members flattened
         self._collect(cursor)
         self.fields.sort(key=lambda f: f[0])
+        # Members of embedded named structs, by leaf name, for pairing with layouts that inline them.
+        self.deep = list(self.fields)
+        for offset, size, name, field, _ in self.fields:
+            record = field.type.get_canonical()
+            if record.kind == T.RECORD and record.get_declaration().spelling:
+                for inner in Struct._members(record.get_declaration()):
+                    inner_offset = record.get_offset(inner.spelling)
+                    if inner_offset >= 0:
+                        self.deep.append((offset + inner_offset // 8, max(inner.type.get_size(), 0),
+                                          inner.spelling, inner, inner.is_bitfield()))
+        self.deep.sort(key=lambda f: f[0])
+
+    @staticmethod
+    def _members(record):
+        for field in record.get_children():
+            if field.kind in (K.UNION_DECL, K.STRUCT_DECL) and field.is_anonymous():
+                yield from Struct._members(field)
+            elif field.kind == K.FIELD_DECL and field.spelling:
+                yield field
 
     def _collect(self, record):
         for field in record.get_children():
@@ -129,8 +148,11 @@ def pair(android, pc):
         pc_name = re.sub(r"[^a-z0-9]", "", (pstruct.tag or "").lower())
         for akey, common in sorted(candidates.items(), key=lambda item: (-item[1], android[item[0]].tag)):
             astruct = android[akey]
-            anchors = clean_anchors(sorted((f[0], names[f[2]] - f[0]) for f in astruct.fields
-                                           if f[2] in names and not ANDROID_PLACEHOLDER.match(f[2])))
+            top = {f[2] for f in astruct.fields}
+            # Embedded members count too, unless a top-level member has the same name.
+            members = astruct.fields + [f for f in astruct.deep if f[2] not in top]
+            anchors = clean_anchors(sorted({f[0]: names[f[2]] - f[0] for f in members
+                                            if f[2] in names and not ANDROID_PLACEHOLDER.match(f[2])}.items()))
             same = sum(1 for _, delta in anchors if delta == 0)
             android_name = re.sub(r"[^a-z0-9]", "", astruct.tag.lower())
             # Deterministic: score, then exact size, similar name, named over anonymous.
