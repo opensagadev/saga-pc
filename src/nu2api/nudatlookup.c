@@ -62,8 +62,7 @@ i32 __cdecl ExplodeCompressedSize(char *header) {
             return 0;
         }
     }
-    size = ((u32)(u8)header[4] | ((u32)(u8)header[5] << 8) | ((u32)(u8)header[6] << 16) |
-            ((u32)(u8)header[7] << 24)) &
+    size = ((u32)(u8)header[4] | ((u32)(u8)header[5] << 8) | ((u32)(u8)header[6] << 16) | ((u32)(u8)header[7] << 24)) &
            PCImplodeWordMask;
     if (size != 0) {
         size += 12;

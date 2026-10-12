@@ -3268,7 +3268,8 @@ void __cdecl MovePlayer_DIRECTIONAL(GAMEOBJECT *object) {
                 if (direct_turn == 0 && ((CInfo[object->character_context].parameter & 2) != 0 ||
                                          (object->character_data->game_character->flags_090 & 0x100) != 0))
                     walking_angle = object->facing_angle;
-                if (WORLD->current_level == VADERA_LDATA && !((object->flags_1fc & 0x80) != 0) && GameCam->sock_position.sock_index == 0)
+                if (WORLD->current_level == VADERA_LDATA && !((object->flags_1fc & 0x80) != 0) &&
+                    GameCam->sock_position.sock_index == 0)
                     walking_speed *= 1.0416666269302368f;
                 object->target_velocity.x = NuTrigTable[walking_angle >> 1] * walking_speed * water_speed_multiplier;
                 object->target_velocity.z =

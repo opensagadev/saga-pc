@@ -29635,7 +29635,6 @@ extern "C" {
 
 #pragma data_seg(".data$testmovef")
     f32 testmovef = 0.005f;
-
 }
 
 extern "C" {
