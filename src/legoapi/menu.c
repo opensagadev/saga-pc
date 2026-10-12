@@ -293,18 +293,6 @@ void MenuDrawBonusWin(MENU_s *unused0) {
     }
 }
 
-i32 GetParentMenuID(void) {
-    i16 menu;
-    if (GameMenuLevel <= 1) {
-        return -1;
-    }
-    menu = GameMenu[GameMenuLevel - 1].menu;
-    if (menu == -1) {
-        return -1;
-    }
-    return MenuInfo[menu].id;
-}
-
 i32 __cdecl Hub_InMenu(void) {
     switch (GetMenuID()) {
         case 8:

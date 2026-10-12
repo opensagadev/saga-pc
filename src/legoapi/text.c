@@ -548,6 +548,18 @@ i32 __cdecl GetMenuID(void) {
     return menu == -1 ? -1 : MenuInfo[menu].id;
 }
 
+i32 GetParentMenuID(void) {
+    i16 menu;
+    if (GameMenuLevel <= 1) {
+        return -1;
+    }
+    menu = GameMenu[GameMenuLevel - 1].menu;
+    if (menu == -1) {
+        return -1;
+    }
+    return MenuInfo[menu].id;
+}
+
 void __cdecl Text3DStringEncodeFont(u8 *source, u16 *destination, VUFNT *font) {
     u16 character;
     while (*source != 0) {

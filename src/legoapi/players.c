@@ -1034,6 +1034,11 @@ void __cdecl SetProtocolDroidDeactivatedAction(GAMEOBJECT *object) {
         object->field_7aa = 0x44;
 }
 
+i32 __cdecl Arcade_BothPlayersActive(void) {
+    return Player[0] != NULL && (((GAMEOBJECT *)Player[0])->flags_1fc & 0x80) != 0 && Player[1] != NULL &&
+           (((GAMEOBJECT *)Player[1])->flags_1fc & 0x80) != 0;
+}
+
 i32 __cdecl Player_HasInvincibility(GAMEOBJECT *object) {
     return Cheats_CheckFlags(0x80) != 0 || (object != NULL && object->powerup_time > 0.0f);
 }

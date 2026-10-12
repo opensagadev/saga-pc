@@ -34,11 +34,6 @@ typedef struct ARCADE_COIN_PACKET_PC {
 } ARCADE_COIN_PACKET_PC;
 STATIC_ASSERT(offsetof(ARCADE_COIN_PACKET_PC, coins) == 0);
 STATIC_ASSERT(offsetof(ARCADE_COIN_PACKET_PC, scale) == 4);
-i32 __cdecl Arcade_BothPlayersActive(void) {
-    return Player[0] != NULL && (((GAMEOBJECT *)Player[0])->flags_1fc & 0x80) != 0 && Player[1] != NULL &&
-           (((GAMEOBJECT *)Player[1])->flags_1fc & 0x80) != 0;
-}
-
 void __cdecl Arcade_AwardPoint(i32 player_index, i32 reset_score, i32 unused) {
     ADD_GAME_MESSAGE_PC message = PCArcadeMessageTemplate;
     NUVEC position;

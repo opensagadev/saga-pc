@@ -10,11 +10,6 @@ __declspec(noinline) void __cdecl NuTimeSub(NuTime *time, NuTime *a, NuTime *b) 
     }
 }
 
-void __cdecl NuTimeGetTicksPerSecondPS(u32 *low, u32 *high) {
-    *low = (u32)NuTime_PerformanceFrequency;
-    *high = (u32)(NuTime_PerformanceFrequency >> 32);
-}
-
 f32 __cdecl NuTimeSeconds(NuTime *time) {
     u32 low;
     u32 high;
