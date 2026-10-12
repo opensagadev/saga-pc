@@ -118,6 +118,89 @@ void DrawShop3D(WORLDINFO *world) {
     SetLevelLights(world->rtl_set, 1.0f);
 }
 
+static i32 Signals_Load(void *world_info, void *unused1) {
+    i32 version;
+    i32 index;
+    WORLDINFO *world = ((WORLDINFO *)(world_info));
+    if (world->signal_count != 0) {
+        return 0;
+    }
+    version = EdFileReadInt();
+    world->signal_count = EdFileReadInt();
+    for (index = 0; index < world->signal_count; ++index) {
+        EdFileRead(world->signals[index].name, sizeof(world->signals[index].name));
+        EdFileReadNuVec(&world->signals[index].position);
+        world->signals[index].character_letter = EdFileReadChar();
+        if (version > 1) {
+            world->signals[index].suit_letter = EdFileReadChar();
+            world->signals[index].yaw = EdFileReadShort();
+        } else {
+            world->signals[index].suit_letter = 'b';
+            world->signals[index].yaw = 0;
+        }
+    }
+    return 1;
+}
+
+static void Signals_Draw(void *world_info, void *unused1, float unused2) {
+    i32 i;
+    WORLDINFO *world = ((WORLDINFO *)(world_info));
+    SIGNAL_s *signal = world->signals;
+    for (i = 0; i < world->signal_count; i++, signal++) {
+        NUMTX matrix;
+        if (!signal->visible) {
+            continue;
+        }
+        matrix = signal->matrix;
+        if (world->level_objects[0x36].active) {
+            NuSpecialDrawAt(&world->level_objects[0x36].special, &matrix);
+        }
+        if (signal->active) {
+            if (world->level_objects[signal->animation_1].active) {
+                NuSpecialDrawAt(&world->level_objects[signal->animation_1].special, &matrix);
+            }
+            if (world->level_objects[signal->animation_2].active) {
+                f32 along_normal;
+                f32 distance;
+                f32 distance_squared;
+                f32 alpha = signal->radius;
+                NUVEC camera_offset;
+                NuVecSub(&camera_offset, &GameCam->position, &signal->position);
+                along_normal = NuVecDot(&camera_offset, &signal->normal);
+                distance = NuVecMag(&camera_offset);
+                distance_squared = distance * distance - along_normal * along_normal;
+                if (distance_squared < 2.25f) {
+                    f32 fade;
+                    if (distance_squared <= 0.5625f) {
+                        fade = 0.0f;
+                    } else {
+                        fade = (NuFsqrt(distance_squared) - 0.75f) / 0.75f;
+                    }
+                    if (along_normal < 0.0f || along_normal > 2.0f) {
+                        if (along_normal >= 0.0f) {
+                            along_normal -= 2.0f;
+                        } else {
+                            along_normal = -along_normal;
+                        }
+                        if (along_normal < 0.75f) {
+                            fade += (1.0f - fade) * (along_normal / 0.75f);
+                        } else {
+                            fade = 1.0f;
+                        }
+                    }
+                    alpha *= fade;
+                }
+                alpha *= signal->scale;
+                if (alpha > 0.0f) {
+                    NuSpecialDrawAtAlpha(&world->level_objects[signal->animation_2].special, &matrix, alpha);
+                }
+            }
+        } else if (world->level_objects[signal->animation_0].active) {
+            NuSpecialDrawAt(&world->level_objects[signal->animation_0].special, &matrix);
+        }
+    }
+}
+
 static void Signal_SetGizmoVisibility(GIZMO_PC *gizmo, i32 visible) {
     if (gizmo != NULL) {
         Signal_SetVisibility(((SIGNAL_s *)(gizmo->object)), visible);

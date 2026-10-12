@@ -172,6 +172,141 @@ void __cdecl InitSplinePosition(SPLINEPOS *position, NUGSPLINE *spline, f32 dist
     }
 }
 
+static void *GizSpinner_ReserveBufferSpace(void *world_ptr) {
+    WORLDINFO *world = ((WORLDINFO *)(world_ptr));
+    world->spinners = NULL;
+    world->spinner_count = 0;
+    if (world->current_level->max_spinners != 0) {
+        i32 index;
+        world->spinner_anim_pool = GameAnimSet_CreateObjectPool(&world->giz_buffer, &world->buffer_end, 0,
+                                                                world->current_level->max_spinneranim_objs);
+
+        world->giz_buffer.addr = ALIGN(world->giz_buffer.addr, 16);
+        world->spinners = ((GIZSPINNER_s *)(world->giz_buffer.void_ptr));
+        world->giz_buffer.addr += world->current_level->max_spinners * sizeof(GIZSPINNER_s);
+        memset(world->spinners, 0, world->current_level->max_spinners * sizeof(GIZSPINNER_s));
+
+        for (index = 0; index < world->current_level->max_spinners; ++index) {
+            world->spinners[index].anim_set = GameAnimSet_Create(&world->giz_buffer, &world->buffer_end,
+                                                                 world->spinner_anim_pool, world->game_anim_sys);
+        }
+
+        world->giz_buffer.addr = ALIGN(world->giz_buffer.addr, 4);
+        return world->spinners;
+    }
+    return NULL;
+}
+
+void GizSpinners_InitTerrain(WORLDINFO *world) {
+    i32 index;
+    i32 use_default_terrain;
+    if (world->spinners == NULL || world->current_level->max_spinners == 0) {
+        return;
+    }
+
+    index = 0;
+    use_default_terrain = 0;
+    do {
+        if ((world->spinners[index].flags & GIZSPINNER_FLAG_VALID) != 0) {
+            NUMTX matrix;
+            i32 instance = NuSpecialGetInstanceix(&world->spinners[index].special);
+            FindPlatInst(instance);
+            matrix = matrix;
+            NuMtxSetIdentity(&matrix);
+            NuMtxSetRotationY(&matrix, 0);
+            NuMtxRotateY(&matrix, world->spinners[index].rotation);
+            NuMtxTranslate(&matrix, &world->spinners[index].position);
+            world->spinners[index].matrix = matrix;
+
+            if (NuSpecialCompare(&world->spinners[index].special, &thingsSceneBase) != 0) {
+                use_default_terrain = 1;
+            }
+            if (use_default_terrain != 0) {
+                i32 arm;
+                if (LEGOTHINGSSCENE_TER_SPINBASE != -1) {
+                    world->spinners[index].platform_id =
+                        NewPlatPickupInst(&world->spinners[index].matrix, LEGOTHINGSSCENE_TER_SPINBASE);
+                } else {
+                    world->spinners[index].platform_id = -1;
+                }
+                for (arm = 0; arm < world->spinners[index].type; ++arm) {
+                    if (LEGOTHINGSSCENE_TER_SPINARM != -1) {
+                        world->spinners[index].arms[arm].platform_id =
+                            NewPlatPickupInst(&world->spinners[index].arms[arm].matrix, LEGOTHINGSSCENE_TER_SPINARM);
+                    } else {
+                        world->spinners[index].arms[arm].platform_id = -1;
+                    }
+                    PlatInstRotate(world->spinners[index].arms[arm].platform_id, 1);
+                }
+            } else {
+                i32 arm;
+                world->spinners[index].platform_id = ((i16)(NewPlatInst(&world->spinners[index].matrix, instance)));
+                for (arm = 0; arm < world->spinners[index].type; ++arm) {
+                    world->spinners[index].arms[arm].platform_id = -1;
+                }
+            }
+        }
+        ++index;
+    } while (world->current_level->max_spinners > index);
+}
+
+static void GizSpinner_Draw(void *world_ptr, void *unused1, float unused2) {
+    i32 index;
+    NUMTX reflection_matrix;
+    WORLDINFO *world = ((WORLDINFO *)(world_ptr));
+    if (world->spinners == NULL || world->current_level->max_spinners == 0) {
+        return;
+    }
+
+    for (index = 0; index < world->current_level->max_spinners; ++index) {
+        struct GIZSPINNER_s *spinner;
+        u8 special_exists;
+        struct WORLDINFO_s *reflection_world;
+        EnableShadowMapRendering(0);
+        spinner = &world->spinners[index];
+        if ((spinner->flags & GIZSPINNER_FLAG_VALID) == 0 ||
+            ((spinner->flags & GIZSPINNER_FLAG_HIDE_BASE) != 0 && editor_active == 0)) {
+            continue;
+        }
+
+        special_exists = NuSpecialExistsFn(&spinner->special) != 0;
+        if (special_exists) {
+            NuSpecialDrawAt(&spinner->special, &spinner->matrix);
+            if (spinner->type != 0 && NuSpecialCompare(&spinner->special, &thingsSceneBase) != 0 &&
+                NuSpecialExistsFn(&thingsSceneArm) != 0) {
+                i32 arm;
+                GIZSPINNERARM_s *arms = spinner->arms;
+                for (arm = 0; arm < spinner->type; ++arm) {
+                    NuSpecialDrawAt(&thingsSceneArm, &arms[arm].matrix);
+                }
+            }
+        }
+
+        ResetShadowMapRendering();
+        if ((spinner->state_flags & GIZSPINNER_STATE_SHADOW_PLATFORM) == 0 ||
+            NuSpecialExistsFn(&spinner->special) == 0 || NuSpecialGetVisibilityFn(&spinner->special) == 0) {
+            continue;
+        }
+
+        reflection_world = WORLD != NULL && WORLD->current_level != NULL ? WORLD : world;
+        if (MatrixReflectionVU0_AXISY(&spinner->matrix, spinner->ground_height,
+                                      reflection_world->current_level->reflection_y, &reflection_matrix) == 0) {
+            continue;
+        }
+        NuRndrStartReflectionRender(0);
+        NuSpecialDrawAt(&spinner->special, &reflection_matrix);
+        if (spinner->type != 0 && NuSpecialCompare(&spinner->special, &thingsSceneBase) != 0 &&
+            NuSpecialExistsFn(&thingsSceneArm) != 0) {
+            i32 arm;
+            GIZSPINNERARM_s *arms = spinner->arms;
+            for (arm = 0; arm < spinner->type; ++arm) {
+                NuSpecialDrawAt(&thingsSceneArm, &arms[arm].matrix);
+            }
+        }
+        NuRndrEndReflectionRender();
+    }
+}
+
 void __cdecl PointAlongSpline(NUGSPLINE *spline, f32 along, NUVEC *position, u16 *angle, u16 *pitch, i32 looping) {
     u32 extent;
     u32 fixed;

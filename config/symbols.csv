@@ -4758,6 +4758,7 @@ address    , symbol                                                         , si
 0x61d990,_eduicbProcessSlider,915,
 0x61dd30,_eduicbInteractSlider,661,
 0x0061e6b0 , _NuKeyToAscii                                                  , 50    , "i32 __cdecl (u32, i32)"
+0x61ec10,_eduicbMenuCloseAllexpanders,40,
 0x61f070,_eduiGetUsingMenuFocus,20,
 0x61f180,_cbSel,14,
 0x61f190,_cbGradChange,1,
@@ -4830,6 +4831,8 @@ address    , symbol                                                         , si
 0x626b30,_eduicbCancelMessageMenu,25,
 0x626b50,_eduiMenuRender,1602,
 0x6271a0,_eduiSetActiveMenu,68,
+0x627230,_cbInteractMenuKeySelect,98,
+0x6272a0,_edmainGetCursorEnabled,126,
 0x627320,_eduiProcessInteracts,125,
 0x627670,_eduiItemColourSliderCreate,243,
 0x627930,_eduiMenuFitOnScreen,118,
@@ -4846,6 +4849,7 @@ address    , symbol                                                         , si
 0x628970,_eduicbProcessGradPick,671,
 0x628d80,_eduiCreateMessageMenu,228,
 0x628e70,_eduiCreate3LineMessageMenu,443,
+0x629030,_eduiCheckForPadMenuCancel,76,
 0x629080,_eduiMenuProcessInput,948,
 0x629440,_cbSubMenu,57,
 0x6297f0,_CreateColourPicker,427,
@@ -10839,6 +10843,7 @@ address    , symbol                                                         , si
 0x761e5c,??_C@_0L@PCPDBMFI@door_start?$AA@,11,
 0x761e68,??_C@_08NPMFAOIK@door_end?$AA@,9,
 0x761e74,??_C@_05PGBIICNC@doors?$AA@,6,
+0x761e7c,??_C@_05MIIFOMEK@Door_?$AA@,6,char []
 0x761e84,??_C@_04KJGJIGFH@Door?$AA@,5,char []
 0x00761e9c , _LevelConfigGenericKeyword_conveyor                            , 9     , const char[9]
 0x00761ea8 , _LevelConfigGenericKeyword_sfx_ambient                         , 12    , const char[12]
@@ -11425,6 +11430,7 @@ address    , symbol                                                         , si
 0x763d10,??_C@_0L@EDOJLNHA@pulses_end?$AA@,11,
 0x763d1c,??_C@_0N@EOMIGLHF@pulses_start?$AA@,13,
 0x763d2c,??_C@_06LKFCNKBI@pulses?$AA@,7,
+0x763d34,__real@3eaaaaab,4,const f32
 0x763d3c,__real@3f7d70a4,4,const f32
 0x763d58,__real@c61c4000,,const f32
 0x763d60,__real@3f647ae160000000,,const f64
@@ -11588,6 +11594,7 @@ address    , symbol                                                         , si
 0x76aa2c,??_C@_02PCIJFNDE@?$AN?6?$AA@,3,
 0x76ad60,_EduiSourcePathPc,52,const char[52]
 0x76ada0,??_C@_05DNIIFBMG@?$CFs?5?$CFs?$AA@,6,char[6]
+0x76adc0,__real@3e2aaaab,4,const f32
 0x76ae48,__real@c024000000000000,8,const f64
 0x76ae78,__real@3ff0ccccc0000000,8,const f64
 0x76ae90,__real@43600000,4,f32
@@ -11597,6 +11604,7 @@ address    , symbol                                                         , si
 0x76af90,??_C@_09GMFECJDN@?$DMno?5name?$DO?$AA@,10,char []
 0x76af9c,??_C@_0L@GFIMNMGP@Enter?5Text?$AA@,11,char []
 0x76afa8,_PcInputText76afa8, ,char[2]
+0x76b040,__real@4097700000000000,8,const f64
 0x76b090,??_C@_0O@HLDALIGL@Return?5To?5App?$AA@,14,char []
 0x76b0b0,??_C@_0BK@ENMLBOJE@Proportional?5Cursor?5Speed?$AA@,26,char []
 0x76b0cc,??_C@_0N@NCKBDIFB@Camera?5Speed?$AA@,13,char []
@@ -17734,6 +17742,7 @@ address    , symbol                                                         , si
 0x93b11c,_dco_locatorposonly,,i32
 0x93b120,_DisguiseAdjustFn,,"void (__cdecl *)(i32,i32,NUVEC *,NUVEC *)"
 0x93b128,_ZipUpLineMaterialPc,,NUMTL *
+0x93b138,_thingsSceneBase,12,nuhspecial_s
 0x93b1c0,_GizObstacleTriggersPc,,NUVEC *[16]
 0x93b200,_GizObstacleTriggerCountPc,,i32
 0x93b204,_GizObstacleExcludeFnPc,,"i32 (__cdecl *)(GIZOBSTACLE *, GAMEOBJECT *)"
@@ -18628,6 +18637,8 @@ address    , symbol                                                         , si
 0x29130e4,?PadRepeat@?1??FS_GetPadWithRepeat@@9@9,,
 0x29130e8,?LastPad@?1??FS_GetPadWithRepeat@@9@9,,
 0x29130ec,?tpent@?1??eduiAddTextPickEntEx@@9@9,,
+0x29130f4,?down_rept@?1??eduiMenuProcessInput@@9@9,,
+0x29130f8,?up_rept@?1??eduiMenuProcessInput@@9@9,,
 0x02913104 , _apicharsys                                                    , 4     , APICHARSYS *
 0x2913108,_append,,i32
 0x291310c  , _apiloadcharactermodels_nopakfile                               , 4     , i32

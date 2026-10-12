@@ -377,6 +377,32 @@ void *__cdecl AITriggerSetSysCreate(VARIPTR *buffer, VARIPTR *end) {
     return system;
 }
 
+static i32 Attractos_Load(void *context, void *unused1) {
+    i32 version;
+    struct ATTRACTO_s *attracto;
+    i32 i;
+    WORLDINFO *world = ((WORLDINFO *)(context));
+    if (world->attracto_count != 0)
+        return 0;
+    version = EdFileReadInt();
+    world->attracto_count = EdFileReadInt();
+    attracto = ((ATTRACTO_s *)(world->attractos));
+    for (i = 0; i < world->attracto_count; ++i, ++attracto) {
+        u8 capacity;
+        EdFileRead(attracto->name, 0x10);
+        EdFileReadNuVec(&attracto->position);
+        attracto->angle = EdFileReadShort();
+        capacity = EdFileReadUnsignedChar();
+        attracto->capacity = capacity != 0 ? capacity : 1;
+        if (version == 2) {
+            char legacy_name[0x10];
+            i32 length = ((i8)(EdFileReadChar()));
+            EdFileRead(legacy_name, length);
+        }
+    }
+    return 1;
+}
+
 static void Attracto_SetVisibility(GIZMO_PC *gizmo, i32 visible) {
     struct ATTRACTO_s *attracto;
     if (gizmo == NULL || gizmo->object == NULL)

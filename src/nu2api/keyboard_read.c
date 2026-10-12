@@ -121,6 +121,13 @@ i32 NuKeyToAscii(u32 key, i32 shifted) {
     return 0;
 }
 
+static void cbSel(eduimenu_s *unused0, eduiitem_s *item) {
+    selection_value = item->data;
+}
+
+static void cbGradChange(void) {
+}
+
 i32 cbInteractMenuTitle(edui_interact_s *interact) {
     static f32 offsetx;
     static f32 offsety;
@@ -152,6 +159,23 @@ i32 cbInteractMenuCancelChild(edui_interact_s *interact) {
     if (menu && menu->child && menu->child->callback)
         menu->child->callback(menu->child, menu);
     return 0;
+}
+
+void edcamMoveEx(FRAME_PAD_PC *pad, f32 delta_time) {
+    if (edmainGetCursorEnabled() != 0) {
+        if (PadFlyMode == 0 || NuKeyboard(0x38) != 0) {
+            do_maya_mouse_camera(&gp_cam);
+        } else {
+            do_mouse_flymode_camera(&gp_cam, delta_time);
+        }
+    }
+    if (pad != NULL) {
+        if (PadFlyMode == 0) {
+            do_Pad_Standard_camera(&gp_cam, delta_time, pad);
+        } else {
+            do_Pad_flymode_camera(&gp_cam, delta_time, pad);
+        }
+    }
 }
 
 void edcamMove(FRAME_PAD_PC *pad) {

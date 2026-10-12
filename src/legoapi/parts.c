@@ -358,6 +358,129 @@ void edpartCancelInstanceFlagsMenu(eduimenu_s *unused0, eduimenu_s *unused1) {
     edpart_instanceflags_menu = NULL;
 }
 
+static void edpartTrail1DebrisMenu(eduimenu_s *menu, eduiitem_s *unused1, u32 unused2) {
+    if (edpart_nearest_type == NULL)
+        return;
+    edpart_set_debris = 0;
+    edpart_trail1debris_menu = eduiMenuCreate(70, 70, 300, 300, ed_fnt, edpartCancelTrail1DebrisMenu, "Trail 1 Debris");
+    if (edpart_trail1debris_menu != NULL) {
+        eduiMenuAddItem(edpart_trail1debris_menu,
+                        eduiItemSelCreate(1, edblack, 0, 0, edpartGeneralDebrisIndexMenu, "General List..."));
+        if (edpart_nearest_type->field_b3 == 1)
+            eduiMenuAddItem(edpart_trail1debris_menu,
+                            eduiItemSelCreate(1, edblack, 0, 0, edpartLevelDebrisIndexMenu, "Level List..."));
+        else
+            eduiMenuAddItem(edpart_trail1debris_menu, eduiItemSelCreate(1, edgrey, 0, 0, NULL, "Level List..."));
+        eduiMenuAddItem(edpart_trail1debris_menu, eduiItemSliderCreateInt(0, edblack, 0, edpartChangeDebrisPerSec, 0,
+                                                                          ((i32)(edpart_superscale * 1200.0f)),
+                                                                          ((i32)(edpart_nearest_type->trail_rates[0])),
+                                                                          "Trail 1 particles per second"));
+    }
+    eduiMenuAttach(menu, edpart_trail1debris_menu);
+    edpart_trail1debris_menu->x = menu->x + 10;
+    edpart_trail1debris_menu->y = menu->y + 40;
+}
+
+static void edpartTrail2DebrisMenu(eduimenu_s *menu, eduiitem_s *unused1, u32 unused2) {
+    if (edpart_nearest_type == NULL)
+        return;
+    edpart_set_debris = 1;
+    edpart_trail2debris_menu = eduiMenuCreate(70, 70, 300, 300, ed_fnt, edpartCancelTrail2DebrisMenu, "Trail 2 Debris");
+    if (edpart_trail2debris_menu != NULL) {
+        eduiMenuAddItem(edpart_trail2debris_menu,
+                        eduiItemSelCreate(1, edblack, 0, 0, edpartGeneralDebrisIndexMenu, "General List..."));
+        if (edpart_nearest_type->field_b3 == 1)
+            eduiMenuAddItem(edpart_trail2debris_menu,
+                            eduiItemSelCreate(1, edblack, 0, 0, edpartLevelDebrisIndexMenu, "Level List..."));
+        else
+            eduiMenuAddItem(edpart_trail2debris_menu, eduiItemSelCreate(1, edgrey, 0, 0, NULL, "Level List..."));
+        eduiMenuAddItem(edpart_trail2debris_menu, eduiItemSliderCreateInt(0, edblack, 0, edpartChangeDebrisPerSec, 0,
+                                                                          ((i32)(edpart_superscale * 1200.0f)),
+                                                                          ((i32)(edpart_nearest_type->trail_rates[1])),
+                                                                          "Trail 2 particles per second"));
+    }
+    eduiMenuAttach(menu, edpart_trail2debris_menu);
+    edpart_trail2debris_menu->x = menu->x + 10;
+    edpart_trail2debris_menu->y = menu->y + 40;
+}
+
+static void edpartEmitterDebrisMenu(eduimenu_s *menu, eduiitem_s *unused1, u32 unused2) {
+    if (edpart_nearest_type == NULL)
+        return;
+    edpart_set_debris = 2;
+    edpart_emitterdebris_menu =
+        eduiMenuCreate(70, 70, 250, 300, ed_fnt, edpartCancelEmitterDebrisMenu, "Emitter Debris");
+    if (edpart_emitterdebris_menu != NULL) {
+        eduiMenuAddItem(edpart_emitterdebris_menu,
+                        eduiItemSelCreate(1, edblack, 0, 0, edpartGeneralDebrisIndexMenu, "General List..."));
+        if (edpart_nearest_type->field_b3 == 1)
+            eduiMenuAddItem(edpart_emitterdebris_menu,
+                            eduiItemSelCreate(1, edblack, 0, 0, edpartLevelDebrisIndexMenu, "Level List..."));
+        else
+            eduiMenuAddItem(edpart_emitterdebris_menu, eduiItemSelCreate(1, edgrey, 0, 0, NULL, "Level List..."));
+    }
+    eduiMenuAttach(menu, edpart_emitterdebris_menu);
+    edpart_emitterdebris_menu->x = menu->x + 10;
+    edpart_emitterdebris_menu->y = menu->y + 40;
+}
+
+static void edpartImpactDebrisMenu(eduimenu_s *menu, eduiitem_s *unused1, u32 unused2) {
+    if (edpart_nearest_type == NULL)
+        return;
+    edpart_set_debris = 3;
+    edpart_impactdebris_menu = eduiMenuCreate(70, 70, 250, 300, ed_fnt, edpartCancelImpactDebrisMenu, "Impact Debris");
+    if (edpart_impactdebris_menu != NULL) {
+        eduiMenuAddItem(edpart_impactdebris_menu,
+                        eduiItemSelCreate(1, edblack, 0, 0, edpartGeneralDebrisIndexMenu, "General List..."));
+        if (edpart_nearest_type->field_b3 == 1)
+            eduiMenuAddItem(edpart_impactdebris_menu,
+                            eduiItemSelCreate(1, edblack, 0, 0, edpartLevelDebrisIndexMenu, "Level List..."));
+        else
+            eduiMenuAddItem(edpart_impactdebris_menu, eduiItemSelCreate(1, edgrey, 0, 0, NULL, "Level List..."));
+    }
+    eduiMenuAttach(menu, edpart_impactdebris_menu);
+    edpart_impactdebris_menu->x = menu->x + 10;
+    edpart_impactdebris_menu->y = menu->y + 40;
+}
+
+static void edpartImpactPartMenu(eduimenu_s *menu, eduiitem_s *unused1, u32 unused2) {
+    if (edpart_nearest_type == NULL)
+        return;
+    edpart_set_part = 5;
+    edpart_impactpart_menu = eduiMenuCreate(70, 70, 250, 300, ed_fnt, edpartCancelImpactPartMenu, "Impact Part");
+    if (edpart_impactpart_menu != NULL) {
+        eduiMenuAddItem(edpart_impactpart_menu,
+                        eduiItemSelCreate(1, edblack, 0, 0, edpartGeneralPartIndexMenu, "General List..."));
+        if (edpart_nearest_type->field_b3 == 1)
+            eduiMenuAddItem(edpart_impactpart_menu,
+                            eduiItemSelCreate(1, edblack, 0, 0, edpartLevelPartIndexMenu, "Level List..."));
+        else
+            eduiMenuAddItem(edpart_impactpart_menu, eduiItemSelCreate(1, edgrey, 0, 0, NULL, "Level List..."));
+    }
+    eduiMenuAttach(menu, edpart_impactpart_menu);
+    edpart_impactpart_menu->x = menu->x + 10;
+    edpart_impactpart_menu->y = menu->y + 40;
+}
+
+static void edpartDieDebrisMenu(eduimenu_s *menu, eduiitem_s *unused1, u32 unused2) {
+    if (edpart_nearest_type == NULL)
+        return;
+    edpart_set_debris = 4;
+    edpart_diedebris_menu = eduiMenuCreate(70, 70, 250, 300, ed_fnt, edpartCancelDieDebrisMenu, "Die Debris");
+    if (edpart_diedebris_menu != NULL) {
+        eduiMenuAddItem(edpart_diedebris_menu,
+                        eduiItemSelCreate(1, edblack, 0, 0, edpartGeneralDebrisIndexMenu, "General List..."));
+        if (edpart_nearest_type->field_b3 == 1)
+            eduiMenuAddItem(edpart_diedebris_menu,
+                            eduiItemSelCreate(1, edblack, 0, 0, edpartLevelDebrisIndexMenu, "Level List..."));
+        else
+            eduiMenuAddItem(edpart_diedebris_menu, eduiItemSelCreate(1, edgrey, 0, 0, NULL, "Level List..."));
+    }
+    eduiMenuAttach(menu, edpart_diedebris_menu);
+    edpart_diedebris_menu->x = menu->x + 10;
+    edpart_diedebris_menu->y = menu->y + 40;
+}
+
 static void edpartChangeDebrisScale(eduimenu_s *unused0, eduiitem_s *item, u32 unused2) {
     if (edpart_nearest_type)
         edpart_nearest_type->effect_scale = ((edui_slider_s *)(item))->value;
@@ -3359,6 +3482,36 @@ void edpartCopyType(eduimenu_s *menu, eduiitem_s *unused1, u32 unused2) {
         menu->callback(menu, parent);
 }
 
+static void edpartTintMenu(eduimenu_s *menu, eduiitem_s *unused1, u32 unused2) {
+    if (edpart_nearest_type != NULL) {
+        edpart_tint_menu = eduiMenuCreate(70, 70, 250, 250, ed_fnt, edpartCancelTintMenu, "Instance Tint");
+        if (edpart_tint_menu != NULL) {
+            eduiMenuAddItem(edpart_tint_menu, eduiItemSliderCreate(0, edblack, 0, edpartChangeTintR, 0.0f, 2.0f,
+                                                                   edpart_nearest_type->field_160, "Red Tint"));
+            eduiMenuAddItem(edpart_tint_menu, eduiItemSliderCreate(0, edblack, 0, edpartChangeTintG, 0.0f, 2.0f,
+                                                                   edpart_nearest_type->field_164, "Green Tint"));
+            eduiMenuAddItem(edpart_tint_menu, eduiItemSliderCreate(0, edblack, 0, edpartChangeTintB, 0.0f, 2.0f,
+                                                                   edpart_nearest_type->field_168, "Blue Tint"));
+            eduiMenuAttach(menu, edpart_tint_menu);
+            edpart_tint_menu->x = menu->x + 10;
+            edpart_tint_menu->y = menu->y + 40;
+        }
+    }
+}
+
+static void edpartInstanceScaleMenu(eduimenu_s *menu, eduiitem_s *unused1, u32 unused2) {
+    edpart_instancescale_menu =
+        eduiMenuCreate(70, 70, 180, 300, ed_fnt, edpartCancelInstanceScaleMenu, "Instance Scale");
+    if (edpart_instancescale_menu != NULL && edpart_nearest_type != NULL) {
+        eduiMenuAddItem(edpart_instancescale_menu,
+                        eduiItemSliderCreate(0, edblack, 0, edpartChangeInstanceScale, 0.0f, edpart_superscale * 10.0f,
+                                             edpart_nearest_type->particle_scale, "Instance Scale"));
+        eduiMenuAttach(menu, edpart_instancescale_menu);
+        edpart_instancescale_menu->x = menu->x + 10;
+        edpart_instancescale_menu->y = menu->y + 40;
+    }
+}
+
 void edpartRender() {
     edcamSet();
     edpartDrawCursor();
@@ -4299,6 +4452,7 @@ void AddScaledVariableShotPARTEffect(i32 effect, NUVEC *position, f32 rate, f32 
     if (scaled != -1)
         AddVariableShotPARTEffect(scaled, position, rate, time, orientation);
 }
+
 i32 edpartProc(float delta_time, FRAME_PAD_PC *pad) {
     edpart_count += 5;
     if (edpart_active_menu) {

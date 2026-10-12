@@ -499,6 +499,30 @@ void __cdecl GizForceSFX_Configure(WORLDINFO *world_ptr, char *config) {
     NuFParDestroy(parser);
 }
 
+static void *GizForces_ReserveBufferSpace(void *world_ptr) {
+    i32 i;
+    WORLDINFO *world = ((WORLDINFO *)(world_ptr));
+    GIZFORCESYS_s *force_sys =
+        ((GIZFORCESYS_s *)(GameBufferAlloc(&world->giz_buffer, &world->buffer_end, sizeof(GIZFORCESYS_s))));
+
+    force_sys->capacity = world->current_level->max_force;
+    force_sys->forces = ((GIZFORCE_s *)(GameBufferAlloc(&world->giz_buffer, &world->buffer_end,
+                                                        force_sys->capacity * sizeof(GIZFORCE_s))));
+    force_sys->hit_test_gizmos = ((GIZMO_PC **)(GameBufferAlloc(&world->giz_buffer, &world->buffer_end,
+                                                                force_sys->capacity * sizeof(GIZMO_PC *))));
+    force_sys->visible_forces = ((GIZFORCE_s **)(GameBufferAlloc(&world->giz_buffer, &world->buffer_end,
+                                                                 force_sys->capacity * sizeof(GIZFORCE_s *))));
+    force_sys->anim_pool = GameAnimSet_CreateObjectPool(&world->giz_buffer, &world->buffer_end, 8,
+                                                        world->current_level->max_force_objects);
+
+    for (i = 0; i < force_sys->capacity; ++i) {
+        force_sys->forces[i].anim_set =
+            GameAnimSet_Create(&world->giz_buffer, &world->buffer_end, force_sys->anim_pool, world->game_anim_sys);
+    }
+    world->giz_force_sys = force_sys;
+    return force_sys;
+}
+
 void GizForces_Draw(void *world_ptr, void *data, float unused2) {
     struct GIZFORCE_s *force;
     u16 force_sys_count;

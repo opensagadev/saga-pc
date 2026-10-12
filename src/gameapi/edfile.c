@@ -338,6 +338,21 @@ void FS_SetFileSelPathFromName(char *name) {
     }
 }
 
+void eduiMenuDestroyItems(eduimenu_s *menu) {
+    if (menu) {
+        eduicbMenuCloseAllexpanders(menu);
+        while (menu->first) {
+            eduiitem_s *next = menu->first->next;
+            menu->first->destroy(menu, menu->first);
+            menu->first = next;
+        }
+        menu->last = NULL;
+        menu->selected = NULL;
+        menu->field_0c = NULL;
+        menu->field_10 = NULL;
+    }
+}
+
 static i32 eduicbProcessSel(eduimenu_s *menu, eduiitem_s *item, f32 unused2, FRAME_PAD_PC *pad) {
     edui_sel_s *selection = ((edui_sel_s *)(item));
     if (pad->digital_buttons_pressed & EDUI_CURSOR_PRIMARY) {
@@ -575,6 +590,143 @@ void eduiCreate3LineMessageMenu(eduimenu_s *parent, char *first, char *second, c
         edui_messagemenu->x = parent->x + 10;
         edui_messagemenu->y = parent->y + 40;
     }
+}
+
+i32 eduiMenuProcessInput(eduimenu_s *menu, f32 delta_time, FRAME_PAD_PC *pad, i32 item_result) {
+    u32 buttons;
+    u32 pressed;
+    u32 up_button;
+    u32 down_button;
+    i32 up;
+    i32 down;
+    i32 to_first;
+    i32 page_up;
+    i32 page_down;
+    i32 to_last;
+    static f32 up_rept;
+    static f32 down_rept;
+    cbInteractMenuKeySelect(menu);
+    if (item_result || !pad)
+        return 0;
+    if (menu && menu->selected && menu->selected->input && !menu->selected->disabled && pad->digital_buttons) {
+        if (menu->selected->input(menu, menu->selected, pad->digital_buttons, pad->digital_buttons_pressed))
+            return 0;
+    }
+    buttons = pad->digital_buttons;
+    pressed = pad->digital_buttons_pressed;
+    up_button = (menu->flags & 2) ? 0x8000 : 0x1000;
+    down_button = (menu->flags & 2) ? 0x2000 : 0x4000;
+    up = 0;
+    if (pressed & up_button) {
+        up_rept = 1.0f / 3.0f;
+        up = 1;
+    }
+    if ((buttons & up_button) && up_rept > 0.0f) {
+        up_rept -= delta_time;
+        if (up_rept <= 0.0f) {
+            up_rept = 1.0f / 6.0f;
+            up = 1;
+        }
+    }
+    if (!(menu->flags & 6)) {
+        if ((buttons & 0x8000) && !(menu->flags & 1)) {
+            i32 distance = ((i32)(delta_time * 1500.0f));
+            if (distance < 1)
+                distance = 1;
+            menu->x -= distance;
+        }
+        if ((buttons & 0x2000) && !(menu->flags & 1)) {
+            i32 distance = ((i32)(delta_time * 1500.0f));
+            if (distance < 1)
+                distance = 1;
+            menu->x += distance;
+        }
+    }
+    down = 0;
+    if (pressed & down_button) {
+        down_rept = 1.0f / 3.0f;
+        down = 1;
+    }
+    if ((buttons & down_button) && down_rept > 0.0f) {
+        down_rept -= delta_time;
+        if (down_rept <= 0.0f) {
+            down_rept = 1.0f / 6.0f;
+            down = 1;
+        }
+    }
+    to_first = up && (buttons & 1);
+    page_up = up && (buttons & 2);
+    page_down = down && (buttons & 2);
+    to_last = down && (buttons & 1);
+    if (page_down && menu->field_10) {
+        struct eduiitem_s *item;
+        i32 count = 1;
+        for (item = menu->field_0c; item && item != menu->field_10; item = item->next)
+            ++count;
+        while (menu->selected->next && count--) {
+            menu->selected = menu->selected->next;
+        }
+        return 0;
+    }
+    if (page_up && menu->field_10) {
+        struct eduiitem_s *item;
+        i32 count = 1;
+        for (item = menu->field_0c; item && item != menu->field_10; item = item->next)
+            ++count;
+        menu->selected = menu->field_0c;
+        while (menu->selected->previous && count--) {
+            menu->selected = menu->selected->previous;
+            menu->field_0c = menu->selected;
+        }
+        return 0;
+    }
+    if (up && menu->selected && menu->selected->previous) {
+        do {
+            struct eduiitem_s *item;
+            if (menu->selected == menu->field_0c)
+                menu->field_0c = menu->selected->previous;
+            item = menu->selected->previous;
+            while (item->type == 18)
+                item = item->previous;
+            menu->selected = item;
+        } while (menu->selected->previous && to_first);
+        return 0;
+    }
+    if (down && menu->selected && menu->selected->next) {
+        do {
+            eduiitem_s *item = menu->selected->next;
+            while (item->type == 18)
+                item = item->next;
+            menu->selected = item;
+        } while (menu->selected->next && to_last);
+        if (to_last) {
+            struct eduiitem_s *item;
+            i32 count = 1;
+            for (item = menu->field_0c; item && item != menu->field_10; item = item->next)
+                ++count;
+            menu->field_0c = menu->selected;
+            while (menu->field_0c->previous && count--)
+                menu->field_0c = menu->field_0c->previous;
+        }
+        return 0;
+    }
+    eduiCheckForPadMenuCancel(menu, pad);
+    return 0;
+}
+
+static void cbSubMenu(eduimenu_s *menu, eduiitem_s *item) {
+    eduiMenuAttach(menu, ((eduimenu_s *)(item->data_ptr)));
+}
+
+static void cbmcfgCancel(eduimenu_s *menu, eduimenu_s *unused1) {
+    eduiMenuDetach(menu);
+}
+
+eduiitem_s *eduiItemGreyGradPickCreate(size_t data, const void *colours, EdUiItemCallback callback, char *text) {
+    eduiitem_s *item = eduiItemGradPickCreate(data, colours, callback, text);
+    if (item)
+        item->type = 8;
+    return item;
 }
 
 i32 eduiMenuProcess(eduimenu_s *menu, f32 delta_time, FRAME_PAD_PC *pad) {

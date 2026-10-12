@@ -89,6 +89,31 @@ GIZMO_PC *__cdecl createGizTimer(void *unused, f32 time, i32 random_time, char *
     return AddGizmo(world->gizmo_sys, giztimer_gizmotype_id, NULL, timer);
 }
 
+i32 GizTimer_Load(void *world_info, void *unused1) {
+    NUVEC vec;
+    char buffer[16];
+
+    WORLDINFO *world = (WORLDINFO *)world_info;
+    if (world->giz_timers_count == 0) {
+        i32 count;
+        i32 i;
+        EdFileReadInt();
+        count = EdFileReadInt();
+
+        for (i = 0; i < count; i++) {
+            i32 length = EdFileReadInt();
+            EdFileRead(buffer, length);
+            EdFileReadFloat();
+            EdFileReadUnsignedShort();
+            EdFileReadNuVec(&vec);
+        }
+
+        return 1;
+    }
+
+    return 0;
+}
+
 ADDGIZMOTYPE_PC *GizTimer_RegisterGizmo(i32 type_id) {
     static ADDGIZMOTYPE_PC addtype;
 

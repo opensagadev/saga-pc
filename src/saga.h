@@ -24429,7 +24429,7 @@ extern "C" {
     extern i16 tCHALLENGECOMPLETE;
     extern i16 tWINNER;
     void __cdecl AI_Activate(void *gizmo, i32 active);
-    void __cdecl AI_AddGizmos(struct GIZMOSYS_s *gizmo_sys, i32 type_id, void *world_ptr, void *unused);
+    void __cdecl AI_AddGizmos(struct gizmosys_pc_s *gizmo_sys, i32 type_id, void *world_ptr, void *unused);
     char *__cdecl AI_GetGizmoName(void *gizmo);
     i32 __cdecl AI_GetMaxGizmos(void *arg0);
     i32 __cdecl AI_GetNumOutputs(void *arg0);
@@ -24437,7 +24437,7 @@ extern "C" {
     char *__cdecl AI_GetOutputName(void *arg0, i32 arg1);
     extern f32 GIZPANEL_PLAYERPOSLIFT;
     void __cdecl GizTurret_ReadAnimSetData(struct gameanimobj_s *object, u8 version);
-    struct nuvec_s *__cdecl GizmoGetPos(struct GIZMOSYS_s *gizmo_sys, void *gizmo);
+    struct nuvec_s *__cdecl GizmoGetPos(struct gizmosys_pc_s *gizmo_sys, void *gizmo);
     struct area_supercounter_pc_s *__cdecl SuperCounters_FindPickup(struct WORLDINFO_s *arg0, void *arg1,
                                                                     struct nuvec_s *arg2, void *arg3);
     extern u16 *Game_CompletionSave;
@@ -24522,7 +24522,7 @@ extern "C" {
     extern i32 COMPLETIONPOINTS;
     f32 __cdecl NuFmin(f32 a, f32 b);
     void __cdecl GizBuildIt_TurnOff(struct GIZBUILDIT_s *buildit);
-    void __cdecl GizAIMessage_AddGizmos(struct GIZMOSYS_s *gizmo_sys, i32 arg1, void *arg2, void *arg3);
+    void __cdecl GizAIMessage_AddGizmos(struct gizmosys_pc_s *gizmo_sys, i32 arg1, void *arg2, void *arg3);
     char *__cdecl GizAIMessage_GetGizmoName(GIZMO_PC *gizmo);
     i32 __cdecl GizAIMessage_GetMaxGizmos(void *arg0);
     i32 __cdecl GizAIMessage_GetNumOutputs(GIZMO_PC *gizmo);
@@ -24533,7 +24533,7 @@ extern "C" {
     void __cdecl PlayRadio(char *arg0, char *arg1, i32 arg2);
     void __cdecl RegisterGizActions(GIZACTIONDEF_PC *definitions);
     void __cdecl GizRandom_Activate(GIZMO_PC *gizmo, i32 active);
-    void __cdecl GizRandom_AddGizmos(struct GIZMOSYS_s *gizmo_sys, i32 type_id, void *world_ptr, void *arg3);
+    void __cdecl GizRandom_AddGizmos(struct gizmosys_pc_s *gizmo_sys, i32 type_id, void *world_ptr, void *arg3);
     char *__cdecl GizRandom_GetGizmoName(GIZMO_PC *gizmo);
     i32 __cdecl GizRandom_GetMaxGizmos(void *world_ptr);
     i32 __cdecl GizRandom_GetNumOutputs(void *gizmo);
@@ -24764,7 +24764,8 @@ extern "C" {
     struct edui_gradient_node_s *__cdecl eduiGradStageAdd(struct edui_gradient_pick_s *item, f32 time, f32 hue,
                                                           f32 saturation, f32 value);
     struct eduiitem_s *__cdecl eduiItemGradPickCreate(u32 data, void *colours, void *callback, char *text);
-    struct eduiitem_s *__cdecl eduiItemGreyGradPickCreate(u32 data, void *colours, void *callback, char *text);
+    struct eduiitem_s *__cdecl eduiItemGreyGradPickCreate(size_t data, const void *colours, EdUiItemCallback callback,
+                                                          char *text);
     struct eduiitem_s *__cdecl eduiItemSliderCreate(u32 data, void *colours, i32 group, void *callback, f32 minimum,
                                                     f32 maximum, f32 value, char *text);
     i32 __cdecl eduiMenuProcessAux(struct eduimenu_s *menu, f32 delta_time, struct FRAME_PAD_PC *pad);
@@ -24869,7 +24870,7 @@ extern "C" {
     extern i32 edptl_clipboard_entry;
     extern struct eduimenu_s *ptltypemenu;
     void __cdecl GizPanel_Activate(void *gizmo, i32 active);
-    void __cdecl GizPanel_AddGizmos(struct GIZMOSYS_s *gizmo_sys, i32 type_id, void *world_ptr, void *arg3);
+    void __cdecl GizPanel_AddGizmos(struct gizmosys_pc_s *gizmo_sys, i32 type_id, void *world_ptr, void *arg3);
     void __cdecl GizPanel_Draw(void *world_ptr, void *arg1, f32 arg2);
     char *__cdecl GizPanel_GetGizmoName(void *gizmo);
     i32 __cdecl GizPanel_GetMaxGizmos(void *world_ptr);
@@ -24894,7 +24895,7 @@ extern "C" {
     void __cdecl edbriDoInput(struct FRAME_PAD_PC *pad);
     extern struct eduimenu_s *edbri_active_menu;
     void __cdecl Door_Activate(GIZMO_PC *gizmo, i32 value);
-    void __cdecl Door_AddGizmos(struct GIZMOSYS_s *gizmo_sys, i32 type_id, void *world_ptr, void *arg3);
+    void __cdecl Door_AddGizmos(struct gizmosys_pc_s *gizmo_sys, i32 type_id, void *world_ptr, void *arg3);
     char *__cdecl Door_GetGizmoName(GIZMO_PC *gizmo);
     i32 __cdecl Door_GetMaxGizmos(void *door);
     i32 __cdecl Door_GetNumOutputs(GIZMO_PC *arg0);
@@ -24911,7 +24912,7 @@ extern "C" {
     extern NUVEC TempleC_StreamStatusPos;
     extern u8 drawLights;
     void __cdecl GizSpinner_Activate(void *gizmo, i32 active);
-    void __cdecl GizSpinner_AddGizmos(struct GIZMOSYS_s *gizmo_sys, i32 type_id, void *world_ptr, void *arg3);
+    void __cdecl GizSpinner_AddGizmos(struct gizmosys_pc_s *gizmo_sys, i32 type_id, void *world_ptr, void *arg3);
     void *__cdecl GizSpinner_AllocateProgressData(void *buffer, void *buffer_end);
     i32 __cdecl GizSpinner_BoltHitPlat(void *arg0, void *spinner_ptr, struct bolt_s *bolt, u8 *hit_flags);
     void __cdecl GizSpinner_ClearProgress(void *arg0, void *progress_ptr);
@@ -24938,7 +24939,7 @@ extern "C" {
     i32 __cdecl GizSpinner_UsingSpecial(void *results, void *world_ptr, i32 capacity, char *name);
     void __cdecl GizSpinners_Update(void *world_ptr, void *arg1, f32 arg2);
     void __cdecl GizTimer_Activate(GIZMO_PC *gizmo, i32 unknown);
-    void __cdecl GizTimer_AddGizmos(struct GIZMOSYS_s *gizmo_sys, i32 unknown1, void *world_info, void *unknown2);
+    void __cdecl GizTimer_AddGizmos(struct gizmosys_pc_s *gizmo_sys, i32 unknown1, void *world_info, void *unknown2);
     char *__cdecl GizTimer_GetGizmoName(GIZMO_PC *gizmo);
     i32 __cdecl GizTimer_GetMaxGizmos(void *world_info);
     i32 __cdecl GizTimer_GetNumOutputs(GIZMO_PC *gizmo);
@@ -24948,7 +24949,7 @@ extern "C" {
     void *__cdecl GizTimer_ReserveBufferSpace(void *world_info);
     void __cdecl GizTimer_Update(void *world_info, void *arg1, f32 delta_time);
     void __cdecl GizTorp_Activate(void *gizmo, i32 active);
-    void __cdecl GizTorp_AddGizmos(struct GIZMOSYS_s *gizmo_sys, i32 type_id, void *world_ptr, void *arg3);
+    void __cdecl GizTorp_AddGizmos(struct gizmosys_pc_s *gizmo_sys, i32 type_id, void *world_ptr, void *arg3);
     void __cdecl GizTorp_Draw(void *world_ptr, void *arg1, f32 arg2);
     char *__cdecl GizTorp_GetGizmoName(void *gizmo);
     i32 __cdecl GizTorp_GetMaxGizmos(void *world_ptr);
@@ -25144,9 +25145,113 @@ extern "C" {
     extern void(__cdecl *nuerror_handler)(char *arg0);
     extern void(__cdecl *nuwarning_handler)(char *arg0);
     void __cdecl GameMsg_Draw_MiniKitDetector(struct game_message_pc_s *arg0, struct nuvec_s *arg1, f32 arg2);
+    void __cdecl edcamSetSpeed(f32 position_x, f32 position_y, f32 position_z, f32 distance);
+    extern u32 edui_cursor_buttons_db;
+    extern f32 edui_cursor_x;
+    extern f32 edui_cursor_y;
+    void __cdecl eduicbMenuCloseAllexpanders(struct eduimenu_s *menu);
+    void __cdecl edpartAddGeneralType(struct eduimenu_s *arg0, struct eduiitem_s *arg1, u32 arg2);
+    void __cdecl edpartAddLevelType(struct eduimenu_s *arg0, struct eduiitem_s *arg1, u32 arg2);
+    void __cdecl edpartCancelGeneralTypeMenu(struct eduimenu_s *arg0, struct eduimenu_s *arg1);
+    void __cdecl edpartCancelInstanceMenu(struct eduimenu_s *arg0, struct eduimenu_s *arg1);
+    void __cdecl edpartCancelLevelTypeMenu(struct eduimenu_s *arg0, struct eduimenu_s *arg1);
+    void __cdecl edpartInstanceOrphansMenu(struct eduimenu_s *arg0, struct eduiitem_s *arg1, u32 arg2);
+    void __cdecl edpartSetDistribution(struct eduimenu_s *arg0, struct eduiitem_s *arg1, u32 arg2);
+    extern struct eduimenu_s *edpart_generaltype_menu;
+    extern struct eduimenu_s *edpart_instance_menu;
+    extern struct eduimenu_s *edpart_leveltype_menu;
+    extern struct eduiitem_s *edpart_nullobject_highlight;
+    extern char nullobjectname[16];
+    void __cdecl Hub_ActivateDoorMenu(void *arg0);
+    extern i32 door_cutscenesnap;
+    extern i32 gone_through_door_to_new_mode;
+    extern void *newmode_cutinfo;
+    extern nuhspecial_s thingsSceneArm;
+    f32 __cdecl NuFmax(f32 a, f32 b);
+    void __cdecl ResetSinglePushBlockHeight(struct WORLDINFO_s *arg0, struct pushblock_s *arg1, i32 arg2);
+    extern i32 pushposincrease;
+    i32 __cdecl GizSpinner_Update(struct GIZSPINNER_s *spinner);
+    extern GRAPPLE_DYNAMIC_PC DynamicGrapple[4];
+    void __cdecl Grapples_DrawList(struct WORLDINFO_s *world, struct GRAPPLE_DYNAMIC_PC *grapples, i32 grapple_count,
+                                   u16 target_rotation, f32 target_alpha);
+    void __cdecl edpartCancelDataMenu(struct eduimenu_s *arg0, struct eduimenu_s *arg1);
+    void __cdecl edpartCancelDieDebrisMenu(struct eduimenu_s *arg0, struct eduimenu_s *arg1);
+    void __cdecl edpartCancelEmitterDebrisMenu(struct eduimenu_s *arg0, struct eduimenu_s *arg1);
+    void __cdecl edpartCancelImpactDebrisMenu(struct eduimenu_s *arg0, struct eduimenu_s *arg1);
+    void __cdecl edpartCancelImpactPartMenu(struct eduimenu_s *arg0, struct eduimenu_s *arg1);
+    void __cdecl edpartCancelOptMenu(struct eduimenu_s *arg0, struct eduimenu_s *arg1);
+    void __cdecl edpartCancelTintMenu(struct eduimenu_s *arg0, struct eduimenu_s *arg1);
+    void __cdecl edpartCancelTrail1DebrisMenu(struct eduimenu_s *arg0, struct eduimenu_s *arg1);
+    void __cdecl edpartCancelTrail2DebrisMenu(struct eduimenu_s *arg0, struct eduimenu_s *arg1);
+    void __cdecl edpartChangeDebrisPerSec(struct eduimenu_s *arg0, struct eduiitem_s *arg1, u32 arg2);
+    void __cdecl edpartChangeFilterName(struct eduimenu_s *arg0, struct eduiitem_s *item, u32 arg2);
+    void __cdecl edpartChangeTintB(struct eduimenu_s *arg0, struct eduiitem_s *arg1, u32 arg2);
+    void __cdecl edpartChangeTintG(struct eduimenu_s *arg0, struct eduiitem_s *arg1, u32 arg2);
+    void __cdecl edpartChangeTintR(struct eduimenu_s *arg0, struct eduiitem_s *arg1, u32 arg2);
+    void __cdecl edpartCreate(struct nuvec_s *position, i32 type);
+    void __cdecl edpartFileLoadEffects(struct eduimenu_s *arg0, struct eduiitem_s *arg1, u32 arg2);
+    void __cdecl edpartFileSaveEffects(struct eduimenu_s *arg0, struct eduiitem_s *arg1, u32 arg2);
+    void __cdecl edpartFileSaveEffectsGeneral(struct eduimenu_s *arg0, struct eduiitem_s *arg1, u32 arg2);
+    void __cdecl edpartFileSaveEffectsLevel(struct eduimenu_s *arg0, struct eduiitem_s *arg1, u32 arg2);
+    void __cdecl edpartGeneralDebrisIndexMenu(struct eduimenu_s *arg0, struct eduiitem_s *arg1, u32 arg2);
+    void __cdecl edpartGeneralPartIndexMenu(struct eduimenu_s *arg0, struct eduiitem_s *arg1, u32 arg2);
+    void __cdecl edpartLevelDebrisIndexMenu(struct eduimenu_s *arg0, struct eduiitem_s *arg1, u32 arg2);
+    void __cdecl edpartLevelPartIndexMenu(struct eduimenu_s *arg0, struct eduiitem_s *arg1, u32 arg2);
+    void __cdecl edpartMoveList(struct eduimenu_s *arg0, struct eduiitem_s *arg1, u32 arg2);
+    void __cdecl edpartMultipleCopyClear(void);
+    void __cdecl edpartMultipleCopyCopy(void);
+    void __cdecl edpartSScaleMenu(struct eduimenu_s *menu, struct eduiitem_s *arg1, u32 arg2);
+    void __cdecl edpartSoundsMenu(struct eduimenu_s *menu, struct eduiitem_s *arg1, u32 arg2);
+    void __cdecl edpartSwitchMenu(struct eduimenu_s *menu, struct eduiitem_s *arg1, u32 arg2);
+    void __cdecl edpartToggleFilter(struct eduimenu_s *arg0, struct eduiitem_s *item, u32 arg2);
+    extern i32 edpart_cam_ax;
+    extern i32 edpart_cam_ay;
+    extern NUVEC edpart_cam_pos;
+    extern struct eduimenu_s *edpart_data_menu;
+    extern struct eduimenu_s *edpart_diedebris_menu;
+    extern struct eduimenu_s *edpart_emitterdebris_menu;
+    extern struct eduimenu_s *edpart_impactdebris_menu;
+    extern struct eduimenu_s *edpart_impactpart_menu;
+    extern f32 edpart_offset;
+    extern struct eduimenu_s *edpart_opt_menu;
+    extern i32 edpart_set_debris;
+    extern i32 edpart_set_part;
+    extern i32 edpart_snap_enabled;
+    extern struct eduimenu_s *edpart_tint_menu;
+    extern struct eduimenu_s *edpart_trail1debris_menu;
+    extern struct eduimenu_s *edpart_trail2debris_menu;
+    extern i32 trooperteamcount;
+    struct SUIT_INITIALIZER_RECORD_PC *__cdecl Suit_FindFromLetter(char letter);
+    extern struct PC_SCENE_MTL_VIEW *SolidMtl3D;
+    extern i32 selection_value;
+    void __cdecl cbInteractMenuKeySelect(struct eduimenu_s *menu);
+    i32 __cdecl eduiCheckForPadMenuCancel(struct eduimenu_s *menu, struct FRAME_PAD_PC *pad);
+    void __cdecl eduicbItemGradPickDestroy(struct eduimenu_s *arg0, struct eduiitem_s *arg1);
+    i32 __cdecl eduicbRenderGradPick(struct eduimenu_s *arg0, struct eduiitem_s *arg1, i32 arg2, i32 arg3, i32 arg4,
+                                     i32 arg5);
+    void __cdecl edpartDataMenu(struct eduimenu_s *menu, struct eduiitem_s *arg1, u32 arg2);
+    void __cdecl edpartEmitMenu(struct eduimenu_s *menu, struct eduiitem_s *arg1, u32 arg2);
+    void __cdecl edpartInstanceMenu(struct eduimenu_s *menu, struct eduiitem_s *arg1, u32 arg2);
+    void __cdecl edpartInstanceSettingsMenu(struct eduimenu_s *menu, struct eduiitem_s *arg1, u32 arg2);
+    void __cdecl do_maya_mouse_camera(struct edcam_s *camera);
 #ifdef __cplusplus
 }
 #endif
+enum { GAMEANIMSET_VISIBILITY_NONE = 0 };
+enum { SPINNER_RUNTIME_AT_OUTPUT = 64 };
+enum { SPINNER_RUNTIME_AUTO_RETURN = 16 };
+enum { SPINNER_RUNTIME_INPUT_DISABLED = 8 };
+enum { SPINNER_STATE_ROTATING = 64 };
+enum { SPINNER_STATE_STOP_ANIMATION = 32 };
+enum { PORTALDOOR_CLOSED = 4 };
+enum { PORTALDOOR_OPENED = 2 };
+enum { PORTALDOOR_TRIGGER_AT_END = 1 };
+enum { GIZSPINNER_STATE_SHADOW_PLATFORM = 2048 };
+enum { APIOBJECT_FLAG_PLAYER_ACTIVE = 128 };
+enum { APIOBJECT_STATE_FLAG_IGNORE_DOORS = 262144 };
+enum { DOOR_FLAG_ONE_WAY = 1 };
+enum { LEVEL_OUTRO = 128 };
+enum { RESETBIT_DOOR_TRANSITION = 8 };
 enum { NUPAD_PLAY = 2 };
 enum { NUPAD_RECORD = 1 };
 enum { GIZMOPICKUP_STATE_COLLECTED = 8 };

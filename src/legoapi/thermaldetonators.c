@@ -103,3 +103,29 @@ i32 __cdecl ThermalDetonator_MoveCode(GAMEOBJECT *object) {
                                 : 1.0f;
     return 0;
 }
+
+static i32 TightRopes_Load(void *world_info, void *unused1) {
+    i32 version;
+    i32 i;
+    WORLDINFO *world = ((WORLDINFO *)(world_info));
+    if (world->tightrope_count != 0)
+        return 0;
+    version = EdFileReadInt();
+    world->tightrope_count = EdFileReadInt();
+    for (i = 0; i < world->tightrope_count; ++i) {
+        EdFileRead(world->tightropes[i].name, 16);
+        EdFileReadNuVec(&world->tightropes[i].start_position);
+        EdFileReadNuVec(&world->tightropes[i].end_position);
+        if (version > 1) {
+            world->tightropes[i].field_0x28 = EdFileReadUnsignedShort();
+            world->tightropes[i].field_0x2a = EdFileReadUnsignedShort();
+            world->tightropes[i].field_0x2c = EdFileReadUnsignedShort();
+            world->tightropes[i].field_0x2e = EdFileReadUnsignedShort();
+            world->tightropes[i].field_0x30 = EdFileReadUnsignedChar();
+            world->tightropes[i].field_0x31 = EdFileReadUnsignedChar();
+            if (version != 2)
+                world->tightropes[i].field_0x32 = EdFileReadChar();
+        }
+    }
+    return 1;
+}

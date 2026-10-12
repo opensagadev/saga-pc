@@ -275,6 +275,21 @@ void GizPanel_CreateTerrain(GIZPANEL_s *panel) {
     PlatInstRotate(panel->platform_id, 1);
 }
 
+void GizPanel_InitTerrain(WORLDINFO *world) {
+    i32 index;
+    GIZPANELSYS_s *panel_sys = world->giz_panel_sys;
+    if (panel_sys == NULL || panel_sys->count <= 0) {
+        return;
+    }
+
+    for (index = 0; index < panel_sys->count; ++index) {
+        GIZPANEL_s *panel = &panel_sys->panels[index];
+        panel->platform_id = -1;
+        GizPanel_CreateTerrain(panel);
+        panel_sys = world->giz_panel_sys;
+    }
+}
+
 static void GizPanel_SetVisibility(GIZMO_PC *gizmo, i32 visible) {
     struct GIZPANEL_s *panel;
     i32 was_visible;

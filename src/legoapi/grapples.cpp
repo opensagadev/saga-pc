@@ -246,6 +246,21 @@ extern "C" GRAPPLE_MOTION_PC *__cdecl Grapple_FindNearest(WORLDINFO *world, NUVE
 }
 
 extern "C" {
+    static void Grapples_Draw(void *world_ptr, void *, float) {
+        WORLDINFO *world = static_cast<WORLDINFO *>(world_ptr);
+        const f32 rotation_time = NuFmod(GameTimer.time_elapsed, 5.0f);
+        const f32 pulse_time = NuFmod(GameTimer.time_elapsed_mod_seconds, 0.5f) * 2.0f * 65536.0f;
+        const f32 target_alpha = NuTrigTable[(static_cast<i32>(pulse_time) >> 1) & 0x7fff] * 0.2f + 0.8f;
+
+        EnableShadowMapRendering(0);
+        const u16 rotation = static_cast<u16>(rotation_time / 5.0f * 65536.0f);
+        Grapples_DrawList(world, world->grapples, world->grapple_count, rotation, target_alpha);
+        Grapples_DrawList(world, DynamicGrapple, 4, rotation, target_alpha);
+        ResetShadowMapRendering();
+    }
+}
+
+extern "C" {
     static char *Grapple_GetOutputName(GIZMO_PC *, i32 output_index) {
         if (output_index == 1) {
             return const_cast<char *>("Occupied");

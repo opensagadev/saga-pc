@@ -29509,3 +29509,12 @@ extern "C" {
 #pragma data_seg(".data$aiEditor_LocatorWidth")
     f32 aiEditor_LocatorWidth = 0.25f;
 }
+
+extern "C" {
+#pragma bss_seg(".bss$thingsSceneBase")
+    nuhspecial_s thingsSceneBase;
+}
+
+extern "C" {}
+
+extern "C" {}

@@ -103,6 +103,19 @@ void GizActions_PlayRadio(GIZFLOW_PC *unused0, FLOWBOX_PC *unused1, char **param
     }
 }
 
+static void GizActions_ActivateBelt(GIZFLOW_PC *unused0, FLOWBOX_PC *unused1, char **params, int count) {
+    i32 index;
+    i32 active = 1;
+    for (index = 0; index < count; ++index) {
+        if (NuStrICmp(params[index], "FALSE") == 0) {
+            active = 0;
+        } else if (NuStrICmp(params[index], "TRUE") == 0) {
+            active = 1;
+        }
+    }
+    WorldInfo_CurrentlyActive()->progress_flag_5174 = ((i8)(active));
+}
+
 void GameRegisterGizActions(void) {
     RegisterGizActions(game_gizactiondefs);
 }

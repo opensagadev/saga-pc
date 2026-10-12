@@ -968,6 +968,36 @@ extern "C" {
         return 0;
     }
 }
+
+extern "C" {
+    static i32 Ledges_Load(void *world_info, void *) {
+        WORLDINFO *world = static_cast<WORLDINFO *>(world_info);
+        if (world->ledge_count != 0)
+            return 0;
+        i32 version = EdFileReadInt();
+        world->ledge_count = EdFileReadInt();
+        for (i32 i = 0; i < world->ledge_count; ++i) {
+            LEDGE_s *ledge = &static_cast<LEDGE_s *>(world->ledges)[i];
+            EdFileRead(ledge->name, 8);
+            EdFileReadNuVec(&ledge->position);
+            ledge->y_rotation = EdFileReadShort();
+            ledge->type_code = EdFileReadChar();
+            if (version > 1) {
+                ledge->field_0x1c = EdFileReadShort();
+                ledge->field_0x1e = EdFileReadShort();
+                if (version == 2)
+                    ledge->flags = 0;
+                else
+                    ledge->flags = EdFileReadUnsignedChar();
+            } else {
+                ledge->field_0x1c = -1;
+                ledge->field_0x1e = -1;
+                ledge->flags = 0;
+            }
+        }
+        return 1;
+    }
+}
 extern "C" u32 LEGO_AIPATHCNX_BIGJUMP, LEGO_AIPATHCNX_REQUIRESPERMISSION, LEGO_AIPATHCNX_NO_DESTINATION_CHECK;
 extern "C" u32 LEGO_AIPATHCNX_JUMP_NOW, LEGO_AIPATHCNX_DONT_JUMP_NOW;
 static u32 ParseAIPathCnxFlagPc(char *name) {
