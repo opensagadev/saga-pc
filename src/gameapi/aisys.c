@@ -671,6 +671,64 @@ void antinodeEditor_UpdateAntiNodesOnPlatforms(void) {
     }
 }
 
+void antinodeEditorSaveData(void) {
+    struct nulisthdr_s *list;
+    struct EDANTINODE_s *head;
+    i32 count;
+    struct EDANTINODE_s *node;
+    if (aidata_version <= 12)
+        return;
+    list = ((NULISTHDR *)(((u8 *)(aieditor)) + 0x42e94));
+    head = ((EDANTINODE_s *)(NuLinkedListGetHead(list)));
+    if (head == NULL) {
+        EdFileWriteInt(0);
+        return;
+    }
+    count = 0;
+    for (node = head; node != NULL;
+         node = ((EDANTINODE_s *)(NuLinkedListGetNext(((NULISTHDR *)(((u8 *)(aieditor)) + 0x42e94)), &node->link))))
+        ++count;
+    EdFileWriteInt(count);
+    for (node = ((EDANTINODE_s *)(NuLinkedListGetHead(((NULISTHDR *)(((u8 *)(aieditor)) + 0x42e94))))); node != NULL;
+         node = ((EDANTINODE_s *)(NuLinkedListGetNext(((NULISTHDR *)(((u8 *)(aieditor)) + 0x42e94)), &node->link)))) {
+        char *name;
+        if (node->type == 2)
+            node->radius = NuFsqrt(node->base_radius * node->base_radius + node->base_height * node->base_height);
+        else if (node->type == 1)
+            node->radius = node->base_radius > node->base_height ? node->base_radius : node->base_height;
+        EdFileWriteFloat(node->position.x);
+        EdFileWriteFloat(node->position.y);
+        EdFileWriteFloat(node->position.z);
+        EdFileWriteFloat(node->radius);
+        EdFileWriteFloat(node->position.y + node->lower_height);
+        EdFileWriteFloat(node->position.y + node->upper_height);
+        if (aidata_version > 14) {
+            EdFileWriteInt(node->flags);
+            EdFileWriteFloat(node->base_radius);
+            EdFileWriteFloat(node->base_height);
+            EdFileWriteChar(node->type);
+        } else {
+            EdFileWriteChar(0);
+        }
+        EdFileWriteChar(0);
+        EdFileWriteChar(0);
+        EdFileWriteChar(node->game_flags);
+        name = NuSpecialExistsFn(&node->special) ? NuSpecialGetName(&node->special) : NULL;
+        if (name == NULL) {
+            EdFileWriteChar(0);
+        } else {
+            i32 length = strlen(name) + 1;
+            EdFileWriteChar(length);
+            EdFileWrite(name, length);
+            EdFileWriteFloat(node->special_position.x);
+            EdFileWriteFloat(node->special_position.y);
+            EdFileWriteFloat(node->special_position.z);
+            if (aidata_version > 14)
+                EdFileWriteInt(node->rotation_offset);
+        }
+    }
+}
+
 void __cdecl AISysCharacterSetPath(AIPACKET_PC *packet, AIPATH_PC *path) {
     AIPACKET_PC *path_packet = packet;
     u8 route;
@@ -1824,6 +1882,44 @@ void LocaledbitsDrawSolidCircleXY(NUVEC *centre, f32 radius, f32 lower_y, f32 up
         AiRndrLine3dDbg(next_x, lower_y, next_z, next_x, upper_y, next_z, colour);
         previous_x = next_x;
         previous_z = next_z;
+    }
+}
+
+void LocaledbitsDrawSolidEllipseXY(NUVEC *centre, f32 radius_x, f32 radius_z, i32 rotation, f32 lower_y, f32 upper_y,
+                                   u32 colour, i32 unused7, i32 segments) {
+    i32 i;
+    NURND_VERTEX3D_PC vertices[2];
+    NURND_VERTEX3D_PC *first = &(vertices[0]);
+    NURND_VERTEX3D_PC *second = &(vertices[1]);
+    (*second).position.x = 0.0f;
+    (*second).position.y = 0.0f;
+    (*second).position.z = radius_z;
+    NuVecRotateY(&(*second).position, &(*second).position, rotation);
+    NuVecAdd(&(*second).position, &(*second).position, centre);
+    (*first).colour = colour;
+    (*second).colour = colour;
+    for (i = 1; i <= segments; ++i) {
+        i32 angle;
+        (*first).position = (*second).position;
+        (*second).position = *centre;
+        angle = (i * 65536) / segments;
+        {
+            NUVEC offset = {radius_x * NU_SIN_LUT(angle), 0.0f, radius_z * NU_COS_LUT(angle)};
+            NuVecRotateY(&offset, &offset, rotation);
+            NuVecAdd(&(*second).position, centre, &offset);
+            (*first).position.y = lower_y;
+            (*second).position.y = lower_y;
+            AiRndrLine3dDbg((*first).position.x, (*first).position.y, (*first).position.z, (*second).position.x,
+                            (*second).position.y, (*second).position.z, colour);
+            (*first).position.y = upper_y;
+            (*second).position.y = upper_y;
+            AiRndrLine3dDbg((*first).position.x, (*first).position.y, (*first).position.z, (*second).position.x,
+                            (*second).position.y, (*second).position.z, colour);
+            (*first).position = (*second).position;
+            (*first).position.y = lower_y;
+            AiRndrLine3dDbg((*first).position.x, (*first).position.y, (*first).position.z, (*second).position.x,
+                            (*second).position.y, (*second).position.z, colour);
+        }
     }
 }
 

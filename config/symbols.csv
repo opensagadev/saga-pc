@@ -5259,6 +5259,7 @@ address    , symbol                                                         , si
 0x0065b800 , _edbitsRegisterBaseTerrain                                     , 10    , void __cdecl (void *)
 0x65b830,_edbitsDrawBasicCube,791,
 0x65bb50,_edbitsDrawCube,875,
+0x65bf70,_edbitsDrawDiagonalCross,212,
 0x65c620,_edbitsLookupInstance,112,"i32 __cdecl(char *, NUGSCN *)"
 0x65c7b0,_edbitsDoSingleDump,183,
 0x65c8a0,_edbitsProcessCubemapDump,544,
@@ -6174,6 +6175,9 @@ address    , symbol                                                         , si
 0x6d58b0,_NuMouseReadButtons,6,
 0x6d5950,?ScheduleRescan@NuKeyboardOwner_PC@@QAEXMH@Z,19,"void __thiscall(f32,i32)"
 0x006d5990 , @NuKeyboardPoll@4                                              , 368   , u8 *__fastcall (NuKeyboardOwner_PC *)
+0x6d5bb0,_NuMouseReadXRel,11,
+0x6d5bc0,_NuMouseReadYRel,11,
+0x6d5bd0,_NuMouseReadZRel,26,
 0x6d5bf0,_NuMouseReadXVel,26,
 0x6d5c10,_NuMouseReadYVel,26,
 0x6d5c30,_NuMouseReadZVel,26,
@@ -10084,6 +10088,9 @@ address    , symbol                                                         , si
 0x75cd34,??_C@_0L@GKNAPDAF@exp_debris?$AA@,11,const char[11]
 0x75cd40,??_C@_0BC@MPDNLAOA@CarbonFreezeCrane?$AA@,18,const char[18]
 0x75cd54,??_C@_0O@CHIEINJL@env_door_flap?$AA@,14,const char[14]
+0x75cd88,??_C@_07PEBBOAOF@shelf_6?$AA@,8,char []
+0x75cd90,??_C@_0N@OJAHMHB@shelf_bottom?$AA@,13,char []
+0x75cda0,??_C@_0L@EIDNECDP@shelf_top1?$AA@,11,char []
 0x0075ce98 , __real@3e333333                                                , 4     , const f32
 0x75ceb8,??_C@_0L@HJHGCGFE@minikit101?$AA@,11,char []
 0x75cec4,??_C@_0BA@CAGBIHNH@thermocrate_031?$AA@,16,char []
@@ -10235,6 +10242,8 @@ address    , symbol                                                         , si
 0x75dd28,??_C@_07EMFPHBF@gun_b11?$AA@,8,char []
 0x75dd30,??_C@_07BEDGOGKC@gun_a21?$AA@,8,char []
 0x75dd38,??_C@_07BGHAFIPL@gun_a11?$AA@,8,char []
+0x75dd60,??_C@_0BA@NMGMNNLJ@green_light_on1?$AA@,16,char []
+0x75dd70,??_C@_0L@BKDJPJOF@FORCE_TUBE?$AA@,11,char []
 0x75ddd4,??_C@_0BK@CMHBPGDI@ep3_GeneralGrievous_Outro?$AA@,26,char []
 0x75ddf0,??_C@_0BA@JNHADNCO@WookiesToRescue?$AA@,16,char []
 0x75de00,??_C@_0N@JAIKINBL@TotalWookies?$AA@,13,char []
@@ -10736,6 +10745,10 @@ address    , symbol                                                         , si
 0x007616c4 , _Text_TimeHMSC                                                 , 18    , const char[18]
 0x007616d8 , __real@40ac200000000000                                        , 8     , const f64
 0x007616e0,__real@43000000,4,const f32
+0x7616e4,__real@bf3d70a4,4,const f32
+0x7616e8,__real@3fcb851f,4,const f32
+0x7616ec,__real@bf428f5c,4,const f32
+0x7616f0,__real@3db851f0,4,const f32
 0x7616f4,__real@bfa00000,,
 0x761760,__real@4044000000000000,8,const f64
 0x7617c0,??_C@_09IAKIBBN@Proximity?$AA@,,const char[]
@@ -14594,6 +14607,7 @@ address    , symbol                                                         , si
 0x007f2390 , _spline_xoffset_speed_roll                                     , 4     , f32
 0x7f2394,_TerrainPlayerShadowFixPc,,i32
 0x007f23a4 , _waiting_for_character                                         , 4     , i32
+0x7f23a8,_apiloadcharactermodels_append,4,i32
 0x007f23b0 , _SpecialLayer                                                  , 504   , SPECIAL_LAYER_PC [42]
 0x7f26d0,_CreatureMosLegsPc,,const u8[3]
 0x7f26d4,_CreatureMosWaistPc,,const u8[3]
@@ -14940,6 +14954,8 @@ address    , symbol                                                         , si
 0x7ffd60,_PodDustEmissionRatePc,,f32
 0x7ffd64,_PodDustHeightScalePc,,f32
 0x7ffd68,_PodRaceKeyPc,,i32[8]
+0x7ffe44,_paint_name,,
+0x7ffe5c,_paint_panel_name,,
 0x007fffec , _GUNSHIPAHACK                                                  , 4     , i32
 0x8000ac,_TempleC_StreamStatusPos,,
 0x800224,_melee_wavePhase,1,i8
@@ -16039,6 +16055,7 @@ address    , symbol                                                         , si
 0x855fa0,_addcreature_override_id_check,,i32
 0x856910,_CustomiseMode,8,i32[2]
 0x008569a0 , _CharacterCustomiser                                           , 4     , CUSTOMISER_LAYERS_PC *
+0x8569d8,_Detonator,560,DETONATOR_s[10]
 0x856c10,_OldBonusScore,,i32[2]
 0x00856c28 , _ChallengeMode                                                 , 4     , i32
 0x00856c2c , _adaptivedifficulty                                            ,       , ADAPTIVEDIFFICULTY_PC
@@ -16496,7 +16513,9 @@ address    , symbol                                                         , si
 0x0087b9dc , _DrawBossHitPointsActorPc                                      ,       ,
 0x87b9dc,_drawbosshitpoints,4,struct gameobject_s *
 0x0087bb10 , _ShadowMode                                                    , 4     , i32
+0x87bbc0,_splshelf,4,struct nugspline_s *
 0x87bd98,_ShopNameAlpha,4,f32
+0x87bed4,_splcodes,4,struct nugspline_s *
 0x87bfac,_drawptr,4,void (__cdecl *)(void)
 0x87bfb8,_TopShelf,696,shopitem_s[6]
 0x87c27c,_iconback,12,nuhspecial_s
@@ -16505,10 +16524,14 @@ address    , symbol                                                         , si
 0x8800d8,_shop_from_cutsceneplayer,,i32
 0x8800dc,_HintShelfIds,28,i32[7]
 0x8800f8,_SHOPCHARCOUNT,4,i32
+0x8800fc,_splcharshelf,,
+0x880128,_CodePos,84,NUVEC[7]
 0x880170,_SHOPHINTCOUNT,,i32
+0x880178,_ShelfPos,72,NUVEC[6]
 0x8801cc,_picked,4,i32
 0x880440,_SubShelfPos,84,NUVEC[7]
 0x88049c,_HintItems,4,struct shopitem_s *
+0x8804c0,_shelfang,2,u16
 0x00880584 , _players_cannot_exit_speeder                                   , 4     , i32
 0x0088058c , _legal_mtl                                                     , 4     , NUMTL *
 0x00880590 , _legal_tid                                                     , 4     , i32
@@ -17260,10 +17283,16 @@ address    , symbol                                                         , si
 0x882aac,_Maul_obj,4,struct gameobject_s *
 0x882ab0,_MaulA_ai_message,4,struct gizaimessage_s *
 0x882ab8,?player_ix@?1??PodRaceSnipersUpdate@@9@9,,
+0x882ac8,_paintobst,,
 0x882ae8,_LevForce,4,i32
+0x882aec,_forcetube,4,struct gizmo_pc_s *
+0x882af0,_paintlights,,
+0x882b4c,_factoryb_netpacket,4,void *
+0x882b80,_green_light,12,nuhspecial_s
 0x882be4,_GunshipANorm,,NUVEC
 0x888fe0,_kaminoe_netpacket,4,void *
 0x888fe4,_force_array,16,struct GIZFORCE_s *[4]
+0x889000,_painttargetcolour,,
 0x00889058 , _kamino_plate_1                                                , 4     , KAMINOEPLATE *
 0x0088905c , _kamino_plate_2                                                , 4     , KAMINOEPLATE *
 0x00889060 , _kamino_plate_3                                                , 4     , KAMINOEPLATE *
@@ -17274,6 +17303,7 @@ address    , symbol                                                         , si
 0x00889074 , _kamino_plate_3_active                                         , 4     , i32
 0x00889078 , _kamino_plate_4_active                                         , 4     , i32
 0x008890a6 , _kamino_plate_id                                               , 2     , u16
+0x8890bc,_paintpanel,,
 0x8890c8,_KaminoDiscoMusicStatePc,,KAMINO_DISCO_MUSIC_VIEW_PC
 0x8894dc,_bonus_gunship_store_progress_flag,,i32
 0x8895e0,_boulder_part,,
@@ -17857,6 +17887,7 @@ address    , symbol                                                         , si
 0x95063c,_GameFogTime,4,f32
 0x950640,_GameFogSet,4,void *
 0x950644,_GameFogDuration,4,f32
+0x950680,_pause_rndr_mtl,4,void *
 0x950688,_GameFogSnap,4,i32
 0x95068c,_FadeLoop_ObjHSpecial,12,nuhspecial_s
 0x00950698 , _MainRenderTime                                                , 4     , f32
@@ -18688,6 +18719,8 @@ address    , symbol                                                         , si
 0x0291f6a8 , _part_scene_pageid                                             , 128   , i32[32]
 0x291f72c,_edpart_cutoff_menu,4,struct eduimenu_s *
 0x291f734,_PartEditorCameraPosPc,,NUVEC
+0x291f764,_edpart_copy_source_vec,12,NUVEC
+0x291f774,_edpart_copy_source,,
 0x291f7a0,_part_platimpactcnt,,i32
 0x291f7a8,_edpart_nearest_duplicates,4,i32
 0x291f7b8,_edpart_name_menu,4,struct eduimenu_s *
@@ -18702,6 +18735,7 @@ address    , symbol                                                         , si
 0x2920994,_edpart_effect_list,1,i8
 0x292099c,_edpart_copy_mode,4,i32
 0x29209a0,_edpart_copy_enclosed,4,i32
+0x29209a4,_edpart_copy_source_count,4,i32
 0x29209a8,_edpart_num_orphans,4,i32
 0x29209b4,_edpart_filter,4,i32
 0x29209b8,_edpart_dpad_mode,4,i32
@@ -18859,6 +18893,7 @@ address    , symbol                                                         , si
 0x2947c40,_xzfacingmtx,,NUMTX
 0x2947c80,_TerrShapeAdjCnt,,i32
 0x02947c84 , _TerrainSkinInfosPc                                            ,       ,
+0x2947c88,_edpp_mtl,4,struct PC_SCENE_MTL_VIEW *
 0x2947c94,_CurTrackInfo,,TERRAIN_TRACK_SLOT_PC *
 0x02947c9c , _edanim_page_scene                                             , 32    , NUGSCN *[8]
 0x2947cc0,_TempScanStack,,void *
@@ -19005,7 +19040,9 @@ address    , symbol                                                         , si
 0x2962a4c,_edpp_instances_used,,i32
 0x2962a50,_edpp_copy_mode,4,i32
 0x2962a50,_edpp_copy_source_count,4,i32
+0x2962a54,_edpp_copy_enclosed,4,i32
 0x2962a5c,_EdppUnresolvedInstancesPc,,i32
+0x2962a60,_edpp_showAllPlaced,4,i32
 0x2962a64,_edpp_dpad_mode,4,i32
 0x2962a68,_edpp_readout,4,i32
 0x2962aa0,_edptl_orphanlist_menu,4,struct eduimenu_s *

@@ -29525,3 +29525,69 @@ extern "C" {}
 extern "C" {}
 
 extern "C" {}
+
+extern "C" {
+#pragma bss_seg(".bss$pause_rndr_mtl")
+    void *pause_rndr_mtl;
+}
+
+extern "C" {
+#pragma bss_seg(".bss$factoryb_netpacket")
+    void *factoryb_netpacket;
+
+#pragma bss_seg(".bss$forcetube")
+    struct gizmo_pc_s *forcetube;
+
+#pragma bss_seg(".bss$green_light")
+    nuhspecial_s green_light;
+}
+
+extern "C" {
+#pragma data_seg(".data$apiloadcharactermodels_append")
+    i32 apiloadcharactermodels_append = -1;
+}
+
+extern "C" {
+#pragma bss_seg(".bss$Detonator")
+    DETONATOR_s Detonator[10];
+}
+
+extern "C" {
+#pragma bss_seg(".bss$edpp_copy_enclosed")
+    i32 edpp_copy_enclosed;
+
+#pragma bss_seg(".bss$edpp_mtl")
+    struct PC_SCENE_MTL_VIEW *edpp_mtl;
+
+#pragma bss_seg(".bss$edpp_showAllPlaced")
+    i32 edpp_showAllPlaced;
+}
+
+extern "C" {
+#pragma bss_seg(".bss$splshelf")
+    struct nugspline_s *splshelf;
+
+#pragma bss_seg(".bss$splcodes")
+    struct nugspline_s *splcodes;
+
+#pragma bss_seg(".bss$ShelfPos")
+    NUVEC ShelfPos[6];
+
+#pragma bss_seg(".bss$CodePos")
+    NUVEC CodePos[7];
+
+#pragma bss_seg(".bss$shelfang")
+    u16 shelfang;
+}
+
+extern "C" {}
+
+extern "C" {}
+
+extern "C" {
+#pragma bss_seg(".bss$edpart_copy_source_vec")
+    NUVEC edpart_copy_source_vec;
+
+#pragma bss_seg(".bss$edpart_copy_source_count")
+    i32 edpart_copy_source_count;
+}

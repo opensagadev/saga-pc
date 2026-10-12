@@ -66,3 +66,25 @@ void Faders_Reset(WORLDINFO *world) {
         }
     }
 }
+
+void Faders_Draw(WORLDINFO *world) {
+    i32 i;
+    for (i = 0; world->faders != NULL && i < world->fader_count; ++i) {
+        FADER_s *fader = &(world->faders[i]);
+        NUMTX matrix = *NuSpecialGetDrawMtx(&(*fader).special);
+        f32 alpha = 0.0f;
+        if (NuSpecialExistsFn(&(*fader).while_animating) == 0) {
+            f32 distance = NuVecDist(((NUVEC *)(&matrix.m30)), ((NUVEC *)(&pNuCam->mtx.m30)), NULL);
+            if (distance >= 2.0f) {
+                alpha = 1.0f;
+            } else if (distance >= 0.5f) {
+                alpha = (distance - 0.5f) / 1.5f;
+            }
+        } else {
+            alpha = 1.0f - NuSpecialGetAnimPos(&(*fader).while_animating);
+        }
+        if (alpha > 0.0f) {
+            NuSpecialDrawAtAlpha(&(*fader).special, &matrix, alpha);
+        }
+    }
+}

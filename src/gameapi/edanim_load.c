@@ -153,6 +153,78 @@ void __cdecl edanimDetermineNearestAnim(f32 distance) {
     }
 }
 
+void edanimDetermineNearestParticle(float distance) {
+    nuhspecial_s special;
+    struct nuvec_s *base_position;
+    NUVEC delta;
+    NUVEC world_position;
+    EDANIM_PARAM_PC *param;
+    i32 particle;
+    if (edanim_nearest == -1 || edanim_nearest_param_id == -1) {
+        edanim_nearest_particle = -1;
+        return;
+    }
+
+    NuGScnGetSpecial(&special, edbits_base_scene, edanim_nearest);
+    base_position = NuSpecialGetPos(&special);
+
+    param = &(AnimParams[edanim_nearest_param_id]);
+    if (edanim_nearest_particle != -1) {
+        NuVecAdd(&world_position, base_position, ((NUVEC *)((*param).effect_positions[edanim_nearest_particle])));
+        NuVecSub(&delta, &edanim_cam_pos, &world_position);
+        if (delta.x * delta.x + delta.y * delta.y + delta.z * delta.z == 0.0f) {
+            return;
+        }
+    }
+    edanim_nearest_particle = -1;
+    for (particle = 0; particle < (*param).effect_count; ++particle) {
+        f32 candidate;
+        NuVecAdd(&world_position, base_position, ((NUVEC *)((*param).effect_positions[particle])));
+        NuVecSub(&delta, &edanim_cam_pos, &world_position);
+        candidate = delta.x * delta.x + delta.y * delta.y + delta.z * delta.z;
+        if (distance < 0.0f || candidate < distance) {
+            distance = candidate;
+            edanim_nearest_particle = particle;
+        }
+    }
+}
+
+void edanimDetermineNearestSound(float distance) {
+    nuhspecial_s special;
+    struct nuvec_s *base_position;
+    NUVEC delta;
+    NUVEC world_position;
+    EDANIM_PARAM_PC *param;
+    i32 sound;
+    if (edanim_nearest == -1 || edanim_nearest_param_id == -1) {
+        edanim_nearest_sound = -1;
+        return;
+    }
+
+    NuGScnGetSpecial(&special, edbits_base_scene, edanim_nearest);
+    base_position = NuSpecialGetPos(&special);
+
+    param = &(AnimParams[edanim_nearest_param_id]);
+    if (edanim_nearest_sound != -1) {
+        NuVecAdd(&world_position, base_position, ((NUVEC *)((*param).sound_positions[edanim_nearest_sound])));
+        NuVecSub(&delta, &edanim_cam_pos, &world_position);
+        if (delta.x * delta.x + delta.y * delta.y + delta.z * delta.z == 0.0f) {
+            return;
+        }
+    }
+    edanim_nearest_sound = -1;
+    for (sound = 0; sound < (*param).sound_count; ++sound) {
+        f32 candidate;
+        NuVecAdd(&world_position, base_position, ((NUVEC *)((*param).sound_positions[sound])));
+        NuVecSub(&delta, &edanim_cam_pos, &world_position);
+        candidate = delta.x * delta.x + delta.y * delta.y + delta.z * delta.z;
+        if (distance < 0.0f || candidate < distance) {
+            distance = candidate;
+            edanim_nearest_sound = sound;
+        }
+    }
+}
+
 void edanimParticleDestroy(i32 parameter_index, i32 particle_index) {
     i32 index;
     EDANIM_PARAM_PC *parameters = AnimParams;
@@ -311,6 +383,53 @@ i32 __cdecl edanimLoadPage(char *path, NUGSCN *scene) {
     edanim_nearest_param_id = -1;
     edanimDetermineNearestAnim(1.0f);
     return page;
+}
+
+static void edanimcbSetBouncyPlayerGrav(eduimenu_s *unused0, eduiitem_s *item, u32 unused2) {
+    EDANIM_PARAM_PC *param;
+    if (edanim_nearest == -1) {
+        return;
+    }
+    param = &(AnimParams[edanim_nearest_param_id]);
+    (*param).bounce_impulse = ((edui_slider_s *)(item))->value;
+    if ((*param).platform_id != -1) {
+        PlatInstBounce((*param).platform_id, (*param).bounce_impulse, (*param).bounce_spring, (*param).bounce_damping);
+    }
+}
+
+static void edanimcbSetBouncyTension(eduimenu_s *unused0, eduiitem_s *item, u32 unused2) {
+    EDANIM_PARAM_PC *param;
+    if (edanim_nearest == -1) {
+        return;
+    }
+    param = &(AnimParams[edanim_nearest_param_id]);
+    (*param).bounce_spring = ((edui_slider_s *)(item))->value;
+    if ((*param).platform_id != -1) {
+        PlatInstBounce((*param).platform_id, (*param).bounce_impulse, (*param).bounce_spring, (*param).bounce_damping);
+    }
+}
+
+static void edanimcbSetBouncyDamping(eduimenu_s *unused0, eduiitem_s *item, u32 unused2) {
+    EDANIM_PARAM_PC *param;
+    if (edanim_nearest == -1) {
+        return;
+    }
+    param = &(AnimParams[edanim_nearest_param_id]);
+    (*param).bounce_damping = ((edui_slider_s *)(item))->value;
+    if ((*param).platform_id != -1) {
+        PlatInstBounce((*param).platform_id, (*param).bounce_impulse, (*param).bounce_spring, (*param).bounce_damping);
+    }
+}
+
+static void edanimcbSetLocalSoundType(eduimenu_s *menu, eduiitem_s *item, u32 unused2) {
+    EDANIM_PARAM_PC *param;
+    edanim_localsoundtype_menu = NULL;
+    param = &(AnimParams[edanim_nearest_param_id]);
+    (*param).sound_ids[edanim_nearest_sound] = item->data;
+    strcpy((*param).sound_names[edanim_nearest_sound], edbitsGetSoundName(item->data));
+    edanim_sound_type = item->data;
+    eduiMenuDetach(menu);
+    eduiMenuDestroy(menu);
 }
 
 static void edanimcbBouncyMenu(eduimenu_s *parent, eduiitem_s *unused1, u32 unused2) {

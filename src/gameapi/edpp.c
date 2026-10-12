@@ -17,6 +17,27 @@ void __cdecl edppPtlShelve(i32 index) {
     }
 }
 
+static void cbCancelChangeNameMenu(eduimenu_s *menu, eduimenu_s *unused1) {
+    if (edpp_create_type == -1 || debtab[edpp_create_type] == NULL) {
+        return;
+    }
+    if (__builtin_expect(debtab[edpp_create_type]->name[0] != '\0', 1)) {
+        eduiMenuDestroy(namemenu);
+        namemenu = NULL;
+        return;
+    }
+    {
+        u32 colours[4] = {0x800000c0, 0x80ff0000, 0x80808080, 0x80404040};
+        messagemenu = eduiMenuCreate(70, 70, 180, 250, ed_fnt, cbCancelMessageMenu, "Message");
+        if (messagemenu != NULL) {
+            eduiMenuAddItem(messagemenu, eduiItemSelCreate(1, colours, 0, 0, NULL, "Name Duplicate"));
+            eduiMenuAttach(menu, messagemenu);
+            messagemenu->x = menu->x + 10;
+            messagemenu->y = menu->y + 40;
+        }
+    }
+}
+
 static void cbChangeNameMenu(eduimenu_s *menu, eduiitem_s *unused1, u32 unused2) {
     struct debris_info_pc_s *effect;
     u32 colours[4] = {0x80000000, 0x80ff0000, 0x80808080, 0x80404040};
@@ -180,6 +201,7 @@ void __cdecl edppDetermineNearest(f32 max_distance_squared) {
         }
     }
 }
+
 static void cbSelEffectList(eduimenu_s *menu, eduiitem_s *item, u32 unused2) {
     struct eduimenu_s *parent;
     if (item->data != ((i8)(edpp_effect_list))) {

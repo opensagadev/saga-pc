@@ -41,6 +41,28 @@ void HothBattleC_Update(WORLDINFO *world) {
     UpdateMiniSnowTroopers(world);
 }
 
+AILOCATOR_PC *getSpawnLocator(float clip_radius, char *name) {
+    AILOCATORSET_PC *locator_set = AIPathFindLocatorSet(WORLD->ai_sys, name);
+    if (locator_set == NULL) {
+        return NULL;
+    }
+
+    AILocatorSet_CheckLocatorsStillAssigned(WORLD->ai_sys, locator_set);
+    {
+        AILOCATOR_PC *locators[32];
+        i32 i = 0;
+        i32 locator_count = 0;
+        for (; i < locator_set->locator_count && locator_count < 32; ++i) {
+            if (locator_set->assigned[i] == 0xff) {
+                locators[locator_count++] = &WORLD->ai_sys->locators[locator_set->locator_entries[i]];
+            }
+        }
+
+        return LocalGetRandomLocator(locators, locator_count, clip_radius, &player->collision_position, 1000000000.0f,
+                                     0, 1000000000.0f, 1000000000.0f);
+    }
+}
+
 i32 HothBattle_StartNewWave() {
     i32 type;
     if (melee.field_0x2 != 0) {

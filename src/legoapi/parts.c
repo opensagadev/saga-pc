@@ -3428,6 +3428,7 @@ void __cdecl edpartDetermineNearest(f32 distance) {
             PartNearestTypePtrPc = &part_types[PartNearestEmitterPtrPc->effect_id];
     }
 }
+
 static void edpartChangeNameMenu(eduimenu_s *menu, eduiitem_s *unused1, u32 unused2) {
     if (edpart_create_type != -1) {
         PARTTYPE_LOOKUP_PC *type = &part_types[edpart_create_type];

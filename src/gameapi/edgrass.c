@@ -258,6 +258,34 @@ void edgracbClumpAreaMenu(eduimenu_s *parent, eduiitem_s *unused1, u32 unused2) 
     edgraAttachMenu(parent, edgra_clumparea_menu);
 }
 
+static void edgracbSetClumpFadeIn(eduimenu_s *unused0, eduiitem_s *item, u32 unused2) {
+    edui_slider_s *slider = fadeoutitem;
+    if (edgra_nearest != -1) {
+        PC_EDGRACLUMP *clump = &(GrassClumps[edgra_nearest]);
+        (*clump).near_distance = ((edui_slider_s *)(item))->value;
+        if ((*clump).near_distance > (*clump).far_distance) {
+            (*clump).far_distance = (*clump).near_distance;
+            slider->value = (*clump).far_distance;
+            slider->normalized_value = (slider->value - slider->minimum) / slider->range;
+        }
+    }
+    edgraInitAllClumps();
+}
+
+static void edgracbSetClumpFadeOut(eduimenu_s *unused0, eduiitem_s *item, u32 unused2) {
+    edui_slider_s *slider = fadeinitem;
+    if (edgra_nearest != -1) {
+        PC_EDGRACLUMP *clump = &(GrassClumps[edgra_nearest]);
+        (*clump).far_distance = ((edui_slider_s *)(item))->value;
+        if ((*clump).near_distance > (*clump).far_distance) {
+            (*clump).near_distance = (*clump).far_distance;
+            slider->value = (*clump).near_distance;
+            slider->normalized_value = (slider->value - slider->minimum) / slider->range;
+        }
+    }
+    edgraInitAllClumps();
+}
+
 static void edgracbSetClumpDist(eduimenu_s *unused0, eduiitem_s *item, u32 unused2) {
     if (edgra_nearest != -1)
         GrassClumps[edgra_nearest].unknown_26 = item->data;

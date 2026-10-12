@@ -71,6 +71,7 @@ void ReleaseCable(CABLE_s *cable, i32 snapped) {
         cable->velocities[i].y = 0.0f;
     }
 }
+
 GAMEOBJECT *__cdecl CableTargetGameObject(GAMEOBJECT *source, NUVEC *position, f32 radius) {
     GAMEOBJECT *nearest = NULL, *candidate = Obj;
     f32 nearest_distance = 100000000.0f;

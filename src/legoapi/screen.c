@@ -55,3 +55,19 @@ void __cdecl GrabStillScreen(void) {
 void NeedScreenGrab(i32 needed) {
     ScreenGrabNeededPc = needed != 0;
 }
+
+void DrawStillScreen(i32 clear) {
+    NuRndrBeginScene(-1);
+    NuVpGetCurrentViewport();
+    if (clear != 0) {
+        NuRndrClear(0x500, 0, 1.0f);
+    }
+    if (MainRenderTime < 1.0f) {
+        const u32 colour = (((i32)(MainRenderTime * 128.0f)) << 24) | 0x00808080u;
+        u32 colours[4] = {colour, colour, colour, colour};
+        NuRndrGradRectUV2di(0, 0, 0x2800, 0xe00, 0.0f, 1.0f, 1.0f, 0.0f, colours, pause_rndr_mtl);
+    } else {
+        NuRndrRectUV2di(0, 0, 0x2800, 0xe00, 0.0f, 1.0f, 1.0f, 0.0f, 0x80808080u, pause_rndr_mtl);
+    }
+    NuRndrEndScene();
+}

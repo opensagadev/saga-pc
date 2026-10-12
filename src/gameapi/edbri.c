@@ -241,6 +241,17 @@ void edbriBridgePlace(i32 index, NUVEC *position) {
     edbriBridgeUpdate(index, edbits_base_scene);
 }
 
+static void edbriRender() {
+    edcamSet();
+    edbriDrawCursor();
+    if (edbri_nearest != -1) {
+        const NUVEC *position = &(edBridges[edbri_nearest].position);
+        edbitsDrawDiagonalCross((*position).x, (*position).y, (*position).z, 0.125f, 0xff80ffff, edbri_mtl_zoff);
+    }
+    if (edbri_active_menu)
+        eduiMenuRender(edbri_active_menu);
+}
+
 void __cdecl edbriStartPage(i32 page_number) {
     i8 page = (i8)page_number;
     i32 index;
@@ -250,6 +261,20 @@ void __cdecl edbriStartPage(i32 page_number) {
                 edbriBridgeUpdate(index, edbri_page_scene[page]);
         }
     }
+}
+
+static void edbricbRopeColourMenu(eduimenu_s *parent, eduiitem_s *unused1, u32 unused2) {
+    PC_EDBRIDGE *bridge;
+    edbri_ropecolour_menu = eduiMenuCreate(70, 70, 180, 250, ed_fnt, edbricbCancelRopeColourMenu, "Rope Colour");
+    if (!edbri_ropecolour_menu)
+        return;
+    eduiMenuAddItem(edbri_ropecolour_menu, eduiItemColourPickCreate(0, edblack, edbricbSetRopeColour, "Rope Colour"));
+    bridge = &(edBridges[edbri_nearest]);
+    eduiItemColourPickSetRGB(((edui_colour_pick_s *)(edui_last_item)), (*bridge).red / 255.0f, (*bridge).green / 255.0f,
+                             (*bridge).blue / 255.0f);
+    eduiMenuAttach(parent, edbri_ropecolour_menu);
+    edbri_ropecolour_menu->x = parent->x + 10;
+    edbri_ropecolour_menu->y = parent->y + 40;
 }
 
 void edbricbSetBridgeTension(eduimenu_s *unused0, eduiitem_s *item, u32 unused2) {

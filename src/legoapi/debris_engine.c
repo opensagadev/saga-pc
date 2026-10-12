@@ -1428,6 +1428,50 @@ i32 __cdecl DebrisPreCheckCollisions(NUVEC *position, f32 radius) {
     }
     return numspherecolldata + numtoruscolldata;
 }
+
+i32 edanimParamCreate(i32 instance_id) {
+    i32 start;
+    i32 index;
+    EDANIM_PARAM_PC *param;
+    nuhspecial_s special;
+    i32 page;
+    if (edanim_params_used == 64) {
+        return -1;
+    }
+    start = edanim_next_param;
+    index = start;
+    while (AnimParams[index].instance_id != -1) {
+        index = index + 1 >= 65 ? 0 : index + 1;
+        if (index == start) {
+            edanim_next_param = start;
+            return -1;
+        }
+    }
+    param = &(AnimParams[index]);
+    edanim_next_param = index;
+    (*param).effect_count = 0;
+    (*param).instance_id = instance_id;
+
+    NuGScnGetSpecial(&special, edbits_base_scene, instance_id);
+    (*param).platform_id = FindPlatInst(NuSpecialGetInstanceix(&special));
+    (*param).bounce_impulse = 0.0f;
+    (*param).bounce_spring = 0.0f;
+    (*param).bounce_damping = 0.0f;
+    if ((*param).platform_id != -1) {
+        PlatInstBounce((*param).platform_id, 0.0f, 0.0f, 0.0f);
+    }
+    page = edbits_anim_page;
+    (*param).page = ((i8)(page));
+    edanim_page_used[page] = 1;
+    edanim_page_on[page] = 1;
+    if (!edanim_page_scene[page]) {
+        edanim_page_scene[page] = edbits_base_scene;
+    }
+    edanim_next_param = index + 1;
+    ++edanim_params_used;
+    return index;
+}
+
 i32 __cdecl DebrisTorusCollisionCheckScaleY(NUVEC *p, f32 r, f32 y) {
     return DebrisTorusCollisionCheckScaleYFlag(p, r, y, 3);
 }

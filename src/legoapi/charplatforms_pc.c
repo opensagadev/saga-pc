@@ -106,6 +106,34 @@ void __cdecl CharPlatforms_Configure(WORLDINFO *world, char *config) {
         view->char_platform_sys = NULL;
 }
 
+void CharPlatforms_Reset(CHARPLATFORMSYS_s *system) {
+    struct gameobject_s *object_cursor;
+    i32 i;
+    if (system == NULL) {
+        return;
+    }
+
+    object_cursor = Obj;
+    for (i = 0; i < HIGHGAMEOBJECT; ++i, ++object_cursor) {
+        if ((object_cursor->flags_1fc_half & 1) != 0) {
+            object_cursor->level_object_index = -1;
+        }
+    }
+
+    for (i = 0; i < system->platform_count; ++i) {
+        NuSpecialSetVisibility(&system->platforms[i].special, 0);
+        system->platforms[i].platform_id = FindPlatInst(NuSpecialGetInstanceix(&system->platforms[i].special));
+        system->platforms[i].object = NULL;
+        if (system->platforms[i].platform_id != -1) {
+            GAMEOBJECT *object = FindGameObject(system->platforms[i].object_id, 0, 1, 0, 1);
+            if (object != NULL) {
+                object->level_object_index = system->platforms[i].platform_id;
+                system->platforms[i].object = object;
+            }
+        }
+    }
+}
+
 void CharPlatforms_Update(CHARPLATFORMSYS_s *system) {
     i32 i;
     if (system == NULL)
