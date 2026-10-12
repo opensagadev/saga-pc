@@ -2268,6 +2268,10 @@ void __cdecl PCBuildLegacySkeletalJoint(DWA_CURVE_CELL_PC *curves, i8 *formats, 
     matrix->m32 = -matrix->m32;
 }
 
+void NuSpecialList(NUGSCN *unused0) {
+    // The original body is an intentional no-op.
+}
+
 #undef PC_LEGACY_CURVE_STORE
 #undef PC_LEGACY_LIMIT_ANGLE
 

@@ -1085,10 +1085,6 @@ void __cdecl Tag_DrawIcon_LSW(GAMEOBJECT *object) {
     AddGameMsg(&message);
 }
 
-extern "C" {}
-
-extern "C" {}
-
 // Source lease: build/analysis/next-world-loading-wave/game-init-after-MM/remaining22-contract-v9/tag-alternate.cppfrag
 /* Reuse TAG_CHARACTER_DATA_READER_PC from the LSW callback contract. */
 GAME_PUBLISHER_ASSERT(offsetof(GAMEOBJECT, pause_context_state) == 0xee8);

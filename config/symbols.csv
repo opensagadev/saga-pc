@@ -14930,6 +14930,8 @@ address    , symbol                                                         , si
 0x805cb4,_TrooperGameDebrisPc,,i32[4]
 0x00805d48 , _gizaimessage_prefix                                           , 5     , char[5]
 0x805e24,_turret_gizmotype_id,4,i32
+0x805e2c,_gizturret_test_ang,4,i32
+0x805e30,_gizturret_rapid_fire_rate,4,f32
 0x00805eb4,_gizspecial_prefix_pc,,
 0x00805ebc,_gizspecial_gizmotype_id,4,i32
 0x805f94,_PortalRegistrationPrefixPc,,const char *
@@ -17126,6 +17128,7 @@ address    , symbol                                                         , si
 0x0092b0e0 , _temp_xrot                                                     , 2     , u16
 0x0092b0e4 , _temp_zrot                                                     , 2     , u16
 0x92b0e8,_ConfigBuffer,,CONFIG_BUFFER_PC
+0x93b0e8,_temp_yrot,2,i16
 0x93b0ec   , _v000                                                          , 12    , NUVEC
 0x0093b0f8 , _Game_OptionsSave                                              , 4     , OPTIONSSAVE *
 0x0093b0fc , _perm_debrissys                                                , 4     , APIDEBRISSYS_PC *

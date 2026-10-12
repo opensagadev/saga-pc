@@ -28439,12 +28439,6 @@ extern "C" {
     f32 GameFogTime;
 }
 
-extern "C" {}
-
-extern "C" {}
-
-extern "C" {}
-
 extern "C" {
 
 #pragma bss_seg(".bss$back_rgba")
@@ -28556,10 +28550,6 @@ extern "C" {
     void(__cdecl *FS_Callback)(char *arg0, char *arg1);
 }
 
-extern "C" {}
-
-extern "C" {}
-
 extern "C" {
 #pragma bss_seg(".bss$gunship_bolts")
     i16 gunship_bolts[2];
@@ -28587,10 +28577,6 @@ extern "C" {
     struct NUGSCN_s *FadeLoop_ObjScene;
 }
 
-extern "C" {}
-
-extern "C" {}
-
 extern "C" {
 #pragma data_seg(".data$gizmopickup_typeid")
     i32 gizmopickup_typeid = -1;
@@ -28599,8 +28585,6 @@ extern "C" {
     void *hothtroopers;
 }
 
-extern "C" {}
-
 extern "C" {
 #pragma bss_seg(".bss$drawptr")
     void(__cdecl *drawptr)(void);
@@ -28608,10 +28592,6 @@ extern "C" {
 #pragma bss_seg(".bss$picked")
     i32 picked;
 }
-
-extern "C" {}
-
-extern "C" {}
 
 extern "C" {
 #pragma bss_seg(".bss$edpp_rotz")
@@ -28635,22 +28615,6 @@ extern "C" {
     i32 makeplayerlist_freeplay;
 }
 
-extern "C" {}
-
-extern "C" {}
-
-extern "C" {}
-
-extern "C" {}
-
-extern "C" {}
-
-extern "C" {}
-
-extern "C" {}
-
-extern "C" {}
-
 extern "C" {
 #pragma bss_seg(".bss$Grievous_obj")
     struct gameobject_s *Grievous_obj;
@@ -28667,10 +28631,6 @@ extern "C" {
 #pragma bss_seg(".bss$vader_b_playersDead")
     u8 vader_b_playersDead;
 }
-
-extern "C" {}
-
-extern "C" {}
 
 extern "C" {
 #pragma bss_seg(".bss$FadeLoop_ObjHSpecial")
@@ -28821,12 +28781,6 @@ extern "C" {
     i32 mushroom_nattempts_per_increment;
 }
 
-extern "C" {}
-
-extern "C" {}
-
-extern "C" {}
-
 extern "C" {
 #pragma bss_seg(".bss$SuperStoryTimer")
     TIMER SuperStoryTimer;
@@ -28848,10 +28802,6 @@ extern "C" {
     i32 status_prompt;
 }
 
-extern "C" {}
-
-extern "C" {}
-
 extern "C" {
 #pragma bss_seg(".bss$PodRace_nsnipers")
     i32 PodRace_nsnipers;
@@ -28868,8 +28818,6 @@ extern "C" {
     i32 edpp_copyroty;
 }
 
-extern "C" {}
-
 extern "C" {
 #pragma data_seg(".data$id_MINIXWING")
     i16 id_MINIXWING = -1;
@@ -28877,12 +28825,6 @@ extern "C" {
 #pragma data_seg(".data$id_MINIROYALSTARSHIP")
     i16 id_MINIROYALSTARSHIP = -1;
 }
-
-extern "C" {}
-
-extern "C" {}
-
-extern "C" {}
 
 extern "C" {
 #pragma bss_seg(".bss$HothBattleC_BombGenerator")
@@ -28895,4 +28837,17 @@ extern "C" {
 
 #pragma bss_seg(".bss$edpart_emitroty")
     i32 edpart_emitroty;
+}
+
+extern "C" {
+#pragma data_seg(".data$gizturret_test_ang")
+    i32 gizturret_test_ang = 3640;
+
+#pragma data_seg(".data$gizturret_rapid_fire_rate")
+    f32 gizturret_rapid_fire_rate = 0.20000000298023224f;
+}
+
+extern "C" {
+#pragma bss_seg(".bss$temp_yrot")
+    i16 temp_yrot;
 }

@@ -46,6 +46,31 @@ CABLE_RECORD_PC *__cdecl CreateCable(GAMEOBJECT *source, GAMEOBJECT *target, i32
     }
     return NULL;
 }
+
+void ReleaseCable(CABLE_s *cable, i32 snapped) {
+    i32 sound;
+    i32 i;
+    cable->flags_1e9 |= 4;
+    if (cable->target != NULL) {
+        cable->target->field_f00 &= (u8)(~0x20u);
+        cable->target->field_f01 &= (u8)(~2u);
+    }
+    sound = GetSfxId(snapped ? "TowCable_Snap" : "TowCable_Detach");
+    GameAudio_PlaySfxById(sound, cable->points, 1, 0);
+    if (cable->source != NULL) {
+        if (cable->source == player || cable->source == player2) {
+            GameCam_Blend(GameCam, 1.0f, 0.0f, 1);
+        }
+    }
+    if (cable->source != NULL && cable->source->cable == cable) {
+        cable->source->cable = NULL;
+        cable->source = NULL;
+    }
+    cable->target = NULL;
+    for (i = 0; i < cable->point_count; ++i) {
+        cable->velocities[i].y = 0.0f;
+    }
+}
 GAMEOBJECT *__cdecl CableTargetGameObject(GAMEOBJECT *source, NUVEC *position, f32 radius) {
     GAMEOBJECT *nearest = NULL, *candidate = Obj;
     f32 nearest_distance = 100000000.0f;

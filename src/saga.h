@@ -500,7 +500,7 @@ typedef struct AIOWNER_PC {
     NUVEC start_position;
     NUVEC initial_position;
     f32 scaled_radius;
-    u8 unknown_a8[0x4];
+    f32 field_a8;
     f32 collision_radius;
     f32 collision_height;
     f32 scaled_height;
@@ -511,10 +511,12 @@ typedef struct AIOWNER_PC {
     NUVEC lower_position;
     NUVEC collision_origin;
     NUVEC last_safe_position;
-    u8 unknown_1c0[0xc];
+    NUVEC field_1c0;
     NUVEC respawn_position;
     f32 movement_stuck_time;
-    u8 unknown_1dc[0xc];
+    f32 field_1dc;
+    f32 field_1e0;
+    u8 unknown_1e4[0x4];
     u64 collision_identity_mask;
     u64 colliding_objects_mask;
     u32 flags_1f8;
@@ -5720,7 +5722,10 @@ typedef struct gamecamera_s {
     f32 shake_freq;
     f32 position_seek;
     f32 angle_seek;
-    u8 unknown_1e8[0x10];
+    f32 field_1e8;
+    f32 field_1ec;
+    f32 field_1f0;
+    f32 field_1f4;
     i32 pitch;
     i32 input_yaw;
     i32 roll;
@@ -8143,7 +8148,16 @@ typedef struct GRAPPLE_DYNAMIC_PC {
     u8 unknown_00[0x1d];
     u8 retain_attachment;
     u8 flags;
-    u8 unknown_1f[0x35];
+    u8 field_1f;
+    u16 y_rotation;
+    u16 x_rotation;
+    NUVEC ground_position;
+    NUVEC hook_position;
+    NUVEC shadow_probe_position;
+    u16 ground_x_rotation;
+    u16 ground_z_rotation;
+    f32 field_4c;
+    f32 rope_length;
     GAMEOBJECT *attached_object;
     u8 unknown_58[0xa0];
 } GRAPPLE_DYNAMIC_PC;
@@ -25038,6 +25052,11 @@ extern "C" {
     void __cdecl eduiMenuDestroy(struct eduimenu_s *menu);
     i32 __cdecl eduiMenuDetach(struct eduimenu_s *menu);
     void __cdecl ChrisAnakinCReset(void);
+    void *__cdecl NuFramebufferGetFrontBuffer(void);
+    void __cdecl GizTurret_CalculateInterceptVector(struct nuvec_s *origin, struct numtx_s *matrix,
+                                                    struct nuvec_s *target, struct nuvec_s *velocity, f32 speed,
+                                                    struct nuvec_s *intercept, struct nuvec_s *intercept_velocity,
+                                                    u32 fallback);
 #ifdef __cplusplus
 }
 #endif
