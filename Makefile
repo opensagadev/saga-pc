@@ -32,12 +32,17 @@ all: build
 build: link
 objects: $(OBJECTS)
 link: $(EXE)
+.PHONY: link-strict
 run: $(EXE)
 	cd res && WINEPREFIX="$(CURDIR)/build/tools/wine" WINEDEBUG=-all WINEDLLOVERRIDES="winemenubuilder.exe=d" wine ../$(EXE)
 
 # Directory dependencies also relink when a source is removed from the input list.
 $(EXE): $(OBJECTS) $(D3DX_LIB) $(DSOUND_LIB) $(D3D9_LIB) $(DINPUT8_LIB) $(XINPUT_LIB) $(SOURCE_DIRS) config/toolchain.json Makefile tools/cc.py tools/lib.py
-	$(PYTHON) tools/cc.py --link $@ $(OBJECTS) -- $(LDFLAGS) $(LDLIBS)
+	$(PYTHON) tools/cc.py --link --allow-unresolved $@ $(OBJECTS) -- $(LDFLAGS) $(LDLIBS)
+
+# The complete link: every referenced function must be implemented.
+link-strict: $(OBJECTS) $(D3DX_LIB) $(DSOUND_LIB) $(D3D9_LIB) $(DINPUT8_LIB) $(XINPUT_LIB)
+	$(PYTHON) tools/cc.py --link build/LEGOStarWarsSaga.strict.exe $(OBJECTS) -- $(LDFLAGS) $(LDLIBS)
 
 $(D3DX_LIB): tools/d3dx9_35.def tools/cc.py Makefile
 	$(PYTHON) tools/cc.py --implib $@ $<

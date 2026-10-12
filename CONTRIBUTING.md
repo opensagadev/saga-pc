@@ -50,6 +50,12 @@ fields with asserted PC offsets, never byte-offset casts. `STUBBED()` /
 `STUBBED_NAMED(...)` mark a verified PC call whose dependency is still missing;
 they emit no code.
 
+`make link` (and `make build`) link with `/FORCE:UNRESOLVED` while the
+decompilation is incomplete: a ported function may call functions nobody has
+written yet, as long as every reference is mapped to its retail address
+(`check-objects`). The link reports how many symbols are still unresolved;
+`make link-strict` is the complete link and requires none.
+
 `make check` runs formatting, clang-tidy (Windows x86 target against the pinned
 SDK headers), project checks and unit tests. `check-objects` requires every
 compiled definition to have a mapping or to be listed in

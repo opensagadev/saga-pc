@@ -50,6 +50,9 @@ def main():
         "Import library: cc.py --implib OUTPUT DEFINITION.def."))
     mode = parser.add_mutually_exclusive_group()
     mode.add_argument("--link", action="store_true", help="Link compiled objects into an executable")
+    parser.add_argument("--allow-unresolved", action="store_true",
+                        help="With --link: link while functions are still unported (/FORCE:UNRESOLVED); "
+                             "unresolved symbols are reported, not fatal")
     mode.add_argument("--implib", action="store_true", help="Build an import library from a module definition")
     parser.add_argument("first", type=Path, help="Source when compiling; output for --link/--implib")
     parser.add_argument("arguments", nargs=argparse.REMAINDER)
@@ -97,6 +100,8 @@ def main():
                     raise ValueError(f"Link input must be a compiled .obj file: {path}")
             if any(flag.upper().startswith(("/FORCE", "-FORCE")) for flag in flags):
                 raise ValueError("Forced linking is unsupported; resolve all symbols normally")
+            if args.allow_unresolved:
+                flags = [*flags, "/FORCE:UNRESOLVED"]
             flags = [windows(Path(flag)) if flag.lower().endswith(".lib") and Path(flag).is_file()
                      else flag for flag in flags]
             command = [wine, str(compiler / "link.exe"), *flags,
@@ -115,6 +120,11 @@ def main():
         log = result.stdout + result.stderr
         print(log, end="", flush=True)
         # Ignored options and forced unresolved links can otherwise exit successfully.
+        if args.link and args.allow_unresolved:
+            # Unported callees are expected here; report how many and keep option checks strict.
+            unresolved = sorted(set(re.findall(r"unresolved external symbol (\S+)", log)))
+            print(f"Linked with {len(unresolved)} unresolved symbols (make link-strict requires none)", flush=True)
+            log = re.sub(r"[^\n]*\b(?:LNK2001|LNK2019|LNK4088)\b[^\n]*", "", log)
         rejected = re.search(r"\b(?:D900[12]|LNK4044|LNK2001|LNK2019|LNK1120|LNK4088)\b", log)
         if result.returncode or rejected or not output.is_file():
             action = "Import library generation" if args.implib else "Linking" if args.link else "Compilation"
