@@ -67,7 +67,7 @@ static void Shop_DrawCharacter(shopitem_s *item, NUVEC *position, f32 scale_valu
         icon_object_id = CDataList[character_id].icon_model;
         if (icon_object_id != -1) {
             struct WORLDINFO_s *world;
-            struct LEVEL_OBJECT_RUNTIME_s *icon;
+            LEVEL_OBJECT_RUNTIME_PC *icon;
             if (unavailable != 0)
                 ++icon_object_id;
             world = WORLD;

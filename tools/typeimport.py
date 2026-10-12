@@ -54,9 +54,21 @@ class Importer:
                     self.typedef_tag.setdefault(cursor.spelling, underlying.get_declaration().spelling)
         punit = typexfer.pc_unit()
         self.pc, self.pc_typedefs = typexfer.parse_structs(punit, str(HEADER))
+        # Types this tool imported earlier are regenerated, not treated as PC types.
+        text = HEADER.read_text(encoding="latin-1")
+        if SECTION_START in text:
+            first = text[:text.index(SECTION_START)].count("\n") + 1
+            end = text.index(GLOBALS_START) if GLOBALS_START in text else len(text)
+            last = text[:end].count("\n") + 1
+            own = {k for k, st in self.pc.items() if first <= st.cursor.location.line <= last}
+            self.pc = {k: st for k, st in self.pc.items() if k not in own}
+            self.pc_typedefs = {k: v for k, v in self.pc_typedefs.items() if k not in own}
+        else:
+            first = last = 0
         self.pc_record_typedefs = {}  # typedef name -> size, for record typedefs of saga.h
         for cursor in punit.cursor.get_children():
             if (cursor.kind == K.TYPEDEF_DECL and cursor.location.file and cursor.location.file.name == str(HEADER)
+                    and not first <= cursor.location.line <= last
                     and cursor.underlying_typedef_type.get_canonical().kind == T.RECORD):
                 self.pc_record_typedefs[cursor.spelling] = cursor.underlying_typedef_type.get_canonical().get_size()
         pairs = typexfer.pair(self.android, self.pc)
@@ -66,7 +78,7 @@ class Importer:
         # Names that units declare themselves (a header type would collide with them).
         sources = "\n".join(path.read_text(encoding="latin-1") for path in (ROOT / "src").rglob("*")
                             if path.suffix in (".c", ".cpp", ".h") and path != HEADER)
-        self.source_names = set(re.findall(r"\b(?:struct|class|union|enum)\s+(\w+)", sources))
+        self.source_names = set(re.findall(r"\b(?:struct|class|union|enum)\s+(\w+)\s*(?::[^{;]*)?\{", sources))
         self.source_names |= set(re.findall(r"\}\s*(\w+)\s*;", sources))
         self.source_names |= set(re.findall(r"\btypedef\b[^;{]*?\b(\w+)\s*;", sources))
         self.imported = {}  # tag -> definition text

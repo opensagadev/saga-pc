@@ -2599,7 +2599,24 @@ typedef struct edanim_param_pc_s {
     i32 instance_id;
     i32 effect_count;
     i32 sound_count;
-    u8 unknown_00c[0x2c4];
+    u8 unknown_c[0x10];
+    char effect_names[8][16];
+    i32 effect_ids[8];
+    i32 effect_intervals[8];
+    i32 effect_flags[8];
+    f32 effect_positions[8][3];
+    i16 effect_angles[8];
+    i16 effect_angle_ranges[8];
+    u8 unknown_17c[0x4];
+    char sound_names[8][16];
+    i32 sound_ids[8];
+    i32 sound_flags[8];
+    f32 sound_values[8];
+    f32 sound_positions[8][3];
+    i32 platform_id;
+    f32 bounce_impulse;
+    f32 bounce_spring;
+    f32 bounce_damping;
     i8 page;
     u8 unknown_2d1[3];
 } EDANIM_PARAM_PC;
@@ -20739,7 +20756,6 @@ typedef i32 AIFINDALTERNATIVESPECIALOBJECT(AISYS_PC *system, struct nuhspecial_s
 /* Types imported from the Android sources (tools/typeimport.py). */
 typedef struct ADDGIZMOTYPE_s ADDGIZMOTYPE_s;
 typedef struct AIAREA_s AIAREA_s;
-typedef struct AICONDITION_s AICONDITION_s;
 typedef struct AIEDITOR_RENDER_STATE AIEDITOR_RENDER_STATE;
 typedef struct AIPATHCNXCONTROLLER_s AIPATHCNXCONTROLLER_s;
 typedef struct AIPATHCNXCONTROLSYS_s AIPATHCNXCONTROLSYS_s;
@@ -20757,14 +20773,12 @@ typedef struct CABLE_s CABLE_s;
 typedef struct CHARACTER_SHADOW_s CHARACTER_SHADOW_s;
 typedef struct CHARPLATFORMSYS_s CHARPLATFORMSYS_s;
 typedef struct CHARPLATFORM_s CHARPLATFORM_s;
-typedef struct CHARSCENE_s CHARSCENE_s;
 typedef struct CLIMBOBJECTSYS_s CLIMBOBJECTSYS_s;
 typedef struct CLIMBOBJECT_s CLIMBOBJECT_s;
 typedef struct COLLECTID COLLECTID;
 typedef struct COLLECTION_s COLLECTION_s;
 typedef struct CUSTOMPIECE CUSTOMPIECE;
 typedef struct CUSTOMPIECECATEGORY CUSTOMPIECECATEGORY;
-typedef struct CUSTOMPIECERESOURCE CUSTOMPIECERESOURCE;
 typedef struct CUTSYS CUTSYS;
 typedef struct DETONATOR_s DETONATOR_s;
 typedef struct DOOR_s DOOR_s;
@@ -20813,7 +20827,6 @@ typedef struct LEDGE_s LEDGE_s;
 typedef struct LEVELSAVE_s LEVELSAVE_s;
 typedef struct LEVELSCRIPTPROCESS_s LEVELSCRIPTPROCESS_s;
 typedef struct LEVELSCRIPTPROGRESS_s LEVELSCRIPTPROGRESS_s;
-typedef struct LEVEL_OBJECT_RUNTIME_s LEVEL_OBJECT_RUNTIME_s;
 typedef struct LEVEL_PROGRESS_DATA_s LEVEL_PROGRESS_DATA_s;
 typedef struct LEVEL_PROGRESS_s LEVEL_PROGRESS_s;
 typedef struct LEVER_s LEVER_s;
@@ -20838,8 +20851,6 @@ typedef struct PLAYERSUBOBJ2_s PLAYERSUBOBJ2_s;
 typedef struct PLAYERSUBOBJ_s PLAYERSUBOBJ_s;
 typedef struct PLUG_s PLUG_s;
 typedef struct PODSPRINTNETPACKET_s PODSPRINTNETPACKET_s;
-typedef struct PODSPRINT_AISPLINE_s PODSPRINT_AISPLINE_s;
-typedef struct PODSPRINT_s PODSPRINT_s;
 typedef struct PORTALDOOR_s PORTALDOOR_s;
 typedef struct PUSHPROGRESS PUSHPROGRESS;
 typedef struct RUMBLEPACKET RUMBLEPACKET;
@@ -20872,9 +20883,7 @@ typedef struct anakin_door_s anakin_door_s;
 typedef struct anakin_door_setup_s anakin_door_setup_s;
 typedef struct debris_float_key_s debris_float_key_s;
 typedef struct ed_module_s ed_module_s;
-typedef struct edanim_param_s edanim_param_s;
 typedef struct edcam_s edcam_s;
-typedef struct edgra_individual_s edgra_individual_s;
 typedef struct edui_colour_pick_s edui_colour_pick_s;
 typedef struct edui_colour_slider_s edui_colour_slider_s;
 typedef struct edui_file_pick_s edui_file_pick_s;
@@ -20891,13 +20900,13 @@ typedef struct eduiitem_s eduiitem_s;
 typedef struct eduimenu_s eduimenu_s;
 typedef struct gizmotype_s gizmotype_s;
 typedef struct instNUGCUTRIGID_s instNUGCUTRIGID_s;
-typedef struct instNUGCUTSCENE_s instNUGCUTSCENE_s;
 typedef struct minisnowtrooper_s minisnowtrooper_s;
 typedef struct minitrooperteam_s minitrooperteam_s;
 typedef struct nuclipbounds_s nuclipbounds_s;
 typedef struct nuclipobject_s nuclipobject_s;
 typedef struct nucolour3_s nucolour3_s;
 typedef struct nufile_info_s nufile_info_s;
+typedef struct nugraph_s nugraph_s;
 typedef struct nuhspecial_s nuhspecial_s;
 typedef struct nutex_s nutex_s;
 typedef struct pushblock_s pushblock_s;
@@ -20937,9 +20946,7 @@ struct AITRIGGERSET_s {
     };
     i8 trigger_indices[8];
     union {
-        u8 unknown_20c[0x2];
-        u16 field_20e;
-        u8 unknown_210[0x4];
+        u8 pad_0x20c[8];
         struct {
             u8 trigger_count;
             u8 field_20d;
@@ -21503,14 +21510,6 @@ struct APICHARACTERMODELLIST_s {
 };
 STATIC_ASSERT(sizeof(struct APICHARACTERMODELLIST_s) == 4);
 
-struct LEVEL_OBJECT_RUNTIME_s {
-    struct nuhspecial_s special;
-    i16 platform_id;
-    u8 active;
-    u8 pad_0f;
-};
-STATIC_ASSERT(sizeof(struct LEVEL_OBJECT_RUNTIME_s) == 16);
-
 struct storepack_s {
     char *name;
     union {
@@ -21700,19 +21699,6 @@ struct CUSTOMPIECECATEGORY {
     char *shared_scene;
 };
 STATIC_ASSERT(sizeof(struct CUSTOMPIECECATEGORY) == 12);
-
-struct CUSTOMPIECERESOURCE {
-    struct NUGSCN_s *scene;
-    struct nuhspecial_s special;
-    i32 original_texture_id;
-    union {
-        i32 texture_id;
-        void *model;
-    };
-    i32 material_index;
-    struct CHARACTER_MODEL_LAYERS_PC *character_model;
-};
-STATIC_ASSERT(sizeof(struct CUSTOMPIECERESOURCE) == 32);
 
 struct rtldata_s {
     RTL_DATA_PC base;
@@ -22822,7 +22808,7 @@ struct NuSpecialBoundsDisplayLayout {
     u32 flags;
     f32 *clip_range;
     i32 instance_ix;
-    struct nuinstanim_time_view_s *instance_animation;
+    struct nuinstanim_s *instance_animation;
     i16 wind_speed;
     i16 wind_scale;
     u32 pad_cc;
@@ -22934,82 +22920,6 @@ struct MINESYS_s {
 };
 STATIC_ASSERT(sizeof(struct MINESYS_s) == 1864);
 
-struct instNUGCUTSCENE_s {
-    struct instNUGCUTSCENE_s *next;
-    struct instNUGCUTSCENE_s *previous;
-    char name[16];
-    NUMTX matrix;
-    struct NUGCUTSCENE_s *cutscene;
-    struct NUGCUTSCENE_s *cutscene_copy;
-    NUVEC transformed_bounds_center;
-    NUVEC bounds_min;
-    NUVEC bounds_max;
-    f32 max_camera_distance_squared;
-    union {
-        struct {
-            union {
-                u8 flags_88;
-                struct {
-                    u8 flags_88_low : 2;
-                    u8 paused : 1;
-                    u8 flags_88_high : 5;
-                };
-            };
-            union {
-                u8 flags_89;
-                struct {
-                    u8 flags_89_low : 4;
-                    i8 finished : 1;
-                    u8 flags_89_high : 3;
-                };
-            };
-            u8 flags_8a;
-            u8 flags_8b;
-        };
-        struct {
-            u32 flags_88_word_low : 13;
-            i32 repeat_count : 5;
-            u32 flags_88_word_high : 14;
-        };
-    };
-    union {
-        u8 flags_8c;
-        struct {
-            u8 flags_8c_low : 6;
-            u8 wait_at_end : 1;
-            u8 flags_8c_high : 1;
-        };
-    };
-    u8 flags_8d;
-    u8 pad_8e[2];
-    f32 current_frame;
-    f32 render_frame;
-    f32 rate;
-    struct instNUGCUTSCENECAMERA_s *camera_instance;
-    struct instNUGCUTRIGIDSYS_s *rigid_instance;
-    struct instNUGCUTCHARSYS_s *character_instance;
-    struct instNUGCUTLOCATORSYS_s *locator_instance;
-    struct instNUGCUTTRIGGERSYS_s *trigger_instance;
-    struct instNUGCUTSCENE_s *chained_instance;
-    void(__cdecl *end_callback)(struct instNUGCUTSCENE_s *arg0);
-    u32 field_b8;
-    struct NUGCUTSCENE_s *stream_buffer_0;
-    struct NUGCUTSCENE_s *stream_buffer_1;
-    void *field_c4;
-    void *field_c8;
-    u8 pad_cc[12];
-    i16 skip_countdown;
-    u8 pad_da[5];
-    u8 stream_index;
-    f32 accumulated_stream_duration;
-    f32 elapsed;
-    f32 alpha;
-    void *pending_stream_buffer;
-    i32 allocation_size;
-    struct instNUGCUTSCENE_s *queued_stream_instance;
-};
-STATIC_ASSERT(sizeof(struct instNUGCUTSCENE_s) == 248);
-
 struct SOCKSYS {
     struct sock_pc_s *sock;
     i32 count;
@@ -23023,34 +22933,6 @@ struct PODSPRINTNETPACKET_s {
     i16 speed2;
 };
 STATIC_ASSERT(sizeof(struct PODSPRINTNETPACKET_s) == 10);
-
-struct PODSPRINT_AISPLINE_s {
-    struct nugspline_s *spline;
-    i16 vals[6];
-};
-STATIC_ASSERT(sizeof(struct PODSPRINT_AISPLINE_s) == 16);
-
-struct PODSPRINT_s {
-    struct nugspline_s *finish_line;
-    struct nugspline_s *halfway;
-    struct PODSPRINT_AISPLINE_s ai[6];
-    struct gizaimessage_s *lap_msg;
-    struct gizaimessage_s *max_speed_msg;
-    struct gizaimessage_s *min_speed_msg;
-    struct gizaimessage_s *speed_step_msg;
-    void *field_0x78;
-    void *boulders;
-    f32 field_0x80;
-    f32 speed;
-    f32 field_0x88;
-    char pad_0x8c[2];
-    u8 ai_state;
-    u8 ai_index;
-    char pad_0x90[2];
-    u8 flags;
-    char pad_0x93[1];
-};
-STATIC_ASSERT(sizeof(struct PODSPRINT_s) == 148);
 
 struct PLAYERSUBOBJ2_s {
     char pad_0x00[28];
@@ -23136,25 +23018,6 @@ struct instNUGCUTRIGID_s {
     u8 pad_0e[2];
 };
 STATIC_ASSERT(sizeof(struct instNUGCUTRIGID_s) == 16);
-
-struct AICONDITION_s {
-    NULISTLNK list_node;
-    f32 param_val;
-    char type;
-    i8 param_idx;
-    u16 bool_and : 1;
-    u16 keep_blocked : 1;
-    u16 is_param_idx_valid : 1;
-    u16 is_complex : 1;
-    char *complex_arg;
-    char *arg;
-    void *void_arg;
-    struct AICONDITIONDEF_PC *def;
-    char *next_state_name;
-    struct AISTATE_PC *next_state;
-    struct AICONDITION_s *param_cond;
-};
-STATIC_ASSERT(sizeof(struct AICONDITION_s) == 44);
 
 struct EDLOCATORSET_s {
     NULISTLNK link;
@@ -23510,12 +23373,6 @@ struct gizmotype_s {
 };
 STATIC_ASSERT(sizeof(struct gizmotype_s) == 160);
 
-struct CHARSCENE_s {
-    struct NUGSCN_s *scene;
-    struct nuhspecial_s special_scene;
-};
-STATIC_ASSERT(sizeof(struct CHARSCENE_s) == 16);
-
 struct STATUSCOLLECT_s {
     u16 completion_points;
     u8 gold_bricks;
@@ -23852,7 +23709,7 @@ struct edui_texture_pick_s {
     f32 uv_x[2];
     f32 uv_y[2];
     void(__cdecl *changed)(struct eduimenu_s *arg0, struct eduiitem_s *arg1, u32 arg2);
-    void *material;
+    struct PC_SCENE_MTL_VIEW *material;
     i32 selected_corner;
     f32 zoom;
 };
@@ -23861,8 +23718,8 @@ STATIC_ASSERT(sizeof(struct edui_texture_pick_s) == 108);
 struct edui_graph_s {
     struct eduiitem_s base;
     i32(__cdecl *interact)(struct edui_interact_s *arg0);
-    struct PC_SPECIAL_PROJECTION_ADJUST *graph;
-    struct PC_SPECIAL_PROJECTION_ADJUST *onion_skins[8];
+    struct nugraph_s *graph;
+    struct nugraph_s *onion_skins[8];
     void(__cdecl *changed)(struct eduimenu_s *arg0, struct eduiitem_s *arg1, u32 arg2);
     f32 cursor_x;
     f32 cursor_y;
@@ -24048,45 +23905,6 @@ struct nutex_s {
 };
 STATIC_ASSERT(sizeof(struct nutex_s) == 12);
 
-struct edanim_param_s {
-    i32 instance_id;
-    i32 effect_count;
-    i32 sound_count;
-    i32 field_00c;
-    i32 field_010;
-    f32 field_014;
-    f32 field_018;
-    char effect_names[8][16];
-    i32 effect_ids[8];
-    i32 effect_intervals[8];
-    i32 effect_flags[8];
-    f32 effect_positions[8][3];
-    i16 effect_angles[8];
-    i16 effect_angle_ranges[8];
-    f32 field_17c;
-    char sound_names[8][16];
-    i32 sound_ids[8];
-    i32 sound_flags[8];
-    f32 sound_values[8];
-    f32 sound_positions[8][3];
-    i32 platform_id;
-    f32 bounce_impulse;
-    f32 bounce_spring;
-    f32 bounce_damping;
-    i8 page;
-    u8 reserved_2d1[3];
-};
-STATIC_ASSERT(sizeof(struct edanim_param_s) == 724);
-
-struct edgra_individual_s {
-    NUVEC position;
-    f32 field_0c;
-    i16 field_10;
-    i16 field_12;
-    u8 unknown_14[12];
-};
-STATIC_ASSERT(sizeof(struct edgra_individual_s) == 32);
-
 struct debris_float_key_s {
     f32 time;
     f32 value;
@@ -24106,7 +23924,7 @@ struct NuLegacyInstanceLayout {
         };
     };
     u8 pad_45[3];
-    struct nuinstanim_time_view_s *animation;
+    struct nuinstanim_s *animation;
 };
 STATIC_ASSERT(sizeof(struct NuLegacyInstanceLayout) == 76);
 
@@ -24133,6 +23951,21 @@ struct LevelEditorScene {
     u32 reserved_flags : 29;
 };
 STATIC_ASSERT(sizeof(struct LevelEditorScene) == 168);
+
+struct nugraph_s {
+    i8 interpolation;
+    i8 point_count;
+    u8 pad_02[2];
+    f32 x[8];
+    f32 y[8];
+    f32 x_scale;
+    f32 y_scale;
+    f32 x_extent;
+    f32 y_extent;
+    f32 x_offset;
+    f32 y_offset;
+};
+STATIC_ASSERT(sizeof(struct nugraph_s) == 92);
 
 /* Globals and constants transferred from the Android sources (tools/globals.py). */
 #ifdef __cplusplus

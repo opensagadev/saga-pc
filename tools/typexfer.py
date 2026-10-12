@@ -165,12 +165,16 @@ def pair(android, pc):
             same = sum(1 for _, delta in anchors if delta == 0)
             android_name = re.sub(r"[^a-z0-9]", "", astruct.tag.lower())
             # Deterministic: score, then exact size, similar name, named over anonymous.
-            score = (common + same - abs(astruct.size - pstruct.size) / 64,
+            score = (bool(pstruct.tag) and astruct.tag == pstruct.tag,  # the same tag (imported types) wins
+                     common + same - abs(astruct.size - pstruct.size) / 64,
                      astruct.size == pstruct.size,
                      bool(pc_name) and (android_name.startswith(pc_name[:6]) or pc_name.startswith(android_name[:6])),
                      not astruct.cursor.is_anonymous(), astruct.tag)
             if best is None or score > best[0]:
                 best = (score, akey, anchors)
+        # Very different sizes need many shared names (a few x/y/scale names match anything).
+        if best and not 0.5 <= pstruct.size / max(android[best[1]].size, 1) <= 2 and len(best[2]) < 8:
+            best = None
         if best and len(best[2]) >= 3:
             result[pkey] = (best[1], offset_name_anchors(android[best[1]], pstruct, best[2]))
     return result
@@ -285,8 +289,8 @@ class Translator:
                     return f"{spelled} {name}"
             return None
         if c.kind == T.CONSTANTARRAY:
-            inner = self.spell(c.element_type, name, line)
-            return f"{inner}[{c.element_count}]" if inner else None
+            # The outer dimension binds to the name first: T name[outer][inner].
+            return self.spell(c.element_type, f"{name}[{c.element_count}]", line)
         return None
 
 
@@ -349,7 +353,7 @@ def referenced_members():
     return names
 
 
-def plan(android_root):
+def plan(android_root, only=None):
     header_bytes = HEADER.read_bytes()
     referenced = referenced_members()
     aunit = android_unit(android_root)
@@ -362,7 +366,7 @@ def plan(android_root):
     edits, report = [], []
     for pkey, (akey, anchors) in pairs.items():
         pstruct, astruct = pc[pkey], android[akey]
-        if pkey in frozen:
+        if pkey in frozen or only and not ({pstruct.tag, pc_typedefs.get(pkey)} & set(only)):
             continue
         line = pstruct.cursor.location.line
         names = {f[2] for f in pstruct.fields}
@@ -461,9 +465,10 @@ def main():
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--android", type=Path, default=ROOT.parent / "saga")
     parser.add_argument("--write", action="store_true")
+    parser.add_argument("--only", nargs="+", help="Limit the transfer to these PC structs (tag or typedef)")
     args = parser.parse_args()
     (ROOT / "build/typexfer").mkdir(parents=True, exist_ok=True)
-    edits, report, (pc, pc_typedefs) = plan(args.android)
+    edits, report, (pc, pc_typedefs) = plan(args.android, args.only)
     print(f"{len(report)} padding ranges gain {sum(r[1] for r in report)} fields "
           f"({sum(r[2] for r in report)} bytes) in "
           f"{len({r[0] for r in report})} structs")

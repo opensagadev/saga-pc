@@ -121,7 +121,7 @@ void __cdecl edanimDetermineNearestAnim(f32 distance) {
 
 void edanimParticleDestroy(i32 parameter_index, i32 particle_index) {
     i32 index;
-    edanim_param_s *parameters = AnimParams;
+    EDANIM_PARAM_PC *parameters = AnimParams;
     for (index = particle_index; index < parameters[parameter_index].effect_count - 1; ++index) {
         parameters[parameter_index].effect_ids[index] = parameters[parameter_index].effect_ids[index + 1];
         parameters[parameter_index].effect_intervals[index] = parameters[parameter_index].effect_intervals[index + 1];

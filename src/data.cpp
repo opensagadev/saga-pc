@@ -29227,3 +29227,34 @@ extern "C" {
 #pragma bss_seg(".bss$edbri_active_menu")
     struct eduimenu_s *edbri_active_menu;
 }
+
+extern "C" {
+#pragma const_seg(".rdata$EduiSourcePathPc")
+    extern const char EduiSourcePathPc[52] = "d:\\projects\\game_saga\\gameapi.saga\\edtools\\edui.cpp";
+}
+
+extern "C" {
+#pragma bss_seg(".bss$active_menu")
+    struct eduimenu_s *active_menu;
+
+#pragma bss_seg(".bss$edui_donotdraw")
+    i32 edui_donotdraw;
+
+#pragma bss_seg(".bss$edui_font")
+    void *edui_font;
+
+#pragma data_seg(".data$edui_font_scale_y")
+    f32 edui_font_scale_y = 0.8999999761581421f;
+
+#pragma data_seg(".data$edui_font_scale_x")
+    f32 edui_font_scale_x = 0.8999999761581421f;
+
+#pragma bss_seg(".bss$uimtls")
+    struct PC_SCENE_MTL_VIEW *uimtls[5];
+
+#pragma bss_seg(".bss$processing_menu")
+    struct eduimenu_s *processing_menu;
+
+#pragma bss_seg(".bss$edui_messagemenu")
+    struct eduimenu_s *edui_messagemenu;
+}
