@@ -249,8 +249,16 @@ def translate(context, function, target_is_c):
                 parents[child.hash] = node
         for node in function.walk_preorder():
             kind = node.type.get_canonical().kind if node.kind in (K.VAR_DECL, K.PARM_DECL) else None
-            if kind in (T.LVALUEREFERENCE, T.RVALUEREFERENCE):
+            if kind in (T.LVALUEREFERENCE, T.RVALUEREFERENCE) and node.kind == K.PARM_DECL:
                 unresolved.append(f"C++ reference {node.spelling}")
+            elif (node.kind == K.DECL_REF_EXPR and node.referenced is not None and node.referenced.kind == K.VAR_DECL
+                  and node.referenced.type.get_canonical().kind in (T.LVALUEREFERENCE, T.RVALUEREFERENCE)
+                  and node.location.file is not None and node.location.file.name == source_file
+                  and data[node.extent.start.offset:node.extent.end.offset] == node.spelling.encode()):
+                # Local references became pointers in hoist_declarations.
+                edits.append((node.extent.start.offset, node.extent.end.offset, f"(*{node.spelling})"))
+            elif node.kind == K.LAMBDA_EXPR:
+                unresolved.append("C++ lambda")
             elif node.kind == K.INIT_LIST_EXPR:
                 parent = parents.get(node.hash)
                 # C89 allows brace lists only to initialize a declaration that stays in place.
@@ -294,18 +302,40 @@ def translate(context, function, target_is_c):
 def hoist_declarations(context, function, data, edits, unresolved):
     """C89: move declarations that follow statements (and for-loop declarations) to block starts."""
     def declaration_text(variable):
+        kind = variable.type.get_canonical().kind
+        if kind in (T.LVALUEREFERENCE, T.RVALUEREFERENCE):
+            # A C++ reference becomes a pointer; translate() rewrites its uses to (*name).
+            pointee = variable.type.get_pointee()
+            spelled = context.translator.spell(pointee, "*" + variable.spelling, 10 ** 9)
+            return (spelled or f"{pointee.spelling} *{variable.spelling}") + ";"
         spelled = context.translator.spell(variable.type, variable.spelling, 10 ** 9)
         if spelled is None:
             original = variable.type.spelling
             spelled = f"{original} {variable.spelling}"
         return spelled + ";"
 
+    def is_reference(variable):
+        return variable.type.get_canonical().kind in (T.LVALUEREFERENCE, T.RVALUEREFERENCE)
+
     for compound in [c for c in function.walk_preorder() if c.kind == K.COMPOUND_STMT]:
         children = list(compound.get_children())
-        seen_statement, hoisted, names = False, [], set()
+        seen_statement, hoisted, names = False, [], {}
         targets = []
+        nested = None
         for child in children:
             if child.kind == K.DECL_STMT and not seen_statement:
+                for variable in child.get_children():
+                    if variable.kind == K.VAR_DECL:
+                        names[variable.spelling] = variable.type.spelling
+                        if is_reference(variable):
+                            # In place at the block start: T &r = e; -> T *r = &(e);
+                            init = [c for c in variable.get_children() if c.kind not in (K.TYPE_REF, K.NAMESPACE_REF)]
+                            source = data[variable.extent.start.offset:variable.location.offset].decode("latin-1")
+                            at = variable.extent.start.offset + source.rfind("&")
+                            edits.append((at, at + 1, "*"))
+                            if init:
+                                edits.append((init[-1].extent.start.offset, init[-1].extent.start.offset, "&("))
+                                edits.append((init[-1].extent.end.offset, init[-1].extent.end.offset, ")"))
                 continue
             seen_statement = True
             if child.kind == K.DECL_STMT:
@@ -315,28 +345,53 @@ def hoist_declarations(context, function, data, edits, unresolved):
                 if init is not None and init.kind == K.DECL_STMT:
                     targets.append((init, child))
         for statement, owner in targets:
+            if nested is not None and owner is statement:
+                continue  # inside the nested block opened for an aggregate initializer below
             variables = [v for v in statement.get_children() if v.kind == K.VAR_DECL]
-            if not variables or any(v.spelling in names for v in variables):
-                if variables:
+            if not variables:
+                continue
+            initialized = []
+            for variable in variables:
+                init = [c for c in variable.get_children() if c.kind not in (K.TYPE_REF, K.NAMESPACE_REF)]
+                # C++ default construction (NUVEC v;) shows up as an argument-less constructor call.
+                if init and init[-1].kind == K.CALL_EXPR and not list(init[-1].get_arguments()) and (
+                        init[-1].spelling == variable.type.spelling
+                        or init[-1].referenced is not None and init[-1].referenced.kind == K.CONSTRUCTOR):
+                    init = []
+                initialized.append((variable, init))
+            aggregate = any(v.type.get_canonical().kind in (T.CONSTANTARRAY, T.RECORD) and init
+                            and (init[-1].kind == K.INIT_LIST_EXPR or v.type.get_canonical().kind == T.CONSTANTARRAY)
+                            for v, init in initialized)
+            if aggregate and owner is statement:
+                # C89 only declares at a block start: open a block here that closes with the enclosing one,
+                # so the initializer stays as written.
+                if any(v.spelling in names for v in variables):
                     unresolved.append(f"C89 redeclaration of {variables[0].spelling}")
+                    continue
+                if any(is_reference(v) for v in variables):
+                    unresolved.append("C++ reference in aggregate declaration")
+                    continue
+                a = statement.extent.start.offset
+                edits.append((a, a, "{\n"))
+                end = compound.extent.end.offset - 1
+                edits.append((end, end, "}\n"))
+                nested = statement
+                continue
+            if aggregate:
+                unresolved.append(f"C89 array initializer {variables[0].spelling}")
+                continue
+            reuse = [v for v in variables if v.spelling in names]
+            if reuse and (len(reuse) != len(variables) or any(names[v.spelling] != v.type.spelling for v in reuse)):
+                unresolved.append(f"C89 redeclaration of {reuse[0].spelling}")
                 continue
             assignments = []
-            for variable in variables:
-                initializer = [c for c in variable.get_children() if c.kind not in (K.TYPE_REF, K.NAMESPACE_REF)]
-                # C++ default construction (NUVEC v;) shows up as a constructor call spelling the variable.
-                if initializer and initializer[-1].kind == K.CALL_EXPR and initializer[-1].spelling == variable.type.spelling \
-                        and not list(initializer[-1].get_arguments()):
-                    initializer = []
-                if (variable.type.get_canonical().kind in (T.CONSTANTARRAY, T.RECORD) and initializer
-                        and initializer[-1].kind == K.INIT_LIST_EXPR or
-                        variable.type.get_canonical().kind == T.CONSTANTARRAY and initializer):
-                    unresolved.append(f"C89 array initializer {variable.spelling}")
-                    break
-                names.add(variable.spelling)
-                hoisted.append(declaration_text(variable))
+            for variable, initializer in initialized:
+                if variable.spelling not in names:
+                    names[variable.spelling] = variable.type.spelling
+                    hoisted.append(declaration_text(variable))
                 if initializer:
                     a, b = initializer[-1].extent.start.offset, initializer[-1].extent.end.offset
-                    assignments.append((variable.spelling, a, b))
+                    assignments.append((variable.spelling, a, b, is_reference(variable)))
             a, b = statement.extent.start.offset, statement.extent.end.offset
             if data[b:b + 1] == b";":
                 b += 1
@@ -346,8 +401,10 @@ def hoist_declarations(context, function, data, edits, unresolved):
             else:
                 pieces, cursor = [], a
                 first = True
-                for name, ia, ib in assignments:
-                    edits.append((cursor, ia, ("" if first else ", ") + f"{name} = "))
+                for name, ia, ib, reference in assignments:
+                    edits.append((cursor, ia, ("" if first else ", ") + f"{name} = " + ("&(" if reference else "")))
+                    if reference:
+                        edits.append((ib, ib, ")"))
                     cursor, first = ib, False
                 edits.append((cursor, b, ";" if owner is statement or True else ""))
         if hoisted:
