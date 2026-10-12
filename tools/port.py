@@ -275,6 +275,8 @@ def translate(context, function, target_is_c):
     source = re.sub(r"__attribute__\s*\(\((?:[^()]|\([^()]*\))*\)\)\s*", "", source)
     source = re.sub(r"\b__(used|unused|noinline|always_inline)__\s*", "", source)
     source = re.sub(r"\busize\b", "size_t", source)
+    # Android helpers for the fabs intrinsic.
+    source = re.sub(r"\b(NuFabs|__builtin_fabsf)\s*\(", "fabsf(", source)
     source = re.sub(r"\bisize\b", "i32", source)
     if target_is_c:
         source = c_casts(source)
@@ -282,6 +284,7 @@ def translate(context, function, target_is_c):
         source = re.sub(r"(\b[A-Za-z_]\w*\s+\**[A-Za-z_]\w*(?:\[[^\]]*\])?)\{(?=[^;]*\};)", r"\1 = {", source)
         source = re.sub(r"=\s*\{\s*\}", "= {0}", source)
         source = re.sub(r"\bnullptr\b", "NULL", source)
+        source = re.sub(r"\binline\b", "__inline", source)
         source = re.sub(r"\bbool\b", "i32", source)
         source = re.sub(r"\btrue\b", "1", source)
         source = re.sub(r"\bfalse\b", "0", source)
