@@ -330,7 +330,7 @@ def hoist_declarations(context, function, data, edits, unresolved):
         children = list(compound.get_children())
         seen_statement, hoisted, names = False, [], {}
         targets = []
-        nested = None
+        nested, opened = None, 0
         for child in children:
             if child.kind == K.DECL_STMT and not seen_statement:
                 for variable in child.get_children():
@@ -375,8 +375,7 @@ def hoist_declarations(context, function, data, edits, unresolved):
                         reference_in_place(variable, init)
                 a = statement.extent.start.offset
                 edits.append((a, a, "{\n"))
-                end = compound.extent.end.offset - 1
-                edits.append((end, end, "}\n"))
+                opened += 1
                 nested = statement
                 continue
             if aggregate:
@@ -409,6 +408,10 @@ def hoist_declarations(context, function, data, edits, unresolved):
                         edits.append((ib, ib, ")"))
                     cursor, first = ib, False
                 edits.append((cursor, b, ";" if owner is statement or True else ""))
+        if opened:
+            # One edit closes them all: identical edit tuples would be merged.
+            end = compound.extent.end.offset - 1
+            edits.append((end, end, "}\n" * opened))
         if hoisted:
             at = compound.extent.start.offset + 1
             edits.append((at, at, "\n" + "\n".join(hoisted)))
