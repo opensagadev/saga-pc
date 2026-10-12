@@ -9049,6 +9049,161 @@ i32 __cdecl Action_SelectRandomSpline(AISYS_PC *sys, AISCRIPTPROCESS_PC *process
     return 1;
 }
 
+extern const char RaceOpponentDistancePrefix[9];
+i32 Action_CreateSplineCreatures(AISYS_PC *system, AISCRIPTPROCESS_PC *processor, AIPACKET_PC *packet, char **params,
+                                 i32 num_params, i32 first_time, f32 unused6) {
+    u16 angle;
+    u16 pitch;
+    i32 model_count;
+    i32 spline_count;
+    i32 use_selected;
+    i32 min_group_size;
+    i32 max_group_size;
+    i32 group_size;
+    f32 min_distance;
+    f32 max_distance;
+    f32 distance;
+    i32 relative_to_player;
+    i32 creature_set;
+    i32 looping;
+    struct AILOCATOR_PC *relative_locator;
+    struct gameobject_s *rider;
+    i32 i;
+    struct nugspline_s *spline;
+    i32 model;
+    i16 models[10];
+    struct nugspline_s *splines[32];
+    char script_name[64] = "default";
+    NUVEC spline_offset = {0.0f, 0.0f, 0.0f};
+    if (!first_time || num_params <= 0)
+        return 1;
+
+    model_count = 0, spline_count = 0, use_selected = 0;
+    min_group_size = -1, max_group_size = -1, group_size = 1;
+    min_distance = 1000000000.0f, max_distance = 1000000000.0f, distance = 0.0f;
+    relative_to_player = 0, creature_set = 0, looping = 0;
+    relative_locator = NULL;
+    rider = NULL;
+    for (i = 0; i < num_params; i++) {
+        char *value = NuStrIStr(params[i], "mingroupsize");
+        if (value != NULL)
+            min_group_size = (i32)AIParamToFloat(processor, value + 13);
+        else if ((value = NuStrIStr(params[i], "maxgroupsize")) != NULL)
+            max_group_size = (i32)AIParamToFloat(processor, value + 13);
+        else if ((value = NuStrIStr(params[i], "groupsize")) != NULL)
+            group_size = (i32)AIParamToFloat(processor, value + 10);
+        else if ((value = NuStrIStr(params[i], "type")) != NULL) {
+            if (LevelCharacterTypeIDFn != NULL && LevelCharacterGlobalIDFn != NULL) {
+                u8 type = LevelCharacterTypeIDFn(value + 5);
+                if (type != 0xff) {
+                    i16 model = LevelCharacterGlobalIDFn(type);
+                    if (model != -1 && model_count < 10)
+                        models[model_count++] = model;
+                }
+            }
+        } else if ((value = NuStrIStr(params[i], "script")) != NULL)
+            NuStrCpy(script_name, value + 7);
+        else if ((value = NuStrIStr(params[i], "mindistance")) != NULL)
+            min_distance = AIParamToFloat(processor, value + 12);
+        else if ((value = NuStrIStr(params[i], "maxdistance")) != NULL)
+            max_distance = AIParamToFloat(processor, value + 12);
+        else if ((value = NuStrIStr(params[i], (char *)RaceOpponentDistancePrefix)) != NULL)
+            distance = AIParamToFloat(processor, value + 9);
+        else if (script_spline_selected != NULL && NuStrICmp("use_selected_spline", params[i]) == 0)
+            use_selected = 1;
+        else if ((value = NuStrIStr(params[i], "splines=")) != NULL)
+            spline_count +=
+                NuSplineFindAllBeg(WORLD->current_gscn, value + 8, &splines[spline_count], 32 - spline_count);
+        else if (NuStrIStr(params[i], "spline=myspline") != NULL) {
+            if (processor->field_ac != NULL)
+                splines[spline_count++] = processor->field_ac;
+        } else if ((value = NuStrIStr(params[i], (char *)AITransferLiteral757a84)) != NULL) {
+            NUGSPLINE *spline = NuSplineFind(WORLD->current_gscn, value + 7);
+            if (spline != NULL && spline_count < 32)
+                splines[spline_count++] = spline;
+        } else if ((value = NuStrIStr(params[i], "x_offset=")) != NULL)
+            spline_offset.x = AIParamToFloat(processor, value + 9);
+        else if ((value = NuStrIStr(params[i], "y_offset=")) != NULL)
+            spline_offset.y = AIParamToFloat(processor, value + 9);
+        else if ((value = NuStrIStr(params[i], "z_offset=")) != NULL)
+            spline_offset.z = AIParamToFloat(processor, value + 9);
+        else if (NuStrICmp(params[i], "looping") == 0)
+            looping = 1;
+        else if (NuStrIStr(params[i], "addtoset=myset") != NULL)
+            creature_set = processor->creature_set;
+        else if ((value = NuStrIStr(params[i], "addtoset=")) != NULL)
+            creature_set = (i32)AIParamToFloat(processor, value + 9);
+        else if (NuStrICmp(params[i], "relative_to_player") == 0)
+            relative_to_player = 1;
+        else if ((value = NuStrIStr(params[i], "relative_to_locator=")) != NULL)
+            relative_locator = AIPathFindLocator(system, value + 20);
+        else if (NuStrIStr(params[i], "ridden_by=myself") != NULL) {
+            if (packet != NULL && packet->owner != NULL)
+                rider = ((GAMEOBJECT *)packet->owner)->objptr;
+        } else if ((value = NuStrIStr(params[i], "ridden_by=")) != NULL)
+            rider = GetNamedGameObject(system, value + 10);
+    }
+    if (min_group_size < max_group_size && min_group_size >= 0)
+        group_size = NuRand(NULL) % (max_group_size + 1 - min_group_size) + min_group_size;
+    if (min_distance != 1000000000.0f && max_distance != 1000000000.0f) {
+        f32 fraction = NuRandFloat();
+        distance = max_distance * fraction + min_distance * (1.0f - fraction);
+    }
+    if ((spline_count | use_selected) == 0 || group_size <= 0 || model_count == 0)
+        return 1;
+    spline = use_selected ? script_spline_selected : splines[qrand() / (65535 / spline_count + 1)];
+    model = models[NuRand(NULL) % model_count];
+    for (i = 0; i < group_size; i++) {
+        GAMEOBJECT *object = AddDynamicCreature(model, NULL, 0, script_name, NULL, NULL, 0, spline, &spline_offset,
+                                                looping, creature_set);
+        if (object == NULL)
+            continue;
+        if (relative_to_player || relative_locator != NULL) {
+            SPLINEPOS position;
+            i16 start = -1, end = -1;
+            if (WORLD->current_level == PODSPRINTA_LDATA)
+                PodSprint_GetIAlongVals(spline, &start, &end);
+            position = position;
+            if (relative_to_player) {
+                GetNearestSplinePos(&player->collision_position, &position, spline, looping, start, end);
+                object->movement_spline_position = position;
+            } else if (relative_locator != NULL) {
+                GetNearestSplinePos(&relative_locator->position, &position, spline, looping, start, end);
+                object->movement_spline_position = position;
+            }
+        }
+        if (distance != 0.0f) {
+            NUVEC position;
+            NUVEC offset;
+            MoveSplinePosition(&object->movement_spline_position, distance);
+            position = position, offset = offset;
+            PointAlongSpline(object->movement_spline_position.spline, object->movement_spline_position.along, &position,
+                             &angle, &pitch, object->movement_spline_position.looping);
+            object->movement_facing_angle = angle;
+            object->facing_angle = angle;
+            object->field_0x276 = angle;
+            object->pitch_angle = -pitch;
+            if (object->movement_spline_offset.x != 0.0f || object->movement_spline_offset.y != 0.0f ||
+                object->movement_spline_offset.z != 0.0f) {
+                NuVecRotateX(&offset, &object->movement_spline_offset, object->pitch_angle);
+                NuVecRotateY(&offset, &offset, object->field_0x276);
+                NuVecAdd(&position, &position, &offset);
+            }
+            object->position = position;
+            object->initial_position = position;
+            object->collision_position = position;
+            plr_lastpos = position;
+            object->start_position = position;
+            GameObjectOrigin(object);
+            object->last_safe_position = object->position;
+            object->ai_update_position = object->position;
+        }
+        if (rider != NULL)
+            TakeOverGameObject(rider, object, 0, 1);
+    }
+    return 1;
+}
+
 i32 __cdecl Action_AddPartDebris(AISYS_PC *sys, AISCRIPTPROCESS_PC *processor, AIPACKET_PC *packet, char **params,
                                  i32 num_params, i32 first_time, f32 elapsed) {
     i32 i;

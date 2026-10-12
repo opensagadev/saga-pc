@@ -140,9 +140,10 @@ def pair(android, pc):
     result = {}
     for pkey, pstruct in pc.items():
         names = {f[2]: f[0] for f in pstruct.fields if not PADDING.match(f[2])}
-        # Members of embedded PC structs, unless a top-level member has the same name.
+        # Members of embedded PC structs whose name occurs once, unless a top-level member has it.
+        deep_count = collections.Counter(f[2] for f in pstruct.deep)
         for f in pstruct.deep:
-            if not PADDING.match(f[2]):
+            if not PADDING.match(f[2]) and deep_count[f[2]] == 1:
                 names.setdefault(f[2], f[0])
         candidates = collections.Counter()
         for name in names:
@@ -153,10 +154,14 @@ def pair(android, pc):
         for akey, common in sorted(candidates.items(), key=lambda item: (-item[1], android[item[0]].tag)):
             astruct = android[akey]
             top = {f[2] for f in astruct.fields}
-            # Embedded members count too, unless a top-level member has the same name.
-            members = astruct.fields + [f for f in astruct.deep if f[2] not in top]
+            # Embedded members count too when their name is unique, unless a top-level member has it.
+            android_count = collections.Counter(f[2] for f in astruct.deep)
+            members = astruct.fields + [f for f in astruct.deep if f[2] not in top and android_count[f[2]] == 1]
+            # Both layouts keep member order, so a shift far beyond their size difference is a name clash.
+            limit = max(64, 2 * abs(astruct.size - pstruct.size))
             anchors = clean_anchors(sorted({f[0]: names[f[2]] - f[0] for f in members
-                                            if f[2] in names and not ANDROID_PLACEHOLDER.match(f[2])}.items()))
+                                            if f[2] in names and not ANDROID_PLACEHOLDER.match(f[2])
+                                            and abs(names[f[2]] - f[0]) <= limit}.items()))
             same = sum(1 for _, delta in anchors if delta == 0)
             android_name = re.sub(r"[^a-z0-9]", "", astruct.tag.lower())
             # Deterministic: score, then exact size, similar name, named over anonymous.
@@ -188,10 +193,11 @@ def offset_name_anchors(astruct, pstruct, anchors):
     agree = sum(1 for _, s, n in checked if pc_at[n] == s)
     if len(checked) < 5 or agree < 0.8 * len(checked):
         return anchors
-    merged = dict(anchors)
+    merged = {}
     for offset, _, pc_offset in named:
         if 0 <= pc_offset < pstruct.size:
             merged[offset] = pc_offset - offset
+    merged.update(dict(anchors))  # a real shared name at the same offset wins over a placeholder
     return sorted(merged.items())
 
 

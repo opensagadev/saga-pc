@@ -7,6 +7,25 @@ f32 __cdecl PodSprint_InStartCountdown(WORLDINFO *world) {
     return 0.0f;
 }
 
+void PodSprint_GetIAlongVals(NUGSPLINE *spline, i16 *out1, i16 *out2) {
+    i32 i;
+    for (i = 0; i < 6; i++) {
+        if (spline != NULL && podsprint.ai[i].spline == spline) {
+            i32 n = podsprint.ai_index;
+            if (n == 0) {
+                *out1 = 0;
+                *out2 = podsprint.ai[i].vals[0];
+            } else {
+                if (n >= 5)
+                    n = 5;
+                *out1 = podsprint.ai[i].vals[n - 1];
+                *out2 = podsprint.ai[i].vals[n];
+            }
+            return;
+        }
+    }
+}
+
 void MaulA_Reset(WORLDINFO *world) {
     nuhspecial_s *slots = LevHSpecial;
     NuSpecialSetVisibility(&slots[4], 0);

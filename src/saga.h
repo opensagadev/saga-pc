@@ -801,10 +801,13 @@ struct AISCRIPTPROCESS_PC {
         u8 unknown_a8[8];
         struct {
             struct AILOCATORSET_PC *locator_set;
-            u8 unknown_ac[4];
+            u32 field_ac;
         };
     };
-    u8 unknown_b0[2];
+    union {
+        u8 unknown_b0[2];
+        u8 creature_set;
+    };
     u16 unknown_b2;
     u8 interrupt_priority;
     u8 interrupt_id;
@@ -1177,9 +1180,15 @@ STATIC_ASSERT(sizeof(AISCRIPTPARAM_PC) == 0x08);
 typedef struct AILOCATOR_PC {
     char name[0x10];
     NUVEC position;
-    i32 rotation;
+    union {
+        i32 rotation;
+        u32 flags;
+    };
     AIPATHINFO_PC path_info;
-    i32 rotation_offset;
+    union {
+        i32 rotation_offset;
+        u32 locator_flags;
+    };
 } AILOCATOR_PC;
 STATIC_ASSERT(offsetof(AILOCATOR_PC, position) == 0x10);
 STATIC_ASSERT(sizeof(AILOCATOR_PC) == 0x3c);
@@ -4578,7 +4587,11 @@ typedef struct apicharacterdata_s {
     char *name;
     u8 opaque_10_24[0x14];
     PLAYERCHARACTERCONFIG_PC *game_character;
-    u8 opaque_28_4c[0x24];
+    u8 opaque_28[8];
+    f32 collision_radius;
+    f32 bounds_min_y;
+    f32 bounds_max_y;
+    u8 opaque_3c[0x10];
 } APICHARACTERDATA;
 STATIC_ASSERT(sizeof(APICHARACTERDATA) == 0x4c);
 STATIC_ASSERT(offsetof(APICHARACTERDATA, name) == 0xc);
@@ -4745,6 +4758,10 @@ typedef struct gameobject_s {
         u8 flags_1fc;
         u16 flags_1fc_half;
         u32 flags_1fc_word;
+        struct {
+            u8 flags_1fc_low;
+            u8 field_1fd;
+        };
     };
     f32 movement_direction_x;
     u8 unknown_0204[4];
@@ -4845,7 +4862,10 @@ typedef struct gameobject_s {
     f32 context_timer;
     f32 field_780;
     f32 context_duration;
-    f32 airborne_action_timer;
+    union {
+        f32 airborne_action_timer;
+        struct ZIPUP_s *attached_zipup;
+    };
     f32 jump_start_height;
     struct gameobject_s *force_target;
     BLOWUP_TARGET_PC *blowup_target;
@@ -5687,11 +5707,22 @@ STATIC_ASSERT(offsetof(BLADE_PC, hit_effect) == 4);
 STATIC_ASSERT(offsetof(BLADE_PC, effect_8) == 8);
 STATIC_ASSERT(offsetof(BLADE_PC, colour) == 0xa);
 
+typedef struct PODSPRINT_AI_PC {
+    NUGSPLINE *spline;
+    i16 vals[6];
+} PODSPRINT_AI_PC;
+STATIC_ASSERT(sizeof(PODSPRINT_AI_PC) == 0x10);
 typedef struct PODSPRINT_PC {
-    u8 unknown_0[0x84];
+    u8 unknown_0[8];
+    PODSPRINT_AI_PC ai[6];
+    u8 unknown_68[0x1c];
     f32 speed;
-    u8 unknown_88[0xc];
+    u8 unknown_88[7];
+    i8 ai_index;
+    u8 unknown_90[4];
 } PODSPRINT_PC;
+STATIC_ASSERT(offsetof(PODSPRINT_PC, ai) == 8);
+STATIC_ASSERT(offsetof(PODSPRINT_PC, ai_index) == 0x8f);
 STATIC_ASSERT(sizeof(PODSPRINT_PC) == 0x94);
 STATIC_ASSERT(offsetof(PODSPRINT_PC, speed) == 0x84);
 typedef void(__cdecl *AI_SCRIPT_FIRST_ACTION_PC)(AISYS_PC *, AIPACKET_PC *, AISCRIPTPROCESS_PC *);
@@ -20693,6 +20724,7 @@ extern "C" {
 #endif
 #define NU_SIN_LUT(ang) NuTrigTable[(i32)(ang) >> 1 & 0x7fff]
 #define NU_COS_LUT(ang) NuTrigTable[((i32)(ang) + 0x4000) >> 1 & 0x7fff]
+#define NUMTX_GET_ROW_VEC(mtx, row) ((NUVEC *)&((mtx)[0].m##row##0))
 #define QRAND_FLOAT() (qrand() * (1.0f / 65535.0f))
 struct eduimenu_s;
 struct eduiitem_s;
@@ -25063,6 +25095,21 @@ extern "C" {
     extern i32 edpart_roty;
     extern i32 edpart_rotz;
     void __cdecl NuRndrLine2di(i32 x0, i32 y0, i32 x1, i32 y1, i32 colour, NUMTL *material);
+    void __cdecl DestroyCable(struct CABLE_s *cable);
+    extern struct level_data_pc_s *HOTHBATTLED_LDATA;
+    void __cdecl IncrementMinikitCounter(struct gameobject_s *object);
+    extern i32 TERRAINMASK_NONDROID;
+    extern i32 atat_locators[4];
+    extern f32 cable_damping;
+    extern f32 cable_gravity;
+    extern f32 cable_ground_damping;
+    extern f32 cable_speed;
+    struct AIGROUP_PC *__cdecl CreateAIGroup(struct AISYS_PC *arg0, i32 arg1, f32 arg2, f32 arg3, f32 arg4);
+    i32 __cdecl Hub_GetRandomCharType(void);
+    struct AILOCATOR_PC *__cdecl LocalGetNearestLocator(void *arg0, i32 arg1, f32 arg2, struct nuvec_s *arg3, f32 arg4,
+                                                        i32 arg5, f32 arg6, f32 arg7);
+    u32 __cdecl ParseAIPathCnxFlag(char *name);
+    void __cdecl PodSprint_GetIAlongVals(struct nugspline_s *spline, i16 *first_point, i16 *last_point);
 #ifdef __cplusplus
 }
 #endif

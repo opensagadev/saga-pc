@@ -28911,3 +28911,19 @@ extern "C" {
 #pragma bss_seg(".bss$edpart_emitrotx")
     i32 edpart_emitrotx;
 }
+
+extern "C" {
+#pragma data_seg(".data$cable_damping")
+    f32 cable_damping = 2.0f;
+
+#pragma data_seg(".data$cable_gravity")
+    f32 cable_gravity = 3.0f;
+
+#pragma data_seg(".data$cable_ground_damping")
+    f32 cable_ground_damping = 20.0f;
+
+#pragma data_seg(".data$cable_speed")
+    f32 cable_speed = 20.0f;
+}
+
+extern "C" {}

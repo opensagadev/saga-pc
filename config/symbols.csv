@@ -7664,6 +7664,8 @@ address    , symbol                                                         , si
 0x751918,??_C@_0P@BKFDLGDJ@TowCable_Latch?$AA@,15,const char[15]
 0x00751928 , _MoveSplineRunSpeedSentinel                                    , 8     , const f64
 0x00751928 , __real@41cdcd6500000000                                        , 8     , const f64
+0x751930,??_C@_0L@GDDKEDCE@BeingTowed?$AA@,11,char []
+0x75193c,??_C@_0L@IAIIHDEA@AT_AT_FALL?$AA@,11,char []
 0x00751948 , __real@41f00000                                                , 4     , const f32
 0x0075194c , __real@42700000                                                , 4     , const f32
 0x751950,__real@c059000000000000,8,const f64
@@ -8388,6 +8390,24 @@ address    , symbol                                                         , si
 0x757a84,_AITransferLiteral757a84,8,const char[8]
 0x757a8c,_AITransferLiteral757a8c,7,const char[7]
 0x757a94,_AITransferLiteral757a94,9,const char[9]
+0x757a94,??_C@_08JMAKNHI@splines?$DN?$AA@,9,char []
+0x757aa0,??_C@_0L@LLDOIFOJ@ridden_by?$DN?$AA@,11,char []
+0x757aac,??_C@_0BB@JHBOPJKM@ridden_by?$DNmyself?$AA@,17,char []
+0x757ac0,??_C@_0BF@DAJLOINF@relative_to_locator?$DN?$AA@,21,char []
+0x757ad8,??_C@_0BD@DGDFHDAP@relative_to_player?$AA@,19,char []
+0x757aec,??_C@_09BNGBNKIF@addtoset?$DN?$AA@,10,char []
+0x757af8,??_C@_0P@LKPLIPGF@addtoset?$DNmyset?$AA@,15,char []
+0x757b08,??_C@_09OEGPDOOM@z_offset?$DN?$AA@,10,char []
+0x757b14,??_C@_09PFIIFOP@y_offset?$DN?$AA@,10,char []
+0x757b20,??_C@_09OAJKOONB@x_offset?$DN?$AA@,10,char []
+0x757b2c,??_C@_0BA@DJKLFLIJ@spline?$DNmyspline?$AA@,16,char []
+0x757b3c,??_C@_0BE@EPEANIOO@use_selected_spline?$AA@,20,char []
+0x757b50,??_C@_0M@OILLACON@maxdistance?$AA@,12,char []
+0x757b5c,??_C@_0M@HIMIBCAH@mindistance?$AA@,12,char []
+0x757b68,??_C@_06OLONEIEH@script?$AA@,7,char []
+0x757b70,??_C@_09PEBCHDHL@groupsize?$AA@,10,char []
+0x757b7c,??_C@_0N@KGCFHEHO@maxgroupsize?$AA@,13,char []
+0x757b8c,??_C@_0N@OGGKAMAI@mingroupsize?$AA@,13,char []
 0x757b9c,_AITransferLiteral757b9c,10,const char[10]
 0x757ba8,_AITransferLiteral757ba8,11,const char[11]
 0x757bb4,_AITransferLiteral757bb4,13,const char[13]
@@ -13861,6 +13881,7 @@ address    , symbol                                                         , si
 0x007ef090 , _StartupDatNames                                               , 28    , const char *[7]
 0x007ef388,_GlobalBoltType,,INIT_BOLT_CONFIG_PC[3]
 0x7f0e98,_VehicleBoltLevelObjectIndexPc,,i16
+0x7f1034,_cable_speed,4,f32
 0x007f1038 , _default_targetmomf                                            , 4     , f32
 0x007f103c , _default_ownermomf                                             , 4     , f32
 0x007f1040 , _default_max_cable_length                                      , 4     , f32
@@ -13869,6 +13890,9 @@ address    , symbol                                                         , si
 0x007f104c , _ownermomf                                                     , 4     , f32
 0x007f1050 , _max_cable_length                                              , 4     , f32
 0x007f1054 , _tow_length                                                    , 4     , f32
+0x7f1058,_cable_gravity,4,f32
+0x7f105c,_cable_damping,4,f32
+0x7f1060,_cable_ground_damping,4,f32
 0x007f1114 , _ViewCam                                                       ,       , VIEWCAM_PC
 0x7f15e0,_PodRaceSplineIncrementPc,,f32
 0x7f1724,_ConfigChar_GameKeywords,,NUFPCOMJMP[2]
