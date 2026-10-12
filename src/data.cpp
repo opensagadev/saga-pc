@@ -10490,6 +10490,7 @@ f32 vehicle_timebase_dist[4] = {50.0f, 25.0f, 0.0f, 0.0f};
 i32 vehicle_timebase_nframes[4] = {4, 2, 0, 0};
 
 // PC checks each byte index is less than 16.
+const u8 CurveGroupMasks[4] = {2, 1, 8, 0};
 const u8 KeyStructSizes[16] = {3, 4, 4, 3, 4, 3, 4, 8, 4, 8, 4, 0, 0, 0, 0, 0};
 
 // Each of the 12 cube edges has two vertex indices and two incident faces.

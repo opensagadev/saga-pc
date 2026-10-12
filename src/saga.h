@@ -13476,6 +13476,7 @@ typedef struct PC_SHADER_OBJECT_FULL_VIEW PC_SHADER_OBJECT_FULL_VIEW;
     extern NUMTX vpsmtx;
     extern NUMTX clip_planes;
     extern u32 crctab[256];
+    extern const u8 CurveGroupMasks[4];
     extern const u8 KeyStructSizes[16];
     extern u16 bad_equiv[8][2];
     extern i32 SkinFlipTab[8];

@@ -721,80 +721,178 @@ void *__cdecl NuAnimDataRead(NUFILE file) {
 i32 __cdecl ANI_SimpleAni3PlayerV4Joint_Quat3(ANI3_HEADER_PC *anim, f32 frame, ANI3_BUFFER_PC *buffer, i32 joint_count,
                                               i32 first_joint) {
     const u8 *node_flags = anim->node_flags;
-    u32 quarter;
+    i32 key_stride;
+    f32 *out;
+    i32 whole;
+    i32 quarter;
     f32 fraction;
-    i32 key_offset;
     u8 *keys;
-    i32 key_stride = anim->key_stride;
-    const u16 *constants = (const u16 *)anim->constants - 16;
-    ANI3_SCALEMIN_PC *scale_min = anim->scale_min;
-    const u16 *curve_types = anim->curve_types;
+    const u16 *constants;
+    ANI3_SCALEMIN_PC *scale_min;
+    const u16 *curve_types;
     i32 count;
-    const u8 *skip_flags;
     const u8 *end_flags;
     u8 *joint_flags;
-    ANI3_JOINT_PC *joint;
+    i32 group;
+    i32 i;
 
     buffer->use_quaternions = 1;
-    ANI3_GET_SAMPLE_POSITION(anim, frame, &quarter, &fraction, &key_offset);
-    keys = anim->keys + key_offset;
-    count = joint_count < anim->node_count ? joint_count : anim->node_count;
-    for (skip_flags = node_flags; skip_flags < node_flags + first_joint; ++skip_flags) {
-        if ((*skip_flags & 2) != 0) {
-            ANI3_SKIP_V4_CURVE(curve_types[0], &keys, &scale_min);
-            ANI3_SKIP_V4_CURVE(curve_types[1], &keys, &scale_min);
-            ANI3_SKIP_V4_CURVE(curve_types[2], &keys, &scale_min);
-        }
-        if ((*skip_flags & 1) != 0) {
-            ANI3_SKIP_V4_CURVE(curve_types[3], &keys, &scale_min);
-            ANI3_SKIP_V4_CURVE(curve_types[4], &keys, &scale_min);
-            ANI3_SKIP_V4_CURVE(curve_types[5], &keys, &scale_min);
-        }
-        if ((*skip_flags & 8) != 0) {
-            ANI3_SKIP_V4_CURVE(curve_types[6], &keys, &scale_min);
-            ANI3_SKIP_V4_CURVE(curve_types[7], &keys, &scale_min);
-            ANI3_SKIP_V4_CURVE(curve_types[8], &keys, &scale_min);
-        }
-        curve_types += 9;
+    if (anim->key_count == 1) {
+        frame = 0.0f;
+    } else {
+        f32 last = (f32)(anim->key_count - 1);
+        f32 key = frame - anim->first_frame;
+        key = key * last;
+        frame = key / (anim->frame_count - 1);
+        if (frame < 0.0f)
+            frame = 0.0f;
+        if (frame >= last)
+            frame = last;
     }
-    node_flags += first_joint;
-    end_flags = node_flags + count;
+    out = &buffer->joints->translation.x;
+    whole = (i32)frame;
+    key_stride = anim->key_stride;
+    scale_min = anim->scale_min;
+    curve_types = anim->curve_types;
+    constants = (const u16 *)anim->constants - 16;
+    fraction = frame - (f32)whole;
+    quarter = whole & 3;
+    keys = anim->keys + (whole / 4) * key_stride;
+    count = joint_count;
+    if (anim->node_count < count)
+        count = anim->node_count;
+    end_flags = node_flags + first_joint;
     joint_flags = buffer->joint_flags + first_joint;
-    joint = buffer->joints + first_joint;
-    for (; node_flags < end_flags; ++node_flags, ++joint) {
+    for (; node_flags < end_flags; ++node_flags) {
         u8 flags = *node_flags;
-        i32 group;
-        *joint_flags++ = flags;
-        for (group = 0; group < 3; ++group, curve_types += 3) {
-            NUVEC4 *output = group == 0 ? &joint->translation : group == 1 ? &joint->rotation : &joint->scale;
-            if ((flags & ANI3_CURVE_GROUP_MASK(group)) == 0) {
-                if (group == 0) {
-                    output->x = output->y = output->z = 0.0f;
-                } else if (group == 1) {
-                    output->x = output->y = output->z = 0.0f;
-                    output->w = 1.0f;
-                } else {
-                    output->x = output->y = output->z = 1.0f;
-                }
-            } else if (group != 1) {
-                ANI3_DECODE_QUAT3_SCALAR(output->x, anim, key_stride, constants, curve_types[0], quarter, fraction,
-                                         &keys, &scale_min);
-                ANI3_DECODE_QUAT3_SCALAR(output->y, anim, key_stride, constants, curve_types[1], quarter, fraction,
-                                         &keys, &scale_min);
-                ANI3_DECODE_QUAT3_SCALAR(output->z, anim, key_stride, constants, curve_types[2], quarter, fraction,
-                                         &keys, &scale_min);
+        for (group = 0; group < 3; ++group) {
+            if (!(flags & CurveGroupMasks[group])) {
+                curve_types += 3;
             } else {
-                NUQUAT first;
-                NUQUAT second;
-                ANI3_DECODE_QUAT3_PAIR(anim, key_stride, constants, curve_types[0], quarter, &keys, &scale_min,
-                                       &first.x, &second.x);
-                ANI3_DECODE_QUAT3_PAIR(anim, key_stride, constants, curve_types[1], quarter, &keys, &scale_min,
-                                       &first.y, &second.y);
-                ANI3_DECODE_QUAT3_PAIR(anim, key_stride, constants, curve_types[2], quarter, &keys, &scale_min,
-                                       &first.z, &second.z);
-                first.w = NuFsqrt(1.0f - (first.x * first.x + first.y * first.y + first.z * first.z));
-                second.w = NuFsqrt(1.0f - (second.x * second.x + second.y * second.y + second.z * second.z));
-                ANI3_QUAT_LERP(output, first, second, fraction, 1);
+                for (i = 0; i < 3; ++i) {
+                    u32 type = *curve_types++;
+                    if (type < 16) {
+                        keys += KeyStructSizes[type];
+                        ++scale_min;
+                    }
+                }
+            }
+            out += 4;
+        }
+    }
+    end_flags += count;
+    for (; node_flags < end_flags; ++node_flags) {
+        u8 flags = *node_flags;
+        *joint_flags++ = flags;
+        for (group = 0; group < 3; ++group) {
+            if (!(flags & CurveGroupMasks[group])) {
+                if (group == 0) {
+                    out[0] = out[1] = out[2] = 0.0f;
+                } else if (group == 1) {
+                    out[0] = out[1] = out[2] = 0.0f;
+                    out[3] = 1.0f;
+                } else {
+                    out[0] = out[1] = out[2] = 1.0f;
+                }
+                out += 4;
+                curve_types += 3;
+            } else if (group == 1) {
+                __declspec(align(16)) f32 first[4];
+                __declspec(align(16)) f32 second[4];
+                __m128 products;
+                __m128 result;
+                f32 dot;
+                for (i = 0; i < 3; ++i) {
+                    u32 type = *curve_types++;
+                    switch (type) {
+                        case 6: {
+                            u32 first_word = *(u32 *)keys;
+                            u32 next_word = *(u32 *)(keys + key_stride);
+                            u32 tangents = first_word >> 8;
+                            f32 start = (f32)(first_word & 0xff);
+                            f32 next = (f32)(next_word & 0xff);
+                            f32 tangent0 = (f32)((tangents >> (quarter * 6)) & 0x3f) * 0.01587302f;
+                            first[i] = ((next - start) * tangent0 + start) * scale_min->scale + scale_min->minimum;
+                            if (quarter < 3) {
+                                f32 tangent1 = (f32)((tangents >> (quarter * 6 + 6)) & 0x3f) * 0.01587302f;
+                                second[i] = ((next - start) * tangent1 + start) * scale_min->scale + scale_min->minimum;
+                            } else {
+                                f32 after = (f32)keys[key_stride * 2];
+                                f32 tangent1 = (f32)((next_word >> 8) & 0x3f) * 0.01587302f;
+                                second[i] = ((after - next) * tangent1 + next) * scale_min->scale + scale_min->minimum;
+                            }
+                            keys += 4;
+                            ++scale_min;
+                            break;
+                        }
+                        case 7:
+                            CalcValue1648Get2Values((char *)keys, quarter, key_stride, scale_min, &first[i],
+                                                    &second[i]);
+                            keys += 8;
+                            ++scale_min;
+                            break;
+                        case 9: {
+                            u32 next;
+                            first[i] = (f32)((u16 *)keys)[quarter] * scale_min->scale + scale_min->minimum;
+                            if (quarter < 3)
+                                next = ((u16 *)keys)[quarter + 1];
+                            else
+                                next = *(u16 *)(keys + key_stride);
+                            second[i] = (f32)next * scale_min->scale + scale_min->minimum;
+                            keys += 8;
+                            ++scale_min;
+                            break;
+                        }
+                        default:
+                            second[i] = first[i] = (f32)constants[type] * anim->scale + anim->minimum;
+                            break;
+                    }
+                }
+                first[3] = NuFsqrt(1.0f - (first[0] * first[0] + first[1] * first[1] + first[2] * first[2]));
+                second[3] = NuFsqrt(1.0f - (second[0] * second[0] + second[1] * second[1] + second[2] * second[2]));
+                products = _mm_mul_ps(_mm_load_ps(second), _mm_load_ps(first));
+                products = _mm_add_ps(_mm_shuffle_ps(products, products, 0x4e), products);
+                _mm_store_ss(&dot, _mm_add_ss(_mm_shuffle_ps(products, products, 0xb1), products));
+                if (dot < 0.0f)
+                    _mm_store_ps(second, _mm_sub_ps(_mm_setzero_ps(), _mm_load_ps(second)));
+                result =
+                    _mm_add_ps(_mm_mul_ps(_mm_sub_ps(_mm_load_ps(second), _mm_load_ps(first)), _mm_set1_ps(fraction)),
+                               _mm_load_ps(first));
+                products = _mm_mul_ps(result, result);
+                products = _mm_add_ps(_mm_shuffle_ps(products, products, 0x4e), products);
+                products = _mm_add_ps(_mm_shuffle_ps(products, products, 0xb1), products);
+                _mm_store_ps(out, _mm_mul_ps(_mm_rsqrt_ps(products), result));
+                out += 4;
+            } else {
+                for (i = 3; i != 0; --i) {
+                    u32 type = *curve_types++;
+                    if (type != 6) {
+                        *out = (f32)constants[type] * anim->scale + anim->minimum;
+                    } else {
+                        u32 first_word = *(u32 *)keys;
+                        u32 next_word = *(u32 *)(keys + key_stride);
+                        u32 tangents = first_word >> 8;
+                        f32 start = (f32)(first_word & 0xff);
+                        f32 next = (f32)(next_word & 0xff);
+                        f32 tangent0 = (f32)((tangents >> (quarter * 6)) & 0x3f) * 0.01587302f;
+                        if (quarter < 3) {
+                            f32 tangent1 = (f32)((tangents >> (quarter * 6 + 6)) & 0x3f) * 0.01587302f;
+                            f32 a = (next - start) * tangent0 + start;
+                            f32 b = (next - start) * tangent1 + start;
+                            *out = ((b - a) * fraction + a) * scale_min->scale + scale_min->minimum;
+                        } else {
+                            f32 after = (f32)keys[key_stride * 2];
+                            f32 tangent1 = (f32)((next_word >> 8) & 0x3f) * 0.01587302f;
+                            f32 a = (next - start) * tangent0 + start;
+                            f32 b = (after - next) * tangent1 + next;
+                            *out = ((b - a) * fraction + a) * scale_min->scale + scale_min->minimum;
+                        }
+                        keys += 4;
+                        ++scale_min;
+                    }
+                    ++out;
+                }
+                ++out;
             }
         }
     }
@@ -804,80 +902,174 @@ i32 __cdecl ANI_SimpleAni3PlayerV4Joint_Quat3(ANI3_HEADER_PC *anim, f32 frame, A
 i32 __cdecl ANI_SimpleAni3PlayerV4Joint_Quat3W(ANI3_HEADER_PC *anim, f32 frame, ANI3_BUFFER_PC *buffer, i32 joint_count,
                                                i32 first_joint) {
     const u8 *node_flags = anim->node_flags;
-    u32 quarter;
+    i32 key_stride;
+    f32 *out;
+    i32 whole;
+    i32 quarter;
     f32 fraction;
-    i32 key_offset;
     u8 *keys;
-    i32 key_stride = anim->key_stride;
-    const u16 *constants = (const u16 *)anim->constants - 16;
-    ANI3_SCALEMIN_PC *scale_min = anim->scale_min;
-    const u16 *curve_types = anim->curve_types;
+    const u16 *constants;
+    ANI3_SCALEMIN_PC *scale_min;
+    const u16 *curve_types;
     i32 count;
-    const u8 *skip_flags;
     const u8 *end_flags;
     u8 *joint_flags;
-    ANI3_JOINT_PC *joint;
+    i32 group;
+    i32 i;
 
     buffer->use_quaternions = 1;
-    ANI3_GET_SAMPLE_POSITION(anim, frame, &quarter, &fraction, &key_offset);
-    keys = anim->keys + key_offset;
-    count = joint_count < anim->node_count ? joint_count : anim->node_count;
-    for (skip_flags = node_flags; skip_flags < node_flags + first_joint; ++skip_flags) {
-        i32 group;
+    if (anim->key_count == 1) {
+        frame = 0.0f;
+    } else {
+        f32 last = (f32)(anim->key_count - 1);
+        f32 key = frame - anim->first_frame;
+        key = key * last;
+        frame = key / (anim->frame_count - 1);
+        if (frame < 0.0f)
+            frame = 0.0f;
+        if (frame >= last)
+            frame = last;
+    }
+    out = &buffer->joints->translation.x;
+    whole = (i32)frame;
+    key_stride = anim->key_stride;
+    scale_min = anim->scale_min;
+    curve_types = anim->curve_types;
+    constants = (const u16 *)anim->constants - 16;
+    fraction = frame - (f32)whole;
+    quarter = whole & 3;
+    keys = anim->keys + (whole / 4) * key_stride;
+    count = joint_count;
+    if (anim->node_count < count)
+        count = anim->node_count;
+    end_flags = node_flags + first_joint;
+    joint_flags = buffer->joint_flags + first_joint;
+    for (; node_flags < end_flags; ++node_flags) {
+        u8 flags = *node_flags;
         for (group = 0; group < 3; ++group) {
-            i32 components = group == 1 ? 4 : 3;
-            if ((*skip_flags & ANI3_CURVE_GROUP_MASK(group)) != 0) {
-                i32 component;
-                for (component = 0; component < components; ++component) {
-                    ANI3_SKIP_V4_CURVE(*curve_types++, &keys, &scale_min);
-                }
+            i32 curve_count = 3;
+            if (group == 1)
+                curve_count = 4;
+            if (!(flags & CurveGroupMasks[group])) {
+                curve_types += curve_count;
             } else {
-                curve_types += components;
+                for (i = 0; i < curve_count; ++i) {
+                    u32 type = *curve_types++;
+                    if (type < 16) {
+                        keys += KeyStructSizes[type];
+                        ++scale_min;
+                    }
+                }
             }
+            out += 4;
         }
     }
-    node_flags += first_joint;
-    end_flags = node_flags + count;
-    joint_flags = buffer->joint_flags + first_joint;
-    joint = buffer->joints + first_joint;
-    for (; node_flags < end_flags; ++node_flags, ++joint) {
+    end_flags += count;
+    for (; node_flags < end_flags; ++node_flags) {
         u8 flags = *node_flags;
-        i32 group;
         *joint_flags++ = flags;
         for (group = 0; group < 3; ++group) {
-            NUVEC4 *output = group == 0 ? &joint->translation : group == 1 ? &joint->rotation : &joint->scale;
-            if ((flags & ANI3_CURVE_GROUP_MASK(group)) == 0) {
+            if (!(flags & CurveGroupMasks[group])) {
                 if (group == 0) {
-                    output->x = output->y = output->z = 0.0f;
+                    out[0] = out[1] = out[2] = 0.0f;
                 } else if (group == 1) {
-                    output->x = output->y = output->z = 0.0f;
-                    output->w = 1.0f;
-                    curve_types += 4;
+                    out[0] = out[1] = out[2] = 0.0f;
+                    out[3] = 1.0f;
+                    ++curve_types;
                 } else {
-                    output->x = output->y = output->z = 1.0f;
-                    curve_types += 3;
+                    out[0] = out[1] = out[2] = 1.0f;
                 }
-                if (group == 0)
-                    curve_types += 3;
-            } else if (group != 1) {
-                ANI3_DECODE_QUAT3_SCALAR(output->x, anim, key_stride, constants, *curve_types++, quarter, fraction,
-                                         &keys, &scale_min);
-                ANI3_DECODE_QUAT3_SCALAR(output->y, anim, key_stride, constants, *curve_types++, quarter, fraction,
-                                         &keys, &scale_min);
-                ANI3_DECODE_QUAT3_SCALAR(output->z, anim, key_stride, constants, *curve_types++, quarter, fraction,
-                                         &keys, &scale_min);
+                out += 4;
+                curve_types += 3;
+            } else if (group == 1) {
+                __declspec(align(16)) f32 first[4];
+                __declspec(align(16)) f32 second[4];
+                __m128 products;
+                __m128 result;
+                for (i = 0; i < 4; ++i) {
+                    u32 type = *curve_types++;
+                    switch (type) {
+                        case 6: {
+                            u32 first_word = *(u32 *)keys;
+                            u32 next_word = *(u32 *)(keys + key_stride);
+                            u32 tangents = first_word >> 8;
+                            f32 start = (f32)(first_word & 0xff);
+                            f32 next = (f32)(next_word & 0xff);
+                            f32 tangent0 = (f32)((tangents >> (quarter * 6)) & 0x3f) * 0.01587302f;
+                            first[i] = ((next - start) * tangent0 + start) * scale_min->scale + scale_min->minimum;
+                            if (quarter < 3) {
+                                f32 tangent1 = (f32)((tangents >> (quarter * 6 + 6)) & 0x3f) * 0.01587302f;
+                                second[i] = ((next - start) * tangent1 + start) * scale_min->scale + scale_min->minimum;
+                            } else {
+                                f32 after = (f32)keys[key_stride * 2];
+                                f32 tangent1 = (f32)((next_word >> 8) & 0x3f) * 0.01587302f;
+                                second[i] = ((after - next) * tangent1 + next) * scale_min->scale + scale_min->minimum;
+                            }
+                            keys += 4;
+                            ++scale_min;
+                            break;
+                        }
+                        case 7:
+                            CalcValue1648Get2Values((char *)keys, quarter, key_stride, scale_min, &first[i],
+                                                    &second[i]);
+                            keys += 8;
+                            ++scale_min;
+                            break;
+                        case 9: {
+                            u32 next;
+                            first[i] = (f32)((u16 *)keys)[quarter] * scale_min->scale + scale_min->minimum;
+                            if (quarter < 3)
+                                next = ((u16 *)keys)[quarter + 1];
+                            else
+                                next = *(u16 *)(keys + key_stride);
+                            second[i] = (f32)next * scale_min->scale + scale_min->minimum;
+                            keys += 8;
+                            ++scale_min;
+                            break;
+                        }
+                        default:
+                            second[i] = first[i] = (f32)constants[type] * anim->scale + anim->minimum;
+                            break;
+                    }
+                }
+                result =
+                    _mm_add_ps(_mm_mul_ps(_mm_sub_ps(_mm_load_ps(second), _mm_load_ps(first)), _mm_set1_ps(fraction)),
+                               _mm_load_ps(first));
+                products = _mm_mul_ps(result, result);
+                products = _mm_add_ps(_mm_shuffle_ps(products, products, 0x4e), products);
+                products = _mm_add_ps(_mm_shuffle_ps(products, products, 0xb1), products);
+                _mm_store_ps(out, _mm_mul_ps(_mm_rsqrt_ps(products), result));
+                out += 4;
             } else {
-                NUQUAT first;
-                NUQUAT second;
-                ANI3_DECODE_QUAT3_PAIR(anim, key_stride, constants, *curve_types++, quarter, &keys, &scale_min,
-                                       &first.x, &second.x);
-                ANI3_DECODE_QUAT3_PAIR(anim, key_stride, constants, *curve_types++, quarter, &keys, &scale_min,
-                                       &first.y, &second.y);
-                ANI3_DECODE_QUAT3_PAIR(anim, key_stride, constants, *curve_types++, quarter, &keys, &scale_min,
-                                       &first.z, &second.z);
-                ANI3_DECODE_QUAT3_PAIR(anim, key_stride, constants, *curve_types++, quarter, &keys, &scale_min,
-                                       &first.w, &second.w);
-                ANI3_QUAT_LERP(output, first, second, fraction, 0);
+                for (i = 3; i != 0; --i) {
+                    u32 type = *curve_types++;
+                    if (type != 6) {
+                        *out = (f32)constants[type] * anim->scale + anim->minimum;
+                    } else {
+                        u32 first_word = *(u32 *)keys;
+                        u32 next_word = *(u32 *)(keys + key_stride);
+                        u32 tangents = first_word >> 8;
+                        f32 start = (f32)(first_word & 0xff);
+                        f32 next = (f32)(next_word & 0xff);
+                        f32 tangent0 = (f32)((tangents >> (quarter * 6)) & 0x3f) * 0.01587302f;
+                        if (quarter < 3) {
+                            f32 tangent1 = (f32)((tangents >> (quarter * 6 + 6)) & 0x3f) * 0.01587302f;
+                            f32 a = (next - start) * tangent0 + start;
+                            f32 b = (next - start) * tangent1 + start;
+                            *out = ((b - a) * fraction + a) * scale_min->scale + scale_min->minimum;
+                        } else {
+                            f32 after = (f32)keys[key_stride * 2];
+                            f32 tangent1 = (f32)((next_word >> 8) & 0x3f) * 0.01587302f;
+                            f32 a = (next - start) * tangent0 + start;
+                            f32 b = (after - next) * tangent1 + next;
+                            *out = ((b - a) * fraction + a) * scale_min->scale + scale_min->minimum;
+                        }
+                        keys += 4;
+                        ++scale_min;
+                    }
+                    ++out;
+                }
+                ++out;
             }
         }
     }
@@ -886,104 +1078,170 @@ i32 __cdecl ANI_SimpleAni3PlayerV4Joint_Quat3W(ANI3_HEADER_PC *anim, f32 frame, 
 
 i32 __cdecl ANI_SimpleAni3PlayerV4Joint_EulerQuat(ANI3_HEADER_PC *anim, f32 frame, ANI3_BUFFER_PC *buffer,
                                                   i32 joint_count, i32 first_joint) {
-    u32 quarter;
+    const u8 *node_flags = anim->node_flags;
+    i32 key_stride;
+    f32 *out;
+    i32 whole;
+    i32 quarter;
     f32 fraction;
-    i32 key_offset;
     u8 *keys;
+    const u16 *constants;
     ANI3_SCALEMIN_PC *scale_min;
     const u16 *curve_types;
-    i32 joint;
-    i32 decode_count;
-    i32 end_joint;
-    i32 joint_index;
+    i32 count;
+    const u8 *end_flags;
+    u8 *joint_flags;
+    i32 group;
+    i32 i;
 
     buffer->use_quaternions = 1;
-    ANI3_GET_SAMPLE_POSITION(anim, frame, &quarter, &fraction, &key_offset);
-    keys = anim->keys + key_offset;
+    if (anim->key_count == 1) {
+        frame = 0.0f;
+    } else {
+        f32 last = (f32)(anim->key_count - 1);
+        f32 key = frame - anim->first_frame;
+        key = key * last;
+        frame = key / (anim->frame_count - 1);
+        if (frame < 0.0f)
+            frame = 0.0f;
+        if (frame >= last)
+            frame = last;
+    }
+    out = &buffer->joints->translation.x;
+    whole = (i32)frame;
+    key_stride = anim->key_stride;
     scale_min = anim->scale_min;
     curve_types = anim->curve_types;
-
-    for (joint = 0; joint < first_joint; ++joint) {
-        u8 flags = anim->node_flags[joint];
-        i32 group;
+    constants = (const u16 *)anim->constants - 16;
+    fraction = frame - (f32)whole;
+    quarter = whole & 3;
+    keys = anim->keys + (whole / 4) * key_stride;
+    count = joint_count;
+    if (anim->node_count < count)
+        count = anim->node_count;
+    end_flags = node_flags + first_joint;
+    joint_flags = buffer->joint_flags + first_joint;
+    for (; node_flags < end_flags; ++node_flags) {
+        u8 flags = *node_flags;
         for (group = 0; group < 3; ++group) {
-            if ((flags & ANI3_CURVE_GROUP_MASK(group)) != 0) {
-                i32 component;
-                for (component = 0; component < 3; ++component) {
-                    ANI3_SKIP_V4_CURVE(curve_types[group * 3 + component], &keys, &scale_min);
-                }
-            }
-        }
-        curve_types += 9;
-    }
-
-    decode_count = joint_count <= anim->node_count ? joint_count : anim->node_count;
-    end_joint = first_joint + decode_count;
-    for (joint_index = first_joint; joint_index < end_joint; ++joint_index) {
-        u8 flags = anim->node_flags[joint_index];
-        ANI3_JOINT_PC *joint_data = &buffer->joints[joint_index];
-        buffer->joint_flags[joint_index] = flags;
-
-        if ((flags & 2) != 0) {
-            ANI3_DECODE_V4_CURVE(joint_data->translation.x, anim, curve_types[0], quarter, fraction, &keys, &scale_min);
-            ANI3_DECODE_V4_CURVE(joint_data->translation.y, anim, curve_types[1], quarter, fraction, &keys, &scale_min);
-            ANI3_DECODE_V4_CURVE(joint_data->translation.z, anim, curve_types[2], quarter, fraction, &keys, &scale_min);
-        } else {
-            joint_data->translation.x = 0.0f;
-            joint_data->translation.y = 0.0f;
-            joint_data->translation.z = 0.0f;
-        }
-
-        if ((flags & 1) != 0) {
-            if (quarter == 3) {
-                f32 euler[3];
-                NUQUAT sampled;
-                i32 component;
-                for (component = 0; component < 3; ++component) {
-                    ANI3_DECODE_V4_CURVE(euler[component], anim, curve_types[3 + component], quarter, fraction, &keys,
-                                         &scale_min);
-                }
-                NuQuatFromEulerXYZ(&sampled, (NUANG)(euler[0] * 10430.378f), (NUANG)(euler[1] * 10430.378f),
-                                   (NUANG)(euler[2] * 10430.378f));
-                joint_data->rotation.x = sampled.x;
-                joint_data->rotation.y = sampled.y;
-                joint_data->rotation.z = sampled.z;
-                joint_data->rotation.w = sampled.w;
+            if (!(flags & CurveGroupMasks[group])) {
+                curve_types += 3;
             } else {
-                f32 first_euler[3];
-                f32 second_euler[3];
-                NUQUAT first;
-                NUQUAT second;
-                i32 component;
-
-                for (component = 0; component < 3; ++component) {
-                    ANI3_DECODE_V4_PAIR(anim, curve_types[3 + component], quarter, &keys, &scale_min,
-                                        &first_euler[component], &second_euler[component]);
+                for (i = 0; i < 3; ++i) {
+                    u32 type = *curve_types++;
+                    if (type < 16) {
+                        keys += KeyStructSizes[type];
+                        ++scale_min;
+                    }
                 }
-
-                NuQuatFromEulerXYZ(&first, (NUANG)(first_euler[0] * 10430.378f), (NUANG)(first_euler[1] * 10430.378f),
-                                   (NUANG)(first_euler[2] * 10430.378f));
-                NuQuatFromEulerXYZ(&second, (NUANG)(second_euler[0] * 10430.378f),
-                                   (NUANG)(second_euler[1] * 10430.378f), (NUANG)(second_euler[2] * 10430.378f));
-                ANI3_QUAT_LERP(&joint_data->rotation, first, second, fraction, 1);
             }
-        } else {
-            joint_data->rotation.x = 0.0f;
-            joint_data->rotation.y = 0.0f;
-            joint_data->rotation.z = 0.0f;
-            joint_data->rotation.w = 1.0f;
+            out += 4;
         }
-
-        if ((flags & 8) != 0) {
-            ANI3_DECODE_V4_CURVE(joint_data->scale.x, anim, curve_types[6], quarter, fraction, &keys, &scale_min);
-            ANI3_DECODE_V4_CURVE(joint_data->scale.y, anim, curve_types[7], quarter, fraction, &keys, &scale_min);
-            ANI3_DECODE_V4_CURVE(joint_data->scale.z, anim, curve_types[8], quarter, fraction, &keys, &scale_min);
-        } else {
-            joint_data->scale.x = 1.0f;
-            joint_data->scale.y = 1.0f;
-            joint_data->scale.z = 1.0f;
+    }
+    end_flags += count;
+    for (; node_flags < end_flags; ++node_flags) {
+        u8 flags = *node_flags;
+        *joint_flags++ = flags;
+        for (group = 0; group < 3; ++group) {
+            if (!(flags & CurveGroupMasks[group])) {
+                if (group == 0) {
+                    out[0] = out[1] = out[2] = 0.0f;
+                } else if (group == 1) {
+                    out[0] = out[1] = out[2] = 0.0f;
+                    out[3] = 1.0f;
+                } else {
+                    out[0] = out[1] = out[2] = 1.0f;
+                }
+                out += 4;
+                curve_types += 3;
+            } else if (group == 1) {
+                f32 first[3];
+                f32 second[3];
+                __declspec(align(16)) NUQUAT first_quat;
+                __declspec(align(16)) NUQUAT second_quat;
+                __m128 products;
+                __m128 result;
+                f32 dot;
+                i32 constant_count = 0;
+                for (i = 0; i < 3; ++i) {
+                    u32 type = *curve_types++;
+                    if (type != 6) {
+                        ++constant_count;
+                        second[i] = first[i] = (f32)constants[type] * anim->scale + anim->minimum;
+                    } else {
+                        u32 first_word = *(u32 *)keys;
+                        u32 next_word = *(u32 *)(keys + key_stride);
+                        u32 tangents = first_word >> 8;
+                        f32 start = (f32)(first_word & 0xff);
+                        f32 next = (f32)(next_word & 0xff);
+                        f32 tangent0 = (f32)((tangents >> (quarter * 6)) & 0x3f) * 0.01587302f;
+                        first[i] = ((next - start) * tangent0 + start) * scale_min->scale + scale_min->minimum;
+                        if (quarter < 3) {
+                            f32 tangent1 = (f32)((tangents >> (quarter * 6 + 6)) & 0x3f) * 0.01587302f;
+                            second[i] = ((next - start) * tangent1 + start) * scale_min->scale + scale_min->minimum;
+                        } else {
+                            f32 after = (f32)keys[key_stride * 2];
+                            f32 tangent1 = (f32)((next_word >> 8) & 0x3f) * 0.01587302f;
+                            second[i] = ((after - next) * tangent1 + next) * scale_min->scale + scale_min->minimum;
+                        }
+                        keys += 4;
+                        ++scale_min;
+                    }
+                }
+                if (constant_count == 3) {
+                    NuQuatFromEulerXYZ((NUQUAT *)out, (NUANG)(first[0] * 10430.378f), (NUANG)(first[1] * 10430.378f),
+                                       (NUANG)(first[2] * 10430.378f));
+                } else {
+                    NuQuatFromEulerXYZ(&first_quat, (NUANG)(first[0] * 10430.378f), (NUANG)(first[1] * 10430.378f),
+                                       (NUANG)(first[2] * 10430.378f));
+                    NuQuatFromEulerXYZ(&second_quat, (NUANG)(second[0] * 10430.378f), (NUANG)(second[1] * 10430.378f),
+                                       (NUANG)(second[2] * 10430.378f));
+                    products = _mm_mul_ps(_mm_load_ps(&second_quat.x), _mm_load_ps(&first_quat.x));
+                    products = _mm_add_ps(_mm_shuffle_ps(products, products, 0x4e), products);
+                    _mm_store_ss(&dot, _mm_add_ss(_mm_shuffle_ps(products, products, 0xb1), products));
+                    if (dot < 0.0f)
+                        _mm_store_ps(&second_quat.x, _mm_sub_ps(_mm_setzero_ps(), _mm_load_ps(&second_quat.x)));
+                    result = _mm_add_ps(_mm_mul_ps(_mm_sub_ps(_mm_load_ps(&second_quat.x), _mm_load_ps(&first_quat.x)),
+                                                   _mm_set1_ps(fraction)),
+                                        _mm_load_ps(&first_quat.x));
+                    products = _mm_mul_ps(result, result);
+                    products = _mm_add_ps(_mm_shuffle_ps(products, products, 0x4e), products);
+                    products = _mm_add_ps(_mm_shuffle_ps(products, products, 0xb1), products);
+                    _mm_store_ps(out, _mm_mul_ps(_mm_rsqrt_ps(products), result));
+                }
+                out += 4;
+            } else {
+                for (i = 3; i != 0; --i) {
+                    u32 type = *curve_types++;
+                    if (type != 6) {
+                        *out = (f32)constants[type] * anim->scale + anim->minimum;
+                    } else {
+                        u32 first_word = *(u32 *)keys;
+                        u32 next_word = *(u32 *)(keys + key_stride);
+                        u32 tangents = first_word >> 8;
+                        f32 start = (f32)(first_word & 0xff);
+                        f32 next = (f32)(next_word & 0xff);
+                        f32 tangent0 = (f32)((tangents >> (quarter * 6)) & 0x3f) * 0.01587302f;
+                        if (quarter < 3) {
+                            f32 tangent1 = (f32)((tangents >> (quarter * 6 + 6)) & 0x3f) * 0.01587302f;
+                            f32 a = (next - start) * tangent0 + start;
+                            f32 b = (next - start) * tangent1 + start;
+                            *out = ((b - a) * fraction + a) * scale_min->scale + scale_min->minimum;
+                        } else {
+                            f32 after = (f32)keys[key_stride * 2];
+                            f32 tangent1 = (f32)((next_word >> 8) & 0x3f) * 0.01587302f;
+                            f32 a = (next - start) * tangent0 + start;
+                            f32 b = (after - next) * tangent1 + next;
+                            *out = ((b - a) * fraction + a) * scale_min->scale + scale_min->minimum;
+                        }
+                        keys += 4;
+                        ++scale_min;
+                    }
+                    ++out;
+                }
+                ++out;
+            }
         }
-        curve_types += 9;
     }
     return 0;
 }

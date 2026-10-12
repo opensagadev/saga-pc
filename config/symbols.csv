@@ -11511,6 +11511,7 @@ address    , symbol                                                         , si
 0x7641f0,??_C@_04HOJMGLEA@texr?$AA@,5,const char[5]
 0x7641f8,??_C@_03JDBMONBN@tex?$AA@,4,const char[4]
 0x7641fc,??_C@_0L@JGMEENFC@scriptmask?$AA@,11,const char[11]
+0x764254,_CurveGroupMasks,4,const u8[4]
 0x00764258 , _KeyStructSizes                                                , 16    , const u8[16]
 0x764268,_kPRIM_COORD_LOOKUP,,
 0x764344,??_C@_1BE@LKNDAOAB@?$AA3?$AAD?$AA?5?$AAr?$AAe?$AAn?$AAd?$AAe?$AAr?$AA?$AA@,,wchar_t[10]
