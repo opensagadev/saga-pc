@@ -40,6 +40,12 @@ i64 __cdecl NuFilePos(NUFILE file) {
     return position;
 }
 
+i32 NuFileEOF(NUFILE file) {
+    i64 position = NuFilePos(file);
+    i64 size = NuFileOpenSize(file);
+    return position >= size;
+}
+
 i64 __cdecl NuFileOpenSize(NUFILE file) {
     if (file >= 0x1000) {
         return NuMcFileOpenSize(file - 0x1000);
@@ -155,4 +161,37 @@ void __cdecl NuFileEndBlkRead(NUFILE file) {
 
 i32 __cdecl NuFileGetBlkSize(void) {
     return nufile_blkinfo[nufile_blkcnt - 1].size;
+}
+
+i32 NuFileExtractPath(char *dest, char *path) {
+    i32 length;
+    char *end = strrchr(path, '\\');
+    if (end != NULL) {
+        ++end;
+    } else {
+        end = path;
+    }
+    length = end - path;
+    strncpy(dest, path, length);
+    dest[length] = '\0';
+    return length;
+}
+
+i32 NuFileExtractFile(char *dest, char *path) {
+    char *end;
+    i32 length;
+    char *start = strrchr(path, '\\');
+    if (start != NULL) {
+        ++start;
+    } else {
+        start = path;
+    }
+    end = strrchr(path, '.');
+    if (end == NULL) {
+        end = path + strlen(path);
+    }
+    length = end - start;
+    strncpy(dest, start, length);
+    dest[length] = '\0';
+    return length;
 }

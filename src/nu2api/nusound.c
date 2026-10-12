@@ -24,6 +24,13 @@ void __cdecl PlaySfxAndSetPitch(char *name, NUVEC *position, f32 pitch) {
     }
 }
 
+void PlaySfxAndSetVolumeAndPitch(char *name, NUVEC *position, f32 volume, f32 pitch) {
+    i32 sfx_id = GetSfxId(name);
+    if (sfx_id != -1) {
+        PlaySfxByIdEx(sfx_id, position, volume, pitch);
+    }
+}
+
 void __cdecl PlaySfxAndSetVolume(char *name, NUVEC *position, f32 volume) {
     i32 sfx_id = GetSfxId(name);
     if (sfx_id != -1) {

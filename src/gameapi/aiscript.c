@@ -869,6 +869,19 @@ f32 __cdecl Condition_Random(void *sys, AISCRIPTPROCESS_PC *processor, AIPACKET_
     return NuRandFloat();
 }
 
+static void *Condition_AlwaysTrueInit(AISYS_PC *sys, char *arg, AISCRIPT_PC *script) {
+    f32 value;
+
+    if (arg != NULL && NuStrLen(arg) != 0) {
+        value = NuAToF(arg);
+
+        return *(void **)&value;
+    }
+
+    value = 1.0f;
+    return *(void **)&value;
+}
+
 #undef AISCRIPT_SET_OWNER_FLAG
 #undef AISCRIPT_SET_PACKET_FLAG
 
@@ -911,6 +924,22 @@ void __cdecl AIScriptSetState(AISCRIPTPROCESS_PC *processor, AISTATE_PC *state) 
         processor->param_stack[0].is_first_time_state = 1;
         AIScriptNextAction(processor);
     }
+}
+
+i32 AIScriptSetStateByName(AISCRIPTPROCESS_PC *processor, char *name) {
+    AISTATE_PC *state;
+
+    if (name != NULL && processor != NULL && processor->script != NULL) {
+        state = AIStateFind(name, processor->script);
+
+        if (state != NULL) {
+            AIScriptSetState(processor, state);
+
+            return 1;
+        }
+    }
+
+    return 0;
 }
 
 void __cdecl AIScriptProcessorInit(AISYS_PC *system, AIPACKET_PC *packet, AISCRIPTPROCESS_PC *processor,

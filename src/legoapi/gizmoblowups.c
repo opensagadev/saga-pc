@@ -1505,6 +1505,23 @@ void __cdecl GizmoBlowupTypeRemove(GIZMOBLOWUPTYPE_PC *type, WORLDINFO *world) {
     memset(type, 0, sizeof(*type));
     --world->gizmo_blowup_type_count;
 }
+
+f32 GizmoBlowup_SetAutoSetReflectY(GIZMOBLOWUP_PC *blowup, NUVEC *position) {
+    if (blowup != NULL) {
+        f32 ground;
+        if (blowup->platform_id != 0) {
+            PlatOnOff(blowup->platform_id, 0);
+        }
+        ground = GameShadow(NULL, position, 5.0f, -1);
+        if (blowup->platform_id != 0) {
+            PlatOnOff(blowup->platform_id, 1);
+        }
+        if (ground != 2000000.0f) {
+            return ground;
+        }
+    }
+    return 0.0f;
+}
 void *__cdecl gizmoblowup_reservebuffers(WORLDINFO *world) {
     InitGizmoBlowupTypes(world);
     InitGizmoBlowups(world);

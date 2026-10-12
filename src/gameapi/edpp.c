@@ -167,6 +167,14 @@ void __cdecl edppDetermineNearest(f32 max_distance_squared) {
     }
 }
 
+static void cbPtlSelType(eduimenu_s *menu, eduiitem_s *item, u32 unused2) {
+    ptltypemenu = NULL;
+    edpp_active_menu = NULL;
+    edpp_create_type = item->data;
+    eduiMenuDetach(menu);
+    eduiMenuDestroy(menu);
+}
+
 static void edppRender() {
     edcamSet();
     edppDrawCursor();
@@ -295,4 +303,48 @@ void __cdecl edppDeleteEffect(i32 index) {
     debtab[index] = NULL;
     --edpp_types_used;
     edppDetermineNearest(1.0f);
+}
+
+static void cbPtlDeleteEffect(eduimenu_s *menu, eduiitem_s *unused1, u32 unused2) {
+    struct eduimenu_s *parent;
+    edppDeleteEffect(edpp_create_type);
+    edpp_create_type = -1;
+    parent = menu->parent;
+    if (parent) {
+        eduiMenuDetach(menu);
+    }
+    if (menu->callback) {
+        menu->callback(menu, parent);
+    }
+}
+
+static void cbPtlQuickDeleteType(eduimenu_s *menu, eduiitem_s *item, u32 unused2) {
+    struct eduimenu_s *parent;
+    edppDeleteEffect(item->data);
+    parent = menu->parent;
+    if (parent) {
+        eduiMenuDetach(menu);
+    }
+    if (menu->callback) {
+        menu->callback(menu, parent);
+    }
+}
+
+static void edptlcbEmptyClipboard(eduimenu_s *menu, eduiitem_s *unused1, u32 unused2) {
+    struct eduimenu_s *parent;
+    i32 create_type = edpp_create_type;
+    edpp_create_type = edptl_clipboard_entry;
+    edppDeleteEffect(edpp_create_type);
+    edpp_create_type = -1;
+
+    parent = menu->parent;
+    if (parent != NULL) {
+        eduiMenuDetach(menu);
+    }
+    if (menu->callback != NULL) {
+        menu->callback(menu, parent);
+    }
+
+    edptl_clipboard_entry = -1;
+    edpp_create_type = create_type;
 }

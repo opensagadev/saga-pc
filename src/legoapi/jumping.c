@@ -205,6 +205,13 @@ void __cdecl BigJumpCode(GAMEOBJECT *object) {
         object->ai_packet.flags |= 0x2000000;
 }
 
+void FadeLoop_SetObj(NUGSCN *scene, char *name) {
+    FadeLoop_ObjScene = scene;
+    if (scene != NULL && NuSpecialFind(scene, &FadeLoop_ObjHSpecial, name, 1) == 0) {
+        FadeLoop_ObjScene = NULL;
+    }
+}
+
 void FadeLoop_DrawObj(float alpha) {
     if (FadeLoop_ObjScene != NULL && NuSpecialExistsFn(&FadeLoop_ObjHSpecial)) {
         NUVEC scale = {0.125f, 0.125f, 0.125f};

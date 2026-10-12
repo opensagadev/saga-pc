@@ -28,6 +28,10 @@ void MenuSetPlatformState(i32 state) {
 void __cdecl PCPresentationPlatformLeafPc(void) {
 }
 
+i32 NuKeyboard(i32 key) {
+    return 0;
+}
+
 /* Original source: nu2api/nucore/nuapi.cpp; PC initializes only the fields
  * below after clearing the real 0x90-byte API record. */
 static i32 NUAPI_PADREC_DEFAULT_BUFFERSIZE = 0x500000;

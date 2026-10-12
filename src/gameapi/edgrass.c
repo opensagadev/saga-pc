@@ -99,6 +99,12 @@ void __cdecl edgraInitAllClumps(void) {
     }
 }
 
+void edgraClumpReseed(i32 index) {
+    PC_EDGRACLUMP *clump = &GrassClumps[index];
+    clump->seed = NuRand(NULL);
+    edgraInitAllClumps();
+}
+
 static void edgracbClumpAreaMenu(eduimenu_s *parent, eduiitem_s *unused1, u32 unused2) {
     u32 colours[4] = {0x80000000, 0x80ff0000, 0x80808080, 0x80404040};
     if (edgra_nearest == -1 || !GrassClumps[edgra_nearest].element_count)

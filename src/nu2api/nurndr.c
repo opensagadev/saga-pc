@@ -1023,6 +1023,14 @@ void __cdecl NuRndrArenaInitPc(VARIPTR *buffer, VARIPTR end) {
     buffer->addr = ((buffer->addr + 3) & ~3u) + 0x7d0;
 }
 
+void AnglesBetweenPoints(NUVEC *from, NUVEC *to, u16 *vertical, u16 *horizontal) {
+    f32 x = to->x - from->x;
+    f32 z = to->z - from->z;
+    f32 y = to->y - from->y;
+    *vertical = NuAtan2D(y, NuFsqrt(x * x + z * z));
+    *horizontal = NuAtan2D(x, z);
+}
+
 void __cdecl NuRndrQuadBufferInitPc(void) {
     void *data;
     RENDERER_SCREEN_VERTEX_PC *vertices;

@@ -160,6 +160,17 @@ void __cdecl GameCam_HitRoll(void) {
     GameCam_Judder(GameCam, amount, 2, NULL);
 }
 
+void NarrowSockExceptions_Init(NARROWSOCKEXCEPTION_PC *exceptions) {
+    i32 level_index;
+    if (exceptions == NULL)
+        return;
+    NarrowSockException = exceptions;
+    for (; exceptions->level_name != NULL; ++exceptions) {
+        Level_FindByName(exceptions->level_name, &level_index);
+        exceptions->level_index = level_index;
+    }
+}
+
 void __cdecl GameCam_HitJudder(void) {
     f32 amount = VehicleArea != 0 ? -0.3f : -0.2f;
     if (qrand() < 0x8000)

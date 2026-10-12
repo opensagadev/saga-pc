@@ -82,6 +82,32 @@ void AiRndrLine3d(NURND_VERTEX3D_PC *vertices, NUMTL *unused1, NUMTX *matrix) {
     NuRndrLine3dDbg(first.x, first.y, first.z, second.x, second.y, second.z, vertices[0].colour);
 }
 
+void AiRndrLine3dDbg(f32 x0, f32 y0, f32 z0, f32 x1, f32 y1, f32 z1, u32 colour) {
+    if (AiRndrCullDistance > 0.0f) {
+        f32 dx;
+        f32 dy;
+        f32 dz;
+        f32 limit;
+        NUVEC position;
+        if (aieditor && (aieditor->flags & 2))
+            position = aieditor->camera_position;
+        else
+            position = *(NUVEC *)&global_camera.mtx.m30;
+        dx = position.x - x0;
+        dy = position.y - y0;
+        dz = position.z - z0;
+        limit = AiRndrCullDistance * AiRndrCullDistance;
+        if (!(dx * dx + dy * dy + dz * dz < limit)) {
+            dx = position.x - x1;
+            dy = position.y - y1;
+            dz = position.z - z1;
+            if (!(dx * dx + dy * dy + dz * dz < limit))
+                return;
+        }
+    }
+    NuRndrLine3dDbg(x0, y0, z0, x1, y1, z1, colour);
+}
+
 i32 __cdecl NuASin(f32 value) {
     union {
         f32 value;

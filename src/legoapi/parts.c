@@ -1464,6 +1464,14 @@ void __cdecl AddVariableShotDebrisEffect(i32 effect, NUVEC *position, i32 count,
     AddVariableShotDebrisEffectMtx3(effect, position, &APIObjectZeroMomentumPC, count, &orientation, NULL);
 }
 
+i32 AddScaledVariableShotDebrisEffect(i32 effect, NUVEC *position, i32 count, f32 time, i16 z_rotation, i16 y_rotation,
+                                      f32 scale) {
+    i32 scaled = CreateScaledEffect(effect, scale);
+    if (scaled != -1)
+        AddVariableShotDebrisEffectTimed1(scaled, position, count, time, z_rotation, y_rotation, NULL);
+    return scaled;
+}
+
 #undef DEBRIS_KEYS_PC
 
 void __cdecl DebrisDrawCalculateClipBoxes(DEBRIS_INFO_PC *effect, DEBRISKEY_PC *key) {
@@ -2668,6 +2676,15 @@ i32 __cdecl AddScaledVariableShotDebrisEffect2(i32 effect, NUVEC *position, i32 
     return scaled;
 }
 
+i32 AddScaledVariableShotDebrisEffect3(i32 effect, NUVEC *position, NUVEC *momentum, i32 count, f32 time,
+                                       NUMTX *emitter_orientation, NUMTX *particle_orientation, f32 scale) {
+    i32 scaled = CreateScaledEffect(effect, scale);
+    if (scaled != -1)
+        AddVariableShotDebrisEffectTimed3(scaled, position, momentum, count, time, emitter_orientation,
+                                          particle_orientation);
+    return scaled;
+}
+
 extern const f32 DebrisGlassMaterialOpacity;
 
 typedef struct debris_collision_effect_pc_s {
@@ -3309,6 +3326,38 @@ void __cdecl edpartDetermineNearest(f32 distance) {
     }
 }
 
+static void edpartCopyType(eduimenu_s *menu, eduiitem_s *unused1, u32 unused2) {
+    struct eduimenu_s *parent;
+    if (part_types_used < 128 && edpart_create_type != -1) {
+        i32 index;
+        for (index = 0; index < 128; ++index) {
+            if (part_types[index].name[0] == '\0') {
+                u32 name_length;
+                PARTTYPE_LOOKUP_PC *source = &part_types[edpart_create_type];
+                PARTTYPE_LOOKUP_PC *copy = &part_types[index];
+                *copy = *source;
+                name_length = strlen(source->name);
+                if (name_length <= 12) {
+                    sprintf(copy->name, "%s%03d", source->name, index);
+                } else {
+                    char name[16];
+                    memcpy(name, source->name, name_length + 1);
+                    name[12] = '\0';
+                    sprintf(copy->name, "%s%03d", name, index);
+                }
+                ++part_types_used;
+                edpart_create_type = index;
+                break;
+            }
+        }
+    }
+    parent = menu->parent;
+    if (parent)
+        eduiMenuDetach(menu);
+    if (menu->callback)
+        menu->callback(menu, parent);
+}
+
 static void edpartRender() {
     edcamSet();
     edpartDrawCursor();
@@ -3824,6 +3873,23 @@ void __cdecl DrawParts(i32 keep_offscreen) {
     }
 }
 
+void AddScaledVariableShotPARTEffect(i32 effect, NUVEC *position, f32 rate, f32 time, NUMTX *orientation, f32 scale) {
+    i32 scaled = CreateScaledPARTEffect(effect, scale);
+    if (scaled != -1)
+        AddVariableShotPARTEffect(scaled, position, rate, time, orientation);
+}
+
+static i32 edpartProc(float delta_time, FRAME_PAD_PC *pad) {
+    edpart_count += 5;
+    if (edpart_active_menu) {
+        eduiMenuProcess(edpart_active_menu, delta_time, pad);
+        return 0;
+    }
+    edpartDoInput(pad);
+    edpartDetermineNearest(1.0f);
+    return (pad->digital_buttons_pressed >> 11) & 1;
+}
+
 void UpdateParts(f32 time) {
     i32 key, i, axis, angle;
     PART_PC *parts, *part;
@@ -4085,6 +4151,12 @@ STATIC_ASSERT(offsetof(PART_PC, field_214) == 0x214);
 
 void __cdecl edpartSetParticlePage(i32 page) {
     PartLoadParticlePagePc = page;
+}
+
+i32 edpartLookupObject(char *name) {
+    if (edbits_base_scene != NULL)
+        return edpartLookupObjectInScene(name, edbits_base_scene);
+    return -1;
 }
 i32 __cdecl edpartLoadPage(char *path, i8 mode, NUGSCN *scene) {
     return edpartLoadPageEx(path, mode, &scene, 1);

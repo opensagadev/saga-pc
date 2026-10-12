@@ -817,6 +817,21 @@ void __cdecl NuMtxGetEulerXYZ(NUMTX *matrix, NUANG *x, NUANG *y, NUANG *z) {
     NuMtxVecToEulerXYZ(&x_vector, &z_vector, x, y, z);
 }
 
+void NuEulerXYZFromQuat(NUANG *x, NUANG *y, NUANG *z, NUQUAT *input) {
+    NUQUAT q = *input;
+    f32 sin_y = -2.0f * (q.x * q.z - q.w * q.y);
+    if (sin_y < -1.0f) {
+        sin_y = -1.0f;
+    }
+    if (sin_y > 1.0f) {
+        sin_y = 1.0f;
+    }
+
+    *y = NuASin(sin_y);
+    *x = NuAtan2D(2.0f * (q.y * q.z + q.w * q.x), q.w * q.w - q.x * q.x - q.y * q.y + q.z * q.z);
+    *z = NuAtan2D(2.0f * (q.x * q.y + q.w * q.z), q.w * q.w + q.x * q.x - q.y * q.y - q.z * q.z);
+}
+
 void __cdecl NuMtxInvVU0(NUMTX *m, NUMTX *source) {
     f32 tx = -source->m30;
     f32 ty = -source->m31;

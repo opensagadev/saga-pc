@@ -1537,6 +1537,16 @@ void __cdecl Debris(i32 update_panel_time) {
     }
 }
 
+static i32 edbriProc(f32 delta_time, FRAME_PAD_PC *pad) {
+    if (edbri_active_menu) {
+        eduiMenuProcess(edbri_active_menu, delta_time, pad);
+        return 0;
+    }
+    edbriDoInput(pad);
+    edbriDetermineNearest(1.0f);
+    return (pad->digital_buttons_pressed >> 11) & 1;
+}
+
 static void edbricbFileLoad(eduimenu_s *menu, eduiitem_s *unused1, u32 unused2) {
     char path[256];
     edbriMakePath(path);

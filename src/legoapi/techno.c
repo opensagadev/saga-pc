@@ -527,3 +527,26 @@ ADD_GIZMO_CONFIG_TYPE_PC *__cdecl Technos_RegisterGizmo(i32 type_id) {
     techno_gizmotype_id = type_id;
     return &addtype;
 }
+
+i32 Techno_isReady(TECHNO_s *techno) {
+    if (techno == NULL) {
+        return 0;
+    }
+
+    if (techno->controlled_object == NULL) {
+        Technos_FindTgt(techno);
+    }
+
+    switch (techno->target_mode) {
+        case 1: {
+            GAMEOBJECT *object = (GAMEOBJECT *)(techno->controlled_object);
+            return object != NULL && (object->flags_1fc_half & 0x1001) == 0x1001;
+        }
+        case 2:
+            return NuSpecialGetVisibilityFn(techno->controlled_object) != 0;
+        case 3:
+            return techno->controlled_object != NULL;
+        default:
+            return 0;
+    }
+}

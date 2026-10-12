@@ -5716,6 +5716,19 @@ static __declspec(noinline) void PodSpeedCodePc(GAMEOBJECT *object, i32 jump_hel
     object->current_speed_mul = SeekLinearF(object->current_speed_mul, target, rate);
 }
 
+void PodLoseSpeed(GAMEOBJECT *object, i32 hit, i32 rumble) {
+    if (hit != 0) {
+        ObjHitObj(NULL, object, 1, 0, 0, 1);
+    }
+    if (hit != 0 || rumble != 0) {
+        TakeHitRumble(object, 0.7f);
+    }
+    object->current_speed_mul *= 0.5f;
+    if (object->current_speed_mul < 0.333f) {
+        object->current_speed_mul = 0.333f;
+    }
+}
+
 void __cdecl PodCollisionCode(GAMEOBJECT *object) {
     if (GamePlayTimer.time_elapsed < 1.0f || object->field_280 == 0xff || (object->flags_1fc & 0x80) == 0 ||
         object->contact_count == 0 || object->contact_normal.y > 0.574f || !(object->contact_normal.y >= -0.574f))

@@ -31,6 +31,12 @@ void __cdecl KillBossCompleteLevel(i32 character_id, i32 flag_index, f32 delay) 
         CompleteLevel(WORLD);
 }
 
+void KillBossNewLevel(i32 a, i32 b, float c, i32 d) {
+    if (KillBoss(a, b, c) != 0) {
+        GoToNewLevel(d);
+    }
+}
+
 i32 __cdecl KillBossPlayCutScene(i32 character_id, i32 flag_index, f32 delay, char *name) {
     if (KillBoss(character_id, flag_index, delay) != 0) {
         NewCutScene(NULL, WORLD->cutscene_sys, name, 1);

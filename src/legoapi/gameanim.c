@@ -783,6 +783,22 @@ void __cdecl GameAnimSet_EvalAnim(GAMEANIMSET *set) {
     }
 }
 
+f32 GameAnimSet_AutoSetReflectY(GAMEANIMSET *set, NUVEC *position, NUMTX *matrix) {
+    if (set != NULL && set->objects != NULL) {
+        f32 height;
+        f32 ground;
+        if (matrix == NULL) {
+            matrix = NuSpecialGetMtx(&set->objects->special);
+        }
+        height = matrix->m31;
+        ground = GameShadow(NULL, position, 5.0f, -1);
+        if (ground != 2000000.0f) {
+            return ground - height;
+        }
+    }
+    return 0.0f;
+}
+
 i32 __cdecl GameAnimSet_GetCentreAndRadius(GAMEANIMSET *set, NUVEC *centre, f32 *radius, i32 frame_selection,
                                            i32 include_animated, i32 include_static) {
     GAMEANIMOBJ *object;
@@ -1237,6 +1253,18 @@ GAMEANIMOBJ *__cdecl GameAnimSet_AddObjectByName(GAMEANIMSET *set, NUGSCN *scene
     if (!Gizmo_FindNuSpecial(scene, &special, name, 1, gizmo_sys, prefix, suffix))
         return NULL;
     return GameAnimSet_AddObject(set, &special, start_frame, end_frame, append);
+}
+
+void GameAnimSet_RemoveSpecial(GAMEANIMSET *set, nuhspecial_s *special) {
+    struct gameanimobj_s *object;
+    if (special == NULL || set == NULL)
+        return;
+    object = set->objects;
+    while (object != NULL && NuSpecialCompare(&object->special, special) == 0) {
+        object = object->next;
+    }
+    if (object != NULL)
+        GameAnimSet_RemoveObject(set, object);
 }
 i32 __cdecl GizmoFileReadGameAnimSet(GAMEANIMSET *set, void *world_ptr, void(__cdecl *read_data)(GAMEANIMOBJ *, u8),
                                      u8 version, char *prefix, char *suffix) {

@@ -28867,3 +28867,32 @@ extern "C" {
 #pragma bss_seg(".bss$edpp_copyroty")
     i32 edpp_copyroty;
 }
+
+extern "C" {}
+
+extern "C" {
+#pragma data_seg(".data$id_MINIXWING")
+    i16 id_MINIXWING = -1;
+
+#pragma data_seg(".data$id_MINIROYALSTARSHIP")
+    i16 id_MINIROYALSTARSHIP = -1;
+}
+
+extern "C" {}
+
+extern "C" {}
+
+extern "C" {}
+
+extern "C" {
+#pragma bss_seg(".bss$HothBattleC_BombGenerator")
+    struct GIZBOMBGEN_s *HothBattleC_BombGenerator;
+}
+
+extern "C" {
+#pragma bss_seg(".bss$edpart_emitrotz")
+    i32 edpart_emitrotz;
+
+#pragma bss_seg(".bss$edpart_emitroty")
+    i32 edpart_emitroty;
+}

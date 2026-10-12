@@ -199,6 +199,28 @@ void __cdecl Bolt_Debris_Default(BOLT_PC *bolt, NUVEC *points, i32 point, NUVEC 
         AddPartDebris(world->part_debris_sys, bolt->hit_part_debris, &bolt->position);
 }
 
+void BoltSys_Init(BOLTSYS_PC *system) {
+    i32 i;
+    for (i = 0; i < system->count; ++i) {
+        INIT_BOLT_CONFIG_PC *type = &system->types[i];
+        type->shoot_sound_id = -1;
+        if (type->shoot_sound != NULL) {
+            type->shoot_sound_id = GetSfxId(type->shoot_sound);
+            type = &system->types[i];
+        }
+        type->hit_sound_id = -1;
+        if (type->hit_sound != NULL)
+            type->hit_sound_id = GetSfxId(type->hit_sound);
+    }
+    BoltSys = system;
+    if (system->debris == NULL)
+        system->debris = Bolt_Debris_Default;
+    if (system->shoot_origin == NULL)
+        system->shoot_origin = Bolt_GetShootOrigin_Default;
+    if (system->shoot_direction == NULL)
+        system->shoot_direction = Bolt_GetShootDirection_Default;
+}
+
 typedef struct VEHICLE_FIRE_STATE_PC {
     u8 unknown_000[0x7f4];
     WEAPON_AMMO_PC weapon_ammo;
