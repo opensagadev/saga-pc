@@ -4952,7 +4952,11 @@ typedef struct gameobject_s {
         };
     };
     u32 ai_area_mask[2];
-    u8 unknown_02b8[0x10];
+    f32 idle_total_time;
+    f32 idle_animation_time;
+    f32 idle_animation_limit;
+    i16 idle_animation;
+    i16 previous_idle_animation;
     union {
         AIPACKET_PC ai_packet;
         struct {
@@ -5010,7 +5014,8 @@ typedef struct gameobject_s {
         void *grapple;
         TECHNO_PC *techno;
     };
-    u8 unknown_079c[7];
+    i32 panel_use_request;
+    u8 unknown_7a0[0x3];
     u8 field_7a3;
     u16 field_7a4;
     u16 takeover_start_angle;
@@ -5354,7 +5359,7 @@ typedef struct gameobject_s {
     u16 previous_movement_angle;
     u16 field_1062;
     u16 id;
-    u8 unknown_1066[2];
+    i16 route_character_id;
     u16 reflection_x;
     union {
         i16 portal_room;
@@ -5398,7 +5403,7 @@ typedef struct gameobject_s {
     u8 unknown_10a0[0x4];
     struct gameobject_s *opponent;
     struct gameobject_s *last_attacker;
-    u8 unknown_10ac[4];
+    void *snake_body;
     void(__cdecl *move_override)(struct gameobject_s *);
     u8 unknown_10b4[4];
     f32 ai_elapsed_time;

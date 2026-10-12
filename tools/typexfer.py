@@ -208,9 +208,16 @@ def offset_name_anchors(astruct, pstruct, anchors):
     if len(checked) < 5 or agree < 0.8 * len(checked):
         return anchors
     merged = {}
+    real = sorted(anchors)
     for offset, _, pc_offset in named:
-        if 0 <= pc_offset < pstruct.size:
-            merged[offset] = pc_offset - offset
+        if not 0 <= pc_offset < pstruct.size:
+            continue
+        # Placeholder names can go stale; real shared names on both sides that agree win.
+        before = [d for o, d in real if o < offset]
+        after = [d for o, d in real if o > offset]
+        if before and after and before[-1] == after[0] != pc_offset - offset:
+            continue
+        merged[offset] = pc_offset - offset
     merged.update(dict(anchors))  # a real shared name at the same offset wins over a placeholder
     return sorted(merged.items())
 
