@@ -140,6 +140,10 @@ def pair(android, pc):
     result = {}
     for pkey, pstruct in pc.items():
         names = {f[2]: f[0] for f in pstruct.fields if not PADDING.match(f[2])}
+        # Members of embedded PC structs, unless a top-level member has the same name.
+        for f in pstruct.deep:
+            if not PADDING.match(f[2]):
+                names.setdefault(f[2], f[0])
         candidates = collections.Counter()
         for name in names:
             for akey in by_field.get(name, ()):
