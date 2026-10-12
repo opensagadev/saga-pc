@@ -4085,7 +4085,7 @@ address    , symbol                                                         , si
 0x005cc550 , _ANI_SimpleAni3PlayerV4Joint_Blend_Quat3                       , 2057  , "i32 __cdecl (ANI3_HEADER_PC *, f32, ANI3_BUFFER_PC *, f32, i32, i32, NUVEC *)"
 0x005ccd60 , _ANI_SimpleAni3PlayerV4Joint_Blend_Quat3W                      , 1952  , "i32 __cdecl (ANI3_HEADER_PC *, f32, ANI3_BUFFER_PC *, f32, i32, i32, NUVEC *)"
 0x005cd500 , _ANI_SimpleAni3PlayerV4Joint_Blend_EulerQuat                   , 2125  , "i32 __cdecl (ANI3_HEADER_PC *, f32, ANI3_BUFFER_PC *, f32, i32, i32, NUVEC *)"
-0x005cdd50 , _ANI_SimpleAni3PlayerV4Joint_Blend                             , 1521  , "void __cdecl (ANI3_HEADER_PC *, f32, ANI3_BUFFER_PC *, f32, i32, i32, NUVEC *)"
+0x005cdd50 , _ANI_SimpleAni3PlayerV4Joint_Blend                             , 1521  , "i32 __cdecl (ANI3_HEADER_PC *, f32, ANI3_BUFFER_PC *, f32, i32, i32, NUVEC *)"
 0x005ce350 , _ANI_Ani3ExtractAllNodeCurves                                  , 1122  , "void __cdecl (ANI3_HEADER_PC *, f32, f32 *, i32, char *)"
 0x005ce7e0 , _NuAnimCurveExtractAllNodeCurves_3                             , 59    , "f32 *__cdecl (ANI3_HEADER_PC *, i32, f32, char *)"
 0x5ce820,_NuAnimCurveSetApplyBlendToJoint2,1722,"void __cdecl (NUANIM_LEGACY_SET_PC *, NUANIM_TIME2_PC *, NUANIM_LEGACY_SET_PC *, NUANIM_TIME2_PC *, f32, NUHGOBJ_EVAL_JOINT_PC *, NUVEC *, NUVEC *, NUMTX *, NUHGOBJ_JOINT_OVERRIDE_PC *)"
@@ -11520,6 +11520,7 @@ address    , symbol                                                         , si
 0x007644ec , _NuAnimSourceFileName                                          , 48    , const char[48]
 0x00764520 , __real@40affe0000000000                                        , 8     , f64
 0x00764528 , __real@3f90410460000000                                        , 8     , f64
+0x764530,__real@c00921fb60000000,8,const f64
 0x00764538 , _NuPrimPS2YScale                                               , 4     , const f32
 0x00764538 , __real@bc124925                                                , 4     , const f32
 0x0076453c , _NuPrimPS2XScale                                               , 4     , const f32

@@ -13128,7 +13128,7 @@ typedef struct PC_SHADER_OBJECT_FULL_VIEW PC_SHADER_OBJECT_FULL_VIEW;
     void __cdecl NuAnimCurve2SetApplyToMatrix_3(ANI3_HEADER_PC *, i32, f32, NUMTX *);
     void __cdecl NuAnimData2CalcMatrix(ANI3_HEADER_PC *, i32, f32, NUMTX *);
     i32 __cdecl ANI_SimpleAni3PlayerV4Joint(ANI3_HEADER_PC *, f32, ANI3_BUFFER_PC *, i32, i32);
-    void __cdecl ANI_SimpleAni3PlayerV4Joint_Blend(ANI3_HEADER_PC *, f32, ANI3_BUFFER_PC *, f32, i32, i32, NUVEC *);
+    i32 __cdecl ANI_SimpleAni3PlayerV4Joint_Blend(ANI3_HEADER_PC *, f32, ANI3_BUFFER_PC *, f32, i32, i32, NUVEC *);
     void __cdecl ResetGizmoFlowBox(GIZFLOW_PC *system, FLOWBOX_PC *box);
     i32 __cdecl CheckOutputActionFlowBox(GIZFLOW_PC *system, FLOWBOX_PC *box, u8 output);
     void __cdecl ProcessFlowBox(GIZFLOW_PC *system, FLOWBOX_PC *box, u8 output);
