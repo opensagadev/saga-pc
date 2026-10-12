@@ -99,8 +99,49 @@ GIZAIMESSAGE *QueryGizAIMessage(GIZAIMESSAGESYS *sys, GIZAIMESSAGE *message) {
     return (GIZAIMESSAGE *)NuLinkedListGetHead(&sys->active_list);
 }
 
+static i32 GizAIMessage_GetMaxGizmos(void *unused0) {
+    return 0x40;
+}
+
 char *GizAIMessage_GetName(GIZAIMESSAGE *message) {
     return message != NULL ? message->name : NULL;
+}
+
+static char *GizAIMessage_GetGizmoName(GIZMO_PC *gizmo) {
+    if (gizmo == NULL) {
+        return NULL;
+    }
+    return GizAIMessage_GetName((GIZAIMESSAGE *)gizmo->object);
+}
+
+static i32 GizAIMessage_GetOutput(GIZMO_PC *gizmo, i32 output_index, i32 unused2) {
+    struct gizaimessage_s *message;
+    if ((gizmo == NULL) || (gizmo->object == NULL) || ((u32)output_index > 7)) {
+        return 0;
+    }
+
+    message = (GIZAIMESSAGE *)gizmo->object;
+    return message->value == (f32)message->output_values[output_index];
+}
+
+static char *GizAIMessage_GetOutputName(GIZMO_PC *gizmo, i32 output_index) {
+    struct gizaimessage_s *message;
+    static char returnstr[4];
+
+    if ((gizmo == NULL) || (gizmo->object == NULL) || ((u32)output_index > 7)) {
+        return NULL;
+    }
+
+    message = (GIZAIMESSAGE *)gizmo->object;
+    sprintf(returnstr, "%d", (i32)message->output_values[output_index]);
+    return returnstr;
+}
+
+static i32 GizAIMessage_GetNumOutputs(GIZMO_PC *gizmo) {
+    if ((gizmo == NULL) || (gizmo->object == NULL)) {
+        return 0;
+    }
+    return ((GIZAIMESSAGE *)gizmo->object)->output_count;
 }
 
 ADDGIZMOTYPE_PC *GizAIMessage_RegisterGizmo(i32 type_id) {

@@ -201,6 +201,27 @@ void __cdecl NuStrFixExt(char *dst, char *src, char *ext, i32 dst_size) {
     NuStrFixExtPlatform(dst, src, ext, dst_size, NULL);
 }
 
+void ParseCommandLine() {
+    while (argc > 0) {
+        if (*argv == NULL) {
+            break;
+        }
+        if (NuStrICmp(*argv, "PADRECORD") == 0) {
+            ++argv;
+            --argc;
+            nuapi.pad_record.filepath = *argv;
+            nuapi.pad_record.mode = NUPAD_RECORD;
+        } else if (NuStrICmp(*argv, "PADPLAY") == 0) {
+            ++argv;
+            --argc;
+            nuapi.pad_record.filepath = *argv;
+            nuapi.pad_record.mode = NUPAD_PLAY;
+        }
+        ++argv;
+        --argc;
+    }
+}
+
 i32 __cdecl NuStrLen(const char *str) {
     i32 count = 0;
 

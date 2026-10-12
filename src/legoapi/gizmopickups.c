@@ -504,3 +504,14 @@ GIZMOPICKUP_PC *__cdecl GizmoPickups_Collide(WORLDINFO *world, GAMEOBJECT *objec
         ++AreaGlobals_PC.field_18;
     return pickup;
 }
+
+void MiniKitDetector(NUVEC *position) {
+    ADD_GAME_MESSAGE_PC message = AddGameMsg_Default;
+    message.text = LEGOASCII_BIGARROW != NULL ? LEGOASCII_BIGARROW : txt_UNKNOWN;
+    message.position = position;
+    message.flags = 0x40083;
+    message.scale = 0.6f;
+    message.unknown_44 = ((void *)(GameMsg_Draw_MiniKitDetector));
+    message.unknown_4f = 4;
+    AddGameMsg(&message);
+}

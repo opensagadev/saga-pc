@@ -250,3 +250,15 @@ ADDGIZMOTYPE_PC *__cdecl Plugs_RegisterGizmo(i32 type_id) {
     plug_gizmotype_id = type_id;
     return &PlugsAddTypePc;
 }
+
+i32 GizRandom_GetMaxGizmos(void *world_ptr) {
+    WORLDINFO *world = ((WORLDINFO *)(world_ptr));
+    if (world == NULL || world->current_level == NULL) {
+        return 0;
+    }
+    return world->current_level->max_gizrandoms;
+}
+
+char *GizRandom_GetOutputName(GIZMO_PC *unused0, i32 unused1) {
+    return ((char *)("Random Output"));
+}

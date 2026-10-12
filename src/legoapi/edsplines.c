@@ -571,6 +571,21 @@ void __cdecl CalcSplinePointFromDist(FLIGHT_SPLINE_RESOURCE_PC *spline, NUVEC4 *
     CalcSplinePoint(spline, result, distance);
 }
 
+void ChrisAnakinBInit() {
+    nuhspecial_s centre;
+    RadialMoveCentre.x = 0.0f;
+    RadialMoveCentre.y = 0.0f;
+    RadialMoveCentre.z = 0.0f;
+    RadialMoveCentre.w = 1.0f;
+    MaxRadialCamY = 8.36f;
+    NuSpecialList(WORLD->current_gscn);
+
+    if (NuSpecialFind(WORLD->current_gscn, &centre, "Centre", 1) != 0 && NuSpecialExistsFn(&centre) != 0) {
+        NUVEC *position = NuSpecialGetPos(&centre);
+        memcpy(&RadialMoveCentre, position, sizeof(NUVEC));
+    }
+}
+
 void ChrisAnakinCReset() {
     struct anakin_door_setup_s *setup;
     anakin_door_s *door = AnakinC;

@@ -2116,6 +2116,13 @@ extern "C" {
     }
 }
 
+extern "C" void Bolts_Reset() {
+    memset(Bolt, 0, sizeof(Bolt));
+    i_bolt = 0;
+    BOLT_OVERRIDE_PLAYERBOLTSPEED = 0.0f;
+    BOLT_OVERRIDE_PLAYERBOLTDURATION = 0.0f;
+}
+
 extern "C" {
     static void bgAckStreamCutScene(BGPROCINFO *) {
         stream_cut_issued = 0;

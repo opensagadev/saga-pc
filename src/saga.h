@@ -24359,13 +24359,13 @@ extern "C" {
     void __cdecl GizAIMessage_AddGizmos(struct GIZMOSYS_s *gizmo_sys, i32 arg1, void *arg2, void *arg3);
     char *__cdecl GizAIMessage_GetGizmoName(GIZMO_PC *gizmo);
     i32 __cdecl GizAIMessage_GetMaxGizmos(void *arg0);
-    i32 __cdecl GizAIMessage_GetNumOutputs(void *gizmo);
+    i32 __cdecl GizAIMessage_GetNumOutputs(GIZMO_PC *gizmo);
     i32 __cdecl GizAIMessage_GetOutput(GIZMO_PC *gizmo, i32 output_index, i32 arg2);
     char *__cdecl GizAIMessage_GetOutputName(GIZMO_PC *gizmo, i32 output_index);
     extern i32 gizaimessage_gizmotype_id;
     extern f32 ICONSIZE;
     void __cdecl PlayRadio(char *arg0, char *arg1, i32 arg2);
-    void __cdecl RegisterGizActions(void *definitions);
+    void __cdecl RegisterGizActions(GIZACTIONDEF_PC *definitions);
     void __cdecl GizRandom_Activate(GIZMO_PC *gizmo, i32 active);
     void __cdecl GizRandom_AddGizmos(struct GIZMOSYS_s *gizmo_sys, i32 type_id, void *world_ptr, void *arg3);
     char *__cdecl GizRandom_GetGizmoName(GIZMO_PC *gizmo);
@@ -24731,7 +24731,7 @@ extern "C" {
     void __cdecl Door_AddGizmos(struct GIZMOSYS_s *gizmo_sys, i32 type_id, void *world_ptr, void *arg3);
     char *__cdecl Door_GetGizmoName(GIZMO_PC *gizmo);
     i32 __cdecl Door_GetMaxGizmos(void *door);
-    i32 __cdecl Door_GetNumOutputs(void *arg0);
+    i32 __cdecl Door_GetNumOutputs(GIZMO_PC *arg0);
     i32 __cdecl Door_GetOutput(GIZMO_PC *gizmo, i32 arg1, i32 arg2);
     char *__cdecl Door_GetOutputName(GIZMO_PC *arg0, i32 arg1);
     extern char door_gizmotype_id;
@@ -24775,7 +24775,7 @@ extern "C" {
     void __cdecl GizTimer_AddGizmos(struct GIZMOSYS_s *gizmo_sys, i32 unknown1, void *world_info, void *unknown2);
     char *__cdecl GizTimer_GetGizmoName(GIZMO_PC *gizmo);
     i32 __cdecl GizTimer_GetMaxGizmos(void *world_info);
-    i32 __cdecl GizTimer_GetNumOutputs(void *gizmo);
+    i32 __cdecl GizTimer_GetNumOutputs(GIZMO_PC *gizmo);
     i32 __cdecl GizTimer_GetOutput(GIZMO_PC *gizmo, i32 arg1, i32 arg2);
     char *__cdecl GizTimer_GetOutputName(GIZMO_PC *gizmo, i32 output_index);
     i32 __cdecl GizTimer_Load(void *world_info, void *arg1);
@@ -24946,9 +24946,44 @@ extern "C" {
     extern f32 zoom_ahead_extra;
     extern f32 zoom_ahead_extra_time;
     u16 __cdecl NuToUpperW(u16 c);
+    extern char edbits_general_save_directory[256];
+    extern char edbits_general_save_extension[256];
+    extern char edbits_general_save_name[256];
+    extern f32 edbri_length;
+    extern struct eduimenu_s *edbri_options_menu;
+    extern i32 edbri_plank_instance_type;
+    extern i32 edbri_post_instance_type;
+    extern i32 edbri_roty;
+    extern i32 edbri_rotz;
+    extern f32 edbri_width;
+    extern struct eduimenu_s *edgra_changeinstance_menu;
+    void __cdecl edgracbCancelChangeInstanceMenu(struct eduimenu_s *arg0, struct eduimenu_s *arg1);
+    void __cdecl edgracbChangeInstanceType(struct eduimenu_s *arg0, struct eduiitem_s *arg1, u32 arg2);
+    void __cdecl edpartCancelWorldInstanceMenu(struct eduimenu_s *arg0, struct eduimenu_s *arg1);
+    void __cdecl edpartRemoveInstance(struct parttype_lookup_pc_s *type, i32 index);
+    extern struct eduimenu_s *edpart_worldinstance_menu;
+    extern struct gameobject_s *Vader_obj;
+    extern i32 edbri_pageid;
+    extern f32 MaxRadialCamY;
+    extern NUVEC4 RadialMoveCentre;
+    void __cdecl NuFileUpCase(struct nufile_device_s *device, char *filepath);
+    extern char *iop_image_name;
+    void __cdecl MakePlayCorner(struct gamecamera_s *camera, f32 screen_x, f32 screen_y, struct nuvec_s *near_corner,
+                                struct nuvec_s *far_corner);
+    void __cdecl SetPlayPlane(struct KEEP_SCREEN_PLANE_PC *plane, struct nuvec_s *a, struct nuvec_s *b,
+                              struct nuvec_s *c, struct nuvec_s *d, struct nuvec_s *edge_a0, struct nuvec_s *edge_a1,
+                              struct nuvec_s *edge_b0, struct nuvec_s *edge_b1);
+    void __cdecl NuErrorPrint(char *arg0);
+    void __cdecl NuWarningPrint(char *message);
+    extern void(__cdecl *nuerror_handler)(char *arg0);
+    extern void(__cdecl *nuwarning_handler)(char *arg0);
+    void __cdecl GameMsg_Draw_MiniKitDetector(struct game_message_pc_s *arg0, struct nuvec_s *arg1, f32 arg2);
 #ifdef __cplusplus
 }
 #endif
+enum { NUPAD_PLAY = 2 };
+enum { NUPAD_RECORD = 1 };
+enum { GIZMOPICKUP_STATE_COLLECTED = 8 };
 enum { GIZFORCE_CONFIG_RESET_STATE_ON_ACTIVATE = 8 };
 enum { GIZFORCE_PROGRESS_ENABLED = 1 };
 enum { GIZFORCE_RUNTIME_HAS_PLATFORM = 1 };

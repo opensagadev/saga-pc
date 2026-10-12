@@ -232,6 +232,11 @@ void edptlcbCancelOrphanListMenu(eduimenu_s *unused0, eduimenu_s *unused1) {
     edptl_orphanlist_menu = NULL;
 }
 
+static void cbPtlCancelTypeMenu(eduimenu_s *unused0, eduimenu_s *unused1) {
+    eduiMenuDestroy(ptltypemenu);
+    ptltypemenu = NULL;
+}
+
 void cbPtlCancelQuickDeleteMenu(eduimenu_s *unused0, eduimenu_s *unused1) {
     eduiMenuDestroy(edptl_quickdel_menu);
     edptl_quickdel_menu = NULL;

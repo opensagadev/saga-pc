@@ -1029,6 +1029,19 @@ void __cdecl edanimStartAllPages(void) {
     }
 }
 
+static void edanimcbToggleSoundType(eduimenu_s *menu, eduiitem_s *item, u32 unused2) {
+    edanim_soundtype_menu = NULL;
+    if (!(item->highlighted & 1)) {
+        AnimParams[edanim_nearest_param_id].sound_values[edanim_nearest_sound] = 1.0f;
+        AnimParams[edanim_nearest_param_id].sound_flags[edanim_nearest_sound] = 0;
+    } else {
+        AnimParams[edanim_nearest_param_id].sound_values[edanim_nearest_sound] = 50.0f;
+        AnimParams[edanim_nearest_param_id].sound_flags[edanim_nearest_sound] = 1;
+    }
+    eduiMenuDetach(menu);
+    eduiMenuDestroy(menu);
+}
+
 static void edanimcbCancelBouncyMenu(eduimenu_s *unused0, eduimenu_s *unused1) {
     eduiMenuDestroy(edanim_bouncy_menu);
     edanim_bouncy_menu = NULL;
@@ -1275,6 +1288,15 @@ void edanimcbMCTBCardFormat(eduimenu_s *menu, eduiitem_s *unused1, u32 unused2) 
     } else {
         eduiCreateMessageMenu(menu, (char *)("Format Fail"), 0);
     }
+}
+
+static void edanimEnter() {
+    edanim_nearest = -1;
+    edanim_nearest_param_id = -1;
+    edanim_nearest_particle = -1;
+    edanim_particle_mode = 0;
+    edanim_particle_type = -1;
+    edanim_sound_type = -1;
 }
 
 static void edanimcbMCTBCardWriteKeyCard(eduimenu_s *menu, eduiitem_s *unused1, u32 unused2) {

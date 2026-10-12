@@ -127,3 +127,21 @@ ADDGIZMOTYPE_PC *GizRandom_RegisterGizmo(i32 type_id) {
 
     return &addtype;
 }
+
+i32 GizTimer_GetMaxGizmos(void *world_info) {
+    WORLDINFO *world = (WORLDINFO *)world_info;
+
+    if (world == NULL || world->current_level == NULL) {
+        return 0;
+    }
+
+    return world->current_level->max_timers;
+}
+
+char *GizTimer_GetOutputName(GIZMO_PC *gizmo, i32 output_index) {
+    return "Ping";
+}
+
+i32 GizTimer_GetNumOutputs(GIZMO_PC *gizmo) {
+    return 1;
+}

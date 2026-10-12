@@ -42,6 +42,38 @@ i32 __cdecl LineIntersectXY(NUVEC *a, NUVEC *b, NUVEC *c, NUVEC *d, NUVEC *first
     return t >= 0.0f && t <= 1.0f && u >= 0.0f && u <= 1.0f;
 }
 
+i32 XZLinesIntersect(NUVEC *a, NUVEC *b, NUVEC *c, NUVEC *d, float *first, float *second) {
+    i32 angle;
+    NUVEC ac;
+    NUVEC bc;
+    NUVEC ca;
+    NUVEC da;
+    NUVEC direction;
+    NuVecSub(&direction, b, a);
+    angle = NuAtan2D(direction.x, direction.z);
+    NuVecSub(&ca, c, a);
+    NuVecRotateY(&ca, &ca, -angle);
+    NuVecSub(&da, d, a);
+    NuVecRotateY(&da, &da, -angle);
+    if (NuFsign(ca.x) == NuFsign(da.x))
+        return 0;
+
+    NuVecSub(&direction, d, c);
+    angle = NuAtan2D(direction.x, direction.z);
+    NuVecSub(&ac, a, c);
+    NuVecRotateY(&ac, &ac, -angle);
+    NuVecSub(&bc, b, c);
+    NuVecRotateY(&bc, &bc, -angle);
+    if (NuFsign(ac.x) == NuFsign(bc.x))
+        return 0;
+
+    if (first != NULL)
+        *first = fabsf(ac.x) / (fabsf(ac.x) + fabsf(bc.x));
+    if (second != NULL)
+        *second = fabsf(ca.x) / (fabsf(ca.x) + fabsf(da.x));
+    return 1;
+}
+
 f32 XZLinesClosest(NUVEC *a, NUVEC *b, NUVEC *c, NUVEC *d, f32 *first, f32 *second) {
     i32 angle;
     f32 ab_length;

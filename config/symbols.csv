@@ -7930,6 +7930,8 @@ address    , symbol                                                         , si
 0x751d10,__real@4041800000000000,8,const f64
 0x751d28,_GrappleMomentumNearScalePc,8,const f64
 0x751d28,__real@4034000000000000,8,const f64
+0x751d30,??_C@_06MCOJAMLH@Centre?$AA@,7,char []
+0x751d38,__real@4105c28f,4,const f32
 0x00751d3c,__real@43160000,,const f32
 0x751d40,??_C@_0BD@FAEJAHCF@Ep3_1_ExplosionXXL?$AA@,19,const char[19]
 0x751d54,??_C@_0BC@GKABDEAG@Dog_TriFighterHit?$AA@,18,const char[18]
@@ -10352,6 +10354,8 @@ address    , symbol                                                         , si
 0x75eba8,_PcInputText75eba8, ,char[2]
 0x0075ebb0,__real@4062c00000000000,8,
 0x75ebb8,__real@43fa0000,4,const f32
+0x75ebbc,??_C@_07EKLOMMED@PADPLAY?$AA@,8,char []
+0x75ebc4,??_C@_09NIJLDPO@PADRECORD?$AA@,10,char []
 0x0075ebd0 , _nufile_disc_suffix                                            , 3     , const char[3]
 0x75ec24,__real@42aa0000,4,const f32
 0x75ec30,??_C@_05EILEDKCG@LABEL?$AA@,6,const char[6]
@@ -11428,8 +11432,10 @@ address    , symbol                                                         , si
 0x763e70,??_C@_0N@KNCHGBDG@ShadowEditor?$AA@,,
 0x763e80,??_C@_07BKGMKKDM@Plugged?$AA@,,const char[8]
 0x763e88,??_C@_04ILINIEJ@Plug?$AA@,,const char[5]
+0x763e90,??_C@_0O@PJDEOCBP@Random?5Output?$AA@,14,char []
 0x763ea0,??_C@_04BDMLBJBK@rnd_?$AA@,5,char []
 0x763ea8,??_C@_09NLDPCFBJ@GizRandom?$AA@,10,char []
+0x763eb4,??_C@_04CPBFGEOK@Ping?$AA@,5,char []
 0x763ebc,??_C@_08LNNNNDNG@GizTimer?$AA@,9,char []
 0x763ec8,??_C@_06MDJIBAJE@Played?$AA@,,
 0x763ed0,??_C@_07JKFMAIED@Playing?$AA@,,
@@ -15670,6 +15676,8 @@ address    , symbol                                                         , si
 0x810968,_debris_render_scale,,f32
 0x8109d0,_PartLevelPagePc,,i32
 0x8109d4,_edbits_editor_enabled,,i32 *
+0x810a28,_edbri_length,4,f32
+0x810a2c,_edbri_width,4,f32
 0x810a30,_edbri_planks,4,i32
 0x810a34,_edbri_post_interval,4,i32
 0x810a70,_edgra_clumpthin,,i32
@@ -15944,6 +15952,8 @@ address    , symbol                                                         , si
 0x00854e58 , _cables                                                        , 3936  , u8[0xf60]
 0x00855e00 , _MiniCutCam                                                    , 4     , i32
 0x855e04,_KEEPONSCREEN_SIDESONLY,,i32
+0x855e18,_MaxRadialCamY,4,f32
+0x855e20,_RadialMoveCentre,16,NUVEC4
 0x855e8c,_AnakinC,4,struct anakin_door_s *
 0x855ea4,_PlayerSuit,,SUIT_LAYERS_PC *[8]
 00855ec4,_CharacterCollectionPc,,COLLECTION_BUILD_PC
@@ -18145,6 +18155,7 @@ address    , symbol                                                         , si
 0x95df54,_gunship_bolts,4,i16[2]
 0x95df5c,_gunship_flags,10,u8[10]
 0x0095df6c , _gizaimessagesys                                               , 4     , GIZAIMESSAGESYS *
+0x95df70,?returnstr@?1??GizAIMessage_GetOutputName@@9@9,,
 0x95df78,?addtype@?1??GizAIMessage_RegisterGizmo@@9@9,,
 0x95e090,?addtype@?1??GizSpecial_RegisterGizmo@@9@9,,
 0x95e108,_portal_gizmotype_id,,i32
@@ -18647,6 +18658,7 @@ address    , symbol                                                         , si
 0x02920ae8 , _DebrisGlassV1                                                 , 4     , f32
 0x2920aec,_edgra_page_used,,i32[8]
 0x2920d90,_TerrImpactPos,,NUVEC
+0x2920da0,_edbri_plank_instance_type,4,i32
 0x02920da4 , _GetSurfaceInfoWaterHeightPc                                   ,       ,
 0x02920da8 , _NuSound3Groups                                                , 1024  , SFX_GROUP_PC[128]
 0x029211a8 , _TerrainCastAuxValidPc                                         ,       ,
@@ -18739,6 +18751,7 @@ address    , symbol                                                         , si
 0x0292fdc0 , _SfxHashHeads                                                  , 4     , i16 *
 0x292fdc4,_SfxRevertInfoPc,,SFX_RECORD_PC *
 0x292fdc8,_edanim_cam_pos,,NUVEC
+0x292fdd4,_edbri_post_instance_type,4,i32
 0x0292fdd8 , _GetSurfaceInfoSurfaceNormalPc                                 ,       ,
 0x292fdd8,_ShadNorm,,NUVEC
 0x292fde4,_spherecolldata,,DEBRIS_COLLISION_ENTRY_PC *
@@ -18785,6 +18798,7 @@ address    , symbol                                                         , si
 0x2948ef4,_TerImpactDataCount,,i32 *
 0x2948ef8,_TempStackPtrPc,,u8 *
 0x2948efc,_TerrOverRideScan,,void *
+0x2948f08,_edgra_size,4,f32
 0x2948f10,_edbri_page_on,,i32[8]
 0x2948f30,_SfxFilenameSlotsPc,,char[1601][64]
 0x2961f70,_curPickInst,,i32
@@ -18855,6 +18869,9 @@ address    , symbol                                                         , si
 0x2962120,_edanim_bouncy_menu,4,struct eduimenu_s *
 0x02962128 , _edanim_params_used                                            , 4     , i32
 0x02962134 , _edbits_base_scene                                             , 4     , NUGSCN *
+0x2962238,_edbits_general_save_directory,256,char[256]
+0x2962338,_edbits_general_save_name,256,char[256]
+0x2962438,_edbits_general_save_extension,256,char[256]
 0x2962538,_edbits_level_save_directory,256,char[256]
 0x2962638,_edbits_level_save_name,256,char[256]
 0x2962738,_edbits_level_save_extension,256,char[256]
@@ -18866,10 +18883,13 @@ address    , symbol                                                         , si
 0x2962950,_edbits_editor_state,,i32
 0x296295c,_EdppTypesErrorPc,,i32
 0x2962974,_edbri_active_menu,4,struct eduimenu_s *
+0x2962978,_edbri_pageid,4,i32
 0x296297c,_edbri_dpadmode_menu,4,struct eduimenu_s *
 0x2962988,_edbri_plankcount_menu,4,struct eduimenu_s *
 0x296298c,_edbri_bridgeproperties_menu,4,struct eduimenu_s *
 0x2962994,_edbri_bridges_used,,i32
+0x296299c,_edbri_rotz,4,i32
+0x29629a0,_edbri_roty,4,i32
 0x29629a4,_edbri_mode,4,i32
 0x29629a8,_edgra_active_menu,4,struct eduimenu_s *
 0x29629b0,_edgra_instance_menu,4,struct eduimenu_s *

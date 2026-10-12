@@ -929,6 +929,10 @@ static void GizFlowConfigActionPc(NUFPAR_PC *parser) {
     }
 }
 
+void RegisterGizActions(GIZACTIONDEF_PC *definitions) {
+    gizactiondefs = definitions;
+}
+
 static void GizFlowConfigNamePc(NUFPAR_PC *parser) {
 
     NuFParGetWord(parser);

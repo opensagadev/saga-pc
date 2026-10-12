@@ -67,6 +67,14 @@ void edbricbCancelDpadModeMenu(eduimenu_s *unused0, eduimenu_s *unused1) {
     eduiMenuDestroy(edbri_dpadmode_menu);
     edbri_dpadmode_menu = NULL;
 }
+
+static void edbricbCancelOptMenu(eduimenu_s *unused0, eduimenu_s *unused1) {
+    edbri_active_menu = NULL;
+    if (edbri_options_menu) {
+        eduiMenuDestroy(edbri_options_menu);
+        edbri_options_menu = NULL;
+    }
+}
 static void edbricbPlankCountMenu(eduimenu_s *parent, eduiitem_s *unused1, u32 unused2) {
     edbri_plankcount_menu = eduiMenuCreate(70, 70, 180, 250, ed_fnt, edbricbCancelPlankCountMenu, "Plank Count");
     if (!edbri_plankcount_menu)
@@ -217,6 +225,20 @@ void __cdecl edbriBridgeUpdate(i32 index, NUGSCN *scene) {
                        edBridges[index].rotation_y, edBridges[index].field_28, edBridges[index].field_2c,
                        edBridges[index].field_30, edBridges[index].field_34, edBridges[index].field_1d,
                        edBridges[index].field_14, edBridges[index].field_38, edBridges[index].field_1e, colour);
+}
+
+void edbriBridgePlace(i32 index, NUVEC *position) {
+    PC_EDBRIDGE *bridge = &edBridges[index];
+    bridge->position = *position;
+    bridge->rotation_z = edbri_rotz;
+    bridge->rotation_y = edbri_roty;
+    bridge->length = edbri_length;
+    bridge->field_14 = edbri_width;
+    bridge->field_1d = edbri_planks;
+    bridge->field_1e = edbri_post_interval;
+    bridge->special_20 = edbri_plank_instance_type;
+    bridge->special_24 = edbri_post_instance_type;
+    edbriBridgeUpdate(index, edbits_base_scene);
 }
 
 void __cdecl edbriStartPage(i32 page_number) {

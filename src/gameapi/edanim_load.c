@@ -84,6 +84,40 @@ i32 __cdecl edanimLookupSpecial(char *name, NUGSCN *scene) {
     return -1;
 }
 
+void edbitsRegisterSaveFormat(char *general_save_directory, char *general_save_name, char *general_save_extension,
+                              char *level_save_directory, char *level_save_name, char *level_save_extension) {
+    if (general_save_directory) {
+        NuStrCpy(edbits_general_save_directory, general_save_directory);
+    } else {
+        edbits_general_save_directory[0] = '\0';
+    }
+    if (general_save_name) {
+        NuStrCpy(edbits_general_save_name, general_save_name);
+    } else {
+        edbits_general_save_name[0] = '\0';
+    }
+    if (general_save_extension) {
+        NuStrCpy(edbits_general_save_extension, general_save_extension);
+    } else {
+        edbits_general_save_extension[0] = '\0';
+    }
+    if (level_save_directory) {
+        NuStrCpy(edbits_level_save_directory, level_save_directory);
+    } else {
+        edbits_level_save_directory[0] = '\0';
+    }
+    if (level_save_name) {
+        NuStrCpy(edbits_level_save_name, level_save_name);
+    } else {
+        edbits_level_save_name[0] = '\0';
+    }
+    if (level_save_extension) {
+        NuStrCpy(edbits_level_save_extension, level_save_extension);
+    } else {
+        edbits_level_save_extension[0] = '\0';
+    }
+}
+
 void __cdecl edanimDetermineNearestAnim(f32 distance) {
     NUSPECIALHANDLE special;
     NUVEC delta;

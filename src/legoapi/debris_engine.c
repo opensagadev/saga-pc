@@ -1547,6 +1547,7 @@ void __cdecl Debris(i32 update_panel_time) {
         DebrisProcessControlChunks(0);
     }
 }
+
 i32 edbriProc(f32 delta_time, FRAME_PAD_PC *pad) {
     if (edbri_active_menu) {
         eduiMenuProcess(edbri_active_menu, delta_time, pad);

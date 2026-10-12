@@ -497,6 +497,36 @@ void __cdecl MenuUpdateFormatConfirm(MENU *menu) {
     }
 }
 
+void MenuUpdateFileCorrupt(MENU_s *menu) {
+    if (MenuInfo[GameMenu[GameMenuLevel - 1].menu].id != 1019)
+        MenuInfo[menu->menu].wrap = 1;
+    else
+        MenuInfo[menu->menu].wrap = 0;
+    if (menu->confirm_pressed != 0) {
+        MenuSFX = MENUSFX_MENUSELECT;
+        if (MenuInfo[GameMenu[GameMenuLevel - 1].menu].id == 1000) {
+            BackupMenuNoFn();
+            NewMenu(1016, 1, -1);
+        } else if (MenuInfo[GameMenu[GameMenuLevel - 1].menu].id == 1019) {
+            MenuCardWarningState = 3;
+            memcard_cardchanged = 0;
+            BackupMenuNoFn();
+        } else {
+            BackupMenuNoFn();
+            NewMenu(1017, 1, -1);
+        }
+    } else if (menu->cancel_pressed != 0 && MenuInfo[GameMenu[GameMenuLevel - 1].menu].id != 1019) {
+        MenuSFX = MENUSFX_MENUSELECT;
+        if (MenuInfo[GameMenu[GameMenuLevel - 1].menu].id == 1000) {
+            BackupMenuNoFn();
+            NewMenu(1016, 1, -1);
+        } else {
+            BackupMenuNoFn();
+            NewMenu(1017, 1, -1);
+        }
+    }
+}
+
 void __cdecl MenuUpdateFormatting(MENU *menu) {
     (void)menu;
     if (memcard_formatme != 0)

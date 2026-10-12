@@ -29402,3 +29402,60 @@ extern "C" {
 #pragma data_seg(".data$fire_clip_dist")
     i32 fire_clip_dist = 1000;
 }
+
+extern "C" {
+#pragma bss_seg(".bss$edbits_general_save_directory")
+    char edbits_general_save_directory[256];
+
+#pragma bss_seg(".bss$edbits_general_save_name")
+    char edbits_general_save_name[256];
+
+#pragma bss_seg(".bss$edbits_general_save_extension")
+    char edbits_general_save_extension[256];
+}
+
+extern "C" {
+#pragma data_seg(".data$edbri_length")
+    f32 edbri_length = 1.0f;
+
+#pragma data_seg(".data$edbri_width")
+    f32 edbri_width = 0.5f;
+
+#pragma bss_seg(".bss$edbri_rotz")
+    i32 edbri_rotz;
+
+#pragma bss_seg(".bss$edbri_roty")
+    i32 edbri_roty;
+
+#pragma bss_seg(".bss$edbri_plank_instance_type")
+    i32 edbri_plank_instance_type;
+
+#pragma bss_seg(".bss$edbri_post_instance_type")
+    i32 edbri_post_instance_type;
+}
+
+extern "C" {
+#pragma bss_seg(".bss$edbri_pageid")
+    i32 edbri_pageid;
+}
+
+extern "C" {}
+
+extern "C" {}
+
+extern "C" {}
+
+extern "C" {}
+
+extern "C" {
+#pragma bss_seg(".bss$edgra_size")
+    f32 edgra_size;
+}
+
+extern "C" {
+#pragma bss_seg(".bss$RadialMoveCentre")
+    NUVEC4 RadialMoveCentre;
+
+#pragma bss_seg(".bss$MaxRadialCamY")
+    f32 MaxRadialCamY;
+}

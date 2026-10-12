@@ -119,6 +119,54 @@ void edpartCancelTypeMenu(eduimenu_s *unused0, eduimenu_s *unused1) {
     edpart_type_menu = NULL;
 }
 
+static void edpartWorldInstanceMenu(eduimenu_s *parent, eduiitem_s *unused1, u32 unused2) {
+    i32 group;
+    i32 selected_first;
+    i32 count;
+    i32 index;
+    edpart_which_scene = 0;
+    edpart_worldinstance_menu = eduiMenuCreate(70, 70, 250, 250, ed_fnt, edpartCancelWorldInstanceMenu,
+                                               ((char *)(edpart_filter ? "World Scene (Filtered)" : "World Scene")));
+    if (edpart_worldinstance_menu == NULL || edbits_base_scene == NULL || edpart_nearest_type == NULL)
+        return;
+    group = 1;
+    selected_first = 0;
+    count = NuGScnNumSpecials(edbits_base_scene);
+    for (index = 0; index < count; ++index) {
+        char *name;
+        i32 selected;
+        i32 included;
+        i32 variant;
+        struct eduiitem_s *item;
+        nuhspecial_s special;
+        NuGScnGetSpecial(&special, edbits_base_scene, index);
+        name = NuSpecialExistsFn(&special) ? NuSpecialGetName(&special) : NULL;
+        selected = 0;
+        included = 0;
+        for (variant = 0; variant < edpart_nearest_type->variant_count; ++variant) {
+            if (edpart_nearest_type->effect_ids[variant] == index) {
+                if (edpart_nearest_type->effect_pages[variant] == 0) {
+                    selected = 1;
+                    included = 1;
+                }
+            }
+        }
+        if (edpart_filter && NuStrNCmp(edpart_filter_string, name, NuStrLen(edpart_filter_string)) != 0 && !included)
+            continue;
+        item = eduiItemToggleCreate(index, edblack, selected, group++, edpartSetInstanceType, name);
+        eduiMenuAddItem(edpart_worldinstance_menu, item);
+        if (selected & (selected_first ^ 1)) {
+            selected_first = 1;
+            edpart_worldinstance_menu->selected = edui_last_item;
+        }
+    }
+    if (group == 1)
+        eduiMenuAddItem(edpart_worldinstance_menu, eduiItemSelCreate(1, edgrey, 0, 0, NULL, "All Instances Filtered"));
+    eduiMenuAttach(parent, edpart_worldinstance_menu);
+    edpart_worldinstance_menu->x = parent->x + 10;
+    edpart_worldinstance_menu->y = parent->y + 40;
+}
+
 void edpartCancelThingsInstanceMenu(eduimenu_s *unused0, eduimenu_s *unused1) {
     eduiMenuDestroy(edpart_thingsinstance_menu);
     edpart_thingsinstance_menu = NULL;

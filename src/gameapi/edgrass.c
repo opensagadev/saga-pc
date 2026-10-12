@@ -105,6 +105,52 @@ void edgracbSetClumpWind(eduimenu_s *unused0, eduiitem_s *item, u32 unused2) {
     edgraInitAllClumps();
 }
 
+static void edgracbChangeInstanceMenu(eduimenu_s *parent, eduiitem_s *unused1, u32 unused2) {
+    i32 selected_found;
+    i32 added;
+    i32 count;
+    char *name;
+    i32 i;
+    edgra_changeinstance_menu =
+        eduiMenuCreate(70, 70, 220, 250, ed_fnt, edgracbCancelChangeInstanceMenu,
+                       ((char *)(edgra_filter ? "Change Instance (Filtered)" : "Change Instance")));
+    if (!edgra_changeinstance_menu || !edbits_base_scene)
+        return;
+    selected_found = 0;
+    added = 1;
+    count = NuSpecialGetNumSpecials(edbits_base_scene);
+    name = NULL;
+    for (i = 0; i < count; ++i) {
+        nuhspecial_s special;
+        const i32 selected = i == GrassClumps[edgra_nearest].special_index;
+        NuGScnGetSpecial(&special, edbits_base_scene, i);
+        if (NuSpecialExistsFn(&special))
+            name = NuSpecialGetName(&special);
+        if (edgra_filter && NuStrNCmp(edgra_filter_string, name, NuStrLen(edgra_filter_string))) {
+            if (!selected)
+                continue;
+            eduiMenuAddItem(edgra_changeinstance_menu,
+                            eduiItemCheckCreate(i, edblack, selected, 1, edgracbChangeInstanceType, name));
+            ++added;
+        } else {
+            eduiMenuAddItem(edgra_changeinstance_menu,
+                            eduiItemCheckCreate(i, edblack, selected, 1, edgracbChangeInstanceType, name));
+            ++added;
+        }
+        if (selected) {
+            selected_found = 1;
+            edgra_changeinstance_menu->selected = edui_last_item;
+        }
+    }
+    if (added == 1)
+        eduiMenuAddItem(edgra_changeinstance_menu, eduiItemSelCreate(1, edgrey, 0, 0, NULL, "All Instances Filtered"));
+    eduiMenuAttach(parent, edgra_changeinstance_menu);
+    edgra_changeinstance_menu->y = parent->y + 40;
+    edgra_changeinstance_menu->x = parent->x + 10;
+    if (selected_found)
+        edgra_changeinstance_menu->field_0c = edgra_changeinstance_menu->selected;
+}
+
 static __inline void edgracbClumpSizesMenu(eduimenu_s *parent, eduiitem_s *unused1, u32 unused2) {
     u32 colours[4] = {0x80000000, 0x80ff0000, 0x80808080, 0x80404040};
     if (edgra_nearest == -1 || !GrassClumps[edgra_nearest].element_count)

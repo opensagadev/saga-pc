@@ -215,6 +215,49 @@ void *__cdecl Door_FindByIndex(WORLDINFO *world, i32 area, i32 level, NUVEC *pos
     return nearest;
 }
 
+static i32 Door_GetMaxGizmos(void *door) {
+    WORLDINFO *world = ((WORLDINFO *)(door));
+    if (world == NULL) {
+        return 0;
+    }
+    return world->current_level->max_doors;
+}
+
+static char *Door_GetGizmoName(GIZMO_PC *gizmo) {
+    struct DOOR_s *door;
+    if (gizmo == NULL || gizmo->object == NULL) {
+        return NULL;
+    }
+    door = ((DOOR_s *)(gizmo->object));
+    return door->gizmo_name;
+}
+
+static i32 Door_GetOutput(GIZMO_PC *gizmo, i32 unused1, i32 unused2) {
+    struct DOOR_s *door;
+    if (gizmo == NULL || gizmo->object == NULL) {
+        return 0;
+    }
+    door = ((DOOR_s *)(gizmo->object));
+    return door->active == 0;
+}
+
+static i32 Door_GetNumOutputs(GIZMO_PC *unused0) {
+    return 1;
+}
+
+char *Door_GetOutputName(GIZMO_PC *unused0, i32 unused1) {
+    return ((char *)("Active"));
+}
+
+void Door_Activate(GIZMO_PC *gizmo, i32 value) {
+    struct DOOR_s *door;
+    if (gizmo == NULL || gizmo->object == NULL) {
+        return;
+    }
+    door = ((DOOR_s *)(gizmo->object));
+    door->active = value == 0;
+}
+
 ADDGIZMOTYPE_PC *Door_RegisterGizmo(i32 type_id) {
     static ADDGIZMOTYPE_PC addtype;
 

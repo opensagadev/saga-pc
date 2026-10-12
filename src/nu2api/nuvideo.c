@@ -118,6 +118,14 @@ void NuRegionSet(i32 region) {
 
 void __cdecl bgProcDataOversize(i32 size) {
 }
+
+void NuErrorSetFilter(char *filter) {
+    if (filter == NULL) {
+        NuStrCpy(err_msg_filter, "");
+    } else {
+        NuStrNCpy(err_msg_filter, filter, 32);
+    }
+}
 static void NuDebugMsgFunction(char *format, ...) {
     char captxt[16384];
     if (!DisableDebugMsg) {
