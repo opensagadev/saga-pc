@@ -25240,6 +25240,12 @@ extern "C" {
     void __cdecl edpartInstanceMenu(struct eduimenu_s *menu, struct eduiitem_s *arg1, u32 arg2);
     void __cdecl edpartInstanceSettingsMenu(struct eduimenu_s *menu, struct eduiitem_s *arg1, u32 arg2);
     void __cdecl do_maya_mouse_camera(struct edcam_s *camera);
+    i32 __cdecl NuKeyGet(u32 *modifiers);
+    void __cdecl cbInteractMenuScrollTo(struct eduimenu_s *menu, char *text);
+    extern NUVEC AttractoBackPackCountPos;
+    extern i16 tCHEAT_SELFDESTRUCT;
+    extern DETONATOR_s Detonator[10];
+    void __cdecl Detonator_Detonate(struct DETONATOR_s *arg0);
 #ifdef __cplusplus
 }
 #endif

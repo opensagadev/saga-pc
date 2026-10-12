@@ -989,6 +989,30 @@ void __cdecl TurnCode(GAMEOBJECT *object, i32 mode, GAMEPAD_PC *pad) {
     object->secondary_lean_angle = (i16)(20024.0f * NuTrigTable[index] + 16384.0f);
 }
 
+void ApplyExtraRotation(GAMEOBJECT *object, NUMTX *matrix) {
+    switch (object->character_context) {
+        case 42:
+            TurnCodeCamSafe(object, matrix);
+            break;
+        case 58: {
+            const f32 phase = 1.0f - object->context_timer / object->context_duration;
+            const f32 wave = NuTrigTable[(((i32)(32768.0f * phase + 16384.0f)) >> 1) & 0x7fff];
+            const i32 rotation = ((i32)((1.0f - (wave + 1.0f) * 0.5f) * 65536.0f));
+            if (object->field_7b3 == 0) {
+                NuMtxPreRotateZ(matrix, rotation);
+            } else {
+                NuMtxPreRotateZ(matrix, -rotation);
+            }
+            break;
+        }
+    }
+
+    if (object->id == id_MINISLAVE1) {
+        NuMtxPreRotateX(matrix, -16384);
+        NuMtxPreRotateY(matrix, 32768);
+    }
+}
+
 static i32 MovementArcSine(f32 value) {
     union {
         f32 value;

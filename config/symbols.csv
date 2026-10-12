@@ -132,7 +132,9 @@ address    , symbol                                                         , si
 0x425910,_Customiser_Update,1673,
 0x425fa0,_Customiser_Draw3D,1087,
 0x426b50,_DetonatorPlacementSlot,81,
+0x426bb0,_Detonator_FindNearest,146,
 0x00426de0 , _Detonate                                                      , 374   , "EXPLOSION_PC *__cdecl (NUVEC *, u16)"
+0x426f60,_Detonator_Detonate,54,
 0x427070,_Detonators_Draw,318,
 0x4271b0,_Detonator_MoveCode,1522,
 0x4278c0,_FreePlay_DropInToPlayerPos,521,
@@ -4764,6 +4766,7 @@ address    , symbol                                                         , si
 0x61f190,_cbGradChange,1,
 0x61f1a0,_cbInteractMenuTitle,135,
 0x61f260,_cbInteractMenuScrollUp,33,
+0x61f290,_cbInteractMenuScrollTo,115,
 0x61f310,_cbInteractMenuCancelChild,35,
 0x61f9b0,_eduiSetFontScale,21,
 0x6200d0,_do_Pad_flymode_camera,1052,
@@ -6188,6 +6191,7 @@ address    , symbol                                                         , si
 0x6d6720,_NuKeyboardClearActiveDevicesPc,30,void __cdecl(void)
 0x6d67a0,_TextInputIsKeyboardDevicePc,20,i32 __cdecl(i32)
 0x6d67f0,_TextInputIsPrimaryDevicePc,15,i32 __cdecl(i32)
+0x6d6940,_NuKeyGet,84,
 0x6d69b0,_QueueKeyPressPc,82,"i32 __cdecl(i32,i32)"
 0x6d6a10,_PcKeyDown,276,void __cdecl(i32)
 0x006d6b30 , _MenuSetPlatformState                                          , 1     , void __cdecl (i32)
@@ -7814,6 +7818,7 @@ address    , symbol                                                         , si
 0x7516e4,__real@3e4ccccd,4,const f32
 0x007516e8 , _NuTimeBarQuarter                                              , 8     , const f64
 0x007516e8 , __real@3fd0000000000000                                        , 8     , const f64
+0x7516f0,??_C@_04OBHEDMPP@?$FL?5?5?$FN?$AA@,5,char []
 0x007516f8 , __real@3fd99999a0000000                                        , 8     , const f64
 0x751700,_PlayerRandomScalePc,8,const f64
 0x00751700 , __real@3ef0001000000000                                        , 8     , const f64
@@ -8148,6 +8153,8 @@ address    , symbol                                                         , si
 0x007533d8 , __real@3f600000                                                , 4     , const f32
 0x007533dc , __real@3fa80000                                                , 4     , const f32
 0x7533e4,??_C@_0BG@HIHHGAPE@imp_thermalDet_attach?$AA@,22,const char[22]
+0x753410,__real@3fc58e21a0000000,8,const f64
+0x753418,__real@3fb3d70a40000000,8,const f64
 0x00753428 , __real@3feb333340000000                                        , 8     , const f64
 0x753430,__real@bfeb333340000000,8,const f64
 0x754390,_PlayerActionNamePc_145,7,const char[7]
@@ -9907,6 +9914,7 @@ address    , symbol                                                         , si
 0x75bf18,??_C@_06LPNLHCHD@R2Q501?$AA@,7,char []
 0x75bf20,??_C@_0BC@CCFOPOCO@drd_r2_scope_down?$AA@,18,const char[18]
 0x75bf34,??_C@_0BA@EFCCJBJD@drd_r2_scope_up?$AA@,16,const char[16]
+0x75bf44,__real@3e851eb8,,
 0x75bf60,_VehicleShieldOnNamePc,10,const char[10]
 0x75bf6c,??_C@_0N@KCDMCLKM@PodX_Booster?$AA@,13,const char[13]
 0x75bf6c,_PodBoosterSoundNamePc,13,const char[13]
@@ -14368,6 +14376,7 @@ address    , symbol                                                         , si
 0x007ef01c , _SUPERBUFFERSIZE                                               , 4     , i32
 0x007ef020 , _CHARACTERBUFFERSIZE                                           , 4     , i32
 0x007ef090 , _StartupDatNames                                               , 28    , const char *[7]
+0x7ef194,_AttractoBackPackCountPos,,
 0x007ef388,_GlobalBoltType,,INIT_BOLT_CONFIG_PC[3]
 0x7f0e98,_VehicleBoltLevelObjectIndexPc,,i16
 0x7f1034,_cable_speed,4,f32
@@ -14560,6 +14569,7 @@ address    , symbol                                                         , si
 0x7f1af0,_VehicleBoltId7f1af0Pc,,i16
 0x7f1af4,_id_MINIATST,,i16
 0x7f1af8,_id_MINIATTE,,i16
+0x7f1afc,_id_MINISLAVE1,,
 0x7f1b00,_VehicleBoltId7f1b00Pc,,i16
 0x7f1b04,_VehicleBoltId7f1b04Pc,,i16
 0x7f1b08,_VehicleBoltId7f1b08Pc,,i16

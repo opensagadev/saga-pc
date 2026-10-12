@@ -36,6 +36,29 @@ void __cdecl AddWaterSplash(GAMEOBJECT *object, NUVEC *position) {
     NewBuzzFrames(object->pad->bound_pad, 1, 0);
 }
 
+void AddSlamDebris(GAMEOBJECT *object) {
+    f32 radius;
+    f32 strength;
+    i32 damage;
+    i32 flags;
+    struct EXPLOSION *explosion;
+    NUVEC position;
+    FindSlamOrigin(object, &position, NULL);
+    radius = 0.6f;
+    strength = 0.3f;
+    damage = 1;
+    flags = 0x17;
+    if ((object->flags_1fc & 0x80) != 0 && Cheat_IsOn(0x16)) {
+        radius = 1.0f;
+        strength = 0.5f;
+        flags = 0x37;
+        damage = 2;
+    }
+    explosion = AddExplosion(&position, radius, strength, object, object->slam_effect, flags);
+    if (explosion != NULL)
+        explosion->field_0x32 = damage;
+}
+
 typedef struct ripple_node_pc_s RIPPLE_NODE_PC;
 struct ripple_set_pc_s {
     u16 capacity, active_count;

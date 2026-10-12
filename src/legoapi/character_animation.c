@@ -225,6 +225,23 @@ static void MoveAnim_Check(GAMEOBJECT *object) {
         object->anim_packet.requested_animation = 3;
 }
 
+static void SelfDestructCode(GAMEOBJECT *object, i32 pressed) {
+    struct EXPLOSION *explosion;
+    if (((i8)(object->flags_1fc)) >= 0 || object->dead != 0 || object->character_context == 0x0b ||
+        object->character_context == 0x16 || object->character_context == 0x2b || pressed == 0)
+        return;
+    InstantKillParts(object, 1, 0.0f);
+    explosion = Detonate(&object->collision_position, 0);
+    if (explosion != NULL && Arcade != 0 && ((u8)(object->field_280)) <= 1) {
+        explosion->field_0x24 |= 0x10000;
+        explosion->object = object;
+    }
+    KillPlayer(object, 2, 1, NULL);
+    if (object->camera_screen_position.z > 0.0f)
+        AddFancyMessage(TTab[tCHEAT_SELFDESTRUCT], object->camera_screen_position.x, object->camera_screen_position.y,
+                        0.25f, 1.0f, 1, 0);
+}
+
 /* Same original motion owner; merge with the genuine static default/Manage helpers. */
 typedef struct CHARACTER_FALL_ANIMATION_READER_PC {
     u8 unknown_000[0xdac];
@@ -369,6 +386,43 @@ void __cdecl Animate_SUPERBATTLEDROID(GAMEOBJECT *object) {
         state->fall_animation_timer += FRAMETIME;
     else
         state->fall_animation_timer = 0.0f;
+}
+
+void PeriscodeCode(GAMEOBJECT *object) {
+    f32 previous;
+    f32 target;
+    if ((object->character_data->model_flags & 0x40) == 0)
+        return;
+
+    previous = object->communicate_blend;
+    target = 0.0f;
+    if (object->field_283 == 9 && object->dead == 0 && WORLD->level_objects[0x19].active != 0) {
+        i32 locator = object->character_data->game_character->thingy_locator;
+        if (locator != -1 && object->character_model->points_of_interest[locator] != NULL &&
+            object->water_height > object->locator_matrices[locator].m31) {
+            if (object->roof_height_pc == 2000000.0f) {
+                target = 1.0f;
+            } else {
+                f32 clearance = object->roof_height_pc - object->water_height;
+                if (!(clearance > 0.0f) || !(clearance < 0.26f))
+                    target = 1.0f;
+            }
+        }
+    }
+    object->communicate_blend = SeekLinearF(previous, target, 5.0f * FRAMETIME);
+    if (previous == 0.0f && object->communicate_blend > 0.0f)
+        PlaySfx("drd_r2_scope_up", &object->upper_position);
+    else if (previous == 1.0f && object->communicate_blend < 1.0f)
+        PlaySfx("drd_r2_scope_down", &object->upper_position);
+
+    if (object->field_db0 > 0.0f) {
+        object->field_db0 -= FRAMETIME;
+        if (!(object->field_db0 <= 0.0f))
+            return;
+        if (object->dead == 0)
+            PlaySfx(((char *)(object->id == id_R2Q5 ? "R2Q501" : "R2D201")), &object->collision_position);
+    }
+    object->field_db0 = qrand() * 1.5259022e-05f * 10.0f + 20.0f;
 }
 
 i32 __cdecl SetProtocolDroidFallAnim(GAMEOBJECT *object);
