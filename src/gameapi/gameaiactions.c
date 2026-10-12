@@ -1219,7 +1219,6 @@ static void GizAction_SetAIState(GIZFLOW_PC *unused0, FLOWBOX_PC *unused1, char 
             (object->flags_1f8 & 0x400) == 0) {
             continue;
         }
-        difference = difference;
         NuVecSub(&difference, &origin, &object->position);
         distance_squared = difference.x * difference.x + difference.y * difference.y + difference.z * difference.z;
         matching_type = type_count == 0;

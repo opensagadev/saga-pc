@@ -4554,7 +4554,6 @@ i32 CheckPosAIArea(AIAREA_s *area, NUVEC *position, float tolerance) {
         return 0;
     }
 
-    local_position = local_position;
     NuVecSub(&local_position, position, &area->position);
     NuVecRotateY(&local_position, &local_position, -area->rotation);
 

@@ -2113,7 +2113,6 @@ void DrawWeapons(GAMEOBJECT *object, i32 reflection, f32 weapon_scale) {
                                 if (model == -1 || !WORLD->level_objects[model].active) {
                                     model = models[part];
                                 }
-                                reflected = reflected;
                                 if (MatrixReflection(matrix, object->field_1087, f0x1020,
                                                      WORLD->current_level->reflection_y, &reflected)) {
                                     NuRndrStartReflectionRender(0);

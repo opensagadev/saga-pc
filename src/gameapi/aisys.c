@@ -9193,7 +9193,6 @@ i32 Action_CreateSplineCreatures(AISYS_PC *system, AISCRIPTPROCESS_PC *processor
             i16 start = -1, end = -1;
             if (WORLD->current_level == PODSPRINTA_LDATA)
                 PodSprint_GetIAlongVals(spline, &start, &end);
-            position = position;
             if (relative_to_player) {
                 GetNearestSplinePos(&player->collision_position, &position, spline, looping, start, end);
                 object->movement_spline_position = position;

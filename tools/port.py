@@ -316,6 +316,10 @@ def hoist_declarations(context, function, data, edits, unresolved):
             assignments = []
             for variable in variables:
                 initializer = [c for c in variable.get_children() if c.kind not in (K.TYPE_REF, K.NAMESPACE_REF)]
+                # C++ default construction (NUVEC v;) shows up as a constructor call spelling the variable.
+                if initializer and initializer[-1].kind == K.CALL_EXPR and initializer[-1].spelling == variable.type.spelling \
+                        and not list(initializer[-1].get_arguments()):
+                    initializer = []
                 if (variable.type.get_canonical().kind in (T.CONSTANTARRAY, T.RECORD) and initializer
                         and initializer[-1].kind == K.INIT_LIST_EXPR or
                         variable.type.get_canonical().kind == T.CONSTANTARRAY and initializer):

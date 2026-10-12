@@ -129,7 +129,6 @@ static void PodRaceSnipersUpdate(void) {
                 f32 distance;
                 NUMTX mtx;
                 s->fire_timer = 0.0f;
-                aim = aim;
                 if (s->state > 0.0f) {
                     GAMEOBJECT *target = player2;
                     if (target == NULL) {
@@ -159,7 +158,6 @@ static void PodRaceSnipersUpdate(void) {
                 temp_yrot = NuAtan2D(direction.x, direction.z);
                 temp_xrot = NuAtan2D(-direction.y, distance);
                 // Retail uses an aligned matrix local in its realigned stack frame.
-                mtx = mtx;
                 NuMtxSetRotationX(&mtx, (u16)temp_xrot);
                 NuMtxRotateY(&mtx, (u16)temp_yrot);
                 Bolt_Add(NULL, &s->prev, &mtx, bolttype, 0);

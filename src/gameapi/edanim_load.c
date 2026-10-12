@@ -378,7 +378,6 @@ static void edanimRender() {
             colour = edanim_nearest_param_id == -1 ? 0xff808080 : 0xffffffff;
         }
 
-        special = special;
         NuGScnGetSpecial(&special, edbits_base_scene, edanim_nearest);
         position = NuSpecialGetPos(&special);
         edbitsDrawCube(position->x, position->y, position->z, 0.5f, 0.5f, 0.5f, 0, 0, 0, 0, 0, colour, edanim_mtl);

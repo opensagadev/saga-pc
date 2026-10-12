@@ -241,7 +241,6 @@ void GizBuildit_Reset(GIZBUILDIT_s *buildit, void *world_ptr) {
             GIZBUILDITANIMDATA_s *data = (GIZBUILDITANIMDATA_s *)(object->object_data);
             memset(data, 0, sizeof(*data));
 
-            evaluated = evaluated;
             EvalAnim(&object->special, object->start_frame, &evaluated, 1);
             data->start_mtx = evaluated;
             if (buildit->linked_buildit != NULL) {

@@ -55,9 +55,7 @@ static void Shop_DrawCharacter(shopitem_s *item, NUVEC *position, f32 scale_valu
         if (!CollectIDUnlocked(character_id))
             alpha = 0.5f;
 
-        scale = scale;
         scale.x = scale.y = scale.z = scale_value;
-        matrix = matrix;
         NuMtxSetScale(&matrix, &scale);
         NuMtxRotateXInline(&matrix, xrot);
         NuMtxRotateYInline(&matrix, yrot);
