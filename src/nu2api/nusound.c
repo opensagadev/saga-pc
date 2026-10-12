@@ -100,29 +100,6 @@ void __cdecl UpdateLevelSfx(WORLDINFO *world, i32 paused) {
     }
 }
 
-void __cdecl GameAudio_PlaySfxById(i32 sfx_id, NUVEC *position, i32 flags, i32 volume) {
-    (void)volume;
-    if (flags == 0) {
-        PlaySfxById(sfx_id, position);
-        return;
-    }
-    if ((flags & ~2) == 1) {
-        nusound_special_positions[1] = *position;
-        PlaySfxById(sfx_id, &nusound_special_positions[1]);
-    }
-    flags -= 2;
-    if ((u32)flags <= 1) {
-        nusound_special_positions[2] = *position;
-        PlaySfxById(sfx_id, &nusound_special_positions[2]);
-    }
-}
-
-void __cdecl GameAudio_PlaySfx(i32 sfx, NUVEC *position, i32 flags, i32 volume) {
-    if ((u32)sfx < 0x54) {
-        GameAudio_PlaySfxById(GameAudio->sfx_ids[sfx], position, flags, volume);
-    }
-}
-
 i32 __cdecl GroupBuffer_MakeGroup(i32 sample_id) {
     i32 group_id = NuSound3GroupCount;
     i32 sample_index;
@@ -684,12 +661,6 @@ void NuSound3CancelCheckStereo(void) {
 
 STATIC_ASSERT(offsetof(GAMEAUDIO_PC, sfx_ids) == 0x158);
 STATIC_ASSERT(sizeof(((GAMEAUDIO_PC *)0)->sfx_ids[0]) == 2);
-
-i32 __cdecl GameAudio_GetSfxId(i32 sfx) {
-    if ((u32)sfx <= 0x53)
-        return GameAudio->sfx_ids[sfx];
-    return -1;
-}
 
 /* Integration fragment: declarations below must precede callback definitions. */
 void __cdecl InitSoundInfo(i32);
