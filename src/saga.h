@@ -801,7 +801,10 @@ struct AISCRIPTPROCESS_PC {
         u8 unknown_a8[8];
         struct {
             struct AILOCATORSET_PC *locator_set;
-            u32 field_ac;
+            union {
+                u32 field_ac;
+                struct nugspline_s *myspline;
+            };
         };
     };
     union {

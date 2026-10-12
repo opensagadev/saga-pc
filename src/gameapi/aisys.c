@@ -9115,8 +9115,8 @@ i32 Action_CreateSplineCreatures(AISYS_PC *system, AISCRIPTPROCESS_PC *processor
             spline_count +=
                 NuSplineFindAllBeg(WORLD->current_gscn, value + 8, &splines[spline_count], 32 - spline_count);
         else if (NuStrIStr(params[i], "spline=myspline") != NULL) {
-            if (processor->field_ac != NULL)
-                splines[spline_count++] = processor->field_ac;
+            if (processor->myspline != NULL)
+                splines[spline_count++] = processor->myspline;
         } else if ((value = NuStrIStr(params[i], (char *)AITransferLiteral757a84)) != NULL) {
             NUGSPLINE *spline = NuSplineFind(WORLD->current_gscn, value + 7);
             if (spline != NULL && spline_count < 32)
