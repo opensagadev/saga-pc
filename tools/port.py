@@ -317,6 +317,15 @@ def hoist_declarations(context, function, data, edits, unresolved):
     def is_reference(variable):
         return variable.type.get_canonical().kind in (T.LVALUEREFERENCE, T.RVALUEREFERENCE)
 
+    def reference_in_place(variable, init):
+        """A declaration that stays in place: T &r = e; becomes T *r = &(e);"""
+        source = data[variable.extent.start.offset:variable.location.offset].decode("latin-1")
+        at = variable.extent.start.offset + source.rfind("&")
+        edits.append((at, at + 1, "*"))
+        if init:
+            edits.append((init[-1].extent.start.offset, init[-1].extent.start.offset, "&("))
+            edits.append((init[-1].extent.end.offset, init[-1].extent.end.offset, ")"))
+
     for compound in [c for c in function.walk_preorder() if c.kind == K.COMPOUND_STMT]:
         children = list(compound.get_children())
         seen_statement, hoisted, names = False, [], {}
@@ -328,14 +337,8 @@ def hoist_declarations(context, function, data, edits, unresolved):
                     if variable.kind == K.VAR_DECL:
                         names[variable.spelling] = variable.type.spelling
                         if is_reference(variable):
-                            # In place at the block start: T &r = e; -> T *r = &(e);
-                            init = [c for c in variable.get_children() if c.kind not in (K.TYPE_REF, K.NAMESPACE_REF)]
-                            source = data[variable.extent.start.offset:variable.location.offset].decode("latin-1")
-                            at = variable.extent.start.offset + source.rfind("&")
-                            edits.append((at, at + 1, "*"))
-                            if init:
-                                edits.append((init[-1].extent.start.offset, init[-1].extent.start.offset, "&("))
-                                edits.append((init[-1].extent.end.offset, init[-1].extent.end.offset, ")"))
+                            reference_in_place(variable, [c for c in variable.get_children()
+                                                          if c.kind not in (K.TYPE_REF, K.NAMESPACE_REF)])
                 continue
             seen_statement = True
             if child.kind == K.DECL_STMT:
@@ -345,8 +348,6 @@ def hoist_declarations(context, function, data, edits, unresolved):
                 if init is not None and init.kind == K.DECL_STMT:
                     targets.append((init, child))
         for statement, owner in targets:
-            if nested is not None and owner is statement:
-                continue  # inside the nested block opened for an aggregate initializer below
             variables = [v for v in statement.get_children() if v.kind == K.VAR_DECL]
             if not variables:
                 continue
@@ -362,15 +363,16 @@ def hoist_declarations(context, function, data, edits, unresolved):
             aggregate = any(v.type.get_canonical().kind in (T.CONSTANTARRAY, T.RECORD) and init
                             and (init[-1].kind == K.INIT_LIST_EXPR or v.type.get_canonical().kind == T.CONSTANTARRAY)
                             for v, init in initialized)
-            if aggregate and owner is statement:
+            if (aggregate or nested is not None) and owner is statement:
                 # C89 only declares at a block start: open a block here that closes with the enclosing one,
-                # so the initializer stays as written.
+                # so the initializer stays as written; later declarations of the same block open their own.
                 if any(v.spelling in names for v in variables):
                     unresolved.append(f"C89 redeclaration of {variables[0].spelling}")
                     continue
-                if any(is_reference(v) for v in variables):
-                    unresolved.append("C++ reference in aggregate declaration")
-                    continue
+                for variable, init in initialized:
+                    names[variable.spelling] = variable.type.spelling
+                    if is_reference(variable):
+                        reference_in_place(variable, init)
                 a = statement.extent.start.offset
                 edits.append((a, a, "{\n"))
                 end = compound.extent.end.offset - 1
