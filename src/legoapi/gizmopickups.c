@@ -275,6 +275,25 @@ void GizPanel_CreateTerrain(GIZPANEL_s *panel) {
     PlatInstRotate(panel->platform_id, 1);
 }
 
+static void GizPanel_SetVisibility(GIZMO_PC *gizmo, i32 visible) {
+    struct GIZPANEL_s *panel;
+    i32 was_visible;
+    if (gizmo == NULL || gizmo->object == NULL) {
+        return;
+    }
+
+    panel = ((GIZPANEL_s *)(gizmo->object));
+    was_visible = panel->visible;
+    panel->visible = visible != 0;
+    if (panel->visible != 0) {
+        if (was_visible == 0) {
+            GizPanel_CreateTerrain(panel);
+        }
+    } else if (was_visible != 0) {
+        DeletePlatinst(panel->platform_id);
+    }
+}
+
 typedef struct SPECIAL_MINIKIT_PC {
     NUSPECIALHANDLE special;
     NUINSTANIM_TIME_VIEW *instance_animation;

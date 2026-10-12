@@ -118,6 +118,12 @@ void DrawShop3D(WORLDINFO *world) {
     SetLevelLights(world->rtl_set, 1.0f);
 }
 
+static void Signal_SetGizmoVisibility(GIZMO_PC *gizmo, i32 visible) {
+    if (gizmo != NULL) {
+        Signal_SetVisibility(((SIGNAL_s *)(gizmo->object)), visible);
+    }
+}
+
 i32 SpeederBlowupHack(GIZMOBLOWUP_PC *blowup, i32 unused1) {
     if (blowup == NULL) {
         return 1;

@@ -48,6 +48,72 @@ void KashyyykA_Reset(WORLDINFO *unused0) {
     KashyyykA_msg_WookiesToRescue = CheckGizAIMessage(gizaimessagesys, "WookiesToRescue", NULL);
 }
 
+i32 Action_BoulderSection(AISYS_PC *system, AISCRIPTPROCESS_PC *processor, AIPACKET_PC *packet, char **params,
+                          i32 param_count, i32 first_time, f32 unused6) {
+    struct gameobject_s *object;
+    u8 can_attack;
+    struct PART_PC *nearest;
+    f32 nearest_distance;
+    NUVEC difference;
+    if (packet == NULL || packet->owner == NULL || packet->owner->objptr == NULL)
+        return 1;
+    object = packet->owner->objptr;
+    if (first_time != 0) {
+        i32 index;
+        processor->action_data_4 = 1.0f;
+        processor->action_data_5 = 1.0f;
+        for (index = 0; index < param_count; ++index) {
+            char *value = NuStrIStr(params[index], "boulder_range=");
+            if (value != NULL) {
+                processor->action_data_4 = AIParamToFloat(&packet->script_processor, value + 14);
+            } else if ((value = NuStrIStr(params[index], "attack_time=")) != NULL) {
+                processor->action_data_5 = AIParamToFloat(&packet->script_processor, value + 12);
+            } else {
+                packet->movement_instruction_parameter = AIParamToFloat(processor, params[index]);
+            }
+        }
+    }
+    can_attack = FreePlay == 0 || CharCategory_IsCategory(object, 0) != 0 || CharCategory_IsCategory(object, 1) != 0 ||
+                 CharCategory_IsCategory(object, 8) != 0;
+    if (!can_attack) {
+        processor->action_timer -= FRAMETIME;
+        if (processor->action_timer < 0.0f) {
+            processor->action_timer = 0.5f;
+            object->pad->buttons_pressed |= GAMEPAD_TOGGLELEFT;
+        }
+    }
+    object->field_ef8 |= GAMEOBJECT_EF8_FLAG_KEEP_WEAPON_OUT;
+    nearest = NULL;
+    nearest_distance = processor->action_data_4 * processor->action_data_4;
+    difference = difference;
+    if (boulder_part[0] != NULL) {
+        const f32 distance = NuVecDistSqr(&object->collision_position, &boulder_part[0]->position, &difference);
+        if (distance < nearest_distance) {
+            nearest = boulder_part[0];
+            nearest_distance = distance;
+        }
+    }
+    if (boulder_part[1] != NULL) {
+        const f32 distance = NuVecDistSqr(&object->collision_position, &boulder_part[1]->position, &difference);
+        if (distance < nearest_distance)
+            nearest = boulder_part[1];
+    }
+    // The retail third probe reads padding past this two-entry array. Do not
+    // reproduce that out-of-bounds access or enlarge the recovered global.
+    if (nearest != NULL) {
+        packet->movement_look_target = &nearest->position;
+        if (can_attack)
+            object->pad->buttons_pressed |= GAMEPAD_ACTION;
+    } else {
+        if (system != NULL && system->player_1 != NULL && system->player_1->ai != NULL) {
+            AIPACKET_PC *player_packet = system->player_1->ai;
+            AIMoveInstruction(packet, &player_packet->last_path_position, player_packet->mover_height,
+                              &player_packet->path_info, 1, packet->movement_instruction_parameter);
+        }
+    }
+    return 0;
+}
+
 void TempleC_AlwaysUpdate(WORLDINFO *unused0) {
     NUVEC position;
     if (LevelFixupSlotPc0087b150 != NULL && Players_AveragePos(&position, NULL) &&

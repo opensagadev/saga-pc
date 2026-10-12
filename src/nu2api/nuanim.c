@@ -85,6 +85,20 @@ f32 __cdecl NuAnimEndFrameOld(void *animation_data) {
     return (f32)((i32)animation->frame_count + (i32)animation->first_frame);
 }
 
+i32 findrange(NUGSCN *scene, i32 first_joint) {
+    // This helper's original C++ ABI names nugscn_s, but animation callers
+    // pass the hierarchy object whose joint table starts at the same offsets.
+    NUHGOBJ_EVAL_PC *object = ((NUHGOBJ_EVAL_PC *)(scene));
+    const i32 joint_count = object->joint_count;
+    NUHGOBJ_EVAL_JOINT_PC *joints = object->joints;
+    const i32 parent_index = joints[first_joint].parent_index;
+    i32 end_joint = first_joint + 1;
+    while (end_joint < joint_count && joints[end_joint].parent_index != parent_index) {
+        ++end_joint;
+    }
+    return end_joint - 1;
+}
+
 f32 __cdecl CalcValue1648(char *data, i32 quarter, i32 stride, f32 fraction, ANI3_SCALEMIN_PC *scale_min) {
     u16 *keys;
     u16 *next;

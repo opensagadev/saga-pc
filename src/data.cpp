@@ -29346,3 +29346,59 @@ extern "C" {
 #pragma bss_seg(".bss$lightning_type")
     i32 lightning_type;
 }
+
+extern "C" {}
+
+extern "C" {
+#pragma bss_seg(".bss$force_array")
+    struct GIZFORCE_s *force_array[4];
+
+#pragma data_seg(".data$sockstep")
+    f32 sockstep = 10.0f;
+
+#pragma data_seg(".data$test_factor")
+    f32 test_factor = 10.0f;
+
+#pragma data_seg(".data$test_seek_rate")
+    f32 test_seek_rate = 0.009999999776482582f;
+
+#pragma data_seg(".data$max_speed_mul")
+    f32 max_speed_mul = 1.2999999523162842f;
+
+#pragma data_seg(".data$min_speed_mul")
+    f32 min_speed_mul = 0.5f;
+
+#pragma data_seg(".data$sebulba_lerpf")
+    f32 sebulba_lerpf = 0.5f;
+
+#pragma bss_seg(".bss$do_mine")
+    i32 do_mine;
+}
+
+extern "C" {}
+
+extern "C" {}
+
+extern "C" {
+#pragma data_seg(".data$gizaimessage_gizmotype_id")
+    i32 gizaimessage_gizmotype_id = -1;
+}
+
+extern "C" {}
+
+extern "C" {}
+
+extern "C" {
+#pragma data_seg(".data$door_gizmotype_id")
+    char door_gizmotype_id = -1;
+}
+
+extern "C" {}
+
+extern "C" {
+#pragma data_seg(".data$bombgen_gizmotype_id")
+    i32 bombgen_gizmotype_id = -1;
+
+#pragma data_seg(".data$fire_clip_dist")
+    i32 fire_clip_dist = 1000;
+}

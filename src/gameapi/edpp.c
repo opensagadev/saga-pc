@@ -237,9 +237,118 @@ void cbPtlCancelQuickDeleteMenu(eduimenu_s *unused0, eduimenu_s *unused1) {
     edptl_quickdel_menu = NULL;
 }
 
+static void cbPtlJibMenu(eduimenu_s *parent, eduiitem_s *unused1, u32 unused2) {
+    if (!(edpp_nearest == -1 || edpp_ptls[edpp_nearest].instance_id == -1)) {
+        const DEBRIS_INFO_PC *effect = debtab[debkeydata[edpp_ptls[edpp_nearest].instance_id].effect_index];
+        const u32 colours[4] = {0x80000000, 0x80ff0000, 0x80808080, 0x80404040};
+        ptljibmenu = eduiMenuCreate(70, 70, 180, 300, ed_fnt, cbPtlCancelJibMenu, "Particle Jibber");
+        if (ptljibmenu == NULL)
+            return;
+
+        eduiMenuAddItem(ptljibmenu, eduiItemSliderCreate(0, colours, 0, cbPtlApplyJib, 0.0f, 32.0f,
+                                                         effect->jib_x_frequency, "Jibber X Freq"));
+        grad_jib_x_freq_item = ((edui_slider_s *)(edui_last_item));
+        eduiMenuAddItem(ptljibmenu, eduiItemSliderCreate(0, colours, 0, cbPtlApplyJib, 0.0f, 1000.0f,
+                                                         effect->jib_x_amplitude, "Jibber X Amp"));
+        grad_jib_x_amp_item = ((edui_slider_s *)(edui_last_item));
+        eduiMenuAddItem(ptljibmenu, eduiItemSliderCreate(0, colours, 0, cbPtlApplyJib, 0.0f, 32.0f,
+                                                         effect->jib_y_frequency, "Jibber Y Freq"));
+        grad_jib_y_freq_item = ((edui_slider_s *)(edui_last_item));
+        eduiMenuAddItem(ptljibmenu, eduiItemSliderCreate(0, colours, 0, cbPtlApplyJib, 0.0f, 1000.0f,
+                                                         effect->jib_y_amplitude, "Jibber Y Amp"));
+        grad_jib_y_amp_item = ((edui_slider_s *)(edui_last_item));
+        eduiMenuAttach(parent, ptljibmenu);
+        ptljibmenu->x = parent->x + 10;
+        ptljibmenu->y = parent->y + 40;
+    }
+}
+
+static void edptlcbBounceMenu(eduimenu_s *parent, eduiitem_s *unused1, u32 unused2) {
+    u32 colours[4] = {0xc479c000, 0xc479c000, 0xc479c000, 0xc479c000};
+    if (!(edpp_nearest == -1 || edpp_ptls[edpp_nearest].instance_id == -1)) {
+        DEBRISKEY_PC *key = &debkeydata[edpp_ptls[edpp_nearest].instance_id];
+        edptl_bounce_menu = eduiMenuCreate(70, 70, 200, 300, ed_fnt, edptlcbCancelBounceMenu, "Particle Bounce");
+        if (edptl_bounce_menu != NULL) {
+            eduiMenuAddItem(edptl_bounce_menu,
+                            eduiItemSliderCreate(0, colours, 0, edptlcbApplyBounceOffset, -10.0f * edptl_superscale,
+                                                 10.0f * edptl_superscale, key->collision_plane, "Plane Offset"));
+            eduiMenuAddItem(edptl_bounce_menu, eduiItemSliderCreate(0, colours, 0, edptlcbApplyBounceFactor, 0.0f, 2.0f,
+                                                                    key->reflection_scale, "Bounce Factor"));
+            eduiMenuAttach(parent, edptl_bounce_menu);
+            edptl_bounce_menu->x = parent->x + 10;
+            edptl_bounce_menu->y = parent->y + 40;
+        }
+    }
+}
+
+static void edptlcbStarMenu(eduimenu_s *parent, eduiitem_s *unused1, u32 unused2) {
+    if (!(edpp_nearest == -1 || edpp_ptls[edpp_nearest].instance_id == -1)) {
+        DEBRIS_INFO_PC *effect = debtab[debkeydata[edpp_ptls[edpp_nearest].instance_id].effect_index];
+        u32 colours[4] = {0xc479c000, 0xc479c000, 0xc479c000, 0xc479c000};
+        edptl_star_menu = eduiMenuCreate(70, 70, 200, 300, ed_fnt, edptlcbCancelStarMenu, "Star Settings");
+        if (edptl_star_menu == NULL)
+            return;
+        eduiMenuAddItem(edptl_star_menu, eduiItemSliderCreateInt(0, colours, 0, edptlcbApplyStarPoints, 3, 17,
+                                                                 ((i8)(effect->radial_segments)), "Number of Points"));
+        eduiMenuAddItem(edptl_star_menu, eduiItemSliderCreate(0, colours, 0, edptlcbApplyStarRatio, 0.1f, 0.8f,
+                                                              effect->radial_floor, "Radius Ratio"));
+        eduiMenuAttach(parent, edptl_star_menu);
+        edptl_star_menu->x = parent->x + 10;
+        edptl_star_menu->y = parent->y + 40;
+    }
+}
+
+static void cbPtlDamageFlagMenu(eduimenu_s *menu, eduiitem_s *unused1, u32 unused2) {
+    struct debris_info_pc_s *effect;
+    if (edpp_nearest == -1 || edpp_ptls[edpp_nearest].instance_id == -1) {
+        return;
+    }
+    effect = debtab[debkeydata[edpp_ptls[edpp_nearest].instance_id].effect_index];
+    edptl_damageflag_menu = eduiMenuCreate(70, 70, 200, 250, ed_fnt, cbPtlCancelDamageFlagMenu, "Damage Flags");
+    if (edptl_damageflag_menu != NULL) {
+        eduiMenuAddItem(edptl_damageflag_menu, eduiItemToggleCreate(1, edblack, effect->collision_flags & 1, 1,
+                                                                    cbPtlChangeDamageFlags, "Good"));
+        eduiMenuAddItem(edptl_damageflag_menu, eduiItemToggleCreate(2, edblack, (effect->collision_flags >> 1) & 1, 2,
+                                                                    cbPtlChangeDamageFlags, "Evil"));
+    }
+    eduiMenuAttach(menu, edptl_damageflag_menu);
+    edptl_damageflag_menu->x = menu->x + 10;
+    edptl_damageflag_menu->y = menu->y + 40;
+}
+
 void cbPtlCancelDamageMenu(eduimenu_s *unused0, eduimenu_s *unused1) {
     eduiMenuDestroy(edptl_damage_menu);
     edptl_damage_menu = NULL;
+}
+
+static void cbPtlCutOffMenu(eduimenu_s *parent, eduiitem_s *unused1, u32 unused2) {
+    struct debris_info_pc_s *effect;
+    if (edpp_nearest == -1 || edpp_ptls[edpp_nearest].instance_id == -1)
+        return;
+
+    effect = debtab[debkeydata[edpp_ptls[edpp_nearest].instance_id].effect_index];
+    ptlcutoffmenu = eduiMenuCreate(70, 70, 250, 200, ed_fnt, cbPtlCancelCutOffMenu, "Repeat / Radii");
+    if (ptlcutoffmenu == NULL)
+        return;
+    eduiMenuAddItem(ptlcutoffmenu, eduiItemToggleCreate(0, edblack, effect->use_explicit_clip_box != 0, 1,
+                                                        cbPtlChangeRepeatFlag, "Repeat"));
+    eduiMenuAddItem(ptlcutoffmenu, eduiItemSelCreate(1, edblack, 0, 0, cbPtlRepeatBoxMenu, "Repeat Box..."));
+    eduiMenuAddItem(ptlcutoffmenu, eduiItemSliderCreate(0, edblack, 0, cbPtlChangeCutOff, 0.0f,
+                                                        25.0f * edptl_superscale, effect->clip_extent, "CutOff Rad"));
+    eduiMenuAddItem(ptlcutoffmenu, eduiItemSliderCreate(0, edblack, 0, cbPtlChangeCutOn, 0.0f, 25.0f * edptl_superscale,
+                                                        effect->cut_on, "CutOn Rad"));
+    eduiMenuAddItem(ptlcutoffmenu,
+                    eduiItemSliderCreate(0, edblack, 0, cbPtlChangeDrawCutOff, 0.0f, 25.0f * edptl_superscale,
+                                         effect->sound_range, "DrawCutOff Rad"));
+    eduiMenuAddItem(ptlcutoffmenu,
+                    eduiItemSliderCreate(0, edblack, 0, cbPtlChangeSoundCutOff, 0.0f, 25.0f * edptl_superscale,
+                                         effect->sound_range_override, "SoundCutOff Rad"));
+    eduiMenuAddItem(ptlcutoffmenu,
+                    eduiItemSliderCreate(0, edblack, 0, cbPtlChangeCameraCutOff, 0.0f, 5.0f * edptl_superscale,
+                                         effect->field_044, "CameraCutOff Rad"));
+    eduiMenuAttach(parent, ptlcutoffmenu);
+    ptlcutoffmenu->x = parent->x + 10;
+    ptlcutoffmenu->y = parent->y + 40;
 }
 
 void cbPtlSelType(eduimenu_s *menu, eduiitem_s *item, u32 unused2) {

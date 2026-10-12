@@ -842,6 +842,38 @@ extern "C" {
 }
 
 extern "C" {
+    static i32 Action_EatVictim(AISYS_PC *sys, AISCRIPTPROCESS_PC *processor, AIPACKET_PC *packet, char **params,
+                                i32 param_4, i32 param_5, f32 param_6) {
+        (void)sys;
+        (void)processor;
+        (void)params;
+        (void)param_4;
+        (void)param_5;
+        (void)param_6;
+        if (packet != NULL && packet->owner != NULL && packet->owner->objptr != NULL) {
+            EatVictim(packet->owner->objptr);
+        }
+        return 1;
+    }
+}
+
+extern "C" {
+    static i32 Action_ReleaseVictim(AISYS_PC *sys, AISCRIPTPROCESS_PC *processor, AIPACKET_PC *packet, char **params,
+                                    i32 param_4, i32 param_5, f32 param_6) {
+        (void)sys;
+        (void)processor;
+        (void)params;
+        (void)param_4;
+        (void)param_5;
+        (void)param_6;
+        if (packet != NULL && packet->owner != NULL && packet->owner->objptr != NULL) {
+            ReleaseEat(packet->owner->objptr);
+        }
+        return 1;
+    }
+}
+
+extern "C" {
     u32 __cdecl AIPathParseBatmanFlagPc(char *name) {
         if (NuStrICmp(name, "JUMP") == 0)
             return 1;
@@ -1282,4 +1314,23 @@ extern "C" {
         }
         return 0;
     }
+}
+
+extern "C" i32 Action_ReleaseLocator(AISYS_PC *sys, AISCRIPTPROCESS_PC *, AIPACKET_PC *packet, char **params,
+                                     i32 param_count, i32 first_time, float) {
+    if (first_time == 0) {
+        return 1;
+    }
+
+    GAMEOBJECT *object = packet != NULL && packet->owner != NULL ? packet->owner->objptr : NULL;
+    for (i32 index = 0; index < param_count; ++index) {
+        char *value = NuStrIStr(params[index], "character=");
+        if (value != NULL) {
+            object = GetNamedGameObject(sys, value + sizeof("character=") - 1);
+        }
+    }
+    if (object != NULL) {
+        object->ai_packet.locator = NULL;
+    }
+    return 1;
 }

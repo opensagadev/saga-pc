@@ -136,6 +136,39 @@ void cbPtlSetFacing(eduimenu_s *unused0, eduiitem_s *item, u32 unused2) {
     }
 }
 
+static void cbPtlTextureMenu(eduimenu_s *menu, eduiitem_s *unused1, u32 unused2) {
+    u32 colours[4] = {0x80000000, 0x80ff0000, 0x80808080, 0x80404040};
+    if (!(edpp_nearest == -1 || edpp_ptls[edpp_nearest].instance_id == -1)) {
+        DEBRIS_INFO_PC *effect = debtab[debkeydata[edpp_ptls[edpp_nearest].instance_id].effect_index];
+        texturemenu = eduiMenuCreate(70, 70, 180, 300, ed_fnt, cbPtlCancelTextureMenu, "Texture");
+        if (texturemenu) {
+            eduiMenuAddItem(texturemenu, eduiItemCheckCreate(0, colours, effect->particle_type == 0, 1,
+                                                             cbPtlSelTextureType, "Addative"));
+            eduiMenuAddItem(texturemenu, eduiItemCheckCreate(2, colours, effect->particle_type == 2, 1,
+                                                             cbPtlSelTextureType, "Modulative"));
+            eduiMenuAddItem(texturemenu, eduiItemCheckCreate(3, colours, effect->particle_type == 3, 1,
+                                                             cbPtlSelTextureType, "Subtractive"));
+            if (!(effect->generator_type == 0 || effect->generator_type == 8)) {
+                eduiMenuAddItem(texturemenu, eduiItemSelCreate(7, edgrey, 0, 0, NULL, "Glass"));
+            } else {
+                eduiMenuAddItem(texturemenu, eduiItemCheckCreate(7, colours, effect->particle_type == 7, 1,
+                                                                 cbPtlSelTextureType, "Glass"));
+            }
+            if (effect->particle_type != 7) {
+                eduiMenuAddItem(texturemenu,
+                                eduiItemSelCreate(1, colours, 0, 0, cbPtlTextureSelectMenu, "Texture Selector..."));
+            } else {
+                eduiMenuAddItem(texturemenu, eduiItemSelCreate(1, edgrey, 0, 0, NULL, "Texture Selector..."));
+            }
+            eduiMenuAddItem(texturemenu, eduiItemToggleCreate(0, edblack, ((i8)(effect->camera_facing)), 2,
+                                                              cbPtlSetXZFacing, "Default to XZ Plane"));
+            eduiMenuAttach(menu, texturemenu);
+            texturemenu->x = menu->x + 10;
+            texturemenu->y = menu->y + 40;
+        }
+    }
+}
+
 static void cbPtlQuickDeleteMenu(eduimenu_s *menu, eduiitem_s *unused1, u32 unused2) {
     edptl_quickdel_menu = eduiMenuCreate(70, 70, 180, 250, ed_fnt, cbPtlCancelQuickDeleteMenu, "Quick Delete");
     if (edptl_quickdel_menu) {

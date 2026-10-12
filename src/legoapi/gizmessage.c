@@ -102,3 +102,42 @@ GIZAIMESSAGE *QueryGizAIMessage(GIZAIMESSAGESYS *sys, GIZAIMESSAGE *message) {
 char *GizAIMessage_GetName(GIZAIMESSAGE *message) {
     return message != NULL ? message->name : NULL;
 }
+
+ADDGIZMOTYPE_PC *GizAIMessage_RegisterGizmo(i32 type_id) {
+    static ADDGIZMOTYPE_PC addtype;
+
+    addtype = Default_ADDGIZMOTYPE;
+    addtype.name = "Message";
+    addtype.prefix = gizaimessage_prefix;
+    addtype.fns.options = 0;
+    addtype.fns.get_max_gizmos_fn = GizAIMessage_GetMaxGizmos;
+    addtype.fns.add_gizmos_fn = GizAIMessage_AddGizmos;
+    addtype.fns.early_update_fn = NULL;
+    addtype.fns.late_update_fn = NULL;
+    addtype.fns.draw_fn = NULL;
+    addtype.fns.panel_draw_fn = NULL;
+    addtype.fns.get_gizmo_name_fn = GizAIMessage_GetGizmoName;
+    addtype.fns.get_output_fn = GizAIMessage_GetOutput;
+    addtype.fns.get_output_name_fn = GizAIMessage_GetOutputName;
+    addtype.fns.get_num_outputs_fn = GizAIMessage_GetNumOutputs;
+    addtype.fns.activate_fn = NULL;
+    addtype.fns.activate_rev_fn = NULL;
+    addtype.fns.set_visibility_fn = NULL;
+    addtype.fns.get_visibility_fn = NULL;
+    addtype.fns.get_pos_fn = NULL;
+    addtype.fns.using_special_fn = NULL;
+    addtype.fns.bolt_hit_plat_fn = NULL;
+    addtype.fns.get_best_bolt_target_fn = NULL;
+    addtype.fns.bolt_hit_fn = NULL;
+    addtype.fns.allocate_progress_data_fn = NULL;
+    addtype.fns.clear_progress_fn = NULL;
+    addtype.fns.store_progress_fn = NULL;
+    addtype.fns.reset_fn = NULL;
+    addtype.fns.reserve_buffer_space_fn = NULL;
+    addtype.fns.load_fn = NULL;
+    addtype.fns.post_load_fn = NULL;
+    addtype.fns.add_level_sfx_fn = NULL;
+    gizaimessage_gizmotype_id = type_id;
+
+    return &addtype;
+}

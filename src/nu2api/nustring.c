@@ -288,6 +288,17 @@ i32 __cdecl NuStrNCmp(const char *a, const char *b, i32 n) {
     return 0;
 }
 
+i32 NuStrLenW(const NUWCHAR *str) {
+    i32 count = 0;
+
+    while (*str != 0) {
+        count++;
+        str++;
+    }
+
+    return count;
+}
+
 i32 __cdecl NuStrICmp(const char *a, const char *b) {
     char a_cursor;
     char b_cursor;
@@ -491,6 +502,20 @@ i32 __cdecl NuHexStringToI(char *string) {
         }
     }
     return value;
+}
+
+i32 NuSPrintfW(NUWCHAR *dest, NUWCHAR *format, ...) {
+    // The original initializes this local but never reads it.
+    i32 length = 0;
+    va_list args;
+    char ascii_format[256];
+    char text[256];
+    NuUnicodeToAscii(ascii_format, format);
+    va_start(args, format);
+    vsprintf(text, ascii_format, args);
+    va_end(args);
+    NuAsciiToUnicode(dest, text);
+    return NuStrLenW(dest);
 }
 
 u8 *__cdecl NuUnicodeCharFromUTF8(u16 *dst, u8 *src) {

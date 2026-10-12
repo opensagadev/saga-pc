@@ -21012,7 +21012,7 @@ struct GIZFORCE_s {
                 struct {
                     u8 progress_enabled : 1;
                     u8 progress_visible : 1;
-                    u8  : 2;
+                    u8 : 2;
                     u8 progress_reverse_active : 1;
                     u8 progress_group_member : 1;
                     u8 progress_animation_reversed : 1;
@@ -21038,9 +21038,9 @@ struct GIZFORCE_s {
                 struct {
                     u8 state_destroyed_or_thrown : 1;
                     u8 state_debris_active : 1;
-                    u8  : 3;
+                    u8 : 3;
                     u8 state_being_used : 1;
-                    u8  : 2;
+                    u8 : 2;
                 };
             };
             u8 field_0xab;
@@ -21169,7 +21169,7 @@ struct ATTRACTO_s {
                     u8 visible : 1;
                     u8 filled : 1;
                     u8 drawn : 1;
-                    u8  : 4;
+                    u8 : 4;
                 };
             };
             u8 reserved_63;
@@ -21494,7 +21494,7 @@ struct storepack_s {
     };
     u8 field7_0xa;
     u8 field8_0xb;
-    void (__cdecl *unlock_fn)(void);
+    void(__cdecl *unlock_fn)(void);
     char *floor_target_door_name;
     char *custodian_locator_set;
     f32 offset_floor_target;
@@ -21858,10 +21858,10 @@ struct HINT_s {
     f32 display_duration;
     f32 repeat_delay;
     union {
-        i32 (__cdecl *availability_fn)(struct HINT_s *arg0);
+        i32(__cdecl *availability_fn)(struct HINT_s *arg0);
         u8 pad_0x14[4];
     };
-    void (__cdecl *on_display)(struct HINT_s *arg0);
+    void(__cdecl *on_display)(struct HINT_s *arg0);
     u8 completion_flags[4];
     f32 field_0x20;
 };
@@ -22018,10 +22018,10 @@ STATIC_ASSERT(sizeof(struct ZIPUP_s) == 124);
 
 struct STATUSPACKET_s {
     struct STATUSPACKET_LSW_s *lsw_packet;
-    i32 (__cdecl *init_callback)(struct WORLDINFO_s *arg0, struct STATUSPACKET_s *arg1);
-    i32 (__cdecl *finish_callback)(struct WORLDINFO_s *arg0, struct STATUSPACKET_s *arg1, i32 arg2);
-    void (__cdecl *reset_callback)(struct STATUSPACKET_s *arg0);
-    void (__cdecl *draw_background_callback)(struct STATUSPACKET_s *arg0);
+    i32(__cdecl *init_callback)(struct WORLDINFO_s *arg0, struct STATUSPACKET_s *arg1);
+    i32(__cdecl *finish_callback)(struct WORLDINFO_s *arg0, struct STATUSPACKET_s *arg1, i32 arg2);
+    void(__cdecl *reset_callback)(struct STATUSPACKET_s *arg0);
+    void(__cdecl *draw_background_callback)(struct STATUSPACKET_s *arg0);
     struct area_data_pc_s *area;
     struct episode_data_pc_s *episode;
     u32 *score;
@@ -22075,7 +22075,7 @@ struct STATUSPACKET_s {
     union {
         u8 field_0xb0;
         struct {
-            u8  : 2;
+            u8 : 2;
             u8 true_hero_complete : 1;
             u8 next_area_unlocked : 1;
             u8 new_minikit_complete : 1;
@@ -22092,7 +22092,7 @@ struct STATUSPACKET_s {
             u8 super_story_mode : 1;
             u8 saved_and_exited : 1;
             u8 continue_story : 1;
-            u8  : 3;
+            u8 : 3;
         };
     };
     u8 status_flags;
@@ -22123,9 +22123,9 @@ struct STATUSPACKET_s {
 STATIC_ASSERT(sizeof(struct STATUSPACKET_s) == 332);
 
 struct STATUS_STAGE_s {
-    void (__cdecl *draw_callback)(struct STATUS_STAGE_s *arg0, struct STATUSPACKET_s *arg1, i32 arg2);
-    void (__cdecl *update_callback)(struct STATUS_STAGE_s *arg0, struct STATUSPACKET_s *arg1, f32 arg2);
-    void (__cdecl *skip_callback)(struct STATUS_STAGE_s *arg0, struct STATUSPACKET_s *arg1);
+    void(__cdecl *draw_callback)(struct STATUS_STAGE_s *arg0, struct STATUSPACKET_s *arg1, i32 arg2);
+    void(__cdecl *update_callback)(struct STATUS_STAGE_s *arg0, struct STATUSPACKET_s *arg1, f32 arg2);
+    void(__cdecl *skip_callback)(struct STATUS_STAGE_s *arg0, struct STATUSPACKET_s *arg1);
     i32 type;
     u16 field_0x10;
     u8 field_0x12;
@@ -22243,7 +22243,7 @@ struct GIZTURRET_s {
     union {
         u8 flags;
         struct {
-            u8  : 1;
+            u8 : 1;
             u8 active : 1;
             u8 visible : 1;
             u8 aim_locked : 1;
@@ -22256,9 +22256,9 @@ struct GIZTURRET_s {
     union {
         u8 runtime_flags;
         struct {
-            u8  : 3;
+            u8 : 3;
             u8 rotation_sound_playing : 1;
-            u8  : 4;
+            u8 : 4;
         };
     };
     struct MechObjectInterface *mech_object_interface;
@@ -22326,7 +22326,7 @@ struct GIZFORCEANIMDATA_s {
         u32 field_0x04;
         struct {
             u32 force_glow_active : 1;
-            u32  : 31;
+            u32 : 31;
         };
     };
 };
@@ -22485,7 +22485,7 @@ struct LEDGE_s {
         struct {
             u8 active : 1;
             u8 visible : 1;
-            u8  : 6;
+            u8 : 6;
         };
     };
     u8 type_index;
@@ -23167,10 +23167,10 @@ struct eduiitem_s {
     i32 y;
     char *text;
     u32 colours[4];
-    i32 (__cdecl *input)(struct eduimenu_s *arg0, struct eduiitem_s *arg1, u32 arg2, u32 arg3);
-    i32 (__cdecl *process)(struct eduimenu_s *arg0, struct eduiitem_s *arg1, f32 arg2, struct FRAME_PAD_PC *arg3);
-    i32 (__cdecl *render)(struct eduimenu_s *arg0, struct eduiitem_s *arg1, i32 arg2, i32 arg3, i32 arg4, i32 arg5);
-    void (__cdecl *destroy)(struct eduimenu_s *arg0, struct eduiitem_s *arg1);
+    i32(__cdecl *input)(struct eduimenu_s *arg0, struct eduiitem_s *arg1, u32 arg2, u32 arg3);
+    i32(__cdecl *process)(struct eduimenu_s *arg0, struct eduiitem_s *arg1, f32 arg2, struct FRAME_PAD_PC *arg3);
+    i32(__cdecl *render)(struct eduimenu_s *arg0, struct eduiitem_s *arg1, i32 arg2, i32 arg3, i32 arg4, i32 arg5);
+    void(__cdecl *destroy)(struct eduimenu_s *arg0, struct eduiitem_s *arg1);
 };
 STATIC_ASSERT(sizeof(struct eduiitem_s) == 72);
 
@@ -23187,7 +23187,7 @@ struct eduimenu_s {
     i32 field_24;
     i32 field_28;
     void *font;
-    void (__cdecl *callback)(struct eduimenu_s *arg0, struct eduimenu_s *arg1);
+    void(__cdecl *callback)(struct eduimenu_s *arg0, struct eduimenu_s *arg1);
     char *title;
     u32 flags : 3;
     u32 unknown_flags : 29;
@@ -23227,14 +23227,14 @@ STATIC_ASSERT(sizeof(struct EDAIPATHCHECK_s) == 28);
 
 struct edui_textpicker_s {
     struct eduiitem_s base;
-    i32 (__cdecl *interact)(struct edui_interact_s *arg0);
+    i32(__cdecl *interact)(struct edui_interact_s *arg0);
     char value[256];
     i32 keyboard_column;
     i32 keyboard_row;
     i32 cursor;
     i16 editing;
     i16 max_length;
-    void (__cdecl *callback)(struct eduimenu_s *arg0, struct eduiitem_s *arg1, u32 arg2);
+    void(__cdecl *callback)(struct eduimenu_s *arg0, struct eduiitem_s *arg1, u32 arg2);
     char *format;
     u32 keyboard_flags;
 };
@@ -23580,25 +23580,25 @@ STATIC_ASSERT(sizeof(struct edui_gradient_node_s) == 32);
 
 struct edui_gradient_pick_s {
     struct eduiitem_s base;
-    i32 (__cdecl *interact)(struct edui_interact_s *arg0);
+    i32(__cdecl *interact)(struct edui_interact_s *arg0);
     struct edui_gradient_node_s *first_stage;
     struct edui_gradient_node_s *selected_stage;
-    void (__cdecl *changed)(struct eduimenu_s *arg0, struct eduiitem_s *arg1, u32 arg2);
-    void (__cdecl *press)(struct eduimenu_s *arg0, struct eduiitem_s *arg1, u32 arg2);
-    void (__cdecl *add)(struct eduimenu_s *arg0, struct eduiitem_s *arg1, u32 arg2);
-    void (__cdecl *remove)(struct eduimenu_s *arg0, struct eduiitem_s *arg1, u32 arg2);
-    void (__cdecl *copy)(struct eduimenu_s *arg0, struct eduiitem_s *arg1, u32 arg2);
-    void (__cdecl *paste)(struct eduimenu_s *arg0, struct eduiitem_s *arg1, u32 arg2);
+    void(__cdecl *changed)(struct eduimenu_s *arg0, struct eduiitem_s *arg1, u32 arg2);
+    void(__cdecl *press)(struct eduimenu_s *arg0, struct eduiitem_s *arg1, u32 arg2);
+    void(__cdecl *add)(struct eduimenu_s *arg0, struct eduiitem_s *arg1, u32 arg2);
+    void(__cdecl *remove)(struct eduimenu_s *arg0, struct eduiitem_s *arg1, u32 arg2);
+    void(__cdecl *copy)(struct eduimenu_s *arg0, struct eduiitem_s *arg1, u32 arg2);
+    void(__cdecl *paste)(struct eduimenu_s *arg0, struct eduiitem_s *arg1, u32 arg2);
     i32 change_timer;
 };
 STATIC_ASSERT(sizeof(struct edui_gradient_pick_s) == 112);
 
 struct edui_texture_pick_s {
     struct eduiitem_s base;
-    i32 (__cdecl *interact)(struct edui_interact_s *arg0);
+    i32(__cdecl *interact)(struct edui_interact_s *arg0);
     f32 uv_x[2];
     f32 uv_y[2];
-    void (__cdecl *changed)(struct eduimenu_s *arg0, struct eduiitem_s *arg1, u32 arg2);
+    void(__cdecl *changed)(struct eduimenu_s *arg0, struct eduiitem_s *arg1, u32 arg2);
     struct PC_SCENE_MTL_VIEW *material;
     i32 selected_corner;
     f32 zoom;
@@ -23607,10 +23607,10 @@ STATIC_ASSERT(sizeof(struct edui_texture_pick_s) == 108);
 
 struct edui_graph_s {
     struct eduiitem_s base;
-    i32 (__cdecl *interact)(struct edui_interact_s *arg0);
+    i32(__cdecl *interact)(struct edui_interact_s *arg0);
     struct nugraph_s *graph;
     struct nugraph_s *onion_skins[8];
-    void (__cdecl *changed)(struct eduimenu_s *arg0, struct eduiitem_s *arg1, u32 arg2);
+    void(__cdecl *changed)(struct eduimenu_s *arg0, struct eduiitem_s *arg1, u32 arg2);
     f32 cursor_x;
     f32 cursor_y;
     i32 width;
@@ -23626,8 +23626,8 @@ STATIC_ASSERT(sizeof(struct edui_graph_s) == 192);
 
 struct edui_slider_s {
     struct eduiitem_s base;
-    i32 (__cdecl *interact)(struct edui_interact_s *arg0);
-    void (__cdecl *changed)(struct eduimenu_s *arg0, struct eduiitem_s *arg1, u32 arg2);
+    i32(__cdecl *interact)(struct edui_interact_s *arg0);
+    void(__cdecl *changed)(struct eduimenu_s *arg0, struct eduiitem_s *arg1, u32 arg2);
     f32 normalized_value;
     f32 value;
     f32 minimum;
@@ -23682,7 +23682,7 @@ STATIC_ASSERT(sizeof(struct edcam_s) == 148);
 
 struct edui_prop_s {
     struct eduiitem_s base;
-    i32 (__cdecl *interact)(struct edui_interact_s *arg0);
+    i32(__cdecl *interact)(struct edui_interact_s *arg0);
     u16 unknown_property_flags : 6;
     u16 button_type : 3;
     u16 remaining_property_flags : 7;
@@ -23694,9 +23694,9 @@ struct edui_prop_s {
     char *property_text;
     u8 unknown_68[4];
     i32 depth;
-    void (__cdecl *selected)(struct eduimenu_s *arg0, struct eduiitem_s *arg1, u32 arg2);
-    void (__cdecl *button)(struct eduimenu_s *arg0, struct eduiitem_s *arg1, u32 arg2);
-    void (__cdecl *changed)(struct eduimenu_s *arg0, struct eduiitem_s *arg1, u32 arg2);
+    void(__cdecl *selected)(struct eduimenu_s *arg0, struct eduiitem_s *arg1, u32 arg2);
+    void(__cdecl *button)(struct eduimenu_s *arg0, struct eduiitem_s *arg1, u32 arg2);
+    void(__cdecl *changed)(struct eduimenu_s *arg0, struct eduiitem_s *arg1, u32 arg2);
     i32 extra_data;
 };
 STATIC_ASSERT(sizeof(struct edui_prop_s) == 128);
@@ -23708,7 +23708,7 @@ struct edui_interact_s {
     f32 height;
     struct eduimenu_s *menu;
     struct eduiitem_s *item;
-    i32 (__cdecl *callback)(struct edui_interact_s *arg0);
+    i32(__cdecl *callback)(struct edui_interact_s *arg0);
     u32 buttons;
     i32 field_20;
 };
@@ -23716,9 +23716,9 @@ STATIC_ASSERT(sizeof(struct edui_interact_s) == 36);
 
 struct edui_sel_s {
     struct eduiitem_s base;
-    i32 (__cdecl *interact)(struct edui_interact_s *arg0);
-    void (__cdecl *selected)(struct eduimenu_s *arg0, struct eduiitem_s *arg1, u32 arg2);
-    void (__cdecl *held)(struct eduimenu_s *arg0, struct eduiitem_s *arg1, u32 arg2);
+    i32(__cdecl *interact)(struct edui_interact_s *arg0);
+    void(__cdecl *selected)(struct eduimenu_s *arg0, struct eduiitem_s *arg1, u32 arg2);
+    void(__cdecl *held)(struct eduimenu_s *arg0, struct eduiitem_s *arg1, u32 arg2);
 };
 STATIC_ASSERT(sizeof(struct edui_sel_s) == 84);
 
@@ -23733,21 +23733,21 @@ STATIC_ASSERT(sizeof(struct edui_colour_slider_s) == 112);
 
 struct edui_file_pick_s {
     struct eduiitem_s base;
-    i32 (__cdecl *interact)(struct edui_interact_s *arg0);
-    void (__cdecl *changed)(struct eduimenu_s *arg0, struct eduiitem_s *arg1, u32 arg2);
+    i32(__cdecl *interact)(struct edui_interact_s *arg0);
+    void(__cdecl *changed)(struct eduimenu_s *arg0, struct eduiitem_s *arg1, u32 arg2);
     char *format;
     u16 reserved_54;
     u16 reopen_directory;
     char name[64];
     char directory[256];
     char filename[264];
-    i32 (__cdecl *compare_entries)(void *arg0, void *arg1);
+    i32(__cdecl *compare_entries)(void *arg0, void *arg1);
 };
 STATIC_ASSERT(sizeof(struct edui_file_pick_s) == 676);
 
 struct edui_colour_pick_s {
     struct eduiitem_s base;
-    i32 (__cdecl *interact)(struct edui_interact_s *arg0);
+    i32(__cdecl *interact)(struct edui_interact_s *arg0);
     f32 cursor_x;
     f32 cursor_y;
     f32 hue;
@@ -23766,7 +23766,7 @@ struct edui_colour_pick_s {
         };
     };
     u8 unknown_6d[3];
-    void (__cdecl *changed)(struct eduimenu_s *arg0, struct eduiitem_s *arg1, u32 arg2);
+    void(__cdecl *changed)(struct eduimenu_s *arg0, struct eduiitem_s *arg1, u32 arg2);
 };
 STATIC_ASSERT(sizeof(struct edui_colour_pick_s) == 116);
 
@@ -23774,16 +23774,16 @@ struct ed_module_s {
     struct ed_module_s *next;
     struct ed_module_s *previous;
     char *name;
-    void (__cdecl *init)(void);
-    void (__cdecl *close)(void);
-    void (__cdecl *activate)(void);
-    void (__cdecl *deactivate)(void);
-    void (__cdecl *apply)(void);
-    void (__cdecl *write)(i32 arg0);
-    void (__cdecl *read)(i32 arg0);
+    void(__cdecl *init)(void);
+    void(__cdecl *close)(void);
+    void(__cdecl *activate)(void);
+    void(__cdecl *deactivate)(void);
+    void(__cdecl *apply)(void);
+    void(__cdecl *write)(i32 arg0);
+    void(__cdecl *read)(i32 arg0);
     u32 block_id;
-    i32 (__cdecl *process)(f32 arg0, struct FRAME_PAD_PC *arg1);
-    void (__cdecl *render)(void);
+    i32(__cdecl *process)(f32 arg0, struct FRAME_PAD_PC *arg1);
+    void(__cdecl *render)(void);
     void *reserved;
 };
 STATIC_ASSERT(sizeof(struct ed_module_s) == 56);
@@ -24357,22 +24357,22 @@ extern "C" {
     f32 __cdecl NuFmin(f32 a, f32 b);
     void __cdecl GizBuildIt_TurnOff(struct GIZBUILDIT_s *buildit);
     void __cdecl GizAIMessage_AddGizmos(struct GIZMOSYS_s *gizmo_sys, i32 arg1, void *arg2, void *arg3);
-    char *__cdecl GizAIMessage_GetGizmoName(void *gizmo);
+    char *__cdecl GizAIMessage_GetGizmoName(GIZMO_PC *gizmo);
     i32 __cdecl GizAIMessage_GetMaxGizmos(void *arg0);
     i32 __cdecl GizAIMessage_GetNumOutputs(void *gizmo);
-    i32 __cdecl GizAIMessage_GetOutput(void *gizmo, i32 output_index, i32 arg2);
-    char *__cdecl GizAIMessage_GetOutputName(void *gizmo, i32 output_index);
+    i32 __cdecl GizAIMessage_GetOutput(GIZMO_PC *gizmo, i32 output_index, i32 arg2);
+    char *__cdecl GizAIMessage_GetOutputName(GIZMO_PC *gizmo, i32 output_index);
     extern i32 gizaimessage_gizmotype_id;
     extern f32 ICONSIZE;
     void __cdecl PlayRadio(char *arg0, char *arg1, i32 arg2);
     void __cdecl RegisterGizActions(void *definitions);
-    void __cdecl GizRandom_Activate(void *gizmo, i32 active);
+    void __cdecl GizRandom_Activate(GIZMO_PC *gizmo, i32 active);
     void __cdecl GizRandom_AddGizmos(struct GIZMOSYS_s *gizmo_sys, i32 type_id, void *world_ptr, void *arg3);
-    char *__cdecl GizRandom_GetGizmoName(void *gizmo);
+    char *__cdecl GizRandom_GetGizmoName(GIZMO_PC *gizmo);
     i32 __cdecl GizRandom_GetMaxGizmos(void *world_ptr);
     i32 __cdecl GizRandom_GetNumOutputs(void *gizmo);
-    i32 __cdecl GizRandom_GetOutput(void *gizmo, i32 output_index, i32 arg2);
-    char *__cdecl GizRandom_GetOutputName(void *arg0, i32 arg1);
+    i32 __cdecl GizRandom_GetOutput(GIZMO_PC *gizmo, i32 output_index, i32 arg2);
+    char *__cdecl GizRandom_GetOutputName(GIZMO_PC *arg0, i32 arg1);
     void *__cdecl GizRandom_ReserveBufferSpace(void *world_ptr);
     i32 __cdecl GizSpinner_GetTargetPoints(struct GIZSPINNER_s *spinner, struct nuvec_s *positions,
                                            struct nuvec_s *directions);
@@ -24711,7 +24711,7 @@ extern "C" {
     i32 __cdecl GizPanel_GetOutput(void *gizmo, i32 arg1, i32 arg2);
     char *__cdecl GizPanel_GetOutputName(void *arg0, i32 output_index);
     i32 __cdecl GizPanel_Load(void *world_ptr, void *arg1);
-    void __cdecl GizPanel_SetVisibility(void *gizmo, i32 visible);
+    void __cdecl GizPanel_SetVisibility(GIZMO_PC *gizmo, i32 visible);
     void __cdecl GizPanel_Update(void *world_ptr, void *arg1, f32 delta_time);
     void *__cdecl GizPanels_AllocateProgressData(void *buffer, void *buffer_end);
     void __cdecl GizPanels_ClearProgress(void *arg0, void *progress_data);
@@ -24727,13 +24727,13 @@ extern "C" {
     extern i16 id_MINIXWING;
     void __cdecl edbriDoInput(struct FRAME_PAD_PC *pad);
     extern struct eduimenu_s *edbri_active_menu;
-    void __cdecl Door_Activate(void *gizmo, i32 value);
+    void __cdecl Door_Activate(GIZMO_PC *gizmo, i32 value);
     void __cdecl Door_AddGizmos(struct GIZMOSYS_s *gizmo_sys, i32 type_id, void *world_ptr, void *arg3);
-    char *__cdecl Door_GetGizmoName(void *gizmo);
+    char *__cdecl Door_GetGizmoName(GIZMO_PC *gizmo);
     i32 __cdecl Door_GetMaxGizmos(void *door);
     i32 __cdecl Door_GetNumOutputs(void *arg0);
-    i32 __cdecl Door_GetOutput(void *gizmo, i32 arg1, i32 arg2);
-    char *__cdecl Door_GetOutputName(void *arg0, i32 arg1);
+    i32 __cdecl Door_GetOutput(GIZMO_PC *gizmo, i32 arg1, i32 arg2);
+    char *__cdecl Door_GetOutputName(GIZMO_PC *arg0, i32 arg1);
     extern char door_gizmotype_id;
     f32 __cdecl XZLinesClosest(struct nuvec_s *first_start, struct nuvec_s *first_end, struct nuvec_s *second_start,
                                struct nuvec_s *second_end, f32 *first_fraction, f32 *second_fraction);
@@ -24771,13 +24771,13 @@ extern "C" {
     void __cdecl GizSpinner_StoreProgressData(void *world_ptr, void *arg1, void *progress_ptr);
     i32 __cdecl GizSpinner_UsingSpecial(void *results, void *world_ptr, i32 capacity, char *name);
     void __cdecl GizSpinners_Update(void *world_ptr, void *arg1, f32 arg2);
-    void __cdecl GizTimer_Activate(void *gizmo, i32 unknown);
+    void __cdecl GizTimer_Activate(GIZMO_PC *gizmo, i32 unknown);
     void __cdecl GizTimer_AddGizmos(struct GIZMOSYS_s *gizmo_sys, i32 unknown1, void *world_info, void *unknown2);
-    char *__cdecl GizTimer_GetGizmoName(void *gizmo);
+    char *__cdecl GizTimer_GetGizmoName(GIZMO_PC *gizmo);
     i32 __cdecl GizTimer_GetMaxGizmos(void *world_info);
     i32 __cdecl GizTimer_GetNumOutputs(void *gizmo);
-    i32 __cdecl GizTimer_GetOutput(void *gizmo, i32 arg1, i32 arg2);
-    char *__cdecl GizTimer_GetOutputName(void *gizmo, i32 output_index);
+    i32 __cdecl GizTimer_GetOutput(GIZMO_PC *gizmo, i32 arg1, i32 arg2);
+    char *__cdecl GizTimer_GetOutputName(GIZMO_PC *gizmo, i32 output_index);
     i32 __cdecl GizTimer_Load(void *world_info, void *arg1);
     void *__cdecl GizTimer_ReserveBufferSpace(void *world_info);
     void __cdecl GizTimer_Update(void *world_info, void *arg1, f32 delta_time);
@@ -24788,7 +24788,7 @@ extern "C" {
     i32 __cdecl GizTorp_GetMaxGizmos(void *world_ptr);
     i32 __cdecl GizTorp_GetNumOutputs(void *arg0);
     i32 __cdecl GizTorp_GetOutput(void *arg0, i32 arg1, i32 arg2);
-    char *__cdecl GizTorp_GetOutputName(void *arg0, i32 output_index);
+    char *__cdecl GizTorp_GetOutputName(GIZMO_PC *arg0, i32 output_index);
     void __cdecl GizTorp_SetVisibility(void *gizmo, i32 visible);
     void __cdecl GizTorp_Update(void *world_ptr, void *arg1, f32 arg2);
     void *__cdecl GizTorps_ReserveBufferSpace(void *world_ptr);
@@ -24911,9 +24911,54 @@ extern "C" {
                                      i32 item_result);
     i32 __cdecl eduiMenuProcessSelectedItem(struct eduimenu_s *menu, f32 delta_time, struct FRAME_PAD_PC *pad);
     void __cdecl AddToGoldBricks(void);
+    extern eduiiattr_s ed_attr;
+    extern struct eduimenu_s *edgra_clumpsizes_menu;
+    void __cdecl edgracbCancelClumpSizesMenu(struct eduimenu_s *arg0, struct eduimenu_s *arg1);
+    void __cdecl edgracbSetClumpHeight(struct eduimenu_s *arg0, struct eduiitem_s *arg1, u32 arg2);
+    void __cdecl edgracbSetClumpMaxHeight(struct eduimenu_s *arg0, struct eduiitem_s *arg1, u32 arg2);
+    void __cdecl edgracbSetClumpMinHeight(struct eduimenu_s *arg0, struct eduiitem_s *arg1, u32 arg2);
+    char *__cdecl GizmoGetName(struct gizmo_pc_s *gizmo);
+    extern i32 fpcount;
+    extern APICHARACTERMODELLIST fplist[341];
+    extern u8 hub_makefreeplaylist_addotherid;
+    extern i32 hub_new_level;
+    extern struct GIZFORCE_s *force_array[4];
+    void __cdecl ResetTrooperCannons(struct WORLDINFO_s *arg0, i32 arg1);
+    void __cdecl UpdateTrooperCannons(struct WORLDINFO_s *arg0);
+    void __cdecl NuSpecialSetDrawPos(struct nuhspecial_s *special, struct nuvec_s *pos);
+    extern GIZACTIONDEF_PC game_gizactiondefs[24];
+    extern nuhspecial_s thingsSceneBase;
+    struct GIZMOBLOWUP_PC *__cdecl DeathStar2BattleD_InZapRange(struct gameobject_s *object);
+    extern i32 bombgen_gizmotype_id;
+    extern i32 fire_clip_dist;
+    void __cdecl Signal_SetVisibility(struct SIGNAL_s *signal, i32 visible);
+    extern i32 set_speedermode;
+    extern f32 speeder_ahead_time;
+    extern i32 speeder_hitpoints_lost;
+    extern f32 speeder_kill_dist;
+    extern f32 speeder_level_height;
+    extern f32 speeder_level_height_lerpf;
+    extern f32 speeder_midrange_time;
+    extern f32 speeder_mode_ahead_timer;
+    extern f32 speeder_shootrate;
+    extern f32 speederfirerange;
+    extern SPEEDERCHASEVALUES speedervals[4];
+    extern f32 zoom_ahead_extra;
+    extern f32 zoom_ahead_extra_time;
+    u16 __cdecl NuToUpperW(u16 c);
 #ifdef __cplusplus
 }
 #endif
+enum { GIZFORCE_CONFIG_RESET_STATE_ON_ACTIVATE = 8 };
+enum { GIZFORCE_PROGRESS_ENABLED = 1 };
+enum { GIZFORCE_RUNTIME_HAS_PLATFORM = 1 };
+enum { GIZFORCE_STATE_DESTROYED_OR_THROWN = 1 };
+enum { GIZBUILDIT_STATE_AUTO_BUILD_STATIC_OBJECTS = 64 };
+enum { GIZBUILDIT_STATE_REISSUE_REWARD_ON_ACTIVATE = 512 };
+enum { AREAFLAG_BONUS_AREA = 4 };
+enum { AREAFLAG_VEHICLE_AREA = 1 };
+enum { HUB_FREEPLAY_MODEL_MINIKIT = 67108864 };
+enum { HUB_FREEPLAY_MODEL_VEHICLE = 8192 };
 enum { GIZSPINNER_FLAG_HIDE_ARM = 2 };
 enum { GIZSPINNER_FLAG_HIDE_BASE = 4 };
 enum { GIZSPINNER_FLAG_VALID = 1 };

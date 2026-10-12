@@ -42,6 +42,108 @@ i32 __cdecl LineIntersectXY(NUVEC *a, NUVEC *b, NUVEC *c, NUVEC *d, NUVEC *first
     return t >= 0.0f && t <= 1.0f && u >= 0.0f && u <= 1.0f;
 }
 
+f32 XZLinesClosest(NUVEC *a, NUVEC *b, NUVEC *c, NUVEC *d, f32 *first, f32 *second) {
+    i32 angle;
+    f32 ab_length;
+    f32 cd_length;
+    f32 closest;
+    f32 distance;
+    f32 fraction;
+    NUVEC ac;
+    NUVEC bc;
+    NUVEC ca;
+    NUVEC da;
+    NUVEC direction;
+    NuVecSub(&direction, b, a);
+    angle = NuAtan2D(direction.x, direction.z);
+    NuVecSub(&ca, c, a);
+    NuVecRotateY(&ca, &ca, -angle);
+    NuVecSub(&da, d, a);
+    NuVecRotateY(&da, &da, -angle);
+    NuVecSub(&direction, d, c);
+    angle = NuAtan2D(direction.x, direction.z);
+    NuVecSub(&ac, a, c);
+    NuVecRotateY(&ac, &ac, -angle);
+    NuVecSub(&bc, b, c);
+    NuVecRotateY(&bc, &bc, -angle);
+
+    if (NuFsign(ca.x) != NuFsign(da.x) && NuFsign(ac.x) != NuFsign(bc.x)) {
+        *first = fabsf(ac.x) / (fabsf(ac.x) + fabsf(bc.x));
+        *second = fabsf(ca.x) / (fabsf(ca.x) + fabsf(da.x));
+        return 0.0f;
+    }
+
+    ab_length = NuVecXZDist(b, a, NULL);
+    cd_length = NuVecXZDist(d, c, NULL);
+    closest = 1000000000.0f;
+
+    if (ca.z < 0.0f) {
+        distance = NuVecXZDist(a, &ca, NULL);
+        fraction = 0.0f;
+    } else if (ca.z > ab_length) {
+        distance = NuVecXZDist(b, &ca, NULL);
+        fraction = 1.0f;
+    } else {
+        fraction = ca.z / ab_length;
+        distance = fabsf(ca.x);
+    }
+    if (distance < closest) {
+        *first = fraction;
+        *second = 0.0f;
+        closest = distance;
+    }
+    if (da.z < 0.0f) {
+        distance = NuVecXZDist(a, &da, NULL);
+        fraction = 0.0f;
+    } else if (da.z > ab_length) {
+        distance = NuVecXZDist(b, &da, NULL);
+        fraction = 1.0f;
+    } else {
+        fraction = da.z / ab_length;
+        distance = fabsf(da.x);
+    }
+    if (distance < closest) {
+        *first = fraction;
+        *second = 1.0f;
+        closest = distance;
+    }
+    if (!(ac.z < 0.0f)) {
+        if (ac.z > cd_length) {
+            distance = NuVecXZDist(d, &ac, NULL);
+            fraction = 1.0f;
+        } else {
+            fraction = ac.z / cd_length;
+            distance = fabsf(ac.x);
+        }
+    } else {
+        distance = NuVecXZDist(c, &ac, NULL);
+        fraction = 0.0f;
+    }
+    if (distance < closest) {
+        *second = fraction;
+        *first = 0.0f;
+        closest = distance;
+    }
+    if (!(bc.z < 0.0f)) {
+        if (bc.z > cd_length) {
+            distance = NuVecXZDist(d, &bc, NULL);
+            fraction = 1.0f;
+        } else {
+            fraction = bc.z / cd_length;
+            distance = fabsf(bc.x);
+        }
+    } else {
+        distance = NuVecXZDist(c, &bc, NULL);
+        fraction = 0.0f;
+    }
+    if (distance < closest) {
+        *second = fraction;
+        *first = 1.0f;
+        closest = distance;
+    }
+    return closest;
+}
+
 i32 __cdecl SphereSphereOverlapScaleY(NUVEC *position_a, f32 radius_a, f32 y_radius_a, NUVEC *position_b, f32 radius_b,
                                       f32 y_radius_b) {
     f32 dx = position_b->x - position_a->x;

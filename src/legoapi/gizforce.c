@@ -560,3 +560,64 @@ i32 __cdecl GizForce_GameObjUsingForce(GAMEOBJECT *object, GIZFORCE_PC *force) {
     return force != NULL && object != NULL && object->character_context == 8 &&
            ((TRIGGER_FORCE_OBJECT_PC *)object)->force == force;
 }
+
+static char *GizmoForce_GetOutputName(GIZMO_PC *unused0, i32 output_index) {
+    switch (output_index) {
+        case 0:
+            return ((char *)("AtEnd"));
+        case 1:
+            return ((char *)("NotAtStart"));
+        case 2:
+            return ((char *)("AtStart"));
+        case 3:
+            return ((char *)("StackComplete"));
+        case 4:
+            return ((char *)("StackCompleteInOrder"));
+        case 5:
+            return ((char *)("Destroyed/Thrown"));
+        case 6:
+            return ((char *)("Complete"));
+        case 7:
+            return ((char *)("BeingUsed"));
+        default:
+            return NULL;
+    }
+}
+
+GIZFORCE_s *GizForces_FindForce(WORLDINFO *world, char *name) {
+    GIZMO_PC *gizmo = GizmoFindByName(world->gizmo_sys, force_gizmotype_id, name);
+    return gizmo != NULL ? ((GIZFORCE_s *)(gizmo->object)) : NULL;
+}
+
+static void GizmoForce_Activate(GIZMO_PC *gizmo, i32 activate) {
+    struct GIZFORCE_s *force;
+    if (gizmo == NULL) {
+        return;
+    }
+    force = ((GIZFORCE_s *)(gizmo->object));
+    if (activate == 0) {
+        force->progress_flags &= ((u8)(~GIZFORCE_PROGRESS_ENABLED));
+        return;
+    }
+
+    if (!force->progress_enabled) {
+        GameAnimSet_JumpToStart(force->anim_set);
+    }
+    force->field_0xaa &= ((u8)(~GIZFORCE_STATE_DESTROYED_OR_THROWN));
+    force->progress_enabled = 1;
+    force->progress_reverse_active = 0;
+    force->progress_animation_reversed = 0;
+    force->field_0x48 = 0.0f;
+    force->field_0x50 = 0.0f;
+    if ((force->config_flags & GIZFORCE_CONFIG_RESET_STATE_ON_ACTIVATE) != 0) {
+        force->runtime_reward_released = 0;
+    }
+    force->runtime_along_socket_hidden = 0;
+    force->runtime_offset_applied = 0;
+    force->runtime_force_range_complete = 0;
+    force->runtime_completion_released = 0;
+    GameAnimSet_EvaluateState(force->anim_set);
+    force->radius = 1.0f;
+    force->position = force->file_position;
+    GameAnimSet_GetCentreAndRadius(force->anim_set, &force->position, &force->radius, 2, 1, 1);
+}

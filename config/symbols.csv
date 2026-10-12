@@ -2484,6 +2484,7 @@ address    , symbol                                                         , si
 0x559ee0,_AddGizmo,112,"GIZMO_PC *__cdecl(void *,i32,char *,void *)"
 0x559f50,_GizmoFindByData,205,
 0x0055a020 , _GizmoFindByName                                               , 244   , "void * __cdecl (void *, i32, char *)"
+0x55a120,_GizmoGetName,52,
 0x55a160,_GizmoGetNumOutputs,66,
 0x0055a1b0 , _GizmoGetOutput                                                , 70    , "i32 __cdecl(void *system, void *gizmo, i32 output, i32 mode)"
 0x0055a200 , _GizmoGetOutputName                                            , 71    , "char * __cdecl(void *system, void *gizmo, i32 output)"
@@ -2817,7 +2818,13 @@ address    , symbol                                                         , si
 0x575710,_Door_SetCutCam,222,
 0x575820,_StartDoorPositions,251,i32 __cdecl(void)
 0x575920,_Door_FindByIndex,236,"void* __cdecl(WORLDINFO*,i32,i32,NUVEC*)"
+0x575a10,_Door_GetMaxGizmos,25,
 0x575a30,_Door_AddGizmos,127,
+0x575ab0,_Door_GetGizmoName,21,
+0x575ad0,_Door_GetOutput,31,
+0x575af0,_Door_GetNumOutputs,6,
+0x575b00,_Door_GetOutputName,6,
+0x575b10,_Door_Activate,29,
 0x575b30,_Door_RegisterGizmo,234,
 0x575c20,_Door_GoThrough,751,
 0x575f10,_Doors_SetLastDoor,50,
@@ -3496,6 +3503,7 @@ address    , symbol                                                         , si
 0x0059edb0,_GizFlowConfigConditionTypePc,100,
 0x0059ee20,_GizFlowConfigMonitorInputsPc,12,
 0x0059eeb0,_GizFlowConfigActionPc,537,
+0x59f0d0,_RegisterGizActions,10,
 0x0059f0e0,_LoadGizFlow,443,"void *__cdecl (void *, void *, char *, VARIPTR *, VARIPTR *)"
 0x0059f2a0 , _ResetGizFlowPointers                                          , 271   , void __cdecl (GIZFLOW_PC *)
 0x0059f3b0 , _GizFlowStoreProgress                                          , 164   , "void __cdecl (GIZFLOW_PC *system, GIZFLOWPROGRESS_PC *progress)"
@@ -3634,8 +3642,13 @@ address    , symbol                                                         , si
 0x005aabc0 , _ClearGizAIMessageSys                                          , 53    , void __cdecl (GIZAIMESSAGESYS *)
 0x005aac00 , _CheckGizAIMessage                                             , 324   , "GIZAIMESSAGE *__cdecl (GIZAIMESSAGESYS *, const char *, GIZAIMESSAGE *)"
 0x005aad50 , _QueryGizAIMessage                                             , 45    , "GIZAIMESSAGE *__cdecl (GIZAIMESSAGESYS *, GIZAIMESSAGE *)"
+0x5aad80,_GizAIMessage_GetMaxGizmos,6,
 0x5aad90,_GizAIMessage_AddGizmos,90,
 0x005aadf0 , _GizAIMessage_GetName                                          , 15    , char *__cdecl (GIZAIMESSAGE *)
+0x5aae00,_GizAIMessage_GetGizmoName,21,
+0x5aae20,_GizAIMessage_GetOutput,57,
+0x5aae60,_GizAIMessage_GetOutputName,56,
+0x5aaea0,_GizAIMessage_GetNumOutputs,22,
 0x5aaec0,_GizAIMessage_RegisterGizmo,229,
 0x005aafb0 , _CreateGizAIMessageSys                                         , 104   , "GIZAIMESSAGESYS *__cdecl (VARIPTR *, VARIPTR *, i32)"
 0x005ab020 , _GetGizAIMessage                                               , 34    , "f32 __cdecl (GIZAIMESSAGESYS *, const char *, GIZAIMESSAGE *)"
@@ -3715,8 +3728,25 @@ address    , symbol                                                         , si
 0x5afdd0,_Plugs_StoreProgress,150,
 0x5afe70,_Plug_GetPos,15,
 0x5afe80,_Plugs_RegisterGizmo,288,
+0x5affd0,_GizRandom_GetMaxGizmos,29,
+0x5afff0,_GizRandom_AddGizmos,98,
+0x5b0060,_GizRandom_GetGizmoName,14,
+0x5b0070,_GizRandom_GetOutput,30,
+0x5b0090,_GizRandom_GetOutputName,6,
+0x5b00a0,_GizRandom_GetNumOutputs,10,
+0x5b00b0,_GizRandom_Activate,123,
+0x5b0130,_GizRandom_ReserveBufferSpace,122,
 0x005b01b0,_createGizRandom,148,"GIZMO_PC *__cdecl (void *, i32, i32 *, char *)"
 0x5b0250,_GizRandom_RegisterGizmo,229,
+0x5b0370,_GizTimer_GetMaxGizmos,29,
+0x5b0390,_GizTimer_AddGizmos,99,
+0x5b0400,_GizTimer_Update,69,
+0x5b0450,_GizTimer_GetGizmoName,17,
+0x5b0470,_GizTimer_GetOutput,32,
+0x5b0490,_GizTimer_GetOutputName,6,
+0x5b04a0,_GizTimer_GetNumOutputs,6,
+0x5b04b0,_GizTimer_Activate,61,
+0x5b04f0,_GizTimer_ReserveBufferSpace,93,
 0x005b0550,_createGizTimer,134,"GIZMO_PC *__cdecl (void *, f32, i32, char *)"
 0x5b05e0,_GizTimer_Load,132,
 0x5b0670,_GizTimer_RegisterGizmo,249,
@@ -10077,6 +10107,7 @@ address    , symbol                                                         , si
 0x75d470,__real@3f3504f4,4,compiler literal
 0x75d474,__real@bf3504f4,4,compiler literal
 0x75d4b0,??_C@_08CNLHJKBO@Sniper?$CFd?$AA@,9,char []
+0x75d4e4,??_C@_04EEJCHKFP@mine?$AA@,5,char []
 0x0075d4f0 , __real@3fefd70a40000000                                        , 8     , const f64
 0x75d52c,_PodRaceAttemptsKeywordPc,,char[25]
 0x75d52c,??_C@_0BJ@CFBACOKC@nattempts_per_increment?$DN?$AA@,25,char []
@@ -10110,6 +10141,10 @@ address    , symbol                                                         , si
 0x75d83c,_PodCreateEndKeywordPc,,char[12]
 0x75d848,_PodCreateStartKeywordPc,,char[14]
 0x75d858,_PodCreateSplineKeywordPc,,char[11]
+0x75da08,??_C@_06IAFFLKKD@force8?$AA@,7,char []
+0x75da10,??_C@_06HMNKGGM@force7?$AA@,7,char []
+0x75da18,??_C@_06BONGJHCN@force6?$AA@,7,char []
+0x75da20,??_C@_06DFPLMEOO@force5?$AA@,7,char []
 0x0075da40 , __real@c066c16c20000000                                        , 8     , const f64
 0x75dbfc,??_C@_0N@GEECAJGO@endblock_b08?$AA@,13,char []
 0x75dc90,__real@4076800000000000,,f64
@@ -10129,6 +10164,8 @@ address    , symbol                                                         , si
 0x75ddd4,??_C@_0BK@CMHBPGDI@ep3_GeneralGrievous_Outro?$AA@,26,char []
 0x75ddf0,??_C@_0BA@JNHADNCO@WookiesToRescue?$AA@,16,char []
 0x75de00,??_C@_0N@JAIKINBL@TotalWookies?$AA@,13,char []
+0x75de34,??_C@_0N@KAKHOCIA@attack_time?$DN?$AA@,13,char []
+0x75de44,??_C@_0P@LJGKHAC@boulder_range?$DN?$AA@,15,char []
 0x75decc,??_C@_0P@MDPIFKNK@VaderBComplete?$AA@,15,char []
 0x75df44,_EpisodeVI_obstacle21,11,const char[11]
 0x75e08c,??_C@_0O@NDAEILHC@RescuedDroids?$AA@,14,char []
@@ -10160,10 +10197,12 @@ address    , symbol                                                         , si
 0x75e40c,??_C@_05KIKKDJAJ@ice_a?$AA@,6,char []
 0x75e414,??_C@_05IDIHGKMK@ice_b?$AA@,6,char []
 0x75e41c,??_C@_0BE@OFBNHBFL@BombGen_ATAT_Killed?$AA@,20,char []
+0x75e430,??_C@_0BA@KEJPHAGH@bomb_generator1?$AA@,16,char []
 0x75e440,??_C@_05HLKEJFEB@rider?$AA@,,
 0x75e448,??_C@_05PBDNICPN@Probe?$AA@,6,char []
 0x75e450,??_C@_05BDADGJGG@spawn?$AA@,6,char []
 0x75e464,??_C@_04LHKOJOEJ@ATAT?$AA@,5,char []
+0x75e4ac,__real@c2200000,4,const f32
 0x75e4b0,_EpisodeVI_doton12,10,const char[10]
 0x75e4bc,_EpisodeVI_doton11,10,const char[10]
 0x75e4c8,_EpisodeVI_doton10,10,const char[10]
@@ -10197,6 +10236,10 @@ address    , symbol                                                         , si
 0x75e670,_EpisodeVI_force16,8,const char[8]
 0x75e678,_EpisodeVI_force15,8,const char[8]
 0x75e680,_EpisodeVI_ElectricFloor,14,const char[14]
+0x75e6f4,??_C@_09FFGBDCJP@Back_Room?$AA@,10,char []
+0x75e700,??_C@_08OEFNINLE@Alcove_2?$AA@,9,char []
+0x75e70c,??_C@_08MPHANOHH@Alcove_1?$AA@,9,char []
+0x75e718,??_C@_09HKHGLEHE@AI_rancor?$AA@,10,char []
 0x75e734,??_C@_09KODIKCNI@Boba_Dead?$AA@,10,char []
 0x75e860,_EpisodeVI_panel2,7,const char[7]
 0x75e868,_EpisodeVI_shot_a_format,10,const char[10]
@@ -10729,6 +10772,7 @@ address    , symbol                                                         , si
 0x761e5c,??_C@_0L@PCPDBMFI@door_start?$AA@,11,
 0x761e68,??_C@_08NPMFAOIK@door_end?$AA@,9,
 0x761e74,??_C@_05PGBIICNC@doors?$AA@,6,
+0x761e84,??_C@_04KJGJIGFH@Door?$AA@,5,char []
 0x00761e9c , _LevelConfigGenericKeyword_conveyor                            , 9     , const char[9]
 0x00761ea8 , _LevelConfigGenericKeyword_sfx_ambient                         , 12    , const char[12]
 0x00761eb4 , _LevelConfigGenericKeyword_music_other                         , 12    , const char[12]
@@ -11338,6 +11382,9 @@ address    , symbol                                                         , si
 0x763e70,??_C@_0N@KNCHGBDG@ShadowEditor?$AA@,,
 0x763e80,??_C@_07BKGMKKDM@Plugged?$AA@,,const char[8]
 0x763e88,??_C@_04ILINIEJ@Plug?$AA@,,const char[5]
+0x763ea0,??_C@_04BDMLBJBK@rnd_?$AA@,5,char []
+0x763ea8,??_C@_09NLDPCFBJ@GizRandom?$AA@,10,char []
+0x763ebc,??_C@_08LNNNNDNG@GizTimer?$AA@,9,char []
 0x763ec8,??_C@_06MDJIBAJE@Played?$AA@,,
 0x763ed0,??_C@_07JKFMAIED@Playing?$AA@,,
 0x763ed8,??_C@_08HMEBKAKE@Unknown?$CB?$AA@,,
@@ -14533,6 +14580,8 @@ address    , symbol                                                         , si
 0x007f682c , _aitol                                                         , 4     , f32
 0x007f6830 , _direction_scale                                               , 4     , f32
 0x7f6844,_test_missile_scale,4,f32
+0x7f8b18,_game_gizactiondefs,,
+0x7f8c44,_bombgen_gizmotype_id,4,i32
 0x7f8cc4,_force_gizmotype_id,,i32
 0x7f8cc8,_GizForceSFX_load_version,,
 0x007f8cc8 , _GizForceSfxLoadVersionPc                                      ,       ,
@@ -14768,6 +14817,7 @@ address    , symbol                                                         , si
 0x7ffcac,_ZipUpTypeNamePtrPc,,char *
 0x7ffcb0,?ropedif@?1??DrawRopeSingle@@9@9,,u32
 0x7ffcb4,_ZipUpRopeCheatColourPc,,u32
+0x7ffcc4,_sockstep,4,f32
 0x7ffccc,_PodRace_sniper_fire_time,4,f32
 0x7ffcd0,_PodRace_sniper_fire_range_time,4,f32
 0x7ffcd4,_PodRace_sniper_fire_radius,4,f32
@@ -14775,6 +14825,11 @@ address    , symbol                                                         , si
 0x7ffd2c,_mushroom0_along,4,f32
 0x7ffd30,_mushroom2_along,4,f32
 0x7ffd40,_mushroom_time_increment,4,f32
+0x7ffd44,_sebulba_lerpf,4,f32
+0x7ffd48,_test_factor,4,f32
+0x7ffd4c,_test_seek_rate,4,f32
+0x7ffd50,_max_speed_mul,4,f32
+0x7ffd54,_min_speed_mul,4,f32
 0x7ffd58,_PodDustLocatorIndicesPc,,i32[2]
 0x7ffd60,_PodDustEmissionRatePc,,f32
 0x7ffd64,_PodDustHeightScalePc,,f32
@@ -14782,6 +14837,7 @@ address    , symbol                                                         , si
 0x007fffec , _GUNSHIPAHACK                                                  , 4     , i32
 0x8000ac,_TempleC_StreamStatusPos,,
 0x800224,_melee_wavePhase,1,i8
+0x8002c4,_fire_clip_dist,4,i32
 0x00800444 , _NuAllocHeaderMetadata                                         , 12    , u32[3]
 0x00800454 , _NuAllocTailMetadata                                           , 12    , u32[3]
 0x00800464 , _nufile_blkcnt                                                 , 4     , i32
@@ -15126,6 +15182,7 @@ address    , symbol                                                         , si
 0x803804,_LEGOMENU_CREDITS,,i32
 0x803874,_Door_NextSock,4,i32
 0x803878,_Door_ConfigKeywords,,
+0x803918,_door_gizmotype_id,1,char
 0x803984,_LEGOHINT_PUNCH,,i32
 0x803988,_LEGOHINT_SHOOTCAMERAS,,i32
 0x80398c,_PushBlockHintIdPc,,i32
@@ -15331,6 +15388,7 @@ address    , symbol                                                         , si
 0x00805c94 , _TrooperStepFrames                                             , 16    , i32[4]
 0x00805ca4 , _trooperspeedtab                                               , 16    , f32[4]
 0x805cb4,_TrooperGameDebrisPc,,i32[4]
+0x805d44,_gizaimessage_gizmotype_id,4,i32
 0x00805d48 , _gizaimessage_prefix                                           , 5     , char[5]
 0x805e24,_turret_gizmotype_id,4,i32
 0x805e2c,_gizturret_test_ang,4,i32
@@ -17076,12 +17134,14 @@ address    , symbol                                                         , si
 0x882a8c,_PodRacePc,,void *
 0x882a90,_Lap,4,i32
 0x882a98,_mushroom_collapse,4,i32
+0x882a9c,_do_mine,4,i32
 0x882aac,_Maul_obj,4,struct gameobject_s *
 0x882ab0,_MaulA_ai_message,4,struct gizaimessage_s *
 0x882ab8,?player_ix@?1??PodRaceSnipersUpdate@@9@9,,
 0x882ae8,_LevForce,4,i32
 0x882be4,_GunshipANorm,,NUVEC
 0x888fe0,_kaminoe_netpacket,4,void *
+0x888fe4,_force_array,16,struct GIZFORCE_s *[4]
 0x00889058 , _kamino_plate_1                                                , 4     , KAMINOEPLATE *
 0x0088905c , _kamino_plate_2                                                , 4     , KAMINOEPLATE *
 0x00889060 , _kamino_plate_3                                                , 4     , KAMINOEPLATE *
@@ -17094,6 +17154,7 @@ address    , symbol                                                         , si
 0x008890a6 , _kamino_plate_id                                               , 2     , u16
 0x8890c8,_KaminoDiscoMusicStatePc,,KAMINO_DISCO_MUSIC_VIEW_PC
 0x8894dc,_bonus_gunship_store_progress_flag,,i32
+0x8895e0,_boulder_part,,
 0x889618,_CruiserD_LiftChase,,i32
 0x88961c,_Grievous_obj,4,struct gameobject_s *
 0x889620,_KashyyykA_msg_TotalWookies,4,struct gizaimessage_s *
@@ -17798,6 +17859,7 @@ address    , symbol                                                         , si
 0x951444,_Door_CutLookAtPlayers,4,i32
 0x95144c,_LastDoorPointerPc,,void *
 0x951450,_Door_GoThrough_ExtraCodeFn,,"void (__cdecl *)(WORLDINFO *world, struct game_door_callback_pc_s *door)"
+0x951458,?addtype@?1??Door_RegisterGizmo@@9@9,,
 0x9514d0,_hintsys,,HINTSYS_PC
 0x9514f0,_Hint_AlphaTargetFn,,f32 (__cdecl *)(void)
 0x9514f8,_ObstacleCamBlendInTime,,f32
@@ -18037,6 +18099,7 @@ address    , symbol                                                         , si
 0x95df54,_gunship_bolts,4,i16[2]
 0x95df5c,_gunship_flags,10,u8[10]
 0x0095df6c , _gizaimessagesys                                               , 4     , GIZAIMESSAGESYS *
+0x95df78,?addtype@?1??GizAIMessage_RegisterGizmo@@9@9,,
 0x95e090,?addtype@?1??GizSpecial_RegisterGizmo@@9@9,,
 0x95e108,_portal_gizmotype_id,,i32
 0x95e10c,_portal_gizmo_name_pc,,
@@ -18044,6 +18107,8 @@ address    , symbol                                                         , si
 0x95e1d0,_edGizShadow_gizmotype_id,,
 0x95e1d8,?addtype@?1??EdGizShadowMachine_RegisterGizmo@@9@9,,
 0x95e250,?PlugsAddTypePc@?1??Plugs_RegisterGizmo@@9@9,,
+0x95e2c8,?addtype@?1??GizRandom_RegisterGizmo@@9@9,,
+0x95e340,?addtype@?1??GizTimer_RegisterGizmo@@9@9,,
 0x95e3b8,?MiniCutAddTypePc@?1??MiniCut_RegisterGizmo@@9@9,,
 0x0095e434 , ?fade_draw_suppressed@@3HA                                     , 4     , i32
 0x95e43c,_splineStore,,NUGSPLINE *

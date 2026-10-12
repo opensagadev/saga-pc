@@ -101,6 +101,16 @@ void __cdecl EmperorFightA_Reset(WORLDINFO *world) {
         LevGizObst[3] = (GIZOBSTACLE *)gizmo->object;
 }
 
+void JabbasPalaceE_Reset(WORLDINFO *world) {
+    LevGameObject[0] = GetNamedGameObject(world->ai_sys, "AI_rancor");
+    LevArea[0] = AISysFindArea(world->ai_sys, "Alcove_1");
+    LevArea[1] = AISysFindArea(world->ai_sys, "Alcove_2");
+    LevArea[2] = AISysFindArea(world->ai_sys, "Back_Room");
+    LevAIMessage[0] = CheckGizAIMessage(gizaimessagesys, "ShowHearts", NULL);
+    TerSurface[14].flags = 0xa040;
+    TerSurface[9].flags = 0x2040;
+}
+
 void SarlaccPitA_Draw(WORLDINFO *unused0) {
     GIZAIMESSAGE *message = NULL;
     if (gizaimessagesys != NULL)

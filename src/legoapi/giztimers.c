@@ -88,3 +88,42 @@ GIZMO_PC *__cdecl createGizTimer(void *unused, f32 time, i32 random_time, char *
     ++world->timer_count;
     return AddGizmo(world->gizmo_sys, giztimer_gizmotype_id, NULL, timer);
 }
+
+ADDGIZMOTYPE_PC *GizTimer_RegisterGizmo(i32 type_id) {
+    static ADDGIZMOTYPE_PC addtype;
+
+    addtype = Default_ADDGIZMOTYPE;
+    addtype.name = "GizTimer";
+    addtype.prefix = "";
+    addtype.fns.options = 0;
+    addtype.fns.get_max_gizmos_fn = GizTimer_GetMaxGizmos;
+    addtype.fns.add_gizmos_fn = GizTimer_AddGizmos;
+    addtype.fns.early_update_fn = GizTimer_Update;
+    addtype.fns.late_update_fn = NULL;
+    addtype.fns.draw_fn = NULL;
+    addtype.fns.panel_draw_fn = NULL;
+    addtype.fns.get_gizmo_name_fn = GizTimer_GetGizmoName;
+    addtype.fns.get_output_fn = GizTimer_GetOutput;
+    addtype.fns.get_output_name_fn = GizTimer_GetOutputName;
+    addtype.fns.get_num_outputs_fn = GizTimer_GetNumOutputs;
+    addtype.fns.activate_fn = GizTimer_Activate;
+    addtype.fns.activate_rev_fn = NULL;
+    addtype.fns.set_visibility_fn = NULL;
+    addtype.fns.get_visibility_fn = NULL;
+    addtype.fns.get_pos_fn = NULL;
+    addtype.fns.using_special_fn = NULL;
+    addtype.fns.bolt_hit_plat_fn = NULL;
+    addtype.fns.get_best_bolt_target_fn = NULL;
+    addtype.fns.bolt_hit_fn = NULL;
+    addtype.fns.allocate_progress_data_fn = NULL;
+    addtype.fns.clear_progress_fn = NULL;
+    addtype.fns.store_progress_fn = NULL;
+    addtype.fns.reset_fn = NULL;
+    addtype.fns.reserve_buffer_space_fn = GizTimer_ReserveBufferSpace;
+    addtype.fns.load_fn = GizTimer_Load;
+    addtype.fns.post_load_fn = NULL;
+    addtype.fns.add_level_sfx_fn = NULL;
+    giztimer_gizmotype_id = type_id;
+
+    return &addtype;
+}

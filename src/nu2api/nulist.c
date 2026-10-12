@@ -12,6 +12,21 @@ void __cdecl NuLinkedListAppend(NULISTHDR *list, NULISTLNK *node) {
     }
 }
 
+void NuLinkedListInsert(NULISTHDR *list, NULISTLNK *node) {
+    node->next = list->head;
+    node->prev = NULL;
+
+    if (list->head != NULL) {
+        list->head->prev = node;
+    }
+
+    if (list->tail == NULL) {
+        list->tail = node;
+    }
+
+    list->head = node;
+}
+
 void __cdecl NuLinkedListRemove(NULISTHDR *list, NULISTLNK *node) {
     if (node->next != NULL) {
         node->next->prev = node->prev;

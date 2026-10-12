@@ -432,6 +432,18 @@ void __cdecl DebFreeOrphansInstantly(DEBRIS_INFO_PC *effect) {
     DebrisReleaseControlStackLock();
 }
 
+void DebFreeAllChunksInstantly(void) {
+    i32 i;
+    for (i = 0; i < maxdebkeys; ++i) {
+        i32 handle;
+        if (debkeydata[i].effect_index == 0) {
+            continue;
+        }
+        handle = i;
+        DebFreeChunksInstantly(&handle);
+    }
+}
+
 void __cdecl DebFreeInstantly(i32 *handle) {
     i32 index, i, linked;
     DEBRISKEY_PC *key;

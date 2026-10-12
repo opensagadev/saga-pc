@@ -1349,6 +1349,10 @@ i32 __cdecl PlayerItem_GotAmmo(WEAPON_AMMO_PC *item) {
     return 1;
 }
 
+static __inline f32 MiniTrooperTurnSpeed() {
+    return ((f32)(qrand())) * (3.0f / 65535.0f);
+}
+
 void __cdecl Move_VEHICLE(GAMEOBJECT *);
 void __cdecl PostResetCode(GAMEOBJECT *object) {
     PLAYERCHARACTERCONFIG_PC *character;

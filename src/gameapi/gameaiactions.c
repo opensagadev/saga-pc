@@ -1302,6 +1302,42 @@ void GizAction_ActivateEffect(GIZFLOW_PC *unused0, FLOWBOX_PC *unused1, char **p
     }
 }
 
+static void GizActions_ChangeObstTriggerType(GIZFLOW_PC *flow, FLOWBOX_PC *unused1, char **params, int count) {
+    i32 index;
+    struct gizmo_pc_s *gizmo;
+    i32 mode = -1;
+    char *name = NULL;
+    for (index = 0; index < count; ++index) {
+        char *value = NuStrIStr(params[index], "name=");
+        if (value != NULL) {
+            name = value + NuStrLen("name=");
+        } else if (NuStrICmp(params[index], "AUTOSTART") == 0) {
+            mode = 0;
+        } else if (NuStrICmp(params[index], "PROXIMITY") == 0) {
+            mode = 1;
+        } else if (NuStrICmp(params[index], "PROXIMITYGROUND") == 0) {
+            mode = 2;
+        } else if (NuStrICmp(params[index], "NOTRIGGER") == 0) {
+            mode = 3;
+        } else if (NuStrICmp(params[index], "TECHNOONLY") == 0) {
+            mode = 4;
+        } else if (NuStrICmp(params[index], "INBOXANDGROUND") == 0) {
+            mode = 6;
+        } else if (NuStrICmp(params[index], "INBOX") == 0) {
+            mode = 5;
+        } else if (NuStrICmp(params[index], "PUSHONLY") == 0) {
+            mode = 7;
+        }
+    }
+    if (mode == -1 || name == NULL) {
+        return;
+    }
+    gizmo = GizmoFindByName(flow->gizmo_sys, obstacle_gizmotype_id, name);
+    if (gizmo != NULL && gizmo->object != NULL) {
+        ((GIZOBSTACLE *)(gizmo->object))->mode = ((u8)(mode));
+    }
+}
+
 static void GizAction_SetAIMessage(GIZFLOW_PC *unused0, FLOWBOX_PC *unused1, char **params, int count) {
     i32 index;
     struct gizaimessage_s *message;

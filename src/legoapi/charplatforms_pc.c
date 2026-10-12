@@ -105,3 +105,35 @@ void __cdecl CharPlatforms_Configure(WORLDINFO *world, char *config) {
     else
         view->char_platform_sys = NULL;
 }
+
+void CharPlatforms_Update(CHARPLATFORMSYS_s *system) {
+    i32 i;
+    if (system == NULL)
+        return;
+    for (i = 0; i < system->platform_count; ++i) {
+        i32 visible;
+        struct gameobject_s *object;
+        i32 j;
+        if (system->platforms[i].object_id == -1)
+            continue;
+        visible = 0;
+        object = Obj;
+        for (j = 0; j < HIGHGAMEOBJECT; ++j, ++object) {
+            if ((object->flags_1fc_half & 0x1001) == 0x1001 && object->dead == 0 &&
+                object->field_107c == system->platforms[i].platform_id) {
+                nuhspecial_s *special = &system->platforms[i].special;
+                NUMTX *matrix = NuSpecialGetDrawMtx(special);
+                if (matrix != NULL) {
+                    *matrix = object->transform;
+                    if (GameTimer.time_elapsed * 2.0f < 1.0f) {
+                        matrix->m31 -= 1.0f - GameTimer.time_elapsed * 2.0f;
+                    }
+                    NuSpecialUpdate(special);
+                }
+                visible = 1;
+                break;
+            }
+        }
+        NuSpecialSetVisibility(&system->platforms[i].special, visible);
+    }
+}

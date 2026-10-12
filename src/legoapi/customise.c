@@ -498,6 +498,38 @@ void CustomiserMenu_End() {
     }
 }
 
+static __inline i32 DetonatorPlacementSlot(GAMEOBJECT *object) {
+    i32 count = 0;
+    i32 available = -1;
+    DetonatorConsiderPlacementSlot(0, object, count, available);
+    DetonatorConsiderPlacementSlot(1, object, count, available);
+    DetonatorConsiderPlacementSlot(2, object, count, available);
+    if (count == 3)
+        return -1;
+    DetonatorConsiderPlacementSlot(3, object, count, available);
+    if (count == 3)
+        return -1;
+    DetonatorConsiderPlacementSlot(4, object, count, available);
+    if (count == 3)
+        return -1;
+    DetonatorConsiderPlacementSlot(5, object, count, available);
+    if (count == 3)
+        return -1;
+    DetonatorConsiderPlacementSlot(6, object, count, available);
+    if (count == 3)
+        return -1;
+    DetonatorConsiderPlacementSlot(7, object, count, available);
+    if (count == 3)
+        return -1;
+    DetonatorConsiderPlacementSlot(8, object, count, available);
+    if (count == 3)
+        return -1;
+    DetonatorConsiderPlacementSlot(9, object, count, available);
+    if (count == 3)
+        return -1;
+    return available;
+}
+
 typedef struct custom_accessory_resource_pc_s {
     NUGSCN *scene;
     NUSPECIALHANDLE special;

@@ -50,3 +50,7 @@ void *__cdecl GizTorpMachine_FindNearest(WORLDINFO *world, NUVEC *position, f32 
         *distance_squared = nearest_distance;
     return nearest;
 }
+
+static char *GizTorp_GetOutputName(GIZMO_PC *unused0, i32 output_index) {
+    return output_index == 0 ? ((char *)("Ready")) : NULL;
+}

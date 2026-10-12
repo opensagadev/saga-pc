@@ -245,6 +245,15 @@ extern "C" GRAPPLE_MOTION_PC *__cdecl Grapple_FindNearest(WORLDINFO *world, NUVE
     return nearest;
 }
 
+extern "C" {
+    static char *Grapple_GetOutputName(GIZMO_PC *, i32 output_index) {
+        if (output_index == 1) {
+            return const_cast<char *>("Occupied");
+        }
+        return output_index != 2 ? const_cast<char *>("Active") : const_cast<char *>("Occupied By 2");
+    }
+}
+
 #define GRAPPLE_CURRENT ((GRAPPLE_MOTION_PC *)object->grapple)
 extern "C" void __cdecl Grapple_MoveCode(GAMEOBJECT *object) {
     object->flags_e24 &= ~0x80;

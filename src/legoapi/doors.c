@@ -215,6 +215,45 @@ void *__cdecl Door_FindByIndex(WORLDINFO *world, i32 area, i32 level, NUVEC *pos
     return nearest;
 }
 
+ADDGIZMOTYPE_PC *Door_RegisterGizmo(i32 type_id) {
+    static ADDGIZMOTYPE_PC addtype;
+
+    addtype = Default_ADDGIZMOTYPE;
+    addtype.name = "Door";
+    addtype.prefix = "";
+    addtype.fns.options = 0;
+    addtype.fns.get_max_gizmos_fn = Door_GetMaxGizmos;
+    addtype.fns.add_gizmos_fn = Door_AddGizmos;
+    addtype.fns.early_update_fn = NULL;
+    addtype.fns.late_update_fn = NULL;
+    addtype.fns.draw_fn = NULL;
+    addtype.fns.panel_draw_fn = NULL;
+    addtype.fns.get_gizmo_name_fn = Door_GetGizmoName;
+    addtype.fns.get_output_fn = Door_GetOutput;
+    addtype.fns.get_output_name_fn = Door_GetOutputName;
+    addtype.fns.get_num_outputs_fn = Door_GetNumOutputs;
+    addtype.fns.activate_fn = Door_Activate;
+    addtype.fns.activate_rev_fn = NULL;
+    addtype.fns.set_visibility_fn = NULL;
+    addtype.fns.get_visibility_fn = NULL;
+    addtype.fns.get_pos_fn = NULL;
+    addtype.fns.using_special_fn = NULL;
+    addtype.fns.bolt_hit_plat_fn = NULL;
+    addtype.fns.get_best_bolt_target_fn = NULL;
+    addtype.fns.bolt_hit_fn = NULL;
+    addtype.fns.allocate_progress_data_fn = NULL;
+    addtype.fns.clear_progress_fn = NULL;
+    addtype.fns.store_progress_fn = NULL;
+    addtype.fns.reset_fn = NULL;
+    addtype.fns.reserve_buffer_space_fn = NULL;
+    addtype.fns.load_fn = NULL;
+    addtype.fns.post_load_fn = NULL;
+    addtype.fns.add_level_sfx_fn = NULL;
+    door_gizmotype_id = (char)type_id;
+
+    return &addtype;
+}
+
 void Hint_ExpandButtons(char *input, char *output) {
     char token[256];
     char expanded[64];

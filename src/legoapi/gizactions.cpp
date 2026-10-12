@@ -87,6 +87,40 @@ extern "C" {
 }
 
 extern "C" {
+    static f32 Condition_SockDistanceToPlayer(AISYS_PC *, AISCRIPTPROCESS_PC *, AIPACKET_PC *packet, char *, void *) {
+        f32 result = 0.0f;
+        if (packet != NULL && packet->owner != NULL && player != NULL) {
+            GAMEOBJECT *object = packet->owner->objptr;
+            if (player->field_661 != 0xff && player->field_661 == object->field_661) {
+                f32 distance = MidDistanceFromSockStart(WORLD->sock_sys, &player->sock_position);
+                result = distance - MidDistanceFromSockStart(WORLD->sock_sys, &object->sock_position);
+            }
+        }
+        return result;
+    }
+}
+
+extern "C" {
+    static f32 Condition_SockXDistanceToPlayer(AISYS_PC *, AISCRIPTPROCESS_PC *, AIPACKET_PC *packet, char *, void *) {
+        f32 result = 0.0f;
+        NUVEC player_offset, object_offset;
+        if (packet == NULL)
+            return 0.0f;
+        if (packet->owner != NULL && player != NULL) {
+            GAMEOBJECT *object = packet->owner->objptr;
+            if (player->field_661 != 0xff && player->field_661 == object->field_661) {
+                NuVecSub(&player_offset, &player->position, &player->sock_position.midpoint);
+                NuVecRotateY(&player_offset, &player_offset, -player->sock_position.midpoint_rotation.y);
+                NuVecSub(&object_offset, &object->position, &object->sock_position.midpoint);
+                NuVecRotateY(&object_offset, &object_offset, -object->sock_position.midpoint_rotation.y);
+                result = player_offset.x - object_offset.x;
+            }
+        }
+        return result;
+    }
+}
+
+extern "C" {
     extern "C" void *Condition_AngleAboutMyLocatorToPlayerInit(AISYS_PC *, char *name, AISCRIPT_PC *) {
         return (void *)(intptr_t)(name != NULL && NuStrICmp(name, "player1") == 0 ? 1 : -1);
     }

@@ -415,6 +415,24 @@ i32 JediBInitLocator(WORLDINFO *world, NUVEC *position, i32 angle, AILOCATOR_PC 
     return 1;
 }
 
+void FactoryG_Init(WORLDINFO *world) {
+    struct gizmo_pc_s *g;
+    if (netclient != 0)
+        return;
+    g = GizmoFindByName(world->gizmo_sys, force_gizmotype_id, "force5");
+    if (g != NULL)
+        force_array[0] = (GIZFORCE_s *)g->object;
+    g = GizmoFindByName(world->gizmo_sys, force_gizmotype_id, "force6");
+    if (g != NULL)
+        force_array[1] = (GIZFORCE_s *)g->object;
+    g = GizmoFindByName(world->gizmo_sys, force_gizmotype_id, "force7");
+    if (g != NULL)
+        force_array[2] = (GIZFORCE_s *)g->object;
+    g = GizmoFindByName(world->gizmo_sys, force_gizmotype_id, "force8");
+    if (g != NULL)
+        force_array[3] = (GIZFORCE_s *)g->object;
+}
+
 STATIC_ASSERT(offsetof(PODRACE_RESOURCE_PC, max_lap_time) == 0xb010);
 STATIC_ASSERT(offsetof(PODRACE_RESOURCE_PC, lap_time_increment) == 0xb014);
 STATIC_ASSERT(offsetof(PODRACE_RESOURCE_PC, attempts_per_increment) == 0xb018);
@@ -442,6 +460,111 @@ i32 __cdecl Action_SetLapTime(void *system, void *process, void *packet, char **
             race->max_lap_time = race->previous_lap_display;
     }
     return 1;
+}
+
+i32 Action_Sebulba(AISYS_PC *unused0, AISCRIPTPROCESS_PC *unused1, AIPACKET_PC *packet, char **unused3, i32 unused4,
+                   i32 first_time, float unused6) {
+    struct gameobject_s *object;
+    nuhspecial_s special;
+    struct gameobject_s *target;
+    struct SOCKSYS *sock;
+    SOCKPOSITION_PC ahead;
+    NUVEC goal;
+    if (packet == NULL || packet->owner == NULL || packet->owner->objptr == NULL)
+        return 1;
+
+    object = packet->owner->objptr;
+
+    if (first_time != 0) {
+        NuSpecialFind(vehicle_scene, &special, "mine", 1);
+        object->field_ef9 |= 0x40;
+        object->field_f02 |= 0x20;
+        object->ai_packet.movement_stopped = 1;
+        object->run_speed_override = 1.0f;
+    }
+
+    target = player;
+    if (target != NULL && player2 != NULL) {
+        float x2 = object->position.x - player2->position.x;
+        float z2 = object->position.z - player2->position.z;
+        float x1 = object->position.x - target->position.x;
+        float z1 = object->position.z - target->position.z;
+        if (x2 * x2 + z2 * z2 <= x1 * x1 + z1 * z1)
+            target = player2;
+    }
+
+    sock = WORLD->sock_sys;
+    ahead = ahead;
+    MoveSockPosition(sock, &object->sock_position, sockstep, &ahead);
+    goal = goal;
+    if (target != NULL) {
+        f32 wanted;
+        f32 speed;
+        NUVEC target_offset;
+        NUVEC object_offset;
+        float target_distance = MidDistanceFromSockStart(sock, &target->sock_position);
+        float object_distance = MidDistanceFromSockStart(sock, &object->sock_position);
+        float difference = target_distance - object_distance;
+        (void)MidDistanceFromSockStart(sock, &object->sock_position);
+        (void)MidDistanceFromSockStart(sock, &target->sock_position);
+        wanted = ((difference + 25.0f) / test_factor + 1.0f) * avg_currentspeed_mul;
+        speed = SeekLinearF(object->run_speed_override, wanted, test_seek_rate);
+        object->run_speed_override = speed;
+        if (speed > max_speed_mul)
+            object->run_speed_override = max_speed_mul;
+        else if (speed < min_speed_mul)
+            object->run_speed_override = min_speed_mul;
+
+        target_offset = target_offset, object_offset = object_offset;
+        NuVecSub(&target_offset, &target->position, &target->sock_position.midpoint);
+        NuVecRotateY(&target_offset, &target_offset, -target->sock_heading);
+        NuVecSub(&object_offset, &object->position, &object->sock_position.midpoint);
+        NuVecRotateY(&object_offset, &object_offset, -object->sock_heading);
+        goal.x = object_offset.x * sebulba_lerpf + target_offset.x * (1.0f - sebulba_lerpf);
+        goal.z = 0.0f;
+        goal.y = 0.0f;
+        NuVecAdd(&goal, &goal, &ahead.midpoint);
+
+        packet->script_processor.action_timer += FRAMETIME;
+        if (packet->script_processor.action_timer > 1.0f) {
+            if (do_mine != 0) {
+                if (CreatePodRaceMine(&object->lower_position) != NULL)
+                    packet->script_processor.action_timer = 0.0f;
+            } else if (NuSpecialExistsFn(&special) != 0) {
+                NUVEC target_delta;
+                NUVEC throw_velocity;
+                NUMTX matrix;
+                ADDPART_PC part;
+                NUVEC origin = object->position;
+                origin.y += 1.0f;
+                target_delta = target_delta;
+                NuVecSub(&target_delta, &target->velocity, &target->collision_position);
+                throw_velocity = throw_velocity;
+                MakeThrowVector(&throw_velocity, &origin, &target->collision_position, &target_delta, 20.0f, -10.0f);
+                NuVecAdd(&throw_velocity, &throw_velocity, &object->velocity);
+                matrix = matrix;
+                NuMtxSetTranslation(&matrix, &origin);
+                part = Default_ADDPART;
+                part.matrix = &matrix;
+                part.velocity = &throw_velocity;
+                part.special = &special;
+                part.field_14 = 0.1f;
+                part.field_18 = 0.1f;
+                part.gravity = -10.0f;
+                part.part_id = 0x29b;
+                part.collision_fn = PartCollide_3D;
+                part.time_step = FRAMETIME;
+                AddPart(&part);
+                packet->script_processor.action_timer = 0.0f;
+            }
+        }
+    } else {
+        goal = ahead.midpoint;
+        object->run_speed_override = 1.0f;
+    }
+
+    AIMoveInstruction(packet, &goal, 0.0f, NULL, 1, 0.0f);
+    return 0;
 }
 
 #include <math.h>

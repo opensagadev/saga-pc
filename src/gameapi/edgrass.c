@@ -105,6 +105,24 @@ void edgracbSetClumpWind(eduimenu_s *unused0, eduiitem_s *item, u32 unused2) {
     edgraInitAllClumps();
 }
 
+static __inline void edgracbClumpSizesMenu(eduimenu_s *parent, eduiitem_s *unused1, u32 unused2) {
+    u32 colours[4] = {0x80000000, 0x80ff0000, 0x80808080, 0x80404040};
+    if (edgra_nearest == -1 || !GrassClumps[edgra_nearest].element_count)
+        return;
+    edgra_clumpsizes_menu = eduiMenuCreate(70, 70, 250, 250, ed_fnt, edgracbCancelClumpSizesMenu, "Clump Sizes");
+    if (!edgra_clumpsizes_menu)
+        return;
+    eduiMenuAddItem(edgra_clumpsizes_menu, eduiItemSliderCreate(0, colours, 0, edgracbSetClumpMinHeight, 0.0f, 5.0f,
+                                                                GrassClumps[edgra_nearest].field_2c, "Min Model Size"));
+    eduiMenuAddItem(edgra_clumpsizes_menu, eduiItemSliderCreate(0, colours, 0, edgracbSetClumpMaxHeight, 0.0f, 5.0f,
+                                                                GrassClumps[edgra_nearest].field_30, "Max Model Size"));
+    if (GrassClumps[edgra_nearest].kind == 1)
+        eduiMenuAddItem(edgra_clumpsizes_menu,
+                        eduiItemSliderCreate(0, colours, 0, edgracbSetClumpHeight, 0.1f, 9.9f,
+                                             GrassClumps[edgra_nearest].field_20, "Bend Height"));
+    edgraAttachMenu(parent, edgra_clumpsizes_menu);
+}
+
 void edgracbSetClumpArea(eduimenu_s *unused0, eduiitem_s *item, u32 unused2) {
     if (edgra_nearest != -1)
         GrassClumps[edgra_nearest].unknown_25 = item->data;
@@ -619,4 +637,51 @@ i32 edgraProc(f32 delta_time, FRAME_PAD_PC *pad) {
     else
         edgraDetermineNearestClump(1.0f);
     return (pad->digital_buttons_pressed >> 11) & 1;
+}
+
+static void edptlcbDrawflagMenu(eduimenu_s *parent, eduiitem_s *unused1, u32 unused2) {
+    struct debris_info_pc_s *effect;
+    if (edpp_nearest == -1 || edpp_ptls[edpp_nearest].instance_id == -1)
+        return;
+    effect = debtab[debkeydata[edpp_ptls[edpp_nearest].instance_id].effect_index];
+    edptl_drawflag_menu = eduiMenuCreate(70, 70, 180, 300, ed_fnt, edptlcbCancelDrawflagMenu, "Draw Flag");
+    if (edptl_drawflag_menu == NULL)
+        return;
+    eduiMenuAddItem(edptl_drawflag_menu,
+                    eduiItemCheckCreate(1, edblack, effect->time_group == 1, 1, edptlcbSetDrawflag, "Before Fog"));
+    eduiMenuAddItem(edptl_drawflag_menu,
+                    eduiItemCheckCreate(0, edblack, effect->time_group == 0, 1, edptlcbSetDrawflag, "After Fog"));
+    eduiMenuAddItem(edptl_drawflag_menu,
+                    eduiItemCheckCreate(3, edblack, effect->time_group == 3, 1, edptlcbSetDrawflag, "Super Early"));
+    eduiMenuAddItem(edptl_drawflag_menu,
+                    eduiItemCheckCreate(4, edblack, effect->time_group == 4, 1, edptlcbSetDrawflag, "Panel Mode"));
+    eduiMenuAttach(parent, edptl_drawflag_menu);
+    edptl_drawflag_menu->x = parent->x + 10;
+    edptl_drawflag_menu->y = parent->y + 40;
+}
+
+static void edptlcbGroupMenu(eduimenu_s *parent, eduiitem_s *unused1, u32 unused2) {
+    u32 *colours;
+    edptl_group_menu = eduiMenuCreate(70, 70, 250, 250, ed_fnt, edptlcbCancelGroupMenu, "Render Settings");
+    if (edptl_group_menu == NULL)
+        return;
+    colours = edblack;
+    if (edpp_nearest != -1 && edpp_ptls[edpp_nearest].instance_id != -1) {
+        DEBRIS_INFO_PC *effect = debtab[debkeydata[edpp_ptls[edpp_nearest].instance_id].effect_index];
+        if (effect->particle_type == 7) {
+            eduiMenuAddItem(edptl_group_menu, eduiItemSelCreate(1, edgrey, 0, 0, NULL, "Draw Flag..."));
+            colours = edblack;
+        } else {
+            eduiMenuAddItem(edptl_group_menu, eduiItemSelCreate(1, edblack, 0, 0, edptlcbDrawflagMenu, "Draw Flag..."));
+        }
+        eduiMenuAddItem(edptl_group_menu, eduiItemToggleCreate(2, colours, effect->cutscene_only != 0, 1,
+                                                               edptlcbChangeCSDisable, "Disable in Cut-Scenes"));
+        eduiMenuAddItem(edptl_group_menu, eduiItemSliderCreateInt(0, colours, 0, edptlcbSetGroup, 0, 32,
+                                                                  edpp_ptls[edpp_nearest].render_group, "Group ID"));
+    }
+    eduiMenuAddItem(edptl_group_menu, eduiItemSliderCreateInt(0, colours, 0, edptlcbSetMasterGroup, 0, 32,
+                                                              debris_render_group, "Master Test Switch"));
+    eduiMenuAttach(parent, edptl_group_menu);
+    edptl_group_menu->x = parent->x + 10;
+    edptl_group_menu->y = parent->y + 40;
 }

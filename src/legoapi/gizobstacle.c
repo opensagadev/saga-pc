@@ -103,6 +103,10 @@ void GizActions_PlayRadio(GIZFLOW_PC *unused0, FLOWBOX_PC *unused1, char **param
     }
 }
 
+void GameRegisterGizActions(void) {
+    RegisterGizActions(game_gizactiondefs);
+}
+
 i32 GizBombGens_Load(void *world_ptr, void *system_ptr) {
     const u8 version = (u8)(EdFileReadChar());
     GIZBOMBGENSYS_s *system = (GIZBOMBGENSYS_s *)(system_ptr);
