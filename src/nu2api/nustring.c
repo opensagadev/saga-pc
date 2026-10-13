@@ -162,6 +162,7 @@ void __cdecl NuStrFixExtPlatform(char *dst, char *src, char *ext, i32 dst_size, 
     }
 
     NuStrCpy(suffix, "PC");
+    NuStrCat(suffix, ".");
     NuStrCat(suffix, ext);
     suffix_length = NuStrLen(suffix);
     source_length = NuStrLen(src);
@@ -181,16 +182,18 @@ void __cdecl NuStrFixExtPlatform(char *dst, char *src, char *ext, i32 dst_size, 
     if (separator >= period) {
         NuStrCat(dst, "_");
         NuStrCat(dst, platform_string != NULL ? platform_string : "PC");
+        NuStrCat(dst, ".");
         NuStrCat(dst, ext);
     } else {
         *period = '\0';
         NuStrCat(period, "_");
         NuStrCat(period, platform_string != NULL ? platform_string : "PC");
+        NuStrCat(period, ".");
         NuStrCat(period, ext);
     }
 
     if (NuStrLen(dst) > dst_size - 1) {
-        STUBBED_NAMED("NuStrFixExtPlatform: retail buffer-size assertion at 0x4ef790");
+        NuFileError();
     }
 }
 

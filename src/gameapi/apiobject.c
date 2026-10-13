@@ -1411,6 +1411,10 @@ f32 __cdecl AnimEndFrame(CHARACTER_MODEL_LAYERS_PC *model, i32 animation) {
 }
 
 static i32 AnimBlendModePc = 1;
+
+void __cdecl SetAnimBlendMode(i32 mode) {
+    AnimBlendModePc = mode;
+}
 static f32 UpdateAnimTimer(CHARACTER_MODEL_LAYERS_PC *model, ANIMPACKET_PC *packet, i16 animation, f32 time,
                            f32 frame_step, f32 movement_speed, i32 report_events, char *reversed, i32 backwards,
                            f32 backwards_multiplier) {

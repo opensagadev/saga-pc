@@ -1,5 +1,7 @@
 #include "saga.h"
 
+extern "C" void __cdecl InitGameBeforeConfig(void);
+
 extern "C" {
     static void StartupParseArguments(i32 count, char **arguments) {
         while (count > 0) {
@@ -26,7 +28,7 @@ extern "C" void __cdecl InitOnce(i32 argc, char **argv) {
     permbuffer_base = original_permbuffer_base;
     superbuffer_end.addr = original_permbuffer_base.addr + (u32)SUPERBUFFERSIZE;
     /* Native uses the permanent arena without an allocation-failure branch here. */
-    STUBBED_NAMED(0x00428b90);
+    InitGameBeforeConfig();
     StartupParseArguments(argc - 1, argv + 1);
     NuFileSetCurrentDirectory(InitOnceCurrentDirectory);
     STUBBED_NAMED(0x00602930); /* (1.0f, .5f, 0), 401268 */

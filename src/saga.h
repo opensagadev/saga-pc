@@ -1653,7 +1653,9 @@ typedef struct gamesave_s {
             u32 initial_store_pack_flags;
             u32 newgame_reserved_7c00;
             u32 purchased_extra_bits_high;
-            u8 newgame_reserved_7c08[0x1c];
+            u8 newgame_reserved_7c08[0x10];
+            u16 save_hash;
+            u8 newgame_reserved_7c1a[0xa];
             GAME_CUSTOMISER_START_PC customiser_start[2];
         };
     };

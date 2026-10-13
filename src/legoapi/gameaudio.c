@@ -93,3 +93,14 @@ void __cdecl GameAudio_SetActionMusicTimes(f32 initial_delay, f32 hold_time) {
     ActionMusicStickyTimeoutPc[0] = initial_delay;
     ActionMusicStickyTimeoutPc[1] = hold_time;
 }
+
+void __cdecl GameAudio_Reset(void) {
+    i32 i;
+
+    GameAudio = &GameAudioStorage;
+    memset(&GameAudioStorage, 0, sizeof(GameAudioStorage));
+    for (i = 0; i < 84; i++) {
+        GameAudioStorage.sfx_names[i] = NULL;
+        GameAudioStorage.sfx_ids[i] = -1;
+    }
+}

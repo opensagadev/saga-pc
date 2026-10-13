@@ -3059,3 +3059,10 @@ void __cdecl NuAnimInit(i32 max_joints, VARIPTR *buffer, VARIPTR end) {
     header->joint_count = 0;
     globalbuffer = header;
 }
+
+u8 __cdecl NuAnimSetForceEulerToQuat(u8 force) {
+    u8 previous = ForceEulerToQuat;
+
+    ForceEulerToQuat = force;
+    return previous;
+}

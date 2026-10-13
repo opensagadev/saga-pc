@@ -545,6 +545,93 @@ static void __cdecl Punch_HitExtraCode_alternate_PC(GAMEOBJECT *object, NUVEC *p
 extern "C" f32 __cdecl GetVehicleAreaRememberSpeed(void);
 extern "C" SUIT_LAYERS_PC *__cdecl Suit_GetLast(i32, i32);
 
+extern "C" {
+    void __cdecl SetAnimBlendMode(i32 mode);
+    void __cdecl GameRegisterGizActions(void);
+    void __cdecl DrawAutoSaveIcon(void);
+    void __cdecl InitPartTable(char **names);
+    void __cdecl GameAudio_Reset(void);
+    u8 __cdecl NuAnimSetForceEulerToQuat(u8 force);
+    i32 __cdecl NuWindowsGetConfigValuePc(i32 index);
+
+    u8 *Game_LevelSave;
+    MISSION_SAVE_READER_PC *Game_MissionSave;
+    TIMER OverallGamePlayTimer;
+    i32 GameDrawCharacterModelFlagPc = 1;
+    char *partdebris_name[] = {"TRAINING_P",   "PART_MOUSE", "PART_BLACK_3", "DRAG_PART_1", "SMALL_PART_2", "RAT_PART",
+                               "BOULDER_PART", "POPCORN",    "PART_THROW",   "ENG_POP",     "DOOKU_PART",   "MAUL_P_1",
+                               "MAUL_P_2",     "MAUL_P_3",   "SPEAR_HIT",    "RED_BRICK",   "POD_ROCK",     NULL};
+}
+
+static void InitOptionsSaveDefaults(OPTIONSSAVE *options) {
+    i32 aspect = NuVideoGetAspect();
+
+    options->unknown_0000[0] = 0;
+    options->unknown_0000[1] = 0;
+    options->unknown_0000[2] = 0;
+    options->music_volume = 10;
+    options->sound_volume = 10;
+    options->unknown_0007[0] = 0;
+    options->unknown_0007[1] = 0;
+    options->master_volume = 10;
+    options->music_enabled = 1;
+    options->widescreen = (aspect == 0 || aspect == 3) ? 0 : 1;
+    options->brightness = 10;
+    options->sound_volume = (u8)NuWindowsGetConfigValuePc(6);
+    options->music_volume = (u8)NuWindowsGetConfigValuePc(5);
+}
+
+static i32 __cdecl MakeSaveHash(void) {
+    return Game.save_hash;
+}
+
+extern "C" void __cdecl InitGameBeforeConfig(void) {
+    if (PAL != 0) {
+        NuStrCpy(SaveProductCodePc, "BESLES-54221");
+        DEFAULTFRAMETIME = 0.02f;
+    } else {
+        NuStrCpy(SaveProductCodePc, "BASLUS-21409");
+        DEFAULTFRAMETIME = ApplyGravityMinimumFrameTime;
+    }
+    FRAMETIME = DEFAULTFRAMETIME;
+    DEFAULTFPS = 1.0f / DEFAULTFRAMETIME;
+    DEFAULTFRAMETIME = ApplyGravityMinimumFrameTime;
+    MAXFRAMETIME = 0.1f;
+    SaveSystemInitialise(6, MakeSaveHash, &Game, sizeof(Game), 1, DrawAutoSaveIcon);
+    Game_OptionsSave = &Game.options_save;
+    Game_LevelSave = Game.unknown_0011;
+    Game_AreaSave = (COLLECTION_AREA_SAVE_PC *)Game.area_save;
+    EpisodeSavePc = (EPISODE_SAVE_READER_PC *)Game.episode_start;
+    Game_CharacterSave = Game.character_save;
+    CustomiserCompletionSavePc = (CUSTOMISER_COMPLETION_READER_PC *)&Game.save_hash;
+    Game_MissionSave = &Game.mission_save;
+    ResetSeeds();
+    ResetTimer(&GlobalTimer, 0.0f);
+    ResetTimer(&OverallGamePlayTimer, 0.0f);
+    SetAnimBlendMode(2);
+    SetAPIObjPlaySfxByIdFn(PlaySfxById);
+    PCAnimationEffectCheckpoint();
+    InitOptionsSaveDefaults(&Game.options_save);
+    GameSetSoundVolume(&Game.options_save);
+    GameSetMusicVolume(&Game.options_save);
+    Text_GameSetLanguageFn = Text_SetLanguage_Game;
+    if (Text_Language != 0 && Text_Language != 13 && PAL != 0) {
+        Text_SetLanguage(NuLanguageGet());
+    }
+    GameRegisterGizActions();
+    WorldInfo_Reset(&WorldInfo[0], -1);
+    WorldInfo_Reset(&WorldInfo[1], -1);
+    Game.purchased_extra_bits_high |= 0x1000;
+    memset(&KillPartsZeroLightingPc, 0, sizeof(KillPartsZeroLightingPc));
+    memset(GameCam, 0, sizeof(*GameCam));
+    InitPartTable(partdebris_name);
+    GameAudio_Reset();
+    if (StartupGameFlag0 != 0) {
+        NuAnimSetForceEulerToQuat(1);
+    }
+    GameDrawCharacterModelFlagPc = 0;
+}
+
 typedef struct game_door_callback_pc_s {
     u8 unknown_00[0xf0];
     u16 level_id;

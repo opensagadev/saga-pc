@@ -146,6 +146,8 @@ address    , symbol                                                         , si
 0x427c70,_StartDropOut,90,
 0x427cd0,_DropOut,495,
 0x4289a0,_AdaptiveDifficultyAdjustPc,156,"f32 __cdecl(ADAPTIVEDIFFICULTY_PC*,f32)"
+0x428b20,?InitOptionsSaveDefaults@@YAXPAUoptionssave_s@@@Z,85,
+0x428b80,?MakeSaveHash@@YAHXZ,8,
 0x428b90,_InitGameBeforeConfig,466,
 0x00428d70,?GoThroughDoor_ExtraCode@@YAXPAUWORLDINFO_s@@PAUgame_door_callback_pc_s@@@Z,176,
 0x00428e20,?CanMagnetClimb_Game@@YAHPAUgameobject_s@@@Z,29,
@@ -1088,6 +1090,7 @@ address    , symbol                                                         , si
 0x4b6bf0,_MovePlayer_NETWORK,1121,
 0x4b7080,_NuRndrPrimSetColour,108,
 0x4b7120,_PowerUp_GetPanelY,108,f32 __cdecl (i32)
+0x4b7190,_DrawAutoSaveIcon,11,
 0x4b71a0,_UpdateStats,1955,
 0x004b8fc0 , _InDoubleScoreZone                                             , 116   , i32 __cdecl (GAMEOBJECT *)
 0x4ba190,_Panel_Clear,87,
@@ -2258,6 +2261,7 @@ address    , symbol                                                         , si
 0x00547700 , _EndPerm                                                       , 124   , void __cdecl (void)
 0x00547780 , _ResetCharacterBuffer                                          , 87    , void __cdecl (i32)
 0x00547820 , _GameAudio_GetPlrSfxBits                                       , 34    , i32 __cdecl (void *)
+0x547850,_GameAudio_Reset,70,
 0x005478a0 , _GameAudio_PlaySfxById                                         , 141   ,
 0x00547930 , _GameAudio_PlaySfx                                             , 33    ,
 0x547990,_GameAudio_GetSfxId,28,i32 __cdecl(i32)
@@ -2792,6 +2796,7 @@ address    , symbol                                                         , si
 0x570c90,_SpecialMiniKits_Configure,786,"void __cdecl(WORLDINFO *, char *)"
 0x570fb0,_SpecialMiniKits_Reset,126,
 0x571030,_SpecialMiniKits_Draw,760,
+0x571850,_InitPartTable,49,
 0x571890,_InitPartDebris,352,"PARTDEBRISSYS * __cdecl (VARIPTR *, VARIPTR *, i32, i32, char **, i32)"
 0x5719f0,_FindPartDebris,86,"i32 __cdecl(PARTDEBRISSYS *,char *)"
 0x571a50,_LoadPartFile,204,void __cdecl(WORLDINFO *)
@@ -4081,6 +4086,7 @@ address    , symbol                                                         , si
 0x5ca2a0,_NuAnimBuffCreateScratch,73,
 0x005ca320 , _ANI_FixUpAddrs                                                , 107   , "void __cdecl (ANI3_HEADER_PC *, i32, i32)"
 0x5ca390,_NuAnimBuffEvaluateCallback,30,
+0x5ca3b0,_NuAnimSetForceEulerToQuat,17,
 0x005ca450,_NuAnimNumNodes,30,
 0x005ca470 , _NuAnimEndFrame                                                , 58    , f32 __cdecl (void *)
 0x005ca4b0 , _NuAnimEndFrameOld                                             , 65    , f32 __cdecl (void *)
@@ -6290,6 +6296,7 @@ address    , symbol                                                         , si
 0x6dd160,_PcPlatformPolicy,321,u8 __cdecl(u8)
 0x6dd2b0,_PublishWindowPc,37,"i32 __cdecl(HWND,i32)"
 0x6dd2e0,_PcRelaunchMediaCenter,126,void __cdecl(void)
+0x6dd380,_NuWindowsGetConfigValuePc,12,
 0x006dd390 , _NuWindowsProcessMessages                                      , 97    , i32 __cdecl (void)
 0x6dd420,_PcGetUserFolder,56,"char *__cdecl PcGetUserFolder(const char *, const char *)"
 0x6dd8c0,_PCOptionsBuildFolder,284,void __cdecl(char*)
@@ -8196,7 +8203,9 @@ address    , symbol                                                         , si
 0x754f9c,??_C@_02BHLPILOJ@?B?$KD?$AA@,,const char[3]
 0x754fa0,??_C@_02JACHJHCG@?B?$KM?$AA@,,const char[3]
 0x00754fa4 , _ApplyGravityMinimumFrameTime                                  , 4     , const f32
+0x754fa8,??_C@_0N@COBFKCAF@BASLUS?921409?$AA@,,const char[13]
 0x754fb8,__real@3ca3d70a,4,const f32
+0x754fbc,??_C@_0N@LKAAGFHJ@BESLES?954221?$AA@,,const char[13]
 0x00754fcc,??_C@_08IHKMLLEN@WhipNowt?$AA@,,const char[9]
 0x754fd8,??_C@_07PJLLFKBJ@WhipHit?$AA@,8,const char[8]
 0x00754fe0,??_C@_0P@GOJFLLHH@fs_gamorr_land?$AA@,,const char[15]
@@ -8274,6 +8283,23 @@ address    , symbol                                                         , si
 0x00755330,??_C@_0BF@LBCKBGFO@chars?2collection?4txt?$AA@,,const char[21]
 0x755348,??_C@_08BIMHHCLM@MK?9Panel?$AA@,9,const char[9]
 0x755348,_ScorePanelName,9,char[9]
+0x755354,??_C@_08DGHAOALJ@POD_ROCK?$AA@,,const char[9]
+0x755360,??_C@_09MKNFFHNB@RED_BRICK?$AA@,,const char[10]
+0x75536c,??_C@_09LLDMPGNL@SPEAR_HIT?$AA@,,const char[10]
+0x755378,??_C@_08DIKOJKHA@MAUL_P_3?$AA@,,const char[9]
+0x755384,??_C@_08CBLFKLDB@MAUL_P_2?$AA@,,const char[9]
+0x755390,??_C@_08KJIPIPC@MAUL_P_1?$AA@,,const char[9]
+0x75539c,??_C@_0L@MOOFIEBB@DOOKU_PART?$AA@,,const char[11]
+0x7553a8,??_C@_07ENPKBIPO@ENG_POP?$AA@,,const char[8]
+0x7553b0,??_C@_0L@NFEPGNBF@PART_THROW?$AA@,,const char[11]
+0x7553bc,??_C@_07KMNACMJA@POPCORN?$AA@,,const char[8]
+0x7553c4,??_C@_0N@ODAHGNHH@BOULDER_PART?$AA@,,const char[13]
+0x7553d4,??_C@_08CAHDKFEJ@RAT_PART?$AA@,,const char[9]
+0x7553e0,??_C@_0N@KGBKGNHI@SMALL_PART_2?$AA@,,const char[13]
+0x7553f0,??_C@_0M@JAMAGINP@DRAG_PART_1?$AA@,,const char[12]
+0x7553fc,??_C@_0N@IDNLELKP@PART_BLACK_3?$AA@,,const char[13]
+0x75540c,??_C@_0L@LDKJPACI@PART_MOUSE?$AA@,,const char[11]
+0x755418,??_C@_0L@BOPNJPLH@TRAINING_P?$AA@,,const char[11]
 0x755424,_PermanentDebrisNamePc755424,,const char[10]
 0x755430,_PermanentDebrisNamePc755430,,const char[11]
 0x75543c,_PermanentDebrisNamePc75543c,,const char[8]
@@ -14705,6 +14731,7 @@ address    , symbol                                                         , si
 0x7f5dc4   , _FalconDebKey                                                   , 8     , i32[2]
 0x7f5dcc,_GunshipDustEmissionRatePc,,f32
 0x7f5dd0,_debris_name,,char *[147]
+0x7f6410,_partdebris_name,,char *[18]
 0x7f6570,_RippleRandomRadiusPc,,f32
 0x7f6574,_RipplePerturbationPc,,f32
 0x7f6578,_RippleSfxCooldownPc,,f32
@@ -15486,6 +15513,7 @@ address    , symbol                                                         , si
 0x804d20,_ZipUpSwingStartAnimationPc,,u16
 0x804d24,_ZipUpSwingSwingAnimationPc,,u16
 0x804d28,_ZipUpSwingJumpAnimationPc,,u16
+0x804d2c,_GameDrawCharacterModelFlagPc,,i32
 0x804dc4,_PUNCHGAP,,f32
 0x804dc8,_PUNCHCHARGAP,,f32
 0x804dcc,_CanPunchGirls,,i32
@@ -16553,6 +16581,7 @@ address    , symbol                                                         , si
 0x0087b9b8 , _PANEL3DMULY                                                   , 4     , f32
 0x87b9bc,_minikittime,,f32
 0x87b9c0,_goldbricktime,4,f32
+0x87b9c8,_AutoSaveIconPendingPc,,i32
 0x87b9cc,_cointotal_x,,f32[2]
 0x0087b9dc , _DrawBossHitPointsActorPc                                      ,       ,
 0x87b9dc,_drawbosshitpoints,4,struct gameobject_s *
@@ -17773,6 +17802,7 @@ address    , symbol                                                         , si
 0x92507c   , _GameTimer                                                     , 16    , TIMER
 0x92508c,_SuperStoryTimer,16,TIMER
 0x92509c,_AreaTimer,16,TIMER
+0x9250ac,_OverallGamePlayTimer,,TIMER
 0x009250bc,_LevelTimer,,TIMER
 0x9250cc,_LevelNameTime,,f32
 0x009250d0 , _PAL                                                           , 4     , i32
@@ -18112,6 +18142,7 @@ address    , symbol                                                         , si
 0x951be8   , _ExtraLevelObject_NameTable                                    , 4     , char *
 0x951bec   , _ExtraLevelObject_NameTableSize                                , 4     , i32
 0x951bf0   , _ExtraLevelObject_NameTableIndex                               , 4     , i32
+0x951bf4,_Game_LevelSave,,u8 *
 0x00951bf8,_newlevelfrommenu_newmenuy,,i32
 0x00951bfc , _CutDeadVehiclePlayer                                          , 4     , GAMEOBJECT *
 0x00951c00 , _CUTSTOPGAME                                                   , 4     , i32
@@ -18178,6 +18209,7 @@ address    , symbol                                                         , si
 0x009553ec , _CHARPAK                                                       , 4     , i32
 0x9553f0   , _SecondCharConfigure                                           , 4     , i32
 0x009553f4 , _MissionSys                                                    , 4     , MISSIONSYS_PC *
+0x9553f8,_Game_MissionSave,,MISSION_SAVE_READER_PC *
 0x9553fc,_PlayerSpecialMoveDataPc,,void *
 0x955400,_PlayerSpecialMoveCountPc,,i32
 0x955408,_ShoveSystemPc,,SHOVE_SYSTEM_PC
@@ -19185,6 +19217,7 @@ address    , symbol                                                         , si
 0x2975940,?PcKeyboardCapabilities@@3UPC_DI_CAPS_PC@@A,,PC_DI_CAPS_PC
 0x29759f0,_NuHwParameter19Pc,,u32
 0x29759f8,_PcWindowCallbacks,,PC_WINDOW_CALLBACK_PC[1]
+0x2975a18,_NuWindowsConfigValuesPc,,i32[19]
 0x2975a64,_PcWindowClass,,WNDCLASSEXA
 0x02975a94 , _win_message                                                   , 28    , MSG
 0x2975ab0,_PcArgv,,char *[2]
