@@ -51,3 +51,14 @@ void __cdecl Level_Draw(WORLDINFO *world) {
     if (draw != NULL)
         draw(world);
 }
+
+void __cdecl Level_Update(WORLDINFO *world) {
+    void(__cdecl * update)(WORLDINFO *) = (void(__cdecl *)(WORLDINFO *))world->current_level->callbacks[3];
+    if (update != NULL)
+        update(world);
+    if (DoubleScoreTime > 0.0f &&
+        (i32)((f64)GameTimer.time_elapsed * 2.0) != (i32)((f64)GameTimer.last_time_elapsed * 2.0))
+        GameAudio_PlaySfxAndSetVolume(0x35, NULL, DoubleScoreTime);
+    if (AreaGlobals_PC.field_00 == 0 && Cheats_CheckFlags(0x2000) != 0)
+        AreaGlobals_PC.field_00 = 1;
+}

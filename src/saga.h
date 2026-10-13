@@ -17671,6 +17671,7 @@ extern "C" {
     extern void *things_scene_terrain;
     extern i32 PARTPAGE_GENERAL;
     void __cdecl CreateFadeMaterials(void);
+    void __cdecl Level_Update(WORLDINFO *world);
     void __cdecl Level_Draw(WORLDINFO *world);
     void __cdecl LoadPerm1(void);
 #ifdef __cplusplus
@@ -20104,6 +20105,7 @@ extern "C" {
     void __cdecl Batarangs_CheckLostData(void *);
     extern f32 HubMiniKitPanelTimePc;
     void __cdecl Hub_ResetPanel(void);
+    void __cdecl GameAudio_PlaySfxAndSetVolume(i32 sfx, NUVEC *position, f32 volume);
     i32 __cdecl GameAudio_GetSfxId(i32);
     extern AREA_DATA_PC *KAMINO_ADATA;
 #ifdef __cplusplus

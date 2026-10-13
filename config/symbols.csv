@@ -2279,6 +2279,7 @@ address    , symbol                                                         , si
 0x547850,_GameAudio_Reset,70,
 0x005478a0 , _GameAudio_PlaySfxById                                         , 141   ,
 0x00547930 , _GameAudio_PlaySfx                                             , 33    ,
+0x547960,_GameAudio_PlaySfxAndSetVolume,46,"void __cdecl(i32,NUVEC *,f32)"
 0x547990,_GameAudio_GetSfxId,28,i32 __cdecl(i32)
 0x5479b0,_GameAudio_AddSfx,85,"void __cdecl (i32, i32 *, i32 *, i32)"
 0x547a10,_GameAudio_SetActionMusicTimes,21,"void __cdecl(f32,f32)"
@@ -3008,6 +3009,7 @@ address    , symbol                                                         , si
 0x57a390,_LevelObject_GetReflection,40,i32 __cdecl(i32)
 0x57a3c0,_LevelObject_FindIndexFromName_RefOnly,93,i32 __cdecl(char *)
 0x0057a420 , _Level_LoadConfigFile                                          , 164   , void __cdecl (WORLDINFO *)
+0x57a4d0,_Level_Update,139,void __cdecl(WORLDINFO *)
 0x57a560,_Level_Draw,24,void __cdecl(WORLDINFO *)
 0x0057a580 , _GoToNewLevel                                                  , 43    ,
 0x0057a5b0 , _CompleteLevel                                                 , 97    ,

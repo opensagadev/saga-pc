@@ -67,6 +67,11 @@ void __cdecl GameAudio_PlaySfx(i32 sfx, NUVEC *position, i32 flags, i32 volume) 
     }
 }
 
+void __cdecl GameAudio_PlaySfxAndSetVolume(i32 sfx, NUVEC *position, f32 volume) {
+    if ((u32)sfx <= 0x53)
+        PlaySfxByIdAndSetVolume(GameAudio->sfx_ids[sfx], position, volume);
+}
+
 i32 __cdecl GameAudio_GetSfxId(i32 sfx) {
     if ((u32)sfx <= 0x53)
         return GameAudio->sfx_ids[sfx];

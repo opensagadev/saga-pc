@@ -236,7 +236,8 @@ static void NuMainUpdateFrame(WORLDINFO *world, i32 *frame_flag) {
             Teleports_UpdateAfterGameObjects(world);
             Pulses_Update((LEVEL_SFX_PULSE_PC *)world->pulses_sys);
             STUBBED_NAMED("NuMainUpdateFrame: Detonators_Update at 0x00426fa0, Batarangs_Update at 0x00405ac0, "
-                          "UpdateCables at 0x00408af0, Level_Update(world) at 0x0057a4d0");
+                          "UpdateCables at 0x00408af0");
+            Level_Update(world);
             Bolts_Update(world);
             UpdateParts(FRAMETIME);
             if (KillPartsBrickImpactWaitPc > 0.0f) {
