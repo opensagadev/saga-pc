@@ -52,6 +52,7 @@ i32 fpk_err;
 i32 PCThreadCriticalSectionCount_candidate;
 CRITICAL_SECTION PCThreadCriticalSections_candidate[13];
 i32 PCFrameCriticalSectionIndex_candidate;
+i32 nudlist_field_fc4;
 u8 PCFrameLoadingYieldEnabledPC;
 
 /* Independent zeroed parser/string state for this synthetic file-I/O executable. */

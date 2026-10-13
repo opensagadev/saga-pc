@@ -31,6 +31,14 @@ __declspec(noinline) void __cdecl PCThreadCriticalSectionLeave_candidate(i32 sec
     }
 }
 
+void __cdecl PCDisplayListCriticalSectionEnterPc(void) {
+    PCThreadCriticalSectionEnter_candidate(nudlist_field_fc4);
+}
+
+void __cdecl PCDisplayListCriticalSectionLeavePc(void) {
+    PCThreadCriticalSectionLeave_candidate(nudlist_field_fc4);
+}
+
 void __cdecl PCFrameCriticalSectionEnter_candidate(void) {
     PCThreadCriticalSectionEnter_candidate(PCFrameCriticalSectionIndex_candidate);
 }

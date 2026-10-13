@@ -30,13 +30,13 @@
     "src/audio/vorbis/vorbis/vorbisfile.h": "b5561ad23bc20c2dbd12a58218a6da3c6c1130036b3c547b257ded17452cbce6",
     "src/audio/vorbis/window.h": "a10ede6832692ccec154bb9291be7ec236f9642a99a6af9b108ff7df030904b5",
     "src/externals.h": "5b08276a7759c01921ac2a5239bf0978accdd38d2533b458c25d1b16f8a4402d",
-    "src/saga.h": "80b2b56a2a224b68a4a4900bcb69fdfe39125951843bf2026519a83226ebd96c",
+    "src/saga.h": "5da4ea18ca815ee8fa5d618b1c6dfd4318e56b9db839023959662c733461e6dc",
     "config/candidate-only.json": "8f7aa39331971569f1680eb2a198c86a1b4b250382a55143fe68bcead3f52e19",
     "config/code-groups.json": "beca4e257e13ae300c33715f41313f086de5df53cb41a038669d41e10131312f",
     "config/data-members.json": "fe09365da4c355f220d724ca99394fc120b758891b4188d2c49707b6df0894f2",
     "config/library-objects.json": "e5ae24d3eac36fa0d0cb098f7690faaef3110f225db30c8cbf0f7d0d64f6ecfe",
     "config/project.json": "dc0e8cc85ae5650c6937b70ccaefb0153629c2460fa09cd4f6b625e251e623dd",
-    "config/symbols.csv": "51135c1115086c6a4eefba90939780ef78514cab888bd6690b55d06b52511a6e",
+    "config/symbols.csv": "01e7930d7374d7fd3dcbfce4d708257ed131f1ed6a4b44efa4af483adf4ff881",
     "config/symbols.md": "dffbdaac86011e3aee74b404063c15bda97f88af3db337ffef9f1bad1785d212",
     "config/toolchain.json": "489d0782638d8033137cdb2834462416111945cbfa073147820e314b8576b95b",
     "config/tools.json": "50199f6b132a7abfabf251e98a75be0a957abfe50f1ff776188fba21e4c4436f",
@@ -367,7 +367,7 @@
     "src/nu2api/nufloat.c": "bd2c30f24957423aa4ba2392df75cf6badfc38db43c782c0c690222782cb5333",
     "src/nu2api/nufont.c": "af53aaa2298355966c68ec0f963c1dbd72f1ba8cc5d955eeb76d49ca7392ca41",
     "src/nu2api/nufpar.c": "126be790fdcc8f0f33cccab553f94221d22c3dc3f320aa149e758255c2eb852a",
-    "src/nu2api/nuframe.c": "7b7427b59eca1bf93e3ee2ab8ee3ea6b164aa98ad9a4b404c87a86232c48b538",
+    "src/nu2api/nuframe.c": "dcb5b385bd4ac443e215a3af6f82a8fdfd03de7403ce576d6016f5cfa67112da",
     "src/nu2api/nughg.c": "217d12dab25d94de5d952948b1628281c8fb95019a637b354e947537f0fd429b",
     "src/nu2api/nugobj.c": "3313538f7e20281321e23694187b68c447385902fa80a317effe833ab2097bb3",
     "src/nu2api/nugscn_pc.c": "84bded48b3dd2e7699cd492b2e2ba40da45694942ad5b1fe69c65c8a4c31786b",
@@ -409,7 +409,7 @@
     "src/nu2api/nuterrain.c": "42936edd2d3ed5e279ed24ca89383e4e1f76aa053c3034f26a35f559e1b30ad7",
     "src/nu2api/nutex.c": "825414218218faac6a8707345c8b2717046735b7406dcaf4e4a48ce01a9afd66",
     "src/nu2api/nutexanim.c": "b73cd71e974406db5b3e38c51851212747ce298104f994775f7bf849ca948ab5",
-    "src/nu2api/nuthread.c": "4645845c85aec59763e77076eca8eeadce2a76e2aa38b0f6452faaf44c0cc0ff",
+    "src/nu2api/nuthread.c": "4ec13a0bcab0193b9e3f2665fa0b8607747ef02962faf14fdeab4c03fe17b0a5",
     "src/nu2api/nutimebar.c": "27407eb6b055759f745937da2ad4ad55bfcb649332f55f39d831a40ea8b4d53b",
     "src/nu2api/nutrig.c": "0ac1cda3a300f40421754dafbee97dab5a98196a3ef0f0eb237a1d7e6f20bd38",
     "src/nu2api/nuvec.c": "242376de36a191733838cedfb195edc9f79014afb1c1b9ca0875002eda4ed47a",
@@ -688,7 +688,7 @@
     "build/obj/nu2api/nufloat.obj": "775d283231b12b48dd960802229783653f8ef39e06b17d3f48fbb7fc4d0ec222",
     "build/obj/nu2api/nufont.obj": "8034f88dac017cb8d84cbe9e55282a64ac757183dee99ac3432c7f23804c0957",
     "build/obj/nu2api/nufpar.obj": "dfaa0a1e2162b7cc75a9bc6d552aba42f87f02bb3a83666cc0ffe08940488ea6",
-    "build/obj/nu2api/nuframe.obj": "8eb295b6b0cb6ad7940462bb46f1383e015d2f32d52d1f3474f48af80875ae5e",
+    "build/obj/nu2api/nuframe.obj": "97c05be28e7deffeeb9bee43e0b42cf139901020a0ba932a26e4b05a9cbe0663",
     "build/obj/nu2api/nufrustum_pc.obj": "fa3c1595c42b53b2774a6dc7b6dc43349bf76bec00d22acb6ddc64c1f926ba55",
     "build/obj/nu2api/nughg.obj": "33ab951b1e33d58cb1a73c761bc136444916185e3d2d7a0a0ddaecaeff66648c",
     "build/obj/nu2api/nugobj.obj": "f4a1cfbdd072365f0b4e47e54354a0334a2cdf678ff3c882f59033abbd5c123f",
@@ -744,7 +744,7 @@
     "build/obj/nu2api/nutex.obj": "20277b0ade513eaf7514ed69b7651a796b65ed579320ff2910e07dc82f4e54fa",
     "build/obj/nu2api/nutex_pc.obj": "5fd159089ebb5dbd5edf7973c04a2fc9c76b2a6023050404b5827e5a3dd3d0c7",
     "build/obj/nu2api/nutexanim.obj": "9308c4e459c1e37c4d6cea122aaaee8bb870d36d84d190e50309e3aadf1f40cf",
-    "build/obj/nu2api/nuthread.obj": "8dd99430bd74a398d38c0a8f6537834ce6ccd92e051358bc65ee2873f794c903",
+    "build/obj/nu2api/nuthread.obj": "20e9edf4d18f7e195c3d674a0b7ca62630fa5a898396aaedbc3c55690ef889a9",
     "build/obj/nu2api/nutimebar.obj": "73a2835539cc8feca5767ad3eb0e4428141470f6747b86f672b8ae598f89b962",
     "build/obj/nu2api/nutrig.obj": "4e27ff4577ca56bcb54f0bed0314ccf19dbdb24ce4567039ca158fa76c41c06d",
     "build/obj/nu2api/nuvec.obj": "a07b476213155bc4958ee07ce4a467bb75f3d8702ef691d99a2384f6481ac9ad",
@@ -36682,17 +36682,17 @@
       "objects": [
         {
           "unit": "src/nu2api/nuframe.c",
-          "base_size": 398,
+          "base_size": 415,
           "exact_match": false,
           "target_sha256": "883d100182098ba8779d0d72e95f9c2e8a983bf4e8a3907107e6c9d2914a1a04",
-          "base_sha256": "cb356cf6724802259fecb2926ecfb99033e05d29fac646deccecb6a224d887e2",
-          "relocation_count": 48,
+          "base_sha256": "09027097b8ebbcffa7ea65182add47ccd1d90b6c4f097faed633e7f35053b8a6",
+          "relocation_count": 50,
           "comparison_unit": "004fd050-68a5202400a8",
-          "objdiff_percent": 31.988764
+          "objdiff_percent": 32.62547
         }
       ],
       "status": "different",
-      "objdiff_percent": 31.988764
+      "objdiff_percent": 32.62547
     },
     {
       "name": "NuFileLoad",
@@ -99354,6 +99354,54 @@
       ],
       "status": "different",
       "objdiff_percent": 76.53061
+    },
+    {
+      "name": "PCDisplayListCriticalSectionEnterPc",
+      "symbol": "_PCDisplayListCriticalSectionEnterPc",
+      "address": "0x005de1a0",
+      "units": [
+        "src/nu2api/nuthread.c"
+      ],
+      "target_size": 13,
+      "exact_match": true,
+      "objects": [
+        {
+          "unit": "src/nu2api/nuthread.c",
+          "base_size": 13,
+          "exact_match": true,
+          "target_sha256": "1e24263d62f3e312a7acb3fa472ab752102d65bbc1e4e028c77d14b832adc825",
+          "base_sha256": "1e24263d62f3e312a7acb3fa472ab752102d65bbc1e4e028c77d14b832adc825",
+          "relocation_count": 2,
+          "comparison_unit": "005de1a0-5a0e2d05b6bb",
+          "objdiff_percent": 100.0
+        }
+      ],
+      "status": "exact",
+      "objdiff_percent": 100.0
+    },
+    {
+      "name": "PCDisplayListCriticalSectionLeavePc",
+      "symbol": "_PCDisplayListCriticalSectionLeavePc",
+      "address": "0x005de1b0",
+      "units": [
+        "src/nu2api/nuthread.c"
+      ],
+      "target_size": 13,
+      "exact_match": true,
+      "objects": [
+        {
+          "unit": "src/nu2api/nuthread.c",
+          "base_size": 13,
+          "exact_match": true,
+          "target_sha256": "c34f9d0cfacbbaae00abcd5149fe3de8118a357c70ceb2e70b141dd2d7ceb471",
+          "base_sha256": "c34f9d0cfacbbaae00abcd5149fe3de8118a357c70ceb2e70b141dd2d7ceb471",
+          "relocation_count": 2,
+          "comparison_unit": "005de1b0-8776dd48df6a",
+          "objdiff_percent": 100.0
+        }
+      ],
+      "status": "exact",
+      "objdiff_percent": 100.0
     },
     {
       "name": "NuDisplayListDestroyMtl",
@@ -371227,17 +371275,17 @@
   ],
   "progress": {
     "text_bytes": 3471246,
-    "mapped_code_bytes": 2145183,
-    "matched_code_bytes": 393930,
-    "matching_percent": 11.348374618220662,
-    "fuzzy_coverage_percent": 36.55184976342697,
-    "mapped_functions": 7472,
-    "matched_functions": 3488,
-    "objdiff_fuzzy_percent": 73.3716,
-    "objdiff_total_code": 1730174,
+    "mapped_code_bytes": 2145209,
+    "matched_code_bytes": 393956,
+    "matching_percent": 11.349123628806487,
+    "fuzzy_coverage_percent": 36.552779812412844,
+    "mapped_functions": 7474,
+    "matched_functions": 3490,
+    "objdiff_fuzzy_percent": 73.37235,
+    "objdiff_total_code": 1730200,
     "image_bytes": 40067072,
-    "mapped_bytes": 3062322,
-    "mapping_percent": 7.6429892356496625,
+    "mapped_bytes": 3062348,
+    "mapping_percent": 7.643054126840115,
     "mapping_denominator": "code_and_data_section_virtual_sizes",
     "mapping_sections": [
       {
@@ -371245,7 +371293,7 @@
         "kind": "code",
         "address": "0x401000",
         "size": 3471246,
-        "mapped_bytes": 2146377
+        "mapped_bytes": 2146403
       },
       {
         "name": ".rdata",
@@ -371262,17 +371310,17 @@
         "mapped_bytes": 879122
       }
     ],
-    "mapping_known_size_symbols": 12582,
+    "mapping_known_size_symbols": 12584,
     "mapping_unknown_size_symbols": 7045,
-    "mapping_code_bytes": 2146377,
+    "mapping_code_bytes": 2146403,
     "mapping_code_total_bytes": 3471246,
-    "mapping_code_percent": 61.83304208344784,
+    "mapping_code_percent": 61.83379109403367,
     "mapping_data_bytes": 915945,
     "mapping_data_total_bytes": 36018966,
     "mapping_data_percent": 2.5429519548118065,
-    "mapping_code_data_bytes": 3062322,
+    "mapping_code_data_bytes": 3062348,
     "mapping_code_data_total_bytes": 39490212,
-    "mapping_code_data_percent": 7.754635503096312,
+    "mapping_code_data_percent": 7.754701342195884,
     "matched_data_region_bytes": 904324
   },
   "data_members": [
@@ -372331,8 +372379,8 @@
     "inputs": {
       "metadata_sha256": "fe09365da4c355f220d724ca99394fc120b758891b4188d2c49707b6df0894f2",
       "header_path": "src/saga.h",
-      "header_sha256": "80b2b56a2a224b68a4a4900bcb69fdfe39125951843bf2026519a83226ebd96c",
-      "geometry_object_sha256": "76b64424aeb37cd3e59d246ed3a2a7c45007e5c191f15e45a26835109b213a8d",
+      "header_sha256": "5da4ea18ca815ee8fa5d618b1c6dfd4318e56b9db839023959662c733461e6dc",
+      "geometry_object_sha256": "c6299fdcf2eb0bf6f641521ebd0055ad597c8da294449ec554318310ae967620",
       "toolchain_sha256": "489d0782638d8033137cdb2834462416111945cbfa073147820e314b8576b95b",
       "implementation_sha256": "9ad7521230f06fde31f0771b10bd001037ea32d2def455913a7f391f05dede9d",
       "headers": {
@@ -372361,7 +372409,7 @@
         "src/audio/vorbis/vorbis/vorbisfile.h": "b5561ad23bc20c2dbd12a58218a6da3c6c1130036b3c547b257ded17452cbce6",
         "src/audio/vorbis/window.h": "a10ede6832692ccec154bb9291be7ec236f9642a99a6af9b108ff7df030904b5",
         "src/externals.h": "5b08276a7759c01921ac2a5239bf0978accdd38d2533b458c25d1b16f8a4402d",
-        "src/saga.h": "80b2b56a2a224b68a4a4900bcb69fdfe39125951843bf2026519a83226ebd96c"
+        "src/saga.h": "5da4ea18ca815ee8fa5d618b1c6dfd4318e56b9db839023959662c733461e6dc"
       },
       "owners": {
         "src/data.cpp": {

@@ -23,7 +23,7 @@ f32 __cdecl NuFrameEnd(void) {
     NuTexAnimProcess(nuapi.frame_time);
     NuWindAnimate(nuapi.wind, nuapi.frame_time);
     STUBBED_NAMED(0x005c6100); /* One-byte PC leaf; identity unresolved. */
-    STUBBED_NAMED(0x005de1a0); /* PC update helper with unresolved owner. */
+    PCDisplayListCriticalSectionEnterPc();
     PCFrameCriticalSectionEnter_candidate();
     /* DispatchMessage may update the native focus and policy flags. */
     if (SoundVoiceEnabledGate != 0) {
@@ -50,7 +50,7 @@ f32 __cdecl NuFrameEnd(void) {
     STUBBED_NAMED(0x004f4c80); /* PC helper immediately before the render boundary. */
     NuTimeBarSetRender(-1);
     NuRndrSwapScreenEx(1, NuApiEndFrameCallbackPc);
-    STUBBED_NAMED(0x005de1b0); /* PC post-render update helper. */
+    PCDisplayListCriticalSectionLeavePc();
     PCFrameCriticalSectionLeave_candidate();
 
     NuTimeGetTicksPS(&now.low, &now.high);

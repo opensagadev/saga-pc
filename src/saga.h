@@ -14441,6 +14441,8 @@ void __cdecl PCSoundAlreadyPlayingHook(void);
     void __cdecl NuTexDestroy(i32 texture_id);
     void __cdecl NuTexDestroyPS(NUTEXDIM_PC *texture);
     void __cdecl PCDeviceReleaseTexture(PC_TEXTURE_RESOURCE_PC **texture);
+    void __cdecl PCDisplayListCriticalSectionEnterPc(void);
+    void __cdecl PCDisplayListCriticalSectionLeavePc(void);
     void __cdecl PCFrameCriticalSectionEnter_candidate(void);
     void __cdecl PCFrameCriticalSectionLeave_candidate(void);
     CHARACTER_MODEL_LAYERS_PC *__cdecl APICharacterLoaded(i32);

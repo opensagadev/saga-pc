@@ -4424,6 +4424,8 @@ address    , symbol                                                         , si
 0x5dde00,_NuDisplayListCreate,602,"void __cdecl(NUDISPLAY_LIST_PC *,VARIPTR *,VARIPTR,i32,i32,i32,i32,i32,i32,i32)"
 0x5de060,_DisplayInsertSortPC,87,void __cdecl(NUSORTPRI *)
 0x5de100,_NuDisplayListCreateMtlDlist,148,"NUDISPLAYLISTITEM *__cdecl(NUDISPLAYLISTITEM *,NUMTL *,VARIPTR *,VARIPTR)"
+0x5de1a0,_PCDisplayListCriticalSectionEnterPc,13,void __cdecl(void)
+0x5de1b0,_PCDisplayListCriticalSectionLeavePc,13,void __cdecl(void)
 0x5de220,_NuDisplayListDestroyMtl,176,void __cdecl(NUMTL *)
 0x005de2d0 , _NuDisplayListLinkMtl                                          , 186   , "void __cdecl (NUDISPLAYLIST *, NUMTL *)"
 0x5de390,_NuDisplayListRecalculateMaterialStartsPC,170,void __cdecl(NUDISPLAY_LIST_PC *)
