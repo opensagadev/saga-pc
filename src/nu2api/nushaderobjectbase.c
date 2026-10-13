@@ -7,8 +7,8 @@ void __cdecl NuShaderObjectBaseUnInit(PC_SHADER_OBJECT_FULL_VIEW *shader) {
 void __cdecl NuShaderObjectBaseCreate(PC_SHADER_OBJECT_FULL_VIEW *shader) {
     shader->marker = -1;
     shader->ref_count = 0;
-    shader->key = 0;
     shader->unknown_c = 0;
+    shader->key = 0;
 }
 void __cdecl NuShaderObjectBaseDestroy(PC_SHADER_OBJECT_FULL_VIEW *shader) {
     shader->ref_count = 0;

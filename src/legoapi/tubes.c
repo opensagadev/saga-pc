@@ -195,7 +195,7 @@ static i32 __cdecl Tube_ActivateRev(GIZMO_PC *gizmo, i32 reverse, i32 check_only
         return 0;
     tube = (TUBE_CALLBACKS_PC *)gizmo->object;
     if (check_only & 1)
-        return ((tube->flags >> 3) & 1) != reverse;
+        return reverse != (((tube->flags >> 3) & 1));
     if (reverse)
         tube->flags = (u8)((tube->flags & ~1) | 8);
     else

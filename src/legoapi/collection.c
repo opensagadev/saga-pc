@@ -150,8 +150,8 @@ void __cdecl Collection_CreateMaster(char *name, i16 *title_id, COLLECTION_BUILD
     collection->list = CollectList;
     collection->columns = (u16)columns;
     collection->count = (u16)CollectCount;
-    collection->title_id = title_id;
     collection->name = name;
+    collection->title_id = title_id;
     collection->scale = scale;
 }
 
