@@ -4624,6 +4624,8 @@ address    , symbol                                                         , si
 0x5f8fd0,_NuTexGetUnresolvedTextureTIDPS,81,i32 __cdecl(void)
 0x005f9530 , _NuWaterReset                                                  , 21    , void __cdecl (void)
 0x5f99d0,_NuRndrQuadBufferInitPc,328,void __cdecl NuRndrQuadBufferInitPc(void)
+0x5f9e50,_NuRndrGeometryBufferReleasePc,12,void __cdecl(void)
+0x5f9e60,_NuRndrGeometryBufferRestorePc,42,void __cdecl(void)
 0x005f9e90 , _NuRndrShadowOnOff_candidate                                   , 10    , void __cdecl (i32)
 0x5f9ed0,_PCEnqueueHierarchyShadowGroup,208,"void __cdecl(NUMTX *,void *,i32,void *,i32,void *,i32)"
 0x5f9fa0,_NuHGobjSubmitShadowGroupsPc,187,"void __cdecl(NUHGOBJ_EVAL_PC *,NUMTX *,NUMTX *)"

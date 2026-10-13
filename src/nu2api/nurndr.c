@@ -1026,6 +1026,16 @@ static u8 *RendererArenaDataPc;
 static u32 *RendererArenaOffsetsPc;
 static i32 *RendererArenaTypesPc;
 
+void __cdecl NuRndrGeometryBufferReleasePc(void) {
+    PCDeviceReleaseTexture((PC_TEXTURE_RESOURCE_PC **)&RendererGeometryVertexBufferPc);
+}
+
+void __cdecl NuRndrGeometryBufferRestorePc(void) {
+    PCDeviceReleaseTexture((PC_TEXTURE_RESOURCE_PC **)&RendererGeometryVertexBufferPc);
+    PCDeviceCreateVertexBuffer(0x40000, 0x208, 0, 0, &RendererGeometryVertexBufferPc);
+    NuRndrQuadBufferInitPc();
+}
+
 typedef struct RENDERER_CLEAR_RECORD_PC {
     u8 unknown_00[0x20];
     u16 active;

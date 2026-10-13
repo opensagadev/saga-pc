@@ -36,7 +36,7 @@
     "config/data-members.json": "8ac33bf43fa7d2cc68c6380b340a8fe5466e906e828b1afb919b82fb9677f047",
     "config/library-objects.json": "e5ae24d3eac36fa0d0cb098f7690faaef3110f225db30c8cbf0f7d0d64f6ecfe",
     "config/project.json": "dc0e8cc85ae5650c6937b70ccaefb0153629c2460fa09cd4f6b625e251e623dd",
-    "config/symbols.csv": "7ed2706b1dfeab67efc36f2f795833546a94447fbc4e651da169d835047e45d0",
+    "config/symbols.csv": "ba5254e7752a7b0fe9fdf0e5f0c644614b8d6c3fb5b0cb152b6f1740d4c98e72",
     "config/symbols.md": "dffbdaac86011e3aee74b404063c15bda97f88af3db337ffef9f1bad1785d212",
     "config/toolchain.json": "489d0782638d8033137cdb2834462416111945cbfa073147820e314b8576b95b",
     "config/tools.json": "50199f6b132a7abfabf251e98a75be0a957abfe50f1ff776188fba21e4c4436f",
@@ -117,7 +117,7 @@
     "src/legogame/startup.cpp": "5d2237959762c23b70088ce00eea9cd381bbbff2caf0684cf3b94f052ad31557",
     "src/nu2api/cpu_features.cpp": "7b57efe0a5b8f722138d143b3037dd70c02478906b792d24ba7df2f123af4de9",
     "src/nu2api/crc16.cpp": "0951ed9b5b9f090cacb3ceab7a8766bd8c92698df7cd1df726b719db4a16b211",
-    "src/nu2api/d3d_api_lifetime.cpp": "0e665db30809c36c08e55ac8048081951ad1bdfd194387155e951d2fa8b26977",
+    "src/nu2api/d3d_api_lifetime.cpp": "a8be311f499857c96c2116c62bce0dd512e6f9bd836c93619351687498a72505",
     "src/nu2api/decoder_diagnostic.cpp": "8f30e87829c66c0c98b25811e5edc880066303d573a5150eef9c84006ebef7fe",
     "src/nu2api/dynamic_geometry.cpp": "d4f67a3fca8190c384803b4987490e04e50d9fe435f52829713e7423e0a48c31",
     "src/nu2api/effect_surface.cpp": "2156be3ae89de28e54cb6feb01a9dd0fff2ae520a9c02c03fc4a3059d86bbf1c",
@@ -394,7 +394,7 @@
     "src/nu2api/nuqfnt_print.c": "dadd2d9bfb7ee1d1e1939c31b6e47f8f6c2ca76117962047dce4dd144088ca62",
     "src/nu2api/nuquat.c": "259412d6e0518f3653d4d5283f6b0c116845a4c84cec44ee3e2bc8b73d67b7d9",
     "src/nu2api/nurdpi.c": "ba14905a540d8143de10a2743e3f27fc796e092b02b8a85ee2d26ba72a6eb759",
-    "src/nu2api/nurndr.c": "82d8ff6363adca30057c22775e3c22cdfcc16f6f3f6d52835159f67a9b6158f0",
+    "src/nu2api/nurndr.c": "c18c9f9ad91ec09ba58dbf0f026aaff64828076bae5519362c364e8bde8f53f6",
     "src/nu2api/nurndrstat.c": "7e04ac0d112372c5f67085ca51e5a28818fe42d81335e7b30bc8786539929c14",
     "src/nu2api/nuscene_pc.c": "b10cb8b8abcd06dc1c5fa1f69508e7326a29b233c4ad24cab7273102e8816004",
     "src/nu2api/nuscratch.c": "91d547d6ad9bc25d7187ce8e049b22acaa1fc670b24d751e61e8b776192f0497",
@@ -647,7 +647,7 @@
     "build/obj/nu2api/bgproc.obj": "701e8254cce7fb59a6eedb0a1626f31268718013b650789b168da6c3f13c5e7f",
     "build/obj/nu2api/cpu_features.obj": "1a95bc91700f8ed44df564b2233d9c9c164eb764157b2cb3425b97ed43719782",
     "build/obj/nu2api/crc16.obj": "71747be5b310593412e8ffbb6bfe6ff58b5d10a2839c67ff35b1c970ca479880",
-    "build/obj/nu2api/d3d_api_lifetime.obj": "4a196afb60c1dadf6cf5b54d7cef5e153a7eb87e1f426f86d92c26bb71abaaa1",
+    "build/obj/nu2api/d3d_api_lifetime.obj": "4234d45edf36e43442e20aa161e37b9a6292121ea00a277b1e19ee16e72fdf9d",
     "build/obj/nu2api/decoder_diagnostic.obj": "6346b28bcdf843948c775cda10b0f22df46b7584dd02242b9b2f75f6a9166bb7",
     "build/obj/nu2api/dynamic_geometry.obj": "43edd1ea4e120ba49125ae7242fa4a4468a3222d488354f699fd1e4dba586fba",
     "build/obj/nu2api/effect_surface.obj": "b465954d61f76b350067b603a248417d37198020a6a0c2d741c0094885c4ddc1",
@@ -720,7 +720,7 @@
     "build/obj/nu2api/nuqfnt_print.obj": "8a6b9d792e255bbc2d206c5c944c9533c03092d13dfee3e80b157adce21752b8",
     "build/obj/nu2api/nuquat.obj": "67061bcf0cc7c8360f06129b8dd13cc26a6facae50f1233cebe504581fa2acb0",
     "build/obj/nu2api/nurdpi.obj": "675cafa6c191bb53a51ed615989e2f14858ddd38c0726b51f94f21bd004f39c6",
-    "build/obj/nu2api/nurndr.obj": "99f52150d2a1e5f7c49183ae6882b3cda0cd68caed882a351eed92fdb29f40c5",
+    "build/obj/nu2api/nurndr.obj": "147764f9fa2e0a67cdb8c75eef1c9477065276c5faa3d808bc7ee988da87a1b8",
     "build/obj/nu2api/nurndr_swap.obj": "db7e8a8272660128119c4798cb72058cd990c1e9f9aeef68c6b9de6d27382b94",
     "build/obj/nu2api/nurndrstat.obj": "a0f67f450fbc1c7b27f54f0c0f40ab4f6b6006742128f5ca81fd2b091c06181c",
     "build/obj/nu2api/nuscene_pc.obj": "151da7da18c043b639f3a72cfe50ac394c2e23df0e03d367f374635e8cb022fb",
@@ -103918,6 +103918,54 @@
       "objdiff_percent": 21.62745
     },
     {
+      "name": "NuRndrGeometryBufferReleasePc",
+      "symbol": "_NuRndrGeometryBufferReleasePc",
+      "address": "0x005f9e50",
+      "units": [
+        "src/nu2api/nurndr.c"
+      ],
+      "target_size": 12,
+      "exact_match": true,
+      "objects": [
+        {
+          "unit": "src/nu2api/nurndr.c",
+          "base_size": 12,
+          "exact_match": true,
+          "target_sha256": "283e0d427bf14be9f886b7f6dacbf4026e354570cf035ce94f87f6e7ddc1d74c",
+          "base_sha256": "283e0d427bf14be9f886b7f6dacbf4026e354570cf035ce94f87f6e7ddc1d74c",
+          "relocation_count": 2,
+          "comparison_unit": "005f9e50-84d9ddfc27e6",
+          "objdiff_percent": 100.0
+        }
+      ],
+      "status": "exact",
+      "objdiff_percent": 100.0
+    },
+    {
+      "name": "NuRndrGeometryBufferRestorePc",
+      "symbol": "_NuRndrGeometryBufferRestorePc",
+      "address": "0x005f9e60",
+      "units": [
+        "src/nu2api/nurndr.c"
+      ],
+      "target_size": 42,
+      "exact_match": true,
+      "objects": [
+        {
+          "unit": "src/nu2api/nurndr.c",
+          "base_size": 42,
+          "exact_match": true,
+          "target_sha256": "851b577677f93a70aa7d7678d4a8bc57ef53f07e2dac887f51550d4f88d61591",
+          "base_sha256": "851b577677f93a70aa7d7678d4a8bc57ef53f07e2dac887f51550d4f88d61591",
+          "relocation_count": 5,
+          "comparison_unit": "005f9e60-8e8a4ade93cc",
+          "objdiff_percent": 100.0
+        }
+      ],
+      "status": "exact",
+      "objdiff_percent": 100.0
+    },
+    {
       "name": "NuRndrShadowOnOff_candidate",
       "symbol": "_NuRndrShadowOnOff_candidate",
       "address": "0x005f9e90",
@@ -142896,17 +142944,17 @@
       "objects": [
         {
           "unit": "src/nu2api/d3d_api_lifetime.cpp",
-          "base_size": 126,
+          "base_size": 131,
           "exact_match": false,
           "target_sha256": "0dcaa3aafc39da350d19c84d196fe850bd71b807962017d83bd77c47f11c5a98",
-          "base_sha256": "e798f5dbf02d69fe75cc881bc02121f75af0f2f76f1fc4b90ba9378785f01ab8",
-          "relocation_count": 14,
+          "base_sha256": "7a00a770bfdc1ac1d7d1b4b861bc60321bbe2d072b7bcd3078b5f57265049f68",
+          "relocation_count": 15,
           "comparison_unit": "006df0e0-811ae130bf78",
-          "objdiff_percent": 79.245285
+          "objdiff_percent": 81.13207
         }
       ],
       "status": "different",
-      "objdiff_percent": 79.245285
+      "objdiff_percent": 81.13207
     },
     {
       "name": "PcInputAspectRatioPc",
@@ -143208,17 +143256,17 @@
       "objects": [
         {
           "unit": "src/nu2api/d3d_api_lifetime.cpp",
-          "base_size": 44,
+          "base_size": 49,
           "exact_match": false,
           "target_sha256": "b7248b6724603b87cd354f064c9935f3fc7736e8bdb0d035757f2c516cbd0940",
-          "base_sha256": "5c09ff42d5378bd97cef7160b6851437736b43296f7656f1b6d68d3b5772ba03",
-          "relocation_count": 6,
+          "base_sha256": "2b145e917cda9263f83bce8a3b1783f9b436c461dc7f7e129b31fcffe9af286e",
+          "relocation_count": 7,
           "comparison_unit": "006dfe20-795c32ee8f11",
-          "objdiff_percent": 29.09091
+          "objdiff_percent": 32.121212
         }
       ],
       "status": "different",
-      "objdiff_percent": 29.09091
+      "objdiff_percent": 32.121212
     },
     {
       "name": "?Shutdown@PC_NATIVE_DEBUG_STATE_PC@@QAEXXZ",
@@ -370703,17 +370751,17 @@
   ],
   "progress": {
     "text_bytes": 3471246,
-    "mapped_code_bytes": 2140620,
-    "matched_code_bytes": 393221,
-    "matching_percent": 11.327949675707224,
-    "fuzzy_coverage_percent": 36.49817243543542,
-    "mapped_functions": 7455,
-    "matched_functions": 3470,
-    "objdiff_fuzzy_percent": 73.49964,
-    "objdiff_total_code": 1724624,
+    "mapped_code_bytes": 2140674,
+    "matched_code_bytes": 393275,
+    "matching_percent": 11.329505313077782,
+    "fuzzy_coverage_percent": 36.49993819526374,
+    "mapped_functions": 7457,
+    "matched_functions": 3472,
+    "objdiff_fuzzy_percent": 73.5009,
+    "objdiff_total_code": 1724678,
     "image_bytes": 40067072,
-    "mapped_bytes": 3057645,
-    "mapping_percent": 7.631316308813382,
+    "mapped_bytes": 3057699,
+    "mapping_percent": 7.63145108282432,
     "mapping_denominator": "code_and_data_section_virtual_sizes",
     "mapping_sections": [
       {
@@ -370721,7 +370769,7 @@
         "kind": "code",
         "address": "0x401000",
         "size": 3471246,
-        "mapped_bytes": 2141814
+        "mapped_bytes": 2141868
       },
       {
         "name": ".rdata",
@@ -370738,17 +370786,17 @@
         "mapped_bytes": 879022
       }
     ],
-    "mapping_known_size_symbols": 12559,
+    "mapping_known_size_symbols": 12561,
     "mapping_unknown_size_symbols": 7053,
-    "mapping_code_bytes": 2141814,
+    "mapping_code_bytes": 2141868,
     "mapping_code_total_bytes": 3471246,
-    "mapping_code_percent": 61.7015907256357,
+    "mapping_code_percent": 61.703146363006255,
     "mapping_data_bytes": 915831,
     "mapping_data_total_bytes": 36018966,
     "mapping_data_percent": 2.54263545488785,
-    "mapping_code_data_bytes": 3057645,
+    "mapping_code_data_bytes": 3057699,
     "mapping_code_data_total_bytes": 39490212,
-    "mapping_code_data_percent": 7.742792061992476,
+    "mapping_code_data_percent": 7.742928804737741,
     "matched_data_region_bytes": 904210
   },
   "data_members": [
@@ -371508,7 +371556,7 @@
       "metadata_sha256": "8ac33bf43fa7d2cc68c6380b340a8fe5466e906e828b1afb919b82fb9677f047",
       "header_path": "src/saga.h",
       "header_sha256": "02f393f1a5b9cecf6fbbca102ac897189468b5d6d046407c380ecb2ec6ca53a2",
-      "geometry_object_sha256": "b3d205d0183f3fa3fb222434b9c80b338725c4b56d18905f2a0d3405c1ac6a39",
+      "geometry_object_sha256": "7697250cac80cb7175c7914d375e74d51aea979416492f8593324bcba2f52819",
       "toolchain_sha256": "489d0782638d8033137cdb2834462416111945cbfa073147820e314b8576b95b",
       "implementation_sha256": "9ad7521230f06fde31f0771b10bd001037ea32d2def455913a7f391f05dede9d",
       "headers": {
@@ -371549,8 +371597,8 @@
           "object_sha256": "0d10115dd1f6b5102f75b6790bbd5cbb78831899cc4b2712362a50a7ced58447"
         },
         "src/nu2api/nurndr.c": {
-          "source_sha256": "82d8ff6363adca30057c22775e3c22cdfcc16f6f3f6d52835159f67a9b6158f0",
-          "object_sha256": "99f52150d2a1e5f7c49183ae6882b3cda0cd68caed882a351eed92fdb29f40c5"
+          "source_sha256": "c18c9f9ad91ec09ba58dbf0f026aaff64828076bae5519362c364e8bde8f53f6",
+          "object_sha256": "147764f9fa2e0a67cdb8c75eef1c9477065276c5faa3d808bc7ee988da87a1b8"
         }
       }
     },

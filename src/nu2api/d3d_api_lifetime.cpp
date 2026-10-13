@@ -3,6 +3,8 @@
 extern "C" {
     void __cdecl PCGraphicsReleaseFramebuffers(void);
     void __cdecl PCGraphicsRestoreFramebuffers(void);
+    void __cdecl NuRndrGeometryBufferReleasePc(void);
+    void __cdecl NuRndrGeometryBufferRestorePc(void);
 }
 
 extern "C" void __cdecl PcFreeApiCallBuffer(void) {
@@ -37,7 +39,7 @@ extern "C" void __cdecl PcRendererShutdown(i32 unused) {
     STUBBED_NAMED("void action401860 at6df15e");
     STUBBED_NAMED("void action5fa220 at6df163");
     STUBBED_NAMED("void action600bb0 at6df168");
-    STUBBED_NAMED("void action5f9e50 at6df16d");
+    NuRndrGeometryBufferReleasePc();
     STUBBED_NAMED("void action659140 at6df172");
     STUBBED_NAMED("void action5ffc10 at6df177");
     STUBBED_NAMED("void action5f9720 at6df17c");
@@ -57,7 +59,7 @@ extern "C" void __cdecl PCGraphicsRecreateResources(i32 reset_available) {
     PC_EFFECT_SURFACE_PC::RestoreResources();
     PCGraphicsRestoreFramebuffers();
     STUBBED_NAMED("void action600bc0 at6dfe68");
-    STUBBED_NAMED("void action5f9e60 at6dfe6d");
+    NuRndrGeometryBufferRestorePc();
     STUBBED_NAMED("NuDebrisCreateVertexBuffersPc at6dfe72 (private particle helper)");
     STUBBED_NAMED("void action659150 at6dfe77");
     STUBBED_NAMED("void action401850 at6dfe7c");
