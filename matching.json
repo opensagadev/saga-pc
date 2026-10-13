@@ -325,7 +325,7 @@
     "src/legoapi/specialsfx.c": "26be35ccfab8cdf989818d6c2ae8dd79d9b3815e98f1aef008a71487f16f7ce2",
     "src/legoapi/speederchase.c": "0a4e916a3bac7c290b40dc789c612c1c730e8d434a79e9635e63572cb64e646b",
     "src/legoapi/startup_dats.c": "5bda6ca6f5af36b6e66d3c6ed8b87d9b2394449b7d25a45851c44698eb36bfd8",
-    "src/legoapi/suit.c": "d9f844eb5a4d44d29b731a37471cc013f2de209a0afb841ab3695378f26578d4",
+    "src/legoapi/suit.c": "fc5ff3f0ecdb69b925bc06dc254ce6686635ee7f00f4369ab1fa51644b294de0",
     "src/legoapi/supportall.c": "57566f9e71ecbff02a13ab8f124dc83507e87c4fdebf3b5e28a233c06c0084e4",
     "src/legoapi/surfaces_pc.c": "d660f4b17481c28971a92142a13fc0283e172041d7f3717c39db72d2d292dc84",
     "src/legoapi/tagging.c": "f1449dc6fdd55c0f83e9ca6f64b59faac8ece79bec8e6cc8cd7c0c4a30dfb447",
@@ -621,7 +621,7 @@
     "build/obj/legoapi/specialsfx.obj": "116ed854af6db7f876ee68d41ffeead8d1ae02397b68287f1a80cef928b07edc",
     "build/obj/legoapi/speederchase.obj": "54d86ef44e084c7379efc3adb94686b4d3314deae631e73977f3a473a006b9fd",
     "build/obj/legoapi/startup_dats.obj": "0c17fe39091e55fd2fb79a25e388d845f9ef6f8d2b90d89b1dd7eb6b1615d53f",
-    "build/obj/legoapi/suit.obj": "334ba5c4b96cb354f28d522c1d429113cbc935c449fba9bfbec276c5c8702f98",
+    "build/obj/legoapi/suit.obj": "c275cf44f9cce94e5c310e379a7fb5dc93a042846e3ae47b4ec17a717dcd9bf5",
     "build/obj/legoapi/supportall.obj": "538c6b932cf943862e75ecf417ffe68c5f79131f21f0a1253dd1734a4c8189be",
     "build/obj/legoapi/surfaces_pc.obj": "1b208e00f22fc63e17842c9ecfb53afd6ebf1b706d2bf7bd2edaca42fa7d6a3e",
     "build/obj/legoapi/tagging.obj": "b6f21a6b17c46358fb3d9389eaba45e16e49e0d3aa2887a5c46674c01ed07408",
@@ -25732,21 +25732,21 @@
         "src/legoapi/suit.c"
       ],
       "target_size": 42,
-      "exact_match": false,
+      "exact_match": true,
       "objects": [
         {
           "unit": "src/legoapi/suit.c",
           "base_size": 42,
-          "exact_match": false,
+          "exact_match": true,
           "target_sha256": "d02b98d1e66964ebc167ccf7260e2affe1a0b3cbca99d5eaf9c90b15b5d9e988",
-          "base_sha256": "9ff1f70e8eaea37b57268d226501af412f9890376024e9810628a0cfd080b86f",
+          "base_sha256": "d02b98d1e66964ebc167ccf7260e2affe1a0b3cbca99d5eaf9c90b15b5d9e988",
           "relocation_count": 1,
           "comparison_unit": "004cc920-8012aea9f95b",
-          "objdiff_percent": 99.375
+          "objdiff_percent": 100.0
         }
       ],
-      "status": "different",
-      "objdiff_percent": 99.375
+      "status": "exact",
+      "objdiff_percent": 100.0
     },
     {
       "name": "Suit_GetLast",
@@ -370887,12 +370887,12 @@
   "progress": {
     "text_bytes": 3471246,
     "mapped_code_bytes": 2141165,
-    "matched_code_bytes": 393844,
-    "matching_percent": 11.345897121667551,
-    "fuzzy_coverage_percent": 36.513414462402686,
+    "matched_code_bytes": 393886,
+    "matching_percent": 11.347107061844651,
+    "fuzzy_coverage_percent": 36.5134220245288,
     "mapped_functions": 7468,
-    "matched_functions": 3486,
-    "objdiff_fuzzy_percent": 73.50711,
+    "matched_functions": 3487,
+    "objdiff_fuzzy_percent": 73.50712,
     "objdiff_total_code": 1725169,
     "image_bytes": 40067072,
     "mapped_bytes": 3058190,
@@ -371991,7 +371991,7 @@
       "metadata_sha256": "fe09365da4c355f220d724ca99394fc120b758891b4188d2c49707b6df0894f2",
       "header_path": "src/saga.h",
       "header_sha256": "9bc5d6334a3c5ae12788bebc0580aa49035d406d99a460b18a823f42d2e73912",
-      "geometry_object_sha256": "48edb25822251863f43ddddf221d69fa634a81ee10e9f47f0072a9505475c774",
+      "geometry_object_sha256": "a3797159999fa4934eca8f23b75013c5319ac8e3ad634f0a5bd0aace29245967",
       "toolchain_sha256": "489d0782638d8033137cdb2834462416111945cbfa073147820e314b8576b95b",
       "implementation_sha256": "9ad7521230f06fde31f0771b10bd001037ea32d2def455913a7f391f05dede9d",
       "headers": {
