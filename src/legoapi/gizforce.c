@@ -167,7 +167,11 @@ struct gizforce_pc_s {
     GAMEANIMSET *anim_set;
     u8 unknown_02c[0x20];
     f32 force_range;
-    u8 unknown_050[0x24];
+    u8 unknown_050[8];
+    f32 animation_speed;
+    f32 start_frame;
+    f32 end_frame;
+    u8 unknown_064[0x10];
     u32 config_flags;
     u8 unknown_078[0x28];
     u32 runtime_flags;
@@ -177,6 +181,52 @@ STATIC_ASSERT(offsetof(GIZFORCE_PC, anim_set) == 0x28);
 STATIC_ASSERT(offsetof(GIZFORCE_PC, force_range) == 0x4c);
 STATIC_ASSERT(offsetof(GIZFORCE_PC, config_flags) == 0x74);
 STATIC_ASSERT(offsetof(GIZFORCE_PC, runtime_flags) == 0xa0);
+STATIC_ASSERT(offsetof(GIZFORCE_PC, animation_speed) == 0x58);
+STATIC_ASSERT(offsetof(GIZFORCE_PC, start_frame) == 0x5c);
+STATIC_ASSERT(offsetof(GIZFORCE_PC, end_frame) == 0x60);
+
+static void GizForce_PlayForwardAnimationPc(GIZFORCE_PC *force) {
+    f32 speed;
+    if (force != NULL) {
+        GameAnimSet_SetRepeating(force->anim_set, 0);
+        if (force->animation_speed < 0.0f)
+            speed = force->end_frame * force->animation_speed;
+        else
+            speed = force->start_frame * force->animation_speed;
+        GameAnimSet_Play(force->anim_set, speed, 0);
+    }
+}
+
+static void GizForce_PlayBackwardAnimationPc(GIZFORCE_PC *force) {
+    f32 speed;
+    if (force != NULL) {
+        GameAnimSet_SetRepeating(force->anim_set, 0);
+        if (force->animation_speed < 0.0f)
+            speed = force->start_frame * -force->animation_speed;
+        else
+            speed = force->end_frame * -force->animation_speed;
+        GameAnimSet_Play(force->anim_set, speed, 0);
+    }
+}
+
+void __cdecl GizForce_PlayForwards(GIZFORCE_PC *force) {
+    if (force != NULL) {
+        if (force->runtime_flags & 0x40)
+            GizForce_PlayBackwardAnimationPc(force);
+        else
+            GizForce_PlayForwardAnimationPc(force);
+    }
+}
+
+void __cdecl GizForce_PlayBackwards(GIZFORCE_PC *force) {
+    if (force != NULL) {
+        if (force->runtime_flags & 0x40)
+            GizForce_PlayForwardAnimationPc(force);
+        else
+            GizForce_PlayBackwardAnimationPc(force);
+    }
+}
+
 typedef struct GIZFORCE_ANIMATION_DATA_PC {
     u8 unknown_00[2];
     i16 platform_id;

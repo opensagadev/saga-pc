@@ -4,6 +4,54 @@ extern "C" i32 __cdecl GizmoGetTypeIDByName(void *system, char *name);
 extern "C" SOCK_PC *__cdecl FindSock(SOCKSYS_PC *system, char *name);
 extern "C" void __cdecl SockOn(SOCKSYS_PC *system, i32 index);
 extern "C" void __cdecl SockOff(SOCKSYS_PC *system, i32 index);
+extern "C" void __cdecl GizForce_PlayForwards(GIZFORCE_PC *force);
+extern "C" void __cdecl GizForce_PlayBackwards(GIZFORCE_PC *force);
+
+struct GIZACTION_FORCE_ANIMATION_PC {
+    u8 unknown_000[0x28];
+    GAMEANIMSET *anim_set;
+    u8 unknown_02c[0x74];
+    u32 flags;
+};
+STATIC_ASSERT(offsetof(GIZACTION_FORCE_ANIMATION_PC, anim_set) == 0x28);
+STATIC_ASSERT(offsetof(GIZACTION_FORCE_ANIMATION_PC, flags) == 0xa0);
+
+extern "C" void __cdecl GizActions_PlayForcePc(GIZFLOW_PC *flow, FLOWBOX_PC *unused, char **params, i32 count) {
+    char *name = NULL;
+    i32 forward = 1;
+    i32 snap = 0;
+    for (i32 i = 0; i < count; ++i) {
+        char *value = NuStrIStr(params[i], (char *)GizObstacleActionNamePC);
+        if (value != NULL)
+            name = value + NuStrLen(GizObstacleActionNamePC) + 1;
+        else if (NuStrICmp(params[i], GizObstacleActionBackwardPC) == 0)
+            forward = 0;
+        else if (NuStrICmp(params[i], GizObstacleActionForwardPC) == 0)
+            forward = 1;
+        else if (NuStrICmp(params[i], GizmoSnapOptionNamePc) == 0)
+            snap = 1;
+    }
+    if (name != NULL) {
+        GIZMO_PC *gizmo = (GIZMO_PC *)GizmoFindByName(flow->gizmo_sys, force_gizmotype_id, name);
+        if (gizmo != NULL) {
+            GIZACTION_FORCE_ANIMATION_PC *force = (GIZACTION_FORCE_ANIMATION_PC *)gizmo->object;
+            if (force != NULL) {
+                if (forward != 0) {
+                    if (snap != 0) {
+                        force->flags |= 0x8000;
+                        GameAnimSet_JumpToEnd(force->anim_set);
+                    } else {
+                        GizForce_PlayForwards((GIZFORCE_PC *)force);
+                    }
+                } else if (snap != 0) {
+                    GameAnimSet_JumpToStart(force->anim_set);
+                } else {
+                    GizForce_PlayBackwards((GIZFORCE_PC *)force);
+                }
+            }
+        }
+    }
+}
 
 STATIC_ASSERT(offsetof(GIZSPECIAL_s, anim_set) == 0x20);
 

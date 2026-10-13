@@ -558,7 +558,7 @@ address    , symbol                                                         , si
 0x465510,_GizActions_GoThroughDoor,115,
 0x00465590 , _GizActions_PlayObstacle                                       , 389   , "void __cdecl (GIZFLOW_PC *, FLOWBOX_PC *, char **, i32)"
 0x465720,_GizActions_PlaySpecialPc,335,"void __cdecl(GIZFLOW_PC *, FLOWBOX_PC *, char **, i32)"
-0x465870,_GizActions_PlayForcePc,,"void __cdecl(GIZFLOW_PC *, FLOWBOX_PC *, char **, i32)"
+0x465870,_GizActions_PlayForcePc,315,"void __cdecl(GIZFLOW_PC *, FLOWBOX_PC *, char **, i32)"
 0x4659b0,_GizActions_PlayRadio,195,
 0x465a80,_GizActions_PlayCutscenePc,98,"void __cdecl(GIZFLOW_PC *, FLOWBOX_PC *, char **, i32)"
 0x465af0,_GizActions_HitBlowup,366,
@@ -575,6 +575,10 @@ address    , symbol                                                         , si
 0x4669e0,_GizForceSFX_Configure,258,"void __cdecl(WORLDINFO *,char *)"
 0x466c20,_GizForces_Load,784,
 0x467040,_GizForces_ReserveBufferSpace,234,
+0x00467380,_GizForce_PlayForwardAnimationPc,96,
+0x004673e0,_GizForce_PlayBackwardAnimationPc,104,
+0x00467450,_GizForce_PlayForwards,32,
+0x00467470,_GizForce_PlayBackwards,32,
 0x4676e0,_GizForces_Draw,226,
 0x4677d0,_GizForce_StoodOnForce,72,"i32 __cdecl(GIZFORCE_PC *, GAMEOBJECT *)"
 0x467820,_GizForces_AngleToForce,54,"u16 __cdecl(NUVEC *, GIZFORCE_PC *)"
