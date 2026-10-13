@@ -168,6 +168,14 @@ STATIC_ASSERT(offsetof(BUILDIT_RESET_PC, build_state) == 0x6d);
 STATIC_ASSERT(offsetof(BUILDIT_RESET_PC, builders_active) == 0x6e);
 STATIC_ASSERT(offsetof(BUILDIT_RESET_PC, built_object_count) == 0x6f);
 STATIC_ASSERT(offsetof(BUILDIT_RESET_PC, availability_flags) == 0x7a);
+
+i32 __cdecl GizBuildIt_AtEnd(void *buildit_pointer) {
+    BUILDIT_RESET_PC *buildit = (BUILDIT_RESET_PC *)buildit_pointer;
+    if (buildit != NULL && buildit->build_state == 2)
+        return 1;
+    return 0;
+}
+
 void __cdecl GizBuildIt_SetToStart(void *buildit_pointer, i32 emit_debris, i32 keep_built_pieces) {
     BUILDIT_RESET_PC *buildit = (BUILDIT_RESET_PC *)buildit_pointer;
     i32 restored_count = 0, i;

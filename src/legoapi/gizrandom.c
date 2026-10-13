@@ -75,6 +75,15 @@ STATIC_ASSERT(offsetof(GIZFLOW_RANDOM_SYSTEM_PC, count) == 4);
 STATIC_ASSERT(offsetof(GIZFLOW_SPECIAL_SYSTEM_PC, specials) == 0);
 STATIC_ASSERT(offsetof(GIZFLOW_SPECIAL_SYSTEM_PC, count) == 4);
 
+char *__cdecl GizRandom_GetGizmoName(GIZMO_PC *gizmo) {
+    return gizmo != NULL ? ((GIZFLOW_RANDOM_PC *)gizmo->object)->name : NULL;
+}
+
+i32 __cdecl GizRandom_GetNumOutputs(void *gizmo_pointer) {
+    GIZMO_PC *gizmo = (GIZMO_PC *)gizmo_pointer;
+    return ((GIZFLOW_RANDOM_PC *)gizmo->object)->output_count;
+}
+
 // NOLINTNEXTLINE(readability-identifier-naming) -- retained genuine subsystem public name.
 GIZMO_PC *__cdecl createGizRandom(void *unused, i32 output_count, i32 *weights, char *name) {
     GIZFLOW_LOAD_WORLD_PC *world = (GIZFLOW_LOAD_WORLD_PC *)WorldInfo_CurrentlyLoading();

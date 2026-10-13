@@ -75,6 +75,10 @@ STATIC_ASSERT(offsetof(GIZFLOW_RANDOM_SYSTEM_PC, count) == 4);
 STATIC_ASSERT(offsetof(GIZFLOW_SPECIAL_SYSTEM_PC, specials) == 0);
 STATIC_ASSERT(offsetof(GIZFLOW_SPECIAL_SYSTEM_PC, count) == 4);
 
+char *__cdecl GizTimer_GetGizmoName(GIZMO_PC *gizmo) {
+    return gizmo != NULL ? ((GIZFLOW_TIMER_PC *)gizmo->object)->name : NULL;
+}
+
 // NOLINTNEXTLINE(readability-identifier-naming) -- retained genuine subsystem public name.
 GIZMO_PC *__cdecl createGizTimer(void *unused, f32 time, i32 random_time, char *name) {
     GIZFLOW_LOAD_WORLD_PC *world = (GIZFLOW_LOAD_WORLD_PC *)WorldInfo_CurrentlyLoading();
