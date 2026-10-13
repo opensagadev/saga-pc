@@ -2,6 +2,48 @@
 
 extern "C" i32 __cdecl GizmoGetTypeIDByName(void *system, char *name);
 
+extern "C" {
+    static const char GizActionPartEffectPrefixPc[12] = "part_effect";
+    static const char GizActionLevelPrefixPc[7] = "level=";
+}
+
+extern "C" void __cdecl GizAction_ActivatePartEffect(GIZFLOW_PC *unused0, FLOWBOX_PC *unused1, char **params,
+                                                     i32 count) {
+    char *name = NULL;
+    for (i32 i = 0; i < count; ++i) {
+        char *value = NuStrIStr(params[i], (char *)GizActionPartEffectPrefixPc);
+        if (value != NULL)
+            name = value + NuStrLen(GizActionPartEffectPrefixPc) + 1;
+        else
+            NuStrICmp(params[i], AIActionFalseName);
+    }
+    if (name != NULL) {
+        i32 type_id = PARTLookupType(name);
+        AddFiniteShotPART(type_id, &((GAMEOBJECT *)Player[0])->collision_position, 50);
+    }
+}
+
+extern "C" void __cdecl GizActions_GoToNewLevelPc(GIZFLOW_PC *unused0, FLOWBOX_PC *unused1, char **params, i32 count) {
+    LEVELDATA_PC *level = NULL;
+    char *cutscene_name = NULL;
+    for (i32 i = 0; i < count; ++i) {
+        char *value = NuStrIStr(params[i], (char *)GizActionLevelPrefixPc);
+        if (value != NULL) {
+            level = Level_FindByName(value + NuStrLen(GizActionLevelPrefixPc), NULL);
+        } else {
+            value = NuStrIStr(params[i], (char *)"cutscene=");
+            if (value != NULL)
+                cutscene_name = value + NuStrLen("cutscene=");
+        }
+    }
+    if (FreePlay == 0 && cutscene_name != NULL) {
+        if (NewCutScene(NULL, (CUTSYS_PC *)WORLD->cutscene_sys, cutscene_name, 0) != NULL)
+            return;
+    }
+    if (level != NULL && netclient == 0)
+        GoToNewLevel(level->index);
+}
+
 extern "C" void __cdecl GizActions_SetVisibilityPc(GIZFLOW_PC *unused0, FLOWBOX_PC *unused1, char **params, i32 count) {
     NUSPECIALHANDLE special = {0};
     i32 visible = 1;

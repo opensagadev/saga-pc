@@ -554,7 +554,7 @@ address    , symbol                                                         , si
 0x464f40,_GizAction_SetAIMessage,307,
 0x465080,_GizAction_SetAIState,693,
 0x465340,_GizActions_CompleteLevel,235,
-0x465430,_GizActions_GoToNewLevelPc,,"void __cdecl(GIZFLOW_PC *, FLOWBOX_PC *, char **, i32)"
+0x465430,_GizActions_GoToNewLevelPc,212,"void __cdecl(GIZFLOW_PC *, FLOWBOX_PC *, char **, i32)"
 0x465510,_GizActions_GoThroughDoor,115,
 0x00465590 , _GizActions_PlayObstacle                                       , 389   , "void __cdecl (GIZFLOW_PC *, FLOWBOX_PC *, char **, i32)"
 0x465720,_GizActions_PlaySpecialPc,,"void __cdecl(GIZFLOW_PC *, FLOWBOX_PC *, char **, i32)"
@@ -9057,6 +9057,7 @@ address    , symbol                                                         , si
 0x7584c4   , _PCContextName_Techno                                          , 7     , const char [7]
 0x007584d4 , _NewLevelPrefix                                                ,       ,
 0x7584d4,??_C@_09CGFKCPPE@newlevel?$DN?$AA@,10,char []
+0x007584e0,_GizActionLevelPrefixPc,7,const char[7]
 0x007584e8,_AIActionCircleClockwiseName,10,const char[10]
 0x007584f4,_AIActionCircleAnticlockwiseName,14,const char[14]
 0x00758504,_AIActionCircleReverseName,8,const char[8]
@@ -9116,6 +9117,7 @@ address    , symbol                                                         , si
 0x75894c,_GizActionNameSetPickupVisibilityPc,20,const char[20]
 0x758960,_GizActionNameSetGizmoVisibilityPc,19,const char[19]
 0x758974,??_C@_06HOPIODND@effect?$AA@,7,char []
+0x0075897c,_GizActionPartEffectPrefixPc,12,const char[12]
 0x75898c,??_C@_08DEMFFOIB@PUSHONLY?$AA@,9,const char[9]
 0x758998,??_C@_05LJBAGOMH@INBOX?$AA@,6,const char[6]
 0x7589a0,??_C@_0P@IBKIICKP@INBOXANDGROUND?$AA@,15,const char[15]
