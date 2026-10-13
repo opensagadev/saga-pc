@@ -4879,7 +4879,7 @@ typedef struct gameobject_s {
     f32 field_b0;
     f32 scaled_height;
     NUMTX transform;
-    u8 unknown_00f8[0x80];
+    NUMTX draw_secondary_mtx, draw_tertiary_mtx;
     NUVEC collision_min;
     NUVEC collision_max;
     NUVEC upper_position;

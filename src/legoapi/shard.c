@@ -118,6 +118,17 @@ void DrawShop3D(WORLDINFO *world) {
     SetLevelLights(world->rtl_set, 1.0f);
 }
 
+extern i32(__cdecl *menuptr)(void *menu);
+extern NUVEC *shopcamlookat;
+i32 __cdecl ItemMenu(void *menu);
+
+void __cdecl GetShopCamLookPos(NUVEC *position) {
+    if (menuptr == ItemMenu && splshelf != NULL && picked != -1)
+        *position = splshelf->pts[picked];
+    else
+        *position = *shopcamlookat;
+}
+
 static i32 Signals_Load(void *world_info, void *unused1) {
     i32 version;
     i32 index;

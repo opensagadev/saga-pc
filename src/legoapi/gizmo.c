@@ -681,6 +681,19 @@ i32 __cdecl GizmoGetVisibility(void *system, void *pointer) {
     return type->fns.get_visibility_fn(gizmo);
 }
 
+typedef NUVEC *(__cdecl *GIZMO_GET_POS_FN_PC)(GIZMO_PC *gizmo);
+
+NUVEC *__cdecl GizmoGetPos(GIZMOSYS_PC *system, void *pointer) {
+    GIZMO_PC *gizmo = (GIZMO_PC *)pointer;
+    GIZMO_GET_POS_FN_PC get_pos_fn;
+    if (gizmotypes == NULL || gizmo == NULL)
+        return NULL;
+    get_pos_fn = (GIZMO_GET_POS_FN_PC)((GIZMOTYPES_PC *)gizmotypes)->types[gizmo->type_id].fns.get_pos_fn;
+    if (get_pos_fn == NULL)
+        return NULL;
+    return get_pos_fn(gizmo);
+}
+
 #include <stdio.h>
 
 typedef struct GIZMO_NAME_TYPE_PC {

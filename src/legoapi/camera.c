@@ -211,6 +211,187 @@ void __cdecl GameCam_HitJudder(void) {
     GameCam_Judder(GameCam, amount, qrand() / 0x5556, NULL);
 }
 
+extern i32 GameCamLookRotXPc;
+extern i32 GameCamLookRotYPc;
+extern NUVEC PlayPlaneCornersPc[4];
+extern f32 PlayPlaneDepthPc;
+extern f32 GameCamShakeRadiusPc;
+extern f32 GameCamShakeRetargetPc;
+extern f32 GameCamShakeDirSeekPc;
+extern f32 GameCamShakeOffsetSeekPc;
+extern i32 PlayPlanesUseRenderMtxPc;
+
+void __cdecl GameCam_ResetLookRot(GAMECAMERA *camera) {
+    if (camera == NULL)
+        camera = GameCam;
+    camera->field_214 = 0.0f;
+    camera->adjusted_yaw_offset = 0.0f;
+    camera->field_20c = 0.0f;
+    camera->field_210 = 0.0f;
+    camera->field_204 = 0.0f;
+    camera->field_208 = 0.0f;
+}
+
+void __cdecl GameCam_UpdateLookRot(GAMECAMERA *camera) {
+    i32 i;
+    f32 players;
+    if (camera == NULL)
+        camera = GameCam;
+    camera->field_204 = 0.0f;
+    camera->field_208 = 0.0f;
+    if (MiniCutCam == 0) {
+        players = 0.0f;
+        for (i = 0; i < 2; i++) {
+            if (Player[i] != NULL && (((GAMEOBJECT *)Player[i])->flags_1fc & 0x80) != 0 &&
+                ((GAMEOBJECT *)Player[i])->pad->bound_pad != NULL) {
+                i32 look = 1;
+                f32 x, y;
+                if (AlternateGameCallbackPc != NULL)
+                    look = AlternateGameCallbackPc((GAMEOBJECT *)Player[i]);
+                if (look == 2) {
+                    GAMEPAD_PC *pad = ((GAMEOBJECT *)Player[i])->pad;
+                    if (pad->input_mode == 1) {
+                        u32 buttons = pad->buttons_held;
+                        u32 horizontal = buttons & (GAMEPAD_DLEFT | GAMEPAD_DRIGHT);
+                        u32 vertical;
+                        if (horizontal == GAMEPAD_DLEFT)
+                            x = -1.0f;
+                        else if (horizontal == GAMEPAD_DRIGHT)
+                            x = 1.0f;
+                        else
+                            x = 0.0f;
+                        vertical = buttons & (GAMEPAD_DUP | GAMEPAD_DDOWN);
+                        if (vertical == GAMEPAD_DUP)
+                            y = -1.0f;
+                        else if (vertical == GAMEPAD_DDOWN)
+                            y = 1.0f;
+                        else
+                            y = 0.0f;
+                    } else {
+                        x = (f32)pad->bound_pad->analog_left_x - 127.5f;
+                        x *= 1.0f / 127.5f;
+                        y = (f32)pad->bound_pad->analog_left_y - 127.5f;
+                        y *= 1.0f / 127.5f;
+                    }
+                    camera->field_204 += (f32)((GameCamLookRotXPc << 16) / 360) * y;
+                    camera->field_208 += (f32)((GameCamLookRotYPc << 16) / 360) * x;
+                    players += 1.0f;
+                } else if (look == 1) {
+                    FRAME_PAD_PC *bound_pad = ((GAMEOBJECT *)Player[i])->pad->bound_pad;
+                    x = (f32)bound_pad->analog_right_x - 127.5f;
+                    x *= 1.0f / 127.5f;
+                    y = (f32)bound_pad->analog_right_y - 127.5f;
+                    y *= 1.0f / 127.5f;
+                    camera->field_204 += y * (f32)((GameCamLookRotXPc << 16) / 360);
+                    camera->field_208 += (f32)((GameCamLookRotYPc << 16) / 360) * x;
+                    players += 1.0f;
+                }
+            }
+            if (players > 1.0f) {
+                f32 scale = 1.0f / players;
+                camera->field_204 *= scale;
+                camera->field_208 *= scale;
+            }
+        }
+    }
+    camera->field_20c =
+        SeekLinearF(camera->field_20c, camera->field_204, (f32)((GameCamLookRotXPc << 16) / 360) * FRAMETIME * 2.0f);
+    camera->field_210 =
+        SeekLinearF(camera->field_210, camera->field_208, (f32)((GameCamLookRotYPc << 16) / 360) * FRAMETIME * 2.0f);
+    camera->field_214 = SeekValF(camera->field_214, camera->field_20c, 3.0f);
+    camera->adjusted_yaw_offset = SeekValF(camera->adjusted_yaw_offset, camera->field_210, 3.0f);
+}
+
+typedef struct PLAY_CORNER_PC {
+    NUVEC near_point;
+    NUVEC far_point;
+} PLAY_CORNER_PC;
+
+static void MakePlayPlane(KEEP_SCREEN_PLANE_PC *plane, NUVEC *a, NUVEC *b, NUVEC *c, NUVEC *d) {
+    NUVEC first_edge;
+    NUVEC second_edge;
+    plane->point.x = (a->x + b->x + c->x + d->x) * 0.25f;
+    plane->point.y = (a->y + b->y + c->y + d->y) * 0.25f;
+    plane->point.z = (a->z + b->z + c->z + d->z) * 0.25f;
+    NuVecSub(&first_edge, b, a);
+    NuVecSub(&second_edge, c, a);
+    NuVecCross(&plane->normal, &first_edge, &second_edge);
+    NuVecNorm(&plane->normal, &plane->normal);
+}
+
+void __cdecl MakePlayPlanes(GAMECAMERA *camera) {
+    NUVEC ray;
+    PLAY_CORNER_PC corners[4];
+    i32 i;
+    for (i = 0; i < 4; i++) {
+        ray.x = PlayPlaneCornersPc[i].x * PANEL3DMULX;
+        ray.y = PlayPlaneCornersPc[i].y * PANEL3DMULY;
+        ray.z = PlayPlaneCornersPc[i].z;
+        NuVecMtxRotate(&ray, &ray, PlayPlanesUseRenderMtxPc != 0 ? &camera->render_mtx : &camera->target_mtx);
+        NuVecAdd(&corners[i].near_point, &ray, &camera->position);
+        NuVecNorm(&ray, &ray);
+        corners[i].far_point.x = corners[i].near_point.x + PlayPlaneDepthPc * ray.x;
+        corners[i].far_point.y = corners[i].near_point.y + PlayPlaneDepthPc * ray.y;
+        corners[i].far_point.z = corners[i].near_point.z + PlayPlaneDepthPc * ray.z;
+    }
+    // Plane order is near, left, right, top, bottom, far.
+    MakePlayPlane(&PlayPlanePc[1], &corners[0].near_point, &corners[0].far_point, &corners[2].far_point,
+                  &corners[2].near_point);
+    MakePlayPlane(&PlayPlanePc[2], &corners[1].far_point, &corners[1].near_point, &corners[3].near_point,
+                  &corners[3].far_point);
+    MakePlayPlane(&PlayPlanePc[3], &corners[0].near_point, &corners[1].near_point, &corners[1].far_point,
+                  &corners[0].far_point);
+    MakePlayPlane(&PlayPlanePc[4], &corners[2].near_point, &corners[2].far_point, &corners[3].far_point,
+                  &corners[3].near_point);
+    MakePlayPlane(&PlayPlanePc[0], &corners[0].near_point, &corners[2].near_point, &corners[3].near_point,
+                  &corners[1].near_point);
+    MakePlayPlane(&PlayPlanePc[5], &corners[0].far_point, &corners[1].far_point, &corners[3].far_point,
+                  &corners[2].far_point);
+}
+
+void __cdecl GameCam_UpdateShake(GAMECAMERA *camera, f32 ambient_amount) {
+    NUVEC offset;
+    f32 amount;
+    f32 rate;
+    if (camera == NULL)
+        camera = GameCam;
+    if (camera->shake_decay > 0.0f)
+        camera->shake_decay -= FRAMETIME;
+    if (camera->shake_decay > 0.0f)
+        amount = camera->shake_intensity;
+    else
+        amount = ambient_amount > 0.0f ? ambient_amount : 0.0f;
+    camera->shake_amplitude = SeekLinearF(camera->shake_amplitude, amount, FRAMETIME * 2.0f);
+    if (NuVecDistSqr(&camera->shake_direction, &camera->shake_target, NULL) <
+        GameCamShakeRetargetPc * GameCamShakeRetargetPc) {
+        camera->shake_target.x = 0.0f;
+        camera->shake_target.y = qrand() * (1.0f / 65535.0f) * GameCamShakeRadiusPc;
+        camera->shake_target.z = 0.0f;
+        NuVecRotateZ(&camera->shake_target, &camera->shake_target, qrand());
+        camera->shake_target.x *= 4.0f / 3.0f;
+    }
+    rate = GameCamShakeDirSeekPc;
+    if (camera->shake_decay > 0.0f)
+        rate = GameCamShakeDirSeekPc * camera->shake_freq;
+    SeekVec(&camera->shake_direction, &camera->shake_direction, &camera->shake_target, rate);
+    rate = GameCamShakeOffsetSeekPc;
+    if (camera->shake_decay > 0.0f)
+        rate = GameCamShakeOffsetSeekPc * camera->shake_freq;
+    SeekVec(&camera->shake_offset, &camera->shake_offset, &camera->shake_direction, rate);
+    NuVecScale(&offset, &camera->shake_offset, camera->shake_amplitude);
+    NuMtxPreRotateX(&camera->render_mtx, (i32)(offset.y / GameCamShakeRadiusPc * (camera->shake_amplitude * 910.0f)));
+    NuMtxPreRotateY(&camera->render_mtx, (i32)(offset.x / GameCamShakeRadiusPc * (camera->shake_amplitude * 910.0f)));
+}
+
+void __cdecl CentreTwoPlayerCamera(NUVEC *center, NUVEC *player_a, NUVEC *player_b, NUVEC *reference) {
+    f32 distance_a = NuVecDist(reference, player_a, NULL);
+    f32 distance_b = NuVecDist(reference, player_b, NULL);
+    f32 blend = distance_a / (distance_b + distance_a);
+    center->x = (player_b->x - player_a->x) * blend + player_a->x;
+    center->y = (player_b->y - player_a->y) * blend + player_a->y;
+    center->z = (player_b->z - player_a->z) * blend + player_a->z;
+}
+
 f32 __fastcall PCDeviceBackend_GetActiveAspectPc(PC_DEVICE_BACKEND_PC *backend) {
     switch (PcWindowOptions.aspect_mode) {
         case 1:
@@ -670,7 +851,6 @@ void __cdecl GameCam_UpdateShake(struct gamecamera_s *camera, f32 ambient_amount
 void __cdecl GetShopCamLookPos(struct nuvec_s *position);
 void __cdecl MakePlayPlanes(GAMECAMERA *camera);
 void __cdecl UpdatePlayerCameraOcclusionPc(void);
-void __cdecl PlayerCamPos(struct gameobject_s *object, struct nuvec_s *position, struct nuvec_s *reference);
 i32 __cdecl SockSysCamera(SOCKSYS_PC *sock_sys, struct nuvec_s *fallback_camera_position, i32 socket_changed,
                           struct nuvec_s *player_camera_positions, struct nuvec_s *player_positions, i32 player_count,
                           struct sockposition_pc_s *camera_socket_position, struct nuvec_s *camera_position,
@@ -728,6 +908,162 @@ void UpdatePlayerCameraOcclusionPc(void) {
                 SeekLinearF(object->pause_context_state, (object->field_efe & 0x10) ? 1.0f : 0.0f, 3.0f * FRAMETIME);
         }
     }
+}
+
+typedef struct CAMERA_CONTEXT_PATH_PC {
+    u8 unknown_00[0x40];
+    struct nugspline_s *path;
+    u8 unknown_44[8];
+    u8 flags;
+} CAMERA_CONTEXT_PATH_PC;
+STATIC_ASSERT(offsetof(CAMERA_CONTEXT_PATH_PC, path) == 0x40);
+STATIC_ASSERT(offsetof(CAMERA_CONTEXT_PATH_PC, flags) == 0x4c);
+typedef struct CAMERA_CONTEXT_FOCUS_PC {
+    u8 unknown_00[0x28];
+    NUVEC focus;
+} CAMERA_CONTEXT_FOCUS_PC;
+STATIC_ASSERT(offsetof(CAMERA_CONTEXT_FOCUS_PC, focus) == 0x28);
+typedef struct CAMERA_CONTEXT_BUILDIT_PC {
+    u8 unknown_00[0x34];
+    NUVEC position;
+} CAMERA_CONTEXT_BUILDIT_PC;
+STATIC_ASSERT(offsetof(CAMERA_CONTEXT_BUILDIT_PC, position) == 0x34);
+typedef struct CAMERA_GIZFORCE_TARGET_PC {
+    u8 unknown_00[0x1c];
+    NUVEC position;
+} CAMERA_GIZFORCE_TARGET_PC;
+STATIC_ASSERT(offsetof(CAMERA_GIZFORCE_TARGET_PC, position) == 0x1c);
+typedef struct CAMERA_CABLE_PC {
+    GAMEOBJECT *source;
+    GAMEOBJECT *target;
+} CAMERA_CABLE_PC;
+STATIC_ASSERT(offsetof(CAMERA_CABLE_PC, target) == 0x4);
+typedef struct CAMERA_GRABBER_PC {
+    u8 unknown_000[0x48c];
+    NUVEC grab_position;
+} CAMERA_GRABBER_PC;
+STATIC_ASSERT(offsetof(CAMERA_GRABBER_PC, grab_position) == 0x48c);
+STATIC_ASSERT(offsetof(GAMEOBJECT, dead) == 0x28b);
+STATIC_ASSERT(offsetof(GAMEOBJECT, previous_position) == 0x1c0);
+STATIC_ASSERT(offsetof(GAMEOBJECT, field_1010) == 0x1010);
+STATIC_ASSERT(offsetof(GAMEOBJECT, cable) == 0x1040);
+STATIC_ASSERT(offsetof(GAMEOBJECT, gizforce_target) == 0x10cc);
+STATIC_ASSERT(offsetof(GAMEOBJECT, force_target) == 0x790);
+STATIC_ASSERT(offsetof(GAMEOBJECT, force_part) == 0xcb8);
+STATIC_ASSERT(offsetof(GAMEOBJECT, techno) == 0x798);
+STATIC_ASSERT(offsetof(WORLDINFO, grabber) == 0x46ec);
+
+i32 __cdecl Grapple_LookAtPos(GAMEOBJECT *object, NUVEC *position);
+f32 __cdecl NuVecMagVU0(NUVEC *v);
+
+static void PlayerCamPos(GAMEOBJECT *object, NUVEC *position, NUVEC *reference) {
+    f32 height =
+        (object->character_data->top + object->character_data->bottom) * object->character_data->model_scale * 0.5f;
+    WORLDINFO *world = WorldInfo_CurrentlyActive();
+    NUVEC direction;
+    NUVEC focus;
+    NUVEC midpoint;
+    NUVEC *target;
+    if ((object->dead != 0 || object->character_context == 0x2b) && (WORLD->current_level->flags & 0x40000) == 0) {
+        if (object->dead != 0)
+            *position = object->position;
+        else
+            *position = object->previous_position;
+        position->y += height;
+        if (VehicleArea != 0 && (object->flags_1fc & 0x80) != 0 && object->field_1010 > 0.0f) {
+            f32 blend = 1.0f - object->field_1010 * 0.5f;
+            if (blend < 0.5f)
+                blend = NU_SIN_LUT((blend * 2.0f) * 16384.0f);
+            else
+                blend = 1.0f - (1.0f - (NU_SIN_LUT((blend - 0.5f) * 2.0f * 32768.0f + 16384.0f) + 1.0f) * 0.5f);
+            position->x += object->velocity.x * blend;
+            position->z += object->velocity.z * blend;
+        }
+        return;
+    }
+    target = NULL;
+    if (object->character_context == 0x0f && object->techno != NULL &&
+        (((CAMERA_CONTEXT_PATH_PC *)object->techno)->flags & 0x10) != 0) {
+        NUVEC *points = ((CAMERA_CONTEXT_PATH_PC *)object->techno)->path->pts;
+        f32 scale;
+        NuVecSub(&direction, &points[0], &points[3]);
+        NuVecSub(&focus, &points[0], &object->position);
+        scale = 1.0f / NuVecMagVU0(&direction);
+        direction.x = fabsf(points[3].x - points[0].x) * scale;
+        direction.y = fabsf(points[3].y - points[0].y) * scale;
+        direction.z = fabsf(points[3].z - points[0].z) * scale;
+        position->x = points[0].x - direction.x * focus.x;
+        position->y = points[0].y - direction.y * focus.y;
+        position->z = points[0].z - direction.z * focus.z;
+        return;
+    }
+    position->x = object->position.x;
+    position->y = object->position.y + height;
+    position->z = object->position.z;
+    if (object->cable != NULL && ((CAMERA_CABLE_PC *)object->cable)->target != NULL)
+        target = &((CAMERA_CABLE_PC *)object->cable)->target->collision_position;
+    switch (object->character_context) {
+        case 0x08:
+            if (object->gizforce_target != NULL)
+                target = &((CAMERA_GIZFORCE_TARGET_PC *)object->gizforce_target)->position;
+            break;
+        case 0x1b:
+            if (object->force_target != NULL)
+                target = &object->force_target->collision_position;
+            break;
+        case 0x1d:
+            if (object->force_part != NULL && (object->force_part->active & 1) != 0)
+                target = &object->force_part->position;
+            break;
+        case 0x2d:
+            if (object->techno != NULL)
+                target = &((CAMERA_CONTEXT_BUILDIT_PC *)object->techno)->position;
+            break;
+        case 0x46:
+            if (Grapple_LookAtPos(object, &focus) != 0)
+                target = &focus;
+            break;
+        case 0x51:
+            target = Technos_TgtPos((TECHNO_s *)object->techno);
+            if (target != NULL) {
+                NuVecSub(&focus, target, &object->position);
+                NuVecScale(&focus, &focus, ((TECHNO_s *)object->techno)->scale);
+                NuVecAdd(&focus, &focus, &object->position);
+                *position = focus;
+                target = NULL;
+            }
+            break;
+        case 0x59:
+            if (object->techno != NULL)
+                target = &((CAMERA_CONTEXT_FOCUS_PC *)object->techno)->focus;
+            break;
+    }
+    if ((object->id == id_GRABCONTROL || object->id == id_GRABR2CONTROL) && world->grabber != NULL) {
+        midpoint.x = (((CAMERA_GRABBER_PC *)world->grabber)->grab_position.x + position->x) * 0.5f;
+        midpoint.y = position->y;
+        midpoint.z = (((CAMERA_GRABBER_PC *)world->grabber)->grab_position.z + position->z) * 0.5f;
+        target = &midpoint;
+    }
+    if (target != NULL)
+        CentreTwoPlayerCamera(position, position, target, reference);
+}
+
+static void PlayersCamLookPos(NUVEC *target, NUVEC *reference) {
+    NUVEC focus;
+    i32 count;
+    i32 i;
+    target->x = target->y = target->z = 0.0f;
+    count = 0;
+    for (i = 0; i < 2; i++) {
+        GAMEOBJECT *object = (GAMEOBJECT *)Player[i];
+        if (object != NULL && ((object->flags_1fc & 0x80) != 0 || LookAtBoth != 0)) {
+            PlayerCamPos(object, &focus, reference);
+            NuVecAdd(target, target, &focus);
+            count++;
+        }
+    }
+    if (count > 0)
+        NuVecScale(target, target, 1.0f / (f32)count);
 }
 
 void MoveGameCamera(GAMECAMERA *camera) {
@@ -1352,27 +1688,8 @@ mode_selected:
         case 4: {
             position = DoorCutCameraPosition0Pc;
             target = DoorCutCameraPosition1Pc;
-            if (Door_CutLookAtPlayers != 0) {
-                NUVEC player_focus;
-                target.x = 0.0f;
-                target.y = 0.0f;
-                target.z = 0.0f;
-                shared_count = 0;
-
-                if (Player[0] != NULL && (((i8)(((GAMEOBJECT *)Player[0])->flags_1fc)) < 0 || LookAtBoth != 0)) {
-                    PlayerCamPos(Player[0], &player_focus, &position);
-                    NuVecAdd(&target, &target, &player_focus);
-                    shared_count = 1;
-                }
-                if (Player[1] != NULL && (((i8)(((GAMEOBJECT *)Player[1])->flags_1fc)) < 0 || LookAtBoth != 0)) {
-                    PlayerCamPos(Player[1], &player_focus, &position);
-                    NuVecAdd(&target, &target, &player_focus);
-                    ++shared_count;
-                }
-                if (shared_count != 0) {
-                    NuVecScale(&target, &target, 1.0f / ((f32)(shared_count)));
-                }
-            }
+            if (Door_CutLookAtPlayers != 0)
+                PlayersCamLookPos(&target, &position);
             ComplexSockPosition(WORLD->sock_sys, &position, -1, -1, &camera->sock_position);
             roll_hint_valid = 0;
             roll_hint = 0;

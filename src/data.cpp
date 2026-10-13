@@ -15384,6 +15384,9 @@ extern "C" {
 #pragma bss_seg(".bss$LookAtBoth")
     i32 LookAtBoth;
 #pragma bss_seg()
+#pragma bss_seg(".bss$PlayPlanesUseRenderMtxPc")
+    i32 PlayPlanesUseRenderMtxPc;
+#pragma bss_seg()
 #pragma bss_seg(".bss$SuperStoryScore")
     u32 SuperStoryScore;
 #pragma bss_seg()
@@ -29678,6 +29681,8 @@ extern "C" {
 
 #pragma bss_seg(".bss$shopcamlookat")
     NUVEC *shopcamlookat;
+#pragma bss_seg(".bss$menuptr")
+    i32(__cdecl *menuptr)(void *menu);
 
 #pragma data_seg(".data$GunshipAOffset")
     NUVEC GunshipAOffset = {12.0f, 22.5f, -12.0f};
@@ -29728,5 +29733,30 @@ extern "C" {
 
 #pragma data_seg(".data$CamDewbackLiftPc")
     f32 CamDewbackLiftPc = 1.5f;
+
+#pragma data_seg(".data$GameCamLookRotXPc")
+    i32 GameCamLookRotXPc = 10;
+
+#pragma data_seg(".data$GameCamLookRotYPc")
+    i32 GameCamLookRotYPc = 15;
+
+#pragma data_seg(".data$PlayPlaneCornersPc")
+    NUVEC PlayPlaneCornersPc[4] = {
+        {-0.85f, 0.85f, 1.0f}, {0.85f, 0.85f, 1.0f}, {-0.85f, -0.85f, 1.0f}, {0.85f, -0.85f, 1.0f}};
+
+#pragma data_seg(".data$PlayPlaneDepthPc")
+    f32 PlayPlaneDepthPc = 5.0f;
+
+#pragma data_seg(".data$GameCamShakeRadiusPc")
+    f32 GameCamShakeRadiusPc = 0.1f;
+
+#pragma data_seg(".data$GameCamShakeRetargetPc")
+    f32 GameCamShakeRetargetPc = 0.025f;
+
+#pragma data_seg(".data$GameCamShakeDirSeekPc")
+    f32 GameCamShakeDirSeekPc = 10.0f;
+
+#pragma data_seg(".data$GameCamShakeOffsetSeekPc")
+    f32 GameCamShakeOffsetSeekPc = 2.0f;
 #pragma data_seg()
 }

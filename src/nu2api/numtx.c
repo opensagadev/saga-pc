@@ -859,6 +859,10 @@ void __cdecl NuMtxInvVU0(NUMTX *m, NUMTX *source) {
     m->m33 = 1.0f;
 }
 
+f32 __cdecl NuVecMagVU0(NUVEC *v) {
+    return (f32)sqrt(v->x * v->x + v->y * v->y + v->z * v->z);
+}
+
 void __cdecl NuMtxScaleVU0(NUMTX *matrix, NUVEC *scale) {
     NuMtxScale(matrix, scale);
 }

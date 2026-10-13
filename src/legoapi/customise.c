@@ -480,6 +480,22 @@ i32 __cdecl PermanentCustomPieceAvailablePc(CUSTOMPIECE_LAYERS_PC *input) {
     return 1;
 }
 
+void __cdecl Customiser_GetActiveWeirdoIndex(i32 *index, i32 *count) {
+    if (MissionMenuPacketPc.active_player[0] != 0) {
+        if (MissionMenuPacketPc.active_player[1] == 0) {
+            *index = 0;
+            *count = 1;
+            return;
+        }
+    } else if (MissionMenuPacketPc.active_player[1] != 0) {
+        *index = 1;
+        *count = 1;
+        return;
+    }
+    *index = 0;
+    *count = 2;
+}
+
 void CustomiserMenu_End() {
     LevLock[1] = 1;
     LevTime[1] = 2.0f;

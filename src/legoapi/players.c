@@ -2204,6 +2204,46 @@ void DrawWeapons(GAMEOBJECT *object, i32 reflection, f32 weapon_scale) {
     }
 }
 
+void DrawGameObjectsDraw(i32 pass) {
+    GAMEOBJECT *object;
+    i32 index;
+    u8 drawn;
+
+    EnableShadowMapRendering(0);
+    object = Obj;
+    for (index = 0; index < HIGHGAMEOBJECT; index++, object++) {
+        if ((object->flags_1f8 & 0x800) != 0) {
+            if (object->rider != NULL && object->character_context == 0x3b) {
+                object->model_draw_result = object->rider->model_draw_result;
+            }
+            continue;
+        }
+        STUBBED_NAMED("DrawGameObjectsDraw: GameDrawCharacterModel at 0x0041cb50");
+        drawn = 0;
+        object->model_draw_result = drawn;
+        object->flags_e24 ^= ((u32)drawcharactermodel_locatorsupdated * 8 ^ object->flags_e24) & 8;
+        if (drawn != 0) {
+            STUBBED_NAMED("DrawGameObjectsDraw: DrawParaphernalia(object) at 0x0041e4c0");
+        } else if (((object->flags_e20 & 0x400) != 0 || object->character_context == 8) &&
+                   object->transform_alpha > 0.0f && object->transform_target_scale > 0.0f &&
+                   WORLD->level_objects[object->field_e1e].active != 0 &&
+                   (object->character_data->game_character->flags_090 & 0x400) == 0) {
+            STUBBED_NAMED("DrawGameObjectsDraw: DrawForceGlowSprite at 0x004a4ce0");
+        }
+        if (object->snake_body != NULL) {
+            STUBBED_NAMED("DrawGameObjectsDraw: DrawSnakeBody(object) at 0x00597620");
+        }
+        object->origin_joint_ready = 1;
+        if (object->model_draw_result != 0) {
+            object->flags_ef0 |= 0x40000;
+        }
+        if (Paused == 0 && object->character_data->draw_fn != NULL) {
+            ((void(__cdecl *)(GAMEOBJECT *))object->character_data->draw_fn)(object);
+        }
+    }
+    ResetShadowMapRendering();
+}
+
 void DrawGameObjects() {
     const f32 saved_far_clip = global_camera.unknown_64;
     const f32 object_far_clip = VehicleArea != 0 ? 50.0f : 20.0f;
