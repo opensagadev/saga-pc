@@ -2704,6 +2704,7 @@ address    , symbol                                                         , si
 0x564ac0,_BackDrop_Update,43,void __cdecl(f32)
 0x564af0,_BackDrop_Draw,285,"void __cdecl (f32,i32)"
 0x564ca0,_GameFog_Reset,35,
+0x565230,_GameDisplaySettings,570,"void __cdecl(LEVEL_DISPLAY_PC *,i32 *)"
 0x00565470 , _WidescreenCode                                                , 339   , void __cdecl (i32)
 0x5655d0,_KeepPointOnScreen,154,"void __cdecl(NUVEC *,NUVEC *)"
 0x00565700 , _DrawCutBorders                                                , 279   , void __cdecl (i32)
@@ -3464,6 +3465,7 @@ address    , symbol                                                         , si
 0x594b70,_Collection_GetIDList,185,"i32 __cdecl(COLLECTION_BUILD_PC*,u32,u32,i16*,i32*,i32*,i32)"
 0x595110,_ZeroLightSetupPrivatePc,183,
 0x5952c0,_NuDynamicLightLookAt,148,
+0x5953b0,?SetParameterfPc@PC_SPECIAL_SHADOW_LIGHT@@QAEXHM@Z,257,"void __thiscall PC_SPECIAL_SHADOW_LIGHT::SetParameterfPc(i32,f32)"
 0x5954f0,_SetLights,75,"void __cdecl(NUVEC *,NUVEC *,NUVEC *,NUVEC *,NUVEC *,NUVEC *,NUVEC *)"
 0x595540,_SetLights_RTLDATA,283,"void __cdecl(RTL_DATA_PC *,f32)"
 0x595660,_SetLevelLights,190,"void __cdecl(void *,f32)"
@@ -4130,6 +4132,8 @@ address    , symbol                                                         , si
 0x5c60a0,_NuOcclusionManagerIsEnabled,45,i32 __cdecl (void)
 0x5c6150,_PcRegisterDynamicGeometryPc,522,i32 __cdecl(PC_GEOMETRY_PUBLISH_FORMAT_PC*)
 0x5c6bb0,_NuDynamicLightIsEnabled,16,i32 __cdecl(NURNDRLIGHTRECORD*)
+0x5c6c90,_NuDynamicLightSetParameterf,23,"void __cdecl(struct PC_SPECIAL_SHADOW_LIGHT *,i32,f32)"
+0x5c6cc0,_NuDynamicLightSetParameteri,44,"void __cdecl(struct PC_SPECIAL_SHADOW_LIGHT *,i32,i32)"
 0x5c6d20,_NuDynamicLightAddRenderScene,39,"void __cdecl(NURNDRLIGHTRECORD*,i32,i32)"
 0x5c6dc0,?TestBox@PCFrustumClipSet@@QAE_NPBUnuvec_s@@0H@Z,642,"bool __thiscall PCFrustumClipSet::TestBox(const NUVEC *,const NUVEC *,i32)"
 0x005c7050,?TestBoxes@PCFrustumClipSet@@QAEHPBUnuvec_s@@0@Z,69,"i32 __thiscall PCFrustumClipSet::TestBoxes(const NUVEC *,const NUVEC *)"
@@ -4550,6 +4554,9 @@ address    , symbol                                                         , si
 0x5f0f00,_NuDisplayListRndrSpecial,1491,"i32 __cdecl(NUSPECIALHANDLE *,NUMTX *,i32,NUMTX *,void *)"
 0x5f14e0,_DrawAlphaImage,2286,"void __cdecl(i32,i32,NUMTL*,i32,RENDER_POST_BLOOM_READER_PC*)"
 0x005f1dd0,_NuMtlInitEx,375,"void __cdecl NuMtlInitEx(VARIPTR *buffer, i32 material_count)"
+0x5f20c0,?allocate@?$LightObjectPool@UPC_SPECIAL_SHADOW_LIGHT@@@@QAEPAUPC_SPECIAL_SHADOW_LIGHT@@XZ,156,"struct PC_SPECIAL_SHADOW_LIGHT *__thiscall LightObjectPool<PC_SPECIAL_SHADOW_LIGHT>::allocate(void)"
+0x5f2160,?allocate@?$LightObjectPool@Unurndrlibstate_s@@@@QAEPAUnurndrlibstate_s@@XZ,153,"NURNDRLIBSTATE *__thiscall LightObjectPool<NURNDRLIBSTATE>::allocate(void)"
+0x5f2200,?allocate@?$LightObjectPool@Unudisplaylistitem_s@@@@QAEPAUnudisplaylistitem_s@@XZ,153,"NUDISPLAYLISTITEM *__thiscall LightObjectPool<NUDISPLAYLISTITEM>::allocate(void)"
 0x005f26d0,?Init@OcclusionManager@@QAEXIPATvariptr_u@@T2@@Z,109,"void __thiscall OcclusionManager::Init(u32,VARIPTR*,VARIPTR)"
 0x5f27a0,?IsOccludedOBB@OcclusionManager@@QAE_NPBUnuvec_s@@0PBUnumtx_s@@@Z,95,"bool __thiscall (const NUVEC *, const NUVEC *, const NUMTX *)"
 0x005f2800,_NuOcclusionManagerInit,26,"void __cdecl(u32,VARIPTR*,VARIPTR)"
@@ -4578,9 +4585,12 @@ address    , symbol                                                         , si
 0x5f5380,?DisplayClipFallbackPC@@YAXPAUnudisplay_list_pc_s@@PAUvisibility_result_reader_pc_s@@@Z,841,
 0x5f56d0,_DisplaySceneRndrSpecials,337,
 0x5f5830,_NuDisplaySceneRndr,454,void __cdecl(NUDISPLAY_LIST_PC*)
+0x5f5ce0,??0nurndrlightrecord_s@@QAE@XZ,168,"NURNDRLIGHTRECORD *__thiscall nurndrlightrecord_s::nurndrlightrecord_s(void)"
+0x5f5d90,??0PC_SPECIAL_SHADOW_LIGHT@@QAE@XZ,150,"struct PC_SPECIAL_SHADOW_LIGHT *__thiscall PC_SPECIAL_SHADOW_LIGHT::PC_SPECIAL_SHADOW_LIGHT(void)"
 0x5f6420,_NuAnimData2LoadBuffFromPAK,69,"void *__cdecl(void *, i32)"
 0x5f6470,_NuQFntPrintJustifiedRSW,1345,"f32 __cdecl (void *, VUFNT *, u16 *, f32, f32, f32, f32, f32, f32, f32, u32, NUMTX *)"
 0x5f69c0,_NuQFntPrintJustifiedW,110,"f32 __cdecl (VUFNT *, u16 *, f32, f32, f32, f32, f32, f32, f32, u32, NUMTX *)"
+0x5f7420,_NuDynamicLightCreate,24,struct PC_SPECIAL_SHADOW_LIGHT *__cdecl(void)
 0x005f7490 , _DisplayListUpdateSpecialTransformPS                           , 1     , "void __cdecl (NUSPECIALHANDLE *, NUMTX *)"
 0x005f7490 , _PCClipScreenUnsupported                                       , 1     , void __cdecl (void)
 0x5f7490,_PCGraphicsRenderTextureAllocationError,1,void __cdecl(void)
@@ -8074,6 +8084,7 @@ address    , symbol                                                         , si
 0x00751d8c,__real@41b40000,,const f32
 0x00751d90 , __real@42480000                                                , 4     , const f32
 0x00751d94 , __real@c0a00000                                                , 4     , const f32
+0x751d98,__real@43960000,,const f32
 0x751da0,??_C@_07IFGLIMJI@variant?$AA@,8,const char[8]
 0x751da8,??_C@_08OBMKNIBC@henchman?$AA@,9,const char[9]
 0x751db4,??_C@_0BA@NPGNDFHH@republicgunship?$AA@,16,const char[16]
@@ -11525,6 +11536,7 @@ address    , symbol                                                         , si
 0x76393c,??_C@_06FHNHFEIA@?$CFs?4rtl?$AA@,,
 0x763948,_LightingSurfaceFadeSlopePc,8,const f64
 0x763950,__real@3feccccd,4,f32
+0x763954,__real@c2700000,,const f32
 0x00763958 , ??_C@_0M@MGCAMLPP@Snake_bit_3?$AA@                             , 12    , const char[12]
 0x00763964 , ??_C@_0M@NPDLPKLO@Snake_bit_2?$AA@                             , 12    , const char[12]
 0x00763970 , ??_C@_0M@PEBGKJHN@Snake_bit_1?$AA@                             , 12    , const char[12]
@@ -11754,6 +11766,7 @@ address    , symbol                                                         , si
 0x00765678 , _NuTimeBarRight                                                , 8     , const f64
 0x00765680 , _NuTimeBarNameMargin                                           , 8     , const f64
 0x00765688 , _NuTimeBarHalfFontScale                                        , 4     , const f32
+0x7656d8,__real@42dc0000,,const f32
 0x76a698,_NuTextureSourcePathPC,55,const char[55]
 0x76a6d0,_NuTextureDdsExtensionPc,,const char[4]
 0x76a6d4,_NuTexturePhongCubePathPc,,const char[25]
@@ -18420,6 +18433,7 @@ address    , symbol                                                         , si
 0x955b50,_Lighting_BlueFlickerFn,,i32 (__cdecl *)(GAMEOBJECT *)
 0x00955b54 , _ResetOldFStop                                                 , 4     , i32
 0x955b58,_PCShadowCurrentLight,,struct PC_SPECIAL_SHADOW_LIGHT *
+0x955b5c,_PCShadowSecondaryLight,4,struct PC_SPECIAL_SHADOW_LIGHT *
 0x00955b68 , _snake_hspecials                                               , 36    , NUSPECIALHANDLE[3]
 0x00955b90 , _snakebodies                                                   , 1088  , u8[1088]
 0x955fd0,_CanSuperCarryFn,,u32 (__cdecl *)(GAMEOBJECT *)
@@ -18746,6 +18760,9 @@ address    , symbol                                                         , si
 0x974008,_PCShadowPacketCount,,i32
 0x974014,_numtl_renderplane,,u32
 0x974018,_g_overrideList,,NULSTHDR *
+0x974040,_dlistItemPool,136,LightObjectPool<NUDISPLAYLISTITEM>
+0x9740c8,_dynamicLightPool,16776,LightObjectPool<PC_SPECIAL_SHADOW_LIGHT>
+0x978250,_rndrStatePool,520,LightObjectPool<NURNDRLIBSTATE>
 0x97ace0,_NuPostEffectBackBufferCopyPc,,GRAPHICS_RENDER_TEXTURE_PC *
 0x97acf0,_debris_box_camera_cache,,NUMTX
 0x97ad30,?clip_inverse@?1??NuCameraCalcClipMtx@@9@9,,NUMTX

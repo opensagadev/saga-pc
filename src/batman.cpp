@@ -89,6 +89,7 @@ extern "C" {
     void __cdecl WorldInfo_DrawScene(WORLDINFO *world);
     void __cdecl PortalDoors_Update(WORLDINFO *world);
     u8 __cdecl IsGrabbingScreen(void);
+    void __cdecl GameDisplaySettings(LEVEL_DISPLAY_PC *display, i32 *colours);
     void __cdecl NuMtlAnimateSetSpeedScale(f32 scale);
     void __cdecl NuMtlAnimateSetMask(i32 mask);
     void __cdecl NuRndrGlobalFrameCountPause(i32 paused);
@@ -291,7 +292,7 @@ static void NuMainUpdateFrame(WORLDINFO *world, i32 *frame_flag) {
     NuWaterReset();
     STUBBED_NAMED("NuMainUpdateFrame: GameTiming(world, 0x0086e508) at 0x00549050, UpdateStats at 0x004b71a0");
     *frame_flag = 0;
-    STUBBED_NAMED("NuMainUpdateFrame: GameDisplaySettings(&level->display, back_rgba) at 0x00565230");
+    GameDisplaySettings(&world->current_level->display, back_rgba);
     if ((NewMode == 0 && NewLData == NULL) || FadeSys.fade != 0.0f) {
         return;
     }

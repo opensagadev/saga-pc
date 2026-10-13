@@ -6748,28 +6748,44 @@ STATIC_ASSERT(sizeof(NUDISPLAYLISTRENDERSCENE) == 0x18);
 STATIC_ASSERT(offsetof(NUDISPLAYLISTRENDERSCENE, render_2d_first) == 0x08);
 
 typedef struct NU_LIGHT_SHADOW_LIST_VIEW_PC {
+    u8 unknown_000[8];
     NURNDRLIBSTATE *state;
-    u8 unknown_004[4];
+    u8 unknown_00c[4];
     NUDISPLAYLISTITEM *first;
     NUDISPLAYLISTITEM *material_last;
-    u8 unknown_010[0x34];
+    u8 unknown_018[0x2c];
 } NU_LIGHT_SHADOW_LIST_VIEW_PC;
 STATIC_ASSERT(sizeof(NU_LIGHT_SHADOW_LIST_VIEW_PC) == 0x44);
-STATIC_ASSERT(offsetof(NU_LIGHT_SHADOW_LIST_VIEW_PC, state) == 0);
-STATIC_ASSERT(offsetof(NU_LIGHT_SHADOW_LIST_VIEW_PC, first) == 8);
-STATIC_ASSERT(offsetof(NU_LIGHT_SHADOW_LIST_VIEW_PC, material_last) == 0xc);
+STATIC_ASSERT(offsetof(NU_LIGHT_SHADOW_LIST_VIEW_PC, state) == 8);
+STATIC_ASSERT(offsetof(NU_LIGHT_SHADOW_LIST_VIEW_PC, first) == 0x10);
+STATIC_ASSERT(offsetof(NU_LIGHT_SHADOW_LIST_VIEW_PC, material_last) == 0x14);
 
+/* PC NuDynamicLight::RenderSet. */
 typedef struct nurndrlightrecord_s {
-    u8 opaque_00_108[0x108];
+    u8 opaque_00_100[0x100];
+    f32 parameter_100;
+    f32 parameter_104;
     i32 enabled;
-    u8 opaque_10c_2ac[0x1a0];
+    u8 opaque_10c_110[0x4];
+    f32 parameter_110;
+    u8 opaque_114_260[0x14c];
+    i32 shadow_plane_count;
+    u8 opaque_264_2a4[0x40];
     NU_LIGHT_SHADOW_LIST_VIEW_PC shadow_lists_pc[2];
-    u8 opaque_334_354[0x20];
+    NURNDRLIBSTATE *render_states[2];
+    NUDISPLAYLISTITEM *list_items[2];
+    u8 opaque_33c_354[0x18];
     i32 pending[8];
     i32 count;
     u8 opaque_378_380[0x8];
+#ifdef __cplusplus
+    nurndrlightrecord_s();
+#endif
 } NURNDRLIGHTRECORD;
 STATIC_ASSERT(sizeof(NURNDRLIGHTRECORD) == 0x380);
+STATIC_ASSERT(offsetof(NURNDRLIGHTRECORD, parameter_110) == 0x110);
+STATIC_ASSERT(offsetof(NURNDRLIGHTRECORD, shadow_plane_count) == 0x260);
+STATIC_ASSERT(offsetof(NURNDRLIGHTRECORD, render_states) == 0x32c);
 STATIC_ASSERT(offsetof(NURNDRLIGHTRECORD, enabled) == 0x108);
 STATIC_ASSERT(offsetof(NURNDRLIGHTRECORD, pending) == 0x354);
 STATIC_ASSERT(offsetof(NURNDRLIGHTRECORD, count) == 0x374);
@@ -9128,6 +9144,7 @@ extern "C" {
     extern PC_GLOBAL_LIGHTING_STATE PCGlobalLightingState;
     extern NUVEC LightingUnitDirectionPc;
     extern struct PC_SPECIAL_SHADOW_LIGHT *PCShadowCurrentLight;
+    extern struct PC_SPECIAL_SHADOW_LIGHT *PCShadowSecondaryLight;
     extern i32 NuRndrShadowCnt;
     extern PC_SHADOW_QUEUE_RECORD NuRndrShadPolDat[128];
     i32 __cdecl NuCameraClipTestPoints(NUVEC *, i32, NUMTX *);
@@ -16419,20 +16436,39 @@ extern "C" DWORD __stdcall PCSoundStreamWorkerPc(void *);
 
 #endif
 
-/* C++ working view only; original allocation extent remains unknown. */
-#ifdef __cplusplus
+/* PC NuDynamicLight; its pool slots are 0x830 bytes. */
 struct PC_SPECIAL_SHADOW_LIGHT {
-    u8 unknown_000[0x808];
+    NURNDRLIGHTRECORD render_sets[2];
+    u8 unknown_700[0xc];
+    i32 render_set_count;
+    i32 active_render_set_count;
+    u8 unknown_714[0x6c];
+    NUMTX view;
+    NUMTX projection;
+    i32 parameter_4;
+    i32 parameter_5;
     i32 enabled;
+    f32 parameter_0, parameter_1, parameter_2, parameter_3;
+    f32 parameter_19, parameter_20;
+    i32 used_on_specials;
+#ifdef __cplusplus
+    PC_SPECIAL_SHADOW_LIGHT();
     void SetEnabledPc(i32 enabled);
-};
-STATIC_ASSERT(offsetof(PC_SPECIAL_SHADOW_LIGHT, enabled) == 0x808);
-STATIC_ASSERT(sizeof(PC_SPECIAL_SHADOW_LIGHT) == 0x80c);
+    void SetParameterfPc(i32 parameter, f32 value);
 #endif
+};
+STATIC_ASSERT(offsetof(struct PC_SPECIAL_SHADOW_LIGHT, render_set_count) == 0x70c);
+STATIC_ASSERT(offsetof(struct PC_SPECIAL_SHADOW_LIGHT, projection) == 0x7c0);
+STATIC_ASSERT(offsetof(struct PC_SPECIAL_SHADOW_LIGHT, enabled) == 0x808);
+STATIC_ASSERT(offsetof(struct PC_SPECIAL_SHADOW_LIGHT, used_on_specials) == 0x824);
+STATIC_ASSERT(sizeof(struct PC_SPECIAL_SHADOW_LIGHT) == 0x828);
 
 #ifdef __cplusplus
 extern "C" {
 #endif
+    struct PC_SPECIAL_SHADOW_LIGHT *__cdecl NuDynamicLightCreate(void);
+    void __cdecl NuDynamicLightSetParameterf(struct PC_SPECIAL_SHADOW_LIGHT *light, i32 parameter, f32 value);
+    void __cdecl NuDynamicLightSetParameteri(struct PC_SPECIAL_SHADOW_LIGHT *light, i32 parameter, i32 value);
     i32 __cdecl rtlDynamicSetRadii(i32, f32, f32);
     i32 __cdecl rtlDynamicSetColours(i32, NUVEC *, NUVEC *);
     i32 __cdecl rtlDynamicSetDirection(i32, NUVEC *);
@@ -20592,8 +20628,8 @@ extern "C" {
 #ifdef __cplusplus
 }
 #endif
-STATIC_ASSERT(offsetof(NURNDRLIGHTRECORD, shadow_lists_pc) == 0x2ac);
-STATIC_ASSERT(offsetof(NURNDRLIGHTRECORD, shadow_lists_pc) + sizeof(NU_LIGHT_SHADOW_LIST_VIEW_PC) == 0x2f0);
+STATIC_ASSERT(offsetof(NURNDRLIGHTRECORD, shadow_lists_pc) == 0x2a4);
+STATIC_ASSERT(offsetof(NURNDRLIGHTRECORD, shadow_lists_pc) + sizeof(NU_LIGHT_SHADOW_LIST_VIEW_PC) == 0x2e8);
 #ifdef __cplusplus
 /* Original declaration order; methods without bodies here are genuine source
  * declarations, not zero substitutes. No class instances may be constructed

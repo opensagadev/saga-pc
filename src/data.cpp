@@ -17776,6 +17776,10 @@ extern "C" {
     struct PC_SPECIAL_SHADOW_LIGHT *PCShadowCurrentLight;
 #pragma bss_seg()
 
+#pragma bss_seg(".bss$PCShadowSecondaryLight")
+    struct PC_SPECIAL_SHADOW_LIGHT *PCShadowSecondaryLight;
+#pragma bss_seg()
+
 #pragma bss_seg(".bss$PCGlobalLightingState")
     PC_GLOBAL_LIGHTING_STATE PCGlobalLightingState;
 #pragma bss_seg()

@@ -2,6 +2,63 @@
 
 class FadeSystem : public FADEINFO_PC {};
 
+typedef struct CUT_DISPLAY_VIEW_PC {
+    u8 unknown_00[0x6c];
+    f32 camera_near_clip;
+    u8 unknown_70[0x78];
+    u16 camera_far_clip;
+} CUT_DISPLAY_VIEW_PC;
+STATIC_ASSERT(offsetof(CUT_DISPLAY_VIEW_PC, camera_near_clip) == 0x6c);
+STATIC_ASSERT(offsetof(CUT_DISPLAY_VIEW_PC, camera_far_clip) == 0xe8);
+
+extern "C" void __cdecl GameDisplaySettings(LEVEL_DISPLAY_PC *display, i32 *colours) {
+    CUT_DISPLAY_VIEW_PC *cut = (CUT_DISPLAY_VIEW_PC *)CutStopInfo;
+    LEVELDATA_PC *level;
+    i32 top_r, top_g, top_b, bottom_r, bottom_g, bottom_b;
+    f32 alpha;
+
+    if (cut != NULL && cut->camera_near_clip != 0.0f) {
+        pNuCam->near_clip = cut->camera_near_clip;
+    } else {
+        pNuCam->near_clip = display->near_clip;
+    }
+    cut = (CUT_DISPLAY_VIEW_PC *)CutStopInfo;
+    if (cut != NULL && cut->camera_far_clip != 0) {
+        pNuCam->far_clip = (f32)cut->camera_far_clip;
+    } else {
+        pNuCam->far_clip = (f32)(u16)display->far_clip;
+    }
+    level = WORLD->current_level;
+    if (level != TITLES_LDATA && (level->flags & 0x400) == 0 && level != STATUS_LDATA && level != CREDITS_LDATA &&
+        !(MainRenderTime < 1.0f)) {
+        colours[0] = (((0xffff8000 | display->bg_blue_top) << 8 | display->bg_green_top) << 8) | display->bg_red_top;
+        colours[1] =
+            (((0xffff8000 | display->bg_blue_bottom) << 8 | display->bg_green_bottom) << 8) | display->bg_red_bottom;
+        return;
+    }
+    BackDrop_UpdateColours(0);
+    top_r = (i32)RenderBackdropTopRPc;
+    top_g = (i32)RenderBackdropTopGPc;
+    top_b = (i32)RenderBackdropTopBPc;
+    bottom_r = (i32)RenderBackdropBottomRPc;
+    bottom_g = (i32)RenderBackdropBottomGPc;
+    bottom_b = (i32)RenderBackdropBottomBPc;
+    alpha = 1.0f;
+    if (RenderBackdropAlphaFnPc != NULL) {
+        RenderBackdropAlphaFnPc(&alpha);
+        if (alpha != 1.0f) {
+            top_r = (i32)(top_r * alpha);
+            top_g = (i32)(top_g * alpha);
+            top_b = (i32)(top_b * alpha);
+            bottom_r = (i32)(bottom_r * alpha);
+            bottom_g = (i32)(bottom_g * alpha);
+            bottom_b = (i32)(bottom_b * alpha);
+        }
+    }
+    colours[0] = (((0xffff8000 | (top_b & 0xff)) << 8 | (top_g & 0xff)) << 8) | (top_r & 0xff);
+    colours[1] = (((0xffff8000 | (bottom_b & 0xff)) << 8 | (bottom_g & 0xff)) << 8) | (bottom_r & 0xff);
+}
+
 extern "C" f32 CutSceneCameraFocalLengthPc;
 extern "C" f32 __cdecl NuCameraFocalLenToFOV(f32 focal_length);
 extern "C" void __cdecl WidescreenCode(i32 widescreen) {
