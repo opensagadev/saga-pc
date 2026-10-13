@@ -397,7 +397,7 @@
     "src/nu2api/nuqfnt_print.c": "dadd2d9bfb7ee1d1e1939c31b6e47f8f6c2ca76117962047dce4dd144088ca62",
     "src/nu2api/nuquat.c": "259412d6e0518f3653d4d5283f6b0c116845a4c84cec44ee3e2bc8b73d67b7d9",
     "src/nu2api/nurdpi.c": "ba14905a540d8143de10a2743e3f27fc796e092b02b8a85ee2d26ba72a6eb759",
-    "src/nu2api/nurndr.c": "9f9abd428e2cb11c83637f91b59481f1e6f8167aa75ca5595e11e19be5069141",
+    "src/nu2api/nurndr.c": "9cccf090ba7d053eb1b2710638f01b396fbe835ca486c3786ba686f9d736003e",
     "src/nu2api/nurndrstat.c": "7e04ac0d112372c5f67085ca51e5a28818fe42d81335e7b30bc8786539929c14",
     "src/nu2api/nuscene_pc.c": "b10cb8b8abcd06dc1c5fa1f69508e7326a29b233c4ad24cab7273102e8816004",
     "src/nu2api/nuscratch.c": "91d547d6ad9bc25d7187ce8e049b22acaa1fc670b24d751e61e8b776192f0497",
@@ -726,7 +726,7 @@
     "build/obj/nu2api/nuqfnt_print.obj": "ca3559f65fb333ec4c72bf9b7d510f2b07495c9caa4fd3b74dc2aba393ecb3c6",
     "build/obj/nu2api/nuquat.obj": "2baf2c189f2b0d82b4d02055db3c1548e4f73b16f97c03665bb89d99e0a1e49b",
     "build/obj/nu2api/nurdpi.obj": "d6f7d40c3bcbfc2acfcd05e7fcb3ef6f1342cb9113d7004fc43315d20e867dbf",
-    "build/obj/nu2api/nurndr.obj": "9d0e94798b4e7cf6abdacfb9ccbaf4cebba43e36acde563107d9b6c34470985a",
+    "build/obj/nu2api/nurndr.obj": "f60070c36776e93bdf12e198d505ed6722ebb00e8f83df7b02d52dcdc6ce6dee",
     "build/obj/nu2api/nurndr_swap.obj": "63c622f3f63e796296ccef96c91d66d631f309bf0c3fb6444ece96be85578ff3",
     "build/obj/nu2api/nurndrstat.obj": "127bc164e09196e772c73d484e6e244b3c8b5abe2a0dac15dbf259c921fc99f8",
     "build/obj/nu2api/nuscene_pc.obj": "fe960b0dfa2f5b24d1750017aa92bceeb67c40fa75a1bea625eddce4ecce94eb",
@@ -103040,14 +103040,14 @@
           "base_size": 755,
           "exact_match": false,
           "target_sha256": "6496973bf0e29bc570047d9f8fa0d94cb93da367b3cf6133883f711caca1bb69",
-          "base_sha256": "e3098eb106e7282775bebb867525a5036314b343fb78e96dbc0cf801a571f501",
+          "base_sha256": "61ebffd39e0b5440372c931e745639eed34069d64d15aae3e10009d77cbb4fc4",
           "relocation_count": 29,
           "comparison_unit": "005efff0-0208ee6a6fa3",
-          "objdiff_percent": 54.766815
+          "objdiff_percent": 54.94619
         }
       ],
       "status": "different",
-      "objdiff_percent": 54.766815
+      "objdiff_percent": 54.94619
     },
     {
       "name": "NuDisplayListDrawRenderScene_candidate",
@@ -377971,10 +377971,10 @@
     "mapped_code_bytes": 2152971,
     "matched_code_bytes": 396182,
     "matching_percent": 11.413250458192822,
-    "fuzzy_coverage_percent": 36.808449674027095,
+    "fuzzy_coverage_percent": 36.80848822322528,
     "mapped_functions": 7502,
     "matched_functions": 3521,
-    "objdiff_fuzzy_percent": 73.46616,
+    "objdiff_fuzzy_percent": 73.46624,
     "objdiff_total_code": 1740071,
     "image_bytes": 40067072,
     "mapped_bytes": 3076490,
@@ -379073,7 +379073,7 @@
       "metadata_sha256": "fe09365da4c355f220d724ca99394fc120b758891b4188d2c49707b6df0894f2",
       "header_path": "src/saga.h",
       "header_sha256": "69ba650ba8d7562b6f59a1634b9254e7c6a438a859204879cb491204d3051db1",
-      "geometry_object_sha256": "9760f29d2892625603407ad6f75f7f783b9ae60ba617b6846da69869a20e64aa",
+      "geometry_object_sha256": "442588924280c172af8b2409bbbc775d390906b8b3567c1d476d2c265fe750e5",
       "toolchain_sha256": "489d0782638d8033137cdb2834462416111945cbfa073147820e314b8576b95b",
       "implementation_sha256": "9ad7521230f06fde31f0771b10bd001037ea32d2def455913a7f391f05dede9d",
       "headers": {
@@ -379114,8 +379114,8 @@
           "object_sha256": "7a85addce13f5783dff9bc1fde21faf3f2a18505986f5aa92913c1cec811e8e9"
         },
         "src/nu2api/nurndr.c": {
-          "source_sha256": "9f9abd428e2cb11c83637f91b59481f1e6f8167aa75ca5595e11e19be5069141",
-          "object_sha256": "9d0e94798b4e7cf6abdacfb9ccbaf4cebba43e36acde563107d9b6c34470985a"
+          "source_sha256": "9cccf090ba7d053eb1b2710638f01b396fbe835ca486c3786ba686f9d736003e",
+          "object_sha256": "f60070c36776e93bdf12e198d505ed6722ebb00e8f83df7b02d52dcdc6ce6dee"
         },
         "src/nu2api/effect_surface.cpp": {
           "source_sha256": "c4797784f4c756ae49ebbb14cade7923fd6a5561471d3aeb55a0e43c4df86520",

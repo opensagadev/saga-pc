@@ -115,7 +115,7 @@ i32 __cdecl NuDisplayListAddRenderScene(void) {
     for (node = sort_list; node != NULL; node = node->sys_next) {
         sub = node->legacy_display_scene;
         if (sub != NULL && (sub->flags & 0x10) != 0) {
-            if ((sub->flags & 0x2) != 0) {
+            if ((sub->flags & 0x2) == 0) {
                 continue;
             }
             rebuilt = (NUSORTPRI *)((NuDisplayListStreamCursor->addr + 3U) & ~3U);
