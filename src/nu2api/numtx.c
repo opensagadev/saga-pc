@@ -373,7 +373,7 @@ void __cdecl NuMtxPreScaleU(NUMTX *m, f32 s) {
     m->m22 *= s;
 }
 
-void __cdecl NuMtxPreScale(NUMTX *m, NUVEC *s) {
+__declspec(noinline) void __cdecl NuMtxPreScale(NUMTX *m, NUVEC *s) {
     m->m00 *= s->x;
     m->m01 *= s->x;
     m->m02 *= s->x;

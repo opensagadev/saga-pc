@@ -289,7 +289,7 @@ void __cdecl Areas_FixUp(AREAFIXUP_PC *fixup) {
     }
 }
 
-LEVELDATA_PC *__cdecl Area_FindStatusLevel(AREA_DATA_PC *area, i32 *index_out) {
+__declspec(noinline) LEVELDATA_PC *__cdecl Area_FindStatusLevel(AREA_DATA_PC *area, i32 *index_out) {
     i32 index;
 
     if (index_out != NULL) {

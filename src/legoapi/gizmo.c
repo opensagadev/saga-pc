@@ -381,7 +381,7 @@ static __declspec(noinline) void GizmoSysPostLoad(GIZMOSYS_PC *system, void *wor
     }
     type = ((GIZMOTYPES_PC *)gizmotypes)->types;
     set = system->sets;
-    for (index = 0; index < ((GIZMOTYPES_PC *)gizmotypes)->count; ++index, ++type, ++set) {
+    for (index = 0; index < ((GIZMOTYPES_PC *)gizmotypes)->count; ++index, ++set, ++type) {
         if (type->fns.post_load_fn != NULL) {
             type->fns.post_load_fn(world, set->data);
         }

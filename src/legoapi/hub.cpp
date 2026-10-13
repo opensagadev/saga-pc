@@ -928,10 +928,10 @@ extern "C" void __cdecl Hub_InitMiniKits(WORLDINFO *world) {
             kit->rate_z = (i32)((f64)qrand() * (f64)(1.0f / 65535.0f) * 5461.0 + 5461.0);
             kit->rate_rotation = (i32)((f64)qrand() * (f64)(1.0f / 65535.0f) * 10922.0 + 10922.0);
             kit->velocity_x = 0;
-            kit->rotation_velocity = 0;
             kit->offset_x = 0;
             kit->velocity_z = 0;
             kit->target_rotation = kit->rotation;
+            kit->rotation_velocity = 0;
             kit->offset_z = 0;
             kit->tilt = 0;
             kit->target_piece_count = 0;

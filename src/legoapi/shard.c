@@ -87,8 +87,8 @@ void DrawItem(nuhspecial_s *special, NUVEC *position, float scale_value, float u
     NUMTX matrix;
     if (position != NULL) {
         if (NuSpecialExistsFn(special) != 0) {
-            rotation.y = y_rot;
             rotation.x = x_rot;
+            rotation.y = y_rot;
             rotation.z = z_rot;
             NuMtxSetRotateXYZVU0(&matrix, &rotation);
 

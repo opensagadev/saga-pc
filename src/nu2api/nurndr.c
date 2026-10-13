@@ -1060,7 +1060,7 @@ STATIC_ASSERT(offsetof(RENDERER_SCREEN_VERTEX_PC, unknown_14) == 20);
 
 void __cdecl NuRndrInitGeneric(void);
 
-void __cdecl NuRndrArenaInitPc(VARIPTR *buffer, VARIPTR end) {
+__declspec(noinline) void __cdecl NuRndrArenaInitPc(VARIPTR *buffer, VARIPTR end) {
     RendererArenaDataPc = (u8 *)((buffer->addr + 3) & ~3u);
     buffer->addr = ((buffer->addr + 3) & ~3u) + 0x36b00;
     RendererArenaOffsetsPc = (u32 *)((buffer->addr + 3) & ~3u);

@@ -325,7 +325,7 @@ void Minicam_ResetForNextCommand(void) {
 
 void Minicam_CalcCamPos(void) {
     if (MINI_CAM_STATE.mode == 0) {
-        MINI_CAM_STATE.position.x = MINI_CAM_STATE.position.y = 0.0f;
+        MINI_CAM_STATE.position.y = MINI_CAM_STATE.position.x = 0.0f;
         MINI_CAM_STATE.position.z = MINI_CAM_STATE.distance;
         NuVecRotateX(&MINI_CAM_STATE.position, &MINI_CAM_STATE.position, MINI_CAM_STATE.pitch);
         NuVecRotateY(&MINI_CAM_STATE.position, &MINI_CAM_STATE.position, MINI_CAM_STATE.yaw);
