@@ -213,7 +213,7 @@ void __cdecl GizBuildIt_SetToStart(void *buildit_pointer, i32 emit_debris, i32 k
 
 void __cdecl ReleaseBuildIt(GAMEOBJECT *player, i32 completed) {
     f32 completion_blend;
-    if (LEGOCONTEXT_BUILDIT == -1 || LEGOCONTEXT_BUILDIT != player->character_context)
+    if (LEGOCONTEXT_BUILDIT == -1 || player->character_context != LEGOCONTEXT_BUILDIT)
         return;
     player->character_context = -1;
     completion_blend = completed != 0 ? 0.6f : 0.0f;

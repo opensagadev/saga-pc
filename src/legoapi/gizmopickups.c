@@ -526,7 +526,7 @@ void MiniKitDetector(NUVEC *position) {
     message.position = position;
     message.flags = 0x40083;
     message.scale = 0.6f;
-    message.unknown_44 = ((void *)(GameMsg_Draw_MiniKitDetector));
     message.unknown_4f = 4;
+    message.unknown_44 = ((void *)(GameMsg_Draw_MiniKitDetector));
     AddGameMsg(&message);
 }
