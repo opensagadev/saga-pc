@@ -885,10 +885,10 @@ void __cdecl WorldInfo_Dump(WORLDINFO *world) {
             ClearLinkedCutSceneMusic(world->cutscene_sys->records[index]->instance);
     }
     STUBBED_NAMED(CharacterMiniKits_Dump); /* Native 55f716: (world). */
-    STUBBED_NAMED(CharScenes_LevelDump);   /* Native 55f71c: (world). */
+    CharScenes_LevelDump(world);
     CutScenes_Destroy(world->cutscene_sys);
     if (resource->icons_scene != NULL) {
-        STUBBED_NAMED(NuGScnRemove); /* Native 55f73b: (icons_scene). */
+        NuGScnRemove(resource->icons_scene);
         resource->icons_scene = NULL;
     }
     if (world->page_pp != -1) {
@@ -925,11 +925,11 @@ void __cdecl WorldInfo_Dump(WORLDINFO *world) {
     }
     DestroyRippleMtls(world);
     if (world->current_gscn != NULL) {
-        STUBBED_NAMED(NuGScnRemove); /* Native 55f865: (current_gscn). */
+        NuGScnRemove(world->current_gscn);
         world->current_gscn = NULL;
     }
     if (world->secondary_gscn != NULL) {
-        STUBBED_NAMED(NuGScnRemove); /* Native 55f882: (secondary_gscn). */
+        NuGScnRemove(world->secondary_gscn);
         world->secondary_gscn = NULL;
     }
 }

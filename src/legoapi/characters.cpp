@@ -255,6 +255,17 @@ static void CharacterSceneLoadPrivatePc(KILLPARTS_CHARSCENE_PC *entry, i32 model
         NuSpecialFind(entry->scene, &entry->special_scene, CDataList[model_id].name, 1);
 }
 extern "C" {
+    void __cdecl CharScenes_LevelDump(WORLDINFO *world) {
+        CHARACTER_SCENE_WORLD_PC *resource = (CHARACTER_SCENE_WORLD_PC *)world;
+        if (resource->character_scenes == NULL)
+            return;
+        for (i32 i = 0; i < CHARCOUNT; ++i) {
+            if (resource->character_scenes[i].scene != NULL)
+                NuGScnRemove(resource->character_scenes[i].scene);
+            resource->character_scenes[i].scene = NULL;
+        }
+    }
+
     void __cdecl CharScenes_LevelLoad(WORLDINFO *world) {
         for (i32 i = 0; i < CHARCOUNT; ++i) {
             KILLPARTS_CHARSCENE_PC *entry = &((CHARACTER_SCENE_WORLD_PC *)world)->character_scenes[i];
