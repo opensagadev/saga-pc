@@ -45,3 +45,9 @@ void __cdecl Levels_FixUp(LEVELFIXUP_PC *fixup) {
         }
     }
 }
+
+void __cdecl Level_Draw(WORLDINFO *world) {
+    void(__cdecl * draw)(WORLDINFO *) = (void(__cdecl *)(WORLDINFO *))world->current_level->callbacks[5];
+    if (draw != NULL)
+        draw(world);
+}
