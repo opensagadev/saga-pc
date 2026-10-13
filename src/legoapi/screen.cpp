@@ -140,6 +140,91 @@ extern "C" void __cdecl DrawCutBorders(i32 widescreen) {
     NuRndrEndScene();
 }
 
+typedef struct USEFUL_MATERIAL_PC {
+    u8 unknown_00[0x40];
+    u32 attributes;
+} USEFUL_MATERIAL_PC;
+STATIC_ASSERT(offsetof(USEFUL_MATERIAL_PC, attributes) == 0x40);
+
+extern "C" {
+    extern NUMTL *FadeMtl2;
+    NUMTL *SolidMtl;
+    void __cdecl NuRndrGradRect2di(i32, i32, i32, i32, u32 *, NUMTL *);
+}
+
+extern "C" void __cdecl CreateUsefulMaterials(void) {
+    SolidMtl = NuMtlCreate(1);
+    ((USEFUL_MATERIAL_PC *)SolidMtl)->attributes &= 0xffff3fffu;
+    ((USEFUL_MATERIAL_PC *)SolidMtl)->attributes &= 0xfffffff0u;
+    ((USEFUL_MATERIAL_PC *)SolidMtl)->attributes |= 0x40000u;
+    NuMtlUpdate(SolidMtl);
+    ZipUpLineMaterialPc = NuMtlCreate3D(1);
+    ((USEFUL_MATERIAL_PC *)ZipUpLineMaterialPc)->attributes &= 0xffff3fffu;
+    ((USEFUL_MATERIAL_PC *)ZipUpLineMaterialPc)->attributes &= 0xfffffff0u;
+    ((USEFUL_MATERIAL_PC *)ZipUpLineMaterialPc)->attributes |= 0x40000u;
+    NuMtlUpdate((NUMTL *)ZipUpLineMaterialPc);
+}
+
+extern "C" void __cdecl DrawFadeScreenWipe(void) {
+    i32 x = 0;
+    i32 y = 0;
+    i32 width = 0x2800;
+    i32 height = 0xe00;
+    i32 gradient_position;
+    i32 skip_solid;
+    f32 edge;
+    u32 colours[4];
+
+    NuRndrBeginScene(1);
+    skip_solid = FadeSys.fade < 0.0f;
+    if ((FadeSys.direction & 3) != 0) {
+        if (((FadeSys.direction & 1) != 0 && FadeSys.rate > 0.0f) ||
+            ((FadeSys.direction & 1) == 0 && !(FadeSys.rate > 0.0f))) {
+            edge = FadeSys.fade;
+            colours[0] = 0x80000000u;
+            colours[1] = 0;
+            colours[2] = 0x80000000u;
+            colours[3] = 0;
+            width = (i32)(edge * 10240.0);
+            gradient_position = width;
+        } else {
+            edge = 1.0f - FadeSys.fade;
+            colours[0] = 0;
+            colours[1] = 0x80000000u;
+            colours[2] = 0;
+            colours[3] = 0x80000000u;
+            x = (i32)(edge * 10240.0);
+            width -= x;
+            gradient_position = (i32)(edge * 10240.0 - 1024.0);
+        }
+        NuRndrGradRect2di(gradient_position - 0x10, -0x10, 0x410, 0xe10, colours, FadeMtl2);
+    } else if ((FadeSys.direction & 0xc) != 0) {
+        if (((FadeSys.direction & 4) != 0 && FadeSys.rate > 0.0f) ||
+            ((FadeSys.direction & 4) == 0 && !(FadeSys.rate > 0.0f))) {
+            edge = FadeSys.fade;
+            colours[0] = 0x80000000u;
+            colours[1] = 0x80000000u;
+            colours[2] = 0;
+            colours[3] = 0;
+            height = (i32)(edge * 3584.0);
+            gradient_position = height;
+        } else {
+            edge = 1.0f - FadeSys.fade;
+            colours[0] = 0;
+            colours[1] = 0;
+            colours[2] = 0x80000000u;
+            colours[3] = 0x80000000u;
+            y = (i32)(edge * 3584.0);
+            height -= y;
+            gradient_position = (i32)(edge * 3584.0 - 358.0);
+        }
+        NuRndrGradRect2di(-0x10, gradient_position - 0x10, 0x2810, 0x176, colours, FadeMtl2);
+    }
+    if (skip_solid == 0)
+        NuRndrRect2di(x - 0x10, y - 0x10, width + 0x10, height + 0x10, 0, SolidMtl);
+    NuRndrEndScene();
+}
+
 extern "C" void __cdecl DrawPauseScreenWipe(void) {
     i32 x = -0x20;
     i32 y = -0xc;

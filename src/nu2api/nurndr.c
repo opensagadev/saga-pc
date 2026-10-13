@@ -514,6 +514,40 @@ void __cdecl NuRndrLine3dDbg(f32 x0, f32 y0, f32 z0, f32 x1, f32 y1, f32 z1, i32
     NuPrim3DEnd();
 }
 
+void __cdecl NuRndrGradRect2di(i32 x, i32 y, i32 width, i32 height, u32 *colours, NUMTL *material) {
+    f32 sx = (f32)((f64)x * 0.0625);
+    f32 sy = (f32)((f64)y * 0.0625);
+    f32 sw = (f32)((f64)width * 0.0625);
+    f32 sh = (f32)((f64)height * 0.0625);
+    LOCATOR_PRIM_VERTEX_PC *vertex;
+    ++NuPrimCSPos;
+    NuPrimSetCoordinateSystem(0);
+    NuPrim2DBegin(13, 7, (NUMTL *)material);
+    NuRndrPrimSetColourPrivate((i32)colours[0]);
+    vertex = (LOCATOR_PRIM_VERTEX_PC *)NuPrimStreamBufferPointer->void_ptr;
+    vertex->u = 0.0f;
+    vertex->v = 0.0f;
+    NuPrim2DAddXYZ(sx, sy, 0.0f);
+    NuRndrPrimSetColourPrivate((i32)colours[1]);
+    vertex = (LOCATOR_PRIM_VERTEX_PC *)NuPrimStreamBufferPointer->void_ptr;
+    vertex->u = 1.0f;
+    vertex->v = 0.0f;
+    NuPrim2DAddXYZ(sx + sw, sy, 0.0f);
+    NuRndrPrimSetColourPrivate((i32)colours[2]);
+    vertex = (LOCATOR_PRIM_VERTEX_PC *)NuPrimStreamBufferPointer->void_ptr;
+    vertex->u = 0.0f;
+    vertex->v = 1.0f;
+    NuPrim2DAddXYZ(sx, sy + sh, 0.0f);
+    NuRndrPrimSetColourPrivate((i32)colours[3]);
+    vertex = (LOCATOR_PRIM_VERTEX_PC *)NuPrimStreamBufferPointer->void_ptr;
+    vertex->u = 1.0f;
+    vertex->v = 1.0f;
+    NuPrim2DAddXYZ(sx + sw, sy + sh, 0.0f);
+    NuPrim2DEnd();
+    --NuPrimCSPos;
+    NuPrimSetCoordinateSystem(NuPrimCoordSystemStack[NuPrimCSPos]);
+}
+
 void __cdecl NuRndrGradRectUV2di(i32 x, i32 y, i32 width, i32 height, f32 u0, f32 v0, f32 u1, f32 v1, u32 *colours,
                                  void *material) {
     f32 sx = (f32)((f64)x * 0.0625);

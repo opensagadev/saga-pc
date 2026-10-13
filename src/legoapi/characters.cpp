@@ -1,5 +1,6 @@
 #include <stdio.h>
 #include "saga.h"
+extern "C" void __cdecl CreateUsefulMaterials(void);
 extern "C" APIDEBRISSYS_PC *__cdecl InitGameDebris(VARIPTR *, VARIPTR, i32, i32, char **, i8);
 #include "saga.h"
 i32 __cdecl TakeOverYodaSeekDistanceHack(GAMEOBJECT *object, GAMEOBJECT *luke, NUVEC *offset) {
@@ -197,9 +198,9 @@ void __cdecl LoadPerm1(void) {
     NuMtlUpdate(PermanentShadowMaterialPc);
     for (index = 0; index < 0x800; ++index)
         shadow_random[index] = (u8)(qrand() >> 8);
-    STUBBED_NAMED(NuRndrShadowInit);      /* Native 48aa72: shadow_random. */
-    CreateFadeMaterials();                /* Native 48aa7a. */
-    STUBBED_NAMED(CreateUsefulMaterials); /* Native 48aa7f. */
+    STUBBED_NAMED(NuRndrShadowInit); /* Native 48aa72: shadow_random. */
+    CreateFadeMaterials();           /* Native 48aa7a. */
+    CreateUsefulMaterials();         /* Native 48aa7f. */
     edgraClumpsReset();
     edanimParamReset();
     STUBBED_NAMED(NuTexAnimProgSysInit); /* Native 48aa8e. */

@@ -2731,7 +2731,7 @@ address    , symbol                                                         , si
 0x565c00,_DrawStillScreen,247,
 0x565d00,_DrawPauseFade,114,void __cdecl (void)
 0x00565d90 , _HandleStillRender                                             , 617   , void __cdecl (void)
-0x566000,_DrawFadeScreenWipe,,void __cdecl (void)
+0x566000,_DrawFadeScreenWipe,488,void __cdecl (void)
 0x005661f0 , _NoRender                                                      , 159   , void __cdecl (void)
 0x00566290 , _FinishLoop                                                    , 271   , void __cdecl (i32)
 0x5663a0,_FadeLoop,601,
@@ -4426,6 +4426,7 @@ address    , symbol                                                         , si
 0x005dba30,_NuRndrRectUV2di,260,"void __cdecl(i32,i32,i32,i32,f32,f32,f32,f32,i32,NUMTL *)"
 0x005dbb40,_NuRndrLineStrip2d,175,"i32 __cdecl(NURND_VERTEX2D_PC *,NUMTL *,i32)"
 0x5dbbf0,_NuRndrLineRect2di,384,
+0x5dbd70,_NuRndrGradRect2di,340,"void __cdecl(i32,i32,i32,i32,u32 *,NUMTL *)"
 0x5dbed0,_NuRndrLine3d,222,"i32 __cdecl(NURND_VERTEX3D_PC *,NUMTL *,NUMTX *)"
 0x005dc050,_NuRndrLine3dDbg,144,"void __cdecl(f32,f32,f32,f32,f32,f32,i32)"
 0x5dc3f0,_NuRndrGradRectUV2di,366,"void __cdecl(i32,i32,i32,i32,f32,f32,f32,f32,u32 *,void *)"
@@ -10782,6 +10783,7 @@ address    , symbol                                                         , si
 0x0075f77c , _TextPlatformWii                                               , 4     , const char[4]
 0x75f780,??_C@_04JFCNHLLM@back?$AA@,5,char[5]
 0x75f788,??_C@_06MPKMECK@accept?$AA@,7,char[7]
+0x75f7a8,__real@40c4000000000000,8,const f64
 0x75f7b0,__real@3f7cac0840000000,8,const f64
 0x75f7d4,??_C@_0P@GIMGIHNL@?$HO0$s?$HO?$HO?5?$CFs?5?$HO0$s?$AA@,,char[15]
 0x75f7e4,??_C@_0BB@MJPIJLMO@?$CFs?5?$HO0?$CFs?$HO?$HO?5?1?5?$HO0$s?$AA@,,char[17]
@@ -11022,6 +11024,8 @@ address    , symbol                                                         , si
 0x7619b8,__real@3e59df52,4,const f32
 0x7619c0,__real@40ac100000000000,8,const f64
 0x7619c8,__real@40c40a0000000000,8,const f64
+0x7619d0,__real@4076600000000000,8,const f64
+0x7619d8,__real@4090000000000000,8,const f64
 0x7619e0,__real@4067e00000000000,8,const f64
 0x761a04,??_C@_0L@GBHGOCDB@BlowUpSwap?$AA@,11,const char [11]
 0x761a10,??_C@_0N@IGFHPGDK@BlowUpShadow?$AA@,13,const char [13]
@@ -18350,6 +18354,7 @@ address    , symbol                                                         , si
 0x93b118,_dco_prerotatez,,u16
 0x93b11c,_dco_locatorposonly,,i32
 0x93b120,_DisguiseAdjustFn,,"void (__cdecl *)(i32,i32,NUVEC *,NUVEC *)"
+0x93b124,_SolidMtl,4,NUMTL *
 0x93b128,_ZipUpLineMaterialPc,,NUMTL *
 0x93b138,_thingsSceneBase,12,nuhspecial_s
 0x93b1c0,_GizObstacleTriggersPc,,NUVEC *[16]
