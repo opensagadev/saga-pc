@@ -458,7 +458,7 @@ extern "C" {
 
         LDataList = Levels_ConfigureList((char *)LoadPermLevelsPath, &permbuffer_ptr, &permbuffer_end, 0x16d,
                                          &LEVELCOUNT, Level_SetDefaults);
-        STUBBED_NAMED("LoadPermData: FixUpLevels(0x7fa790)");
+        FixUpLevels(LevelFixupStartupPc);
 
         ADataList = Areas_ConfigureList((char *)LoadPermAreasPath, &permbuffer_ptr, &permbuffer_end, 0x48, &AREACOUNT);
         FixUpAreas();

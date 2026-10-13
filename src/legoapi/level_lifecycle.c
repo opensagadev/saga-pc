@@ -1,22 +1,5 @@
 #include "saga.h"
 
-typedef struct level_fixup_pc_s {
-    char *name;
-    LEVELDATA_PC **level;
-    void *load;
-    void *init;
-    void *reset;
-    void *update;
-    void *always_update;
-    void *draw;
-    void *draw_status;
-} LEVELFIXUP_PC;
-STATIC_ASSERT(sizeof(LEVELFIXUP_PC) == 0x24);
-STATIC_ASSERT(offsetof(LEVELFIXUP_PC, name) == 0);
-STATIC_ASSERT(offsetof(LEVELFIXUP_PC, level) == 4);
-STATIC_ASSERT(offsetof(LEVELFIXUP_PC, load) == 8);
-STATIC_ASSERT(offsetof(LEVELFIXUP_PC, draw_status) == 0x20);
-
 LEVELDATA_PC *__cdecl Level_FindByName(char *name, i32 *index_out) {
     i32 index;
 

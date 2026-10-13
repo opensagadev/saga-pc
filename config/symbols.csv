@@ -716,6 +716,8 @@ address    , symbol                                                         , si
 0x47cdd0,_Hub_Update,3846,
 0x481740,_PlayerInitCapabilitiesVariant0Pc,152,void __cdecl(GAMEOBJECT *)
 0x4817e0,_AIPathParseIndyFlagPc,310,
+0x00481920,_LostTempleC_ResetPc,44,void __cdecl(WORLDINFO *)
+0x00481950,_LostTempleC_UpdatePc,287,void __cdecl(WORLDINFO *)
 0x481ac0,_Ledges_Load,235,
 0x481f00,_Ledges_Draw,162,
 0x482290,?LedgeSetAttachPositionPc@@YAXPAUnuvec_s@@GPAUgameobject_s@@@Z,124,
@@ -9346,6 +9348,7 @@ address    , symbol                                                         , si
 0x75989c,??_C@_0O@NIMHMOA@NO_DEST_CHECK?$AA@,14,const char[]
 0x7598ac,??_C@_05GODLHHF@CLIMB?$AA@,6,const char[]
 0x7598b4,??_C@_07LAGNLOHJ@DBLJUMP?$AA@,8,const char[]
+0x007598bc,_LostTempleExitObstacleNamePc,10,const char[10]
 0x7598d0,__real@c479c000,,
 0x7598d4,__real@4479c000,,
 0x7598d8   , _PCContextName_Ledge                                           , 6     , const char [6]
@@ -14998,6 +15001,7 @@ address    , symbol                                                         , si
 0x7fa770,_CreditsEpisodeMusicPc,,const char *const[6]
 0x7fa788,_CreditsPictureScalePc,,f32
 0x7fa78c,_CreditsPictureBaseZPc,,f32
+0x007fa790,_LevelFixupStartupPc,72,LEVELFIXUP_PC[2]
 0x007fa7d8 , _AreaFixUpLSW                                                  , 520   , AREAFIXUP_PC[65]
 0x007fa9e0 , _AreaFixUpLostTemple                                           , 16    , AREAFIXUP_PC[2]
 0x007fa9f0 , _AreaFixUpGotham                                               , 40    , AREAFIXUP_PC[5]
@@ -16414,6 +16418,7 @@ address    , symbol                                                         , si
 0x879b6c,_HubResetAIFnPc,,void (__cdecl *)(WORLDINFO *)
 0x879b98,_HubBuildItsResetPc,,i32
 0x879b9c,_HubStatsLowColourPc,,u8
+0x0087a0f4,_LostTempleExitSockPositionPc,,SOCKPOSITION_PC
 0x87a1f0,_iconalphaoverride,4,f32
 0x87a1f4,_goldbrickmsgcount,4,i32
 0x87a620,_StatusStages,4,struct STATUS_STAGE_s *

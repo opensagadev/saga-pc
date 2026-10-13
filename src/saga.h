@@ -8031,7 +8031,22 @@ class CRC16 {
 extern CRC16 CRC16InstancePC;
 #endif
 
-struct level_fixup_pc_s;
+typedef struct level_fixup_pc_s {
+    char *name;
+    LEVELDATA_PC **level;
+    void *load;
+    void *init;
+    void *reset;
+    void *update;
+    void *always_update;
+    void *draw;
+    void *draw_status;
+} LEVELFIXUP_PC;
+STATIC_ASSERT(sizeof(LEVELFIXUP_PC) == 0x24);
+STATIC_ASSERT(offsetof(LEVELFIXUP_PC, name) == 0);
+STATIC_ASSERT(offsetof(LEVELFIXUP_PC, level) == 4);
+STATIC_ASSERT(offsetof(LEVELFIXUP_PC, load) == 8);
+STATIC_ASSERT(offsetof(LEVELFIXUP_PC, draw_status) == 0x20);
 
 #define PlayerCarryRotationScalePc TerrainSkinSampleCountPc // NOLINT(readability-identifier-naming)
 
@@ -19333,6 +19348,7 @@ extern "C" {
 #ifdef __cplusplus
 extern "C" {
 #endif
+    extern LEVELFIXUP_PC LevelFixupStartupPc[2];
     void __cdecl FixUpLevels(struct level_fixup_pc_s *fixup);
 
 #ifdef __cplusplus
