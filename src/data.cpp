@@ -8793,7 +8793,7 @@ extern "C" {
     __declspec(align(16)) NUVEC4BLOCK_PC ClipTransformedBlocks[2];
 #pragma bss_seg()
 #pragma bss_seg(".bss$clip_outcode_workspace_prefix")
-    u32 clip_outcode_workspace_prefix[8];
+    __declspec(align(16)) u32 clip_outcode_workspace_prefix[8];
 #pragma bss_seg()
 #pragma data_seg(".data$AIPathConnectionMargin")
     f32 AIPathConnectionMargin = 0.05f;

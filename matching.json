@@ -76,7 +76,7 @@
     "tools/dsound.def": "10147b85f8f09f4a3fefe82c0756818c64d9a6f2d81bb3f120757ea5b08941da",
     "tools/xinput1_3.def": "f2b829c89adb5c7fc9fbd7dfdbc49f8eb5412d4700bf1123935f71a29fa84b50",
     "src/batman.cpp": "c02aefbe0c4d63515c16bff9eda553f45ed01cb4b2bc5ec61dfcc57ab0060004",
-    "src/data.cpp": "378ddc23c02f0f2dba0362c55e8a4fda808f070d06f5ded04037ee68d954034d",
+    "src/data.cpp": "b03bea065793c747a45e73a4709abfdb044a79a3ca1807c5e8c74174d8200160",
     "src/gameapi/message.cpp": "d866d1645077e79807e57c3808e326e472a7ea95edd40a22bc405f922aff4999",
     "src/gameapi/saveload.cpp": "b45694feeb9a7f49d79dc8ae970a0a91eb86ccff032ac884dc883e16d366d25f",
     "src/gamelib/util/VirtualStackAllocator.cpp": "98d724a680ef413962cb0e928cc20d5695ec4a968f588628e7c8c72a261705f4",
@@ -450,7 +450,7 @@
     "build/obj/audio/vorbis/window.obj": "e2b08e317670a9e0b89f363c90c6703bc49c297764c1bb8c1ab48a6aa8db07a6",
     "build/obj/audio/vorbis_smallft.obj": "e1b62bc5226db43647c12d6cc145b6169d53769bf92761926f2fd43f4a646412",
     "build/obj/batman.obj": "a156a6d28a3d4f1b315c1e5a608f435a6f9579f1a966a48bb7d3ecc6ed3a5498",
-    "build/obj/data.obj": "a8b123bbcd831b0c645bcbb0001a1186c9625e2123958e6aaa6d404eb1af3882",
+    "build/obj/data.obj": "7323c9377725437b9cd3b6975c43709758d950a3e138ff69c77186cde3d49830",
     "build/obj/editor/edtoolsall.obj": "22fbd6d2c257381122305f452d1d7abcbe45450f42f0d166e3fef2bab8c660c5",
     "build/obj/gameapi/aiscript.obj": "2d1f8e3150c0086b0aca8906cf6e5b5b79526d7d23fd8916ad29f43333a0aa22",
     "build/obj/gameapi/aisys.obj": "e841b7b972c3418255f38205ebb6d0178acd7f4c7ed2d1bc46914381f6e7dd3a",
@@ -371436,7 +371436,7 @@
       "metadata_sha256": "8ac33bf43fa7d2cc68c6380b340a8fe5466e906e828b1afb919b82fb9677f047",
       "header_path": "src/saga.h",
       "header_sha256": "02f393f1a5b9cecf6fbbca102ac897189468b5d6d046407c380ecb2ec6ca53a2",
-      "geometry_object_sha256": "00c44138b08f655f3edf189df1a53a7f08eb0c1dc9610d6155d0a9e2b24db2ad",
+      "geometry_object_sha256": "a80d8950651f6bf8159c3345006c7881c615759ecd7fe33d71359318a8c96105",
       "toolchain_sha256": "489d0782638d8033137cdb2834462416111945cbfa073147820e314b8576b95b",
       "implementation_sha256": "9ad7521230f06fde31f0771b10bd001037ea32d2def455913a7f391f05dede9d",
       "headers": {
@@ -371469,8 +371469,8 @@
       },
       "owners": {
         "src/data.cpp": {
-          "source_sha256": "378ddc23c02f0f2dba0362c55e8a4fda808f070d06f5ded04037ee68d954034d",
-          "object_sha256": "a8b123bbcd831b0c645bcbb0001a1186c9625e2123958e6aaa6d404eb1af3882"
+          "source_sha256": "b03bea065793c747a45e73a4709abfdb044a79a3ca1807c5e8c74174d8200160",
+          "object_sha256": "7323c9377725437b9cd3b6975c43709758d950a3e138ff69c77186cde3d49830"
         },
         "src/nu2api/pc_device.cpp": {
           "source_sha256": "c1937a5729128359d65efa6fb21ca01d87f6e60b4a23c204bf561befafb94a22",
