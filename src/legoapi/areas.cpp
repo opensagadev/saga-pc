@@ -576,7 +576,7 @@ AREA_DATA_PC *__cdecl Areas_ConfigureList(char *path, VARIPTR *buffer, VARIPTR *
         return NULL;
     }
 
-    buffer_end->void_ptr = area;
+    buffer->void_ptr = area;
     if (count_out != NULL) {
         *count_out = area_count;
     }

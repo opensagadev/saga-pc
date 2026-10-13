@@ -605,7 +605,7 @@ extern "C" {
             return NULL;
         }
 
-        buffer_end->void_ptr = episode;
+        buffer->void_ptr = episode;
         if (count_out != NULL) {
             *count_out = episode_count;
         }
