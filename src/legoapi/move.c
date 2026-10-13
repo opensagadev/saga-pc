@@ -5813,8 +5813,8 @@ void PodLoseSpeed(GAMEOBJECT *object, i32 hit, i32 rumble) {
         TakeHitRumble(object, 0.7f);
     }
     object->current_speed_mul *= 0.5f;
-    if (object->current_speed_mul < 0.333f) {
-        object->current_speed_mul = 0.333f;
+    if (object->current_speed_mul < PodRaceMinimumSpeedPc) {
+        object->current_speed_mul = PodRaceMinimumSpeedPc;
     }
 }
 

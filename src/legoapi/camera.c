@@ -331,7 +331,7 @@ void __cdecl MakePlayPlanes(GAMECAMERA *camera) {
         NuVecAdd(&corners[i].near_point, &ray, &camera->position);
         NuVecNorm(&ray, &ray);
         corners[i].far_point.x = corners[i].near_point.x + PlayPlaneDepthPc * ray.x;
-        corners[i].far_point.y = corners[i].near_point.y + PlayPlaneDepthPc * ray.y;
+        corners[i].far_point.y = (PlayPlaneDepthPc * ray.y) + corners[i].near_point.y;
         corners[i].far_point.z = corners[i].near_point.z + PlayPlaneDepthPc * ray.z;
     }
     // Plane order is near, left, right, top, bottom, far.

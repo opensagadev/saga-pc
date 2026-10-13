@@ -517,7 +517,7 @@ void RestoreGameCut(void) {
     if (music->state != MUSIC_PLAYBACK_DUAL_STREAM && music->state != MUSIC_PLAYBACK_DUAL_STREAM_PENDING) {
         return;
     }
-    NuSound3ResumeStereoStream(1 - music->primary_stream);
+    NuSound3PauseStereoStream(1 - music->primary_stream);
 }
 
 void __cdecl ResetSounds(void) {

@@ -262,7 +262,7 @@ void __cdecl GizmoSysEarlyUpdate(void *system_ptr, void *world, f32 delta_time) 
     }
     type = ((GIZMOTYPES_PC *)gizmotypes)->types;
     set = system->sets;
-    for (index = 0; index < ((GIZMOTYPES_PC *)gizmotypes)->count; ++index, ++type, ++set) {
+    for (index = 0; index < ((GIZMOTYPES_PC *)gizmotypes)->count; ++index, ++set, ++type) {
         if (type->fns.early_update_fn != NULL) {
             type->fns.early_update_fn(world, set->data, delta_time);
         }
@@ -279,7 +279,7 @@ void __cdecl GizmoSysLateUpdate(void *system_ptr, void *world, f32 delta_time) {
     }
     type = ((GIZMOTYPES_PC *)gizmotypes)->types;
     set = system->sets;
-    for (index = 0; index < ((GIZMOTYPES_PC *)gizmotypes)->count; ++index, ++type, ++set) {
+    for (index = 0; index < ((GIZMOTYPES_PC *)gizmotypes)->count; ++index, ++set, ++type) {
         if (type->fns.late_update_fn != NULL) {
             type->fns.late_update_fn(world, set->data, delta_time);
         }
@@ -296,7 +296,7 @@ void __cdecl GizmoSysDraw(void *system_ptr, void *world, f32 delta_time) {
     }
     type = ((GIZMOTYPES_PC *)gizmotypes)->types;
     set = system->sets;
-    for (index = 0; index < ((GIZMOTYPES_PC *)gizmotypes)->count; ++index, ++type, ++set) {
+    for (index = 0; index < ((GIZMOTYPES_PC *)gizmotypes)->count; ++index, ++set, ++type) {
         if (type->fns.draw_fn != NULL) {
             type->fns.draw_fn(world, set->data, delta_time);
         }
@@ -313,7 +313,7 @@ void __cdecl GizmoSysPanelDraw(void *system_ptr, void *world, f32 delta_time) {
     }
     type = ((GIZMOTYPES_PC *)gizmotypes)->types;
     set = system->sets;
-    for (index = 0; index < ((GIZMOTYPES_PC *)gizmotypes)->count; ++index, ++type, ++set) {
+    for (index = 0; index < ((GIZMOTYPES_PC *)gizmotypes)->count; ++index, ++set, ++type) {
         if (type->fns.panel_draw_fn != NULL) {
             type->fns.panel_draw_fn(world, set->data, delta_time);
         }
