@@ -729,6 +729,19 @@ i32 __cdecl AreaFromMiniKitID(i32 id) {
     return -1;
 }
 
+extern "C" i8 __cdecl Area_CharIDInCurrentList(i32 character_id) {
+    i32 index;
+    if (CurrentCList != NULL) {
+        for (index = 0; CurrentStoryCList[index].model_id != -1; ++index) {
+            if (index >= 64)
+                break;
+            if (CurrentStoryCList[index].model_id == character_id)
+                return (i8)index;
+        }
+    }
+    return -1;
+}
+
 #include "saga.h"
 #include <string.h>
 typedef struct AREA_MISSION_READER_PC {

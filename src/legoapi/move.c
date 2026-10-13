@@ -6124,11 +6124,11 @@ typedef struct GLOW_ANIMATION_DATA_PC {
 } GLOW_ANIMATION_DATA_PC;
 STATIC_ASSERT(offsetof(GLOW_ANIMATION_DATA_PC, flags) == 0x4);
 
-extern f32 PCForceGlowDisabledState, PCForceGlowRadiusMultiplier, PCForceGlowHoldDuration, FORCEGLOWTIME;
+extern f32 PCForceGlowRadiusMultiplier, PCForceGlowHoldDuration, FORCEGLOWTIME;
 static void ForceGlowCode(GAMEOBJECT *object, i32 model) {
     GLOW_OBJECT_PC *glow = (GLOW_OBJECT_PC *)object;
     f32 target, previous;
-    if (object->dead != 0 || PCForceGlowDisabledState != 0.0f) {
+    if (object->dead != 0 || FadeSys.fade != 0.0f) {
         glow->alpha = 0.0f;
         glow->target = 0.0f;
         glow->object = NULL;

@@ -86,6 +86,27 @@ extern "C" {
     TIMER BonusTimer;
 
     void __cdecl NuAllocDumpRecords(i32 min_size);
+    void __cdecl WorldInfo_DrawScene(WORLDINFO *world);
+    void __cdecl PortalDoors_Update(WORLDINFO *world);
+    u8 __cdecl IsGrabbingScreen(void);
+    void __cdecl NuMtlAnimateSetSpeedScale(f32 scale);
+    void __cdecl NuMtlAnimateSetMask(i32 mask);
+    void __cdecl NuRndrGlobalFrameCountPause(i32 paused);
+    void __cdecl SetTexAnimSignals(void);
+    void __cdecl CharPlatforms_Update(CHARPLATFORMSYS_s *system);
+    void __cdecl TrafficAnimSys_Update(struct TRAFFICANIMSYS_s *system);
+    void __cdecl GizmoSysEarlyUpdate(void *system, void *world, f32 delta_time);
+    void __cdecl GizmoSysLateUpdate(void *system, void *world, f32 delta_time);
+    void __cdecl UpdateGameObjects(WORLDINFO *world);
+    void __cdecl MoveGameCamera(GAMECAMERA *camera);
+    void __cdecl GameObjectToCameraDistances(void);
+    void __cdecl DrawGameObjects(void);
+    void __cdecl GameObjectStuffAfterAnimation(void);
+    void __cdecl Faders_Draw(WORLDINFO *world);
+    void __cdecl TrafficAnimSys_Draw(struct TRAFFICANIMSYS_s *system);
+    void __cdecl GizmoSysDraw(void *system, void *world, f32 delta_time);
+    void __cdecl NuLgtLaserDraw(i32 paused);
+    void __cdecl SpeedBlur_Apply(WORLDINFO *world);
 
     u8 NuAllocDumpOnLevelPc;
     i32 AreaGlobalsChallengeCountPc;
@@ -97,11 +118,318 @@ extern "C" {
 
 /* PC splits NuMain's per-frame game update (0x491d50) and world render (0x4927f0) into helpers. */
 static void NuMainUpdateFrame(WORLDINFO *world, i32 *frame_flag) {
-    STUBBED_NAMED("NuMain: PC update helper at 0x00491d50");
+    GAMEOBJECT **player;
+    GAMEOBJECT *object;
+    LEVELDATA_PC *level;
+    FADETYPE fade_type;
+
+    UpdateFrameCounters();
+    PortalDoors_Update(world);
+    STUBBED_NAMED("NuMainUpdateFrame: NuRndrShadowOnOff(COMPLEXSHADOWS) at 0x005f9e90");
+    if (Paused == 0) {
+        STUBBED_NAMED("NuMainUpdateFrame: GameAISysStartFrame(world->ai_sys) at 0x0043b940");
+    }
+    AddCoinDelay[1] = 0.0f;
+    AddCoinDelay[0] = 0.0f;
+    other_level_override = -1;
+    Shadow_SetMode();
+    STUBBED_NAMED("NuMainUpdateFrame: GizmoPickups_SetOnOff at 0x0046c7d0");
+    STUBBED_NAMED("NuMainUpdateFrame: DoInput(WORLD) at 0x0054b0b0");
+    if (memcard_autosaveenabled != 0 && memcard_autosavedisabled != 0 &&
+        (world == NULL || world->area == NULL || (world->area->flags & 2) == 0) && NewMode == 0 && NewLData == NULL &&
+        FadeSys.fade == 0.0f && editor_active == 0 &&
+        (GamePads_IgnoreInputFn == NULL || GamePads_IgnoreInputFn() == 0)) {
+        if (CUTSTOPGAME != 0) {
+            STUBBED_NAMED("NuMainUpdateFrame: CutScene_IsSkippable(CutStopInfo) at 0x0057cf70 gates the autosave menu");
+        } else if (MiniCutCam == 0 && CutSceneWaiting == 0) {
+            if (GameMenu[GameMenuLevel].menu != -1) {
+                STUBBED_NAMED("NuMainUpdateFrame: MenuInMemoryCard at 0x0050b310");
+                if (MenuInfo[GameMenu[GameMenuLevel].menu].id != 1 && MenuInfo[GameMenu[GameMenuLevel].menu].id != 4) {
+                    NewMenu(0x3f3, 0, -1);
+                } else {
+                    memcard_autosavedisabled = 0;
+                    memcard_autosaveenabled = 0;
+                }
+            } else if (Paused == 0) {
+                for (player = (GAMEOBJECT **)Player; player < (GAMEOBJECT **)&Player[2]; player++) {
+                    if (*player != NULL && ((*player)->flags_1fc & 0x80) != 0) {
+                        STUBBED_NAMED("NuMainUpdateFrame: PauseGame(pad index) at 0x0055c120");
+                        break;
+                    }
+                }
+            }
+        }
+    }
+    STUBBED_NAMED("NuMainUpdateFrame: theGameThings->ProcessThings(&packet) via 0x0095e438");
+    if (NOSOUND == 0) {
+        STUBBED_NAMED("NuMainUpdateFrame: NuSound3SetDPL(options, 0) at 0x00698820");
+        NuSound3Update();
+        UpdateLevelSfx(world, Paused);
+        STUBBED_NAMED("NuMainUpdateFrame: NuSound3SetRumblePads, NuSound3UpdateRumble at 0x00698920, SoundUpdate at "
+                      "0x00653460, ProcessMusicChanges at 0x00548c40");
+    }
+    if (Paused != 0 && screendump == 0 && !IsGrabbingScreen()) {
+        NuMtlAnimateSetSpeedScale(0.0f);
+        NuTexAnimSetMask(2);
+        NuRndrGlobalFrameCountPause(1);
+        pNuCam->mtx = GameCam->render_mtx;
+        NuCameraSet(pNuCam);
+        UpdateGameMenu((GAMEPAD_PC *)GamePadStorage, 1);
+        for (player = (GAMEOBJECT **)Player; player < (GAMEOBJECT **)&Player[2]; player++) {
+            object = *player;
+            if (object != NULL) {
+                UpdateCoinPacket((PLAYER_COIN_PACKET_PC *)object->coin_packet, (object->flags_1fc >> 7) & 1,
+                                 (i8)object->field_280);
+            }
+        }
+        Debris(1);
+    } else {
+        NuRndrGlobalFrameCountPause(0);
+        STUBBED_NAMED("NuMainUpdateFrame: rtlFrameUpdate(FRAMETIME) at 0x0063dcd0");
+        DoubleScore = 0;
+        SetTexAnimSignals();
+        NuTexAnimSetMask(0xffff);
+        CutScenes_Start(world);
+        CutScenes_Update(world, Paused != 0 && !IsGrabbingScreen());
+        STUBBED_NAMED("NuMainUpdateFrame: adaptive difficulty update(&adaptivedifficulty) at 0x00428a40");
+        if ((world->current_level->flags & 8) != 0) {
+            TerrainPlatformOldUpdate();
+        }
+        ProcessGizFlow(world->giz_flow, FRAMETIME);
+        STUBBED_NAMED("NuMainUpdateFrame: AIPathCnxControlSysUpdate(world+0x4670) at 0x0043d0c0");
+        if (world->current_gscn != NULL) {
+            NuGScnUpdate(world->current_gscn, FRAMETIME * 60.0f);
+        }
+        GameAnimSys_Update(world->game_anim_sys);
+        STUBBED_NAMED("NuMainUpdateFrame: edanimUpdateObjects(1.0f) at 0x00686950");
+        NuBridgeUpdate(&plr_lastpos);
+        if (Grass_Available != 0) {
+            STUBBED_NAMED("NuMainUpdateFrame: NuWindUpdateArray at 0x00546380, NuFadeObjUpdateArray at 0x00545a80");
+        }
+        rtlProcessLights(world->rtl_set, FRAMETIME);
+        CharPlatforms_Update((CHARPLATFORMSYS_s *)world->shadow_platform_list_pc);
+        STUBBED_NAMED("NuMainUpdateFrame: Grabber_Update(world) at 0x00471650");
+        TrafficAnimSys_Update(world->trafficanim_sys);
+        GizmoSysEarlyUpdate(world->gizmo_sys, world, FRAMETIME);
+        if ((world->current_level->flags & 8) != 0) {
+            TerrainPlatformNewUpdate();
+        }
+        STUBBED_NAMED("NuMainUpdateFrame: UpdateSpecialSfx(world) at 0x005b1b10");
+        Teleports_UpdateBeforeGameObjects(world);
+        if (CUTSTOPGAME == 0) {
+            ManageGameObjects();
+            UpdateGameObjects(world);
+        } else {
+            for (player = (GAMEOBJECT **)Player; player < (GAMEOBJECT **)&Player[8]; player++) {
+                object = *player;
+                if (object != NULL && (object->flags_1fc & 0x80) != 0 && object->pad->bound_pad != NULL) {
+                    UpdateRumble((RUMBLE_PACKET_RESOURCE_PC *)object->pad->unknown_40);
+                }
+            }
+        }
+        ShoveObjectSysReset();
+        if (CUTSTOPGAME == 0) {
+            if (Cheat_IsOn(0x2c) == 0) {
+                adaptivedifficulty.accumulator = 0.0f;
+            }
+            Teleports_UpdateAfterGameObjects(world);
+            Pulses_Update((LEVEL_SFX_PULSE_PC *)world->pulses_sys);
+            STUBBED_NAMED("NuMainUpdateFrame: Detonators_Update at 0x00426fa0, Batarangs_Update at 0x00405ac0, "
+                          "UpdateCables at 0x00408af0, Level_Update(world) at 0x0057a4d0");
+            Bolts_Update(world);
+            UpdateParts(FRAMETIME);
+            if (KillPartsBrickImpactWaitPc > 0.0f) {
+                KillPartsBrickImpactWaitPc -= FRAMETIME;
+            }
+            if (coinimpactwait > 0.0f) {
+                coinimpactwait -= FRAMETIME;
+            }
+            if (SaberSparksTimer > 0.0f) {
+                SaberSparksTimer -= FRAMETIME;
+            }
+            if (TerrainChatterWaitPc > 0.0f) {
+                TerrainChatterWaitPc -= FRAMETIME;
+            }
+            if (tieonsfxwait > 0.0f) {
+                tieonsfxwait -= FRAMETIME;
+            }
+            if (tieoffsfxwait > 0.0f) {
+                tieoffsfxwait -= FRAMETIME;
+            }
+            STUBBED_NAMED("NuMainUpdateFrame: UpdateExplosions at 0x0056ee80, Tag_UpdateTransfers at 0x0059ff80");
+            UpdateRepeatSfx();
+            GizmoSysLateUpdate(world->gizmo_sys, world, FRAMETIME);
+            STUBBED_NAMED("NuMainUpdateFrame: UpdateRadios at 0x004bcb10, Hint_Process at 0x005769d0, Cheats_Update at "
+                          "0x0056e570");
+        }
+        UpdateGameMenu((GAMEPAD_PC *)GamePadStorage, 1);
+        Debris(0);
+        if (CUTSTOPGAME == 0) {
+            STUBBED_NAMED("NuMainUpdateFrame: DebrisKillPlayers at 0x0042f4a0");
+        }
+        UpdateRippleSet(RippleSetPc);
+        STUBBED_NAMED("NuMainUpdateFrame: AddCameraRain(world, 0x7a) at 0x005a82c0");
+        NuMtlAnimateSetSpeedScale(1.0f);
+        NuMtlAnimateSetMask(0xffff);
+        MoveGameCamera(GameCam);
+        GameObjectToCameraDistances();
+        STUBBED_NAMED("NuMainUpdateFrame: SetCameraMatrices at 0x0054a0d0");
+        if (CUTSTOPGAME == 0) {
+            STUBBED_NAMED("NuMainUpdateFrame: UpdateStreaks at 0x005a3bd0");
+        }
+        if ((world->area != NULL && world->area == HUB_ADATA) || world->current_level == TITLES_LDATA ||
+            world->current_level == STATUS_LDATA || (world->current_level->flags & 0x400) != 0 ||
+            world->current_level == CREDITS_LDATA) {
+            BackDrop_Update(FRAMETIME);
+        }
+    }
+    if (world->current_level->callbacks[4] != NULL) {
+        ((void(__cdecl *)(WORLDINFO *))world->current_level->callbacks[4])(world);
+    }
+    LevelStreaming_Update(world);
+    STUBBED_NAMED("NuMainUpdateFrame: UpdateCutBorders at 0x00565670, NuWaterSpeed at 0x005f9940");
+    NuWaterReset();
+    STUBBED_NAMED("NuMainUpdateFrame: GameTiming(world, 0x0086e508) at 0x00549050, UpdateStats at 0x004b71a0");
+    *frame_flag = 0;
+    STUBBED_NAMED("NuMainUpdateFrame: GameDisplaySettings(&level->display, back_rgba) at 0x00565230");
+    if ((NewMode == 0 && NewLData == NULL) || FadeSys.fade != 0.0f) {
+        return;
+    }
+    level = world->current_level;
+    if (level != NULL && (level->flags & 0x400) != 0 && HUB_LDATA != NULL && NewLData != HUB_LDATA &&
+        NewLData != NULL && NewLData->area_index != -1 && (ADataList[NewLData->area_index].flags & 2) == 0) {
+        FadeSys.fade = 1.0f;
+        FinishLoop_On = 0;
+        return;
+    }
+    if (FadeSys.pending_type == FADE_TYPE_NONE ||
+        (NewLData != NULL && WORLD->current_level != NewLData && NewLData == HUB_LDATA)) {
+        level = WORLD->current_level;
+        if (level != NULL) {
+            if (NewLData == NULL) {
+                goto fade_still;
+            }
+            if (NewLData != level) {
+                if (NewLData == HUB_LDATA || level == HUB_LDATA || NewLData == TITLES_LDATA || level == TITLES_LDATA ||
+                    NewLData == CREDITS_LDATA) {
+                    goto fade_wipe;
+                }
+                if (SuperStory != 0 && (level->flags & 0x400) != 0 &&
+                    (ADataList[NewLData->area_index].flags & 2) != 0) {
+                    goto fade_wipe;
+                }
+            }
+        }
+        if (NewLData == NULL || NewLData->area_index == WORLD->area_index) {
+            goto fade_still;
+        }
+        if (SuperStory != 0 && (WORLD->area->flags & 2) == 0) {
+            goto fade_still;
+        }
+    fade_wipe:
+        fade_type.type = FADE_TYPE_WIPE;
+        FadeSys.SetFade(fade_type, 0);
+        goto set_stage;
+    fade_still:
+        fade_type.type = FADE_TYPE_STILL_WIPE;
+        FadeSys.SetFade(fade_type, 0);
+    }
+set_stage:
+    FadeSys.SetStage(2);
 }
 
 static void NuMainRenderWorld(WORLDINFO *world) {
-    STUBBED_NAMED("NuMain: PC world render helper at 0x004927f0");
+    i32 paused;
+
+    STUBBED_NAMED("NuMainRenderWorld: GameFog_Update(world) at 0x00564cd0, GameFog_Set at 0x00401820");
+    SetLevelLights(world->rtl_set, 1.0f);
+    STUBBED_NAMED("NuMainRenderWorld: SetSpotLightMode at 0x00596960");
+    if (CUTSTOPGAME == 0) {
+        STUBBED_NAMED("NuMainRenderWorld: DrawGameObjectsProcess at 0x0041d350");
+    }
+    STUBBED_NAMED("NuMainRenderWorld: 0x00596a30");
+    NuRndrBeginScene(1);
+    STUBBED_NAMED("NuMainRenderWorld: SpeedBlur_Update at 0x0042df70");
+    if (back_rgba[0] == back_rgba[1]) {
+        NuRndrClear(0x1f00, back_rgba[0], 1.0f);
+    } else {
+        NuRndrGradClear(0xf00, back_rgba[0], back_rgba[1], 1.0f);
+    }
+    if (CUTSTOPGAME == 0) {
+        EnableShadowMapRendering(0);
+        DrawParts(Paused);
+        ResetShadowMapRendering();
+        if (CUTSTOPGAME == 0) {
+            DrawGameObjects();
+        }
+    }
+    STUBBED_NAMED("NuMainRenderWorld: Grabber_Draw(world) at 0x00470940");
+    SetLevelLights(world->rtl_set, 1.0f);
+    if (editor_active == 0 && Paused == 0 && CUTSTOPGAME == 0) {
+        STUBBED_NAMED("NuMainRenderWorld: CharShadows_Update at 0x00589f80");
+        GameObjectStuffAfterAnimation();
+    }
+    if (CUTSTOPGAME == 0) {
+        STUBBED_NAMED("NuMainRenderWorld: CharShadows_Draw at 0x0058a270");
+    }
+    paused = screendump != 0 ? save_paused : Paused;
+    if (IsGrabbingScreen()) {
+        paused = 0;
+    }
+    if (world->level_objects[1].active != 0 && (CUTSTOPGAME == 0 || CUTDRAWWORLD != 0)) {
+        STUBBED_NAMED("NuMainRenderWorld: DrawParallax at 0x00564c30");
+    }
+    if (CUTSTOPGAME == 0) {
+        WorldInfo_DrawScene(world);
+        STUBBED_NAMED("NuMainRenderWorld: Level_Draw(world) at 0x0057a560");
+        Faders_Draw(world);
+        STUBBED_NAMED("NuMainRenderWorld: DrawStreaks at 0x005a3cc0, Bolts_Draw(world) at 0x00581bb0");
+        STUBBED_NAMED("NuMainRenderWorld: DrawExplosions at 0x0056e6a0");
+        ZipUps_DrawLines();
+        STUBBED_NAMED(
+            "NuMainRenderWorld: DrawCables at 0x00409980, Detonators_Draw at 0x00427070, Batarangs_Draw at 0x00404dc0");
+        TrafficAnimSys_Draw(world->trafficanim_sys);
+        GizmoSysDraw(world->gizmo_sys, world, FRAMETIME);
+        STUBBED_NAMED("NuMainRenderWorld: SpecialMiniKits_Draw(world) at 0x00571030");
+        NuBridgeDraw(NULL);
+    }
+    if (Grass_Available != 0) {
+        STUBBED_NAMED("NuMainRenderWorld: NuWindDraw at 0x00546e60, NuFadeObjDraw at 0x00545c80");
+    }
+    STUBBED_NAMED("NuMainRenderWorld: theGameThings->RenderThings(NULL) via 0x0095e438");
+    CutScenes_Draw(world);
+    STUBBED_NAMED("NuMainRenderWorld: NuRndrShadPolys(PermanentShadowMaterialPc) at 0x005fed10");
+    NuLgtLaserDraw(paused);
+    if (world->current_level == TITLES_LDATA || (world->current_level->flags & 0x400) != 0 ||
+        world->current_level == CREDITS_LDATA ||
+        (world->current_level == STATUS_LDATA && (PcGameStatusRenderState.mode_flags & 0x400) != 0)) {
+        BackDrop_Draw(1.0f, 0);
+    }
+    if (MainRenderTime != 1.0f) {
+        BackDrop_Draw(1.0f - MainRenderTime, 0);
+    }
+    STUBBED_NAMED("NuMainRenderWorld: NuRndrLine3dDbgFlush at 0x005fecb0");
+    DebrisSetCutSceneMode(CUTCAM);
+    DebrisDraw(paused ^ editor_active, 1);
+    DrawRippleSet(RippleSetPc);
+    SpeedBlur_Apply(world);
+    NuRndrEndScene();
+    STUBBED_NAMED("NuMainRenderWorld: RenderShadowLights(Paused) at 0x00596870");
+    NuRndrBeginScene(1);
+    STUBBED_NAMED("NuMainRenderWorld: 0x00596520, SetDepthOfField at 0x004017b0, BurnoutApply at 0x0042fbf0");
+    STUBBED_NAMED("NuMainRenderWorld: 0x00491bd0(world->current_gscn) when 0x0087b580 is set");
+    NuRndrEndScene();
+    STUBBED_NAMED("NuMainRenderWorld: NuRndrFx(paused, &plr_lastpos) at 0x0060af80");
+    NuRndrBeginScene(1);
+    UpdateDebrisRenderStackPriority();
+    SortDebrisRenderStack();
+    DebrisDraw(paused ^ editor_active, 1);
+    DebrisDraw(paused ^ editor_active, 0);
+    NuRndrEndSceneEx(0);
+    STUBBED_NAMED("NuMainRenderWorld: DebrisDrawGlass at 0x006868f0");
+    if (screendump == 0) {
+        STUBBED_NAMED("NuMainRenderWorld: ViewCamDraw at 0x0040aa80");
+    }
 }
 
 extern "C" int __cdecl NuMain(int argc, char **argv) {

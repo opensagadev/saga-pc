@@ -211,6 +211,33 @@ void __cdecl GameCam_HitJudder(void) {
     GameCam_Judder(GameCam, amount, qrand() / 0x5556, NULL);
 }
 
+f32 __fastcall PCDeviceBackend_GetActiveAspectPc(PC_DEVICE_BACKEND_PC *backend) {
+    switch (PcWindowOptions.aspect_mode) {
+        case 1:
+            return 1.7777777910232544f;
+        case 2:
+            return 1.600000023841858f;
+        case 3:
+            return backend->active_aspect;
+        case 0:
+            return 1.3333333730697632f;
+        default:
+            return 1.3333333730697632f;
+    }
+}
+
+void __cdecl ViewCamSetActive(i32 mode, GAMEPAD_PC *gamepad) {
+    if (player != NULL) {
+        ViewCam.mode = mode;
+        if (mode != 0) {
+            ViewCam.gamepad = gamepad;
+            ViewCam.target = player->collision_position;
+        } else {
+            ViewCam.gamepad = NULL;
+        }
+    }
+}
+
 i32 __cdecl ViewCamGetMode(void) {
     return ViewCam.mode;
 }
@@ -637,7 +664,6 @@ extern f32 CamWalkerLiftPc;
 extern f32 CamDewbackRadiusPc;
 extern f32 CamDewbackLiftPc;
 void __cdecl GameCam_ResetLookRot(struct gamecamera_s *camera);
-f32 __fastcall PCDeviceBackend_GetActiveAspectPc(PC_DEVICE_BACKEND_PC *backend);
 void __cdecl Customiser_GetActiveWeirdoIndex(i32 *index, i32 *count);
 void __cdecl GameCam_UpdateLookRot(struct gamecamera_s *camera);
 void __cdecl GameCam_UpdateShake(struct gamecamera_s *camera, f32 ambient_amount);

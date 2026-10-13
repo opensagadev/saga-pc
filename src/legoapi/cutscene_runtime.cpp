@@ -30,6 +30,9 @@ CUTINFO *__cdecl NewCutScene(CUTINFO *cutscene, CUTSYS_PC *system, char *name, i
     return cutscene;
 }
 
+extern "C" void __cdecl CutScene_StartAudio(void) {
+}
+
 extern "C" i32 CutScene_PlayingOrRequested(CUTINFO *cut) {
     if (cut == NULL) {
         if (CutStopInfo != NULL || NewCutInfoCount != 0)

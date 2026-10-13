@@ -74,6 +74,14 @@ extern "C" void __cdecl LC_AL_music_other(NUFPAR_PC *parser) {
     levelconfig_ldata->music_tracks[5] = music_man.GetTrackHandle(0x20, name);
 }
 
+extern "C" void __cdecl ResetRepeatSfx(void) {
+    i32 i;
+    memset(RepeatSfxQueue, 0, sizeof(RepeatSfxQueue));
+    RepeatSfxQueueHead = 0;
+    for (i = 0; i < 32; ++i)
+        RepeatSfxQueue[0].sfx_id = -1;
+}
+
 void __cdecl PlayRepeatSfx(char *name, i32 sfx_id, f32 start_delay, i32 play_count_arg, f32 repeat_delay,
                            NUVEC *position) {
     REPEAT_SFX_ENTRY_PC *entry;
@@ -177,6 +185,22 @@ void __cdecl PlayJumpSfx(GAMEOBJECT *object, i32 type) {
         else
             PlaySfxById(sfx, &object->lower_position);
     }
+}
+
+extern "C" void __cdecl SetSoundFadeDist(WORLDINFO *world, OPTIONSSAVE *options) {
+    options->sound_volume = 8;
+    options->music_volume = 6;
+    if (SetSoundFadeDistCallBackFn == NULL || SetSoundFadeDistCallBackFn(world) == 0) {
+        if (VehicleArea != 0) {
+            nusound_fade_start = 10.0f;
+            nusound_fade_end = 80.0f;
+        } else {
+            nusound_fade_start = 2.0f;
+            nusound_fade_end = 15.0f;
+        }
+    }
+    GameSetSoundVolume(options);
+    GameSetMusicVolume(options);
 }
 
 extern "C" void(__cdecl *ExtraDieSfxFn)(GAMEOBJECT *);

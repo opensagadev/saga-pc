@@ -1684,6 +1684,10 @@ static GAMEOBJECT *Tag_FindGameObject_TRANSFER(GAMEOBJECT *object) {
     return nearest;
 }
 
+void __cdecl Tag_SetMode(i32 mode) {
+    Tag_Mode = mode;
+}
+
 static i32 Tag_FindGameObject_CYCLICAL(GAMEOBJECT *object) {
     i32 remaining = HIGHGAMEOBJECT - 1;
     i32 index = object->hostility_group;

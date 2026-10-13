@@ -17619,10 +17619,6 @@ extern "C" {
     f32 PodCollisionMagnitudePc;
 #pragma bss_seg()
 
-#pragma bss_seg(".bss$PCForceGlowDisabledState")
-    f32 PCForceGlowDisabledState;
-#pragma bss_seg()
-
 #pragma bss_seg(".bss$LEGO_AIPATHCNX_BLOCKAGE")
     i32 LEGO_AIPATHCNX_BLOCKAGE;
 #pragma bss_seg()
@@ -19027,6 +19023,9 @@ extern "C" {
 #pragma data_seg()
 #pragma data_seg(".data$FramePadMaxGamePadsPc")
     i32 FramePadMaxGamePadsPc = 2;
+#pragma data_seg()
+#pragma data_seg(".data$NuMtlAnimateMaskPc")
+    i32 NuMtlAnimateMaskPc = 0xffffff;
 #pragma data_seg()
 #pragma data_seg(".data$FrameMaterialAnimationSpeedPc")
     f32 FrameMaterialAnimationSpeedPc = 1.0f;
@@ -28450,6 +28449,33 @@ extern "C" {
 
 #pragma bss_seg(".bss$old_pause_state")
     i32 old_pause_state;
+
+#pragma bss_seg(".bss$FadeMtl2")
+    NUMTL *FadeMtl2;
+#pragma bss_seg()
+
+    f32 ScreenPauseFadeSpeedPc = 2.0f;
+    u64 CharacterMaskAllPc = ~(u64)0;
+    i32 FalconDebKey[2] = {-1, -1};
+
+#pragma bss_seg(".bss$PauseTimer")
+    TIMER PauseTimer;
+
+#pragma bss_seg(".bss$makebaddiesforgetinresetbits")
+    i32 makebaddiesforgetinresetbits;
+
+#pragma bss_seg(".bss$reset_reimport")
+    i32 reset_reimport;
+
+#pragma bss_seg(".bss$come_from_an_editor")
+    i32 come_from_an_editor;
+
+#pragma bss_seg(".bss$gone_through_door_to_new_mode")
+    i32 gone_through_door_to_new_mode;
+
+#pragma bss_seg(".bss$newmode_cutinfo")
+    void *newmode_cutinfo;
+#pragma bss_seg()
 }
 
 extern "C" {

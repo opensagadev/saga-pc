@@ -339,6 +339,10 @@ void NuRndrEndReflectionRender(void) {
     RndrStateSetReflection(0);
 }
 
+void NuRndrGlobalFrameCountPause(i32 paused) {
+    RenderFramePausedPc = paused;
+}
+
 void __cdecl NuRndrAddShadow(NUVEC *position, f32 radius, i32 opacity, i32 unused_x, i32 unused_y, i32 unused_z) {
     if (NuCameraClipTestPoints(position, 1, NULL) == 0 && NuRndrShadowCnt < 128) {
         NuRndrShadPolDat[NuRndrShadowCnt].position = *position;

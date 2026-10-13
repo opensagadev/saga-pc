@@ -624,6 +624,12 @@ u32 NuPartGetSeed(void) {
     return partseed;
 }
 
+void __cdecl ResetParts(void) {
+    if (Part != NULL)
+        memset(Part, 0, MAXPARTS * sizeof(PART_PC));
+    part_slot_cursor = 0;
+}
+
 void __cdecl AddPartDebris(PARTDEBRISSYS *sys, i32 index, NUVEC *position) {
     PARTDEBRISENTRY *entry;
 
