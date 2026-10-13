@@ -557,7 +557,7 @@ address    , symbol                                                         , si
 0x465430,_GizActions_GoToNewLevelPc,212,"void __cdecl(GIZFLOW_PC *, FLOWBOX_PC *, char **, i32)"
 0x465510,_GizActions_GoThroughDoor,115,
 0x00465590 , _GizActions_PlayObstacle                                       , 389   , "void __cdecl (GIZFLOW_PC *, FLOWBOX_PC *, char **, i32)"
-0x465720,_GizActions_PlaySpecialPc,,"void __cdecl(GIZFLOW_PC *, FLOWBOX_PC *, char **, i32)"
+0x465720,_GizActions_PlaySpecialPc,335,"void __cdecl(GIZFLOW_PC *, FLOWBOX_PC *, char **, i32)"
 0x465870,_GizActions_PlayForcePc,,"void __cdecl(GIZFLOW_PC *, FLOWBOX_PC *, char **, i32)"
 0x4659b0,_GizActions_PlayRadio,195,
 0x465a80,_GizActions_PlayCutscenePc,98,"void __cdecl(GIZFLOW_PC *, FLOWBOX_PC *, char **, i32)"
