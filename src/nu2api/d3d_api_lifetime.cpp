@@ -1,6 +1,7 @@
 #include "saga.h"
 
 extern "C" {
+    void __cdecl PCDeviceBeginScenePc(void);
     void __cdecl PCGraphicsReleaseFramebuffers(void);
     void __cdecl PCGraphicsRestoreFramebuffers(void);
     void __cdecl NuRndrGeometryBufferReleasePc(void);
@@ -86,4 +87,9 @@ extern "C" void __cdecl PCFrameResetTargetsPc(void) {
 
 extern "C" void __cdecl PCFrameConfigureTargetsPc(void) {
     PCDeviceBackend.ConfigureCurrentTargets();
+}
+
+extern "C" i32 __cdecl PCFrameBeginScenePc(void) {
+    PCDeviceBeginScenePc();
+    return 0;
 }

@@ -78,14 +78,14 @@ extern "C" void __cdecl PCDeviceSetRenderState(i32 state, u32 value) {
             default:
                 goto submit;
         }
-        if ((u32)PCDeviceRenderStateCache[cache_index] == value) {
+        if ((u32)PCDeviceStateCachePc.render_states[cache_index] == value) {
             return;
         }
-        PCDeviceRenderStateCache[cache_index] = (i32)value;
+        PCDeviceStateCachePc.render_states[cache_index] = (i32)value;
     }
 
 submit:
-    PCDeviceCacheStateKey = -1;
+    PCDeviceStateCachePc.state_key = -1;
     PCDeviceLastResult = PCDeviceBackend.device->methods->set_render_state(PCDeviceBackend.device, state, value);
 }
 
@@ -93,10 +93,10 @@ extern "C" void __cdecl PCDeviceSetSamplerState(u32 stage, i32 state, u32 value)
     PCDeviceSamplerInvalidation[stage][0] = -1;
     PCDeviceSamplerInvalidation[stage][1] = -1;
     if (PCDeviceStateCacheEnabled != 0 && stage < 8 && state < 14 && state != 4) {
-        if ((u32)PCDeviceSamplerStateCache[stage][state] == value) {
+        if ((u32)PCDeviceStateCachePc.sampler_states[stage][state] == value) {
             return;
         }
-        PCDeviceSamplerStateCache[stage][state] = (i32)value;
+        PCDeviceStateCachePc.sampler_states[stage][state] = (i32)value;
     }
     PCDeviceLastResult =
         PCDeviceBackend.device->methods->set_sampler_state(PCDeviceBackend.device, stage, state, value);
@@ -104,10 +104,10 @@ extern "C" void __cdecl PCDeviceSetSamplerState(u32 stage, i32 state, u32 value)
 
 extern "C" void __cdecl PCDeviceSetTexture(u32 stage, void *texture) {
     if (PCDeviceStateCacheEnabled != 0 && stage < 5) {
-        if (PCDeviceTextureCache[stage] == texture) {
+        if (PCDeviceStateCachePc.textures[stage] == texture) {
             return;
         }
-        PCDeviceTextureCache[stage] = texture;
+        PCDeviceStateCachePc.textures[stage] = texture;
     }
     PCDeviceLastResult = PCDeviceBackend.device->methods->set_texture(PCDeviceBackend.device, stage, texture);
 }
@@ -193,8 +193,8 @@ struct PRIMITIVE_D3D_DEVICE_VIEW {
 };
 extern "C" void __cdecl PCDeviceDrawPrimitiveUPPc(i32 type, u32 count, const void *vertices, u32 stride) {
     ++PCDevicePrimitiveUPCallCountPc;
-    PCDeviceVertexBufferCachePc = NULL;
-    PCDeviceIndexBufferCachePc = NULL;
+    PCDeviceStateCachePc.vertex_buffer = NULL;
+    PCDeviceStateCachePc.index_buffer = NULL;
     PRIMITIVE_D3D_DEVICE_VIEW *device = reinterpret_cast<PRIMITIVE_D3D_DEVICE_VIEW *>(PCDeviceBackend.device);
     PCDeviceLastResult = device->methods->draw_primitive_up(device, type, count, vertices, stride);
 }
@@ -761,7 +761,7 @@ void __thiscall PC_DEVICE_BACKEND_PC::Present(const RECT *source, const RECT *de
     for (i32 i = 0; i != 4; ++i)
         target_cache[i] = reinterpret_cast<PC_TEXTURE_RESOURCE_PC *>(-1);
 }
-void __thiscall PC_DEVICE_BACKEND_PC::BeginScene() {
+__declspec(noinline) void __thiscall PC_DEVICE_BACKEND_PC::BeginScene() {
     PCGraphicsFrameScratchCount.reset_word = 0;
     PCGraphicsBoundShader = -1;
     PCGraphicsFrameState = -1;
@@ -1364,13 +1364,13 @@ extern "C" HRESULT __cdecl PCDeviceEndScenePc(void) {
 
 extern "C" void __cdecl PCDeviceSetStreamSourcePc(u32 stream, PC_BUFFER_RESOURCE_PC *buffer, u32 offset, u32 stride) {
     if (PCDeviceStateCacheEnabled != 0) {
-        if (PCDeviceVertexBufferCachePc == buffer && PCDeviceStreamStrideCachePc == stride &&
-            PCDeviceStreamNumberCachePc == stream && PCDeviceStreamOffsetCachePc == offset)
+        if (PCDeviceStateCachePc.vertex_buffer == buffer && PCDeviceStateCachePc.stream_stride == stride &&
+            PCDeviceStateCachePc.stream_number == stream && PCDeviceStateCachePc.stream_offset == offset)
             return;
-        PCDeviceVertexBufferCachePc = buffer;
-        PCDeviceStreamNumberCachePc = stream;
-        PCDeviceStreamStrideCachePc = stride;
-        PCDeviceStreamOffsetCachePc = offset;
+        PCDeviceStateCachePc.vertex_buffer = buffer;
+        PCDeviceStateCachePc.stream_number = stream;
+        PCDeviceStateCachePc.stream_stride = stride;
+        PCDeviceStateCachePc.stream_offset = offset;
     }
     PCDeviceLastResult =
         PCDeviceBackend.device->methods->set_stream_source(PCDeviceBackend.device, stream, buffer, offset, stride);
@@ -1383,9 +1383,9 @@ extern "C" void __cdecl PCDeviceDrawPrimitivePc(i32 type, u32 start, u32 count) 
 
 extern "C" void __cdecl PCDeviceSetIndicesPc(PC_BUFFER_RESOURCE_PC *buffer) {
     if (PCDeviceStateCacheEnabled != 0) {
-        if (PCDeviceIndexBufferCachePc == buffer)
+        if (PCDeviceStateCachePc.index_buffer == buffer)
             return;
-        PCDeviceIndexBufferCachePc = buffer;
+        PCDeviceStateCachePc.index_buffer = buffer;
     }
     PCDeviceLastResult = PCDeviceBackend.device->methods->set_indices(PCDeviceBackend.device, buffer);
 }
@@ -1404,9 +1404,9 @@ extern "C" void __cdecl PCDeviceSetStreamSourceFreqPc(u32 stream, u32 setting) {
 
 extern "C" void __cdecl PCDeviceSetVertexDeclarationPc(PC_TEXTURE_RESOURCE_PC *declaration) {
     if (PCDeviceStateCacheEnabled != 0) {
-        if (PCDeviceVertexDeclarationCachePc == declaration)
+        if (PCDeviceStateCachePc.vertex_declaration == declaration)
             return;
-        PCDeviceVertexDeclarationCachePc = declaration;
+        PCDeviceStateCachePc.vertex_declaration = declaration;
     }
     PCDeviceLastResult = PCDeviceBackend.device->methods->set_vertex_declaration(PCDeviceBackend.device, declaration);
 }
@@ -1468,4 +1468,37 @@ extern "C" f32 __cdecl PcInputAspectRatioPc(void) {
             break;
     }
     return value;
+}
+
+void __thiscall PC_DEVICE_STATE_CACHE_PC::Invalidate() {
+    vertex_declaration = reinterpret_cast<PC_TEXTURE_RESOURCE_PC *>(-1);
+    index_buffer = reinterpret_cast<PC_BUFFER_RESOURCE_PC *>(-1);
+    vertex_buffer = reinterpret_cast<PC_BUFFER_RESOURCE_PC *>(-1);
+    stream_stride = (u32)-1;
+    stream_number = (u32)-1;
+    stream_offset = (u32)-1;
+    textures[0] = reinterpret_cast<void *>(-1);
+    textures[1] = reinterpret_cast<void *>(-1);
+    textures[2] = reinterpret_cast<void *>(-1);
+    textures[3] = reinterpret_cast<void *>(-1);
+    textures[4] = reinterpret_cast<void *>(-1);
+    memset(sampler_states, -1, sizeof(sampler_states));
+    state_key = -1;
+    render_states[0] = -1;
+    render_states[1] = -1;
+    render_states[2] = -1;
+    render_states[3] = -1;
+    render_states[4] = -1;
+    render_states[5] = -1;
+    render_states[6] = -1;
+    render_states[7] = -1;
+    render_states[8] = -1;
+    render_states[9] = -1;
+    render_states[10] = -1;
+    render_states[11] = -1;
+}
+
+extern "C" void __cdecl PCDeviceBeginScenePc(void) {
+    PCDeviceStateCachePc.Invalidate();
+    PCDeviceBackend.BeginScene();
 }

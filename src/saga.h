@@ -7647,6 +7647,36 @@ extern "C" {
 
 typedef struct PC_EFFECT_SURFACE_PC PC_EFFECT_SURFACE_PC;
 typedef struct PC_FRAMEBUFFER_PC PC_FRAMEBUFFER_PC;
+typedef void *PC_DEVICE_TEXTURE_CACHE_PC[5];
+typedef i32 PC_DEVICE_SAMPLER_CACHE_PC[8][14];
+typedef i32 PC_DEVICE_RENDER_CACHE_PC[12];
+typedef struct PC_DEVICE_STATE_CACHE_PC {
+    PC_TEXTURE_RESOURCE_PC *vertex_declaration;
+    PC_BUFFER_RESOURCE_PC *index_buffer;
+    PC_BUFFER_RESOURCE_PC *vertex_buffer;
+    u32 stream_stride;
+    u32 stream_number;
+    u32 stream_offset;
+    PC_DEVICE_TEXTURE_CACHE_PC textures;
+    PC_DEVICE_SAMPLER_CACHE_PC sampler_states;
+    i32 state_key;
+    PC_DEVICE_RENDER_CACHE_PC render_states;
+#ifdef __cplusplus
+    void __thiscall Invalidate();
+#endif
+} PC_DEVICE_STATE_CACHE_PC;
+STATIC_ASSERT(sizeof(PC_DEVICE_STATE_CACHE_PC) == 0x220);
+STATIC_ASSERT(offsetof(PC_DEVICE_STATE_CACHE_PC, vertex_declaration) == 0x0);
+STATIC_ASSERT(offsetof(PC_DEVICE_STATE_CACHE_PC, index_buffer) == 0x4);
+STATIC_ASSERT(offsetof(PC_DEVICE_STATE_CACHE_PC, vertex_buffer) == 0x8);
+STATIC_ASSERT(offsetof(PC_DEVICE_STATE_CACHE_PC, stream_stride) == 0xc);
+STATIC_ASSERT(offsetof(PC_DEVICE_STATE_CACHE_PC, stream_number) == 0x10);
+STATIC_ASSERT(offsetof(PC_DEVICE_STATE_CACHE_PC, stream_offset) == 0x14);
+STATIC_ASSERT(offsetof(PC_DEVICE_STATE_CACHE_PC, textures) == 0x18);
+STATIC_ASSERT(offsetof(PC_DEVICE_STATE_CACHE_PC, sampler_states) == 0x2c);
+STATIC_ASSERT(offsetof(PC_DEVICE_STATE_CACHE_PC, state_key) == 0x1ec);
+STATIC_ASSERT(offsetof(PC_DEVICE_STATE_CACHE_PC, render_states) == 0x1f0);
+
 typedef struct PC_DEVICE_BACKEND_PC {
     GRAPHICS_FACTORY_PC *factory;
     PC_D3D9_DEVICE_PC *device;
@@ -14175,10 +14205,7 @@ void __cdecl PCSoundAlreadyPlayingHook(void);
     void __cdecl PCDeviceSetTexture(u32, void *);
     void __cdecl PCDeviceSetTextureStageState(u32, i32, u32);
     extern u8 PCDeviceStateCacheEnabled;
-    extern i32 PCDeviceRenderStateCache[12];
-    extern i32 PCDeviceCacheStateKey;
-    extern void *PCDeviceTextureCache[5];
-    extern i32 PCDeviceSamplerStateCache[8][14];
+    extern PC_DEVICE_STATE_CACHE_PC PCDeviceStateCachePc;
     extern i32 PCDeviceSamplerInvalidation[16][2];
     void __cdecl Customiser_DumpAll(void *, WORLDINFO *);
     void __cdecl ClearAreaProgress(i32, i32);
@@ -15053,8 +15080,6 @@ void __cdecl PCSoundAlreadyPlayingHook(void);
     void *__cdecl PCShaderCurrentObjectPc(void);
     void __cdecl PCDeviceDrawPrimitiveUPPc(i32, u32, const void *, u32);
     extern u32 PCDevicePrimitiveUPCallCountPc;
-    extern PC_BUFFER_RESOURCE_PC *PCDeviceIndexBufferCachePc;
-    extern PC_BUFFER_RESOURCE_PC *PCDeviceVertexBufferCachePc;
 
     extern GAMEOBJECT *PodPacemakerPc;
     extern void *PodRacePc;
@@ -20414,10 +20439,6 @@ extern "C" {
     extern f32 NuDisplayHandlerShadowPc;
     extern u32 PCDevicePrimitiveCallCountPc;
     extern u32 PCDeviceIndexedPrimitiveCallCountPc;
-    extern u32 PCDeviceStreamStrideCachePc;
-    extern u32 PCDeviceStreamNumberCachePc;
-    extern u32 PCDeviceStreamOffsetCachePc;
-    extern PC_TEXTURE_RESOURCE_PC *PCDeviceVertexDeclarationCachePc;
 #ifdef __cplusplus
 }
 #endif

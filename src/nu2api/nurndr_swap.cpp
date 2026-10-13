@@ -1,6 +1,7 @@
 #include "saga.h"
 
 extern "C" {
+    i32 __cdecl PCFrameBeginScenePc(void);
     void __cdecl PCFrameResetTargetsPc(void);
     void __cdecl PCFrameConfigureTargetsPc(void);
 }
@@ -12,7 +13,7 @@ extern "C" i32 __cdecl NuRndrSwapScreen(i32 mode) {
     RenderFrameShaderTimePc += nuapi.frame_time;
     DwaWeightCursorPc = 0xef00;
     DwaPointerCursorPc = 0x800;
-    STUBBED_NAMED(0x006dfd30); /* (1), native60b026 */
+    PCFrameBeginScenePc();
     PCFrameCriticalSectionEnter_candidate();
     for (i32 i = 0; i != 4; ++i)
         PCDeviceSetTexture((u32)i, NULL);

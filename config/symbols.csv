@@ -6409,6 +6409,7 @@ address    , symbol                                                         , si
 0x6df330,_PCFrameLoadingYieldEnabled,9,i32 __cdecl (void)
 0x6df940,_PCDeviceResetState,220,void __cdecl (void)
 0x6dfa20,_PCDeviceResetSamplerDefaultsPc,72,void __cdecl(void)
+0x6dfd30,_PCFrameBeginScenePc,8,i32 __cdecl(void)
 0x006dfd40,_PCFramePresentNativePc,36,"i32 __cdecl(i32,i32)"
 0x6dfd70,_PCFrameResetTargetsPc,10,void __cdecl(void)
 0x6dfd80,_PCFrameConfigureTargetsPc,10,void __cdecl(void)
@@ -6459,8 +6460,10 @@ address    , symbol                                                         , si
 0x6e4170,?BeginScene@PC_DEVICE_BACKEND_PC@@QAEXXZ,48,void __thiscall PC_DEVICE_BACKEND_PC::BeginScene(void)
 0x6e41a0,?Present@PC_DEVICE_BACKEND_PC@@QAEXPBUtagRECT@@0PAUHWND__@@PBU_RGNDATA@@@Z,140,"void __thiscall PC_DEVICE_BACKEND_PC::Present(const RECT*,const RECT*,HWND,const RGNDATA*)"
 0x6e42d0,?InitializeAdapter@PC_DEVICE_BACKEND_PC@@QAEXXZ,476,void __thiscall PC_DEVICE_BACKEND_PC::InitializeAdapter(void)
+0x6e44b0,?Invalidate@PC_DEVICE_STATE_CACHE_PC@@QAEXXZ,128,void __thiscall(void)
 0x6e4570,_PCDeviceGetDevice,6,PC_D3D9_DEVICE_PC* __cdecl(void)
 0x6e45a0,_PCDeviceIsAbsent,12,i32 __cdecl(void)
+0x6e45b0,_PCDeviceBeginScenePc,20,void __cdecl(void)
 0x6e45e0,_PCDeviceClear,55,"void __cdecl(u32,const RECT*,u32,u32,f32,u32)"
 0x6e46b0,_PCDeviceCreateDepthSurface,59,"void __cdecl(u32,u32,i32,i32,u32,BOOL,PC_TEXTURE_RESOURCE_PC**,HANDLE*)"
 0x6e46f0,_PCDeviceCreateIndexBuffer,63,"void __cdecl (u32, u32, i32, i32, PC_BUFFER_RESOURCE_PC **, HANDLE *)"
@@ -19450,16 +19453,7 @@ address    , symbol                                                         , si
 0x297b6b8,_PCNativeDebugFormatBuffer,,char[2048]
 0x297beb8,_PCGraphicsDeviceLostCallback,,void (__cdecl *)(GRAPHICS_PRESENT_PARAMETERS_PC *)
 0x297bec0, _PCDeviceLastResult, ,
-0x297bec8,_PCDeviceVertexDeclarationCachePc,,PC_TEXTURE_RESOURCE_PC *
-0x297becc,_PCDeviceIndexBufferCachePc,,PC_BUFFER_RESOURCE_PC *
-0x297bed0,_PCDeviceVertexBufferCachePc,,PC_BUFFER_RESOURCE_PC *
-0x297bed4,_PCDeviceStreamStrideCachePc,,u32
-0x297bed8,_PCDeviceStreamNumberCachePc,,u32
-0x297bedc,_PCDeviceStreamOffsetCachePc,,u32
-0x297bee0,_PCDeviceTextureCache,,void *[5]
-0x297bef4,_PCDeviceSamplerStateCache,,i32[8][14]
-0x297c0b4,_PCDeviceCacheStateKey,4,i32
-0x297c0b8,_PCDeviceRenderStateCache,,i32[12]
+0x297bec8,_PCDeviceStateCachePc,,PC_DEVICE_STATE_CACHE_PC
 0x297c0e8,_CpuVendorPc,,u32
 0x297c0ec,_CpuHas3dnowPc,,u32
 0x0297c0f0 , _PCClipUseSSE                                                  , 4     , i32

@@ -7933,12 +7933,6 @@ extern "C" {
 #pragma bss_seg(".bss$PCDevicePrimitiveUPCallCountPc")
     u32 PCDevicePrimitiveUPCallCountPc;
 #pragma bss_seg()
-#pragma bss_seg(".bss$PCDeviceIndexBufferCachePc")
-    PC_BUFFER_RESOURCE_PC *PCDeviceIndexBufferCachePc;
-#pragma bss_seg()
-#pragma bss_seg(".bss$PCDeviceVertexBufferCachePc")
-    PC_BUFFER_RESOURCE_PC *PCDeviceVertexBufferCachePc;
-#pragma bss_seg()
 }
 
 struct SoundQueue;
@@ -12723,17 +12717,8 @@ extern "C" {
 #pragma data_seg(".data$PCDeviceStateCacheEnabled")
     u8 PCDeviceStateCacheEnabled = 1;
 #pragma data_seg()
-#pragma bss_seg(".bss$PCDeviceRenderStateCache")
-    i32 PCDeviceRenderStateCache[12];
-#pragma bss_seg()
-#pragma bss_seg(".bss$PCDeviceCacheStateKey")
-    i32 PCDeviceCacheStateKey;
-#pragma bss_seg()
-#pragma bss_seg(".bss$PCDeviceTextureCache")
-    void *PCDeviceTextureCache[5];
-#pragma bss_seg()
-#pragma bss_seg(".bss$PCDeviceSamplerStateCache")
-    i32 PCDeviceSamplerStateCache[8][14];
+#pragma bss_seg(".bss$PCDeviceStateCachePc")
+    PC_DEVICE_STATE_CACHE_PC PCDeviceStateCachePc;
 #pragma bss_seg()
 #pragma bss_seg(".bss$PCDeviceSamplerInvalidation")
     i32 PCDeviceSamplerInvalidation[16][2];
@@ -28126,10 +28111,6 @@ extern "C" {
     f32 NuDisplayHandlerShadowPc = 0.0f;
     u32 PCDevicePrimitiveCallCountPc = 0;
     u32 PCDeviceIndexedPrimitiveCallCountPc = 0;
-    u32 PCDeviceStreamStrideCachePc = 0;
-    u32 PCDeviceStreamNumberCachePc = 0;
-    u32 PCDeviceStreamOffsetCachePc = 0;
-    PC_TEXTURE_RESOURCE_PC *PCDeviceVertexDeclarationCachePc = NULL;
 }
 #pragma bss_seg()
 #pragma data_seg()
