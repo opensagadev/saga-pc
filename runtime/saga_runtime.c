@@ -1,6 +1,8 @@
 // Runtime-build support, never linked into the matching build: logs reached stubs,
-// unresolved-symbol traps and crashes to saga_stubs.log next to the executable.
+// unresolved-symbol traps and crashes to saga_stubs.log next to the executable, and
+// first-chance access violations in game code to saga_crash.log.
 #define _CRT_SECURE_NO_DEPRECATE
+#define _WIN32_WINNT 0x0501
 #define WIN32_LEAN_AND_MEAN
 #include <windows.h>
 #include <stdio.h>
@@ -107,9 +109,58 @@ static DWORD WINAPI SagaRuntime_Sample(void *main_thread) {
     }
 }
 
+static void SagaRuntime_CrashLogPath(char *path) {
+    char *slash;
+
+    GetModuleFileNameA(NULL, path, MAX_PATH - 16);
+    slash = strrchr(path, '\\');
+    strcpy(slash != NULL ? slash + 1 : path, "saga_crash.log");
+}
+
+// Log access violations in game code before any handler runs. A runaway write can clobber this
+// module's statics and the top-level filter, so this keeps no state and opens the log per event.
+static LONG WINAPI SagaRuntime_Vectored(EXCEPTION_POINTERS *exception) {
+    char text[2048];
+    char path[MAX_PATH];
+    DWORD stack[256];
+    SIZE_T got = 0;
+    DWORD written;
+    HANDLE file;
+    int length;
+    int i;
+
+    if (exception->ExceptionRecord->ExceptionCode != EXCEPTION_ACCESS_VIOLATION ||
+        (DWORD)exception->ExceptionRecord->ExceptionAddress < 0x401000 ||
+        (DWORD)exception->ExceptionRecord->ExceptionAddress >= 0x800000) {
+        return EXCEPTION_CONTINUE_SEARCH;
+    }
+    ReadProcessMemory(GetCurrentProcess(), (void *)exception->ContextRecord->Esp, stack, sizeof(stack), &got);
+    length = _snprintf(text, 1900, "first-chance AV at %p esp %08lx eax %08lx edx %08lx ecx %08lx; refs:",
+                       exception->ExceptionRecord->ExceptionAddress, exception->ContextRecord->Esp,
+                       exception->ContextRecord->Eax, exception->ContextRecord->Edx, exception->ContextRecord->Ecx);
+    for (i = 0; i < (int)(got / 4) && length > 0 && length < 1900; i++) {
+        if (stack[i] >= 0x401000 && stack[i] < 0x800000) {
+            length += _snprintf(text + length, 1950 - length, " %08lx", stack[i]);
+        }
+    }
+    if (length < 0 || length > 1950) {
+        length = 1950;
+    }
+    text[length++] = '\n';
+    SagaRuntime_CrashLogPath(path);
+    file = CreateFileA(path, FILE_APPEND_DATA, FILE_SHARE_READ, NULL, OPEN_ALWAYS, FILE_ATTRIBUTE_NORMAL, NULL);
+    WriteFile(file, text, length, &written, NULL);
+    CloseHandle(file);
+    return EXCEPTION_CONTINUE_SEARCH;
+}
+
 static int __cdecl SagaRuntime_Init(void) {
     HANDLE main_thread;
+    char path[MAX_PATH];
 
+    SagaRuntime_CrashLogPath(path);
+    DeleteFileA(path);
+    AddVectoredExceptionHandler(1, SagaRuntime_Vectored);
     SetUnhandledExceptionFilter(SagaRuntime_Crash);
     SagaRuntime_Write("saga runtime build started\n");
     DuplicateHandle(GetCurrentProcess(), GetCurrentThread(), GetCurrentProcess(), &main_thread, 0, FALSE,
