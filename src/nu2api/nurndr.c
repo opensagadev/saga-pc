@@ -27,6 +27,8 @@ VARIPTR nudlist_stream_cursor;
 
 i32 __cdecl NuRndrBeginScene(i32 begin_flags) {
     currentScene.clear_alpha_4c = 0.0f;
+    currentScene.clear_flags_08 = 0;
+    currentScene.clear_flags = 0;
     currentScene.unknown_24 = 0;
     currentScene.unknown_28 = 0;
     currentScene.unknown_58 = 0;

@@ -394,7 +394,7 @@
     "src/nu2api/nuqfnt_print.c": "dadd2d9bfb7ee1d1e1939c31b6e47f8f6c2ca76117962047dce4dd144088ca62",
     "src/nu2api/nuquat.c": "259412d6e0518f3653d4d5283f6b0c116845a4c84cec44ee3e2bc8b73d67b7d9",
     "src/nu2api/nurdpi.c": "ba14905a540d8143de10a2743e3f27fc796e092b02b8a85ee2d26ba72a6eb759",
-    "src/nu2api/nurndr.c": "c18c9f9ad91ec09ba58dbf0f026aaff64828076bae5519362c364e8bde8f53f6",
+    "src/nu2api/nurndr.c": "d2694bad10c65877fb5ec75f32f1225cb1cde09c0bd077135936af909144cbd3",
     "src/nu2api/nurndrstat.c": "7e04ac0d112372c5f67085ca51e5a28818fe42d81335e7b30bc8786539929c14",
     "src/nu2api/nuscene_pc.c": "b10cb8b8abcd06dc1c5fa1f69508e7326a29b233c4ad24cab7273102e8816004",
     "src/nu2api/nuscratch.c": "91d547d6ad9bc25d7187ce8e049b22acaa1fc670b24d751e61e8b776192f0497",
@@ -720,7 +720,7 @@
     "build/obj/nu2api/nuqfnt_print.obj": "1e06a76a47d5a7f386cfeb0e21600487e4069130990bc03357ceaf400cd2e094",
     "build/obj/nu2api/nuquat.obj": "4e1d3ff340c9ad11f758843aad92a0d4b9a62e581e844e9a76c56b59031b6fe6",
     "build/obj/nu2api/nurdpi.obj": "f9022c7c2cb039ca322a699bf72b578da65b51e1f6e3ef3f5575ed0f97cfcc35",
-    "build/obj/nu2api/nurndr.obj": "096c263a41de20838a69f03cbbfe86ada761cf6fb96ed7ad2a7eb16147267b33",
+    "build/obj/nu2api/nurndr.obj": "e9b2e7756513a01abef96df3cedf7ebdebec0aaf62b27332bd1ec4c9b50ece30",
     "build/obj/nu2api/nurndr_swap.obj": "9121a48207826724e0e1c19fc5e7e7a611881001d1e50e199b0d4c86d4e6810d",
     "build/obj/nu2api/nurndrstat.obj": "bdb4f578ae1e47f359ca7fbcfcd14e89898e675129d548fdc122c5fe8065fbf1",
     "build/obj/nu2api/nuscene_pc.obj": "24b12b666751d025f3d790783e5f883404aa237a01d960f82ed9605475db4587",
@@ -96337,17 +96337,17 @@
       "objects": [
         {
           "unit": "src/nu2api/nurndr.c",
-          "base_size": 99,
+          "base_size": 109,
           "exact_match": false,
           "target_sha256": "92c312ca79727c0e3e1a77aa92082180d2988066851a4c4e58ce5c2d6720d4b6",
-          "base_sha256": "6b3f50cb1106a5b99fbf878e201d4f8f7a7ee29cf204be760356b8e89ecbd92d",
-          "relocation_count": 17,
+          "base_sha256": "2207b5fb5460b02d9e930761330623475612ae55dc60a3f05ae59635ac8abb39",
+          "relocation_count": 19,
           "comparison_unit": "005d4290-d643470db845",
-          "objdiff_percent": 79.958336
+          "objdiff_percent": 88.0
         }
       ],
       "status": "different",
-      "objdiff_percent": 79.958336
+      "objdiff_percent": 88.0
     },
     {
       "name": "NuRndrBeginSceneEx",
@@ -370733,10 +370733,10 @@
     "mapped_code_bytes": 2140858,
     "matched_code_bytes": 393496,
     "matching_percent": 11.335871903057289,
-    "fuzzy_coverage_percent": 36.502275732417836,
+    "fuzzy_coverage_percent": 36.502528247329195,
     "mapped_functions": 7461,
     "matched_functions": 3478,
-    "objdiff_fuzzy_percent": 73.497765,
+    "objdiff_fuzzy_percent": 73.498276,
     "objdiff_total_code": 1724862,
     "image_bytes": 40067072,
     "mapped_bytes": 3057883,
@@ -371785,7 +371785,7 @@
       "metadata_sha256": "40992e5ff1fe1784d15619aded26d9af0686296384364b2740d984147dac785f",
       "header_path": "src/saga.h",
       "header_sha256": "0777b7ef9f3a78251864f0f04e858a270feb541eed617b9af41b971b1bac1f93",
-      "geometry_object_sha256": "ddbfb03ee6d8c0868619d158b8538b122cff462c7be8dc7f59b343eff93b05f9",
+      "geometry_object_sha256": "280ef545ac302c4a15756a997991efc77d2cf1e85097723e9e8608d2a4ca8aba",
       "toolchain_sha256": "489d0782638d8033137cdb2834462416111945cbfa073147820e314b8576b95b",
       "implementation_sha256": "9ad7521230f06fde31f0771b10bd001037ea32d2def455913a7f391f05dede9d",
       "headers": {
@@ -371826,8 +371826,8 @@
           "object_sha256": "dff893d59ded3ddbab57a3d1abf774ad23133eccbc6d189666e19f53ac324397"
         },
         "src/nu2api/nurndr.c": {
-          "source_sha256": "c18c9f9ad91ec09ba58dbf0f026aaff64828076bae5519362c364e8bde8f53f6",
-          "object_sha256": "096c263a41de20838a69f03cbbfe86ada761cf6fb96ed7ad2a7eb16147267b33"
+          "source_sha256": "d2694bad10c65877fb5ec75f32f1225cb1cde09c0bd077135936af909144cbd3",
+          "object_sha256": "e9b2e7756513a01abef96df3cedf7ebdebec0aaf62b27332bd1ec4c9b50ece30"
         }
       }
     },
