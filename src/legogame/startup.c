@@ -298,7 +298,7 @@ void __cdecl LoadPermData(void *process) {
         LoadPermLoadLegalTexture();
     }
 
-    STUBBED_NAMED("LoadPermData: string filter load (badwords.txt at 0x4fe390)");
+    NuStringFilterLoad("stuff\\text\\badwords.txt", &permbuffer_ptr, permbuffer_end);
     MusicInfo = ConfigureMusic("audio\\music.txt", &permbuffer_ptr, &permbuffer_end);
     SfxSetFileTable((SFX_FILE_INFO_PC *)MusicInfo);
     InitSfx(&permbuffer_ptr, permbuffer_end, "Audio\\Audio.cfg");
@@ -354,9 +354,10 @@ void __cdecl LoadPermData(void *process) {
 
     STUBBED_NAMED("LoadPermData: Movies_ConfigureList(movies\\movies.txt)");
     STUBBED_NAMED("LoadPermData: NuRegisterEndFrameCallBackFn(0x5ca000)");
-    STUBBED_NAMED("LoadPermData: ConfigureCharacterList(chars\\chars.txt) into CDataList/CHARCOUNT/GCDataList");
+    CDataList = ConfigureCharacterList("chars\\chars.txt", &permbuffer_ptr, &permbuffer_end, 0x154, &CHARCOUNT, 0x120,
+                                       &GCDataList);
     STUBBED_NAMED("LoadPermData: CharScenes_Init");
-    STUBBED_NAMED("LoadPermData: IconScenes_Init(stuff\\icons\\)");
+    IconScenes_Init("stuff\\icons\\", &permbuffer_ptr, &permbuffer_end);
     STUBBED_NAMED("LoadPermData: FixUpCharacters(0x7f1b50)");
     STUBBED_NAMED("LoadPermData: MiniKits_Init");
 
@@ -386,21 +387,22 @@ void __cdecl LoadPermData(void *process) {
     EDataList =
         Episodes_ConfigureList((char *)LoadPermEpisodesPath, &permbuffer_ptr, &permbuffer_end, 6, &EPISODECOUNT);
 
-    STUBBED_NAMED("LoadPermData: NewGame");
-    STUBBED_NAMED("LoadPermData: InitGameAfterConfig");
+    NewGame();
+    InitGameAfterConfig();
 
     if (StartupGameFlag1 == 0) {
         STUBBED_NAMED("LoadPermData: cutscene list load (cut\\cutscenes.txt at 0x57a870)");
     }
 
-    STUBBED_NAMED("LoadPermData: APICharacterSysInit(&ptr, end, CHARCOUNT, 0x30, 0xe9, 0x400, CDataList, 0x595e00)");
+    APICharacterSysInit(&permbuffer_ptr, permbuffer_end, CHARCOUNT, 0x30, 0xe9, 0x400, (APICHARACTERDATA *)CDataList,
+                        SetCreatureLights);
     STUBBED_NAMED("LoadPermData: SetActionInfo(0x7fbec8, 0x7fbed0)");
-    STUBBED_NAMED("LoadPermData: CreateGizAIMessageSys(&ptr, &end, 0x40) into gizaimessagesys");
+    gizaimessagesys = CreateGizAIMessageSys(&permbuffer_ptr, &permbuffer_end, 0x40);
 
     permbuffer_ptr.addr = (permbuffer_ptr.addr + 0xfU) & ~0xfU;
 
     if (StartupGameFlag1 != 0) {
-        STUBBED_NAMED("LoadPermData: BackDrop_Init(stuff\\starfield.gsc)");
+        BackDrop_Init("stuff\\starfield.gsc", &permbuffer_ptr, &permbuffer_end);
     }
 
     LoadPerm1();

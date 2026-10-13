@@ -9364,6 +9364,7 @@ address    , symbol                                                         , si
 0x75a028,__real@4010aaaaa0000000,,const f64
 0x75a030,??_C@_07OMEBBDEO@scripts?$AA@,,const char[8]
 0x75a038,??_C@_0BC@NHKBPPPN@stuff?2general?4par?$AA@,18,const char[18]
+0x75a04c,??_C@_0BE@LMEBPOJ@stuff?2starfield?4gsc?$AA@,,const char[20]
 0x75a060,??_C@_0N@FEFEJMAO@stuff?2things?$AA@,13,const char[13]
 0x75a070,??_C@_0BB@GGGAILKI@stuff?2things?4gsc?$AA@,17,const char[17]
 0x75a084,??_C@_0P@EOCAHEBJ@stuff?2gradient?$AA@,15,const char[15]
@@ -10162,8 +10163,11 @@ address    , symbol                                                         , si
 0x0075d0c0 , _LoadPermEpisodesPath                                          , 20    , const char[20]
 0x0075d0d4 , _LoadPermAreasPath                                             , 17    , const char[17]
 0x0075d0e8 , _LoadPermLevelsPath                                            , 18    , const char[18]
+0x75d0fc,??_C@_0N@LOOJFHKC@stuff?2icons?2?$AA@,,const char[13]
+0x75d10c,??_C@_0BA@NIAGBOPP@chars?2chars?4txt?$AA@,,const char[16]
 0x75d130,??_C@_0BA@NLBJKIHO@Audio?2Audio?4cfg?$AA@,,const char[16]
 0x75d140,??_C@_0BA@CCGCGINK@audio?2music?4txt?$AA@,,const char[16]
+0x75d150,??_C@_0BI@NAECPHOM@stuff?2text?2badwords?4txt?$AA@,,const char[24]
 0x75d168,__real@3ff5555560000000,8,const f64
 0x0075d170 , __real@400e666660000000                                        , 8     , const f64
 0x0075d178 , __real@40b9999a                                                , 4     , const f32
