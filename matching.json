@@ -84,7 +84,7 @@
     "src/legoapi/areas.cpp": "7bc45f4ec5c8b96ee1b63dec337d328edeecaba1ef4078adfc7b07b7f1d4ffe3",
     "src/legoapi/batarang.cpp": "dcd2e555f9eb2a5b4324aafaeac9de5212396d1e9b2681b5762fade9531c46f5",
     "src/legoapi/bolt_runtime.cpp": "c3211dd6919fc520ad15e88685c18a1d624cf6ede2a6210557c466cc0c6fb706",
-    "src/legoapi/characters.cpp": "641e88b735701e1d999425fd87cd845bf5bcc26bf7657e68bc7b624fef6d3df1",
+    "src/legoapi/characters.cpp": "22c81da4e1352ab76e2100068503769101ec502f10ed0eaf48af3f5244755778",
     "src/legoapi/cutscene_runtime.cpp": "064508ee9234903d0e0a828daaeff8891185e2603c281677984bc38a030e3cfc",
     "src/legoapi/debris_generators.cpp": "f49b1f1d20263f99fbc80077116dcb7866305c8420b5240a8d950a0e4712f062",
     "src/legoapi/episode.cpp": "3de3b6cb91947b20781a56587c43c332f736985f677b4edd42f494bac2e631dd",
@@ -492,7 +492,7 @@
     "build/obj/legoapi/camera.obj": "ddad96dfe9067921e994c637646ed6aa4c11dd18dd96b85121e386f3e5034b1c",
     "build/obj/legoapi/carrying.obj": "c4741244c526b34bb68f91a93ce7ae8a76bb53de35b3add507a9d6d5a41bc407",
     "build/obj/legoapi/character_animation.obj": "6ac4105e06cb88279ceb453d2564582b738d2987430585e0c0bededddcd7b013",
-    "build/obj/legoapi/characters.obj": "e899cc0dd3366e6744ba45d054630a5288bf774bc22caafe65ffb5881fa6494a",
+    "build/obj/legoapi/characters.obj": "5d446b70e72be1948451d0125821b7d38db14a23619bd49ce4bb6098343e837c",
     "build/obj/legoapi/charconfig.obj": "bbbfd07fed240c00e6b3633dc702eccccd1f05b03c802b70620153b708fec5f4",
     "build/obj/legoapi/charpivot.obj": "5a6c6eca580d5a7086e8a63992d1401fa4bfdb97d2fc9afb4ece74349db9e13d",
     "build/obj/legoapi/charplatforms_pc.obj": "16b3f80a22f4a666dc7a7c49f6b7fb5997c49383c1817087a2390065bbb0cd47",
@@ -17379,14 +17379,14 @@
           "base_size": 855,
           "exact_match": false,
           "target_sha256": "0aecd2a9c0421ae5550d9276526ac9449ad49e4c4e7322d347e0f52f1e32eab2",
-          "base_sha256": "ec2d6361f3fed20a5d9372fa7a83b7ca8ced012fe2ff2f1ab9c1ee269130c3e3",
-          "relocation_count": 92,
+          "base_sha256": "0044023931aac5d457071f2dcbcb0c419bf6be640810e8d4871bcb8ad0f627ea",
+          "relocation_count": 93,
           "comparison_unit": "0048a6a0-09e553a46689",
-          "objdiff_percent": 54.53731
+          "objdiff_percent": 54.02388
         }
       ],
       "status": "different",
-      "objdiff_percent": 54.53731
+      "objdiff_percent": 54.02388
     },
     {
       "name": "LoadPerm2",
@@ -378036,10 +378036,10 @@
     "mapped_code_bytes": 2152971,
     "matched_code_bytes": 396267,
     "matching_percent": 11.415699146646478,
-    "fuzzy_coverage_percent": 36.82137808106018,
+    "fuzzy_coverage_percent": 36.821178255426965,
     "mapped_functions": 7502,
     "matched_functions": 3522,
-    "objdiff_fuzzy_percent": 73.47409,
+    "objdiff_fuzzy_percent": 73.473694,
     "objdiff_total_code": 1740494,
     "image_bytes": 40067072,
     "mapped_bytes": 3076490,
@@ -379138,7 +379138,7 @@
       "metadata_sha256": "fe09365da4c355f220d724ca99394fc120b758891b4188d2c49707b6df0894f2",
       "header_path": "src/saga.h",
       "header_sha256": "69ba650ba8d7562b6f59a1634b9254e7c6a438a859204879cb491204d3051db1",
-      "geometry_object_sha256": "a1e7f714798faf7617bee2d77aa00bd68d6e29f9847478e567fbae42c63d18c0",
+      "geometry_object_sha256": "bc94337e3c12f4f60639b1a5758d112b6c19dd45da2a8e5f3f88563b5f568fdd",
       "toolchain_sha256": "489d0782638d8033137cdb2834462416111945cbfa073147820e314b8576b95b",
       "implementation_sha256": "9ad7521230f06fde31f0771b10bd001037ea32d2def455913a7f391f05dede9d",
       "headers": {

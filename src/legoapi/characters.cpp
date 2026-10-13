@@ -1,6 +1,7 @@
 #include <stdio.h>
 #include "saga.h"
 extern "C" void __cdecl CreateUsefulMaterials(void);
+extern "C" void __cdecl ParticleReset(void);
 extern "C" APIDEBRISSYS_PC *__cdecl InitGameDebris(VARIPTR *, VARIPTR, i32, i32, char **, i8);
 #include "saga.h"
 i32 __cdecl TakeOverYodaSeekDistanceHack(GAMEOBJECT *object, GAMEOBJECT *luke, NUVEC *offset) {
@@ -168,7 +169,7 @@ void __cdecl LoadPerm1(void) {
     NuBridgeInit();
     native_end_address.void_ptr = &permbuffer_end;
     InitParts(0x40, &permbuffer_ptr, native_end_address);
-    STUBBED_NAMED(ParticleReset); /* Native 48a85b. */
+    ParticleReset();
     NuStrCpy(path, "stuff\\general.ptl");
     if (NuFileExists(path) != 0)
         DEBPAGE_GENERAL = edppLoadPage(path, 0, 0);
