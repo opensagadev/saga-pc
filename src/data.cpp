@@ -30124,4 +30124,51 @@ extern "C" {
     const char *MenuPcStrings[39];
     i32 MenuPcStringsInitialized;
     f32 MenuNewGameYPc = -0.5f;
+#pragma const_seg(".rdata$GizActionNameSetVisibilityPc")
+    extern const char GizActionNameSetVisibilityPc[14] = "SetVisibility";
+#pragma const_seg(".rdata$GizActionNameSetGizmoVisibilityPc")
+    extern const char GizActionNameSetGizmoVisibilityPc[19] = "SetGizmoVisibility";
+#pragma const_seg(".rdata$GizActionNameSetPickupVisibilityPc")
+    extern const char GizActionNameSetPickupVisibilityPc[20] = "SetPickupVisibility";
+#pragma const_seg(".rdata$GizActionNameActivateGizmoPc")
+    extern const char GizActionNameActivateGizmoPc[14] = "ActivateGizmo";
+#pragma const_seg(".rdata$GizActionNameActivateCharPc")
+    extern const char GizActionNameActivateCharPc[13] = "ActivateChar";
+#pragma const_seg(".rdata$GizActionNameTurnOnFlowBoxPc")
+    extern const char GizActionNameTurnOnFlowBoxPc[14] = "TurnOnFlowBox";
+#pragma const_seg(".rdata$GizActionNameActivateEffectPc")
+    extern const char GizActionNameActivateEffectPc[15] = "ActivateEffect";
+#pragma const_seg(".rdata$GizActionNameActivatePartEffectPc")
+    extern const char GizActionNameActivatePartEffectPc[19] = "ActivatePartEffect";
+#pragma const_seg(".rdata$GizActionNameChangeTechnoTargetPc")
+    extern const char GizActionNameChangeTechnoTargetPc[19] = "ChangeTechnoTarget";
+#pragma const_seg(".rdata$GizActionNameSetAIMessagePc")
+    extern const char GizActionNameSetAIMessagePc[13] = "SetAIMessage";
+#pragma const_seg(".rdata$GizActionNameSetAIStatePc")
+    extern const char GizActionNameSetAIStatePc[11] = "SetAIState";
+#pragma const_seg(".rdata$GizActionNameCompleteLevelPc")
+    extern const char GizActionNameCompleteLevelPc[14] = "CompleteLevel";
+#pragma const_seg(".rdata$GizActionNameGoToNewLevelPc")
+    extern const char GizActionNameGoToNewLevelPc[13] = "GoToNewLevel";
+#pragma const_seg(".rdata$GizActionNameGoThroughDoorPc")
+    extern const char GizActionNameGoThroughDoorPc[14] = "GoThroughDoor";
+#pragma const_seg(".rdata$GizActionNamePlayObstaclePc")
+    extern const char GizActionNamePlayObstaclePc[13] = "PlayObstacle";
+#pragma const_seg(".rdata$GizActionNamePlaySpecialPc")
+    extern const char GizActionNamePlaySpecialPc[12] = "PlaySpecial";
+#pragma const_seg(".rdata$GizActionNamePlayForcePc")
+    extern const char GizActionNamePlayForcePc[10] = "PlayForce";
+#pragma const_seg(".rdata$GizActionNameChangeObstTriggerTypePc")
+    extern const char GizActionNameChangeObstTriggerTypePc[22] = "ChangeObstTriggerType";
+#pragma const_seg(".rdata$GizActionNamePlayRadioPc")
+    extern const char GizActionNamePlayRadioPc[10] = "PlayRadio";
+#pragma const_seg(".rdata$GizActionNamePlayCutscenePc")
+    extern const char GizActionNamePlayCutscenePc[13] = "PlayCutscene";
+#pragma const_seg(".rdata$GizActionNameHitBlowupPc")
+    extern const char GizActionNameHitBlowupPc[10] = "HitBlowup";
+#pragma const_seg(".rdata$GizActionNameActivateBeltPc")
+    extern const char GizActionNameActivateBeltPc[13] = "ActivateBelt";
+#pragma const_seg(".rdata$GizActionNameEnableSockPc")
+    extern const char GizActionNameEnableSockPc[11] = "EnableSock";
+#pragma const_seg()
 }

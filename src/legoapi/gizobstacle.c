@@ -103,6 +103,8 @@ void GizActions_PlayRadio(GIZFLOW_PC *unused0, FLOWBOX_PC *unused1, char **param
     }
 }
 
+STATIC_ASSERT(offsetof(WORLDINFO, progress_flag_5174) == 0x5170);
+
 static void GizActions_ActivateBelt(GIZFLOW_PC *unused0, FLOWBOX_PC *unused1, char **params, int count) {
     i32 index;
     i32 active = 1;
@@ -115,6 +117,77 @@ static void GizActions_ActivateBelt(GIZFLOW_PC *unused0, FLOWBOX_PC *unused1, ch
     }
     WorldInfo_CurrentlyActive()->progress_flag_5174 = ((i8)(active));
 }
+
+extern const char GizActionNameSetVisibilityPc[14];
+extern const char GizActionNameSetGizmoVisibilityPc[19];
+extern const char GizActionNameSetPickupVisibilityPc[20];
+extern const char GizActionNameActivateGizmoPc[14];
+extern const char GizActionNameActivateCharPc[13];
+extern const char GizActionNameTurnOnFlowBoxPc[14];
+extern const char GizActionNameActivateEffectPc[15];
+extern const char GizActionNameActivatePartEffectPc[19];
+extern const char GizActionNameChangeTechnoTargetPc[19];
+extern const char GizActionNameSetAIMessagePc[13];
+extern const char GizActionNameSetAIStatePc[11];
+extern const char GizActionNameCompleteLevelPc[14];
+extern const char GizActionNameGoToNewLevelPc[13];
+extern const char GizActionNameGoThroughDoorPc[14];
+extern const char GizActionNamePlayObstaclePc[13];
+extern const char GizActionNamePlaySpecialPc[12];
+extern const char GizActionNamePlayForcePc[10];
+extern const char GizActionNameChangeObstTriggerTypePc[22];
+extern const char GizActionNamePlayRadioPc[10];
+extern const char GizActionNamePlayCutscenePc[13];
+extern const char GizActionNameHitBlowupPc[10];
+extern const char GizActionNameActivateBeltPc[13];
+extern const char GizActionNameEnableSockPc[11];
+extern void __cdecl GizActions_SetVisibilityPc(GIZFLOW_PC *, FLOWBOX_PC *, char **, i32);
+extern void __cdecl GizActions_SetGizmoVisibilityPc(GIZFLOW_PC *, FLOWBOX_PC *, char **, i32);
+extern void __cdecl GizActions_SetPickupVisibilityPc(GIZFLOW_PC *, FLOWBOX_PC *, char **, i32);
+extern void __cdecl GizActions_ActivateGizmoPc(GIZFLOW_PC *, FLOWBOX_PC *, char **, i32);
+extern void __cdecl GizActions_ActivateCharPc(GIZFLOW_PC *, FLOWBOX_PC *, char **, i32);
+extern void __cdecl GizActions_TurnOnFlowBoxPc(GIZFLOW_PC *, FLOWBOX_PC *, char **, i32);
+extern void __cdecl GizAction_ActivateEffect(GIZFLOW_PC *, FLOWBOX_PC *, char **, i32);
+extern void __cdecl GizAction_ActivatePartEffect(GIZFLOW_PC *, FLOWBOX_PC *, char **, i32);
+extern void __cdecl GizAction_ChangeTechnoTgt(GIZFLOW_PC *, FLOWBOX_PC *, char **, i32);
+extern void __cdecl GizAction_SetAIMessage(GIZFLOW_PC *, FLOWBOX_PC *, char **, i32);
+extern void __cdecl GizAction_SetAIState(GIZFLOW_PC *, FLOWBOX_PC *, char **, i32);
+extern void __cdecl GizActions_CompleteLevel(GIZFLOW_PC *, FLOWBOX_PC *, char **, i32);
+extern void __cdecl GizActions_GoToNewLevelPc(GIZFLOW_PC *, FLOWBOX_PC *, char **, i32);
+extern void __cdecl GizActions_GoThroughDoor(GIZFLOW_PC *, FLOWBOX_PC *, char **, i32);
+extern void __cdecl GizActions_PlaySpecialPc(GIZFLOW_PC *, FLOWBOX_PC *, char **, i32);
+extern void __cdecl GizActions_PlayForcePc(GIZFLOW_PC *, FLOWBOX_PC *, char **, i32);
+extern void __cdecl GizActions_ChangeObstTriggerType(GIZFLOW_PC *, FLOWBOX_PC *, char **, i32);
+extern void __cdecl GizActions_PlayCutscenePc(GIZFLOW_PC *, FLOWBOX_PC *, char **, i32);
+extern void __cdecl GizActions_HitBlowup(GIZFLOW_PC *, FLOWBOX_PC *, char **, i32);
+extern void __cdecl GizActions_EnableSock(GIZFLOW_PC *, FLOWBOX_PC *, char **, i32);
+
+GIZACTIONDEF_PC game_gizactiondefs[24] = {
+    {GizActionNameSetVisibilityPc, GizActions_SetVisibilityPc},
+    {GizActionNameSetGizmoVisibilityPc, GizActions_SetGizmoVisibilityPc},
+    {GizActionNameSetPickupVisibilityPc, GizActions_SetPickupVisibilityPc},
+    {GizActionNameActivateGizmoPc, GizActions_ActivateGizmoPc},
+    {GizActionNameActivateCharPc, GizActions_ActivateCharPc},
+    {GizActionNameTurnOnFlowBoxPc, GizActions_TurnOnFlowBoxPc},
+    {GizActionNameActivateEffectPc, GizAction_ActivateEffect},
+    {GizActionNameActivatePartEffectPc, GizAction_ActivatePartEffect},
+    {GizActionNameChangeTechnoTargetPc, GizAction_ChangeTechnoTgt},
+    {GizActionNameSetAIMessagePc, GizAction_SetAIMessage},
+    {GizActionNameSetAIStatePc, GizAction_SetAIState},
+    {GizActionNameCompleteLevelPc, GizActions_CompleteLevel},
+    {GizActionNameGoToNewLevelPc, GizActions_GoToNewLevelPc},
+    {GizActionNameGoThroughDoorPc, GizActions_GoThroughDoor},
+    {GizActionNamePlayObstaclePc, GizActions_PlayObstacle},
+    {GizActionNamePlaySpecialPc, GizActions_PlaySpecialPc},
+    {GizActionNamePlayForcePc, GizActions_PlayForcePc},
+    {GizActionNameChangeObstTriggerTypePc, GizActions_ChangeObstTriggerType},
+    {GizActionNamePlayRadioPc, GizActions_PlayRadio},
+    {GizActionNamePlayCutscenePc, GizActions_PlayCutscenePc},
+    {GizActionNameHitBlowupPc, GizActions_HitBlowup},
+    {GizActionNameActivateBeltPc, GizActions_ActivateBelt},
+    {GizActionNameEnableSockPc, GizActions_EnableSock},
+    {NULL, NULL},
+};
 
 void GameRegisterGizActions(void) {
     RegisterGizActions(game_gizactiondefs);

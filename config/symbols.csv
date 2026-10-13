@@ -543,14 +543,24 @@ address    , symbol                                                         , si
 0x463f30,_ChallangeCash_Draw,405,
 0x464360,_GizAction_ActivateEffect,154,
 0x464400,_GizAction_ActivatePartEffect,125,
+0x464480,_GizActions_SetVisibilityPc,,"void __cdecl(GIZFLOW_PC *, FLOWBOX_PC *, char **, i32)"
+0x464530,_GizActions_SetGizmoVisibilityPc,,"void __cdecl(GIZFLOW_PC *, FLOWBOX_PC *, char **, i32)"
+0x4645f0,_GizActions_SetPickupVisibilityPc,,"void __cdecl(GIZFLOW_PC *, FLOWBOX_PC *, char **, i32)"
+0x464760,_GizActions_TurnOnFlowBoxPc,,"void __cdecl(GIZFLOW_PC *, FLOWBOX_PC *, char **, i32)"
+0x464820,_GizActions_ActivateGizmoPc,,"void __cdecl(GIZFLOW_PC *, FLOWBOX_PC *, char **, i32)"
+0x4648e0,_GizActions_ActivateCharPc,,"void __cdecl(GIZFLOW_PC *, FLOWBOX_PC *, char **, i32)"
 0x464ae0,_GizActions_ChangeObstTriggerType,363,
 0x464c50,_GizAction_ChangeTechnoTgt,751,
 0x464f40,_GizAction_SetAIMessage,307,
 0x465080,_GizAction_SetAIState,693,
 0x465340,_GizActions_CompleteLevel,235,
+0x465430,_GizActions_GoToNewLevelPc,,"void __cdecl(GIZFLOW_PC *, FLOWBOX_PC *, char **, i32)"
 0x465510,_GizActions_GoThroughDoor,115,
 0x00465590 , _GizActions_PlayObstacle                                       , 389   , "void __cdecl (GIZFLOW_PC *, FLOWBOX_PC *, char **, i32)"
+0x465720,_GizActions_PlaySpecialPc,,"void __cdecl(GIZFLOW_PC *, FLOWBOX_PC *, char **, i32)"
+0x465870,_GizActions_PlayForcePc,,"void __cdecl(GIZFLOW_PC *, FLOWBOX_PC *, char **, i32)"
 0x4659b0,_GizActions_PlayRadio,195,
+0x465a80,_GizActions_PlayCutscenePc,,"void __cdecl(GIZFLOW_PC *, FLOWBOX_PC *, char **, i32)"
 0x465af0,_GizActions_HitBlowup,366,
 0x465c60,_GizActions_ActivateBelt,94,
 0x465cc0,_GizActions_EnableSock,251,
@@ -8683,8 +8693,13 @@ address    , symbol                                                         , si
 0x755d78,??_C@_02HCKGKOFO@?$CI?$CJ?$AA@,3,char[3]
 0x00755d8c , ??_C@_05KOHFLOFG@Level?$AA@                                    , 6     , const char[6]
 0x00755d8c , _AIScriptKeywordLevel                                          , 6     , const char[6]
+0x755ee4,_GizActionNameGoToNewLevelPc,13,const char[13]
+0x755ef4,_GizActionNameCompleteLevelPc,14,const char[14]
 0x75600c   , _PCContextName_ThrowDetonator                                  , 15    , const char [15]
 0x7561fc   , _PCContextName_PullLever                                       , 10    , const char [10]
+0x75623c,_GizActionNamePlayObstaclePc,13,const char[13]
+0x756454,_GizActionNameEnableSockPc,11,const char[11]
+0x756460,_GizActionNameSetVisibilityPc,14,const char[14]
 0x7565d0   , _PCContextName_Launch                                          , 7     , const char [7]
 0x756788   , _PCContextName_ForcePush                                       , 10    , const char [10]
 0x00756848 , _AIRegistryName_Game_AttackOpponent                            ,       , ""
@@ -8882,6 +8897,7 @@ address    , symbol                                                         , si
 0x757c20,_AITransferLiteral757c20,12,const char[12]
 0x757c2c,??_C@_0L@BGPPMAOI@decrement?$DN?$AA@,11,char []
 0x757c38,_PodRaceIncrementKeywordPc,,char[11]
+0x757c38,??_C@_0L@CFILHGBI@increment?$DN?$AA@,11,const char[11]
 0x00757c44 , _AIAnimSpeedValueName                                          ,       ,
 0x757c44,??_C@_06KFEJCPI@value?$DN?$AA@,7,char []
 0x757c4c,??_C@_03KIJPOJDM@ix?$DN?$AA@,4,const char[]
@@ -8932,6 +8948,7 @@ address    , symbol                                                         , si
 0x757ea8,_AITransferLiteral757ea8,10,const char[10]
 0x757eb4,_AITransferLiteral757eb4,8,const char[8]
 0x757ebc,_AITransferLiteral757ebc,5,const char[5]
+0x757ebc,??_C@_04HCDDPBNL@TRUE?$AA@,5,const char[5]
 0x757ec4,_AITransferLiteral757ec4,10,const char[10]
 0x00757ed0 , _AIAnimSpeedMultiplyByName                                     ,       ,
 0x757ee0,_AITransferLiteral757ee0,8,const char[8]
@@ -9080,7 +9097,33 @@ address    , symbol                                                         , si
 0x758844,__real@bc75c28f,4,const f32
 0x758848,__real@bf2ccccd,,
 0x75884c,__real@3f2ccccd,,
+0x758850,_GizActionNameActivateBeltPc,13,const char[13]
+0x758860,_GizActionNameHitBlowupPc,10,const char[10]
+0x75886c,_GizActionNamePlayCutscenePc,13,const char[13]
+0x75887c,_GizActionNamePlayRadioPc,10,const char[10]
+0x758888,_GizActionNameChangeObstTriggerTypePc,22,const char[22]
+0x7588a0,_GizActionNamePlayForcePc,10,const char[10]
+0x7588ac,_GizActionNamePlaySpecialPc,12,const char[12]
+0x7588b8,_GizActionNameGoThroughDoorPc,14,const char[14]
+0x7588c8,_GizActionNameSetAIStatePc,11,const char[11]
+0x7588d4,_GizActionNameSetAIMessagePc,13,const char[13]
+0x7588e4,_GizActionNameChangeTechnoTargetPc,19,const char[19]
+0x7588f8,_GizActionNameActivatePartEffectPc,19,const char[19]
+0x75890c,_GizActionNameActivateEffectPc,15,const char[15]
+0x75891c,_GizActionNameTurnOnFlowBoxPc,14,const char[14]
+0x75892c,_GizActionNameActivateCharPc,13,const char[13]
+0x75893c,_GizActionNameActivateGizmoPc,14,const char[14]
+0x75894c,_GizActionNameSetPickupVisibilityPc,20,const char[20]
+0x758960,_GizActionNameSetGizmoVisibilityPc,19,const char[19]
 0x758974,??_C@_06HOPIODND@effect?$AA@,7,char []
+0x75898c,??_C@_08DEMFFOIB@PUSHONLY?$AA@,9,const char[9]
+0x758998,??_C@_05LJBAGOMH@INBOX?$AA@,6,const char[6]
+0x7589a0,??_C@_0P@IBKIICKP@INBOXANDGROUND?$AA@,15,const char[15]
+0x7589b0,??_C@_0L@GAEAAOHJ@TECHNOONLY?$AA@,11,const char[11]
+0x7589bc,??_C@_09MCJAKGGK@NOTRIGGER?$AA@,10,const char[10]
+0x7589c8,??_C@_0BA@GEDHLMK@PROXIMITYGROUND?$AA@,16,const char[16]
+0x7589d8,??_C@_09HHKGLPDK@PROXIMITY?$AA@,10,const char[10]
+0x7589e4,??_C@_09ODCJEJAG@AUTOSTART?$AA@,10,const char[10]
 0x758a5c,??_C@_03LAIAPFCB@Val?$AA@,4,char []
 0x00758a60,??_C@_04FABLJDN@Name?$AA@,,
 0x758a60,_GizObstacleActionNamePC,5,const char[5]
@@ -15211,7 +15254,7 @@ address    , symbol                                                         , si
 0x007f682c , _aitol                                                         , 4     , f32
 0x007f6830 , _direction_scale                                               , 4     , f32
 0x7f6844,_test_missile_scale,4,f32
-0x7f8b18,_game_gizactiondefs,,
+0x7f8b18,_game_gizactiondefs,192,GIZACTIONDEF_PC[24]
 0x7f8c44,_bombgen_gizmotype_id,4,i32
 0x7f8cc4,_force_gizmotype_id,,i32
 0x7f8cc8,_GizForceSFX_load_version,,
