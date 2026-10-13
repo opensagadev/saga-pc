@@ -51,8 +51,8 @@ void __cdecl NuRndrClear(i32 clear_flags, i32 bg_colour, f32 alpha) {
     currentScene.clear_flags_08 |= clear_flags;
     currentScene.bg_colour = bg_colour;
     NuVpGetPosition2(&currentScene.unknown_14, &currentScene.unknown_18);
-    currentScene.calc_1c = (f32)(0.0625 * vpCurrent.width / ((f64)DebrisGlassTextureWidth / PS2_VREZ_W));
-    currentScene.calc_20 = (f32)(0.0625 * vpCurrent.height / ((f64)DebrisGlassTextureHeight / PS2_VREZ_H));
+    currentScene.calc_1c = (f32)(0.0625 * vpCurrent.width / ((f64)PS2_REZ_W / PS2_VREZ_W));
+    currentScene.calc_20 = (f32)(0.0625 * vpCurrent.height / ((f64)PS2_REZ_H / PS2_VREZ_H));
 }
 
 void NuRndrAxisArrows(NUVEC *position, void *unused1, f32 length, NUMTL *material) {
@@ -74,10 +74,10 @@ static __forceinline f32 NuFdiv(f32 a, f32 b) {
 }
 
 void __cdecl NuVpGetPosition2(f32 *x, f32 *y) {
-    *x = NuFdiv((f32)vpCurrent.x * 0.0625f - ((f32)PS2_VCNTR_X - (f32)(DebrisGlassTextureWidth >> 1)),
-                NuFdiv((f32)DebrisGlassTextureWidth, (f32)PS2_VREZ_W));
-    *y = NuFdiv((f32)vpCurrent.y * 0.0625f - ((f32)PS2_VCNTR_Y - (f32)(DebrisGlassTextureHeight >> 1)),
-                NuFdiv((f32)DebrisGlassTextureHeight, (f32)PS2_VREZ_H));
+    *x = NuFdiv((f32)vpCurrent.x * 0.0625f - ((f32)PS2_VCNTR_X - (f32)(PS2_REZ_W >> 1)),
+                NuFdiv((f32)PS2_REZ_W, (f32)PS2_VREZ_W));
+    *y = NuFdiv((f32)vpCurrent.y * 0.0625f - ((f32)PS2_VCNTR_Y - (f32)(PS2_REZ_H >> 1)),
+                NuFdiv((f32)PS2_REZ_H, (f32)PS2_VREZ_H));
 }
 
 void __cdecl NuDisplayListResetStateCache(NURNDRLIBSTATE *state) {
@@ -859,6 +859,13 @@ u8 __cdecl RenderPostClampBytePc(i32 minimum_unused, i32 maximum_unused, f32 val
 
 #include <float.h>
 void __cdecl NuRndrStateSetSpecularLightEx(const NUVEC *, const NUMTX *, const NUVEC *);
+i32 __cdecl NuRndrSetViewMtx(NUMTX *view_projection, NUMTX *viewport_clip, NUMTX *scissor_clip) {
+    return 0;
+}
+
+void __cdecl FaceYDirStream(i32 angle) {
+}
+
 i32 __cdecl NuRndrSetSpecularLightPS(const NUVEC *direction, const NUVEC4 *intensity) {
     static NUVEC rndrstream_specular_dir = {0.0f, 0.0f, 1.0f};
     static NUVEC4 rndrstream_specular_intensity = {1.0f, 1.0f, 1.0f, 1.0f};
@@ -1084,14 +1091,14 @@ void __cdecl NuRndrQuadBufferInitPc(void) {
     vertices[0].x = 0.0f;
     vertices[0].y = 0.0f;
     vertices[0].z = 1.0f;
-    vertices[1].x = (f32)(u32)DebrisGlassTextureWidth;
+    vertices[1].x = (f32)(u32)PS2_REZ_W;
     vertices[1].y = 0.0f;
     vertices[1].z = 1.0f;
-    vertices[2].x = (f32)(u32)DebrisGlassTextureWidth;
-    vertices[2].y = (f32)(u32)DebrisGlassTextureHeight;
+    vertices[2].x = (f32)(u32)PS2_REZ_W;
+    vertices[2].y = (f32)(u32)PS2_REZ_H;
     vertices[2].z = 1.0f;
     vertices[3].x = 0.0f;
-    vertices[3].y = (f32)(u32)DebrisGlassTextureHeight;
+    vertices[3].y = (f32)(u32)PS2_REZ_H;
     vertices[3].z = 1.0f;
     vertices[3].attribute_bits = 0x4b000000;
     vertices[2].attribute_bits = 0x4b000000;

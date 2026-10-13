@@ -319,10 +319,15 @@ void __cdecl NuCameraSetProjectionMtx(NUMTX *out, f32 fov, f32 aspect, f32 near_
     pmtx.m21 = NuCameraProjectionGlobalOffsetY;
 }
 
+extern f32 VisibilityAlternateWidthPc;
+extern i32 NuCameraScissorWidthPc;
+extern i32 NuCameraScissorHeightPc;
+i32 __cdecl NuRndrSetViewMtx(NUMTX *view_projection, NUMTX *viewport_clip, NUMTX *scissor_clip);
+void __cdecl FaceYDirStream(i32 angle);
+
 void __cdecl NuCameraSetEx(NUCAMERA *camera, i32 fast) {
     global_camera = *camera;
-    NuAtan2D(-global_camera.mtx.m20, -global_camera.mtx.m22);
-    STUBBED_NAMED("NuCameraSetEx: FaceYDirStream at 0x005ff830");
+    FaceYDirStream(NuAtan2D(-global_camera.mtx.m20, -global_camera.mtx.m22));
     if (fast == 0)
         NuVpUpdate();
     if (NuCameraMode == 0) {
@@ -379,7 +384,8 @@ void __cdecl NuCameraSetEx(NUCAMERA *camera, i32 fast) {
         volatile f32 reciprocal;
         zy = NuTrigTable[(angle >> 1) & 0x7fff] / NuTrigTable[((angle + 0x4000) >> 1) & 0x7fff];
         zx = zy / global_camera.aspect;
-        STUBBED_NAMED("NuCameraSetEx: scissor frustum ratios");
+        VisibilityAlternateWidthPc = zx * NuCameraScissorWidthPc / PS2_REZ_W;
+        VisibilityAlternateHeightPc = zy * NuCameraScissorHeightPc / PS2_REZ_H;
         clip_planes.m02 = 0.0f;
         clip_planes.m12 = NuTrigTable[((angle + 0x4000) >> 1) & 0x7fff];
         clip_planes.m22 = NuTrigTable[(angle >> 1) & 0x7fff];
@@ -399,11 +405,16 @@ void __cdecl NuCameraSetEx(NUCAMERA *camera, i32 fast) {
         clip_planes.m01 = reciprocal;
         clip_planes.m21 = clip_planes.m20;
         clip_planes.m31 = 0.0f;
-        STUBBED_NAMED("NuCameraSetEx: frustum setup at 0x005d5500");
+        NuCameraBuildClipPlanes();
     }
-    STUBBED_NAMED("NuCameraSetEx: viewport/scissor render state submission");
-    STUBBED_NAMED("NuCameraSetEx: renderer flags, viewport offsets and clip-mode synchronization");
-    STUBBED_NAMED("NuCameraSetEx: conditional renderer cache invalidation");
+    NuRndrSetViewMtx(&vpsmtx, &vpc_vport_mtx, &vpc_sci_mtx);
+    PCGlobalLightingState.specular_direction_missing = 1;
+    PCGlobalLightingState.specular_intensity_present = 0;
+    NuRndrSetSpecularLightPS(NULL, NULL);
+    NuRndrStateUpdateCameraState();
+    if (g_OcclusionManager.initialized != 0 && g_OcclusionManager.enabled != 0) {
+        g_OcclusionManager.current_set->queries_prepared = 0;
+    }
 }
 
 i32 __cdecl NuCameraClipTestExtentsAxisAligned(NUVEC *center, NUVEC *extent, f32 far_clip) {

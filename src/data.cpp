@@ -9522,6 +9522,12 @@ extern "C" {
 #pragma data_seg(".data$PS2_VREZ_H")
     i32 PS2_VREZ_H = 224;
 #pragma data_seg()
+#pragma data_seg(".data$NuCameraScissorWidthPc")
+    i32 NuCameraScissorWidthPc = 0x1000;
+#pragma data_seg()
+#pragma data_seg(".data$NuCameraScissorHeightPc")
+    i32 NuCameraScissorHeightPc = 0x1000;
+#pragma data_seg()
 
     i32 PlayerID[2] = {-1, -1};
     i16 PlayerList[8];
@@ -10374,12 +10380,6 @@ extern "C" {
 #pragma bss_seg()
 #pragma bss_seg(".bss$DebrisGlassV1")
     f32 DebrisGlassV1;
-#pragma bss_seg()
-#pragma bss_seg(".bss$DebrisGlassTextureWidth")
-    i32 DebrisGlassTextureWidth;
-#pragma bss_seg()
-#pragma bss_seg(".bss$DebrisGlassTextureHeight")
-    i32 DebrisGlassTextureHeight;
 #pragma bss_seg()
 #pragma bss_seg(".bss$PS2_VCNTR_X")
     i32 PS2_VCNTR_X;
@@ -17710,10 +17710,6 @@ extern "C" {
     NUSPECIALHANDLE RenderBackdropSpecialsPc[4];
 #pragma bss_seg()
 
-#pragma bss_seg(".bss$RenderBackgroundColoursPc")
-    i32 RenderBackgroundColoursPc[2];
-#pragma bss_seg()
-
 #pragma bss_seg(".bss$RenderBackdropScenePc")
     NUGSCN *RenderBackdropScenePc;
 #pragma bss_seg()
@@ -17846,9 +17842,6 @@ extern "C" {
 extern "C" {
 #pragma bss_seg(".bss$ScreenGrabNeededPc")
     u8 ScreenGrabNeededPc;
-#pragma bss_seg()
-#pragma bss_seg(".bss$ScreenPauseRenderTargetPc")
-    i32 ScreenPauseRenderTargetPc;
 #pragma bss_seg()
 #pragma bss_seg(".bss$ScreenPauseFadePc")
     f32 ScreenPauseFadePc;
@@ -18723,6 +18716,9 @@ extern "C" {
 #pragma bss_seg()
 #pragma bss_seg(".bss$VisibilityAbsoluteDepthPlanePc")
     NUPLANE VisibilityAbsoluteDepthPlanePc;
+#pragma bss_seg()
+#pragma bss_seg(".bss$VisibilityAlternateWidthPc")
+    f32 VisibilityAlternateWidthPc;
 #pragma bss_seg()
 #pragma bss_seg(".bss$VisibilityAlternateHeightPc")
     f32 VisibilityAlternateHeightPc;

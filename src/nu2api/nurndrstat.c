@@ -27,8 +27,8 @@ i32 __cdecl NuRndrStateUpdateCameraState(void) {
     render_state.projection_0164 = projection->m32;
     NuVpGetPosition2(&render_state.viewport_x, &render_state.viewport_y);
     NuVpGetSize2(&render_state.viewport_width, &render_state.viewport_height);
-    horizontal = (f64)DebrisGlassTextureWidth / 640.0;
-    vertical = (f64)DebrisGlassTextureHeight / 224.0;
+    horizontal = (f64)PS2_REZ_W / 640.0;
+    vertical = (f64)PS2_REZ_H / 224.0;
     render_state.viewport_x = (f32)(render_state.viewport_x * horizontal);
     render_state.viewport_width = (f32)(render_state.viewport_width * horizontal);
     render_state.viewport_y = (f32)(render_state.viewport_y * vertical);

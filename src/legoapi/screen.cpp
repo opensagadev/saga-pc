@@ -173,31 +173,29 @@ extern "C" void __cdecl DrawPauseScreenWipe(void) {
     NuRndrEndScene();
 }
 
-extern "C" i32 RenderBackgroundColoursPc[2];
 extern "C" void __cdecl NuCameraSet(NUCAMERA *);
 extern "C" void __cdecl BackDrop_Draw(f32, i32);
 extern "C" void __cdecl NoRender(void) {
     pNuCam->mtx = NuMtxSetIdentityTemplate;
     NuCameraSet(pNuCam);
     NuRndrBeginScene(1);
-    if (RenderBackgroundColoursPc[0] == RenderBackgroundColoursPc[1])
-        NuRndrClear(0xf00, RenderBackgroundColoursPc[0], 1.0f);
+    if (back_rgba[0] == back_rgba[1])
+        NuRndrClear(0xf00, back_rgba[0], 1.0f);
     else
-        NuRndrGradClear(0xf00, RenderBackgroundColoursPc[0], RenderBackgroundColoursPc[1], 1.0f);
+        NuRndrGradClear(0xf00, back_rgba[0], back_rgba[1], 1.0f);
     if (MainRenderTime != 1.0f)
         BackDrop_Draw((f32)(1.0f - MainRenderTime), 0);
     NuRndrEndScene();
 }
 
 extern "C" u8 ScreenGrabNeededPc;
-extern "C" i32 ScreenPauseRenderTargetPc;
 extern "C" f32 ScreenPauseFadePc;
 extern "C" void __cdecl NuBackbufferCopy(i32 texture_id);
 extern "C" void __cdecl GrabStillScreen(void) {
     if (ScreenGrabNeededPc != 0) {
         ScreenGrabNeededPc = 0;
         NuRndrBeginScene(1);
-        NuBackbufferCopy(ScreenPauseRenderTargetPc);
+        NuBackbufferCopy(pause_rt);
         NuRndrEndScene();
         ScreenPauseFadePc = 0.0f;
     }

@@ -9105,7 +9105,6 @@ extern "C" {
     extern NUGSCN *things_scene;
     extern i32 DrawCharIconFindPc;
     extern NUSPECIALHANDLE RenderBackdropSpecialsPc[4];
-    extern i32 RenderBackgroundColoursPc[2];
     extern NUGSCN *RenderBackdropScenePc;
     extern void(__cdecl *RenderBackdropAlphaFnPc)(f32 *);
     extern u16 SURFACEBITS_NODUST;
@@ -9313,7 +9312,6 @@ extern "C" {
     void __cdecl edppStartPage(i32);
     void __cdecl Particles_Start(WORLDINFO *);
     extern u8 ScreenGrabNeededPc;
-    extern i32 ScreenPauseRenderTargetPc;
     extern f32 ScreenPauseFadePc;
     extern NUGSCN *EdppPageScenesPc[8];
     extern i32 EdppUseMemcardPc;
@@ -10472,8 +10470,6 @@ extern OCCLUSIONMANAGER g_OcclusionManager;
     i32 __cdecl NuDisplayListAddRenderScene(void);
     void __cdecl NuVpGetPosition2(f32 *x, f32 *y);
     extern i32 sceneParametersCount;
-    extern i32 DebrisGlassTextureWidth;
-    extern i32 DebrisGlassTextureHeight;
     i32 __cdecl NuRndrBeginScene(i32 begin_flags);
     void __cdecl NuRndrClear(i32 clear_flags, i32 bg_colour, f32 alpha);
     void __cdecl NuRndrGradClear(i32 clear_flags, i32 top_colour, i32 bottom_colour, f32 alpha);
