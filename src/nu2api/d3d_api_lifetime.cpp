@@ -1,5 +1,10 @@
 #include "saga.h"
 
+extern "C" {
+    void __cdecl PCGraphicsReleaseFramebuffers(void);
+    void __cdecl PCGraphicsRestoreFramebuffers(void);
+}
+
 extern "C" void __cdecl PcFreeApiCallBuffer(void) {
     if (PcApiCallBuffer != NULL)
         NuFree(PcApiCallBuffer, ".\\d3dApiCalls.cpp", 0x451);
@@ -20,15 +25,15 @@ extern "C" void __cdecl PcRendererShutdown(i32 unused) {
         PCDeviceSetTexture(1, NULL);
         PCDeviceSetTexture(2, NULL);
         PCDeviceSetTexture(3, NULL);
-        STUBBED_NAMED("void action6e5590(0,0,0,0) at6df113");
-        STUBBED_NAMED("void action6e5590(1,0,0,0) at6df120");
-        STUBBED_NAMED("void action6e5590(2,0,0,0) at6df130");
-        STUBBED_NAMED("void action6e5590(3,0,0,0) at6df13d");
+        PCDeviceSetStreamSourcePc(0, NULL, 0, 0);
+        PCDeviceSetStreamSourcePc(1, NULL, 0, 0);
+        PCDeviceSetStreamSourcePc(2, NULL, 0, 0);
+        PCDeviceSetStreamSourcePc(3, NULL, 0, 0);
     }
-    STUBBED_NAMED("void action605bd0 at6df145");
+    PCGraphicsReleaseFramebuffers();
     PCDeviceBackend.ReleaseDefaultPoolResources();
-    STUBBED_NAMED("void action5fb960 at6df154");
-    STUBBED_NAMED("void action5f85a0 at6df159");
+    PC_EFFECT_SURFACE_PC::ReleaseResources();
+    PCGraphicsReleaseEffectTextures();
     STUBBED_NAMED("void action401860 at6df15e");
     STUBBED_NAMED("void action5fa220 at6df163");
     STUBBED_NAMED("void action600bb0 at6df168");
@@ -40,6 +45,28 @@ extern "C" void __cdecl PcRendererShutdown(i32 unused) {
     STUBBED_NAMED("void action5f8fb0 at6df186");
     STUBBED_NAMED("void action631230 at6df18b");
     STUBBED_NAMED("void tail action74ed40 at6df190");
+}
+
+extern "C" void __cdecl PCGraphicsRecreateResources(i32 reset_available) {
+    PCDeviceBackend.RestoreDefaultPoolResources();
+    if (reset_available != 0) {
+        STUBBED_NAMED("void action5c3900 at6dfe33");
+        STUBBED_NAMED("void action5658b0(PS2_REZ_W,PS2_REZ_H) at6dfe45");
+    }
+    PCGraphicsRestoreEffectTextures(reset_available == 1);
+    PC_EFFECT_SURFACE_PC::RestoreResources();
+    PCGraphicsRestoreFramebuffers();
+    STUBBED_NAMED("void action600bc0 at6dfe68");
+    STUBBED_NAMED("void action5f9e60 at6dfe6d");
+    STUBBED_NAMED("NuDebrisCreateVertexBuffersPc at6dfe72 (private particle helper)");
+    STUBBED_NAMED("void action659150 at6dfe77");
+    STUBBED_NAMED("void action401850 at6dfe7c");
+    STUBBED_NAMED("void action5f8fc0 at6dfe81");
+    STUBBED_NAMED("void action6028b0 at6dfe86");
+    PCDeviceResetState();
+    STUBBED_NAMED("void action631250 at6dfe90");
+    STUBBED_NAMED("void action74ed60 at6dfe95");
+    STUBBED_NAMED("void tail action60a410 at6dfe9b");
 }
 
 extern "C" void __cdecl PcDestroyPlatform(void) {

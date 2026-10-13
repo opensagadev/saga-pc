@@ -538,7 +538,6 @@ u32 __thiscall PC_DEVICE_BACKEND_PC::FindMode(u32 width, u32 height, u32 refresh
 
 extern "C" {
     i32 __cdecl PCGraphicsPrepareVendor();
-    void __cdecl PCGraphicsResetResources(i32 reset_available);
     void __cdecl PCGraphicsRecreateResources(i32 reset_available);
     void __cdecl PCDeviceEvictManagedResources();
     void __cdecl PCDeviceSetSoftwareVertexProcessing(BOOL enabled);
@@ -664,9 +663,9 @@ void __thiscall PC_DEVICE_BACKEND_PC::CreateOrResetDevice(i32 reposition_window)
         if (cooperative < 0) {
             if (cooperative == static_cast<HRESULT>(0x88760869)) {
                 PCDeviceEvictManagedResources();
-                STUBBED_NAMED("CreateOrResetDevice: ResetResources(0) at PC 0x6e3e6c");
+                PcRendererShutdown(0);
                 if (view->methods->reset(view, &parameters) >= 0) {
-                    STUBBED_NAMED("CreateOrResetDevice: RecreateResources(0) at PC 0x6e3e8e");
+                    PCGraphicsRecreateResources(0);
                     rebuild_resources = 0;
                 }
             } else if (cooperative == static_cast<HRESULT>(0x88760868)) {
@@ -676,13 +675,13 @@ void __thiscall PC_DEVICE_BACKEND_PC::CreateOrResetDevice(i32 reposition_window)
                 SendMessageA(reinterpret_cast<HWND>(PCInputInstance_candidate), WM_CLOSE, 0, 0);
         } else {
             PCDeviceEvictManagedResources();
-            STUBBED_NAMED("CreateOrResetDevice: ResetResources(1) at PC 0x6e3ebc");
+            PcRendererShutdown(1);
             view->methods->reset(view, &parameters);
             PS2_REZ_W = parameters.width;
             PS2_REZ_H = parameters.height;
             PS2_VCNTR_X = PS2_REZ_W / 2;
             PS2_VCNTR_Y = PS2_REZ_H / 2;
-            STUBBED_NAMED("CreateOrResetDevice: RecreateResources(1) at PC 0x6e3f00");
+            PCGraphicsRecreateResources(1);
             rebuild_resources = 0;
         }
     }

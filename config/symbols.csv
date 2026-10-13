@@ -6409,6 +6409,7 @@ address    , symbol                                                         , si
 0x006dfd40,_PCFramePresentNativePc,36,"i32 __cdecl(i32,i32)"
 0x6dfdc0,_PcFreeApiCallBuffer,45,void __cdecl(void)
 0x6dfdf0,_PcDestroyPlatform,40,void __cdecl(void)
+0x6dfe20,_PCGraphicsRecreateResources,128,void __cdecl(i32)
 0x6dff80,?Shutdown@PC_NATIVE_DEBUG_STATE_PC@@QAEXXZ,31,void __thiscall(void)
 0x6dffc0,?InitializeHeader@PC_NATIVE_DEBUG_STATE_PC@@QAEXXZ,104,void __thiscall(void)
 0x006e0030,_PCNativeDebugPrint,72,"void __cdecl (PC_NATIVE_DEBUG_STATE_PC *, const char *, ...)"
