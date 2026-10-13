@@ -254,7 +254,7 @@ void __cdecl NuRndrParticleGroup(DEBRIS_PARTICLE_CHUNK_PC *chunks, DEBRIS_PART_H
 }
 /* Append to the current nuparticle_runtime.c. PC platform implementation of
  * the source-facing NuInitDebrisRenderer family; no Android GL operations. */
-static void __cdecl NuDebrisCreateVertexBuffersPc(void) {
+void __cdecl NuDebrisCreateVertexBuffersPc(void) {
     i32 index;
     NuDebrisCurrentBufferIndex = 0;
     NuDebrisUseSystemMemory = 0;
@@ -264,6 +264,14 @@ static void __cdecl NuDebrisCreateVertexBuffersPc(void) {
         PCDeviceCreateVertexBuffer(NuDebrisVertexBufferSize, 0x208, 0, 0, &NuDebrisVertexBuffers[index]);
     PCDeviceLockVertexBuffer(0, NuDebrisVertexBufferSize, &NuDebrisVertexData, 0x2000,
                              NuDebrisVertexBuffers[NuDebrisCurrentBufferIndex]);
+}
+
+void __cdecl NuDebrisReleaseVertexBuffersPc(void) {
+    PC_BUFFER_RESOURCE_PC **buffer = NuDebrisVertexBuffers;
+    do {
+        PCDeviceReleaseTexture((PC_TEXTURE_RESOURCE_PC **)buffer);
+        ++buffer;
+    } while (buffer != NuDebrisVertexBuffers + 4);
 }
 
 void __cdecl NuInitDebrisRenderer(VARIPTR *buffer, VARIPTR buffer_end) {

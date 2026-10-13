@@ -4693,6 +4693,7 @@ address    , symbol                                                         , si
 0x5ff830,_FaceYDirStream,1,void __cdecl(i32)
 0x5ff840,_NuRndrSetSpecularLightPS,861,"i32 __cdecl(const NUVEC *, const NUVEC4 *)"
 0x005ffba0,_NuDebrisCreateVertexBuffersPc,108,void __cdecl(void); original-TU private helper
+0x005ffc10,_NuDebrisReleaseVertexBuffersPc,28,void __cdecl(void)
 0x5ffc30,_NuDebrisRendererFlushBuffers,78,void __cdecl (void)
 0x5ffc80,_NuDebrisRendererNextBuffer,185,i32 __cdecl (void)
 0x5ffd40,_NuRndrSetParticleRotation,10,void __cdecl (NUMTX *)
