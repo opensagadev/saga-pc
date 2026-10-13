@@ -135,7 +135,7 @@ static void NuMainUpdateFrame(WORLDINFO *world, i32 *frame_flag) {
     other_level_override = -1;
     Shadow_SetMode();
     STUBBED_NAMED("NuMainUpdateFrame: GizmoPickups_SetOnOff at 0x0046c7d0");
-    STUBBED_NAMED("NuMainUpdateFrame: DoInput(WORLD) at 0x0054b0b0");
+    DoInput(WORLD);
     if (memcard_autosaveenabled != 0 && memcard_autosavedisabled != 0 &&
         (world == NULL || world->area == NULL || (world->area->flags & 2) == 0) && NewMode == 0 && NewLData == NULL &&
         FadeSys.fade == 0.0f && editor_active == 0 &&
