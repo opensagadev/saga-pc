@@ -696,6 +696,7 @@ i32 __cdecl NuStringTableLoadCSV(char *filepath, VARIPTR *buf, VARIPTR buf_end, 
             while (NuFParGetLine(parser) != 0) {
                 ++max_strings;
             }
+            NuFreeFPar(parser);
         }
         NuFileClose(mem_file);
     }
@@ -807,6 +808,7 @@ i32 __cdecl NuStringTableLoadCSV(char *filepath, VARIPTR *buf, VARIPTR buf_end, 
             bank->strings = strings;
             bank->string_count = i;
             bank->max_strings = max_strings;
+            NuFreeFPar(parser);
         }
         NuFileClose(mem_file);
     }
@@ -840,6 +842,7 @@ i32 __cdecl NuStringTableLoadTXT(char *filepath, VARIPTR *buf, VARIPTR buf_end) 
             while (NuFParGetLine(parser) != 0) {
                 ++max_strings;
             }
+            NuFreeFPar(parser);
         }
         NuFileClose(mem_file);
     }
@@ -899,6 +902,7 @@ i32 __cdecl NuStringTableLoadTXT(char *filepath, VARIPTR *buf, VARIPTR buf_end) 
             bank->strings = strings;
             bank->string_count = i;
             bank->max_strings = max_strings;
+            NuFreeFPar(parser);
         }
         NuFileClose(mem_file);
     }
@@ -992,6 +996,7 @@ void __cdecl NuStringFilterLoad(char *path, VARIPTR *buf, VARIPTR buf_end) {
                     ++count;
                 }
             } while (NuFParGetLine(parser) != 0);
+            NuFreeFPar(parser);
         }
         NuFileClose(file);
     }
@@ -1027,6 +1032,7 @@ void __cdecl NuStringFilterLoad(char *path, VARIPTR *buf, VARIPTR buf_end) {
                     ++i;
                 }
             } while (NuFParGetLine(parser) != 0 && i < count);
+            NuFreeFPar(parser);
         }
         NuFileClose(file);
     }

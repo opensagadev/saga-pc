@@ -405,7 +405,7 @@
     "src/nu2api/nuspecial.c": "a2cf4259bcb87896fe3d3792258d5de1957befcf16f6fd2acdc8976d82569ea2",
     "src/nu2api/nuspline.c": "4fca834d595d001f94487843973d0ec517f0009b800958c71cd4a03a82f76933",
     "src/nu2api/nustateanim.c": "075aa9b9759dc0563d76c7a6c1a3bdcddc10ea95b2e48b630a6cd1b91e08ac5f",
-    "src/nu2api/nustring.c": "5465b360babc83fe0b09b838a382f7ee5f70410b47552dedf8fbe564a97bbe16",
+    "src/nu2api/nustring.c": "1efd51bbdb2f9c47ebb3f52ed9b9e46a0e98cf941bfb38e1b174dd3819d30ba4",
     "src/nu2api/nuterrain.c": "42936edd2d3ed5e279ed24ca89383e4e1f76aa053c3034f26a35f559e1b30ad7",
     "src/nu2api/nutex.c": "825414218218faac6a8707345c8b2717046735b7406dcaf4e4a48ce01a9afd66",
     "src/nu2api/nutexanim.c": "51d58c7b50f1d98c9e7fd950d575d096abd57cd62f05c24f344414f078d6e4ab",
@@ -739,7 +739,7 @@
     "build/obj/nu2api/nuspline.obj": "2c0c0307ea365154859feb9b75a2656f43e1653e62253756e9f561e8f1c018dc",
     "build/obj/nu2api/nustateanim.obj": "ad85540cee4bf204618d5364f3e084a5d403176c5ba9fad216179d4e4121105a",
     "build/obj/nu2api/nustream.obj": "ed8c3a930c40e8bf1fdcd2dd84ac3962937fc66dfaf8c25e7e3acf2b89f7605f",
-    "build/obj/nu2api/nustring.obj": "8a1c44cfda69bbfa493ccf04e54f46c680a309d96cc28c34d397805786e2aa87",
+    "build/obj/nu2api/nustring.obj": "f2784ea9f02e60003c456ff1e6218a4f99dee510584f2d7eaa82687a88af7403",
     "build/obj/nu2api/nuterrain.obj": "6d6a1b837dae01b8a97c18bce432cf0563fda35be33edfa2d961a0a66fe25753",
     "build/obj/nu2api/nutex.obj": "3dda0eadae6e401989de20ca53604420b1ce912b1b3af24ea9d3f1e6867665f9",
     "build/obj/nu2api/nutex_pc.obj": "26f54898fed13dddd31828cab3e5a4415f783199a955bdeda21c76181dc675d3",
@@ -36321,17 +36321,17 @@
       "objects": [
         {
           "unit": "src/nu2api/nustring.c",
-          "base_size": 1365,
+          "base_size": 1378,
           "exact_match": false,
           "target_sha256": "50740a12bfd09b4db296ba2b02a0262541bb757b73d3f74486cfe06a9c997a37",
-          "base_sha256": "9f4d59e4a53762d0a2803cb1120de4c9dbd544ba63991082a2be4423ce5bef5f",
-          "relocation_count": 29,
+          "base_sha256": "75d330cc2b3e2a4a660b2833f526edaf44dde5aeff5ba0afec423d6d7f5b839c",
+          "relocation_count": 31,
           "comparison_unit": "004fda90-da3283fab0f5",
-          "objdiff_percent": 44.414364
+          "objdiff_percent": 43.118786
         }
       ],
       "status": "different",
-      "objdiff_percent": 44.414364
+      "objdiff_percent": 43.118786
     },
     {
       "name": "NuStringTableLoadTXT",
@@ -36345,17 +36345,17 @@
       "objects": [
         {
           "unit": "src/nu2api/nustring.c",
-          "base_size": 740,
+          "base_size": 749,
           "exact_match": false,
           "target_sha256": "af0113283cfed0537ab79fed929c9ab28241479cdb1452a29d348f9cc056c7a2",
-          "base_sha256": "ef5ec54c0b123ee6062c9e5bd597eb936d20885aa5024958e6bb6fa4d0ef1617",
-          "relocation_count": 22,
+          "base_sha256": "bb2f94798b1704bd5edbd3d262899626893868bb63490a0566976cbb0dce8f33",
+          "relocation_count": 24,
           "comparison_unit": "004fdf80-d10628479472",
-          "objdiff_percent": 62.94035
+          "objdiff_percent": 59.582455
         }
       ],
       "status": "different",
-      "objdiff_percent": 62.94035
+      "objdiff_percent": 59.582455
     },
     {
       "name": "NuStringFilterLoad",
@@ -36369,17 +36369,17 @@
       "objects": [
         {
           "unit": "src/nu2api/nustring.c",
-          "base_size": 529,
+          "base_size": 558,
           "exact_match": false,
           "target_sha256": "b29e0bec26d66b38cfd04a6f6fff7fd2c6ba36eda5a7f970a6a2a3b39ada70d7",
-          "base_sha256": "09bef7856d8d6d68cb1bff6bdee258b624dddc625770a3b6d4eba70532ba34a0",
-          "relocation_count": 22,
+          "base_sha256": "60951325fa63a0a57302085411ddc357d343ed89a1d119e7a9f5362a4b94fe18",
+          "relocation_count": 26,
           "comparison_unit": "004fe390-7682e6d02869",
-          "objdiff_percent": 0.17368421
+          "objdiff_percent": 41.105263
         }
       ],
       "status": "different",
-      "objdiff_percent": 0.17368421
+      "objdiff_percent": 41.105263
     },
     {
       "name": "bgProcDataOversize",
@@ -366004,10 +366004,10 @@
     "mapped_code_bytes": 2131104,
     "matched_code_bytes": 384602,
     "matching_percent": 11.079652666506494,
-    "fuzzy_coverage_percent": 35.94712121868785,
+    "fuzzy_coverage_percent": 35.95355197425446,
     "mapped_functions": 7367,
     "matched_functions": 3361,
-    "objdiff_fuzzy_percent": 73.18586,
+    "objdiff_fuzzy_percent": 73.19894,
     "objdiff_total_code": 1705813,
     "image_bytes": 40067072,
     "mapped_bytes": 3030215,
@@ -366806,7 +366806,7 @@
       "metadata_sha256": "8ac33bf43fa7d2cc68c6380b340a8fe5466e906e828b1afb919b82fb9677f047",
       "header_path": "src/saga.h",
       "header_sha256": "4708eea5b52b9274657e81bf6b490a610149518f6031141c7ec500489f617c81",
-      "geometry_object_sha256": "3b722b00ac026b31df5c9f90adc40a01015164831b1fc89be7a798b9f20f6a1e",
+      "geometry_object_sha256": "b8d671d0d86c2e50f04e99b3554b62547f94337648b3ab70cba30891cdc8201b",
       "toolchain_sha256": "489d0782638d8033137cdb2834462416111945cbfa073147820e314b8576b95b",
       "implementation_sha256": "9ad7521230f06fde31f0771b10bd001037ea32d2def455913a7f391f05dede9d",
       "headers": {
