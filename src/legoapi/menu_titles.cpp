@@ -1,3 +1,4 @@
+#include <string.h>
 #include "saga.h"
 
 void __cdecl legoSetMusicVolume(f32);
@@ -84,4 +85,66 @@ extern "C" void __cdecl MenuUpdateTitles(MENU *menu) {
         NewMenu(1, saveload_savepresent != 0, -1);
     else
         NewMenu(22, 0, -1);
+}
+
+extern "C" void __cdecl MenuPcStringsInit(void) {
+    MENU_PC_STRING_ENTRY *entry = MenuPcStringTable827940;
+    switch (NuLanguageGet()) {
+        case 2:
+            entry = MenuPcStringTable827a80;
+            break;
+        case 3:
+            entry = MenuPcStringTable827e40;
+            break;
+        case 4:
+            entry = MenuPcStringTable827bc0;
+            break;
+        case 5:
+            entry = MenuPcStringTable827d00;
+            break;
+        case 8:
+            entry = MenuPcStringTable827f80;
+            break;
+        case 18:
+            entry = MenuPcStringTable827800;
+            break;
+    }
+    memset(MenuPcStrings, 0, sizeof(MenuPcStrings));
+    while (entry->text != NULL) {
+        MenuPcStrings[entry->id] = entry->text;
+        ++entry;
+    }
+    MenuPcStringsInitialized = 1;
+}
+
+extern "C" f32 MenuNewGameYPc;
+
+extern "C" void __cdecl MenuDrawNewGame(MENU *menu) {
+    i32 menu_alpha = (i32)((f32)MenuA * newgamealpha);
+    if (MenuLoadOccurred != 0 || newgame_menudrawoff != 0)
+        return;
+    f32 title_alpha;
+    if (GameTimer.time_elapsed < 3.5) {
+        title_alpha = 0.0f;
+    } else if (GameTimer.time_elapsed < 4.0f) {
+        i32 angle = (i32)((GameTimer.time_elapsed - 3.5) * 16384.0 * 2.0) >> 1;
+        title_alpha = NuTrigTable[angle & 0x7fff];
+    } else {
+        title_alpha = 1.0f;
+    }
+    menu->draw_y = MenuNewGameYPc - menu->centre_offset;
+    i32 alpha = (i32)((f32)menu_alpha * title_alpha);
+    DrawMenuEntryEx(menu, TTab[TextIdPc880824], alpha);
+    DrawMenuEntryEx(menu, TTab[TextIdPc8808fc], alpha);
+    DrawMenuEntryEx(menu, TTab[TextIdPc880850], alpha);
+    DrawMenuEntryEx(menu, TTab[TextIdPc880bc4], alpha);
+    if (!MenuPcStringsInitialized)
+        MenuPcStringsInit();
+    DrawMenuEntryEx(menu, (char *)MenuPcStrings[18], alpha);
+    if (!MenuPcStringsInitialized)
+        MenuPcStringsInit();
+    DrawMenuEntryEx(menu, (char *)MenuPcStrings[29], alpha);
+    if (!MenuPcStringsInitialized)
+        MenuPcStringsInit();
+    DrawMenuEntryEx(menu, (char *)MenuPcStrings[1], alpha);
 }

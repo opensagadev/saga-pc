@@ -1506,7 +1506,8 @@ typedef struct menu_s {
     u32 action_08_pressed;
     i32 draw_item;
     f32 item_scale;
-    u8 unknown_0094[0x4c];
+    f32 draw_x, draw_y, draw_z, draw_offset, centre_offset;
+    u8 unknown_00a8[0x38];
 } MENU;
 STATIC_ASSERT(sizeof(MENU) == 0xe0);
 STATIC_ASSERT(offsetof(MENU, selected_column) == 0x08);
@@ -1522,6 +1523,15 @@ STATIC_ASSERT(offsetof(MENU, confirm_pressed) == 0x64);
 STATIC_ASSERT(offsetof(MENU, cancel_pressed) == 0x68);
 STATIC_ASSERT(offsetof(MENU, draw_item) == 0x8c);
 STATIC_ASSERT(offsetof(MENU, item_scale) == 0x90);
+STATIC_ASSERT(offsetof(MENU, draw_y) == 0x98);
+STATIC_ASSERT(offsetof(MENU, centre_offset) == 0xa4);
+
+typedef struct MENU_PC_STRING_ENTRY {
+    i32 id;
+    const char *text;
+} MENU_PC_STRING_ENTRY;
+STATIC_ASSERT(sizeof(MENU_PC_STRING_ENTRY) == 8);
+STATIC_ASSERT(offsetof(MENU_PC_STRING_ENTRY, text) == 4);
 
 typedef struct menufninfo_s {
     i32 id;
@@ -10369,6 +10379,15 @@ extern OCCLUSIONMANAGER g_OcclusionManager;
                                 void (*draw_save_slots_fn)(MENU *, f32), i32 is_fade_enabled, i32 is_shadow_enabled);
     void __cdecl MenuReset(void);
     void __cdecl MenuEnterNewGame(MENU *menu);
+    void __cdecl MenuDrawNewGame(MENU *menu);
+    void __cdecl MenuPcStringsInit(void);
+    extern MENU_PC_STRING_ENTRY MenuPcStringTable827800[40], MenuPcStringTable827940[40];
+    extern MENU_PC_STRING_ENTRY MenuPcStringTable827a80[40], MenuPcStringTable827bc0[40];
+    extern MENU_PC_STRING_ENTRY MenuPcStringTable827d00[40], MenuPcStringTable827e40[40];
+    extern MENU_PC_STRING_ENTRY MenuPcStringTable827f80[40];
+    extern const char *MenuPcStrings[39];
+    extern i32 MenuPcStringsInitialized;
+    extern i16 TextIdPc880824, TextIdPc8808fc, TextIdPc880850, TextIdPc880bc4;
     void __cdecl MenuEnterOptions(MENU *menu);
     void __cdecl MenuUpdateOptions(MENU *menu);
     void __cdecl MenuDrawOptions(MENU *menu);

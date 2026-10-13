@@ -10338,11 +10338,11 @@ extern "C" {
     i32 opts_sfx_i;
     LEVELDATA_PC *TITLES_LDATA;
 
-    // STUBBED: Remaining PC callback bodies are not reconstructed; NULL slots keep them inactive.
-    // IDs, remembered cursors, and prompt flags use the 23-record PC table.
+    // STUBBED: Remaining PC callbacks, including Menu1 activation, are not reconstructed; NULL slots keep them
+    // inactive. IDs, remembered cursors, and prompt flags use the 23-record PC table.
     MENUFNINFO GameMenuInfo[23] = {
         {0, MenuEnterTitles, MenuDrawTitles, MenuUpdateTitles, NULL, -1, -1, 0, 0, 0, 0},
-        {1, MenuEnterNewGame, NULL, NULL, NULL, -1, -1, 0, 1, 0, 0},
+        {1, MenuEnterNewGame, MenuDrawNewGame, NULL, NULL, -1, -1, 0, 1, 0, 0},
         {2, NULL, NULL, NULL, NULL, -1, -1, 0, 0, 0, 0},
         {3, NULL, NULL, NULL, NULL, -1, -1, 0, 0, 0, 0},
         {4, MenuEnterOptions, MenuDrawOptions, MenuUpdateOptions, MenuExitOptions, 0, 0, 0, 1, 1, 0},
@@ -29746,4 +29746,303 @@ extern "C" {
 #pragma data_seg(".data$GameCamShakeOffsetSeekPc")
     f32 GameCamShakeOffsetSeekPc = 2.0f;
 #pragma data_seg()
+    // Native PC frontend strings: language-selected index/string tables.
+
+    extern const char MenuPcString75f0b0[5] = "Back";
+    extern const char MenuPcString75f2b4[7] = "Cancel";
+    extern const char MenuPcString75f2bc[3] = "OK";
+    extern const char MenuPcString75f2c0[3] = "No";
+    extern const char MenuPcString75f2c4[4] = "Yes";
+    extern const char MenuPcString76b274[4] = "Off";
+    extern const char MenuPcString76f660[3] = "On";
+    extern const char MenuPcString770fbc[5] = "Ende";
+    extern const char MenuPcString772c44[8] = "Tilbage";
+    extern const char MenuPcString772dd4[5] = "H\303\270j";
+    extern const char MenuPcString773210[5] = "Baja";
+    extern const char MenuPcString7733f0[8] = "Zur\303\274ck";
+    extern const char MenuPcString773568[5] = "Hoch";
+    extern const char MenuPcString77375c[9] = "Indietro";
+    extern const char MenuPcString773934[5] = "Alta";
+    extern const char MenuPcString77393c[6] = "Bassa";
+    extern const char MenuPcString773b98[7] = "Retour";
+    extern const char MenuPcString774bb4[4] = "Lav";
+    extern const char MenuPcString77565c[5] = "High";
+    extern const char MenuPcString775664[4] = "Low";
+    extern const char MenuPcString775b04[5] = "FSAA";
+    extern const char MenuPcString77601c[8] = "Kant-AA";
+    extern const char MenuPcString776024[22] = "Dynamisk lys-kvalitet";
+    extern const char MenuPcString77603c[9] = "Sl\303\270ring";
+    extern const char MenuPcString776048[10] = "Synsdybde";
+    extern const char MenuPcString776054[8] = "Skygger";
+    extern const char MenuPcString77605c[8] = "Ekstern";
+    extern const char MenuPcString776064[27] = "Anti-aliasing, fuld sk\303\246rm";
+    extern const char MenuPcString776080[18] = "Effektindstilling";
+    extern const char MenuPcString776094[63] =
+        "Du skal genstarte spillet for at \303\246ndringerne tr\303\246der i kraft.";
+    extern const char MenuPcString7760d4[13] = "Vend tilbage";
+    extern const char MenuPcString7760e4[16] = "Teksturkvalitet";
+    extern const char MenuPcString7760f4[36] = "Brug nuv\303\246rende grafikindstillinger";
+    extern const char MenuPcString776118[21] = "Fra sk\303\246rmopl\303\270sning";
+    extern const char MenuPcString776130[17] = "Forbedret grafik";
+    extern const char MenuPcString776144[19] = "St\303\270rrelsesforhold";
+    extern const char MenuPcString776158[17] = "Sk\303\246rmopdatering";
+    extern const char MenuPcString77616c[15] = "Billedfrekvens";
+    extern const char MenuPcString77617c[17] = "Sk\303\246rmopl\303\270sning";
+    extern const char MenuPcString776190[20] = "Grafikindstillinger";
+    extern const char MenuPcString7761a4[8] = "Nulstil";
+    extern const char MenuPcString7761ac[4] = "Fra";
+    extern const char MenuPcString7761b0[4] = "Til";
+    extern const char MenuPcString7761b4[9] = "Annuller";
+    extern const char MenuPcString7761c0[4] = "Nej";
+    extern const char MenuPcString7761c4[7] = "Afsl\303\245";
+    extern const char MenuPcString7761cc[9] = "Genoptag";
+    extern const char MenuPcString7761d8[7] = "Mellem";
+    extern const char MenuPcString7761e0[25] = "Vend tilbage til spillet";
+    extern const char MenuPcString7761fc[28] = "Slut og g\303\245 til Demo-menuen";
+    extern const char MenuPcString776218[19] = "Forlad til Windows";
+    extern const char MenuPcString77622c[7] = "Forlad";
+    extern const char MenuPcString776234[20] = "Suavizado de bordes";
+    extern const char MenuPcString776248[25] = "Calidad de luz din\303\241mica";
+    extern const char MenuPcString776264[25] = "Distorsi\303\263n de velocidad";
+    extern const char MenuPcString776280[21] = "Profundidad de campo";
+    extern const char MenuPcString776298[8] = "Sombras";
+    extern const char MenuPcString7762a0[22] = "Ajustado externamente";
+    extern const char MenuPcString7762b8[5] = "AAPC";
+    extern const char MenuPcString7762c0[19] = "Ajustes de efectos";
+    extern const char MenuPcString7762d4[62] = "Debes reiniciar el juego para que estos cambios tengan efecto";
+    extern const char MenuPcString776314[9] = "Revertir";
+    extern const char MenuPcString776320[19] = "Calidad de textura";
+    extern const char MenuPcString776334[25] = "Usar ajustes de actuales";
+    extern const char MenuPcString776350[12] = "R. pantalla";
+    extern const char MenuPcString77635c[20] = "Gr\303\241ficos mejorados";
+    extern const char MenuPcString776370[21] = "Relaci\303\263n de aspecto";
+    extern const char MenuPcString776388[25] = "Sincronizaci\303\263n vertical";
+    extern const char MenuPcString7763a4[23] = "Tasa de actualizaci\303\263n";
+    extern const char MenuPcString7763bc[12] = "Resoluci\303\263n";
+    extern const char MenuPcString7763c8[18] = "Ajustes de v\303\255deo";
+    extern const char MenuPcString7763dc[28] = "Restablecer predeterminados";
+    extern const char MenuPcString7763f8[9] = "Cancelar";
+    extern const char MenuPcString776404[4] = "S\303\255";
+    extern const char MenuPcString776408[7] = "Atr\303\241s";
+    extern const char MenuPcString776410[9] = "Rechazar";
+    extern const char MenuPcString77641c[8] = "Aceptar";
+    extern const char MenuPcString776424[9] = "Reanudar";
+    extern const char MenuPcString776430[16] = "Volver al juego";
+    extern const char MenuPcString776440[23] = "Salir al menu del demo";
+    extern const char MenuPcString776458[16] = "Salir a Windows";
+    extern const char MenuPcString776468[6] = "Salir";
+    extern const char MenuPcString776470[24] = "Qualit\303\240 luci dinamiche";
+    extern const char MenuPcString776488[20] = "Sfumatura movimento";
+    extern const char MenuPcString77649c[21] = "Profondit\303\240 di campo";
+    extern const char MenuPcString7764b4[12] = "Luminosit\303\240";
+    extern const char MenuPcString7764c0[6] = "Ombre";
+    extern const char MenuPcString7764c8[23] = "Impostato esternamente";
+    extern const char MenuPcString7764e0[8] = "Effetti";
+    extern const char MenuPcString7764e8[64] = "Devi riavviare il gioco affinch\303\251 le modifiche abbiano effetto.";
+    extern const char MenuPcString776528[11] = "Ripristina";
+    extern const char MenuPcString776534[17] = "Qualit\303\240 texture";
+    extern const char MenuPcString776548[25] = "Usa impostazioni attuali";
+    extern const char MenuPcString776564[15] = "Da risoluzione";
+    extern const char MenuPcString776574[19] = "Grafica migliorata";
+    extern const char MenuPcString776588[9] = "Rapporto";
+    extern const char MenuPcString776594[27] = "Sincronizzazione verticale";
+    extern const char MenuPcString7765b0[27] = "Frequenza di aggiornamento";
+    extern const char MenuPcString7765cc[20] = "Risoluzione schermo";
+    extern const char MenuPcString7765e0[6] = "Video";
+    extern const char MenuPcString7765e8[25] = "Impostazioni predefinite";
+    extern const char MenuPcString776604[4] = "S\303\254";
+    extern const char MenuPcString776608[8] = "Annulla";
+    extern const char MenuPcString776610[8] = "Accetta";
+    extern const char MenuPcString776618[9] = "Riprendi";
+    extern const char MenuPcString776624[6] = "Media";
+    extern const char MenuPcString77662c[15] = "Torna al gioco";
+    extern const char MenuPcString77663c[18] = "Esci al Menu Demo";
+    extern const char MenuPcString776650[16] = "Torna a Windows";
+    extern const char MenuPcString776660[5] = "Esci";
+    extern const char MenuPcString776668[16] = "Kantengl\303\244ttung";
+    extern const char MenuPcString776678[52] = "Qualit\303\244t der dynamischen Beleuchtungsverh\303\244ltnisse";
+    extern const char MenuPcString7766ac[27] = "Geschwindigkeitsunsch\303\244rfe";
+    extern const char MenuPcString7766c8[15] = "Sch\303\244rfentiefe";
+    extern const char MenuPcString7766d8[12] = "Bloomeffekt";
+    extern const char MenuPcString7766e4[9] = "Schatten";
+    extern const char MenuPcString7766f0[20] = "Extern konfiguriert";
+    extern const char MenuPcString776704[20] = "Effekteinstellungen";
+    extern const char MenuPcString776718[76] =
+        "Du musst das Spiel erneut starten, damit diese \303\204nderungen in Kraft treten.";
+    extern const char MenuPcString776764[9] = "Umkehren";
+    extern const char MenuPcString776770[23] = "Qualit\303\244t der Texturen";
+    extern const char MenuPcString776788[33] = "Aktuelle Einstellungen verwenden";
+    extern const char MenuPcString7767ac[11] = "Aufl\303\266sung";
+    extern const char MenuPcString7767b8[18] = "Erh\303\266hte Grafiken";
+    extern const char MenuPcString7767cc[18] = "Seitenverh\303\244ltnis";
+    extern const char MenuPcString7767e0[19] = "Vertikales Synchr.";
+    extern const char MenuPcString7767f4[22] = "Bildwiederholfrequenz";
+    extern const char MenuPcString77680c[21] = "Bildschirmaufl\303\266sung";
+    extern const char MenuPcString776824[20] = "Grafikeinstellungen";
+    extern const char MenuPcString776838[32] = "Zur\303\274cksetzen auf Standardwerte";
+    extern const char MenuPcString776858[4] = "Aus";
+    extern const char MenuPcString77685c[4] = "Ein";
+    extern const char MenuPcString776860[10] = "Abbrechen";
+    extern const char MenuPcString77686c[5] = "Nein";
+    extern const char MenuPcString776874[3] = "Ja";
+    extern const char MenuPcString776878[9] = "Ablehnen";
+    extern const char MenuPcString776884[9] = "Annehmen";
+    extern const char MenuPcString776890[11] = "Fortsetzen";
+    extern const char MenuPcString77689c[7] = "Mittel";
+    extern const char MenuPcString7768a4[7] = "Gering";
+    extern const char MenuPcString7768ac[18] = "Zur\303\274ck zum Spiel";
+    extern const char MenuPcString7768c0[30] = "Schlie\303\237en und zum Demo-Men\303\274";
+    extern const char MenuPcString7768e0[19] = "Zur\303\274ck zu Windows";
+    extern const char MenuPcString7768f4[20] = "Lissage des ar\303\252tes";
+    extern const char MenuPcString776908[28] = "Qualit\303\251 lumi\303\250re dynamique";
+    extern const char MenuPcString776924[24] = "Flou (effet de vitesse)";
+    extern const char MenuPcString77693c[21] = "Distance d'affichage";
+    extern const char MenuPcString776954[12] = "Luminosit\303\251";
+    extern const char MenuPcString776960[7] = "Ombres";
+    extern const char MenuPcString776968[19] = "D\303\251fini en externe";
+    extern const char MenuPcString77697c[21] = "Param\303\250tres d'effets";
+    extern const char MenuPcString776998[71] =
+        "Vous devez red\303\251marrer le jeu pour que ces changements prennent effet.";
+    extern const char MenuPcString7769e0[9] = "Inverser";
+    extern const char MenuPcString7769ec[18] = "Qualit\303\251 Textures";
+    extern const char MenuPcString776a00[33] = "Utiliser les param\303\250tres actuels";
+    extern const char MenuPcString776a24[19] = "R\303\251solution \303\251cran";
+    extern const char MenuPcString776a38[23] = "Graphismes am\303\251lior\303\251s";
+    extern const char MenuPcString776a50[7] = "Format";
+    extern const char MenuPcString776a58[26] = "Synchronisation verticale";
+    extern const char MenuPcString776a74[26] = "Taux de rafra\303\256chissement";
+    extern const char MenuPcString776a90[12] = "R\303\251solution";
+    extern const char MenuPcString776a9c[19] = "Param\303\250tres vid\303\251o";
+    extern const char MenuPcString776ab0[24] = "Param\303\250tres par d\303\251faut";
+    extern const char MenuPcString776ac8[5] = "Sans";
+    extern const char MenuPcString776ad0[5] = "Avec";
+    extern const char MenuPcString776ad8[8] = "Annuler";
+    extern const char MenuPcString776ae0[4] = "Non";
+    extern const char MenuPcString776ae4[4] = "Oui";
+    extern const char MenuPcString776ae8[8] = "Refuser";
+    extern const char MenuPcString776af0[9] = "Accepter";
+    extern const char MenuPcString776afc[10] = "Reprendre";
+    extern const char MenuPcString776b08[8] = "Elev\303\251e";
+    extern const char MenuPcString776b10[8] = "Moyenne";
+    extern const char MenuPcString776b18[7] = "Faible";
+    extern const char MenuPcString776b20[20] = "Reprendre la partie";
+    extern const char MenuPcString776b34[22] = "Quitter au menu D\303\251mo";
+    extern const char MenuPcString776b4c[21] = "Revenir sous Windows";
+    extern const char MenuPcString776b64[8] = "Quitter";
+    extern const char MenuPcString776b6c[19] = "Show Game Controls";
+    extern const char MenuPcString776b80[8] = "Edge AA";
+    extern const char MenuPcString776b88[22] = "Dynamic Light Quality";
+    extern const char MenuPcString776ba0[11] = "Speed Blur";
+    extern const char MenuPcString776bac[15] = "Depth of Field";
+    extern const char MenuPcString776bbc[6] = "Bloom";
+    extern const char MenuPcString776bc4[8] = "Shadows";
+    extern const char MenuPcString776bcc[15] = "Externally Set";
+    extern const char MenuPcString776bdc[17] = "Effects Settings";
+    extern const char MenuPcString776bf0[60] = "You must restart the game for these changes to take effect!";
+    extern const char MenuPcString776c2c[7] = "Revert";
+    extern const char MenuPcString776c34[16] = "Texture Quality";
+    extern const char MenuPcString776c44[21] = "Use current settings";
+    extern const char MenuPcString776c5c[16] = "From Screen-Res";
+    extern const char MenuPcString776c6c[18] = "Enhanced Graphics";
+    extern const char MenuPcString776c80[13] = "Aspect Ratio";
+    extern const char MenuPcString776c90[14] = "Vertical Sync";
+    extern const char MenuPcString776ca0[13] = "Refresh Rate";
+    extern const char MenuPcString776cb0[18] = "Screen Resolution";
+    extern const char MenuPcString776cc4[15] = "Video Settings";
+    extern const char MenuPcString776cd4[18] = "Reset To Defaults";
+    extern const char MenuPcString776ce8[8] = "Decline";
+    extern const char MenuPcString776cf0[7] = "Accept";
+    extern const char MenuPcString776cf8[7] = "Resume";
+    extern const char MenuPcString776d00[7] = "Medium";
+    extern const char MenuPcString776d08[15] = "Return to game";
+    extern const char MenuPcString776d18[19] = "Quit to Demos Menu";
+    extern const char MenuPcString776d2c[16] = "Quit to Windows";
+    extern const char MenuPcString776d3c[5] = "Quit";
+    MENU_PC_STRING_ENTRY MenuPcStringTable827800[40] = {
+        {0, MenuPcString776d3c},  {1, MenuPcString776d2c},  {2, MenuPcString776d18},  {3, MenuPcString776d08},
+        {4, MenuPcString775664},  {5, MenuPcString776d00},  {6, MenuPcString77565c},  {7, MenuPcString776cf8},
+        {8, MenuPcString776cf0},  {10, MenuPcString75f0b0}, {9, MenuPcString776ce8},  {11, MenuPcString75f2c4},
+        {12, MenuPcString75f2c0}, {13, MenuPcString75f2bc}, {14, MenuPcString75f2b4}, {15, MenuPcString76f660},
+        {16, MenuPcString76b274}, {17, MenuPcString776cd4}, {18, MenuPcString776cc4}, {19, MenuPcString776cb0},
+        {20, MenuPcString776ca0}, {21, MenuPcString776c90}, {22, MenuPcString776c80}, {23, MenuPcString776c6c},
+        {24, MenuPcString776c5c}, {25, MenuPcString776c44}, {26, MenuPcString776c34}, {27, MenuPcString776c2c},
+        {28, MenuPcString776bf0}, {29, MenuPcString776bdc}, {30, MenuPcString775b04}, {31, MenuPcString776bcc},
+        {32, MenuPcString776bc4}, {33, MenuPcString776bbc}, {34, MenuPcString776bac}, {35, MenuPcString776ba0},
+        {36, MenuPcString776b88}, {37, MenuPcString776b80}, {38, MenuPcString776b6c}, {39, NULL},
+    };
+    MENU_PC_STRING_ENTRY MenuPcStringTable827940[40] = {
+        {0, MenuPcString776d3c},  {1, MenuPcString776d2c},  {2, MenuPcString776d18},  {3, MenuPcString776d08},
+        {4, MenuPcString775664},  {5, MenuPcString776d00},  {6, MenuPcString77565c},  {7, MenuPcString776cf8},
+        {8, MenuPcString776cf0},  {9, MenuPcString776ce8},  {10, MenuPcString75f0b0}, {11, MenuPcString75f2c4},
+        {12, MenuPcString75f2c0}, {13, MenuPcString75f2bc}, {14, MenuPcString75f2b4}, {15, MenuPcString76f660},
+        {16, MenuPcString76b274}, {17, MenuPcString776cd4}, {18, MenuPcString776cc4}, {19, MenuPcString776cb0},
+        {20, MenuPcString776ca0}, {21, MenuPcString776c90}, {22, MenuPcString776c80}, {23, MenuPcString776c6c},
+        {24, MenuPcString776c5c}, {25, MenuPcString776c44}, {26, MenuPcString776c34}, {27, MenuPcString776c2c},
+        {28, MenuPcString776bf0}, {29, MenuPcString776bdc}, {30, MenuPcString775b04}, {31, MenuPcString776bcc},
+        {32, MenuPcString776bc4}, {33, MenuPcString776bbc}, {34, MenuPcString776bac}, {35, MenuPcString776ba0},
+        {36, MenuPcString776b88}, {37, MenuPcString776b80}, {38, MenuPcString776b6c}, {39, NULL},
+    };
+    MENU_PC_STRING_ENTRY MenuPcStringTable827a80[40] = {
+        {0, MenuPcString776b64},  {1, MenuPcString776b4c},  {2, MenuPcString776b34},  {3, MenuPcString776b20},
+        {4, MenuPcString776b18},  {5, MenuPcString776b10},  {6, MenuPcString776b08},  {7, MenuPcString776afc},
+        {8, MenuPcString776af0},  {9, MenuPcString776ae8},  {10, MenuPcString773b98}, {11, MenuPcString776ae4},
+        {12, MenuPcString776ae0}, {13, MenuPcString75f2bc}, {14, MenuPcString776ad8}, {15, MenuPcString776ad0},
+        {16, MenuPcString776ac8}, {17, MenuPcString776ab0}, {18, MenuPcString776a9c}, {19, MenuPcString776a90},
+        {20, MenuPcString776a74}, {21, MenuPcString776a58}, {22, MenuPcString776a50}, {23, MenuPcString776a38},
+        {24, MenuPcString776a24}, {25, MenuPcString776a00}, {26, MenuPcString7769ec}, {27, MenuPcString7769e0},
+        {28, MenuPcString776998}, {29, MenuPcString77697c}, {30, MenuPcString775b04}, {31, MenuPcString776968},
+        {32, MenuPcString776960}, {33, MenuPcString776954}, {34, MenuPcString77693c}, {35, MenuPcString776924},
+        {36, MenuPcString776908}, {37, MenuPcString7768f4}, {38, MenuPcString776b6c}, {39, NULL},
+    };
+    MENU_PC_STRING_ENTRY MenuPcStringTable827bc0[40] = {
+        {0, MenuPcString770fbc},  {1, MenuPcString7768e0},  {2, MenuPcString7768c0},  {3, MenuPcString7768ac},
+        {4, MenuPcString7768a4},  {5, MenuPcString77689c},  {6, MenuPcString773568},  {7, MenuPcString776890},
+        {8, MenuPcString776884},  {9, MenuPcString776878},  {10, MenuPcString7733f0}, {11, MenuPcString776874},
+        {12, MenuPcString77686c}, {13, MenuPcString75f2bc}, {14, MenuPcString776860}, {15, MenuPcString77685c},
+        {16, MenuPcString776858}, {17, MenuPcString776838}, {18, MenuPcString776824}, {19, MenuPcString77680c},
+        {20, MenuPcString7767f4}, {21, MenuPcString7767e0}, {22, MenuPcString7767cc}, {23, MenuPcString7767b8},
+        {24, MenuPcString7767ac}, {25, MenuPcString776788}, {26, MenuPcString776770}, {27, MenuPcString776764},
+        {28, MenuPcString776718}, {29, MenuPcString776704}, {30, MenuPcString775b04}, {31, MenuPcString7766f0},
+        {32, MenuPcString7766e4}, {33, MenuPcString7766d8}, {34, MenuPcString7766c8}, {35, MenuPcString7766ac},
+        {36, MenuPcString776678}, {37, MenuPcString776668}, {38, MenuPcString776b6c}, {39, NULL},
+    };
+    MENU_PC_STRING_ENTRY MenuPcStringTable827d00[40] = {
+        {0, MenuPcString776660},  {1, MenuPcString776650},  {2, MenuPcString77663c},  {3, MenuPcString77662c},
+        {4, MenuPcString77393c},  {5, MenuPcString776624},  {6, MenuPcString773934},  {7, MenuPcString776618},
+        {8, MenuPcString776610},  {9, MenuPcString776608},  {10, MenuPcString77375c}, {11, MenuPcString776604},
+        {12, MenuPcString75f2c0}, {13, MenuPcString75f2bc}, {14, MenuPcString776608}, {15, MenuPcString76f660},
+        {16, MenuPcString76b274}, {17, MenuPcString7765e8}, {18, MenuPcString7765e0}, {19, MenuPcString7765cc},
+        {20, MenuPcString7765b0}, {21, MenuPcString776594}, {22, MenuPcString776588}, {23, MenuPcString776574},
+        {24, MenuPcString776564}, {25, MenuPcString776548}, {26, MenuPcString776534}, {27, MenuPcString776528},
+        {28, MenuPcString7764e8}, {29, MenuPcString7764e0}, {30, MenuPcString775b04}, {31, MenuPcString7764c8},
+        {32, MenuPcString7764c0}, {33, MenuPcString7764b4}, {34, MenuPcString77649c}, {35, MenuPcString776488},
+        {36, MenuPcString776470}, {37, MenuPcString776b80}, {38, MenuPcString776b6c}, {39, NULL},
+    };
+    MENU_PC_STRING_ENTRY MenuPcStringTable827e40[40] = {
+        {0, MenuPcString776468},  {1, MenuPcString776458},  {2, MenuPcString776440},  {3, MenuPcString776430},
+        {4, MenuPcString773210},  {5, MenuPcString776624},  {6, MenuPcString773934},  {7, MenuPcString776424},
+        {8, MenuPcString77641c},  {9, MenuPcString776410},  {10, MenuPcString776408}, {11, MenuPcString776404},
+        {12, MenuPcString75f2c0}, {13, MenuPcString77641c}, {14, MenuPcString7763f8}, {15, MenuPcString776404},
+        {16, MenuPcString75f2c0}, {17, MenuPcString7763dc}, {18, MenuPcString7763c8}, {19, MenuPcString7763bc},
+        {20, MenuPcString7763a4}, {21, MenuPcString776388}, {22, MenuPcString776370}, {23, MenuPcString77635c},
+        {24, MenuPcString776350}, {25, MenuPcString776334}, {26, MenuPcString776320}, {27, MenuPcString776314},
+        {28, MenuPcString7762d4}, {29, MenuPcString7762c0}, {30, MenuPcString7762b8}, {31, MenuPcString7762a0},
+        {32, MenuPcString776298}, {33, MenuPcString776bbc}, {34, MenuPcString776280}, {35, MenuPcString776264},
+        {36, MenuPcString776248}, {37, MenuPcString776234}, {38, MenuPcString776b6c}, {39, NULL},
+    };
+    MENU_PC_STRING_ENTRY MenuPcStringTable827f80[40] = {
+        {0, MenuPcString77622c},  {1, MenuPcString776218},  {2, MenuPcString7761fc},  {3, MenuPcString7761e0},
+        {4, MenuPcString774bb4},  {5, MenuPcString7761d8},  {6, MenuPcString772dd4},  {7, MenuPcString7761cc},
+        {8, MenuPcString776af0},  {9, MenuPcString7761c4},  {10, MenuPcString772c44}, {11, MenuPcString776874},
+        {12, MenuPcString7761c0}, {13, MenuPcString75f2bc}, {14, MenuPcString7761b4}, {15, MenuPcString7761b0},
+        {16, MenuPcString7761ac}, {17, MenuPcString7761a4}, {18, MenuPcString776190}, {19, MenuPcString77617c},
+        {20, MenuPcString77616c}, {21, MenuPcString776158}, {22, MenuPcString776144}, {23, MenuPcString776130},
+        {24, MenuPcString776118}, {25, MenuPcString7760f4}, {26, MenuPcString7760e4}, {27, MenuPcString7760d4},
+        {28, MenuPcString776094}, {29, MenuPcString776080}, {30, MenuPcString776064}, {31, MenuPcString77605c},
+        {32, MenuPcString776054}, {33, MenuPcString776bbc}, {34, MenuPcString776048}, {35, MenuPcString77603c},
+        {36, MenuPcString776024}, {37, MenuPcString77601c}, {38, MenuPcString776b6c}, {39, NULL},
+    };
+    const char *MenuPcStrings[39];
+    i32 MenuPcStringsInitialized;
+    f32 MenuNewGameYPc = -0.5f;
 }
