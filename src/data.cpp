@@ -19551,6 +19551,8 @@ extern "C" {
     i32 freeplay_selected[2] = {0, 0};
     i32(__cdecl *Tag_NoHiddenIconFn)(GAMEOBJECT *) = NULL;
     f32 game_pulse = 0.0f;
+    f32 global_pulse = 0.0f;
+    TIMER ChallengeTimer = {0};
 }
 
 extern "C" {

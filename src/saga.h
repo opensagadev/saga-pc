@@ -1643,7 +1643,9 @@ typedef struct gamesave_s {
                 };
             };
             u8 customizer_weirdo_flags;
-            u8 unknown_7c1c[0x12];
+            u8 unknown_7c1c[4];
+            f32 game_time;
+            u8 unknown_7c24[0xa];
             u16 customizer_cape_piece;
             u8 unknown_7c30[0x36];
             u16 customizer_secondary_cape_piece;
@@ -1677,6 +1679,7 @@ STATIC_ASSERT(offsetof(GAMESAVE, episode_start) == 0x7b8c);
 STATIC_ASSERT(offsetof(GAMESAVE, initial_store_pack_flags) == 0x7bfc);
 STATIC_ASSERT(offsetof(GAMESAVE, purchased_extra_bits_high) == 0x7c04);
 STATIC_ASSERT(offsetof(GAMESAVE, customizer_weirdo_flags) == 0x7c1b);
+STATIC_ASSERT(offsetof(GAMESAVE, game_time) == 0x7c20);
 STATIC_ASSERT(offsetof(GAMESAVE, customiser_start) == 0x7c24);
 STATIC_ASSERT(offsetof(GAMESAVE, customizer_cape_piece) == 0x7c2e);
 STATIC_ASSERT(offsetof(GAMESAVE, customizer_secondary_cape_piece) == 0x7c66);
@@ -9404,6 +9407,7 @@ extern "C" {
     void __cdecl DrawMenuHeader(void);
     void __cdecl DrawMenu(i32);
     void __cdecl DrawPanel(void);
+    void __cdecl GameTiming(WORLDINFO *world, f32 *game_time);
     extern i32 g_enableButtonPrompts;
     extern void(__cdecl *headerdrawfn)(void);
     extern f32 MenuTopYPc;
