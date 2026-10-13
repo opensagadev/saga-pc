@@ -1,5 +1,10 @@
 #include "saga.h"
 
+extern "C" {
+    void __cdecl PCFrameResetTargetsPc(void);
+    void __cdecl PCFrameConfigureTargetsPc(void);
+}
+
 /* Full native 60aff0 control reconstruction, with genuinely missing VOID
  * actions retained at their actual call sites. No consumed value is stubbed. */
 extern "C" i32 __cdecl NuRndrSwapScreen(i32 mode) {
@@ -85,9 +90,9 @@ extern "C" i32 __cdecl NuRndrSwapScreen(i32 mode) {
             rendered_effect = true;
         }
         if (i <= last_effect_scene) {
-            STUBBED_NAMED(0x006dfd80); /* native60b2fb */
+            PCFrameConfigureTargetsPc();
         } else {
-            STUBBED_NAMED(0x006dfd70); /* native60b302 */
+            PCFrameResetTargetsPc();
         }
         NuShaderManagerSetfv(0x3e, dimensions);
         if (scene->clear_flags_08 != 0) {

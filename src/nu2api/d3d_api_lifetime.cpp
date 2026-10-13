@@ -75,3 +75,11 @@ extern "C" void __cdecl PcDestroyPlatform(void) {
     PcRendererShutdown(0);
     PCDeviceBackend.Shutdown();
 }
+
+extern "C" void __cdecl PCFrameResetTargetsPc(void) {
+    PCDeviceBackend.ResetTargets();
+}
+
+extern "C" void __cdecl PCFrameConfigureTargetsPc(void) {
+    PCDeviceBackend.ConfigureCurrentTargets();
+}

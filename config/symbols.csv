@@ -6407,6 +6407,8 @@ address    , symbol                                                         , si
 0x6df940,_PCDeviceResetState,220,void __cdecl (void)
 0x6dfa20,_PCDeviceResetSamplerDefaultsPc,72,void __cdecl(void)
 0x006dfd40,_PCFramePresentNativePc,36,"i32 __cdecl(i32,i32)"
+0x6dfd70,_PCFrameResetTargetsPc,10,void __cdecl(void)
+0x6dfd80,_PCFrameConfigureTargetsPc,10,void __cdecl(void)
 0x6dfdc0,_PcFreeApiCallBuffer,45,void __cdecl(void)
 0x6dfdf0,_PcDestroyPlatform,40,void __cdecl(void)
 0x6dfe20,_PCGraphicsRecreateResources,128,void __cdecl(i32)
