@@ -9,8 +9,6 @@ extern "C" {
     extern PC_FRAMEBUFFER_PC *PcBoundFramebuffer;
     extern PC_FRAMEBUFFER_PC *PcDefaultFramebuffer;
     extern PC_FRAMEBUFFER_PC *PcSecondaryFramebuffer;
-    extern PC_FRAMEBUFFER_PC *PcBootDefaultFramebuffer;
-    extern PC_FRAMEBUFFER_PC *PcBootSecondaryFramebuffer;
 }
 
 PC_EFFECT_SURFACE_PC::PC_EFFECT_SURFACE_PC() {
@@ -306,8 +304,28 @@ extern "C" {
     PC_FRAMEBUFFER_PC *PcBoundFramebuffer = NULL;
     PC_FRAMEBUFFER_PC *PcDefaultFramebuffer = NULL;
     PC_FRAMEBUFFER_PC *PcSecondaryFramebuffer = NULL;
-    PC_FRAMEBUFFER_PC *PcBootDefaultFramebuffer = NULL;
-    PC_FRAMEBUFFER_PC *PcBootSecondaryFramebuffer = NULL;
+    PC_BOOT_FRAMEBUFFER_VIEW_PC PcBootFramebuffersPc = {NULL, NULL};
+}
+
+extern "C" void __cdecl NuEffectTexLockVP(VARIPTR *buffer, VARIPTR end) {
+    (void)buffer;
+    (void)end;
+}
+extern "C" i32 __cdecl NuEffectTexUnlockVP(void) {
+    return 0;
+}
+extern "C" PC_FRAMEBUFFER_PC *__cdecl NuFramebufferGetObject(i32 index) {
+    return PcBootFramebuffersPc.slots[index];
+}
+extern "C" i32 __cdecl NuFramebufferGetWidth(PC_FRAMEBUFFER_PC *framebuffer) {
+    if (framebuffer == PcDefaultFramebuffer || framebuffer == PcSecondaryFramebuffer)
+        return PCDeviceBackend.parameters.width;
+    return framebuffer != NULL ? framebuffer->targets[0].width : 0;
+}
+extern "C" i32 __cdecl NuFramebufferGetHeight(PC_FRAMEBUFFER_PC *framebuffer) {
+    if (framebuffer == PcDefaultFramebuffer || framebuffer == PcSecondaryFramebuffer)
+        return PCDeviceBackend.parameters.height;
+    return framebuffer != NULL ? framebuffer->targets[0].height : 0;
 }
 
 /* Two additional genuine original leaves, proposed in existing effect_surface.cpp.

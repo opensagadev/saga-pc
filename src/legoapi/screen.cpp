@@ -2,6 +2,37 @@
 
 class FadeSystem : public FADEINFO_PC {};
 
+typedef struct STILL_RENDER_MATERIAL_PC {
+    u8 unknown_00[0x40];
+    u32 attributes;
+    u8 unknown_44[0x2c];
+    f32 opacity;
+    i16 texture_id, sort_priority;
+    u8 unknown_78[0x3c];
+    PC_MATERIAL_SHADER_DESC_VIEW shader;
+} STILL_RENDER_MATERIAL_PC;
+STATIC_ASSERT(offsetof(STILL_RENDER_MATERIAL_PC, attributes) == 0x40);
+STATIC_ASSERT(offsetof(STILL_RENDER_MATERIAL_PC, opacity) == 0x70);
+STATIC_ASSERT(offsetof(STILL_RENDER_MATERIAL_PC, texture_id) == 0x74);
+STATIC_ASSERT(offsetof(STILL_RENDER_MATERIAL_PC, sort_priority) == 0x76);
+STATIC_ASSERT(offsetof(STILL_RENDER_MATERIAL_PC, shader) == 0xb4);
+
+extern "C" void __cdecl InitStillRender(VARIPTR *buffer, VARIPTR end) {
+    pause_rt = NuTexCreateFramebufferCopy(buffer, end);
+    STILL_RENDER_MATERIAL_PC *material = (STILL_RENDER_MATERIAL_PC *)NuMtlCreate3D(1);
+    material->opacity = 1.0f;
+    material->texture_id = (i16)pause_rt;
+    material->attributes = (material->attributes & 0xfffee5d1u) | 0x6e511u;
+    material->shader.vertex_format = (material->shader.vertex_format & 0xffffcfff) | 0x40800;
+    pause_rndr_mtl = material;
+    material->sort_priority = 0x7fff;
+    material->shader.flags = 0x1000;
+    material->shader.packed_diffuse_colour = 0xffffffff;
+    material->shader.texture_unit_count = 1;
+    NuMtlUpdate((NUMTL *)material);
+    pause_rndr_on = 0;
+}
+
 typedef struct CUT_DISPLAY_VIEW_PC {
     u8 unknown_00[0x6c];
     f32 camera_near_clip;

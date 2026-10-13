@@ -1,5 +1,15 @@
 #include "saga.h"
 
+extern "C" i32 __cdecl NuTexCreateFramebufferCopy(VARIPTR *buffer, VARIPTR end) {
+    NuEffectTexLockVP(buffer, end);
+    PC_FRAMEBUFFER_PC *framebuffer = NuFramebufferGetObject(1);
+    i32 width = NuFramebufferGetWidth(framebuffer);
+    i32 height = NuFramebufferGetHeight(framebuffer);
+    GRAPHICS_RENDER_TEXTURE_PC *texture = PCGraphicsCreateEffectTexture(width, height, 1, 1, 1);
+    NuEffectTexUnlockVP();
+    return NuTexRegisterRenderTargetPc(texture);
+}
+
 extern "C" void __cdecl NuStrFixExt(char *, char *, char *, i32);
 
 void __cdecl NuTexDestroyPS(NUTEXDIM_PC *texture) {

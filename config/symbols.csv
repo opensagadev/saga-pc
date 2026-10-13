@@ -2708,6 +2708,7 @@ address    , symbol                                                         , si
 0x00565470 , _WidescreenCode                                                , 339   , void __cdecl (i32)
 0x5655d0,_KeepPointOnScreen,154,"void __cdecl(NUVEC *,NUVEC *)"
 0x00565700 , _DrawCutBorders                                                , 279   , void __cdecl (i32)
+0x565820,_InitStillRender,143,"void __cdecl(VARIPTR *, VARIPTR)"
 0x5658e0,_DrawPauseScreenWipe,681,void __cdecl(void)
 0x00565ba0 , _GrabStillScreen                                               , 51    , void __cdecl (void)
 0x565be0,_NeedScreenGrab,14,
@@ -4473,6 +4474,7 @@ address    , symbol                                                         , si
 0x5e5470,_NuTexRegisterDimensionsPc,45,i32 __cdecl(NUTEXDIM_PC *)
 0x5e5550,_NuTexHiresFilename,109,
 0x5e5630,_NuTexDestroy,66,void __cdecl(i32)
+0x5e57f0,_NuTexCreateFramebufferCopy,72,"i32 __cdecl(VARIPTR *, VARIPTR)"
 0x5e5ce0,?isEnabled@NuMainFilterGen@@UAE_NXZ,12,bool __thiscall NuMainFilterGen::isEnabled(void)
 0x5e66b0,_NuDynamicLightTestShadowExtrusionsSpecial,91,
 0x005e7f40,?Init@OccluderSet@@QAEXIPATvariptr_u@@T2@@Z,585,"void __thiscall OccluderSet::Init(u32,VARIPTR*,VARIPTR)"
@@ -4599,6 +4601,8 @@ address    , symbol                                                         , si
 0x005f77d0,_NuLgtSetVertexColor,108,
 0x5f7980,?PCGraphicsFormatToD3d@@YAHH@Z,92,
 0x5f79e0,?PCGraphicsFormatFromD3d@@YAHH@Z,123,
+0x5f7a90,_NuEffectTexLockVP,1,"void __cdecl(VARIPTR *, VARIPTR)"
+0x5f7aa0,_NuEffectTexUnlockVP,3,i32 __cdecl(void)
 0x5f7b40,_PCGraphicsDestroyRenderTexture,255,void __cdecl(GRAPHICS_RENDER_TEXTURE_PC*)
 0x5f7c40,_PCGraphicsEffectTextureWidth,9,
 0x5f7c50,_PCGraphicsEffectTextureHeight,9,
@@ -4611,6 +4615,9 @@ address    , symbol                                                         , si
 0x5f8670,_PCGraphicsRestoreEffectTextures,106,
 0x005f8930,?PCDisplayHandlerSetZMode@@YAXH@Z,140,
 0x005f8a50,_PCGraphicsGetBoundFramebufferPc,6,PC_FRAMEBUFFER_PC *__cdecl(void)
+0x5f8a60,_NuFramebufferGetObject,12,PC_FRAMEBUFFER_PC *__cdecl(i32)
+0x5f8ae0,_NuFramebufferGetWidth,38,i32 __cdecl(PC_FRAMEBUFFER_PC *)
+0x5f8b10,_NuFramebufferGetHeight,38,i32 __cdecl(PC_FRAMEBUFFER_PC *)
 0x005f8be0,_PCGraphicsEnableFramebufferGuardsPc,1,"void __cdecl(PC_FRAMEBUFFER_PC *,i32)"
 0x5f8bf0,_PCGraphicsBindFramebuffer,175,
 0x5f8ca0,_PCGraphicsBindDefaultFramebuffer,13,
@@ -18841,8 +18848,7 @@ address    , symbol                                                         , si
 0x28490f8,_PCStartupMaterial2Pc,,NUMTL *
 0x28490fc,_RndrStreamMaxUsedPc,,u32
 0x284910c,_RndrStreamSecondPc,,VARIPTR
-0x2849310,_PcBootDefaultFramebuffer,,PC_FRAMEBUFFER_PC *
-0x2849314,_PcBootSecondaryFramebuffer,,PC_FRAMEBUFFER_PC *
+0x2849310,_PcBootFramebuffersPc,,PC_BOOT_FRAMEBUFFER_VIEW_PC
 0x2849318, _NuCameraProjectionGlobalScaleX, ,
 0x2854b64,_NuLgtArcLaserFrame,4,i32
 0x2854b68,_RendererConfigMatrixPc,,NUMTX

@@ -556,6 +556,34 @@
       "ctype": "PC_DEVICE_RENDER_CACHE_PC",
       "historical_symbol": "_PCDeviceRenderStateCache",
       "qualification": "Historical complete initializer comparison preserved at the same native owner offset; original field extent unknown and no new coverage credit."
+    },
+    {
+      "id": "PcBootFramebuffersPc.fields.default_framebuffer",
+      "kind": "data_member",
+      "owner_symbol": "_PcBootFramebuffersPc",
+      "owner_identifier": "PcBootFramebuffersPc",
+      "owner_unit": "src/nu2api/effect_surface.cpp",
+      "owner_type": "PC_BOOT_FRAMEBUFFER_VIEW_PC",
+      "member_path": "fields.default_framebuffer",
+      "original_address": "0x02849310",
+      "original_size": null,
+      "ctype": "PC_FRAMEBUFFER_PC *",
+      "historical_symbol": "_PcBootDefaultFramebuffer",
+      "qualification": "Same existing4-byte initialized framebuffer pointer in asserted8-byte working owner; original owning extent unknown, no new coverage credit. Indexed native5f8a60 requires actual contiguous storage."
+    },
+    {
+      "id": "PcBootFramebuffersPc.fields.secondary_framebuffer",
+      "kind": "data_member",
+      "owner_symbol": "_PcBootFramebuffersPc",
+      "owner_identifier": "PcBootFramebuffersPc",
+      "owner_unit": "src/nu2api/effect_surface.cpp",
+      "owner_type": "PC_BOOT_FRAMEBUFFER_VIEW_PC",
+      "member_path": "fields.secondary_framebuffer",
+      "original_address": "0x02849314",
+      "original_size": null,
+      "ctype": "PC_FRAMEBUFFER_PC *",
+      "historical_symbol": "_PcBootSecondaryFramebuffer",
+      "qualification": "Same existing4-byte initialized framebuffer pointer in asserted8-byte working owner; original owning extent unknown, no new coverage credit. Indexed native5f8a60 requires actual contiguous storage."
     }
   ]
 }

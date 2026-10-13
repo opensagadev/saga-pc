@@ -20366,6 +20366,18 @@ extern "C" {
 }
 #endif
 
+typedef union PC_BOOT_FRAMEBUFFER_VIEW_PC {
+    struct {
+        PC_FRAMEBUFFER_PC *default_framebuffer;
+        PC_FRAMEBUFFER_PC *secondary_framebuffer;
+    } fields;
+    PC_FRAMEBUFFER_PC *slots[2];
+} PC_BOOT_FRAMEBUFFER_VIEW_PC;
+STATIC_ASSERT(sizeof(PC_BOOT_FRAMEBUFFER_VIEW_PC) == 8);
+STATIC_ASSERT(offsetof(PC_BOOT_FRAMEBUFFER_VIEW_PC, fields.default_framebuffer) == 0);
+STATIC_ASSERT(offsetof(PC_BOOT_FRAMEBUFFER_VIEW_PC, fields.secondary_framebuffer) == 4);
+STATIC_ASSERT(offsetof(PC_BOOT_FRAMEBUFFER_VIEW_PC, slots) == 0);
+
 #ifdef __cplusplus
 extern "C" {
 #endif
@@ -20384,11 +20396,22 @@ extern "C" {
     void __cdecl NuTimeBarSetRender(i32 set);
     void __cdecl PCGraphicsBindFramebuffer(PC_FRAMEBUFFER_PC *framebuffer);
     extern PC_FRAMEBUFFER_PC *PcDefaultFramebuffer;
-    extern PC_FRAMEBUFFER_PC *PcBootDefaultFramebuffer;
-    extern PC_FRAMEBUFFER_PC *PcBootSecondaryFramebuffer;
+    extern PC_BOOT_FRAMEBUFFER_VIEW_PC PcBootFramebuffersPc;
+    PC_FRAMEBUFFER_PC *__cdecl NuFramebufferGetObject(i32 index);
+    i32 __cdecl NuFramebufferGetWidth(PC_FRAMEBUFFER_PC *framebuffer);
+    i32 __cdecl NuFramebufferGetHeight(PC_FRAMEBUFFER_PC *framebuffer);
+    void __cdecl NuEffectTexLockVP(VARIPTR *buffer, VARIPTR end);
+    i32 __cdecl NuEffectTexUnlockVP(void);
+    i32 __cdecl NuTexCreateFramebufferCopy(VARIPTR *buffer, VARIPTR end);
+    void __cdecl InitStillRender(VARIPTR *buffer, VARIPTR end);
 #ifdef __cplusplus
 }
 #endif
+
+// NOLINTNEXTLINE(readability-identifier-naming)
+#define PcBootDefaultFramebuffer (PcBootFramebuffersPc.fields.default_framebuffer)
+// NOLINTNEXTLINE(readability-identifier-naming)
+#define PcBootSecondaryFramebuffer (PcBootFramebuffersPc.fields.secondary_framebuffer)
 
 /* Refine the existing single DWORD owner; do not create another address alias. */
 typedef union PC_GRAPHICS_FRAME_SCRATCH_VIEW_PC {

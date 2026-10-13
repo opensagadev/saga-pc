@@ -376,7 +376,7 @@ extern "C" {
         MusicInfo = ConfigureMusic("audio\\music.txt", &permbuffer_ptr, &permbuffer_end);
         SfxSetFileTable((SFX_FILE_INFO_PC *)MusicInfo);
         InitSfx(&permbuffer_ptr, permbuffer_end, "Audio\\Audio.cfg");
-        STUBBED_NAMED("LoadPermData: still-render initialization (0x565820)");
+        InitStillRender(&permbuffer_ptr, permbuffer_end);
 
         OldLevelHackData = GameBufferAlloc(&permbuffer_ptr, &permbuffer_end, 0x80);
         LevelHackData = GameBufferAlloc(&permbuffer_ptr, &permbuffer_end, 0x80);
