@@ -157,7 +157,7 @@
     "src/nu2api/platform_policy.cpp": "7b4e8a6e683a1f2970123face56eed86b075d3e3d3632991e812dfa002cc89ee",
     "src/nu2api/save_folder.cpp": "3e8d5fecb96c7433389f4cbfb01c3907762fd1b7fd7436ebf50fdcb1dd2353da",
     "src/nu2api/shader_buffer_allocator.cpp": "2bd1c9abaddf48fb4491145b02ec6dea01b8e7e7a57576ea7228358d1b9d8f6c",
-    "src/nu2api/shader_compiler.cpp": "b12dcdd154f8b267157da3ae7c8a3136f9dc0ce2464228ce78a1f64a4225632f",
+    "src/nu2api/shader_compiler.cpp": "ec9e3b83444689f8140fa617763794c7dac3a2d847e0f0bbe1cb5187f11f4d68",
     "src/nu2api/shader_dictionary.cpp": "1fb3af88f4ac3ae4794eb56821ed57bd2ed45ffdf5f670d21492b06f83042813",
     "src/nu2api/shader_lexical.cpp": "99804ebf31170cee98e41a47497ee55f4d9bdef3569f68b3a7719f869cccec77",
     "src/nu2api/shader_parser.cpp": "91e89cdfcdb84c8e9fa5e3224960bdc624b89eb158f49c85b6957efd17410bde",
@@ -764,7 +764,7 @@
     "build/obj/nu2api/platform_policy.obj": "e88626fd93e21f9096977342bb2bfe0bb284e71173abb0b616249b3ebbe5f1c0",
     "build/obj/nu2api/save_folder.obj": "b89561c0f34e32bca477fcb026ad046a44f5ec2b815ed212d10dad3fb82e123d",
     "build/obj/nu2api/shader_buffer_allocator.obj": "c749f75747839bce8201553d1a0c1c4ec6c8d4225d6bb84757b2b331e2a7dcd6",
-    "build/obj/nu2api/shader_compiler.obj": "4b3439763819c0f47fe288a6af12ae7ad76c9b52e11ddba7fdcc3e4da9d439e5",
+    "build/obj/nu2api/shader_compiler.obj": "2beba99f57a585f92a90bb8cf90003929348b65da387754d7f194d6e82711e25",
     "build/obj/nu2api/shader_dictionary.obj": "07ab7a7c343546e54857faace439b9adeb0cf5288b63899e22c17bb1c175ba8c",
     "build/obj/nu2api/shader_lexical.obj": "f96a38d13375c588070fff10a376fa4251126c7edc02f67901f16d732acbff1e",
     "build/obj/nu2api/shader_parser.obj": "a686650c6719644941a7cf76715e0603902bfa3d98710482decfd7cff23b5088",
@@ -164464,17 +164464,17 @@
       "objects": [
         {
           "unit": "src/nu2api/shader_compiler.cpp",
-          "base_size": 4072,
+          "base_size": 4138,
           "exact_match": false,
           "target_sha256": "bd97542da0dfa8c90261c0414dde689ef6f491bfe08eba98fbe17202bad03127",
-          "base_sha256": "f79aabc1527378818a30182376e0cd8cb3c4ef8d0d67a4680bcf8d39c8214453",
-          "relocation_count": 287,
+          "base_sha256": "1b2275dc4b85da760e1442d9961a6a5cee1998e886f2824918fbd3ee10d4bf4b",
+          "relocation_count": 292,
           "comparison_unit": "00749620-e24702bfc8f0",
-          "objdiff_percent": 71.1889
+          "objdiff_percent": 68.80585
         }
       ],
       "status": "different",
-      "objdiff_percent": 71.1889
+      "objdiff_percent": 68.80585
     },
     {
       "name": "?Prepare@HLSLShaderBuilder@@UAEXPBUPC_SHADER_FILTER_DESC_VIEW@@PAUShaderCompilerDictionaryPc@@@Z",
@@ -370889,10 +370889,10 @@
     "mapped_code_bytes": 2141165,
     "matched_code_bytes": 393844,
     "matching_percent": 11.345897121667551,
-    "fuzzy_coverage_percent": 36.51660124838674,
+    "fuzzy_coverage_percent": 36.513414462402686,
     "mapped_functions": 7468,
     "matched_functions": 3486,
-    "objdiff_fuzzy_percent": 73.51352,
+    "objdiff_fuzzy_percent": 73.50711,
     "objdiff_total_code": 1725169,
     "image_bytes": 40067072,
     "mapped_bytes": 3058190,
@@ -371991,7 +371991,7 @@
       "metadata_sha256": "fe09365da4c355f220d724ca99394fc120b758891b4188d2c49707b6df0894f2",
       "header_path": "src/saga.h",
       "header_sha256": "9bc5d6334a3c5ae12788bebc0580aa49035d406d99a460b18a823f42d2e73912",
-      "geometry_object_sha256": "fe5cd64e77d1b0704d0929cd4aa542b58c83d969f47b5f785f547bdb6f9ec0ae",
+      "geometry_object_sha256": "48edb25822251863f43ddddf221d69fa634a81ee10e9f47f0072a9505475c774",
       "toolchain_sha256": "489d0782638d8033137cdb2834462416111945cbfa073147820e314b8576b95b",
       "implementation_sha256": "9ad7521230f06fde31f0771b10bd001037ea32d2def455913a7f391f05dede9d",
       "headers": {

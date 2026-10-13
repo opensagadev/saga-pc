@@ -52,7 +52,8 @@ void ShaderCompilerBasePc::Configure(PC_SHADER_MATERIAL_FILTER_VIEW *filter, Sha
             definitions->AddDefinition("VERTEX_FETCH_UVSET", vertex_uvs[descriptor->sampler_indices[5] - 1], 1);
             definitions->AddDefinition("FUNC_pipePosition", "VERTEX_FETCH_DISPLACEMENT", 0);
         }
-    } else {
+    }
+    if (!nvidia_profile || filter->variant != 0 || !(filter->descriptor->layer_flags & 0x2000)) {
         if (0 == filter->variant && (filter->descriptor->layer_flags & 0x20000000) &&
             (filter->descriptor->vertex_format & 0x30000) && !(filter->descriptor->vertex_format & 0x400000)) {
             definitions->AddDefinition("FUNC_pipePosition", "VERTEX_TRANSFORM_REFRACTED_GLASS_SKINNING", 0);
