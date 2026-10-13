@@ -741,7 +741,7 @@ void __cdecl EvalAnim2(NUSPECIALHANDLE *special, f32 frame) {
     }
     scene = (NUGSCN *)special->scene;
     animation = (ANI3_HEADER_PC *)scene->instance_animation_data[instance_animation->animation_index];
-    if (animation == NULL || frame == instance_animation->prev_eval_time) {
+    if (animation == NULL || instance_animation->prev_eval_time == frame) {
         return;
     }
     instance_matrix = NuSpecialGetInstanceMtx(special);

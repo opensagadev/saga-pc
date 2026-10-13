@@ -686,7 +686,7 @@ void __cdecl NuTexAnimProgInit(TEXTURE_ANIM_PROGRAM_PC *program) {
     program->off_mask = 0;
     program->name[0] = 0;
     program->label_count = 0;
-    program->flags &= ~1u;
+    *(i16 *)&program->flags &= ~1;
     program->mask = 1;
 }
 

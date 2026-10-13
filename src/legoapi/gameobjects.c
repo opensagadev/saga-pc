@@ -1597,8 +1597,7 @@ void __cdecl GetTakeOverPos(GAMEOBJECT *object, NUVEC *position) {
     i32 locator = object->character_data->game_character->ride_locator;
     CHARACTER_MODEL_LAYERS_PC *model = (CHARACTER_MODEL_LAYERS_PC *)object->character_model;
     if (locator != -1 && model->points_of_interest[locator] != NULL) {
-        NUMTX *matrix = &object->locator_matrices[locator];
-        *position = matrix->translation;
+        *position = object->locator_matrices[locator].translation;
     } else {
         position->x = object->position.x;
         position->y = object->upper_position.y;

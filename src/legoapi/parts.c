@@ -136,7 +136,7 @@ __declspec(noinline) void __cdecl NewPartRotation(PART_PC *part) {
     for (index = 0; index < 2; ++index) {
         do {
             part->rotation_axes[index] = (u8)((NuRandIntSeeded(&partseed) % 65535u) / 21845u + 1);
-        } while (index == 1 && part->rotation_axes[0] == part->rotation_axes[1]);
+        } while (index == 1 && part->rotation_axes[1] == part->rotation_axes[0]);
         part->field_124[index + 3] = (i32)(((f64)NuRandFloatSeeded(&partseed) * 2.0 - 1.0) * 65536.0);
     }
 }
