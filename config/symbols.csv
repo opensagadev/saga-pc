@@ -2701,6 +2701,7 @@ address    , symbol                                                         , si
 0x564470,??_EFadeStill@@UAEPAXI@Z,31,
 0x5644c0,_FadeLoop_SetObj,44,
 0x564500,_FadeLoop_DrawObj,98,
+0x564570,_CreateFadeMaterials,475,void __cdecl(void)
 0x564750,_BackDrop_ClearColourTargets,39,void __cdecl(void)
 0x564780,_BackDrop_ResetColours,87,void __cdecl(void)
 0x5647e0,_BackDrop_UpdateColours,572,void __cdecl(i32)

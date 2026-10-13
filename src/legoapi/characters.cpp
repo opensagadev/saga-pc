@@ -80,6 +80,58 @@ NUGSCN *__cdecl NuGScnRead(VARIPTR *, VARIPTR, char *);
 
 extern "C" void __cdecl DebrisSetup(VARIPTR *, VARIPTR, char *, i32, i32, i32);
 
+extern "C" NUMTL *FadeMtl, *FadeMtl2, *ScreenFadeMtl;
+
+extern "C" void __cdecl CreateFadeMaterials(void) {
+    FadeMtl = NuMtlCreate(1);
+    ((PERMANENT_MATERIAL_READER_PC *)FadeMtl)->attributes |= 0xc000;
+    ((PERMANENT_MATERIAL_READER_PC *)FadeMtl)->attributes =
+        (((PERMANENT_MATERIAL_READER_PC *)FadeMtl)->attributes & ~0x20u) | 0x10u;
+    ((PERMANENT_MATERIAL_READER_PC *)FadeMtl)->attributes =
+        (((PERMANENT_MATERIAL_READER_PC *)FadeMtl)->attributes & ~0x10000u) | 0x20000u;
+    ((PERMANENT_MATERIAL_READER_PC *)FadeMtl)->attributes =
+        (((PERMANENT_MATERIAL_READER_PC *)FadeMtl)->attributes & ~0x200u) | 0x100u;
+    ((PERMANENT_MATERIAL_READER_PC *)FadeMtl)->attributes =
+        (((PERMANENT_MATERIAL_READER_PC *)FadeMtl)->attributes & ~0x800u) | 0x400u;
+    ((PERMANENT_MATERIAL_READER_PC *)FadeMtl)->attributes |= 0x40000;
+    ((PERMANENT_MATERIAL_READER_PC *)FadeMtl)->attributes =
+        (((PERMANENT_MATERIAL_READER_PC *)FadeMtl)->attributes & ~0xcu) | 3u;
+    NuMtlUpdate(FadeMtl);
+
+    FadeMtl2 = NuMtlCreate(1);
+    ((PERMANENT_MATERIAL_READER_PC *)FadeMtl2)->attributes |= 0xc000;
+    ((PERMANENT_MATERIAL_READER_PC *)FadeMtl2)->attributes =
+        (((PERMANENT_MATERIAL_READER_PC *)FadeMtl2)->attributes & ~0x20u) | 0x10u;
+    ((PERMANENT_MATERIAL_READER_PC *)FadeMtl2)->attributes =
+        (((PERMANENT_MATERIAL_READER_PC *)FadeMtl2)->attributes & ~0x10000u) | 0x20000u;
+    ((PERMANENT_MATERIAL_READER_PC *)FadeMtl2)->attributes =
+        (((PERMANENT_MATERIAL_READER_PC *)FadeMtl2)->attributes & ~0x200u) | 0x100u;
+    ((PERMANENT_MATERIAL_READER_PC *)FadeMtl2)->attributes =
+        (((PERMANENT_MATERIAL_READER_PC *)FadeMtl2)->attributes & ~0x800u) | 0x400u;
+    ((PERMANENT_MATERIAL_READER_PC *)FadeMtl2)->attributes |= 0x40000;
+    ((PERMANENT_MATERIAL_READER_PC *)FadeMtl2)->attributes =
+        (((PERMANENT_MATERIAL_READER_PC *)FadeMtl2)->attributes & ~0xeu) | 1u;
+    NuMtlUpdate(FadeMtl2);
+
+    ScreenFadeMtl = NuMtlCreate(1);
+    ((PERMANENT_MATERIAL_READER_PC *)ScreenFadeMtl)->attributes |= 0xc000;
+    ((PERMANENT_MATERIAL_READER_PC *)ScreenFadeMtl)->attributes =
+        (((PERMANENT_MATERIAL_READER_PC *)ScreenFadeMtl)->attributes & ~0x200u) | 0x100u;
+    ((PERMANENT_MATERIAL_READER_PC *)ScreenFadeMtl)->attributes =
+        (((PERMANENT_MATERIAL_READER_PC *)ScreenFadeMtl)->attributes & ~0x800u) | 0x400u;
+    ((PERMANENT_MATERIAL_READER_PC *)ScreenFadeMtl)->attributes =
+        (((PERMANENT_MATERIAL_READER_PC *)ScreenFadeMtl)->attributes & ~0x20u) | 0x10u;
+    ((PERMANENT_MATERIAL_READER_PC *)ScreenFadeMtl)->attributes =
+        (((PERMANENT_MATERIAL_READER_PC *)ScreenFadeMtl)->attributes & ~0x10000u) | 0x20000u;
+    ((PERMANENT_MATERIAL_READER_PC *)ScreenFadeMtl)->attributes |= 0x40000;
+    ((PERMANENT_MATERIAL_READER_PC *)ScreenFadeMtl)->opacity = 1.0f;
+    ((PERMANENT_MATERIAL_READER_PC *)ScreenFadeMtl)->attributes =
+        (((PERMANENT_MATERIAL_READER_PC *)ScreenFadeMtl)->attributes & ~0xeu) | 1u;
+    ((PERMANENT_MATERIAL_READER_PC *)ScreenFadeMtl)->texture_id = 0;
+    ((PERMANENT_MATERIAL_READER_PC *)ScreenFadeMtl)->sort_priority = 0x7ffe;
+    NuMtlUpdate(ScreenFadeMtl);
+}
+
 void __cdecl LoadPerm1(void) {
     char path[256];
     u8 shadow_random[0x800];
@@ -146,7 +198,7 @@ void __cdecl LoadPerm1(void) {
     for (index = 0; index < 0x800; ++index)
         shadow_random[index] = (u8)(qrand() >> 8);
     STUBBED_NAMED(NuRndrShadowInit);      /* Native 48aa72: shadow_random. */
-    STUBBED_NAMED(CreateFadeMaterials);   /* Native 48aa7a. */
+    CreateFadeMaterials();                /* Native 48aa7a. */
     STUBBED_NAMED(CreateUsefulMaterials); /* Native 48aa7f. */
     edgraClumpsReset();
     edanimParamReset();

@@ -17670,6 +17670,7 @@ extern "C" {
     extern NUMTL *PermanentShadowMaterialPc;
     extern void *things_scene_terrain;
     extern i32 PARTPAGE_GENERAL;
+    void __cdecl CreateFadeMaterials(void);
     void __cdecl LoadPerm1(void);
 #ifdef __cplusplus
 }
