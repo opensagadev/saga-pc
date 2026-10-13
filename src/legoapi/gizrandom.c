@@ -19,7 +19,9 @@ typedef struct GIZFLOW_RANDOM_PC {
     char name[16];
     i32 output_count;
     i32 output_weights[8];
-    u8 unknown_034[8];
+    i32 selected_output;
+    u8 flags;
+    u8 unknown_039[3];
 } GIZFLOW_RANDOM_PC;
 typedef struct GIZFLOW_RANDOM_SYSTEM_PC {
     GIZFLOW_RANDOM_PC *randoms;
@@ -58,6 +60,8 @@ STATIC_ASSERT(offsetof(GIZFLOW_TIMER_PC, name) == 0xc);
 STATIC_ASSERT(sizeof(GIZFLOW_RANDOM_PC) == 0x3c);
 STATIC_ASSERT(offsetof(GIZFLOW_RANDOM_PC, output_count) == 0x10);
 STATIC_ASSERT(offsetof(GIZFLOW_RANDOM_PC, output_weights) == 0x14);
+STATIC_ASSERT(offsetof(GIZFLOW_RANDOM_PC, selected_output) == 0x34);
+STATIC_ASSERT(offsetof(GIZFLOW_RANDOM_PC, flags) == 0x38);
 STATIC_ASSERT(sizeof(GIZFLOW_SPECIAL_PC) == 0x28);
 STATIC_ASSERT(offsetof(GIZFLOW_SPECIAL_PC, anim_set) == 0x20);
 STATIC_ASSERT(offsetof(GIZFLOW_LOAD_WORLD_PC, level) == 0x128);
@@ -74,6 +78,20 @@ STATIC_ASSERT(offsetof(GIZFLOW_RANDOM_SYSTEM_PC, randoms) == 0);
 STATIC_ASSERT(offsetof(GIZFLOW_RANDOM_SYSTEM_PC, count) == 4);
 STATIC_ASSERT(offsetof(GIZFLOW_SPECIAL_SYSTEM_PC, specials) == 0);
 STATIC_ASSERT(offsetof(GIZFLOW_SPECIAL_SYSTEM_PC, count) == 4);
+
+void __cdecl GizRandom_AddGizmos(struct gizmosys_pc_s *gizmo_sys, i32 type_id, void *world_ptr, void *unused) {
+    GIZFLOW_LOAD_WORLD_PC *world = (GIZFLOW_LOAD_WORLD_PC *)world_ptr;
+    i32 i;
+    for (i = 0; i < world->randoms->count; ++i) {
+        if (NuStrLen(world->randoms->randoms[i].name) != 0)
+            AddGizmo(gizmo_sys, type_id, NULL, &world->randoms->randoms[i]);
+    }
+}
+
+i32 __cdecl GizRandom_GetOutput(GIZMO_PC *gizmo, i32 output_index, i32 unused) {
+    GIZFLOW_RANDOM_PC *random = (GIZFLOW_RANDOM_PC *)gizmo->object;
+    return (random->flags & 1) != 0 && random->selected_output == output_index;
+}
 
 char *__cdecl GizRandom_GetGizmoName(GIZMO_PC *gizmo) {
     return gizmo != NULL ? ((GIZFLOW_RANDOM_PC *)gizmo->object)->name : NULL;

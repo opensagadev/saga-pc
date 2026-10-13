@@ -76,6 +76,27 @@ STATIC_ASSERT(offsetof(GIZFLOW_RANDOM_SYSTEM_PC, count) == 4);
 STATIC_ASSERT(offsetof(GIZFLOW_SPECIAL_SYSTEM_PC, specials) == 0);
 STATIC_ASSERT(offsetof(GIZFLOW_SPECIAL_SYSTEM_PC, count) == 4);
 
+void __cdecl GizTimer_AddGizmos(struct gizmosys_pc_s *gizmo_sys, i32 type_id, void *world_info, void *unused) {
+    GIZFLOW_LOAD_WORLD_PC *world = (GIZFLOW_LOAD_WORLD_PC *)world_info;
+    i32 i;
+    for (i = 0; i < world->timer_count; ++i) {
+        if (NuStrLen(world->timers[i].name) != 0)
+            AddGizmo(gizmo_sys, type_id, NULL, &world->timers[i]);
+    }
+}
+
+void __cdecl GizTimer_Activate(GIZMO_PC *gizmo, i32 active) {
+    GIZFLOW_TIMER_PC *timer = (GIZFLOW_TIMER_PC *)gizmo->object;
+    if (timer->flags & 2)
+        timer->time_remaining = (f32)((f64)qrand() * (f64)(1.0f / 65535.0f) * (f64)timer->start_time);
+    else
+        timer->time_remaining = timer->start_time;
+    if (active != 0)
+        timer->flags |= 1;
+    else
+        timer->flags &= (u8)~1;
+}
+
 void __cdecl GizTimer_Update(void *world_info, void *unused, f32 delta_time) {
     GIZFLOW_LOAD_WORLD_PC *world = (GIZFLOW_LOAD_WORLD_PC *)world_info;
     i32 i;
