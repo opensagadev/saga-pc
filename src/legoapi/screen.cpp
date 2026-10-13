@@ -109,6 +109,70 @@ extern "C" void __cdecl DrawCutBorders(i32 widescreen) {
     NuRndrEndScene();
 }
 
+extern "C" void __cdecl DrawPauseScreenWipe(void) {
+    i32 x = -0x20;
+    i32 y = -0xc;
+    i32 width = 0x2814;
+    i32 height = 0xe08;
+    f32 u0 = 0.0f;
+    f32 v0 = 0.0f;
+    f32 u1 = 1.0f;
+    f32 v1 = 1.0f;
+    f32 edge;
+    u32 colours[4];
+
+    NuRndrBeginScene(1);
+    if ((FadeSys.direction & 3) != 0) {
+        if ((FadeSys.direction & 1) != 0) {
+            edge = 1.0f - FadeSys.fade;
+            colours[0] = 0x808080;
+            colours[1] = 0x80808080;
+            colours[2] = 0x808080;
+            colours[3] = 0x80808080;
+            x = (i32)(edge * 10260.0);
+            u0 = edge;
+            width -= x;
+            NuRndrGradRectUV2di(x - 0x402, y, 0x402, height, edge - (f64)0.1f, 0.0f, edge, 1.0f, colours,
+                                (NUMTL *)pause_rndr_mtl);
+        } else {
+            edge = FadeSys.fade;
+            colours[0] = 0x80808080;
+            colours[1] = 0x808080;
+            colours[2] = 0x80808080;
+            colours[3] = 0x808080;
+            width = (i32)(edge * 10260.0);
+            u1 = edge;
+            NuRndrGradRectUV2di(width - 0x20, y, 0x402, 0xe08, edge, 0.0f, edge + (f64)0.1f, 1.0f, colours,
+                                (NUMTL *)pause_rndr_mtl);
+        }
+    } else if ((FadeSys.direction & 0xc) != 0) {
+        if ((FadeSys.direction & 4) != 0) {
+            edge = 1.0f - FadeSys.fade;
+            colours[0] = 0x808080;
+            colours[1] = 0x808080;
+            colours[2] = 0x80808080;
+            colours[3] = 0x80808080;
+            y = (i32)(edge * 3592.0);
+            v0 = edge;
+            height -= y;
+            NuRndrGradRectUV2di(x, y - 0x167, 0x2814, 0x167, 0.0f, edge - (f64)0.1f, 1.0f, edge, colours,
+                                (NUMTL *)pause_rndr_mtl);
+        } else {
+            edge = FadeSys.fade;
+            colours[0] = 0x80808080;
+            colours[1] = 0x80808080;
+            colours[2] = 0x808080;
+            colours[3] = 0x808080;
+            height = (i32)(edge * 3592.0);
+            v1 = edge;
+            NuRndrGradRectUV2di(-0x20, height - 0xc, 0x2814, 0x167, 0.0f, edge, 1.0f, edge + (f64)0.1f, colours,
+                                (NUMTL *)pause_rndr_mtl);
+        }
+    }
+    NuRndrRectUV2di(x, y, width, height, u0, v0, u1, v1, (i32)0x80808080, (NUMTL *)pause_rndr_mtl);
+    NuRndrEndScene();
+}
+
 extern "C" i32 RenderBackgroundColoursPc[2];
 extern "C" void __cdecl NuCameraSet(NUCAMERA *);
 extern "C" void __cdecl BackDrop_Draw(f32, i32);

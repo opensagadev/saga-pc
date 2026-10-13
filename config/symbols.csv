@@ -2708,7 +2708,7 @@ address    , symbol                                                         , si
 0x00565470 , _WidescreenCode                                                , 339   , void __cdecl (i32)
 0x5655d0,_KeepPointOnScreen,154,"void __cdecl(NUVEC *,NUVEC *)"
 0x00565700 , _DrawCutBorders                                                , 279   , void __cdecl (i32)
-0x5658e0,_DrawPauseScreenWipe,681,
+0x5658e0,_DrawPauseScreenWipe,681,void __cdecl(void)
 0x00565ba0 , _GrabStillScreen                                               , 51    , void __cdecl (void)
 0x565be0,_NeedScreenGrab,14,
 0x565bf0,_IsGrabbingScreen,6,u8 __cdecl(void)
@@ -4408,7 +4408,7 @@ address    , symbol                                                         , si
 0x5dbbf0,_NuRndrLineRect2di,384,
 0x5dbed0,_NuRndrLine3d,222,"i32 __cdecl(NURND_VERTEX3D_PC *,NUMTL *,NUMTX *)"
 0x005dc050,_NuRndrLine3dDbg,144,"void __cdecl(f32,f32,f32,f32,f32,f32,i32)"
-0x5dc3f0,_NuRndrGradRectUV2di,366,
+0x5dc3f0,_NuRndrGradRectUV2di,366,"void __cdecl(i32,i32,i32,i32,f32,f32,f32,f32,u32 *,void *)"
 0x5dd230,_NuRndrAxisArrowsMtx,903,"void __cdecl(NUMTX *, f32, NUMTL *)"
 0x5dda30,_NuRndrStrip3d,160,"i32 __cdecl(NURND_VERTEX3D_PC *,NUMTL *,NUMTX *,i32)"
 0x5ddad0,_NuRndrTriStrip3dClip,29,"i32 __cdecl(NURND_VERTEX3D_PC *,i32,NUMTX *,NUMTL *)"
@@ -10941,6 +10941,8 @@ address    , symbol                                                         , si
 0x7619a4,??_C@_05FJDDNDLN@ball1?$AA@,,const char[6]
 0x7619b0,__real@40ac000000000000,8,const f64
 0x7619b8,__real@3e59df52,4,const f32
+0x7619c0,__real@40ac100000000000,8,const f64
+0x7619c8,__real@40c40a0000000000,8,const f64
 0x7619e0,__real@4067e00000000000,8,const f64
 0x761a04,??_C@_0L@GBHGOCDB@BlowUpSwap?$AA@,11,const char [11]
 0x761a10,??_C@_0N@IGFHPGDK@BlowUpShadow?$AA@,13,const char [13]
