@@ -8330,7 +8330,30 @@ address    , symbol                                                         , si
 0x754568,_PlayerActionNamePc_233,6,const char[6]
 0x7546c8   , ??_C@_03NBAOADML@gun?$AA@                                      , 4     , const char[4]
 0x007547a4 , _PermLegalBase                                                 , 6     , const char[6]
+0x007547c4,_LevelSplineNameMissionCamPc,12,const char[12]
+0x007547d0,_LevelSplineNameBonusZone5Pc,13,const char[13]
+0x007547e0,_LevelSplineNameBonusZone4Pc,13,const char[13]
+0x007547f0,_LevelSplineNameBonusZone3Pc,13,const char[13]
+0x00754800,_LevelSplineNameBonusZone2Pc,13,const char[13]
+0x00754810,_LevelSplineNameBonusZone1Pc,13,const char[13]
+0x00754820,_LevelSplineNameCustardPc,8,const char[8]
+0x00754828,_LevelSplineNameTurnAround2Pc,14,const char[14]
+0x00754838,_LevelSplineNameTurnAround1Pc,14,const char[14]
+0x00754848,_LevelSplineNameCharCamPc,9,const char[9]
+0x00754854,_LevelSplineNameJabbaEntrance1Pc,16,const char[16]
+0x00754864,_LevelSplineNameE6EntrancePc,12,const char[12]
+0x00754870,_LevelSplineNameE5EntrancePc,12,const char[12]
+0x0075487c,_LevelSplineNameE4EntrancePc,12,const char[12]
+0x00754888,_LevelSplineNameE3EntrancePc,12,const char[12]
+0x00754894,_LevelSplineNameE2EntrancePc,12,const char[12]
+0x007548a0,_LevelSplineNameE1EntrancePc,12,const char[12]
+0x007548ac,_LevelSplineNameMapLookPc,9,const char[9]
+0x007548b8,_LevelSplineNameMapCamPc,8,const char[8]
+0x007548c0,_LevelSplineNameSplitPc,6,const char[6]
+0x007548c8,_LevelSplineNameCamStartPc,10,const char[10]
 0x7548d4,??_C@_0M@HAEDCOCH@finish_line?$AA@,12,char []
+0x007548d4,_LevelSplineNameFinishLinePc,12,const char[12]
+0x007548e0,_LevelSplineNamePointCamPc,10,const char[10]
 0x7548ec,??_C@_09FBNHKBDB@start_cam?$AA@,10,const char[10]
 0x007548ec , _LevelSplinesStartCamName                                      , 10    , const char[10]
 0x7548f8,??_C@_05FAGFPHJG@start?$AA@,6,char[6]
@@ -15131,7 +15154,7 @@ address    , symbol                                                         , si
 0x7f3ec0,_CheatPooCoinsEnabledPc,,u8
 0x7f4140,_TractorBeamEnabledPc,,u8
 0x7f41a0,_DroidCheat32EnabledPc,,u8
-0x007f4358 , _LevelSplinesTable                                             , 4     , LEVELSPLINE_PC *
+0x007f4358,_LevelSplinesTable,416,LEVELSPLINE_PC[26]
 0x007f5c74 , __real@42de0000                                                , 4     , const f32
 0x007f5cf8 , _PodAvalanchePeakPos                                           , 12    , NUVEC
 0x007f5d04 , __real@443b8000                                                , 4     , const f32

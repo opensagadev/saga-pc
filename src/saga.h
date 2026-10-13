@@ -10489,7 +10489,7 @@ extern OCCLUSIONMANAGER g_OcclusionManager;
     extern LEVEL_PROGRESS *LevelProgressData;
     i32 __cdecl EffectOffProgress_Update(LEVEL_PROGRESS *progress, char *name, i32 enabled);
     void __cdecl EffectOffProgress_Reset(LEVEL_PROGRESS *progress);
-    extern LEVELSPLINE_PC *LevelSplinesTable;
+    extern LEVELSPLINE_PC LevelSplinesTable[26];
     void __cdecl LevelProgress_ReserveBufferSpace(VARIPTR *buffer, VARIPTR buffer_end);
     void __cdecl LevelSplines_InitForGame(LEVELSPLINE_PC *table);
     extern LEVELDATA_PC *KAMINOE_LDATA;

@@ -8499,7 +8499,71 @@ extern "C" {
     NUVEC PodAvalanchePeakPos = {-110.0f, -10.0f, -455.0f};
     LEVEL_PROGRESS *LevelProgressData;
     LEVELSPLINE_PC *LevSplList;
-    LEVELSPLINE_PC *LevelSplinesTable;
+#pragma const_seg(".rdata$LevelSplineNamePointCamPc")
+    extern const char LevelSplineNamePointCamPc[10] = "point_cam";
+#pragma const_seg(".rdata$LevelSplineNameFinishLinePc")
+    extern const char LevelSplineNameFinishLinePc[12] = "finish_line";
+#pragma const_seg(".rdata$LevelSplineNameCamStartPc")
+    extern const char LevelSplineNameCamStartPc[10] = "cam_start";
+#pragma const_seg(".rdata$LevelSplineNameSplitPc")
+    extern const char LevelSplineNameSplitPc[6] = "split";
+#pragma const_seg(".rdata$LevelSplineNameMapCamPc")
+    extern const char LevelSplineNameMapCamPc[8] = "map_cam";
+#pragma const_seg(".rdata$LevelSplineNameMapLookPc")
+    extern const char LevelSplineNameMapLookPc[9] = "map_look";
+#pragma const_seg(".rdata$LevelSplineNameE1EntrancePc")
+    extern const char LevelSplineNameE1EntrancePc[12] = "e1_entrance";
+#pragma const_seg(".rdata$LevelSplineNameE2EntrancePc")
+    extern const char LevelSplineNameE2EntrancePc[12] = "e2_entrance";
+#pragma const_seg(".rdata$LevelSplineNameE3EntrancePc")
+    extern const char LevelSplineNameE3EntrancePc[12] = "e3_entrance";
+#pragma const_seg(".rdata$LevelSplineNameE4EntrancePc")
+    extern const char LevelSplineNameE4EntrancePc[12] = "e4_entrance";
+#pragma const_seg(".rdata$LevelSplineNameE5EntrancePc")
+    extern const char LevelSplineNameE5EntrancePc[12] = "e5_entrance";
+#pragma const_seg(".rdata$LevelSplineNameE6EntrancePc")
+    extern const char LevelSplineNameE6EntrancePc[12] = "e6_entrance";
+#pragma const_seg(".rdata$LevelSplineNameJabbaEntrance1Pc")
+    extern const char LevelSplineNameJabbaEntrance1Pc[16] = "jabba_entrance1";
+#pragma const_seg(".rdata$LevelSplineNameCharCamPc")
+    extern const char LevelSplineNameCharCamPc[9] = "char_cam";
+#pragma const_seg(".rdata$LevelSplineNameTurnAround1Pc")
+    extern const char LevelSplineNameTurnAround1Pc[14] = "Turn_Around_1";
+#pragma const_seg(".rdata$LevelSplineNameTurnAround2Pc")
+    extern const char LevelSplineNameTurnAround2Pc[14] = "Turn_Around_2";
+#pragma const_seg(".rdata$LevelSplineNameCustardPc")
+    extern const char LevelSplineNameCustardPc[8] = "custard";
+#pragma const_seg(".rdata$LevelSplineNameBonusZone1Pc")
+    extern const char LevelSplineNameBonusZone1Pc[13] = "bonus_zone_1";
+#pragma const_seg(".rdata$LevelSplineNameBonusZone2Pc")
+    extern const char LevelSplineNameBonusZone2Pc[13] = "bonus_zone_2";
+#pragma const_seg(".rdata$LevelSplineNameBonusZone3Pc")
+    extern const char LevelSplineNameBonusZone3Pc[13] = "bonus_zone_3";
+#pragma const_seg(".rdata$LevelSplineNameBonusZone4Pc")
+    extern const char LevelSplineNameBonusZone4Pc[13] = "bonus_zone_4";
+#pragma const_seg(".rdata$LevelSplineNameBonusZone5Pc")
+    extern const char LevelSplineNameBonusZone5Pc[13] = "bonus_zone_5";
+#pragma const_seg(".rdata$LevelSplineNameMissionCamPc")
+    extern const char LevelSplineNameMissionCamPc[12] = "mission_cam";
+#pragma const_seg()
+#pragma data_seg(".data$LevelSplinesTable")
+    LEVELSPLINE_PC LevelSplinesTable[26] = {
+        {NULL, LevelSplinesStartName, 2, 0, -1, -1},           {NULL, LevelSplinesStartCamName, 2, 0, -1, -1},
+        {NULL, LevelSplineNamePointCamPc, 2, 2, -1, -1},       {NULL, LevelSplineNameFinishLinePc, 2, 2, -1, -1},
+        {NULL, LevelSplineNameCamStartPc, 2, 2, -1, -1},       {NULL, LevelSplineNameSplitPc, 2, 2, -1, -1},
+        {NULL, LevelSplineNameMapCamPc, 2, 0, -1, -1},         {NULL, LevelSplineNameMapLookPc, 2, 0, -1, -1},
+        {NULL, LevelSplineNameE1EntrancePc, 2, 2, -1, -1},     {NULL, LevelSplineNameE2EntrancePc, 2, 2, -1, -1},
+        {NULL, LevelSplineNameE3EntrancePc, 2, 2, -1, -1},     {NULL, LevelSplineNameE4EntrancePc, 2, 2, -1, -1},
+        {NULL, LevelSplineNameE5EntrancePc, 2, 2, -1, -1},     {NULL, LevelSplineNameE6EntrancePc, 2, 2, -1, -1},
+        {NULL, LevelSplineNameJabbaEntrance1Pc, 2, 2, -1, -1}, {NULL, LevelSplineNameCharCamPc, 2, 2, -1, -1},
+        {NULL, LevelSplineNameTurnAround1Pc, 2, 1024, -1, -1}, {NULL, LevelSplineNameTurnAround2Pc, 2, 1024, -1, -1},
+        {NULL, LevelSplineNameCustardPc, 4, 4, -1, -1},        {NULL, LevelSplineNameBonusZone1Pc, 3, 0, -1, -1},
+        {NULL, LevelSplineNameBonusZone2Pc, 3, 0, -1, -1},     {NULL, LevelSplineNameBonusZone3Pc, 3, 0, -1, -1},
+        {NULL, LevelSplineNameBonusZone4Pc, 3, 0, -1, -1},     {NULL, LevelSplineNameBonusZone5Pc, 3, 0, -1, -1},
+        {NULL, LevelSplineNameMissionCamPc, 2, 2, -1, -1},     {NULL, NULL, 0, 0, 0, 0},
+    };
+#pragma data_seg()
+    STATIC_ASSERT(sizeof(LevelSplinesTable) == 0x1a0);
     i32 nudlist_alloc_count;
     u32 nudlist_alloc_base;
     u32 nudlist_alloc_end;
