@@ -435,6 +435,33 @@ static void NuMainRenderWorld(WORLDINFO *world) {
     }
 }
 
+typedef struct NU_MAIN_STATUS_PACKET_PC {
+    u8 unknown_00[0x9c];
+    u16 player_models[2];
+    u8 unknown_a0[4];
+    u8 player_active[2];
+    u8 unknown_a6[0xe];
+    u8 status_flags;
+} NU_MAIN_STATUS_PACKET_PC;
+STATIC_ASSERT(offsetof(NU_MAIN_STATUS_PACKET_PC, player_models) == 0x9c);
+STATIC_ASSERT(offsetof(NU_MAIN_STATUS_PACKET_PC, player_active) == 0xa4);
+STATIC_ASSERT(offsetof(NU_MAIN_STATUS_PACKET_PC, status_flags) == 0xb4);
+STATIC_ASSERT(offsetof(PLAYERPROGRESS, field_7) == 7);
+STATIC_ASSERT(offsetof(PLAYERPROGRESS, coins) == 0);
+
+extern "C" {
+    u8 StatusPlayerActivePc[8];
+    void __cdecl InitStatusScreen(WORLDINFO *);
+    void __cdecl NuMainStatusHelperPc(STATUSPACKET_s *);
+    void __cdecl MusicClearAll(void);
+    void __cdecl SoundKillAll(void);
+    void __cdecl ClearUpAreaData(void);
+    void __cdecl WorldInfo_ClearAllIfScreenFaded(void);
+    i32 __cdecl MakePlayerList(i32);
+}
+
+i32 __cdecl Game_Exit(i32);
+
 extern "C" int __cdecl NuMain(int argc, char **argv) {
     WORLDINFO *saved_world;
     GIZAIMESSAGE *message;
@@ -445,6 +472,8 @@ extern "C" int __cdecl NuMain(int argc, char **argv) {
     i32 vbcnt;
     i64 previous_vbcnt;
     f32 saved_frametime;
+    i32 player_index;
+    NU_MAIN_STATUS_PACKET_PC *status = (NU_MAIN_STATUS_PACKET_PC *)&StatusPacket;
 
     NuCommandLine(&argc, &argv);
     WorldInfo_InitOnce();
@@ -805,13 +834,119 @@ extern "C" int __cdecl NuMain(int argc, char **argv) {
         }
 
         reset_load = 1;
-        if (PcWindowQuit != 0 || NewLData == NULL) {
+        if (new_level_from_menu != 0) {
+            ClearAreaProgress(WORLD->area_index, 1);
+        }
+        LastLData = WORLD->current_level;
+        if (PlayTrailer != -1) {
+            last_area = -1;
+        } else {
+            last_area = Area;
+            LastAData = &ADataList[Area];
+        }
+        if (LastLData == CREDITS_LDATA) {
+            saved_frametime = Game_OptionsSave != NULL ? GameSetMusicVolume(Game_OptionsSave) : 1.0f;
+            legoSetMusicVolume(saved_frametime);
+        }
+        Area = NewLData->area_index;
+        Level = NewLData->index;
+        if (Area == last_area && Area != -1) {
+            ++LevelChangesInArea;
+        } else {
+            LevelChangesInArea = 0;
+        }
+        LevelChange = NewLData->index != LastLData->index;
+        if (Area != last_area || new_level_from_menu != 0) {
+            if (NOSOUND == 0) {
+                music_man.StopAll(0);
+                MusicClearAll();
+                SoundKillAll();
+            }
+            if ((HUB_ADATA == NULL || last_area != (u8)HUB_ADATA->index) && Arcade != 0) {
+                if (HUB_ADATA != NULL && Area == (u8)HUB_ADATA->index) {
+                    hub_from_arcade = last_area;
+                }
+                Arcade = 0;
+            }
+        }
+        if (NewLData == STATUS_LDATA || (NewLData->flags & 0x400) != 0) {
+            InitStatusScreen(WORLD);
+            if (NewLData != STATUS_LDATA && status->status_flags != 0) {
+                NuMainStatusHelperPc(&StatusPacket);
+            }
+        }
+        if (netclient != 0) {
+            for (player_index = 0; player_index < 8; ++player_index) {
+                PlayerProgress[player_index].active = StatusPlayerActivePc[player_index];
+            }
+            UsePlayerList = 2;
+        } else if (Area != -1 && Area == last_area) {
+            MakePlayerList(8);
+            UsePlayerList = new_level_from_menu != 0 ? 2 : 1;
+        } else {
+            if (PLAYERCOUNT > 0) {
+                UsePlayerList = 2;
+            }
+            MakePlayerList(8);
+            Door_UseCutCam = 0;
+        }
+        if (Area == -1) {
+            NextArea_FreePlay = 0;
+            FreePlay = 0;
+        } else {
+            if ((ADataList[Area].flags & 4) != 0) {
+                NextArea_FreePlay = 1;
+                FreePlay = 1;
+            }
+            if (new_level_from_menu != 0 && Area != last_area) {
+                if (HUB_ADATA != NULL && Area == (u8)HUB_ADATA->index) {
+                    NextArea_FreePlay = 0;
+                }
+                FreePlay = NextArea_FreePlay;
+                if (FreePlay != 0) {
+                    if (Player[0] != NULL) {
+                        ((GAMEOBJECT *)Player[0])->id = -1;
+                    }
+                    if (Player[1] != NULL) {
+                        ((GAMEOBJECT *)Player[1])->id = -1;
+                    }
+                    makefreeplaymodellist = 1;
+                }
+            }
+        }
+        if (status->status_flags != 0 &&
+            ((STATUS_LDATA != NULL && LastLData == STATUS_LDATA) || (LastLData->flags & 0x400) != 0 ||
+             (CREDITS_LDATA != NULL && LastLData == CREDITS_LDATA))) {
+            for (player_index = 0; player_index < 8; ++player_index) {
+                if (player_index < 2) {
+                    PlayerList[player_index] = status->player_models[player_index];
+                    PlayerProgress[player_index].active = status->player_active[player_index];
+                } else {
+                    PlayerList[player_index] = -1;
+                    PlayerProgress[player_index].active = 0;
+                }
+                PlayerProgress[player_index].field_7 = 0;
+                PlayerProgress[player_index].coins = 0;
+            }
+            UsePlayerList = HUB_ADATA != NULL && Area == (u8)HUB_ADATA->index && LastLData != TITLES_LDATA ? 1 : 2;
+        }
+        if (HUB_ADATA != NULL && Area == (u8)HUB_ADATA->index && Area != last_area) {
+            if (CREDITS_LDATA != NULL && LastLData == CREDITS_LDATA && status->status_flags != 0) {
+                RememberPlayerIDs(1, (i16)status->player_models[0], (i16)status->player_models[1]);
+            }
+            Hub_MakeModelList();
+        }
+        NuSound3StopRumble();
+        FreeGameObjectLights();
+        ClearUpAreaData();
+        if (NuAllocDumpOnLevelPc != 0) {
+            NuAllocDumpRecords(0);
+        }
+        MenuReset();
+        WorldInfo_ClearAllIfScreenFaded();
+        if (Game_Exit(last_area) != 0) {
             break;
         }
-        STUBBED_NAMED("NuMain: level transition at 0x004937b1 (NewLData -> Area/Level, music, restart)");
-        break;
     }
-
-    STUBBED_NAMED("NuMain: Game_Exit and restart decision at 0x00493c12");
     return 0;
 }

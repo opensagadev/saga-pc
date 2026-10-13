@@ -36,7 +36,7 @@
     "config/data-members.json": "fe09365da4c355f220d724ca99394fc120b758891b4188d2c49707b6df0894f2",
     "config/library-objects.json": "e5ae24d3eac36fa0d0cb098f7690faaef3110f225db30c8cbf0f7d0d64f6ecfe",
     "config/project.json": "dc0e8cc85ae5650c6937b70ccaefb0153629c2460fa09cd4f6b625e251e623dd",
-    "config/symbols.csv": "0bd62d867ebfe3f5b5b58bc788033b7adf30010dd30030f706d3a89fe38c995a",
+    "config/symbols.csv": "f5c0b3df2cdb1a7823ec86f2a5c980a8c0a1d2c0af57fa1482518afa9c8a2efb",
     "config/symbols.md": "dffbdaac86011e3aee74b404063c15bda97f88af3db337ffef9f1bad1785d212",
     "config/toolchain.json": "489d0782638d8033137cdb2834462416111945cbfa073147820e314b8576b95b",
     "config/tools.json": "50199f6b132a7abfabf251e98a75be0a957abfe50f1ff776188fba21e4c4436f",
@@ -75,7 +75,7 @@
     "tools/dinput8.def": "0650c8a82ce920cd1f07c5f585b6f64129b09c5969bb5074b871c8921dc32a3c",
     "tools/dsound.def": "10147b85f8f09f4a3fefe82c0756818c64d9a6f2d81bb3f120757ea5b08941da",
     "tools/xinput1_3.def": "f2b829c89adb5c7fc9fbd7dfdbc49f8eb5412d4700bf1123935f71a29fa84b50",
-    "src/batman.cpp": "3424a0555ada4981511e9753f8ae60edf4da35e52bbb3bb99ec6bd76ac21d78d",
+    "src/batman.cpp": "8ee72c8d0d780a7e4fd3c16c50dc01234c23c8b1f7a6d3ed06b151d6b1d0d96f",
     "src/data.cpp": "9222e1a1bfec253e66003b8471f9c25db6e2316e8728d5c150fd4d437e7248a6",
     "src/gameapi/message.cpp": "d866d1645077e79807e57c3808e326e472a7ea95edd40a22bc405f922aff4999",
     "src/gameapi/saveload.cpp": "b45694feeb9a7f49d79dc8ae970a0a91eb86ccff032ac884dc883e16d366d25f",
@@ -452,7 +452,7 @@
     "build/obj/audio/vorbis/vorbisfile.obj": "8453a5153df8ce91e8e81b803511ab5ea0bfddb8a1e4b7e7b6c85babf84d80ca",
     "build/obj/audio/vorbis/window.obj": "561822a52c2bc02d6448687a6f6356d7dc524911b1f796f6ca2f341c56332539",
     "build/obj/audio/vorbis_smallft.obj": "ff18cd26ea3e0ac3eee1fe1f65724670317cd51ce8fd5cc70452d60993fb75dd",
-    "build/obj/batman.obj": "191a67172158153327850aa36b6348b52d289c7c04855b7892b0ba2a763c0714",
+    "build/obj/batman.obj": "2a7998c5919163b42e38694662cfde2ea5603db7b5545207ef65877e6c15f4ac",
     "build/obj/data.obj": "88228bd6dbeca46b7e53b8681fcc4dcf81bf900077c7c037ee1ce6a0bdf531b4",
     "build/obj/editor/edtoolsall.obj": "425ec5d021c056c8bf647a6d040c4be8dc941827081671a1e50622f462607893",
     "build/obj/gameapi/aiscript.obj": "41543ca62d041247d914a2362408339d1c66f7a6e82f53dfbe3d9a028aafe74d",
@@ -16447,6 +16447,16 @@
       "status": "not implemented"
     },
     {
+      "name": "NuMainStatusHelperPc",
+      "symbol": "_NuMainStatusHelperPc",
+      "address": "0x00486c00",
+      "units": [],
+      "target_size": null,
+      "exact_match": false,
+      "objects": [],
+      "status": "unknown size"
+    },
+    {
       "name": "UpdateStatusScreen",
       "symbol": "_UpdateStatusScreen",
       "address": "0x00486c60",
@@ -19710,17 +19720,17 @@
       "objects": [
         {
           "unit": "src/batman.cpp",
-          "base_size": 3117,
+          "base_size": 4241,
           "exact_match": false,
           "target_sha256": "b21a1c5cc4d55da5db8c00161fc107d1695175b7fc48c3e62805ddf7ae85cda2",
-          "base_sha256": "53a061cb5f0b4b9285da08d61b4ea5abc567c76edf09d7f77c61e73191ff59d8",
-          "relocation_count": 367,
+          "base_sha256": "44cc4e23062c29ca9856c95b71c76ff25464e03a87b95b03956757649da6be99",
+          "relocation_count": 491,
           "comparison_unit": "00492b40-dd208425f9ad",
-          "objdiff_percent": 57.66305
+          "objdiff_percent": 77.558266
         }
       ],
       "status": "different",
-      "objdiff_percent": 57.66305
+      "objdiff_percent": 77.558266
     },
     {
       "name": "MenuEnterOptions",
@@ -326437,6 +326447,27 @@
       "status": "exact"
     },
     {
+      "name": "StatusPlayerActivePc",
+      "symbol": "_StatusPlayerActivePc",
+      "address": "0x0087a1f8",
+      "units": [
+        "src/batman.cpp"
+      ],
+      "target_size": 8,
+      "exact_match": true,
+      "objects": [
+        {
+          "unit": "src/batman.cpp",
+          "exact_match": true,
+          "target_size": 8,
+          "base_size": 8,
+          "target_sha256": "af5570f5a1810b7af78caf4bc70a660f0df51e42baf91d4de5b2328de0e83dfc",
+          "base_sha256": "af5570f5a1810b7af78caf4bc70a660f0df51e42baf91d4de5b2328de0e83dfc"
+        }
+      ],
+      "status": "exact"
+    },
+    {
       "name": "StatusStages",
       "symbol": "_StatusStages",
       "address": "0x0087a620",
@@ -377888,14 +377919,14 @@
     "mapped_code_bytes": 2152966,
     "matched_code_bytes": 396177,
     "matching_percent": 11.413106417695548,
-    "fuzzy_coverage_percent": 36.780599254082205,
-    "mapped_functions": 7500,
+    "fuzzy_coverage_percent": 36.80542782448949,
+    "mapped_functions": 7501,
     "matched_functions": 3520,
-    "objdiff_fuzzy_percent": 73.41651,
+    "objdiff_fuzzy_percent": 73.46605,
     "objdiff_total_code": 1739931,
     "image_bytes": 40067072,
-    "mapped_bytes": 3076477,
-    "mapping_percent": 7.67831749722066,
+    "mapped_bytes": 3076485,
+    "mapping_percent": 7.6783374637407995,
     "mapping_denominator": "code_and_data_section_virtual_sizes",
     "mapping_sections": [
       {
@@ -377917,21 +377948,21 @@
         "kind": "data",
         "address": "0x7ef000",
         "size": 35372200,
-        "mapped_bytes": 881982
+        "mapped_bytes": 881990
       }
     ],
-    "mapping_known_size_symbols": 12868,
-    "mapping_unknown_size_symbols": 7044,
+    "mapping_known_size_symbols": 12869,
+    "mapping_unknown_size_symbols": 7045,
     "mapping_code_bytes": 2154160,
     "mapping_code_total_bytes": 3471246,
     "mapping_code_percent": 62.05725552150438,
-    "mapping_data_bytes": 922317,
+    "mapping_data_bytes": 922325,
     "mapping_data_total_bytes": 36018966,
-    "mapping_data_percent": 2.5606426347719142,
-    "mapping_code_data_bytes": 3076477,
+    "mapping_data_percent": 2.560664845292894,
+    "mapping_code_data_bytes": 3076485,
     "mapping_code_data_total_bytes": 39490212,
-    "mapping_code_data_percent": 7.790479828267318,
-    "matched_data_region_bytes": 908574
+    "mapping_code_data_percent": 7.790500086451802,
+    "matched_data_region_bytes": 908582
   },
   "data_members": [
     {
@@ -378990,7 +379021,7 @@
       "metadata_sha256": "fe09365da4c355f220d724ca99394fc120b758891b4188d2c49707b6df0894f2",
       "header_path": "src/saga.h",
       "header_sha256": "69ba650ba8d7562b6f59a1634b9254e7c6a438a859204879cb491204d3051db1",
-      "geometry_object_sha256": "fd3626518e1d1e9604739471deffabddfc36338cbb23da3f502cdc03106161f2",
+      "geometry_object_sha256": "aef7573aaad71132b4a69588918c7291ab72b9c5ff629d36d2234f79a714ff34",
       "toolchain_sha256": "489d0782638d8033137cdb2834462416111945cbfa073147820e314b8576b95b",
       "implementation_sha256": "9ad7521230f06fde31f0771b10bd001037ea32d2def455913a7f391f05dede9d",
       "headers": {
