@@ -19,8 +19,8 @@ f32 __cdecl NuFrameEnd(void) {
     i32 had_error = NuHasError();
     STUBBED_NAMED(0x008004e8); /* PC frame pacing gate and target interval. */
     STUBBED_NAMED(0x007510ac); /* PC Sleep calls inside the frame wait loop. */
-    STUBBED_NAMED(0x00601330); /* PC frame-time update helper; identity unconfirmed. */
-    STUBBED_NAMED(0x005d34a0); /* PC frame-time update helper; identity unconfirmed. */
+    NuMtlAnimate(nuapi.frame_time);
+    NuTexAnimProcess(nuapi.frame_time);
     NuWindAnimate(nuapi.wind, nuapi.frame_time);
     STUBBED_NAMED(0x005c6100); /* One-byte PC leaf; identity unresolved. */
     STUBBED_NAMED(0x005de1a0); /* PC update helper with unresolved owner. */

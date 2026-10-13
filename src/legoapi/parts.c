@@ -1276,6 +1276,56 @@ void PartKill_ForceThrow(PART_PC *part, i32 reason) {
     PlaySfx((char *)ForceThrowExplodeNamePc, &part->position);
 }
 
+void __cdecl Hub_LockUnlockDoors(WORLDINFO *world);
+
+void __cdecl Areas_OpenAll(i32 mode) {
+    i32 i;
+
+    for (i = 0; i < AREACOUNT; i++) {
+        Game.area_save[i].complete = 1;
+        Game.area_save[i].area_complete = 1;
+        if (ADataList[i].challenge_trial_time > 0) {
+            Game.area_save[i].challenge_trial_time = (f32)(ADataList[i].challenge_trial_time - 0.5);
+        }
+        if (mode != 0) {
+            Game.area_save[i].challenge_unlocked = 1;
+        }
+    }
+    Game.unknown_game_02[1] = 1;
+    if (WORLD != NULL && WORLD->current_level == HUB_LDATA) {
+        Hub_LockUnlockDoors(WORLD);
+    }
+    ReCalculateCompletionPoints();
+}
+
+extern void *game_cutscenes_droid_factory_conveyor;
+extern void *game_cutscenes_podrace_avalanche;
+
+void __cdecl FindGameCutScenes(void) {
+    game_cutscenes_podrace_pod_explode = NULL;
+    game_cutscenes_podrace_out_of_time = NULL;
+    game_cutscenes_bonus_gunship_cavalry_explode = NULL;
+    game_cutscenes_droid_factory_conveyor = NULL;
+    game_cutscenes_podrace_avalanche = NULL;
+    game_cutscenes_dogfight_die = NULL;
+    game_cutscenes_podrace_sebulba = NULL;
+    game_cutscenes_cutscene = NULL;
+    game_cutscenes_podsprint_out_of_time = NULL;
+    game_cutscenes_podsprint_sebulba = NULL;
+
+    game_cutscenes_podrace_pod_explode = CutScene_Find(WORLD->cutscene_sys, "ep1_podrace_podexplode");
+    game_cutscenes_podrace_out_of_time = CutScene_Find(WORLD->cutscene_sys, "ep1_podrace_outoftime");
+    game_cutscenes_bonus_gunship_cavalry_explode =
+        CutScene_Find(WORLD->cutscene_sys, "ep2_bonus_gunshipcavalry_explode");
+    game_cutscenes_droid_factory_conveyor = CutScene_Find(WORLD->cutscene_sys, "ep2_droidfactory_conveyor");
+    game_cutscenes_podrace_avalanche = CutScene_Find(WORLD->cutscene_sys, "ep1_podrace_avalanche");
+    game_cutscenes_dogfight_die = CutScene_Find(WORLD->cutscene_sys, "ep3_dogfight_die");
+    game_cutscenes_podrace_sebulba = CutScene_Find(WORLD->cutscene_sys, "ep1_podrace_sebulba");
+    game_cutscenes_cutscene = CutScene_Find(WORLD->cutscene_sys, "ep1_podsprint_avalanche");
+    game_cutscenes_podsprint_out_of_time = CutScene_Find(WORLD->cutscene_sys, "ep1_podsprint_outoftime");
+    game_cutscenes_podsprint_sebulba = CutScene_Find(WORLD->cutscene_sys, "ep1_podsprint_sebulba");
+}
+
 void GizmoBlowupCreateStuff(GIZMOBLOWUP_PC *blowup) {
     i32 coins;
     NUVEC direction;

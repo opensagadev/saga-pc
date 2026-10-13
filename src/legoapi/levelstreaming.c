@@ -130,3 +130,8 @@ void __cdecl LevelStreaming_Update(WORLDINFO *world) {
         abort_load = 1;
     }
 }
+
+void __cdecl WorldInfo_Activate(void) {
+    WORLD = LWORLD;
+    WorldInfo_Init(LWORLD);
+}

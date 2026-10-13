@@ -8529,6 +8529,8 @@ extern "C" {
     void *game_cutscenes_podrace_pod_explode;
     void *game_cutscenes_podrace_out_of_time;
     void *game_cutscenes_bonus_gunship_cavalry_explode;
+    void *game_cutscenes_droid_factory_conveyor;
+    void *game_cutscenes_podrace_avalanche;
     NUVEC PodRaceADiePos = {350.0f, 0.25f, -15.0f};
     NUVEC PodRaceBDiePos = {138.0f, 0.15f, 178.0f};
     NUVEC PodRaceCDiePos = {140.0f, -7.2f, 52.0f};
@@ -28493,6 +28495,27 @@ extern "C" {
 
 #pragma data_seg(".data$CurrentMusicPair_Quiet")
     i32 CurrentMusicPair_Quiet = -1;
+
+#pragma bss_seg(".bss$MoviePlayTime")
+    f32 MoviePlayTime;
+
+#pragma bss_seg(".bss$movie_skipped")
+    i32 movie_skipped;
+
+#pragma bss_seg(".bss$MovieInputFn")
+    i32(__cdecl *MovieInputFn)(void);
+
+#pragma bss_seg(".bss$MovieFrameTime")
+    f32 MovieFrameTime;
+
+#pragma data_seg(".data$last_currentmusicpair_quiet")
+    i32 last_currentmusicpair_quiet = -1;
+
+#pragma bss_seg(".bss$MusicOther")
+    i32 MusicOther;
+
+#pragma bss_seg(".bss$sticky_attack")
+    i32 sticky_attack;
 }
 
 extern "C" {

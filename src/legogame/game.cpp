@@ -1868,6 +1868,64 @@ extern "C" nusound_filename_info_s *__cdecl ConfigureMusic(char *ignored_file, V
     return files;
 }
 
+extern "C" {
+    extern i32 last_currentmusicpair_quiet;
+    extern i32 MusicOther;
+    extern i32 sticky_attack;
+}
+
+extern "C" void __cdecl GamePlayMusic(LEVELDATA_PC *level, i32 check, OPTIONSSAVE *options) {
+    i32 other = MusicOther;
+    i32 music_other;
+
+    last_currentmusicpair_quiet = CurrentMusicPair_Quiet;
+    MusicOther = 0;
+    if (NOSOUND != 0 || NOMUSIC != 0) {
+        return;
+    }
+    if (CheckMusicOtherFn != NULL) {
+        music_other = CheckMusicOtherFn();
+    } else {
+        music_other = 0;
+    }
+    MusicOther = music_other;
+    if (check != 0) {
+        if (music_other == other) {
+            return;
+        }
+    } else {
+        sticky_attack_time = 0.0f;
+        sticky_attack = MusicActiveReset;
+    }
+
+    music_man.SelectTrackByHandle(1, level->music_tracks[music_other]);
+    music_man.SelectTrackByHandle(2, level->music_tracks[MusicOther + 2]);
+    music_man.SelectTrackByHandle(0x20, level->music_tracks[MusicOther + 4]);
+
+    if (options->music_enabled != 0) {
+        if (sticky_attack != 0) {
+            if (music_man.GetTrackHandle(2, NULL) != -1) {
+                music_man.PlayTrack(2);
+                return;
+            }
+            if (music_man.GetTrackHandle(1, NULL) != -1) {
+                music_man.PlayTrack(1);
+                return;
+            }
+        } else {
+            if (music_man.GetTrackHandle(1, NULL) != -1) {
+                music_man.PlayTrack(1);
+                return;
+            }
+            if (music_man.GetTrackHandle(2, NULL) != -1) {
+                music_man.PlayTrack(2);
+                return;
+            }
+        }
+    }
+    music_man.PlayTrack(0x20);
+}
+
 extern "C" void MusicClearAll() {
     MusicPlrsUnderAttack = 0;
     MusicActive = -1;

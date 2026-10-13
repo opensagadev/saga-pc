@@ -1564,7 +1564,9 @@ typedef struct AREA_SAVE_PICKUP_PC {
         };
         struct {
             u8 complete;
-            u8 newgame_reserved_01[7];
+            u8 area_complete;
+            u8 newgame_reserved_02[5];
+            u8 challenge_unlocked;
             f32 challenge_trial_time;
         };
     };
@@ -1724,7 +1726,12 @@ typedef struct numtl_s {
     u8 unknown_0002[0x3a];
     NUDISPLAYLIST_PC *display_list;
     NUMTLATTRIB attribs;
-    u8 unknown_0044[0x30];
+    u8 unknown_0044[0x10];
+    f32 diffuse_r;
+    f32 diffuse_g;
+    f32 diffuse_b;
+    u8 unknown_0060[0x10];
+    f32 opacity;
     i16 texture_id;
     u8 unknown_076[0x23];
     i8 particle_type_tag;
@@ -1732,6 +1739,8 @@ typedef struct numtl_s {
 STATIC_ASSERT(offsetof(NUMTL, flags) == 0);
 STATIC_ASSERT(offsetof(NUMTL, display_list) == 0x3c);
 STATIC_ASSERT(offsetof(NUMTL, attribs) == 0x40);
+STATIC_ASSERT(offsetof(NUMTL, diffuse_r) == 0x54);
+STATIC_ASSERT(offsetof(NUMTL, opacity) == 0x70);
 STATIC_ASSERT(offsetof(NUMTL, texture_id) == 0x74);
 STATIC_ASSERT(offsetof(NUMTL, particle_type_tag) == 0x99);
 

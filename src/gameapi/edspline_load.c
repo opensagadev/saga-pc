@@ -83,3 +83,49 @@ NUGSPLINE *__cdecl edSpline_SplineFind(NUGSCN *scene, char *name) {
     }
     return NuSplineFind(scene, name);
 }
+
+extern i32 movie_skipped;
+extern f32 MoviePlayTime;
+extern i32(__cdecl *MovieInputFn)(void);
+extern f32 MovieFrameTime;
+i32 __cdecl GamePads_SkipMovie(void);
+i32 __cdecl Movie_CallBack(void);
+i32 __cdecl NuFmvPlayV(i32 tag, ...);
+
+i32 __cdecl Movie_Play(char *name, VARIPTR *buffer, VARIPTR *buffer_end, f32 frame_time, i32(__cdecl *input_fn)(void),
+                       f32 volume) {
+    char path[256];
+    char subtitles[256];
+    f32 movie_volume;
+
+    movie_skipped = 0;
+    NuStrCpy(path, "movies\\");
+    if (PAL != 0) {
+        NuStrCat(path, "pal\\");
+    } else {
+        NuStrCat(path, "ntsc\\");
+    }
+    NuStrCat(path, name);
+    NuStrCpy(subtitles, path);
+    NuStrCat(subtitles, ".sub");
+    NuStrCat(path, ".pss");
+    if (NOSOUND == 0) {
+        NuSound3KillAllAudio();
+        NuSound3Update();
+    }
+    MoviePlayTime = 0.0f;
+    MovieInputFn = input_fn;
+    movie_volume = volume;
+    MovieFrameTime = frame_time;
+    if (input_fn == NULL) {
+        MovieInputFn = GamePads_SkipMovie;
+    }
+    if (buffer == NULL || buffer_end == NULL) {
+        return 0;
+    }
+    if (NuFmvPlayV(2, path, 3, 4, 2, 7, Movie_CallBack, 10, 0, 14, &movie_volume, 8, buffer, buffer_end->void_ptr, 5,
+                   subtitles, 1) == 0) {
+        return 0;
+    }
+    return movie_skipped != 0 ? 1 : 2;
+}

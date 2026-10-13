@@ -171,6 +171,20 @@ NUANG NuAngSub(NUANG a, NUANG b) {
     return difference;
 }
 
+i32 NuPower2(i32 value) {
+    i32 power;
+
+    if (value >= 128) {
+        power = 128;
+    } else {
+        power = 1;
+    }
+    while (power < value) {
+        power += power;
+    }
+    return power;
+}
+
 void NuAng2AltSol(NUANG *out_x, NUANG *out_y, NUANG *out_z, NUANG x, NUANG y, NUANG z) {
     *out_x = x + 0x8000;
     *out_y = -0x8000 - y;

@@ -1142,6 +1142,10 @@ extern "C" void __cdecl Hub_DrawMiniKits(WORLDINFO *world) {
     STUBBED_NAMED("Hub_DrawMiniKits: SetLevelLights");
 }
 
+extern "C" void __cdecl Hub_LockUnlockDoors(WORLDINFO *world) {
+    (void)world;
+}
+
 /* Additional source-private viewer state/native menu-reader view, genuine
  * original backing/ownership gate pending; no placeholder storage emitted. */
 
