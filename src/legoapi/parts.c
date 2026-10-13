@@ -82,8 +82,8 @@ void __cdecl edpartClearPage(i8 page) {
     for (index = 0; index < 32; ++index) {
         if (part_scene_pageid[index] == page) {
             KillPartsByScene(part_scene[index]);
-            part_scene_pageid[index] = -1;
             part_scene[index] = NULL;
+            part_scene_pageid[index] = -1;
         }
     }
     NuThreadEnableThreadSwap();

@@ -917,7 +917,7 @@ NUFILE_DEVICE *__cdecl NuFileFindDevice(i32 id, i32 unit) {
         id = 2;
     }
     for (index = 0; index < numdevices; ++index) {
-        if (devices[index].id == id && (unit < 0 || devices[index].unit == unit)) {
+        if (devices[index].id == id && (unit < 0 || unit == devices[index].unit)) {
             return &devices[index];
         }
     }

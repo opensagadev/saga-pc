@@ -121,7 +121,7 @@ void SarlaccPitA_Draw(WORLDINFO *unused0) {
         GAMEOBJECT *boba = FindGameObject(id_BOBAFETT, 1, 1, 1, 0);
         if (gizaimessagesys != NULL)
             message = CheckGizAIMessage(gizaimessagesys, "BobaFightStarted", NULL);
-        if (message != NULL && boba != NULL && message->value == 1.0f)
+        if (boba != NULL && message != NULL && message->value == 1.0f)
             DrawBossHitPoints(boba);
     }
 }

@@ -199,7 +199,7 @@ void __cdecl GameAnimSet_RemoveObject(GAMEANIMSET *set, GAMEANIMOBJ *object) {
     if (set == NULL || object == NULL) {
         return;
     }
-    if (set->objects == object) {
+    if (object == set->objects) {
         set->objects = object->next;
     } else {
         previous = set->objects;

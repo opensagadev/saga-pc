@@ -104,7 +104,7 @@ void PC_NATIVE_DEBUG_STATE_PC::UpdateGeometry() {
 #undef DEBUG_RECT_PC
 void PC_NATIVE_DEBUG_STATE_PC::Initialize() {
     unknown_0 = 1;
-    top = left = 100.0f;
+    left = top = 100.0f;
     right = 600.0f;
     bottom = 500.0f;
     InitializeHeader();
