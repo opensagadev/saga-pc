@@ -36,7 +36,7 @@
     "config/data-members.json": "8ac33bf43fa7d2cc68c6380b340a8fe5466e906e828b1afb919b82fb9677f047",
     "config/library-objects.json": "e5ae24d3eac36fa0d0cb098f7690faaef3110f225db30c8cbf0f7d0d64f6ecfe",
     "config/project.json": "dc0e8cc85ae5650c6937b70ccaefb0153629c2460fa09cd4f6b625e251e623dd",
-    "config/symbols.csv": "11446ef5c1a783d031993f9c1cb0f002872a0d178948d59720278b8cc456f00c",
+    "config/symbols.csv": "e7a431cef8f8b2f74102beaec5d9cb7c19f0b49881b781e3b0abffb781d0245e",
     "config/symbols.md": "dffbdaac86011e3aee74b404063c15bda97f88af3db337ffef9f1bad1785d212",
     "config/toolchain.json": "489d0782638d8033137cdb2834462416111945cbfa073147820e314b8576b95b",
     "config/tools.json": "50199f6b132a7abfabf251e98a75be0a957abfe50f1ff776188fba21e4c4436f",
@@ -415,7 +415,7 @@
     "src/nu2api/nuvec.c": "242376de36a191733838cedfb195edc9f79014afb1c1b9ca0875002eda4ed47a",
     "src/nu2api/nuvec4.c": "8ee25ec87ce3011d38c7636ecf4c84e51465468cc451fd9b1b7fc03901c71c56",
     "src/nu2api/nuvertexdecl.c": "5c25fce7e1c9f350e60cbfa15d2a73b26376e5848bdbfced19c3a8ea6895a80c",
-    "src/nu2api/nuvideo.c": "a43a9570f69c1d61b58bb9140d27aa0f00507771506da133aab7a983a37b932b",
+    "src/nu2api/nuvideo.c": "3a76c679ac4b5372b494332b7db399b8601c570ef8ef53ee2bdce201f9210803",
     "src/nu2api/nuvisibility.c": "5037242c7ec79cb1c132d91955af6acfcd8f5fcac4da709fd046a0d9dd1cba92",
     "src/nu2api/nuvport.c": "ac09f615d3feff111e251c22ea40e1fa4a63dafcaaaa010f5310cc8310feb9df",
     "src/nu2api/nuwin.c": "3b3a6e5a80ae38abe6fb3a7cb977a2f2832910573686e1d88719587e1c86f172",
@@ -750,7 +750,7 @@
     "build/obj/nu2api/nuvec.obj": "927e164338213bf380bd91f01344d1d24e2cc3f483e510091b1dbfbfece917a3",
     "build/obj/nu2api/nuvec4.obj": "f5c3d8adfbe18261e70d2a650210a1e3aa1a071db1b0b8ad401992da0c425299",
     "build/obj/nu2api/nuvertexdecl.obj": "424e197edd9a1bd02ca735730162f269abcf4ea9f151ae46c2c81c84c9d532be",
-    "build/obj/nu2api/nuvideo.obj": "c2885d4a7645cf63b114b0bec49da4caaf7ad499f6ed16c3670178d0175848aa",
+    "build/obj/nu2api/nuvideo.obj": "6d4cec74fee9a9f39116b1d6f266d5f4549b802d981e304a1d54b043c869dfb8",
     "build/obj/nu2api/nuvisibility.obj": "99a46e6c4dfe8ea0ab61c57e9962d71d38d3d6b9c3db409b3553bc698208500f",
     "build/obj/nu2api/nuvport.obj": "9d8260263b8a39c8834055c3fd3bad98f74aea49e92aef9af2a452998b3de73e",
     "build/obj/nu2api/nuwin.obj": "64d99760f9d4e137d89c5100c075b9b602c5c819f78cde70fba4026e71e777fd",
@@ -300545,18 +300545,18 @@
         "src/nu2api/nuvideo.c"
       ],
       "target_size": 4,
-      "exact_match": false,
+      "exact_match": true,
       "objects": [
         {
           "unit": "src/nu2api/nuvideo.c",
-          "exact_match": false,
+          "exact_match": true,
           "target_size": 4,
           "base_size": 4,
           "target_sha256": "71210c00e131a7d1b3a4a036148df7362b5db5f093c57b7482498b07d1d1c622",
-          "base_sha256": "df3f619804a92fdb4057192dc43dd748ea778adc52bc498ce80524c014b81119"
+          "base_sha256": "71210c00e131a7d1b3a4a036148df7362b5db5f093c57b7482498b07d1d1c622"
         }
       ],
-      "status": "different"
+      "status": "exact"
     },
     {
       "name": "LEGOCAMMODE_DOORCUT",
@@ -337671,11 +337671,22 @@
       "name": "GameCamera",
       "symbol": "_GameCamera",
       "address": "0x00925188",
-      "units": [],
+      "units": [
+        "src/nu2api/nuvideo.c"
+      ],
       "target_size": 560,
-      "exact_match": false,
-      "objects": [],
-      "status": "not implemented"
+      "exact_match": true,
+      "objects": [
+        {
+          "unit": "src/nu2api/nuvideo.c",
+          "exact_match": true,
+          "target_size": 560,
+          "base_size": 560,
+          "target_sha256": "738c079dff6c9b77a0891ac42db1cabcab933a672b14aed8ecfcf94c0e77bb40",
+          "base_sha256": "738c079dff6c9b77a0891ac42db1cabcab933a672b14aed8ecfcf94c0e77bb40"
+        }
+      ],
+      "status": "exact"
     },
     {
       "name": "LookAtBoth",
@@ -366036,7 +366047,7 @@
     "mapping_code_data_bytes": 3030215,
     "mapping_code_data_total_bytes": 39490212,
     "mapping_code_data_percent": 7.673331811943679,
-    "matched_data_region_bytes": 885615
+    "matched_data_region_bytes": 886179
   },
   "data_members": [
     {
@@ -366795,7 +366806,7 @@
       "metadata_sha256": "8ac33bf43fa7d2cc68c6380b340a8fe5466e906e828b1afb919b82fb9677f047",
       "header_path": "src/saga.h",
       "header_sha256": "4708eea5b52b9274657e81bf6b490a610149518f6031141c7ec500489f617c81",
-      "geometry_object_sha256": "072b370cb01d7ec102f8c9b505f8ea4e5c6956dfc9e486679798c65530f127e5",
+      "geometry_object_sha256": "3b722b00ac026b31df5c9f90adc40a01015164831b1fc89be7a798b9f20f6a1e",
       "toolchain_sha256": "489d0782638d8033137cdb2834462416111945cbfa073147820e314b8576b95b",
       "implementation_sha256": "9ad7521230f06fde31f0771b10bd001037ea32d2def455913a7f391f05dede9d",
       "headers": {

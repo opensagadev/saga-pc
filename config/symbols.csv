@@ -17815,7 +17815,7 @@ address    , symbol                                                         , si
 0x9250f0,_PlayPlanePc,,KEEP_SCREEN_PLANE_PC[6]
 0x925180,_AlternateGameCallbackPc,,i32 (__cdecl *)(GAMEOBJECT *object)
 0x00925184 , _pNuCam                                                        , 4     , NUCAMERA *
-0x00925188,_GameCamera,560,
+0x00925188,_GameCamera,560,GAMECAMERA
 0x9253b8,_LookAtBoth,,i32
 0x009253c0 , _NarrowSockException                                           , 4     , NARROWSOCKEXCEPTION_PC *
 0x009253c4 , _disable_narrow_socks                                          , 4     , i32

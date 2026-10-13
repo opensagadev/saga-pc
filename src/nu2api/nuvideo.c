@@ -145,7 +145,8 @@ static void NuDebugMsgFunction(char *format, ...) {
     }
 }
 
-GAMECAMERA *GameCam;
+GAMECAMERA GameCamera;
+GAMECAMERA *GameCam = &GameCamera;
 i32 part_debris_count;
 
 void __cdecl NewRumbleAllPlayers(f32 strength, f32 duration, i32 frames, f32 priority) {
