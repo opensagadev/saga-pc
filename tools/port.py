@@ -21,11 +21,11 @@ import clang.cindex as ci
 
 if __package__:
     from . import typexfer
-    from .lib import ROOT, load_symbols
+    from .lib import CLANG_INCLUDE, ROOT, load_symbols
 else:
     sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
     from tools import typexfer
-    from tools.lib import ROOT, load_symbols
+    from tools.lib import CLANG_INCLUDE, ROOT, load_symbols
 
 K = ci.CursorKind
 T = ci.TypeKind
@@ -433,6 +433,7 @@ def main():
     parser.add_argument("--android", type=Path, default=ROOT.parent / "saga")
     parser.add_argument("--insert", action="store_true")
     args = parser.parse_args()
+    args.android = args.android.resolve()
     context = Context(args.android)
     files = sorted(p for p in (args.android / "src").rglob("*.cpp") if "/host/" not in str(p))
     function = None
@@ -441,7 +442,7 @@ def main():
             continue
         unit = ci.Index.create().parse(str(path), args=[
             "-x", "c++", "-std=c++17", "-I" + str(args.android / "src"), "--target=i686-pc-windows-msvc",
-            "-fms-extensions", "-fms-compatibility", "-isystem", "/usr/lib/llvm-18/lib/clang/18/include",
+            "-fms-extensions", "-fms-compatibility", "-isystem", CLANG_INCLUDE, "-idirafter", "/usr/include",
             "-D__ANDROID__", "-w"])
         function = find_definition(unit, args.name, path)
         if function is not None:

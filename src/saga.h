@@ -5893,14 +5893,32 @@ typedef struct kaminoeplate_s {
 STATIC_ASSERT(offsetof(BOLT, speed) == 0xcc);
 
 typedef struct gamecamera_s {
-    SOCKPOSITION_PC sock_position;
-    NUMTX mtx, target_mtx, render_mtx;
-    NUVEC shaken_right, shaken_up, dir;
+    union {
+        SOCKPOSITION_PC sock_position;
+        struct {
+            u8 unknown_00;
+            u8 sock;
+        };
+    };
+    NUMTX mtx;
+    NUMTX target_mtx;
+    NUMTX render_mtx;
+    NUVEC shaken_right;
+    NUVEC shaken_up;
+    NUVEC dir;
     NUVEC position;
     NUVEC target;
-    NUVEC blend_start_position, desired_position, blend_end_position, blend_destination_position, blend_start_target;
+    NUVEC blend_start_position;
+    NUVEC desired_position;
+    NUVEC blend_end_position;
+    NUVEC blend_destination_position;
+    NUVEC blend_start_target;
     u8 unknown_170[0xc];
-    NUVEC blend_end_target, blend_destination_target, shake_offset, shake_direction, shake_target;
+    NUVEC blend_end_target;
+    NUVEC blend_destination_target;
+    NUVEC shake_offset;
+    NUVEC shake_direction;
+    NUVEC shake_target;
     f32 field_1b8;
     f32 blend_time;
     f32 blend_duration;
@@ -5914,9 +5932,16 @@ typedef struct gamecamera_s {
     f32 angle_seek;
     f32 field_1e8, field_1ec, field_1f0, field_1f4;
     i32 pitch;
-    i32 input_yaw;
+    union {
+        i32 yaw;
+        i32 input_yaw;
+    };
     i32 roll;
-    f32 field_204, field_208, field_20c, field_210, field_214;
+    f32 field_204;
+    f32 field_208;
+    f32 field_20c;
+    f32 field_210;
+    f32 field_214;
     f32 adjusted_yaw_offset;
     u16 blend_start_pitch;
     u16 desired_pitch;
@@ -5933,12 +5958,18 @@ typedef struct gamecamera_s {
     u8 previous_camera_mode;
 } GAMECAMERA;
 STATIC_ASSERT(offsetof(GAMECAMERA, input_yaw) == 0x1fc);
+STATIC_ASSERT(offsetof(GAMECAMERA, yaw) == 0x1fc);
+STATIC_ASSERT(offsetof(GAMECAMERA, sock) == 0x1);
 STATIC_ASSERT(offsetof(GAMECAMERA, position) == 0x11c);
 STATIC_ASSERT(offsetof(GAMECAMERA, sock_position.sock_index) == 1);
 STATIC_ASSERT(offsetof(GAMECAMERA, shake_offset) == 0x194);
 STATIC_ASSERT(offsetof(GAMECAMERA, shake_intensity) == 0x1d4);
 STATIC_ASSERT(offsetof(GAMECAMERA, shake_decay) == 0x1d8);
 STATIC_ASSERT(offsetof(GAMECAMERA, shake_freq) == 0x1dc);
+STATIC_ASSERT(offsetof(GAMECAMERA, mtx) == 0x38);
+STATIC_ASSERT(offsetof(GAMECAMERA, blend_end_target) == 0x17c);
+STATIC_ASSERT(offsetof(GAMECAMERA, blend_time) == 0x1bc);
+STATIC_ASSERT(sizeof(GAMECAMERA) == 0x230);
 STATIC_ASSERT(sizeof(NUVEC) == 0xc);
 
 typedef struct nuquat_s {

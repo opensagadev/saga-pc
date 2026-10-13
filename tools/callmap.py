@@ -26,13 +26,12 @@ import sys
 import capstone
 
 if __package__:
-    from .lib import ROOT, load_symbols, project, retail
+    from .lib import CLANG_INCLUDE, ROOT, load_symbols, project, retail
 else:
     sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
-    from tools.lib import ROOT, load_symbols, project, retail
+    from tools.lib import CLANG_INCLUDE, ROOT, load_symbols, project, retail
 
 CACHE = ROOT / "build/callmap/android-calls.json"
-CLANG_INCLUDE = "/usr/lib/llvm-18/lib/clang/18/include"
 
 
 def source_name(symbol):

@@ -26,11 +26,11 @@ import capstone
 
 if __package__:
     from .callmap import android_symbols, function_extent, source_name
-    from .lib import ROOT, load_symbols, project, retail
+    from .lib import CLANG_INCLUDE, ROOT, load_symbols, project, retail
 else:
     sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
     from tools.callmap import android_symbols, function_extent, source_name
-    from tools.lib import ROOT, load_symbols, project, retail
+    from tools.lib import CLANG_INCLUDE, ROOT, load_symbols, project, retail
 
 
 CACHE = ROOT / "build/callmap/android-features.json"
@@ -78,7 +78,7 @@ def android_features(root):
     for count, path in enumerate(files):
         language = ["-x", "c++", "-std=c++17"] if path.suffix == ".cpp" else ["-x", "c", "-std=c11"]
         unit = index.parse(str(path), args=[*language, "-I" + str(Path(root, "src")), "-isystem",
-                                            "/usr/lib/llvm-18/lib/clang/18/include", "-D__ANDROID__", "-w"])
+                                            CLANG_INCLUDE, "-D__ANDROID__", "-w"])
         for cursor in unit.cursor.walk_preorder():
             if (cursor.kind not in (K.FUNCTION_DECL, K.CXX_METHOD) or not cursor.is_definition()
                     or not cursor.location.file or cursor.location.file.name != str(path)):

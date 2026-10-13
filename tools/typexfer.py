@@ -23,11 +23,11 @@ import clang.cindex as ci
 
 if __package__:
     from .check import analysis_configuration
-    from .lib import ROOT
+    from .lib import CLANG_INCLUDE, ROOT
 else:
     sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
     from tools.check import analysis_configuration
-    from tools.lib import ROOT
+    from tools.lib import CLANG_INCLUDE, ROOT
 
 K = ci.CursorKind
 T = ci.TypeKind
@@ -108,12 +108,13 @@ def parse_structs(unit, prefix):
 
 
 def android_unit(root):
+    root = Path(root).resolve()
     headers = sorted(p for p in Path(root, "src").rglob("*.h") if "/host/" not in str(p))
     text = "".join(f'#include "{p}"\n' for p in headers)
     name = str(ROOT / "build/typexfer/android.cpp")
     return ci.Index.create().parse(name, unsaved_files=[(name, text)], args=[
         "-x", "c++", "-std=c++17", "-I" + str(Path(root, "src")), "--target=i686-pc-windows-msvc",
-        "-fms-extensions", "-fms-compatibility", "-isystem", "/usr/lib/llvm-18/lib/clang/18/include",
+        "-fms-extensions", "-fms-compatibility", "-isystem", CLANG_INCLUDE, "-idirafter", "/usr/include",
         "-D__ANDROID__", "-w", "-ferror-limit=0"])
 
 

@@ -10,6 +10,11 @@ else:
     from binary import COFF, PE, _COFFAnalysis, validate_code_group_descriptor
 
 ROOT = Path(__file__).resolve().parents[1]
+# Clang's builtin headers (stdint.h etc.) for libclang parses of the Android sources.
+CLANG_INCLUDE = str(next((p for pattern in ("/usr/lib/llvm-18/lib/clang/18/include", "/usr/lib/clang/*/include",
+                                            "/usr/lib/llvm-*/lib/clang/*/include")
+                          for p in sorted(Path("/").glob(pattern.lstrip("/")), reverse=True)),
+                         "/usr/lib/llvm-18/lib/clang/18/include"))
 FIELDS = ("address", "symbol", "size", "ctype")
 
 

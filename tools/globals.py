@@ -32,13 +32,13 @@ if __package__:
     from . import typexfer
     from .binary import COFF
     from .cc import environment, windows
-    from .lib import ROOT, bindings_for, load_symbols, project, retail
+    from .lib import CLANG_INCLUDE, ROOT, bindings_for, load_symbols, project, retail
 else:
     sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
     from tools import typexfer
     from tools.binary import COFF
     from tools.cc import environment, windows
-    from tools.lib import ROOT, bindings_for, load_symbols, project, retail
+    from tools.lib import CLANG_INCLUDE, ROOT, bindings_for, load_symbols, project, retail
 
 K = ci.CursorKind
 T = ci.TypeKind
@@ -98,7 +98,7 @@ class Android:
             self._parsed.add(path)
             unit = ci.Index.create().parse(str(path), args=[
                 "-x", "c++", "-std=c++17", "-I" + str(self.root / "src"), "--target=i686-pc-windows-msvc",
-                "-fms-extensions", "-fms-compatibility", "-isystem", "/usr/lib/llvm-18/lib/clang/18/include",
+                "-fms-extensions", "-fms-compatibility", "-isystem", CLANG_INCLUDE, "-idirafter", "/usr/include",
                 "-D__ANDROID__", "-w"])
             for cursor in unit.cursor.walk_preorder():
                 self.add(cursor)
@@ -354,6 +354,7 @@ def main():
     parser.add_argument("units", nargs="+")
     parser.add_argument("--android", type=Path, default=ROOT.parent / "saga")
     args = parser.parse_args()
+    args.android = args.android.resolve()
     android = Android(args.android)
     from tools import port
     context = port.Context(args.android)
