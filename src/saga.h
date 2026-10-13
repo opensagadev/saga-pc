@@ -24739,6 +24739,8 @@ extern "C" {
                                     u8 arg8);
     void __cdecl PadOutPause(i32 port, struct WORLDINFO_s *world);
     i32 __cdecl PlayersDropInOut(void);
+    void __cdecl DoInput(WORLDINFO *world);
+    i32 __cdecl CutScene_IsSkippable(CUTINFO *cut);
     extern i32 COMPLETIONPOINTS;
     f32 __cdecl NuFmin(f32 a, f32 b);
     void __cdecl GizBuildIt_TurnOff(struct GIZBUILDIT_s *buildit);

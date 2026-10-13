@@ -148,6 +148,7 @@ address    , symbol                                                         , si
 0x427c10,_StartDropIn,96,
 0x427c70,_StartDropOut,90,
 0x427cd0,_DropOut,495,
+0x00427ec0,_PlayersDropInOut,2672,i32 __cdecl (void)
 0x4289a0,_AdaptiveDifficultyAdjustPc,156,"f32 __cdecl(ADAPTIVEDIFFICULTY_PC*,f32)"
 0x428b20,?InitOptionsSaveDefaults@@YAXPAUoptionssave_s@@@Z,85,
 0x428b80,?MakeSaveHash@@YAHXZ,8,
@@ -3081,6 +3082,7 @@ address    , symbol                                                         , si
 0x57ceb0,_CutScene_StartAudio,1,void __cdecl (void)
 0x57cec0,_CutScenes_Stop,49,void __cdecl (CUTSYS_PC *)
 0x57cf00,_CutScenes_Destroy,108,void __cdecl(CUTSYS_PC *)
+0x0057cf70,_CutScene_IsSkippable,22,i32 __cdecl (CUTINFO *)
 0x57cf90,_LocatorFunction_Blaster,189,
 0x57d050,_CutScene_ResetCharacters,65,
 0x57d0a0,_CutScenes_Draw,343,void __cdecl (WORLDINFO *)
