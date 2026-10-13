@@ -387,7 +387,7 @@
     "src/nu2api/nuparticle_state.c": "3f45a3aee290916bacf88328b024ed6e63beccaa21a847cafdf235a7956f76be",
     "src/nu2api/nuplane.c": "6d7278c2129035fa6815f95dde535c077f95976cf8a4919c0de475c9cbe3d9f2",
     "src/nu2api/nuportal.c": "db732ad1f4810e67f4a1590b37dc4abbd5104232a78ea9c7701a743af29e2578",
-    "src/nu2api/nuprim.c": "126420eee8015d1fd6c76d7db8b099263705e2510a180af32ebfbc46da4b60a2",
+    "src/nu2api/nuprim.c": "40e6de16fae1acd5cac93c26ae1fa04e0e8cf28ed780e55f7649abfaf8cd69b8",
     "src/nu2api/nupsfile.c": "4fcb207887cfe5c70599f8b95f3d52d5c26e2af3198a039317fa35ee22d32427",
     "src/nu2api/nuptrblock.c": "9fca2aa2ac4be26a25a5471baea40d4ce25b3cec9c9d13679a530421b1465af4",
     "src/nu2api/nuqfnt.c": "28abe2fe5cdc29184d012560ccfe0450a32803c5dec26f01ddfdf471c7fd319e",
@@ -712,7 +712,7 @@
     "build/obj/nu2api/nuplane.obj": "4108d6836a55bd1e239bfbe26340436e545a5db7c110e747e19644ad4c45b853",
     "build/obj/nu2api/nuportal.obj": "a095f9e82a4624bc2d2ce22d0523ca52fbaa3641a0e9ef7db182c2cda42fa0db",
     "build/obj/nu2api/nupostfilter.obj": "25a1cc693b064279eeab4d3afe4af149bdfc982e2cf04cc24b956bfb2d9ac0ac",
-    "build/obj/nu2api/nuprim.obj": "5c77ff6990cedc45d0d78821e0da1fbf28f9b957cf2d4fae72aa007511b6c865",
+    "build/obj/nu2api/nuprim.obj": "145b6e617345ab9254c03ca175c0a29045349a9c2263baeb29a7a2a87f5cc246",
     "build/obj/nu2api/nupsfile.obj": "37abe6d1fb7798afac8db9031baab255c005110f9fddf83bd4e9858b5233f40c",
     "build/obj/nu2api/nuptl.obj": "376d44d6c83e9f42769e112b6ebae6e5074dbec082484f665de345c9024fceb7",
     "build/obj/nu2api/nuptrblock.obj": "ea4e722b0112b27e5a815ff2e0244be37ddc1c80cf21884ac1f77716017d7254",
@@ -107847,17 +107847,17 @@
       "objects": [
         {
           "unit": "src/nu2api/nuprim.c",
-          "base_size": 341,
+          "base_size": 590,
           "exact_match": false,
           "target_sha256": "83adef71a357ab1a8e9d0a01668e913b32a89528c3a55592fe04e9a05882c0f8",
-          "base_sha256": "82568220d392bee323eb0dbaf134959319f1a12c7ecde773fac906ed573e1e74",
-          "relocation_count": 10,
+          "base_sha256": "e09f92fd423e6188093bb490f089337cf85ef4f848fbf39c550257d3c2c5d984",
+          "relocation_count": 15,
           "comparison_unit": "00607590-2b3d2b9fd888",
-          "objdiff_percent": 31.492064
+          "objdiff_percent": 57.338623
         }
       ],
       "status": "different",
-      "objdiff_percent": 31.492064
+      "objdiff_percent": 57.338623
     },
     {
       "name": "DisplayListUpdateRenderStateShadow",
@@ -370889,10 +370889,10 @@
     "mapped_code_bytes": 2141165,
     "matched_code_bytes": 393844,
     "matching_percent": 11.345897121667551,
-    "fuzzy_coverage_percent": 36.511768857714635,
+    "fuzzy_coverage_percent": 36.51660124838674,
     "mapped_functions": 7468,
     "matched_functions": 3486,
-    "objdiff_fuzzy_percent": 73.50379,
+    "objdiff_fuzzy_percent": 73.51352,
     "objdiff_total_code": 1725169,
     "image_bytes": 40067072,
     "mapped_bytes": 3058190,
@@ -371991,7 +371991,7 @@
       "metadata_sha256": "fe09365da4c355f220d724ca99394fc120b758891b4188d2c49707b6df0894f2",
       "header_path": "src/saga.h",
       "header_sha256": "9bc5d6334a3c5ae12788bebc0580aa49035d406d99a460b18a823f42d2e73912",
-      "geometry_object_sha256": "953cd77c156d6e276546343844575f277290d0aa1958c0b3645dc17f56f99b5a",
+      "geometry_object_sha256": "fe5cd64e77d1b0704d0929cd4aa542b58c83d969f47b5f785f547bdb6f9ec0ae",
       "toolchain_sha256": "489d0782638d8033137cdb2834462416111945cbfa073147820e314b8576b95b",
       "implementation_sha256": "9ad7521230f06fde31f0771b10bd001037ea32d2def455913a7f391f05dede9d",
       "headers": {
@@ -372257,24 +372257,5 @@
     "member_count": 42,
     "physical_definition_credit": 0
   },
-  "data_member_migrations": [
-    {
-      "retired_coff_symbol": "_PcBootDefaultFramebuffer",
-      "member_id": "PcBootFramebuffersPc.fields.default_framebuffer",
-      "address": "0x02849310",
-      "complete_original_size": null,
-      "historical_exact_preserved": false,
-      "retired_physical_definition": true,
-      "member_is_not_new_definition": true
-    },
-    {
-      "retired_coff_symbol": "_PcBootSecondaryFramebuffer",
-      "member_id": "PcBootFramebuffersPc.fields.secondary_framebuffer",
-      "address": "0x02849314",
-      "complete_original_size": null,
-      "historical_exact_preserved": false,
-      "retired_physical_definition": true,
-      "member_is_not_new_definition": true
-    }
-  ]
+  "data_member_migrations": []
 }

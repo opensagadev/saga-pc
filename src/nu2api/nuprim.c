@@ -84,6 +84,17 @@ STATIC_ASSERT(offsetof(NUPRIM_RENDER_STATE_IDS_PC, fog_id) == 0x2e);
 STATIC_ASSERT(offsetof(NUPRIM_RENDER_STATE_IDS_PC, vertex_groups_id) == 0x30);
 STATIC_ASSERT(offsetof(NUPRIM_RENDER_STATE_IDS_PC, reflection_id) == 0x32);
 
+typedef struct nuprim_camera_packet_pc_s {
+    i32 id;
+    NUMTX view;
+    NUMTX projection;
+    f32 viewport[4];
+} NUPRIM_CAMERA_PACKET_PC;
+STATIC_ASSERT(sizeof(NUPRIM_CAMERA_PACKET_PC) == 0x94);
+STATIC_ASSERT(offsetof(NUPRIM_CAMERA_PACKET_PC, view) == 4);
+STATIC_ASSERT(offsetof(NUPRIM_CAMERA_PACKET_PC, projection) == 0x44);
+STATIC_ASSERT(offsetof(NUPRIM_CAMERA_PACKET_PC, viewport) == 0x84);
+
 typedef struct nuprim_vec4_pc_s {
     f32 x;
     f32 y;
@@ -295,7 +306,30 @@ void __cdecl DisplayListUpdateRenderState(NUDISPLAYLIST_PC *list, NUGLOBALRNDRST
     }
 
     if (state->camera_id != global->camera_id) {
-        STUBBED_NAMED(0x0060760b); /* Build and link the inline PC camera packet. */
+        packet = global->camera_packet_cache;
+        if (packet == NULL) {
+            NUMTX projection;
+            NUPRIM_CAMERA_PACKET_PC *camera;
+            memset(&projection.m01, 0, sizeof(projection) - sizeof(projection.m00));
+            projection.m00 = global->projection_0154;
+            projection.m11 = global->projection_0158;
+            projection.m22 = global->projection_015c;
+            projection.m23 = global->projection_0160;
+            projection.m32 = global->projection_0164;
+            NuDisplayListStreamCursor->addr = (NuDisplayListStreamCursor->addr + 15) & ~15u;
+            camera = (NUPRIM_CAMERA_PACKET_PC *)NuDisplayListStreamCursor->void_ptr;
+            NuDisplayListStreamCursor->addr += sizeof(*camera);
+            camera->id = ((i32)(i16)global->camera_id + 5) * (global->counter_0020 + 13) + nuapi.frame_count;
+            camera->view = global->camera_matrix;
+            camera->projection = projection;
+            camera->viewport[0] = global->viewport_x;
+            camera->viewport[1] = global->viewport_y;
+            camera->viewport[2] = global->viewport_width;
+            camera->viewport[3] = global->viewport_height;
+            packet = camera;
+            global->camera_packet_cache = packet;
+        }
+        NuDisplayListLinkItem(list, 0x9a, packet);
         state->camera_id = global->camera_id;
     }
 
