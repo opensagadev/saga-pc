@@ -127,7 +127,7 @@ void __cdecl LoadPerm1(void) {
     STUBBED_NAMED(InitStreaks); /* Native 48a913: &ptr,end,stuff\\streak.pnt. */
     permbuffer_ptr.addr = (permbuffer_ptr.addr + 3) & ~3u;
     InitRopeMtl("rope", &permbuffer_ptr, &permbuffer_end);
-    STUBBED_NAMED(InitRipples); /* Native 48a94f: &RippleSetPc,&ptr,&end,40. */
+    InitRipples(&RippleSetPc, &permbuffer_ptr, &permbuffer_end, 40);
     permbuffer_ptr.addr = (permbuffer_ptr.addr + 0xff) & ~0xffu;
     PermanentShadowMaterialPc = NuMtlCreate3D(1);
     material = (PERMANENT_MATERIAL_READER_PC *)PermanentShadowMaterialPc;
