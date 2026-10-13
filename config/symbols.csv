@@ -884,6 +884,7 @@ address    , symbol                                                         , si
 0x4952d0,_MenuDrawSelectLanguage,49,
 0x495310,_UpdateGameMenu,1070,"void __cdecl(GAMEPAD_PC *, i32)"
 0x00495740 , _MenuEnterTitles                                               , 34    , void __cdecl (MENU *)
+0x495840,_MenuDrawTitles,186,void __cdecl (MENU *)
 0x495900,_MenuUpdatePauseMain,592,
 0x495d30,_MenuUpdatePauseRestart,97,
 0x495da0,_MenuDrawPauseRestart,214,
@@ -1105,6 +1106,7 @@ address    , symbol                                                         , si
 0x4ba190,_Panel_Clear,87,
 0x4ba2d0,_DrawBossHitPoints,10,
 0x004badd0 , _InitPanel                                                     , 106   , void __cdecl (i32)
+0x4bae40,_DrawPanel,3501,void __cdecl (void)
 0x4bbbf0,_PanelRender,286,void __cdecl (WORLDINFO *)
 0x004bbd10,?Tag_DrawIcon_Batman@@YAXPAUgameobject_s@@@Z,927,
 0x004bc0b0,?Tag_DrawIcon_LSW@@YAXPAUgameobject_s@@@Z,491,
@@ -15021,6 +15023,8 @@ address    , symbol                                                         , si
 0x7facbe,_MENULOSTR1,1,u8
 0x7facc0,_MENULOSTB1,1,u8
 0x007faccc , _opts_sfx_wait                                                 , 4     , f32
+0x7facd8,_MenuTitlesPromptYPc,4,f32
+0x7facdc,_MenuTitlesWidePromptYPc,4,f32
 0x007facf0 , _GameMenuInfo                                                  , 644   , MENUFNINFO[23]
 0x7fafe4,_MissionIconBaseSizePc,,f32
 0x7fafe8,_MissionIconSelectedSizePc,,f32

@@ -58,6 +58,22 @@ void MenuReset(void) {
     MenuSetPlatformState(-1);
 }
 
+extern f32 MenuTitlesPromptYPc, MenuTitlesWidePromptYPc;
+
+void __cdecl MenuDrawTitles(MENU *menu) {
+    f32 y;
+    (void)menu;
+    if (GameTimer.time_elapsed >= 3.0f && GameTimer.time_elapsed_mod_seconds < 0.666f) {
+        if (Game_OptionsSave != NULL && Game_OptionsSave->widescreen != 0) {
+            y = MenuTitlesWidePromptYPc;
+        } else {
+            y = MenuTitlesPromptYPc;
+        }
+        SmartTextEx(apitxt_PCPRESSSTARTFE, 0.0f, y, 1.0f, MenuTextScalePc, MenuTextScalePc, MenuTextScalePc, 0, 255,
+                    255, 255, 1.7f, 1, NULL, 0, (u32)(i32)((f64)MenuA * (f64)newgamealpha));
+    }
+}
+
 void MenuEnterNewGame(MENU *menu) {
     (void)menu;
     if (MenuLoadOccurred == 0 && startnewgame_initiated == 0 && startnewgame == 0) {

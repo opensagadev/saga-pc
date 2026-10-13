@@ -10330,15 +10330,17 @@ extern "C" {
 #pragma bss_seg(".bss$tBACK")
     i16 tBACK;
 #pragma bss_seg()
+    f32 MenuTitlesPromptYPc = -0.5f;
+    f32 MenuTitlesWidePromptYPc = -0.575f;
     OPTIONSSAVE *Game_OptionsSave;
     f32 opts_sfx_wait = 1.5f;
     i32 opts_sfx_i;
     LEVELDATA_PC *TITLES_LDATA;
 
-    // STUBBED: PC callback bodies are not reconstructed; NULL slots keep them inactive.
+    // STUBBED: Remaining PC callback bodies are not reconstructed; NULL slots keep them inactive.
     // IDs, remembered cursors, and prompt flags use the 23-record PC table.
     MENUFNINFO GameMenuInfo[23] = {
-        {0, MenuEnterTitles, NULL, NULL, NULL, -1, -1, 0, 0, 0, 0},
+        {0, MenuEnterTitles, MenuDrawTitles, NULL, NULL, -1, -1, 0, 0, 0, 0},
         {1, MenuEnterNewGame, NULL, NULL, NULL, -1, -1, 0, 1, 0, 0},
         {2, NULL, NULL, NULL, NULL, -1, -1, 0, 0, 0, 0},
         {3, NULL, NULL, NULL, NULL, -1, -1, 0, 0, 0, 0},

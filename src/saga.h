@@ -9403,6 +9403,7 @@ extern "C" {
     void __cdecl MenuSmartTextEx(char *, f32, f32, f32, f32, f32, f32, u32, u8, u8, u8, f32, i32, void *, i32, i32);
     void __cdecl DrawMenuHeader(void);
     void __cdecl DrawMenu(i32);
+    void __cdecl DrawPanel(void);
     extern i32 g_enableButtonPrompts;
     extern void(__cdecl *headerdrawfn)(void);
     extern f32 MenuTopYPc;
@@ -10371,6 +10372,7 @@ extern OCCLUSIONMANAGER g_OcclusionManager;
     void __cdecl SetSoundVolume(f32 volume);
     f32 __cdecl GetSoundVolume(void);
     void __cdecl MenuEnterTitles(MENU *menu);
+    void __cdecl MenuDrawTitles(MENU *menu);
     i32 __cdecl GetParentMenuID(void);
     extern i32 MenuLoadOccurred;
     extern i32 startnewgame_initiated;

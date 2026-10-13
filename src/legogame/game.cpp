@@ -1443,7 +1443,7 @@ extern "C" void __cdecl PanelRender(WORLDINFO *world) {
     SetPanelLights(1.0f);
     NuRndrClear(0xe00, 0xff000000, 1.0f);
     DrawPauseFade();
-    STUBBED_NAMED("PanelRender: DrawPanel at 0x004bae40");
+    DrawPanel();
     FadeSys.Update();
     STUBBED_NAMED("PanelRender: theGameThings->DisplayThings(NULL) (vtable slot 0x28) at 0x0095e438");
     NuRndrEndScene();
