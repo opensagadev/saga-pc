@@ -2718,6 +2718,7 @@ address    , symbol                                                         , si
 0x564a20,_BackDrop_Init,159,"void __cdecl(char*,VARIPTR*,VARIPTR*)"
 0x564ac0,_BackDrop_Update,43,void __cdecl(f32)
 0x564af0,_BackDrop_Draw,285,"void __cdecl (f32,i32)"
+0x00564c10,_BackDrop_Dump,17,void __cdecl(void)
 0x564ca0,_GameFog_Reset,35,
 0x565230,_GameDisplaySettings,570,"void __cdecl(LEVEL_DISPLAY_PC *,i32 *)"
 0x00565470 , _WidescreenCode                                                , 339   , void __cdecl (i32)

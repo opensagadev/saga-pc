@@ -201,6 +201,12 @@ void __cdecl DrawCharIcon(i32 character_id, f32 x, f32 y, f32 z, f32 scale, i32 
 extern NUGSCN *RenderBackdropScenePc;
 extern NUSPECIALHANDLE RenderBackdropSpecialsPc[4];
 extern void(__cdecl *RenderBackdropAlphaFnPc)(f32 *);
+
+void __cdecl BackDrop_Dump(void) {
+    if (RenderBackdropScenePc != NULL)
+        NuGScnRemove(RenderBackdropScenePc);
+}
+
 void __cdecl BackDrop_Draw(f32 alpha, i32 flags) {
     i32 special_index;
     if (RenderBackdropScenePc == NULL)

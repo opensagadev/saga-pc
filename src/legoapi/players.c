@@ -1,5 +1,50 @@
 #include "saga.h"
 
+STATIC_ASSERT(offsetof(GAMEOBJECT, field_e22) == 0xe22);
+STATIC_ASSERT(offsetof(GAMEOBJECT, field_1062) == 0x1062);
+
+i32 __cdecl MakePlayerList(i32 count) {
+    i32 player_count = 0;
+    i32 i;
+    GAMEOBJECT *player;
+    PLAYERPROGRESS *progress;
+    for (i = 0; i < count; ++i) {
+        player = Player[i];
+        if (player == NULL)
+            continue;
+        if (makeplayerlist_freeplay == 1)
+            PlayerList[player_count] = FreePlayModelList[i].model_id;
+        else if (makeplayerlist_freeplay != 2)
+            PlayerList[player_count] = player->id;
+        progress = &PlayerProgress[player_count];
+        progress->active = (u8)((player->flags_1fc >> 7) & 1);
+        if (player->character_context != 6 && player->field_e33 != 2 &&
+            ((player->field_e22 & 1) != 0 || player->field_e33 != 0))
+            progress->field_7 = 1;
+        else
+            progress->field_7 = 0;
+        progress->coins = player->coin_packet != NULL ? ((PLAYER_COIN_PACKET_PC *)player->coin_packet)->coins : 0;
+        progress->field_b = player->jump_variant_state == 1;
+        if (player->dead != 0) {
+            progress->hitpoints = player->field_107e;
+            progress->field_9 = 4;
+        } else {
+            progress->hitpoints = player->current_hp;
+            progress->field_9 = player->saved_hitpoints;
+        }
+        progress->field_a = player->helmet;
+        progress->unknown_0004 = player->field_1062;
+        progress->field_c = player->powerup_time;
+        PlayerSuit[player_count] = player->suit;
+        PlayerTorpedoCount[player_count] = player->torpedo != NULL ? player->torpedo->count : 0;
+        ++player_count;
+    }
+    makeplayerlist_freeplay = 0;
+    for (i = player_count; i < 8; ++i)
+        PlayerList[i] = -1;
+    return player_count;
+}
+
 extern i16 LEGOACT_CLIMB_UP, LEGOACT_CLIMB_DOWN, LEGOACT_CLIMB_LEFT, LEGOACT_CLIMB_RIGHT;
 extern i16 LEGOACT_WALLSHUFFLE_IDLE, LEGOACT_WALLSHUFFLE_LEFT, LEGOACT_WALLSHUFFLE_RIGHT;
 extern i16 LEGOACT_MAGNET_WALK_METAL;

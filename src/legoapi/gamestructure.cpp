@@ -1,5 +1,31 @@
 #include "saga.h"
 
+extern "C" void __cdecl DumpAreaData(i32 mode, i32 last_area);
+extern "C" void __cdecl BackDrop_Dump(void);
+
+i32 __cdecl Game_Exit(i32 last_area) {
+    if (PcWindowQuit != 0) {
+        if (WorldInfo[0].loaded != 0)
+            WorldInfo_Dump(&WorldInfo[0]);
+        if (WorldInfo[1].loaded != 0)
+            WorldInfo_Dump(&WorldInfo[1]);
+        DumpAreaData(1, last_area);
+        if (save_icon_scene != NULL)
+            NuGScnRemove(save_icon_scene);
+        if (big_icon_scene != NULL)
+            NuGScnRemove(big_icon_scene);
+        if (area_scene != NULL)
+            NuGScnRemove(area_scene);
+        if (things_scene != NULL)
+            NuGScnRemove(things_scene);
+        if (vehicle_scene != NULL)
+            NuGScnRemove(vehicle_scene);
+        BackDrop_Dump();
+        return last_area;
+    }
+    return 0;
+}
+
 void ClearPause(void) {
     Paused = 0;
     NetPaused = 0;
