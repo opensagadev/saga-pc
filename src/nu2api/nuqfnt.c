@@ -29,6 +29,15 @@ void __cdecl NuQFntSet(VUFNT *font) {
     }
 }
 
+void __cdecl NuQFntSetICGap(VUFNT *font, f32 ic_gap) {
+    if (font == NULL) {
+        font = system_qfont;
+    }
+    if (font != NULL) {
+        font->ic_gap = ic_gap;
+    }
+}
+
 void __cdecl NuQFntSetScale(VUFNT *font, f32 x_scale, f32 y_scale) {
     if (font == NULL) {
         font = system_qfont;

@@ -4163,7 +4163,7 @@ address    , symbol                                                         , si
 0x005c9ff0 , _NuRegisterEndFrameCallBackFn                                  , 10    , void __cdecl (void (*)(void))
 0x5ca2a0,_NuAnimBuffCreateScratch,73,
 0x005ca320 , _ANI_FixUpAddrs                                                , 107   , "void __cdecl (ANI3_HEADER_PC *, i32, i32)"
-0x5ca390,_NuAnimBuffEvaluateCallback,30,
+0x5ca390,_NuAnimBuffEvaluateCallback,30,"void __cdecl (ANI3_EVAL_CALLBACK_PC, void **, i32 *)"
 0x5ca3b0,_NuAnimSetForceEulerToQuat,17,
 0x005ca450,_NuAnimNumNodes,30,
 0x005ca470 , _NuAnimEndFrame                                                , 58    , f32 __cdecl (void *)
@@ -4222,7 +4222,7 @@ address    , symbol                                                         , si
 0x5d0740,_NuSplineFindAllBeg,93,"i32 __cdecl (NUGSCN *, char *, NUGSPLINE **, i32)"
 0x5d0880,_NuQFntPushPrintMode,52,void __cdecl(u32)
 0x5d08c0,_NuQFntPopPrintMode,30,void __cdecl(void)
-0x5d08f0,_NuQFntSetICGap,25,
+0x5d08f0,_NuQFntSetICGap,25,"void __cdecl (VUFNT *, f32)"
 0x5d0910,_NuQFntSetSpaceWidth,11,"void __cdecl (VUFNT *, f32)"
 0x005d0940 , _NuQFntSetCoordinateSystem                                     , 244   , i32 __cdecl (i32)
 0x005d0a40 , _NuQFntPushCoordinateSystem                                    , 36    , void __cdecl (i32)

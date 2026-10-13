@@ -2102,6 +2102,12 @@ f32 __cdecl NuAnimEndFrame(void *animation_data) {
                                               _mm_loadu_ps(&_d.x)));                                                   \
     } while (0)
 
+void __cdecl NuAnimBuffEvaluateCallback(ANI3_EVAL_CALLBACK_PC callback, void **data, i32 *joints) {
+    AnimBuffEvalCB = callback;
+    AnimBuffEvalData = data;
+    AnimBuffEvalJoint = joints;
+}
+
 void __cdecl NuAnimBuffEvaluate_3(ANI3_BUFFER_PC *buffer, NUHGOBJ_EVAL_PC *object, NUMTX *matrices,
                                   ANI3_HEADER_PC *animation, ANI3_ROOT_CALLBACK_PC root_fn, NUVEC *root_translation,
                                   void *root_data) {

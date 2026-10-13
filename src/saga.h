@@ -14424,6 +14424,7 @@ void __cdecl PCSoundAlreadyPlayingHook(void);
     void __cdecl NuQFntPushPrintMode(u32 mode);
     void __cdecl NuQFntPopPrintMode(void);
     void __cdecl NuQFntSet(VUFNT *font);
+    void __cdecl NuQFntSetICGap(VUFNT *font, f32 ic_gap);
     void __cdecl NuQFntSetScale(VUFNT *font, f32 x_scale, f32 y_scale);
     void __cdecl NuQFntSetColour(VUFNT *font, u32 colour);
     void __cdecl NuQFntSetPointSize(VUFNT *font, f32 width, f32 height);
@@ -14560,6 +14561,7 @@ void __cdecl PCSoundAlreadyPlayingHook(void);
     void __cdecl NuScratchRelease(void);
     NUVEC *__cdecl NuMtxGetScale(NUVEC *, NUMTX *);
     void __cdecl NuMtxScaleVU0(NUMTX *, NUVEC *);
+    void __cdecl NuAnimBuffEvaluateCallback(ANI3_EVAL_CALLBACK_PC callback, void **data, i32 *joints);
     void __cdecl NuAnimBuffEvaluate_3_QuatB(NUMTX *, ANI3_BUFFER_PC *, NUHGOBJ_EVAL_PC *, NUMTX *, ANI3_HEADER_PC *,
                                             ANI3_ROOT_CALLBACK_PC, NUVEC *, void *);
     void __cdecl NuAnimBuffEvaluate_3(ANI3_BUFFER_PC *, NUHGOBJ_EVAL_PC *, NUMTX *, ANI3_HEADER_PC *,
