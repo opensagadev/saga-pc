@@ -1299,3 +1299,16 @@ void __cdecl DrawMenuEntryEx(MENU *menu, char *text, i32 alpha) {
     dme_sx = 1.0f;
     dme_sy = 1.0f;
 }
+
+void __cdecl IconScenes_Dump(void) {
+    i32 i;
+    if (IconScenePc == NULL) {
+        return;
+    }
+    for (i = 0; i < CHARCOUNT; ++i) {
+        if (IconScenePc[i] != NULL) {
+            NuGScnRemove(IconScenePc[i]);
+            IconScenePc[i] = NULL;
+        }
+    }
+}

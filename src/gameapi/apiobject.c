@@ -2665,3 +2665,20 @@ CHARACTERDATA_PC *__cdecl ConfigureCharacterList(char *file, VARIPTR *buffer_sta
         *count_out = count;
     return (CHARACTERDATA_PC *)first;
 }
+
+extern void __cdecl NuHGobjDestroy(NUHGOBJ_EVAL_PC *object);
+STATIC_ASSERT(offsetof(APICHARSYS, permanent_model_count) == 0xc);
+STATIC_ASSERT(offsetof(APICHARSYS, loaded_model_count) == 0x10);
+STATIC_ASSERT(offsetof(APICHARSYS, models) == 0x18);
+STATIC_ASSERT(sizeof(CHARACTER_MODEL_LAYERS_PC) == 0x54);
+STATIC_ASSERT(offsetof(CHARACTER_MODEL_LAYERS_PC, hierarchy) == 4);
+
+void __cdecl APIDumpCharacterModels(i32 mode) {
+    i32 model_index = mode == 0 ? apicharsys->permanent_model_count : 0;
+    while (model_index < apicharsys->loaded_model_count) {
+        if (apicharsys->models[model_index].hierarchy != NULL) {
+            NuHGobjDestroy(apicharsys->models[model_index].hierarchy);
+        }
+        ++model_index;
+    }
+}

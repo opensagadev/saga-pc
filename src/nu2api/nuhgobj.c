@@ -864,3 +864,7 @@ DWA_WEIGHT_BLOCK_PC **__cdecl NuHGobjEvalDwaBlend(i32 render_count, i16 *render_
     }
     return weights_by_render;
 }
+
+void __cdecl NuHGobjDestroy(NUHGOBJ_EVAL_PC *object) {
+    NuGScnRemove((NUGSCN *)object);
+}

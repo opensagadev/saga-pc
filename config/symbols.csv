@@ -4567,6 +4567,7 @@ address    , symbol                                                         , si
 0x5ef7f0,_NuGScnRead,26,"NUGSCN *__cdecl(VARIPTR *,VARIPTR,char *)"
 0x5ef810,_NuGHGRead,101,"NUHGOBJ_EVAL_PC *__cdecl(char *,VARIPTR *,VARIPTR)"
 0x5ef880,_NuGScnRemove,200,void __cdecl(NUGSCN *)
+0x5ef950,_NuHGobjDestroy,5,void __cdecl(NUHGOBJ_EVAL_PC *)
 0x5ef960,_NuGScnReadFromMemory,19,void __cdecl(NUGSCN*)
 0x5ef980,_NuGHGFixup,19,"NUGSCN* __cdecl(NUGSCN*,void*)"
 0x5ef9a0,_NuVpSetPosition,344,"void __cdecl(f32,f32)"
