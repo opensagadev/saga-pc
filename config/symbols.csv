@@ -546,8 +546,8 @@ address    , symbol                                                         , si
 0x464480,_GizActions_SetVisibilityPc,,"void __cdecl(GIZFLOW_PC *, FLOWBOX_PC *, char **, i32)"
 0x464530,_GizActions_SetGizmoVisibilityPc,,"void __cdecl(GIZFLOW_PC *, FLOWBOX_PC *, char **, i32)"
 0x4645f0,_GizActions_SetPickupVisibilityPc,,"void __cdecl(GIZFLOW_PC *, FLOWBOX_PC *, char **, i32)"
-0x464760,_GizActions_TurnOnFlowBoxPc,,"void __cdecl(GIZFLOW_PC *, FLOWBOX_PC *, char **, i32)"
-0x464820,_GizActions_ActivateGizmoPc,,"void __cdecl(GIZFLOW_PC *, FLOWBOX_PC *, char **, i32)"
+0x464760,_GizActions_TurnOnFlowBoxPc,182,"void __cdecl(GIZFLOW_PC *, FLOWBOX_PC *, char **, i32)"
+0x464820,_GizActions_ActivateGizmoPc,192,"void __cdecl(GIZFLOW_PC *, FLOWBOX_PC *, char **, i32)"
 0x4648e0,_GizActions_ActivateCharPc,,"void __cdecl(GIZFLOW_PC *, FLOWBOX_PC *, char **, i32)"
 0x464ae0,_GizActions_ChangeObstTriggerType,363,
 0x464c50,_GizAction_ChangeTechnoTgt,751,
@@ -560,7 +560,7 @@ address    , symbol                                                         , si
 0x465720,_GizActions_PlaySpecialPc,,"void __cdecl(GIZFLOW_PC *, FLOWBOX_PC *, char **, i32)"
 0x465870,_GizActions_PlayForcePc,,"void __cdecl(GIZFLOW_PC *, FLOWBOX_PC *, char **, i32)"
 0x4659b0,_GizActions_PlayRadio,195,
-0x465a80,_GizActions_PlayCutscenePc,,"void __cdecl(GIZFLOW_PC *, FLOWBOX_PC *, char **, i32)"
+0x465a80,_GizActions_PlayCutscenePc,98,"void __cdecl(GIZFLOW_PC *, FLOWBOX_PC *, char **, i32)"
 0x465af0,_GizActions_HitBlowup,366,
 0x465c60,_GizActions_ActivateBelt,94,
 0x465cc0,_GizActions_EnableSock,251,

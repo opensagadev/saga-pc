@@ -1,5 +1,70 @@
 #include "saga.h"
 
+extern "C" i32 __cdecl GizmoGetTypeIDByName(void *system, char *name);
+
+struct GIZACTION_FLOWBOX_FLAGS_PC {
+    u8 unknown_00[0xa];
+    u16 flags;
+    u8 unknown_0c[0x10];
+    char *name;
+};
+STATIC_ASSERT(sizeof(GIZACTION_FLOWBOX_FLAGS_PC) == 0x20);
+STATIC_ASSERT(offsetof(GIZACTION_FLOWBOX_FLAGS_PC, flags) == 0xa);
+STATIC_ASSERT(offsetof(GIZACTION_FLOWBOX_FLAGS_PC, name) == 0x1c);
+
+extern "C" void __cdecl GizActions_TurnOnFlowBoxPc(GIZFLOW_PC *flow, FLOWBOX_PC *unused, char **params, i32 count) {
+    char *name = NULL;
+    i32 enabled = 1;
+    i32 i;
+    for (i = 0; i < count; ++i) {
+        char *value = NuStrIStr(params[i], (char *)AIScriptActionNameArgPrefix);
+        if (value != NULL)
+            name = value + 5;
+        else if (NuStrICmp(params[i], AIActionFalseName) == 0)
+            enabled = 0;
+    }
+    if (flow != NULL && name != NULL) {
+        for (i = 0; i < flow->flowbox_count; ++i) {
+            GIZACTION_FLOWBOX_FLAGS_PC *box = &((GIZACTION_FLOWBOX_FLAGS_PC *)flow->flowboxes)[i];
+            if (box->name != NULL && NuStrICmp(box->name, name) == 0)
+                box->flags ^= (box->flags ^ enabled) & 1;
+        }
+    }
+}
+
+extern "C" void __cdecl GizActions_ActivateGizmoPc(GIZFLOW_PC *flow, FLOWBOX_PC *unused, char **params, i32 count) {
+    char *name = NULL;
+    i32 type_id = -1;
+    i32 active = 1;
+    for (i32 i = 0; i < count; ++i) {
+        char *value = NuStrIStr(params[i], (char *)AIScriptActionNameArgPrefix);
+        if (value != NULL) {
+            name = value + 5;
+        } else {
+            value = NuStrIStr(params[i], (char *)AITransferLiteral7576f8);
+            if (value != NULL)
+                type_id = GizmoGetTypeIDByName(flow->gizmo_sys, value + 5);
+            else if (NuStrIStr(params[i], (char *)AIActionFalseName) != NULL)
+                active = 0;
+        }
+    }
+    if (name != NULL) {
+        void *gizmo = GizmoFindByName(flow->gizmo_sys, type_id, name);
+        if (gizmo != NULL)
+            GizmoActivate(flow->gizmo_sys, gizmo, active, 1);
+    }
+}
+
+extern "C" void __cdecl GizActions_PlayCutscenePc(GIZFLOW_PC *unused0, FLOWBOX_PC *unused1, char **params, i32 count) {
+    char *name = NULL;
+    for (i32 i = 0; i < count; ++i) {
+        char *value = NuStrIStr(params[i], (char *)AIScriptActionNameArgPrefix);
+        if (value != NULL)
+            name = value + NuStrLen(AIScriptActionNameArgPrefix);
+    }
+    NewCutScene(NULL, (CUTSYS_PC *)WorldInfo_CurrentlyActive()->cutscene_sys, name, 0);
+}
+
 extern "C" const char GizActionLiteral758274[];
 extern "C" const char GizActionLiteral75827c[];
 extern "C" const char GizActionLiteral758280[];
