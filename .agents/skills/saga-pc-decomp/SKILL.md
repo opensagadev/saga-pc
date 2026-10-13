@@ -16,3 +16,6 @@ workflow, the VC8 source-shape lessons and the automated search.
   translation-unit placement come from the PC executable.
 - Keep notes short. Git history and `matching.json` are the record; do not add
   per-function prose journals or checkpoint documents.
+- Every commit Codex creates in this repository, including merge commits, must
+  include exactly one `Co-authored-by: Codex <267193182+codex@users.noreply.github.com>`
+  trailer. Preserve the author and any other co-author trailers.
