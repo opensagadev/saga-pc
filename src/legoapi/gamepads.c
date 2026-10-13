@@ -128,26 +128,6 @@ void __cdecl GamePad_InitButtons(void) {
     GAMEPAD_MENUCANCEL = 0x120;
 }
 
-typedef struct GAMEPAD_RUNTIME_INPUT_PC {
-    FRAME_PAD_PC *bound_pad;
-    u32 held, pressed;
-    u32 left_held, left_pressed, left_previous;
-    u32 right_held, right_pressed, right_previous;
-    u8 input_ready;
-    u8 unknown25[0x60 - 0x25];
-} GAMEPAD_RUNTIME_INPUT_PC;
-STATIC_ASSERT(sizeof(GAMEPAD_RUNTIME_INPUT_PC) == 0x60);
-STATIC_ASSERT(sizeof(GAMEPAD_INIT_RECORD) == 0x60);
-STATIC_ASSERT(offsetof(GAMEPAD_RUNTIME_INPUT_PC, bound_pad) == 0);
-STATIC_ASSERT(offsetof(GAMEPAD_RUNTIME_INPUT_PC, held) == 4);
-STATIC_ASSERT(offsetof(GAMEPAD_RUNTIME_INPUT_PC, pressed) == 8);
-STATIC_ASSERT(offsetof(GAMEPAD_RUNTIME_INPUT_PC, left_held) == 0xc);
-STATIC_ASSERT(offsetof(GAMEPAD_RUNTIME_INPUT_PC, left_pressed) == 0x10);
-STATIC_ASSERT(offsetof(GAMEPAD_RUNTIME_INPUT_PC, left_previous) == 0x14);
-STATIC_ASSERT(offsetof(GAMEPAD_RUNTIME_INPUT_PC, right_held) == 0x18);
-STATIC_ASSERT(offsetof(GAMEPAD_RUNTIME_INPUT_PC, right_pressed) == 0x1c);
-STATIC_ASSERT(offsetof(GAMEPAD_RUNTIME_INPUT_PC, right_previous) == 0x20);
-STATIC_ASSERT(offsetof(GAMEPAD_RUNTIME_INPUT_PC, input_ready) == 0x24);
 STATIC_ASSERT(offsetof(WORLDINFO, current_level) == 0x128);
 STATIC_ASSERT(offsetof(LEVELDATA_PC, flags) == 0x64);
 STATIC_ASSERT(offsetof(GAMEOBJECT, flags_1fc) == 0x1fc);

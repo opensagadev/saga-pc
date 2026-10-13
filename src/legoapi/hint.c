@@ -122,3 +122,18 @@ void __cdecl Hint_ClearHintsAndDoneFlags(void) {
         ++hint;
     }
 }
+
+void __cdecl Hint_LoadAllGameState(void) {
+    HINT_PC *hint = hintsys.hints;
+    i32 index = 0;
+    if (hint == NULL || hintsys.save_bits == NULL)
+        return;
+    while (hint->id != -1) {
+        i32 word = index / 32;
+        if (word >= hintsys.save_word_count)
+            break;
+        hint->completed = (hintsys.save_bits[word] & (1U << (index % 32))) != 0;
+        ++hint;
+        ++index;
+    }
+}

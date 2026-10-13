@@ -148,3 +148,91 @@ extern "C" void __cdecl MenuDrawNewGame(MENU *menu) {
         MenuPcStringsInit();
     DrawMenuEntryEx(menu, (char *)MenuPcStrings[1], alpha);
 }
+
+extern "C" void __cdecl MenuUpdateNewGame(MENU *menu) {
+    i32 aspect_mode = PcWindowOptions.aspect_mode;
+    if (aspect_mode == 3)
+        aspect_mode = PCDeviceBackend.active_aspect_mode;
+    Game.options_save.widescreen = aspect_mode != 0;
+    if (MenuLoadOccurred != 0) {
+        MenuLoadOccurred = 0;
+        NewLData = LOADGAME_LDATA;
+        UsePlayerList = 2;
+        GameSetSoundVolume(&Game.options_save);
+        legoSetMusicVolume(Game.options_save.music_enabled != 0 ? GameGetMusicVolume(&TempOptions) : 0.0f);
+        Hint_LoadAllGameState();
+        newgamealpha = 0.0f;
+        LswForceUsedHintFlagsPc |= 7;
+        u8 brightness = Game.options_save.brightness;
+        if (brightness > 20) {
+            brightness = 10;
+            Game.options_save.brightness = 10;
+        }
+        NuVideoSetBrightness((f32)((f64)brightness / 10.0));
+        return;
+    }
+    if (MenuUpdateTitleFadePc(menu))
+        return;
+    if (menu->time_04 >= 30.0) {
+        newgamefade = 2;
+        return;
+    }
+    if (GameTimer.time_elapsed < 4.0f)
+        return;
+
+    GAMEPAD_RUNTIME_INPUT_PC *gamepads = (GAMEPAD_RUNTIME_INPUT_PC *)GamePadStorage;
+    for (i32 player = 0; player < 2; ++player) {
+        GAMEPAD_RUNTIME_INPUT_PC *gamepad = &gamepads[player];
+        if ((gamepad->held & GAMEPAD_START) != 0)
+            NuPadSetStatus(gamepad->bound_pad->device, 1);
+        if (gamepad->input_ready == 0 || gamepad->bound_pad->is_valid == 0) {
+            PlayerProgress[player].active = 0;
+        } else if ((gamepad->held & (GAMEPAD_START | GAMEPAD_JUMP | GAMEPAD_ACTION | GAMEPAD_SPECIAL | GAMEPAD_TAG |
+                                     GAMEPAD_TOGGLELEFT | GAMEPAD_TOGGLERIGHT | GAMEPAD_DUP | GAMEPAD_DDOWN |
+                                     GAMEPAD_DLEFT | GAMEPAD_DRIGHT)) != 0 ||
+                   (gamepad->left_held & (GAMEPAD_DUP | GAMEPAD_DDOWN | GAMEPAD_DLEFT | GAMEPAD_DRIGHT)) != 0) {
+            if (TextInputDeviceLinksPc[player].available != 0)
+                PlayerProgress[player].active = 1;
+        }
+    }
+    startnewgame = 0;
+    if (startnewgame_initiated != 0) {
+        startnewgame = 1;
+        startnewgame_initiated = 0;
+    }
+    if (menu->confirm_pressed != 0 && startnewgame == 0) {
+        MenuSFX = GameAudio_GetSfxId(0x30);
+        switch (menu->selected_item) {
+            case 0:
+                NewMenu(1022, -1, -1);
+                startnewgame_initiated = 1;
+                break;
+            case 1:
+                NewMenu(1012, -1, -1);
+                break;
+            case 2:
+                NewMenu(4, -1, -1);
+                break;
+            case 3:
+                NewMenu(21, 0, -1);
+                break;
+            case 4:
+                NewMenu(1025, 0, -1);
+                break;
+            case 5:
+                NewMenu(1026, 0, -1);
+                break;
+            case 6:
+                NewMenu(1029, -1, -1);
+                break;
+        }
+    }
+    if (startnewgame != 0) {
+        startnewgame = 0;
+        NewGame();
+        NewLData = NEWGAME_LDATA;
+        UsePlayerList = 2;
+        newgamecam = 1;
+        newgamecamtime = 0.0f;
+    }
+}

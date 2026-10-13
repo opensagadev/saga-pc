@@ -882,6 +882,7 @@ address    , symbol                                                         , si
 0x004947c0 , _MenuExitOptions                                               , 5     , void __cdecl (MENU *)
 0x494bb0,?MenuUpdateTitleFadePc@@YAHPAUmenu_s@@@Z,571,
 0x00494df0 , _MenuEnterNewGame                                              , 38    , void __cdecl (MENU *)
+0x494e20,_MenuUpdateNewGame,724,void __cdecl(MENU *)
 0x495110,_MenuDrawNewGame,370,void __cdecl(MENU *)
 0x495290,_MenuUpdateSelectLanguage,53,
 0x4952d0,_MenuDrawSelectLanguage,49,
@@ -2924,6 +2925,7 @@ address    , symbol                                                         , si
 0x5765f0,_Hint_Reset,59,void __cdecl (void)
 0x576670,_Hint_ClearHintsAndDoneFlags,35,void __cdecl(void)
 0x5766e0,_Hint_SaveGameState,99,void __cdecl (HINT_PC *)
+0x5767d0,_Hint_LoadAllGameState,103,void __cdecl(void)
 0x576840,_Hint_Draw,31,
 0x576860,_Hint_SetHint,165,"void __cdecl (HINT_PC *,i32,i32)"
 0x576910,_Hint_SetHintFromId,70,"void __cdecl (i32,i32,i32)"
