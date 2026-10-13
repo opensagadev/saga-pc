@@ -1,6 +1,16 @@
 #include "saga.h"
 #include <string.h>
 
+static f32 motionFactorPan = 0.01f;
+static f32 motionFactorPull = -0.024f;
+static f32 motionFactorPanClamp = 0.02f;
+
+void __cdecl NuSpeedBlurSetMotionFactors(f32 pan, f32 pull, f32 clamp) {
+    motionFactorPan = pan;
+    motionFactorPull = pull;
+    motionFactorPanClamp = clamp;
+}
+
 i32 __cdecl NuPostEffectIsInitialised(u32 mask) {
     return (NuPostEffectInitialisedFlagsPc & mask) != 0;
 }

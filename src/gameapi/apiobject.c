@@ -10,6 +10,11 @@ STATIC_ASSERT(offsetof(API_EXTRA_ACTION_PC, action) == 4);
 static API_ACTION_INFO_PC *APIActionInfo;
 static API_EXTRA_ACTION_PC *APIExtraActionData;
 
+void __cdecl SetActionInfo(API_ACTION_INFO_PC *info, API_EXTRA_ACTION_PC *extra) {
+    APIActionInfo = info;
+    APIExtraActionData = extra;
+}
+
 i32 __cdecl FindGameDebris(APIDEBRISSYS_PC *system, char *name) {
     i32 index;
     for (index = system->named_count; index < system->capacity; ++index) {

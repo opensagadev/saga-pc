@@ -16049,6 +16049,9 @@ address    , symbol                                                         , si
 0x008066c8 , _ang                                                           , 1026  , u16[513]
 0x806acc,_RenderPostLogFirstPc,,i32
 0x806ad0,_NuExp10FirstTimePc,,i32
+0x00806b74,_motionFactorPan,4,private f32
+0x00806b78,_motionFactorPanClamp,4,private f32
+0x00806b7c,_motionFactorPull,4,private f32
 0x00806b9c , _nuspecial_const_alpha                                         , 4     , f32
 0x00806c00 , _cubeEdgeIndices                                               , 96    , i32[12][2]
 0x00806c60 , _cubeEdgeTopologies                                            , 96    , i32[12][2]

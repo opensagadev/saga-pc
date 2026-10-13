@@ -78,6 +78,10 @@ STATIC_ASSERT(offsetof(KILLPARTS_RIDER_LIGHT_PC, intensity) == 0x628);
 #define NU_COS_LUT(angle) NuTrigTable[((static_cast<i32>(angle) + 0x4000) >> 1) & 0x7fff]
 
 extern "C" {
+    void __cdecl InitBikeParts(void) {
+        memset(KillPartsBikesPc, 0, sizeof(KillPartsBikesPc));
+    }
+
     void __cdecl AddPartDebris(PARTDEBRISSYS *, i32, NUVEC *);
     void KillParts(GAMEOBJECT *object, i32 animation, i32 excluded_layer, i32 mode, float vertical_scale,
                    i32 use_vehicle_velocity, u16 *angle_override) {
