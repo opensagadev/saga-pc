@@ -37,7 +37,7 @@ void __cdecl PCGraphicsFatalDiagnostic(PC_NATIVE_DEBUG_STATE_PC *state, const ch
 extern "C" void __cdecl NuFileWriteString(NUFILE file, const char *text);
 
 void PC_NATIVE_DEBUG_STATE_PC::InitializeHeader() {
-    header.first = header.second = header.third = -1;
+    header.third = header.first = header.second = -1;
     header.font_size = 12;
     strcat(header.label, "Arial");
     header.unknown_colour = 0xff;

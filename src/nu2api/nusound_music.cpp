@@ -828,7 +828,7 @@ i32 NuMusic::Initialise(const char *file, char *language_, VARIPTR *cursor, VARI
 char *NuMusic::RemovePath(char *str) {
     char *last = NULL;
     for (char *p = str; *p != 0; ++p)
-        if (*p == '/' || *p == '\\')
+        if (*p == '\\' || *p == '/')
             last = p;
     return last == NULL ? str : last + 1;
 }

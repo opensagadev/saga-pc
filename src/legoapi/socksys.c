@@ -168,9 +168,9 @@ static void SockParCamArenaOffset(NUFPAR_PC *parser, void *context) {
 
 static void SockParOffsetBlendRatio(NUFPAR_PC *parser, void *context) {
     const f32 ratio = NuFParGetFloat(parser);
-    sockpar_sock->camera_arena_blend.x = ratio;
-    sockpar_sock->camera_arena_blend.y = ratio;
     sockpar_sock->camera_arena_blend.z = ratio;
+    sockpar_sock->camera_arena_blend.y = ratio;
+    sockpar_sock->camera_arena_blend.x = ratio;
 }
 
 static void SockParOffsetBlendXRatio(NUFPAR_PC *parser, void *context) {

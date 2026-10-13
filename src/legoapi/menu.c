@@ -185,8 +185,8 @@ void InitSuperStory(i32 episode) {
     SuperStoryEpisode = episode;
     ResetTimer(&SuperStoryTimer, 0.0f);
     SuperStoryScore = 0;
-    FreePlay = 0;
     NextArea_FreePlay = 0;
+    FreePlay = 0;
     Cheats_TurnOff(0);
 }
 
