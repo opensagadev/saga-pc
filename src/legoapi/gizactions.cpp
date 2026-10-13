@@ -2,6 +2,44 @@
 
 extern "C" i32 __cdecl GizmoGetTypeIDByName(void *system, char *name);
 
+extern "C" void __cdecl GizActions_SetVisibilityPc(GIZFLOW_PC *unused0, FLOWBOX_PC *unused1, char **params, i32 count) {
+    NUSPECIALHANDLE special = {0};
+    i32 visible = 1;
+    for (i32 i = 0; i < count; ++i) {
+        char *value = NuStrIStr(params[i], (char *)AIScriptActionNameArgPrefix);
+        if (value != NULL)
+            NuSpecialFind(WORLD->current_gscn, &special, value + 5, 1);
+        else if (NuStrIStr(params[i], (char *)AIActionFalseName) != NULL)
+            visible = 0;
+    }
+    if (NuSpecialExistsFn(&special) != 0)
+        NuSpecialSetVisibility(&special, visible);
+}
+
+extern "C" void __cdecl GizActions_SetGizmoVisibilityPc(GIZFLOW_PC *flow, FLOWBOX_PC *unused, char **params,
+                                                        i32 count) {
+    char *name = NULL;
+    i32 type_id = -1;
+    i32 visible = 1;
+    for (i32 i = 0; i < count; ++i) {
+        char *value = NuStrIStr(params[i], (char *)AIScriptActionNameArgPrefix);
+        if (value != NULL) {
+            name = value + 5;
+        } else {
+            value = NuStrIStr(params[i], (char *)AITransferLiteral7576f8);
+            if (value != NULL)
+                type_id = GizmoGetTypeIDByName(flow->gizmo_sys, value + 5);
+            else if (NuStrIStr(params[i], (char *)AIActionFalseName) != NULL)
+                visible = 0;
+        }
+    }
+    if (name != NULL) {
+        void *gizmo = GizmoFindByName(flow->gizmo_sys, type_id, name);
+        if (gizmo != NULL)
+            GizmoSetVisibility(flow->gizmo_sys, gizmo, visible, 1);
+    }
+}
+
 struct GIZACTION_FLOWBOX_FLAGS_PC {
     u8 unknown_00[0xa];
     u16 flags;
