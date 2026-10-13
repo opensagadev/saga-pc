@@ -36,11 +36,14 @@ u8 *__fastcall NuKeyboardPoll(NuKeyboardOwner_PC *owner) {
 
     owner->poll_status = 1;
     device = owner->device;
-    if (device->vtable->poll(device) < 0 && (device->vtable->acquire(device) < 0 || device->vtable->poll(device) < 0)) {
-        page_index = nu_keyboard_page_index;
-        page = nu_keyboard_pages + (i8)page_index * 0x100;
-        memset(page, 0, nu_keyboard_owner.key_count);
-        return page;
+    if (device->vtable->poll(device) < 0) {
+        if (device->vtable->acquire(device) < 0) {
+            page_index = nu_keyboard_page_index;
+            page = nu_keyboard_pages + (i8)page_index * 0x100;
+            memset(page, 0, nu_keyboard_owner.key_count);
+            return page;
+        }
+        device->vtable->poll(device);
     }
 
     page_index = (u8)(nu_keyboard_page_index ^ 1);

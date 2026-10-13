@@ -347,7 +347,7 @@
     "src/nu2api/glutils.c": "562d5438332dfb4654aaab1e9dd0a7b017b65a9e9fc8c786e5b1f7e5331af251",
     "src/nu2api/implode.c": "8c4ad469facfb6d4d04dadce3d489b36452c5da5e6ecd7c8bbcf52a0eb89564c",
     "src/nu2api/keyboard_init.c": "e844ec51ecb1a694928b6b530f13daf0459a1dfab29ca08b0c036781e17c6c3d",
-    "src/nu2api/keyboard_read.c": "f4b24703e385a2674dedc959b7f3bfea489bc1b67c59c6c033fad0e46e84db8d",
+    "src/nu2api/keyboard_read.c": "90cf6692254c4bf6fd2a4cca12cbdac5fea742d3af7f8f5f96a7e81629af02ae",
     "src/nu2api/nualloc.c": "9749f8cfcf47499c8bee2a1dae5783ba2eed7a476efe29cb2c07ac9994e1d689",
     "src/nu2api/nuanim.c": "21ec96166f8b0180a7e3a6ab53bf8159e3d20593e73e43014f83380e8d63527e",
     "src/nu2api/nuapi.c": "9eb6c8c445053a341ea85370be854d8b60f24da7c6ec9826e641b543ec68718b",
@@ -664,7 +664,7 @@
     "build/obj/nu2api/input_runtime.obj": "b769bb0c62bbbbb07309a40119cefe1e6901a1f88479b8ef3611d6ab4fd1b74d",
     "build/obj/nu2api/key_events.obj": "0ca98c9d58281a0f3ee2d181ce2aeaf03e9582dc3cedf5170a2fa609eafbcd9b",
     "build/obj/nu2api/keyboard_init.obj": "89ae30be082d53316a2724f0ea590a7f1e8d7e77135a50d950cad779240a45b5",
-    "build/obj/nu2api/keyboard_read.obj": "520f0b5ea554ce0b700561fb00099221a357e4782d2687eccea7f5e19b8a5555",
+    "build/obj/nu2api/keyboard_read.obj": "db1fe0fd834422f5d2c2e02cfbc7036a27a059572711514d787962048f6e0189",
     "build/obj/nu2api/nualloc.obj": "c6f431e2fdb34b0748e49094fa0b96303b16bdcf26a0fa4779ac6495609d2888",
     "build/obj/nu2api/nuanim.obj": "f05384923947eaffb1a80d292095326b2f389011e05a8d29aa8b879b56f1f4bc",
     "build/obj/nu2api/nuapi.obj": "3de4298b3de5898dcb790394a7a13db12b888ad4c4ba1ba5f0e3d9744dbe9b35",
@@ -140384,17 +140384,17 @@
       "objects": [
         {
           "unit": "src/nu2api/keyboard_read.c",
-          "base_size": 367,
+          "base_size": 321,
           "exact_match": false,
           "target_sha256": "26c8c1f0e8d9bf71f68914e67ae017534c8b305048bde5160ca36e3991668e09",
-          "base_sha256": "90cf9449b17902459aafd5451f0837dd8669a440168b7f98f3b61b3ffbfa0625",
-          "relocation_count": 24,
+          "base_sha256": "d528179c88a060b20840b1244190eb7a2e3235b5d9ebe48ec97b853ebcb42f14",
+          "relocation_count": 20,
           "comparison_unit": "006d5990-ff36e6ae5d8e",
-          "objdiff_percent": 43.517544
+          "objdiff_percent": 40.763157
         }
       ],
       "status": "different",
-      "objdiff_percent": 43.517544
+      "objdiff_percent": 40.763157
     },
     {
       "name": "NuMouseReadXRel",
@@ -376524,10 +376524,10 @@
     "mapped_code_bytes": 2148349,
     "matched_code_bytes": 394814,
     "matching_percent": 11.373840978138686,
-    "fuzzy_coverage_percent": 36.629091683792744,
+    "fuzzy_coverage_percent": 36.62879968074369,
     "mapped_functions": 7489,
     "matched_functions": 3500,
-    "objdiff_fuzzy_percent": 73.389946,
+    "objdiff_fuzzy_percent": 73.38935,
     "objdiff_total_code": 1733395,
     "image_bytes": 40067072,
     "mapped_bytes": 3071131,
@@ -377626,7 +377626,7 @@
       "metadata_sha256": "fe09365da4c355f220d724ca99394fc120b758891b4188d2c49707b6df0894f2",
       "header_path": "src/saga.h",
       "header_sha256": "f942c779b44810cd13be8778a6d3f2f63cc4b71c4dd57e3b678dd7bfc43b1e0f",
-      "geometry_object_sha256": "fb64460ea60a8727aa110518e326078cf3c172ca82618ff9c0689571945f1d89",
+      "geometry_object_sha256": "6c018dadd8f4dcf92a6e78e6ed05d52a21ce82d60d05ae48c38455635f62bd07",
       "toolchain_sha256": "489d0782638d8033137cdb2834462416111945cbfa073147820e314b8576b95b",
       "implementation_sha256": "9ad7521230f06fde31f0771b10bd001037ea32d2def455913a7f391f05dede9d",
       "headers": {
