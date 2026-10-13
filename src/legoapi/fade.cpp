@@ -10,7 +10,9 @@ enum FADETYPE_VALUE {
 
 struct FADEINFO_s;
 
-struct FadeBase {
+class FadeBase {
+  public:
+    FADEINFO_s *info;
     virtual ~FadeBase();
     virtual void Init(FADEINFO_s *info) = 0;
     virtual void InitFade() = 0;
@@ -51,6 +53,7 @@ class FadeSystem : public FADEINFO_s {
     void Draw();
     void SetStage(char stage);
     i32 SetFade(FADETYPE const &type, u32 frames);
+    i32 AddFade(FadeBase *fade);
 };
 
 STATIC_ASSERT(sizeof(FadeSystem) == 0x2c);
@@ -59,6 +62,231 @@ extern "C" {
 #pragma bss_seg(".bss$FadeSys")
     FadeSystem FadeSys;
 #pragma bss_seg()
+}
+
+class Fade : public FadeBase {
+  public:
+    void Init(FADEINFO_s *state);
+    void InitFade();
+    void UpdateFade();
+    void DrawFade();
+    FADETYPE_VALUE GetFadeType() const;
+};
+
+class FadeWipe : public FadeBase {
+  public:
+    void Init(FADEINFO_s *state);
+    void InitFade();
+    void UpdateFade();
+    void DrawFade();
+    FADETYPE_VALUE GetFadeType() const;
+};
+
+class FadeStillWipe : public FadeBase {
+  public:
+    void Init(FADEINFO_s *state);
+    void InitFade();
+    void UpdateFade();
+    void DrawFade();
+    FADETYPE_VALUE GetFadeType() const;
+};
+
+class FadeStill : public FadeBase {
+  public:
+    void Init(FADEINFO_s *state);
+    void InitFade();
+    void UpdateFade();
+    void DrawFade();
+    FADETYPE_VALUE GetFadeType() const;
+};
+
+extern "C" {
+    void __cdecl NeedScreenGrab(i32 needed);
+    void __cdecl DrawStillScreen(i32 clear);
+    void __cdecl DrawPauseScreenWipe(void);
+    void __cdecl DrawFadeScreenWipe(void);
+
+    Fade fade;
+    FadeWipe fadeWipe;
+    FadeStillWipe fadeStillWipe;
+    FadeStill fadeStill;
+    FADEINFO_s *pFadeInfo;
+    NUMTL *FadeMtl;
+    NUMTL *ScreenFadeMtl;
+    i32 wait_till_next_frame;
+    i32 FRAMES_TO_WAIT = 1;
+}
+
+FadeBase::~FadeBase() {
+}
+
+void Fade::Init(FADEINFO_s *state) {
+    info = state;
+}
+
+void Fade::InitFade() {
+    if ((info->stage & 1) != 0) {
+        info->fade = 1.0f;
+        info->rate = -1.3333334f;
+    } else {
+        info->fade = 0.0f;
+        info->rate = 2.0f;
+    }
+}
+
+void Fade::UpdateFade() {
+}
+
+void Fade::DrawFade() {
+    i32 index;
+
+    if (info->fade != 0.0f && FadeMtl != NULL) {
+        index = (i32)(((f64)info->fade - 0.0) * 16384.0 + 49152.0) >> 1 & 0x7fff;
+        NuRndrRect2di(0, 0, 0x2800, 0xe00, (i32)(NuTrigTable[index] * 128.0) << 24, ScreenFadeMtl);
+    }
+}
+
+FADETYPE_VALUE Fade::GetFadeType() const {
+    return FADE_TYPE_SCREEN;
+}
+
+void FadeWipe::Init(FADEINFO_s *state) {
+    info = state;
+}
+
+void FadeWipe::InitFade() {
+    u32 old_direction = info->direction;
+
+    if ((info->stage & 1) != 0) {
+        info->fade = 1.0f;
+        info->rate = -1.3333334f;
+    } else {
+        info->fade = 0.0f;
+        info->rate = 2.0f;
+    }
+    do {
+        info->direction = 1u << (qrand() / 0x4000);
+    } while (info->direction == old_direction);
+}
+
+void FadeWipe::UpdateFade() {
+}
+
+void FadeWipe::DrawFade() {
+    DrawFadeScreenWipe();
+}
+
+FADETYPE_VALUE FadeWipe::GetFadeType() const {
+    return FADE_TYPE_WIPE;
+}
+
+void FadeStillWipe::Init(FADEINFO_s *state) {
+    info = state;
+}
+
+void FadeStillWipe::InitFade() {
+    u32 old_direction = info->direction;
+
+    if ((info->stage & 1) != 0) {
+        info->fade = 1.0f;
+        info->rate = -1.3333334f;
+        if (CUTSTOPGAME == 0 && WORLD->current_level != NULL && (WORLD->current_level->flags & 0xe0) == 0 &&
+            WORLD->current_level != TITLES_LDATA) {
+            PlaySfx("WipeScreen", NULL);
+        }
+    } else {
+        pause_rndr_on = 0;
+        info->fade = 1.0f;
+        info->rate = 2.0f;
+        if (info->field_28 != 0) {
+            NeedScreenGrab(1);
+        } else {
+            info->field_28 = 1;
+        }
+        wait_till_next_frame = FRAMES_TO_WAIT;
+    }
+    do {
+        info->direction = 1u << (qrand() / 0x4000);
+    } while (info->direction == old_direction);
+}
+
+void FadeStillWipe::UpdateFade() {
+    if (wait_till_next_frame > 0) {
+        wait_till_next_frame--;
+    }
+    if ((info->stage & 2) != 0 && wait_till_next_frame == 0) {
+        pause_rndr_on = 1;
+    }
+}
+
+void FadeStillWipe::DrawFade() {
+    if (wait_till_next_frame != 0) {
+        return;
+    }
+    if ((info->stage & 2) != 0) {
+        DrawStillScreen(1);
+    } else {
+        DrawPauseScreenWipe();
+    }
+}
+
+FADETYPE_VALUE FadeStillWipe::GetFadeType() const {
+    return FADE_TYPE_STILL_WIPE;
+}
+
+void FadeStill::Init(FADEINFO_s *state) {
+    info = state;
+}
+
+void FadeStill::InitFade() {
+    u32 old_direction = info->direction;
+
+    if ((info->stage & 1) != 0) {
+        info->fade = 0.0f;
+        info->rate = 0.0f;
+    } else {
+        info->fade = 1.0f;
+        info->rate = 2.0f;
+        NeedScreenGrab(1);
+        wait_till_next_frame = FRAMES_TO_WAIT;
+    }
+    do {
+        info->direction = 1u << (qrand() / 0x4000);
+    } while (info->direction == old_direction);
+}
+
+void FadeStill::UpdateFade() {
+    if ((info->stage & 2) != 0) {
+        pause_rndr_on = 1;
+    }
+}
+
+void FadeStill::DrawFade() {
+    if (wait_till_next_frame != 0) {
+        wait_till_next_frame--;
+        return;
+    }
+    if ((info->stage & 2) != 0) {
+        DrawStillScreen(1);
+    } else {
+        DrawPauseScreenWipe();
+    }
+}
+
+FADETYPE_VALUE FadeStill::GetFadeType() const {
+    return FADE_TYPE_STILL;
+}
+
+i32 FadeSystem::AddFade(FadeBase *fade_object) {
+    FADETYPE_VALUE type;
+
+    if (fade_object == NULL) {
+        return 0;
+    }
+    type = fade_object->GetFadeType();
+    fade_object->Init(this);
+    fades[type] = fade_object;
+    return 1;
 }
 
 extern i32 fade_draw_suppressed;

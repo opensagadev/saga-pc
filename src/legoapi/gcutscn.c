@@ -179,7 +179,7 @@ void __cdecl CutScenePlayer_Configure(char *file, VARIPTR *buffer, VARIPTR *end,
             ++player.clip_count;
     }
     NuFParDestroy(fp);
-    if (player.clip_count != 0) {
+    if (player.clip_count > 0) {
         buffer->void_ptr = player.clips + player.clip_count;
         PCByteCopy_candidate(buffer->void_ptr, &player, sizeof(player));
         CutScenePlayerPc = (CUT_PLAYER_ACTIVE_PC *)buffer->void_ptr;

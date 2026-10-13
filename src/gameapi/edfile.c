@@ -386,9 +386,9 @@ void eduiSetActiveMenu(eduimenu_s *menu) {
     }
 }
 
-void cbInteractMenuKeySelect(eduimenu_s *menu) {
+__declspec(noinline) void cbInteractMenuKeySelect(eduimenu_s *menu) {
     u32 modifiers;
-    char text[16];
+    char text[2];
     i32 key = NuKeyGet(&modifiers);
     if (key >= 0) {
         text[0] = NuKeyToAscii(key, modifiers & 1);

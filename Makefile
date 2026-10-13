@@ -12,6 +12,9 @@ VORBIS_HEADERS := $(shell find src/audio/vorbis -type f \( -name '*.h' -o -name 
 ifneq ($(filter build/obj/audio/vorbis/%,$(OBJECTS)),)
 $(filter build/obj/audio/vorbis/%,$(OBJECTS)): $(VORBIS_HEADERS)
 endif
+# Retail libvorbis was built without /GS: none of its functions carry a security
+# cookie. vorbisfile keeps them, so it was built with the game's flags.
+$(filter-out build/obj/audio/vorbis/vorbisfile.obj,$(filter build/obj/audio/vorbis/% build/obj/audio/vorbis_%,$(OBJECTS))): CXXFLAGS += /GS-
 $(filter build/obj/nu2api/oggreader.obj build/obj/nu2api/nustream.obj,$(OBJECTS)): $(VORBIS_HEADERS)
 EXE := build/LEGOStarWarsSaga.exe
 D3DX_LIB := build/d3dx9_35.lib
@@ -26,7 +29,7 @@ LDLIBS := user32.lib gdi32.lib winmm.lib ole32.lib oleaut32.lib shell32.lib adva
 
 .DEFAULT_GOAL := build
 .DELETE_ON_ERROR:
-.PHONY: all build objects link run setup editor check check-core lint check-objects test match diff inspect clean
+.PHONY: all build objects link runtime run setup editor check check-core lint check-objects test match diff inspect clean
 
 all: build
 build: link
@@ -43,6 +46,38 @@ $(EXE): $(OBJECTS) $(D3DX_LIB) $(DSOUND_LIB) $(D3D9_LIB) $(DINPUT8_LIB) $(XINPUT
 # The complete link: every referenced function must be implemented.
 link-strict: $(OBJECTS) $(D3DX_LIB) $(DSOUND_LIB) $(D3D9_LIB) $(DINPUT8_LIB) $(XINPUT_LIB)
 	$(PYTHON) tools/cc.py --link build/LEGOStarWarsSaga.strict.exe $(OBJECTS) -- $(LDFLAGS) $(LDLIBS)
+
+# Runtime build: same sources with SAGA_RUNTIME, so reached stubs are logged and
+# unresolved symbols trap by name. It never touches the matching objects or EXE.
+RUNTIME_DIR := build/runtime
+RUNTIME_EXE := $(RUNTIME_DIR)/LEGOStarWarsSaga.exe
+RUNTIME_OBJECTS := $(patsubst build/obj/%,$(RUNTIME_DIR)/obj/%,$(OBJECTS)) $(RUNTIME_DIR)/saga_runtime.obj
+RUNTIME_LIBS := $(D3DX_LIB) $(DSOUND_LIB) $(D3D9_LIB) $(DINPUT8_LIB) $(XINPUT_LIB)
+$(RUNTIME_DIR)/%.obj: CPPFLAGS += /DSAGA_RUNTIME
+$(patsubst build/obj/%,$(RUNTIME_DIR)/obj/%,$(filter build/obj/audio/vorbis/%,$(OBJECTS))): $(VORBIS_HEADERS)
+$(patsubst build/obj/%,$(RUNTIME_DIR)/obj/%,$(filter-out build/obj/audio/vorbis/vorbisfile.obj,$(filter build/obj/audio/vorbis/% build/obj/audio/vorbis_%,$(OBJECTS)))): CXXFLAGS += /GS-
+
+runtime: $(RUNTIME_EXE)
+
+$(RUNTIME_EXE): $(RUNTIME_OBJECTS) $(RUNTIME_DIR)/traps.obj $(RUNTIME_LIBS)
+	$(PYTHON) tools/cc.py --link $@ $(RUNTIME_OBJECTS) $(RUNTIME_DIR)/traps.obj -- $(LDFLAGS) /MAP $(LDLIBS)
+
+# Probe link: its unresolved symbols become named traps for the real link above.
+$(RUNTIME_DIR)/traps.c: $(RUNTIME_OBJECTS) $(RUNTIME_LIBS) tools/traps.py
+	$(PYTHON) tools/cc.py --link --allow-unresolved $(RUNTIME_DIR)/probe.exe $(RUNTIME_OBJECTS) -- $(LDFLAGS) $(LDLIBS) > $(RUNTIME_DIR)/probe.log
+	$(PYTHON) tools/traps.py $(RUNTIME_DIR)/probe.log $@
+
+$(RUNTIME_DIR)/traps.obj: $(RUNTIME_DIR)/traps.c | build/tools/wine/.ready
+	$(PYTHON) tools/cc.py $< $@ $(CPPFLAGS) $(CXXFLAGS)
+
+$(RUNTIME_DIR)/saga_runtime.obj: runtime/saga_runtime.c config/toolchain.json Makefile tools/cc.py | build/tools/wine/.ready
+	$(PYTHON) tools/cc.py $< $@ $(CPPFLAGS) $(CXXFLAGS)
+
+$(RUNTIME_DIR)/obj/%.obj: src/%.cpp src/saga.h src/externals.h config/toolchain.json Makefile tools/cc.py tools/lib.py | build/tools/wine/.ready
+	$(PYTHON) tools/cc.py $< $@ $(CPPFLAGS) $(CXXFLAGS)
+
+$(RUNTIME_DIR)/obj/%.obj: src/%.c src/saga.h src/externals.h config/toolchain.json Makefile tools/cc.py tools/lib.py | build/tools/wine/.ready
+	$(PYTHON) tools/cc.py $< $@ $(CPPFLAGS) $(CXXFLAGS)
 
 $(D3DX_LIB): tools/d3dx9_35.def tools/cc.py Makefile
 	$(PYTHON) tools/cc.py --implib $@ $<
@@ -106,5 +141,5 @@ inspect:
 	$(PYTHON) tools/check.py --inspect
 
 clean:
-	rm -rf build/obj build/objdiff
+	rm -rf build/obj build/objdiff build/runtime
 	rm -f $(EXE)

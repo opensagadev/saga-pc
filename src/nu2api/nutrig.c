@@ -64,7 +64,7 @@ void AiRndrLine3d(NURND_VERTEX3D_PC *vertices, NUMTL *unused1, NUMTX *matrix) {
         f32 dx2;
         f32 dy2;
         f32 dz2;
-        NUVEC position;
+        __declspec(align(16)) NUVEC position;
         if (aieditor && (aieditor->flags & 2))
             position = aieditor->camera_position;
         else
@@ -88,7 +88,7 @@ void AiRndrLine3dDbg(f32 x0, f32 y0, f32 z0, f32 x1, f32 y1, f32 z1, u32 colour)
         f32 dy;
         f32 dz;
         f32 limit;
-        NUVEC position;
+        __declspec(align(16)) NUVEC position;
         if (aieditor && (aieditor->flags & 2))
             position = aieditor->camera_position;
         else

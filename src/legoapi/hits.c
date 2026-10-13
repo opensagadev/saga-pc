@@ -26,7 +26,7 @@ i32 __cdecl ObjHitObj_Flags(GAMEOBJECT *object) {
 }
 
 void __cdecl KillRumble(GAMEOBJECT *object) {
-    PAD_INPUT_PC *pad;
+    FRAME_PAD_PC *pad;
     if (object != NULL && (object->flags_1fc & 0x80) != 0) {
         NewRumble(object->pad->bound_pad, 0.7f, 0);
         pad = object->pad->bound_pad;
@@ -35,7 +35,7 @@ void __cdecl KillRumble(GAMEOBJECT *object) {
     }
 }
 void __cdecl HitRumble(GAMEOBJECT *object) {
-    PAD_INPUT_PC *pad;
+    FRAME_PAD_PC *pad;
     if (object != NULL && (object->flags_1fc & 0x80) != 0) {
         NewRumble(object->pad->bound_pad, 0.5f, 0);
         pad = object->pad->bound_pad;
@@ -675,7 +675,7 @@ void __cdecl FloatRumble(GAMEOBJECT *object) {
         u32 bits;
     } absolute_velocity;
     f32 strength;
-    PAD_INPUT_PC *pad;
+    FRAME_PAD_PC *pad;
     if (object != NULL && (object->flags_1fc & 0x80) != 0) {
         absolute_velocity.value = object->velocity.y;
         absolute_velocity.bits &= 0x7fffffff;

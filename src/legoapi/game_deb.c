@@ -322,3 +322,13 @@ void __cdecl DebrisStartOffsetEx(DEBRISKEY_PC *key, f32 offset) {
 i32 __cdecl LookupDebrisEffect(char *name) {
     return LookupDebrisEffectPage(name, 0);
 }
+
+void __cdecl InitPartTable(char **names) {
+    part_debris_count = 0;
+    PartDebrisNameListPc = names;
+    if (names != NULL) {
+        while (names[part_debris_count] != NULL) {
+            part_debris_count++;
+        }
+    }
+}

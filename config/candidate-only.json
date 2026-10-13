@@ -2,6 +2,16 @@
  "description": "Compiler-generated definitions with no original PC address (STL/CRT helpers, private SDK scalars). They may stay unmapped and earn no credit.",
  "entries": [
   {
+   "unit": "src/nu2api/nucore.cpp",
+   "symbol": "??2@YAPAXIPAX@Z",
+   "kind": "function"
+  },
+  {
+   "unit": "src/nu2api/nucore.cpp",
+   "symbol": "__bad_alloc_Message",
+   "kind": "data"
+  },
+  {
    "unit": "src/nu2api/nushadermanager.cpp",
    "symbol": "??2@YAPAXIPAX@Z",
    "kind": "function"
@@ -449,6 +459,31 @@
   {
    "unit": "src/legoapi/episodeIV.c",
    "symbol": "_AsteroidChaseD_SetTurretTarget",
+   "kind": "function"
+  },
+  {
+   "unit": "src/legoapi/fade.cpp",
+   "symbol": "??_GFade@@UAEPAXI@Z",
+   "kind": "function"
+  },
+  {
+   "unit": "src/legoapi/fade.cpp",
+   "symbol": "??_GFadeWipe@@UAEPAXI@Z",
+   "kind": "function"
+  },
+  {
+   "unit": "src/legoapi/fade.cpp",
+   "symbol": "??_GFadeStillWipe@@UAEPAXI@Z",
+   "kind": "function"
+  },
+  {
+   "unit": "src/legoapi/fade.cpp",
+   "symbol": "??_GFadeStill@@UAEPAXI@Z",
+   "kind": "function"
+  },
+  {
+   "unit": "src/legoapi/fade.cpp",
+   "symbol": "??_GFadeBase@@UAEPAXI@Z",
    "kind": "function"
   }
  ]

@@ -110,7 +110,7 @@ typedef struct numtx_s {
 
 typedef struct nurnd_vertex3d_pc_s {
     NUVEC position;
-    u8 unknown_0c[12];
+    NUVEC normal;
     u32 colour;
     f32 u;
     f32 v;
@@ -781,22 +781,15 @@ struct AISCRIPTPROCESS_PC {
     NUVEC action_pos;
     AIPATHINFO_PC path_info;
     f32 action_timer;
-    u8 unknown_a0[4];
+    u32 unknown_a0;
     struct AILOCATOR_PC *locator;
+    struct AILOCATORSET_PC *locator_set;
     union {
-        u8 unknown_a8[8];
-        struct {
-            struct AILOCATORSET_PC *locator_set;
-            union {
-                u32 field_ac;
-                struct nugspline_s *myspline;
-            };
-        };
+        u32 field_ac;
+        struct nugspline_s *myspline;
     };
-    union {
-        u8 unknown_b0[2];
-        u8 creature_set;
-    };
+    u8 creature_set;
+    u8 unknown_b1;
     u16 unknown_b2;
     u8 interrupt_priority;
     u8 interrupt_id;
@@ -1571,7 +1564,9 @@ typedef struct AREA_SAVE_PICKUP_PC {
         };
         struct {
             u8 complete;
-            u8 newgame_reserved_01[7];
+            u8 area_complete;
+            u8 newgame_reserved_02[5];
+            u8 challenge_unlocked;
             f32 challenge_trial_time;
         };
     };
@@ -1583,13 +1578,13 @@ STATIC_ASSERT(offsetof(AREA_SAVE_PICKUP_PC, red_brick_collected) == 0xa);
 typedef struct MISSION_MENU_PACKET_PC {
     i16 player_model[2];
     u8 active_player[2];
-    u8 reserved[2];
+    u8 customise_other_player[2];
     u8 selected[2];
 } MISSION_MENU_PACKET_PC;
 STATIC_ASSERT(sizeof(MISSION_MENU_PACKET_PC) == 0xa);
 STATIC_ASSERT(offsetof(MISSION_MENU_PACKET_PC, player_model) == 0);
 STATIC_ASSERT(offsetof(MISSION_MENU_PACKET_PC, active_player) == 4);
-STATIC_ASSERT(offsetof(MISSION_MENU_PACKET_PC, reserved) == 6);
+STATIC_ASSERT(offsetof(MISSION_MENU_PACKET_PC, customise_other_player) == 6);
 STATIC_ASSERT(offsetof(MISSION_MENU_PACKET_PC, selected) == 8);
 
 typedef struct MISSION_SAVE_READER_PC {
@@ -1660,7 +1655,9 @@ typedef struct gamesave_s {
             u32 initial_store_pack_flags;
             u32 newgame_reserved_7c00;
             u32 purchased_extra_bits_high;
-            u8 newgame_reserved_7c08[0x1c];
+            u8 newgame_reserved_7c08[0x10];
+            u16 save_hash;
+            u8 newgame_reserved_7c1a[0xa];
             GAME_CUSTOMISER_START_PC customiser_start[2];
         };
     };
@@ -1729,7 +1726,12 @@ typedef struct numtl_s {
     u8 unknown_0002[0x3a];
     NUDISPLAYLIST_PC *display_list;
     NUMTLATTRIB attribs;
-    u8 unknown_0044[0x30];
+    u8 unknown_0044[0x10];
+    f32 diffuse_r;
+    f32 diffuse_g;
+    f32 diffuse_b;
+    u8 unknown_0060[0x10];
+    f32 opacity;
     i16 texture_id;
     u8 unknown_076[0x23];
     i8 particle_type_tag;
@@ -1737,6 +1739,8 @@ typedef struct numtl_s {
 STATIC_ASSERT(offsetof(NUMTL, flags) == 0);
 STATIC_ASSERT(offsetof(NUMTL, display_list) == 0x3c);
 STATIC_ASSERT(offsetof(NUMTL, attribs) == 0x40);
+STATIC_ASSERT(offsetof(NUMTL, diffuse_r) == 0x54);
+STATIC_ASSERT(offsetof(NUMTL, opacity) == 0x70);
 STATIC_ASSERT(offsetof(NUMTL, texture_id) == 0x74);
 STATIC_ASSERT(offsetof(NUMTL, particle_type_tag) == 0x99);
 
@@ -4163,7 +4167,7 @@ typedef struct PAD_INPUT_PC {
     u8 analog_left_y;
 } PAD_INPUT_PC;
 typedef struct GAMEPAD_PC {
-    PAD_INPUT_PC *bound_pad;
+    struct FRAME_PAD_PC *bound_pad;
     u32 buttons_held;
     u32 buttons_pressed;
     u32 buttons_released;
@@ -4875,7 +4879,7 @@ typedef struct gameobject_s {
     f32 field_b0;
     f32 scaled_height;
     NUMTX transform;
-    u8 unknown_00f8[0x80];
+    NUMTX draw_secondary_mtx, draw_tertiary_mtx;
     NUVEC collision_min;
     NUVEC collision_max;
     NUVEC upper_position;
@@ -5144,7 +5148,7 @@ typedef struct gameobject_s {
     f32 weapon_scale_rate;
     f32 sabre_collision_radius;
     f32 delayed_turn_timer;
-    u8 unknown_0d4c[0x8];
+    f32 combo_input_timer, ai_combo_cooldown;
     f32 field_d54;
     f32 quick_shoot_timer;
     f32 torpedo_fire_cooldown;
@@ -5685,7 +5689,6 @@ typedef struct ADDPART_PC {
     u32 field_a8[6];
     f32 field_c0;
     u8 field_c4;
-    u8 padding_c5[3];
 } ADDPART_PC;
 STATIC_ASSERT(sizeof(ADDPART_PC) == 0xc8);
 STATIC_ASSERT(offsetof(ADDPART_PC, matrix) == 0);
@@ -5890,30 +5893,30 @@ typedef struct kaminoeplate_s {
 STATIC_ASSERT(offsetof(BOLT, speed) == 0xcc);
 
 typedef struct gamecamera_s {
-    u8 unknown_00;
-    u8 sock;
-    u8 unknown_02[0x11a];
+    SOCKPOSITION_PC sock_position;
+    NUMTX mtx, target_mtx, render_mtx;
+    NUVEC shaken_right, shaken_up, dir;
     NUVEC position;
-    u8 opaque_128_1bc[0x94];
+    NUVEC target;
+    NUVEC blend_start_position, desired_position, blend_end_position, blend_destination_position, blend_start_target;
+    u8 unknown_170[0xc];
+    NUVEC blend_end_target, blend_destination_target, shake_offset, shake_direction, shake_target;
+    f32 field_1b8;
     f32 blend_time;
     f32 blend_duration;
     f32 blend_curve;
-    f32 judder_time;
-    f32 judder_duration;
+    f32 judder_time, judder_duration;
     f32 shake_amplitude;
     f32 shake_intensity;
     f32 shake_decay;
     f32 shake_freq;
     f32 position_seek;
     f32 angle_seek;
-    f32 field_1e8;
-    f32 field_1ec;
-    f32 field_1f0;
-    f32 field_1f4;
+    f32 field_1e8, field_1ec, field_1f0, field_1f4;
     i32 pitch;
     i32 input_yaw;
     i32 roll;
-    u8 unknown_204[0x14];
+    f32 field_204, field_208, field_20c, field_210, field_214;
     f32 adjusted_yaw_offset;
     u16 blend_start_pitch;
     u16 desired_pitch;
@@ -5931,7 +5934,8 @@ typedef struct gamecamera_s {
 } GAMECAMERA;
 STATIC_ASSERT(offsetof(GAMECAMERA, input_yaw) == 0x1fc);
 STATIC_ASSERT(offsetof(GAMECAMERA, position) == 0x11c);
-STATIC_ASSERT(offsetof(GAMECAMERA, sock) == 1);
+STATIC_ASSERT(offsetof(GAMECAMERA, sock_position.sock_index) == 1);
+STATIC_ASSERT(offsetof(GAMECAMERA, shake_offset) == 0x194);
 STATIC_ASSERT(offsetof(GAMECAMERA, shake_intensity) == 0x1d4);
 STATIC_ASSERT(offsetof(GAMECAMERA, shake_decay) == 0x1d8);
 STATIC_ASSERT(offsetof(GAMECAMERA, shake_freq) == 0x1dc);
@@ -6744,28 +6748,44 @@ STATIC_ASSERT(sizeof(NUDISPLAYLISTRENDERSCENE) == 0x18);
 STATIC_ASSERT(offsetof(NUDISPLAYLISTRENDERSCENE, render_2d_first) == 0x08);
 
 typedef struct NU_LIGHT_SHADOW_LIST_VIEW_PC {
+    u8 unknown_000[8];
     NURNDRLIBSTATE *state;
-    u8 unknown_004[4];
+    u8 unknown_00c[4];
     NUDISPLAYLISTITEM *first;
     NUDISPLAYLISTITEM *material_last;
-    u8 unknown_010[0x34];
+    u8 unknown_018[0x2c];
 } NU_LIGHT_SHADOW_LIST_VIEW_PC;
 STATIC_ASSERT(sizeof(NU_LIGHT_SHADOW_LIST_VIEW_PC) == 0x44);
-STATIC_ASSERT(offsetof(NU_LIGHT_SHADOW_LIST_VIEW_PC, state) == 0);
-STATIC_ASSERT(offsetof(NU_LIGHT_SHADOW_LIST_VIEW_PC, first) == 8);
-STATIC_ASSERT(offsetof(NU_LIGHT_SHADOW_LIST_VIEW_PC, material_last) == 0xc);
+STATIC_ASSERT(offsetof(NU_LIGHT_SHADOW_LIST_VIEW_PC, state) == 8);
+STATIC_ASSERT(offsetof(NU_LIGHT_SHADOW_LIST_VIEW_PC, first) == 0x10);
+STATIC_ASSERT(offsetof(NU_LIGHT_SHADOW_LIST_VIEW_PC, material_last) == 0x14);
 
+/* PC NuDynamicLight::RenderSet. */
 typedef struct nurndrlightrecord_s {
-    u8 opaque_00_108[0x108];
+    u8 opaque_00_100[0x100];
+    f32 parameter_100;
+    f32 parameter_104;
     i32 enabled;
-    u8 opaque_10c_2ac[0x1a0];
+    u8 opaque_10c_110[0x4];
+    f32 parameter_110;
+    u8 opaque_114_260[0x14c];
+    i32 shadow_plane_count;
+    u8 opaque_264_2a4[0x40];
     NU_LIGHT_SHADOW_LIST_VIEW_PC shadow_lists_pc[2];
-    u8 opaque_334_354[0x20];
+    NURNDRLIBSTATE *render_states[2];
+    NUDISPLAYLISTITEM *list_items[2];
+    u8 opaque_33c_354[0x18];
     i32 pending[8];
     i32 count;
     u8 opaque_378_380[0x8];
+#ifdef __cplusplus
+    nurndrlightrecord_s();
+#endif
 } NURNDRLIGHTRECORD;
 STATIC_ASSERT(sizeof(NURNDRLIGHTRECORD) == 0x380);
+STATIC_ASSERT(offsetof(NURNDRLIGHTRECORD, parameter_110) == 0x110);
+STATIC_ASSERT(offsetof(NURNDRLIGHTRECORD, shadow_plane_count) == 0x260);
+STATIC_ASSERT(offsetof(NURNDRLIGHTRECORD, render_states) == 0x32c);
 STATIC_ASSERT(offsetof(NURNDRLIGHTRECORD, enabled) == 0x108);
 STATIC_ASSERT(offsetof(NURNDRLIGHTRECORD, pending) == 0x354);
 STATIC_ASSERT(offsetof(NURNDRLIGHTRECORD, count) == 0x374);
@@ -8791,6 +8811,13 @@ extern "C" {
                                    i32 button_font);
     void __cdecl Text3DEx(char *text, f32 x, f32 y, f32 z, f32 x_scale, f32 y_scale, f32 z_scale, u32 alignment, u8 red,
                           u8 green, u8 blue, i32 alpha);
+    void Text3D(char *text, f32 x, f32 y, f32 z, f32 x_scale, f32 y_scale, f32 z_scale, u32 alignment, u8 red, u8 green,
+                u8 blue);
+    void FadeLoop_DrawObj(f32 alpha);
+    void EdFileWriteFloat(f32 value);
+    void AddGameMsgCount(NUVEC *position, i32 count, i32 total, u8 red, u8 green, u8 blue, f32 field_0xd4);
+    void AddFancyMessage(char *text, f32 x, f32 y, f32 scale, f32 duration, i32 message_id, i32 colour_type);
+    void __cdecl DebrisEmitterPos(i32 handle, f32 x, f32 y, f32 z);
     void __cdecl NuQFntMove(VUFNT *font, f32 x, f32 y, f32 z);
     void __cdecl NuQFntPrintW(VUFNT *font, u16 *text);
     void __cdecl DrawGameMessage_Targets(GAME_MESSAGE_PC *message, NUVEC *position, f32 scale);
@@ -8872,7 +8899,6 @@ extern "C" {
     extern void(__cdecl *VehicleSlowdownCallbackPc)(GAMEOBJECT *);
     extern f32 VehicleLaunchHoverOffsetPc;
     extern f32 PodCollisionMagnitudePc;
-    extern f32 PCForceGlowDisabledState;
     extern i32 LEGO_AIPATHCNX_BLOCKAGE;
     extern i32 LEGO_AIPATHCNX_WALLSHUFFLE;
     extern i32 LEGO_AIPATHCNX_FULLTERRAIN;
@@ -9079,7 +9105,6 @@ extern "C" {
     extern NUGSCN *things_scene;
     extern i32 DrawCharIconFindPc;
     extern NUSPECIALHANDLE RenderBackdropSpecialsPc[4];
-    extern i32 RenderBackgroundColoursPc[2];
     extern NUGSCN *RenderBackdropScenePc;
     extern void(__cdecl *RenderBackdropAlphaFnPc)(f32 *);
     extern u16 SURFACEBITS_NODUST;
@@ -9118,6 +9143,7 @@ extern "C" {
     extern PC_GLOBAL_LIGHTING_STATE PCGlobalLightingState;
     extern NUVEC LightingUnitDirectionPc;
     extern struct PC_SPECIAL_SHADOW_LIGHT *PCShadowCurrentLight;
+    extern struct PC_SPECIAL_SHADOW_LIGHT *PCShadowSecondaryLight;
     extern i32 NuRndrShadowCnt;
     extern PC_SHADOW_QUEUE_RECORD NuRndrShadPolDat[128];
     i32 __cdecl NuCameraClipTestPoints(NUVEC *, i32, NUMTX *);
@@ -9192,9 +9218,9 @@ extern "C" {
         NUVEC previous_shadow_direction;
         f32 previous_shadow_value, shadow_blend;
         u16 cached_light_uid;
-        u8 unknown_76[2];
+        u16 unknown_76;
         NUVEC intensity_vectors[3], direction[3], ambient;
-        u8 unknown_cc[0x54];
+        u32 unknown_cc[0x15];
         f32 field_120;
         NUVEC blended_shadow_direction;
         f32 blended_shadow_value;
@@ -9286,7 +9312,6 @@ extern "C" {
     void __cdecl edppStartPage(i32);
     void __cdecl Particles_Start(WORLDINFO *);
     extern u8 ScreenGrabNeededPc;
-    extern i32 ScreenPauseRenderTargetPc;
     extern f32 ScreenPauseFadePc;
     extern NUGSCN *EdppPageScenesPc[8];
     extern i32 EdppUseMemcardPc;
@@ -10445,8 +10470,6 @@ extern OCCLUSIONMANAGER g_OcclusionManager;
     i32 __cdecl NuDisplayListAddRenderScene(void);
     void __cdecl NuVpGetPosition2(f32 *x, f32 *y);
     extern i32 sceneParametersCount;
-    extern i32 DebrisGlassTextureWidth;
-    extern i32 DebrisGlassTextureHeight;
     i32 __cdecl NuRndrBeginScene(i32 begin_flags);
     void __cdecl NuRndrClear(i32 clear_flags, i32 bg_colour, f32 alpha);
     void __cdecl NuRndrGradClear(i32 clear_flags, i32 top_colour, i32 bottom_colour, f32 alpha);
@@ -11261,7 +11284,7 @@ typedef struct PC_SHADER_OBJECT_FULL_VIEW PC_SHADER_OBJECT_FULL_VIEW;
     extern TERRAIN_POLYGON_INFO_PC *EShadowPolygonPc;
     extern TERRAIN_POLYGON_INFO_PC *ShadowRoofPolygonPc;
     extern i16 TerrainShadowGroupIndexPc;
-    extern f32 GetSurfaceInfoWaterHeightPc;
+    extern f32 EShadY;
     extern f32 GetSurfaceInfoRoofHeightPc;
     extern NUVEC GetSurfaceInfoSurfaceNormalPc;
     extern NUVEC GetSurfaceInfoWaterNormalPc;
@@ -11764,8 +11787,8 @@ typedef struct PC_SHADER_OBJECT_FULL_VIEW PC_SHADER_OBJECT_FULL_VIEW;
     STATIC_ASSERT(offsetof(GAMEPAD_PC, animation_input_magnitude) == 0x34);
     STATIC_ASSERT(offsetof(GAMEPAD_PC, operator_data) == 0x54);
     STATIC_ASSERT(offsetof(GAMEPAD_PC, runtime_flags) == 0x5a);
-    STATIC_ASSERT(offsetof(PAD_INPUT_PC, analog_left_x) == 0x92);
-    STATIC_ASSERT(offsetof(PAD_INPUT_PC, analog_left_y) == 0x93);
+    STATIC_ASSERT(offsetof(FRAME_PAD_PC, analog_left_x) == 0x92);
+    STATIC_ASSERT(offsetof(FRAME_PAD_PC, analog_left_y) == 0x93);
     STATIC_ASSERT(offsetof(GAMEOBJECT, vehicle_orientation) == 0xc04);
     STATIC_ASSERT(offsetof(GAMEOBJECT, current_speed_bias) == 0xc48);
     STATIC_ASSERT(offsetof(GAMEOBJECT, sock_body_heading) == 0x7ce);
@@ -14096,7 +14119,7 @@ void __cdecl PCSoundAlreadyPlayingHook(void);
     extern PC_FILEEXTINFO extensions[64];
     extern i32 num_extensions;
     extern void *Game_Customiser;
-    extern void *CUTCAM;
+    extern i32 CUTCAM;
     extern const char APIObjectCharsDirectory[7];
     extern const char APIObjectPakExtension[5];
     extern i32 append;
@@ -14164,13 +14187,16 @@ void __cdecl PCSoundAlreadyPlayingHook(void);
     extern i32 BeenAttacked;
     typedef struct TAKEOVEROBJECT_PC {
         GAMEOBJECT *object;
-        u8 unknown_04[16];
+        NUVEC last_safe_position;
+        u32 heading;
         char script_name[16];
         i16 character_id;
         u8 source_creature;
         u8 registered_level;
         u8 current_level;
-        u8 unknown_29[3];
+        u8 hitpoints;
+        u8 contact_index;
+        u8 unknown_2b;
     } TAKEOVEROBJECT_PC;
     STATIC_ASSERT(sizeof(TAKEOVEROBJECT_PC) == 0x2c);
     STATIC_ASSERT(offsetof(TAKEOVEROBJECT_PC, object) == 0);
@@ -14179,6 +14205,10 @@ void __cdecl PCSoundAlreadyPlayingHook(void);
     STATIC_ASSERT(offsetof(TAKEOVEROBJECT_PC, source_creature) == 0x26);
     STATIC_ASSERT(offsetof(TAKEOVEROBJECT_PC, registered_level) == 0x27);
     STATIC_ASSERT(offsetof(TAKEOVEROBJECT_PC, current_level) == 0x28);
+    STATIC_ASSERT(offsetof(TAKEOVEROBJECT_PC, last_safe_position) == 4);
+    STATIC_ASSERT(offsetof(TAKEOVEROBJECT_PC, heading) == 0x10);
+    STATIC_ASSERT(offsetof(TAKEOVEROBJECT_PC, hitpoints) == 0x29);
+    STATIC_ASSERT(offsetof(TAKEOVEROBJECT_PC, contact_index) == 0x2a);
     extern TAKEOVEROBJECT_PC takeoverobjects[8];
     i32 __cdecl TagCharacter(GAMEOBJECT *, GAMEOBJECT *, i32);
     void __cdecl RegisterTakeOverObject(GAMEOBJECT *);
@@ -15088,6 +15118,7 @@ void __cdecl PCSoundAlreadyPlayingHook(void);
     void __cdecl GizObstacles_StoreProgress(void *, void *, void *);
     i32 __cdecl GizmoObstacle_ActivateRev(GIZMO_PC *, i32, i32);
     i32 __cdecl NuTexResolveReference(NUGSCN *, i32);
+    i32 __cdecl NuGScnFixupTID(NUGSCN *, i32);
     i32 __cdecl NuTexReadPc(char *, VARIPTR *, VARIPTR);
     void __cdecl NuApiSetEndFrameCallbackPc(void(__cdecl *)(void));
     void __cdecl DebrisSetup2(VARIPTR *, VARIPTR, VARIPTR *, VARIPTR, char *, i32, i32, i32, i32);
@@ -16401,20 +16432,39 @@ extern "C" DWORD __stdcall PCSoundStreamWorkerPc(void *);
 
 #endif
 
-/* C++ working view only; original allocation extent remains unknown. */
-#ifdef __cplusplus
+/* PC NuDynamicLight; its pool slots are 0x830 bytes. */
 struct PC_SPECIAL_SHADOW_LIGHT {
-    u8 unknown_000[0x808];
+    NURNDRLIGHTRECORD render_sets[2];
+    u8 unknown_700[0xc];
+    i32 render_set_count;
+    i32 active_render_set_count;
+    u8 unknown_714[0x6c];
+    NUMTX view;
+    NUMTX projection;
+    i32 parameter_4;
+    i32 parameter_5;
     i32 enabled;
+    f32 parameter_0, parameter_1, parameter_2, parameter_3;
+    f32 parameter_19, parameter_20;
+    i32 used_on_specials;
+#ifdef __cplusplus
+    PC_SPECIAL_SHADOW_LIGHT();
     void SetEnabledPc(i32 enabled);
-};
-STATIC_ASSERT(offsetof(PC_SPECIAL_SHADOW_LIGHT, enabled) == 0x808);
-STATIC_ASSERT(sizeof(PC_SPECIAL_SHADOW_LIGHT) == 0x80c);
+    void SetParameterfPc(i32 parameter, f32 value);
 #endif
+};
+STATIC_ASSERT(offsetof(struct PC_SPECIAL_SHADOW_LIGHT, render_set_count) == 0x70c);
+STATIC_ASSERT(offsetof(struct PC_SPECIAL_SHADOW_LIGHT, projection) == 0x7c0);
+STATIC_ASSERT(offsetof(struct PC_SPECIAL_SHADOW_LIGHT, enabled) == 0x808);
+STATIC_ASSERT(offsetof(struct PC_SPECIAL_SHADOW_LIGHT, used_on_specials) == 0x824);
+STATIC_ASSERT(sizeof(struct PC_SPECIAL_SHADOW_LIGHT) == 0x828);
 
 #ifdef __cplusplus
 extern "C" {
 #endif
+    struct PC_SPECIAL_SHADOW_LIGHT *__cdecl NuDynamicLightCreate(void);
+    void __cdecl NuDynamicLightSetParameterf(struct PC_SPECIAL_SHADOW_LIGHT *light, i32 parameter, f32 value);
+    void __cdecl NuDynamicLightSetParameteri(struct PC_SPECIAL_SHADOW_LIGHT *light, i32 parameter, i32 value);
     i32 __cdecl rtlDynamicSetRadii(i32, f32, f32);
     i32 __cdecl rtlDynamicSetColours(i32, NUVEC *, NUVEC *);
     i32 __cdecl rtlDynamicSetDirection(i32, NUVEC *);
@@ -19199,7 +19249,7 @@ extern "C" {
     extern LEVELDATA_PC *LevelFixupSlotPc0087b17c;
     extern LEVELDATA_PC *LevelFixupSlotPc0087b194;
     extern LEVELDATA_PC *LevelFixupSlotPc0087b1a8;
-    extern LEVELDATA_PC *LevelFixupSlotPc0087b1ac;
+    extern LEVELDATA_PC *TATOOINEE_LDATA;
     extern LEVELDATA_PC *LevelFixupSlotPc0087b1bc;
     extern LEVELDATA_PC *LevelFixupSlotPc0087b1c0;
     extern LEVELDATA_PC *LevelFixupSlotPc0087b1d0;
@@ -20574,8 +20624,8 @@ extern "C" {
 #ifdef __cplusplus
 }
 #endif
-STATIC_ASSERT(offsetof(NURNDRLIGHTRECORD, shadow_lists_pc) == 0x2ac);
-STATIC_ASSERT(offsetof(NURNDRLIGHTRECORD, shadow_lists_pc) + sizeof(NU_LIGHT_SHADOW_LIST_VIEW_PC) == 0x2f0);
+STATIC_ASSERT(offsetof(NURNDRLIGHTRECORD, shadow_lists_pc) == 0x2a4);
+STATIC_ASSERT(offsetof(NURNDRLIGHTRECORD, shadow_lists_pc) + sizeof(NU_LIGHT_SHADOW_LIST_VIEW_PC) == 0x2e8);
 #ifdef __cplusplus
 /* Original declaration order; methods without bodies here are genuine source
  * declarations, not zero substitutes. No class instances may be constructed
@@ -20906,6 +20956,7 @@ extern "C" {
 struct eduimenu_s;
 struct eduiitem_s;
 struct nuhspecial_s;
+f32 NuSpecialGetAnimPos(struct nuhspecial_s *special);
 typedef void(__cdecl *EdUiMenuCallback)(struct eduimenu_s *menu, struct eduimenu_s *parent);
 typedef void(__cdecl *EdUiItemCallback)(struct eduimenu_s *menu, struct eduiitem_s *item, u32 value);
 typedef i32 AIFINDALTERNATIVESPECIALOBJECT(AISYS_PC *system, struct nuhspecial_s *special);
@@ -25460,5 +25511,26 @@ enum { MUSIC_PLAYBACK_DUAL_STREAM = 11 };
 enum { MUSIC_PLAYBACK_DUAL_STREAM_PENDING = 13 };
 enum { NUPORTAL_FLAG_ACTIVE = 1 };
 enum { AREAFLAG_SINGLE_BUFFER = 8 };
+
+// Runtime build only (make runtime): log each reached unported site once; see runtime/saga_runtime.c.
+// Kept at the end so the matching build's line numbers are unchanged.
+#ifdef SAGA_RUNTIME
+#ifdef __cplusplus
+extern "C"
+#endif
+    void __cdecl SagaRuntime_Stub(const char *file, int line, const char *name);
+#define SAGA_RUNTIME_STUB(text)                                                                                        \
+    do {                                                                                                               \
+        static int saga_stub_seen;                                                                                     \
+        if (!saga_stub_seen) {                                                                                         \
+            saga_stub_seen = 1;                                                                                        \
+            SagaRuntime_Stub(__FILE__, __LINE__, text);                                                                \
+        }                                                                                                              \
+    } while (0)
+#undef STUBBED
+#undef STUBBED_NAMED
+#define STUBBED() SAGA_RUNTIME_STUB("")
+#define STUBBED_NAMED(name) SAGA_RUNTIME_STUB(#name)
+#endif
 
 #endif

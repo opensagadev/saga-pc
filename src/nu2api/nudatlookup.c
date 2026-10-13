@@ -39,25 +39,31 @@ i32 __cdecl NuDatGetFileInfo(NUDATHDR *header, char *name, i64 *position, i32 *l
 }
 
 i32 __cdecl ExplodeBufferSize(char *header) {
-    u32 size;
+    char magic[] = "LZ2K";
+    i32 i;
 
-    if (header[0] != 'L' || header[1] != 'Z' || header[2] != '2' || header[3] != 'K') {
-        return 0;
+    for (i = 0; i < 4; ++i) {
+        if (*header++ != magic[i]) {
+            return 0;
+        }
     }
-
-    size = (u32)(u8)header[4] | ((u32)(u8)header[5] << 8) | ((u32)(u8)header[6] << 16) | ((u32)(u8)header[7] << 24);
-    return (i32)(size & PCImplodeWordMask);
+    return (i32)(((u32)(u8)header[0] | ((u32)(u8)header[1] << 8) | ((u32)(u8)header[2] << 16) |
+                  ((u32)(u8)header[3] << 24)) &
+                 PCImplodeWordMask);
 }
 
 i32 __cdecl ExplodeCompressedSize(char *header) {
+    char magic[] = "LZ2K";
+    i32 i;
     u32 size;
 
-    if (header[0] != 'L' || header[1] != 'Z' || header[2] != '2' || header[3] != 'K') {
-        return 0;
+    for (i = 0; i < 4; ++i) {
+        if (*header++ != magic[i]) {
+            return 0;
+        }
     }
-
-    size = (u32)(u8)header[8] | ((u32)(u8)header[9] << 8) | ((u32)(u8)header[10] << 16) | ((u32)(u8)header[11] << 24);
-    size &= PCImplodeWordMask;
+    size = ((u32)(u8)header[4] | ((u32)(u8)header[5] << 8) | ((u32)(u8)header[6] << 16) | ((u32)(u8)header[7] << 24)) &
+           PCImplodeWordMask;
     if (size != 0) {
         size += 12;
     }

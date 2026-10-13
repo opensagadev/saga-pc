@@ -98,6 +98,20 @@ void __cdecl Hint_CancelCurrent(void) {
     }
 }
 
+void __cdecl Hint_Reset(void) {
+    HINT_PC *hint = hintsys.hints;
+    if (hint == NULL)
+        return;
+    while (hint->id != -1) {
+        hint->cooldown = 0.0f;
+        ++hint;
+    }
+    hintsys.display_elapsed = 0.0f;
+    hintsys.state = 2;
+    hintsys.alpha = 0.0f;
+    hintsys.active_hint = NULL;
+}
+
 void __cdecl Hint_ClearHintsAndDoneFlags(void) {
     HINT_PC *hint = hintsys.hints;
     if (hint == NULL)

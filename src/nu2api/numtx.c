@@ -827,7 +827,7 @@ void NuEulerXYZFromQuat(NUANG *x, NUANG *y, NUANG *z, NUQUAT *input) {
         sin_y = 1.0f;
     }
 
-    *y = NuASin(sin_y);
+    *y = (i16)NuASin(sin_y);
     *x = NuAtan2D(2.0f * (q.y * q.z + q.w * q.x), q.w * q.w - q.x * q.x - q.y * q.y + q.z * q.z);
     *z = NuAtan2D(2.0f * (q.x * q.y + q.w * q.z), q.w * q.w + q.x * q.x - q.y * q.y - q.z * q.z);
 }
@@ -857,6 +857,10 @@ void __cdecl NuMtxInvVU0(NUMTX *m, NUMTX *source) {
     m->m13 = m->m23;
     m->m03 = m->m13;
     m->m33 = 1.0f;
+}
+
+f32 __cdecl NuVecMagVU0(NUVEC *v) {
+    return (f32)sqrt(v->x * v->x + v->y * v->y + v->z * v->z);
 }
 
 void __cdecl NuMtxScaleVU0(NUMTX *matrix, NUVEC *scale) {

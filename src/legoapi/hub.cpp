@@ -913,7 +913,7 @@ extern "C" void __cdecl Hub_InitMiniKits(WORLDINFO *world) {
             kit->scalar_10 = 0;
             kit->rotation = (u16)qrand();
             for (info = HubAreaInfoPc; info->area_name != NULL; ++info) {
-                if (info->area != NULL && i == info->area->index)
+                if (info->area != NULL && info->area->index == i)
                     break;
             }
             height = GameShadow(NULL, &kit->position, 5.0f, -1);
@@ -1140,6 +1140,10 @@ extern "C" void __cdecl Hub_DrawMiniKits(WORLDINFO *world) {
     /* Native478ab6: true SetLevelLights595660 void provider remains
      * unreconstructed. */
     STUBBED_NAMED("Hub_DrawMiniKits: SetLevelLights");
+}
+
+extern "C" void __cdecl Hub_LockUnlockDoors(WORLDINFO *world) {
+    (void)world;
 }
 
 /* Additional source-private viewer state/native menu-reader view, genuine

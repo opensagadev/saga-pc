@@ -614,7 +614,7 @@ LEVELDATA_PC *__cdecl Levels_ConfigureList(char *path, VARIPTR *buffer, VARIPTR 
         return NULL;
     }
 
-    buffer_end->void_ptr = current_level;
+    buffer->void_ptr = current_level;
     if (count_out != NULL) {
         *count_out = level_count;
     }

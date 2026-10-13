@@ -10,3 +10,9 @@ i32 NuWindowsProcessMessages(void) {
     }
     return 1;
 }
+
+static i32 NuWindowsConfigValuesPc[19];
+
+i32 __cdecl NuWindowsGetConfigValuePc(i32 index) {
+    return NuWindowsConfigValuesPc[index];
+}

@@ -693,7 +693,7 @@ GAMEOBJECT *__cdecl TargetGameObject(GAMEOBJECT *object, NUVEC *position, NUVEC 
             continue;
         }
         if (WORLD->current_level == DEATHSTARRESCUEA_LDATA && target->field_280 == 0xff && target->position.y < -1.5f &&
-            GameCam->sock == 2) {
+            GameCam->sock_position.sock_index == 2) {
             continue;
         }
         distance = NuVecDistSqr(&target->collision_position, position, &delta);
@@ -1682,6 +1682,10 @@ static GAMEOBJECT *Tag_FindGameObject_TRANSFER(GAMEOBJECT *object) {
         }
     }
     return nearest;
+}
+
+void __cdecl Tag_SetMode(i32 mode) {
+    Tag_Mode = mode;
 }
 
 static i32 Tag_FindGameObject_CYCLICAL(GAMEOBJECT *object) {
@@ -3293,7 +3297,7 @@ void __cdecl GetSurfaceInfo(GAMEOBJECT *object, i32 update_fields, f32 floor_hei
             object->surface_normal = GetSurfaceInfoSurfaceNormalPc;
     }
 
-    object->water_height = GetSurfaceInfoWaterHeightPc;
+    object->water_height = EShadY;
     if (object->water_height != GameObjectNearFloorNoFloorHeight) {
         material = (i8)EShadowInfo();
         object->field_283 = material;
@@ -5193,4 +5197,10 @@ void __cdecl GameLoadCharacterModels(APICHARACTERMODELLIST *list, i32 append_mod
     if (area_models != 0 && CutScenePlayer_Active() != NULL && area != -1 && &ADataList[area] != HUB_ADATA)
         area_models = 0;
     APILoadCharacterModels(list, append_models, buffer, *end, area_models);
+}
+
+i32 AutoSaveIconPendingPc;
+
+void __cdecl DrawAutoSaveIcon(void) {
+    AutoSaveIconPendingPc = 1;
 }

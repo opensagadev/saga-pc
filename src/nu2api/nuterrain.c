@@ -786,7 +786,7 @@ extern NUVEC TerrainRoofNormalPc;
 extern const f64 TerrainScanRadiusEpsilon;
 extern const f32 TerrainScanTriangleSentinel, TerrainCastLowerSentinel;
 /* Existing canonical globals: CurrentTerrain(void*), ShadPoly,
- * EShadowPolygonPc, ShadowRoofPolygonPc, GetSurfaceInfoWaterHeightPc,
+ * EShadowPolygonPc, ShadowRoofPolygonPc, EShadY,
  * GetSurfaceInfoRoofHeightPc, GetSurfaceInfoSurfaceNormalPc,
  * GetSurfaceInfoWaterNormalPc, TerrainSurfaceClassPc.
  * Reuse existing BoltTargetRandomDenominator(f64)/LevelConfigFarDistance(f32).
@@ -1269,25 +1269,25 @@ f32 NewCast(NUVEC *position, f32 height_above, f32 roof_range) {
                 if (extended_floor_y <= TerrainCastLowerSentinel ||
                     (TerrainCastLowerSentinel < ordinary_floor_y && extended_floor_y < ordinary_floor_y)) {
                     TerrainWaterCastIndexPc = 3;
-                    GetSurfaceInfoWaterHeightPc = LevelConfigFarDistance;
+                    EShadY = LevelConfigFarDistance;
                     EShadowPolygonPc = NULL;
                     GetSurfaceInfoWaterNormalPc.y = 1.0f;
                 } else {
                     TerrainWaterCastIndexPc = 2;
-                    GetSurfaceInfoWaterHeightPc = extended_floor_y;
+                    EShadY = extended_floor_y;
                     EShadowPolygonPc = extended_floor;
                     GetSurfaceInfoWaterNormalPc = extended_floor_normal;
                 }
             } else if (!(LevelConfigFarDistance > ordinary_above_y) || !(ordinary_above_normal.y < 0.0f) ||
                        !(roof_range + position->y > ordinary_above_y) || !(extended_above_y > ordinary_above_y)) {
                 EShadowPolygonPc = extended_above;
-                GetSurfaceInfoWaterHeightPc = extended_above_y;
+                EShadY = extended_above_y;
                 GetSurfaceInfoWaterNormalPc = extended_above_normal;
                 TerrainWaterCastIndexPc = 1;
                 TerrainShadowFloorIndexPc = extended_above_group;
             } else {
                 TerrainWaterCastIndexPc = 3;
-                GetSurfaceInfoWaterHeightPc = LevelConfigFarDistance;
+                EShadY = LevelConfigFarDistance;
                 GetSurfaceInfoWaterNormalPc.y = 1.0f;
                 EShadowPolygonPc = NULL;
             }
@@ -1453,7 +1453,7 @@ f32 __cdecl NewShadowEx(NUVEC *position, f32 unused, f32 height_above, f32 roof_
     NUVEC local_position;
     (void)unused;
     TerrainShadowHeightPc = LevelConfigFarDistance;
-    GetSurfaceInfoWaterHeightPc = LevelConfigFarDistance;
+    EShadY = LevelConfigFarDistance;
     GetSurfaceInfoWaterNormalPc.y = 1.0f;
     TerrainShadowStatusPc = -1;
     GetSurfaceInfoRoofHeightPc = LevelConfigFarDistance;

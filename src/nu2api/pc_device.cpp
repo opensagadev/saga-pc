@@ -10,10 +10,10 @@ extern "C" void __cdecl PCDeviceReleaseTexture(PC_TEXTURE_RESOURCE_PC **texture)
 
 void __thiscall PC_DEVICE_BACKEND_PC::ApplyViewport(const PC_VIEWPORT_PC *viewport) {
     PC_VIEWPORT_PC applied = *viewport;
-    if (applied.width >= (u32)DebrisGlassTextureWidth)
-        applied.width = (u32)DebrisGlassTextureWidth;
-    if (applied.height >= (u32)DebrisGlassTextureHeight)
-        applied.height = (u32)DebrisGlassTextureHeight;
+    if (applied.width >= (u32)PS2_REZ_W)
+        applied.width = (u32)PS2_REZ_W;
+    if (applied.height >= (u32)PS2_REZ_H)
+        applied.height = (u32)PS2_REZ_H;
     device->methods->set_viewport(device, &applied);
     requested_viewport.x = viewport->x;
     requested_viewport.y = viewport->y;

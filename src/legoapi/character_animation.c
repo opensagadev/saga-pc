@@ -836,3 +836,7 @@ void __cdecl Animate_POD(GAMEOBJECT *object) {
     if (object->character_model->action_animations[object->anim_packet.requested_animation] == NULL)
         object->anim_packet.requested_animation = 1;
 }
+
+f32 __cdecl getPodRoll(i32 index) {
+    return pod_roll[index];
+}

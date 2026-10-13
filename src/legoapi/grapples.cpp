@@ -536,3 +536,10 @@ extern "C" void __cdecl Grapple_MoveCode(GAMEOBJECT *object) {
 }
 
 #undef GRAPPLE_CURRENT
+
+extern "C" i32 __cdecl Grapple_LookAtPos(GAMEOBJECT *object, NUVEC *position) {
+    position->x = ((GRAPPLE_MOTION_PC *)object->grapple)->hook_position.x;
+    position->y = ((GRAPPLE_MOTION_PC *)object->grapple)->hook_position.y - object->context_hover_target_y;
+    position->z = ((GRAPPLE_MOTION_PC *)object->grapple)->hook_position.z;
+    return 1;
+}

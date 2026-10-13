@@ -51,3 +51,8 @@ i64 __cdecl PCThreadMillisecondsPc(void) {
 void __cdecl PCThreadCriticalSectionDeleteNoOpPc(i32 index) {
     (void)index;
 }
+
+void __cdecl NuTimeGetTicksPerSecondPS(u32 *low, u32 *high) {
+    *low = (u32)NuTime_PerformanceFrequency;
+    *high = (u32)(NuTime_PerformanceFrequency >> 32);
+}

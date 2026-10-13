@@ -86,7 +86,7 @@ extern "C" {
     extern LEVELDATA_PC *TATOOINEA_LDATA;
     extern LEVELDATA_PC *TATOOINEB_LDATA;
     extern LEVELDATA_PC *LevelFixupSlotPc0087b1a8;
-    extern LEVELDATA_PC *LevelFixupSlotPc0087b1ac;
+    extern LEVELDATA_PC *TATOOINEE_LDATA;
     extern LEVELDATA_PC *DEATHSTARRESCUEA_LDATA;
     extern LEVELDATA_PC *DEATHSTARRESCUEB_LDATA;
     extern LEVELDATA_PC *DEATHSTARRESCUEC_LDATA;
@@ -629,7 +629,7 @@ extern "C" void __cdecl FixUpLevels(struct level_fixup_pc_s *fixup) {
             level = Level_FindByName("tatooine_d", NULL);        /* Native call 0x48ea3a. */
             LevelFixupSlotPc0087b1a8 = level;                    /* Native store 0x48ea46. */
             level = Level_FindByName("tatooine_e", NULL);        /* Native call 0x48ea4b. */
-            LevelFixupSlotPc0087b1ac = level;                    /* Native store 0x48ea57. */
+            TATOOINEE_LDATA = level;                             /* Native store 0x48ea57. */
             level = Level_FindByName("deathstarrescue_a", NULL); /* Native call 0x48ea5c. */
             DEATHSTARRESCUEA_LDATA = level;                      /* Native store 0x48ea68. */
             level = Level_FindByName("deathstarrescue_b", NULL); /* Native call 0x48ea6d. */

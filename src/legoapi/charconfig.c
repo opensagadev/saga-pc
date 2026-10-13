@@ -2610,7 +2610,7 @@ void __cdecl ExtraCharacterFixUpAfterConfig(void) {
     SetMoveAndAnimateFunctions(0, 0, 0, 0, 2, NULL, NULL, PostAnimate_FETT);
     SetMoveAndAnimateFunctions(0, 0, 0, 0, 0, Move_WEIRDO, Animate_WEIRDO, NULL);
     for (i = 0; i < CHARCOUNT; ++i) {
-        if ((GCDataList[i].flags_094_bytes[3] & 0x10) != 0) {
+        if ((GCDataList[i].flags_094 & 0x10000000) != 0) {
             CDataList[i].move_fn = Move_GEONOSIAN;
             CDataList[i].animate_fn = Animate_GEONOSIAN;
         }

@@ -894,7 +894,7 @@ static __declspec(noinline) i32 CutFindLocatorFunctionPc(char *name) {
 
 static __declspec(noinline) void CutSceneLocatorFixUpPc(CUT_SCENE_LOAD_PC *scene, i32 page) {
     CUT_LOAD_LOCATOR_SYSTEM *system = scene->locator_system;
-    i32 i;
+    u32 i;
     for (i = 0; i < system->type_count; ++i) {
         CUT_LOAD_LOCATOR_TYPE *type = &system->types[i];
         if ((type->flags & 1) != 0) {

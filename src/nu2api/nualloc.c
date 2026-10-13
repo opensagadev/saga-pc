@@ -52,6 +52,10 @@ extern void *NuAllocPeakEnd1;
 extern u32 NuAllocHeaderMetadata[3];
 extern u32 NuAllocTailMetadata[3];
 
+/* Retail diagnostic hooks compiled out to a bare RET; defined in nudebug.c. */
+void __cdecl NuAllocBadPointer(void);
+void __cdecl NuAllocReport(const void *message, ...);
+
 void *__cdecl NuAlloc(i32 size, const char *file, i32 line) {
     u32 allocation_size;
     u32 filename_size;
@@ -194,4 +198,27 @@ void __cdecl NuFree(void *user_data, const char *file, i32 line) {
     free(record);
     (void)file;
     (void)line;
+}
+
+/* Lists every tracked allocation of at least min_size bytes, then the running total. */
+void __cdecl NuAllocDumpRecords(i32 min_size) {
+    NUALLOC_RECORD *record = NuAllocRecordHead;
+
+    while (record != NULL) {
+        if ((i32)record->requested_size >= min_size) {
+            NuAllocReport((char *)(record + 1) + record->requested_size + sizeof(NUALLOC_TAIL), record->source_line,
+                          record->serial, record->requested_size);
+        }
+        record = record->next;
+        if (record == (NUALLOC_RECORD *)0xfefefefe) {
+            NuAllocBadPointer();
+        }
+        if (record == NULL) {
+            break;
+        }
+        if (record->next == (NUALLOC_RECORD *)0xfefefefe) {
+            NuAllocBadPointer();
+        }
+    }
+    NuAllocReport((const void *)NuAllocTrackedBytes);
 }

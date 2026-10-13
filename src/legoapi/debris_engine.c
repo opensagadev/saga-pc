@@ -1492,6 +1492,44 @@ i32 __cdecl DebrisAllCollisionCheckScaleYFlag(NUVEC *p, f32 r, f32 y, u8 f) {
     }
     return result;
 }
+
+extern i32 DebrisGlassInitialized;
+extern void *DebrisGlassCopyMaterial;
+extern f32 DebrisGlassU1;
+extern f32 DebrisGlassV1;
+i32 __cdecl NuPower2(i32 value);
+
+void __cdecl DebrisGlassInit(void) {
+    NUMTL *material;
+    f32 size;
+
+    if (DebrisGlassInitialized != 0) {
+        return;
+    }
+    size = (f32)NuPower2(PS2_REZ_W);
+    DebrisGlassU1 = (f32)((PS2_REZ_W - 1.0) / size);
+    size = (f32)NuPower2(PS2_REZ_H);
+    DebrisGlassV1 = (f32)((PS2_REZ_H - 1.0) / size);
+    if (DebrisGlassCopyMaterial == NULL) {
+        material = NuMtlCreateEx(1, 14);
+        material->diffuse_r = 1.0f;
+        material->diffuse_g = 1.0f;
+        material->diffuse_b = 1.0f;
+        material->opacity = 0.999f;
+        material->texture_id = 1;
+        material->attribs.unknown_1_1_2 = 1;
+        material->attribs.unknown_1_4_8 = 1;
+        material->attribs.cull_mode = 2;
+        material->attribs.z_mode = 3;
+        material->attribs.alpha_mode = 0;
+        material->attribs.filter_mode = 0;
+        material->attribs.unknown_2_1_2 = 2;
+        material->attribs.unknown_2_4 = 1;
+        DebrisGlassCopyMaterial = material;
+        NuMtlUpdate(material);
+    }
+    DebrisGlassInitialized = 1;
+}
 extern i32 DebrisProcessingEnabledPc, globalframes;
 extern i32 debris_sort_delay, debris_sort_this_stack, debris_update_delay, debris_update_this_stack;
 extern i32 DebrisDmaCleanupDelayPc, DebrisDmaCleanupIndexPc;

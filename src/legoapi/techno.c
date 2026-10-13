@@ -464,3 +464,19 @@ i32 Techno_isReady(TECHNO_s *techno) {
             return 0;
     }
 }
+
+NUVEC *__cdecl Technos_TgtPos(TECHNO_s *techno) {
+    if (techno == NULL)
+        return NULL;
+    if (techno->controlled_object == NULL)
+        Technos_FindTgt(techno);
+    switch (techno->target_mode) {
+        case 1:
+            return &((GAMEOBJECT *)techno->controlled_object)->collision_position;
+        case 2:
+            return NuSpecialGetPos((NUSPECIALHANDLE *)techno->controlled_object);
+        case 3:
+            return GizmoGetPos(WORLD->gizmo_sys, techno->controlled_object);
+    }
+    return NULL;
+}

@@ -10,8 +10,8 @@ NUVPCURRENT *NuVpGetCurrentViewport(void) {
 }
 
 void __cdecl NuVpBuildScalingTemplatePc(void) {
-    volatile f32 width = (f32)DebrisGlassTextureWidth;
-    volatile f32 height = (f32)DebrisGlassTextureHeight;
+    volatile f32 width = (f32)PS2_REZ_W;
+    volatile f32 height = (f32)PS2_REZ_H;
     volatile f32 min_z = vpCurrent.min_z;
     NuCameraScalingTemplate.m00 = (f32)((f64)width * NuQFntHalfScale);
     NuCameraScalingTemplate.m01 = 0.0f;
@@ -51,8 +51,8 @@ void __cdecl NuVpUpdate(void) {
     height = vpCurrent.height;
     right = (i32)((u32)x + (u32)width);
     bottom = (i32)((u32)y + (u32)height);
-    limit_x = (i32)((u32)DebrisGlassTextureWidth << 4);
-    limit_y = (i32)((u32)DebrisGlassTextureHeight << 4);
+    limit_x = (i32)((u32)PS2_REZ_W << 4);
+    limit_y = (i32)((u32)PS2_REZ_H << 4);
     viewport.min_z = vpCurrent.min_z;
     viewport.max_z = vpCurrent.max_z;
     if (right < 0 || x >= limit_x || bottom < 0 || y >= limit_y)
@@ -160,8 +160,8 @@ void __cdecl RenderPostViewportResetPc(void) {
 }
 
 void __cdecl NuVpGetSize2(f32 *width, f32 *height) {
-    *width = (f32)((vpCurrent.width * 0.0625) / ((f64)DebrisGlassTextureWidth / PS2_VREZ_W));
-    *height = (f32)((vpCurrent.height * 0.0625) / ((f64)DebrisGlassTextureHeight / PS2_VREZ_H));
+    *width = (f32)((vpCurrent.width * 0.0625) / ((f64)PS2_REZ_W / PS2_VREZ_W));
+    *height = (f32)((vpCurrent.height * 0.0625) / ((f64)PS2_REZ_H / PS2_VREZ_H));
 }
 
 STATIC_ASSERT(offsetof(NUVPCURRENT, x) == 0);

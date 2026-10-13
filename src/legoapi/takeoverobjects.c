@@ -46,3 +46,45 @@ void __cdecl RegisterTakeOverObject(GAMEOBJECT *object) {
     takeoverobjects[index].current_level = level;
     ++num_takeoverobjects;
 }
+
+extern void *Door_Last;
+extern u64 CharacterMaskAllPc;
+i8 __cdecl Area_CharIDInCurrentList(i32 character_id);
+void __cdecl StoreStatusTakeOverObjectSys(void) {
+    i32 index;
+    i32 level;
+    u8 character_index;
+    TAKEOVEROBJECT_PC *record;
+    GAMEOBJECT *object;
+    if (netclient != 0)
+        return;
+    level = WORLD->current_level->area_level_index;
+    record = takeoverobjects;
+    for (index = 0; index < num_takeoverobjects; ++index, ++record) {
+        object = record->object;
+        if (object == NULL)
+            continue;
+        record->last_safe_position = object->last_safe_position;
+        record->heading = object->field_0x276;
+        if (object->rider != NULL && LEGOCONTEXT_BEENTAKENOVER != -1 &&
+            object->rider->character_context == LEGOCONTEXT_BEENTAKENOVER && object->field_280 != 0xff &&
+            Door_Last != NULL && ((struct DOOR_s *)Door_Last)->takeover_character_mask != 0) {
+            if (((struct DOOR_s *)Door_Last)->takeover_character_mask == CharacterMaskAllPc) {
+                record->contact_index = record->object->field_280;
+            } else {
+                character_index = (u8)Area_CharIDInCurrentList((i16)object->id);
+                if (character_index < 63 &&
+                    (((struct DOOR_s *)Door_Last)->takeover_character_mask & ((u64)1 << character_index)) != 0)
+                    record->contact_index = record->object->field_280;
+                else
+                    record->contact_index = 0xff;
+            }
+        } else {
+            record->contact_index = 0xff;
+        }
+        record->hitpoints = record->object->current_hp;
+        if (record->hitpoints == 0 && record->object->field_107e != 0)
+            record->hitpoints = record->object->field_107e;
+        record->current_level = (u8)level;
+    }
+}

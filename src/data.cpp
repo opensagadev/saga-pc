@@ -26,6 +26,7 @@ extern "C" {
     i32 AreaCrawlMusicEnabledPc = 1;
     f32 AreaCrawlPromptYPc = 0.745000005f;
     f32 AreaCrawlPromptScalePc = 0.400000006f;
+    f32 PermCollectionScalePc = 0.600000024f;
     APICHARACTERMODELLIST FreePlayModelList[49] = {0};
     i32 CharacterDataLoad = 0;
     i32 loadareacharacters_no_backdrop_reset = 0;
@@ -413,7 +414,7 @@ extern "C" {
     LEVELDATA_PC *LevelFixupSlotPc0087b17c = NULL;
     LEVELDATA_PC *LevelFixupSlotPc0087b194 = NULL;
     LEVELDATA_PC *LevelFixupSlotPc0087b1a8 = NULL;
-    LEVELDATA_PC *LevelFixupSlotPc0087b1ac = NULL;
+    LEVELDATA_PC *TATOOINEE_LDATA = NULL;
     LEVELDATA_PC *LevelFixupSlotPc0087b1bc = NULL;
     LEVELDATA_PC *LevelFixupSlotPc0087b1c0 = NULL;
     LEVELDATA_PC *LevelFixupSlotPc0087b1d0 = NULL;
@@ -8528,6 +8529,8 @@ extern "C" {
     void *game_cutscenes_podrace_pod_explode;
     void *game_cutscenes_podrace_out_of_time;
     void *game_cutscenes_bonus_gunship_cavalry_explode;
+    void *game_cutscenes_droid_factory_conveyor;
+    void *game_cutscenes_podrace_avalanche;
     NUVEC PodRaceADiePos = {350.0f, 0.25f, -15.0f};
     NUVEC PodRaceBDiePos = {138.0f, 0.15f, 178.0f};
     NUVEC PodRaceCDiePos = {140.0f, -7.2f, 52.0f};
@@ -9519,6 +9522,12 @@ extern "C" {
 #pragma data_seg(".data$PS2_VREZ_H")
     i32 PS2_VREZ_H = 224;
 #pragma data_seg()
+#pragma data_seg(".data$NuCameraScissorWidthPc")
+    i32 NuCameraScissorWidthPc = 0x1000;
+#pragma data_seg()
+#pragma data_seg(".data$NuCameraScissorHeightPc")
+    i32 NuCameraScissorHeightPc = 0x1000;
+#pragma data_seg()
 
     i32 PlayerID[2] = {-1, -1};
     i16 PlayerList[8];
@@ -10372,12 +10381,6 @@ extern "C" {
 #pragma bss_seg(".bss$DebrisGlassV1")
     f32 DebrisGlassV1;
 #pragma bss_seg()
-#pragma bss_seg(".bss$DebrisGlassTextureWidth")
-    i32 DebrisGlassTextureWidth;
-#pragma bss_seg()
-#pragma bss_seg(".bss$DebrisGlassTextureHeight")
-    i32 DebrisGlassTextureHeight;
-#pragma bss_seg()
 #pragma bss_seg(".bss$PS2_VCNTR_X")
     i32 PS2_VCNTR_X;
 #pragma bss_seg(".bss$PS2_VCNTR_Y")
@@ -11185,7 +11188,6 @@ extern "C" {
         {0x0u, 0x0u, 0x0u, 0x0u, 0x0u, 0x0u}, // field_a8
         1.0f,                                 // field_c0
         0,                                    // field_c4
-        {0, 0, 0},                            // padding_c5
     };
 #pragma data_seg()
 
@@ -12296,8 +12298,8 @@ extern "C" {
 #pragma bss_seg(".bss$TerrainShadowGroupIndexPc")
     i16 TerrainShadowGroupIndexPc;
 #pragma bss_seg()
-#pragma bss_seg(".bss$GetSurfaceInfoWaterHeightPc")
-    f32 GetSurfaceInfoWaterHeightPc;
+#pragma bss_seg(".bss$EShadY")
+    f32 EShadY;
 #pragma bss_seg()
 #pragma bss_seg(".bss$GetSurfaceInfoRoofHeightPc")
     f32 GetSurfaceInfoRoofHeightPc;
@@ -12884,7 +12886,7 @@ extern "C" {
     void *Game_Customiser;
 #pragma bss_seg()
 #pragma bss_seg(".bss$CUTCAM")
-    void *CUTCAM;
+    i32 CUTCAM;
 #pragma bss_seg()
 }
 
@@ -15382,6 +15384,9 @@ extern "C" {
 #pragma bss_seg(".bss$LookAtBoth")
     i32 LookAtBoth;
 #pragma bss_seg()
+#pragma bss_seg(".bss$PlayPlanesUseRenderMtxPc")
+    i32 PlayPlanesUseRenderMtxPc;
+#pragma bss_seg()
 #pragma bss_seg(".bss$SuperStoryScore")
     u32 SuperStoryScore;
 #pragma bss_seg()
@@ -17617,10 +17622,6 @@ extern "C" {
     f32 PodCollisionMagnitudePc;
 #pragma bss_seg()
 
-#pragma bss_seg(".bss$PCForceGlowDisabledState")
-    f32 PCForceGlowDisabledState;
-#pragma bss_seg()
-
 #pragma bss_seg(".bss$LEGO_AIPATHCNX_BLOCKAGE")
     i32 LEGO_AIPATHCNX_BLOCKAGE;
 #pragma bss_seg()
@@ -17709,10 +17710,6 @@ extern "C" {
     NUSPECIALHANDLE RenderBackdropSpecialsPc[4];
 #pragma bss_seg()
 
-#pragma bss_seg(".bss$RenderBackgroundColoursPc")
-    i32 RenderBackgroundColoursPc[2];
-#pragma bss_seg()
-
 #pragma bss_seg(".bss$RenderBackdropScenePc")
     NUGSCN *RenderBackdropScenePc;
 #pragma bss_seg()
@@ -17773,6 +17770,10 @@ extern "C" {
 
 #pragma bss_seg(".bss$PCShadowCurrentLight")
     struct PC_SPECIAL_SHADOW_LIGHT *PCShadowCurrentLight;
+#pragma bss_seg()
+
+#pragma bss_seg(".bss$PCShadowSecondaryLight")
+    struct PC_SPECIAL_SHADOW_LIGHT *PCShadowSecondaryLight;
 #pragma bss_seg()
 
 #pragma bss_seg(".bss$PCGlobalLightingState")
@@ -17841,9 +17842,6 @@ extern "C" {
 extern "C" {
 #pragma bss_seg(".bss$ScreenGrabNeededPc")
     u8 ScreenGrabNeededPc;
-#pragma bss_seg()
-#pragma bss_seg(".bss$ScreenPauseRenderTargetPc")
-    i32 ScreenPauseRenderTargetPc;
 #pragma bss_seg()
 #pragma bss_seg(".bss$ScreenPauseFadePc")
     f32 ScreenPauseFadePc;
@@ -18719,6 +18717,9 @@ extern "C" {
 #pragma bss_seg(".bss$VisibilityAbsoluteDepthPlanePc")
     NUPLANE VisibilityAbsoluteDepthPlanePc;
 #pragma bss_seg()
+#pragma bss_seg(".bss$VisibilityAlternateWidthPc")
+    f32 VisibilityAlternateWidthPc;
+#pragma bss_seg()
 #pragma bss_seg(".bss$VisibilityAlternateHeightPc")
     f32 VisibilityAlternateHeightPc;
 #pragma bss_seg()
@@ -19025,6 +19026,9 @@ extern "C" {
 #pragma data_seg()
 #pragma data_seg(".data$FramePadMaxGamePadsPc")
     i32 FramePadMaxGamePadsPc = 2;
+#pragma data_seg()
+#pragma data_seg(".data$NuMtlAnimateMaskPc")
+    i32 NuMtlAnimateMaskPc = 0xffffff;
 #pragma data_seg()
 #pragma data_seg(".data$FrameMaterialAnimationSpeedPc")
     f32 FrameMaterialAnimationSpeedPc = 1.0f;
@@ -28448,6 +28452,33 @@ extern "C" {
 
 #pragma bss_seg(".bss$old_pause_state")
     i32 old_pause_state;
+
+#pragma bss_seg(".bss$FadeMtl2")
+    NUMTL *FadeMtl2;
+#pragma bss_seg()
+
+    f32 ScreenPauseFadeSpeedPc = 2.0f;
+    u64 CharacterMaskAllPc = ~(u64)0;
+    i32 FalconDebKey[2] = {-1, -1};
+
+#pragma bss_seg(".bss$PauseTimer")
+    TIMER PauseTimer;
+
+#pragma bss_seg(".bss$makebaddiesforgetinresetbits")
+    i32 makebaddiesforgetinresetbits;
+
+#pragma bss_seg(".bss$reset_reimport")
+    i32 reset_reimport;
+
+#pragma bss_seg(".bss$come_from_an_editor")
+    i32 come_from_an_editor;
+
+#pragma bss_seg(".bss$gone_through_door_to_new_mode")
+    i32 gone_through_door_to_new_mode;
+
+#pragma bss_seg(".bss$newmode_cutinfo")
+    void *newmode_cutinfo;
+#pragma bss_seg()
 }
 
 extern "C" {
@@ -28493,6 +28524,27 @@ extern "C" {
 
 #pragma data_seg(".data$CurrentMusicPair_Quiet")
     i32 CurrentMusicPair_Quiet = -1;
+
+#pragma bss_seg(".bss$MoviePlayTime")
+    f32 MoviePlayTime;
+
+#pragma bss_seg(".bss$movie_skipped")
+    i32 movie_skipped;
+
+#pragma bss_seg(".bss$MovieInputFn")
+    i32(__cdecl *MovieInputFn)(void);
+
+#pragma bss_seg(".bss$MovieFrameTime")
+    f32 MovieFrameTime;
+
+#pragma data_seg(".data$last_currentmusicpair_quiet")
+    i32 last_currentmusicpair_quiet = -1;
+
+#pragma bss_seg(".bss$MusicOther")
+    i32 MusicOther;
+
+#pragma bss_seg(".bss$sticky_attack")
+    i32 sticky_attack;
 }
 
 extern "C" {
@@ -29590,4 +29642,121 @@ extern "C" {
 
 #pragma bss_seg(".bss$edpart_copy_source_count")
     i32 edpart_copy_source_count;
+}
+
+extern "C" {
+#pragma bss_seg(".bss$netcamera")
+    i32 netcamera;
+
+#pragma data_seg(".data$movegamecamera_forcesock")
+    i32 movegamecamera_forcesock = -1;
+
+#pragma bss_seg(".bss$PodCamDist")
+    f32 PodCamDist;
+
+#pragma bss_seg(".bss$CustomisePos")
+    NUVEC CustomisePos[2];
+
+#pragma bss_seg(".bss$shopcampos")
+    struct nuvec_s *shopcampos;
+
+#pragma data_seg(".data$HUB_MINIKITVIEWER_CAMDY")
+    f32 HUB_MINIKITVIEWER_CAMDY = 0.30000001192092896f;
+
+#pragma data_seg(".data$CamStopBlend")
+    f32 CamStopBlend = 1.0f;
+}
+
+extern "C" {
+#pragma bss_seg(".bss$CutCamMtx")
+    NUMTX CutCamMtx;
+
+#pragma bss_seg(".bss$newgamecamtime")
+    f32 newgamecamtime;
+}
+
+extern "C" {
+#pragma bss_seg(".bss$SHOPACTIVE")
+    i32 SHOPACTIVE;
+
+#pragma bss_seg(".bss$shopcamlookat")
+    NUVEC *shopcamlookat;
+#pragma bss_seg(".bss$menuptr")
+    i32(__cdecl *menuptr)(void *menu);
+
+#pragma data_seg(".data$GunshipAOffset")
+    NUVEC GunshipAOffset = {12.0f, 22.5f, -12.0f};
+
+#pragma data_seg(".data$testmovef")
+    f32 testmovef = 0.005f;
+}
+
+extern "C" {
+#pragma data_seg(".data$CamTitlesSplineEndPc")
+    f32 CamTitlesSplineEndPc = 0.95f;
+
+#pragma data_seg(".data$CamTitlesBonusTimePc")
+    f32 CamTitlesBonusTimePc = 51.0f;
+
+#pragma data_seg(".data$CamShopBlendTimePc")
+    f32 CamShopBlendTimePc = 1.0f;
+
+#pragma data_seg(".data$CamNewGameDurationPc")
+    f32 CamNewGameDurationPc = 10.0f;
+
+#pragma data_seg(".data$CamPodSprintStartDistPc")
+    f32 CamPodSprintStartDistPc = 12.0f;
+
+#pragma data_seg(".data$CamPodSprintEndDistPc")
+    f32 CamPodSprintEndDistPc = 2.0f;
+
+#pragma data_seg(".data$CamPodSprintHeightPc")
+    f32 CamPodSprintHeightPc = 0.65f;
+
+#pragma data_seg(".data$CamPodSprintRollScalePc")
+    f32 CamPodSprintRollScalePc = 0.6f;
+
+#pragma data_seg(".data$CamPodSprintAngleSeekPc")
+    f32 CamPodSprintAngleSeekPc = 7.0f;
+
+#pragma data_seg(".data$CamPodShakeScalePc")
+    f32 CamPodShakeScalePc = 2.0f;
+
+#pragma data_seg(".data$CamWalkerRadiusPc")
+    f32 CamWalkerRadiusPc = 5.0f;
+
+#pragma data_seg(".data$CamWalkerLiftPc")
+    f32 CamWalkerLiftPc = 4.0f;
+
+#pragma data_seg(".data$CamDewbackRadiusPc")
+    f32 CamDewbackRadiusPc = 5.0f;
+
+#pragma data_seg(".data$CamDewbackLiftPc")
+    f32 CamDewbackLiftPc = 1.5f;
+
+#pragma data_seg(".data$GameCamLookRotXPc")
+    i32 GameCamLookRotXPc = 10;
+
+#pragma data_seg(".data$GameCamLookRotYPc")
+    i32 GameCamLookRotYPc = 15;
+
+#pragma data_seg(".data$PlayPlaneCornersPc")
+    NUVEC PlayPlaneCornersPc[4] = {
+        {-0.85f, 0.85f, 1.0f}, {0.85f, 0.85f, 1.0f}, {-0.85f, -0.85f, 1.0f}, {0.85f, -0.85f, 1.0f}};
+
+#pragma data_seg(".data$PlayPlaneDepthPc")
+    f32 PlayPlaneDepthPc = 5.0f;
+
+#pragma data_seg(".data$GameCamShakeRadiusPc")
+    f32 GameCamShakeRadiusPc = 0.1f;
+
+#pragma data_seg(".data$GameCamShakeRetargetPc")
+    f32 GameCamShakeRetargetPc = 0.025f;
+
+#pragma data_seg(".data$GameCamShakeDirSeekPc")
+    f32 GameCamShakeDirSeekPc = 10.0f;
+
+#pragma data_seg(".data$GameCamShakeOffsetSeekPc")
+    f32 GameCamShakeOffsetSeekPc = 2.0f;
+#pragma data_seg()
 }

@@ -51,8 +51,8 @@ void __cdecl NuRndrClear(i32 clear_flags, i32 bg_colour, f32 alpha) {
     currentScene.clear_flags_08 |= clear_flags;
     currentScene.bg_colour = bg_colour;
     NuVpGetPosition2(&currentScene.unknown_14, &currentScene.unknown_18);
-    currentScene.calc_1c = (f32)(0.0625 * vpCurrent.width / ((f64)DebrisGlassTextureWidth / PS2_VREZ_W));
-    currentScene.calc_20 = (f32)(0.0625 * vpCurrent.height / ((f64)DebrisGlassTextureHeight / PS2_VREZ_H));
+    currentScene.calc_1c = (f32)(0.0625 * vpCurrent.width / ((f64)PS2_REZ_W / PS2_VREZ_W));
+    currentScene.calc_20 = (f32)(0.0625 * vpCurrent.height / ((f64)PS2_REZ_H / PS2_VREZ_H));
 }
 
 void NuRndrAxisArrows(NUVEC *position, void *unused1, f32 length, NUMTL *material) {
@@ -74,10 +74,10 @@ static __forceinline f32 NuFdiv(f32 a, f32 b) {
 }
 
 void __cdecl NuVpGetPosition2(f32 *x, f32 *y) {
-    *x = NuFdiv((f32)vpCurrent.x * 0.0625f - ((f32)PS2_VCNTR_X - (f32)(DebrisGlassTextureWidth >> 1)),
-                NuFdiv((f32)DebrisGlassTextureWidth, (f32)PS2_VREZ_W));
-    *y = NuFdiv((f32)vpCurrent.y * 0.0625f - ((f32)PS2_VCNTR_Y - (f32)(DebrisGlassTextureHeight >> 1)),
-                NuFdiv((f32)DebrisGlassTextureHeight, (f32)PS2_VREZ_H));
+    *x = NuFdiv((f32)vpCurrent.x * 0.0625f - ((f32)PS2_VCNTR_X - (f32)(PS2_REZ_W >> 1)),
+                NuFdiv((f32)PS2_REZ_W, (f32)PS2_VREZ_W));
+    *y = NuFdiv((f32)vpCurrent.y * 0.0625f - ((f32)PS2_VCNTR_Y - (f32)(PS2_REZ_H >> 1)),
+                NuFdiv((f32)PS2_REZ_H, (f32)PS2_VREZ_H));
 }
 
 void __cdecl NuDisplayListResetStateCache(NURNDRLIBSTATE *state) {
@@ -339,6 +339,10 @@ void NuRndrEndReflectionRender(void) {
     RndrStateSetReflection(0);
 }
 
+void NuRndrGlobalFrameCountPause(i32 paused) {
+    RenderFramePausedPc = paused;
+}
+
 void __cdecl NuRndrAddShadow(NUVEC *position, f32 radius, i32 opacity, i32 unused_x, i32 unused_y, i32 unused_z) {
     if (NuCameraClipTestPoints(position, 1, NULL) == 0 && NuRndrShadowCnt < 128) {
         NuRndrShadPolDat[NuRndrShadowCnt].position = *position;
@@ -506,6 +510,41 @@ void __cdecl NuRndrLine3dDbg(f32 x0, f32 y0, f32 z0, f32 x1, f32 y1, f32 z1, i32
     NuPrimStreamBufferPointer->addr += sizeof(LOCATOR_PRIM_VERTEX_PC);
     ++NuPrimVertexCount;
     NuPrim3DEnd();
+}
+
+void __cdecl NuRndrGradRectUV2di(i32 x, i32 y, i32 width, i32 height, f32 u0, f32 v0, f32 u1, f32 v1, u32 *colours,
+                                 void *material) {
+    f32 sx = (f32)((f64)x * 0.0625);
+    f32 sy = (f32)((f64)y * 0.0625);
+    f32 sw = (f32)((f64)width * 0.0625);
+    f32 sh = (f32)((f64)height * 0.0625);
+    LOCATOR_PRIM_VERTEX_PC *vertex;
+    ++NuPrimCSPos;
+    NuPrimSetCoordinateSystem(0);
+    NuPrim2DBegin(13, 7, (NUMTL *)material);
+    NuRndrPrimSetColourPrivate((i32)colours[0]);
+    vertex = (LOCATOR_PRIM_VERTEX_PC *)NuPrimStreamBufferPointer->void_ptr;
+    vertex->u = u0;
+    vertex->v = v0;
+    NuPrim2DAddXYZ(sx, sy, 0.0f);
+    NuRndrPrimSetColourPrivate((i32)colours[1]);
+    vertex = (LOCATOR_PRIM_VERTEX_PC *)NuPrimStreamBufferPointer->void_ptr;
+    vertex->u = u1;
+    vertex->v = v0;
+    NuPrim2DAddXYZ(sx + sw, sy, 0.0f);
+    NuRndrPrimSetColourPrivate((i32)colours[2]);
+    vertex = (LOCATOR_PRIM_VERTEX_PC *)NuPrimStreamBufferPointer->void_ptr;
+    vertex->u = u0;
+    vertex->v = v1;
+    NuPrim2DAddXYZ(sx, sy + sh, 0.0f);
+    NuRndrPrimSetColourPrivate((i32)colours[3]);
+    vertex = (LOCATOR_PRIM_VERTEX_PC *)NuPrimStreamBufferPointer->void_ptr;
+    vertex->u = u1;
+    vertex->v = v1;
+    NuPrim2DAddXYZ(sx + sw, sy + sh, 0.0f);
+    NuPrim2DEnd();
+    --NuPrimCSPos;
+    NuPrimSetCoordinateSystem(NuPrimCoordSystemStack[NuPrimCSPos]);
 }
 
 i32 __cdecl NuRndrLineStrip2d(NURND_VERTEX2D_PC *vertices, NUMTL *material, i32 count) {
@@ -820,6 +859,13 @@ u8 __cdecl RenderPostClampBytePc(i32 minimum_unused, i32 maximum_unused, f32 val
 
 #include <float.h>
 void __cdecl NuRndrStateSetSpecularLightEx(const NUVEC *, const NUMTX *, const NUVEC *);
+i32 __cdecl NuRndrSetViewMtx(NUMTX *view_projection, NUMTX *viewport_clip, NUMTX *scissor_clip) {
+    return 0;
+}
+
+void __cdecl FaceYDirStream(i32 angle) {
+}
+
 i32 __cdecl NuRndrSetSpecularLightPS(const NUVEC *direction, const NUVEC4 *intensity) {
     static NUVEC rndrstream_specular_dir = {0.0f, 0.0f, 1.0f};
     static NUVEC4 rndrstream_specular_intensity = {1.0f, 1.0f, 1.0f, 1.0f};
@@ -1045,14 +1091,14 @@ void __cdecl NuRndrQuadBufferInitPc(void) {
     vertices[0].x = 0.0f;
     vertices[0].y = 0.0f;
     vertices[0].z = 1.0f;
-    vertices[1].x = (f32)(u32)DebrisGlassTextureWidth;
+    vertices[1].x = (f32)(u32)PS2_REZ_W;
     vertices[1].y = 0.0f;
     vertices[1].z = 1.0f;
-    vertices[2].x = (f32)(u32)DebrisGlassTextureWidth;
-    vertices[2].y = (f32)(u32)DebrisGlassTextureHeight;
+    vertices[2].x = (f32)(u32)PS2_REZ_W;
+    vertices[2].y = (f32)(u32)PS2_REZ_H;
     vertices[2].z = 1.0f;
     vertices[3].x = 0.0f;
-    vertices[3].y = (f32)(u32)DebrisGlassTextureHeight;
+    vertices[3].y = (f32)(u32)PS2_REZ_H;
     vertices[3].z = 1.0f;
     vertices[3].attribute_bits = 0x4b000000;
     vertices[2].attribute_bits = 0x4b000000;

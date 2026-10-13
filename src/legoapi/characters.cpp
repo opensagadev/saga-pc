@@ -127,7 +127,7 @@ void __cdecl LoadPerm1(void) {
     STUBBED_NAMED(InitStreaks); /* Native 48a913: &ptr,end,stuff\\streak.pnt. */
     permbuffer_ptr.addr = (permbuffer_ptr.addr + 3) & ~3u;
     InitRopeMtl("rope", &permbuffer_ptr, &permbuffer_end);
-    STUBBED_NAMED(InitRipples); /* Native 48a94f: &RippleSetPc,&ptr,&end,40. */
+    InitRipples(&RippleSetPc, &permbuffer_ptr, &permbuffer_end, 40);
     permbuffer_ptr.addr = (permbuffer_ptr.addr + 0xff) & ~0xffu;
     PermanentShadowMaterialPc = NuMtlCreate3D(1);
     material = (PERMANENT_MATERIAL_READER_PC *)PermanentShadowMaterialPc;
@@ -254,27 +254,28 @@ extern "C" {
     extern i16 PermanentAllTitleIdPc, PermanentJediTitleIdPc, PermanentBlasterTitleIdPc, PermanentBountyTitleIdPc;
     extern i16 PermanentWeirdo1IdPc, PermanentWeirdo2IdPc;
     extern i16 PermanentCustomiserActionsPc[5];
+    extern f32 PermCollectionScalePc;
 
     void __cdecl LoadPerm2(void) {
         CharConfig_ConfigureAll(1, ConfigChar_GameKeywords);
-        STUBBED_NAMED(0x00414400); /* Actual 48abfd: ExtraCharacterFixUpAfterConfig; held real callback values. */
+        ExtraCharacterFixUpAfterConfig();
         nopakfile = CHARPAK == 0;
         APILoadCharacterModels(PermModelListPc, 1, &permbuffer_ptr, permbuffer_end, 1);
-        Collection_CreateMaster("All", NULL, &MasterCollectionPc, 15, 0.6f);
+        Collection_CreateMaster("All", NULL, &MasterCollectionPc, 15, PermCollectionScalePc);
         Collection_CreateCustom("Characters", &PermanentAllTitleIdPc, &CharacterCollectionPc, 0, 0x04002000, 0, 0, 22,
                                 &permbuffer_ptr, &permbuffer_end, 0, 0.515f);
         Collection_CreateCustom("Vehicles", NULL, &VehicleCollectionPc, 0x2000, 0x04000000, 0, 0, 7, &permbuffer_ptr,
-                                &permbuffer_end, 0, 0.6f);
+                                &permbuffer_end, 0, PermCollectionScalePc);
         Collection_CreateCustom("Minikits", NULL, &MiniKitCollection, 0x04000000, 0, 0, 0, 12, &permbuffer_ptr,
-                                &permbuffer_end, 0, 0.6f);
+                                &permbuffer_end, 0, PermCollectionScalePc);
         Collection_CreateCustom("Shop", NULL, &ShopCollectionPc, 0, 0, 0, 1, 10, &permbuffer_ptr, &permbuffer_end, 0,
-                                0.6f);
+                                PermCollectionScalePc);
         Collection_CreateCustom("Jedi", &PermanentJediTitleIdPc, &JediCollectionPc, 8, 0, 0, 0, 7, &permbuffer_ptr,
-                                &permbuffer_end, 0, 0.6f);
+                                &permbuffer_end, 0, PermCollectionScalePc);
         Collection_CreateCustom("BlasterZipUps", &PermanentBlasterTitleIdPc, &BlasterCollectionPc, 0x100080, 0x01000000,
-                                0, 0, 11, &permbuffer_ptr, &permbuffer_end, 0, 0.6f);
+                                0, 0, 11, &permbuffer_ptr, &permbuffer_end, 0, PermCollectionScalePc);
         Collection_CreateCustom("BountyHunters", &PermanentBountyTitleIdPc, &BountyHunterCollectionPc, 0x01000000, 0, 0,
-                                0, 4, &permbuffer_ptr, &permbuffer_end, 0, 0.6f);
+                                0, 4, &permbuffer_ptr, &permbuffer_end, 0, PermCollectionScalePc);
         Areas_ConfigureResidents(&permbuffer_ptr, &permbuffer_end);
         CharacterCustomiser =
             Customiser_Configure("chars\\customiser.txt", &permbuffer_ptr, &permbuffer_end, (i32)PermanentWeirdo1IdPc,

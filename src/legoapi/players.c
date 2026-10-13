@@ -1034,6 +1034,11 @@ void __cdecl SetProtocolDroidDeactivatedAction(GAMEOBJECT *object) {
         object->field_7aa = 0x44;
 }
 
+i32 __cdecl Arcade_BothPlayersActive(void) {
+    return Player[0] != NULL && (((GAMEOBJECT *)Player[0])->flags_1fc & 0x80) != 0 && Player[1] != NULL &&
+           (((GAMEOBJECT *)Player[1])->flags_1fc & 0x80) != 0;
+}
+
 i32 __cdecl Player_HasInvincibility(GAMEOBJECT *object) {
     return Cheats_CheckFlags(0x80) != 0 || (object != NULL && object->powerup_time > 0.0f);
 }
@@ -2027,7 +2032,7 @@ static void DrawWeapon_SetSabreObjects(GAMEOBJECT *object, i32 red, i32 green, i
 
 void DrawWeapons(GAMEOBJECT *object, i32 reflection, f32 weapon_scale) {
     struct PLAYERCHARACTERCONFIG_PC *data;
-    u8 saved_matrix[sizeof(NUMTX)];
+    NUMTX saved_matrix;
     NUVEC reverse;
     i32 sabre;
     u16 rotation;
@@ -2152,7 +2157,7 @@ void DrawWeapons(GAMEOBJECT *object, i32 reflection, f32 weapon_scale) {
                 }
                 NuMtxPreScale(&blade_matrix, &scale);
 
-                memcpy(saved_matrix, &blade_matrix, sizeof(blade_matrix));
+                memcpy(&saved_matrix, &blade_matrix, sizeof(blade_matrix));
                 for (side = 0;; ++side) {
                     i32 part;
                     for (part = 0; part < 4; ++part) {
@@ -2184,7 +2189,7 @@ void DrawWeapons(GAMEOBJECT *object, i32 reflection, f32 weapon_scale) {
                         (!Cheat_IsOn(25) && (object->field_280 == -1 || !Player_HasPurpleForce(object)))) {
                         break;
                     }
-                    memcpy(&blade_matrix, saved_matrix, sizeof(blade_matrix));
+                    memcpy(&blade_matrix, &saved_matrix, sizeof(blade_matrix));
 
                     reverse.x = 1.0f;
                     reverse.y = -1.0f;
@@ -2197,6 +2202,46 @@ void DrawWeapons(GAMEOBJECT *object, i32 reflection, f32 weapon_scale) {
             return;
         }
     }
+}
+
+void DrawGameObjectsDraw(i32 pass) {
+    GAMEOBJECT *object;
+    i32 index;
+    u8 drawn;
+
+    EnableShadowMapRendering(0);
+    object = Obj;
+    for (index = 0; index < HIGHGAMEOBJECT; index++, object++) {
+        if ((object->flags_1f8 & 0x800) != 0) {
+            if (object->rider != NULL && object->character_context == 0x3b) {
+                object->model_draw_result = object->rider->model_draw_result;
+            }
+            continue;
+        }
+        STUBBED_NAMED("DrawGameObjectsDraw: GameDrawCharacterModel at 0x0041cb50");
+        drawn = 0;
+        object->model_draw_result = drawn;
+        object->flags_e24 ^= ((u32)drawcharactermodel_locatorsupdated * 8 ^ object->flags_e24) & 8;
+        if (drawn != 0) {
+            STUBBED_NAMED("DrawGameObjectsDraw: DrawParaphernalia(object) at 0x0041e4c0");
+        } else if (((object->flags_e20 & 0x400) != 0 || object->character_context == 8) &&
+                   object->transform_alpha > 0.0f && object->transform_target_scale > 0.0f &&
+                   WORLD->level_objects[object->field_e1e].active != 0 &&
+                   (object->character_data->game_character->flags_090 & 0x400) == 0) {
+            STUBBED_NAMED("DrawGameObjectsDraw: DrawForceGlowSprite at 0x004a4ce0");
+        }
+        if (object->snake_body != NULL) {
+            STUBBED_NAMED("DrawGameObjectsDraw: DrawSnakeBody(object) at 0x00597620");
+        }
+        object->origin_joint_ready = 1;
+        if (object->model_draw_result != 0) {
+            object->flags_ef0 |= 0x40000;
+        }
+        if (Paused == 0 && object->character_data->draw_fn != NULL) {
+            ((void(__cdecl *)(GAMEOBJECT *))object->character_data->draw_fn)(object);
+        }
+    }
+    ResetShadowMapRendering();
 }
 
 void DrawGameObjects() {

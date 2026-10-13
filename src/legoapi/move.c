@@ -3268,7 +3268,8 @@ void __cdecl MovePlayer_DIRECTIONAL(GAMEOBJECT *object) {
                 if (direct_turn == 0 && ((CInfo[object->character_context].parameter & 2) != 0 ||
                                          (object->character_data->game_character->flags_090 & 0x100) != 0))
                     walking_angle = object->facing_angle;
-                if (WORLD->current_level == VADERA_LDATA && !((object->flags_1fc & 0x80) != 0) && GameCam->sock == 0)
+                if (WORLD->current_level == VADERA_LDATA && !((object->flags_1fc & 0x80) != 0) &&
+                    GameCam->sock_position.sock_index == 0)
                     walking_speed *= 1.0416666269302368f;
                 object->target_velocity.x = NuTrigTable[walking_angle >> 1] * walking_speed * water_speed_multiplier;
                 object->target_velocity.z =
@@ -6123,11 +6124,11 @@ typedef struct GLOW_ANIMATION_DATA_PC {
 } GLOW_ANIMATION_DATA_PC;
 STATIC_ASSERT(offsetof(GLOW_ANIMATION_DATA_PC, flags) == 0x4);
 
-extern f32 PCForceGlowDisabledState, PCForceGlowRadiusMultiplier, PCForceGlowHoldDuration, FORCEGLOWTIME;
+extern f32 PCForceGlowRadiusMultiplier, PCForceGlowHoldDuration, FORCEGLOWTIME;
 static void ForceGlowCode(GAMEOBJECT *object, i32 model) {
     GLOW_OBJECT_PC *glow = (GLOW_OBJECT_PC *)object;
     f32 target, previous;
-    if (object->dead != 0 || PCForceGlowDisabledState != 0.0f) {
+    if (object->dead != 0 || FadeSys.fade != 0.0f) {
         glow->alpha = 0.0f;
         glow->target = 0.0f;
         glow->object = NULL;

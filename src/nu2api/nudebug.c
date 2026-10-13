@@ -31,3 +31,10 @@ void __cdecl CutSceneConfigMissingPc(char *unused) {
 void __cdecl CutSceneStreamDiagnosticPc(char *unused) {
     (void)unused;
 }
+
+void __cdecl NuAllocBadPointer(void) {
+}
+
+void __cdecl NuAllocReport(const void *message, ...) {
+    (void)message;
+}

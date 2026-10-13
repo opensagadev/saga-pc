@@ -3,10 +3,10 @@
 i32 __cdecl KaminoInside(void) {
     if (WORLD->area != NULL && WORLD->area == KAMINO_ADATA) {
         if (WORLD->current_level == LevelFixupSlotPc0087b12c) {
-            if (CUTSTOPGAME != 0 || GameCam->sock == 5 || GameCam->sock == 6)
+            if (CUTSTOPGAME != 0 || GameCam->sock_position.sock_index == 5 || GameCam->sock_position.sock_index == 6)
                 return 1;
         } else if (WORLD->current_level == KAMINOE_LDATA) {
-            if (CUTSTOPGAME == 0 && GameCam->sock != 0x1e)
+            if (CUTSTOPGAME == 0 && GameCam->sock_position.sock_index != 0x1e)
                 return 1;
         }
     }

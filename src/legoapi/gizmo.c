@@ -640,6 +640,24 @@ i32 __cdecl GizmoSys_BoltHit(void *system, WORLDINFO *world, BOLT_PC *bolt, NUVE
     return 0;
 }
 
+i32 __cdecl GizObstacle_CheckExcludeFlagsFn_LSW(GIZOBSTACLE *obstacle, GAMEOBJECT *object) {
+    if ((obstacle->exclude_flags & 1) != 0 && object->character_data->game_character->weapon_action != 10) {
+        return 1;
+    }
+    if ((obstacle->exclude_flags & 2) != 0 && object->character_data->move_fn != Move_BEAST) {
+        return 1;
+    }
+    return 0;
+}
+
+void __cdecl GizmoSysSetGame(void) {
+    if (StartupGameFlag0 != 0) {
+        GizObstacleExcludeFnPc = NULL;
+        return;
+    }
+    GizObstacleExcludeFnPc = StartupGameFlag1 != 0 ? GizObstacle_CheckExcludeFlagsFn_LSW : NULL;
+}
+
 typedef struct GIZMO_VISIBILITY_TYPE_VIEW_PC {
     u8 unknown_00[0x60];
     i32(__cdecl *get_visibility)(void *);
@@ -661,6 +679,19 @@ i32 __cdecl GizmoGetVisibility(void *system, void *pointer) {
     if (type->fns.get_visibility_fn == NULL)
         return 0;
     return type->fns.get_visibility_fn(gizmo);
+}
+
+typedef NUVEC *(__cdecl *GIZMO_GET_POS_FN_PC)(GIZMO_PC *gizmo);
+
+NUVEC *__cdecl GizmoGetPos(GIZMOSYS_PC *system, void *pointer) {
+    GIZMO_PC *gizmo = (GIZMO_PC *)pointer;
+    GIZMO_GET_POS_FN_PC get_pos_fn;
+    if (gizmotypes == NULL || gizmo == NULL)
+        return NULL;
+    get_pos_fn = (GIZMO_GET_POS_FN_PC)((GIZMOTYPES_PC *)gizmotypes)->types[gizmo->type_id].fns.get_pos_fn;
+    if (get_pos_fn == NULL)
+        return NULL;
+    return get_pos_fn(gizmo);
 }
 
 #include <stdio.h>
