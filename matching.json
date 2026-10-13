@@ -276,7 +276,7 @@
     "src/legoapi/gizrandom.c": "de6c9a2b7a9ed602f9db33bebf65db305c1cbd1945a808a82cdc85bc5307120f",
     "src/legoapi/gizspecial.c": "5e39cb5b80a0077d5ae065f0603bc6d601838c91d4751d6624992dac45d55f5e",
     "src/legoapi/gizteleports.c": "044b1f4cc720befcae79ca13858f3cecae40fb8aeda5772bb145342f438bd3df",
-    "src/legoapi/giztimers.c": "65ffdd8017c1bb8f0e7624cb5642852ad2da417161ebe1b3e4b4e4cda44f2624",
+    "src/legoapi/giztimers.c": "77e6ef8a1e50f5b5cb8cf977510f144d05b732cbd43e08536769a1b5a23174bc",
     "src/legoapi/giztorpedo.c": "35b7af7e10ce32d0b1cb4c42cc68e585748be9bbf61825c3eaa990112f8cf61c",
     "src/legoapi/gizturret.c": "0e4772c1e80341c31ca6725fcbc26e8492d5d67f7849d3170375a49ade1a562f",
     "src/legoapi/grabber.c": "91d04f1077a4a42b6ba317a4a90df07c0aa714de2c4d65b9712c01dc8754d7ec",
@@ -557,7 +557,7 @@
     "build/obj/legoapi/gizspecial.obj": "4ba501cd72a8425e7d5bd582fd6112c3b0ee62feffc296397a507a2a19eb69ba",
     "build/obj/legoapi/gizspinner.obj": "b0a9f6ad28552e8c4b90d56914a3fee44610769ccb0ec33042740e7436f62acc",
     "build/obj/legoapi/gizteleports.obj": "a9c09f066c1a8d7b1ecd7b8f6720cb6d6e1f3af5782af3e18ca8298753cd0ca0",
-    "build/obj/legoapi/giztimers.obj": "13809e56e8220dc4f7590c3eb4fe0256b09e2dfe7aa831a2dc1fa7fcb9764fca",
+    "build/obj/legoapi/giztimers.obj": "995b02e25a6b5086a3b7e9ccc21aa15f61573744c1959015c21917131f5ffb94",
     "build/obj/legoapi/giztorpedo.obj": "292dfbf51a0667a58b51dc0b8b95fad780fcbdd4697f0a20233c34db4e00f268",
     "build/obj/legoapi/gizturret.obj": "3af73fb2dffef32a774727279e3d886cbf93e849636e23a806a876954dd87703",
     "build/obj/legoapi/grabber.obj": "b9f454f04e456b1a7d36d530540ba617bc723fba5cf55b6995f39bf5a735f556",
@@ -85816,11 +85816,25 @@
       "name": "GizTimer_Update",
       "symbol": "_GizTimer_Update",
       "address": "0x005b0400",
-      "units": [],
+      "units": [
+        "src/legoapi/giztimers.c"
+      ],
       "target_size": 69,
-      "exact_match": false,
-      "objects": [],
-      "status": "not implemented"
+      "exact_match": true,
+      "objects": [
+        {
+          "unit": "src/legoapi/giztimers.c",
+          "base_size": 69,
+          "exact_match": true,
+          "target_sha256": "8c8ab0e2a99f0cd12f2154f36105a7c771ef7da06f2d2829e17deb84c29df862",
+          "base_sha256": "8c8ab0e2a99f0cd12f2154f36105a7c771ef7da06f2d2829e17deb84c29df862",
+          "relocation_count": 0,
+          "comparison_unit": "005b0400-c7c519c2b039",
+          "objdiff_percent": 100.0
+        }
+      ],
+      "status": "exact",
+      "objdiff_percent": 100.0
     },
     {
       "name": "GizTimer_GetGizmoName",
@@ -85850,11 +85864,25 @@
       "name": "GizTimer_GetOutput",
       "symbol": "_GizTimer_GetOutput",
       "address": "0x005b0470",
-      "units": [],
+      "units": [
+        "src/legoapi/giztimers.c"
+      ],
       "target_size": 32,
-      "exact_match": false,
-      "objects": [],
-      "status": "not implemented"
+      "exact_match": true,
+      "objects": [
+        {
+          "unit": "src/legoapi/giztimers.c",
+          "base_size": 32,
+          "exact_match": true,
+          "target_sha256": "fc35fe547a7d5e37fd5d22f272feb0a74019ebf5b8bdb72089cba2fb2f0b3828",
+          "base_sha256": "fc35fe547a7d5e37fd5d22f272feb0a74019ebf5b8bdb72089cba2fb2f0b3828",
+          "relocation_count": 0,
+          "comparison_unit": "005b0470-6f6bfc7f36c9",
+          "objdiff_percent": 100.0
+        }
+      ],
+      "status": "exact",
+      "objdiff_percent": 100.0
     },
     {
       "name": "GizTimer_GetOutputName",
@@ -170731,6 +170759,7 @@
         "src/legoapi/gizspecial.c",
         "src/legoapi/gizspinner.cpp",
         "src/legoapi/gizteleports.c",
+        "src/legoapi/giztimers.c",
         "src/legoapi/gizturret.c",
         "src/legoapi/grabber_pc.c",
         "src/legoapi/grapples.cpp",
@@ -171542,6 +171571,14 @@
         },
         {
           "unit": "src/legoapi/gizteleports.c",
+          "exact_match": true,
+          "target_size": 4,
+          "base_size": 4,
+          "target_sha256": "df3f619804a92fdb4057192dc43dd748ea778adc52bc498ce80524c014b81119",
+          "base_sha256": "df3f619804a92fdb4057192dc43dd748ea778adc52bc498ce80524c014b81119"
+        },
+        {
+          "unit": "src/legoapi/giztimers.c",
           "exact_match": true,
           "target_size": 4,
           "base_size": 4,
@@ -377596,13 +377633,13 @@
   "progress": {
     "text_bytes": 3471246,
     "mapped_code_bytes": 2152121,
-    "matched_code_bytes": 395179,
-    "matching_percent": 11.384355934439679,
-    "fuzzy_coverage_percent": 36.73714611755659,
+    "matched_code_bytes": 395280,
+    "matching_percent": 11.387265552484612,
+    "fuzzy_coverage_percent": 36.74005573560152,
     "mapped_functions": 7498,
-    "matched_functions": 3511,
-    "objdiff_fuzzy_percent": 73.40846,
-    "objdiff_total_code": 1738067,
+    "matched_functions": 3513,
+    "objdiff_fuzzy_percent": 73.41001,
+    "objdiff_total_code": 1738168,
     "image_bytes": 40067072,
     "mapped_bytes": 3075604,
     "mapping_percent": 7.676138650710489,
@@ -378700,7 +378737,7 @@
       "metadata_sha256": "fe09365da4c355f220d724ca99394fc120b758891b4188d2c49707b6df0894f2",
       "header_path": "src/saga.h",
       "header_sha256": "69ba650ba8d7562b6f59a1634b9254e7c6a438a859204879cb491204d3051db1",
-      "geometry_object_sha256": "c88d097c1af86159ce167014994b86e47b72a29c83064192885cce6751e3949f",
+      "geometry_object_sha256": "3f7560b3cdf4f697f045f54586e65ab3b37157caadc97b4493796a09850431ed",
       "toolchain_sha256": "489d0782638d8033137cdb2834462416111945cbfa073147820e314b8576b95b",
       "implementation_sha256": "9ad7521230f06fde31f0771b10bd001037ea32d2def455913a7f391f05dede9d",
       "headers": {

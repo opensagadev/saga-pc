@@ -8,7 +8,7 @@ typedef struct GIZFLOW_LOAD_LEVEL_PC {
     u8 max_randoms;
 } GIZFLOW_LOAD_LEVEL_PC;
 typedef struct GIZFLOW_TIMER_PC {
-    u8 unknown_000[4];
+    f32 time_remaining;
     f32 start_time;
     u8 unknown_008[2];
     u8 flags;
@@ -52,6 +52,7 @@ STATIC_ASSERT(offsetof(GIZFLOW_LOAD_LEVEL_PC, max_timers) == 0xe9);
 STATIC_ASSERT(offsetof(GIZFLOW_LOAD_LEVEL_PC, max_specials) == 0xf5);
 STATIC_ASSERT(offsetof(GIZFLOW_LOAD_LEVEL_PC, max_randoms) == 0x103);
 STATIC_ASSERT(sizeof(GIZFLOW_TIMER_PC) == 0x1c);
+STATIC_ASSERT(offsetof(GIZFLOW_TIMER_PC, time_remaining) == 0);
 STATIC_ASSERT(offsetof(GIZFLOW_TIMER_PC, start_time) == 4);
 STATIC_ASSERT(offsetof(GIZFLOW_TIMER_PC, flags) == 0xa);
 STATIC_ASSERT(offsetof(GIZFLOW_TIMER_PC, name) == 0xc);
@@ -74,6 +75,23 @@ STATIC_ASSERT(offsetof(GIZFLOW_RANDOM_SYSTEM_PC, randoms) == 0);
 STATIC_ASSERT(offsetof(GIZFLOW_RANDOM_SYSTEM_PC, count) == 4);
 STATIC_ASSERT(offsetof(GIZFLOW_SPECIAL_SYSTEM_PC, specials) == 0);
 STATIC_ASSERT(offsetof(GIZFLOW_SPECIAL_SYSTEM_PC, count) == 4);
+
+void __cdecl GizTimer_Update(void *world_info, void *unused, f32 delta_time) {
+    GIZFLOW_LOAD_WORLD_PC *world = (GIZFLOW_LOAD_WORLD_PC *)world_info;
+    i32 i;
+    for (i = 0; i < world->timer_count; ++i) {
+        GIZFLOW_TIMER_PC *timer = &world->timers[i];
+        if (timer->time_remaining >= 0.0f)
+            timer->time_remaining -= delta_time;
+    }
+}
+
+i32 __cdecl GizTimer_GetOutput(GIZMO_PC *gizmo, i32 unused1, i32 unused2) {
+    GIZFLOW_TIMER_PC *timer = (GIZFLOW_TIMER_PC *)gizmo->object;
+    if (timer->flags & 1)
+        return timer->time_remaining <= 0.0f;
+    return 0;
+}
 
 char *__cdecl GizTimer_GetGizmoName(GIZMO_PC *gizmo) {
     return gizmo != NULL ? ((GIZFLOW_TIMER_PC *)gizmo->object)->name : NULL;
