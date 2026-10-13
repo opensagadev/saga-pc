@@ -1,5 +1,126 @@
 #include "saga.h"
 
+i32 PC_INPUT_RUNTIME_PC::ResolveAuxiliaryConflictsPc(i32 auxiliary_index, i32 bank_count) {
+    if ((u32)(auxiliary_ports[auxiliary_index] - 10) > 3)
+        return 0;
+    PC_INPUT_BINDING_PC *bindings = auxiliary_bindings[auxiliary_index];
+    i32 missing = 0;
+    for (i32 bank = 0; bank < bank_count; ++bank) {
+        if (bank == auxiliary_index || (u32)(auxiliary_ports[bank] - 10) > 3)
+            continue;
+        if (PcInputActionOrder[0] >= 0) {
+            for (i32 a = 0; PcInputActionOrder[a] >= 0; ++a) {
+                i32 first = PcInputActionOrder[a];
+                if (!bindings[first].kind)
+                    continue;
+                for (i32 b = 0; PcInputActionOrder[b] >= 0; ++b) {
+                    i32 second = PcInputActionOrder[b];
+                    if (bindings[second].kind && bindings[second].value != 255 &&
+                        bindings[first].value == auxiliary_bindings[bank][second].value &&
+                        bindings[first].kind == auxiliary_bindings[bank][second].kind) {
+                        bindings[first].value = 0;
+                        bindings[first].kind = 0;
+                    }
+                }
+            }
+        } else {
+            for (i32 first = 0; first < 32; ++first) {
+                if (!bindings[first].kind)
+                    continue;
+                for (i32 second = 0; second < 32; ++second) {
+                    if (bindings[second].kind && bindings[first].value == auxiliary_bindings[bank][second].value &&
+                        bindings[first].kind == auxiliary_bindings[bank][second].kind) {
+                        bindings[first].value = 0;
+                        bindings[first].kind = 0;
+                    }
+                }
+            }
+        }
+    }
+    for (i32 index = 0; PcInputActionOrder[index] >= 0; ++index) {
+        i32 command = PcInputActionOrder[index];
+        if ((PcInputCommandFilterPc == NULL || PcInputCommandFilterPc(auxiliary_ports[auxiliary_index], command)) &&
+            bindings[command].kind == 0) {
+            missing = 1;
+            break;
+        }
+    }
+    return missing;
+}
+
+i32 PC_INPUT_RUNTIME_PC::SelectConfigurationPc(i32 port, i32 key, i32 auxiliary_index) {
+    PC_INPUT_CONFIG_PC *config = NULL;
+    for (i32 attempt = 0; attempt < 3; ++attempt) {
+        config = FindConfig(3, port, key);
+        if (config != NULL)
+            break;
+        if (++key == 3)
+            key = 0;
+    }
+    InstallConfig(config, port, key, auxiliary_index >= 0, auxiliary_index);
+    if (auxiliary_index >= 0 && (u32)(port - 10) <= 3) {
+        for (i32 device = 0; device < 3; ++device)
+            (void)TextInputLinkedDevicePc(device);
+        if (ResolveAuxiliaryConflictsPc(auxiliary_index, 4))
+            config = NULL;
+    }
+    return config != NULL;
+}
+
+extern "C" i32 __cdecl PcInputSelectPressedDevicePc(u32 excluded, u8 kinds, i32 *kind, i32 *value, i32 skip_active) {
+    PC_INPUT_RUNTIME_PC *runtime = (PC_INPUT_RUNTIME_PC *)nu_input_state;
+    runtime->action_mask = (u32)-1;
+    for (i32 port = 0; port < 14; ++port) {
+        if ((skip_active && runtime->mouse.port_activity[port]) || (excluded & (1u << port)))
+            continue;
+        PC_INPUT_CAPTURE_PC *capture = &runtime->staged_capture[port];
+        i32 selected = -1;
+        if ((u32)(port - 10) <= 3) {
+            if ((kinds & 16) && capture->kind[0])
+                selected = 0;
+            else if ((kinds & 8) && capture->kind[1])
+                selected = 1;
+            else if ((kinds & 4) && capture->kind[2])
+                selected = 2;
+        } else {
+            if ((kinds & 2) && capture->kind[0])
+                selected = 0;
+            else if ((kinds & 1) && capture->kind[2])
+                selected = 2;
+        }
+        if (selected < 0)
+            continue;
+        i32 selected_kind = (i8)capture->kind[selected];
+        if (!selected_kind)
+            return -1;
+        if (kind != NULL)
+            *kind = selected_kind;
+        if (value != NULL)
+            *value = capture->value[selected];
+        return port;
+    }
+    return -1;
+}
+
+extern "C" i32 __cdecl PcInputMapKeyboardPortPc(i32 port, i32 player) {
+    if (port >= 10 && port < 14) {
+        PC_INPUT_RUNTIME_PC *runtime = (PC_INPUT_RUNTIME_PC *)nu_input_state;
+        if (player != runtime->captured_port)
+            ++port;
+        if (player >= 0)
+            port += player * 2;
+    }
+    return port;
+}
+
+extern "C" u8 __cdecl PcInputSelectConfigurationPc(i32 port, i32 key, i32 auxiliary_index) {
+    return ((PC_INPUT_RUNTIME_PC *)nu_input_state)->SelectConfigurationPc(port, key, auxiliary_index);
+}
+
+extern "C" void __cdecl PcInputSetCommandFilterPc(i32(__cdecl *filter)(i32, i32)) {
+    PcInputCommandFilterPc = filter;
+}
+
 typedef struct NuKeyboardInitKeyRecord_PC {
     u8 unknown_00;
     u8 unknown_01;

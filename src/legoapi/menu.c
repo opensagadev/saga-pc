@@ -209,11 +209,11 @@ void InitSuperStory(i32 episode) {
 void MenuEnterTitles(MENU *menu) {
     i32 i;
     (void)menu;
-    STUBBED_NAMED(0x004f4c10); /* NuPadResetState(1) */
+    NuPadResetState(1);
     for (i = 0; i < 8; ++i) {
         PlayerProgress[i].active = 0;
     }
-    STUBBED_NAMED(0x004f4920); /* NuPadInit() */
+    NuPadInit();
 }
 
 void MenuUpdatePauseRestart(MENU_s *menu) {

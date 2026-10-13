@@ -1,6 +1,7 @@
 address    , symbol                                                         , size  , ctype
 0x401080,??_H@YGXPAXIHP6EPAX0@Z@Z,50,
 0x00401100 , _StartupParseArguments                                         , 59    , "void __cdecl (i32, char **)"
+0x4011b0,?PcInputCommandAllowedPc@@YAHHH@Z,48,
 0x4011e0,_InitOnce,1019,"void __cdecl(i32,char**)"
 0x4015e0,_Text_ExpandButtonString,462,
 0x4017c0,_GamePad_InitButtons,66,void __cdecl(void)
@@ -879,11 +880,13 @@ address    , symbol                                                         , si
 0x00494300 , _MenuUpdateOptions                                             , 690   , void __cdecl (MENU *)
 0x004945c0 , _MenuDrawOptions                                               , 510   , void __cdecl (MENU *)
 0x004947c0 , _MenuExitOptions                                               , 5     , void __cdecl (MENU *)
+0x494bb0,?MenuUpdateTitleFadePc@@YAHPAUmenu_s@@@Z,571,
 0x00494df0 , _MenuEnterNewGame                                              , 38    , void __cdecl (MENU *)
 0x495290,_MenuUpdateSelectLanguage,53,
 0x4952d0,_MenuDrawSelectLanguage,49,
 0x495310,_UpdateGameMenu,1070,"void __cdecl(GAMEPAD_PC *, i32)"
 0x00495740 , _MenuEnterTitles                                               , 34    , void __cdecl (MENU *)
+0x495770,_MenuUpdateTitles,201,void __cdecl(MENU *)
 0x495840,_MenuDrawTitles,186,void __cdecl (MENU *)
 0x495900,_MenuUpdatePauseMain,592,
 0x495d30,_MenuUpdatePauseRestart,97,
@@ -6314,6 +6317,9 @@ address    , symbol                                                         , si
 0x6d6c40,_NuKeyboard_db,53,i32 __cdecl(i32)
 0x6d6d70,_PcKeyUp,12,void __cdecl(i32)
 0x6d6d80,_TextInputGetKeyNamesPc,6,char **__cdecl(void)
+0x6d6d90,_PcInputSetCommandFilterPc,10,
+0x6d7040,?ResolveAuxiliaryConflictsPc@PC_INPUT_RUNTIME_PC@@QAEHHH@Z,603,
+0x6d72a0,?SelectConfigurationPc@PC_INPUT_RUNTIME_PC@@QAEHHHH@Z,170,
 0x6d74e0,?SampleDevicePc@PC_INPUT_RUNTIME_PC@@QAEHHPAUPC_INPUT_RAW_SAMPLE_PC@@@Z,1140,"i32 __thiscall(i32,PC_INPUT_RAW_SAMPLE_PC*)"
 0x6d7990,?UpdateMousePc@PC_INPUT_RUNTIME_PC@@QAEHXZ,998,i32 __thiscall(void)
 0x6d7d80,?TranslateBindingsPc@PC_INPUT_RUNTIME_PC@@QAEHHPAUPC_INPUT_SAMPLE_PC@@HPAUPC_INPUT_RAW_SAMPLE_PC@@PAUPC_INPUT_MOUSE_RUNTIME_PC@@PAPAE@Z,1360,"i32 __thiscall(i32,PC_INPUT_SAMPLE_PC*,i32,PC_INPUT_RAW_SAMPLE_PC*,PC_INPUT_MOUSE_RUNTIME_PC*,u8**)"
@@ -6322,9 +6328,12 @@ address    , symbol                                                         , si
 0x6d8760,?ServicePendingCapturePc@PC_INPUT_RUNTIME_PC@@QAEXXZ,135,void __thiscall(void)
 0x6d87f0,?ButtonName@TEXT_INPUT_MANAGER_PC@@QAEHHHPADHHHH0@Z,1328,"i32 __thiscall(i32,i32,char*,i32,i32,i32,i32,char*)"
 0x6d9040,?Shutdown@NuKeyboardOwner_PC@@QAEXXZ,224,void __thiscall NuKeyboardOwner_PC::Shutdown(void)
+0x6d9120,_PcInputSelectPressedDevicePc,236,
 0x006d9340 , _NuKeyboardRead                                                , 42    , void __cdecl (void)
 0x6d9370,_PcInputDeadzonePc,36,i32 __cdecl(i32)
+0x6d9510,_PcInputMapKeyboardPortPc,43,
 0x006d9540 , _NuKeyboardApplyActionKeys_candidate                           , 112   , "void __cdecl (const i16 *, i32)"
+0x6d95b0,_PcInputSelectConfigurationPc,27,
 0x6d9610,_PcInputEndFramePc,49,void __cdecl(void)
 0x006d96b0 , @NuKeyboardInitializeDefaultRecords_candidate@4                , 802   , void __fastcall (NuKeyboardState_PC *)
 0x6d9b80,?BindPreferredConfig@PC_INPUT_RUNTIME_PC@@QAEXHH@Z,70,"void __thiscall(i32,i32)"
@@ -16727,6 +16736,7 @@ address    , symbol                                                         , si
 0x0087b55c , _HubMainRenderTimeHack                                         , 4     , i32
 0x0087b560 , _NuDatHandles                                                  , 28    , DAT_HANDLES_PC
 0x87b5c0,_newgamefade,,i32
+0x87b6e0,_newgamewait,4,f32
 0x87b6e4,_MissionMenuPacketPc,,MISSION_MENU_PACKET_PC
 0x87b6f4,_newgamealpha,,f32
 0x87b738,_MenuKeyboardPendingPc,,i32
@@ -19429,6 +19439,7 @@ address    , symbol                                                         , si
 0x029755c8 , _nu_keyboard_device_flags                                      , 4     , i32
 0x029755cc , _nu_keyboard_key_index                                         , 4     , i32
 0x029755d0 , _nu_keyboard_repeat_countdown                                  , 4     , i32
+0x29755d4,_PcInputCommandFilterPc,4,
 0x29755d8,_PcMouseAxisIdlePc,,f32[3]
 0x29755f8,_TextInputNameCallbackPc,,"void (__cdecl *)(i32,char*)"
 0x29755fc,?PcXInputDeviceCount@@3HA,,i32

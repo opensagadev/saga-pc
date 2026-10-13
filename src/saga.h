@@ -1462,7 +1462,7 @@ STATIC_ASSERT(offsetof(VUFNT, material) == 0x40);
 STATIC_ASSERT(offsetof(VUFNT, platform_data) == 0x48);
 
 typedef struct menu_s {
-    u8 unknown_0000[8];
+    f32 menu_time, time_04;
     i16 selected_column;
     i16 selected_row;
     i16 first_column;
@@ -1510,6 +1510,8 @@ typedef struct menu_s {
 } MENU;
 STATIC_ASSERT(sizeof(MENU) == 0xe0);
 STATIC_ASSERT(offsetof(MENU, selected_column) == 0x08);
+STATIC_ASSERT(offsetof(MENU, menu_time) == 0);
+STATIC_ASSERT(offsetof(MENU, time_04) == 4);
 STATIC_ASSERT(offsetof(MENU, selected_row) == 0x0a);
 STATIC_ASSERT(offsetof(MENU, menu) == 0x14);
 STATIC_ASSERT(offsetof(MENU, selected_item) == 0x34);
@@ -9193,6 +9195,11 @@ extern "C" {
     void __cdecl TextInputSetKeyboardOverridePc(i32);
     void __cdecl TextInputSetLastDevicePc(i32);
     i32 __cdecl TextInputIsKeyboardDevicePc(i32);
+    extern i32(__cdecl *PcInputCommandFilterPc)(i32, i32);
+    void __cdecl PcInputSetCommandFilterPc(i32(__cdecl *filter)(i32, i32));
+    i32 __cdecl PcInputSelectPressedDevicePc(u32 excluded, u8 kinds, i32 *kind, i32 *value, i32 skip_active);
+    i32 __cdecl PcInputMapKeyboardPortPc(i32 port, i32 player);
+    u8 __cdecl PcInputSelectConfigurationPc(i32 port, i32 key, i32 auxiliary_index);
 
     typedef struct PC_SHADOW_QUEUE_RECORD {
         NUVEC position;
@@ -10377,6 +10384,7 @@ extern OCCLUSIONMANAGER g_OcclusionManager;
     f32 __cdecl GetSoundVolume(void);
     void __cdecl MenuEnterTitles(MENU *menu);
     void __cdecl MenuDrawTitles(MENU *menu);
+    void __cdecl MenuUpdateTitles(MENU *menu);
     i32 __cdecl GetParentMenuID(void);
     extern i32 MenuLoadOccurred;
     extern i32 startnewgame_initiated;
@@ -17237,6 +17245,8 @@ struct PC_INPUT_RUNTIME_PC {
     PC_INPUT_CONFIG_PC *FindConfig(u8 mask, i32 port, i32 key);
     void InstallConfig(PC_INPUT_CONFIG_PC *, i32 port, i32 key, i32 auxiliary, i32 auxiliary_port);
     void BindPreferredConfig(i32 mask, i32 port);
+    i32 ResolveAuxiliaryConflictsPc(i32 auxiliary_index, i32 bank_count);
+    i32 SelectConfigurationPc(i32 port, i32 key, i32 auxiliary_index);
     void InitKeyboardProfiles();
     void AutoConfigurePadsPc(i32 count);
     void ServicePendingCapturePc();
@@ -17311,6 +17321,7 @@ STATIC_ASSERT(offsetof(PC_INPUT_RUNTIME_PC, keyboard_polled) == 0x4e10);
 STATIC_ASSERT(offsetof(PC_INPUT_RUNTIME_PC, mouse_polled) == 0x4e11);
 STATIC_ASSERT(offsetof(PC_INPUT_RUNTIME_PC, suppress_key_1) == 0x4e12);
 STATIC_ASSERT(offsetof(PC_INPUT_RUNTIME_PC, mouse) == 0x62fc);
+STATIC_ASSERT(offsetof(PC_INPUT_RUNTIME_PC, mouse) + offsetof(PC_INPUT_MOUSE_RUNTIME_PC, port_activity) == 0x6345);
 STATIC_ASSERT(offsetof(PC_INPUT_RUNTIME_PC, axis_threshold) == 0x6568);
 STATIC_ASSERT(offsetof(PC_INPUT_RUNTIME_PC, motion_threshold) == 0x656c);
 STATIC_ASSERT(offsetof(PC_INPUT_RUNTIME_PC, ramp_seconds) == 0x6570);
@@ -19471,6 +19482,7 @@ extern "C" {
     extern f32 LevAlpha;
     extern f32 TitlesAlpha;
     extern f32 newgamealpha;
+    extern f32 newgamewait;
     extern i32 newgamefade;
     extern i32 newgame_menudrawoff;
 #ifdef __cplusplus

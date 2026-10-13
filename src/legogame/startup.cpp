@@ -1,5 +1,11 @@
 #include "saga.h"
 
+static i32 __cdecl PcInputCommandAllowedPc(i32 port, i32 command) {
+    if (TextInputIsKeyboardDevicePc(port) && ((command >= 4 && command <= 7) || (u32)(command - 8) <= 3))
+        return 0;
+    return 1;
+}
+
 enum FADETYPE_VALUE {
     FADE_TYPE_NONE = -1,
     FADE_TYPE_SCREEN = 0,
@@ -492,7 +498,7 @@ extern "C" {
         STUBBED_NAMED("LoadPermData: loading-screen registration (0x421320 struct with font,"
                       " LoadPermProgressDraw, 0x401140)");
         STUBBED_NAMED("LoadPermData: procedural animation fn registration (0x6d4dd0(0x50c140))");
-        STUBBED_NAMED("LoadPermData: callback registration (0x6d6d90(0x4011b0))");
+        PcInputSetCommandFilterPc(PcInputCommandAllowedPc);
 
         permbuffer_ptr.addr = (permbuffer_ptr.addr + 0xfU) & ~0xfU;
         PermDataLoaded = 1;

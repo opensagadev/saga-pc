@@ -3527,6 +3527,7 @@ const char *PcCompanyName = PcInputText775ec0;
 const char *PcProductName = PcInputText775eb4;
 i32 PcUsePersonalFolder = 1;
 void(__cdecl *PcInputStateInitializedCallback)(PC_INPUT_RUNTIME_PC *) = NULL;
+extern "C" i32(__cdecl *PcInputCommandFilterPc)(i32, i32) = NULL;
 char PcUserFolder[260] = {};
 char PcFileDirectory[128] = {};
 char PcFilePath[128] = {};
@@ -10340,7 +10341,7 @@ extern "C" {
     // STUBBED: Remaining PC callback bodies are not reconstructed; NULL slots keep them inactive.
     // IDs, remembered cursors, and prompt flags use the 23-record PC table.
     MENUFNINFO GameMenuInfo[23] = {
-        {0, MenuEnterTitles, MenuDrawTitles, NULL, NULL, -1, -1, 0, 0, 0, 0},
+        {0, MenuEnterTitles, MenuDrawTitles, MenuUpdateTitles, NULL, -1, -1, 0, 0, 0, 0},
         {1, MenuEnterNewGame, NULL, NULL, NULL, -1, -1, 0, 1, 0, 0},
         {2, NULL, NULL, NULL, NULL, -1, -1, 0, 0, 0, 0},
         {3, NULL, NULL, NULL, NULL, -1, -1, 0, 0, 0, 0},
@@ -19301,6 +19302,7 @@ extern "C" {
     f32 LevAlpha = 0.0f;
     f32 TitlesAlpha = 0.0f;
     f32 newgamealpha = 0.0f;
+    f32 newgamewait = 0.0f;
     i32 newgamefade = 0;
     i32 newgame_menudrawoff = 0;
 }
