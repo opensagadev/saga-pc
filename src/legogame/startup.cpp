@@ -139,6 +139,7 @@ extern "C" {
 
     f32 __cdecl LoadPermFadeAlpha(f32 t, f32 duration) {
         f32 end;
+        f32 total;
 
         if (t > 0.0f && t < duration + 0.3f + 0.3f + 0.2f) {
             if (t < 0.3f) {
@@ -148,8 +149,9 @@ extern "C" {
             if (t < end) {
                 return 1.0f;
             }
-            if (t < end + 0.3f) {
-                return 1.0f - end / (end + 0.3f - (t - end));
+            total = end + 0.3f;
+            if (t < total) {
+                return 1.0f - (t - end) / (total - end);
             }
         }
         return 0.0f;

@@ -117,7 +117,7 @@
     "src/legoapi/tightrope.cpp": "be579d1a2167462202e8987e813edd58941aa4c7031d693096019f9f4121fa9f",
     "src/legoapi/world.cpp": "26a0460e8511ee1826142cf6560a3e9f09b5581bea4562e205a81322f28e6fb3",
     "src/legogame/game.cpp": "ecf3922ab0ef0ab6e8acbb22718f1d3f9d17bf4d30c9258fd5d4b869e4b24860",
-    "src/legogame/startup.cpp": "408b49f4538276f10496ebe09d2ba328b35f0d5cc09c9e2643c35b655337b109",
+    "src/legogame/startup.cpp": "8e48d5f50d73b1c67679bc58eb3afaf904a91ba4a58973c2751d5e381e7c3196",
     "src/nu2api/cpu_features.cpp": "7b57efe0a5b8f722138d143b3037dd70c02478906b792d24ba7df2f123af4de9",
     "src/nu2api/crc16.cpp": "0951ed9b5b9f090cacb3ceab7a8766bd8c92698df7cd1df726b719db4a16b211",
     "src/nu2api/d3d_api_lifetime.cpp": "6f9e71a040d618a5348e4cfb973963065a553d3cb9b1f917d889f71d1ddce671",
@@ -649,7 +649,7 @@
     "build/obj/legoapi/world.obj": "7e2396b9c422664191ce1d08e0cff09d88d56c30901b8e02a080fbd69a2a2d8b",
     "build/obj/legoapi/zipup.obj": "efd859a6a9b6d4031d25afe3b2be8da09725b70445cdc501e90ee3963ad5ffee",
     "build/obj/legogame/game.obj": "b9f1cc33e675fc546c0d4a8d78d757ea3a7153fe8e43866a25ef2624af203f49",
-    "build/obj/legogame/startup.obj": "7cb30a1875a03b190fd8f6551bdcf6f9b2e4bad24ba41a9fea5567691b85f76f",
+    "build/obj/legogame/startup.obj": "4278862a1820883f2b65354201173fa9dc9cefd7f3c35fe77b99719dc6da0755",
     "build/obj/nu2api/bgproc.obj": "9cd880094ae0ab36292b55159aae7558b19808526294ec7e1a35daccdc604c78",
     "build/obj/nu2api/cpu_features.obj": "931fa1a5a66db907810a1b0e08a51c643c7044e46b77f5e88f1c9f557b85db06",
     "build/obj/nu2api/crc16.obj": "7b2df2c3be2da58145b0784f3b6fa9f1299f452fa5b1e4157f497f8a782beafa",
@@ -26694,21 +26694,21 @@
         "src/legogame/startup.cpp"
       ],
       "target_size": 163,
-      "exact_match": false,
+      "exact_match": true,
       "objects": [
         {
           "unit": "src/legogame/startup.cpp",
-          "base_size": 162,
-          "exact_match": false,
+          "base_size": 163,
+          "exact_match": true,
           "target_sha256": "8dced41fc9f5d81842902bc8359c84155c458b8634a200a274cf91d31e924f8e",
-          "base_sha256": "61e9df59c9f7b4d1271a22fc6a7fc8b15c5b847f2d580a5849d51185f6f7a11c",
+          "base_sha256": "8dced41fc9f5d81842902bc8359c84155c458b8634a200a274cf91d31e924f8e",
           "relocation_count": 3,
           "comparison_unit": "004c9eb0-ffdd6d0ec622",
-          "objdiff_percent": 85.61905
+          "objdiff_percent": 100.0
         }
       ],
-      "status": "different",
-      "objdiff_percent": 85.61905
+      "status": "exact",
+      "objdiff_percent": 100.0
     },
     {
       "name": "MemoryManagerInit",
@@ -380405,12 +380405,12 @@
   "progress": {
     "text_bytes": 3471246,
     "mapped_code_bytes": 2154933,
-    "matched_code_bytes": 400639,
-    "matching_percent": 11.541648157462767,
-    "fuzzy_coverage_percent": 37.11914409073994,
+    "matched_code_bytes": 400802,
+    "matching_percent": 11.546343877673896,
+    "fuzzy_coverage_percent": 37.11981937991565,
     "mapped_functions": 7516,
-    "matched_functions": 3556,
-    "objdiff_fuzzy_percent": 73.59417,
+    "matched_functions": 3557,
+    "objdiff_fuzzy_percent": 73.595505,
     "objdiff_total_code": 1751699,
     "image_bytes": 40067072,
     "mapped_bytes": 3079194,
@@ -381509,7 +381509,7 @@
       "metadata_sha256": "fe09365da4c355f220d724ca99394fc120b758891b4188d2c49707b6df0894f2",
       "header_path": "src/saga.h",
       "header_sha256": "87ee41e81a930be24f012bcf461236776783529b92984cc8cf3e99072deba4a7",
-      "geometry_object_sha256": "db7a7276e87fc104116b6f61f4fdf5cdebded16ffb1049134bf6aca9a77f586f",
+      "geometry_object_sha256": "67e0fc2bced19d6dda4d8cd726f11ef94579ba8c98fe5e2983aa9659a9894f06",
       "toolchain_sha256": "489d0782638d8033137cdb2834462416111945cbfa073147820e314b8576b95b",
       "implementation_sha256": "9ad7521230f06fde31f0771b10bd001037ea32d2def455913a7f391f05dede9d",
       "headers": {
