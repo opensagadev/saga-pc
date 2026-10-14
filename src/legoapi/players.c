@@ -2249,6 +2249,10 @@ void DrawWeapons(GAMEOBJECT *object, i32 reflection, f32 weapon_scale) {
     }
 }
 
+i32 __cdecl GameDrawCharacterModel(CHARACTER_MODEL_LAYERS_PC *, ANIMPACKET_PC *, NUMTX *, NUMTX *, NUMTX *, NUMTX *,
+                                   GAMEOBJECT *, u32);
+void __cdecl DrawParaphernaliaPc(GAMEOBJECT *object);
+
 void DrawGameObjectsDraw(i32 pass) {
     GAMEOBJECT *object;
     i32 index;
@@ -2263,12 +2267,14 @@ void DrawGameObjectsDraw(i32 pass) {
             }
             continue;
         }
-        STUBBED_NAMED("DrawGameObjectsDraw: GameDrawCharacterModel at 0x0041cb50");
-        drawn = 0;
+        drawn = (u8)GameDrawCharacterModel(object->character_model, &object->anim_packet, &object->transform,
+                                           (object->flags_ef0 & 0x20000) != 0 ? &object->draw_secondary_mtx : NULL,
+                                           (u8)object->field_107c != 0 ? &object->draw_tertiary_mtx : NULL,
+                                           object->locator_matrices, object, object->layer_mask);
         object->model_draw_result = drawn;
         object->flags_e24 ^= ((u32)drawcharactermodel_locatorsupdated * 8 ^ object->flags_e24) & 8;
         if (drawn != 0) {
-            STUBBED_NAMED("DrawGameObjectsDraw: DrawParaphernalia(object) at 0x0041e4c0");
+            DrawParaphernaliaPc(object);
         } else if (((object->flags_e20 & 0x400) != 0 || object->character_context == 8) &&
                    object->transform_alpha > 0.0f && object->transform_target_scale > 0.0f &&
                    WORLD->level_objects[object->field_e1e].active != 0 &&
@@ -3198,4 +3204,954 @@ void __cdecl ResetPlayer(GAMEOBJECT *object, i32 reset_moves, NUVEC *position, i
     object->field_f10 = 0.0f;
     object->camera_screen_position.z = -1.0f;
     object->field_de0 = -1.0f;
+}
+
+/* Private source fragment for src/legoapi/players.c; not a standalone TU.
+ * Retail private ABI: Copy src=EAX,dst=ECX; other helpers matrix=EAX,angle=ECX.
+ * Same-TU compiler convention must be checked with all retail callers.
+ */
+static void GameDrawMtxCopyPc(NUMTX *destination, const NUMTX *source) {
+    destination->m00 = source->m00;
+    destination->m01 = source->m01;
+    destination->m02 = source->m02;
+    destination->m03 = source->m03;
+    destination->m10 = source->m10;
+    destination->m11 = source->m11;
+    destination->m12 = source->m12;
+    destination->m13 = source->m13;
+    destination->m20 = source->m20;
+    destination->m21 = source->m21;
+    destination->m22 = source->m22;
+    destination->m23 = source->m23;
+    destination->m30 = source->m30;
+    destination->m31 = source->m31;
+    destination->m32 = source->m32;
+    destination->m33 = source->m33;
+}
+
+static void GameDrawMtxSetYRotationPc(NUMTX *matrix, NUANG angle) {
+    f32 cosine = NuTrigTable[((angle + 0x4000) >> 1) & 0x7fff];
+    f32 sine = NuTrigTable[(angle >> 1) & 0x7fff];
+    matrix->m00 = cosine;
+    matrix->m01 = 0.0f;
+    matrix->m02 = -sine;
+    matrix->m03 = 0.0f;
+    matrix->m10 = ANI3_EVAL_IDENTITY_MATRIX.m10;
+    matrix->m11 = ANI3_EVAL_IDENTITY_MATRIX.m11;
+    matrix->m12 = ANI3_EVAL_IDENTITY_MATRIX.m12;
+    matrix->m13 = ANI3_EVAL_IDENTITY_MATRIX.m13;
+    matrix->m20 = sine;
+    matrix->m21 = 0.0f;
+    matrix->m23 = 0.0f;
+    matrix->m22 = cosine;
+    matrix->m30 = ANI3_EVAL_IDENTITY_MATRIX.m30;
+    matrix->m31 = ANI3_EVAL_IDENTITY_MATRIX.m31;
+    matrix->m32 = ANI3_EVAL_IDENTITY_MATRIX.m32;
+    matrix->m33 = ANI3_EVAL_IDENTITY_MATRIX.m33;
+}
+
+static void GameDrawMtxRotateXPc(NUMTX *matrix, NUANG angle) {
+    f32 cosine = NuTrigTable[((angle + 0x4000) >> 1) & 0x7fff];
+    f32 sine = NuTrigTable[(angle >> 1) & 0x7fff];
+    f32 m01 = matrix->m01;
+    f32 m11 = matrix->m11;
+    f32 m21 = matrix->m21;
+    f32 m31 = matrix->m31;
+
+    matrix->m01 = m01 * cosine - matrix->m02 * sine;
+    matrix->m02 = m01 * sine + matrix->m02 * cosine;
+    matrix->m11 = m11 * cosine - matrix->m12 * sine;
+    matrix->m12 = m11 * sine + matrix->m12 * cosine;
+    matrix->m21 = m21 * cosine - matrix->m22 * sine;
+    matrix->m22 = m21 * sine + matrix->m22 * cosine;
+    matrix->m31 = m31 * cosine - matrix->m32 * sine;
+    matrix->m32 = m31 * sine + matrix->m32 * cosine;
+}
+
+static void GameDrawMtxRotateYPc(NUMTX *matrix, NUANG angle) {
+    f32 cosine = NuTrigTable[((angle + 0x4000) >> 1) & 0x7fff];
+    f32 sine = NuTrigTable[(angle >> 1) & 0x7fff];
+    f32 m00 = matrix->m00;
+    f32 m10 = matrix->m10;
+    f32 m20 = matrix->m20;
+    f32 m30 = matrix->m30;
+
+    matrix->m00 = m00 * cosine + matrix->m02 * sine;
+    matrix->m02 = matrix->m02 * cosine - m00 * sine;
+    matrix->m10 = m10 * cosine + matrix->m12 * sine;
+    matrix->m12 = matrix->m12 * cosine - m10 * sine;
+    matrix->m20 = m20 * cosine + matrix->m22 * sine;
+    matrix->m22 = matrix->m22 * cosine - m20 * sine;
+    matrix->m30 = m30 * cosine + matrix->m32 * sine;
+    matrix->m32 = matrix->m32 * cosine - m30 * sine;
+}
+
+static void GameDrawMtxRotateZPc(NUMTX *matrix, NUANG angle) {
+    f32 cosine = NuTrigTable[((angle + 0x4000) >> 1) & 0x7fff];
+    f32 sine = NuTrigTable[(angle >> 1) & 0x7fff];
+    f32 m00 = matrix->m00;
+    f32 m10 = matrix->m10;
+    f32 m20 = matrix->m20;
+    f32 m30 = matrix->m30;
+
+    matrix->m00 = m00 * cosine - matrix->m01 * sine;
+    matrix->m01 = m00 * sine + matrix->m01 * cosine;
+    matrix->m10 = m10 * cosine - matrix->m11 * sine;
+    matrix->m11 = m10 * sine + matrix->m11 * cosine;
+    matrix->m20 = m20 * cosine - matrix->m21 * sine;
+    matrix->m21 = m20 * sine + matrix->m21 * cosine;
+    matrix->m30 = m30 * cosine - matrix->m31 * sine;
+    matrix->m31 = m30 * sine + matrix->m31 * cosine;
+}
+
+#include <string.h>
+
+typedef struct DRAW_ATTACHMENTS_MINI_PC {
+    f32 current_time, previous_time, blend_elapsed, blend_duration, source_time, target_time;
+    u8 flags, blending;
+    i16 source_animation, target_animation, animation, previous_animation, requested_animation;
+} DRAW_ATTACHMENTS_MINI_PC;
+typedef struct DRAW_ATTACHMENTS_MINI_OBJECT_PC {
+    u8 unknown_000[0x7d0];
+    DRAW_ATTACHMENTS_MINI_PC mini;
+} DRAW_ATTACHMENTS_MINI_OBJECT_PC;
+typedef union DRAW_ATTACHMENTS_PACKET_PC {
+    ANIMPACKET_PC packet;
+    u32 words[18];
+} DRAW_ATTACHMENTS_PACKET_PC;
+STATIC_ASSERT(sizeof(DRAW_ATTACHMENTS_MINI_PC) == 0x24);
+STATIC_ASSERT(offsetof(DRAW_ATTACHMENTS_MINI_PC, flags) == 0x18);
+STATIC_ASSERT(offsetof(DRAW_ATTACHMENTS_MINI_PC, source_animation) == 0x1a);
+STATIC_ASSERT(offsetof(DRAW_ATTACHMENTS_MINI_PC, requested_animation) == 0x22);
+STATIC_ASSERT(offsetof(DRAW_ATTACHMENTS_MINI_OBJECT_PC, mini) == 0x7d0);
+STATIC_ASSERT(sizeof(DRAW_ATTACHMENTS_PACKET_PC) == 0x48);
+STATIC_ASSERT(offsetof(GAMEOBJECT, anim_packet) == 8);
+STATIC_ASSERT(offsetof(GAMEOBJECT, suit) == 0xcbc);
+STATIC_ASSERT(offsetof(GAMEOBJECT, id) == 0x1064);
+STATIC_ASSERT(offsetof(GAMEOBJECT, transform) == 0xb8);
+STATIC_ASSERT(offsetof(GAMEOBJECT, reflection_height) == 0x1014);
+STATIC_ASSERT(offsetof(GAMEOBJECT, reflection_enabled) == 0x107b);
+STATIC_ASSERT(offsetof(GAMEOBJECT, field_107c) == 0x107c);
+STATIC_ASSERT(offsetof(ANIMPACKET_PC, blending) == 0x31);
+STATIC_ASSERT(offsetof(ANIMPACKET_PC, blend_target_animation) == 0x34);
+STATIC_ASSERT(sizeof(CHARACTER_MODEL_LAYERS_PC) == 0x54);
+STATIC_ASSERT(offsetof(CHARACTER_MODEL_LAYERS_PC, model_data_b) == 0xc);
+STATIC_ASSERT(offsetof(PLAYERCHARACTERCONFIG_PC, extra_character_locator) == 0x11d);
+i32 __cdecl GameDrawCharacterModel(CHARACTER_MODEL_LAYERS_PC *, ANIMPACKET_PC *, NUMTX *, NUMTX *, NUMTX *, NUMTX *,
+                                   GAMEOBJECT *, u32);
+
+void __cdecl AnimPacketMiniToFullPc(DRAW_ATTACHMENTS_MINI_PC *source, ANIMPACKET_PC *destination) {
+    destination->current_time = source->current_time;
+    destination->previous_time = source->previous_time;
+    destination->blend_elapsed_pc = source->blend_elapsed;
+    destination->blend_duration_pc = source->blend_duration;
+    destination->blend_source_time = source->source_time;
+    destination->blend_target_time = source->target_time;
+    destination->flags = source->flags;
+    destination->blending = source->blending;
+    destination->blend_source_animation = source->source_animation;
+    destination->blend_target_animation = source->target_animation;
+    destination->animation_index = source->animation;
+    destination->previous_animation = source->previous_animation;
+    destination->requested_animation = source->requested_animation;
+    destination->reversed_3c = 0;
+    destination->reversed_3d = 0;
+    destination->reversed_3e = 0;
+    destination->overlay_animation = -1;
+}
+
+i32 __cdecl AnimPacketModelsCompatiblePc(ANIMPACKET_PC *packet, i32 source_id, i32 target_id) {
+    CHARACTER_MODEL_LAYERS_PC *source, *target;
+    i32 source_model, target_model;
+    i32 source_animation, target_animation;
+    if (source_id == -1)
+        return 0;
+    source_model = apicharsys->playermodelids[source_id];
+    if (source_model == -1)
+        return 0;
+    source = &apicharsys->models[source_model];
+    if (target_id == -1)
+        return 0;
+    target_model = apicharsys->playermodelids[target_id];
+    if (target_model == -1)
+        return 0;
+    target = &apicharsys->models[target_model];
+    if (packet->blending != 0) {
+        source_animation = packet->blend_source_animation;
+        if (source->model_data_b[source_animation] == NULL)
+            return 0;
+        target_animation = packet->blend_target_animation;
+        if (source->model_data_b[target_animation] == NULL || target->model_data_b[source_animation] == NULL ||
+            target->model_data_b[target_animation] == NULL)
+            return 0;
+    } else {
+        source_animation = packet->animation_index;
+        if (source->model_data_b[source_animation] == NULL || target->model_data_b[source_animation] == NULL)
+            return 0;
+    }
+    return 1;
+}
+
+static void __cdecl DrawCharacterAttachmentModelPc(GAMEOBJECT *object, i32 character_id, NUMTX *joint_matrices,
+                                                   ANIMPACKET_PC *animation, i32 locator, NUMTX *override_matrix) {
+    i16 model_index;
+    CHARACTER_MODEL_LAYERS_PC *model;
+    NUMTX matrix, reflected;
+    NUMTX *reflection = NULL;
+    if (override_matrix == NULL && (locator == -1 || object->character_model->points_of_interest[locator] == NULL))
+        return;
+    model_index = apicharsys->playermodelids[character_id];
+    if (model_index == -1)
+        return;
+    model = &apicharsys->models[model_index];
+    if (override_matrix != NULL)
+        matrix = *override_matrix;
+    else
+        matrix = joint_matrices[locator];
+    if ((u8)object->field_107c != 0 && (f64)object->reflection_height != 2000000.0 &&
+        MatrixReflection(&matrix, object->reflection_enabled, object->reflection_height,
+                         WORLD->current_level->reflection_y, &reflected) != 0)
+        reflection = &reflected;
+    GameDrawCharacterModel(model, animation, &matrix, NULL, reflection, NULL, NULL, 0xffffffffu);
+}
+
+void __cdecl DrawCharacterAttachments(GAMEOBJECT *object, NUMTX *joint_matrices) {
+    i32 character_id;
+    i32 current_animation;
+    CHARACTER_MODEL_LAYERS_PC *model;
+    CHARACTER_ANIMATION_LOCATOR_PC *configuration;
+    DRAW_ATTACHMENTS_PACKET_PC animation;
+    NUMTX *override_matrix = NULL;
+    if (object->suit != NULL && (object->suit->flags & 2) != 0) {
+        if (object->id != (u16)ID_DEFAULTCHARACTER_A)
+            return;
+        character_id = AreaExtraTargetId7f17bcPc;
+        AnimPacketMiniToFullPc(&((DRAW_ATTACHMENTS_MINI_OBJECT_PC *)object)->mini, &animation.packet);
+    } else if (object->id == (u16)PunchRangeUnitIdPc && (AnimPlaying(&object->anim_packet, 0x51, 1, 1) != NULL ||
+                                                         AnimPlaying(&object->anim_packet, 0x55, 1, 1) != NULL ||
+                                                         AnimPlaying(&object->anim_packet, 0x56, 1, 1) != NULL ||
+                                                         AnimPlaying(&object->anim_packet, 0x94, 1, 1) != NULL)) {
+        character_id = PunchRangeCompanionIdPc;
+        memcpy(&animation, (u8 *)object + offsetof(GAMEOBJECT, anim_packet), sizeof(animation));
+        if (animation.packet.blending != 0 && animation.packet.blend_target_animation != 0x51 &&
+            animation.packet.blend_target_animation != 0x55 && animation.packet.blend_target_animation != 0x56 &&
+            animation.packet.blend_target_animation != 0x94)
+            return;
+    } else if (object->id == (u16)AreaExtraSourceId7f17c8Pc) {
+        character_id = AreaExtraTargetId7f17ccPc;
+        AnimPacketMiniToFullPc(&((DRAW_ATTACHMENTS_MINI_OBJECT_PC *)object)->mini, &animation.packet);
+    } else if (object->id == (u16)VehicleBoltId7f17d0Pc || object->id == (u16)VehicleBoltId7f17d4Pc) {
+        if (AnimPacketModelsCompatiblePc(&object->anim_packet, (i16)object->id, PunchRangeCompanionIdPc) == 0)
+            return;
+        character_id = PunchRangeCompanionIdPc;
+        memcpy(&animation, (u8 *)object + offsetof(GAMEOBJECT, anim_packet), sizeof(animation));
+        override_matrix = &object->transform;
+    } else
+        return;
+    if (character_id == -1)
+        return;
+    current_animation = CurrentAnim(&object->anim_packet);
+    model = object->character_model;
+    configuration = model->animations[current_animation];
+    if (configuration != NULL && (configuration->misc_flags & 8) != 0)
+        return;
+    DrawCharacterAttachmentModelPc(object, character_id, joint_matrices, &animation.packet,
+                                   object->character_data->game_character->extra_character_locator, override_matrix);
+}
+
+/* Private players.c helper. Retail 0x419130, 158 bytes through RET at 0x4191cd.
+ * Retail private ABI: object=EAX; f32 result=ST0.
+ * The two calculated return paths require a final f32 store/reload.
+ */
+extern const f32 CharacterWeaponScaleUpperBoundPc;
+static f32 ParaphernaliaWeaponScalePc(GAMEOBJECT *object) {
+    f32 *frame;
+    if (object->character_data->game_character->hover_fall_mode == 9) {
+        frame = AnimPlaying(&object->anim_packet, 0x5e, 1, 0);
+        if (frame != NULL && 18.0f <= *frame && CharacterWeaponScaleUpperBoundPc >= *frame) {
+            if (*frame <= 27.0) {
+                return (f32)(((f64)*frame - 18.0) / 9.0);
+            }
+            if (55.0 > *frame)
+                return 1.0f;
+            return (f32)(1.0 - ((f64)*frame - 55.0) / 10.0);
+        }
+    }
+    return 0.0f;
+}
+
+f32 __cdecl DropInOutScale(GAMEOBJECT *object);
+
+/* Private native PC 41cb50/2038 draft; integrate only after source review. */
+typedef struct CHARACTER_DRAW_HIERARCHY_PC {
+    u8 unknown_000[0x1a0];
+    u8 suppress_shadow_surface_points;
+} CHARACTER_DRAW_HIERARCHY_PC;
+typedef struct CHARACTER_DRAW_OBJECT_PC {
+    u8 unknown_000[0xf3c];
+    NUHGOBJ_JOINT_OVERRIDE_PC joint_overrides[1];
+    u8 unknown_f70[0x107c - 0xf70];
+    u8 reflection_active;
+    u8 joint_override_count;
+} CHARACTER_DRAW_OBJECT_PC;
+STATIC_ASSERT(offsetof(CHARACTER_DRAW_HIERARCHY_PC, suppress_shadow_surface_points) == 0x1a0);
+STATIC_ASSERT(offsetof(CHARACTER_DRAW_OBJECT_PC, joint_overrides) == 0xf3c);
+STATIC_ASSERT(offsetof(CHARACTER_DRAW_OBJECT_PC, reflection_active) == 0x107c);
+STATIC_ASSERT(offsetof(CHARACTER_DRAW_OBJECT_PC, joint_override_count) == 0x107d);
+extern i32 GameKeepMergeActionPc;
+extern i32 CharacterBlobShadowsOnPc;
+extern i32 CharacterBlobShadowModePc;
+extern i32 GameDrawCharacterModelFlagPc;
+
+i32 __cdecl GameDrawCharacterModel(CHARACTER_MODEL_LAYERS_PC *model, ANIMPACKET_PC *animation, NUMTX *matrix,
+                                   NUMTX *secondary_matrix, NUMTX *reflection_matrix, NUMTX *auxiliary_matrix,
+                                   GAMEOBJECT *object, u32 flags) {
+    NUMTX special_matrix;
+    NUMTX scaled_matrix;
+    NUMTX scaled_reflection;
+    NUMTX output_matrices[256];
+    NUVEC half_scale;
+    CHARACTER_DRAW_OBJECT_PC *draw_object = (CHARACTER_DRAW_OBJECT_PC *)object;
+    i32 drag_bomb = 0;
+    i32 complex_shadow = 0;
+    i32 result;
+    i32 draw_shadow;
+    i32 i;
+    if (object != NULL && object->id == id_DRAGBOMB && Cheat_IsOn(5) && WORLD->level_objects[0x135].active != 0) {
+        ResetShadowMapRendering();
+        special_matrix = *matrix;
+        NuSpecialDrawAt(&WORLD->level_objects[0x135].special, &special_matrix);
+        drag_bomb = 1;
+        if (reflection_matrix != NULL) {
+            special_matrix = *reflection_matrix;
+            NuRndrStartReflectionRender(1);
+            NuSpecialDrawAt(&WORLD->level_objects[0x135].special, &special_matrix);
+            NuRndrEndReflectionRender();
+        }
+        half_scale.x = half_scale.y = half_scale.z = 0.5f;
+        scaled_matrix = *matrix;
+        NuMtxPreScale(&scaled_matrix, &half_scale);
+        matrix = &scaled_matrix;
+        if (reflection_matrix != NULL) {
+            scaled_reflection = *reflection_matrix;
+            NuMtxPreScale(&scaled_reflection, &half_scale);
+            reflection_matrix = &scaled_reflection;
+        }
+    }
+    if (object != NULL && (object->character_data->model_flags & 0x10000) != 0 &&
+        (WORLD->area == NULL || WORLD->area != BATTLEOVERCORUSCANT_ADATA)) {
+        ((CHARACTER_DRAW_HIERARCHY_PC *)model->hierarchy)->suppress_shadow_surface_points = 0;
+        if (reflection_matrix != NULL) {
+            ConfigureComplexShadow(object);
+            complex_shadow = 1;
+        }
+    } else {
+        ((CHARACTER_DRAW_HIERARCHY_PC *)model->hierarchy)->suppress_shadow_surface_points = 1;
+    }
+    drawcharactermodel_keepmergeaction = GameKeepMergeActionPc;
+    ModelAnimLayerListDispatchPc = GCDataList[model->model_id].make_layer_list;
+    result = APIDrawCharacterModel(
+        model, object != NULL ? (APICHARACTERDATA *)object->character_data : NULL, animation, matrix, secondary_matrix,
+        reflection_matrix, NULL, auxiliary_matrix, object, flags,
+        object != NULL && GameDrawCharacterModelFlagPc != 0 ? draw_object->joint_overrides : NULL,
+        object != NULL && GameDrawCharacterModelFlagPc != 0 ? draw_object->joint_override_count : 0, Paused, FRAMETIME,
+        output_matrices, NULL, WORLD->game_debris_sys);
+    draw_shadow = 0;
+    if (result == 0) {
+        if (object != NULL && auxiliary_matrix != NULL) {
+            for (i = 0; i < 16; ++i) {
+                if (model->points_of_interest[i] != NULL) {
+                    auxiliary_matrix[i] = object->transform;
+                    memcpy(&auxiliary_matrix[i].m30, &object->collision_position, sizeof(NUVEC));
+                    auxiliary_matrix[i].m31 = (f32)((f64)auxiliary_matrix[i].m31 -
+                                                    ((f64)object->character_top + (f64)object->character_bottom) *
+                                                        (f64)object->origin_scale * 0.5);
+                }
+            }
+        }
+    } else if (object == NULL ||
+               ((object->flags_ef0 & 0x4000000) == 0 && (object->character_data->model_flags & 0x10000) == 0)) {
+        draw_shadow = 1;
+    }
+    if (CharacterBlobShadowModePc == 1 && draw_shadow && secondary_matrix != NULL && object != NULL) {
+        i32 level_alpha = WORLD->current_level->blob_shadow_alpha;
+        if (level_alpha > 0 && object->shadow_opacity > 0.0f && object->surface_normal.y > 0.0f &&
+            (object->water_height == -1.0f || (TerLayer[object->field_283].flags & 1) == 0)) {
+            if ((i16)object->id == id_MOUSEDROID && WORLD->level_objects[0xa2].active != 0) {
+                volatile f32 opacity;
+                special_matrix = *secondary_matrix;
+                opacity = (f32)((f64)object->shadow_opacity * (f64)object->surface_normal.y);
+                NuSpecialDrawAtAlpha(&WORLD->level_objects[0xa2].special, &special_matrix, opacity);
+            } else if (CharacterBlobShadowsOnPc != 0) {
+                PLAYERCHARACTERCONFIG_PC *config = object->character_data->game_character;
+                i32 alpha = config->blob_shadow_alpha;
+                volatile f32 radius;
+                if (alpha == 255)
+                    alpha = level_alpha;
+                if (alpha > 0) {
+                    radius = config->field_08c < 99.0f ? config->field_08c : object->character_data->collision_radius;
+                    if (radius > 0.0f) {
+                        volatile f32 scaled_radius;
+                        i32 shadow_alpha;
+                        f32 final_radius;
+                        scaled_radius = (f32)((f64)DropInOutScale(object) * (f64)radius);
+                        shadow_alpha = (i32)((f64)alpha * (f64)object->shadow_opacity * (f64)object->surface_normal.y);
+                        final_radius = (f32)((f64)object->origin_scale * (f64)scaled_radius);
+                        NuRndrAddShadow((NUVEC *)&secondary_matrix->m30, final_radius, shadow_alpha, object->field_1052,
+                                        0, object->field_1054);
+                    }
+                }
+            }
+        }
+    }
+    if (complex_shadow != 0)
+        ConfigureComplexShadow(NULL);
+    if (drag_bomb != 0)
+        EnableShadowMapRendering(0);
+    return result;
+}
+
+/* Selective append to players.c after the existing five private matrix helpers. */
+typedef struct DRAW_PREPASS_TELEPORT_PC {
+    u8 unknown_00[0x4c];
+    u8 flags;
+} DRAW_PREPASS_TELEPORT_PC;
+typedef struct DRAW_PREPASS_TELEPORT_OBJECT_PC {
+    u8 unknown_000[0x798];
+    DRAW_PREPASS_TELEPORT_PC *teleport;
+} DRAW_PREPASS_TELEPORT_OBJECT_PC;
+STATIC_ASSERT(sizeof(GAMEOBJECT) == 0x10d8);
+STATIC_ASSERT(offsetof(DRAW_PREPASS_TELEPORT_PC, flags) == 0x4c);
+STATIC_ASSERT(offsetof(DRAW_PREPASS_TELEPORT_OBJECT_PC, teleport) == 0x798);
+STATIC_ASSERT(offsetof(GAMEOBJECT, flags_1f8) == 0x1f8);
+STATIC_ASSERT(offsetof(GAMEOBJECT, flags_1fc_word) == 0x1fc);
+STATIC_ASSERT(offsetof(GAMEOBJECT, origin_joint_ready) == 0x28c);
+STATIC_ASSERT(offsetof(GAMEOBJECT, dead) == 0x28b);
+STATIC_ASSERT(offsetof(GAMEOBJECT, death_delay) == 0x100c);
+STATIC_ASSERT(offsetof(GAMEOBJECT, field_1010) == 0x1010);
+STATIC_ASSERT(offsetof(GAMEOBJECT, character_context) == 0x7b5);
+STATIC_ASSERT(offsetof(GAMEOBJECT, field_7b3) == 0x7b3);
+STATIC_ASSERT(offsetof(GAMEOBJECT, render_offset) == 0xe94);
+STATIC_ASSERT(offsetof(GAMEOBJECT, flags_e20) == 0xe20);
+STATIC_ASSERT(offsetof(GAMEOBJECT, flags_e24) == 0xe24);
+STATIC_ASSERT(offsetof(GAMEOBJECT, flags_ef4) == 0xef4);
+STATIC_ASSERT(offsetof(GAMEOBJECT, flags_ef0) == 0xef0);
+STATIC_ASSERT(offsetof(GAMEOBJECT, movement_mode) == 0x107a);
+STATIC_ASSERT(offsetof(GAMEOBJECT, reflection_enabled) == 0x107b);
+STATIC_ASSERT(offsetof(GAMEOBJECT, field_107c) == 0x107c);
+STATIC_ASSERT(offsetof(GAMEOBJECT, ai_update_distance) == 0x101c);
+STATIC_ASSERT(offsetof(GAMEOBJECT, transform) == 0xb8);
+STATIC_ASSERT(offsetof(GAMEOBJECT, draw_secondary_mtx) == 0xf8);
+STATIC_ASSERT(offsetof(GAMEOBJECT, draw_tertiary_mtx) == 0x138);
+STATIC_ASSERT(offsetof(GAMEOBJECT, vehicle_orientation) == 0xc04);
+STATIC_ASSERT(offsetof(GAMEOBJECT, pitch_angle) == 0x278);
+STATIC_ASSERT(offsetof(GAMEOBJECT, field_0x276) == 0x27a);
+STATIC_ASSERT(offsetof(GAMEOBJECT, roll_angle) == 0x27c);
+STATIC_ASSERT(offsetof(GAMEOBJECT, movement_lean_angle) == 0xe18);
+STATIC_ASSERT(offsetof(GAMEOBJECT, secondary_lean_angle) == 0xe1a);
+STATIC_ASSERT(offsetof(GAMEOBJECT, tertiary_lean_angle) == 0xe1c);
+STATIC_ASSERT(offsetof(GAMEOBJECT, field_1052) == 0x1052);
+STATIC_ASSERT(offsetof(GAMEOBJECT, field_1054) == 0x1054);
+STATIC_ASSERT(offsetof(LEVELDATA_PC, reflection_range) == 0xcd);
+STATIC_ASSERT(offsetof(LEVELDATA_PC, reflection_y) == 0xc0);
+STATIC_ASSERT(offsetof(PLAYERCHARACTERCONFIG_PC, shadow_locators) == 0xf0);
+f32 __cdecl PodSprint_RollMul(GAMEOBJECT *);
+void __cdecl ApplyExtraRotation(GAMEOBJECT *, NUMTX *);
+
+i32 __cdecl DrawGameObjectsProcess(void) {
+    GAMEOBJECT *object = Obj;
+    i32 index;
+    for (index = 0; index < HIGHGAMEOBJECT; ++index, ++object) {
+        u8 draw_pending;
+        NUVEC position, scale, displacement;
+        f32 drop_scale, distance, offset;
+        NUMTX matrix, orientation, reflected, shadow;
+        i32 angle;
+        object->flags_1f8 |= 0x800;
+        if ((object->flags_1fc_word & 0x1001) != 0x1001)
+            continue;
+        draw_pending = object->origin_joint_ready;
+        object->flags_e24 &= ~8u;
+        object->origin_joint_ready = 0;
+        object->flags_e20 ^= (((u32)draw_pending << 27) ^ object->flags_e20) & 0x8000000u;
+        if (object->dead != 0 && (object->field_1010 > 0.0f || object->death_delay == 0.0f))
+            continue;
+        if ((object->flags_e20 & 0x20) != 0 && object->character_context != 0x23 && object->character_context != 0x24)
+            continue;
+        if (object->character_context == 0xf && object->field_7b3 == 1 &&
+            ((DRAW_PREPASS_TELEPORT_OBJECT_PC *)object)->teleport != NULL &&
+            (((DRAW_PREPASS_TELEPORT_OBJECT_PC *)object)->teleport->flags & 4) == 0)
+            continue;
+        if (object->character_context == 0x3b || object->character_context == 0x39)
+            continue;
+        position.x = object->position.x;
+        position.y = object->position.y;
+        if ((object->flags_1f8 & 0x100) != 0)
+            position.y = (f32)((f64)object->character_bottom * object->origin_scale + position.y);
+        position.z = object->position.z;
+        NuVecAdd(&position, &position, &object->render_offset);
+        object->flags_ef4 ^= (((u32)object->model_draw_result << 8) ^ object->flags_ef4) & 0x100u;
+        object->model_draw_result = 1;
+        scale.x = object->origin_scale;
+        drop_scale = DropInOutScale(object);
+        scale.x = (f32)((f64)drop_scale * scale.x);
+        scale.y = scale.z = scale.x;
+        NuMtxSetScale(&matrix, &scale);
+        switch ((u8)object->movement_mode) {
+            case 0:
+                GameDrawMtxSetYRotationPc(&orientation, 0x8000);
+                if (object->pitch_angle != 0)
+                    GameDrawMtxRotateXPc(&orientation, object->pitch_angle);
+                if (object->field_0x276 != 0)
+                    GameDrawMtxRotateYPc(&orientation, object->field_0x276);
+                if (object->roll_angle != 0)
+                    GameDrawMtxRotateZPc(&orientation, object->roll_angle);
+                NuMtxMulVU0(&matrix, &matrix, &orientation);
+                NuMtxTranslate(&matrix, &position);
+                break;
+            case 1:
+                GameDrawMtxSetYRotationPc(&orientation, object->field_0x276 + 0x8000);
+                if (object->pitch_angle != 0)
+                    GameDrawMtxRotateXPc(&orientation, object->pitch_angle);
+                if (object->roll_angle != 0)
+                    GameDrawMtxRotateZPc(&orientation, object->roll_angle);
+                NuMtxMulVU0(&matrix, &matrix, &orientation);
+                NuMtxTranslate(&matrix, &position);
+                break;
+            case 3:
+                GameDrawMtxSetYRotationPc(&orientation, 0x8000);
+                if (object->roll_angle != 0)
+                    GameDrawMtxRotateZPc(&orientation, object->roll_angle);
+                if (object->pitch_angle != 0)
+                    GameDrawMtxRotateXPc(&orientation, object->pitch_angle);
+                if (object->field_0x276 != 0)
+                    GameDrawMtxRotateYPc(&orientation, object->field_0x276);
+                NuMtxMulVU0(&matrix, &matrix, &orientation);
+                NuMtxTranslate(&matrix, &position);
+                break;
+            case 4:
+                matrix = object->vehicle_orientation;
+                NuMtxPreScale(&matrix, &scale);
+                NuMtxPreRotateY(&matrix, 0x8000);
+                NuMtxTranslate(&matrix, &position);
+                break;
+            case 5:
+                matrix = object->vehicle_orientation;
+                NuMtxPreScale(&matrix, &scale);
+                NuMtxPreRotateY(&matrix, 0x8000);
+                break;
+            default:
+            case 2:
+                GameDrawMtxSetYRotationPc(&orientation, object->field_0x276 + 0x8000);
+                if (object->roll_angle != 0)
+                    GameDrawMtxRotateZPc(&orientation, object->roll_angle);
+                if (object->pitch_angle != 0)
+                    GameDrawMtxRotateXPc(&orientation, object->pitch_angle);
+                NuMtxMulVU0(&matrix, &matrix, &orientation);
+                NuMtxTranslate(&matrix, &position);
+                break;
+        }
+        if (object->movement_lean_angle != 0) {
+            angle = (i16)object->movement_lean_angle;
+            if (PODSPRINT_ADATA != NULL && WORLD->area == PODSPRINT_ADATA)
+                angle = (i32)((f64)PodSprint_RollMul(object) * angle);
+            NuMtxPreRotateZ(&matrix, angle);
+        }
+        if (object->secondary_lean_angle != 0)
+            NuMtxPreRotateX(&matrix, (i16)object->secondary_lean_angle);
+        if (object->tertiary_lean_angle != 0)
+            NuMtxPreRotateY(&matrix, (i16)object->tertiary_lean_angle);
+        ApplyExtraRotation(object, &matrix);
+        if ((u8)object->movement_mode != 4 &&
+            (object->character_context == 0x23 || object->character_context == 0x24)) {
+            distance = (f32)((f64)object->character_data->collision_radius * object->character_data->model_scale * 7.5);
+            if (object->character_context == 0x23)
+                offset = (f32)((1.0 - (f64)drop_scale) * distance);
+            else
+                offset = (f32)(-((1.0 - (f64)drop_scale) * distance));
+            NuVecMtxTransformVU0(&displacement, &v001, &orientation);
+            NuVecScale(&displacement, &displacement, offset);
+            NuVecAdd(NUMTX_GET_ROW_VEC(&matrix, 3), NUMTX_GET_ROW_VEC(&matrix, 3), &displacement);
+        }
+        if (object->use_model_origin < 2 &&
+            (object->id == GameObjectRotationAtstId || object->id == (u16)id_ATST_LOWRES || object->id == (u16)id_ATAT))
+            matrix.m31 = (f32)((f64)object->character_bottom * object->origin_scale + matrix.m31);
+        object->transform = matrix;
+        if (scale.x == 0.0f && scale.y == 0.0f && scale.z == 0.0f) {
+            object->model_draw_result = 0;
+            continue;
+        }
+        object->flags_1f8 ^= 0x800;
+        object->flags_ef0 &= ~0x20000u;
+        *(u8 *)&object->field_107c = 0;
+        if (object->reflection_enabled != 0 && (f64)object->reflection_height != 2000000.0 &&
+            (f64)WORLD->current_level->reflection_range > object->ai_update_distance) {
+            *(u8 *)&object->field_107c =
+                (u8)MatrixReflection(&matrix, object->reflection_enabled, object->reflection_height,
+                                     WORLD->current_level->reflection_y, &reflected);
+            object->draw_tertiary_mtx = reflected;
+        }
+        if (object->dead == 0 && (f64)object->floor_height != 2000000.0 && (object->flags_1f8 & 0x40) != 0 &&
+            object->character_data->game_character->shadow_locators == 0) {
+            GameDrawMtxCopyPc(&shadow, &ANI3_EVAL_IDENTITY_MATRIX);
+            GameDrawMtxRotateYPc(&shadow, object->field_0x276 + 0x8000);
+            if (object->field_1054 != 0)
+                GameDrawMtxRotateZPc(&shadow, object->field_1054);
+            if (object->field_1052 != 0)
+                GameDrawMtxRotateXPc(&shadow, object->field_1052);
+            shadow.m30 = object->position.x;
+            object->flags_ef0 |= 0x20000;
+            shadow.m31 = (f32)((f64)object->floor_height + (f64)0.005f);
+            shadow.m32 = object->position.z;
+            object->draw_secondary_mtx = shadow;
+        }
+    }
+    return 0;
+}
+
+typedef struct PARAPHERNALIA_EXTRA_PC {
+    u8 prefix[0xc68];
+    NUVEC force_position;
+    u8 gap_c74[0x10c];
+    f32 force_alpha;
+    u8 gap_d84[8];
+    f32 force_radius;
+    u8 gap_d90[0x2ec];
+    u8 draw_reflection;
+} PARAPHERNALIA_EXTRA_PC;
+STATIC_ASSERT(offsetof(PARAPHERNALIA_EXTRA_PC, force_position) == 0xc68);
+STATIC_ASSERT(offsetof(PARAPHERNALIA_EXTRA_PC, force_alpha) == 0xd80);
+STATIC_ASSERT(offsetof(PARAPHERNALIA_EXTRA_PC, force_radius) == 0xd8c);
+STATIC_ASSERT(offsetof(PARAPHERNALIA_EXTRA_PC, draw_reflection) == 0x107c);
+STATIC_ASSERT(offsetof(GAMEOBJECT, takeover_source) == 0xcd0);
+STATIC_ASSERT(offsetof(GAMEOBJECT, force_target) == 0x790);
+STATIC_ASSERT(offsetof(GAMEOBJECT, field_0x276) == 0x27a);
+STATIC_ASSERT(offsetof(GAMEOBJECT, locator_matrices) == 0x804);
+STATIC_ASSERT(offsetof(GAMEOBJECT, reflection_enabled) == 0x107b);
+STATIC_ASSERT(offsetof(GAMEOBJECT, reflection_height) == 0x1014);
+STATIC_ASSERT(offsetof(GAMEOBJECT, ai_update_distance) == 0x101c);
+STATIC_ASSERT(offsetof(GAMEOBJECT, origin_scale_override) == 0xd30);
+STATIC_ASSERT(offsetof(GAMEOBJECT, timer_d34) == 0xd34);
+STATIC_ASSERT(offsetof(GAMEOBJECT, communicate_blend) == 0xd38);
+STATIC_ASSERT(offsetof(GAMEOBJECT, field_d54) == 0xd54);
+STATIC_ASSERT(offsetof(GAMEOBJECT, field_e1e) == 0xe1e);
+STATIC_ASSERT(offsetof(GAMEOBJECT, helmet) == 0x1082);
+STATIC_ASSERT(offsetof(GAMEOBJECT, character_bottom) == 0xff0);
+STATIC_ASSERT(offsetof(GAMEOBJECT, character_top) == 0xff4);
+STATIC_ASSERT(offsetof(CHARACTERDATA_PC, game_character) == 0x24);
+STATIC_ASSERT(offsetof(CHARACTER_MODEL_LAYERS_PC, points_of_interest) == 0x14);
+STATIC_ASSERT(offsetof(LEVELDATA_PC, reflection_y) == 0xc0);
+STATIC_ASSERT(offsetof(LEVELDATA_PC, reflection_range) == 0xcd);
+
+extern i32 DrawParaphernaliaEnabledPc;
+extern i16 CharacterFixupIdPc007f1820;
+void __cdecl DrawWeapons(GAMEOBJECT *, i32, f32);
+i32 __cdecl GameDrawCharacterModel(CHARACTER_MODEL_LAYERS_PC *, ANIMPACKET_PC *, NUMTX *, NUMTX *, NUMTX *, NUMTX *,
+                                   GAMEOBJECT *, u32);
+void __cdecl DrawCharacterAttachments(GAMEOBJECT *, NUMTX *);
+void __cdecl CustomiserDrawAccessoriesPc(CUSTOMISER_LAYERS_PC *, GAMEOBJECT *, NUMTX *);
+void __cdecl ParaphernaliaShieldPc(GAMEOBJECT *, i32);
+void __cdecl ParaphernaliaCommunicatePc(GAMEOBJECT *, i32);
+void __cdecl ParaphernaliaThrustPc(GAMEOBJECT *, i32);
+void __cdecl DrawForceGlowSpritePc(NUVEC *, f32, i32, f32, GAMEOBJECT *);
+void __cdecl ParaphernaliaPlacePc(GAMEOBJECT *, i32, i32, i32);
+void __cdecl ParaphernaliaRemovePc(GAMEOBJECT *, i32, i32, i32);
+i32 __cdecl BatarangGetObjectFromCharIdPc(i32);
+void __cdecl Grapple_DrawLine(GAMEOBJECT *);
+void __cdecl SuperCarry_DrawObject(GAMEOBJECT *);
+void __cdecl ParaphernaliaHandPc(GAMEOBJECT *, i32);
+void __cdecl DrawTorpedos(GAMEOBJECT *);
+void __cdecl GizDrawBuildItPiece(GAMEOBJECT *, i32);
+void __cdecl TransformDrawTargetPc(NUVEC *, f32, f32);
+
+void __cdecl DrawParaphernaliaPc(GAMEOBJECT *object) {
+    i32 i;
+    NUMTX matrix, reflected, special_reflected, attachments[16];
+    PARAPHERNALIA_EXTRA_PC *extra;
+    GAMEOBJECT *carried;
+    PARAPHERNALIA_EXTRA_PC *carried_extra;
+    i32 ride_locator;
+    NUVEC carried_position;
+    NUMTX *carried_reflection;
+    u32 carried_layers;
+    GAMEOBJECT *passenger;
+    i32 passenger_locator;
+    NUANGVEC passenger_rotation;
+    PLAYERCHARACTERCONFIG_PC *config;
+    NUMTX *joints;
+    i32 scene_locator;
+    f32 weapon_scale;
+    NUVEC glow_position;
+    f32 glow_radius;
+    f32 glow_alpha;
+    f32 held_glow_alpha;
+    i32 helmet_locator;
+    u32 throw_layers;
+    i32 throw_reflection;
+    i32 throw_locator;
+    i32 throw_model;
+    f32 transform_alpha;
+    f32 transform_radius;
+    f32 *time;
+    i32 special_locator;
+    f32 distance;
+    i32 chosen;
+    volatile f32 next;
+    NUMTX *special_matrix;
+    volatile f32 start;
+    volatile f32 finish;
+    volatile f32 fraction;
+    f32 special_scale;
+    NUVEC special_scaling;
+    i32 special_phase;
+
+    if (DrawParaphernaliaEnabledPc == 0)
+        return;
+
+    extra = ((PARAPHERNALIA_EXTRA_PC *)(object));
+    carried = object->takeover_source;
+    if (carried != NULL && object->character_context != 0x3b &&
+        (object->character_data->game_character->flags_098[0] & 0x40) == 0) {
+        carried_extra = ((PARAPHERNALIA_EXTRA_PC *)(carried));
+        carried_extra->draw_reflection = extra->draw_reflection;
+        carried->reflection_enabled = object->reflection_enabled;
+        carried->reflection_height = object->reflection_height;
+        ride_locator = object->character_data->game_character->ride_locator;
+        if (ride_locator != -1 && object->character_model->points_of_interest[ride_locator] != NULL) {
+            matrix = object->locator_matrices[ride_locator];
+        } else {
+            carried_position.x = 0.0f;
+            carried_position.y = object->bounds_half_height;
+            NuVecMtxRotate(&carried_position, &carried_position, &object->transform);
+            NuVecAdd(&carried_position, &carried_position, &object->collision_position);
+            matrix = object->transform;
+            matrix.m30 = carried_position.x;
+            matrix.m31 = carried_position.y;
+            matrix.m32 = carried_position.z;
+        }
+        carried_reflection = NULL;
+        if (carried->reflection_enabled != 0 && carried->reflection_height != 2000000.0 &&
+            ((u8)(WORLD->current_level->reflection_range)) > object->ai_update_distance &&
+            MatrixReflection(&matrix, carried->reflection_enabled, carried->reflection_height,
+                             WORLD->current_level->reflection_y, &reflected))
+            carried_reflection = &reflected;
+        carried_layers = AdjustLayerBits(carried->character_data->game_character->layer_mask_medium, carried);
+        if (GameDrawCharacterModel(carried->character_model, &carried->anim_packet, &matrix, NULL, carried_reflection,
+                                   attachments, NULL, carried_layers)) {
+            if (carried->helmet != 0)
+                DrawObjectOnCharacter(WORLD, carried, carried->helmet + 0xf9, NULL,
+                                      carried->character_data->game_character->helmet_locator, -1, attachments,
+                                      carried_extra->draw_reflection, carried_layers, NULL, NULL, 1.0f, 1.0f);
+            if (Cheat_IsOn(2))
+                DrawObjectOnCharacter(WORLD, carried, 0xe7, NULL, carried->character_data->game_character->head_locator,
+                                      -1, attachments, carried_extra->draw_reflection, carried_layers, NULL, NULL, 1.0f,
+                                      1.0f);
+            DrawCharacterAttachments(carried, attachments);
+            if (((i16)(carried->id)) == PermanentWeirdo1IdPc || ((i16)(carried->id)) == PermanentWeirdo2IdPc)
+                CustomiserDrawAccessoriesPc(CharacterCustomiser, carried, attachments);
+        }
+    } else if ((object->flags_e24 & 1) != 0 && object->force_target != NULL) {
+        passenger = object->force_target;
+        passenger_locator = object->character_data->game_character->weapon_joints[0];
+        if (passenger_locator != -1 && object->character_model->points_of_interest[passenger_locator] != NULL) {
+            matrix = object->locator_matrices[passenger_locator];
+        } else {
+            passenger_rotation.x = -0x4000;
+            passenger_rotation.y = object->field_0x276;
+            NuMtxSetRotationXYVU0(&matrix, &passenger_rotation);
+            matrix.m30 = ((f32)(object->position.x +
+                                ((f64)(NuTrigTable[object->field_0x276 >> 1])) * object->bounds_radius * 1.75));
+            matrix.m31 = ((f32)(object->collision_min.y +
+                                (((f64)(object->collision_max.y)) - object->collision_min.y) * 0.60000002384185791));
+            matrix.m32 =
+                ((f32)(object->position.z + ((f64)(NuTrigTable[((object->field_0x276 + 0x4000) >> 1) & 0x7fff])) *
+                                                object->bounds_radius * 1.75));
+        }
+        GameDrawCharacterModel(passenger->character_model, &passenger->anim_packet, &matrix, NULL, NULL, NULL, NULL,
+                               passenger->character_data->game_character->layer_mask_medium);
+    }
+    config = object->character_data->game_character;
+    joints = object->locator_matrices;
+    if ((config->flags_094 & 1) != 0) {
+        if (BonusArea != 0 && VehicleArea != 0)
+            CharMiniKit_Draw(((i16)(object->id)), &object->transform, object->reflection_enabled,
+                             object->reflection_height, WORLD->current_level->reflection_y);
+    } else if ((object->character_data->flags & 1) != 0) {
+        scene_locator = config->thingy_locator;
+        matrix = scene_locator != -1 && object->character_model->points_of_interest[scene_locator] != NULL &&
+                         object->model_draw_result != 0
+                     ? joints[scene_locator]
+                     : object->transform;
+        reflected = object->draw_tertiary_mtx;
+        CharScene_Draw(WORLD, ((i16)(object->id)), &matrix, extra->draw_reflection ? &reflected : NULL);
+    } else if (((i16)(object->id)) == id_CATAPULT &&
+               (object->character_context != 0x0a || (object->context_variant_flags & 0x40) == 0 ||
+                object->quick_shoot_bolt_id != -1 ||
+                (object->context_timer < 0.5f && ((u32)(GameTimer.update_count)) % 6 < 3))) {
+        dco_prerotatez = 0xc000;
+        DrawObjectOnCharacter(WORLD, object, 0xf0, NULL, object->character_data->game_character->weapon_shoot_joints[0],
+                              -1, joints, 0, object->layer_mask, NULL, NULL, 1.0f, 1.0f);
+    }
+    if (object->character_data->game_character->weapon_action == 1 &&
+        AnimPlaying(&object->anim_packet, 0x60, 1, 1) != NULL) {
+        DrawObjectOnCharacter(WORLD, object, 9, NULL, object->character_data->game_character->weapon_joints[0], -1,
+                              joints, extra->draw_reflection, object->layer_mask, NULL, NULL, 1.0f, 1.0f);
+    } else if (object->weapon_scale > 0.0f) {
+        DrawWeapons(object, extra->draw_reflection, object->weapon_scale);
+        if (object->field_d54 > 0.0f) {
+            dco_locatorposonly = 1;
+            DrawObjectOnCharacter(WORLD, object, 0x35, NULL,
+                                  object->character_data->game_character->weapon_shoot_joints[0], -1, joints,
+                                  extra->draw_reflection, object->layer_mask, NULL, NULL, 1.0f, 1.0f);
+        }
+    } else {
+        weapon_scale = ParaphernaliaWeaponScalePc(object);
+        DrawWeapons(object, extra->draw_reflection, weapon_scale);
+    }
+    if (object->origin_scale_override > 0.0f || object->timer_d34 > 0.0f) {
+        ResetShadowMapRendering();
+        ParaphernaliaShieldPc(object, extra->draw_reflection);
+        EnableShadowMapRendering(0);
+    }
+    if (object->communicate_blend > 0.0f)
+        ParaphernaliaCommunicatePc(object, extra->draw_reflection);
+    if (object->character_context == 0x22) {
+        if ((WORLD->area != NULL && WORLD->area == HUB_ADATA) || WORLD->current_level == LevelFixupSlotPc0087b194 ||
+            WORLD->current_level == DOOKUC_LDATA) {
+            glow_position.x = object->collision_position.x;
+            glow_position.y =
+                ((f32)(object->character_bottom * ((f64)(object->origin_scale)) + object->position.y +
+                       (((f64)(object->character_top)) - object->character_bottom) * 0.5 * object->origin_scale));
+            glow_position.z = object->collision_position.z;
+            glow_radius =
+                object->bounds_radius > object->bounds_half_height ? object->bounds_radius : object->bounds_half_height;
+            glow_radius = ((f32)(glow_radius * 1.75));
+
+            if (object->context_hover_target_y < 0.20000000298023224)
+                glow_alpha = ((f32)(object->context_hover_target_y / 0.20000000298023224));
+            else if (object->context_timer < 0.20000000298023224)
+                glow_alpha = ((f32)(object->context_timer / 0.20000000298023224));
+            else
+                glow_alpha = 1.0f;
+            DrawForceGlowSpritePc(&glow_position, glow_radius, 0xdf, glow_alpha, object);
+        }
+    } else if (extra->force_alpha > 0.0f && extra->force_radius > 0.0f &&
+               WORLD->level_objects[object->field_e1e].active != 0 &&
+               (object->character_data->game_character->flags_090 & 0x400) == 0) {
+        held_glow_alpha = ((f32)(extra->force_alpha / FORCEGLOWTIME));
+        DrawForceGlowSpritePc(&extra->force_position, extra->force_radius, object->field_e1e, held_glow_alpha, object);
+    }
+    if (Cheat_IsOn(2))
+        DrawObjectOnCharacter(WORLD, object, 0xe7, NULL, object->character_data->game_character->head_locator, -1,
+                              joints, extra->draw_reflection, object->layer_mask, NULL, NULL, 1.0f, 1.0f);
+    if (object->helmet != 0) {
+        if ((((i16)(object->id)) == id_CHEWBACCA || ((i16)(object->id)) == id_WOOKIEE) && object->helmet != 5 &&
+            object->helmet != 6)
+            helmet_locator = 9;
+        else
+            helmet_locator = object->character_data->game_character->helmet_locator;
+        DrawObjectOnCharacter(WORLD, object, object->helmet + 0xf9, NULL, helmet_locator, -1, joints,
+                              extra->draw_reflection, object->layer_mask, NULL, NULL, 1.0f, 1.0f);
+    }
+    if (object->model_draw_result != 0 && object->character_data->game_character->thrust_locators != 0 &&
+        object->thrust_effect_scale > 0.0f)
+        ParaphernaliaThrustPc(object, extra->draw_reflection);
+    if (object->character_context == 0x2d)
+        GizDrawBuildItPiece(object, extra->draw_reflection);
+    if (object->character_context == 0x48 && object->character_model->model_data_b[object->field_7aa] != NULL &&
+        object->field_7b3 == 0) {
+        ParaphernaliaPlacePc(object, 0xec, extra->draw_reflection,
+                             object->character_data->game_character->place_locator);
+    } else if (object->character_context == 0x49 && object->character_model->model_data_b[object->field_7aa] != NULL &&
+               object->field_7b3 != 0) {
+        ParaphernaliaRemovePc(object, 0xec, extra->draw_reflection,
+                              object->character_data->game_character->place_locator);
+    }
+    if ((object->flags_e20 & 0x400000) != 0) {
+        dco_prerotatez = 0x4000;
+        throw_layers = object->layer_mask;
+        throw_reflection = extra->draw_reflection;
+        throw_locator = object->character_data->game_character->throw_locator;
+        throw_model = BatarangGetObjectFromCharIdPc(((i16)(object->id)));
+        DrawObjectOnCharacter(WORLD, object, throw_model, NULL, throw_locator, -1, joints, throw_reflection,
+                              throw_layers, NULL, NULL, 1.0f, 1.0f);
+    }
+    if (object->character_context == 0x46)
+        Grapple_DrawLine(object);
+    if ((object->flags_e20 & 0x800000) != 0 || object->character_context == 0x58)
+        SuperCarry_DrawObject(object);
+    DrawCharacterAttachments(object, joints);
+    if (object->character_context == 0x5d)
+        ParaphernaliaHandPc(object, extra->draw_reflection);
+    if (object->torpedo != NULL && object->torpedo->count != 0)
+        DrawTorpedos(object);
+    if (object->character_data->game_character->weapon_action == 0)
+        CustomiserDrawAccessoriesPc(CharacterCustomiser, object, NULL);
+    if ((object->character_data->game_character->flags_090 & 0x1000000) != 0 && extra->force_alpha > 0.0f &&
+        extra->force_radius > 0.0f) {
+        transform_alpha = ((f32)(extra->force_alpha * 0.60000002384185791 + 0.40000000596046448));
+        transform_radius =
+            ((f32)((extra->force_alpha * 0.20000004768371582 + 1.3999999761581421) * extra->force_radius));
+        TransformDrawTargetPc(&extra->force_position, transform_radius, transform_alpha);
+    }
+    config = object->character_data->game_character;
+
+    if (config->weapon_action == 1) {
+        special_locator = config->thingy_locator;
+        if (special_locator == -1 || object->character_model->points_of_interest[special_locator] == NULL ||
+            (time = AnimPlaying(&object->anim_packet, 0x6b, 1, 1)) == NULL)
+            return;
+        if ((*time >= 70.0f && *time <= 210.0) || (*time >= 310.0f && *time <= 433.0)) {
+            matrix = joints[special_locator];
+            NuMtxPreRotateZ(&matrix, -0x4000);
+            NuSpecialDrawAt(&WORLD->level_objects[10].special, &matrix);
+            if (extra->draw_reflection != 0 &&
+                MatrixReflection(&matrix, object->reflection_enabled, object->reflection_height,
+                                 WORLD->current_level->reflection_y, &special_reflected))
+                NuSpecialDrawAt(&WORLD->level_objects[10].special, &special_reflected);
+        } else {
+            distance = 1.0f;
+            chosen = -1;
+            for (i = 10; i < 18; ++i) {
+                if (NuSpecialExistsFn(&LevHSpecial[i])) {
+                    next = NuVecDistSqr(&object->collision_position, NuSpecialGetDrawPos(&LevHSpecial[i]), NULL);
+                    if (next < distance) {
+                        distance = next;
+                        chosen = i;
+                    }
+                }
+            }
+            if (chosen != -1) {
+                special_matrix = NuSpecialGetDrawMtx(&LevHSpecial[chosen]);
+                NuSpecialDrawAt(&WORLD->level_objects[10].special, special_matrix);
+            }
+        }
+    } else if (((i16)(object->id)) == CharacterFixupIdPc007f1820 &&
+               (time = AnimPlaying(&object->anim_packet, 1, 0, 0)) != NULL) {
+        start = AnimListFrame(object->character_model, 1, 0);
+        if (start >= 1.0f) {
+            finish = AnimListFrame(object->character_model, 1, 1);
+            if (start <= finish && *time > start && *time < finish) {
+                fraction = ((f32)((((f64)(*time)) - start) / (((f64)(finish)) - start)));
+
+                if (fraction < 0.10000000149011612)
+                    special_scale = ((f32)(fraction / 0.10000000149011612));
+                else if (fraction < 0.89999997615814209)
+                    special_scale = 1.0f;
+                else
+                    special_scale = ((f32)(1.0 - (fraction - 0.89999997615814209) / 0.10000000149011612));
+                special_scaling.x = special_scale;
+                special_scaling.y = special_scale;
+                special_scaling.z = special_scale;
+                NuMtxSetScale(&matrix, &special_scaling);
+                NuMtxRotateX(&matrix, ((u16)(((i32)(fraction * -65536.0)))));
+                NuMtxRotateY(&matrix, object->field_0x276);
+                NuMtxTranslate(&matrix, ((NUVEC *)(&joints[0].m30)));
+                special_phase = ((i32)(fraction * 32768.0));
+                matrix.m31 = ((f32)(matrix.m31 + NuTrigTable[(special_phase >> 1) & 0x7fff] * 0.20000000298023224));
+                DrawObjectOnCharacter(WORLD, object, 0xf9, NULL, 0, -1, &matrix, extra->draw_reflection,
+                                      object->layer_mask, NULL, NULL, 1.0f, 1.0f);
+            }
+        }
+    }
 }

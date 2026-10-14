@@ -104,6 +104,7 @@ extern "C" {
     void __cdecl MoveGameCamera(GAMECAMERA *camera);
     void __cdecl GameObjectToCameraDistances(void);
     void __cdecl DrawGameObjects(void);
+    i32 __cdecl DrawGameObjectsProcess(void);
     void __cdecl GameObjectStuffAfterAnimation(void);
     void __cdecl Faders_Draw(WORLDINFO *world);
     void __cdecl TrafficAnimSys_Draw(struct TRAFFICANIMSYS_s *system);
@@ -368,7 +369,7 @@ static void NuMainRenderWorld(WORLDINFO *world) {
     SetLevelLights(world->rtl_set, 1.0f);
     STUBBED_NAMED("NuMainRenderWorld: SetSpotLightMode at 0x00596960");
     if (CUTSTOPGAME == 0) {
-        STUBBED_NAMED("NuMainRenderWorld: DrawGameObjectsProcess at 0x0041d350");
+        DrawGameObjectsProcess();
     }
     STUBBED_NAMED("NuMainRenderWorld: 0x00596a30");
     NuRndrBeginScene(1);

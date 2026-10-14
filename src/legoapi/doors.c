@@ -574,3 +574,263 @@ void __cdecl Doors_Configure(WORLDINFO *world_ptr, char *config) {
     else
         world->doors = NULL;
 }
+
+/* Private append to doors.c after existing types; full native PC bodies. */
+STATIC_ASSERT(sizeof(DOOR_s) == 0x128);
+STATIC_ASSERT(offsetof(DOOR_s, pos) == 0xd4);
+STATIC_ASSERT(offsetof(DOOR_s, normal) == 0xe4);
+STATIC_ASSERT(offsetof(DOOR_s, level) == 0xf0);
+STATIC_ASSERT(offsetof(DOOR_s, flags) == 0xf5);
+STATIC_ASSERT(offsetof(DOOR_s, active) == 0xf7);
+STATIC_ASSERT(offsetof(DOOR_s, camera_spline) == 0xf8);
+STATIC_ASSERT(offsetof(DOOR_s, plane) == 0x110);
+STATIC_ASSERT(offsetof(DOOR_s, cutscene) == 0x120);
+STATIC_ASSERT(offsetof(GAMEOBJECT, dead) == 0x28b);
+STATIC_ASSERT(offsetof(GAMEOBJECT, character_context) == 0x7b5);
+STATIC_ASSERT(offsetof(GAMEOBJECT, origin_scale) == 0xa8);
+STATIC_ASSERT(offsetof(GAMEOBJECT, character_bottom) == 0xff0);
+STATIC_ASSERT(offsetof(GAMEOBJECT, character_top) == 0xff4);
+STATIC_ASSERT(offsetof(GAMEOBJECT, movement_direction_x) == 0x200);
+STATIC_ASSERT(offsetof(GAMEOBJECT, movement_direction_z) == 0x208);
+STATIC_ASSERT(offsetof(GAMEOBJECT, jump_variant_state) == 0xe32);
+STATIC_ASSERT(offsetof(GAMEOBJECT, saved_hitpoints) == 0xe39);
+STATIC_ASSERT(offsetof(WORLDINFO, area_index) == 0x120);
+STATIC_ASSERT(offsetof(PLAYERPROGRESS, field_9) == 9);
+STATIC_ASSERT(offsetof(PLAYERPROGRESS, field_b) == 11);
+extern void *Door_Last;
+extern char DoorExitNamePc[];
+extern i32 door_cutscenesnap;
+i32 __cdecl CutScene_HasPlayed(CUTINFO *cutscene);
+i32 __cdecl NuPtInPoly(NUVEC *, NUVEC *, NUVEC *, NUVEC *, NUPLANE *);
+
+void __cdecl Door_SetCutCam(DOOR_s *door) {
+    Door_UseCutCam = 0;
+    if (door->camera_spline != NULL) {
+        Door_UseCutCam = 1;
+        DoorCutCameraPosition0Pc = door->camera_spline->pts[0];
+        DoorCutCameraPosition1Pc = door->camera_spline->pts[1];
+    } else {
+        if (door->camera_spline_name[0] == '\0' || door->level == WORLD->level_idx)
+            return;
+        Door_UseCutCam = 1;
+        NuStrCpy(DoorExitCameraSplineNamePc, door->camera_spline_name);
+    }
+    Door_CutCamWaitTime = door->camera_wait;
+    Door_CutCamWait = Door_CutCamWaitTime;
+    Door_CutCamBlendTime = door->camera_blend_time;
+    Door_CutLookAtPlayers = door->flags & 2;
+}
+
+void __cdecl Door_GoThrough(WORLDINFO *world, DOOR_s *door, i32 player_triggered) {
+    i32 destination;
+    i32 index;
+    (void)player_triggered;
+    if ((door->flags & 0x10) != 0 && (Player[0] == NULL || (((GAMEOBJECT *)Player[0])->flags_1fc & 0x80) == 0 ||
+                                      Player[1] == NULL || (((GAMEOBJECT *)Player[1])->flags_1fc & 0x80) == 0))
+        return;
+    if (NewLData != NULL)
+        return;
+    if (door->level != -1) {
+        NuStrCpy(DoorExitNamePc, door->name);
+        if (door->cutscene == NULL || CutScene_HasPlayed((CUTINFO *)door->cutscene) != 0) {
+            door_cutscenesnap = 0;
+            goto choose_destination;
+        }
+        if (door->cutscene == NULL)
+            goto choose_destination;
+        if (door_cutscenesnap == 0) {
+            newmode_cutinfo = door->cutscene;
+            StartDoorPositions();
+            NewGameMode();
+        } else {
+            WORLDINFO *active = WorldInfo_CurrentlyActive();
+            NewCutScene((CUTINFO *)door->cutscene, active->cutscene_sys, NULL, 0);
+        }
+        goto set_camera;
+    choose_destination:
+        if (InStory() != 0) {
+            destination = door->level;
+            if (destination != world->level_idx)
+                goto change_level;
+        }
+        if (InStory() == 0) {
+            destination = door->freeplay_level;
+            if (destination != world->level_idx)
+                goto change_level;
+        }
+        StartDoorPositions();
+        NewGameMode();
+        for (index = 0; index < 8; ++index) {
+            GAMEOBJECT *object = (GAMEOBJECT *)Player[index];
+            if (object != NULL) {
+                PlayerProgress[index].field_b = object->jump_variant_state == 1;
+                PlayerProgress[index].field_9 = object->dead == 0 ? object->saved_hitpoints : 4;
+            }
+        }
+        gone_through_door_to_new_mode = 1;
+        goto set_camera;
+    change_level:
+        NewLData = &LDataList[destination];
+        if (FreePlay != 0 && (NewLData->flags & 0x80) != 0) {
+            NewLData = Area_FindStatusLevel(WORLD->area, NULL);
+            if (NewLData == NULL)
+                NewLData = &LDataList[destination];
+            else if (ChallengeMode != 0)
+                ChallengeMode = 4;
+        }
+    set_camera:
+        Door_NextSock = (i8)door->next_sock;
+        Door_SetCutCam(door);
+    }
+    ResetBits |= 8;
+    if (NewLData != NULL && NewLData != world->current_level) {
+        if (world->area == HUB_ADATA)
+            Hub_ActivateDoorMenu(&NewLData);
+        else if (NewLData->area_index == world->area_index)
+            gone_through_door_to_new_level = 1;
+    }
+    Door_Last = door;
+    if (Door_GoThrough_ExtraCodeFn != NULL)
+        Door_GoThrough_ExtraCodeFn(world, (struct game_door_callback_pc_s *)door);
+}
+
+void __cdecl Doors_Check(WORLDINFO *world, GAMEOBJECT *object) {
+    DOOR_s *door;
+    NUVEC previous, current, previous_offset, current_offset, intersection, block_normal;
+    f32 centre_height, previous_distance, current_distance, ratio;
+    i32 index, direction, two_players;
+    union {
+        f32 value;
+        u32 bits;
+    } previous_abs, current_abs, normal_abs;
+    if (object->dead != 0 || (LEGOCONTEXT_DOOMED != -1 && LEGOCONTEXT_DOOMED == (i8)object->character_context) ||
+        NewLData != NULL)
+        return;
+    door = WORLD->doors;
+    if (door == NULL || (object->flags_1f8 & 0x40000) != 0)
+        return;
+    two_players = Player[0] != NULL && (((GAMEOBJECT *)Player[0])->flags_1fc & 0x80) != 0 && Player[1] != NULL &&
+                  (((GAMEOBJECT *)Player[1])->flags_1fc & 0x80) != 0;
+    centre_height = (f32)(((f64)object->character_top + object->character_bottom) * object->origin_scale * 0.5);
+    previous = object->start_position;
+    previous.y = (f32)((f64)previous.y + centre_height);
+    current = object->position;
+    current.y = (f32)((f64)current.y + centre_height);
+    for (index = 0; index < WORLD->door_count; ++index, ++door) {
+        if ((door->flags & 4) != 0 || door->active != 0)
+            continue;
+        if (Mission_Active(NULL) != NULL && door->level != world->level_idx)
+            continue;
+        NuVecSub(&previous_offset, &previous, &door->pos);
+        NuVecSub(&current_offset, &current, &door->pos);
+        previous_distance = NuVecDot(&door->normal, &previous_offset);
+        current_distance = NuVecDot(&door->normal, &current_offset);
+        direction = 0;
+        if (previous_distance < 0.0f && current_distance >= 0.0f)
+            direction = 1;
+        else if ((door->flags & 1) == 0 && previous_distance >= 0.0f && current_distance < 0.0f)
+            direction = 2;
+        if (direction == 0)
+            continue;
+        previous_abs.value = previous_distance;
+        previous_abs.bits &= 0x7fffffff;
+        current_abs.value = current_distance;
+        current_abs.bits &= 0x7fffffff;
+        ratio = (f32)((f64)previous_abs.value / ((f64)current_abs.value + previous_abs.value));
+        intersection.x = (f32)((f64)previous.x + ((f64)current.x - previous.x) * ratio);
+        intersection.y = (f32)((f64)previous.y + ((f64)current.y - previous.y) * ratio);
+        intersection.z = (f32)((f64)previous.z + ((f64)current.z - previous.z) * ratio);
+        if (NuPtInPoly(&intersection, &door->point0, &door->point1, &door->point3, &door->plane) == 0 &&
+            NuPtInPoly(&intersection, &door->point1, &door->opposite_midpoint, &door->point3, &door->plane) == 0)
+            continue;
+        if ((object->flags_1fc & 0x80) != 0 && ((door->flags & 0x10) == 0 || two_players)) {
+            Door_GoThrough(world, door, 1);
+            return;
+        }
+        normal_abs.value = door->normal.y;
+        normal_abs.bits &= 0x7fffffff;
+        if (!(normal_abs.value < NuTrigTable[0xaaa]))
+            return;
+        object->position = object->start_position;
+        block_normal = door->normal;
+        if (direction == 2)
+            NuVecRotateY(&block_normal, &block_normal, 0x8000);
+        object->movement_direction_x = (f32)((f64)object->movement_direction_x - (f64)block_normal.x * 10.0);
+        object->movement_direction_z = (f32)((f64)object->movement_direction_z - (f64)block_normal.z * 10.0);
+        return;
+    }
+}
+
+STATIC_ASSERT(offsetof(WORLDINFO, cutscene_sys) == 0x2ab0);
+STATIC_ASSERT(offsetof(WORLDINFO, level_progress) == 0x130);
+STATIC_ASSERT(offsetof(LEVEL_PROGRESS, progress_state) == 0x2820);
+STATIC_ASSERT(offsetof(CUTSYS_PC, records) == 0);
+STATIC_ASSERT(offsetof(CUTSYS_PC, count) == 4);
+STATIC_ASSERT(offsetof(GAMEOBJECT, id) == 0x1064);
+STATIC_ASSERT(offsetof(GAMEOBJECT, flags_1fc) == 0x1fc);
+STATIC_ASSERT(offsetof(LEVELDATA_PC, area_index) == 0xa3);
+STATIC_ASSERT(sizeof(AREA_DATA_PC) == 0x9c);
+STATIC_ASSERT(offsetof(AREA_DATA_PC, levels) == 0x60);
+STATIC_ASSERT(offsetof(AREA_DATA_PC, flags) == 0x7a);
+STATIC_ASSERT(sizeof(MISSION_MENU_PACKET_PC) == 10);
+STATIC_ASSERT(offsetof(MISSION_MENU_PACKET_PC, player_model) == 0);
+STATIC_ASSERT(offsetof(MISSION_MENU_PACKET_PC, active_player) == 4);
+STATIC_ASSERT(offsetof(MISSION_MENU_PACKET_PC, customise_other_player) == 6);
+STATIC_ASSERT(offsetof(MISSION_MENU_PACKET_PC, selected) == 8);
+extern i32 HubDoorAreaPc;
+extern i32 HubDoorNewLevelPc;
+void __cdecl NeedScreenGrab(i32 needed);
+
+i32 __cdecl CutScene_HasPlayed(CUTINFO *cutscene) {
+    CUTSYS_PC *system = WorldInfo_CurrentlyActive()->cutscene_sys;
+    i32 found = -1;
+    i32 index;
+    if (system == NULL || cutscene == NULL || system->count <= 0)
+        return 0;
+    for (index = 0; index < system->count; ++index) {
+        if (system->records[index] == cutscene)
+            found = index;
+    }
+    if (found != -1)
+        return (WorldInfo_CurrentlyActive()->level_progress->progress_state & (1u << (found & 31))) != 0;
+    return 0;
+}
+
+void __cdecl MakeMenuPacket(void) {
+    i32 player;
+    for (player = 0; player < 2; ++player) {
+        GAMEOBJECT *object = Player[player];
+        if (object != NULL) {
+            MissionMenuPacketPc.player_model[player] = object->id;
+            MissionMenuPacketPc.active_player[player] = (u8)((object->flags_1fc >> 7) & 1);
+        } else {
+            MissionMenuPacketPc.player_model[player] = -1;
+            MissionMenuPacketPc.active_player[player] = 0;
+        }
+        MissionMenuPacketPc.customise_other_player[player] = 0;
+        MissionMenuPacketPc.selected[player] = 0;
+    }
+}
+
+void __cdecl Hub_ActivateDoorMenu(void *argument) {
+    LEVELDATA_PC **level = (LEVELDATA_PC **)argument;
+    i32 area = (*level)->area_index;
+    i32 menu;
+    if (area == -1)
+        return;
+    if (HubDoorAreaPc != area) {
+        *level = NULL;
+        return;
+    }
+    MakeMenuPacket();
+    HubDoorNewLevelPc = ADataList[area].levels[0];
+    *level = NULL;
+    HubAreaTimePc = 0.0f;
+    HubEpisodeTimePc = 0.0f;
+    MainRenderTargetTime = 0.0f;
+    NeedScreenGrab(1);
+    BackDrop_ResetColours();
+    menu = ((ADataList[area].flags & 4) != 0) + 15;
+    Hint_CancelCurrent();
+    NewMenu(menu, -1, -1);
+}

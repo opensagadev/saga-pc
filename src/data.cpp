@@ -32241,3 +32241,41 @@ extern "C" {
     GRAPHICS_RENDER_TEXTURE_PC *PCGraphicsPostEffectBackBufferTexturePc;
 #pragma bss_seg()
 }
+
+extern "C" {
+#pragma bss_seg(".bss$door_cutscenesnap")
+    i32 door_cutscenesnap;
+#pragma bss_seg()
+}
+
+extern "C" {
+#pragma bss_seg(".bss$HubDoorAreaPc")
+    i32 HubDoorAreaPc;
+#pragma bss_seg(".bss$HubDoorNewLevelPc")
+    i32 HubDoorNewLevelPc;
+#pragma bss_seg()
+}
+
+extern "C" {
+/* Place actual owners in canonical data.cpp extern-C cohort. */
+#pragma bss_seg(".bss$GameKeepMergeActionPc")
+    i32 GameKeepMergeActionPc;
+#pragma bss_seg()
+#pragma data_seg(".data$CharacterBlobShadowsOnPc")
+    i32 CharacterBlobShadowsOnPc = 1;
+#pragma data_seg(".data$CharacterBlobShadowModePc")
+    i32 CharacterBlobShadowModePc = 0;
+#pragma data_seg()
+}
+
+extern "C" {
+#pragma data_seg(".data$DrawParaphernaliaEnabledPc")
+    i32 DrawParaphernaliaEnabledPc = 1;
+#pragma data_seg()
+}
+
+extern "C" {
+#pragma const_seg(".rdata$CharacterWeaponScaleUpperBoundPc")
+    extern const f32 CharacterWeaponScaleUpperBoundPc = 65.0f;
+#pragma const_seg()
+}

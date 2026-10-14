@@ -284,3 +284,38 @@ __declspec(noinline) f32 __cdecl NuInfiniteLineToPointDistSqrEx(NUVEC *start, NU
 f32 __cdecl NuInfiniteLineToPointDistSqr(NUVEC *start, NUVEC *end, NUVEC *point) {
     return NuInfiniteLineToPointDistSqrEx(start, end, point, NULL);
 }
+
+i32 __cdecl NuPtInPoly(NUVEC *pnt, NUVEC *t0, NUVEC *t1, NUVEC *t2, NUPLANE *plane) {
+    union {
+        f32 value;
+        u32 bits;
+    } magnitude;
+    f32 abs_a, abs_b, abs_c;
+    magnitude.value = plane->a;
+    magnitude.bits &= 0x7fffffff;
+    abs_a = magnitude.value;
+    magnitude.value = plane->b;
+    magnitude.bits &= 0x7fffffff;
+    abs_b = magnitude.value;
+    magnitude.value = plane->c;
+    magnitude.bits &= 0x7fffffff;
+    abs_c = magnitude.value;
+    if (abs_a > abs_b) {
+        if (abs_a > abs_c) {
+            if (plane->a <= 0.0f)
+                return NuPtInPolyYZ(pnt, t0, t1, t2);
+            return NuPtInPolyZY(pnt, t0, t1, t2);
+        }
+        if (plane->c <= 0.0f)
+            return NuPtInPolyXY(pnt, t0, t1, t2);
+        return NuPtInPolyYX(pnt, t0, t1, t2);
+    }
+    if (abs_b > abs_c) {
+        if (plane->b <= 0.0f)
+            return NuPtInPolyZX(pnt, t0, t1, t2);
+        return NuPtInPolyXZ(pnt, t0, t1, t2);
+    }
+    if (plane->c <= 0.0f)
+        return NuPtInPolyXY(pnt, t0, t1, t2);
+    return NuPtInPolyYX(pnt, t0, t1, t2);
+}

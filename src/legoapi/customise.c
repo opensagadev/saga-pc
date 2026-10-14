@@ -778,3 +778,46 @@ void __cdecl Customiser_RestoreModelTextureIDs(void *input) {
         }
     }
 }
+
+/* Private integration fragment for src/legoapi/customise.c, after its existing
+ * CUSTOMISER_CONFIG_PC / CUSTOM_SAVE_CONFIG_PC definitions.
+ * Native 0x592d00, 450 bytes, cdecl(customiser, object, matrices).
+ */
+void __cdecl CustomiserDrawAccessoriesPc(CUSTOMISER_LAYERS_PC *input, GAMEOBJECT *object, NUMTX *matrices) {
+    CUSTOMISER_CONFIG_PC *customiser = (CUSTOMISER_CONFIG_PC *)input;
+    i32 joint = object->character_data->game_character->helmet_locator;
+    i32 side;
+    i32 category;
+    const u16 *pieces;
+    KILLPARTS_ACCESSORY_PC *resource;
+    NUMTX matrix;
+    NUMTX reflection;
+    if (customiser == NULL || joint == -1 || object->character_model->points_of_interest[joint] == NULL)
+        return;
+    side = object->id != (u16)customiser->character_ids[0];
+    for (category = 0; category < 9; ++category) {
+        if (customiser->piece_counts[category] <= 0 || category == 2)
+            continue;
+        if (category == 0) {
+            pieces = side == 0 ? customiser->save->pieces : customiser->save->secondary_pieces;
+            if ((customiser->piece_sets[0][pieces[0]].availability_flags & 0x20) != 0 ||
+                (customiser->piece_sets[1][pieces[1]].availability_flags & 1) != 0 || object->helmet != 0)
+                continue;
+        }
+        resource = &KillPartsAccessoriesPc[side][category];
+        if (NuSpecialExistsFn(&resource->special) == 0)
+            continue;
+        if (matrices != NULL)
+            matrix = matrices[joint];
+        else
+            matrix = object->locator_matrices[joint];
+        NuSpecialDrawAt(&resource->special, &matrix);
+        if ((u8)object->field_107c != 0 &&
+            MatrixReflection(&matrix, object->reflection_enabled, object->reflection_height,
+                             WORLD->current_level->reflection_y, &reflection) != 0) {
+            NuRndrStartReflectionRender(0);
+            NuSpecialDrawAt(&resource->special, &reflection);
+            NuRndrEndReflectionRender();
+        }
+    }
+}
