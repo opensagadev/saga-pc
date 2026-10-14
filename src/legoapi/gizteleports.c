@@ -204,3 +204,50 @@ void __cdecl Teleports_Configure(WORLDINFO *world_ptr, char *config) {
     else
         world->teleports = NULL;
 }
+
+i32 __cdecl Teleport_GetMaxGizmos(void *);
+void __cdecl Teleport_AddGizmos(GIZMOSYS_PC *, i32, void *, void *);
+char *__cdecl Teleport_GetGizmoName(GIZMO_PC *);
+i32 __cdecl Teleport_GetOutput(GIZMO_PC *, i32, i32);
+char *__cdecl Teleport_GetOutputName(GIZMO_PC *, i32);
+i32 __cdecl Teleport_GetNumOutputs(GIZMO_PC *);
+void __cdecl Teleport_Activate(GIZMO_PC *, i32);
+i32 __cdecl Teleport_ActivateRev(GIZMO_PC *, i32, i32);
+
+static ADDGIZMOTYPE_PC GizmoRegistryTeleportAddTypePc;
+extern const char PCContextName_Teleport[9];
+i32 teleport_gizmotype_id = -1;
+
+ADDGIZMOTYPE_PC *__cdecl Teleport_RegisterGizmo(i32 type_id) {
+    ADDGIZMOTYPE_PC *addtype = &GizmoRegistryTeleportAddTypePc;
+    *addtype = Default_ADDGIZMOTYPE;
+    addtype->prefix = TeleportConfigDataPc.name_prefix;
+    addtype->fns.options = 0x0;
+    addtype->fns.early_update_fn = NULL;
+    addtype->fns.late_update_fn = NULL;
+    addtype->fns.draw_fn = NULL;
+    addtype->fns.panel_draw_fn = NULL;
+    addtype->fns.set_visibility_fn = NULL;
+    addtype->fns.get_visibility_fn = NULL;
+    addtype->fns.get_pos_fn = NULL;
+    addtype->fns.using_special_fn = NULL;
+    addtype->fns.allocate_progress_data_fn = NULL;
+    addtype->fns.clear_progress_fn = NULL;
+    addtype->fns.store_progress_fn = NULL;
+    addtype->fns.reset_fn = NULL;
+    addtype->fns.reserve_buffer_space_fn = NULL;
+    addtype->fns.load_fn = NULL;
+    addtype->fns.post_load_fn = NULL;
+    addtype->fns.add_level_sfx_fn = NULL;
+    addtype->name = (char *)PCContextName_Teleport;
+    addtype->fns.get_max_gizmos_fn = (i32(__cdecl *)(void *))Teleport_GetMaxGizmos;
+    addtype->fns.add_gizmos_fn = (void *)Teleport_AddGizmos;
+    addtype->fns.get_gizmo_name_fn = (char *(__cdecl *)(GIZMO_PC *))Teleport_GetGizmoName;
+    addtype->fns.get_output_fn = (i32(__cdecl *)(GIZMO_PC *, i32, i32))Teleport_GetOutput;
+    addtype->fns.get_output_name_fn = (char *(__cdecl *)(GIZMO_PC *, i32))Teleport_GetOutputName;
+    addtype->fns.get_num_outputs_fn = (void *)Teleport_GetNumOutputs;
+    addtype->fns.activate_fn = (void(__cdecl *)(GIZMO_PC *, i32))Teleport_Activate;
+    addtype->fns.activate_rev_fn = (i32(__cdecl *)(GIZMO_PC *, i32, i32))Teleport_ActivateRev;
+    teleport_gizmotype_id = type_id;
+    return addtype;
+}
