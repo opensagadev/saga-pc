@@ -135,7 +135,9 @@ static void NuMainUpdateFrame(WORLDINFO *world, i32 *frame_flag) {
     other_level_override = -1;
     Shadow_SetMode();
     STUBBED_NAMED("NuMainUpdateFrame: GizmoPickups_SetOnOff at 0x0046c7d0");
+    LOG_INFO_IF(GameTimer.update_count < 2, "NuMainUpdateFrame before DoInput: world=%p", (void *)WORLD);
     DoInput(WORLD);
+    LOG_INFO_IF(GameTimer.update_count < 2, "NuMainUpdateFrame after DoInput: world=%p", (void *)WORLD);
     if (memcard_autosaveenabled != 0 && memcard_autosavedisabled != 0 &&
         (world == NULL || world->area == NULL || (world->area->flags & 2) == 0) && NewMode == 0 && NewLData == NULL &&
         FadeSys.fade == 0.0f && editor_active == 0 &&
@@ -739,7 +741,9 @@ extern "C" int __cdecl NuMain(int argc, char **argv) {
                         MiniCutCam == 0 && CutScene_PlayingOrRequested(NULL) == 0 && FadeSys.fade == 0.0f) {
                         EndChallenge(2, 1);
                     }
+                    LOG_INFO_IF(GameTimer.update_count < 2, "NuMain before update: world=%p", (void *)WORLD);
                     NuMainUpdateFrame(WORLD, &frame_flag);
+                    LOG_INFO_IF(GameTimer.update_count < 2, "NuMain after update: world=%p", (void *)WORLD);
                 }
                 if (waiting_for_level != -1 && screendump == 0) {
                     WaitingForLevelTime += FRAMETIME;
@@ -753,7 +757,9 @@ extern "C" int __cdecl NuMain(int argc, char **argv) {
                 NuFrameBegin();
                 if (SoundVoiceEnabledGate != 0) {
                     if (pause_rndr_on == 0 || (FadeSys.pending_type == FADE_TYPE_WIPE && MainRenderTime != 0.0f)) {
+                        LOG_INFO_IF(GameTimer.update_count < 2, "NuMain before render: world=%p", (void *)WORLD);
                         NuMainRenderWorld(WORLD);
+                        LOG_INFO_IF(GameTimer.update_count < 2, "NuMain after render: world=%p", (void *)WORLD);
                     } else {
                         NoRender();
                     }
