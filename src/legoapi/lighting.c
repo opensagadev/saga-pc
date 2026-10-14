@@ -32,6 +32,22 @@ void __cdecl ResetLights(NUVEC *position, RTL_DATA_PC *packet, void *set) {
         rtlApplySetScale(set, packet, position, NULL, -1, 1.0f);
 }
 
+void __cdecl ConfigureComplexShadow(GAMEOBJECT *object) {
+    NUVEC direction;
+    f32 distance;
+    if (object != NULL) {
+        direction.x = 65536.0f;
+        direction.y = object->collision_position.y;
+        direction.z = (f32)((f64)object->floor_height - (f64)0.1f);
+    } else {
+        direction.x = 0.0f;
+        direction.y = (f32)(-(f64)ComplexShadowBasePc * 0.25);
+        direction.z = 0.0f;
+    }
+    distance = VehicleArea != 0 ? 150.0f : 30.0f;
+    NuRndrShadowDirCol(&direction, 0x17000000u, distance, distance);
+}
+
 typedef struct startup_object_light_pc_s {
     u8 unknown_000[0x1fc];
     u32 flags;

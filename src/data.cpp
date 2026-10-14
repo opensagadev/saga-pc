@@ -32153,3 +32153,9 @@ extern "C" {
     };
 #pragma data_seg()
 }
+
+extern "C" {
+#pragma data_seg(".data$ComplexShadowBasePc")
+    f32 ComplexShadowBasePc = 25.0f;
+#pragma data_seg()
+}

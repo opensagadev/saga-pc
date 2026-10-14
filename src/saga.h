@@ -8534,15 +8534,27 @@ struct PC_HG_SHADOW_PACKET {
     u8 ellipse_count, cylinder_count, third_count, sequence;
 };
 struct PC_HG_SHADOW_STATE_VIEW {
-    i32 state0, state1, state2;
-    u8 unknown_0c[3];
-    i8 state_byte;
+    union {
+        struct {
+            i32 state0, state1, state2;
+        };
+        NUVEC direction;
+    };
+    union {
+        struct {
+            u8 unknown_0c[3];
+            i8 state_byte;
+        };
+        u32 packed_colour;
+    };
 };
 
 STATIC_ASSERT(sizeof(struct PC_HG_SHADOW_PACKET) == 104);
 STATIC_ASSERT(offsetof(struct PC_HG_SHADOW_PACKET, sequence) == 103);
 STATIC_ASSERT(sizeof(struct PC_HG_SHADOW_STATE_VIEW) == 16);
 STATIC_ASSERT(offsetof(struct PC_HG_SHADOW_STATE_VIEW, state_byte) == 15);
+STATIC_ASSERT(offsetof(struct PC_HG_SHADOW_STATE_VIEW, direction) == 0);
+STATIC_ASSERT(offsetof(struct PC_HG_SHADOW_STATE_VIEW, packed_colour) == 12);
 struct PC_HG_RENDER_VIEW;
 
 typedef struct level_sfx_pulse_prefix_s LEVEL_SFX_PULSE_PC;
@@ -8811,6 +8823,10 @@ extern "C" {
     extern f32 PCShadowFarValue;
     extern i32 PCShadowPacketCount;
     extern struct PC_HG_SHADOW_STATE_VIEW PCShadowState;
+    extern f32 ComplexShadowBasePc;
+    void __cdecl ConfigureComplexShadow(GAMEOBJECT *object);
+    void __cdecl NuRndrShadowDirCol(const NUVEC *direction, u32 colour, f32 near_distance, f32 far_distance);
+    void __cdecl InitGameMode(void);
     extern i32 drawcharactermodel_nobsa;
     extern i32 drawcharactermodel_noani;
     extern i32 drawcharactermodel_restpose;

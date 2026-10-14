@@ -3038,3 +3038,164 @@ i32 __cdecl Players_AveragePos(NUVEC *position, SOCKPOSITION_PC *socket_position
         socket_position->sock_index = -1;
     return 0;
 }
+
+/* Native ResetPlayer shares the light packet at 4d8 with LightGameObject. */
+typedef struct PLAYER_RESET_LIGHT_VIEW_PC {
+    u8 reserved_000[0x4d8];
+    RTL_DATA_PC light_data;
+} PLAYER_RESET_LIGHT_VIEW_PC;
+STATIC_ASSERT(offsetof(PLAYER_RESET_LIGHT_VIEW_PC, light_data) == 0x4d8);
+STATIC_ASSERT(offsetof(GAMEOBJECT, field_dbc) == 0xdbc);
+STATIC_ASSERT(offsetof(GAMEOBJECT, field_de0) == 0xde0);
+STATIC_ASSERT(offsetof(PLAYER_POSITION_RECORD_PC, angle) == 0xc);
+extern i32 movegamecamera_forcesock;
+
+void __cdecl ResetPlayer(GAMEOBJECT *object, i32 reset_moves, NUVEC *position, i32 snap_to_surface) {
+    f32 surface_y = 2000000.0f;
+    i32 restore_hitpoints;
+    i32 player_index;
+    u16 facing;
+    SOCK_PC *sock;
+    PLAYER_POSITION_RECORD_PC *starts = (PLAYER_POSITION_RECORD_PC *)PlayerStartRecordInitPc;
+    if (object == NULL)
+        return;
+    restore_hitpoints = object->field_280 != 0xff && object->character_context == 0x2b;
+    if (reset_moves != 0) {
+        if (position == NULL)
+            position = Player_StartPos(object);
+        if (position != NULL)
+            object->position = *position;
+        if (object->field_280 != 0xff)
+            object->flags_ef4 |= 0x40;
+        ResetPlayerMoves(object);
+        object->collision_position = object->position;
+        object->initial_position = object->position;
+        plr_lastpos = object->collision_position;
+        object->start_position = object->collision_position;
+        object->reset_velocity = v000;
+        object->velocity = object->reset_velocity;
+        GetTopBot(object);
+        GameObjectDimensions(object);
+        object->flags_e20 &= ~0x08000000u;
+        object->use_model_origin = 0;
+        object->origin_joint_ready = 0;
+        GameObjectOrigin(object);
+        ResetRumble((RUMBLE_PACKET_RESOURCE_PC *)object->pad->unknown_40);
+        ResetLights(&object->position, &((PLAYER_RESET_LIGHT_VIEW_PC *)object)->light_data, WORLD->rtl_set);
+        ResetMiniAnimPacket((MINIANIMPACKET_PC *)((PLAYER_CHARACTER_CHANGE_VIEW_PC *)object)->mini_packet, -1);
+        object->sock_position.sock_index = -1;
+        object->sock_position.segment = -1;
+        if (WORLD->sock_sys != NULL) {
+            if (Door_NextSock != -1 && WORLD->sock_sys->socks[Door_NextSock].valid != 0) {
+                complexsockposition_forcesock = Door_NextSock;
+                movegamecamera_forcesock = Door_NextSock;
+            }
+            ComplexSockPosition(WORLD->sock_sys, &object->position, object->sock_position.sock_index,
+                                object->sock_position.segment, &object->sock_position);
+            ComplexSockAngles(&object->sock_angles);
+            if ((i8)object->field_280 < 2 && object->sock_position.sock_index != -1) {
+                if (BONUS_GUNSHIP_ADATA != NULL && WORLD->area == BONUS_GUNSHIP_ADATA) {
+                    object->position = object->sock_position.midpoint;
+                    surface_y = FindGunshipHoverHeight(object);
+                    snap_to_surface = 0;
+                    if (WORLD->current_level == BONUS_GUNSHIPA_LDATA && (LevFlag[0] & 0xff) != 0)
+                        object->position.x = (f32)((f64)object->position.x + 12.0);
+                } else if (DOGFIGHT_ADATA != NULL && WORLD->area == DOGFIGHT_ADATA) {
+                    sock = &WORLD->sock_sys->socks[object->sock_position.sock_index];
+                    if ((sock->flags & 1) == 0) {
+                        object->position = object->sock_position.midpoint;
+                        if (Player[0] != NULL && (((GAMEOBJECT *)Player[0])->flags_1fc & 0x80) != 0 &&
+                            Player[1] != NULL && (((GAMEOBJECT *)Player[1])->flags_1fc & 0x80) != 0) {
+                            NUVEC offset;
+                            f32 side = object == Player[0] ? -1.0f : 1.0f;
+                            NuVecNorm(&offset, &sock->segments[object->sock_position.segment].planes[4]);
+                            NuVecScale(&offset, &offset, side);
+                            NuVecAdd(&object->position, &object->position, &offset);
+                        }
+                        object->collision_position = object->position;
+                        object->initial_position = object->position;
+                        plr_lastpos = object->collision_position;
+                        object->start_position = object->collision_position;
+                    }
+                    snap_to_surface = 0;
+                }
+            }
+        }
+        player_index = (i8)object->field_280;
+        if (player_index < 0 || player_index >= 8)
+            player_index = object->hostility_group;
+        facing = (u16)starts[player_index].angle;
+        object->pitch_angle = 0;
+        object->movement_facing_angle = facing;
+        object->facing_angle = facing;
+        object->field_0x276 = facing;
+        object->roll_angle = 0;
+        NuVecRotateYValZ(&object->facing_direction, 1.0f, facing);
+        object->current_speed_mul = 1.0f;
+        object->current_speed_bias = 0.0f;
+        CurrentStart(object, 0, 1);
+        object->flags_e20 &= ~0x08000000u;
+        object->flags_ef0 &= ~0x02040000u;
+        object->model_draw_result = 1;
+        object->use_model_origin = 0;
+        object->origin_joint_ready = 0;
+        object->contact_count = 0;
+        InitSurfaceInfo(object);
+        if ((f64)surface_y == 2000000.0)
+            surface_y = GetHoverPosY(object);
+        if (snap_to_surface != 0 && (object->character_data->model_flags & 0x2000) == 0) {
+            SetObjOnSurface(object, 0);
+        } else if ((f64)surface_y != 2000000.0) {
+            object->position.y = surface_y;
+            object->collision_position = object->position;
+            object->initial_position = object->position;
+            plr_lastpos = object->collision_position;
+            object->start_position = object->collision_position;
+        }
+        GizForce_ResetLOS(object);
+        PortalGameObject(object, 1, 1, -1, WORLD->current_gscn);
+        if ((ResetBits & 2) != 0 || object->dead != 0 || restore_hitpoints != 0) {
+            object->current_hp = (i8)DEFAULT_PLAYERHITPOINTS;
+            if (object->current_hp > object->field_107e)
+                object->current_hp = (i8)object->field_107e;
+            object->vehicle_secondary_hp = 4;
+        }
+        if ((ResetBits & 8) != 0) {
+            player_index = (i8)object->field_280;
+            if (PlayerProgress[player_index].field_b != 0)
+                object->jump_variant_state = 1;
+            object->vehicle_secondary_hp = PlayerProgress[player_index].field_9;
+        }
+        ResetPlayerAI(object);
+        object->last_safe_position = object->position;
+        object->ai_update_position = object->position;
+        if ((object->character_data->model_flags & 0x2000) != 0) {
+            object->in_narrow_socket = ObjInNarrowSock(object, WORLD->sock_sys, WORLD->level_idx);
+            object->field_dc8 = GetVehicleSpeedMul(object, 0.0f);
+        } else {
+            object->field_dc8 = 0.0f;
+        }
+        if (object->field_dc8 > 0.0f) {
+            object->velocity.x = NuTrigTable[object->facing_angle >> 1] * object->field_dc8;
+            object->velocity.z = NuTrigTable[((object->facing_angle + 0x4000) >> 1) & 0x7fff] * object->field_dc8;
+        }
+    } else {
+        object->field_dc8 = 0.0f;
+    }
+    object->flags_1fc_word &= 0xfffdfa83u;
+    object->collision_scale = 1.0f;
+    object->flags_ef0 |= 0x80;
+    object->field_1010 = 0.0f;
+    object->field_da8 = 0.0f;
+    object->flags_1f8 &= ~0x100u;
+    object->flags_e20 |= 0x8000;
+    object->directional_seek_multiplier = 1.0f;
+    object->dead = 0;
+    object->wall_run_state = 0;
+    object->previous_floor_height = 2000000.0f;
+    object->effect_flags = 0;
+    object->field_dbc = 0.0f;
+    object->field_f10 = 0.0f;
+    object->camera_screen_position.z = -1.0f;
+    object->field_de0 = -1.0f;
+}

@@ -524,6 +524,45 @@ extern "C" {
     extern f32 VehicleAreaRememberSpeed;
 }
 
+extern "C" i32 __cdecl GetRandomCoinType(void);
+extern "C" void __cdecl GameFog_Reset(void);
+
+extern "C" void __cdecl InitGameMode(void) {
+    i32 i;
+    f32 speed;
+    GAMEOBJECT **players = (GAMEOBJECT **)Player;
+    if ((WORLD->current_level->flags & 2) != 0)
+        MenuReset();
+    for (i = 0; i < 8; ++i) {
+        if (players[i] != NULL && (players[i]->flags_ef0 & 0x01000000u) == 0)
+            ResetPlayer(players[i], 1, NULL, 1);
+    }
+    speed = GetVehicleAreaRememberSpeed();
+    if (VehicleAreaRememberSpeed < speed)
+        VehicleAreaRememberSpeed = speed;
+    AveragePlayerCurrentSpeedMul();
+    SetPlayer();
+    AreaGlobals_PC.progress_flags = WORLD->area != NULL ? AreaGlobals_PC.area_phase : 0;
+    AreaGlobals_PC.field_20 = AreaGlobals_PC.field_1c;
+    NewLData = NULL;
+    NewMode = 0;
+    for (i = 0; i < 2; ++i) {
+        if (players[i] != NULL && players[i]->coin_packet != NULL) {
+            GIZMO_PICKUP_TYPE_PC *type = &GizmoPickupType[GetRandomCoinType()];
+            PLAYER_COIN_PACKET_PC *coins = (PLAYER_COIN_PACKET_PC *)players[i]->coin_packet;
+            coins->last_coin = type->first_model_id;
+            if (type->random_model_count != 0)
+                coins->last_coin += (i16)(qrand() / (0xffff / type->random_model_count + 1));
+        }
+    }
+    for (i = 0; i < HIGHGAMEOBJECT; ++i) {
+        if ((Obj[i].flags_1fc_word & 0x1001) == 0x1001)
+            Obj[i].flags_ef0 |= 0x80;
+    }
+    GameFog_Reset();
+    ConfigureComplexShadow(NULL);
+}
+
 extern "C" void __cdecl CheckResetBits(void) {
     i32 i;
     GAMEOBJECT **player_slot;
@@ -543,7 +582,7 @@ extern "C" void __cdecl CheckResetBits(void) {
     if (NOSOUND == 0)
         NuSound3Update();
     if ((ResetBits & 0x40) == 0)
-        STUBBED_NAMED("CheckResetBits: InitGameMode at 0x0042b7c0");
+        InitGameMode();
     if (NOSOUND == 0)
         NuSound3Update();
     STUBBED_NAMED("CheckResetBits: Customiser_SetUpCharacterData(CharacterCustomiser) at 0x00424500");

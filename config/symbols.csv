@@ -94,6 +94,7 @@ address    , symbol                                                         , si
 0x418ca0,_AnimatePlayer,772,void __cdecl(GAMEOBJECT *)
 0x418fb0,_DrawWeapon_SetSabreObjects,291,
 0x004190e0 , _AnakinGreenSabre                                              , 70    , i32 __cdecl (GAMEOBJECT *)
+0x419e00,_ConfigureComplexShadow,131,void __cdecl(GAMEOBJECT *)
 0x419e90,_LoadSingleCharacter,284,
 0x419fb0,_UpdateCharacterLoad,808,
 0x0041a360 , _AvailableToPlayer                                             , 365   , "i32 __cdecl (u32, i32, i32, i32)"
@@ -4671,6 +4672,7 @@ address    , symbol                                                         , si
 0x5f8f80,_NuTexInitExPS,34,void __cdecl NuTexInitExPS(VARIPTR *buffer_unused)
 0x5f8fd0,_NuTexGetUnresolvedTextureTIDPS,81,i32 __cdecl(void)
 0x005f9530 , _NuWaterReset                                                  , 21    , void __cdecl (void)
+0x5f9980,_NuRndrShadowDirCol,78,"void __cdecl(const NUVEC *,u32,f32,f32)"
 0x5f99d0,_NuRndrQuadBufferInitPc,328,void __cdecl NuRndrQuadBufferInitPc(void)
 0x5f9e50,_NuRndrGeometryBufferReleasePc,12,void __cdecl(void)
 0x5f9e60,_NuRndrGeometryBufferRestorePc,42,void __cdecl(void)
@@ -8497,6 +8499,7 @@ address    , symbol                                                         , si
 0x007531f8 , __real@406fe00000000000                                        , 8     , const f64
 0x00753200 , _TerrainScanTriangleSentinel                                   ,       ,
 0x753200,__real@47800000,4,const f32
+0x753218,__real@4028000000000000,8,const f64
 0x00753220 , __real@bdcccccd                                                , 4     , const f32
 0x753224,__real@42c60000,4,f32
 0x753228,__real@401e000000000000,8,const f64
@@ -15784,6 +15787,7 @@ address    , symbol                                                         , si
 0x007f238c , _spline_xoffset_speed_seek                                     , 4     , f32
 0x007f2390 , _spline_xoffset_speed_roll                                     , 4     , f32
 0x7f2394,_TerrainPlayerShadowFixPc,,i32
+0x7f239c,_ComplexShadowBasePc,4,f32
 0x007f23a4 , _waiting_for_character                                         , 4     , i32
 0x7f23a8,_apiloadcharactermodels_append,4,i32
 0x007f23b0 , _SpecialLayer                                                  , 504   , SPECIAL_LAYER_PC [42]
