@@ -137,6 +137,32 @@ static void PodMatrixCopyPrivatePc(NUMTX *destination, const NUMTX *source) {
     destination->m33 = source->m33;
 }
 
+STATIC_ASSERT(offsetof(SNIPER_s, prev) == 0);
+STATIC_ASSERT(offsetof(SNIPER_s, pos) == 0xc);
+STATIC_ASSERT(offsetof(SNIPER_s, fire_timer) == 0x18);
+STATIC_ASSERT(offsetof(SNIPER_s, state) == 0x1c);
+
+void __cdecl PodRaceSnipersReset(void) {
+    PodRace_nsnipers = 0;
+    if (Lap != 0) {
+        char name[16];
+        NUGSPLINE *spline;
+        i32 point;
+        sprintf(name, "Sniper%d", Lap);
+        spline = NuSplineFind(WORLD->current_gscn, name);
+        if (spline != NULL && spline->length > 0) {
+            for (point = 0; point < spline->length && PodRace_nsnipers < 10; point += 2) {
+                SNIPER_s *sniper = &PodRace_snipers[PodRace_nsnipers];
+                sniper->prev = spline->pts[point];
+                sniper->pos = spline->pts[point + 1];
+                sniper->fire_timer = NuRandFloat() * PodRace_sniper_fire_time + (f64)PodRace_sniper_fire_time * 0.5;
+                sniper->state = 0.0f;
+                ++PodRace_nsnipers;
+            }
+        }
+    }
+}
+
 void PodRaceSnipersUpdate(void) {
     i32 i;
     NUVEC direction;
