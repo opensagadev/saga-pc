@@ -149,19 +149,24 @@ GAMECAMERA GameCamera;
 GAMECAMERA *GameCam = &GameCamera;
 i32 part_debris_count;
 
+STATIC_ASSERT(offsetof(GAMEOBJECT, pad) == 0xca4);
+STATIC_ASSERT(offsetof(GAMEPAD_PC, bound_pad) == 0);
+
 void __cdecl NewRumbleAllPlayers(f32 strength, f32 duration, i32 frames, f32 priority) {
     i32 index;
     GAMEOBJECT *object;
+    (void)priority;
 
     if (frames > 0) {
-        if ((f32)frames / DEFAULTFPS > duration) {
-            duration = (f32)frames / DEFAULTFPS;
+        volatile f32 rounded_duration = (f64)frames / DEFAULTFPS;
+        if (rounded_duration > duration) {
+            duration = rounded_duration;
         }
     }
     for (index = 0; index < 8; index++) {
         object = (GAMEOBJECT *)Player[index];
-        if (object != NULL && (object->flags_1fc & 0x80) != 0 && object->pad != NULL) {
-            NuSound3AddRumble(object->pad, duration, (i32)(strength * 255.0f), 0, strength);
+        if (object != NULL && (object->flags_1fc & 0x80) != 0 && object->pad->bound_pad != NULL) {
+            NuSound3AddRumble(object->pad->bound_pad, duration, (i32)((f64)strength * 255.0), 0, strength);
         }
     }
 }

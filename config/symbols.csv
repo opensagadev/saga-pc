@@ -2463,7 +2463,7 @@ address    , symbol                                                         , si
 0x0054a850,_NewRumble,66,"void __cdecl(void *, f32, i32)"
 0x0054a8a0,_NewBuzz,40,"void __cdecl(void *, f32, i32)"
 0x54a8d0,_NewBuzzFrames,54,"void __cdecl (void *, i32, i32)"
-0x0054a910 , _NewRumbleAllPlayers                                           , 145   , "void __cdecl (f32, f32, i32, f32)"
+0x0054a910,_NewRumbleAllPlayers,146,"void __cdecl (f32, f32, i32, f32)"
 0x0054a9b0 , _DieRumble                                                     , 90     ,
 0x54aa10,_KillRumble,94,void __cdecl (GAMEOBJECT *)
 0x54aa70,_HitRumble,108,void __cdecl (GAMEOBJECT *)
@@ -2586,6 +2586,9 @@ address    , symbol                                                         , si
 0x00553570 , _InitSplinePosition                                            , 156   , "void __cdecl (SPLINEPOS *position, NUGSPLINE *spline, f32 distance, i32 looping)"
 0x553610,_SetAnimFrame,238,
 0x553710,_SpinnerMissingSpecialPc,1,"void __cdecl(char *,char *)"
+0x00553780,?SpinnerMatrixSetRotationYPc@@YAXPAUnumtx_s@@H@Z,162,
+0x00553830,?SpinnerMatrixRotateYPc@@YAXPAUnumtx_s@@H@Z,219,
+0x00553910,?SpinnerOwnerPc@@YAPAUgameobject_s@@PAUGIZSPINNER_s@@@Z,75,
 0x5539a0,_SpinnerBoundsResetPc,252,
 0x553aa0,_GizSpinner_Load,1953,
 0x554250,_GizSpinner_ReserveBufferSpace,252,
@@ -2597,13 +2600,15 @@ address    , symbol                                                         , si
 0x554900,_GizSpinner_GetGizmoName,,char * __cdecl(GIZMO_PC *)
 0x554920,_GizSpinner_GetOutputName,173,
 0x5549d0,_GizSpinner_GetNumOutputs,,i32 __cdecl(GIZMO_PC *)
+0x005549e0,?SpinnerCurrentOutputPc@@YAHPAUGIZSPINNER_s@@@Z,216,
+0x00554ac0,?SpinnerSeekOutputPc@@YAXPAUGIZSPINNER_s@@H@Z,640,
 0x554d70,_GizSpinner_PushFail,178,"void __cdecl(GAMEOBJECT *, PUSH_SPINNER_PC *)"
 0x554e30,_GizSpinner_Push,441,"i32 __cdecl(PUSH_SPINNER_PC *, i32)"
 0x554ff0,_GizSpinner_Spin,344,
 0x5552b0,_GizSpinner_StoreProgressData,237,
 0x5553a0,_GizSpinner_AllocateProgressData,21,"void * __cdecl(VARIPTR *, VARIPTR *)"
 0x5553c0,_GizSpinner_ClearProgress,22,"void __cdecl(void *, void *)"
-0x5553e0,_GizSpinner_ResetAll,366,
+0x5553e0,?SpinnerResetEntryPc@@YAXPAUGIZSPINNER_s@@PAUSpinnerProgressEntryPc@@@Z,366,
 0x555550,_GizSpinner_Activate,,"void __cdecl(GIZMO_PC *, i32)"
 0x555580,_GizSpinner_GetPos,,NUVEC * __cdecl(GIZMO_PC *)
 0x5555a0,_GizSpinner_SetVisibility,524,
@@ -2613,10 +2618,10 @@ address    , symbol                                                         , si
 0x555a70,_GizSpinner_GetBestBoltTarget,1332,
 0x555fb0,_GizSpinner_Find,215,"PUSH_SPINNER_PC * __cdecl(WORLDINFO *, NUVEC *, i32)"
 0x556170,_GizSpinner_GetOutput,,"i32 __cdecl(GIZMO_PC *, i32, i32)"
-0x556190,_GizSpinner_Update,1865,
+0x556190,_GizSpinner_Update,1865,void __cdecl(GIZSPINNER_s *)
 0x5568e0,_GizSpinners_Update,998,
 0x556cd0,_GizSpinner_GetNearestTargetPoint,454,
-0x556ea0,_GizSpinner_ResetAllPc,,"void __cdecl(void *, void *, void *)"
+0x556ea0,_GizSpinner_ResetAllPc,151,"void __cdecl(void *, void *, void *)"
 0x556f40,_GizSpinner_HasBoltHit,,"i32 __cdecl(WORLDINFO *, void *, GAMEOBJECT *, NUVEC *, i32, f32, NUVEC *, NUVEC *, BOLT_PC *, i32, u8 *)"
 0x556f50,_Spinner_RegisterGizmo,312,
 0x5570c0,_Gizobstacle_ReadAnimSetData,53,
@@ -2985,9 +2990,12 @@ address    , symbol                                                         , si
 0x0056e5d0 , _ResetExplosions                                               , 31    , void __cdecl (void)
 0x0056e5f0 , _AddExplosion                                                  , 168   , "EXPLOSION_PC *__cdecl (NUVEC *, f32, f32, GAMEOBJECT *, i32, u32)"
 0x56e710,_UpdateExplosion_Generic,1904,
+0x0056ef50,_PickupSetRotationXPc,160,
+0x0056eff0,_PickupSetRotationYPc,162,
+0x0056f0a0,_PickupRotateYPc,219,
 0x56f180,_GizmoPickups_InitSys,10,void __cdecl(PICKUP_TYPE_SYSTEM_PC*)
 0x56f240,_GizmoPickups_DrawList,846,
-0x56f590,_GizmoPickups_Draw,,"void __cdecl(void *, void *, f32)"
+0x56f590,_GizmoPickups_Draw,64,"void __cdecl(void *, void *, f32)"
 0x56f5d0,_GizmoPickups_GetMaxGizmos,25,i32 __cdecl(void *)
 0x56f5f0,_GizmoPickups_AddGizmos,81,"void __cdecl(GIZMOSYS_PC *, i32, void *, void *)"
 0x56f650,_GizmoPickup_GetGizmoName,,char * __cdecl(GIZMO_PC *)
@@ -3020,7 +3028,8 @@ address    , symbol                                                         , si
 0x570c90,_SpecialMiniKits_Configure,786,"void __cdecl(WORLDINFO *, char *)"
 0x570fb0,_SpecialMiniKits_Reset,126,
 0x571030,_SpecialMiniKits_Draw,760,
-0x5716c0,_GizmoPickups_Update,,"void __cdecl(void *, void *, f32)"
+0x00571330,_GizmoPickups_UpdateListPc,903,
+0x5716c0,_GizmoPickups_Update,55,"void __cdecl(void *, void *, f32)"
 0x571700,_GizmoPickups_RegisterGizmo,293,ADDGIZMOTYPE_PC * __cdecl(i32)
 0x571850,_InitPartTable,49,
 0x571890,_InitPartDebris,352,"PARTDEBRISSYS * __cdecl (VARIPTR *, VARIPTR *, i32, i32, char **, i32)"
@@ -3052,6 +3061,7 @@ address    , symbol                                                         , si
 0x573690,_SuperCounters_FixUpGizmos,234,
 0x5738c0,_SuperCounter_ActivateGizmoPickup,295,
 0x005739f0 , _SuperCounter_FindFromNameAndLevel                             , 164   , "AREA_SUPERCOUNTER_PC * __cdecl (char *, WORLDINFO *, AREA_SUPERCOUNTER_PICKUP_PC **)"
+0x00573aa0,_SuperCounter_AnyCollected,210,
 0x00573b80 , _SuperCounters_ResetProcessed                                  , 85    , void __cdecl (WORLDINFO *)
 0x573be0,?AreaAddModelListPrivatePc@@YAXPAUapicharactermodellist_s@@PAHHHHPAUAREA_EXTRA_MODEL_PC@@@Z,185,
 0x573ca0,_Area_Configure,4017,"void __cdecl(i32,i32,AREA_EXTRA_MODEL_PC *,i16 *)"

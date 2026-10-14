@@ -1630,3 +1630,26 @@ void __cdecl LoadAreaCharacters(void) {
     }
     TextInputSetKeyboardOverridePc(saved_override);
 }
+
+extern "C" u8 *Game_LevelSave;
+
+extern "C" i32 __cdecl SuperCounter_AnyCollected(AREA_SUPERCOUNTER_PC *counter, WORLDINFO *world) {
+    AREA_SUPERCOUNTER_PICKUP_PC *pickup = counter->pickups;
+    i32 index, saved;
+    LEVELSAVE_s *save;
+    for (index = 0; index < counter->pickup_count; ++index, ++pickup) {
+        if (world->area_index != -1) {
+            for (saved = 0; saved < AreaGlobals_PC.new_minikit_count; ++saved)
+                if (NewMiniPiece[saved].level == pickup->level_index &&
+                    NuStrICmp(NewMiniPiece[saved].name, pickup->name) == 0)
+                    return 1;
+        }
+        if (Game_LevelSave != NULL) {
+            save = &((LEVELSAVE_s *)Game_LevelSave)[pickup->level_index];
+            for (saved = 0; saved < save->minikit_count; ++saved)
+                if (NuStrICmp(save->minikit_names[saved], pickup->name) == 0)
+                    return 1;
+        }
+    }
+    return 0;
+}

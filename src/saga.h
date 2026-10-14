@@ -25195,7 +25195,6 @@ extern "C" {
     i32 __cdecl GizSpinner_Load(void *world_ptr, void *arg1);
     void __cdecl GizSpinner_PanelDraw(void *arg0, void *arg1, f32 arg2);
     void *__cdecl GizSpinner_ReserveBufferSpace(void *world_ptr);
-    void __cdecl GizSpinner_ResetAll(void *world_ptr, void *arg1, void *progress_ptr);
     void __cdecl GizSpinner_SetVisibility(void *gizmo, i32 visible);
     void __cdecl GizSpinner_StoreProgressData(void *world_ptr, void *arg1, void *progress_ptr);
     i32 __cdecl GizSpinner_UsingSpecial(void *results, void *world_ptr, i32 capacity, char *name);
@@ -25432,7 +25431,7 @@ extern "C" {
     f32 __cdecl NuFmax(f32 a, f32 b);
     void __cdecl ResetSinglePushBlockHeight(struct WORLDINFO_s *arg0, struct pushblock_s *arg1, i32 arg2);
     extern i32 pushposincrease;
-    i32 __cdecl GizSpinner_Update(struct GIZSPINNER_s *spinner);
+    void __cdecl GizSpinner_Update(struct GIZSPINNER_s *spinner);
     extern GRAPPLE_DYNAMIC_PC DynamicGrapple[4];
     void __cdecl Grapples_DrawList(struct WORLDINFO_s *world, struct GRAPPLE_DYNAMIC_PC *grapples, i32 grapple_count,
                                    u16 target_rotation, f32 target_alpha);
