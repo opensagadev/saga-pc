@@ -12778,6 +12778,8 @@ extern "C" {
 #pragma const_seg()
 #pragma data_seg(".data$gizspecial_gizmotype_id")
     i32 gizspecial_gizmotype_id = -1;
+#pragma data_seg(".data$gizbuildit_gizmotype_id")
+    i32 gizbuildit_gizmotype_id = -1;
 #pragma data_seg()
 #pragma bss_seg(".bss$APIObjPlaySfxByIdFn")
     void(__cdecl *APIObjPlaySfxByIdFn)(i32, NUVEC *);

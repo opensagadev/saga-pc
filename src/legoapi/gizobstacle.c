@@ -193,6 +193,68 @@ void GameRegisterGizActions(void) {
     RegisterGizActions(game_gizactiondefs);
 }
 
+typedef struct ACTIVATE_CHAR_BUILDIT_VIEW_PC {
+    u8 unknown_00[0x34];
+    NUVEC position;
+    u8 unknown_40[0x34];
+    u16 angle;
+} ACTIVATE_CHAR_BUILDIT_VIEW_PC;
+STATIC_ASSERT(offsetof(ACTIVATE_CHAR_BUILDIT_VIEW_PC, position) == 0x34);
+STATIC_ASSERT(offsetof(ACTIVATE_CHAR_BUILDIT_VIEW_PC, angle) == 0x74);
+STATIC_ASSERT(offsetof(GAMEOBJECT, ai_packet) + offsetof(AIPACKET_PC, creature_index) == 0x400);
+STATIC_ASSERT(sizeof(AICREATURE_PC) == 0xa4);
+extern i32 gizbuildit_gizmotype_id;
+GAMEOBJECT *__cdecl ActivateCharacter(char *, NUVEC *, i32);
+void __cdecl DeactivateCharacter(char *);
+void __cdecl GizBuildIt_KillParts(GIZBUILDIT_s *);
+
+void __cdecl GizActions_ActivateCharPc(GIZFLOW_PC *flow, FLOWBOX_PC *unused, char **params, i32 count) {
+    WORLDINFO *world = WorldInfo_CurrentlyActive();
+    char *name = NULL;
+    i32 active = 1;
+    ACTIVATE_CHAR_BUILDIT_VIEW_PC *buildit = NULL;
+    i32 index;
+    GAMEOBJECT *player;
+    AICREATURE_PC *creature;
+    (void)unused;
+    for (index = 0; index < count; ++index) {
+        char *value = NuStrIStr(params[index], "name=");
+        if (value != NULL)
+            name = value + 5;
+        else if (NuStrICmp(params[index], "TRUE") == 0)
+            active = 1;
+        else if (NuStrICmp(params[index], "FALSE") == 0)
+            active = 0;
+        else if ((value = NuStrIStr(params[index], "buildit=")) != NULL) {
+            GIZMO_PC *gizmo = GizmoFindByName(flow->gizmo_sys, gizbuildit_gizmotype_id, value + 8);
+            if (gizmo != NULL && gizmo->object != NULL)
+                buildit = (ACTIVATE_CHAR_BUILDIT_VIEW_PC *)gizmo->object;
+        }
+    }
+    if (active != 0 && name != NULL) {
+        if (ActivateCharacter(name, buildit != NULL ? &buildit->position : NULL,
+                              buildit != NULL ? buildit->angle : 0) == NULL &&
+            buildit != NULL)
+            GizBuildIt_KillParts((GIZBUILDIT_s *)buildit);
+    } else if (active == 0 && name != NULL) {
+        player = (GAMEOBJECT *)Player[0];
+        if (player != NULL && (player->flags_1fc_word & 0x1000) != 0 && player->dead == 0 &&
+            player->ai_packet.creature_index != 0xff) {
+            creature = &world->ai_sys->creatures[player->ai_packet.creature_index];
+            if (creature != NULL && NuStrICmp(creature->name, name) == 0)
+                ReleaseTakeOver((GAMEOBJECT *)Player[0], 0);
+        }
+        player = (GAMEOBJECT *)Player[1];
+        if (player != NULL && (player->flags_1fc_word & 0x1000) != 0 && player->dead == 0 &&
+            player->ai_packet.creature_index != 0xff) {
+            creature = &world->ai_sys->creatures[((GAMEOBJECT *)Player[0])->ai_packet.creature_index];
+            if (creature != NULL && NuStrICmp(creature->name, name) == 0)
+                ReleaseTakeOver((GAMEOBJECT *)Player[1], 0);
+        }
+        DeactivateCharacter(name);
+    }
+}
+
 i32 GizBombGens_Load(void *world_ptr, void *system_ptr) {
     const u8 version = (u8)(EdFileReadChar());
     GIZBOMBGENSYS_s *system = (GIZBOMBGENSYS_s *)(system_ptr);

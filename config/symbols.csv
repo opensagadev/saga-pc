@@ -121,7 +121,7 @@ address    , symbol                                                         , si
 0x41e2c0,_DrawCharacterAttachments,497,
 0x41f480,_DrawGameObjectsDraw,478,void __cdecl(i32)
 0x41f660,_DrawGameObjects,110,
-0x41f6d0,_ActivateCharacter,529,
+0x41f6d0,_ActivateCharacter,529,"GAMEOBJECT * __cdecl(char *, NUVEC *, i32)"
 0x41f8f0,_AddCreature,67,"GAMEOBJECT * __cdecl(i32,i32)"
 0x41f940,_Players_Init,1355,void __cdecl(void)
 0x00421410,_PlayerDevicePortPc,20,i32 __cdecl (i32)
@@ -549,7 +549,7 @@ address    , symbol                                                         , si
 0x4645f0,_GizActions_SetPickupVisibilityPc,,"void __cdecl(GIZFLOW_PC *, FLOWBOX_PC *, char **, i32)"
 0x464760,_GizActions_TurnOnFlowBoxPc,182,"void __cdecl(GIZFLOW_PC *, FLOWBOX_PC *, char **, i32)"
 0x464820,_GizActions_ActivateGizmoPc,192,"void __cdecl(GIZFLOW_PC *, FLOWBOX_PC *, char **, i32)"
-0x4648e0,_GizActions_ActivateCharPc,,"void __cdecl(GIZFLOW_PC *, FLOWBOX_PC *, char **, i32)"
+0x4648e0,_GizActions_ActivateCharPc,498,"void __cdecl(GIZFLOW_PC *, FLOWBOX_PC *, char **, i32)"
 0x464ae0,_GizActions_ChangeObstTriggerType,363,
 0x464c50,_GizAction_ChangeTechnoTgt,751,
 0x464f40,_GizAction_SetAIMessage,307,
@@ -9449,6 +9449,7 @@ address    , symbol                                                         , si
 0x757d38,??_C@_0BD@IGGPPCDP@REQUIRESPERMISSION?$AA@,19,const char[]
 0x757d4c,??_C@_07BOMCBDMH@BIGJUMP?$AA@,8,const char[]
 0x00757d6c , _AIActionToName                                                , 3     , const char[3]
+0x757de4,??_C@_08PNEHPKKG@buildit?$DN?$AA@,9,const char[9]
 0x00757df0 , _CompleteLevelCutscenePrefix                                   ,       ,
 0x757df0,??_C@_09EJLELPDA@cutscene?$DN?$AA@,10,char []
 0x00757e18 , _AIActionBothWaysName                                          , 9     , const char[9]
@@ -16664,6 +16665,7 @@ address    , symbol                                                         , si
 0x804dc8,_PUNCHCHARGAP,,f32
 0x804dcc,_CanPunchGirls,,i32
 0x804e38,_GizBuilditGDeb,,i16[6]
+0x804e44,_gizbuildit_gizmotype_id,4,i32
 0x804ec8,_CustomiserSetDataPrivatePc,,CUSTOM_CATEGORY_CONFIG_PC[9]
 0x804fac,_PermCollectionScalePc,4,f32
 0x00805030 , _GhostLightMul                                                 , 4     , f32
