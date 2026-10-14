@@ -1345,10 +1345,13 @@ mode_selected:
                 NUVEC rail_position;
                 complexsockposition_forcesock = movegamecamera_forcesock;
 
+                LOG_WARN_ONCE("SockSysCamera before: player_count=%d camera=%p world=%p", player_count, (void *)camera,
+                              (void *)WORLD);
                 index = SockSysCamera(WORLD->sock_sys, &camera->position, camera->mode != camera->previous_mode,
                                       player_focus, player_positions, player_count, &camera->sock_position, &position,
                                       &target, &blend_duration, &position_seek, &angle_seek, &camera_shake,
                                       &separation_scale);
+                LOG_WARN_ONCE("SockSysCamera after: index=%d", index);
                 rail_position = position;
                 blend_duration *= 1.5f;
                 if (WORLD->current_level->cam_pullback_dist > 0.0f) {
