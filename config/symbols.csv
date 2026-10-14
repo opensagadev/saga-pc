@@ -1,6 +1,7 @@
 address    , symbol                                                         , size  , ctype
 0x401080,??_H@YGXPAXIHP6EPAX0@Z@Z,50,
 0x00401100 , _StartupParseArguments                                         , 59    , "void __cdecl (i32, char **)"
+0x401140,_PcControlPlaySoundPc,112,
 0x4011b0,?PcInputCommandAllowedPc@@YAHHH@Z,48,
 0x4011e0,_InitOnce,1019,"void __cdecl(i32,char**)"
 0x4015e0,_Text_ExpandButtonString,462,
@@ -140,7 +141,33 @@ address    , symbol                                                         , si
 0x41f6d0,_ActivateCharacter,529,"GAMEOBJECT * __cdecl(char *, NUVEC *, i32)"
 0x41f8f0,_AddCreature,67,"GAMEOBJECT * __cdecl(i32,i32)"
 0x41f940,_Players_Init,1355,void __cdecl(void)
+0x4200c0,?PcControlPrimColourPc@@YAXI@Z,108,
+0x420220,?Register@PC_CONTROL_SCREEN_PC@@QAEXPAUPC_CONTROL_CONFIG_PC@@PATvariptr_u@@1@Z,247,
+0x420330,?HashConfiguration@PC_CONTROL_SCREEN_PC@@QAEHXZ,142,
+0x4203c0,?WaitForRelease@PC_CONTROL_SCREEN_PC@@QAEHXZ,90,
+0x420450,?SaveConfiguration@PC_CONTROL_SCREEN_PC@@QAEXXZ,138,
+0x4204e0,?PortAllowed@PC_CONTROL_SCREEN_PC@@QAEEHHH@Z,130,
+0x420570,?HasMissingBindings@PC_CONTROL_SCREEN_PC@@QAEEXZ,201,
+0x420640,?ItemAllowsBinding@PC_CONTROL_SCREEN_PC@@QAEHPAUPC_CONTROL_ROW_PC@@HH@Z,67,
+0x420690,?AdvanceSelection@PC_CONTROL_SCREEN_PC@@QAEXPAUPC_CONTROL_ROW_PC@@@Z,98,
+0x420700,_PcControlFontScalePc,124,
+0x420780,?ScaleColour@PC_CONTROL_SCREEN_PC@@QAEIMMI@Z,274,
+0x4208a0,?ScaleAlpha@PC_CONTROL_SCREEN_PC@@QAEIMI@Z,118,
+0x420920,?DrawDeadzone@PC_CONTROL_SCREEN_PC@@QAEXMMMMMMMM@Z,1033,
+0x421050,?HashString@PC_CONTROL_SCREEN_PC@@QAEIPBD@Z,161,
+0x421100,?QueueText@PC_CONTROL_SCREEN_PC@@QAEXPADMMMHMMIMMI@Z,472,
+0x4212e0,?CountPlayerRows@PC_CONTROL_SCREEN_PC@@QAEHPAUPC_CONTROL_ROW_PC@@@Z,57,
+0x421320,_PcControlRegisterPc,210,
 0x00421410,_PlayerDevicePortPc,20,i32 __cdecl (i32)
+0x421430,?RefreshItems@PC_CONTROL_SCREEN_PC@@QAEXXZ,746,
+0x421720,?Update@PC_CONTROL_SCREEN_PC@@QAEHPAUFRAME_PAD_PC@@0M@Z,3056,
+0x422340,?DrawTextA@PC_CONTROL_SCREEN_PC@@QAEMPADMMMHMMIHM@Z,393,
+0x4224d0,?DrawQueuedText@PC_CONTROL_SCREEN_PC@@QAEXM@Z,608,
+0x422730,?Draw@PC_CONTROL_SCREEN_PC@@QAEXXZ,3404,
+0x423480,_PcControlUpdatePc,29,
+0x4234a0,_PcControlDrawPc,10,
+0x4234b0,?Initialize@PC_CONTROL_SCREEN_PC@@QAEXHHHE@Z,349,
+0x423610,_PcControlInitializePc,31,
 0x4238d0,_Customise_FindLetter,40,
 0x423900,_FinishWeirdoNames,146,void __cdecl(i32)
 0x4239e0,_UpdateCustomPieceAnim,389,
@@ -990,6 +1017,12 @@ address    , symbol                                                         , si
 0x491d50,?NuMainUpdateFrame@@YAXPAUWORLDINFO_s@@PAH@Z,2715,"void __cdecl (WORLDINFO *, i32 *)"
 0x4927f0,?NuMainRenderWorld@@YAXPAUWORLDINFO_s@@@Z,845,void __cdecl (WORLDINFO *)
 0x00492b40 , _NuMain                                                        , 4332  , "i32 __cdecl (i32, char **)"
+0x493cb0,_MenuEnterControlSetupPc,17,
+0x493cd0,_MenuDrawControlSetupPc,5,
+0x493ce0,_MenuUpdateControlSetupPc,120,
+0x493d60,_MenuExitSelectControlsPc,1,
+0x493d70,_MenuEnterSelectControlsPc,30,
+0x493d90,_MenuUpdateSelectControlsPc,75,
 0x493e60,_DrawGameState,794,
 0x494180,?DrawSaveSlotsImplPc@@YAXPAUmenu_s@@M@Z,203,
 0x494250,_DrawSaveSlots,23,
@@ -997,6 +1030,8 @@ address    , symbol                                                         , si
 0x00494300 , _MenuUpdateOptions                                             , 690   , void __cdecl (MENU *)
 0x004945c0 , _MenuDrawOptions                                               , 510   , void __cdecl (MENU *)
 0x004947c0 , _MenuExitOptions                                               , 5     , void __cdecl (MENU *)
+0x4947d0,_MenuUpdateExtras,181,
+0x494890,_MenuDrawExtras,785,
 0x494bb0,?MenuUpdateTitleFadePc@@YAHPAUmenu_s@@@Z,571,
 0x00494df0 , _MenuEnterNewGame                                              , 38    , void __cdecl (MENU *)
 0x494e20,_MenuUpdateNewGame,724,void __cdecl(MENU *)
@@ -1283,7 +1318,7 @@ address    , symbol                                                         , si
 0x004c9d80 , _LoadPermDestroyLegalMtl                                       , 29    , void (void)
 0x004c9db0 , _LoadPermLoadFonts                                             , 93    , void (void)
 0x004c9e10 , _LoadPermLoadSaveIconScene                                     , 81    , void (void)
-0x004c9e70 , _LoadPermProgressDraw                                          , 53    , "void (i32, f32)"
+0x4c9e70,_LoadPermProgressDraw,53,
 0x004c9eb0 , _LoadPermFadeAlpha                                             , 163   , "f32 __cdecl (f32, f32)"
 0x004c9f60 , _MemoryManagerInit                                             , 71    , void (void *)
 0x004c9fb0 , _LoadPermData                                                  , 1532  , void __cdecl (void *)
@@ -2022,6 +2057,7 @@ address    , symbol                                                         , si
 0x0050e6d0 , _SmartTextSetWidescreen                                        , 21    , "void __cdecl (f32, f32)"
 0x0050e6f0 , _SmartTextGetWidescreen                                        , 33    , "void __cdecl (f32 *, f32 *)"
 0x0050e730 , _SplitTextFindNextWS                                           , 99    , "i32 __cdecl (u8 *, i32)"
+0x50e7a0,_PcControlWrapTextPc,468,
 0x50e980,_MatrixTextStringEncode,172,
 0x50ea30,_MatrixText,517,
 0x0050ec40 , _FixUpButtonsInFont                                            , 200   , "void __cdecl (VUFNT *, VUFNT *)"
@@ -3027,6 +3063,7 @@ address    , symbol                                                         , si
 0x0056e030 , _Cheat_FindByName                                              , 69    , i32 __cdecl (char *)
 0x56e080,_Cheats_SetFlags,107,void __cdecl(void)
 0x0056e0f0 , _Cheats_CheckFlags                                             , 13    , i32 __cdecl (u32)
+0x56e100,_Cheat_CheckFlags,36,
 0x56e130,_Cheat_SetOn,42,"void __cdecl(i32,i32,i32)"
 0x0056e160 , _Cheat_IsOn                                                    , 98    , i32 __cdecl (i32)
 0x56e2e0,_Cheats_TurnOff,62,void __cdecl(i32)
@@ -8146,6 +8183,8 @@ address    , symbol                                                         , si
 0x74fc90,__ehhandler$?_Insert_n@?$vector@UPOST_VERTEX_SHADER_CACHE_ENTRY_PC@@V?$allocator@UPOST_VERTEX_SHADER_CACHE_ENTRY_PC@@@std@@@std@@IAEXV?$_Vector_iterator@UPOST_VERTEX_SHADER_CACHE_ENTRY_PC@@V?$allocator@UPOST_VERTEX_SHADER_CACHE_ENTRY_PC@@@std@@@2@IABUPOST_VERTEX_SHADER_CACHE_ENTRY_PC@@@Z,27,native EH handler
 0x74fcb0,__ehhandler$?_Insert_n@?$vector@UPOST_PIXEL_SHADER_CACHE_ENTRY_PC@@V?$allocator@UPOST_PIXEL_SHADER_CACHE_ENTRY_PC@@@std@@@std@@IAEXV?$_Vector_iterator@UPOST_PIXEL_SHADER_CACHE_ENTRY_PC@@V?$allocator@UPOST_PIXEL_SHADER_CACHE_ENTRY_PC@@@std@@@2@IABUPOST_PIXEL_SHADER_CACHE_ENTRY_PC@@@Z,27,native EH handler
 0x74fd50,__ehhandler$?_Insert_n@?$vector@PAUShaderParserIncludePc@@V?$allocator@PAUShaderParserIncludePc@@@std@@@std@@IAEXV?$_Vector_iterator@PAUShaderParserIncludePc@@V?$allocator@PAUShaderParserIncludePc@@@std@@@2@IABQAUShaderParserIncludePc@@@Z,27,
+0x74fe00,??__EGame_LanguageList@@YAXXZ,69,
+0x74fe70,??__EText_LanguageList_Default@@YAXXZ,69,
 0x74fed0,??__Efade@@YAXXZ,12,
 0x74fee0,??__EfadeWipe@@YAXXZ,12,
 0x74fef0,??__EfadeStillWipe@@YAXXZ,12,
@@ -8364,6 +8403,8 @@ address    , symbol                                                         , si
 0x0075133c , __imp__CoCreateInstance@20                                     , 4     , "HRESULT (__stdcall *)(REFCLSID, IUnknown *, DWORD, REFIID, void **)"
 0x00751340 , __imp__CoUninitialize@0                                        , 4     , void (__stdcall *)(void)
 0x00751344 , __imp__CoSetProxyBlanket@32                                    , 4     , "HRESULT (__stdcall *)(IUnknown *, DWORD, DWORD, OLECHAR *, DWORD, DWORD, RPC_AUTH_IDENTITY_HANDLE, DWORD)"
+0x75135c,_Game_LanguageList$initializer$,4,native CRT pointer
+0x751364,_Text_LanguageList_Default$initializer$,4,native CRT pointer
 0x75136c,_fade$initializer$,,void (__cdecl *)(void)
 0x751370,_fadeWipe$initializer$,,void (__cdecl *)(void)
 0x751374,_fadeStillWipe$initializer$,,void (__cdecl *)(void)
@@ -8970,15 +9011,21 @@ address    , symbol                                                         , si
 0x00753288 , _NuTimeBarUnsignedBias                                         , 4     , const f32
 0x00753288 , __real@4f800000                                                , 4     , f32
 0x753290,__real@4058000000000000,8,const f64
+0x753298,__real@3faeb851e0000000,8,const f64
 0x7532a0,??_C@_04MFANEHND@?$DP?$DP?$DP?$DP?$AA@,,
+0x7532a0,_PcControlMissingTextPc,5,const char[5]
 0x007532a8 , __real@42c80000                                                , 4     , const f32
 0x7532ac,__real@bf4ccccd,,const f32
+0x7532b0,__real@3f0a3d71,4,const f32
 0x7532b4,__real@3f333333,4,const f32
 0x7532b8   , __real@3ecccccd                                                , 4     , const f32
+0x7532bc,??_C@_07IFMLPBAP@?$CFs?5?$CI?$CFs?$CJ?$AA@,8,const char[8]
 0x7532c4,__real@3ee66666,4,const f32
 0x7532c8,_TerrainScanMargin02Pc,,const f64
+0x7532c8,__real@3f947ae140000000,8,const f64
 0x7532d0,__real@3fb33333,4,f32
 0x7532d4,__real@3f266666,4,const f32
+0x7532d8,__real@bf266666,4,const f32
 0x7532e0,__real@3fe4ccccc0000000,8,const f64
 0x7532e8,??_C@_0BD@KBNGLIEH@stormtrooperhelmet?$AA@,19,const char[19]
 0x7532fc,??_C@_0O@IJKNNAGM@alreadygothat?$AA@,14,const char[14]
@@ -9347,6 +9394,140 @@ address    , symbol                                                         , si
 0x007548ec , _LevelSplinesStartCamName                                      , 10    , const char[10]
 0x7548f8,??_C@_05FAGFPHJG@start?$AA@,6,char[6]
 0x007548f8 , _LevelSplinesStartName                                         , 6     , const char[6]
+0x754900,_ExtrasLiteralPc00754900,7,char[7]
+0x754908,_ExtrasLiteralPc00754908,19,char[19]
+0x75491c,_ExtrasLiteralPc0075491c,12,char[12]
+0x754928,_ExtrasLiteralPc00754928,7,char[7]
+0x754930,_ExtrasLiteralPc00754930,9,char[9]
+0x75493c,_ExtrasLiteralPc0075493c,12,char[12]
+0x754948,_ExtrasLiteralPc00754948,7,char[7]
+0x754950,_ExtrasLiteralPc00754950,17,char[17]
+0x754964,_ExtrasLiteralPc00754964,12,char[12]
+0x754970,_ExtrasLiteralPc00754970,7,char[7]
+0x754978,_ExtrasLiteralPc00754978,18,char[18]
+0x75498c,_ExtrasLiteralPc0075498c,12,char[12]
+0x754998,_ExtrasLiteralPc00754998,7,char[7]
+0x7549a0,_ExtrasLiteralPc007549a0,8,char[8]
+0x7549a8,_ExtrasLiteralPc007549a8,12,char[12]
+0x7549b4,_ExtrasLiteralPc007549b4,7,char[7]
+0x7549bc,_ExtrasLiteralPc007549bc,8,char[8]
+0x7549c4,_ExtrasLiteralPc007549c4,12,char[12]
+0x7549d0,_ExtrasLiteralPc007549d0,7,char[7]
+0x7549d8,_ExtrasLiteralPc007549d8,12,char[12]
+0x7549e4,_ExtrasLiteralPc007549e4,12,char[12]
+0x7549f0,_ExtrasLiteralPc007549f0,7,char[7]
+0x7549f8,_ExtrasLiteralPc007549f8,8,char[8]
+0x754a00,_ExtrasLiteralPc00754a00,12,char[12]
+0x754a0c,_ExtrasLiteralPc00754a0c,7,char[7]
+0x754a14,_ExtrasLiteralPc00754a14,16,char[16]
+0x754a24,_ExtrasLiteralPc00754a24,12,char[12]
+0x754a30,_ExtrasLiteralPc00754a30,7,char[7]
+0x754a38,_ExtrasLiteralPc00754a38,11,char[11]
+0x754a44,_ExtrasLiteralPc00754a44,12,char[12]
+0x754a50,_ExtrasLiteralPc00754a50,7,char[7]
+0x754a58,_ExtrasLiteralPc00754a58,8,char[8]
+0x754a60,_ExtrasLiteralPc00754a60,12,char[12]
+0x754a6c,_ExtrasLiteralPc00754a6c,7,char[7]
+0x754a74,_ExtrasLiteralPc00754a74,10,char[10]
+0x754a80,_ExtrasLiteralPc00754a80,12,char[12]
+0x754a8c,_ExtrasLiteralPc00754a8c,7,char[7]
+0x754a94,_ExtrasLiteralPc00754a94,13,char[13]
+0x754aa4,_ExtrasLiteralPc00754aa4,12,char[12]
+0x754ab0,_ExtrasLiteralPc00754ab0,7,char[7]
+0x754ab8,_ExtrasLiteralPc00754ab8,8,char[8]
+0x754ac0,_ExtrasLiteralPc00754ac0,12,char[12]
+0x754acc,_ExtrasLiteralPc00754acc,7,char[7]
+0x754ad4,_ExtrasLiteralPc00754ad4,14,char[14]
+0x754ae4,_ExtrasLiteralPc00754ae4,12,char[12]
+0x754af0,_ExtrasLiteralPc00754af0,7,char[7]
+0x754af8,_ExtrasLiteralPc00754af8,12,char[12]
+0x754b04,_ExtrasLiteralPc00754b04,11,char[11]
+0x754b10,_ExtrasLiteralPc00754b10,7,char[7]
+0x754b18,_ExtrasLiteralPc00754b18,12,char[12]
+0x754b24,_ExtrasLiteralPc00754b24,11,char[11]
+0x754b30,_ExtrasLiteralPc00754b30,7,char[7]
+0x754b38,_ExtrasLiteralPc00754b38,10,char[10]
+0x754b44,_ExtrasLiteralPc00754b44,11,char[11]
+0x754b50,_ExtrasLiteralPc00754b50,7,char[7]
+0x754b58,_ExtrasLiteralPc00754b58,14,char[14]
+0x754b68,_ExtrasLiteralPc00754b68,14,char[14]
+0x754b78,_ExtrasLiteralPc00754b78,7,char[7]
+0x754b80,_ExtrasLiteralPc00754b80,9,char[9]
+0x754b8c,_ExtrasLiteralPc00754b8c,18,char[18]
+0x754ba0,_ExtrasLiteralPc00754ba0,7,char[7]
+0x754ba8,_ExtrasLiteralPc00754ba8,13,char[13]
+0x754bb8,_ExtrasLiteralPc00754bb8,18,char[18]
+0x754bcc,_ExtrasLiteralPc00754bcc,7,char[7]
+0x754bd4,_ExtrasLiteralPc00754bd4,22,char[22]
+0x754bec,_ExtrasLiteralPc00754bec,19,char[19]
+0x754c00,_ExtrasLiteralPc00754c00,7,char[7]
+0x754c08,_ExtrasLiteralPc00754c08,14,char[14]
+0x754c18,_ExtrasLiteralPc00754c18,20,char[20]
+0x754c2c,_ExtrasLiteralPc00754c2c,7,char[7]
+0x754c34,_ExtrasLiteralPc00754c34,15,char[15]
+0x754c44,_ExtrasLiteralPc00754c44,18,char[18]
+0x754c58,_ExtrasLiteralPc00754c58,7,char[7]
+0x754c60,_ExtrasLiteralPc00754c60,17,char[17]
+0x754c74,_ExtrasLiteralPc00754c74,15,char[15]
+0x754c84,_ExtrasLiteralPc00754c84,7,char[7]
+0x754c8c,_ExtrasLiteralPc00754c8c,10,char[10]
+0x754c98,_ExtrasLiteralPc00754c98,20,char[20]
+0x754cac,_ExtrasLiteralPc00754cac,7,char[7]
+0x754cb4,_ExtrasLiteralPc00754cb4,22,char[22]
+0x754ccc,_ExtrasLiteralPc00754ccc,20,char[20]
+0x754ce0,_ExtrasLiteralPc00754ce0,7,char[7]
+0x754ce8,_ExtrasLiteralPc00754ce8,15,char[15]
+0x754cf8,_ExtrasLiteralPc00754cf8,20,char[20]
+0x754d0c,_ExtrasLiteralPc00754d0c,7,char[7]
+0x754d14,_ExtrasLiteralPc00754d14,15,char[15]
+0x754d24,_ExtrasLiteralPc00754d24,20,char[20]
+0x754d38,_ExtrasLiteralPc00754d38,7,char[7]
+0x754d40,_ExtrasLiteralPc00754d40,15,char[15]
+0x754d50,_ExtrasLiteralPc00754d50,16,char[16]
+0x754d60,_ExtrasLiteralPc00754d60,7,char[7]
+0x754d68,_ExtrasLiteralPc00754d68,11,char[11]
+0x754d74,_ExtrasLiteralPc00754d74,18,char[18]
+0x754d88,_ExtrasLiteralPc00754d88,7,char[7]
+0x754d90,_ExtrasLiteralPc00754d90,11,char[11]
+0x754d9c,_ExtrasLiteralPc00754d9c,15,char[15]
+0x754dac,_ExtrasLiteralPc00754dac,7,char[7]
+0x754db4,_ExtrasLiteralPc00754db4,10,char[10]
+0x754dc0,_ExtrasLiteralPc00754dc0,16,char[16]
+0x754dd0,_ExtrasLiteralPc00754dd0,7,char[7]
+0x754dd8,_ExtrasLiteralPc00754dd8,19,char[19]
+0x754dec,_ExtrasLiteralPc00754dec,18,char[18]
+0x754e00,_ExtrasLiteralPc00754e00,7,char[7]
+0x754e08,_ExtrasLiteralPc00754e08,20,char[20]
+0x754e1c,_ExtrasLiteralPc00754e1c,14,char[14]
+0x754e2c,_ExtrasLiteralPc00754e2c,7,char[7]
+0x754e34,_ExtrasLiteralPc00754e34,9,char[9]
+0x754e40,_ExtrasLiteralPc00754e40,15,char[15]
+0x754e50,_ExtrasLiteralPc00754e50,7,char[7]
+0x754e58,_ExtrasLiteralPc00754e58,10,char[10]
+0x754e64,_ExtrasLiteralPc00754e64,14,char[14]
+0x754e74,_ExtrasLiteralPc00754e74,7,char[7]
+0x754e7c,_ExtrasLiteralPc00754e7c,9,char[9]
+0x754e88,_ExtrasLiteralPc00754e88,16,char[16]
+0x754e98,_ExtrasLiteralPc00754e98,7,char[7]
+0x754ea0,_ExtrasLiteralPc00754ea0,12,char[12]
+0x754eac,_ExtrasLiteralPc00754eac,11,char[11]
+0x754eb8,_ExtrasLiteralPc00754eb8,7,char[7]
+0x754ec0,_ExtrasLiteralPc00754ec0,13,char[13]
+0x754ed0,_ExtrasLiteralPc00754ed0,11,char[11]
+0x754edc,_ExtrasLiteralPc00754edc,7,char[7]
+0x754ee4,_ExtrasLiteralPc00754ee4,9,char[9]
+0x754ef0,_ExtrasLiteralPc00754ef0,11,char[11]
+0x754efc,_ExtrasLiteralPc00754efc,7,char[7]
+0x754f04,_ExtrasLiteralPc00754f04,12,char[12]
+0x754f10,_ExtrasLiteralPc00754f10,11,char[11]
+0x754f1c,_ExtrasLiteralPc00754f1c,7,char[7]
+0x754f24,_ExtrasLiteralPc00754f24,10,char[10]
+0x754f30,_ExtrasLiteralPc00754f30,11,char[11]
+0x754f3c,_ExtrasLiteralPc00754f3c,7,char[7]
+0x754f44,_ExtrasLiteralPc00754f44,4,char[4]
+0x754f48,_ExtrasLiteralPc00754f48,11,char[11]
+0x754f54,_ExtrasLiteralPc00754f54,7,char[7]
+0x754f5c,_ExtrasLiteralPc00754f5c,12,char[12]
 0x00754f68,??_C@_06ILNPDLNE@rancor?$AA@,,const char[7]
 0x754f70   , ??_C@_04OBGPFBCN@blue?$AA@                                     , 5     , const char[5]
 0x754f98,??_C@_02FIPOBNCO@?B?$KE?$AA@,,const char[3]
@@ -10838,6 +11019,8 @@ address    , symbol                                                         , si
 0x0075adcc , _EpisodeIIDat                                                  , 15    , const char[15]
 0x0075addc , _EpisodeIDat                                                   , 14    , const char[14]
 0x0075adec , _Menu_OptionsVolumeFormat                                      , 10    , const char[10]
+0x75adf8,_ExtrasNameFormatPc,7,const char[7]
+0x75ae00,_ExtrasLockedNumberFormatPc,6,const char[6]
 0x75ae08,__real@3f80000000000000,8,const f64
 0x75ae10,??_C@_06FMEEHHCF@?$FL?$FLrb?$FN?$FN?$AA@,7,char []
 0x75ae18,??_C@_06IDJEFOMG@?$FL?$FLlb?$FN?$FN?$AA@,7,char []
@@ -16452,6 +16635,10 @@ address    , symbol                                                         , si
 0x7f2700,_CreatureCloudLegsPc,,const u8[3]
 0x7f2704,_CreatureCloudBodyPc,,const u8[3]
 0x7f2708,_CreatureCloudHeadPc,,const u8[3]
+0x7f2710,_PcControlTextIdsPc,180,i16*[45]
+0x7f27c8,_PcControlItemsPc,200,PC_CONTROL_ITEM_PC[25]
+0x7f2890,_PcControlRowsPc,8,PC_CONTROL_ITEM_PC*[2]
+0x7f2900,_PcControlScreenPc,3780,PC_CONTROL_SCREEN_PC
 0x007f295c,_PlayerDevicePortsPc,8,i32[2]
 0x7f37d8,_CustomiseHeadOffsetPc,4,f32
 007f37e0,_PermanentCustomiserActionsPc,,i16[5]
@@ -16483,6 +16670,7 @@ address    , symbol                                                         , si
 0x007f3afc,_InitPlayerItemTypesPc,,PLAYER_ITEM_TYPE_RESET_PC[2]
 0x007f3b14 , _BonusWinner                                                   , 4     , i32
 0x007f3b18,_CharPivot_LSW,,CHARPIVOT_PC[32]
+0x7f3d98,_ExtrasCheatsPc,1472,CHEAT_PC[46]
 0x7f3dc0,_CheatPooPartsEnabledPc,,u8
 0x7f3e20,_CheatC3poBitsEnabledPc,,u8
 0x7f3ec0,_CheatPooCoinsEnabledPc,,u8
@@ -16630,6 +16818,8 @@ address    , symbol                                                         , si
 0x7facc0,_MENULOSTB1,1,u8
 0x7facc4,_MenuSaveSlotsWidthPc,4,f32
 0x007faccc , _opts_sfx_wait                                                 , 4     , f32
+0x7facd0,_ExtrasFadeStartPc,4,f32
+0x7facd4,_ExtrasFadeEndPc,4,f32
 0x7facd8,_MenuTitlesPromptYPc,4,f32
 0x7facdc,_MenuTitlesWidePromptYPc,4,f32
 0x007facf0 , _GameMenuInfo                                                  , 644   , MENUFNINFO[23]
@@ -17958,6 +18148,14 @@ address    , symbol                                                         , si
 0x855f9c,_makeplayerlist_freeplay,4,i32
 0x855fa0,_addcreature_override_id_check,,i32
 0x855fa8,_GameKeepMergeActionPc,4,i32
+0x855fb0,_PcControlTextPc,180,char*[45]
+0x856868,_PcControlTextIdPc,2,i16
+0x85686c,_PcControlBaselineAdjustPc,4,f32
+0x856870,_PcControlButtonsPc,4,u32
+0x856874,_PcControlPulseAnglePc,4,i32
+0x856878,_PcControlRepeatPc,8,f32[2]
+0x856880,_PcControlHeldPc,8,u32[2]
+0x856888,_PcControlPressedPc,8,u32[2]
 0x856898,_CustomiseArmsAnimPc,40,CUSTOM_PIECE_ANIM_PC[2]
 0x8568e8,_CustomiseLegsAnimPc,40,CUSTOM_PIECE_ANIM_PC[2]
 0x856910,_CustomiseMode,8,i32[2]

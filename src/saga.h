@@ -1571,8 +1571,9 @@ STATIC_ASSERT(offsetof(OPTIONSSAVE, widescreen) == 0x0b);
 typedef struct AREA_SAVE_PICKUP_PC {
     union {
         struct {
-            u8 unknown0[9];
-            u8 minikit_count, red_brick_collected, unknownb;
+            u8 unknown0[5];
+            u8 minikit_count, red_brick_collected;
+            u8 unknown_07[5];
         };
         struct {
             u8 complete;
@@ -1584,8 +1585,8 @@ typedef struct AREA_SAVE_PICKUP_PC {
     };
 } AREA_SAVE_PICKUP_PC;
 STATIC_ASSERT(sizeof(AREA_SAVE_PICKUP_PC) == 0xc);
-STATIC_ASSERT(offsetof(AREA_SAVE_PICKUP_PC, minikit_count) == 9);
-STATIC_ASSERT(offsetof(AREA_SAVE_PICKUP_PC, red_brick_collected) == 0xa);
+STATIC_ASSERT(offsetof(AREA_SAVE_PICKUP_PC, minikit_count) == 5);
+STATIC_ASSERT(offsetof(AREA_SAVE_PICKUP_PC, red_brick_collected) == 6);
 
 typedef struct MISSION_MENU_PACKET_PC {
     i16 player_model[2];
@@ -4415,13 +4416,22 @@ STATIC_ASSERT(offsetof(ARCADE_ITEM_PC, mode) == 0xc);
 
 typedef struct cheat_pc_s {
     char *name;
-    u8 unknown_0004[4];
+    i16 *text_id;
     u8 enabled;
     u8 unknown_0009[2];
     i8 area_index;
-    u8 unknown_000c[0x10];
+    i32 field_0c;
+    char *code;
+    i32 extra_price;
+    char *extra_name;
     u32 flags;
 } CHEAT_PC;
+STATIC_ASSERT(sizeof(CHEAT_PC) == 0x20);
+STATIC_ASSERT(offsetof(CHEAT_PC, text_id) == 4);
+STATIC_ASSERT(offsetof(CHEAT_PC, code) == 0x10);
+STATIC_ASSERT(offsetof(CHEAT_PC, extra_price) == 0x14);
+STATIC_ASSERT(offsetof(CHEAT_PC, extra_name) == 0x18);
+
 STATIC_ASSERT(sizeof(CHEAT_PC) == 0x20);
 STATIC_ASSERT(offsetof(CHEAT_PC, enabled) == 0x8);
 STATIC_ASSERT(offsetof(CHEAT_PC, flags) == 0x1c);
@@ -6630,7 +6640,7 @@ STATIC_ASSERT(offsetof(GAMEANIMPROGRESS, entries) == 8);
 
 typedef struct language_data_s {
     i32 language;
-    i32 unknown_04;
+    char *localized_name;
 } LANGUAGEDATA;
 STATIC_ASSERT(sizeof(LANGUAGEDATA) == 8);
 
@@ -17222,6 +17232,121 @@ STATIC_ASSERT(offsetof(PC_INPUT_MOUSE_RUNTIME_PC, port_activity) == 0x49);
 STATIC_ASSERT(offsetof(NuKeyboardOwner_PC, mouse_cooperative) == 0x3c);
 STATIC_ASSERT(offsetof(NuKeyboardOwner_PC, mouse_enabled) == 0x40);
 
+/* Private PC contract proposal. Include after saga.h. */
+struct PC_CONTROL_ITEM_PC {
+    u8 kind, command, label, flags;
+    f32 pulse;
+};
+struct PC_CONTROL_ROW_PC {
+    i32 count, selected;
+    PC_CONTROL_ITEM_PC *items;
+};
+struct PC_CONTROL_TEXT_PC {
+    char text[0x100];
+    f32 fade, x, y, z, x_scale, y_scale, wrap_width;
+    u32 colour, key;
+    i8 alignment;
+    u8 refreshed;
+    u8 unknown126[2];
+};
+struct PC_CONTROL_CONFIG_PC {
+    VUFNT *font;
+    void(__cdecl *draw_background)(f32, f32, f32);
+    PC_CONTROL_ITEM_PC **rows;
+    void(__cdecl *play_sound)(i32);
+    const char *blocked_keys;
+};
+struct PC_CONTROL_SCREEN_PC {
+    i32 result, player_count;
+    u8 drop_in, active, initialized, unknown0b;
+    f32 opacity, unknown10, fade;
+    i32 phase, row_count, selected_row, capture_state, release_frames, release_reset;
+    f32 x_scale, y_scale;
+    i32 selected_player;
+    i32 ports[4], original_ports[4], saved_ports[4];
+    u32 config_hash;
+    u8 missing_binding, unknown71[3];
+    void(__cdecl *draw_background)(f32, f32, f32);
+    f32 deadzone[4];
+    f32 saved_deadzone[4];
+    f32 keyboard_deadzone;
+    f32 saved_keyboard_deadzone;
+    VUFNT *font;
+    PC_CONTROL_ROW_PC rows[4];
+    u8 unknownd4[4];
+    PC_CONTROL_TEXT_PC text[12];
+    f32 elapsed;
+    NUMTL *material;
+    void(__cdecl *play_sound)(i32);
+    i32 ItemAllowsBinding(PC_CONTROL_ROW_PC *, i32, i32);
+    void AdvanceSelection(PC_CONTROL_ROW_PC *);
+    i32 CountPlayerRows(PC_CONTROL_ROW_PC *);
+    u32 ScaleAlpha(f32, u32);
+    u32 ScaleColour(f32, f32, u32);
+    u32 HashString(const char *);
+    u8 PortAllowed(i32, i32, i32);
+    u8 HasMissingBindings(void);
+    void RefreshItems(void);
+    void Register(PC_CONTROL_CONFIG_PC *, VARIPTR *, VARIPTR *);
+    void Initialize(i32, i32, i32, u8);
+    i32 HashConfiguration(void);
+    void SaveConfiguration(void);
+    i32 WaitForRelease(void);
+    i32 Update(FRAME_PAD_PC *, FRAME_PAD_PC *, f32);
+    void DrawDeadzone(f32, f32, f32, f32, f32, f32, f32, f32);
+    void QueueText(char *, f32, f32, f32, i32, f32, f32, u32, f32, f32, u32);
+    f32 DrawText(char *, f32, f32, f32, i32, f32, f32, u32, i32, f32);
+    void DrawQueuedText(f32);
+
+    void Draw(void);
+};
+STATIC_ASSERT(sizeof(PC_CONTROL_ITEM_PC) == 8);
+STATIC_ASSERT(sizeof(PC_CONTROL_ROW_PC) == 0xc);
+STATIC_ASSERT(sizeof(PC_CONTROL_TEXT_PC) == 0x128);
+STATIC_ASSERT(offsetof(PC_CONTROL_TEXT_PC, key) == 0x120);
+STATIC_ASSERT(offsetof(PC_CONTROL_SCREEN_PC, ports) == 0x3c);
+STATIC_ASSERT(offsetof(PC_CONTROL_SCREEN_PC, saved_ports) == 0x5c);
+STATIC_ASSERT(offsetof(PC_CONTROL_SCREEN_PC, draw_background) == 0x74);
+STATIC_ASSERT(offsetof(PC_CONTROL_SCREEN_PC, keyboard_deadzone) == 0x98);
+STATIC_ASSERT(offsetof(PC_CONTROL_SCREEN_PC, rows) == 0xa4);
+STATIC_ASSERT(offsetof(PC_CONTROL_SCREEN_PC, text) == 0xd8);
+STATIC_ASSERT(offsetof(PC_CONTROL_SCREEN_PC, elapsed) == 0xeb8);
+STATIC_ASSERT(offsetof(PC_CONTROL_SCREEN_PC, material) == 0xebc);
+STATIC_ASSERT(offsetof(PC_CONTROL_SCREEN_PC, play_sound) == 0xec0);
+STATIC_ASSERT(sizeof(PC_CONTROL_SCREEN_PC) == 0xec4);
+
+STATIC_ASSERT(sizeof(PC_CONTROL_CONFIG_PC) == 0x14);
+STATIC_ASSERT(offsetof(PC_CONTROL_CONFIG_PC, draw_background) == 4);
+STATIC_ASSERT(offsetof(PC_CONTROL_CONFIG_PC, rows) == 8);
+STATIC_ASSERT(offsetof(PC_CONTROL_CONFIG_PC, play_sound) == 0xc);
+STATIC_ASSERT(offsetof(PC_CONTROL_CONFIG_PC, blocked_keys) == 0x10);
+STATIC_ASSERT(offsetof(PC_CONTROL_TEXT_PC, alignment) == 0x124);
+STATIC_ASSERT(offsetof(PC_CONTROL_TEXT_PC, refreshed) == 0x125);
+
+extern "C" {
+    extern PC_CONTROL_SCREEN_PC PcControlScreenPc;
+    extern PC_CONTROL_ITEM_PC PcControlItemsPc[25];
+    extern PC_CONTROL_ITEM_PC *PcControlRowsPc[2];
+    extern i16 *PcControlTextIdsPc[45];
+    extern char *PcControlTextPc[45];
+    extern f32 PcControlBaselineAdjustPc;
+    void __cdecl PcControlRegisterPc(PC_CONTROL_CONFIG_PC *, VARIPTR *, VARIPTR *);
+    void __cdecl PcControlPlaySoundPc(i32);
+    void __cdecl LoadPermProgressDraw(f32, f32, f32);
+    void __cdecl MenuEnterControlSetupPc(MENU *);
+    void __cdecl MenuDrawSelectLanguage(MENU *);
+    void __cdecl MenuUpdateSelectLanguage(MENU *);
+    void __cdecl MenuDrawExtras(MENU *);
+    void __cdecl MenuUpdateExtras(MENU *);
+    u32 __cdecl Cheat_CheckFlags(i32, u32);
+    extern CHEAT_PC ExtrasCheatsPc[46];
+    void __cdecl MenuDrawControlSetupPc(MENU *);
+    void __cdecl MenuUpdateControlSetupPc(MENU *);
+    void __cdecl MenuEnterSelectControlsPc(MENU *);
+    void __cdecl MenuUpdateSelectControlsPc(MENU *);
+    void __cdecl MenuExitSelectControlsPc(MENU *);
+}
+
 #pragma pack(push, 2)
 struct PC_INPUT_CONFIG_PC {
     char name[64];
@@ -18637,6 +18762,7 @@ extern "C" {
     i32 __cdecl UpdateMenu(u32, u32, u32, u32, f32, u32, u32, u32, u32);
     void __cdecl UpdateGameMenu(GAMEPAD_PC *, i32);
     i32 __cdecl AreaGetKeyboardOverridePc(void);
+    i32 __cdecl NuKeyboard(i32);
     i32 __cdecl NuKeyboard_db(i32);
     i32 __cdecl NuSound3LoadingSfx(void);
 #ifdef __cplusplus

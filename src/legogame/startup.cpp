@@ -360,6 +360,8 @@ extern "C" {
         i16 default_id_a;
         i16 default_id_b;
         u32 aligned;
+        PC_CONTROL_CONFIG_PC control_config;
+        char blocked_keys[4];
 
         LoadPermLoadFonts();
         while (LoadPerm_LanguageSelect != 3) {
@@ -461,7 +463,7 @@ extern "C" {
         id_DEFAULTCHARACTER[1] = default_id_b;
 
         STUBBED_NAMED("LoadPermData: CharCategories_Init(0x7f25f0 / 0x7f25a8)");
-        STUBBED_NAMED("LoadPermData: Cheats_Init(0x7f3d98)");
+        Cheats_Init(ExtrasCheatsPc);
         PlayerID[0] = id_DEFAULTCHARACTER[0];
         PlayerID[1] = id_DEFAULTCHARACTER[1];
         STUBBED_NAMED("LoadPermData: CharVariants_Init(0x7f3a80, 0x17)");
@@ -499,8 +501,17 @@ extern "C" {
         STUBBED_NAMED("LoadPermData: GameThingManager::AddOnceOnlyThings(0x95e438)");
         STUBBED_NAMED("LoadPermData: RegisterHelpers");
 
-        STUBBED_NAMED("LoadPermData: loading-screen registration (0x421320 struct with font,"
-                      " LoadPermProgressDraw, 0x401140)");
+        blocked_keys[0] = 0x3b;
+        blocked_keys[1] = 0x3c;
+        blocked_keys[2] = 1;
+        blocked_keys[3] = 0;
+        control_config.font = SmartTextFont != NULL ? SmartTextFont : QFont2D;
+        control_config.draw_background = LoadPermProgressDraw;
+        control_config.rows = NULL;
+        control_config.play_sound = PcControlPlaySoundPc;
+        control_config.blocked_keys = blocked_keys;
+        PcControlRegisterPc(&control_config, &permbuffer_ptr, &permbuffer_end);
+
         STUBBED_NAMED("LoadPermData: procedural animation fn registration (0x6d4dd0(0x50c140))");
         PcInputSetCommandFilterPc(PcInputCommandAllowedPc);
 

@@ -9630,8 +9630,14 @@ extern "C" {
 #pragma bss_seg(".bss$Panel3DMulY")
     f32 PANEL3DMULY;
 #pragma bss_seg()
-    LANGUAGEDATA Game_LanguageList[7] = {{1, 0}, {2, 0}, {4, 0}, {5, 0}, {3, 0}, {8, 0}, {-1, 0}};
-    LANGUAGEDATA Text_LanguageList_Default[7] = {{1, 0}, {2, 0}, {4, 0}, {5, 0}, {3, 0}, {8, 0}, {-1, 0}};
+    LANGUAGEDATA Game_LanguageList[7] = {{1, apitxt_ENGLISH}, {2, apitxt_FRENCH},  {4, apitxt_GERMAN},
+                                         {5, apitxt_ITALIAN}, {3, apitxt_SPANISH}, {8, apitxt_DANISH},
+                                         {-1, NULL}};
+    LANGUAGEDATA Text_LanguageList_Default[7] = {{1, apitxt_ENGLISH}, {2, apitxt_FRENCH},  {4, apitxt_GERMAN},
+                                                 {5, apitxt_ITALIAN}, {3, apitxt_SPANISH}, {8, apitxt_DANISH},
+                                                 {-1, NULL}};
+    STATIC_ASSERT(offsetof(LANGUAGEDATA, localized_name) == 4);
+
     LANGUAGEDATA *Text_LanguageList = Text_LanguageList_Default;
     i32 LANGUAGECOUNT = 6;
     i32 Text_Language = 1;
@@ -10428,9 +10434,9 @@ extern "C" {
         {2, NULL, NULL, NULL, NULL, -1, -1, 0, 0, 0, 0},
         {3, NULL, NULL, NULL, NULL, -1, -1, 0, 0, 0, 0},
         {4, MenuEnterOptions, MenuDrawOptions, MenuUpdateOptions, MenuExitOptions, 0, 0, 0, 1, 1, 0},
-        {5, NULL, NULL, NULL, NULL, 0, 0, 0, 0, 0, 0},
+        {5, NULL, MenuDrawExtras, MenuUpdateExtras, NULL, 0, 0, 0, 0, 0, 0},
         {6, NULL, NULL, NULL, NULL, -1, -1, 0, 0, 0, 0},
-        {7, NULL, NULL, NULL, NULL, 0, 0, 0, 0, 0, 0},
+        {7, NULL, MenuDrawSelectLanguage, MenuUpdateSelectLanguage, NULL, 0, 0, 0, 0, 0, 0},
         {8, NULL, NULL, NULL, NULL, -1, -1, 0, 0, 0, 0},
         {9, NULL, NULL, NULL, NULL, -1, -1, 0, 0, 0, 0},
         {10, NULL, NULL, NULL, NULL, -1, -1, 0, 0, 0, 0},
@@ -10444,8 +10450,9 @@ extern "C" {
         {18, NULL, NULL, NULL, NULL, -1, -1, 0, 0, 0, 0},
         {19, NULL, NULL, NULL, NULL, -1, -1, 0, 0, 0, 0},
         {20, NULL, NULL, NULL, NULL, -1, -1, 0, 0, 0, 0},
-        {21, NULL, NULL, NULL, NULL, -1, -1, 0, 0, 0, 0},
-        {22, NULL, NULL, NULL, NULL, 0, 0, 0, 0, 0, 0},
+        {21, MenuEnterControlSetupPc, MenuDrawControlSetupPc, MenuUpdateControlSetupPc, NULL, -1, -1, 0, 0, 0, 0},
+        {22, MenuEnterSelectControlsPc, MenuDrawControlSetupPc, MenuUpdateSelectControlsPc, MenuExitSelectControlsPc, 0,
+         0, 0, 0, 0, 0},
     };
 
 #pragma bss_seg(".bss$DebrisGlassInitialized")
@@ -32277,5 +32284,766 @@ extern "C" {
 extern "C" {
 #pragma const_seg(".rdata$CharacterWeaponScaleUpperBoundPc")
     extern const f32 CharacterWeaponScaleUpperBoundPc = 65.0f;
+#pragma const_seg()
+}
+
+extern "C" {
+    /* Persistent native ControlSetup data proposals; include after types. */
+    extern "C" {
+        extern i16 TextIdPc880890;
+        extern i16 TextIdPc880f00;
+        extern i16 TextIdPc880f04;
+        extern i16 TextIdPc880f0c;
+        extern i16 TextIdPc880f10;
+        extern i16 TextIdPc880f08;
+        extern i16 TextIdPc880c34;
+        extern i16 TextIdPc880c38;
+        extern i16 TextIdPc880c3c;
+        extern i16 TextIdPc880c40;
+        extern i16 TextIdPc880c44;
+        extern i16 TextIdPc880c48;
+        extern i16 TextIdPc880c4c;
+        extern i16 TextIdPc880c50;
+        extern i16 TextIdPc880c54;
+        extern i16 TextIdPc880c58;
+        extern i16 TextIdPc880c5c;
+        extern i16 TextIdPc880f14;
+        extern i16 TextIdPc880f18;
+        extern i16 TextIdPc880f1c;
+        extern i16 TextIdPc880f20;
+        extern i16 TextIdPc880f44;
+        extern i16 TextIdPc880894;
+        extern i16 TextIdPc880898;
+        extern i16 TextIdPc880f24;
+        extern i16 TextIdPc880f28;
+        extern i16 TextIdPc880f2c;
+        extern i16 TextIdPc880f30;
+        extern i16 TextIdPc880f34;
+        extern i16 TextIdPc880f38;
+        extern i16 TextIdPc880f3c;
+        extern i16 TextIdPc880f40;
+        extern i16 TextIdPc880f48;
+        extern i16 TextIdPc880f4c;
+        extern i16 TextIdPc880f50;
+        extern i16 TextIdPc880c80;
+        extern i16 TextIdPc880c7c;
+        extern i16 TextIdPc880c74;
+        extern i16 TextIdPc880c78;
+        extern i16 TextIdPc880cb0;
+        extern i16 TextIdPc8811c0;
+        extern i16 TextIdPc8811bc;
+        extern i16 PcControlTextIdPc;
+        extern i16 TextIdPc8811b0;
+    }
+    i16 *PcControlTextIdsPc[45] = {
+        &tACCEPT,        &TextIdPc880890,    &TextIdPc880f00, &TextIdPc880f04, &TextIdPc880f0c, &TextIdPc880f10,
+        &TextIdPc880f08, &TextIdPc880c34,    &TextIdPc880c38, &TextIdPc880c3c, &TextIdPc880c40, &TextIdPc880c44,
+        &TextIdPc880c48, &TextIdPc880c4c,    &TextIdPc880c50, &TextIdPc880c54, &TextIdPc880c58, &TextIdPc880c5c,
+        &TextIdPc880f14, &TextIdPc880f18,    &TextIdPc880f1c, &TextIdPc880f20, &TextIdPc880f44, &TextIdPc880894,
+        &TextIdPc880898, &TextIdPc880f24,    &TextIdPc880f28, &TextIdPc880f2c, &TextIdPc880f30, &TextIdPc880f34,
+        &TextIdPc880f38, &TextIdPc880f3c,    &TextIdPc880f40, &TextIdPc880f48, &TextIdPc880f4c, &TextIdPc880f50,
+        &TextIdPc880c80, &TextIdPc880c7c,    &TextIdPc880c74, &TextIdPc880c78, &TextIdPc880cb0, &TextIdPc8811c0,
+        &TextIdPc8811bc, &PcControlTextIdPc, &TextIdPc8811b0};
+    char *PcControlTextPc[45];
+    PC_CONTROL_ITEM_PC PcControlItemsPc[25] = {
+        {0, 0, 7, 1, 0.0f},       {0, 1, 8, 2, 0.0f},   {0, 2, 9, 3, 0.0f},   {0, 3, 10, 4, 0.0f},
+        {0, 12, 11, 0, 0.0f},     {0, 13, 12, 0, 0.0f}, {0, 14, 13, 0, 0.0f}, {0, 15, 14, 0, 0.0f},
+        {0, 16, 16, 0, 0.0f},     {0, 18, 15, 0, 0.0f}, {0, 23, 17, 0, 0.0f}, {0, 4, 18, 8, 0.0f},
+        {0, 5, 19, 8, 0.0f},      {0, 6, 20, 8, 0.0f},  {0, 7, 21, 8, 0.0f},  {0, 8, 36, 8, 0.0f},
+        {0, 10, 37, 8, 0.0f},     {0, 11, 38, 8, 0.0f}, {0, 9, 39, 8, 0.0f},  {2, 0, 22, 0, 0.0f},
+        {4, 0, 3, 0, 0.0f},       {4, 0, 40, 0, 0.0f},  {4, 0, 0, 0, 0.0f},   {4, 0, 1, 0, 0.0f},
+        {255, 255, 255, 0, 0.0f},
+    };
+    PC_CONTROL_ITEM_PC *PcControlRowsPc[2] = {PcControlItemsPc, NULL};
+
+#pragma const_seg(".rdata$PcControlMissingTextPc")
+    extern const char PcControlMissingTextPc[] = "????";
+#pragma const_seg()
+    i16 PcControlTextIdPc;
+    u32 PcControlButtonsPc;
+    i32 PcControlPulseAnglePc;
+    f32 PcControlRepeatPc[2];
+    u32 PcControlHeldPc[2], PcControlPressedPc[2];
+    PC_CONTROL_SCREEN_PC PcControlScreenPc = {0,
+                                              0,
+                                              0,
+                                              0,
+                                              0,
+                                              0,
+                                              0.0f,
+                                              0.0f,
+                                              0.0f,
+                                              0,
+                                              0,
+                                              0,
+                                              0,
+                                              0,
+                                              0,
+                                              0.9f,
+                                              0.8f,
+                                              0,
+                                              {0, 0, 0, 0},
+                                              {0, 0, 0, 0},
+                                              {-1, -1, -1, -1},
+                                              0,
+                                              0,
+                                              {0, 0, 0},
+                                              NULL,
+                                              {32.0f, 32.0f, 32.0f, 32.0f},
+                                              {0, 0, 0, 0},
+                                              5.0f,
+                                              0.0f,
+                                              NULL,
+                                              {{0}},
+                                              {0},
+                                              {{0}},
+                                              0.0f,
+                                              NULL,
+                                              NULL};
+
+    // Original .data virtual tail (BSS) at 0x85686c; initial bits zero.
+    f32 PcControlBaselineAdjustPc = 0.0f;
+}
+
+extern "C" {
+    extern i16 TextIdPc880990;
+    extern i16 TextIdPc880994;
+    extern i16 TextIdPc880998;
+    extern i16 TextIdPc88099c;
+    extern i16 TextIdPc8809a0;
+    extern i16 TextIdPc8809a4;
+    extern i16 TextIdPc8809a8;
+    extern i16 TextIdPc8809ac;
+    extern i16 TextIdPc8809b0;
+    extern i16 TextIdPc8809b4;
+    extern i16 TextIdPc8809b8;
+    extern i16 TextIdPc8809bc;
+    extern i16 TextIdPc8809c0;
+    extern i16 TextIdPc8809c4;
+    extern i16 TextIdPc8809c8;
+    extern i16 TextIdPc8809cc;
+    extern i16 TextIdPc8809d0;
+    extern i16 TextIdPc881044;
+    extern i16 TextIdPc881048;
+    extern i16 TextIdPc88104c;
+    extern i16 TextIdPc881058;
+    extern i16 TextIdPc88105c;
+    extern i16 TextIdPc881060;
+    extern i16 TextIdPc881064;
+    extern i16 TextIdPc881068;
+    extern i16 TextIdPc88106c;
+    extern i16 TextIdPc881070;
+    extern i16 TextIdPc881074;
+    extern i16 TextIdPc881078;
+    extern i16 TextIdPc88107c;
+    extern i16 TextIdPc881080;
+    extern i16 TextIdPc881084;
+    extern i16 TextIdPc881088;
+    extern i16 TextIdPc88108c;
+    extern i16 TextIdPc881090;
+    extern i16 TextIdPc881094;
+    extern i16 TextIdPc881098;
+    extern i16 TextIdPc88109c;
+    extern i16 TextIdPc8810a0;
+    extern i16 TextIdPc8810a4;
+    extern i16 TextIdPc8810a8;
+    extern i16 TextIdPc8810ac;
+    extern i16 TextIdPc8810b0;
+    extern i16 TextIdPc8810b4;
+    extern i16 TextIdPc8810b8;
+    /* Install in extern C data section. */
+    char ExtrasLiteralPc00754f5c[] = "extratoggle";
+    char ExtrasLiteralPc00754f54[] = "MZY419";
+    char ExtrasLiteralPc00754f48[] = "shop_tool1";
+    char ExtrasLiteralPc00754f44[] = "poo";
+    char ExtrasLiteralPc00754f3c[] = "6HUJ56";
+    char ExtrasLiteralPc00754f30[] = "shop_tool2";
+    char ExtrasLiteralPc00754f24[] = "disguises";
+    char ExtrasLiteralPc00754f1c[] = "BRJ437";
+    char ExtrasLiteralPc00754f10[] = "shop_tool3";
+    char ExtrasLiteralPc00754f04[] = "daisychains";
+    char ExtrasLiteralPc00754efc[] = "KAU532";
+    char ExtrasLiteralPc00754ef0[] = "shop_tool4";
+    char ExtrasLiteralPc00754ee4[] = "c3pobits";
+    char ExtrasLiteralPc00754edc[] = "5HD9TY";
+    char ExtrasLiteralPc00754ed0[] = "shop_tool5";
+    char ExtrasLiteralPc00754ec0[] = "towdeathstar";
+    char ExtrasLiteralPc00754eb8[] = "JNK8J4";
+    char ExtrasLiteralPc00754eac[] = "shop_tool6";
+    char ExtrasLiteralPc00754ea0[] = "silhouettes";
+    char ExtrasLiteralPc00754e98[] = "5HD86H";
+    char ExtrasLiteralPc00754e88[] = "shop_silhouette";
+    char ExtrasLiteralPc00754e7c[] = "beepbeep";
+    char ExtrasLiteralPc00754e74[] = "VXZ3K2";
+    char ExtrasLiteralPc00754e64[] = "shop_beepbeep";
+    char ExtrasLiteralPc00754e58[] = "supergonk";
+    char ExtrasLiteralPc00754e50[] = "SPRGNK";
+    char ExtrasLiteralPc00754e40[] = "shop_supergonk";
+    char ExtrasLiteralPc00754e34[] = "poomoney";
+    char ExtrasLiteralPc00754e2c[] = "PMN904";
+    char ExtrasLiteralPc00754e1c[] = "shop_poomoney";
+    char ExtrasLiteralPc00754e08[] = "walkietalkiedisable";
+    char ExtrasLiteralPc00754e00[] = "JKJ589";
+    char ExtrasLiteralPc00754dec[] = "shop_walkietalkie";
+    char ExtrasLiteralPc00754dd8[] = "powerbrickdetector";
+    char ExtrasLiteralPc00754dd0[] = "FBM834";
+    char ExtrasLiteralPc00754dc0[] = "shop_powerbrick";
+    char ExtrasLiteralPc00754db4[] = "superslap";
+    char ExtrasLiteralPc00754dac[] = "294NMB";
+    char ExtrasLiteralPc00754d9c[] = "shop_superslap";
+    char ExtrasLiteralPc00754d90[] = "forcezipup";
+    char ExtrasLiteralPc00754d88[] = "CLZ738";
+    char ExtrasLiteralPc00754d74[] = "shop_forcegrapple";
+    char ExtrasLiteralPc00754d68[] = "coinmagnet";
+    char ExtrasLiteralPc00754d60[] = "VXZ193";
+    char ExtrasLiteralPc00754d50[] = "shop_coinmagnet";
+    char ExtrasLiteralPc00754d40[] = "disarmtroopers";
+    char ExtrasLiteralPc00754d38[] = "HJU848";
+    char ExtrasLiteralPc00754d24[] = "shop_disarmtroopers";
+    char ExtrasLiteralPc00754d14[] = "characterstuds";
+    char ExtrasLiteralPc00754d0c[] = "DHY782";
+    char ExtrasLiteralPc00754cf8[] = "shop_characterstuds";
+    char ExtrasLiteralPc00754ce8[] = "perfectdeflect";
+    char ExtrasLiteralPc00754ce0[] = "PER894";
+    char ExtrasLiteralPc00754ccc[] = "shop_perfectdeflect";
+    char ExtrasLiteralPc00754cb4[] = "explodingblasterbolts";
+    char ExtrasLiteralPc00754cac[] = "EXP912";
+    char ExtrasLiteralPc00754c98[] = "shop_explodingbolts";
+    char ExtrasLiteralPc00754c8c[] = "forcepull";
+    char ExtrasLiteralPc00754c84[] = "PUL966";
+    char ExtrasLiteralPc00754c74[] = "shop_forcepull";
+    char ExtrasLiteralPc00754c60[] = "vehiclesmartbomb";
+    char ExtrasLiteralPc00754c58[] = "SMA293";
+    char ExtrasLiteralPc00754c44[] = "shop_vehiclesmart";
+    char ExtrasLiteralPc00754c34[] = "superastromech";
+    char ExtrasLiteralPc00754c2c[] = "R2D222";
+    char ExtrasLiteralPc00754c18[] = "shop_superastromech";
+    char ExtrasLiteralPc00754c08[] = "superjedislam";
+    char ExtrasLiteralPc00754c00[] = "SLM768";
+    char ExtrasLiteralPc00754bec[] = "shop_superjedislam";
+    char ExtrasLiteralPc00754bd4[] = "superthermaldetonator";
+    char ExtrasLiteralPc00754bcc[] = "THE931";
+    char ExtrasLiteralPc00754bb8[] = "shop_superthermal";
+    char ExtrasLiteralPc00754ba8[] = "deflectbolts";
+    char ExtrasLiteralPc00754ba0[] = "BNL435";
+    char ExtrasLiteralPc00754b8c[] = "shop_deflectbolts";
+    char ExtrasLiteralPc00754b80[] = "darkside";
+    char ExtrasLiteralPc00754b78[] = "DRK328";
+    char ExtrasLiteralPc00754b68[] = "shop_darkside";
+    char ExtrasLiteralPc00754b58[] = "superblasters";
+    char ExtrasLiteralPc00754b50[] = "HHD647";
+    char ExtrasLiteralPc00754b44[] = "shop_tool7";
+    char ExtrasLiteralPc00754b38[] = "fastforce";
+    char ExtrasLiteralPc00754b30[] = "BYY492";
+    char ExtrasLiteralPc00754b24[] = "shop_tool8";
+    char ExtrasLiteralPc00754b18[] = "supersabres";
+    char ExtrasLiteralPc00754b10[] = "GHL978";
+    char ExtrasLiteralPc00754b04[] = "shop_tool9";
+    char ExtrasLiteralPc00754af8[] = "tractorbeam";
+    char ExtrasLiteralPc00754af0[] = "53NKH3";
+    char ExtrasLiteralPc00754ae4[] = "shop_tool10";
+    char ExtrasLiteralPc00754ad4[] = "invincibility";
+    char ExtrasLiteralPc00754acc[] = "HS9K44";
+    char ExtrasLiteralPc00754ac0[] = "shop_tool11";
+    char ExtrasLiteralPc00754ab8[] = "scorex2";
+    char ExtrasLiteralPc00754ab0[] = "HBF899";
+    char ExtrasLiteralPc00754aa4[] = "shop_tool13";
+    char ExtrasLiteralPc00754a94[] = "selfdestruct";
+    char ExtrasLiteralPc00754a8c[] = "DRX444";
+    char ExtrasLiteralPc00754a80[] = "shop_tool12";
+    char ExtrasLiteralPc00754a74[] = "fastbuild";
+    char ExtrasLiteralPc00754a6c[] = "KJU233";
+    char ExtrasLiteralPc00754a60[] = "shop_tool14";
+    char ExtrasLiteralPc00754a58[] = "scorex4";
+    char ExtrasLiteralPc00754a50[] = "DQY857";
+    char ExtrasLiteralPc00754a44[] = "shop_tool15";
+    char ExtrasLiteralPc00754a38[] = "regenerate";
+    char ExtrasLiteralPc00754a30[] = "528HBB";
+    char ExtrasLiteralPc00754a24[] = "shop_tool16";
+    char ExtrasLiteralPc00754a14[] = "minikitdetector";
+    char ExtrasLiteralPc00754a0c[] = "FBM152";
+    char ExtrasLiteralPc00754a00[] = "shop_tool17";
+    char ExtrasLiteralPc007549f8[] = "scorex6";
+    char ExtrasLiteralPc007549f0[] = "NMP499";
+    char ExtrasLiteralPc007549e4[] = "shop_tool18";
+    char ExtrasLiteralPc007549d8[] = "superzapper";
+    char ExtrasLiteralPc007549d0[] = "DFY111";
+    char ExtrasLiteralPc007549c4[] = "shop_tool19";
+    char ExtrasLiteralPc007549bc[] = "rockets";
+    char ExtrasLiteralPc007549b4[] = "BKJ462";
+    char ExtrasLiteralPc007549a8[] = "shop_tool20";
+    char ExtrasLiteralPc007549a0[] = "scorex8";
+    char ExtrasLiteralPc00754998[] = "XXY99G";
+    char ExtrasLiteralPc0075498c[] = "shop_tool21";
+    char ExtrasLiteralPc00754978[] = "superewokcatapult";
+    char ExtrasLiteralPc00754970[] = "ERF893";
+    char ExtrasLiteralPc00754964[] = "shop_tool22";
+    char ExtrasLiteralPc00754950[] = "infinitetorpedos";
+    char ExtrasLiteralPc00754948[] = "NUJ866";
+    char ExtrasLiteralPc0075493c[] = "shop_tool23";
+    char ExtrasLiteralPc00754930[] = "scorex10";
+    char ExtrasLiteralPc00754928[] = "VXZ123";
+    char ExtrasLiteralPc0075491c[] = "shop_tool24";
+    char ExtrasLiteralPc00754908[] = "adaptivedifficulty";
+    char ExtrasLiteralPc00754900[] = "------";
+    CHEAT_PC ExtrasCheatsPc[46] = {
+        {ExtrasLiteralPc00754f5c,
+         &TextIdPc880990,
+         0,
+         {0, 0},
+         -1,
+         -1,
+         ExtrasLiteralPc00754f54,
+         25000,
+         ExtrasLiteralPc00754f48,
+         0x100},
+        {ExtrasLiteralPc00754f44,
+         &TextIdPc88104c,
+         0,
+         {0, 0},
+         -1,
+         -1,
+         ExtrasLiteralPc00754f3c,
+         8000,
+         ExtrasLiteralPc00754f30,
+         0x0},
+        {ExtrasLiteralPc00754f24,
+         &TextIdPc880994,
+         0,
+         {0, 0},
+         -1,
+         -1,
+         ExtrasLiteralPc00754f1c,
+         10000,
+         ExtrasLiteralPc00754f10,
+         0x0},
+        {ExtrasLiteralPc00754f04,
+         &TextIdPc881058,
+         0,
+         {0, 0},
+         -1,
+         -1,
+         ExtrasLiteralPc00754efc,
+         5000,
+         ExtrasLiteralPc00754ef0,
+         0x0},
+        {ExtrasLiteralPc00754ee4,
+         &TextIdPc881048,
+         0,
+         {0, 0},
+         -1,
+         -1,
+         ExtrasLiteralPc00754edc,
+         10000,
+         ExtrasLiteralPc00754ed0,
+         0x0},
+        {ExtrasLiteralPc00754ec0,
+         &TextIdPc88105c,
+         0,
+         {0, 0},
+         -1,
+         -1,
+         ExtrasLiteralPc00754eb8,
+         5000,
+         ExtrasLiteralPc00754eac,
+         0x0},
+        {ExtrasLiteralPc00754ea0,
+         &TextIdPc8809d0,
+         0,
+         {0, 0},
+         -1,
+         -1,
+         ExtrasLiteralPc00754e98,
+         10000,
+         ExtrasLiteralPc00754e88,
+         0x1},
+        {ExtrasLiteralPc00754e7c,
+         &TextIdPc881074,
+         0,
+         {0, 0},
+         -1,
+         -1,
+         ExtrasLiteralPc00754e74,
+         7500,
+         ExtrasLiteralPc00754e64,
+         0x0},
+        {ExtrasLiteralPc00754e58,
+         &TextIdPc881070,
+         0,
+         {0, 0},
+         -1,
+         -1,
+         ExtrasLiteralPc00754e50,
+         100000,
+         ExtrasLiteralPc00754e40,
+         0x0},
+        {ExtrasLiteralPc00754e34,
+         &TextIdPc88107c,
+         0,
+         {0, 0},
+         -1,
+         -1,
+         ExtrasLiteralPc00754e2c,
+         100000,
+         ExtrasLiteralPc00754e1c,
+         0x200000},
+        {ExtrasLiteralPc00754e08,
+         &TextIdPc8810a0,
+         0,
+         {0, 0},
+         -1,
+         -1,
+         ExtrasLiteralPc00754e00,
+         5000,
+         ExtrasLiteralPc00754dec,
+         0x0},
+        {ExtrasLiteralPc00754dd8,
+         &TextIdPc881080,
+         0,
+         {0, 0},
+         -1,
+         -1,
+         ExtrasLiteralPc00754dd0,
+         125000,
+         ExtrasLiteralPc00754dc0,
+         0x40000},
+        {ExtrasLiteralPc00754db4,
+         &TextIdPc881084,
+         0,
+         {0, 0},
+         -1,
+         -1,
+         ExtrasLiteralPc00754dac,
+         5000,
+         ExtrasLiteralPc00754d9c,
+         0x0},
+        {ExtrasLiteralPc00754d90,
+         &TextIdPc88108c,
+         0,
+         {0, 0},
+         -1,
+         -1,
+         ExtrasLiteralPc00754d88,
+         15000,
+         ExtrasLiteralPc00754d74,
+         0x0},
+        {ExtrasLiteralPc00754d68,
+         &TextIdPc881078,
+         0,
+         {0, 0},
+         -1,
+         -1,
+         ExtrasLiteralPc00754d60,
+         100000,
+         ExtrasLiteralPc00754d50,
+         0x238000},
+        {ExtrasLiteralPc00754d40,
+         &TextIdPc881094,
+         0,
+         {0, 0},
+         -1,
+         -1,
+         ExtrasLiteralPc00754d38,
+         100000,
+         ExtrasLiteralPc00754d24,
+         0x0},
+        {ExtrasLiteralPc00754d14,
+         &TextIdPc8810b8,
+         0,
+         {0, 0},
+         -1,
+         -1,
+         ExtrasLiteralPc00754d0c,
+         100000,
+         ExtrasLiteralPc00754cf8,
+         0x200000},
+        {ExtrasLiteralPc00754ce8,
+         &TextIdPc8810a4,
+         0,
+         {0, 0},
+         -1,
+         -1,
+         ExtrasLiteralPc00754ce0,
+         20000,
+         ExtrasLiteralPc00754ccc,
+         0x100000},
+        {ExtrasLiteralPc00754cb4,
+         &TextIdPc881098,
+         0,
+         {0, 0},
+         -1,
+         -1,
+         ExtrasLiteralPc00754cac,
+         20000,
+         ExtrasLiteralPc00754c98,
+         0x0},
+        {ExtrasLiteralPc00754c8c,
+         &TextIdPc8810a8,
+         0,
+         {0, 0},
+         -1,
+         -1,
+         ExtrasLiteralPc00754c84,
+         12000,
+         ExtrasLiteralPc00754c74,
+         0x0},
+        {ExtrasLiteralPc00754c60,
+         &TextIdPc88109c,
+         0,
+         {0, 0},
+         -1,
+         -1,
+         ExtrasLiteralPc00754c58,
+         15000,
+         ExtrasLiteralPc00754c44,
+         0x0},
+        {ExtrasLiteralPc00754c34,
+         &TextIdPc8810ac,
+         0,
+         {0, 0},
+         -1,
+         -1,
+         ExtrasLiteralPc00754c2c,
+         10000,
+         ExtrasLiteralPc00754c18,
+         0x0},
+        {ExtrasLiteralPc00754c08,
+         &TextIdPc8810b4,
+         0,
+         {0, 0},
+         -1,
+         -1,
+         ExtrasLiteralPc00754c00,
+         11000,
+         ExtrasLiteralPc00754bec,
+         0x0},
+        {ExtrasLiteralPc00754bd4,
+         &TextIdPc881090,
+         0,
+         {0, 0},
+         -1,
+         -1,
+         ExtrasLiteralPc00754bcc,
+         25000,
+         ExtrasLiteralPc00754bb8,
+         0x0},
+        {ExtrasLiteralPc00754ba8,
+         &TextIdPc881088,
+         0,
+         {0, 0},
+         -1,
+         -1,
+         ExtrasLiteralPc00754ba0,
+         150000,
+         ExtrasLiteralPc00754b8c,
+         0xb0000},
+        {ExtrasLiteralPc00754b80,
+         &TextIdPc8810b0,
+         0,
+         {0, 0},
+         -1,
+         -1,
+         ExtrasLiteralPc00754b78,
+         25000,
+         ExtrasLiteralPc00754b68,
+         0x0},
+        {ExtrasLiteralPc00754b58,
+         &TextIdPc880998,
+         0,
+         {0, 0},
+         -1,
+         -1,
+         ExtrasLiteralPc00754b50,
+         15000,
+         ExtrasLiteralPc00754b44,
+         0x32002},
+        {ExtrasLiteralPc00754b38,
+         &TextIdPc88099c,
+         0,
+         {0, 0},
+         -1,
+         -1,
+         ExtrasLiteralPc00754b30,
+         40000,
+         ExtrasLiteralPc00754b24,
+         0x412000},
+        {ExtrasLiteralPc00754b18,
+         &TextIdPc881044,
+         0,
+         {0, 0},
+         -1,
+         -1,
+         ExtrasLiteralPc00754b10,
+         40000,
+         ExtrasLiteralPc00754b04,
+         0x12400},
+        {ExtrasLiteralPc00754af8,
+         &TextIdPc881068,
+         0,
+         {0, 0},
+         -1,
+         -1,
+         ExtrasLiteralPc00754af0,
+         15000,
+         ExtrasLiteralPc00754ae4,
+         0x20000},
+        {ExtrasLiteralPc00754ad4,
+         &TextIdPc8809a0,
+         0,
+         {0, 0},
+         -1,
+         -1,
+         ExtrasLiteralPc00754acc,
+         1000000,
+         ExtrasLiteralPc00754ac0,
+         0x32080},
+        {ExtrasLiteralPc00754ab8,
+         &TextIdPc8809a4,
+         0,
+         {0, 0},
+         -1,
+         -1,
+         ExtrasLiteralPc00754ab0,
+         1250000,
+         ExtrasLiteralPc00754aa4,
+         0x230004},
+        {ExtrasLiteralPc00754a94,
+         &TextIdPc881060,
+         0,
+         {0, 0},
+         -1,
+         -1,
+         ExtrasLiteralPc00754a8c,
+         25000,
+         ExtrasLiteralPc00754a80,
+         0x0},
+        {ExtrasLiteralPc00754a74,
+         &TextIdPc8809a8,
+         0,
+         {0, 0},
+         -1,
+         -1,
+         ExtrasLiteralPc00754a6c,
+         30000,
+         ExtrasLiteralPc00754a60,
+         0x16000},
+        {ExtrasLiteralPc00754a58,
+         &TextIdPc8809ac,
+         0,
+         {0, 0},
+         -1,
+         -1,
+         ExtrasLiteralPc00754a50,
+         2500000,
+         ExtrasLiteralPc00754a44,
+         0x200008},
+        {ExtrasLiteralPc00754a38,
+         &TextIdPc8809b0,
+         0,
+         {0, 0},
+         -1,
+         -1,
+         ExtrasLiteralPc00754a30,
+         150000,
+         ExtrasLiteralPc00754a24,
+         0x33000},
+        {ExtrasLiteralPc00754a14,
+         &TextIdPc8809b4,
+         0,
+         {0, 0},
+         -1,
+         -1,
+         ExtrasLiteralPc00754a0c,
+         250000,
+         ExtrasLiteralPc00754a00,
+         0x200},
+        {ExtrasLiteralPc007549f8,
+         &TextIdPc8809b8,
+         0,
+         {0, 0},
+         -1,
+         -1,
+         ExtrasLiteralPc007549f0,
+         5000000,
+         ExtrasLiteralPc007549e4,
+         0x200010},
+        {ExtrasLiteralPc007549d8,
+         &TextIdPc8809bc,
+         0,
+         {0, 0},
+         -1,
+         -1,
+         ExtrasLiteralPc007549d0,
+         14000,
+         ExtrasLiteralPc007549c4,
+         0x2000},
+        {ExtrasLiteralPc007549bc,
+         &TextIdPc8809c0,
+         0,
+         {0, 0},
+         -1,
+         -1,
+         ExtrasLiteralPc007549b4,
+         20000,
+         ExtrasLiteralPc007549a8,
+         0x2000},
+        {ExtrasLiteralPc007549a0,
+         &TextIdPc8809c4,
+         0,
+         {0, 0},
+         -1,
+         -1,
+         ExtrasLiteralPc00754998,
+         10000000,
+         ExtrasLiteralPc0075498c,
+         0x200020},
+        {ExtrasLiteralPc00754978,
+         &TextIdPc88106c,
+         0,
+         {0, 0},
+         -1,
+         -1,
+         ExtrasLiteralPc00754970,
+         25000,
+         ExtrasLiteralPc00754964,
+         0x0},
+        {ExtrasLiteralPc00754950,
+         &TextIdPc881064,
+         0,
+         {0, 0},
+         -1,
+         -1,
+         ExtrasLiteralPc00754948,
+         25000,
+         ExtrasLiteralPc0075493c,
+         0x0},
+        {ExtrasLiteralPc00754930,
+         &TextIdPc8809c8,
+         0,
+         {0, 0},
+         -1,
+         -1,
+         ExtrasLiteralPc00754928,
+         20000000,
+         ExtrasLiteralPc0075491c,
+         0x200040},
+        {ExtrasLiteralPc00754908,
+         &TextIdPc8809cc,
+         0,
+         {0, 0},
+         -1,
+         0,
+         ExtrasLiteralPc00754900,
+         0,
+         ExtrasLiteralPc00754f48,
+         0x0},
+        {0},
+    };
+    f32 ExtrasFadeStartPc = 0.15f, ExtrasFadeEndPc = 0.6f;
+#pragma const_seg(".rdata$ExtrasNameFormatPc")
+    extern const char ExtrasNameFormatPc[] = "%s: %s";
+#pragma const_seg()
+#pragma const_seg(".rdata$ExtrasLockedNumberFormatPc")
+    extern const char ExtrasLockedNumberFormatPc[] = " %i: ";
 #pragma const_seg()
 }

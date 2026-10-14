@@ -28,8 +28,8 @@ void MenuSetPlatformState(i32 state) {
 void __cdecl PCPresentationPlatformLeafPc(void) {
 }
 
-i32 NuKeyboard(i32 key) {
-    return 0;
+i32 __cdecl NuKeyboard(i32 key) {
+    return (i8)nu_keyboard_pages[(i8)nu_keyboard_page_index * 0x100 + key];
 }
 
 /* Original source: nu2api/nucore/nuapi.cpp; PC initializes only the fields
