@@ -1799,3 +1799,65 @@ void __cdecl GizmoBlowupBurstDraw(void *world_pointer, void *data, f32 frame_tim
     }
     ResetShadowMapRendering();
 }
+
+STATIC_ASSERT(offsetof(GIZMO_PC, object) == 0);
+STATIC_ASSERT(offsetof(GIZMOBLOWUP_PC, status_flags) == 0x94);
+STATIC_ASSERT(offsetof(GIZMOBLOWUP_PC, type) == 0xa4);
+STATIC_ASSERT(offsetof(GIZMOBLOWUP_PC, anti_node) == 0xd8);
+STATIC_ASSERT(offsetof(GIZMOBLOWUP_PC, platform_id) == 0x102);
+STATIC_ASSERT(offsetof(GIZMOBLOWUPTYPE_PC, animated_special) == 0x30);
+STATIC_ASSERT(offsetof(NUINSTANIM_TIME_VIEW, flags) == 0x50);
+STATIC_ASSERT(offsetof(WORLDINFO, game_antinode_sys) == 0x510c);
+
+i32 __cdecl Blowup_GetOutput(GIZMO_PC *gizmo, i32 output, i32 ignored) {
+    GIZMOBLOWUP_PC *blowup = (GIZMOBLOWUP_PC *)gizmo->object;
+    (void)ignored;
+    switch (output) {
+        case 0:
+            return (blowup->status_flags & 1) != 0;
+        case 1:
+            return (blowup->status_flags & 2) != 0;
+        case 2:
+            return (blowup->status_flags & 0x10000000) != 0;
+        default:
+            return 0;
+    }
+}
+
+void __cdecl Blowup_Activate(GIZMO_PC *gizmo, i32 active) {
+    GIZMOBLOWUP_PC *blowup;
+    NUINSTANIM_TIME_VIEW *animation;
+    if (gizmo == NULL)
+        return;
+    blowup = (GIZMOBLOWUP_PC *)gizmo->object;
+    blowup->status_flags = (blowup->status_flags & ~0x800000u) | ((active != 0) << 23);
+    animation = (NUINSTANIM_TIME_VIEW *)NuSpecialGetInstAnim(&blowup->type->animated_special);
+    if (animation != NULL) {
+        if (active == 0) {
+            animation->flags &= ~1u;
+            return;
+        }
+        if ((blowup->status_flags & 0x100000) != 0)
+            animation->flags |= 1;
+    }
+    if (active != 0)
+        GizmoBlowupRestoreInitialStatePc(blowup);
+}
+
+void __cdecl Blowup_SetVisibility(GIZMO_PC *gizmo, i32 visible) {
+    GIZMOBLOWUP_PC *blowup;
+    if (gizmo == NULL)
+        return;
+    blowup = (GIZMOBLOWUP_PC *)gizmo->object;
+    blowup->status_flags = (blowup->status_flags & ~0x4000u) | ((visible != 0) << 14);
+    if (blowup->platform_id != -1)
+        PlatOnOff(blowup->platform_id, visible);
+    if ((blowup->status_flags & 0x4000) == 0) {
+        if (blowup->anti_node != NULL) {
+            GameAntinode_UnregisterAntiNode(WORLD->game_antinode_sys, blowup->anti_node);
+            blowup->anti_node = NULL;
+        }
+    } else if (blowup->anti_node == NULL) {
+        blowup->status_flags |= 0x10000;
+    }
+}

@@ -364,3 +364,27 @@ void __cdecl GizTurrets_Draw(void *world_pointer, void *system_pointer, f32 unus
             GameAnimSet_DrawReflection(turret->anim_set, 2, turret->reflection_alpha, NULL);
     }
 }
+
+/* Append to gizturret.c; canonical316B PC record/system16 view already owned. */
+STATIC_ASSERT(sizeof(AI_TURRET_RECORD_PC) == 0x13c);
+STATIC_ASSERT(offsetof(AI_TURRET_RECORD_PC, sfx12a) == 0x12a);
+STATIC_ASSERT(offsetof(AI_TURRET_RECORD_PC, sfx126) == 0x126);
+STATIC_ASSERT(offsetof(AI_TURRET_RECORD_PC, sfx138) == 0x138);
+STATIC_ASSERT(offsetof(AI_TURRET_SYSTEM_PC, count) == 8);
+void __cdecl GizTurrets_AddLevelSfx(void *world, void *system_pointer, i32 *ids, i32 *count, i32 capacity) {
+    AI_TURRET_SYSTEM_PC *system = (AI_TURRET_SYSTEM_PC *)system_pointer;
+    AI_TURRET_RECORD_PC *turret;
+    i32 index;
+    (void)world;
+    if (system == NULL)
+        return;
+    turret = system->turrets;
+    for (index = 0; index < system->count; ++index, ++turret) {
+        if (turret->sfx12a != -1)
+            AddLevelSfxFromId(turret->sfx12a, ids, count, capacity);
+        if (turret->sfx126 != -1)
+            AddLevelSfxFromId(turret->sfx126, ids, count, capacity);
+        if (turret->sfx138 != -1)
+            AddLevelSfxFromId(turret->sfx138, ids, count, capacity);
+    }
+}

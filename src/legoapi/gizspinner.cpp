@@ -721,3 +721,83 @@ extern "C" void __cdecl GizSpinner_Draw(void *world_pointer, void *data, f32 fra
         NuRndrEndReflectionRender();
     }
 }
+
+/* Append to gizspinner.cpp: reuse the actual same-TU SpinnerCurrentOutputPc. */
+STATIC_ASSERT(offsetof(GIZSPINNER_s, matrix) == 0);
+STATIC_ASSERT(offsetof(GIZSPINNER_s, special) == 0x50);
+STATIC_ASSERT(offsetof(GIZSPINNER_s, type) == 0x8b);
+STATIC_ASSERT(offsetof(GIZSPINNER_s, platform_id) == 0xae);
+STATIC_ASSERT(offsetof(GIZSPINNER_s, arms) == 0xb4);
+STATIC_ASSERT(offsetof(GIZSPINNER_s, anti_node) == 0x300);
+STATIC_ASSERT(sizeof(GIZSPINNERARM_s) == 0x44);
+STATIC_ASSERT(offsetof(GIZSPINNERARM_s, platform_id) == 0x40);
+STATIC_ASSERT(offsetof(WORLDINFO, game_antinode_sys) == 0x510c);
+extern "C" i32 __cdecl GizSpinner_GetOutput(void *gizmo_pointer, i32 output_index, i32 unused) {
+    GIZSPINNER_s *spinner = (GIZSPINNER_s *)((GIZMO_PC *)gizmo_pointer)->object;
+    (void)unused;
+    if (spinner != NULL)
+        return SpinnerCurrentOutputPc(spinner) == output_index;
+    return 0;
+}
+extern "C" void __cdecl GizSpinner_Activate(void *gizmo_pointer, i32 active) {
+    if (gizmo_pointer != NULL) {
+        GIZSPINNER_s *spinner = (GIZSPINNER_s *)((GIZMO_PC *)gizmo_pointer)->object;
+        if (active != 0) {
+            spinner->flags &= (u8)~0x22;
+            spinner->state_flags &= ~0x20u;
+        } else {
+            spinner->flags |= 2;
+        }
+    }
+}
+extern "C" void __cdecl GizSpinner_SetVisibility(void *gizmo_pointer, i32 visible) {
+    NUMTX matrix;
+    if (gizmo_pointer == NULL)
+        return;
+    GIZSPINNER_s *spinner = (GIZSPINNER_s *)((GIZMO_PC *)gizmo_pointer)->object;
+    if (visible != 0) {
+        spinner->flags &= (u8)~4;
+        if (spinner->platform_id == -1) {
+            i32 instance_index = NuSpecialGetInstanceix((NUSPECIALHANDLE *)&spinner->special);
+            FindPlatInst(instance_index);
+            NuMtxSetIdentity(&matrix);
+            NuMtxSetRotationY(&matrix, 0);
+            NuMtxRotateY(&matrix, spinner->rotation);
+            NuMtxTranslate(&matrix, &spinner->position);
+            spinner->matrix = matrix;
+            if (NuSpecialCompare((NUSPECIALHANDLE *)&spinner->special, (NUSPECIALHANDLE *)&thingsSceneBase) != 0) {
+                if (LEGOTHINGSSCENE_TER_SPINBASE != -1)
+                    spinner->platform_id = NewPlatPickupInst(spinner, LEGOTHINGSSCENE_TER_SPINBASE);
+                else
+                    spinner->platform_id = -1;
+                for (i32 index = 0; index < spinner->type; ++index) {
+                    if (LEGOTHINGSSCENE_TER_SPINARM != -1)
+                        spinner->arms[index].platform_id =
+                            NewPlatPickupInst(&spinner->arms[index].matrix, LEGOTHINGSSCENE_TER_SPINARM);
+                    else
+                        spinner->arms[index].platform_id = -1;
+                    PlatInstRotate(spinner->arms[index].platform_id, 1);
+                }
+            } else {
+                spinner->platform_id = (i16)NewPlatInst(spinner, instance_index);
+            }
+        }
+        if (spinner->anti_node == NULL)
+            spinner->anti_node = (GAMEANTINODE_s *)GameAntinode_RegisterAntiNode(
+                WORLD->game_antinode_sys, &spinner->position, 0.66f, 1.0f, 1.0f, spinner->rotation, 0, 0.0f);
+    } else {
+        spinner->flags |= 4;
+        DeletePlatinst(spinner->platform_id);
+        spinner->platform_id = -1;
+        for (i32 index = 0; index < spinner->type; ++index) {
+            if (spinner->arms[index].platform_id != -1) {
+                DeletePlatinst(spinner->arms[index].platform_id);
+                spinner->arms[index].platform_id = -1;
+            }
+        }
+        if (spinner->anti_node != NULL) {
+            GameAntinode_UnregisterAntiNode(WORLD->game_antinode_sys, spinner->anti_node);
+            spinner->anti_node = NULL;
+        }
+    }
+}

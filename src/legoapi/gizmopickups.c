@@ -1046,3 +1046,69 @@ void __cdecl GizmoPickups_Draw(void *world_pointer, void *unused_system, f32 unu
     GizmoPickups_DrawList(world, system->temporary_pickups, 64);
     ResetShadowMapRendering();
 }
+
+/* Append to gizmopickups.c: share its actual private GizmoPickupSys pointer. */
+typedef struct PICKUP_ACTIVATION_PC {
+    u8 unknown_00[0x18];
+    u8 activation_group;
+} PICKUP_ACTIVATION_PC;
+STATIC_ASSERT(offsetof(PICKUP_ACTIVATION_PC, activation_group) == 0x18);
+STATIC_ASSERT(sizeof(GIZMOPICKUP_PC) == 0x2c);
+STATIC_ASSERT(offsetof(WORLDINFO, pickup_runtime_sys) == 0x50b8);
+STATIC_ASSERT(offsetof(WORLDINFO, game_debris_sys) == 0x134);
+void __cdecl SuperCounter_ActivateGizmoPickup(GIZMO_PC *, GIZMOPICKUP_PC *);
+i32 __cdecl GizmoPickup_GetOutput(GIZMO_PC *gizmo, i32 output, i32 mode) {
+    (void)output;
+    (void)mode;
+    return (((GIZMOPICKUP_PC *)gizmo->object)->flags >> 3) & 1;
+}
+void __cdecl GizmoPickup_SetVisibility(GIZMO_PC *gizmo, i32 visible) {
+    GIZMOPICKUP_PC *pickup;
+    if (gizmo != NULL) {
+        pickup = (GIZMOPICKUP_PC *)gizmo->object;
+        pickup->flags = (pickup->flags & (u8)~4) | ((visible != 0) << 2);
+    }
+}
+void __cdecl GizmoPickup_Activate(GIZMO_PC *gizmo, i32 active) {
+    WORLDINFO *world = WorldInfo_CurrentlyActive();
+    GIZMOPICKUP_PC *pickup, *group_pickup;
+    GIZMO_PICKUP_TYPE_PC *type;
+    i32 type_index, debris, index;
+    u8 group;
+    if (gizmo == NULL)
+        return;
+    pickup = (GIZMOPICKUP_PC *)gizmo->object;
+    pickup->flags = (pickup->flags & (u8)~2) | ((active != 0) << 1);
+    if (active != 0) {
+        SuperCounter_ActivateGizmoPickup(gizmo, pickup);
+        if ((pickup->flags & 2) != 0) {
+            pickup->flags |= 0x80;
+            type_index = pickup->type_index;
+            if ((pickup->flags & 0x40) != 0 && GizmoPickupSys->alternate_type != -1)
+                type_index = GizmoPickupSys->alternate_type;
+            type = &GizmoPickupSys->types[type_index];
+            if ((ChallengeMode != 0 ? (type->flags & 0x20) != 0 : (type->flags & 0x20) == 0) &&
+                Mission_Active(NULL) == NULL) {
+                if (type->activation_sfx_name != NULL)
+                    PlaySfx(type->activation_sfx_name, &pickup->position);
+                if (type->debris_id != -1) {
+                    if ((pickup->flags & 0x40) != 0)
+                        debris = GizmoPickupSys->types[GizmoPickupSys->gizmo_type_id].debris_id;
+                    else
+                        debris = type->debris_id;
+                    AddGameDebris(world->game_debris_sys, debris, &pickup->position);
+                }
+            }
+        }
+    }
+    group = ((PICKUP_ACTIVATION_PC *)pickup)->activation_group;
+    if (group != 0) {
+        group_pickup = ((struct GIZMOPICKUPRUNTIMESYS_s *)world->pickup_runtime_sys)->pickups;
+        for (index = 0; index < ((struct GIZMOPICKUPRUNTIMESYS_s *)world->pickup_runtime_sys)->pickup_count;
+             ++index, ++group_pickup) {
+            if (((PICKUP_ACTIVATION_PC *)group_pickup)->activation_group ==
+                ((PICKUP_ACTIVATION_PC *)pickup)->activation_group)
+                group_pickup->flags = (group_pickup->flags & (u8)~6) | ((active & 1) << 1) | ((active & 1) << 2);
+        }
+    }
+}

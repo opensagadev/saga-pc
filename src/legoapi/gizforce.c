@@ -732,39 +732,6 @@ GIZFORCE_s *GizForces_FindForce(WORLDINFO *world, char *name) {
     return gizmo != NULL ? ((GIZFORCE_s *)(gizmo->object)) : NULL;
 }
 
-static void GizmoForce_Activate(GIZMO_PC *gizmo, i32 activate) {
-    struct GIZFORCE_s *force;
-    if (gizmo == NULL) {
-        return;
-    }
-    force = ((GIZFORCE_s *)(gizmo->object));
-    if (activate == 0) {
-        force->progress_flags &= ((u8)(~GIZFORCE_PROGRESS_ENABLED));
-        return;
-    }
-
-    if (!force->progress_enabled) {
-        GameAnimSet_JumpToStart(force->anim_set);
-    }
-    force->field_0xaa &= ((u8)(~GIZFORCE_STATE_DESTROYED_OR_THROWN));
-    force->progress_enabled = 1;
-    force->progress_reverse_active = 0;
-    force->progress_animation_reversed = 0;
-    force->field_0x48 = 0.0f;
-    force->field_0x50 = 0.0f;
-    if ((force->config_flags & GIZFORCE_CONFIG_RESET_STATE_ON_ACTIVATE) != 0) {
-        force->runtime_reward_released = 0;
-    }
-    force->runtime_along_socket_hidden = 0;
-    force->runtime_offset_applied = 0;
-    force->runtime_force_range_complete = 0;
-    force->runtime_completion_released = 0;
-    GameAnimSet_EvaluateState(force->anim_set);
-    force->radius = 1.0f;
-    force->position = force->file_position;
-    GameAnimSet_GetCentreAndRadius(force->anim_set, &force->position, &force->radius, 2, 1, 1);
-}
-
 /* Private integration fragment: append to gizforce.c after its actual static
  * version owner. Extend its existing GIZFORCE_PC with the named native fields
  * in the companion layout file. */
@@ -1429,4 +1396,85 @@ void __cdecl GizForces_Update(void *world_pointer, void *system_pointer, f32 unu
             for (object = force->anim_set->objects; object != NULL; object = object->next)
                 ((GIZFORCEANIMDATA_s *)object->object_data)->field_0x04 &= ~1u;
     }
+}
+
+/* Append to gizforce.c; canonical164B PC record/system344 view already owned. */
+STATIC_ASSERT(sizeof(GIZFORCE_PC) == 0xa4);
+STATIC_ASSERT(offsetof(GIZFORCE_PC, start_sfx_id) == 0x82);
+STATIC_ASSERT(offsetof(GIZFORCE_PC, loop_sfx_id) == 0x84);
+STATIC_ASSERT(offsetof(GIZFORCE_PC, stop_sfx_id) == 0x86);
+STATIC_ASSERT(offsetof(GIZFORCESYS_s, count) == 0xe);
+void __cdecl GizForces_AddLevelSfx(void *world, void *system_pointer, i32 *ids, i32 *count, i32 capacity) {
+    GIZFORCESYS_s *system = (GIZFORCESYS_s *)system_pointer;
+    GIZFORCE_PC *force;
+    i32 index;
+    (void)world;
+    if (system == NULL)
+        return;
+    force = (GIZFORCE_PC *)system->forces;
+    for (index = 0; index < system->count; ++index, ++force) {
+        if (force->start_sfx_id != -1)
+            AddLevelSfxFromId(force->start_sfx_id, ids, count, capacity);
+        if (force->loop_sfx_id != -1)
+            AddLevelSfxFromId(force->loop_sfx_id, ids, count, capacity);
+        if (force->stop_sfx_id != -1)
+            AddLevelSfxFromId(force->stop_sfx_id, ids, count, capacity);
+    }
+}
+
+i32 __cdecl GizmoForce_GetOutput(GIZMO_PC *gizmo, i32 output_index, i32 force_read) {
+    GIZFORCE_PC *force = (GIZFORCE_PC *)gizmo->object;
+    if (((!(force->runtime_flags & 2) && force->blowup_type == -1) || !(force->runtime_flags & 1)) && force_read == 0)
+        return 0;
+    switch (output_index) {
+        case 0:
+            return force->anim_set != NULL && force->anim_set->state == 2;
+        case 1:
+            return force->anim_set != NULL && force->anim_set->state != 0;
+        case 2:
+            return force->anim_set != NULL && force->anim_set->state == 0;
+        case 3:
+            return force->group != NULL && (force->group->runtime_flags & 2) != 0;
+        case 4:
+            return force->group != NULL && (force->group->runtime_flags & 4) != 0;
+        case 5:
+            return (force->runtime_flags & 0x10000) != 0;
+        case 6:
+            return GizForce_Complete(force);
+        case 7:
+            return (force->runtime_flags & 0x200000) != 0;
+        default:
+            return 0;
+    }
+}
+void __cdecl GizmoForce_Activate(GIZMO_PC *gizmo, i32 active) {
+    GIZFORCE_PC *force;
+    if (gizmo == NULL)
+        return;
+    force = (GIZFORCE_PC *)gizmo->object;
+    if (active != 0 && !(force->runtime_flags & 1))
+        GameAnimSet_JumpToStart(force->anim_set);
+    force->runtime_flags = (force->runtime_flags & ~1u) | (active != 0 ? 1u : 0u);
+    if (active != 0) {
+        force->field_48 = 0.0f;
+        force->field_50 = 0.0f;
+        force->runtime_flags &= 0xfffeffafu;
+        if (force->config_flags & 8)
+            force->runtime_flags &= ~0x200u;
+        force->runtime_flags &= 0xffff87ffu;
+        GameAnimSet_EvaluateState(force->anim_set);
+        force->radius = 1.0f;
+        force->position = force->file_position;
+        GameAnimSet_GetCentreAndRadius(force->anim_set, &force->position, &force->radius, 2, 1, 1);
+    }
+}
+void __cdecl GizmoForce_SetVisibility(GIZMO_PC *gizmo, i32 visible) {
+    GIZFORCE_PC *force;
+    if (gizmo == NULL)
+        return;
+    force = (GIZFORCE_PC *)gizmo->object;
+    if (force == NULL)
+        return;
+    GameAnimSet_SetVisibility(force->anim_set, visible);
+    force->runtime_flags = (force->runtime_flags & ~2u) | (visible != 0 ? 2u : 0u);
 }

@@ -1,5 +1,7 @@
 #include "saga.h"
 
+extern "C" void __cdecl RegisterLswGizmoTypesPc(VARIPTR *, VARIPTR *);
+
 static i32 __cdecl PcInputCommandAllowedPc(i32 port, i32 command) {
     if (TextInputIsKeyboardDevicePc(port) && ((command >= 4 && command <= 7) || (u32)(command - 8) <= 3))
         return 0;
@@ -417,7 +419,7 @@ extern "C" {
         if (StartupGameFlag0 != 0) {
             STUBBED_NAMED("LoadPermData: startup registration variant (0x46a150)");
         } else if (StartupGameFlag1 != 0) {
-            STUBBED_NAMED("LoadPermData: startup registration variant (0x46a340)");
+            RegisterLswGizmoTypesPc(&permbuffer_ptr, &permbuffer_end);
             GameAnimSys_AllocateLevelProgressData(&permbuffer_ptr, &permbuffer_end, 0x280, 0xc);
             STUBBED_NAMED("LoadPermData: registration pair (0x4642e0, 0x458440)");
             CutScene_StartFn = CutScene_StartFn_LSW;

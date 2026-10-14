@@ -972,3 +972,71 @@ void __cdecl GizBuildIts_LateUpdate(void *world_pointer, void *system_pointer, f
         }
     }
 }
+
+STATIC_ASSERT(offsetof(BUILDIT_RESET_PC, anim_set) == 0x10);
+STATIC_ASSERT(offsetof(BUILDIT_RESET_PC, anim_objects) == 0x14);
+STATIC_ASSERT(offsetof(BUILDIT_RESET_PC, linked_buildit) == 0x18);
+STATIC_ASSERT(offsetof(BUILDIT_RESET_PC, start_position) == 0x28);
+STATIC_ASSERT(offsetof(BUILDIT_RESET_PC, reset_step_timer) == 0x44);
+STATIC_ASSERT(offsetof(BUILDIT_RESET_PC, anim_object_count) == 0x6c);
+STATIC_ASSERT(offsetof(BUILDIT_RESET_PC, build_state) == 0x6d);
+STATIC_ASSERT(offsetof(BUILDIT_RESET_PC, state_flags) == 0x72);
+STATIC_ASSERT(offsetof(BUILDIT_RESET_PC, availability_flags) == 0x7a);
+STATIC_ASSERT(offsetof(WORLDINFO, game_debris_sys) == 0x134);
+STATIC_ASSERT(offsetof(GIZBUILDITANIMDATA_s, draw_mtx) == 0x80);
+STATIC_ASSERT(offsetof(GIZBUILDITANIMDATA_s, draw_mtx) + offsetof(NUMTX, m30) == 0xb0);
+i32 __cdecl GizmoBuildit_GetOutput(GIZMO_PC *gizmo, i32 output_index, i32 force_read) {
+    BUILDIT_RESET_PC *buildit = (BUILDIT_RESET_PC *)gizmo->object;
+    if (((buildit->availability_flags & 3) == 3 || force_read != 0) && buildit->build_state == 2)
+        return 1;
+    return 0;
+}
+void __cdecl GizmoBuildit_SetVisibility(GIZMO_PC *gizmo, i32 visible) {
+    BUILDIT_RESET_PC *buildit;
+    if (gizmo == NULL)
+        return;
+    buildit = (BUILDIT_RESET_PC *)gizmo->object;
+    if (buildit == NULL)
+        return;
+    GameAnimSet_SetVisibility(buildit->anim_set, visible);
+    buildit->availability_flags = (u16)((buildit->availability_flags & ~2u) | (visible != 0 ? 2u : 0u));
+}
+void __cdecl GizmoBuildit_Activate(GIZMO_PC *gizmo, i32 active) {
+    BUILDIT_RESET_PC *buildit;
+    NUVEC scatter_position;
+    i32 reward_released, index;
+    GAMEANIMOBJ *object;
+    GIZBUILDITANIMDATA_s *object_data;
+    if (gizmo == NULL)
+        return;
+    buildit = (BUILDIT_RESET_PC *)gizmo->object;
+    buildit->availability_flags = (u16)((buildit->availability_flags & ~1u) | (active != 0 ? 1u : 0u));
+    if (!(buildit->availability_flags & 1))
+        return;
+    if (buildit->state_flags & 0x200)
+        buildit->availability_flags &= ~0x200u;
+    if (buildit->linked_buildit == NULL)
+        GameAnimSet_JumpToStart(buildit->anim_set);
+    reward_released = (buildit->availability_flags >> 9) & 1;
+    GizBuildit_Reset((GIZBUILDIT_s *)buildit, NULL);
+    buildit->availability_flags = (u16)((buildit->availability_flags & ~0x200u) | (reward_released != 0 ? 0x200u : 0u));
+    if (!(buildit->state_flags & 0x40) || GizBuildit_AutoBuildPosFn == NULL)
+        return;
+    if (!GizBuildit_AutoBuildPosFn(NULL, &buildit->start_position, &scatter_position, NULL))
+        return;
+    buildit->reset_step_timer = 5.0f;
+    for (index = 0; index < buildit->anim_object_count; ++index) {
+        scatter_position.x = (f32)((f64)NuFloatRand((NURAND *)&GAMERAND) / 5.0 - (f64)0.1f + scatter_position.x);
+        scatter_position.y = (f32)((f64)NuFloatRand((NURAND *)&GAMERAND) / 5.0 - (f64)0.1f + scatter_position.y);
+        scatter_position.z = (f32)((f64)NuFloatRand((NURAND *)&GAMERAND) / 5.0 - (f64)0.1f + scatter_position.z);
+        if (buildit->linked_buildit != NULL) {
+            object = buildit->anim_objects[index];
+            object_data = (GIZBUILDITANIMDATA_s *)object->object_data;
+            *(NUVEC *)&object_data->draw_mtx.m30 = scatter_position;
+        } else {
+            object = buildit->anim_objects[index];
+            NuSpecialSetDrawPos((nuhspecial_s *)&object->special, &scatter_position);
+        }
+        AddGameDebris(WORLD->game_debris_sys, GizBuilditGDeb[qrand() / 0x2aab], &scatter_position);
+    }
+}

@@ -1653,3 +1653,82 @@ extern "C" i32 __cdecl SuperCounter_AnyCollected(AREA_SUPERCOUNTER_PC *counter, 
     }
     return 0;
 }
+
+/* Append to areas.cpp; native573780316 +5738c0295. */
+STATIC_ASSERT(offsetof(WORLDINFO, area) == 0x12c);
+STATIC_ASSERT(offsetof(WORLDINFO, level_idx) == 0x11c);
+STATIC_ASSERT(offsetof(WORLDINFO, gizmo_sys) == 0x2ac8);
+STATIC_ASSERT(offsetof(AREA_DATA_PC, super_counter_count) == 0x7f);
+STATIC_ASSERT(offsetof(AREA_DATA_PC, super_counters) == 0x80);
+STATIC_ASSERT(offsetof(AREA_SUPERCOUNTER_PICKUP_PC, gizmo) == 0);
+STATIC_ASSERT(offsetof(AREA_SUPERCOUNTER_PICKUP_PC, position_gizmo) == 4);
+STATIC_ASSERT(offsetof(AREA_SUPERCOUNTER_PICKUP_PC, position_special) == 8);
+STATIC_ASSERT(sizeof(AREA_SUPERCOUNTER_PICKUP_PC) == 0x30);
+STATIC_ASSERT(sizeof(AREA_SUPERCOUNTER_PC) == 0x1e8);
+STATIC_ASSERT(offsetof(AREA_SUPERCOUNTER_PC, red) == 0x1e4);
+STATIC_ASSERT(offsetof(AREA_SUPERCOUNTER_PC, green) == 0x1e5);
+STATIC_ASSERT(offsetof(AREA_SUPERCOUNTER_PC, blue) == 0x1e6);
+STATIC_ASSERT(offsetof(GAMECAMERA, position) == 0x11c);
+extern "C" AREA_SUPERCOUNTER_PC *__cdecl SuperCounters_FindPickup(WORLDINFO *world, void *gizmo, NUVEC *position,
+                                                                  void *output_pointer) {
+    AREA_SUPERCOUNTER_PICKUP_PC **output = (AREA_SUPERCOUNTER_PICKUP_PC **)output_pointer;
+    AREA_SUPERCOUNTER_PC *found_counter = NULL;
+    AREA_SUPERCOUNTER_PICKUP_PC *found_pickup = NULL;
+    if (world->area != NULL && world->area->super_counters != NULL) {
+        AREA_SUPERCOUNTER_PC *counter = world->area->super_counters;
+        f32 closest = 1000000000.0f;
+        for (i32 counter_index = 0; counter_index < world->area->super_counter_count; ++counter_index, ++counter) {
+            AREA_SUPERCOUNTER_PICKUP_PC *pickup = counter->pickups;
+            for (i32 index = 0; index < counter->pickup_count; ++index, ++pickup) {
+                if (pickup->level_index == world->level_idx && pickup->gizmo == gizmo) {
+                    if (pickup->position_gizmo == NULL) {
+                        if (output != NULL)
+                            *output = pickup;
+                        return counter;
+                    }
+                    NUVEC *draw_position = GizmoGetPos((GIZMOSYS_PC *)world->gizmo_sys, pickup->position_gizmo);
+                    if (draw_position != NULL) {
+                        volatile f32 rounded_distance = NuVecDist(position, draw_position, NULL);
+                        f32 distance = rounded_distance;
+                        if (closest > distance) {
+                            closest = distance;
+                            found_counter = counter;
+                            found_pickup = pickup;
+                        }
+                    }
+                }
+            }
+        }
+        if (output != NULL)
+            *output = found_pickup;
+        return found_counter;
+    }
+    if (output != NULL)
+        *output = NULL;
+    return NULL;
+}
+extern "C" void __cdecl SuperCounter_ActivateGizmoPickup(GIZMO_PC *gizmo, GIZMOPICKUP_PC *gizmo_pickup) {
+    NUVEC position;
+    if (Players_AveragePos(&position, NULL) == 0)
+        position = GameCam->position;
+    AREA_SUPERCOUNTER_PICKUP_PC *pickup;
+    AREA_SUPERCOUNTER_PC *counter = SuperCounters_FindPickup(WORLD, gizmo, &position, &pickup);
+    if (counter != NULL) {
+        gizmo_pickup->flags &= (u8)~6;
+        if (counter->collected_count < counter->pickup_count) {
+            ++counter->collected_count;
+            if (counter->collected_count == counter->pickup_count)
+                gizmo_pickup->flags |= 6;
+            NUVEC *message_position;
+            if (pickup->position_gizmo != NULL)
+                message_position = GizmoGetPos((GIZMOSYS_PC *)WORLD->gizmo_sys, pickup->position_gizmo);
+            else if (NuSpecialExistsFn((NUSPECIALHANDLE *)&pickup->position_special) != 0)
+                message_position = NuSpecialGetDrawPos((NUSPECIALHANDLE *)&pickup->position_special);
+            else
+                message_position = &gizmo_pickup->position;
+            AddGameMsgCount(message_position, counter->collected_count, counter->pickup_count, counter->red,
+                            counter->green, counter->blue, 0.75f);
+            GameAudio_PlaySfx(0x53, NULL, 0, 0);
+        }
+    }
+}

@@ -285,3 +285,171 @@ void __cdecl GizPanel_Update(void *world_pointer, void *unused, f32 delta_time) 
         }
     }
 }
+
+/* Real mutable original globals: 007f90c4 Z and 007f90c8 Y, each4B. */
+f32 GizPanelPictureZPc = -0.123f;
+f32 GizPanelPictureYPc = 0.0775f;
+
+/* Private append to gizpanel_pc.c; reuse canonical PANEL_MOVEMENT_PC144/PANEL_SYSTEM_PC8. */
+extern f32 GizPanelPictureYPc, GizPanelPictureZPc;
+extern const f64 GameObjectNearFloorNoFloorHeight;
+STATIC_ASSERT(sizeof(PANEL_MOVEMENT_PC) == 0x90);
+STATIC_ASSERT(offsetof(WORLDINFO, level_objects) == 0x2ac0);
+STATIC_ASSERT(sizeof(LEVEL_OBJECT_RUNTIME_PC) == 0x10);
+STATIC_ASSERT(offsetof(LEVEL_OBJECT_RUNTIME_PC, active) == 0xe);
+STATIC_ASSERT(offsetof(TIMER, time_elapsed_mod_seconds) == 8);
+
+typedef struct PanelDrawModelsPc {
+    i32 base, animated, transition, state_on, state_off, arm, target;
+    f32 arm_y, arm_z;
+} PanelDrawModelsPc;
+
+void __cdecl GizPanel_Draw(void *world_pointer, void *unused, f32 unused_time) {
+    WORLDINFO *world = (WORLDINFO *)world_pointer;
+    PANEL_SYSTEM_PC *system;
+    u16 target_spin;
+    volatile f32 target_alpha;
+    i32 index;
+    (void)unused;
+    (void)unused_time;
+    if (world == NULL)
+        return;
+    system = (PANEL_SYSTEM_PC *)world->giz_panel_sys;
+    if (system == NULL || system->count == 0)
+        return;
+    target_spin = (u16)(i32)((f64)NuFmod(GameTimer.time_elapsed, 5.0f) / 5.0 * 65536.0);
+    target_alpha =
+        (f64)NuTrigTable[((i32)((f64)NuFmod(GameTimer.time_elapsed_mod_seconds, 0.5f) * 2.0 * 65536.0) >> 1) & 0x7fff] *
+            (f64)0.2f +
+        (f64)0.8f;
+    for (index = 0; index < system->count; ++index) {
+        PANEL_MOVEMENT_PC *panel = &system->panels[index];
+        PanelDrawModelsPc models;
+        NUMTX base_matrix;
+        i32 state_model;
+        if ((panel->flags & 4) == 0 && editor_active == 0)
+            continue;
+        if ((panel->draw_flags & 2) == 0)
+            EnableShadowMapRendering(0);
+        else
+            ResetShadowMapRendering();
+        models.base = models.animated = models.transition = models.state_on = models.state_off = models.arm =
+            models.target = -1;
+        models.arm_y = 0.0f;
+        models.arm_z = 0.0f;
+        switch (panel->model_variant) {
+            case 0:
+                models.base = (panel->draw_flags & 1) | 0x106;
+                models.animated = (panel->flags >> 7) | 0x108;
+                models.transition = 0x10a;
+                models.state_on = 0x10b;
+                models.state_off = 0x10c;
+                models.target = 0x55;
+                break;
+            case 1:
+                models.base = (panel->draw_flags & 1) != 0 ? 0x107 : 0x100;
+                models.animated = (panel->flags & 0x80) != 0 ? 0x102 : 0x101;
+                models.transition = 0x103;
+                models.state_on = 0x104;
+                models.state_off = 0x105;
+                models.target = 0x55;
+                break;
+            case 2:
+                models.base = 0x10d;
+                models.animated = 0x10e;
+                models.transition = 0x10f;
+                models.state_on = 0x110;
+                models.state_off = 0x111;
+                models.arm = 0x112;
+                models.target = 0x113;
+                models.arm_y = 0.245f;
+                models.arm_z = -0.19f;
+                break;
+            case 3:
+                models.base = 0x114;
+                models.animated = 0x115;
+                models.transition = 0x116;
+                models.state_on = 0x117;
+                models.state_off = 0x118;
+                models.arm = 0x119;
+                models.target = 0x11a;
+                models.arm_y = 0.34f;
+                models.arm_z = -0.17f;
+                break;
+        }
+        NuMtxSetRotationY(&base_matrix, panel->y_rotation);
+        NuMtxTranslate(&base_matrix, &panel->position);
+        if ((panel->flags & 0x20) == 0 && models.base != -1 && world->level_objects[models.base].active != 0)
+            NuSpecialDrawAt(&world->level_objects[models.base].special, &base_matrix);
+        state_model = (panel->flags & 2) != 0 ? models.state_on : models.state_off;
+        if ((panel->flags & 0x20) == 0 && state_model != -1 && world->level_objects[state_model].active != 0)
+            NuSpecialDrawAt(&world->level_objects[state_model].special, &base_matrix);
+        if ((panel->flags & 0x20) == 0 && (panel->activation_time > 0.0f || editor_active != 0)) {
+            NUVEC picture_offset, transition_offset;
+            NUMTX transition_base, animated_matrix;
+            volatile f32 frame;
+            picture_offset.x = 0.0f;
+            picture_offset.y = GizPanelPictureYPc;
+            picture_offset.z = GizPanelPictureZPc;
+            transition_offset.x = 0.0f;
+            transition_offset.y = GizPanelPictureYPc;
+            transition_offset.z = (f64)GizPanelPictureZPc - (f64)0.0005f;
+            NuVecRotateY(&picture_offset, &picture_offset, panel->y_rotation);
+            NuVecRotateY(&transition_offset, &transition_offset, panel->y_rotation);
+            transition_base = base_matrix;
+            NuMtxTranslate(&base_matrix, &picture_offset);
+            NuMtxTranslate(&transition_base, &transition_offset);
+            if (1.2f > panel->activation_time && editor_active == 0) {
+                f64 progress = (f64)panel->activation_time / (f64)1.2f;
+                volatile f32 rounded_progress = progress;
+                volatile f32 alpha;
+                frame = progress * 23.0 + 1.0;
+                EvalAnim(&world->level_objects[models.transition].special, frame, &animated_matrix, 0);
+                animated_matrix.m32 = 0.0f;
+                animated_matrix.m31 = 0.0f;
+                animated_matrix.m30 = 0.0f;
+                NuMtxMulVU0(&animated_matrix, &animated_matrix, &transition_base);
+                alpha = 1.0 - (f64)rounded_progress;
+                NuSpecialDrawAtAlpha(&world->level_objects[models.transition].special, &animated_matrix, alpha);
+            }
+            frame = (f64)panel->activation_time / (f64)0.8f * 24.0 + 1.0;
+            EvalAnim(&world->level_objects[models.animated].special, frame, &animated_matrix, 0);
+            animated_matrix.m32 = 0.0f;
+            animated_matrix.m31 = 0.0f;
+            animated_matrix.m30 = 0.0f;
+            NuMtxMulVU0(&animated_matrix, &animated_matrix, &base_matrix);
+            NuSpecialDrawAtAlpha(&world->level_objects[models.animated].special, &animated_matrix, 1.0f);
+        }
+        if ((panel->flags & 0x48) == 8 && (f64)panel->target_offset.y != GameObjectNearFloorNoFloorHeight &&
+            models.target != -1 && world->level_objects[models.target].active != 0) {
+            NUVEC target;
+            f32 alpha;
+            GizPanel_GetAbsTargetPos(panel, &target, 0);
+            NuMtxSetRotationY(&base_matrix, target_spin);
+            if (panel->target_roll != 0)
+                NuMtxRotateZ(&base_matrix, panel->target_roll);
+            if (panel->target_pitch != 0)
+                NuMtxRotateX(&base_matrix, panel->target_pitch);
+            NuMtxTranslate(&base_matrix, &target);
+            NuMtxPreScaleU(&base_matrix, panel->target_scale);
+            alpha = (panel->flags & 1) != 0 ? 0.0f : target_alpha;
+            NuSpecialDrawAtAlpha(&world->level_objects[models.target].special, &base_matrix, alpha);
+        }
+        if ((panel->flags & 0x20) == 0 && models.arm != -1 && world->level_objects[models.arm].active != 0) {
+            NUVEC arm_offset;
+            arm_offset.x = 0.0f;
+            arm_offset.y = models.arm_y;
+            arm_offset.z = models.arm_z;
+            NuVecRotateX(&arm_offset, &arm_offset, panel->arm_x_rotation);
+            NuVecRotateY(&arm_offset, &arm_offset, panel->y_rotation);
+            NuMtxSetRotationX(&base_matrix, panel->arm_x_rotation);
+            NuMtxRotateY(&base_matrix, panel->y_rotation);
+            NuMtxPreRotateX(&base_matrix, panel->field_7c);
+            NuMtxRotateY(&base_matrix, panel->field_7e);
+            NuMtxTranslate(&base_matrix, &panel->position);
+            NuMtxTranslate(&base_matrix, &arm_offset);
+            NuSpecialDrawAt(&world->level_objects[models.arm].special, &base_matrix);
+        }
+    }
+    ResetShadowMapRendering();
+}

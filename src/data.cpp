@@ -32210,3 +32210,19 @@ extern "C" {
     extern const char PanelActivateSfxPc[10] = "DPanelAct";
 #pragma const_seg()
 }
+
+extern "C" {
+#pragma data_seg(".data$RopeCurveSubdivisionsPc")
+    i32 RopeCurveSubdivisionsPc = 3;
+#pragma data_seg(".data$GrappleRopeColourPc")
+    u32 GrappleRopeColourPc = 0xffffffffu;
+#pragma data_seg(".data$GrappleCurvedRopeEnabledPc")
+    i32 GrappleCurvedRopeEnabledPc = 1;
+#pragma data_seg()
+}
+
+extern "C" {
+#pragma bss_seg(".bss$AIGizmoNameBufferPc")
+    char AIGizmoNameBufferPc[16];
+#pragma bss_seg()
+}
