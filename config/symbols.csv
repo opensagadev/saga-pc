@@ -9058,6 +9058,8 @@ address    , symbol                                                         , si
 0x00758464 , _AIScriptParamPrefix                                           , 6     , const char[6]
 0x75848c,??_C@_0BB@PGCHANHM@ForceLightningLp?$AA@,17,const char[17]
 0x007584a8 , _AIExpressionMaxName                                           , 4     , const char [4]
+0x007584ac,_AIActionNumName,4,const char[4]
+0x007584b0,_AIActionDistName,5,const char[5]
 0x7584c4   , _PCContextName_Techno                                          , 7     , const char [7]
 0x007584d4 , _NewLevelPrefix                                                ,       ,
 0x7584d4,??_C@_09CGFKCPPE@newlevel?$DN?$AA@,10,char []

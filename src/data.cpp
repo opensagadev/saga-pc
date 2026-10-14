@@ -11468,6 +11468,10 @@ extern "C" {
 #pragma const_seg()
 #pragma const_seg(".rdata$AIExpressionMaxName")
     extern const char AIExpressionMaxName[4] = "max";
+#pragma const_seg(".rdata$AIActionNumName")
+    extern const char AIActionNumName[4] = "num";
+#pragma const_seg(".rdata$AIActionDistName")
+    extern const char AIActionDistName[5] = "Dist";
 #pragma const_seg()
 #pragma data_seg(".data$rocket_speed")
     f32 rocket_speed = 1.2000000476837158f;

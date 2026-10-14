@@ -7536,6 +7536,66 @@ i32 __cdecl Action_SetUseOneAtOnce(AISYS_PC *sys, AISCRIPTPROCESS_PC *processor,
     return 1;
 }
 
+i32 __cdecl Action_SetAO_MaxAttackers(AISYS_PC *unused0, AISCRIPTPROCESS_PC *processor, AIPACKET_PC *unused2,
+                                      char **params, i32 count, i32 first_time, f32 unused6) {
+    i32 index;
+    char *value;
+    if (first_time != 0) {
+        if (count == 0)
+            return 1;
+        for (index = 0; index < count; ++index) {
+            value = NuStrIStr(params[index], (char *)AIExpressionMaxName);
+            if (value != NULL)
+                oneAtOnce_SetNumAttackers((i32)AIParamToFloat(processor, value + 4));
+        }
+    }
+    return 1;
+}
+
+i32 __cdecl Action_SetAO_AttackersPerRow(AISYS_PC *unused0, AISCRIPTPROCESS_PC *processor, AIPACKET_PC *unused2,
+                                         char **params, i32 count, i32 first_time, f32 unused6) {
+    i32 index;
+    char *value;
+    if (first_time != 0) {
+        if (count == 0)
+            return 1;
+        for (index = 0; index < count; ++index) {
+            value = NuStrIStr(params[index], (char *)AIActionNumName);
+            if (value != NULL)
+                oneAtOnce_SetAttackersPerRow((i32)AIParamToFloat(processor, value + 4));
+        }
+    }
+    return 1;
+}
+
+i32 __cdecl Action_SetAO_RowDist(AISYS_PC *unused0, AISCRIPTPROCESS_PC *processor, AIPACKET_PC *unused2, char **params,
+                                 i32 count, i32 first_time, f32 unused6) {
+    i32 index;
+    char *value;
+    if (first_time != 0) {
+        for (index = 0; index < count; ++index) {
+            value = NuStrIStr(params[index], (char *)AIActionDistName);
+            if (value != NULL)
+                oneAtOnce_SetDistPerRow(AIParamToFloat(processor, value + 5));
+        }
+    }
+    return 1;
+}
+
+i32 __cdecl Action_SetAO_InitRowDist(AISYS_PC *unused0, AISCRIPTPROCESS_PC *processor, AIPACKET_PC *unused2,
+                                     char **params, i32 count, i32 first_time, f32 unused6) {
+    i32 index;
+    char *value;
+    if (first_time != 0) {
+        for (index = 0; index < count; ++index) {
+            value = NuStrIStr(params[index], (char *)AIActionDistName);
+            if (value != NULL)
+                oneAtOnce_SetInitDistPerRow(AIParamToFloat(processor, value + 5));
+        }
+    }
+    return 1;
+}
+
 static i32 Action_SetTechnoComplete(AISYS_PC *unused0, AISCRIPTPROCESS_PC *unused1, AIPACKET_PC *packet, char **params,
                                     i32 param_count, i32 first_time, f32 unused6) {
     GAMEOBJECT *object = packet != NULL && packet->owner != NULL ? packet->owner->objptr : NULL;
