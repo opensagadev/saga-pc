@@ -810,3 +810,24 @@ void __cdecl NuSpecialGetBounds(NUSPECIALHANDLE *special, NUVEC *minimum, NUVEC 
         maximum->z = display->bounds_max.z;
     }
 }
+
+void __cdecl NuSpecialSetDrawPos(nuhspecial_s *special_pointer, NUVEC *position) {
+    NUSPECIALHANDLE *special = (NUSPECIALHANDLE *)special_pointer;
+    NUDISPLAY_LIST_PC *display_list;
+    if (special == NULL || special->scene == NULL)
+        return;
+    if (special->special != NULL) {
+        ((NuSpecialLegacyMatrixPc *)((NuSpecialLegacyView *)special->special)->instance)->matrix.m30 = position->x;
+        ((NuSpecialLegacyMatrixPc *)((NuSpecialLegacyView *)special->special)->instance)->matrix.m31 = position->y;
+        ((NuSpecialLegacyMatrixPc *)((NuSpecialLegacyView *)special->special)->instance)->matrix.m32 = position->z;
+    } else {
+        ((NuSpecialDisplayView *)special->display_special)->draw_matrix.m30 = position->x;
+        ((NuSpecialDisplayView *)special->display_special)->draw_matrix.m31 = position->y;
+        ((NuSpecialDisplayView *)special->display_special)->draw_matrix.m32 = position->z;
+        display_list = ((NUGSCN *)special->scene)->display_list;
+        if ((display_list->instance_visibility_enabled & 1) != 0) {
+            NuDisplayListUpdateSpecial(special);
+            ((NuSpecialDisplayView *)special->display_special)->flags |= 0x400;
+        }
+    }
+}

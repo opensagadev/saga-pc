@@ -382,3 +382,33 @@ i32 __cdecl OnOrInsidePlane(NUVEC *point, NUVEC *plane_point, NUVEC *plane_norma
     }
     return 1;
 }
+
+static __declspec(noinline) void ReflectionCopyMatrixPc(NUMTX *source, NUMTX *result) {
+    result->m00 = source->m00;
+    result->m01 = source->m01;
+    result->m02 = source->m02;
+    result->m03 = source->m03;
+    result->m10 = source->m10;
+    result->m11 = source->m11;
+    result->m12 = source->m12;
+    result->m13 = source->m13;
+    result->m20 = source->m20;
+    result->m21 = source->m21;
+    result->m22 = source->m22;
+    result->m23 = source->m23;
+    result->m30 = source->m30;
+    result->m31 = source->m31;
+    result->m32 = source->m32;
+    result->m33 = source->m33;
+}
+i32 __cdecl MatrixReflectionVU0_AXISY(NUMTX *matrix, f32 plane, f32 override_plane, NUMTX *result) {
+    if ((f64)override_plane != 2000000.0 &&
+        (MatrixReflection_CanOverrideFn == NULL || MatrixReflection_CanOverrideFn() != 0))
+        plane = override_plane;
+    ReflectionCopyMatrixPc(matrix, result);
+    result->m01 = -result->m01;
+    result->m11 = -result->m11;
+    result->m21 = -result->m21;
+    result->m31 = plane - (result->m31 - plane);
+    return 1;
+}

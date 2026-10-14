@@ -32175,3 +32175,38 @@ extern "C" {
     f32 MenuSaveSlotsWidthPc = 0.5f;
     f32 MenuSaveSlotsStepYPc;
 }
+
+extern "C" {
+#pragma bss_seg(".bss$BuilditHopSfxWaitPc")
+    f32 BuilditHopSfxWaitPc;
+#pragma bss_seg()
+#pragma data_seg(".data$GIZBUILDITWOBBLEJUMPHEIGHT")
+    f32 GIZBUILDITWOBBLEJUMPHEIGHT = 0.05f;
+#pragma data_seg()
+}
+
+extern "C" {
+#pragma const_seg(".rdata$PanelVariantTwoTargetZ")
+    extern const f64 PanelVariantTwoTargetZ = (f64)0.19f;
+#pragma const_seg()
+#pragma const_seg(".rdata$PanelVariantTwoTargetY")
+    extern const f64 PanelVariantTwoTargetY = (f64)0.245f;
+#pragma const_seg()
+#pragma const_seg(".rdata$PanelVariantThreeTargetZ")
+    extern const f64 PanelVariantThreeTargetZ = (f64)0.17f;
+#pragma const_seg()
+#pragma const_seg(".rdata$PanelVariantThreeTargetY")
+    extern const f64 PanelVariantThreeTargetY = (f64)0.34f;
+#pragma const_seg()
+#pragma const_seg(".rdata$PanelTrackEnterDistanceSquared")
+    extern const f32 PanelTrackEnterDistanceSquared = 0.809999942779541f;
+#pragma const_seg()
+#pragma const_seg(".rdata$PanelTrackLeaveDistanceSquared")
+    extern const f32 PanelTrackLeaveDistanceSquared = 1.2100000381469727f;
+#pragma const_seg()
+#pragma const_seg(".rdata$PanelDeactivateSfxPc")
+    extern const char PanelDeactivateSfxPc[10] = "DPanelDis";
+#pragma const_seg(".rdata$PanelActivateSfxPc")
+    extern const char PanelActivateSfxPc[10] = "DPanelAct";
+#pragma const_seg()
+}

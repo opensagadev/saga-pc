@@ -193,3 +193,95 @@ void __cdecl GizPanels_Reset(void *world_pointer, void *unused, void *progress_p
         }
     }
 }
+
+extern const f64 PanelVariantTwoTargetY, PanelVariantTwoTargetZ;
+extern const f64 PanelVariantThreeTargetY, PanelVariantThreeTargetZ;
+extern const f32 PanelTrackEnterDistanceSquared, PanelTrackLeaveDistanceSquared;
+extern const char PanelDeactivateSfxPc[10], PanelActivateSfxPc[10];
+
+static NUVEC *PanelGetTrackingPositionPc(PANEL_MOVEMENT_PC *panel, NUVEC *position) {
+    *position = panel->position;
+    if (panel->model_variant == 3) {
+        position->y = (f32)((f64)position->y + PanelVariantThreeTargetY);
+        position->z = (f32)((f64)position->z - PanelVariantThreeTargetZ);
+    } else if (panel->model_variant == 2) {
+        position->y = (f32)((f64)position->y + PanelVariantTwoTargetY);
+        position->z = (f32)((f64)position->z - PanelVariantTwoTargetZ);
+    }
+    return position;
+}
+
+void __cdecl GizPanel_Update(void *world_pointer, void *unused, f32 delta_time) {
+    WORLDINFO *world = (WORLDINFO *)world_pointer;
+    PANEL_SYSTEM_PC *system = (PANEL_SYSTEM_PC *)world->giz_panel_sys;
+    GAMEOBJECT *nearest_player = NULL;
+    NUVEC nearest_direction;
+    i32 index;
+    (void)unused;
+    if (system == NULL)
+        return;
+    for (index = 0; index < system->count; ++index) {
+        PANEL_MOVEMENT_PC *panel = &system->panels[index];
+        if ((panel->flags & 8) != 0) {
+            f32 nearest_distance = 1000000000.0f;
+            f32 maximum_distance;
+            i32 player_index;
+            maximum_distance =
+                (panel->flags & 0x10) != 0 ? PanelTrackLeaveDistanceSquared : PanelTrackEnterDistanceSquared;
+            nearest_player = NULL;
+            for (player_index = 0; player_index < 8; ++player_index) {
+                GAMEOBJECT *player = Player[player_index];
+                if (player != NULL && (player->flags_1fc_word & 0x1000) != 0 && player->dead == 0) {
+                    NUVEC position, direction;
+                    volatile f32 distance;
+                    PanelGetTrackingPositionPc(panel, &position);
+                    distance = NuVecDistSqr(&position, &player->collision_position, &direction);
+                    if (nearest_distance > distance && maximum_distance > distance) {
+                        nearest_distance = distance;
+                        nearest_direction = direction;
+                        nearest_player = Player[player_index];
+                    }
+                }
+            }
+        }
+        if (nearest_player != NULL) {
+            u16 previous_x = panel->field_7c;
+            u16 previous_y = panel->field_7e;
+            u16 target_x, target_y;
+            FindAnglesXY(&nearest_direction, &target_x, &target_y);
+            target_y = (u16)(target_y - panel->y_rotation);
+            if (previous_y <= 0x4000 && (u16)(target_y - 0x4001) <= 0x7ffe)
+                target_y = 0x4000;
+            else if (previous_y >= 0xc000 && (u16)(target_y - 0x4001) <= 0x7ffe)
+                target_y = 0xc000;
+            if (previous_x <= 0x4000 && (u16)(target_x - 0x4001) <= 0x7ffe)
+                target_x = (u16)(panel->y_rotation + 0x4000);
+            else if (previous_x >= 0xc000 && (u16)(target_x - 0x4001) <= 0x7ffe)
+                target_x = 0xc000;
+            panel->field_7c = SeekRot(panel->field_7c, target_x, 5.0f);
+            panel->field_7e = SeekRot(panel->field_7e, target_y, 5.0f);
+            if ((panel->flags & 0x10) == 0) {
+                panel->activation_time = 0.0f;
+                panel->flags |= 0x10;
+                PlaySfx((char *)PanelActivateSfxPc, &panel->position);
+            } else {
+                volatile f32 time = panel->activation_time + FRAMETIME;
+                panel->activation_time = time;
+                if ((f64)time > (f64)0.8f)
+                    panel->activation_time = 0.8f;
+            }
+        } else {
+            panel->field_7c = SeekRot(panel->field_7c, 0xe000, 10.0f);
+            panel->field_7e = SeekRot(panel->field_7e, 0, 10.0f);
+            if ((panel->flags & 0x10) != 0)
+                PlaySfx((char *)PanelDeactivateSfxPc, &panel->position);
+            panel->flags &= (u8)~0x10;
+            if (panel->activation_time > 0.0f) {
+                volatile f32 time = panel->activation_time - delta_time;
+                panel->activation_time = time;
+                if (time < 0.0f)
+                    panel->activation_time = 0.0f;
+            }
+        }
+    }
+}

@@ -1670,3 +1670,132 @@ void __cdecl Blowups_Reset(void *world_ptr, void *unused, void *progress_ptr) {
     GizBlowup_DeleteTerrain();
     GizBlowup_InitTerrain();
 }
+
+typedef struct {
+    u8 unknown00[0x40];
+    NUVEC screen_position;
+} BLOWUP_SCREEN_DRAW_PC;
+typedef struct {
+    u8 unknown00[0x44];
+    f32 first_frame;
+} BLOWUP_ANIM_FIRST_DRAW_PC;
+STATIC_ASSERT(offsetof(BLOWUP_SCREEN_DRAW_PC, screen_position) == 0x40);
+STATIC_ASSERT(offsetof(BLOWUP_ANIM_FIRST_DRAW_PC, first_frame) == 0x44);
+STATIC_ASSERT(sizeof(GIZMOBLOWUP_PC) == 276);
+STATIC_ASSERT(offsetof(GIZMOBLOWUP_PC, status_flags) == 0x94);
+STATIC_ASSERT(offsetof(GIZMOBLOWUP_PC, draw_flags) == 0x98);
+STATIC_ASSERT(offsetof(GIZMOBLOWUP_PC, type) == 0xa4);
+STATIC_ASSERT(offsetof(GIZMOBLOWUP_PC, animation_time) == 0xbc);
+STATIC_ASSERT(offsetof(GIZMOBLOWUP_PC, animation_offset) == 0xc8);
+STATIC_ASSERT(offsetof(GIZMOBLOWUP_PC, reflection_height) == 0xd4);
+STATIC_ASSERT(offsetof(GIZMOBLOWUPTYPE_PC, animated_special) == 0x30);
+STATIC_ASSERT(offsetof(GIZMOBLOWUPTYPE_PC, decal_special) == 0x3c);
+STATIC_ASSERT(offsetof(GIZMOBLOWUPTYPE_PC, shadow_special) == 0x48);
+STATIC_ASSERT(offsetof(GIZMOBLOWUPTYPE_PC, burst_special) == 0x54);
+STATIC_ASSERT(offsetof(GIZMOBLOWUPTYPE_PC, animation_flags) == 0x7c);
+STATIC_ASSERT(offsetof(GIZMOBLOWUPTYPE_PC, animation_base_frame) == 0x90);
+STATIC_ASSERT(offsetof(GIZMOBLOWUPTYPE_PC, instance_count) == 0xb2);
+STATIC_ASSERT(offsetof(NUINSTANIM_TIME_VIEW, animation_index) == 0x5c);
+STATIC_ASSERT(offsetof(NUGSCN, instance_animation_data) == 0x54);
+void __cdecl GizmoBlowupBurstDraw(void *world_pointer, void *data, f32 frame_time) {
+    WORLDINFO *world = (WORLDINFO *)world_pointer;
+    GIZMOBLOWUP_PC *type_instances = world->gizmo_blowups;
+    GIZMOBLOWUP_PC *blowup, *next_type_instances;
+    GIZMOBLOWUPTYPE_PC *type;
+    NUSPECIALHANDLE *special;
+    NUINSTANIM_TIME_VIEW *animation;
+    NUMTX animated_matrix, draw_matrix;
+    f32 end_frame, frame, difference, reflection_height;
+    f64 accumulated_frame;
+    i32 type_index, instance_index, drawn;
+    for (type_index = 0; type_index < world->gizmo_blowup_type_count; ++type_index) {
+        type = type_instances->type;
+        if (type == NULL)
+            continue;
+        blowup = type_instances;
+        for (instance_index = 0; instance_index < type->instance_count; ++instance_index, ++blowup) {
+            if (blowup->draw_flags & 0x800000) {
+                blowup->status_flags |= 0x8000;
+                NuCameraTransformScreenClip(&((BLOWUP_SCREEN_DRAW_PC *)blowup)->screen_position, &blowup->position, 1,
+                                            NULL);
+                continue;
+            }
+            if (!(blowup->status_flags & 0x4000))
+                continue;
+            if (blowup->draw_flags & 0x20000)
+                ResetShadowMapRendering();
+            else
+                EnableShadowMapRendering(0);
+            special = &type->animated_special;
+            animation = (NUINSTANIM_TIME_VIEW *)NuSpecialGetInstAnim(special);
+            if (animation != NULL && (blowup->status_flags & 0x80000)) {
+                end_frame = NuAnimEndFrameOld((ANI3_HEADER_PC *)((NUGSCN *)blowup->type->animated_special.scene)
+                                                  ->instance_animation_data[animation->animation_index]);
+                accumulated_frame = (f64)blowup->type->animation_base_frame + blowup->animation_offset;
+                if (accumulated_frame > end_frame) {
+                    difference = (f32)(accumulated_frame - end_frame);
+                    frame = (f32)((f64)difference + ((BLOWUP_ANIM_FIRST_DRAW_PC *)animation)->first_frame);
+                } else
+                    frame = (f32)accumulated_frame;
+                if (blowup->type->animation_flags & 0x2000)
+                    EvalAnim(special, frame, &animated_matrix, 1);
+                else {
+                    if (!(blowup->status_flags & 0x400000))
+                        frame = blowup->animation_time;
+                    EvalAnim(special, frame, &animated_matrix, 0);
+                    NuMtxMulVU0(&animated_matrix, &animated_matrix, &blowup->transform);
+                }
+                drawn = NuSpecialDrawAt(special, &animated_matrix);
+                blowup->status_flags = (blowup->status_flags & ~0x8000u) | (((u32)drawn << 15) & 0x8000u);
+                draw_matrix = animated_matrix;
+                if (blowup->status_flags & 0x8000)
+                    NuCameraTransformScreenClip(&((BLOWUP_SCREEN_DRAW_PC *)blowup)->screen_position,
+                                                NUMTX_GET_ROW_VEC(&animated_matrix, 3), 1, NULL);
+            } else {
+                drawn = NuSpecialDrawAt(special, &blowup->transform);
+                blowup->status_flags = (blowup->status_flags & ~0x8000u) | (((u32)drawn << 15) & 0x8000u);
+                draw_matrix = blowup->transform;
+                if (blowup->status_flags & 0x8000)
+                    NuCameraTransformScreenClip(&((BLOWUP_SCREEN_DRAW_PC *)blowup)->screen_position, &blowup->position,
+                                                1, NULL);
+            }
+            ResetShadowMapRendering();
+            if ((blowup->status_flags & 0x808000) == 0x808000 && (blowup->draw_flags & 0x10) &&
+                GizmoBlowup_TransformDrawFn != NULL)
+                GizmoBlowup_TransformDrawFn(blowup);
+            if (blowup->draw_flags & 0x40000000) {
+                reflection_height = draw_matrix.m31 + blowup->reflection_height;
+                if (MatrixReflection(&draw_matrix, 2, reflection_height, blowup->reflection_height, &draw_matrix)) {
+                    NuRndrStartReflectionRender(0);
+                    NuSpecialDrawAt(special, &draw_matrix);
+                    NuRndrEndReflectionRender();
+                }
+            }
+        }
+        next_type_instances = blowup;
+        if (NuSpecialExistsFn(&type->decal_special)) {
+            blowup = type_instances;
+            for (instance_index = 0; instance_index < type->instance_count; ++instance_index, ++blowup)
+                if (!(blowup->draw_flags & 0x400) && (blowup->status_flags & 1)) {
+                    GizmoBlowupGenDecalMatrix(blowup, &animated_matrix, 0);
+                    NuSpecialDrawAt(&type->decal_special, &animated_matrix);
+                }
+        }
+        if (NuSpecialExistsFn(&type->shadow_special)) {
+            blowup = type_instances;
+            for (instance_index = 0; instance_index < type->instance_count; ++instance_index, ++blowup)
+                if ((blowup->status_flags & 0x800000) && !(blowup->draw_flags & 0x20000)) {
+                    GizmoBlowupGenShadowMatrix(blowup, &animated_matrix);
+                    NuSpecialDrawAt(&type->decal_special, &animated_matrix);
+                }
+        }
+        if (NuSpecialExistsFn(&type->burst_special)) {
+            blowup = type_instances;
+            for (instance_index = 0; instance_index < type->instance_count; ++instance_index, ++blowup)
+                if (blowup->status_flags & 1)
+                    NuSpecialDrawAt(&type->burst_special, &blowup->transform);
+        }
+        type_instances = next_type_instances;
+    }
+    ResetShadowMapRendering();
+}

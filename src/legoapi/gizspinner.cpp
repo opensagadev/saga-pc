@@ -664,3 +664,60 @@ extern "C" void __cdecl GizSpinner_ResetAllPc(void *world_pointer, void *unused,
     }
     GizSpinners_Update(world, NULL, FRAMETIME);
 }
+
+extern "C" i32 __cdecl MatrixReflectionVU0_AXISY(NUMTX *, f32, f32, NUMTX *);
+STATIC_ASSERT(sizeof(GIZSPINNER_s) == 772);
+STATIC_ASSERT(offsetof(GIZSPINNER_s, special) == 0x50);
+STATIC_ASSERT(offsetof(GIZSPINNER_s, type) == 0x8b);
+STATIC_ASSERT(offsetof(GIZSPINNER_s, state_flags) == 0x84);
+STATIC_ASSERT(offsetof(GIZSPINNER_s, ground_height) == 0xa0);
+STATIC_ASSERT(offsetof(GIZSPINNER_s, flags) == 0xac);
+STATIC_ASSERT(offsetof(GIZSPINNER_s, arms) == 0xb4);
+STATIC_ASSERT(sizeof(GIZSPINNERARM_s) == 68);
+STATIC_ASSERT(offsetof(GIZSPINNERARM_s, matrix) == 0);
+STATIC_ASSERT(offsetof(LEVELDATA_PC, max_spinners) == 0xf2);
+STATIC_ASSERT(offsetof(LEVELDATA_PC, reflection_y) == 0xc0);
+extern "C" void __cdecl GizSpinner_Draw(void *world_pointer, void *data, f32 frame_time) {
+    WORLDINFO *world = (WORLDINFO *)world_pointer;
+    GIZSPINNER_s *spinner;
+    GIZSPINNERARM_s *arm;
+    NUMTX reflection;
+    f32 ground_height, override_height;
+    i32 index, arm_index;
+    if (world->spinners == NULL || world->current_level->max_spinners == 0)
+        return;
+    for (index = 0; index < world->current_level->max_spinners; ++index) {
+        EnableShadowMapRendering(0);
+        spinner = &world->spinners[index];
+        if (!(spinner->flags & 1) || ((spinner->flags & 4) && editor_active == 0))
+            continue;
+        if (NuSpecialExistsFn((NUSPECIALHANDLE *)&spinner->special)) {
+            NuSpecialDrawAt((NUSPECIALHANDLE *)&spinner->special, &spinner->matrix);
+            if (spinner->type != 0 &&
+                NuSpecialCompare((NUSPECIALHANDLE *)&spinner->special, (NUSPECIALHANDLE *)&thingsSceneBase) != 0 &&
+                NuSpecialExistsFn((NUSPECIALHANDLE *)&thingsSceneArm) != 0) {
+                arm = spinner->arms;
+                for (arm_index = 0; arm_index < spinner->type; ++arm_index, ++arm)
+                    NuSpecialDrawAt((NUSPECIALHANDLE *)&thingsSceneArm, &arm->matrix);
+            }
+        }
+        ResetShadowMapRendering();
+        if (!(spinner->state_flags & 0x800) || !NuSpecialExistsFn((NUSPECIALHANDLE *)&spinner->special) ||
+            !NuSpecialGetVisibilityFn((NUSPECIALHANDLE *)&spinner->special))
+            continue;
+        ground_height = spinner->ground_height;
+        override_height = WORLD->current_level->reflection_y;
+        if (!MatrixReflectionVU0_AXISY(&spinner->matrix, ground_height, override_height, &reflection))
+            continue;
+        NuRndrStartReflectionRender(0);
+        NuSpecialDrawAt((NUSPECIALHANDLE *)&spinner->special, &reflection);
+        if (spinner->type != 0 &&
+            NuSpecialCompare((NUSPECIALHANDLE *)&spinner->special, (NUSPECIALHANDLE *)&thingsSceneBase) != 0 &&
+            NuSpecialExistsFn((NUSPECIALHANDLE *)&thingsSceneArm) != 0) {
+            arm = spinner->arms;
+            for (arm_index = 0; arm_index < spinner->type; ++arm_index, ++arm)
+                NuSpecialDrawAt((NUSPECIALHANDLE *)&thingsSceneArm, &arm->matrix);
+        }
+        NuRndrEndReflectionRender();
+    }
+}

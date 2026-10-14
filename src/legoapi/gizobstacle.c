@@ -1247,3 +1247,166 @@ ADDGIZMOTYPE_PC *__cdecl GizObstacles_RegisterGizmo(i32 type_id) {
     obstacle_gizmotype_id = type_id;
     return addtype;
 }
+
+extern const char CharacterFixupNamePc00752dfc[9];
+
+typedef struct bomb_generator_runtime_pc_s {
+    char name[16];
+    NUVEC position;
+    GAMEANIMSET *anim_set;
+    i32 interval;
+    GAMEOBJECT *generated_bomb;
+    u16 unknown_28;
+    u16 flags;
+} BOMB_GENERATOR_RUNTIME_PC;
+typedef struct bomb_generator_system_runtime_pc_s {
+    BOMB_GENERATOR_RUNTIME_PC *items;
+    u16 count, capacity;
+    void *pool;
+    u16 flags, unknown_0e;
+    void *progress;
+} BOMB_GENERATOR_SYSTEM_RUNTIME_PC;
+typedef struct bomb_generator_progress_pc_s {
+    u32 active[3], visible[3];
+} BOMB_GENERATOR_PROGRESS_PC;
+STATIC_ASSERT(sizeof(BOMB_GENERATOR_RUNTIME_PC) == 0x2c);
+STATIC_ASSERT(offsetof(BOMB_GENERATOR_RUNTIME_PC, anim_set) == 0x1c);
+STATIC_ASSERT(offsetof(BOMB_GENERATOR_RUNTIME_PC, generated_bomb) == 0x24);
+STATIC_ASSERT(offsetof(BOMB_GENERATOR_RUNTIME_PC, flags) == 0x2a);
+STATIC_ASSERT(sizeof(BOMB_GENERATOR_SYSTEM_RUNTIME_PC) == 0x14);
+STATIC_ASSERT(offsetof(BOMB_GENERATOR_SYSTEM_RUNTIME_PC, count) == 4);
+STATIC_ASSERT(offsetof(BOMB_GENERATOR_SYSTEM_RUNTIME_PC, flags) == 0xc);
+STATIC_ASSERT(offsetof(BOMB_GENERATOR_SYSTEM_RUNTIME_PC, progress) == 0x10);
+STATIC_ASSERT(sizeof(BOMB_GENERATOR_PROGRESS_PC) == 0x18);
+STATIC_ASSERT(offsetof(BOMB_GENERATOR_PROGRESS_PC, visible) == 0xc);
+STATIC_ASSERT(offsetof(GAMEOBJECT, cable) == 0x1040);
+STATIC_ASSERT(offsetof(CABLE_s, target) == 4);
+STATIC_ASSERT(offsetof(CABLE_s, max_length) == 0x1c4);
+STATIC_ASSERT(offsetof(WORLDINFO, game_debris_sys) == 0x134);
+
+static void __cdecl BombGeneratorsApplyResetPc(BOMB_GENERATOR_SYSTEM_RUNTIME_PC *system,
+                                               BOMB_GENERATOR_PROGRESS_PC *progress) {
+    BOMB_GENERATOR_RUNTIME_PC *generator = system->items;
+    i32 index;
+    i32 shared_bomb;
+    for (index = 0; index < system->count; ++index, ++generator) {
+        GAMEOBJECT *bomb;
+        generator->flags |= 3;
+        if (generator->anim_set != NULL)
+            GameAnimSet_EvaluateState(generator->anim_set);
+        bomb = generator->generated_bomb;
+        if (bomb != NULL && (system->flags & 2) != 0 && (bomb->flags_1fc_word & 1) != 0 &&
+            (bomb->flags_1fc_word & 0x1000) != 0)
+            KillGameObject(bomb, 4, 0);
+        generator->generated_bomb = NULL;
+        if (progress != NULL && index < 96) {
+            i32 word = index / 32;
+            u32 mask = 1u << (index & 31);
+            generator->flags = (u16)((generator->flags & ~2u) | (((progress->visible[word] & mask) != 0) << 1));
+            generator->flags = (u16)((generator->flags & ~1u) | ((progress->active[word] & mask) != 0));
+        }
+    }
+    shared_bomb = BombGenerator_PlayerBomb[0] != NULL && BombGenerator_PlayerBomb[0] == BombGenerator_PlayerBomb[1];
+    for (index = 0; index < 2; ++index) {
+        GAMEOBJECT *player;
+        CABLE_s *cable;
+        GAMEOBJECT *bomb;
+        if (netclient != 0)
+            break;
+        player = (GAMEOBJECT *)Player[index];
+        if (player != NULL && BombGenerator_PlayerBomb[index] != NULL && player->cable != NULL &&
+            ((CABLE_s *)player->cable)->target != NULL && ((CABLE_s *)player->cable)->target->id == id_DRAGBOMB) {
+            KillGameObject(((CABLE_s *)player->cable)->target, 4, 0);
+            ((GAMEOBJECT *)Player[index])->cable = NULL;
+        }
+        player = (GAMEOBJECT *)Player[index];
+        if (player == NULL || (player->flags_1fc_word & 0x80) == 0 || BombGenerator_PlayerBomb[index] == NULL ||
+            player->cable != NULL)
+            continue;
+        if (index != 0 && shared_bomb != 0 && ((GAMEOBJECT *)Player[0])->cable != NULL &&
+            ((CABLE_s *)((GAMEOBJECT *)Player[0])->cable)->target != NULL &&
+            ((CABLE_s *)((GAMEOBJECT *)Player[0])->cable)->target->id == id_DRAGBOMB) {
+            bomb = ((CABLE_s *)((GAMEOBJECT *)Player[0])->cable)->target;
+        } else {
+            NUVEC position;
+            position.x = 0.0f;
+            position.y = 0.0f;
+            position.z = -2.0f;
+            NuVecRotateY(&position, &position, player->field_0x276);
+            NuVecAdd(&position, &position, &((GAMEOBJECT *)Player[index])->collision_position);
+            bomb = AddDynamicCreature((i16)id_DRAGBOMB, &position, 0, (char *)CharacterFixupNamePc00752dfc, NULL, NULL,
+                                      0, NULL, NULL, 0, 0);
+        }
+        if (bomb != NULL) {
+            CABLE_RECORD_PC *created = CreateCable((GAMEOBJECT *)Player[index], bomb, 0);
+            ((GAMEOBJECT *)Player[index])->cable = created;
+            cable = (CABLE_s *)((GAMEOBJECT *)Player[index])->cable;
+            if (cable != NULL)
+                cable->max_length = 1000000000.0f;
+        }
+    }
+}
+
+void __cdecl GizBombGens_Update(void *world_pointer, void *system_pointer, f32 delta_time) {
+    WORLDINFO *world = (WORLDINFO *)world_pointer;
+    BOMB_GENERATOR_SYSTEM_RUNTIME_PC *system = (BOMB_GENERATOR_SYSTEM_RUNTIME_PC *)system_pointer;
+    u16 model;
+    GAMEOBJECT *player;
+    CABLE_s *cable;
+    (void)delta_time;
+    if (system != NULL) {
+        BOMB_GENERATOR_RUNTIME_PC *generator;
+        i32 index;
+        if ((system->flags & 1) != 0) {
+            BombGeneratorsApplyResetPc(system, (BOMB_GENERATOR_PROGRESS_PC *)system->progress);
+            system->flags &= (u16)~1u;
+        }
+        generator = system->items;
+        for (index = 0; index < system->count; ++index, ++generator) {
+            if ((generator->flags & 2) == 0 || (generator->flags & 1) == 0 || generator->anim_set == NULL)
+                continue;
+            if (generator->generated_bomb != NULL) {
+                GAMEOBJECT *bomb;
+                GameAnimSet_SetVisibility(generator->anim_set, 0);
+                bomb = generator->generated_bomb;
+                if (bomb->dead != 0 || (bomb->flags_1fc_word & 0x1000) == 0) {
+                    GAMEANIMSET *anim_set = generator->anim_set;
+                    generator->generated_bomb = NULL;
+                    GameAnimSet_Reset(anim_set);
+                    GameAnimSet_EvalAnim(generator->anim_set);
+                    GameAnimSet_SetVisibility(generator->anim_set, 1);
+                }
+            } else {
+                GameAnimSet_Play(generator->anim_set, 1.0f, 1);
+                if (generator->anim_set->state == 2) {
+                    NUVEC position;
+                    GameAnimSet_GetAveragePos(generator->anim_set, &position, 2, 1, 1);
+                    if (netclient == 0) {
+                        generator->generated_bomb =
+                            AddDynamicCreature((i16)id_DRAGBOMB, &position, 0, (char *)CharacterFixupNamePc00752dfc,
+                                               NULL, NULL, 1, NULL, NULL, 0, 0);
+                        if (Cheat_IsOn(5) != 0) {
+                            AddGameDebris(world->game_debris_sys, 0x7d, &position);
+                            AddGameDebris(world->game_debris_sys, 0x7e, &position);
+                        }
+                    }
+                }
+            }
+        }
+    }
+    player = (GAMEOBJECT *)Player[0];
+    model = id_DRAGBOMB;
+    BombGenerator_PlayerBomb[0] = NULL;
+    if (player != NULL) {
+        cable = (CABLE_s *)player->cable;
+        if (cable != NULL && cable->target != NULL && cable->target->id == model)
+            BombGenerator_PlayerBomb[0] = cable->target;
+    }
+    player = (GAMEOBJECT *)Player[1];
+    BombGenerator_PlayerBomb[1] = NULL;
+    if (player != NULL) {
+        cable = (CABLE_s *)player->cable;
+        if (cable != NULL && cable->target != NULL && cable->target->id == model)
+            BombGenerator_PlayerBomb[1] = cable->target;
+    }
+}

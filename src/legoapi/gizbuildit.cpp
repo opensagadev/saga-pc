@@ -43,8 +43,21 @@ extern "C" void GizBuildIt_SetHeadTarget(GIZBUILDIT_s *buildit, GAMEOBJECT *play
     }
 }
 
-extern "C" void GizMoveAttractoBuildItPiece(GIZBUILDIT_s *buildit, GAMEANIMOBJ *piece) {
-    f32 progress = 1.0f - buildit->step_timer / buildit->step_duration;
+typedef struct buildit_attracto_reader_pc_s {
+    u8 unknown_00[0x18];
+    void *linked_buildit;
+    u8 unknown_1c[0x28];
+    f32 step_timer, step_duration;
+    u8 unknown_4c[0x30];
+} BUILDIT_ATTRACTO_READER_PC;
+STATIC_ASSERT(sizeof(BUILDIT_ATTRACTO_READER_PC) == 0x7c);
+STATIC_ASSERT(offsetof(BUILDIT_ATTRACTO_READER_PC, linked_buildit) == 0x18);
+STATIC_ASSERT(offsetof(BUILDIT_ATTRACTO_READER_PC, step_timer) == 0x44);
+STATIC_ASSERT(offsetof(BUILDIT_ATTRACTO_READER_PC, step_duration) == 0x48);
+
+extern "C" void GizMoveAttractoBuildItPiece(GIZBUILDIT_s *buildit_pointer, GAMEANIMOBJ *piece) {
+    BUILDIT_ATTRACTO_READER_PC *buildit = (BUILDIT_ATTRACTO_READER_PC *)buildit_pointer;
+    volatile f32 progress = 1.0 - (f64)buildit->step_timer / buildit->step_duration;
     GIZBUILDITANIMDATA_s *data = static_cast<GIZBUILDITANIMDATA_s *>(piece->object_data);
     NUMTX *draw = NuSpecialGetDrawMtx(&piece->special);
     if (progress > 0.0f) {
@@ -58,19 +71,14 @@ extern "C" void GizMoveAttractoBuildItPiece(GIZBUILDIT_s *buildit, GAMEANIMOBJ *
         NuMtxToQuat(&to, &to_rotation);
         NuQuatSlerp(&rotation, &from_rotation, &to_rotation, progress);
         NuQuatToMtx(&rotation, &result);
-        NUVEC delta = {data->end_mtx.m30 - draw->m30, data->end_mtx.m31 - draw->m31, data->end_mtx.m32 - draw->m32};
-        delta.x *= progress;
-        delta.y *= progress;
-        delta.z *= progress;
-        result.m31 = delta.y + draw->m31;
-        result.m32 = delta.z + draw->m32;
-        result.m30 = delta.x + draw->m30;
-        result.m31 += 0.1f * NU_SIN_LUT(progress * 32768.0f);
+        result.m30 = ((f64)data->end_mtx.m30 - draw->m30) * progress + draw->m30;
+        result.m31 = ((f64)data->end_mtx.m31 - draw->m31) * progress + draw->m31 +
+                     (f64)NU_SIN_LUT((f64)progress * 32768.0) * (f64)0.1f;
+        result.m32 = ((f64)data->end_mtx.m32 - draw->m32) * progress + draw->m32;
         *draw = result;
     }
-    if (buildit->linked_buildit != NULL) {
+    if (buildit->linked_buildit != NULL)
         data->draw_mtx = *draw;
-    } else {
+    else
         NuSpecialSetDrawMtx(&piece->special, draw);
-    }
 }
