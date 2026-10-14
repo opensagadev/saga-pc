@@ -125,3 +125,71 @@ i32 __cdecl GizPanel_Load(void *world_pointer, void *unused) {
     }
     return 1;
 }
+
+/* Private append-only fragment for canonical 144B PANEL_MOVEMENT_PC. */
+extern const f64 GameObjectNearFloorNoFloorHeight;
+
+STATIC_ASSERT(sizeof(PANEL_MOVEMENT_PC) == 0x90);
+STATIC_ASSERT(offsetof(PANEL_MOVEMENT_PC, floor_position) == 0x64);
+STATIC_ASSERT(offsetof(PANEL_MOVEMENT_PC, flags) == 0x62);
+STATIC_ASSERT(offsetof(PANEL_MOVEMENT_PC, arm_x_rotation) == 0x80);
+STATIC_ASSERT(offsetof(PANEL_MOVEMENT_PC, target_pitch) == 0x82);
+STATIC_ASSERT(offsetof(PANEL_MOVEMENT_PC, target_roll) == 0x84);
+STATIC_ASSERT(offsetof(PANEL_MOVEMENT_PC, activation_time) == 0x88);
+STATIC_ASSERT(offsetof(WORLDINFO, giz_panel_sys) == 0x5070);
+
+void __cdecl GizPanel_Reset(void *context) {
+    PANEL_MOVEMENT_PC *panel = (PANEL_MOVEMENT_PC *)context;
+    NUVEC offset, probe_position;
+    volatile f32 rounded_height;
+    f32 height;
+    panel->floor_position.y = 0.0f;
+    panel->floor_position.x = 0.0f;
+    panel->floor_position.z = 0.4f;
+    NuVecRotateY(&panel->floor_position, &panel->floor_position, panel->y_rotation + 0x8000);
+    NuVecAdd(&panel->floor_position, &panel->floor_position, &panel->position);
+    offset = panel->target_offset;
+    NuVecRotateY(&offset, &offset, panel->y_rotation);
+    probe_position.x = panel->position.x + offset.x;
+    probe_position.z = panel->position.z + offset.z;
+    probe_position.y = panel->position.y;
+    panel->floor_position.y = GameShadow(NULL, &panel->floor_position, 0.2f, -1);
+    rounded_height = GameShadow(NULL, &probe_position, 0.2f, -1);
+    height = rounded_height;
+    panel->target_offset.y = height;
+    if ((f64)height != GameObjectNearFloorNoFloorHeight) {
+        panel->target_offset.y = height + 0.001f;
+        FindAnglesZX(&ShadNorm, &panel->target_pitch, &panel->target_roll);
+    }
+    panel->flags = (u8)((panel->flags & 0xfcu) | 0x0cu);
+    panel->activation_time = 0.0f;
+    panel->arm_x_rotation = 0;
+    NuMtxSetRotationY(&panel->matrix, panel->y_rotation);
+    NuMtxTranslate(&panel->matrix, &panel->position);
+}
+
+void __cdecl GizPanels_Reset(void *world_pointer, void *unused, void *progress_pointer) {
+    WORLDINFO *world = (WORLDINFO *)world_pointer;
+    PANEL_SYSTEM_PC *system;
+    PANEL_MOVEMENT_PC *panel;
+    u32 *progress = (u32 *)progress_pointer;
+    i32 index;
+    (void)unused;
+    if (world == NULL)
+        return;
+    system = (PANEL_SYSTEM_PC *)world->giz_panel_sys;
+    if (system == NULL || system->panels == NULL || system->count <= 0)
+        return;
+    for (index = 0; index < system->count; ++index) {
+        panel = &system->panels[index];
+        GizPanel_Reset(panel);
+        if (progress != NULL && index < 32) {
+            i32 word = index / 32;
+            u32 bit = 1u << (index % 32);
+            if (progress[word] & bit)
+                panel->flags |= 2;
+            panel->flags = (u8)((panel->flags & ~4u) | ((progress[word + 2] & bit) != 0 ? 4 : 0));
+            panel->flags = (u8)((panel->flags & ~8u) | ((progress[word + 1] & bit) != 0 ? 8 : 0));
+        }
+    }
+}

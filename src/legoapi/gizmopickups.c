@@ -642,3 +642,136 @@ i32 __cdecl GizmoPickups_Load(void *world_ptr, void *unused) {
     }
     return 1;
 }
+
+typedef struct PICKUP_RESET_RECORD_PC {
+    char name[8];
+    NUVEC position;
+    u8 type_code, config_flags, model_variant, flags;
+    u8 unknown_18[4];
+    f32 floor;
+    u16 shadow_x, shadow_z;
+    i8 room;
+    u8 type_index;
+    u16 rotation;
+    f32 timer;
+} PICKUP_RESET_RECORD_PC;
+typedef struct PICKUP_RESET_PROGRESS_PC {
+    u32 collected[16], enabled[16], visible[16], activated[16];
+} PICKUP_RESET_PROGRESS_PC;
+STATIC_ASSERT(sizeof(PICKUP_RESET_RECORD_PC) == 0x2c);
+STATIC_ASSERT(offsetof(PICKUP_RESET_RECORD_PC, position) == 8);
+STATIC_ASSERT(offsetof(PICKUP_RESET_RECORD_PC, type_code) == 0x14);
+STATIC_ASSERT(offsetof(PICKUP_RESET_RECORD_PC, config_flags) == 0x15);
+STATIC_ASSERT(offsetof(PICKUP_RESET_RECORD_PC, model_variant) == 0x16);
+STATIC_ASSERT(offsetof(PICKUP_RESET_RECORD_PC, flags) == 0x17);
+STATIC_ASSERT(offsetof(PICKUP_RESET_RECORD_PC, floor) == 0x1c);
+STATIC_ASSERT(offsetof(PICKUP_RESET_RECORD_PC, shadow_x) == 0x20);
+STATIC_ASSERT(offsetof(PICKUP_RESET_RECORD_PC, shadow_z) == 0x22);
+STATIC_ASSERT(offsetof(PICKUP_RESET_RECORD_PC, room) == 0x24);
+STATIC_ASSERT(offsetof(PICKUP_RESET_RECORD_PC, type_index) == 0x25);
+STATIC_ASSERT(offsetof(PICKUP_RESET_RECORD_PC, rotation) == 0x26);
+STATIC_ASSERT(offsetof(PICKUP_RESET_RECORD_PC, timer) == 0x28);
+STATIC_ASSERT(sizeof(PICKUP_RESET_PROGRESS_PC) == 0x100);
+STATIC_ASSERT(offsetof(PICKUP_RESET_PROGRESS_PC, enabled) == 0x40);
+STATIC_ASSERT(offsetof(PICKUP_RESET_PROGRESS_PC, visible) == 0x80);
+STATIC_ASSERT(offsetof(PICKUP_RESET_PROGRESS_PC, activated) == 0xc0);
+STATIC_ASSERT(offsetof(struct GIZMOPICKUPRUNTIMESYS_s, pickups) == 0);
+STATIC_ASSERT(offsetof(struct GIZMOPICKUPRUNTIMESYS_s, temporary_pickups) == 4);
+STATIC_ASSERT(offsetof(struct GIZMOPICKUPRUNTIMESYS_s, pickup_count) == 8);
+STATIC_ASSERT(sizeof(struct GIZMOPICKUPRUNTIMESYS_s) == 0x1c);
+STATIC_ASSERT(sizeof(struct LEVELSAVE_s) == 0x54);
+STATIC_ASSERT(offsetof(struct LEVELSAVE_s, minikit_count) == 0x50);
+STATIC_ASSERT(offsetof(WORLDINFO, pickup_runtime_sys) == 0x50b8);
+STATIC_ASSERT(offsetof(WORLDINFO, current_gscn) == 0x13c);
+STATIC_ASSERT(offsetof(WORLDINFO, level_idx) == 0x11c);
+extern u8 *Game_LevelSave;
+extern const f64 GameObjectNearFloorNoFloorHeight;
+
+static __declspec(noinline) void GizmoPickups_Reset(WORLDINFO *world, PICKUP_RESET_RECORD_PC *pickup) {
+    i32 index;
+    volatile f32 floor;
+    for (index = 0; index < GizmoPickupSys->type_count; ++index)
+        if (GizmoPickupSys->types[index].field_c == pickup->type_code)
+            break;
+    if (index == GizmoPickupSys->type_count)
+        index = 0;
+    pickup->type_index = (u8)index;
+    NewTerrPlatformsOff();
+    floor = GameShadow(NULL, &pickup->position, 5.0f, -1);
+    pickup->floor = floor;
+    if ((f64)pickup->floor != GameObjectNearFloorNoFloorHeight) {
+        if (pickup->floor >= pickup->position.y)
+            pickup->floor = LevelConfigFarDistance;
+        else
+            FindAnglesZX(&ShadNorm, &pickup->shadow_x, &pickup->shadow_z);
+    }
+    pickup->flags = (pickup->flags & ~0x18) | 7;
+    if (GizmoPickupSys->types[pickup->type_index].random_model_count > 0) {
+        i32 random = qrand();
+        pickup->model_variant =
+            (u8)(random / (65535 / GizmoPickupSys->types[pickup->type_index].random_model_count + 1));
+    } else {
+        pickup->model_variant = 0;
+    }
+    pickup->room = world->current_gscn != NULL ? (i8)NuPortalWhichRoom(world->current_gscn, &pickup->position) : -1;
+    pickup->rotation = (u16)qrand();
+    pickup->timer = 0.0f;
+    pickup->flags = (pickup->flags & ~0x40) | 0x20;
+}
+
+void __cdecl GizmoPickups_ResetPc(void *world_ptr, void *unused, void *progress_ptr) {
+    WORLDINFO *world = (WORLDINFO *)world_ptr;
+    PICKUP_RESET_PROGRESS_PC *progress = (PICKUP_RESET_PROGRESS_PC *)progress_ptr;
+    struct GIZMOPICKUPRUNTIMESYS_s *system;
+    PICKUP_RESET_RECORD_PC *pickup;
+    i32 index;
+    (void)unused;
+    for (index = 0; index < GizmoPickupSys->type_count; ++index) {
+        GizmoPickupSys->types[index].shadow_extent_x =
+            GizmoPickupSys->types[index].draw_distance * GizmoPickupSys->types[index].shadow_radius_x;
+        GizmoPickupSys->types[index].shadow_extent_z =
+            GizmoPickupSys->types[index].draw_distance * GizmoPickupSys->types[index].shadow_radius_z;
+    }
+    if (world == NULL)
+        return;
+    system = (struct GIZMOPICKUPRUNTIMESYS_s *)world->pickup_runtime_sys;
+    pickup = (PICKUP_RESET_RECORD_PC *)system->pickups;
+    if (pickup != NULL) {
+        for (index = 0; index < ((struct GIZMOPICKUPRUNTIMESYS_s *)world->pickup_runtime_sys)->pickup_count;
+             ++index, ++pickup) {
+            GizmoPickups_Reset(world, pickup);
+            if (progress != NULL && index < 512) {
+                i32 word = index >> 5;
+                u32 bit = 1u << (index & 31);
+                pickup->flags = (pickup->flags & ~4) | ((progress->visible[word] & bit) != 0 ? 4 : 0);
+                pickup->flags = (pickup->flags & ~2) | ((progress->enabled[word] & bit) != 0 ? 2 : 0);
+                pickup->flags = (pickup->flags & ~8) | ((progress->collected[word] & bit) != 0 ? 8 : 0);
+                pickup->flags = (pickup->flags & ~0x80) | ((progress->activated[word] & bit) != 0 ? 0x80 : 0);
+                if ((pickup->config_flags & 1) != 0 && (pickup->flags & 0x80) == 0)
+                    pickup->flags &= ~6;
+            } else if ((pickup->config_flags & 1) != 0) {
+                pickup->flags &= ~6;
+            }
+            if (GizmoPickupSys->gizmo_type_id != -1 && pickup->type_index == GizmoPickupSys->gizmo_type_id &&
+                Game_LevelSave != NULL) {
+                if (SuperStory != 0) {
+                    pickup->flags |= 0x40;
+                } else {
+                    i32 saved_index;
+                    for (saved_index = 0;
+                         saved_index < ((struct LEVELSAVE_s *)Game_LevelSave)[world->level_idx].minikit_count;
+                         ++saved_index) {
+                        if (NuStrICmp(pickup->name, ((struct LEVELSAVE_s *)Game_LevelSave)[world->level_idx]
+                                                        .minikit_names[saved_index]) == 0) {
+                            pickup->flags |= 0x40;
+                            break;
+                        }
+                    }
+                }
+            }
+        }
+    }
+    system = (struct GIZMOPICKUPRUNTIMESYS_s *)world->pickup_runtime_sys;
+    if (system->temporary_pickups != NULL)
+        memset(system->temporary_pickups, 0, 0xb00);
+}
