@@ -212,7 +212,7 @@ void __cdecl LoadPerm1(void) {
     CreateUsefulMaterials();         /* Native 48aa7f. */
     edgraClumpsReset();
     edanimParamReset();
-    STUBBED_NAMED(NuTexAnimProgSysInit); /* Native 48aa8e. */
+    NuTexAnimProgSysInit(); /* Native 48aa8e. */
     if (StartupGameFlag1 != 0) {
         STUBBED_NAMED(InitTexAnimScripts); /* Native 48aaa9: table7f5c78. */
     } else {

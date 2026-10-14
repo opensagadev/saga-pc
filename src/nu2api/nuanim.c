@@ -1940,6 +1940,26 @@ STATIC_ASSERT(offsetof(NuAnimData2Prefix_PC, curve_types) == 0x10);
 STATIC_ASSERT(offsetof(NuAnimData2Prefix_PC, node_flags) == 0x14);
 STATIC_ASSERT(sizeof(NuAnimData2Prefix_PC) == 0x18);
 
+void __cdecl NuAnimRelocatePtrsANI3(ANI3_HEADER_PC *anim, i32 delta) {
+    for (;;) {
+        if (anim->scale_min != NULL)
+            anim->scale_min = (ANI3_SCALEMIN_PC *)((u32)anim->scale_min + delta);
+        if (anim->constants != NULL)
+            anim->constants = (i16 *)((u32)anim->constants + delta);
+        if (anim->curve_types != NULL)
+            anim->curve_types = (u16 *)((u32)anim->curve_types + delta);
+        if (anim->keys != NULL)
+            anim->keys = (u8 *)((u32)anim->keys + delta);
+        if (anim->node_flags != NULL)
+            anim->node_flags = (u8 *)((u32)anim->node_flags + delta);
+        if (anim->field_38 != NULL)
+            anim->field_38 = (void *)((u32)anim->field_38 + delta);
+        if (anim->next_block == 0)
+            break;
+        anim = (ANI3_HEADER_PC *)((char *)anim + anim->next_block);
+    }
+}
+
 #define NUANIM_REBASE_POINTER(pointer, amount) ((pointer) == NULL ? NULL : (void *)((u32)(pointer) + (u32)(amount)))
 
 void __cdecl ANI_FixUpAddrs(ANI3_HEADER_PC *anim, i32 delta, i32 flags) {

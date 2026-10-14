@@ -4990,7 +4990,7 @@ address    , symbol                                                         , si
 0x5c91c0,_NuAnimCurveCalcVal2,364,"f32 __cdecl (NUANIM_LEGACY_CURVE_PC *, NUANIM_TIME2_PC *)"
 0x5c9330,_NuAnimCurveSetApplyToMatrix,482,"void __cdecl (NUANIM_LEGACY_SET_PC *, NUANIM_TIME2_PC *, NUMTX *)"
 0x005c9520,_NuAnimCurve2CalcValEx,1373,
-0x5c9af0,_NuAnimRelocatePtrsANI3,97,
+0x5c9af0,_NuAnimRelocatePtrsANI3,97,"void __cdecl (ANI3_HEADER_PC *, i32)"
 0x5c9b60,_NuAnimDataCalcTime,222,"void __cdecl (NUANIM_LEGACY_HEADER_PC *, f32, NUANIM_TIME2_PC *)"
 0x005c9c40,_NuAnimData2CalcTime,303,
 0x005c9e70 , _NuAnimCurveSetCreate                                          , 120   , void *__cdecl (i32)
@@ -5084,7 +5084,7 @@ address    , symbol                                                         , si
 0x5d1150,_NuQFntWrite,637,"void __cdecl(char *,VUFNT *)"
 0x5d13d0,_NuQFntWriteUniversalFont,228,"void __cdecl(char *,VUFNT *,char *)"
 0x5d1530,_NuQFntSetUVSizePc,144,"void __cdecl(VUFNT *, f32, f32)"
-0x5d1860,_NuTexAnimProgSysInit,84,
+0x5d1860,_NuTexAnimProgSysInit,84,void __cdecl (void)
 0x5d18c0,_NuTexAnimProgRelease,11,void __cdecl NuTexAnimProgRelease(void)
 0x5d18d0,_NuTexAnimProgFind,48,TEXTURE_ANIM_PROGRAM_PC *__cdecl NuTexAnimProgFind(const char *name)
 0x5d1900,_NuTexAnimProgDestroy,66,void __cdecl NuTexAnimProgDestroy(TEXTURE_ANIM_PROGRAM_PC *program)
@@ -21882,6 +21882,7 @@ address    , symbol                                                         , si
 0x0096d9e0 , _fstack_top                                                    , 4     , VARIPTR
 0x96d9e4,_NuRndrDebBase,,NUVEC
 0x96d9f0,_PCSpecialShadowLights,,struct PC_SPECIAL_SHADOW_LIGHT *[4]
+0x0096da00,_TextureAnimationListBufferPc,768,PC_TEXTURE_ANIM_LIST[64]
 0x96dd04,_VisibilityAlternateHeightPc,,f32
 0x96dd08,_NuPostFilterMemoryPc,2048,native BSS
 0x0096e508,_AnimQuatSavedPc,,

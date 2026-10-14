@@ -414,6 +414,23 @@ static char TextureAnimationExternalLabelsPrivatePc[256][21];
 static i32 TextureAnimationExternalLabelCountPrivatePc;
 static i32 TextureAnimationLabelOffsetsPrivatePc[64];
 
+static PC_TEXTURE_ANIM_LIST TextureAnimationListBufferPc[64];
+
+void __cdecl NuTexAnimProgSysInit(void) {
+    PC_TEXTURE_ANIM_LIST *list;
+    GHGTextureProgramsPC = NULL;
+    for (list = TextureAnimationListBufferPc; list < &TextureAnimationListBufferPc[63]; ++list)
+        list->next = list + 1;
+    TextureAnimationListBufferPc[63].next = NULL;
+    ntal_free = TextureAnimationListBufferPc;
+    ntal_first = NULL;
+    TextureAnimationExternalLabelCountPrivatePc = 0;
+    TextureAnimationPreviousSignalsPc = 0;
+    TextureAnimationSignalsOffPc = 0;
+    TextureAnimationSignalsOnPc = 0;
+    TextureAnimationRandomPc.value = 0;
+}
+
 TEXTURE_ANIM_PROGRAM_PC *__cdecl NuTexAnimProgFind(const char *name) {
     TEXTURE_ANIM_PROGRAM_PC *program;
     for (program = (TEXTURE_ANIM_PROGRAM_PC *)GHGTextureProgramsPC; program != NULL; program = program->next) {

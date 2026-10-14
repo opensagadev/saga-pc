@@ -31,13 +31,13 @@
     "src/audio/vorbis/window.h": "a10ede6832692ccec154bb9291be7ec236f9642a99a6af9b108ff7df030904b5",
     "src/diagnostics.h": "dae209151b55b9f5aadc18ce8ad63a1d961c311a7d8ec7214ea32c7e7a095459",
     "src/externals.h": "5b08276a7759c01921ac2a5239bf0978accdd38d2533b458c25d1b16f8a4402d",
-    "src/saga.h": "58da586d1fb6823ec0bf18eeb071bd5a791cfd4e107e0277428a1fa30d3b3159",
+    "src/saga.h": "0ec4814d0968d6622d5e3c325d9dbd236ff11f9a485a79065150467a8605c314",
     "config/candidate-only.json": "2f9b865d9f773f8a9e79d4e6d155fa387e8d7b8087d6bf3b61298055281cec09",
     "config/code-groups.json": "0c7700323db8a7240f98cd4ab349200bbf0a8f580d3ca93167477e00c7db77cc",
     "config/data-members.json": "fe09365da4c355f220d724ca99394fc120b758891b4188d2c49707b6df0894f2",
     "config/library-objects.json": "e5ae24d3eac36fa0d0cb098f7690faaef3110f225db30c8cbf0f7d0d64f6ecfe",
     "config/project.json": "dc0e8cc85ae5650c6937b70ccaefb0153629c2460fa09cd4f6b625e251e623dd",
-    "config/symbols.csv": "b46d3987f0d959a2e98c05f37fa13bfd18e6b8323bf75b75eccb5d8c6e25e21a",
+    "config/symbols.csv": "4bd3628330486864ad383ef6415a286ef6747a9cd4cab971199f41d6c5801e48",
     "config/symbols.md": "dffbdaac86011e3aee74b404063c15bda97f88af3db337ffef9f1bad1785d212",
     "config/toolchain.json": "489d0782638d8033137cdb2834462416111945cbfa073147820e314b8576b95b",
     "config/tools.json": "50199f6b132a7abfabf251e98a75be0a957abfe50f1ff776188fba21e4c4436f",
@@ -87,7 +87,7 @@
     "src/legoapi/areas.cpp": "bc106185205b9e5573b117c73ef872ad640d99ca03b4035a723cf914b2b859e4",
     "src/legoapi/batarang.cpp": "dcd2e555f9eb2a5b4324aafaeac9de5212396d1e9b2681b5762fade9531c46f5",
     "src/legoapi/bolt_runtime.cpp": "c3211dd6919fc520ad15e88685c18a1d624cf6ede2a6210557c466cc0c6fb706",
-    "src/legoapi/characters.cpp": "f20d1de262a9c12f7296ad482e4087c31d2832a17072eba2fec152ddf9033681",
+    "src/legoapi/characters.cpp": "c284cb172d0a31978771b44b8423761ee7e8d92b9b76022edb1538bfc69a17a6",
     "src/legoapi/collection_render.cpp": "a32e3521921d0b7aebf5422f1449f6acbea8b8503577f769de2cc616defa77a0",
     "src/legoapi/control_setup.cpp": "38ca5b00cb993deb59bdbdd4c9bff12cfede3f72a3b62610499a30a7c92af877",
     "src/legoapi/cutscene_runtime.cpp": "aecea4c17a4aeec61649081ad1999d7ad330c7234eb5e02892863cd4118a9626",
@@ -374,7 +374,7 @@
     "src/nu2api/keyboard_init.c": "e844ec51ecb1a694928b6b530f13daf0459a1dfab29ca08b0c036781e17c6c3d",
     "src/nu2api/keyboard_read.c": "90cf6692254c4bf6fd2a4cca12cbdac5fea742d3af7f8f5f96a7e81629af02ae",
     "src/nu2api/nualloc.c": "9749f8cfcf47499c8bee2a1dae5783ba2eed7a476efe29cb2c07ac9994e1d689",
-    "src/nu2api/nuanim.c": "21ec96166f8b0180a7e3a6ab53bf8159e3d20593e73e43014f83380e8d63527e",
+    "src/nu2api/nuanim.c": "7743109f4315b7dbf1f2eb801d483f1d7f9ef981156f3deb13e201a579cac18e",
     "src/nu2api/nuapi.c": "ef158fcf656e6ded08653b5a62e9828254807f6fad5d24917cc2140914ec7104",
     "src/nu2api/nubridge.c": "d399f2b50588ed0e2f79519296dc3a248d2d6efaef692b3c8c0c262c205b6b19",
     "src/nu2api/nucamera.c": "115a67c3bd515aa639e05e22ef4f7013e3819f823d596004c11f941477f22151",
@@ -434,7 +434,7 @@
     "src/nu2api/nustring.c": "1efd51bbdb2f9c47ebb3f52ed9b9e46a0e98cf941bfb38e1b174dd3819d30ba4",
     "src/nu2api/nuterrain.c": "086929cadb8097f8ae063a261c8f077c16f57c33425d695863663cd451378fc1",
     "src/nu2api/nutex.c": "825414218218faac6a8707345c8b2717046735b7406dcaf4e4a48ce01a9afd66",
-    "src/nu2api/nutexanim.c": "b73cd71e974406db5b3e38c51851212747ce298104f994775f7bf849ca948ab5",
+    "src/nu2api/nutexanim.c": "1e700f182f8416bc7a21b44beccb00a2e0389b26a053a2ab991e422a59b2bfd7",
     "src/nu2api/nuthread.c": "4ec13a0bcab0193b9e3f2665fa0b8607747ef02962faf14fdeab4c03fe17b0a5",
     "src/nu2api/nutimebar.c": "27407eb6b055759f745937da2ad4ad55bfcb649332f55f39d831a40ea8b4d53b",
     "src/nu2api/nutrig.c": "0ac1cda3a300f40421754dafbee97dab5a98196a3ef0f0eb237a1d7e6f20bd38",
@@ -523,7 +523,7 @@
     "build/obj/legoapi/camera.obj": "13c049cdeafe97b531afb65ee412cb55c941166c2d061d1780dc59b9e10d253a",
     "build/obj/legoapi/carrying.obj": "724bb35cd91d9db4f59a7abb722588ce8d59f76abb4a1ac5d79bae9d4505733c",
     "build/obj/legoapi/character_animation.obj": "79583cb3bc902512669f5d0015fcd9f47fd77d5e5aa7dd8f87c97adac83ea4c4",
-    "build/obj/legoapi/characters.obj": "1027239e5523a97502f9540d19c9a102f37deeea5d0207aaef0d5e5c9ff907b5",
+    "build/obj/legoapi/characters.obj": "5c9c128d4a1aae310864c11298ec3b164f7f3156b6001bcd8d3ea8b68bbecaba",
     "build/obj/legoapi/charconfig.obj": "d13f60a372796fa590db869b7a15f3279f8dea7f2efa7a1c2620d382e725fd09",
     "build/obj/legoapi/charpivot.obj": "f48d5f8d364471da068dd5953806f170215871f314ea55aa1e50276dae85941d",
     "build/obj/legoapi/charplatforms_pc.obj": "3288f12c5ef08004120bdfda93ce5f81346040e8c6b136272065b2bcd20e586c",
@@ -712,7 +712,7 @@
     "build/obj/nu2api/keyboard_init.obj": "e697cd2caf292b6d5a3b6bf74babc5d3a5838898cb25b8cfbe33de9e77a13a65",
     "build/obj/nu2api/keyboard_read.obj": "50e34dcbf4070eab7aa78d83ea0bfc75795c94c1f29666424008cb5103058e86",
     "build/obj/nu2api/nualloc.obj": "80ef13954c7f23259b4993fe7fed95a0a814b5a2637a4cf228d3140675fb408d",
-    "build/obj/nu2api/nuanim.obj": "bd6283599e5527de4fcc5665421dbe1ffbe360a17be8c82c6a5e9cc10a72e7b5",
+    "build/obj/nu2api/nuanim.obj": "2ab451a8e5099118695f48a0e19c99fe676ed76d6f67e7125bca1bba68e4ab4b",
     "build/obj/nu2api/nuapi.obj": "6408623db9daf93190cb9aa1f02a255e288aaaf17b469cac15f86dcf294a4735",
     "build/obj/nu2api/nubridge.obj": "479bb0c809e65934e44269615138a4cc22fa8f39d3868a7a2337ef7c6c052965",
     "build/obj/nu2api/nucamera.obj": "53e9b8ca1bc8aa155f61a63f7eee3f57f27c17535f161d55c0e72ce5be92a58c",
@@ -791,7 +791,7 @@
     "build/obj/nu2api/nuterrain.obj": "40f8187b885fd9fb8021b40d86b9b116e4a64de7beac67fde2856e12c5c8022e",
     "build/obj/nu2api/nutex.obj": "d4202ce5eca66e8d7df0d0effe29fcf0105c71d84b5b6c227c777ab1044a971f",
     "build/obj/nu2api/nutex_pc.obj": "45cb5c001998d93dd561cd536e596717877d3c2f319cb765692260eede163d10",
-    "build/obj/nu2api/nutexanim.obj": "970b92ee6bc7888c27931a4f1feb0fa9764d8906d337126c00253143b73ea8d1",
+    "build/obj/nu2api/nutexanim.obj": "239235e57579af46de69296c62b940c0af6a172679b241c3e58b1e3dd5259f68",
     "build/obj/nu2api/nuthread.obj": "3db784e16d9e5d3048acb3a37c2c57dca1af4fd7f7c08fdae29673cb45a79bb0",
     "build/obj/nu2api/nutimebar.obj": "762aad2080856bf64c2035d15778ba53a9e7ba8336203130c1ed6dcf044cf3ba",
     "build/obj/nu2api/nutrig.obj": "73e0900d2af5141dfaaf036851b78be27a87c8220aeb78082a14295eeb539a1a",
@@ -25679,17 +25679,17 @@
       "objects": [
         {
           "unit": "src/legoapi/characters.cpp",
-          "base_size": 870,
+          "base_size": 875,
           "exact_match": false,
           "target_sha256": "0aecd2a9c0421ae5550d9276526ac9449ad49e4c4e7322d347e0f52f1e32eab2",
-          "base_sha256": "265439f77fe2a67de9f8cb7f100f71da258c5a4220767495dc92ab4c2b0dd2ca",
-          "relocation_count": 96,
+          "base_sha256": "41c593de4391d0f06b74e2e376b339ced80b8a16382611c3a578296ea7dc1384",
+          "relocation_count": 97,
           "comparison_unit": "0048a6a0-09e553a46689",
-          "objdiff_percent": 54.919403
+          "objdiff_percent": 55.21791
         }
       ],
       "status": "different",
-      "objdiff_percent": 54.919403
+      "objdiff_percent": 55.21791
     },
     {
       "name": "LoadPerm2",
@@ -110950,11 +110950,25 @@
       "name": "NuAnimRelocatePtrsANI3",
       "symbol": "_NuAnimRelocatePtrsANI3",
       "address": "0x005c9af0",
-      "units": [],
+      "units": [
+        "src/nu2api/nuanim.c"
+      ],
       "target_size": 97,
-      "exact_match": false,
-      "objects": [],
-      "status": "not implemented"
+      "exact_match": true,
+      "objects": [
+        {
+          "unit": "src/nu2api/nuanim.c",
+          "base_size": 97,
+          "exact_match": true,
+          "target_sha256": "70b544ff1876a7b08a3af2c517cd5a1e05616364ca2f6fe1cc2f6df40fed033d",
+          "base_sha256": "70b544ff1876a7b08a3af2c517cd5a1e05616364ca2f6fe1cc2f6df40fed033d",
+          "relocation_count": 0,
+          "comparison_unit": "005c9af0-490f72302044",
+          "objdiff_percent": 100.0
+        }
+      ],
+      "status": "exact",
+      "objdiff_percent": 100.0
     },
     {
       "name": "NuAnimDataCalcTime",
@@ -113164,11 +113178,25 @@
       "name": "NuTexAnimProgSysInit",
       "symbol": "_NuTexAnimProgSysInit",
       "address": "0x005d1860",
-      "units": [],
+      "units": [
+        "src/nu2api/nutexanim.c"
+      ],
       "target_size": 84,
       "exact_match": false,
-      "objects": [],
-      "status": "not implemented"
+      "objects": [
+        {
+          "unit": "src/nu2api/nutexanim.c",
+          "base_size": 86,
+          "exact_match": false,
+          "target_sha256": "3dead1ac875e67a644a33978bcb9711b5870f84c279dfd2c98dd09640778350c",
+          "base_sha256": "0868853315aa3f69627d228e5cec9bb6b1eb39ee7a269437cc5077ccf254bdd7",
+          "relocation_count": 11,
+          "comparison_unit": "005d1860-17c777e34909",
+          "objdiff_percent": 75.55556
+        }
+      ],
+      "status": "different",
+      "objdiff_percent": 75.55556
     },
     {
       "name": "NuTexAnimProgRelease",
@@ -425620,6 +425648,27 @@
       "status": "unknown size"
     },
     {
+      "name": "TextureAnimationListBufferPc",
+      "symbol": "_TextureAnimationListBufferPc",
+      "address": "0x0096da00",
+      "units": [
+        "src/nu2api/nutexanim.c"
+      ],
+      "target_size": 768,
+      "exact_match": true,
+      "objects": [
+        {
+          "unit": "src/nu2api/nutexanim.c",
+          "exact_match": true,
+          "target_size": 768,
+          "base_size": 768,
+          "target_sha256": "ef115a0e0c15cdc41958ca46b5b14b456115f4baec5e3ca68599d2a8f435e3b8",
+          "base_sha256": "ef115a0e0c15cdc41958ca46b5b14b456115f4baec5e3ca68599d2a8f435e3b8"
+        }
+      ],
+      "status": "exact"
+    },
+    {
       "name": "VisibilityAlternateHeightPc",
       "symbol": "_VisibilityAlternateHeightPc",
       "address": "0x0096dd04",
@@ -446530,16 +446579,16 @@
   "progress": {
     "text_bytes": 3471246,
     "mapped_code_bytes": 2298968,
-    "matched_code_bytes": 427504,
-    "matching_percent": 12.315577749315375,
-    "fuzzy_coverage_percent": 41.90445305513761,
+    "matched_code_bytes": 427601,
+    "matching_percent": 12.31837213496249,
+    "fuzzy_coverage_percent": 41.909191973093,
     "mapped_functions": 8472,
-    "matched_functions": 3902,
-    "objdiff_fuzzy_percent": 74.36994,
-    "objdiff_total_code": 1959213,
+    "matched_functions": 3903,
+    "objdiff_fuzzy_percent": 74.37148,
+    "objdiff_total_code": 1959394,
     "image_bytes": 40067072,
-    "mapped_bytes": 3367559,
-    "mapping_percent": 8.404804324109334,
+    "mapped_bytes": 3368327,
+    "mapping_percent": 8.40672111004268,
     "mapping_denominator": "code_and_data_section_virtual_sizes",
     "mapping_sections": [
       {
@@ -446561,21 +446610,21 @@
         "kind": "data",
         "address": "0x7ef000",
         "size": 35372200,
-        "mapped_bytes": 989694
+        "mapped_bytes": 990462
       }
     ],
-    "mapping_known_size_symbols": 15765,
+    "mapping_known_size_symbols": 15766,
     "mapping_unknown_size_symbols": 7144,
     "mapping_code_bytes": 2300162,
     "mapping_code_total_bytes": 3471246,
     "mapping_code_percent": 66.26329565810087,
-    "mapping_data_bytes": 1067397,
+    "mapping_data_bytes": 1068165,
     "mapping_data_total_bytes": 36018966,
-    "mapping_data_percent": 2.9634304327336882,
-    "mapping_code_data_bytes": 3367559,
+    "mapping_data_percent": 2.965562642747712,
+    "mapping_code_data_bytes": 3368327,
     "mapping_code_data_total_bytes": 39490212,
-    "mapping_code_data_percent": 8.527578935256159,
-    "matched_data_region_bytes": 1052788
+    "mapping_code_data_percent": 8.529523720966603,
+    "matched_data_region_bytes": 1053556
   },
   "data_members": [
     {
@@ -447633,8 +447682,8 @@
     "inputs": {
       "metadata_sha256": "fe09365da4c355f220d724ca99394fc120b758891b4188d2c49707b6df0894f2",
       "header_path": "src/saga.h",
-      "header_sha256": "58da586d1fb6823ec0bf18eeb071bd5a791cfd4e107e0277428a1fa30d3b3159",
-      "geometry_object_sha256": "405adb22b99b98238213d5af1c7127ab2d9cc07ac4594acb57325cc7b0b3b37a",
+      "header_sha256": "0ec4814d0968d6622d5e3c325d9dbd236ff11f9a485a79065150467a8605c314",
+      "geometry_object_sha256": "47d9e41db5026b3d2f0bcd9d75ab96332bcbb06a2188aece2afdecfcc3ab2c0b",
       "toolchain_sha256": "489d0782638d8033137cdb2834462416111945cbfa073147820e314b8576b95b",
       "implementation_sha256": "9ad7521230f06fde31f0771b10bd001037ea32d2def455913a7f391f05dede9d",
       "headers": {
@@ -447664,7 +447713,7 @@
         "src/audio/vorbis/window.h": "a10ede6832692ccec154bb9291be7ec236f9642a99a6af9b108ff7df030904b5",
         "src/diagnostics.h": "dae209151b55b9f5aadc18ce8ad63a1d961c311a7d8ec7214ea32c7e7a095459",
         "src/externals.h": "5b08276a7759c01921ac2a5239bf0978accdd38d2533b458c25d1b16f8a4402d",
-        "src/saga.h": "58da586d1fb6823ec0bf18eeb071bd5a791cfd4e107e0277428a1fa30d3b3159"
+        "src/saga.h": "0ec4814d0968d6622d5e3c325d9dbd236ff11f9a485a79065150467a8605c314"
       },
       "owners": {
         "src/data.cpp": {
@@ -447901,25 +447950,5 @@
     "member_count": 42,
     "physical_definition_credit": 0
   },
-  "data_member_migrations": [],
-  "incremental_validated_refresh": {
-    "method": "Incremental validated metadata refresh; aggregate report was not globally recomputed.",
-    "baseline_commit": "90120f560fdaced44cd65d0ca8873a8e8d412941",
-    "baseline_full_report_sha256": "7f87150e596dc78316d2c755e26a1b6cb6e0ff50e7ec09f004eb5e7166aab135",
-    "filtered_generator": "python3 -m tools.match --function NuShaderObjectKeyGenerate3",
-    "filtered_summary_sha256": "a2323ae3c7bfad9bda1ab53267efa22232899f4a1de13bad7751b09ab3845061",
-    "changed_function_identity": {
-      "address": "0x744c20",
-      "symbol": "_NuShaderObjectKeyGenerate3"
-    },
-    "changed_fields": [
-      "functions[target].objects[0].base_sha256",
-      "inputs[src/nu2api/nushaderkey.cpp]",
-      "objects[build/obj/nu2api/nushaderkey.obj]"
-    ],
-    "all_other_full_records_inputs_objects_verified_unchanged": true,
-    "progress_and_readme_unchanged": true,
-    "input_count": 447,
-    "report_object_count": 375
-  }
+  "data_member_migrations": []
 }

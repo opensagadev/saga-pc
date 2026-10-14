@@ -6187,6 +6187,7 @@ STATIC_ASSERT(offsetof(ANI3_HEADER_PC, curve_count) == 0x0c);
 STATIC_ASSERT(offsetof(ANI3_HEADER_PC, first_frame) == 0x0e);
 STATIC_ASSERT(offsetof(ANI3_HEADER_PC, end_frame) == 0x10);
 STATIC_ASSERT(offsetof(ANI3_HEADER_PC, format_flags) == 0x13);
+STATIC_ASSERT(offsetof(ANI3_HEADER_PC, next_block) == 0x14);
 STATIC_ASSERT(offsetof(ANI3_HEADER_PC, declared_end_frame) == 0x16);
 STATIC_ASSERT(offsetof(ANI3_HEADER_PC, minimum) == 0x1c);
 STATIC_ASSERT(offsetof(ANI3_HEADER_PC, scale) == 0x20);
@@ -6195,6 +6196,7 @@ STATIC_ASSERT(offsetof(ANI3_HEADER_PC, constants) == 0x28);
 STATIC_ASSERT(offsetof(ANI3_HEADER_PC, curve_types) == 0x2c);
 STATIC_ASSERT(offsetof(ANI3_HEADER_PC, keys) == 0x30);
 STATIC_ASSERT(offsetof(ANI3_HEADER_PC, node_flags) == 0x34);
+STATIC_ASSERT(offsetof(ANI3_HEADER_PC, field_38) == 0x38);
 STATIC_ASSERT(sizeof(ANI3_HEADER_PC) == 0x3c);
 
 typedef union DWA_CURVE_CELL_PC {
@@ -14360,6 +14362,8 @@ void __cdecl AIScriptMissingConditionDiagnostic();
 #else
 void __cdecl PCSoundAlreadyPlayingHook(void);
 #endif
+    void __cdecl NuAnimRelocatePtrsANI3(ANI3_HEADER_PC *, i32);
+    void __cdecl NuTexAnimProgSysInit(void);
     void __cdecl ANI_FixUpAddrs(ANI3_HEADER_PC *, i32, i32);
     void *__cdecl NuAnimData2FixPtrs(void *, i32, i32, i32);
     void *__cdecl NuAnimData2Fixup(i32, void **);
