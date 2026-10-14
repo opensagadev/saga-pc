@@ -15141,6 +15141,9 @@ extern "C" {
 #pragma data_seg(".data$id_MINIATTE")
     i16 id_MINIATTE = -1;
 #pragma data_seg()
+#pragma data_seg(".data$id_MINISLAVE1")
+    i16 id_MINISLAVE1 = -1;
+#pragma data_seg()
 #pragma data_seg(".data$id_RANCOR")
     i16 id_RANCOR = -1;
 #pragma data_seg()

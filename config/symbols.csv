@@ -15757,7 +15757,7 @@ address    , symbol                                                         , si
 0x7f1af0,_VehicleBoltId7f1af0Pc,,i16
 0x7f1af4,_id_MINIATST,,i16
 0x7f1af8,_id_MINIATTE,,i16
-0x7f1afc,_id_MINISLAVE1,,
+0x7f1afc,_id_MINISLAVE1,2,i16
 0x7f1b00,_VehicleBoltId7f1b00Pc,,i16
 0x7f1b04,_VehicleBoltId7f1b04Pc,,i16
 0x7f1b08,_VehicleBoltId7f1b08Pc,,i16
