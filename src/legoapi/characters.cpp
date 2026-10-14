@@ -228,8 +228,7 @@ void __cdecl LoadPerm1(void) {
     }
     things_scene_terrain = TerrainInitEx(-1, &permbuffer_ptr, permbuffer_end.void_ptr, 0, "stuff\\things",
                                          terrain_scene, 0, 0x14, 0x14, 0x14);
-    STUBBED_NAMED(terrainpickupinit); /* Native 48ab3c:
-                                         stuff\\things,&things_scene_terrain. */
+    terrainpickupinit("stuff\\things", &things_scene_terrain);
     if (StartupGameFlag1 != 0) {
         STUBBED_NAMED(BackDrop_Init); /* Native 48ab5c: stuff\\starfield.gsc,&ptr,&end. */
     }

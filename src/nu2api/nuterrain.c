@@ -2384,17 +2384,17 @@ static TERRAIN_PICKUP_SET_PC *PickupTerrainPc;
 i32 ReadTerrainPickup(unsigned char *base_path, i16 **buffer, TERRAIN_PICKUP_SET_PC *terrain) {
     char path[100];
     u8 *file_start;
-    TERRAIN_FILE_CHUNK *chunk;
-    i32 i, count, group_count = 0;
+    TERRAIN_FILE_CHUNK *chunk, *header;
+    i32 i, group_count = 0;
     strcpy(path, (char *)base_path);
     strcat(path, ".ter");
     NuFileLoadBuffer(path, *buffer, INT_MAX);
     file_start = (u8 *)*buffer;
     chunk = (TERRAIN_FILE_CHUNK *)(file_start + 2 * *(u32 *)file_start);
-    count = chunk->chunk_count;
+    header = chunk;
     *buffer = (i16 *)(file_start + 4);
     TerrainCrashDataPc = NULL;
-    for (i = 0; i < count; ++i, ++chunk) {
+    for (i = 0; i < header->chunk_count; ++i, ++chunk) {
         u8 *chunk_data = (u8 *)*buffer;
         if (chunk->chunk_type == TERRAIN_CHUNK_SPATIAL_INDEX) {
             TERRAIN_SPATIAL_NODE **link = (TERRAIN_SPATIAL_NODE **)chunk_data;

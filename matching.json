@@ -85,7 +85,7 @@
     "src/legoapi/areas.cpp": "db3a65120e098d375230dd9edf030596c7f0b2f8fe81921a98eee9e40bef1db4",
     "src/legoapi/batarang.cpp": "dcd2e555f9eb2a5b4324aafaeac9de5212396d1e9b2681b5762fade9531c46f5",
     "src/legoapi/bolt_runtime.cpp": "c3211dd6919fc520ad15e88685c18a1d624cf6ede2a6210557c466cc0c6fb706",
-    "src/legoapi/characters.cpp": "1a26811300fd1eb3765149100a3a422cbd6081d2bee984e5dd9543a425fd655c",
+    "src/legoapi/characters.cpp": "9e3a5fd227ada48edae67d84ac0ebc4cd05e60ba4a119420685c98b954103833",
     "src/legoapi/cutscene_runtime.cpp": "064508ee9234903d0e0a828daaeff8891185e2603c281677984bc38a030e3cfc",
     "src/legoapi/debris_generators.cpp": "f49b1f1d20263f99fbc80077116dcb7866305c8420b5240a8d950a0e4712f062",
     "src/legoapi/episode.cpp": "c44213b13202c6db1debf38310b3c28bbe6eb6bfd8b2d93747d4b766159f016e",
@@ -416,7 +416,7 @@
     "src/nu2api/nuspline.c": "4fca834d595d001f94487843973d0ec517f0009b800958c71cd4a03a82f76933",
     "src/nu2api/nustateanim.c": "075aa9b9759dc0563d76c7a6c1a3bdcddc10ea95b2e48b630a6cd1b91e08ac5f",
     "src/nu2api/nustring.c": "1efd51bbdb2f9c47ebb3f52ed9b9e46a0e98cf941bfb38e1b174dd3819d30ba4",
-    "src/nu2api/nuterrain.c": "42936edd2d3ed5e279ed24ca89383e4e1f76aa053c3034f26a35f559e1b30ad7",
+    "src/nu2api/nuterrain.c": "086929cadb8097f8ae063a261c8f077c16f57c33425d695863663cd451378fc1",
     "src/nu2api/nutex.c": "825414218218faac6a8707345c8b2717046735b7406dcaf4e4a48ce01a9afd66",
     "src/nu2api/nutexanim.c": "b73cd71e974406db5b3e38c51851212747ce298104f994775f7bf849ca948ab5",
     "src/nu2api/nuthread.c": "4ec13a0bcab0193b9e3f2665fa0b8607747ef02962faf14fdeab4c03fe17b0a5",
@@ -499,7 +499,7 @@
     "build/obj/legoapi/camera.obj": "22ae8bc10ec2392831b24cea7b1dab2ca83fe291358bf71240467e5c73e1d2f3",
     "build/obj/legoapi/carrying.obj": "77cffc171a6ec72df97d3382f665859f38c14abe24479622a47dfcb58e454805",
     "build/obj/legoapi/character_animation.obj": "55ef0f7a6f7bb43d10c2cb91415b2845abea642c1b4662a878a7d9939ca9a5ca",
-    "build/obj/legoapi/characters.obj": "7a9e65f3955cd346e36fae1bb9fa55434e5b46b0d4f9d180d1560c80c2dec04e",
+    "build/obj/legoapi/characters.obj": "fbc9dedc57d9c1d01d3acca98d54892cc3d18e4ea493bda8fbc285ba020d4127",
     "build/obj/legoapi/charconfig.obj": "a8744bcf38d806c9bc28123de760d2c6177585ca65a2910444550e5a95e9cfa9",
     "build/obj/legoapi/charpivot.obj": "a65aa82477bcf80395d64e5f3c633f258e1ec095e418af366b8f98d998249d5a",
     "build/obj/legoapi/charplatforms_pc.obj": "765ebe51cd9b34b4e6da6fe4893ead48f569f6444e8e20217677fdb5a99dff3e",
@@ -759,7 +759,7 @@
     "build/obj/nu2api/nustateanim.obj": "153a83ad9d18c69b82fefa0dbc799f35c3c128ded551a86c8fb0d848b8172852",
     "build/obj/nu2api/nustream.obj": "e1cc1e1017c852b7f738d925f9c6d4eae636831b5f5d564a7fe29a8e3382357b",
     "build/obj/nu2api/nustring.obj": "3705426c78033cd45e7ab600db133cdacabcfa27082bd7234f1811d19e1c966a",
-    "build/obj/nu2api/nuterrain.obj": "8b41dd38c0f29be15c6b3e733e7e99f88224a46afd6385a9484fd88a3b7f68d2",
+    "build/obj/nu2api/nuterrain.obj": "a83c318bde2b168655df6c5f10dcab24369216e33d157fabf8700882e47ee9d7",
     "build/obj/nu2api/nutex.obj": "11e35aa697eae32c86ad21a113f80d1163bf86824f45c060f79ba0d76e56a500",
     "build/obj/nu2api/nutex_pc.obj": "1986f02e6094e04f33b086fa0d5b7c75060a28e05107518c2c19be28c8758fa0",
     "build/obj/nu2api/nutexanim.obj": "faa4338b0b6f242d1c1cbfb9e4f4d5389b21dbee3e7aa7bf494d19f1a23faa1d",
@@ -19895,17 +19895,17 @@
       "objects": [
         {
           "unit": "src/legoapi/characters.cpp",
-          "base_size": 855,
+          "base_size": 870,
           "exact_match": false,
           "target_sha256": "0aecd2a9c0421ae5550d9276526ac9449ad49e4c4e7322d347e0f52f1e32eab2",
-          "base_sha256": "0044023931aac5d457071f2dcbcb0c419bf6be640810e8d4871bcb8ad0f627ea",
-          "relocation_count": 93,
+          "base_sha256": "265439f77fe2a67de9f8cb7f100f71da258c5a4220767495dc92ab4c2b0dd2ca",
+          "relocation_count": 96,
           "comparison_unit": "0048a6a0-09e553a46689",
-          "objdiff_percent": 54.02388
+          "objdiff_percent": 54.919403
         }
       ],
       "status": "different",
-      "objdiff_percent": 54.02388
+      "objdiff_percent": 54.919403
     },
     {
       "name": "LoadPerm2",
@@ -128523,17 +128523,17 @@
       "objects": [
         {
           "unit": "src/nu2api/nuterrain.c",
-          "base_size": 413,
+          "base_size": 428,
           "exact_match": false,
           "target_sha256": "cbf3cbe08144d73e43c7b9909b8d21a66a260ccd8a15b75029d0367eeca26b9d",
-          "base_sha256": "f0556415e8ef3cb9824865d7787d3e6cabeb8abb0e81de7f0f1f3aa3863ade45",
+          "base_sha256": "10a91a11f07d65d87b1af22e964d4910e688ff38a110184a130f7c56632003d9",
           "relocation_count": 8,
           "comparison_unit": "0066c670-36e4b4bd5c78",
-          "objdiff_percent": 36.031006
+          "objdiff_percent": 30.829458
         }
       ],
       "status": "different",
-      "objdiff_percent": 36.031006
+      "objdiff_percent": 30.829458
     },
     {
       "name": "terrainpickupinit",
@@ -401737,10 +401737,10 @@
     "mapped_code_bytes": 2180715,
     "matched_code_bytes": 411665,
     "matching_percent": 11.859286262051148,
-    "fuzzy_coverage_percent": 38.49695064325711,
+    "fuzzy_coverage_percent": 38.49668780391613,
     "mapped_functions": 7742,
     "matched_functions": 3659,
-    "objdiff_fuzzy_percent": 73.94268,
+    "objdiff_fuzzy_percent": 73.94218,
     "objdiff_total_code": 1808415,
     "image_bytes": 40067072,
     "mapped_bytes": 3122988,
@@ -402839,7 +402839,7 @@
       "metadata_sha256": "fe09365da4c355f220d724ca99394fc120b758891b4188d2c49707b6df0894f2",
       "header_path": "src/saga.h",
       "header_sha256": "f42c7ebf19fde506ebfedfb2efd20efc7b47b652729acc7dfbb09af71b6be0a7",
-      "geometry_object_sha256": "2a5d0329ff17d6c8172f1e0920ef1cfcbbad77ac2adfba4ce0d25bdba4408233",
+      "geometry_object_sha256": "08390a7dd9dd6a14c4a189f7077115577b69694867b8f667c016c8808d532843",
       "toolchain_sha256": "489d0782638d8033137cdb2834462416111945cbfa073147820e314b8576b95b",
       "implementation_sha256": "9ad7521230f06fde31f0771b10bd001037ea32d2def455913a7f391f05dede9d",
       "headers": {
