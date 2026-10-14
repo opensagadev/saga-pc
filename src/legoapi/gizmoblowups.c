@@ -1627,3 +1627,46 @@ GIZMOBLOWUP_PC *__cdecl GizmoBlowUp_Hit(GAMEOBJECT *object, NUVEC *points, i32 p
     }
     return nearest;
 }
+
+typedef struct {
+    u32 active[16], hidden[16], terrain[16], alternate[16];
+} BLOWUP_RESET_PROGRESS_PC;
+STATIC_ASSERT(sizeof(BLOWUP_RESET_PROGRESS_PC) == 0x100);
+STATIC_ASSERT(offsetof(BLOWUP_RESET_PROGRESS_PC, hidden) == 0x40);
+STATIC_ASSERT(offsetof(BLOWUP_RESET_PROGRESS_PC, terrain) == 0x80);
+STATIC_ASSERT(offsetof(BLOWUP_RESET_PROGRESS_PC, alternate) == 0xc0);
+void __cdecl Blowups_Reset(void *world_ptr, void *unused, void *progress_ptr) {
+    WORLDINFO *w = (WORLDINFO *)world_ptr;
+    BLOWUP_RESET_PROGRESS_PC *p = (BLOWUP_RESET_PROGRESS_PC *)progress_ptr;
+    GIZMOBLOWUP_PC *item;
+    i32 i, word, old_terrain, new_terrain;
+    u32 bit;
+    (void)unused;
+    if (w == NULL)
+        return;
+    item = w->gizmo_blowups;
+    if (item != NULL)
+        for (i = 0; i < w->gizmo_blowup_count; ++i, ++item) {
+            GizmoBlowupRestoreInitialStatePc(item);
+            if (p != NULL && i < 512) {
+                word = i >> 5;
+                bit = 1u << (i & 31);
+                item->status_flags = (item->status_flags & ~1u) | ((p->active[word] & bit) != 0);
+                old_terrain = (item->status_flags >> 14) & 1;
+                new_terrain = (p->terrain[word] & bit) != 0;
+                item->status_flags = (item->status_flags & ~0x4000u) | ((u32)new_terrain << 14);
+                if (!old_terrain && new_terrain)
+                    GizBlowup_InitSingleTerrain(item);
+                else if (old_terrain && !new_terrain)
+                    GizBlowup_DeleteSingleTerrain(item);
+                item->status_flags =
+                    (item->status_flags & ~0x800000u) | (((p->hidden[word] & bit) != 0) ? 0x800000u : 0);
+                item->status_flags =
+                    (item->status_flags & ~0x10000000u) | (((p->alternate[word] & bit) != 0) ? 0x10000000u : 0);
+            }
+            if (item->status_flags & 1)
+                item->animation_time = 0.0f;
+        }
+    GizBlowup_DeleteTerrain();
+    GizBlowup_InitTerrain();
+}

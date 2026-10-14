@@ -162,20 +162,62 @@ void __cdecl ResetForceGlow(void *packet) {
 }
 
 struct gizforce_pc_s {
-    u8 unknown_000[0x1c];
+    char name[16];
+    NUVEC file_position;
     NUVEC position;
     GAMEANIMSET *anim_set;
-    u8 unknown_02c[0x20];
+    NUSPECIALHANDLE along_socket;
+    u8 unknown_038[0xc];
+    f32 force_strength;
+    u8 unknown_048[4];
     f32 force_range;
-    u8 unknown_050[8];
+    u8 unknown_050[4];
+    f32 interaction_radius;
     f32 animation_speed;
-    f32 start_frame;
-    f32 end_frame;
-    u8 unknown_064[0x10];
+    f32 start_frame, end_frame;
+    f32 effect_scale;
+    u8 unknown_068[4];
+    f32 vertical_range, horizontal_range;
     u32 config_flags;
-    u8 unknown_078[0x28];
+    u8 unknown_078[4];
+    u8 group_index, collision_mask, activation_mode;
+    u8 unknown_07f[3];
+    i16 start_sfx_id, loop_sfx_id, stop_sfx_id;
+    i16 blowup_type;
+    i16 pickup_count, pickup_rotation_x, pickup_rotation_y;
+    NUVEC effect_position;
+    f32 activation_radius;
     u32 runtime_flags;
 };
+STATIC_ASSERT(sizeof(GIZFORCE_PC) == 0xa4);
+STATIC_ASSERT(offsetof(GIZFORCE_PC, file_position) == 0x10);
+STATIC_ASSERT(offsetof(GIZFORCE_PC, position) == 0x1c);
+STATIC_ASSERT(offsetof(GIZFORCE_PC, anim_set) == 0x28);
+STATIC_ASSERT(offsetof(GIZFORCE_PC, along_socket) == 0x2c);
+STATIC_ASSERT(offsetof(GIZFORCE_PC, force_strength) == 0x44);
+STATIC_ASSERT(offsetof(GIZFORCE_PC, force_range) == 0x4c);
+STATIC_ASSERT(offsetof(GIZFORCE_PC, interaction_radius) == 0x54);
+STATIC_ASSERT(offsetof(GIZFORCE_PC, animation_speed) == 0x58);
+STATIC_ASSERT(offsetof(GIZFORCE_PC, start_frame) == 0x5c);
+STATIC_ASSERT(offsetof(GIZFORCE_PC, end_frame) == 0x60);
+STATIC_ASSERT(offsetof(GIZFORCE_PC, effect_scale) == 0x64);
+STATIC_ASSERT(offsetof(GIZFORCE_PC, vertical_range) == 0x6c);
+STATIC_ASSERT(offsetof(GIZFORCE_PC, horizontal_range) == 0x70);
+STATIC_ASSERT(offsetof(GIZFORCE_PC, config_flags) == 0x74);
+STATIC_ASSERT(offsetof(GIZFORCE_PC, group_index) == 0x7c);
+STATIC_ASSERT(offsetof(GIZFORCE_PC, collision_mask) == 0x7d);
+STATIC_ASSERT(offsetof(GIZFORCE_PC, activation_mode) == 0x7e);
+STATIC_ASSERT(offsetof(GIZFORCE_PC, start_sfx_id) == 0x82);
+STATIC_ASSERT(offsetof(GIZFORCE_PC, loop_sfx_id) == 0x84);
+STATIC_ASSERT(offsetof(GIZFORCE_PC, stop_sfx_id) == 0x86);
+STATIC_ASSERT(offsetof(GIZFORCE_PC, blowup_type) == 0x88);
+STATIC_ASSERT(offsetof(GIZFORCE_PC, pickup_count) == 0x8a);
+STATIC_ASSERT(offsetof(GIZFORCE_PC, pickup_rotation_x) == 0x8c);
+STATIC_ASSERT(offsetof(GIZFORCE_PC, pickup_rotation_y) == 0x8e);
+STATIC_ASSERT(offsetof(GIZFORCE_PC, effect_position) == 0x90);
+STATIC_ASSERT(offsetof(GIZFORCE_PC, activation_radius) == 0x9c);
+STATIC_ASSERT(offsetof(GIZFORCE_PC, runtime_flags) == 0xa0);
+
 STATIC_ASSERT(offsetof(GIZFORCE_PC, position) == 0x1c);
 STATIC_ASSERT(offsetof(GIZFORCE_PC, anim_set) == 0x28);
 STATIC_ASSERT(offsetof(GIZFORCE_PC, force_range) == 0x4c);
@@ -694,4 +736,152 @@ static void GizmoForce_Activate(GIZMO_PC *gizmo, i32 activate) {
     force->radius = 1.0f;
     force->position = force->file_position;
     GameAnimSet_GetCentreAndRadius(force->anim_set, &force->position, &force->radius, 2, 1, 1);
+}
+
+/* Private integration fragment: append to gizforce.c after its actual static
+ * version owner. Extend its existing GIZFORCE_PC with the named native fields
+ * in the companion layout file. */
+extern const char GizmoRegistryGizForceNamePc[];
+
+static __declspec(noinline) char *ForceCopyNamePrefixPc(char *source, char *destination, i32 capacity) {
+    char *result = destination;
+    i32 index = 0;
+    if (destination == NULL || source == NULL)
+        return NULL;
+    while (index++ < capacity - 1) {
+        char value = *source++;
+        *destination++ = value;
+        if (value == '_' || *source == '\0')
+            break;
+    }
+    return result;
+}
+
+static __declspec(noinline) void ForceFindBaseSpecialPc(GIZFORCE_PC *force) {
+    GAMEANIMOBJ *object;
+    char *name;
+    char socket_name[64];
+    if (force == NULL)
+        return;
+    force->along_socket.scene = NULL;
+    force->along_socket.special = NULL;
+    force->along_socket.display_special = NULL;
+    if (!(force->config_flags & 0x40))
+        return;
+    for (object = force->anim_set->objects; object != NULL; object = object->next) {
+        name = NuSpecialGetName(&object->special);
+        if (name != NULL) {
+            memset(socket_name, 0, sizeof(socket_name));
+            if (ForceCopyNamePrefixPc(name, socket_name, sizeof(socket_name)) != NULL) {
+                NuStrCat(socket_name, "b");
+                if (NuSpecialFind(object->special.scene, &force->along_socket, socket_name, 1) != 0)
+                    break;
+            }
+        }
+    }
+}
+
+static void __cdecl edgizforce_ReadAnimSetData(GAMEANIMOBJ *object, u8 version) {
+    GIZFORCEANIMDATA_s temporary;
+    GIZFORCEANIMDATA_s *data;
+    if (object == NULL)
+        return;
+    data = (GIZFORCEANIMDATA_s *)object->object_data;
+    if (data == NULL)
+        data = &temporary;
+    if (version > 8)
+        data->flags = (u16)EdFileReadShort();
+}
+
+i32 __cdecl GizForces_Load(void *world_pointer, void *system_pointer) {
+    WORLDINFO *world = (WORLDINFO *)world_pointer;
+    GIZFORCESYS_s *system = (GIZFORCESYS_s *)system_pointer;
+    GIZFORCE_PC *force;
+    u8 version;
+    i32 index, length;
+    char blowup_name[32];
+    char sfx_name[64];
+    NUVEC unused;
+    version = (u8)EdFileReadChar();
+    GizForceSFX_load_version = version;
+    system->count = (u16)EdFileReadShort();
+    if (system->count == 0)
+        return 1;
+    force = (GIZFORCE_PC *)system->forces;
+    for (index = 0; index < system->count; ++index, ++force) {
+        EdFileRead(force->name, 16);
+        EdFileReadNuVec(&force->file_position);
+        if (version == 1)
+            EdFileReadNuVec(&unused);
+        force->force_strength = EdFileReadFloat();
+        if (version >= 8)
+            force->force_range = EdFileReadFloat();
+        force->interaction_radius = EdFileReadFloat();
+        if (version == 1) {
+            EdFileReadNuVec(&unused);
+            EdFileReadShort();
+        }
+        force->config_flags = (u32)EdFileReadInt();
+        if (version <= 12)
+            force->config_flags |= 0x800;
+        force->group_index = (u8)EdFileReadChar();
+        if (version >= 11) {
+            force->collision_mask = (u8)EdFileReadChar();
+            if (version == 11 && force->collision_mask != 0)
+                force->collision_mask = (u8)(1u << ((force->collision_mask - 1) & 31));
+        }
+        force->activation_mode = (u8)EdFileReadChar();
+        if (version == 1)
+            EdFileReadChar();
+        GizmoFileReadGameAnimSet(force->anim_set, world, edgizforce_ReadAnimSetData, version,
+                                 (char *)GizmoRegistryGizForceNamePc, force->name);
+        force->start_frame = EdFileReadFloat();
+        force->end_frame = EdFileReadFloat();
+        if (version >= 6)
+            force->effect_scale = EdFileReadFloat();
+        force->horizontal_range = version >= 7 ? EdFileReadFloat() : 1.0f;
+        if (version >= 3)
+            force->vertical_range = EdFileReadFloat();
+        force->blowup_type = -1;
+        if (version >= 4) {
+            if (version == 4) {
+                force->blowup_type = EdFileReadShort();
+            } else {
+                length = (i8)EdFileReadChar();
+                if (length != 0) {
+                    EdFileRead(blowup_name, length);
+                    force->blowup_type = (i16)GizmoBlowupGetNameTableId(blowup_name);
+                    if (force->blowup_type != -1)
+                        force->runtime_flags |= 0x400;
+                }
+            }
+            force->pickup_count = EdFileReadShort();
+            force->pickup_rotation_x = EdFileReadShort();
+            force->pickup_rotation_y = EdFileReadShort();
+            EdFileReadNuVec(&force->effect_position);
+        }
+        if (version >= 10)
+            force->activation_radius = EdFileReadFloat();
+        else
+            force->activation_radius = world->area != NULL && (world->area->flags & 1) ? 12.0f : 1.75f;
+        force->start_sfx_id = -1;
+        force->loop_sfx_id = -1;
+        force->stop_sfx_id = -1;
+        if (version >= 14) {
+            if (GizmoFileReadName(sfx_name))
+                force->start_sfx_id = (i16)GetSfxId(sfx_name);
+            if (GizmoFileReadName(sfx_name))
+                force->loop_sfx_id = (i16)GetSfxId(sfx_name);
+            if (GizmoFileReadName(sfx_name))
+                force->stop_sfx_id = (i16)GetSfxId(sfx_name);
+        }
+        if (version <= 14) {
+            force->start_sfx_id = -1;
+            force->loop_sfx_id = -1;
+            force->stop_sfx_id = -1;
+        }
+        if (force->config_flags & 0x40)
+            ForceFindBaseSpecialPc(force);
+    }
+    return 1;
 }

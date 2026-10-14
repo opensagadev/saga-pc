@@ -577,10 +577,10 @@ address    , symbol                                                         , si
 0x465f60,_GizmoBombGen_Activate,,"void __cdecl(GIZMO_PC *, i32)"
 0x465fb0,_GizmoBombGen_SetVisibility,,"void __cdecl(GIZMO_PC *, i32)"
 0x465ff0,_GizmoBombGen_GetPos,,NUVEC * __cdecl(GIZMO_PC *)
-0x466060,_GizBombGens_SetResetFlag,,"void __cdecl(void *, void *, void *)"
+0x466060,_GizBombGens_SetResetFlag,69,"void __cdecl(void *, void *, void *)"
 0x466330,_GizBombGens_Update,,"void __cdecl(void *, void *, f32)"
 0x466500,_GizBombGens_GetMaxGizmos,25,i32 __cdecl(void *)
-0x466520,_GizBombGens_AddGizmos,,"void __cdecl(GIZMOSYS_PC *, i32, void *, void *)"
+0x466520,_GizBombGens_AddGizmos,89,"void __cdecl(GIZMOSYS_PC *, i32, void *, void *)"
 0x466580,_GizmoBombGen_GetGizmoName,,char * __cdecl(GIZMO_PC *)
 0x466590,_GizmoBombGen_GetOutput,,"i32 __cdecl(GIZMO_PC *, i32, i32)"
 0x4665a0,_GizmoBombGen_GetOutputName,,"char * __cdecl(GIZMO_PC *, i32)"
@@ -596,6 +596,9 @@ address    , symbol                                                         , si
 0x466940,_GizForceSFX_completesfx,72,
 0x466990,_GizForceSFX_returnsfx,72,
 0x4669e0,_GizForceSFX_Configure,258,"void __cdecl(WORLDINFO *,char *)"
+0x466af0,_ForceCopyNamePrefixPc,62,char * (char * source; char * destination; i32 capacity) optimizer-private
+0x466b30,_ForceFindBaseSpecialPc,179,void (GIZFORCE_PC *) optimizer-private
+0x466bf0,_edgizforce_ReadAnimSetData,43,"void __cdecl(GAMEANIMOBJ *; u8)"
 0x466c20,_GizForces_Load,784,
 0x466f30,_GizForces_PostLoad,86,"void __cdecl(void *, void *)"
 0x466f90,_GizForces_AddLevelSfx,,"void __cdecl(void *, void *, i32 *, i32 *, i32)"
@@ -614,7 +617,7 @@ address    , symbol                                                         , si
 0x4678f0,_GizForce_GameObjUsingForce,42,"i32 __cdecl(GAMEOBJECT *, GIZFORCE_PC *)"
 0x467920,_GizForce_Throw,386,
 0x467ab0,_GizForces_GetMaxGizmos,25,i32 __cdecl(void *)
-0x467ad0,_GizForces_AddGizmos,,"void __cdecl(GIZMOSYS_PC *, i32, void *, void *)"
+0x467ad0,_GizForces_AddGizmos,92,"void __cdecl(GIZMOSYS_PC *, i32, void *, void *)"
 0x467b30,_GizmoForce_GetGizmoName,,char * __cdecl(GIZMO_PC *)
 0x467b40,_GizmoForce_GetOutput,,"i32 __cdecl(GIZMO_PC *, i32, i32)"
 0x467c30,_GizmoForce_GetOutputName,100,
@@ -694,7 +697,7 @@ address    , symbol                                                         , si
 0x46df70,_GizPanel_Update,,"void __cdecl(void *, void *, f32)"
 0x46e290,_GizPanel_Draw,2052,
 0x46eaa0,_GizPanel_GetMaxGizmos,25,i32 __cdecl(void *)
-0x46eac0,_GizPanel_AddGizmos,,"void __cdecl(GIZMOSYS_PC *, i32, void *, void *)"
+0x46eac0,_GizPanel_AddGizmos,106,"void __cdecl(GIZMOSYS_PC *, i32, void *, void *)"
 0x46eb30,_GizPanel_GetGizmoName,,char * __cdecl(GIZMO_PC *)
 0x46eb60,_GizPanel_GetOutput,,"i32 __cdecl(GIZMO_PC *, i32, i32)"
 0x46eb80,_GizPanel_GetOutputName,,"char * __cdecl(GIZMO_PC *, i32)"
@@ -711,12 +714,12 @@ address    , symbol                                                         , si
 0x46f990,_GizTorps_ReserveBufferSpace,174,void * __cdecl(void *)
 0x46fa40,_GizTorp_SetVisibility,,"void __cdecl(GIZMO_PC *, i32)"
 0x46fa60,_GizTorp_Activate,,"void __cdecl(GIZMO_PC *, i32)"
-0x46fa90,_GizTorps_Reset,,"void __cdecl(void *, void *, void *)"
+0x46fa90,_GizTorps_Reset,55,"void __cdecl(void *, void *, void *)"
 0x46fad0,_GizTorpMachine_FindNearest,171,"void *__cdecl(WORLDINFO*,NUVEC*,f32*)"
 0x46fb80,_GizTorp_Update,,"void __cdecl(void *, void *, f32)"
 0x46fbe0,_GizTorp_Draw,580,
 0x46fe30,_GizTorp_GetMaxGizmos,25,i32 __cdecl(void *)
-0x46fe50,_GizTorp_AddGizmos,,"void __cdecl(GIZMOSYS_PC *, i32, void *, void *)"
+0x46fe50,_GizTorp_AddGizmos,101,"void __cdecl(GIZMOSYS_PC *, i32, void *, void *)"
 0x46fec0,_GizTorp_GetGizmoName,,char * __cdecl(GIZMO_PC *)
 0x46fee0,_GizTorp_GetOutput,,"i32 __cdecl(GIZMO_PC *, i32, i32)"
 0x46fef0,_GizTorp_GetOutputName,16,
@@ -1312,7 +1315,7 @@ address    , symbol                                                         , si
 0x4cf070,_Teleport_ActivateRev,,"i32 __cdecl(GIZMO_PC *, i32, i32)"
 0x4cf0b0,_Teleport_Activate,,"void __cdecl(GIZMO_PC *, i32)"
 0x4cf0d0,_Teleport_GetMaxGizmos,25,i32 __cdecl(void *)
-0x4cf0f0,_Teleport_AddGizmos,,"void __cdecl(GIZMOSYS_PC *, i32, void *, void *)"
+0x4cf0f0,_Teleport_AddGizmos,95,"void __cdecl(GIZMOSYS_PC *, i32, void *, void *)"
 0x4cf150,_Teleport_GetGizmoName,,char * __cdecl(GIZMO_PC *)
 0x4cf170,_Teleport_GetOutput,,"i32 __cdecl(GIZMO_PC *, i32, i32)"
 0x4cf190,_Teleport_GetOutputName,,"char * __cdecl(GIZMO_PC *, i32)"
@@ -2502,7 +2505,7 @@ address    , symbol                                                         , si
 0x54de80,_Grapple_Activate,,"void __cdecl(GIZMO_PC *, i32)"
 0x54deb0,_Grapple_SetVisibility,,"void __cdecl(GIZMO_PC *, i32)"
 0x54ded0,_Grapples_GetMaxGizmos,25,i32 __cdecl(void *)
-0x54def0,_Grapples_AddGizmos,,"void __cdecl(GIZMOSYS_PC *, i32, void *, void *)"
+0x54def0,_Grapples_AddGizmos,100,"void __cdecl(GIZMOSYS_PC *, i32, void *, void *)"
 0x54df60,_Grapple_GetGizmoName,,char * __cdecl(GIZMO_PC *)
 0x54df70,_Grapple_GetOutput,,"i32 __cdecl(GIZMO_PC *, i32, i32)"
 0x54dfc0,_Grapple_GetOutputName,32,
@@ -2583,7 +2586,7 @@ address    , symbol                                                         , si
 0x554630,_GizSpinner_Draw,520,
 0x554840,_GizSpinner_PanelDraw,,"void __cdecl(void *, void *, f32)"
 0x554850,_GizSpinner_GetMaxGizmos,18,i32 __cdecl(void *)
-0x554870,_GizSpinner_AddGizmos,,"void __cdecl(GIZMOSYS_PC *, i32, void *, void *)"
+0x554870,_GizSpinner_AddGizmos,139,"void __cdecl(GIZMOSYS_PC *, i32, void *, void *)"
 0x554900,_GizSpinner_GetGizmoName,,char * __cdecl(GIZMO_PC *)
 0x554920,_GizSpinner_GetOutputName,173,
 0x5549d0,_GizSpinner_GetNumOutputs,,i32 __cdecl(GIZMO_PC *)
@@ -2870,7 +2873,7 @@ address    , symbol                                                         , si
 0x5667a0,_InitGizmoBlowupsMtxBuffer,73,i32 __cdecl (WORLDINFO *)
 0x5667f0,_gizmoblowup_reservebuffers,82,void *__cdecl (WORLDINFO *)
 0x566850,_Blowup_GetMaxGizmos,25,i32 __cdecl(void *)
-0x566870,_Blowup_AddGizmos,,"void __cdecl(GIZMOSYS_PC *, i32, void *, void *)"
+0x566870,_Blowup_AddGizmos,105,"void __cdecl(GIZMOSYS_PC *, i32, void *, void *)"
 0x5668e0,_Blowup_GetGizmoName,,char * __cdecl(GIZMO_PC *)
 0x566900,_Blowup_GetOutput,,"i32 __cdecl(GIZMO_PC *, i32, i32)"
 0x566950,_Blowup_GetOutputName,,"char * __cdecl(GIZMO_PC *, i32)"
@@ -2979,7 +2982,7 @@ address    , symbol                                                         , si
 0x56f240,_GizmoPickups_DrawList,846,
 0x56f590,_GizmoPickups_Draw,,"void __cdecl(void *, void *, f32)"
 0x56f5d0,_GizmoPickups_GetMaxGizmos,25,i32 __cdecl(void *)
-0x56f5f0,_GizmoPickups_AddGizmos,,"void __cdecl(GIZMOSYS_PC *, i32, void *, void *)"
+0x56f5f0,_GizmoPickups_AddGizmos,81,"void __cdecl(GIZMOSYS_PC *, i32, void *, void *)"
 0x56f650,_GizmoPickup_GetGizmoName,,char * __cdecl(GIZMO_PC *)
 0x56f660,_GizmoPickup_GetOutput,,"i32 __cdecl(GIZMO_PC *, i32, i32)"
 0x56f680,_GizmoPickup_GetOutputName,,"char * __cdecl(GIZMO_PC *, i32)"
@@ -3612,12 +3615,12 @@ address    , symbol                                                         , si
 0x5900e0,_GizmoBuildit_SetVisibility,,"void __cdecl(GIZMO_PC *, i32)"
 0x590120,_GizmoBuildit_GetPos,,NUVEC * __cdecl(GIZMO_PC *)
 0x590140,_GizBuildit_Reset,996,
-0x590530,_GizBuildIts_Reset,,"void __cdecl(void *, void *, void *)"
-0x590610,_GizBuildIts_EarlyUpdate,,"void __cdecl(void *, void *, f32)"
+0x590530,_GizBuildIts_Reset,217,"void __cdecl(void *, void *, void *)"
+0x590610,_GizBuildIts_EarlyUpdate,57,"void __cdecl(void *, void *, f32)"
 0x590690,_GizBuildIt_KillParts,288,
 0x5907b0,_GizBuildIts_Draw,,"void __cdecl(void *, void *, f32)"
 0x590960,_GizBuildIts_GetMaxGizmos,25,i32 __cdecl(void *)
-0x590980,_GizBuildIts_AddGizmos,,"void __cdecl(GIZMOSYS_PC *, i32, void *, void *)"
+0x590980,_GizBuildIts_AddGizmos,89,"void __cdecl(GIZMOSYS_PC *, i32, void *, void *)"
 0x5909e0,_GizmoBuildit_GetGizmoName,,char * __cdecl(GIZMO_PC *)
 0x5909f0,_GizmoBuildit_GetOutput,,"i32 __cdecl(GIZMO_PC *, i32, i32)"
 0x590a20,_GizmoBuildit_GetOutputName,,"char * __cdecl(GIZMO_PC *, i32)"
@@ -3953,7 +3956,7 @@ address    , symbol                                                         , si
 0x005acf30,_GizTurrets_OpponentSelection,493,"void __cdecl(AI_TURRET_SYSTEM_PC *,i32,APIOBJECT_PC **,i32,APIOBJECT_PC **)"
 0x5ad1d0,_GizTurrets_Draw,,"void __cdecl(void *, void *, f32)"
 0x5ad250,_GizTurrets_GetMaxGizmos,25,i32 __cdecl(void *)
-0x5ad270,_GizTurrets_AddGizmos,,"void __cdecl(GIZMOSYS_PC *, i32, void *, void *)"
+0x5ad270,_GizTurrets_AddGizmos,94,"void __cdecl(GIZMOSYS_PC *, i32, void *, void *)"
 0x5ad2d0,_GizmoTurret_GetGizmoName,,char * __cdecl(GIZMO_PC *)
 0x5ad2f0,_GizmoTurret_GetOutput,,"i32 __cdecl(GIZMO_PC *, i32, i32)"
 0x5ad340,_GizmoTurret_GetOutputName,,"char * __cdecl(GIZMO_PC *, i32)"
