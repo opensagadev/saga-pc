@@ -9093,6 +9093,7 @@ address    , symbol                                                         , si
 0x007586e8 , __real@3fb70a3d80000000                                        , 8     , const f64
 0x7586f4,__real@c0400000,,const f32
 0x7586f8,__real@4000ccccc0000000,8,const f64
+0x758700,__real@40466666,4,const f32
 0x758704,__real@40066666,4,const f32
 0x758708,??_C@_0P@KMHAGGAM@TrueJedi_100pc?$AA@,15,const char[15]
 0x758718,??_C@_0N@KOFOPOOP@TrueJedi_NOT?$AA@,13,const char[13]
@@ -9644,7 +9645,13 @@ address    , symbol                                                         , si
 0x75a208,??_C@_07HJPHGMCL@levels?2?$AA@,,const char[8]
 0x0075a208 , _AreaResidentsDirectory                                        , 8     , const char[8]
 0x75a210,__real@4040000000000000,,
+0x75a218,__real@be2a3d70,4,const f32
+0x75a21c,__real@3e2a3d70,4,const f32
+0x75a220,__real@3fe3333300000000,8,const f64
+0x75a228,__real@4008ccccc0000000,8,const f64
 0x75a230,__real@400d999980000000,,f64
+0x75a238,__real@3ddae148,4,const f32
+0x75a23c,__real@3e11eb85,4,const f32
 0x75a240,__real@407ccccc,,f32
 0x75a248,__real@400f999980000000,,f64
 0x75a250,??_C@_0O@OFELKNBI@Ep1_TextCrawl?$AA@,,const char[14]

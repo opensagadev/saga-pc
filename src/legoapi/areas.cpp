@@ -1384,6 +1384,7 @@ extern "C" {
     void __cdecl ReadPads(void);
     void __cdecl MusicClearAll(void);
     void __cdecl SoundKillAll(void);
+    void __cdecl NeedScreenGrab(i32);
     i32 __cdecl GamePlayMusic(LEVELDATA_PC *, i32, OPTIONSSAVE *);
     void __cdecl Area_Configure(i32, i32, AREA_EXTRA_MODEL_PC *, i16 *);
     extern AREA_EXTRA_MODEL_PC ExtraModelList[];
@@ -1531,13 +1532,39 @@ void __cdecl LoadAreaCharacters(void) {
             if (LoadWait == LOADWAITTIME) {
                 if (HUB_ADATA != NULL && Area == HUB_ADATA->index) {
                     if (CharacterDataLoad != 0 && icon_time > 0.0f && (f64)icon_time < (f64)3.9499998092651367f) {
+                        f32 base_x = 0.1425f;
+                        f32 icon_scale = 0.4f;
+                        if (Game_OptionsSave != NULL && Game_OptionsSave->widescreen != 0) {
+                            base_x = 0.106875f;
+                            icon_scale = 0.35f;
+                        }
+                        i32 bob_angle = (i32)((f64)NuFmod(LoadTime, 1.0f) * 65536.0);
+                        f32 bob = (f32)((f64)NuTrigTable[(bob_angle >> 1) & 0x7fff] * 0.15000000596046448);
                         for (i32 player = 0; 1 >= player; ++player) {
-
-                            if ((f64)((f32)(player == 0 ? icon_time : icon_time - 0.25f)) > 0.0 &&
-                                (f64)((f32)(player == 0 ? icon_time : icon_time - 0.25f)) < (f64)3.6999998092651367f) {
+                            f32 phase = player == 0 ? icon_time : (f32)((f64)icon_time - 0.25);
+                            if ((f64)phase > 0.0 && (f64)phase < 3.6999998092651367) {
+                                f32 x;
+                                f32 alpha;
+                                if (phase < 0.6f) {
+                                    alpha = (f32)((f64)phase / 0.6000000238418579);
+                                    f32 start_x = (f32)((f64)base_x + 0.30000001192092896);
+                                    i32 angle = (i32)((f64)alpha * 16384.0);
+                                    x = (f32)((f64)start_x +
+                                              ((f64)base_x - start_x) * NuTrigTable[(angle >> 1) & 0x7fff]);
+                                } else {
+                                    x = base_x;
+                                    if (phase < 3.1f)
+                                        alpha = 1.0f;
+                                    else
+                                        alpha = (f32)(1.0 - ((f64)phase - 3.0999999046325684) / 0.5999999046325684);
+                                }
                                 DrawCharIconFindPc = 1;
-                                STUBBED_NAMED(DrawCharIcon); /* Native48bed6: PlayerID[player], native
-                                                                XY/scale, alpha, brightness,1,NULL. */
+                                if (player == 0)
+                                    DrawCharIcon(PlayerID[0], -x, 0.16624999046325684f, 0.0f, icon_scale, 166, alpha,
+                                                 (f32)((0.8500000238418579 + (f64)bob) * alpha), 1, NULL);
+                                else
+                                    DrawCharIcon(PlayerID[1], x, -0.16624999046325684f, 0.0f, icon_scale, 165, alpha,
+                                                 (f32)((0.8500000238418579 - (f64)bob) * alpha), 1, NULL);
                             }
                         }
                     }
@@ -1583,7 +1610,7 @@ void __cdecl LoadAreaCharacters(void) {
             (FadeSys.pending_type == FADE_TYPE_NONE || FadeSys.pending_type == FADE_TYPE_STILL)) {
             FADETYPE wipe = {FADE_TYPE_STILL_WIPE};
             FadeSys.SetFade(wipe, 0);
-            STUBBED_NAMED(NeedScreenGrab); /* Native48bf88:1. */
+            NeedScreenGrab(1); /* Native48bf88. */
             GrabStillScreen();
         }
         edGraEnableTerrainSwap();
