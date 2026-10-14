@@ -44,4 +44,36 @@ extern "C" {
         saveload_status = 1;
         saveload_autosave = -1;
     }
+    i32 __cdecl saveloadCheckSlotsUsed(void) {
+        i32 used = 0;
+        for (i32 slot = 0; slot < 6; ++slot) {
+            FILE *file = fopen(fullslotname(slot), "rb");
+            if (file != NULL) {
+                ++used;
+                fclose(file);
+            }
+        }
+        return used;
+    }
+    i32 __cdecl saveloadCheckCardPresent(void) {
+        return 1;
+    }
+    i32 __cdecl saveloadCheckCardType(void) {
+        return 1;
+    }
+    i32 __cdecl saveloadCheckCardFormatted(void) {
+        return 1;
+    }
+    i32 __cdecl saveloadCheckCardFreeSpace(i32 slot) {
+        return 1;
+    }
+    i32 __cdecl saveloadFormatCard(void) {
+        return 1;
+    }
+    i32 __cdecl saveloadUnFormatCard(void) {
+        return 1;
+    }
+    i32 __cdecl saveloadWriteKeyCode(char *id, u8 *code) {
+        return 0;
+    }
 }

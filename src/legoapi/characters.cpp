@@ -1,4 +1,5 @@
 #include <stdio.h>
+#include <string.h>
 #include "saga.h"
 extern "C" void __cdecl CreateUsefulMaterials(void);
 extern "C" void __cdecl ParticleReset(void);
@@ -54,6 +55,13 @@ extern "C" void CharScenes_AreaDump() {
         }
         entry.scene = NULL;
     }
+}
+
+extern "C" void __cdecl CharScenes_Init(VARIPTR *buffer, VARIPTR end) {
+    buffer->addr = (buffer->addr + 3) & ~3u;
+    KillPartsCharSceneAreaPc = (KILLPARTS_CHARSCENE_PC *)buffer->void_ptr;
+    buffer->addr += CHARCOUNT * sizeof(*KillPartsCharSceneAreaPc);
+    memset(KillPartsCharSceneAreaPc, 0, CHARCOUNT * sizeof(*KillPartsCharSceneAreaPc));
 }
 
 typedef struct permanent_material_reader_pc_s {

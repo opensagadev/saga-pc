@@ -26,6 +26,7 @@ STATIC_ASSERT(offsetof(EPISODEDATA_PC, area_ids) == 4);
 STATIC_ASSERT(offsetof(EPISODEDATA_PC, area_count) == 0x18);
 STATIC_ASSERT(offsetof(AREA_DATA_PC, flags) == 0x7a);
 STATIC_ASSERT(offsetof(AREA_DATA_PC, challenge_trial_time) == 0x84);
+STATIC_ASSERT(offsetof(EPISODEDATA_PC, regular_areas) == 0x19);
 
 extern i32 EpCompleteTotal, EpCompleteCount, EpMiniKitTotal, EpMiniKitCount;
 extern i32 EpCharKitTotal, EpCharKitCount, EpBuildUpTotal, EpBuildUpCount;
@@ -34,6 +35,24 @@ extern i32 EpRedBrickTotal, EpRedBrickCount, EpGoldBrickTotal, EpGoldBrickCount;
 extern i32 EpisodeGoldBrickForSuperStoryPc, EpisodeGoldBrickForSuperBonusPc, EpisodeGoldBrickForChallengePc;
 extern i32 HubBothTrueJediGoldBricksPc;
 extern EPISODE_SAVE_READER_PC *EpisodeSavePc;
+
+extern "C" i32 __cdecl Episodes_Completed(void) {
+    i32 completed = 0;
+    EPISODE_AREA_SAVE_READER_PC *saves = (EPISODE_AREA_SAVE_READER_PC *)Game_AreaSave;
+    for (i32 i = 0; i < EPISODECOUNT; ++i) {
+        EPISODEDATA_PC *episode = &EDataList[i];
+        i32 complete = 0;
+        if (saves != NULL) {
+            for (i32 j = 0; j < episode->regular_areas; ++j) {
+                if (saves[episode->area_ids[j]].area_complete != 0)
+                    ++complete;
+            }
+            if (complete == episode->regular_areas)
+                ++completed;
+        }
+    }
+    return completed;
+}
 
 /* Original episode.cpp C++ entry. PC resets every counter even on the -1 path,
  * counts the superstory brick regardless of area filter, and has no Android

@@ -11775,6 +11775,32 @@ i32 __cdecl Action_RemoveThrownForceObjects(AISYS_PC *system, AISCRIPTPROCESS_PC
     return 1;
 }
 
+i32 __cdecl Action_EatVictim(AISYS_PC *system, AISCRIPTPROCESS_PC *processor, AIPACKET_PC *packet, char **params,
+                             i32 count, i32 first_time, f32 delta) {
+    (void)system;
+    (void)processor;
+    (void)params;
+    (void)count;
+    (void)first_time;
+    (void)delta;
+    if (packet != NULL && packet->owner != NULL && packet->owner->objptr != NULL)
+        EatVictim(packet->owner->objptr);
+    return 1;
+}
+
+i32 __cdecl Action_ReleaseVictim(AISYS_PC *system, AISCRIPTPROCESS_PC *processor, AIPACKET_PC *packet, char **params,
+                                 i32 count, i32 first_time, f32 delta) {
+    (void)system;
+    (void)processor;
+    (void)params;
+    (void)count;
+    (void)first_time;
+    (void)delta;
+    if (packet != NULL && packet->owner != NULL && packet->owner->objptr != NULL)
+        ReleaseEat(packet->owner->objptr);
+    return 1;
+}
+
 static i32 Action_Launch(AISYS_PC *unused0, AISCRIPTPROCESS_PC *unused1, AIPACKET_PC *packet, char **unused3,
                          i32 unused4, i32 first_time, f32 unused6) {
     if (first_time && packet != NULL && packet->owner != NULL && packet->owner->objptr != NULL)
