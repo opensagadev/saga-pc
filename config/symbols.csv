@@ -510,7 +510,7 @@ address    , symbol                                                         , si
 0x4543e0   , _Action_TakeOver                                                , 493   , "i32 __cdecl (AISYS_PC *, AISCRIPTPROCESS_PC *, AIPACKET_PC *, char **, i32, i32, f32)"
 0x4545d0   , _Action_ReleaseTakeOver                                         , 158   , "i32 __cdecl (AISYS_PC *, AISCRIPTPROCESS_PC *, AIPACKET_PC *, char **, i32, i32, f32)"
 0x454670   , _Action_RegisterTakeOverObject                                  , 135   , "i32 __cdecl (AISYS_PC *, AISCRIPTPROCESS_PC *, AIPACKET_PC *, char **, i32, i32, f32)"
-0x454700,_Action_AddGameMsgCount,606,
+0x454700,_Action_AddGameMsgCount,606,"i32 __cdecl (AISYS_PC *, AISCRIPTPROCESS_PC *, AIPACKET_PC *, char **, i32, i32, f32)"
 0x454960   , _Action_SetCanTakeOver                                          , 135   , "i32 __cdecl (AISYS_PC *, AISCRIPTPROCESS_PC *, AIPACKET_PC *, char **, i32, i32, f32)"
 0x4549f0   , _Action_CanBeCarried                                            , 221   , "i32 __cdecl (AISYS_PC *, AISCRIPTPROCESS_PC *, AIPACKET_PC *, char **, i32, i32, f32)"
 0x454e30,_Action_AddMiscPickups,294,"i32 __cdecl (AISYS_PC *, AISCRIPTPROCESS_PC *, AIPACKET_PC *, char **, i32, i32, f32)"
@@ -531,7 +531,7 @@ address    , symbol                                                         , si
 0x456350,_Action_GizmoSetVisibility,189,"i32 __cdecl (AISYS_PC *, AISCRIPTPROCESS_PC *, AIPACKET_PC *, char **, i32, i32, f32)"
 0x456490,_Action_CanHelpWithTriggers,113,"i32 __cdecl (AISYS_PC *, AISCRIPTPROCESS_PC *, AIPACKET_PC *, char **, i32, i32, f32)"
 0x456510,_Action_CanCollideWithObjects,113,"i32 __cdecl (AISYS_PC *, AISCRIPTPROCESS_PC *, AIPACKET_PC *, char **, i32, i32, f32)"
-0x456590,_Action_AddTorpedoPacket,575,
+0x456590,_Action_AddTorpedoPacket,575,"i32 __cdecl (AISYS_PC *, AISCRIPTPROCESS_PC *, AIPACKET_PC *, char **, i32, i32, f32)"
 0x00456850 , _Action_PartyCanBeUnderCover                                    , 94    ," i32 __cdecl (void *, void *, void *, char **, i32, i32, f32)"
 0x004568b0 , _GameAIScriptAddLevelSfx                                       , 255   , "void __cdecl (WORLDINFO *, NULISTHDR *)"
 0x004569b0 , _Action_RaceOpponent                                           , 606   ,
@@ -9053,6 +9053,12 @@ address    , symbol                                                         , si
 0x7583e4,_AITransferLiteral7583e4,12,const char[12]
 0x7583f0,_AITransferLiteral7583f0,8,const char[8]
 0x7583f8,_AITransferLiteral7583f8,8,const char[8]
+0x00758400,_AIActionBluePrefixPc,6,const char[6]
+0x00758408,_AIActionGreenPrefixPc,7,const char[7]
+0x00758410,_AIActionRedPrefixPc,5,const char[5]
+0x00758418,_AIActionCountPrefixPc,7,const char[7]
+0x00758420,_AIActionTotalPrefixPc,7,const char[7]
+0x00758428,_AIActionMyPosNamePc,6,const char[6]
 0x758430,_AITransferLiteral758430,5,const char[5]
 0x00758438,_AIActionTorpedoPrefixPc,9,const char[9]
 0x758460,??_C@_01NEMOKFLO@?$DN?$AA@,,
@@ -9070,6 +9076,8 @@ address    , symbol                                                         , si
 0x00758504,_AIActionCircleReverseName,8,const char[8]
 0x75850c   , ??_C@_08LOCMGIHJ@teleport?$AA@                                 , 9     , const char[9]
 0x0075850c,_AIActionCircleTeleportName,9,const char[9]
+0x00758518,_AIActionCanBeStolenNamePc,12,const char[12]
+0x00758524,_AIActionTorpedoNamePc,8,const char[8]
 0x0075852c , __real@3f8ccccd                                                ,       ,
 0x758550,_PlayerActionNamePc_178,11,const char[11]
 0x758604,??_C@_07OACGECMA@yoffset?$AA@,8,const char[8]

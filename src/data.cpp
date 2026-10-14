@@ -30184,3 +30184,23 @@ extern "C" {
     extern const char GizActionNameEnableSockPc[11] = "EnableSock";
 #pragma const_seg()
 }
+
+extern "C" {
+#pragma const_seg(".rdata$AIActionBluePrefixPc")
+    extern const char AIActionBluePrefixPc[6] = "Blue=";
+#pragma const_seg(".rdata$AIActionGreenPrefixPc")
+    extern const char AIActionGreenPrefixPc[7] = "Green=";
+#pragma const_seg(".rdata$AIActionRedPrefixPc")
+    extern const char AIActionRedPrefixPc[5] = "Red=";
+#pragma const_seg(".rdata$AIActionCountPrefixPc")
+    extern const char AIActionCountPrefixPc[7] = "count=";
+#pragma const_seg(".rdata$AIActionTotalPrefixPc")
+    extern const char AIActionTotalPrefixPc[7] = "total=";
+#pragma const_seg(".rdata$AIActionMyPosNamePc")
+    extern const char AIActionMyPosNamePc[6] = "mypos";
+#pragma const_seg(".rdata$AIActionCanBeStolenNamePc")
+    extern const char AIActionCanBeStolenNamePc[12] = "CANBESTOLEN";
+#pragma const_seg(".rdata$AIActionTorpedoNamePc")
+    extern const char AIActionTorpedoNamePc[8] = "torpedo";
+#pragma const_seg()
+}

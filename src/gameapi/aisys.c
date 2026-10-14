@@ -12136,71 +12136,108 @@ i32 __cdecl Action_RegisterTakeOverObject(AISYS_PC *system, AISCRIPTPROCESS_PC *
     return 1;
 }
 
-static i32 Action_AddGameMsgCount(AISYS_PC *sys, AISCRIPTPROCESS_PC *processor, AIPACKET_PC *packet, char **params,
-                                  i32 param_4, i32 param_5, f32 param_6) {
-    (void)sys;
-    (void)param_6;
-    if (param_5 != 0) {
-        GAMEOBJECT *object = NULL;
-        if (packet != NULL && packet->owner != NULL) {
-            object = packet->owner->objptr;
-        }
-        if (param_4 > 0) {
-            i32 index;
-            NUVEC *position = NULL;
-            i32 total = 0;
-            i32 count = 0;
-            u8 red = 0;
-            u8 green = 0;
-            u8 blue = 0;
+extern const char AIActionBluePrefixPc[6];
+extern const char AIActionGreenPrefixPc[7];
+extern const char AIActionRedPrefixPc[5];
+extern const char AIActionCountPrefixPc[7];
+extern const char AIActionTotalPrefixPc[7];
+extern const char AIActionMyPosNamePc[6];
+extern const char AIActionCanBeStolenNamePc[12];
+extern const char AIActionTorpedoNamePc[8];
 
-            for (index = 0; index < param_4; ++index) {
-                if (NuStrICmp("mypos", params[index]) == 0) {
-                    if (object != NULL) {
-                        position = &object->collision_position;
-                    }
-                } else {
-                    char *value = NuStrIStr(params[index], "count=");
-                    if (value != NULL) {
-                        count = ((i32)(AIParamToFloat(processor, value + 6)));
-                    } else {
-                        value = NuStrIStr(params[index], "total=");
-                        if (value != NULL) {
-                            total = ((i32)(AIParamToFloat(processor, value + 6)));
-                        } else {
-                            value = NuStrIStr(params[index], "messageval=");
-                            if (value != NULL) {
-                                GIZAIMESSAGE *message = CheckGizAIMessage(gizaimessagesys, value + 11, NULL);
-                                if (message != NULL) {
-                                    total = ((i32)(message->value));
-                                }
-                            } else {
-                                value = NuStrIStr(params[index], "Red=");
-                                if (value != NULL) {
-                                    red = ((u8)(AIParamToFloat(processor, value + 4)));
-                                } else {
-                                    value = NuStrIStr(params[index], "Green=");
-                                    if (value != NULL) {
-                                        green = ((u8)(AIParamToFloat(processor, value + 6)));
-                                    } else {
-                                        value = NuStrIStr(params[index], "Blue=");
-                                        if (value != NULL) {
-                                            blue = ((u8)(AIParamToFloat(processor, value + 5)));
-                                        }
-                                    }
-                                }
-                            }
-                        }
-                    }
-                }
+typedef struct torpedo_action_packet_pc_s {
+    u8 count;
+    u8 flags;
+    u8 unknown_02;
+    u8 state;
+    u8 unknown_04[4];
+    f32 timer;
+    u8 unknown_0c[0x30];
+    NUVEC pickup_positions[5];
+    u8 unknown_78[0x10];
+} TORPEDO_ACTION_PACKET_PC;
+STATIC_ASSERT(sizeof(TORPEDO_ACTION_PACKET_PC) == 0x88);
+STATIC_ASSERT(offsetof(TORPEDO_ACTION_PACKET_PC, count) == 0);
+STATIC_ASSERT(offsetof(TORPEDO_ACTION_PACKET_PC, flags) == 1);
+STATIC_ASSERT(offsetof(TORPEDO_ACTION_PACKET_PC, state) == 3);
+STATIC_ASSERT(offsetof(TORPEDO_ACTION_PACKET_PC, timer) == 8);
+STATIC_ASSERT(offsetof(TORPEDO_ACTION_PACKET_PC, pickup_positions) == 0x3c);
+
+i32 __cdecl Action_AddGameMsgCount(AISYS_PC *unused0, AISCRIPTPROCESS_PC *processor, AIPACKET_PC *packet, char **params,
+                                   i32 param_count, i32 first_time, f32 unused6) {
+    GAMEOBJECT *object = NULL;
+    NUVEC *position = NULL;
+    i32 count = 0;
+    i32 total = 0;
+    u8 red = 0;
+    u8 green = 0;
+    u8 blue = 0;
+    i32 index;
+    char *value;
+    GIZAIMESSAGE *message;
+    if (first_time != 0) {
+        if (packet != NULL && packet->owner != NULL && packet->owner->objptr != NULL)
+            object = packet->owner->objptr;
+        if (param_count > 0) {
+            for (index = 0; index < param_count; ++index) {
+                if (NuStrICmp(AIActionMyPosNamePc, params[index]) == 0 && object != NULL)
+                    position = &object->collision_position;
+                else if ((value = NuStrIStr(params[index], (char *)AIActionTotalPrefixPc)) != NULL)
+                    total = (i32)AIParamToFloat(processor, value + 6);
+                else if ((value = NuStrIStr(params[index], (char *)AIActionCountPrefixPc)) != NULL)
+                    count = (i32)AIParamToFloat(processor, value + 6);
+                else if ((value = NuStrIStr(params[index], (char *)AITransferLiteral757c20)) != NULL) {
+                    message = CheckGizAIMessage(gizaimessagesys, value + 11, NULL);
+                    if (message != NULL)
+                        count = (i32)message->value;
+                } else if ((value = NuStrIStr(params[index], (char *)AIActionRedPrefixPc)) != NULL)
+                    red = (u8)AIParamToFloat(processor, value + 4);
+                else if ((value = NuStrIStr(params[index], (char *)AIActionGreenPrefixPc)) != NULL)
+                    green = (u8)AIParamToFloat(processor, value + 6);
+                else if ((value = NuStrIStr(params[index], (char *)AIActionBluePrefixPc)) != NULL)
+                    blue = (u8)AIParamToFloat(processor, value + 5);
             }
-            if (total > count) {
-                return 1;
+            if (count != 0 && count <= total)
+                AddGameMsgCount(position, count, total, red, green, blue, 0.75f);
+        }
+    }
+    return 1;
+}
+
+i32 __cdecl Action_AddTorpedoPacket(AISYS_PC *unused0, AISCRIPTPROCESS_PC *unused1, AIPACKET_PC *packet, char **params,
+                                    i32 param_count, i32 first_time, f32 unused6) {
+    GAMEOBJECT *object = NULL;
+    i32 count = 0;
+    u8 flags = 0;
+    i32 index;
+    char *value;
+    if (packet != NULL && packet->owner != NULL && packet->owner->objptr != NULL)
+        object = packet->owner->objptr;
+    if (first_time != 0) {
+        for (index = 0; index < param_count; ++index) {
+            value = NuStrIStr(params[index], (char *)AIActionTorpedoNamePc);
+            if (value != NULL) {
+                count = (i32)AIParamToFloat(&packet->script_processor, value + 8);
+                if (count < 0)
+                    count = 0;
+                else if (count > getMaxTorpedos(NULL))
+                    count = getMaxTorpedos(NULL);
+            } else if (NuStrICmp(params[index], AIActionCanBeStolenNamePc) == 0)
+                flags |= 0x20;
+        }
+    }
+    if (object != NULL) {
+        if (object->torpedo != NULL)
+            FreeTorpedoPacket(&object->torpedo);
+        object->torpedo = GetTorpedoPacket();
+        if (object->torpedo != NULL && count != 0) {
+            ((TORPEDO_ACTION_PACKET_PC *)object->torpedo)->count = (u8)count;
+            ((TORPEDO_ACTION_PACKET_PC *)object->torpedo)->flags |= flags;
+            for (index = 0; index < count; ++index) {
+                ((TORPEDO_ACTION_PACKET_PC *)object->torpedo)->pickup_positions[index] = object->collision_position;
+                ((TORPEDO_ACTION_PACKET_PC *)object->torpedo)->timer = 0.8f;
+                ((TORPEDO_ACTION_PACKET_PC *)object->torpedo)->state = 0;
             }
-            if (total == 0) {
-                return 1;
-            }
-            AddGameMsgCount(position, count, total, red, green, blue, 0.75f);
         }
     }
     return 1;
