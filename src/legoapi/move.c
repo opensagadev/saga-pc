@@ -8906,3 +8906,53 @@ void __cdecl Move_WEIRDO(GAMEOBJECT *object) {
     STUBBED_NAMED(0x0058cf50); /* Native4b5d13: CloakMovement(object). */
     STUBBED_NAMED(0x0058d150); /* Native4b5d19: HairMovement(object). */
 }
+
+void __cdecl DrawForceGlowSpritePc(NUVEC *position, f32 radius, i32 model, f32 alpha, GAMEOBJECT *object) {
+    WORLDINFO *world;
+    NUVEC direction, draw_position, scale;
+    NUMTX matrix;
+    f32 distance, offset;
+    u16 angle;
+    (void)object;
+    world = WorldInfo_CurrentlyActive();
+    if (model == -1 || world->level_objects[model].active == 0)
+        return;
+    ResetShadowMapRendering();
+    NuVecSub(&direction, position, (NUVEC *)&pNuCam->mtx.m30);
+    distance = NuFsqrt(direction.x * direction.x + direction.y * direction.y + direction.z * direction.z);
+    NuVecNorm(&direction, &direction);
+    if (radius < (f64)distance - 0.20000000298023224)
+        offset = radius;
+    else if (distance < 0.20000000298023224)
+        offset = 0.0f;
+    else
+        offset = (f32)((f64)distance - 0.20000000298023224);
+    NuVecScale(&direction, &direction, offset);
+    NuVecSub(&draw_position, position, &direction);
+    if (offset == 0.0f)
+        scale.x = scale.y = scale.z = radius;
+    else
+        scale.x = scale.y = scale.z = (f32)(radius * ((f64)distance - offset) / distance);
+    NuMtxSetScale(&matrix, &scale);
+    angle = (u16)(i32)((f64)NuFmod(GameTimer.time_elapsed, 20.0f) / 20.0 * 65536.0);
+    MovementMtxRotateZPc(&matrix, -(i32)angle);
+    NuMtxMulR(&matrix, &matrix, &GameCam->render_mtx);
+    NuMtxTranslate(&matrix, &draw_position);
+    NuSpecialDrawAtAlpha(&WORLD->level_objects[model].special, &matrix, alpha);
+    if (WORLD->level_objects[model + 1].active != 0) {
+        NuMtxSetScale(&matrix, &scale);
+        angle = (u16)(i32)((f64)NuFmod(GameTimer.time_elapsed, 16.777000427246094f) / 16.777000427246094 * 65536.0);
+        MovementMtxRotateZPc(&matrix, (i32)angle);
+        NuMtxMulR(&matrix, &matrix, &GameCam->render_mtx);
+        NuMtxTranslate(&matrix, &draw_position);
+        NuSpecialDrawAtAlpha(&WORLD->level_objects[model + 1].special, &matrix, alpha);
+    }
+    EnableShadowMapRendering(0);
+}
+
+STATIC_ASSERT(offsetof(NUCAMERA, mtx) == 0);
+STATIC_ASSERT(offsetof(NUMTX, m30) == 0x30);
+STATIC_ASSERT(offsetof(GAMECAMERA, render_mtx) == 0xb8);
+STATIC_ASSERT(offsetof(WORLDINFO, level_objects) == 0x2ac0);
+STATIC_ASSERT(sizeof(LEVEL_OBJECT_RUNTIME_PC) == 0x10);
+STATIC_ASSERT(offsetof(LEVEL_OBJECT_RUNTIME_PC, active) == 0xe);

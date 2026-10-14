@@ -11632,6 +11632,8 @@ address    , symbol                                                         , si
 0x75be30   , _ForcePushApproachInnerSquare                                  , 4     , const f32
 0x0075be30 , __real@3c23d70b                                                , 4     , const f32
 0x75be34,__real@40bb3333,4,compiler literal
+0x75be38,__real@4030c6e980000000,8,const f64
+0x75be40,__real@4186374c,4,const f32
 0x0075be44 , ??_C@_07GDIDDJMN@BBounce?$AA@                                  , 8     , const char[8]
 0x0075be50 , __real@4003333340000000                                        , 8     , const f64
 0x75be58   , __real@3eb851ec                                                , 4     , const f32
