@@ -1,5 +1,60 @@
 #include "saga.h"
 
+STATIC_ASSERT(offsetof(GIZMOTYPE_PC, fns) + offsetof(GIZMOFNS_PC, get_gizmo_name_fn) == 0x44);
+STATIC_ASSERT(offsetof(GIZMOTYPE_PC, fns) + offsetof(GIZMOFNS_PC, get_num_outputs_fn) == 0x50);
+
+GIZMO_PC *__cdecl GizmoFindByData(void *system_ptr, i32 type_id, void *data) {
+    GIZMOTYPES_PC *types = (GIZMOTYPES_PC *)gizmotypes;
+    GIZMOSYS_PC *system = (GIZMOSYS_PC *)system_ptr;
+    GIZMOSET_PC *set;
+    i32 i, type_index;
+    if (types != NULL && system != NULL && data != NULL) {
+        if (type_id >= 0 && type_id <= types->count) {
+            set = &system->sets[type_id];
+            if (types->types[type_id].fns.get_gizmo_name_fn != NULL) {
+                for (i = 0; i < set->count; ++i) {
+                    if (set->gizmos[i].object == data)
+                        return &set->gizmos[i];
+                }
+            }
+        } else {
+            for (type_index = 0; type_index < types->count; ++type_index) {
+                set = &system->sets[type_index];
+                if (types->types[type_index].fns.get_gizmo_name_fn != NULL) {
+                    for (i = 0; i < set->count; ++i) {
+                        if (set->gizmos[i].object == data)
+                            return &set->gizmos[i];
+                    }
+                }
+            }
+        }
+    }
+    return NULL;
+}
+
+char *__cdecl GizmoGetName(GIZMO_PC *gizmo) {
+    GIZMOTYPES_PC *types = (GIZMOTYPES_PC *)gizmotypes;
+    if (types != NULL && gizmo != NULL && gizmo->type_id < types->count) {
+        char *(__cdecl * get_name)(GIZMO_PC *) = types->types[gizmo->type_id].fns.get_gizmo_name_fn;
+        if (get_name != NULL)
+            return get_name(gizmo);
+    }
+    return NULL;
+}
+
+i32 __cdecl GizmoGetNumOutputs(void *system, GIZMO_PC *gizmo) {
+    GIZMOTYPES_PC *types = (GIZMOTYPES_PC *)gizmotypes;
+    i32(__cdecl * get_count)(GIZMO_PC *);
+    if (types == NULL || system == NULL || gizmo == NULL)
+        return 0;
+    if (gizmo->type_id < types->count) {
+        get_count = (i32(__cdecl *)(GIZMO_PC *))types->types[gizmo->type_id].fns.get_num_outputs_fn;
+        if (get_count != NULL)
+            return get_count(gizmo);
+    }
+    return 1;
+}
+
 void __cdecl GizmoActivate(void *system, void *gizmo_ptr, i32 active, i32 mode) {
     GIZMOTYPES_PC *registry;
     GIZMOTYPE_PC *type;
