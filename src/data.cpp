@@ -31458,3 +31458,698 @@ extern "C" {
     };
 #pragma data_seg()
 }
+
+extern "C" {
+#pragma const_seg(".rdata$CharacterFixupNamePc00752684")
+    extern const char CharacterFixupNamePc00752684[17] = "droidstarfighter";
+#pragma const_seg(".rdata$CharacterFixupNamePc00752698")
+    extern const char CharacterFixupNamePc00752698[16] = "droidtrifighter";
+#pragma const_seg(".rdata$CharacterFixupNamePc007526a8")
+    extern const char CharacterFixupNamePc007526a8[13] = "vulturedroid";
+#pragma const_seg(".rdata$CharacterFixupNamePc007526b8")
+    extern const char CharacterFixupNamePc007526b8[12] = "ZamsSpeeder";
+#pragma const_seg(".rdata$CharacterFixupNamePc007526c4")
+    extern const char CharacterFixupNamePc007526c4[21] = "anakinsspeeder_green";
+#pragma const_seg(".rdata$CharacterFixupNamePc007526dc")
+    extern const char CharacterFixupNamePc007526dc[15] = "anakinsspeeder";
+#pragma const_seg(".rdata$CharacterFixupNamePc007526ec")
+    extern const char CharacterFixupNamePc007526ec[20] = "newanakinspod_green";
+#pragma const_seg(".rdata$CharacterFixupNamePc00752700")
+    extern const char CharacterFixupNamePc00752700[14] = "newanakinspod";
+#pragma const_seg(".rdata$CharacterFixupNamePc00752710")
+    extern const char CharacterFixupNamePc00752710[16] = "anothermiscpod2";
+#pragma const_seg(".rdata$CharacterFixupNamePc00752720")
+    extern const char CharacterFixupNamePc00752720[15] = "anothermiscpod";
+#pragma const_seg(".rdata$CharacterFixupNamePc00752730")
+    extern const char CharacterFixupNamePc00752730[12] = "gasganospod";
+#pragma const_seg(".rdata$CharacterFixupNamePc0075273c")
+    extern const char CharacterFixupNamePc0075273c[12] = "sebulbaspod";
+#pragma const_seg(".rdata$CharacterFixupNamePc00752748")
+    extern const char CharacterFixupNamePc00752748[17] = "anakinspod_green";
+#pragma const_seg(".rdata$CharacterFixupNamePc0075275c")
+    extern const char CharacterFixupNamePc0075275c[11] = "anakinspod";
+#pragma const_seg(".rdata$CharacterFixupNamePc00752768")
+    extern const char CharacterFixupNamePc00752768[18] = "mini_sand_crawler";
+#pragma const_seg(".rdata$CharacterFixupNamePc0075277c")
+    extern const char CharacterFixupNamePc0075277c[18] = "mini_solar_sailor";
+#pragma const_seg(".rdata$CharacterFixupNamePc00752790")
+    extern const char CharacterFixupNamePc00752790[22] = "mini_sith_infiltrator";
+#pragma const_seg(".rdata$CharacterFixupNamePc007527a8")
+    extern const char CharacterFixupNamePc007527a8[18] = "mini_tie_advanced";
+#pragma const_seg(".rdata$CharacterFixupNamePc007527bc")
+    extern const char CharacterFixupNamePc007527bc[17] = "mini_tie_fighter";
+#pragma const_seg(".rdata$CharacterFixupNamePc007527d0")
+    extern const char CharacterFixupNamePc007527d0[14] = "mini_droideka";
+#pragma const_seg(".rdata$CharacterFixupNamePc007527e0")
+    extern const char CharacterFixupNamePc007527e0[12] = "mini_slave1";
+#pragma const_seg(".rdata$CharacterFixupNamePc007527ec")
+    extern const char CharacterFixupNamePc007527ec[10] = "mini_atte";
+#pragma const_seg(".rdata$CharacterFixupNamePc00752804")
+    extern const char CharacterFixupNamePc00752804[23] = "Mini_Millennium_Falcon";
+#pragma const_seg(".rdata$CharacterFixupNamePc0075281c")
+    extern const char CharacterFixupNamePc0075281c[22] = "mini_imperial_shuttle";
+#pragma const_seg(".rdata$CharacterFixupNamePc00752834")
+    extern const char CharacterFixupNamePc00752834[20] = "mini_royal_starship";
+#pragma const_seg(".rdata$CharacterFixupNamePc00752848")
+    extern const char CharacterFixupNamePc00752848[20] = "mini_star_destroyer";
+#pragma const_seg(".rdata$CharacterFixupNamePc0075285c")
+    extern const char CharacterFixupNamePc0075285c[10] = "mini_atat";
+#pragma const_seg(".rdata$CharacterFixupNamePc00752868")
+    extern const char CharacterFixupNamePc00752868[16] = "mini_tie_bomber";
+#pragma const_seg(".rdata$CharacterFixupNamePc00752878")
+    extern const char CharacterFixupNamePc00752878[21] = "mini_tie_interceptor";
+#pragma const_seg(".rdata$CharacterFixupNamePc00752890")
+    extern const char CharacterFixupNamePc00752890[12] = "mini_y_wing";
+#pragma const_seg(".rdata$CharacterFixupNamePc0075289c")
+    extern const char CharacterFixupNamePc0075289c[12] = "mini_x_wing";
+#pragma const_seg(".rdata$CharacterFixupNamePc007528a8")
+    extern const char CharacterFixupNamePc007528a8[10] = "indysnake";
+#pragma const_seg(".rdata$CharacterFixupNamePc007528b4")
+    extern const char CharacterFixupNamePc007528b4[11] = "indyspider";
+#pragma const_seg(".rdata$CharacterFixupNamePc007528c0")
+    extern const char CharacterFixupNamePc007528c0[10] = "crocodile";
+#pragma const_seg(".rdata$CharacterFixupNamePc007528cc")
+    extern const char CharacterFixupNamePc007528cc[9] = "barranca";
+#pragma const_seg(".rdata$CharacterFixupNamePc007528d8")
+    extern const char CharacterFixupNamePc007528d8[17] = "hovitostribesman";
+#pragma const_seg(".rdata$CharacterFixupNamePc007528ec")
+    extern const char CharacterFixupNamePc007528ec[7] = "belloq";
+#pragma const_seg(".rdata$CharacterFixupNamePc007528f4")
+    extern const char CharacterFixupNamePc007528f4[6] = "chuck";
+#pragma const_seg(".rdata$CharacterFixupNamePc007528fc")
+    extern const char CharacterFixupNamePc007528fc[7] = "satipo";
+#pragma const_seg(".rdata$CharacterFixupNamePc00752904")
+    extern const char CharacterFixupNamePc00752904[13] = "indianajones";
+#pragma const_seg(".rdata$CharacterFixupNamePc00752914")
+    extern const char CharacterFixupNamePc00752914[9] = "skeleton";
+#pragma const_seg(".rdata$CharacterFixupNamePc00752920")
+    extern const char CharacterFixupNamePc00752920[13] = "flashspeeder";
+#pragma const_seg(".rdata$CharacterFixupNamePc00752930")
+    extern const char CharacterFixupNamePc00752930[13] = "hansolo_indy";
+#pragma const_seg(".rdata$CharacterFixupNamePc00752940")
+    extern const char CharacterFixupNamePc00752940[22] = "naboostarfighter_lime";
+#pragma const_seg(".rdata$CharacterFixupNamePc00752958")
+    extern const char CharacterFixupNamePc00752958[9] = "clonearc";
+#pragma const_seg(".rdata$CharacterFixupNamePc00752964")
+    extern const char CharacterFixupNamePc00752964[10] = "buzzdroid";
+#pragma const_seg(".rdata$CharacterFixupNamePc00752970")
+    extern const char CharacterFixupNamePc00752970[7] = "taunwe";
+#pragma const_seg(".rdata$CharacterFixupNamePc00752978")
+    extern const char CharacterFixupNamePc00752978[7] = "lamasu";
+#pragma const_seg(".rdata$CharacterFixupNamePc00752980")
+    extern const char CharacterFixupNamePc00752980[9] = "lifeBoat";
+#pragma const_seg(".rdata$CharacterFixupNamePc0075298c")
+    extern const char CharacterFixupNamePc0075298c[10] = "fireTruck";
+#pragma const_seg(".rdata$CharacterFixupNamePc00752998")
+    extern const char CharacterFixupNamePc00752998[8] = "Tractor";
+#pragma const_seg(".rdata$CharacterFixupNamePc007529a0")
+    extern const char CharacterFixupNamePc007529a0[8] = "TownCar";
+#pragma const_seg(".rdata$CharacterFixupNamePc007529a8")
+    extern const char CharacterFixupNamePc007529a8[9] = "pitdroid";
+#pragma const_seg(".rdata$CharacterFixupNamePc007529b4")
+    extern const char CharacterFixupNamePc007529b4[12] = "cantinaband";
+#pragma const_seg(".rdata$CharacterFixupNamePc007529c0")
+    extern const char CharacterFixupNamePc007529c0[6] = "bossk";
+#pragma const_seg(".rdata$CharacterFixupNamePc007529c8")
+    extern const char CharacterFixupNamePc007529c8[7] = "greedo";
+#pragma const_seg(".rdata$CharacterFixupNamePc007529d0")
+    extern const char CharacterFixupNamePc007529d0[12] = "imperialspy";
+#pragma const_seg(".rdata$CharacterFixupNamePc007529dc")
+    extern const char CharacterFixupNamePc007529dc[12] = "wookieflyer";
+#pragma const_seg(".rdata$CharacterFixupNamePc007529e8")
+    extern const char CharacterFixupNamePc007529e8[7] = "mapcar";
+#pragma const_seg(".rdata$CharacterFixupNamePc007529f0")
+    extern const char CharacterFixupNamePc007529f0[8] = "mooncar";
+#pragma const_seg(".rdata$CharacterFixupNamePc007529f8")
+    extern const char CharacterFixupNamePc007529f8[5] = "tc14";
+#pragma const_seg(".rdata$CharacterFixupNamePc00752a00")
+    extern const char CharacterFixupNamePc00752a00[5] = "c3po";
+#pragma const_seg(".rdata$CharacterFixupNamePc00752a08")
+    extern const char CharacterFixupNamePc00752a08[10] = "gonkdroid";
+#pragma const_seg(".rdata$CharacterFixupNamePc00752a14")
+    extern const char CharacterFixupNamePc00752a14[16] = "grandmofftarkin";
+#pragma const_seg(".rdata$CharacterFixupNamePc00752a24")
+    extern const char CharacterFixupNamePc00752a24[16] = "imperialofficer";
+#pragma const_seg(".rdata$CharacterFixupNamePc00752a34")
+    extern const char CharacterFixupNamePc00752a34[21] = "ImperialShuttlePilot";
+#pragma const_seg(".rdata$CharacterFixupNamePc00752a4c")
+    extern const char CharacterFixupNamePc00752a4c[13] = "beachtrooper";
+#pragma const_seg(".rdata$CharacterFixupNamePc00752a5c")
+    extern const char CharacterFixupNamePc00752a5c[14] = "kaminoandroid";
+#pragma const_seg(".rdata$CharacterFixupNamePc00752a6c")
+    extern const char CharacterFixupNamePc00752a6c[12] = "sentrydroid";
+#pragma const_seg(".rdata$CharacterFixupNamePc00752a78")
+    extern const char CharacterFixupNamePc00752a78[9] = "ugnaught";
+#pragma const_seg(".rdata$CharacterFixupNamePc00752a84")
+    extern const char CharacterFixupNamePc00752a84[16] = "imperialshuttle";
+#pragma const_seg(".rdata$CharacterFixupNamePc00752a94")
+    extern const char CharacterFixupNamePc00752a94[15] = "tieinterceptor";
+#pragma const_seg(".rdata$CharacterFixupNamePc00752aa4")
+    extern const char CharacterFixupNamePc00752aa4[12] = "snowspeeder";
+#pragma const_seg(".rdata$CharacterFixupNamePc00752ab0")
+    extern const char CharacterFixupNamePc00752ab0[11] = "royalguard";
+#pragma const_seg(".rdata$CharacterFixupNamePc00752abc")
+    extern const char CharacterFixupNamePc00752abc[6] = "xwing";
+#pragma const_seg(".rdata$CharacterFixupNamePc00752ac4")
+    extern const char CharacterFixupNamePc00752ac4[5] = "r2q5";
+#pragma const_seg(".rdata$CharacterFixupNamePc00752acc")
+    extern const char CharacterFixupNamePc00752acc[5] = "r2d2";
+#pragma const_seg(".rdata$CharacterFixupNamePc00752ad4")
+    extern const char CharacterFixupNamePc00752ad4[9] = "kitfisto";
+#pragma const_seg(".rdata$CharacterFixupNamePc00752ae0")
+    extern const char CharacterFixupNamePc00752ae0[10] = "palpatine";
+#pragma const_seg(".rdata$CharacterFixupNamePc00752aec")
+    extern const char CharacterFixupNamePc00752aec[11] = "countdooku";
+#pragma const_seg(".rdata$CharacterFixupNamePc00752af8")
+    extern const char CharacterFixupNamePc00752af8[25] = "newrepublicgunship_green";
+#pragma const_seg(".rdata$CharacterFixupNamePc00752b14")
+    extern const char CharacterFixupNamePc00752b14[19] = "newrepublicgunship";
+#pragma const_seg(".rdata$CharacterFixupNamePc00752b28")
+    extern const char CharacterFixupNamePc00752b28[22] = "republicgunship_green";
+#pragma const_seg(".rdata$CharacterFixupNamePc00752b40")
+    extern const char CharacterFixupNamePc00752b40[12] = "anakin_jedi";
+#pragma const_seg(".rdata$CharacterFixupNamePc00752b4c")
+    extern const char CharacterFixupNamePc00752b4c[17] = "obiwankenobi_ep3";
+#pragma const_seg(".rdata$CharacterFixupNamePc00752b60")
+    extern const char CharacterFixupNamePc00752b60[7] = "Rancor";
+#pragma const_seg(".rdata$CharacterFixupNamePc00752b68")
+    extern const char CharacterFixupNamePc00752b68[24] = "JediStarfighter_Red_Ep3";
+#pragma const_seg(".rdata$CharacterFixupNamePc00752b80")
+    extern const char CharacterFixupNamePc00752b80[27] = "JediStarfighter_Yellow_Ep3";
+#pragma const_seg(".rdata$CharacterFixupNamePc00752b9c")
+    extern const char CharacterFixupNamePc00752b9c[10] = "JangoFett";
+#pragma const_seg(".rdata$CharacterFixupNamePc00752ba8")
+    extern const char CharacterFixupNamePc00752ba8[4] = "bob";
+#pragma const_seg(".rdata$CharacterFixupNamePc00752bac")
+    extern const char CharacterFixupNamePc00752bac[9] = "luminara";
+#pragma const_seg(".rdata$CharacterFixupNamePc00752bb8")
+    extern const char CharacterFixupNamePc00752bb8[8] = "shaakti";
+#pragma const_seg(".rdata$CharacterFixupNamePc00752bc0")
+    extern const char CharacterFixupNamePc00752bc0[24] = "ObiWanKenobi_JediMaster";
+#pragma const_seg(".rdata$CharacterFixupNamePc00752bd8")
+    extern const char CharacterFixupNamePc00752bd8[15] = "Anakin_padawan";
+#pragma const_seg(".rdata$CharacterFixupNamePc00752be8")
+    extern const char CharacterFixupNamePc00752be8[12] = "PadmeClawed";
+#pragma const_seg(".rdata$CharacterFixupNamePc00752bf4")
+    extern const char CharacterFixupNamePc00752bf4[12] = "JarJarBinks";
+#pragma const_seg(".rdata$CharacterFixupNamePc00752c00")
+    extern const char CharacterFixupNamePc00752c00[17] = "jumbohomingdroid";
+#pragma const_seg(".rdata$CharacterFixupNamePc00752c14")
+    extern const char CharacterFixupNamePc00752c14[6] = "Stap2";
+#pragma const_seg(".rdata$CharacterFixupNamePc00752c1c")
+    extern const char CharacterFixupNamePc00752c1c[5] = "Stap";
+#pragma const_seg(".rdata$CharacterFixupNamePc00752c24")
+    extern const char CharacterFixupNamePc00752c24[11] = "Falumpaset";
+#pragma const_seg(".rdata$CharacterFixupNamePc00752c38")
+    extern const char CharacterFixupNamePc00752c38[6] = "Kaadu";
+#pragma const_seg(".rdata$CharacterFixupNamePc00752c40")
+    extern const char CharacterFixupNamePc00752c40[16] = "speederbikesnow";
+#pragma const_seg(".rdata$CharacterFixupNamePc00752c50")
+    extern const char CharacterFixupNamePc00752c50[17] = "millenniumfalcon";
+#pragma const_seg(".rdata$CharacterFixupNamePc00752c64")
+    extern const char CharacterFixupNamePc00752c64[11] = "theemperor";
+#pragma const_seg(".rdata$CharacterFixupNamePc00752c70")
+    extern const char CharacterFixupNamePc00752c70[11] = "darthvader";
+#pragma const_seg(".rdata$CharacterFixupNamePc00752c7c")
+    extern const char CharacterFixupNamePc00752c7c[17] = "deathstartrooper";
+#pragma const_seg(".rdata$CharacterFixupNamePc00752c90")
+    extern const char CharacterFixupNamePc00752c90[12] = "snowtrooper";
+#pragma const_seg(".rdata$CharacterFixupNamePc00752c9c")
+    extern const char CharacterFixupNamePc00752c9c[8] = "SnowMob";
+#pragma const_seg(".rdata$CharacterFixupNamePc00752ca4")
+    extern const char CharacterFixupNamePc00752ca4[22] = "lukeskywalker_dagobah";
+#pragma const_seg(".rdata$CharacterFixupNamePc00752cbc")
+    extern const char CharacterFixupNamePc00752cbc[5] = "jawa";
+#pragma const_seg(".rdata$CharacterFixupNamePc00752cc4")
+    extern const char CharacterFixupNamePc00752cc4[11] = "robot_base";
+#pragma const_seg(".rdata$CharacterFixupNamePc00752cd0")
+    extern const char CharacterFixupNamePc00752cd0[7] = "magnet";
+#pragma const_seg(".rdata$CharacterFixupNamePc00752ce0")
+    extern const char CharacterFixupNamePc00752ce0[17] = "grabberr2control";
+#pragma const_seg(".rdata$CharacterFixupNamePc00752cf4")
+    extern const char CharacterFixupNamePc00752cf4[15] = "grabberControl";
+#pragma const_seg(".rdata$CharacterFixupNamePc00752d04")
+    extern const char CharacterFixupNamePc00752d04[11] = "tiefighter";
+#pragma const_seg(".rdata$CharacterFixupNamePc00752d10")
+    extern const char CharacterFixupNamePc00752d10[16] = "tiefighterdarth";
+#pragma const_seg(".rdata$CharacterFixupNamePc00752d2c")
+    extern const char CharacterFixupNamePc00752d2c[10] = "tiebomber";
+#pragma const_seg(".rdata$CharacterFixupNamePc00752d38")
+    extern const char CharacterFixupNamePc00752d38[6] = "ywing";
+#pragma const_seg(".rdata$CharacterFixupNamePc00752d40")
+    extern const char CharacterFixupNamePc00752d40[7] = "slave1";
+#pragma const_seg(".rdata$CharacterFixupNamePc00752d50")
+    extern const char CharacterFixupNamePc00752d50[14] = "troopercannon";
+#pragma const_seg(".rdata$CharacterFixupNamePc00752d60")
+    extern const char CharacterFixupNamePc00752d60[7] = "biggun";
+#pragma const_seg(".rdata$CharacterFixupNamePc00752d68")
+    extern const char CharacterFixupNamePc00752d68[21] = "heavyrepeatingcannon";
+#pragma const_seg(".rdata$CharacterFixupNamePc00752d80")
+    extern const char CharacterFixupNamePc00752d80[12] = "speederbike";
+#pragma const_seg(".rdata$CharacterFixupNamePc00752d8c")
+    extern const char CharacterFixupNamePc00752d8c[9] = "tauntaun";
+#pragma const_seg(".rdata$CharacterFixupNamePc00752d98")
+    extern const char CharacterFixupNamePc00752d98[13] = "speeder_land";
+#pragma const_seg(".rdata$CharacterFixupNamePc00752da8")
+    extern const char CharacterFixupNamePc00752da8[8] = "dewback";
+#pragma const_seg(".rdata$CharacterFixupNamePc00752db0")
+    extern const char CharacterFixupNamePc00752db0[11] = "bomarrmonk";
+#pragma const_seg(".rdata$CharacterFixupNamePc00752dbc")
+    extern const char CharacterFixupNamePc00752dbc[7] = "bantha";
+#pragma const_seg(".rdata$CharacterFixupNamePc00752dc4")
+    extern const char CharacterFixupNamePc00752dc4[13] = "basketcannon";
+#pragma const_seg(".rdata$CharacterFixupNamePc00752dd4")
+    extern const char CharacterFixupNamePc00752dd4[9] = "catapult";
+#pragma const_seg(".rdata$CharacterFixupNamePc00752de0")
+    extern const char CharacterFixupNamePc00752de0[7] = "wicket";
+#pragma const_seg(".rdata$CharacterFixupNamePc00752de8")
+    extern const char CharacterFixupNamePc00752de8[5] = "ewok";
+#pragma const_seg(".rdata$CharacterFixupNamePc00752dfc")
+    extern const char CharacterFixupNamePc00752dfc[9] = "dragbomb";
+#pragma const_seg(".rdata$CharacterFixupNamePc00752e08")
+    extern const char CharacterFixupNamePc00752e08[12] = "service_car";
+#pragma const_seg(".rdata$CharacterFixupNamePc00752e14")
+    extern const char CharacterFixupNamePc00752e14[5] = "atat";
+#pragma const_seg(".rdata$CharacterFixupNamePc00752e1c")
+    extern const char CharacterFixupNamePc00752e1c[15] = "trainingremote";
+#pragma const_seg(".rdata$CharacterFixupNamePc00752e2c")
+    extern const char CharacterFixupNamePc00752e2c[5] = "4lom";
+#pragma const_seg(".rdata$CharacterFixupNamePc00752e34")
+    extern const char CharacterFixupNamePc00752e34[9] = "bobafett";
+#pragma const_seg(".rdata$CharacterFixupNamePc00752e40")
+    extern const char CharacterFixupNamePc00752e40[17] = "superbattledroid";
+#pragma const_seg(".rdata$CharacterFixupNamePc00752e54")
+    extern const char CharacterFixupNamePc00752e54[10] = "destroyer";
+#pragma const_seg(".rdata$CharacterFixupNamePc00752e60")
+    extern const char CharacterFixupNamePc00752e60[7] = "barman";
+#pragma const_seg(".rdata$CharacterFixupNamePc00752e7c")
+    extern const char CharacterFixupNamePc00752e7c[7] = "wookie";
+#pragma const_seg(".rdata$CharacterFixupNamePc00752e84")
+    extern const char CharacterFixupNamePc00752e84[10] = "chewbacca";
+#pragma const_seg(".rdata$CharacterFixupNamePc00752e90")
+    extern const char CharacterFixupNamePc00752e90[6] = "watto";
+#pragma const_seg(".rdata$CharacterFixupNamePc00752e98")
+    extern const char CharacterFixupNamePc00752e98[10] = "geonosian";
+#pragma const_seg(".rdata$CharacterFixupNamePc00752ea4")
+    extern const char CharacterFixupNamePc00752ea4[17] = "cloudcitycitizen";
+#pragma const_seg(".rdata$CharacterFixupNamePc00752eb8")
+    extern const char CharacterFixupNamePc00752eb8[14] = "cantinaaliens";
+#pragma const_seg(".rdata$CharacterFixupNamePc00752ec8")
+    extern const char CharacterFixupNamePc00752ec8[17] = "moseisleycitizen";
+#pragma const_seg(".rdata$CharacterFixupNamePc00752edc")
+    extern const char CharacterFixupNamePc00752edc[11] = "yoda_ghost";
+#pragma const_seg(".rdata$CharacterFixupNamePc00752ee8")
+    extern const char CharacterFixupNamePc00752ee8[5] = "yoda";
+#pragma const_seg(".rdata$CharacterFixupNamePc00752ef0")
+    extern const char CharacterFixupNamePc00752ef0[8] = "womprat";
+#pragma const_seg(".rdata$CharacterFixupNamePc00752ef8")
+    extern const char CharacterFixupNamePc00752ef8[4] = "bat";
+#pragma const_seg(".rdata$CharacterFixupNamePc00752efc")
+    extern const char CharacterFixupNamePc00752efc[6] = "snake";
+#pragma const_seg(".rdata$CharacterFixupNamePc00752f04")
+    extern const char CharacterFixupNamePc00752f04[8] = "pkdroid";
+#pragma const_seg(".rdata$CharacterFixupNamePc00752f0c")
+    extern const char CharacterFixupNamePc00752f0c[11] = "probedroid";
+#pragma const_seg(".rdata$CharacterFixupNamePc00752f18")
+    extern const char CharacterFixupNamePc00752f18[11] = "mousedroid";
+#pragma const_seg(".rdata$CharacterFixupNamePc00752f24")
+    extern const char CharacterFixupNamePc00752f24[11] = "naffdroid4";
+#pragma const_seg(".rdata$CharacterFixupNamePc00752f30")
+    extern const char CharacterFixupNamePc00752f30[11] = "naffdroid3";
+#pragma const_seg(".rdata$CharacterFixupNamePc00752f3c")
+    extern const char CharacterFixupNamePc00752f3c[11] = "naffdroid2";
+#pragma const_seg(".rdata$CharacterFixupNamePc00752f48")
+    extern const char CharacterFixupNamePc00752f48[11] = "naffdroid1";
+#pragma const_seg(".rdata$CharacterFixupNamePc00752f54")
+    extern const char CharacterFixupNamePc00752f54[15] = "Clone_Ep3_Sand";
+#pragma const_seg(".rdata$CharacterFixupNamePc00752f64")
+    extern const char CharacterFixupNamePc00752f64[10] = "Clone_Ep3";
+#pragma const_seg(".rdata$CharacterFixupNamePc00752f70")
+    extern const char CharacterFixupNamePc00752f70[21] = "battledroid_security";
+#pragma const_seg(".rdata$CharacterFixupNamePc00752f88")
+    extern const char CharacterFixupNamePc00752f88[22] = "battledroid_geonosian";
+#pragma const_seg(".rdata$CharacterFixupNamePc00752fa0")
+    extern const char CharacterFixupNamePc00752fa0[22] = "battledroid_commander";
+#pragma const_seg(".rdata$CharacterFixupNamePc00752fb8")
+    extern const char CharacterFixupNamePc00752fb8[15] = "gamorreanguard";
+#pragma const_seg(".rdata$CharacterFixupNamePc00752fc8")
+    extern const char CharacterFixupNamePc00752fc8[10] = "darthmaul";
+#pragma const_seg(".rdata$CharacterFixupNamePc00752fd4")
+    extern const char CharacterFixupNamePc00752fd4[10] = "bodyguard";
+#pragma const_seg(".rdata$CharacterFixupNamePc00752fe0")
+    extern const char CharacterFixupNamePc00752fe0[14] = "imperialguard";
+#pragma const_seg(".rdata$CharacterFixupNamePc00752ff0")
+    extern const char CharacterFixupNamePc00752ff0[15] = "captaintarpals";
+#pragma const_seg(".rdata$CharacterFixupNamePc00753000")
+    extern const char CharacterFixupNamePc00753000[16] = "captainantilles";
+#pragma const_seg(".rdata$CharacterFixupNamePc00753010")
+    extern const char CharacterFixupNamePc00753010[20] = "princessleia_Boushh";
+#pragma const_seg(".rdata$CharacterFixupNamePc00753024")
+    extern const char CharacterFixupNamePc00753024[19] = "princessleia_slave";
+#pragma const_seg(".rdata$CharacterFixupNamePc00753038")
+    extern const char CharacterFixupNamePc00753038[13] = "princessleia";
+#pragma const_seg(".rdata$CharacterFixupNamePc00753048")
+    extern const char CharacterFixupNamePc00753048[11] = "quigonjinn";
+#pragma const_seg(".rdata$CharacterFixupNamePc00753054")
+    extern const char CharacterFixupNamePc00753054[10] = "poisonivy";
+#pragma const_seg(".rdata$CharacterFixupNamePc00753060")
+    extern const char CharacterFixupNamePc00753060[9] = "umbrella";
+#pragma const_seg(".rdata$CharacterFixupNamePc0075306c")
+    extern const char CharacterFixupNamePc0075306c[8] = "penguin";
+#pragma const_seg(".rdata$CharacterFixupNamePc00753074")
+    extern const char CharacterFixupNamePc00753074[9] = "clayface";
+#pragma const_seg(".rdata$CharacterFixupNamePc00753080")
+    extern const char CharacterFixupNamePc00753080[11] = "gyrocopter";
+#pragma const_seg(".rdata$CharacterFixupNamePc0075308c")
+    extern const char CharacterFixupNamePc0075308c[7] = "dodgem";
+#pragma const_seg(".rdata$CharacterFixupNamePc00753094")
+    extern const char CharacterFixupNamePc00753094[6] = "mower";
+#pragma const_seg(".rdata$CharacterFixupNamePc0075309c")
+    extern const char CharacterFixupNamePc0075309c[11] = "jackinabox";
+#pragma const_seg(".rdata$CharacterFixupNamePc007530a8")
+    extern const char CharacterFixupNamePc007530a8[11] = "r_goon_gun";
+#pragma const_seg(".rdata$CharacterFixupNamePc007530b4")
+    extern const char CharacterFixupNamePc007530b4[7] = "r_goon";
+#pragma const_seg(".rdata$CharacterFixupNamePc007530bc")
+    extern const char CharacterFixupNamePc007530bc[11] = "j_goon_gun";
+#pragma const_seg(".rdata$CharacterFixupNamePc007530c8")
+    extern const char CharacterFixupNamePc007530c8[7] = "j_goon";
+#pragma const_seg(".rdata$CharacterFixupNamePc007530d0")
+    extern const char CharacterFixupNamePc007530d0[11] = "p_goon_gun";
+#pragma const_seg(".rdata$CharacterFixupNamePc007530dc")
+    extern const char CharacterFixupNamePc007530dc[7] = "p_goon";
+#pragma const_seg(".rdata$CharacterFixupNamePc007530e4")
+    extern const char CharacterFixupNamePc007530e4[12] = "PenguinBomb";
+#pragma const_seg(".rdata$CharacterFixupNamePc007530f0")
+    extern const char CharacterFixupNamePc007530f0[5] = "whip";
+#pragma const_seg(".rdata$CharacterFixupNamePc007530f8")
+    extern const char CharacterFixupNamePc007530f8[9] = "catwoman";
+#pragma const_seg(".rdata$CharacterFixupNamePc00753104")
+    extern const char CharacterFixupNamePc00753104[11] = "harlequinn";
+#pragma const_seg(".rdata$CharacterFixupNamePc00753110")
+    extern const char CharacterFixupNamePc00753110[8] = "twoface";
+#pragma const_seg(".rdata$CharacterFixupNamePc00753118")
+    extern const char CharacterFixupNamePc00753118[10] = "policecar";
+#pragma const_seg(".rdata$CharacterFixupNamePc00753124")
+    extern const char CharacterFixupNamePc00753124[9] = "radiocar";
+#pragma const_seg(".rdata$CharacterFixupNamePc00753130")
+    extern const char CharacterFixupNamePc00753130[11] = "glide_pack";
+#pragma const_seg(".rdata$CharacterFixupNamePc0075313c")
+    extern const char CharacterFixupNamePc0075313c[6] = "buggy";
+#pragma const_seg(".rdata$CharacterFixupNamePc00753154")
+    extern const char CharacterFixupNamePc00753154[8] = "weirdo2";
+#pragma const_seg(".rdata$CharacterFixupNamePc0075315c")
+    extern const char CharacterFixupNamePc0075315c[8] = "weirdo1";
+#pragma const_seg()
+#pragma data_seg(".data$CharacterFixupIdPc007f1810")
+    i16 CharacterFixupIdPc007f1810 = -1;
+#pragma data_seg(".data$CharacterFixupIdPc007f1820")
+    i16 CharacterFixupIdPc007f1820 = -1;
+#pragma data_seg(".data$CharacterFixupIdPc007f1824")
+    i16 CharacterFixupIdPc007f1824 = -1;
+#pragma data_seg(".data$CharacterFixupIdPc007f1828")
+    i16 CharacterFixupIdPc007f1828 = -1;
+#pragma data_seg(".data$CharacterFixupIdPc007f1844")
+    i16 CharacterFixupIdPc007f1844 = -1;
+#pragma data_seg(".data$CharacterFixupIdPc007f1854")
+    i16 CharacterFixupIdPc007f1854 = -1;
+#pragma data_seg(".data$CharacterFixupIdPc007f1858")
+    i16 CharacterFixupIdPc007f1858 = -1;
+#pragma data_seg(".data$CharacterFixupIdPc007f1864")
+    i16 CharacterFixupIdPc007f1864 = -1;
+#pragma data_seg(".data$CharacterFixupIdPc007f1870")
+    i16 CharacterFixupIdPc007f1870 = -1;
+#pragma data_seg(".data$CharacterFixupIdPc007f18a8")
+    i16 CharacterFixupIdPc007f18a8 = -1;
+#pragma data_seg(".data$CharacterFixupIdPc007f18c4")
+    i16 CharacterFixupIdPc007f18c4 = -1;
+#pragma data_seg(".data$CharacterFixupIdPc007f19ac")
+    i16 CharacterFixupIdPc007f19ac = -1;
+#pragma data_seg(".data$CharacterFixupIdPc007f19b0")
+    i16 CharacterFixupIdPc007f19b0 = -1;
+#pragma data_seg(".data$CharacterFixupIdPc007f19b4")
+    i16 CharacterFixupIdPc007f19b4 = -1;
+#pragma data_seg(".data$CharacterFixupIdPc007f19c4")
+    i16 CharacterFixupIdPc007f19c4 = -1;
+#pragma data_seg(".data$CharacterFixupIdPc007f19c8")
+    i16 CharacterFixupIdPc007f19c8 = -1;
+#pragma data_seg(".data$CharacterFixupIdPc007f19d0")
+    i16 CharacterFixupIdPc007f19d0 = -1;
+#pragma data_seg(".data$CharacterFixupIdPc007f19d4")
+    i16 CharacterFixupIdPc007f19d4 = -1;
+#pragma data_seg(".data$CharacterFixupIdPc007f19d8")
+    i16 CharacterFixupIdPc007f19d8 = -1;
+#pragma data_seg(".data$CharacterFixupIdPc007f1a0c")
+    i16 CharacterFixupIdPc007f1a0c = -1;
+#pragma data_seg(".data$CharacterFixupIdPc007f1a10")
+    i16 CharacterFixupIdPc007f1a10 = -1;
+#pragma data_seg(".data$CharacterFixupIdPc007f1a14")
+    i16 CharacterFixupIdPc007f1a14 = -1;
+#pragma data_seg(".data$CharacterFixupIdPc007f1a3c")
+    i16 CharacterFixupIdPc007f1a3c = -1;
+#pragma data_seg(".data$CharacterFixupIdPc007f1a40")
+    i16 CharacterFixupIdPc007f1a40 = -1;
+#pragma data_seg(".data$CharacterFixupIdPc007f1a78")
+    i16 CharacterFixupIdPc007f1a78 = -1;
+#pragma data_seg(".data$CharacterFixupIdPc007f1a7c")
+    i16 CharacterFixupIdPc007f1a7c = -1;
+#pragma data_seg(".data$CharacterFixupIdPc007f1a88")
+    i16 CharacterFixupIdPc007f1a88 = -1;
+#pragma data_seg(".data$CharacterFixupIdPc007f1ac0")
+    i16 CharacterFixupIdPc007f1ac0 = -1;
+#pragma data_seg(".data$CharacterFixupIdPc007f1b10")
+    i16 CharacterFixupIdPc007f1b10 = -1;
+#pragma data_seg(".data$CharacterFixupIdPc007f1b20")
+    i16 CharacterFixupIdPc007f1b20 = -1;
+#pragma data_seg(".data$CharacterFixupIdPc007f1b24")
+    i16 CharacterFixupIdPc007f1b24 = -1;
+#pragma data_seg(".data$CharacterFixupIdPc007f1b28")
+    i16 CharacterFixupIdPc007f1b28 = -1;
+#pragma data_seg(".data$CharacterFixupIdPc007f1b48")
+    i16 CharacterFixupIdPc007f1b48 = -1;
+#pragma data_seg(".data$CharacterFixupTablePc")
+    extern const char HubTableTextPc00752d20[9];
+    extern const char HubTableTextPc00752d48[6];
+    CHARFIXUP_PC CharacterFixupTablePc[219] = {
+        {const_cast<char *>(CharacterFixupNamePc0075315c), &PermanentWeirdo1IdPc},
+        {const_cast<char *>(CharacterFixupNamePc00753154), &PermanentWeirdo2IdPc},
+        {const_cast<char *>(SuitMetadataName0075314cPc), &ID_DEFAULTCHARACTER_A},
+        {const_cast<char *>(SuitMetadataName00753144Pc), &ID_DEFAULTCHARACTER_B},
+        {"henchman", &CharacterFixupIdPc007f1810},
+        {const_cast<char *>(CharacterFixupNamePc0075313c), reinterpret_cast<i16 *>(&GameObjectRotationBuggyId)},
+        {const_cast<char *>(CharacterFixupNamePc00753130), &AreaExtraTargetId7f17bcPc},
+        {const_cast<char *>(CharacterFixupNamePc00753124), reinterpret_cast<i16 *>(&GameObjectRotationRadioCarId)},
+        {const_cast<char *>(CharacterFixupNamePc00753118), reinterpret_cast<i16 *>(&GameObjectRotationPoliceCarId)},
+        {const_cast<char *>(CharacterFixupNamePc00753110), &CharacterFixupIdPc007f1820},
+        {const_cast<char *>(CharacterFixupNamePc00753104), &CharacterFixupIdPc007f1824},
+        {const_cast<char *>(CharacterFixupNamePc007530f8), &PunchRangeUnitIdPc},
+        {const_cast<char *>(CharacterFixupNamePc007530f0), &PunchRangeCompanionIdPc},
+        {const_cast<char *>(CharacterFixupNamePc007530e4), &CharacterFixupIdPc007f1828},
+        {const_cast<char *>(CharacterFixupNamePc007530dc), &id_PENGUIN_GOON},
+        {const_cast<char *>(CharacterFixupNamePc007530d0), &id_PENGUIN_GOON_GUN},
+        {const_cast<char *>(CharacterFixupNamePc007530c8), &id_JOKER_GOON},
+        {const_cast<char *>(CharacterFixupNamePc007530bc), &id_JOKER_GOON_GUN},
+        {const_cast<char *>(CharacterFixupNamePc007530b4), &id_RIDDLER_GOON},
+        {const_cast<char *>(CharacterFixupNamePc007530a8), &id_RIDDLER_GOON_GUN},
+        {const_cast<char *>(CharacterFixupNamePc0075309c), &CharacterFixupIdPc007f1844},
+        {const_cast<char *>(CharacterFixupNamePc00753094), reinterpret_cast<i16 *>(&GameObjectRotationMowerId)},
+        {const_cast<char *>(CharacterFixupNamePc0075308c), &id_DODGEM},
+        {const_cast<char *>(CharacterFixupNamePc00753080), &id_GYROCOPTER},
+        {const_cast<char *>(CharacterFixupNamePc00753074), &CharacterFixupIdPc007f1854},
+        {const_cast<char *>(CharacterFixupNamePc0075306c), &AreaExtraSourceId7f17c8Pc},
+        {const_cast<char *>(CharacterFixupNamePc00753060), &AreaExtraTargetId7f17ccPc},
+        {const_cast<char *>(CharacterFixupNamePc00753054), &CharacterFixupIdPc007f1858},
+        {const_cast<char *>(CharacterFixupNamePc00753048), &ID_DEFAULTCHARACTER_LSW_A},
+        {"obiwankenobi", &ID_DEFAULTCHARACTER_LSW_B},
+        {const_cast<char *>(CharacterFixupNamePc00753038), &CharacterFixupIdPc007f1864},
+        {const_cast<char *>(CharacterFixupNamePc00753024), &DefaultAnimationLeiaSlaveIdPc},
+        {const_cast<char *>(CharacterFixupNamePc00753010), &id_PRINCESSLEIABOUSHH},
+        {const_cast<char *>(CharacterFixupNamePc00753000), &CharacterFixupIdPc007f1870},
+        {const_cast<char *>(CharacterFixupNamePc00752ff0), &id_CAPTAINTARPALS},
+        {const_cast<char *>(CharacterFixupNamePc00752fe0), &id_IMPERIALGUARD},
+        {const_cast<char *>(CharacterFixupNamePc00752fd4), &id_BODYGUARD},
+        {const_cast<char *>(CharacterFixupNamePc00752fc8), &id_DARTHMAUL},
+        {const_cast<char *>(CharacterFixupNamePc00752fb8), &id_GAMORREANGUARD},
+        {"battledroid", &id_BATTLEDROID},
+        {const_cast<char *>(CharacterFixupNamePc00752fa0), &id_BATTLEDROIDCOMMANDER},
+        {const_cast<char *>(CharacterFixupNamePc00752f88), &id_BATTLEDROIDGEONOSIAN},
+        {const_cast<char *>(CharacterFixupNamePc00752f70), &id_BATTLEDROIDSECURITY},
+        {const_cast<char *>(CharacterFixupNamePc00752f64), &id_CLONEEP3},
+        {const_cast<char *>(CharacterFixupNamePc00752f54), &id_CLONEEP3SAND},
+        {const_cast<char *>(CharacterFixupNamePc00752f48), &id_NAFFDROID1},
+        {const_cast<char *>(CharacterFixupNamePc00752f3c), &id_NAFFDROID2},
+        {const_cast<char *>(CharacterFixupNamePc00752f30), &CharacterFixupIdPc007f18a8},
+        {const_cast<char *>(CharacterFixupNamePc00752f24), &id_NAFFDROID4},
+        {const_cast<char *>(CharacterFixupNamePc00752f18), &id_MOUSEDROID},
+        {const_cast<char *>(CharacterFixupNamePc00752f0c), &VehicleBoltId7f18b4Pc},
+        {const_cast<char *>(CharacterFixupNamePc00752f04), &id_PKDROID},
+        {const_cast<char *>(CharacterFixupNamePc00752efc), &id_SNAKE},
+        {const_cast<char *>(CharacterFixupNamePc00752ef8), &id_BAT},
+        {const_cast<char *>(CharacterFixupNamePc00752ef0), &CharacterFixupIdPc007f18c4},
+        {const_cast<char *>(CharacterFixupNamePc00752ee8), &id_YODA},
+        {const_cast<char *>(CharacterFixupNamePc00752edc), &id_YODAGHOST},
+        {const_cast<char *>(CharacterFixupNamePc00752ec8), &id_MOSEISLEYCITIZEN},
+        {const_cast<char *>(CharacterFixupNamePc00752eb8), &id_CANTINAALIEN},
+        {const_cast<char *>(CharacterFixupNamePc00752ea4), &id_CLOUDCITYCITIZEN},
+        {const_cast<char *>(CharacterFixupNamePc00752e98), &id_GEONOSIAN},
+        {const_cast<char *>(CharacterFixupNamePc00752e90), &id_WATTO},
+        {const_cast<char *>(CharacterFixupNamePc0075315c), &PermanentWeirdo1IdPc},
+        {const_cast<char *>(CharacterFixupNamePc00753154), &PermanentWeirdo2IdPc},
+        {const_cast<char *>(CharacterFixupNamePc00752e84), &id_CHEWBACCA},
+        {const_cast<char *>(CharacterFixupNamePc00752e7c), &id_WOOKIEE},
+        {"atst", reinterpret_cast<i16 *>(&GameObjectRotationAtstId)},
+        {"atst_lowres", &id_ATST_LOWRES},
+        {const_cast<char *>(CharacterFixupNamePc00752e60), &id_BARMAN},
+        {const_cast<char *>(CharacterFixupNamePc00752e54), &id_DROIDEKA},
+        {const_cast<char *>(CharacterFixupNamePc00752e40), &id_SUPERBATTLEDROID},
+        {const_cast<char *>(CharacterFixupNamePc00752e34), &id_BOBAFETT},
+        {const_cast<char *>(CharacterFixupNamePc00752e2c), &VehicleBoltId7f190cPc},
+        {const_cast<char *>(CharacterFixupNamePc00752e1c), &VehicleBoltId7f1910Pc},
+        {const_cast<char *>(CharacterFixupNamePc00752e14), &id_ATAT},
+        {const_cast<char *>(CharacterFixupNamePc00752e08), &id_SERVICECAR},
+        {const_cast<char *>(CharacterFixupNamePc00752dfc), reinterpret_cast<i16 *>(&id_DRAGBOMB)},
+        {"clonewalker", &id_CLONEWALKER},
+        {const_cast<char *>(CharacterFixupNamePc00752de8), &VehicleBoltId7f1924Pc},
+        {const_cast<char *>(CharacterFixupNamePc00752de0), &VehicleBoltId7f1928Pc},
+        {const_cast<char *>(CharacterFixupNamePc00752dd4), &id_CATAPULT},
+        {const_cast<char *>(CharacterFixupNamePc00752dc4), &id_BASKETCANNON},
+        {const_cast<char *>(CharacterFixupNamePc00752dbc), &id_BANTHA},
+        {const_cast<char *>(CharacterFixupNamePc00752db0), &id_BOMARRMONK},
+        {const_cast<char *>(CharacterFixupNamePc00752da8), &id_DEWBACK},
+        {const_cast<char *>(CharacterFixupNamePc00752d98), &id_LANDSPEEDER},
+        {const_cast<char *>(CharacterFixupNamePc00752d8c), &id_TAUNTAUN},
+        {const_cast<char *>(CharacterFixupNamePc00752d80), &id_SPEEDERBIKE},
+        {const_cast<char *>(CharacterFixupNamePc00752d68), &id_HEAVYREPEATINGCANNON},
+        {const_cast<char *>(CharacterFixupNamePc00752d60), &id_BIGGUN},
+        {const_cast<char *>(CharacterFixupNamePc00752d50), &id_TROOPERCANNON},
+        {const_cast<char *>(HubTableTextPc00752d48), &DefaultAnimationJabbaIdPc},
+        {const_cast<char *>(CharacterFixupNamePc00752d40), &VehicleBoltId7f195cPc},
+        {const_cast<char *>(CharacterFixupNamePc00752d38), &id_YWING},
+        {const_cast<char *>(CharacterFixupNamePc00752d2c), &id_TIEBOMBER},
+        {const_cast<char *>(HubTableTextPc00752d20), &id_GRIEVOUS},
+        {const_cast<char *>(CharacterFixupNamePc00752d10), &VehicleBoltId7f196cPc},
+        {const_cast<char *>(CharacterFixupNamePc00752d04), &id_TIEFIGHTER},
+        {const_cast<char *>(CharacterFixupNamePc00752cf4), &id_GRABCONTROL},
+        {const_cast<char *>(CharacterFixupNamePc00752ce0), &id_GRABR2CONTROL},
+        {"grabber", &GrabMachineIdPc},
+        {const_cast<char *>(CharacterFixupNamePc00752cd0), &GrabMagnetIdPc},
+        {const_cast<char *>(CharacterFixupNamePc00752cc4), &RobotBaseIdPc},
+        {const_cast<char *>(CharacterFixupNamePc00752cbc), &id_JAWA},
+        {const_cast<char *>(CharacterFixupNamePc00752ca4), &id_LUKESKYWALKERDAGOBAH},
+        {const_cast<char *>(CharacterFixupNamePc00752c9c), &id_SNOWMOB},
+        {const_cast<char *>(CharacterFixupNamePc00752c90), &id_SNOWTROOPER},
+        {const_cast<char *>(CharacterFixupNamePc00752c7c), &id_DEATHSTARTROOPER},
+        {const_cast<char *>(CharacterFixupNamePc00752c70), &FreePlayId007f199cPc},
+        {const_cast<char *>(CharacterFixupNamePc00752c64), &id_THEEMPEROR},
+        {const_cast<char *>(CharacterFixupNamePc00752c50), &VehicleBoltId7f19a4Pc},
+        {const_cast<char *>(CharacterFixupNamePc00752c40), &VehicleBoltId7f19a8Pc},
+        {const_cast<char *>(CharacterFixupNamePc00752c38), &CharacterFixupIdPc007f19ac},
+        {const_cast<char *>(AreaFixUpName_Gungan), &CharacterFixupIdPc007f19b0},
+        {const_cast<char *>(CharacterFixupNamePc00752c24), &CharacterFixupIdPc007f19b4},
+        {const_cast<char *>(CharacterFixupNamePc00752c1c), &id_STAP},
+        {const_cast<char *>(CharacterFixupNamePc00752c14), &id_STAP2},
+        {const_cast<char *>(CharacterFixupNamePc00752c00), &id_JUMBOHOMINGDROID},
+        {const_cast<char *>(CharacterFixupNamePc00752bf4), &CharacterFixupIdPc007f19c4},
+        {const_cast<char *>(CharacterFixupNamePc00752be8), &CharacterFixupIdPc007f19c8},
+        {const_cast<char *>(CharacterFixupNamePc00752bd8), &id_ANAKINPADAWAN},
+        {const_cast<char *>(CharacterFixupNamePc00752bc0), &CharacterFixupIdPc007f19d0},
+        {const_cast<char *>(CharacterFixupNamePc00752bb8), &CharacterFixupIdPc007f19d4},
+        {const_cast<char *>(CharacterFixupNamePc00752bac), &CharacterFixupIdPc007f19d8},
+        {const_cast<char *>(CharacterFixupNamePc00752ba8), &id_BOB},
+        {const_cast<char *>(CharacterFixupNamePc00752b9c), &id_JANGOFETT},
+        {const_cast<char *>(CharacterFixupNamePc00752b80), &id_JEDISTARFIGHTERYELLOWEP3},
+        {const_cast<char *>(CharacterFixupNamePc00752b68), &VehicleBoltId7f19e8Pc},
+        {const_cast<char *>(CharacterFixupNamePc00752b60), &id_RANCOR},
+        {const_cast<char *>(CharacterFixupNamePc00752b4c), &id_OBIWANKENOBIEP3},
+        {const_cast<char *>(CharacterFixupNamePc00752b40), &id_ANAKINJEDI},
+        {"republicgunship", &id_REPUBLICGUNSHIP},
+        {const_cast<char *>(CharacterFixupNamePc00752b28), &id_REPUBLICGUNSHIP_GREEN},
+        {const_cast<char *>(CharacterFixupNamePc00752b14), &id_NEW_REPUBLIC_GUNSHIP},
+        {const_cast<char *>(CharacterFixupNamePc00752af8), &id_NEW_REPUBLIC_GUNSHIP_GREEN},
+        {const_cast<char *>(CharacterFixupNamePc00752aec), &id_DOOKU},
+        {const_cast<char *>(CharacterFixupNamePc00752ae0), &CharacterFixupIdPc007f1a0c},
+        {const_cast<char *>(CharacterFixupNamePc00752ad4), &CharacterFixupIdPc007f1a10},
+        {const_cast<char *>(CharacterFixupNamePc00752acc), &CharacterFixupIdPc007f1a14},
+        {const_cast<char *>(CharacterFixupNamePc00752ac4), &id_R2Q5},
+        {const_cast<char *>(CharacterFixupNamePc00752abc), &id_XWING},
+        {const_cast<char *>(CharacterFixupNamePc00752ab0), &id_ROYALGUARD},
+        {const_cast<char *>(CharacterFixupNamePc00752aa4), &VehicleBoltId7f1a24Pc},
+        {const_cast<char *>(CharacterFixupNamePc00752a94), &VehicleBoltId7f1a28Pc},
+        {const_cast<char *>(CharacterFixupNamePc00752a84), &VehicleBoltId7f1a2cPc},
+        {const_cast<char *>(CharacterFixupNamePc00752a78), &id_UGNAUGHT},
+        {const_cast<char *>(CharacterFixupNamePc00752a6c), &id_SENTRYDROID},
+        {const_cast<char *>(CharacterFixupNamePc00752a5c), &VehicleBoltId7f1a38Pc},
+        {"stormtrooper", &CharacterFixupIdPc007f1a3c},
+        {const_cast<char *>(CharacterFixupNamePc00752a4c), &CharacterFixupIdPc007f1a40},
+        {const_cast<char *>(CharacterFixupNamePc00752a34), &FreePlayId007f1a44Pc},
+        {const_cast<char *>(CharacterFixupNamePc00752a24), &FreePlayId007f1a48Pc},
+        {const_cast<char *>(CharacterFixupNamePc00752a14), &FreePlayId007f1a4cPc},
+        {const_cast<char *>(CharacterFixupNamePc00752a08), reinterpret_cast<i16 *>(&id_GONKDROID)},
+        {const_cast<char *>(CharacterFixupNamePc00752a00), &id_C3PO},
+        {const_cast<char *>(CharacterFixupNamePc007529f8), &id_TC14},
+        {const_cast<char *>(CharacterFixupNamePc007529f0), &id_MOONCAR},
+        {const_cast<char *>(CharacterFixupNamePc007529e8), &id_MAPCAR},
+        {const_cast<char *>(CharacterFixupNamePc007529dc), &id_WOOKIEFLYER},
+        {const_cast<char *>(CharacterFixupNamePc007529d0), &id_IMPERIALSPY},
+        {const_cast<char *>(CharacterFixupNamePc007529c8), &id_GREEDO},
+        {const_cast<char *>(CharacterFixupNamePc007529c0), &id_BOSSK},
+        {const_cast<char *>(CharacterFixupNamePc007529b4), &id_CANTINABAND},
+        {const_cast<char *>(CharacterFixupNamePc007529a8), &CharacterFixupIdPc007f1a78},
+        {const_cast<char *>(CharacterFixupNamePc007529a0), &CharacterFixupIdPc007f1a7c},
+        {const_cast<char *>(CharacterFixupNamePc00752998), &id_TRACTOR},
+        {const_cast<char *>(CharacterFixupNamePc0075298c), &id_FIRETRUCK},
+        {const_cast<char *>(CharacterFixupNamePc00752980), &CharacterFixupIdPc007f1a88},
+        {const_cast<char *>(CharacterFixupNamePc00752978), &DefaultAnimationLamaSuIdPc},
+        {const_cast<char *>(CharacterFixupNamePc00752970), &DefaultAnimationTaunWeIdPc},
+        {const_cast<char *>(CharacterFixupNamePc00752964), &id_BUZZDROID},
+        {const_cast<char *>(CharacterFixupNamePc00752958), &FreePlayId007f1a98Pc},
+        {"naboostarfighter", &VehicleBoltId7f1a9cPc},
+        {const_cast<char *>(CharacterFixupNamePc00752940), &VehicleBoltId7f1aa0Pc},
+        {const_cast<char *>(CharacterFixupNamePc00752930), &VehicleBoltId7f17d4Pc},
+        {const_cast<char *>(CharacterFixupNamePc00752920), &id_FLASHSPEEDER},
+        {const_cast<char *>(CharacterFixupNamePc00752914), &DefaultMotionSkeletonIdPc},
+        {const_cast<char *>(CharacterFixupNamePc00752904), &VehicleBoltId7f17d0Pc},
+        {const_cast<char *>(CharacterFixupNamePc007528fc), &VehicleBoltId7f1aacPc},
+        {const_cast<char *>(CharacterFixupNamePc007528f4), &FreePlayId007f1ab0Pc},
+        {const_cast<char *>(CharacterFixupNamePc007528ec), &FreePlayId007f1ab4Pc},
+        {const_cast<char *>(CharacterFixupNamePc007528d8), &VehicleSpecialShooterIdPc},
+        {const_cast<char *>(CharacterFixupNamePc007528cc), &FreePlayId007f1abcPc},
+        {const_cast<char *>(CharacterFixupNamePc007528c0), &CharacterFixupIdPc007f1ac0},
+        {const_cast<char *>(CharacterFixupNamePc007528b4), &ZipUpLineCharacterIdPc},
+        {const_cast<char *>(CharacterFixupNamePc007528a8), &DefaultMotionIndySnakeIdPc},
+        {const_cast<char *>(CharacterFixupNamePc0075289c), &id_MINIXWING},
+        {const_cast<char *>(CharacterFixupNamePc00752890), &id_MINIYWING},
+        {const_cast<char *>(CharacterFixupNamePc00752878), &VehicleBoltId7f1ad8Pc},
+        {const_cast<char *>(CharacterFixupNamePc00752868), &id_MINITIEBOMBER},
+        {const_cast<char *>(CharacterFixupNamePc0075285c), &id_MINIATAT},
+        {const_cast<char *>(CharacterFixupNamePc00752848), &id_MINISTARDESTROYER},
+        {const_cast<char *>(CharacterFixupNamePc00752834), &id_MINIROYALSTARSHIP},
+        {const_cast<char *>(CharacterFixupNamePc0075281c), &VehicleBoltId7f1aecPc},
+        {const_cast<char *>(CharacterFixupNamePc00752804), &VehicleBoltId7f1af0Pc},
+        {"mini_atst", &id_MINIATST},
+        {const_cast<char *>(CharacterFixupNamePc007527ec), &id_MINIATTE},
+        {const_cast<char *>(CharacterFixupNamePc007527e0), &id_MINISLAVE1},
+        {const_cast<char *>(CharacterFixupNamePc007527d0), &id_MINIDROIDEKA},
+        {const_cast<char *>(CharacterFixupNamePc007527bc), &VehicleBoltId7f1b00Pc},
+        {const_cast<char *>(CharacterFixupNamePc007527a8), &VehicleBoltId7f1b04Pc},
+        {const_cast<char *>(CharacterFixupNamePc00752790), &VehicleBoltId7f1b08Pc},
+        {const_cast<char *>(CharacterFixupNamePc0075277c), &VehicleBoltId7f1b0cPc},
+        {const_cast<char *>(CharacterFixupNamePc00752768), &CharacterFixupIdPc007f1b10},
+        {const_cast<char *>(CharacterFixupNamePc0075275c), &id_ANAKINSPOD},
+        {const_cast<char *>(CharacterFixupNamePc00752748), &id_ANAKINSPODGREEN},
+        {const_cast<char *>(CharacterFixupNamePc0075273c), &id_SEBULBASPOD},
+        {const_cast<char *>(CharacterFixupNamePc00752730), &CharacterFixupIdPc007f1b20},
+        {const_cast<char *>(CharacterFixupNamePc00752720), &CharacterFixupIdPc007f1b24},
+        {const_cast<char *>(CharacterFixupNamePc00752710), &CharacterFixupIdPc007f1b28},
+        {const_cast<char *>(CharacterFixupNamePc00752700), &id_ANAKINSNEWPOD},
+        {const_cast<char *>(CharacterFixupNamePc007526ec), &id_ANAKINSNEWPODGREEN},
+        {const_cast<char *>(CharacterFixupNamePc007526dc), &VehicleBoltId7f1b34Pc},
+        {const_cast<char *>(CharacterFixupNamePc007526c4), &VehicleBoltId7f1b38Pc},
+        {const_cast<char *>(CharacterFixupNamePc007526b8), &id_ZAMSSPEEDER},
+        {const_cast<char *>(CharacterFixupNamePc007526a8), &FreePlayId007f1b40Pc},
+        {const_cast<char *>(CharacterFixupNamePc00752698), &FreePlayId007f1b44Pc},
+        {const_cast<char *>(CharacterFixupNamePc00752684), &CharacterFixupIdPc007f1b48},
+        {NULL, NULL},
+    };
+#pragma data_seg()
+}

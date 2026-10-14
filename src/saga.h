@@ -19969,10 +19969,17 @@ extern "C" {
 }
 #endif
 
-typedef struct charfixup_pc_s CHARFIXUP_PC;
+typedef struct charfixup_pc_s {
+    char *name;
+    i16 *id;
+} CHARFIXUP_PC;
+STATIC_ASSERT(sizeof(CHARFIXUP_PC) == 8);
+STATIC_ASSERT(offsetof(CHARFIXUP_PC, name) == 0);
+STATIC_ASSERT(offsetof(CHARFIXUP_PC, id) == 4);
 #ifdef __cplusplus
 extern "C" {
 #endif
+    extern CHARFIXUP_PC CharacterFixupTablePc[219];
     void __cdecl FixUpCharacters(CHARFIXUP_PC *);
     void __cdecl ExtraCharacterFixUpAfterConfig(void);
 #ifdef __cplusplus

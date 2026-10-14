@@ -8262,16 +8262,216 @@ address    , symbol                                                         , si
 0x752630,??_C@_0BM@MJLOPMJG@ride_bantha_old_blasterchar?$AA@,,const char[28]
 0x75264c,??_C@_0BJ@HNBHKKBE@ride_bantha_new_jedichar?$AA@,,const char[25]
 0x752668,??_C@_0BM@LHHGDNP@ride_bantha_new_blasterchar?$AA@,,const char[28]
+0x752684,_CharacterFixupNamePc00752684,17,const char[17]
+0x752698,_CharacterFixupNamePc00752698,16,const char[16]
+0x7526a8,_CharacterFixupNamePc007526a8,13,const char[13]
+0x7526b8,_CharacterFixupNamePc007526b8,12,const char[12]
+0x7526c4,_CharacterFixupNamePc007526c4,21,const char[21]
+0x7526dc,_CharacterFixupNamePc007526dc,15,const char[15]
+0x7526ec,_CharacterFixupNamePc007526ec,20,const char[20]
+0x752700,_CharacterFixupNamePc00752700,14,const char[14]
+0x752710,_CharacterFixupNamePc00752710,16,const char[16]
+0x752720,_CharacterFixupNamePc00752720,15,const char[15]
+0x752730,_CharacterFixupNamePc00752730,12,const char[12]
+0x75273c,_CharacterFixupNamePc0075273c,12,const char[12]
+0x752748,_CharacterFixupNamePc00752748,17,const char[17]
+0x75275c,_CharacterFixupNamePc0075275c,11,const char[11]
+0x752768,_CharacterFixupNamePc00752768,18,const char[18]
+0x75277c,_CharacterFixupNamePc0075277c,18,const char[18]
+0x752790,_CharacterFixupNamePc00752790,22,const char[22]
+0x7527a8,_CharacterFixupNamePc007527a8,18,const char[18]
+0x7527bc,_CharacterFixupNamePc007527bc,17,const char[17]
+0x7527d0,_CharacterFixupNamePc007527d0,14,const char[14]
+0x7527e0,_CharacterFixupNamePc007527e0,12,const char[12]
+0x7527ec,_CharacterFixupNamePc007527ec,10,const char[10]
 0x007527f8,??_C@_09LDNACNOG@mini_atst?$AA@,,const char[10]
+0x752804,_CharacterFixupNamePc00752804,23,const char[23]
+0x75281c,_CharacterFixupNamePc0075281c,22,const char[22]
+0x752834,_CharacterFixupNamePc00752834,20,const char[20]
+0x752848,_CharacterFixupNamePc00752848,20,const char[20]
+0x75285c,_CharacterFixupNamePc0075285c,10,const char[10]
+0x752868,_CharacterFixupNamePc00752868,16,const char[16]
+0x752878,_CharacterFixupNamePc00752878,21,const char[21]
+0x752890,_CharacterFixupNamePc00752890,12,const char[12]
+0x75289c,_CharacterFixupNamePc0075289c,12,const char[12]
+0x7528a8,_CharacterFixupNamePc007528a8,10,const char[10]
+0x7528b4,_CharacterFixupNamePc007528b4,11,const char[11]
+0x7528c0,_CharacterFixupNamePc007528c0,10,const char[10]
+0x7528cc,_CharacterFixupNamePc007528cc,9,const char[9]
+0x7528d8,_CharacterFixupNamePc007528d8,17,const char[17]
+0x7528ec,_CharacterFixupNamePc007528ec,7,const char[7]
+0x7528f4,_CharacterFixupNamePc007528f4,6,const char[6]
+0x7528fc,_CharacterFixupNamePc007528fc,7,const char[7]
+0x752904,_CharacterFixupNamePc00752904,13,const char[13]
+0x752914,_CharacterFixupNamePc00752914,9,const char[9]
+0x752920,_CharacterFixupNamePc00752920,13,const char[13]
+0x752930,_CharacterFixupNamePc00752930,13,const char[13]
+0x752940,_CharacterFixupNamePc00752940,22,const char[22]
+0x752958,_CharacterFixupNamePc00752958,9,const char[9]
+0x752964,_CharacterFixupNamePc00752964,10,const char[10]
+0x752970,_CharacterFixupNamePc00752970,7,const char[7]
+0x752978,_CharacterFixupNamePc00752978,7,const char[7]
+0x752980,_CharacterFixupNamePc00752980,9,const char[9]
+0x75298c,_CharacterFixupNamePc0075298c,10,const char[10]
+0x752998,_CharacterFixupNamePc00752998,8,const char[8]
+0x7529a0,_CharacterFixupNamePc007529a0,8,const char[8]
+0x7529a8,_CharacterFixupNamePc007529a8,9,const char[9]
+0x7529b4,_CharacterFixupNamePc007529b4,12,const char[12]
+0x7529c0,_CharacterFixupNamePc007529c0,6,const char[6]
+0x7529c8,_CharacterFixupNamePc007529c8,7,const char[7]
+0x7529d0,_CharacterFixupNamePc007529d0,12,const char[12]
+0x7529dc,_CharacterFixupNamePc007529dc,12,const char[12]
+0x7529e8,_CharacterFixupNamePc007529e8,7,const char[7]
+0x7529f0,_CharacterFixupNamePc007529f0,8,const char[8]
+0x7529f8,_CharacterFixupNamePc007529f8,5,const char[5]
+0x752a00,_CharacterFixupNamePc00752a00,5,const char[5]
+0x752a08,_CharacterFixupNamePc00752a08,10,const char[10]
+0x752a14,_CharacterFixupNamePc00752a14,16,const char[16]
+0x752a24,_CharacterFixupNamePc00752a24,16,const char[16]
+0x752a34,_CharacterFixupNamePc00752a34,21,const char[21]
+0x752a4c,_CharacterFixupNamePc00752a4c,13,const char[13]
+0x752a5c,_CharacterFixupNamePc00752a5c,14,const char[14]
+0x752a6c,_CharacterFixupNamePc00752a6c,12,const char[12]
+0x752a78,_CharacterFixupNamePc00752a78,9,const char[9]
+0x752a84,_CharacterFixupNamePc00752a84,16,const char[16]
+0x752a94,_CharacterFixupNamePc00752a94,15,const char[15]
+0x752aa4,_CharacterFixupNamePc00752aa4,12,const char[12]
+0x752ab0,_CharacterFixupNamePc00752ab0,11,const char[11]
+0x752abc,_CharacterFixupNamePc00752abc,6,const char[6]
+0x752ac4,_CharacterFixupNamePc00752ac4,5,const char[5]
+0x752acc,_CharacterFixupNamePc00752acc,5,const char[5]
+0x752ad4,_CharacterFixupNamePc00752ad4,9,const char[9]
+0x752ae0,_CharacterFixupNamePc00752ae0,10,const char[10]
+0x752aec,_CharacterFixupNamePc00752aec,11,const char[11]
+0x752af8,_CharacterFixupNamePc00752af8,25,const char[25]
+0x752b14,_CharacterFixupNamePc00752b14,19,const char[19]
+0x752b28,_CharacterFixupNamePc00752b28,22,const char[22]
+0x752b40,_CharacterFixupNamePc00752b40,12,const char[12]
+0x752b4c,_CharacterFixupNamePc00752b4c,17,const char[17]
+0x752b60,_CharacterFixupNamePc00752b60,7,const char[7]
+0x752b68,_CharacterFixupNamePc00752b68,24,const char[24]
+0x752b80,_CharacterFixupNamePc00752b80,27,const char[27]
+0x752b9c,_CharacterFixupNamePc00752b9c,10,const char[10]
+0x752ba8,_CharacterFixupNamePc00752ba8,4,const char[4]
+0x752bac,_CharacterFixupNamePc00752bac,9,const char[9]
+0x752bb8,_CharacterFixupNamePc00752bb8,8,const char[8]
+0x752bc0,_CharacterFixupNamePc00752bc0,24,const char[24]
+0x752bd8,_CharacterFixupNamePc00752bd8,15,const char[15]
+0x752be8,_CharacterFixupNamePc00752be8,12,const char[12]
+0x752bf4,_CharacterFixupNamePc00752bf4,12,const char[12]
+0x752c00,_CharacterFixupNamePc00752c00,17,const char[17]
+0x752c14,_CharacterFixupNamePc00752c14,6,const char[6]
+0x752c1c,_CharacterFixupNamePc00752c1c,5,const char[5]
+0x752c24,_CharacterFixupNamePc00752c24,11,const char[11]
 0x00752c30 , _AreaFixUpName_Gungan                                          , 8     , char[8]
+0x752c38,_CharacterFixupNamePc00752c38,6,const char[6]
+0x752c40,_CharacterFixupNamePc00752c40,16,const char[16]
+0x752c50,_CharacterFixupNamePc00752c50,17,const char[17]
+0x752c64,_CharacterFixupNamePc00752c64,11,const char[11]
+0x752c70,_CharacterFixupNamePc00752c70,11,const char[11]
+0x752c7c,_CharacterFixupNamePc00752c7c,17,const char[17]
+0x752c90,_CharacterFixupNamePc00752c90,12,const char[12]
+0x752c9c,_CharacterFixupNamePc00752c9c,8,const char[8]
+0x752ca4,_CharacterFixupNamePc00752ca4,22,const char[22]
+0x752cbc,_CharacterFixupNamePc00752cbc,5,const char[5]
+0x752cc4,_CharacterFixupNamePc00752cc4,11,const char[11]
+0x752cd0,_CharacterFixupNamePc00752cd0,7,const char[7]
 0x752cd8,??_C@_07NJGEJNND@grabber?$AA@,8,
+0x752ce0,_CharacterFixupNamePc00752ce0,17,const char[17]
+0x752cf4,_CharacterFixupNamePc00752cf4,15,const char[15]
+0x752d04,_CharacterFixupNamePc00752d04,11,const char[11]
+0x752d10,_CharacterFixupNamePc00752d10,16,const char[16]
 0x752d20,_HubTableTextPc00752d20,,const char[9]
+0x752d2c,_CharacterFixupNamePc00752d2c,10,const char[10]
+0x752d38,_CharacterFixupNamePc00752d38,6,const char[6]
+0x752d40,_CharacterFixupNamePc00752d40,7,const char[7]
 0x752d48,_HubTableTextPc00752d48,,const char[6]
+0x752d50,_CharacterFixupNamePc00752d50,14,const char[14]
+0x752d60,_CharacterFixupNamePc00752d60,7,const char[7]
+0x752d68,_CharacterFixupNamePc00752d68,21,const char[21]
+0x752d80,_CharacterFixupNamePc00752d80,12,const char[12]
+0x752d8c,_CharacterFixupNamePc00752d8c,9,const char[9]
+0x752d98,_CharacterFixupNamePc00752d98,13,const char[13]
+0x752da8,_CharacterFixupNamePc00752da8,8,const char[8]
+0x752db0,_CharacterFixupNamePc00752db0,11,const char[11]
+0x752dbc,_CharacterFixupNamePc00752dbc,7,const char[7]
+0x752dc4,_CharacterFixupNamePc00752dc4,13,const char[13]
+0x752dd4,_CharacterFixupNamePc00752dd4,9,const char[9]
+0x752de0,_CharacterFixupNamePc00752de0,7,const char[7]
+0x752de8,_CharacterFixupNamePc00752de8,5,const char[5]
 0x00752df0,??_C@_0M@KEPJOCCI@clonewalker?$AA@,,const char[12]
+0x752dfc,_CharacterFixupNamePc00752dfc,9,const char[9]
+0x752e08,_CharacterFixupNamePc00752e08,12,const char[12]
+0x752e14,_CharacterFixupNamePc00752e14,5,const char[5]
+0x752e1c,_CharacterFixupNamePc00752e1c,15,const char[15]
+0x752e2c,_CharacterFixupNamePc00752e2c,5,const char[5]
+0x752e34,_CharacterFixupNamePc00752e34,9,const char[9]
+0x752e40,_CharacterFixupNamePc00752e40,17,const char[17]
+0x752e54,_CharacterFixupNamePc00752e54,10,const char[10]
+0x752e60,_CharacterFixupNamePc00752e60,7,const char[7]
 0x00752e68,??_C@_0M@DAGPJJIG@atst_lowres?$AA@,,const char[12]
 0x00752e74,??_C@_04GEDGALCP@atst?$AA@,,const char[5]
+0x752e7c,_CharacterFixupNamePc00752e7c,7,const char[7]
+0x752e84,_CharacterFixupNamePc00752e84,10,const char[10]
+0x752e90,_CharacterFixupNamePc00752e90,6,const char[6]
+0x752e98,_CharacterFixupNamePc00752e98,10,const char[10]
+0x752ea4,_CharacterFixupNamePc00752ea4,17,const char[17]
+0x752eb8,_CharacterFixupNamePc00752eb8,14,const char[14]
+0x752ec8,_CharacterFixupNamePc00752ec8,17,const char[17]
+0x752edc,_CharacterFixupNamePc00752edc,11,const char[11]
+0x752ee8,_CharacterFixupNamePc00752ee8,5,const char[5]
+0x752ef0,_CharacterFixupNamePc00752ef0,8,const char[8]
+0x752ef8,_CharacterFixupNamePc00752ef8,4,const char[4]
+0x752efc,_CharacterFixupNamePc00752efc,6,const char[6]
+0x752f04,_CharacterFixupNamePc00752f04,8,const char[8]
+0x752f0c,_CharacterFixupNamePc00752f0c,11,const char[11]
+0x752f18,_CharacterFixupNamePc00752f18,11,const char[11]
+0x752f24,_CharacterFixupNamePc00752f24,11,const char[11]
+0x752f30,_CharacterFixupNamePc00752f30,11,const char[11]
+0x752f3c,_CharacterFixupNamePc00752f3c,11,const char[11]
+0x752f48,_CharacterFixupNamePc00752f48,11,const char[11]
+0x752f54,_CharacterFixupNamePc00752f54,15,const char[15]
+0x752f64,_CharacterFixupNamePc00752f64,10,const char[10]
+0x752f70,_CharacterFixupNamePc00752f70,21,const char[21]
+0x752f88,_CharacterFixupNamePc00752f88,22,const char[22]
+0x752fa0,_CharacterFixupNamePc00752fa0,22,const char[22]
+0x752fb8,_CharacterFixupNamePc00752fb8,15,const char[15]
+0x752fc8,_CharacterFixupNamePc00752fc8,10,const char[10]
+0x752fd4,_CharacterFixupNamePc00752fd4,10,const char[10]
+0x752fe0,_CharacterFixupNamePc00752fe0,14,const char[14]
+0x752ff0,_CharacterFixupNamePc00752ff0,15,const char[15]
+0x753000,_CharacterFixupNamePc00753000,16,const char[16]
+0x753010,_CharacterFixupNamePc00753010,20,const char[20]
+0x753024,_CharacterFixupNamePc00753024,19,const char[19]
+0x753038,_CharacterFixupNamePc00753038,13,const char[13]
+0x753048,_CharacterFixupNamePc00753048,11,const char[11]
+0x753054,_CharacterFixupNamePc00753054,10,const char[10]
+0x753060,_CharacterFixupNamePc00753060,9,const char[9]
+0x75306c,_CharacterFixupNamePc0075306c,8,const char[8]
+0x753074,_CharacterFixupNamePc00753074,9,const char[9]
+0x753080,_CharacterFixupNamePc00753080,11,const char[11]
+0x75308c,_CharacterFixupNamePc0075308c,7,const char[7]
+0x753094,_CharacterFixupNamePc00753094,6,const char[6]
+0x75309c,_CharacterFixupNamePc0075309c,11,const char[11]
+0x7530a8,_CharacterFixupNamePc007530a8,11,const char[11]
+0x7530b4,_CharacterFixupNamePc007530b4,7,const char[7]
+0x7530bc,_CharacterFixupNamePc007530bc,11,const char[11]
+0x7530c8,_CharacterFixupNamePc007530c8,7,const char[7]
+0x7530d0,_CharacterFixupNamePc007530d0,11,const char[11]
+0x7530dc,_CharacterFixupNamePc007530dc,7,const char[7]
+0x7530e4,_CharacterFixupNamePc007530e4,12,const char[12]
+0x7530f0,_CharacterFixupNamePc007530f0,5,const char[5]
+0x7530f8,_CharacterFixupNamePc007530f8,9,const char[9]
+0x753104,_CharacterFixupNamePc00753104,11,const char[11]
+0x753110,_CharacterFixupNamePc00753110,8,const char[8]
+0x753118,_CharacterFixupNamePc00753118,10,const char[10]
+0x753124,_CharacterFixupNamePc00753124,9,const char[9]
+0x753130,_CharacterFixupNamePc00753130,11,const char[11]
+0x75313c,_CharacterFixupNamePc0075313c,6,const char[6]
 0x753144,_SuitMetadataName00753144Pc,,char[6]
 0x75314c,_SuitMetadataName0075314cPc,,char[7]
+0x753154,_CharacterFixupNamePc00753154,8,const char[8]
+0x75315c,_CharacterFixupNamePc0075315c,8,const char[8]
 0x00753164 , _GameObjectState_InActive                                      , 9     , const char[9]
 0x00753170 , _TerrainSkinSampleCountPc                                     ,       ,
 0x753170,__real@4020000000000000,8,const f64
@@ -15367,22 +15567,31 @@ address    , symbol                                                         , si
 0x007f1808 , _id_DEFAULTCHARACTER                                           , 4     , i16[2]
 0x007f180c , _ID_DEFAULTCHARACTER_B                                         , 2     , i16
 0x7f180c,_id_ROBIN,2,i16
+0x7f1810,_CharacterFixupIdPc007f1810,2,i16
 0x007f1814 , _GameObjectRotationBuggyId                                     , 2     , u16
 0x007f1818 , _GameObjectRotationRadioCarId                                  , 2     , u16
 0x007f181c , _GameObjectRotationPoliceCarId                                 , 2     , u16
+0x7f1820,_CharacterFixupIdPc007f1820,2,i16
+0x7f1824,_CharacterFixupIdPc007f1824,2,i16
+0x7f1828,_CharacterFixupIdPc007f1828,2,i16
 0x7f182c,_id_PENGUIN_GOON,2,i16
 0x7f1830,_id_PENGUIN_GOON_GUN,2,i16
 0x7f1834,_id_JOKER_GOON,2,i16
 0x7f1838,_id_JOKER_GOON_GUN,2,i16
 0x7f183c,_id_RIDDLER_GOON,2,i16
 0x7f1840,_id_RIDDLER_GOON_GUN,2,i16
+0x7f1844,_CharacterFixupIdPc007f1844,2,i16
 0x007f1848 , _GameObjectRotationMowerId                                     , 2     , u16
 0x7f184c,_id_DODGEM,,i16
 0x007f1850 , _id_GYROCOPTER                                                 , 2     , i16
+0x7f1854,_CharacterFixupIdPc007f1854,2,i16
+0x7f1858,_CharacterFixupIdPc007f1858,2,i16
 0x007f185c , _ID_DEFAULTCHARACTER_LSW_A                                     , 2     , i16
 0x007f1860 , _ID_DEFAULTCHARACTER_LSW_B                                     , 2     , i16
+0x7f1864,_CharacterFixupIdPc007f1864,2,i16
 0x7f1868,_DefaultAnimationLeiaSlaveIdPc,,i16
 0x7f186c,_id_PRINCESSLEIABOUSHH,,i16
+0x7f1870,_CharacterFixupIdPc007f1870,2,i16
 0x7f1874,_id_CAPTAINTARPALS,,i16
 0x007f1878 , _id_IMPERIALGUARD                                              , 2     , i16
 0x007f187c , _id_BODYGUARD                                                  , 2     , i16
@@ -15396,12 +15605,14 @@ address    , symbol                                                         , si
 0x007f189c , _id_CLONEEP3SAND                                               , 2, i16
 0x7f18a0,_id_NAFFDROID1,,i16
 0x7f18a4,_id_NAFFDROID2,,i16
+0x7f18a8,_CharacterFixupIdPc007f18a8,2,i16
 0x7f18ac,_id_NAFFDROID4,,i16
 0x7f18b0,_id_MOUSEDROID,,i16
 0x7f18b4,_VehicleBoltId7f18b4Pc,,i16
 0x007f18b8 , _id_PKDROID                                                    , 2     , i16
 0x7f18bc,_id_SNAKE,,i16
 0x7f18c0,_id_BAT,,i16
+0x7f18c4,_CharacterFixupIdPc007f18c4,2,i16
 0x7f18c8,_id_YODA,,i16
 0x7f18cc,_id_YODAGHOST,,i16
 0x7f18d0,_id_MOSEISLEYCITIZEN,,i16
@@ -15459,10 +15670,18 @@ address    , symbol                                                         , si
 0x007f19a0 , _id_THEEMPEROR                                                 , 2     , i16
 0x7f19a4,_VehicleBoltId7f19a4Pc,,i16
 0x7f19a8,_VehicleBoltId7f19a8Pc,,i16
+0x7f19ac,_CharacterFixupIdPc007f19ac,2,i16
+0x7f19b0,_CharacterFixupIdPc007f19b0,2,i16
+0x7f19b4,_CharacterFixupIdPc007f19b4,2,i16
 0x007f19b8 , _id_STAP                                                       , 2     , i16
 0x007f19bc , _id_STAP2                                                      , 2     , i16
 0x7f19c0,_id_JUMBOHOMINGDROID,,i16
+0x7f19c4,_CharacterFixupIdPc007f19c4,2,i16
+0x7f19c8,_CharacterFixupIdPc007f19c8,2,i16
 0x007f19cc , _id_ANAKINPADAWAN                                              , 2     , i16
+0x7f19d0,_CharacterFixupIdPc007f19d0,2,i16
+0x7f19d4,_CharacterFixupIdPc007f19d4,2,i16
+0x7f19d8,_CharacterFixupIdPc007f19d8,2,i16
 0x007f19dc , _id_BOB                                                        , 2     , i16
 0x7f19e0,_id_JANGOFETT,,i16
 0x007f19e4 , _id_JEDISTARFIGHTERYELLOWEP3                                   , 2     , i16
@@ -15475,6 +15694,9 @@ address    , symbol                                                         , si
 0x007f1a00 , _id_NEW_REPUBLIC_GUNSHIP                                       , 2     , i16
 0x007f1a04 , _id_NEW_REPUBLIC_GUNSHIP_GREEN                                 , 2     , i16
 0x007f1a08 , _id_DOOKU                                                      , 2     , i16
+0x7f1a0c,_CharacterFixupIdPc007f1a0c,2,i16
+0x7f1a10,_CharacterFixupIdPc007f1a10,2,i16
+0x7f1a14,_CharacterFixupIdPc007f1a14,2,i16
 0x7f1a18,_id_R2Q5,,i16
 0x007f1a1c , _id_XWING                                                      , 2     , i16
 0x7f1a20,_id_ROYALGUARD,,i16
@@ -15484,6 +15706,8 @@ address    , symbol                                                         , si
 0x007f1a30,_id_UGNAUGHT,,i16
 0x7f1a34,_id_SENTRYDROID,,i16
 0x7f1a38,_VehicleBoltId7f1a38Pc,,i16
+0x7f1a3c,_CharacterFixupIdPc007f1a3c,2,i16
+0x7f1a40,_CharacterFixupIdPc007f1a40,2,i16
 0x7f1a44,_FreePlayId007f1a44Pc,,i16
 0x7f1a48,_FreePlayId007f1a48Pc,,i16
 0x7f1a4c,_FreePlayId007f1a4cPc,,i16
@@ -15497,8 +15721,11 @@ address    , symbol                                                         , si
 0x7f1a6c,_id_GREEDO,,i16
 0x7f1a70,_id_BOSSK,,i16
 0x7f1a74,_id_CANTINABAND,,i16
+0x7f1a78,_CharacterFixupIdPc007f1a78,2,i16
+0x7f1a7c,_CharacterFixupIdPc007f1a7c,2,i16
 0x7f1a80,_id_TRACTOR,,i16
 0x7f1a84,_id_FIRETRUCK,,i16
+0x7f1a88,_CharacterFixupIdPc007f1a88,2,i16
 0x7f1a8c,_DefaultAnimationLamaSuIdPc,,i16
 0x7f1a90,_DefaultAnimationTaunWeIdPc,,i16
 0x7f1a94,_id_BUZZDROID,,i16
@@ -15512,6 +15739,7 @@ address    , symbol                                                         , si
 0x7f1ab4,_FreePlayId007f1ab4Pc,,i16
 0x7f1ab8,_VehicleSpecialShooterIdPc,,i16
 0x7f1abc,_FreePlayId007f1abcPc,,i16
+0x7f1ac0,_CharacterFixupIdPc007f1ac0,2,i16
 0x7f1ac4,_ZipUpLineCharacterIdPc,,i16
 007f1ac8,_DefaultMotionIndySnakeIdPc,,i16
 0x7f1acc,_id_MINIDROIDEKA,,i16
@@ -15531,9 +15759,13 @@ address    , symbol                                                         , si
 0x7f1b04,_VehicleBoltId7f1b04Pc,,i16
 0x7f1b08,_VehicleBoltId7f1b08Pc,,i16
 0x7f1b0c,_VehicleBoltId7f1b0cPc,,i16
+0x7f1b10,_CharacterFixupIdPc007f1b10,2,i16
 0x007f1b14 , _id_ANAKINSPOD                                                 , 2     , i16
 0x007f1b18 , _id_ANAKINSPODGREEN                                            , 2     , i16
 0x007f1b1c , _id_SEBULBASPOD                                                , 2     , i16
+0x7f1b20,_CharacterFixupIdPc007f1b20,2,i16
+0x7f1b24,_CharacterFixupIdPc007f1b24,2,i16
+0x7f1b28,_CharacterFixupIdPc007f1b28,2,i16
 0x007f1b2c , _id_ANAKINSNEWPOD                                              , 2     , i16
 0x007f1b30 , _id_ANAKINSNEWPODGREEN                                         , 2     , i16
 0x7f1b34,_VehicleBoltId7f1b34Pc,,i16
@@ -15541,7 +15773,9 @@ address    , symbol                                                         , si
 0x7f1b3c,_id_ZAMSSPEEDER,,i16
 0x7f1b40,_FreePlayId007f1b40Pc,,i16
 0x7f1b44,_FreePlayId007f1b44Pc,,i16
+0x7f1b48,_CharacterFixupIdPc007f1b48,2,i16
 007f1b4c,_PermModelListPc,,APICHARACTERMODELLIST[1]
+0x7f1b50,_CharacterFixupTablePc,1752,CHARFIXUP_PC[219]
 0x7f2228,_AnimRedirectList_LSW,,ANIM_REDIRECT_VIEW_PC[41]
 0x7f2374,_default_mover_extra,,f32
 0x7f2380,_TerrainPlayerPlatConnectTolerancePc,,f32

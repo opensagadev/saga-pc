@@ -570,13 +570,6 @@ extern "C" i32 __cdecl SetProtocolDroidFallAnim(GAMEOBJECT *object) {
     }
 }
 
-struct charfixup_pc_s {
-    char *name;
-    i16 *id;
-};
-STATIC_ASSERT(sizeof(CHARFIXUP_PC) == 8);
-STATIC_ASSERT(offsetof(CHARFIXUP_PC, name) == 0);
-STATIC_ASSERT(offsetof(CHARFIXUP_PC, id) == 4);
 STATIC_ASSERT(sizeof(PLAYERCHARACTERCONFIG_PC) == 0x120);
 STATIC_ASSERT(sizeof(CHARACTERDATA_PC) == 0x4c);
 STATIC_ASSERT(offsetof(CHARACTERDATA_PC, name_id) == 0);

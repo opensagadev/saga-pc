@@ -445,7 +445,7 @@ extern "C" {
                                            0x120, &GCDataList);
         CharScenes_Init(&permbuffer_ptr, &permbuffer_end);
         IconScenes_Init("stuff\\icons\\", &permbuffer_ptr, &permbuffer_end);
-        STUBBED_NAMED("LoadPermData: FixUpCharacters(0x7f1b50)");
+        FixUpCharacters(CharacterFixupTablePc);
         STUBBED_NAMED("LoadPermData: MiniKits_Init");
 
         if (StartupGameFlag1 != 0) {
@@ -493,7 +493,7 @@ extern "C" {
         }
 
         LoadPerm1();
-        STUBBED_NAMED("LoadPermData: LoadPerm2");
+        LoadPerm2();
         STUBBED_NAMED("LoadPermData: GameThingManager::AddOnceOnlyThings(0x95e438)");
         STUBBED_NAMED("LoadPermData: RegisterHelpers");
 
