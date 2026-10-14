@@ -441,7 +441,7 @@ extern "C" {
         STUBBED_NAMED("LoadPermData: NuRegisterEndFrameCallBackFn(0x5ca000)");
         CDataList = ConfigureCharacterList("chars\\chars.txt", &permbuffer_ptr, &permbuffer_end, 0x154, &CHARCOUNT,
                                            0x120, &GCDataList);
-        STUBBED_NAMED("LoadPermData: CharScenes_Init");
+        CharScenes_Init(&permbuffer_ptr, &permbuffer_end);
         IconScenes_Init("stuff\\icons\\", &permbuffer_ptr, &permbuffer_end);
         STUBBED_NAMED("LoadPermData: FixUpCharacters(0x7f1b50)");
         STUBBED_NAMED("LoadPermData: MiniKits_Init");

@@ -57,7 +57,7 @@ extern "C" void CharScenes_AreaDump() {
     }
 }
 
-extern "C" void __cdecl CharScenes_Init(VARIPTR *buffer, VARIPTR end) {
+extern "C" void __cdecl CharScenes_Init(VARIPTR *buffer, VARIPTR *end) {
     buffer->addr = (buffer->addr + 3) & ~3u;
     KillPartsCharSceneAreaPc = (KILLPARTS_CHARSCENE_PC *)buffer->void_ptr;
     buffer->addr += CHARCOUNT * sizeof(*KillPartsCharSceneAreaPc);

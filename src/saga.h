@@ -19356,6 +19356,7 @@ extern "C" {
 extern "C" {
 #endif
     APIDEBRISSYS_PC *__cdecl InitGameDebris(VARIPTR *, VARIPTR, i32, i32, char **, i8);
+    void __cdecl CharScenes_Init(VARIPTR *, VARIPTR *);
     void __cdecl CharScenes_LevelLoad(WORLDINFO *);
     void __cdecl CharScenes_AreaLoad(APICHARACTERMODELLIST *, VARIPTR *, VARIPTR);
 #ifdef __cplusplus
