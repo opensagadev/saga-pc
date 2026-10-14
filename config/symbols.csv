@@ -408,9 +408,9 @@ address    , symbol                                                         , si
 0x44b0e0,_Action_SetWalkSpeed,107,"i32 __cdecl (AISYS_PC *, AISCRIPTPROCESS_PC *, AIPACKET_PC *, char **, i32, i32, f32)"
 0x44b150,_Action_SetHitPoints,316,"i32 __cdecl (AISYS_PC *, AISCRIPTPROCESS_PC *, AIPACKET_PC *, char **, i32, i32, f32)"
 0x44b290,_Action_SetShieldHitPoints,201,"i32 __cdecl (AISYS_PC *, AISCRIPTPROCESS_PC *, AIPACKET_PC *, char **, i32, i32, f32)"
-0x44b360,_Action_SetMessage,328,
+0x44b360,_Action_SetMessage,328,"i32 __cdecl (AISYS_PC *, AISCRIPTPROCESS_PC *, AIPACKET_PC *, char **, i32, i32, f32)"
 0x44b4b0,_Action_SetScriptParam,459,
-0x44b680,_Action_CopyMessage,183,
+0x44b680,_Action_CopyMessage,183,"i32 __cdecl (AISYS_PC *, AISCRIPTPROCESS_PC *, AIPACKET_PC *, char **, i32, i32, f32)"
 0x0044b950 , _Action_AddPartDebris                                          , 495   , "i32 __cdecl (AISYS_PC *, AISCRIPTPROCESS_PC *, AIPACKET_PC *, char **, i32, i32, f32)"
 0x44bb40,_GuidedMissile_Move,717,
 0x44be10,_GuidedMissile_Kill,130,

@@ -9546,59 +9546,69 @@ i32 __cdecl Action_SetShieldHitPoints(AISYS_PC *system, AISCRIPTPROCESS_PC *proc
     return 1;
 }
 
-static i32 Action_CopyMessage(AISYS_PC *unused0, AISCRIPTPROCESS_PC *unused1, AIPACKET_PC *unused2, char **params,
-                              i32 num_params, i32 first_time, f32 unused6) {
-    if (first_time && gizaimessagesys != NULL && num_params != 0) {
-        i32 i;
-        char *from = NULL;
-        char *to = NULL;
-        for (i = 0; i < num_params; i++) {
-            char *value = NuStrIStr(params[i], "from=");
+i32 __cdecl Action_CopyMessage(AISYS_PC *unused0, AISCRIPTPROCESS_PC *unused1, AIPACKET_PC *unused2, char **params,
+                               i32 count, i32 first_time, f32 unused6) {
+    char *from = NULL;
+    char *to = NULL;
+    i32 index;
+    char *value;
+    GIZAIMESSAGE *source;
+    GIZAIMESSAGE *destination;
+    if (first_time != 0 && gizaimessagesys != NULL && count > 0) {
+        for (index = 0; index < count; ++index) {
+            value = NuStrIStr(params[index], "from=");
             if (value != NULL)
                 from = value + 5;
-            else if ((value = NuStrIStr(params[i], "to=")) != NULL)
+            else if ((value = NuStrIStr(params[index], "to=")) != NULL)
                 to = value + 3;
         }
-        if (to != NULL && from != NULL) {
-            GIZAIMESSAGE *source = CheckGizAIMessage(gizaimessagesys, from, NULL);
-            GIZAIMESSAGE *destination = CheckGizAIMessage(gizaimessagesys, to, NULL);
-            if (destination != NULL && source != NULL)
+        if (from != NULL && to != NULL) {
+            source = CheckGizAIMessage(gizaimessagesys, from, NULL);
+            destination = CheckGizAIMessage(gizaimessagesys, to, NULL);
+            if (source != NULL && destination != NULL)
                 destination->value = source->value;
         }
     }
     return 1;
 }
 
-static i32 Action_SetMessage(AISYS_PC *unused0, AISCRIPTPROCESS_PC *processor, AIPACKET_PC *unused2, char **params,
-                             i32 num_params, i32 first_time, f32 unused6) {
-    if (first_time && gizaimessagesys != NULL && num_params != 0) {
-        i32 i;
-        char *name = NULL;
-        i32 operation = 0;
-        f32 amount = 0.0f;
-        for (i = 0; i < num_params; i++) {
-            char *value = NuStrIStr(params[i], "name=");
+i32 __cdecl Action_SetMessage(AISYS_PC *unused0, AISCRIPTPROCESS_PC *processor, AIPACKET_PC *unused2, char **params,
+                              i32 count, i32 first_time, f32 unused6) {
+    char *name = NULL;
+    i32 operation = 0;
+    f32 amount = 0.0f;
+    i32 index;
+    char *value;
+    GIZAIMESSAGE *message;
+    if (first_time != 0 && gizaimessagesys != NULL && count > 0) {
+        for (index = 0; index < count; ++index) {
+            value = NuStrIStr(params[index], (char *)AIScriptActionNameArgPrefix);
             if (value != NULL)
                 name = value + 5;
-            else if ((value = NuStrIStr(params[i], "value=")) != NULL)
+            else if ((value = NuStrIStr(params[index], (char *)AIAnimSpeedValueName)) != NULL)
                 amount = AIParamToFloat(processor, value + 6);
-            else if ((value = NuStrIStr(params[i], "increment=")) != NULL) {
+            else if ((value = NuStrIStr(params[index], "increment=")) != NULL) {
                 amount = AIParamToFloat(processor, value + 10);
                 operation = 1;
-            } else if ((value = NuStrIStr(params[i], "decrement=")) != NULL) {
+            } else if ((value = NuStrIStr(params[index], "decrement=")) != NULL) {
                 amount = AIParamToFloat(processor, value + 10);
                 operation = -1;
             }
         }
         if (name != NULL) {
-            GIZAIMESSAGE *message = CheckGizAIMessage(gizaimessagesys, name, NULL);
+            message = CheckGizAIMessage(gizaimessagesys, name, NULL);
             if (message != NULL) {
-                if (operation == 0)
-                    message->value = amount;
-                else if (operation == 1)
-                    message->value = amount + message->value;
-                else if (operation == -1)
-                    message->value -= amount;
+                switch (operation) {
+                    case -1:
+                        message->value -= amount;
+                        break;
+                    case 0:
+                        message->value = amount;
+                        break;
+                    case 1:
+                        message->value = message->value + amount;
+                        break;
+                }
             }
         }
     }
