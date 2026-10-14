@@ -228,7 +228,7 @@
     "src/legoapi/collection.c": "897f49e0eb5cd35f7880b5c5e8c9df27976c51416e5c130a595318f898f3302d",
     "src/legoapi/creature.c": "93c969d615056202ba1d99ec5ff6fd24715017b8a23e4c613ddd9bcaf9156927",
     "src/legoapi/credits.c": "6d0adb83680d1b13f32e0dec1d720fa85b163646ea9c9260e8d783050586e4ca",
-    "src/legoapi/customise.c": "a940520ac2dc0aca2970423282f1968a2b7fc5d2f6b95287a19902e3a61799ad",
+    "src/legoapi/customise.c": "0772da78369a3052f8e27d1acdb1e6605df83676d9b3bc15c53f72d68f7698da",
     "src/legoapi/cutscene_hooks.c": "af2a872a83fe38173a810dd28e34a1a905b52a003ded2e16a8e71b5df7891091",
     "src/legoapi/cutscene_lifecycle.c": "9a2d83208c30e774d2549d57ac40185a0b26eb2208165f961fc935542bb9b186",
     "src/legoapi/debris_callbacks.c": "2e3209336de614c5934560ae421c0788822ce98c47a6ef5102f00defec1416cf",
@@ -500,7 +500,7 @@
     "build/obj/legoapi/collection.obj": "874cdd232afaac9003d80ecbb672c7e293b46d702c485d3a07a9d6d9e61eeec8",
     "build/obj/legoapi/creature.obj": "2545cf996eacb5b24911d85b7dbd62c2cf3826bd9f26dda487c51881192c2900",
     "build/obj/legoapi/credits.obj": "bc4fd86c200d6c4b9273b8d66ab06867cc754513bbf6c91e9ca4c2938f8fea92",
-    "build/obj/legoapi/customise.obj": "4dab0af31f46c2fff867da0a3134ac1a2a10d0ad618e5940a33a06189858f798",
+    "build/obj/legoapi/customise.obj": "e18f51880ea4824ba38a374b13e067fbf3a31df52b2da098d807a6d6bf2c4c80",
     "build/obj/legoapi/cutscene_hooks.obj": "24bb1b00ab92f055a25b103cdcdf328eb3a3b314a5595cbce2fae9b6514a03eb",
     "build/obj/legoapi/cutscene_lifecycle.obj": "702c3bdbd6ef0735ef8df87463264332237d3ef2a89ad2a6eab4807786765d8c",
     "build/obj/legoapi/cutscene_runtime.obj": "bef992008abe18c387df441f2099a20a2d479ad73099328223b8c467e586dbc1",
@@ -78372,11 +78372,25 @@
       "name": "Customiser_DumpAccessories",
       "symbol": "_Customiser_DumpAccessories",
       "address": "0x005930c0",
-      "units": [],
+      "units": [
+        "src/legoapi/customise.c"
+      ],
       "target_size": 211,
       "exact_match": false,
-      "objects": [],
-      "status": "not implemented"
+      "objects": [
+        {
+          "unit": "src/legoapi/customise.c",
+          "base_size": 211,
+          "exact_match": false,
+          "target_sha256": "ff738eca251622b32e193ce5f88740bb39057d24b059f01ac108b73631fe0db8",
+          "base_sha256": "cde6332e85a675e6bf872731f30cc415c154dd239ce6975e255b3c2cd9cf844a",
+          "relocation_count": 7,
+          "comparison_unit": "005930c0-8460926beecd",
+          "objdiff_percent": 75.38806
+        }
+      ],
+      "status": "different",
+      "objdiff_percent": 75.38806
     },
     {
       "name": "Customiser_LoadAll",
@@ -78392,11 +78406,25 @@
       "name": "Customiser_DumpAll",
       "symbol": "_Customiser_DumpAll",
       "address": "0x005934d0",
-      "units": [],
+      "units": [
+        "src/legoapi/customise.c"
+      ],
       "target_size": 145,
-      "exact_match": false,
-      "objects": [],
-      "status": "not implemented"
+      "exact_match": true,
+      "objects": [
+        {
+          "unit": "src/legoapi/customise.c",
+          "base_size": 145,
+          "exact_match": true,
+          "target_sha256": "ab2f1aa20d25af97d834a8ba7754a6c16531681de0b160b23a70a70e21bc4e46",
+          "base_sha256": "ab2f1aa20d25af97d834a8ba7754a6c16531681de0b160b23a70a70e21bc4e46",
+          "relocation_count": 3,
+          "comparison_unit": "005934d0-b3c09b783507",
+          "objdiff_percent": 100.0
+        }
+      ],
+      "status": "exact",
+      "objdiff_percent": 100.0
     },
     {
       "name": "Customiser_ResetModelTextureIDs",
@@ -78426,11 +78454,25 @@
       "name": "Customiser_RestoreModelTextureIDs",
       "symbol": "_Customiser_RestoreModelTextureIDs",
       "address": "0x005936b0",
-      "units": [],
+      "units": [
+        "src/legoapi/customise.c"
+      ],
       "target_size": 217,
-      "exact_match": false,
-      "objects": [],
-      "status": "not implemented"
+      "exact_match": true,
+      "objects": [
+        {
+          "unit": "src/legoapi/customise.c",
+          "base_size": 217,
+          "exact_match": true,
+          "target_sha256": "763b634c0c23c667d1377644a94ea14d7764cc36d9c00d98be9a2e0fa679e1be",
+          "base_sha256": "763b634c0c23c667d1377644a94ea14d7764cc36d9c00d98be9a2e0fa679e1be",
+          "relocation_count": 2,
+          "comparison_unit": "005936b0-d34ca4d19056",
+          "objdiff_percent": 100.0
+        }
+      ],
+      "status": "exact",
+      "objdiff_percent": 100.0
     },
     {
       "name": "Customiser_Set100PercentPieces",
@@ -380217,13 +380259,13 @@
   "progress": {
     "text_bytes": 3471246,
     "mapped_code_bytes": 2154933,
-    "matched_code_bytes": 399905,
-    "matching_percent": 11.52050301246296,
-    "fuzzy_coverage_percent": 37.06592977570033,
+    "matched_code_bytes": 400267,
+    "matching_percent": 11.53093154446559,
+    "fuzzy_coverage_percent": 37.08094077770365,
     "mapped_functions": 7516,
-    "matched_functions": 3551,
-    "objdiff_fuzzy_percent": 73.564316,
-    "objdiff_total_code": 1749899,
+    "matched_functions": 3553,
+    "objdiff_fuzzy_percent": 73.57,
+    "objdiff_total_code": 1750472,
     "image_bytes": 40067072,
     "mapped_bytes": 3079194,
     "mapping_percent": 7.685098626622879,
@@ -381321,7 +381363,7 @@
       "metadata_sha256": "fe09365da4c355f220d724ca99394fc120b758891b4188d2c49707b6df0894f2",
       "header_path": "src/saga.h",
       "header_sha256": "de8cd5d7db9bd1b485bbc9ee5898c3b573499ce2c45e239631fae75e5f7f809c",
-      "geometry_object_sha256": "2e1387660e67e805306ecc2bda3fffd1d92bb21d9bb9577887ee1237ca9a44c1",
+      "geometry_object_sha256": "a34a461534d2533230ca0c1ad56760f45fc45a091b0529a92e5a3ed7b574f9f4",
       "toolchain_sha256": "489d0782638d8033137cdb2834462416111945cbfa073147820e314b8576b95b",
       "implementation_sha256": "9ad7521230f06fde31f0771b10bd001037ea32d2def455913a7f391f05dede9d",
       "headers": {

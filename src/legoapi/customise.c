@@ -693,3 +693,88 @@ CUSTOMPIECE_LAYERS_PC *__cdecl Customiser_FindPieceByName(CUSTOMISER_LAYERS_PC *
     }
     return NULL;
 }
+
+void __cdecl Customiser_DumpAccessories(void *input) {
+    CUSTOMISER_CONFIG_PC *customiser = (CUSTOMISER_CONFIG_PC *)input;
+    i32 side, category;
+    if (customiser == NULL || Customiser_AccessoriesLoaded != 1)
+        return;
+    for (side = 0; side < 2; ++side) {
+        if (apicharsys->playermodelids[customiser->character_ids[side]] == -1)
+            continue;
+        for (category = 0; category < 9; ++category) {
+            CUSTOM_ACCESSORY_RESOURCE_PC *resource =
+                (CUSTOM_ACCESSORY_RESOURCE_PC *)&KillPartsAccessoriesPc[side][category];
+            if (customiser->categories[category]->name == NULL)
+                continue;
+            if (resource->scene != NULL) {
+                NuGScnRemove(resource->scene);
+                resource->scene = NULL;
+            } else if (resource->texture_id != 0) {
+                ((CUSTOM_ACCESSORY_MATERIAL_PC *)((CUSTOM_ACCESSORY_HIERARCHY_PC *)resource->character_model->hierarchy)
+                     ->materials[resource->material_index])
+                    ->texture_id = (i16)resource->original_texture_id;
+                NuMtlUpdate(((CUSTOM_ACCESSORY_HIERARCHY_PC *)resource->character_model->hierarchy)
+                                ->materials[resource->material_index]);
+                NuTexDestroy(resource->texture_id);
+            }
+        }
+    }
+}
+
+STATIC_ASSERT(offsetof(WORLDINFO, customiser_resources) == 0x5120);
+STATIC_ASSERT(offsetof(WORLDINFO, customiser_shared_scenes) == 0x5144);
+
+void __cdecl Customiser_DumpAll(void *input, WORLDINFO *world) {
+    CUSTOMISER_CONFIG_PC *customiser = (CUSTOMISER_CONFIG_PC *)input;
+    i32 category, piece;
+    if (customiser == NULL)
+        return;
+    for (category = 0; category < 9; ++category) {
+        CUSTOM_ACCESSORY_RESOURCE_PC *resources = (CUSTOM_ACCESSORY_RESOURCE_PC *)world->customiser_resources[category];
+        if (resources == NULL)
+            continue;
+        for (piece = 0; piece < customiser->piece_counts[category]; ++piece) {
+            CUSTOM_ACCESSORY_RESOURCE_PC *resource = &resources[piece];
+            if (resource->scene != NULL) {
+                if (resource->scene != world->customiser_shared_scenes[category])
+                    NuGScnRemove(resource->scene);
+                resource->scene = NULL;
+            } else if (resource->texture_id != 0) {
+                NuTexDestroy(resource->texture_id);
+            }
+        }
+        if (world->customiser_shared_scenes[category] != NULL) {
+            NuGScnRemove(world->customiser_shared_scenes[category]);
+            world->customiser_shared_scenes[category] = NULL;
+        }
+    }
+}
+
+void __cdecl Customiser_RestoreModelTextureIDs(void *input) {
+    CUSTOMISER_CONFIG_PC *customiser = (CUSTOMISER_CONFIG_PC *)input;
+    CUSTOMISER_ANIMS_LOAD_PC *textures = (CUSTOMISER_ANIMS_LOAD_PC *)input;
+    i32 side, category, material;
+    if (customiser == NULL)
+        return;
+    for (side = 0; side < 2; ++side) {
+        CHARACTER_MODEL_LAYERS_PC *model = APICharacterLoaded(customiser->character_ids[side]);
+        if (model == NULL)
+            continue;
+        for (category = 0; category < 9; ++category) {
+            if (textures->model_texture_ids[side * 9 + category] == 0)
+                continue;
+            for (material = 0; material < ((CUSTOM_ACCESSORY_HIERARCHY_PC *)model->hierarchy)->material_count;
+                 ++material) {
+                NUMTL *entry = ((CUSTOM_ACCESSORY_HIERARCHY_PC *)model->hierarchy)->materials[material];
+                if (((CUSTOM_ACCESSORY_MATERIAL_PC *)entry)->material_tag ==
+                    customiser->categories[category]->material_tag) {
+                    ((CUSTOM_ACCESSORY_MATERIAL_PC *)((CUSTOM_ACCESSORY_HIERARCHY_PC *)model->hierarchy)
+                         ->materials[material])
+                        ->texture_id = (i16)textures->model_texture_ids[side * 9 + category];
+                    NuMtlUpdate(((CUSTOM_ACCESSORY_HIERARCHY_PC *)model->hierarchy)->materials[material]);
+                }
+            }
+        }
+    }
+}
