@@ -716,7 +716,7 @@ address    , symbol                                                         , si
 0x46fa60,_GizTorp_Activate,,"void __cdecl(GIZMO_PC *, i32)"
 0x46fa90,_GizTorps_Reset,55,"void __cdecl(void *, void *, void *)"
 0x46fad0,_GizTorpMachine_FindNearest,171,"void *__cdecl(WORLDINFO*,NUVEC*,f32*)"
-0x46fb80,_GizTorp_Update,,"void __cdecl(void *, void *, f32)"
+0x46fb80,_GizTorp_Update,94,"void __cdecl(void *, void *, f32)"
 0x46fbe0,_GizTorp_Draw,580,
 0x46fe30,_GizTorp_GetMaxGizmos,25,i32 __cdecl(void *)
 0x46fe50,_GizTorp_AddGizmos,101,"void __cdecl(GIZMOSYS_PC *, i32, void *, void *)"
@@ -2580,6 +2580,8 @@ address    , symbol                                                         , si
 0x00553500,_FindReflectionNoPlatforms,100,f32 __cdecl(NUVEC *)
 0x00553570 , _InitSplinePosition                                            , 156   , "void __cdecl (SPLINEPOS *position, NUGSPLINE *spline, f32 distance, i32 looping)"
 0x553610,_SetAnimFrame,238,
+0x553710,_SpinnerMissingSpecialPc,1,"void __cdecl(char *,char *)"
+0x5539a0,_SpinnerBoundsResetPc,252,
 0x553aa0,_GizSpinner_Load,1953,
 0x554250,_GizSpinner_ReserveBufferSpace,252,
 0x554350,_GizSpinners_InitTerrain,579,
@@ -19261,6 +19263,7 @@ address    , symbol                                                         , si
 0x93b120,_DisguiseAdjustFn,,"void (__cdecl *)(i32,i32,NUVEC *,NUVEC *)"
 0x93b124,_SolidMtl,4,NUMTL *
 0x93b128,_ZipUpLineMaterialPc,,NUMTL *
+0x93b12c,_thingsSceneArm,12,nuhspecial_s
 0x93b138,_thingsSceneBase,12,nuhspecial_s
 0x93b148,_GizmoRegistrySpinnerAddTypePc,120,ADDGIZMOTYPE_PC
 0x93b1c0,_GizObstacleTriggersPc,,NUVEC *[16]

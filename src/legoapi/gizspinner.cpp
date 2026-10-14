@@ -234,3 +234,8 @@ extern "C" PUSH_SPINNER_PC *__cdecl GizSpinner_Find(WORLDINFO *world, NUVEC *pos
     }
     return nearest;
 }
+
+extern "C" __declspec(noinline) void __cdecl SpinnerMissingSpecialPc(char *name, char *special_name) {
+    (void)name;
+    (void)special_name;
+}
