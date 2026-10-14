@@ -19,6 +19,15 @@ def windows(path):
     return "Z:" + str(path.resolve()).replace("/", "\\")
 
 
+def linker_output_path(flag):
+    """Keep explicit map output beside the selected build artifact."""
+    name, separator, value = flag.partition(":")
+    if separator and name.upper() == "/MAP":
+        if not re.match(r"^[A-Za-z]:[\\/]", value) and not value.startswith("\\\\"):
+            return name + ":" + windows(Path(value))
+    return flag
+
+
 def environment():
     """Verify the toolchain and isolate both compiler and linker from host options."""
     pin = load_json(ROOT / "config/toolchain.json")
@@ -104,6 +113,7 @@ def main():
                 flags = [*flags, "/FORCE:UNRESOLVED"]
             flags = [windows(Path(flag)) if flag.lower().endswith(".lib") and Path(flag).is_file()
                      else flag for flag in flags]
+            flags = [linker_output_path(flag) for flag in flags]
             command = [wine, str(compiler / "link.exe"), *flags,
                        "/LIBPATH:" + windows(compiler.parent / "lib"),
                        "/LIBPATH:" + windows(compiler.parent / "PlatformSDK/Lib"),

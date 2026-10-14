@@ -185,11 +185,22 @@ def check_headers():
         "window.h", "ogg/ogg.h", "ogg/os_types.h", "vorbis/codec.h",
         "vorbis/vorbisenc.h", "vorbis/vorbisfile.h",
     }
-    allowed = {"src/saga.h", "src/externals.h"} | {
+    allowed = {"src/saga.h", "src/externals.h", "src/diagnostics.h"} | {
         "src/audio/vorbis/" + name for name in vorbis_headers}
     if "src/saga.h" not in headers or headers - allowed:
-        raise ValueError("Project headers must be src/saga.h and optional src/externals.h "
+        raise ValueError("Project headers must be src/saga.h, src/diagnostics.h and optional src/externals.h "
                          "or the reviewed original Vorbis header catalog")
+
+
+def check_diagnostic_boundaries():
+    """Build-kind conditionals belong to diagnostic support, never game code."""
+    selector = re.compile(r"^\s*#\s*(?:if|ifdef|ifndef|elif|define|undef)\b[^\n]*\b(?:SAGA_DEBUG|SAGA_RUNTIME)\b",
+                          re.MULTILINE)
+    for path in (ROOT / "src").rglob("*"):
+        if path.suffix not in {".c", ".cpp", ".h"} or path == ROOT / "src/diagnostics.h":
+            continue
+        if selector.search(path.read_text(encoding="latin-1")):
+            raise ValueError(f"Build-kind conditionals are diagnostics-only: {path.relative_to(ROOT)}")
 
 
 def clang_tool(name):
@@ -207,7 +218,8 @@ def clang_tool(name):
 
 def source_files(headers=False):
     suffixes = {".c", ".cpp", ".h", ".inc"} if headers else {".c", ".cpp"}
-    return sorted(path.relative_to(ROOT).as_posix() for path in (ROOT / "src").rglob("*")
+    return sorted(path.relative_to(ROOT).as_posix() for directory in (ROOT / "src", ROOT / "diagnostics")
+                  for path in directory.rglob("*")
                   if path.is_file() and path.suffix in suffixes)
 
 
@@ -252,6 +264,8 @@ def analysis_configuration():
 
 
 def analysis_language(source):
+    if source == "diagnostics/log.c":
+        return ["-x", "c", "-std=c89", "-DSAGA_DEBUG"]
     return ["-x", "c", "-std=c89"] if source.endswith(".c") else [
         "-x", "c++", "-std=c++98", "-fdelayed-template-parsing"]
 
@@ -380,6 +394,7 @@ def main():
     if errors:
         raise ValueError("Symbol/map checks failed:\n  - " + "\n  - ".join(errors))
     check_headers()
+    check_diagnostic_boundaries()
     files = subprocess.check_output(
         ["git", "ls-files", "--cached", "--others", "--exclude-standard", "-z"], cwd=ROOT).decode().split("\0")
     forbidden = {".exe", ".dll", ".obj", ".o", ".pdb", ".lib", ".zip", ".7z", ".dat", ".obb", ".apk"}

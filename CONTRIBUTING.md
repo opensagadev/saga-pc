@@ -25,6 +25,61 @@ make -j"$(nproc)" build check-objects
 compiler-only work use `python3 tools/setup.py --compiler-only`; an existing
 pinned archive can be passed with `--archive`.
 
+## Build kinds and logging
+
+There are exactly two build kinds, **Matching** and **Debug**:
+
+```sh
+make                                      # BUILD_KIND=Matching, the default
+make Matching                             # same build
+make Debug                                # BUILD_KIND=Debug
+make BUILD_KIND=Debug run                  # explicitly run the Debug executable
+```
+
+Matching keeps `build/obj/` and `build/LEGOStarWarsSaga.exe`. Debug uses only
+`build/Debug/obj/` and `build/Debug/LEGOStarWarsSaga.exe`, with embedded CodeView
+symbols in its objects and an isolated linker map. The two kinds use the same source, `/O2 /Gy /GS /MT`, native linker
+optimization settings and unresolved-symbol policy. Debug adds `/Z7`, linker
+`/MAP`, and `SAGA_DEBUG` for diagnostic support; it does not define
+`DEBUG` or `_DEBUG`, select a debug CRT, or change assertion policy.
+The pinned PDB writer rejects `/DEBUG` with LNK1101, so Debug does not emit a
+PDB; its object symbols and map are the supported symbol outputs.
+`match`, `diff` and `check-objects` require Matching and never consume Debug
+objects. `make clean` removes the managed outputs of both kinds, leaving legacy
+investigation archives alone.
+
+**Only diagnostics may differ.** Both kinds must share native game behavior,
+including initialization, required calls, correctness, error handling, bugs,
+crashes and incomplete paths. Never use a build-kind `#ifdef` to add guards,
+crash avoidance, fallbacks, return values, or Matching-only real logic. Fixes
+belong in both kinds. Never replace a required native call with a diagnostic
+macro. Original retail logging and error functions remain native code in both
+kinds. The project check rejects build-kind conditionals in game source; the
+private selector belongs only in `src/diagnostics.h`.
+
+The logging conventions follow the sibling saga repo's `src/decomp.h`:
+`LOG(level, ...)`, `LOG_ERR`, `LOG_WARN`, `LOG_INFO`, `LOG_DEBUG`,
+`LOG_INFO_IF`, `LOG_WARN_ONCE`, `STUBBED()` and `UNIMPLEMENTED(...)`.
+`STUBBED_NAMED(description)` retains existing PC call-site descriptions.
+Debug writes timestamped, colored severity/file/line/function messages to
+stderr (redirect it when needed), filtering above INFO as saga does.
+WARN_ONCE and STUBBED use an atomic flag per site. The logger preserves
+`errno` and Win32 `GetLastError`. STUBBED and UNIMPLEMENTED only report missing
+work: they do not implement it, return a safe alternative, or suppress a crash.
+
+All arguments, levels and conditions supplied to logging macros must be free
+of side effects and valid to read. Do required work before logging and pass
+values, never assignments, increments or calls that change game state. Matching
+removes diagnostics completely, including argument and condition evaluation;
+Debug may filter messages or emit a once-only message. Required work must not
+depend on whether any message is emitted.
+
+The former `make runtime`, `SAGA_RUNTIME` and `SAGA_RUNTIME_*` watch/capture
+options are retired. Their Present hooks, thread sampler, crash interception
+and unresolved-symbol exit traps are not part of Debug. Existing ignored
+private executables, logs and validation archives are preserved; they are
+historical artifacts, not another supported build kind.
+
 ## Original executable
 
 Put your own `LEGOStarWarsSaga.exe` in `res/` (a symlink works). The supported

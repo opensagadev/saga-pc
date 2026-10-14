@@ -48,4 +48,6 @@ jobs:
         run: make -j"$(nproc)" check-core
       - name: Build executable and check symbol coverage
         run: make -j"$(nproc)" build check-objects
+      - name: Build Debug diagnostics and map
+        run: make -j"$(nproc)" BUILD_KIND=Debug build
       # Matching runs locally against the user's copy of the original executable.

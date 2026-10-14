@@ -17,6 +17,11 @@ similarity and 7% matches byte for byte. See the [roadmap](docs/roadmap.md).
 See [CONTRIBUTING.md](CONTRIBUTING.md) for setup, the workflow and the automated
 source-shape search (`tools/permute.py`).
 
+`make Matching` (the default) builds the matching executable. `make Debug`
+builds a separate executable with diagnostics and symbols. Both share the same
+game behavior; build-kind differences are strictly diagnostics only. See
+[build kinds and logging](CONTRIBUTING.md#build-kinds-and-logging).
+
 ## License
 
 Source is distributed under [GNU GPL version 3](LICENSE). This independent

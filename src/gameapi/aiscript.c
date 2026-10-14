@@ -54,7 +54,6 @@ static void *AIScriptLoadPakPc;
 static char *AIScriptLoadPathPc;
 static AISCRIPT_CONST_RECORD_PC AIScriptConstantRecordsPc[8];
 static i32 AIScriptConstCursorPc;
-extern i32 ai_onlyusepackfile;
 
 static char *AIScriptCopyStringPc(char *text, VARIPTR *buffer, VARIPTR *end);
 static AISCRIPT_PC *AIScriptLoadPakFilePc(void *pak, char *filename, char *path, VARIPTR *buffer, VARIPTR *end);
@@ -1575,9 +1574,7 @@ static NUFPAR_PC *AIScriptOpenParserPc(void *pak, char *filename, char *path) {
         } else {
             STUBBED_NAMED("AIScriptOpenParser: native RET-only missing item diagnostic 0x512850/0x512870");
         }
-        if (ai_onlyusepackfile != 0) {
-            STUBBED_NAMED("AIScriptOpenParser: native RET-only package-only diagnostic 0x512850/0x512860");
-        }
+        /* Native package-only diagnostics at 0x512850/0x512860 are RET-only. */
     }
     return NuFParCreate(filepath);
 }
