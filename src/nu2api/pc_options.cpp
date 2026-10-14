@@ -318,3 +318,16 @@ void __thiscall PC_WINDOW_OPTIONS_PC::SetUseHires(u8 value) {
 void __thiscall PC_WINDOW_OPTIONS_PC::SetOption459(u8 value) {
     option459 = value;
 }
+
+void __thiscall PC_WINDOW_OPTIONS_PC::SetSfxVolume(i32 value) {
+    sfxvolume = value;
+}
+void __thiscall PC_WINDOW_OPTIONS_PC::SetMusicVolume(i32 value) {
+    musicvolume = value;
+}
+void __thiscall PC_WINDOW_OPTIONS_PC::SetMasterVolume(i32 value) {
+    mastervolume = value;
+}
+void __thiscall PC_WINDOW_OPTIONS_PC::SetMusicEnabled(u8 value) {
+    musicenabled = value;
+}

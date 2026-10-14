@@ -497,11 +497,11 @@ void __cdecl MenuUpdateFormatConfirm(MENU *menu) {
     }
 }
 
-void MenuUpdateFileCorrupt(MENU_s *menu) {
+void __cdecl MenuUpdateFileCorrupt(MENU *menu) {
     if (MenuInfo[GameMenu[GameMenuLevel - 1].menu].id != 1019)
-        MenuInfo[menu->menu].wrap = 1;
+        MenuInfo[menu->menu].cancel_prompt = 1;
     else
-        MenuInfo[menu->menu].wrap = 0;
+        MenuInfo[menu->menu].cancel_prompt = 0;
     if (menu->confirm_pressed != 0) {
         MenuSFX = MENUSFX_MENUSELECT;
         if (MenuInfo[GameMenu[GameMenuLevel - 1].menu].id == 1000) {
@@ -1057,5 +1057,68 @@ void __cdecl APIMenuDrawGameState(f32 x, f32 y, i32 highlight, i32 slot) {
     } else {
         MenuSmartTextEx(apitxt_NOSPACE, x, (f32)(y + MenuTextScalePc * 0.5), 1.0f, MenuTextScalePc, MenuTextScalePc,
                         MenuTextScalePc, 0, MENUWARNR, MENUWARNG, MENUWARNB, 0.4f, 2, NULL, 0, MenuA);
+    }
+}
+
+static void MenuDrawNoDataMessagePc(void) {
+    char message[1024];
+    f32 scale = MenuTextScalePc;
+    sprintf(message, apitxt_NODATAAVAILABLE, apiGameName);
+    MenuSmartTextEx(message, 0.0f, -0.4f, 1.0f, scale, scale, scale, 0, MENUNORMALR, MENUNORMALG, MENUNORMALB, 1.5f, 3,
+                    NULL, 0, MenuA);
+}
+
+void __cdecl MenuEnterNoMemoryCard(MENU *menu) {
+    (void)menu;
+}
+
+void __cdecl MenuDrawNoData(MENU *menu) {
+    MenuDrawNoDataMessagePc();
+    ((SAVE_MENU_VIEW_PC *)menu)->draw_y = MENUBOTY;
+    DrawMenuEntryEx(menu, apitxt_OK, (u8)MenuA);
+}
+
+static void MenuDrawLoadingMessagePc(void) {
+    f32 scale = MenuTextScalePc;
+    MenuSmartTextEx(apitxt_GAMELOADING, 0.0f, -0.4f, 1.0f, scale, scale, scale, 0, MENUNORMALR, MENUNORMALG,
+                    MENUNORMALB, 1.5f, 2, NULL, 0, MenuA);
+}
+static void MenuDrawLoadedMessagePc(void) {
+    f32 scale = MenuTextScalePc;
+    MenuSmartTextEx(apitxt_GAMELOADED, 0.0f, -0.4f, 1.0f, scale, scale, scale, 0, MENUNORMALR, MENUNORMALG, MENUNORMALB,
+                    1.5f, 2, NULL, 0, MenuA);
+}
+static void MenuDrawLoadFailedMessagePc(void) {
+    f32 scale = MenuTextScalePc;
+    MenuSmartTextEx(apitxt_FAILEDTOLOAD, 0.0f, 0.0f, 1.0f, scale, scale, scale, 0, MENUNORMALR, MENUNORMALG,
+                    MENUNORMALB, 1.5f, 3, NULL, 0, MenuA);
+}
+static void MenuDrawLoadCorruptMessagePc(void) {
+    f32 scale = MenuTextScalePc;
+    MenuSmartTextEx(apitxt_CORRUPTLOAD, 0.0f, 0.0f, 1.0f, scale, scale, scale, 0, MENUNORMALR, MENUNORMALG, MENUNORMALB,
+                    1.5f, 3, NULL, 0, MenuA);
+}
+static i32 MenuLoadResultShownPc;
+void __cdecl MenuDrawLoading(MENU *menu) {
+    (void)menu;
+    NuStrCpy(MenuHeader, apitxt_LOADGAME);
+    header_r = MENUHEADERR;
+    header_g = MENUHEADERG;
+    header_b = MENUHEADERB;
+    if (memcard_loadneeded != 0 || memcard_loadstarted != 0 || memcard_loadmessage_delay > 0.0f) {
+        MenuLoadResultShownPc = 0;
+        MenuDrawLoadingMessagePc();
+    } else {
+        if (MenuLoadResultShownPc == 0) {
+            MenuAlpha = 0.0f;
+            MenuA = 0;
+            MenuLoadResultShownPc = 1;
+        }
+        if (memcard_loadfailed != 0)
+            MenuDrawLoadFailedMessagePc();
+        else if (memcard_loadcorrupt != 0)
+            MenuDrawLoadCorruptMessagePc();
+        else
+            MenuDrawLoadedMessagePc();
     }
 }

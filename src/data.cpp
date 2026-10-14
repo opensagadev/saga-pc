@@ -10292,29 +10292,34 @@ extern "C" {
     f32 NuVideoFrameRate;
     OcclusionManager g_OcclusionManager = {0, 1, {0}, {{0}}, 0, 0, 0.3f, -1.0f, 0, 0, {0}};
 
+    void __cdecl MenuEnterNoMemoryCard(MENU *);
+    void __cdecl MenuDrawNoData(MENU *);
+    void __cdecl MenuDrawLoading(MENU *);
+    void __cdecl MenuUpdateFileCorrupt(MENU *);
+
     // STUBBED: reserved PC menu callbacks remain unavailable.
     MENUFNINFO MenuInfo[100] = {
         {1000, NULL, NULL, NULL, NULL, -1, -1, 0, 1, 1, 0},
         {1001, NULL, NULL, NULL, NULL, -1, -1, 0, 0, 0, 0},
         {1002, NULL, NULL, NULL, NULL, -1, -1, 0, 1, 1, 0},
-        {1004, NULL, NULL, NULL, NULL, -1, -1, 0, 1, 1, 0},
+        {1004, MenuEnterNoMemoryCard, MenuDrawNoMemoryCard, MenuUpdateNoMemoryCard, NULL, -1, -1, 0, 1, 1, 0},
         {1003, NULL, NULL, NULL, NULL, -1, -1, 0, 1, 1, 0},
-        {1005, NULL, NULL, NULL, NULL, -1, -1, 0, 1, 1, 0},
+        {1005, NULL, MenuDrawNoData, MenuUpdateNoData, NULL, -1, -1, 0, 1, 1, 0},
         {1006, NULL, NULL, NULL, NULL, -1, -1, 0, 1, 1, 0},
         {1007, NULL, NULL, NULL, NULL, -1, -1, 0, 0, 0, 0},
         {1008, NULL, NULL, NULL, NULL, -1, -1, 0, 1, 1, 0},
         {1009, NULL, NULL, NULL, NULL, -1, -1, 0, 0, 0, 0},
         {1010, NULL, NULL, NULL, NULL, -1, -1, 0, 1, 0, 0},
         {1011, NULL, NULL, NULL, NULL, -1, -1, 0, 1, 1, 0},
-        {1012, NULL, NULL, NULL, NULL, -1, -1, 0, 1, 1, 0},
-        {1013, NULL, NULL, NULL, NULL, -1, -1, 0, 1, 1, 0},
-        {1014, NULL, NULL, NULL, NULL, -1, -1, 0, 0, 0, 0},
+        {1012, MenuEnterLoad, MenuDrawLoad, MenuUpdateLoad, MenuExitLoad, -1, -1, 0, 1, 1, 0},
+        {1013, NULL, MenuDrawLoadConfirm, MenuUpdateLoadConfirm, NULL, -1, -1, 0, 1, 1, 0},
+        {1014, NULL, MenuDrawLoading, MenuUpdateLoading, NULL, -1, -1, 0, 0, 0, 0},
         {1015, NULL, NULL, NULL, NULL, -1, -1, 0, 0, 0, 0},
         {1016, NULL, NULL, NULL, NULL, -1, -1, 0, 1, 1, 0},
-        {1017, NULL, NULL, NULL, NULL, -1, -1, 0, 1, 1, 0},
+        {1017, NULL, MenuDrawLoadCancel, MenuUpdateLoadCancel, NULL, -1, -1, 0, 1, 1, 0},
         {1018, NULL, NULL, NULL, NULL, -1, -1, 0, 1, 1, 0},
         {1019, NULL, NULL, NULL, NULL, -1, -1, 0, 1, 0, 0},
-        {1020, NULL, NULL, NULL, NULL, -1, -1, 0, 1, 1, 0},
+        {1020, NULL, MenuDrawFileCorrupt, MenuUpdateFileCorrupt, NULL, -1, -1, 0, 1, 1, 0},
         {1021, NULL, NULL, NULL, NULL, -1, -1, 0, 0, 0, 0},
         {1022, MenuEnterStartNewGame, NULL, NULL, NULL, -1, -1, 0, 0, 0, 0},
         {1023, NULL, NULL, NULL, NULL, -1, -1, 0, 1, 1, 0},
@@ -32163,4 +32168,10 @@ extern "C" {
 #pragma data_seg(".data$ComplexShadowBasePc")
     f32 ComplexShadowBasePc = 25.0f;
 #pragma data_seg()
+}
+
+extern "C" {
+    i32 MenuOptionsPlayerFlagPc;
+    f32 MenuSaveSlotsWidthPc = 0.5f;
+    f32 MenuSaveSlotsStepYPc;
 }

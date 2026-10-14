@@ -959,6 +959,9 @@ address    , symbol                                                         , si
 0x491d50,?NuMainUpdateFrame@@YAXPAUWORLDINFO_s@@PAH@Z,2715,"void __cdecl (WORLDINFO *, i32 *)"
 0x4927f0,?NuMainRenderWorld@@YAXPAUWORLDINFO_s@@@Z,845,void __cdecl (WORLDINFO *)
 0x00492b40 , _NuMain                                                        , 4332  , "i32 __cdecl (i32, char **)"
+0x493e60,_DrawGameState,794,
+0x494180,?DrawSaveSlotsImplPc@@YAXPAUmenu_s@@M@Z,203,
+0x494250,_DrawSaveSlots,23,
 0x004942c0 , _MenuEnterOptions                                              , 60    , void __cdecl (MENU *)
 0x00494300 , _MenuUpdateOptions                                             , 690   , void __cdecl (MENU *)
 0x004945c0 , _MenuDrawOptions                                               , 510   , void __cdecl (MENU *)
@@ -1923,6 +1926,7 @@ address    , symbol                                                         , si
 0x509ca0,_MenuRepeat,96,"void __cdecl(i32 *,i32 *,f32 *,u8 *,f32,f32)"
 0x509d00,_UpdateMenu,1756,"i32 __cdecl(u32,u32,u32,u32,f32,u32,u32,u32,u32)"
 0x50a450,_MenuEnterSave,364,void __cdecl(MENU *)
+0x50a5d0,_MenuEnterNoMemoryCard,1,
 0x50a5e0,_MenuEnterSaveConfirm,38,void __cdecl(MENU *)
 0x50a610,_MenuEnterAutoSaveWarning,21,void __cdecl(MENU *)
 0x50a630,_MenuEnterAutoSaveCancel,29,void __cdecl(MENU *)
@@ -1993,12 +1997,19 @@ address    , symbol                                                         , si
 0x50fed0,_DrawMenu,543,void __cdecl(i32)
 0x5100f0,_APIMenuDrawGameState,746,"void __cdecl(f32,f32,i32,i32)"
 0x5103e0,_APIMenuDrawMemCardSlots,1235,"void __cdecl(MENU *,f32)"
+0x510970,_MenuDrawNoDataMessagePc,177,
+0x510c10,_MenuDrawLoadingMessagePc,114,
+0x510c90,_MenuDrawLoadedMessagePc,114,
+0x510d10,_MenuDrawLoadFailedMessagePc,108,
+0x510d80,_MenuDrawLoadCorruptMessagePc,108,
 0x511220,_MenuDrawFileCorrupt,158,void __cdecl(MENU *)
+0x511390,_MenuDrawLoading,257,
 0x5114a0,_loadsaveCallEachFrame,91,void __cdecl(void)
 0x511500,_Text3D,89,
 0x5115d0,_LoadButtonFont,98,"VUFNT *__cdecl(char *,char *,VARIPTR *,VARIPTR *,i32)"
 0x5116c0,_MenuDrawSave,170,void __cdecl(MENU *)
 0x511770,_MenuDrawNoMemoryCard,69,void __cdecl(MENU *)
+0x5117c0,_MenuDrawNoData,46,
 0x5117f0,_MenuDrawDeleteConfirm,168,void __cdecl(MENU *)
 0x5118a0,_MenuDrawSaveConfirm,334,void __cdecl(MENU *)
 0x511a60,_MenuDrawLoad,161,void __cdecl(MENU *)
@@ -6554,6 +6565,10 @@ address    , symbol                                                         , si
 0x6daf20,?SetHeight@PC_WINDOW_OPTIONS_PC@@QAEXH@Z,13,void __thiscall PC_WINDOW_OPTIONS_PC::SetHeight(i32)
 0x6daf50,?SetRefresh@PC_WINDOW_OPTIONS_PC@@QAEXH@Z,13,void __thiscall PC_WINDOW_OPTIONS_PC::SetRefresh(i32)
 0x6daf60,?SetMultisample@PC_WINDOW_OPTIONS_PC@@QAEXH@Z,13,void __thiscall PC_WINDOW_OPTIONS_PC::SetMultisample(i32)
+0x6daf80,?SetSfxVolume@PC_WINDOW_OPTIONS_PC@@QAEXH@Z,13,
+0x6daf90,?SetMusicVolume@PC_WINDOW_OPTIONS_PC@@QAEXH@Z,13,
+0x6dafa0,?SetMasterVolume@PC_WINDOW_OPTIONS_PC@@QAEXH@Z,13,
+0x6dafb0,?SetMusicEnabled@PC_WINDOW_OPTIONS_PC@@QAEXE@Z,13,
 0x6daff0,?SetBloomMethod@PC_WINDOW_OPTIONS_PC@@QAEXH@Z,13,void __thiscall PC_WINDOW_OPTIONS_PC::SetBloomMethod(i32)
 0x6db000,?SetDesiredBloomMethod@PC_WINDOW_OPTIONS_PC@@QAEXH@Z,13,void __thiscall PC_WINDOW_OPTIONS_PC::SetDesiredBloomMethod(i32)
 0x6db020,?SetDesiredShadowMethod@PC_WINDOW_OPTIONS_PC@@QAEXH@Z,13,void __thiscall PC_WINDOW_OPTIONS_PC::SetDesiredShadowMethod(i32)
@@ -8690,6 +8705,7 @@ address    , symbol                                                         , si
 0x7532ac,__real@bf4ccccd,,const f32
 0x7532b4,__real@3f333333,4,const f32
 0x7532b8   , __real@3ecccccd                                                , 4     , const f32
+0x7532c4,__real@3ee66666,4,const f32
 0x7532c8,_TerrainScanMargin02Pc,,const f64
 0x7532d0,__real@3fb33333,4,f32
 0x7532d4,__real@3f266666,4,const f32
@@ -16156,6 +16172,7 @@ address    , symbol                                                         , si
 0x7facbd,_MENUEXITG,1,u8
 0x7facbe,_MENULOSTR1,1,u8
 0x7facc0,_MENULOSTB1,1,u8
+0x7facc4,_MenuSaveSlotsWidthPc,4,f32
 0x007faccc , _opts_sfx_wait                                                 , 4     , f32
 0x7facd8,_MenuTitlesPromptYPc,4,f32
 0x7facdc,_MenuTitlesWidePromptYPc,4,f32
@@ -17886,6 +17903,7 @@ address    , symbol                                                         , si
 0x87b738,_MenuKeyboardPendingPc,,i32
 0x0087b73c , _new_level_from_menu                                           , 4     , i32
 0x87b748,_AlternateHudRgbPc,,u8[3]
+0x87b74c,_MenuSaveSlotsStepYPc,4,f32
 0x0087b750 , _opts_sfx_i                                                    , 4     , i32
 0x87b754,_newgame_menudrawoff,,i32
 0x0087b758 , _newgamecam                                                    , 4     , i32
@@ -19032,6 +19050,7 @@ address    , symbol                                                         , si
 0x921ee0,_TextPrintModePc,,i32
 0x00921ee4 , _buttonmapfn                                                   , 4     , "void (*)(char *, char *)"
 0x00921ee8 , _smarttext_fwn                                                 , 4     , i32
+0x921f00,_MenuLoadResultShownPc,4,i32
 0x00921f08 , _global_aiscripts                                              , 8     , NULISTHDR
 0x922110,_AIScriptConstantRecordsPc,,AISCRIPT_CONST_RECORD_PC[8]
 0x922230,_AiRndrCullDistance,4,f32
@@ -19092,6 +19111,7 @@ address    , symbol                                                         , si
 0x924828,_saveload_cardchanged,,i32
 0x924830,_saveload_savepresent,,i32
 0x924838,_saveload_autosavedisabled,,i32
+0x924840,_MenuOptionsPlayerFlagPc,4,i32
 0x924844,_saveload_filecorrupt,,i32
 0x924854,_NuFadeMaxDataPC,,i32
 0x924858,_NuFadeMaxGroupsPC,,i32

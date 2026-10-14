@@ -3,6 +3,8 @@
 #include <stdio.h>
 #include <string.h>
 
+void __cdecl GameDrawMenuEntry(MENU *, char *);
+
 void MenuInitialiseEx(MENUFNINFO *menu_info, i32 menu_id_count, i32 language_count,
                       void (*draw_save_slots_info_fn)(f32, f32, i32, i32), i32 is_fade_enabled, i32 is_shadow_enabled) {
     char menus_used_str[64];
@@ -90,87 +92,19 @@ void MenuEnterOptions(MENU *menu) {
     }
 }
 
-void MenuUpdateOptions(MENU *menu) {
-    i32 accept_row;
-    i32 requested_sound;
-    i32 sound;
-    f32 title_music_volume;
-
-    GameSetSoundVolume(&TempOptions);
-    if (WORLD->current_level != TITLES_LDATA) {
-        GameSetMusicVolume(&TempOptions);
-    } else if (TempOptions.music_enabled != 0) {
-        title_music_volume = GameGetMusicVolume(&TempOptions);
-        STUBBED_NAMED(0x00547a30); /* legoSetMusicVolume(title_music_volume) */
-        (void)title_music_volume;
-    } else {
-        STUBBED_NAMED(0x00547a30); /* legoSetMusicVolume(0.0f) */
-    }
-
-    opts_sfx_wait -= FRAMETIME;
-    if (opts_sfx_wait <= 0.0f) {
-        opts_sfx_wait += 1.5;
-        opts_sfx_i = (i32)((u32)opts_sfx_i + 1u);
-        if (opts_sfx_i == 1) {
-            opts_sfx_i = 0;
-        }
-    }
-
-    if (menu->cancel_pressed != 0) {
-        STUBBED_NAMED(0x00509ab0); /* BackupMenu() */
-        STUBBED_NAMED(0x00547990); /* GameAudio_GetSfxId(0x31) */
-        MenuSFX = -1;
-        return;
-    }
-
-    accept_row = 1;
-    if (menu->selected_item == 0) {
-        menu->selected_item_column = TempOptions.master_volume;
-        if (menu->left_pressed != 0 && TempOptions.master_volume != 0) {
-            --TempOptions.master_volume;
-        } else if (menu->right_pressed != 0 && TempOptions.master_volume < 10) {
-            ++TempOptions.master_volume;
-        }
-    } else {
-        accept_row = 2;
-        if (menu->selected_item == 1 && menu->confirm_pressed != 0) {
-            TempOptions.music_enabled = TempOptions.music_enabled == 0;
-            STUBBED_NAMED(0x00547990); /* GameAudio_GetSfxId(0x30) */
-            MenuSFX = -1;
-        }
-    }
-
-    if (menu->selected_item == accept_row && menu->confirm_pressed != 0) {
-        requested_sound = memcmp(&TempOptions, &Game.options_save, sizeof(TempOptions)) == 0 ? 0x31 : 0x30;
-        STUBBED_NAMED(0x00547990); /* GameAudio_GetSfxId(requested_sound) */
-        (void)requested_sound;
-        sound = -1;
-        Game.options_save = TempOptions;
-        STUBBED_NAMED(0x00494549); /* selected-player option flag: PC owner at 0x00924840 unresolved */
-        STUBBED_NAMED(0x006daf80); /* PC settings sound volume */
-        STUBBED_NAMED(0x006daf90); /* PC settings music volume */
-        STUBBED_NAMED(0x006dafa0); /* PC settings master volume */
-        STUBBED_NAMED(0x006dafb0); /* PC settings music-enabled flag */
-        STUBBED_NAMED(0x006db1c0); /* PC settings persistence */
-        STUBBED_NAMED(0x00509ab0); /* BackupMenu() */
-        SfxCheckMusicOnOff(&Game.options_save);
-        MenuSFX = sound;
-    }
-}
-
 void MenuDrawOptions(MENU *menu) {
     char text[256];
     menu->item_scale = 1.0f;
 
     sprintf(text, Menu_OptionsVolumeFormat, TTab[tAUDIOVOLUME], TempOptions.master_volume, 10);
     dme_sy = menu->item_scale;
-    STUBBED_NAMED(0x00574de0); /* GameDrawMenuEntry(menu, text) */
+    GameDrawMenuEntry(menu, text);
 
     NuStrCpy(text, TTab[tMUSIC]);
     NuStrCat(text, Menu_ColonSeparator);
     NuStrCat(text, TTab[TempOptions.music_enabled != 0 ? tON : tOFF]);
     dme_sy = menu->item_scale;
-    STUBBED_NAMED(0x00574de0); /* GameDrawMenuEntry(menu, text) */
+    GameDrawMenuEntry(menu, text);
 
     if (memcmp(&TempOptions, &Game.options_save, sizeof(TempOptions)) == 0) {
         NuStrCpy(text, TTab[tBACK]);
@@ -180,7 +114,7 @@ void MenuDrawOptions(MENU *menu) {
         NuStrCpy(text, TTab[tACCEPT]);
     }
     dme_sy = menu->item_scale;
-    STUBBED_NAMED(0x00574de0); /* GameDrawMenuEntry(menu, text) */
+    GameDrawMenuEntry(menu, text);
 }
 
 void MenuExitOptions(MENU *menu) {

@@ -1,6 +1,8 @@
 #include "saga.h"
 #include <string.h>
 
+extern "C" void __cdecl DrawSaveSlots(MENU *, f32);
+
 enum FADETYPE_VALUE {
     FADE_TYPE_NONE = -1,
     FADE_TYPE_SCREEN = 0,
@@ -497,8 +499,7 @@ extern "C" int __cdecl NuMain(int argc, char **argv) {
     WorldInfo_InitOnce();
     InitOnce(argc, argv);
 
-    STUBBED_NAMED("NuMain: DrawSaveSlots callback at 0x00494250");
-    MenuInitialise(GameMenuInfo, 0x17, LANGUAGECOUNT, NULL, 1, 0);
+    MenuInitialise(GameMenuInfo, 0x17, LANGUAGECOUNT, DrawSaveSlots, 1, 0);
     MenuReset();
     edGraInitTerrainSwapProtection();
 

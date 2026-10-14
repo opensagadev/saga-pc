@@ -7598,6 +7598,10 @@ typedef struct PC_WINDOW_OPTIONS_PC {
     void __thiscall SetDeviceHeight(i32 value);
     void __thiscall SetRefresh(i32 value);
     void __thiscall SetMultisample(i32 value);
+    void __thiscall SetSfxVolume(i32 value);
+    void __thiscall SetMusicVolume(i32 value);
+    void __thiscall SetMasterVolume(i32 value);
+    void __thiscall SetMusicEnabled(u8 value);
     void __thiscall SetBloomMethod(i32 value);
     void __thiscall SetShadowMethod(i32 value);
     void __thiscall SetSpeedBlurSupported(u8 value);
