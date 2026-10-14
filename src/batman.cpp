@@ -201,6 +201,7 @@ static void NuMainUpdateFrame(WORLDINFO *world, i32 *frame_flag) {
         if ((world->current_level->flags & 8) != 0) {
             TerrainPlatformOldUpdate();
         }
+        LOG_INFO_IF(GameTimer.update_count < 2, "ProcessGizFlow before: world=%p", (void *)WORLD);
         ProcessGizFlow(world->giz_flow, FRAMETIME);
         LOG_INFO_IF(GameTimer.update_count < 2, "Update stage: after ProcessGizFlow world=%p", (void *)WORLD);
         STUBBED_NAMED("NuMainUpdateFrame: AIPathCnxControlSysUpdate(world+0x4670) at 0x0043d0c0");
