@@ -164,6 +164,7 @@ static void NuMainUpdateFrame(WORLDINFO *world, i32 *frame_flag) {
         }
     }
     STUBBED_NAMED("NuMainUpdateFrame: theGameThings->ProcessThings(&packet) via 0x0095e438");
+    LOG_INFO_IF(GameTimer.update_count < 2, "Update stage: before sound world=%p", (void *)WORLD);
     if (NOSOUND == 0) {
         STUBBED_NAMED("NuMainUpdateFrame: NuSound3SetDPL(options, 0) at 0x00698820");
         NuSound3Update();
@@ -171,6 +172,7 @@ static void NuMainUpdateFrame(WORLDINFO *world, i32 *frame_flag) {
         STUBBED_NAMED("NuMainUpdateFrame: NuSound3SetRumblePads, NuSound3UpdateRumble at 0x00698920, SoundUpdate at "
                       "0x00653460, ProcessMusicChanges at 0x00548c40");
     }
+    LOG_INFO_IF(GameTimer.update_count < 2, "Update stage: after sound world=%p", (void *)WORLD);
     if (Paused != 0 && screendump == 0 && !IsGrabbingScreen()) {
         NuMtlAnimateSetSpeedScale(0.0f);
         NuTexAnimSetMask(2);
@@ -194,16 +196,19 @@ static void NuMainUpdateFrame(WORLDINFO *world, i32 *frame_flag) {
         NuTexAnimSetMask(0xffff);
         CutScenes_Start(world);
         CutScenes_Update(world, Paused != 0 && !IsGrabbingScreen());
+        LOG_INFO_IF(GameTimer.update_count < 2, "Update stage: after CutScenes_Update world=%p", (void *)WORLD);
         STUBBED_NAMED("NuMainUpdateFrame: adaptive difficulty update(&adaptivedifficulty) at 0x00428a40");
         if ((world->current_level->flags & 8) != 0) {
             TerrainPlatformOldUpdate();
         }
         ProcessGizFlow(world->giz_flow, FRAMETIME);
+        LOG_INFO_IF(GameTimer.update_count < 2, "Update stage: after ProcessGizFlow world=%p", (void *)WORLD);
         STUBBED_NAMED("NuMainUpdateFrame: AIPathCnxControlSysUpdate(world+0x4670) at 0x0043d0c0");
         if (world->current_gscn != NULL) {
             NuGScnUpdate(world->current_gscn, FRAMETIME * 60.0f);
         }
         GameAnimSys_Update(world->game_anim_sys);
+        LOG_INFO_IF(GameTimer.update_count < 2, "Update stage: after GameAnimSys_Update world=%p", (void *)WORLD);
         STUBBED_NAMED("NuMainUpdateFrame: edanimUpdateObjects(1.0f) at 0x00686950");
         NuBridgeUpdate(&plr_lastpos);
         if (Grass_Available != 0) {
@@ -213,15 +218,20 @@ static void NuMainUpdateFrame(WORLDINFO *world, i32 *frame_flag) {
         CharPlatforms_Update((CHARPLATFORMSYS_s *)world->shadow_platform_list_pc);
         STUBBED_NAMED("NuMainUpdateFrame: Grabber_Update(world) at 0x00471650");
         TrafficAnimSys_Update(world->trafficanim_sys);
+        LOG_INFO_IF(GameTimer.update_count < 2, "Update stage: after TrafficAnimSys_Update world=%p", (void *)WORLD);
         GizmoSysEarlyUpdate(world->gizmo_sys, world, FRAMETIME);
+        LOG_INFO_IF(GameTimer.update_count < 2, "Update stage: after GizmoSysEarlyUpdate world=%p", (void *)WORLD);
         if ((world->current_level->flags & 8) != 0) {
             TerrainPlatformNewUpdate();
         }
         STUBBED_NAMED("NuMainUpdateFrame: UpdateSpecialSfx(world) at 0x005b1b10");
         Teleports_UpdateBeforeGameObjects(world);
         if (CUTSTOPGAME == 0) {
+            LOG_INFO_IF(GameTimer.update_count < 2, "Update stage: before ManageGameObjects world=%p", (void *)WORLD);
             ManageGameObjects();
+            LOG_INFO_IF(GameTimer.update_count < 2, "Update stage: after ManageGameObjects world=%p", (void *)WORLD);
             UpdateGameObjects(world);
+            LOG_INFO_IF(GameTimer.update_count < 2, "Update stage: after UpdateGameObjects world=%p", (void *)WORLD);
         } else {
             for (player = (GAMEOBJECT **)Player; player < (GAMEOBJECT **)&Player[8]; player++) {
                 object = *player;
@@ -239,9 +249,12 @@ static void NuMainUpdateFrame(WORLDINFO *world, i32 *frame_flag) {
             Pulses_Update((LEVEL_SFX_PULSE_PC *)world->pulses_sys);
             STUBBED_NAMED("NuMainUpdateFrame: Detonators_Update at 0x00426fa0, Batarangs_Update at 0x00405ac0, "
                           "UpdateCables at 0x00408af0");
+            LOG_INFO_IF(GameTimer.update_count < 2, "Update stage: before Level_Update world=%p", (void *)WORLD);
             Level_Update(world);
+            LOG_INFO_IF(GameTimer.update_count < 2, "Update stage: after Level_Update world=%p", (void *)WORLD);
             Bolts_Update(world);
             UpdateParts(FRAMETIME);
+            LOG_INFO_IF(GameTimer.update_count < 2, "Update stage: after UpdateParts world=%p", (void *)WORLD);
             if (KillPartsBrickImpactWaitPc > 0.0f) {
                 KillPartsBrickImpactWaitPc -= FRAMETIME;
             }
@@ -275,7 +288,9 @@ static void NuMainUpdateFrame(WORLDINFO *world, i32 *frame_flag) {
         STUBBED_NAMED("NuMainUpdateFrame: AddCameraRain(world, 0x7a) at 0x005a82c0");
         NuMtlAnimateSetSpeedScale(1.0f);
         NuMtlAnimateSetMask(0xffff);
+        LOG_INFO_IF(GameTimer.update_count < 2, "Update stage: before MoveGameCamera world=%p", (void *)WORLD);
         MoveGameCamera(GameCam);
+        LOG_INFO_IF(GameTimer.update_count < 2, "Update stage: after MoveGameCamera world=%p", (void *)WORLD);
         GameObjectToCameraDistances();
         STUBBED_NAMED("NuMainUpdateFrame: SetCameraMatrices at 0x0054a0d0");
         if (CUTSTOPGAME == 0) {
