@@ -530,3 +530,115 @@ void MiniKitDetector(NUVEC *position) {
     message.unknown_44 = ((void *)(GameMsg_Draw_MiniKitDetector));
     AddGameMsg(&message);
 }
+
+STATIC_ASSERT(sizeof(struct GIZMOPICKUPRUNTIMESYS_s) == 0x1c);
+STATIC_ASSERT(offsetof(struct GIZMOPICKUPRUNTIMESYS_s, pickups) == 0);
+STATIC_ASSERT(offsetof(struct GIZMOPICKUPRUNTIMESYS_s, temporary_pickups) == 4);
+STATIC_ASSERT(offsetof(struct GIZMOPICKUPRUNTIMESYS_s, pickup_count) == 8);
+STATIC_ASSERT(offsetof(struct GIZMOPICKUPRUNTIMESYS_s, total_score) == 0x10);
+STATIC_ASSERT(offsetof(struct GIZMOPICKUPRUNTIMESYS_s, draw_distance) == 0x14);
+STATIC_ASSERT(offsetof(struct GIZMOPICKUPRUNTIMESYS_s, pickup_scale) == 0x18);
+STATIC_ASSERT(offsetof(WORLDINFO, giz_buffer) == 0x104);
+STATIC_ASSERT(offsetof(WORLDINFO, level_idx) == 0x11c);
+STATIC_ASSERT(offsetof(WORLDINFO, area_index) == 0x120);
+STATIC_ASSERT(offsetof(WORLDINFO, current_level) == 0x128);
+STATIC_ASSERT(offsetof(AREA_DATA_PC, flags) == 0x7a);
+STATIC_ASSERT(offsetof(GIZMOPICKUP_PC, unknown_14) == 0x14);
+STATIC_ASSERT(offsetof(GIZMOPICKUP_PC, unknown_18) == 0x18);
+
+static __declspec(noinline) void SetAreaPickupScalePc(i32 area) {
+    u16 flags;
+    AreaPickupScale = 1.0f;
+    if (area < 0 || area >= AREACOUNT)
+        return;
+    flags = ADataList[area].flags;
+    if ((flags & 0x200) != 0) {
+        AreaPickupScale = 6.0f;
+        return;
+    }
+    if ((flags & 1) != 0)
+        AreaPickupScale = BonusArea != 0 ? 3.0f : 5.0f;
+}
+
+static __declspec(noinline) void AdjustPickupDrawDistancePc(i32 area, f32 *distance, i32 version) {
+    if (version > 6)
+        return;
+    if (version <= 5 && *distance < 10.0f)
+        *distance = 10.0f;
+    if (area >= 0 && area < AREACOUNT && (ADataList[area].flags & 1) != 0 && (f64)*distance < 100.0)
+        *distance = 100.0f;
+}
+
+void *__cdecl GizmoPickups_ReserveBufferSpace(void *world_ptr) {
+    WORLDINFO *world = (WORLDINFO *)world_ptr;
+    struct GIZMOPICKUPRUNTIMESYS_s *system;
+    world->giz_buffer.addr = (world->giz_buffer.addr + 3u) & ~3u;
+    world->pickup_runtime_sys = (PICKUP_RUNTIME_SYS_PC *)world->giz_buffer.addr;
+    world->giz_buffer.addr += sizeof(*system);
+    system = (struct GIZMOPICKUPRUNTIMESYS_s *)world->pickup_runtime_sys;
+    memset(system, 0, sizeof(*system));
+    system->draw_distance = 10.0f;
+    SetAreaPickupScalePc(world->area_index);
+    ((struct GIZMOPICKUPRUNTIMESYS_s *)world->pickup_runtime_sys)->pickup_scale = AreaPickupScale;
+    SetAreaPickupGravity(world->area_index, world->level_idx);
+    if ((u16)world->current_level->max_pickups > 0) {
+        world->giz_buffer.addr = (world->giz_buffer.addr + 3u) & ~3u;
+        ((struct GIZMOPICKUPRUNTIMESYS_s *)world->pickup_runtime_sys)->pickups =
+            (GIZMOPICKUP_PC *)world->giz_buffer.addr;
+        world->giz_buffer.addr += (u16)world->current_level->max_pickups * sizeof(GIZMOPICKUP_PC);
+    }
+    world->giz_buffer.addr = (world->giz_buffer.addr + 3u) & ~3u;
+    ((struct GIZMOPICKUPRUNTIMESYS_s *)world->pickup_runtime_sys)->temporary_pickups =
+        (GIZMOPICKUP_PC *)world->giz_buffer.addr;
+    world->giz_buffer.addr += 64 * sizeof(GIZMOPICKUP_PC);
+    return world->pickup_runtime_sys;
+}
+
+i32 __cdecl GizmoPickups_Load(void *world_ptr, void *unused) {
+    WORLDINFO *world = (WORLDINFO *)world_ptr;
+    struct GIZMOPICKUPRUNTIMESYS_s *system;
+    GIZMOPICKUP_PC *pickup;
+    i32 version, value, index;
+    f32 number;
+    (void)unused;
+    if (((struct GIZMOPICKUPRUNTIMESYS_s *)world->pickup_runtime_sys)->pickup_count != 0)
+        return 0;
+    version = EdFileReadInt();
+    value = EdFileReadInt();
+    ((struct GIZMOPICKUPRUNTIMESYS_s *)world->pickup_runtime_sys)->pickup_count = value;
+    if (version >= 3) {
+        value = EdFileReadInt();
+        ((struct GIZMOPICKUPRUNTIMESYS_s *)world->pickup_runtime_sys)->total_score = value;
+    }
+    if (version >= 5) {
+        number = EdFileReadFloat();
+        ((struct GIZMOPICKUPRUNTIMESYS_s *)world->pickup_runtime_sys)->draw_distance = number;
+        number = EdFileReadFloat();
+        system = (struct GIZMOPICKUPRUNTIMESYS_s *)world->pickup_runtime_sys;
+        system->pickup_scale = number;
+        if (version > 5) {
+            AreaPickupScale = system->pickup_scale;
+        } else {
+            SetAreaPickupScalePc(world->area_index);
+            ((struct GIZMOPICKUPRUNTIMESYS_s *)world->pickup_runtime_sys)->pickup_scale = AreaPickupScale;
+        }
+    } else {
+        AreaPickupScale = 1.0f;
+        ((struct GIZMOPICKUPRUNTIMESYS_s *)world->pickup_runtime_sys)->pickup_scale = 1.0f;
+    }
+    AdjustPickupDrawDistancePc(world->area_index,
+                               &((struct GIZMOPICKUPRUNTIMESYS_s *)world->pickup_runtime_sys)->draw_distance, version);
+    SetAreaPickupGravity(world->area_index, world->level_idx);
+    pickup = ((struct GIZMOPICKUPRUNTIMESYS_s *)world->pickup_runtime_sys)->pickups;
+    for (index = 0; index < ((struct GIZMOPICKUPRUNTIMESYS_s *)world->pickup_runtime_sys)->pickup_count;
+         ++index, ++pickup) {
+        EdFileRead(pickup->name, sizeof(pickup->name));
+        EdFileReadNuVec(&pickup->position);
+        pickup->unknown_14[0] = (u8)EdFileReadChar();
+        if (version >= 2)
+            pickup->unknown_14[1] = (u8)EdFileReadChar();
+        if (version >= 4)
+            pickup->unknown_18[0] = (u8)EdFileReadChar();
+    }
+    return 1;
+}

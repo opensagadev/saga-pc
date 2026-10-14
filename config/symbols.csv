@@ -2977,8 +2977,10 @@ address    , symbol                                                         , si
 0x56f7f0,_GizmoPickups_AllocateProgressData,,"void * __cdecl(VARIPTR *, VARIPTR *)"
 0x56f810,_GizmoPickups_ClearProgress,,"void __cdecl(void *, void *)"
 0x56f860,_GizmoPickups_StoreProgress,,"void __cdecl(void *, void *, void *)"
+0x56f930,_SetAreaPickupScalePc,96,void (i32) optimizer-internal EAX
+0x56f990,_AdjustPickupDrawDistancePc,89,void (i32 area; f32 *distance; i32 version) optimizer-internal ECX/EDX/stack
 0x56f9f0,_SetAreaPickupGravity,104,"void __cdecl(i32, i32)"
-0x56fa60,_GizmoPickups_ReserveBufferSpace,,void * __cdecl(void *)
+0x56fa60,_GizmoPickups_ReserveBufferSpace,232,void * __cdecl(void *)
 0x56fb50,_GizmoPickup_SetVisibility,,"void __cdecl(GIZMO_PC *, i32)"
 0x56fb70,_GizmoPickups_Reset,319,
 0x56fcb0,_GizmoPickups_ResetPc,,"void __cdecl(void *, void *, void *)"
