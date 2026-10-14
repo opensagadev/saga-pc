@@ -333,17 +333,17 @@ address    , symbol                                                         , si
 0x440ad0,_Condition_IsVisible,95,
 0x440c70,_Condition_PlayerCategoryIs,38,
 0x441070,_Condition_EitherPlayerUsingForce,52,
-0x441a30,_Condition_EitherPlayerLocatorRangeXZ,195,
+0x441a30,_Condition_EitherPlayerLocatorRangeXZ,195,"f32 __cdecl (AISYS_PC *, AISCRIPTPROCESS_PC *, AIPACKET_PC *, char *, void *)"
 0x441f90,_Condition_IsSetAliveInit,53,
 0x4422c0,_Condition_NumForceObjectsInit,67,
 0x4423f0,_Condition_LastLevelInit,102,
-0x442790,_Condition_SockDistanceToPlayer,132,
-0x442820,_Condition_SockDistanceToOpponent,134,
-0x4428b0,_Condition_SockXDistanceToPlayer,189,
+0x442790,_Condition_SockDistanceToPlayer,132,"f32 __cdecl (AISYS_PC *, AISCRIPTPROCESS_PC *, AIPACKET_PC *, char *, void *)"
+0x442820,_Condition_SockDistanceToOpponent,134,"f32 __cdecl (AISYS_PC *, AISCRIPTPROCESS_PC *, AIPACKET_PC *, char *, void *)"
+0x4428b0,_Condition_SockXDistanceToPlayer,189,"f32 __cdecl (AISYS_PC *, AISCRIPTPROCESS_PC *, AIPACKET_PC *, char *, void *)"
 0x442bd0,_Condition_MaulShouldRunAway,261,
 0x443050,_Condition_TakenOver,156,
 0x443bf0,_Condition_AngleAboutMyLocatorToPlayerInit,36,
-0x443c20,_Condition_AngleAboutMyLocatorToPlayer,219,
+0x443c20,_Condition_AngleAboutMyLocatorToPlayer,219,"f32 __cdecl (AISYS_PC *, AISCRIPTPROCESS_PC *, AIPACKET_PC *, char *, void *)"
 0x443ef0,_Condition_InSameTriggerAreaAsNearestPlayer,180,
 0x443fc0   , _Action_SetTakeOverTarget                                       , 739   , "i32 __cdecl (AISYS_PC *, AISCRIPTPROCESS_PC *, AIPACKET_PC *, char **, i32, i32, f32)"
 0x4442b0   , _Action_ClearTakeOverTarget                                     , 52    , "i32 __cdecl (AISYS_PC *, AISCRIPTPROCESS_PC *, AIPACKET_PC *, char **, i32, i32, f32)"

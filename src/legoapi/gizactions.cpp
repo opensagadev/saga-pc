@@ -344,13 +344,15 @@ extern "C" {
 }
 
 extern "C" {
-    static f32 Condition_SockDistanceToPlayer(AISYS_PC *, AISCRIPTPROCESS_PC *, AIPACKET_PC *packet, char *, void *) {
+    f32 __cdecl Condition_SockDistanceToPlayer(AISYS_PC *, AISCRIPTPROCESS_PC *, AIPACKET_PC *packet, char *, void *) {
         f32 result = 0.0f;
         if (packet != NULL && packet->owner != NULL && player != NULL) {
             GAMEOBJECT *object = packet->owner->objptr;
-            if (player->field_661 != 0xff && player->field_661 == object->field_661) {
-                f32 distance = MidDistanceFromSockStart(WORLD->sock_sys, &player->sock_position);
-                result = distance - MidDistanceFromSockStart(WORLD->sock_sys, &object->sock_position);
+            GAMEOBJECT *target = player;
+            if (target->sock_position.sock_index != -1 &&
+                target->sock_position.sock_index == object->sock_position.sock_index) {
+                f64 distance = MidDistanceFromSockStart(WORLD->sock_sys, &target->sock_position);
+                result = static_cast<f32>(distance - MidDistanceFromSockStart(WORLD->sock_sys, &object->sock_position));
             }
         }
         return result;
@@ -358,19 +360,58 @@ extern "C" {
 }
 
 extern "C" {
-    static f32 Condition_SockXDistanceToPlayer(AISYS_PC *, AISCRIPTPROCESS_PC *, AIPACKET_PC *packet, char *, void *) {
+    f32 __cdecl Condition_SockDistanceToOpponent(AISYS_PC *, AISCRIPTPROCESS_PC *, AIPACKET_PC *packet, char *,
+                                                 void *) {
+        f32 result = 0.0f;
+        if (packet != NULL && packet->owner != NULL && packet->opponent != NULL) {
+            GAMEOBJECT *object = packet->owner->objptr;
+            GAMEOBJECT *target = packet->opponent->objptr;
+            if (target->sock_position.sock_index != -1 &&
+                target->sock_position.sock_index == object->sock_position.sock_index) {
+                f64 distance = MidDistanceFromSockStart(WORLD->sock_sys, &target->sock_position);
+                result = static_cast<f32>(distance - MidDistanceFromSockStart(WORLD->sock_sys, &object->sock_position));
+            }
+        }
+        return result;
+    }
+}
+
+extern "C" {
+    f32 __cdecl Condition_SockXDistanceToPlayer(AISYS_PC *, AISCRIPTPROCESS_PC *, AIPACKET_PC *packet, char *, void *) {
         f32 result = 0.0f;
         NUVEC player_offset, object_offset;
-        if (packet == NULL)
-            return 0.0f;
-        if (packet->owner != NULL && player != NULL) {
+        if (packet != NULL && packet->owner != NULL && player != NULL) {
             GAMEOBJECT *object = packet->owner->objptr;
-            if (player->field_661 != 0xff && player->field_661 == object->field_661) {
+            if (player->sock_position.sock_index != -1 &&
+                player->sock_position.sock_index == object->sock_position.sock_index) {
                 NuVecSub(&player_offset, &player->position, &player->sock_position.midpoint);
-                NuVecRotateY(&player_offset, &player_offset, -player->sock_position.midpoint_rotation.y);
+                NuVecRotateY(&player_offset, &player_offset, -player->sock_position.heading);
                 NuVecSub(&object_offset, &object->position, &object->sock_position.midpoint);
-                NuVecRotateY(&object_offset, &object_offset, -object->sock_position.midpoint_rotation.y);
+                NuVecRotateY(&object_offset, &object_offset, -object->sock_position.heading);
                 result = player_offset.x - object_offset.x;
+            }
+        }
+        return result;
+    }
+}
+
+extern "C" {
+    f32 __cdecl Condition_AngleAboutMyLocatorToPlayer(AISYS_PC *, AISCRIPTPROCESS_PC *processor, AIPACKET_PC *packet,
+                                                      char *, void *argument) {
+        f32 result = 0.0f;
+        if (argument != NULL && processor->locator != NULL && packet != NULL && packet->owner != NULL) {
+            GAMEOBJECT *object = packet->owner;
+            GAMEOBJECT *target = NULL;
+            if (reinterpret_cast<intptr_t>(argument) == -1)
+                target = player;
+            else if (reinterpret_cast<intptr_t>(argument) == 1)
+                target = static_cast<GAMEOBJECT *>(Player[1]);
+            if (target != NULL) {
+                NUANG object_angle = NuAtan2D(object->position.x - processor->locator->position.x,
+                                              object->position.z - processor->locator->position.z);
+                NUANG target_angle = NuAtan2D(target->position.x - processor->locator->position.x,
+                                              target->position.z - processor->locator->position.z);
+                result = static_cast<f32>(NuAngSub(target_angle, object_angle));
             }
         }
         return result;
@@ -384,8 +425,8 @@ extern "C" {
 }
 
 extern "C" {
-    static f32 Condition_EitherPlayerLocatorRangeXZ(AISYS_PC *, AISCRIPTPROCESS_PC *processor, AIPACKET_PC *packet,
-                                                    char *, void *argument) {
+    f32 __cdecl Condition_EitherPlayerLocatorRangeXZ(AISYS_PC *, AISCRIPTPROCESS_PC *processor, AIPACKET_PC *packet,
+                                                     char *, void *argument) {
         NUVEC difference;
         if (packet != NULL && packet->owner != NULL) {
             AILOCATOR_PC *locator = static_cast<AILOCATOR_PC *>(argument);
@@ -401,7 +442,7 @@ extern "C" {
                 if (player2 != NULL) {
                     second_distance = NuVecXZDist(&player2->position, &locator->position, &difference);
                 }
-                return NuFmin(first_distance, second_distance);
+                return second_distance > first_distance ? first_distance : second_distance;
             }
         }
         return 1.0e9f;
