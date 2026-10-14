@@ -17222,20 +17222,34 @@ STATIC_ASSERT(offsetof(PC_INPUT_MOUSE_RUNTIME_PC, port_activity) == 0x49);
 STATIC_ASSERT(offsetof(NuKeyboardOwner_PC, mouse_cooperative) == 0x3c);
 STATIC_ASSERT(offsetof(NuKeyboardOwner_PC, mouse_enabled) == 0x40);
 
+#pragma pack(push, 2)
 struct PC_INPUT_CONFIG_PC {
     char name[64];
     u32 product_id;
-    u8 unknown_44[0x16];
+    union {
+        u8 unknown_44[0x16];
+        struct {
+            u32 guid_data2, guid_data3;
+            u8 guid_data4[8];
+            i16 button_count, pov_count, axis_count;
+        };
+    };
     u8 deadzone;
     u8 unknown_5b;
     u8 alternate_deadzone;
     u8 unknown_5d;
     i16 key;
     u8 unknown_60[4];
-    u8 axes[4][3];
-    u8 unknown_axes[4][3];
+    union {
+        struct {
+            u8 axes[4][3];
+            u8 unknown_axes[4][3];
+        };
+        u8 all_axes[8][3];
+    };
     u8 buttons[16][2];
 };
+#pragma pack(pop)
 struct PC_INPUT_COMMAND_PC {
     u8 active;
     i8 axis, button;
@@ -17302,8 +17316,14 @@ struct PC_INPUT_RUNTIME_PC {
         struct {
             i32 field_4e00;
             u32 read_mask, action_mask, completed_mask;
-            u8 keyboard_polled, mouse_polled, suppress_key_1, field_4e13;
-            u8 unknown_4e14[0x20];
+            u8 keyboard_polled, mouse_polled, suppress_key_1;
+            union {
+                struct {
+                    u8 field_4e13;
+                    u8 unknown_4e14[0x20];
+                };
+                char blocked_keys[33];
+            };
         };
     };
     PC_INPUT_DEVICE_PC devices[14];
@@ -17361,12 +17381,65 @@ struct PC_INPUT_RUNTIME_PC {
     u32 CombineUiButtonsPc(i32 port, u32 buttons);
     void NormalizeAxisPairPc(i16 *x, i16 *y);
     void InitXInputCaps(const PC_XINPUT_CAPABILITIES_PC *, PC_INPUT_DEVICE_PC *);
+    void CopyBindingsPc(i32, i32, i32);
+    i32 HashAuxiliaryBindingsPc();
+    i32 BindingAvailablePc(i32, i32, i32, i32);
+    void ClearOtherBankConflictsPc(i32, i32);
+    void AssignBindingPc(i32, i32, i32, i32, i32, i32, i32, u32);
+    void ExportConfigPc(i32, PC_INPUT_CONFIG_PC *, i32, i32, i32);
+    void PromoteConfigPc(PC_INPUT_CONFIG_PC *, i32, PC_INPUT_CONFIG_PC *);
+    void SanitizeConfigNamePc(const char *, char *);
+    void FormatConfigTextPc(char *, PC_INPUT_CONFIG_PC *);
+    void WriteConfigTextPc(const char *, PC_INPUT_CONFIG_PC *);
+    void WriteConfigurationPc(PC_INPUT_CONFIG_PC *, i32, const char *);
+    void SaveConfigurationPc();
 };
+// Add public declarations in C++ context (PC_INPUT_CONFIG_PC type is C++ only).
+typedef i32(__cdecl *PC_INPUT_COMMAND_FILTER_PC)(i32, i32);
+extern u8 PcInputAxisRemap[16];
+extern u32 PcInputAxisRemapInitialized;
+extern "C" void __cdecl PcInputCopyBindingsPc(i32 port, i32 to_auxiliary, i32 bank);
+extern "C" void __cdecl PcInputResetMouseMotionPc();
+extern "C" char *__cdecl PcInputDeviceNamePc(i32 port);
+extern "C" void __cdecl PcInputSuppressKeyOnePc(i32 value);
+extern "C" void __cdecl PcInputSetMouseFieldPc(i32 value);
+extern "C" void __cdecl PcInputSetCapturedPortPc(i32 port);
+extern "C" i32 __cdecl PcInputCapturedPortPc();
+extern "C" void __cdecl PcInputSetBlockedKeysPc(const char *keys);
+extern "C" i32 __cdecl PcInputIsMouseDevicePc(i32 port);
+extern "C" i32 __cdecl PcInputIsJoystickDevicePc(i32 port);
+extern "C" i32 __cdecl PcInputMixConfigurationHashPc(i32 previous, i32 value);
+extern "C" i32 __cdecl PcInputHashAuxiliaryBindingsPc();
+extern "C" void __cdecl PcInputInstallConfigPc(PC_INPUT_CONFIG_PC *config, i32 port, i32 key, i32 auxiliary, i32 bank);
+extern "C" i32 __cdecl PcInputBindingPresentPc(i32 port, i32 action, i32 auxiliary, i32 bank);
+extern "C" PC_INPUT_CONFIG_PC *__cdecl PcInputFindConfigPc(u8 mask, i32 port, i32 key);
+extern "C" i32 __cdecl PcInputBindingAvailablePc(i32 bank, i32 bank_count, i32 kind, i32 value);
+extern "C" void __cdecl PcInputClearOtherBankConflictsPc(i32 bank, i32 bank_count);
+extern "C" i32 __cdecl PcInputResolveAuxiliaryConflictsPc(i32 bank, i32 bank_count);
+extern "C" i32 __cdecl PcInputAlternateDeadzonePc(i32 port);
+extern "C" void __cdecl PcInputSetDeadzonePc(i32 port, i32 value);
+extern "C" void __cdecl PcInputSetAlternateDeadzonePc(i32 port, i32 value);
+extern "C" PC_INPUT_COMMAND_FILTER_PC __cdecl PcInputGetCommandFilterPc();
+extern "C" void __cdecl PcInputAssignBindingPc(i32 action, i32 port, i32 kind, i32 value, i32 unused, i32 auxiliary,
+                                               i32 bank, u32 excluded);
+extern "C" i32 __cdecl PcInputBindingButtonNamePc(i32 action, i32 port, char *destination, i32 auxiliary, i32 bank,
+                                                  i32 a, i32 b, char *c);
+extern "C" void __cdecl PcInputStageAuxiliaryConfigPc(i32 port, i32 bank, i32 key);
+extern "C" void __cdecl PcInputSaveConfigurationPc();
+
 extern PC_INPUT_CONFIG_PC PcStaticInputConfigs[15];
 extern PC_DI_CAPS_PC PcKeyboardCapabilities;
 extern "C" u8 IsXInputProductPc(const GUID *);
 extern "C" void ConfigureJoystickRangesPc(NuKeyboardDevice_PC *);
 STATIC_ASSERT(sizeof(PC_INPUT_CONFIG_PC) == 0x9c);
+STATIC_ASSERT(offsetof(PC_INPUT_CONFIG_PC, guid_data2) == 0x44);
+STATIC_ASSERT(offsetof(PC_INPUT_CONFIG_PC, guid_data3) == 0x48);
+STATIC_ASSERT(offsetof(PC_INPUT_CONFIG_PC, guid_data4) == 0x4c);
+STATIC_ASSERT(offsetof(PC_INPUT_CONFIG_PC, button_count) == 0x54);
+STATIC_ASSERT(offsetof(PC_INPUT_CONFIG_PC, pov_count) == 0x56);
+STATIC_ASSERT(offsetof(PC_INPUT_CONFIG_PC, axis_count) == 0x58);
+STATIC_ASSERT(offsetof(PC_INPUT_CONFIG_PC, all_axes) == 0x64);
+STATIC_ASSERT(offsetof(PC_INPUT_RUNTIME_PC, blocked_keys) == 0x4e13);
 STATIC_ASSERT(offsetof(PC_INPUT_CONFIG_PC, product_id) == 0x40);
 STATIC_ASSERT(offsetof(PC_INPUT_CONFIG_PC, deadzone) == 0x5a);
 STATIC_ASSERT(offsetof(PC_INPUT_CONFIG_PC, alternate_deadzone) == 0x5c);
@@ -19126,6 +19199,13 @@ extern "C" {
     extern u8 dme_g;
     extern u8 dme_b;
     extern f32 MENUENTRYEXWIDTH;
+    void __cdecl MenuEnterInsertCard(MENU *);
+    void __cdecl MenuDrawInsertCard(MENU *);
+    void __cdecl MenuDrawFormatConfirm(MENU *);
+    void __cdecl MenuDrawNotEnoughSpace(MENU *);
+    void __cdecl MenuDrawSaving(MENU *);
+    void __cdecl MenuDrawDeleting(MENU *);
+    void __cdecl MenuDrawAutoSaveWarning(MENU *);
     void __cdecl MenuDrawSave(MENU *);
     void __cdecl MenuDrawLoad(MENU *);
     void __cdecl MenuDrawNoMemoryCard(MENU *);
@@ -25697,8 +25777,9 @@ extern "C" {
     extern nuhspecial_s painttargetcolour[3];
     void __cdecl Customiser_SaveModelTextureIDs(void *customiser, struct CHARACTER_MODEL_LAYERS_PC *model);
     extern LEVEL_OBJECT_CONFIG_PC ObjTab[750];
-    extern i32 apiloadcharactermodels_append;
-    extern i32 apiloadcharactermodels_nopakfile;
+    extern i32 CharacterLoadAreaModelsPc;
+    void __cdecl LoadSingleCharacter(BGPROCINFO *);
+    void __cdecl UpdateCharacterLoad(void);
     extern i32 g_loadingCharacterInHub;
     extern i32 hub_character_ready;
     extern f32 KITPOS2Y;
@@ -25917,6 +25998,9 @@ extern "C" {
     extern const char GameAudioName0075c510Pc[12];
     extern const char GameAudioName0075c51cPc[11];
     extern const char GameAudioName0075c528Pc[12];
+    void __cdecl Hub_UpdateMiniKits(WORLDINFO *world);
+    void __cdecl Customiser_Update(CUSTOMISER_LAYERS_PC *, WORLDINFO *);
+    extern i32 customiser_quit;
 #ifdef __cplusplus
 }
 #endif

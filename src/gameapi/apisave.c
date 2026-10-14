@@ -1122,3 +1122,124 @@ void __cdecl MenuDrawLoading(MENU *menu) {
             MenuDrawLoadedMessagePc();
     }
 }
+
+void __cdecl MenuEnterInsertCard(MENU *menu) {
+    (void)menu;
+}
+
+void __cdecl MenuDrawInsertCard(MENU *menu) {
+    char message[1024];
+    (void)menu;
+    (void)message;
+}
+
+void __cdecl MenuDrawFormatConfirm(MENU *menu) {
+    (void)menu;
+}
+
+static void MenuDrawNotEnoughSpaceMessagePc(void) {
+    f32 scale = MenuTextScalePc;
+    MenuSmartTextEx(apitxt_NOTENOUGHSPACE, 0.0f, 0.3f, 1.0f, scale, scale, scale, 0, MENUNORMALR, MENUNORMALG,
+                    MENUNORMALB, 1.5f, 3, NULL, 0, MenuA);
+}
+
+static void MenuDrawSavingMessagePc(void) {
+    f32 scale = MenuTextScalePc;
+    MenuSmartTextEx(apitxt_GAMESAVING, 0.0f, -0.2f, 1.0f, scale, scale, scale, 0, MENUNORMALR, MENUNORMALG, MENUNORMALB,
+                    1.5f, 2, NULL, 0, MenuA);
+}
+
+static void MenuDrawSavedMessagePc(void) {
+    f32 scale = MenuTextScalePc;
+    MenuSmartTextEx(apitxt_GAMESAVED, 0.0f, -0.2f, 1.0f, scale, scale, scale, 0, MENUNORMALR, MENUNORMALG, MENUNORMALB,
+                    1.5f, 2, NULL, 0, MenuA);
+}
+
+static void MenuDrawDeletingMessagePc(void) {
+    f32 scale = MenuTextScalePc;
+    MenuSmartTextEx(apitxt_DELETING, 0.0f, 0.2f, 1.0f, scale, scale, scale, 0, MENUNORMALR, MENUNORMALG, MENUNORMALB,
+                    1.5f, 2, NULL, 0, MenuA);
+}
+
+static void MenuDrawDeletedMessagePc(void) {
+    f32 scale = MenuTextScalePc;
+    MenuSmartTextEx(apitxt_DELETECOMPLETE, 0.0f, 0.0f, 1.0f, scale, scale, scale, 0, MENUNORMALR, MENUNORMALG,
+                    MENUNORMALB, 1.5f, 3, NULL, 0, MenuA);
+}
+
+static void MenuDrawSaveFailedMessagePc(void) {
+    f32 scale = MenuTextScalePc;
+    if (Menu_Overwriteflag != 0)
+        MenuSmartTextEx(apitxt_FAILEDTOOVERWRITE, 0.0f, 0.0f, 1.0f, scale, scale, scale, 0, MENUNORMALR, MENUNORMALG,
+                        MENUNORMALB, 1.5f, 3, NULL, 0, MenuA);
+    else
+        MenuSmartTextEx(apitxt_FAILEDTOSAVE, 0.0f, 0.0f, 1.0f, scale, scale, scale, 0, MENUNORMALR, MENUNORMALG,
+                        MENUNORMALB, 1.5f, 3, NULL, 0, MenuA);
+}
+
+static void MenuDrawAutoSaveWarningMessagePc(void) {
+    char message[1024];
+    f32 scale = MenuTextScalePc;
+    if (memcard_drawasiconfn != NULL)
+        memcard_drawasiconfn();
+    sprintf(message, apitxt_AUTOSAVE_ENABLED, saveload_autosave + 1);
+    MenuSmartTextEx(message, 0.0f, 0.45f, 1.0f, scale, scale, scale, 0, MENUNORMALR, MENUNORMALG, MENUNORMALB, 1.5f, 3,
+                    NULL, 0, MenuA);
+}
+
+void __cdecl MenuDrawNotEnoughSpace(MENU *menu) {
+    char message[1024];
+    (void)menu;
+    (void)message;
+    MenuDrawNotEnoughSpaceMessagePc();
+}
+
+static i32 MenuSaveResultShownPc;
+void __cdecl MenuDrawSaving(MENU *menu) {
+    (void)menu;
+    NuStrCpy(MenuHeader, apitxt_SAVEGAME);
+    header_r = MENUHEADERR;
+    header_g = MENUHEADERG;
+    header_b = MENUHEADERB;
+    if (memcard_saveneeded != 0 || memcard_savestarted != 0 || memcard_savemessage_delay > 0.0f) {
+        MenuSaveResultShownPc = 0;
+        MenuDrawSavingMessagePc();
+    } else {
+        if (MenuSaveResultShownPc == 0) {
+            MenuAlpha = 0.0f;
+            MenuA = 0;
+            MenuSaveResultShownPc = 1;
+        }
+        if (memcard_savefailed != 0)
+            MenuDrawSaveFailedMessagePc();
+        else
+            MenuDrawSavedMessagePc();
+    }
+}
+
+static i32 MenuDeleteResultShownPc;
+void __cdecl MenuDrawDeleting(MENU *menu) {
+    (void)menu;
+    NuStrCpy(MenuHeader, apitxt_DELETEGAME);
+    header_r = MENUHEADERR;
+    header_g = MENUHEADERG;
+    header_b = MENUHEADERB;
+    if (memcard_deleteneeded != 0 || memcard_deletestarted != 0 || memcard_deletemessage_delay > 0.0f) {
+        MenuDeleteResultShownPc = 0;
+        MenuDrawDeletingMessagePc();
+    } else {
+        if (MenuDeleteResultShownPc == 0) {
+            MenuAlpha = 0.0f;
+            MenuA = 0;
+            MenuDeleteResultShownPc = 1;
+        }
+        if (memcard_deletefailed == 0)
+            MenuDrawDeletedMessagePc();
+    }
+}
+
+void __cdecl MenuDrawAutoSaveWarning(MENU *menu) {
+    MenuDrawAutoSaveWarningMessagePc();
+    ((SAVE_MENU_VIEW_PC *)menu)->draw_y = MENUBOTY;
+    DrawMenuEntryEx(menu, apitxt_OK, (u8)MenuA);
+}

@@ -248,3 +248,8 @@ extern "C" {
 extern "C" i32 __cdecl AreaGetKeyboardOverridePc(void) {
     return (i8)((TEXT_INPUT_MANAGER_PC *)nu_input_state)->use_keyboard_override;
 }
+
+extern "C" i32 __cdecl PcInputBindingButtonNamePc(i32 action, i32 port, char *destination, i32 auxiliary, i32 bank,
+                                                  i32 a, i32 b, char *c) {
+    return ((TEXT_INPUT_MANAGER_PC *)nu_input_state)->ButtonName(action, port, destination, auxiliary, bank, a, b, c);
+}

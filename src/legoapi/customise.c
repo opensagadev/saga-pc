@@ -821,3 +821,255 @@ void __cdecl CustomiserDrawAccessoriesPc(CUSTOMISER_LAYERS_PC *input, GAMEOBJECT
         }
     }
 }
+
+/* Append after existing CUSTOM_ACCESSORY_* types in src/legoapi/customise.c.
+ * Retail 005935f0/179; no callees. Uses established local view types. */
+void __cdecl Customiser_SaveModelTextureIDs(void *input, CHARACTER_MODEL_LAYERS_PC *model) {
+    CUSTOMISER_CONFIG_PC *customiser = (CUSTOMISER_CONFIG_PC *)input;
+    CUSTOMISER_ANIMS_LOAD_PC *textures = (CUSTOMISER_ANIMS_LOAD_PC *)input;
+    i32 side, category, material;
+    if (customiser == NULL || model == NULL)
+        return;
+    for (side = 0; side < 2; ++side) {
+        if (customiser->character_ids[side] != model->model_id)
+            continue;
+        for (category = 0; category < 9; ++category) {
+            for (material = 0; material < ((CUSTOM_ACCESSORY_HIERARCHY_PC *)model->hierarchy)->material_count;
+                 ++material) {
+                NUMTL *entry = ((CUSTOM_ACCESSORY_HIERARCHY_PC *)model->hierarchy)->materials[material];
+                if (((CUSTOM_ACCESSORY_MATERIAL_PC *)entry)->material_tag ==
+                    customiser->categories[category]->material_tag)
+                    textures->model_texture_ids[side * 9 + category] = entry->texture_id;
+            }
+        }
+    }
+}
+
+/* Source-private views for customise.c. Config/piece/category types already defined there. */
+typedef struct custom_piece_anim_pc_s {
+    f32 duration, elapsed, hold_time;
+    u16 start_angle, target_angle, current_angle;
+    u8 unknown_12[2];
+} CUSTOM_PIECE_ANIM_PC;
+STATIC_ASSERT(sizeof(CUSTOM_PIECE_ANIM_PC) == 0x14);
+STATIC_ASSERT(offsetof(CUSTOM_PIECE_ANIM_PC, elapsed) == 4);
+STATIC_ASSERT(offsetof(CUSTOM_PIECE_ANIM_PC, hold_time) == 8);
+STATIC_ASSERT(offsetof(CUSTOM_PIECE_ANIM_PC, start_angle) == 0xc);
+STATIC_ASSERT(offsetof(CUSTOM_PIECE_ANIM_PC, target_angle) == 0xe);
+STATIC_ASSERT(offsetof(CUSTOM_PIECE_ANIM_PC, current_angle) == 0x10);
+/* Native customiser packet allocation stride is 0x48; canonical API view
+ * currently covers offsets 0..0x43. Preserve its unknown four-byte tail. */
+typedef struct customiser_anim_packet_pc_s {
+    ANIMPACKET_PC packet;
+    u8 unknown_44[4];
+} CUSTOMISER_ANIM_PACKET_PC;
+STATIC_ASSERT(sizeof(ANIMPACKET_PC) == 0x44);
+STATIC_ASSERT(sizeof(CUSTOMISER_ANIM_PACKET_PC) == 0x48);
+STATIC_ASSERT(offsetof(CUSTOMISER_ANIM_PACKET_PC, packet) == 0);
+STATIC_ASSERT(offsetof(CUSTOMISER_ANIM_PACKET_PC, unknown_44) == 0x44);
+typedef struct customiser_update_pc_s {
+    u8 unknown_00[0x178];
+    CUSTOMISER_ANIM_PACKET_PC animation_packets[2];
+    u8 unknown_208[0x60];
+    NUMTX joint_matrices[2][16];
+    u8 unknown_a68[4];
+    u8 animation_active[2], animation_state[2];
+    f32 animation_values[2];
+} CUSTOMISER_UPDATE_PC;
+STATIC_ASSERT(offsetof(CUSTOMISER_UPDATE_PC, animation_packets) == 0x178);
+STATIC_ASSERT(offsetof(CUSTOMISER_UPDATE_PC, joint_matrices) == 0x268);
+STATIC_ASSERT(offsetof(CUSTOMISER_UPDATE_PC, animation_active) == 0xa6c);
+STATIC_ASSERT(offsetof(CUSTOMISER_UPDATE_PC, animation_state) == 0xa6e);
+STATIC_ASSERT(offsetof(CUSTOMISER_UPDATE_PC, animation_values) == 0xa70);
+STATIC_ASSERT(offsetof(ANIMPACKET_PC, animation_index) == 0x36);
+STATIC_ASSERT(offsetof(ANIMPACKET_PC, previous_animation) == 0x38);
+STATIC_ASSERT(offsetof(ANIMPACKET_PC, requested_animation) == 0x3a);
+typedef struct custom_resource_update_pc_s {
+    u8 unknown_00[0x14];
+    u32 texture_id;
+    u8 unknown_18[8];
+} CUSTOM_RESOURCE_UPDATE_PC;
+STATIC_ASSERT(offsetof(CUSTOM_RESOURCE_UPDATE_PC, texture_id) == 0x14);
+STATIC_ASSERT(sizeof(CUSTOM_RESOURCE_UPDATE_PC) == 0x20);
+typedef struct custom_hierarchy_update_pc_s {
+    u8 unknown_00[0xc];
+    NUMTL **materials;
+    i32 material_count;
+} CUSTOM_HIERARCHY_UPDATE_PC;
+STATIC_ASSERT(offsetof(CUSTOM_HIERARCHY_UPDATE_PC, materials) == 0xc);
+STATIC_ASSERT(offsetof(CUSTOM_HIERARCHY_UPDATE_PC, material_count) == 0x10);
+typedef struct custom_material_update_pc_s {
+    u8 unknown_00[0x9a];
+    u8 material_tag;
+} CUSTOM_MATERIAL_UPDATE_PC;
+STATIC_ASSERT(offsetof(CUSTOM_MATERIAL_UPDATE_PC, material_tag) == 0x9a);
+STATIC_ASSERT(offsetof(WORLDINFO, customiser_resources) == 0x5120);
+STATIC_ASSERT(offsetof(NUMTL, texture_id) == 0x74);
+
+static CUSTOM_PIECE_ANIM_PC CustomiseArmsAnimPc[2], CustomiseLegsAnimPc[2], CustomiseHeadAnimPc[2];
+static u16 CustomiseTiltXPc[2], CustomiseBobPc[2], CustomiseTiltZPc[2], CustomiseRotYPc[2], CustomiseYRotPc[2];
+static f32 CustomiseMenuTimePc[2];
+static i32 CustomiseMenuYPc[2];
+static NUVEC CustomiseNoHatPosPc[2];
+static f32 CustomiseNameAlphaPc;
+i32 customiser_quit;
+static f32 CustomiseHeadOffsetPc = 0.21f;
+/* Canonical existing InitAsciiLeftPc, Game.customiser_start and AddGameMsg_Default are reused. */
+
+static void UpdateCustomPieceAnim(CUSTOM_PIECE_ANIM_PC *anim, u16 minimum, u16 maximum) {
+    i32 difference, index;
+    f64 blend;
+    if (anim->elapsed < anim->duration) {
+        anim->elapsed += FRAMETIME;
+        if (anim->elapsed >= anim->duration) {
+            anim->elapsed = anim->duration;
+            anim->hold_time = (f64)qrand() * (f64)(1.0f / 65535.0f) * 0.5 + 0.5;
+        }
+        difference = RotDiff(anim->start_angle, anim->target_angle);
+        index = (i32)((f64)anim->elapsed / anim->duration * 32768.0 + 16384.0);
+        blend = 1.0 - ((f64)NuTrigTable[(index >> 1) & 0x7fff] + 1.0) * 0.5;
+        anim->current_angle = (i32)((f64)difference * blend + anim->start_angle);
+    } else {
+        anim->hold_time -= FRAMETIME;
+        if (anim->hold_time <= 0.0f) {
+            anim->start_angle = anim->current_angle;
+            difference = RotDiff(minimum, maximum);
+            anim->target_angle = (i32)((f64)qrand() * (f64)(1.0f / 65535.0f) * difference + minimum);
+            anim->elapsed = 0.0f;
+            anim->duration = (f64)qrand() * (f64)(1.0f / 65535.0f) + 1.0;
+        }
+    }
+}
+
+void __cdecl Customiser_Update(CUSTOMISER_LAYERS_PC *input, WORLDINFO *world) {
+    CUSTOMISER_CONFIG_PC *customiser = (CUSTOMISER_CONFIG_PC *)input;
+    CUSTOMISER_UPDATE_PC *runtime = (CUSTOMISER_UPDATE_PC *)input;
+    /* Native conversions must all happen before the NULL test. */
+    const f32 frame_time = FRAMETIME;
+    const i32 rotation_step = (i32)(10922.0 * frame_time);
+    const i32 tilt_x_step = (i32)(12379.0 * frame_time);
+    const i32 tilt_z_step = (i32)(10376.0 * frame_time);
+    const i32 bob_step = (i32)(20206.0 * frame_time);
+    i32 active_side, active_count, preview_side, colour, side, category;
+    ADD_GAME_MESSAGE_PC message;
+    if (customiser == NULL)
+        return;
+    Customiser_GetActiveWeirdoIndex(&active_side, &active_count);
+    preview_side = -1;
+    if (active_count == 1)
+        preview_side = MissionMenuPacketPc.customise_other_player[active_side] != 0 ? active_side == 0 : active_side;
+    colour = menu_flash == 0 ? 255 : 191;
+    message = AddGameMsg_Default;
+    for (side = 0; side < 2; ++side) {
+        const i32 control_side = active_count == 2                           ? side
+                                 : MissionMenuPacketPc.active_player[0] != 0 ? 0
+                                 : MissionMenuPacketPc.active_player[1] != 0 ? 1
+                                                                             : -1;
+        const u16 *selection = Game.customiser_start[side].pieces;
+        CUSTOM_PIECE_CONFIG_PC *head, *torso, *weapon;
+        CHARACTER_MODEL_LAYERS_PC *model;
+        ANIMPACKET_PC *packet;
+        i32 saber_colour, intro;
+        u16 angle;
+        f32 no_hat;
+        CustomiseRotYPc[side] += rotation_step;
+        CustomiseTiltXPc[side] += tilt_x_step;
+        CustomiseTiltZPc[side] += tilt_z_step;
+        CustomiseBobPc[side] += bob_step;
+        UpdateCustomPieceAnim(&CustomiseHeadAnimPc[side], 0xd556, 0x2aaa);
+        UpdateCustomPieceAnim(&CustomiseArmsAnimPc[side], 0x1555, 0x4000);
+        UpdateCustomPieceAnim(&CustomiseLegsAnimPc[side], 0xe000, 0x4000);
+        head = &customiser->piece_sets[0][selection[0]];
+        torso = &customiser->piece_sets[1][selection[1]];
+        no_hat = 0.0f;
+        if ((torso->availability_flags & 1) != 0) {
+            if ((torso->availability_flags & 4) != 0)
+                no_hat = (head->availability_flags & 8) != 0 ? CustomiseHeadOffsetPc
+                                                             : (f64)CustomiseHeadOffsetPc * (f64)0.8f;
+            else
+                no_hat = (head->availability_flags & 8) != 0 ? (f64)CustomiseHeadOffsetPc * (f64)0.8f
+                                                             : (f64)CustomiseHeadOffsetPc * (f64)0.6f;
+        }
+        CustomiseNoHatPosPc[side].y = SeekValF(CustomiseNoHatPosPc[side].y, no_hat, 10.0f);
+        CustomiseMenuTimePc[side] += FRAMETIME;
+        model = APICharacterLoaded(customiser->character_ids[side]);
+        if (model == NULL)
+            continue;
+        weapon = &customiser->piece_sets[2][selection[2]];
+        saber_colour = LightSabre_ColourFromObj(weapon->weapon_model, NULL);
+        if (runtime->animation_state[side] > 0)
+            --runtime->animation_state[side];
+        packet = &runtime->animation_packets[side].packet;
+        intro = saber_colour == -1 ? 0x62 : 0x61;
+        if (runtime->animation_active[side] == 0 && model->model_data_b[intro] != NULL) {
+            if (runtime->animation_values[side] == 0.0f) {
+                runtime->animation_values[side] = AnimDuration(model->model_id, intro, 0.0f, 0.0f, 1);
+            } else {
+                runtime->animation_values[side] -= FRAMETIME;
+                if (runtime->animation_values[side] <= 0.0f)
+                    runtime->animation_active[side] = 1;
+            }
+        } else {
+            runtime->animation_active[side] = 1;
+        }
+        packet->previous_animation = packet->animation_index;
+        if (saber_colour == -1)
+            packet->requested_animation = runtime->animation_active[side] == 0 ? 0x62 : 0x63;
+        else
+            packet->requested_animation = runtime->animation_active[side] == 0 ? 0x61 : 0xbe;
+        UpdateAnimPacket(model, packet, (f64)FRAMETIME * 30.0, 0.0f, FRAMETIME, 0.0f);
+        angle = CustomiseYRotPc[side] + 0xc000;
+        for (category = 0; category < 9; ++category) {
+            i32 locator;
+            CUSTOM_CATEGORY_CONFIG_PC *category_data;
+            CUSTOM_RESOURCE_UPDATE_PC *resources;
+            i32 piece_index, material;
+            if (CustomiseMenuYPc[side] == category && GetMenuID() == 12 && customiser_quit == 0 &&
+                (active_count == 2 || side == preview_side) && control_side != -1 &&
+                (locator = customiser->locator_indices[category]) != -1 && model->points_of_interest[locator] != NULL) {
+                const NUMTX *joint = &runtime->joint_matrices[side][locator];
+                NUVEC position;
+                const f32 offset = customiser->locator_x_offsets[category];
+                position.x = joint->m30;
+                position.y = joint->m31;
+                position.z = joint->m32;
+                message.text = InitAsciiLeftPc;
+                message.unknown_4f = 2;
+                if (offset != 0.0f) {
+                    position.x += offset * NuTrigTable[(angle >> 1) & 0x7fff];
+                    position.z += offset * NuTrigTable[((angle + 0x4000) >> 1) & 0x7fff];
+                }
+                position.y += customiser->locator_y_offsets[category];
+                message.red = colour;
+                message.green = colour;
+                message.blue = colour;
+                message.position = &position;
+                message.scale = 1.5f;
+                message.alpha = 0x60;
+                message.flags = 0x87;
+                AddGameMsg(&message);
+            }
+            resources = (CUSTOM_RESOURCE_UPDATE_PC *)world->customiser_resources[category];
+            if (resources == NULL || customiser->piece_counts[category] <= 0)
+                continue;
+            category_data = customiser->categories[category];
+            if (category_data->uses_special != 0 || category_data->material_tag == -1)
+                continue;
+            piece_index = selection[category];
+            if (resources[piece_index].texture_id == 0)
+                continue;
+            for (material = 0; material < ((CUSTOM_HIERARCHY_UPDATE_PC *)model->hierarchy)->material_count;
+                 ++material) {
+                NUMTL *entry = ((CUSTOM_HIERARCHY_UPDATE_PC *)model->hierarchy)->materials[material];
+                if (((CUSTOM_MATERIAL_UPDATE_PC *)entry)->material_tag == category_data->material_tag) {
+                    entry->texture_id = (u16)resources[piece_index].texture_id;
+                    NuMtlUpdate(entry);
+                }
+            }
+        }
+    }
+    {
+        const f32 target = GetMenuID() == 12 && customiser_quit == 0 ? 1.0f : 0.0f;
+        CustomiseNameAlphaPc = SeekLinearF(CustomiseNameAlphaPc, target, 1.5 * FRAMETIME);
+    }
+}

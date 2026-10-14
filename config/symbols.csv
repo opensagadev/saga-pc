@@ -812,6 +812,7 @@ address    , symbol                                                         , si
 0x476da0,_Hub_UpdateFreePlaySelect,2192,
 0x4778f0,_Hub_LoadAndFixUpMiniKits,269,"void __cdecl(WORLDINFO *, VARIPTR *, VARIPTR *)"
 0x477a00,_Hub_InitMiniKits,392,void __cdecl(WORLDINFO *)
+0x477b90,?Hub_UpdateMiniKitBoundsPc@@YAHHPAUWORLDINFO_s@@@Z,453,"i32 __cdecl(i32, WORLDINFO *)"
 0x477d60,_Hub_UpdateMiniKits,1773,
 0x478450,_Hub_DrawMiniKits,1669,void __cdecl(WORLDINFO *)
 0x478ae0,_Hub_LockUnlockDoors,1,void __cdecl(WORLDINFO *)
@@ -1960,6 +1961,7 @@ address    , symbol                                                         , si
 0x509ca0,_MenuRepeat,96,"void __cdecl(i32 *,i32 *,f32 *,u8 *,f32,f32)"
 0x509d00,_UpdateMenu,1756,"i32 __cdecl(u32,u32,u32,u32,f32,u32,u32,u32,u32)"
 0x50a450,_MenuEnterSave,364,void __cdecl(MENU *)
+0x50a5c0,_MenuEnterInsertCard,1,void __cdecl(MENU *)
 0x50a5d0,_MenuEnterNoMemoryCard,1,
 0x50a5e0,_MenuEnterSaveConfirm,38,void __cdecl(MENU *)
 0x50a610,_MenuEnterAutoSaveWarning,21,void __cdecl(MENU *)
@@ -1971,6 +1973,7 @@ address    , symbol                                                         , si
 0x50a770,_MenuExitSave,11,void __cdecl(MENU *)
 0x50a780,_MenuExitLoad,11,void __cdecl(MENU *)
 0x50a790,_MenuExitCardWarning,11,void __cdecl(MENU *)
+0x50a800,_MenuDrawFormatConfirm,1,void __cdecl(MENU *)
 0x50a810,_MenuUpdateSave,246,void __cdecl(MENU *)
 0x50a940,_MenuUpdateInsertCard,95,void __cdecl(MENU *)
 0x50a9a0,_MenuUpdateNoMemoryCard,99,void __cdecl(MENU *)
@@ -2031,12 +2034,23 @@ address    , symbol                                                         , si
 0x50fed0,_DrawMenu,543,void __cdecl(i32)
 0x5100f0,_APIMenuDrawGameState,746,"void __cdecl(f32,f32,i32,i32)"
 0x5103e0,_APIMenuDrawMemCardSlots,1235,"void __cdecl(MENU *,f32)"
+0x5108f0,_MenuDrawNotEnoughSpaceMessagePc,114,void __cdecl(void)
 0x510970,_MenuDrawNoDataMessagePc,177,
+0x510a30,_MenuDrawSavingMessagePc,114,void __cdecl(void)
+0x510ab0,_MenuDrawSavedMessagePc,114,void __cdecl(void)
+0x510b30,_MenuDrawSaveFailedMessagePc,211,void __cdecl(void)
 0x510c10,_MenuDrawLoadingMessagePc,114,
 0x510c90,_MenuDrawLoadedMessagePc,114,
 0x510d10,_MenuDrawLoadFailedMessagePc,108,
 0x510d80,_MenuDrawLoadCorruptMessagePc,108,
+0x510ee0,_MenuDrawDeletingMessagePc,114,void __cdecl(void)
+0x510f60,_MenuDrawDeletedMessagePc,108,void __cdecl(void)
+0x510fd0,_MenuDrawAutoSaveWarningMessagePc,191,void __cdecl(void)
+0x511090,_MenuDrawInsertCard,23,void __cdecl(MENU *)
+0x5110b0,_MenuDrawNotEnoughSpace,28,void __cdecl(MENU *)
+0x511160,_MenuDrawDeleting,187,void __cdecl(MENU *)
 0x511220,_MenuDrawFileCorrupt,158,void __cdecl(MENU *)
+0x5112c0,_MenuDrawSaving,195,void __cdecl(MENU *)
 0x511390,_MenuDrawLoading,257,
 0x5114a0,_loadsaveCallEachFrame,91,void __cdecl(void)
 0x511500,_Text3D,89,
@@ -2046,6 +2060,7 @@ address    , symbol                                                         , si
 0x5117c0,_MenuDrawNoData,46,
 0x5117f0,_MenuDrawDeleteConfirm,168,void __cdecl(MENU *)
 0x5118a0,_MenuDrawSaveConfirm,334,void __cdecl(MENU *)
+0x5119f0,_MenuDrawAutoSaveWarning,46,void __cdecl(MENU *)
 0x511a60,_MenuDrawLoad,161,void __cdecl(MENU *)
 0x511b10,_MenuDrawLoadConfirm,214,void __cdecl(MENU *)
 0x511bf0,_MenuDrawSaveCancel,232,void __cdecl(MENU *)
@@ -3702,6 +3717,7 @@ address    , symbol                                                         , si
 0x005931a0 , _Customiser_LoadAll                                            , 811   , "void __cdecl (CUSTOMISER*, WORLDINFO*)"
 0x5934d0,_Customiser_DumpAll,145,"void __cdecl(void *, WORLDINFO *)"
 0x593570,_Customiser_ResetModelTextureIDs,119,void __cdecl (CUSTOMISER_LAYERS_PC *)
+0x5935f0,_Customiser_SaveModelTextureIDs,179,"void __cdecl(void *, CHARACTER_MODEL_LAYERS_PC *)"
 0x5936b0,_Customiser_RestoreModelTextureIDs,217,
 0x593790,_Customiser_Set100PercentPieces,115,void __cdecl(CUSTOMISER_LAYERS_PC *)
 0x593810,_Customiser_CopyDefaultPiecesToSave,131,"void __cdecl(CUSTOMISER_LAYERS_PC *,void *)"
@@ -6665,12 +6681,18 @@ address    , symbol                                                         , si
 0x006d3430 , _StartupParseArgument                                          , 3     , "i32 __cdecl (i32, char **)"
 0x006d3440 , _StartupOpenDats                                               , 116   , "void __cdecl (const char **, i32, VARIPTR *)"
 0x6d34c0,_StartupDatsSelectPc,39,void __cdecl (i32)
+0x6d37d0,?HashAuxiliaryBindingsPc@PC_INPUT_RUNTIME_PC@@QAEHXZ,220,
+0x6d38f0,?PromoteConfigPc@PC_INPUT_RUNTIME_PC@@QAEXPAUPC_INPUT_CONFIG_PC@@H0@Z,115,
 0x6d3990,?ReadConfiguration@PC_INPUT_RUNTIME_PC@@QAEXPAUPC_INPUT_CONFIG_PC@@PBD@Z,262,"void __thiscall PC_INPUT_RUNTIME_PC::ReadConfiguration(PC_INPUT_CONFIG_PC *, const char *)"
 0x6d3aa0,?InitConfiguration@PC_INPUT_RUNTIME_PC@@QAEXXZ,108,void __thiscall PC_INPUT_RUNTIME_PC::InitConfiguration(void)
+0x6d3b30,?SanitizeConfigNamePc@PC_INPUT_RUNTIME_PC@@QAEXPBDPAD@Z,84,
+0x6d3b90,?FormatConfigTextPc@PC_INPUT_RUNTIME_PC@@QAEXPADPAUPC_INPUT_CONFIG_PC@@@Z,1239,
+0x6d4070,?ExportConfigPc@PC_INPUT_RUNTIME_PC@@QAEXHPAUPC_INPUT_CONFIG_PC@@HHH@Z,877,
 0x6d43e0,?FindConfig@PC_INPUT_RUNTIME_PC@@QAEPAUPC_INPUT_CONFIG_PC@@EHH@Z,277,"PC_INPUT_CONFIG_PC* __thiscall(u8,i32,i32)"
 0x6d45f0,?InstallConfig@PC_INPUT_RUNTIME_PC@@QAEXPAUPC_INPUT_CONFIG_PC@@HHHH@Z,403,"void __thiscall(PC_INPUT_CONFIG_PC*,i32,i32,i32,i32)"
 0x6d47a0,?InitXInputCaps@PC_INPUT_RUNTIME_PC@@QAEXPBUPC_XINPUT_CAPABILITIES_PC@@PAUPC_INPUT_DEVICE_PC@@@Z,215,"void __thiscall(const PC_XINPUT_CAPABILITIES_PC*,PC_INPUT_DEVICE_PC*)"
 0x6d4880,?NormalizeAxisPairPc@PC_INPUT_RUNTIME_PC@@QAEXPAF0@Z,364,"void __thiscall(i16*,i16*)"
+0x6d4ba0,?CopyBindingsPc@PC_INPUT_RUNTIME_PC@@QAEXHHH@Z,103,
 0x6d4c10,?AdvanceCaptureRecordsPc@PC_INPUT_RUNTIME_PC@@QAEXXZ,127,void __thiscall(void)
 0x006d4d90 , @NuKeyboardResetInputRecords_candidate@4                       , 49    , void __fastcall (NuKeyboardState_PC *)
 0x006d4e20 , @NuKeyboardSetStateValue6354_candidate@12                      , 13    , "void __fastcall (NuKeyboardState_PC *, i32, i32)"
@@ -6696,6 +6718,8 @@ address    , symbol                                                         , si
 0x6d5bf0,_NuMouseReadXVel,26,
 0x6d5c10,_NuMouseReadYVel,26,
 0x6d5c30,_NuMouseReadZVel,26,
+0x6d5d90,_PcInputCopyBindingsPc,27,
+0x6d5db0,_PcInputResetMouseMotionPc,26,
 0x6d6020,_GamePadReadBackendPc,14,"i32 __cdecl(FRAME_PAD_PC *,i32)"
 0x6d60a0,_NuPad_Interface_GetMaxDevices,6,i32 __cdecl(void)
 0x6d60b0,_NuPadOpenPS,12,void __cdecl(FRAME_PAD_PC*)
@@ -6704,12 +6728,26 @@ address    , symbol                                                         , si
 0x6d61a0,_AreaGetKeyboardOverridePc,13,i32 __cdecl(void)
 0x6d61b0,_SetPadDescriptorPc,229,"void __cdecl(i32,const u16*)"
 0x6d62a0,_InitPadDescriptorsPc,87,"void __cdecl(const u16*,const u16*,const u16*,const u16*,const i8*)"
+0x6d6300,_PcInputDeviceNamePc,24,
+0x6d6320,_PcInputSuppressKeyOnePc,17,
 0x6d6340,_TextInputSetLastDevicePc,10,void __cdecl(i32)
 0x6d6350,_TextInputLastDevicePc,8,i32 __cdecl(void)
 0x6d6460,?ApplyMouseAxisPc@PC_INPUT_RUNTIME_PC@@QAEXPAUPC_INPUT_SAMPLE_PC@@@Z,615,void __thiscall(PC_INPUT_SAMPLE_PC*)
+0x6d66d0,_PcInputSetMouseFieldPc,17,
+0x6d66f0,_PcInputSetCapturedPortPc,17,
+0x6d6710,_PcInputCapturedPortPc,12,
 0x6d6720,_NuKeyboardClearActiveDevicesPc,30,void __cdecl(void)
+0x6d6740,_PcInputSetBlockedKeysPc,32,
 0x6d67a0,_TextInputIsKeyboardDevicePc,20,i32 __cdecl(i32)
+0x6d67c0,_PcInputIsMouseDevicePc,23,
+0x6d67e0,_PcInputIsJoystickDevicePc,15,
 0x6d67f0,_TextInputIsPrimaryDevicePc,15,i32 __cdecl(i32)
+0x6d6800,_PcInputHashAuxiliaryBindingsPc,11,
+0x6d6810,_PcInputMixConfigurationHashPc,34,
+0x6d6840,_PcInputInstallConfigPc,37,
+0x6d6870,_PcInputStageAuxiliaryConfigPc,102,
+0x6d68e0,_PcInputBindingPresentPc,62,
+0x6d6920,_PcInputFindConfigPc,27,
 0x6d6940,_NuKeyGet,84,
 0x6d69b0,_QueueKeyPressPc,82,"i32 __cdecl(i32,i32)"
 0x6d6a10,_PcKeyDown,276,void __cdecl(i32)
@@ -6720,8 +6758,12 @@ address    , symbol                                                         , si
 0x6d6d70,_PcKeyUp,12,void __cdecl(i32)
 0x6d6d80,_TextInputGetKeyNamesPc,6,char **__cdecl(void)
 0x6d6d90,_PcInputSetCommandFilterPc,10,
+0x6d6da0,_PcInputGetCommandFilterPc,6,
+0x6d6de0,?WriteConfigTextPc@PC_INPUT_RUNTIME_PC@@QAEXPBDPAUPC_INPUT_CONFIG_PC@@@Z,193,
+0x6d6f40,?BindingAvailablePc@PC_INPUT_RUNTIME_PC@@QAEHHHHH@Z,253,
 0x6d7040,?ResolveAuxiliaryConflictsPc@PC_INPUT_RUNTIME_PC@@QAEHHH@Z,603,
 0x6d72a0,?SelectConfigurationPc@PC_INPUT_RUNTIME_PC@@QAEHHHH@Z,170,
+0x6d7430,?ClearOtherBankConflictsPc@PC_INPUT_RUNTIME_PC@@QAEXHH@Z,173,
 0x6d74e0,?SampleDevicePc@PC_INPUT_RUNTIME_PC@@QAEHHPAUPC_INPUT_RAW_SAMPLE_PC@@@Z,1140,"i32 __thiscall(i32,PC_INPUT_RAW_SAMPLE_PC*)"
 0x6d7990,?UpdateMousePc@PC_INPUT_RUNTIME_PC@@QAEHXZ,998,i32 __thiscall(void)
 0x6d7d80,?TranslateBindingsPc@PC_INPUT_RUNTIME_PC@@QAEHHPAUPC_INPUT_SAMPLE_PC@@HPAUPC_INPUT_RAW_SAMPLE_PC@@PAUPC_INPUT_MOUSE_RUNTIME_PC@@PAPAE@Z,1360,"i32 __thiscall(i32,PC_INPUT_SAMPLE_PC*,i32,PC_INPUT_RAW_SAMPLE_PC*,PC_INPUT_MOUSE_RUNTIME_PC*,u8**)"
@@ -6729,21 +6771,33 @@ address    , symbol                                                         , si
 0x6d8490,?CaptureBindingPc@PC_INPUT_RUNTIME_PC@@QAEXH@Z,706,void __thiscall(i32)
 0x6d8760,?ServicePendingCapturePc@PC_INPUT_RUNTIME_PC@@QAEXXZ,135,void __thiscall(void)
 0x6d87f0,?ButtonName@TEXT_INPUT_MANAGER_PC@@QAEHHHPADHHHH0@Z,1328,"i32 __thiscall(i32,i32,char*,i32,i32,i32,i32,char*)"
+0x6d8d60,?AssignBindingPc@PC_INPUT_RUNTIME_PC@@QAEXHHHHHHHI@Z,725,
 0x6d9040,?Shutdown@NuKeyboardOwner_PC@@QAEXXZ,224,void __thiscall NuKeyboardOwner_PC::Shutdown(void)
 0x6d9120,_PcInputSelectPressedDevicePc,236,
+0x6d9210,_PcInputAssignBindingPc,52,
 0x006d9340 , _NuKeyboardRead                                                , 42    , void __cdecl (void)
 0x6d9370,_PcInputDeadzonePc,36,i32 __cdecl(i32)
+0x6d93a0,_PcInputAlternateDeadzonePc,36,
+0x6d93d0,_PcInputSetDeadzonePc,45,
+0x6d9400,_PcInputSetAlternateDeadzonePc,47,
+0x6d94f0,_PcInputClearOtherBankConflictsPc,22,
 0x6d9510,_PcInputMapKeyboardPortPc,43,
 0x006d9540 , _NuKeyboardApplyActionKeys_candidate                           , 112   , "void __cdecl (const i16 *, i32)"
 0x6d95b0,_PcInputSelectConfigurationPc,27,
 0x006d95d0,_PcInputInstallDropInConfigurationPc,22,"u8 __cdecl (i32, i32)"
+0x6d95f0,_PcInputBindingAvailablePc,32,
 0x6d9610,_PcInputEndFramePc,49,void __cdecl(void)
+0x6d9650,_PcInputResolveAuxiliaryConflictsPc,22,
+0x6d9670,_PcInputBindingButtonNamePc,52,
 0x006d96b0 , @NuKeyboardInitializeDefaultRecords_candidate@4                , 802   , void __fastcall (NuKeyboardState_PC *)
+0x6d9a00,?WriteConfigurationPc@PC_INPUT_RUNTIME_PC@@QAEXPAUPC_INPUT_CONFIG_PC@@HPBD@Z,267,
+0x6d9b10,?SaveConfigurationPc@PC_INPUT_RUNTIME_PC@@QAEXXZ,97,
 0x6d9b80,?BindPreferredConfig@PC_INPUT_RUNTIME_PC@@QAEXHH@Z,70,"void __thiscall(i32,i32)"
 0x6d9bd0,?InitKeyboardProfiles@PC_INPUT_RUNTIME_PC@@QAEXXZ,496,void __thiscall(void)
 0x6d9df0,_InputEnumDevicesPc@8,1027,"BOOL __stdcall(const PC_DI_INSTANCE_PC*,void*)"
 0x6da200,?RescanDevicesPc@NuKeyboardOwner_PC@@QAEXXZ,338,void __thiscall(void)
 0x6da410,_TextInputButtonNamePc,74,"i32 __cdecl(i32,i32,char*)"
+0x6da550,_PcInputSaveConfigurationPc,11,
 0x6da560,??0PC_INPUT_RUNTIME_PC@@QAE@XZ,1040,PC_INPUT_RUNTIME_PC::PC_INPUT_RUNTIME_PC(void)
 0x6da970,?AutoConfigurePadsPc@PC_INPUT_RUNTIME_PC@@QAEXH@Z,197,void __thiscall(i32)
 0x6daa40,?ReadSamplePc@PC_INPUT_RUNTIME_PC@@QAEHHPAE0000000PAI0PAH@Z,617,"i32 __thiscall(i32,u8*,u8*,u8*,u8*,u8*,u8*,u8*,u8*,u32*,u8*,i32*)"
@@ -6989,6 +7043,7 @@ address    , symbol                                                         , si
 0x6e89ce,__fseek_nolock,135,
 0x6e8a55,_fseek,,"int __cdecl fseek(FILE *stream, long offset, int origin)"
 0x6e8b9e,_fopen,,"FILE *__cdecl fopen(const char *filename, const char *mode)"
+0x6e8d60,_fwrite,130,"size_t __cdecl(const void *,size_t,size_t,FILE *)"
 0x006e8e11 , _srand                                                         , 13    , void __cdecl (unsigned int)
 0x006e8e1e,_rand,34,i32 __cdecl (void)
 0x006e8e80 , __CIsin                                                        , 79    , f64 (x87 ST0 -> ST0)
@@ -8891,6 +8946,8 @@ address    , symbol                                                         , si
 0x007531f8 , __real@406fe00000000000                                        , 8     , const f64
 0x00753200 , _TerrainScanTriangleSentinel                                   ,       ,
 0x753200,__real@47800000,4,const f32
+0x753208,__real@c130000000000000,8,const f64
+0x753210,__real@415b000000000000,8,const f64
 0x753218,__real@4028000000000000,8,const f64
 0x00753220 , __real@bdcccccd                                                , 4     , const f32
 0x753224,__real@42c60000,4,f32
@@ -8937,6 +8994,9 @@ address    , symbol                                                         , si
 0x753370,_TextInputKeyNameTextPc753370,,char[2]
 0x753374,??_C@_01OHGJGJJP@?$FL?$AA@,,const char []
 0x753374,_TextInputKeyNameTextPc753374,,char[2]
+0x753380,__real@40d3bb8000000000,8,const f64
+0x753388,__real@40c4440000000000,8,const f64
+0x753390,__real@40c82d8000000000,8,const f64
 0x7533c4,??_C@_01PPODPGHN@?$DO?$AA@,2,char[2]
 0x7533c8,??_C@_01MNNFJEPP@?$DM?$AA@,2,char[2]
 0x007533d0 , _GameObjectNearFloorRadiusDivisor                              , 8     , const f64
@@ -10374,6 +10434,7 @@ address    , symbol                                                         , si
 0x00759718,_ArcadeAiKilledSoundNamePc,16,const char[16]
 0x759740,__real@3f647ae140000000,8,const f64
 0x759748,__real@80000000,,const f32
+0x759750,__real@40b1c70000000000,8,const f64
 0x759758,__real@3f00000000000000,8,const f64
 0x00759760 , __real@47000000                                                , 4     , const f32
 0x759764,??_C@_0M@BMDKLHLG@ui_hover_lp?$AA@,12,const char[12]
@@ -12017,6 +12078,7 @@ address    , symbol                                                         , si
 0x761518,??_C@_0BI@PANEOMLK@SaveGame?$CFd?4?$CFs_SavedGame?$AA@,24,const char[24]
 0x761530,??_C@_0L@BKAHIOAH@SavedGames?$AA@,11,const char[11]
 0x761548,??_C@_02JDPG@rb?$AA@,3,const char[3]
+0x76155c,??_C@_02GMLFBBN@wb?$AA@,3,const char[3]
 0x761584,__real@cb189680,4,const f32
 0x761588,__real@4b189680,4,const f32
 0x76158c,__real@2d2febff,4,const f32
@@ -14734,7 +14796,34 @@ address    , symbol                                                         , si
 0x775694,_PcInputText775694, ,char[7]
 0x77569c,??_C@_0N@IPEDNLAC@Mappings?4dat?$AA@,13,const char[13]
 0x7756ac,??_C@_09EECDJGEH@?$CFs?2?$CFs?2?$CFs?2?$AA@,10,const char[10]
+0x7756b8,?PcInputProfileButtonsEnd3@@3QBDB,26,
+0x7756d4,?PcInputProfileButtonsEnd2@@3QBDB,22,
+0x7756ec,?PcInputProfileButtonsEnd1@@3QBDB,26,
+0x775708,?PcInputProfileButtonsEnd0@@3QBDB,15,
+0x775718,?PcInputProfileButton@@3QBDB,8,
+0x775720,?PcInputProfileUnknownAxesEnd@@3QBDB,29,
+0x775740,?PcInputProfileAxesEnd@@3QBDB,25,
+0x77575c,?PcInputProfileAxis@@3QBDB,11,
 0x775768,??_C@_01GPOEFGEJ@?7?$AA@,,
+0x775768,?PcInputProfileTab@@3QBDB,2,
+0x77576c,?PcInputProfileNumbers@@3QBDB,43,
+0x775798,?PcInputProfileGuidEnd@@3QBDB,17,
+0x7757ac,?PcInputProfileGuidChar@@3QBDB,5,
+0x7757b4,?PcInputProfileHeader@@3QBDB,21,
+0x7757cc,?PcInputBindingKindName0@@3QBDB,7,
+0x7757d4,?PcInputBindingKindName1@@3QBDB,11,
+0x7757e0,?PcInputBindingKindName2@@3QBDB,15,
+0x7757f0,?PcInputBindingKindName3@@3QBDB,15,
+0x775800,?PcInputBindingKindName4@@3QBDB,13,
+0x775810,?PcInputBindingKindName5@@3QBDB,13,
+0x775820,?PcInputBindingKindName6@@3QBDB,13,
+0x775830,?PcInputBindingKindName7@@3QBDB,11,
+0x77583c,?PcInputBindingKindName8@@3QBDB,14,
+0x77584c,?PcInputBindingKindName9@@3QBDB,14,
+0x77585c,?PcInputBindingKindName10@@3QBDB,16,
+0x77586c,?PcInputBindingKindName11@@3QBDB,16,
+0x77587c,?PcInputBindingKindName12@@3QBDB,13,
+0x77588c,?PcInputBindingKindName13@@3QBDB,13,
 0x77589c,__real@46fffe00,4,const f32
 0x7758a0,__real@c6fffe00,4,const f32
 0x7758a8,__real@c0dfffc000000000,8,const f64
@@ -14748,6 +14837,7 @@ address    , symbol                                                         , si
 0x775930,??_C@_1BO@BLJMPFMI@?$AA?2?$AA?2?$AA?4?$AA?2?$AAr?$AAo?$AAo?$AAt?$AA?2?$AAc?$AAi?$AAm?$AAv?$AA2?$AA?$AA@,30,const wchar_t[15]
 0x775950,?PcWbemClassId@@3U_GUID@@B,,GUID
 0x775960,?PcWbemInterfaceId@@3U_GUID@@B,,GUID
+0x775970,?PcInputProfileFileFormat@@3QBDB,13,
 0x775980,__real@3ee0000000000000,8,const f64
 0x775988,__real@c7000000,4,const f32
 0x77598c,__real@c3000000,4,const f32
@@ -16345,8 +16435,9 @@ address    , symbol                                                         , si
 0x7f2394,_TerrainPlayerShadowFixPc,,i32
 0x7f2398,_DrawParaphernaliaEnabledPc,4,i32
 0x7f239c,_ComplexShadowBasePc,4,f32
+0x7f23a0,_CharacterLoadAreaModelsPc,4,i32
 0x007f23a4 , _waiting_for_character                                         , 4     , i32
-0x7f23a8,_apiloadcharactermodels_append,4,i32
+0x7f23a8,_hub_character_ready,4,i32
 0x007f23b0 , _SpecialLayer                                                  , 504   , SPECIAL_LAYER_PC [42]
 0x7f26d0,_CreatureMosLegsPc,,const u8[3]
 0x7f26d4,_CreatureMosWaistPc,,const u8[3]
@@ -16362,6 +16453,7 @@ address    , symbol                                                         , si
 0x7f2704,_CreatureCloudBodyPc,,const u8[3]
 0x7f2708,_CreatureCloudHeadPc,,const u8[3]
 0x007f295c,_PlayerDevicePortsPc,8,i32[2]
+0x7f37d8,_CustomiseHeadOffsetPc,4,f32
 007f37e0,_PermanentCustomiserActionsPc,,i16[5]
 0x7f3820,_CustomiserGameSettingsPrivatePc,,CUSTOMISER_GAME_SETTING_PC[7]
 0x7f3964,_drop_in_teleport,,i32
@@ -17722,6 +17814,7 @@ address    , symbol                                                         , si
 0x824f9c,?PcInputSelectedPort@@3HA,,i32
 0x824fa0,_TextInputKeyboardOverridePc,,u8[32]
 0x824fc0,?PcStaticInputConfigs@@3PAUPC_INPUT_CONFIG_PC@@A,,PC_INPUT_CONFIG_PC[15]
+0x825ec0,?PcInputBindingKindNames@@3PAPBDA,56,
 0x825ef8,_PcInputPovBitsPc,,const u8[8]
 0x825f00,_TextInputAxisLabelIndexPc,,i8[16]
 0x825f10,_TextInputButtonLabelIndexPc,,i8[11]
@@ -17865,9 +17958,22 @@ address    , symbol                                                         , si
 0x855f9c,_makeplayerlist_freeplay,4,i32
 0x855fa0,_addcreature_override_id_check,,i32
 0x855fa8,_GameKeepMergeActionPc,4,i32
+0x856898,_CustomiseArmsAnimPc,40,CUSTOM_PIECE_ANIM_PC[2]
+0x8568e8,_CustomiseLegsAnimPc,40,CUSTOM_PIECE_ANIM_PC[2]
 0x856910,_CustomiseMode,8,i32[2]
+0x856918,_CustomiseTiltXPc,4,u16[2]
+0x85691c,_CustomiseBobPc,4,u16[2]
 0x856924,_CustomisePos,24,NUVEC[2]
+0x85694c,_CustomiseMenuTimePc,8,f32[2]
+0x85695c,_CustomiseHeadAnimPc,40,CUSTOM_PIECE_ANIM_PC[2]
+0x85698c,_CustomiseTiltZPc,4,u16[2]
+0x856990,_CustomiseRotYPc,4,u16[2]
+0x85699c,_CustomiseYRotPc,4,u16[2]
 0x008569a0 , _CharacterCustomiser                                           , 4     , CUSTOMISER_LAYERS_PC *
+0x8569a4,_CustomiseMenuYPc,8,i32[2]
+0x8569ac,_CustomiseNoHatPosPc,24,NUVEC[2]
+0x8569c4,_CustomiseNameAlphaPc,4,f32
+0x8569cc,_customiser_quit,4,i32
 0x8569d8,_Detonator,560,DETONATOR_s[10]
 0x856c10,_OldBonusScore,,i32[2]
 0x00856c28 , _ChallengeMode                                                 , 4     , i32
@@ -19429,6 +19535,8 @@ address    , symbol                                                         , si
 0x921ee0,_TextPrintModePc,,i32
 0x00921ee4 , _buttonmapfn                                                   , 4     , "void (*)(char *, char *)"
 0x00921ee8 , _smarttext_fwn                                                 , 4     , i32
+0x921ef8,_MenuDeleteResultShownPc,4,i32
+0x921efc,_MenuSaveResultShownPc,4,i32
 0x921f00,_MenuLoadResultShownPc,4,i32
 0x00921f08 , _global_aiscripts                                              , 8     , NULISTHDR
 0x922110,_AIScriptConstantRecordsPc,,AISCRIPT_CONST_RECORD_PC[8]
@@ -20577,7 +20685,6 @@ address    , symbol                                                         , si
 0x29130f8,?up_rept@?1??eduiMenuProcessInput@@9@9,,
 0x02913104 , _apicharsys                                                    , 4     , APICHARSYS *
 0x2913108,_append,,i32
-0x291310c  , _apiloadcharactermodels_nopakfile                               , 4     , i32
 0x291310c,_nopakfile,4,i32
 0x2913110,_RedirectAnimFn,,"i32 (__cdecl *)(char *, void *, CHARACTERANIM_CONFIG_PC *, char *)"
 0x2913114,_RedirectAnimList,,void *
@@ -21005,6 +21112,7 @@ address    , symbol                                                         , si
 0x2975194,_PcMouseSamplesPc,,PC_DI_MOUSE_STATE_PC[2]
 0x29751bc,_PcMousePressedMaskPc,,u32
 0x029751c0 , _nu_keyboard_pages                                             , 512   , u8[512]
+0x29755c0,?PcInputWriteTextProfiles@@3EA,1,
 0x029755c1 , _nu_keyboard_page_index                                        , 1     , u8
 0x29755c2,_PcKeyQueueHead,,u8
 0x29755c3,_PcKeyQueueTail,,u8
@@ -21027,6 +21135,8 @@ address    , symbol                                                         , si
 0x2975918,_PcMouseSampleIndexPc,,i8
 0x2975919,_TextInputLastDeviceIndexPc,,i8
 0x297591c,_PcMouseInterpolationPc,,f32
+0x297592c,?PcInputAxisRemap@@3PAEA,16,
+0x297593c,?PcInputAxisRemapInitialized@@3IA,4,
 0x2975940,?PcKeyboardCapabilities@@3UPC_DI_CAPS_PC@@A,,PC_DI_CAPS_PC
 0x29759f0,_NuHwParameter19Pc,,u32
 0x29759f8,_PcWindowCallbacks,,PC_WINDOW_CALLBACK_PC[1]

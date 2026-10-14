@@ -1164,6 +1164,177 @@ STATIC_ASSERT(offsetof(HUB_MINIKIT_RUNTIME_PC, bounds_max) == 0x58);
 STATIC_ASSERT(offsetof(HUB_MINIKIT_RUNTIME_PC, radius) == 0x64);
 STATIC_ASSERT(offsetof(HUB_MINIKIT_RUNTIME_PC, height_ratio) == 0x68);
 
+/* Insert in hub.cpp, after HUB_PAD_READER_PC. Existing types/state are reused. */
+static i32 Hub_UpdateMiniKitBoundsPc(i32 area_index, WORLDINFO *world) {
+    const i32 model = ADataList[area_index].minikit_id;
+    HUB_WORLD_READER_PC *w = (HUB_WORLD_READER_PC *)world;
+    if (model == -1 || w->minikits == NULL)
+        return 0;
+    HUB_MINIKIT_RUNTIME_PC *kit = &w->minikits[area_index];
+    HUB_AREA_INFO_PC *info;
+    for (info = HubAreaInfoPc; info->area_name != NULL; ++info) {
+        if (info->area != NULL && info->area->index == area_index)
+            break;
+    }
+    if (info->area_name == NULL)
+        info = NULL;
+    const CHARACTERDATA_PC *data = &CDataList[model];
+    const f32 bottom = data->bottom;
+    const f32 top = data->top;
+    const f32 radius = data->collision_radius;
+    kit->radius = radius;
+    const f32 height_ratio = (top - bottom) / (radius * 2.0);
+    kit->height_ratio = height_ratio;
+    kit->collision_center.x = kit->position.x + kit->offset_x;
+    kit->collision_center.z = kit->position.z + kit->offset_z;
+    kit->collision_center.y = (top + bottom) * 0.5 + kit->position.y;
+    const f32 scale = kit->scale;
+    kit->collision_center.y +=
+        (1.0 - (1.0 + (f64)HUB_SIN_LUT_PC((i32)((f64)scale * 32768.0 + 16384.0))) * 0.5) * (f64)0.333f;
+    kit->collision_center.y += (f64)HUB_SIN_LUT_PC(kit->phase_rotation) * (f64)0.025f * scale;
+    const f32 panel_offset = info ? info->panel_offset : 0.0f;
+    kit->collision_center.y += panel_offset;
+    kit->bounds_min.x = kit->collision_center.x - radius;
+    kit->bounds_max.x = kit->collision_center.x + radius;
+    kit->bounds_min.y = kit->collision_center.y - height_ratio * radius;
+    kit->bounds_max.y = kit->collision_center.y + height_ratio * radius;
+    kit->bounds_min.z = kit->collision_center.z - radius;
+    kit->bounds_max.z = kit->collision_center.z + radius;
+    return 1;
+}
+
+extern "C" void __cdecl Hub_UpdateMiniKits(WORLDINFO *world) {
+    i32 count[72];
+    f32 speed = 0.0f;
+    u16 angle = 0;
+    const i32 viewer = GetMenuID() == 14;
+    if (viewer && HubMiniKitViewerMoveWaitPc <= 0.0f) {
+        if (Hub_PadSpeed[0] > 0.0f) {
+            if (Hub_PadSpeed[1] > 0.0f) {
+                speed = (Hub_PadSpeed[0] + Hub_PadSpeed[1]) * 0.5;
+                angle = (i32)((f64)RotDiff(Hub_PadAngle[0], Hub_PadAngle[1]) * 0.5 + Hub_PadAngle[0] + GameCam->yaw);
+            } else {
+                speed = Hub_PadSpeed[0];
+                angle = Hub_PadAngle[0] + GameCam->yaw;
+            }
+        } else if (Hub_PadSpeed[1] > 0.0f) {
+            speed = Hub_PadSpeed[1];
+            angle = Hub_PadAngle[1] + GameCam->yaw;
+        }
+    }
+    HUB_WORLD_READER_PC *w = (HUB_WORLD_READER_PC *)world;
+    if (w->pieces == NULL || w->minikits == NULL)
+        return;
+    if (viewer) {
+        if (HubMiniKitViewerAlphaPc < 1.0f) {
+            HubMiniKitViewerAlphaPc += FRAMETIME * 2.0f;
+            if (HubMiniKitViewerAlphaPc > 1.0f)
+                HubMiniKitViewerAlphaPc = 1.0f;
+        }
+    } else {
+        HubMiniKitViewerAlphaPc = 0.0f;
+    }
+    if (HubMiniKitViewerMoveWaitPc > 0.0f) {
+        HubMiniKitViewerMoveWaitPc -= FRAMETIME;
+        if (HubMiniKitViewerMoveWaitPc <= 0.0f)
+            HubMiniKitViewerMovePc = 0.0f;
+    }
+    PlaySfx("ui_hover_lp", &HubMiniKitViewerPositionPc);
+    HUB_MINIKIT_RUNTIME_PC *kit = w->minikits;
+    for (i32 i = 0; i < AREACOUNT; ++i, ++kit) {
+        HUB_MINIKIT_PIECES_PC *pieces = w->pieces[i];
+        if (pieces == NULL)
+            continue;
+        count[i] = Game.area_save[i].minikit_count;
+        if (count[i] > pieces->piece_count)
+            count[i] = pieces->piece_count;
+        kit->scale = 1.0f;
+        const f32 vx = (0.0 - kit->offset_x) * 5.0;
+        const f32 vz = (0.0 - kit->offset_z) * 5.0;
+        kit->velocity_x = SeekValF(kit->velocity_x, vx, 10.0f);
+        kit->velocity_z = SeekValF(kit->velocity_z, vz, 10.0f);
+        const u16 old_rotation = kit->rotation;
+        kit->offset_x += kit->velocity_x * FRAMETIME;
+        kit->offset_z += kit->velocity_z * FRAMETIME;
+        if (i == HubMiniKitViewerAreaPc) {
+            if (speed > 0.0f)
+                kit->target_rotation =
+                    TurnRot(kit->target_rotation, angle + 0x8000, (u16)(i32)((f64)kit->scale * 32768.0), NULL);
+            kit->target_piece_count = count[i];
+            const HUB_PAD_READER_PC *pads = (const HUB_PAD_READER_PC *)GamePadStorage;
+            if (viewer && count[i] >= pieces->piece_count &&
+                ((MissionMenuPacketPc.active_player[0] != 0 && (pads[0].held & GAMEPAD_JUMP) != 0) ||
+                 (MissionMenuPacketPc.active_player[1] != 0 && (pads[1].held & GAMEPAD_JUMP) != 0)))
+                kit->target_piece_count = 1;
+        } else if (count[i] == 0) {
+            kit->target_piece_count = 0;
+            kit->displayed_piece_count = 0;
+        } else {
+            kit->target_piece_count = count[i];
+        }
+        kit->rotation = SeekRot(kit->rotation, kit->target_rotation, 3.0f);
+        i32 rate = (i32)((f64)RotDiff(old_rotation, kit->rotation) / FRAMETIME);
+        if (rate < -65536)
+            rate = -65536;
+        else if (rate > 65536)
+            rate = 65536;
+        rate /= 8;
+        if (rate < -4551)
+            rate = -4551;
+        else if (rate > 4551)
+            rate = 4551;
+        kit->rotation_velocity = SeekRot(kit->rotation_velocity, rate, 8.0f);
+        i32 tilt = 0;
+        if (i == HubMiniKitViewerAreaPc && speed > 0.0f) {
+            const i32 diff = RotDiff(old_rotation, kit->rotation);
+            const f32 angular_speed = (f64)(diff < 0 ? -diff : diff) / FRAMETIME;
+            if (angular_speed < 32768.0f)
+                tilt = (i32)((1.0 - (f64)angular_speed * (1.0 / 32768.0)) * 4551.0);
+        }
+        kit->tilt = SeekRot(kit->tilt, -tilt, 3.0f);
+        for (i32 j = 0; j < pieces->piece_count; ++j) {
+            pieces->pieces[j].enabled = 0;
+            if (NuSpecialExistsFn(&pieces->pieces[j].special)) {
+                NuSpecialSetVisibility(&pieces->pieces[j].special, 0);
+                if (j < count[i])
+                    pieces->pieces[j].enabled = 1;
+            }
+        }
+        kit->phase_x = (i32)((f64)kit->rate_x * FRAMETIME + kit->phase_x);
+        if (kit->phase_x > 65536)
+            kit->phase_x -= 65536;
+        kit->phase_y = (i32)((f64)kit->rate_y * FRAMETIME + kit->phase_y);
+        if (kit->phase_y > 65536)
+            kit->phase_y -= 65536;
+        kit->phase_z = (i32)((f64)kit->rate_z * FRAMETIME + kit->phase_z);
+        if (kit->phase_z > 65536)
+            kit->phase_z -= 65536;
+        kit->phase_rotation = (i32)((f64)kit->rate_rotation * FRAMETIME + kit->phase_rotation);
+        if (kit->phase_rotation > 65536)
+            kit->phase_rotation -= 65536;
+        Hub_UpdateMiniKitBoundsPc(i, world);
+    }
+    kit = w->minikits;
+    for (i32 i = 0; i < AREACOUNT; ++i, ++kit) {
+        if (w->pieces[i] == NULL)
+            continue;
+        if (kit->displayed_piece_count != kit->target_piece_count &&
+            (i32)((f64)GameTimer.time_elapsed / (f64)0.15f) != (i32)((f64)GameTimer.last_time_elapsed / (f64)0.15f)) {
+            if (kit->displayed_piece_count < kit->target_piece_count)
+                ++kit->displayed_piece_count;
+            else if (kit->displayed_piece_count > kit->target_piece_count)
+                --kit->displayed_piece_count;
+            if (i == HubMiniKitAreaPc)
+                PlaySfx((char *)GameAudioName00758be8Pc, &kit->position);
+            NewRumbleAllPlayers(0.0f, 0.0f, 1, 0);
+        }
+        if (count[i] > 0 && kit->displayed_piece_count != 0) {
+            PushAway(&kit->collision_center, kit->radius, &kit->bounds_min, &kit->bounds_max, NULL, NULL, 2.5f, 5);
+            AIAntinodeCreateSingleFrame(&kit->collision_center, kit->radius);
+        }
+    }
+}
+
 /* Actual PC Draw3D omits the Android sign/episode scene branch. */
 typedef struct hub_game_stats_reader_pc_s {
     u8 unknown_0000[0x7c18];
