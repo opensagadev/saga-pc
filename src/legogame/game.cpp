@@ -666,9 +666,9 @@ extern "C" void __cdecl CheckResetBits(void) {
         DrawBossHitPoints(NULL);
         ResetForceBack();
         ClearAICreatures();
-        STUBBED_NAMED("CheckResetBits: GameAISysReset(WORLD->ai_sys) at 0x0043fda0");
-        STUBBED_NAMED("CheckResetBits: ReStoreStatusTakeOverObjectSys(1) at 0x0059fbe0");
-        STUBBED_NAMED("CheckResetBits: AIScriptInitConditions(WORLD->ai_sys) at 0x005143a0");
+        GameAISysReset(WORLD->ai_sys);
+        ReStoreStatusTakeOverObjectSys(1);
+        AIScriptInitConditions(WORLD->ai_sys);
         for (player_slot = (GAMEOBJECT **)Player; player_slot < (GAMEOBJECT **)Player + 8; ++player_slot) {
             if (*player_slot == NULL)
                 continue;
@@ -707,10 +707,10 @@ extern "C" void __cdecl CheckResetBits(void) {
             if (FreePlay == 0 && Mission_Active(NULL) == NULL && (*player_slot)->rider == NULL &&
                 AIScriptSetBaseScriptStateByName(&(*player_slot)->ai_packet.script_processor,
                                                  (char *)GameObjectState_InActive) != 0)
-                (*player_slot)->flags_1fc &= ~0x1000;
+                (*player_slot)->flags_1fc_word &= ~0x1000;
         }
     } else {
-        STUBBED_NAMED("CheckResetBits: ReStoreStatusTakeOverObjectSys(0) at 0x0059fbe0");
+        ReStoreStatusTakeOverObjectSys(0);
     }
     if (makebaddiesforgetinresetbits != 0)
         MakeBaddiesForgetAboutParty(0);
@@ -734,7 +734,7 @@ extern "C" void __cdecl CheckResetBits(void) {
     STUBBED_NAMED("CheckResetBits: SpecialMiniKits_Reset(WORLD) at 0x00570fb0");
     STUBBED_NAMED("CheckResetBits: SuperCounters_FixUpGizmos(WORLD) at 0x00573690");
     AITriggerSetSysReset(((CHECK_RESET_WORLD_VIEW_PC *)WORLD)->ai_trigger_set_sys);
-    STUBBED_NAMED("CheckResetBits: AITriggerSysAutoSetUp(WORLD, ai_trigger_set_sys) at 0x004027a0");
+    AITriggerSysAutoSetUp(WORLD, (AITRIGGERSETSYS_s *)((CHECK_RESET_WORLD_VIEW_PC *)WORLD)->ai_trigger_set_sys);
     if ((ResetBits & 0x10) != 0) {
         for (player_slot = (GAMEOBJECT **)Player; player_slot < (GAMEOBJECT **)Player + 8; ++player_slot) {
             if (*player_slot != NULL)

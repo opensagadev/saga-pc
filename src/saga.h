@@ -422,7 +422,13 @@ struct FLOWBOX_PC {
     u8 loop_parent_count;
     u8 child_count;
     u8 type;
-    i32 runtime_id;
+    union {
+        i32 runtime_id;
+        struct {
+            u8 ai_trigger_group;
+            u8 unknown_05_trigger_group[3];
+        };
+    };
     u8 last_process_frame;
     u8 loop_checksum;
     u8 state_flags_low;
@@ -939,7 +945,10 @@ struct AIPACKET_PC {
         AIPATHNODE_PC *goal_path_node;
     };
     f32 movement_instruction_parameter;
-    void *path_target;
+    union {
+        void *path_target;
+        AIPATHNODE_PC *special_move_node;
+    };
     AIPATHCNX_PC *movement_target;
     f32 antinode_timer;
     AIPATHCNX_PC *intersection_connection;
@@ -4958,6 +4967,15 @@ typedef struct AITRIGGERSET_PARTIAL_PC {
     u8 flags_low;
 } AITRIGGERSET_PARTIAL_PC;
 STATIC_ASSERT(offsetof(AITRIGGERSET_PARTIAL_PC, flags_low) == 0x210);
+#pragma pack(push, 1)
+typedef struct AI_SPECIAL_PROGRESS_PC {
+    u8 reserved_1072;
+    u8 flags;
+    f32 progress;
+} AI_SPECIAL_PROGRESS_PC;
+#pragma pack(pop)
+STATIC_ASSERT(sizeof(AI_SPECIAL_PROGRESS_PC) == 6);
+STATIC_ASSERT(offsetof(AI_SPECIAL_PROGRESS_PC, progress) == 2);
 typedef struct gameobject_s {
     union {
         struct {
@@ -5057,7 +5075,14 @@ typedef struct gameobject_s {
     u8 dead;
     u8 origin_joint_ready;
     u8 hostility_group;
-    u8 unknown_028e[0x1a];
+    union {
+        u8 unknown_028e[0x1a];
+        struct {
+            u8 ai_priority_reserved_28e[4];
+            u16 ai_collision_priority_pc;
+            u8 ai_priority_reserved_294[0x14];
+        };
+    };
     union {
         u32 hostility_mask[2];
         struct {
@@ -5102,7 +5127,10 @@ typedef struct gameobject_s {
         u32 contact_material_word;
         u8 contact_material[4];
     };
-    u8 unknown_06c4[0x64];
+    union {
+        u8 unknown_06c4[0x64];
+        u8 ai_player_packet_pc[0x64];
+    };
     struct {
         f32 height;
         f32 velocity;
@@ -5480,7 +5508,10 @@ typedef struct gameobject_s {
     i16 terrain_platform_id;
     i16 field_106e;
     i16 level_object_index;
-    u8 unknown_1072[6];
+    union {
+        u8 unknown_1072[6];
+        AI_SPECIAL_PROGRESS_PC special_move_progress_view_pc;
+    };
     u8 contact_count;
     u8 use_model_origin;
     union {
@@ -5504,15 +5535,30 @@ typedef struct gameobject_s {
     u8 unknown_108a[0x4];
     u8 field_108e;
     u8 field_108f;
-    u8 unknown_1090[0x2];
-    u8 field_1092;
-    u8 field_1093;
-    u8 field_1094;
-    u8 route_search_index;
-    u8 unknown_1096[0x2];
-    u32 field_1098;
-    u32 field_109c;
-    u8 unknown_10a0[0x4];
+    union {
+        struct {
+            u8 unknown_1090[2];
+            u8 field_1092;
+            u8 field_1093;
+        };
+        f32 special_move_timer_pc;
+    };
+    union {
+        struct {
+            u8 field_1094;
+            u8 route_search_index;
+            u8 unknown_1096[2];
+        };
+        AIPATHNODE_PC *special_move_source_pc;
+    };
+    union {
+        struct {
+            u32 field_1098;
+            u32 field_109c;
+            u8 unknown_10a0[0x4];
+        };
+        NUVEC special_move_look_position_pc;
+    };
     struct gameobject_s *opponent;
     struct gameobject_s *last_attacker;
     void *snake_body;
@@ -11826,7 +11872,7 @@ typedef struct PC_SHADER_OBJECT_FULL_VIEW PC_SHADER_OBJECT_FULL_VIEW;
     STATIC_ASSERT(offsetof(WORLDINFO, gizmo_blowup_count) == 0x50c0);
     STATIC_ASSERT(offsetof(WORLDINFO, gizmo_blowups) == 0x50c8);
     typedef i32(__cdecl *AI_PARSE_SPEED_PC)(char *, u8 *);
-    typedef f32(__cdecl *AI_CHARACTER_DISTANCE_PC)(i16);
+    typedef f32(__cdecl *AI_CHARACTER_DISTANCE_PC)(i32);
     typedef NUVEC *(__cdecl *AI_ORIGIN_POSITION_PC)(AISYS_PC *, AIPACKET_PC *);
     extern AI_PARSE_SPEED_PC AIActionParseSpeedFn;
     extern AI_CHARACTER_DISTANCE_PC GetViewRangeFn;
@@ -12065,8 +12111,15 @@ typedef struct PC_SHADER_OBJECT_FULL_VIEW PC_SHADER_OBJECT_FULL_VIEW;
 
     EXPLOSION_PC *__cdecl AddExplosion(NUVEC *, f32, f32, GAMEOBJECT *, i32, u32);
     void __cdecl ResetExplosions(void);
-    void __cdecl AIScriptMissingStateDiagnostic(char *, char *, char *);
-    void __cdecl AIScriptMissingStateDiagnosticAlternate(char *, char *, char *);
+#ifdef __cplusplus
+    void __cdecl AIScriptMissingStateDiagnostic(...);
+    void __cdecl AIScriptMissingStateDiagnosticAlternate(...);
+    void __cdecl AIScriptMissingConditionDiagnostic(...);
+#else
+void __cdecl AIScriptMissingStateDiagnostic();
+void __cdecl AIScriptMissingStateDiagnosticAlternate();
+void __cdecl AIScriptMissingConditionDiagnostic();
+#endif
     void __cdecl InitFn_GameParamToFloat(AI_GAME_PARAM_TO_FLOAT_PC);
     i32 __cdecl NuSpecialFindDisplay(NUGSCN *, NUSPECIALHANDLE *, char *, i32);
     NUGSPLINE *__cdecl NuSplineFind(NUGSCN *, char *);
@@ -12333,7 +12386,7 @@ typedef struct PC_SHADER_OBJECT_FULL_VIEW PC_SHADER_OBJECT_FULL_VIEW;
     extern void(__cdecl *GameObjectDimensionsExtraFn)(GAMEOBJECT *);
     MISSIONDATA_PC *__cdecl Mission_Active(MISSIONSYS_PC *);
     void __cdecl GameObjectDimensions(GAMEOBJECT *);
-    typedef i32(__cdecl *AI_LEVEL_CHARACTER_TYPE_ID_PC)(char *);
+    typedef u8(__cdecl *AI_LEVEL_CHARACTER_TYPE_ID_PC)(char *);
     typedef i32(__cdecl *AI_LEVEL_CHARACTER_GLOBAL_ID_PC)(u8);
     extern f32 idealgoalrange;
     extern f32 engagefiretime;
@@ -13408,6 +13461,7 @@ typedef struct PC_SHADER_OBJECT_FULL_VIEW PC_SHADER_OBJECT_FULL_VIEW;
     void __cdecl NuLinkedListAppend(NULISTHDR *list, NULISTLNK *node);
     void __cdecl NuLinkedListRemove(NULISTHDR *list, NULISTLNK *node);
     NULISTLNK *__cdecl NuLinkedListGetHead(NULISTHDR *list);
+    NULISTLNK *__cdecl NuLinkedListGetTail(NULISTHDR *list);
     NULISTLNK *__cdecl NuLinkedListGetNext(NULISTHDR *list, NULISTLNK *node);
     void __cdecl ResetGizAIMessageSys(GIZAIMESSAGESYS *sys);
     void __cdecl ClearGizAIMessageSys(GIZAIMESSAGESYS *sys);
@@ -13565,6 +13619,7 @@ typedef struct PC_SHADER_OBJECT_FULL_VIEW PC_SHADER_OBJECT_FULL_VIEW;
     NUANG __cdecl NuAtan2D(f32 dx, f32 dy);
     NUANG __cdecl NuAtan2DA(f32 dx, f32 dy);
     f32 __cdecl NuAtan2DAF(f32 dx, f32 dy);
+    void __cdecl AIScriptInitConditions(AISYS_PC *sys);
     void __cdecl xConditions(NUFPAR_PC *parser);
     void __cdecl xActions(NUFPAR_PC *parser);
     void __cdecl xConditionMacro(NUFPAR_PC *parser);
@@ -14828,7 +14883,7 @@ void __cdecl PCSoundAlreadyPlayingHook(void);
     extern const char YArgPrefix[3];
     extern const char ZArgPrefix[3];
     extern const char CharacterPosArgPrefix[15];
-    i32 __cdecl Action_PlaySfx(void *, void *, AIPACKET_PC *, char **, i32, i32, f32);
+    i32 __cdecl Action_PlaySfx(AISYS_PC *, AISCRIPTPROCESS_PC *, AIPACKET_PC *, char **, i32, i32, f32);
     void __cdecl GameAIScriptAddLevelSfx(WORLDINFO *, NULISTHDR *);
     void __cdecl AISysCharacterSetPath(AIPACKET_PC *, AIPATH_PC *);
     void __cdecl AISysFindRoute(AIPACKET_PC *);
@@ -14881,18 +14936,18 @@ void __cdecl PCSoundAlreadyPlayingHook(void);
                                NUVEC *, NUMTX *, u32);
     i32 __cdecl PCBuildModelLayerList(CHARACTER_MODEL_LAYERS_PC *, i16 *, u32);
     void __cdecl PCStoreModelLocatorCoordinates(CHARACTER_MODEL_LAYERS_PC *, NUMTX *, NUMTX *, NUVEC *, NUMTX *);
-    i32 __cdecl Action_NoTerrain(void *, void *, AIPACKET_PC *, char **, i32, i32, f32);
-    i32 __cdecl Action_NoLosCheck(void *, void *, AIPACKET_PC *, char **, i32, i32, f32);
-    i32 __cdecl Action_FlatTerrain(void *, void *, AIPACKET_PC *, char **, i32, i32, f32);
-    i32 __cdecl Action_DontUseShadowTerrain(void *, void *, AIPACKET_PC *, char **, i32, i32, f32);
-    i32 __cdecl Action_DontPush(void *, void *, AIPACKET_PC *, char **, i32, i32, f32);
-    i32 __cdecl Action_CanSeeBehind(void *, void *, AIPACKET_PC *, char **, i32, i32, f32);
-    i32 __cdecl Action_RequiresLOS(void *, void *, AIPACKET_PC *, char **, i32, i32, f32);
-    i32 __cdecl Action_SetFullPathSearch(void *, void *, AIPACKET_PC *, char **, i32, i32, f32);
-    i32 __cdecl Action_NoShadows(void *, void *, AIPACKET_PC *, char **, i32, i32, f32);
-    f32 __cdecl Condition_Timer(void *, AISCRIPTPROCESS_PC *, AIPACKET_PC *, char *, void *);
-    f32 __cdecl Condition_Random(void *, AISCRIPTPROCESS_PC *, AIPACKET_PC *, char *, void *);
-    f32 __cdecl Condition_AlwaysTrue(void *, AISCRIPTPROCESS_PC *, AIPACKET_PC *, char *, void *);
+    i32 __cdecl Action_NoTerrain(AISYS_PC *, AISCRIPTPROCESS_PC *, AIPACKET_PC *, char **, i32, i32, f32);
+    i32 __cdecl Action_NoLosCheck(AISYS_PC *, AISCRIPTPROCESS_PC *, AIPACKET_PC *, char **, i32, i32, f32);
+    i32 __cdecl Action_FlatTerrain(AISYS_PC *, AISCRIPTPROCESS_PC *, AIPACKET_PC *, char **, i32, i32, f32);
+    i32 __cdecl Action_DontUseShadowTerrain(AISYS_PC *, AISCRIPTPROCESS_PC *, AIPACKET_PC *, char **, i32, i32, f32);
+    i32 __cdecl Action_DontPush(AISYS_PC *, AISCRIPTPROCESS_PC *, AIPACKET_PC *, char **, i32, i32, f32);
+    i32 __cdecl Action_CanSeeBehind(AISYS_PC *, AISCRIPTPROCESS_PC *, AIPACKET_PC *, char **, i32, i32, f32);
+    i32 __cdecl Action_RequiresLOS(AISYS_PC *, AISCRIPTPROCESS_PC *, AIPACKET_PC *, char **, i32, i32, f32);
+    i32 __cdecl Action_SetFullPathSearch(AISYS_PC *, AISCRIPTPROCESS_PC *, AIPACKET_PC *, char **, i32, i32, f32);
+    i32 __cdecl Action_NoShadows(AISYS_PC *, AISCRIPTPROCESS_PC *, AIPACKET_PC *, char **, i32, i32, f32);
+    f32 __cdecl Condition_Timer(AISYS_PC *, AISCRIPTPROCESS_PC *, AIPACKET_PC *, char *, void *);
+    f32 __cdecl Condition_Random(AISYS_PC *, AISCRIPTPROCESS_PC *, AIPACKET_PC *, char *, void *);
+    f32 __cdecl Condition_AlwaysTrue(AISYS_PC *, AISCRIPTPROCESS_PC *, AIPACKET_PC *, char *, void *);
     NUMTX *__cdecl NuSound3GetListener(void);
     extern NUMTX *NuSound3Listener;
     extern f32 nusound_fade_start;
@@ -15344,7 +15399,7 @@ void __cdecl PCSoundAlreadyPlayingHook(void);
     GAMEPAD_PC *__cdecl GamePad_Allocate(void);
     SUIT_LAYERS_PC *__cdecl Suit_GetDefault(i32);
     NUVEC *__cdecl Player_StartPos(GAMEOBJECT *);
-    i32 __cdecl Action_CreatePod(void *, void *, void *, char **, i32, i32, f32);
+    i32 __cdecl Action_CreatePod(AISYS_PC *, AISCRIPTPROCESS_PC *, AIPACKET_PC *, char **, i32, i32, f32);
     extern i32 NOAICREATURES;
     extern i32 addcreature_override_id_check;
     extern f32 default_mover_extra;
@@ -16011,7 +16066,7 @@ void __cdecl PCSoundAlreadyPlayingHook(void);
 
     void __cdecl ClearLevData(void);
     void __cdecl NewLevelFromMenu(LEVELDATA_PC *, i32, i32, i32);
-    i32 __cdecl Action_SetLapTime(void *, void *, void *, char **, i32, i32, f32);
+    i32 __cdecl Action_SetLapTime(AISYS_PC *, AISCRIPTPROCESS_PC *, AIPACKET_PC *, char **, i32, i32, f32);
 
     void __cdecl WorldInfo_Init(WORLDINFO *);
     void __cdecl NuRndrInitWorld(void);
@@ -20064,7 +20119,24 @@ extern "C" {
 #endif
 
 typedef struct HATMACHINE_PC HATMACHINE_PC;
+#ifndef SAGA_GIZMO_LEVER_PC_DEFINED
+#define SAGA_GIZMO_LEVER_PC_DEFINED
 typedef struct GIZMO_LEVER_PC GIZMO_LEVER_PC;
+struct GIZMO_LEVER_PC {
+    NUMTX matrix;
+    NUVEC floor_position, target_offset;
+    char name[16];
+    NUVEC position;
+    f32 idle_animation_timer, pull_progress, auto_reset_timer, auto_reset_delay, target_indicator_scale;
+    u16 yaw;
+    i16 model_special_index, platform_id;
+    u16 animation_frame, terrain_pitch, terrain_roll, flags;
+    u8 model_variant, reserved_97[9];
+};
+STATIC_ASSERT(sizeof(GIZMO_LEVER_PC) == 0xa0);
+STATIC_ASSERT(offsetof(GIZMO_LEVER_PC, floor_position) == 0x40);
+STATIC_ASSERT(offsetof(GIZMO_LEVER_PC, position) == 0x68);
+#endif
 #ifdef __cplusplus
 extern "C" {
 #endif
@@ -21724,7 +21796,7 @@ struct nuhspecial_s;
 f32 NuSpecialGetAnimPos(struct nuhspecial_s *special);
 typedef void(__cdecl *EdUiMenuCallback)(struct eduimenu_s *menu, struct eduimenu_s *parent);
 typedef void(__cdecl *EdUiItemCallback)(struct eduimenu_s *menu, struct eduiitem_s *item, u32 value);
-typedef i32 AIFINDALTERNATIVESPECIALOBJECT(AISYS_PC *system, struct nuhspecial_s *special);
+typedef i32 AIFINDALTERNATIVESPECIALOBJECT(AISYS_PC *system, NUSPECIALHANDLE *special);
 
 /* Types imported from the Android sources (tools/typeimport.py). */
 typedef struct AIAREA_s AIAREA_s;
@@ -21918,8 +21990,14 @@ struct AITRIGGERSET_s {
             u8 trigger_count;
             u8 field_20d;
             u16 field_0x20e;
-            u8 flags;
-            u8 reserved_211[3];
+            union {
+                u16 flags_word;
+                struct {
+                    u8 flags;
+                    u8 reserved_211;
+                };
+            };
+            u8 reserved_212[2];
         };
     };
 };
@@ -22950,7 +23028,7 @@ struct AIPATHCNXCONTROLLER_s {
     struct AIPATHCNX_PC *connection;
     union {
         void *target;
-        struct nuhspecial_s special;
+        NUSPECIALHANDLE special;
         i32 fake_animation_id;
     };
     i32 gizmo_output;
@@ -22959,11 +23037,23 @@ struct AIPATHCNXCONTROLLER_s {
     u32 on_frames[32];
     u8 target_type;
     u8 path_index;
-    u8 flags;
-    u8 padding_0xa7;
+    union {
+        u16 flags_word;
+        struct {
+            u8 flags;
+            u8 padding_0xa7;
+        };
+    };
 };
 STATIC_ASSERT(sizeof(struct AIPATHCNXCONTROLLER_s) == 168);
 
+STATIC_ASSERT(offsetof(struct AIPATHCNXCONTROLLER_s, special) == 0xc);
+STATIC_ASSERT(offsetof(struct AIPATHCNXCONTROLLER_s, on_flags) == 0x1c);
+STATIC_ASSERT(offsetof(struct AIPATHCNXCONTROLLER_s, off_flags) == 0x20);
+STATIC_ASSERT(offsetof(struct AIPATHCNXCONTROLLER_s, on_frames) == 0x24);
+STATIC_ASSERT(offsetof(struct AIPATHCNXCONTROLLER_s, target_type) == 0xa4);
+STATIC_ASSERT(offsetof(struct AIPATHCNXCONTROLLER_s, path_index) == 0xa5);
+STATIC_ASSERT(offsetof(struct AIPATHCNXCONTROLLER_s, flags_word) == 0xa6);
 struct AIPATHCNXCONTROLSYS_s {
     i32 controller_count;
     struct AIPATHCNXCONTROLLER_s *controllers;
@@ -25620,8 +25710,8 @@ extern "C" {
     void __cdecl edcamSet(void);
     void __cdecl edppDoInput(struct FRAME_PAD_PC *pad);
     void __cdecl edcamMoveEx(struct FRAME_PAD_PC *pad, f32 delta_time);
-    extern i32(__cdecl *FindAlternativeSpecialObjectFn)(struct AISYS_PC *arg0, struct nuhspecial_s *arg1);
-    i32 __cdecl FindAnimIX(struct characterdata_pc_s *character, char *name);
+    extern i32(__cdecl *FindAlternativeSpecialObjectFn)(struct AISYS_PC *arg0, NUSPECIALHANDLE *arg1);
+    i16 __cdecl FindAnimIX(struct characterdata_pc_s *character, char *name);
     extern u32 lightning_col[2];
     extern f32 lightning_endw[2];
     extern f32 lightning_sizel[2];
@@ -26686,6 +26776,26 @@ extern "C" {
 }
 #endif
 
+#ifdef __cplusplus
+extern "C" {
+#endif
+    void __cdecl ReStoreStatusTakeOverObjectSys(i32 restore_progress);
+    AITRIGGERSET_s *__cdecl AITriggerSetCreate(AITRIGGERSETSYS_s *, FLOWBOX_PC *);
+    void __cdecl AITriggerSysAutoSetUp(WORLDINFO *, AITRIGGERSETSYS_s *);
+#ifdef __cplusplus
+}
+#endif
+
+STATIC_ASSERT(offsetof(AIPACKET_PC, special_move_node) == 0x184);
+STATIC_ASSERT(offsetof(AIPACKET_PC, goal_path_node) == 0x17c);
+#ifdef __cplusplus
+extern "C" {
+#endif
+    void __cdecl SetSpecialMove(GAMEOBJECT *, AIPATHNODE_PC *, AIPATHNODE_PC *, i8);
+#ifdef __cplusplus
+}
+#endif
+
 #include "diagnostics.h"
 
 STATIC_ASSERT(offsetof(AREA_DATA_PC, true_hero_targets) == 0x8c);
@@ -26721,3 +26831,11 @@ extern "C" {
 #ifdef __cplusplus
 }
 #endif
+
+STATIC_ASSERT(offsetof(GAMEOBJECT, ai_collision_priority_pc) == 0x292);
+STATIC_ASSERT(offsetof(GAMEOBJECT, ai_player_packet_pc) == 0x6c4);
+STATIC_ASSERT(offsetof(GAMEOBJECT, special_move_progress_view_pc) + offsetof(AI_SPECIAL_PROGRESS_PC, flags) == 0x1073);
+STATIC_ASSERT(offsetof(GAMEOBJECT, special_move_progress_view_pc) + offsetof(AI_SPECIAL_PROGRESS_PC, progress) ==
+              0x1074);
+STATIC_ASSERT(offsetof(GAMEOBJECT, special_move_timer_pc) == 0x1090);
+STATIC_ASSERT(offsetof(GAMEOBJECT, special_move_source_pc) == 0x1094);

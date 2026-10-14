@@ -1,7 +1,7 @@
 #include "saga.h"
 
-i32 __cdecl Action_PlaySfx(void *sys, void *processor, AIPACKET_PC *packet, char **params, i32 param_count,
-                           i32 first_time, f32 delta_time) {
+i32 __cdecl Action_PlaySfx(AISYS_PC *sys, AISCRIPTPROCESS_PC *processor, AIPACKET_PC *packet, char **params,
+                           i32 param_count, i32 first_time, f32 delta_time) {
     NUVEC position;
     NUVEC *position_ptr;
     char *name;

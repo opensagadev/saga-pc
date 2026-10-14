@@ -291,7 +291,7 @@ i32 AITriggerSetAddTrigger(AISYS_PC *system, AITRIGGERSET_s *set, GIZMO_PC *gizm
     name = GizmoGetName(gizmo);
     locator = name != NULL ? AIPathFindLocator(system, name) : NULL;
     if (gizmo->type_id == lever_gizmotype_id) {
-        LEVER_s *lever = ((LEVER_s *)(gizmo->object));
+        GIZMO_LEVER_PC *lever = (GIZMO_LEVER_PC *)gizmo->object;
         set->gizmos[set->trigger_count] = gizmo;
         if (locator != NULL) {
             set->locators[set->trigger_count] = *locator;

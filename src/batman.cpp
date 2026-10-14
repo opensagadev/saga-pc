@@ -87,7 +87,7 @@ static void NuMainUpdateFrame(WORLDINFO *world, i32 *frame_flag) {
     PortalDoors_Update(world);
     STUBBED_NAMED("NuMainUpdateFrame: NuRndrShadowOnOff(COMPLEXSHADOWS) at 0x005f9e90");
     if (Paused == 0) {
-        STUBBED_NAMED("NuMainUpdateFrame: GameAISysStartFrame(world->ai_sys) at 0x0043b940");
+        GameAISysStartFrame(world->ai_sys);
     }
     AddCoinDelay[1] = 0.0f;
     AddCoinDelay[0] = 0.0f;

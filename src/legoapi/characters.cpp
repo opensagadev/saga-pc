@@ -791,3 +791,22 @@ queue:
     WaitingForCharacterTime = 0.0f;
     bgPostRequest(LoadSingleCharacter, NULL, NULL, 0);
 }
+
+extern "C" {
+    i16 __cdecl FindAnimIX(CHARACTERDATA_PC *character, char *name) {
+        CHARACTERANIM_CONFIG_PC *animation;
+        if (character != NULL) {
+            animation = character->animations;
+            if (animation != NULL) {
+                do {
+                    if (animation->name == NULL)
+                        break;
+                    if (NuStrICmp(name, animation->name) == 0)
+                        return animation->action_id;
+                    ++animation;
+                } while (animation != NULL);
+            }
+        }
+        return -1;
+    }
+}

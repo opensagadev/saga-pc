@@ -88,3 +88,65 @@ void __cdecl StoreStatusTakeOverObjectSys(void) {
         record->current_level = (u8)level;
     }
 }
+
+STATIC_ASSERT(offsetof(GAMEOBJECT, ai_packet) + offsetof(AIPACKET_PC, creature_index) == 0x400);
+STATIC_ASSERT(offsetof(GAMEOBJECT, ai_packet) + offsetof(AIPACKET_PC, reset_mode) == 0x406);
+STATIC_ASSERT(offsetof(GAMEOBJECT, ai_packet) + offsetof(AIPACKET_PC, path_info) == 0x420);
+STATIC_ASSERT(offsetof(GAMEOBJECT, field_0x276) == 0x27a);
+STATIC_ASSERT(offsetof(GAMEOBJECT, dead) == 0x28b);
+STATIC_ASSERT(offsetof(GAMEOBJECT, current_hp) == 0x107f);
+STATIC_ASSERT(offsetof(GAMEOBJECT, flags_1fc_word) == 0x1fc);
+void __cdecl ReStoreStatusTakeOverObjectSys(i32 restore_progress) {
+    i32 level, index, object_index;
+    TAKEOVEROBJECT_PC *record;
+    GAMEOBJECT *object, *controller;
+    if (netclient != 0)
+        return;
+    level = (i8)WORLD->current_level->area_level_index;
+    for (index = 0; index < num_takeoverobjects; ++index) {
+        record = &takeoverobjects[index];
+        if (restore_progress != 0 || record->current_level != level)
+            record->object = NULL;
+        if (record->contact_index != 0xff)
+            record->current_level = (u8)level;
+        if (record->registered_level == level) {
+            if (record->object == NULL) {
+                if (record->source_creature != 0xff) {
+                    for (object_index = 0; object_index < HIGHGAMEOBJECT; ++object_index) {
+                        if (Obj[object_index].ai_packet.creature_index == record->source_creature) {
+                            record->object = &Obj[object_index];
+                            break;
+                        }
+                    }
+                } else if (record->current_level == level) {
+                    record->object =
+                        AddDynamicCreature(record->character_id, &record->last_safe_position, record->heading,
+                                           record->script_name, NULL, NULL, 1, NULL, NULL, 0, 0);
+                }
+            }
+            if (record->object != NULL && record->current_level != level) {
+                KillGameObject(record->object, 5, 0);
+                record->object = NULL;
+            }
+        } else if (record->current_level == level && record->object == NULL) {
+            record->object = AddDynamicCreature(record->character_id, &record->last_safe_position, record->heading,
+                                                record->script_name, NULL, NULL, 1, NULL, NULL, 0, 0);
+        }
+        object = record->object;
+        if (object != NULL) {
+            object->current_hp = record->hitpoints;
+            if (record->contact_index != 0xff && (controller = (GAMEOBJECT *)Player[record->contact_index]) != NULL) {
+                record->object->dead = 0;
+                record->object->flags_1fc_word |= 0x1000;
+                record->object->flags_1fc_word |= 1;
+                record->object->ai_packet.reset_mode = 2;
+                SnapCreaturePos(record->object, &controller->position, controller->field_0x276,
+                                &controller->ai_packet.path_info, 1);
+                InitPlayerAI(controller);
+                TakeOverGameObject(controller, record->object, 0, 1);
+            } else {
+                SnapCreaturePos(record->object, &record->last_safe_position, record->heading, NULL, 1);
+            }
+        }
+    }
+}

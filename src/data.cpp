@@ -33922,3 +33922,84 @@ extern "C" {
         {PlayerExtraActionNamePc_30, 195}, {PlayerExtraActionNamePc_31, 196}, {NULL, 0}};
 #pragma data_seg()
 }
+
+extern "C" {
+#pragma const_seg(".rdata$AIControllerLiteralPc00757e34")
+    extern const char AIControllerLiteralPc00757e34[10] = "pathname=";
+#pragma const_seg()
+#pragma const_seg(".rdata$AIControllerLiteralPc00757d98")
+    extern const char AIControllerLiteralPc00757d98[10] = "obstacle=";
+#pragma const_seg()
+#pragma const_seg(".rdata$AIControllerLiteralPc00757d70")
+    extern const char AIControllerLiteralPc00757d70[16] = "OBSTACLE_CLOSED";
+#pragma const_seg()
+#pragma const_seg(".rdata$AIControllerLiteralPc00757db4")
+    extern const char AIControllerLiteralPc00757db4[9] = "flowbox=";
+#pragma const_seg()
+#pragma const_seg(".rdata$AIControllerLiteralPc00757de4")
+    extern const char AIControllerLiteralPc00757de4[9] = "buildit=";
+#pragma const_seg()
+#pragma const_seg(".rdata$AIControllerLiteralPc00757e18")
+    extern const char AIControllerLiteralPc00757e18[9] = "bothways";
+#pragma const_seg()
+#pragma const_seg(".rdata$AIControllerLiteralPc00757e40")
+    extern const char AIControllerLiteralPc00757e40[10] = "on_frames";
+#pragma const_seg()
+#pragma const_seg(".rdata$AIControllerLiteralPc00757dc8")
+    extern const char AIControllerLiteralPc00757dc8[14] = "gizmo_output=";
+#pragma const_seg()
+#pragma const_seg(".rdata$AIControllerLiteralPc00757da4")
+    extern const char AIControllerLiteralPc00757da4[7] = "force=";
+#pragma const_seg()
+#pragma const_seg(".rdata$AIControllerLiteralPc00757e10")
+    extern const char AIControllerLiteralPc00757e10[8] = "on_flag";
+#pragma const_seg()
+#pragma const_seg(".rdata$AIControllerLiteralPc00757d60")
+    extern const char AIControllerLiteralPc00757d60[12] = "lastframe-1";
+#pragma const_seg()
+#pragma const_seg(".rdata$AIControllerLiteralPc00757dac")
+    extern const char AIControllerLiteralPc00757dac[8] = "blowup=";
+#pragma const_seg()
+#pragma const_seg(".rdata$AIControllerLiteralPc00757dc0")
+    extern const char AIControllerLiteralPc00757dc0[7] = "gizmo=";
+#pragma const_seg()
+#pragma const_seg(".rdata$AIControllerLiteralPc00757dfc")
+    extern const char AIControllerLiteralPc00757dfc[5] = "obj=";
+#pragma const_seg()
+#pragma const_seg(".rdata$AIControllerLiteralPc00757d6c")
+    extern const char AIControllerLiteralPc00757d6c[3] = "to";
+#pragma const_seg()
+#pragma const_seg(".rdata$AIControllerLiteralPc00757d80")
+    extern const char AIControllerLiteralPc00757d80[14] = "OBSTACLE_OPEN";
+#pragma const_seg()
+#pragma const_seg(".rdata$AIControllerLiteralPc00757e04")
+    extern const char AIControllerLiteralPc00757e04[9] = "off_flag";
+#pragma const_seg()
+#pragma const_seg(".rdata$AIControllerLiteralPc00757d54")
+    extern const char AIControllerLiteralPc00757d54[10] = "lastframe";
+#pragma const_seg()
+#pragma const_seg(".rdata$AIControllerLiteralPc00757dd8")
+    extern const char AIControllerLiteralPc00757dd8[12] = "fakeanimid=";
+#pragma const_seg()
+#pragma const_seg(".rdata$AIControllerLiteralPc00757d90")
+    extern const char AIControllerLiteralPc00757d90[7] = "zipup=";
+#pragma const_seg()
+#pragma const_seg(".rdata$AIControllerLiteralPc00757e24")
+    extern const char AIControllerLiteralPc00757e24[13] = "CheckVisible";
+#pragma const_seg()
+#pragma const_seg(".rdata$AIControllerLiteralPc00757df0")
+    extern const char AIControllerLiteralPc00757df0[10] = "cutscene=";
+#pragma const_seg()
+#pragma const_seg(".rdata$AISetLayerKeywordPc")
+    extern const char AISetLayerKeywordPc[11] = "set_layer=";
+#pragma const_seg()
+#pragma const_seg(".rdata$AIClearLayerKeywordPc")
+    extern const char AIClearLayerKeywordPc[13] = "clear_layer=";
+#pragma const_seg()
+#pragma const_seg(".rdata$AIOverrideAllKeywordPc")
+    extern const char AIOverrideAllKeywordPc[9] = "from=All";
+#pragma const_seg()
+#pragma bss_seg(".bss$fakeanimendframe")
+    f32 fakeanimendframe[1];
+#pragma bss_seg()
+}

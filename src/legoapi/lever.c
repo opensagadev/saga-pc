@@ -8,17 +8,6 @@ i32 __cdecl Lever_BeingPulled(void *lever) {
     return (((LEVER_TRIGGER_FLAGS_PC *)lever)->flags >> 1) & 1;
 }
 
-typedef struct GIZMO_LEVER_PC {
-    NUMTX matrix;
-    NUVEC floor_position, target_offset;
-    char name[16];
-    NUVEC position;
-    f32 idle_animation_timer, pull_progress, auto_reset_timer, auto_reset_delay, target_indicator_scale;
-    u16 yaw;
-    i16 model_special_index, platform_id;
-    u16 animation_frame, terrain_pitch, terrain_roll, flags;
-    u8 model_variant, reserved_97[9];
-} GIZMO_LEVER_PC;
 typedef struct LEVER_WORLD_PC {
     u8 unknown_000[0x5068];
     GIZMO_LEVER_PC *levers;

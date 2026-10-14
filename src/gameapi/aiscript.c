@@ -5,6 +5,7 @@
 #include <string.h>
 
 extern const char AIScriptFalse[6];
+extern const char Text_UnknownText[2];
 
 extern VARIPTR *aiscript_load_buffer;
 extern VARIPTR *aiscript_load_end_buffer;
@@ -56,6 +57,7 @@ static AISCRIPT_CONST_RECORD_PC AIScriptConstantRecordsPc[8];
 static i32 AIScriptConstCursorPc;
 
 static char *AIScriptCopyStringPc(char *text, VARIPTR *buffer, VARIPTR *end);
+static void *AIScriptBufferAlloc(VARIPTR *buf, VARIPTR *buf_end, u32 size);
 static AISCRIPT_PC *AIScriptLoadPakFilePc(void *pak, char *filename, char *path, VARIPTR *buffer, VARIPTR *end);
 void __cdecl AIScriptOpenPakFileParse(AISCRIPT_PC **script_ref, void *pak, char *filename, char *path, VARIPTR *buffer,
                                       VARIPTR *end);
@@ -177,45 +179,78 @@ AISTATE_PC *__cdecl AIStateFind(const char *name, AISCRIPT_PC *script) {
         }                                                                                                              \
     } while (0)
 
-void __cdecl AIScriptCopyConditions(NULISTHDR *source, NULISTHDR *destination, VARIPTR *cursor, VARIPTR *end) {
-    AICONDITION_PC *source_condition;
+#define AISCRIPT_COPY_NATIVE_STRING(source, destination, buffer, end)                                                  \
+    do {                                                                                                               \
+        char *text = (source);                                                                                         \
+        u32 length;                                                                                                    \
+        (destination) = NULL;                                                                                          \
+        if (text != NULL) {                                                                                            \
+            length = NuStrLen(text);                                                                                   \
+            if (length != 0) {                                                                                         \
+                (destination) = (char *)AIScriptBufferAlloc((buffer), (end), length + 1);                              \
+                if ((destination) == NULL) {                                                                           \
+                    AIScriptMissingStateDiagnostic();                                                                  \
+                }                                                                                                      \
+                NuStrCpy((destination), text);                                                                         \
+            }                                                                                                          \
+        }                                                                                                              \
+    } while (0)
 
-    source_condition = (AICONDITION_PC *)NuLinkedListGetHead(source);
-    while (source_condition != NULL) {
-        AICONDITION_PC *copy;
-        copy = (AICONDITION_PC *)AISysBufferAlloc(cursor, end, sizeof(AICONDITION_PC));
-        if (copy != NULL) {
-            PCByteCopy_candidate(copy, source_condition, sizeof(AICONDITION_PC));
-            copy->link.next = NULL;
-            copy->link.prev = NULL;
-            AISCRIPT_COPY_ARENA_STRING(source_condition->argument, copy->argument, cursor, end);
-            AISCRIPT_COPY_ARENA_STRING(source_condition->next_state_name, copy->next_state_name, cursor, end);
-            NuLinkedListAppend(destination, &copy->link);
+void __cdecl AIScriptCopyConditions(NULISTHDR *src, NULISTHDR *dst, VARIPTR *buf, VARIPTR *buf_end) {
+    AICONDITION_PC *src_cond;
+
+    src_cond = (AICONDITION_PC *)NuLinkedListGetHead(src);
+    while (src_cond != NULL) {
+        AICONDITION_PC *dst_cond;
+
+        dst_cond = (AICONDITION_PC *)AIScriptBufferAlloc(buf, buf_end, sizeof(AICONDITION_PC));
+        if (dst_cond != NULL) {
+            memset(dst_cond, 0, sizeof(AICONDITION_PC));
+            PCByteCopy_candidate(dst_cond, src_cond, sizeof(AICONDITION_PC));
+
+            dst_cond->link.prev = NULL;
+            dst_cond->link.next = NULL;
+
+            AISCRIPT_COPY_NATIVE_STRING(src_cond->argument, dst_cond->argument, buf, buf_end);
+            AISCRIPT_COPY_NATIVE_STRING(src_cond->next_state_name, dst_cond->next_state_name, buf, buf_end);
+
+            NuLinkedListAppend(dst, &dst_cond->link);
+        } else {
+            AIScriptMissingStateDiagnostic();
         }
-        source_condition = (AICONDITION_PC *)NuLinkedListGetNext(source, &source_condition->link);
+
+        src_cond = (AICONDITION_PC *)NuLinkedListGetNext(src, &src_cond->link);
     }
 }
 
-void __cdecl AIScriptCopyActions(NULISTHDR *source, NULISTHDR *destination, VARIPTR *cursor, VARIPTR *end) {
-    AIACTION_PC *source_action;
+void __cdecl AIScriptCopyActions(NULISTHDR *src, NULISTHDR *dst, VARIPTR *buf, VARIPTR *buf_end) {
+    AIACTION_PC *src_action;
 
-    source_action = (AIACTION_PC *)NuLinkedListGetHead(source);
-    while (source_action != NULL) {
-        AIACTION_PC *copy;
-        copy = (AIACTION_PC *)AISysBufferAlloc(cursor, end, sizeof(AIACTION_PC));
-        if (copy != NULL) {
-            i32 i;
-            copy->params = (char **)AISysBufferAlloc(cursor, end, (u32)(source_action->param_count * sizeof(char *)));
-            copy->param_count = source_action->param_count;
-            if (copy->params != NULL) {
-                for (i = 0; i < copy->param_count; i++) {
-                    AISCRIPT_COPY_ARENA_STRING(source_action->params[i], copy->params[i], cursor, end);
-                }
+    src_action = (AIACTION_PC *)NuLinkedListGetHead(src);
+    while (src_action != NULL) {
+        AIACTION_PC *dst_action;
+        i32 i;
+
+        dst_action = (AIACTION_PC *)AIScriptBufferAlloc(buf, buf_end, sizeof(AIACTION_PC));
+        if (dst_action != NULL) {
+            dst_action->params = (char **)AIScriptBufferAlloc(buf, buf_end, src_action->param_count * sizeof(char *));
+            if (dst_action->params == NULL) {
+                AIScriptMissingStateDiagnostic();
             }
-            copy->definition = source_action->definition;
-            NuLinkedListAppend(destination, &copy->link);
+            dst_action->param_count = src_action->param_count;
+
+            for (i = 0; i < dst_action->param_count; i++) {
+                AISCRIPT_COPY_NATIVE_STRING(src_action->params[i], dst_action->params[i], buf, buf_end);
+            }
+
+            dst_action->definition = src_action->definition;
+
+            NuLinkedListAppend(dst, &dst_action->link);
+        } else {
+            AIScriptMissingStateDiagnostic();
         }
-        source_action = (AIACTION_PC *)NuLinkedListGetNext(source, &source_action->link);
+
+        src_action = (AIACTION_PC *)NuLinkedListGetNext(src, &src_action->link);
     }
 }
 
@@ -529,113 +564,414 @@ void __cdecl AIScriptLoadAllPakFile(void *pak, char *path, VARIPTR *buffer, VARI
         }                                                                                                              \
     } while (0)
 
-void __cdecl xActions(NUFPAR_PC *parser) {
-    while (NuFParGetLine(parser) != 0) {
-        NuFParGetWord(parser);
-        if (NuStrICmp(parser->word_buffer, "}") == 0) {
-            return;
-        }
+extern AIACTIONDEF_PC *game_aiactiondefs;
+extern AICONDITIONDEF_PC *game_aiconditiondefs;
+extern AIACTIONDEF_PC api_aiactiondefs[];
+extern AICONDITIONDEF_PC api_aiconditiondefs[];
 
-        if (NuStrICmp(parser->word_buffer, "DoMacro") == 0) {
-            AIACTIONMACRO_PC *macro;
-            NuFParGetWord(parser);
-            macro = (AIACTIONMACRO_PC *)NuLinkedListGetHead(&aiscript_load_script->action_macros);
-            while (macro != NULL) {
-                if (NuStrICmp(macro->name, parser->word_buffer) == 0) {
-                    AIACTION_PC *action;
-                    action = (AIACTION_PC *)NuLinkedListGetHead(&macro->actions);
-                    while (action != NULL) {
-                        AIACTION_PC *copy;
-                        i32 i;
-                        copy = (AIACTION_PC *)AISysBufferAlloc(aiscript_load_buffer, aiscript_load_end_buffer,
-                                                               sizeof(AIACTION_PC));
-                        if (copy != NULL) {
-                            copy->params = (char **)AISysBufferAlloc(aiscript_load_buffer, aiscript_load_end_buffer,
-                                                                     (u32)(action->param_count * sizeof(char *)));
-                            copy->param_count = action->param_count;
-                            if (copy->params != NULL) {
-                                for (i = 0; i < copy->param_count; i++) {
-                                    AISCRIPT_COPY_STRING(action->params[i], copy->params[i]);
-                                }
-                            }
-                            copy->definition = action->definition;
-                            NuLinkedListAppend(aiscript_load_actions, &copy->link);
-                        }
-                        action = (AIACTION_PC *)NuLinkedListGetNext(&macro->actions, &action->link);
-                    }
-                    break;
-                }
-                macro = (AIACTIONMACRO_PC *)NuLinkedListGetNext(&aiscript_load_script->action_macros, &macro->link);
+static i32 ExpressionRequiredNameLookup;
+static i32 ExpressionNameLookupFailed;
+i32 AiParseExpressionFailed;
+
+static i32 AiParseExpressionNameLoopup(char *name, f32 *float_out, i32 *int_out) {
+    f32 value;
+
+    ExpressionRequiredNameLookup = 1;
+    value = 0.0f;
+    ExpressionNameLookupFailed = 1;
+
+    if (GameParamToFloatFn != NULL) {
+        if ((*GameParamToFloatFn)(NULL, NULL, name, &value) != 0) {
+            ExpressionNameLookupFailed = 0;
+        }
+    }
+
+    if (float_out != NULL) {
+        *float_out = value;
+    }
+
+    if (int_out != NULL) {
+        *int_out = value;
+    }
+
+    return 0;
+}
+
+f32 AiParseExpression(char *expr) {
+    f32 value;
+
+    ExpressionRequiredNameLookup = 0;
+    ExpressionNameLookupFailed = 0;
+    AiParseExpressionFailed = 0;
+
+    value = NuRDPFVar(expr, AiParseExpressionNameLoopup);
+
+    if (ExpressionNameLookupFailed != 0) {
+        AiParseExpressionFailed = 1;
+    }
+
+    return value;
+}
+
+static void *AIScriptBufferAlloc(VARIPTR *buf, VARIPTR *buf_end, u32 size) {
+    void *ret;
+
+    ret = NULL;
+    if (buf != NULL && buf_end != NULL) {
+        if (buf_end->addr > buf->addr + size) {
+            ret = (void *)((buf->addr + 15) & ~15u);
+            buf->addr = (u32)ret + size;
+            memset(ret, 0, size);
+        }
+    }
+
+    return ret;
+}
+
+static AIACTIONDEF_PC *AIActionFind(char *name) {
+    AIACTIONDEF_PC *definition;
+
+    if (game_aiactiondefs != NULL) {
+        for (definition = game_aiactiondefs; definition->name != NULL; definition++) {
+            if (NuStrICmp(name, definition->name) == 0) {
+                return definition;
             }
+        }
+    }
+
+    for (definition = api_aiactiondefs; definition->name != NULL; definition++) {
+        if (NuStrICmp(name, definition->name) == 0) {
+            return definition;
+        }
+    }
+
+    return NULL;
+}
+
+static AICONDITIONDEF_PC *AIConditionFind(char *name) {
+    AICONDITIONDEF_PC *definition;
+
+    if (game_aiconditiondefs != NULL) {
+        for (definition = game_aiconditiondefs; definition->name != NULL; definition++) {
+            if (NuStrICmp(name, definition->name) == 0) {
+                return definition;
+            }
+        }
+    }
+
+    for (definition = api_aiconditiondefs; definition->name != NULL; definition++) {
+        if (NuStrICmp(name, definition->name) == 0) {
+            return definition;
+        }
+    }
+
+    return NULL;
+}
+
+static void ConditionsParseFinalise(AICONDITION_PC *cond, NUFPAR_PC *parser) {
+    NuFParGetWord(parser);
+    if (NuStrICmp(parser->word_buffer_ptr, "goto") == 0) {
+        cond->flags &= (u16)~2;
+        NuFParGetWord(parser);
+        cond->next_state_name =
+            AIScriptCopyStringPc(parser->word_buffer_ptr, aiscript_load_buffer, aiscript_load_end_buffer);
+        NuFParGetWord(parser);
+        if (NuStrICmp(parser->word_buffer_ptr, "KeepBlockedMessages") == 0) {
+            cond->flags |= 2;
+        }
+    } else if (NuStrICmp(parser->word_buffer_ptr, "and") == 0) {
+        cond->flags |= 1;
+    } else if (condition_has_no_goto == 0) {
+        if (AIActionDiagnosticMode == 1) {
+            AIScriptMissingStateDiagnosticAlternate(aiscript_load_script->name,
+                                                    aiscript_load_state != NULL ? aiscript_load_state->name
+                                                                                : (char *)Text_UnknownText,
+                                                    parser->line_buffer_ptr);
         } else {
-            STUBBED_NAMED("xActions: PC action-definition lookup table not yet mapped");
-            NuStrChr(parser->word_buffer, '{');
-            while (NuFParGetWord(parser) != 0) {
-                /* The source line is consumed while its unresolved action is skipped. */
-            }
-            continue;
+            AIScriptMissingStateDiagnostic(aiscript_load_script->name,
+                                           aiscript_load_state != NULL ? aiscript_load_state->name
+                                                                       : (char *)Text_UnknownText,
+                                           parser->line_buffer_ptr);
         }
     }
 }
 
-void __cdecl xConditions(NUFPAR_PC *parser) {
+void __cdecl xActions(NUFPAR_PC *parser) {
     while (NuFParGetLine(parser) != 0) {
+        AIACTION_PC *action;
+
         NuFParGetWord(parser);
-        if (NuStrICmp(parser->word_buffer, "}") == 0) {
+
+        if (NuStrICmp(parser->word_buffer_ptr, "}") == 0) {
             return;
         }
-        if (NuStrICmp(parser->word_buffer, "IF") != 0) {
-            if (NuStrICmp(parser->word_buffer, "OnMacro") == 0) {
-                AICONDITIONMACRO_PC *macro;
-                AICONDITION_PC *last;
-                NuFParGetWord(parser);
-                macro = (AICONDITIONMACRO_PC *)NuLinkedListGetHead(&aiscript_load_script->condition_macros);
-                while (macro != NULL && NuStrICmp(macro->name, parser->word_buffer) != 0) {
-                    macro = (AICONDITIONMACRO_PC *)NuLinkedListGetNext(&aiscript_load_script->condition_macros,
-                                                                       &macro->link);
+
+        if (NuStrICmp(parser->word_buffer_ptr, "DoMacro") == 0) {
+            AIACTIONMACRO_PC *macro;
+
+            NuFParGetWord(parser);
+
+            macro = (AIACTIONMACRO_PC *)NuLinkedListGetHead(&aiscript_load_script->action_macros);
+            while (macro != NULL) {
+                if (NuStrICmp(macro->name, parser->word_buffer_ptr) == 0) {
+                    AIScriptCopyActions(&macro->actions, aiscript_load_actions, aiscript_load_buffer,
+                                        aiscript_load_end_buffer);
+
+                    break;
                 }
-                if (macro != NULL) {
-                    AICONDITION_PC *condition;
-                    condition = (AICONDITION_PC *)NuLinkedListGetHead(&macro->conditions);
-                    while (condition != NULL) {
-                        AICONDITION_PC *copy;
-                        copy = (AICONDITION_PC *)AISysBufferAlloc(aiscript_load_buffer, aiscript_load_end_buffer,
-                                                                  sizeof(AICONDITION_PC));
-                        if (copy != NULL) {
-                            memcpy(copy, condition, sizeof(AICONDITION_PC));
-                            copy->link.next = NULL;
-                            copy->link.prev = NULL;
-                            AISCRIPT_COPY_STRING(condition->argument, copy->argument);
-                            AISCRIPT_COPY_STRING(condition->next_state_name, copy->next_state_name);
-                            NuLinkedListAppend(aiscript_load_conditions, &copy->link);
-                        }
-                        condition = (AICONDITION_PC *)NuLinkedListGetNext(&macro->conditions, &condition->link);
+
+                macro = (AIACTIONMACRO_PC *)NuLinkedListGetNext(&aiscript_load_script->action_macros, &macro->link);
+            }
+            if (macro == NULL) {
+                if (AIActionDiagnosticMode == 1) {
+                    AIScriptMissingStateDiagnosticAlternate(parser->word_buffer_ptr, aiscript_load_script->name,
+                                                            aiscript_load_state != NULL ? aiscript_load_state->name
+                                                                                        : (char *)Text_UnknownText);
+                } else {
+                    AIScriptMissingStateDiagnostic(parser->word_buffer_ptr, aiscript_load_script->name,
+                                                   aiscript_load_state != NULL ? aiscript_load_state->name
+                                                                               : (char *)Text_UnknownText);
+                }
+            }
+        } else {
+            AIACTIONDEF_PC *definition;
+            char params[24][128];
+
+            definition = AIActionFind(parser->word_buffer_ptr);
+            if (definition != NULL) {
+                i32 param_count;
+                i32 i;
+
+                action = (AIACTION_PC *)AIScriptBufferAlloc(aiscript_load_buffer, aiscript_load_end_buffer,
+                                                            sizeof(AIACTION_PC));
+                if (action == NULL) {
+                    AIScriptMissingStateDiagnostic();
+                    continue;
+                }
+
+                memset(action, 0, sizeof(AIACTION_PC));
+
+                NuLinkedListAppend(aiscript_load_actions, &action->link);
+
+                action->definition = definition;
+
+                param_count = 0;
+
+                while (NuFParGetWord(parser) != 0) {
+                    if (NuStrCmp(parser->word_buffer_ptr, "\\") == 0) {
+                        NuFParGetLine(parser);
+                    } else {
+                        NuStrCpy(params[param_count++], parser->word_buffer_ptr);
                     }
-                    last = (AICONDITION_PC *)aiscript_load_conditions->tail;
-                    NuFParGetWord(parser);
-                    if (NuStrICmp(parser->word_buffer, "goto") == 0) {
-                        last->flags &= (u16)~2;
-                        NuFParGetWord(parser);
-                        AISCRIPT_COPY_STRING(parser->word_buffer, last->next_state_name);
-                        NuFParGetWord(parser);
-                        if (NuStrICmp(parser->word_buffer, "KeepBlockedMessages") == 0) {
-                            last->flags |= 2;
+                }
+
+                if (param_count != 0) {
+                    action->params = (char **)AIScriptBufferAlloc(aiscript_load_buffer, aiscript_load_end_buffer,
+                                                                  param_count * sizeof(char *));
+                    if (action->params != NULL) {
+                        action->param_count = param_count;
+
+                        for (i = 0; i < param_count; i++) {
+                            action->params[i] =
+                                AIScriptCopyStringPc(params[i], aiscript_load_buffer, aiscript_load_end_buffer);
                         }
-                    } else if (NuStrICmp(parser->word_buffer, "and") == 0) {
-                        last->flags |= 1;
                     }
                 }
             } else {
-                NuStrChr(parser->word_buffer, '{');
+                if (NuStrChr(parser->word_buffer_ptr, '{') == NULL) {
+                    if (AIActionDiagnosticMode == 1) {
+                        AIScriptMissingStateDiagnosticAlternate(parser->word_buffer_ptr, aiscript_load_script->name,
+                                                                aiscript_load_state != NULL ? aiscript_load_state->name
+                                                                                            : (char *)Text_UnknownText);
+                    } else {
+                        AIScriptMissingStateDiagnostic(parser->word_buffer_ptr, aiscript_load_script->name,
+                                                       aiscript_load_state != NULL ? aiscript_load_state->name
+                                                                                   : (char *)Text_UnknownText);
+                    }
+                }
             }
-            continue;
         }
+    }
+}
+
+enum { EQ = 0, LT = 1, GT = 2, LT_EQ = 3, GT_EQ = 4, NEQ = 5 };
+
+void __cdecl xConditions(NUFPAR_PC *parser) {
+    i32 complex_idx = 0;
+
+    while (NuFParGetLine(parser) != 0) {
+        AICONDITION_PC *cond;
+        AICONDITIONDEF_PC *definition;
 
         NuFParGetWord(parser);
-        STUBBED_NAMED("xConditions: PC condition-definition table not yet mapped");
-        while (NuFParGetWord(parser) != 0) {
+
+        if (NuStrICmp(parser->word_buffer_ptr, "}") == 0) {
+            return;
         }
-        continue;
+
+        if (NuStrICmp(parser->word_buffer_ptr, "IF") == 0) {
+            NuFParGetWord(parser);
+
+            definition = AIConditionFind(parser->word_buffer_ptr);
+            if (definition == NULL) {
+                if (AIActionDiagnosticMode == 1) {
+                    AIScriptMissingConditionDiagnostic(parser->word_buffer_ptr, aiscript_load_script->name,
+                                                       aiscript_load_state != NULL ? aiscript_load_state->name
+                                                                                   : (char *)Text_UnknownText);
+                } else {
+                    AIScriptMissingStateDiagnostic(parser->word_buffer_ptr, aiscript_load_script->name,
+                                                   aiscript_load_state != NULL ? aiscript_load_state->name
+                                                                               : (char *)Text_UnknownText);
+                }
+                continue;
+            }
+
+            cond = (AICONDITION_PC *)AIScriptBufferAlloc(aiscript_load_buffer, aiscript_load_end_buffer,
+                                                         sizeof(AICONDITION_PC));
+            if (cond == NULL) {
+                AIScriptMissingStateDiagnostic();
+                continue;
+            }
+
+            memset(cond, 0, sizeof(AICONDITION_PC));
+
+            NuLinkedListAppend(aiscript_load_conditions, &cond->link);
+
+            cond->definition = definition;
+
+            NuFParGetWord(parser);
+
+            if (NuStrICmp(parser->word_buffer_ptr, "=") == 0 || NuStrICmp(parser->word_buffer_ptr, "==") == 0) {
+                cond->comparison = EQ;
+            } else if (NuStrICmp(parser->word_buffer_ptr, "<") == 0) {
+                cond->comparison = LT;
+            } else if (NuStrICmp(parser->word_buffer_ptr, ">") == 0) {
+                cond->comparison = GT;
+            } else if (NuStrICmp(parser->word_buffer_ptr, "<=") == 0) {
+                cond->comparison = LT_EQ;
+            } else if (NuStrICmp(parser->word_buffer_ptr, ">=") == 0) {
+                cond->comparison = GT_EQ;
+            } else if (NuStrICmp(parser->word_buffer_ptr, "!=") == 0) {
+                cond->comparison = NEQ;
+            } else {
+                cond->argument =
+                    AIScriptCopyStringPc(parser->word_buffer_ptr, aiscript_load_buffer, aiscript_load_end_buffer);
+
+                NuFParGetWord(parser);
+
+                if (NuStrICmp(parser->word_buffer_ptr, "=") == 0 || NuStrICmp(parser->word_buffer_ptr, "==") == 0) {
+                    cond->comparison = EQ;
+                } else if (NuStrICmp(parser->word_buffer_ptr, "<") == 0) {
+                    cond->comparison = LT;
+                } else if (NuStrICmp(parser->word_buffer_ptr, ">") == 0) {
+                    cond->comparison = GT;
+                } else if (NuStrICmp(parser->word_buffer_ptr, "<=") == 0) {
+                    cond->comparison = LT_EQ;
+                } else if (NuStrICmp(parser->word_buffer_ptr, ">=") == 0) {
+                    cond->comparison = GT_EQ;
+                } else if (NuStrICmp(parser->word_buffer_ptr, "!=") == 0) {
+                    cond->comparison = NEQ;
+                }
+            }
+
+            NuFParGetWord(parser);
+
+            if (cond->parameter_condition == NULL) {
+                i8 param_index;
+                i32 i;
+                char *param;
+
+                param = NuStrIStr(parser->word_buffer_ptr, "param");
+                if (param == NULL) {
+                    for (i = 0; i < 4; i++) {
+                        char *param_name = aiscript_load_script->params[i].name;
+
+                        if (param_name != NULL && NuStrICmp(param_name, parser->word_buffer_ptr) == 0) {
+                            cond->param_index = i;
+                            cond->flags |= 4;
+
+                            break;
+                        }
+                    }
+                } else {
+                    param_index = NuAToI(param);
+                    cond->param_index = param_index;
+
+                    if (param_index >= 0 && param_index < 4) {
+                        cond->flags |= 4;
+                    }
+                }
+
+                if (!(cond->flags & 4)) {
+
+                    for (i = 0; i < AIScriptConstCursorPc; i++) {
+                        if (NuStrICmp(AIScriptConstantRecordsPc[i].name, parser->word_buffer_ptr) == 0) {
+                            cond->param_value = AIScriptConstantRecordsPc[i].default_val;
+
+                            break;
+                        }
+                    }
+
+                    if (i == AIScriptConstCursorPc) {
+                        cond->param_value = AiParseExpression(parser->word_buffer_ptr);
+
+                        if (AiParseExpressionFailed) {
+                            cond->flags |= 8;
+                            cond->param_index = complex_idx++;
+                            cond->complex_expression = AIScriptCopyStringPc(
+                                parser->word_buffer_ptr, aiscript_load_buffer, aiscript_load_end_buffer);
+                        }
+                    }
+                }
+            }
+
+            ConditionsParseFinalise(cond, parser);
+        } else if (NuStrICmp(parser->word_buffer_ptr, "OnMacro") == 0) {
+            AICONDITIONMACRO_PC *macro;
+
+            NuFParGetWord(parser);
+
+            macro = (AICONDITIONMACRO_PC *)NuLinkedListGetHead(&aiscript_load_script->condition_macros);
+            while (macro != NULL) {
+                if (NuStrICmp(macro->name, parser->word_buffer_ptr) == 0) {
+                    AICONDITION_PC *macro_last;
+
+                    AIScriptCopyConditions(&macro->conditions, aiscript_load_conditions, aiscript_load_buffer,
+                                           aiscript_load_end_buffer);
+                    macro_last = (AICONDITION_PC *)NuLinkedListGetTail(aiscript_load_conditions);
+
+                    ConditionsParseFinalise(macro_last, parser);
+
+                    break;
+                }
+
+                macro =
+                    (AICONDITIONMACRO_PC *)NuLinkedListGetNext(&aiscript_load_script->condition_macros, &macro->link);
+            }
+            if (macro == NULL) {
+                if (AIActionDiagnosticMode == 1) {
+                    AIScriptMissingStateDiagnosticAlternate(parser->word_buffer_ptr, aiscript_load_script->name,
+                                                            aiscript_load_state != NULL ? aiscript_load_state->name
+                                                                                        : (char *)Text_UnknownText);
+                } else {
+                    AIScriptMissingStateDiagnostic(parser->word_buffer_ptr, aiscript_load_script->name,
+                                                   aiscript_load_state != NULL ? aiscript_load_state->name
+                                                                               : (char *)Text_UnknownText);
+                }
+            }
+        } else {
+            if (NuStrChr(parser->word_buffer_ptr, '{') == NULL) {
+                if (AIActionDiagnosticMode == 1) {
+                    AIScriptMissingConditionDiagnostic(aiscript_load_script->name, aiscript_load_state != NULL
+                                                                                       ? aiscript_load_state->name
+                                                                                       : (char *)Text_UnknownText);
+                } else {
+                    AIScriptMissingStateDiagnostic(aiscript_load_script->name, aiscript_load_state != NULL
+                                                                                   ? aiscript_load_state->name
+                                                                                   : (char *)Text_UnknownText);
+                }
+            }
+        }
     }
 }
 
@@ -768,8 +1104,8 @@ void __cdecl xRefScript(NUFPAR_PC *parser) {
         }                                                                                                              \
     } while (0)
 
-i32 __cdecl Action_NoTerrain(void *sys, void *processor, AIPACKET_PC *packet, char **params, i32 count, i32 first_time,
-                             f32 delta_time) {
+i32 __cdecl Action_NoTerrain(AISYS_PC *sys, AISCRIPTPROCESS_PC *processor, AIPACKET_PC *packet, char **params,
+                             i32 count, i32 first_time, f32 delta_time) {
     (void)sys;
     (void)processor;
     (void)delta_time;
@@ -777,8 +1113,8 @@ i32 __cdecl Action_NoTerrain(void *sys, void *processor, AIPACKET_PC *packet, ch
     return 1;
 }
 
-i32 __cdecl Action_NoLosCheck(void *sys, void *processor, AIPACKET_PC *packet, char **params, i32 count, i32 first_time,
-                              f32 delta_time) {
+i32 __cdecl Action_NoLosCheck(AISYS_PC *sys, AISCRIPTPROCESS_PC *processor, AIPACKET_PC *packet, char **params,
+                              i32 count, i32 first_time, f32 delta_time) {
     (void)sys;
     (void)processor;
     (void)delta_time;
@@ -786,8 +1122,8 @@ i32 __cdecl Action_NoLosCheck(void *sys, void *processor, AIPACKET_PC *packet, c
     return 1;
 }
 
-i32 __cdecl Action_FlatTerrain(void *sys, void *processor, AIPACKET_PC *packet, char **params, i32 count,
-                               i32 first_time, f32 delta_time) {
+i32 __cdecl Action_FlatTerrain(AISYS_PC *sys, AISCRIPTPROCESS_PC *processor, AIPACKET_PC *packet, char **params,
+                               i32 count, i32 first_time, f32 delta_time) {
     (void)sys;
     (void)processor;
     (void)delta_time;
@@ -795,8 +1131,8 @@ i32 __cdecl Action_FlatTerrain(void *sys, void *processor, AIPACKET_PC *packet, 
     return 1;
 }
 
-i32 __cdecl Action_DontUseShadowTerrain(void *sys, void *processor, AIPACKET_PC *packet, char **params, i32 count,
-                                        i32 first_time, f32 delta_time) {
+i32 __cdecl Action_DontUseShadowTerrain(AISYS_PC *sys, AISCRIPTPROCESS_PC *processor, AIPACKET_PC *packet,
+                                        char **params, i32 count, i32 first_time, f32 delta_time) {
     (void)sys;
     (void)processor;
     (void)delta_time;
@@ -804,8 +1140,8 @@ i32 __cdecl Action_DontUseShadowTerrain(void *sys, void *processor, AIPACKET_PC 
     return 1;
 }
 
-i32 __cdecl Action_DontPush(void *sys, void *processor, AIPACKET_PC *packet, char **params, i32 count, i32 first_time,
-                            f32 delta_time) {
+i32 __cdecl Action_DontPush(AISYS_PC *sys, AISCRIPTPROCESS_PC *processor, AIPACKET_PC *packet, char **params, i32 count,
+                            i32 first_time, f32 delta_time) {
     (void)sys;
     (void)processor;
     (void)delta_time;
@@ -813,8 +1149,8 @@ i32 __cdecl Action_DontPush(void *sys, void *processor, AIPACKET_PC *packet, cha
     return 1;
 }
 
-i32 __cdecl Action_CanSeeBehind(void *sys, void *processor, AIPACKET_PC *packet, char **params, i32 count,
-                                i32 first_time, f32 delta_time) {
+i32 __cdecl Action_CanSeeBehind(AISYS_PC *sys, AISCRIPTPROCESS_PC *processor, AIPACKET_PC *packet, char **params,
+                                i32 count, i32 first_time, f32 delta_time) {
     (void)sys;
     (void)processor;
     (void)delta_time;
@@ -822,8 +1158,8 @@ i32 __cdecl Action_CanSeeBehind(void *sys, void *processor, AIPACKET_PC *packet,
     return 1;
 }
 
-i32 __cdecl Action_RequiresLOS(void *sys, void *processor, AIPACKET_PC *packet, char **params, i32 count,
-                               i32 first_time, f32 delta_time) {
+i32 __cdecl Action_RequiresLOS(AISYS_PC *sys, AISCRIPTPROCESS_PC *processor, AIPACKET_PC *packet, char **params,
+                               i32 count, i32 first_time, f32 delta_time) {
     (void)sys;
     (void)processor;
     (void)delta_time;
@@ -831,8 +1167,8 @@ i32 __cdecl Action_RequiresLOS(void *sys, void *processor, AIPACKET_PC *packet, 
     return 1;
 }
 
-i32 __cdecl Action_SetFullPathSearch(void *sys, void *processor, AIPACKET_PC *packet, char **params, i32 count,
-                                     i32 first_time, f32 delta_time) {
+i32 __cdecl Action_SetFullPathSearch(AISYS_PC *sys, AISCRIPTPROCESS_PC *processor, AIPACKET_PC *packet, char **params,
+                                     i32 count, i32 first_time, f32 delta_time) {
     (void)sys;
     (void)processor;
     (void)delta_time;
@@ -840,8 +1176,8 @@ i32 __cdecl Action_SetFullPathSearch(void *sys, void *processor, AIPACKET_PC *pa
     return 1;
 }
 
-i32 __cdecl Action_NoShadows(void *sys, void *processor, AIPACKET_PC *packet, char **params, i32 count, i32 first_time,
-                             f32 delta_time) {
+i32 __cdecl Action_NoShadows(AISYS_PC *sys, AISCRIPTPROCESS_PC *processor, AIPACKET_PC *packet, char **params,
+                             i32 count, i32 first_time, f32 delta_time) {
     (void)sys;
     (void)processor;
     (void)delta_time;
@@ -849,7 +1185,7 @@ i32 __cdecl Action_NoShadows(void *sys, void *processor, AIPACKET_PC *packet, ch
     return 1;
 }
 
-f32 __cdecl Condition_Timer(void *sys, AISCRIPTPROCESS_PC *processor, AIPACKET_PC *packet, char *argument,
+f32 __cdecl Condition_Timer(AISYS_PC *sys, AISCRIPTPROCESS_PC *processor, AIPACKET_PC *packet, char *argument,
                             void *initialized_argument) {
     (void)sys;
     (void)packet;
@@ -858,7 +1194,7 @@ f32 __cdecl Condition_Timer(void *sys, AISCRIPTPROCESS_PC *processor, AIPACKET_P
     return processor->script_timer;
 }
 
-f32 __cdecl Condition_Random(void *sys, AISCRIPTPROCESS_PC *processor, AIPACKET_PC *packet, char *argument,
+f32 __cdecl Condition_Random(AISYS_PC *sys, AISCRIPTPROCESS_PC *processor, AIPACKET_PC *packet, char *argument,
                              void *initialized_argument) {
     (void)sys;
     (void)processor;
@@ -884,7 +1220,7 @@ void *Condition_AlwaysTrueInit(AISYS_PC *sys, char *arg, AISCRIPT_PC *script) {
 #undef AISCRIPT_SET_OWNER_FLAG
 #undef AISCRIPT_SET_PACKET_FLAG
 
-f32 __cdecl Condition_AlwaysTrue(void *sys, AISCRIPTPROCESS_PC *processor, AIPACKET_PC *packet, char *argument,
+f32 __cdecl Condition_AlwaysTrue(AISYS_PC *sys, AISCRIPTPROCESS_PC *processor, AIPACKET_PC *packet, char *argument,
                                  void *initialized_argument) {
     union {
         void *pointer;
@@ -1302,12 +1638,6 @@ i32 __cdecl AIScriptSetBaseScriptStateByName(AISCRIPTPROCESS_PC *processor, char
     return 1;
 }
 
-void __cdecl AIScriptMissingStateDiagnostic(char *name, char *script_name, char *state_name) {
-}
-
-void __cdecl AIScriptMissingStateDiagnosticAlternate(char *name, char *script_name, char *state_name) {
-}
-
 i32 __cdecl AIScriptSetInterrupt(AISCRIPTPROCESS_PC *processor, u8 priority, u8 id, char *state_name, f32 time) {
     AISTATE_PC *state;
     if (processor->interrupt_priority > priority)
@@ -1681,4 +2011,172 @@ void __cdecl AIScriptLoadAll(char *path, VARIPTR *buffer, VARIPTR *end, AISYS_PC
         }
     }
     AIScriptLoadAllPakFile(pak, path, buffer, &pak_start, sys);
+}
+
+static void AIScriptFindRefScripts(AISYS_PC *sys, AISCRIPT_PC *script) {
+    AIREFSCRIPT_PC *ref;
+    AIREFSCRIPT_PC *next;
+    AICONDITION_PC *condition;
+    AISTATE_PC *state;
+
+    if (sys == NULL || script == NULL) {
+        return;
+    }
+
+    ref = (AIREFSCRIPT_PC *)NuLinkedListGetHead(&script->reference_scripts);
+
+    while (ref != NULL) {
+        next = (AIREFSCRIPT_PC *)NuLinkedListGetNext(&script->reference_scripts, &ref->link);
+
+        if (!(sys->reset_flags & 4) || ref->script == NULL) {
+            ref->script = AIScriptFind(sys, ref->name, 1, ref->check_level_scripts, ref->check_global_scripts);
+        }
+
+        if (ref->script == NULL || script == ref->script) {
+            NuLinkedListRemove(&script->reference_scripts, &ref->link);
+            ref = next;
+
+            continue;
+        }
+
+        ref->return_state = AIStateFind(ref->return_state_name, script);
+        if (ref->return_state == NULL && ref->return_state_name != NULL) {
+            if (AIActionDiagnosticMode == 1) {
+                AIScriptMissingStateDiagnosticAlternate(ref->return_state_name, script->name);
+            } else {
+                AIScriptMissingStateDiagnostic(ref->return_state_name, script->name);
+            }
+        }
+
+        condition = (AICONDITION_PC *)NuLinkedListGetHead(&ref->conditions);
+
+        while (condition != NULL) {
+            if (condition->definition->init_fn != NULL) {
+                condition->initialized_argument = (*condition->definition->init_fn)(sys, condition->argument, script);
+            }
+
+            condition = (AICONDITION_PC *)NuLinkedListGetNext(&ref->conditions, &condition->link);
+        }
+
+        ref = next;
+    }
+
+    state = (AISTATE_PC *)NuLinkedListGetHead(&script->states);
+
+    while (state != NULL) {
+        ref = (AIREFSCRIPT_PC *)NuLinkedListGetHead(&state->reference_scripts);
+
+        while (ref != NULL) {
+            next = (AIREFSCRIPT_PC *)NuLinkedListGetNext(&state->reference_scripts, &ref->link);
+
+            if (!(sys->reset_flags & 4) || ref->script == NULL) {
+                ref->script = AIScriptFind(sys, ref->name, 1, ref->check_level_scripts, ref->check_global_scripts);
+            }
+
+            if (ref->script == NULL || script == ref->script) {
+                NuLinkedListRemove(&script->reference_scripts, &ref->link);
+            }
+
+            ref->return_state = AIStateFind(ref->return_state_name, script);
+            if (ref->return_state == NULL && ref->return_state_name != NULL) {
+                if (AIActionDiagnosticMode == 1) {
+                    AIScriptMissingStateDiagnosticAlternate(ref->return_state_name, script->name, state->name);
+                } else {
+                    AIScriptMissingStateDiagnostic(ref->return_state_name, script->name, state->name);
+                }
+            }
+
+            condition = (AICONDITION_PC *)NuLinkedListGetHead(&ref->conditions);
+
+            while (condition != NULL) {
+                if (condition->definition->init_fn != NULL) {
+                    condition->initialized_argument =
+                        (*condition->definition->init_fn)(sys, condition->argument, script);
+                }
+
+                condition = (AICONDITION_PC *)NuLinkedListGetNext(&ref->conditions, &condition->link);
+            }
+
+            ref = next;
+        }
+
+        state = (AISTATE_PC *)NuLinkedListGetNext(&script->states, &state->link);
+    }
+}
+
+void __cdecl AIScriptInitConditions(AISYS_PC *sys) {
+    AISCRIPT_PC *script;
+    AISTATE_PC *state;
+    AICONDITION_PC *condition;
+    AICONDITION_PC *parameter_condition;
+
+    NuLinkedListGetHead(&global_aiscripts);
+
+    if (sys != NULL) {
+        script = (AISCRIPT_PC *)NuLinkedListGetHead(&sys->scripts);
+
+        while (script != NULL) {
+            state = (AISTATE_PC *)NuLinkedListGetHead(&script->states);
+
+            while (state != NULL) {
+                condition = (AICONDITION_PC *)NuLinkedListGetHead(&state->conditions);
+
+                while (condition != NULL) {
+                    if (condition->definition->init_fn != NULL) {
+                        condition->initialized_argument =
+                            (*condition->definition->init_fn)(sys, condition->argument, script);
+                    }
+
+                    parameter_condition = condition->parameter_condition;
+                    if (parameter_condition != NULL && parameter_condition->definition != NULL &&
+                        parameter_condition->definition->init_fn != NULL) {
+                        condition->parameter_condition->initialized_argument =
+                            (*parameter_condition->definition->init_fn)(sys, parameter_condition->argument, script);
+                    }
+
+                    condition = (AICONDITION_PC *)NuLinkedListGetNext(&state->conditions, &condition->link);
+                }
+
+                state = (AISTATE_PC *)NuLinkedListGetNext(&script->states, &state->link);
+            }
+
+            script->base_state = AIStateFind("Base", script);
+
+            AIScriptFindRefScripts(sys, script);
+
+            script = (AISCRIPT_PC *)NuLinkedListGetNext(&sys->scripts, &script->link);
+        }
+    }
+
+    script = (AISCRIPT_PC *)NuLinkedListGetHead(&global_aiscripts);
+
+    while (script != NULL) {
+        state = (AISTATE_PC *)NuLinkedListGetHead(&script->states);
+
+        while (state != NULL) {
+            condition = (AICONDITION_PC *)NuLinkedListGetHead(&state->conditions);
+
+            while (condition != NULL) {
+                if (condition->definition->init_fn != NULL) {
+                    if (sys == NULL) {
+                        condition->initialized_argument =
+                            (*condition->definition->init_fn)(NULL, condition->argument, script);
+                    } else if (!(sys->reset_flags & 4) || condition->initialized_argument == NULL) {
+                        condition->initialized_argument =
+                            (*condition->definition->init_fn)(sys, condition->argument, script);
+                    }
+                }
+
+                condition = (AICONDITION_PC *)NuLinkedListGetNext(&state->conditions, &condition->link);
+            }
+
+            state = (AISTATE_PC *)NuLinkedListGetNext(&script->states, &state->link);
+        }
+
+        script->base_state = AIStateFind("Base", script);
+
+        AIScriptFindRefScripts(sys, script);
+
+        script = (AISCRIPT_PC *)NuLinkedListGetNext(&global_aiscripts, &script->link);
+    }
 }

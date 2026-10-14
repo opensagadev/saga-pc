@@ -292,8 +292,8 @@ static void RacePodAlignPrivatePc(RACEPOD_RESOURCE_PC *pod, NUVEC4 *direction, f
     NuMtxPreRotateZ(&pod->matrix, angle);
 }
 
-i32 __cdecl Action_CreatePod(void *system, void *process, void *packet, char **params, i32 param_count, i32 first_time,
-                             f32 ignored) {
+i32 __cdecl Action_CreatePod(AISYS_PC *system, AISCRIPTPROCESS_PC *process, AIPACKET_PC *packet, char **params,
+                             i32 param_count, i32 first_time, f32 ignored) {
     i32 spline_id = -1, pacemaker = 0, damaged = 0;
     i16 model_id = -1;
     f32 start = 0.0f, end = 1.0f, time_factor = 1.0f;
@@ -463,8 +463,8 @@ STATIC_ASSERT(offsetof(PODRACE_RESOURCE_PC, max_lap_time) == 0xb010);
 STATIC_ASSERT(offsetof(PODRACE_RESOURCE_PC, lap_time_increment) == 0xb014);
 STATIC_ASSERT(offsetof(PODRACE_RESOURCE_PC, attempts_per_increment) == 0xb018);
 
-i32 __cdecl Action_SetLapTime(void *system, void *process, void *packet, char **params, i32 param_count, i32 first_time,
-                              f32 ignored) {
+i32 __cdecl Action_SetLapTime(AISYS_PC *system, AISCRIPTPROCESS_PC *process, AIPACKET_PC *packet, char **params,
+                              i32 param_count, i32 first_time, f32 ignored) {
     i32 i;
     PODRACE_RESOURCE_PC *race = (PODRACE_RESOURCE_PC *)PodRacePc;
     (void)system;

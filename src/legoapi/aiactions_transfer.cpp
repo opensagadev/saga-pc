@@ -1783,3 +1783,201 @@ extern "C" i32 __cdecl Action_CreateCreatures(AISYS_PC *sys, AISCRIPTPROCESS_PC 
     }
     return 1;
 }
+
+typedef struct ai_action_controller_world_pc_s {
+    u8 unknown_0000[0x4670];
+    AI_CONTROL_SYSTEM_PC *control_system;
+} AI_ACTION_CONTROLLER_WORLD_PC;
+STATIC_ASSERT(offsetof(AI_ACTION_CONTROLLER_WORLD_PC, control_system) == 0x4670);
+extern "C" struct AIPATHCNXCONTROLLER_s *__cdecl AIPathCnxControllerCreate(AI_CONTROL_SYSTEM_PC *, AISYS_PC *,
+                                                                           AIPATH_PC *, char *, char *, i32, char *,
+                                                                           i32, i32);
+extern "C" void __cdecl AIPathCnxControllerSetOnRange(struct AIPATHCNXCONTROLLER_s *, i32, i32);
+extern "C" const char AIControllerLiteralPc00757e34[10];
+extern "C" const char AIControllerLiteralPc00757d98[10];
+extern "C" const char AIControllerLiteralPc00757d70[16];
+extern "C" const char AIControllerLiteralPc00757db4[9];
+extern "C" const char AIControllerLiteralPc00757de4[9];
+extern "C" const char AIControllerLiteralPc00757e18[9];
+extern "C" const char AIControllerLiteralPc00757e40[10];
+extern "C" const char AIControllerLiteralPc00757dc8[14];
+extern "C" const char AIControllerLiteralPc00757da4[7];
+extern "C" const char AIControllerLiteralPc00757e10[8];
+extern "C" const char AIControllerLiteralPc00757d60[12];
+extern "C" const char AIControllerLiteralPc00757dac[8];
+extern "C" const char AIControllerLiteralPc00757dc0[7];
+extern "C" const char AIControllerLiteralPc00757dfc[5];
+extern "C" const char AIControllerLiteralPc00757d6c[3];
+extern "C" const char AIControllerLiteralPc00757d80[14];
+extern "C" const char AIControllerLiteralPc00757e04[9];
+extern "C" const char AIControllerLiteralPc00757d54[10];
+extern "C" const char AIControllerLiteralPc00757dd8[12];
+extern "C" const char AIControllerLiteralPc00757d90[7];
+extern "C" const char AIControllerLiteralPc00757e24[13];
+extern "C" const char AIControllerLiteralPc00757df0[10];
+
+extern "C" i32 __cdecl Action_CnxController(struct AISYS_PC *sys, struct AISCRIPTPROCESS_PC *processor,
+                                            struct AIPACKET_PC *packet, char **params, i32 param_count, i32 first_time,
+                                            f32 param_6) {
+    (void)packet;
+    (void)param_6;
+    if (first_time == 0) {
+        return 1;
+    }
+
+    struct AIPATH_PC *path = NULL;
+    char *from = NULL;
+    char *to = NULL;
+    char *target_name = NULL;
+    i32 target_type = 0;
+    i32 fake_animation_id = -1;
+    i32 gizmo_output = 0;
+    u32 on_flags = 0;
+    u32 off_flags = 0;
+    bool both_ways = false;
+    bool check_visible = false;
+    bool on_obstacle_open = false;
+    bool off_obstacle_open = false;
+
+    for (i32 index = 0; index < param_count; ++index) {
+        char *param = params[index];
+        if (NuStrIStr(param, const_cast<char *>(AIControllerLiteralPc00757e40)) != NULL) {
+            continue;
+        }
+        char *match = NuStrIStr(param, const_cast<char *>("from="));
+        if (match != NULL) {
+            from = match + 5;
+            continue;
+        }
+        match = NuStrIStr(param, const_cast<char *>("to="));
+        if (match != NULL) {
+            to = match + 3;
+            continue;
+        }
+        match = NuStrIStr(param, const_cast<char *>(AIControllerLiteralPc00757e34));
+        if (match != NULL) {
+            path = AISysFindPath(sys, match + 9);
+            continue;
+        }
+        if (NuStrIStr(param, const_cast<char *>(AIControllerLiteralPc00757e24)) != NULL) {
+            check_visible = true;
+            continue;
+        }
+        if (NuStrIStr(param, const_cast<char *>(AIControllerLiteralPc00757e18)) != NULL) {
+            both_ways = true;
+            continue;
+        }
+
+        match = NuStrIStr(param, const_cast<char *>(AIControllerLiteralPc00757e10));
+        if (match != NULL) {
+            char *value = match + 8;
+            if (NuStrIStr(param, const_cast<char *>(AIControllerLiteralPc00757d80)) != NULL) {
+                on_obstacle_open = true;
+            } else if (NuStrIStr(param, const_cast<char *>(AIControllerLiteralPc00757d70)) != NULL) {
+                on_obstacle_open = false;
+            } else {
+                on_flags |= ParseAIPathCnxFlagPc(value);
+            }
+            continue;
+        }
+        match = NuStrIStr(param, const_cast<char *>(AIControllerLiteralPc00757e04));
+        if (match != NULL) {
+            char *value = match + 9;
+            if (NuStrIStr(param, const_cast<char *>(AIControllerLiteralPc00757d80)) != NULL) {
+                off_obstacle_open = true;
+            } else if (NuStrIStr(param, const_cast<char *>(AIControllerLiteralPc00757d70)) != NULL) {
+                off_obstacle_open = false;
+            } else {
+                off_flags |= ParseAIPathCnxFlagPc(value);
+            }
+            continue;
+        }
+
+        if ((match = NuStrIStr(param, const_cast<char *>(AIControllerLiteralPc00757dfc))) != NULL) {
+            target_name = match + 4;
+            target_type = 0;
+            continue;
+        }
+        if ((match = NuStrIStr(param, const_cast<char *>(AIControllerLiteralPc00757df0))) != NULL) {
+            target_name = match + 9;
+            target_type = 1;
+            continue;
+        }
+        if ((match = NuStrIStr(param, const_cast<char *>(AIControllerLiteralPc00757de4))) != NULL) {
+            target_name = match + 8;
+            target_type = 2;
+            continue;
+        }
+        match = NuStrIStr(param, const_cast<char *>(AIControllerLiteralPc00757dd8));
+        if (match != NULL) {
+            fake_animation_id = static_cast<i32>(AIParamToFloat(processor, match + 11));
+            target_type = 5;
+            continue;
+        }
+        match = NuStrIStr(param, const_cast<char *>(AIControllerLiteralPc00757dc8));
+        if (match != NULL) {
+            gizmo_output = static_cast<i32>(AIParamToFloat(processor, match + 13));
+            continue;
+        }
+        if ((match = NuStrIStr(param, const_cast<char *>(AIControllerLiteralPc00757dc0))) != NULL) {
+            target_name = match + 6;
+            target_type = 3;
+        } else if ((match = NuStrIStr(param, const_cast<char *>(AIControllerLiteralPc00757db4))) != NULL) {
+            target_name = match + NuStrLen(AIControllerLiteralPc00757db4);
+            target_type = 6;
+        } else if ((match = NuStrIStr(param, const_cast<char *>(AIControllerLiteralPc00757dac))) != NULL) {
+            target_name = match + 7;
+            target_type = 4;
+        } else if ((match = NuStrIStr(param, const_cast<char *>(AIControllerLiteralPc00757da4))) != NULL) {
+            target_name = match + 6;
+            target_type = 7;
+        } else if ((match = NuStrIStr(param, const_cast<char *>(AIControllerLiteralPc00757d98))) != NULL) {
+            target_name = match + 9;
+            target_type = 8;
+        } else if ((match = NuStrIStr(param, const_cast<char *>(AIControllerLiteralPc00757d90))) != NULL) {
+            target_name = match + 6;
+            target_type = 9;
+        }
+    }
+
+    WORLDINFO *world = WORLD;
+    struct AIPATHCNXCONTROLLER_s *controller =
+        AIPathCnxControllerCreate(((AI_ACTION_CONTROLLER_WORLD_PC *)world)->control_system, world->ai_sys, path, from,
+                                  to, target_type, target_name, fake_animation_id, gizmo_output);
+    if (controller == NULL) {
+        return 1;
+    }
+    controller->on_flags = on_flags;
+    controller->off_flags = off_flags;
+    controller->flags_word =
+        static_cast<u16>((controller->flags_word & 0xffe1) | (both_ways ? 2 : 0) | (check_visible ? 4 : 0) |
+                         (on_obstacle_open ? 8 : 0) | (off_obstacle_open ? 0x10 : 0));
+
+    for (i32 index = 0; index < param_count; ++index) {
+        char *match = NuStrIStr(params[index], const_cast<char *>(AIControllerLiteralPc00757e40));
+        if (match == NULL) {
+            continue;
+        }
+        char range[64];
+        NuStrCpy(range, match + 10);
+        char *separator = NuStrIStr(range, const_cast<char *>(AIControllerLiteralPc00757d6c));
+        if (separator == NULL) {
+            continue;
+        }
+        *separator = '\0';
+        char *end_text = separator + 2;
+        i32 start_frame = NuStrICmp(range, AIControllerLiteralPc00757d60) == 0 ? -2
+                          : NuStrICmp(range, AIControllerLiteralPc00757d54) == 0
+                              ? -1
+                              : static_cast<i32>(AIParamToFloat(processor, range));
+        i32 end_frame = NuStrICmp(end_text, AIControllerLiteralPc00757d60) == 0 ? -2
+                        : NuStrICmp(end_text, AIControllerLiteralPc00757d54) == 0
+                            ? -1
+                            : static_cast<i32>(AIParamToFloat(processor, end_text));
+        if (end_frame != -1 && end_frame != -2 && end_frame < start_frame) {
+            continue;
+        }
+        AIPathCnxControllerSetOnRange(controller, start_frame, end_frame);
+    }
+    return 1;
+}
