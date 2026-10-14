@@ -332,7 +332,7 @@ extern "C" i32 __cdecl NuInitHardwarePc(VARIPTR *buffer, VARIPTR *end, i32 alloc
     STUBBED_NAMED(0x005d16a0); /* (buffer, *end) */
     NuInitDebrisRenderer(buffer, *end);
     PCGraphicsInitializeFramebuffers((u8)PCDeviceBackend.render_target_flags, 0, buffer, *end);
-    STUBBED_NAMED(0x005f22a0); /* (PCDeviceBackend.shader_flags, buffer, *end) */
+    NuPostEffectInit(PCDeviceBackend.shader_flags, buffer, *end);
     NuRndrBufferDescriptorsInitPc(buffer, *end);
     PcResetGeometryOriginStatePc();
     STUBBED_NAMED(0x005eaa80); /* (buffer, *end) */

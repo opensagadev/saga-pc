@@ -12601,6 +12601,34 @@ typedef struct PC_SHADER_OBJECT_FULL_VIEW PC_SHADER_OBJECT_FULL_VIEW;
     extern i32 edgra_page_on[8];
     extern NUVEC ShadNorm;
 #define PCGrassTerrainScene CurrentTerrain // NOLINT(readability-identifier-naming)
+    struct PC_EFFECT_SURFACE_PC {
+        GRAPHICS_RENDER_TEXTURE_PC *texture;
+        u8 owns_texture, unknown_05[3];
+        PC_TEXTURE_RESOURCE_PC *surface;
+        u16 level, unknown_0e;
+        u32 field_10;
+        u16 width, height;
+        i16 registry_index;
+        u8 unknown_1a[2];
+#ifdef __cplusplus
+        PC_EFFECT_SURFACE_PC();
+        ~PC_EFFECT_SURFACE_PC();
+        void Reset();
+        void Attach(GRAPHICS_RENDER_TEXTURE_PC *, i32, bool);
+        static void ReleaseResources();
+        static void RestoreResources();
+#endif
+    };
+    STATIC_ASSERT(sizeof(PC_EFFECT_SURFACE_PC) == 0x1c);
+    STATIC_ASSERT(offsetof(PC_EFFECT_SURFACE_PC, texture) == 0);
+    STATIC_ASSERT(offsetof(PC_EFFECT_SURFACE_PC, owns_texture) == 4);
+    STATIC_ASSERT(offsetof(PC_EFFECT_SURFACE_PC, surface) == 8);
+    STATIC_ASSERT(offsetof(PC_EFFECT_SURFACE_PC, level) == 0xc);
+    STATIC_ASSERT(offsetof(PC_EFFECT_SURFACE_PC, field_10) == 0x10);
+    STATIC_ASSERT(offsetof(PC_EFFECT_SURFACE_PC, width) == 0x14);
+    STATIC_ASSERT(offsetof(PC_EFFECT_SURFACE_PC, height) == 0x16);
+    STATIC_ASSERT(offsetof(PC_EFFECT_SURFACE_PC, registry_index) == 0x18);
+
 #include "saga.h"
     typedef struct PC_NUFADEGROUP {
         i16 active;
@@ -19223,33 +19251,7 @@ extern "C" {
 #define SAGA_HARDWARE_LIFECYCLE_PROPOSAL
 /* Proposed working fields only. Original PC class name/TU visibility stays qualified.
    Keep the pool and its real static constructor/destructor in one C++ owner. */
-struct PC_EFFECT_SURFACE_PC {
-    GRAPHICS_RENDER_TEXTURE_PC *texture;
-    u8 owns_texture, unknown_05[3];
-    PC_TEXTURE_RESOURCE_PC *surface;
-    u16 level, unknown_0e;
-    u32 field_10;
-    u16 width, height;
-    i16 registry_index;
-    u8 unknown_1a[2];
-#ifdef __cplusplus
-    PC_EFFECT_SURFACE_PC();
-    ~PC_EFFECT_SURFACE_PC();
-    void Reset();
-    void Attach(GRAPHICS_RENDER_TEXTURE_PC *, i32, bool);
-    static void ReleaseResources();
-    static void RestoreResources();
-#endif
-};
-STATIC_ASSERT(sizeof(PC_EFFECT_SURFACE_PC) == 0x1c);
-STATIC_ASSERT(offsetof(PC_EFFECT_SURFACE_PC, texture) == 0);
-STATIC_ASSERT(offsetof(PC_EFFECT_SURFACE_PC, owns_texture) == 4);
-STATIC_ASSERT(offsetof(PC_EFFECT_SURFACE_PC, surface) == 8);
-STATIC_ASSERT(offsetof(PC_EFFECT_SURFACE_PC, level) == 0xc);
-STATIC_ASSERT(offsetof(PC_EFFECT_SURFACE_PC, field_10) == 0x10);
-STATIC_ASSERT(offsetof(PC_EFFECT_SURFACE_PC, width) == 0x14);
-STATIC_ASSERT(offsetof(PC_EFFECT_SURFACE_PC, height) == 0x16);
-STATIC_ASSERT(offsetof(PC_EFFECT_SURFACE_PC, registry_index) == 0x18);
+
 struct PC_FRAMEBUFFER_PC {
     PC_EFFECT_SURFACE_PC targets[5];
     u32 clear_colour[5];
@@ -20509,6 +20511,7 @@ extern "C" {
 #endif
     i32 __cdecl NuRndrSwapScreen(i32 mode);
     i32 __cdecl NuRndrSwapScreenEx(i32 mode, void(__cdecl *callback)(void));
+    void __cdecl NuPostEffectInit(u32, VARIPTR *, VARIPTR);
     i32 __cdecl NuPostEffectIsInitialised(u32 mask);
     i32 __cdecl NuDynamicLightIsEnabled(NURNDRLIGHTRECORD *records);
     void __cdecl NuDynamicLightAddRenderScene(NURNDRLIGHTRECORD *records, i32 index, i32 scene_id);
@@ -20828,11 +20831,11 @@ extern "C" {
 STATIC_ASSERT(offsetof(NURNDRLIGHTRECORD, shadow_lists_pc) == 0x2a4);
 STATIC_ASSERT(offsetof(NURNDRLIGHTRECORD, shadow_lists_pc) + sizeof(NU_LIGHT_SHADOW_LIST_VIEW_PC) == 0x2e8);
 #ifdef __cplusplus
-/* Original declaration order; methods without bodies here are genuine source
- * declarations, not zero substitutes. No class instances may be constructed
- * from these accessed-field views. No original class sizeof is asserted. */
-struct NuPostFilterGen {
-    NuPostFilterGen();
+/* Extend/replace existing C++ accessed-field classes; private proposal only. */
+class NuPostFilterGen {
+  public:
+    NuPostFilterGen() : enabled(false), input_fbo(NULL) {
+    }
     virtual ~NuPostFilterGen();
     virtual void initResources();
     virtual void destroyResources();
@@ -20847,23 +20850,96 @@ struct NuPostFilterGen {
     u8 unknown_005[3];
     PC_FRAMEBUFFER_PC *input_fbo;
 };
-struct NU_POST_BLOOM_PARAMETERS_PC;
-struct NuMainFilterGen : NuPostFilterGen {
+class NuPostFilter : public NuPostFilterGen {};
+class NuMainFilterGen : public NuPostFilter {
+  public:
     NuMainFilterGen();
+    virtual void initResources();
+    virtual void destroyResources();
+    virtual void initTextureResources(i32, i32);
+    virtual void destroyTextureResources();
+    virtual void render();
+    virtual void reset();
+    virtual bool isEnabled();
     void *programs[18];
-    void *blur_texture;
-    void *blur_fbo;
-    void *downsample_texture;
+    GRAPHICS_RENDER_TEXTURE_PC *blur_texture;
+    PC_FRAMEBUFFER_PC *blur_fbo;
+    GRAPHICS_RENDER_TEXTURE_PC *downsample_texture;
     f32 blur_gain;
     i32 downsample_lod;
     const NU_POST_BLOOM_PARAMETERS_PC *bloom;
-    f32 blur_radius;
-    f32 dof_strength, dof_near, dof_far, dof_blur;
+    f32 blur_radius, dof_strength, dof_near, dof_far, dof_blur;
     i32 dof_mode, dof_bias;
     bool dof_enabled, bloom_enabled, motion_blur_enabled;
     u8 unknown_08b;
     i32 active_filter_count;
-    virtual bool isEnabled();
+    NUMTX motion_previous, motion_current;
+    f32 motion_scale, motion_maximum, motion_falloff;
+    i32 accumulation_frames;
+    f32 accumulation_blend, accumulation_mode_pc;
+};
+class NuMainFilter : public NuMainFilterGen {
+  public:
+    NuMainFilter();
+    virtual void initResources();
+    virtual void initTextureResources(i32, i32);
+    virtual void destroyResources();
+    virtual void destroyTextureResources();
+    virtual void render();
+    PC_EFFECT_SURFACE_PC texture_surface;
+    PC_FRAMEBUFFER_PC *platform_fbo;
+    void *platform_programs[2];
+    i32 platform_uniforms[4];
+};
+class NuMotionFilterGen : public NuPostFilter {
+  public:
+    NuMotionFilterGen() : scale(0.0f), maximum(0.0f), falloff(1.0f) {
+    }
+    virtual void render();
+    void *programs[2];
+    NUMTX previous, current;
+    f32 scale, maximum, falloff;
+};
+class NuMotionFilter : public NuMotionFilterGen {
+  public:
+};
+class NuMotionAccumFilterGen : public NuPostFilter {
+  public:
+    NuMotionAccumFilterGen() : frames(0), blend(1.0f), mode_pc(0.0f) {
+    }
+    virtual void initResources();
+    virtual void destroyResources();
+    virtual void initTextureResources(i32, i32);
+    virtual void destroyTextureResources();
+    virtual void render();
+    void *program;
+    PC_FRAMEBUFFER_PC *accumulation_fbo;
+    GRAPHICS_RENDER_TEXTURE_PC *accumulation_texture;
+    i32 frames;
+    f32 blend, mode_pc;
+    i32 current_frame;
+};
+class NuMotionAccumFilter : public NuMotionAccumFilterGen {
+  public:
+    virtual void initResources();
+};
+class NuSpeedBlurFilterGen : public NuPostFilter {
+  public:
+    virtual void initTextureResources(i32, i32);
+    virtual void destroyTextureResources();
+    virtual void render();
+    void *programs[3];
+    GRAPHICS_RENDER_TEXTURE_PC *texture;
+    const NU_POST_SPEED_PARAMETERS_PC *parameters;
+};
+class NuSpeedBlurFilter : public NuSpeedBlurFilterGen {
+  public:
+    virtual void initResources();
+    virtual void initTextureResources(i32, i32);
+    virtual void destroyTextureResources();
+    virtual void render();
+    PC_EFFECT_SURFACE_PC texture_surface;
+    i32 platform_uniform;
 };
 struct NuDynamicLight {
     void resetGeometry();
@@ -20871,16 +20947,63 @@ struct NuDynamicLight {
     u8 unknown_700[0xc];
     i32 render_set_count_pc;
 };
-struct NuDeferredFilterGen : NuPostFilterGen {
+class NuDeferredFilterGen : public NuPostFilter {
+  public:
     NuDeferredFilterGen();
-    u8 unknown_00c[0x38];
+    virtual void initResources();
+    virtual void destroyResources();
+    virtual void initTextureResources(i32, i32);
+    virtual void destroyTextureResources();
+    virtual void render();
+    virtual void resetAll();
+    virtual bool isEnabled();
+    i32 sample_count;
+    void *programs[6];
+    GRAPHICS_RENDER_TEXTURE_PC *textures[6];
+    u32 unknown_040;
     f32 parameters[4];
     i32 dynamic_light_count;
     NuDynamicLight *dynamic_lights[32];
     i32 deferred_geometry_count;
-    virtual void resetAll();
-    virtual bool isEnabled();
+    void *geometry[128];
+    PC_FRAMEBUFFER_PC *shadow_fbos[6], *light_fbo;
 };
+class NuDeferredFilter : public NuDeferredFilterGen {
+  public:
+    virtual void initResources();
+    virtual void initTextureResources(i32, i32);
+};
+class NuCopyFilter : public NuPostFilter {
+  public:
+    virtual void initResources();
+    virtual void destroyResources();
+    virtual void reset();
+    virtual void render(PC_FRAMEBUFFER_PC *);
+    PC_FRAMEBUFFER_PC *copy_fbo;
+    GRAPHICS_RENDER_TEXTURE_PC *copy_texture;
+};
+STATIC_ASSERT(sizeof(NuPostFilterGen) == 0xc);
+STATIC_ASSERT(sizeof(NuPostFilter) == 0xc);
+STATIC_ASSERT(sizeof(NuMainFilterGen) == 0x128);
+STATIC_ASSERT(sizeof(NuMainFilter) == 0x160);
+STATIC_ASSERT(sizeof(NuMotionFilterGen) == 0xa0);
+STATIC_ASSERT(sizeof(NuMotionFilter) == 0xa0);
+STATIC_ASSERT(sizeof(NuMotionAccumFilterGen) == 0x28);
+STATIC_ASSERT(sizeof(NuMotionAccumFilter) == 0x28);
+STATIC_ASSERT(sizeof(NuSpeedBlurFilterGen) == 0x20);
+STATIC_ASSERT(sizeof(NuSpeedBlurFilter) == 0x40);
+STATIC_ASSERT(sizeof(NuDeferredFilterGen) == 0x2f8);
+STATIC_ASSERT(sizeof(NuDeferredFilter) == 0x2f8);
+STATIC_ASSERT(sizeof(NuCopyFilter) == 0x14);
+STATIC_ASSERT(offsetof(NuMainFilter, texture_surface) == 0x128);
+STATIC_ASSERT(offsetof(NuMainFilter, platform_fbo) == 0x144);
+STATIC_ASSERT(offsetof(NuMainFilter, platform_programs) == 0x148);
+STATIC_ASSERT(offsetof(NuMainFilter, platform_uniforms) == 0x150);
+STATIC_ASSERT(offsetof(NuSpeedBlurFilter, texture_surface) == 0x20);
+STATIC_ASSERT(offsetof(NuSpeedBlurFilter, platform_uniform) == 0x3c);
+STATIC_ASSERT(offsetof(NuDeferredFilterGen, shadow_fbos) == 0x2dc);
+STATIC_ASSERT(offsetof(NuDeferredFilterGen, light_fbo) == 0x2f4);
+
 STATIC_ASSERT(offsetof(NuPostFilterGen, enabled) == 4);
 STATIC_ASSERT(offsetof(NuPostFilterGen, input_fbo) == 8);
 STATIC_ASSERT(offsetof(NuMainFilterGen, bloom) == 0x68);

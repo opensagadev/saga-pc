@@ -399,3 +399,173 @@ extern "C" i32 __cdecl NuTexRegisterRenderTargetPc(GRAPHICS_RENDER_TEXTURE_PC *t
 extern "C" void __cdecl PCGraphicsBindTextureDimensionsPc(NUTEXDIM_PC *texture, u32 stage) {
     PCDeviceSetTexture(stage, texture->resource);
 }
+
+// Native PCDeviceBackend+44 is D3DCAPS9.TextureCaps (caps begins at +8).
+typedef struct POST_EFFECT_TEXTURE_CAPS_VIEW_PC {
+    u8 unknown_00[0x44];
+    u32 texture_caps;
+} POST_EFFECT_TEXTURE_CAPS_VIEW_PC;
+STATIC_ASSERT(offsetof(POST_EFFECT_TEXTURE_CAPS_VIEW_PC, texture_caps) == 0x44);
+STATIC_ASSERT(offsetof(PC_DEVICE_BACKEND_PC, caps) == 8);
+STATIC_ASSERT(sizeof(GRAPHICS_RENDER_TEXTURE_PC) == 0x30);
+
+extern "C" {
+    extern u32 PCGraphicsPostEffectWidthPc;
+    extern u32 PCGraphicsPostEffectHeightPc;
+    extern GRAPHICS_RENDER_TEXTURE_PC *PCGraphicsPostEffectWorkTexturePc;
+    extern GRAPHICS_RENDER_TEXTURE_PC *PCGraphicsPostEffectBackBufferTexturePc;
+}
+
+extern "C" void __cdecl PCGraphicsCreatePostEffectWorkTexture(i32 width, i32 height) {
+    (void)width;
+    (void)height;
+    PCGraphicsPostEffectWorkTexturePc =
+        PCGraphicsCreateEffectTexture(PCGraphicsPostEffectWidthPc, PCGraphicsPostEffectHeightPc, 1, 0x11, 2);
+}
+
+extern "C" void __cdecl PCGraphicsCreatePostEffectTextures(u32 width, u32 height) {
+    GRAPHICS_RENDER_TEXTURE_PC *texture;
+    i32 index;
+    PCGraphicsPostEffectWidthPc = width < 512 ? width : 512;
+    PCGraphicsPostEffectHeightPc = height < 512 ? height : 512;
+    if ((((POST_EFFECT_TEXTURE_CAPS_VIEW_PC *)&PCDeviceBackend)->texture_caps & 0x102) != 0) {
+        u32 width_power = 1;
+        u32 height_power = 1;
+        while (width_power <= (width < 512 ? width : 512))
+            width_power += width_power;
+        PCGraphicsPostEffectWidthPc = width_power >> 1;
+        while (height_power <= (height < 512 ? height : 512))
+            height_power += height_power;
+        PCGraphicsPostEffectHeightPc = height_power >> 1;
+    }
+    PCGraphicsCreatePostEffectWorkTexture(width, height);
+    for (index = 0; index != 32; ++index)
+        if (PCGraphicsRenderTextureActive[index] == 0)
+            break;
+    if (index == 32) {
+        PCGraphicsRenderTextureAllocationError();
+        texture = NULL;
+    } else {
+        PCGraphicsRenderTextureActive[index] = 1;
+        texture = &PCGraphicsRenderTextures[index];
+    }
+    PCGraphicsInitRenderTexture(texture, PCGraphicsPostEffectWidthPc, PCGraphicsPostEffectHeightPc, 0, 1, 0, 2);
+    PCGraphicsPostEffectBackBufferTexturePc = texture;
+}
+
+STATIC_ASSERT(sizeof(GRAPHICS_RENDER_TEXTURE_PC) == 0x30);
+STATIC_ASSERT(offsetof(GRAPHICS_RENDER_TEXTURE_PC, mip_count) == 0xa);
+STATIC_ASSERT(offsetof(GRAPHICS_RENDER_TEXTURE_PC, flags) == 0x20);
+STATIC_ASSERT(offsetof(GRAPHICS_RENDER_TEXTURE_PC, field_24) == 0x24);
+
+extern "C" i32 __cdecl PCGraphicsEffectTextureMipCount(GRAPHICS_RENDER_TEXTURE_PC *texture) {
+    return texture->mip_count;
+}
+
+extern "C" void __cdecl PCGraphicsEffectTextureSetLowNibbles(GRAPHICS_RENDER_TEXTURE_PC *texture, i32 low, i32 high) {
+    texture->flags = (texture->flags & ~0xffu) | (((u32)high & 0xfu) << 4) | ((u32)low & 0xfu);
+}
+
+extern "C" void __cdecl PCGraphicsEffectTextureSetField24(GRAPHICS_RENDER_TEXTURE_PC *texture, i32 value) {
+    texture->field_24 = (u32)value;
+}
+
+extern "C" void __cdecl PCGraphicsEffectTextureSetFilterFields(GRAPHICS_RENDER_TEXTURE_PC *texture, i32 first,
+                                                               i32 second, i32 third) {
+    i32 value;
+    switch (first) {
+        case 0:
+            value = 0;
+            break;
+        case 1:
+            value = 1;
+            break;
+        case 2:
+            value = 2;
+            break;
+        case 3:
+            value = 3;
+            break;
+        default:
+            value = -1;
+            break;
+    }
+    texture->flags ^= (((u32)value << 17) ^ texture->flags) & 0xe0000u;
+    switch (second) {
+        case 0:
+            value = 0;
+            break;
+        case 1:
+            value = 1;
+            break;
+        case 2:
+            value = 2;
+            break;
+        case 3:
+            value = 3;
+            break;
+        default:
+            value = -1;
+            break;
+    }
+    texture->flags ^= (((u32)value << 20) ^ texture->flags) & 0x700000u;
+    switch (third) {
+        case 0:
+            value = 0;
+            break;
+        case 1:
+            value = 1;
+            break;
+        case 2:
+            value = 2;
+            break;
+        case 3:
+            value = 3;
+            break;
+        default:
+            value = -1;
+            break;
+    }
+    texture->flags ^= (((u32)value << 23) ^ texture->flags) & 0x3800000u;
+}
+
+extern "C" void __cdecl PCGraphicsEffectTextureSetWrapFields(GRAPHICS_RENDER_TEXTURE_PC *texture, i32 first,
+                                                             i32 second) {
+    i32 value;
+    switch (first) {
+        case 0:
+            value = 1;
+            break;
+        case 1:
+            value = 2;
+            break;
+        case 2:
+            value = 3;
+            break;
+        case 3:
+            value = 4;
+            break;
+        default:
+            value = -1;
+            break;
+    }
+    texture->flags ^= (((u32)value << 8) ^ texture->flags) & 0x700u;
+    switch (second) {
+        case 0:
+            value = 1;
+            break;
+        case 1:
+            value = 2;
+            break;
+        case 2:
+            value = 3;
+            break;
+        case 3:
+            value = 4;
+            break;
+        default:
+            value = -1;
+            break;
+    }
+    texture->flags ^= (((u32)value << 11) ^ texture->flags) & 0x3800u;
+}

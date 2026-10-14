@@ -32226,3 +32226,18 @@ extern "C" {
     char AIGizmoNameBufferPc[16];
 #pragma bss_seg()
 }
+
+extern "C" {
+#pragma data_seg(".data$PCGraphicsPostEffectWidthPc")
+    u32 PCGraphicsPostEffectWidthPc = 512;
+#pragma data_seg()
+#pragma data_seg(".data$PCGraphicsPostEffectHeightPc")
+    u32 PCGraphicsPostEffectHeightPc = 512;
+#pragma data_seg()
+#pragma bss_seg(".bss$PCGraphicsPostEffectWorkTexturePc")
+    GRAPHICS_RENDER_TEXTURE_PC *PCGraphicsPostEffectWorkTexturePc;
+#pragma bss_seg()
+#pragma bss_seg(".bss$PCGraphicsPostEffectBackBufferTexturePc")
+    GRAPHICS_RENDER_TEXTURE_PC *PCGraphicsPostEffectBackBufferTexturePc;
+#pragma bss_seg()
+}

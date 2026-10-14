@@ -485,6 +485,716 @@
    "unit": "src/legoapi/fade.cpp",
    "symbol": "??_GFadeBase@@UAEPAXI@Z",
    "kind": "function"
+  },
+  {
+   "unit": "src/nu2api/nupostfilter.cpp",
+   "symbol": "__bad_alloc_Message",
+   "kind": "data"
+  },
+  {
+   "unit": "src/nu2api/nupostfilter.cpp",
+   "symbol": "??2@YAPAXIPAX@Z",
+   "kind": "function"
+  },
+  {
+   "unit": "src/nu2api/nupostfilter.cpp",
+   "symbol": "??1NuPostFilter@@UAE@XZ",
+   "kind": "function"
+  },
+  {
+   "unit": "src/nu2api/nupostfilter.cpp",
+   "symbol": "??1NuMotionFilterGen@@UAE@XZ",
+   "kind": "function"
+  },
+  {
+   "unit": "src/nu2api/nupostfilter.cpp",
+   "symbol": "??1NuMotionAccumFilterGen@@UAE@XZ",
+   "kind": "function"
+  },
+  {
+   "unit": "src/nu2api/nupostfilter.cpp",
+   "symbol": "??1NuMainFilterGen@@UAE@XZ",
+   "kind": "function"
+  },
+  {
+   "unit": "src/nu2api/nupostfilter.cpp",
+   "symbol": "??1NuMainFilter@@UAE@XZ",
+   "kind": "function"
+  },
+  {
+   "unit": "src/nu2api/nupostfilter.cpp",
+   "symbol": "??1NuDeferredFilterGen@@UAE@XZ",
+   "kind": "function"
+  },
+  {
+   "unit": "src/nu2api/nupostfilter.cpp",
+   "symbol": "??1NuSpeedBlurFilterGen@@UAE@XZ",
+   "kind": "function"
+  },
+  {
+   "unit": "src/nu2api/nupostfilter.cpp",
+   "symbol": "??1NuMotionAccumFilter@@UAE@XZ",
+   "kind": "function"
+  },
+  {
+   "unit": "src/nu2api/nupostfilter.cpp",
+   "symbol": "??1NuDeferredFilter@@UAE@XZ",
+   "kind": "function"
+  },
+  {
+   "unit": "src/nu2api/nupostfilter.cpp",
+   "symbol": "??1NuCopyFilter@@UAE@XZ",
+   "kind": "function"
+  },
+  {
+   "unit": "src/nu2api/nupostfilter.cpp",
+   "symbol": "??1NuMotionFilter@@UAE@XZ",
+   "kind": "function"
+  },
+  {
+   "unit": "src/nu2api/nupostfilter.cpp",
+   "symbol": "??1NuSpeedBlurFilter@@UAE@XZ",
+   "kind": "function"
+  },
+  {
+   "unit": "src/nu2api/posteffect_shader_pc.cpp",
+   "symbol": "__bad_alloc_Message",
+   "kind": "data"
+  },
+  {
+   "unit": "src/nu2api/posteffect_shader_pc.cpp",
+   "symbol": "?assign@?$char_traits@D@std@@SAXAADABD@Z",
+   "kind": "function"
+  },
+  {
+   "unit": "src/nu2api/posteffect_shader_pc.cpp",
+   "symbol": "?length@?$char_traits@D@std@@SAIPBD@Z",
+   "kind": "function"
+  },
+  {
+   "unit": "src/nu2api/posteffect_shader_pc.cpp",
+   "symbol": "?_Copy_s@?$char_traits@D@std@@SAPADPADIPBDI@Z",
+   "kind": "function"
+  },
+  {
+   "unit": "src/nu2api/posteffect_shader_pc.cpp",
+   "symbol": "?_Move_s@?$char_traits@D@std@@SAPADPADIPBDI@Z",
+   "kind": "function"
+  },
+  {
+   "unit": "src/nu2api/posteffect_shader_pc.cpp",
+   "symbol": "??0_Iterator_base@std@@QAE@XZ",
+   "kind": "function"
+  },
+  {
+   "unit": "src/nu2api/posteffect_shader_pc.cpp",
+   "symbol": "??0bad_alloc@std@@QAE@PBD@Z",
+   "kind": "function"
+  },
+  {
+   "unit": "src/nu2api/posteffect_shader_pc.cpp",
+   "symbol": "??2@YAPAXIPAX@Z",
+   "kind": "function"
+  },
+  {
+   "unit": "src/nu2api/posteffect_shader_pc.cpp",
+   "symbol": "?_Myptr@?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@std@@IBEPBDXZ",
+   "kind": "function"
+  },
+  {
+   "unit": "src/nu2api/posteffect_shader_pc.cpp",
+   "symbol": "??0?$allocator@D@std@@QAE@ABV01@@Z",
+   "kind": "function"
+  },
+  {
+   "unit": "src/nu2api/posteffect_shader_pc.cpp",
+   "symbol": "?capacity@?$vector@UPOST_VERTEX_SHADER_CACHE_ENTRY_PC@@V?$allocator@UPOST_VERTEX_SHADER_CACHE_ENTRY_PC@@@std@@@std@@QBEIXZ",
+   "kind": "function"
+  },
+  {
+   "unit": "src/nu2api/posteffect_shader_pc.cpp",
+   "symbol": "?size@?$vector@UPOST_VERTEX_SHADER_CACHE_ENTRY_PC@@V?$allocator@UPOST_VERTEX_SHADER_CACHE_ENTRY_PC@@@std@@@std@@QBEIXZ",
+   "kind": "function"
+  },
+  {
+   "unit": "src/nu2api/posteffect_shader_pc.cpp",
+   "symbol": "??0?$allocator@UPOST_VERTEX_SHADER_CACHE_ENTRY_PC@@@std@@QAE@XZ",
+   "kind": "function"
+  },
+  {
+   "unit": "src/nu2api/posteffect_shader_pc.cpp",
+   "symbol": "?capacity@?$vector@UPOST_PIXEL_SHADER_CACHE_ENTRY_PC@@V?$allocator@UPOST_PIXEL_SHADER_CACHE_ENTRY_PC@@@std@@@std@@QBEIXZ",
+   "kind": "function"
+  },
+  {
+   "unit": "src/nu2api/posteffect_shader_pc.cpp",
+   "symbol": "?size@?$vector@UPOST_PIXEL_SHADER_CACHE_ENTRY_PC@@V?$allocator@UPOST_PIXEL_SHADER_CACHE_ENTRY_PC@@@std@@@std@@QBEIXZ",
+   "kind": "function"
+  },
+  {
+   "unit": "src/nu2api/posteffect_shader_pc.cpp",
+   "symbol": "??0?$allocator@UPOST_PIXEL_SHADER_CACHE_ENTRY_PC@@@std@@QAE@XZ",
+   "kind": "function"
+  },
+  {
+   "unit": "src/nu2api/posteffect_shader_pc.cpp",
+   "symbol": "??D?$_Vector_const_iterator@UPOST_VERTEX_SHADER_CACHE_ENTRY_PC@@V?$allocator@UPOST_VERTEX_SHADER_CACHE_ENTRY_PC@@@std@@@std@@QBEABUPOST_VERTEX_SHADER_CACHE_ENTRY_PC@@XZ",
+   "kind": "function"
+  },
+  {
+   "unit": "src/nu2api/posteffect_shader_pc.cpp",
+   "symbol": "??E?$_Vector_const_iterator@UPOST_VERTEX_SHADER_CACHE_ENTRY_PC@@V?$allocator@UPOST_VERTEX_SHADER_CACHE_ENTRY_PC@@@std@@@std@@QAEAAV01@XZ",
+   "kind": "function"
+  },
+  {
+   "unit": "src/nu2api/posteffect_shader_pc.cpp",
+   "symbol": "??8?$_Vector_const_iterator@UPOST_VERTEX_SHADER_CACHE_ENTRY_PC@@V?$allocator@UPOST_VERTEX_SHADER_CACHE_ENTRY_PC@@@std@@@std@@QBE_NABV01@@Z",
+   "kind": "function"
+  },
+  {
+   "unit": "src/nu2api/posteffect_shader_pc.cpp",
+   "symbol": "??D?$_Vector_const_iterator@UPOST_PIXEL_SHADER_CACHE_ENTRY_PC@@V?$allocator@UPOST_PIXEL_SHADER_CACHE_ENTRY_PC@@@std@@@std@@QBEABUPOST_PIXEL_SHADER_CACHE_ENTRY_PC@@XZ",
+   "kind": "function"
+  },
+  {
+   "unit": "src/nu2api/posteffect_shader_pc.cpp",
+   "symbol": "??E?$_Vector_const_iterator@UPOST_PIXEL_SHADER_CACHE_ENTRY_PC@@V?$allocator@UPOST_PIXEL_SHADER_CACHE_ENTRY_PC@@@std@@@std@@QAEAAV01@XZ",
+   "kind": "function"
+  },
+  {
+   "unit": "src/nu2api/posteffect_shader_pc.cpp",
+   "symbol": "??8?$_Vector_const_iterator@UPOST_PIXEL_SHADER_CACHE_ENTRY_PC@@V?$allocator@UPOST_PIXEL_SHADER_CACHE_ENTRY_PC@@@std@@@std@@QBE_NABV01@@Z",
+   "kind": "function"
+  },
+  {
+   "unit": "src/nu2api/posteffect_shader_pc.cpp",
+   "symbol": "?size@?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@std@@QBEIXZ",
+   "kind": "function"
+  },
+  {
+   "unit": "src/nu2api/posteffect_shader_pc.cpp",
+   "symbol": "?_Myptr@?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@std@@IAEPADXZ",
+   "kind": "function"
+  },
+  {
+   "unit": "src/nu2api/posteffect_shader_pc.cpp",
+   "symbol": "?deallocate@?$allocator@D@std@@QAEXPADI@Z",
+   "kind": "function"
+  },
+  {
+   "unit": "src/nu2api/posteffect_shader_pc.cpp",
+   "symbol": "??0?$allocator@UPOST_VERTEX_SHADER_CACHE_ENTRY_PC@@@std@@QAE@ABV01@@Z",
+   "kind": "function"
+  },
+  {
+   "unit": "src/nu2api/posteffect_shader_pc.cpp",
+   "symbol": "?deallocate@?$allocator@UPOST_VERTEX_SHADER_CACHE_ENTRY_PC@@@std@@QAEXPAUPOST_VERTEX_SHADER_CACHE_ENTRY_PC@@I@Z",
+   "kind": "function"
+  },
+  {
+   "unit": "src/nu2api/posteffect_shader_pc.cpp",
+   "symbol": "??0?$allocator@UPOST_PIXEL_SHADER_CACHE_ENTRY_PC@@@std@@QAE@ABV01@@Z",
+   "kind": "function"
+  },
+  {
+   "unit": "src/nu2api/posteffect_shader_pc.cpp",
+   "symbol": "?deallocate@?$allocator@UPOST_PIXEL_SHADER_CACHE_ENTRY_PC@@@std@@QAEXPAUPOST_PIXEL_SHADER_CACHE_ENTRY_PC@@I@Z",
+   "kind": "function"
+  },
+  {
+   "unit": "src/nu2api/posteffect_shader_pc.cpp",
+   "symbol": "??0?$_Ranit@UPOST_VERTEX_SHADER_CACHE_ENTRY_PC@@HPBU1@ABU1@@std@@QAE@XZ",
+   "kind": "function"
+  },
+  {
+   "unit": "src/nu2api/posteffect_shader_pc.cpp",
+   "symbol": "??0?$_Ranit@UPOST_PIXEL_SHADER_CACHE_ENTRY_PC@@HPBU1@ABU1@@std@@QAE@XZ",
+   "kind": "function"
+  },
+  {
+   "unit": "src/nu2api/posteffect_shader_pc.cpp",
+   "symbol": "?max_size@?$allocator@UPOST_VERTEX_SHADER_CACHE_ENTRY_PC@@@std@@QBEIXZ",
+   "kind": "function"
+  },
+  {
+   "unit": "src/nu2api/posteffect_shader_pc.cpp",
+   "symbol": "?max_size@?$allocator@UPOST_PIXEL_SHADER_CACHE_ENTRY_PC@@@std@@QBEIXZ",
+   "kind": "function"
+  },
+  {
+   "unit": "src/nu2api/posteffect_shader_pc.cpp",
+   "symbol": "??G?$_Vector_const_iterator@UPOST_VERTEX_SHADER_CACHE_ENTRY_PC@@V?$allocator@UPOST_VERTEX_SHADER_CACHE_ENTRY_PC@@@std@@@std@@QBEHABV01@@Z",
+   "kind": "function"
+  },
+  {
+   "unit": "src/nu2api/posteffect_shader_pc.cpp",
+   "symbol": "??G?$_Vector_const_iterator@UPOST_PIXEL_SHADER_CACHE_ENTRY_PC@@V?$allocator@UPOST_PIXEL_SHADER_CACHE_ENTRY_PC@@@std@@@std@@QBEHABV01@@Z",
+   "kind": "function"
+  },
+  {
+   "unit": "src/nu2api/posteffect_shader_pc.cpp",
+   "symbol": "??0?$allocator@D@std@@QAE@XZ",
+   "kind": "function"
+  },
+  {
+   "unit": "src/nu2api/posteffect_shader_pc.cpp",
+   "symbol": "?max_size@?$allocator@D@std@@QBEIXZ",
+   "kind": "function"
+  },
+  {
+   "unit": "src/nu2api/posteffect_shader_pc.cpp",
+   "symbol": "??Y?$_Vector_const_iterator@UPOST_VERTEX_SHADER_CACHE_ENTRY_PC@@V?$allocator@UPOST_VERTEX_SHADER_CACHE_ENTRY_PC@@@std@@@std@@QAEAAV01@H@Z",
+   "kind": "function"
+  },
+  {
+   "unit": "src/nu2api/posteffect_shader_pc.cpp",
+   "symbol": "??Y?$_Vector_const_iterator@UPOST_PIXEL_SHADER_CACHE_ENTRY_PC@@V?$allocator@UPOST_PIXEL_SHADER_CACHE_ENTRY_PC@@@std@@@std@@QAEAAV01@H@Z",
+   "kind": "function"
+  },
+  {
+   "unit": "src/nu2api/posteffect_shader_pc.cpp",
+   "symbol": "?_Inside@?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@std@@IAE_NPBD@Z",
+   "kind": "function"
+  },
+  {
+   "unit": "src/nu2api/posteffect_shader_pc.cpp",
+   "symbol": "??$_Char_traits_cat@U?$char_traits@D@std@@@std@@YA?AU_Secure_char_traits_tag@0@XZ",
+   "kind": "function"
+  },
+  {
+   "unit": "src/nu2api/posteffect_shader_pc.cpp",
+   "symbol": "??$copy_s@U?$char_traits@D@std@@@_Traits_helper@std@@YAPADPADIPBDIU_Secure_char_traits_tag@1@@Z",
+   "kind": "function"
+  },
+  {
+   "unit": "src/nu2api/posteffect_shader_pc.cpp",
+   "symbol": "??$_Ptr_cat@PAUPOST_VERTEX_SHADER_CACHE_ENTRY_PC@@PAU1@@std@@YA?AU_Nonscalar_ptr_iterator_tag@0@AAPAUPOST_VERTEX_SHADER_CACHE_ENTRY_PC@@0@Z",
+   "kind": "function"
+  },
+  {
+   "unit": "src/nu2api/posteffect_shader_pc.cpp",
+   "symbol": "??$_Ptr_cat@PAUPOST_PIXEL_SHADER_CACHE_ENTRY_PC@@PAU1@@std@@YA?AU_Nonscalar_ptr_iterator_tag@0@AAPAUPOST_PIXEL_SHADER_CACHE_ENTRY_PC@@0@Z",
+   "kind": "function"
+  },
+  {
+   "unit": "src/nu2api/posteffect_shader_pc.cpp",
+   "symbol": "??$move_s@U?$char_traits@D@std@@@_Traits_helper@std@@YAPADPADIPBDIU_Secure_char_traits_tag@1@@Z",
+   "kind": "function"
+  },
+  {
+   "unit": "src/nu2api/posteffect_shader_pc.cpp",
+   "symbol": "??$_Fill@PAUPOST_VERTEX_SHADER_CACHE_ENTRY_PC@@U1@@std@@YAXPAUPOST_VERTEX_SHADER_CACHE_ENTRY_PC@@0ABU1@@Z",
+   "kind": "function"
+  },
+  {
+   "unit": "src/nu2api/posteffect_shader_pc.cpp",
+   "symbol": "??$_Iter_random@PAUPOST_VERTEX_SHADER_CACHE_ENTRY_PC@@PAU1@@std@@YA?AUrandom_access_iterator_tag@0@ABQAUPOST_VERTEX_SHADER_CACHE_ENTRY_PC@@0@Z",
+   "kind": "function"
+  },
+  {
+   "unit": "src/nu2api/posteffect_shader_pc.cpp",
+   "symbol": "??$_Move_cat@PAUPOST_VERTEX_SHADER_CACHE_ENTRY_PC@@@std@@YA?AU_Undefined_move_tag@0@ABQAUPOST_VERTEX_SHADER_CACHE_ENTRY_PC@@@Z",
+   "kind": "function"
+  },
+  {
+   "unit": "src/nu2api/posteffect_shader_pc.cpp",
+   "symbol": "??$_Fill@PAUPOST_PIXEL_SHADER_CACHE_ENTRY_PC@@U1@@std@@YAXPAUPOST_PIXEL_SHADER_CACHE_ENTRY_PC@@0ABU1@@Z",
+   "kind": "function"
+  },
+  {
+   "unit": "src/nu2api/posteffect_shader_pc.cpp",
+   "symbol": "??$_Iter_random@PAUPOST_PIXEL_SHADER_CACHE_ENTRY_PC@@PAU1@@std@@YA?AUrandom_access_iterator_tag@0@ABQAUPOST_PIXEL_SHADER_CACHE_ENTRY_PC@@0@Z",
+   "kind": "function"
+  },
+  {
+   "unit": "src/nu2api/posteffect_shader_pc.cpp",
+   "symbol": "??$_Move_cat@PAUPOST_PIXEL_SHADER_CACHE_ENTRY_PC@@@std@@YA?AU_Undefined_move_tag@0@ABQAUPOST_PIXEL_SHADER_CACHE_ENTRY_PC@@@Z",
+   "kind": "function"
+  },
+  {
+   "unit": "src/nu2api/posteffect_shader_pc.cpp",
+   "symbol": "??$_Checked_base@PAUPOST_VERTEX_SHADER_CACHE_ENTRY_PC@@@std@@YAPAUPOST_VERTEX_SHADER_CACHE_ENTRY_PC@@AAPAU1@U_Unchanged_checked_iterator_base_type_tag@0@@Z",
+   "kind": "function"
+  },
+  {
+   "unit": "src/nu2api/posteffect_shader_pc.cpp",
+   "symbol": "??$_Checked_base@PAUPOST_PIXEL_SHADER_CACHE_ENTRY_PC@@@std@@YAPAUPOST_PIXEL_SHADER_CACHE_ENTRY_PC@@AAPAU1@U_Unchanged_checked_iterator_base_type_tag@0@@Z",
+   "kind": "function"
+  },
+  {
+   "unit": "src/nu2api/posteffect_shader_pc.cpp",
+   "symbol": "??$_Construct@UPOST_VERTEX_SHADER_CACHE_ENTRY_PC@@U1@@std@@YAXPAUPOST_VERTEX_SHADER_CACHE_ENTRY_PC@@ABU1@@Z",
+   "kind": "function"
+  },
+  {
+   "unit": "src/nu2api/posteffect_shader_pc.cpp",
+   "symbol": "??$_Destroy@UPOST_VERTEX_SHADER_CACHE_ENTRY_PC@@@std@@YAXPAUPOST_VERTEX_SHADER_CACHE_ENTRY_PC@@@Z",
+   "kind": "function"
+  },
+  {
+   "unit": "src/nu2api/posteffect_shader_pc.cpp",
+   "symbol": "??$_Construct@UPOST_PIXEL_SHADER_CACHE_ENTRY_PC@@U1@@std@@YAXPAUPOST_PIXEL_SHADER_CACHE_ENTRY_PC@@ABU1@@Z",
+   "kind": "function"
+  },
+  {
+   "unit": "src/nu2api/posteffect_shader_pc.cpp",
+   "symbol": "??$_Destroy@UPOST_PIXEL_SHADER_CACHE_ENTRY_PC@@@std@@YAXPAUPOST_PIXEL_SHADER_CACHE_ENTRY_PC@@@Z",
+   "kind": "function"
+  },
+  {
+   "unit": "src/nu2api/posteffect_shader_pc.cpp",
+   "symbol": "??$_Copy_backward_opt@PAUPOST_VERTEX_SHADER_CACHE_ENTRY_PC@@PAU1@Uforward_iterator_tag@std@@@std@@YAPAUPOST_VERTEX_SHADER_CACHE_ENTRY_PC@@PAU1@00Uforward_iterator_tag@0@U_Nonscalar_ptr_iterator_tag@0@U_Range_checked_iterator_tag@0@@Z",
+   "kind": "function"
+  },
+  {
+   "unit": "src/nu2api/posteffect_shader_pc.cpp",
+   "symbol": "??$_Copy_backward_opt@PAUPOST_PIXEL_SHADER_CACHE_ENTRY_PC@@PAU1@Uforward_iterator_tag@std@@@std@@YAPAUPOST_PIXEL_SHADER_CACHE_ENTRY_PC@@PAU1@00Uforward_iterator_tag@0@U_Nonscalar_ptr_iterator_tag@0@U_Range_checked_iterator_tag@0@@Z",
+   "kind": "function"
+  },
+  {
+   "unit": "src/nu2api/posteffect_shader_pc.cpp",
+   "symbol": "??D?$_Vector_iterator@UPOST_VERTEX_SHADER_CACHE_ENTRY_PC@@V?$allocator@UPOST_VERTEX_SHADER_CACHE_ENTRY_PC@@@std@@@std@@QBEAAUPOST_VERTEX_SHADER_CACHE_ENTRY_PC@@XZ",
+   "kind": "function"
+  },
+  {
+   "unit": "src/nu2api/posteffect_shader_pc.cpp",
+   "symbol": "??C?$_Vector_iterator@UPOST_VERTEX_SHADER_CACHE_ENTRY_PC@@V?$allocator@UPOST_VERTEX_SHADER_CACHE_ENTRY_PC@@@std@@@std@@QBEPAUPOST_VERTEX_SHADER_CACHE_ENTRY_PC@@XZ",
+   "kind": "function"
+  },
+  {
+   "unit": "src/nu2api/posteffect_shader_pc.cpp",
+   "symbol": "??E?$_Vector_iterator@UPOST_VERTEX_SHADER_CACHE_ENTRY_PC@@V?$allocator@UPOST_VERTEX_SHADER_CACHE_ENTRY_PC@@@std@@@std@@QAEAAV01@XZ",
+   "kind": "function"
+  },
+  {
+   "unit": "src/nu2api/posteffect_shader_pc.cpp",
+   "symbol": "??9?$_Vector_const_iterator@UPOST_VERTEX_SHADER_CACHE_ENTRY_PC@@V?$allocator@UPOST_VERTEX_SHADER_CACHE_ENTRY_PC@@@std@@@std@@QBE_NABV01@@Z",
+   "kind": "function"
+  },
+  {
+   "unit": "src/nu2api/posteffect_shader_pc.cpp",
+   "symbol": "??D?$_Vector_iterator@UPOST_PIXEL_SHADER_CACHE_ENTRY_PC@@V?$allocator@UPOST_PIXEL_SHADER_CACHE_ENTRY_PC@@@std@@@std@@QBEAAUPOST_PIXEL_SHADER_CACHE_ENTRY_PC@@XZ",
+   "kind": "function"
+  },
+  {
+   "unit": "src/nu2api/posteffect_shader_pc.cpp",
+   "symbol": "??C?$_Vector_iterator@UPOST_PIXEL_SHADER_CACHE_ENTRY_PC@@V?$allocator@UPOST_PIXEL_SHADER_CACHE_ENTRY_PC@@@std@@@std@@QBEPAUPOST_PIXEL_SHADER_CACHE_ENTRY_PC@@XZ",
+   "kind": "function"
+  },
+  {
+   "unit": "src/nu2api/posteffect_shader_pc.cpp",
+   "symbol": "??E?$_Vector_iterator@UPOST_PIXEL_SHADER_CACHE_ENTRY_PC@@V?$allocator@UPOST_PIXEL_SHADER_CACHE_ENTRY_PC@@@std@@@std@@QAEAAV01@XZ",
+   "kind": "function"
+  },
+  {
+   "unit": "src/nu2api/posteffect_shader_pc.cpp",
+   "symbol": "??9?$_Vector_const_iterator@UPOST_PIXEL_SHADER_CACHE_ENTRY_PC@@V?$allocator@UPOST_PIXEL_SHADER_CACHE_ENTRY_PC@@@std@@@std@@QBE_NABV01@@Z",
+   "kind": "function"
+  },
+  {
+   "unit": "src/nu2api/posteffect_shader_pc.cpp",
+   "symbol": "??0?$_String_val@DV?$allocator@D@std@@@std@@IAE@V?$allocator@D@1@@Z",
+   "kind": "function"
+  },
+  {
+   "unit": "src/nu2api/posteffect_shader_pc.cpp",
+   "symbol": "??0?$_Vector_val@UPOST_VERTEX_SHADER_CACHE_ENTRY_PC@@V?$allocator@UPOST_VERTEX_SHADER_CACHE_ENTRY_PC@@@std@@@std@@IAE@V?$allocator@UPOST_VERTEX_SHADER_CACHE_ENTRY_PC@@@1@@Z",
+   "kind": "function"
+  },
+  {
+   "unit": "src/nu2api/posteffect_shader_pc.cpp",
+   "symbol": "??0?$_Vector_val@UPOST_PIXEL_SHADER_CACHE_ENTRY_PC@@V?$allocator@UPOST_PIXEL_SHADER_CACHE_ENTRY_PC@@@std@@@std@@IAE@V?$allocator@UPOST_PIXEL_SHADER_CACHE_ENTRY_PC@@@1@@Z",
+   "kind": "function"
+  },
+  {
+   "unit": "src/nu2api/posteffect_shader_pc.cpp",
+   "symbol": "?_Eos@?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@std@@IAEXI@Z",
+   "kind": "function"
+  },
+  {
+   "unit": "src/nu2api/posteffect_shader_pc.cpp",
+   "symbol": "?max_size@?$vector@UPOST_VERTEX_SHADER_CACHE_ENTRY_PC@@V?$allocator@UPOST_VERTEX_SHADER_CACHE_ENTRY_PC@@@std@@@std@@QBEIXZ",
+   "kind": "function"
+  },
+  {
+   "unit": "src/nu2api/posteffect_shader_pc.cpp",
+   "symbol": "?allocate@?$allocator@UPOST_VERTEX_SHADER_CACHE_ENTRY_PC@@@std@@QAEPAUPOST_VERTEX_SHADER_CACHE_ENTRY_PC@@I@Z",
+   "kind": "function"
+  },
+  {
+   "unit": "src/nu2api/posteffect_shader_pc.cpp",
+   "symbol": "?max_size@?$vector@UPOST_PIXEL_SHADER_CACHE_ENTRY_PC@@V?$allocator@UPOST_PIXEL_SHADER_CACHE_ENTRY_PC@@@std@@@std@@QBEIXZ",
+   "kind": "function"
+  },
+  {
+   "unit": "src/nu2api/posteffect_shader_pc.cpp",
+   "symbol": "?allocate@?$allocator@UPOST_PIXEL_SHADER_CACHE_ENTRY_PC@@@std@@QAEPAUPOST_PIXEL_SHADER_CACHE_ENTRY_PC@@I@Z",
+   "kind": "function"
+  },
+  {
+   "unit": "src/nu2api/posteffect_shader_pc.cpp",
+   "symbol": "??G?$_Vector_iterator@UPOST_VERTEX_SHADER_CACHE_ENTRY_PC@@V?$allocator@UPOST_VERTEX_SHADER_CACHE_ENTRY_PC@@@std@@@std@@QBEHABV?$_Vector_const_iterator@UPOST_VERTEX_SHADER_CACHE_ENTRY_PC@@V?$allocator@UPOST_VERTEX_SHADER_CACHE_ENTRY_PC@@@std@@@1@@Z",
+   "kind": "function"
+  },
+  {
+   "unit": "src/nu2api/posteffect_shader_pc.cpp",
+   "symbol": "??0?$_Vector_const_iterator@UPOST_VERTEX_SHADER_CACHE_ENTRY_PC@@V?$allocator@UPOST_VERTEX_SHADER_CACHE_ENTRY_PC@@@std@@@std@@QAE@PAUPOST_VERTEX_SHADER_CACHE_ENTRY_PC@@PBU_Container_base@1@@Z",
+   "kind": "function"
+  },
+  {
+   "unit": "src/nu2api/posteffect_shader_pc.cpp",
+   "symbol": "??G?$_Vector_iterator@UPOST_PIXEL_SHADER_CACHE_ENTRY_PC@@V?$allocator@UPOST_PIXEL_SHADER_CACHE_ENTRY_PC@@@std@@@std@@QBEHABV?$_Vector_const_iterator@UPOST_PIXEL_SHADER_CACHE_ENTRY_PC@@V?$allocator@UPOST_PIXEL_SHADER_CACHE_ENTRY_PC@@@std@@@1@@Z",
+   "kind": "function"
+  },
+  {
+   "unit": "src/nu2api/posteffect_shader_pc.cpp",
+   "symbol": "??0?$_Vector_const_iterator@UPOST_PIXEL_SHADER_CACHE_ENTRY_PC@@V?$allocator@UPOST_PIXEL_SHADER_CACHE_ENTRY_PC@@@std@@@std@@QAE@PAUPOST_PIXEL_SHADER_CACHE_ENTRY_PC@@PBU_Container_base@1@@Z",
+   "kind": "function"
+  },
+  {
+   "unit": "src/nu2api/posteffect_shader_pc.cpp",
+   "symbol": "?max_size@?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@std@@QBEIXZ",
+   "kind": "function"
+  },
+  {
+   "unit": "src/nu2api/posteffect_shader_pc.cpp",
+   "symbol": "??Y?$_Vector_iterator@UPOST_VERTEX_SHADER_CACHE_ENTRY_PC@@V?$allocator@UPOST_VERTEX_SHADER_CACHE_ENTRY_PC@@@std@@@std@@QAEAAV01@H@Z",
+   "kind": "function"
+  },
+  {
+   "unit": "src/nu2api/posteffect_shader_pc.cpp",
+   "symbol": "??Y?$_Vector_iterator@UPOST_PIXEL_SHADER_CACHE_ENTRY_PC@@V?$allocator@UPOST_PIXEL_SHADER_CACHE_ENTRY_PC@@@std@@@std@@QAEAAV01@H@Z",
+   "kind": "function"
+  },
+  {
+   "unit": "src/nu2api/posteffect_shader_pc.cpp",
+   "symbol": "??$copy_s@U?$char_traits@D@std@@@_Traits_helper@std@@YAPADPADIPBDI@Z",
+   "kind": "function"
+  },
+  {
+   "unit": "src/nu2api/posteffect_shader_pc.cpp",
+   "symbol": "??$move_s@U?$char_traits@D@std@@@_Traits_helper@std@@YAPADPADIPBDI@Z",
+   "kind": "function"
+  },
+  {
+   "unit": "src/nu2api/posteffect_shader_pc.cpp",
+   "symbol": "??$_Checked_base@PAUPOST_VERTEX_SHADER_CACHE_ENTRY_PC@@@std@@YAPAUPOST_VERTEX_SHADER_CACHE_ENTRY_PC@@AAPAU1@@Z",
+   "kind": "function"
+  },
+  {
+   "unit": "src/nu2api/posteffect_shader_pc.cpp",
+   "symbol": "??$_Checked_base@PAUPOST_PIXEL_SHADER_CACHE_ENTRY_PC@@@std@@YAPAUPOST_PIXEL_SHADER_CACHE_ENTRY_PC@@AAPAU1@@Z",
+   "kind": "function"
+  },
+  {
+   "unit": "src/nu2api/posteffect_shader_pc.cpp",
+   "symbol": "?destroy@?$allocator@UPOST_VERTEX_SHADER_CACHE_ENTRY_PC@@@std@@QAEXPAUPOST_VERTEX_SHADER_CACHE_ENTRY_PC@@@Z",
+   "kind": "function"
+  },
+  {
+   "unit": "src/nu2api/posteffect_shader_pc.cpp",
+   "symbol": "?destroy@?$allocator@UPOST_PIXEL_SHADER_CACHE_ENTRY_PC@@@std@@QAEXPAUPOST_PIXEL_SHADER_CACHE_ENTRY_PC@@@Z",
+   "kind": "function"
+  },
+  {
+   "unit": "src/nu2api/posteffect_shader_pc.cpp",
+   "symbol": "??$_Copy_backward_opt@PAUPOST_VERTEX_SHADER_CACHE_ENTRY_PC@@PAU1@@std@@YAPAUPOST_VERTEX_SHADER_CACHE_ENTRY_PC@@PAU1@00Urandom_access_iterator_tag@0@U_Nonscalar_ptr_iterator_tag@0@U_Range_checked_iterator_tag@0@@Z",
+   "kind": "function"
+  },
+  {
+   "unit": "src/nu2api/posteffect_shader_pc.cpp",
+   "symbol": "??$_Copy_backward_opt@PAUPOST_PIXEL_SHADER_CACHE_ENTRY_PC@@PAU1@@std@@YAPAUPOST_PIXEL_SHADER_CACHE_ENTRY_PC@@PAU1@00Urandom_access_iterator_tag@0@U_Nonscalar_ptr_iterator_tag@0@U_Range_checked_iterator_tag@0@@Z",
+   "kind": "function"
+  },
+  {
+   "unit": "src/nu2api/posteffect_shader_pc.cpp",
+   "symbol": "?_Tidy@?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@std@@IAEX_NI@Z",
+   "kind": "function"
+  },
+  {
+   "unit": "src/nu2api/posteffect_shader_pc.cpp",
+   "symbol": "??0?$_Vector_iterator@UPOST_VERTEX_SHADER_CACHE_ENTRY_PC@@V?$allocator@UPOST_VERTEX_SHADER_CACHE_ENTRY_PC@@@std@@@std@@QAE@PAUPOST_VERTEX_SHADER_CACHE_ENTRY_PC@@PBU_Container_base@1@@Z",
+   "kind": "function"
+  },
+  {
+   "unit": "src/nu2api/posteffect_shader_pc.cpp",
+   "symbol": "??0?$_Vector_iterator@UPOST_PIXEL_SHADER_CACHE_ENTRY_PC@@V?$allocator@UPOST_PIXEL_SHADER_CACHE_ENTRY_PC@@@std@@@std@@QAE@PAUPOST_PIXEL_SHADER_CACHE_ENTRY_PC@@PBU_Container_base@1@@Z",
+   "kind": "function"
+  },
+  {
+   "unit": "src/nu2api/posteffect_shader_pc.cpp",
+   "symbol": "??H?$_Vector_iterator@UPOST_VERTEX_SHADER_CACHE_ENTRY_PC@@V?$allocator@UPOST_VERTEX_SHADER_CACHE_ENTRY_PC@@@std@@@std@@QBE?AV01@H@Z",
+   "kind": "function"
+  },
+  {
+   "unit": "src/nu2api/posteffect_shader_pc.cpp",
+   "symbol": "??H?$_Vector_iterator@UPOST_PIXEL_SHADER_CACHE_ENTRY_PC@@V?$allocator@UPOST_PIXEL_SHADER_CACHE_ENTRY_PC@@@std@@@std@@QBE?AV01@H@Z",
+   "kind": "function"
+  },
+  {
+   "unit": "src/nu2api/posteffect_shader_pc.cpp",
+   "symbol": "??$_Destroy_range@UPOST_VERTEX_SHADER_CACHE_ENTRY_PC@@V?$allocator@UPOST_VERTEX_SHADER_CACHE_ENTRY_PC@@@std@@@std@@YAXPAUPOST_VERTEX_SHADER_CACHE_ENTRY_PC@@0AAV?$allocator@UPOST_VERTEX_SHADER_CACHE_ENTRY_PC@@@0@U_Nonscalar_ptr_iterator_tag@0@@Z",
+   "kind": "function"
+  },
+  {
+   "unit": "src/nu2api/posteffect_shader_pc.cpp",
+   "symbol": "??$_Move_backward_opt@PAUPOST_VERTEX_SHADER_CACHE_ENTRY_PC@@PAU1@Urandom_access_iterator_tag@std@@U_Undefined_move_tag@3@@std@@YAPAUPOST_VERTEX_SHADER_CACHE_ENTRY_PC@@PAU1@00Urandom_access_iterator_tag@0@U_Undefined_move_tag@0@U_Range_checked_iterator_tag@0@@Z",
+   "kind": "function"
+  },
+  {
+   "unit": "src/nu2api/posteffect_shader_pc.cpp",
+   "symbol": "??$_Destroy_range@UPOST_PIXEL_SHADER_CACHE_ENTRY_PC@@V?$allocator@UPOST_PIXEL_SHADER_CACHE_ENTRY_PC@@@std@@@std@@YAXPAUPOST_PIXEL_SHADER_CACHE_ENTRY_PC@@0AAV?$allocator@UPOST_PIXEL_SHADER_CACHE_ENTRY_PC@@@0@U_Nonscalar_ptr_iterator_tag@0@@Z",
+   "kind": "function"
+  },
+  {
+   "unit": "src/nu2api/posteffect_shader_pc.cpp",
+   "symbol": "??$_Move_backward_opt@PAUPOST_PIXEL_SHADER_CACHE_ENTRY_PC@@PAU1@Urandom_access_iterator_tag@std@@U_Undefined_move_tag@3@@std@@YAPAUPOST_PIXEL_SHADER_CACHE_ENTRY_PC@@PAU1@00Urandom_access_iterator_tag@0@U_Undefined_move_tag@0@U_Range_checked_iterator_tag@0@@Z",
+   "kind": "function"
+  },
+  {
+   "unit": "src/nu2api/posteffect_shader_pc.cpp",
+   "symbol": "??$unchecked_uninitialized_copy@PAUPOST_VERTEX_SHADER_CACHE_ENTRY_PC@@PAU1@V?$allocator@UPOST_VERTEX_SHADER_CACHE_ENTRY_PC@@@std@@@stdext@@YAPAUPOST_VERTEX_SHADER_CACHE_ENTRY_PC@@PAU1@00AAV?$allocator@UPOST_VERTEX_SHADER_CACHE_ENTRY_PC@@@std@@@Z",
+   "kind": "function"
+  },
+  {
+   "unit": "src/nu2api/posteffect_shader_pc.cpp",
+   "symbol": "??$unchecked_uninitialized_copy@PAUPOST_PIXEL_SHADER_CACHE_ENTRY_PC@@PAU1@V?$allocator@UPOST_PIXEL_SHADER_CACHE_ENTRY_PC@@@std@@@stdext@@YAPAUPOST_PIXEL_SHADER_CACHE_ENTRY_PC@@PAU1@00AAV?$allocator@UPOST_PIXEL_SHADER_CACHE_ENTRY_PC@@@std@@@Z",
+   "kind": "function"
+  },
+  {
+   "unit": "src/nu2api/posteffect_shader_pc.cpp",
+   "symbol": "?begin@?$vector@UPOST_VERTEX_SHADER_CACHE_ENTRY_PC@@V?$allocator@UPOST_VERTEX_SHADER_CACHE_ENTRY_PC@@@std@@@std@@QAE?AV?$_Vector_iterator@UPOST_VERTEX_SHADER_CACHE_ENTRY_PC@@V?$allocator@UPOST_VERTEX_SHADER_CACHE_ENTRY_PC@@@std@@@2@XZ",
+   "kind": "function"
+  },
+  {
+   "unit": "src/nu2api/posteffect_shader_pc.cpp",
+   "symbol": "?end@?$vector@UPOST_VERTEX_SHADER_CACHE_ENTRY_PC@@V?$allocator@UPOST_VERTEX_SHADER_CACHE_ENTRY_PC@@@std@@@std@@QAE?AV?$_Vector_iterator@UPOST_VERTEX_SHADER_CACHE_ENTRY_PC@@V?$allocator@UPOST_VERTEX_SHADER_CACHE_ENTRY_PC@@@std@@@2@XZ",
+   "kind": "function"
+  },
+  {
+   "unit": "src/nu2api/posteffect_shader_pc.cpp",
+   "symbol": "?begin@?$vector@UPOST_PIXEL_SHADER_CACHE_ENTRY_PC@@V?$allocator@UPOST_PIXEL_SHADER_CACHE_ENTRY_PC@@@std@@@std@@QAE?AV?$_Vector_iterator@UPOST_PIXEL_SHADER_CACHE_ENTRY_PC@@V?$allocator@UPOST_PIXEL_SHADER_CACHE_ENTRY_PC@@@std@@@2@XZ",
+   "kind": "function"
+  },
+  {
+   "unit": "src/nu2api/posteffect_shader_pc.cpp",
+   "symbol": "?end@?$vector@UPOST_PIXEL_SHADER_CACHE_ENTRY_PC@@V?$allocator@UPOST_PIXEL_SHADER_CACHE_ENTRY_PC@@@std@@@std@@QAE?AV?$_Vector_iterator@UPOST_PIXEL_SHADER_CACHE_ENTRY_PC@@V?$allocator@UPOST_PIXEL_SHADER_CACHE_ENTRY_PC@@@std@@@2@XZ",
+   "kind": "function"
+  },
+  {
+   "unit": "src/nu2api/posteffect_shader_pc.cpp",
+   "symbol": "?_Grow@?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@std@@IAE_NI_N@Z",
+   "kind": "function"
+  },
+  {
+   "unit": "src/nu2api/posteffect_shader_pc.cpp",
+   "symbol": "??$unchecked_uninitialized_fill_n@PAUPOST_VERTEX_SHADER_CACHE_ENTRY_PC@@IU1@V?$allocator@UPOST_VERTEX_SHADER_CACHE_ENTRY_PC@@@std@@@stdext@@YAXPAUPOST_VERTEX_SHADER_CACHE_ENTRY_PC@@IABU1@AAV?$allocator@UPOST_VERTEX_SHADER_CACHE_ENTRY_PC@@@std@@@Z",
+   "kind": "function"
+  },
+  {
+   "unit": "src/nu2api/posteffect_shader_pc.cpp",
+   "symbol": "??$unchecked_uninitialized_fill_n@PAUPOST_PIXEL_SHADER_CACHE_ENTRY_PC@@IU1@V?$allocator@UPOST_PIXEL_SHADER_CACHE_ENTRY_PC@@@std@@@stdext@@YAXPAUPOST_PIXEL_SHADER_CACHE_ENTRY_PC@@IABU1@AAV?$allocator@UPOST_PIXEL_SHADER_CACHE_ENTRY_PC@@@std@@@Z",
+   "kind": "function"
+  },
+  {
+   "unit": "src/nu2api/posteffect_shader_pc.cpp",
+   "symbol": "??$_Destroy_range@UPOST_VERTEX_SHADER_CACHE_ENTRY_PC@@V?$allocator@UPOST_VERTEX_SHADER_CACHE_ENTRY_PC@@@std@@@std@@YAXPAUPOST_VERTEX_SHADER_CACHE_ENTRY_PC@@0AAV?$allocator@UPOST_VERTEX_SHADER_CACHE_ENTRY_PC@@@0@@Z",
+   "kind": "function"
+  },
+  {
+   "unit": "src/nu2api/posteffect_shader_pc.cpp",
+   "symbol": "??$_Destroy_range@UPOST_PIXEL_SHADER_CACHE_ENTRY_PC@@V?$allocator@UPOST_PIXEL_SHADER_CACHE_ENTRY_PC@@@std@@@std@@YAXPAUPOST_PIXEL_SHADER_CACHE_ENTRY_PC@@0AAV?$allocator@UPOST_PIXEL_SHADER_CACHE_ENTRY_PC@@@0@@Z",
+   "kind": "function"
+  },
+  {
+   "unit": "src/nu2api/posteffect_shader_pc.cpp",
+   "symbol": "??$_Uninit_move@PAUPOST_VERTEX_SHADER_CACHE_ENTRY_PC@@PAU1@V?$allocator@UPOST_VERTEX_SHADER_CACHE_ENTRY_PC@@@std@@U_Undefined_move_tag@3@@std@@YAPAUPOST_VERTEX_SHADER_CACHE_ENTRY_PC@@PAU1@00AAV?$allocator@UPOST_VERTEX_SHADER_CACHE_ENTRY_PC@@@0@U_Undefined_move_tag@0@U_Range_checked_iterator_tag@0@@Z",
+   "kind": "function"
+  },
+  {
+   "unit": "src/nu2api/posteffect_shader_pc.cpp",
+   "symbol": "??$_Uninit_move@PAUPOST_PIXEL_SHADER_CACHE_ENTRY_PC@@PAU1@V?$allocator@UPOST_PIXEL_SHADER_CACHE_ENTRY_PC@@@std@@U_Undefined_move_tag@3@@std@@YAPAUPOST_PIXEL_SHADER_CACHE_ENTRY_PC@@PAU1@00AAV?$allocator@UPOST_PIXEL_SHADER_CACHE_ENTRY_PC@@@0@U_Undefined_move_tag@0@U_Range_checked_iterator_tag@0@@Z",
+   "kind": "function"
+  },
+  {
+   "unit": "src/nu2api/posteffect_shader_pc.cpp",
+   "symbol": "?c_str@?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@std@@QBEPBDXZ",
+   "kind": "function"
+  },
+  {
+   "unit": "src/nu2api/posteffect_shader_pc.cpp",
+   "symbol": "?_Destroy@?$vector@UPOST_VERTEX_SHADER_CACHE_ENTRY_PC@@V?$allocator@UPOST_VERTEX_SHADER_CACHE_ENTRY_PC@@@std@@@std@@IAEXPAUPOST_VERTEX_SHADER_CACHE_ENTRY_PC@@0@Z",
+   "kind": "function"
+  },
+  {
+   "unit": "src/nu2api/posteffect_shader_pc.cpp",
+   "symbol": "?_Destroy@?$vector@UPOST_PIXEL_SHADER_CACHE_ENTRY_PC@@V?$allocator@UPOST_PIXEL_SHADER_CACHE_ENTRY_PC@@@std@@@std@@IAEXPAUPOST_PIXEL_SHADER_CACHE_ENTRY_PC@@0@Z",
+   "kind": "function"
+  },
+  {
+   "unit": "src/nu2api/posteffect_shader_pc.cpp",
+   "symbol": "??$_Unchecked_uninitialized_move@PAUPOST_VERTEX_SHADER_CACHE_ENTRY_PC@@PAU1@V?$allocator@UPOST_VERTEX_SHADER_CACHE_ENTRY_PC@@@std@@@stdext@@YAPAUPOST_VERTEX_SHADER_CACHE_ENTRY_PC@@PAU1@00AAV?$allocator@UPOST_VERTEX_SHADER_CACHE_ENTRY_PC@@@std@@@Z",
+   "kind": "function"
+  },
+  {
+   "unit": "src/nu2api/posteffect_shader_pc.cpp",
+   "symbol": "??$_Unchecked_uninitialized_move@PAUPOST_PIXEL_SHADER_CACHE_ENTRY_PC@@PAU1@V?$allocator@UPOST_PIXEL_SHADER_CACHE_ENTRY_PC@@@std@@@stdext@@YAPAUPOST_PIXEL_SHADER_CACHE_ENTRY_PC@@PAU1@00AAV?$allocator@UPOST_PIXEL_SHADER_CACHE_ENTRY_PC@@@std@@@Z",
+   "kind": "function"
+  },
+  {
+   "unit": "src/nu2api/posteffect_shader_pc.cpp",
+   "symbol": "??0?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@std@@QAE@ABV01@@Z",
+   "kind": "function"
+  },
+  {
+   "unit": "src/nu2api/posteffect_shader_pc.cpp",
+   "symbol": "?_Tidy@?$vector@UPOST_VERTEX_SHADER_CACHE_ENTRY_PC@@V?$allocator@UPOST_VERTEX_SHADER_CACHE_ENTRY_PC@@@std@@@std@@IAEXXZ",
+   "kind": "function"
+  },
+  {
+   "unit": "src/nu2api/posteffect_shader_pc.cpp",
+   "symbol": "?_Tidy@?$vector@UPOST_PIXEL_SHADER_CACHE_ENTRY_PC@@V?$allocator@UPOST_PIXEL_SHADER_CACHE_ENTRY_PC@@@std@@@std@@IAEXXZ",
+   "kind": "function"
+  },
+  {
+   "unit": "src/nu2api/posteffect_shader_pc.cpp",
+   "symbol": "?assign@?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@std@@QAEAAV12@PBD@Z",
+   "kind": "function"
+  },
+  {
+   "unit": "src/nu2api/posteffect_shader_pc.cpp",
+   "symbol": "??0length_error@std@@QAE@ABV?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@1@@Z",
+   "kind": "function"
+  },
+  {
+   "unit": "src/nu2api/posteffect_shader_pc.cpp",
+   "symbol": "??1?$vector@UPOST_VERTEX_SHADER_CACHE_ENTRY_PC@@V?$allocator@UPOST_VERTEX_SHADER_CACHE_ENTRY_PC@@@std@@@std@@QAE@XZ",
+   "kind": "function"
+  },
+  {
+   "unit": "src/nu2api/posteffect_shader_pc.cpp",
+   "symbol": "??1?$vector@UPOST_PIXEL_SHADER_CACHE_ENTRY_PC@@V?$allocator@UPOST_PIXEL_SHADER_CACHE_ENTRY_PC@@@std@@@std@@QAE@XZ",
+   "kind": "function"
+  },
+  {
+   "unit": "src/nu2api/posteffect_shader_pc.cpp",
+   "symbol": "?_Buy@?$vector@UPOST_VERTEX_SHADER_CACHE_ENTRY_PC@@V?$allocator@UPOST_VERTEX_SHADER_CACHE_ENTRY_PC@@@std@@@std@@IAE_NI@Z",
+   "kind": "function"
+  },
+  {
+   "unit": "src/nu2api/posteffect_shader_pc.cpp",
+   "symbol": "?_Buy@?$vector@UPOST_PIXEL_SHADER_CACHE_ENTRY_PC@@V?$allocator@UPOST_PIXEL_SHADER_CACHE_ENTRY_PC@@@std@@@std@@IAE_NI@Z",
+   "kind": "function"
+  },
+  {
+   "unit": "src/nu2api/posteffect_shader_pc.cpp",
+   "symbol": "??0?$vector@UPOST_VERTEX_SHADER_CACHE_ENTRY_PC@@V?$allocator@UPOST_VERTEX_SHADER_CACHE_ENTRY_PC@@@std@@@std@@QAE@XZ",
+   "kind": "function"
+  },
+  {
+   "unit": "src/nu2api/posteffect_shader_pc.cpp",
+   "symbol": "??0?$vector@UPOST_PIXEL_SHADER_CACHE_ENTRY_PC@@V?$allocator@UPOST_PIXEL_SHADER_CACHE_ENTRY_PC@@@std@@@std@@QAE@XZ",
+   "kind": "function"
   }
  ]
 }

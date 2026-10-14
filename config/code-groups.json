@@ -44,6 +44,140 @@
           "catch_record": "__catchsym$?_Insert_n@?$vector@PAUShaderParserIncludePc@@V?$allocator@PAUShaderParserIncludePc@@@std@@@std@@IAEXV?$_Vector_iterator@PAUShaderParserIncludePc@@V?$allocator@PAUShaderParserIncludePc@@@std@@@2@IABQAUShaderParserIncludePc@@@Z$4"
         }
       ]
+    },
+    {
+      "unit": "src/nu2api/posteffect_shader_pc.cpp",
+      "parent": "?_Insert_n@?$vector@UPOST_VERTEX_SHADER_CACHE_ENTRY_PC@@V?$allocator@UPOST_VERTEX_SHADER_CACHE_ENTRY_PC@@@std@@@std@@IAEXV?$_Vector_iterator@UPOST_VERTEX_SHADER_CACHE_ENTRY_PC@@V?$allocator@UPOST_VERTEX_SHADER_CACHE_ENTRY_PC@@@std@@@2@IABUPOST_VERTEX_SHADER_CACHE_ENTRY_PC@@@Z",
+      "address": "0x60d2b0",
+      "size": 587,
+      "handler": "__ehhandler$?_Insert_n@?$vector@UPOST_VERTEX_SHADER_CACHE_ENTRY_PC@@V?$allocator@UPOST_VERTEX_SHADER_CACHE_ENTRY_PC@@@std@@@std@@IAEXV?$_Vector_iterator@UPOST_VERTEX_SHADER_CACHE_ENTRY_PC@@V?$allocator@UPOST_VERTEX_SHADER_CACHE_ENTRY_PC@@@std@@@2@IABUPOST_VERTEX_SHADER_CACHE_ENTRY_PC@@@Z",
+      "func_info": "__ehfuncinfo$?_Insert_n@?$vector@UPOST_VERTEX_SHADER_CACHE_ENTRY_PC@@V?$allocator@UPOST_VERTEX_SHADER_CACHE_ENTRY_PC@@@std@@@std@@IAEXV?$_Vector_iterator@UPOST_VERTEX_SHADER_CACHE_ENTRY_PC@@V?$allocator@UPOST_VERTEX_SHADER_CACHE_ENTRY_PC@@@std@@@2@IABUPOST_VERTEX_SHADER_CACHE_ENTRY_PC@@@Z",
+      "unwind_table": "__unwindtable$?_Insert_n@?$vector@UPOST_VERTEX_SHADER_CACHE_ENTRY_PC@@V?$allocator@UPOST_VERTEX_SHADER_CACHE_ENTRY_PC@@@std@@@std@@IAEXV?$_Vector_iterator@UPOST_VERTEX_SHADER_CACHE_ENTRY_PC@@V?$allocator@UPOST_VERTEX_SHADER_CACHE_ENTRY_PC@@@std@@@2@IABUPOST_VERTEX_SHADER_CACHE_ENTRY_PC@@@Z",
+      "try_table": "__tryblocktable$?_Insert_n@?$vector@UPOST_VERTEX_SHADER_CACHE_ENTRY_PC@@V?$allocator@UPOST_VERTEX_SHADER_CACHE_ENTRY_PC@@@std@@@std@@IAEXV?$_Vector_iterator@UPOST_VERTEX_SHADER_CACHE_ENTRY_PC@@V?$allocator@UPOST_VERTEX_SHADER_CACHE_ENTRY_PC@@@std@@@2@IABUPOST_VERTEX_SHADER_CACHE_ENTRY_PC@@@Z",
+      "components": [
+        {
+          "symbol": "__catch$?_Insert_n@?$vector@UPOST_VERTEX_SHADER_CACHE_ENTRY_PC@@V?$allocator@UPOST_VERTEX_SHADER_CACHE_ENTRY_PC@@@std@@@std@@IAEXV?$_Vector_iterator@UPOST_VERTEX_SHADER_CACHE_ENTRY_PC@@V?$allocator@UPOST_VERTEX_SHADER_CACHE_ENTRY_PC@@@std@@@2@IABUPOST_VERTEX_SHADER_CACHE_ENTRY_PC@@@Z$0",
+          "address": "0x60d418",
+          "catch_record": "__catchsym$?_Insert_n@?$vector@UPOST_VERTEX_SHADER_CACHE_ENTRY_PC@@V?$allocator@UPOST_VERTEX_SHADER_CACHE_ENTRY_PC@@@std@@@std@@IAEXV?$_Vector_iterator@UPOST_VERTEX_SHADER_CACHE_ENTRY_PC@@V?$allocator@UPOST_VERTEX_SHADER_CACHE_ENTRY_PC@@@std@@@2@IABUPOST_VERTEX_SHADER_CACHE_ENTRY_PC@@@Z$4"
+        },
+        {
+          "symbol": "__catch$?_Insert_n@?$vector@UPOST_VERTEX_SHADER_CACHE_ENTRY_PC@@V?$allocator@UPOST_VERTEX_SHADER_CACHE_ENTRY_PC@@@std@@@std@@IAEXV?$_Vector_iterator@UPOST_VERTEX_SHADER_CACHE_ENTRY_PC@@V?$allocator@UPOST_VERTEX_SHADER_CACHE_ENTRY_PC@@@std@@@2@IABUPOST_VERTEX_SHADER_CACHE_ENTRY_PC@@@Z$2",
+          "address": "0x60d424",
+          "catch_record": "__catchsym$?_Insert_n@?$vector@UPOST_VERTEX_SHADER_CACHE_ENTRY_PC@@V?$allocator@UPOST_VERTEX_SHADER_CACHE_ENTRY_PC@@@std@@@std@@IAEXV?$_Vector_iterator@UPOST_VERTEX_SHADER_CACHE_ENTRY_PC@@V?$allocator@UPOST_VERTEX_SHADER_CACHE_ENTRY_PC@@@std@@@2@IABUPOST_VERTEX_SHADER_CACHE_ENTRY_PC@@@Z$5"
+        }
+      ]
+    },
+    {
+      "unit": "src/nu2api/posteffect_shader_pc.cpp",
+      "parent": "??$_Uninit_copy@PAUPOST_VERTEX_SHADER_CACHE_ENTRY_PC@@PAU1@V?$allocator@UPOST_VERTEX_SHADER_CACHE_ENTRY_PC@@@std@@@std@@YAPAUPOST_VERTEX_SHADER_CACHE_ENTRY_PC@@PAU1@00AAV?$allocator@UPOST_VERTEX_SHADER_CACHE_ENTRY_PC@@@0@U_Nonscalar_ptr_iterator_tag@0@U_Range_checked_iterator_tag@0@@Z",
+      "address": "0x60a2f0",
+      "size": 129,
+      "handler": "__ehhandler$??$_Uninit_copy@PAUPOST_VERTEX_SHADER_CACHE_ENTRY_PC@@PAU1@V?$allocator@UPOST_VERTEX_SHADER_CACHE_ENTRY_PC@@@std@@@std@@YAPAUPOST_VERTEX_SHADER_CACHE_ENTRY_PC@@PAU1@00AAV?$allocator@UPOST_VERTEX_SHADER_CACHE_ENTRY_PC@@@0@U_Nonscalar_ptr_iterator_tag@0@U_Range_checked_iterator_tag@0@@Z",
+      "func_info": "__ehfuncinfo$??$_Uninit_copy@PAUPOST_VERTEX_SHADER_CACHE_ENTRY_PC@@PAU1@V?$allocator@UPOST_VERTEX_SHADER_CACHE_ENTRY_PC@@@std@@@std@@YAPAUPOST_VERTEX_SHADER_CACHE_ENTRY_PC@@PAU1@00AAV?$allocator@UPOST_VERTEX_SHADER_CACHE_ENTRY_PC@@@0@U_Nonscalar_ptr_iterator_tag@0@U_Range_checked_iterator_tag@0@@Z",
+      "unwind_table": "__unwindtable$??$_Uninit_copy@PAUPOST_VERTEX_SHADER_CACHE_ENTRY_PC@@PAU1@V?$allocator@UPOST_VERTEX_SHADER_CACHE_ENTRY_PC@@@std@@@std@@YAPAUPOST_VERTEX_SHADER_CACHE_ENTRY_PC@@PAU1@00AAV?$allocator@UPOST_VERTEX_SHADER_CACHE_ENTRY_PC@@@0@U_Nonscalar_ptr_iterator_tag@0@U_Range_checked_iterator_tag@0@@Z",
+      "try_table": "__tryblocktable$??$_Uninit_copy@PAUPOST_VERTEX_SHADER_CACHE_ENTRY_PC@@PAU1@V?$allocator@UPOST_VERTEX_SHADER_CACHE_ENTRY_PC@@@std@@@std@@YAPAUPOST_VERTEX_SHADER_CACHE_ENTRY_PC@@PAU1@00AAV?$allocator@UPOST_VERTEX_SHADER_CACHE_ENTRY_PC@@@0@U_Nonscalar_ptr_iterator_tag@0@U_Range_checked_iterator_tag@0@@Z",
+      "components": [
+        {
+          "symbol": "__catch$??$_Uninit_copy@PAUPOST_VERTEX_SHADER_CACHE_ENTRY_PC@@PAU1@V?$allocator@UPOST_VERTEX_SHADER_CACHE_ENTRY_PC@@@std@@@std@@YAPAUPOST_VERTEX_SHADER_CACHE_ENTRY_PC@@PAU1@00AAV?$allocator@UPOST_VERTEX_SHADER_CACHE_ENTRY_PC@@@0@U_Nonscalar_ptr_iterator_tag@0@U_Range_checked_iterator_tag@0@@Z$0",
+          "address": "0x60a367",
+          "catch_record": "__catchsym$??$_Uninit_copy@PAUPOST_VERTEX_SHADER_CACHE_ENTRY_PC@@PAU1@V?$allocator@UPOST_VERTEX_SHADER_CACHE_ENTRY_PC@@@std@@@std@@YAPAUPOST_VERTEX_SHADER_CACHE_ENTRY_PC@@PAU1@00AAV?$allocator@UPOST_VERTEX_SHADER_CACHE_ENTRY_PC@@@0@U_Nonscalar_ptr_iterator_tag@0@U_Range_checked_iterator_tag@0@@Z$2"
+        }
+      ]
+    },
+    {
+      "unit": "src/nu2api/posteffect_shader_pc.cpp",
+      "parent": "??$_Uninit_fill_n@PAUPOST_VERTEX_SHADER_CACHE_ENTRY_PC@@IU1@V?$allocator@UPOST_VERTEX_SHADER_CACHE_ENTRY_PC@@@std@@@std@@YAXPAUPOST_VERTEX_SHADER_CACHE_ENTRY_PC@@IABU1@AAV?$allocator@UPOST_VERTEX_SHADER_CACHE_ENTRY_PC@@@0@U_Nonscalar_ptr_iterator_tag@0@U_Range_checked_iterator_tag@0@@Z",
+      "address": "0x60bfa0",
+      "size": 129,
+      "handler": "__ehhandler$??$_Uninit_fill_n@PAUPOST_VERTEX_SHADER_CACHE_ENTRY_PC@@IU1@V?$allocator@UPOST_VERTEX_SHADER_CACHE_ENTRY_PC@@@std@@@std@@YAXPAUPOST_VERTEX_SHADER_CACHE_ENTRY_PC@@IABU1@AAV?$allocator@UPOST_VERTEX_SHADER_CACHE_ENTRY_PC@@@0@U_Nonscalar_ptr_iterator_tag@0@U_Range_checked_iterator_tag@0@@Z",
+      "func_info": "__ehfuncinfo$??$_Uninit_fill_n@PAUPOST_VERTEX_SHADER_CACHE_ENTRY_PC@@IU1@V?$allocator@UPOST_VERTEX_SHADER_CACHE_ENTRY_PC@@@std@@@std@@YAXPAUPOST_VERTEX_SHADER_CACHE_ENTRY_PC@@IABU1@AAV?$allocator@UPOST_VERTEX_SHADER_CACHE_ENTRY_PC@@@0@U_Nonscalar_ptr_iterator_tag@0@U_Range_checked_iterator_tag@0@@Z",
+      "unwind_table": "__unwindtable$??$_Uninit_fill_n@PAUPOST_VERTEX_SHADER_CACHE_ENTRY_PC@@IU1@V?$allocator@UPOST_VERTEX_SHADER_CACHE_ENTRY_PC@@@std@@@std@@YAXPAUPOST_VERTEX_SHADER_CACHE_ENTRY_PC@@IABU1@AAV?$allocator@UPOST_VERTEX_SHADER_CACHE_ENTRY_PC@@@0@U_Nonscalar_ptr_iterator_tag@0@U_Range_checked_iterator_tag@0@@Z",
+      "try_table": "__tryblocktable$??$_Uninit_fill_n@PAUPOST_VERTEX_SHADER_CACHE_ENTRY_PC@@IU1@V?$allocator@UPOST_VERTEX_SHADER_CACHE_ENTRY_PC@@@std@@@std@@YAXPAUPOST_VERTEX_SHADER_CACHE_ENTRY_PC@@IABU1@AAV?$allocator@UPOST_VERTEX_SHADER_CACHE_ENTRY_PC@@@0@U_Nonscalar_ptr_iterator_tag@0@U_Range_checked_iterator_tag@0@@Z",
+      "components": [
+        {
+          "symbol": "__catch$??$_Uninit_fill_n@PAUPOST_VERTEX_SHADER_CACHE_ENTRY_PC@@IU1@V?$allocator@UPOST_VERTEX_SHADER_CACHE_ENTRY_PC@@@std@@@std@@YAXPAUPOST_VERTEX_SHADER_CACHE_ENTRY_PC@@IABU1@AAV?$allocator@UPOST_VERTEX_SHADER_CACHE_ENTRY_PC@@@0@U_Nonscalar_ptr_iterator_tag@0@U_Range_checked_iterator_tag@0@@Z$0",
+          "address": "0x60c017",
+          "catch_record": "__catchsym$??$_Uninit_fill_n@PAUPOST_VERTEX_SHADER_CACHE_ENTRY_PC@@IU1@V?$allocator@UPOST_VERTEX_SHADER_CACHE_ENTRY_PC@@@std@@@std@@YAXPAUPOST_VERTEX_SHADER_CACHE_ENTRY_PC@@IABU1@AAV?$allocator@UPOST_VERTEX_SHADER_CACHE_ENTRY_PC@@@0@U_Nonscalar_ptr_iterator_tag@0@U_Range_checked_iterator_tag@0@@Z$2"
+        }
+      ]
+    },
+    {
+      "unit": "src/nu2api/posteffect_shader_pc.cpp",
+      "parent": "?_Insert_n@?$vector@UPOST_PIXEL_SHADER_CACHE_ENTRY_PC@@V?$allocator@UPOST_PIXEL_SHADER_CACHE_ENTRY_PC@@@std@@@std@@IAEXV?$_Vector_iterator@UPOST_PIXEL_SHADER_CACHE_ENTRY_PC@@V?$allocator@UPOST_PIXEL_SHADER_CACHE_ENTRY_PC@@@std@@@2@IABUPOST_PIXEL_SHADER_CACHE_ENTRY_PC@@@Z",
+      "address": "0x60d500",
+      "size": 587,
+      "handler": "__ehhandler$?_Insert_n@?$vector@UPOST_PIXEL_SHADER_CACHE_ENTRY_PC@@V?$allocator@UPOST_PIXEL_SHADER_CACHE_ENTRY_PC@@@std@@@std@@IAEXV?$_Vector_iterator@UPOST_PIXEL_SHADER_CACHE_ENTRY_PC@@V?$allocator@UPOST_PIXEL_SHADER_CACHE_ENTRY_PC@@@std@@@2@IABUPOST_PIXEL_SHADER_CACHE_ENTRY_PC@@@Z",
+      "func_info": "__ehfuncinfo$?_Insert_n@?$vector@UPOST_PIXEL_SHADER_CACHE_ENTRY_PC@@V?$allocator@UPOST_PIXEL_SHADER_CACHE_ENTRY_PC@@@std@@@std@@IAEXV?$_Vector_iterator@UPOST_PIXEL_SHADER_CACHE_ENTRY_PC@@V?$allocator@UPOST_PIXEL_SHADER_CACHE_ENTRY_PC@@@std@@@2@IABUPOST_PIXEL_SHADER_CACHE_ENTRY_PC@@@Z",
+      "unwind_table": "__unwindtable$?_Insert_n@?$vector@UPOST_PIXEL_SHADER_CACHE_ENTRY_PC@@V?$allocator@UPOST_PIXEL_SHADER_CACHE_ENTRY_PC@@@std@@@std@@IAEXV?$_Vector_iterator@UPOST_PIXEL_SHADER_CACHE_ENTRY_PC@@V?$allocator@UPOST_PIXEL_SHADER_CACHE_ENTRY_PC@@@std@@@2@IABUPOST_PIXEL_SHADER_CACHE_ENTRY_PC@@@Z",
+      "try_table": "__tryblocktable$?_Insert_n@?$vector@UPOST_PIXEL_SHADER_CACHE_ENTRY_PC@@V?$allocator@UPOST_PIXEL_SHADER_CACHE_ENTRY_PC@@@std@@@std@@IAEXV?$_Vector_iterator@UPOST_PIXEL_SHADER_CACHE_ENTRY_PC@@V?$allocator@UPOST_PIXEL_SHADER_CACHE_ENTRY_PC@@@std@@@2@IABUPOST_PIXEL_SHADER_CACHE_ENTRY_PC@@@Z",
+      "components": [
+        {
+          "symbol": "__catch$?_Insert_n@?$vector@UPOST_PIXEL_SHADER_CACHE_ENTRY_PC@@V?$allocator@UPOST_PIXEL_SHADER_CACHE_ENTRY_PC@@@std@@@std@@IAEXV?$_Vector_iterator@UPOST_PIXEL_SHADER_CACHE_ENTRY_PC@@V?$allocator@UPOST_PIXEL_SHADER_CACHE_ENTRY_PC@@@std@@@2@IABUPOST_PIXEL_SHADER_CACHE_ENTRY_PC@@@Z$0",
+          "address": "0x60d668",
+          "catch_record": "__catchsym$?_Insert_n@?$vector@UPOST_PIXEL_SHADER_CACHE_ENTRY_PC@@V?$allocator@UPOST_PIXEL_SHADER_CACHE_ENTRY_PC@@@std@@@std@@IAEXV?$_Vector_iterator@UPOST_PIXEL_SHADER_CACHE_ENTRY_PC@@V?$allocator@UPOST_PIXEL_SHADER_CACHE_ENTRY_PC@@@std@@@2@IABUPOST_PIXEL_SHADER_CACHE_ENTRY_PC@@@Z$4"
+        },
+        {
+          "symbol": "__catch$?_Insert_n@?$vector@UPOST_PIXEL_SHADER_CACHE_ENTRY_PC@@V?$allocator@UPOST_PIXEL_SHADER_CACHE_ENTRY_PC@@@std@@@std@@IAEXV?$_Vector_iterator@UPOST_PIXEL_SHADER_CACHE_ENTRY_PC@@V?$allocator@UPOST_PIXEL_SHADER_CACHE_ENTRY_PC@@@std@@@2@IABUPOST_PIXEL_SHADER_CACHE_ENTRY_PC@@@Z$2",
+          "address": "0x60d674",
+          "catch_record": "__catchsym$?_Insert_n@?$vector@UPOST_PIXEL_SHADER_CACHE_ENTRY_PC@@V?$allocator@UPOST_PIXEL_SHADER_CACHE_ENTRY_PC@@@std@@@std@@IAEXV?$_Vector_iterator@UPOST_PIXEL_SHADER_CACHE_ENTRY_PC@@V?$allocator@UPOST_PIXEL_SHADER_CACHE_ENTRY_PC@@@std@@@2@IABUPOST_PIXEL_SHADER_CACHE_ENTRY_PC@@@Z$5"
+        }
+      ]
+    },
+    {
+      "unit": "src/nu2api/posteffect_shader_pc.cpp",
+      "parent": "??$_Uninit_copy@PAUPOST_PIXEL_SHADER_CACHE_ENTRY_PC@@PAU1@V?$allocator@UPOST_PIXEL_SHADER_CACHE_ENTRY_PC@@@std@@@std@@YAPAUPOST_PIXEL_SHADER_CACHE_ENTRY_PC@@PAU1@00AAV?$allocator@UPOST_PIXEL_SHADER_CACHE_ENTRY_PC@@@0@U_Nonscalar_ptr_iterator_tag@0@U_Range_checked_iterator_tag@0@@Z",
+      "address": "0x60a380",
+      "size": 129,
+      "handler": "__ehhandler$??$_Uninit_copy@PAUPOST_PIXEL_SHADER_CACHE_ENTRY_PC@@PAU1@V?$allocator@UPOST_PIXEL_SHADER_CACHE_ENTRY_PC@@@std@@@std@@YAPAUPOST_PIXEL_SHADER_CACHE_ENTRY_PC@@PAU1@00AAV?$allocator@UPOST_PIXEL_SHADER_CACHE_ENTRY_PC@@@0@U_Nonscalar_ptr_iterator_tag@0@U_Range_checked_iterator_tag@0@@Z",
+      "func_info": "__ehfuncinfo$??$_Uninit_copy@PAUPOST_PIXEL_SHADER_CACHE_ENTRY_PC@@PAU1@V?$allocator@UPOST_PIXEL_SHADER_CACHE_ENTRY_PC@@@std@@@std@@YAPAUPOST_PIXEL_SHADER_CACHE_ENTRY_PC@@PAU1@00AAV?$allocator@UPOST_PIXEL_SHADER_CACHE_ENTRY_PC@@@0@U_Nonscalar_ptr_iterator_tag@0@U_Range_checked_iterator_tag@0@@Z",
+      "unwind_table": "__unwindtable$??$_Uninit_copy@PAUPOST_PIXEL_SHADER_CACHE_ENTRY_PC@@PAU1@V?$allocator@UPOST_PIXEL_SHADER_CACHE_ENTRY_PC@@@std@@@std@@YAPAUPOST_PIXEL_SHADER_CACHE_ENTRY_PC@@PAU1@00AAV?$allocator@UPOST_PIXEL_SHADER_CACHE_ENTRY_PC@@@0@U_Nonscalar_ptr_iterator_tag@0@U_Range_checked_iterator_tag@0@@Z",
+      "try_table": "__tryblocktable$??$_Uninit_copy@PAUPOST_PIXEL_SHADER_CACHE_ENTRY_PC@@PAU1@V?$allocator@UPOST_PIXEL_SHADER_CACHE_ENTRY_PC@@@std@@@std@@YAPAUPOST_PIXEL_SHADER_CACHE_ENTRY_PC@@PAU1@00AAV?$allocator@UPOST_PIXEL_SHADER_CACHE_ENTRY_PC@@@0@U_Nonscalar_ptr_iterator_tag@0@U_Range_checked_iterator_tag@0@@Z",
+      "components": [
+        {
+          "symbol": "__catch$??$_Uninit_copy@PAUPOST_PIXEL_SHADER_CACHE_ENTRY_PC@@PAU1@V?$allocator@UPOST_PIXEL_SHADER_CACHE_ENTRY_PC@@@std@@@std@@YAPAUPOST_PIXEL_SHADER_CACHE_ENTRY_PC@@PAU1@00AAV?$allocator@UPOST_PIXEL_SHADER_CACHE_ENTRY_PC@@@0@U_Nonscalar_ptr_iterator_tag@0@U_Range_checked_iterator_tag@0@@Z$0",
+          "address": "0x60a3f7",
+          "catch_record": "__catchsym$??$_Uninit_copy@PAUPOST_PIXEL_SHADER_CACHE_ENTRY_PC@@PAU1@V?$allocator@UPOST_PIXEL_SHADER_CACHE_ENTRY_PC@@@std@@@std@@YAPAUPOST_PIXEL_SHADER_CACHE_ENTRY_PC@@PAU1@00AAV?$allocator@UPOST_PIXEL_SHADER_CACHE_ENTRY_PC@@@0@U_Nonscalar_ptr_iterator_tag@0@U_Range_checked_iterator_tag@0@@Z$2"
+        }
+      ]
+    },
+    {
+      "unit": "src/nu2api/posteffect_shader_pc.cpp",
+      "parent": "??$_Uninit_fill_n@PAUPOST_PIXEL_SHADER_CACHE_ENTRY_PC@@IU1@V?$allocator@UPOST_PIXEL_SHADER_CACHE_ENTRY_PC@@@std@@@std@@YAXPAUPOST_PIXEL_SHADER_CACHE_ENTRY_PC@@IABU1@AAV?$allocator@UPOST_PIXEL_SHADER_CACHE_ENTRY_PC@@@0@U_Nonscalar_ptr_iterator_tag@0@U_Range_checked_iterator_tag@0@@Z",
+      "address": "0x60c030",
+      "size": 129,
+      "handler": "__ehhandler$??$_Uninit_fill_n@PAUPOST_PIXEL_SHADER_CACHE_ENTRY_PC@@IU1@V?$allocator@UPOST_PIXEL_SHADER_CACHE_ENTRY_PC@@@std@@@std@@YAXPAUPOST_PIXEL_SHADER_CACHE_ENTRY_PC@@IABU1@AAV?$allocator@UPOST_PIXEL_SHADER_CACHE_ENTRY_PC@@@0@U_Nonscalar_ptr_iterator_tag@0@U_Range_checked_iterator_tag@0@@Z",
+      "func_info": "__ehfuncinfo$??$_Uninit_fill_n@PAUPOST_PIXEL_SHADER_CACHE_ENTRY_PC@@IU1@V?$allocator@UPOST_PIXEL_SHADER_CACHE_ENTRY_PC@@@std@@@std@@YAXPAUPOST_PIXEL_SHADER_CACHE_ENTRY_PC@@IABU1@AAV?$allocator@UPOST_PIXEL_SHADER_CACHE_ENTRY_PC@@@0@U_Nonscalar_ptr_iterator_tag@0@U_Range_checked_iterator_tag@0@@Z",
+      "unwind_table": "__unwindtable$??$_Uninit_fill_n@PAUPOST_PIXEL_SHADER_CACHE_ENTRY_PC@@IU1@V?$allocator@UPOST_PIXEL_SHADER_CACHE_ENTRY_PC@@@std@@@std@@YAXPAUPOST_PIXEL_SHADER_CACHE_ENTRY_PC@@IABU1@AAV?$allocator@UPOST_PIXEL_SHADER_CACHE_ENTRY_PC@@@0@U_Nonscalar_ptr_iterator_tag@0@U_Range_checked_iterator_tag@0@@Z",
+      "try_table": "__tryblocktable$??$_Uninit_fill_n@PAUPOST_PIXEL_SHADER_CACHE_ENTRY_PC@@IU1@V?$allocator@UPOST_PIXEL_SHADER_CACHE_ENTRY_PC@@@std@@@std@@YAXPAUPOST_PIXEL_SHADER_CACHE_ENTRY_PC@@IABU1@AAV?$allocator@UPOST_PIXEL_SHADER_CACHE_ENTRY_PC@@@0@U_Nonscalar_ptr_iterator_tag@0@U_Range_checked_iterator_tag@0@@Z",
+      "components": [
+        {
+          "symbol": "__catch$??$_Uninit_fill_n@PAUPOST_PIXEL_SHADER_CACHE_ENTRY_PC@@IU1@V?$allocator@UPOST_PIXEL_SHADER_CACHE_ENTRY_PC@@@std@@@std@@YAXPAUPOST_PIXEL_SHADER_CACHE_ENTRY_PC@@IABU1@AAV?$allocator@UPOST_PIXEL_SHADER_CACHE_ENTRY_PC@@@0@U_Nonscalar_ptr_iterator_tag@0@U_Range_checked_iterator_tag@0@@Z$0",
+          "address": "0x60c0a7",
+          "catch_record": "__catchsym$??$_Uninit_fill_n@PAUPOST_PIXEL_SHADER_CACHE_ENTRY_PC@@IU1@V?$allocator@UPOST_PIXEL_SHADER_CACHE_ENTRY_PC@@@std@@@std@@YAXPAUPOST_PIXEL_SHADER_CACHE_ENTRY_PC@@IABU1@AAV?$allocator@UPOST_PIXEL_SHADER_CACHE_ENTRY_PC@@@0@U_Nonscalar_ptr_iterator_tag@0@U_Range_checked_iterator_tag@0@@Z$2"
+        }
+      ]
+    },
+    {
+      "unit": "src/nu2api/posteffect_shader_pc.cpp",
+      "parent": "?_Copy@?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@std@@IAEXII@Z",
+      "address": "0x60bdd0",
+      "size": 335,
+      "handler": "__ehhandler$?_Copy@?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@std@@IAEXII@Z",
+      "func_info": "__ehfuncinfo$?_Copy@?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@std@@IAEXII@Z",
+      "unwind_table": "__unwindtable$?_Copy@?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@std@@IAEXII@Z",
+      "try_table": "__tryblocktable$?_Copy@?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@std@@IAEXII@Z",
+      "components": [
+        {
+          "symbol": "__catch$?_Copy@?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@std@@IAEXII@Z$1",
+          "address": "0x60beee",
+          "catch_record": "__catchsym$?_Copy@?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@std@@IAEXII@Z$4"
+        },
+        {
+          "symbol": "__catch$?_Copy@?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@std@@IAEXII@Z$0",
+          "address": "0x60be53",
+          "catch_record": "__catchsym$?_Copy@?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@std@@IAEXII@Z$5"
+        }
+      ]
     }
   ]
 }
