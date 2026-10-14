@@ -6173,47 +6173,42 @@ i32 __cdecl Action_CircleLocator(AISYS_PC *sys, AISCRIPTPROCESS_PC *processor, A
     return locator == NULL;
 }
 
-static i32 Action_GizmoActivate(AISYS_PC *sys, AISCRIPTPROCESS_PC *processor, AIPACKET_PC *packet, char **params,
-                                i32 param_4, i32 param_5, f32 param_6) {
-    if (param_5 != 0 && param_4 > 0) {
-        i32 index;
-        GIZMO_PC *gizmo = NULL;
-        i32 enabled = 1;
-        for (index = 0; index < param_4; ++index) {
-            char *value = NuStrIStr(params[index], "name=");
-            if (value != NULL) {
-                gizmo = GizmoFindByName(WORLD->gizmo_sys, -1, value + NuStrLen("name="));
-            } else if (NuStrICmp(params[index], "FALSE") == 0) {
+i32 __cdecl Action_GizmoActivate(AISYS_PC *unused0, AISCRIPTPROCESS_PC *unused1, AIPACKET_PC *unused2, char **params,
+                                 i32 count, i32 first_time, f32 unused6) {
+    void *gizmo = NULL;
+    i32 enabled = 1;
+    i32 index;
+    char *value;
+    if (first_time != 0 && count > 0) {
+        for (index = 0; index < count; ++index) {
+            value = NuStrIStr(params[index], (char *)AIScriptActionNameArgPrefix);
+            if (value != NULL)
+                gizmo = GizmoFindByName(WORLD->gizmo_sys, -1, value + NuStrLen(AIScriptActionNameArgPrefix));
+            else if (NuStrICmp(params[index], AIActionFalseName) == 0)
                 enabled = 0;
-            }
         }
-        if (gizmo != NULL) {
+        if (gizmo != NULL)
             GizmoActivate(WORLD->gizmo_sys, gizmo, enabled, 1);
-        }
     }
     return 1;
 }
 
-static i32 Action_GizmoSetVisibility(AISYS_PC *unused0, AISCRIPTPROCESS_PC *unused1, AIPACKET_PC *unused2,
-                                     char **params, i32 param_count, i32 first_time, f32 unused6) {
-    struct gizmo_pc_s *gizmo;
-    i32 visible;
+i32 __cdecl Action_GizmoSetVisibility(AISYS_PC *unused0, AISCRIPTPROCESS_PC *unused1, AIPACKET_PC *unused2,
+                                      char **params, i32 count, i32 first_time, f32 unused6) {
+    void *gizmo = NULL;
+    i32 enabled = 1;
     i32 index;
-    if (first_time == 0) {
-        return 1;
-    }
-    gizmo = NULL;
-    visible = 1;
-    for (index = 0; index < param_count; ++index) {
-        char *value = NuStrIStr(params[index], "name=");
-        if (value != NULL) {
-            gizmo = GizmoFindByName(WORLD->gizmo_sys, -1, value + NuStrLen("name="));
-        } else if (NuStrICmp(params[index], "FALSE") == 0) {
-            visible = 0;
+    char *value;
+    if (first_time != 0 && count > 0) {
+        for (index = 0; index < count; ++index) {
+            value = NuStrIStr(params[index], (char *)AIScriptActionNameArgPrefix);
+            if (value != NULL)
+                gizmo = GizmoFindByName(WORLD->gizmo_sys, -1, value + NuStrLen(AIScriptActionNameArgPrefix));
+            else if (NuStrICmp(params[index], AIActionFalseName) == 0)
+                enabled = 0;
         }
-    }
-    if (gizmo != NULL) {
-        GizmoSetVisibility(WORLD->gizmo_sys, gizmo, visible, 1);
+        if (gizmo != NULL)
+            GizmoSetVisibility(WORLD->gizmo_sys, gizmo, enabled, 1);
     }
     return 1;
 }
@@ -9541,6 +9536,56 @@ i32 __cdecl Action_SetShieldHitPoints(AISYS_PC *system, AISCRIPTPROCESS_PC *proc
             if (hit_points == -1)
                 hit_points = object->character_data->game_character->shield_hitpoints;
             object->shield_hitpoints = (u8)(hit_points);
+        }
+    }
+    return 1;
+}
+
+i32 __cdecl Action_SetScriptParam(AISYS_PC *unused0, AISCRIPTPROCESS_PC *processor, AIPACKET_PC *unused2, char **params,
+                                  i32 count, i32 first_time, f32 unused6) {
+    f32 amount = 0.0f;
+    i32 operation = 0;
+    i32 param_index = -1;
+    i32 index;
+    i32 candidate;
+    char *value;
+    if (first_time != 0 && count != 0 && processor->script != NULL) {
+        for (index = 0; index < count; ++index) {
+            value = NuStrIStr(params[index], (char *)AIScriptActionNameArgPrefix);
+            if (value != NULL) {
+                value += 5;
+                for (candidate = 0; candidate < 4; ++candidate) {
+                    if (NuStrICmp(processor->script->params[candidate].name, value) == 0) {
+                        param_index = candidate;
+                        break;
+                    }
+                }
+            } else if ((value = NuStrIStr(params[index], "ix=")) != NULL) {
+                param_index = (i32)AIParamToFloat(processor, value + 3);
+                if (param_index >= 4)
+                    param_index = -1;
+            } else if ((value = NuStrIStr(params[index], (char *)AIAnimSpeedValueName)) != NULL)
+                amount = AIParamToFloat(processor, value + 6);
+            else if ((value = NuStrIStr(params[index], "increment=")) != NULL) {
+                amount = AIParamToFloat(processor, value + 10);
+                operation = 1;
+            } else if ((value = NuStrIStr(params[index], "decrement=")) != NULL) {
+                amount = AIParamToFloat(processor, value + 10);
+                operation = -1;
+            }
+        }
+        if (param_index >= 0) {
+            switch (operation) {
+                case -1:
+                    processor->params[param_index] -= amount;
+                    break;
+                case 0:
+                    processor->params[param_index] = amount;
+                    break;
+                case 1:
+                    processor->params[param_index] = processor->params[param_index] + amount;
+                    break;
+            }
         }
     }
     return 1;
