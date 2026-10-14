@@ -602,3 +602,119 @@ ADDGIZMOTYPE_PC *__cdecl Grapples_RegisterGizmo(i32 type_id) {
     grapple_gizmotype_id = type_id;
     return addtype;
 }
+
+i32 __cdecl GizBuildIts_GetMaxGizmos(void *world_ptr) {
+    WORLDINFO *world = (WORLDINFO *)world_ptr;
+    if (world == NULL)
+        return 0;
+    return world->current_level->max_buildits;
+}
+
+i32 __cdecl GizForces_GetMaxGizmos(void *world_ptr) {
+    WORLDINFO *world = (WORLDINFO *)world_ptr;
+    if (world == NULL)
+        return 0;
+    return world->current_level->max_force;
+}
+
+i32 __cdecl Blowup_GetMaxGizmos(void *world_ptr) {
+    WORLDINFO *world = (WORLDINFO *)world_ptr;
+    if (world == NULL)
+        return 0;
+    return (u16)world->current_level->max_gizmoblowups;
+}
+
+i32 __cdecl GizmoPickups_GetMaxGizmos(void *world_ptr) {
+    WORLDINFO *world = (WORLDINFO *)world_ptr;
+    if (world == NULL)
+        return 0;
+    return (u16)world->current_level->max_pickups;
+}
+
+i32 __cdecl GizSpinner_GetMaxGizmos(void *world_ptr) {
+    WORLDINFO *world = (WORLDINFO *)world_ptr;
+    return world->current_level->max_spinners;
+}
+
+i32 __cdecl GizTurrets_GetMaxGizmos(void *world_ptr) {
+    WORLDINFO *world = (WORLDINFO *)world_ptr;
+    if (world == NULL)
+        return 0;
+    return world->current_level->max_turrets;
+}
+
+i32 __cdecl GizBombGens_GetMaxGizmos(void *world_ptr) {
+    WORLDINFO *world = (WORLDINFO *)world_ptr;
+    if (world == NULL)
+        return 0;
+    return world->current_level->max_bombgens;
+}
+
+i32 __cdecl AI_GetMaxGizmos(void *world_ptr) {
+    (void)world_ptr;
+    return 32;
+}
+
+i32 __cdecl GizPanel_GetMaxGizmos(void *world_ptr) {
+    WORLDINFO *world = (WORLDINFO *)world_ptr;
+    if (world == NULL)
+        return 0;
+    return world->current_level->max_gizpanels;
+}
+
+i32 __cdecl Teleport_GetMaxGizmos(void *world_ptr) {
+    WORLDINFO *world = (WORLDINFO *)world_ptr;
+    if (world == NULL)
+        return 0;
+    return world->current_level->max_teleports;
+}
+
+i32 __cdecl GizTorp_GetMaxGizmos(void *world_ptr) {
+    WORLDINFO *world = (WORLDINFO *)world_ptr;
+    if (world == NULL)
+        return 0;
+    return world->current_level->max_torpmachines;
+}
+
+i32 __cdecl Grapples_GetMaxGizmos(void *world_ptr) {
+    WORLDINFO *world = (WORLDINFO *)world_ptr;
+    if (world == NULL)
+        return 0;
+    return world->current_level->max_grapples;
+}
+
+void *__cdecl GizBuildIts_AllocateProgressData(VARIPTR *buffer, VARIPTR *end) {
+    return GizmoBufferAlloc(buffer, end, 0x60);
+}
+
+void *__cdecl GizForces_AllocateProgressData(VARIPTR *buffer, VARIPTR *end) {
+    return GizmoBufferAlloc(buffer, end, 0xb0);
+}
+
+void *__cdecl Blowup_AllocateProgressData(VARIPTR *buffer, VARIPTR *end) {
+    return GizmoBufferAlloc(buffer, end, 0x100);
+}
+
+void *__cdecl GizmoPickups_AllocateProgressData(VARIPTR *buffer, VARIPTR *end) {
+    return GizmoBufferAlloc(buffer, end, 0x100);
+}
+
+void *__cdecl GizSpinner_AllocateProgressData(void *buffer, void *end) {
+    return GizmoBufferAlloc((VARIPTR *)buffer, (VARIPTR *)end, 0x40);
+}
+
+void *__cdecl GizTurrets_AllocateProgressData(VARIPTR *buffer, VARIPTR *end) {
+    return GizmoBufferAlloc(buffer, end, 0x70);
+}
+
+void *__cdecl GizBombGens_AllocateProgressData(VARIPTR *buffer, VARIPTR *end) {
+    return GizmoBufferAlloc(buffer, end, 0x18);
+}
+
+void *__cdecl GizPanels_AllocateProgressData(void *buffer, void *end) {
+    return GizmoBufferAlloc((VARIPTR *)buffer, (VARIPTR *)end, 0xc);
+}
+
+void *__cdecl Grapples_AllocateProgressData(VARIPTR *buffer, VARIPTR *end) {
+    return GizmoBufferAlloc(buffer, end, 0x8);
+}
