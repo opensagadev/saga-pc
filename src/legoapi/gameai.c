@@ -307,3 +307,24 @@ void TurnCodeCamSafe(GAMEOBJECT *object, NUMTX *matrix) {
         NuMtxPreRotateZ(matrix, (i16)((i32)((1.0f - (wave + 1.0f) * 0.5f) * 32768.0f)));
     }
 }
+
+/* Native 0x0043b730, 137 bytes. */
+void __cdecl GameAIResetPathConnectionsPc(AISYS_PC *system) {
+    AIPATH_PC *path;
+    AIPATHCNX_PC *connection;
+    i32 path_index, connection_index;
+    if (system->path_sys != NULL) {
+        for (path_index = 0; path_index < system->path_sys->path_count; ++path_index) {
+            path = system->path_sys->paths[path_index];
+            for (connection_index = 0; connection_index < path->connection_count; ++connection_index) {
+                connection = &path->connections[connection_index];
+                connection->traversal_flags[0] = connection->original_traversal_flags[0];
+                if (LEGO_AIPATHCNX_BLOCKAGE != 0)
+                    connection->traversal_flags[0] &= ~LEGO_AIPATHCNX_BLOCKAGE;
+                connection->traversal_flags[1] = connection->original_traversal_flags[1];
+                if (LEGO_AIPATHCNX_BLOCKAGE != 0)
+                    connection->traversal_flags[1] &= ~LEGO_AIPATHCNX_BLOCKAGE;
+            }
+        }
+    }
+}

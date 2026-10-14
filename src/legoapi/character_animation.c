@@ -705,10 +705,10 @@ void __cdecl Animate_JEDI(GAMEOBJECT *object) {
 }
 
 typedef struct default_animation_mini_request_pc_s {
-    u8 unknown_0000[0x7f2];
-    i16 requested_animation;
+    u8 unknown_0000[0x7d0];
+    DRAW_ATTACHMENTS_MINI_PC packet;
 } DEFAULT_ANIMATION_MINI_REQUEST_PC;
-STATIC_ASSERT(offsetof(DEFAULT_ANIMATION_MINI_REQUEST_PC, requested_animation) == 0x7f2);
+STATIC_ASSERT(offsetof(DEFAULT_ANIMATION_MINI_REQUEST_PC, packet.requested_animation) == 0x7f2);
 STATIC_ASSERT(sizeof(DEFAULT_ANIMATION_MINI_REQUEST_PC) == 0x7f4);
 extern i16 DefaultAnimationJabbaIdPc, DefaultAnimationLeiaSlaveIdPc;
 extern i16 DefaultAnimationLamaSuIdPc, DefaultAnimationTaunWeIdPc;
@@ -765,7 +765,7 @@ void __cdecl Animate_CHARACTER(GAMEOBJECT *object) {
                    object->anim_packet.requested_animation == 1)
             object->anim_packet.requested_animation = 15;
     }
-    STUBBED_NAMED(0x00415370); /* Native4a9175 UpdateCharacterIdle(object), authored supplier not activated yet. */
+    UpdateCharacterIdle(object);
     animation = object->anim_packet.requested_animation;
     if (animation == 5 || ((object->character_data->model_flags & 0x20) != 0 &&
                            (animation == 0x28 || animation == 0x4b || animation == 0x4c)))
@@ -776,18 +776,20 @@ void __cdecl Animate_CHARACTER(GAMEOBJECT *object) {
         model_id = apicharsys->playermodelids[AreaExtraTargetId7f17ccPc];
         if (model_id == -1)
             return;
-        mini->requested_animation =
+        mini->packet.requested_animation =
             animation != -1 && apicharsys->models[model_id].model_data_b[animation] != NULL ? animation : 1;
-        STUBBED_NAMED(0x0062f0a0); /* Native4a9256 UpdateMiniAnimPacket(model,&mini,spill(FRAMETIME*30),0,FRAMETIME). */
+        UpdateMiniAnimPacket(&apicharsys->models[model_id], &mini->packet, (f32)((f64)FRAMETIME * 30.0), 0.0f,
+                             FRAMETIME);
     } else if (object->suit != NULL && (object->suit->flags & 2) != 0) {
         model_id = apicharsys->playermodelids[AreaExtraTargetId7f17bcPc];
         if (model_id == -1)
             return;
-        mini->requested_animation = object->character_context == 0x4f                                      ? 45
-                                    : object->character_context == 0 && object->action_movement_state == 4 ? 33
-                                    : object->character_context == 14                                      ? 34
-                                                                                                           : 44;
-        STUBBED_NAMED(0x0062f0a0); /* Native4a930e same five-argument void update. */
+        mini->packet.requested_animation = object->character_context == 0x4f                                      ? 45
+                                           : object->character_context == 0 && object->action_movement_state == 4 ? 33
+                                           : object->character_context == 14                                      ? 34
+                                                                                                                  : 44;
+        UpdateMiniAnimPacket(&apicharsys->models[model_id], &mini->packet, (f32)((f64)FRAMETIME * 30.0), 0.0f,
+                             FRAMETIME);
     }
 }
 

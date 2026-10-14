@@ -141,6 +141,7 @@ address    , symbol                                                         , si
 0x41f6d0,_ActivateCharacter,529,"GAMEOBJECT * __cdecl(char *, NUVEC *, i32)"
 0x41f8f0,_AddCreature,67,"GAMEOBJECT * __cdecl(i32,i32)"
 0x41f940,_Players_Init,1355,void __cdecl(void)
+0x41fe90,_InitAICreatures,526,void __cdecl(AISYS_PC *)
 0x4200c0,?PcControlPrimColourPc@@YAXI@Z,108,
 0x420220,?Register@PC_CONTROL_SCREEN_PC@@QAEXPAUPC_CONTROL_CONFIG_PC@@PATvariptr_u@@1@Z,247,
 0x420330,?HashConfiguration@PC_CONTROL_SCREEN_PC@@QAEHXZ,142,
@@ -345,6 +346,8 @@ address    , symbol                                                         , si
 0x43ae00,_CreatureInteractionOrbitPc,311,
 0x43af40,_GameCreatureInteraction2D,1217,"void __cdecl(AISYS_PC *, i32, APIOBJECT_PC **, i32 *, f32)"
 0x0043b410,_GameAIWallShufflePc,790,
+0x43b730,_GameAIResetPathConnectionsPc,137,void __cdecl(AISYS_PC *)
+0x43b7c0,_GameAIUpdateAreaPc,376,
 0x0043b940 , _GameAISysStartFrame                                           , 467   , void __cdecl (AISYS *)
 0x43bb20,_CheckPosAIArea,223,
 0x43bf70,_GlobalCharacterRender,279,
@@ -384,12 +387,22 @@ address    , symbol                                                         , si
 0x00440120 , _GetNamedGameObject                                            , 34    , "GAMEOBJECT *__cdecl (void *, char *)"
 0x440150   , _PartyMemberInWay                                              , 312   , "i32 __cdecl (GAMEOBJECT *, GAMEOBJECT *)"
 0x440290,_LocalGetRandomLocator,469,
+0x440470,_LocalGetNearestLocator,457,"AILOCATOR_PC *__cdecl(void *, i32, f32, NUVEC *, f32, i32, f32, f32)"
+0x440640,_FirstSpawnSetLocator,31,
 0x440660,?GizActionNextLocator@@YAXPAUAISYS_PC@@PAUAILOCATORSET_PC@@HHHPAUAPIOBJECT_PC@@@Z,424,
+0x4408b0,_Condition_ObstacleAtEndInit,39,"void *__cdecl(AISYS_PC *,char *,AISCRIPT_PC *)"
+0x440940,_Condition_ObstacleAtEnd,43,"f32 __cdecl(AISYS_PC *,AISCRIPTPROCESS_PC *,AIPACKET_PC *,char *,void *)"
 0x440ad0,_Condition_IsVisible,95,"f32 __cdecl (AISYS_PC *, AISCRIPTPROCESS_PC *, AIPACKET_PC *, char *, void *)"
+0x440c00,_Condition_CategoryIsInit,38,"void *__cdecl(AISYS_PC *,char *,AISCRIPT_PC *)"
+0x440c30,_Condition_CategoryIs,49,"f32 __cdecl(AISYS_PC *,AISCRIPTPROCESS_PC *,AIPACKET_PC *,char *,void *)"
 0x440c70,_Condition_PlayerCategoryIs,38,
+0x440ca0,_Condition_IAmAPartyCharacter,33,"f32 __cdecl(AISYS_PC *,AISCRIPTPROCESS_PC *,AIPACKET_PC *,char *,void *)"
+0x440df0,_Condition_GameOpponentIsAThreatPc,42,"f32 __cdecl(AISYS_PC *,AISCRIPTPROCESS_PC *,AIPACKET_PC *,char *,void *)"
+0x440e20,_Condition_CanFightLikeAJedi,42,"f32 __cdecl(AISYS_PC *,AISCRIPTPROCESS_PC *,AIPACKET_PC *,char *,void *)"
 0x441070,_Condition_EitherPlayerUsingForce,52,"f32 __cdecl (AISYS_PC *, AISCRIPTPROCESS_PC *, AIPACKET_PC *, char *, void *)"
 0x441a30,_Condition_EitherPlayerLocatorRangeXZ,195,"f32 __cdecl (AISYS_PC *, AISCRIPTPROCESS_PC *, AIPACKET_PC *, char *, void *)"
 0x441f90,_Condition_IsSetAliveInit,53,"void *__cdecl (AISYS_PC *, char *, AISCRIPT_PC *)"
+0x442000,_Condition_NumInSetAlive,43,"f32 __cdecl(AISYS_PC *,AISCRIPTPROCESS_PC *,AIPACKET_PC *,char *,void *)"
 0x4422c0,_Condition_NumForceObjectsInit,67,"void *__cdecl (AISYS_PC *, char *, AISCRIPT_PC *)"
 0x4423f0,_Condition_LastLevelInit,102,"void *__cdecl (AISYS_PC *, char *, AISCRIPT_PC *)"
 0x442790,_Condition_SockDistanceToPlayer,132,"f32 __cdecl (AISYS_PC *, AISCRIPTPROCESS_PC *, AIPACKET_PC *, char *, void *)"
@@ -397,8 +410,14 @@ address    , symbol                                                         , si
 0x4428b0,_Condition_SockXDistanceToPlayer,189,"f32 __cdecl (AISYS_PC *, AISCRIPTPROCESS_PC *, AIPACKET_PC *, char *, void *)"
 0x442bd0,_Condition_MaulShouldRunAway,261,
 0x443050,_Condition_TakenOver,156,"f32 __cdecl (AISYS_PC *, AISCRIPTPROCESS_PC *, AIPACKET_PC *, char *, void *)"
+0x4436d0,_Condition_ShopActive,16,"f32 __cdecl(AISYS_PC *,AISCRIPTPROCESS_PC *,AIPACKET_PC *,char *,void *)"
+0x4436e0,_Condition_SideInit,140,"void *__cdecl(AISYS_PC *,char *,AISCRIPT_PC *)"
+0x443770,_Condition_Side,92,"f32 __cdecl(AISYS_PC *,AISCRIPTPROCESS_PC *,AIPACKET_PC *,char *,void *)"
 0x443bf0,_Condition_AngleAboutMyLocatorToPlayerInit,36,
 0x443c20,_Condition_AngleAboutMyLocatorToPlayer,219,"f32 __cdecl (AISYS_PC *, AISCRIPTPROCESS_PC *, AIPACKET_PC *, char *, void *)"
+0x443dc0,_Condition_MusicOn,15,"f32 __cdecl(AISYS_PC *,AISCRIPTPROCESS_PC *,AIPACKET_PC *,char *,void *)"
+0x443dd0,_Condition_CharacterLoadedInit,21,"void *__cdecl(AISYS_PC *,char *,AISCRIPT_PC *)"
+0x443df0,_Condition_CharacterLoaded,27,"f32 __cdecl(AISYS_PC *,AISCRIPTPROCESS_PC *,AIPACKET_PC *,char *,void *)"
 0x443ef0,_Condition_InSameTriggerAreaAsNearestPlayer,180,"f32 __cdecl (AISYS_PC *, AISCRIPTPROCESS_PC *, AIPACKET_PC *, char *, void *)"
 0x443fc0   , _Action_SetTakeOverTarget                                       , 739   , "i32 __cdecl (AISYS_PC *, AISCRIPTPROCESS_PC *, AIPACKET_PC *, char **, i32, i32, f32)"
 0x4442b0   , _Action_ClearTakeOverTarget                                     , 52    , "i32 __cdecl (AISYS_PC *, AISCRIPTPROCESS_PC *, AIPACKET_PC *, char **, i32, i32, f32)"
@@ -455,6 +474,8 @@ address    , symbol                                                         , si
 0x449cc0,_Action_FormationMove,33,"i32 __cdecl (AISYS_PC *, AISCRIPTPROCESS_PC *, AIPACKET_PC *, char **, i32, i32, f32)"
 0x00449cf0,_Action_SetFormationCommander,282,"i32 __cdecl (AISYS_PC *, AISCRIPTPROCESS_PC *, AIPACKET_PC *, char **, i32, i32, f32)"
 0x00449e10 , _Action_RemoveThrownForceObjects                               , 75    , "i32 __cdecl (AISYS_PC *, AISCRIPTPROCESS_PC *, AIPACKET_PC *, char **, i32, i32, f32)"
+0x449e60,_LocalGetRandomSpawnZipUp,119,
+0x449ee0,_FindSpawnZipUp,90,ZIPUP_s *__cdecl(char *)
 0x449f40,_Action_Launch,47,"i32 __cdecl (AISYS_PC *, AISCRIPTPROCESS_PC *, AIPACKET_PC *, char **, i32, i32, f32)"
 0x449f70,_Action_SelectRandomSpline,538,"i32 __cdecl (AISYS_PC *, AISCRIPTPROCESS_PC *, AIPACKET_PC *, char **, i32, i32, f32)"
 0x44a190,_Action_CreateSplineCreatures,2346,
@@ -1053,9 +1074,15 @@ address    , symbol                                                         , si
 0x491170,_Levers_Reset,207,
 0x491240,_Levers_RegisterGizmo,288,struct addgizmotype_pc_s * __cdecl(i32)
 0x491380,_LSW_Hub_InitAI,481,
+0x491570,_LSW_Hub_ResetAI,39,void __cdecl(WORLDINFO *)
 0x4915c0,_Hub_Outside,40,i32 __cdecl(void)
 0x491620,_Hub_MakeListCharactersAvailable,311,
+0x491760,_HubChooseRandomCharacterPc,155,
+0x491800,_Hub_GetRandomCharType,56,i32 __cdecl(void)
+0x491840,_HubGoneThroughDoorPc,595,
 0x491aa0,_LSW_Hub_UpdateAI,130,
+0x491b30,_Condition_InHubAreaInit,56,"void *__cdecl(AISYS_PC *,char *,AISCRIPT_PC *)"
+0x491b70,_Condition_InHubArea,19,"f32 __cdecl(AISYS_PC *,AISCRIPTPROCESS_PC *,AIPACKET_PC *,char *,void *)"
 0x491d50,?NuMainUpdateFrame@@YAXPAUWORLDINFO_s@@PAH@Z,2715,"void __cdecl (WORLDINFO *, i32 *)"
 0x4927f0,?NuMainRenderWorld@@YAXPAUWORLDINFO_s@@@Z,845,void __cdecl (WORLDINFO *)
 0x00492b40 , _NuMain                                                        , 4332  , "i32 __cdecl (i32, char **)"
@@ -1305,10 +1332,18 @@ address    , symbol                                                         , si
 0x4b7190,_DrawAutoSaveIcon,11,
 0x4b71a0,_UpdateStats,1955,
 0x004b79a0,_DrawPlayerIconPrompts,1846,"void(i32,i32,f32,i32,i32,i32,i32,i32,i32,f32,i32,i32,i32,i32)"
+0x4b80e0,_CoinTotal_Draw,562,"void __cdecl (i32,f32,f32,i32,f32,i32,i32,i32)"
+0x4b8320,_DrawSuperStoryTimePc,432,"static void (f32,f32,f32,i32,i32)"
+0x4b84d0,_DrawCoinTotalPc,530,"static void (i32,i32); source ECX plus stack hide flag"
 0x004b86f0,?HubDrawBuildUpBarPc@@YAXMMHHMMMH@Z,444,
+0x4b88b0,_DrawHitPointsPc,1084,
 0x004b8cf0,?HubDrawArcadeScorePc@@YAXMHHMPAH@Z,718,
 0x004b8fc0 , _InDoubleScoreZone                                             , 116   , i32 __cdecl (GAMEOBJECT *)
+0x4b9040,_DoubleScoreAlpha,79,f32 __cdecl (void)
+0x4b9090,_DrawInDoubleScoreZone,122,void __cdecl (f32)
+0x4b9110,_DrawPlayerHudPc,4213,void __cdecl (i32)
 0x4ba190,_Panel_Clear,87,
+0x4ba1f0,_DrawBossHitPointsPc,211,static i32 (GAMEOBJECT *); boss ESI
 0x4ba2d0,_DrawBossHitPoints,10,
 0x004badd0 , _InitPanel                                                     , 106   , void __cdecl (i32)
 0x4bae40,_DrawPanel,3501,void __cdecl (void)
@@ -2216,6 +2251,12 @@ address    , symbol                                                         , si
 0x005149a0 , _Condition_Random                                              , 5     , "f32 __cdecl (void *, void *, void *, char *, void *)"
 0x5149b0,_Condition_AlwaysTrueInit,49,
 0x005149f0 , _Condition_AlwaysTrue                                          , 13    , "f32 __cdecl (void *, void *, void *, char *, void *)"
+0x514a00,_Condition_LocatorRange,79,"f32 __cdecl(AISYS_PC *,AISCRIPTPROCESS_PC *,AIPACKET_PC *,char *,void *)"
+0x514ae0,_Condition_GotLocator,19,"f32 __cdecl(AISYS_PC *,AISCRIPTPROCESS_PC *,AIPACKET_PC *,char *,void *)"
+0x514c30,_Condition_PlayerRange,73,"f32 __cdecl(AISYS_PC *,AISCRIPTPROCESS_PC *,AIPACKET_PC *,char *,void *)"
+0x5151c0,_Condition_GotOpponent,23,"f32 __cdecl(AISYS_PC *,AISCRIPTPROCESS_PC *,AIPACKET_PC *,char *,void *)"
+0x515210,_Condition_OpponentOnSamePath,49,"f32 __cdecl(AISYS_PC *,AISCRIPTPROCESS_PC *,AIPACKET_PC *,char *,void *)"
+0x515250,_Condition_OpponentRange,31,"f32 __cdecl(AISYS_PC *,AISCRIPTPROCESS_PC *,AIPACKET_PC *,char *,void *)"
 0x5157d0   , _Action_SetState                                               , 177   , "i32 __cdecl (AISYS_PC *, AISCRIPTPROCESS_PC *, AIPACKET_PC *, char **, i32, i32, f32)"
 0x515890   , _Action_ResetTimer                                             , 269   , "i32 __cdecl (AISYS_PC *, AISCRIPTPROCESS_PC *, AIPACKET_PC *, char **, i32, i32, f32)"
 0x5159a0   , _Action_Idle                                                   , 499   , "i32 __cdecl (AISYS_PC *, AISCRIPTPROCESS_PC *, AIPACKET_PC *, char **, i32, i32, f32)"
@@ -2257,6 +2298,7 @@ address    , symbol                                                         , si
 0x517220,_AIPathCalcExtents,393,void __cdecl(AIPATH_PC *)
 0x005173b0 , _AIPathCheckExtents                                            , 123   , "i32 __cdecl (AIPATH_PC *, NUVEC *)"
 0x517430,_AISysLoadPathsPc,2967,
+0x517fd0,_CreateAIGroup,105,"AIGROUP_PC * __cdecl(AISYS_PC *, i32, f32, f32, f32)"
 0x00518040 , _AddToAIGroup                                                  , 401   , "void __cdecl (AIGROUP_PC *, APIOBJECT_PC *)"
 0x5181e0,_DestroyAIGroup,25,void __cdecl(AIGROUP_PC *)
 0x00518210 , _AISysProcess                                                  , 854   , "void __cdecl (AISYS_PC *, APIOBJECT_PC *, APIOBJECT_PC *)"
@@ -2355,6 +2397,7 @@ address    , symbol                                                         , si
 0x0052c880 , _AIScriptProcessStateConditions                                , 587   , ""
 0x0052caf0 , _AIScriptProcessReferences                                     , 401   , ""
 0x0052cc90 , _AIScriptProcess                                               , 989   , "void __cdecl (AISYS_PC *, APIOBJECT_PC *, AIPACKET_PC *, AISCRIPTPROCESS_PC *, f32)"
+0x52d070,_Condition_LocatorRangeInit,26,"void *__cdecl(AISYS_PC *,char *,AISCRIPT_PC *)"
 0x52d220   , _Action_FaceLocator                                            , 240   , "i32 __cdecl (AISYS_PC *, AISCRIPTPROCESS_PC *, AIPACKET_PC *, char **, i32, i32, f32)"
 0x52d310   , _Action_SetLocator                                             , 506   , "i32 __cdecl (AISYS_PC *, AISCRIPTPROCESS_PC *, AIPACKET_PC *, char **, i32, i32, f32)"
 0x52d510   , _Action_SetRespawnLocator                                      , 224   , "i32 __cdecl (AISYS_PC *, AISCRIPTPROCESS_PC *, AIPACKET_PC *, char **, i32, i32, f32)"
@@ -3150,6 +3193,7 @@ address    , symbol                                                         , si
 0x56e100,_Cheat_CheckFlags,36,
 0x56e130,_Cheat_SetOn,42,"void __cdecl(i32,i32,i32)"
 0x0056e160 , _Cheat_IsOn                                                    , 98    , i32 __cdecl (i32)
+0x56e2a0,_Cheat_MultiplyScorePc,60,u32 __cdecl (u32)
 0x56e2e0,_Cheats_TurnOff,62,void __cdecl(i32)
 0x56e320,_Cheat_StartPowerUp,308,"void __cdecl (NUVEC *,GAMEOBJECT *)"
 0x0056e460 , _Cheat_PowerUpActive                                           , 110   , i32 __cdecl (i32)
@@ -3184,6 +3228,7 @@ address    , symbol                                                         , si
 0x56fcb0,_GizmoPickups_ResetPc,477,"void __cdecl(void *, void *, void *)"
 0x56fe90,_GizmoPickup_GetPos,15,NUVEC * __cdecl(GIZMO_PC *)
 0x56fea0,_GizmoPickups_Load,309,
+0x570030,_GizmoPickup_NumberOfTypePc,82,"i32 __cdecl (WORLDINFO *,i32,u8)"
 0x570120,_GizmoPickups_PostLoad,1,"void __cdecl(void *, void *)"
 0x570130,_GizmoPickup_InBox,323,
 0x570280,_GizmoPickups_CollideListPc,814,
@@ -4135,6 +4180,7 @@ address    , symbol                                                         , si
 0x005ab020 , _GetGizAIMessage                                               , 34    , "f32 __cdecl (GIZAIMESSAGESYS *, const char *, GIZAIMESSAGE *)"
 0x005ab050 , _SetGizAIMessage                                               , 35    , "GIZAIMESSAGE *__cdecl (GIZAIMESSAGESYS *, const char *, f32, GIZAIMESSAGE *)"
 0x5ab0a0,_AIPathCnxHelperSysCreate,73,"void * __cdecl (VARIPTR *, VARIPTR *, i32)"
+0x5ab0f0,_AIPathCnxHelperSysReset,66,"void __cdecl(WORLDINFO *, AI_HELPER_SYSTEM_PC *)"
 0x5ab140,_AIPathCnxHelperSys_AddHelper,153,
 0x005ab2d0,_GizTurretClearPc,185,
 0x005ab390,_GizTurretReadAnimSetDataPc,62,"void __cdecl(GAMEANIMOBJ *, u8)"
@@ -5564,7 +5610,8 @@ address    , symbol                                                         , si
 0x62e760,_UpdateAnimTimer,591,
 0x62e9b0,_UpdateAnimPacket,1530,"void __cdecl(CHARACTER_MODEL_LAYERS_PC *,ANIMPACKET_PC *,f32,f32,f32,f32)"
 0x62efb0,_AnimPacketMiniToFullPc,114,"void __cdecl(DRAW_ATTACHMENTS_MINI_PC*,ANIMPACKET_PC*)"
-0x62f0a0,_UpdateMiniAnimPacket,85,
+0x62f030,_AnimPacketFullToMiniPc,97,"void __cdecl(ANIMPACKET_PC*,DRAW_ATTACHMENTS_MINI_PC*)"
+0x62f0a0,_UpdateMiniAnimPacket,85,"void __cdecl(CHARACTER_MODEL_LAYERS_PC*,DRAW_ATTACHMENTS_MINI_PC*,f32,f32,f32)"
 0x62f100,_AnimBlendingFromTo,76,"i32 __cdecl(CHARACTER_MODEL_LAYERS_PC *, ANIMPACKET_PC *, i32, i32)"
 0x62f150,_AnimPlaying,68,"f32 *__cdecl (ANIMPACKET_PC *, i32, i32, i32)"
 0x0062f1a0 , _CurrentAnim                                                   , 20    , i32 __cdecl (ANIMPACKET_PC *)
@@ -5583,7 +5630,7 @@ address    , symbol                                                         , si
 0x62fac0,_APITransparentCharDraw,291,"void __cdecl(NUHGOBJ_EVAL_PC *,NUMTX *,i32,i16 *,NUMTX *,DWA_WEIGHT_BLOCK_PC **,i32)"
 0x62fbf0,_APIDrawCharacterModel,2690,"i32 __cdecl(CHARACTER_MODEL_LAYERS_PC *,APICHARACTERDATA *,ANIMPACKET_PC *,NUMTX *,NUMTX *,NUMTX *,NUVEC *,NUMTX *,GAMEOBJECT *,u32,NUHGOBJ_JOINT_OVERRIDE_PC *,i32,i32,f32,NUMTX *,void(__cdecl *)(void *,GAMEOBJECT *,i32,i32),APIDEBRISSYS_PC *)"
 0x630680,_InModelList,82,"i32 __cdecl(APICHARACTERMODELLIST *,i32,i32 *)"
-0x6306e0,_SetActionInfo,20,
+0x6306e0,_SetActionInfo,20,"void __cdecl(API_ACTION_INFO_PC*,API_EXTRA_ACTION_PC*)"
 0x00630740 , _ActionFromName                                                , 127   , i32 __cdecl (const char *)
 0x6307c0,_ConfigureCharacterList,892,"CHARACTERDATA_PC *__cdecl(char *,VARIPTR *,VARIPTR *,i32,i32 *,i32,PLAYERCHARACTERCONFIG_PC **)"
 0x00630b40,_APICharacterSysInit,541,"void __cdecl (VARIPTR *, VARIPTR, i32, i32, i32, i32, APICHARACTERDATA *, void (__cdecl *)(APIOBJECT_PC *))"
@@ -8762,6 +8809,7 @@ address    , symbol                                                         , si
 0x751e7c,??_C@_04DLPMPBEA@fett?$AA@,5,const char[5]
 0x751e84,??_C@_0N@MFECPDEM@stormtrooper?$AA@,13,const char[13]
 0x751e94   , _PCContextName_ZipUp                                           , 6     , const char [6]
+0x751e94,??_C@_05FJHNFFMA@ZipUp?$AA@,6,char []
 0x751ec0   , _PCContextName_Teleport                                        , 9     , const char [9]
 0x751ee8,??_C@_04NMIHPMCJ@Jedi?$AA@,,const char[]
 0x00751ee8 , _AreaFixUpName_Jedi                                            , 8     , char[8]
@@ -9960,6 +10008,7 @@ address    , symbol                                                         , si
 0x755d80,_GizmoRegistryAINamePc,12,const char[12]
 0x00755d8c , ??_C@_05KOHFLOFG@Level?$AA@                                    , 6     , const char[6]
 0x00755d8c , _AIScriptKeywordLevel                                          , 6     , const char[6]
+0x755d94,_GameAILevelScriptFormatPc,8,const char[8]
 0x755ee4,_GizActionNameGoToNewLevelPc,13,const char[13]
 0x755ef4,_GizActionNameCompleteLevelPc,14,const char[14]
 0x75600c   , _PCContextName_ThrowDetonator                                  , 15    , const char [15]
@@ -10010,6 +10059,7 @@ address    , symbol                                                         , si
 0x7575bc,??_C@_06MAFFGDO@Active?$AA@,,const char[7]
 0x007575d8 , __real@3fc0000000000000                                        , 8     , const f64
 0x007575e0,_AIConditionMySetNamePc,6,const char[6]
+0x7575e0,??_C@_05HCFAHKCN@myset?$AA@,6,char []
 0x757648,??_C@_07OCKDJMPO@inrange?$AA@,,const char[8]
 0x757650,??_C@_09ONPKMKJM@throwable?$AA@,,const char[10]
 0x00757670,_AIConditionTakeoverTargetNamePc,15,const char[15]
@@ -10053,10 +10103,12 @@ address    , symbol                                                         , si
 0x7577b0   , ??_C@_09MNKJOHH@character?$AA@                                 , 10    , const char[10]
 0x007577b0 , _AreaConfigKeyword_character                                   , 10    , const char[10]
 0x007577bc , _AIGameStateName                                               , 7     , const char[7]
+0x7577bc,??_C@_06ELFLINKD@state?$DN?$AA@,7,char []
 0x7577c4,??_C@_05MAJJAKPI@FALSE?$AA@,,const char[6]
 0x007577c4 , _AIActionFalseName                                             , 6     , const char[6]
 0x007577cc , _AILocatorPersonalFormat                                       , 6     , const char[6]
 0x007577d4 , _AILocatorIndexedFormat                                        , 6     , const char[6]
+0x7577d4,_HubAILocatorFormatPc,6,const char[6]
 0x7577dc,_AITransferLiteral7577dc,8,const char[8]
 0x007577e4 , _AIGameNearestName                                             , 8     , const char[8]
 0x7577e4,??_C@_07NHJEPDMH@nearest?$AA@,8,const char[]
@@ -10116,6 +10168,7 @@ address    , symbol                                                         , si
 0x007579bc , _AICombatCircleName                                            , 7     , const char[7]
 0x007579c4 , _AICombatNoFireInMiniCutName                                   , 19    , const char[19]
 0x007579d8 , _AICombatOffscreenName                                         , 10    , const char[10]
+0x7579d8,??_C@_09GMAMNFFI@offscreen?$AA@,10,char []
 0x007579e4 , _AICombatStaticName                                            , 7     , const char[7]
 0x007579ec , _AICombatMinimumRangeName                                      , 10    , const char[10]
 0x007579f8 , _AIGameFireRangeName                                           , 10    , const char[10]
@@ -10276,6 +10329,7 @@ address    , symbol                                                         , si
 0x758194,_AITransferLiteral758194,11,const char[11]
 0x7581a0,_AITransferLiteral7581a0,8,const char[8]
 0x007581a8 , _AIPathLocatorName                                             , 9     , const char[9]
+0x7581a8,??_C@_08IBBGPEKL@locator?$DN?$AA@,9,char []
 0x007581b4 , _AIActionMaxTimeName                                           , 8     , const char[8]
 0x7581b4,??_C@_07JHKGEBG@maxtime?$AA@,8,const char[]
 0x007581bc , _AIActionMinTimeName                                           , 8     , const char[8]
@@ -10329,6 +10383,7 @@ address    , symbol                                                         , si
 0x00758438,_AIActionTorpedoPrefixPc,9,const char[9]
 0x758460,??_C@_01NEMOKFLO@?$DN?$AA@,,
 0x00758464 , _AIScriptParamPrefix                                           , 6     , const char[6]
+0x75846c,??_C@_0N@GACGPICE@locator_set?$DN?$AA@,13,char []
 0x75848c,??_C@_0BB@PGCHANHM@ForceLightningLp?$AA@,17,const char[17]
 0x007584a8 , _AIExpressionMaxName                                           , 4     , const char [4]
 0x007584ac,_AIActionNumName,4,const char[4]
@@ -10345,10 +10400,39 @@ address    , symbol                                                         , si
 0x00758518,_AIActionCanBeStolenNamePc,12,const char[12]
 0x00758524,_AIActionTorpedoNamePc,8,const char[8]
 0x0075852c , __real@3f8ccccd                                                ,       ,
+0x758530,??_C@_0M@EFIMIGKI@capability?$DN?$AA@,12,char []
+0x75853c,??_C@_0BB@JHEFNHEN@lose_capability?$DN?$AA@,17,char []
 0x758550,_PlayerActionNamePc_178,11,const char[11]
+0x758550,??_C@_0L@BDHDCCIM@ballooning?$AA@,11,char []
+0x75855c,??_C@_06PFEONBIE@no_gun?$AA@,7,char []
+0x758564,??_C@_0N@DPGDHOGI@CheapAsChips?$AA@,13,char []
+0x758574,??_C@_0N@NPGEFLKO@fall_chance?$DN?$AA@,13,char []
+0x758584,??_C@_09ENFGDPBG@on_screen?$AA@,10,char []
+0x758590,??_C@_0L@EBLKANKA@off_screen?$AA@,11,char []
+0x75859c,??_C@_0P@PLJBJHHG@nearest_player?$AA@,15,char []
+0x7585ac,??_C@_07BHHGKHBN@zipdown?$AA@,8,char []
+0x7585b4,??_C@_0BE@IBLLIILO@dont_set_on_surface?$AA@,20,char []
+0x7585c8,??_C@_0M@JJNHPCFJ@not_grouped?$AA@,12,char []
+0x7585d4,??_C@_0N@LGJJLOEJ@crate_delay?$DN?$AA@,13,char []
+0x7585e4,??_C@_0O@HKJCNPNN@crate_height?$DN?$AA@,14,char []
+0x7585f4,??_C@_07EOOPAAHM@nacross?$AA@,8,char []
+0x7585fc,??_C@_07GOKJEFCD@zoffset?$AA@,8,char []
 0x758604,??_C@_07OACGECMA@yoffset?$AA@,8,const char[8]
 0x75860c,??_C@_07CMIMECFO@xoffset?$AA@,8,const char[8]
+0x758614,??_C@_08IBCNJGOD@zspacing?$AA@,9,char []
+0x758620,??_C@_08KPNLLOGF@xspacing?$AA@,9,char []
+0x75862c,??_C@_0M@HCLEKNEH@CANTINABAND?$AA@,12,char []
+0x758638,??_C@_05COAMLBPD@JABBA?$AA@,6,char []
+0x758640,??_C@_06IKJKODGB@Barman?$AA@,7,char []
+0x758648,??_C@_0BC@LNBNMKHN@type?$DNgeneric_goon?$AA@,18,char []
+0x75865c,??_C@_0P@DNJEINCE@type?$DNrandommap?$AA@,15,char []
 0x75866c   , ??_C@_05GGJMBGBG@zipup?$AA@                                    , 6     , const char[6]
+0x758674,??_C@_06HHEABGA@maxdy?$DN?$AA@,7,char []
+0x75867c,??_C@_06EIHOBCP@mindy?$DN?$AA@,7,char []
+0x758684,??_C@_0BF@DFCEFPMB@max_range_to_player?$DN?$AA@,21,char []
+0x75869c,??_C@_09ODLGHJE@mylocator?$AA@,10,char []
+0x7586a8,??_C@_0BJ@NHEFCPEF@dont_inherit_locator_set?$AA@,25,char []
+0x7586c4,??_C@_0BD@PNDINJIL@start_locator_set?$DN?$AA@,19,char []
 0x007586e0 , _NuTimeBarHorizontalTop                                        , 8     , const f64
 0x7586e0,__real@3fc3333340000000,8,const f64
 0x007586e8 , __real@3fb70a3d80000000                                        , 8     , const f64
@@ -10464,6 +10548,7 @@ address    , symbol                                                         , si
 0x758c8c,_PowerUpLoopSfx_PC,18,const char[18]
 0x758ca0,_ScoreCounterName,8,char[8]
 0x758ca8,_PickupMultiplierFormat,4,const char[4]
+0x758ca8,??_C@_03PKIJPMHF@x?$CFi?$AA@,4,const char[4]
 0x758cac,_CoinDropGoldSfx_PC,10,const char[10]
 0x758cb8,_CoinDropSilverSfx_PC,10,const char[10]
 0x758cc4,_PowerUpBounceSfx_PC,21,const char[21]
@@ -11126,6 +11211,24 @@ address    , symbol                                                         , si
 0x75ac48,??_C@_0N@HBKFFHGC@Down?$CIGoodie?$CJ?$AA@,,const char[]
 0x75ac58,??_C@_0N@DLNNCJI@Down?$CIBaddie?$CJ?$AA@,,const char[]
 0x75ac68,??_C@_05HKDEIBIJ@Lever?$AA@,,const char[6]
+0x75ac70,_HubAIAreaNamePc9,7,const char[7]
+0x75ac78,_HubAIAreaNamePc8,6,const char[6]
+0x75ac80,_HubAIAreaNamePc7,9,const char[9]
+0x75ac8c,_HubAIAreaNamePc6,9,const char[9]
+0x75ac98,_HubAIAreaNamePc5,9,const char[9]
+0x75aca4,_HubAIAreaNamePc4,9,const char[9]
+0x75acb0,_HubAIAreaNamePc3,9,const char[9]
+0x75acbc,_HubAIAreaNamePc2,9,const char[9]
+0x75acc8,_HubAIAreaNamePc1,9,const char[9]
+0x75acd4,_HubAIAreaNamePc0,9,const char[9]
+0x75ace0,_HubAIServePlayerPc,12,const char[12]
+0x75acec,_HubAICounterBFormatPc,12,const char[12]
+0x75acf8,_HubAICounterAFormatPc,12,const char[12]
+0x75ad04,_HubAIServingCustomerPc,16,const char[16]
+0x75ad14,_HubAIAreaMessagePc,5,const char[5]
+0x75ad1c,_HubAIBandDoorPc,14,const char[14]
+0x75ad2c,_HubAITableFormatPc,9,const char[9]
+0x75ad38,_HubAITableAreaFormatPc,11,const char[11]
 0x75ad44,??_C@_04MHCFDMKN@indy?$AA@,,const char[5]
 0x75ad4c,??_C@_09LMCJBFCN@demointro?$AA@,,const char[10]
 0x75ad64,_SaveIconFilenamePc,9,const char[9]
@@ -11146,6 +11249,37 @@ address    , symbol                                                         , si
 0x75ae18,??_C@_06IDJEFOMG@?$FL?$FLlb?$FN?$FN?$AA@,7,char []
 0x75ae20,??_C@_0L@ONAOABPC@?$HO0?$CI?$HO2?$CFs?$HO0?$CJ?$AA@,,const char[]
 0x75ae2c,__real@3f066666,,const f32
+0x0075ae30,_PlayerExtraActionNamePc_31,17,const char[17]
+0x0075ae44,_PlayerExtraActionNamePc_30,9,const char[9]
+0x0075ae50,_PlayerExtraActionNamePc_29,19,const char[19]
+0x0075ae64,_PlayerExtraActionNamePc_28,26,const char[26]
+0x0075ae80,_PlayerExtraActionNamePc_27,17,const char[17]
+0x0075ae94,_PlayerExtraActionNamePc_26,14,const char[14]
+0x0075aea4,_PlayerExtraActionNamePc_25,17,const char[17]
+0x0075aeb8,_PlayerExtraActionNamePc_24,13,const char[13]
+0x0075aec8,_PlayerExtraActionNamePc_23,12,const char[12]
+0x0075aed4,_PlayerExtraActionNamePc_22,16,const char[16]
+0x0075aee4,_PlayerExtraActionNamePc_21,11,const char[11]
+0x0075aef0,_PlayerExtraActionNamePc_19,9,const char[9]
+0x0075aefc,_PlayerExtraActionNamePc_18,6,const char[6]
+0x0075af04,_PlayerExtraActionNamePc_17,13,const char[13]
+0x0075af14,_PlayerExtraActionNamePc_16,7,const char[7]
+0x0075af1c,_PlayerExtraActionNamePc_15,14,const char[14]
+0x0075af2c,_PlayerExtraActionNamePc_14,7,const char[7]
+0x0075af34,_PlayerExtraActionNamePc_13,9,const char[9]
+0x0075af40,_PlayerExtraActionNamePc_12,6,const char[6]
+0x0075af48,_PlayerExtraActionNamePc_11,7,const char[7]
+0x0075af50,_PlayerExtraActionNamePc_10,6,const char[6]
+0x0075af58,_PlayerExtraActionNamePc_09,6,const char[6]
+0x0075af60,_PlayerExtraActionNamePc_08,8,const char[8]
+0x0075af68,_PlayerExtraActionNamePc_07,6,const char[6]
+0x0075af70,_PlayerExtraActionNamePc_06,7,const char[7]
+0x0075af78,_PlayerExtraActionNamePc_05,6,const char[6]
+0x0075af80,_PlayerExtraActionNamePc_04,6,const char[6]
+0x0075af88,_PlayerExtraActionNamePc_03,13,const char[13]
+0x0075af98,_PlayerExtraActionNamePc_02,11,const char[11]
+0x0075afa4,_PlayerExtraActionNamePc_01,6,const char[6]
+0x0075afac,_PlayerExtraActionNamePc_00,5,const char[5]
 0x75afb4,_PlayerActionNamePc_232,4,const char[4]
 0x75afb8,_PlayerActionNamePc_231,5,const char[5]
 0x75afc0,_PlayerActionNamePc_230,5,const char[5]
@@ -11544,6 +11678,7 @@ address    , symbol                                                         , si
 0x75c020,__real@3e8ccccd,4,f32
 0x75c024,??_C@_0L@PPGNKBM@?$FL?$FLaccept?$FN?$FN?$AA@,,char[11]
 0x75c030,__real@4065200000000000,8,f64
+0x75c038,__real@3f8020c5,4,f32
 0x75c03c,??_C@_04FMMAFMGP@?$CI?$CFi?$CJ?$AA@,5,const char[5]
 0x75c044,??_C@_01JLIPDDHJ@?3?$AA@,,
 0x75c044,_PcInputText75c044, ,char[2]
@@ -16998,6 +17133,7 @@ address    , symbol                                                         , si
 0x7faaa8,_TechnoDefaultObjectPc,,i16
 0x7faaac,_LeverOutputDownNamePtrPc,,char *
 0x7fab10,_LeverTypeNamePtrPc,,char *
+0x7fab24,_HubAreaNamesPc,40,const char *[10]
 0x7fabb4,_SaveIconNamePc,,const char *
 0x7fabb8,_SaveUnicodeNamePc,,char[20]
 0x007fac04 , _BGLOAD                                                        , 4     , i32
@@ -17056,6 +17192,7 @@ address    , symbol                                                         , si
 0x7fb778,_PlayerActionInfoListPc,,API_ACTION_INFO_PC[234]
 0x7fbec8,_PlayerBlockActionInfoPc,,void *
 0x7fbecc   , _ApplyGravityContextHoverHeight                                , 4     , f32
+0x007fbed0,_PlayerExtraActionInfoPc,264,API_EXTRA_ACTION_PC[33]
 0x7fc000   , _ApplyGravityContext22HoverHeight                              , 4     , f32
 0x7fc004   , _ApplyGravityWallRunAcceleration                               , 4     , f32
 0x7fc008   , _ApplyGravityContext42HoverHeight                              , 4     , f32
@@ -17118,15 +17255,44 @@ address    , symbol                                                         , si
 0x7fc22c,_PodSprintLiftPositionsPc,,NUVEC[3]
 0x007fc274 , _PanelProjectionX                                              , 4     , f32
 0x007fc278 , _PanelProjectionY                                              , 4     , f32
+0x7fc27c,_HudNameScalePc,4,f32
+0x7fc280,_HudNameRedPc,4,i32
+0x7fc284,_HudNameGreenPc,4,i32
+0x7fc288,_HudNameBluePc,4,i32
+0x7fc28c,_HudNameWidthPc,4,f32
+0x7fc290,_HudNameWideWidthPc,4,f32
+0x7fc294,_HudNameOffsetXPc,4,f32
+0x7fc298,_HudNameOffsetYPc,4,f32
+0x7fc29c,_HudPausePromptEnabledPc,4,i32
+0x7fc2a0,_HudPausePromptOffsetYPc,4,f32
+0x7fc2a4,_HudPausePromptRedPc,4,i32
+0x7fc2a8,_HudPausePromptGreenPc,4,i32
+0x7fc2ac,_DoubleScoreTextYPc,4,f32
+0x7fc2b0,_DoubleScoreTextScalePc,4,f32
 0x7fc2b4,_POWERUPOBJSIZE,,f32
 0x7fc2b8,_POWERUPYPOS1,,f32
 0x7fc2bc,_POWERUPYPOS2,,f32
+0x7fc2c4,_HudLevelTitleYPc,4,f32
+0x7fc2c8,_HudLevelTitleScalePc,4,f32
+0x7fc2cc,_HudLevelTitleScaleXPc,4,f32
+0x7fc2d0,_HudLevelTitleWidthPc,4,f32
+0x7fc2d4,_HudDropInXPc,4,f32
 0x7fc2d8,_MissionDropInAlphaPc,,f32
+0x7fc2dc,_HudDropInScalePc,4,f32
 0x7fc2e0,_PANEL_COINX,,f32
 0x7fc2e4,_PANEL_COINY,,f32
+0x7fc2e8,_HudCoinAdjustYPc,4,f32
+0x7fc2ec,_HudScoreXPc,4,f32
 0x7fc2f0,_PANEL_COINSCALE_START,,f32
 0x7fc2f4,_PANEL_COINSCALE_END,,f32
+0x7fc2f8,_HudScoreScalePc,4,f32
+0x7fc2fc,_HudHeartXPc,4,f32
+0x7fc300,_HudHeartYPc,4,f32
+0x7fc304,_HudHeartScalePc,4,f32
+0x7fc308,_PanelHeartSpacingPc,4,f32
+0x7fc30c,_PanelHeartRowOffsetPc,4,f32
 0x7fc310,_STATSPOSY,,f32
+0x7fc314,_STATSPOS2YPc,4,f32
 0x7fc318,_MissionPlayerIconSizePc,,f32
 0x7fc31c,_ICONX,,f32
 0x7fc320,_PANEL_REDBRICKSCALE,,f32
@@ -17140,12 +17306,22 @@ address    , symbol                                                         , si
 0x007fc354,_HubPromptSpacingPc,4,f32
 0x007fc358,_HubPromptLabelOffsetPc,4,f32
 0x007fc360,_HubPromptMaxWidthPc,4,f32
+0x7fc364,_CoinTotalScoreSizePc,4,f32
 0x7fc368,_COINTOTAL_COINSIZE,,f32
+0x7fc36c,_CoinTotalCoinOffsetPc,4,f32
+0x7fc370,_CoinTotalScoreOffsetYPc,4,f32
 0x7fc374,_cointotal_i_obj,,i32[2]
+0x7fc37c,_CoinTotalTargetOffsetYPc,4,f32
+0x7fc380,_DrawCoinTotalYPc,4,f32
 0x007fc384,_HubBuildBarSegmentsPc,4,i32
 0x007fc388,_HubBuildBarSpacingPc,4,f32
 0x007fc38c,_HubBuildBarScalePc,4,f32
 0x007fc390,_HubBuildBarOverallScalePc,4,f32
+0x7fc394,_PanelHeartWidescreenPc,4,f32
+0x7fc398,_HudBossHeartYPc,4,f32
+0x7fc39c,_HudBossHeartScalePc,4,f32
+0x7fc3a0,_HudBossIconYPc,4,f32
+0x7fc3a4,_HudBossIconScalePc,4,f32
 0x007fc3c4 , _PanelWideWidth                                                , 4     , f32
 0x007fc3c8 , _PanelWideHeight                                               , 4     , f32
 0x7fc5b8,_GameAudioLswPc,512,GAMEAUDIO_PC
@@ -17764,6 +17940,7 @@ address    , symbol                                                         , si
 0x80525c,_KITPOSX,,f32
 0x805260,_KITPOSY,,f32
 0x805264,_KITPOS2X,,f32
+0x805268,_KITPOS2YPc,4,f32
 0x80526c,_PANEL_MINIKITSCALE,,f32
 0x805270,_PANEL_MINIKITY,,f32
 0x00805274,_PANEL_MINIKITCOUNTSCALE,4,f32
@@ -18906,20 +19083,22 @@ address    , symbol                                                         , si
 0x87b954,_DrawMiniKitTime,,f32
 0x0087b958 , _PANEL3DMULX                                                   , 4     , f32
 0x87b95c,_CoinTotalScale,,f32
-0x87b960,_DrawCoinTotalTime,,f32
-0x87b960,_cointotaltime,4,f32
+0x87b960,_DrawCoinTotalTime,4,f32
 0x87b964,_DrawRedBrickTime,,f32
 0x87b968,_RedBrickScale,,f32
 0x87b96c,_DrawBuildUpTime,,f32
-0x87b990,_redbrickslidetime,4,f32
+0x87b990,_cointotaltime,4,f32
+0x87b994,_redbrickslidetime,4,f32
 0x87b998,_builduptime,,f32
 0x87b9a0,_BuildUpTotal,4,i32
 0x87b9b4,_BuildUpDone,4,i32
 0x0087b9b8 , _PANEL3DMULY                                                   , 4     , f32
 0x87b9bc,_minikittime,,f32
 0x87b9c0,_goldbricktime,4,f32
+0x87b9c4,_HudPausePromptBluePc,1,u8
 0x87b9c8,_AutoSaveIconPendingPc,,i32
 0x87b9cc,_cointotal_x,,f32[2]
+0x87b9d4,_DrawBossHitPointsTwoRowsPc,4,i32
 0x0087b9dc , _DrawBossHitPointsActorPc                                      ,       ,
 0x87b9dc,_drawbosshitpoints,4,struct gameobject_s *
 0x0087bb10 , _ShadowMode                                                    , 4     , i32
@@ -20763,6 +20942,7 @@ address    , symbol                                                         , si
 0x0095df6c , _gizaimessagesys                                               , 4     , GIZAIMESSAGESYS *
 0x95df70,?returnstr@?1??GizAIMessage_GetOutputName@@9@9,,
 0x95df78,?addtype@?1??GizAIMessage_RegisterGizmo@@9@9,,
+0x95dff0,_AIPathCnxHelperSysInitFn,4,void (__cdecl *)(WORLDINFO *)
 0x95e018,_GizmoRegistryGizTurretsAddTypePc,120,ADDGIZMOTYPE_PC
 0x95e090,?addtype@?1??GizSpecial_RegisterGizmo@@9@9,,
 0x95e108,_portal_gizmotype_id,,i32

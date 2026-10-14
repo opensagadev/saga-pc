@@ -12268,3 +12268,24 @@ i32 __cdecl Action_AddTorpedoPacket(AISYS_PC *unused0, AISCRIPTPROCESS_PC *unuse
     }
     return 1;
 }
+
+/* Native 0x00517fd0, 105 bytes. */
+AIGROUP_PC *__cdecl CreateAIGroup(AISYS_PC *system, i32 count_across, f32 x_spacing, f32 z_spacing, f32 max_speed) {
+    AIGROUP_PC *group;
+    i32 index;
+    if (system == NULL || count_across == 0)
+        return NULL;
+    for (index = 0; index < 16; ++index) {
+        group = &system->groups[index];
+        if ((group->flags & 1) == 0) {
+            group->flags |= 1;
+            group->flags &= ~8u;
+            group->x_spacing = x_spacing;
+            group->z_spacing = z_spacing;
+            group->count_across = (u8)count_across;
+            group->max_speed = max_speed;
+            return group;
+        }
+    }
+    return NULL;
+}

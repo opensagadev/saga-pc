@@ -62,3 +62,35 @@ void __cdecl Level_Update(WORLDINFO *world) {
     if (AreaGlobals_PC.field_00 == 0 && Cheats_CheckFlags(0x2000) != 0)
         AreaGlobals_PC.field_00 = 1;
 }
+
+/* Native 0x0048a310, 217 bytes. */
+typedef struct level_script_progress_pc_s {
+    char name[16];
+    f32 params[4];
+} LEVEL_SCRIPT_PROGRESS_PC;
+typedef struct ai_script_progress_view_pc_s {
+    u8 unknown_0000[0x2824];
+    LEVEL_SCRIPT_PROGRESS_PC scripts[32];
+} AI_SCRIPT_PROGRESS_VIEW_PC;
+STATIC_ASSERT(offsetof(AI_SCRIPT_PROGRESS_VIEW_PC, scripts) == 0x2824);
+STATIC_ASSERT(sizeof(LEVEL_SCRIPT_PROGRESS_PC) == 0x20);
+/* Shared LEVEL_SCRIPT_PROCESS_PC is defined in saga.h in the final patch. */
+void __cdecl LevelScriptReStoreProgress(WORLDINFO *world, LEVEL_SCRIPT_PROCESS_PC *process) {
+    i32 index, parameter;
+    AI_SCRIPT_PROGRESS_VIEW_PC *progress;
+    if (world->level_progress == NULL || process == NULL || NuStrLen(process->name) == 0)
+        return;
+    for (index = 0; index < 32; ++index) {
+        progress = (AI_SCRIPT_PROGRESS_VIEW_PC *)world->level_progress;
+        if (NuStrLen(progress->scripts[index].name) == 0)
+            break;
+        progress = (AI_SCRIPT_PROGRESS_VIEW_PC *)world->level_progress;
+        if (NuStrICmp(progress->scripts[index].name, process->name) == 0) {
+            for (parameter = 0; parameter < 4; ++parameter) {
+                progress = (AI_SCRIPT_PROGRESS_VIEW_PC *)world->level_progress;
+                process->processor.params[parameter] = progress->scripts[index].params[parameter];
+            }
+            break;
+        }
+    }
+}

@@ -143,3 +143,23 @@ void __cdecl Hint_Draw(i32 viewport) {
     if (hintsys.active_hint != NULL && hintsys.draw_fn != NULL)
         hintsys.draw_fn(hintsys.active_hint, viewport);
 }
+
+/* Append to src/legoapi/hint.c. */
+
+f32 __cdecl CurrentHintAlpha(void) {
+    f32 alpha;
+    f32 fade_start;
+    if (hintsys.active_hint == NULL)
+        return 0.0f;
+    alpha = 1.0f;
+    if (hintsys.active_hint->display_duration > 0.0f) {
+        fade_start = (f32)((f64)hintsys.active_hint->display_duration - 0.5);
+        if (hintsys.display_elapsed >= fade_start) {
+            alpha =
+                1.0f - (hintsys.display_elapsed - fade_start) / (hintsys.active_hint->display_duration - fade_start);
+            if (alpha <= 0.0f)
+                alpha = 0.0f;
+        }
+    }
+    return alpha * hintsys.alpha;
+}

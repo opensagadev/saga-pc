@@ -269,7 +269,7 @@ static void NuMainUpdateFrame(WORLDINFO *world, i32 *frame_flag) {
     STUBBED_NAMED("NuMainUpdateFrame: UpdateCutBorders at 0x00565670, NuWaterSpeed at 0x005f9940");
     NuWaterReset();
     GameTiming(world, &Game.game_time);
-    STUBBED_NAMED("NuMainUpdateFrame: UpdateStats at 0x004b71a0");
+    UpdateStats();
     *frame_flag = 0;
     GameDisplaySettings(&world->current_level->display, back_rgba);
     if ((NewMode == 0 && NewLData == NULL) || FadeSys.fade != 0.0f) {

@@ -1204,7 +1204,16 @@ STATIC_ASSERT(offsetof(AILOCATORSET_PC, locator_entries) == 0x14);
 STATIC_ASSERT(offsetof(AILOCATORSET_PC, assigned) == 0x18);
 typedef struct AIAREA_PC {
     char name[0x10];
-    u8 unknown_10[0x30];
+    NUVEC position;
+    f32 half_width;
+    f32 height;
+    f32 half_depth;
+    i16 rotation;
+    u8 runtime_flags;
+    u8 game_flags;
+    u8 unknown_2c[12];
+    AISYS_PC *system;
+    u8 unknown_3c[4];
 } AIAREA_PC;
 STATIC_ASSERT(sizeof(AIAREA_PC) == 0x40); /* PC differs from Android's 0x3c. */
 typedef struct AIPATHSYS_PC {
@@ -1320,7 +1329,10 @@ STATIC_ASSERT(offsetof(AICREATURE_PC, max_respawn_time) == 0x8c);
 struct AISYS_PC {
     u8 unknown_00[0x10];
     AIPATHSYS_PC *path_sys;
-    u8 unknown_14[4];
+    union {
+        u8 unknown_14[4];
+        i32 creature_count;
+    };
     AICREATURE_PC *creatures;
     NULISTHDR scripts;
     i32 locator_count;
@@ -1334,7 +1346,10 @@ struct AISYS_PC {
     AIANTINODE_PC *antinodes;
     u8 next_area_check;
     u8 goody_idx;
-    u8 unknown_1386[0x2];
+    union {
+        u8 unknown_1386[0x2];
+        u16 reset_flags;
+    };
     void *game_sys;
     APIOBJECT_PC *player_1;
     APIOBJECT_PC *player_2;
@@ -1685,7 +1700,13 @@ typedef struct gamesave_s {
             u32 initial_store_pack_flags;
             u32 newgame_reserved_7c00;
             u32 purchased_extra_bits_high;
-            u8 newgame_reserved_7c08[0x10];
+            union {
+                u8 newgame_reserved_7c08[0x10];
+                struct {
+                    u8 hud_coin_reserved_7c08[0xc];
+                    u32 coins;
+                };
+            };
             u16 save_hash;
             u8 newgame_reserved_7c1a[0xa];
             GAME_CUSTOMISER_START_PC customiser_start[2];
@@ -1704,6 +1725,7 @@ STATIC_ASSERT(offsetof(GAMESAVE, save_version) == 1);
 STATIC_ASSERT(offsetof(GAMESAVE, options_save) == 4);
 STATIC_ASSERT(offsetof(GAMESAVE, area_save) == 0x782c);
 STATIC_ASSERT(offsetof(GAMESAVE, episode_start) == 0x7b8c);
+STATIC_ASSERT(offsetof(GAMESAVE, coins) == 0x7c14);
 STATIC_ASSERT(offsetof(GAMESAVE, initial_store_pack_flags) == 0x7bfc);
 STATIC_ASSERT(offsetof(GAMESAVE, purchased_extra_bits_high) == 0x7c04);
 STATIC_ASSERT(offsetof(GAMESAVE, customizer_weirdo_flags) == 0x7c1b);
@@ -3000,6 +3022,19 @@ STATIC_ASSERT(offsetof(ANIMPACKET_PC, blending) == 0x31);
 STATIC_ASSERT(offsetof(ANIMPACKET_PC, blend_source_animation) == 0x32);
 STATIC_ASSERT(offsetof(ANIMPACKET_PC, blend_target_animation) == 0x34);
 STATIC_ASSERT(offsetof(ANIMPACKET_PC, animation_index) == 0x36);
+typedef struct DRAW_ATTACHMENTS_MINI_PC {
+    f32 current_time, previous_time, blend_elapsed, blend_duration, source_time, target_time;
+    u8 flags, blending;
+    i16 source_animation, target_animation, animation, previous_animation, requested_animation;
+} DRAW_ATTACHMENTS_MINI_PC;
+STATIC_ASSERT(sizeof(DRAW_ATTACHMENTS_MINI_PC) == 0x24);
+STATIC_ASSERT(offsetof(DRAW_ATTACHMENTS_MINI_PC, blend_elapsed) == 8);
+STATIC_ASSERT(offsetof(DRAW_ATTACHMENTS_MINI_PC, blend_duration) == 0xc);
+STATIC_ASSERT(offsetof(DRAW_ATTACHMENTS_MINI_PC, source_time) == 0x10);
+STATIC_ASSERT(offsetof(DRAW_ATTACHMENTS_MINI_PC, target_time) == 0x14);
+STATIC_ASSERT(offsetof(DRAW_ATTACHMENTS_MINI_PC, flags) == 0x18);
+STATIC_ASSERT(offsetof(DRAW_ATTACHMENTS_MINI_PC, source_animation) == 0x1a);
+STATIC_ASSERT(offsetof(DRAW_ATTACHMENTS_MINI_PC, requested_animation) == 0x22);
 typedef struct sockrot_pc_s {
     u16 x;
     u16 y;
@@ -3798,8 +3833,12 @@ typedef struct area_data_pc_s {
     i8 area_index;
     i16 area_music;
     i16 minikit_id;
-    u32 unknown_008c;
-    u32 unknown_0090;
+    union {
+        struct {
+            u32 unknown_008c, unknown_0090;
+        };
+        u32 true_hero_targets[2];
+    };
     i16 text_id;
     u8 text_id_value;
     u8 unknown_0097;
@@ -5078,16 +5117,14 @@ typedef struct gameobject_s {
     f32 context_timer;
     f32 field_780;
     f32 context_duration;
-    union {
-        f32 airborne_action_timer;
-        struct ZIPUP_s *attached_zipup;
-    };
+    f32 airborne_action_timer;
     f32 jump_start_height;
     struct gameobject_s *force_target;
     BLOWUP_TARGET_PC *blowup_target;
     union {
         void *grapple;
         TECHNO_PC *techno;
+        struct ZIPUP_s *attached_zipup;
     };
     i32 panel_use_request;
     u8 unknown_7a0[0x3];
@@ -5601,6 +5638,7 @@ STATIC_ASSERT(offsetof(GAMEOBJECT, suspension) == 0x728);
 STATIC_ASSERT(offsetof(GAMEOBJECT, context_timer) == 0x77c);
 STATIC_ASSERT(offsetof(GAMEOBJECT, context_duration) == 0x784);
 STATIC_ASSERT(offsetof(GAMEOBJECT, field_7a3) == 0x7a3);
+STATIC_ASSERT(offsetof(GAMEOBJECT, attached_zipup) == 0x798);
 STATIC_ASSERT(offsetof(GAMEOBJECT, field_7a4) == 0x7a4);
 STATIC_ASSERT(offsetof(GAMEOBJECT, field_7a8) == 0x7a8);
 STATIC_ASSERT(offsetof(GAMEOBJECT, field_7aa) == 0x7aa);
@@ -8441,7 +8479,12 @@ STATIC_ASSERT(offsetof(OcclusionManager, query_count) == 0x164);
 typedef struct GIZMOPICKUP_PC {
     char name[8];
     NUVEC position;
-    u8 unknown_14[2];
+    union {
+        u8 unknown_14[2];
+        struct {
+            u8 filter_byte, filter_reserved;
+        };
+    };
     u8 model_variant, flags;
     u8 unknown_18[4];
     f32 floor;
@@ -8520,6 +8563,10 @@ STATIC_ASSERT(sizeof(NEW_MINI_PIECE_PC) == 0xc);
 STATIC_ASSERT(offsetof(NEW_MINI_PIECE_PC, level) == 8);
 typedef struct HINT_PC {
     union {
+        struct {
+            u8 unknown_duration_prefix[8];
+            f32 display_duration;
+        };
         struct {
             i16 id;
             u8 flags;
@@ -11082,6 +11129,14 @@ typedef struct PC_SHADER_OBJECT_FULL_VIEW PC_SHADER_OBJECT_FULL_VIEW;
     STATIC_ASSERT(sizeof(API_ACTION_INFO_PC) == 8);
     STATIC_ASSERT(offsetof(API_ACTION_INFO_PC, name) == 0);
     STATIC_ASSERT(offsetof(API_ACTION_INFO_PC, flags) == 4);
+    typedef struct API_EXTRA_ACTION_PC {
+        const char *name;
+        i32 action;
+    } API_EXTRA_ACTION_PC;
+    STATIC_ASSERT(sizeof(API_EXTRA_ACTION_PC) == 8);
+    STATIC_ASSERT(offsetof(API_EXTRA_ACTION_PC, action) == 4);
+    extern API_EXTRA_ACTION_PC PlayerExtraActionInfoPc[33];
+    void __cdecl SetActionInfo(API_ACTION_INFO_PC *, API_EXTRA_ACTION_PC *);
     extern API_ACTION_INFO_PC PlayerActionInfoListPc[234];
     extern void *PlayerBlockActionInfoPc;
 
@@ -15218,6 +15273,9 @@ void __cdecl PCSoundAlreadyPlayingHook(void);
     /* Proposed finite public interfaces; UpdateAnimTimer remains original-TU private. */
     void __cdecl AnimatePlayer(GAMEOBJECT *);
     void __cdecl UpdateAnimPacket(CHARACTER_MODEL_LAYERS_PC *, ANIMPACKET_PC *, f32, f32, f32, f32);
+    void __cdecl AnimPacketMiniToFullPc(DRAW_ATTACHMENTS_MINI_PC *, ANIMPACKET_PC *);
+    void __cdecl AnimPacketFullToMiniPc(ANIMPACKET_PC *, DRAW_ATTACHMENTS_MINI_PC *);
+    void __cdecl UpdateMiniAnimPacket(CHARACTER_MODEL_LAYERS_PC *, DRAW_ATTACHMENTS_MINI_PC *, f32, f32, f32);
     GAMEOBJECT *__cdecl APIObjectCreate(APIOBJECTSYS_PC *);
     void __cdecl SetAnimTimeRandom(CHARACTER_MODEL_LAYERS_PC *, ANIMPACKET_PC *);
     void __cdecl PlayerInitCapabilitiesDefaultPc(GAMEOBJECT *);
@@ -20447,9 +20505,22 @@ STATIC_ASSERT(offsetof(GAMEOBJECT, transform_alpha) == 0xd80);
 STATIC_ASSERT(offsetof(GAMEOBJECT, transform_target_scale) == 0xd8c);
 typedef struct attracto_pc_s ATTRACTO_PC;
 typedef struct HUB_AI_MUSIC_VIEW_PC {
-    u8 unknown_00[0xf0];
+    AIAREA_PC *areas[10];
+    AIPATH_PC *paths[10];
+    AILOCATOR_PC *area_locators[10][4];
     i16 area;
-    u8 unknown_f2[0x5e];
+    i16 door_state;
+    i16 table_count;
+    i16 counter_count;
+    u8 unknown_f8[4];
+    void *customer;
+    void *serving_object;
+    GIZAIMESSAGE *area_message;
+    GIZAIMESSAGE *serving_customer_message;
+    AILOCATOR_PC *counter_a[4];
+    AILOCATOR_PC *counter_b[4];
+    AILOCATOR_PC *table_locators[8];
+    AILOCATOR_PC *serve_player;
 } HUB_AI_MUSIC_VIEW_PC;
 STATIC_ASSERT(sizeof(HUB_AI_MUSIC_VIEW_PC) == 0x150);
 STATIC_ASSERT(offsetof(HUB_AI_MUSIC_VIEW_PC, area) == 0xf0);
@@ -26556,6 +26627,97 @@ extern "C" {
 #ifdef __cplusplus
 }
 #endif
+
+/* PC level AI reset/population ABI. */
+typedef struct ai_helper_system_pc_s AI_HELPER_SYSTEM_PC;
+typedef struct level_script_process_pc_s {
+    char name[16];
+    AISCRIPTPROCESS_PC processor;
+    u8 unknown_d8[4];
+} LEVEL_SCRIPT_PROCESS_PC;
+STATIC_ASSERT(sizeof(AISCRIPTPROCESS_PC) == 0xc8);
+STATIC_ASSERT(sizeof(LEVEL_SCRIPT_PROCESS_PC) == 0xdc);
+STATIC_ASSERT(offsetof(LEVEL_SCRIPT_PROCESS_PC, unknown_d8) == 0xd8);
+STATIC_ASSERT(offsetof(LEVEL_SCRIPT_PROCESS_PC, processor.params) == 0x24);
+STATIC_ASSERT(offsetof(LEVEL_SCRIPT_PROCESS_PC, processor) == 0x10);
+STATIC_ASSERT(offsetof(AISYS_PC, creature_count) == 0x14);
+STATIC_ASSERT(offsetof(AISYS_PC, reset_flags) == 0x1386);
+#ifdef __cplusplus
+extern "C" {
+#endif
+    void __cdecl InitAICreatures(AISYS_PC *);
+    void __cdecl AIPathCnxHelperSysReset(WORLDINFO *, struct ai_helper_system_pc_s *);
+    void __cdecl GameAISysReset(AISYS_PC *);
+#ifdef __cplusplus
+}
+#endif
+
+STATIC_ASSERT(offsetof(AIAREA_PC, position) == 0x10);
+STATIC_ASSERT(offsetof(AIAREA_PC, half_width) == 0x1c);
+STATIC_ASSERT(offsetof(AIAREA_PC, height) == 0x20);
+STATIC_ASSERT(offsetof(AIAREA_PC, half_depth) == 0x24);
+STATIC_ASSERT(offsetof(AIAREA_PC, rotation) == 0x28);
+STATIC_ASSERT(offsetof(AIAREA_PC, runtime_flags) == 0x2a);
+STATIC_ASSERT(offsetof(AIAREA_PC, system) == 0x38);
+STATIC_ASSERT(offsetof(HUB_AI_MUSIC_VIEW_PC, paths) == 0x28);
+STATIC_ASSERT(offsetof(HUB_AI_MUSIC_VIEW_PC, area_locators) == 0x50);
+STATIC_ASSERT(offsetof(HUB_AI_MUSIC_VIEW_PC, door_state) == 0xf2);
+STATIC_ASSERT(offsetof(HUB_AI_MUSIC_VIEW_PC, table_count) == 0xf4);
+STATIC_ASSERT(offsetof(HUB_AI_MUSIC_VIEW_PC, counter_count) == 0xf6);
+STATIC_ASSERT(offsetof(HUB_AI_MUSIC_VIEW_PC, customer) == 0xfc);
+STATIC_ASSERT(offsetof(HUB_AI_MUSIC_VIEW_PC, serving_object) == 0x100);
+STATIC_ASSERT(offsetof(HUB_AI_MUSIC_VIEW_PC, area_message) == 0x104);
+STATIC_ASSERT(offsetof(HUB_AI_MUSIC_VIEW_PC, serving_customer_message) == 0x108);
+STATIC_ASSERT(offsetof(HUB_AI_MUSIC_VIEW_PC, counter_a) == 0x10c);
+STATIC_ASSERT(offsetof(HUB_AI_MUSIC_VIEW_PC, counter_b) == 0x11c);
+STATIC_ASSERT(offsetof(HUB_AI_MUSIC_VIEW_PC, table_locators) == 0x12c);
+STATIC_ASSERT(offsetof(HUB_AI_MUSIC_VIEW_PC, serve_player) == 0x14c);
+#ifdef __cplusplus
+extern "C" {
+#endif
+    void __cdecl GameAISysStartFrame(AISYS_PC *);
+    i32 __cdecl CheckPosAIArea(AIAREA_PC *, NUVEC *, f32);
+    void __cdecl LSW_Hub_InitAI(WORLDINFO *);
+    void __cdecl LSW_Hub_ResetAI(WORLDINFO *);
+    void __cdecl LSW_Hub_UpdateAI(WORLDINFO *);
+    void *__cdecl Condition_InHubAreaInit(AISYS_PC *, char *, AISCRIPT_PC *);
+    f32 __cdecl Condition_InHubArea(AISYS_PC *, AISCRIPTPROCESS_PC *, AIPACKET_PC *, char *, void *);
+#ifdef __cplusplus
+}
+#endif
+
 #include "diagnostics.h"
 
+STATIC_ASSERT(offsetof(AREA_DATA_PC, true_hero_targets) == 0x8c);
+STATIC_ASSERT(offsetof(HINT_PC, display_duration) == 8);
+STATIC_ASSERT(offsetof(GIZMOPICKUP_PC, filter_byte) == 0x14);
+#ifdef __cplusplus
+extern "C" {
+#endif
+    void __cdecl UpdateStats(void);
+    f32 __cdecl CurrentHintAlpha(void);
+    void __cdecl DrawMiniKitCount(f32, f32, i32, i32);
+    u32 __cdecl Cheat_MultiplyScorePc(u32);
+    i32 __cdecl GizmoPickup_NumberOfTypePc(WORLDINFO *, i32, u8);
+#ifdef __cplusplus
+}
+#endif
+#endif
+
+#ifdef __cplusplus
+extern "C" {
+#endif
+    extern i16 TextIdPc880818;
+    extern i16 TextIdPc880834;
+    void __cdecl Arcade_UpdatePanel(i32 paused);
+#ifdef __cplusplus
+}
+#endif
+
+#ifdef __cplusplus
+extern "C" {
+#endif
+    i32 __cdecl DrawPanel3DObjectMtx(NUSPECIALHANDLE *special, NUMTX *matrix, f32 alpha);
+#ifdef __cplusplus
+}
 #endif

@@ -1,12 +1,5 @@
 #include "saga.h"
 
-typedef struct API_EXTRA_ACTION_PC {
-    char *name;
-    i32 action;
-} API_EXTRA_ACTION_PC;
-STATIC_ASSERT(sizeof(API_EXTRA_ACTION_PC) == 8);
-STATIC_ASSERT(offsetof(API_EXTRA_ACTION_PC, action) == 4);
-
 static API_ACTION_INFO_PC *APIActionInfo;
 static API_EXTRA_ACTION_PC *APIExtraActionData;
 
@@ -1700,6 +1693,33 @@ update_timers:
         ResetAnimPacket(packet, -1);
         packet->requested_animation = requested_animation;
     }
+}
+
+void __cdecl AnimPacketFullToMiniPc(ANIMPACKET_PC *source, DRAW_ATTACHMENTS_MINI_PC *destination) {
+    destination->current_time = source->current_time;
+    destination->previous_time = source->previous_time;
+    destination->blend_elapsed = source->blend_elapsed_pc;
+    destination->blend_duration = source->blend_duration_pc;
+    destination->source_time = source->blend_source_time;
+    destination->target_time = source->blend_target_time;
+    destination->flags = source->flags;
+    destination->blending = source->blending;
+    destination->source_animation = source->blend_source_animation;
+    destination->target_animation = source->blend_target_animation;
+    destination->animation = source->animation_index;
+    destination->previous_animation = source->previous_animation;
+    destination->requested_animation = source->requested_animation;
+}
+
+void __cdecl UpdateMiniAnimPacket(CHARACTER_MODEL_LAYERS_PC *model, DRAW_ATTACHMENTS_MINI_PC *mini, f32 frame_step,
+                                  f32 movement_speed, f32 blend_step) {
+    union {
+        ANIMPACKET_PC packet;
+        u32 words[18];
+    } full;
+    AnimPacketMiniToFullPc(mini, &full.packet);
+    UpdateAnimPacket(model, &full.packet, frame_step, movement_speed, blend_step, 0.0f);
+    AnimPacketFullToMiniPc(&full.packet, mini);
 }
 
 GAMEOBJECT *__cdecl APIObjectCreate(APIOBJECTSYS_PC *system) {

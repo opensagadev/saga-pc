@@ -718,3 +718,12 @@ void __cdecl DrawGameMessages(void) {
         }
     }
 }
+
+/* Add to render.c. Native PC 552e00/78; cdecl (special,matrix,alpha). */
+i32 __cdecl DrawPanel3DObjectMtx(NUSPECIALHANDLE *special, NUMTX *matrix, f32 alpha) {
+    if (!(alpha <= 0.0f) && special != NULL && NuSpecialExistsFn(special) != 0) {
+        NuMtxMulVU0(matrix, matrix, NuCameraGetMtx());
+        NuSpecialDrawAtAlpha(special, matrix, alpha);
+    }
+    return 0;
+}

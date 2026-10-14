@@ -429,7 +429,7 @@ extern "C" {
 
         APICharacterSysInit(&permbuffer_ptr, permbuffer_end, CHARCOUNT, 0x30, 0xe9, 0x400,
                             (APICHARACTERDATA *)CDataList, SetCreatureLights);
-        STUBBED_NAMED("LoadPermData: SetActionInfo(0x7fbec8, 0x7fbed0)");
+        SetActionInfo((API_ACTION_INFO_PC *)PlayerBlockActionInfoPc, PlayerExtraActionInfoPc);
         gizaimessagesys = CreateGizAIMessageSys(&permbuffer_ptr, &permbuffer_end, 0x40);
 
         permbuffer_ptr.addr = (permbuffer_ptr.addr + 0xfU) & ~0xfU;

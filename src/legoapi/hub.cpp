@@ -1861,7 +1861,7 @@ extern "C" void __cdecl Hub_Update(WORLDINFO *world) {
     }
     if (MenuInMemoryCard() != 0) {
         statstime = 0;
-        redbrickslidetime = 0;
+        cointotaltime = 0;
         goldbricktime = 0;
         HubPreventDropOutTimePc = 1;
     } else if (menu == 12 || menu == 13 || menu == 14) {
@@ -4314,5 +4314,761 @@ extern "C" void Hub_DrawPanel(WORLDINFO *) {
         }
         const i32 count = total > Game.gold_bricks ? Game.gold_bricks : total;
         Hub_DrawImportantBrick(211, 0.0f, HubEpisodeSubtitleYPc, HubStatsTimePc, count, total);
+    }
+}
+
+/* Five reviewed providers: append these four to existing hub.cpp. */
+extern "C" {
+    extern f32 KITPOS2YPc;
+    f32 __cdecl CurrentHintAlpha(void);
+    /* Complete native0056e2a0..0056e2dc. */
+    u32 __cdecl Cheat_MultiplyScorePc(u32 score) {
+        u32 flags = CheatSystemPtr->flags;
+        if ((flags & 4) != 0)
+            score *= 2;
+        if ((flags & 8) != 0)
+            score *= 4;
+        if ((flags & 16) != 0)
+            score *= 6;
+        if ((flags & 32) != 0)
+            score *= 8;
+        if ((flags & 64) != 0)
+            score *= 10;
+        return score;
+    }
+
+    /* Read-only PC prefix. WORLD50b8 points to pickups0/count8, unlike the
+       legacy PICKUP_RUNTIME_SYS_PC overlay used by other incomplete routines. */
+    typedef struct HudPickupRuntimePc {
+        GIZMOPICKUP_PC *pickups;
+        void *temporary_pickups;
+        i32 count;
+    } HudPickupRuntimePc;
+    STATIC_ASSERT(offsetof(HudPickupRuntimePc, pickups) == 0);
+    STATIC_ASSERT(offsetof(HudPickupRuntimePc, count) == 8);
+    STATIC_ASSERT(offsetof(GIZMOPICKUP_PC, filter_byte) == 0x14);
+    /* Complete native00570030..00570082. */
+    i32 __cdecl GizmoPickup_NumberOfTypePc(WORLDINFO *world, i32 type, u8 filter) {
+        HudPickupRuntimePc *system = (HudPickupRuntimePc *)world->pickup_runtime_sys;
+        GIZMOPICKUP_PC *pickup = system->pickups;
+        i32 count = 0;
+        i32 i;
+        if (filter == 0 && type == -1)
+            return 0;
+        for (i = system->count; i > 0; --i, ++pickup) {
+            if (filter != 0 ? pickup->filter_byte == filter : pickup->type_index == type)
+                ++count;
+        }
+        return count;
+    }
+
+    /* Complete native0059a1e0..0059a414. */
+    void __cdecl DrawMiniKitCount(f32 time, f32 scale, i32 amount, i32 total) {
+        i32 model = ChallengeMode != 0 ? CharKitModelId_PC : MiniKitModelId_PC;
+        f32 factor, x, y;
+        WORLDINFO *world;
+        char text[24];
+        if (model == -1 || time <= 0.0f)
+            return;
+        factor = NuTrigTable[((i32)((f64)time * 16384.0) >> 1) & 0x7fff];
+        x = (KITPOSX - KITPOS2X) * factor + KITPOS2X;
+        y = (KITPOSY - KITPOS2YPc) * factor + KITPOS2YPc;
+        world = WorldInfo_CurrentlyActive();
+        if (world->level_objects[model].active != 0) {
+            u16 angle = (u16)(i32)((f64)NuFmod(GlobalTimer.time_elapsed, 4.0f) * 0.25 * 65536.0);
+            u16 pitch = (u16)(i32)((f64)NuTrigTable[angle & 0x7fff] * 1820.0);
+            f32 size = PANEL_MINIKITSCALE * scale;
+            DrawPanel3DObjectNoAlpha(x, y + PANEL_MINIKITY, 1.0f, size, size, size, pitch, angle, 0,
+                                     &world->level_objects[model].special, 2);
+        }
+        sprintf(text, "%i/%i", amount, total);
+        scale *= PANEL_MINIKITCOUNTSCALE;
+        Text3D(text, x, y + PANEL_MINIKITCOUNTY, 1.0f, scale, scale, scale, 0, 255, 0, 127);
+    }
+
+    /* Append to src/legoapi/panel.c. Complete native 004b71a0..004b7943. */
+    void __cdecl UpdateStats(void) {
+        f32 target;
+        i32 freeplay;
+        u32 maximum;
+        i32 i;
+        if ((WORLD->current_level->flags & 2) == 0)
+            return;
+        target = 0.0f;
+        if (FadeSys.fade == 0.0f && CUTSTOPGAME == 0 && newgamecam == 0 &&
+            !(HUB_ADATA != NULL && WORLD->area == HUB_ADATA && GameCam->mode == 4))
+            target = 1.0f;
+        statstime = SeekLinearF(statstime, target, FRAMETIME);
+        if (SuperStory != 0) {
+            DrawMiniKitTime = 0.0f;
+            MiniKitScale = 1.0f;
+            BuildUpScale = 1.0f;
+            RedBrickScale = 1.0f;
+            DrawBuildUpTime = 0.0f;
+            builduptime = 0.0f;
+            redbrickslidetime = 0.0f;
+            DrawRedBrickTime = 0.0f;
+        } else {
+            if (ChallengeMode != 0)
+                DrawMiniKitTime = 2.0f;
+            if (DrawMiniKitTime > 0.0f)
+                DrawMiniKitTime -= FRAMETIME;
+            target = 0.0f;
+            if (FadeSys.fade == 0.0f && CUTSTOPGAME == 0 && (Paused != 0 || NetPaused != 0 || DrawMiniKitTime > 0.0f) &&
+                screendump == 0)
+                target = 1.0f;
+            if (ChallengeMode != 0) {
+                f32 hint_alpha = CurrentHintAlpha();
+                if (hint_alpha > 0.0f)
+                    target *= 1.0f - hint_alpha;
+            }
+            minikittime = SeekLinearF(minikittime, target, FRAMETIME);
+            MiniKitScale = SeekLinearF(MiniKitScale, 1.0f, (f32)(5.0 * (f64)FRAMETIME));
+            if (ChallengeMode != 0) {
+                DrawBuildUpTime = 0.0f;
+                builduptime = 0.0f;
+                BuildUpScale = 1.0f;
+                RedBrickScale = 1.0f;
+                redbrickslidetime = 0.0f;
+                DrawRedBrickTime = 0.0f;
+            } else {
+                if (DrawRedBrickTime > 0.0f)
+                    DrawRedBrickTime -= FRAMETIME;
+                target = 0.0f;
+                if (FadeSys.fade == 0.0f && CUTSTOPGAME == 0 &&
+                    (Paused != 0 ||
+                     (NetPaused != 0 &&
+                      (AreaGlobals_PC.field_08 != 0 ||
+                       (WORLD->area_index != -1 && Game.area_save[WORLD->area_index].red_brick_collected != 0))) ||
+                     DrawRedBrickTime > 0.0f) &&
+                    screendump == 0)
+                    target = 1.0f;
+                redbrickslidetime = SeekLinearF(redbrickslidetime, target, FRAMETIME);
+                RedBrickScale = SeekLinearF(RedBrickScale, 1.0f, (f32)(5.0 * (f64)FRAMETIME));
+                if (DrawBuildUpTime > 0.0f)
+                    DrawBuildUpTime -= FRAMETIME;
+                target = 0.0f;
+                if (FadeSys.fade == 0.0f && CUTSTOPGAME == 0 &&
+                    (Paused != 0 || NetPaused != 0 || DrawBuildUpTime > 0.0f || BuildUpTotal != 0) && screendump == 0)
+                    target = 1.0f;
+                builduptime = SeekLinearF(builduptime, target, FRAMETIME);
+                freeplay = GAMEDEMO != 0 ? 0 : FreePlay;
+                if (WORLD->area != NULL && (WORLD->area->flags & 0x10) != 0) {
+                    if (HubBothTrueJediGoldBricksPc != 0) {
+                        if (Game.area_save[WORLD->area_index].true_hero_complete[freeplay] != 0)
+                            goto buildup_finished;
+                    } else if (Game.area_save[WORLD->area_index].true_hero_complete[0] != 0 ||
+                               Game.area_save[WORLD->area_index].true_hero_complete[1] != 0)
+                        goto buildup_finished;
+                    maximum = WORLD->area->true_hero_targets[freeplay];
+                    if (maximum != 0) {
+                        /* Existing canonical names are swapped: 87b9a0 is done;87b9b4 is amount. */
+                        if (BuildUpTotal == 0) {
+                            BuildUpDone = 0;
+                            if (Player[0] != NULL && ((GAMEOBJECT *)Player[0])->coin_packet != NULL)
+                                BuildUpDone = ((PLAYER_COIN_PACKET_PC *)((GAMEOBJECT *)Player[0])->coin_packet)->coins;
+                            if (Player[1] != NULL && ((GAMEOBJECT *)Player[1])->coin_packet != NULL)
+                                BuildUpDone += ((PLAYER_COIN_PACKET_PC *)((GAMEOBJECT *)Player[1])->coin_packet)->coins;
+                            if ((u32)BuildUpDone >= maximum) {
+                                BuildUpScale = 2.5f;
+                                BuildUpTotal = 1;
+                                AddFancyMessage(TTab[TextIdPc880818], 0.0f, 0.0f, 1.0f, 1.0f, 1, 0);
+                            }
+                        }
+                        BuildUpScale = SeekLinearF(BuildUpScale, 1.0f, (f32)(3.0 * (f64)FRAMETIME));
+                    }
+                }
+            buildup_finished:;
+            }
+        }
+        if (SuperStory != 0 && (WORLD->current_level->flags & 0x2000) != 0)
+            DrawCoinTotalTime = 1.0f;
+        if (DrawCoinTotalTime > 0.0f)
+            DrawCoinTotalTime -= FRAMETIME;
+        target = 0.0f;
+        if (FadeSys.fade == 0.0f && CUTSTOPGAME == 0 && (Paused != 0 || NetPaused != 0 || DrawCoinTotalTime > 0.0f) &&
+            screendump == 0)
+            target = 1.0f;
+        cointotaltime = SeekLinearF(cointotaltime, target, FRAMETIME);
+        CoinTotalScale = SeekLinearF(CoinTotalScale, 1.0f, (f32)(3.0 * (f64)FRAMETIME));
+        if (HUB_ADATA != NULL && WORLD->area == HUB_ADATA) {
+            target = (Paused != 0 || NetPaused != 0) && MenuInMemoryCard() == 0 ? 1.0f : 0.0f;
+            goldbricktime = SeekLinearF(goldbricktime, target, FRAMETIME);
+        } else
+            goldbricktime = 0.0f;
+        Arcade_UpdatePanel(Paused != 0 || NetPaused != 0);
+        if (Paused == 0 && NetPaused == 0) {
+            PowerUp_PanelYRot[0] = (u16)(i32)((f64)PowerUp_PanelYRot[0] + (f64)FRAMETIME * 16384.0);
+            PowerUp_PanelYRot[1] = (u16)(i32)((f64)PowerUp_PanelYRot[1] + (f64)FRAMETIME * 16384.0);
+        }
+        for (i = 0; i < 2; ++i) {
+            target =
+                Paused == 0 && Player[i] != NULL && ((GAMEOBJECT *)Player[i])->hud_icon_timer <= 0.0f ? 1.0f : 0.0f;
+            PowerUp_PanelPosMul[i] = SeekLinearF(PowerUp_PanelPosMul[i], target, FRAMETIME + FRAMETIME);
+        }
+    }
+}
+
+/* Reviewed remaining native HUD helper family, shared total, and sole DrawPanel owner. */
+extern "C" {
+    extern f32 STATSPOS2YPc, HudCoinAdjustYPc;
+    void __cdecl DrawPlayerHudPc(i32);
+    /* Add to panel.c before DrawPlayerHudPc so VC8 can derive the native internal ABI. */
+    extern i32 DrawBossHitPointsTwoRowsPc;
+    extern f32 PanelHeartSpacingPc, PanelHeartRowOffsetPc, PanelHeartWidescreenPc;
+    extern f32 DoubleScoreTextYPc, DoubleScoreTextScalePc;
+    extern i16 TextIdPc88098c;
+    i32 __cdecl DrawPanel3DObjectMtx(NUSPECIALHANDLE *, NUMTX *, f32);
+    STATIC_ASSERT(offsetof(GAMEOBJECT, portal_flags) == 0xeec);
+    STATIC_ASSERT(offsetof(GAMEOBJECT, takeover_source) == 0xcd0);
+    STATIC_ASSERT(offsetof(GAMEOBJECT, field_107e) == 0x107e);
+    STATIC_ASSERT(offsetof(GAMEOBJECT, current_hp) == 0x107f);
+    STATIC_ASSERT(offsetof(GAMEOBJECT, dead) == 0x28b);
+    STATIC_ASSERT(offsetof(GAMEOBJECT, field_1010) == 0x1010);
+    static void DrawHitPointsPc(GAMEOBJECT *object, f32 x, f32 y, f32 scale, f32 scale_factor, i32 alignment, f32 alpha,
+                                i32 pulse_enabled) {
+        i32 two_rows;
+        i32 heart_object;
+        i32 hitpoints, current_hp, odd, transitioning, i;
+        f32 spacing, draw_y, start_x;
+        if (SuperStory != 0 && WORLD->current_level == VADERC_LDATA && object->field_107e == 10) {
+            two_rows = 1;
+        } else if ((object->portal_flags & 0x08000000) != 0) {
+            two_rows = DrawBossHitPointsTwoRowsPc != 0;
+            DrawBossHitPointsTwoRowsPc = 0;
+        } else {
+            two_rows = 0;
+        }
+        heart_object = object->takeover_source != NULL ? 0xcd : 0xcc;
+        if (WORLD->level_objects[heart_object].active == 0)
+            return;
+        if (object->field_107e != 0) {
+            hitpoints = object->field_107e;
+            current_hp = object->current_hp;
+            if ((PlayerHitPointsTwoHeartsPc != 0 && (object->flags_1fc & 0x80) != 0) ||
+                WORLD->current_level == BOUNTYHUNTERPURSUITE_LDATA) {
+                odd = (hitpoints & 1) != 0 && hitpoints == current_hp ? 0 : current_hp & 1;
+                current_hp = current_hp / 2 + odd;
+                hitpoints = hitpoints / 2 + (hitpoints & 1);
+            }
+        } else {
+            hitpoints = 1;
+            current_hp = 1;
+        }
+        transitioning = 0;
+        if (two_rows != 0 && hitpoints < 2)
+            two_rows = 0;
+        if (object->field_280 <= 1 && hitpoints > 1 && object->dead != 0 && object->field_1010 > 0.0f &&
+            object->field_1010 < 1.0f) {
+            current_hp = (i32)((1.0f - object->field_1010) * (f32)object->field_107e);
+            transitioning = 1;
+        }
+        spacing = PanelHeartSpacingPc * scale;
+        if (GetMenuID() == 4 ? TempOptions.widescreen != 0
+                             : Game_OptionsSave != NULL && Game_OptionsSave->widescreen != 0)
+            spacing *= PanelHeartWidescreenPc;
+        if (alignment == 0)
+            x -= (f32)(((f32)((two_rows != 0 ? hitpoints / 2 : hitpoints) - 1) * spacing) * 0.5);
+        else if (alignment == 8)
+            spacing = -spacing;
+        draw_y = PANEL3DMULY * y;
+        start_x = x;
+        for (i = 0; i < hitpoints; ++i) {
+            NUVEC object_scale;
+            NUVEC translation;
+            NUMTX matrix;
+            f32 draw_alpha, pulse;
+            if (two_rows == 1 && i >= hitpoints / 2) {
+                two_rows = 2;
+                draw_y -= PanelHeartRowOffsetPc * scale;
+                x = start_x;
+            }
+            object_scale.x = scale;
+            object_scale.y = scale;
+            object_scale.z = scale;
+            translation.z = 1.001f;
+            if (i < current_hp) {
+                draw_alpha = 1.0f;
+                if (pulse_enabled != 0 && transitioning == 0 && current_hp > 0 && i == current_hp - 1) {
+                    pulse = i == 0 && current_hp == 1 ? 0.5f : 0.2f;
+                    pulse = (f32)((f64)pulse - (f64)(NuFmod(GlobalTimer.time_elapsed, 0.5f) * 2.0f) * (f64)pulse);
+                    pulse = (f32)((f64)pulse + 1.0);
+                    object_scale.x *= pulse;
+                    object_scale.y *= pulse;
+                    translation.z = 0.999f;
+                }
+            } else {
+                draw_alpha = 0.5f;
+            }
+            if (scale_factor != 1.0f) {
+                NUVEC scaled;
+                scaled.x = object_scale.x * scale_factor;
+                scaled.y = object_scale.y * scale_factor;
+                scaled.z = scale;
+                NuMtxSetScale(&matrix, &scaled);
+            } else {
+                NuMtxSetScale(&matrix, &object_scale);
+            }
+            translation.x = PANEL3DMULX * x;
+            translation.y = draw_y;
+            NuMtxTranslate(&matrix, &translation);
+            DrawPanel3DObjectMtx(&WORLD->level_objects[heart_object].special, &matrix, draw_alpha * alpha);
+            x += spacing;
+        }
+    }
+
+    f32 __cdecl DoubleScoreAlpha(void) {
+        i32 angle = (i32)((f64)(NuFmod(GameTimer.time_elapsed_mod_seconds, 0.5f) * 2.0f) * 65536.0);
+        return (f32)((f64)NuTrigTable[(angle >> 1) & 0x7fff] * (f64)0.2f + 0.5);
+    }
+
+    void __cdecl DrawInDoubleScoreZone(f32 time) {
+        i32 alpha = (i32)((f64)DoubleScoreAlpha() * 128.0 * (f64)time);
+        SmartTextEx(TTab[TextIdPc88098c], 0.0f, DoubleScoreTextYPc, 1.0f, DoubleScoreTextScalePc,
+                    DoubleScoreTextScalePc, DoubleScoreTextScalePc, 0, 255, 255, 255, 1.5f, 1, NULL, 0, alpha);
+    }
+}
+/* Append before moved DrawPanel, in same existing hub.cpp as DrawHitPointsPc. */
+extern "C" {
+    extern f32 CoinTotalScoreSizePc, CoinTotalCoinOffsetPc, CoinTotalScoreOffsetYPc, CoinTotalTargetOffsetYPc,
+        DrawCoinTotalYPc;
+
+    void __cdecl CoinTotal_Draw(i32 total, f32 y, f32 scale, i32 remember_positions, f32 icon_phase, i32 red, i32 green,
+                                i32 blue) {
+        char text[32];
+        f32 score_scale, icon_scale, x;
+        i32 angle;
+        LEVEL_OBJECT_RUNTIME_PC *model;
+        Text_MakeScore((u32)total, text);
+        score_scale = CoinTotalScoreSizePc * scale;
+        Text3DEx(text, 0.0f, y + HudCoinAdjustYPc, 1.0f, score_scale, score_scale, score_scale, 0, (u8)red, (u8)green,
+                 (u8)blue, (u8)(i32)((f64)icon_phase * 128.0));
+        angle = (i32)((f64)icon_phase * 16384.0);
+        icon_scale = COINTOTAL_COINSIZE * scale * NuTrigTable[(angle >> 1) & 0x7fff];
+        model = &WORLD->level_objects[cointotal_i_obj[0]];
+        if (model->active != 0) {
+            x = (f32)(-(f64)text3d_width * 0.5 - (f64)(CoinTotalCoinOffsetPc * scale));
+            if (remember_positions != 0)
+                cointotal_x[0] = x;
+            DrawPanel3DObject(x, y, 1.0f, icon_scale, icon_scale, icon_scale, 0, 0, 0, &model->special, 0, 1.0f);
+        }
+        model = &WORLD->level_objects[cointotal_i_obj[1]];
+        if (model->active != 0) {
+            x = (f32)((f64)(CoinTotalCoinOffsetPc * scale) + (f64)text3d_width * 0.5);
+            if (remember_positions != 0)
+                cointotal_x[1] = x;
+            else
+                model = &WORLD->level_objects[187];
+            DrawPanel3DObject(x, y, 1.0f, icon_scale, icon_scale, icon_scale, 0, 0, 0, &model->special, 0, 1.0f);
+        }
+    }
+
+    static void DrawSuperStoryTimePc(f32 y, f32 timer, f32 target, i32 target_above, i32 show_hours) {
+        char text[256], auxiliary[256];
+        i32 green;
+        Text_MakeTime(timer, show_hours, 1, 1, text);
+        green = 191;
+        if (!(target <= 0.0f) && !(target > timer))
+            green = 31;
+        Text3DEx(text, 0.0f, y, 1.0f, 0.5f, 0.5f, 0.5f, 0, 255, green, 0, 128);
+        if (target > 0.0f) {
+            f32 offset;
+            Text_MakeTime(target, show_hours, 1, 1, text);
+            NuStrCpy(auxiliary, const_cast<char *>("("));
+            NuStrCat(auxiliary, text);
+            NuStrCat(auxiliary, const_cast<char *>(")"));
+            offset = target_above != 0 ? CoinTotalTargetOffsetYPc : -CoinTotalTargetOffsetYPc;
+            Text3DEx(auxiliary, 0.0f, y + offset, 1.0f, 0.35f, 0.35f, 0.35f, 0, 255, 255, 255, 48);
+        }
+    }
+
+    static void DrawCoinTotalPc(i32 source, i32 hide_super_story_target) {
+        f32 time, y;
+        i32 total;
+        i32 red = 255, green = 191, blue = 0;
+        char text[64], auxiliary[64];
+        if (FadeSys.fade != 0.0f || (WORLD->current_level->flags & 2) == 0)
+            return;
+        time = source == 2 ? statstime : cointotaltime;
+        y = (STATSPOSY - STATSPOS2YPc) * NuTrigTable[((i32)((f64)time * 16384.0) >> 1) & 0x7fff] + STATSPOS2YPc;
+        y += CoinTotalScoreOffsetYPc;
+        DrawCoinTotalYPc = y;
+        if (source == 1) {
+            DrawSuperStoryTimePc(-y, SuperStoryTimer.time_elapsed,
+                                 Game.episode_start[SuperStoryEpisode].superstory_time_limit, 0, 1);
+            total = SuperStoryScore;
+            if ((u32)Game.episode_start[SuperStoryEpisode].superstory_score_target > 0) {
+                if (hide_super_story_target == 0) {
+                    Text_MakeScore(Game.episode_start[SuperStoryEpisode].superstory_score_target, auxiliary);
+                    NuStrCpy(text, const_cast<char *>("("));
+                    NuStrCat(text, auxiliary);
+                    NuStrCat(text, const_cast<char *>(")"));
+                    Text3DEx(text, 0.0f, y + CoinTotalTargetOffsetYPc, 1.0f, 0.35f, 0.35f, 0.35f, 0, 255, 255, 255, 48);
+                }
+                if (SuperStoryScore > (u32)Game.episode_start[SuperStoryEpisode].superstory_score_target) {
+                    red = 63;
+                    green = 255;
+                    blue = 31;
+                }
+            }
+        } else
+            total = source == 2 ? BonusCoinTotal : Game.coins;
+        CoinTotal_Draw(total, y, CoinTotalScale, 1, 1.0f, red, green, blue);
+    }
+}
+
+extern "C" {
+    extern f32 HudBossHeartYPc, HudBossHeartScalePc, HudBossIconYPc, HudBossIconScalePc;
+    /* Complete native004ba1f0..004ba2c3/211, original boss argument ESI. */
+    static i32 DrawBossHitPointsPc(GAMEOBJECT *boss) {
+        if (boss != NULL && boss->dead == 0 && (boss->flags_1fc & 0x80) == 0) {
+            if (FadeSys.fade == 0.0f) {
+                f32 alpha = statstime;
+                DrawCharIcon(boss->id, 0.0f, HudBossIconYPc, 0.0f, HudBossIconScalePc, 167, alpha, alpha, 1, NULL);
+                DrawHitPointsPc(boss, 0.0f, HudBossHeartYPc, HudBossHeartScalePc, 1.0f, 0, alpha, 1);
+                return 1;
+            }
+            DrawBossHitPointsTwoRowsPc = 0;
+        }
+        return 0;
+    }
+}
+
+extern "C" {
+    extern i32 NuMainSkipCutBordersPc, AutoSaveIconPendingPc;
+    extern f32 CoinTotalScoreSizePc;
+    extern f32 CoinTotalCoinOffsetPc;
+    extern f32 CoinTotalScoreOffsetYPc;
+    extern f32 CoinTotalTargetOffsetYPc;
+    extern f32 DrawCoinTotalYPc;
+    extern f32 HudLevelTitleYPc;
+    extern f32 HudLevelTitleScalePc;
+    extern f32 HudLevelTitleScaleXPc;
+    extern f32 HudLevelTitleWidthPc;
+    extern f32 HudBossHeartYPc;
+    extern f32 HudBossHeartScalePc;
+    extern f32 HudBossIconYPc;
+    extern f32 HudBossIconScalePc;
+
+    void __cdecl DrawPanel(void) {
+        i32 menu = GetMenuID();
+        i32 paused;
+        i32 player_index;
+        NUVEC coordinate_positions[8];
+        char coordinate_text[128];
+        SetQFont2D();
+        if (CUTSTOPGAME == 0) {
+            TransformGameMessages(&GameCam->position, &GameCam->shaken_right, &GameCam->dir);
+        }
+        if (HUB_ADATA != NULL && WORLD->area == HUB_ADATA) {
+            Customiser_TransformToPanel(CharacterCustomiser);
+        }
+        paused = screendump != 0 ? save_paused : Paused;
+        if (NuMainSkipCutBordersPc != 0 && paused == 0 && (WORLD->current_level->flags & 2) != 0) {
+            return;
+        }
+        if (waiting_for_level != -1) {
+            STUBBED_NAMED("DrawPanel: background-load diagnostics at 0x004baf0b");
+            if (gone_through_door_to_new_level != 0) {
+                STUBBED_NAMED("DrawPanel: removed-controller menu gate at 0x004bba59");
+                goto finish;
+            }
+        }
+        STUBBED_NAMED("DrawPanel: controller remapping at 0x004bb08d");
+        if (WORLD->current_level == STATUS_LDATA || (WORLD->current_level->flags & 0x400) != 0) {
+            if (WORLD->current_level->callbacks[6] != NULL)
+                ((void(__cdecl *)(WORLDINFO *))WORLD->current_level->callbacks[6])(WORLD);
+            DrawGameMessages();
+            goto draw_menu;
+        }
+        if (BonusWinner != -1) {
+            goto draw_menu;
+        }
+        if (menu != 15 && menu != 16 && menu != 17 && CUTSTOPGAME == 0) {
+            if ((menu != 12 || customiser_quit != 0) && (menu != 13 || shop_quit != 0) && menu != 14 && menu != 8)
+                DrawPlayerHudPc(paused);
+            if (StartupGameFlag1 == 0 && LevelNameTime > 0.0f && (WORLD->current_level->flags & 0xe0) == 0 &&
+                WORLD->current_level != TITLES_LDATA && WORLD->current_level != CREDITS_LDATA) {
+                LEVELDATA_PC *level = WORLD->current_level;
+                char *name = level->title_text_id != 0xffff && level->title_text_id != (u16)tUNKNOWN
+                                 ? TTab[(i16)level->title_text_id]
+                                 : level->name;
+                if (name != NULL) {
+                    f32 alpha = NuTrigTable[((i32)((f64)LevelNameTime * 16384.0) >> 1) & 0x7fff];
+                    if (FadeSys.fade > 0.0f)
+                        alpha = (f32)((1.0 - (f64)FadeSys.fade) * (f64)alpha);
+                    SmartTextEx(name, 0.0f, HudLevelTitleYPc, 1.0f, HudLevelTitleScalePc * HudLevelTitleScaleXPc,
+                                HudLevelTitleScalePc, HudLevelTitleScalePc, 0, 255, 255, 255, HudLevelTitleWidthPc, 1,
+                                NULL, 0, (u8)(i32)((f64)alpha * 64.0));
+                }
+            }
+            i32 hide_super_story_target = drawbosshitpoints != NULL ? DrawBossHitPointsPc(drawbosshitpoints) : 0;
+            if (WORLD->area == HUB_ADATA)
+                DrawCoinTotalPc(0, hide_super_story_target);
+            else if (SuperStory != 0) {
+                if ((WORLD->current_level->flags & 0x2000) != 0)
+                    DrawCoinTotalPc(1, hide_super_story_target);
+            } else {
+                STUBBED_NAMED("DrawPanel: native bonus/challenge/mission HUD branches at 0x004bb3d6..0x004bb8ff");
+            }
+        }
+        STUBBED_NAMED("DrawPanel: frame-rate diagnostics at 0x004bb319");
+        if (CUTSTOPGAME != 0) {
+            STUBBED_NAMED("DrawPanel: DrawSubtitles at 0x0057e2c0");
+            goto draw_menu;
+        }
+        if (WORLD->current_level->callbacks[6] == NULL && (WORLD->current_level->flags & 2) == 0) {
+            goto draw_menu;
+        }
+        for (player_index = 0; player_index < 8; ++player_index) {
+            if (Player[player_index] != NULL && (((GAMEOBJECT *)Player[player_index])->flags_1fc & 0x80) != 0 &&
+                ShowPlayerCoordinatePc != 0) {
+                sprintf(coordinate_text, "X:%.2f Y:%.2f Z:%.2f", (f64)((GAMEOBJECT *)Player[player_index])->position.x,
+                        (f64)((GAMEOBJECT *)Player[player_index])->position.y,
+                        (f64)((GAMEOBJECT *)Player[player_index])->position.z);
+                Text3DEx(coordinate_text, coordinate_positions[player_index].x, coordinate_positions[player_index].y,
+                         1.0f, 0.4f, 0.5f, 0.5f, 0, 255, 191, 0, 48);
+            }
+        }
+        DebrisDraw(paused, 4);
+        if (WORLD->current_level->callbacks[6] != NULL)
+            ((void(__cdecl *)(WORLDINFO *))WORLD->current_level->callbacks[6])(WORLD);
+        GizmoSysPanelDraw(WORLD->gizmo_sys, WORLD, FRAMETIME);
+        if (paused == 0) {
+            Hint_Draw(-1);
+            DrawGameMessages();
+        }
+
+    draw_menu:
+        if (editor_active == 0) {
+            DrawMenu(paused);
+        }
+    finish:
+        if (AutoSaveIconPendingPc != 0 && WORLD->level_objects[0].active != 0) {
+            STUBBED_NAMED("DrawPanel: autosave model at 0x004bba99");
+        }
+        AutoSaveIconPendingPc = 0;
+        if (GameCam != NULL) {
+            pNuCam->mtx = GameCam->render_mtx;
+        }
+        NuCameraSet(pNuCam);
+    }
+}
+
+/* Complete native player HUD4213B; independent source gate pending. */
+extern "C" {
+    extern f32 HudNameScalePc;
+    extern f32 HudNameWidthPc;
+    extern f32 HudNameWideWidthPc;
+    extern f32 HudNameOffsetXPc;
+    extern f32 HudNameOffsetYPc;
+    extern f32 HudPausePromptOffsetYPc;
+    extern f32 HudDropInXPc;
+    extern f32 HudDropInScalePc;
+    extern f32 HudCoinAdjustYPc;
+    extern f32 HudScoreXPc;
+    extern f32 HudScoreScalePc;
+    extern f32 HudHeartXPc;
+    extern f32 HudHeartYPc;
+    extern f32 HudHeartScalePc;
+    extern f32 STATSPOS2YPc;
+    extern f32 KITPOS2YPc;
+    extern i32 HudNameRedPc;
+    extern i32 HudNameGreenPc;
+    extern i32 HudNameBluePc;
+    extern i32 HudPausePromptEnabledPc;
+    extern i32 HudPausePromptRedPc;
+    extern i32 HudPausePromptGreenPc;
+    extern u8 HudPausePromptBluePc;
+    f32 __cdecl CurrentHintAlpha(void);
+    void __cdecl DrawMiniKitCount(f32, f32, i32, i32);
+    u32 __cdecl Cheat_MultiplyScorePc(u32);
+    i32 __cdecl GizmoPickup_NumberOfTypePc(WORLDINFO *, i32, u8);
+
+    /* Append in src/legoapi/panel.c after the static DrawHitPointsPc definition.
+       Native bounded routine004b9110..004ba185 (4213 bytes), cdecl(i32 paused). */
+    void __cdecl DrawPlayerHudPc(i32 paused) {
+        u32 arcade_flags;
+        i32 arcade_mode;
+        f32 status_y;
+        i32 raised_hearts;
+        i32 flash_alpha;
+        i32 old_input_device;
+        i32 player;
+        char text[256], auxiliary[64];
+        if (FadeSys.fade != 0.0f || (WORLD->current_level->flags & 2) == 0)
+            return;
+        arcade_mode = Arcade_GetMode(&arcade_flags);
+        status_y = (f32)((STATSPOSY - STATSPOS2YPc) * NuTrigTable[((i32)((f64)statstime * 16384.0) >> 1) & 0x7fff] +
+                         STATSPOS2YPc);
+        raised_hearts = (WORLD->area != NULL && (WORLD->area == HUB_ADATA || (WORLD->area->flags & 0x100) != 0)) ||
+                        SuperStory != 0 || ChallengeMode != 0 || Mission_Active(NULL) != NULL || arcade_mode == 0;
+        GetMenuID();
+        flash_alpha =
+            (i32)((f64)NuTrigTable[(
+                      (u16)(i32)((f64)(NuFmod(GlobalTimer.time_elapsed_mod_seconds, 0.5f) * 2.0f) * 65536.0) >> 1)] *
+                      16.0 +
+                  96.0);
+        old_input_device = TextInputLastDevicePc();
+        for (player = 0; player < 2; ++player) {
+            GAMEOBJECT *object;
+            f32 base_alpha, alpha, icon_x, name_x;
+            i32 alignment, frame_model, visible;
+            TextInputSetLastDevicePc(player);
+            object = (GAMEOBJECT *)Player[player];
+            if (object == NULL)
+                continue;
+            base_alpha = paused != 0 && player != pause_i_pad && (object->flags_1fc & 0x80) != 0 ? 0.5f : 1.0f;
+            icon_x = player == 0 ? -ICONX : ICONX;
+            alignment = player == 0 ? 2 : 8;
+            frame_model = player == 0 ? 166 : 165;
+            alpha = ((object->flags_1fc & 0x80) != 0 ? 1.0f : MissionDropInAlphaPc) * base_alpha;
+            DrawCharIconPanelPc = player;
+            visible = object->hud_icon_timer <= 0.0f ||
+                      (object->hud_icon_timer < 2.0f && (f64)NuFmod(object->hud_icon_timer, 0.4f) < (f64)0.2f);
+            if (WORLD->current_level == LevelFixupSlotPc0087b268 && object->takeover_source != NULL &&
+                object->takeover_source->id == id_YODA)
+                DrawCharIcon(object->id, icon_x, status_y, 0.0f, MissionPlayerIconSizePc, frame_model, alpha, alpha,
+                             visible, NULL);
+            else
+                DrawCharIcon(object->takeover_source != NULL ? object->takeover_source->id : object->id, icon_x,
+                             status_y, 0.0f, MissionPlayerIconSizePc, frame_model, alpha, alpha, visible, NULL);
+            name_x = player == 0 ? -(ICONX + HudNameOffsetXPc) : ICONX + HudNameOffsetXPc;
+            if ((object->flags_1fc & 0x80) != 0 && object->character_data->name_id != -1 &&
+                (paused != 0 || (object->hud_icon_timer > 0.0f && object->hud_icon_timer < 2.0f &&
+                                 (f64)NuFmod(object->hud_icon_timer, 0.4f) < (f64)0.2f))) {
+                f32 width = Game.options_save.widescreen != 0 ? HudNameWideWidthPc : HudNameWidthPc;
+                SmartTextEx(GameObj_GetNamePc(-1, object, auxiliary), name_x, status_y + HudNameOffsetYPc, 1.0f,
+                            HudNameScalePc, HudNameScalePc, HudNameScalePc, alignment | 1, (u8)HudNameRedPc,
+                            (u8)HudNameGreenPc, (u8)HudNameBluePc, width, 2, NULL, 0, (i32)((f64)base_alpha * 128.0));
+            }
+            if (HudPausePromptEnabledPc != 0 && paused != 0 && player == pause_i_pad) {
+                f32 width = Game.options_save.widescreen != 0 ? HudNameWideWidthPc : HudNameWidthPc;
+                SmartTextEx(TTab[TextIdPc880834], name_x, status_y + HudPausePromptOffsetYPc, 1.0f, HudNameScalePc,
+                            HudNameScalePc, HudNameScalePc, alignment | 1, (u8)HudPausePromptRedPc,
+                            (u8)HudPausePromptGreenPc, HudPausePromptBluePc, width, 1, NULL, 0, flash_alpha);
+            }
+            if (StartupGameFlag1 != 0 && paused == 0 && FadeSys.fade == 0.0f && (object->flags_1fc & 0x80) != 0) {
+                if (ONEPLAYERPOWERUPS != 0 && object->powerup_time > 0.0f) {
+                    if (FindGameMsgsWithID(7, 0, (i8)object->field_280, NULL) == 0 &&
+                        (object->powerup_time >= 3.0f || (u32)GameTimer.update_count % 6 < 3)) {
+                        f32 y = PowerUp_GetPanelY(player) + status_y;
+                        DrawPanel3DObject(icon_x, y, 1.0f, POWERUPOBJSIZE, POWERUPOBJSIZE, POWERUPOBJSIZE, 0,
+                                          PowerUp_PanelYRot[player], 0, &WORLD->level_objects[208].special, 0, 1.0f);
+                        y = PowerUp_GetPanelY(player) + status_y;
+                        DrawPanel3DObject(icon_x, y, 1.0f, POWERUPOBJSIZE, POWERUPOBJSIZE, POWERUPOBJSIZE, 0,
+                                          PowerUp_PanelYRot[player], 0, &WORLD->level_objects[209].special, 0, 1.0f);
+                    }
+                } else {
+                    u32 multiplier = Cheat_MultiplyScorePc(1);
+                    if ((DoubleScore & (1 << player)) != 0)
+                        multiplier *= 2;
+                    if (multiplier > 1) {
+                        sprintf(text, "x%i", multiplier);
+                        Text3DEx(text, icon_x, status_y + HudPausePromptOffsetYPc, 1.0f, 0.3f, 0.35f, 0.35f, 1, 255, 0,
+                                 255, (u8)flash_alpha);
+                    }
+                }
+            }
+            if ((object->flags_1fc & 0x80) != 0) {
+                f32 x = player == 0 ? -HudHeartXPc : HudHeartXPc;
+                f32 y = raised_hearts != 0 ? status_y : status_y + HudHeartYPc;
+                DrawHitPointsPc(object, x, y, HudHeartScalePc, 1.0f, alignment, alpha, 1);
+            } else if (paused == 0 && CUTSTOPGAME == 0) {
+                i32 drop_alpha = (i32)((f64)MissionDropInAlphaPc * 128.0);
+                if (drop_alpha > 0) {
+                    f32 x = player == 0 ? -HudDropInXPc : HudDropInXPc;
+                    f32 y = raised_hearts != 0 ? status_y : status_y + HudHeartYPc;
+                    SmartTextEx(player == 0 ? apitxt_PCPRESSSTARTP1 : apitxt_PCPRESSSTARTP2, x, y, 1.0f,
+                                HudDropInScalePc, HudDropInScalePc, HudDropInScalePc, alignment, 255, 255, 255, 0.3f, 2,
+                                NULL, 0, drop_alpha);
+                }
+            }
+            if (raised_hearts == 0) {
+                PLAYER_COIN_PACKET_PC *packet = (PLAYER_COIN_PACKET_PC *)object->coin_packet;
+                i32 model;
+                f32 coin_x, score_x, y, scale;
+                if ((arcade_flags & 2) != 0) {
+                    sprintf(text, "%i/%i", AreaGlobals_PC.arcade_ai_kills[player], Arcade_Mode[ArcadeItem.mode].target);
+                    model = 53;
+                } else {
+                    if (packet == NULL)
+                        continue;
+                    Text_MakeScore(packet->coins, text);
+                }
+                coin_x = player == 0 ? -PANEL_COINX : PANEL_COINX;
+                score_x = player == 0 ? -HudScoreXPc : HudScoreXPc;
+                y = status_y + PANEL_COINY;
+                scale = packet->scale * HudScoreScalePc;
+                Text3DEx(text, score_x, y + HudCoinAdjustYPc, 1.0f, scale, scale, scale, alignment, 255, 191, 0,
+                         (u8)(i32)((f64)alpha * 128.0));
+                if ((arcade_flags & 2) == 0) {
+                    packet = (PLAYER_COIN_PACKET_PC *)object->coin_packet;
+                    model = packet->last_coin;
+                    if ((model >= 183 && model <= 186) || (model >= 191 && model <= 194) ||
+                        (model >= 199 && model <= 202))
+                        model -= 4;
+                    else if (model >= 213 && model <= 216)
+                        model += 4;
+                }
+                if (WORLD->level_objects[model].active != 0) {
+                    packet = (PLAYER_COIN_PACKET_PC *)object->coin_packet;
+                    scale = packet->scale * PANEL_COINSCALE_END;
+                    DrawPanel3DObject(coin_x, y, 1.0f, scale, scale, scale, 0, 0, 0,
+                                      &WORLD->level_objects[model].special, 0, alpha);
+                }
+            }
+        }
+        if (MenuInMemoryCard() == 0) {
+            if (WORLD->area != NULL) {
+                i32 freeplay = GAMEDEMO != 0 ? 0 : FreePlay;
+                if (SuperStory == 0 && ChallengeMode == 0 && Mission_Active(NULL) == NULL && Arcade == 0 &&
+                    (WORLD->area->flags & 0x10) != 0 &&
+                    (HubBothTrueJediGoldBricksPc != 0
+                         ? Game.area_save[WORLD->area_index].true_hero_complete[freeplay] == 0
+                         : Game.area_save[WORLD->area_index].true_hero_complete[0] == 0 &&
+                               Game.area_save[WORLD->area_index].true_hero_complete[1] == 0)) {
+                    u32 maximum = WORLD->area->true_hero_targets[freeplay];
+                    if (maximum != 0) {
+                        status_y = (STATSPOSY - STATSPOS2YPc) *
+                                       NuTrigTable[((i32)((f64)builduptime * 16384.0) >> 1) & 0x7fff] +
+                                   STATSPOS2YPc;
+                        HubDrawBuildUpBarPc(0.0f, status_y + PANEL_COINY, BuildUpTotal != 0 ? maximum : BuildUpDone,
+                                            maximum, 1.0f, BuildUpScale, 1.0f, 0);
+                    }
+                }
+                if (SuperStory == 0 && Mission_Active(NULL) == NULL && Arcade == 0 &&
+                    ((WORLD->area->flags & 0x10) != 0 ||
+                     ((WORLD->current_level->flags & 0x200) != 0 && GizmoPickup_NumberOfTypePc(WORLD, 4, 0) > 0)))
+                    DrawMiniKitCount(minikittime, MiniKitScale,
+                                     ChallengeMode != 0 ? AreaGlobals_PC.field_20 : AreaGlobals_PC.progress_flags, 10);
+                if (SuperStory == 0 && ChallengeMode == 0 && Mission_Active(NULL) == NULL && Arcade == 0 &&
+                    (WORLD->area->flags & 0x10) != 0 &&
+                    (AreaGlobals_PC.field_08 == 2 || Game.area_save[WORLD->area_index].red_brick_collected != 0) &&
+                    redbrickslidetime > 0.0f) {
+                    f32 factor = NuTrigTable[((i32)((f64)redbrickslidetime * 16384.0) >> 1) & 0x7fff];
+                    f32 x = (REDBRICKPOSX - REDBRICKPOS2X) * factor + REDBRICKPOS2X;
+                    f32 y = (REDBRICKPOSY - REDBRICKPOS2Y) * factor + REDBRICKPOS2Y;
+                    u16 angle =
+                        (u16)(0x1555 - (u16)(i32)((f64)NuFmod(GlobalTimer.time_elapsed, 4.0f) * 0.25 * -65536.0));
+                    u16 pitch = (u16)(i32)((f64)NuTrigTable[angle & 0x7fff] * 1820.0);
+                    f32 scale = RedBrickScale * PANEL_REDBRICKSCALE;
+                    DrawPanel3DObjectNoAlpha(x, y, 1.0f, scale, scale, scale, pitch, angle, 0,
+                                             &WORLD->level_objects[210].special, 2);
+                }
+            }
+            if (DoubleScoreTime > 0.0f)
+                DrawInDoubleScoreZone(DoubleScoreTime);
+        }
+        if (BonusArea != 0 && WORLD->area != NULL && (WORLD->area->flags & 0x104) == 4)
+            HubDrawArcadeScorePc(status_y, Player[0] != NULL && (((GAMEOBJECT *)Player[0])->flags_1fc & 0x80) != 0,
+                                 Player[1] != NULL && (((GAMEOBJECT *)Player[1])->flags_1fc & 0x80) != 0, 1.0f,
+                                 Arcade != 0 ? Arcade_Points : BonusScore);
+        if (HUB_ADATA != NULL && WORLD->area == HUB_ADATA && goldbricktime > 0.0f) {
+            f32 y = (STATSPOS2YPc - STATSPOSY) * NuTrigTable[((i32)((f64)goldbricktime * 16384.0) >> 1) & 0x7fff] -
+                    STATSPOS2YPc;
+            Hub_DrawImportantBrick(211, 0.0f, y, 1.0f, Game.gold_bricks, GOLDBRICKPOINTS);
+        }
+        TextInputSetLastDevicePc(old_input_device);
     }
 }

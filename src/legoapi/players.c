@@ -3306,11 +3306,6 @@ static void GameDrawMtxRotateZPc(NUMTX *matrix, NUANG angle) {
 
 #include <string.h>
 
-typedef struct DRAW_ATTACHMENTS_MINI_PC {
-    f32 current_time, previous_time, blend_elapsed, blend_duration, source_time, target_time;
-    u8 flags, blending;
-    i16 source_animation, target_animation, animation, previous_animation, requested_animation;
-} DRAW_ATTACHMENTS_MINI_PC;
 typedef struct DRAW_ATTACHMENTS_MINI_OBJECT_PC {
     u8 unknown_000[0x7d0];
     DRAW_ATTACHMENTS_MINI_PC mini;
@@ -4154,4 +4149,60 @@ void __cdecl DrawParaphernaliaPc(GAMEOBJECT *object) {
             }
         }
     }
+}
+
+/* Native 0x0041fe90, 526 bytes. */
+typedef struct ai_creature_init_packet_pc_s {
+    u8 unknown_000[0xa0];
+    void *area;
+    void *locator;
+} AI_CREATURE_INIT_PACKET_PC;
+STATIC_ASSERT(offsetof(AI_CREATURE_INIT_PACKET_PC, area) == 0xa0);
+STATIC_ASSERT(offsetof(AI_CREATURE_INIT_PACKET_PC, locator) == 0xa4);
+STATIC_ASSERT(offsetof(AIPACKET_PC, creature_index) + offsetof(GAMEOBJECT, ai_packet) == 0x400);
+
+void __cdecl InitAICreatures(AISYS_PC *system) {
+    i32 creature_index, member, type;
+    AICREATURE_PC *creature;
+    GAMEOBJECT *object;
+    AIGROUP_PC *group;
+    u32 model_flags;
+    if (NOAICREATURES != 0 || Mission_Active(NULL) != NULL || netclient != 0 || system == NULL)
+        return;
+    for (creature_index = 0; creature_index < system->creature_count; ++creature_index) {
+        creature = &system->creatures[creature_index];
+        group = NULL;
+        for (member = 0; member < creature->count; ++member) {
+            if (((u64)creature->active_mask & ((u64)1 << member)) == 0)
+                continue;
+            type = creature->type;
+            if ((u32)type > 339 || apicharsys->playermodelids[type] == -1)
+                continue;
+            object = AddGameObject();
+            if (object == NULL)
+                continue;
+            InitCreature(object, type, 1);
+            object->flags_1f8 |= 0x400;
+            object->flags_1fc_word &= ~0x1000u;
+            model_flags = apicharsys->char_data[creature->type].model_flags;
+            if ((model_flags & 0x200) != 0)
+                object->flags_1f8 |= 4;
+            else if ((model_flags & 4) != 0)
+                object->flags_1f8 |= 1;
+            object->flags_1044 |= 1;
+            if ((apicharsys->char_data[creature->type].model_flags & 0x1000) != 0)
+                object->flags_1044 |= 4;
+            object->ai_packet.creature_index = (u8)creature_index;
+            if (member == 0 && creature->count > 1 && creature->start_stagger == 0.0f)
+                group = CreateAIGroup(system, creature->count_across, creature->x_spacing, creature->z_spacing,
+                                      object->character_data->game_character->run_speed);
+            if (group != NULL)
+                AddToAIGroup(group, (APIOBJECT_PC *)object);
+            ((AI_CREATURE_INIT_PACKET_PC *)&object->ai_packet)->area = creature->area;
+            ((AI_CREATURE_INIT_PACKET_PC *)&object->ai_packet)->locator = creature->locator;
+            object->ai_packet.respawn_locator = (AILOCATOR_PC *)creature->respawn_locator;
+            object->ai_packet.creature_set = creature->set;
+        }
+    }
+    system->reset_flags &= ~1u;
 }

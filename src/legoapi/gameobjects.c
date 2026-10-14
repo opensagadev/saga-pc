@@ -4586,7 +4586,7 @@ static i32 GameAIWallShufflePc(GAMEOBJECT *object) {
     return 1;
 }
 
-i32 CheckPosAIArea(AIAREA_s *area, NUVEC *position, float tolerance) {
+i32 CheckPosAIArea(AIAREA_PC *area, NUVEC *position, float tolerance) {
     NUVEC local_position;
     if (position == NULL || area == NULL) {
         return 0;
@@ -5237,4 +5237,140 @@ i32 AutoSaveIconPendingPc;
 
 void __cdecl DrawAutoSaveIcon(void) {
     AutoSaveIconPendingPc = 1;
+}
+
+/* Native 0x0043fda0, 390 bytes. */
+typedef struct ai_reset_world_pc_s {
+    u8 unknown_0000[0x2aec];
+    i32 processor_count;
+    LEVEL_SCRIPT_PROCESS_PC processors[32];
+    AI_CONTROL_SYSTEM_PC *ai_path_cnx_control_sys;
+    AI_HELPER_SYSTEM_PC *ai_path_cnx_helper_sys;
+} AI_RESET_WORLD_PC;
+STATIC_ASSERT(offsetof(AI_RESET_WORLD_PC, processor_count) == 0x2aec);
+STATIC_ASSERT(offsetof(AI_RESET_WORLD_PC, processors) == 0x2af0);
+STATIC_ASSERT(offsetof(AI_RESET_WORLD_PC, ai_path_cnx_control_sys) == 0x4670);
+STATIC_ASSERT(offsetof(AI_RESET_WORLD_PC, ai_path_cnx_helper_sys) == 0x4674);
+void __cdecl LevelScriptReStoreProgress(WORLDINFO *, LEVEL_SCRIPT_PROCESS_PC *);
+void __cdecl GameAIResetPathConnectionsPc(AISYS_PC *);
+
+extern const char GameAILevelScriptFormatPc[8];
+
+void __cdecl GameAISysReset(AISYS_PC *system) {
+    i32 script_index;
+    char script_name[32];
+    AI_RESET_WORLD_PC *world;
+    if (system == NULL)
+        return;
+    AISysSetLevelPath(system, NULL);
+    ((AI_RESET_WORLD_PC *)WORLD)->processor_count = 0;
+    for (script_index = 0; script_index < 32; ++script_index) {
+        if (script_index != 0)
+            sprintf(script_name, GameAILevelScriptFormatPc, script_index);
+        else
+            sprintf(script_name, AIScriptKeywordLevel);
+        if (AIScriptFind(WORLD->ai_sys, script_name, 0, 1, 0) == NULL)
+            continue;
+        world = (AI_RESET_WORLD_PC *)WORLD;
+        AIScriptProcessorInit(system, NULL, &world->processors[world->processor_count].processor, NULL, script_name,
+                              NULL, 0, NULL, NULL);
+        world = (AI_RESET_WORLD_PC *)WORLD;
+        NuStrCpy(world->processors[world->processor_count].name, script_name);
+        world = (AI_RESET_WORLD_PC *)WORLD;
+        LevelScriptReStoreProgress(WORLD, &world->processors[world->processor_count]);
+        ++((AI_RESET_WORLD_PC *)WORLD)->processor_count;
+    }
+    GameAIResetPathConnectionsPc(system);
+    AIPathCnxControlSysReset(((AI_RESET_WORLD_PC *)WORLD)->ai_path_cnx_control_sys);
+    AIPathCnxHelperSysReset(WORLD, ((AI_RESET_WORLD_PC *)WORLD)->ai_path_cnx_helper_sys);
+    InitAICreatures(system);
+    ResetAICreatures(system);
+    if (((AI_RESET_WORLD_PC *)WORLD)->processor_count != 0)
+        GizmoSysAddGizmos(WORLD->gizmo_sys, WORLD->giz_flow, WORLD);
+}
+
+/* Native 0x0043b7c0, 376 bytes: private EDI-argument helper of frame owner. */
+static void GameAIUpdateAreaPc(AIAREA_PC *area) {
+    i32 area_index = (i32)(area - WORLD->ai_sys->areas);
+    GAMEOBJECT *object = Obj;
+    i32 index;
+    NUVEC local;
+    u64 outside_bit;
+    i32 inside_low;
+    area->runtime_flags &= ~7u;
+    for (index = 0; index < HIGHGAMEOBJECT; ++index, ++object) {
+        if ((object->flags_1fc_word & 1) == 0 || (object->flags_1fc_word & 0x1000) == 0)
+            continue;
+        if (object->dead != 0 && !(object->field_1010 > 0.0f) && (i8)object->flags_1fc_half >= 0)
+            continue;
+        NuVecSub(&local, &object->position, &area->position);
+        NuVecRotateY(&local, &local, -area->rotation);
+        if (local.x >= -area->half_width && (f64)local.y >= (f64)-0.1f && local.z >= -area->half_depth &&
+            local.x <= area->half_width && local.y <= area->height && local.z <= area->half_depth) {
+            inside_low = (i32)(1u << (area_index & 31));
+            object->ai_area_mask[0] |= (u32)inside_low;
+            object->ai_area_mask[1] |= (u32)((i64)inside_low >> 32);
+            if ((object->flags_1fc_half & 0x80) != 0)
+                area->runtime_flags |= 1;
+            if ((object->flags_1f8 & 1) != 0)
+                area->runtime_flags |= 4;
+            else if ((object->flags_1f8 & 4) == 0)
+                area->runtime_flags |= 2;
+        } else {
+            outside_bit = (u64)1 << area_index;
+            object->ai_area_mask[0] &= ~(u32)outside_bit;
+            object->ai_area_mask[1] &= ~(u32)(outside_bit >> 32);
+        }
+    }
+}
+
+typedef struct ai_frame_world_pc_s {
+    u8 unknown_0000[0x2aec];
+    i32 processor_count;
+    LEVEL_SCRIPT_PROCESS_PC processors[32];
+} AI_FRAME_WORLD_PC;
+STATIC_ASSERT(offsetof(AI_FRAME_WORLD_PC, processor_count) == 0x2aec);
+STATIC_ASSERT(offsetof(AI_FRAME_WORLD_PC, processors) == 0x2af0);
+/* Native 0x0043b940, 467 bytes. */
+void __cdecl GameAISysStartFrame(AISYS_PC *system) {
+    i32 path_index, connection_index, script_index;
+    AIPATH_PC *path;
+    AIPATHCNX_PC *connection;
+    AIPATHNODE_PC *node;
+    AI_FRAME_WORLD_PC *world;
+    if (system == NULL || netclient != 0)
+        return;
+    if (system->path_sys != NULL) {
+        for (path_index = 0; path_index < system->path_sys->path_count; ++path_index) {
+            memset(system->path_sys->paths[path_index]->updated_node_bits, 0, 0x20);
+            PCByteCopy_candidate(system->path_sys->paths[path_index]->previous_inside_node_bits,
+                                 system->path_sys->paths[path_index]->inside_node_bits, 0x20);
+            memset(system->path_sys->paths[path_index]->inside_node_bits, 0, 0x20);
+        }
+        for (path_index = 0; path_index < system->path_sys->path_count; ++path_index) {
+            for (connection_index = 0; connection_index < system->path_sys->paths[path_index]->connection_count;
+                 ++connection_index) {
+                path = system->path_sys->paths[path_index];
+                connection = &path->connections[connection_index];
+                node = &path->nodes[connection->node_indices[0]];
+                if (node->has_special != 0)
+                    AIPathNodeUpdatePos(system, system->path_sys->paths[path_index], node);
+                path = system->path_sys->paths[path_index];
+                node = &path->nodes[connection->node_indices[1]];
+                if (node->has_special != 0)
+                    AIPathNodeUpdatePos(system, path, node);
+            }
+        }
+    }
+    if (system->next_area_check < system->area_count) {
+        GameAIUpdateAreaPc(&system->areas[system->next_area_check]);
+        ++system->next_area_check;
+        if (system->next_area_check >= system->area_count)
+            system->next_area_check = 0;
+    }
+    for (script_index = 0; script_index < ((AI_FRAME_WORLD_PC *)WORLD)->processor_count; ++script_index) {
+        world = (AI_FRAME_WORLD_PC *)WORLD;
+        if ((world->processors[script_index].processor.flags & 2) == 0)
+            AIScriptProcess(system, NULL, NULL, &world->processors[script_index].processor, FRAMETIME);
+    }
 }

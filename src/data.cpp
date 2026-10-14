@@ -33640,3 +33640,285 @@ extern "C" {
     struct nugspline_s *splcharshelf = NULL;
 #pragma bss_seg()
 }
+
+extern "C" {
+#pragma bss_seg(".bss$AIPathCnxHelperSysInitFn")
+    void(__cdecl *AIPathCnxHelperSysInitFn)(WORLDINFO *);
+#pragma bss_seg()
+
+#pragma const_seg(".rdata$GameAILevelScriptFormatPc")
+    extern const char GameAILevelScriptFormatPc[8] = "Level%d";
+#pragma const_seg()
+}
+
+extern "C" {
+#pragma const_seg(".rdata$HubAILocatorFormatPc")
+    extern const char HubAILocatorFormatPc[6] = "%s_%d";
+#pragma const_seg()
+#pragma const_seg(".rdata$HubAIAreaMessagePc")
+    extern const char HubAIAreaMessagePc[5] = "Area";
+#pragma const_seg()
+#pragma const_seg(".rdata$HubAIServingCustomerPc")
+    extern const char HubAIServingCustomerPc[16] = "ServingCustomer";
+#pragma const_seg()
+#pragma const_seg(".rdata$HubAICounterAFormatPc")
+    extern const char HubAICounterAFormatPc[12] = "CounterA_%d";
+#pragma const_seg()
+#pragma const_seg(".rdata$HubAICounterBFormatPc")
+    extern const char HubAICounterBFormatPc[12] = "CounterB_%d";
+#pragma const_seg()
+#pragma const_seg(".rdata$HubAIServePlayerPc")
+    extern const char HubAIServePlayerPc[12] = "ServePlayer";
+#pragma const_seg()
+#pragma const_seg(".rdata$HubAIBandDoorPc")
+    extern const char HubAIBandDoorPc[14] = "BandDoor_Open";
+#pragma const_seg()
+#pragma const_seg(".rdata$HubAITableFormatPc")
+    extern const char HubAITableFormatPc[9] = "Table_%d";
+#pragma const_seg()
+#pragma const_seg(".rdata$HubAITableAreaFormatPc")
+    extern const char HubAITableAreaFormatPc[11] = "Table%d_%d";
+#pragma const_seg()
+#pragma const_seg(".rdata$HubAIAreaNamePc0")
+    extern const char HubAIAreaNamePc0[9] = "MAINROOM";
+#pragma const_seg()
+#pragma const_seg(".rdata$HubAIAreaNamePc1")
+    extern const char HubAIAreaNamePc1[9] = "EPISODE1";
+#pragma const_seg()
+#pragma const_seg(".rdata$HubAIAreaNamePc2")
+    extern const char HubAIAreaNamePc2[9] = "EPISODE2";
+#pragma const_seg()
+#pragma const_seg(".rdata$HubAIAreaNamePc3")
+    extern const char HubAIAreaNamePc3[9] = "EPISODE3";
+#pragma const_seg()
+#pragma const_seg(".rdata$HubAIAreaNamePc4")
+    extern const char HubAIAreaNamePc4[9] = "EPISODE4";
+#pragma const_seg()
+#pragma const_seg(".rdata$HubAIAreaNamePc5")
+    extern const char HubAIAreaNamePc5[9] = "EPISODE5";
+#pragma const_seg()
+#pragma const_seg(".rdata$HubAIAreaNamePc6")
+    extern const char HubAIAreaNamePc6[9] = "EPISODE6";
+#pragma const_seg()
+#pragma const_seg(".rdata$HubAIAreaNamePc7")
+    extern const char HubAIAreaNamePc7[9] = "JUNKYARD";
+#pragma const_seg()
+#pragma const_seg(".rdata$HubAIAreaNamePc8")
+    extern const char HubAIAreaNamePc8[6] = "BONUS";
+#pragma const_seg()
+#pragma const_seg(".rdata$HubAIAreaNamePc9")
+    extern const char HubAIAreaNamePc9[7] = "BOUNTY";
+#pragma const_seg()
+    const char *HubAreaNamesPc[10] = {HubAIAreaNamePc0, HubAIAreaNamePc1, HubAIAreaNamePc2, HubAIAreaNamePc3,
+                                      HubAIAreaNamePc4, HubAIAreaNamePc5, HubAIAreaNamePc6, HubAIAreaNamePc7,
+                                      HubAIAreaNamePc8, HubAIAreaNamePc9};
+}
+
+extern "C" {
+#pragma data_seg(".data$KITPOS2YPc")
+    f32 KITPOS2YPc = -1.2999999523162842f;
+#pragma data_seg()
+}
+
+extern "C" {
+#pragma data_seg(".data$HudNameScalePc")
+    f32 HudNameScalePc = 0.3499999940395355f;
+#pragma data_seg(".data$HudNameWidthPc")
+    f32 HudNameWidthPc = 0.5f;
+#pragma data_seg(".data$HudNameWideWidthPc")
+    f32 HudNameWideWidthPc = 0.699999988079071f;
+#pragma data_seg(".data$HudNameOffsetXPc")
+    f32 HudNameOffsetXPc = 0.07500000298023224f;
+#pragma data_seg(".data$HudNameOffsetYPc")
+    f32 HudNameOffsetYPc = -0.125f;
+#pragma data_seg(".data$HudPausePromptOffsetYPc")
+    f32 HudPausePromptOffsetYPc = -0.2849999964237213f;
+#pragma data_seg(".data$HudDropInXPc")
+    f32 HudDropInXPc = 0.6850000023841858f;
+#pragma data_seg(".data$HudDropInScalePc")
+    f32 HudDropInScalePc = 0.3499999940395355f;
+#pragma data_seg(".data$HudCoinAdjustYPc")
+    f32 HudCoinAdjustYPc = -0.006000000052154064f;
+#pragma data_seg(".data$HudScoreXPc")
+    f32 HudScoreXPc = 0.6100000143051147f;
+#pragma data_seg(".data$HudScoreScalePc")
+    f32 HudScoreScalePc = 0.375f;
+#pragma data_seg(".data$HudHeartXPc")
+    f32 HudHeartXPc = 0.6499999761581421f;
+#pragma data_seg(".data$HudHeartYPc")
+    f32 HudHeartYPc = -0.04500000178813934f;
+#pragma data_seg(".data$HudHeartScalePc")
+    f32 HudHeartScalePc = 0.19499999284744263f;
+#pragma data_seg(".data$STATSPOS2YPc")
+    f32 STATSPOS2YPc = 1.2549999952316284f;
+#pragma data_seg(".data$HudNameRedPc")
+    i32 HudNameRedPc = 255;
+#pragma data_seg(".data$HudNameGreenPc")
+    i32 HudNameGreenPc = 255;
+#pragma data_seg(".data$HudNameBluePc")
+    i32 HudNameBluePc = 255;
+#pragma data_seg(".data$HudPausePromptEnabledPc")
+    i32 HudPausePromptEnabledPc = 1;
+#pragma data_seg(".data$HudPausePromptRedPc")
+    i32 HudPausePromptRedPc = 255;
+#pragma data_seg(".data$HudPausePromptGreenPc")
+    i32 HudPausePromptGreenPc = 191;
+#pragma bss_seg(".bss$HudPausePromptBluePc")
+    u8 HudPausePromptBluePc;
+#pragma data_seg()
+#pragma bss_seg()
+
+#pragma bss_seg(".bss$DrawBossHitPointsTwoRowsPc")
+    i32 DrawBossHitPointsTwoRowsPc = 0;
+#pragma data_seg(".data$PanelHeartSpacingPc")
+    f32 PanelHeartSpacingPc = 0.3f;
+#pragma data_seg(".data$PanelHeartRowOffsetPc")
+    f32 PanelHeartRowOffsetPc = 0.14f;
+#pragma data_seg(".data$PanelHeartWidescreenPc")
+    f32 PanelHeartWidescreenPc = 0.85f;
+#pragma data_seg(".data$DoubleScoreTextYPc")
+    f32 DoubleScoreTextYPc = -0.6f;
+#pragma data_seg(".data$DoubleScoreTextScalePc")
+    f32 DoubleScoreTextScalePc = 0.5f;
+
+#pragma data_seg()
+#pragma bss_seg()
+
+#pragma data_seg(".data$CoinTotalScoreSizePc")
+    f32 CoinTotalScoreSizePc = 0.5f;
+#pragma data_seg(".data$CoinTotalCoinOffsetPc")
+    f32 CoinTotalCoinOffsetPc = 0.05000000074505806f;
+#pragma data_seg(".data$CoinTotalScoreOffsetYPc")
+    f32 CoinTotalScoreOffsetYPc = -0.004999999888241291f;
+#pragma data_seg(".data$CoinTotalTargetOffsetYPc")
+    f32 CoinTotalTargetOffsetYPc = -0.10000000149011612f;
+#pragma data_seg(".data$DrawCoinTotalYPc")
+    f32 DrawCoinTotalYPc = 2000000.0f;
+#pragma data_seg(".data$HudLevelTitleYPc")
+    f32 HudLevelTitleYPc = -0.7450000047683716f;
+#pragma data_seg(".data$HudLevelTitleScalePc")
+    f32 HudLevelTitleScalePc = 0.5f;
+#pragma data_seg(".data$HudLevelTitleScaleXPc")
+    f32 HudLevelTitleScaleXPc = 1.0f;
+#pragma data_seg(".data$HudLevelTitleWidthPc")
+    f32 HudLevelTitleWidthPc = 1.0f;
+#pragma data_seg(".data$HudBossHeartYPc")
+    f32 HudBossHeartYPc = 0.4699999988079071f;
+#pragma data_seg(".data$HudBossHeartScalePc")
+    f32 HudBossHeartScalePc = 0.20000000298023224f;
+#pragma data_seg(".data$HudBossIconYPc")
+    f32 HudBossIconYPc = 0.612500011920929f;
+#pragma data_seg(".data$HudBossIconScalePc")
+    f32 HudBossIconScalePc = 0.1599999964237213f;
+#pragma data_seg()
+}
+
+extern "C" {
+#pragma const_seg(".rdata$PlayerExtraActionNamePc_00")
+    extern const char PlayerExtraActionNamePc_00[5] = "run1";
+#pragma const_seg()
+#pragma const_seg(".rdata$PlayerExtraActionNamePc_01")
+    extern const char PlayerExtraActionNamePc_01[6] = "idle1";
+#pragma const_seg()
+#pragma const_seg(".rdata$PlayerExtraActionNamePc_02")
+    extern const char PlayerExtraActionNamePc_02[11] = "interface1";
+#pragma const_seg()
+#pragma const_seg(".rdata$PlayerExtraActionNamePc_03")
+    extern const char PlayerExtraActionNamePc_03[13] = "deactivated1";
+#pragma const_seg()
+#pragma const_seg(".rdata$PlayerExtraActionNamePc_04")
+    extern const char PlayerExtraActionNamePc_04[6] = "fall1";
+#pragma const_seg()
+#pragma const_seg(".rdata$PlayerExtraActionNamePc_05")
+    extern const char PlayerExtraActionNamePc_05[6] = "fire1";
+#pragma const_seg()
+#pragma const_seg(".rdata$PlayerExtraActionNamePc_06")
+    extern const char PlayerExtraActionNamePc_06[7] = "force1";
+#pragma const_seg()
+#pragma const_seg(".rdata$PlayerExtraActionNamePc_07")
+    extern const char PlayerExtraActionNamePc_07[6] = "walk1";
+#pragma const_seg()
+#pragma const_seg(".rdata$PlayerExtraActionNamePc_08")
+    extern const char PlayerExtraActionNamePc_08[8] = "tiptoe1";
+#pragma const_seg()
+#pragma const_seg(".rdata$PlayerExtraActionNamePc_09")
+    extern const char PlayerExtraActionNamePc_09[6] = "jump1";
+#pragma const_seg()
+#pragma const_seg(".rdata$PlayerExtraActionNamePc_10")
+    extern const char PlayerExtraActionNamePc_10[6] = "land1";
+#pragma const_seg()
+#pragma const_seg(".rdata$PlayerExtraActionNamePc_11")
+    extern const char PlayerExtraActionNamePc_11[7] = "shoot1";
+#pragma const_seg()
+#pragma const_seg(".rdata$PlayerExtraActionNamePc_12")
+    extern const char PlayerExtraActionNamePc_12[6] = "block";
+#pragma const_seg()
+#pragma const_seg(".rdata$PlayerExtraActionNamePc_13")
+    extern const char PlayerExtraActionNamePc_13[9] = "takehit1";
+#pragma const_seg()
+#pragma const_seg(".rdata$PlayerExtraActionNamePc_14")
+    extern const char PlayerExtraActionNamePc_14[7] = "punch1";
+#pragma const_seg()
+#pragma const_seg(".rdata$PlayerExtraActionNamePc_15")
+    extern const char PlayerExtraActionNamePc_15[14] = "trooperaccess";
+#pragma const_seg()
+#pragma const_seg(".rdata$PlayerExtraActionNamePc_16")
+    extern const char PlayerExtraActionNamePc_16[7] = "throw1";
+#pragma const_seg()
+#pragma const_seg(".rdata$PlayerExtraActionNamePc_17")
+    extern const char PlayerExtraActionNamePc_17[13] = "hunteraccess";
+#pragma const_seg()
+#pragma const_seg(".rdata$PlayerExtraActionNamePc_18")
+    extern const char PlayerExtraActionNamePc_18[6] = "stun1";
+#pragma const_seg()
+#pragma const_seg(".rdata$PlayerExtraActionNamePc_19")
+    extern const char PlayerExtraActionNamePc_19[9] = "stunned1";
+#pragma const_seg()
+#pragma const_seg(".rdata$PlayerExtraActionNamePc_21")
+    extern const char PlayerExtraActionNamePc_21[11] = "ride_buggy";
+#pragma const_seg()
+#pragma const_seg(".rdata$PlayerExtraActionNamePc_22")
+    extern const char PlayerExtraActionNamePc_22[16] = "ride_gyrocopter";
+#pragma const_seg()
+#pragma const_seg(".rdata$PlayerExtraActionNamePc_23")
+    extern const char PlayerExtraActionNamePc_23[12] = "ride_bantha";
+#pragma const_seg()
+#pragma const_seg(".rdata$PlayerExtraActionNamePc_24")
+    extern const char PlayerExtraActionNamePc_24[13] = "ride_dewback";
+#pragma const_seg()
+#pragma const_seg(".rdata$PlayerExtraActionNamePc_25")
+    extern const char PlayerExtraActionNamePc_25[17] = "ride_landspeeder";
+#pragma const_seg()
+#pragma const_seg(".rdata$PlayerExtraActionNamePc_26")
+    extern const char PlayerExtraActionNamePc_26[14] = "ride_tauntaun";
+#pragma const_seg()
+#pragma const_seg(".rdata$PlayerExtraActionNamePc_27")
+    extern const char PlayerExtraActionNamePc_27[17] = "ride_speederbike";
+#pragma const_seg()
+#pragma const_seg(".rdata$PlayerExtraActionNamePc_28")
+    extern const char PlayerExtraActionNamePc_28[26] = "ride_heavyrepeatingcannon";
+#pragma const_seg()
+#pragma const_seg(".rdata$PlayerExtraActionNamePc_29")
+    extern const char PlayerExtraActionNamePc_29[19] = "ride_troopercannon";
+#pragma const_seg()
+#pragma const_seg(".rdata$PlayerExtraActionNamePc_30")
+    extern const char PlayerExtraActionNamePc_30[9] = "rideluke";
+#pragma const_seg()
+#pragma const_seg(".rdata$PlayerExtraActionNamePc_31")
+    extern const char PlayerExtraActionNamePc_31[17] = "rideluke_running";
+#pragma const_seg()
+#pragma data_seg(".data$PlayerExtraActionInfoPc")
+    API_EXTRA_ACTION_PC PlayerExtraActionInfoPc[33] = {
+        {PlayerExtraActionNamePc_00, 3},   {PlayerExtraActionNamePc_01, 1},   {PlayerExtraActionNamePc_02, 24},
+        {PlayerExtraActionNamePc_03, 65},  {PlayerExtraActionNamePc_04, 5},   {PlayerExtraActionNamePc_05, 2},
+        {PlayerExtraActionNamePc_06, 11},  {PlayerExtraActionNamePc_07, 0},   {PlayerExtraActionNamePc_08, 4},
+        {PlayerExtraActionNamePc_09, 6},   {PlayerExtraActionNamePc_10, 7},   {PlayerExtraActionNamePc_11, 22},
+        {PlayerExtraActionNamePc_12, 26},  {PlayerExtraActionNamePc_13, 61},  {PlayerExtraActionNamePc_14, 81},
+        {PlayerExtraActionNamePc_15, 69},  {PlayerExtraActionNamePc_16, 101}, {PlayerExtraActionNamePc_17, 70},
+        {PlayerExtraActionNamePc_18, 167}, {PlayerExtraActionNamePc_19, 170}, {PlayerActionNamePc_109, 108},
+        {PlayerExtraActionNamePc_21, 112}, {PlayerExtraActionNamePc_22, 131}, {PlayerExtraActionNamePc_23, 112},
+        {PlayerExtraActionNamePc_24, 131}, {PlayerExtraActionNamePc_25, 132}, {PlayerExtraActionNamePc_26, 134},
+        {PlayerExtraActionNamePc_27, 192}, {PlayerExtraActionNamePc_28, 193}, {PlayerExtraActionNamePc_29, 194},
+        {PlayerExtraActionNamePc_30, 195}, {PlayerExtraActionNamePc_31, 196}, {NULL, 0}};
+#pragma data_seg()
+}

@@ -51,11 +51,11 @@ typedef struct ai_control_system_pc_s {
 typedef struct ai_helper_slot_pc_s {
     u8 unknown_00[0x10];
 } AI_HELPER_SLOT_PC;
-typedef struct ai_helper_system_pc_s {
+struct ai_helper_system_pc_s {
     i16 capacity;
     i16 count;
     AI_HELPER_SLOT_PC *helpers;
-} AI_HELPER_SYSTEM_PC;
+};
 typedef struct climb_slot_pc_s {
     u8 unknown_00[0x20];
 } CLIMB_SLOT_PC;
@@ -90,4 +90,17 @@ void __cdecl AIPathCnxControlSysReset(AI_CONTROL_SYSTEM_PC *system) {
     memset(system->controllers, 0, (u32)system->capacity * sizeof(AI_CONTROL_SLOT_PC));
     for (index = 0; index < system->capacity; ++index)
         NuLinkedListAppend(&system->available, &system->controllers[index].links);
+}
+
+/* Native 0x005ab0f0, 66 bytes. */
+extern void(__cdecl *AIPathCnxHelperSysInitFn)(WORLDINFO *);
+void __cdecl AIPathCnxHelperSysReset(WORLDINFO *world, AI_HELPER_SYSTEM_PC *system) {
+    if (system != NULL) {
+        if (system->count != 0) {
+            memset(system->helpers, 0, (i32)system->count * sizeof(AI_HELPER_SLOT_PC));
+            system->count = 0;
+        }
+        if (AIPathCnxHelperSysInitFn != NULL)
+            AIPathCnxHelperSysInitFn(world);
+    }
 }
