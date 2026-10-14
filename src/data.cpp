@@ -30520,3 +30520,941 @@ extern "C" {
 #pragma const_seg()
 #pragma data_seg()
 }
+
+extern "C" {
+#pragma const_seg(".rdata$LevelObjectNamePc00753554")
+    extern const char LevelObjectNamePc00753554[18] = "Network_Icon_Glow";
+#pragma const_seg(".rdata$LevelObjectNamePc00753568")
+    extern const char LevelObjectNamePc00753568[13] = "Network_Icon";
+#pragma const_seg(".rdata$LevelObjectNamePc00753578")
+    extern const char LevelObjectNamePc00753578[5] = "lap3";
+#pragma const_seg(".rdata$LevelObjectNamePc00753580")
+    extern const char LevelObjectNamePc00753580[5] = "lap2";
+#pragma const_seg(".rdata$LevelObjectNamePc00753588")
+    extern const char LevelObjectNamePc00753588[5] = "lap1";
+#pragma const_seg(".rdata$LevelObjectNamePc00753590")
+    extern const char LevelObjectNamePc00753590[11] = "death_star";
+#pragma const_seg(".rdata$LevelObjectNamePc0075359c")
+    extern const char LevelObjectNamePc0075359c[6] = "arrow";
+#pragma const_seg(".rdata$LevelObjectNamePc007535a4")
+    extern const char LevelObjectNamePc007535a4[8] = "missile";
+#pragma const_seg(".rdata$LevelObjectNamePc007535ac")
+    extern const char LevelObjectNamePc007535ac[17] = "blasterglow_blue";
+#pragma const_seg(".rdata$LevelObjectNamePc007535c0")
+    extern const char LevelObjectNamePc007535c0[16] = "blasterglow_red";
+#pragma const_seg(".rdata$LevelObjectNamePc007535d0")
+    extern const char LevelObjectNamePc007535d0[12] = "blasterglow";
+#pragma const_seg(".rdata$LevelObjectNamePc007535dc")
+    extern const char LevelObjectNamePc007535dc[3] = "ca";
+#pragma const_seg(".rdata$LevelObjectNamePc007535e0")
+    extern const char LevelObjectNamePc007535e0[4] = "dtf";
+#pragma const_seg(".rdata$LevelObjectNamePc007535e4")
+    extern const char LevelObjectNamePc007535e4[4] = "bvd";
+#pragma const_seg(".rdata$LevelObjectNamePc007535e8")
+    extern const char LevelObjectNamePc007535e8[3] = "vd";
+#pragma const_seg(".rdata$LevelObjectNamePc007535ec")
+    extern const char LevelObjectNamePc007535ec[12] = "ATAT_PART_1";
+#pragma const_seg(".rdata$LevelObjectNamePc007535f8")
+    extern const char LevelObjectNamePc007535f8[11] = "FalconGlow";
+#pragma const_seg(".rdata$LevelObjectNamePc00753604")
+    extern const char LevelObjectNamePc00753604[12] = "zip_flower3";
+#pragma const_seg(".rdata$LevelObjectNamePc00753610")
+    extern const char LevelObjectNamePc00753610[12] = "zip_flower2";
+#pragma const_seg(".rdata$LevelObjectNamePc0075361c")
+    extern const char LevelObjectNamePc0075361c[12] = "zip_flower1";
+#pragma const_seg(".rdata$LevelObjectNamePc00753628")
+    extern const char LevelObjectNamePc00753628[8] = "photon1";
+#pragma const_seg(".rdata$LevelObjectNamePc00753630")
+    extern const char LevelObjectNamePc00753630[8] = "photon2";
+#pragma const_seg(".rdata$LevelObjectNamePc00753638")
+    extern const char LevelObjectNamePc00753638[18] = "Hat_machine_down1";
+#pragma const_seg(".rdata$LevelObjectNamePc0075364c")
+    extern const char LevelObjectNamePc0075364c[13] = "lever_helmet";
+#pragma const_seg(".rdata$LevelObjectNamePc0075365c")
+    extern const char LevelObjectNamePc0075365c[16] = "Hat_machine_off";
+#pragma const_seg(".rdata$LevelObjectNamePc0075366c")
+    extern const char LevelObjectNamePc0075366c[15] = "Hat_machine_on";
+#pragma const_seg(".rdata$LevelObjectNamePc0075367c")
+    extern const char LevelObjectNamePc0075367c[16] = "Hat_machine_out";
+#pragma const_seg(".rdata$LevelObjectNamePc0075368c")
+    extern const char LevelObjectNamePc0075368c[17] = "Hat_machine_down";
+#pragma const_seg(".rdata$LevelObjectNamePc007536a0")
+    extern const char LevelObjectNamePc007536a0[17] = "Hat_machine_base";
+#pragma const_seg(".rdata$LevelObjectNamePc007536b4")
+    extern const char LevelObjectNamePc007536b4[13] = "Storm_Target";
+#pragma const_seg(".rdata$LevelObjectNamePc007536c4")
+    extern const char LevelObjectNamePc007536c4[10] = "Storm_cam";
+#pragma const_seg(".rdata$LevelObjectNamePc007536d0")
+    extern const char LevelObjectNamePc007536d0[16] = "Storm_light_off";
+#pragma const_seg(".rdata$LevelObjectNamePc007536e0")
+    extern const char LevelObjectNamePc007536e0[15] = "Storm_light_on";
+#pragma const_seg(".rdata$LevelObjectNamePc007536f0")
+    extern const char LevelObjectNamePc007536f0[13] = "Storm_static";
+#pragma const_seg(".rdata$LevelObjectNamePc00753700")
+    extern const char LevelObjectNamePc00753700[10] = "Storm_pic";
+#pragma const_seg(".rdata$LevelObjectNamePc0075370c")
+    extern const char LevelObjectNamePc0075370c[11] = "Storm_base";
+#pragma const_seg(".rdata$LevelObjectNamePc00753718")
+    extern const char LevelObjectNamePc00753718[14] = "Bounty_Target";
+#pragma const_seg(".rdata$LevelObjectNamePc00753728")
+    extern const char LevelObjectNamePc00753728[11] = "Bounty_cam";
+#pragma const_seg(".rdata$LevelObjectNamePc00753734")
+    extern const char LevelObjectNamePc00753734[17] = "Bounty_light_off";
+#pragma const_seg(".rdata$LevelObjectNamePc00753748")
+    extern const char LevelObjectNamePc00753748[16] = "Bounty_light_on";
+#pragma const_seg(".rdata$LevelObjectNamePc00753758")
+    extern const char LevelObjectNamePc00753758[14] = "Bounty_static";
+#pragma const_seg(".rdata$LevelObjectNamePc00753768")
+    extern const char LevelObjectNamePc00753768[11] = "Bounty_pic";
+#pragma const_seg(".rdata$LevelObjectNamePc00753774")
+    extern const char LevelObjectNamePc00753774[12] = "Bounty_base";
+#pragma const_seg(".rdata$LevelObjectNamePc00753780")
+    extern const char LevelObjectNamePc00753780[13] = "R2_light_off";
+#pragma const_seg(".rdata$LevelObjectNamePc00753790")
+    extern const char LevelObjectNamePc00753790[12] = "R2_light_on";
+#pragma const_seg(".rdata$LevelObjectNamePc0075379c")
+    extern const char LevelObjectNamePc0075379c[10] = "R2_static";
+#pragma const_seg(".rdata$LevelObjectNamePc007537a8")
+    extern const char LevelObjectNamePc007537a8[7] = "R4_pic";
+#pragma const_seg(".rdata$LevelObjectNamePc007537b0")
+    extern const char LevelObjectNamePc007537b0[7] = "R2_pic";
+#pragma const_seg(".rdata$LevelObjectNamePc007537b8")
+    extern const char LevelObjectNamePc007537b8[9] = "R2_base1";
+#pragma const_seg(".rdata$LevelObjectNamePc007537c4")
+    extern const char LevelObjectNamePc007537c4[8] = "R2_base";
+#pragma const_seg(".rdata$LevelObjectNamePc007537cc")
+    extern const char LevelObjectNamePc007537cc[15] = "C3PO_light_off";
+#pragma const_seg(".rdata$LevelObjectNamePc007537dc")
+    extern const char LevelObjectNamePc007537dc[14] = "C3PO_light_on";
+#pragma const_seg(".rdata$LevelObjectNamePc007537ec")
+    extern const char LevelObjectNamePc007537ec[12] = "C3PO_static";
+#pragma const_seg(".rdata$LevelObjectNamePc007537f8")
+    extern const char LevelObjectNamePc007537f8[9] = "TC14_pic";
+#pragma const_seg(".rdata$LevelObjectNamePc00753804")
+    extern const char LevelObjectNamePc00753804[9] = "C3PO_pic";
+#pragma const_seg(".rdata$LevelObjectNamePc00753810")
+    extern const char LevelObjectNamePc00753810[10] = "C3PO_base";
+#pragma const_seg(".rdata$LevelObjectNamePc0075381c")
+    extern const char LevelObjectNamePc0075381c[13] = "bountyHelmet";
+#pragma const_seg(".rdata$LevelObjectNamePc0075382c")
+    extern const char LevelObjectNamePc0075382c[19] = "stormTrooperHelmet";
+#pragma const_seg(".rdata$LevelObjectNamePc00753840")
+    extern const char LevelObjectNamePc00753840[6] = "hat_5";
+#pragma const_seg(".rdata$LevelObjectNamePc00753848")
+    extern const char LevelObjectNamePc00753848[6] = "hat_4";
+#pragma const_seg(".rdata$LevelObjectNamePc00753850")
+    extern const char LevelObjectNamePc00753850[6] = "hat_3";
+#pragma const_seg(".rdata$LevelObjectNamePc00753858")
+    extern const char LevelObjectNamePc00753858[6] = "hat_1";
+#pragma const_seg(".rdata$LevelObjectNamePc00753860")
+    extern const char LevelObjectNamePc00753860[13] = "twoface_coin";
+#pragma const_seg(".rdata$LevelObjectNamePc00753870")
+    extern const char LevelObjectNamePc00753870[10] = "umbrella2";
+#pragma const_seg(".rdata$LevelObjectNamePc0075387c")
+    extern const char LevelObjectNamePc0075387c[10] = "umbrella1";
+#pragma const_seg(".rdata$LevelObjectNamePc00753888")
+    extern const char LevelObjectNamePc00753888[25] = "photontorpedoglow_wicket";
+#pragma const_seg(".rdata$LevelObjectNamePc007538a4")
+    extern const char LevelObjectNamePc007538a4[21] = "photontorpedo_wicket";
+#pragma const_seg(".rdata$LevelObjectNamePc007538bc")
+    extern const char LevelObjectNamePc007538bc[14] = "pebble_wicket";
+#pragma const_seg(".rdata$LevelObjectNamePc007538cc")
+    extern const char LevelObjectNamePc007538cc[23] = "photontorpedoglow_ewok";
+#pragma const_seg(".rdata$LevelObjectNamePc007538e4")
+    extern const char LevelObjectNamePc007538e4[19] = "photontorpedo_ewok";
+#pragma const_seg(".rdata$LevelObjectNamePc007538f8")
+    extern const char LevelObjectNamePc007538f8[12] = "pebble_ewok";
+#pragma const_seg(".rdata$LevelObjectNamePc00753904")
+    extern const char LevelObjectNamePc00753904[13] = "part_boulder";
+#pragma const_seg(".rdata$LevelObjectNamePc00753914")
+    extern const char LevelObjectNamePc00753914[12] = "bomb_red_on";
+#pragma const_seg(".rdata$LevelObjectNamePc00753920")
+    extern const char LevelObjectNamePc00753920[13] = "bomb_red_off";
+#pragma const_seg(".rdata$LevelObjectNamePc00753930")
+    extern const char LevelObjectNamePc00753930[9] = "bomb_off";
+#pragma const_seg(".rdata$LevelObjectNamePc0075393c")
+    extern const char LevelObjectNamePc0075393c[10] = "bomb_main";
+#pragma const_seg(".rdata$LevelObjectNamePc00753948")
+    extern const char LevelObjectNamePc00753948[15] = "thermal_red_on";
+#pragma const_seg(".rdata$LevelObjectNamePc00753958")
+    extern const char LevelObjectNamePc00753958[16] = "thermal_red_off";
+#pragma const_seg(".rdata$LevelObjectNamePc00753968")
+    extern const char LevelObjectNamePc00753968[8] = "thermal";
+#pragma const_seg(".rdata$LevelObjectNamePc00753970")
+    extern const char LevelObjectNamePc00753970[13] = "jango_rocket";
+#pragma const_seg(".rdata$LevelObjectNamePc00753980")
+    extern const char LevelObjectNamePc00753980[10] = "moustache";
+#pragma const_seg(".rdata$LevelObjectNamePc0075398c")
+    extern const char LevelObjectNamePc0075398c[6] = "crate";
+#pragma const_seg(".rdata$LevelObjectNamePc00753994")
+    extern const char LevelObjectNamePc00753994[9] = "zip_ring";
+#pragma const_seg(".rdata$LevelObjectNamePc007539a0")
+    extern const char LevelObjectNamePc007539a0[15] = "ripple_purple1";
+#pragma const_seg(".rdata$LevelObjectNamePc007539b0")
+    extern const char LevelObjectNamePc007539b0[14] = "ripple_purple";
+#pragma const_seg(".rdata$LevelObjectNamePc007539c0")
+    extern const char LevelObjectNamePc007539c0[13] = "ripple_blue1";
+#pragma const_seg(".rdata$LevelObjectNamePc007539d0")
+    extern const char LevelObjectNamePc007539d0[12] = "ripple_blue";
+#pragma const_seg(".rdata$LevelObjectNamePc007539dc")
+    extern const char LevelObjectNamePc007539dc[12] = "ripple_red1";
+#pragma const_seg(".rdata$LevelObjectNamePc007539e8")
+    extern const char LevelObjectNamePc007539e8[11] = "ripple_red";
+#pragma const_seg(".rdata$LevelObjectNamePc007539f4")
+    extern const char LevelObjectNamePc007539f4[14] = "ripple_green1";
+#pragma const_seg(".rdata$LevelObjectNamePc00753a04")
+    extern const char LevelObjectNamePc00753a04[13] = "ripple_green";
+#pragma const_seg(".rdata$LevelObjectNamePc00753a14")
+    extern const char LevelObjectNamePc00753a14[17] = "purple_pan_coin4";
+#pragma const_seg(".rdata$LevelObjectNamePc00753a28")
+    extern const char LevelObjectNamePc00753a28[17] = "purple_pan_coin3";
+#pragma const_seg(".rdata$LevelObjectNamePc00753a3c")
+    extern const char LevelObjectNamePc00753a3c[17] = "purple_pan_coin2";
+#pragma const_seg(".rdata$LevelObjectNamePc00753a50")
+    extern const char LevelObjectNamePc00753a50[17] = "purple_pan_coin1";
+#pragma const_seg(".rdata$LevelObjectNamePc00753a64")
+    extern const char LevelObjectNamePc00753a64[13] = "purple_coin4";
+#pragma const_seg(".rdata$LevelObjectNamePc00753a74")
+    extern const char LevelObjectNamePc00753a74[13] = "purple_coin3";
+#pragma const_seg(".rdata$LevelObjectNamePc00753a84")
+    extern const char LevelObjectNamePc00753a84[13] = "purple_coin2";
+#pragma const_seg(".rdata$LevelObjectNamePc00753a94")
+    extern const char LevelObjectNamePc00753a94[13] = "purple_coin1";
+#pragma const_seg(".rdata$LevelObjectNamePc00753aa4")
+    extern const char LevelObjectNamePc00753aa4[5] = "info";
+#pragma const_seg(".rdata$LevelObjectNamePc00753aac")
+    extern const char LevelObjectNamePc00753aac[11] = "gold_brick";
+#pragma const_seg(".rdata$LevelObjectNamePc00753ab8")
+    extern const char LevelObjectNamePc00753ab8[10] = "red_brick";
+#pragma const_seg(".rdata$LevelObjectNamePc00753ac4")
+    extern const char LevelObjectNamePc00753ac4[14] = "power_up_glow";
+#pragma const_seg(".rdata$LevelObjectNamePc00753ad4")
+    extern const char LevelObjectNamePc00753ad4[5] = "plop";
+#pragma const_seg(".rdata$LevelObjectNamePc00753adc")
+    extern const char LevelObjectNamePc00753adc[12] = "char_pickup";
+#pragma const_seg(".rdata$LevelObjectNamePc00753ae8")
+    extern const char LevelObjectNamePc00753ae8[16] = "mini_kit_pickup";
+#pragma const_seg(".rdata$LevelObjectNamePc00753af8")
+    extern const char LevelObjectNamePc00753af8[13] = "silver_heart";
+#pragma const_seg(".rdata$LevelObjectNamePc00753b08")
+    extern const char LevelObjectNamePc00753b08[11] = "flat_heart";
+#pragma const_seg(".rdata$LevelObjectNamePc00753b14")
+    extern const char LevelObjectNamePc00753b14[6] = "heart";
+#pragma const_seg(".rdata$LevelObjectNamePc00753b1c")
+    extern const char LevelObjectNamePc00753b1c[11] = "blue_coin4";
+#pragma const_seg(".rdata$LevelObjectNamePc00753b28")
+    extern const char LevelObjectNamePc00753b28[11] = "blue_coin3";
+#pragma const_seg(".rdata$LevelObjectNamePc00753b34")
+    extern const char LevelObjectNamePc00753b34[11] = "blue_coin2";
+#pragma const_seg(".rdata$LevelObjectNamePc00753b40")
+    extern const char LevelObjectNamePc00753b40[11] = "blue_coin1";
+#pragma const_seg(".rdata$LevelObjectNamePc00753b4c")
+    extern const char LevelObjectNamePc00753b4c[15] = "blue_pan_coin4";
+#pragma const_seg(".rdata$LevelObjectNamePc00753b5c")
+    extern const char LevelObjectNamePc00753b5c[15] = "blue_pan_coin3";
+#pragma const_seg(".rdata$LevelObjectNamePc00753b6c")
+    extern const char LevelObjectNamePc00753b6c[15] = "blue_pan_coin2";
+#pragma const_seg(".rdata$LevelObjectNamePc00753b7c")
+    extern const char LevelObjectNamePc00753b7c[15] = "blue_pan_coin1";
+#pragma const_seg(".rdata$LevelObjectNamePc00753b8c")
+    extern const char LevelObjectNamePc00753b8c[11] = "gold_coin4";
+#pragma const_seg(".rdata$LevelObjectNamePc00753b98")
+    extern const char LevelObjectNamePc00753b98[11] = "gold_coin3";
+#pragma const_seg(".rdata$LevelObjectNamePc00753ba4")
+    extern const char LevelObjectNamePc00753ba4[11] = "gold_coin2";
+#pragma const_seg(".rdata$LevelObjectNamePc00753bb0")
+    extern const char LevelObjectNamePc00753bb0[11] = "gold_coin1";
+#pragma const_seg(".rdata$LevelObjectNamePc00753bbc")
+    extern const char LevelObjectNamePc00753bbc[15] = "gold_pan_coin4";
+#pragma const_seg(".rdata$LevelObjectNamePc00753bcc")
+    extern const char LevelObjectNamePc00753bcc[15] = "gold_pan_coin3";
+#pragma const_seg(".rdata$LevelObjectNamePc00753bdc")
+    extern const char LevelObjectNamePc00753bdc[15] = "gold_pan_coin2";
+#pragma const_seg(".rdata$LevelObjectNamePc00753bec")
+    extern const char LevelObjectNamePc00753bec[15] = "gold_pan_coin1";
+#pragma const_seg(".rdata$LevelObjectNamePc00753bfc")
+    extern const char LevelObjectNamePc00753bfc[13] = "silver_coin4";
+#pragma const_seg(".rdata$LevelObjectNamePc00753c0c")
+    extern const char LevelObjectNamePc00753c0c[13] = "silver_coin3";
+#pragma const_seg(".rdata$LevelObjectNamePc00753c1c")
+    extern const char LevelObjectNamePc00753c1c[13] = "silver_coin2";
+#pragma const_seg(".rdata$LevelObjectNamePc00753c2c")
+    extern const char LevelObjectNamePc00753c2c[13] = "silver_coin1";
+#pragma const_seg(".rdata$LevelObjectNamePc00753c3c")
+    extern const char LevelObjectNamePc00753c3c[17] = "silver_pan_coin4";
+#pragma const_seg(".rdata$LevelObjectNamePc00753c50")
+    extern const char LevelObjectNamePc00753c50[17] = "silver_pan_coin3";
+#pragma const_seg(".rdata$LevelObjectNamePc00753c64")
+    extern const char LevelObjectNamePc00753c64[17] = "silver_pan_coin2";
+#pragma const_seg(".rdata$LevelObjectNamePc00753c78")
+    extern const char LevelObjectNamePc00753c78[17] = "silver_pan_coin1";
+#pragma const_seg(".rdata$LevelObjectNamePc00753c8c")
+    extern const char LevelObjectNamePc00753c8c[12] = "coin_side10";
+#pragma const_seg(".rdata$LevelObjectNamePc00753c98")
+    extern const char LevelObjectNamePc00753c98[11] = "coin_side9";
+#pragma const_seg(".rdata$LevelObjectNamePc00753ca4")
+    extern const char LevelObjectNamePc00753ca4[11] = "coin_side8";
+#pragma const_seg(".rdata$LevelObjectNamePc00753cb0")
+    extern const char LevelObjectNamePc00753cb0[11] = "coin_side7";
+#pragma const_seg(".rdata$LevelObjectNamePc00753cbc")
+    extern const char LevelObjectNamePc00753cbc[11] = "coin_side6";
+#pragma const_seg(".rdata$LevelObjectNamePc00753cc8")
+    extern const char LevelObjectNamePc00753cc8[11] = "coin_side5";
+#pragma const_seg(".rdata$LevelObjectNamePc00753cd4")
+    extern const char LevelObjectNamePc00753cd4[11] = "coin_side4";
+#pragma const_seg(".rdata$LevelObjectNamePc00753ce0")
+    extern const char LevelObjectNamePc00753ce0[11] = "coin_side3";
+#pragma const_seg(".rdata$LevelObjectNamePc00753cec")
+    extern const char LevelObjectNamePc00753cec[11] = "coin_side2";
+#pragma const_seg(".rdata$LevelObjectNamePc00753cf8")
+    extern const char LevelObjectNamePc00753cf8[11] = "coin_side1";
+#pragma const_seg(".rdata$LevelObjectNamePc00753d04")
+    extern const char LevelObjectNamePc00753d04[15] = "icon_back_gold";
+#pragma const_seg(".rdata$LevelObjectNamePc00753d14")
+    extern const char LevelObjectNamePc00753d14[18] = "icon_back_neutral";
+#pragma const_seg(".rdata$LevelObjectNamePc00753d28")
+    extern const char LevelObjectNamePc00753d28[15] = "icon_back_blue";
+#pragma const_seg(".rdata$LevelObjectNamePc00753d38")
+    extern const char LevelObjectNamePc00753d38[16] = "icon_back_green";
+#pragma const_seg(".rdata$LevelObjectNamePc00753d48")
+    extern const char LevelObjectNamePc00753d48[17] = "silhouette_icon1";
+#pragma const_seg(".rdata$LevelObjectNamePc00753d5c")
+    extern const char LevelObjectNamePc00753d5c[16] = "silhouette_icon";
+#pragma const_seg(".rdata$LevelObjectNamePc00753d6c")
+    extern const char LevelObjectNamePc00753d6c[11] = "mouse_glow";
+#pragma const_seg(".rdata$LevelObjectNamePc00753d78")
+    extern const char LevelObjectNamePc00753d78[14] = "question_icon";
+#pragma const_seg(".rdata$LevelObjectNamePc00753d88")
+    extern const char LevelObjectNamePc00753d88[37] = "jedi_starfighter_blasterBoltglow_ref";
+#pragma const_seg(".rdata$LevelObjectNamePc00753db0")
+    extern const char LevelObjectNamePc00753db0[33] = "jedi_starfighter_blasterBolt_ref";
+#pragma const_seg(".rdata$LevelObjectNamePc00753dd4")
+    extern const char LevelObjectNamePc00753dd4[24] = "photontorpedo_glow1_ref";
+#pragma const_seg(".rdata$LevelObjectNamePc00753dec")
+    extern const char LevelObjectNamePc00753dec[23] = "photontorpedo_glow_ref";
+#pragma const_seg(".rdata$LevelObjectNamePc00753e04")
+    extern const char LevelObjectNamePc00753e04[18] = "photontorpedo_ref";
+#pragma const_seg(".rdata$LevelObjectNamePc00753e18")
+    extern const char LevelObjectNamePc00753e18[24] = "xwing_thruster_glow_ref";
+#pragma const_seg(".rdata$LevelObjectNamePc00753e30")
+    extern const char LevelObjectNamePc00753e30[19] = "xwing_thruster_ref";
+#pragma const_seg(".rdata$LevelObjectNamePc00753e44")
+    extern const char LevelObjectNamePc00753e44[20] = "green_blob_glow_ref";
+#pragma const_seg(".rdata$LevelObjectNamePc00753e58")
+    extern const char LevelObjectNamePc00753e58[15] = "green_blob_ref";
+#pragma const_seg(".rdata$LevelObjectNamePc00753e68")
+    extern const char LevelObjectNamePc00753e68[20] = "laserglow_green_ref";
+#pragma const_seg(".rdata$LevelObjectNamePc00753e7c")
+    extern const char LevelObjectNamePc00753e7c[16] = "laser_green_ref";
+#pragma const_seg(".rdata$LevelObjectNamePc00753e8c")
+    extern const char LevelObjectNamePc00753e8c[18] = "xwingboltglow_ref";
+#pragma const_seg(".rdata$LevelObjectNamePc00753ea0")
+    extern const char LevelObjectNamePc00753ea0[14] = "xwingbolt_ref";
+#pragma const_seg(".rdata$LevelObjectNamePc00753eb0")
+    extern const char LevelObjectNamePc00753eb0[24] = "destroyershield_red_ref";
+#pragma const_seg(".rdata$LevelObjectNamePc00753ec8")
+    extern const char LevelObjectNamePc00753ec8[20] = "destroyershield_ref";
+#pragma const_seg(".rdata$LevelObjectNamePc00753edc")
+    extern const char LevelObjectNamePc00753edc[25] = "doublelightsabreglow_ref";
+#pragma const_seg(".rdata$LevelObjectNamePc00753ef8")
+    extern const char LevelObjectNamePc00753ef8[24] = "doublelightsabrered_ref";
+#pragma const_seg(".rdata$LevelObjectNamePc00753f10")
+    extern const char LevelObjectNamePc00753f10[25] = "lightsabreglowpurple_ref";
+#pragma const_seg(".rdata$LevelObjectNamePc00753f2c")
+    extern const char LevelObjectNamePc00753f2c[21] = "lightsabrepurple_ref";
+#pragma const_seg(".rdata$LevelObjectNamePc00753f44")
+    extern const char LevelObjectNamePc00753f44[19] = "lightsabreglow_ref";
+#pragma const_seg(".rdata$LevelObjectNamePc00753f58")
+    extern const char LevelObjectNamePc00753f58[19] = "lightsabreblue_ref";
+#pragma const_seg(".rdata$LevelObjectNamePc00753f6c")
+    extern const char LevelObjectNamePc00753f6c[24] = "lightsabreglowgreen_ref";
+#pragma const_seg(".rdata$LevelObjectNamePc00753f84")
+    extern const char LevelObjectNamePc00753f84[20] = "lightsabregreen_ref";
+#pragma const_seg(".rdata$LevelObjectNamePc00753f98")
+    extern const char LevelObjectNamePc00753f98[22] = "lightsabreglowred_ref";
+#pragma const_seg(".rdata$LevelObjectNamePc00753fb0")
+    extern const char LevelObjectNamePc00753fb0[18] = "lightsabrered_ref";
+#pragma const_seg(".rdata$LevelObjectNamePc00753fc4")
+    extern const char LevelObjectNamePc00753fc4[27] = "double_blasterboltGlow_ref";
+#pragma const_seg(".rdata$LevelObjectNamePc00753fe0")
+    extern const char LevelObjectNamePc00753fe0[23] = "double_blasterbolt_ref";
+#pragma const_seg(".rdata$LevelObjectNamePc00753ff8")
+    extern const char LevelObjectNamePc00753ff8[25] = "blasterboltglow_blue_ref";
+#pragma const_seg(".rdata$LevelObjectNamePc00754014")
+    extern const char LevelObjectNamePc00754014[21] = "blasterbolt_blue_ref";
+#pragma const_seg(".rdata$LevelObjectNamePc0075402c")
+    extern const char LevelObjectNamePc0075402c[26] = "blasterboltglow_green_ref";
+#pragma const_seg(".rdata$LevelObjectNamePc00754048")
+    extern const char LevelObjectNamePc00754048[22] = "blasterbolt_green_ref";
+#pragma const_seg(".rdata$LevelObjectNamePc00754060")
+    extern const char LevelObjectNamePc00754060[24] = "blasterboltglow_red_ref";
+#pragma const_seg(".rdata$LevelObjectNamePc00754078")
+    extern const char LevelObjectNamePc00754078[20] = "blasterbolt_red_ref";
+#pragma const_seg(".rdata$LevelObjectNamePc0075408c")
+    extern const char LevelObjectNamePc0075408c[20] = "blasterboltglow_ref";
+#pragma const_seg(".rdata$LevelObjectNamePc007540a0")
+    extern const char LevelObjectNamePc007540a0[16] = "blasterbolt_ref";
+#pragma const_seg(".rdata$LevelObjectNamePc007540b0")
+    extern const char LevelObjectNamePc007540b0[33] = "jedi_starfighter_blasterBoltglow";
+#pragma const_seg(".rdata$LevelObjectNamePc007540d4")
+    extern const char LevelObjectNamePc007540d4[29] = "jedi_starfighter_blasterBolt";
+#pragma const_seg(".rdata$LevelObjectNamePc007540f4")
+    extern const char LevelObjectNamePc007540f4[19] = "photontorpedoglow1";
+#pragma const_seg(".rdata$LevelObjectNamePc00754108")
+    extern const char LevelObjectNamePc00754108[18] = "photontorpedoglow";
+#pragma const_seg(".rdata$LevelObjectNamePc0075411c")
+    extern const char LevelObjectNamePc0075411c[14] = "photontorpedo";
+#pragma const_seg(".rdata$LevelObjectNamePc0075412c")
+    extern const char LevelObjectNamePc0075412c[20] = "xwing_thruster_glow";
+#pragma const_seg(".rdata$LevelObjectNamePc00754140")
+    extern const char LevelObjectNamePc00754140[15] = "xwing_thruster";
+#pragma const_seg(".rdata$LevelObjectNamePc00754150")
+    extern const char LevelObjectNamePc00754150[16] = "green_blob_glow";
+#pragma const_seg(".rdata$LevelObjectNamePc00754160")
+    extern const char LevelObjectNamePc00754160[11] = "green_blob";
+#pragma const_seg(".rdata$LevelObjectNamePc0075416c")
+    extern const char LevelObjectNamePc0075416c[17] = "laser_green_glow";
+#pragma const_seg(".rdata$LevelObjectNamePc00754180")
+    extern const char LevelObjectNamePc00754180[12] = "laser_green";
+#pragma const_seg(".rdata$LevelObjectNamePc0075418c")
+    extern const char LevelObjectNamePc0075418c[14] = "xwingboltglow";
+#pragma const_seg(".rdata$LevelObjectNamePc0075419c")
+    extern const char LevelObjectNamePc0075419c[10] = "xwingbolt";
+#pragma const_seg(".rdata$LevelObjectNamePc007541a8")
+    extern const char LevelObjectNamePc007541a8[20] = "destroyershield_red";
+#pragma const_seg(".rdata$LevelObjectNamePc007541bc")
+    extern const char LevelObjectNamePc007541bc[16] = "destroyershield";
+#pragma const_seg(".rdata$LevelObjectNamePc007541cc")
+    extern const char LevelObjectNamePc007541cc[21] = "doublelightsabreglow";
+#pragma const_seg(".rdata$LevelObjectNamePc007541e4")
+    extern const char LevelObjectNamePc007541e4[20] = "doublelightsabrered";
+#pragma const_seg(".rdata$LevelObjectNamePc007541f8")
+    extern const char LevelObjectNamePc007541f8[21] = "lightsabreglowpurple";
+#pragma const_seg(".rdata$LevelObjectNamePc00754210")
+    extern const char LevelObjectNamePc00754210[17] = "lightsabrepurple";
+#pragma const_seg(".rdata$LevelObjectNamePc00754224")
+    extern const char LevelObjectNamePc00754224[15] = "lightsabreglow";
+#pragma const_seg(".rdata$LevelObjectNamePc00754234")
+    extern const char LevelObjectNamePc00754234[15] = "lightsabreblue";
+#pragma const_seg(".rdata$LevelObjectNamePc00754244")
+    extern const char LevelObjectNamePc00754244[20] = "lightsabreglowgreen";
+#pragma const_seg(".rdata$LevelObjectNamePc00754258")
+    extern const char LevelObjectNamePc00754258[16] = "lightsabregreen";
+#pragma const_seg(".rdata$LevelObjectNamePc00754268")
+    extern const char LevelObjectNamePc00754268[18] = "lightsabreglowred";
+#pragma const_seg(".rdata$LevelObjectNamePc0075427c")
+    extern const char LevelObjectNamePc0075427c[14] = "lightsabrered";
+#pragma const_seg(".rdata$LevelObjectNamePc0075428c")
+    extern const char LevelObjectNamePc0075428c[23] = "double_blasterBoltglow";
+#pragma const_seg(".rdata$LevelObjectNamePc007542a4")
+    extern const char LevelObjectNamePc007542a4[19] = "double_blasterBolt";
+#pragma const_seg(".rdata$LevelObjectNamePc007542b8")
+    extern const char LevelObjectNamePc007542b8[21] = "blasterboltglow_blue";
+#pragma const_seg(".rdata$LevelObjectNamePc007542d0")
+    extern const char LevelObjectNamePc007542d0[17] = "blasterbolt_blue";
+#pragma const_seg(".rdata$LevelObjectNamePc007542e4")
+    extern const char LevelObjectNamePc007542e4[22] = "blasterboltglow_green";
+#pragma const_seg(".rdata$LevelObjectNamePc007542fc")
+    extern const char LevelObjectNamePc007542fc[18] = "blasterbolt_green";
+#pragma const_seg(".rdata$LevelObjectNamePc00754310")
+    extern const char LevelObjectNamePc00754310[20] = "blasterboltglow_red";
+#pragma const_seg(".rdata$LevelObjectNamePc00754324")
+    extern const char LevelObjectNamePc00754324[16] = "blasterbolt_red";
+#pragma const_seg(".rdata$LevelObjectNamePc00754334")
+    extern const char LevelObjectNamePc00754334[16] = "blasterboltglow";
+#pragma const_seg(".rdata$LevelObjectNamePc00754344")
+    extern const char LevelObjectNamePc00754344[12] = "blasterbolt";
+#pragma const_seg(".rdata$LevelObjectNamePc00754350")
+    extern const char LevelObjectNamePc00754350[11] = "basketball";
+#pragma const_seg(".rdata$LevelObjectNamePc0075435c")
+    extern const char LevelObjectNamePc0075435c[7] = "carrot";
+#pragma const_seg(".rdata$LevelObjectNamePc00754364")
+    extern const char LevelObjectNamePc00754364[20] = "Spinner_default_Arm";
+#pragma const_seg(".rdata$LevelObjectNamePc00754378")
+    extern const char LevelObjectNamePc00754378[21] = "Spinner_default_Base";
+#pragma const_seg(".rdata$LevelObjectNamePc00754398")
+    extern const char LevelObjectNamePc00754398[13] = "zipup_target";
+#pragma const_seg(".rdata$LevelObjectNamePc007543a8")
+    extern const char LevelObjectNamePc007543a8[12] = "zipup_hook1";
+#pragma const_seg(".rdata$LevelObjectNamePc007543b4")
+    extern const char LevelObjectNamePc007543b4[11] = "zipup_hook";
+#pragma const_seg(".rdata$LevelObjectNamePc007543c0")
+    extern const char LevelObjectNamePc007543c0[9] = "door_1_r";
+#pragma const_seg(".rdata$LevelObjectNamePc007543cc")
+    extern const char LevelObjectNamePc007543cc[9] = "door_1_l";
+#pragma const_seg(".rdata$LevelObjectNamePc007543d8")
+    extern const char LevelObjectNamePc007543d8[8] = "ledge_6";
+#pragma const_seg(".rdata$LevelObjectNamePc007543e0")
+    extern const char LevelObjectNamePc007543e0[8] = "ledge_5";
+#pragma const_seg(".rdata$LevelObjectNamePc007543e8")
+    extern const char LevelObjectNamePc007543e8[8] = "ledge_4";
+#pragma const_seg(".rdata$LevelObjectNamePc007543f0")
+    extern const char LevelObjectNamePc007543f0[8] = "ledge_3";
+#pragma const_seg(".rdata$LevelObjectNamePc007543f8")
+    extern const char LevelObjectNamePc007543f8[8] = "ledge_2";
+#pragma const_seg(".rdata$LevelObjectNamePc00754400")
+    extern const char LevelObjectNamePc00754400[8] = "ledge_1";
+#pragma const_seg(".rdata$LevelObjectNamePc00754408")
+    extern const char LevelObjectNamePc00754408[12] = "transform1b";
+#pragma const_seg(".rdata$LevelObjectNamePc00754414")
+    extern const char LevelObjectNamePc00754414[12] = "transform1a";
+#pragma const_seg(".rdata$LevelObjectNamePc00754420")
+    extern const char LevelObjectNamePc00754420[16] = "attract_o_matic";
+#pragma const_seg(".rdata$LevelObjectNamePc00754430")
+    extern const char LevelObjectNamePc00754430[11] = "metal_bit7";
+#pragma const_seg(".rdata$LevelObjectNamePc0075443c")
+    extern const char LevelObjectNamePc0075443c[11] = "metal_bit6";
+#pragma const_seg(".rdata$LevelObjectNamePc00754448")
+    extern const char LevelObjectNamePc00754448[11] = "metal_bit5";
+#pragma const_seg(".rdata$LevelObjectNamePc00754454")
+    extern const char LevelObjectNamePc00754454[11] = "metal_bit4";
+#pragma const_seg(".rdata$LevelObjectNamePc00754460")
+    extern const char LevelObjectNamePc00754460[11] = "metal_bit3";
+#pragma const_seg(".rdata$LevelObjectNamePc0075446c")
+    extern const char LevelObjectNamePc0075446c[11] = "metal_bit2";
+#pragma const_seg(".rdata$LevelObjectNamePc00754478")
+    extern const char LevelObjectNamePc00754478[11] = "metal_bit1";
+#pragma const_seg(".rdata$LevelObjectNamePc00754484")
+    extern const char LevelObjectNamePc00754484[16] = "tightrope_base2";
+#pragma const_seg(".rdata$LevelObjectNamePc00754494")
+    extern const char LevelObjectNamePc00754494[16] = "tightrope_base1";
+#pragma const_seg(".rdata$LevelObjectNamePc007544a4")
+    extern const char LevelObjectNamePc007544a4[15] = "grapple_point1";
+#pragma const_seg(".rdata$LevelObjectNamePc007544b4")
+    extern const char LevelObjectNamePc007544b4[14] = "grapple_point";
+#pragma const_seg(".rdata$LevelObjectNamePc007544c4")
+    extern const char LevelObjectNamePc007544c4[19] = "robin_signal_light";
+#pragma const_seg(".rdata$LevelObjectNamePc007544d8")
+    extern const char LevelObjectNamePc007544d8[16] = "robin_signal_on";
+#pragma const_seg(".rdata$LevelObjectNamePc007544e8")
+    extern const char LevelObjectNamePc007544e8[17] = "robin_signal_off";
+#pragma const_seg(".rdata$LevelObjectNamePc007544fc")
+    extern const char LevelObjectNamePc007544fc[17] = "bat_signal_light";
+#pragma const_seg(".rdata$LevelObjectNamePc00754510")
+    extern const char LevelObjectNamePc00754510[14] = "bat_signal_on";
+#pragma const_seg(".rdata$LevelObjectNamePc00754520")
+    extern const char LevelObjectNamePc00754520[15] = "bat_signal_off";
+#pragma const_seg(".rdata$LevelObjectNamePc00754530")
+    extern const char LevelObjectNamePc00754530[12] = "signal_base";
+#pragma const_seg(".rdata$LevelObjectNamePc0075453c")
+    extern const char LevelObjectNamePc0075453c[12] = "pistolflash";
+#pragma const_seg(".rdata$LevelObjectNamePc00754548")
+    extern const char LevelObjectNamePc00754548[7] = "bullet";
+#pragma const_seg(".rdata$LevelObjectNamePc00754550")
+    extern const char LevelObjectNamePc00754550[11] = "robinarang";
+#pragma const_seg(".rdata$LevelObjectNamePc0075455c")
+    extern const char LevelObjectNamePc0075455c[9] = "batarang";
+#pragma const_seg(".rdata$LevelObjectNamePc00754570")
+    extern const char LevelObjectNamePc00754570[14] = "winch_bracket";
+#pragma const_seg(".rdata$LevelObjectNamePc00754580")
+    extern const char LevelObjectNamePc00754580[11] = "winch_base";
+#pragma const_seg(".rdata$LevelObjectNamePc0075458c")
+    extern const char LevelObjectNamePc0075458c[11] = "hack_door2";
+#pragma const_seg(".rdata$LevelObjectNamePc00754598")
+    extern const char LevelObjectNamePc00754598[11] = "hack_door1";
+#pragma const_seg(".rdata$LevelObjectNamePc007545a4")
+    extern const char LevelObjectNamePc007545a4[13] = "hack_control";
+#pragma const_seg(".rdata$LevelObjectNamePc007545b4")
+    extern const char LevelObjectNamePc007545b4[10] = "lever_off";
+#pragma const_seg(".rdata$LevelObjectNamePc007545c0")
+    extern const char LevelObjectNamePc007545c0[9] = "lever_on";
+#pragma const_seg(".rdata$LevelObjectNamePc007545cc")
+    extern const char LevelObjectNamePc007545cc[11] = "lever_glow";
+#pragma const_seg(".rdata$LevelObjectNamePc007545d8")
+    extern const char LevelObjectNamePc007545d8[11] = "lever_nob9";
+#pragma const_seg(".rdata$LevelObjectNamePc007545e4")
+    extern const char LevelObjectNamePc007545e4[11] = "lever_nob8";
+#pragma const_seg(".rdata$LevelObjectNamePc007545f0")
+    extern const char LevelObjectNamePc007545f0[11] = "lever_nob7";
+#pragma const_seg(".rdata$LevelObjectNamePc007545fc")
+    extern const char LevelObjectNamePc007545fc[11] = "lever_nob6";
+#pragma const_seg(".rdata$LevelObjectNamePc00754608")
+    extern const char LevelObjectNamePc00754608[11] = "lever_nob5";
+#pragma const_seg(".rdata$LevelObjectNamePc00754614")
+    extern const char LevelObjectNamePc00754614[11] = "lever_nob4";
+#pragma const_seg(".rdata$LevelObjectNamePc00754620")
+    extern const char LevelObjectNamePc00754620[11] = "lever_nob3";
+#pragma const_seg(".rdata$LevelObjectNamePc0075462c")
+    extern const char LevelObjectNamePc0075462c[11] = "lever_nob2";
+#pragma const_seg(".rdata$LevelObjectNamePc00754638")
+    extern const char LevelObjectNamePc00754638[11] = "lever_nob1";
+#pragma const_seg(".rdata$LevelObjectNamePc00754644")
+    extern const char LevelObjectNamePc00754644[11] = "lever_base";
+#pragma const_seg(".rdata$LevelObjectNamePc00754650")
+    extern const char LevelObjectNamePc00754650[6] = "lever";
+#pragma const_seg(".rdata$LevelObjectNamePc00754658")
+    extern const char LevelObjectNamePc00754658[14] = "bounty_target";
+#pragma const_seg(".rdata$LevelObjectNamePc00754668")
+    extern const char LevelObjectNamePc00754668[13] = "storm_target";
+#pragma const_seg(".rdata$LevelObjectNamePc00754678")
+    extern const char LevelObjectNamePc00754678[11] = "spearblack";
+#pragma const_seg(".rdata$LevelObjectNamePc00754684")
+    extern const char LevelObjectNamePc00754684[6] = "spear";
+#pragma const_seg(".rdata$LevelObjectNamePc0075468c")
+    extern const char LevelObjectNamePc0075468c[5] = "peri";
+#pragma const_seg(".rdata$LevelObjectNamePc00754694")
+    extern const char LevelObjectNamePc00754694[5] = "poop";
+#pragma const_seg(".rdata$LevelObjectNamePc0075469c")
+    extern const char LevelObjectNamePc0075469c[14] = "submachinegun";
+#pragma const_seg(".rdata$LevelObjectNamePc007546ac")
+    extern const char LevelObjectNamePc007546ac[13] = "blaster_blue";
+#pragma const_seg(".rdata$LevelObjectNamePc007546bc")
+    extern const char LevelObjectNamePc007546bc[10] = "bowcaster";
+#pragma const_seg(".rdata$LevelObjectNamePc007546cc")
+    extern const char LevelObjectNamePc007546cc[15] = "bentlightsabre";
+#pragma const_seg(".rdata$LevelObjectNamePc007546dc")
+    extern const char LevelObjectNamePc007546dc[23] = "doublelightsabrehandle";
+#pragma const_seg(".rdata$LevelObjectNamePc007546f4")
+    extern const char LevelObjectNamePc007546f4[17] = "lightsabrehandle";
+#pragma const_seg(".rdata$LevelObjectNamePc00754708")
+    extern const char LevelObjectNamePc00754708[13] = "pistolchrome";
+#pragma const_seg(".rdata$LevelObjectNamePc00754718")
+    extern const char LevelObjectNamePc00754718[11] = "pistolgrey";
+#pragma const_seg(".rdata$LevelObjectNamePc00754724")
+    extern const char LevelObjectNamePc00754724[14] = "walkie_talkie";
+#pragma const_seg(".rdata$LevelObjectNamePc00754734")
+    extern const char LevelObjectNamePc00754734[11] = "machinegun";
+#pragma const_seg(".rdata$LevelObjectNamePc00754740")
+    extern const char LevelObjectNamePc00754740[13] = "slave1_level";
+#pragma const_seg(".rdata$LevelObjectNamePc00754750")
+    extern const char LevelObjectNamePc00754750[6] = "phone";
+#pragma const_seg(".rdata$LevelObjectNamePc00754758")
+    extern const char LevelObjectNamePc00754758[4] = "rod";
+#pragma const_seg(".rdata$LevelObjectNamePc0075475c")
+    extern const char LevelObjectNamePc0075475c[10] = "status_06";
+#pragma const_seg(".rdata$LevelObjectNamePc00754768")
+    extern const char LevelObjectNamePc00754768[10] = "status_05";
+#pragma const_seg(".rdata$LevelObjectNamePc00754774")
+    extern const char LevelObjectNamePc00754774[10] = "status_04";
+#pragma const_seg(".rdata$LevelObjectNamePc00754780")
+    extern const char LevelObjectNamePc00754780[10] = "status_03";
+#pragma const_seg(".rdata$LevelObjectNamePc0075478c")
+    extern const char LevelObjectNamePc0075478c[10] = "status_02";
+#pragma const_seg(".rdata$LevelObjectNamePc00754798")
+    extern const char LevelObjectNamePc00754798[10] = "status_01";
+#pragma const_seg(".rdata$LevelObjectNamePc007547ac")
+    extern const char LevelObjectNamePc007547ac[9] = "parallax";
+#pragma const_seg(".rdata$LevelObjectNamePc007547b8")
+    extern const char LevelObjectNamePc007547b8[10] = "save_icon";
+#pragma const_seg()
+#pragma data_seg(".data$ObjTab")
+    LEVEL_OBJECT_CONFIG_PC ObjTab[750] = {
+        {4, 0, 0, const_cast<char *>(LevelObjectNamePc007547b8)},
+        {1, 0, 0, const_cast<char *>(LevelObjectNamePc007547ac)},
+        {1, 0, 0, const_cast<char *>(PermLegalBase)},
+        {1, 0, 0, const_cast<char *>(LevelObjectNamePc00754798)},
+        {1, 0, 0, const_cast<char *>(LevelObjectNamePc0075478c)},
+        {1, 0, 0, const_cast<char *>(LevelObjectNamePc00754780)},
+        {1, 0, 0, const_cast<char *>(LevelObjectNamePc00754774)},
+        {1, 0, 0, const_cast<char *>(LevelObjectNamePc00754768)},
+        {1, 0, 0, const_cast<char *>(LevelObjectNamePc0075475c)},
+        {1, 0, 0, const_cast<char *>(LevelObjectNamePc00754758)},
+        {1, 0, 0, const_cast<char *>(LevelObjectNamePc00754750)},
+        {1, 0, 0, const_cast<char *>(LevelObjectNamePc00754740)},
+        {0, 0, 0, const_cast<char *>(LevelObjectNamePc00754734)},
+        {0, 0, 0, "blaster"},
+        {0, 0, 0, const_cast<char *>(LevelObjectNamePc00754724)},
+        {0, 0, 0, const_cast<char *>(LevelObjectNamePc00754718)},
+        {0, 0, 0, const_cast<char *>(LevelObjectNamePc00754708)},
+        {0, 0, 0, const_cast<char *>(LevelObjectNamePc007546f4)},
+        {0, 0, 0, const_cast<char *>(LevelObjectNamePc007546dc)},
+        {0, 0, 0, const_cast<char *>(LevelObjectNamePc007546cc)},
+        {0, 0, 0, "gun"},
+        {0, 0, 0, const_cast<char *>(LevelObjectNamePc007546bc)},
+        {0, 0, 0, const_cast<char *>(LevelObjectNamePc007546ac)},
+        {0, 0, 0, const_cast<char *>(LevelObjectNamePc0075469c)},
+        {0, 0, 0, const_cast<char *>(LevelObjectNamePc00754694)},
+        {0, 0, 0, const_cast<char *>(LevelObjectNamePc0075468c)},
+        {0, 0, 0, const_cast<char *>(LevelObjectNamePc00754684)},
+        {0, 0, 0, const_cast<char *>(LevelObjectNamePc00754678)},
+        {0, 0, 0, const_cast<char *>(LevelObjectNamePc00754668)},
+        {0, 0, 0, const_cast<char *>(LevelObjectNamePc00754658)},
+        {0, 0, 0, const_cast<char *>(LevelObjectNamePc00754650)},
+        {0, 0, 0, const_cast<char *>(LevelObjectNamePc00754644)},
+        {0, 0, 0, const_cast<char *>(LevelObjectNamePc00754638)},
+        {0, 0, 0, const_cast<char *>(LevelObjectNamePc0075462c)},
+        {0, 0, 0, const_cast<char *>(LevelObjectNamePc00754620)},
+        {0, 0, 0, const_cast<char *>(LevelObjectNamePc00754614)},
+        {0, 0, 0, const_cast<char *>(LevelObjectNamePc00754608)},
+        {0, 0, 0, const_cast<char *>(LevelObjectNamePc007545fc)},
+        {0, 0, 0, const_cast<char *>(LevelObjectNamePc007545f0)},
+        {0, 0, 0, const_cast<char *>(LevelObjectNamePc007545e4)},
+        {0, 0, 0, const_cast<char *>(LevelObjectNamePc007545d8)},
+        {0, 0, 0, const_cast<char *>(LevelObjectNamePc007545cc)},
+        {0, 0, 0, const_cast<char *>(LevelObjectNamePc007545c0)},
+        {0, 0, 0, const_cast<char *>(LevelObjectNamePc007545b4)},
+        {0, 0, 0, const_cast<char *>(LevelObjectNamePc007545a4)},
+        {0, 0, 0, const_cast<char *>(LevelObjectNamePc00754598)},
+        {0, 0, 0, const_cast<char *>(LevelObjectNamePc0075458c)},
+        {0, 0, 0, const_cast<char *>(LevelObjectNamePc00754580)},
+        {0, 0, 0, const_cast<char *>(LevelObjectNamePc00754570)},
+        {0, 0, 0, const_cast<char *>(PlayerActionNamePc_233)},
+        {0, 0, 0, const_cast<char *>(LevelObjectNamePc0075455c)},
+        {0, 0, 0, const_cast<char *>(LevelObjectNamePc00754550)},
+        {0, 0, 0, const_cast<char *>(LevelObjectNamePc00754548)},
+        {0, 1, 0, const_cast<char *>(LevelObjectNamePc0075453c)},
+        {0, 0, 0, const_cast<char *>(LevelObjectNamePc00754530)},
+        {0, 0, 0, const_cast<char *>(LevelObjectNamePc00754520)},
+        {0, 0, 0, const_cast<char *>(LevelObjectNamePc00754510)},
+        {0, 0, 0, const_cast<char *>(LevelObjectNamePc007544fc)},
+        {0, 0, 0, const_cast<char *>(LevelObjectNamePc007544e8)},
+        {0, 0, 0, const_cast<char *>(LevelObjectNamePc007544d8)},
+        {0, 0, 0, const_cast<char *>(LevelObjectNamePc007544c4)},
+        {0, 0, 0, const_cast<char *>(LevelObjectNamePc007544b4)},
+        {0, 0, 0, const_cast<char *>(LevelObjectNamePc007544a4)},
+        {0, 0, 0, const_cast<char *>(LevelObjectNamePc00754494)},
+        {0, 0, 0, const_cast<char *>(LevelObjectNamePc00754484)},
+        {0, 0, 0, const_cast<char *>(LevelObjectNamePc00754478)},
+        {0, 0, 0, const_cast<char *>(LevelObjectNamePc0075446c)},
+        {0, 0, 0, const_cast<char *>(LevelObjectNamePc00754460)},
+        {0, 0, 0, const_cast<char *>(LevelObjectNamePc00754454)},
+        {0, 0, 0, const_cast<char *>(LevelObjectNamePc00754448)},
+        {0, 0, 0, const_cast<char *>(LevelObjectNamePc0075443c)},
+        {0, 0, 0, const_cast<char *>(LevelObjectNamePc00754430)},
+        {0, 0, 0, const_cast<char *>(LevelObjectNamePc00754420)},
+        {0, 0, 0, const_cast<char *>(LevelObjectNamePc00754414)},
+        {0, 0, 0, const_cast<char *>(LevelObjectNamePc00754408)},
+        {0, 0, 0, const_cast<char *>(LevelObjectNamePc00754400)},
+        {0, 0, 0, const_cast<char *>(LevelObjectNamePc007543f8)},
+        {0, 0, 0, const_cast<char *>(LevelObjectNamePc007543f0)},
+        {0, 0, 0, const_cast<char *>(LevelObjectNamePc007543e8)},
+        {0, 0, 0, const_cast<char *>(LevelObjectNamePc007543e0)},
+        {0, 0, 0, const_cast<char *>(LevelObjectNamePc007543d8)},
+        {0, 0, 0, const_cast<char *>(LevelObjectNamePc007543cc)},
+        {0, 0, 0, const_cast<char *>(LevelObjectNamePc007543c0)},
+        {0, 0, 0, const_cast<char *>(LevelObjectNamePc007543b4)},
+        {0, 0, 0, const_cast<char *>(LevelObjectNamePc007543a8)},
+        {0, 0, 0, const_cast<char *>(LevelObjectNamePc00754398)},
+        {0, 0, 0, const_cast<char *>(PlayerActionNamePc_145)},
+        {0, 0, 0, const_cast<char *>(LevelObjectNamePc00754378)},
+        {0, 0, 0, const_cast<char *>(LevelObjectNamePc00754364)},
+        {0, 0, 0, const_cast<char *>(LevelObjectNamePc0075435c)},
+        {1, 0, 0, const_cast<char *>(LevelObjectNamePc00754350)},
+        {0, 0, 1, const_cast<char *>(LevelObjectNamePc00754344)},
+        {0, 0, 1, const_cast<char *>(LevelObjectNamePc00754334)},
+        {0, 0, 1, const_cast<char *>(LevelObjectNamePc00754324)},
+        {0, 0, 1, const_cast<char *>(LevelObjectNamePc00754310)},
+        {0, 0, 1, const_cast<char *>(LevelObjectNamePc007542fc)},
+        {0, 0, 1, const_cast<char *>(LevelObjectNamePc007542e4)},
+        {0, 0, 1, const_cast<char *>(LevelObjectNamePc007542d0)},
+        {0, 0, 1, const_cast<char *>(LevelObjectNamePc007542b8)},
+        {0, 0, 1, const_cast<char *>(LevelObjectNamePc007542a4)},
+        {0, 0, 1, const_cast<char *>(LevelObjectNamePc0075428c)},
+        {0, 0, 1, const_cast<char *>(LevelObjectNamePc0075427c)},
+        {0, 0, 1, const_cast<char *>(LevelObjectNamePc00754268)},
+        {0, 0, 1, const_cast<char *>(LevelObjectNamePc00754258)},
+        {0, 0, 1, const_cast<char *>(LevelObjectNamePc00754244)},
+        {0, 0, 1, const_cast<char *>(LevelObjectNamePc00754234)},
+        {0, 0, 1, const_cast<char *>(LevelObjectNamePc00754224)},
+        {0, 0, 1, const_cast<char *>(LevelObjectNamePc00754210)},
+        {0, 0, 1, const_cast<char *>(LevelObjectNamePc007541f8)},
+        {0, 0, 1, const_cast<char *>(LevelObjectNamePc007541e4)},
+        {0, 0, 1, const_cast<char *>(LevelObjectNamePc007541cc)},
+        {3, 0, 1, const_cast<char *>(LevelObjectNamePc007541bc)},
+        {3, 0, 1, const_cast<char *>(LevelObjectNamePc007541a8)},
+        {5, 0, 1, const_cast<char *>(LevelObjectNamePc0075419c)},
+        {5, 0, 1, const_cast<char *>(LevelObjectNamePc0075418c)},
+        {5, 0, 1, const_cast<char *>(LevelObjectNamePc00754180)},
+        {5, 0, 1, const_cast<char *>(LevelObjectNamePc0075416c)},
+        {0, 0, 1, const_cast<char *>(LevelObjectNamePc00754160)},
+        {0, 0, 1, const_cast<char *>(LevelObjectNamePc00754150)},
+        {5, 0, 1, const_cast<char *>(LevelObjectNamePc00754140)},
+        {5, 0, 1, const_cast<char *>(LevelObjectNamePc0075412c)},
+        {5, 0, 1, const_cast<char *>(LevelObjectNamePc0075411c)},
+        {5, 0, 1, const_cast<char *>(LevelObjectNamePc00754108)},
+        {5, 0, 1, const_cast<char *>(LevelObjectNamePc007540f4)},
+        {5, 0, 1, const_cast<char *>(LevelObjectNamePc007540d4)},
+        {5, 0, 1, const_cast<char *>(LevelObjectNamePc007540b0)},
+        {0, 0, 2, const_cast<char *>(LevelObjectNamePc007540a0)},
+        {0, 0, 2, const_cast<char *>(LevelObjectNamePc0075408c)},
+        {0, 0, 2, const_cast<char *>(LevelObjectNamePc00754078)},
+        {0, 0, 2, const_cast<char *>(LevelObjectNamePc00754060)},
+        {0, 0, 2, const_cast<char *>(LevelObjectNamePc00754048)},
+        {0, 0, 2, const_cast<char *>(LevelObjectNamePc0075402c)},
+        {0, 0, 2, const_cast<char *>(LevelObjectNamePc00754014)},
+        {0, 0, 2, const_cast<char *>(LevelObjectNamePc00753ff8)},
+        {0, 0, 2, const_cast<char *>(LevelObjectNamePc00753fe0)},
+        {0, 0, 2, const_cast<char *>(LevelObjectNamePc00753fc4)},
+        {0, 0, 2, const_cast<char *>(LevelObjectNamePc00753fb0)},
+        {0, 0, 2, const_cast<char *>(LevelObjectNamePc00753f98)},
+        {0, 0, 2, const_cast<char *>(LevelObjectNamePc00753f84)},
+        {0, 0, 2, const_cast<char *>(LevelObjectNamePc00753f6c)},
+        {0, 0, 2, const_cast<char *>(LevelObjectNamePc00753f58)},
+        {0, 0, 2, const_cast<char *>(LevelObjectNamePc00753f44)},
+        {0, 0, 2, const_cast<char *>(LevelObjectNamePc00753f2c)},
+        {0, 0, 2, const_cast<char *>(LevelObjectNamePc00753f10)},
+        {0, 0, 2, const_cast<char *>(LevelObjectNamePc00753ef8)},
+        {0, 0, 2, const_cast<char *>(LevelObjectNamePc00753edc)},
+        {3, 0, 2, const_cast<char *>(LevelObjectNamePc00753ec8)},
+        {3, 0, 2, const_cast<char *>(LevelObjectNamePc00753eb0)},
+        {0, 0, 2, const_cast<char *>(LevelObjectNamePc00753ea0)},
+        {0, 0, 2, const_cast<char *>(LevelObjectNamePc00753e8c)},
+        {0, 0, 2, const_cast<char *>(LevelObjectNamePc00753e7c)},
+        {0, 0, 2, const_cast<char *>(LevelObjectNamePc00753e68)},
+        {0, 0, 2, const_cast<char *>(LevelObjectNamePc00753e58)},
+        {0, 0, 2, const_cast<char *>(LevelObjectNamePc00753e44)},
+        {0, 0, 2, const_cast<char *>(LevelObjectNamePc00753e30)},
+        {0, 0, 2, const_cast<char *>(LevelObjectNamePc00753e18)},
+        {0, 0, 2, const_cast<char *>(LevelObjectNamePc00753e04)},
+        {0, 0, 2, const_cast<char *>(LevelObjectNamePc00753dec)},
+        {0, 0, 2, const_cast<char *>(LevelObjectNamePc00753dd4)},
+        {5, 0, 2, const_cast<char *>(LevelObjectNamePc00753db0)},
+        {5, 0, 2, const_cast<char *>(LevelObjectNamePc00753d88)},
+        {3, 0, 0, const_cast<char *>(LevelObjectNamePc00753d78)},
+        {3, 0, 0, const_cast<char *>(LevelObjectNamePc00753d6c)},
+        {3, 0, 0, const_cast<char *>(LevelObjectNamePc00753d5c)},
+        {3, 0, 0, const_cast<char *>(LevelObjectNamePc00753d48)},
+        {0, 0, 0, const_cast<char *>(LevelObjectNamePc00753d38)},
+        {0, 0, 0, const_cast<char *>(LevelObjectNamePc00753d28)},
+        {0, 0, 0, const_cast<char *>(LevelObjectNamePc00753d14)},
+        {0, 0, 0, const_cast<char *>(LevelObjectNamePc00753d04)},
+        {0, 0, 0, const_cast<char *>(LevelObjectNamePc00753cf8)},
+        {0, 0, 0, const_cast<char *>(LevelObjectNamePc00753cec)},
+        {0, 0, 0, const_cast<char *>(LevelObjectNamePc00753ce0)},
+        {0, 0, 0, const_cast<char *>(LevelObjectNamePc00753cd4)},
+        {0, 0, 0, const_cast<char *>(LevelObjectNamePc00753cc8)},
+        {0, 0, 0, const_cast<char *>(LevelObjectNamePc00753cbc)},
+        {0, 0, 0, const_cast<char *>(LevelObjectNamePc00753cb0)},
+        {0, 0, 0, const_cast<char *>(LevelObjectNamePc00753ca4)},
+        {0, 0, 0, const_cast<char *>(LevelObjectNamePc00753c98)},
+        {0, 0, 0, const_cast<char *>(LevelObjectNamePc00753c8c)},
+        {0, 0, 0, const_cast<char *>(LevelObjectNamePc00753c78)},
+        {0, 0, 0, const_cast<char *>(LevelObjectNamePc00753c64)},
+        {0, 0, 0, const_cast<char *>(LevelObjectNamePc00753c50)},
+        {0, 0, 0, const_cast<char *>(LevelObjectNamePc00753c3c)},
+        {0, 0, 0, const_cast<char *>(LevelObjectNamePc00753c2c)},
+        {0, 0, 0, const_cast<char *>(LevelObjectNamePc00753c1c)},
+        {0, 0, 0, const_cast<char *>(LevelObjectNamePc00753c0c)},
+        {0, 0, 0, const_cast<char *>(LevelObjectNamePc00753bfc)},
+        {0, 0, 0, const_cast<char *>(LevelObjectNamePc00753bec)},
+        {0, 0, 0, const_cast<char *>(LevelObjectNamePc00753bdc)},
+        {0, 0, 0, const_cast<char *>(LevelObjectNamePc00753bcc)},
+        {0, 0, 0, const_cast<char *>(LevelObjectNamePc00753bbc)},
+        {0, 0, 0, const_cast<char *>(LevelObjectNamePc00753bb0)},
+        {0, 0, 0, const_cast<char *>(LevelObjectNamePc00753ba4)},
+        {0, 0, 0, const_cast<char *>(LevelObjectNamePc00753b98)},
+        {0, 0, 0, const_cast<char *>(LevelObjectNamePc00753b8c)},
+        {0, 0, 0, const_cast<char *>(LevelObjectNamePc00753b7c)},
+        {0, 0, 0, const_cast<char *>(LevelObjectNamePc00753b6c)},
+        {0, 0, 0, const_cast<char *>(LevelObjectNamePc00753b5c)},
+        {0, 0, 0, const_cast<char *>(LevelObjectNamePc00753b4c)},
+        {0, 0, 0, const_cast<char *>(LevelObjectNamePc00753b40)},
+        {0, 0, 0, const_cast<char *>(LevelObjectNamePc00753b34)},
+        {0, 0, 0, const_cast<char *>(LevelObjectNamePc00753b28)},
+        {0, 0, 0, const_cast<char *>(LevelObjectNamePc00753b1c)},
+        {0, 0, 0, const_cast<char *>(LevelObjectNamePc00753b14)},
+        {0, 0, 0, const_cast<char *>(LevelObjectNamePc00753b08)},
+        {0, 0, 0, const_cast<char *>(LevelObjectNamePc00753af8)},
+        {0, 0, 0, const_cast<char *>(LevelObjectNamePc00753ae8)},
+        {0, 0, 0, const_cast<char *>(LevelObjectNamePc00753adc)},
+        {0, 0, 0, const_cast<char *>(LevelObjectNamePc00753ad4)},
+        {0, 0, 0, const_cast<char *>(LevelObjectNamePc00753ac4)},
+        {0, 0, 0, const_cast<char *>(LevelObjectNamePc00753ab8)},
+        {0, 0, 0, const_cast<char *>(LevelObjectNamePc00753aac)},
+        {0, 0, 0, const_cast<char *>(LevelObjectNamePc00753aa4)},
+        {0, 0, 0, const_cast<char *>(LevelObjectNamePc00753a94)},
+        {0, 0, 0, const_cast<char *>(LevelObjectNamePc00753a84)},
+        {0, 0, 0, const_cast<char *>(LevelObjectNamePc00753a74)},
+        {0, 0, 0, const_cast<char *>(LevelObjectNamePc00753a64)},
+        {0, 0, 0, const_cast<char *>(LevelObjectNamePc00753a50)},
+        {0, 0, 0, const_cast<char *>(LevelObjectNamePc00753a3c)},
+        {0, 0, 0, const_cast<char *>(LevelObjectNamePc00753a28)},
+        {0, 0, 0, const_cast<char *>(LevelObjectNamePc00753a14)},
+        {0, 0, 0, const_cast<char *>(LevelObjectNamePc00753a04)},
+        {0, 0, 0, const_cast<char *>(LevelObjectNamePc007539f4)},
+        {0, 0, 0, const_cast<char *>(LevelObjectNamePc007539e8)},
+        {0, 0, 0, const_cast<char *>(LevelObjectNamePc007539dc)},
+        {0, 0, 0, const_cast<char *>(LevelObjectNamePc007539d0)},
+        {0, 0, 0, const_cast<char *>(LevelObjectNamePc007539c0)},
+        {0, 0, 0, const_cast<char *>(LevelObjectNamePc007539b0)},
+        {0, 0, 0, const_cast<char *>(LevelObjectNamePc007539a0)},
+        {0, 0, 0, const_cast<char *>(LevelObjectNamePc00753994)},
+        {0, 0, 0, const_cast<char *>(LevelObjectNamePc0075398c)},
+        {0, 0, 0, const_cast<char *>(LevelObjectNamePc00753980)},
+        {0, 0, 0, const_cast<char *>(LevelObjectNamePc00753970)},
+        {0, 0, 0, const_cast<char *>(LevelObjectNamePc00753968)},
+        {0, 0, 0, const_cast<char *>(LevelObjectNamePc00753958)},
+        {0, 0, 0, const_cast<char *>(LevelObjectNamePc00753948)},
+        {0, 0, 0, const_cast<char *>(LevelObjectNamePc0075393c)},
+        {0, 0, 0, const_cast<char *>(LevelObjectNamePc00753930)},
+        {0, 0, 0, const_cast<char *>(LevelObjectNamePc00753920)},
+        {0, 0, 0, const_cast<char *>(LevelObjectNamePc00753914)},
+        {3, 0, 0, const_cast<char *>(LevelObjectNamePc00753904)},
+        {3, 0, 0, const_cast<char *>(LevelObjectNamePc007538f8)},
+        {3, 0, 0, const_cast<char *>(LevelObjectNamePc007538e4)},
+        {3, 0, 0, const_cast<char *>(LevelObjectNamePc007538cc)},
+        {3, 0, 0, const_cast<char *>(LevelObjectNamePc007538bc)},
+        {3, 0, 0, const_cast<char *>(LevelObjectNamePc007538a4)},
+        {3, 0, 0, const_cast<char *>(LevelObjectNamePc00753888)},
+        {3, 0, 0, const_cast<char *>(LevelObjectNamePc0075387c)},
+        {3, 0, 0, const_cast<char *>(LevelObjectNamePc00753870)},
+        {3, 0, 0, const_cast<char *>(LevelObjectNamePc00753860)},
+        {0, 0, 0, const_cast<char *>(LevelObjectNamePc00753858)},
+        {0, 0, 0, const_cast<char *>(LevelObjectNamePc00753850)},
+        {0, 0, 0, const_cast<char *>(LevelObjectNamePc00753848)},
+        {0, 0, 0, const_cast<char *>(LevelObjectNamePc00753840)},
+        {0, 0, 0, const_cast<char *>(LevelObjectNamePc0075382c)},
+        {0, 0, 0, const_cast<char *>(LevelObjectNamePc0075381c)},
+        {0, 0, 0, const_cast<char *>(LevelObjectNamePc00753810)},
+        {0, 0, 0, const_cast<char *>(LevelObjectNamePc00753804)},
+        {0, 0, 0, const_cast<char *>(LevelObjectNamePc007537f8)},
+        {0, 0, 0, const_cast<char *>(LevelObjectNamePc007537ec)},
+        {0, 0, 0, const_cast<char *>(LevelObjectNamePc007537dc)},
+        {0, 0, 0, const_cast<char *>(LevelObjectNamePc007537cc)},
+        {0, 0, 0, const_cast<char *>(LevelObjectNamePc007537c4)},
+        {0, 0, 0, const_cast<char *>(LevelObjectNamePc007537b8)},
+        {0, 0, 0, const_cast<char *>(LevelObjectNamePc007537b0)},
+        {0, 0, 0, const_cast<char *>(LevelObjectNamePc007537a8)},
+        {0, 0, 0, const_cast<char *>(LevelObjectNamePc0075379c)},
+        {0, 0, 0, const_cast<char *>(LevelObjectNamePc00753790)},
+        {0, 0, 0, const_cast<char *>(LevelObjectNamePc00753780)},
+        {0, 0, 0, const_cast<char *>(LevelObjectNamePc00753774)},
+        {0, 0, 0, const_cast<char *>(LevelObjectNamePc00753768)},
+        {0, 0, 0, const_cast<char *>(LevelObjectNamePc00753758)},
+        {0, 0, 0, const_cast<char *>(LevelObjectNamePc00753748)},
+        {0, 0, 0, const_cast<char *>(LevelObjectNamePc00753734)},
+        {0, 0, 0, const_cast<char *>(LevelObjectNamePc00753728)},
+        {0, 0, 0, const_cast<char *>(LevelObjectNamePc00753718)},
+        {0, 0, 0, const_cast<char *>(LevelObjectNamePc0075370c)},
+        {0, 0, 0, const_cast<char *>(LevelObjectNamePc00753700)},
+        {0, 0, 0, const_cast<char *>(LevelObjectNamePc007536f0)},
+        {0, 0, 0, const_cast<char *>(LevelObjectNamePc007536e0)},
+        {0, 0, 0, const_cast<char *>(LevelObjectNamePc007536d0)},
+        {0, 0, 0, const_cast<char *>(LevelObjectNamePc007536c4)},
+        {0, 0, 0, const_cast<char *>(LevelObjectNamePc007536b4)},
+        {0, 0, 0, const_cast<char *>(LevelObjectNamePc007536a0)},
+        {0, 0, 0, const_cast<char *>(LevelObjectNamePc0075368c)},
+        {0, 0, 0, const_cast<char *>(LevelObjectNamePc0075367c)},
+        {0, 0, 0, const_cast<char *>(LevelObjectNamePc0075366c)},
+        {0, 0, 0, const_cast<char *>(LevelObjectNamePc0075365c)},
+        {0, 0, 0, const_cast<char *>(LevelObjectNamePc0075364c)},
+        {0, 0, 0, const_cast<char *>(LevelObjectNamePc00753638)},
+        {0, 0, 0, const_cast<char *>(LevelObjectNamePc00753630)},
+        {0, 0, 0, const_cast<char *>(LevelObjectNamePc00753628)},
+        {0, 0, 0, const_cast<char *>(LevelObjectNamePc0075361c)},
+        {0, 0, 0, const_cast<char *>(LevelObjectNamePc00753610)},
+        {0, 0, 0, const_cast<char *>(LevelObjectNamePc00753604)},
+        {5, 0, 0, const_cast<char *>(LevelObjectNamePc007535f8)},
+        {5, 0, 0, const_cast<char *>(LevelObjectNamePc007535ec)},
+        {1, 0, 0, const_cast<char *>(LevelObjectNamePc007535e8)},
+        {1, 0, 0, const_cast<char *>(LevelObjectNamePc007535e4)},
+        {1, 0, 0, const_cast<char *>(LevelObjectNamePc007535e0)},
+        {1, 0, 0, const_cast<char *>(LevelObjectNamePc007535dc)},
+        {1, 0, 0, const_cast<char *>(LevelObjectNamePc00754344)},
+        {1, 0, 0, const_cast<char *>(LevelObjectNamePc007535d0)},
+        {1, 0, 0, const_cast<char *>(LevelObjectNamePc00754324)},
+        {1, 0, 0, const_cast<char *>(LevelObjectNamePc007535c0)},
+        {1, 0, 0, const_cast<char *>(LevelObjectNamePc007542d0)},
+        {1, 0, 0, const_cast<char *>(LevelObjectNamePc007535ac)},
+        {1, 0, 0, const_cast<char *>(LevelObjectNamePc007535a4)},
+        {5, 0, 0, const_cast<char *>(LevelObjectNamePc0075359c)},
+        {5, 0, 0, const_cast<char *>(LevelObjectNamePc00753590)},
+        {5, 0, 0, const_cast<char *>(LevelObjectNamePc00753588)},
+        {5, 0, 0, const_cast<char *>(LevelObjectNamePc00753580)},
+        {5, 0, 0, const_cast<char *>(LevelObjectNamePc00753578)},
+        {0, 0, 0, const_cast<char *>(LevelObjectNamePc00753568)},
+        {0, 0, 0, const_cast<char *>(LevelObjectNamePc00753554)},
+        {255, 0, 0, NULL},
+    };
+#pragma data_seg()
+}

@@ -397,7 +397,7 @@ extern "C" {
         FadeSys.AddFade((FadeBase *)&fadeWipe);
         FadeSys.AddFade((FadeBase *)&fadeStillWipe);
         FadeSys.AddFade((FadeBase *)&fadeStill);
-        STUBBED_NAMED("LoadPermData: LevelObjects_InitForGame(0x7f44f8, &ptr, &end, 0x2ee, 0x1f40)");
+        LevelObjects_InitForGame(ObjTab, &permbuffer_ptr, &permbuffer_end, 0x2ee, 0x1f40);
         LevelSplines_InitForGame(LevelSplinesTable);
         STUBBED_NAMED("LoadPermData: LoadPermLoadSaveIconScene");
 
