@@ -1578,7 +1578,12 @@ typedef struct AREA_SAVE_PICKUP_PC {
         struct {
             u8 complete;
             u8 area_complete;
-            u8 newgame_reserved_02[5];
+            union {
+                u8 newgame_reserved_02[5];
+                struct {
+                    u8 true_hero_complete[2], minikit_complete, preserved_minikit_count, preserved_red_brick_collected;
+                };
+            };
             u8 challenge_unlocked;
             f32 challenge_trial_time;
         };
@@ -1656,7 +1661,17 @@ typedef struct gamesave_s {
                 };
             };
             u8 customizer_weirdo_flags;
-            u8 unknown_7c1c[4];
+            union {
+                u8 unknown_7c1c[4];
+                struct {
+                    u8 hub_buildit_completed;
+                    union {
+                        u8 losttemple_trailer_watched;
+                        u8 lost_temple_area_complete;
+                    };
+                    u8 unknown_7c1e[2];
+                };
+            };
             f32 game_time;
             u8 unknown_7c24[0xa];
             u16 customizer_cape_piece;
@@ -1947,13 +1962,27 @@ STATIC_ASSERT(offsetof(NUPAD_INIT_STATE, init_port) == 0x8a);
 
 typedef struct gamepad_init_record_s {
     NUPAD_INIT_STATE *pad;
-    u8 unknown_04[0x56];
-    u16 allocated;
-    u8 unknown_5c[4];
+    union {
+        struct {
+            u8 unknown_04[0x56];
+            u16 allocated;
+            u8 unknown_5c[4];
+        };
+        struct {
+            u32 menu_buttons_held, menu_buttons_pressed, menu_directions_held, menu_directions;
+            u8 unknown_14[0x4c];
+        };
+    };
 } GAMEPAD_INIT_RECORD;
 STATIC_ASSERT(sizeof(GAMEPAD_INIT_RECORD) == 0x60);
 STATIC_ASSERT(offsetof(GAMEPAD_INIT_RECORD, pad) == 0);
 STATIC_ASSERT(offsetof(GAMEPAD_INIT_RECORD, allocated) == 0x5a);
+STATIC_ASSERT(offsetof(GAMEPAD_INIT_RECORD, menu_buttons_held) == 4);
+STATIC_ASSERT(offsetof(GAMEPAD_INIT_RECORD, menu_buttons_pressed) == 8);
+STATIC_ASSERT(offsetof(GAMEPAD_INIT_RECORD, menu_directions_held) == 0xc);
+STATIC_ASSERT(offsetof(GAMEPAD_INIT_RECORD, menu_directions) == 0x10);
+STATIC_ASSERT(offsetof(GAMEPAD_INIT_RECORD, unknown_5c) == 0x5c);
+STATIC_ASSERT(__alignof(GAMEPAD_INIT_RECORD) == 4);
 
 typedef struct NuKeyboardState_PC {
     u8 unknown_0000_to_4e10[0x4e10];
@@ -4397,22 +4426,38 @@ typedef struct ARCADE_MODE_PC_s {
 } ARCADE_MODE_PC;
 STATIC_ASSERT(sizeof(ARCADE_MODE_PC) == 0xc);
 STATIC_ASSERT(offsetof(ARCADE_MODE_PC, flags) == 8);
-typedef struct ARCADE_ITEM_PC_s {
-    i16 *level_text;
-    i8 level;
-    u8 level_count;
+typedef struct ARCADE_MENU_ENTRY_PC_s {
+    i16 *text;
+    i8 index;
+    u8 count;
     u16 unknown_06;
-    i16 *mode_text;
-    i8 mode;
-    u8 mode_count;
-    u16 unknown_0e;
-    i16 *play_text;
-    i8 play;
-    u8 play_count;
-    u16 unknown_16;
+} ARCADE_MENU_ENTRY_PC;
+STATIC_ASSERT(sizeof(ARCADE_MENU_ENTRY_PC) == 8);
+/* REPLACE existing ARCADE_ITEM_PC24-byte declaration, preserve every old field. */
+typedef struct ARCADE_ITEM_PC_s {
+    union {
+        struct {
+            i16 *level_text;
+            i8 level;
+            u8 level_count;
+            u16 unknown_06;
+            i16 *mode_text;
+            i8 mode;
+            u8 mode_count;
+            u16 unknown_0e;
+            i16 *play_text;
+            i8 play;
+            u8 play_count;
+            u16 unknown_16;
+            ARCADE_MENU_ENTRY_PC reset_points_entry, launch_entry;
+        };
+        ARCADE_MENU_ENTRY_PC entries[5];
+    };
 } ARCADE_ITEM_PC;
-STATIC_ASSERT(sizeof(ARCADE_ITEM_PC) == 0x18);
+STATIC_ASSERT(sizeof(ARCADE_ITEM_PC) == 0x28);
 STATIC_ASSERT(offsetof(ARCADE_ITEM_PC, mode) == 0xc);
+STATIC_ASSERT(offsetof(ARCADE_ITEM_PC, reset_points_entry) == 0x18);
+STATIC_ASSERT(offsetof(ARCADE_ITEM_PC, launch_entry) == 0x20);
 
 typedef struct cheat_pc_s {
     char *name;
@@ -7000,7 +7045,63 @@ STATIC_ASSERT(offsetof(FADEINFO_PC, fades) == 0x14);
 STATIC_ASSERT(offsetof(FADEINFO_PC, pending_type) == 0x24);
 STATIC_ASSERT(offsetof(FADEINFO_PC, field_28) == 0x28);
 #ifdef __cplusplus
-class FadeSystem;
+enum FADETYPE_VALUE {
+    FADE_TYPE_NONE = -1,
+    FADE_TYPE_SCREEN = 0,
+    FADE_TYPE_WIPE = 1,
+    FADE_TYPE_STILL_WIPE = 2,
+    FADE_TYPE_STILL = 3,
+};
+
+struct FADEINFO_s;
+
+class FadeBase {
+  public:
+    FADEINFO_s *info;
+    virtual ~FadeBase();
+    virtual void Init(FADEINFO_s *info) = 0;
+    virtual void InitFade() = 0;
+    virtual void UpdateFade() = 0;
+    virtual void DrawFade() = 0;
+    virtual FADETYPE_VALUE GetFadeType() const = 0;
+};
+
+struct FADEINFO_s {
+    u32 direction;
+    f32 fade;
+    f32 rate;
+    i32 busy;
+    i32 stage;
+    FadeBase *fades[4];
+    FADETYPE_VALUE pending_type;
+    i32 field_28;
+};
+
+STATIC_ASSERT(sizeof(FADEINFO_s) == 0x2c);
+STATIC_ASSERT(offsetof(FADEINFO_s, direction) == 0x00);
+STATIC_ASSERT(offsetof(FADEINFO_s, fade) == 0x04);
+STATIC_ASSERT(offsetof(FADEINFO_s, rate) == 0x08);
+STATIC_ASSERT(offsetof(FADEINFO_s, busy) == 0x0c);
+STATIC_ASSERT(offsetof(FADEINFO_s, stage) == 0x10);
+STATIC_ASSERT(offsetof(FADEINFO_s, fades) == 0x14);
+STATIC_ASSERT(offsetof(FADEINFO_s, pending_type) == 0x24);
+STATIC_ASSERT(offsetof(FADEINFO_s, field_28) == 0x28);
+
+struct FADETYPE {
+    FADETYPE_VALUE type;
+};
+
+class FadeSystem : public FADEINFO_s {
+  public:
+    void Init();
+    void Update();
+    void Draw();
+    void SetStage(char stage);
+    i32 SetFade(FADETYPE const &type, u32 frames);
+    i32 AddFade(FadeBase *fade);
+};
+
+STATIC_ASSERT(sizeof(FadeSystem) == 0x2c);
 extern "C" FadeSystem FadeSys;
 #else
 extern FADEINFO_PC FadeSys;
@@ -7566,6 +7667,24 @@ struct GRAPHICS_FACTORY_PC {
     const GRAPHICS_FACTORY_METHODS_PC *methods;
 };
 typedef struct GRAPHICS_RENDER_TEXTURE_PC GRAPHICS_RENDER_TEXTURE_PC;
+typedef struct MENU_VIDEO_OPTIONS_PC {
+    i32 aspect_mode;
+    i32 shadows_enabled;
+    i32 bloom_enabled;
+    i32 speed_blur_enabled;
+    i32 hires_enabled;
+#ifdef __cplusplus
+    u8 __thiscall ChangedPc();
+    void __thiscall ApplyPc();
+#endif
+} MENU_VIDEO_OPTIONS_PC;
+STATIC_ASSERT(sizeof(MENU_VIDEO_OPTIONS_PC) == 20);
+STATIC_ASSERT(offsetof(MENU_VIDEO_OPTIONS_PC, aspect_mode) == 0);
+STATIC_ASSERT(offsetof(MENU_VIDEO_OPTIONS_PC, shadows_enabled) == 4);
+STATIC_ASSERT(offsetof(MENU_VIDEO_OPTIONS_PC, bloom_enabled) == 8);
+STATIC_ASSERT(offsetof(MENU_VIDEO_OPTIONS_PC, speed_blur_enabled) == 12);
+STATIC_ASSERT(offsetof(MENU_VIDEO_OPTIONS_PC, hires_enabled) == 16);
+
 typedef struct PC_WINDOW_OPTIONS_PC {
     i32 context;
     char file_name[1024];
@@ -7626,6 +7745,10 @@ typedef struct PC_WINDOW_OPTIONS_PC {
     void __thiscall SetUseHires(u8 value);
     void __thiscall SetOption459(u8 value);
 
+    void __thiscall SetAspectModePc(i32);
+    void __thiscall SetShadowsEnabledPc(u8);
+    void __thiscall SetBloomEnabledPc(u8);
+    void __thiscall SetUseHiresPendingPc(u8);
 #endif
 } PC_WINDOW_OPTIONS_PC;
 STATIC_ASSERT(sizeof(PC_WINDOW_OPTIONS_PC) == 0x460);
@@ -7821,6 +7944,9 @@ typedef struct PC_DEVICE_BACKEND_PC {
     void CopyBackBuffer(GRAPHICS_RENDER_TEXTURE_PC *);
     void CopyCurrentSurface(GRAPHICS_RENDER_TEXTURE_PC *);
 
+    u8 __thiscall SupportsMultisamplePc(i32);
+    u8 __thiscall HasRequestedModeChangedPc();
+    void __thiscall RestoreSavedModePc();
 #endif
 } PC_DEVICE_BACKEND_PC;
 
@@ -8143,7 +8269,10 @@ struct game_message_pc_s {
     i8 player_index;
     u8 target_is_coin_total, allow_temporary;
     GAME_MESSAGE_CALLBACK_PC delay_fn, tick_fn, update_fn;
-    void *parameter_10c;
+    union {
+        void *parameter_10c;
+        void(__cdecl *draw_fn)(struct game_message_pc_s *, NUVEC *, f32);
+    };
     GAME_MESSAGE_CALLBACK_PC end_fn;
 };
 STATIC_ASSERT(sizeof(GAME_MESSAGE_PC) == 0x114);
@@ -8414,7 +8543,10 @@ STATIC_ASSERT(offsetof(HINT_PC, repeat_delay) == 0xc);
 STATIC_ASSERT(offsetof(HINT_PC, completed) == 0x14);
 STATIC_ASSERT(offsetof(HINT_PC, cooldown) == 0x18);
 typedef struct HINTSYS_PC {
-    u8 unknown0[4];
+    union {
+        u8 unknown0[4];
+        void(__cdecl *draw_fn)(HINT_PC *, i32);
+    };
     HINT_PC *hints, *active_hint;
     u8 unknownc, state, unknowne[2];
     u32 *save_bits;
@@ -9125,11 +9257,17 @@ extern "C" {
     STATIC_ASSERT(sizeof(PLAYER_COIN_PACKET_PC) == 0x10);
     STATIC_ASSERT(offsetof(PLAYER_COIN_PACKET_PC, last_coin) == 8);
     typedef struct collection_area_save_pc_s {
-        u8 unknown_00[4];
+        union {
+            u8 unknown_00[4];
+            struct {
+                u8 complete, area_complete, unknown_02[2];
+            };
+        };
         u8 minikit_complete;
         u8 unknown_05[7];
     } COLLECTION_AREA_SAVE_PC;
     STATIC_ASSERT(sizeof(COLLECTION_AREA_SAVE_PC) == 0xc);
+    STATIC_ASSERT(offsetof(COLLECTION_AREA_SAVE_PC, area_complete) == 1);
     STATIC_ASSERT(offsetof(COLLECTION_AREA_SAVE_PC, minikit_complete) == 4);
     extern i32 Hub_UsePlayerList;
     extern i16 Area_PlayerIDList[9];
@@ -11733,6 +11871,10 @@ typedef struct PC_SHADER_OBJECT_FULL_VIEW PC_SHADER_OBJECT_FULL_VIEW;
                 u8 shop_enabled;
                 u8 unknown_price_tail[0x13];
             };
+            struct {
+                u8 unknown_grid_prefix[0x14];
+                f32 grid_x, grid_y;
+            };
         };
     } COLLECTID_PC;
     STATIC_ASSERT(sizeof(COLLECTID_PC) == 0x1c);
@@ -12639,7 +12781,6 @@ typedef struct PC_SHADER_OBJECT_FULL_VIEW PC_SHADER_OBJECT_FULL_VIEW;
     STATIC_ASSERT(offsetof(PC_EFFECT_SURFACE_PC, height) == 0x16);
     STATIC_ASSERT(offsetof(PC_EFFECT_SURFACE_PC, registry_index) == 0x18);
 
-#include "saga.h"
     typedef struct PC_NUFADEGROUP {
         i16 active;
         i16 flags;
@@ -15743,7 +15884,7 @@ void __cdecl PCSoundAlreadyPlayingHook(void);
     extern i32 LevPathCnxDir;
     extern void *LevelLocator;
     extern i32 LevPlatID[2];
-    extern u8 LevLock[4];
+    extern u8 LevLock[5];
     extern i32 SuperStoryEpisode;
     extern i32 hub_from_superstory;
     extern i32 hub_from_mission;
@@ -20381,7 +20522,30 @@ extern "C" {
 }
 #endif
 
-struct GIZBUILDIT_PC;
+typedef struct GIZBUILDIT_PC {
+    char name[16];
+    GAMEANIMSET *anim_set;
+    GAMEANIMOBJ **anim_objects;
+    struct GIZBUILDIT_PC *linked_buildit;
+    NUVEC file_position, start_position, position;
+    f32 bounds_radius, step_timer, step_duration;
+    u8 unknown_4c[0x20];
+    u8 anim_object_count, build_state, builders_active, built_object_count;
+    u8 unknown_70, progress;
+    u16 state_flags;
+    u8 unknown_74[6];
+    u16 availability_flags;
+} GIZBUILDIT_PC;
+STATIC_ASSERT(sizeof(GIZBUILDIT_PC) == 0x7c);
+STATIC_ASSERT(offsetof(GIZBUILDIT_PC, anim_objects) == 0x14);
+STATIC_ASSERT(offsetof(GIZBUILDIT_PC, linked_buildit) == 0x18);
+STATIC_ASSERT(offsetof(GIZBUILDIT_PC, start_position) == 0x28);
+STATIC_ASSERT(offsetof(GIZBUILDIT_PC, bounds_radius) == 0x40);
+STATIC_ASSERT(offsetof(GIZBUILDIT_PC, anim_object_count) == 0x6c);
+STATIC_ASSERT(offsetof(GIZBUILDIT_PC, progress) == 0x71);
+STATIC_ASSERT(offsetof(GIZBUILDIT_PC, state_flags) == 0x72);
+STATIC_ASSERT(offsetof(GIZBUILDIT_PC, availability_flags) == 0x7a);
+
 #ifdef __cplusplus
 extern "C" {
 #endif
@@ -25135,7 +25299,7 @@ extern "C" {
                                            struct nuvec_s *directions);
     f32 __cdecl NuSpecialGetOriginRadius(void *special);
     i32 __cdecl DrawPanel3DObjectNoAlpha(f32 x, f32 y, f32 z, f32 scale_x, f32 scale_y, f32 scale_z, u16 rotate_x,
-                                         u16 rotate_y, u16 rotate_z, struct nuhspecial_s *special, i32 rotate_order);
+                                         u16 rotate_y, u16 rotate_z, NUSPECIALHANDLE *special, i32 rotate_order);
     extern f32 PANEL_MINIKITCOUNTSCALE;
     extern f32 PANEL_MINIKITCOUNTY;
     extern f32 stats_xscale;
@@ -25252,9 +25416,6 @@ extern "C" {
     extern struct shopitem_s *HintItems;
     extern i32 HintShelfIds[7];
     void __cdecl InitBikeParts(void);
-    void __cdecl NuMtxRotateXInline(struct numtx_s *m, i32 a);
-    void __cdecl NuMtxRotateYInline(struct numtx_s *m, i32 a);
-    void __cdecl NuMtxRotateZInline(struct numtx_s *m, i32 a);
     extern i32 SHOPCHARCOUNT;
     i32 __cdecl SelectShopItem(struct shopitem_s *items, i32 index);
     extern f32 ShopNameAlpha;
@@ -26127,10 +26288,274 @@ extern "C" {
     void __cdecl Hub_UpdateMiniKits(WORLDINFO *world);
     void __cdecl Customiser_Update(CUSTOMISER_LAYERS_PC *, WORLDINFO *);
     extern i32 customiser_quit;
+    extern const char ExtrasNameFormatPc[7];
+    extern MENU_VIDEO_OPTIONS_PC MenuVideoOptionsPc;
+    extern i32 MenuAppliedAspectPc;
+    extern const char MenuVideoAspectErrorFormatPc[10];
+    extern const char MenuVideoAspect1610FormatPc[10];
+    extern const char MenuVideoAspect169FormatPc[9];
+    extern const char MenuVideoAspect43FormatPc[8];
+    extern const char MenuVideoRefreshFormatPc[9];
+    extern const char MenuVideoResolutionFormatPc[12];
+    extern const char MenuEffects16xFormatPc[8];
+    extern const char MenuEffects8xFormatPc[7];
+    extern const char MenuEffects4xFormatPc[7];
+    extern const char MenuEffects2xFormatPc[7];
+    u8 __cdecl MenuCanChangeMultisamplePc(void);
+    u8 __cdecl MenuCanChangeShadowsPc(void);
+    void __cdecl MenuEnterVideoPc(MENU *);
+    void __cdecl MenuDrawVideoPc(MENU *);
+    void __cdecl MenuUpdateVideoPc(MENU *);
+    void __cdecl MenuExitVideoPc(MENU *);
+    void __cdecl MenuEnterEffectsPc(MENU *);
+    void __cdecl MenuDrawEffectsPc(MENU *);
+    void __cdecl MenuUpdateEffectsPc(MENU *);
+    void __cdecl MenuExitEffectsPc(MENU *);
+    void __cdecl MenuApplyVideoPc(MENU *);
+    void __cdecl MenuCancelVideoPc(MENU *);
+    extern f32 MenuVideoConfirmDurationPc;
+    extern i32 MenuVideoConfirmWaitPc;
+    extern const char MenuVideoCountdownFormatPc[9];
+    void __cdecl MenuEnterVideoConfirmPc(MENU *);
+    void __cdecl MenuDrawVideoConfirmPc(MENU *);
+    void __cdecl MenuUpdateVideoConfirmPc(MENU *);
+    void __cdecl MenuExitVideoConfirmPc(MENU *);
+    void __cdecl MenuDrawNoticePc(char *, u8, u8, u8);
+    void __cdecl MenuEnterHiresNoticePc(MENU *);
+    void __cdecl MenuDrawHiresNoticePc(MENU *);
+    void __cdecl MenuUpdateHiresNoticePc(MENU *);
+    void __cdecl MenuExitHiresNoticePc(MENU *);
+    void __cdecl PauseGame(i32);
+    void __cdecl PadOutPause(i32, WORLDINFO *);
+    void __cdecl DropOut(i32, i32, i32, i32);
+    void __cdecl MenuDrawPauseMain(MENU *);
+    void __cdecl MenuUpdatePauseMain(MENU *);
+    void __cdecl MenuDrawPauseRestart(MENU *);
+    void __cdecl MenuDrawPauseExit(MENU *);
+    void __cdecl MenuUpdatePauseExit(MENU *);
+    void __cdecl MenuDrawAutoSaveCancel(MENU *);
+    void __cdecl MenuUpdateAutoSaveCancel(MENU *);
+    void __cdecl saveloadASCallEachFrame(void);
+
+    i32 __cdecl MenuInMemoryCard(void);
+    i32 __cdecl Customiser_MenuAvailable(CUSTOMISER_LAYERS_PC *);
+    void __cdecl Customiser_Update(CUSTOMISER_LAYERS_PC *, WORLDINFO *);
+    void __cdecl UpdateCharacterLoad(void);
+    void __cdecl MakeMenuPacket(void);
+    void __cdecl Hub_UpdateMiniKits(WORLDINFO *);
+    i32 __cdecl Episode_IsComplete(EPISODEDATA_PC *, i32 *);
+    void __cdecl GizBuildIt_SetToEnd(GIZBUILDIT_PC *);
+    GIZBUILDIT_PC *__cdecl GizBuildIt_FindNearest(WORLDINFO *, GAMEOBJECT *, i32, i32);
+    extern i32 HubTrueJediTypeAlphaPc;
+    extern f32 HubMiniKitOpenThresholdPc;
+    extern i32 HubCompletedAreasPc, HubAreasPerEpisodePc;
+    extern NUVEC HubForceBackPositionPc;
+    extern f32 HubForceBackRadiusPc;
+    extern f32 HubMiniKitOpenTimePc;
+    extern void(__cdecl *HubUpdateAIFnPc)(WORLDINFO *);
+    extern i32 shop_quit, shop_save_done, SHOPACTIVE;
+    extern f32 ShopLockedScalePc;
+    extern i32 customiser_save_done, customiser_quit, customiser_changed;
+    extern GAMESAVE TempGame;         /* 856c38, native0x7e4c owner. */
+    extern GAMESAVE OldCustomiseGame; /* 85ea98, native0x7e4c owner. */
+    void __cdecl Hub_Update(WORLDINFO *);
+    extern i32 HubDoorAreaPc;
+    void __cdecl Customiser_LoadAll(CUSTOMISER_LAYERS_PC *, WORLDINFO *);
+    void __cdecl Customiser_Init(CUSTOMISER_LAYERS_PC *);
+    void __cdecl Customiser_Reset(CUSTOMISER_LAYERS_PC *);
+    void __cdecl Customiser_Draw3D(CUSTOMISER_LAYERS_PC *);
+    void __cdecl Customiser_TransformToPanel(CUSTOMISER_LAYERS_PC *);
+    void __cdecl Hub_Load(WORLDINFO *, VARIPTR *, VARIPTR *);
+
+    /* Append declarations inside saga.h extern "C" block. */
+    extern f32 PANEL_MINIKITCOUNTSCALE;
+    extern f32 PANEL_MINIKITCOUNTY;
+    extern f32 stats_xscale;
+    extern f32 HubEpisodeTitleYPc;
+    extern f32 HubEpisodeTitleSizePc;
+    extern f32 HubEpisodeSubtitleYPc;
+    extern f32 HubEpisodeSubtitleSizePc;
+    extern f32 HubSelectMenuYPc;
+    extern f32 HubBonusMenuYPc;
+    extern f32 HubPromptXPc;
+    extern f32 HubPromptSpacingPc;
+    extern f32 HubPromptLabelOffsetPc;
+    extern f32 HubPromptMaxWidthPc;
+    extern f32 HubBuildBarSpacingPc;
+    extern f32 HubBuildBarScalePc;
+    extern f32 HubBuildBarOverallScalePc;
+    extern f32 HubTrueJediLabelOffsetPc;
+    extern f32 HubTrueJediLabelScalePc;
+    extern f32 HubTrueJediLabelWidthPc;
+    extern f32 COLLECTION_DX;
+    extern f32 COLLECTION_DY;
+    extern f32 COLLECTION_ICONSIZE;
+    extern f32 COLLECTION_Y_HUB;
+    extern f32 HubFreePlayFinalSizePc;
+    extern f32 HubFreePlayBigYPc;
+    extern f32 HubFreePlayBigSizePc;
+    extern f32 HubFreePlayNameYPc;
+    extern f32 HubFreePlayCursorSizePc;
+    extern u8 HubEpisodeRedPc;
+    extern u8 HubEpisodeGreenPc;
+    extern u8 HubTrueJediLabelRedPc;
+    extern u8 HubTrueJediLabelGreenPc;
+    extern u8 HubTrueJediLabelBluePc;
+    extern i32 HubBuildBarSegmentsPc;
+    extern i32 HubPromptOffColourPc[3];
+    extern i32 HubPromptOnColourPc[3];
+    extern i16 *HubLostTempleStoryTextPc;
+    extern i16 *HubLostTempleFreePlayTextPc;
+    extern i32 HubDrawMiniKitCharacterPc;
+    extern u8 HubEpisodeBluePc;
+    extern f32 HubArcadeMenuYPc;
+    extern char TextInputActionLabelBufferPc[128];
+    extern APICHARACTERMODELLIST HubFreePlayDrawListPc[341];
+    extern char HubButtonStringBufferPc[];
+
+    /* Existing mapped text IDs; definitions remain in their canonical owner. */
+    extern i16 TextIdPc880714;
+    extern i16 TextIdPc880718;
+    extern i16 TextIdPc880724;
+    extern i16 TextIdPc88076c;
+    extern i16 TextIdPc880780;
+    extern i16 TextIdPc8807b8;
+    extern i16 TextIdPc8807c0;
+    extern i16 TextIdPc8807c4;
+    extern i16 TextIdPc8807e8;
+    extern i16 TextIdPc8807fc;
+    extern i16 TextIdPc880844;
+    extern i16 TextIdPc880864;
+    extern i16 TextIdPc880874;
+    extern i16 TextIdPc880888;
+    extern i16 TextIdPc880890;
+    extern i16 TextIdPc8808a4;
+    extern i16 TextIdPc8808a8;
+    extern i16 TextIdPc8808b8;
+    extern i16 TextIdPc880eac;
+    extern i16 TextIdPc880eb0;
+    extern i16 TextIdPc880eb4;
+    extern i16 TextIdPc881018;
+    extern i16 TextIdPc881020;
+    extern i16 TextIdPc881028;
+    extern i16 TextIdPc881030;
+    extern i16 TextIdPc881038;
+    extern i16 TextIdPc881040;
+    extern i16 TextIdPc8810c0;
+
+    /* Append inside saga.h extern "C" block; native C ABI. Existing identical prototypes may be retained once. */
+    void __cdecl SmartTextPc(char *, f32, f32, f32, f32, f32, f32, i32, i32, i32, i32, f32, i32);
+    char *__cdecl TextButtonStringPc(i32, const char *, const char *);
+    char *__cdecl TextInputActionLabelPc(i32, i32, i32, i32);
+    i32 __cdecl Text_ExpandButtonString(char *, char *);
+    void __cdecl DrawPlayerIconPrompts(i32, i32, f32, i32, i32, i32, i32, i32, i32, f32, i32, i32, i32, i32);
+    void __cdecl Hub_DrawImportantBrick(i32, f32, f32, f32, i32, i32);
+    char *__cdecl GameObj_GetNamePc(i32, GAMEOBJECT *, char *);
+    void __cdecl Collection_DrawPc(COLLECTION_BUILD_PC *, f32, f32, f32, APICHARACTERMODELLIST *, f32, i32);
+
+#ifdef __cplusplus
+    extern "C" {
+#endif
+        extern i32 hub_bonusepisode;
+        extern f32 selectmodeduration;
+        extern f32 freeplayduration;
+        extern f32 bonusmodetime;
+        extern i32 hub_selectmode;
+        extern f32 freeplaytime;
+        extern i32 hub_bonusarea;
+        extern i32 hub_bonusmode;
+        extern i32 fpcount;
+        extern i32 hub_freeplaysource;
+        extern APICHARACTERMODELLIST fplist[341];
+        extern i32 hub_freeplay_area;
+        extern i32 bonusmodemode;
+        extern f32 bonusmodeduration;
+        extern u16 HubIconWibbleAnglePc[4];
+        extern f32 HubIconWibbleTimePc[4];
+        extern f32 BlipL[2];
+        extern f32 BlipR[2];
+        extern f32 BlipU[2];
+        extern f32 BlipD[2];
+        extern f32 uprepeattime[2];
+        extern f32 downrepeattime[2];
+        extern f32 leftrepeattime[2];
+        extern f32 rightrepeattime[2];
+        extern u8 uprepeatcount[2];
+        extern u8 downrepeatcount[2];
+        extern u8 leftrepeatcount[2];
+        extern u8 rightrepeatcount[2];
+        extern i32 HubIconWibbleRatePc[4];
+        extern f32 BigIconAlpha[2];
+        extern i32 freeplay_i[2];
+        extern f32 freeplay_time[2];
+        extern APICHARACTERMODELLIST NetFreePlayModelList[49];
+        extern u8 net_recievedFreePlayList;
+        extern i8 net_FreePlayModelCount;
+        extern f32 HubFreePlaySelectionWaitPc;
+        extern AREA_DATA_PC **ArcadeLevelPc[12];
+        extern i16 PCArcadeLevelText;
+        extern i16 PCArcadeModeText;
+        extern AREA_DATA_PC *SENATE_ADATA;
+        extern AREA_DATA_PC *UTAPAU_ADATA;
+        extern AREA_DATA_PC *HOTH_ADATA;
+        extern AREA_DATA_PC *BONUSDAGOBAH_ADATA;
+        extern AREA_DATA_PC *BONUSKAMINO_ADATA;
+        extern AREA_DATA_PC *BONUSKASHYYYK_ADATA;
+        extern AREA_DATA_PC *E1CHARACTER_ADATA;
+        extern AREA_DATA_PC *E2CHARACTER_ADATA;
+        extern AREA_DATA_PC *E3CHARACTER_ADATA;
+        extern AREA_DATA_PC *E4CHARACTER_ADATA;
+        extern AREA_DATA_PC *E5CHARACTER_ADATA;
+        extern AREA_DATA_PC *E6CHARACTER_ADATA;
+        extern i16 PCArcadePlayText;
+        extern i16 TextIdPc8807cc;
+        extern i16 TextIdPc8808c0;
+#ifdef __cplusplus
+    }
+#endif
+
+#ifdef __cplusplus
+    extern "C" {
+#endif
+        void __cdecl WipeBackToHub(void);
+        void __cdecl Hub_UpdateFreePlaySelect(void);
+        void __cdecl InitChallenge(i32);
+        void __cdecl MenuInitSelectMode(MENU *);
+        void __cdecl MenuInitBonusMode(MENU *);
+        void __cdecl MenuDrawSelectMode(MENU *);
+        void __cdecl MenuDrawBonusMode(MENU *);
+        void __cdecl MenuUpdateSelectMode(MENU *);
+        void __cdecl MenuUpdateBonusMode(MENU *);
+        void __cdecl MenuInitFreePlay(MENU *);
+        void __cdecl MenuUpdateFreePlay(MENU *);
+        void __cdecl MenuDrawFreePlay(MENU *);
+#ifdef __cplusplus
+    }
+#endif
+
+    void __cdecl Hub_DrawPanel(WORLDINFO *);
+    void __cdecl DrawShopPanel(void);
+    void __cdecl DrawGameMessages(void);
+    void __cdecl Hint_Draw(i32);
+    extern void(__cdecl *ShopDrawPanelFnPc)(void);
+
 #ifdef __cplusplus
 }
 #endif
 
+#ifdef __cplusplus
+extern "C" {
+#endif
+    i32 __cdecl NuSpecialFindMulti(NUGSCN *, NUSPECIALHANDLE *, char *, i32, i32);
+    void __cdecl InitShop(WORLDINFO *);
+    void __cdecl DrawShop3D(WORLDINFO *);
+    void __cdecl Doors_Check(WORLDINFO *, GAMEOBJECT *);
+    void __cdecl TransformGameMessages(NUVEC *, NUVEC *, NUVEC *);
+    void __cdecl GizmoSysPanelDraw(void *, void *, f32);
+    extern i32 ShowPlayerCoordinatePc;
+#ifdef __cplusplus
+}
+#endif
 #include "diagnostics.h"
 
 #endif

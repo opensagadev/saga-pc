@@ -1851,41 +1851,9 @@ STATIC_ASSERT(offsetof(CUT_LOAD_RECORD_PC, reflection_range) == 0xf2);
 STATIC_ASSERT(offsetof(WORLDINFO, area) == 0x12c);
 STATIC_ASSERT(offsetof(LEVELDATA_PC, flags) == 0x64);
 STATIC_ASSERT(sizeof(LEVELDATA_PC) == 0x130);
-enum FADETYPE_VALUE {
-    FADE_TYPE_NONE = -1,
-    FADE_TYPE_SCREEN = 0,
-    FADE_TYPE_WIPE = 1,
-    FADE_TYPE_STILL_WIPE = 2,
-    FADE_TYPE_STILL = 3
-};
+
 struct FADEINFO_s;
-struct FadeBase {
-    virtual ~FadeBase();
-    virtual void Init(FADEINFO_s *info) = 0;
-    virtual void InitFade() = 0;
-    virtual void UpdateFade() = 0;
-    virtual void DrawFade() = 0;
-    virtual FADETYPE_VALUE GetFadeType() const = 0;
-};
-struct FADEINFO_s {
-    u32 direction;
-    f32 fade, rate;
-    i32 busy, stage;
-    FadeBase *fades[4];
-    FADETYPE_VALUE pending_type;
-    i32 field_28;
-};
-struct FADETYPE {
-    FADETYPE_VALUE type;
-};
-class FadeSystem : public FADEINFO_s {
-  public:
-    void Init();
-    void Update();
-    void Draw();
-    void SetStage(char stage);
-    i32 SetFade(FADETYPE const &type, u32 frames);
-};
+
 STATIC_ASSERT(sizeof(FadeSystem) == 0x2c);
 STATIC_ASSERT(sizeof(FADETYPE) == 4);
 extern "C" {

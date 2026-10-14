@@ -1450,12 +1450,6 @@ void __cdecl GizmoBlowUp_Sfx(GIZMOBLOWUP_PC *unused, NUVEC *position) {
     }
 }
 
-class FadeSystem : public FADEINFO_PC {
-  public:
-    void Update();
-    void Draw();
-};
-
 extern "C" NUMTL *FadeMtl2;
 extern "C" void __cdecl DrawPauseFade(void);
 

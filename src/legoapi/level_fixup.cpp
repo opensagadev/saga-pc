@@ -272,12 +272,12 @@ extern "C" void __cdecl FixUpLevels(struct level_fixup_pc_s *fixup) {
             level = Level_FindByName("map", NULL);                  /* Native call 0x48dca8. */
             HUB_LDATA = level;                                      /* Native store 0x48dcb2. */
             if (level != NULL) {
-                STUBBED_NAMED(FixUpLevels_Callback_4778d0); /* Native 0x48dcb9: callbacks[0] = entry 0x4778d0. */
-                STUBBED_NAMED(FixUpLevels_Callback_47cab0); /* Native 0x48dcc5: callbacks[1] = entry 0x47cab0. */
-                STUBBED_NAMED(FixUpLevels_Callback_479b30); /* Native 0x48dcd2: callbacks[2] = entry 0x479b30. */
-                STUBBED_NAMED(FixUpLevels_Callback_47cdd0); /* Native 0x48dcdf: callbacks[3] = entry 0x47cdd0. */
-                STUBBED_NAMED(FixUpLevels_Callback_479ed0); /* Native 0x48dceb: callbacks[5] = entry 0x479ed0. */
-                STUBBED_NAMED(FixUpLevels_Callback_47dce0); /* Native 0x48dcf8: callbacks[6] = entry 0x47dce0. */
+                level->callbacks[0] = (void *)Hub_Load;      /* Native 0x48dcb9: callbacks[0] = entry 0x4778d0. */
+                level->callbacks[1] = (void *)Hub_Init;      /* Native 0x48dcc5: callbacks[1] = entry 0x47cab0. */
+                level->callbacks[2] = (void *)Hub_Reset;     /* Native 0x48dcd2: callbacks[2] = entry 0x479b30. */
+                level->callbacks[3] = (void *)Hub_Update;    /* Native 0x48dcdf: callbacks[3] = entry 0x47cdd0. */
+                level->callbacks[5] = (void *)Hub_Draw3D;    /* Native 0x48dceb: callbacks[5] = entry 0x479ed0. */
+                level->callbacks[6] = (void *)Hub_DrawPanel; /* Native 0x48dcf8: callbacks[6] = entry 0x47dce0. */
             }
             level = Level_FindByName("speederchase_a", NULL); /* Native call 0x48dd09. */
             SPEEDERCHASEA_LDATA = level;                      /* Native store 0x48dd13. */

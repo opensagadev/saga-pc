@@ -428,3 +428,60 @@ void __cdecl ReleaseEat(GAMEOBJECT *object) {
     }
     object->flags_e24 &= ~1u;
 }
+
+/* Append to existing collection.c after its canonical static CollectCount/CollectList. */
+
+typedef struct SHOP_UNLOCK_AREA_PC {
+    u8 unknown_00;
+    u8 area_complete;
+    u8 unknown_02[10];
+} SHOP_UNLOCK_AREA_PC;
+STATIC_ASSERT(sizeof(SHOP_UNLOCK_AREA_PC) == 12);
+STATIC_ASSERT(offsetof(SHOP_UNLOCK_AREA_PC, area_complete) == 1);
+typedef struct SHOP_UNLOCK_COMPLETION_PC {
+    u8 unknown_00[2];
+    u8 gold_bricks;
+} SHOP_UNLOCK_COMPLETION_PC;
+STATIC_ASSERT(offsetof(SHOP_UNLOCK_COMPLETION_PC, gold_bricks) == 2);
+i32 __cdecl Episodes_Completed(void);
+i32 __cdecl AllMiniKitsDone(AREASAVE_s *);
+
+COLLECTID *__cdecl CollectIDUnlocked(i32 id) {
+    COLLECTID *entry;
+    COLLECTID_PC *list = CollectList;
+    i32 index = InCollectList_Index(id, list, CollectCount);
+    if (index == -1)
+        return NULL;
+    if (Game_CharacterSave != NULL && (Game_CharacterSave[id] & 2) != 0)
+        return (COLLECTID *)&CollectList[index];
+    entry = (COLLECTID *)&list[index];
+    switch (entry->type) {
+        case 0:
+            return (COLLECTID *)&CollectList[index];
+        case 2:
+            if ((i8)entry->field2_0x3 != -1 &&
+                ((SHOP_UNLOCK_AREA_PC *)Game_AreaSave)[(i8)entry->field2_0x3].area_complete != 0)
+                return (COLLECTID *)&CollectList[index];
+            break;
+        case 3:
+            if (Episodes_Completed() == EPISODECOUNT)
+                return (COLLECTID *)&CollectList[index];
+            break;
+        case 4:
+            if (AllMiniKitsDone((AREASAVE_s *)Game_AreaSave) != 0)
+                return (COLLECTID *)&CollectList[index];
+            break;
+        case 6:
+            if (CustomiserCompletionSavePc != NULL &&
+                ((SHOP_UNLOCK_COMPLETION_PC *)CustomiserCompletionSavePc)->gold_bricks >= entry->field6_0xa)
+                return (COLLECTID *)&CollectList[index];
+            break;
+        case 7:
+            if (Game_100PercentComplete() != 0)
+                return (COLLECTID *)&CollectList[index];
+            break;
+        default:
+            break;
+    }
+    return NULL;
+}

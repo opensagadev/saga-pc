@@ -268,3 +268,39 @@ GAME_MESSAGE_PC *__cdecl AddGameMessage(char *text, NUVEC *position, f32 scale, 
     message.duration = duration;
     return AddGameMsg(&message);
 }
+
+/* PC5612f0/267; append to gamemessages.c. Native cdecl3 pointers, all stack. */
+void __cdecl TransformGameMessages(NUVEC *camera_position, NUVEC *camera_right, NUVEC *camera_direction) {
+    GAME_MESSAGE_PC *message = GameMessage;
+    GAME_MESSAGE_PC *end = message + 128;
+    for (; message != end; ++message) {
+        NUVEC target, transformed;
+        union {
+            f32 value;
+            u32 bits;
+        } difference;
+        if (message->active == 0 || message->has_start_position != 0)
+            continue;
+        NuCameraTransformScreenClip(&message->start_position, &message->position, 1, NULL);
+        if ((message->position.y - camera_position->y) * camera_direction->y +
+                (message->position.x - camera_position->x) * camera_direction->x +
+                (message->position.z - camera_position->z) * camera_direction->z <=
+            0.0) {
+            message->parameter_fb = 1;
+        } else {
+            message->parameter_fb = 0;
+            if ((message->flags & 4) != 0) {
+                target.x = message->position.x + message->scale_initial * camera_right->x;
+                target.y = message->position.y + message->scale_initial * camera_right->y;
+                target.z = message->position.z + message->scale_initial * camera_right->z;
+                NuCameraTransformScreenClip(&transformed, &target, 1, NULL);
+                difference.value = message->start_position.x - transformed.x;
+                difference.bits &= 0x7fffffff;
+                message->scale_current = (f32)(difference.value * 0.5249999761581421);
+            }
+        }
+        if ((message->flags & 2) == 0)
+            message->has_start_position = 1;
+        message->start_position.z = 1.0f;
+    }
+}

@@ -275,7 +275,7 @@ void UpdateSaveSlots(void) {
 }
 
 void __cdecl loadsaveCallEachFrame(void) {
-    STUBBED_NAMED("0x005114a0: saveloadASCallEachFrame at 0x00543de0 (void)");
+    saveloadASCallEachFrame();
     if (saveload_cardchanged != 0)
         memcard_cardchanged = 1;
     UpdateSaveSlots();

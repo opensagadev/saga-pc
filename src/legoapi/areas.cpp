@@ -1297,61 +1297,6 @@ extern "C" void ClearUpAreaData() {
     Particles_DumpAreaPage();
 }
 
-enum FADETYPE_VALUE {
-    FADE_TYPE_NONE = -1,
-    FADE_TYPE_SCREEN = 0,
-    FADE_TYPE_WIPE = 1,
-    FADE_TYPE_STILL_WIPE = 2,
-    FADE_TYPE_STILL = 3,
-};
-
-struct FADEINFO_s;
-
-struct FadeBase {
-    virtual ~FadeBase();
-    virtual void Init(FADEINFO_s *info) = 0;
-    virtual void InitFade() = 0;
-    virtual void UpdateFade() = 0;
-    virtual void DrawFade() = 0;
-    virtual FADETYPE_VALUE GetFadeType() const = 0;
-};
-
-struct FADEINFO_s {
-    u32 direction;
-    f32 fade;
-    f32 rate;
-    i32 busy;
-    i32 stage;
-    FadeBase *fades[4];
-    FADETYPE_VALUE pending_type;
-    i32 field_28;
-};
-
-STATIC_ASSERT(sizeof(FADEINFO_s) == 0x2c);
-STATIC_ASSERT(offsetof(FADEINFO_s, direction) == 0x00);
-STATIC_ASSERT(offsetof(FADEINFO_s, fade) == 0x04);
-STATIC_ASSERT(offsetof(FADEINFO_s, rate) == 0x08);
-STATIC_ASSERT(offsetof(FADEINFO_s, busy) == 0x0c);
-STATIC_ASSERT(offsetof(FADEINFO_s, stage) == 0x10);
-STATIC_ASSERT(offsetof(FADEINFO_s, fades) == 0x14);
-STATIC_ASSERT(offsetof(FADEINFO_s, pending_type) == 0x24);
-STATIC_ASSERT(offsetof(FADEINFO_s, field_28) == 0x28);
-
-struct FADETYPE {
-    FADETYPE_VALUE type;
-};
-
-class FadeSystem : public FADEINFO_s {
-  public:
-    void Init();
-    void Update();
-    void Draw();
-    void SetStage(char stage);
-    i32 SetFade(FADETYPE const &type, u32 frames);
-};
-
-STATIC_ASSERT(sizeof(FadeSystem) == 0x2c);
-
 typedef struct area_loading_clock_reader_pc_s {
     u8 unknown_0000[0x7c20];
     f32 elapsed_time;

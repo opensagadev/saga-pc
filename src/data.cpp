@@ -7513,7 +7513,7 @@ extern "C" {
 #pragma bss_seg()
 
 #pragma bss_seg(".bss$LevLock")
-    u8 LevLock[4];
+    u8 LevLock[5];
 #pragma bss_seg()
 
 #pragma data_seg(".data$SuperStoryEpisode")
@@ -10315,7 +10315,7 @@ extern "C" {
         {1008, MenuEnterSaveConfirm, MenuDrawSaveConfirm, MenuUpdateSaveConfirm, NULL, -1, -1, 0, 1, 1, 0},
         {1009, NULL, MenuDrawSaving, MenuUpdateSaving, NULL, -1, -1, 0, 0, 0, 0},
         {1010, MenuEnterAutoSaveWarning, MenuDrawAutoSaveWarning, MenuUpdateAutoSaveWarning, NULL, -1, -1, 0, 1, 0, 0},
-        {1011, NULL, NULL, NULL, NULL, -1, -1, 0, 1, 1, 0},
+        {1011, MenuEnterAutoSaveCancel, MenuDrawAutoSaveCancel, MenuUpdateAutoSaveCancel, NULL, -1, -1, 0, 1, 1, 0},
         {1012, MenuEnterLoad, MenuDrawLoad, MenuUpdateLoad, MenuExitLoad, -1, -1, 0, 1, 1, 0},
         {1013, NULL, MenuDrawLoadConfirm, MenuUpdateLoadConfirm, NULL, -1, -1, 0, 1, 1, 0},
         {1014, NULL, MenuDrawLoading, MenuUpdateLoading, NULL, -1, -1, 0, 0, 0, 0},
@@ -10329,10 +10329,12 @@ extern "C" {
         {1022, MenuEnterStartNewGame, NULL, NULL, NULL, -1, -1, 0, 0, 0, 0},
         {1023, NULL, MenuDrawDeleteConfirm, MenuUpdateDeleteConfirm, NULL, -1, -1, 0, 1, 1, 0},
         {1024, NULL, NULL, NULL, NULL, -1, -1, 0, 0, 0, 0},
-        {1025, NULL, NULL, NULL, NULL, -1, -1, 0, 0, 0, 0},
-        {1026, NULL, NULL, NULL, NULL, -1, -1, 0, 0, 0, 0},
-        {1027, NULL, NULL, NULL, NULL, -1, -1, 0, 0, 0, 0},
-        {1028, NULL, NULL, NULL, NULL, -1, -1, 0, 0, 0, 0},
+        {1025, MenuEnterVideoPc, MenuDrawVideoPc, MenuUpdateVideoPc, MenuExitVideoPc, -1, -1, 0, 0, 0, 0},
+        {1026, MenuEnterEffectsPc, MenuDrawEffectsPc, MenuUpdateEffectsPc, MenuExitEffectsPc, -1, -1, 0, 0, 0, 0},
+        {1027, MenuEnterVideoConfirmPc, MenuDrawVideoConfirmPc, MenuUpdateVideoConfirmPc, MenuExitVideoConfirmPc, -1,
+         -1, 0, 0, 0, 0},
+        {1028, MenuEnterHiresNoticePc, MenuDrawHiresNoticePc, MenuUpdateHiresNoticePc, MenuExitHiresNoticePc, -1, -1, 0,
+         0, 0, 0},
         {1029, NULL, NULL, NULL, NULL, -1, -1, 0, 0, 0, 0},
         {1030, NULL, NULL, NULL, NULL, -1, -1, 0, 0, 0, 0},
     };
@@ -10428,14 +10430,15 @@ extern "C" {
 
     // STUBBED: Remaining PC callbacks, including Menu1 activation, are not reconstructed; NULL slots keep them
     // inactive. IDs, remembered cursors, and prompt flags use the 23-record PC table.
+    void __cdecl MenuUpdatePauseRestart(MENU *);
     MENUFNINFO GameMenuInfo[23] = {
         {0, MenuEnterTitles, MenuDrawTitles, MenuUpdateTitles, NULL, -1, -1, 0, 0, 0, 0},
         {1, MenuEnterNewGame, MenuDrawNewGame, MenuUpdateNewGame, NULL, -1, -1, 0, 1, 0, 0},
-        {2, NULL, NULL, NULL, NULL, -1, -1, 0, 0, 0, 0},
-        {3, NULL, NULL, NULL, NULL, -1, -1, 0, 0, 0, 0},
+        {2, NULL, MenuDrawPauseMain, MenuUpdatePauseMain, NULL, -1, -1, 0, 0, 0, 0},
+        {3, NULL, MenuDrawPauseRestart, MenuUpdatePauseRestart, NULL, -1, -1, 0, 0, 0, 0},
         {4, MenuEnterOptions, MenuDrawOptions, MenuUpdateOptions, MenuExitOptions, 0, 0, 0, 1, 1, 0},
         {5, NULL, MenuDrawExtras, MenuUpdateExtras, NULL, 0, 0, 0, 0, 0, 0},
-        {6, NULL, NULL, NULL, NULL, -1, -1, 0, 0, 0, 0},
+        {6, NULL, MenuDrawPauseExit, MenuUpdatePauseExit, NULL, -1, -1, 0, 0, 0, 0},
         {7, NULL, MenuDrawSelectLanguage, MenuUpdateSelectLanguage, NULL, 0, 0, 0, 0, 0, 0},
         {8, NULL, NULL, NULL, NULL, -1, -1, 0, 0, 0, 0},
         {9, NULL, NULL, NULL, NULL, -1, -1, 0, 0, 0, 0},
@@ -10444,9 +10447,9 @@ extern "C" {
         {12, NULL, NULL, NULL, NULL, -1, -1, 0, 0, 0, 0},
         {13, NULL, NULL, NULL, NULL, -1, -1, 0, 0, 0, 0},
         {14, NULL, NULL, NULL, NULL, -1, -1, 0, 0, 0, 0},
-        {15, NULL, NULL, NULL, NULL, -1, -1, 0, 0, 0, 0},
-        {16, NULL, NULL, NULL, NULL, -1, -1, 0, 0, 0, 0},
-        {17, NULL, NULL, NULL, NULL, -1, -1, 0, 0, 0, 0},
+        {15, MenuInitSelectMode, MenuDrawSelectMode, MenuUpdateSelectMode, NULL, -1, -1, 0, 0, 0, 0},
+        {16, MenuInitBonusMode, MenuDrawBonusMode, MenuUpdateBonusMode, NULL, -1, -1, 0, 0, 0, 0},
+        {17, MenuInitFreePlay, MenuDrawFreePlay, MenuUpdateFreePlay, NULL, -1, -1, 0, 0, 0, 0},
         {18, NULL, NULL, NULL, NULL, -1, -1, 0, 0, 0, 0},
         {19, NULL, NULL, NULL, NULL, -1, -1, 0, 0, 0, 0},
         {20, NULL, NULL, NULL, NULL, -1, -1, 0, 0, 0, 0},
@@ -11128,7 +11131,22 @@ extern "C" {
     };
 #pragma data_seg()
 #pragma data_seg(".data$ArcadeItem")
-    ARCADE_ITEM_PC ArcadeItem = {&PCArcadeLevelText, 0, 12, 0, &PCArcadeModeText, 0, 7, 0, &PCArcadePlayText, 0, 5, 0};
+    extern i16 TextIdPc8807cc, TextIdPc8808c0;
+    ARCADE_ITEM_PC ArcadeItem = {{&PCArcadeLevelText,
+                                  0,
+                                  12,
+                                  0,
+                                  &PCArcadeModeText,
+                                  0,
+                                  7,
+                                  0,
+                                  &PCArcadePlayText,
+                                  0,
+                                  5,
+                                  0,
+                                  {&TextIdPc8807cc, 0, 2, 0},
+                                  {&TextIdPc8808c0, 0, 1, 0}}};
+
 #pragma data_seg()
 #pragma data_seg(".data$gizmoerrorlogsize")
     i32 gizmoerrorlogsize = 2048;
@@ -33046,4 +33064,579 @@ extern "C" {
 #pragma const_seg(".rdata$ExtrasLockedNumberFormatPc")
     extern const char ExtrasLockedNumberFormatPc[] = " %i: ";
 #pragma const_seg()
+}
+
+extern "C" {
+#pragma bss_seg(".bss$MenuVideoOptionsPc")
+    MENU_VIDEO_OPTIONS_PC MenuVideoOptionsPc;
+#pragma bss_seg(".bss$MenuAppliedAspectPc")
+    i32 MenuAppliedAspectPc;
+#pragma bss_seg()
+#pragma const_seg(".rdata$MenuVideoAspectErrorFormatPc")
+    extern const char MenuVideoAspectErrorFormatPc[10] = "%s: ERROR";
+#pragma const_seg(".rdata$MenuVideoAspect1610FormatPc")
+    extern const char MenuVideoAspect1610FormatPc[10] = "%s: 16:10";
+#pragma const_seg(".rdata$MenuVideoAspect169FormatPc")
+    extern const char MenuVideoAspect169FormatPc[9] = "%s: 16:9";
+#pragma const_seg(".rdata$MenuVideoAspect43FormatPc")
+    extern const char MenuVideoAspect43FormatPc[8] = "%s: 4:3";
+#pragma const_seg(".rdata$MenuVideoRefreshFormatPc")
+    extern const char MenuVideoRefreshFormatPc[9] = "%s: %dHz";
+#pragma const_seg(".rdata$MenuVideoResolutionFormatPc")
+    extern const char MenuVideoResolutionFormatPc[12] = "%s: %d x %d";
+#pragma const_seg(".rdata$MenuEffects16xFormatPc")
+    extern const char MenuEffects16xFormatPc[8] = "%s: 16X";
+#pragma const_seg(".rdata$MenuEffects8xFormatPc")
+    extern const char MenuEffects8xFormatPc[7] = "%s: 8X";
+#pragma const_seg(".rdata$MenuEffects4xFormatPc")
+    extern const char MenuEffects4xFormatPc[7] = "%s: 4X";
+#pragma const_seg(".rdata$MenuEffects2xFormatPc")
+    extern const char MenuEffects2xFormatPc[7] = "%s: 2X";
+#pragma const_seg()
+// Replace existing MenuInfo rows exactly (native row metadata is unchanged):
+// {1025, MenuEnterVideoPc, MenuDrawVideoPc, MenuUpdateVideoPc, MenuExitVideoPc, -1, -1, 0, 0, 0, 0},
+// {1026, MenuEnterEffectsPc, MenuDrawEffectsPc, MenuUpdateEffectsPc, MenuExitEffectsPc, -1, -1, 0, 0, 0, 0},
+#pragma bss_seg(".bss$MenuVideoConfirmDurationPc")
+    f32 MenuVideoConfirmDurationPc;
+#pragma bss_seg(".bss$MenuVideoConfirmWaitPc")
+    i32 MenuVideoConfirmWaitPc;
+#pragma bss_seg()
+#pragma const_seg(".rdata$MenuVideoCountdownFormatPc")
+    extern const char MenuVideoCountdownFormatPc[9] = "%s (%ds)";
+#pragma const_seg()
+    // {1027, MenuEnterVideoConfirmPc, MenuDrawVideoConfirmPc, MenuUpdateVideoConfirmPc, MenuExitVideoConfirmPc, -1, -1,
+    // 0, 0, 0, 0}, {1028, MenuEnterHiresNoticePc, MenuDrawHiresNoticePc, MenuUpdateHiresNoticePc,
+    // MenuExitHiresNoticePc, -1, -1, 0, 0, 0, 0},
+
+#pragma bss_seg(".bss$PauseSaveAndExitPc")
+    i32 PauseSaveAndExitPc;
+#pragma bss_seg()
+
+#pragma data_seg(".data$MenuAutoSaveCancelFirstPc")
+    u8 MenuAutoSaveCancelFirstPc = 1;
+#pragma data_seg()
+#pragma bss_seg(".bss$SaveloadPendingPc")
+    i32 SaveloadPendingPc;
+#pragma bss_seg()
+#pragma bss_seg(".bss$SaveloadStartedTickPc")
+    u32 SaveloadStartedTickPc;
+#pragma bss_seg()
+}
+
+extern "C" {
+#pragma data_seg(".data$HubTrueJediTypeAlphaPc")
+    i32 HubTrueJediTypeAlphaPc = 96;
+#pragma data_seg()
+#pragma data_seg(".data$HubMiniKitOpenThresholdPc")
+    f32 HubMiniKitOpenThresholdPc = 1.0;
+#pragma data_seg()
+#pragma data_seg(".data$HubCompletedAreasPc")
+    i32 HubCompletedAreasPc = 6;
+#pragma data_seg()
+#pragma data_seg(".data$HubAreasPerEpisodePc")
+    i32 HubAreasPerEpisodePc = 7;
+#pragma data_seg()
+#pragma data_seg(".data$HubForceBackPositionPc")
+    NUVEC HubForceBackPositionPc = {-20.275999069213867, 0.0, -49.327999114990234};
+#pragma data_seg()
+#pragma data_seg(".data$HubForceBackRadiusPc")
+    f32 HubForceBackRadiusPc = 2.299999952316284;
+#pragma data_seg()
+#pragma bss_seg(".bss$HubMiniKitOpenTimePc")
+    f32 HubMiniKitOpenTimePc;
+#pragma bss_seg()
+#pragma bss_seg(".bss$HubUpdateAIFnPc")
+    void(__cdecl *HubUpdateAIFnPc)(WORLDINFO *);
+#pragma bss_seg()
+#pragma bss_seg(".bss$shop_quit")
+    i32 shop_quit;
+#pragma bss_seg()
+#pragma bss_seg(".bss$shop_save_done")
+    i32 shop_save_done;
+#pragma bss_seg()
+#pragma bss_seg(".bss$ShopLockedScalePc")
+    f32 ShopLockedScalePc;
+#pragma bss_seg()
+#pragma bss_seg(".bss$customiser_save_done")
+    i32 customiser_save_done;
+#pragma bss_seg()
+#pragma bss_seg(".bss$customiser_changed")
+    i32 customiser_changed;
+#pragma bss_seg()
+#pragma bss_seg(".bss$TempGame")
+    GAMESAVE TempGame;
+#pragma bss_seg()
+#pragma bss_seg(".bss$OldCustomiseGame")
+    GAMESAVE OldCustomiseGame;
+#pragma bss_seg()
+}
+
+/* Append to data.cpp. Each new native owner gets its own contribution. */
+extern "C" {
+#pragma data_seg(".data$PANEL_MINIKITCOUNTSCALE")
+    f32 PANEL_MINIKITCOUNTSCALE = 0.5f;
+#pragma data_seg()
+#pragma data_seg(".data$PANEL_MINIKITCOUNTY")
+    f32 PANEL_MINIKITCOUNTY = -0.10000000149011612f;
+#pragma data_seg()
+#pragma data_seg(".data$stats_xscale")
+    f32 stats_xscale = 1.0f;
+#pragma data_seg()
+#pragma data_seg(".data$HubEpisodeTitleYPc")
+    f32 HubEpisodeTitleYPc = -0.5950000286102295f;
+#pragma data_seg()
+#pragma data_seg(".data$HubEpisodeTitleSizePc")
+    f32 HubEpisodeTitleSizePc = 0.5f;
+#pragma data_seg()
+#pragma data_seg(".data$HubEpisodeSubtitleYPc")
+    f32 HubEpisodeSubtitleYPc = -0.7450000047683716f;
+#pragma data_seg()
+#pragma data_seg(".data$HubEpisodeSubtitleSizePc")
+    f32 HubEpisodeSubtitleSizePc = 0.6000000238418579f;
+#pragma data_seg()
+#pragma data_seg(".data$HubSelectMenuYPc")
+    f32 HubSelectMenuYPc = 0.125f;
+#pragma data_seg()
+#pragma data_seg(".data$HubBonusMenuYPc")
+    f32 HubBonusMenuYPc = 0.125f;
+#pragma data_seg()
+#pragma data_seg(".data$HubPromptXPc")
+    f32 HubPromptXPc = 0.6700000166893005f;
+#pragma data_seg()
+#pragma data_seg(".data$HubPromptSpacingPc")
+    f32 HubPromptSpacingPc = -0.07000000029802322f;
+#pragma data_seg()
+#pragma data_seg(".data$HubPromptLabelOffsetPc")
+    f32 HubPromptLabelOffsetPc = -0.03999999910593033f;
+#pragma data_seg()
+#pragma data_seg(".data$HubPromptMaxWidthPc")
+    f32 HubPromptMaxWidthPc = 0.2750000059604645f;
+#pragma data_seg()
+#pragma data_seg(".data$HubBuildBarSpacingPc")
+    f32 HubBuildBarSpacingPc = 0.03500000014901161f;
+#pragma data_seg()
+#pragma data_seg(".data$HubBuildBarScalePc")
+    f32 HubBuildBarScalePc = 0.10000000149011612f;
+#pragma data_seg()
+#pragma data_seg(".data$HubBuildBarOverallScalePc")
+    f32 HubBuildBarOverallScalePc = 0.8500000238418579f;
+#pragma data_seg()
+#pragma data_seg(".data$HubTrueJediLabelOffsetPc")
+    f32 HubTrueJediLabelOffsetPc = 0.23499999940395355f;
+#pragma data_seg()
+#pragma data_seg(".data$HubTrueJediLabelScalePc")
+    f32 HubTrueJediLabelScalePc = 0.44999998807907104f;
+#pragma data_seg()
+#pragma data_seg(".data$HubTrueJediLabelWidthPc")
+    f32 HubTrueJediLabelWidthPc = 0.4000000059604645f;
+#pragma data_seg()
+#pragma data_seg(".data$COLLECTION_DX")
+    f32 COLLECTION_DX = 0.15000000596046448f;
+#pragma data_seg()
+#pragma data_seg(".data$COLLECTION_DY")
+    f32 COLLECTION_DY = -0.20000000298023224f;
+#pragma data_seg()
+#pragma data_seg(".data$COLLECTION_ICONSIZE")
+    f32 COLLECTION_ICONSIZE = 0.1599999964237213f;
+#pragma data_seg()
+#pragma data_seg(".data$COLLECTION_Y_HUB")
+    f32 COLLECTION_Y_HUB = -0.5f;
+#pragma data_seg()
+#pragma data_seg(".data$HubFreePlayFinalSizePc")
+    f32 HubFreePlayFinalSizePc = 0.3499999940395355f;
+#pragma data_seg()
+#pragma data_seg(".data$HubFreePlayBigYPc")
+    f32 HubFreePlayBigYPc = 0.3499999940395355f;
+#pragma data_seg()
+#pragma data_seg(".data$HubFreePlayBigSizePc")
+    f32 HubFreePlayBigSizePc = 0.3499999940395355f;
+#pragma data_seg()
+#pragma data_seg(".data$HubFreePlayNameYPc")
+    f32 HubFreePlayNameYPc = 0.125f;
+#pragma data_seg()
+#pragma data_seg(".data$HubFreePlayCursorSizePc")
+    f32 HubFreePlayCursorSizePc = 0.1599999964237213f;
+#pragma data_seg()
+#pragma data_seg(".data$HubEpisodeRedPc")
+    u8 HubEpisodeRedPc = 255;
+#pragma data_seg()
+#pragma data_seg(".data$HubEpisodeGreenPc")
+    u8 HubEpisodeGreenPc = 191;
+#pragma data_seg()
+#pragma data_seg(".data$HubTrueJediLabelRedPc")
+    u8 HubTrueJediLabelRedPc = 255;
+#pragma data_seg()
+#pragma data_seg(".data$HubTrueJediLabelGreenPc")
+    u8 HubTrueJediLabelGreenPc = 255;
+#pragma data_seg()
+#pragma data_seg(".data$HubTrueJediLabelBluePc")
+    u8 HubTrueJediLabelBluePc = 255;
+#pragma data_seg()
+#pragma data_seg(".data$HubBuildBarSegmentsPc")
+    i32 HubBuildBarSegmentsPc = 10;
+#pragma data_seg()
+#pragma data_seg(".data$HubPromptOffColourPc")
+    i32 HubPromptOffColourPc[3] = {255, 255, 255};
+#pragma data_seg()
+#pragma data_seg(".data$HubPromptOnColourPc")
+    i32 HubPromptOnColourPc[3] = {223, 223, 223};
+#pragma data_seg()
+#pragma data_seg(".data$HubLostTempleStoryTextPc")
+    i16 *HubLostTempleStoryTextPc = &tINTRO;
+#pragma data_seg()
+#pragma data_seg(".data$HubLostTempleFreePlayTextPc")
+    i16 *HubLostTempleFreePlayTextPc = &TextIdPc8810c0;
+#pragma data_seg()
+#pragma bss_seg(".bss$HubDrawMiniKitCharacterPc")
+    i32 HubDrawMiniKitCharacterPc;
+#pragma bss_seg()
+#pragma bss_seg(".bss$HubEpisodeBluePc")
+    u8 HubEpisodeBluePc;
+#pragma bss_seg()
+#pragma bss_seg(".bss$HubArcadeMenuYPc")
+    f32 HubArcadeMenuYPc;
+#pragma bss_seg()
+#pragma bss_seg(".bss$TextInputActionLabelBufferPc")
+    char TextInputActionLabelBufferPc[128];
+#pragma bss_seg()
+#pragma bss_seg(".bss$HubFreePlayDrawListPc")
+    APICHARACTERMODELLIST HubFreePlayDrawListPc[341];
+#pragma bss_seg()
+/* Exact address-backed native span [8016a8,8016f0), not a claim about original logical array capacity. Reader remains
+ * unsized. */
+#pragma data_seg(".data$HubButtonStringBufferPc")
+    char HubButtonStringBufferPc[72] = "???";
+#pragma data_seg()
+}
+
+/* Append inside data.cpp; each original new owner gets its own section. */
+extern "C" {
+    extern i16 TextIdPc8807cc, TextIdPc8808c0;
+    extern AREA_DATA_PC *SENATE_ADATA, *UTAPAU_ADATA, *HOTH_ADATA, *BONUSDAGOBAH_ADATA, *BONUSKAMINO_ADATA,
+        *BONUSKASHYYYK_ADATA, *E1CHARACTER_ADATA, *E2CHARACTER_ADATA, *E3CHARACTER_ADATA, *E4CHARACTER_ADATA,
+        *E5CHARACTER_ADATA, *E6CHARACTER_ADATA;
+#pragma bss_seg(".bss$hub_bonusepisode")
+    i32 hub_bonusepisode;
+#pragma bss_seg()
+#pragma bss_seg(".bss$selectmodeduration")
+    f32 selectmodeduration;
+#pragma bss_seg()
+#pragma bss_seg(".bss$freeplayduration")
+    f32 freeplayduration;
+#pragma bss_seg()
+#pragma bss_seg(".bss$bonusmodetime")
+    f32 bonusmodetime;
+#pragma bss_seg()
+#pragma bss_seg(".bss$hub_selectmode")
+    i32 hub_selectmode;
+#pragma bss_seg()
+#pragma bss_seg(".bss$freeplaytime")
+    f32 freeplaytime;
+#pragma bss_seg()
+#pragma bss_seg(".bss$hub_bonusarea")
+    i32 hub_bonusarea;
+#pragma bss_seg()
+#pragma bss_seg(".bss$hub_bonusmode")
+    i32 hub_bonusmode;
+#pragma bss_seg()
+#pragma bss_seg(".bss$fpcount")
+    i32 fpcount;
+#pragma bss_seg()
+#pragma bss_seg(".bss$hub_freeplaysource")
+    i32 hub_freeplaysource;
+#pragma bss_seg()
+#pragma bss_seg(".bss$fplist")
+    APICHARACTERMODELLIST fplist[341];
+#pragma bss_seg()
+#pragma bss_seg(".bss$hub_freeplay_area")
+    i32 hub_freeplay_area;
+#pragma bss_seg()
+#pragma bss_seg(".bss$bonusmodemode")
+    i32 bonusmodemode;
+#pragma bss_seg()
+#pragma bss_seg(".bss$bonusmodeduration")
+    f32 bonusmodeduration;
+#pragma bss_seg()
+#pragma bss_seg(".bss$HubIconWibbleAnglePc")
+    u16 HubIconWibbleAnglePc[4];
+#pragma bss_seg()
+#pragma bss_seg(".bss$HubIconWibbleTimePc")
+    f32 HubIconWibbleTimePc[4];
+#pragma bss_seg()
+#pragma bss_seg(".bss$BlipL")
+    f32 BlipL[2];
+#pragma bss_seg()
+#pragma bss_seg(".bss$BlipR")
+    f32 BlipR[2];
+#pragma bss_seg()
+#pragma bss_seg(".bss$BlipU")
+    f32 BlipU[2];
+#pragma bss_seg()
+#pragma bss_seg(".bss$BlipD")
+    f32 BlipD[2];
+#pragma bss_seg()
+#pragma bss_seg(".bss$uprepeattime")
+    f32 uprepeattime[2];
+#pragma bss_seg()
+#pragma bss_seg(".bss$downrepeattime")
+    f32 downrepeattime[2];
+#pragma bss_seg()
+#pragma bss_seg(".bss$leftrepeattime")
+    f32 leftrepeattime[2];
+#pragma bss_seg()
+#pragma bss_seg(".bss$rightrepeattime")
+    f32 rightrepeattime[2];
+#pragma bss_seg()
+#pragma bss_seg(".bss$uprepeatcount")
+    u8 uprepeatcount[2];
+#pragma bss_seg()
+#pragma bss_seg(".bss$downrepeatcount")
+    u8 downrepeatcount[2];
+#pragma bss_seg()
+#pragma bss_seg(".bss$leftrepeatcount")
+    u8 leftrepeatcount[2];
+#pragma bss_seg()
+#pragma bss_seg(".bss$rightrepeatcount")
+    u8 rightrepeatcount[2];
+#pragma bss_seg()
+#pragma bss_seg(".bss$HubIconWibbleRatePc")
+    i32 HubIconWibbleRatePc[4];
+#pragma bss_seg()
+#pragma bss_seg(".bss$BigIconAlpha")
+    f32 BigIconAlpha[2];
+#pragma bss_seg()
+#pragma bss_seg(".bss$freeplay_i")
+    i32 freeplay_i[2];
+#pragma bss_seg()
+#pragma bss_seg(".bss$freeplay_time")
+    f32 freeplay_time[2];
+#pragma bss_seg()
+#pragma bss_seg(".bss$NetFreePlayModelList")
+    APICHARACTERMODELLIST NetFreePlayModelList[49];
+#pragma bss_seg()
+#pragma bss_seg(".bss$net_recievedFreePlayList")
+    u8 net_recievedFreePlayList;
+#pragma bss_seg()
+#pragma bss_seg(".bss$net_FreePlayModelCount")
+    i8 net_FreePlayModelCount;
+#pragma bss_seg()
+#pragma data_seg(".data$HubFreePlaySelectionWaitPc")
+    f32 HubFreePlaySelectionWaitPc = 0.75f;
+#pragma data_seg()
+#pragma data_seg(".data$ArcadeLevelPc")
+    AREA_DATA_PC **ArcadeLevelPc[12] = {&SENATE_ADATA,       &UTAPAU_ADATA,      &HOTH_ADATA,
+                                        &BONUSDAGOBAH_ADATA, &BONUSKAMINO_ADATA, &BONUSKASHYYYK_ADATA,
+                                        &E1CHARACTER_ADATA,  &E2CHARACTER_ADATA, &E3CHARACTER_ADATA,
+                                        &E4CHARACTER_ADATA,  &E5CHARACTER_ADATA, &E6CHARACTER_ADATA};
+#pragma data_seg()
+}
+
+extern "C" {
+#pragma bss_seg(".bss$ShopDrawPanelFnPc")
+    void(__cdecl *ShopDrawPanelFnPc)(void);
+#pragma bss_seg()
+}
+
+extern "C" {
+#pragma bss_seg(".bss$charcheatix")
+    i32 charcheatix = 0;
+#pragma bss_seg()
+#pragma bss_seg(".bss$extracheatix")
+    i32 extracheatix = 0;
+#pragma bss_seg()
+#pragma bss_seg(".bss$SHOPEXTRACOUNT")
+    i32 SHOPEXTRACOUNT = 0;
+#pragma bss_seg()
+#pragma bss_seg(".bss$CharItems")
+    shopitem_s *CharItems = NULL;
+#pragma bss_seg()
+#pragma bss_seg(".bss$ExtraItems")
+    shopitem_s *ExtraItems = NULL;
+#pragma bss_seg()
+#pragma bss_seg(".bss$CodeItems")
+    shopitem_s *CodeItems = NULL;
+#pragma bss_seg()
+#pragma bss_seg(".bss$BrickItems")
+    shopitem_s *BrickItems = NULL;
+#pragma bss_seg()
+#pragma bss_seg(".bss$extrasils")
+    nuhspecial_s extrasils[44] = {0};
+#pragma bss_seg()
+#pragma bss_seg(".bss$atoz0to9icon")
+    nuhspecial_s atoz0to9icon[36] = {0};
+#pragma bss_seg()
+#pragma bss_seg(".bss$codelist")
+    u32 codelist[144] = {0};
+#pragma bss_seg()
+#pragma bss_seg(".bss$infoblank")
+    nuhspecial_s infoblank = {0};
+#pragma bss_seg()
+#pragma bss_seg(".bss$cutblank")
+    nuhspecial_s cutblank = {0};
+#pragma bss_seg()
+#pragma bss_seg(".bss$cutfilm_unlocked")
+    nuhspecial_s cutfilm_unlocked = {0};
+#pragma bss_seg()
+#pragma bss_seg(".bss$cutfilm_locked")
+    nuhspecial_s cutfilm_locked = {0};
+#pragma bss_seg()
+#pragma bss_seg(".bss$toolblank")
+    nuhspecial_s toolblank = {0};
+#pragma bss_seg()
+#pragma bss_seg(".bss$codeblank")
+    nuhspecial_s codeblank = {0};
+#pragma bss_seg()
+#pragma bss_seg(".bss$question")
+    nuhspecial_s question = {0};
+#pragma bss_seg()
+#pragma bss_seg(".bss$arrow1")
+    nuhspecial_s arrow1 = {0};
+#pragma bss_seg()
+#pragma bss_seg(".bss$arrow2")
+    nuhspecial_s arrow2 = {0};
+#pragma bss_seg()
+#pragma bss_seg(".bss$arrow3")
+    nuhspecial_s arrow3 = {0};
+#pragma bss_seg()
+#pragma bss_seg(".bss$arrow4")
+    nuhspecial_s arrow4 = {0};
+#pragma bss_seg()
+#pragma bss_seg(".bss$shopcamspline")
+    struct nugspline_s *shopcamspline = NULL;
+#pragma bss_seg()
+#pragma bss_seg(".bss$CharCurPos")
+    NUVEC CharCurPos[7] = {0};
+#pragma bss_seg()
+#pragma bss_seg(".bss$HintCurPos")
+    NUVEC HintCurPos[7] = {0};
+#pragma bss_seg()
+#pragma bss_seg(".bss$ExtraCurPos")
+    NUVEC ExtraCurPos[7] = {0};
+#pragma bss_seg()
+#pragma bss_seg(".bss$BrickCurPos")
+    NUVEC BrickCurPos[7] = {0};
+#pragma bss_seg()
+#pragma bss_seg(".bss$CutCurPos")
+    NUVEC CutCurPos[7] = {0};
+#pragma bss_seg()
+#pragma bss_seg(".bss$CharShelfIds")
+    i32 CharShelfIds[7] = {0};
+#pragma bss_seg()
+#pragma bss_seg(".bss$ExtraShelfIds")
+    i32 ExtraShelfIds[7] = {0};
+#pragma bss_seg()
+#pragma bss_seg(".bss$BrickShelfIds")
+    i32 BrickShelfIds[7] = {0};
+#pragma bss_seg()
+#pragma bss_seg(".bss$CutShelfIds")
+    i32 CutShelfIds[7] = {0};
+#pragma bss_seg()
+#pragma data_seg(".data$SHOPCUTCOUNT")
+    i32 SHOPCUTCOUNT = 128;
+#pragma data_seg()
+#pragma bss_seg(".bss$oldpicked")
+    i32 oldpicked = 0;
+#pragma bss_seg()
+#pragma bss_seg(".bss$subpicked")
+    i32 subpicked = 0;
+#pragma bss_seg()
+#pragma bss_seg(".bss$pickedbing")
+    f32 pickedbing = 0;
+#pragma bss_seg()
+#pragma bss_seg(".bss$scalenorm")
+    f32 scalenorm = 0;
+#pragma bss_seg()
+#pragma bss_seg(".bss$scalepicked")
+    f32 scalepicked = 0;
+#pragma bss_seg()
+#pragma bss_seg(".bss$scale2")
+    f32 scale2 = 0;
+#pragma bss_seg()
+#pragma bss_seg(".bss$scale3")
+    f32 scale3 = 0;
+#pragma bss_seg()
+#pragma bss_seg(".bss$scale4")
+    f32 scale4 = 0;
+#pragma bss_seg()
+#pragma bss_seg(".bss$TopShelfScale")
+    f32 TopShelfScale[6] = {0};
+#pragma bss_seg()
+#pragma bss_seg(".bss$topscale")
+    f32 topscale[6] = {0};
+#pragma bss_seg()
+#pragma bss_seg(".bss$TopBigScale")
+    f32 TopBigScale[6] = {0};
+#pragma bss_seg()
+#pragma bss_seg(".bss$TopShelfPush")
+    f32 TopShelfPush[6] = {0};
+#pragma bss_seg()
+#pragma bss_seg(".bss$TopBigPush")
+    f32 TopBigPush[6] = {0};
+#pragma bss_seg()
+#pragma bss_seg(".bss$toppush")
+    f32 toppush[6] = {0};
+#pragma bss_seg()
+#pragma bss_seg(".bss$ShopSubInitAPc")
+    f32 ShopSubInitAPc = 0;
+#pragma bss_seg()
+#pragma bss_seg(".bss$ShopSubInitBPc")
+    f32 ShopSubInitBPc = 0;
+#pragma bss_seg()
+#pragma bss_seg(".bss$SubBigCharPush")
+    f32 SubBigCharPush = 0;
+#pragma bss_seg()
+#pragma bss_seg(".bss$SubNormCharPush")
+    f32 SubNormCharPush = 0;
+#pragma bss_seg()
+#pragma bss_seg(".bss$subpush")
+    f32 subpush[3] = {0};
+#pragma bss_seg()
+#pragma bss_seg(".bss$codeshelfscale")
+    f32 codeshelfscale[6] = {0};
+#pragma bss_seg()
+#pragma bss_seg(".bss$codemenuscale")
+    f32 codemenuscale[6] = {0};
+#pragma bss_seg()
+#pragma bss_seg(".bss$codebigscale")
+    f32 codebigscale[6] = {0};
+#pragma bss_seg()
+#pragma bss_seg(".bss$shopcutsceneplayer")
+    struct CUT_PLAYER_ACTIVE_PC *shopcutsceneplayer = NULL;
+#pragma bss_seg()
+#pragma data_seg(".data$ShopNativeScalePc")
+    f32 ShopNativeScalePc[6] = {0.9f, 0.9f, 0.28f, 0.95f, 0.8f, 0.9f};
+#pragma data_seg()
+#pragma data_seg(".data$ShopNativeBigFactorPc")
+    f32 ShopNativeBigFactorPc[6] = {1.6f, 1.6f, 1.6f, 1.65f, 1.6875f, 1.6f};
+#pragma data_seg()
+#pragma data_seg(".data$ShopNativePushPc")
+    f32 ShopNativePushPc[6] = {0.045f, 0.045f, 0.045f, 0.05f, 0.015f, 0.045f};
+#pragma data_seg()
+#pragma data_seg(".data$ShopNativeSubInitAPc")
+    f32 ShopNativeSubInitAPc = 0.045f;
+#pragma data_seg()
+#pragma data_seg(".data$ShopNativeSubInitBPc")
+    f32 ShopNativeSubInitBPc = 0.075f;
+#pragma data_seg()
+#pragma bss_seg(".bss$ShopCharTopOffsetPc")
+    f32 ShopCharTopOffsetPc = 0;
+#pragma bss_seg()
+}
+
+extern "C" {
+#pragma bss_seg(".bss$ShowPlayerCoordinatePc")
+    i32 ShowPlayerCoordinatePc;
+#pragma bss_seg()
+}
+
+extern "C" {
+#pragma data_seg(".data$ShopTopBrickOffsetPc")
+    f32 ShopTopBrickOffsetPc = -0.0325f;
+#pragma data_seg()
+}
+
+extern "C" {
+#pragma bss_seg(".bss$splcharshelf")
+    struct nugspline_s *splcharshelf = NULL;
+#pragma bss_seg()
 }

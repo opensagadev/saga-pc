@@ -253,3 +253,11 @@ extern "C" i32 __cdecl PcInputBindingButtonNamePc(i32 action, i32 port, char *de
                                                   i32 a, i32 b, char *c) {
     return ((TEXT_INPUT_MANAGER_PC *)nu_input_state)->ButtonName(action, port, destination, auxiliary, bank, a, b, c);
 }
+
+/* Append to nupad_text.cpp. Native6da3d0,51 bytes all stack cdecl. */
+extern "C" char TextInputActionLabelBufferPc[128]; /*2975970..29759ef*/
+extern "C" char *TextInputActionLabelPc(i32 device, i32 action, i32 custom, i32 custom_index) {
+    ((TEXT_INPUT_MANAGER_PC *)nu_input_state)
+        ->ButtonName(device, action, TextInputActionLabelBufferPc, custom, custom_index, 1, 1, "()");
+    return TextInputActionLabelBufferPc;
+}

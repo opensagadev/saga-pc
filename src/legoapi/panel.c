@@ -26,12 +26,15 @@ STATIC_ASSERT(offsetof(LEVEL_OBJECT_RUNTIME_PC, active) == 0xe);
 void __cdecl DrawPanel(void) {
     i32 menu = GetMenuID();
     i32 paused;
+    i32 player_index;
+    NUVEC coordinate_positions[8];
+    char coordinate_text[128];
     SetQFont2D();
     if (CUTSTOPGAME == 0) {
-        STUBBED_NAMED("DrawPanel: TransformGameMessages at 0x005612f0");
+        TransformGameMessages(&GameCam->position, &GameCam->shaken_right, &GameCam->dir);
     }
     if (HUB_ADATA != NULL && WORLD->area == HUB_ADATA) {
-        STUBBED_NAMED("DrawPanel: Customiser_TransformToPanel at 0x004243b0");
+        Customiser_TransformToPanel(CharacterCustomiser);
     }
     paused = screendump != 0 ? save_paused : Paused;
     if (NuMainSkipCutBordersPc != 0 && paused == 0 && (WORLD->current_level->flags & 2) != 0) {
@@ -46,7 +49,9 @@ void __cdecl DrawPanel(void) {
     }
     STUBBED_NAMED("DrawPanel: controller remapping at 0x004bb08d");
     if (WORLD->current_level == STATUS_LDATA || (WORLD->current_level->flags & 0x400) != 0) {
-        STUBBED_NAMED("DrawPanel: status callback and DrawGameMessages at 0x004bb904");
+        if (WORLD->current_level->callbacks[6] != NULL)
+            ((void(__cdecl *)(WORLDINFO *))WORLD->current_level->callbacks[6])(WORLD);
+        DrawGameMessages();
         goto draw_menu;
     }
     if (BonusWinner != -1) {
@@ -63,7 +68,24 @@ void __cdecl DrawPanel(void) {
     if (WORLD->current_level->callbacks[6] == NULL && (WORLD->current_level->flags & 2) == 0) {
         goto draw_menu;
     }
-    STUBBED_NAMED("DrawPanel: gameplay status, effects and messages at 0x004bb93e");
+    for (player_index = 0; player_index < 8; ++player_index) {
+        if (Player[player_index] != NULL && (((GAMEOBJECT *)Player[player_index])->flags_1fc & 0x80) != 0 &&
+            ShowPlayerCoordinatePc != 0) {
+            sprintf(coordinate_text, "X:%.2f Y:%.2f Z:%.2f", (f64)((GAMEOBJECT *)Player[player_index])->position.x,
+                    (f64)((GAMEOBJECT *)Player[player_index])->position.y,
+                    (f64)((GAMEOBJECT *)Player[player_index])->position.z);
+            Text3DEx(coordinate_text, coordinate_positions[player_index].x, coordinate_positions[player_index].y, 1.0f,
+                     0.4f, 0.5f, 0.5f, 0, 255, 191, 0, 48);
+        }
+    }
+    DebrisDraw(paused, 4);
+    if (WORLD->current_level->callbacks[6] != NULL)
+        ((void(__cdecl *)(WORLDINFO *))WORLD->current_level->callbacks[6])(WORLD);
+    GizmoSysPanelDraw(WORLD->gizmo_sys, WORLD, FRAMETIME);
+    if (paused == 0) {
+        Hint_Draw(-1);
+        DrawGameMessages();
+    }
 
 draw_menu:
     if (editor_active == 0) {

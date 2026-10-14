@@ -137,3 +137,9 @@ void __cdecl Hint_LoadAllGameState(void) {
         ++index;
     }
 }
+
+/* PC576840/31; append to hint.c; update_fn alias below names native+0. */
+void __cdecl Hint_Draw(i32 viewport) {
+    if (hintsys.active_hint != NULL && hintsys.draw_fn != NULL)
+        hintsys.draw_fn(hintsys.active_hint, viewport);
+}

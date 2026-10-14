@@ -597,3 +597,124 @@ void __cdecl BackDrop_Update(f32 dt) {
     if (RenderBackdropScenePc != NULL)
         NuGScnUpdate(RenderBackdropScenePc, (f32)(dt * 60.0));
 }
+
+/* Append to render.c. Native PC 552d10, 229 bytes, cdecl full stack ABI. */
+i32 __cdecl DrawPanel3DObjectNoAlpha(f32 x, f32 y, f32 z, f32 scale_x, f32 scale_y, f32 scale_z, u16 rotate_x,
+                                     u16 rotate_y, u16 rotate_z, NUSPECIALHANDLE *special, i32 rotate_order) {
+    if (special != NULL && NuSpecialExistsFn(special) != 0 && (scale_x != 0.0f || scale_y != 0.0f || scale_z != 0.0f)) {
+        NUVEC scale = {scale_x, scale_y, scale_z};
+        NUMTX matrix;
+        NuMtxSetScale(&matrix, &scale);
+        RotateGameMatrix(&matrix, rotate_order, rotate_x, rotate_y, rotate_z);
+        matrix.translation.x = x * PANEL3DMULX;
+        matrix.translation.y = y * PANEL3DMULY;
+        matrix.translation.z = z;
+        NuMtxMulVU0(&matrix, &matrix, NuCameraGetMtx());
+        NuSpecialDrawAt(special, &matrix);
+    }
+    return 0;
+}
+
+/* PC561400/1235. Append to render.c (body valid C99), existing native globals. */
+void __cdecl DrawGameMessages(void) {
+
+    GAME_MESSAGE_PC *message = GameMessage;
+    GAME_MESSAGE_PC *end = message + 128;
+    for (; message != end; ++message) {
+        u32 flags;
+        f32 progress, scale;
+        NUVEC position;
+        if (message->active == 0) {
+            continue;
+        }
+        if (message->parameter_fb != 0 && (message->flags & 0x40000) == 0) {
+            continue;
+        }
+        if (message->delay > 0.0f) {
+            continue;
+        }
+        if (!(message->duration > message->elapsed) && message->expired == 0) {
+            continue;
+        }
+
+        flags = message->flags;
+        progress = message->elapsed / message->duration;
+        if ((flags & 0x100) != 0) {
+            progress = 1.0f - NuTrigTable[((i32)(progress * 16384.0 + 16384.0) >> 1) & 0x7fff];
+        } else if ((flags & 0x200) != 0) {
+            progress = NuTrigTable[((i32)(progress * 16384.0) >> 1) & 0x7fff];
+        } else if ((flags & 0x400) != 0) {
+            progress = NuTrigTable[((i32)(progress * 32768.0) >> 1) & 0x7fff];
+        } else if ((flags & 0x800) != 0) {
+            progress = 1.0f - NuTrigTable[((i32)(progress * 32768.0) >> 1) & 0x7fff];
+        }
+
+        scale = (flags & 5) == 5 ? message->scale_current : message->scale_initial;
+        position = message->start_position;
+        if (message->parameter_d4 != 0.0f && message->parameter_fb == 0) {
+            const f32 limit = message->parameter_d4;
+            if (position.x < -limit) {
+                position.x = -limit;
+            } else if (position.x > limit) {
+                position.x = limit;
+            }
+            if (position.y < -limit) {
+                position.y = -limit;
+            } else if (position.y > limit) {
+                position.y = limit;
+            }
+        }
+
+        if ((flags & 8) != 0) {
+            if (message->update_fn != NULL) {
+                message->update_fn(message);
+                flags = message->flags;
+            }
+            position.x = position.x + (message->target_position.x - position.x) * progress;
+            position.y = position.y + (message->target_position.y - position.y) * progress;
+            position.z = position.z + (message->target_position.z - position.z) * progress;
+        }
+        if ((flags & 0x20) != 0) {
+            scale += (message->target_scale - scale) * progress;
+        }
+        position.z += message->parameter_c8;
+        position.x += message->parameter_c4;
+
+        if (message->draw_fn != NULL) {
+            message->draw_fn(message, &position, scale);
+            continue;
+        }
+
+        if (NuSpecialExistsFn(&message->special) != 0) {
+            const u32 draw_flags = message->flags;
+            if ((draw_flags & 0x20000) != 0) {
+                DrawPanel3DObjectNoAlpha(position.x, position.y, position.z, scale, scale, scale, message->parameter_e0,
+                                         message->parameter_e2, message->parameter_e4, &message->special, 2);
+            } else {
+                const f32 alpha = (draw_flags & 0x10000) != 0 ? (f32)(message->alpha * 0.0078125) : 1.0f;
+                DrawPanel3DObject(position.x, position.y, position.z, scale, scale, scale, message->parameter_e0,
+                                  message->parameter_e2, message->parameter_e4, &message->special, 2, alpha);
+            }
+            if (GameMsg_GetExtraObjFn != NULL) {
+                NUSPECIALHANDLE *extra = GameMsg_GetExtraObjFn(message);
+                if (extra != NULL && NuSpecialExistsFn(extra) != 0) {
+                    const u32 draw_flags = message->flags;
+                    if ((draw_flags & 0x20000) != 0) {
+                        DrawPanel3DObjectNoAlpha(position.x, position.y, position.z, scale, scale, scale,
+                                                 message->parameter_e0, message->parameter_e2, message->parameter_e4,
+                                                 extra, 2);
+                    } else {
+                        const f32 alpha = (draw_flags & 0x10000) != 0 ? (f32)(message->alpha * 0.0078125) : 1.0f;
+                        DrawPanel3DObject(position.x, position.y, position.z, scale, scale, scale,
+                                          message->parameter_e0, message->parameter_e2, message->parameter_e4, extra, 2,
+                                          alpha);
+                    }
+                }
+            }
+        } else {
+            const char *text = message->text != NULL ? message->text : message->text_buffer;
+            Text3DEx((char *)text, position.x, position.y, position.z, scale, scale, scale, message->parameter_fc,
+                     message->red, message->green, message->blue, message->alpha);
+        }
+    }
+}

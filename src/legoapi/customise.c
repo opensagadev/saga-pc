@@ -1073,3 +1073,399 @@ void __cdecl Customiser_Update(CUSTOMISER_LAYERS_PC *input, WORLDINFO *world) {
         CustomiseNameAlphaPc = SeekLinearF(CustomiseNameAlphaPc, target, 1.5 * FRAMETIME);
     }
 }
+
+/* Append to customise.c after existing update/runtime types and state. */
+#include <stdio.h>
+extern NUVEC CustomisePos[2];
+static f32 CustomiseNameBoardTMulPc[2], CustomiseNameBoardMulPc[2], CustomiseNameLetterBlipScalePc[2];
+static i32 CustomiserUseBigScenesPc = 1;
+void __cdecl Customiser_SetNameAndIcon(CUSTOMISER_LAYERS_PC *, i32);
+
+/* 00592940 / 291 */
+i32 __cdecl Customiser_NextPieceRight(CUSTOMISER_LAYERS_PC *input, i32 index, i32 count, i32 unused, i32 category) {
+    CUSTOMISER_CONFIG_PC *customiser = (CUSTOMISER_CONFIG_PC *)input;
+    i32 attempts = 0;
+    (void)unused;
+    if (customiser != NULL) {
+        while (attempts < count) {
+            i32 available = 1;
+            ++index;
+            if (index >= count)
+                index -= count;
+            if (category != 2) {
+                WORLDINFO *world = WorldInfo_CurrentlyActive();
+                if (world != NULL && HUB_ADATA != NULL && world->area == HUB_ADATA) {
+                    CUSTOM_ACCESSORY_RESOURCE_PC *resources =
+                        (CUSTOM_ACCESSORY_RESOURCE_PC *)world->customiser_resources[category];
+                    if (resources == NULL)
+                        available = 0;
+                    else if (customiser->categories[category]->uses_special != 0)
+                        available = NuSpecialExistsFn(&resources[index].special) != 0;
+                    else
+                        available = resources[index].texture_id != 0;
+                }
+            }
+            if (available != 0 &&
+                ((customiser->piece_sets[category][index].availability_flags & 0x180) == 0 ||
+                 Game_100PercentComplete() != 0) &&
+                customiser->piece_available((CUSTOMPIECE_LAYERS_PC *)&customiser->piece_sets[category][index]) != 0)
+                break;
+            ++attempts;
+        }
+    }
+    return index;
+}
+
+/* 00424040 / 775 */
+void __cdecl Customiser_Init(CUSTOMISER_LAYERS_PC *input) {
+    CUSTOMISER_CONFIG_PC *customiser = (CUSTOMISER_CONFIG_PC *)input;
+    CUSTOMISER_UPDATE_PC *runtime = (CUSTOMISER_UPDATE_PC *)input;
+    i32 side, category;
+    if (customiser == NULL)
+        return;
+    for (side = 0; side < 2; ++side) {
+        ResetAnimPacket(&runtime->animation_packets[side].packet, -1);
+        runtime->animation_values[side] = 0.0f;
+        runtime->animation_active[side] = 0;
+        runtime->animation_state[side] = 2;
+        CustomiseMode[side] = 2;
+    }
+    if (WORLD->camera_splines[18] != NULL) {
+        for (side = 0; side < 2; ++side) {
+            NUVEC *points = WORLD->camera_splines[18]->pts;
+            CustomisePos[side] = points[side * 2];
+            CustomiseYRotPc[side] =
+                NuAtan2D(points[side * 2 + 1].x - CustomisePos[side].x, points[side * 2 + 1].z - CustomisePos[side].z);
+            CustomiseHeadAnimPc[side].current_angle = 0;
+            CustomiseHeadAnimPc[side].hold_time = (f64)qrand() * (f64)(1.0f / 65535.0f) * 0.5 * 0.5;
+            CustomiseHeadAnimPc[side].start_angle = 0;
+            CustomiseHeadAnimPc[side].target_angle = 0;
+            CustomiseHeadAnimPc[side].elapsed = 0.0f;
+            CustomiseHeadAnimPc[side].duration = 0.0f;
+            CustomiseArmsAnimPc[side].current_angle = 0;
+            CustomiseArmsAnimPc[side].hold_time = (f64)qrand() * (f64)(1.0f / 65535.0f) * 0.5 * 0.5;
+            CustomiseArmsAnimPc[side].start_angle = 0;
+            CustomiseArmsAnimPc[side].target_angle = 0;
+            CustomiseArmsAnimPc[side].elapsed = 0.0f;
+            CustomiseArmsAnimPc[side].duration = 0.0f;
+            CustomiseLegsAnimPc[side].current_angle = 0;
+            CustomiseLegsAnimPc[side].hold_time = (f64)qrand() * (f64)(1.0f / 65535.0f) * 0.5 * 0.5;
+            CustomiseLegsAnimPc[side].start_angle = 0;
+            CustomiseLegsAnimPc[side].target_angle = 0;
+            CustomiseLegsAnimPc[side].elapsed = 0.0f;
+            CustomiseLegsAnimPc[side].duration = 0.0f;
+        }
+        CustomiseRotYPc[0] = qrand();
+        CustomiseRotYPc[1] = CustomiseRotYPc[0] + 0x4000;
+        CustomiseTiltXPc[0] = qrand();
+        CustomiseTiltXPc[1] = CustomiseTiltXPc[0] + 0x8000;
+        CustomiseTiltZPc[0] = qrand();
+        CustomiseTiltZPc[1] = CustomiseTiltZPc[0] + 0x8000;
+        CustomiseBobPc[0] = qrand();
+        CustomiseBobPc[1] = CustomiseBobPc[0] + 0x8000;
+    }
+    Customiser_SetNameAndIcon(input, -1);
+    CustomiseNameAlphaPc = 0.0f;
+    for (side = 0; side < 2; ++side) {
+        for (category = 0; category < 9; ++category) {
+            if (customiser->piece_counts[category] > 0)
+                Game.customiser_start[side].pieces[category] =
+                    (u16)Customiser_NextPieceRight(input, (u16)Game.customiser_start[side].pieces[category] - 1,
+                                                   customiser->piece_counts[category], side, category);
+        }
+    }
+    CustomiseNameBoardTMulPc[1] = 0.0f;
+    CustomiseNameBoardMulPc[0] = 0.0f;
+    CustomiseNameLetterBlipScalePc[1] = 1.0f;
+    CustomiseNameLetterBlipScalePc[0] = 1.0f;
+}
+
+/* 005931a0 / 811. Retail ignored extra arguments remain explicit calls. */
+void __cdecl Customiser_LoadAll(CUSTOMISER_LAYERS_PC *input, WORLDINFO *world) {
+    CUSTOMISER_CONFIG_PC *customiser = (CUSTOMISER_CONFIG_PC *)input;
+    char converted_path[0x80];
+    char piece_name[0x80];
+    char path[0x80];
+    void *texture_pack;
+    i32 category, piece;
+    if (customiser == NULL)
+        return;
+    Customiser_AccessoriesLoaded = 2;
+    world->giz_buffer.addr = (world->giz_buffer.addr + 3) & ~3u;
+    for (category = 0; category < 9; ++category) {
+        if (customiser->piece_counts[category] > 0 && customiser->categories[category]->name != NULL) {
+            i32 bytes = customiser->piece_counts[category] * sizeof(CUSTOM_ACCESSORY_RESOURCE_PC);
+            world->customiser_resources[category] = world->giz_buffer.void_ptr;
+            memset(world->customiser_resources[category], 0, bytes);
+            world->giz_buffer.addr += bytes;
+        } else {
+            world->customiser_resources[category] = NULL;
+        }
+    }
+    texture_pack = CHARPAK != 0
+                       ? NuFilePakLoad("chars\\weirdo\\all_textures.fpk", &world->giz_buffer, world->buffer_end, 0x20)
+                       : NULL;
+    for (category = 0; category < 9; ++category) {
+        CUSTOM_ACCESSORY_RESOURCE_PC *resources = (CUSTOM_ACCESSORY_RESOURCE_PC *)world->customiser_resources[category];
+        world->customiser_shared_scenes[category] = NULL;
+        if (resources == NULL)
+            continue;
+        if (CustomiserUseBigScenesPc != 0 && customiser->categories[category]->uses_special != 0 &&
+            customiser->categories[category]->scene_file != NULL) {
+            world->customiser_shared_scenes[category] =
+                NuGScnRead(&world->giz_buffer, world->buffer_end, customiser->categories[category]->scene_file);
+            ((void(__cdecl *)(char *))Customiser_Dump)(customiser->categories[category]->scene_file);
+        }
+        for (piece = 0; piece < customiser->piece_counts[category]; ++piece) {
+            CUSTOM_ACCESSORY_RESOURCE_PC *resource = &resources[piece];
+            NuStrCpy(piece_name, customiser->piece_sets[category][piece].name);
+            NuStrCpy(path, "chars\\weirdo\\");
+            NuStrCat(path, customiser->categories[category]->name);
+            NuStrCat(path, "\\");
+            NuStrCat(path, piece_name);
+            if (customiser->categories[category]->uses_special != 0) {
+                if (world->customiser_shared_scenes[category] != NULL) {
+                    resource->scene = world->customiser_shared_scenes[category];
+                } else {
+                    NuStrCat(path, ".gsc");
+                    world->giz_buffer.addr = (world->giz_buffer.addr + 0x3f) & ~0x3fu;
+                    resource->scene = NuGScnRead(&world->giz_buffer, world->buffer_end, path);
+                    ((void(__cdecl *)(char *))Customiser_Dump)(path);
+                }
+                if (resource->scene != NULL)
+                    NuSpecialFind(resource->scene, &resource->special, piece_name, 1);
+            } else if (customiser->categories[category]->material_tag != -1) {
+                NuStrCat(path, ".pnt");
+                if (texture_pack != NULL) {
+                    i32 item, size;
+                    void *data;
+                    ((i32(__cdecl *)(char *, char *, i32))NuFileExtConvert)(converted_path, path, 0x80);
+                    item = NuFilePakGetItem(texture_pack, converted_path);
+                    if (item != -1 && NuFilePakGetItemInfo(texture_pack, item, &data, &size) != 0) {
+                        data = NuPtrBlockFix(data);
+                        resource->texture_id = NuTexCreateNative((NUTEXDIM_PC *)data);
+                        ((void(__cdecl *)(char *))Customiser_Dump)(path);
+                    }
+                }
+                if (resource->texture_id == 0) {
+                    resource->texture_id = NuTexReadPc(path, &world->giz_buffer, world->buffer_end);
+                    ((void(__cdecl *)(char *))Customiser_Dump)(path);
+                }
+            }
+        }
+    }
+}
+
+/* 004243e0 / 273; static native callee receives customiser in EDI. */
+static u32 CustomiserPreviewLayerMaskPc(CUSTOMISER_CONFIG_PC *customiser, const u16 *selection, i32 selected,
+                                        PLAYERCHARACTERCONFIG_PC *character) {
+    u32 mask = 0;
+    i32 category;
+    for (category = 0; category < 9; ++category) {
+        if (category != 5 && customiser->layer_indices[category] != -1)
+            mask |= 1u << customiser->layer_indices[category];
+    }
+    if (mask == 0)
+        mask = 1;
+    if (character->cape_layer != -1) {
+        mask |= 1u << character->cape_layer;
+        if ((selected == -1 || GetMenuID() != 12 || customiser_quit != 0 || selected != 5) &&
+            (customiser->piece_sets[5][selection[5]].availability_flags & 0x40) != 0)
+            mask &= ~(1u << character->cape_layer);
+    }
+    return mask;
+}
+
+i32 __cdecl GameDrawCharacterModel(CHARACTER_MODEL_LAYERS_PC *, ANIMPACKET_PC *, NUMTX *, NUMTX *, NUMTX *, NUMTX *,
+                                   GAMEOBJECT *, u32);
+/* 00425fa0 / 1087 */
+void __cdecl Customiser_Draw3D(CUSTOMISER_LAYERS_PC *input) {
+    WORLDINFO *world = WorldInfo_CurrentlyActive();
+    CUSTOMISER_CONFIG_PC *customiser = (CUSTOMISER_CONFIG_PC *)input;
+    CUSTOMISER_UPDATE_PC *runtime = (CUSTOMISER_UPDATE_PC *)input;
+    i32 active_side, active_count, preview_side, side;
+    if (customiser == NULL || world->camera_splines[18] == NULL)
+        return;
+    Customiser_GetActiveWeirdoIndex(&active_side, &active_count);
+    preview_side = -1;
+    if (active_count == 1)
+        preview_side = MissionMenuPacketPc.customise_other_player[active_side] != 0 ? active_side == 0 : active_side;
+    for (side = 0; side < 2; ++side) {
+        i32 character_id = customiser->character_ids[side];
+        CHARACTER_MODEL_LAYERS_PC *model = APICharacterLoaded(character_id);
+        PLAYERCHARACTERCONFIG_PC *character;
+        i32 helmet, selected, category;
+        const u16 *selection = Game.customiser_start[side].pieces;
+        RTL_DATA_PC light_data;
+        NUMTX matrix;
+        u32 mask;
+        if (model == NULL || runtime->animation_state[side] > 0)
+            continue;
+        character = &GCDataList[character_id];
+        helmet = character->helmet_locator;
+        if (helmet != -1 && model->points_of_interest[helmet] == NULL)
+            helmet = -1;
+        selected = CustomiseMenuYPc[side];
+        rtlResetEx(&light_data, 1);
+        rtlApplySetScale(world->rtl_set, &light_data, &CustomisePos[side], NULL, -1, 1.0f);
+        SetLights_RTLDATA(&light_data, 1.0f);
+        mask = CustomiserPreviewLayerMaskPc(customiser, selection, selected, character);
+        NuMtxSetRotationY(&matrix, CustomiseYRotPc[side] + 0x8000);
+        NuMtxTranslate(&matrix, &CustomisePos[side]);
+        if (GameDrawCharacterModel(model, &runtime->animation_packets[side].packet, &matrix, NULL, NULL,
+                                   runtime->joint_matrices[side], NULL, mask) == 0)
+            continue;
+        if (helmet != -1) {
+            for (category = 0; category < 9; ++category) {
+                CUSTOM_ACCESSORY_RESOURCE_PC *resources =
+                    (CUSTOM_ACCESSORY_RESOURCE_PC *)world->customiser_resources[category];
+                CUSTOM_ACCESSORY_RESOURCE_PC *resource;
+                CUSTOM_PIECE_CONFIG_PC *piece;
+                if (resources == NULL || customiser->piece_counts[category] <= 0 ||
+                    customiser->categories[category]->uses_special == 0)
+                    continue;
+                resource = &resources[selection[category]];
+                if (NuSpecialExistsFn(&resource->special) == 0)
+                    continue;
+                piece = &customiser->piece_sets[category][selection[category]];
+                if (GetMenuID() == 12 && customiser_quit == 0 && category == selected &&
+                    (active_count == 2 || side == preview_side)) {
+                    NuFmod(CustomiseMenuTimePc[side], 0.3f);
+                } else if (category == 0 && (piece->availability_flags & 0x20) != 0) {
+                    continue;
+                }
+                matrix = runtime->joint_matrices[side][helmet];
+                if (category == 0)
+                    NuMtxPreTranslate(&matrix, &CustomiseNoHatPosPc[side]);
+                NuSpecialDrawAt(&resource->special, &matrix);
+            }
+        }
+        if (customiser->piece_counts[2] > 0) {
+            i32 hand = character->weapon_joints[0];
+            CUSTOM_PIECE_CONFIG_PC *weapon;
+            LEVEL_OBJECT_RUNTIME_PC *object;
+            if (hand == -1 || model->points_of_interest[hand] == NULL)
+                continue;
+            weapon = &customiser->piece_sets[2][selection[2]];
+            if (weapon->weapon_model == -1)
+                continue;
+            object = &world->level_objects[weapon->weapon_model];
+            if (object->active != 0) {
+                i32 blade;
+                NUSPECIALHANDLE *special;
+                matrix = runtime->joint_matrices[side][hand];
+                NuSpecialDrawAt(&object->special, &matrix);
+                if (LightSabre_ColourFromObj(weapon->weapon_model, &blade) != -1) {
+                    if (blade != -1) {
+                        special = &world->level_objects[blade].special;
+                        if (special != NULL)
+                            NuSpecialDrawAt(special, &matrix);
+                    }
+                    special = &world->level_objects[17].special;
+                    if (special != NULL)
+                        NuSpecialDrawAt(special, &matrix);
+                }
+            }
+        }
+    }
+    SetLevelLights(world->rtl_set, 1.0f);
+}
+
+/* 00593920 / 120; retail does not check the customiser/save arguments. */
+i32 __cdecl Customiser_GetIcon(CUSTOMISER_LAYERS_PC *input, const void *save_input, i32 unused) {
+    CUSTOMISER_CONFIG_PC *customiser = (CUSTOMISER_CONFIG_PC *)input;
+    const CUSTOM_SAVE_CONFIG_PC *save = (const CUSTOM_SAVE_CONFIG_PC *)save_input;
+    CUSTOM_PIECE_CONFIG_PC *hat = &customiser->piece_sets[0][save->pieces[0]];
+    CUSTOM_PIECE_CONFIG_PC *head;
+    i32 character;
+    (void)unused;
+    if ((hat->availability_flags & 0x20) == 0) {
+        head = &customiser->piece_sets[1][save->pieces[1]];
+        if ((head->availability_flags & 1) == 0) {
+            character = hat->icon_character_id;
+            if (character != -1)
+                return CDataList[character].icon_model;
+            character = hat->character_id;
+            if (character != -1)
+                return CDataList[character].icon_model;
+        }
+    }
+    head = &customiser->piece_sets[1][save->pieces[1]];
+    character = head->icon_character_id;
+    if (character != -1)
+        return CDataList[character].icon_model;
+    character = head->character_id;
+    if (character != -1)
+        return CDataList[character].icon_model;
+    return PCArcadeUnpairedIconModel;
+}
+
+extern i16 TextIdPc880fa0;
+/* 00423c30 / 874. Native contains class/name-part accumulation even though
+ * the final displayed name is the generic stranger label. */
+void __cdecl Customiser_SetNameAndIcon(CUSTOMISER_LAYERS_PC *input, i32 index) {
+    CUSTOMISER_CONFIG_PC *customiser = (CUSTOMISER_CONFIG_PC *)input;
+    CUSTOMISER_NAMES_PC *names = (CUSTOMISER_NAMES_PC *)input;
+    i32 best = -1;
+    i32 side, category, group;
+    if (customiser == NULL)
+        return;
+    for (side = 0; side < 2; ++side) {
+        i32 counts[11] = {0};
+        CUSTOM_PIECE_CONFIG_PC *first = NULL;
+        CUSTOM_PIECE_CONFIG_PC *second = NULL;
+        CUSTOM_PIECE_CONFIG_PC *third = NULL;
+        const u16 *selection = Game.customiser_start[side].pieces;
+        if (index != -1 && side != index)
+            continue;
+        names->display_names[side][0] = 0;
+        for (category = 0; category < 9; ++category) {
+            CUSTOM_PIECE_CONFIG_PC *piece;
+            if (customiser->piece_counts[category] <= 0)
+                continue;
+            if (category == 0 && (customiser->piece_sets[1][selection[1]].availability_flags & 1) != 0)
+                continue;
+            if (category == 1 && (customiser->piece_sets[0][selection[0]].availability_flags & 2) != 0 &&
+                (customiser->piece_sets[1][selection[1]].availability_flags & 1) == 0)
+                continue;
+            piece = &customiser->piece_sets[category][selection[category]];
+            if (piece->field_10 != -1)
+                counts[piece->field_10] += (i8)customiser->categories[category]->material_indices[0];
+            if (first == NULL && piece->unknown_indices_0a[0] != 0)
+                first = piece;
+            else if (second == NULL && piece->unknown_indices_0a[1] != 0)
+                second = piece;
+            else if (third == NULL && piece->unknown_indices_0a[2] != 0)
+                third = piece;
+        }
+        for (group = 0; group < 11; ++group) {
+            if (counts[group] >= 4 && (best == -1 || counts[group] > counts[best]))
+                best = group;
+        }
+        sprintf(names->display_names[side], "%s %i", TTab[TextIdPc880fa0], side + 1);
+        CDataList[customiser->character_ids[side]].icon_model =
+            (i16)Customiser_GetIcon(input, &Game.customiser_start[side], side);
+    }
+}
+
+static NUVEC CustomiseScreenPosPc[2];
+/* 004243b0 / 42 */
+void __cdecl Customiser_TransformToPanel(CUSTOMISER_LAYERS_PC *unused) {
+    (void)unused;
+    NuCameraTransformScreenClip(&CustomiseScreenPosPc[0], &CustomisePos[0], 1, NULL);
+    NuCameraTransformScreenClip(&CustomiseScreenPosPc[1], &CustomisePos[1], 1, NULL);
+}
+
+void __cdecl Customiser_Reset(CUSTOMISER_LAYERS_PC *customiser) {
+    CUSTOMISER_UPDATE_PC *runtime = (CUSTOMISER_UPDATE_PC *)customiser;
+    i32 side;
+    if (customiser == NULL)
+        return;
+    for (side = 0; side < 2; ++side) {
+        CustomiseMenuTimePc[side] = 0.0f;
+        ResetAnimPacket(&runtime->animation_packets[side].packet, -1);
+        runtime->animation_active[side] = 0;
+        runtime->animation_values[side] = 0.0f;
+        runtime->animation_state[side] = 2;
+    }
+}

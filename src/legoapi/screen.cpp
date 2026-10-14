@@ -1,7 +1,5 @@
 #include "saga.h"
 
-class FadeSystem : public FADEINFO_PC {};
-
 typedef struct STILL_RENDER_MATERIAL_PC {
     u8 unknown_00[0x40];
     u32 attributes;

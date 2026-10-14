@@ -3109,7 +3109,7 @@ void __cdecl UpdateGameObjects(WORLDINFO *world) {
             *object->previous_sock_position = object->sock_position;
         }
         KeepOnScreen(object);
-        STUBBED_NAMED("UpdateGameObjects: Doors_Check PC575f50");
+        Doors_Check(world, object);
         scale = 1.0f;
         if (object->dead == 1)
             scale = scale - (object->death_timer / object->death_delay);

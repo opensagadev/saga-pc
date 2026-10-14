@@ -112,7 +112,7 @@ extern "C" {
         }
         if (editor_active == 0) {
             widescreen = Game.options_save.widescreen;
-            STUBBED_NAMED("0x004955c7: original loadsaveCallEachFrame at0x005114a0");
+            loadsaveCallEachFrame();
             Game.options_save.widescreen = widescreen;
         }
         if (!(((FADEINFO_PC *)&FadeSys)->fade > 0.0f) && NewMode == 0 && NewLData == NULL && editor_active == 0) {
@@ -141,7 +141,7 @@ extern "C" {
                 GetMenuID() == menu_id)
                 GameAudio_PlaySfx(0x2f, NULL, 0, 0);
             if (result == 1 && Paused != 0) {
-                STUBBED_NAMED("0x0049570b: original ResumeGame(1) at0x0055c560");
+                ResumeGame(1);
             }
         }
         if (previous_menu != -1 && NewLData != NULL && gone_through_door_to_new_level == 0)

@@ -30,7 +30,7 @@ void __cdecl DoInput(WORLDINFO *world) {
             continue;
         if (input[index] == 0 || input[index] == 1) {
             if (player != NULL && (player->flags_1fc_word & 0x80) && MiniCutCam == 0) {
-                STUBBED_NAMED("DoInput: PadOutPause(index, world) at 0x0054ad40");
+                PadOutPause(index, world);
             }
             continue;
         }
@@ -69,7 +69,7 @@ void __cdecl DoInput(WORLDINFO *world) {
                 if ((CUTSTOPGAME == 0 || CutScene_IsSkippable((CUTINFO *)CutStopInfo)) && MiniCutCam == 0 &&
                     memcard_autosavestarted == 0 && !(memcard_autosavepostdelay > 0.0f) &&
                     !(memcard_autosavepredelay > 0.0f) && GameTimer.update_count != 0) {
-                    STUBBED_NAMED("DoInput: PauseGame(player->pad - GamePadStorage) at 0x0055c120");
+                    PauseGame((GAMEPAD_INIT_RECORD *)player->pad - GamePadStorage);
                     changed = 1;
                     continue;
                 }

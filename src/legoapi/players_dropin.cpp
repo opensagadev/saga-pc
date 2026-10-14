@@ -1,4 +1,5 @@
 #include "saga.h"
+extern "C" void __cdecl PcControlInitializePc(i32, i32, i32, u8);
 
 extern "C" {
     i32 __cdecl FreePlay_DropInToPlayerPos(GAMEOBJECT *object);
@@ -149,8 +150,8 @@ extern "C" i32 __cdecl PlayersDropInOut(void) {
                         input_join = value == (index == 0 ? 0x3b : 0x3c);
                         if (input_join && !PcInputInstallDropInConfigurationPc(port, index)) {
                             NuPadMapPlayerToPort(index, port);
-                            STUBBED_NAMED("PlayersDropInOut: PauseGame(index) at 0x0055c120");
-                            STUBBED_NAMED("PlayersDropInOut: native input setup(2, index, index, 0) at 0x00423610");
+                            PauseGame(index);
+                            PcControlInitializePc(2, index, index, 0);
                             NewMenu(0x15, 0, -1);
                             input_join = 0;
                             DropInConfigurationPlayerPc = (i8)index;
