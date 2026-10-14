@@ -152,7 +152,7 @@
     "src/nu2api/nupostfilter.cpp": "512a1741219feea5f2552f76c385cf065ca8b49c4b082ab121c485fcbe62daf4",
     "src/nu2api/nuptl.cpp": "12efcc1d64207cd6b1520654410dff70454f3fbe82fd93d69eda5b58458d250c",
     "src/nu2api/nurndr_swap.cpp": "db9c5963d0ae6bf057e12180193183e3a9d775450e0e0b6864fb3f38cd4f6538",
-    "src/nu2api/nushaderkey.cpp": "023b3ede7217b09a356043c0b7bc0825f139e75e8b7902dbbdfdad5eb52eeaef",
+    "src/nu2api/nushaderkey.cpp": "79db865270b87f593428f020502fdd49b1801ea64649fd0d2d7f2445167e5e64",
     "src/nu2api/nushadermanager.cpp": "73c05d70cd82d39871894e8f73f37b4c1ae7ab24828b926e07c9834a82f445c8",
     "src/nu2api/nushaderobject_pc.cpp": "6fe043371a08b4fdec80967fd802307e99256c3d8761ea72275bd0d26179f458",
     "src/nu2api/nusound_music.cpp": "74123f3a19aecb102cb199d07c90c8e0939df8b2de5a3a4dc856fc785904284a",
@@ -774,7 +774,7 @@
     "build/obj/nu2api/nuscene_pc.obj": "f4514631da64dc39e17778b8099fd717ced4041ca62adc53599ecbb0ea96ae0d",
     "build/obj/nu2api/nuscratch.obj": "45b947c243811f58c4aa296a2244d63afbbd57cb32205ccdf1b45701bd551e6e",
     "build/obj/nu2api/nushader.obj": "2bc27701aeeb799df5b4277b5209fe0e49c20f27c5945df9eeecba9811c928bc",
-    "build/obj/nu2api/nushaderkey.obj": "37ba3101ab8b99e7160bf2e081d5cf56ef5dc480a60012223e7b06f7e3ef538f",
+    "build/obj/nu2api/nushaderkey.obj": "70ff86a9fc91992656be272a0f72485d654f14ecd9e3873fcb0d6ea2e29a7f8e",
     "build/obj/nu2api/nushadermanager.obj": "de084ccff5ac0f8dac9df3b0df4f73a88af6d7b9bb15d0606b5eaab165621ef7",
     "build/obj/nu2api/nushaderobject.obj": "db60b072dd45c2f1ca79506c7909cf28cd2f423599f217b24cbbee3307d080e6",
     "build/obj/nu2api/nushaderobject_pc.obj": "2f77a6f96849caef060d0a21893210ffb19e6e4d4d5558f2d61ff0967a3f299e",
@@ -184563,7 +184563,7 @@
           "base_size": 718,
           "exact_match": false,
           "target_sha256": "85980f602e04aaf6b1d6e657a6bc4b959c50d44bae8822ee0c75c903084c0c32",
-          "base_sha256": "a98b7b8fd1df6eaf3328276587feed7892ebff9d075c551b826fbcf3907cd8eb",
+          "base_sha256": "7fa9378e85dbe9eab195d9006af66841353ee2fbcfac5e64dbbadb2fd4fd52c9",
           "relocation_count": 12,
           "comparison_unit": "00744c20-4eb90eedd516",
           "objdiff_percent": 38.22222
@@ -447901,5 +447901,25 @@
     "member_count": 42,
     "physical_definition_credit": 0
   },
-  "data_member_migrations": []
+  "data_member_migrations": [],
+  "incremental_validated_refresh": {
+    "method": "Incremental validated metadata refresh; aggregate report was not globally recomputed.",
+    "baseline_commit": "90120f560fdaced44cd65d0ca8873a8e8d412941",
+    "baseline_full_report_sha256": "7f87150e596dc78316d2c755e26a1b6cb6e0ff50e7ec09f004eb5e7166aab135",
+    "filtered_generator": "python3 -m tools.match --function NuShaderObjectKeyGenerate3",
+    "filtered_summary_sha256": "a2323ae3c7bfad9bda1ab53267efa22232899f4a1de13bad7751b09ab3845061",
+    "changed_function_identity": {
+      "address": "0x744c20",
+      "symbol": "_NuShaderObjectKeyGenerate3"
+    },
+    "changed_fields": [
+      "functions[target].objects[0].base_sha256",
+      "inputs[src/nu2api/nushaderkey.cpp]",
+      "objects[build/obj/nu2api/nushaderkey.obj]"
+    ],
+    "all_other_full_records_inputs_objects_verified_unchanged": true,
+    "progress_and_readme_unchanged": true,
+    "input_count": 447,
+    "report_object_count": 375
+  }
 }

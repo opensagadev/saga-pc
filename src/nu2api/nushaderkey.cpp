@@ -29,7 +29,7 @@ extern "C" void __cdecl NuShaderObjectKeyGenerate3(u32 *key, const PC_SHADER_MAT
         block[0x15] = desc->sampler_indices[0];
     if (filter->variant == 0 && desc->specular_threshold > filter->parameter)
         block[0x16] = desc->sampler_indices[1];
-    block[0x1b] = filter->HasDiffuse(0);
+    block[0x17] = filter->HasDiffuse(0);
     for (i32 layer = 1; layer <= 3; ++layer)
         if (filter->HasDiffuse(layer))
             block[0x17 + layer] = desc->sampler_indices[layer + 1];
