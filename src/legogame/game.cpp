@@ -1693,6 +1693,40 @@ static void __cdecl LEGO_100PercentFn(void) {
 
 // Genuine original static configuration definitions.
 /* Original static game.cpp settings/items. Proposal only, no production data. */
+extern "C" AREA_DATA_PC *DEATHSTARRESCUE_ADATA;
+
+i32 __cdecl GameAudio_OverrideFootStep_LSW(GAMEOBJECT *object, i32 on_platform) {
+    WORLDINFO *world = WorldInfo_CurrentlyActive();
+    AREA_DATA_PC *area = world->area;
+    if ((area == HOTHESCAPE_ADATA || world->current_level == JABBASPALACEE_LDATA) && on_platform == 0)
+        return GetSfxId("fs_ice");
+    if (area == DAGOBAH_ADATA && on_platform == 0) {
+        if (world->current_level != LevelFixupSlotPc0087b258 || object->jump_animation_state != 0x14) {
+            if (world->current_level != LevelFixupSlotPc0087b264) {
+                if (world->current_level != LevelFixupSlotPc0087b268 ||
+                    (GameCam->sock_position.sock_index != 1 && GameCam->sock_position.sock_index != 4))
+                    return GetSfxId("fs_swamp");
+            }
+        }
+    }
+    if (world->current_level == JABBASPALACEA_LDATA &&
+        (object->jump_animation_state == 0x18 || object->jump_animation_state == 9))
+        return GetSfxId("fs_ice");
+    if ((area == DEATHSTARRESCUE_ADATA || area == DEATHSTARESCAPE_ADATA || WORLD->area == JABBASPALACE_ADATA) &&
+        object->jump_animation_state == 0x14)
+        return GetSfxId((char *)GameAudioName0075c478Pc);
+    return -1;
+}
+
+i32 __cdecl GameAudio_CheckReverb_LSW(void) {
+    LEVELDATA_PC *level = WorldInfo_CurrentlyActive()->current_level;
+    if (level == LevelFixupSlotPc0087b200 || level == LevelFixupSlotPc0087b264)
+        return 1;
+    if (level == LevelFixupSlotPc0087b228 && GameCam->sock_position.sock_index == 4)
+        return 1;
+    return 0;
+}
+
 static CUT_DRAW_SETTINGS_PC InitCutSettingsLswPc = {0x5b, 0x5c, 0xe7, 2, 0};
 static CUT_DRAW_SETTINGS_PC InitCutSettingsAlternatePc = {0x5b, 0x5c, 0xe7, 2, 1};
 static PLAYER_ITEM_TYPE_RESET_PC InitPlayerItemTypesPc[2] = {{15, {6, 0}, "blue", 2, 0, {0, 0}},
@@ -1847,7 +1881,7 @@ void __cdecl InitGameAfterConfig(void) {
         STUBBED_NAMED("InitGameAfterConfig: SurfaceMaskOn 42e6d4 -> 572360, mask95102c");
         Hub_UsePlayerList = 1;
         STUBBED_NAMED("InitGameAfterConfig: BoltSys_Init 42e6e4 -> 580ca0, config7f3a40");
-        STUBBED_NAMED("InitGameAfterConfig: GameAudio_Init 42e6ee -> 548f20, config7fc5b8");
+        GameAudio_Init(&GameAudioLswPc);
         KITPOSX = 0.0f;
         KITPOS2X = 0.0f;
         ConvertOldPickupsPc = 1;
@@ -1917,7 +1951,7 @@ void __cdecl InitGameAfterConfig(void) {
         STUBBED_NAMED("InitGameAfterConfig: SurfaceMaskOff 42e961 -> 572370, mask95102c");
         Hub_UsePlayerList = 0;
         STUBBED_NAMED("InitGameAfterConfig: BoltSys_Init 42e975 -> 580ca0, config7f3a60");
-        STUBBED_NAMED("InitGameAfterConfig: GameAudio_Init 42e97f -> 548f20, config7fc7b8");
+        GameAudio_Init(&GameAudioAlternatePc);
         MAGNETOFFSET = 0.0305f;
         GizmoBlowupHitMultiplierPc.value = 2;
         PUNCHGAP = 0.3f;

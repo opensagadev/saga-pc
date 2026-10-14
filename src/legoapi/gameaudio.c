@@ -109,3 +109,13 @@ void __cdecl GameAudio_Reset(void) {
         GameAudioStorage.sfx_ids[i] = -1;
     }
 }
+
+void __cdecl GameAudio_Init(GAMEAUDIO_PC *audio) {
+    i32 i;
+    GameAudio = audio;
+    for (i = 0; i < 84; ++i) {
+        GameAudio->sfx_ids[i] = (i16)GetSfxId(GameAudio->sfx_names[i]);
+    }
+    MenuRegisterSoundFX(GameAudio->sfx_ids[0x2f], GameAudio->sfx_ids[0x30], GameAudio->sfx_ids[0x31],
+                        GameAudio->sfx_ids[0x32]);
+}

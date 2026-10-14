@@ -14,6 +14,13 @@ STATIC_ASSERT(offsetof(GAMEOBJECT, pad) == 0xca4);
 STATIC_ASSERT(offsetof(LEVELDATA_PC, flags) == 0x64);
 STATIC_ASSERT(offsetof(GAMESAVE, options_save) + offsetof(OPTIONSSAVE, widescreen) == 0xf);
 extern "C" {
+    void __cdecl MenuRegisterSoundFX(i32 move, i32 select, i32 back, i32 no_entry) {
+        MENUSFX_MENUMOVE = move;
+        MENUSFX_MENUSELECT = select;
+        MENUSFX_MENUBACK = back;
+        MENUSFX_MENUNOENTRY = no_entry;
+    }
+
     extern i32 MenuKeyboardAlwaysPc, MenuKeyboardSecondaryPc;
     extern u8 MenuKeyboardOverrideActivePc;
     extern i32 MenuKeyboardPendingPc, pause_i_pad, editor_active;

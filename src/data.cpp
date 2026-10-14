@@ -30212,3 +30212,311 @@ extern "C" {
     extern const char AIConditionTakeoverTargetNamePc[15] = "TakeoverTarget";
 #pragma const_seg()
 }
+
+extern "C" {
+#pragma const_seg(".rdata$GameAudioName00753354Pc")
+    extern const char GameAudioName00753354Pc[11] = "ToggleChar";
+#pragma const_seg(".rdata$GameAudioName00758838Pc")
+    extern const char GameAudioName00758838Pc[12] = "PickupHeart";
+#pragma const_seg(".rdata$GameAudioName00758be8Pc")
+    extern const char GameAudioName00758be8Pc[9] = "LegoForm";
+#pragma const_seg(".rdata$GameAudioName0075c1ecPc")
+    extern const char GameAudioName0075c1ecPc[9] = "ricochet";
+#pragma const_seg(".rdata$GameAudioName0075c1f8Pc")
+    extern const char GameAudioName0075c1f8Pc[10] = "Boy_Death";
+#pragma const_seg(".rdata$GameAudioName0075c204Pc")
+    extern const char GameAudioName0075c204Pc[11] = "Girl_Death";
+#pragma const_seg(".rdata$GameAudioName0075c210Pc")
+    extern const char GameAudioName0075c210Pc[9] = "Boy_Hurt";
+#pragma const_seg(".rdata$GameAudioName0075c21cPc")
+    extern const char GameAudioName0075c21cPc[10] = "Girl_Hurt";
+#pragma const_seg(".rdata$GameAudioName0075c228Pc")
+    extern const char GameAudioName0075c228Pc[10] = "Boy_Grunt";
+#pragma const_seg(".rdata$GameAudioName0075c234Pc")
+    extern const char GameAudioName0075c234Pc[11] = "Girl_Grunt";
+#pragma const_seg(".rdata$GameAudioName0075c240Pc")
+    extern const char GameAudioName0075c240Pc[5] = "Land";
+#pragma const_seg(".rdata$GameAudioName0075c248Pc")
+    extern const char GameAudioName0075c248Pc[12] = "PowerUp_Off";
+#pragma const_seg(".rdata$GameAudioName0075c254Pc")
+    extern const char GameAudioName0075c254Pc[13] = "PowerUp_Loop";
+#pragma const_seg(".rdata$GameAudioName0075c264Pc")
+    extern const char GameAudioName0075c264Pc[11] = "PowerUp_On";
+#pragma const_seg(".rdata$GameAudioName0075c270Pc")
+    extern const char GameAudioName0075c270Pc[12] = "FallApart01";
+#pragma const_seg(".rdata$GameAudioName0075c27cPc")
+    extern const char GameAudioName0075c27cPc[5] = "Honk";
+#pragma const_seg(".rdata$GameAudioName0075c284Pc")
+    extern const char GameAudioName0075c284Pc[10] = "wpn_punch";
+#pragma const_seg(".rdata$GameAudioName0075c2acPc")
+    extern const char GameAudioName0075c2acPc[12] = "FS_WaterOut";
+#pragma const_seg(".rdata$GameAudioName0075c2b8Pc")
+    extern const char GameAudioName0075c2b8Pc[12] = "BlasterDraw";
+#pragma const_seg(".rdata$GameAudioName0075c2c4Pc")
+    extern const char GameAudioName0075c2c4Pc[15] = "BlasterHolster";
+#pragma const_seg(".rdata$GameAudioName0075c2d4Pc")
+    extern const char GameAudioName0075c2d4Pc[13] = "SaberSmack01";
+#pragma const_seg(".rdata$GameAudioName0075c2e4Pc")
+    extern const char GameAudioName0075c2e4Pc[12] = "SaberMove01";
+#pragma const_seg(".rdata$GameAudioName0075c2f0Pc")
+    extern const char GameAudioName0075c2f0Pc[13] = "SaberSaber01";
+#pragma const_seg(".rdata$GameAudioName0075c300Pc")
+    extern const char GameAudioName0075c300Pc[8] = "SaberOn";
+#pragma const_seg(".rdata$GameAudioName0075c308Pc")
+    extern const char GameAudioName0075c308Pc[9] = "SaberOff";
+#pragma const_seg(".rdata$GameAudioName0075c348Pc")
+    extern const char GameAudioName0075c348Pc[10] = "imp_punch";
+#pragma const_seg(".rdata$GameAudioName0075c354Pc")
+    extern const char GameAudioName0075c354Pc[12] = "MenuNoEntry";
+#pragma const_seg(".rdata$GameAudioName0075c360Pc")
+    extern const char GameAudioName0075c360Pc[9] = "MenuBack";
+#pragma const_seg(".rdata$GameAudioName0075c36cPc")
+    extern const char GameAudioName0075c36cPc[11] = "MenuSelect";
+#pragma const_seg(".rdata$GameAudioName0075c378Pc")
+    extern const char GameAudioName0075c378Pc[9] = "MenuMove";
+#pragma const_seg(".rdata$GameAudioName0075c3a0Pc")
+    extern const char GameAudioName0075c3a0Pc[11] = "SabDefBlas";
+#pragma const_seg(".rdata$GameAudioName0075c3acPc")
+    extern const char GameAudioName0075c3acPc[9] = "BlastRic";
+#pragma const_seg(".rdata$GameAudioName0075c3b8Pc")
+    extern const char GameAudioName0075c3b8Pc[9] = "BlastHit";
+#pragma const_seg(".rdata$GameAudioName0075c3c4Pc")
+    extern const char GameAudioName0075c3c4Pc[8] = "MK-Loop";
+#pragma const_seg(".rdata$GameAudioName0075c3ccPc")
+    extern const char GameAudioName0075c3ccPc[7] = "SwChar";
+#pragma const_seg(".rdata$GameAudioName0075c3fcPc")
+    extern const char GameAudioName0075c3fcPc[11] = "Luke_Death";
+#pragma const_seg(".rdata$GameAudioName0075c408Pc")
+    extern const char GameAudioName0075c408Pc[11] = "Leia_Death";
+#pragma const_seg(".rdata$GameAudioName0075c414Pc")
+    extern const char GameAudioName0075c414Pc[11] = "DroidDie01";
+#pragma const_seg(".rdata$GameAudioName0075c420Pc")
+    extern const char GameAudioName0075c420Pc[10] = "Luke_Hurt";
+#pragma const_seg(".rdata$GameAudioName0075c42cPc")
+    extern const char GameAudioName0075c42cPc[10] = "Leia_Hurt";
+#pragma const_seg(".rdata$GameAudioName0075c438Pc")
+    extern const char GameAudioName0075c438Pc[12] = "Rebel_grunt";
+#pragma const_seg(".rdata$GameAudioName0075c444Pc")
+    extern const char GameAudioName0075c444Pc[11] = "Leia_grunt";
+#pragma const_seg(".rdata$GameAudioName0075c450Pc")
+    extern const char GameAudioName0075c450Pc[13] = "FS_WaterWade";
+#pragma const_seg(".rdata$GameAudioName0075c460Pc")
+    extern const char GameAudioName0075c460Pc[10] = "FS_DWalkM";
+#pragma const_seg(".rdata$GameAudioName0075c46cPc")
+    extern const char GameAudioName0075c46cPc[10] = "FS_DWalkS";
+#pragma const_seg(".rdata$GameAudioName0075c478Pc")
+    extern const char GameAudioName0075c478Pc[10] = "FS_JWalkM";
+#pragma const_seg(".rdata$GameAudioName0075c484Pc")
+    extern const char GameAudioName0075c484Pc[10] = "FS_JWalkS";
+#pragma const_seg(".rdata$GameAudioName0075c490Pc")
+    extern const char GameAudioName0075c490Pc[19] = "Grv_GrievAngryJump";
+#pragma const_seg(".rdata$GameAudioName0075c4a4Pc")
+    extern const char GameAudioName0075c4a4Pc[9] = "JediSlam";
+#pragma const_seg(".rdata$GameAudioName0075c4b0Pc")
+    extern const char GameAudioName0075c4b0Pc[10] = "JediLunge";
+#pragma const_seg(".rdata$GameAudioName0075c4bcPc")
+    extern const char GameAudioName0075c4bcPc[10] = "FS_DLandM";
+#pragma const_seg(".rdata$GameAudioName0075c4c8Pc")
+    extern const char GameAudioName0075c4c8Pc[10] = "FS_DLandS";
+#pragma const_seg(".rdata$GameAudioName0075c4d4Pc")
+    extern const char GameAudioName0075c4d4Pc[10] = "FS_JLandM";
+#pragma const_seg(".rdata$GameAudioName0075c4e0Pc")
+    extern const char GameAudioName0075c4e0Pc[10] = "FS_JLandS";
+#pragma const_seg(".rdata$GameAudioName0075c4ecPc")
+    extern const char GameAudioName0075c4ecPc[12] = "Jp_OQ_BackF";
+#pragma const_seg(".rdata$GameAudioName0075c4f8Pc")
+    extern const char GameAudioName0075c4f8Pc[9] = "JumpSlam";
+#pragma const_seg(".rdata$GameAudioName0075c504Pc")
+    extern const char GameAudioName0075c504Pc[10] = "JumpLunge";
+#pragma const_seg(".rdata$GameAudioName0075c510Pc")
+    extern const char GameAudioName0075c510Pc[12] = "Jp_OQ_DJump";
+#pragma const_seg(".rdata$GameAudioName0075c51cPc")
+    extern const char GameAudioName0075c51cPc[11] = "Jp_OQ_Jump";
+#pragma const_seg(".rdata$GameAudioName0075c528Pc")
+    extern const char GameAudioName0075c528Pc[12] = "Jp_Ami_Jump";
+#pragma const_seg()
+#pragma data_seg(".data$GameAudioLswPc")
+    GAMEAUDIO_PC GameAudioLswPc = {GameAudio_OverrideFootStep_LSW,
+                                   GameAudio_CheckReverb_LSW,
+                                   {(char *)GameAudioName0075c528Pc,
+                                    NULL,
+                                    (char *)GameAudioName0075c51cPc,
+                                    (char *)GameAudioName0075c510Pc,
+                                    (char *)GameAudioName0075c504Pc,
+                                    (char *)GameAudioName0075c4f8Pc,
+                                    (char *)GameAudioName0075c4ecPc,
+                                    (char *)GameAudioName0075c4e0Pc,
+                                    (char *)GameAudioName0075c4d4Pc,
+                                    (char *)GameAudioName0075c4c8Pc,
+                                    (char *)GameAudioName0075c4bcPc,
+                                    (char *)GameAudioName0075c4b0Pc,
+                                    (char *)GameAudioName0075c4a4Pc,
+                                    (char *)GameAudioName0075c490Pc,
+                                    NULL,
+                                    (char *)GameAudioName0075c484Pc,
+                                    (char *)GameAudioName0075c478Pc,
+                                    (char *)GameAudioName0075c46cPc,
+                                    (char *)GameAudioName0075c460Pc,
+                                    (char *)GameAudioName0075c450Pc,
+                                    (char *)GameAudioName0075c444Pc,
+                                    (char *)GameAudioName0075c438Pc,
+                                    (char *)GameAudioName0075c42cPc,
+                                    (char *)GameAudioName0075c420Pc,
+                                    (char *)ForceThrowExplodeNamePc,
+                                    "exp_thermalDet",
+                                    (char *)GameAudioName0075c414Pc,
+                                    (char *)GameAudioName0075c408Pc,
+                                    (char *)GameAudioName0075c3fcPc,
+                                    "CountdownTimerTick",
+                                    "CountdownTimerTock",
+                                    (char *)GameAudioName0075c3ccPc,
+                                    NULL,
+                                    (char *)GameAudioName0075c3ccPc,
+                                    (char *)GameAudioName0075c3ccPc,
+                                    (char *)GameAudioName00753354Pc,
+                                    (char *)GameAudioName00753354Pc,
+                                    (char *)GameAudioName0075c3c4Pc,
+                                    ScorePanelName,
+                                    (char *)GameAudioName00758838Pc,
+                                    (char *)GameAudioName0075c3b8Pc,
+                                    (char *)GameAudioName0075c3acPc,
+                                    (char *)GameAudioName0075c3a0Pc,
+                                    "StatusAward",
+                                    "TrueJedi_100pc",
+                                    "WipeScreen",
+                                    "NegC_MagnetCoil",
+                                    (char *)GameAudioName0075c378Pc,
+                                    (char *)GameAudioName0075c36cPc,
+                                    (char *)GameAudioName0075c360Pc,
+                                    (char *)GameAudioName0075c354Pc,
+                                    (char *)ForceThrowExplodeNamePc,
+                                    (char *)GameAudioName0075c348Pc,
+                                    "ui_DoubleScoreText",
+                                    (char *)GameAudioName0075c36cPc,
+                                    (char *)GameAudioName0075c360Pc,
+                                    "fly_paddle_rotate_lp",
+                                    "fly_paddle_stuck",
+                                    PickupTypeLiteral758c14,
+                                    (char *)GameAudioName00758be8Pc,
+                                    KillPartsLegoSingleTextPc,
+                                    (char *)GameAudioName0075c308Pc,
+                                    (char *)GameAudioName0075c300Pc,
+                                    (char *)GameAudioName0075c2f0Pc,
+                                    (char *)GameAudioName0075c2e4Pc,
+                                    (char *)GameAudioName0075c2d4Pc,
+                                    (char *)GameAudioName0075c2c4Pc,
+                                    (char *)GameAudioName0075c2b8Pc,
+                                    NULL,
+                                    NULL,
+                                    (char *)GameAudioName0075c2acPc,
+                                    "Block_Shove",
+                                    "Block_Push_Lp",
+                                    "Blaster",
+                                    (char *)GameAudioName0075c284Pc,
+                                    (char *)GameAudioName0075c27cPc,
+                                    "WhipSwish",
+                                    "WhipHit",
+                                    "WhipNowt",
+                                    (char *)GameAudioName0075c270Pc,
+                                    (char *)GameAudioName0075c264Pc,
+                                    (char *)GameAudioName0075c254Pc,
+                                    (char *)GameAudioName0075c248Pc,
+                                    (char *)ArcadeAiKilledSoundNamePc},
+                                   {-1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+                                    0,  0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+                                    0,  0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+                                    0,  0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0}};
+#pragma data_seg(".data$GameAudioAlternatePc")
+    GAMEAUDIO_PC GameAudioAlternatePc = {NULL,
+                                         NULL,
+                                         {(char *)PCContextName_Jump,
+                                          NULL,
+                                          NULL,
+                                          NULL,
+                                          NULL,
+                                          NULL,
+                                          NULL,
+                                          (char *)GameAudioName0075c240Pc,
+                                          (char *)GameAudioName0075c240Pc,
+                                          (char *)GameAudioName0075c240Pc,
+                                          (char *)GameAudioName0075c240Pc,
+                                          (char *)GameAudioName0075c240Pc,
+                                          (char *)GameAudioName0075c240Pc,
+                                          (char *)GameAudioName0075c240Pc,
+                                          (char *)GameAudioName0075c240Pc,
+                                          (char *)GameAudioName0075c484Pc,
+                                          (char *)GameAudioName0075c478Pc,
+                                          (char *)GameAudioName0075c46cPc,
+                                          (char *)GameAudioName0075c460Pc,
+                                          (char *)GameAudioName0075c450Pc,
+                                          (char *)GameAudioName0075c234Pc,
+                                          (char *)GameAudioName0075c228Pc,
+                                          (char *)GameAudioName0075c21cPc,
+                                          (char *)GameAudioName0075c210Pc,
+                                          (char *)ForceThrowExplodeNamePc,
+                                          "exp_thermalDet",
+                                          (char *)GameAudioName0075c414Pc,
+                                          (char *)GameAudioName0075c204Pc,
+                                          (char *)GameAudioName0075c1f8Pc,
+                                          NULL,
+                                          NULL,
+                                          (char *)GameAudioName0075c3ccPc,
+                                          (char *)GameAudioName0075c354Pc,
+                                          (char *)GameAudioName0075c3ccPc,
+                                          (char *)GameAudioName0075c3ccPc,
+                                          (char *)GameAudioName00753354Pc,
+                                          (char *)GameAudioName00753354Pc,
+                                          (char *)GameAudioName0075c3c4Pc,
+                                          ScorePanelName,
+                                          (char *)GameAudioName00758838Pc,
+                                          (char *)GameAudioName0075c3b8Pc,
+                                          (char *)GameAudioName0075c1ecPc,
+                                          (char *)GameAudioName0075c3a0Pc,
+                                          "StatusAward",
+                                          "TrueJedi_100pc",
+                                          "WipeScreen",
+                                          "NegC_MagnetCoil",
+                                          (char *)GameAudioName0075c378Pc,
+                                          (char *)GameAudioName0075c36cPc,
+                                          (char *)GameAudioName0075c360Pc,
+                                          (char *)GameAudioName0075c354Pc,
+                                          (char *)ForceThrowExplodeNamePc,
+                                          (char *)GameAudioName0075c348Pc,
+                                          "ui_DoubleScoreText",
+                                          (char *)GameAudioName0075c36cPc,
+                                          (char *)GameAudioName0075c360Pc,
+                                          "fly_paddle_rotate_lp",
+                                          "fly_paddle_stuck",
+                                          PickupTypeLiteral758c14,
+                                          (char *)GameAudioName00758be8Pc,
+                                          (char *)GameAudioName0075c308Pc,
+                                          (char *)GameAudioName0075c300Pc,
+                                          (char *)GameAudioName0075c2f0Pc,
+                                          (char *)GameAudioName0075c2e4Pc,
+                                          (char *)GameAudioName0075c2d4Pc,
+                                          (char *)GameAudioName0075c2c4Pc,
+                                          (char *)GameAudioName0075c2b8Pc,
+                                          GrapAttach_text,
+                                          GrapDetach_text,
+                                          (char *)GameAudioName0075c2acPc,
+                                          "Block_Shove",
+                                          "Block_Push_Lp",
+                                          "Blaster",
+                                          (char *)PCContextName_Punch,
+                                          (char *)GameAudioName0075c27cPc,
+                                          "WhipSwish",
+                                          "WhipHit",
+                                          "WhipNowt",
+                                          (char *)GameAudioName0075c270Pc,
+                                          (char *)GameAudioName0075c264Pc,
+                                          (char *)GameAudioName0075c254Pc,
+                                          (char *)GameAudioName0075c248Pc,
+                                          (char *)ArcadeAiKilledSoundNamePc,
+                                          NULL},
+                                         {-1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+                                          0,  0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+                                          0,  0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+                                          0,  0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0}};
+#pragma const_seg()
+#pragma data_seg()
+}

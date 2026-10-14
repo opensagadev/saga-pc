@@ -1142,6 +1142,7 @@ address    , symbol                                                         , si
 0x4bccc0,_PlayRadio,353,
 0x4bdaf0,_SecurityDoor_MoveCode,436,
 0x4bdcd0,_GameAudio_OverrideFootStep_LSW,243,
+0x4bddd0,_GameAudio_CheckReverb_LSW,55,i32 __cdecl(void)
 0x4bde10,_SetLevelSfxBits,8845,void __cdecl(WORLDINFO*)
 0x004c00c0 , _Shadow_SetMode                                                , 60    , void __cdecl (void)
 0x4c0740,_Shards_Draw,404,
@@ -1841,6 +1842,7 @@ address    , symbol                                                         , si
 0x005094b0 , _MenuInitialiseEx                                              , 360   , "void __cdecl (MENUFNINFO *, i32, i32, void (*)(f32, f32, i32, i32), i32, i32)"
 0x00509620 , _MenuInitialise                                                , 49    , "void __cdecl (MENUFNINFO *, i32, i32, void (*)(MENU *, f32), i32, i32)"
 0x00509760 , _MenuReset                                                     , 51    , void __cdecl (void)
+0x5097a0,_MenuRegisterSoundFX,39,"void __cdecl(i32, i32, i32, i32)"
 0x5097d0,_MenuRememberCursor,90,void __cdecl(MENU *)
 0x509830,_NewMenu,629,"MENU * __cdecl (i32, i32, i32)"
 0x509ab0,_BackupMenu,262,void __cdecl(void)
@@ -8329,6 +8331,7 @@ address    , symbol                                                         , si
 0x753334,??_C@_05INKFKLBN@?$CFs?5?$CFi?$AA@,,const char[6]
 0x753340,__real@40c5550000000000,8,const f64
 0x753348,__real@408c700000000000,8,const f64
+0x753354,_GameAudioName00753354Pc,11,const char[11]
 0x753370,??_C@_01LBDDMOBJ@?$FN?$AA@,,const char []
 0x753370,_TextInputKeyNameTextPc753370,,char[2]
 0x753374,??_C@_01OHGJGJJP@?$FL?$AA@,,const char []
@@ -9112,6 +9115,7 @@ address    , symbol                                                         , si
 0x758828,??_C@_02DKCKIIND@?$CFs?$AA@,3,const char[3]
 0x00758828 , _GizAIMessage_NameFormat                                       , 3     , const char[3]
 0x758830,__real@4012000000000000,,f64
+0x758838,_GameAudioName00758838Pc,12,const char[12]
 0x758844,__real@bc75c28f,4,const f32
 0x758848,__real@bf2ccccd,,
 0x75884c,__real@3f2ccccd,,
@@ -9174,6 +9178,7 @@ address    , symbol                                                         , si
 0x758bcc,??_C@_05GJHJCBBM@AtEnd?$AA@,,const char[]
 0x758be0,_PlayerSlideSpeedPc,8,const f64
 0x758be0,__real@3ff3333340000000,8,const f64
+0x758be8,_GameAudioName00758be8Pc,9,const char[9]
 0x758c00,_PickupTypeLiteral758c00,9,char[9]
 0x758c0c,_PickupTypeLiteral758c0c,8,char[8]
 0x758c14,_PickupTypeLiteral758c14,10,char[10]
@@ -10251,15 +10256,72 @@ address    , symbol                                                         , si
 0x75c1ac,??_C@_07EHPEANFD@swdisco?$AA@,8,const char[8]
 0x0075c1d4 , _GrapDetach_text                                              , 11    , char[11]
 0x0075c1e0 , _GrapAttach_text                                              , 11    , char[11]
+0x75c1ec,_GameAudioName0075c1ecPc,9,const char[9]
+0x75c1f8,_GameAudioName0075c1f8Pc,10,const char[10]
+0x75c204,_GameAudioName0075c204Pc,11,const char[11]
+0x75c210,_GameAudioName0075c210Pc,9,const char[9]
+0x75c21c,_GameAudioName0075c21cPc,10,const char[10]
+0x75c228,_GameAudioName0075c228Pc,10,const char[10]
+0x75c234,_GameAudioName0075c234Pc,11,const char[11]
+0x75c240,_GameAudioName0075c240Pc,5,const char[5]
+0x75c248,_GameAudioName0075c248Pc,12,const char[12]
+0x75c254,_GameAudioName0075c254Pc,13,const char[13]
+0x75c264,_GameAudioName0075c264Pc,11,const char[11]
+0x75c270,_GameAudioName0075c270Pc,12,const char[12]
+0x75c27c,_GameAudioName0075c27cPc,5,const char[5]
+0x75c284,_GameAudioName0075c284Pc,10,const char[10]
 0x75c290,??_C@_0O@HJFPJKO@Block_Push_Lp?$AA@,14,const char[14]
 0x75c2a0,??_C@_0M@BHEJPJKP@Block_Shove?$AA@,12,const char[12]
+0x75c2ac,_GameAudioName0075c2acPc,12,const char[12]
+0x75c2b8,_GameAudioName0075c2b8Pc,12,const char[12]
+0x75c2c4,_GameAudioName0075c2c4Pc,15,const char[15]
+0x75c2d4,_GameAudioName0075c2d4Pc,13,const char[13]
+0x75c2e4,_GameAudioName0075c2e4Pc,12,const char[12]
+0x75c2f0,_GameAudioName0075c2f0Pc,13,const char[13]
+0x75c300,_GameAudioName0075c300Pc,8,const char[8]
+0x75c308,_GameAudioName0075c308Pc,9,const char[9]
 0x75c314,_KillPartsLegoSingleTextPc,11,char[11]
 0x75c320,??_C@_0BB@KKENPEBK@fly_paddle_stuck?$AA@,17,const char[17]
 0x75c334,??_C@_0BD@NNLNBGMG@ui_DoubleScoreText?$AA@,19,const char[19]
+0x75c348,_GameAudioName0075c348Pc,10,const char[10]
+0x75c354,_GameAudioName0075c354Pc,12,const char[12]
+0x75c360,_GameAudioName0075c360Pc,9,const char[9]
+0x75c36c,_GameAudioName0075c36cPc,11,const char[11]
+0x75c378,_GameAudioName0075c378Pc,9,const char[9]
 0x75c384,??_C@_0BA@KOEGAKHN@NegC_MagnetCoil?$AA@,16,const char[16]
 0x75c394,??_C@_0L@CGHCLBKG@WipeScreen?$AA@,,const char[11]
+0x75c3a0,_GameAudioName0075c3a0Pc,11,const char[11]
+0x75c3ac,_GameAudioName0075c3acPc,9,const char[9]
+0x75c3b8,_GameAudioName0075c3b8Pc,9,const char[9]
+0x75c3c4,_GameAudioName0075c3c4Pc,8,const char[8]
+0x75c3cc,_GameAudioName0075c3ccPc,7,const char[7]
 0x75c3d4,??_C@_0BD@MHJNCOEN@CountdownTimerTock?$AA@,19,const char[19]
 0x75c3e8,??_C@_0BD@OCPGHBJB@CountdownTimerTick?$AA@,19,const char[19]
+0x75c3fc,_GameAudioName0075c3fcPc,11,const char[11]
+0x75c408,_GameAudioName0075c408Pc,11,const char[11]
+0x75c414,_GameAudioName0075c414Pc,11,const char[11]
+0x75c420,_GameAudioName0075c420Pc,10,const char[10]
+0x75c42c,_GameAudioName0075c42cPc,10,const char[10]
+0x75c438,_GameAudioName0075c438Pc,12,const char[12]
+0x75c444,_GameAudioName0075c444Pc,11,const char[11]
+0x75c450,_GameAudioName0075c450Pc,13,const char[13]
+0x75c460,_GameAudioName0075c460Pc,10,const char[10]
+0x75c46c,_GameAudioName0075c46cPc,10,const char[10]
+0x75c478,_GameAudioName0075c478Pc,10,const char[10]
+0x75c484,_GameAudioName0075c484Pc,10,const char[10]
+0x75c490,_GameAudioName0075c490Pc,19,const char[19]
+0x75c4a4,_GameAudioName0075c4a4Pc,9,const char[9]
+0x75c4b0,_GameAudioName0075c4b0Pc,10,const char[10]
+0x75c4bc,_GameAudioName0075c4bcPc,10,const char[10]
+0x75c4c8,_GameAudioName0075c4c8Pc,10,const char[10]
+0x75c4d4,_GameAudioName0075c4d4Pc,10,const char[10]
+0x75c4e0,_GameAudioName0075c4e0Pc,10,const char[10]
+0x75c4ec,_GameAudioName0075c4ecPc,12,const char[12]
+0x75c4f8,_GameAudioName0075c4f8Pc,9,const char[9]
+0x75c504,_GameAudioName0075c504Pc,10,const char[10]
+0x75c510,_GameAudioName0075c510Pc,12,const char[12]
+0x75c51c,_GameAudioName0075c51cPc,11,const char[11]
+0x75c528,_GameAudioName0075c528Pc,12,const char[12]
 0x75c534,??_C@_08OLCDOOAB@fs_swamp?$AA@,9,const char[9]
 0x75c540,??_C@_06KJDFCMDJ@fs_ice?$AA@,7,const char[7]
 0x75c548,??_C@_0BE@HNCGDLAJ@ui_DoubleScoreEntry?$AA@,20,const char[20]
@@ -12067,6 +12129,8 @@ address    , symbol                                                         , si
 0x76d1e0,??_C@_05MBDCODDP@Group?$AA@,,const char[6]
 0x76d1e8,??_C@_06OANMLBJC@Sample?$AA@,,const char[7]
 0x76d1f0,??_C@_05KKCMAPLJ@Audio?$AA@,,const char[6]
+0x76d208,__real@40e5888000000000,8,const f64
+0x76d210,__real@40ad660000000000,8,const f64
 0x76d218,??_C@_04EHKMPAH@fcat?$AA@,,const char[5]
 0x76d220,??_C@_06FJKEMHGD@global?$AA@,,const char[7]
 0x76d228,??_C@_03JEOKDCFP@far?$AA@,,const char[4]
@@ -15482,6 +15546,8 @@ address    , symbol                                                         , si
 0x7fc374,_cointotal_i_obj,,i32[2]
 0x007fc3c4 , _PanelWideWidth                                                , 4     , f32
 0x007fc3c8 , _PanelWideHeight                                               , 4     , f32
+0x7fc5b8,_GameAudioLswPc,512,GAMEAUDIO_PC
+0x7fc7b8,_GameAudioAlternatePc,512,GAMEAUDIO_PC
 0x7fcb18,_ShopHintIdsPc,,i16[24]
 0x7fcb48,_ShopHintTextIdsPc,,i16[15]
 0x7fcd84,_players_going_forward,4,i32

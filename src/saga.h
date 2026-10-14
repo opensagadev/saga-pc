@@ -4442,12 +4442,13 @@ typedef struct SoundTable {
 STATIC_ASSERT(sizeof(SoundTable) == 0xc8);
 
 typedef struct GAMEAUDIO_PC {
-    u8 unknown_0000[4];
+    i32(__cdecl *override_footstep_fn)(struct gameobject_s *, i32);
     i32(__cdecl *check_reverb_fn)(void);
     char *sfx_names[84];
     i16 sfx_ids[84];
 } GAMEAUDIO_PC;
 STATIC_ASSERT(sizeof(GAMEAUDIO_PC) == 0x200);
+STATIC_ASSERT(offsetof(GAMEAUDIO_PC, override_footstep_fn) == 0);
 STATIC_ASSERT(offsetof(GAMEAUDIO_PC, sfx_names) == 8);
 STATIC_ASSERT(offsetof(GAMEAUDIO_PC, check_reverb_fn) == 4);
 STATIC_ASSERT(offsetof(GAMEAUDIO_PC, sfx_ids) == 0x158);
@@ -25689,6 +25690,88 @@ enum { AREAFLAG_SINGLE_BUFFER = 8 };
 
 // Runtime build only (make runtime): log each reached unported site once; see runtime/saga_runtime.c.
 // Kept at the end so the matching build's line numbers are unchanged.
+
+#ifdef __cplusplus
+extern "C" {
+#endif
+    void __cdecl GameAudio_Init(GAMEAUDIO_PC *audio);
+    void __cdecl MenuRegisterSoundFX(i32 move, i32 select, i32 back, i32 no_entry);
+    i32 __cdecl GameAudio_OverrideFootStep_LSW(GAMEOBJECT *object, i32 on_platform);
+    i32 __cdecl GameAudio_CheckReverb_LSW(void);
+    extern GAMEAUDIO_PC GameAudioLswPc, GameAudioAlternatePc;
+    extern const char GameAudioName00753354Pc[11];
+    extern const char ForceThrowExplodeNamePc[9];
+    extern char ScorePanelName[9];
+    extern const char PCContextName_Jump[5];
+    extern const char GameAudioName00758838Pc[12];
+    extern const char GameAudioName00758be8Pc[9];
+    extern char PickupTypeLiteral758c14[10];
+    extern const char ArcadeAiKilledSoundNamePc[16];
+    extern const char PCContextName_Punch[6];
+    extern char GrapDetach_text[11];
+    extern char GrapAttach_text[11];
+    extern const char GameAudioName0075c1ecPc[9];
+    extern const char GameAudioName0075c1f8Pc[10];
+    extern const char GameAudioName0075c204Pc[11];
+    extern const char GameAudioName0075c210Pc[9];
+    extern const char GameAudioName0075c21cPc[10];
+    extern const char GameAudioName0075c228Pc[10];
+    extern const char GameAudioName0075c234Pc[11];
+    extern const char GameAudioName0075c240Pc[5];
+    extern const char GameAudioName0075c248Pc[12];
+    extern const char GameAudioName0075c254Pc[13];
+    extern const char GameAudioName0075c264Pc[11];
+    extern const char GameAudioName0075c270Pc[12];
+    extern const char GameAudioName0075c27cPc[5];
+    extern const char GameAudioName0075c284Pc[10];
+    extern const char GameAudioName0075c2acPc[12];
+    extern const char GameAudioName0075c2b8Pc[12];
+    extern const char GameAudioName0075c2c4Pc[15];
+    extern const char GameAudioName0075c2d4Pc[13];
+    extern const char GameAudioName0075c2e4Pc[12];
+    extern const char GameAudioName0075c2f0Pc[13];
+    extern const char GameAudioName0075c300Pc[8];
+    extern const char GameAudioName0075c308Pc[9];
+    extern char KillPartsLegoSingleTextPc[11];
+    extern const char GameAudioName0075c348Pc[10];
+    extern const char GameAudioName0075c354Pc[12];
+    extern const char GameAudioName0075c360Pc[9];
+    extern const char GameAudioName0075c36cPc[11];
+    extern const char GameAudioName0075c378Pc[9];
+    extern const char GameAudioName0075c3a0Pc[11];
+    extern const char GameAudioName0075c3acPc[9];
+    extern const char GameAudioName0075c3b8Pc[9];
+    extern const char GameAudioName0075c3c4Pc[8];
+    extern const char GameAudioName0075c3ccPc[7];
+    extern const char GameAudioName0075c3fcPc[11];
+    extern const char GameAudioName0075c408Pc[11];
+    extern const char GameAudioName0075c414Pc[11];
+    extern const char GameAudioName0075c420Pc[10];
+    extern const char GameAudioName0075c42cPc[10];
+    extern const char GameAudioName0075c438Pc[12];
+    extern const char GameAudioName0075c444Pc[11];
+    extern const char GameAudioName0075c450Pc[13];
+    extern const char GameAudioName0075c460Pc[10];
+    extern const char GameAudioName0075c46cPc[10];
+    extern const char GameAudioName0075c478Pc[10];
+    extern const char GameAudioName0075c484Pc[10];
+    extern const char GameAudioName0075c490Pc[19];
+    extern const char GameAudioName0075c4a4Pc[9];
+    extern const char GameAudioName0075c4b0Pc[10];
+    extern const char GameAudioName0075c4bcPc[10];
+    extern const char GameAudioName0075c4c8Pc[10];
+    extern const char GameAudioName0075c4d4Pc[10];
+    extern const char GameAudioName0075c4e0Pc[10];
+    extern const char GameAudioName0075c4ecPc[12];
+    extern const char GameAudioName0075c4f8Pc[9];
+    extern const char GameAudioName0075c504Pc[10];
+    extern const char GameAudioName0075c510Pc[12];
+    extern const char GameAudioName0075c51cPc[11];
+    extern const char GameAudioName0075c528Pc[12];
+#ifdef __cplusplus
+}
+#endif
+
 #ifdef SAGA_RUNTIME
 #ifdef __cplusplus
 extern "C"

@@ -171,10 +171,15 @@ void __cdecl PlaySfxByIdEx(i32 sfx_id, NUVEC *position, f32 volume, f32 pitch) {
     i8 priority;
     i32 sample_id;
     i32 voice_volume;
+    i32 pitch_parameter;
     i32 volume_left;
     i32 volume_right;
     i32 loop;
+    i32 rumble_strength;
     f32 pan;
+    f32 buzz_timer;
+    f32 rumble_sustain;
+    f32 rumble_release;
     f32 falloff_near;
     f32 falloff_far;
     f32 saved_fade_start;
@@ -197,9 +202,14 @@ void __cdecl PlaySfxByIdEx(i32 sfx_id, NUVEC *position, f32 volume, f32 pitch) {
         record = &SfxInfo[sample_id];
     }
 
-    sample_id = (i32)(record->sample_id_flags & 0x7fffu);
+    pitch_parameter = (i32)((f64)record->pitch * 3763.0 / 44100.0);
+    sample_id = (i32)(record->sample_id_flags << 17) >> 17;
     loop = (record->sample_id_flags & 0x8000u) != 0;
     pan = record->pan;
+    buzz_timer = record->buzz_timer;
+    rumble_strength = record->rumble_strength;
+    rumble_sustain = record->rumble_sustain;
+    rumble_release = record->rumble_release;
     falloff_near = record->falloff_near;
     falloff_far = record->falloff_far;
     saved_fade_start = 0.0f;
@@ -231,6 +241,9 @@ void __cdecl PlaySfxByIdEx(i32 sfx_id, NUVEC *position, f32 volume, f32 pitch) {
         }
     }
 
+    if (pitch != 1.0f) {
+        pitch_parameter = (i32)((f64)pitch * record->pitch * 3763.0 / 44100.0);
+    }
     if (volume != 1.0f) {
         if (volume > 1.0f) {
             volume = 1.0f;
@@ -247,12 +260,15 @@ void __cdecl PlaySfxByIdEx(i32 sfx_id, NUVEC *position, f32 volume, f32 pitch) {
 
     if (record->pitch_rnd != 0.0f) {
         f32 pitch_variation = NuRandFloatSeeded(&nusound_seed) * record->pitch_rnd;
+        f32 pitch_scale;
         if ((NuRandIntSeeded(&nusound_seed) & 1u) == 0) {
-            pitch_variation *= 0.5f;
-            pitch *= 1.0f - pitch_variation;
+            pitch_scale = (f32)(1.0 - (f64)pitch_variation * 0.5);
         } else {
-            pitch *= 1.0f + pitch_variation;
+            pitch_scale = 1.0f + pitch_variation;
         }
+        pitch_parameter = (i32)(pitch_parameter * pitch_scale);
+        if (loop != 0)
+            pitch_parameter = -pitch_parameter;
     }
     if (record->volume_rnd != 0.0f) {
         voice_volume = (i32)((f32)voice_volume * (1.0f + NuRandFloatSeeded(&nusound_seed) * record->volume_rnd));
@@ -276,7 +292,13 @@ void __cdecl PlaySfxByIdEx(i32 sfx_id, NUVEC *position, f32 volume, f32 pitch) {
                 NuVecAdd(&listener_position, &listener_position, &forward);
                 STUBBED_NAMED("dispatch listener-relative looped SFX to 3D backend");
             } else {
-                STUBBED_NAMED("dispatch unpositioned SFX to standard or priority backend");
+                if (priority != 0) {
+                    PCSoundPlayUnpositioned(sample_id, volume_left, volume_right, pitch_parameter, buzz_timer,
+                                            rumble_strength, rumble_sustain, rumble_release, priority);
+                } else {
+                    PCSoundPlayUnpositionedWrapper(sample_id, volume_left, volume_right, pitch_parameter, buzz_timer,
+                                                   rumble_strength, rumble_sustain, rumble_release);
+                }
             }
         }
     }
