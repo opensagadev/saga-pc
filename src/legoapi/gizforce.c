@@ -161,27 +161,42 @@ void __cdecl ResetForceGlow(void *packet) {
     view->recovery = 0.2f;
 }
 
+typedef struct FORCE_RESET_GROUP_PC {
+    GIZFORCE_PC *forces[8];
+    f32 combined_height;
+    u8 unknown_24[2];
+    u8 member_count;
+    u8 configured_count;
+} FORCE_RESET_GROUP_PC;
+STATIC_ASSERT(sizeof(FORCE_RESET_GROUP_PC) == 0x28);
+STATIC_ASSERT(offsetof(FORCE_RESET_GROUP_PC, combined_height) == 0x20);
+STATIC_ASSERT(offsetof(FORCE_RESET_GROUP_PC, member_count) == 0x26);
+STATIC_ASSERT(offsetof(FORCE_RESET_GROUP_PC, configured_count) == 0x27);
+
 struct gizforce_pc_s {
     char name[16];
     NUVEC file_position;
     NUVEC position;
     GAMEANIMSET *anim_set;
     NUSPECIALHANDLE along_socket;
-    u8 unknown_038[0xc];
+    u8 unknown_038[4];
+    u32 reset_word;
+    FORCE_RESET_GROUP_PC *group;
     f32 force_strength;
-    u8 unknown_048[4];
+    f32 field_48;
     f32 force_range;
-    u8 unknown_050[4];
+    f32 field_50;
     f32 interaction_radius;
     f32 animation_speed;
     f32 start_frame, end_frame;
     f32 effect_scale;
-    u8 unknown_068[4];
+    f32 radius;
     f32 vertical_range, horizontal_range;
     u32 config_flags;
     u8 unknown_078[4];
     u8 group_index, collision_mask, activation_mode;
-    u8 unknown_07f[3];
+    u8 unknown_07f;
+    i16 room_id;
     i16 start_sfx_id, loop_sfx_id, stop_sfx_id;
     i16 blowup_type;
     i16 pickup_count, pickup_rotation_x, pickup_rotation_y;
@@ -190,6 +205,12 @@ struct gizforce_pc_s {
     u32 runtime_flags;
 };
 STATIC_ASSERT(sizeof(GIZFORCE_PC) == 0xa4);
+STATIC_ASSERT(offsetof(GIZFORCE_PC, reset_word) == 0x3c);
+STATIC_ASSERT(offsetof(GIZFORCE_PC, group) == 0x40);
+STATIC_ASSERT(offsetof(GIZFORCE_PC, field_48) == 0x48);
+STATIC_ASSERT(offsetof(GIZFORCE_PC, field_50) == 0x50);
+STATIC_ASSERT(offsetof(GIZFORCE_PC, radius) == 0x68);
+STATIC_ASSERT(offsetof(GIZFORCE_PC, room_id) == 0x80);
 STATIC_ASSERT(offsetof(GIZFORCE_PC, file_position) == 0x10);
 STATIC_ASSERT(offsetof(GIZFORCE_PC, position) == 0x1c);
 STATIC_ASSERT(offsetof(GIZFORCE_PC, anim_set) == 0x28);
@@ -652,13 +673,13 @@ void GizForces_Draw(void *world_ptr, void *data, float unused2) {
                 continue;
             }
             draw_matrix = NuSpecialGetDrawMtx(&anim_object->special);
-            NuSpecialDrawAt(&force->along_socket, draw_matrix);
+            NuSpecialDrawAt((NUSPECIALHANDLE *)&force->along_socket, draw_matrix);
             if ((force->config_flags & GIZFORCE_CONFIG_DRAW_REFLECTION) != 0) {
                 NUMTX reflection_matrix;
                 if (MatrixReflection(draw_matrix, 2, draw_matrix->m31 + force->vertical_range,
                                      WORLD->current_level->reflection_y, &reflection_matrix) != 0) {
                     NuRndrStartReflectionRender(0);
-                    NuSpecialDrawAt(&force->along_socket, &reflection_matrix);
+                    NuSpecialDrawAt((NUSPECIALHANDLE *)&force->along_socket, &reflection_matrix);
                     NuRndrEndReflectionRender();
                 }
             }
@@ -884,4 +905,185 @@ i32 __cdecl GizForces_Load(void *world_pointer, void *system_pointer) {
             ForceFindBaseSpecialPc(force);
     }
     return 1;
+}
+
+void __cdecl GameAnimSet_SetOffset(GAMEANIMSET *, NUVEC *);
+
+typedef struct FORCE_RESET_PROGRESS_PC {
+    u32 enabled[4], visible[4], reward_released[4], socket_hidden[4];
+    u32 completion_released[4], completion_pending[4], destroyed[4];
+    u8 group_members[8][8];
+} FORCE_RESET_PROGRESS_PC;
+STATIC_ASSERT(sizeof(FORCE_RESET_PROGRESS_PC) == 0xb0);
+STATIC_ASSERT(offsetof(FORCE_RESET_PROGRESS_PC, visible) == 0x10);
+STATIC_ASSERT(offsetof(FORCE_RESET_PROGRESS_PC, reward_released) == 0x20);
+STATIC_ASSERT(offsetof(FORCE_RESET_PROGRESS_PC, socket_hidden) == 0x30);
+STATIC_ASSERT(offsetof(FORCE_RESET_PROGRESS_PC, completion_released) == 0x40);
+STATIC_ASSERT(offsetof(FORCE_RESET_PROGRESS_PC, completion_pending) == 0x50);
+STATIC_ASSERT(offsetof(FORCE_RESET_PROGRESS_PC, destroyed) == 0x60);
+STATIC_ASSERT(offsetof(FORCE_RESET_PROGRESS_PC, group_members) == 0x70);
+STATIC_ASSERT(offsetof(GIZFORCESYS_s, forces) == 0);
+STATIC_ASSERT(offsetof(GIZFORCESYS_s, count) == 0xe);
+STATIC_ASSERT(offsetof(GIZFORCESYS_s, groups) == 0x18);
+STATIC_ASSERT(sizeof(GIZFORCESYS_s) == 0x158);
+STATIC_ASSERT(offsetof(GAMEANIMSET, objects) == 0x18);
+STATIC_ASSERT(offsetof(GAMEANIMOBJ, special) == 4);
+STATIC_ASSERT(offsetof(GAMEANIMOBJ, object_data) == 0x24);
+STATIC_ASSERT(offsetof(GIZFORCEANIMDATA_s, platform_id) == 2);
+STATIC_ASSERT(offsetof(WORLDINFO, terrain) == 0x295c);
+STATIC_ASSERT(offsetof(WORLDINFO, current_gscn) == 0x13c);
+
+static __declspec(noinline) void ForceResetSinglePc(WORLDINFO *world, GIZFORCE_PC *force) {
+    GAMEANIMOBJ *object;
+    force->runtime_flags = (force->runtime_flags & 0xffe2049fu) | 3;
+    force->animation_speed = 1.0f;
+    force->field_48 = 0.0f;
+    force->field_50 = 0.0f;
+    force->reset_word = 0;
+    if (force->anim_set == NULL)
+        return;
+    for (object = force->anim_set->objects; object != NULL; object = object->next) {
+        GIZFORCEANIMDATA_s *data = (GIZFORCEANIMDATA_s *)object->object_data;
+        data->platform_id = -1;
+        if (world->terrain != NULL && (data->flags & 1) == 0 && NuSpecialExistsFn(&object->special) != 0) {
+            data->platform_id = (i16)FindPlatInst(NuSpecialGetInstanceix(&object->special));
+            if (data->platform_id != -1)
+                force->runtime_flags |= 0x100;
+        }
+    }
+    force->room_id = world->current_gscn != NULL ? NuPortalWhichRoom(world->current_gscn, &force->file_position) : -1;
+    GameAnimSet_SetOffset(force->anim_set, &v000);
+    force->radius = 1.0f;
+    force->position = force->file_position;
+    GameAnimSet_GetCentreAndRadius(force->anim_set, &force->position, &force->radius, 2, 1, 1);
+    GameAnimSet_EvaluateState(force->anim_set);
+}
+
+static __declspec(noinline) f32 ForceAnimatedHeightPc(GIZFORCE_PC *force) {
+    GAMEANIMOBJ *object;
+    f32 minimum_y = 1.0e9f, maximum_y = -1.0e9f;
+    volatile f32 height;
+    if (force == NULL || force->anim_set == NULL)
+        return 0.0f;
+    for (object = force->anim_set->objects; object != NULL; object = object->next) {
+        NUVEC minimum, maximum;
+        NuSpecialGetBounds(&object->special, &minimum, &maximum);
+        if (minimum.y < minimum_y)
+            minimum_y = minimum.y;
+        if (maximum.y > maximum_y)
+            maximum_y = maximum.y;
+    }
+    height = maximum_y - minimum_y;
+    return height;
+}
+
+void __cdecl GizForces_Reset(void *world_ptr, void *data_ptr, void *progress_ptr) {
+    WORLDINFO *world = (WORLDINFO *)world_ptr;
+    GIZFORCESYS_s *system = (GIZFORCESYS_s *)data_ptr;
+    FORCE_RESET_PROGRESS_PC *progress = (FORCE_RESET_PROGRESS_PC *)progress_ptr;
+    GIZFORCE_PC *force;
+    i32 index;
+    memset(system->groups, 0, 0x140);
+    force = (GIZFORCE_PC *)system->forces;
+    for (index = 0; index < system->count; ++index, ++force) {
+        i32 group_index;
+        ForceResetSinglePc(world, force);
+        if (progress != NULL && index < 128) {
+            i32 word = index >> 5;
+            u32 bit = 1u << (index & 31);
+            force->runtime_flags = (force->runtime_flags & ~2u) | ((progress->visible[word] & bit) != 0 ? 2u : 0);
+            force->runtime_flags = (force->runtime_flags & ~1u) | ((progress->enabled[word] & bit) != 0 ? 1u : 0);
+            force->runtime_flags =
+                (force->runtime_flags & ~0x200u) | ((progress->reward_released[word] & bit) != 0 ? 0x200u : 0);
+            force->runtime_flags =
+                (force->runtime_flags & ~0x800u) | ((progress->socket_hidden[word] & bit) != 0 ? 0x800u : 0);
+            force->runtime_flags =
+                (force->runtime_flags & ~0x4000u) | ((progress->completion_released[word] & bit) != 0 ? 0x4000u : 0);
+            force->runtime_flags =
+                (force->runtime_flags & ~0x8000u) | ((progress->completion_pending[word] & bit) != 0 ? 0x8000u : 0);
+            force->runtime_flags =
+                (force->runtime_flags & ~0x10000u) | ((progress->destroyed[word] & bit) != 0 ? 0x10000u : 0);
+        }
+        group_index = (i8)force->group_index;
+        if (group_index >= 0 && group_index < 8) {
+            force->group = (FORCE_RESET_GROUP_PC *)&system->groups[group_index];
+            ++force->group->configured_count;
+        } else {
+            force->group = NULL;
+        }
+    }
+    if (progress != NULL) {
+        i32 group_index, member_index;
+        for (group_index = 0; group_index < 8; ++group_index) {
+            for (member_index = 0; member_index < 8; ++member_index) {
+                u8 force_index = progress->group_members[group_index][member_index];
+                if (force_index >= system->count)
+                    continue;
+                force = (GIZFORCE_PC *)system->forces + force_index;
+                if ((force->runtime_flags & 0x20) == 0) {
+                    if (force->group != NULL && force->group->member_count < 8) {
+                        if (force->group->member_count != 0) {
+                            FORCE_RESET_GROUP_PC *group = force->group;
+                            f32 height = ForceAnimatedHeightPc(group->forces[group->member_count - 1]);
+                            group->combined_height += height;
+                        }
+                        force->group->forces[force->group->member_count] = force;
+                        ++force->group->member_count;
+                        force->runtime_flags |= 0x20;
+                    }
+                }
+                if ((force->runtime_flags & 0x20) != 0) {
+                    NUVEC offset;
+                    offset.x = 0.0f;
+                    offset.y = GameAnimSet_GetCompletionRatio(force->anim_set) * force->group->combined_height;
+                    offset.z = 0.0f;
+                    GameAnimSet_SetOffset(force->anim_set, &offset);
+                    force->radius = 1.0f;
+                    force->position = force->file_position;
+                    GameAnimSet_GetCentreAndRadius(force->anim_set, &force->position, &force->radius, 2, 1, 1);
+                }
+            }
+        }
+    }
+}
+
+STATIC_ASSERT(offsetof(GIZFORCE_PC, room_id) == 0x80);
+void __cdecl GizForces_DrawPc(void *world_pointer, void *system_pointer, f32 unused) {
+    WORLDINFO *world = (WORLDINFO *)world_pointer;
+    GIZFORCESYS_s *system = (GIZFORCESYS_s *)system_pointer;
+    GIZFORCE_PC *force;
+    GAMEANIMOBJ *object;
+    NUMTX *draw_matrix, reflection;
+    f32 reflection_height;
+    i32 index;
+    (void)unused;
+    if (system == NULL)
+        return;
+    force = (GIZFORCE_PC *)system->forces;
+    for (index = 0; index < system->count; ++index, ++force) {
+        if (!(force->runtime_flags & 2) || (i8)force->runtime_flags >= 0 ||
+            (force->room_id >= 0 && world->rooms_visible_ptr[force->room_id] == 0))
+            continue;
+        ResetShadowMapRendering();
+        if (force->config_flags & 4)
+            GameAnimSet_DrawReflection(force->anim_set, 2, force->vertical_range, NULL);
+        if (!(force->config_flags & 0x1000))
+            EnableShadowMapRendering(0);
+        if (!(force->config_flags & 0x40) || !(force->runtime_flags & 0x800))
+            continue;
+        object = force->anim_set->objects;
+        if (object == NULL)
+            continue;
+        draw_matrix = NuSpecialGetDrawMtx((NUSPECIALHANDLE *)&object->special);
+        NuSpecialDrawAt((NUSPECIALHANDLE *)&force->along_socket, draw_matrix);
+        if (force->config_flags & 4) {
+            reflection_height = force->vertical_range + draw_matrix->m31;
+            if (MatrixReflection(draw_matrix, 2, reflection_height, WORLD->current_level->reflection_y, &reflection)) {
+                NuRndrStartReflectionRender(0);
+                NuSpecialDrawAt((NUSPECIALHANDLE *)&force->along_socket, &reflection);
+                NuRndrEndReflectionRender();
+            }
+        }
+    }
+    ResetShadowMapRendering();
 }

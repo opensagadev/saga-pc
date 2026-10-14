@@ -347,3 +347,20 @@ void __cdecl GizTurrets_ResetPc(WORLDINFO *world, AI_TURRET_SYSTEM_PC *system, v
         }
     }
 }
+
+void __cdecl GizTurrets_Draw(void *world_pointer, void *system_pointer, f32 unused) {
+    WORLDINFO *world = (WORLDINFO *)world_pointer;
+    AI_TURRET_SYSTEM_PC *system = (AI_TURRET_SYSTEM_PC *)system_pointer;
+    AI_TURRET_RECORD_PC *turret;
+    i32 index;
+    (void)unused;
+    if (system == NULL)
+        return;
+    turret = system->turrets;
+    for (index = 0; index < system->count; ++index, ++turret) {
+        if (!(turret->flags & 4) || (turret->room_id >= 0 && world->rooms_visible_ptr[turret->room_id] == 0))
+            continue;
+        if (turret->behavior_flags & 0x1000)
+            GameAnimSet_DrawReflection(turret->anim_set, 2, turret->reflection_alpha, NULL);
+    }
+}

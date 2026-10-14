@@ -239,3 +239,9 @@ extern "C" __declspec(noinline) void __cdecl SpinnerMissingSpecialPc(char *name,
     (void)name;
     (void)special_name;
 }
+
+extern "C" void __cdecl GizSpinner_PanelDraw(void *world, void *system, f32 frame_time) {
+    (void)world;
+    (void)system;
+    (void)frame_time;
+}

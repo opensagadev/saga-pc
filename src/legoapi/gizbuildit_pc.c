@@ -587,3 +587,52 @@ void __cdecl GizBuildIts_EarlyUpdate(void *world, void *pointer, f32 delta_time)
     (void)world;
     (void)delta_time;
 }
+
+STATIC_ASSERT(offsetof(GIZBUILDITANIMDATA_s, was_drawn) == 0xc6);
+void __cdecl GizBuildIts_Draw(void *world_pointer, void *system_pointer, f32 unused) {
+    WORLDINFO *world = (WORLDINFO *)world_pointer;
+    BUILDIT_RESET_SYSTEM_PC *system = (BUILDIT_RESET_SYSTEM_PC *)system_pointer;
+    BUILDIT_RESET_PC *buildit;
+    GAMEANIMOBJ *object;
+    GIZBUILDITANIMDATA_s *data;
+    NUMTX matrix;
+    f32 reflection_height;
+    i32 index;
+    (void)unused;
+    if (system == NULL)
+        return;
+    buildit = system->buildits;
+    for (index = 0; index < system->count; ++index, ++buildit) {
+        if (!(buildit->availability_flags & 2) ||
+            (buildit->room_index >= 0 && world->rooms_visible_ptr[buildit->room_index] == 0))
+            continue;
+        if (buildit->state_flags & 0x400)
+            EnableShadowMapRendering(0);
+        else
+            ResetShadowMapRendering();
+        if (buildit->linked_buildit != NULL) {
+            if (buildit->anim_set == NULL)
+                continue;
+            reflection_height = 0.0f;
+            if ((buildit->state_flags & 0x100) && buildit->anim_set->objects != NULL &&
+                buildit->anim_set->objects->object_data != NULL) {
+                data = (GIZBUILDITANIMDATA_s *)buildit->anim_set->objects->object_data;
+                reflection_height = buildit->field_50 + data->start_mtx.m31;
+            }
+            for (object = buildit->anim_set->objects; object != NULL; object = object->next) {
+                data = (GIZBUILDITANIMDATA_s *)object->object_data;
+                matrix = data->draw_mtx;
+                data->was_drawn = (u8)NuSpecialDrawAt(&object->special, &matrix);
+                if ((buildit->state_flags & 0x100) && !(object->flags & 2) &&
+                    MatrixReflection(&data->draw_mtx, 2, reflection_height, WORLD->current_level->reflection_y,
+                                     &matrix))
+                    NuSpecialDrawAt(&object->special, &matrix);
+            }
+        } else {
+            ResetShadowMapRendering();
+            if (buildit->state_flags & 0x100)
+                GameAnimSet_DrawReflection(buildit->anim_set, 2, buildit->field_50, NULL);
+        }
+    }
+    ResetShadowMapRendering();
+}

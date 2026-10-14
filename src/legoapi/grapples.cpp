@@ -1,3 +1,4 @@
+#include <stdio.h>
 #include "saga.h"
 
 GRAPPLE_DYNAMIC_PC *__cdecl Grapple_AddDynamic(void *attached_object, i32 retain_attachment) {
@@ -615,4 +616,115 @@ extern "C" i32 __cdecl Grapples_Load(void *world_pointer, void *unused) {
         }
     }
     return 1;
+}
+
+extern "C" const f64 GameObjectNearFloorNoFloorHeight;
+STATIC_ASSERT(offsetof(GRAPPLE_MOTION_PC, rope_points) == 0x5c);
+STATIC_ASSERT(offsetof(GRAPPLE_MOTION_PC, target_rope_points) == 0xa4);
+STATIC_ASSERT(offsetof(GRAPPLE_MOTION_PC, ground_x_rotation) == 0x48);
+STATIC_ASSERT(offsetof(GRAPPLE_MOTION_PC, ground_z_rotation) == 0x4a);
+STATIC_ASSERT(offsetof(GRAPPLE_MOTION_PC, activation_progress) == 0x58);
+
+static void Grapple_ResetRopeTargetsPc(GRAPPLE_MOTION_PC *grapple) {
+    volatile f32 rounded_segment = grapple->rope_length / 6.0;
+    f32 segment = rounded_segment;
+    grapple->target_rope_points[0].x = grapple->hook_position.x;
+    grapple->target_rope_points[0].y = grapple->hook_position.y - (0.0 * segment + segment);
+    grapple->target_rope_points[0].z = grapple->hook_position.z;
+    grapple->target_rope_points[1].x = grapple->hook_position.x;
+    grapple->target_rope_points[1].y = grapple->hook_position.y - ((f64)segment + segment);
+    grapple->target_rope_points[1].z = grapple->hook_position.z;
+    grapple->target_rope_points[2].x = grapple->hook_position.x;
+    grapple->target_rope_points[2].y = grapple->hook_position.y - (2.0 * segment + segment);
+    grapple->target_rope_points[2].z = grapple->hook_position.z;
+    grapple->target_rope_points[3].x = grapple->hook_position.x;
+    grapple->target_rope_points[3].y = grapple->hook_position.y - (3.0 * segment + segment);
+    grapple->target_rope_points[3].z = grapple->hook_position.z;
+    grapple->target_rope_points[4].x = grapple->hook_position.x;
+    grapple->target_rope_points[4].y = grapple->hook_position.y - (4.0 * segment + segment);
+    grapple->target_rope_points[4].z = grapple->hook_position.z;
+    grapple->target_rope_points[5].x = grapple->hook_position.x;
+    grapple->target_rope_points[5].y = grapple->hook_position.y - (5.0 * segment + segment);
+    grapple->target_rope_points[5].z = grapple->hook_position.z;
+}
+
+static void Grapple_ResetPositionPc(GRAPPLE_MOTION_PC *grapple, NUVEC *offset, NUVEC *position,
+                                    i32 has_terrain_platform) {
+    volatile f32 rounded_height;
+    f32 height;
+    if (offset != NULL) {
+        NuVecRotateX(&grapple->hook_position, offset, grapple->x_rotation);
+        NuVecRotateY(&grapple->hook_position, &grapple->hook_position, grapple->y_rotation);
+        NuVecAdd(&grapple->hook_position, &grapple->hook_position, position);
+    } else {
+        grapple->hook_position = *position;
+    }
+    grapple->shadow_probe_position.x = grapple->hook_position.x;
+    grapple->shadow_probe_position.y = grapple->hook_position.y - (f64)0.1f;
+    grapple->shadow_probe_position.z = grapple->hook_position.z;
+    grapple->ground_position.x = grapple->hook_position.x;
+    grapple->ground_position.z = grapple->hook_position.z;
+    if (has_terrain_platform == 0)
+        NewTerrPlatformsOff();
+    rounded_height = GameShadow(NULL, &grapple->hook_position, 5.0f, -1);
+    height = rounded_height;
+    grapple->ground_position.y = height;
+    if ((f64)height != GameObjectNearFloorNoFloorHeight) {
+        grapple->ground_position.y = (f64)height + (f64)0.005f;
+        FindAnglesZX(&ShadNorm, &grapple->ground_x_rotation, &grapple->ground_z_rotation);
+    }
+}
+
+static void Grapple_ResetSinglePc(GRAPPLE_MOTION_PC *grapple) {
+    volatile f32 rounded_length;
+    f32 length;
+    i32 point;
+    Grapple_ResetPositionPc(grapple, &GrapplePointOffset, &grapple->position, grapple->has_terrain_platform);
+    if ((f64)grapple->ground_position.y != GameObjectNearFloorNoFloorHeight) {
+        rounded_length = grapple->hook_position.y - ((f64)grapple->ground_position.y + (f64)0.1f);
+        length = rounded_length;
+        if (grapple->rope_length > length) {
+            grapple->rope_length = length;
+            if (0.7f > length)
+                grapple->rope_length = 0.7f;
+        }
+    }
+    Grapple_ResetRopeTargetsPc(grapple);
+    for (point = 0; point < 6; ++point)
+        grapple->rope_points[point] = grapple->target_rope_points[point];
+    grapple->activation_progress = 0.0f;
+    grapple->flags |= 3;
+    grapple->has_terrain_platform = 0;
+}
+
+extern "C" void __cdecl Grapples_Reset(void *world_pointer, void *unused, void *progress_pointer) {
+    WORLDINFO *world = (WORLDINFO *)world_pointer;
+    u32 *progress = (u32 *)progress_pointer;
+    GRAPPLE_MOTION_PC *grapple, *dynamic;
+    u8 *flags;
+    i32 index;
+    (void)unused;
+    if (world == NULL)
+        return;
+    if (world->grapples != NULL && world->grapple_count > 0) {
+        flags = &((GRAPPLE_MOTION_PC *)world->grapples)->flags;
+        for (index = 0; index < world->grapple_count; ++index, flags += 0xf8) {
+            grapple = &((GRAPPLE_MOTION_PC *)world->grapples)[index];
+            Grapple_ResetSinglePc(grapple);
+            if (progress != NULL && index < 32) {
+                i32 word = index / 32;
+                u32 bit = 1u << (index % 32);
+                *flags = (u8)((*flags & ~2u) | ((progress[word + 1] & bit) != 0 ? 2 : 0));
+                *flags = (u8)((*flags & ~1u) | ((progress[word] & bit) != 0 ? 1 : 0));
+            }
+        }
+    }
+    for (index = 0; index < 4; ++index) {
+        dynamic = &((GRAPPLE_MOTION_PC *)DynamicGrapplePc)[index];
+        sprintf(dynamic->name, "dynamic%i", index + 1);
+        dynamic->flags = (u8)((dynamic->flags & ~2u) | 1u);
+        dynamic->y_rotation = 0;
+        dynamic->attached_object = NULL;
+        dynamic->has_terrain_platform = 1;
+    }
 }
