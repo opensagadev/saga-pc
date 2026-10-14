@@ -198,7 +198,7 @@
     "src/gameapi/edanim_load.c": "76521f786114c6f0fd2472a1167e692ae9a43e3a03eb7b6240ac69461ed6e311",
     "src/gameapi/edbits.c": "ed24fc37a564f4bbfbf2c0a0b7dc9acf519cce0939d181a34ad82a04ba39c829",
     "src/gameapi/edbri.c": "792e18eab2d72398cfb6b7b0c24b42c7e3b7d6953003fd3ac82ed9c809892b07",
-    "src/gameapi/edfile.c": "31225f28ca4ebff1c7798547f0ba69f9cf7f9b642ea9c38c95fe997f053240c4",
+    "src/gameapi/edfile.c": "7626a40d836ccdb7b781aad1cb38645bd0970f18bcb42984c61e38d9d0e96efa",
     "src/gameapi/edgra.c": "c0dae373a378317fc1707fb7bbc6f4da478faae8879fbc64ee28780f5809a899",
     "src/gameapi/edgrass.c": "13481e3697f9b48283468651a6c2246b91bbcc6d31763b835278ccd11d9023a1",
     "src/gameapi/edpart.c": "9e8e574fcf99cbbed162eafa05798adad0bfd48a1b2e769b9f658e4144853f25",
@@ -462,7 +462,7 @@
     "build/obj/gameapi/edanim_load.obj": "d81897e4d70a1ca89e71330b141ab04377d8e1deaae3342bba350082df67c9be",
     "build/obj/gameapi/edbits.obj": "387be7cf98bb3d1153dd42ab112a63fd4c79e195811b2a1778090ffa9dfe3cc5",
     "build/obj/gameapi/edbri.obj": "0054ef3230cb9018668892cb56d7e9ba332fdcd88d62a3616e4d8dd890e417ea",
-    "build/obj/gameapi/edfile.obj": "a07e1b653d203a5bcbabaf52b226d4e9ebdcc129adfe1feda05f128a43d6700f",
+    "build/obj/gameapi/edfile.obj": "fb7930a77f95b8e157bd7d79d94f72b10b474dbba7752ad295283d0b7de2af14",
     "build/obj/gameapi/edgra.obj": "3f8c46e1d3031a791b129c682be4b9b656b606984132ff8cae2d9b0790e8e3b5",
     "build/obj/gameapi/edgrass.obj": "182884201f9e88adb2b3ff9257c81db40608091e68b98db2d7ccb1cda44eff16",
     "build/obj/gameapi/edpart.obj": "45181c29e8a26cb43371b27540148b76340293153778a10d26924e0d7272e81d",
@@ -110916,11 +110916,25 @@
       "name": "eduiMenuSortItemsByTxt",
       "symbol": "_eduiMenuSortItemsByTxt",
       "address": "0x00619060",
-      "units": [],
+      "units": [
+        "src/gameapi/edfile.c"
+      ],
       "target_size": 179,
-      "exact_match": false,
-      "objects": [],
-      "status": "not implemented"
+      "exact_match": true,
+      "objects": [
+        {
+          "unit": "src/gameapi/edfile.c",
+          "base_size": 179,
+          "exact_match": true,
+          "target_sha256": "20c7f9a3a78bad73a621c67528e3e411b0aeeda70297d8be413b850fe7e8c607",
+          "base_sha256": "20c7f9a3a78bad73a621c67528e3e411b0aeeda70297d8be413b850fe7e8c607",
+          "relocation_count": 1,
+          "comparison_unit": "00619060-c33511ed465d",
+          "objdiff_percent": 100.0
+        }
+      ],
+      "status": "exact",
+      "objdiff_percent": 100.0
     },
     {
       "name": "eduiMenuCreate",
@@ -111220,11 +111234,25 @@
       "name": "cbInteractMenuScrollTo",
       "symbol": "_cbInteractMenuScrollTo",
       "address": "0x0061f290",
-      "units": [],
+      "units": [
+        "src/gameapi/edfile.c"
+      ],
       "target_size": 115,
       "exact_match": false,
-      "objects": [],
-      "status": "not implemented"
+      "objects": [
+        {
+          "unit": "src/gameapi/edfile.c",
+          "base_size": 115,
+          "exact_match": false,
+          "target_sha256": "af51e42366363e3da68b5f75609552e220f198cc733ee3fe0726742737f72fba",
+          "base_sha256": "8e97142f19d3021c4847a386434756c2f5adfcdf081dabcdafeae2df5f6c5a54",
+          "relocation_count": 2,
+          "comparison_unit": "0061f290-3fac937db190",
+          "objdiff_percent": 90.81633
+        }
+      ],
+      "status": "different",
+      "objdiff_percent": 90.81633
     },
     {
       "name": "cbInteractMenuCancelChild",
@@ -112374,11 +112402,25 @@
       "name": "eduiMenuDestroy",
       "symbol": "_eduiMenuDestroy",
       "address": "0x00624220",
-      "units": [],
+      "units": [
+        "src/gameapi/edfile.c"
+      ],
       "target_size": 133,
       "exact_match": false,
-      "objects": [],
-      "status": "not implemented"
+      "objects": [
+        {
+          "unit": "src/gameapi/edfile.c",
+          "base_size": 136,
+          "exact_match": false,
+          "target_sha256": "499ab0752ebb60ad63dbadec64b208e8d847e7d432c7ac0eefc98decca6c349f",
+          "base_sha256": "46d7bcef54a90cd0ee9d1892d69a0be5211d479cdf42588eb5cd71459300adf6",
+          "relocation_count": 13,
+          "comparison_unit": "00624220-af23276e17d2",
+          "objdiff_percent": 96.625
+        }
+      ],
+      "status": "different",
+      "objdiff_percent": 96.625
     },
     {
       "name": "eduiMenuFitWidth",
@@ -380315,13 +380357,13 @@
   "progress": {
     "text_bytes": 3471246,
     "mapped_code_bytes": 2154933,
-    "matched_code_bytes": 400460,
-    "matching_percent": 11.536491507660362,
-    "fuzzy_coverage_percent": 37.09868436606356,
+    "matched_code_bytes": 400639,
+    "matching_percent": 11.541648157462767,
+    "fuzzy_coverage_percent": 37.11055186348379,
     "mapped_functions": 7516,
-    "matched_functions": 3555,
-    "objdiff_fuzzy_percent": 73.58677,
-    "objdiff_total_code": 1750910,
+    "matched_functions": 3556,
+    "objdiff_fuzzy_percent": 73.592354,
+    "objdiff_total_code": 1751337,
     "image_bytes": 40067072,
     "mapped_bytes": 3079194,
     "mapping_percent": 7.685098626622879,
@@ -381419,7 +381461,7 @@
       "metadata_sha256": "fe09365da4c355f220d724ca99394fc120b758891b4188d2c49707b6df0894f2",
       "header_path": "src/saga.h",
       "header_sha256": "de8cd5d7db9bd1b485bbc9ee5898c3b573499ce2c45e239631fae75e5f7f809c",
-      "geometry_object_sha256": "45d737eec3bc9d0edd5232bff94a740712aea4a87e95458de705a00bc49eab3f",
+      "geometry_object_sha256": "0208beda4bfb17a7cb941af08e612e950a54dcb9c9d0b4d4b4d85e140de6e03a",
       "toolchain_sha256": "489d0782638d8033137cdb2834462416111945cbfa073147820e314b8576b95b",
       "implementation_sha256": "9ad7521230f06fde31f0771b10bd001037ea32d2def455913a7f391f05dede9d",
       "headers": {

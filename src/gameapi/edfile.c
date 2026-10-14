@@ -431,6 +431,87 @@ void eduiMenuDestroyItems(eduimenu_s *menu) {
     }
 }
 
+STATIC_ASSERT(offsetof(edui_interact_s, menu) == 0x10);
+STATIC_ASSERT(offsetof(eduimenu_s, child) == 0x3c);
+STATIC_ASSERT(offsetof(eduimenu_s, parent) == 0x40);
+
+void __cdecl eduiMenuDestroy(eduimenu_s *menu) {
+    if (menu != NULL) {
+        if (eduiInteractLocked != NULL && eduiInteractLocked->menu == menu)
+            eduiInteractLocked = NULL;
+        if (processing_menu == menu)
+            processing_menu = NULL;
+        if (menu->parent != NULL) {
+            if (active_menu == menu)
+                active_menu = menu->parent;
+            menu->parent->child = NULL;
+        }
+        if (default_active_menu == menu)
+            default_active_menu = NULL;
+        if (active_menu == menu)
+            active_menu = NULL;
+        if (menu->child != NULL)
+            menu->child->parent = NULL;
+        eduiMenuDestroyItems(menu);
+        NuFree(menu, EduiSourcePathPc, 0x3d0);
+    }
+}
+
+void __cdecl eduiMenuSortItemsByTxt(eduimenu_s *menu) {
+    eduiitem_s *first = menu->first;
+    if (first != NULL) {
+        i32 sorted;
+        do {
+            eduiitem_s *item = first;
+            sorted = 1;
+            while (item->next != NULL && item->text != NULL && item->next->text != NULL) {
+                if (item->type != 20 && (item->next->type == 20 || NuStrICmp(item->text, item->next->text) > 0)) {
+                    if (item != menu->last) {
+                        eduiitem_s *next = item->next;
+                        eduiitem_s *previous = item->previous;
+                        item->previous = next;
+                        item->next = next->next;
+                        if (item->next != NULL)
+                            item->next->previous = item;
+                        else
+                            menu->last = item;
+                        if (previous != NULL)
+                            previous->next = next;
+                        else
+                            menu->first = next;
+                        next->previous = previous;
+                        next->next = item;
+                        menu->field_0c = menu->first;
+                        menu->field_10 = NULL;
+                    }
+                    if (item == first)
+                        first = item->previous;
+                    sorted = 0;
+                } else {
+                    item = item->next;
+                }
+            }
+        } while (sorted == 0);
+    }
+}
+
+void __cdecl cbInteractMenuScrollTo(eduimenu_s *menu, char *text) {
+    i32 comparison;
+    if (menu == NULL || text == NULL || text[0] == 0)
+        return;
+    comparison = menu->first != NULL && menu->first->text != NULL ? NuStrICmp(menu->first->text, text) : -1;
+    menu->field_0c = menu->first;
+    menu->selected = menu->first;
+    while (menu->selected->next != NULL && comparison < 0) {
+        menu->selected = menu->selected->next;
+        if (menu->selected->text != NULL)
+            comparison = NuStrICmp(menu->selected->text, text);
+        else
+            comparison = -1;
+    }
+    menu->field_10 = menu->selected;
+}
+
 static i32 eduicbProcessSel(eduimenu_s *menu, eduiitem_s *item, f32 unused2, FRAME_PAD_PC *pad) {
     edui_sel_s *selection = ((edui_sel_s *)(item));
     if (pad->digital_buttons_pressed & EDUI_CURSOR_PRIMARY) {
