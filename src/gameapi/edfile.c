@@ -338,6 +338,84 @@ void FS_SetFileSelPathFromName(char *name) {
     }
 }
 
+extern const char EduiSourcePathPc[52];
+STATIC_ASSERT(offsetof(eduiitem_s, flags) == 0x11);
+STATIC_ASSERT(offsetof(eduiitem_s, selection_group) == 0x18);
+STATIC_ASSERT(offsetof(eduiitem_s, text) == 0x24);
+STATIC_ASSERT(offsetof(eduimenu_s, callback) == 0x30);
+STATIC_ASSERT(offsetof(eduimenu_s, title) == 0x34);
+
+eduiitem_s *__cdecl eduiMenuAddItem(eduimenu_s *menu, eduiitem_s *item) {
+    if (menu->last != NULL)
+        menu->last->next = item;
+    else
+        menu->first = item;
+    item->previous = menu->last;
+    item->next = NULL;
+    menu->last = item;
+    menu->field_0c = menu->first;
+    edui_last_item = item;
+    menu->field_10 = NULL;
+    return item;
+}
+
+eduimenu_s *__cdecl eduiMenuCreate(i32 x, i32 y, i32 width, i32 height, void *font, void *callback, char *title) {
+    u32 bytes = sizeof(eduimenu_s) + 1;
+    eduimenu_s *menu;
+    if (title != NULL)
+        bytes += NuStrLen(title);
+    menu = (eduimenu_s *)NuAlloc(bytes, EduiSourcePathPc, 0x3dd);
+    if (menu != NULL) {
+        memset(menu, 0, bytes);
+        menu->x = x;
+        menu->y = y;
+        menu->width = width;
+        menu->height = height;
+        menu->field_24 = -1;
+        menu->field_28 = -1;
+        menu->font = font;
+        menu->callback = (EdUiMenuCallback)callback;
+        menu->flags = 0;
+        if (title != NULL) {
+            menu->title = (char *)(menu + 1);
+            NuStrCpy(menu->title, title);
+        }
+        active_menu = menu;
+    }
+    edui_last_item = NULL;
+    return menu;
+}
+
+void __cdecl eduiMenuHighlight(eduimenu_s *menu, eduiitem_s *item) {
+    eduiitem_s *entry;
+    if (item->selection_group != 0) {
+        for (entry = menu->first; entry != NULL; entry = entry->next) {
+            if (entry == item) {
+                if (entry->type == 3)
+                    entry->highlighted = 1 - entry->highlighted;
+                else
+                    entry->highlighted = 1;
+            } else if (entry->selection_group == item->selection_group) {
+                entry->highlighted = 0;
+            }
+        }
+    }
+}
+
+i32 __cdecl eduiItemSetText(eduiitem_s *item, char *text) {
+    if (item->text != NULL && NuStrLen(item->text) < NuStrLen(text)) {
+        NuFree(item->text, EduiSourcePathPc, 0x516);
+        item->text = NULL;
+    }
+    if (item->text == NULL)
+        item->text = (char *)NuAlloc(NuStrLen(text) + 1, EduiSourcePathPc, 0x51b);
+    if (item->text != NULL) {
+        NuStrCpy(item->text, text);
+        return 1;
+    }
+    return 0;
+}
+
 void eduiMenuDestroyItems(eduimenu_s *menu) {
     if (menu) {
         eduicbMenuCloseAllexpanders(menu);
