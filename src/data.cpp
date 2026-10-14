@@ -30204,3 +30204,11 @@ extern "C" {
     extern const char AIActionTorpedoNamePc[8] = "torpedo";
 #pragma const_seg()
 }
+
+extern "C" {
+#pragma const_seg(".rdata$AIConditionMySetNamePc")
+    extern const char AIConditionMySetNamePc[6] = "myset";
+#pragma const_seg(".rdata$AIConditionTakeoverTargetNamePc")
+    extern const char AIConditionTakeoverTargetNamePc[15] = "TakeoverTarget";
+#pragma const_seg()
+}

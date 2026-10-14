@@ -450,10 +450,70 @@ extern "C" {
 }
 
 extern "C" {
-    static void *Condition_IsSetAliveInit(AISYS_PC *, char *arg, AISCRIPT_PC *) {
+    extern const char AIConditionMySetNamePc[6];
+    extern const char AIConditionTakeoverTargetNamePc[15];
+
+    f32 __cdecl Condition_IsVisible(AISYS_PC *, AISCRIPTPROCESS_PC *, AIPACKET_PC *, char *, void *argument) {
+        NUSPECIALHANDLE special = {NULL, NULL, NULL};
+        NuSpecialFind(WORLD->current_gscn, &special, static_cast<char *>(argument), 1);
+        if (NuSpecialExistsFn(&special) != 0)
+            return static_cast<f32>(NuSpecialGetVisibilityFn(&special));
+        return 0.0f;
+    }
+
+    f32 __cdecl Condition_EitherPlayerUsingForce(AISYS_PC *, AISCRIPTPROCESS_PC *, AIPACKET_PC *, char *,
+                                                 void *argument) {
+        GIZFORCE_PC *force = static_cast<GIZFORCE_PC *>(argument);
+        return GizForce_GameObjUsingForce(player, force) != 0 || GizForce_GameObjUsingForce(player2, force) != 0 ? 1.0f
+                                                                                                                 : 0.0f;
+    }
+
+    f32 __cdecl Condition_TakenOver(AISYS_PC *, AISCRIPTPROCESS_PC *, AIPACKET_PC *packet, char *name, void *argument) {
+        GAMEOBJECT *object = static_cast<GAMEOBJECT *>(argument);
+        if (object == NULL) {
+            if (name != NULL) {
+                if (NuStrICmp(name, AIGameOpponentName) == 0) {
+                    GAMEOBJECT *opponent = packet->owner->objptr->ai_packet.opponent;
+                    if (opponent != NULL)
+                        object = opponent->objptr;
+                } else if (NuStrICmp(name, AIConditionTakeoverTargetNamePc) == 0) {
+                    object = packet->owner->objptr;
+                    if (object != NULL)
+                        object = object->takeover_target;
+                }
+            } else if (packet != NULL && packet->owner != NULL)
+                object = packet->owner->objptr;
+        }
+        return object != NULL && object->takeover_source != NULL && object->character_context != 0x3b ? 1.0f : 0.0f;
+    }
+
+    f32 __cdecl Condition_InSameTriggerAreaAsNearestPlayer(AISYS_PC *, AISCRIPTPROCESS_PC *, AIPACKET_PC *packet,
+                                                           char *, void *) {
+        GAMEOBJECT *nearest = NULL;
+        f32 distance = 1.0e9f;
+        if (packet != NULL && packet->owner != NULL) {
+            if (player != NULL) {
+                distance = NuVecXZDistSqr(&player->position, &packet->owner->position, NULL);
+                nearest = player;
+            }
+            if (player2 != NULL) {
+                f32 second_distance = NuVecXZDistSqr(&player2->position, &packet->owner->position, NULL);
+                if (distance > second_distance)
+                    nearest = player2;
+            }
+            if (nearest != NULL && ((packet->owner->ai_area_mask[0] & nearest->ai_area_mask[0]) |
+                                    (packet->owner->ai_area_mask[1] & nearest->ai_area_mask[1])) != 0)
+                return 1.0f;
+        }
+        return 0.0f;
+    }
+}
+
+extern "C" {
+    void *__cdecl Condition_IsSetAliveInit(AISYS_PC *, char *arg, AISCRIPT_PC *) {
         if (arg == NULL)
             return NULL;
-        if (NuStrICmp(arg, "myset") == 0)
+        if (NuStrICmp(arg, AIConditionMySetNamePc) == 0)
             return reinterpret_cast<void *>(static_cast<intptr_t>(-1));
         i32 set = NuAToI(arg);
         if (set < 1 || set > 16)
@@ -463,7 +523,7 @@ extern "C" {
 }
 
 extern "C" {
-    static void *Condition_NumForceObjectsInit(AISYS_PC *system, char *name, AISCRIPT_PC *) {
+    void *__cdecl Condition_NumForceObjectsInit(AISYS_PC *system, char *name, AISCRIPT_PC *) {
         i32 flags = 0;
         if (name != NULL && system != NULL) {
             flags = NuStrIStr(name, "throwable") != NULL;
@@ -475,7 +535,7 @@ extern "C" {
 }
 
 extern "C" {
-    static void *Condition_LastLevelInit(AISYS_PC *system, char *name, AISCRIPT_PC *) {
+    void *__cdecl Condition_LastLevelInit(AISYS_PC *system, char *name, AISCRIPT_PC *) {
         if (name != NULL && system != NULL && WORLD->area != NULL) {
             for (i32 index = 0; index < LEVELCOUNT; ++index) {
                 if (NuStrICmp(name, LDataList[index].name) == 0) {

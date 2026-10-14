@@ -330,21 +330,21 @@ address    , symbol                                                         , si
 0x440150   , _PartyMemberInWay                                              , 312   , "i32 __cdecl (GAMEOBJECT *, GAMEOBJECT *)"
 0x440290,_LocalGetRandomLocator,469,
 0x440660,?GizActionNextLocator@@YAXPAUAISYS_PC@@PAUAILOCATORSET_PC@@HHHPAUAPIOBJECT_PC@@@Z,424,
-0x440ad0,_Condition_IsVisible,95,
+0x440ad0,_Condition_IsVisible,95,"f32 __cdecl (AISYS_PC *, AISCRIPTPROCESS_PC *, AIPACKET_PC *, char *, void *)"
 0x440c70,_Condition_PlayerCategoryIs,38,
-0x441070,_Condition_EitherPlayerUsingForce,52,
+0x441070,_Condition_EitherPlayerUsingForce,52,"f32 __cdecl (AISYS_PC *, AISCRIPTPROCESS_PC *, AIPACKET_PC *, char *, void *)"
 0x441a30,_Condition_EitherPlayerLocatorRangeXZ,195,"f32 __cdecl (AISYS_PC *, AISCRIPTPROCESS_PC *, AIPACKET_PC *, char *, void *)"
-0x441f90,_Condition_IsSetAliveInit,53,
-0x4422c0,_Condition_NumForceObjectsInit,67,
-0x4423f0,_Condition_LastLevelInit,102,
+0x441f90,_Condition_IsSetAliveInit,53,"void *__cdecl (AISYS_PC *, char *, AISCRIPT_PC *)"
+0x4422c0,_Condition_NumForceObjectsInit,67,"void *__cdecl (AISYS_PC *, char *, AISCRIPT_PC *)"
+0x4423f0,_Condition_LastLevelInit,102,"void *__cdecl (AISYS_PC *, char *, AISCRIPT_PC *)"
 0x442790,_Condition_SockDistanceToPlayer,132,"f32 __cdecl (AISYS_PC *, AISCRIPTPROCESS_PC *, AIPACKET_PC *, char *, void *)"
 0x442820,_Condition_SockDistanceToOpponent,134,"f32 __cdecl (AISYS_PC *, AISCRIPTPROCESS_PC *, AIPACKET_PC *, char *, void *)"
 0x4428b0,_Condition_SockXDistanceToPlayer,189,"f32 __cdecl (AISYS_PC *, AISCRIPTPROCESS_PC *, AIPACKET_PC *, char *, void *)"
 0x442bd0,_Condition_MaulShouldRunAway,261,
-0x443050,_Condition_TakenOver,156,
+0x443050,_Condition_TakenOver,156,"f32 __cdecl (AISYS_PC *, AISCRIPTPROCESS_PC *, AIPACKET_PC *, char *, void *)"
 0x443bf0,_Condition_AngleAboutMyLocatorToPlayerInit,36,
 0x443c20,_Condition_AngleAboutMyLocatorToPlayer,219,"f32 __cdecl (AISYS_PC *, AISCRIPTPROCESS_PC *, AIPACKET_PC *, char *, void *)"
-0x443ef0,_Condition_InSameTriggerAreaAsNearestPlayer,180,
+0x443ef0,_Condition_InSameTriggerAreaAsNearestPlayer,180,"f32 __cdecl (AISYS_PC *, AISCRIPTPROCESS_PC *, AIPACKET_PC *, char *, void *)"
 0x443fc0   , _Action_SetTakeOverTarget                                       , 739   , "i32 __cdecl (AISYS_PC *, AISCRIPTPROCESS_PC *, AIPACKET_PC *, char **, i32, i32, f32)"
 0x4442b0   , _Action_ClearTakeOverTarget                                     , 52    , "i32 __cdecl (AISYS_PC *, AISCRIPTPROCESS_PC *, AIPACKET_PC *, char **, i32, i32, f32)"
 0x4442f0,_Action_Activate,412,"i32 __cdecl (AISYS_PC *, AISCRIPTPROCESS_PC *, AIPACKET_PC *, char **, i32, i32, f32)"
@@ -8746,8 +8746,10 @@ address    , symbol                                                         , si
 0x757088,??_C@_07BEIHKDLJ@Message?$AA@,8,char []
 0x7575bc,??_C@_06MAFFGDO@Active?$AA@,,const char[7]
 0x007575d8 , __real@3fc0000000000000                                        , 8     , const f64
+0x007575e0,_AIConditionMySetNamePc,6,const char[6]
 0x757648,??_C@_07OCKDJMPO@inrange?$AA@,,const char[8]
 0x757650,??_C@_09ONPKMKJM@throwable?$AA@,,const char[10]
+0x00757670,_AIConditionTakeoverTargetNamePc,15,const char[15]
 0x00757680 , _AIGameOpponentName                                            , 9     , const char[9]
 0x75768c,_AITransferLiteral75768c,13,const char[13]
 0x75769c,_AITransferLiteral75769c,11,const char[11]
