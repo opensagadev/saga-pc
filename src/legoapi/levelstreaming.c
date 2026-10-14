@@ -134,4 +134,5 @@ void __cdecl LevelStreaming_Update(WORLDINFO *world) {
 void __cdecl WorldInfo_Activate(void) {
     WORLD = LWORLD;
     WorldInfo_Init(LWORLD);
+    LOG_INFO("WorldInfo_Activate complete: world=%p", (void *)WORLD);
 }

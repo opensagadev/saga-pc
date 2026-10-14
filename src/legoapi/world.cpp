@@ -1200,6 +1200,7 @@ void __cdecl WorldInfo_Load(WORLDINFO *world) {
     CharScenes_LevelLoad(world); /* Native 48d282: actual ordinary cdecl1. */
     if ((world->current_level->flags & 2) != 0 && (world->current_level->flags & 0xe0) == 0)
         world->sock_sys = SockSysInit(&world->giz_buffer, world->buffer_end, world->current_gscn);
+    LOG_INFO("WorldInfo_Load after SockSysInit: world=%p", (void *)world);
     LevelSplines_InitForLevel(world);
     LevelObjects_InitForLevel(world);
     BoltTypes_Init(world);
@@ -1296,6 +1297,7 @@ void __cdecl WorldInfo_Load(WORLDINFO *world) {
             world, &world->giz_buffer, &world->buffer_end);
     SetAreaPickupGravity(world->area_index, world->level_idx); /* Native 48d683: cdecl(area,level). */
     world->loaded = 1;
+    LOG_INFO("WorldInfo_Load complete: world=%p", (void *)world);
     return;
 abort:
     WorldInfo_Dump(world);

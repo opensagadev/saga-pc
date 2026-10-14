@@ -692,7 +692,9 @@ extern "C" int __cdecl NuMain(int argc, char **argv) {
             FadeSys.SetStage(1);
             MainRenderTargetTime = 1.0f;
             MainRenderTime = 1.0f;
+            LOG_INFO("NuMain before CheckResetBits: world=%p", (void *)WORLD);
             CheckResetBits();
+            LOG_INFO("NuMain after CheckResetBits: world=%p", (void *)WORLD);
             music_man.SetFader(1.0f, 0.0f);
             GamePlayMusic(WORLD->current_level, 1, &Game.options_save);
             if (WORLD->current_level == TITLES_LDATA && Game.options_save.music_enabled == 0) {
