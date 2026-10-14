@@ -1691,3 +1691,461 @@ void SetSockPostion(SOCKSYS_PC *system, SOCKPOSITION_PC *position, i32 index, i3
     position->camera_position = temp_sockcampos;
     SockSysPointAlongMID(sock, position, &position->midpoint);
 }
+
+STATIC_ASSERT(offsetof(SOCK_PC, length) == 0x30);
+STATIC_ASSERT(offsetof(SOCK_PC, looping) == 0x33);
+STATIC_ASSERT(offsetof(SOCK_PC, look_ahead_segments) == 0x6d);
+
+void __cdecl PerspectMidPoint(NUVEC *result, NUVEC *first, NUVEC *second, NUVEC *camera_position) {
+    f32 first_distance = NuVecDist(camera_position, first, NULL);
+    volatile f32 second_distance = NuVecDist(camera_position, second, NULL);
+    f32 ratio = (f32)((f64)first_distance / ((f64)second_distance + first_distance));
+    result->x = (f32)(((f64)second->x - first->x) * ratio + first->x);
+    result->y = (f32)(((f64)second->y - first->y) * ratio + first->y);
+    result->z = (f32)(((f64)second->z - first->z) * ratio + first->z);
+}
+
+i32 __cdecl SockSegmentsAhead(SOCK_PC *sock, i32 segment, i32 *from_segment, i32 *to_segment) {
+    i32 segments_ahead;
+    i32 advanced = 0;
+    if (sock->look_ahead_segments == 0)
+        return 0;
+    *from_segment = segment;
+    segments_ahead = sock->look_ahead_segments;
+    if (sock->looping != 0) {
+        while (segments_ahead > 0) {
+            ++*from_segment;
+            if (*from_segment == sock->length + 1)
+                *from_segment = 0;
+            --segments_ahead;
+        }
+        *to_segment = *from_segment + 1;
+        if (*to_segment == sock->length + 1)
+            *to_segment = 0;
+        return 1;
+    }
+    while (segments_ahead > 0) {
+        if (*from_segment >= sock->length - 1)
+            break;
+        ++*from_segment;
+        --segments_ahead;
+        *to_segment = *from_segment + 1;
+        advanced = 1;
+    }
+    return advanced;
+}
+
+/* Append to canonical socksys.c after reviewed helper290. No shared edits. */
+#define SOCK_CAMERA_CLAMP_Y(value, candidate, system)                                                                  \
+    do {                                                                                                               \
+        if ((value) < (candidate)->camera_position.y)                                                                  \
+            (value) = (candidate)->camera_position.y;                                                                  \
+        else if ((system)->socks[(candidate)->sock_index].mid != NULL && (candidate)->midpoint.y < (value))            \
+            (value) = (candidate)->midpoint.y;                                                                         \
+    } while (0)
+typedef union SOCK_CAMERA_FLOAT_BITS_PC {
+    f32 value;
+    u32 bits;
+} SOCK_CAMERA_FLOAT_BITS_PC;
+void __cdecl PerspectMidPoint(NUVEC *, NUVEC *, NUVEC *, NUVEC *);
+i32 __cdecl SockSegmentsAhead(SOCK_PC *, i32, i32 *, i32 *);
+i32 __cdecl SockSysCamera(SOCKSYS_PC *sock_sys, NUVEC *fallback_camera_position, i32 socket_changed,
+                          NUVEC *player_camera_positions, NUVEC *player_positions, i32 player_count,
+                          SOCKPOSITION_PC *camera_socket_position, NUVEC *camera_position, NUVEC *camera_target,
+                          f32 *overlap_blend, f32 *position_seek, f32 *angle_seek, f32 *camera_shake,
+                          f32 *separation_scale) {
+    NUVEC average_camera_position, average_player_position, accumulated_target;
+    NUVEC candidate_camera, look_position, displacement, local_right, local_x, local_y;
+    i32 i;
+    volatile f32 magnitude, side, half_width, height_sum, pair_offset;
+    volatile f32 working_scale;
+    volatile f32 two_player_pullback;
+    volatile f32 single_player_pullback;
+    volatile f32 camera_height_above_ground;
+    i32 contributing_sockets;
+    SOCKPOSITION_PC *candidate;
+    i32 include;
+    SOCK_PC *sock;
+    volatile f32 projection_x;
+    volatile f32 projection_y;
+    volatile f32 lateral_ratio;
+    i32 have_limit;
+    i32 look_from;
+    i32 look_to;
+    u16 from_angle;
+    i32 difference;
+    u16 pitch;
+    u16 yaw;
+    NUVEC scratch;
+    i32 player;
+    volatile f32 rounded_player_count;
+    SOCK_CAMERA_FLOAT_BITS_PC absolute_difference;
+
+    scratch.x = scratch.y = scratch.z = 0.0f;
+    if (sock_sys == NULL) {
+        return 0;
+    }
+
+    average_camera_position.x = average_camera_position.y = average_camera_position.z = 0.0f;
+    average_player_position.x = average_player_position.y = average_player_position.z = 0.0f;
+    for (i = 0; i < player_count; ++i) {
+        NuVecAdd(&average_camera_position, &average_camera_position, &player_camera_positions[i]);
+        NuVecAdd(&average_player_position, &average_player_position, &player_positions[i]);
+    }
+    rounded_player_count = (f32)player_count;
+    working_scale = 1.0 / rounded_player_count;
+    NuVecScale(&average_camera_position, &average_camera_position, working_scale);
+    NuVecScale(&average_player_position, &average_player_position, working_scale);
+
+    if (player_count == 2 && socket_changed == 0) {
+        PerspectMidPoint(camera_target, &player_camera_positions[0], &player_camera_positions[1],
+                         fallback_camera_position);
+    } else {
+        *camera_target = average_camera_position;
+    }
+
+    ComplexSockPosition(sock_sys, &average_camera_position, camera_socket_position->sock_index,
+                        camera_socket_position->segment, camera_socket_position);
+    if (camera_socket_position->sock_index == -1) {
+        *camera_position = *fallback_camera_position;
+        return 0;
+    }
+
+    camera_position->x = camera_position->y = camera_position->z = 0.0f;
+    accumulated_target.x = accumulated_target.y = accumulated_target.z = 0.0f;
+    if (overlap_blend != NULL) {
+        *overlap_blend = 0.0f;
+    }
+    if (position_seek != NULL) {
+        *position_seek = 0.0f;
+    }
+    if (angle_seek != NULL) {
+        *angle_seek = 0.0f;
+    }
+    if (camera_shake != NULL) {
+        *camera_shake = 0.0f;
+    }
+    if (separation_scale != NULL) {
+        *separation_scale = 0.0f;
+    }
+
+    two_player_pullback = 0.0f;
+    single_player_pullback = 0.0f;
+    camera_height_above_ground = 0.0f;
+    contributing_sockets = 0;
+    for (i = 0; i < TempSPosCount; ++i) {
+        candidate = &TempSPosList[i];
+        include =
+            socket_changed == 0 || candidate->sock_index == camera_socket_position->sock_index ||
+            ((sock_sys->socks[camera_socket_position->sock_index].overlap_exclusion_mask[candidate->sock_index / 32] &
+              (1u << (candidate->sock_index & 31))) != 0) == 0;
+        if (include) {
+            sock = &sock_sys->socks[candidate->sock_index];
+
+            if ((sock->flags & SOCK_FLAG_PROJECT_CAMERA_FROM_PLAYER) != 0) {
+
+                local_y.x = 0.0f;
+                local_y.y = 1.0f;
+                local_y.z = 0.0f;
+                local_x.x = 1.0f;
+                local_x.y = 0.0f;
+                local_x.z = 0.0f;
+                NuVecSub(&scratch, &average_camera_position, &candidate->midpoint);
+                NuVecRotateX(&local_x, &local_x, candidate->camera_rotation.x);
+                NuVecRotateY(&local_x, &local_x, candidate->camera_rotation.y);
+                NuVecRotateX(&local_y, &local_y, candidate->camera_rotation.x);
+                NuVecRotateY(&local_y, &local_y, candidate->camera_rotation.y);
+                projection_x = NuVecDot(&scratch, &local_x);
+                projection_y = NuVecDot(&scratch, &local_y);
+                projection_x *= sock->camera_local_x_ratio;
+                projection_y *= sock->camera_vertical_ratio;
+                NuVecScale(&local_x, &local_x, projection_x);
+                NuVecScale(&local_y, &local_y, projection_y);
+                NuVecAdd(&candidate_camera, &local_x, &local_y);
+                NuVecAdd(&candidate_camera, &candidate_camera, &candidate->camera_position);
+            } else {
+                candidate_camera = candidate->camera_position;
+            }
+
+            if (sock->camera_rail_offset != 0.0f) {
+                scratch.x = 0.0f;
+                scratch.y = 0.0f;
+                scratch.z = 1.0f;
+                NuVecRotateX(&scratch, &scratch, candidate->camera_rotation.x);
+                NuVecRotateY(&scratch, &scratch, candidate->camera_rotation.y);
+                working_scale = sock->camera_rail_offset;
+                candidate_camera.x = (f64)scratch.x * working_scale + candidate_camera.x;
+                candidate_camera.y = (f64)scratch.y * working_scale + candidate_camera.y;
+                candidate_camera.z = (f64)scratch.z * working_scale + candidate_camera.z;
+            }
+
+            if (sock->lateral != NULL) {
+
+                SockSysPointAlongSpline(&scratch, sock->lateral, candidate->segment, candidate->next_segment,
+                                        candidate->ratio);
+                local_right.x = 1.0f;
+                local_right.y = 0.0f;
+                local_right.z = 0.0f;
+                NuVecRotateY(&local_right, &local_right, candidate->midpoint_rotation.y);
+                displacement.x = scratch.x - candidate->midpoint.x;
+                displacement.z = scratch.z - candidate->midpoint.z;
+                side = (f64)local_right.x * displacement.x + (f64)local_right.z * displacement.z;
+                magnitude = side;
+
+                SockSysPointAlongSpline(&scratch, sock->a, candidate->segment, candidate->next_segment,
+                                        candidate->ratio);
+                displacement.x = scratch.x - candidate->midpoint.x;
+                displacement.z = scratch.z - candidate->midpoint.z;
+                half_width = NuFsqrt((f64)displacement.x * displacement.x + (f64)displacement.z * displacement.z);
+                SockSysPointAlongSpline(&scratch, sock->b, candidate->segment, candidate->next_segment,
+                                        candidate->ratio);
+                displacement.x = scratch.x - candidate->midpoint.x;
+                displacement.z = scratch.z - candidate->midpoint.z;
+                half_width += NuFsqrt((f64)displacement.x * displacement.x + (f64)displacement.z * displacement.z);
+                half_width = (f64)half_width * 0.5;
+                if (half_width > 0.0f) {
+                    lateral_ratio = (f64)magnitude / half_width * working_scale;
+                } else {
+                    lateral_ratio = 0.0f;
+                }
+            } else {
+                lateral_ratio = sock->camera_lateral_ratio;
+            }
+
+            if (lateral_ratio != 0.0f && (sock->flags & SOCK_FLAG_PROJECT_CAMERA_FROM_PLAYER) == 0) {
+                displacement.x = ((f64)average_camera_position.x - candidate->midpoint.x) * lateral_ratio;
+                displacement.z = ((f64)average_camera_position.z - candidate->midpoint.z) * lateral_ratio;
+                if (sock->left != NULL || sock->right != NULL) {
+                    magnitude = NuFsqrt((f64)displacement.x * displacement.x + (f64)displacement.z * displacement.z);
+                    local_right.x = 1.0f;
+                    local_right.y = 0.0f;
+                    local_right.z = 0.0f;
+                    NuVecRotateY(&local_right, &local_right, candidate->midpoint_rotation.y);
+                    side = (f64)local_right.x * displacement.x + (f64)local_right.z * displacement.z;
+                    have_limit = 0;
+                    if (side < 0.0f) {
+                        if (sock->left != NULL) {
+                            SockSysPointAlongSpline(&scratch, sock->left, candidate->segment, candidate->next_segment,
+                                                    candidate->ratio);
+                            have_limit = 1;
+                        }
+                    } else if (sock->right != NULL) {
+                        SockSysPointAlongSpline(&scratch, sock->right, candidate->segment, candidate->next_segment,
+                                                candidate->ratio);
+                        have_limit = 1;
+                    }
+                    if (have_limit) {
+                        local_x.x = scratch.x - candidate->camera_position.x;
+                        local_x.z = scratch.z - candidate->camera_position.z;
+                        half_width = NuFsqrt((f64)local_x.x * local_x.x + (f64)local_x.z * local_x.z);
+                        if (half_width < magnitude) {
+                            working_scale = (f64)half_width / magnitude;
+                            displacement.x = (f64)displacement.x * working_scale;
+                            displacement.z = (f64)displacement.z * working_scale;
+                        }
+                    }
+                }
+                candidate_camera.x += displacement.x;
+                candidate_camera.z += displacement.z;
+            }
+
+            if (sock->camera_vertical_ratio != 0.0f && (sock->flags & SOCK_FLAG_PROJECT_CAMERA_FROM_PLAYER) == 0) {
+                displacement.y =
+                    (f64)sock->camera_vertical_ratio * ((f64)average_camera_position.y - candidate->midpoint.y);
+                candidate_camera.y += displacement.y;
+            }
+
+            if ((sock->camera_arena_blend.x > 0.0f || sock->camera_arena_blend.y > 0.0f ||
+                 sock->camera_arena_blend.z > 0.0f) &&
+                (sock->camera_arena_offset.x != 0.0f || sock->camera_arena_offset.y != 0.0f ||
+                 sock->camera_arena_offset.z != 0.0f)) {
+                NuVecAdd(&scratch, &average_player_position, &sock->camera_arena_offset);
+                if (1.0f > sock->camera_arena_blend.x)
+                    candidate_camera.x =
+                        ((f64)scratch.x - candidate_camera.x) * sock->camera_arena_blend.x + candidate_camera.x;
+                else
+                    candidate_camera.x = scratch.x;
+                if (1.0f > sock->camera_arena_blend.y)
+                    candidate_camera.y =
+                        ((f64)scratch.y - candidate_camera.y) * sock->camera_arena_blend.y + candidate_camera.y;
+                else
+                    candidate_camera.y = scratch.y;
+                if (1.0f > sock->camera_arena_blend.z)
+                    candidate_camera.z =
+                        ((f64)scratch.z - candidate_camera.z) * sock->camera_arena_blend.z + candidate_camera.z;
+                else
+                    candidate_camera.z = scratch.z;
+                if ((sock->flags & SOCK_FLAG_CLAMP_TARGET_Y) != 0) {
+                    SOCK_CAMERA_CLAMP_Y(candidate_camera.y, candidate, sock_sys);
+                }
+            } else if (sock->camera_arena_offset.y != 0.0f) {
+                height_sum = 0.0f;
+                for (player = 0; player < player_count; ++player) {
+                    height_sum += player_camera_positions[player].y;
+                    height_sum += sock->camera_arena_offset.y;
+                }
+                candidate_camera.y = (f64)height_sum / rounded_player_count;
+                if ((sock->flags & SOCK_FLAG_CLAMP_TARGET_Y) != 0) {
+                    SOCK_CAMERA_CLAMP_Y(candidate_camera.y, candidate, sock_sys);
+                }
+            }
+
+            if (sock->camera_distance_to_target != 0.0f) {
+
+                if ((sock->flags & SOCK_FLAG_CAMERA_DISTANCE_XZ) != 0) {
+                    scratch.x = camera_target->x - candidate_camera.x;
+                    scratch.y = 0.0f;
+                    scratch.z = camera_target->z - candidate_camera.z;
+                } else {
+                    NuVecSub(&scratch, camera_target, &candidate_camera);
+                }
+                NuVecNorm(&scratch, &scratch);
+                candidate_camera.x = (f64)camera_target->x - (f64)scratch.x * sock->camera_distance_to_target;
+                candidate_camera.z = (f64)camera_target->z - (f64)scratch.z * sock->camera_distance_to_target;
+                if ((sock->flags & SOCK_FLAG_CAMERA_DISTANCE_XZ) == 0) {
+                    candidate_camera.y = (f64)camera_target->y - (f64)scratch.y * sock->camera_distance_to_target;
+                }
+            } else {
+                if (sock->camera_pullback_ratio != 0.0f) {
+                    candidate_camera.x =
+                        ((f64)camera_target->x - candidate_camera.x) * sock->camera_pullback_ratio + candidate_camera.x;
+                    candidate_camera.y =
+                        ((f64)camera_target->y - candidate_camera.y) * sock->camera_pullback_ratio + candidate_camera.y;
+                    candidate_camera.z =
+                        ((f64)camera_target->z - candidate_camera.z) * sock->camera_pullback_ratio + candidate_camera.z;
+                }
+            }
+
+            if (!(sock->look_ratio_xz == 1.0f && sock->look_ratio_y == 1.0f && sock->look_ahead_segments == 0)) {
+
+                if (sock->look != NULL) {
+                    SockSysPointAlongSpline(&look_position, sock->look, candidate->segment, candidate->next_segment,
+                                            candidate->ratio);
+                } else {
+                    look_position.x = 0.0f;
+                    look_position.y = 0.0f;
+                    look_position.z = NuVecDist(&candidate_camera, camera_target, NULL);
+                    if (SockSegmentsAhead(sock, candidate->segment, &look_from, &look_to) != 0) {
+                        from_angle = sock->cam_rotations[look_from].x;
+                        difference =
+                            SOCK_ROTATION_DELTA(sock->cam_rotations[look_from].x, sock->cam_rotations[look_to].x);
+                        pitch = (u16)(i32)((f64)from_angle + (f64)difference * candidate->ratio);
+                        from_angle = sock->cam_rotations[look_from].y;
+                        difference =
+                            SOCK_ROTATION_DELTA(sock->cam_rotations[look_from].y, sock->cam_rotations[look_to].y);
+                        yaw = (u16)(i32)((f64)from_angle + (f64)difference * candidate->ratio);
+                        NuVecRotateX(&look_position, &look_position, pitch);
+                        NuVecRotateY(&look_position, &look_position, yaw - 0x1555);
+                    } else {
+                        NuVecRotateX(&look_position, &look_position, candidate->camera_rotation.x);
+                        NuVecRotateY(&look_position, &look_position, candidate->camera_rotation.y);
+                    }
+                    NuVecAdd(&look_position, &look_position, &candidate_camera);
+                }
+                accumulated_target.x = ((f64)camera_target->x - look_position.x) * sock->look_ratio_xz +
+                                       look_position.x + accumulated_target.x;
+                accumulated_target.y = ((f64)camera_target->y - look_position.y) * sock->look_ratio_y +
+                                       look_position.y + accumulated_target.y;
+                accumulated_target.z = ((f64)camera_target->z - look_position.z) * sock->look_ratio_xz +
+                                       look_position.z + accumulated_target.z;
+            } else {
+                NuVecAdd(&accumulated_target, &accumulated_target, camera_target);
+            }
+
+            NuVecAdd(camera_position, camera_position, &candidate_camera);
+            if (overlap_blend != NULL) {
+                *overlap_blend += sock->overlap_blend_ratio;
+            }
+            if (position_seek != NULL) {
+                *position_seek += sock->camera_position_seek;
+            }
+            if (angle_seek != NULL) {
+                *angle_seek += sock->camera_angle_seek;
+            }
+            if (camera_shake != NULL) {
+                *camera_shake += sock->camera_shake;
+            }
+            two_player_pullback += sock->two_player_pullback;
+            single_player_pullback += sock->single_player_pullback;
+            camera_height_above_ground += sock->camera_height_above_ground;
+            ++contributing_sockets;
+        }
+    }
+
+    if (contributing_sockets > 0) {
+        working_scale = 1.0 / (f64)contributing_sockets;
+        NuVecScale(camera_position, camera_position, working_scale);
+        if (overlap_blend != NULL) {
+            *overlap_blend *= working_scale;
+        }
+        if (position_seek != NULL) {
+            *position_seek *= working_scale;
+        }
+        if (angle_seek != NULL) {
+            *angle_seek *= working_scale;
+        }
+        if (camera_shake != NULL) {
+            *camera_shake *= working_scale;
+        }
+        two_player_pullback *= working_scale;
+        single_player_pullback *= working_scale;
+        if (separation_scale != NULL) {
+            *separation_scale = two_player_pullback * working_scale;
+        }
+        NuVecScale(camera_target, &accumulated_target, working_scale);
+        camera_height_above_ground *= working_scale;
+    }
+
+    if (camera_height_above_ground > 0.0f) {
+        height_sum = NewShadow(camera_position, 0.0f, 5.0f, -1);
+        if (height_sum != 2000000.0f && camera_position->y < (f64)height_sum + camera_height_above_ground) {
+            camera_position->y = (f64)height_sum + camera_height_above_ground;
+        }
+    }
+
+    if (player_count == 1 && single_player_pullback != 0.0f) {
+
+        working_scale = NuVecDist(camera_target, camera_position, &scratch);
+        if (working_scale > 1.0f) {
+            NuVecNorm(&scratch, &scratch);
+            if ((f64)working_scale - single_player_pullback < 1.0) {
+                single_player_pullback = working_scale - 1.0f;
+            }
+            camera_position->x = (f64)scratch.x * single_player_pullback + camera_position->x;
+            camera_position->y = (f64)scratch.y * single_player_pullback + camera_position->y;
+            camera_position->z = (f64)scratch.z * single_player_pullback + camera_position->z;
+        }
+    }
+    if (player_count == 2 && two_player_pullback != 0.0f) {
+        // The reference has distinct spatial and planar pullback blocks.
+#define SOCK_CAMERA_PAIR_PULLBACK(distance_service, with_y)                                                            \
+    do {                                                                                                               \
+        if ((sock_sys->socks[camera_socket_position->sock_index].flags & SOCK_FLAG_TWO_PLAYER_VERTICAL_SEPARATION) !=  \
+            0) {                                                                                                       \
+            absolute_difference.value = (f64)player_camera_positions[0].y - player_camera_positions[1].y;              \
+            absolute_difference.bits &= 0x7fffffffu;                                                                   \
+            pair_offset = absolute_difference.value;                                                                   \
+        } else                                                                                                         \
+            pair_offset = distance_service(&player_camera_positions[0], &player_camera_positions[1], NULL);            \
+        pair_offset *= -two_player_pullback;                                                                           \
+        working_scale = distance_service(camera_target, camera_position, &scratch);                                    \
+        NuVecNorm(&scratch, &scratch);                                                                                 \
+        if ((f64)working_scale - pair_offset < 1.0)                                                                    \
+            pair_offset = working_scale - 1.0f;                                                                        \
+        camera_position->x = (f64)scratch.x * pair_offset + camera_position->x;                                        \
+        if (with_y)                                                                                                    \
+            camera_position->y = (f64)scratch.y * pair_offset + camera_position->y;                                    \
+        camera_position->z = (f64)scratch.z * pair_offset + camera_position->z;                                        \
+    } while (0)
+        if (camera_socket_position->sock_index != -1 &&
+            (sock_sys->socks[camera_socket_position->sock_index].flags & SOCK_FLAG_TWO_PLAYER_PLANAR_PULLBACK) != 0) {
+            SOCK_CAMERA_PAIR_PULLBACK(NuVecXZDist, 0);
+        } else {
+            SOCK_CAMERA_PAIR_PULLBACK(NuVecDist, 1);
+        }
+#undef SOCK_CAMERA_PAIR_PULLBACK
+    }
+    return 1;
+}
+
+#undef SOCK_CAMERA_CLAMP_Y

@@ -1688,7 +1688,7 @@ extern "C" AREA_SUPERCOUNTER_PC *__cdecl SuperCounters_FindPickup(WORLDINFO *wor
                     }
                     NUVEC *draw_position = GizmoGetPos((GIZMOSYS_PC *)world->gizmo_sys, pickup->position_gizmo);
                     if (draw_position != NULL) {
-                        volatile f32 rounded_distance = NuVecDist(position, draw_position, NULL);
+                        volatile f32 rounded_distance = NuVecDistSqr(position, draw_position, NULL);
                         f32 distance = rounded_distance;
                         if (closest > distance) {
                             closest = distance;

@@ -2288,6 +2288,7 @@ address    , symbol                                                         , si
 0x0053f640 , _SetSockPostion                                                , 241   ,
 0x53f7a0   , _MidDistanceFromSockStart                                      , 64    , "f32 __cdecl (SOCKSYS_PC *, SOCKPOSITION_PC *)"
 0x53f7e0,_FindSock,71,
+0x53f830,_SockSegmentsAhead,168,"i32 __cdecl(SOCK_PC*,i32,i32*,i32*)"
 0x53f940   , _SockParCircuit                                                , 10    , "void __cdecl (NUFPAR_PC *, void *)"
 0x53f950   , _SockParCurSpeed                                               , 23    , "void __cdecl (NUFPAR_PC *, void *)"
 0x53f970   , _SockParMidRangeInner                                          , 23    , "void __cdecl (NUFPAR_PC *, void *)"
@@ -2346,6 +2347,7 @@ address    , symbol                                                         , si
 0x540360   , _SockManCam_MAX_Y                                              , 26    , "void __cdecl (NUFPAR_PC *, void *)"
 0x540380   , _SockTerrainCamInActive                                        , 16    , "void __cdecl (NUFPAR_PC *, void *)"
 0x5404f0   , _SockSys_Configure                                             , 254   , "void __cdecl (SOCKSYS_PC *, char *, i32, VARIPTR *, VARIPTR *, NUGSCN *)"
+0x5405f0,_PerspectMidPoint,122,"void __cdecl(NUVEC*,NUVEC*,NUVEC*,NUVEC*)"
 0x5407d0,_CalculateDistanceToNearestEnd,743,
 0x00540d20 , _SockRotationMatrix                                            , 1804  , "void __cdecl (SOCKSYS_PC *, SOCKPOSITION_PC *, NUMTX *, i32, i32)"
 0x541430,_SockOn,44,
