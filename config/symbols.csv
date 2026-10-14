@@ -398,7 +398,7 @@ address    , symbol                                                         , si
 0x449bb0,_Action_SetZeroAcceleration,215,"i32 __cdecl (AISYS_PC *, AISCRIPTPROCESS_PC *, AIPACKET_PC *, char **, i32, i32, f32)"
 0x449c90,_Action_BreakFormation,33,"i32 __cdecl (AISYS_PC *, AISCRIPTPROCESS_PC *, AIPACKET_PC *, char **, i32, i32, f32)"
 0x449cc0,_Action_FormationMove,33,"i32 __cdecl (AISYS_PC *, AISCRIPTPROCESS_PC *, AIPACKET_PC *, char **, i32, i32, f32)"
-0x00449cf0 , _Action_SetFormationCommander                                 , 282   , "i32 __cdecl (AISYS_PC *, AISCRIPTPROCESS_PC *, AIPACKET_PC *, char **, i32, i32, f32)"
+0x00449cf0,_Action_SetFormationCommander,282,"i32 __cdecl (AISYS_PC *, AISCRIPTPROCESS_PC *, AIPACKET_PC *, char **, i32, i32, f32)"
 0x00449e10 , _Action_RemoveThrownForceObjects                               , 75    , "i32 __cdecl (AISYS_PC *, AISCRIPTPROCESS_PC *, AIPACKET_PC *, char **, i32, i32, f32)"
 0x449f40,_Action_Launch,47,"i32 __cdecl (AISYS_PC *, AISCRIPTPROCESS_PC *, AIPACKET_PC *, char **, i32, i32, f32)"
 0x449f70,_Action_SelectRandomSpline,538,"i32 __cdecl (AISYS_PC *, AISCRIPTPROCESS_PC *, AIPACKET_PC *, char **, i32, i32, f32)"
@@ -513,8 +513,8 @@ address    , symbol                                                         , si
 0x454700,_Action_AddGameMsgCount,606,
 0x454960   , _Action_SetCanTakeOver                                          , 135   , "i32 __cdecl (AISYS_PC *, AISCRIPTPROCESS_PC *, AIPACKET_PC *, char **, i32, i32, f32)"
 0x4549f0   , _Action_CanBeCarried                                            , 221   , "i32 __cdecl (AISYS_PC *, AISCRIPTPROCESS_PC *, AIPACKET_PC *, char **, i32, i32, f32)"
-0x454e30,_Action_AddMiscPickups,294,
-0x4550a0,_Action_CreateRider,275,
+0x454e30,_Action_AddMiscPickups,294,"i32 __cdecl (AISYS_PC *, AISCRIPTPROCESS_PC *, AIPACKET_PC *, char **, i32, i32, f32)"
+0x4550a0,_Action_CreateRider,275,"i32 __cdecl (AISYS_PC *, AISCRIPTPROCESS_PC *, AIPACKET_PC *, char **, i32, i32, f32)"
 0x455290,_Action_UseTimeBasedUpdate,141,"i32 __cdecl (AISYS_PC *, AISCRIPTPROCESS_PC *, AIPACKET_PC *, char **, i32, i32, f32)"
 0x455320,_Action_WalkBackwards,201,"i32 __cdecl (AISYS_PC *, AISCRIPTPROCESS_PC *, AIPACKET_PC *, char **, i32, i32, f32)"
 0x4553f0,_Action_AddScriptProcessor,1005,
@@ -9054,6 +9054,7 @@ address    , symbol                                                         , si
 0x7583f0,_AITransferLiteral7583f0,8,const char[8]
 0x7583f8,_AITransferLiteral7583f8,8,const char[8]
 0x758430,_AITransferLiteral758430,5,const char[5]
+0x00758438,_AIActionTorpedoPrefixPc,9,const char[9]
 0x758460,??_C@_01NEMOKFLO@?$DN?$AA@,,
 0x00758464 , _AIScriptParamPrefix                                           , 6     , const char[6]
 0x75848c,??_C@_0BB@PGCHANHM@ForceLightningLp?$AA@,17,const char[17]
@@ -15000,11 +15001,11 @@ address    , symbol                                                         , si
 0x007f1880 , _id_DARTHMAUL                                                  , 2     , i16
 0x7f1884,_id_GAMORREANGUARD,,i16
 0x007f1888 , _id_BATTLEDROID                                                ,       ,
-0x007f188c , _id_BATTLEDROIDCOMMANDER                                       ,       ,
-0x007f1890 , _id_BATTLEDROIDGEONOSIAN                                       ,       ,
-0x007f1894 , _id_BATTLEDROIDSECURITY                                        ,       ,
-0x007f1898 , _id_CLONEEP3                                                   ,       ,
-0x007f189c , _id_CLONEEP3SAND                                               ,       ,
+0x007f188c , _id_BATTLEDROIDCOMMANDER                                       , 2, i16
+0x007f1890 , _id_BATTLEDROIDGEONOSIAN                                       , 2, i16
+0x007f1894 , _id_BATTLEDROIDSECURITY                                        , 2, i16
+0x007f1898 , _id_CLONEEP3                                                   , 2, i16
+0x007f189c , _id_CLONEEP3SAND                                               , 2, i16
 0x7f18a0,_id_NAFFDROID1,,i16
 0x7f18a4,_id_NAFFDROID2,,i16
 0x7f18ac,_id_NAFFDROID4,,i16

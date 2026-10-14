@@ -19888,6 +19888,12 @@ extern "C" {
     extern f32 pod_animtime[2];
     extern f32 podanimendframe;
     extern i16 id_BATTLEDROID;
+    extern i16 id_BATTLEDROIDCOMMANDER;
+    extern i16 id_BATTLEDROIDGEONOSIAN;
+    extern i16 id_BATTLEDROIDSECURITY;
+    extern i16 id_CLONEEP3;
+    extern i16 id_CLONEEP3SAND;
+    extern const char AIActionTorpedoPrefixPc[9];
 #ifdef __cplusplus
 }
 #endif

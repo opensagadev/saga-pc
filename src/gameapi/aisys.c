@@ -11492,73 +11492,92 @@ i32 __cdecl Action_CanBeCarried(AISYS_PC *system, AISCRIPTPROCESS_PC *processor,
     return 1;
 }
 
-static i32 Action_AddMiscPickups(AISYS_PC *sys, AISCRIPTPROCESS_PC *processor, AIPACKET_PC *packet, char **params,
-                                 i32 param_4, i32 param_5, f32 param_6) {
-    (void)param_6;
-    if (param_5 != 0) {
-        i32 value;
-        i32 torpedo;
-        i32 index;
-        struct nuvec_s *position;
-        GAMEOBJECT *object = NULL;
-        if (packet != NULL && packet->owner != NULL) {
+i32 __cdecl Action_SetFormationCommander(AISYS_PC *unused0, AISCRIPTPROCESS_PC *unused1, AIPACKET_PC *packet,
+                                         char **unused3, i32 unused4, i32 unused5, f32 unused6) {
+    GAMEOBJECT *object;
+    AIGROUP_PC *group;
+    i32 commander_id;
+    if (packet == NULL || packet->owner == NULL || packet->owner->objptr == NULL || packet->group == NULL)
+        return 1;
+    object = packet->owner->objptr;
+    group = packet->group;
+    if (packet->group_member_index != group->member_count - 1)
+        return 1;
+    if (group->count_across != 1 && group->member_count % group->count_across != 1)
+        return 1;
+    packet->flags |= 0x1000000;
+    if ((i16)object->id == id_BATTLEDROID || (i16)object->id == id_BATTLEDROIDSECURITY ||
+        (i16)object->id == id_BATTLEDROIDGEONOSIAN)
+        commander_id = id_BATTLEDROIDCOMMANDER;
+    else if ((i16)object->id == id_CLONEEP3)
+        commander_id = id_CLONEEP3SAND;
+    else
+        return 1;
+    NewPlayerCharacter(object, commander_id, (i16)object->id, 1);
+    object->current_hp = object->character_data->game_character->hitpoints;
+    object->field_107e = object->character_data->game_character->hitpoints;
+    return 1;
+}
+
+i32 __cdecl Action_AddMiscPickups(AISYS_PC *system, AISCRIPTPROCESS_PC *processor, AIPACKET_PC *packet, char **params,
+                                  i32 count, i32 first_time, f32 unused6) {
+    i32 value = 0;
+    i32 torpedo = 0;
+    GAMEOBJECT *object = NULL;
+    APIOBJECT_PC *named;
+    NUVEC *position;
+    i32 index;
+    char *parameter;
+    if (first_time != 0) {
+        if (packet != NULL && packet->owner != NULL && packet->owner->objptr != NULL)
             object = packet->owner->objptr;
-        }
-        value = 0;
-        torpedo = 0;
-        for (index = 0; index < param_4; ++index) {
-            char *parameter = NuStrIStr(params[index], "character=");
+        for (index = 0; index < count; ++index) {
+            parameter = NuStrIStr(params[index], (char *)AIGameCharacterName);
             if (parameter != NULL) {
-                object = GetNamedGameObject(sys, parameter + 10);
-            } else if ((parameter = NuStrIStr(params[index], "value=")) != NULL) {
-                value = ((i32)(AIParamToFloat(processor, parameter + 6)));
-            } else if ((parameter = NuStrIStr(params[index], "torpedo=")) != NULL) {
-                torpedo = ((i32)(AIParamToFloat(processor, parameter + 8)));
-            }
+                named = GetNamedGameObjectCallback != NULL ? GetNamedGameObjectCallback(system, parameter + 10) : NULL;
+                object = named != NULL ? named->owner : NULL;
+            } else if ((parameter = NuStrIStr(params[index], (char *)AIAnimSpeedValueName)) != NULL)
+                value = (i32)AIParamToFloat(processor, parameter + 6);
+            else if ((parameter = NuStrIStr(params[index], (char *)AIActionTorpedoPrefixPc)) != NULL)
+                torpedo = (i32)AIParamToFloat(processor, parameter + 8);
         }
-        if (object == NULL) {
-            return 1;
-        }
-        position = &object->collision_position;
-        if (value != 0 || torpedo != 0) {
-            AddMiscPickups(position, -1, value, torpedo);
+        if (object != NULL) {
+            position = &object->collision_position;
+            if (position != NULL && (value != 0 || torpedo != 0))
+                AddMiscPickups(position, -1, value, torpedo);
         }
     }
     return 1;
 }
 
-static i32 Action_CreateRider(AISYS_PC *sys, AISCRIPTPROCESS_PC *processor, AIPACKET_PC *packet, char **params,
-                              i32 param_4, i32 param_5, f32 param_6) {
-    struct gameobject_s *vehicle;
-    (void)sys;
-    (void)processor;
-    (void)param_6;
-    vehicle = packet != NULL && packet->owner != NULL ? packet->owner->objptr : NULL;
-    if (param_5 != 0 && param_4 > 0) {
-        i32 index;
-        i32 model = -1;
-        char *script = NULL;
-        for (index = 0; index < param_4; ++index) {
-            char *value = NuStrIStr(params[index], "type");
+i32 __cdecl Action_CreateRider(AISYS_PC *unused0, AISCRIPTPROCESS_PC *unused1, AIPACKET_PC *packet, char **params,
+                               i32 count, i32 first_time, f32 unused6) {
+    GAMEOBJECT *vehicle = NULL;
+    i32 model = -1;
+    char *script = NULL;
+    i32 index;
+    char *value;
+    GAMEOBJECT *rider;
+    if (packet != NULL && packet->owner != NULL && packet->owner->objptr != NULL)
+        vehicle = packet->owner->objptr;
+    if (first_time != 0 && count > 0) {
+        for (index = 0; index < count; ++index) {
+            value = NuStrIStr(params[index], (char *)AITransferLiteral75772c);
             if (value != NULL) {
                 if (LevelCharacterTypeIDFn != NULL && LevelCharacterGlobalIDFn != NULL) {
-                    model = ((u8)(LevelCharacterTypeIDFn(value + 5)));
-                    if (model != 0xff) {
+                    model = (u8)LevelCharacterTypeIDFn(value + 5);
+                    if (model != 0xff)
                         model = LevelCharacterGlobalIDFn(model);
-                    }
                 }
-            } else if ((value = NuStrIStr(params[index], "script")) != NULL) {
+            } else if ((value = NuStrIStr(params[index], "script")) != NULL)
                 script = value + 7;
-            }
         }
-
-        if (model != -1 && vehicle != NULL && vehicle->batarang == NULL) {
-            GAMEOBJECT *rider =
+        if (model != -1 && vehicle->rider == NULL) {
+            rider =
                 AddDynamicCreature(model, &vehicle->collision_position, 0,
-                                   script != NULL ? script : ((char *)("default")), NULL, NULL, 0, NULL, NULL, 0, 0);
-            if (rider != NULL) {
+                                   script != NULL ? script : GizmoDefaultOutputName, NULL, NULL, 0, NULL, NULL, 0, 0);
+            if (rider != NULL)
                 TakeOverGameObject(rider, vehicle, 0, 1);
-            }
         }
     }
     return 1;

@@ -19470,6 +19470,14 @@ extern "C" {
     f32 pod_animtime[2] = {1.0f, 1.0f};
     f32 podanimendframe = 1.0f;
     i16 id_BATTLEDROID = -1;
+    i16 id_BATTLEDROIDCOMMANDER = -1;
+    i16 id_BATTLEDROIDGEONOSIAN = -1;
+    i16 id_BATTLEDROIDSECURITY = -1;
+    i16 id_CLONEEP3 = -1;
+    i16 id_CLONEEP3SAND = -1;
+#pragma const_seg(".rdata$AIActionTorpedoPrefixPc")
+    extern const char AIActionTorpedoPrefixPc[9] = "torpedo=";
+#pragma const_seg()
 }
 
 // Sole-writer proposal only. Native working record 288; original owning extent remains unknown.
