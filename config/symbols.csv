@@ -39,7 +39,10 @@ address    , symbol                                                         , si
 0x407d00,_AIPathParseBatmanFlagPc,285,
 0x00407e40,_BoltType_FindIDByCreature,1317,"i32 __cdecl(GAMEOBJECT*,i32)"
 0x408370,_Bolt_Debris_LSW,650,
+0x408600,_Bolt_HitPart_LSW,63,"i32 __cdecl(BOLT_PC *, PART_PC *)"
 0x408640,_Bolt_AlternateFire_LSW,185,
+0x00408700 , _EndBolt_EwokTorpedo                                            , 21    , "void __cdecl (void *)"
+0x408720,_UpdateBolt_Geonosian,64,void __cdecl(void *)
 0x00408800 , _InitCables                                                    , 127   , void __cdecl (WORLDINFO *)
 0x408880,_CreateCable,147,"CABLE_RECORD_PC *__cdecl(GAMEOBJECT*,GAMEOBJECT*,i32)"
 0x408960,_ReleaseCable,213,
@@ -1473,6 +1476,8 @@ address    , symbol                                                         , si
 0x004a5b00 , _BobaRocket_Deflect                                            , 37    , void __cdecl (PART_PC *)
 0x004a5b30 , _PartUpdate_Basketball                                         , 113   , void __cdecl (PART_PC *)
 0x004a5bb0 , _PartImpact_Basketball                                         , 128   , void __cdecl (PART_PC *)
+0x4a5c30,_GetShootDirection_LSW,411,"u16 __cdecl(GAMEOBJECT *, NUVEC *)"
+0x4a5dd0,_GetShootDirection_Batman,238,"u16 __cdecl(GAMEOBJECT *, NUVEC *)"
 0x4a5ec0,_SetObjTarget,161,"i32 __cdecl(GAMEOBJECT*,GAMEOBJECT*)"
 0x4a5f70,_SetGizmoBlowUpTarget,107,"i32 __cdecl(GAMEOBJECT*,GIZMOBLOWUP_PC*)"
 0x4a5fe0,_SetPartTarget,107,"i32 __cdecl(GAMEOBJECT*,PART_PC*)"
@@ -1480,6 +1485,7 @@ address    , symbol                                                         , si
 0x4a60b0,_ZapTarget,173,i32 __cdecl(GAMEOBJECT*)
 0x4a6160,_ZapCode,2162,
 0x4a69e0,_FireBountyHunterRocket,442,
+0x4a6ba0,_GetShootOrigin_LSW,131,"void __cdecl(GAMEOBJECT *, NUVEC *)"
 0x4a6c30,_FireCode,1460,"static void(GAMEOBJECT*,i32,i32,f32,i32)"
 0x4a71f0,_CableCode,362,"void __cdecl(GAMEOBJECT*,i32,f32)"
 0x4a7360,_JumpAnimCode,289,
@@ -1774,9 +1780,11 @@ address    , symbol                                                         , si
 0x4d24f0,_Torpedo_UpdateJobbies,1274,void __cdecl(GAMEOBJECT*)
 0x4d29f0,_FindNearestTorpTarget,582,"void *__cdecl(WORLDINFO*,NUVEC*,f32,u8*)"
 0x4d2c40,_HomeNearestTorpTarget,746,
+0x4d2f30,_Torpedo_InitRicochet,89,"void __cdecl(void *, NUVEC *)"
 0x4d2f90,_Torpedo_Ricochet,438,
 0x4d3220,_DrawGameMessage_Targets,546,"void __cdecl(GAME_MESSAGE_PC*,NUVEC*,f32)"
 0x4d3490,_Torpedo_UpdateBolt,340,
+0x4d35f0,_Torpedo_Scale,39,f32 __cdecl(void *)
 0x4d3690,_Torpedo_Shoot,196,
 0x4d3760,_PartDraw_Torp,133,i32 __cdecl (PART_PC *)
 0x4d3800,_TorpedoCode,1820,"void __cdecl(GAMEOBJECT*,i32,f32)"
@@ -3007,7 +3015,7 @@ address    , symbol                                                         , si
 0x5495e0,_GameCam_UpdateLookRot,974,void __cdecl (GAMECAMERA *)
 0x5499b0,_MakePlayPlane,128,"void __cdecl (KEEP_SCREEN_PLANE_PC *, NUVEC *, NUVEC *, NUVEC *, NUVEC *)"
 0x549a30,_MakePlayPlanes,375,void __cdecl (GAMECAMERA *)
-0x00549bb0 , _GameCam_NewShake                                              , 43    , "void __cdecl (GAMECAMERA *, f32, f32, f32)"
+0x00549bb0 , _GameCam_NewShake                                              , 44    , "void __cdecl (GAMECAMERA *, f32, f32, f32)"
 0x549be0,_GameCam_UpdateShake,498,"void __cdecl (GAMECAMERA *, f32)"
 0x00549de0,_GameCam_Judder,301,"void __cdecl(GAMECAMERA *, f32, i32, NUVEC *)"
 0x549f10,_GameCam_HitJudder,186,void __cdecl (void)
@@ -3614,7 +3622,7 @@ address    , symbol                                                         , si
 0x571a50,_LoadPartFile,204,void __cdecl(WORLDINFO *)
 0x00571b20 , _Parts_Start                                                   , 30    , void __cdecl (WORLDINFO *)
 0x00571b40 , _Parts_Stop                                                    , 30    , void __cdecl (WORLDINFO *)
-0x00571b60 , _AddPartDebris                                                 , 54    , "void __cdecl (PARTDEBRISSYS *, i32, NUVEC *)"
+0x00571b60 , _AddPartDebris                                                 , 55    , "void __cdecl (PARTDEBRISSYS *, i32, NUVEC *)"
 0x571ba0,_PartImpact_Brick,173,void __cdecl(PART_PC *)
 0x00571c50 , _PartStop_Flickerer                                            , 38    , void __cdecl (PART_PC *)
 0x00571c80 , _PartDraw_Flickerer                                            , 108   , i32 __cdecl (PART_PC *)

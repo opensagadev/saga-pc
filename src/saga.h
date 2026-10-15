@@ -4974,7 +4974,11 @@ STATIC_ASSERT(offsetof(BLOWUP_TARGET_PC, mid_position) == 0x4c);
 
 typedef struct TORPEDOPACKET_PC {
     u8 count;
-    u8 unknown_01[0x13];
+    u8 flags;
+    u8 ricochet_count;
+    u8 unknown_03[9];
+    f32 ricochet_time;
+    u8 unknown_10[4];
     u32 pickup_data[5];
     u32 pickup_flags[5];
     NUVEC pickup_positions[5];
@@ -4983,6 +4987,11 @@ typedef struct TORPEDOPACKET_PC {
 } TORPEDOPACKET_PC;
 STATIC_ASSERT(sizeof(TORPEDOPACKET_PC) == 0x88);
 STATIC_ASSERT(offsetof(TORPEDOPACKET_PC, count) == 0);
+STATIC_ASSERT(offsetof(TORPEDOPACKET_PC, flags) == 1);
+STATIC_ASSERT(offsetof(TORPEDOPACKET_PC, ricochet_count) == 2);
+STATIC_ASSERT(offsetof(TORPEDOPACKET_PC, ricochet_time) == 0xc);
+STATIC_ASSERT(offsetof(TORPEDOPACKET_PC, ricochet_position) == 0x78);
+STATIC_ASSERT(offsetof(TORPEDOPACKET_PC, target) == 0x84);
 STATIC_ASSERT(offsetof(TORPEDOPACKET_PC, pickup_data) == 0x14);
 STATIC_ASSERT(offsetof(TORPEDOPACKET_PC, pickup_flags) == 0x28);
 
@@ -11830,6 +11839,14 @@ typedef struct PC_SHADER_OBJECT_FULL_VIEW PC_SHADER_OBJECT_FULL_VIEW;
     extern BOLTTYPE_PC GlobalBoltType_Default;
     extern BOLTSYS_PC GlobalBoltSystem_Default;
     void __cdecl Bolt_GetShootOrigin_Default(GAMEOBJECT *, NUVEC *);
+    i32 __cdecl Bolt_HitPart_LSW(BOLT_PC *, PART_PC *);
+    void __cdecl GetShootOrigin_LSW(GAMEOBJECT *, NUVEC *);
+    u16 __cdecl GetShootDirection_LSW(GAMEOBJECT *, NUVEC *);
+    u16 __cdecl GetShootDirection_Batman(GAMEOBJECT *, NUVEC *);
+    void __cdecl Bolt_Debris_LSW(BOLT_PC *, NUVEC *, i32, NUVEC *, i32);
+    void __cdecl UpdateBolt_Geonosian(void *);
+    void __cdecl Torpedo_InitRicochet(void *, NUVEC *);
+    f32 __cdecl Torpedo_Scale(void *);
     u16 __cdecl Bolt_GetShootDirection_Default(GAMEOBJECT *, NUVEC *);
     void __cdecl Bolt_Debris_Default(BOLT *, NUVEC *, i32, NUVEC *, i32);
     void __cdecl FindAnglesZX(NUVEC *, u16 *, u16 *);
@@ -12571,6 +12588,7 @@ void __cdecl AIScriptMissingConditionDiagnostic();
     i32 __cdecl Arcade_GetMode(u32 *);
     extern NUVEC v001;
     extern AREA_DATA_PC *VADER_ADATA;
+    void __cdecl EndBolt_EwokTorpedo(void *bolt);
     BOLTTYPE_PC *__cdecl BoltType_FindByID(i32, WORLDINFO *);
     GAMEOBJECT *__cdecl FindGameObject(i32, u32, i32, i32, i32);
     void __cdecl MakeBaddiesForgetAboutParty(i32);

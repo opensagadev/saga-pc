@@ -2,6 +2,12 @@
 
 void __cdecl AddPartDebris(PARTDEBRISSYS *system, i32 debris_id, NUVEC *position);
 
+STATIC_ASSERT(offsetof(BOLT_PC, position) == 0x88);
+
+void __cdecl EndBolt_EwokTorpedo(void *bolt) {
+    Detonate(&((BOLT_PC *)bolt)->position, 0);
+}
+
 BOLTTYPE_PC *__cdecl BoltType_FindByID(i32 id, WORLDINFO *world) {
     BOLTSYS_PC *system = BoltSys;
     if (id >= 0 && id < system->count)

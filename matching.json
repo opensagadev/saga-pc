@@ -31,13 +31,13 @@
     "src/audio/vorbis/window.h": "a10ede6832692ccec154bb9291be7ec236f9642a99a6af9b108ff7df030904b5",
     "src/diagnostics.h": "dae209151b55b9f5aadc18ce8ad63a1d961c311a7d8ec7214ea32c7e7a095459",
     "src/externals.h": "5b08276a7759c01921ac2a5239bf0978accdd38d2533b458c25d1b16f8a4402d",
-    "src/saga.h": "e651cf57012a66f2d596cf782811b1612ef895cdb0c2b1c27200800fe98234cd",
+    "src/saga.h": "a9fdc6d2b1cc91f843e3166d1a74f4e73fac20db294e49aaa4edd35e22d4e15b",
     "config/candidate-only.json": "2f9b865d9f773f8a9e79d4e6d155fa387e8d7b8087d6bf3b61298055281cec09",
     "config/code-groups.json": "0c7700323db8a7240f98cd4ab349200bbf0a8f580d3ca93167477e00c7db77cc",
     "config/data-members.json": "fe09365da4c355f220d724ca99394fc120b758891b4188d2c49707b6df0894f2",
     "config/library-objects.json": "e5ae24d3eac36fa0d0cb098f7690faaef3110f225db30c8cbf0f7d0d64f6ecfe",
     "config/project.json": "dc0e8cc85ae5650c6937b70ccaefb0153629c2460fa09cd4f6b625e251e623dd",
-    "config/symbols.csv": "a8af585c619012ede194f4cc29dfa31503b258c9b4f43320633c687c58580f38",
+    "config/symbols.csv": "cbaacce1dac3b3e6da5a1cd306f11b340bb8e9d93a63df7555a0a0bf3036a5f4",
     "config/symbols.md": "dffbdaac86011e3aee74b404063c15bda97f88af3db337ffef9f1bad1785d212",
     "config/toolchain.json": "489d0782638d8033137cdb2834462416111945cbfa073147820e314b8576b95b",
     "config/tools.json": "50199f6b132a7abfabf251e98a75be0a957abfe50f1ff776188fba21e4c4436f",
@@ -87,6 +87,7 @@
     "src/legoapi/aiactions_transfer.cpp": "da63bf223d39adc8957745c7016eaacc8ec1bbe86641d2cce1b2aea1a82b9066",
     "src/legoapi/areas.cpp": "3d0458afc5567d6ddf3b69739e1d1e0bc4d920ce67a18b0c56973f29b5103701",
     "src/legoapi/batarang.cpp": "70f496db7f600b5ad5e1da7087bfbce0e52c1ae065a830306c316992208067cd",
+    "src/legoapi/bolt_foundation_callbacks.cpp": "5e57627006575fec19f871d5fc02ea53e10bf10b8135d156da853922c3a58aef",
     "src/legoapi/bolt_runtime.cpp": "c3211dd6919fc520ad15e88685c18a1d624cf6ede2a6210557c466cc0c6fb706",
     "src/legoapi/characters.cpp": "c284cb172d0a31978771b44b8423761ee7e8d92b9b76022edb1538bfc69a17a6",
     "src/legoapi/collection_render.cpp": "a32e3521921d0b7aebf5422f1449f6acbea8b8503577f769de2cc616defa77a0",
@@ -239,7 +240,7 @@
     "src/legoapi/aitrigger.c": "48da83255ac5dadf4590bbe9727e8117f6e6873b9fc7914b6b324b7dbb06db28",
     "src/legoapi/arcade.c": "8a82a221119d4fe903faaef014ab65b00b6af7defd12f7716398fadd4f3877eb",
     "src/legoapi/attracto.c": "f93f6cd26f10a120144e128d73869166ee90068faf668d97d2a982928667406e",
-    "src/legoapi/bolts.c": "f19aae95fab549fa756bf695f214df0a072744fed5cee2da0329579d41225314",
+    "src/legoapi/bolts.c": "91c639edbdfb0866520a936cf7fbedda1bc45215cf5d61810d99cbc1f13807f8",
     "src/legoapi/boss.c": "12c8ca024217434f3a9b687477df96f7dd0c8f6d4d30002de3e7e491eb4cb788",
     "src/legoapi/cables.c": "5d9ea917e6dbeec7b70601e6eb4439c94b6c98e8d1fc88a2724d9a067fe63fa0",
     "src/legoapi/camera.c": "6aa0b848cceeb9496678c239df6ae1f8f1556340c55104b2603cfe76a5b63a9a",
@@ -365,7 +366,7 @@
     "src/legoapi/techno.c": "329d378c86f94c7484002d1d4e1f8ed716251d3e4c4b12eeb853aa4b33b8955b",
     "src/legoapi/terrain_player_pc.c": "50be33a3e4864baee5a98651644155bde619e3f245419d5a9d281c7817472b02",
     "src/legoapi/text.c": "900a92420c7c09660ade743358c1be926355f1878ab6518136cad9b97179874b",
-    "src/legoapi/thermaldetonators.c": "08994ba9d8f137d4cfcc30544940551b9a6d3c4685a98a473bde02634a2a58a4",
+    "src/legoapi/thermaldetonators.c": "b6c53fe97b629330191f12d8e1800d53d9b8e8c97dbaaee2b21501bda0aa990e",
     "src/legoapi/timing.c": "ea304f9e546ce775f65c709d05948f28d12b9a4a324089e29fbc79c48395729a",
     "src/legoapi/torpedo.c": "8f7f2f46223c5fb8d560ef64e2526ba6ad6492213d8586f58604d7e4f3eb28cd",
     "src/legoapi/traffic.c": "78c0b55ad6842a37c852ac8a99c7f810900bf15fc600be50a1f2a5ef996e2949",
@@ -525,8 +526,9 @@
     "build/obj/legoapi/areas.obj": "6b62ca2e83d7d0792cfffd0743316d18ec98398cffc2542b5366132d01560c3c",
     "build/obj/legoapi/attracto.obj": "79b043f9c4de4f04919ab861f69a88f7618aca5ebd0fddf04dd53adcbcb05259",
     "build/obj/legoapi/batarang.obj": "c0fe041765e82b6ae48faad9f7d81b84172ffe68ec4199af8169698dd466fa6c",
+    "build/obj/legoapi/bolt_foundation_callbacks.obj": "67f29773aa83cb1215235d9b783683c0748092624078c938c04951699973ee3f",
     "build/obj/legoapi/bolt_runtime.obj": "4a1ded79d167d6882ca7da133d8d419da68484a3ae2ee8b9003af5ea0b09fd99",
-    "build/obj/legoapi/bolts.obj": "b98e304286b02141ea74a28df5e8e8d7ea719388bb067438e2a7e7e0fec64a4f",
+    "build/obj/legoapi/bolts.obj": "09b43668c6f12718464e0579a7d9638db6b0e2470e56e58953b8180bc21f37c1",
     "build/obj/legoapi/boss.obj": "8d02ed5a762d211811bdc0ed883bf97164e400f18a7d8c65ec5b3794fffd3b54",
     "build/obj/legoapi/cables.obj": "40dc97706a3ded32855b7b206f770e21ca1c61e2486f006d604b564c7ec84f67",
     "build/obj/legoapi/camera.obj": "7f376d21faf02c209cd5fcaaba7752ff9ae3401ff4f6667084d369e2feba5abe",
@@ -692,7 +694,7 @@
     "build/obj/legoapi/terrain_player_pc.obj": "0d7eb754ee954bfc340850dc0ac34692da45c3271b17932b258720fed883990f",
     "build/obj/legoapi/text.obj": "b2c3dd546e0a9f9f474210d432d14cf2bd231dc75130244a6db959e960edfb36",
     "build/obj/legoapi/text_tables.obj": "af7dbacd3899fd10b5ccd5f61684a84ecf415c13a6236cc30c9ca5f5b70b4bdf",
-    "build/obj/legoapi/thermaldetonators.obj": "c2111c48f9da0ab1cde252d4c4403f31d772e5ba609ccd942c10e53a93a5f7b5",
+    "build/obj/legoapi/thermaldetonators.obj": "6d44cc6ebb0aae083d1aa3bf407d9c3370f08b53efa7b855190f9b6f10b8e5f6",
     "build/obj/legoapi/tightrope.obj": "829951e42a57f47ca1984a480fc0f205f3ed2e905f6bb44445ce632b67a69852",
     "build/obj/legoapi/timing.obj": "9539564799a404610c8a408a4ced8d14040330ce9a9791ecafd0201ca7637b4b",
     "build/obj/legoapi/torpedo.obj": "f28988f4bab25db09e5b914a535c76951cdcdc0b45b0dc62b16e54dc8b2f0bc1",
@@ -1648,11 +1650,49 @@
       "name": "Bolt_Debris_LSW",
       "symbol": "_Bolt_Debris_LSW",
       "address": "0x00408370",
-      "units": [],
+      "units": [
+        "src/legoapi/bolt_foundation_callbacks.cpp"
+      ],
       "target_size": 650,
       "exact_match": false,
-      "objects": [],
-      "status": "not implemented"
+      "objects": [
+        {
+          "unit": "src/legoapi/bolt_foundation_callbacks.cpp",
+          "base_size": 647,
+          "exact_match": false,
+          "target_sha256": "3c38b75823796c10774245ae6b35d0372a5638c7042d753fe9e459c1e3390a30",
+          "base_sha256": "297cce2ea9f933ecc7d99218b68a5f959314199774a3e382eb96fa4af932f969",
+          "relocation_count": 28,
+          "comparison_unit": "00408370-7999533dd4de",
+          "objdiff_percent": 78.95722
+        }
+      ],
+      "status": "different",
+      "objdiff_percent": 78.95722
+    },
+    {
+      "name": "Bolt_HitPart_LSW",
+      "symbol": "_Bolt_HitPart_LSW",
+      "address": "0x00408600",
+      "units": [
+        "src/legoapi/bolt_foundation_callbacks.cpp"
+      ],
+      "target_size": 63,
+      "exact_match": false,
+      "objects": [
+        {
+          "unit": "src/legoapi/bolt_foundation_callbacks.cpp",
+          "base_size": 50,
+          "exact_match": false,
+          "target_sha256": "359aec47d86df94d0882190edf4d5938e17fa045546788543604ce369309d23e",
+          "base_sha256": "60ba9c932fe16d44254df23152993f270bb90c441a62d0159a34d72c9d113047",
+          "relocation_count": 1,
+          "comparison_unit": "00408600-bd3e87203a41",
+          "objdiff_percent": 80.25
+        }
+      ],
+      "status": "different",
+      "objdiff_percent": 80.25
     },
     {
       "name": "Bolt_AlternateFire_LSW",
@@ -1677,6 +1717,54 @@
       ],
       "status": "different",
       "objdiff_percent": 69.56
+    },
+    {
+      "name": "EndBolt_EwokTorpedo",
+      "symbol": "_EndBolt_EwokTorpedo",
+      "address": "0x00408700",
+      "units": [
+        "src/legoapi/bolts.c"
+      ],
+      "target_size": 21,
+      "exact_match": true,
+      "objects": [
+        {
+          "unit": "src/legoapi/bolts.c",
+          "base_size": 21,
+          "exact_match": true,
+          "target_sha256": "efda99931fe590dd2e9bc9fcd5670c155ac2c125bede1129b6e8fb75b760a9a9",
+          "base_sha256": "efda99931fe590dd2e9bc9fcd5670c155ac2c125bede1129b6e8fb75b760a9a9",
+          "relocation_count": 1,
+          "comparison_unit": "00408700-f8ad9e5c23c6",
+          "objdiff_percent": 100.0
+        }
+      ],
+      "status": "exact",
+      "objdiff_percent": 100.0
+    },
+    {
+      "name": "UpdateBolt_Geonosian",
+      "symbol": "_UpdateBolt_Geonosian",
+      "address": "0x00408720",
+      "units": [
+        "src/legoapi/bolt_foundation_callbacks.cpp"
+      ],
+      "target_size": 64,
+      "exact_match": true,
+      "objects": [
+        {
+          "unit": "src/legoapi/bolt_foundation_callbacks.cpp",
+          "base_size": 64,
+          "exact_match": true,
+          "target_sha256": "b3ffa92a7224751854ca2d449a831be6f8969a9a720a0234a9ee96ed74e90604",
+          "base_sha256": "b3ffa92a7224751854ca2d449a831be6f8969a9a720a0234a9ee96ed74e90604",
+          "relocation_count": 3,
+          "comparison_unit": "00408720-6697e8d22f14",
+          "objdiff_percent": 100.0
+        }
+      ],
+      "status": "exact",
+      "objdiff_percent": 100.0
     },
     {
       "name": "InitCables",
@@ -5068,17 +5156,17 @@
       "objects": [
         {
           "unit": "src/legoapi/thermaldetonators.c",
-          "base_size": 258,
+          "base_size": 386,
           "exact_match": false,
           "target_sha256": "427eedff7f6faa0074a3bbe9b5b74cbd73eaa04e9c4ebaa3c9aee4649e6a7ae9",
-          "base_sha256": "e7695414dd6bb1fafe1dccb67d6d07e74b17b83e70f768023a3d88b70f91bfc4",
-          "relocation_count": 19,
+          "base_sha256": "83ba57f0673350bd3f56d561ee01cacc980c443b389ba377972d97d4930cd792",
+          "relocation_count": 28,
           "comparison_unit": "00426de0-330aa71ffb58",
-          "objdiff_percent": 57.68182
+          "objdiff_percent": 74.84545
         }
       ],
       "status": "different",
-      "objdiff_percent": 57.68182
+      "objdiff_percent": 74.84545
     },
     {
       "name": "Detonator_Detonate",
@@ -32193,6 +32281,54 @@
       "objdiff_percent": 100.0
     },
     {
+      "name": "GetShootDirection_LSW",
+      "symbol": "_GetShootDirection_LSW",
+      "address": "0x004a5c30",
+      "units": [
+        "src/legoapi/bolt_foundation_callbacks.cpp"
+      ],
+      "target_size": 411,
+      "exact_match": true,
+      "objects": [
+        {
+          "unit": "src/legoapi/bolt_foundation_callbacks.cpp",
+          "base_size": 411,
+          "exact_match": true,
+          "target_sha256": "6d454ccd2ab1322801aa8f266c228e61b089dbe47d997350ef953bbddba24fd8",
+          "base_sha256": "6d454ccd2ab1322801aa8f266c228e61b089dbe47d997350ef953bbddba24fd8",
+          "relocation_count": 14,
+          "comparison_unit": "004a5c30-0c8de6b1f4f4",
+          "objdiff_percent": 100.0
+        }
+      ],
+      "status": "exact",
+      "objdiff_percent": 100.0
+    },
+    {
+      "name": "GetShootDirection_Batman",
+      "symbol": "_GetShootDirection_Batman",
+      "address": "0x004a5dd0",
+      "units": [
+        "src/legoapi/bolt_foundation_callbacks.cpp"
+      ],
+      "target_size": 238,
+      "exact_match": true,
+      "objects": [
+        {
+          "unit": "src/legoapi/bolt_foundation_callbacks.cpp",
+          "base_size": 238,
+          "exact_match": true,
+          "target_sha256": "fd954ae38ca1f82d7a72c8ae0e756f32792b1d61d1c4b004d9597d7b98321651",
+          "base_sha256": "fd954ae38ca1f82d7a72c8ae0e756f32792b1d61d1c4b004d9597d7b98321651",
+          "relocation_count": 6,
+          "comparison_unit": "004a5dd0-e8f8b2926a7b",
+          "objdiff_percent": 100.0
+        }
+      ],
+      "status": "exact",
+      "objdiff_percent": 100.0
+    },
+    {
       "name": "SetObjTarget",
       "symbol": "_SetObjTarget",
       "address": "0x004a5ec0",
@@ -32359,6 +32495,30 @@
       ],
       "status": "different",
       "objdiff_percent": 27.984375
+    },
+    {
+      "name": "GetShootOrigin_LSW",
+      "symbol": "_GetShootOrigin_LSW",
+      "address": "0x004a6ba0",
+      "units": [
+        "src/legoapi/bolt_foundation_callbacks.cpp"
+      ],
+      "target_size": 131,
+      "exact_match": true,
+      "objects": [
+        {
+          "unit": "src/legoapi/bolt_foundation_callbacks.cpp",
+          "base_size": 131,
+          "exact_match": true,
+          "target_sha256": "53317b27dd5c9864b19266d426853ea36e035062a80ad54a32be81897ab4a2f1",
+          "base_sha256": "53317b27dd5c9864b19266d426853ea36e035062a80ad54a32be81897ab4a2f1",
+          "relocation_count": 4,
+          "comparison_unit": "004a6ba0-86af1bd8eb25",
+          "objdiff_percent": 100.0
+        }
+      ],
+      "status": "exact",
+      "objdiff_percent": 100.0
     },
     {
       "name": "FireCode",
@@ -38857,6 +39017,30 @@
       "status": "not implemented"
     },
     {
+      "name": "Torpedo_InitRicochet",
+      "symbol": "_Torpedo_InitRicochet",
+      "address": "0x004d2f30",
+      "units": [
+        "src/legoapi/bolt_foundation_callbacks.cpp"
+      ],
+      "target_size": 89,
+      "exact_match": true,
+      "objects": [
+        {
+          "unit": "src/legoapi/bolt_foundation_callbacks.cpp",
+          "base_size": 89,
+          "exact_match": true,
+          "target_sha256": "030d529562d9e3e36b1a573082d80d6bb8e0556bf101c3d396b08f6e0a134ff2",
+          "base_sha256": "030d529562d9e3e36b1a573082d80d6bb8e0556bf101c3d396b08f6e0a134ff2",
+          "relocation_count": 0,
+          "comparison_unit": "004d2f30-5269d03d6d6f",
+          "objdiff_percent": 100.0
+        }
+      ],
+      "status": "exact",
+      "objdiff_percent": 100.0
+    },
+    {
       "name": "Torpedo_Ricochet",
       "symbol": "_Torpedo_Ricochet",
       "address": "0x004d2f90",
@@ -38899,6 +39083,30 @@
       "exact_match": false,
       "objects": [],
       "status": "not implemented"
+    },
+    {
+      "name": "Torpedo_Scale",
+      "symbol": "_Torpedo_Scale",
+      "address": "0x004d35f0",
+      "units": [
+        "src/legoapi/bolt_foundation_callbacks.cpp"
+      ],
+      "target_size": 39,
+      "exact_match": true,
+      "objects": [
+        {
+          "unit": "src/legoapi/bolt_foundation_callbacks.cpp",
+          "base_size": 39,
+          "exact_match": true,
+          "target_sha256": "507c0cb720c7b033ebe25d4b3b1e45371904ece4f8341644a896bf2e8b856fec",
+          "base_sha256": "507c0cb720c7b033ebe25d4b3b1e45371904ece4f8341644a896bf2e8b856fec",
+          "relocation_count": 1,
+          "comparison_unit": "004d35f0-b4b18166e821",
+          "objdiff_percent": 100.0
+        }
+      ],
+      "status": "exact",
+      "objdiff_percent": 100.0
     },
     {
       "name": "Torpedo_Shoot",
@@ -65869,22 +66077,22 @@
       "units": [
         "src/nu2api/nuvideo.c"
       ],
-      "target_size": 43,
-      "exact_match": false,
+      "target_size": 44,
+      "exact_match": true,
       "objects": [
         {
           "unit": "src/nu2api/nuvideo.c",
           "base_size": 44,
-          "exact_match": false,
-          "target_sha256": "503e162761655d190c834da55e9017cdf3d42752dd04bfb2b0e26da0791a689a",
+          "exact_match": true,
+          "target_sha256": "a2b233ab6ede724df7f7b042e21b2f874e11408028358c53ecc08d8b18ca5035",
           "base_sha256": "a2b233ab6ede724df7f7b042e21b2f874e11408028358c53ecc08d8b18ca5035",
           "relocation_count": 1,
           "comparison_unit": "00549bb0-629fbec1b98f",
-          "objdiff_percent": 90.0
+          "objdiff_percent": 100.0
         }
       ],
-      "status": "different",
-      "objdiff_percent": 90.0
+      "status": "exact",
+      "objdiff_percent": 100.0
     },
     {
       "name": "GameCam_UpdateShake",
@@ -79905,22 +80113,22 @@
       "units": [
         "src/legoapi/parts.c"
       ],
-      "target_size": 54,
+      "target_size": 55,
       "exact_match": false,
       "objects": [
         {
           "unit": "src/legoapi/parts.c",
           "base_size": 57,
           "exact_match": false,
-          "target_sha256": "04e28ea39bfa9f66164ade16fd7e3ea7648543e7903d87a8aada02da1f602704",
+          "target_sha256": "66d51b5ae70e208f7438414a02555393ee74b703212e00e45a0e07112dbc3496",
           "base_sha256": "9063e8ad7aec9a33abcd2fced7b7519b0cead6268fb899e16cb9531c7779ec0c",
           "relocation_count": 2,
           "comparison_unit": "00571b60-bee7d2a510a5",
-          "objdiff_percent": 85.52631
+          "objdiff_percent": 92.0
         }
       ],
       "status": "different",
-      "objdiff_percent": 85.52631
+      "objdiff_percent": 92.0
     },
     {
       "name": "PartImpact_Brick",
@@ -190719,6 +190927,7 @@
         "src/legoapi/arcade.c",
         "src/legoapi/areas.cpp",
         "src/legoapi/batarang.cpp",
+        "src/legoapi/bolt_foundation_callbacks.cpp",
         "src/legoapi/bolt_runtime.cpp",
         "src/legoapi/cables.c",
         "src/legoapi/camera.c",
@@ -191065,6 +191274,14 @@
         },
         {
           "unit": "src/legoapi/batarang.cpp",
+          "exact_match": true,
+          "target_size": 4,
+          "base_size": 4,
+          "target_sha256": "e00e5eb9444182f352323374ef4e08ebcb784725fdd4fd612d7730540b3e0c8c",
+          "base_sha256": "e00e5eb9444182f352323374ef4e08ebcb784725fdd4fd612d7730540b3e0c8c"
+        },
+        {
+          "unit": "src/legoapi/bolt_foundation_callbacks.cpp",
           "exact_match": true,
           "target_size": 4,
           "base_size": 4,
@@ -192356,6 +192573,7 @@
         "src/legoapi/aiactions_transfer.cpp",
         "src/legoapi/aipathcnxhelper.c",
         "src/legoapi/areas.cpp",
+        "src/legoapi/bolt_foundation_callbacks.cpp",
         "src/legoapi/bolt_runtime.cpp",
         "src/legoapi/camera.c",
         "src/legoapi/carrying.c",
@@ -192495,6 +192713,14 @@
         },
         {
           "unit": "src/legoapi/areas.cpp",
+          "exact_match": true,
+          "target_size": 4,
+          "base_size": 4,
+          "target_sha256": "d99e58435243d9fef9c88273b8d553b4fba4d0baf8009d29eae74fa99e0d9f57",
+          "base_sha256": "d99e58435243d9fef9c88273b8d553b4fba4d0baf8009d29eae74fa99e0d9f57"
+        },
+        {
+          "unit": "src/legoapi/bolt_foundation_callbacks.cpp",
           "exact_match": true,
           "target_size": 4,
           "base_size": 4,
@@ -194809,6 +195035,7 @@
         "src/legoapi/arcade.c",
         "src/legoapi/areas.cpp",
         "src/legoapi/batarang.cpp",
+        "src/legoapi/bolt_foundation_callbacks.cpp",
         "src/legoapi/bolt_runtime.cpp",
         "src/legoapi/bolts.c",
         "src/legoapi/boss.c",
@@ -195267,6 +195494,14 @@
         },
         {
           "unit": "src/legoapi/batarang.cpp",
+          "exact_match": true,
+          "target_size": 4,
+          "base_size": 4,
+          "target_sha256": "df3f619804a92fdb4057192dc43dd748ea778adc52bc498ce80524c014b81119",
+          "base_sha256": "df3f619804a92fdb4057192dc43dd748ea778adc52bc498ce80524c014b81119"
+        },
+        {
+          "unit": "src/legoapi/bolt_foundation_callbacks.cpp",
           "exact_match": true,
           "target_size": 4,
           "base_size": 4,
@@ -197958,6 +198193,7 @@
         "src/legoapi/aiactions_transfer.cpp",
         "src/legoapi/areas.cpp",
         "src/legoapi/attracto.c",
+        "src/legoapi/bolt_foundation_callbacks.cpp",
         "src/legoapi/bolts.c",
         "src/legoapi/camera.c",
         "src/legoapi/character_animation.c",
@@ -198209,6 +198445,14 @@
         },
         {
           "unit": "src/legoapi/attracto.c",
+          "exact_match": true,
+          "target_size": 8,
+          "base_size": 8,
+          "target_sha256": "6c3c396ed6b5c36dcae172271f462051b1266b851e92df3deea8ac65478fd712",
+          "base_sha256": "6c3c396ed6b5c36dcae172271f462051b1266b851e92df3deea8ac65478fd712"
+        },
+        {
+          "unit": "src/legoapi/bolt_foundation_callbacks.cpp",
           "exact_match": true,
           "target_size": 8,
           "base_size": 8,
@@ -200231,6 +200475,7 @@
         "src/gameapi/gameaiactions.c",
         "src/gamelib/nuwind_groups.c",
         "src/legoapi/aiactions_transfer.cpp",
+        "src/legoapi/bolt_foundation_callbacks.cpp",
         "src/legoapi/bolt_runtime.cpp",
         "src/legoapi/bolts.c",
         "src/legoapi/camera.c",
@@ -200445,6 +200690,14 @@
         },
         {
           "unit": "src/legoapi/aiactions_transfer.cpp",
+          "exact_match": true,
+          "target_size": 8,
+          "base_size": 8,
+          "target_sha256": "4cfa5b42ca669328764e67cd9a34bb8f90b16ed7ca8d85e8443783d7ccce15ed",
+          "base_sha256": "4cfa5b42ca669328764e67cd9a34bb8f90b16ed7ca8d85e8443783d7ccce15ed"
+        },
+        {
+          "unit": "src/legoapi/bolt_foundation_callbacks.cpp",
           "exact_match": true,
           "target_size": 8,
           "base_size": 8,
@@ -202183,6 +202436,7 @@
       "symbol": "__real@40400000",
       "address": "0x00751708",
       "units": [
+        "src/legoapi/bolt_foundation_callbacks.cpp",
         "src/legoapi/camera.c",
         "src/legoapi/carrying.c",
         "src/legoapi/characters.cpp",
@@ -202219,6 +202473,14 @@
       "target_size": 4,
       "exact_match": true,
       "objects": [
+        {
+          "unit": "src/legoapi/bolt_foundation_callbacks.cpp",
+          "exact_match": true,
+          "target_size": 4,
+          "base_size": 4,
+          "target_sha256": "ea2845900b5856c9bf354b1aa9761b5aa6888e5ed61738fe9579ca42bc0f6054",
+          "base_sha256": "ea2845900b5856c9bf354b1aa9761b5aa6888e5ed61738fe9579ca42bc0f6054"
+        },
         {
           "unit": "src/legoapi/camera.c",
           "exact_match": true,
@@ -202849,6 +203111,7 @@
       "symbol": "__real@3e800000",
       "address": "0x00751718",
       "units": [
+        "src/legoapi/bolt_foundation_callbacks.cpp",
         "src/legoapi/camera.c",
         "src/legoapi/character_animation.c",
         "src/legoapi/characters.cpp",
@@ -202884,6 +203147,14 @@
       "target_size": 4,
       "exact_match": true,
       "objects": [
+        {
+          "unit": "src/legoapi/bolt_foundation_callbacks.cpp",
+          "exact_match": true,
+          "target_size": 4,
+          "base_size": 4,
+          "target_sha256": "75e253f50979177eba47b2d0805ad36038789108924514d2a761a70de057d16f",
+          "base_sha256": "75e253f50979177eba47b2d0805ad36038789108924514d2a761a70de057d16f"
+        },
         {
           "unit": "src/legoapi/camera.c",
           "exact_match": true,
@@ -203201,6 +203472,7 @@
       "address": "0x00751728",
       "units": [
         "src/gameapi/apisave.c",
+        "src/legoapi/bolt_foundation_callbacks.cpp",
         "src/legoapi/camera.c",
         "src/legoapi/characters.cpp",
         "src/legoapi/control_setup.cpp",
@@ -203228,6 +203500,14 @@
       "objects": [
         {
           "unit": "src/gameapi/apisave.c",
+          "exact_match": true,
+          "target_size": 4,
+          "base_size": 4,
+          "target_sha256": "45a6d738a7607576d3fe0862200bc67b10c12d5ed74167b4d5d5a708974c0f32",
+          "base_sha256": "45a6d738a7607576d3fe0862200bc67b10c12d5ed74167b4d5d5a708974c0f32"
+        },
+        {
+          "unit": "src/legoapi/bolt_foundation_callbacks.cpp",
           "exact_match": true,
           "target_size": 4,
           "base_size": 4,
@@ -203649,6 +203929,7 @@
         "src/legoapi/ai_party_trigger_pc.cpp",
         "src/legoapi/ai_spinner_targets_pc.cpp",
         "src/legoapi/aiactions_transfer.cpp",
+        "src/legoapi/bolt_foundation_callbacks.cpp",
         "src/legoapi/bolt_runtime.cpp",
         "src/legoapi/camera.c",
         "src/legoapi/debris_callbacks.c",
@@ -203667,6 +203948,7 @@
         "src/legoapi/players_dropin.cpp",
         "src/legoapi/pushing.cpp",
         "src/legoapi/rtl.c",
+        "src/legoapi/thermaldetonators.c",
         "src/legoapi/tightrope.cpp",
         "src/legoapi/world.cpp",
         "src/legoapi/zipup.c",
@@ -203717,6 +203999,14 @@
         },
         {
           "unit": "src/legoapi/aiactions_transfer.cpp",
+          "exact_match": true,
+          "target_size": 4,
+          "base_size": 4,
+          "target_sha256": "c68830a25204a09f8e77aada6bc5807f607cccaaa0ebb2a7122d317584478a8b",
+          "base_sha256": "c68830a25204a09f8e77aada6bc5807f607cccaaa0ebb2a7122d317584478a8b"
+        },
+        {
+          "unit": "src/legoapi/bolt_foundation_callbacks.cpp",
           "exact_match": true,
           "target_size": 4,
           "base_size": 4,
@@ -203861,6 +204151,14 @@
         },
         {
           "unit": "src/legoapi/rtl.c",
+          "exact_match": true,
+          "target_size": 4,
+          "base_size": 4,
+          "target_sha256": "c68830a25204a09f8e77aada6bc5807f607cccaaa0ebb2a7122d317584478a8b",
+          "base_sha256": "c68830a25204a09f8e77aada6bc5807f607cccaaa0ebb2a7122d317584478a8b"
+        },
+        {
+          "unit": "src/legoapi/thermaldetonators.c",
           "exact_match": true,
           "target_size": 4,
           "base_size": 4,
@@ -205953,6 +206251,7 @@
       "address": "0x007517b8",
       "units": [
         "src/legoapi/arcade.c",
+        "src/legoapi/bolt_foundation_callbacks.cpp",
         "src/legoapi/bolts.c",
         "src/legoapi/camera.c",
         "src/legoapi/control_setup.cpp",
@@ -206011,6 +206310,14 @@
       "objects": [
         {
           "unit": "src/legoapi/arcade.c",
+          "exact_match": true,
+          "target_size": 4,
+          "base_size": 4,
+          "target_sha256": "d88c86f15bbea365d658ad95a81d45367c465f7af6f7264fb077f01747ddc77d",
+          "base_sha256": "d88c86f15bbea365d658ad95a81d45367c465f7af6f7264fb077f01747ddc77d"
+        },
+        {
+          "unit": "src/legoapi/bolt_foundation_callbacks.cpp",
           "exact_match": true,
           "target_size": 4,
           "base_size": 4,
@@ -206948,6 +207255,7 @@
       "address": "0x007518d4",
       "units": [
         "src/data.cpp",
+        "src/legoapi/bolt_foundation_callbacks.cpp",
         "src/legoapi/sfx_level.c",
         "src/legoapi/thermaldetonators.c"
       ],
@@ -206956,6 +207264,14 @@
       "objects": [
         {
           "unit": "src/data.cpp",
+          "exact_match": true,
+          "target_size": 15,
+          "base_size": 15,
+          "target_sha256": "e492767498db3688279e3e51947ab2d9b948b0ca4f30de6d8622b70bbdf775cd",
+          "base_sha256": "e492767498db3688279e3e51947ab2d9b948b0ca4f30de6d8622b70bbdf775cd"
+        },
+        {
+          "unit": "src/legoapi/bolt_foundation_callbacks.cpp",
           "exact_match": true,
           "target_size": 15,
           "base_size": 15,
@@ -206988,6 +207304,7 @@
       "units": [
         "src/gameapi/aisys.c",
         "src/legoapi/areas.cpp",
+        "src/legoapi/bolt_foundation_callbacks.cpp",
         "src/legoapi/camera.c",
         "src/legoapi/cheats.c",
         "src/legoapi/edgizshadowmachine.c",
@@ -207018,6 +207335,14 @@
         },
         {
           "unit": "src/legoapi/areas.cpp",
+          "exact_match": true,
+          "target_size": 4,
+          "base_size": 4,
+          "target_sha256": "9a8208635e00348ab64aac2b759e76391fd47089e9a749bbcec770d9eb5c6421",
+          "base_sha256": "9a8208635e00348ab64aac2b759e76391fd47089e9a749bbcec770d9eb5c6421"
+        },
+        {
+          "unit": "src/legoapi/bolt_foundation_callbacks.cpp",
           "exact_match": true,
           "target_size": 4,
           "base_size": 4,
@@ -210067,6 +210392,7 @@
       "units": [
         "src/gameapi/edbits.c",
         "src/gamelib/nuwind_groups.c",
+        "src/legoapi/bolt_foundation_callbacks.cpp",
         "src/legoapi/camera.c",
         "src/legoapi/customise.c",
         "src/legoapi/faders.c",
@@ -210103,6 +210429,14 @@
         },
         {
           "unit": "src/gamelib/nuwind_groups.c",
+          "exact_match": true,
+          "target_size": 8,
+          "base_size": 8,
+          "target_sha256": "e163f8cb0f7067a7fc78ca859a77f849aea3214f38fb75b884e4a16be725c905",
+          "base_sha256": "e163f8cb0f7067a7fc78ca859a77f849aea3214f38fb75b884e4a16be725c905"
+        },
+        {
+          "unit": "src/legoapi/bolt_foundation_callbacks.cpp",
           "exact_match": true,
           "target_size": 8,
           "base_size": 8,
@@ -450931,17 +451265,17 @@
   ],
   "progress": {
     "text_bytes": 3471246,
-    "mapped_code_bytes": 2314406,
-    "matched_code_bytes": 431467,
-    "matching_percent": 12.42974424745466,
-    "fuzzy_coverage_percent": 42.62072930862956,
-    "mapped_functions": 8523,
-    "matched_functions": 3962,
-    "objdiff_fuzzy_percent": 74.2961,
-    "objdiff_total_code": 1994626,
+    "mapped_code_bytes": 2315464,
+    "matched_code_bytes": 432504,
+    "matching_percent": 12.459618246589265,
+    "fuzzy_coverage_percent": 42.66770630763223,
+    "mapped_functions": 8531,
+    "matched_functions": 3970,
+    "objdiff_fuzzy_percent": 74.31422,
+    "objdiff_total_code": 1996334,
     "image_bytes": 40067072,
-    "mapped_bytes": 3384665,
-    "mapping_percent": 8.447497735796617,
+    "mapped_bytes": 3385723,
+    "mapping_percent": 8.450138308085004,
     "mapping_denominator": "code_and_data_section_virtual_sizes",
     "mapping_sections": [
       {
@@ -450949,7 +451283,7 @@
         "kind": "code",
         "address": "0x401000",
         "size": 3471246,
-        "mapped_bytes": 2315600
+        "mapped_bytes": 2316658
       },
       {
         "name": ".rdata",
@@ -450966,17 +451300,17 @@
         "mapped_bytes": 991276
       }
     ],
-    "mapping_known_size_symbols": 15927,
+    "mapping_known_size_symbols": 15935,
     "mapping_unknown_size_symbols": 7115,
-    "mapping_code_bytes": 2315600,
+    "mapping_code_bytes": 2316658,
     "mapping_code_total_bytes": 3471246,
-    "mapping_code_percent": 66.70803509748373,
+    "mapping_code_percent": 66.73851406670688,
     "mapping_data_bytes": 1069065,
     "mapping_data_total_bytes": 36018966,
     "mapping_data_percent": 2.968061326357897,
-    "mapping_code_data_bytes": 3384665,
+    "mapping_code_data_bytes": 3385723,
     "mapping_code_data_total_bytes": 39490212,
-    "mapping_code_data_percent": 8.570895998228623,
+    "mapping_code_data_percent": 8.573575143126606,
     "matched_data_region_bytes": 1054452
   },
   "data_members": [
@@ -452035,8 +452369,8 @@
     "inputs": {
       "metadata_sha256": "fe09365da4c355f220d724ca99394fc120b758891b4188d2c49707b6df0894f2",
       "header_path": "src/saga.h",
-      "header_sha256": "e651cf57012a66f2d596cf782811b1612ef895cdb0c2b1c27200800fe98234cd",
-      "geometry_object_sha256": "0c58109426e267a6fa2fbca290110f00e4da5eb4409224d68b7970c26055e8bb",
+      "header_sha256": "a9fdc6d2b1cc91f843e3166d1a74f4e73fac20db294e49aaa4edd35e22d4e15b",
+      "geometry_object_sha256": "737f144769a14d50e5fc6e655cc9aab54e8030ea394a60b0aff5f0a64c583ed5",
       "toolchain_sha256": "489d0782638d8033137cdb2834462416111945cbfa073147820e314b8576b95b",
       "implementation_sha256": "9ad7521230f06fde31f0771b10bd001037ea32d2def455913a7f391f05dede9d",
       "headers": {
@@ -452066,7 +452400,7 @@
         "src/audio/vorbis/window.h": "a10ede6832692ccec154bb9291be7ec236f9642a99a6af9b108ff7df030904b5",
         "src/diagnostics.h": "dae209151b55b9f5aadc18ce8ad63a1d961c311a7d8ec7214ea32c7e7a095459",
         "src/externals.h": "5b08276a7759c01921ac2a5239bf0978accdd38d2533b458c25d1b16f8a4402d",
-        "src/saga.h": "e651cf57012a66f2d596cf782811b1612ef895cdb0c2b1c27200800fe98234cd"
+        "src/saga.h": "a9fdc6d2b1cc91f843e3166d1a74f4e73fac20db294e49aaa4edd35e22d4e15b"
       },
       "owners": {
         "src/data.cpp": {
