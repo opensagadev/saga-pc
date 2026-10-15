@@ -5641,6 +5641,7 @@ address    , symbol                                                         , si
 0x005fe5e0,_NuRndrCreateBlendShapeDWAPointers,39,
 0x5fe610,_NuRndrInitWorld,1,void __cdecl(void)
 0x005feab0 , _NuRndrGradClear                                               , 27    , "void (i32, i32, i32, f32)"
+0x5fed10,_NuRndrShadPolys,353,void __cdecl(NUMTL *)
 0x5fee80,_NuRndrAddShadow,104,"void __cdecl(NUVEC *,f32,i32,i32,i32,i32)"
 0x5ff2d0, _NuVpBuildScalingTemplatePc, 189,
 0x5ff390, _NuVpUpdate, 715,
@@ -22389,6 +22390,7 @@ address    , symbol                                                         , si
 0x28570e8,_PcGeometryTranslationMatrixPc,,NUMTX
 0x2857128,_PcGeometryScaleMatrixPc,,NUMTX
 0x2857168,_NuDisplayHandlerShadowPc,,f32
+0x2857178,_NuRndrShadowVerticesPc,144,NURND_VERTEX3D_PC[4]
 0x2857208,_FrameShaderMaterialAnimationTimePc,,f32
 0x2857210,_PCSpecialProjectionTranslate,,NUMTX
 0x2857250,_PCSpecialProjectionScale,,NUMTX

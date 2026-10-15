@@ -31,13 +31,13 @@
     "src/audio/vorbis/window.h": "a10ede6832692ccec154bb9291be7ec236f9642a99a6af9b108ff7df030904b5",
     "src/diagnostics.h": "dae209151b55b9f5aadc18ce8ad63a1d961c311a7d8ec7214ea32c7e7a095459",
     "src/externals.h": "5b08276a7759c01921ac2a5239bf0978accdd38d2533b458c25d1b16f8a4402d",
-    "src/saga.h": "a6295e048f381a25e89961ffafa550c37123ce83d2ba74ff842fb84a21fca700",
+    "src/saga.h": "3d48f3f42c74980e833e5bebc366c841cf551956cab7809ab9eef7eb6f851a7e",
     "config/candidate-only.json": "2f9b865d9f773f8a9e79d4e6d155fa387e8d7b8087d6bf3b61298055281cec09",
     "config/code-groups.json": "0c7700323db8a7240f98cd4ab349200bbf0a8f580d3ca93167477e00c7db77cc",
     "config/data-members.json": "fe09365da4c355f220d724ca99394fc120b758891b4188d2c49707b6df0894f2",
     "config/library-objects.json": "e5ae24d3eac36fa0d0cb098f7690faaef3110f225db30c8cbf0f7d0d64f6ecfe",
     "config/project.json": "dc0e8cc85ae5650c6937b70ccaefb0153629c2460fa09cd4f6b625e251e623dd",
-    "config/symbols.csv": "8d2607c8eb5189b6c115371b5baa0856d074723b839b061f91c6f739a82a7387",
+    "config/symbols.csv": "14e5357eea584320ff3c8910bf38a083132e9faebe1b7971a64ecb43b1c55e03",
     "config/symbols.md": "dffbdaac86011e3aee74b404063c15bda97f88af3db337ffef9f1bad1785d212",
     "config/toolchain.json": "489d0782638d8033137cdb2834462416111945cbfa073147820e314b8576b95b",
     "config/tools.json": "50199f6b132a7abfabf251e98a75be0a957abfe50f1ff776188fba21e4c4436f",
@@ -76,8 +76,8 @@
     "tools/dinput8.def": "0650c8a82ce920cd1f07c5f585b6f64129b09c5969bb5074b871c8921dc32a3c",
     "tools/dsound.def": "10147b85f8f09f4a3fefe82c0756818c64d9a6f2d81bb3f120757ea5b08941da",
     "tools/xinput1_3.def": "f2b829c89adb5c7fc9fbd7dfdbc49f8eb5412d4700bf1123935f71a29fa84b50",
-    "src/batman.cpp": "88e873a5bda3fa8c2a2e0f23f22de1b1933ebdaa1be623b63eb60bf905a7cea2",
-    "src/data.cpp": "c429da43066533e7e0c7773e332320e4332a8c6dc1c5c535ba88363e70279c17",
+    "src/batman.cpp": "96aeb68f35dc57e23755e9a3470c997943f59fb63c9773700088c8e8a9d91868",
+    "src/data.cpp": "b5bd3080234056870a1bd680c6455f8f3e83aa9eba95c21d2f66502af610b573",
     "src/gameapi/message.cpp": "d866d1645077e79807e57c3808e326e472a7ea95edd40a22bc405f922aff4999",
     "src/gameapi/saveload.cpp": "98b1f080a17c0ee2f1d4be9aaa54aba5beac5d4ef2807d9e1d84141bee0bf98a",
     "src/gameapi/shop_persistence.cpp": "359508d095b1198a1076b967c9c67d67b908e1e7ba54be1db2f5afe7e48d3a85",
@@ -429,7 +429,7 @@
     "src/nu2api/nuqfnt_print.c": "dadd2d9bfb7ee1d1e1939c31b6e47f8f6c2ca76117962047dce4dd144088ca62",
     "src/nu2api/nuquat.c": "259412d6e0518f3653d4d5283f6b0c116845a4c84cec44ee3e2bc8b73d67b7d9",
     "src/nu2api/nurdpi.c": "ba14905a540d8143de10a2743e3f27fc796e092b02b8a85ee2d26ba72a6eb759",
-    "src/nu2api/nurndr.c": "f3d1138c9bb8fbf3741c3a33d80e18c92f6d9f5e55395f0c8c783c896d9b6536",
+    "src/nu2api/nurndr.c": "c620fb8f6093634cf2c0f82dfd062faa5acf29d284350230316f880cc40af870",
     "src/nu2api/nurndrstat.c": "7e04ac0d112372c5f67085ca51e5a28818fe42d81335e7b30bc8786539929c14",
     "src/nu2api/nuscene_pc.c": "b10cb8b8abcd06dc1c5fa1f69508e7326a29b233c4ad24cab7273102e8816004",
     "src/nu2api/nuscratch.c": "91d547d6ad9bc25d7187ce8e049b22acaa1fc670b24d751e61e8b776192f0497",
@@ -484,8 +484,8 @@
     "build/obj/audio/vorbis/vorbisfile.obj": "77ce8bbf4000cb4611f84605a80b08434e6b6716554cdc0093588762b8f331e4",
     "build/obj/audio/vorbis/window.obj": "f68053e4c5824d92bbce09964ac5beee2ac43873a54c81453ad3dfa9e2e07d3d",
     "build/obj/audio/vorbis_smallft.obj": "7f8b607ee0383eb3092e5722cc2c3a157d9adf1ca393fc46312743f1f386039d",
-    "build/obj/batman.obj": "a16b42b875d97f630e50106f3a209b03e771f551450056eda0f54dd92d02d3af",
-    "build/obj/data.obj": "05acc3f8d14b984235c5bcfdb8502bb9ccad84af8ae9de7ff9e9ddb68b0cd984",
+    "build/obj/batman.obj": "5f48278581f77deb7ef1b5c932929f505d731ddcde0b3b8d5acc8ba41145feab",
+    "build/obj/data.obj": "2e260980013d6e918b5928612aab8bdb87cb524a808f02d47a7ce779f2e00483",
     "build/obj/editor/edtoolsall.obj": "3a1e240439b0ae227f11c9ebe3f9c27dc5e9b3fc7595f47ba4b36e5ddfd6c74a",
     "build/obj/gameapi/ai_registry_pc.obj": "55ac2265320c0ace8b9bae519dd7a88dbb9276f708015685cbf5ba591d02ccbf",
     "build/obj/gameapi/aiscript.obj": "311cbad7ed9a191f8f1dd802253bd60b29e5a846ea41f1570ae69e79d5273edd",
@@ -785,7 +785,7 @@
     "build/obj/nu2api/nuqfnt_print.obj": "4369d9b32f11d4de1bca06ff8411c1ac8e43b9eb77c60028bbf145d1924ebba4",
     "build/obj/nu2api/nuquat.obj": "a9af825601c0bc7e23e197c6f681ce1326ada9728f85af6afa3c724f5a31ac86",
     "build/obj/nu2api/nurdpi.obj": "e71e9f1f671da10c3216e217d4baf5ea42b4c091b71957246d4c786c31acb607",
-    "build/obj/nu2api/nurndr.obj": "92c89897b9a7bc5ef687ac02365222a3c066c136120ac29dc7b16397bb344204",
+    "build/obj/nu2api/nurndr.obj": "bbf8ea2607e1079f5ec76daf998c6d30799ac2def9d38798c67a4c415172f3dc",
     "build/obj/nu2api/nurndr_swap.obj": "b450354f6bc76e4dece19a53db8449b31f7ad7d2b9cecaca6df9b7f4808a1745",
     "build/obj/nu2api/nurndrstat.obj": "9eeb0d745e0143bfbd42f8f33db40cda52944e2d4362c09ec64284dbb4d28e1d",
     "build/obj/nu2api/nuscene_pc.obj": "7503acac2e5eb2f015ed857cc538b1dea2674935a6ece85c71906b6b4e6e94f4",
@@ -28840,17 +28840,17 @@
       "objects": [
         {
           "unit": "src/batman.cpp",
-          "base_size": 634,
+          "base_size": 646,
           "exact_match": false,
           "target_sha256": "c391949bda148200f552571d5409a2a164631aabb94f691525b5c706bae9a627",
-          "base_sha256": "205aa122417800bdf8b05e1c48f209fd51b389ecb16137638334197f098234c3",
-          "relocation_count": 68,
+          "base_sha256": "dd5e55823fdad83bf8a055223dee230f13deb17e56cbfd5a02ff7d2a3f0bbc07",
+          "relocation_count": 70,
           "comparison_unit": "004927f0-8cfe0085181c",
-          "objdiff_percent": 75.30769
+          "objdiff_percent": 76.40171
         }
       ],
       "status": "different",
-      "objdiff_percent": 75.30769
+      "objdiff_percent": 76.40171
     },
     {
       "name": "NuMain",
@@ -127168,6 +127168,30 @@
       ],
       "status": "exact",
       "objdiff_percent": 100.0
+    },
+    {
+      "name": "NuRndrShadPolys",
+      "symbol": "_NuRndrShadPolys",
+      "address": "0x005fed10",
+      "units": [
+        "src/nu2api/nurndr.c"
+      ],
+      "target_size": 353,
+      "exact_match": false,
+      "objects": [
+        {
+          "unit": "src/nu2api/nurndr.c",
+          "base_size": 321,
+          "exact_match": false,
+          "target_sha256": "7257291b15e0f94c8f13d79b2b1a550cc585b08a89e9aae71523b58870a44e7a",
+          "base_sha256": "2ecb75ccd1f8bdeca7d7a978d962a33c7618c5fc3deb7ef155341417b5f79813",
+          "relocation_count": 30,
+          "comparison_unit": "005fed10-7e9dbf293c6f",
+          "objdiff_percent": 54.268818
+        }
+      ],
+      "status": "different",
+      "objdiff_percent": 54.268818
     },
     {
       "name": "NuRndrAddShadow",
@@ -436775,6 +436799,27 @@
       "status": "unknown size"
     },
     {
+      "name": "NuRndrShadowVerticesPc",
+      "symbol": "_NuRndrShadowVerticesPc",
+      "address": "0x02857178",
+      "units": [
+        "src/data.cpp"
+      ],
+      "target_size": 144,
+      "exact_match": true,
+      "objects": [
+        {
+          "unit": "src/data.cpp",
+          "exact_match": true,
+          "target_size": 144,
+          "base_size": 144,
+          "target_sha256": "81c611f35bff79491538b2f7cf201c7597a661a5c549633541c62bdc8af1613f",
+          "base_sha256": "81c611f35bff79491538b2f7cf201c7597a661a5c549633541c62bdc8af1613f"
+        }
+      ],
+      "status": "exact"
+    },
+    {
       "name": "FrameShaderMaterialAnimationTimePc",
       "symbol": "_FrameShaderMaterialAnimationTimePc",
       "address": "0x02857208",
@@ -452914,17 +452959,17 @@
   ],
   "progress": {
     "text_bytes": 3471246,
-    "mapped_code_bytes": 2318984,
+    "mapped_code_bytes": 2319337,
     "matched_code_bytes": 434096,
     "matching_percent": 12.505480740921271,
-    "fuzzy_coverage_percent": 43.03256547817976,
-    "mapped_functions": 8550,
+    "fuzzy_coverage_percent": 43.03835053047914,
+    "mapped_functions": 8551,
     "matched_functions": 3981,
-    "objdiff_fuzzy_percent": 74.52196,
-    "objdiff_total_code": 2007764,
+    "objdiff_fuzzy_percent": 74.518845,
+    "objdiff_total_code": 2008117,
     "image_bytes": 40067072,
-    "mapped_bytes": 3427430,
-    "mapping_percent": 8.554231265014824,
+    "mapped_bytes": 3427927,
+    "mapping_percent": 8.55547168507846,
     "mapping_denominator": "code_and_data_section_virtual_sizes",
     "mapping_sections": [
       {
@@ -452932,7 +452977,7 @@
         "kind": "code",
         "address": "0x401000",
         "size": 3471246,
-        "mapped_bytes": 2320178
+        "mapped_bytes": 2320531
       },
       {
         "name": ".rdata",
@@ -452946,21 +452991,21 @@
         "kind": "data",
         "address": "0x7ef000",
         "size": 35372200,
-        "mapped_bytes": 1029312
+        "mapped_bytes": 1029456
       }
     ],
-    "mapping_known_size_symbols": 15983,
+    "mapping_known_size_symbols": 15985,
     "mapping_unknown_size_symbols": 7112,
-    "mapping_code_bytes": 2320178,
+    "mapping_code_bytes": 2320531,
     "mapping_code_total_bytes": 3471246,
-    "mapping_code_percent": 66.8399185767877,
-    "mapping_data_bytes": 1107252,
+    "mapping_code_percent": 66.85008783589524,
+    "mapping_data_bytes": 1107396,
     "mapping_data_total_bytes": 36018966,
-    "mapping_data_percent": 3.074080471938034,
-    "mapping_code_data_bytes": 3427430,
+    "mapping_data_percent": 3.0744802613156637,
+    "mapping_code_data_bytes": 3427927,
     "mapping_code_data_total_bytes": 39490212,
-    "mapping_code_data_percent": 8.679188655659788,
-    "matched_data_region_bytes": 1092606
+    "mapping_code_data_percent": 8.680447195370842,
+    "matched_data_region_bytes": 1092750
   },
   "data_members": [
     {
@@ -454018,8 +454063,8 @@
     "inputs": {
       "metadata_sha256": "fe09365da4c355f220d724ca99394fc120b758891b4188d2c49707b6df0894f2",
       "header_path": "src/saga.h",
-      "header_sha256": "a6295e048f381a25e89961ffafa550c37123ce83d2ba74ff842fb84a21fca700",
-      "geometry_object_sha256": "0c785b0736200921e6f8389bbb81fc61db0d0638a8368c4703f1d7e9c60e72b2",
+      "header_sha256": "3d48f3f42c74980e833e5bebc366c841cf551956cab7809ab9eef7eb6f851a7e",
+      "geometry_object_sha256": "5b564c1d9574de80e5f9585c513c16f0fe37edcf11e3d91b43358f713eb17ebb",
       "toolchain_sha256": "489d0782638d8033137cdb2834462416111945cbfa073147820e314b8576b95b",
       "implementation_sha256": "9ad7521230f06fde31f0771b10bd001037ea32d2def455913a7f391f05dede9d",
       "headers": {
@@ -454049,20 +454094,20 @@
         "src/audio/vorbis/window.h": "a10ede6832692ccec154bb9291be7ec236f9642a99a6af9b108ff7df030904b5",
         "src/diagnostics.h": "dae209151b55b9f5aadc18ce8ad63a1d961c311a7d8ec7214ea32c7e7a095459",
         "src/externals.h": "5b08276a7759c01921ac2a5239bf0978accdd38d2533b458c25d1b16f8a4402d",
-        "src/saga.h": "a6295e048f381a25e89961ffafa550c37123ce83d2ba74ff842fb84a21fca700"
+        "src/saga.h": "3d48f3f42c74980e833e5bebc366c841cf551956cab7809ab9eef7eb6f851a7e"
       },
       "owners": {
         "src/data.cpp": {
-          "source_sha256": "c429da43066533e7e0c7773e332320e4332a8c6dc1c5c535ba88363e70279c17",
-          "object_sha256": "05acc3f8d14b984235c5bcfdb8502bb9ccad84af8ae9de7ff9e9ddb68b0cd984"
+          "source_sha256": "b5bd3080234056870a1bd680c6455f8f3e83aa9eba95c21d2f66502af610b573",
+          "object_sha256": "2e260980013d6e918b5928612aab8bdb87cb524a808f02d47a7ce779f2e00483"
         },
         "src/nu2api/pc_device.cpp": {
           "source_sha256": "6f7e08a9c3d180cde750d21d03a4b7511b951943add98358333d252fb6751a85",
           "object_sha256": "68f5be6c9753db1014ae60e2cb319c96ed4db9d030465af33cd5085fbc3b4df3"
         },
         "src/nu2api/nurndr.c": {
-          "source_sha256": "f3d1138c9bb8fbf3741c3a33d80e18c92f6d9f5e55395f0c8c783c896d9b6536",
-          "object_sha256": "92c89897b9a7bc5ef687ac02365222a3c066c136120ac29dc7b16397bb344204"
+          "source_sha256": "c620fb8f6093634cf2c0f82dfd062faa5acf29d284350230316f880cc40af870",
+          "object_sha256": "bbf8ea2607e1079f5ec76daf998c6d30799ac2def9d38798c67a4c415172f3dc"
         },
         "src/nu2api/effect_surface.cpp": {
           "source_sha256": "c4797784f4c756ae49ebbb14cade7923fd6a5561471d3aeb55a0e43c4df86520",

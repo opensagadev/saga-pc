@@ -9603,6 +9603,10 @@ extern "C" {
     extern struct PC_SPECIAL_SHADOW_LIGHT *PCShadowSecondaryLight;
     extern i32 NuRndrShadowCnt;
     extern PC_SHADOW_QUEUE_RECORD NuRndrShadPolDat[128];
+    extern NURND_VERTEX3D_PC NuRndrShadowVerticesPc[4];
+    STATIC_ASSERT(sizeof(NURND_VERTEX3D_PC[4]) == 0x90);
+    STATIC_ASSERT(offsetof(NURND_VERTEX3D_PC, normal) == 0xc);
+    void __cdecl NuRndrShadPolys(NUMTL *);
     i32 __cdecl NuCameraClipTestPoints(NUVEC *, i32, NUMTX *);
     i32 __cdecl NuRndrSetDirectionalLightsPS(const NUVEC *, const NUVEC *, const NUVEC *, const NUVEC *, const NUVEC *,
                                              const NUVEC *);

@@ -34267,3 +34267,9 @@ extern "C" {
     extern const char StreakTextureNamePc[17] = "stuff\\streak.pnt";
 #pragma const_seg()
 }
+
+extern "C" {
+#pragma bss_seg(".bss$NuRndrShadowVerticesPc")
+    NURND_VERTEX3D_PC NuRndrShadowVerticesPc[4];
+#pragma bss_seg()
+}

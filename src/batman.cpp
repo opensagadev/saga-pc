@@ -381,7 +381,7 @@ static void NuMainRenderWorld(WORLDINFO *world) {
     }
     STUBBED_NAMED("NuMainRenderWorld: theGameThings->RenderThings(NULL) via 0x0095e438");
     CutScenes_Draw(world);
-    STUBBED_NAMED("NuMainRenderWorld: NuRndrShadPolys(PermanentShadowMaterialPc) at 0x005fed10");
+    NuRndrShadPolys(PermanentShadowMaterialPc);
     NuLgtLaserDraw(paused);
     if (world->current_level == TITLES_LDATA || (world->current_level->flags & 0x400) != 0 ||
         world->current_level == CREDITS_LDATA ||

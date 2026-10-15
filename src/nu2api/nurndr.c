@@ -361,6 +361,50 @@ void __cdecl NuRndrAddShadow(NUVEC *position, f32 radius, i32 opacity, i32 unuse
     }
 }
 
+void __cdecl NuRndrShadPolys(NUMTL *material) {
+    i32 index;
+    PC_SHADOW_QUEUE_RECORD *record;
+    f32 left, right, front, back, y;
+    u32 colour;
+    if (NuRndrShadowCnt == 0)
+        return;
+    record = NuRndrShadPolDat;
+    for (index = 0; index < NuRndrShadowCnt; ++index, ++record) {
+        left = record->position.x - record->radius;
+        right = record->position.x + record->radius;
+        front = record->position.z - record->radius;
+        back = record->position.z + record->radius;
+        y = record->position.y;
+        colour = (u32)(i16)record->opacity << 24;
+        NuRndrShadowVerticesPc[0].colour = colour;
+        NuRndrShadowVerticesPc[1].colour = colour;
+        NuRndrShadowVerticesPc[2].colour = colour;
+        NuRndrShadowVerticesPc[3].colour = colour;
+        NuRndrShadowVerticesPc[0].position.x = left;
+        NuRndrShadowVerticesPc[0].position.y = y;
+        NuRndrShadowVerticesPc[0].position.z = front;
+        NuRndrShadowVerticesPc[0].u = 0.0f;
+        NuRndrShadowVerticesPc[0].v = 0.0f;
+        NuRndrShadowVerticesPc[1].position.x = right;
+        NuRndrShadowVerticesPc[1].position.y = y;
+        NuRndrShadowVerticesPc[1].position.z = front;
+        NuRndrShadowVerticesPc[1].u = 1.0f;
+        NuRndrShadowVerticesPc[1].v = 0.0f;
+        NuRndrShadowVerticesPc[2].position.x = left;
+        NuRndrShadowVerticesPc[2].position.y = y;
+        NuRndrShadowVerticesPc[2].position.z = back;
+        NuRndrShadowVerticesPc[2].u = 0.0f;
+        NuRndrShadowVerticesPc[2].v = 1.0f;
+        NuRndrShadowVerticesPc[3].position.x = right;
+        NuRndrShadowVerticesPc[3].position.y = y;
+        NuRndrShadowVerticesPc[3].position.z = back;
+        NuRndrShadowVerticesPc[3].u = 1.0f;
+        NuRndrShadowVerticesPc[3].v = 1.0f;
+        NuRndrStrip3d(NuRndrShadowVerticesPc, material, NULL, 4);
+    }
+    NuRndrShadowCnt = 0;
+}
+
 STATIC_ASSERT(offsetof(NURNDRLIBSCENE, unknown_214) == 0x214);
 void __cdecl NuBackbufferCopy(i32 texture_id) {
     currentScene.unknown_214 = (u32)texture_id;
