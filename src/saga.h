@@ -2847,6 +2847,7 @@ STATIC_ASSERT(offsetof(MUSICPLAYBACK_PC, update_delay) == 0x1c);
 STATIC_ASSERT(offsetof(MUSICPLAYBACK_PC, resume_track) == 0x1e);
 STATIC_ASSERT(offsetof(MUSICPLAYBACK_PC, track_data) == 0x20);
 
+struct bolt_s;
 typedef struct BOLTTYPE_PC_s {
     char name[16];
     f32 field_10;
@@ -2855,26 +2856,45 @@ typedef struct BOLTTYPE_PC_s {
     f32 field_1c;
     f32 field_20;
     f32 field_24;
-    i32 field_28;
-    i32 field_2c;
-    i32 field_30;
-    i32 field_34;
+    union {
+        struct {
+            i32 field_28, field_2c, field_30, field_34;
+        };
+        struct {
+            i16 object_ids[3];
+            i16 debris_id;
+            i16 moving_debris[2];
+            i16 moving_debris_counts[2];
+        };
+    };
     i16 field_38;
     i16 field_3a;
     u8 field_3c;
     u8 field_3d;
     u16 field_3e;
     u32 field_40;
-    void (*init_callback)(void *bolt);
-    void (*update_callback)(void *bolt);
-    void (*end_callback)(void *bolt);
-    void (*ricochet_callback)(void *bolt, NUVEC *normal);
-    f32 (*scale_callback)(void *bolt);
-    void *field_58;
-    void *field_5c;
+    void(__cdecl *init_callback)(struct bolt_s *bolt);
+    void(__cdecl *update_callback)(struct bolt_s *bolt);
+    void(__cdecl *end_callback)(struct bolt_s *bolt);
+    void(__cdecl *ricochet_callback)(struct bolt_s *bolt, NUVEC *normal);
+    f32(__cdecl *scale_callback)(struct bolt_s *bolt);
+    union {
+        const char *shoot_sound;
+        void *field_58;
+    };
+    union {
+        const char *hit_sound;
+        void *field_5c;
+    };
     u32 flags_60;
-    i16 field_64;
-    i16 field_66;
+    union {
+        i16 field_64;
+        i16 shoot_sound_id;
+    };
+    union {
+        i16 field_66;
+        i16 hit_sound_id;
+    };
     u8 specials_68[0x3c];
 } BOLTTYPE_PC;
 STATIC_ASSERT(offsetof(BOLTTYPE_PC, field_10) == 0x10);
@@ -2897,6 +2917,14 @@ STATIC_ASSERT(offsetof(BOLTTYPE_PC, field_5c) == 0x5c);
 STATIC_ASSERT(offsetof(BOLTTYPE_PC, field_64) == 0x64);
 STATIC_ASSERT(offsetof(BOLTTYPE_PC, field_66) == 0x66);
 STATIC_ASSERT(sizeof(BOLTTYPE_PC) == 0xa4);
+STATIC_ASSERT(offsetof(BOLTTYPE_PC, object_ids) == 0x28);
+STATIC_ASSERT(offsetof(BOLTTYPE_PC, debris_id) == 0x2e);
+STATIC_ASSERT(offsetof(BOLTTYPE_PC, moving_debris) == 0x30);
+STATIC_ASSERT(offsetof(BOLTTYPE_PC, moving_debris_counts) == 0x34);
+STATIC_ASSERT(offsetof(BOLTTYPE_PC, shoot_sound) == 0x58);
+STATIC_ASSERT(offsetof(BOLTTYPE_PC, hit_sound) == 0x5c);
+STATIC_ASSERT(offsetof(BOLTTYPE_PC, shoot_sound_id) == 0x64);
+STATIC_ASSERT(offsetof(BOLTTYPE_PC, hit_sound_id) == 0x66);
 STATIC_ASSERT(offsetof(BOLTTYPE_PC, field_24) == 0x24);
 STATIC_ASSERT(offsetof(BOLTTYPE_PC, update_callback) == 0x48);
 STATIC_ASSERT(offsetof(BOLTTYPE_PC, end_callback) == 0x4c);
@@ -9055,7 +9083,6 @@ extern "C" {
     void __cdecl StartQuickShoot(GAMEOBJECT *, i32);
     void __cdecl Move_CANNON(GAMEOBJECT *);
     i32 __cdecl ZapTarget(GAMEOBJECT *);
-    extern i16 VehicleBoltLevelObjectIndexPc;
     extern i16 VehicleBoltId7f17d0Pc;
     extern i16 VehicleBoltId7f17d4Pc;
     extern i16 VehicleBoltId7f18b4Pc;
@@ -11851,13 +11878,16 @@ typedef struct PC_SHADER_OBJECT_FULL_VIEW PC_SHADER_OBJECT_FULL_VIEW;
     u16 __cdecl GetShootDirection_LSW(GAMEOBJECT *, NUVEC *);
     u16 __cdecl GetShootDirection_Batman(GAMEOBJECT *, NUVEC *);
     void __cdecl Bolt_Debris_LSW(BOLT_PC *, NUVEC *, i32, NUVEC *, i32);
-    void __cdecl UpdateBolt_Geonosian(void *);
-    void __cdecl Torpedo_InitRicochet(void *, NUVEC *);
-    f32 __cdecl Torpedo_Scale(void *);
+    void __cdecl UpdateBolt_Geonosian(BOLT_PC *);
+    void __cdecl Torpedo_InitRicochet(BOLT_PC *, NUVEC *);
+    void __cdecl Torpedo_EndBolt(BOLT_PC *);
+    i32 __cdecl Bolt_AlternateFire_LSW(GAMEOBJECT *, i32);
+    f32 __cdecl Torpedo_Scale(BOLT_PC *);
     u16 __cdecl Bolt_GetShootDirection_Default(GAMEOBJECT *, NUVEC *);
     void __cdecl Bolt_Debris_Default(BOLT *, NUVEC *, i32, NUVEC *, i32);
     void __cdecl FindAnglesZX(NUVEC *, u16 *, u16 *);
     extern BOLTSYS_PC *BoltSys;
+    void __cdecl BoltSys_Init(BOLTSYS_PC *);
     extern BOLT Bolt[32];
     extern i32 i_bolt;
     i16 __cdecl NuPortalWhichRoom(NUGSCN *, NUVEC *);
@@ -12595,7 +12625,7 @@ void __cdecl AIScriptMissingConditionDiagnostic();
     i32 __cdecl Arcade_GetMode(u32 *);
     extern NUVEC v001;
     extern AREA_DATA_PC *VADER_ADATA;
-    void __cdecl EndBolt_EwokTorpedo(void *bolt);
+    void __cdecl EndBolt_EwokTorpedo(BOLT_PC *bolt);
     BOLTTYPE_PC *__cdecl BoltType_FindByID(i32, WORLDINFO *);
     GAMEOBJECT *__cdecl FindGameObject(i32, u32, i32, i32, i32);
     void __cdecl MakeBaddiesForgetAboutParty(i32);
@@ -20826,36 +20856,6 @@ extern "C" {
 /* Genuine publisher minimum configuration declarations. */
 /* Declaration inventory only. Keep owning data definitions in their genuine
  * source groups; shared placement remains root/sole-writer work. */
-typedef struct init_bolt_config_pc_s {
-    char name[16];
-    f32 speed, duration, extra_speed, collision_radius, radius, scale;
-    i16 object_ids[3];
-    i16 debris_id;
-    i16 moving_debris[2];
-    i16 moving_debris_counts[2];
-    i16 field_38, field_3a;
-    u8 field_3c, field_3d;
-    u16 field_3e;
-    u32 field_40;
-    void *callbacks[5];
-    const char *shoot_sound;
-    const char *hit_sound;
-    u32 flags;
-    i16 shoot_sound_id, hit_sound_id;
-    NUSPECIALHANDLE specials[5];
-} INIT_BOLT_CONFIG_PC;
-STATIC_ASSERT(sizeof(INIT_BOLT_CONFIG_PC) == 0xa4);
-STATIC_ASSERT(offsetof(INIT_BOLT_CONFIG_PC, name) == 0);
-STATIC_ASSERT(offsetof(INIT_BOLT_CONFIG_PC, speed) == 0x10);
-STATIC_ASSERT(offsetof(INIT_BOLT_CONFIG_PC, object_ids) == 0x28);
-STATIC_ASSERT(offsetof(INIT_BOLT_CONFIG_PC, debris_id) == 0x2e);
-STATIC_ASSERT(offsetof(INIT_BOLT_CONFIG_PC, moving_debris) == 0x30);
-STATIC_ASSERT(offsetof(INIT_BOLT_CONFIG_PC, moving_debris_counts) == 0x34);
-STATIC_ASSERT(offsetof(INIT_BOLT_CONFIG_PC, callbacks) == 0x44);
-STATIC_ASSERT(offsetof(INIT_BOLT_CONFIG_PC, shoot_sound) == 0x58);
-STATIC_ASSERT(offsetof(INIT_BOLT_CONFIG_PC, hit_sound) == 0x5c);
-STATIC_ASSERT(offsetof(INIT_BOLT_CONFIG_PC, flags) == 0x60);
-STATIC_ASSERT(offsetof(INIT_BOLT_CONFIG_PC, specials) == 0x68);
 
 /* Existing incomplete player_item_type_reset_pc_s completed identically,
  * apart from readonly pointee qualification required by the source literals. */
@@ -20932,7 +20932,9 @@ extern "C" {
     extern f32(__cdecl *Hint_AlphaTargetFn)(void);
     extern void(__cdecl *Collection_GetSelectingPlayerIDsFn)(i16 *ids);
     extern NUSPECIALHANDLE *(__cdecl *GameMsg_GetExtraObjFn)(GAME_MESSAGE_PC *message);
-    extern INIT_BOLT_CONFIG_PC GlobalBoltType[3];
+    extern BOLTTYPE_PC GlobalBoltType[44];
+    extern BOLTSYS_PC BoltSys_LSW;
+    extern BOLTSYS_PC BoltSys_Batman;
     extern struct CHARPIVOT_PC CharPivot_LSW[32];
     extern struct CHARPIVOT_PC CharPivot_Batman;
     extern i32 CompletionPointInfoPc[7];

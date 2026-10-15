@@ -8015,10 +8015,10 @@ extern "C" {
     NULISTHDR global_aiscripts;
     u16 **BadWords;
     i32 NumBadWords;
-    BOLTTYPE_PC GlobalBoltType_Default = {
-        "null", 4.0f, 2.0f, 0.0f, 0.125f, 1.0f, 0.1f, -1,   -1,   -1,   0, -1, 0,  1,
-        0xff,   0,    0,    NULL, NULL,   NULL, NULL, NULL, NULL, NULL, 0, -1, -1, {0},
-    };
+    BOLTTYPE_PC GlobalBoltType_Default = {"null", 4.0f, 2.0f, 0.0f,   0.125f, 1.0f, 0.1f, {{-1, -1, -1, 0}},
+                                          -1,     0,    1,    0xff,   0,      0,    NULL, NULL,
+                                          NULL,   NULL, NULL, {NULL}, {NULL}, 0,    {-1}, {-1},
+                                          {0}};
     BOLTSYS_PC GlobalBoltSystem_Default = {
         &GlobalBoltType_Default,        1,    NULL, Bolt_Debris_Default, Bolt_GetShootOrigin_Default,
         Bolt_GetShootDirection_Default, NULL, NULL,
@@ -16200,10 +16200,6 @@ extern "C" {
 }
 
 extern "C" {
-
-#pragma data_seg(".data$VehicleBoltLevelObjectIndexPc")
-    i16 VehicleBoltLevelObjectIndexPc = 52;
-#pragma data_seg()
 
 #pragma data_seg(".data$VehicleBoltId7f17d0Pc")
     i16 VehicleBoltId7f17d0Pc = -1;

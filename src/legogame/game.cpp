@@ -1913,7 +1913,7 @@ void __cdecl InitGameAfterConfig(void) {
         STUBBED_NAMED("InitGameAfterConfig: SurfaceMaskOff 42e6ca -> 572370, mask8034c4");
         STUBBED_NAMED("InitGameAfterConfig: SurfaceMaskOn 42e6d4 -> 572360, mask95102c");
         Hub_UsePlayerList = 1;
-        STUBBED_NAMED("InitGameAfterConfig: BoltSys_Init 42e6e4 -> 580ca0, config7f3a40");
+        BoltSys_Init(&BoltSys_LSW);
         GameAudio_Init(&GameAudioLswPc);
         KITPOSX = 0.0f;
         KITPOS2X = 0.0f;
@@ -1983,7 +1983,7 @@ void __cdecl InitGameAfterConfig(void) {
         STUBBED_NAMED("InitGameAfterConfig: SurfaceMaskOn 42e957 -> 572360, mask8034c4");
         STUBBED_NAMED("InitGameAfterConfig: SurfaceMaskOff 42e961 -> 572370, mask95102c");
         Hub_UsePlayerList = 0;
-        STUBBED_NAMED("InitGameAfterConfig: BoltSys_Init 42e975 -> 580ca0, config7f3a60");
+        BoltSys_Init(&BoltSys_Batman);
         GameAudio_Init(&GameAudioAlternatePc);
         MAGNETOFFSET = 0.0305f;
         GizmoBlowupHitMultiplierPc.value = 2;

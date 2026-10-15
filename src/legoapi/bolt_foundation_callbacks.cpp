@@ -44,16 +44,14 @@ extern "C" void __cdecl GetShootOrigin_LSW(GAMEOBJECT *object, NUVEC *position) 
     }
 }
 
-extern "C" void __cdecl UpdateBolt_Geonosian(void *storage) {
-    BOLT_PC *bolt = static_cast<BOLT_PC *>(storage);
+extern "C" void __cdecl UpdateBolt_Geonosian(BOLT_PC *bolt) {
     WORLDINFO *world = WorldInfo_CurrentlyActive();
     i32 effect = world->game_debris_sys->entries[85].effect;
     if (effect != -1)
         AddVariableShotDebrisEffectTimed1(effect, &bolt->position, 60, FRAMETIME, 0, 0, NULL);
 }
 
-extern "C" void __cdecl Torpedo_InitRicochet(void *storage, NUVEC *position) {
-    BOLT_PC *bolt = static_cast<BOLT_PC *>(storage);
+extern "C" void __cdecl Torpedo_InitRicochet(BOLT_PC *bolt, NUVEC *position) {
     if (bolt != NULL && bolt->owner != NULL && static_cast<GAMEOBJECT *>(bolt->owner)->torpedo != NULL) {
         TORPEDOPACKET_PC *packet = static_cast<GAMEOBJECT *>(bolt->owner)->torpedo;
         if (packet->target != NULL) {
@@ -69,8 +67,7 @@ extern "C" void __cdecl Torpedo_InitRicochet(void *storage, NUVEC *position) {
     }
 }
 
-extern "C" f32 __cdecl Torpedo_Scale(void *storage) {
-    BOLT_PC *bolt = static_cast<BOLT_PC *>(storage);
+extern "C" f32 __cdecl Torpedo_Scale(BOLT_PC *bolt) {
     if (bolt != NULL && bolt->owner != NULL) {
         volatile f32 scale = 2.0f * static_cast<GAMEOBJECT *>(bolt->owner)->bounds_radius;
         return scale;

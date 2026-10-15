@@ -41,8 +41,8 @@ address    , symbol                                                         , si
 0x408370,_Bolt_Debris_LSW,650,
 0x408600,_Bolt_HitPart_LSW,63,"i32 __cdecl(BOLT_PC *, PART_PC *)"
 0x408640,_Bolt_AlternateFire_LSW,185,
-0x00408700 , _EndBolt_EwokTorpedo                                            , 21    , "void __cdecl (void *)"
-0x408720,_UpdateBolt_Geonosian,64,void __cdecl(void *)
+0x00408700 , _EndBolt_EwokTorpedo                                            , 21    , "void __cdecl (BOLT_PC *)"
+0x408720,_UpdateBolt_Geonosian,64,void __cdecl(BOLT_PC *)
 0x00408800 , _InitCables                                                    , 127   , void __cdecl (WORLDINFO *)
 0x408880,_CreateCable,147,"CABLE_RECORD_PC *__cdecl(GAMEOBJECT*,GAMEOBJECT*,i32)"
 0x408960,_ReleaseCable,213,
@@ -1784,13 +1784,13 @@ address    , symbol                                                         , si
 0x4d24f0,_Torpedo_UpdateJobbies,1274,void __cdecl(GAMEOBJECT*)
 0x4d29f0,_FindNearestTorpTarget,582,"void *__cdecl(WORLDINFO*,NUVEC*,f32,u8*)"
 0x4d2c40,_HomeNearestTorpTarget,746,"void __cdecl(BOLT_PC *, TORPEDOPACKET_PC *)"
-0x4d2f30,_Torpedo_InitRicochet,89,"void __cdecl(void *, NUVEC *)"
+0x4d2f30,_Torpedo_InitRicochet,89,"void __cdecl(BOLT_PC *, NUVEC *)"
 0x4d2f90,_Torpedo_Ricochet,438,"void __cdecl(BOLT_PC *, TORPEDOPACKET_PC *)"
 0x4d3150,_TorpedoHitTarget,204,void __cdecl(BOLT_PC*)
 0x4d3220,_DrawGameMessage_Targets,546,"void __cdecl(GAME_MESSAGE_PC*,NUVEC*,f32)"
 0x4d3460,_Torpedo_InitBolt,41,void __cdecl(BOLT_PC *)
 0x4d3490,_Torpedo_UpdateBolt,340,void __cdecl(BOLT_PC *)
-0x4d35f0,_Torpedo_Scale,39,f32 __cdecl(void *)
+0x4d35f0,_Torpedo_Scale,39,f32 __cdecl(BOLT_PC *)
 0x4d3620,_Torpedo_EndBolt,102,void __cdecl(BOLT_PC*)
 0x4d3690,_Torpedo_Shoot,196,
 0x4d3760,_PartDraw_Torp,133,i32 __cdecl (PART_PC *)
@@ -3931,7 +3931,7 @@ address    , symbol                                                         , si
 0x5809e0,_Bolt_HitPartMode,42,i32 __cdecl (BOLT_PC *)
 0x580a10,_Bolt_HitParts,492,"PART_PC *__cdecl (BOLT_PC *,NUVEC *,NUVEC *,NUVEC *,f32,i32)"
 0x00580c00 , _Bolt_Debris_Default                                           , 149   , "void __cdecl (BOLT *, NUVEC *, i32, NUVEC *, i32)"
-0x580ca0,_BoltSys_Init,161,
+0x580ca0,_BoltSys_Init,161,void __cdecl(BOLTSYS_PC*)
 0x580d50,?Write32@NETMESSAGE_PC@@QAEXPBH@Z,59,void __thiscall NETMESSAGE_PC::Write32(const i32 *)
 0x580f50,?Bolt_HitPlatPrivate@@YAHPAUbolt_s@@PAE@Z,445,
 0x581110,?Bolt_HitBlowupPrivate@@YAHPAUbolt_s@@PAUnuvec_s@@11MPAE@Z,223,
@@ -9079,7 +9079,10 @@ address    , symbol                                                         , si
 0x751844,??_C@_0L@CBINNIFB@COMBATROLL?$AA@,11,const char[]
 0x751850,??_C@_04BFLEPEFN@JUMP?$AA@,5,const char[]
 0x751858,??_C@_0N@EBMKNCBE@wpn_bib_stab?$AA@,13,const char[13]
+0x751868,_BoltAxeSwingSoundPc,14,const char[14]
+0x751878,_BoltGunShotSoundPc,8,const char[8]
 0x751880,??_C@_0BB@IJKIODOI@PodX_TuskenBlast?$AA@,17,const char[17]
+0x751894,_BoltImpactSoundPc,12,const char[12]
 0x7518a0,??_C@_0BA@LKLLKNOA@imp_proton_torp?$AA@,16,const char[16]
 0x7518b0,??_C@_0O@NFIPIGCD@XWing_Torpedo?$AA@,14,const char[14]
 0x7518b0,_TorpedoFireSfxPc,,const char[14]
@@ -17573,8 +17576,7 @@ address    , symbol                                                         , si
 0x007ef020 , _CHARACTERBUFFERSIZE                                           , 4     , i32
 0x007ef090 , _StartupDatNames                                               , 28    , const char *[7]
 0x7ef194,_AttractoBackPackCountPos,,
-0x007ef388,_GlobalBoltType,,INIT_BOLT_CONFIG_PC[3]
-0x7f0e98,_VehicleBoltLevelObjectIndexPc,,i16
+0x007ef388,_GlobalBoltType,7216,BOLTTYPE_PC[44]
 0x7f1034,_cable_speed,4,f32
 0x007f1038 , _default_targetmomf                                            , 4     , f32
 0x007f103c , _default_ownermomf                                             , 4     , f32
@@ -17886,6 +17888,8 @@ address    , symbol                                                         , si
 0x7f3a28,_InitAsciiBigArrowPc,,const char *
 0x007f3a2c,_InitCutSettingsLswPc,,CUTSCENE_SYS_SETTINGS_PC
 0x007f3a34,_InitCutSettingsAlternatePc,,CUTSCENE_SYS_SETTINGS_PC
+0x7f3a40,_BoltSys_LSW,32,BOLTSYS_PC
+0x7f3a60,_BoltSys_Batman,32,BOLTSYS_PC
 0x7f3adc,_BuckSnowmobRadiusPc,,f32
 0x7f3ae0,_BuckSnowmobMaxYPc,,f32
 0x7f3ae4,_BuckSnowmobMinYPc,,f32
