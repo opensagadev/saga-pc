@@ -227,3 +227,76 @@ void __cdecl CutScenePlayer_Start(i32 clip_id) {
         FreePlay = 0;
     }
 }
+
+extern const char Text_UnknownText[2];
+extern const char CutPlayerClipFormatPc[8], CutPlayerTextSeparatorPc[4];
+STATIC_ASSERT(offsetof(AREA_DATA_PC, name_id) == 0x78);
+STATIC_ASSERT(offsetof(EPISODEDATA_PC, text_id) == 2);
+STATIC_ASSERT(offsetof(LEVELDATA_PC, episode) == 0xa2);
+STATIC_ASSERT(offsetof(LEVELDATA_PC, area_index) == 0xa3);
+
+/* 0057e850..0057ea41 instructions, alignment to0057ea44, four-entry table
+ *0057ea44..0057ea54. PC mode is only a boolean controlling the type suffix. */
+void __cdecl CutScenePlayer_GetText(i32 id, char *title, char *subtitle, i32 mode) {
+    CUT_PLAYER_CLIP_CONFIG_PC *clips;
+    LEVELDATA_PC *level;
+    AREA_DATA_PC *area;
+    i32 episode;
+    if (CutScenePlayerPc == NULL) {
+        if (title != NULL)
+            NuStrCpy(title, Text_UnknownText);
+        if (subtitle != NULL)
+            NuStrCpy(subtitle, Text_UnknownText);
+        return;
+    }
+    if (title != NULL) {
+        sprintf(title, CutScenePlayerPc->clip_text != NULL ? TTab[*CutScenePlayerPc->clip_text] : CutPlayerClipFormatPc,
+                id + 1);
+        if (mode != 0) {
+            clips = (CUT_PLAYER_CLIP_CONFIG_PC *)CutScenePlayerPc->clips;
+            switch (clips[id].type) {
+                case 0:
+                    if (CutScenePlayerPc->intro_text != NULL) {
+                        NuStrCat(title, CutPlayerTextSeparatorPc);
+                        NuStrCat(title, TTab[*CutScenePlayerPc->intro_text]);
+                    }
+                    break;
+                case 1:
+                    if (CutScenePlayerPc->midtro_text != NULL) {
+                        NuStrCat(title, CutPlayerTextSeparatorPc);
+                        NuStrCat(title, TTab[*CutScenePlayerPc->midtro_text]);
+                    }
+                    break;
+                case 2:
+                    if (CutScenePlayerPc->outro_text != NULL) {
+                        NuStrCat(title, CutPlayerTextSeparatorPc);
+                        NuStrCat(title, TTab[*CutScenePlayerPc->outro_text]);
+                    }
+                    break;
+                case 3:
+                    if (CutScenePlayerPc->ending_text != NULL) {
+                        NuStrCat(title, CutPlayerTextSeparatorPc);
+                        NuStrCat(title, TTab[*CutScenePlayerPc->ending_text]);
+                    }
+                    break;
+            }
+        }
+    }
+    if (subtitle != NULL) {
+        clips = (CUT_PLAYER_CLIP_CONFIG_PC *)CutScenePlayerPc->clips;
+        level = &LDataList[clips[id].level_id];
+        if (level->area_index != -1) {
+            area = &ADataList[level->area_index];
+            if ((area->flags & 2) == 0) {
+                NuStrCpy(subtitle, TTab[area->name_id]);
+                return;
+            }
+            episode = (i8)level->episode;
+            if (episode != -1) {
+                NuStrCpy(subtitle, TTab[EDataList[episode].text_id]);
+                return;
+            }
+        }
+        NuStrCpy(subtitle, Text_UnknownText);
+    }
+}

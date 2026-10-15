@@ -10463,7 +10463,7 @@ extern "C" {
         {10, NULL, NULL, NULL, NULL, -1, -1, 0, 0, 0, 0},
         {11, NULL, NULL, NULL, NULL, -1, -1, 0, 0, 0, 0},
         {12, NULL, NULL, NULL, NULL, -1, -1, 0, 0, 0, 0},
-        {13, NULL, NULL, NULL, NULL, -1, -1, 0, 0, 0, 0},
+        {13, NULL, MenuDrawShop, MenuUpdateShop, NULL, -1, -1, 0, 0, 0, 0},
         {14, NULL, NULL, NULL, NULL, -1, -1, 0, 0, 0, 0},
         {15, MenuInitSelectMode, MenuDrawSelectMode, MenuUpdateSelectMode, NULL, -1, -1, 0, 0, 0, 0},
         {16, MenuInitBonusMode, MenuDrawBonusMode, MenuUpdateBonusMode, NULL, -1, -1, 0, 0, 0, 0},
@@ -34190,5 +34190,37 @@ extern "C" {
 #pragma bss_seg()
 #pragma const_seg(".rdata$ShopCheatBlinkCutoffPc")
     extern const f64 ShopCheatBlinkCutoffPc = 3.1499998569488525;
+#pragma const_seg()
+}
+
+extern "C" {
+#pragma data_seg(".data$ShopCodePulseScalePc")
+    f32 ShopCodePulseScalePc = 0.5f;
+#pragma data_seg()
+#pragma data_seg(".data$ShopCodeArrowBingPc")
+    f32 ShopCodeArrowBingPc = 0.5f;
+#pragma data_seg()
+#pragma data_seg(".data$ShopCodeArrowAmplitudePc")
+    f32 ShopCodeArrowAmplitudePc = 0.5f;
+#pragma data_seg()
+}
+
+extern "C" {
+#pragma data_seg(".data$ShopBrickRotationDegreesPc")
+    i32 ShopBrickRotationDegreesPc = 315;
+#pragma data_seg()
+#pragma data_seg(".data$ShopCharacterPeriodPc")
+    f32 ShopCharacterPeriodPc = 1.75f;
+#pragma data_seg()
+#pragma const_seg(".rdata$ShopCharacterAmplitudePc")
+    extern const f64 ShopCharacterAmplitudePc = 4369.0;
+#pragma const_seg()
+}
+
+extern "C" {
+#pragma const_seg(".rdata$CutPlayerClipFormatPc")
+    extern const char CutPlayerClipFormatPc[8] = "Clip %i";
+#pragma const_seg(".rdata$CutPlayerTextSeparatorPc")
+    extern const char CutPlayerTextSeparatorPc[4] = " - ";
 #pragma const_seg()
 }

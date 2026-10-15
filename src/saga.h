@@ -19123,6 +19123,7 @@ extern "C" {
     void __cdecl CutScenePlayer_Reset(void);
     i32 __cdecl CutScenePlayer_CanStart(i32 clip_id);
     void __cdecl CutScenePlayer_Start(i32 clip_id);
+    void __cdecl CutScenePlayer_GetText(i32 id, char *title, char *subtitle, i32 mode);
     void __cdecl CutScenePlayer_Configure(char *, VARIPTR *, VARIPTR *, i16 *, i16 *, i16 *, i16 *, i16 *);
     i32 __cdecl Batarang_StartTargetting(GAMEOBJECT *);
     void __cdecl KeepPointOnScreen(NUVEC *, NUVEC *);
@@ -25635,7 +25636,14 @@ extern "C" {
     void __cdecl DrawTopShelf(i32 picked_item);
     void __cdecl DrawShopPrompts(void);
     void __cdecl DrawItemMenu2D(void);
+    void __cdecl DrawCodeMenu3D(void);
+    void __cdecl DrawSubItems(void);
+    extern i32 ShopBrickRotationDegreesPc;
+    extern f32 ShopCharacterPeriodPc;
+    extern const f64 ShopCharacterAmplitudePc;
+    extern f32 ShopCodePulseScalePc, ShopCodeArrowBingPc, ShopCodeArrowAmplitudePc;
     void __cdecl MenuDrawShop(MENU *menu);
+    void __cdecl MenuUpdateShop(MENU *menu);
     extern i16 TextIdPc88070c, TextIdPc88077c, TextIdPc880800, TextIdPc8808c4;
     extern i16 TextIdPc880904, TextIdPc880908, TextIdPc88090c;
     extern struct shopitem_s *ExtraItems;

@@ -1639,7 +1639,7 @@ address    , symbol                                                         , si
 0x4c5650,_DrawCodeMenu3D,653,void __cdecl(void)
 0x4c58e0,_DrawSubItems,2844,void __cdecl(void)
 0x4c6400,_DrawItemMenu2D,233,void __cdecl(void)
-0x4c64f0,_DrawSubItemMenu2D,1776,
+0x4c64f0,_DrawSubItemMenu2D,1812,void __cdecl(void)
 0x4c6c10,_DrawSubItemMenu3D,5,void __cdecl(void)
 0x4c6c20,_DrawShop3D,47,
 0x4c6c50,_DrawShopPanel,21,
@@ -3858,6 +3858,7 @@ address    , symbol                                                         , si
 0x57e710,_CutScenePlayer_Active,16,void * __cdecl(void)
 0x57e720,_CutScenePlayer_CanStart,178,i32 __cdecl(i32)
 0x57e7e0,_CutScenePlayer_Start,105,void __cdecl(i32)
+0x57e850,_CutScenePlayer_GetText,516,"void __cdecl(i32,char *,char *,i32)"
 0x57ea60,_CutScenePlayer_SetObjects,156,void __cdecl (CUTINFO *)
 0x57eb00,_CutSceneStartPrivatePc,616,
 0x57ed70,_CutScenes_Start,66,void __cdecl (WORLDINFO *)
@@ -11240,6 +11241,7 @@ address    , symbol                                                         , si
 0x7587b8,__real@409c700000000000,8,const f64
 0x7587c0,??_C@_0L@FMEHDMAG@PickupCoin?$AA@,11,const char[11]
 0x7587c0,_PickupCoinSfx_PC,11,const char[11]
+0x7587cc,_CutPlayerTextSeparatorPc,4,const char[4]
 0x7587d4,??_C@_0L@LJNJLHJF@LegoClicks?$AA@,11,const char[11]
 0x7587e0,??_C@_0BA@NPIBEEBC@Char_Icon_Slide?$AA@,16,const char[16]
 0x7587f8,??_C@_0M@BFEAIAEK@Jp_Ana_Jump?$AA@,12,const char[12]
@@ -12706,8 +12708,10 @@ address    , symbol                                                         , si
 0x75ce78,??_C@_08DALLCAMD@tool_box?$AA@,9,char[9]
 0x75ce84,??_C@_05BHMELPJO@Extra?$AA@,6,char[6]
 0x75ce8c,??_C@_04BOGKPJDL@Hint?$AA@,5,char[5]
+0x75ce94,_ShopCodeCheatDisplayTimePc,4,const f32
 0x0075ce98 , __real@3e333333                                                , 4     , const f32
 0x75cea0,_ShopCheatBlinkCutoffPc,8,const f64
+0x75cea8,_ShopCharacterAmplitudePc,8,const f64
 0x75ceb8,??_C@_0L@HJHGCGFE@minikit101?$AA@,11,char []
 0x75cec4,??_C@_0BA@CAGBIHNH@thermocrate_031?$AA@,16,char []
 0x75ced4,??_C@_0BA@CBKDONOA@thermocrate_021?$AA@,16,char []
@@ -13773,6 +13777,7 @@ address    , symbol                                                         , si
 0x7625d4,??_C@_05NHOAHAPB@outro?$AA@,,const char[]
 0x7625dc,??_C@_06JKPGHOCG@midtro?$AA@,,const char[]
 0x7625e4,??_C@_04POIGMEJN@clip?$AA@,,const char[]
+0x7625ec,_CutPlayerClipFormatPc,8,const char[8]
 0x7625f4,__real@41b80000,,const f32
 0x7625f8,??_C@_0O@JOJJFNHN@single_debris?$AA@,14,const char[14]
 0x762608,??_C@_0N@MFNJNGOD@trooper_bolt?$AA@,13,const char[13]
@@ -18226,13 +18231,21 @@ address    , symbol                                                         , si
 0x7fcb48,_ShopHintTextIdsPc,,i16[15]
 0x7fcb68,_SHOPCUTCOUNT,4,i32
 0x7fcb6c,_ShopPurchasePulseDurationPc,4,f32
+0x7fcb70,_ShopCodePulseScalePc,4,f32
 0x7fcb74,_ShopNativeScalePc,24,f32[6]
 0x7fcb8c,_ShopNativeBigFactorPc,24,f32[6]
 0x7fcba4,_ShopNativePushPc,24,f32[6]
 0x7fcbbc,_ShopNativeSubInitAPc,4,f32
 0x7fcbc0,_ShopNativeSubInitBPc,4,f32
+0x7fcbc8,_ShopCodeExitPushPc,4,f32
+0x7fcbcc,_ShopCodeCharactersPc,37,char[37]
 0x7fcbf4,_ShopUserCodePc,6,char[6]
+0x7fcc60,_ShopCodeRepeatIntervalPc,4,f32
 0x7fcc64,_ShopTopBrickOffsetPc,4,f32
+0x7fcc74,_ShopCodeArrowBingPc,4,f32
+0x7fcc78,_ShopCodeArrowAmplitudePc,4,f32
+0x7fcc7c,_ShopBrickRotationDegreesPc,4,i32
+0x7fcc80,_ShopCharacterPeriodPc,4,f32
 0x7fcd84,_players_going_forward,4,i32
 0x007fce84 , _PermDataLoaded                                                , 4     , i32
 0x7fcf00,_starwars_midspecialmovefns,16,
@@ -20043,6 +20056,7 @@ address    , symbol                                                         , si
 0x87bef0,_scale4,4,f32
 0x87bef4,_CutShelfIds,28,i32[7]
 0x87bf10,_cutblank,12,nuhspecial_s
+0x87bf1c,_ShopCodeCharacterPc,4,i32
 0x87bf20,_ExtraShelfIds,28,i32[7]
 0x87bf3c,_toppush,24,f32[6]
 0x87bf54,_ShopOldDrawFnPc,4,void (__cdecl *)(void)
@@ -20123,7 +20137,11 @@ address    , symbol                                                         , si
 0x8804b8,_ShopCheatTimerPc,4,f32
 0x8804bc,_shopcutsceneplayer,4,struct CUT_PLAYER_ACTIVE_PC *
 0x8804c0,_shelfang,2,u16
+0x8804c4,_ShopCodeValidPc,4,i32
 0x8804cc,_ShopSubMoveSfxLockPc,4,i32
+0x8804d0,_ShopCodeMoveSfxLockPc,4,i32
+0x8804d4,_ShopCodeItemChangedPc,4,i32
+0x8804d8,_ShopCodeRepeatTimerPc,4,f32
 0x8804dc,_ShopCharTopOffsetPc,4,f32
 0x8804e0,_ShopSubMenuPc,4,i32
 0x8804e4,_ShopMoveSfxLockPc,4,i32

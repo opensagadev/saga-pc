@@ -28,19 +28,15 @@ void MenuInitialiseEx(MENUFNINFO *menu_info, i32 menu_id_count, i32 language_cou
     }
     MenuFadeEnabled = is_fade_enabled;
     MenuDrawDropShadows = is_shadow_enabled;
-    STUBBED_NAMED("MenuInfo reserved callbacks and default save-slot drawing");
-    STUBBED_NAMED("NuMtlCreate(1)");
-    MenuFadeMtl = NULL;
-    if (MenuFadeMtl != NULL) {
-        MenuFadeMtl->attribs.z_mode = 3;
-        MenuFadeMtl->attribs.filter_mode = 1;
-        MenuFadeMtl->attribs.unknown_2_1_2 = 2;
-        MenuFadeMtl->attribs.unknown_1_1_2 = 1;
-        MenuFadeMtl->attribs.unknown_1_4_8 = 1;
-        MenuFadeMtl->attribs.unknown_2_4 = 1;
-        MenuFadeMtl->attribs.alpha_mode = 1;
-    }
-    STUBBED_NAMED("NuMtlUpdate(MenuFadeMtl)");
+    MenuFadeMtl = NuMtlCreate(1);
+    MenuFadeMtl->attribs.z_mode = 3;
+    MenuFadeMtl->attribs.filter_mode = 1;
+    MenuFadeMtl->attribs.unknown_2_1_2 = 2;
+    MenuFadeMtl->attribs.unknown_1_1_2 = 1;
+    MenuFadeMtl->attribs.unknown_1_4_8 = 1;
+    MenuFadeMtl->attribs.unknown_2_4 = 1;
+    MenuFadeMtl->attribs.alpha_mode = 1;
+    NuMtlUpdate(MenuFadeMtl);
     MenuSetPlatformState(-1);
 }
 
