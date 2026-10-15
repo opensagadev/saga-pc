@@ -34183,3 +34183,12 @@ extern "C" {
     f32 ShopPurchasePulseDurationPc = 0.35f;
 #pragma data_seg()
 }
+
+extern "C" {
+#pragma bss_seg(".bss$ShopCheatTimerPc")
+    f32 ShopCheatTimerPc;
+#pragma bss_seg()
+#pragma const_seg(".rdata$ShopCheatBlinkCutoffPc")
+    extern const f64 ShopCheatBlinkCutoffPc = 3.1499998569488525;
+#pragma const_seg()
+}

@@ -1179,3 +1179,19 @@ void __cdecl IconScenes_Dump(void) {
         }
     }
 }
+
+/* 00496650..00496738. Callback remains unwired until the full native shop
+ * interaction/drawing/exit dependency chain is available. */
+void __cdecl MenuDrawShop(MENU *menu) {
+    f32 alpha;
+    (void)menu;
+    if (MenuStopDraw == 0 && shop_quit == 0) {
+        alpha = MissionMenuPacketPc.active_player[0] != 0 ? 1.0f : MissionDropInAlphaPc;
+        DrawCharIcon(MissionMenuPacketPc.player_model[0], -ICONX, STATSPOSY, 0.0f, MissionPlayerIconSizePc, 166, alpha,
+                     alpha, 1, NULL);
+        alpha = MissionMenuPacketPc.active_player[1] != 0 ? 1.0f : MissionDropInAlphaPc;
+        DrawCharIcon(MissionMenuPacketPc.player_model[1], ICONX, STATSPOSY, 0.0f, MissionPlayerIconSizePc, 165, alpha,
+                     alpha, 1, NULL);
+        DrawShopPrompts();
+    }
+}

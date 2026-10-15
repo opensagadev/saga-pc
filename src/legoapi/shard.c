@@ -1397,3 +1397,109 @@ i32 __cdecl MoveSubItemsLeft(i32 *ids, NUVEC *positions, i32 count) {
     ShopScaleOverridePc[6] = 0.0f;
     return 1;
 }
+
+extern f32 ShopCheatTimerPc;
+extern const f64 ShopCheatBlinkCutoffPc;
+void __cdecl DrawSubItems(void);
+
+/* 004c6400..004c64e9. The PC top-level label follows all six native shelves. */
+void __cdecl DrawItemMenu2D(void) {
+    i32 text_id;
+    if (ShopNameAlpha > 0.0f) {
+        if (picked == 0)
+            text_id = TextIdPc880904;
+        else if (picked == 1)
+            text_id = TextIdPc88070c;
+        else if (picked == 2)
+            text_id = TextIdPc88090c;
+        else if (picked == 4)
+            text_id = TextIdPc88077c;
+        else if (picked == 5)
+            text_id = TextIdPc880800;
+        else
+            text_id = TextIdPc880908;
+        SmartTextEx(TTab[text_id], 0.0f, (f32)(((f64)HubEpisodeTitleYPc + HubEpisodeSubtitleYPc) * 0.5), 1.0f, 0.8f,
+                    0.8f, 0.8f, 0, 255, 255, 255, 1.7f, 1, NULL, 0, (i32)((f64)ShopNameAlpha * 128.0));
+    }
+}
+
+/* 004c4f40..004c501f. ShopCheatNamePc is a text pointer at00880008; the
+ * separate integer code column is at0087c564. */
+void __cdecl DrawCodeMenu(void) {
+    if (ShopCheatTimerPc > 0.0f) {
+        if (ShopCheatNamePc != NULL && (f64)ShopCheatTimerPc < ShopCheatBlinkCutoffPc &&
+            NuFmod(ShopCheatTimerPc, 0.35f) < 0.175f) {
+            SmartTextEx(ShopCheatNamePc, 0.0f, (f32)(((f64)HubEpisodeTitleYPc + HubEpisodeSubtitleYPc) * 0.5), 1.0f,
+                        0.8f, 0.8f, 0.8f, 0, 0, 255, 0, 1.7f, 1, NULL, 0, 128);
+        }
+        ShopCheatTimerPc -= FRAMETIME;
+    }
+}
+
+/* 004c6c70..004c6dd8 instructions;004c6dd8..004c6df0 six-entry table.
+ * This native predicate was previously misidentified as DrawShopPrompts. */
+static i32 Shop_CanSelectPc(void) {
+    shopitem_s *item;
+    SHOP_SAVE_VIEW_PC *save = (SHOP_SAVE_VIEW_PC *)&Game;
+    i32 id, area, index;
+    switch (picked) {
+        case 0:
+            item = &HintItems[HintShelfIds[3]];
+            return Game.coins >= (u32)item->price && item->unlocked != 1;
+        case 1:
+            item = &CharItems[CharShelfIds[3]];
+            return Game.coins >= (u32)item->price && Shop_CharacterUnlockedPc((u16)item->item_id) != 0 &&
+                   item->unlocked != 1;
+        case 2:
+            item = &ExtraItems[ExtraShelfIds[3]];
+            if (Game.coins < (u32)item->price)
+                return 0;
+            id = (u16)item->item_id;
+            if (id >= 8) {
+                area = ExtrasCheatsPc[id].area_index;
+                if (area != -1 && Game.area_save[area].red_brick_collected == 0)
+                    return 0;
+            }
+            return (save->extra_purchased_bits[id / 32] & (1u << (id & 31))) == 0 && item->unlocked != 1;
+        case 4:
+            index = BrickShelfIds[3];
+            if (Game.coins < (u32)BrickItems[index].price)
+                return 0;
+            if ((f64)(i32)((u32)index * 3600u) > (f64)Game.game_time)
+                return 0;
+            return 1;
+        case 5:
+            return CutScenePlayer_CanStart(CutShelfIds[3]) != 0;
+        default:
+            return 0;
+    }
+}
+
+/* 004c7750..004c7819. Keep the affordability predicate separate from actual
+ * prompt drawing and preserve both players' native prompt arguments. */
+void __cdecl DrawShopPrompts(void) {
+    i32 select = -1, back = -1;
+    f32 alpha = 1.0f;
+    if (menuptr == ItemMenu) {
+        back = TextIdPc880844;
+        select = TextIdPc880888;
+    } else if (menuptr == SubItemMenu) {
+        select = picked == 5 ? TextIdPc8808c0 : TextIdPc8808c4;
+        if (Shop_CanSelectPc() == 0)
+            alpha = 0.25f;
+        back = tBACK;
+    } else if (menuptr == CodeMenu) {
+        back = tBACK;
+        select = TextIdPc880888;
+    }
+    if (netclient != 0)
+        select = -1;
+    if (select != -1 || back != -1)
+        DrawPlayerIconPrompts(MissionMenuPacketPc.active_player[0], select, alpha, -1, back, -1, TextIdPc880eac,
+                              MissionMenuPacketPc.active_player[1], select, alpha, -1, back, -1, TextIdPc880eac);
+}
+
+/* 004c6c10..004c6c15: retain the real native target, currently unresolved. */
+void __cdecl DrawSubItemMenu3D(void) {
+    DrawSubItems();
+}

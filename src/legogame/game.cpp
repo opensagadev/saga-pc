@@ -1355,7 +1355,7 @@ static void __cdecl GizBuildIt_FinishFn_Game(GIZBUILDIT_PC *input) {
         (Game.purchased_extra_bits_high & 0x80) == 0) {
         STUBBED_NAMED("GizBuildIt_FinishFn_Game: AddFancyMessageRGB native 42e12e -> 561a00");
         STUBBED_NAMED("GizBuildIt_FinishFn_Game: BuyAllShopExtras native 42e133 -> 42b730");
-        STUBBED_NAMED("GizBuildIt_FinishFn_Game: ReCalculateCompletionPoints native 42e138 -> 42b080");
+        ReCalculateCompletionPoints();
         AddPartDebris(WORLD->part_debris_sys, 15, &((GAME_BUILDIT_READER_PC *)HubBuildItPc)->position);
     }
 }

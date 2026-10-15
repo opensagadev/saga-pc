@@ -59,6 +59,7 @@ extern i32 saveload_cardchanged;
 extern i32 saveload_savepresent;
 extern i32 saveload_autosavedisabled;
 extern i32 saveload_slotused[];
+void __cdecl saveloadASSave(i32 slot, void *buffer, i32 size, u32 hash);
 
 void __cdecl SaveSystemInitialise(i32 slots, SAVE_HASH_FN_PC hashfn, void *save, i32 save_size, i32 autosave,
                                   SAVE_VOID_FN_PC draw_save_icon) {
@@ -213,8 +214,7 @@ void UpdateSaveSlots(void) {
                 PCByteCopy_candidate(memcard_savedatabuffer, memcard_savedata, memcard_savedatasize);
                 *(i32 *)((char *)memcard_savedatabuffer + memcard_savedatasize) =
                     ChecksumSaveData(memcard_savedatabuffer, memcard_savedatasize);
-                STUBBED_NAMED("0x0050be2e: saveloadASSave at 0x00543d40 (void, 4 arguments)");
-                (void)save_hash;
+                saveloadASSave(memcard_slot, memcard_savedatabuffer, memcard_savedatasize + 4, (u32)save_hash);
             }
             memcard_saveneeded = 0;
             memcard_savestarted = 1;

@@ -1,5 +1,7 @@
 #include "saga.h"
 
+extern "C" void __cdecl PcRegisterSaveMetadataPc(const void *);
+
 /* Incomplete entry-connected reconstruction. Every skipped native call remains
  * marked at its actual site; this is not a complete dispatcher implementation. */
 extern "C" i32 __cdecl NuInitHardwarePc(VARIPTR *buffer, VARIPTR *end, i32 allocate, ...) {
@@ -203,7 +205,7 @@ extern "C" i32 __cdecl NuInitHardwarePc(VARIPTR *buffer, VARIPTR *end, i32 alloc
     PcNativeSelectLanguage(config_name);
     PcConfigureInputGraphicsCaps();
     if (parameter_32) {
-        STUBBED_NAMED(0x006ddd90);
+        PcRegisterSaveMetadataPc(parameter_32);
     }
     if (parameter_2d) {
         STUBBED_NAMED(0x006ddd40);

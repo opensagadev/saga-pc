@@ -25633,6 +25633,11 @@ extern "C" {
     extern shopitem_s CutItems[128];
     extern i32 CutShelfIds[7];
     void __cdecl DrawTopShelf(i32 picked_item);
+    void __cdecl DrawShopPrompts(void);
+    void __cdecl DrawItemMenu2D(void);
+    void __cdecl MenuDrawShop(MENU *menu);
+    extern i16 TextIdPc88070c, TextIdPc88077c, TextIdPc880800, TextIdPc8808c4;
+    extern i16 TextIdPc880904, TextIdPc880908, TextIdPc88090c;
     extern struct shopitem_s *ExtraItems;
     extern i32 ExtraShelfIds[7];
     extern struct shopitem_s *HintItems;
