@@ -658,3 +658,479 @@ void DrawTopShelf(i32 unused) {
                      (u16)(shelfang + 0x2000), 0);
     Shop_DrawItemPc(&TopShelf[5], &ShelfPos[5], topscale[5], 1.0f, 1, toppush[5], 0, shelfang, 0);
 }
+
+/* Native PC shop state machine. Child callbacks remain real unresolved native
+ * references until their complete functions are ported; menu ID 13 stays unwired. */
+typedef struct SHOP_INPUT_PC {
+    i32 left_pressed, right_pressed, up_pressed, down_pressed;
+    i32 left_held, right_held, up_held, down_held;
+    i32 confirm, cancel;
+} SHOP_INPUT_PC;
+STATIC_ASSERT(sizeof(SHOP_INPUT_PC) == 0x28);
+STATIC_ASSERT(offsetof(SHOP_INPUT_PC, confirm) == 0x20);
+STATIC_ASSERT(offsetof(SHOP_INPUT_PC, cancel) == 0x24);
+
+typedef i32(__cdecl *SHOP_MENU_CALLBACK_PC)(void *);
+typedef void(__cdecl *SHOP_DRAW_CALLBACK_PC)(void);
+extern SHOP_MENU_CALLBACK_PC ShopMenuParentPc[3], ShopOldMenuParentPc[3], ShopOldMenuFnPc;
+extern SHOP_DRAW_CALLBACK_PC ShopDrawParentPc[3], ShopOldDrawParentPc[3];
+extern SHOP_DRAW_CALLBACK_PC ShopOldDrawPanelFnPc, ShopOldDrawFnPc;
+extern i32 ShopMenuLevelPc, ShopDrawLevelPc, ShopOldMenuLevelPc, ShopOldDrawLevelPc;
+extern i32 ShopExitPc, ShopLastItemPc, ShopEnteredPc, ShopItemChangedPc, ShopMoveSfxLockPc, ShopSubMenuPc;
+extern i32 ShopEaseSubInPc, ShopMenuPc, ShopColumnPc;
+extern f32 ShopSlideTimerPc, ShopHintDrawWaitPc, ShopOldPickedScalePc, ShopOldPickedPushPc;
+extern f32 ShopScaleOverridePc[7], ShopInOutScalePc;
+extern char *ShopCheatNamePc;
+extern char ShopUserCodePc[6];
+extern u32 GAMEPAD_MENUCANCEL;
+i32 __cdecl SubItemMenu(void *menu);
+i32 __cdecl CodeMenu(void *menu);
+void __cdecl DrawItemMenu2D(void);
+void __cdecl DrawCodeMenu(void);
+void __cdecl DrawCodeMenu3D(void);
+void __cdecl DrawSubItemMenu2D(void);
+void __cdecl DrawSubItemMenu3D(void);
+
+/* 004c1080..004c11ba: input argument is EAX in the original same-TU helper. */
+static void Shop_GetInputPc(SHOP_INPUT_PC *input) {
+    i32 player;
+    GAMEPAD_RUNTIME_INPUT_PC *pad;
+    u32 held, pressed;
+    memset(input, 0, sizeof(*input));
+    for (player = 0; player < 2; ++player) {
+        if (MissionMenuPacketPc.active_player[player] == 0)
+            continue;
+        pad = (GAMEPAD_RUNTIME_INPUT_PC *)&GamePadStorage[player];
+        if ((pad->pressed & GAMEPAD_MENUSELECT) != 0 && netclient == 0) {
+            input->confirm = 1;
+            return;
+        }
+        if ((pad->pressed & GAMEPAD_MENUCANCEL) != 0) {
+            input->cancel = 1;
+            return;
+        }
+        if (netclient != 0)
+            continue;
+        held = pad->held | pad->left_held;
+        pressed = pad->pressed | pad->left_pressed;
+        if ((held & GAMEPAD_DLEFT) != 0)
+            input->left_held = 1;
+        if ((held & GAMEPAD_DRIGHT) != 0)
+            input->right_held = 1;
+        if (input->left_held != 0 && input->right_held != 0)
+            input->left_held = input->right_held = 0;
+        if ((held & GAMEPAD_DUP) != 0)
+            input->up_held = 1;
+        if ((held & GAMEPAD_DDOWN) != 0)
+            input->down_held = 1;
+        if (input->up_held != 0 && input->down_held != 0)
+            input->up_held = input->down_held = 0;
+        if ((pressed & GAMEPAD_DLEFT) != 0)
+            input->left_pressed = 1;
+        if ((pressed & GAMEPAD_DRIGHT) != 0)
+            input->right_pressed = 1;
+        if (input->left_pressed != 0 && input->right_pressed != 0)
+            input->left_pressed = input->right_pressed = 0;
+        if ((pressed & GAMEPAD_DUP) != 0)
+            input->up_pressed = 1;
+        if ((pressed & GAMEPAD_DDOWN) != 0)
+            input->down_pressed = 1;
+        if (input->up_pressed != 0 && input->down_pressed != 0)
+            input->up_pressed = input->down_pressed = 0;
+    }
+}
+
+/* 004c4110..004c4193. PC cancellation belongs to the active child callback. */
+i32 __cdecl DoShopMenu(void *menu) {
+    i32 result;
+    if (menuptr != NULL) {
+        result = menuptr(menu);
+        if (result == 5)
+            return 1;
+        if (result == 6) {
+            menuptr = ShopMenuParentPc[ShopMenuLevelPc];
+            ShopMenuParentPc[ShopMenuLevelPc] = NULL;
+            --ShopMenuLevelPc;
+            if (ShopMenuLevelPc < 0)
+                ShopMenuLevelPc = 0;
+            ShopDrawPanelFnPc = ShopDrawParentPc[ShopDrawLevelPc];
+            ShopDrawParentPc[ShopDrawLevelPc] = NULL;
+            --ShopDrawLevelPc;
+            drawptr = NULL;
+            if (ShopDrawLevelPc < 0)
+                ShopDrawLevelPc = 0;
+        }
+    }
+    return 0;
+}
+
+/* 004c6e90..004c74dd. The PC version deliberately ignores the generic MENU
+ * confirm/cursor fields and permits selection of all six original shelves. */
+i32 __cdecl ItemMenu(void *menu) {
+    SHOP_INPUT_PC input;
+    i32 entry_picked = picked;
+    i32 candidate = picked;
+    i32 selection = -1;
+    i32 cancel = 0;
+    f32 reverse_phase, old_factor, forward_factor;
+    i32 old_angle, forward_angle;
+    (void)menu;
+    Shop_GetInputPc(&input);
+    if (ShopSlideTimerPc >= 0.0f) {
+        ShopSlideTimerPc -= FRAMETIME;
+        ShopNameAlpha = 0.0f;
+    }
+    if (ShopExitPc != 0)
+        ShopNameAlpha = 0.0f;
+    ShopItemChangedPc = 0;
+    Hint_CancelCurrent();
+    ShopHintDrawWaitPc = 0.2f;
+    if (ShopSlideTimerPc < 0.0f) {
+        ShopMoveSfxLockPc = 0;
+        if (input.left_pressed != 0 && picked > 0)
+            candidate = picked - 1;
+        else if (input.right_pressed != 0 && picked < 5)
+            candidate = picked + 1;
+        else if (input.confirm != 0)
+            selection = picked;
+        else if (input.cancel != 0)
+            cancel = 1;
+    }
+    if (candidate != entry_picked) {
+        ShopSubMenuPc = 0;
+        ShopLastItemPc = picked;
+        picked = candidate;
+        if (picked < 0)
+            picked = 0;
+        else if (picked > 5)
+            picked = 5;
+        ShopSlideTimerPc = 0.125f;
+        if (ShopMoveSfxLockPc == 0) {
+            ShopMoveSfxLockPc = 1;
+            GameAudio_PlaySfx(0x2f, &SubShelfPos[5], 0, 0);
+        }
+        ShopNameAlpha = 0.0f;
+        GameCam_Blend(GameCam, 0.3f, 0.0f, 1);
+    }
+    if (selection != -1) {
+        if (selection != picked) {
+            picked = selection;
+            if (ShopMoveSfxLockPc == 0) {
+                ShopMoveSfxLockPc = 1;
+                GameAudio_PlaySfx(0x2f, &SubShelfPos[5], 0, 0);
+            }
+            ShopNameAlpha = 0.0f;
+        }
+        ShopSlideTimerPc = 0.125f;
+        ShopLastItemPc = picked;
+        picked = -1;
+        ShopSubMenuPc = 1;
+        GameAudio_PlaySfx(0x30, NULL, 0, 0);
+        GameCam_Blend(GameCam, 0.6f, 0.0f, 1);
+        ShopNameAlpha = 0.0f;
+    }
+    if (cancel != 0) {
+        ShopSlideTimerPc = 0.125f;
+        ShopExitPc = 1;
+        ShopLastItemPc = picked;
+        picked = -1;
+        ShopSubMenuPc = 0;
+        GameAudio_PlaySfx(0x31, NULL, 0, 0);
+    }
+    if (ShopSlideTimerPc < 0.0f) {
+        ShopEnteredPc = 0;
+    } else if ((ShopLastItemPc != picked || ShopEnteredPc != 0) && ShopSubMenuPc == 0) {
+        reverse_phase = (f32)((f64)ShopSlideTimerPc * 8.0);
+        old_angle = (i32)((f64)(1.0f - reverse_phase) * 32768.0 + 16384.0);
+        forward_angle = (i32)((f64)reverse_phase * 32768.0 + 16384.0);
+        old_factor = (f32)(1.0 - ((f64)NuTrigTable[(old_angle >> 1) & 0x7fff] + 1.0) * 0.5);
+        forward_factor = (f32)(1.0 - ((f64)NuTrigTable[(forward_angle >> 1) & 0x7fff] + 1.0) * 0.5);
+        if (ShopLastItemPc != -1) {
+            old_factor = old_factor < 1.0f ? old_factor : 1.0f;
+            old_factor = old_factor > 0.0f ? old_factor : 0.0f;
+            topscale[ShopLastItemPc] = TopBigScale[ShopLastItemPc] +
+                                       (TopShelfScale[ShopLastItemPc] - TopBigScale[ShopLastItemPc]) * old_factor;
+            forward_factor = forward_factor < 1.0f ? forward_factor : 1.0f;
+            forward_factor = forward_factor > 0.0f ? forward_factor : 0.0f;
+            toppush[ShopLastItemPc] = TopBigPush[ShopLastItemPc] +
+                                      (TopShelfPush[ShopLastItemPc] - TopBigPush[ShopLastItemPc]) * forward_factor;
+        }
+        if (picked != -1 && ShopLastItemPc != -1) {
+            old_factor = old_factor < 1.0f ? old_factor : 1.0f;
+            old_factor = old_factor > 0.0f ? old_factor : 0.0f;
+            topscale[picked] = TopShelfScale[picked] + (TopBigScale[picked] - TopShelfScale[picked]) * old_factor;
+            forward_factor = forward_factor < 1.0f ? forward_factor : 1.0f;
+            forward_factor = forward_factor > 0.0f ? forward_factor : 0.0f;
+            toppush[picked] = TopShelfPush[picked] + (TopBigPush[picked] - TopShelfPush[picked]) * forward_factor;
+        }
+    }
+    if (ShopSubMenuPc != 0 && ShopSlideTimerPc <= 0.0f) {
+        ShopInOutScalePc = 0.0f;
+        picked = ShopLastItemPc;
+        ShopSlideTimerPc = 0.125f;
+        ++ShopMenuLevelPc;
+        ShopMenuParentPc[ShopMenuLevelPc] = menuptr;
+        ShopSubMenuPc = 0;
+        ShopEaseSubInPc = 1;
+        ++ShopDrawLevelPc;
+        ShopDrawParentPc[ShopDrawLevelPc] = ShopDrawPanelFnPc;
+        if (TopShelf[ShopLastItemPc].type == 3) {
+            ShopUserCodePc[0] = 'A';
+            ShopUserCodePc[1] = 'A';
+            ShopUserCodePc[2] = 'A';
+            ShopUserCodePc[3] = 'A';
+            ShopUserCodePc[4] = 'A';
+            ShopUserCodePc[5] = 'A';
+            ShopMenuPc = 11;
+            ShopColumnPc = 0;
+            ShopLastItemPc = -1;
+            menuptr = CodeMenu;
+            ShopCheatNamePc = NULL;
+            ShopDrawPanelFnPc = DrawCodeMenu;
+            drawptr = DrawCodeMenu3D;
+        } else {
+            menuptr = SubItemMenu;
+            ShopDrawPanelFnPc = DrawSubItemMenu2D;
+            drawptr = DrawSubItemMenu3D;
+        }
+    }
+    if (ShopExitPc != 0 && ShopSlideTimerPc < 0.0f) {
+        menuptr = NULL;
+        return 5;
+    }
+    return 7;
+}
+
+/* 004c74e0..004c76c4. Preserve PC initialization to shelf zero, and the
+ * complete cutscene-player return state rather than Android's defaults. */
+i32 __cdecl UpdateShop(void *menu) {
+    UpdateCharacterIDs();
+    ShopScaleOverridePc[0] = ShopScaleOverridePc[6] = 0.0f;
+    ShopScaleOverridePc[1] = ShopScaleOverridePc[5] = 0.4f;
+    ShopScaleOverridePc[2] = ShopScaleOverridePc[4] = 0.8f;
+    if (ShopNameAlpha < 1.0f) {
+        ShopNameAlpha += FRAMETIME + FRAMETIME;
+        if (ShopNameAlpha > 1.0f)
+            ShopNameAlpha = 1.0f;
+    }
+    ShopLockedScalePc = SeekLinearF(ShopLockedScalePc, 1.0f, (f32)((f64)FRAMETIME * 3.0));
+    SubNormCharPush = 0.02f;
+    SubBigCharPush = 0.05f;
+    if (menuptr == NULL) {
+        if (shop_from_cutsceneplayer == 0) {
+            menuptr = ItemMenu;
+            ShopSlideTimerPc = 0.125f;
+            ShopExitPc = 0;
+            ShopEnteredPc = 1;
+            picked = 0;
+            ShopLastItemPc = 0;
+            ShopDrawPanelFnPc = DrawItemMenu2D;
+            ShopDrawLevelPc = 0;
+            ShopDrawParentPc[0] = NULL;
+            ShopMenuLevelPc = 0;
+            ShopMenuParentPc[0] = NULL;
+        } else {
+            ShopDrawParentPc[0] = ShopOldDrawParentPc[0];
+            topscale[5] = ShopOldPickedScalePc;
+            shop_from_cutsceneplayer = 0;
+            menuptr = ShopOldMenuFnPc;
+            toppush[5] = ShopOldPickedPushPc;
+            ShopMenuParentPc[0] = ShopOldMenuParentPc[0];
+            ShopMenuParentPc[1] = ShopOldMenuParentPc[1];
+            ShopDrawParentPc[2] = ShopOldDrawParentPc[2];
+            ShopDrawParentPc[1] = ShopOldDrawParentPc[1];
+            ShopDrawPanelFnPc = ShopOldDrawPanelFnPc;
+            drawptr = ShopOldDrawFnPc;
+            ShopMenuParentPc[2] = ShopOldMenuParentPc[2];
+            ShopDrawLevelPc = ShopOldDrawLevelPc;
+            picked = oldpicked;
+            ShopMenuLevelPc = ShopOldMenuLevelPc;
+        }
+    }
+    return DoShopMenu(menu) != 0;
+}
+
+/* The interaction batch shares SHOP_INPUT_PC and the existing Shop*Pc state
+ * contract above. Native movement mode is 1=left, 2=right (not Android's sign). */
+extern i32 ShopMoveItemsPc, ShopSubMoveSfxLockPc, ShopScrollKeyHitPc;
+i32 __cdecl MoveSubItemsLeft(i32 *ids, NUVEC *positions, i32 count);
+i32 __cdecl MoveSubItemsRight(i32 *ids, NUVEC *positions, i32 count);
+void __cdecl Hint_ResetHint(i32 hint_id, i32 reset_completed);
+
+/* 004c3900..004c3988 instructions; 004c3988..004c39a0 six-entry switch table. */
+void __cdecl SelectSubItem(void) {
+    shopitem_s *items;
+    i32 index, result;
+    switch (picked) {
+        case 0:
+            items = HintItems;
+            index = HintShelfIds[3];
+            break;
+        case 1:
+            items = CharItems;
+            index = CharShelfIds[3];
+            break;
+        case 2:
+            items = ExtraItems;
+            index = ExtraShelfIds[3];
+            break;
+        case 4:
+            items = BrickItems;
+            index = BrickShelfIds[3];
+            break;
+        case 5:
+            items = CutItems;
+            index = CutShelfIds[3];
+            break;
+        default:
+            return;
+    }
+    if (items == NULL || index == -1)
+        return;
+    result = SelectShopItem(items, index);
+    if (result == -1)
+        PlaySfx("Shop_NotEnufMuny", &SubShelfPos[3]);
+    else if (result == 1)
+        ShopNameAlpha = 0.0f;
+}
+
+/* 004c39a0..004c410a. The PC callback uses direct shop-pad input, buys on one
+ * confirm, and has no Android touch rows, item-selection mode, or cursor input. */
+i32 __cdecl SubItemMenu(void *menu) {
+    SHOP_INPUT_PC input;
+    shopitem_s *items = NULL;
+    shopitem_s *selected;
+    i32 *ids = NULL, *count = NULL;
+    NUVEC *positions = NULL;
+    NUVEC position;
+    i32 left = 0, right = 0, cancel = 0, scrolling = 0;
+    f32 ypush = 0.0f, phase, factor;
+    i32 angle, moved;
+    (void)menu;
+    Shop_GetInputPc(&input);
+    if (ShopHintDrawWaitPc > 0.0f) {
+        ShopHintDrawWaitPc -= FRAMETIME;
+        ShopNameAlpha = 0.0f;
+    }
+    if (ShopExitPc != 0)
+        ShopNameAlpha = 0.0f;
+    if (picked == 0) {
+        items = HintItems;
+        ids = HintShelfIds;
+        positions = HintCurPos;
+        count = &SHOPHINTCOUNT;
+        if (ShopHintDrawWaitPc <= 0.0f && (items[ids[3]].unlocked == 1 || items[ids[3]].price == 0)) {
+            Hint_ResetHint(ShopHintIdsPc[(u16)items[ids[3]].item_id], 0);
+            Hint_SetHintFromId(ShopHintIdsPc[(u16)items[ids[3]].item_id], 1, 0);
+        } else {
+            Hint_CancelCurrent();
+        }
+        ypush = SubNormCharPush;
+    } else if (picked == 1) {
+        items = CharItems;
+        ids = CharShelfIds;
+        positions = CharCurPos;
+        count = &SHOPCHARCOUNT;
+        ypush = SubNormCharPush;
+    } else if (picked == 2) {
+        items = ExtraItems;
+        ids = ExtraShelfIds;
+        positions = ExtraCurPos;
+        count = &SHOPEXTRACOUNT;
+        ypush = SubNormCharPush;
+    } else if (picked == 4) {
+        items = BrickItems;
+        ids = BrickShelfIds;
+        positions = BrickCurPos;
+        count = &SHOPGOLDBRICKS;
+        ypush = SubNormCharPush;
+    } else if (picked == 5) {
+        items = CutItems;
+        ids = CutShelfIds;
+        positions = CutCurPos;
+        count = &SHOPCUTCOUNT;
+        ypush = SubNormCharPush;
+    }
+    if (ShopSlideTimerPc >= 0.0f) {
+        ShopSlideTimerPc -= FRAMETIME;
+        if (ShopSlideTimerPc < 0.0f)
+            ShopNameAlpha = 0.0f;
+    }
+    if (ShopEaseSubInPc != 0) {
+        phase = (f32)(1.0 - (f64)ShopSlideTimerPc * 8.0);
+        angle = (i32)((f64)phase * 32768.0 + 16384.0);
+        factor = (f32)(1.0 - ((f64)NuTrigTable[(angle >> 1) & 0x7fff] + 1.0) * 0.5);
+        factor = factor < 1.0f ? factor : 1.0f;
+        factor = 0.0f > factor ? 0.0f : factor;
+        if (ShopEaseSubInPc == 1)
+            ShopInOutScalePc = 0.0f + factor;
+        else if (ShopEaseSubInPc == -1)
+            ShopInOutScalePc = (f32)(1.0 - (f64)factor);
+    }
+    if (ShopMoveItemsPc != 0) {
+        if (ShopSubMoveSfxLockPc == 0) {
+            ShopSubMoveSfxLockPc = 1;
+            GameAudio_PlaySfx(0x2f, positions, 0, 0);
+        }
+        moved = 0;
+        if (ShopMoveItemsPc == 1)
+            moved = MoveSubItemsLeft(ids, positions, *count);
+        else if (ShopMoveItemsPc == 2)
+            moved = MoveSubItemsRight(ids, positions, *count);
+        if (moved != 0 && items != NULL) {
+            selected = &items[ids[3]];
+            if (selected->type == 0 && selected->unlocked == 1)
+                SelectSubItem();
+        }
+    } else {
+        ShopSubMoveSfxLockPc = 0;
+    }
+    if (ShopSlideTimerPc < 0.0f) {
+        ShopEaseSubInPc = 0;
+        if (input.left_held != 0)
+            left = 1;
+        else if (input.right_held != 0)
+            right = 1;
+        else if (input.confirm != 0 && ShopExitPc == 0) {
+            SelectSubItem();
+            goto finish;
+        } else if (input.cancel != 0)
+            cancel = 1;
+    }
+    if (ShopExitPc == 0) {
+        if (left != 0 || right != 0) {
+            ShopScaleOverridePc[0] = left != 0 ? 0.0f : 1.0f;
+            ShopScaleOverridePc[1] = ShopScaleOverridePc[5] = 0.4f;
+            ShopScaleOverridePc[2] = ShopScaleOverridePc[4] = 0.8f;
+            ShopScaleOverridePc[6] = left != 0 ? 1.0f : 0.0f;
+            position = SubShelfPos[left != 0 ? 0 : 6];
+            position.y += ypush;
+            AddGameDebris(WORLD->game_debris_sys, qrand() / 10923 + 76, &position);
+            position = SubShelfPos[left != 0 ? 6 : 0];
+            position.y += ypush;
+            AddGameDebris(WORLD->game_debris_sys, qrand() / 10923 + 76, &position);
+            ShopMoveItemsPc = left != 0 ? 1 : 2;
+            ShopSlideTimerPc = 0.125f;
+            ShopHintDrawWaitPc = 0.2f;
+            scrolling = 1;
+        }
+        if (cancel != 0) {
+            ShopSlideTimerPc = 0.125f;
+            ShopEaseSubInPc = -1;
+            ShopExitPc = 1;
+            GameAudio_PlaySfx(0x31, NULL, 0, 0);
+        }
+    }
+finish:
+    if (ShopExitPc != 0 && ShopSlideTimerPc < 0.0f) {
+        ShopSlideTimerPc = 0.125f;
+        ShopExitPc = 0;
+        ShopEaseSubInPc = -1;
+        ShopLastItemPc = -1;
+        GameCam_Blend(GameCam, 0.6f, 0.0f, 1);
+        ShopNameAlpha = 0.0f;
+        return 6;
+    }
+    ShopScrollKeyHitPc = scrolling;
+    return 0;
+}

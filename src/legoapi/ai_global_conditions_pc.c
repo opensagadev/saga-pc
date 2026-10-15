@@ -264,3 +264,13 @@ void *__cdecl Condition_PlayerInTriggerAreaInitPc(AISYS_PC *system, char *name, 
 void *__cdecl Condition_OpponentInTriggerAreaInitPc(AISYS_PC *system, char *name, AISCRIPT_PC *script) {
     return name != NULL ? AISysFindArea(system, name) : NULL;
 }
+
+f32 __cdecl Condition_PartyUnderCoverPc(AISYS_PC *system, AISCRIPTPROCESS_PC *process, AIPACKET_PC *packet, char *name,
+                                        void *argument) {
+    (void)system;
+    (void)process;
+    (void)packet;
+    (void)name;
+    (void)argument;
+    return party_under_cover != 0 ? 1.0f : 0.0f;
+}

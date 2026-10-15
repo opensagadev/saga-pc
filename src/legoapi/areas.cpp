@@ -1565,7 +1565,7 @@ void __cdecl LoadAreaCharacters(void) {
     MainRenderTime = 1.0f;
     CutBorderScale = 0.0f;
     music_man.StopAll(0);
-    STUBBED_NAMED(MusicClearAll); /* Native48c204->548e90. */
+    MusicClearAll();
     SoundKillAll();
     legoSetMusicVolume(music_volume);
     textcrawlactive = 0;

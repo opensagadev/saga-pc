@@ -26249,7 +26249,7 @@ extern "C" {
     extern i32 LEGOOBJ_CHARKIT;
     extern i32 LEGOOBJ_MINIKIT;
     extern f32 teamswitchtimer;
-    extern NUVEC CodePos[7];
+    extern NUVEC CodePos[6];
     f32 __cdecl GetAspectRatio(void);
     extern f32 LastTouchTime;
     extern NUVEC ShelfPos[6];

@@ -29765,7 +29765,7 @@ extern "C" {
     NUVEC ShelfPos[6];
 
 #pragma bss_seg(".bss$CodePos")
-    NUVEC CodePos[7];
+    NUVEC CodePos[6];
 
 #pragma bss_seg(".bss$shelfang")
     u16 shelfang;
@@ -34037,4 +34037,103 @@ extern "C" {
 #pragma const_seg(".rdata$ComboSaber2NamePc")
     extern const char ComboSaber2NamePc[12] = "ComboSaber2";
 #pragma const_seg()
+}
+
+extern "C" {
+#pragma bss_seg(".bss$ShopMenuPc")
+    i32 ShopMenuPc;
+#pragma bss_seg()
+#pragma bss_seg(".bss$ShopEaseSubInPc")
+    i32 ShopEaseSubInPc;
+#pragma bss_seg()
+#pragma bss_seg(".bss$ShopInOutScalePc")
+    f32 ShopInOutScalePc;
+#pragma bss_seg()
+#pragma bss_seg(".bss$ShopScaleOverridePc")
+    f32 ShopScaleOverridePc[7];
+#pragma bss_seg()
+#pragma bss_seg(".bss$ShopHintDrawWaitPc")
+    f32 ShopHintDrawWaitPc;
+#pragma bss_seg()
+#pragma bss_seg(".bss$ShopOldDrawFnPc")
+    void(__cdecl *ShopOldDrawFnPc)(void);
+#pragma bss_seg()
+#pragma bss_seg(".bss$ShopOldDrawPanelFnPc")
+    void(__cdecl *ShopOldDrawPanelFnPc)(void);
+#pragma bss_seg()
+#pragma bss_seg(".bss$ShopOldPickedPushPc")
+    f32 ShopOldPickedPushPc;
+#pragma bss_seg()
+#pragma bss_seg(".bss$ShopDrawParentPc")
+    void(__cdecl *ShopDrawParentPc[3])(void);
+#pragma bss_seg()
+#pragma bss_seg(".bss$ShopOldMenuLevelPc")
+    i32 ShopOldMenuLevelPc;
+#pragma bss_seg()
+#pragma bss_seg(".bss$ShopCheatNamePc")
+    char *ShopCheatNamePc;
+#pragma bss_seg()
+#pragma bss_seg(".bss$ShopEnteredPc")
+    i32 ShopEnteredPc;
+#pragma bss_seg()
+#pragma bss_seg(".bss$ShopOldPickedScalePc")
+    f32 ShopOldPickedScalePc;
+#pragma bss_seg()
+#pragma bss_seg(".bss$ShopColumnPc")
+    i32 ShopColumnPc;
+#pragma bss_seg()
+#pragma bss_seg(".bss$ShopOldMenuFnPc")
+    i32(__cdecl *ShopOldMenuFnPc)(void *);
+#pragma bss_seg()
+#pragma bss_seg(".bss$ShopOldMenuParentPc")
+    i32(__cdecl *ShopOldMenuParentPc[3])(void *);
+#pragma bss_seg()
+#pragma bss_seg(".bss$ShopSlideTimerPc")
+    f32 ShopSlideTimerPc;
+#pragma bss_seg()
+#pragma bss_seg(".bss$ShopOldDrawLevelPc")
+    i32 ShopOldDrawLevelPc;
+#pragma bss_seg()
+#pragma bss_seg(".bss$ShopMenuLevelPc")
+    i32 ShopMenuLevelPc;
+#pragma bss_seg()
+#pragma bss_seg(".bss$ShopOldDrawParentPc")
+    void(__cdecl *ShopOldDrawParentPc[3])(void);
+#pragma bss_seg()
+#pragma bss_seg(".bss$ShopDrawLevelPc")
+    i32 ShopDrawLevelPc;
+#pragma bss_seg()
+#pragma bss_seg(".bss$ShopMenuParentPc")
+    i32(__cdecl *ShopMenuParentPc[3])(void *);
+#pragma bss_seg()
+#pragma bss_seg(".bss$ShopLastItemPc")
+    i32 ShopLastItemPc;
+#pragma bss_seg()
+#pragma bss_seg(".bss$ShopExitPc")
+    i32 ShopExitPc;
+#pragma bss_seg()
+#pragma bss_seg(".bss$ShopSubMenuPc")
+    i32 ShopSubMenuPc;
+#pragma bss_seg()
+#pragma bss_seg(".bss$ShopMoveSfxLockPc")
+    i32 ShopMoveSfxLockPc;
+#pragma bss_seg()
+#pragma bss_seg(".bss$ShopItemChangedPc")
+    i32 ShopItemChangedPc;
+#pragma bss_seg()
+#pragma data_seg(".data$ShopUserCodePc")
+    char ShopUserCodePc[6] = {'A', 'A', 'A', 'A', 'A', 'A'};
+#pragma data_seg()
+}
+
+extern "C" {
+#pragma bss_seg(".bss$ShopMoveItemsPc")
+    i32 ShopMoveItemsPc;
+#pragma bss_seg()
+#pragma bss_seg(".bss$ShopScrollKeyHitPc")
+    i32 ShopScrollKeyHitPc;
+#pragma bss_seg()
+#pragma bss_seg(".bss$ShopSubMoveSfxLockPc")
+    i32 ShopSubMoveSfxLockPc;
+#pragma bss_seg()
 }

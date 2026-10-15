@@ -1608,26 +1608,36 @@ address    , symbol                                                         , si
 0x4c0db0,_NuMtxRotateXInline,217,
 0x4c0e90,_NuMtxRotateYInline,219,
 0x4c0f70,_NuMtxRotateZInline,215,
+0x4c1080,_Shop_GetInputPc,314,void __cdecl(SHOP_INPUT_PC *)
 0x4c11c0,_LoadShelfSplines,464,
 0x4c1390,_InitExtraList,372,
 0x4c1510,_InitAlphaList,208,
 0x4c15e0,_UpdateCharacterIDs,77,
 0x4c1630,_InitShop,4108,
 0x4c2730,_SelectShopItem,976,
+0x4c2b00,_MoveSubItemsRight,1789,"i32 __cdecl(i32 *, NUVEC *, i32)"
+0x4c3200,_MoveSubItemsLeft,1788,"i32 __cdecl(i32 *, NUVEC *, i32)"
 0x4c3900,_SelectSubItem,160,
-0x4c4560,_CodeMenu,2080,
+0x4c39a0,_SubItemMenu,1898,i32 __cdecl(void *)
+0x4c4110,_DoShopMenu,131,i32 __cdecl(void *)
+0x4c41a0,_CodeMenu,3480,i32 __cdecl(void *)
+0x4c4f40,_DrawCodeMenu,223,void __cdecl(void)
 0x4c5020,_Shop_DrawCharacter,450,
 0x4c51f0,_DrawItem,165,
 0x4c52a0,_DrawArrow,94,
 0x4c5300,_Shop_DrawItemPc,201,
 0x4c53d0,_Shop_DrawBrickPc,129,
 0x4c5460,_DrawTopShelf,496,
-0x4c5a60,_DrawSubItems,2403,
+0x4c5650,_DrawCodeMenu3D,653,void __cdecl(void)
+0x4c58e0,_DrawSubItems,2844,void __cdecl(void)
+0x4c6400,_DrawItemMenu2D,233,void __cdecl(void)
 0x4c64f0,_DrawSubItemMenu2D,1776,
+0x4c6c10,_DrawSubItemMenu3D,5,void __cdecl(void)
 0x4c6c20,_DrawShop3D,47,
 0x4c6c50,_DrawShopPanel,21,
 0x4c6c70,_DrawShopPrompts,384,
-0x4c6e90,_ItemMenu,1613,
+0x4c6e90,_ItemMenu,1613,i32 __cdecl(void *)
+0x4c74e0,_UpdateShop,484,i32 __cdecl(void *)
 0x4c7820,_GetShopCamLookPos,89,void __cdecl (NUVEC *)
 0x4c78b0,_Signals_Load,198,
 0x4c7a90,_Signal_SetGizmoVisibility,79,
@@ -3660,6 +3670,7 @@ address    , symbol                                                         , si
 0x5764b0,_Hint_isAvailable,77,
 0x5765b0,_Hint_CancelCurrent,62,void __cdecl(void)
 0x5765f0,_Hint_Reset,59,void __cdecl (void)
+0x576630,_Hint_ResetHint,56,"void __cdecl(i32,i32)"
 0x576670,_Hint_ClearHintsAndDoneFlags,35,void __cdecl(void)
 0x5766e0,_Hint_SaveGameState,99,void __cdecl (HINT_PC *)
 0x5767d0,_Hint_LoadAllGameState,103,void __cdecl(void)
@@ -18192,6 +18203,7 @@ address    , symbol                                                         , si
 0x7fcba4,_ShopNativePushPc,24,f32[6]
 0x7fcbbc,_ShopNativeSubInitAPc,4,f32
 0x7fcbc0,_ShopNativeSubInitBPc,4,f32
+0x7fcbf4,_ShopUserCodePc,6,char[6]
 0x7fcc64,_ShopTopBrickOffsetPc,4,f32
 0x7fcd84,_players_going_forward,4,i32
 0x007fce84 , _PermDataLoaded                                                , 4     , i32
@@ -19972,18 +19984,24 @@ address    , symbol                                                         , si
 0x87bb90,_scale2,4,f32
 0x87bb94,_subpicked,4,i32
 0x87bb98,_arrow3,12,nuhspecial_s
+0x87bba4,_ShopMoveItemsPc,4,i32
 0x87bba8,_infoblank,12,nuhspecial_s
 0x87bbb4,_ShopSubInitAPc,4,f32
 0x87bbb8,_ShopSubInitBPc,4,f32
 0x87bbc0,_splshelf,4,struct nugspline_s *
 0x87bbd0,_pickedbing,4,f32
+0x87bbd4,_ShopMenuPc,4,i32
 0x87bbd8,_SubBigCharPush,4,f32
+0x87bbdc,_ShopEaseSubInPc,4,i32
 0x87bbe0,_SHOPEXTRACOUNT,4,i32
+0x87bbe4,_ShopInOutScalePc,4,f32
 0x87bbe8,_atoz0to9icon,432,nuhspecial_s[36]
 0x87bd98,_ShopNameAlpha,4,f32
+0x87bd9c,_ShopScaleOverridePc,28,f32[7]
 0x87bdb8,_HintCurPos,84,NUVEC[7]
 0x87be0c,_CharShelfIds,28,i32[7]
 0x87be28,_CutCurPos,84,NUVEC[7]
+0x87be7c,_ShopHintDrawWaitPc,4,f32
 0x87be80,_CharCurPos,84,NUVEC[7]
 0x87bed4,_splcodes,4,struct nugspline_s *
 0x87bed8,_codemenuscale,24,f32[6]
@@ -19992,6 +20010,7 @@ address    , symbol                                                         , si
 0x87bf10,_cutblank,12,nuhspecial_s
 0x87bf20,_ExtraShelfIds,28,i32[7]
 0x87bf3c,_toppush,24,f32[6]
+0x87bf54,_ShopOldDrawFnPc,4,void (__cdecl *)(void)
 0x87bf58,_ExtraCurPos,84,NUVEC[7]
 0x87bfac,_drawptr,4,void (__cdecl *)(void)
 0x87bfb0,_shopcamspline,4,struct nugspline_s *
@@ -20001,44 +20020,61 @@ address    , symbol                                                         , si
 0x87c27c,_iconback,12,nuhspecial_s
 0x87c288,_extrasils,528,nuhspecial_s[44]
 0x87c498,_arrow2,12,nuhspecial_s
+0x87c4a4,_ShopOldPickedPushPc,4,f32
 0x87c4a8,_BrickCurPos,84,NUVEC[7]
 0x87c4fc,_scalenorm,4,f32
+0x87c500,_ShopDrawParentPc,12,void (__cdecl *)(void)[3]
+0x87c518,_ShopOldMenuLevelPc,4,i32
 0x87c51c,_cutfilm_locked,12,nuhspecial_s
 0x87c528,_TopBigPush,24,f32[6]
 0x87c540,_codeblank,12,nuhspecial_s
 0x87c54c,_codeshelfscale,24,f32[6]
+0x87c564,_ShopCheatNamePc,4,char *
 0x87c568,_topscale,24,f32[6]
 0x87c580,_question,12,nuhspecial_s
 0x87c58c,_charcheatix,4,i32
 0x87c590,_ShopLockedScalePc,4,f32
+0x87c594,_ShopEnteredPc,4,i32
 0x87c598,_CutItems,14848,shopitem_s[128]
 0x87ff98,_TopShelfPush,24,f32[6]
 0x87ffb0,_CutScenePlayCountPc,4,i32
+0x87ffb4,_ShopOldPickedScalePc,4,f32
 0x87ffb8,_BrickShelfIds,28,i32[7]
 0x87ffd4,_codebigscale,24,f32[6]
 0x87ffec,_TopBigScale,24,f32[6]
 0x880004,_oldpicked,4,i32
+0x880008,_ShopColumnPc,4,i32
 0x88000c,_shopcampos,4,NUVEC *
 0x880010,_TopShelfScale,24,f32[6]
 0x880028,_extracheatix,4,i32
+0x88002c,_ShopOldMenuFnPc,4,i32 (__cdecl *)(void *)
 0x8800c0,_menuptr,4,i32(__cdecl *)(void *)
 0x8800c4,_SubNormCharPush,4,f32
+0x8800c8,_ShopScrollKeyHitPc,4,i32
+0x8800cc,_ShopOldMenuParentPc,12,i32 (__cdecl *)(void *)[3]
 0x8800d8,_shop_from_cutsceneplayer,,i32
 0x8800dc,_HintShelfIds,28,i32[7]
 0x8800f8,_SHOPCHARCOUNT,4,i32
 0x8800fc,_splcharshelf,4,struct nugspline_s *
 0x880100,_ShopDrawPanelFnPc,4,void (__cdecl *)(void)
+0x880104,_ShopSlideTimerPc,4,f32
 0x880108,_toolblank,12,nuhspecial_s
-0x880128,_CodePos,84,NUVEC[7]
+0x880114,_ShopOldDrawLevelPc,4,i32
+0x880118,_ShopMenuLevelPc,4,i32
+0x88011c,_ShopOldDrawParentPc,12,void (__cdecl *)(void)[3]
+0x880128,_CodePos,72,NUVEC[6]
 0x880170,_SHOPHINTCOUNT,,i32
+0x880174,_ShopDrawLevelPc,4,i32
 0x880178,_ShelfPos,72,NUVEC[6]
 0x8801c0,_arrow4,12,nuhspecial_s
 0x8801cc,_picked,4,i32
 0x8801d0,_arrow1,12,nuhspecial_s
 0x8801dc,_scalepicked,4,f32
+0x8801e0,_ShopMenuParentPc,12,i32 (__cdecl *)(void *)[3]
 0x8801ec,_scale3,4,f32
 0x8801f0,_codelist,576,u32[144]
 0x880430,_subpush,12,f32[3]
+0x88043c,_ShopOldDrawPanelFnPc,4,void (__cdecl *)(void)
 0x880440,_SubShelfPos,84,NUVEC[7]
 0x880494,_SHOPACTIVE,4,i32
 0x880498,_CharItems,4,shopitem_s *
@@ -20046,9 +20082,15 @@ address    , symbol                                                         , si
 0x8804a0,_ExtraItems,4,shopitem_s *
 0x8804a4,_CodeItems,4,shopitem_s *
 0x8804a8,_BrickItems,4,shopitem_s *
+0x8804b0,_ShopLastItemPc,4,i32
+0x8804b4,_ShopExitPc,4,i32
 0x8804bc,_shopcutsceneplayer,4,struct CUT_PLAYER_ACTIVE_PC *
 0x8804c0,_shelfang,2,u16
+0x8804cc,_ShopSubMoveSfxLockPc,4,i32
 0x8804dc,_ShopCharTopOffsetPc,4,f32
+0x8804e0,_ShopSubMenuPc,4,i32
+0x8804e4,_ShopMoveSfxLockPc,4,i32
+0x8804e8,_ShopItemChangedPc,4,i32
 0x00880584 , _players_cannot_exit_speeder                                   , 4     , i32
 0x0088058c , _legal_mtl                                                     , 4     , NUMTL *
 0x00880590 , _legal_tid                                                     , 4     , i32
