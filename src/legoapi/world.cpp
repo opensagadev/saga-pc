@@ -879,12 +879,12 @@ STATIC_ASSERT(offsetof(WORLD_RESOURCE_ICONS_READER_PC, icons_scene) == 0x2964);
 void __cdecl WorldInfo_Dump(WORLDINFO *world) {
     i32 index;
     WORLD_RESOURCE_ICONS_READER_PC *resource = (WORLD_RESOURCE_ICONS_READER_PC *)world;
-    STUBBED_NAMED(Customiser_DumpAll); /* Native 55f6cd: (Game_Customiser, world). */
+    Customiser_DumpAll(Game_Customiser, world); /* Native 55f6cd. */
     if (world->cutscene_sys != NULL) {
         for (index = 0; index < world->cutscene_sys->count; ++index)
             ClearLinkedCutSceneMusic(world->cutscene_sys->records[index]->instance);
     }
-    STUBBED_NAMED(CharacterMiniKits_Dump); /* Native 55f716: (world). */
+    CharacterMiniKits_Dump(world); /* Native 55f716. */
     CharScenes_LevelDump(world);
     CutScenes_Destroy(world->cutscene_sys);
     if (resource->icons_scene != NULL) {
