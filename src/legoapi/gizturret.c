@@ -418,3 +418,35 @@ void __cdecl GizTurrets_AddLevelSfx(void *world, void *system_pointer, i32 *ids,
             AddLevelSfxFromId(turret->sfx138, ids, count, capacity);
     }
 }
+
+STATIC_ASSERT(offsetof(AI_TURRET_RECORD_PC, byte131) == 0x131);
+
+i32 __cdecl GizmoTurret_GetOutput(GIZMO_PC *gizmo, i32 output, i32 mode) {
+    AI_TURRET_RECORD_PC *turret = (AI_TURRET_RECORD_PC *)gizmo->object;
+    (void)mode;
+    switch (output) {
+        case 0:
+            return (turret->flags & 0x30) != 0;
+        case 1:
+            return (turret->flags & 0x80) != 0;
+        case 2:
+            return turret->byte132 >= turret->byte131;
+        default:
+            return 0;
+    }
+}
+
+i32 __cdecl GizmoTurret_ActivateRev(GIZMO_PC *gizmo, i32 reverse, i32 mode) {
+    AI_TURRET_RECORD_PC *turret;
+    if (gizmo == NULL || gizmo->object == NULL)
+        return 0;
+    turret = (AI_TURRET_RECORD_PC *)gizmo->object;
+    if ((mode & 1) != 0) {
+        if ((turret->flags & 2) != 0)
+            return reverse;
+        turret->flags &= (u16)~0x10;
+        return reverse == 0;
+    }
+    turret->flags ^= (u16)(((reverse == 0) << 1) ^ turret->flags) & 2;
+    return 1;
+}

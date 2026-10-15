@@ -1063,3 +1063,12 @@ i32 __cdecl StarWars_MidSpecialMove_BigJump(AISYS_PC *system, AIPACKET_PC *packe
     ClearSpecialMove(owner);
     return 0;
 }
+
+i32 __cdecl AI_GetOutput(void *input, i32 output, i32 mode) {
+    GIZMO_PC *gizmo = (GIZMO_PC *)input;
+    (void)output;
+    (void)mode;
+    if (gizmo != NULL && gizmo->object != NULL)
+        return (~(((LEVEL_SCRIPT_PROCESS_PC *)gizmo->object)->processor.flags >> 1)) & 1;
+    return 0;
+}

@@ -179,3 +179,10 @@ i32 __cdecl GizTorp_Load(void *world_pointer, void *unused) {
     }
     return 1;
 }
+
+i32 __cdecl GizTorp_GetOutput(void *input, i32 output, i32 mode) {
+    (void)input;
+    (void)output;
+    (void)mode;
+    return 0;
+}

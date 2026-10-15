@@ -263,3 +263,25 @@ ADDGIZMOTYPE_PC *__cdecl Teleport_RegisterGizmo(i32 type_id) {
     teleport_gizmotype_id = type_id;
     return addtype;
 }
+
+i32 __cdecl Teleport_GetOutput(GIZMO_PC *gizmo, i32 output, i32 mode) {
+    (void)output;
+    (void)mode;
+    if (gizmo != NULL && gizmo->object != NULL)
+        return ((TELEPORT_CONFIG_PC *)gizmo->object)->active;
+    return 0;
+}
+
+i32 __cdecl Teleport_ActivateRev(GIZMO_PC *gizmo, i32 reverse, i32 mode) {
+    TELEPORT_CONFIG_PC *teleport;
+    if (gizmo == NULL || gizmo->object == NULL)
+        return 0;
+    teleport = (TELEPORT_CONFIG_PC *)gizmo->object;
+    if ((mode & 1) != 0 && teleport->enabled != reverse)
+        return 0;
+    if (reverse != 0)
+        teleport->enabled = 0;
+    else if (teleport->enabled == 0)
+        teleport->enabled = 1;
+    return 1;
+}

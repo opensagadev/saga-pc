@@ -1025,3 +1025,23 @@ extern "C" void __cdecl Grapples_Draw(void *world_pointer, void *unused, f32 unu
     GrapplesDrawListPc(world, (GRAPPLE_MOTION_PC *)DynamicGrapplePc, 4, rotation, target_alpha);
     ResetShadowMapRendering();
 }
+
+extern "C" i32 __cdecl Grapple_GetOutput(GIZMO_PC *gizmo, i32 output, i32 mode) {
+    GRAPPLE_MOTION_PC *grapple = (GRAPPLE_MOTION_PC *)gizmo->object;
+    (void)mode;
+    if ((grapple->flags & 2) == 0 || (grapple->flags & 1) == 0)
+        return 0;
+    switch (output) {
+        case 1:
+            if (Grapple_Occupied(grapple, NULL, NULL) == NULL)
+                return 0;
+            break;
+        case 2:
+            if (Grapple_Occupied(grapple, NULL, NULL) == NULL)
+                return 0;
+            break;
+        default:
+            break;
+    }
+    return 1;
+}

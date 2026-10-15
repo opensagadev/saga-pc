@@ -1478,3 +1478,22 @@ void __cdecl GizmoForce_SetVisibility(GIZMO_PC *gizmo, i32 visible) {
     GameAnimSet_SetVisibility(force->anim_set, visible);
     force->runtime_flags = (force->runtime_flags & ~2u) | (visible != 0 ? 2u : 0u);
 }
+
+i32 __cdecl GizmoForce_ActivateRev(GIZMO_PC *gizmo, i32 reverse, i32 mode) {
+    GIZFORCE_PC *force;
+    if (gizmo == NULL)
+        return 0;
+    force = (GIZFORCE_PC *)gizmo->object;
+    if (force == NULL)
+        return 0;
+    if ((mode & 1) != 0)
+        return reverse != ((force->runtime_flags >> 4) & 1);
+    if (reverse != 0) {
+        GizForce_PlayBackwards(force);
+        force->runtime_flags = (force->runtime_flags & ~1u) | 0x10;
+    } else {
+        GizForce_PlayForwards(force);
+        force->runtime_flags = (force->runtime_flags & ~0x10u) | 1;
+    }
+    return 1;
+}

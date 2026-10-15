@@ -1446,3 +1446,11 @@ void __cdecl GizBombGens_Update(void *world_pointer, void *system_pointer, f32 d
             BombGenerator_PlayerBomb[1] = cable->target;
     }
 }
+
+STATIC_ASSERT(offsetof(GIZBOMBGEN_s, flags) == 0x2a);
+
+i32 __cdecl GizmoBombGen_GetOutput(GIZMO_PC *gizmo, i32 output, i32 mode) {
+    (void)output;
+    (void)mode;
+    return ((GIZBOMBGEN_s *)gizmo->object)->flags & 1;
+}

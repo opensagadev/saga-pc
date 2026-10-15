@@ -525,3 +525,13 @@ void __cdecl GizPanel_SetVisibility(GIZMO_PC *gizmo, i32 visible) {
         DeletePlatinst((i16)panel->platform_id);
     }
 }
+
+i32 __cdecl GizPanel_GetOutput(void *input, i32 output, i32 mode) {
+    GIZMO_PC *gizmo = (GIZMO_PC *)input;
+    u32 flags = ((PANEL_MOVEMENT_PC *)gizmo->object)->flags;
+    (void)output;
+    (void)mode;
+    if ((flags & 8) != 0 && (flags & 4) != 0)
+        return (flags >> 1) & 1;
+    return 0;
+}
