@@ -425,10 +425,10 @@ void NuMainFilter::initResources() {
 }
 void NuDeferredFilter::initResources() {
     NuDeferredFilterGen::initResources();
-    programs[1] = PostShaderProgramCreatePc(2, PostShaderTokens767598, PostShaderTokens7676f0);
-    programs[2] = PostShaderProgramCreatePc(2, PostShaderTokens767598, PostShaderTokens767fc8);
-    programs[3] = PostShaderProgramCreatePc(2, PostShaderTokens768d20, PostShaderTokens768870);
-    programs[4] = PostShaderProgramCreatePc(2, PostShaderTokens768d20, PostShaderTokens768ae0);
+    programs[0] = PostShaderProgramCreatePc(2, PostShaderTokens767598, PostShaderTokens7676f0);
+    programs[1] = PostShaderProgramCreatePc(2, PostShaderTokens767598, PostShaderTokens767fc8);
+    programs[2] = PostShaderProgramCreatePc(2, PostShaderTokens768d20, PostShaderTokens768870);
+    programs[3] = PostShaderProgramCreatePc(2, PostShaderTokens768d20, PostShaderTokens768ae0);
 }
 void NuSpeedBlurFilter::initResources() {
     NuPostFilterGen::initResources();
