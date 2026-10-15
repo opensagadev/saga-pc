@@ -12988,8 +12988,8 @@ void __cdecl AIScriptMissingConditionDiagnostic();
     i32 __cdecl NuGScnNumSpecials(NUGSCN *);
     void __cdecl NuGScnGetSpecial(NUSPECIALHANDLE *, NUGSCN *, i32);
     extern i32 edgra_page_on[8];
-    extern NUVEC ShadNorm;
-#define PCGrassTerrainScene CurrentTerrain // NOLINT(readability-identifier-naming)
+#define ShadNorm GetSurfaceInfoSurfaceNormalPc // NOLINT(readability-identifier-naming)
+#define PCGrassTerrainScene CurrentTerrain     // NOLINT(readability-identifier-naming)
     struct PC_EFFECT_SURFACE_PC {
         GRAPHICS_RENDER_TEXTURE_PC *texture;
         u8 owns_texture, unknown_05[3];
@@ -15591,6 +15591,8 @@ void __cdecl PCSoundAlreadyPlayingHook(void);
                   0x54);
 
     void __cdecl CharShadows_Reset(CHARACTER_SHADOW_PACKET_PC *);
+    void __cdecl CharShadows_Update(void);
+    void __cdecl CharShadows_Draw(void);
 
     extern char SuitMetadataName0075314cPc[7];
     extern i16 tBATMANSUIT;

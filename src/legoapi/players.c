@@ -3495,7 +3495,6 @@ STATIC_ASSERT(offsetof(CHARACTER_DRAW_OBJECT_PC, reflection_active) == 0x107c);
 STATIC_ASSERT(offsetof(CHARACTER_DRAW_OBJECT_PC, joint_override_count) == 0x107d);
 extern i32 GameKeepMergeActionPc;
 extern i32 CharacterBlobShadowsOnPc;
-extern i32 CharacterBlobShadowModePc;
 extern i32 GameDrawCharacterModelFlagPc;
 
 i32 __cdecl GameDrawCharacterModel(CHARACTER_MODEL_LAYERS_PC *model, ANIMPACKET_PC *animation, NUMTX *matrix,
@@ -3568,7 +3567,7 @@ i32 __cdecl GameDrawCharacterModel(CHARACTER_MODEL_LAYERS_PC *model, ANIMPACKET_
                ((object->flags_ef0 & 0x4000000) == 0 && (object->character_data->model_flags & 0x10000) == 0)) {
         draw_shadow = 1;
     }
-    if (CharacterBlobShadowModePc == 1 && draw_shadow && secondary_matrix != NULL && object != NULL) {
+    if (PcWindowOptions.shadowmethod == 1 && draw_shadow && secondary_matrix != NULL && object != NULL) {
         i32 level_alpha = WORLD->current_level->blob_shadow_alpha;
         if (level_alpha > 0 && object->shadow_opacity > 0.0f && object->surface_normal.y > 0.0f &&
             (object->water_height == -1.0f || (TerLayer[object->field_283].flags & 1) == 0)) {

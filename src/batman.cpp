@@ -348,11 +348,11 @@ static void NuMainRenderWorld(WORLDINFO *world) {
     STUBBED_NAMED("NuMainRenderWorld: Grabber_Draw(world) at 0x00470940");
     SetLevelLights(world->rtl_set, 1.0f);
     if (editor_active == 0 && Paused == 0 && CUTSTOPGAME == 0) {
-        STUBBED_NAMED("NuMainRenderWorld: CharShadows_Update at 0x00589f80");
+        CharShadows_Update();
         GameObjectStuffAfterAnimation();
     }
     if (CUTSTOPGAME == 0) {
-        STUBBED_NAMED("NuMainRenderWorld: CharShadows_Draw at 0x0058a270");
+        CharShadows_Draw();
     }
     paused = screendump != 0 ? save_paused : Paused;
     if (IsGrabbingScreen()) {

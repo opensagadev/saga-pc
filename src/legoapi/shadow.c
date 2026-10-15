@@ -138,3 +138,131 @@ void __cdecl CharShadows_Reset(CHARACTER_SHADOW_PACKET_PC *packet) {
     packet->shadows[3].position.y = 2000000.0f;
     packet->shadows[4].position.y = 2000000.0f;
 }
+
+extern i32 CharacterBlobShadowsOnPc;
+f32 __cdecl DropInOutScale(GAMEOBJECT *object);
+STATIC_ASSERT(offsetof(GAMEOBJECT, ai_player_packet_pc) == 0x6c4);
+STATIC_ASSERT(sizeof(CHARACTER_SHADOW_PACKET_PC) == 0x64);
+STATIC_ASSERT(offsetof(CHARACTER_SHADOW_RESET_SLOT_PC, x_rotation) == 0xc);
+STATIC_ASSERT(offsetof(CHARACTER_SHADOW_RESET_SLOT_PC, z_rotation) == 0xe);
+STATIC_ASSERT(offsetof(CHARACTER_SHADOW_RESET_SLOT_PC, opacity) == 0x10);
+STATIC_ASSERT(offsetof(GAMEOBJECT, floor_height) == 0x21c);
+STATIC_ASSERT(offsetof(GAMEOBJECT, shadow_radius) == 0x1024);
+STATIC_ASSERT(offsetof(GAMEOBJECT, shadow_joint_mask) == 0x105a);
+
+void __cdecl CharShadows_Update(void) {
+    GAMEOBJECT *object = Obj;
+    CHARACTER_SHADOW_PACKET_PC *packet;
+    CHARACTER_SHADOW_RESET_SLOT_PC *slot;
+    PLAYERCHARACTERCONFIG_PC *config;
+    NUVEC position;
+    NUVEC *locator_position;
+    volatile f32 height, extended_height;
+    i32 index, locator, count, layer;
+    for (index = 0; index < HIGHGAMEOBJECT; ++index, ++object) {
+        if ((object->flags_1fc_word & 1) == 0 || (object->flags_1fc_word & 0x1000) == 0 || object->dead != 0 ||
+            (object->character_data->model_flags & 0x10000) != 0 || object->use_model_origin == 0 ||
+            object->character_data->game_character->shadow_locators == 0 || object->model_draw_result == 0 ||
+            (CInfo[(i8)object->character_context].flags & 0x20000) != 0 || 0.0f >= object->shadow_opacity)
+            continue;
+        config = object->character_data->game_character;
+        object->shadow_joint_mask = config->shadow_locators;
+        object->shadow_radius =
+            config->field_08c < 99.0f ? config->field_08c : object->character_data->collision_radius;
+        packet = (CHARACTER_SHADOW_PACKET_PC *)object->ai_player_packet_pc;
+        count = 0;
+        for (locator = 0; locator < 16; ++locator) {
+            if (count >= 5)
+                break;
+            if ((object->shadow_joint_mask & (1u << locator)) == 0 ||
+                object->character_model->points_of_interest[locator] == NULL)
+                continue;
+            slot = &packet->shadows[count];
+            locator_position = (NUVEC *)&object->locator_matrices[locator].m30;
+            slot->position.x = locator_position->x;
+            slot->position.z = locator_position->z;
+            if ((object->flags_1fc_word & 0x10) != 0) {
+                slot->position.y = object->floor_height;
+                slot->x_rotation = 0;
+                slot->z_rotation = 0;
+                slot->opacity = 1.0f;
+            } else {
+                position = *locator_position;
+                height = GameShadow(object, &position, 5.0f, -1);
+                slot->position.y = height;
+                if ((f64)height != 2000000.0) {
+                    layer = EShadowInfo();
+                    extended_height = EShadY;
+                    if ((f64)extended_height != 2000000.0 && (u32)layer <= 16 && (TerLayer[layer].flags & 1) != 0) {
+                        if (height >= extended_height ||
+                            (f64)locator_position->y + (f64)0.075f < (f64)extended_height) {
+                            slot->position.y = 2000000.0f;
+                            height = 2000000.0f;
+                        }
+                    }
+                    if ((f64)height != 2000000.0) {
+                        slot->opacity = GetSurfaceInfoSurfaceNormalPc.y;
+                        FindAnglesZX(&GetSurfaceInfoSurfaceNormalPc, NULL, NULL);
+                        slot->x_rotation = temp_zrot;
+                        slot->z_rotation = temp_xrot;
+                    }
+                }
+            }
+            ++count;
+        }
+        for (; count < 5; ++count)
+            packet->shadows[count].position.y = 2000000.0f;
+    }
+}
+
+void __cdecl CharShadows_Draw(void) {
+    GAMEOBJECT *object;
+    CHARACTER_SHADOW_PACKET_PC *packet;
+    CHARACTER_SHADOW_RESET_SLOT_PC *slot;
+    NUVEC position;
+    volatile f32 alpha, radius;
+    i32 index, locator, count, level_alpha;
+    if (CharacterBlobShadowsOnPc == 0 || PcWindowOptions.shadowmethod != 1 || PcWindowOptions.shadowsenabled == 0)
+        return;
+    object = Obj;
+    for (index = 0; index < HIGHGAMEOBJECT; ++index, ++object) {
+        if ((object->flags_1fc_word & 1) == 0 || (object->flags_1fc_word & 0x1000) == 0 || object->dead != 0)
+            continue;
+        if ((object->flags_e20 & 0x20) != 0 && (CInfo[(i8)object->character_context].flags & 0x40000) == 0)
+            continue;
+        if ((object->character_data->model_flags & 0x10000) != 0 || !(object->shadow_opacity > 0.0f) ||
+            object->model_draw_result == 0 || object->shadow_joint_mask == 0 || (object->flags_ef0 & 0x4000000) != 0 ||
+            (CInfo[(i8)object->character_context].flags & 0x20000) != 0)
+            continue;
+        level_alpha = object->character_data->game_character->blob_shadow_alpha;
+        if (level_alpha == 255)
+            level_alpha = WORLD->current_level->blob_shadow_alpha;
+        if (level_alpha <= 0)
+            continue;
+        radius = object->shadow_radius;
+        if (!(radius > 0.0f))
+            continue;
+        alpha = (f32)((f64)level_alpha * (f64)object->shadow_opacity);
+        radius = (f32)((f64)radius * (f64)object->origin_scale);
+        radius = (f32)((f64)DropInOutScale(object) * (f64)radius);
+        packet = (CHARACTER_SHADOW_PACKET_PC *)object->ai_player_packet_pc;
+        count = 0;
+        for (locator = 0; locator < 16; ++locator) {
+            if (count >= 5)
+                break;
+            if ((object->shadow_joint_mask & (1u << locator)) == 0 ||
+                object->character_model->points_of_interest[locator] == NULL)
+                continue;
+            slot = &packet->shadows[count];
+            ++count;
+            if ((f64)slot->position.y == 2000000.0 || !(slot->opacity > 0.0f) ||
+                !((f64)object->locator_matrices[locator].m31 + (f64)0.025f >= (f64)slot->position.y))
+                continue;
+            position.x = slot->position.x;
+            position.y = (f32)((f64)slot->position.y + (f64)0.005f);
+            position.z = slot->position.z;
+            NuRndrAddShadow(&position, radius, (i32)((f64)slot->opacity * (f64)alpha), slot->x_rotation, 0,
+                            slot->z_rotation);
+        }
+    }
+}

@@ -13471,9 +13471,6 @@ extern "C" {
 #pragma bss_seg(".bss$edgra_page_on")
     i32 edgra_page_on[8];
 #pragma bss_seg()
-#pragma bss_seg(".bss$ShadNorm")
-    NUVEC ShadNorm;
-#pragma bss_seg()
 #pragma bss_seg(".bss$rtl_dynamic_pool")
     NULSTHDR *rtl_dynamic_pool;
 #pragma bss_seg()
@@ -32327,8 +32324,6 @@ extern "C" {
 #pragma bss_seg()
 #pragma data_seg(".data$CharacterBlobShadowsOnPc")
     i32 CharacterBlobShadowsOnPc = 1;
-#pragma data_seg(".data$CharacterBlobShadowModePc")
-    i32 CharacterBlobShadowModePc = 0;
 #pragma data_seg()
 }
 

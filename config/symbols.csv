@@ -4167,8 +4167,8 @@ address    , symbol                                                         , si
 0x589410   , _CharConfig                                                    , 1704  , "i32 (i32 character_id, char *directory, char *filename, VARIPTR *arena, VARIPTR *arena_end, i32 permanent, char *text, i32 text_length, i32 redirect, NUFPCOMJMP *game_keywords)"
 0x589ac0   , _CharConfig_ConfigureAll                                       , 1139  , "void (i32 permanent, NUFPCOMJMP *game_keywords)"
 0x00589f60,_CharShadows_Reset,26,void __cdecl(CHARACTER_SHADOW_PACKET_PC *)
-0x589f80,_CharShadows_Update,742,
-0x58a270,_CharShadows_Draw,660,
+0x589f80,_CharShadows_Update,742,void __cdecl(void)
+0x58a270,_CharShadows_Draw,660,void __cdecl(void)
 0x58a540,_Missions_Configure,911,"MISSIONSYS_PC *__cdecl(char *, VARIPTR *, VARIPTR *, MISSION_SAVE_READER_PC *)"
 0x0058a8d0 , _Mission_Clear                                                 , 44    , void __cdecl (void *)
 0x0058a900 , _Mission_Active                                                , 33    , MISSIONDATA_PC *__cdecl (MISSIONSYS_PC *)
@@ -19380,8 +19380,7 @@ address    , symbol                                                         , si
 0x825f10,_TextInputButtonLabelIndexPc,,i8[11]
 0x825f20,_PCOptionsCommands,,NUFPCOMJMP[28]
 0x826000,_PCOptionsFileVersion,,i32
-0x826070,_PcWindowOptions,,PC_WINDOW_OPTIONS_PC
-0x8264bc,_CharacterBlobShadowModePc,4,i32
+0x826070,_PcWindowOptions,1120,PC_WINDOW_OPTIONS_PC
 0x826580,_NuHwSoundDfsNamePc,,const char *
 0x826584,_NuHwDfsNamePc,,const char *
 0x00827610 , _SoundVoiceEnabledGate                                         , 4     , i32
@@ -22625,8 +22624,7 @@ address    , symbol                                                         , si
 0x292fdc4,_SfxRevertInfoPc,,SFX_RECORD_PC *
 0x292fdc8,_edanim_cam_pos,,NUVEC
 0x292fdd4,_edbri_post_instance_type,4,i32
-0x0292fdd8 , _GetSurfaceInfoSurfaceNormalPc                                 ,       ,
-0x292fdd8,_ShadNorm,,NUVEC
+0x292fdd8,_GetSurfaceInfoSurfaceNormalPc,12,NUVEC
 0x292fde4,_spherecolldata,,DEBRIS_COLLISION_ENTRY_PC *
 0x0292fde8 , _TerrainShadowStatusPc                                          ,       ,
 0x0292fdec , _TerrainWaterCastIndexPc                                       ,       ,
