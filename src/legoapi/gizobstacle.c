@@ -3,6 +3,21 @@
 STATIC_ASSERT(offsetof(GIZMO_PC, object) == 0);
 STATIC_ASSERT(offsetof(GIZBOMBGEN_s, name) == 0);
 
+typedef struct bombgen_activation_reader_pc_s {
+    u8 unknown_00[0x2a];
+    u16 flags;
+} BOMBGEN_ACTIVATION_READER_PC;
+STATIC_ASSERT(offsetof(BOMBGEN_ACTIVATION_READER_PC, flags) == 0x2a);
+STATIC_ASSERT(sizeof(BOMBGEN_ACTIVATION_READER_PC) == 0x2c);
+
+void __cdecl GizmoBombGen_Activate(GIZMO_PC *gizmo, i32 active) {
+    BOMBGEN_ACTIVATION_READER_PC *generator;
+    if (gizmo != NULL) {
+        generator = (BOMBGEN_ACTIVATION_READER_PC *)gizmo->object;
+        generator->flags ^= (u16)((active != 0) ^ generator->flags) & 1;
+    }
+}
+
 char *__cdecl GizmoBombGen_GetGizmoName(GIZMO_PC *gizmo) {
     if (gizmo != NULL)
         return ((GIZBOMBGEN_s *)gizmo->object)->name;

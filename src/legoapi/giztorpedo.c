@@ -27,6 +27,15 @@ STATIC_ASSERT(sizeof(TORPEDO_MACHINE_QUERY_PC) == 0x2c);
 STATIC_ASSERT(offsetof(TORPEDO_MACHINE_QUERY_PC, name) == 0);
 STATIC_ASSERT(offsetof(GIZMO_PC, object) == 0);
 
+void __cdecl GizTorp_Activate(void *input, i32 active) {
+    GIZMO_PC *gizmo = (GIZMO_PC *)input;
+    TORPEDO_MACHINE_QUERY_PC *machine;
+    if (gizmo != NULL) {
+        machine = (TORPEDO_MACHINE_QUERY_PC *)gizmo->object;
+        machine->flags ^= (u8)((active != 0) ^ machine->flags) & 1;
+    }
+}
+
 char *__cdecl GizTorp_GetGizmoName(void *input) {
     GIZMO_PC *gizmo = (GIZMO_PC *)input;
     if (gizmo != NULL && gizmo->object != NULL)

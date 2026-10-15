@@ -12131,6 +12131,7 @@ void __cdecl AIScriptMissingConditionDiagnostic();
     extern const char AILocatorIndexedFormat[6];
     extern const char AIActionIndexedName[8];
     extern const char AIActionPersonalName[9];
+    extern const char AIActionIgnoreDoneFlagNamePc[17];
     extern const char AIActionIDName[3];
     extern const char AIActionToName[3];
     extern const char AIActionBothWaysName[9];

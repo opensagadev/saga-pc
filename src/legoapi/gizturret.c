@@ -48,7 +48,20 @@ STATIC_ASSERT(offsetof(AI_TURRET_RECORD_PC, radius) == 0x120);
 STATIC_ASSERT(offsetof(AI_TURRET_RECORD_PC, opponent_timer) == 0x12c);
 STATIC_ASSERT(offsetof(AI_TURRET_RECORD_PC, y_rotation) == 0x134);
 STATIC_ASSERT(offsetof(AI_TURRET_RECORD_PC, flags) == 0x13a);
+STATIC_ASSERT(offsetof(AI_TURRET_RECORD_PC, byte132) == 0x132);
 STATIC_ASSERT(offsetof(GIZMO_PC, object) == 0);
+
+void __cdecl GizmoTurret_Activate(GIZMO_PC *gizmo, i32 active) {
+    AI_TURRET_RECORD_PC *turret;
+    if (gizmo != NULL) {
+        turret = (AI_TURRET_RECORD_PC *)gizmo->object;
+        turret->flags ^= (u16)(((active != 0) << 1) ^ turret->flags) & 2;
+        if (active != 0) {
+            turret->flags &= (u16)~0x30;
+            turret->byte132 = 0;
+        }
+    }
+}
 
 char *__cdecl GizmoTurret_GetGizmoName(GIZMO_PC *gizmo) {
     if (gizmo != NULL)

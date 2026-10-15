@@ -74,6 +74,16 @@ typedef struct GRAPPLE_MOTION_PC {
 STATIC_ASSERT(offsetof(GRAPPLE_MOTION_PC, name) == 0);
 STATIC_ASSERT(offsetof(GIZMO_PC, object) == 0);
 
+extern "C" void __cdecl Grapple_Activate(GIZMO_PC *gizmo, i32 active) {
+    GRAPPLE_MOTION_PC *grapple;
+    if (gizmo != NULL) {
+        grapple = (GRAPPLE_MOTION_PC *)gizmo->object;
+        grapple->flags ^= (u8)((active != 0) ^ grapple->flags) & 1;
+        if (active != 0)
+            grapple->activation_progress = 1.0f;
+    }
+}
+
 extern "C" char *__cdecl Grapple_GetGizmoName(GIZMO_PC *gizmo) {
     if (gizmo != NULL)
         return ((GRAPPLE_MOTION_PC *)gizmo->object)->name;

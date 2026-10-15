@@ -11848,6 +11848,8 @@ extern "C" {
 #pragma const_seg(".rdata$AIActionPersonalName")
     const char AIActionPersonalName[9] = "personal";
 #pragma const_seg()
+#pragma const_seg(".rdata$AIActionIgnoreDoneFlagNamePc")
+    const char AIActionIgnoreDoneFlagNamePc[17] = "ignore_done_flag";
 #pragma const_seg(".rdata$AIActionIDName")
     const char AIActionIDName[3] = "id";
 #pragma const_seg()

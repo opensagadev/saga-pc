@@ -29,6 +29,18 @@ STATIC_ASSERT(offsetof(TELEPORT_CONFIG_PC, flap2_special) == 0x68);
 STATIC_ASSERT(offsetof(TELEPORT_CONFIG_PC, flap1_matrix) == 0x7c);
 STATIC_ASSERT(offsetof(TELEPORT_CONFIG_PC, flap2_matrix) == 0xbc);
 
+STATIC_ASSERT(offsetof(GIZMO_PC, object) == 0);
+
+void __cdecl Teleport_Activate(GIZMO_PC *gizmo, i32 active) {
+    TELEPORT_CONFIG_PC *teleport = (TELEPORT_CONFIG_PC *)gizmo->object;
+    if (active != 0) {
+        teleport->enabled = 1;
+        teleport->active = 0;
+    } else {
+        teleport->enabled = 0;
+    }
+}
+
 typedef struct WORLD_TELEPORT_CONFIG_PC {
     u8 unknown_00[0x104];
     VARIPTR giz_buffer;

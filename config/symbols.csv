@@ -400,7 +400,7 @@ address    , symbol                                                         , si
 0x43e350,_AI_GetOutput,,"i32 __cdecl(GIZMO_PC *, i32, i32)"
 0x43e370,_AI_GetNumOutputs,,i32 __cdecl(GIZMO_PC *)
 0x43e380,_AI_GetOutputName,,"char * __cdecl(GIZMO_PC *, i32)"
-0x43e390,_AI_Activate,,"void __cdecl(GIZMO_PC *, i32)"
+0x43e390,_AI_Activate,35,"void __cdecl(GIZMO_PC *, i32)"
 0x43e3c0,_AI_RegisterGizmo,225,
 0x0043e530,_GameAIProcess,6245,void __cdecl(void)
 0x43fda0,_GameAISysReset,390,
@@ -878,7 +878,7 @@ address    , symbol                                                         , si
 0x465dc0,_GameRegisterGizActions,12,
 0x465e00,_GizBombGens_Load,147,
 0x465ea0,_GizBombGens_ReserveBufferSpace,183,void * __cdecl(void *)
-0x465f60,_GizmoBombGen_Activate,,"void __cdecl(GIZMO_PC *, i32)"
+0x465f60,_GizmoBombGen_Activate,30,"void __cdecl(GIZMO_PC *, i32)"
 0x465fb0,_GizmoBombGen_SetVisibility,,"void __cdecl(GIZMO_PC *, i32)"
 0x465ff0,_GizmoBombGen_GetPos,,NUVEC * __cdecl(GIZMO_PC *)
 0x466060,_GizBombGens_SetResetFlag,69,"void __cdecl(void *, void *, void *)"
@@ -1022,12 +1022,12 @@ address    , symbol                                                         , si
 0x46eda0,_GizPanel_MoveCode,1387,
 0x46f4d0,_GizPanel_Reset,326,
 0x46f620,_GizPanels_Reset,197,"void __cdecl(void *, void *, void *)"
-0x46f730,_GizPanel_Activate,,"void __cdecl(GIZMO_PC *, i32)"
+0x46f730,_GizPanel_Activate,50,"void __cdecl(GIZMO_PC *, i32)"
 0x46f770,_GizPanel_RegisterGizmo,282,
 0x46f8c0,_GizTorp_Load,195,
 0x46f990,_GizTorps_ReserveBufferSpace,174,void * __cdecl(void *)
 0x46fa40,_GizTorp_SetVisibility,,"void __cdecl(GIZMO_PC *, i32)"
-0x46fa60,_GizTorp_Activate,,"void __cdecl(GIZMO_PC *, i32)"
+0x46fa60,_GizTorp_Activate,28,"void __cdecl(GIZMO_PC *, i32)"
 0x46fa90,_GizTorps_Reset,55,"void __cdecl(void *, void *, void *)"
 0x46fad0,_GizTorpMachine_FindNearest,171,"void *__cdecl(WORLDINFO*,NUVEC*,f32*)"
 0x46fb80,_GizTorp_Update,94,"void __cdecl(void *, void *, f32)"
@@ -1720,7 +1720,7 @@ address    , symbol                                                         , si
 0x4ce740,_Teleport_NetMoveCode,238,void __cdecl(GAMEOBJECT *)
 0x4ce830,_Teleport_MoveCode,1947,"void __cdecl(GAMEOBJECT *, i32)"
 0x4cf070,_Teleport_ActivateRev,,"i32 __cdecl(GIZMO_PC *, i32, i32)"
-0x4cf0b0,_Teleport_Activate,,"void __cdecl(GIZMO_PC *, i32)"
+0x4cf0b0,_Teleport_Activate,26,"void __cdecl(GIZMO_PC *, i32)"
 0x4cf0d0,_Teleport_GetMaxGizmos,25,i32 __cdecl(void *)
 0x4cf0f0,_Teleport_AddGizmos,95,"void __cdecl(GIZMOSYS_PC *, i32, void *, void *)"
 0x4cf150,_Teleport_GetGizmoName,17,char * __cdecl(GIZMO_PC *)
@@ -3052,7 +3052,7 @@ address    , symbol                                                         , si
 0x54db40,_Grapples_Draw,231,
 0x0054dc30,?GrappleAttachmentPositionsPc@@YAHPAUgameobject_s@@PAPAUnuvec_s@@@Z,126,
 0x54dcb0,_Grapple_DrawLine,461,
-0x54de80,_Grapple_Activate,,"void __cdecl(GIZMO_PC *, i32)"
+0x54de80,_Grapple_Activate,39,"void __cdecl(GIZMO_PC *, i32)"
 0x54deb0,_Grapple_SetVisibility,,"void __cdecl(GIZMO_PC *, i32)"
 0x54ded0,_Grapples_GetMaxGizmos,25,i32 __cdecl(void *)
 0x54def0,_Grapples_AddGizmos,100,"void __cdecl(GIZMOSYS_PC *, i32, void *, void *)"
@@ -4526,7 +4526,7 @@ address    , symbol                                                         , si
 0x5ab730,_GizTurrets_PostLoad,84,"void __cdecl(void *, void *)"
 0x5ab790,_GizTurrets_AddLevelSfx,161,"void __cdecl(void *, void *, i32 *, i32 *, i32)"
 0x5ab840,_GizTurrets_ReserveBufferSpace,186,void * __cdecl(void *)
-0x5ab900,_GizmoTurret_Activate,,"void __cdecl(GIZMO_PC *, i32)"
+0x5ab900,_GizmoTurret_Activate,70,"void __cdecl(GIZMO_PC *, i32)"
 0x5ab950,_GizmoTurret_ActivateRev,,"i32 __cdecl(GIZMO_PC *, i32, i32)"
 0x5ab9f0,_GizmoTurret_SetVisibility,,"void __cdecl(GIZMO_PC *, i32)"
 0x5aba30,_GizmoTurret_GetPos,,NUVEC * __cdecl(GIZMO_PC *)
@@ -10964,6 +10964,7 @@ address    , symbol                                                         , si
 0x757cc8,_AITransferLiteral757cc8,7,const char[7]
 0x757cd0,_AITransferLiteral757cd0,6,const char[6]
 0x757cd8,_AITransferLiteral757cd8,5,const char[5]
+0x00757ce0,_AIActionIgnoreDoneFlagNamePc,17,const char[17]
 0x00757cf4 , _AIActionIDName                                                , 3     , const char[3]
 0x757cf8,??_C@_0N@HBCFLCHB@SingleSwitch?$AA@,13,const char[]
 0x757d08,??_C@_0L@JENDBCPD@min_speed?$DN?$AA@,11,const char[]

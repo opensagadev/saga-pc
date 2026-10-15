@@ -177,6 +177,17 @@ void __cdecl GizPanel_Reset(void *context) {
     NuMtxTranslate(&panel->matrix, &panel->position);
 }
 
+void __cdecl GizPanel_Activate(void *input, i32 active) {
+    GIZMO_PC *gizmo = (GIZMO_PC *)input;
+    PANEL_MOVEMENT_PC *panel;
+    if (gizmo != NULL && gizmo->object != NULL) {
+        panel = (PANEL_MOVEMENT_PC *)gizmo->object;
+        panel->flags ^= (u8)(((active != 0) << 3) ^ panel->flags) & 8;
+        if (active != 0)
+            GizPanel_Reset(panel);
+    }
+}
+
 void __cdecl GizPanels_Reset(void *world_pointer, void *unused, void *progress_pointer) {
     WORLDINFO *world = (WORLDINFO *)world_pointer;
     PANEL_SYSTEM_PC *system;

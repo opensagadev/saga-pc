@@ -8518,25 +8518,36 @@ i32 __cdecl Action_SetLevelPath(AISYS_PC *sys, AISCRIPTPROCESS_PC *processor, AI
 
 i32 Action_SetHint(AISYS_PC *sys, AISCRIPTPROCESS_PC *processor, AIPACKET_PC *packet, char **params, i32 param_4,
                    i32 param_5, f32 param_6) {
-    (void)sys;
-    (void)processor;
-    (void)packet;
-    (void)params;
-    (void)param_4;
-    (void)param_5;
-    (void)param_6;
+    i32 hint_id = -1;
+    i32 ignore_done = 0;
+    i32 index;
+    char *value;
+    if (param_5 != 0) {
+        for (index = 0; index < param_4; ++index) {
+            value = NuStrIStr(params[index], (char *)AIActionIDName);
+            if (value != NULL)
+                hint_id = (i32)AIParamToFloat(processor, value + 3);
+            else if (NuStrIStr(params[index], (char *)AIActionIgnoreDoneFlagNamePc) != NULL)
+                ignore_done = 1;
+        }
+        Hint_SetHintFromId(hint_id, 0, ignore_done);
+    }
     return 1;
 }
 
 i32 Action_SetHintComplete(AISYS_PC *sys, AISCRIPTPROCESS_PC *processor, AIPACKET_PC *packet, char **params,
                            i32 param_4, i32 param_5, f32 param_6) {
-    (void)sys;
-    (void)processor;
-    (void)packet;
-    (void)params;
-    (void)param_4;
-    (void)param_5;
-    (void)param_6;
+    i32 hint_id = -1;
+    i32 index;
+    char *value;
+    if (param_5 != 0) {
+        for (index = 0; index < param_4; ++index) {
+            value = NuStrIStr(params[index], (char *)AIActionIDName);
+            if (value != NULL)
+                hint_id = (i32)AIParamToFloat(processor, value + 3);
+        }
+        Hint_SetComplete(hint_id);
+    }
     return 1;
 }
 

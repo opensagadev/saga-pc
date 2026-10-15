@@ -1,5 +1,17 @@
 #include "saga.h"
 
+STATIC_ASSERT(offsetof(LEVEL_SCRIPT_PROCESS_PC, processor) + offsetof(AISCRIPTPROCESS_PC, flags) == 0x60);
+STATIC_ASSERT(offsetof(GIZMO_PC, object) == 0);
+
+void __cdecl AI_Activate(void *input, i32 active) {
+    GIZMO_PC *gizmo = (GIZMO_PC *)input;
+    LEVEL_SCRIPT_PROCESS_PC *process;
+    if (gizmo != NULL && gizmo->object != NULL) {
+        process = (LEVEL_SCRIPT_PROCESS_PC *)gizmo->object;
+        process->processor.flags ^= (((active == 0) << 1) ^ process->processor.flags) & 2;
+    }
+}
+
 #include <string.h>
 #include <stdio.h>
 
