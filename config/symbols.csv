@@ -818,9 +818,9 @@ address    , symbol                                                         , si
 0x454960   , _Action_SetCanTakeOver                                          , 135   , "i32 __cdecl (AISYS_PC *, AISCRIPTPROCESS_PC *, AIPACKET_PC *, char **, i32, i32, f32)"
 0x4549f0   , _Action_CanBeCarried                                            , 221   , "i32 __cdecl (AISYS_PC *, AISCRIPTPROCESS_PC *, AIPACKET_PC *, char **, i32, i32, f32)"
 0x454ad0,_Action_IgnoreLastSafePathPosPc,222,
-0x454bb0,_Action_AwkwardShapeOverridePc,222,
-0x454c90,_Action_IgnoreSlideTerrainPc,193,
-0x454d60,_Action_SplineFollowTerrainPc,193,
+0x454bb0,_Action_AwkwardShapeOverridePc,222,"i32 __cdecl(AISYS_PC *, AISCRIPTPROCESS_PC *, AIPACKET_PC *, char **, i32, i32, f32)"
+0x454c90,_Action_IgnoreSlideTerrainPc,193,"i32 __cdecl(AISYS_PC *, AISCRIPTPROCESS_PC *, AIPACKET_PC *, char **, i32, i32, f32)"
+0x454d60,_Action_SplineFollowTerrainPc,193,"i32 __cdecl(AISYS_PC *, AISCRIPTPROCESS_PC *, AIPACKET_PC *, char **, i32, i32, f32)"
 0x454e30,_Action_AddMiscPickups,294,"i32 __cdecl (AISYS_PC *, AISCRIPTPROCESS_PC *, AIPACKET_PC *, char **, i32, i32, f32)"
 0x454f60,_Action_SetLayer,318,"i32 __cdecl(AISYS_PC *,AISCRIPTPROCESS_PC *,AIPACKET_PC *,char **,i32,i32,f32)"
 0x4550a0,_Action_CreateRider,275,"i32 __cdecl (AISYS_PC *, AISCRIPTPROCESS_PC *, AIPACKET_PC *, char **, i32, i32, f32)"
@@ -847,7 +847,7 @@ address    , symbol                                                         , si
 0x456490,_Action_CanHelpWithTriggers,113,"i32 __cdecl (AISYS_PC *, AISCRIPTPROCESS_PC *, AIPACKET_PC *, char **, i32, i32, f32)"
 0x456510,_Action_CanCollideWithObjects,113,"i32 __cdecl (AISYS_PC *, AISCRIPTPROCESS_PC *, AIPACKET_PC *, char **, i32, i32, f32)"
 0x456590,_Action_AddTorpedoPacket,575,"i32 __cdecl (AISYS_PC *, AISCRIPTPROCESS_PC *, AIPACKET_PC *, char **, i32, i32, f32)"
-0x4567d0,_Action_SetShootOpponentsPc,113,
+0x4567d0,_Action_SetShootOpponentsPc,113,"i32 __cdecl(AISYS_PC *, AISCRIPTPROCESS_PC *, AIPACKET_PC *, char **, i32, i32, f32)"
 0x00456850 , _Action_PartyCanBeUnderCover                                    , 94    ," i32 __cdecl (void *, void *, void *, char **, i32, i32, f32)"
 0x004568b0 , _GameAIScriptAddLevelSfx                                       , 255   , "void __cdecl (WORLDINFO *, NULISTHDR *)"
 0x004569b0 , _Action_RaceOpponent                                           , 606   ,
