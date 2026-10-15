@@ -331,7 +331,7 @@
     "src/legoapi/mission.c": "04e202914e996191e8d9a494c7c2bf3269ab82673ad0dc220c39c0bbe6fde4d5",
     "src/legoapi/missions.c": "ae0537b4fdc2fffab2838eaaf259aae7481477ffd0791248fdb9a9afb511ae2b",
     "src/legoapi/model_animation.c": "ef78e3baf9aca6e9f638f4b195ef6cca7d5061a9ab739ebe9533b7f6dd75f5ab",
-    "src/legoapi/move.c": "e870758fa9246622cb070abcfb103ee3ce657686024601470beb4d82008931b0",
+    "src/legoapi/move.c": "47a45db7f60ca3628e10d224c0b7158205bb4a92f3590df17c91e6c385f19a96",
     "src/legoapi/netplay.c": "08f5e9eb81ca542d5e76d6c3ee9e8ae43aad56a50ed14da7a72e800c6682d0e9",
     "src/legoapi/newlevels.c": "d0dc547486da46b327b1d5a47a93874be06c985e258a703114c010c3e066a16d",
     "src/legoapi/objectsall.c": "1d0ff33901ba13c10ea3f607d9295a0cc611046b44792394da6ef3b696b62efb",
@@ -644,7 +644,7 @@
     "build/obj/legoapi/mission.obj": "8e0133cfc6e5ac15bb9c0659b0440cca23c0a95664fb18a44f20a9a7ac33a0b8",
     "build/obj/legoapi/missions.obj": "e5a6ccd1fcfe0a671379c6b58da3061053d606ae797a417bca358336d5037dd1",
     "build/obj/legoapi/model_animation.obj": "57916eaf4f3ef843e9a19d7ae74e429bea8f293fd7d513cbf01ef8d0db793657",
-    "build/obj/legoapi/move.obj": "da9db0fcba91ee49854a283a92f0939571e0a27ee6b65fce472945f6a1830dbe",
+    "build/obj/legoapi/move.obj": "4bd70db36aa954574b56cae88b0d9fbab65500acea74c16a0515363451bee337",
     "build/obj/legoapi/netplay.obj": "12b2ff5a6e2470570ce33ac68ee6d01ea10ff7c1b3ce36f424ceebc35713b920",
     "build/obj/legoapi/newlevels.obj": "169a0ae633f9802f6da128dec48a49a3be68d1c8871294cf6389468ca8bd1344",
     "build/obj/legoapi/objectsall.obj": "45a413520fba0abeba8cfe2df54635f6b591306f90fa48b5cdd4d0c3bdaa399f",
@@ -3018,17 +3018,17 @@
       "objects": [
         {
           "unit": "src/legoapi/move.c",
-          "base_size": 2500,
+          "base_size": 2509,
           "exact_match": false,
           "target_sha256": "eb15920cbd609937262f5a8d15f08551cf01025263672a8fd298f079bd517677",
-          "base_sha256": "797a0213b06992d0dcb1f03fe672f2ee622ce8d3b75a95ed174413794ca49c58",
-          "relocation_count": 68,
+          "base_sha256": "a3869cf3eccf1041d7a9792066ef52eb9daa38bb746bb6db21e53a788530b843",
+          "relocation_count": 69,
           "comparison_unit": "00416190-547399f101c4",
-          "objdiff_percent": 77.262405
+          "objdiff_percent": 77.6188
         }
       ],
       "status": "different",
-      "objdiff_percent": 77.262405
+      "objdiff_percent": 77.6188
     },
     {
       "name": "TerrainPlayerResetContactPc",
@@ -453613,10 +453613,10 @@
     "mapped_code_bytes": 2320820,
     "matched_code_bytes": 434420,
     "matching_percent": 12.51481456514462,
-    "fuzzy_coverage_percent": 43.19968070731967,
+    "fuzzy_coverage_percent": 43.199959766081285,
     "mapped_functions": 8557,
     "matched_functions": 3986,
-    "objdiff_fuzzy_percent": 74.54881,
+    "objdiff_fuzzy_percent": 74.54931,
     "objdiff_total_code": 2014822,
     "image_bytes": 40067072,
     "mapped_bytes": 3430605,
@@ -454715,7 +454715,7 @@
       "metadata_sha256": "fe09365da4c355f220d724ca99394fc120b758891b4188d2c49707b6df0894f2",
       "header_path": "src/saga.h",
       "header_sha256": "7a555fb4f1ad5ac2a1352b84165d2aa78bce95d67085231d76e3dd9911cf3c99",
-      "geometry_object_sha256": "2bde46f02b1e847cc74ee4cf37d7f9fb8c75fabe2036db03065bb1dd938262b6",
+      "geometry_object_sha256": "e5d30cb66bd8324d8e152027f1c049a54b2bfad455cca1662fc66dee28c934a9",
       "toolchain_sha256": "489d0782638d8033137cdb2834462416111945cbfa073147820e314b8576b95b",
       "implementation_sha256": "9ad7521230f06fde31f0771b10bd001037ea32d2def455913a7f391f05dede9d",
       "headers": {

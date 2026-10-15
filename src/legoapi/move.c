@@ -2236,7 +2236,7 @@ void __cdecl MovePlayer(GAMEOBJECT *object) {
     if (object->character_context == 0x3b || object->character_context == 0x39)
         return;
     object->movement_mode = 2;
-    STUBBED_NAMED("ShoveSystemCheckGameObject(object)");
+    ShoveSystemCheckGameObject(object);
     if (object->id == (u16)id_DRAGBOMB)
         MovePlayer_ROLLING(object);
     else if (!MovePlayer_TWIST(object) && !MovePlayer_CIRCLE(object) && !MovePlayer_GUNSHIPIN(object) &&
