@@ -31,13 +31,13 @@
     "src/audio/vorbis/window.h": "a10ede6832692ccec154bb9291be7ec236f9642a99a6af9b108ff7df030904b5",
     "src/diagnostics.h": "dae209151b55b9f5aadc18ce8ad63a1d961c311a7d8ec7214ea32c7e7a095459",
     "src/externals.h": "5b08276a7759c01921ac2a5239bf0978accdd38d2533b458c25d1b16f8a4402d",
-    "src/saga.h": "e3ed61a0762ff216ce1d9325486cb95550bdebe76936bba94e08869a12278231",
+    "src/saga.h": "8d63cc0fd1e6c624bb0e623d5a017109c6dc9ee30eb8bb4ca3b777d1c5834738",
     "config/candidate-only.json": "2f9b865d9f773f8a9e79d4e6d155fa387e8d7b8087d6bf3b61298055281cec09",
     "config/code-groups.json": "0c7700323db8a7240f98cd4ab349200bbf0a8f580d3ca93167477e00c7db77cc",
     "config/data-members.json": "fe09365da4c355f220d724ca99394fc120b758891b4188d2c49707b6df0894f2",
     "config/library-objects.json": "e5ae24d3eac36fa0d0cb098f7690faaef3110f225db30c8cbf0f7d0d64f6ecfe",
     "config/project.json": "dc0e8cc85ae5650c6937b70ccaefb0153629c2460fa09cd4f6b625e251e623dd",
-    "config/symbols.csv": "78d177c1e432bb10f99f85481d3a01c0ead597813ce0a87d43bfe3f699de737c",
+    "config/symbols.csv": "7a0a462f46f0c995ed94e406c3830c0323b0ffc17f7edb9f579c02ce479cc1ee",
     "config/symbols.md": "dffbdaac86011e3aee74b404063c15bda97f88af3db337ffef9f1bad1785d212",
     "config/toolchain.json": "489d0782638d8033137cdb2834462416111945cbfa073147820e314b8576b95b",
     "config/tools.json": "50199f6b132a7abfabf251e98a75be0a957abfe50f1ff776188fba21e4c4436f",
@@ -76,7 +76,7 @@
     "tools/dinput8.def": "0650c8a82ce920cd1f07c5f585b6f64129b09c5969bb5074b871c8921dc32a3c",
     "tools/dsound.def": "10147b85f8f09f4a3fefe82c0756818c64d9a6f2d81bb3f120757ea5b08941da",
     "tools/xinput1_3.def": "f2b829c89adb5c7fc9fbd7dfdbc49f8eb5412d4700bf1123935f71a29fa84b50",
-    "src/batman.cpp": "818fe8dccf8ca7158f6ef59a40b952d2ee30863152d4eea0571903b13d8b8aa7",
+    "src/batman.cpp": "f82aeac53dce303ca7714584e7354dd9cb8d8a50348d5ddc59cf27c509340a72",
     "src/data.cpp": "d5f7b8a8795f155bc3f1fdf1c763834656ec3440da0d8cb1518d7fe59d92086a",
     "src/gameapi/message.cpp": "d866d1645077e79807e57c3808e326e472a7ea95edd40a22bc405f922aff4999",
     "src/gameapi/saveload.cpp": "98b1f080a17c0ee2f1d4be9aaa54aba5beac5d4ef2807d9e1d84141bee0bf98a",
@@ -355,7 +355,7 @@
     "src/legoapi/snakes.c": "41ec24352d214b20f6e9c7822affda47766eff7e9cf173a5137830045a2a713e",
     "src/legoapi/socksys.c": "02a4c133e2e0ae800e097a78cf49095c9d5c8475fd8beba898b99e99047335fe",
     "src/legoapi/specialmoves.c": "4a40c260e508b3062bf3565cfd9809c74b3157d269a2c145c2162eed704f8c0d",
-    "src/legoapi/specialsfx.c": "26be35ccfab8cdf989818d6c2ae8dd79d9b3815e98f1aef008a71487f16f7ce2",
+    "src/legoapi/specialsfx.c": "c5a33a7d49985156a3fe223907fe5082cb2bc15d18b85eefcb81d9fd807762c0",
     "src/legoapi/speederchase.c": "0a4e916a3bac7c290b40dc789c612c1c730e8d434a79e9635e63572cb64e646b",
     "src/legoapi/startup_dats.c": "5bda6ca6f5af36b6e66d3c6ed8b87d9b2394449b7d25a45851c44698eb36bfd8",
     "src/legoapi/suit.c": "fc5ff3f0ecdb69b925bc06dc254ce6686635ee7f00f4369ab1fa51644b294de0",
@@ -483,7 +483,7 @@
     "build/obj/audio/vorbis/vorbisfile.obj": "77ce8bbf4000cb4611f84605a80b08434e6b6716554cdc0093588762b8f331e4",
     "build/obj/audio/vorbis/window.obj": "f68053e4c5824d92bbce09964ac5beee2ac43873a54c81453ad3dfa9e2e07d3d",
     "build/obj/audio/vorbis_smallft.obj": "7f8b607ee0383eb3092e5722cc2c3a157d9adf1ca393fc46312743f1f386039d",
-    "build/obj/batman.obj": "ad7820c3c3ea2a8a175c9979ce9c83fe2bc3a4001addd80e0c9d85f5554d6b36",
+    "build/obj/batman.obj": "4c213d85f643faf7dd512d536c45cf79af5faad7ac6b0dc8dc36d4d40b5c6994",
     "build/obj/data.obj": "a98a77cb33885dddc5c0ab18713c32d09b574963e4e9c2e839c56a6d0a7acc3a",
     "build/obj/editor/edtoolsall.obj": "3a1e240439b0ae227f11c9ebe3f9c27dc5e9b3fc7595f47ba4b36e5ddfd6c74a",
     "build/obj/gameapi/ai_registry_pc.obj": "55ac2265320c0ace8b9bae519dd7a88dbb9276f708015685cbf5ba591d02ccbf",
@@ -681,7 +681,7 @@
     "build/obj/legoapi/snakes.obj": "da04702f72953c830bf090e2968746cf115b154d57b9d76a585786f4bd2e5b38",
     "build/obj/legoapi/socksys.obj": "8b5962ddd926441b8f43cb373036de58afcba8d90a391b2ec464e8154956f5e7",
     "build/obj/legoapi/specialmoves.obj": "32e6493432148b2e3021130166cf2a296a30a6aede906569fffc807bb6991622",
-    "build/obj/legoapi/specialsfx.obj": "aa26889af9c163bceccbc9d0d250cf08aac0fbb2e9cd381e9461daaad3e128ed",
+    "build/obj/legoapi/specialsfx.obj": "19d7e28d1f09e6eec2a8f80ccb5550261a752e4fab5d32c0b435f573d96e2687",
     "build/obj/legoapi/speederchase.obj": "a652f0c70995e72a66d22b015813e59cc9e9fc69a5f47f0063748307544cac4d",
     "build/obj/legoapi/startup_dats.obj": "d985ea6d6086e4bf5471bcb8a5fa370e68c76d5d910799cd68f8dbfe8dffb02a",
     "build/obj/legoapi/suit.obj": "7535c79585cb8ec4cfe1615d4eecd18190c0b3d0f60cf8f4c234a4e5e355874a",
@@ -28814,17 +28814,17 @@
       "objects": [
         {
           "unit": "src/batman.cpp",
-          "base_size": 1989,
+          "base_size": 1991,
           "exact_match": false,
           "target_sha256": "26ebdc2d5c01ca2be720acd39df9a8059cfdc6a03816fc856db4230c25ea2478",
-          "base_sha256": "9eeb1ad906dcd3758adf00aca15195321cef4d0711a560cab63614224744e93a",
-          "relocation_count": 162,
+          "base_sha256": "f186cfd9b7dc14eaadaa73aecf07397583e60c1fdb719d1c5ab75d4c2809ff07",
+          "relocation_count": 163,
           "comparison_unit": "00491d50-0eb317885010",
-          "objdiff_percent": 69.81916
+          "objdiff_percent": 70.17139
         }
       ],
       "status": "different",
-      "objdiff_percent": 69.81916
+      "objdiff_percent": 70.17139
     },
     {
       "name": "?NuMainRenderWorld@@YAXPAUWORLDINFO_s@@@Z",
@@ -106142,11 +106142,25 @@
       "name": "UpdateSpecialSfx",
       "symbol": "_UpdateSpecialSfx",
       "address": "0x005b1b10",
-      "units": [],
+      "units": [
+        "src/legoapi/specialsfx.c"
+      ],
       "target_size": 695,
       "exact_match": false,
-      "objects": [],
-      "status": "not implemented"
+      "objects": [
+        {
+          "unit": "src/legoapi/specialsfx.c",
+          "base_size": 688,
+          "exact_match": false,
+          "target_sha256": "2a1aac30d1829adcfcd4e9a53e23a6c53a49bcd3c45c95174f0fb5bb8ee01b24",
+          "base_sha256": "56f3865c0ea0b975f83ff9f4cf46136b1e573263e874a872e5837e3c0c6cbb1e",
+          "relocation_count": 7,
+          "comparison_unit": "005b1b10-4e1d9ca7a7a4",
+          "objdiff_percent": 92.50826
+        }
+      ],
+      "status": "different",
+      "objdiff_percent": 92.50826
     },
     {
       "name": "SetSpecialSfxBits",
@@ -452399,11 +452413,11 @@
     "mapped_code_bytes": 2317306,
     "matched_code_bytes": 433998,
     "matching_percent": 12.502657547174703,
-    "fuzzy_coverage_percent": 42.93213225244641,
+    "fuzzy_coverage_percent": 42.95092940630702,
     "mapped_functions": 8546,
     "matched_functions": 3980,
-    "objdiff_fuzzy_percent": 74.506226,
-    "objdiff_total_code": 2003509,
+    "objdiff_fuzzy_percent": 74.51294,
+    "objdiff_total_code": 2004204,
     "image_bytes": 40067072,
     "mapped_bytes": 3394987,
     "mapping_percent": 8.473259538406001,
@@ -453500,8 +453514,8 @@
     "inputs": {
       "metadata_sha256": "fe09365da4c355f220d724ca99394fc120b758891b4188d2c49707b6df0894f2",
       "header_path": "src/saga.h",
-      "header_sha256": "e3ed61a0762ff216ce1d9325486cb95550bdebe76936bba94e08869a12278231",
-      "geometry_object_sha256": "f57ed6ed4f8a9d70749dec09f7b38b3a05c462aeb1e1a05cea2028e9bce6febc",
+      "header_sha256": "8d63cc0fd1e6c624bb0e623d5a017109c6dc9ee30eb8bb4ca3b777d1c5834738",
+      "geometry_object_sha256": "e204cd3f785a1787a0167f935c7f48eb448a18f7766af97131be063b4d192c3c",
       "toolchain_sha256": "489d0782638d8033137cdb2834462416111945cbfa073147820e314b8576b95b",
       "implementation_sha256": "9ad7521230f06fde31f0771b10bd001037ea32d2def455913a7f391f05dede9d",
       "headers": {
@@ -453531,7 +453545,7 @@
         "src/audio/vorbis/window.h": "a10ede6832692ccec154bb9291be7ec236f9642a99a6af9b108ff7df030904b5",
         "src/diagnostics.h": "dae209151b55b9f5aadc18ce8ad63a1d961c311a7d8ec7214ea32c7e7a095459",
         "src/externals.h": "5b08276a7759c01921ac2a5239bf0978accdd38d2533b458c25d1b16f8a4402d",
-        "src/saga.h": "e3ed61a0762ff216ce1d9325486cb95550bdebe76936bba94e08869a12278231"
+        "src/saga.h": "8d63cc0fd1e6c624bb0e623d5a017109c6dc9ee30eb8bb4ca3b777d1c5834738"
       },
       "owners": {
         "src/data.cpp": {

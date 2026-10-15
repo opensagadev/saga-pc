@@ -125,6 +125,79 @@ typedef struct level_sfx_special_world_s {
 STATIC_ASSERT(offsetof(LEVEL_SFX_SPECIAL_WORLD_PC, special_sfx_event_count) == 0x46d4);
 STATIC_ASSERT(offsetof(LEVEL_SFX_SPECIAL_WORLD_PC, special_sfx_events) == 0x46d8);
 
+void __cdecl UpdateSpecialSfx(WORLDINFO *world_info) {
+    SPECIAL_RESOURCE_WORLD_PC *world = (SPECIAL_RESOURCE_WORLD_PC *)world_info;
+    i32 i, j, direction, play;
+    SPECIAL_RESOURCE_ENTRY_PC *entry;
+    SPECIAL_RESOURCE_EVENT_PC *event;
+    NUINSTANIM_TIME_VIEW *animation;
+    void *animation_data;
+    NUVEC *position;
+    f32 end_frame, frame;
+    u8 flags;
+    for (i = 0; i < world->entry_count; ++i) {
+        entry = &world->entries[i];
+        event = entry->events;
+        if (NuSpecialExistsFn(&entry->special) == 0 || NuSpecialGetVisibilityFn(&entry->special) == 0)
+            continue;
+        animation = (NUINSTANIM_TIME_VIEW *)NuSpecialGetInstAnim(&entry->special);
+        if (animation == NULL)
+            continue;
+        animation_data = ((NUGSCN *)entry->special.scene)->instance_animation_data[animation->animation_index];
+        if (animation_data == NULL)
+            continue;
+        end_frame = NuAnimEndFrameOld(animation_data);
+        frame = animation->ltime;
+        if ((animation->flags & 1) == 0 && entry->animation_playing == 0) {
+            for (j = 0; j < entry->event_count; ++j) {
+                if (event != NULL) {
+                    event->flags &= ~1u;
+                    if ((event->flags & 2) == 0 && frame < end_frame)
+                        event->previous_frame = 0.0f;
+                }
+                event = event->next;
+            }
+            entry->animation_playing = 0;
+            continue;
+        }
+        position = NuSpecialGetDrawPos(&entry->special);
+        direction = GetAnimDirection(animation);
+        for (j = 0; j < entry->event_count; ++j) {
+            if (event != NULL) {
+                play = 0;
+                flags = event->flags;
+                if ((flags & 2) != 0) {
+                    if ((direction == 0 && (flags & 4) != 0) || (flags & 0xc) == 0xc) {
+                        if (event->trigger_frame <= frame && frame <= event->previous_frame)
+                            play = 1;
+                    } else if (direction == 1 && (flags & 8) != 0 && frame <= event->trigger_frame &&
+                               frame >= event->previous_frame) {
+                        play = 1;
+                    }
+                } else if ((flags & 0xc) == 0xc) {
+                    if ((event->previous_frame < event->trigger_frame && event->trigger_frame <= frame) ||
+                        (event->trigger_frame < event->previous_frame && frame <= event->trigger_frame))
+                        play = 1;
+                } else if ((flags & 4) != 0) {
+                    if ((event->previous_frame < event->trigger_frame && event->trigger_frame <= frame) ||
+                        (event->previous_frame == 0.0f && event->trigger_frame == 1.0f))
+                        play = 1;
+                } else if ((flags & 8) != 0) {
+                    if ((event->trigger_frame < event->previous_frame && frame <= event->trigger_frame) ||
+                        (end_frame == event->previous_frame && end_frame == event->trigger_frame))
+                        play = 1;
+                }
+                if (play != 0)
+                    GameAudio_PlaySfxById(event->sfx_id, position, 0, 0);
+                if ((event->flags & 2) == 0)
+                    event->previous_frame = frame;
+            }
+            event = event->next;
+        }
+        entry->animation_playing = (i8)(animation->flags & 1);
+    }
+}
+
 void __cdecl SetSpecialSfxBits(i32 *ids, i32 *count, WORLDINFO *world) {
     LEVEL_SFX_SPECIAL_WORLD_PC *view = (LEVEL_SFX_SPECIAL_WORLD_PC *)world;
     i32 i;

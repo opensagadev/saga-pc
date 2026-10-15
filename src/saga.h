@@ -17321,7 +17321,7 @@ extern "C" {
     };
     typedef struct SPECIAL_RESOURCE_ENTRY_PC {
         u8 flags, unknown_01;
-        i8 event_count, unknown_03;
+        i8 event_count, animation_playing;
         NUSPECIALHANDLE special;
         SPECIAL_RESOURCE_EVENT_PC *events;
     } SPECIAL_RESOURCE_ENTRY_PC;
@@ -17345,6 +17345,8 @@ extern "C" {
     STATIC_ASSERT(offsetof(SPECIAL_RESOURCE_EVENT_PC, next) == 0xc);
     STATIC_ASSERT(offsetof(SPECIAL_RESOURCE_ENTRY_PC, flags) == 0x0);
     STATIC_ASSERT(offsetof(SPECIAL_RESOURCE_ENTRY_PC, event_count) == 0x2);
+    STATIC_ASSERT(offsetof(SPECIAL_RESOURCE_ENTRY_PC, animation_playing) == 0x3);
+    STATIC_ASSERT(sizeof(((SPECIAL_RESOURCE_ENTRY_PC *)0)->animation_playing) == 1);
     STATIC_ASSERT(offsetof(SPECIAL_RESOURCE_ENTRY_PC, special) == 0x4);
     STATIC_ASSERT(offsetof(SPECIAL_RESOURCE_ENTRY_PC, events) == 0x10);
     STATIC_ASSERT(offsetof(SPECIAL_RESOURCE_WORLD_PC, config_file) == 0x80);
@@ -17375,6 +17377,8 @@ extern "C" {
     i32 __cdecl InitSpecialSfx(void *);
     void __cdecl LoadSpecialSfxFile(void *);
     i32 __cdecl SpecialSfxLoad(char *, void *);
+    void __cdecl UpdateSpecialSfx(WORLDINFO *);
+    i32 __cdecl GetAnimDirection(NUINSTANIM_TIME_VIEW *);
 
     void __cdecl AveragePlayerCurrentSpeedMul(void);
     void __cdecl SetPlayer(void);

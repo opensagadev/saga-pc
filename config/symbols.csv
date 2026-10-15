@@ -4623,7 +4623,7 @@ address    , symbol                                                         , si
 0x5ae720,_GizSpecial_StoreProgress,170,
 0x5ae7d0,_GizSpecial_ReserveBuffer,261,
 0x5ae8e0,_GizSpecial_RegisterGizmo,279,
-0x5aea20,_GetAnimDirection,56,
+0x5aea20,_GetAnimDirection,56,i32 __cdecl(NUINSTANIM_TIME_VIEW *)
 0x5aee80,_edbobs_DrawCoordinateInfo,140,
 0x5aef10,_GizmoFileReadGameAnimSet,413,"i32 __cdecl (GAMEANIMSET *, void *, void (__cdecl *)(GAMEANIMOBJ *, u8), u8, char *, char *)"
 0x5af0e0,_Portal_GetMaxGizmos,25,
@@ -4730,7 +4730,7 @@ address    , symbol                                                         , si
 0x5b1770,_InitSpecialSfx,142,i32 __cdecl (void *)
 0x5b1810,_SpecialSfxLoad,596,"i32 __cdecl (char *, void *)"
 0x5b1a70,_SpecialSfxAdd,150,
-0x5b1b10,_UpdateSpecialSfx,695,
+0x5b1b10,_UpdateSpecialSfx,695,void __cdecl(WORLDINFO *)
 0x5b1dd0,_SetSpecialSfxBits,91,"void __cdecl (i32 *, i32 *, WORLDINFO *)"
 0x5b1e30,_LoadSpecialSfxFile,103,void __cdecl (void *)
 0x5b1ee0,_LoadEditorSplines,550,"i32 __cdecl(char *, VARIPTR *, VARIPTR *)"

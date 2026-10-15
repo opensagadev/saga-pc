@@ -184,7 +184,7 @@ static void NuMainUpdateFrame(WORLDINFO *world, i32 *frame_flag) {
         if ((world->current_level->flags & 8) != 0) {
             TerrainPlatformNewUpdate();
         }
-        STUBBED_NAMED("NuMainUpdateFrame: UpdateSpecialSfx(world) at 0x005b1b10");
+        UpdateSpecialSfx(world);
         Teleports_UpdateBeforeGameObjects(world);
         if (CUTSTOPGAME == 0) {
             LOG_INFO_IF(GameTimer.update_count < 2, "Update stage: before ManageGameObjects world=%p", (void *)WORLD);
