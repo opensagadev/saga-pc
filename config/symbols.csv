@@ -2979,7 +2979,7 @@ address    , symbol                                                         , si
 0x00548a60 , _GetMusicIndex                                                 , 4     , "i16 __cdecl (char *, nusound_filename_info_s *, i32)"
 0x00548a70 , _ConfigureMusic                                                , 108   , "nusound_filename_info_s * __cdecl (char *, VARIPTR *, VARIPTR *)"
 0x00548ae0 , _GamePlayMusic                                                 , 324   , "void __cdecl (LEVELDATA_PC *, i32, OPTIONSSAVE *)"
-0x548c40,_ProcessMusicChanges,577,
+0x548c40,_ProcessMusicChanges,577,"void __cdecl(LEVELDATA_PC *, OPTIONSSAVE *)"
 0x00548e90 , _MusicClearAll                                                 , 82    , void __cdecl (void)
 0x00548ef0 , _SfxCheckMusicOnOff                                            , 1     , void __cdecl (OPTIONSSAVE *)
 0x00548f00 , _UpdateBackgroundMusic                                         , 1     , void __cdecl (void)
@@ -6178,10 +6178,12 @@ address    , symbol                                                         , si
 0x00652010 , _AudioGroup_Parse                                              , 158   , void __cdecl (NUFPAR_PC *)
 0x6520b0,_LoadSfx,245,"void __cdecl(const char *,VARIPTR *,VARIPTR)"
 0x6521b0,_InitSfx,583,"void __cdecl(VARIPTR *,VARIPTR,const char *)"
+0x652400,_PauseGameAudio,28,void __cdecl(i32)
 0x00652450 , _SfxSetFileTable                                               , 72    , void __cdecl (SFX_FILE_INFO_PC *)
 0x00652a40 , _SoundStopMusic                                                , 131   , void __cdecl (void)
 0x00652ad0 , _SoundKillAll                                                  , 20    , void __cdecl (void)
 0x00652b40 , _ClearLinkedCutSceneMusic                                      , 27    , void __cdecl (void *)
+0x652b60,_SetLinkedCutSceneMusic,55,"void __cdecl(void *, i32)"
 0x652fb0,_PauseGameCut,72,
 0x00653000 , _RestoreGameCut                                                , 67    , void __cdecl (void)
 0x00653840,_SolveQuadratic,243,"i32 __cdecl (f32, f32, f32, f32 *, f32 *)"
@@ -6782,6 +6784,7 @@ address    , symbol                                                         , si
 0x698520,_PCStereoStartPacket,181,void __cdecl(PC_STEREO_PLAY_PACKET *)
 0x006986d0 , _NuSound3SetDat                                                , 10    , void __cdecl (NUDATHDR *)
 0x698710,_NuSound3SetRequestTable,100,"void __cdecl(u16 *,i32)"
+0x698790,_NuSound3SetSFXPitch,1,void __cdecl(i32)
 0x006987a0 , _NuSound3FlushLoops                                            , 1     , void __cdecl (void)
 0x00698900 , _NuSound3AddRumble                                             , 1     , "void __cdecl (void *, f32, i32, i32, f32)"
 0x00698910 , _NuSound3StopRumble                                            , 1     , void __cdecl (void)
@@ -6794,6 +6797,7 @@ address    , symbol                                                         , si
 0x698cc0,?UpdateVoices@SoundVoiceManagerPC@@QAEXXZ,336,void __thiscall (SoundVoiceManagerPC *)
 0x00698e70 , _NuSound3Update                                                , 86    , void (void)
 0x00698ed0 , _NuSound3KillAllAudio                                          , 32    , void __cdecl (void)
+0x698f10,_NuSound3StopSFX,10,void __cdecl(void)
 0x699070,?SetFormatPc@SoundQueue@@QAEHPBUtWAVEFORMATEX@@@Z,266,"i32 __thiscall(SoundQueue *,const WAVEFORMATEX *)"
 0x00699180 , ?SendCommand@SoundQueue@@QAEHHH@Z                              , 117   , "i32 __thiscall (SoundQueue *, i32, i32)"
 0x00699260 , ?HasCommand@SoundQueue@@QAEHH@Z                                , 85    , "i32 __thiscall (SoundQueue *, i32)"

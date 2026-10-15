@@ -129,7 +129,8 @@ static void NuMainUpdateFrame(WORLDINFO *world, i32 *frame_flag) {
         NuSound3Update();
         UpdateLevelSfx(world, Paused);
         STUBBED_NAMED("NuMainUpdateFrame: NuSound3SetRumblePads, NuSound3UpdateRumble at 0x00698920, SoundUpdate at "
-                      "0x00653460, ProcessMusicChanges at 0x00548c40");
+                      "0x00653460");
+        ProcessMusicChanges(world->current_level, &Game.options_save);
     }
     LOG_INFO_IF(GameTimer.update_count < 2, "Update stage: after sound world=%p", (void *)WORLD);
     if (Paused != 0 && screendump == 0 && !IsGrabbingScreen()) {

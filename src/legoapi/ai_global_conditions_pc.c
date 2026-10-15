@@ -274,3 +274,19 @@ f32 __cdecl Condition_PartyUnderCoverPc(AISYS_PC *system, AISCRIPTPROCESS_PC *pr
     (void)argument;
     return party_under_cover != 0 ? 1.0f : 0.0f;
 }
+
+f32 __cdecl Condition_OriginRangePc(AISYS_PC *system, AISCRIPTPROCESS_PC *process, AIPACKET_PC *packet, char *name,
+                                    void *argument) {
+    NUVEC *origin;
+    (void)process;
+    (void)name;
+    (void)argument;
+    if (packet != NULL) {
+        origin = GetOriginPositionFn != NULL ? GetOriginPositionFn(system, packet) : NULL;
+        if (origin != NULL)
+            return NuVecDist(&packet->terrain_origin, origin, NULL);
+        if (system != NULL && packet->creature_index != 0xff)
+            return NuVecDist(&packet->terrain_origin, &system->creatures[packet->creature_index].position, NULL);
+    }
+    return 0.0f;
+}

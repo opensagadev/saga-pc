@@ -850,3 +850,11 @@ extern "C" {
         return 1;
     }
 }
+
+extern "C" void __cdecl NuSound3StopSFX(void) {
+    SoundVoiceManager.StopAllVoices();
+}
+
+extern "C" void __cdecl NuSound3SetSFXPitch(i32 pitch) {
+    (void)pitch;
+}

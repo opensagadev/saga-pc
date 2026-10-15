@@ -938,3 +938,17 @@ void __cdecl InitSfx(VARIPTR *cursor, VARIPTR end, const char *file) {
     }
     PCByteCopy_candidate(SfxBits, GlobalSfxBits, 200);
 }
+
+void __cdecl PauseGameAudio(i32 ignored) {
+    (void)ignored;
+    if (NOSOUND == 0) {
+        NuSound3StopSFX();
+        NuSound3SetSFXPitch(0);
+    }
+}
+
+void __cdecl SetLinkedCutSceneMusic(void *context, i32 state) {
+    Music.track_data = context;
+    if (Music.state == 11 || Music.state == 12 || Music.state == 13)
+        Music.state = state == 13 ? 13 : 11;
+}

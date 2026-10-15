@@ -2368,3 +2368,74 @@ extern "C" void MusicClearAll() {
     MusicPlrsHoldAttack = 0;
     CurrentMusicPair_Quiet = -1;
 }
+
+struct MUSIC_CUT_STOP_VIEW_PC {
+    u8 unknown_0000[0xec];
+    i16 skip_level;
+};
+STATIC_ASSERT(offsetof(MUSIC_CUT_STOP_VIEW_PC, skip_level) == 0xec);
+STATIC_ASSERT(offsetof(GAMEOBJECT, ai_packet) + offsetof(AIPACKET_PC, nearest_opponent) == 0x39c);
+STATIC_ASSERT(offsetof(GAMEOBJECT, ai_packet) + offsetof(AIPACKET_PC, nearest_opponent_metric) == 0x3a0);
+STATIC_ASSERT(offsetof(GAMEOBJECT, ai_packet) + offsetof(AIPACKET_PC, opponent) == 0x3ac);
+STATIC_ASSERT(offsetof(GAMEOBJECT, dead) == 0x28b);
+STATIC_ASSERT(offsetof(LEVELDATA_PC, music_tracks) == 0x118);
+STATIC_ASSERT(offsetof(OPTIONSSAVE, music_enabled) == 6);
+
+extern "C" void __cdecl ProcessMusicChanges(LEVELDATA_PC *level, OPTIONSSAVE *options) {
+    if (GameAudio_ActionMusicFn != NULL) {
+        MusicActiveReset = GameAudio_ActionMusicFn();
+    } else {
+        MusicActiveReset =
+            DoubleScore != 0 || Cheat_PowerUpActive(-1) != 0 ||
+            (Player[0] != NULL && (((GAMEOBJECT *)Player[0])->ai_packet.opponent != NULL ||
+                                   (((GAMEOBJECT *)Player[0])->ai_packet.nearest_opponent != NULL &&
+                                    ((GAMEOBJECT *)Player[0])->ai_packet.nearest_opponent->dead == 0 &&
+                                    ((GAMEOBJECT *)Player[0])->ai_packet.nearest_opponent_metric < 3.0f))) ||
+            (Player[1] != NULL && (((GAMEOBJECT *)Player[1])->ai_packet.opponent != NULL ||
+                                   (((GAMEOBJECT *)Player[1])->ai_packet.nearest_opponent != NULL &&
+                                    ((GAMEOBJECT *)Player[1])->ai_packet.nearest_opponent->dead == 0 &&
+                                    ((GAMEOBJECT *)Player[1])->ai_packet.nearest_opponent_metric < 3.0f)));
+    }
+    if (CheckMusicOtherFn != NULL)
+        MusicOther = CheckMusicOtherFn();
+    else
+        MusicOther = 0;
+    if (Paused == 0 && sticky_attack_time > 0.0f)
+        sticky_attack_time -= FRAMETIME;
+    if (sticky_attack != MusicActiveReset && sticky_attack_time <= 0.0f) {
+        sticky_attack = MusicActiveReset;
+        sticky_attack_time = ActionMusicStickyTimeoutPc[MusicActiveReset];
+    }
+    if (CutStopInfo != NULL) {
+        MUSIC_CUT_STOP_VIEW_PC *cut = (MUSIC_CUT_STOP_VIEW_PC *)CutStopInfo;
+        if (cut->skip_level != -1 && (LDataList[cut->skip_level].flags & 1) != 0)
+            level = &LDataList[cut->skip_level];
+    }
+    music_man.SelectTrackByHandle(1, level->music_tracks[MusicOther]);
+    music_man.SelectTrackByHandle(2, level->music_tracks[MusicOther + 2]);
+    music_man.SelectTrackByHandle(0x20, level->music_tracks[MusicOther + 4]);
+    if (options->music_enabled != 0) {
+        if (sticky_attack != 0) {
+            if (music_man.GetTrackHandle(2, NULL) != -1) {
+                music_man.PlayTrack(2);
+                goto process_music;
+            }
+            if (music_man.GetTrackHandle(1, NULL) != -1) {
+                music_man.PlayTrack(1);
+                goto process_music;
+            }
+        } else {
+            if (music_man.GetTrackHandle(1, NULL) != -1) {
+                music_man.PlayTrack(1);
+                goto process_music;
+            }
+            if (music_man.GetTrackHandle(2, NULL) != -1) {
+                music_man.PlayTrack(2);
+                goto process_music;
+            }
+        }
+    }
+    music_man.PlayTrack(0x20);
+process_music:
+    music_man.Process(FRAMETIME);
+}

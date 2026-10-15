@@ -1727,13 +1727,13 @@ extern "C" {
             reinterpret_cast<CUT_CONTROLLER_INSTANCE_PC *>(cut->instance)->rate = 0.0f;
             if ((cut->flags & 1) != 0 && status == 1) {
                 CutSceneWaiting = 1;
-                STUBBED_NAMED(0x00652400); /* Native PauseGameAudio(0). */
+                PauseGameAudio(0);
                 cutaudiopaused = 1;
             } else
                 cutaudiopaused = 0;
         } else {
-            STUBBED_NAMED(0x00652400); /* Native PauseGameAudio(0). */
-            STUBBED_NAMED(0x00652b60); /* Native SetLinkedCutSceneMusic(instance, linked_audio ? 13 : 11). */
+            PauseGameAudio(0);
+            SetLinkedCutSceneMusic(cut->instance, cut->linked_audio != 0 ? 13 : 11);
             rate = cut->frames_per_second * FRAMETIME;
             reinterpret_cast<CUT_CONTROLLER_INSTANCE_PC *>(cut->instance)->rate = rate;
             if ((cut->flags & 1) == 0)
