@@ -12218,6 +12218,20 @@ typedef struct PC_SHADER_OBJECT_FULL_VIEW PC_SHADER_OBJECT_FULL_VIEW;
 
     EXPLOSION_PC *__cdecl AddExplosion(NUVEC *, f32, f32, GAMEOBJECT *, i32, u32);
     void __cdecl ResetExplosions(void);
+    void __cdecl DrawExplosions(void);
+    void __cdecl UpdateExplosions(void);
+    void __cdecl UpdateExplosion_Generic(EXPLOSION_PC *);
+    extern f32 ExplosionKnockbackScalePc;
+    STATIC_ASSERT(offsetof(GAMEOBJECT, collision_identity_mask) == 0x1e8);
+    STATIC_ASSERT(offsetof(GAMEOBJECT, flags_1f8) == 0x1f8);
+    STATIC_ASSERT(offsetof(GAMEOBJECT, flags_1fc_word) == 0x1fc);
+    STATIC_ASSERT(offsetof(GAMEOBJECT, movement_direction_x) == 0x200);
+    STATIC_ASSERT(offsetof(GAMEOBJECT, movement_direction_z) == 0x208);
+    STATIC_ASSERT(offsetof(GAMEOBJECT, field_280) == 0x280);
+    STATIC_ASSERT(offsetof(GAMEOBJECT, dead) == 0x28b);
+    STATIC_ASSERT(offsetof(GAMEOBJECT, bounds_radius) == 0x1dc);
+    STATIC_ASSERT(offsetof(GAMEOBJECT, bounds_half_height) == 0x1e0);
+
 #ifdef __cplusplus
     void __cdecl AIScriptMissingStateDiagnostic(...);
     void __cdecl AIScriptMissingStateDiagnosticAlternate(...);

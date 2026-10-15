@@ -233,7 +233,8 @@ static void NuMainUpdateFrame(WORLDINFO *world, i32 *frame_flag) {
             if (tieoffsfxwait > 0.0f) {
                 tieoffsfxwait -= FRAMETIME;
             }
-            STUBBED_NAMED("NuMainUpdateFrame: UpdateExplosions at 0x0056ee80, Tag_UpdateTransfers at 0x0059ff80");
+            UpdateExplosions();
+            STUBBED_NAMED("NuMainUpdateFrame: Tag_UpdateTransfers at 0x0059ff80");
             UpdateRepeatSfx();
             GizmoSysLateUpdate(world->gizmo_sys, world, FRAMETIME);
             STUBBED_NAMED("NuMainUpdateFrame: UpdateRadios at 0x004bcb10, Hint_Process at 0x005769d0");
@@ -365,7 +366,7 @@ static void NuMainRenderWorld(WORLDINFO *world) {
         Level_Draw(world);
         Faders_Draw(world);
         STUBBED_NAMED("NuMainRenderWorld: DrawStreaks at 0x005a3cc0, Bolts_Draw(world) at 0x00581bb0");
-        STUBBED_NAMED("NuMainRenderWorld: DrawExplosions at 0x0056e6a0");
+        DrawExplosions();
         ZipUps_DrawLines();
         STUBBED_NAMED(
             "NuMainRenderWorld: DrawCables at 0x00409980, Detonators_Draw at 0x00427070, Batarangs_Draw at 0x00404dc0");

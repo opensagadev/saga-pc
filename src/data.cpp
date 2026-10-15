@@ -34231,3 +34231,5 @@ extern "C" {
     extern const char CutPlayerTextSeparatorPc[4] = " - ";
 #pragma const_seg()
 }
+
+extern "C" f32 ExplosionKnockbackScalePc = 2.0f;
