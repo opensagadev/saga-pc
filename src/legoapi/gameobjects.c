@@ -840,7 +840,6 @@ static void LightSabreStreakCode(GAMEOBJECT *object, i32 blade, i32 effect) {
     i8 context;
     i32 joints[2];
     i32 streak_blade;
-    CHARACTER_MODEL_LAYERS_PC *model;
     PLAYERCHARACTERCONFIG_PC *data;
     i32 joint_a;
     i32 joint_b;
@@ -869,8 +868,6 @@ static void LightSabreStreakCode(GAMEOBJECT *object, i32 blade, i32 effect) {
         return;
     if (!GetBladeJoints(object, blade, joints, &streak_blade))
         return;
-    data = object->character_data->game_character;
-    model = (CHARACTER_MODEL_LAYERS_PC *)object->character_model;
     joint_a = joints[0];
     joint_b = joints[1];
     object->blade_states[blade] = -1;
@@ -896,7 +893,7 @@ static void LightSabreStreakCode(GAMEOBJECT *object, i32 blade, i32 effect) {
         if (0 != object->model_draw_result) {
             const u8 *rgb = BladeTab[colour].colour;
             const u32 packed = 0xff000000u | rgb[0] | (rgb[1] << 8) | (rgb[2] << 16);
-            AddStreakPoints(points, 0.25f, packed, &object->sabre_streaks[blade][0], 0, object);
+            AddStreakPoints(points, 0.25f, packed, &object->sabre_streaks[streak_blade][0], 0, object);
             if (object->reflection_enabled != 0 && object->reflection_height != 2000000.0f) {
                 f32 plane = object->reflection_height;
                 NUVEC reflected[2];
@@ -906,7 +903,7 @@ static void LightSabreStreakCode(GAMEOBJECT *object, i32 blade, i32 effect) {
                 reflected[1] = points[1];
                 reflected[0].y = plane - (reflected[0].y - plane);
                 reflected[1].y = plane - (reflected[1].y - plane);
-                AddStreakPoints(reflected, 0.25f, packed, &object->sabre_streaks[blade][1], 1, object);
+                AddStreakPoints(reflected, 0.25f, packed, &object->sabre_streaks[streak_blade][1], 1, object);
             }
         }
     }
@@ -918,8 +915,9 @@ static void LightSabreStreakCode(GAMEOBJECT *object, i32 blade, i32 effect) {
         effect = 4;
     else if (object->id == id_GRIEVOUS)
         effect = (blade == 3 || blade == 0) ? 3 : 2;
-    if (data->weapon_action == 12 && context == 5 && 2 == object->combo_stage && object->field_7aa == 52 &&
-        model->points_of_interest[4] != NULL) {
+    data = object->character_data->game_character;
+    if (data->weapon_action == 12 && object->character_context == 5 && 2 == object->combo_stage &&
+        object->field_7aa == 52 && object->character_model->points_of_interest[4] != NULL) {
         points[0].x = object->locator_matrices[4].m30;
         points[0].y = object->locator_matrices[4].m31;
         points[0].z = object->locator_matrices[4].m32;
@@ -940,14 +938,14 @@ static void LightSabreStreakCode(GAMEOBJECT *object, i32 blade, i32 effect) {
     maximum.z = points[2].z + extent;
     if ((object->sabre_flags & 4) != 0) {
         NUVEC direction;
-        NuVecRotateY(&direction, &v001, (u16)(object->field_0x276 + (context == 16 ? 0x8000 : 0)));
+        NuVecRotateY(&direction, &v001, (u16)(object->field_0x276 + (object->character_context == 16 ? 0x8000 : 0)));
         NuVecScale(&difference, &direction, 0.2f);
         NuVecAdd(&points[0], &object->collision_position, &difference);
         NuVecScale(&difference, &direction, 0.5f);
         NuVecAdd(&points[1], &object->collision_position, &difference);
         NuVecScale(&difference, &direction, 0.35f);
         NuVecAdd(&points[2], &object->collision_position, &difference);
-        if (context == 13) {
+        if (object->character_context == 13) {
             points[0].y = (f32)((f64)object->lower_position.y +
                                 (f64)(object->upper_position.y - object->lower_position.y) * (f64)0.333f);
             points[1].y = points[2].y = points[0].y;
@@ -967,6 +965,12 @@ static void LightSabreStreakCode(GAMEOBJECT *object, i32 blade, i32 effect) {
     }
     if ((object->sabre_flags & 5) == 0)
         goto particle_contact;
+    if (object->field_280 != 0xff && Cheat_IsOn(25))
+        effect = 1;
+    else if (object->field_280 != 0xff && Player_HasPurpleForce(object))
+        effect = 4;
+    else if (object->id == id_GRIEVOUS)
+        effect = (blade == 3 || blade == 0) ? 3 : 2;
     nearest = NULL;
     nearest_point = 0;
     nearest_distance = 1000000.0f;
@@ -991,9 +995,10 @@ static void LightSabreStreakCode(GAMEOBJECT *object, i32 blade, i32 effect) {
                                            object->sabre_collision_radius))
                 continue;
             if (0 != (object->sabre_flags & 1)) {
-                if ((target->flags_1fc_word & 2) == 0 && (target_data->flags_090 & 0x1040) == 0) {
+                if ((target->flags_1fc_word & 2) == 0 &&
+                    (target->character_data->game_character->flags_090 & 0x1040) == 0) {
                     NUVEC reaction;
-                    f32 maximum_speed = target_data->run_speed;
+                    f32 maximum_speed;
                     f32 magnitude_squared;
                     NuVecSub(&reaction, &target->collision_position, &object->collision_position);
                     if (reaction.x == 0.0f && reaction.z == 0.0f) {
@@ -1001,8 +1006,11 @@ static void LightSabreStreakCode(GAMEOBJECT *object, i32 blade, i32 effect) {
                         reaction.z = (f32)((f64)qrand() * (f64)(1.0f / 65535.0f) - 0.5);
                     }
                     NuVecNorm(&reaction, &reaction);
-                    target->movement_direction_x = target_data->walk_speed * reaction.x + target->velocity.x;
-                    target->movement_direction_z = target->velocity.z + (target_data->walk_speed * reaction.z);
+                    target->movement_direction_x =
+                        target->character_data->game_character->walk_speed * reaction.x + target->velocity.x;
+                    target->movement_direction_z =
+                        target->velocity.z + (target->character_data->game_character->walk_speed * reaction.z);
+                    maximum_speed = target->character_data->game_character->run_speed;
                     magnitude_squared = target->movement_direction_x * target->movement_direction_x +
                                         target->movement_direction_z * target->movement_direction_z;
                     if (magnitude_squared > maximum_speed * maximum_speed) {
@@ -1011,7 +1019,10 @@ static void LightSabreStreakCode(GAMEOBJECT *object, i32 blade, i32 effect) {
                         target->movement_direction_z *= scale;
                     }
                 }
-                STUBBED_NAMED("LightSabre: AddGameDebrisRot PC62c680");
+                {
+                    i32 count = ParticlesPerSecond(10.0f, FRAMETIME);
+                    AddGameDebrisRot(WORLD->game_debris_sys, effect, &points[point], count, 0, 0);
+                }
                 if (SaberSparksTimer <= 0.0f && object->anim_blending == 0 && object->character_context != 5 &&
                     object->character_context != 16 && object->character_context != 13 &&
                     object->character_context != 14 && (CInfo[object->character_context].flags & 0x04000000) == 0 &&
@@ -1024,10 +1035,10 @@ static void LightSabreStreakCode(GAMEOBJECT *object, i32 blade, i32 effect) {
                      (target->context_variant_flags & 0x20000) == 0)) {
                     PlaySfx((char *)SaberSparksName, &points[point]);
                     SaberSparksTimer = (f32)(((f64)qrand() * (f64)(1.0f / 65535.0f)) * (f64)0.3f + (f64)0.3f);
-                    qrand();
-                    STUBBED_NAMED("LightSabre: source randomized rumble PC54a850");
-                    qrand();
-                    STUBBED_NAMED("LightSabre: target randomized rumble PC54a850");
+                    NewRumble(object->pad->bound_pad,
+                              (f32)((f64)qrand() * (f64)(1.0f / 65535.0f) * (f64)0.2f + (f64)0.2f), 0);
+                    NewRumble(target->pad->bound_pad,
+                              (f32)((f64)qrand() * (f64)(1.0f / 65535.0f) * (f64)0.2f + (f64)0.2f), 0);
                 }
             }
             distance = NuVecDistSqr(&object->collision_position, &target->collision_position, NULL);
@@ -1039,16 +1050,16 @@ static void LightSabreStreakCode(GAMEOBJECT *object, i32 blade, i32 effect) {
         }
     }
     if (nearest != NULL && (object->sabre_flags & 4) != 0) {
-        STUBBED_NAMED("LightSabre: closest-target debris PC62c560");
+        AddGameDebris(WORLD->game_debris_sys, effect, &points[nearest_point]);
         if (!CannotKill(nearest)) {
             i32 damage = object->sabre_damage;
             if (damage != 0 && (nearest->flags_1fc_word & 0x80) != 0) {
                 damage = (object->flags_1fc_word & 0x80) != 0 && Player_HasDoubleWeaponDamage(object) ? 2 : 1;
             }
-            STUBBED_NAMED("LightSabre: apply ObjHitObj damage PC438230");
+            ObjHitObj(object, nearest, damage, (u16)(ObjHitObj_Flags(object) | 0x100), 0, 1);
         } else {
-            STUBBED_NAMED("LightSabre: source rumble PC54a850");
-            STUBBED_NAMED("LightSabre: target rumble PC54a850");
+            NewRumble(object->pad->bound_pad, 0.5f, 0);
+            NewRumble(nearest->pad->bound_pad, 0.5f, 0);
         }
         return;
     }
@@ -1056,12 +1067,19 @@ static void LightSabreStreakCode(GAMEOBJECT *object, i32 blade, i32 effect) {
         ((object->flags_1fc_word & 0x80) != 0 || (object->portal_flags & 0x40) != 0 || object->field_f00 == 5)) {
         if ((object->flags_1fc_word & 0x80) == 0 && object->model_draw_result == 0) {
             if (object->blowup_target != NULL) {
-                STUBBED_NAMED("LightSabre: GizmoBlowupBlowup PC567800");
-                STUBBED_NAMED("LightSabre: AlertSurroundingCreatures PC4399e0");
+                /* Legacy prefix view of the canonical GizmoBlowUpOpponent result. */
+                GizmoBlowupBlowup((GIZMOBLOWUP_PC *)object->blowup_target, 1, -1, 1, NULL, 1);
+                AlertSurroundingCreatures(object, &points[0]);
             }
             return;
         }
-        STUBBED_NAMED("LightSabre: GizmoBlowUp_Hit pointer-dependent hit/debris/rumble branch PC569c70");
+        if (GizmoBlowUp_Hit(object, points, 3, object->sabre_collision_radius, &minimum, &maximum, NULL, 0, NULL) !=
+            NULL) {
+            for (i = 0; i < 3; ++i)
+                AddGameDebris(WORLD->game_debris_sys, effect, &points[i]);
+            NewRumble(object->pad->bound_pad, 0.75f, 0);
+            return;
+        }
     }
 particle_contact:
     if ((object->sabre_flags & 6) != 0) {
@@ -1070,9 +1088,9 @@ particle_contact:
             if ((part->flags & 8) == 0) {
                 KillPart(part, 0);
             } else {
-                STUBBED_NAMED("LightSabre: DeflectPart(part,object,5.0,-2.5,0,effect) PC42c500");
+                DeflectPart(part, object, GameDeflectPartSpeed, GameDeflectPartGravity, 0, effect);
             }
-            STUBBED_NAMED("LightSabre: AlertSurroundingCreatures PC4399e0");
+            AlertSurroundingCreatures(object, &points[0]);
         }
     }
 }
