@@ -157,7 +157,7 @@
     "src/nu2api/nufrustum_pc.cpp": "b52dcc1223387a6c23b130660d36456beccaa7436b9e404d2bb2389f7a0bce9b",
     "src/nu2api/numtl_pc.cpp": "7faa88bc41796491b64e08c631be1262e8553e0504478d5443ecae3c2fcc9f0c",
     "src/nu2api/nupad_text.cpp": "a83ea4cd787f2d73073e6662bffa57e08e77ed39f083ca07662ab34780fccee4",
-    "src/nu2api/nupostdeferred.cpp": "8044dab168c4922c2d63cd3231f8e7ae51a0e6470a8a19e87184c7e24edf05e5",
+    "src/nu2api/nupostdeferred.cpp": "af33694160c6bb4dc363a596627811eb52a5ec8f3857589d6aba2fc165f4ec5c",
     "src/nu2api/nupostfilter.cpp": "bd12463e4383f128862da3700134aea8ded3c092c4dbb04ca97e7d8f65dcc320",
     "src/nu2api/nuptl.cpp": "12efcc1d64207cd6b1520654410dff70454f3fbe82fd93d69eda5b58458d250c",
     "src/nu2api/nurndr_swap.cpp": "1e4e8574d94e7290d27996dd6189cbdc640f10cecdb94e9f834b8df7646ce10f",
@@ -779,7 +779,7 @@
     "build/obj/nu2api/nuparticle_state.obj": "0557334bf23bb2ce54aeed9d566b19e5f6d5c6a7704090fc44effc64031dde53",
     "build/obj/nu2api/nuplane.obj": "334d9d6cd4ce1e3c4a083171b0dc12be5cf6a3414dab937a748bb7dd3e40678b",
     "build/obj/nu2api/nuportal.obj": "7859daa818bcc375ed87fe556c0a5293d525ce1aadc4f5ca78787377ec8891fb",
-    "build/obj/nu2api/nupostdeferred.obj": "e92295bcaf534ea33878eaccd77aaf324d090d135349024d689cd10b56277ddd",
+    "build/obj/nu2api/nupostdeferred.obj": "bbbaec524cc6e8e68d88a8b97eb16fcb9125c64ec9043ecc35aa85191de36411",
     "build/obj/nu2api/nupostfilter.obj": "07f0a8d5a5cad7e22ad19762e63c0e2423113663be19b0de088fae9febdf6202",
     "build/obj/nu2api/nuprim.obj": "162badfef509b831078c6231be5ee325154c29e10e93f3074570cabf58c6b981",
     "build/obj/nu2api/nupsfile.obj": "a190d876f8a250fde0ae38225aa992b137041aeca0acb18f9298bd646e4f9a52",
@@ -125561,17 +125561,17 @@
       "objects": [
         {
           "unit": "src/nu2api/nupostdeferred.cpp",
-          "base_size": 1856,
+          "base_size": 1840,
           "exact_match": false,
           "target_sha256": "cdeed5fcf79246cd45998e6356a29dcab2517252f5787744cbd08c9a551f17e0",
-          "base_sha256": "fe6d7ed6fad09116f606fa38d4f8fccf6e9ddc04335e5d78985595f5b61e3e50",
+          "base_sha256": "772a36682084af4ec7e077696f9e2b394dc4e4ef85867940529b6b8c77d7dd50",
           "relocation_count": 135,
           "comparison_unit": "005f6c60-aa134e75b636",
-          "objdiff_percent": 85.44711
+          "objdiff_percent": 85.8766
         }
       ],
       "status": "different",
-      "objdiff_percent": 85.44711
+      "objdiff_percent": 85.8766
     },
     {
       "name": "NuDynamicLightCreate",
@@ -455889,10 +455889,10 @@
     "mapped_code_bytes": 2341860,
     "matched_code_bytes": 435414,
     "matching_percent": 12.543449816002669,
-    "fuzzy_coverage_percent": 43.62761054138064,
+    "fuzzy_coverage_percent": 43.627854903995676,
     "mapped_functions": 8607,
     "matched_functions": 4010,
-    "objdiff_fuzzy_percent": 74.46392,
+    "objdiff_fuzzy_percent": 74.464325,
     "objdiff_total_code": 2037068,
     "image_bytes": 40067072,
     "mapped_bytes": 3452336,
@@ -456991,7 +456991,7 @@
       "metadata_sha256": "fe09365da4c355f220d724ca99394fc120b758891b4188d2c49707b6df0894f2",
       "header_path": "src/saga.h",
       "header_sha256": "ed64255b521a2b06ea0512b2543d9e6c983e29190eb87b0e537122a297617240",
-      "geometry_object_sha256": "24a61071b7ef22c0aae323e4a04002ac74aa2f16343b81c46fb0b7e309eabe0a",
+      "geometry_object_sha256": "c800c0e547bca44a3749afeef14dca099fa405253c409ddf83042f867121f8b1",
       "toolchain_sha256": "489d0782638d8033137cdb2834462416111945cbfa073147820e314b8576b95b",
       "implementation_sha256": "9ad7521230f06fde31f0771b10bd001037ea32d2def455913a7f391f05dede9d",
       "headers": {

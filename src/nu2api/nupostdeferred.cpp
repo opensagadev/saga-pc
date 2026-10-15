@@ -486,10 +486,10 @@ void NuDeferredFilterGen::render() {
     f32 parameters_pc[4] = {parameters[1], last_sample, parameters[2], parameters[3]};
     PCDeviceSetPixelShaderConstantsF(0xa0, parameters_pc, 1);
     if (output == NuFramebufferGetObject(1) && PCDeviceBackend.textures[0] != NULL) {
-        PCGraphicsEffectTextureSetFilterFields(normal_texture, 2, 2, 0);
+        PCGraphicsEffectTextureSetFilterFields(color_texture, 2, 2, 0);
         {
             const u32 stage_pc = 4;
-            GRAPHICS_RENDER_TEXTURE_PC *texture_pc = normal_texture;
+            GRAPHICS_RENDER_TEXTURE_PC *texture_pc = color_texture;
             if (texture_pc != NULL) {
                 u32 *tuple_pc = PCGraphicsEffectTextureSamplerPc(texture_pc);
                 if ((u32)PCDeviceSamplerInvalidation[stage_pc][0] != tuple_pc[0] ||
