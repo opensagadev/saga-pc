@@ -25797,6 +25797,7 @@ extern "C" {
     i32 __cdecl GizPanel_GetOutput(void *gizmo, i32 arg1, i32 arg2);
     char *__cdecl GizPanel_GetOutputName(void *arg0, i32 output_index);
     i32 __cdecl GizPanel_Load(void *world_ptr, void *arg1);
+    void __cdecl GizPanel_InitTerrain(WORLDINFO *world);
     void __cdecl GizPanel_SetVisibility(GIZMO_PC *gizmo, i32 visible);
     void __cdecl GizPanel_Update(void *world_ptr, void *arg1, f32 delta_time);
     void *__cdecl GizPanels_AllocateProgressData(void *buffer, void *buffer_end);

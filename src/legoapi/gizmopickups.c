@@ -248,67 +248,6 @@ void AddMiscPickups(NUVEC *position, i32 player_id, i32 coins, i32 torpedoes) {
     }
 }
 
-void GizPanel_CreateTerrain(GIZPANEL_s *panel) {
-    if (panel == NULL) {
-        return;
-    }
-    if (panel->platform_id != -1) {
-        DeletePlatinst(panel->platform_id);
-    }
-
-    switch (panel->model_variant) {
-        case 0:
-            panel->platform_id = NewPlatPickupInst(panel, 4);
-            break;
-        case 1:
-            panel->platform_id = NewPlatPickupInst(panel, 7);
-            break;
-        case 2:
-            panel->platform_id = NewPlatPickupInst(panel, 5);
-            break;
-        case 3:
-            panel->platform_id = NewPlatPickupInst(panel, 6);
-            break;
-        default:
-            break;
-    }
-    PlatInstRotate(panel->platform_id, 1);
-}
-
-void GizPanel_InitTerrain(WORLDINFO *world) {
-    i32 index;
-    GIZPANELSYS_s *panel_sys = world->giz_panel_sys;
-    if (panel_sys == NULL || panel_sys->count <= 0) {
-        return;
-    }
-
-    for (index = 0; index < panel_sys->count; ++index) {
-        GIZPANEL_s *panel = &panel_sys->panels[index];
-        panel->platform_id = -1;
-        GizPanel_CreateTerrain(panel);
-        panel_sys = world->giz_panel_sys;
-    }
-}
-
-static void GizPanel_SetVisibility(GIZMO_PC *gizmo, i32 visible) {
-    struct GIZPANEL_s *panel;
-    i32 was_visible;
-    if (gizmo == NULL || gizmo->object == NULL) {
-        return;
-    }
-
-    panel = ((GIZPANEL_s *)(gizmo->object));
-    was_visible = panel->visible;
-    panel->visible = visible != 0;
-    if (panel->visible != 0) {
-        if (was_visible == 0) {
-            GizPanel_CreateTerrain(panel);
-        }
-    } else if (was_visible != 0) {
-        DeletePlatinst(panel->platform_id);
-    }
-}
-
 typedef struct SPECIAL_MINIKIT_PC {
     NUSPECIALHANDLE special;
     NUINSTANIM_TIME_VIEW *instance_animation;

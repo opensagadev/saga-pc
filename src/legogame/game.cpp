@@ -1400,7 +1400,7 @@ extern "C" void __cdecl Game_WorldInfo_InitLast(WORLDINFO *world) {
     STUBBED_NAMED("Game_WorldInfo_InitLast: Attractos_InitTerrain 48f702 -> 4029e0");
     STUBBED_NAMED("Game_WorldInfo_InitLast: SecurityDoors_InitTerrain 48f708 -> 4bcf70");
     Levers_InitTerrain(world);
-    STUBBED_NAMED("Game_WorldInfo_InitLast: GizPanel_InitTerrain 48f714 -> 46d890");
+    GizPanel_InitTerrain(world);
     HatMachines_InitTerrain(world);
     GizmoBlowupsFinalSetup(world);
     STUBBED_NAMED("Game_WorldInfo_InitLast: InitClimbObjectSys 48f726 -> 56cc00");

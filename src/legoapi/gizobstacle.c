@@ -4,9 +4,12 @@ STATIC_ASSERT(offsetof(GIZMO_PC, object) == 0);
 STATIC_ASSERT(offsetof(GIZBOMBGEN_s, name) == 0);
 
 typedef struct bombgen_activation_reader_pc_s {
-    u8 unknown_00[0x2a];
+    u8 unknown_00[0x1c];
+    GAMEANIMSET *anim_set;
+    u8 unknown_20[0xa];
     u16 flags;
 } BOMBGEN_ACTIVATION_READER_PC;
+STATIC_ASSERT(offsetof(BOMBGEN_ACTIVATION_READER_PC, anim_set) == 0x1c);
 STATIC_ASSERT(offsetof(BOMBGEN_ACTIVATION_READER_PC, flags) == 0x2a);
 STATIC_ASSERT(sizeof(BOMBGEN_ACTIVATION_READER_PC) == 0x2c);
 
@@ -15,6 +18,15 @@ void __cdecl GizmoBombGen_Activate(GIZMO_PC *gizmo, i32 active) {
     if (gizmo != NULL) {
         generator = (BOMBGEN_ACTIVATION_READER_PC *)gizmo->object;
         generator->flags ^= (u16)((active != 0) ^ generator->flags) & 1;
+    }
+}
+
+void __cdecl GizmoBombGen_SetVisibility(GIZMO_PC *gizmo, i32 visible) {
+    BOMBGEN_ACTIVATION_READER_PC *generator;
+    if (gizmo != NULL && gizmo->object != NULL) {
+        generator = (BOMBGEN_ACTIVATION_READER_PC *)gizmo->object;
+        GameAnimSet_SetVisibility(generator->anim_set, visible);
+        generator->flags ^= (u16)(((visible != 0) << 1) ^ generator->flags) & 2;
     }
 }
 

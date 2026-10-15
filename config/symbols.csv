@@ -879,7 +879,7 @@ address    , symbol                                                         , si
 0x465e00,_GizBombGens_Load,147,
 0x465ea0,_GizBombGens_ReserveBufferSpace,183,void * __cdecl(void *)
 0x465f60,_GizmoBombGen_Activate,30,"void __cdecl(GIZMO_PC *, i32)"
-0x465fb0,_GizmoBombGen_SetVisibility,,"void __cdecl(GIZMO_PC *, i32)"
+0x465fb0,_GizmoBombGen_SetVisibility,55,"void __cdecl(GIZMO_PC *, i32)"
 0x465ff0,_GizmoBombGen_GetPos,,NUVEC * __cdecl(GIZMO_PC *)
 0x466060,_GizBombGens_SetResetFlag,69,"void __cdecl(void *, void *, void *)"
 0x4660b0,_BombGeneratorsApplyResetPc,629,
@@ -1026,7 +1026,7 @@ address    , symbol                                                         , si
 0x46f770,_GizPanel_RegisterGizmo,282,
 0x46f8c0,_GizTorp_Load,195,
 0x46f990,_GizTorps_ReserveBufferSpace,174,void * __cdecl(void *)
-0x46fa40,_GizTorp_SetVisibility,,"void __cdecl(GIZMO_PC *, i32)"
+0x46fa40,_GizTorp_SetVisibility,30,"void __cdecl(GIZMO_PC *, i32)"
 0x46fa60,_GizTorp_Activate,28,"void __cdecl(GIZMO_PC *, i32)"
 0x46fa90,_GizTorps_Reset,55,"void __cdecl(void *, void *, void *)"
 0x46fad0,_GizTorpMachine_FindNearest,171,"void *__cdecl(WORLDINFO*,NUVEC*,f32*)"
@@ -3053,7 +3053,7 @@ address    , symbol                                                         , si
 0x0054dc30,?GrappleAttachmentPositionsPc@@YAHPAUgameobject_s@@PAPAUnuvec_s@@@Z,126,
 0x54dcb0,_Grapple_DrawLine,461,
 0x54de80,_Grapple_Activate,39,"void __cdecl(GIZMO_PC *, i32)"
-0x54deb0,_Grapple_SetVisibility,,"void __cdecl(GIZMO_PC *, i32)"
+0x54deb0,_Grapple_SetVisibility,30,"void __cdecl(GIZMO_PC *, i32)"
 0x54ded0,_Grapples_GetMaxGizmos,25,i32 __cdecl(void *)
 0x54def0,_Grapples_AddGizmos,100,"void __cdecl(GIZMOSYS_PC *, i32, void *, void *)"
 0x54df60,_Grapple_GetGizmoName,14,char * __cdecl(GIZMO_PC *)
@@ -4528,7 +4528,7 @@ address    , symbol                                                         , si
 0x5ab840,_GizTurrets_ReserveBufferSpace,186,void * __cdecl(void *)
 0x5ab900,_GizmoTurret_Activate,70,"void __cdecl(GIZMO_PC *, i32)"
 0x5ab950,_GizmoTurret_ActivateRev,,"i32 __cdecl(GIZMO_PC *, i32, i32)"
-0x5ab9f0,_GizmoTurret_SetVisibility,,"void __cdecl(GIZMO_PC *, i32)"
+0x5ab9f0,_GizmoTurret_SetVisibility,63,"void __cdecl(GIZMO_PC *, i32)"
 0x5aba30,_GizmoTurret_GetPos,,NUVEC * __cdecl(GIZMO_PC *)
 0x5aba50,_GizTurrets_Reset,423,
 0x5abc00,_GizTurrets_ResetPc,376,"void __cdecl(void *, void *, void *)"

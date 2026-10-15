@@ -13,7 +13,7 @@ typedef struct panel_movement_pc_s {
     NUVEC target_offset;
     u16 field_7c, field_7e;
     u16 arm_x_rotation, target_pitch, target_roll;
-    u16 field_86;
+    i16 platform_id;
     f32 activation_time;
     f32 target_scale;
 } PANEL_MOVEMENT_PC;
@@ -33,7 +33,7 @@ STATIC_ASSERT(offsetof(PANEL_MOVEMENT_PC, field_7e) == 0x7e);
 STATIC_ASSERT(offsetof(PANEL_MOVEMENT_PC, arm_x_rotation) == 0x80);
 STATIC_ASSERT(offsetof(PANEL_MOVEMENT_PC, target_pitch) == 0x82);
 STATIC_ASSERT(offsetof(PANEL_MOVEMENT_PC, target_roll) == 0x84);
-STATIC_ASSERT(offsetof(PANEL_MOVEMENT_PC, field_86) == 0x86);
+STATIC_ASSERT(offsetof(PANEL_MOVEMENT_PC, platform_id) == 0x86);
 STATIC_ASSERT(offsetof(PANEL_MOVEMENT_PC, activation_time) == 0x88);
 
 STATIC_ASSERT(offsetof(GIZMO_PC, object) == 0);
@@ -472,4 +472,56 @@ void __cdecl GizPanel_Draw(void *world_pointer, void *unused, f32 unused_time) {
         }
     }
     ResetShadowMapRendering();
+}
+
+/* Retail terrain helper is private to these callers (panel arrives in ESI). */
+static void GizPanel_CreateTerrain(PANEL_MOVEMENT_PC *panel) {
+    if (panel == NULL)
+        return;
+    if (panel->platform_id != -1)
+        DeletePlatinst((i16)panel->platform_id);
+    switch (panel->model_variant) {
+        case 0:
+            panel->platform_id = NewPlatPickupInst(panel, 4);
+            break;
+        case 1:
+            panel->platform_id = NewPlatPickupInst(panel, 7);
+            break;
+        case 2:
+            panel->platform_id = NewPlatPickupInst(panel, 5);
+            break;
+        case 3:
+            panel->platform_id = NewPlatPickupInst(panel, 6);
+            break;
+        default:
+            break;
+    }
+    PlatInstRotate((i16)panel->platform_id, 1);
+}
+
+void GizPanel_InitTerrain(WORLDINFO *world) {
+    i32 index;
+    PANEL_SYSTEM_PC *system = (PANEL_SYSTEM_PC *)world->giz_panel_sys;
+    if (system == NULL || system->count <= 0)
+        return;
+    for (index = 0; index < ((PANEL_SYSTEM_PC *)world->giz_panel_sys)->count; ++index) {
+        ((PANEL_SYSTEM_PC *)world->giz_panel_sys)->panels[index].platform_id = -1;
+        GizPanel_CreateTerrain(&((PANEL_SYSTEM_PC *)world->giz_panel_sys)->panels[index]);
+    }
+}
+
+void __cdecl GizPanel_SetVisibility(GIZMO_PC *gizmo, i32 visible) {
+    PANEL_MOVEMENT_PC *panel;
+    i32 was_visible;
+    if (gizmo == NULL || gizmo->object == NULL)
+        return;
+    panel = (PANEL_MOVEMENT_PC *)gizmo->object;
+    was_visible = (panel->flags >> 2) & 1;
+    panel->flags = (u8)((panel->flags & ~4u) | ((visible != 0) << 2));
+    if ((panel->flags & 4) != 0) {
+        if (was_visible == 0)
+            GizPanel_CreateTerrain(panel);
+    } else if (was_visible != 0) {
+        DeletePlatinst((i16)panel->platform_id);
+    }
 }

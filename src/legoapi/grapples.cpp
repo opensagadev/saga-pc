@@ -84,6 +84,14 @@ extern "C" void __cdecl Grapple_Activate(GIZMO_PC *gizmo, i32 active) {
     }
 }
 
+extern "C" void __cdecl Grapple_SetVisibility(GIZMO_PC *gizmo, i32 visible) {
+    GRAPPLE_MOTION_PC *grapple;
+    if (gizmo != NULL) {
+        grapple = (GRAPPLE_MOTION_PC *)gizmo->object;
+        grapple->flags ^= (u8)(((visible != 0) << 1) ^ grapple->flags) & 2;
+    }
+}
+
 extern "C" char *__cdecl Grapple_GetGizmoName(GIZMO_PC *gizmo) {
     if (gizmo != NULL)
         return ((GRAPPLE_MOTION_PC *)gizmo->object)->name;

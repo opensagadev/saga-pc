@@ -36,6 +36,15 @@ void __cdecl GizTorp_Activate(void *input, i32 active) {
     }
 }
 
+void __cdecl GizTorp_SetVisibility(void *input, i32 visible) {
+    GIZMO_PC *gizmo = (GIZMO_PC *)input;
+    TORPEDO_MACHINE_QUERY_PC *machine;
+    if (gizmo != NULL) {
+        machine = (TORPEDO_MACHINE_QUERY_PC *)gizmo->object;
+        machine->flags ^= (u8)(((visible != 0) << 1) ^ machine->flags) & 2;
+    }
+}
+
 char *__cdecl GizTorp_GetGizmoName(void *input) {
     GIZMO_PC *gizmo = (GIZMO_PC *)input;
     if (gizmo != NULL && gizmo->object != NULL)
