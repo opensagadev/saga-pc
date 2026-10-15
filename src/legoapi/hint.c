@@ -170,3 +170,19 @@ f32 __cdecl CurrentHintAlpha(void) {
     }
     return alpha * hintsys.alpha;
 }
+
+/* 00576630..00576668. Both arguments are ordinary cdecl stack arguments. */
+void __cdecl Hint_ResetHint(i32 hint_id, i32 reset_completed) {
+    HINT_PC *hint = hintsys.hints;
+    if (hint == NULL)
+        return;
+    while (hint->id != -1) {
+        if (hint->id == hint_id) {
+            if (reset_completed == 1)
+                hint->completed = 0;
+            hintsys.display_elapsed = 0.0f;
+            return;
+        }
+        ++hint;
+    }
+}

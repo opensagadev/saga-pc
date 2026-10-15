@@ -188,3 +188,42 @@ void __cdecl CutScenePlayer_Configure(char *file, VARIPTR *buffer, VARIPTR *end,
         CutSceneConfigMissingPc(file);
     }
 }
+
+STATIC_ASSERT(offsetof(AREA_DATA_PC, episode_index) == 0x86);
+STATIC_ASSERT(sizeof(EPISODEDATA_PC) == 0x1c);
+STATIC_ASSERT(offsetof(COLLECTION_AREA_SAVE_PC, area_complete) == 1);
+
+/* 0057e720..0057e7d2, ordinary one-argument cdecl. */
+i32 __cdecl CutScenePlayer_CanStart(i32 clip_id) {
+    CUT_PLAYER_CLIP_CONFIG_PC *clips;
+    AREA_DATA_PC *area;
+    i32 area_id, episode;
+    if (CutScenePlayerPc != NULL && clip_id >= 0 && clip_id < CutScenePlayerPc->clip_count) {
+        clips = (CUT_PLAYER_CLIP_CONFIG_PC *)CutScenePlayerPc->clips;
+        area_id = LDataList[clips[clip_id].level_id].area_index;
+        if (area_id != -1) {
+            area = &ADataList[area_id];
+            if ((area->flags & 2) != 0) {
+                episode = area->episode_index;
+                if (episode != -1 && Episode_IsComplete(&EDataList[episode], NULL) != 0)
+                    return 2;
+            } else if (Game_AreaSave != NULL && Game_AreaSave[area_id].area_complete != 0) {
+                return 1;
+            }
+        }
+    }
+    return 0;
+}
+
+/* 0057e7e0..0057e849. The following 0057e850 text function is a separate
+ * native owner. PC accepts one argument and does not write return_door. */
+void __cdecl CutScenePlayer_Start(i32 clip_id) {
+    CUT_PLAYER_CLIP_CONFIG_PC *clips;
+    if (CutScenePlayerPc != NULL && clip_id >= 0 && clip_id < CutScenePlayerPc->clip_count) {
+        clips = (CUT_PLAYER_CLIP_CONFIG_PC *)CutScenePlayerPc->clips;
+        NewLevelFromMenu(&LDataList[clips[clip_id].level_id], -1, -1, 1);
+        CutScenePlayerPc->active = &((CUT_PLAYER_CLIP_CONFIG_PC *)CutScenePlayerPc->clips)[clip_id];
+        NextArea_FreePlay = 0;
+        FreePlay = 0;
+    }
+}

@@ -1134,3 +1134,266 @@ finish:
     ShopScrollKeyHitPc = scrolling;
     return 0;
 }
+
+i32 __cdecl AddToCollection(i32 id);
+void __cdecl AddToCompletionPoints(u32 points);
+extern f32 ShopPurchasePulsePc;
+extern i32 HubForceShopSavePc;
+i32 __cdecl BuyShopItem(shopitem_s *items, i32 index, i32 charge);
+i32 __cdecl CutScenePlayer_CanStart(i32 index);
+void __cdecl CutScenePlayer_Start(i32 index);
+
+/* 004c1050..004c1077: original same-TU EAX helper includes the vehicle exception. */
+static i32 Shop_CharacterUnlockedPc(i32 character_id) {
+    if (character_id == VehicleBoltId7f17d4Pc)
+        return ((SHOP_SAVE_VIEW_PC *)&Game)->bolt_unlocked != 0;
+    return CollectIDUnlocked(character_id) != 0;
+}
+
+/* 004c2730..004c2ae8 instructions; 004c2ae8..004c2b00 six-entry switch table. */
+i32 __cdecl SelectShopItem(shopitem_s *items, i32 index) {
+    shopitem_s *item = &items[index];
+    SHOP_SAVE_VIEW_PC *save = (SHOP_SAVE_VIEW_PC *)&Game;
+    HINT_PC *hint;
+    i32 id, area, i;
+    switch (item->type) {
+        case 0:
+            id = (u16)item->item_id;
+            if (item->unlocked == 1 || item->price == 0)
+                return 1;
+            if (Game.coins < (u32)item->price)
+                goto no_cash;
+            AddToCompletionPoints(POINTS_PER_HINT);
+            hint = Hint_FindHint(ShopHintIdsPc[id]);
+            if (hint != NULL)
+                hint->flags |= 2;
+            BuyShopItem(items, index, 1);
+            return 1;
+        case 1:
+            if (item->unlocked == 1)
+                return 0;
+            id = (u16)item->item_id;
+            if (id < 0 || id >= CHARCOUNT)
+                return 0;
+            if (Shop_CharacterUnlockedPc(id) == 0)
+                goto locked;
+            if (Game.coins < (u32)item->price)
+                goto no_cash;
+            if (AddToCollection(id) != 0) {
+                AddToCompletionPoints(POINTS_PER_CHARACTER);
+                BuyShopItem(items, index, 1);
+            }
+            return 1;
+        case 2:
+            id = (u16)item->item_id;
+            if (item->unlocked == 1 || (save->extra_purchased_bits[id / 32] & (1u << (id & 31))) != 0)
+                return 0;
+            area = ExtrasCheatsPc[id].area_index;
+            if (area != -1 && Game.area_save[area].red_brick_collected == 0)
+                goto locked;
+            if (Game.coins < (u32)item->price)
+                goto no_cash;
+            save->extra_purchased_bits[id / 32] |= 1u << (id & 31);
+            AddToCompletionPoints(POINTS_PER_CHEAT);
+            BuyShopItem(items, index, 1);
+            return 1;
+        case 4:
+            if (item->unlocked == 1 || item->price == 0)
+                return 0;
+            if ((f64)(i32)((u32)index * 3600u) > (f64)Game.game_time)
+                goto locked;
+            if (Game.coins < (u32)item->price)
+                goto no_cash;
+            AddToCompletionPoints(POINTS_PER_GOLDBRICK);
+            AddToGoldBricks();
+            BuyShopItem(items, index, 1);
+            return 1;
+        case 5:
+            if (CutScenePlayer_CanStart(index) == 0) {
+                PlaySfx((char *)GameAudioName0075c354Pc, NULL);
+                ShopLockedScalePc = 1.5f;
+                return 0;
+            }
+            ShopOldMenuFnPc = menuptr;
+            ShopOldPickedScalePc = topscale[5];
+            ShopOldPickedPushPc = toppush[5];
+            for (i = 0; i < 3; ++i) {
+                ShopOldDrawParentPc[i] = ShopDrawParentPc[i];
+                ShopOldMenuParentPc[i] = ShopMenuParentPc[i];
+            }
+            ShopOldDrawPanelFnPc = ShopDrawPanelFnPc;
+            ShopOldDrawFnPc = drawptr;
+            ShopOldMenuLevelPc = ShopMenuLevelPc;
+            ShopOldDrawLevelPc = ShopDrawLevelPc;
+            oldpicked = picked;
+            menuptr = NULL;
+            for (i = 0; i < 3; ++i) {
+                ShopDrawParentPc[i] = NULL;
+                ShopMenuParentPc[i] = NULL;
+            }
+            ShopMenuLevelPc = 0;
+            ShopDrawLevelPc = 0;
+            SHOPACTIVE = 0;
+            BuyShopItem(items, index, 0);
+            ShopPurchasePulsePc = 0.0f;
+            TempGame.game_time = Game.game_time;
+            if (memcmp(&TempGame, &Game, sizeof(Game)) != 0)
+                HubForceShopSavePc = 1;
+            CutScenePlayer_Start(index);
+            return 1;
+        default:
+            return -1;
+    }
+no_cash:
+    CoinTotalScale = 1.5f;
+    return -1;
+locked:
+    GameAudio_PlaySfx(0x32, NULL, 0, 0);
+    ShopLockedScalePc = 1.5f;
+    return 0;
+}
+
+extern f32 ShopPurchasePulseDurationPc;
+
+/* 004c2660..004c2725. Preserve the PC purchase pulse owner separately from the
+ * existing shop initialization value at 0087bbd0. */
+i32 __cdecl BuyShopItem(shopitem_s *items, i32 index, i32 charge) {
+    shopitem_s *item = &items[index];
+    SHOP_SAVE_VIEW_PC *save = (SHOP_SAVE_VIEW_PC *)&Game;
+    u32 *bits = NULL;
+    if (item->type == 0)
+        bits = save->hint_purchased_bits;
+    else if (item->type == 1)
+        bits = save->character_purchased_bits;
+    else if (item->type == 2)
+        bits = save->extra_unlocked_bits;
+    else if (item->type == 4)
+        bits = save->gold_brick_purchased_bits;
+    else if (item->type == 5) {
+        PlaySfx((char *)GameAudioName0075c36cPc, NULL);
+        return 1;
+    }
+    if (bits != NULL)
+        bits[index / 32] |= (u32)((u64)1 << (index % 32));
+    if (charge != 0)
+        Game.coins -= item->price;
+    ShopPurchasePulsePc = ShopPurchasePulseDurationPc;
+    item->unlocked = 1;
+    if (charge != 0)
+        PlaySfx("Shop_BuyCheat", &SubShelfPos[3]);
+    return 1;
+}
+
+/* 004c2b00..004c31fd. Right moves IDs toward index zero, interpolates slots
+ * 1..6 toward their previous shelf slot, and uses the PC scale2 owner. */
+i32 __cdecl MoveSubItemsRight(i32 *ids, NUVEC *positions, i32 count) {
+    i32 i, angle;
+    f32 phase, reverse_phase, factor;
+    if (!(ShopSlideTimerPc <= 0.0f)) {
+        phase = (f32)(1.0 - (f64)ShopSlideTimerPc * 8.0);
+        reverse_phase = (f32)(1.0 - (f64)phase);
+        angle = (i32)((f64)phase * 32768.0 + 16384.0);
+        factor = (f32)(1.0 - ((f64)NuTrigTable[(angle >> 1) & 0x7fff] + 1.0) * 0.5);
+        for (i = 1; i < 7; ++i) {
+            factor = factor < 1.0f ? factor : 1.0f;
+            factor = 0.0f > factor ? 0.0f : factor;
+            positions[i].x = SubShelfPos[i].x + (SubShelfPos[i - 1].x - SubShelfPos[i].x) * factor;
+            positions[i].y = SubShelfPos[i].y + (SubShelfPos[i - 1].y - SubShelfPos[i].y) * factor;
+            positions[i].z = SubShelfPos[i].z + (SubShelfPos[i - 1].z - SubShelfPos[i].z) * factor;
+        }
+        factor = factor < 1.0f ? factor : 1.0f;
+        factor = 0.0f > factor ? 0.0f : factor;
+        scale3 = scalepicked + (scalenorm - scalepicked) * factor;
+        factor = factor < 1.0f ? factor : 1.0f;
+        factor = 0.0f > factor ? 0.0f : factor;
+        scale2 = scalenorm + (scalepicked - scalenorm) * factor;
+        factor = factor < 1.0f ? factor : 1.0f;
+        factor = 0.0f > factor ? 0.0f : factor;
+        subpush[1] = SubBigCharPush + (SubNormCharPush - SubBigCharPush) * factor;
+        factor = factor < 1.0f ? factor : 1.0f;
+        factor = 0.0f > factor ? 0.0f : factor;
+        subpush[2] = SubNormCharPush + (SubBigCharPush - SubNormCharPush) * factor;
+        ShopScaleOverridePc[0] = reverse_phase;
+        ShopScaleOverridePc[6] = phase;
+        return 0;
+    }
+    for (i = 0; i < 6; ++i)
+        ids[i] = ids[i + 1];
+    ids[6] = (i32)((u32)ids[6] + 1u);
+    if (ids[6] >= count)
+        ids[6] = 0;
+    ShopSlideTimerPc = 0.0f;
+    for (i = 0; i < 7; ++i)
+        positions[i] = SubShelfPos[i];
+    scale4 = scalenorm;
+    scale3 = scalepicked;
+    scale2 = scalenorm;
+    subpush[0] = SubNormCharPush;
+    ShopMoveItemsPc = 0;
+    subpush[1] = SubBigCharPush;
+    subpush[2] = SubNormCharPush;
+    ShopScaleOverridePc[0] = 0.0f;
+    ShopScaleOverridePc[1] = 0.4f;
+    ShopScaleOverridePc[2] = 0.8f;
+    ShopScaleOverridePc[4] = 0.8f;
+    ShopScaleOverridePc[5] = 0.4f;
+    ShopScaleOverridePc[6] = 0.0f;
+    return 1;
+}
+
+/* 004c3200..004c38fc. Preserve the descending PC interpolation order and
+ * the distinct scale4 owner, including when positions aliases SubShelfPos. */
+i32 __cdecl MoveSubItemsLeft(i32 *ids, NUVEC *positions, i32 count) {
+    i32 i, angle;
+    f32 phase, reverse_phase, factor;
+    if (!(ShopSlideTimerPc <= 0.0f)) {
+        phase = (f32)(1.0 - (f64)ShopSlideTimerPc * 8.0);
+        reverse_phase = (f32)(1.0 - (f64)phase);
+        angle = (i32)((f64)phase * 32768.0 + 16384.0);
+        factor = (f32)(1.0 - ((f64)NuTrigTable[(angle >> 1) & 0x7fff] + 1.0) * 0.5);
+        for (i = 5; i >= 0; --i) {
+            factor = factor < 1.0f ? factor : 1.0f;
+            factor = 0.0f > factor ? 0.0f : factor;
+            positions[i].x = SubShelfPos[i].x + (SubShelfPos[i + 1].x - SubShelfPos[i].x) * factor;
+            positions[i].y = SubShelfPos[i].y + (SubShelfPos[i + 1].y - SubShelfPos[i].y) * factor;
+            positions[i].z = SubShelfPos[i].z + (SubShelfPos[i + 1].z - SubShelfPos[i].z) * factor;
+        }
+        factor = factor < 1.0f ? factor : 1.0f;
+        factor = 0.0f > factor ? 0.0f : factor;
+        scale4 = scalenorm + (scalepicked - scalenorm) * factor;
+        factor = factor < 1.0f ? factor : 1.0f;
+        factor = 0.0f > factor ? 0.0f : factor;
+        scale3 = scalepicked + (scalenorm - scalepicked) * factor;
+        factor = factor < 1.0f ? factor : 1.0f;
+        factor = 0.0f > factor ? 0.0f : factor;
+        subpush[0] = SubNormCharPush + (SubBigCharPush - SubNormCharPush) * factor;
+        factor = factor < 1.0f ? factor : 1.0f;
+        factor = 0.0f > factor ? 0.0f : factor;
+        subpush[1] = SubBigCharPush + (SubNormCharPush - SubBigCharPush) * factor;
+        ShopScaleOverridePc[0] = phase;
+        ShopScaleOverridePc[6] = reverse_phase;
+        return 0;
+    }
+    for (i = 6; i > 0; --i)
+        ids[i] = ids[i - 1];
+    ids[0] = (i32)((u32)ids[0] - 1u);
+    if (ids[0] < 0)
+        ids[0] = (i32)((u32)count - 1u);
+    ShopSlideTimerPc = 0.0f;
+    for (i = 0; i < 7; ++i)
+        positions[i] = SubShelfPos[i];
+    scale4 = scalenorm;
+    scale3 = scalepicked;
+    scale2 = scalenorm;
+    subpush[0] = SubNormCharPush;
+    ShopMoveItemsPc = 0;
+    subpush[1] = SubBigCharPush;
+    subpush[2] = SubNormCharPush;
+    ShopScaleOverridePc[0] = 0.0f;
+    ShopScaleOverridePc[1] = 0.4f;
+    ShopScaleOverridePc[2] = 0.8f;
+    ShopScaleOverridePc[4] = 0.8f;
+    ShopScaleOverridePc[5] = 0.4f;
+    ShopScaleOverridePc[6] = 0.0f;
+    return 1;
+}

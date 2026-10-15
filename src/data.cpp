@@ -34168,3 +34168,18 @@ extern "C" {
     u32 NuRndrFxColourPc;
 #pragma bss_seg()
 }
+
+extern "C" {
+#pragma bss_seg(".bss$ShopPurchasePulsePc")
+    f32 ShopPurchasePulsePc;
+#pragma bss_seg()
+#pragma bss_seg(".bss$HubForceShopSavePc")
+    i32 HubForceShopSavePc;
+#pragma bss_seg()
+}
+
+extern "C" {
+#pragma data_seg(".data$ShopPurchasePulseDurationPc")
+    f32 ShopPurchasePulseDurationPc = 0.35f;
+#pragma data_seg()
+}

@@ -10036,6 +10036,7 @@ void __cdecl PCStereoUnknownToken(void);
     void __cdecl EndChallenge(i32, i32);
     i32 __cdecl FindGameMsgsWithID(i32, i32, i32, GAME_MESSAGE_PC *);
     HINT_PC *__cdecl Hint_FindHint(i32);
+    void __cdecl Hint_ResetHint(i32 hint_id, i32 reset_completed);
     void __cdecl Hint_SetHint(HINT_PC *, i32, i32);
     void __cdecl Hint_SaveGameState(HINT_PC *);
     void __cdecl Hint_LoadAllGameState(void);
@@ -19120,6 +19121,8 @@ extern "C" {
     extern struct CUT_PLAYER_ACTIVE_PC *CutScenePlayerPc;
     struct CUT_PLAYER_ACTIVE_PC *__cdecl CutScenePlayer_Available(void);
     void __cdecl CutScenePlayer_Reset(void);
+    i32 __cdecl CutScenePlayer_CanStart(i32 clip_id);
+    void __cdecl CutScenePlayer_Start(i32 clip_id);
     void __cdecl CutScenePlayer_Configure(char *, VARIPTR *, VARIPTR *, i16 *, i16 *, i16 *, i16 *, i16 *);
     i32 __cdecl Batarang_StartTargetting(GAMEOBJECT *);
     void __cdecl KeepPointOnScreen(NUVEC *, NUVEC *);
@@ -25637,6 +25640,9 @@ extern "C" {
     void __cdecl InitBikeParts(void);
     extern i32 SHOPCHARCOUNT;
     i32 __cdecl SelectShopItem(struct shopitem_s *items, i32 index);
+    i32 __cdecl BuyShopItem(struct shopitem_s *items, i32 index, i32 charge);
+    i32 __cdecl MoveSubItemsLeft(i32 *ids, NUVEC *positions, i32 count);
+    i32 __cdecl MoveSubItemsRight(i32 *ids, NUVEC *positions, i32 count);
     extern f32 ShopNameAlpha;
     extern NUVEC SubShelfPos[7];
     extern shopitem_s TopShelf[6];
