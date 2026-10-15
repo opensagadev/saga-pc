@@ -31,13 +31,13 @@
     "src/audio/vorbis/window.h": "a10ede6832692ccec154bb9291be7ec236f9642a99a6af9b108ff7df030904b5",
     "src/diagnostics.h": "dae209151b55b9f5aadc18ce8ad63a1d961c311a7d8ec7214ea32c7e7a095459",
     "src/externals.h": "5b08276a7759c01921ac2a5239bf0978accdd38d2533b458c25d1b16f8a4402d",
-    "src/saga.h": "ed64255b521a2b06ea0512b2543d9e6c983e29190eb87b0e537122a297617240",
+    "src/saga.h": "8604bc3cbcc9f1de8406b0ae4b94b53a0afd63549b867234114e1d07b563ef2f",
     "config/candidate-only.json": "2f9b865d9f773f8a9e79d4e6d155fa387e8d7b8087d6bf3b61298055281cec09",
     "config/code-groups.json": "0c7700323db8a7240f98cd4ab349200bbf0a8f580d3ca93167477e00c7db77cc",
     "config/data-members.json": "fe09365da4c355f220d724ca99394fc120b758891b4188d2c49707b6df0894f2",
     "config/library-objects.json": "e5ae24d3eac36fa0d0cb098f7690faaef3110f225db30c8cbf0f7d0d64f6ecfe",
     "config/project.json": "dc0e8cc85ae5650c6937b70ccaefb0153629c2460fa09cd4f6b625e251e623dd",
-    "config/symbols.csv": "96c9ca3fea8a12f4bd2e96f02cde710fb67dcb31c37ddffb033e4c64532d8bc0",
+    "config/symbols.csv": "a8e200499ee73d5fefd5cbb29d551ac839c62517c89246889de561a0dc0938c2",
     "config/symbols.md": "dffbdaac86011e3aee74b404063c15bda97f88af3db337ffef9f1bad1785d212",
     "config/toolchain.json": "489d0782638d8033137cdb2834462416111945cbfa073147820e314b8576b95b",
     "config/tools.json": "50199f6b132a7abfabf251e98a75be0a957abfe50f1ff776188fba21e4c4436f",
@@ -98,13 +98,13 @@
     "src/legoapi/fade.cpp": "6cd20416261a89eb71caf12a91e505bdd96396325e8b61f796bd198ee913138d",
     "src/legoapi/gamestructure.cpp": "a0dd3b09668e42b36e365810bb7f9c5586756b51a949c2863c6187f50fe8b7cd",
     "src/legoapi/gizactions.cpp": "bc523627b93dba4197ed62c7625f2fb6369d9457796d32ea91b2339a399ec59c",
-    "src/legoapi/gizbuildit.cpp": "aed69bb4479eb4053fae9db53ff3be5b172e7d402ef7de7a7aa7e759266e8492",
+    "src/legoapi/gizbuildit.cpp": "969777c23531a58834fd89c4fd04f9e879d6793773066cf82c394c64e1aa8ab5",
     "src/legoapi/gizmo_lsw_registration_pc.cpp": "e9d6512adae2a64285f5cc2212b831c9aa3ceda36faa04f8bd01deac2949346e",
     "src/legoapi/gizpushblocks.cpp": "7fd4aef47f619454eb6f2cbf5e7731278b56b011a8cfc664764e56e061a8542a",
     "src/legoapi/gizspinner.cpp": "81553b0a6d2dd23da164ab08295d4f30f127d1ebe834574189b3f882c73e0dda",
     "src/legoapi/grapples.cpp": "42e6c9915088ae110f0dff82c8da500f0a5085167a30c2779cc0c5af70e64529",
     "src/legoapi/hatmachine.cpp": "e4b7ec5e2d842580df21b4119b109ea3a64c0958a7010daebd7d927f6d6e7c47",
-    "src/legoapi/hub.cpp": "c4fe5e0770bf89bd23e176df6f6c3f505854a73117eccb793a02dca5e8204e60",
+    "src/legoapi/hub.cpp": "638a95fe48a05b5ca9b42a3633968765b4d66f1cd81c2249756667b1ed15a5c7",
     "src/legoapi/init_once.cpp": "cb0741fb96402c37292cb31b83efee77d616485dfa64fee5a5adc0b879225f3d",
     "src/legoapi/input.cpp": "7509dec122d97631a0329146aa4f9f1087ba49c1e5062c706f21398032be0697",
     "src/legoapi/ledges.cpp": "3fec51f0f2aa94e5d9ae74b4201aab0e42b92af5f45291a33716099d40b877e3",
@@ -157,7 +157,7 @@
     "src/nu2api/nufrustum_pc.cpp": "b52dcc1223387a6c23b130660d36456beccaa7436b9e404d2bb2389f7a0bce9b",
     "src/nu2api/numtl_pc.cpp": "7faa88bc41796491b64e08c631be1262e8553e0504478d5443ecae3c2fcc9f0c",
     "src/nu2api/nupad_text.cpp": "a83ea4cd787f2d73073e6662bffa57e08e77ed39f083ca07662ab34780fccee4",
-    "src/nu2api/nupostdeferred.cpp": "af33694160c6bb4dc363a596627811eb52a5ec8f3857589d6aba2fc165f4ec5c",
+    "src/nu2api/nupostdeferred.cpp": "0281dbd5f36d623041d19eef873758060df752df30417d8dd8a9c35a9fcac650",
     "src/nu2api/nupostfilter.cpp": "bd12463e4383f128862da3700134aea8ded3c092c4dbb04ca97e7d8f65dcc320",
     "src/nu2api/nuptl.cpp": "12efcc1d64207cd6b1520654410dff70454f3fbe82fd93d69eda5b58458d250c",
     "src/nu2api/nurndr_swap.cpp": "1e4e8574d94e7290d27996dd6189cbdc640f10cecdb94e9f834b8df7646ce10f",
@@ -167,7 +167,7 @@
     "src/nu2api/nusound_music.cpp": "105787b9973b19abfcfd655303adb316063c26a49de2c443ab71e57a93731e08",
     "src/nu2api/nusound_pc.cpp": "3375e6d6c295584cef38c74a26f2ea2b57b288acfbc4e20319dafd306e9adfeb",
     "src/nu2api/nuspecial_shadow_pc.cpp": "c6f6081a01ad1f3aa75437945abfb909ca5d0c8a28ccca85905c205fe53b12c1",
-    "src/nu2api/nustream.cpp": "c8ea186128e40c9a7bd450405c4d400d8de453d5dce989a37db9038b420a8f57",
+    "src/nu2api/nustream.cpp": "01e9a1ed40042fbea2db35207a92fd9e4ce8fa66679fb93d5b6f9ef06d26f92f",
     "src/nu2api/nutex_pc.cpp": "8a390b324195ea14da4b0113a106ad67b486cab8144b1d19c50329909b009c77",
     "src/nu2api/oggreader.cpp": "1ee6d7c1ef21fa917773b36166cd7ee5b0af103f24fc96fefff609e3b6e87e7d",
     "src/nu2api/pc_device.cpp": "7d94d949a1aefa3d2b21db6b03fa4b7c8487a70c461fbcded1187b70ef3d6634",
@@ -404,7 +404,7 @@
     "src/nu2api/nufloat.c": "bd2c30f24957423aa4ba2392df75cf6badfc38db43c782c0c690222782cb5333",
     "src/nu2api/nufont.c": "af53aaa2298355966c68ec0f963c1dbd72f1ba8cc5d955eeb76d49ca7392ca41",
     "src/nu2api/nufpar.c": "126be790fdcc8f0f33cccab553f94221d22c3dc3f320aa149e758255c2eb852a",
-    "src/nu2api/nuframe.c": "b5b0075dfce1b71e6cf874522d6c1c6adbf87ab3355d56aaf0f37c17954de150",
+    "src/nu2api/nuframe.c": "419157ea1d16988c177a41fc4c3aeac5221897cd2e496fe4e1e5356a965add4c",
     "src/nu2api/nughg.c": "217d12dab25d94de5d952948b1628281c8fb95019a637b354e947537f0fd429b",
     "src/nu2api/nugobj.c": "3313538f7e20281321e23694187b68c447385902fa80a317effe833ab2097bb3",
     "src/nu2api/nugscn_pc.c": "84bded48b3dd2e7699cd492b2e2ba40da45694942ad5b1fe69c65c8a4c31786b",
@@ -586,7 +586,7 @@
     "build/obj/legoapi/gcutscn.obj": "f110ae543fba3f02cf0044fa001b39107ec2345b939c34b7f1ee13886048f73e",
     "build/obj/legoapi/gcutscn_locators.obj": "c26bc0a00643e703ead11a0c100fd912f7501c42980804349a7437b6dd2cf8cb",
     "build/obj/legoapi/gizactions.obj": "c6dc4c57bfe49b4fe42beebf546fa854e37aef855dcf70e32c3665fcf9011bb4",
-    "build/obj/legoapi/gizbuildit.obj": "2cb891d8c44bc93fd9c46629edffb51403f8c25a5ae865f7707fb931ab2bf6ef",
+    "build/obj/legoapi/gizbuildit.obj": "73867edffb69b158b800e81f42c60731678440bd40126522942ed8c4d74dafbb",
     "build/obj/legoapi/gizbuildit_pc.obj": "f6dae0d055e0cf2d0ccb1a7b360009d3d92b179b19641169f71d3d6c47aac88e",
     "build/obj/legoapi/gizflow.obj": "e9c19bfeb2ac685ac232f38fc40999b2447bdd9a6fe6b323dfc7a5e4bdf44d0a",
     "build/obj/legoapi/gizflow_diagnostic.obj": "55a19f29bc86220096f9d58d06f24a51ade3230bdc12b48dea641324083f70e6",
@@ -619,7 +619,7 @@
     "build/obj/legoapi/hatmachine.obj": "51a0f9a30845035eb6468302bf81c1471af7687492a896aa363dd7e611e5ccb7",
     "build/obj/legoapi/hint.obj": "e1a159b420f71ebcc16141bf77fb7d537bdcf8adedd1c3a8f89e84bd56acda8d",
     "build/obj/legoapi/hits.obj": "35074b50ac4a4ee408a9c2960eaf7a0ccab05d67bc5fafc921ad2679fa9840e0",
-    "build/obj/legoapi/hub.obj": "67f02ab14a9b7e42e9adfa95c9e904366d56e0cca2edc6e9074955c53f55859d",
+    "build/obj/legoapi/hub.obj": "063b138300c1723bc34dfda9491f527c8859d4fd70d3068156077f84b1e034a4",
     "build/obj/legoapi/hub_model.obj": "2742c5f63c35613079cfad777dc0b09337bd063f24ecfc669563c4e13eccee6c",
     "build/obj/legoapi/init_once.obj": "cfb6c5ff761574644e512889af23be09f0325e48ed25fb94fc8a853169f053f7",
     "build/obj/legoapi/input.obj": "c84b3d356eb3c0fdd80d1cc04673fbb0bef64d489141429c4a5bd374a00a74e4",
@@ -756,7 +756,7 @@
     "build/obj/nu2api/nufloat.obj": "02754bcfaadccc0841a2b0dce92e6efb6cf61ebd44cb49ef277307bfdd216513",
     "build/obj/nu2api/nufont.obj": "2552a73303b82a5b015510e4670a0fa73cb7d67c521c79350cd566ffdee3cd4b",
     "build/obj/nu2api/nufpar.obj": "19bad673a24bf92640fb6a87a91f1a04bd4b05bed215c2cfcc12e549e5d83952",
-    "build/obj/nu2api/nuframe.obj": "027208015272c48169ae4bcf36393eba92010c701d3be0b7a8c1789719c90e16",
+    "build/obj/nu2api/nuframe.obj": "900c13729a55da220b0f878ca0320da8cd85e55be6d553f850c94ef4b4e02534",
     "build/obj/nu2api/nufrustum_pc.obj": "34fbd42580351ed0185bb9d81371dfeccd2dfb0e9fb1e0bfc60e28b23e3c5a66",
     "build/obj/nu2api/nughg.obj": "4f728650ed058aa1984f81d07dcadd43dcbae5ccb14f01e510d1f3d2986421be",
     "build/obj/nu2api/nugobj.obj": "65f995b4b4300bbcc9e5b2780b662fecc183d6b97a1f7da7c2405f3fcbf132cb",
@@ -779,7 +779,7 @@
     "build/obj/nu2api/nuparticle_state.obj": "0557334bf23bb2ce54aeed9d566b19e5f6d5c6a7704090fc44effc64031dde53",
     "build/obj/nu2api/nuplane.obj": "334d9d6cd4ce1e3c4a083171b0dc12be5cf6a3414dab937a748bb7dd3e40678b",
     "build/obj/nu2api/nuportal.obj": "7859daa818bcc375ed87fe556c0a5293d525ce1aadc4f5ca78787377ec8891fb",
-    "build/obj/nu2api/nupostdeferred.obj": "bbbaec524cc6e8e68d88a8b97eb16fcb9125c64ec9043ecc35aa85191de36411",
+    "build/obj/nu2api/nupostdeferred.obj": "a0a3f8b2f2f84d026ed33d20d3477be2127fc130fd96dfec14495173583f0474",
     "build/obj/nu2api/nupostfilter.obj": "07f0a8d5a5cad7e22ad19762e63c0e2423113663be19b0de088fae9febdf6202",
     "build/obj/nu2api/nuprim.obj": "162badfef509b831078c6231be5ee325154c29e10e93f3074570cabf58c6b981",
     "build/obj/nu2api/nupsfile.obj": "a190d876f8a250fde0ae38225aa992b137041aeca0acb18f9298bd646e4f9a52",
@@ -807,7 +807,7 @@
     "build/obj/nu2api/nuspecial_shadow_pc.obj": "7993640cd33e90980d79eceed3e37524f41b50f24b345783a018db0a9388c065",
     "build/obj/nu2api/nuspline.obj": "07234ee38d7365b7db92b7b84c918eb5f644a1defa0bcc87700d729b3253686a",
     "build/obj/nu2api/nustateanim.obj": "b21d0b5690c7112c242c55fd9e6e73d91f961c68b4ff5d5c618e8bb77709b692",
-    "build/obj/nu2api/nustream.obj": "f51bcf1b996812d59f44c946b53ec8af67b71e9b13c3b9ba8cb395859f8502f6",
+    "build/obj/nu2api/nustream.obj": "ff51f6d092c4afa7c9f01d4680c1607e3a307180ce11d391cf8c491e7fa545c0",
     "build/obj/nu2api/nustring.obj": "786095031f7d24cab8185b5b21fa260025b0030baecb40c7ed7e41ec958a8938",
     "build/obj/nu2api/nuterrain.obj": "aef928fb69841f129c6d50c2e0071ec9e8b65bda61a21381d0f5899ff40d32f1",
     "build/obj/nu2api/nutex.obj": "229c733199060490718e36d80a429a721552bd9e6e31386d21dcd8c074adadad",
@@ -35075,14 +35075,14 @@
           "base_size": 444,
           "exact_match": false,
           "target_sha256": "f60d6d9957e6064c3047ef9a7914a2065a6b6553783c0c759b9b9ea3017fc07a",
-          "base_sha256": "ffaff20c072d6d4389f8b22cd87c6ce260fda806e58bf4d969b4fa09d69f9d41",
+          "base_sha256": "79bea8622a2da1f3cfd90a0034640e807ace902c50e65c03aea5446c865e5a31",
           "relocation_count": 21,
           "comparison_unit": "004b86f0-97e7302189ec",
-          "objdiff_percent": 98.41525
+          "objdiff_percent": 98.49152
         }
       ],
       "status": "different",
-      "objdiff_percent": 98.41525
+      "objdiff_percent": 98.49152
     },
     {
       "name": "DrawHitPointsPc",
@@ -48714,17 +48714,17 @@
       "objects": [
         {
           "unit": "src/nu2api/nuframe.c",
-          "base_size": 415,
+          "base_size": 426,
           "exact_match": false,
           "target_sha256": "883d100182098ba8779d0d72e95f9c2e8a983bf4e8a3907107e6c9d2914a1a04",
-          "base_sha256": "09027097b8ebbcffa7ea65182add47ccd1d90b6c4f097faed633e7f35053b8a6",
-          "relocation_count": 50,
+          "base_sha256": "4c824d41bedd462faf08877616e68105a7e9817020fa9d9bc4eacc424b58ce73",
+          "relocation_count": 53,
           "comparison_unit": "004fd050-68a5202400a8",
-          "objdiff_percent": 32.62547
+          "objdiff_percent": 33.90637
         }
       ],
       "status": "different",
-      "objdiff_percent": 32.62547
+      "objdiff_percent": 33.90637
     },
     {
       "name": "NuFileLoad",
@@ -94941,14 +94941,14 @@
           "base_size": 76,
           "exact_match": false,
           "target_sha256": "dd3d845fcbb4a2b75949ba53943cf6511ad8145c297ed795967ada17085d406e",
-          "base_sha256": "b3c0889ac748addce550ecca4242a7426f1fa77dd4bd68ba7a4f578bc7137663",
+          "base_sha256": "260de55f6c8ddf2e90d09cec741d97a7f2026110ff1177437cdc06d829fe4603",
           "relocation_count": 2,
           "comparison_unit": "0058ed40-f6a63ff79780",
-          "objdiff_percent": 97.23077
+          "objdiff_percent": 97.30769
         }
       ],
       "status": "different",
-      "objdiff_percent": 97.23077
+      "objdiff_percent": 97.30769
     },
     {
       "name": "GizMoveAttractoBuildItPiece",
@@ -125589,17 +125589,17 @@
       "objects": [
         {
           "unit": "src/nu2api/nupostdeferred.cpp",
-          "base_size": 1840,
+          "base_size": 1856,
           "exact_match": false,
           "target_sha256": "cdeed5fcf79246cd45998e6356a29dcab2517252f5787744cbd08c9a551f17e0",
-          "base_sha256": "772a36682084af4ec7e077696f9e2b394dc4e4ef85867940529b6b8c77d7dd50",
+          "base_sha256": "bef3639225f514c0bfe4061d973a4649c2884cd7dc926676baf14d7dc8710a28",
           "relocation_count": 135,
           "comparison_unit": "005f6c60-aa134e75b636",
-          "objdiff_percent": 85.8766
+          "objdiff_percent": 85.45353
         }
       ],
       "status": "different",
-      "objdiff_percent": 85.8766
+      "objdiff_percent": 85.45353
     },
     {
       "name": "NuDynamicLightCreate",
@@ -153152,6 +153152,30 @@
       "objdiff_percent": 100.0
     },
     {
+      "name": "NuSound3ResumeAfterFocusPc",
+      "symbol": "_NuSound3ResumeAfterFocusPc",
+      "address": "0x00696b00",
+      "units": [
+        "src/nu2api/nustream.cpp"
+      ],
+      "target_size": 32,
+      "exact_match": true,
+      "objects": [
+        {
+          "unit": "src/nu2api/nustream.cpp",
+          "base_size": 32,
+          "exact_match": true,
+          "target_sha256": "35ba6b684f4732bd97ff1289297b61f8814767587f3fc41f051b0bed7cb6eca8",
+          "base_sha256": "35ba6b684f4732bd97ff1289297b61f8814767587f3fc41f051b0bed7cb6eca8",
+          "relocation_count": 5,
+          "comparison_unit": "00696b00-3658710dad8b",
+          "objdiff_percent": 100.0
+        }
+      ],
+      "status": "exact",
+      "objdiff_percent": 100.0
+    },
+    {
       "name": "PCSoundVolumeLookup",
       "symbol": "_PCSoundVolumeLookup",
       "address": "0x00696b20",
@@ -154400,6 +154424,30 @@
       "objdiff_percent": 100.0
     },
     {
+      "name": "NuSound3SuspendForFocusPc",
+      "symbol": "_NuSound3SuspendForFocusPc",
+      "address": "0x00698fa0",
+      "units": [
+        "src/nu2api/nustream.cpp"
+      ],
+      "target_size": 42,
+      "exact_match": true,
+      "objects": [
+        {
+          "unit": "src/nu2api/nustream.cpp",
+          "base_size": 42,
+          "exact_match": true,
+          "target_sha256": "5cfa1e86bc8c1d7471316dc59a8e9a0a5427268e3074da02486a4291069568dc",
+          "base_sha256": "5cfa1e86bc8c1d7471316dc59a8e9a0a5427268e3074da02486a4291069568dc",
+          "relocation_count": 7,
+          "comparison_unit": "00698fa0-dccd9289d848",
+          "objdiff_percent": 100.0
+        }
+      ],
+      "status": "exact",
+      "objdiff_percent": 100.0
+    },
+    {
       "name": "?SetFormatPc@SoundQueue@@QAEHPBUtWAVEFORMATEX@@@Z",
       "symbol": "?SetFormatPc@SoundQueue@@QAEHPBUtWAVEFORMATEX@@@Z",
       "address": "0x00699070",
@@ -154686,6 +154734,30 @@
       ],
       "status": "different",
       "objdiff_percent": 96.51515
+    },
+    {
+      "name": "?SuspendForFocusPc@SoundQueue@@QAEXXZ",
+      "symbol": "?SuspendForFocusPc@SoundQueue@@QAEXXZ",
+      "address": "0x006997f0",
+      "units": [
+        "src/nu2api/nustream.cpp"
+      ],
+      "target_size": 77,
+      "exact_match": false,
+      "objects": [
+        {
+          "unit": "src/nu2api/nustream.cpp",
+          "base_size": 75,
+          "exact_match": false,
+          "target_sha256": "8f5b249e795b50cd7db0d85305d26c07a28d3cde0806aa53419f196e7e5f2b9a",
+          "base_sha256": "cb4b6ce2ef8a38f7f25c79adc6264e9342ebd33121767986cd5e758bd12993e6",
+          "relocation_count": 2,
+          "comparison_unit": "006997f0-1e87a7237e7b",
+          "objdiff_percent": 73.166664
+        }
+      ],
+      "status": "different",
+      "objdiff_percent": 73.166664
     },
     {
       "name": "?CancelPausePc@SoundQueue@@QAEXXZ",
@@ -455914,17 +455986,17 @@
   ],
   "progress": {
     "text_bytes": 3471246,
-    "mapped_code_bytes": 2341860,
-    "matched_code_bytes": 435414,
-    "matching_percent": 12.543449816002669,
-    "fuzzy_coverage_percent": 43.62882879974262,
-    "mapped_functions": 8607,
-    "matched_functions": 4010,
-    "objdiff_fuzzy_percent": 74.45967,
-    "objdiff_total_code": 2037241,
+    "mapped_code_bytes": 2342011,
+    "matched_code_bytes": 435488,
+    "matching_percent": 12.545581615362323,
+    "fuzzy_coverage_percent": 43.632718535007136,
+    "mapped_functions": 8610,
+    "matched_functions": 4012,
+    "objdiff_fuzzy_percent": 74.46075,
+    "objdiff_total_code": 2037392,
     "image_bytes": 40067072,
-    "mapped_bytes": 3452336,
-    "mapping_percent": 8.616392033837661,
+    "mapped_bytes": 3452487,
+    "mapping_percent": 8.616768901905285,
     "mapping_denominator": "code_and_data_section_virtual_sizes",
     "mapping_sections": [
       {
@@ -455932,7 +456004,7 @@
         "kind": "code",
         "address": "0x401000",
         "size": 3471246,
-        "mapped_bytes": 2343054
+        "mapped_bytes": 2343205
       },
       {
         "name": ".rdata",
@@ -455949,17 +456021,17 @@
         "mapped_bytes": 1031153
       }
     ],
-    "mapping_known_size_symbols": 16082,
+    "mapping_known_size_symbols": 16085,
     "mapping_unknown_size_symbols": 7104,
-    "mapping_code_bytes": 2343054,
+    "mapping_code_bytes": 2343205,
     "mapping_code_total_bytes": 3471246,
-    "mapping_code_percent": 67.4989326599152,
+    "mapping_code_percent": 67.50328268293288,
     "mapping_data_bytes": 1109282,
     "mapping_data_total_bytes": 36018966,
     "mapping_data_percent": 3.0797163916365617,
-    "mapping_code_data_bytes": 3452336,
+    "mapping_code_data_bytes": 3452487,
     "mapping_code_data_total_bytes": 39490212,
-    "mapping_code_data_percent": 8.742257448503949,
+    "mapping_code_data_percent": 8.74263982173608,
     "matched_data_region_bytes": 1094602
   },
   "data_members": [
@@ -457018,8 +457090,8 @@
     "inputs": {
       "metadata_sha256": "fe09365da4c355f220d724ca99394fc120b758891b4188d2c49707b6df0894f2",
       "header_path": "src/saga.h",
-      "header_sha256": "ed64255b521a2b06ea0512b2543d9e6c983e29190eb87b0e537122a297617240",
-      "geometry_object_sha256": "77da1b908b172fcfe5bb3b12d4584a5870f800f8f6a66976e660a8798ef1742c",
+      "header_sha256": "8604bc3cbcc9f1de8406b0ae4b94b53a0afd63549b867234114e1d07b563ef2f",
+      "geometry_object_sha256": "1d602e083cf1a2a5ee0a867de3a4b9ad8278e81f8fe39f9cff31eb67ac17c5ac",
       "toolchain_sha256": "489d0782638d8033137cdb2834462416111945cbfa073147820e314b8576b95b",
       "implementation_sha256": "9ad7521230f06fde31f0771b10bd001037ea32d2def455913a7f391f05dede9d",
       "headers": {
@@ -457049,7 +457121,7 @@
         "src/audio/vorbis/window.h": "a10ede6832692ccec154bb9291be7ec236f9642a99a6af9b108ff7df030904b5",
         "src/diagnostics.h": "dae209151b55b9f5aadc18ce8ad63a1d961c311a7d8ec7214ea32c7e7a095459",
         "src/externals.h": "5b08276a7759c01921ac2a5239bf0978accdd38d2533b458c25d1b16f8a4402d",
-        "src/saga.h": "ed64255b521a2b06ea0512b2543d9e6c983e29190eb87b0e537122a297617240"
+        "src/saga.h": "8604bc3cbcc9f1de8406b0ae4b94b53a0afd63549b867234114e1d07b563ef2f"
       },
       "owners": {
         "src/data.cpp": {

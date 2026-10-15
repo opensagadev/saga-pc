@@ -33,7 +33,8 @@ extern "C" void *__cdecl GizBuildIt_Find(WORLDINFO *world, char *name) {
     return NULL;
 }
 
-extern "C" void GizBuildIt_SetHeadTarget(GIZBUILDIT_s *buildit, GAMEOBJECT *player) {
+extern "C" void GizBuildIt_SetHeadTarget(GIZBUILDIT_s *buildit_pointer, GAMEOBJECT *player) {
+    GIZBUILDIT_PC *buildit = reinterpret_cast<GIZBUILDIT_PC *>(buildit_pointer);
     if (buildit->anim_object_count != 0) {
         i32 index = buildit->built_object_count;
         if (buildit->anim_object_count <= index)

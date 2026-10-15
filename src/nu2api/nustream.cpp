@@ -712,3 +712,28 @@ SoundQueue::SoundQueue(IDirectSound8 *factory_value, i32 mode) {
         temporary->vtable->release(temporary);
     }
 }
+
+void SoundQueue::SuspendForFocusPc(void) {
+    if (this == NULL)
+        return;
+    EnterCriticalSection(&operation_lock);
+    EnterCriticalSection(&volume_lock);
+    IDirectSoundBuffer *buffer = (IDirectSoundBuffer *)volume_sink;
+    if (stream_state == 2 && buffer != NULL)
+        buffer->vtable->stop(buffer);
+    LeaveCriticalSection(&volume_lock);
+    unknown_03f4 = 1;
+}
+extern "C" void __cdecl NuSound3SuspendForFocusPc(void) {
+    if (NuSound3Initialized != 0) {
+        SoundVoiceManager.StopAllVoices();
+        NuSound3StereoStreams[0]->SuspendForFocusPc();
+        NuSound3StereoStreams[1]->SuspendForFocusPc();
+    }
+}
+extern "C" void __cdecl NuSound3ResumeAfterFocusPc(void) {
+    if (NuSound3Initialized != 0) {
+        NuSound3StereoStreams[0]->CancelPausePc();
+        NuSound3StereoStreams[1]->CancelPausePc();
+    }
+}

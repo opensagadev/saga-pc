@@ -33,7 +33,7 @@ f32 __cdecl NuFrameEnd(void) {
         Sleep(1);
         NuWindowsProcessMessages();
     } else {
-        STUBBED_NAMED(0x00698fa0);
+        NuSound3SuspendForFocusPc();
         while (SoundVoiceEnabledGate == 0) {
             Sleep(10);
             if (NuWindowsProcessMessages() == 0) {
@@ -45,7 +45,7 @@ f32 __cdecl NuFrameEnd(void) {
         if ((i32)nuapi.time.high < 0) {
             NuFileError();
         }
-        STUBBED_NAMED(0x00696b00);
+        NuSound3ResumeAfterFocusPc();
     }
     STUBBED_NAMED(0x004f4c80); /* PC helper immediately before the render boundary. */
     NuTimeBarSetRender(-1);

@@ -17026,6 +17026,7 @@ struct SoundQueue {
 
     SoundQueue(IDirectSound8 *, i32);
     ~SoundQueue(void);
+    void SuspendForFocusPc(void);
     void CancelPausePc(void);
     DWORD Run(void);
     i32 SetFormatPc(const WAVEFORMATEX *);
@@ -27308,6 +27309,15 @@ extern "C" {
     void __cdecl PostShadowComputeFrustumCubePc(const NUCAMERA *, NUVEC4 *, NUVEC4 *);
     i32 __cdecl PostShadowComputePlanesPc(const NUVEC4 *, const NUVEC4 *, NUVEC4 *);
     void __cdecl PostShadowComputeCapsulePc(const NUVEC4 *, const NUVEC4 *, NUVEC4 *, NUVEC4 *, f32 *);
+#ifdef __cplusplus
+}
+#endif
+
+#ifdef __cplusplus
+extern "C" {
+#endif
+    void __cdecl NuSound3SuspendForFocusPc(void);
+    void __cdecl NuSound3ResumeAfterFocusPc(void);
 #ifdef __cplusplus
 }
 #endif

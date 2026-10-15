@@ -6849,6 +6849,7 @@ address    , symbol                                                         , si
 0x00696a30 , ?PlayTrack@NuMusic@@QAEHI@Z                                    , 15    , "i32 __thiscall (NuMusic *, u32)"
 0x00696a90 , _PCSoundAlreadyPlayingHook                                     , 1     , void __cdecl (void)
 0x00696ab0 , _PCSoundFailure                                                , 1     , PC RET-only diagnostic hook; observed varying cdecl arguments
+0x696b00,_NuSound3ResumeAfterFocusPc,32,void __cdecl(void)
 0x00696b20 , _PCSoundVolumeLookup                                           , 21    , f32 __cdecl (i32)
 0x00696b40 , _PCSoundSetRawVolume                                           , 48    , "HRESULT __cdecl (IDirectSoundBuffer *, i32)"
 0x00696b70 , _PCSoundSetLinearVolume                                        , 53    , "HRESULT __cdecl (IDirectSoundBuffer *, f32)"
@@ -6901,6 +6902,7 @@ address    , symbol                                                         , si
 0x00698e70 , _NuSound3Update                                                , 86    , void (void)
 0x00698ed0 , _NuSound3KillAllAudio                                          , 32    , void __cdecl (void)
 0x698f10,_NuSound3StopSFX,10,void __cdecl(void)
+0x698fa0,_NuSound3SuspendForFocusPc,42,void __cdecl(void)
 0x699070,?SetFormatPc@SoundQueue@@QAEHPBUtWAVEFORMATEX@@@Z,266,"i32 __thiscall(SoundQueue *,const WAVEFORMATEX *)"
 0x00699180 , ?SendCommand@SoundQueue@@QAEHHH@Z                              , 117   , "i32 __thiscall (SoundQueue *, i32, i32)"
 0x00699260 , ?HasCommand@SoundQueue@@QAEHH@Z                                , 85    , "i32 __thiscall (SoundQueue *, i32)"
@@ -6913,6 +6915,7 @@ address    , symbol                                                         , si
 0x00699710 , ?SetVolume@SoundQueue@@QAEHH@Z                                 , 82    , "i32 __thiscall (SoundQueue *, i32)"
 0x00699770 , ?IsStreamIdle@SoundQueue@@QAEHXZ                               , 37    , "i32 __thiscall (SoundQueue *, i32)"
 0x006997a0 , ?GetStatus@SoundQueue@@QAEHXZ                                  , 77    , "i32 __thiscall (SoundQueue *, i32)"
+0x6997f0,?SuspendForFocusPc@SoundQueue@@QAEXXZ,77,void __thiscall(SoundQueue *)
 0x699840,?CancelPausePc@SoundQueue@@QAEXXZ,90,void __thiscall(SoundQueue *)
 0x006998a0 , ?StartTimer@SoundQueue@@QAEXXZ                                 , 43    , void __thiscall (SoundQueue *)
 0x006998d0 , ?StopTimer@SoundQueue@@QAEXXZ                                  , 26    , void __thiscall (SoundQueue *)

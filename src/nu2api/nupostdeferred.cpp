@@ -447,11 +447,11 @@ void NuDeferredFilterGen::render() {
             }
             PCGraphicsBindEffectTexture(texture_pc, stage_pc);
         }
-        if (color_texture != NULL) {
-            PCGraphicsEffectTextureSetFilterFields(color_texture, 1, 1, 0);
+        if (normal_texture != NULL) {
+            PCGraphicsEffectTextureSetFilterFields(normal_texture, 1, 1, 0);
             {
                 const u32 stage_pc = 2;
-                GRAPHICS_RENDER_TEXTURE_PC *texture_pc = color_texture;
+                GRAPHICS_RENDER_TEXTURE_PC *texture_pc = normal_texture;
                 if (texture_pc != NULL) {
                     u32 *tuple_pc = PCGraphicsEffectTextureSamplerPc(texture_pc);
                     if ((u32)PCDeviceSamplerInvalidation[stage_pc][0] != tuple_pc[0] ||

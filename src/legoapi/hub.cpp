@@ -2639,7 +2639,7 @@ static void HubDrawBuildUpBarPc(f32 x, f32 y, i32 count, i32 total, f32 scale_x,
     i32 object = 178 - (i32)(GlobalTimer.time_elapsed_mod_seconds * 10.0);
     const f32 spacing =
         HubBuildBarOverallScalePc * HubBuildBarSpacingPc * scale_y * NuTrigTable[((angle + 16384) >> 1) & 0x7fff];
-    f32 cursor = (f32)(y - (HubBuildBarSegmentsPc - 1) * spacing * .5);
+    f32 cursor = (f32)(x - (HubBuildBarSegmentsPc - 1) * spacing * .5);
     for (i32 i = 0; i < HubBuildBarSegmentsPc; ++i) {
         if (count == total) {
             ++object;
@@ -2652,7 +2652,7 @@ static void HubDrawBuildUpBarPc(f32 x, f32 y, i32 count, i32 total, f32 scale_x,
         else
             object = 169;
         const f32 size = HubBuildBarScalePc * HubBuildBarOverallScalePc * scale_x * scale_y;
-        DrawPanel3DObject(x, cursor, (f32)((HubBuildBarSegmentsPc - i - 1) * .0010000000474974513 + 1.0), size, size,
+        DrawPanel3DObject(cursor, y, (f32)((HubBuildBarSegmentsPc - i - 1) * .0010000000474974513 + 1.0), size, size,
                           size, 0, 0, 0, &WORLD->level_objects[object].special, 0, alpha);
         cursor += spacing;
     }
