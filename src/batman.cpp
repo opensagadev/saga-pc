@@ -255,7 +255,7 @@ static void NuMainUpdateFrame(WORLDINFO *world, i32 *frame_flag) {
         GameObjectToCameraDistances();
         SetCameraMatrices();
         if (CUTSTOPGAME == 0) {
-            STUBBED_NAMED("NuMainUpdateFrame: UpdateStreaks at 0x005a3bd0");
+            UpdateStreaks(FRAMETIME);
         }
         if ((world->area != NULL && world->area == HUB_ADATA) || world->current_level == TITLES_LDATA ||
             world->current_level == STATUS_LDATA || (world->current_level->flags & 0x400) != 0 ||
@@ -365,7 +365,7 @@ static void NuMainRenderWorld(WORLDINFO *world) {
         WorldInfo_DrawScene(world);
         Level_Draw(world);
         Faders_Draw(world);
-        STUBBED_NAMED("NuMainRenderWorld: DrawStreaks at 0x005a3cc0");
+        DrawStreaks();
         Bolts_Draw(world);
         DrawExplosions();
         ZipUps_DrawLines();

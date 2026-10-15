@@ -4502,9 +4502,12 @@ address    , symbol                                                         , si
 0x5a2fd0,_Pulses_Reset,121,void __cdecl(LEVEL_SFX_PULSE_PC *)
 0x5a3050,_Pulses_Update,1024,void __cdecl(LEVEL_SFX_PULSE_PC *)
 0x5a3450,_Pulses_AddSfx,158,"void __cdecl (LEVEL_SFX_PULSE_PC *, i32 *, i32 *, i32)"
-0x5a3730,_AddStreakPoints,1181,
-0x5a40d0,_ResetStreaks,143,
-0x5a4160,_InitStreaks,558,
+0x5a35f0,_StreakBezierPointPrivate,310,"void(NUVEC *,NUVEC *,NUVEC *,NUVEC *,NUVEC *,i32,i32,f32) [private native EDI start; ESI end; six stack arguments]"
+0x5a3730,_AddStreakPoints,1181,"void __cdecl(NUVEC *,f32,u32,void **,i32,GAMEOBJECT *)"
+0x5a3bd0,_UpdateStreaks,234,void __cdecl(f32)
+0x5a3cc0,_DrawStreaks,1036,void __cdecl(void)
+0x5a40d0,_ResetStreaks,143,void __cdecl(void)
+0x5a4160,_InitStreaks,558,"void __cdecl(VARIPTR *,VARIPTR,char *)"
 0x5a4400,_KnockPushBlock,79,"void __cdecl(PUSH_BLOCK_PC*,NUVEC*)"
 0x5a4450,_ResetSinglePushBlock,233,
 0x5a4540,_ResetPushProgress,638,
@@ -11828,6 +11831,7 @@ address    , symbol                                                         , si
 0x75a070,??_C@_0BB@GGGAILKI@stuff?2things?4gsc?$AA@,17,const char[17]
 0x75a084,??_C@_0P@EOCAHEBJ@stuff?2gradient?$AA@,15,const char[15]
 0x75a094,??_C@_04JFPBKLKK@rope?$AA@,5,const char[5]
+0x75a09c,_StreakTextureNamePc,17,const char[17]
 0x75a0b0,??_C@_0P@DFIGHEHL@stuff?2char?4ptl?$AA@,15,const char[15]
 0x75a0c0,??_C@_0BC@BJANKBLJ@stuff?2general?4ptl?$AA@,18,const char[18]
 0x75a0d8,__real@3f100000,4,const f32
@@ -14266,6 +14270,7 @@ address    , symbol                                                         , si
 0x763d1c,??_C@_0N@EOMIGLHF@pulses_start?$AA@,13,
 0x763d2c,??_C@_06LKFCNKBI@pulses?$AA@,7,
 0x763d34,__real@3eaaaaab,4,const f32
+0x763d38,__real@3f8147ae,4,const f32
 0x763d3c,__real@3f7d70a4,4,const f32
 0x763d58,__real@c61c4000,,const f32
 0x763d60,__real@3f647ae160000000,,const f64
@@ -21952,6 +21957,14 @@ address    , symbol                                                         , si
 0x956644,_RippleEffectsCurrentPc,,
 0x956648,_RippleEraseListPc,,RIPPLE_NODE_PC **
 0x95664c,_RippleEraseCountPc,,i32
+0x956650,_StreakNodesPc,29696,STREAK_NODE_PC[128]
+0x95da50,_StreakReflectionMaterialPc,4,NUMTL *
+0x95da54,_StreakNodesUsedPc,4,STREAK_NODE_PC *
+0x95da58,_StreakNodesFreePc,4,STREAK_NODE_PC *
+0x95da5c,_StreakHeadersFreePc,4,STREAK_HEADER_PC *
+0x95da60,_StreakHeadersUsedPc,4,STREAK_HEADER_PC *
+0x95da64,_StreakMaterialPc,4,NUMTL *
+0x95da68,_StreakHeadersPc,1024,STREAK_HEADER_PC[32]
 0x95de68,_RenderHubFromCutscenePlayerPc,,i32
 0x95de6c,_Hub_PanelBusyFn,,i32 (__cdecl *)(void)
 0x95de8c,?pushblock_gizmotype_id@@3HA,,

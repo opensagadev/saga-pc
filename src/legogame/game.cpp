@@ -587,7 +587,7 @@ extern "C" void __cdecl CheckResetBits(void) {
         NuSound3Update();
     STUBBED_NAMED("CheckResetBits: Customiser_SetUpCharacterData(CharacterCustomiser) at 0x00424500");
     Surfaces_Reset();
-    STUBBED_NAMED("CheckResetBits: ResetStreaks at 0x005a40d0");
+    ResetStreaks();
     Bolts_Reset();
     Batarangs_Reset();
     Detonators_Reset();

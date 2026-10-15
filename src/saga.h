@@ -17374,6 +17374,57 @@ extern "C" {
     STATIC_ASSERT(sizeof(((SPECIAL_RESOURCE_WORLD_PC *)0)->event_count) == 4);
     STATIC_ASSERT(sizeof(((SPECIAL_RESOURCE_WORLD_PC *)0)->events) == 4);
 
+    typedef struct STREAK_NODE_PC {
+        struct STREAK_NODE_PC *next, *prev;
+        NUVEC position, previous_position;
+        NUVEC start_tangent, end_tangent;
+        NUVEC positions[7], tangents[7];
+        i32 segment_count;
+        f32 remaining_time;
+    } STREAK_NODE_PC;
+    typedef struct STREAK_HEADER_PC {
+        struct STREAK_HEADER_PC *next, *prev;
+        STREAK_NODE_PC *nodes;
+        u16 index;
+        u8 flags, unknown_0f;
+        i32 has_new_node;
+        void **owner_slot;
+        u32 colour;
+        GAMEOBJECT *owner;
+    } STREAK_HEADER_PC;
+    STATIC_ASSERT(sizeof(STREAK_NODE_PC) == 0xe8);
+    STATIC_ASSERT(offsetof(STREAK_NODE_PC, next) == 0x0);
+    STATIC_ASSERT(offsetof(STREAK_NODE_PC, prev) == 0x4);
+    STATIC_ASSERT(offsetof(STREAK_NODE_PC, position) == 0x8);
+    STATIC_ASSERT(offsetof(STREAK_NODE_PC, previous_position) == 0x14);
+    STATIC_ASSERT(offsetof(STREAK_NODE_PC, start_tangent) == 0x20);
+    STATIC_ASSERT(offsetof(STREAK_NODE_PC, end_tangent) == 0x2c);
+    STATIC_ASSERT(offsetof(STREAK_NODE_PC, positions) == 0x38);
+    STATIC_ASSERT(offsetof(STREAK_NODE_PC, tangents) == 0x8c);
+    STATIC_ASSERT(offsetof(STREAK_NODE_PC, segment_count) == 0xe0);
+    STATIC_ASSERT(offsetof(STREAK_NODE_PC, remaining_time) == 0xe4);
+    STATIC_ASSERT(sizeof(STREAK_HEADER_PC) == 0x20);
+    STATIC_ASSERT(offsetof(STREAK_HEADER_PC, next) == 0x0);
+    STATIC_ASSERT(offsetof(STREAK_HEADER_PC, prev) == 0x4);
+    STATIC_ASSERT(offsetof(STREAK_HEADER_PC, nodes) == 0x8);
+    STATIC_ASSERT(offsetof(STREAK_HEADER_PC, index) == 0xc);
+    STATIC_ASSERT(offsetof(STREAK_HEADER_PC, flags) == 0xe);
+    STATIC_ASSERT(offsetof(STREAK_HEADER_PC, has_new_node) == 0x10);
+    STATIC_ASSERT(offsetof(STREAK_HEADER_PC, owner_slot) == 0x14);
+    STATIC_ASSERT(offsetof(STREAK_HEADER_PC, colour) == 0x18);
+    STATIC_ASSERT(offsetof(STREAK_HEADER_PC, owner) == 0x1c);
+    extern STREAK_NODE_PC StreakNodesPc[128];
+    extern STREAK_HEADER_PC StreakHeadersPc[32];
+    extern STREAK_NODE_PC *StreakNodesFreePc, *StreakNodesUsedPc;
+    extern STREAK_HEADER_PC *StreakHeadersFreePc, *StreakHeadersUsedPc;
+    extern NUMTL *StreakMaterialPc, *StreakReflectionMaterialPc;
+    extern const char StreakTextureNamePc[17];
+    void __cdecl InitStreaks(VARIPTR *, VARIPTR, char *);
+    void __cdecl AddStreakPoints(NUVEC *, f32, u32, void **, i32, GAMEOBJECT *);
+    void __cdecl UpdateStreaks(f32);
+    void __cdecl DrawStreaks(void);
+    void __cdecl ResetStreaks(void);
+
     i32 __cdecl InitSpecialSfx(void *);
     void __cdecl LoadSpecialSfxFile(void *);
     i32 __cdecl SpecialSfxLoad(char *, void *);

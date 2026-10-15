@@ -34244,3 +34244,26 @@ extern "C" {
     extern const char EP3DogfightDiePc[17] = "EP3_DOGFIGHT_DIE";
 #pragma const_seg()
 }
+
+extern "C" {
+#pragma bss_seg(".bss$StreakNodesPc")
+    STREAK_NODE_PC StreakNodesPc[128];
+#pragma bss_seg(".bss$StreakReflectionMaterialPc")
+    NUMTL *StreakReflectionMaterialPc;
+#pragma bss_seg(".bss$StreakNodesUsedPc")
+    STREAK_NODE_PC *StreakNodesUsedPc;
+#pragma bss_seg(".bss$StreakNodesFreePc")
+    STREAK_NODE_PC *StreakNodesFreePc;
+#pragma bss_seg(".bss$StreakHeadersFreePc")
+    STREAK_HEADER_PC *StreakHeadersFreePc;
+#pragma bss_seg(".bss$StreakHeadersUsedPc")
+    STREAK_HEADER_PC *StreakHeadersUsedPc;
+#pragma bss_seg(".bss$StreakMaterialPc")
+    NUMTL *StreakMaterialPc;
+#pragma bss_seg(".bss$StreakHeadersPc")
+    STREAK_HEADER_PC StreakHeadersPc[32];
+#pragma bss_seg()
+#pragma const_seg(".rdata$StreakTextureNamePc")
+    extern const char StreakTextureNamePc[17] = "stuff\\streak.pnt";
+#pragma const_seg()
+}

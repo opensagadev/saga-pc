@@ -186,7 +186,7 @@ void __cdecl LoadPerm1(void) {
         DEBPAGE_CHARACTER = edppLoadPage(path, 5, 0);
     perm_debrissys = InitGameDebris(&permbuffer_ptr, native_end_address, 0x190, 0x93, debris_name, 0);
     permbuffer_ptr.addr = (permbuffer_ptr.addr + 3) & ~3u;
-    STUBBED_NAMED(InitStreaks); /* Native 48a913: &ptr,end,stuff\\streak.pnt. */
+    InitStreaks(&permbuffer_ptr, permbuffer_end, (char *)StreakTextureNamePc);
     permbuffer_ptr.addr = (permbuffer_ptr.addr + 3) & ~3u;
     InitRopeMtl("rope", &permbuffer_ptr, &permbuffer_end);
     InitRipples(&RippleSetPc, &permbuffer_ptr, &permbuffer_end, 40);
