@@ -101,12 +101,11 @@ static void NuMainUpdateFrame(WORLDINFO *world, i32 *frame_flag) {
         (world == NULL || world->area == NULL || (world->area->flags & 2) == 0) && NewMode == 0 && NewLData == NULL &&
         FadeSys.fade == 0.0f && editor_active == 0 &&
         (GamePads_IgnoreInputFn == NULL || GamePads_IgnoreInputFn() == 0)) {
-        if (CUTSTOPGAME != 0) {
-            STUBBED_NAMED("NuMainUpdateFrame: CutScene_IsSkippable(CutStopInfo) at 0x0057cf70 gates the autosave menu");
-        } else if (MiniCutCam == 0 && CutSceneWaiting == 0) {
+        if ((CUTSTOPGAME == 0 || CutScene_IsSkippable((CUTINFO *)CutStopInfo) != 0) && MiniCutCam == 0 &&
+            CutSceneWaiting == 0) {
             if (GameMenu[GameMenuLevel].menu != -1) {
-                STUBBED_NAMED("NuMainUpdateFrame: MenuInMemoryCard at 0x0050b310");
-                if (MenuInfo[GameMenu[GameMenuLevel].menu].id != 1 && MenuInfo[GameMenu[GameMenuLevel].menu].id != 4) {
+                if (MenuInMemoryCard() == 0 && MenuInfo[GameMenu[GameMenuLevel].menu].id != 1 &&
+                    MenuInfo[GameMenu[GameMenuLevel].menu].id != 4) {
                     NewMenu(0x3f3, 0, -1);
                 } else {
                     memcard_autosavedisabled = 0;
@@ -115,7 +114,7 @@ static void NuMainUpdateFrame(WORLDINFO *world, i32 *frame_flag) {
             } else if (Paused == 0) {
                 for (player = (GAMEOBJECT **)Player; player < (GAMEOBJECT **)&Player[2]; player++) {
                     if (*player != NULL && ((*player)->flags_1fc & 0x80) != 0) {
-                        STUBBED_NAMED("NuMainUpdateFrame: PauseGame(pad index) at 0x0055c120");
+                        PauseGame((i32)((GAMEPAD_INIT_RECORD *)(*player)->pad - GamePadStorage));
                         break;
                     }
                 }

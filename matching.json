@@ -76,7 +76,7 @@
     "tools/dinput8.def": "0650c8a82ce920cd1f07c5f585b6f64129b09c5969bb5074b871c8921dc32a3c",
     "tools/dsound.def": "10147b85f8f09f4a3fefe82c0756818c64d9a6f2d81bb3f120757ea5b08941da",
     "tools/xinput1_3.def": "f2b829c89adb5c7fc9fbd7dfdbc49f8eb5412d4700bf1123935f71a29fa84b50",
-    "src/batman.cpp": "bc0f29882bc35525b08d892cbc34e312b4ef074524ecfbf53b443f765a5b40c0",
+    "src/batman.cpp": "c34b84fdbd7f1ed15b46541a0ad7f0bc11ada49ee379b3e915fdd25e44f6f043",
     "src/data.cpp": "99cc54ec3d8bd2773492446ea2e1c2782e1a368ff54b0c5bc7cdc540205a3a6d",
     "src/gameapi/message.cpp": "d866d1645077e79807e57c3808e326e472a7ea95edd40a22bc405f922aff4999",
     "src/gameapi/saveload.cpp": "98b1f080a17c0ee2f1d4be9aaa54aba5beac5d4ef2807d9e1d84141bee0bf98a",
@@ -482,7 +482,7 @@
     "build/obj/audio/vorbis/vorbisfile.obj": "77ce8bbf4000cb4611f84605a80b08434e6b6716554cdc0093588762b8f331e4",
     "build/obj/audio/vorbis/window.obj": "f68053e4c5824d92bbce09964ac5beee2ac43873a54c81453ad3dfa9e2e07d3d",
     "build/obj/audio/vorbis_smallft.obj": "7f8b607ee0383eb3092e5722cc2c3a157d9adf1ca393fc46312743f1f386039d",
-    "build/obj/batman.obj": "590eadfed35542ab2eef131aa933d3c34c04fef6282d1dc0570cd771f3e26e19",
+    "build/obj/batman.obj": "a3bec9a79e9b1551b1f05c7362d7bc0b0f7d0e21eda700823a56338f5657ea6c",
     "build/obj/data.obj": "6b26d2988a02336e2fb29a42b4182f71c5a148d1ef1deecab4f03080ef10ac19",
     "build/obj/editor/edtoolsall.obj": "3a1e240439b0ae227f11c9ebe3f9c27dc5e9b3fc7595f47ba4b36e5ddfd6c74a",
     "build/obj/gameapi/ai_registry_pc.obj": "55ac2265320c0ace8b9bae519dd7a88dbb9276f708015685cbf5ba591d02ccbf",
@@ -28726,17 +28726,17 @@
       "objects": [
         {
           "unit": "src/batman.cpp",
-          "base_size": 1900,
+          "base_size": 1984,
           "exact_match": false,
           "target_sha256": "26ebdc2d5c01ca2be720acd39df9a8059cfdc6a03816fc856db4230c25ea2478",
-          "base_sha256": "21ae40fffff08a1e6ecd69660fc3081c1e479e5fed3c46dbae581aa63aae4dd7",
-          "relocation_count": 154,
+          "base_sha256": "db0e807bce3d5309160d2e7d8a87957efa5a7b621ccd10df781ea333df972356",
+          "relocation_count": 161,
           "comparison_unit": "00491d50-0eb317885010",
-          "objdiff_percent": 66.10391
+          "objdiff_percent": 69.848854
         }
       ],
       "status": "different",
-      "objdiff_percent": 66.10391
+      "objdiff_percent": 69.848854
     },
     {
       "name": "?NuMainRenderWorld@@YAXPAUWORLDINFO_s@@@Z",
@@ -450934,10 +450934,10 @@
     "mapped_code_bytes": 2314406,
     "matched_code_bytes": 431467,
     "matching_percent": 12.42974424745466,
-    "fuzzy_coverage_percent": 42.61780023850316,
+    "fuzzy_coverage_percent": 42.62072930862956,
     "mapped_functions": 8523,
     "matched_functions": 3962,
-    "objdiff_fuzzy_percent": 74.29099,
+    "objdiff_fuzzy_percent": 74.2961,
     "objdiff_total_code": 1994626,
     "image_bytes": 40067072,
     "mapped_bytes": 3384665,
@@ -452036,7 +452036,7 @@
       "metadata_sha256": "fe09365da4c355f220d724ca99394fc120b758891b4188d2c49707b6df0894f2",
       "header_path": "src/saga.h",
       "header_sha256": "e651cf57012a66f2d596cf782811b1612ef895cdb0c2b1c27200800fe98234cd",
-      "geometry_object_sha256": "9d3de0aaa5bf292cfb0bb5c4829801a1ee177f3ad028eccc20f47bdb4b00800a",
+      "geometry_object_sha256": "0c58109426e267a6fa2fbca290110f00e4da5eb4409224d68b7970c26055e8bb",
       "toolchain_sha256": "489d0782638d8033137cdb2834462416111945cbfa073147820e314b8576b95b",
       "implementation_sha256": "9ad7521230f06fde31f0771b10bd001037ea32d2def455913a7f391f05dede9d",
       "headers": {
