@@ -9599,6 +9599,18 @@ extern "C" {
     LEVELDATA_PC *HUB_LDATA;
     LEVELDATA_PC *STATUS_LDATA;
     LEVELDATA_PC *CREDITS_LDATA;
+#pragma data_seg(".data$ScreenStillXPc")
+    i32 ScreenStillXPc = -32;
+#pragma data_seg()
+#pragma data_seg(".data$ScreenStillYPc")
+    i32 ScreenStillYPc = -12;
+#pragma data_seg()
+#pragma data_seg(".data$ScreenStillWidthPc")
+    i32 ScreenStillWidthPc = 10260;
+#pragma data_seg()
+#pragma data_seg(".data$ScreenStillHeightPc")
+    i32 ScreenStillHeightPc = 3592;
+#pragma data_seg()
     f32 MainRenderTime;
     f32 MainRenderTargetTime;
     f32 WaitingForLevelTime;

@@ -2968,7 +2968,7 @@ address    , symbol                                                         , si
 0x00548a10 , _AmbientFromQuiet                                              , 65    , i32 __cdecl (i32)
 0x00548a60 , _GetMusicIndex                                                 , 4     , "i16 __cdecl (char *, nusound_filename_info_s *, i32)"
 0x00548a70 , _ConfigureMusic                                                , 108   , "nusound_filename_info_s * __cdecl (char *, VARIPTR *, VARIPTR *)"
-0x00548ae0 , _GamePlayMusic                                                 , 324   , "i32 __cdecl (LEVELDATA_PC *, i32, OPTIONSSAVE *)"
+0x00548ae0 , _GamePlayMusic                                                 , 324   , "void __cdecl (LEVELDATA_PC *, i32, OPTIONSSAVE *)"
 0x548c40,_ProcessMusicChanges,577,
 0x00548e90 , _MusicClearAll                                                 , 82    , void __cdecl (void)
 0x00548ef0 , _SfxCheckMusicOnOff                                            , 1     , void __cdecl (OPTIONSSAVE *)
@@ -18594,6 +18594,10 @@ address    , symbol                                                         , si
 0x00802eec , ??_R0?AVFadeWipe@@@8                                           , 23    ,
 0x00802f04 , ??_R0?AVFadeStillWipe@@@8                                      , 28    ,
 0x00802f20 , ??_R0?AVFadeStill@@@8                                          , 24    ,
+0x802f38,_ScreenStillXPc,4,i32
+0x802f3c,_ScreenStillYPc,4,i32
+0x802f40,_ScreenStillWidthPc,4,i32
+0x802f44,_ScreenStillHeightPc,4,i32
 0x802f54,_blowup_gizmotype_id,4,i32
 0x00802f58,_MAXBLOWUPRANDSPANG,,i32
 0x803068,_GizmoBlowupHitMultiplierPc,,GIZMO_BLOWUP_HIT_MULTIPLIER_STORAGE_PC

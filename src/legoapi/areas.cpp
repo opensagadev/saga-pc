@@ -1330,7 +1330,7 @@ extern "C" {
     void __cdecl MusicClearAll(void);
     void __cdecl SoundKillAll(void);
     void __cdecl NeedScreenGrab(i32);
-    i32 __cdecl GamePlayMusic(LEVELDATA_PC *, i32, OPTIONSSAVE *);
+    void __cdecl GamePlayMusic(LEVELDATA_PC *, i32, OPTIONSSAVE *);
     void __cdecl Area_Configure(i32, i32, AREA_EXTRA_MODEL_PC *, i16 *);
     extern AREA_EXTRA_MODEL_PC ExtraModelList[];
     void __cdecl LoadAreaCharacters(void);
@@ -1401,9 +1401,9 @@ void __cdecl LoadAreaCharacters(void) {
             i32 handle = music_man.GetTrackHandle(1, crawl_music[(i8)ADataList[Area].episode_index]);
             music_man.SelectTrackByHandle(1, handle);
             if (music_man.GetTrackHandle(1, NULL) != -1)
-                STUBBED_NAMED(AreaCrawlPlayTrack); /* Native48b8c1->696a30, return ignored. */
+                music_man.PlayTrack(1);
         } else {
-            STUBBED_NAMED(GamePlayMusic); /* Native48b8d5->548ae0, return ignored. */
+            GamePlayMusic(TITLES_LDATA, 0, &Game.options_save);
         }
         NuSound3Update();
     }
@@ -1416,7 +1416,7 @@ void __cdecl LoadAreaCharacters(void) {
         NuFrameBegin();
         NuCameraSet(&global_camera);
         readpads_always = 1;
-        STUBBED_NAMED(ReadPads); /* Native48b93d->54b090. */
+        ReadPads();
         if (load_type != 2) {
             if (AreaDataLoaded != 0)
                 skip_text_scroll = 1;

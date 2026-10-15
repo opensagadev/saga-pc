@@ -118,6 +118,18 @@ compiled definition to have a mapping or to be listed in
 helpers with no known original address, which earn no credit). CI runs
 everything that needs no original files; matching runs locally only.
 
+### Temporary artifacts
+
+Remove temporary files when their task or checkpoint no longer needs them. After
+validation and publication, retain concise provenance summaries and any candidate,
+log or capture still needed for an active investigation or human test; discard
+obsolete object copies, compiler experiments and exact duplicate captures. Check
+active agent references before deleting shared scratch. Preserve current builds,
+pinned toolchains, active or shared Wine prefixes, original assets and user
+provided evidence. Obsolete task-owned prefixes and scratch may be removed once
+all owned processes have exited and no active work depends on them. Report what
+was removed and what remains needed.
+
 ## Matching VC8 from Android source
 
 Android sources were shaped until clang reproduced the Android binary. Clang

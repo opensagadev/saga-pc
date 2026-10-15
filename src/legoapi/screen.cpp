@@ -324,8 +324,9 @@ extern "C" u8 IsGrabbingScreen(void) {
 }
 
 extern "C" NUVPCURRENT *__cdecl NuVpGetCurrentViewport(void);
+extern "C" i32 ScreenStillXPc, ScreenStillYPc, ScreenStillWidthPc, ScreenStillHeightPc;
 extern "C" void DrawStillScreen(i32 clear) {
-    NuRndrBeginScene(-1);
+    NuRndrBeginScene(1);
     NuVpGetCurrentViewport();
     if (clear != 0) {
         NuRndrClear(0x500, 0, 1.0f);
@@ -333,9 +334,11 @@ extern "C" void DrawStillScreen(i32 clear) {
     if (MainRenderTime < 1.0f) {
         const u32 colour = (((i32)(MainRenderTime * 128.0f)) << 24) | 0x00808080u;
         u32 colours[4] = {colour, colour, colour, colour};
-        NuRndrGradRectUV2di(0, 0, 0x2800, 0xe00, 0.0f, 1.0f, 1.0f, 0.0f, colours, (NUMTL *)pause_rndr_mtl);
+        NuRndrGradRectUV2di(ScreenStillXPc, ScreenStillYPc, ScreenStillWidthPc, ScreenStillHeightPc, 0.0f, 0.0f, 1.0f,
+                            1.0f, colours, (NUMTL *)pause_rndr_mtl);
     } else {
-        NuRndrRectUV2di(0, 0, 0x2800, 0xe00, 0.0f, 1.0f, 1.0f, 0.0f, 0x80808080u, (NUMTL *)pause_rndr_mtl);
+        NuRndrRectUV2di(ScreenStillXPc, ScreenStillYPc, ScreenStillWidthPc, ScreenStillHeightPc, 0.0f, 0.0f, 1.0f, 1.0f,
+                        0x80808080u, (NUMTL *)pause_rndr_mtl);
     }
     NuRndrEndScene();
 }

@@ -1408,9 +1408,15 @@ static __declspec(noinline) AICONDITION_PC *AIScriptProcessStateConditions(AISYS
         condition_value = 0.0f;
         comparison_passed = 0;
         if (condition->definition != NULL) {
-            if (condition->definition->eval_fn != NULL)
+            if (condition->definition->eval_fn != NULL) {
+                LOG_INFO_IF((u32)condition->definition->eval_fn == 0x00400000,
+                            "Story condition eval: name=%s def=%p fn=%p sys=%p process=%p condition=%p",
+                            condition->definition->name, (void *)condition->definition,
+                            (void *)condition->definition->eval_fn, (void *)system, (void *)processor,
+                            (void *)condition);
                 condition_value = condition->definition->eval_fn(system, processor, packet, condition->argument,
                                                                  condition->initialized_argument);
+            }
             if (condition->parameter_condition != NULL && condition->parameter_condition->definition != NULL) {
                 comparison_fn = condition->parameter_condition->definition->eval_fn;
                 comparison_value = comparison_fn != NULL ? comparison_fn(system, processor, packet, condition->argument,
