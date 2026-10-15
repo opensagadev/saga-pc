@@ -365,7 +365,8 @@ static void NuMainRenderWorld(WORLDINFO *world) {
         WorldInfo_DrawScene(world);
         Level_Draw(world);
         Faders_Draw(world);
-        STUBBED_NAMED("NuMainRenderWorld: DrawStreaks at 0x005a3cc0, Bolts_Draw(world) at 0x00581bb0");
+        STUBBED_NAMED("NuMainRenderWorld: DrawStreaks at 0x005a3cc0");
+        Bolts_Draw(world);
         DrawExplosions();
         ZipUps_DrawLines();
         STUBBED_NAMED(

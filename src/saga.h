@@ -13963,6 +13963,7 @@ void __cdecl AIScriptMissingConditionDiagnostic();
     void __cdecl Minicam_CalcCamPos(void);
     void __cdecl Minicam_Update(void);
     void __cdecl Bolts_Update(WORLDINFO *);
+    void __cdecl Bolts_Draw(WORLDINFO *);
     void __cdecl Bolt_Reflect(NUVEC *, NUVEC *, NUVEC *);
     void __cdecl NewTerrHitInfo(u8 *);
     void __cdecl NewRayCastGetImpactNormal(NUVEC *);

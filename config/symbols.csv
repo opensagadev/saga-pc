@@ -3890,6 +3890,8 @@ address    , symbol                                                         , si
 0x0057eec0 , _CutScenes_End                                                 , 135   , void __cdecl (void)
 0x57ef50,_CutScenes_Update,1783,"void __cdecl (WORLDINFO *, i32)"
 0x57f700,_NuMtxSetRotationYInline,162,"static void(NUMTX *, NUANG)"
+0x57f7b0,_BoltDrawRotateXPrivate,217,"NUMTX *(NUMTX *, i32) [private native EAX matrix; ECX angle; returns EAX]"
+0x57f890,_BoltDrawRotateZPrivate,215,"NUMTX *(NUMTX *, i32) [private native EAX matrix; ECX angle; returns EAX]"
 0x57f970,_Bolts_Reset,45,
 0x57f9a0,?Bolt_RayCastPrivate@@YAHPAUbolt_s@@PAUnuvec_s@@1@Z,260,
 0x57fab0,?Bolt_GeneratePointsPrivate@@YAXPAUbolt_s@@PAUnuvec_s@@@Z,117,
@@ -3941,7 +3943,7 @@ address    , symbol                                                         , si
 0x580f50,?Bolt_HitPlatPrivate@@YAHPAUbolt_s@@PAE@Z,445,
 0x581110,?Bolt_HitBlowupPrivate@@YAHPAUbolt_s@@PAUnuvec_s@@11MPAE@Z,223,
 0x5811f0,_Bolt_HitGameObjectRC,2495,void __cdecl(NETMESSAGE_PC&)
-0x581bb0,_Bolts_Draw,650,
+0x581bb0,_Bolts_Draw,650,void __cdecl(WORLDINFO *)
 0x00581e40 , _BoltTypes_Configure                                           , 362   , "void __cdecl (WORLDINFO *, char *)"
 0x581fb0,_Bolt_HitGameObject,691,"i32 __cdecl(BOLT_PC*,GAMEOBJECT*,NUVEC*,NUVEC*,NUVEC*,f32,u8*)"
 0x582270,_Bolt_HitGameObjects,499,"i32 __cdecl(BOLT_PC*,NUVEC*,NUVEC*,NUVEC*,f32,u8*)"

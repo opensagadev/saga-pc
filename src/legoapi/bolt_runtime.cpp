@@ -913,3 +913,114 @@ extern "C" void __cdecl Bolts_Update(WORLDINFO *world) {
             BoltSys->stop_targeting(static_cast<GAMEOBJECT *>(bolt->owner), &bolt->position);
     }
 }
+
+// Retail private rotation leaves take the matrix in EAX and angle in ECX.
+// Keep these beside their sole caller so VC8 can select its internal ABI.
+extern "C" {
+    static __declspec(noinline) NUMTX *__cdecl BoltDrawRotateXPrivate(NUMTX *m, i32 angle) {
+        f32 cos_x = NuTrigTable[((angle + 0x4000) >> 1) & 0x7fff];
+        f32 sin_x = NuTrigTable[(angle >> 1) & 0x7fff];
+        f32 m01 = m->m01;
+        f32 m11 = m->m11;
+        f32 m21 = m->m21;
+        f32 m31 = m->m31;
+
+        m->m01 = m01 * cos_x - m->m02 * sin_x;
+        m->m02 = m01 * sin_x + m->m02 * cos_x;
+        m->m11 = m11 * cos_x - m->m12 * sin_x;
+        m->m12 = m11 * sin_x + m->m12 * cos_x;
+        m->m21 = m21 * cos_x - m->m22 * sin_x;
+        m->m22 = m21 * sin_x + m->m22 * cos_x;
+        m->m31 = m31 * cos_x - m->m32 * sin_x;
+        m->m32 = m31 * sin_x + m->m32 * cos_x;
+        return m;
+    }
+
+    static __declspec(noinline) NUMTX *__cdecl BoltDrawRotateZPrivate(NUMTX *m, i32 angle) {
+        f32 cos_z = NuTrigTable[((angle + 0x4000) >> 1) & 0x7fff];
+        f32 sin_z = NuTrigTable[(angle >> 1) & 0x7fff];
+        f32 m00 = m->m00;
+        f32 m10 = m->m10;
+        f32 m20 = m->m20;
+        f32 m30 = m->m30;
+
+        m->m00 = m00 * cos_z - m->m01 * sin_z;
+        m->m01 = m00 * sin_z + m->m01 * cos_z;
+        m->m10 = m10 * cos_z - m->m11 * sin_z;
+        m->m11 = m10 * sin_z + m->m11 * cos_z;
+        m->m20 = m20 * cos_z - m->m21 * sin_z;
+        m->m21 = m20 * sin_z + m->m21 * cos_z;
+        m->m30 = m30 * cos_z - m->m31 * sin_z;
+        m->m31 = m30 * sin_z + m->m31 * cos_z;
+        return m;
+    }
+}
+
+STATIC_ASSERT(offsetof(BOLT_PC, effect_orientation) == 0x48);
+STATIC_ASSERT(offsetof(BOLT_PC, position) == 0x88);
+STATIC_ASSERT(offsetof(BOLT_PC, scale) == 0xc4);
+STATIC_ASSERT(offsetof(BOLT_PC, field_e4) == 0xe4);
+STATIC_ASSERT(offsetof(BOLT_PC, reflection_height) == 0xe8);
+STATIC_ASSERT(offsetof(BOLT_PC, surface_x_rotation) == 0xf4);
+STATIC_ASSERT(offsetof(BOLT_PC, surface_z_rotation) == 0xf6);
+STATIC_ASSERT(offsetof(BOLT_PC, field_102) == 0x102);
+STATIC_ASSERT(offsetof(BOLTTYPE_PC, field_24) == 0x24);
+STATIC_ASSERT(offsetof(BOLTTYPE_PC, flags_60) == 0x60);
+STATIC_ASSERT(offsetof(BOLTTYPE_PC, specials_68) == 0x68);
+STATIC_ASSERT(sizeof(NUSPECIALHANDLE) == 0xc);
+STATIC_ASSERT(offsetof(WORLDINFO, current_level) == 0x128);
+STATIC_ASSERT(offsetof(LEVELDATA_PC, reflection_y) == 0xc0);
+
+extern "C" i32 __cdecl MatrixReflectionVU0_AXISY(NUMTX *, f32, f32, NUMTX *);
+extern "C" void __cdecl Bolts_Draw(WORLDINFO *world) {
+    NUVEC scale = {0.0f, 0.0f, 0.0f};
+    for (BOLT_PC *bolt = Bolt; bolt != Bolt + 32; ++bolt) {
+        if (bolt->active == 0)
+            continue;
+        BOLTTYPE_PC *type = bolt->type;
+        f32 size = type->scale_callback != NULL ? type->scale_callback(bolt) : bolt->scale;
+        NUMTX matrix = bolt->effect_orientation;
+        if (bolt->time < type->field_24) {
+            if ((type->flags_60 & 0x2000000) != 0)
+                scale.y = size;
+            else
+                scale.y = (bolt->time / type->field_24) * size;
+            scale.x = scale.z = (bolt->flags & 0x200) != 0 ? scale.y : size;
+            NuMtxPreScale(&matrix, &scale);
+        } else if (bolt->scale != 1.0f) {
+            scale.x = scale.y = scale.z = size;
+            NuMtxPreScale(&matrix, &scale);
+        }
+        NuMtxTranslate(&matrix, &bolt->position);
+        NUSPECIALHANDLE *specials = reinterpret_cast<NUSPECIALHANDLE *>(type->specials_68);
+        i32 first = 0, second = 0;
+        if (NuSpecialExistsFn(&specials[0]))
+            first = NuSpecialDrawAt(&specials[0], &matrix);
+        if (NuSpecialExistsFn(&specials[1]))
+            second = NuSpecialDrawAt(&specials[1], &matrix);
+        if (static_cast<f64>(bolt->reflection_height) != 2000000.0) {
+            NUMTX reflection;
+            if (MatrixReflectionVU0_AXISY(&matrix, bolt->reflection_height, world->current_level->reflection_y,
+                                          &reflection)) {
+                if (NuSpecialExistsFn(&specials[2]))
+                    NuSpecialDrawAt(&specials[2], &reflection);
+                if (NuSpecialExistsFn(&specials[3]))
+                    NuSpecialDrawAt(&specials[3], &reflection);
+            }
+        }
+        if (static_cast<f64>(bolt->field_e4) != 2000000.0) {
+            scale.x = scale.z = scale.y;
+            NuMtxSetScale(&matrix, &scale);
+            BoltDrawRotateZPrivate(&matrix, bolt->surface_z_rotation);
+            NUMTX *shadow_matrix = BoltDrawRotateXPrivate(&matrix, bolt->surface_x_rotation);
+            matrix.m30 = bolt->position.x;
+            matrix.m31 = static_cast<f32>(static_cast<f64>(bolt->field_e4) + static_cast<f64>(0.005f));
+            matrix.m32 = bolt->position.z;
+            NuSpecialDrawAt(&specials[4], shadow_matrix);
+        }
+        if (first != 0 || second != 0)
+            bolt->field_102 = 1;
+        else if (Paused == 0 && bolt->field_102 != 0 && (bolt->flags & 0x20) == 0)
+            bolt->active = 0;
+    }
+}
