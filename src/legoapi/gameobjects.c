@@ -4224,6 +4224,35 @@ STATIC_ASSERT(offsetof(OPPONENT_LOS_PC, line_of_sight) == 8);
 #define OPPONENT_GAME(p) ((OPPONENT_GAME_PC *)(p))
 #define OPPONENT_SYS(p) ((OPPONENT_SYS_PC *)(p))
 #define OPPONENT_LOS(p) ((OPPONENT_LOS_PC *)(p))
+f32 __cdecl Condition_CollidingWithOpponentPc(AISYS_PC *system, AISCRIPTPROCESS_PC *process, AIPACKET_PC *packet,
+                                              char *name, void *argument) {
+    if (packet != NULL && packet->opponent != NULL && packet->owner != NULL &&
+        ((packet->owner->collision_contact_mask[0] & packet->opponent->collision_identity_mask[0]) |
+         (packet->owner->collision_contact_mask[1] & packet->opponent->collision_identity_mask[1])) != 0)
+        return 1.0f;
+    return 0.0f;
+}
+
+f32 __cdecl Condition_GotOpponentLOSPc(AISYS_PC *system, AISCRIPTPROCESS_PC *process, AIPACKET_PC *packet, char *name,
+                                       void *argument) {
+    GAMEOBJECT *object, *opponent;
+    u32 owner_index, opponent_index;
+    u64 opponent_bit;
+    if (packet == NULL || packet->owner == NULL || packet->owner->objptr == NULL)
+        return 0.0f;
+    object = packet->owner->objptr;
+    opponent = object->character_context == 0x1b ? object->force_target : packet->opponent;
+    if (opponent == NULL)
+        return 0.0f;
+    owner_index = packet->owner->hostility_group;
+    opponent_index = opponent->hostility_group;
+    /* Native __allshl returns zero for every byte count >=64. Keep the C shift defined. */
+    opponent_bit = (u64)(opponent_index < 64u) << (opponent_index & 63u);
+    if ((OPPONENT_LOS(WORLD->object_sys)->line_of_sight[owner_index] & opponent_bit) != 0)
+        return 1.0f;
+    return 0.0f;
+}
+
 extern i16 id_UGNAUGHT;
 extern i32 nbaddies_can_see_players;
 extern f32 OpponentSelectionHysteresisPc;
