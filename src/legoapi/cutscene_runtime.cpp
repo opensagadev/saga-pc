@@ -2079,7 +2079,7 @@ extern "C" {
         NuGCutSceneSysRender(Paused);
         if (CUTDRAWWORLD != 0 && world->current_gscn != NULL) {
             SetLevelLights(world->rtl_set, 1.0f);
-            STUBBED_NAMED(0x00601df0); /* Native NuGScnRndr3(world->current_gscn). */
+            NuGScnRndr3(world->current_gscn);
             if (world->gizmo_sys != NULL && CutStopInfo != NULL &&
                 (reinterpret_cast<CUT_LOAD_RECORD_PC *>(CutStopInfo)->flags & 0x8000) != 0)
                 GizmoSysDraw(world->gizmo_sys, world, FRAMETIME);

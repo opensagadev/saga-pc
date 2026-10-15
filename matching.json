@@ -90,7 +90,7 @@
     "src/legoapi/characters.cpp": "c284cb172d0a31978771b44b8423761ee7e8d92b9b76022edb1538bfc69a17a6",
     "src/legoapi/collection_render.cpp": "a32e3521921d0b7aebf5422f1449f6acbea8b8503577f769de2cc616defa77a0",
     "src/legoapi/control_setup.cpp": "38ca5b00cb993deb59bdbdd4c9bff12cfede3f72a3b62610499a30a7c92af877",
-    "src/legoapi/cutscene_runtime.cpp": "aecea4c17a4aeec61649081ad1999d7ad330c7234eb5e02892863cd4118a9626",
+    "src/legoapi/cutscene_runtime.cpp": "408b992ad5d9ca08d97d2593c3d0ac47174b52efb5267561b0ea17dc2744d1c6",
     "src/legoapi/debris_generators.cpp": "f49b1f1d20263f99fbc80077116dcb7866305c8420b5240a8d950a0e4712f062",
     "src/legoapi/episode.cpp": "c44213b13202c6db1debf38310b3c28bbe6eb6bfd8b2d93747d4b766159f016e",
     "src/legoapi/fade.cpp": "6cd20416261a89eb71caf12a91e505bdd96396325e8b61f796bd198ee913138d",
@@ -536,7 +536,7 @@
     "build/obj/legoapi/customise.obj": "73bfaacedcd90c52aa511559198b969a2b83559e60b768879e17e426720df602",
     "build/obj/legoapi/cutscene_hooks.obj": "f1923902af318e044d8dea6a84cf5ae8606ca81df01e0b9d458676cf8a108380",
     "build/obj/legoapi/cutscene_lifecycle.obj": "42135cd3d3b08916793f0a36f3f817f5d32e8d26ee3123f72558f50159f41807",
-    "build/obj/legoapi/cutscene_runtime.obj": "d5342ffff0ed7e4c712c132cb3183fadf2e00db9b900b34414c4da570604ed08",
+    "build/obj/legoapi/cutscene_runtime.obj": "9ed0b12487e17a21b640c0010cdb5cbb558ff0e76b4b35887cdf61f83f4a475c",
     "build/obj/legoapi/debris_callbacks.obj": "36be1c5ce5b959ee23414b46614ac3ebd8d912754d6eaacf46ebd7ef9bb9569b",
     "build/obj/legoapi/debris_engine.obj": "a580643ab4f0a084b0e7fe6d754957869f960ac658f7906e736817d5b4784bb1",
     "build/obj/legoapi/debris_generators.obj": "639e0d9c686c5af1fde72e794f5308ed2120c3c5e1522340a7f5b4503427c681",
@@ -84515,17 +84515,17 @@
       "objects": [
         {
           "unit": "src/legoapi/cutscene_runtime.cpp",
-          "base_size": 350,
+          "base_size": 362,
           "exact_match": false,
           "target_sha256": "72998fc186456d0e24412032c564735bd3730d4931049473975b966b50e720e9",
-          "base_sha256": "b8dc592ed8f84d51178ad278ad6e9db4381e4d43f355a12fbc0b7a52fa943f13",
-          "relocation_count": 19,
+          "base_sha256": "2457e2bbe7cbe5714919ecc900d4dd5bbb6610bafa426a01ec10e5f1ea2a39ca",
+          "relocation_count": 20,
           "comparison_unit": "0057d0a0-e37ded1bcf2c",
-          "objdiff_percent": 74.06024
+          "objdiff_percent": 75.93976
         }
       ],
       "status": "different",
-      "objdiff_percent": 74.06024
+      "objdiff_percent": 75.93976
     },
     {
       "name": "bgAckStreamCutScene",
@@ -447373,10 +447373,10 @@
     "mapped_code_bytes": 2300431,
     "matched_code_bytes": 429075,
     "matching_percent": 12.360835273558832,
-    "fuzzy_coverage_percent": 42.01584034674501,
+    "fuzzy_coverage_percent": 42.016026065463876,
     "mapped_functions": 8475,
     "matched_functions": 3925,
-    "objdiff_fuzzy_percent": 74.35632,
+    "objdiff_fuzzy_percent": 74.35664,
     "objdiff_total_code": 1964772,
     "image_bytes": 40067072,
     "mapped_bytes": 3369831,
@@ -448475,7 +448475,7 @@
       "metadata_sha256": "fe09365da4c355f220d724ca99394fc120b758891b4188d2c49707b6df0894f2",
       "header_path": "src/saga.h",
       "header_sha256": "acf2bffe17fd0e063ca8d500bbe853186d24138c12bedfe658a02f24afbc6a4b",
-      "geometry_object_sha256": "8fe70e562f0f9d3a4ae79ffb15eb40a746058c2ea61efa4a8d03ee0bb8b632ed",
+      "geometry_object_sha256": "e39003fa7a24082831d4ad8550814e883affd16e4582fa642e7076b307989d32",
       "toolchain_sha256": "489d0782638d8033137cdb2834462416111945cbfa073147820e314b8576b95b",
       "implementation_sha256": "9ad7521230f06fde31f0771b10bd001037ea32d2def455913a7f391f05dede9d",
       "headers": {

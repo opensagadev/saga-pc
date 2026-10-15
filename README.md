@@ -9,10 +9,11 @@ compiler (MSVC 2005) into the same x86 code as the retail executable. Most game
 code comes from the [Android decompilation](https://github.com/opensagadev/saga)
 and is adapted to the PC build.
 
-**Status:** not playable yet. The source EXE starts the window, devices and
-permanent-data loading; rendering a loaded world is not reached. Of the original
-`.text` (3,471,246 bytes), about 44% is mapped, 30% is covered by objdiff-weighted
-similarity and 7% matches byte for byte. See the [roadmap](docs/roadmap.md).
+**Status:** incomplete. The rebuilt executable renders the Cantina and reaches
+Negotiations cinematics. Recent human testing showed missing scene geometry,
+white blades, black lamps, missing audio and a later post-cutscene crash. Fixes
+remain under validation; stable Story gameplay and complete visual fidelity are
+not established. See the [roadmap](docs/roadmap.md) and [matching report](matching.json).
 
 See [CONTRIBUTING.md](CONTRIBUTING.md) for setup, the workflow and the automated
 source-shape search (`tools/permute.py`).
