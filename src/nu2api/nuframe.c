@@ -83,6 +83,10 @@ f32 __cdecl NuFrameEnd(void) {
     return nuapi.frame_time;
 }
 
+void __cdecl NuWaterSpeed(f32 speed) {
+    NuShaderObjectBaseSetWaterSpeedPc(speed);
+}
+
 __declspec(noinline) void __cdecl NuWaterReset(void) {
     nu_water_reset_state = 1;
     nu_water_reset_status = 0;

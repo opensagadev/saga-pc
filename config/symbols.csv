@@ -5575,6 +5575,7 @@ address    , symbol                                                         , si
 0x5f8f80,_NuTexInitExPS,34,void __cdecl NuTexInitExPS(VARIPTR *buffer_unused)
 0x5f8fd0,_NuTexGetUnresolvedTextureTIDPS,81,i32 __cdecl(void)
 0x005f9530 , _NuWaterReset                                                  , 21    , void __cdecl (void)
+0x5f9940,_NuWaterSpeed,15,void __cdecl(f32)
 0x5f9980,_NuRndrShadowDirCol,78,"void __cdecl(const NUVEC *,u32,f32,f32)"
 0x5f99d0,_NuRndrQuadBufferInitPc,328,void __cdecl NuRndrQuadBufferInitPc(void)
 0x5f9e50,_NuRndrGeometryBufferReleasePc,12,void __cdecl(void)
@@ -8592,6 +8593,7 @@ address    , symbol                                                         , si
 0x7439b0,_NuShaderObjectBaseDestroy,12,void __cdecl NuShaderObjectBaseDestroy(PC_SHADER_OBJECT_FULL_VIEW *)
 0x7439c0,_NuShaderObjectBaseInit,20,"void __cdecl(PC_SHADER_OBJECT_FULL_VIEW*,const u32*,i32)"
 0x7439e0,_NuShaderObjectBaseUnInit,11,void __cdecl(PC_SHADER_OBJECT_FULL_VIEW*)
+0x7439f0,_NuShaderObjectBaseSetWaterSpeedPc,17,void __cdecl(f32)
 0x00743a30,_NuShaderObjectBaseUpdateWaterTable,601,"void __cdecl(PC_SHADER_OBJECT_FULL_VIEW*,PC_SHADER_WATER_MATERIAL_VIEW*)"
 0x743ca0,?SetTransposedMatrixValues@PC_SHADER_PARAMETER_LOCAL_PC@@QAEXHHPBM@Z,84,"void __thiscall PC_SHADER_PARAMETER_LOCAL_PC::SetTransposedMatrixValues(i32,i32,const f32*)"
 0x743d00,_PCShaderObjectCreateHLSLPc,46,void __cdecl PCShaderObjectCreateHLSLPc(PC_SHADER_OBJECT_FULL_VIEW *)

@@ -13807,6 +13807,8 @@ void __cdecl AIScriptMissingConditionDiagnostic();
     i32 __cdecl NuSpecialGetVisibilityFn(NUSPECIALHANDLE *special);
     extern i32 nu_water_reset_state;
     extern i32 nu_water_reset_status;
+    void __cdecl NuWaterSpeed(f32);
+    void __cdecl NuShaderObjectBaseSetWaterSpeedPc(f32);
     void __cdecl NuWaterReset(void);
     extern u8 fstackmem[NU_PORTAL_STACK_SIZE];
     extern VARIPTR fstack;

@@ -78,6 +78,7 @@ extern "C" {
 
 /* PC splits NuMain's per-frame game update (0x491d50) and world render (0x4927f0) into helpers. */
 static void NuMainUpdateFrame(WORLDINFO *world, i32 *frame_flag) {
+    f32 water_speed;
     GAMEOBJECT **player;
     GAMEOBJECT *object;
     LEVELDATA_PC *level;
@@ -268,7 +269,11 @@ static void NuMainUpdateFrame(WORLDINFO *world, i32 *frame_flag) {
     }
     LevelStreaming_Update(world);
     UpdateCutBorders();
-    STUBBED_NAMED("NuMainUpdateFrame: NuWaterSpeed at 0x005f9940");
+    if (Paused != 0 && editor_active == 0)
+        water_speed = 0.0f;
+    else
+        water_speed = (f32)((f64)FRAMETIME / (f64)(f32)(1.0f / 60.0f));
+    NuWaterSpeed(water_speed);
     NuWaterReset();
     GameTiming(world, &Game.game_time);
     UpdateStats();
