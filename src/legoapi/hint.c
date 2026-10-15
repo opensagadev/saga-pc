@@ -1,5 +1,12 @@
 #include "saga.h"
 
+STATIC_ASSERT(offsetof(HINTSYS_PC, active_hint) == 8);
+STATIC_ASSERT(offsetof(HINT_PC, id) == 0);
+
+i32 __cdecl Hint_CurrentId(void) {
+    return hintsys.active_hint != NULL ? hintsys.active_hint->id : -1;
+}
+
 HINT_PC *__cdecl Hint_FindHint(i32 hint_id) {
     HINT_PC *hint = hintsys.hints;
     if (hint == NULL)

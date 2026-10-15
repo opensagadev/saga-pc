@@ -3656,6 +3656,7 @@ address    , symbol                                                         , si
 0x575f10,_Doors_SetLastDoor,50,
 0x575f50,_Doors_Check,974,
 0x576340,_Hint_ExpandButtons,279,
+0x576460,_Hint_CurrentId,17,i32 __cdecl (void)
 0x576480,_Hint_FindHint,45,HINT_PC * __cdecl (i32)
 0x5764b0,_Hint_isAvailable,77,
 0x5765b0,_Hint_CancelCurrent,62,void __cdecl(void)

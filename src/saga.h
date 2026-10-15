@@ -9997,6 +9997,7 @@ void __cdecl PCStereoUnknownToken(void);
     void __cdecl CollectPowerUp(GAMEOBJECT *, NUVEC *, u16, i32);
     void __cdecl MiniKit_GameMsg_Update(GAME_MESSAGE_PC *);
     void __cdecl MiniKit_GameMsg_End(GAME_MESSAGE_PC *);
+    i32 __cdecl Hint_CurrentId(void);
     void __cdecl Hint_SetHintFromId(i32, i32, i32);
     u16 __cdecl GameCam_GetAdjustedYRot(GAMECAMERA *);
     f32 __cdecl PowerUp_GetPanelY(i32);

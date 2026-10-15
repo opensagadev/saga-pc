@@ -1,4 +1,5 @@
 #include "saga.h"
+#include <float.h>
 
 typedef struct ai_global_trigger_world_pc_s {
     u8 unknown_0000[0x4678];
@@ -11,6 +12,145 @@ STATIC_ASSERT(offsetof(struct AITRIGGERSET_s, field_0x20e) == 0x20e);
 STATIC_ASSERT(offsetof(GAMEOBJECT, ai_packet) + offsetof(AIPACKET_PC, opponent) == 0x3ac);
 STATIC_ASSERT(offsetof(GAMEOBJECT, ai_packet) + offsetof(AIPACKET_PC, opponent_metric) == 0x3b0);
 STATIC_ASSERT(offsetof(GAMEOBJECT, ai_packet) + offsetof(AIPACKET_PC, flags) == 0x4b0);
+
+STATIC_ASSERT(offsetof(AREA_DATA_PC, index) == 0x7c);
+STATIC_ASSERT(offsetof(GAMESAVE, area_save) == 0x782c);
+STATIC_ASSERT(sizeof(AREA_SAVE_PICKUP_PC) == 0xc);
+STATIC_ASSERT(offsetof(AREA_SAVE_PICKUP_PC, area_complete) == 1);
+STATIC_ASSERT(offsetof(AIPACKET_PC, owner) == 0xd0);
+STATIC_ASSERT(offsetof(AIPACKET_PC, flags) == 0x1e8);
+STATIC_ASSERT(offsetof(GAMEOBJECT, objptr) == 0);
+STATIC_ASSERT(offsetof(GAMEOBJECT, field_f10) == 0xf10);
+STATIC_ASSERT(offsetof(GAMEOBJECT, position) == 0x5c);
+STATIC_ASSERT(offsetof(APIOBJECT_PC, position) == 0x5c);
+
+void *__cdecl Condition_AreaCompleteInitPc(AISYS_PC *system, char *name, AISCRIPT_PC *script) {
+    return name != NULL ? Area_FindByName(name, NULL) : NULL;
+}
+
+f32 __cdecl Condition_AreaCompletePc(AISYS_PC *system, AISCRIPTPROCESS_PC *process, AIPACKET_PC *packet, char *name,
+                                     void *argument) {
+    AREA_DATA_PC *area = (AREA_DATA_PC *)argument;
+    return area != NULL && Game.area_save[area->index].area_complete == 1 ? 1.0f : 0.0f;
+}
+
+f32 __cdecl Condition_FreeplayPc(AISYS_PC *system, AISCRIPTPROCESS_PC *process, AIPACKET_PC *packet, char *name,
+                                 void *argument) {
+    return (f32)FreePlay;
+}
+
+f32 __cdecl Condition_CurrentHintIdPc(AISYS_PC *system, AISCRIPTPROCESS_PC *process, AIPACKET_PC *packet, char *name,
+                                      void *argument) {
+    return (f32)Hint_CurrentId();
+}
+
+f32 __cdecl Condition_NearestPlayerRangePc(AISYS_PC *system, AISCRIPTPROCESS_PC *process, AIPACKET_PC *packet,
+                                           char *name, void *argument) {
+    NUVEC difference;
+    f32 distance = FLT_MAX;
+    if (packet != NULL && packet->owner != NULL && system != NULL) {
+        if (system->player_1 != NULL)
+            distance = NuVecDistSqr(&system->player_1->position, &packet->owner->position, &difference);
+        if (system->player_2 != NULL) {
+            f32 second = NuVecDistSqr(&system->player_2->position, &packet->owner->position, &difference);
+            distance = second < distance ? second : distance;
+        }
+        if ((f64)distance != (f64)FLT_MAX)
+            distance = NuFsqrt(distance);
+    }
+    return distance;
+}
+
+f32 __cdecl Condition_OffScreenTimerPc(AISYS_PC *system, AISCRIPTPROCESS_PC *process, AIPACKET_PC *packet, char *name,
+                                       void *argument) {
+    GAMEOBJECT *object = (GAMEOBJECT *)argument;
+    if (object == NULL)
+        object = packet != NULL && packet->owner != NULL ? packet->owner->objptr : NULL;
+    return object != NULL ? object->field_f10 : 0.0f;
+}
+
+f32 __cdecl Condition_CannotReachDestinationPc(AISYS_PC *system, AISCRIPTPROCESS_PC *process, AIPACKET_PC *packet,
+                                               char *name, void *argument) {
+    return packet != NULL && (packet->flags & 0x400000) != 0 ? 1.0f : 0.0f;
+}
+
+f32 __cdecl Condition_PathBlockedPc(AISYS_PC *system, AISCRIPTPROCESS_PC *process, AIPACKET_PC *packet, char *name,
+                                    void *argument) {
+    return packet != NULL && (packet->flags & 0x400000) != 0 ? 1.0f : 0.0f;
+}
+
+void *__cdecl Condition_ForceCompleteInitPc(AISYS_PC *system, char *name, AISCRIPT_PC *script) {
+    GIZMO_PC *gizmo = (GIZMO_PC *)GizmoFindByName(WORLD->gizmo_sys, force_gizmotype_id, name);
+    return gizmo != NULL ? gizmo->object : NULL;
+}
+
+f32 __cdecl Condition_ForceCompletePc(AISYS_PC *system, AISCRIPTPROCESS_PC *process, AIPACKET_PC *packet, char *name,
+                                      void *argument) {
+    return argument != NULL && GizForce_Complete((GIZFORCE_PC *)argument) != 0 ? 1.0f : 0.0f;
+}
+
+f32 __cdecl Condition_MissionModePc(AISYS_PC *system, AISCRIPTPROCESS_PC *process, AIPACKET_PC *packet, char *name,
+                                    void *argument) {
+    return Mission_Active(NULL) != NULL ? 1.0f : 0.0f;
+}
+
+typedef struct condition_trigger_process_reader_pc_s {
+    u8 unknown_00[0xa0];
+    AIAREA_PC *trigger_area;
+} CONDITION_TRIGGER_PROCESS_READER_PC;
+STATIC_ASSERT(offsetof(CONDITION_TRIGGER_PROCESS_READER_PC, trigger_area) == 0xa0);
+STATIC_ASSERT(sizeof(AIAREA_PC) == 0x40);
+STATIC_ASSERT(offsetof(AIAREA_PC, system) == 0x38);
+STATIC_ASSERT(offsetof(AISYS_PC, areas) == 0x38);
+STATIC_ASSERT(offsetof(AISYS_PC, player_1) == 0x138c);
+STATIC_ASSERT(offsetof(AISYS_PC, player_2) == 0x1390);
+STATIC_ASSERT(offsetof(GAMEOBJECT, ai_area_mask) == 0x2b0);
+
+f32 __cdecl Condition_EitherPlayerInTriggerAreaPc(AISYS_PC *system, AISCRIPTPROCESS_PC *process, AIPACKET_PC *packet,
+                                                  char *name, void *argument) {
+    AIAREA_PC *area;
+    GAMEOBJECT *object;
+    i32 index;
+    i64 mask;
+    u64 membership;
+    if (system != NULL) {
+        area = (AIAREA_PC *)argument;
+        if (area == NULL)
+            area = ((CONDITION_TRIGGER_PROCESS_READER_PC *)process)->trigger_area;
+        if (area != NULL) {
+            if (system->player_1 != NULL && area->system != NULL) {
+                object = (GAMEOBJECT *)system->player_1;
+                index = (i32)(area - area->system->areas);
+                /* Retail sign-extends a 32-bit shift into the 64-bit mask. */
+                mask = (i32)(1u << index);
+                membership = ((u64)object->ai_area_mask[1] << 32) | object->ai_area_mask[0];
+                if ((membership & mask) != 0)
+                    return 1.0f;
+            }
+            if (system->player_2 != NULL && area->system != NULL) {
+                object = (GAMEOBJECT *)system->player_2;
+                index = (i32)(area - area->system->areas);
+                mask = (i32)(1u << index);
+                membership = ((u64)object->ai_area_mask[1] << 32) | object->ai_area_mask[0];
+                if ((membership & mask) != 0)
+                    return 1.0f;
+            }
+        }
+    }
+    return 0.0f;
+}
+
+void *__cdecl Condition_EitherPlayerIsInitPc(AISYS_PC *system, char *name, AISCRIPT_PC *script) {
+    if (name != NULL && GetNamedGameObjectCallback != NULL)
+        return GetNamedGameObjectCallback(system, name);
+    return NULL;
+}
+
+f32 __cdecl Condition_EitherPlayerIsPc(AISYS_PC *system, AISCRIPTPROCESS_PC *process, AIPACKET_PC *packet, char *name,
+                                       void *argument) {
+    return system != NULL && argument != NULL && (system->player_1 == argument || system->player_2 == argument) ? 1.0f
+                                                                                                                : 0.0f;
+}
 
 void *__cdecl Condition_MessageInitPc(AISYS_PC *system, char *name, AISCRIPT_PC *script) {
     if (name != NULL && system != NULL && gizaimessagesys != NULL)
