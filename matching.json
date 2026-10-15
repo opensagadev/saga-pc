@@ -31,13 +31,13 @@
     "src/audio/vorbis/window.h": "a10ede6832692ccec154bb9291be7ec236f9642a99a6af9b108ff7df030904b5",
     "src/diagnostics.h": "dae209151b55b9f5aadc18ce8ad63a1d961c311a7d8ec7214ea32c7e7a095459",
     "src/externals.h": "5b08276a7759c01921ac2a5239bf0978accdd38d2533b458c25d1b16f8a4402d",
-    "src/saga.h": "bff15f9bcd7635cc8104b29dff91913bd269a23055ff8386d36aec100812af60",
+    "src/saga.h": "25d147bf3164ffbec14aa181b9360b21005686131fdd06b3cfdf5f169e943509",
     "config/candidate-only.json": "2f9b865d9f773f8a9e79d4e6d155fa387e8d7b8087d6bf3b61298055281cec09",
     "config/code-groups.json": "0c7700323db8a7240f98cd4ab349200bbf0a8f580d3ca93167477e00c7db77cc",
     "config/data-members.json": "fe09365da4c355f220d724ca99394fc120b758891b4188d2c49707b6df0894f2",
     "config/library-objects.json": "e5ae24d3eac36fa0d0cb098f7690faaef3110f225db30c8cbf0f7d0d64f6ecfe",
     "config/project.json": "dc0e8cc85ae5650c6937b70ccaefb0153629c2460fa09cd4f6b625e251e623dd",
-    "config/symbols.csv": "9cb955efcda3f0ca8915042688968aae94573370ebdddf0a4be343699b7edf86",
+    "config/symbols.csv": "11b9c180774297a788edbfeb8f0dc93994a225f04125d88a1a3d5cec82252767",
     "config/symbols.md": "dffbdaac86011e3aee74b404063c15bda97f88af3db337ffef9f1bad1785d212",
     "config/toolchain.json": "489d0782638d8033137cdb2834462416111945cbfa073147820e314b8576b95b",
     "config/tools.json": "50199f6b132a7abfabf251e98a75be0a957abfe50f1ff776188fba21e4c4436f",
@@ -146,7 +146,7 @@
     "src/nu2api/hardware_dispatch.cpp": "9b6b634de4c3e9a6f8fa1b3aecad526904c7b2595299136bb16a3dec2aca28f0",
     "src/nu2api/input_descriptors.cpp": "873e98548b23193619bef0872324ce5425174d612bac3932a2c14aba5bc6d6b6",
     "src/nu2api/input_detection.cpp": "958d85117bc5a8f0ff95acabf1f9f2f255b8cba9530954bd79d9d1282ab6aaf7",
-    "src/nu2api/input_runtime.cpp": "bb0e28b362627f42f9c25836f48f3b5dfce3d78758daec62bca245f23272b22b",
+    "src/nu2api/input_runtime.cpp": "01394153c695e35a3651154ee77c320d23081d7638c625d1253e0a25f074426e",
     "src/nu2api/key_events.cpp": "3c134ce21e2c349174f035ba4fde999f31651ba21baa1b39aafd87ec05ec95ac",
     "src/nu2api/nucore.cpp": "90e3d2e3b0854a8abf53542a096b4aa338658e14d9517fa0c98760d133ea5c10",
     "src/nu2api/nudebug_pc.cpp": "1a6e12eb444388ae50ff49c44ea00e7f530ca664cb1151bbe7860e29e5bbb8a4",
@@ -724,7 +724,7 @@
     "build/obj/nu2api/implode.obj": "86d555bd526b637988fde370e34a003c7d88f2071e0a188b5266def24af7cd7f",
     "build/obj/nu2api/input_descriptors.obj": "4fca28f959e8e2e1654eb758125194e8863a38d43575163270c968f0e05ff736",
     "build/obj/nu2api/input_detection.obj": "06118422f80a621a61ea4b4b93157156f117a4a2ec1edaded198b52211ff8d52",
-    "build/obj/nu2api/input_runtime.obj": "d2d850079d3d1f1f2e7c52b3140c236b8fef6337c656605287296840508c29db",
+    "build/obj/nu2api/input_runtime.obj": "9f78e16ee9fe6d54ef6af0c2ff64c2400e700b0c4e0f933532c62b348b1f9f82",
     "build/obj/nu2api/key_events.obj": "48958c947c654ce12379f8e956b504737de3ee78c9d259ff80cd0f78cac4f5eb",
     "build/obj/nu2api/keyboard_init.obj": "6406b2f823a29376da06d111723757a5ac9029ddbdea14ef916cfdb0c0edc959",
     "build/obj/nu2api/keyboard_read.obj": "117ddd5acb5df3d2c1ffa1aff4c383aaf96009495e78f8d3fb971c0f970e3bf5",
@@ -164906,6 +164906,30 @@
       "objdiff_percent": 98.367645
     },
     {
+      "name": "?InstallDropInConfigurationPc@PC_INPUT_RUNTIME_PC@@QAEEHH@Z",
+      "symbol": "?InstallDropInConfigurationPc@PC_INPUT_RUNTIME_PC@@QAEEHH@Z",
+      "address": "0x006d7350",
+      "units": [
+        "src/nu2api/input_runtime.cpp"
+      ],
+      "target_size": 188,
+      "exact_match": false,
+      "objects": [
+        {
+          "unit": "src/nu2api/input_runtime.cpp",
+          "base_size": 177,
+          "exact_match": false,
+          "target_sha256": "01a6ead89ec64a140ddff7f9292e919fb940bc72ebf0cde3cd771bf6308977bd",
+          "base_sha256": "aa9ee3f2a7d71bca403f03f87bf5606b21bf4f0504d02bd7e058b7c1f8f6b3b4",
+          "relocation_count": 5,
+          "comparison_unit": "006d7350-66c97b9cbffb",
+          "objdiff_percent": 92.78378
+        }
+      ],
+      "status": "different",
+      "objdiff_percent": 92.78378
+    },
+    {
       "name": "?ClearOtherBankConflictsPc@PC_INPUT_RUNTIME_PC@@QAEXHH@Z",
       "symbol": "?ClearOtherBankConflictsPc@PC_INPUT_RUNTIME_PC@@QAEXHH@Z",
       "address": "0x006d7430",
@@ -165413,11 +165437,25 @@
       "name": "PcInputInstallDropInConfigurationPc",
       "symbol": "_PcInputInstallDropInConfigurationPc",
       "address": "0x006d95d0",
-      "units": [],
+      "units": [
+        "src/nu2api/input_runtime.cpp"
+      ],
       "target_size": 22,
-      "exact_match": false,
-      "objects": [],
-      "status": "not implemented"
+      "exact_match": true,
+      "objects": [
+        {
+          "unit": "src/nu2api/input_runtime.cpp",
+          "base_size": 22,
+          "exact_match": true,
+          "target_sha256": "d8c7abe649a2e4fa7544f8a5c78f36e8409b84161d8b84eaa8c0c5df6ff30f24",
+          "base_sha256": "d8c7abe649a2e4fa7544f8a5c78f36e8409b84161d8b84eaa8c0c5df6ff30f24",
+          "relocation_count": 2,
+          "comparison_unit": "006d95d0-e635140ad1b8",
+          "objdiff_percent": 100.0
+        }
+      ],
+      "status": "exact",
+      "objdiff_percent": 100.0
     },
     {
       "name": "PcInputBindingAvailablePc",
@@ -453517,17 +453555,17 @@
   ],
   "progress": {
     "text_bytes": 3471246,
-    "mapped_code_bytes": 2320632,
-    "matched_code_bytes": 434398,
-    "matching_percent": 12.514180786956615,
-    "fuzzy_coverage_percent": 43.14295018202962,
-    "mapped_functions": 8556,
-    "matched_functions": 3985,
-    "objdiff_fuzzy_percent": 74.52333,
-    "objdiff_total_code": 2012869,
+    "mapped_code_bytes": 2320820,
+    "matched_code_bytes": 434420,
+    "matching_percent": 12.51481456514462,
+    "fuzzy_coverage_percent": 43.148609058018245,
+    "mapped_functions": 8557,
+    "matched_functions": 3986,
+    "objdiff_fuzzy_percent": 74.525314,
+    "objdiff_total_code": 2013079,
     "image_bytes": 40067072,
-    "mapped_bytes": 3430417,
-    "mapping_percent": 8.561686264471733,
+    "mapped_bytes": 3430605,
+    "mapping_percent": 8.562155477695,
     "mapping_denominator": "code_and_data_section_virtual_sizes",
     "mapping_sections": [
       {
@@ -453535,7 +453573,7 @@
         "kind": "code",
         "address": "0x401000",
         "size": 3471246,
-        "mapped_bytes": 2321826
+        "mapped_bytes": 2322014
       },
       {
         "name": ".rdata",
@@ -453552,17 +453590,17 @@
         "mapped_bytes": 1030596
       }
     ],
-    "mapping_known_size_symbols": 16002,
+    "mapping_known_size_symbols": 16003,
     "mapping_unknown_size_symbols": 7108,
-    "mapping_code_bytes": 2321826,
+    "mapping_code_bytes": 2322014,
     "mapping_code_total_bytes": 3471246,
-    "mapping_code_percent": 66.88739432468917,
+    "mapping_code_percent": 66.89281024738668,
     "mapping_data_bytes": 1108591,
     "mapping_data_total_bytes": 36018966,
     "mapping_data_percent": 3.0777979578869643,
-    "mapping_code_data_bytes": 3430417,
+    "mapping_code_data_bytes": 3430605,
     "mapping_code_data_total_bytes": 39490212,
-    "mapping_code_data_percent": 8.686752555291422,
+    "mapping_code_data_percent": 8.687228622626792,
     "matched_data_region_bytes": 1093945
   },
   "data_members": [
@@ -454621,8 +454659,8 @@
     "inputs": {
       "metadata_sha256": "fe09365da4c355f220d724ca99394fc120b758891b4188d2c49707b6df0894f2",
       "header_path": "src/saga.h",
-      "header_sha256": "bff15f9bcd7635cc8104b29dff91913bd269a23055ff8386d36aec100812af60",
-      "geometry_object_sha256": "bc7776c2331c74585ab42dcb6b6a455ad8fe3685872bcbed5d91a2ca9ca230c6",
+      "header_sha256": "25d147bf3164ffbec14aa181b9360b21005686131fdd06b3cfdf5f169e943509",
+      "geometry_object_sha256": "2d7e9a56889c1fd70b74ff922cef14596ccd51f519c1f9d87d40f5c5eb84ab3d",
       "toolchain_sha256": "489d0782638d8033137cdb2834462416111945cbfa073147820e314b8576b95b",
       "implementation_sha256": "9ad7521230f06fde31f0771b10bd001037ea32d2def455913a7f391f05dede9d",
       "headers": {
@@ -454652,7 +454690,7 @@
         "src/audio/vorbis/window.h": "a10ede6832692ccec154bb9291be7ec236f9642a99a6af9b108ff7df030904b5",
         "src/diagnostics.h": "dae209151b55b9f5aadc18ce8ad63a1d961c311a7d8ec7214ea32c7e7a095459",
         "src/externals.h": "5b08276a7759c01921ac2a5239bf0978accdd38d2533b458c25d1b16f8a4402d",
-        "src/saga.h": "bff15f9bcd7635cc8104b29dff91913bd269a23055ff8386d36aec100812af60"
+        "src/saga.h": "25d147bf3164ffbec14aa181b9360b21005686131fdd06b3cfdf5f169e943509"
       },
       "owners": {
         "src/data.cpp": {

@@ -67,6 +67,35 @@ i32 PC_INPUT_RUNTIME_PC::SelectConfigurationPc(i32 port, i32 key, i32 auxiliary_
     return config != NULL;
 }
 
+u8 PC_INPUT_RUNTIME_PC::InstallDropInConfigurationPc(i32 port, i32 player_index) {
+    for (i32 bank = 0; bank < 3; ++bank) {
+        if (bank == player_index)
+            continue;
+        i32 linked_port = TextInputLinkedDevicePc(bank);
+        if (linked_port < 0)
+            continue;
+        auxiliary_ports[bank] = linked_port;
+        PCByteCopy_candidate(auxiliary_bindings[bank], devices[linked_port].bindings, 0x80);
+    }
+    i32 key = player_index;
+    PC_INPUT_CONFIG_PC *config = NULL;
+    for (i32 attempt = 0; attempt < 3; ++attempt) {
+        config = FindConfig(3, port, key);
+        if (config != NULL)
+            break;
+        if (++key == 3)
+            key = 0;
+    }
+    if (config == NULL)
+        return 0;
+    InstallConfig(config, port, player_index, 1, player_index);
+    return ResolveAuxiliaryConflictsPc(player_index, 3) == 0;
+}
+
+extern "C" u8 __cdecl PcInputInstallDropInConfigurationPc(i32 port, i32 player_index) {
+    return ((PC_INPUT_RUNTIME_PC *)nu_input_state)->InstallDropInConfigurationPc(port, player_index);
+}
+
 extern "C" i32 __cdecl PcInputSelectPressedDevicePc(u32 excluded, u8 kinds, i32 *kind, i32 *value, i32 skip_active) {
     PC_INPUT_RUNTIME_PC *runtime = (PC_INPUT_RUNTIME_PC *)nu_input_state;
     runtime->action_mask = (u32)-1;

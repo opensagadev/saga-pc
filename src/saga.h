@@ -17959,6 +17959,7 @@ struct PC_INPUT_RUNTIME_PC {
     void BindPreferredConfig(i32 mask, i32 port);
     i32 ResolveAuxiliaryConflictsPc(i32 auxiliary_index, i32 bank_count);
     i32 SelectConfigurationPc(i32 port, i32 key, i32 auxiliary_index);
+    u8 InstallDropInConfigurationPc(i32 port, i32 player_index);
     void InitKeyboardProfiles();
     void AutoConfigurePadsPc(i32 count);
     void ServicePendingCapturePc();

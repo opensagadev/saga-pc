@@ -7352,6 +7352,7 @@ address    , symbol                                                         , si
 0x6d6f40,?BindingAvailablePc@PC_INPUT_RUNTIME_PC@@QAEHHHHH@Z,253,
 0x6d7040,?ResolveAuxiliaryConflictsPc@PC_INPUT_RUNTIME_PC@@QAEHHH@Z,603,
 0x6d72a0,?SelectConfigurationPc@PC_INPUT_RUNTIME_PC@@QAEHHHH@Z,170,
+0x6d7350,?InstallDropInConfigurationPc@PC_INPUT_RUNTIME_PC@@QAEEHH@Z,188,"u8 __thiscall(i32,i32)"
 0x6d7430,?ClearOtherBankConflictsPc@PC_INPUT_RUNTIME_PC@@QAEXHH@Z,173,
 0x6d74e0,?SampleDevicePc@PC_INPUT_RUNTIME_PC@@QAEHHPAUPC_INPUT_RAW_SAMPLE_PC@@@Z,1140,"i32 __thiscall(i32,PC_INPUT_RAW_SAMPLE_PC*)"
 0x6d7990,?UpdateMousePc@PC_INPUT_RUNTIME_PC@@QAEHXZ,998,i32 __thiscall(void)
