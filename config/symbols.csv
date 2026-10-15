@@ -880,7 +880,7 @@ address    , symbol                                                         , si
 0x465ea0,_GizBombGens_ReserveBufferSpace,183,void * __cdecl(void *)
 0x465f60,_GizmoBombGen_Activate,30,"void __cdecl(GIZMO_PC *, i32)"
 0x465fb0,_GizmoBombGen_SetVisibility,55,"void __cdecl(GIZMO_PC *, i32)"
-0x465ff0,_GizmoBombGen_GetPos,,NUVEC * __cdecl(GIZMO_PC *)
+0x465ff0,_GizmoBombGen_GetPos,21,NUVEC * __cdecl(GIZMO_PC *)
 0x466060,_GizBombGens_SetResetFlag,69,"void __cdecl(void *, void *, void *)"
 0x4660b0,_BombGeneratorsApplyResetPc,629,
 0x466330,_GizBombGens_Update,449,"void __cdecl(void *, void *, f32)"
@@ -4528,7 +4528,7 @@ address    , symbol                                                         , si
 0x5ab900,_GizmoTurret_Activate,70,"void __cdecl(GIZMO_PC *, i32)"
 0x5ab950,_GizmoTurret_ActivateRev,97,"i32 __cdecl(GIZMO_PC *, i32, i32)"
 0x5ab9f0,_GizmoTurret_SetVisibility,63,"void __cdecl(GIZMO_PC *, i32)"
-0x5aba30,_GizmoTurret_GetPos,,NUVEC * __cdecl(GIZMO_PC *)
+0x5aba30,_GizmoTurret_GetPos,21,NUVEC * __cdecl(GIZMO_PC *)
 0x5aba50,_GizTurrets_Reset,423,
 0x5abc00,_GizTurrets_ResetPc,376,"void __cdecl(void *, void *, void *)"
 0x5abd80,_GizTurret_GetTgt,384,

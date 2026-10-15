@@ -2,6 +2,7 @@
 
 STATIC_ASSERT(offsetof(GIZMO_PC, object) == 0);
 STATIC_ASSERT(offsetof(GIZBOMBGEN_s, name) == 0);
+STATIC_ASSERT(offsetof(GIZBOMBGEN_s, position) == 0x10);
 
 typedef struct bombgen_activation_reader_pc_s {
     u8 unknown_00[0x1c];
@@ -28,6 +29,12 @@ void __cdecl GizmoBombGen_SetVisibility(GIZMO_PC *gizmo, i32 visible) {
         GameAnimSet_SetVisibility(generator->anim_set, visible);
         generator->flags ^= (u16)(((visible != 0) << 1) ^ generator->flags) & 2;
     }
+}
+
+NUVEC *__cdecl GizmoBombGen_GetPos(GIZMO_PC *gizmo) {
+    if (gizmo == NULL || gizmo->object == NULL)
+        return NULL;
+    return &((GIZBOMBGEN_s *)gizmo->object)->position;
 }
 
 char *__cdecl GizmoBombGen_GetGizmoName(GIZMO_PC *gizmo) {

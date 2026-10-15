@@ -1,5 +1,7 @@
 #include "saga.h"
 
+STATIC_ASSERT(offsetof(GIZMO_PC, object) == 0);
+
 typedef struct AI_TURRET_RECORD_PC {
     u8 unknown000[8];
     char name[16];
@@ -70,6 +72,12 @@ void __cdecl GizmoTurret_SetVisibility(GIZMO_PC *gizmo, i32 visible) {
         GameAnimSet_SetVisibility(turret->anim_set, visible);
         turret->flags ^= (u16)(((visible != 0) << 2) ^ turret->flags) & 4;
     }
+}
+
+NUVEC *__cdecl GizmoTurret_GetPos(GIZMO_PC *gizmo) {
+    if (gizmo == NULL || gizmo->object == NULL)
+        return NULL;
+    return &((AI_TURRET_RECORD_PC *)gizmo->object)->position;
 }
 
 char *__cdecl GizmoTurret_GetGizmoName(GIZMO_PC *gizmo) {
