@@ -17932,6 +17932,9 @@ extern "C" {
     f32 rtl_frametime;
 #pragma bss_seg()
 
+#pragma data_seg(".data$rtltimer1adv")
+    f32 rtltimer1adv = 2500.0f;
+#pragma data_seg()
 #pragma bss_seg(".bss$rtltimer1")
     i32 rtltimer1;
 #pragma bss_seg()

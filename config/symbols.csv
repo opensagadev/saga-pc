@@ -3436,6 +3436,7 @@ address    , symbol                                                         , si
 0x565230,_GameDisplaySettings,570,"void __cdecl(LEVEL_DISPLAY_PC *,i32 *)"
 0x00565470 , _WidescreenCode                                                , 339   , void __cdecl (i32)
 0x5655d0,_KeepPointOnScreen,154,"void __cdecl(NUVEC *,NUVEC *)"
+0x565670,_UpdateCutBorders,133,void __cdecl(void)
 0x00565700 , _DrawCutBorders                                                , 279   , void __cdecl (i32)
 0x565820,_InitStillRender,143,"void __cdecl(VARIPTR *, VARIPTR)"
 0x5658e0,_DrawPauseScreenWipe,681,void __cdecl(void)
@@ -3558,6 +3559,7 @@ address    , symbol                                                         , si
 0x0056e460 , _Cheat_PowerUpActive                                           , 110   , i32 __cdecl (i32)
 0x56e4d0,_Cheats_Update,144,
 0x56e560,_Cheats_Reset,13,void __cdecl(void)
+0x56e570,_Cheats_FrameUpdate,10,void __cdecl(void)
 0x0056e580 , _Cheat_SetArea                                                 , 45    , "void __cdecl (i32, i32)"
 0x0056e5d0 , _ResetExplosions                                               , 31    , void __cdecl (void)
 0x0056e5f0 , _AddExplosion                                                  , 168   , "EXPLOSION_PC *__cdecl (NUVEC *, f32, f32, GAMEOBJECT *, i32, u32)"
@@ -6048,6 +6050,7 @@ address    , symbol                                                         , si
 0x63ced0,_edrtlDrawFogs,96,
 0x63d0f0,_edrtlDrawRTLInfo,1984,
 0x63d8b0,_edrtlDrawFogInfo,638,
+0x63dcd0,_rtlFrameUpdate,66,void __cdecl(f32)
 0x63f6a0,_edrtlUndo,353,
 0x63f810,_edrtlRedo,248,
 0x63f930,_InitUI,3646,
@@ -19105,6 +19108,7 @@ address    , symbol                                                         , si
 0x80fe04,_RtlModifierIndexZeroPc,,f32
 0x80fe0c,_modifiers,,f32 *
 0x80fe1c,_rtlwob,,f32
+0x80fea0,_rtltimer1adv,4,f32
 0x0080fff4 , ??_R0?AVEdClassInterface@@@8                                   , 31    ,
 0x00810014 , ??_R0?AVEdControl@@@8                                          , 24    ,
 0x0081002c , ??_R0?AVEdEnumControl@@@8                                      , 28    ,

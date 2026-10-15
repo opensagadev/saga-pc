@@ -150,7 +150,7 @@ static void NuMainUpdateFrame(WORLDINFO *world, i32 *frame_flag) {
         Debris(1);
     } else {
         NuRndrGlobalFrameCountPause(0);
-        STUBBED_NAMED("NuMainUpdateFrame: rtlFrameUpdate(FRAMETIME) at 0x0063dcd0");
+        rtlFrameUpdate(FRAMETIME);
         DoubleScore = 0;
         SetTexAnimSignals();
         NuTexAnimSetMask(0xffff);
@@ -237,8 +237,8 @@ static void NuMainUpdateFrame(WORLDINFO *world, i32 *frame_flag) {
             STUBBED_NAMED("NuMainUpdateFrame: UpdateExplosions at 0x0056ee80, Tag_UpdateTransfers at 0x0059ff80");
             UpdateRepeatSfx();
             GizmoSysLateUpdate(world->gizmo_sys, world, FRAMETIME);
-            STUBBED_NAMED("NuMainUpdateFrame: UpdateRadios at 0x004bcb10, Hint_Process at 0x005769d0, Cheats_Update at "
-                          "0x0056e570");
+            STUBBED_NAMED("NuMainUpdateFrame: UpdateRadios at 0x004bcb10, Hint_Process at 0x005769d0");
+            Cheats_FrameUpdate();
         }
         UpdateGameMenu((GAMEPAD_PC *)GamePadStorage, 1);
         Debris(0);
@@ -267,7 +267,8 @@ static void NuMainUpdateFrame(WORLDINFO *world, i32 *frame_flag) {
         ((void(__cdecl *)(WORLDINFO *))world->current_level->callbacks[4])(world);
     }
     LevelStreaming_Update(world);
-    STUBBED_NAMED("NuMainUpdateFrame: UpdateCutBorders at 0x00565670, NuWaterSpeed at 0x005f9940");
+    UpdateCutBorders();
+    STUBBED_NAMED("NuMainUpdateFrame: NuWaterSpeed at 0x005f9940");
     NuWaterReset();
     GameTiming(world, &Game.game_time);
     UpdateStats();

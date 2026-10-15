@@ -9702,6 +9702,10 @@ extern "C" {
     extern NUVEC rtl_shadow_flicker, RtlUnitDirectionYPc;
     extern f32 *modifiers;
     extern i32 rtltimer1;
+    extern f32 rtltimer1adv;
+    void __cdecl rtlFrameUpdate(f32 frame_time);
+    void __cdecl Cheats_FrameUpdate(void);
+    void __cdecl UpdateCutBorders(void);
     extern struct RTL_INDEX_PC *dbg_rtlindex;
     extern const char RtlSearchTimebarNamePc[];
 

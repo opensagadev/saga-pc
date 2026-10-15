@@ -116,6 +116,15 @@ typedef struct CUT_BORDER_RECORD_PC {
 } CUT_BORDER_RECORD_PC;
 STATIC_ASSERT(offsetof(CUT_BORDER_RECORD_PC, flags) == 0x50);
 extern "C" NUMTL *FadeMtl;
+extern "C" void __cdecl UpdateCutBorders(void) {
+    f32 target_scale = 1.0f;
+    if (CUTSTOPGAME == 0 && (LEGOCAMMODE_DOORCUT == -1 || GameCam->mode != LEGOCAMMODE_DOORCUT)) {
+        if (LEGOCAMMODE_OBSTACLE == -1 || GameCam->mode != LEGOCAMMODE_OBSTACLE || ObstacleCamBorders == 0)
+            target_scale = 0.0f;
+    }
+    CutBorderScale = SeekLinearF(CutBorderScale, target_scale, FRAMETIME + FRAMETIME);
+}
+
 extern "C" void __cdecl DrawCutBorders(i32 widescreen) {
     f32 border_scale;
     i32 height;

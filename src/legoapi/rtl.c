@@ -1,4 +1,20 @@
 #include "saga.h"
+
+typedef union RTL_FRAME_TIMER_VIEW_PC {
+    i32 value;
+    struct {
+        u16 low, high;
+    } words;
+} RTL_FRAME_TIMER_VIEW_PC;
+STATIC_ASSERT(sizeof(RTL_FRAME_TIMER_VIEW_PC) == sizeof(i32));
+STATIC_ASSERT(offsetof(RTL_FRAME_TIMER_VIEW_PC, words.low) == 0);
+STATIC_ASSERT(offsetof(RTL_FRAME_TIMER_VIEW_PC, words.high) == 2);
+
+void __cdecl rtlFrameUpdate(f32 frame_time) {
+    ((RTL_FRAME_TIMER_VIEW_PC *)&rtltimer1)->words.low += (u16)(i32)(rtltimer1adv * frame_time);
+    NuTimeBarSlotReset(0, 6);
+}
+
 i32 __cdecl rtlResetDynamic(void) {
     if (rtl_dynamic_pool != NULL) {
         NULNKHDR *entry = NuLstGetNext(rtl_dynamic_pool, NULL);
