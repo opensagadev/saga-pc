@@ -276,21 +276,31 @@ void __cdecl PlaySfxByIdEx(i32 sfx_id, NUVEC *position, f32 volume, f32 pitch) {
 
     if ((u32)sample_id <= 1599u) {
         if (position != NULL) {
-            STUBBED_NAMED("dispatch positioned SFX to loop, standard, or priority backend");
+            if (loop != 0) {
+                PCSoundPlayPositionedLoop(position, sample_id, voice_volume, voice_volume, pitch_parameter, buzz_timer,
+                                          rumble_strength, rumble_sustain, rumble_release);
+            } else if (priority != 0) {
+                PCSoundPlayPositioned(position, sample_id, voice_volume, voice_volume, pitch_parameter, buzz_timer,
+                                      rumble_strength, rumble_sustain, rumble_release, priority);
+            } else {
+                PCSoundPlayPositionedWrapper(position, sample_id, voice_volume, voice_volume, pitch_parameter,
+                                             buzz_timer, rumble_strength, rumble_sustain, rumble_release);
+            }
         } else {
             volume_left = pan < 0.0f ? voice_volume : (i32)((1.0f - pan) * voice_volume);
             volume_right = pan > 0.0f ? voice_volume : (i32)((1.0f + pan) * voice_volume);
             if (loop != 0) {
-                NUVEC listener_position;
                 NUVEC forward;
-                listener_position.x = listener->m30;
-                listener_position.y = listener->m31;
-                listener_position.z = listener->m32;
+                listener = NuSound3GetListener();
+                PCSoundListenerLoopPositionPc.x = listener->m30;
+                PCSoundListenerLoopPositionPc.y = listener->m31;
+                PCSoundListenerLoopPositionPc.z = listener->m32;
                 forward.x = listener->m20;
                 forward.y = listener->m21;
                 forward.z = listener->m22;
-                NuVecAdd(&listener_position, &listener_position, &forward);
-                STUBBED_NAMED("dispatch listener-relative looped SFX to 3D backend");
+                NuVecAdd(&PCSoundListenerLoopPositionPc, &PCSoundListenerLoopPositionPc, &forward);
+                PCSoundPlayPositionedLoop(&PCSoundListenerLoopPositionPc, sample_id, volume_left, volume_right,
+                                          pitch_parameter, buzz_timer, rumble_strength, rumble_sustain, rumble_release);
             } else {
                 if (priority != 0) {
                     PCSoundPlayUnpositioned(sample_id, volume_left, volume_right, pitch_parameter, buzz_timer,

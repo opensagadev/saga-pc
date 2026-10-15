@@ -12740,6 +12740,18 @@ extern "C" {
 #pragma bss_seg(".bss$PCSoundOneShotVoiceCount")
     i32 PCSoundOneShotVoiceCount;
 #pragma bss_seg()
+#pragma bss_seg(".bss$PCSoundStartedOneShotCountPc")
+    i32 PCSoundStartedOneShotCountPc;
+#pragma bss_seg()
+#pragma bss_seg(".bss$PCSoundStartedLoopCountPc")
+    i32 PCSoundStartedLoopCountPc;
+#pragma bss_seg()
+#pragma bss_seg(".bss$PCSoundUpdatedLoopCountPc")
+    i32 PCSoundUpdatedLoopCountPc;
+#pragma bss_seg()
+#pragma bss_seg(".bss$PCSoundListenerLoopPositionPc")
+    NUVEC PCSoundListenerLoopPositionPc;
+#pragma bss_seg()
 #pragma bss_seg(".bss$PCSoundMixEvent")
     HANDLE PCSoundMixEvent;
 #pragma bss_seg()

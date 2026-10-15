@@ -31,13 +31,13 @@
     "src/audio/vorbis/window.h": "a10ede6832692ccec154bb9291be7ec236f9642a99a6af9b108ff7df030904b5",
     "src/diagnostics.h": "dae209151b55b9f5aadc18ce8ad63a1d961c311a7d8ec7214ea32c7e7a095459",
     "src/externals.h": "5b08276a7759c01921ac2a5239bf0978accdd38d2533b458c25d1b16f8a4402d",
-    "src/saga.h": "acf2bffe17fd0e063ca8d500bbe853186d24138c12bedfe658a02f24afbc6a4b",
+    "src/saga.h": "e10516ccb9290e2d9546e89f34e6abec0b971b881d20ed1e90002d59f2566986",
     "config/candidate-only.json": "2f9b865d9f773f8a9e79d4e6d155fa387e8d7b8087d6bf3b61298055281cec09",
     "config/code-groups.json": "0c7700323db8a7240f98cd4ab349200bbf0a8f580d3ca93167477e00c7db77cc",
     "config/data-members.json": "fe09365da4c355f220d724ca99394fc120b758891b4188d2c49707b6df0894f2",
     "config/library-objects.json": "e5ae24d3eac36fa0d0cb098f7690faaef3110f225db30c8cbf0f7d0d64f6ecfe",
     "config/project.json": "dc0e8cc85ae5650c6937b70ccaefb0153629c2460fa09cd4f6b625e251e623dd",
-    "config/symbols.csv": "7f1cac4c626f404fa79dbf5f08168b762bab8d587f0d45c48a5ee4b20fce83ab",
+    "config/symbols.csv": "681a657015ba158638fda6393bc0c0d66bf583c908517bb8860d0c00eaf2fcaf",
     "config/symbols.md": "dffbdaac86011e3aee74b404063c15bda97f88af3db337ffef9f1bad1785d212",
     "config/toolchain.json": "489d0782638d8033137cdb2834462416111945cbfa073147820e314b8576b95b",
     "config/tools.json": "50199f6b132a7abfabf251e98a75be0a957abfe50f1ff776188fba21e4c4436f",
@@ -77,7 +77,7 @@
     "tools/dsound.def": "10147b85f8f09f4a3fefe82c0756818c64d9a6f2d81bb3f120757ea5b08941da",
     "tools/xinput1_3.def": "f2b829c89adb5c7fc9fbd7dfdbc49f8eb5412d4700bf1123935f71a29fa84b50",
     "src/batman.cpp": "dfbb001dfc4d36757429c85d98f0f9759de407ea0900c248cfb8d2934806f526",
-    "src/data.cpp": "a6364f8adb8539a5bcb7ecf769bad031e5adea3ec43e08dadee1dadc90e108e6",
+    "src/data.cpp": "0eb4362e0b45761acfe92f8f29c2906a48f9940c05fe9b26f2151a0f7702e512",
     "src/gameapi/message.cpp": "d866d1645077e79807e57c3808e326e472a7ea95edd40a22bc405f922aff4999",
     "src/gameapi/saveload.cpp": "98b1f080a17c0ee2f1d4be9aaa54aba5beac5d4ef2807d9e1d84141bee0bf98a",
     "src/gamelib/util/VirtualStackAllocator.cpp": "98d724a680ef413962cb0e928cc20d5695ec4a968f588628e7c8c72a261705f4",
@@ -156,7 +156,7 @@
     "src/nu2api/nushadermanager.cpp": "73c05d70cd82d39871894e8f73f37b4c1ae7ab24828b926e07c9834a82f445c8",
     "src/nu2api/nushaderobject_pc.cpp": "6fe043371a08b4fdec80967fd802307e99256c3d8761ea72275bd0d26179f458",
     "src/nu2api/nusound_music.cpp": "74123f3a19aecb102cb199d07c90c8e0939df8b2de5a3a4dc856fc785904284a",
-    "src/nu2api/nusound_pc.cpp": "45da8ad0933626383840693e6e26479178e8a969860d6989ed4db2964a8053a2",
+    "src/nu2api/nusound_pc.cpp": "bfac178b3afd405f2e1e1b39736cdb191dc70cdba22170a5e6b88e662253261f",
     "src/nu2api/nuspecial_shadow_pc.cpp": "c6f6081a01ad1f3aa75437945abfb909ca5d0c8a28ccca85905c205fe53b12c1",
     "src/nu2api/nustream.cpp": "c8ea186128e40c9a7bd450405c4d400d8de453d5dce989a37db9038b420a8f57",
     "src/nu2api/nutex_pc.cpp": "26747ca4022cc1e569dfc4a1e761ca29f447b2258f71173433cc7a386ed94457",
@@ -427,7 +427,7 @@
     "src/nu2api/nushader.c": "3c13c5770f83a13ba399b87e431fffc8826524d5250e40589dc6c3ae5fcf070b",
     "src/nu2api/nushaderobject.c": "d404c86f43a080f655d08efc4adce8eae9ebc0e2b7ac346a119c9b0b4e512a54",
     "src/nu2api/nushaderobjectbase.c": "8615f22e7d809ab3fbbf8e663472024238231ad40f6448646335e386d258523a",
-    "src/nu2api/nusound.c": "d563be7f2f42568215f31db7f504c59d1c96e4ecd37454e59a7ab4024111e6ac",
+    "src/nu2api/nusound.c": "04b44455c886e05d663cae3d46f3572e2716e2fceadcf48bdb1c853e0abd9c36",
     "src/nu2api/nuspecial.c": "74002224a803f7619966cedd73d96803c80757d57cf2a1300f686ff395e53ff3",
     "src/nu2api/nuspline.c": "4fca834d595d001f94487843973d0ec517f0009b800958c71cd4a03a82f76933",
     "src/nu2api/nustateanim.c": "075aa9b9759dc0563d76c7a6c1a3bdcddc10ea95b2e48b630a6cd1b91e08ac5f",
@@ -476,7 +476,7 @@
     "build/obj/audio/vorbis/window.obj": "d884444d9c06c7b64093bd7bd900c958a9c2f000ca34935cbf194c647b309756",
     "build/obj/audio/vorbis_smallft.obj": "cf9181bb9ac6cb7c2e14de6c9b142d4b6492a7cd52b36a7a7122d401d5e4659b",
     "build/obj/batman.obj": "575a8e0fcdcee04b7eb69978f81ea38e53d55c47f91297e0ded1c81bccbe3cb1",
-    "build/obj/data.obj": "85861aeb84e3dca6d9dbf40bca35c238a79cbfd3459934ccca0194375974469f",
+    "build/obj/data.obj": "14e77558693ce304d5325e73a9e1a8a82ec431b8d19382571e8ed3c3dad215b1",
     "build/obj/editor/edtoolsall.obj": "7357579ee7852dad956640938c5684856237b8a193e986f16712f4a6f7c100c0",
     "build/obj/gameapi/ai_registry_pc.obj": "3bbc1cfe092214aa6f68aa51b23cace0dd50be817deac4db59b3ba00e7aa3d82",
     "build/obj/gameapi/aiscript.obj": "79e31418a19e2793db0f52d74dc4812e14f04829c04caf0b919044d61de08cfc",
@@ -779,9 +779,9 @@
     "build/obj/nu2api/nushaderobject.obj": "db60b072dd45c2f1ca79506c7909cf28cd2f423599f217b24cbbee3307d080e6",
     "build/obj/nu2api/nushaderobject_pc.obj": "2f77a6f96849caef060d0a21893210ffb19e6e4d4d5558f2d61ff0967a3f299e",
     "build/obj/nu2api/nushaderobjectbase.obj": "77b0ff1237204c70e06ab3c12eef7f881454fead59d0c91b7541fafa30579296",
-    "build/obj/nu2api/nusound.obj": "73050d2f5c698245c99944b2978665d76a952031896d8fcfdd1116b3d18ce49b",
+    "build/obj/nu2api/nusound.obj": "aedbb33308894e4e1bb25855ee275e8358845721a77240f56503bbb1f62a88e7",
     "build/obj/nu2api/nusound_music.obj": "6cacb3cfbb9df721cf497693306e5e4ee638d973c3414a5056c2914088022759",
-    "build/obj/nu2api/nusound_pc.obj": "bf7bdf0f6bb43beaf6a73acf2db8cf19dd63206e54fabc78352c1bc57288bb58",
+    "build/obj/nu2api/nusound_pc.obj": "4fab3a029221f61ebbd6efc18942e71d8a26d90f478ad16dd422c7e479a06d85",
     "build/obj/nu2api/nuspecial.obj": "1a2650f43bd1e4dad2fdd8972873bdc9f6ce033216b892a89d8b656d4fc27c61",
     "build/obj/nu2api/nuspecial_shadow_pc.obj": "3423967e6071379fa69b39129dd91d0aa413bc354056bb80daf1a457c8404987",
     "build/obj/nu2api/nuspline.obj": "7ae65302e2b6a0edf5231759f018606b36d0efdca21134783b74db1c9c29fd3c",
@@ -137192,17 +137192,17 @@
       "objects": [
         {
           "unit": "src/nu2api/nusound.c",
-          "base_size": 1108,
+          "base_size": 1300,
           "exact_match": false,
           "target_sha256": "871f2770ba50b1cdffac8839ad57028ee2fbc127274d978b87c961a354756248",
-          "base_sha256": "afdfb505f1dcfe4c6035afc06dd9b8ec10f390bd2cd1e44eee2bc15e69242d33",
-          "relocation_count": 36,
+          "base_sha256": "595bc6f3a8871f53ef259b19484309f4f7305f08a50e713c6897664527300dcd",
+          "relocation_count": 47,
           "comparison_unit": "00650f20-65811d0aa6fc",
-          "objdiff_percent": 40.47541
+          "objdiff_percent": 51.955505
         }
       ],
       "status": "different",
-      "objdiff_percent": 40.47541
+      "objdiff_percent": 51.955505
     },
     {
       "name": "PlaySfxAndSetVolume",
@@ -149933,6 +149933,54 @@
       "objdiff_percent": 88.666664
     },
     {
+      "name": "?FindLoopVoicePc@SoundVoiceManagerPC@@QAE_NPAUnuvec_s@@HPAH@Z",
+      "symbol": "?FindLoopVoicePc@SoundVoiceManagerPC@@QAE_NPAUnuvec_s@@HPAH@Z",
+      "address": "0x00697740",
+      "units": [
+        "src/nu2api/nusound_pc.cpp"
+      ],
+      "target_size": 99,
+      "exact_match": true,
+      "objects": [
+        {
+          "unit": "src/nu2api/nusound_pc.cpp",
+          "base_size": 99,
+          "exact_match": true,
+          "target_sha256": "75ee297338e6e9c113281a312cb9c7fbb431233cfb927e74c13f2c8f40e45fbd",
+          "base_sha256": "75ee297338e6e9c113281a312cb9c7fbb431233cfb927e74c13f2c8f40e45fbd",
+          "relocation_count": 2,
+          "comparison_unit": "00697740-b6f45dc34c63",
+          "objdiff_percent": 100.0
+        }
+      ],
+      "status": "exact",
+      "objdiff_percent": 100.0
+    },
+    {
+      "name": "PCSoundPositionVolumePc",
+      "symbol": "_PCSoundPositionVolumePc",
+      "address": "0x006977b0",
+      "units": [
+        "src/nu2api/nusound_pc.cpp"
+      ],
+      "target_size": 200,
+      "exact_match": false,
+      "objects": [
+        {
+          "unit": "src/nu2api/nusound_pc.cpp",
+          "base_size": 198,
+          "exact_match": false,
+          "target_sha256": "e9e7a23d98db2a3016dd48ee98a6af3d78a7238d8be1d558a48e69c540dbb423",
+          "base_sha256": "ec7f6d9d5b200792cb7dbb66dc50aded00b2ceac501b83f01419d25d6417ea59",
+          "relocation_count": 14,
+          "comparison_unit": "006977b0-cc1f493e68ef",
+          "objdiff_percent": 96.67164
+        }
+      ],
+      "status": "different",
+      "objdiff_percent": 96.67164
+    },
+    {
       "name": "?Setup3DVoice@SoundVoiceManagerPC@@QAEXHPBUnuvec_s@@H@Z",
       "symbol": "?Setup3DVoice@SoundVoiceManagerPC@@QAEXHPBUnuvec_s@@H@Z",
       "address": "0x00697880",
@@ -150147,6 +150195,78 @@
       ],
       "status": "exact",
       "objdiff_percent": 100.0
+    },
+    {
+      "name": "PCSoundPlayPositioned",
+      "symbol": "_PCSoundPlayPositioned",
+      "address": "0x00698100",
+      "units": [
+        "src/nu2api/nusound_pc.cpp"
+      ],
+      "target_size": 261,
+      "exact_match": false,
+      "objects": [
+        {
+          "unit": "src/nu2api/nusound_pc.cpp",
+          "base_size": 257,
+          "exact_match": false,
+          "target_sha256": "3df80f579781a2bf3d5a28801b0e78989ef45d42c6b5d36119f912b293eb1ba7",
+          "base_sha256": "93a868585b45ca353e457fc3224870bc261712f2074867b273b212c73baafdf9",
+          "relocation_count": 16,
+          "comparison_unit": "00698100-19052a6d444a",
+          "objdiff_percent": 91.97561
+        }
+      ],
+      "status": "different",
+      "objdiff_percent": 91.97561
+    },
+    {
+      "name": "PCSoundPlayPositionedWrapper",
+      "symbol": "_PCSoundPlayPositionedWrapper",
+      "address": "0x00698210",
+      "units": [
+        "src/nu2api/nusound_pc.cpp"
+      ],
+      "target_size": 67,
+      "exact_match": true,
+      "objects": [
+        {
+          "unit": "src/nu2api/nusound_pc.cpp",
+          "base_size": 67,
+          "exact_match": true,
+          "target_sha256": "87d02a7258cfbf6745320a09d68c1c953c3a8a90541e90c5229e65cf8ab78dcf",
+          "base_sha256": "87d02a7258cfbf6745320a09d68c1c953c3a8a90541e90c5229e65cf8ab78dcf",
+          "relocation_count": 1,
+          "comparison_unit": "00698210-2ee6d7b1b1ea",
+          "objdiff_percent": 100.0
+        }
+      ],
+      "status": "exact",
+      "objdiff_percent": 100.0
+    },
+    {
+      "name": "PCSoundPlayPositionedLoop",
+      "symbol": "_PCSoundPlayPositionedLoop",
+      "address": "0x00698260",
+      "units": [
+        "src/nu2api/nusound_pc.cpp"
+      ],
+      "target_size": 411,
+      "exact_match": false,
+      "objects": [
+        {
+          "unit": "src/nu2api/nusound_pc.cpp",
+          "base_size": 396,
+          "exact_match": false,
+          "target_sha256": "416658893a9b5a989cc9155f5917b72ca073c2008afee6c9d99aac78b21eabbd",
+          "base_sha256": "1b95c2773bc98a2234dcefdc83cf365c7b050b9752f507e4bb882ba2bf55d41f",
+          "relocation_count": 27,
+          "comparison_unit": "00698260-323109806fb2",
+          "objdiff_percent": 92.578514
+        }
+      ],
+      "status": "different",
+      "objdiff_percent": 92.578514
     },
     {
       "name": "NuSound3StopStereoStream",
@@ -438412,6 +438532,27 @@
       "status": "unknown size"
     },
     {
+      "name": "PCSoundListenerLoopPositionPc",
+      "symbol": "_PCSoundListenerLoopPositionPc",
+      "address": "0x02962b5c",
+      "units": [
+        "src/data.cpp"
+      ],
+      "target_size": 12,
+      "exact_match": true,
+      "objects": [
+        {
+          "unit": "src/data.cpp",
+          "exact_match": true,
+          "target_size": 12,
+          "base_size": 12,
+          "target_sha256": "15ec7bf0b50732b49f8228e07d24365338f9e3ab994b00af08e5a3bffe55fd8b",
+          "base_sha256": "15ec7bf0b50732b49f8228e07d24365338f9e3ab994b00af08e5a3bffe55fd8b"
+        }
+      ],
+      "status": "exact"
+    },
+    {
       "name": "DebrisDmaCleanupDelayPc",
       "symbol": "_DebrisDmaCleanupDelayPc",
       "address": "0x02962b6c",
@@ -438695,6 +438836,69 @@
       "exact_match": false,
       "objects": [],
       "status": "unknown size"
+    },
+    {
+      "name": "PCSoundStartedOneShotCountPc",
+      "symbol": "_PCSoundStartedOneShotCountPc",
+      "address": "0x02972c2c",
+      "units": [
+        "src/data.cpp"
+      ],
+      "target_size": 4,
+      "exact_match": true,
+      "objects": [
+        {
+          "unit": "src/data.cpp",
+          "exact_match": true,
+          "target_size": 4,
+          "base_size": 4,
+          "target_sha256": "df3f619804a92fdb4057192dc43dd748ea778adc52bc498ce80524c014b81119",
+          "base_sha256": "df3f619804a92fdb4057192dc43dd748ea778adc52bc498ce80524c014b81119"
+        }
+      ],
+      "status": "exact"
+    },
+    {
+      "name": "PCSoundStartedLoopCountPc",
+      "symbol": "_PCSoundStartedLoopCountPc",
+      "address": "0x02972c30",
+      "units": [
+        "src/data.cpp"
+      ],
+      "target_size": 4,
+      "exact_match": true,
+      "objects": [
+        {
+          "unit": "src/data.cpp",
+          "exact_match": true,
+          "target_size": 4,
+          "base_size": 4,
+          "target_sha256": "df3f619804a92fdb4057192dc43dd748ea778adc52bc498ce80524c014b81119",
+          "base_sha256": "df3f619804a92fdb4057192dc43dd748ea778adc52bc498ce80524c014b81119"
+        }
+      ],
+      "status": "exact"
+    },
+    {
+      "name": "PCSoundUpdatedLoopCountPc",
+      "symbol": "_PCSoundUpdatedLoopCountPc",
+      "address": "0x02972c34",
+      "units": [
+        "src/data.cpp"
+      ],
+      "target_size": 4,
+      "exact_match": true,
+      "objects": [
+        {
+          "unit": "src/data.cpp",
+          "exact_match": true,
+          "target_size": 4,
+          "base_size": 4,
+          "target_sha256": "df3f619804a92fdb4057192dc43dd748ea778adc52bc498ce80524c014b81119",
+          "base_sha256": "df3f619804a92fdb4057192dc43dd748ea778adc52bc498ce80524c014b81119"
+        }
+      ],
+      "status": "exact"
     },
     {
       "name": "PCSoundUpdateClock",
@@ -447370,17 +447574,17 @@
   ],
   "progress": {
     "text_bytes": 3471246,
-    "mapped_code_bytes": 2300431,
-    "matched_code_bytes": 429075,
-    "matching_percent": 12.360835273558832,
-    "fuzzy_coverage_percent": 42.016026065463876,
-    "mapped_functions": 8475,
-    "matched_functions": 3925,
-    "objdiff_fuzzy_percent": 74.35664,
-    "objdiff_total_code": 1964772,
+    "mapped_code_bytes": 2301469,
+    "matched_code_bytes": 429241,
+    "matching_percent": 12.365617418068325,
+    "fuzzy_coverage_percent": 42.04872968255094,
+    "mapped_functions": 8480,
+    "matched_functions": 3927,
+    "objdiff_fuzzy_percent": 74.37514,
+    "objdiff_total_code": 1965810,
     "image_bytes": 40067072,
-    "mapped_bytes": 3369831,
-    "mapping_percent": 8.410474815828819,
+    "mapped_bytes": 3370893,
+    "mapping_percent": 8.413125371377275,
     "mapping_denominator": "code_and_data_section_virtual_sizes",
     "mapping_sections": [
       {
@@ -447388,7 +447592,7 @@
         "kind": "code",
         "address": "0x401000",
         "size": 3471246,
-        "mapped_bytes": 2301625
+        "mapped_bytes": 2302663
       },
       {
         "name": ".rdata",
@@ -447402,21 +447606,21 @@
         "kind": "data",
         "address": "0x7ef000",
         "size": 35372200,
-        "mapped_bytes": 990462
+        "mapped_bytes": 990486
       }
     ],
-    "mapping_known_size_symbols": 15798,
+    "mapping_known_size_symbols": 15807,
     "mapping_unknown_size_symbols": 7118,
-    "mapping_code_bytes": 2301625,
+    "mapping_code_bytes": 2302663,
     "mapping_code_total_bytes": 3471246,
-    "mapping_code_percent": 66.30544190760321,
-    "mapping_data_bytes": 1068206,
+    "mapping_code_percent": 66.33534471483726,
+    "mapping_data_bytes": 1068230,
     "mapping_data_total_bytes": 36018966,
-    "mapping_data_percent": 2.9656764716677317,
-    "mapping_code_data_bytes": 3369831,
+    "mapping_data_percent": 2.96574310323067,
+    "mapping_code_data_bytes": 3370893,
     "mapping_code_data_total_bytes": 39490212,
-    "mapping_code_data_percent": 8.533332259649555,
-    "matched_data_region_bytes": 1053597
+    "mapping_code_data_percent": 8.53602153363978,
+    "matched_data_region_bytes": 1053621
   },
   "data_members": [
     {
@@ -448474,8 +448678,8 @@
     "inputs": {
       "metadata_sha256": "fe09365da4c355f220d724ca99394fc120b758891b4188d2c49707b6df0894f2",
       "header_path": "src/saga.h",
-      "header_sha256": "acf2bffe17fd0e063ca8d500bbe853186d24138c12bedfe658a02f24afbc6a4b",
-      "geometry_object_sha256": "e39003fa7a24082831d4ad8550814e883affd16e4582fa642e7076b307989d32",
+      "header_sha256": "e10516ccb9290e2d9546e89f34e6abec0b971b881d20ed1e90002d59f2566986",
+      "geometry_object_sha256": "956091fe448114b680b73f27ef901befff9117e029d7c99499e4c746d41a6b93",
       "toolchain_sha256": "489d0782638d8033137cdb2834462416111945cbfa073147820e314b8576b95b",
       "implementation_sha256": "9ad7521230f06fde31f0771b10bd001037ea32d2def455913a7f391f05dede9d",
       "headers": {
@@ -448505,12 +448709,12 @@
         "src/audio/vorbis/window.h": "a10ede6832692ccec154bb9291be7ec236f9642a99a6af9b108ff7df030904b5",
         "src/diagnostics.h": "dae209151b55b9f5aadc18ce8ad63a1d961c311a7d8ec7214ea32c7e7a095459",
         "src/externals.h": "5b08276a7759c01921ac2a5239bf0978accdd38d2533b458c25d1b16f8a4402d",
-        "src/saga.h": "acf2bffe17fd0e063ca8d500bbe853186d24138c12bedfe658a02f24afbc6a4b"
+        "src/saga.h": "e10516ccb9290e2d9546e89f34e6abec0b971b881d20ed1e90002d59f2566986"
       },
       "owners": {
         "src/data.cpp": {
-          "source_sha256": "a6364f8adb8539a5bcb7ecf769bad031e5adea3ec43e08dadee1dadc90e108e6",
-          "object_sha256": "85861aeb84e3dca6d9dbf40bca35c238a79cbfd3459934ccca0194375974469f"
+          "source_sha256": "0eb4362e0b45761acfe92f8f29c2906a48f9940c05fe9b26f2151a0f7702e512",
+          "object_sha256": "14e77558693ce304d5325e73a9e1a8a82ec431b8d19382571e8ed3c3dad215b1"
         },
         "src/nu2api/pc_device.cpp": {
           "source_sha256": "6f7e08a9c3d180cde750d21d03a4b7511b951943add98358333d252fb6751a85",

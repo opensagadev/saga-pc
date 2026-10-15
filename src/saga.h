@@ -223,6 +223,7 @@ typedef struct SoundVoiceManagerPC {
     IDirectSound8 *__thiscall GetFactory(void);
     void __thiscall SetSampleName(const char *name, i32 sample_index);
     i32 __thiscall AllocateVoice(i32, i32);
+    bool __thiscall FindLoopVoicePc(NUVEC *, i32, i32 *);
     void __thiscall SetVoice(i32, i32, f32, i32);
     void __thiscall SetVolumeTableIndex(i32, i32);
     void __thiscall SetFrequencyParameter(i32, i32);
@@ -14357,6 +14358,13 @@ void __cdecl AIScriptMissingConditionDiagnostic();
     STATIC_ASSERT(offsetof(PC_SOUND_COMMIT_METHODS_PC, set_rolloff_factor) == 0x3c);
     void __cdecl PCSoundPlayUnpositioned(i32, i32, i32, i32, f32, i32, f32, f32, i32);
     void __cdecl PCSoundPlayUnpositionedWrapper(i32, i32, i32, i32, f32, i32, f32, f32);
+    extern i32 PCSoundStartedOneShotCountPc;
+    extern i32 PCSoundStartedLoopCountPc;
+    extern i32 PCSoundUpdatedLoopCountPc;
+    extern NUVEC PCSoundListenerLoopPositionPc;
+    void __cdecl PCSoundPlayPositionedLoop(NUVEC *, i32, i32, i32, i32, f32, i32, f32, f32);
+    void __cdecl PCSoundPlayPositioned(NUVEC *, i32, i32, i32, i32, f32, i32, f32, f32, i32);
+    void __cdecl PCSoundPlayPositionedWrapper(NUVEC *, i32, i32, i32, i32, f32, i32, f32, f32);
     extern const GUID SoundVoice3DBufferIID;
 #ifdef __cplusplus
     void __cdecl PCSoundAlreadyPlayingHook(...);

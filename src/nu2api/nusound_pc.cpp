@@ -63,6 +63,152 @@ extern "C" void __cdecl PCSoundPlayUnpositionedWrapper(i32 arg1, i32 arg2, i32 a
     PCSoundPlayUnpositioned(arg1, arg2, arg3, arg4, arg5, arg6, arg7, arg8, 0);
 }
 
+extern "C" {
+    extern NUVEC nusound_special_positions[5];
+    extern f32 nusound_fade_start;
+    extern f32 nusound_fade_end;
+    extern NUMTX *NuSound3Listener;
+
+    static i32 __cdecl PCSoundPositionVolumePc(NUVEC *relative, NUVEC *position, i32 volume) {
+        f32 distance_squared;
+        f32 distance;
+        f32 scale;
+
+        if (NuSound3Listener == NULL)
+            NuSound3Listener = &global_camera.mtx;
+        if (nusound_fade_start >= nusound_fade_end)
+            nusound_fade_end = nusound_fade_start;
+        NuVecInvMtxTransform(relative, position, NuSound3Listener);
+        distance_squared = NuVecMagSqr(relative);
+        if (distance_squared > nusound_fade_end * nusound_fade_end)
+            return 0;
+        distance = NuFsqrt(distance_squared);
+        if (distance > nusound_fade_start)
+            scale = (nusound_fade_end - distance) / (nusound_fade_end - nusound_fade_start);
+        else
+            scale = 1.0f;
+        return (i32)(volume * scale);
+    }
+}
+
+extern "C" void __cdecl PCSoundPlayPositioned(NUVEC *position, i32 sample_id, i32 volume_left, i32 volume_right,
+                                              i32 pitch, f32 buzz_timer, i32 rumble_strength, f32 rumble_sustain,
+                                              f32 rumble_release, i32 priority) {
+    NUVEC relative;
+    i32 scaled_volume;
+    i32 voice_id;
+
+    if (SoundVoiceManager.samples == NULL)
+        return;
+    if (SoundVoiceManager.samples[sample_id].valid_byte == 0)
+        return;
+    if (position >= &nusound_special_positions[1] && position <= &nusound_special_positions[4] &&
+        position->x == nusound_special_positions[0].x && position->y == nusound_special_positions[0].y &&
+        position->z == nusound_special_positions[0].z)
+        return;
+    if (PCSoundVolumeMultiplier == 0x4000)
+        scaled_volume = volume_left;
+    else
+        scaled_volume = (PCSoundVolumeMultiplier * volume_left) >> 15;
+    scaled_volume = PCSoundPositionVolumePc(&relative, position, scaled_volume);
+    if (scaled_volume == 0)
+        return;
+    voice_id = SoundVoiceManager.AllocateVoice(sample_id, 0);
+    if (voice_id <= -1)
+        return;
+    SoundVoiceManager.Setup3DVoice(voice_id, &relative, 1);
+    if (scaled_volume > 0x3fff)
+        scaled_volume = 0;
+    SoundVoiceManager.SetVoice(voice_id, 0, NuSound3VolumeTable[scaled_volume], pitch);
+    ++PCSoundStartedOneShotCountPc;
+    (void)volume_right;
+    (void)buzz_timer;
+    (void)rumble_strength;
+    (void)rumble_sustain;
+    (void)rumble_release;
+    (void)priority;
+}
+
+extern "C" void __cdecl PCSoundPlayPositionedWrapper(NUVEC *position, i32 sample_id, i32 volume_left, i32 volume_right,
+                                                     i32 pitch, f32 buzz_timer, i32 rumble_strength, f32 rumble_sustain,
+                                                     f32 rumble_release) {
+    PCSoundPlayPositioned(position, sample_id, volume_left, volume_right, pitch, buzz_timer, rumble_strength,
+                          rumble_sustain, rumble_release, 0);
+}
+
+bool __thiscall SoundVoiceManagerPC::FindLoopVoicePc(NUVEC *position, i32 sample_id, i32 *voice_id) {
+    i32 index;
+
+    if (SoundVoiceEnabledGate == 0) {
+        *voice_id = -1;
+        return false;
+    }
+    for (index = 0; index < 64; ++index) {
+        if (voices[index].sample_id == sample_id && voices[index].sound_key == (i32)position &&
+            voices[index].field_19 == 0) {
+            *voice_id = index;
+            return true;
+        }
+    }
+    *voice_id = AllocateVoice(sample_id, 1);
+    return false;
+}
+
+extern "C" void __cdecl PCSoundPlayPositionedLoop(NUVEC *position, i32 sample_id, i32 volume_left, i32 volume_right,
+                                                  i32 pitch, f32 buzz_timer, i32 rumble_strength, f32 rumble_sustain,
+                                                  f32 rumble_release) {
+    NUVEC relative;
+    i32 scaled_volume;
+    i32 attenuated_volume;
+    i32 voice_id;
+    bool reused;
+    SoundVoiceSlotPC *slot;
+
+    if (SoundVoiceManager.samples == NULL)
+        return;
+    if (SoundVoiceManager.samples[sample_id].valid_byte == 0)
+        return;
+    if (position >= &nusound_special_positions[1] && position <= &nusound_special_positions[4] &&
+        position->x == nusound_special_positions[0].x && position->y == nusound_special_positions[0].y &&
+        position->z == nusound_special_positions[0].z)
+        return;
+    if (PCSoundVolumeMultiplier == 0x4000)
+        scaled_volume = volume_left;
+    else
+        scaled_volume = (PCSoundVolumeMultiplier * volume_left) >> 15;
+    attenuated_volume = PCSoundPositionVolumePc(&relative, position, scaled_volume);
+    if (attenuated_volume == 0)
+        return;
+    reused = SoundVoiceManager.FindLoopVoicePc(position, sample_id, &voice_id);
+    if (voice_id <= -1)
+        return;
+    slot = &SoundVoiceManager.voices[voice_id];
+    slot->field_28 = PCSoundUpdateClock;
+    slot->field_1c = nusound_fade_start;
+    slot->field_20 = nusound_fade_end;
+    slot->sound_key = (i32)position;
+    slot->field_18 = 1;
+    slot->volume_index = scaled_volume;
+    slot->field_2c = NuSound3LoopHoldTime;
+    if (!reused) {
+        SoundVoiceManager.Setup3DVoice(voice_id, &relative, 1);
+        if (attenuated_volume > 0x3fff)
+            attenuated_volume = 0;
+        SoundVoiceManager.SetVoice(voice_id, 1, NuSound3VolumeTable[attenuated_volume], pitch);
+        ++PCSoundStartedLoopCountPc;
+    } else {
+        SoundVoiceManager.Setup3DVoice(voice_id, &relative, 0);
+        SoundVoiceManager.SetVolumeTableIndex(voice_id, attenuated_volume);
+        SoundVoiceManager.SetFrequencyParameter(voice_id, pitch);
+        ++PCSoundUpdatedLoopCountPc;
+    }
+    (void)volume_right;
+    (void)buzz_timer;
+    (void)rumble_strength;
+    (void)rumble_sustain;
+    (void)rumble_release;
+}
+
 i32 __thiscall SoundVoiceManagerPC::AllocateVoice(i32 sample_id, i32 bank) {
     i32 first_voice;
     i32 last_voice;
