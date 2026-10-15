@@ -25,6 +25,20 @@ void __cdecl EndChallenge(i32 state, i32 show_message) {
     }
 }
 
+void __cdecl EndMission(MISSIONSYS_PC *system, i32 state, i32 show_message) {
+    if (netclient == 0 || show_message == 0) {
+        system->state = (u8)state;
+        SetBonusWinner(qrand() / 0x8000);
+        if (Player[BonusWinner] == NULL || ((((GAMEOBJECT *)Player[BonusWinner])->flags_1fc & 0x80) == 0))
+            BonusWinner = BonusWinner == 0;
+        BonusWinFlag = 0;
+        NewMenu(9, -1, -1);
+        ResetGameMessages();
+        if (state == 3)
+            PlaySfx(ScorePanelName, NULL);
+    }
+}
+
 typedef struct MISSION_END_DATA_VIEW_PC {
     i16 find_character;
 } MISSION_END_DATA_VIEW_PC;

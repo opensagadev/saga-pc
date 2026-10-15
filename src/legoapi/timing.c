@@ -142,7 +142,7 @@ void __cdecl GameTiming(WORLDINFO *world, f32 *game_time) {
                         time_limit = (f32)mission->active_mission->time;
                         UpdateTimer(&mission->timer);
                         if (mission->timer.time_elapsed >= time_limit && netclient == 0) {
-                            STUBBED_NAMED("GameTiming: EndMission(MissionSys, 3, 1) at 0x00497760");
+                            EndMission(MissionSys, 3, 1);
                         }
                     }
                 }

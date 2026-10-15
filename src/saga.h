@@ -20376,6 +20376,7 @@ struct MISSION_SAVE_READER_PC;
 extern "C" {
 #endif
     MISSIONSYS_PC *__cdecl Missions_Configure(char *, VARIPTR *, VARIPTR *, struct MISSION_SAVE_READER_PC *);
+    void __cdecl EndMission(MISSIONSYS_PC *, i32, i32);
     i32 __cdecl Mission_CurrentState(MISSIONSYS_PC *);
     i32 __cdecl Missions_PartyAvailable(MISSIONSYS_PC *);
     i32 __cdecl Missions_NumCompleted(MISSIONSYS_PC *, struct MISSION_SAVE_READER_PC *, i32);

@@ -1371,7 +1371,7 @@ address    , symbol                                                         , si
 0x496f90,_MenuInitMissions,97,void __cdecl(MENU *)
 0x497000,_MenuDrawMissions,1340,void __cdecl(MENU *)
 0x497720,_InitMission,49,
-0x497760,_EndMission,144,
+0x497760,_EndMission,144,"void __cdecl(MISSIONSYS_PC *, i32, i32)"
 0x4977f0,_CheckMissionEnd,336,void __cdecl(MISSIONSYS_PC*)
 0x497940,_MenuUpdateMissions,709,void __cdecl(MENU *)
 0x497c40   , _MovementArcSine                                               , 320   , ""
