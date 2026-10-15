@@ -730,7 +730,7 @@ extern "C" void __cdecl CheckResetBits(void) {
             }
         }
     }
-    STUBBED_NAMED("CheckResetBits: ResetRadios at 0x004bcaf0");
+    ResetRadios();
     STUBBED_NAMED("CheckResetBits: SpecialMiniKits_Reset(WORLD) at 0x00570fb0");
     STUBBED_NAMED("CheckResetBits: SuperCounters_FixUpGizmos(WORLD) at 0x00573690");
     AITriggerSetSysReset(((CHECK_RESET_WORLD_VIEW_PC *)WORLD)->ai_trigger_set_sys);

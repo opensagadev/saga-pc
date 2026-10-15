@@ -20028,6 +20028,8 @@ address    , symbol                                                         , si
 0x87b9d4,_DrawBossHitPointsTwoRowsPc,4,i32
 0x0087b9dc , _DrawBossHitPointsActorPc                                      ,       ,
 0x87b9dc,_drawbosshitpoints,4,struct gameobject_s *
+0x0087b9f0,_radios_playing,4,i32
+0x0087b9f8,_RadioEntriesPc,160,u8[160]
 0x0087bb10 , _ShadowMode                                                    , 4     , i32
 0x87bb90,_scale2,4,f32
 0x87bb94,_subpicked,4,i32

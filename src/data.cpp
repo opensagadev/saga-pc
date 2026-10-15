@@ -28691,6 +28691,14 @@ extern "C" {
 }
 
 extern "C" {
+#pragma bss_seg(".bss$RadioEntriesPc")
+    u8 RadioEntriesPc[0xa0];
+#pragma bss_seg(".bss$radios_playing")
+    i32 radios_playing;
+#pragma bss_seg()
+}
+
+extern "C" {
 #pragma data_seg(".data$id_ROBIN")
     i16 id_ROBIN = -1;
 }

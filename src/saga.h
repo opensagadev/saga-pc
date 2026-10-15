@@ -19126,6 +19126,7 @@ extern "C" {
     void __cdecl CutScenePlayer_GetText(i32 id, char *title, char *subtitle, i32 mode);
     void __cdecl CutScenePlayer_Configure(char *, VARIPTR *, VARIPTR *, i16 *, i16 *, i16 *, i16 *, i16 *);
     i32 __cdecl Batarang_StartTargetting(GAMEOBJECT *);
+    i32 __cdecl BatarangGetObjectFromCharIdPc(i32 character);
     void __cdecl KeepPointOnScreen(NUVEC *, NUVEC *);
 
 #ifdef __cplusplus
@@ -25677,6 +25678,8 @@ extern "C" {
     extern struct level_data_pc_s *DAGOBAHA_LDATA;
     extern struct level_data_pc_s *DAGOBAHD_LDATA;
     extern struct level_data_pc_s *DAGOBAHE_LDATA;
+    void __cdecl ResetRadios(void);
+    extern u8 RadioEntriesPc[0xa0];
     extern i32 radios_playing;
     u32 __cdecl NuMouseReadButtons(void);
     f32 __cdecl NuMouseReadXVel(void);

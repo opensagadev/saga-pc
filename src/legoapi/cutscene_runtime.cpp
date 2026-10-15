@@ -30,6 +30,11 @@ CUTINFO *__cdecl NewCutScene(CUTINFO *cutscene, CUTSYS_PC *system, char *name, i
     return cutscene;
 }
 
+void __cdecl CutScene_SnapToEnd(void *cut) {
+    if (cut != NULL)
+        instNuGCutSceneEnd((INSTNUGCUTSCENE *)((CUTINFO *)cut)->instance);
+}
+
 extern "C" void __cdecl CutScene_StartAudio(void) {
 }
 

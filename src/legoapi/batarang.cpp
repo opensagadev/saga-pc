@@ -88,6 +88,10 @@ void __cdecl Batarangs_CheckLostData(void *data) {
     } while (batarang != end);
 }
 
+i32 __cdecl BatarangGetObjectFromCharIdPc(i32 character) {
+    return 0x32 + (character == id_ROBIN);
+}
+
 extern "C" void Batarang_GetSightInfo(i32 character, i32 *red, i32 *green, i32 *blue, char *text) {
     *red = 255;
     if (character == id_ROBIN) {
