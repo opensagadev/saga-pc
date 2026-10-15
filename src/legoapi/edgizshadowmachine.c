@@ -1,20 +1,6 @@
 #include "saga.h"
 #include <string.h>
 
-typedef struct edgizshadow_pc_s {
-    NUVEC direction;
-    f32 field_0c;
-    f32 field_10;
-    f32 field_14;
-    f32 field_18;
-    f32 field_1c;
-    f32 field_20;
-    f32 field_24;
-    f32 field_28;
-    f32 field_2c;
-    f32 field_30;
-    i32 preset;
-} EDGIZSHADOW_PC;
 typedef struct shadow_world_view_pc_s {
     u8 reserved_0000[0x5110];
     EDGIZSHADOW_PC *shadow_editor;

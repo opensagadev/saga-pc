@@ -1,4 +1,5 @@
 #include "saga.h"
+#include <string.h>
 
 static void ZeroLightSetupPrivatePc(NUVEC *direction0, NUVEC *colour0, NUVEC *direction1, NUVEC *colour1,
                                     NUVEC *direction2, NUVEC *colour2) {
@@ -141,29 +142,6 @@ void __cdecl LightGameObject(GAMEOBJECT *object, void *set) {
 }
 
 #include <stdio.h>
-typedef struct BURN_PARAMETERS_PC {
-    i32 field_00;
-    f32 field_04;
-    f32 field_08;
-    f32 field_0c;
-    f32 field_10;
-    f32 field_14;
-    i32 field_18;
-    f32 field_1c;
-    f32 field_20;
-    f32 field_24;
-    i32 field_28;
-    f32 field_2c;
-    f32 field_30;
-    f32 field_34;
-    f32 field_38;
-    f32 field_3c;
-    f32 field_40;
-    f32 field_44;
-    f32 field_48;
-    f32 field_4c;
-    f32 field_50;
-} BURN_PARAMETERS_PC;
 typedef struct BURN_OUT_PC {
     i32 active;
     NUVEC position;
@@ -476,4 +454,51 @@ void __cdecl SetCreatureLights(APIOBJECT_PC *object) {
             intensity[index].z *= blue;
     }
     SetLights(&intensity[0], &direction[0], &intensity[1], &direction[1], &intensity[2], &direction[2], &ambient);
+}
+
+/* Native cut resource access prefix; sole resource owner remains the cut loader. */
+typedef struct BURNOUT_CUT_PREFIX_PC {
+    u8 unknown_00[0x50];
+    u32 flags;
+} BURNOUT_CUT_PREFIX_PC;
+STATIC_ASSERT(offsetof(BURNOUT_CUT_PREFIX_PC, flags) == 0x50);
+void __cdecl NuRndrSetBurnoutParametersPc(i32 view, const BURN_PARAMETERS_PC *parameters) {
+    currentScene.burnout_parameters_pc = *parameters;
+}
+void __cdecl NuRndrSetShadowCoefficientPc(i32 index, f32 value) {
+    switch (index) {
+        case 0:
+            currentScene.shadow_coefficients_pc[0] = value;
+            break;
+        case 1:
+            currentScene.shadow_coefficients_pc[1] = value;
+            break;
+        case 2:
+            currentScene.shadow_coefficients_pc[2] = value;
+            break;
+        default:
+            AnimationDiagnosticNoOpPc();
+            break;
+    }
+}
+void __cdecl NuRndrEnableDeferredPc(void) {
+    currentScene.unknown_48 = 1;
+}
+void __cdecl BurnoutApply(i32 view) {
+    BURN_PARAMETERS_PC parameters;
+    NUVEC average;
+    parameters.field_00 = 0;
+    memset(&parameters.field_04, 0, 0x50);
+    if ((CutStopInfo == NULL || (((BURNOUT_CUT_PREFIX_PC *)CutStopInfo)->flags & 0x80) == 0) &&
+        WORLD->page_unknown != 0)
+        edrtlCalculateBurnoutEx((BURN_SET_PC *)WORLD->page_unknown, &parameters, (NUVEC *)&global_camera.mtx.m30,
+                                FRAMETIME);
+    if (parameters.field_14 > 0.0f)
+        NuRndrSetBurnoutParametersPc(view, &parameters);
+    if ((Players_AveragePos(&average, NULL) != 0 || netclient != 0) && PCShadowCurrentLight->enabled != 0) {
+        NuRndrSetShadowCoefficientPc(0, WORLD->shadow_editor->field_24);
+        NuRndrSetShadowCoefficientPc(1, WORLD->shadow_editor->field_28);
+        NuRndrSetShadowCoefficientPc(2, WORLD->shadow_editor->field_2c);
+        NuRndrEnableDeferredPc();
+    }
 }

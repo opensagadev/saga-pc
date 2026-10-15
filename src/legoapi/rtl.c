@@ -923,29 +923,6 @@ i32 __cdecl rtlInitDynamic(VARIPTR *buffer, VARIPTR end, i32 max_lights) {
 }
 
 #include <string.h>
-struct BURN_PARAMETERS_PC {
-    i32 field_00;
-    f32 field_04;
-    f32 field_08;
-    f32 field_0c;
-    f32 field_10;
-    f32 field_14;
-    i32 field_18;
-    f32 field_1c;
-    f32 field_20;
-    f32 field_24;
-    i32 field_28;
-    f32 field_2c;
-    f32 field_30;
-    f32 field_34;
-    f32 field_38;
-    f32 field_3c;
-    f32 field_40;
-    f32 field_44;
-    f32 field_48;
-    f32 field_4c;
-    f32 field_50;
-};
 typedef struct BURN_OUT_PC {
     i32 active;
     NUVEC position;

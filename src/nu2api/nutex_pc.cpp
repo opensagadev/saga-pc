@@ -569,3 +569,68 @@ extern "C" void __cdecl PCGraphicsEffectTextureSetWrapFields(GRAPHICS_RENDER_TEX
     }
     texture->flags ^= (((u32)value << 11) ^ texture->flags) & 0x3800u;
 }
+
+extern "C" u32 *__cdecl PCGraphicsEffectTextureSamplerPc(GRAPHICS_RENDER_TEXTURE_PC *texture) {
+    return &texture->flags;
+}
+extern "C" GRAPHICS_RENDER_TEXTURE_PC *__cdecl PCGraphicsGetFramebufferAttachmentPc(PC_FRAMEBUFFER_PC *framebuffer,
+                                                                                    i32 index, i32 *level, i32 *field) {
+    PC_EFFECT_SURFACE_PC *target = &framebuffer->targets[index];
+    GRAPHICS_RENDER_TEXTURE_PC *texture = target->texture;
+    if (texture == NULL) {
+        if (level != NULL)
+            *level = 0;
+        if (field != NULL)
+            *field = 0;
+        return NULL;
+    }
+    if (level != NULL)
+        *level = target->level;
+    /* Retail tests field but writes through level, including when level is null. */
+    if (field != NULL)
+        *level = target->field_10;
+    return texture;
+}
+extern "C" void __cdecl PCGraphicsFramebufferBarrierPc(i32, i32) {
+}
+extern "C" void __cdecl PCGraphicsFramebufferActionPc(i32) {
+}
+extern "C" void __cdecl PCGraphicsSubmitViewportPc(i32 x, i32 y, i32 width, i32 height) {
+    PC_VIEWPORT_PC viewport;
+    viewport.x = x;
+    viewport.y = y;
+    viewport.width = width;
+    viewport.height = height;
+    viewport.min_z = 0.0f;
+    viewport.max_z = 1.0f;
+    NuVpSubmitPc(&viewport);
+}
+extern "C" void __cdecl PCGraphicsSetSamplerTuplePc(u32 stage, const u32 *tuple) {
+    union {
+        f32 value;
+        u32 bits;
+    } bias;
+    PCDeviceSetSamplerState(stage, 9, tuple[0] & 15);
+    bias.value = (((tuple[0] >> 4) ^ tuple[0]) & 15) == 0 ? -10.0f : 0.0f;
+    PCDeviceSetSamplerState(stage, 8, bias.bits);
+    PCDeviceSetSamplerState(stage, 1, (tuple[0] >> 8) & 7);
+    PCDeviceSetSamplerState(stage, 2, (tuple[0] >> 11) & 7);
+    PCDeviceSetSamplerState(stage, 3, (tuple[0] >> 14) & 7);
+    PCDeviceSetSamplerState(stage, 5, (tuple[0] >> 17) & 7);
+    PCDeviceSetSamplerState(stage, 6, (tuple[0] >> 20) & 7);
+    PCDeviceSetSamplerState(stage, 7, (tuple[0] >> 23) & 7);
+    PCDeviceSetSamplerState(stage, 4, tuple[1]);
+    PCDeviceSamplerInvalidation[stage][0] = tuple[0];
+    PCDeviceSamplerInvalidation[stage][1] = tuple[1];
+}
+extern "C" void __cdecl PCGraphicsBindEffectTexturePc(u32 stage, GRAPHICS_RENDER_TEXTURE_PC *texture) {
+    if (texture != NULL) {
+        const u32 *tuple = &texture->flags;
+        if ((u32)PCDeviceSamplerInvalidation[stage][0] != tuple[0] ||
+            (u32)PCDeviceSamplerInvalidation[stage][1] != tuple[1])
+            PCGraphicsSetSamplerTuplePc(stage, tuple);
+        PCDeviceSetTexture(stage, texture->resource);
+    } else {
+        PCDeviceSetTexture(stage, NULL);
+    }
+}

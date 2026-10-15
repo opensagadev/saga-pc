@@ -90,3 +90,30 @@ void __cdecl ResetShadowMapRenderingFn(void) {
 void __cdecl EnableShadowMapRenderingFn(void) {
     EnableShadowMapRendering(0);
 }
+
+extern "C" i32 __cdecl ShadowSetClipStatePc(i32 enabled, i32 state) {
+    i32 previous = PCSpecialClipState;
+    PCSpecialClipState = enabled == 0 ? -1 : state;
+    return previous;
+}
+extern "C" void __cdecl ShadowResetClipResultsPc(void) {
+    PCSpecialShadowClipResultsPresent = 0;
+}
+extern "C" void __cdecl RenderShadowLights(i32 paused) {
+    if (PcWindowOptions.shadowsenabled != 0 && PcWindowOptions.shadowmethod == 2 && PCShadowCurrentLight != NULL &&
+        PCShadowCurrentLight->enabled != 0) {
+        i32 previous = ShadowSetClipStatePc(1, 1);
+        ShadowMapResetPc();
+        ShadowMapEnablePc(PCShadowCurrentLight);
+        ShadowResetClipResultsPc();
+        NuRndrBeginScene(1);
+        currentScene.dyn_light_count = 1;
+        currentScene.dyn_light_ptr = PCShadowCurrentLight;
+        currentScene.unknown_40 = 0;
+        if (WORLD->current_gscn != NULL)
+            PCShadowCurrentLight->RenderSceneShadowPc(WORLD->current_gscn);
+        ShadowSetClipStatePc(0, previous);
+        NuRndrEndScene();
+        ShadowMapResetPc();
+    }
+}

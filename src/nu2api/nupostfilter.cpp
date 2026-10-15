@@ -446,3 +446,41 @@ void NuSpeedBlurFilter::initResources() {
 void NuDeferredFilter::initTextureResources(i32 width, i32 height) {
     NuDeferredFilterGen::initTextureResources(width, height);
 }
+
+void NuMainFilterGen::reset() {
+    enabled = false;
+    dof_enabled = false;
+    bloom_enabled = false;
+    motion_blur_enabled = false;
+    active_filter_count = 0;
+}
+void NuMainFilter::render() {
+    if (bloom_enabled)
+        RenderBloomPc();
+}
+extern "C" void __cdecl NuPostEffectEnd(void) {
+    if (NuPostDeferredFilterPc != NULL)
+        ((NuPostFilterGen *)NuPostDeferredFilterPc)->resetAll();
+    if (NuPostMainFilterPc != NULL)
+        ((NuPostFilterGen *)NuPostMainFilterPc)->resetAll();
+    if (NuPostMotionFilterPc != NULL)
+        ((NuPostFilterGen *)NuPostMotionFilterPc)->resetAll();
+    if (NuPostAccumFilterPc != NULL)
+        ((NuPostFilterGen *)NuPostAccumFilterPc)->resetAll();
+    PostProxyBuffersPc[0].texture = NULL;
+    PostProxyBuffersPc[0].kind = 0;
+    PostProxyBuffersPc[0].resolved = false;
+    PostProxyBuffersPc[1].texture = NULL;
+    PostProxyBuffersPc[1].resolved = false;
+    PostProxyBuffersPc[2].texture = NULL;
+    PostProxyBuffersPc[2].resolved = false;
+    PostProxyBuffersPc[4].texture = NULL;
+    PostProxyBuffersPc[4].resolved = false;
+    PostProxyBuffersPc[0].enabled = true;
+    PostProxyBuffersPc[1].kind = 1;
+    PostProxyBuffersPc[1].enabled = true;
+    PostProxyBuffersPc[2].kind = 2;
+    PostProxyBuffersPc[2].enabled = true;
+    PostProxyBuffersPc[4].kind = 4;
+    PostProxyBuffersPc[4].enabled = true;
+}

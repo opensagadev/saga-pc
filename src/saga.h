@@ -3501,6 +3501,21 @@ STATIC_ASSERT(offsetof(AREA_GLOBALS_PC, arcade_ai_kills) == 0x2c);
 
 typedef struct zipup_pc_s ZIPUP_PC;
 
+typedef struct edgizshadow_pc_s {
+    NUVEC direction;
+    f32 field_0c;
+    f32 field_10;
+    f32 field_14;
+    f32 field_18;
+    f32 field_1c;
+    f32 field_20;
+    f32 field_24;
+    f32 field_28;
+    f32 field_2c;
+    f32 field_30;
+    i32 preset;
+} EDGIZSHADOW_PC;
+STATIC_ASSERT(sizeof(EDGIZSHADOW_PC) == 0x38);
 typedef struct WORLDINFO_s {
     char name[0x80];
     char config_file[0x80];
@@ -3637,7 +3652,7 @@ typedef struct WORLDINFO_s {
     void *giz_randoms;
     void *giz_special_sys;
     void *game_antinode_sys;
-    void *shadow_editor;
+    EDGIZSHADOW_PC *shadow_editor;
     struct GIZBOMBGENSYS_s *giz_bombgen_sys;
     i32 has_level_specific_data;
     void *level_specific_data;
@@ -7020,13 +7035,15 @@ STATIC_ASSERT(offsetof(NU_LIGHT_SHADOW_LIST_VIEW_PC, material_last) == 0x14);
 
 /* PC NuDynamicLight::RenderSet. */
 typedef struct nurndrlightrecord_s {
-    u8 opaque_00_100[0x100];
+    NUMTX view_pc, projection_pc, shadow_matrix_pc, texture_matrix_pc;
     f32 parameter_100;
     f32 parameter_104;
     i32 enabled;
     u8 opaque_10c_110[0x4];
     f32 parameter_110;
-    u8 opaque_114_260[0x14c];
+    u8 opaque_114_120[0xc];
+    NUVEC4 corners_pc[8];
+    u8 opaque_1a0_260[0xc0];
     i32 shadow_plane_count;
     u8 opaque_264_2a4[0x40];
     NU_LIGHT_SHADOW_LIST_VIEW_PC shadow_lists_pc[2];
@@ -7047,6 +7064,32 @@ STATIC_ASSERT(offsetof(NURNDRLIGHTRECORD, render_states) == 0x32c);
 STATIC_ASSERT(offsetof(NURNDRLIGHTRECORD, enabled) == 0x108);
 STATIC_ASSERT(offsetof(NURNDRLIGHTRECORD, pending) == 0x354);
 STATIC_ASSERT(offsetof(NURNDRLIGHTRECORD, count) == 0x374);
+
+typedef struct BURN_PARAMETERS_PC {
+    i32 field_00;
+    f32 field_04;
+    f32 field_08;
+    f32 field_0c;
+    f32 field_10;
+    f32 field_14;
+    i32 field_18;
+    f32 field_1c;
+    f32 field_20;
+    f32 field_24;
+    i32 field_28;
+    f32 field_2c;
+    f32 field_30;
+    f32 field_34;
+    f32 field_38;
+    f32 field_3c;
+    f32 field_40;
+    f32 field_44;
+    f32 field_48;
+    f32 field_4c;
+    f32 field_50;
+} BURN_PARAMETERS_PC;
+STATIC_ASSERT(sizeof(BURN_PARAMETERS_PC) == 0x54);
+STATIC_ASSERT(offsetof(BURN_PARAMETERS_PC, field_14) == 0x14);
 
 typedef struct nurndrlibscene_s {
     union {
@@ -7074,10 +7117,20 @@ typedef struct nurndrlibscene_s {
     i32 unknown_40;
     u8 opaque_44_48[0x4];
     u32 unknown_48;
-    f32 clear_alpha_4c;
-    u8 opaque_50_58[0x8];
-    u32 unknown_58;
-    u8 opaque_5c_ac[0x50];
+    union {
+        struct {
+            f32 clear_alpha_4c;
+            u8 opaque_50_58[0x8];
+        };
+        f32 shadow_coefficients_pc[3];
+    };
+    union {
+        struct {
+            u32 unknown_58;
+            u8 opaque_5c_ac[0x50];
+        };
+        BURN_PARAMETERS_PC burnout_parameters_pc;
+    };
     u32 unknown_ac;
     u8 opaque_b0_c4[0x14];
     u32 unknown_c4;
@@ -8067,6 +8120,9 @@ typedef struct PC_DEVICE_BACKEND_PC {
     PC_DEVICE_BACKEND_PC();
     ~PC_DEVICE_BACKEND_PC();
     void __thiscall Shutdown();
+    void __thiscall DrawPostEffectQuadPc();
+    void __thiscall DrawPostEffectIndexedPc();
+    void __thiscall PostEffectBarrierPc();
     HRESULT __thiscall EndScene();
     HRESULT __thiscall CopySurfaceTargetPc(PC_EFFECT_SURFACE_PC *target, i32 filter, i32 unused);
     void __thiscall SetColorWriteMaskPc(u8 colour_enabled, u8 alpha_enabled, i32 target);
@@ -17042,10 +17098,14 @@ extern "C" DWORD __stdcall PCSoundStreamWorkerPc(void *);
 /* PC NuDynamicLight; its pool slots are 0x830 bytes. */
 struct PC_SPECIAL_SHADOW_LIGHT {
     NURNDRLIGHTRECORD render_sets[2];
-    u8 unknown_700[0xc];
+    u8 unknown_700[4];
+    f32 shadow_distance_pc;
+    u8 unknown_708[4];
     i32 render_set_count;
     i32 active_render_set_count;
-    u8 unknown_714[0x6c];
+    u8 unknown_714[0x5c];
+    NUVEC shadow_direction_pc;
+    u8 unknown_77c[4];
     NUMTX view;
     NUMTX projection;
     i32 parameter_4;
@@ -17056,10 +17116,27 @@ struct PC_SPECIAL_SHADOW_LIGHT {
     i32 used_on_specials;
 #ifdef __cplusplus
     PC_SPECIAL_SHADOW_LIGHT();
+    void RenderSceneShadowPc(NUGSCN *scene);
+    void ComputeShadowMatrixPc(NURNDRLIGHTRECORD *);
+    void SetupShadowPc(NURNDRLIGHTRECORD *);
+    void RenderShadowPc(i32, PC_FRAMEBUFFER_PC *);
+    void RenderConstantsPc(void *);
     void SetEnabledPc(i32 enabled);
     void SetParameterfPc(i32 parameter, f32 value);
 #endif
 };
+STATIC_ASSERT(offsetof(NURNDRLIGHTRECORD, view_pc) == 0);
+STATIC_ASSERT(offsetof(NURNDRLIGHTRECORD, projection_pc) == 0x40);
+STATIC_ASSERT(offsetof(NURNDRLIGHTRECORD, shadow_matrix_pc) == 0x80);
+STATIC_ASSERT(offsetof(NURNDRLIGHTRECORD, texture_matrix_pc) == 0xc0);
+STATIC_ASSERT(offsetof(NURNDRLIGHTRECORD, corners_pc) == 0x120);
+STATIC_ASSERT(offsetof(struct PC_SPECIAL_SHADOW_LIGHT, shadow_distance_pc) == 0x704);
+STATIC_ASSERT(offsetof(struct PC_SPECIAL_SHADOW_LIGHT, active_render_set_count) == 0x710);
+STATIC_ASSERT(offsetof(struct PC_SPECIAL_SHADOW_LIGHT, shadow_direction_pc) == 0x770);
+STATIC_ASSERT(offsetof(struct PC_SPECIAL_SHADOW_LIGHT, view) == 0x780);
+STATIC_ASSERT(offsetof(struct PC_SPECIAL_SHADOW_LIGHT, parameter_4) == 0x800);
+STATIC_ASSERT(offsetof(struct PC_SPECIAL_SHADOW_LIGHT, parameter_5) == 0x804);
+STATIC_ASSERT(offsetof(struct PC_SPECIAL_SHADOW_LIGHT, parameter_0) == 0x80c);
 STATIC_ASSERT(offsetof(struct PC_SPECIAL_SHADOW_LIGHT, render_set_count) == 0x70c);
 STATIC_ASSERT(offsetof(struct PC_SPECIAL_SHADOW_LIGHT, projection) == 0x7c0);
 STATIC_ASSERT(offsetof(struct PC_SPECIAL_SHADOW_LIGHT, enabled) == 0x808);
@@ -17227,7 +17304,7 @@ extern "C" {
     extern f32 GunshipDustEmissionRatePc;
 
     typedef struct BURN_SET_PC BURN_SET_PC;
-    typedef struct BURN_PARAMETERS_PC BURN_PARAMETERS_PC;
+
     void __cdecl edrtlInitBurnset(BURN_SET_PC *);
     void __cdecl edrtlDetermineNearestBurn(f32, BURN_SET_PC *);
     i32 __cdecl edrtlBurnoutLoadSet(char *, BURN_SET_PC *);
@@ -21435,6 +21512,63 @@ extern "C" {
 /* Working accessed-field views only, not original allocation extents.
  * Pointer-only parameter types remain opaque until an actual read is consumed. */
 typedef struct NU_POST_BLOOM_PARAMETERS_PC NU_POST_BLOOM_PARAMETERS_PC;
+/* Native 80bb38 proxy array: five 12-byte records. */
+typedef struct PC_POST_BUFFER_PROXY_PC {
+    GRAPHICS_RENDER_TEXTURE_PC *texture;
+    i32 kind;
+    u8 enabled, resolved, unknown_0a[2];
+} PC_POST_BUFFER_PROXY_PC;
+STATIC_ASSERT(sizeof(PC_POST_BUFFER_PROXY_PC) == 12);
+STATIC_ASSERT(offsetof(PC_POST_BUFFER_PROXY_PC, texture) == 0);
+STATIC_ASSERT(offsetof(PC_POST_BUFFER_PROXY_PC, kind) == 4);
+STATIC_ASSERT(offsetof(PC_POST_BUFFER_PROXY_PC, enabled) == 8);
+STATIC_ASSERT(offsetof(PC_POST_BUFFER_PROXY_PC, resolved) == 9);
+struct NU_POST_BLOOM_PARAMETERS_PC {
+    i32 enabled;
+    f32 near_angle, near_scale, far_angle, far_scale;
+    f32 intensity, unknown_18, blur_iterations, blend, threshold;
+    i32 directional;
+    NUVEC direction;
+    f32 direction_near_angle, direction_far_scale, direction_far_angle;
+    f32 direction_near_scale, direction_bias, unknown_4c, unknown_50;
+};
+STATIC_ASSERT(sizeof(NU_POST_BLOOM_PARAMETERS_PC) == 0x54);
+STATIC_ASSERT(offsetof(NU_POST_BLOOM_PARAMETERS_PC, intensity) == 0x14);
+STATIC_ASSERT(offsetof(NU_POST_BLOOM_PARAMETERS_PC, directional) == 0x28);
+STATIC_ASSERT(offsetof(NU_POST_BLOOM_PARAMETERS_PC, direction) == 0x2c);
+STATIC_ASSERT(offsetof(NU_POST_BLOOM_PARAMETERS_PC, direction_bias) == 0x48);
+#ifdef __cplusplus
+extern "C" {
+#endif
+    extern PC_POST_BUFFER_PROXY_PC PostProxyBuffersPc[5];
+    void __cdecl NuPostEffectRender(PC_FRAMEBUFFER_PC *);
+#ifdef __cplusplus
+}
+#endif
+
+#ifdef __cplusplus
+struct PC_POST_DATA_PORT_ENTRY {
+    void *data;
+    char name[32];
+    i32 references;
+};
+struct PC_POST_DATA_PORT_MANAGER {
+    PC_POST_DATA_PORT_ENTRY entries[256];
+    i32 __thiscall Register(const char *name, void *data);
+};
+struct PC_POST_DATA_PORT {
+    i32 index;
+    PC_POST_DATA_PORT_MANAGER *manager;
+};
+STATIC_ASSERT(sizeof(PC_POST_DATA_PORT_ENTRY) == 40);
+STATIC_ASSERT(offsetof(PC_POST_DATA_PORT_ENTRY, name) == 4);
+STATIC_ASSERT(offsetof(PC_POST_DATA_PORT_ENTRY, references) == 36);
+STATIC_ASSERT(sizeof(PC_POST_DATA_PORT_MANAGER) == 0x2800);
+STATIC_ASSERT(sizeof(PC_POST_DATA_PORT) == 8);
+STATIC_ASSERT(offsetof(PC_POST_DATA_PORT, manager) == 4);
+extern "C" PC_POST_DATA_PORT PostResourcePortsPc[6];
+#endif
+
 typedef struct NU_POST_SPEED_PARAMETERS_PC NU_POST_SPEED_PARAMETERS_PC;
 typedef struct NU_POST_DOF_PARAMETERS_PC {
     i32 enabled;
@@ -21596,6 +21730,7 @@ class NuMainFilterGen : public NuPostFilter {
 class NuMainFilter : public NuMainFilterGen {
   public:
     NuMainFilter();
+    void RenderBloomPc();
     virtual void initResources();
     virtual void initTextureResources(i32, i32);
     virtual void destroyResources();
@@ -27086,6 +27221,51 @@ extern "C" {
     void __cdecl GizBuildItPushAwayFromEnd(GAMEOBJECT *);
     void __cdecl GizBuildIt_SetHeadTarget(GIZBUILDIT_s *, GAMEOBJECT *);
     void __cdecl GizBuildIt_SetStepTime(GIZBUILDIT_s *, GAMEOBJECT *);
+#ifdef __cplusplus
+}
+#endif
+
+#ifdef __cplusplus
+
+struct POST_SHADER_PROGRAM_PC;
+extern "C" {
+    u32 *__cdecl PCGraphicsEffectTextureSamplerPc(GRAPHICS_RENDER_TEXTURE_PC *);
+    GRAPHICS_RENDER_TEXTURE_PC *__cdecl PCGraphicsGetFramebufferAttachmentPc(PC_FRAMEBUFFER_PC *, i32, i32 *, i32 *);
+    void __cdecl PCGraphicsFramebufferBarrierPc(i32, i32);
+    void __cdecl PCGraphicsFramebufferActionPc(i32);
+    void __cdecl PCGraphicsSubmitViewportPc(i32, i32, i32, i32);
+    void __cdecl PCGraphicsSetSamplerTuplePc(u32, const u32 *);
+    void __cdecl PCGraphicsBindEffectTexturePc(u32, GRAPHICS_RENDER_TEXTURE_PC *);
+    void __cdecl PostShaderProgramBindPc(POST_SHADER_PROGRAM_PC *);
+    void __cdecl PCGraphicsDrawPostEffectQuadPc(void);
+    void __cdecl PCDevicePostEffectBarrierPc(void);
+    void __cdecl NuRndrEndFrameActionPc(void);
+    void __cdecl NuPostEffectEnd(void);
+}
+
+#endif
+
+STATIC_ASSERT(offsetof(WORLDINFO, shadow_editor) == 0x5110);
+STATIC_ASSERT(offsetof(NURNDRLIBSCENE, shadow_coefficients_pc) == 0x4c);
+STATIC_ASSERT(offsetof(NURNDRLIBSCENE, burnout_parameters_pc) == 0x58);
+#ifdef __cplusplus
+extern "C" {
+#endif
+    void __cdecl BurnoutApply(i32);
+    void __cdecl NuRndrSetBurnoutParametersPc(i32, const BURN_PARAMETERS_PC *);
+    void __cdecl NuRndrSetShadowCoefficientPc(i32, f32);
+    void __cdecl NuRndrEnableDeferredPc(void);
+#ifdef __cplusplus
+}
+#endif
+
+#ifdef __cplusplus
+extern "C" {
+#endif
+    void __cdecl RenderShadowLights(i32);
+    i32 __cdecl ShadowSetClipStatePc(i32, i32);
+    void __cdecl ShadowResetClipResultsPc(void);
+    void __cdecl DisplaySceneRndrSpecials(NUDISPLAY_LIST_PC *, i32, i32);
 #ifdef __cplusplus
 }
 #endif

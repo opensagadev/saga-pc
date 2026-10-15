@@ -1706,3 +1706,37 @@ extern "C" void __cdecl NuDisplayListDrawRenderScene_candidate(i32 scene_id) {
     NuDisplayListDrawItemsPc(&PCSafeRenderScenes[scene_id]->render_2d_first);
     PCThreadCriticalSectionLeave_candidate(nudlist_field_fc4);
 }
+
+extern "C" void __cdecl DisplaySceneRndrSpecials(NUDISPLAY_LIST_PC *scene, i32 unused0, i32 unused1) {
+    NUGSCN temporary_scene;
+    VISIBILITY_RESULT_READER_PC *visibility = NuVisiEvaluate(scene->gscene, &unused1);
+    i32 portal_filter = visibility != NULL && VisibilityPortalFilterEnabledPc != 0 &&
+                        visibility->portal_marker != NULL && PCPortalsEnabled != 0;
+    i32 shadow_filter = currentScene.dyn_light_ptr != NULL;
+    if ((scene->instance_visibility_enabled & 1) != 0 || DisplaySceneSpecialsDisabledPc != 0)
+        return;
+    NUGSCN *gscene = scene->gscene;
+    if (gscene == NULL) {
+        temporary_scene.display_list = scene;
+        gscene = &temporary_scene;
+    }
+    NUSPECIALHANDLE handle;
+    handle.scene = gscene;
+    for (i32 i = 0; i < scene->special_count; ++i) {
+        VISIBILITY_DISPLAY_SPECIAL_READER_PC *special =
+            reinterpret_cast<VISIBILITY_DISPLAY_SPECIAL_READER_PC *>(&scene->specials[i]);
+        if ((special->common.flags & 2) == 0)
+            continue;
+        if (shadow_filter != 0 && (scene->visibility_flags[special->common.instance_ix] & 0x20) == 0)
+            continue;
+        if (portal_filter != 0 && (scene->visibility_flags[special->common.instance_ix] & 8) == 0 &&
+            ((visibility->portal_bits[(i32)special->common.instance_ix >> 3] >> (special->common.instance_ix & 7)) &
+             1) == 0)
+            continue;
+        handle.display_special = reinterpret_cast<NUMTX *>(special);
+        NUMTX *matrix = special->draw_matrix_override;
+        if (matrix == NULL || matrix == reinterpret_cast<NUMTX *>(-1))
+            matrix = &special->draw_matrix;
+        NuDisplayListRndrSpecial(&handle, matrix, 0, NULL, NULL);
+    }
+}

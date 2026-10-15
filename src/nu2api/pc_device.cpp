@@ -1502,3 +1502,25 @@ extern "C" void __cdecl PCDeviceBeginScenePc(void) {
     PCDeviceStateCachePc.Invalidate();
     PCDeviceBackend.BeginScene();
 }
+
+void __thiscall PC_DEVICE_BACKEND_PC::DrawPostEffectQuadPc() {
+    PCDeviceSetVertexDeclarationPc(declaration68c);
+    PCDeviceSetStreamSourcePc(0, buffer690, 0, 20);
+    PCDeviceDrawPrimitivePc(5, 0, 2);
+}
+void __thiscall PC_DEVICE_BACKEND_PC::DrawPostEffectIndexedPc() {
+    PCDeviceSetVertexDeclarationPc(declaration68c);
+    PCDeviceSetStreamSourcePc(0, buffer694, 0, 20);
+    PCDeviceSetIndicesPc(buffer698);
+    PCDeviceDrawIndexedPrimitivePc(4, 0, 0, state6a4, 0, state6a8);
+}
+void __thiscall PC_DEVICE_BACKEND_PC::PostEffectBarrierPc() {
+}
+extern "C" void __cdecl PCGraphicsDrawPostEffectQuadPc(void) {
+    PCDeviceBackend.DrawPostEffectQuadPc();
+}
+extern "C" void __cdecl PCDevicePostEffectBarrierPc(void) {
+    PCDeviceBackend.PostEffectBarrierPc();
+}
+extern "C" void __cdecl NuRndrEndFrameActionPc(void) {
+}

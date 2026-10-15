@@ -1,6 +1,13 @@
 #include "saga.h"
 #include <string.h>
 
+extern "C" {
+#pragma data_seg(".data$BURNOUTON")
+    i32 BURNOUTON = 1;
+#pragma data_seg()
+}
+STATIC_ASSERT(sizeof(BURNOUTON) == 4);
+
 typedef struct main_controller_world_view_pc_s {
     u8 unknown_0000[0x4670];
     AI_CONTROL_SYSTEM_PC *control_system;
@@ -409,9 +416,11 @@ static void NuMainRenderWorld(WORLDINFO *world) {
     DrawRippleSet(RippleSetPc);
     SpeedBlur_Apply(world);
     NuRndrEndScene();
-    STUBBED_NAMED("NuMainRenderWorld: RenderShadowLights(Paused) at 0x00596870");
+    RenderShadowLights(Paused);
     NuRndrBeginScene(1);
-    STUBBED_NAMED("NuMainRenderWorld: 0x00596520, SetDepthOfField at 0x004017b0, BurnoutApply at 0x0042fbf0");
+    STUBBED_NAMED("NuMainRenderWorld: 0x00596520, SetDepthOfField at 0x004017b0");
+    if (BURNOUTON != 0)
+        BurnoutApply(paused);
     STUBBED_NAMED("NuMainRenderWorld: 0x00491bd0(world->current_gscn) when 0x0087b580 is set");
     NuRndrEndScene();
     NuRndrFx(paused, &plr_lastpos);

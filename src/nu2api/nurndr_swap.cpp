@@ -66,7 +66,7 @@ extern "C" i32 __cdecl NuRndrSwapScreen(i32 mode) {
                 if (scene->scene_id != -1)
                     NuDynamicLightAddRenderScene(light, scene->unknown_40, scene->scene_id);
                 if (scene->unknown_40 == 0) {
-                    STUBBED_NAMED(0x005c3640); /* (light),60b259 */
+                    NuPostEffectAddDynamicLight(reinterpret_cast<NuDynamicLight *>(light));
                 }
             }
             scene->scene_id = -1;
@@ -74,14 +74,14 @@ extern "C" i32 __cdecl NuRndrSwapScreen(i32 mode) {
         if (scene->unknown_ac != 0)
             NuPostEffectIsInitialised(8); /* Native60b270 result unused. */
         if (scene->unknown_58 != 0 && NuPostEffectIsInitialised(4)) {
-            STUBBED_NAMED(0x005c32d0); /* Activate(4),60b291 */
-            STUBBED_NAMED(0x005c36e0); /* (&scene->unknown_58),60b297 */
+            NuPostEffectEnable(4);
+            NuPostEffectBloom(reinterpret_cast<const NU_POST_BLOOM_PARAMETERS_PC *>(&scene->burnout_parameters_pc));
             scene->unknown_58 = 0;
             rendered_effect = true;
         }
         if (scene->unknown_48 != 0) {
-            STUBBED_NAMED(0x005c32d0); /* Activate(0x20),60b2b5 */
-            STUBBED_NAMED(0x005c36b0); /* (&scene->unknown_48),60b2bb */
+            NuPostEffectEnable(0x20);
+            NuPostEffectDeferredShading(reinterpret_cast<const f32 *>(&scene->unknown_48));
             scene->unknown_48 = 0;
             rendered_effect = true;
         }
@@ -120,9 +120,9 @@ extern "C" i32 __cdecl NuRndrSwapScreen(i32 mode) {
             D3DPERF_EndEvent();
         }
         if (rendered_effect) {
-            STUBBED_NAMED(0x006dfd90); /* native60b3d9 */
+            PCDevicePostEffectBarrierPc();
             NuShaderManagerBindShaderPc(NULL);
-            STUBBED_NAMED(0x005e6a80); /* Render(destination),60b3ea */
+            NuPostEffectRender(destination);
             NuShaderManagerBindShaderPc(NULL);
             PCDeviceResetSamplerDefaultsPc();
         }
@@ -141,9 +141,9 @@ extern "C" i32 __cdecl NuRndrSwapScreen(i32 mode) {
             }
         }
     }
-    sceneParametersCount = 0;  /* Actual native60b50d, after both live-count loops. */
-    STUBBED_NAMED(0x005decd0); /* native60b513 */
-    STUBBED_NAMED(0x005c3200); /* actual post-effect End,60b518 */
+    sceneParametersCount = 0; /* Actual native60b50d, after both live-count loops. */
+    NuRndrEndFrameActionPc();
+    NuPostEffectEnd();
     _NuTimeBarSlotEnd(-1, 4);
     STUBBED_NAMED(0x005ded40); /* native60b529 */
     NuDisplayListBeginFrame();
