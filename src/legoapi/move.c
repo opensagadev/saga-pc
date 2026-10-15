@@ -6613,7 +6613,7 @@ after_gravity:
     ZipUp_MoveCode(object, special_pressed);
     if ((object->character_data->model_flags & 0x100000) != 0)
         Grapple_MoveCode(object); /* Native4b4ea7: object; Grapple_MoveCode. */
-    STUBBED_NAMED(0x00592280);    /* Native4b4eb0: object; BuildIt_MoveCode. */
+    BuildIt_MoveCode(object);
     Lever_MoveCode(WORLD, object);
     STUBBED_NAMED(0x004d0290); /* Native4b4ec3: object; ThermalDetonator_MoveCode. */
     if ((object->character_data->model_flags & 0x40000) != 0)
@@ -8514,7 +8514,7 @@ void __cdecl Move_JAWA(GAMEOBJECT *object) {
     if ((object->flags_1fc & 0x80) != 0)
         ForceCode(object, 0, 0, 0);
     JumpCode(object, jump_pressed, jump_held, 0, 0, 0, -1);
-    STUBBED_NAMED(0x00592280); /* Native4b3c84: BuildIt_MoveCode(object), ignored action. */
+    BuildIt_MoveCode(object);
     if ((object->character_data->model_flags & 0x40000) != 0)
         Teleport_MoveCode(object, special_pressed);
     ZipUp_MoveCode(object, special_pressed);
@@ -9029,7 +9029,7 @@ void __cdecl Move_JEDI(GAMEOBJECT *object) {
     GizPanel_MoveCode(WORLD, object, special_pressed);
     HatMachine_MoveCode(WORLD, object, special_pressed);
     ZipUp_MoveCode(object, special_pressed);
-    STUBBED_NAMED(0x00592280); /* Native4b3675: BuildIt_MoveCode(object), ignored action. */
+    BuildIt_MoveCode(object);
     Lever_MoveCode(WORLD, object);
     if ((object->character_data->game_character->flags_094 & 0x8000) == 0) {
         STUBBED_NAMED(0x004b15c0); /* Native4b36a6: ForceDeflectCode(object EAX,special_pressed,special_held). */
@@ -9137,7 +9137,7 @@ void __cdecl Move_WEIRDO(GAMEOBJECT *object) {
     ZipUp_MoveCode(object, special_pressed);
     if ((object->character_data->model_flags & 0x100000) != 0)
         Grapple_MoveCode(object);
-    STUBBED_NAMED(0x00592280); /* Native4b5aad: BuildIt_MoveCode(object). */
+    BuildIt_MoveCode(object);
     if (has_sabre || SuperWeirdo(object)) {
         STUBBED_NAMED(0x004b15c0); /* Native4b5ad1: ForceDeflectCode(object EAX,special_pressed,special_held). */
         STUBBED_NAMED(0x004a28e0); /* Native4b5ad9: ForcePushCode(object EDI,special_held). */

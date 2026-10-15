@@ -27078,3 +27078,14 @@ extern "C" {
 #ifdef __cplusplus
 }
 #endif
+
+#ifdef __cplusplus
+extern "C" {
+#endif
+    void __cdecl BuildIt_MoveCode(GAMEOBJECT *);
+    void __cdecl GizBuildItPushAwayFromEnd(GAMEOBJECT *);
+    void __cdecl GizBuildIt_SetHeadTarget(GIZBUILDIT_s *, GAMEOBJECT *);
+    void __cdecl GizBuildIt_SetStepTime(GIZBUILDIT_s *, GAMEOBJECT *);
+#ifdef __cplusplus
+}
+#endif

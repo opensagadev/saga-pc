@@ -1040,3 +1040,164 @@ void __cdecl GizmoBuildit_Activate(GIZMO_PC *gizmo, i32 active) {
         AddGameDebris(WORLD->game_debris_sys, GizBuilditGDeb[qrand() / 0x2aab], &scatter_position);
     }
 }
+
+STATIC_ASSERT(offsetof(GAMEOBJECT, grapple) == 0x798);
+STATIC_ASSERT(offsetof(GAMEOBJECT, panel_request_data) == 0x7a0);
+STATIC_ASSERT(offsetof(GAMEOBJECT, big_jump_animation) == 0x7b4);
+STATIC_ASSERT(offsetof(GIZBUILDIT_PC, position) == 0x34);
+STATIC_ASSERT(offsetof(GIZBUILDIT_PC, build_state) == 0x6d);
+STATIC_ASSERT(offsetof(GIZBUILDIT_PC, builders_active) == 0x6e);
+STATIC_ASSERT(offsetof(GIZBUILDIT_PC, built_object_count) == 0x6f);
+STATIC_ASSERT(offsetof(WORLDINFO, giz_buildit_sys) == 0x46a8);
+STATIC_ASSERT(offsetof(GIZBUILDITSYS_s, buildits) == 0);
+STATIC_ASSERT(offsetof(GIZBUILDITSYS_s, count) == 4);
+
+void __cdecl GizBuildItPushAwayFromEnd(GAMEOBJECT *player) {
+    GIZBUILDIT_PC *buildit;
+    GIZBUILDITANIMDATA_s *data;
+    NUVEC centre, end_position, minimum, maximum, radius_centre;
+    f32 player_x, player_z, radius;
+    volatile f32 radius_squared = PlayerBuildItNegativeLimitPc;
+    volatile f32 nearest_distance, dx, dz, distance;
+    i32 i, j, nearest = 0;
+    if (WORLD->giz_buildit_sys == NULL)
+        return;
+    buildit = (GIZBUILDIT_PC *)WORLD->giz_buildit_sys->buildits;
+    player_x = player->collision_position.x;
+    player_z = player->collision_position.z;
+    for (i = 0; i < WORLD->giz_buildit_sys->count; ++i, ++buildit) {
+        centre = v000;
+        if ((buildit->state_flags & 8) == 0 || (buildit->availability_flags & 2) == 0 ||
+            buildit->built_object_count == 0)
+            continue;
+        end_position = buildit->position;
+        minimum.x = minimum.z = AIPositionUnsetPc;
+        maximum.x = maximum.z = PlayerBuildItNegativeLimitPc;
+        if ((buildit->state_flags & 0x10) != 0) {
+            nearest_distance = AIPositionUnsetPc;
+            for (j = 0; j < buildit->built_object_count; ++j) {
+                data = (GIZBUILDITANIMDATA_s *)buildit->anim_objects[j]->object_data;
+                dx = (f64)data->end_mtx.m30 - player_x;
+                dz = (f64)data->end_mtx.m32 - player_z;
+                distance = (f64)dx * dx + (f64)dz * dz;
+                if (nearest_distance > distance) {
+                    nearest_distance = distance;
+                    nearest = j;
+                    centre.x = data->end_mtx.m30;
+                    centre.y = data->end_mtx.m31;
+                    centre.z = data->end_mtx.m32;
+                }
+            }
+            NuSpecialGetBounds(&buildit->anim_objects[nearest]->special, &minimum, &maximum);
+            NuSpecialGetRadius(&buildit->anim_objects[nearest]->special, &radius_centre, &radius);
+        } else {
+            centre.y = end_position.y;
+            for (j = 0; j < buildit->built_object_count; ++j) {
+                data = (GIZBUILDITANIMDATA_s *)buildit->anim_objects[j]->object_data;
+                centre.x = (f64)centre.x + data->end_mtx.m30;
+                centre.z = (f64)centre.z + data->end_mtx.m32;
+                dx = (f64)data->end_mtx.m30 - end_position.x;
+                dz = (f64)data->end_mtx.m32 - end_position.z;
+                maximum.x = dx < maximum.x ? maximum.x : dx;
+                maximum.z = dz < maximum.z ? maximum.z : dz;
+                minimum.x = minimum.x < dx ? minimum.x : dx;
+                minimum.z = minimum.z < dz ? minimum.z : dz;
+                distance = (f64)dx * dx + (f64)dz * dz;
+                if (radius_squared < distance)
+                    radius_squared = distance;
+            }
+            centre.x = (f64)centre.x / buildit->built_object_count;
+            centre.z = (f64)centre.z / buildit->built_object_count;
+            radius = NuFsqrt(radius_squared);
+        }
+        maximum.x = (f64)maximum.x + centre.x;
+        maximum.y = (f64)centre.y + (f64)0.01f;
+        maximum.z = (f64)maximum.z + centre.z;
+        minimum.x = (f64)minimum.x + centre.x;
+        minimum.y = centre.y;
+        minimum.z = (f64)minimum.z + centre.z;
+        PushAway(&centre, radius, &minimum, &maximum, player, NULL, 1.0f, 0);
+    }
+}
+
+void __cdecl BuildIt_MoveCode(GAMEOBJECT *player) {
+    GIZBUILDIT_PC *buildit;
+    i32 animation;
+    volatile f32 timer;
+    if (LEGOCONTEXT_BUILDIT == -1)
+        return;
+    if ((player->character_data->model_flags & 0x2010) != 0)
+        return;
+    if (player->character_context == LEGOCONTEXT_BUILDIT) {
+        if (BoltSys->stop_targeting != NULL)
+            BoltSys->stop_targeting(player, &player->collision_position);
+        buildit = (GIZBUILDIT_PC *)player->grapple;
+        if (buildit == NULL)
+            return;
+        GizBuildIt_SetHeadTarget((GIZBUILDIT_s *)buildit, player);
+        buildit = (GIZBUILDIT_PC *)player->grapple;
+        if ((buildit->state_flags & 0x80) != 0 && ShadowMode == 0) {
+            player->character_context = -1;
+            buildit->builders_active = 1;
+            ((GIZBUILDIT_PC *)player->grapple)->availability_flags |= 4;
+        }
+        animation = player->field_7aa;
+        if (player->character_model->model_data_b[animation] != NULL &&
+            AnimPlaying(&player->anim_packet, animation, 1, 0) == NULL)
+            return;
+        buildit = (GIZBUILDIT_PC *)player->grapple;
+        if (buildit->build_state == 0 && (player->pad->buttons_held & GAMEPAD_SPECIAL) != 0 &&
+            (f64)player->context_timer < (f64)0.2f) {
+            player->context_timer = 0.2f;
+        } else {
+            timer = (f64)player->context_timer - FRAMETIME;
+            player->context_timer = timer;
+            if (timer <= 0.0f)
+                player->character_context = -1;
+        }
+        if (player->character_context != -1) {
+            buildit->builders_active = 1;
+            ((GIZBUILDIT_PC *)player->grapple)->availability_flags |= 4;
+        }
+        return;
+    }
+    if (LEGOACT_BUILD == -1 || player->character_model->model_data_b[LEGOACT_BUILD] == NULL)
+        return;
+    if (AnimPlaying(&player->anim_packet, LEGOACT_BUILD, 1, 1) != NULL)
+        return;
+    if (player->field_281 == 0)
+        return;
+    if (ObjLandReady(player) == 0 && objInNetWaitContext(player, LEGOCONTEXT_BUILDIT) == 0)
+        return;
+    buildit = GizBuildIt_FindNearest(WORLD, player, 1, ShadowMode);
+    if (objInNetWaitContext(player, LEGOCONTEXT_BUILDIT) != 0) {
+        timer = (f64)player->context_timer - FRAMETIME;
+        player->context_timer = timer;
+        if (timer <= 0.0f) {
+            player->character_context = -1;
+            player->panel_request_data = NULL;
+        }
+    }
+    if (buildit == NULL || (player->flags_1fc & 0x80) == 0)
+        return;
+    if (player->field_281 != 0 && (buildit->state_flags & 4) != 0)
+        GizBuildItPushAwayFromStart(player, buildit);
+    GizBuildIt_SetHeadTarget((GIZBUILDIT_s *)buildit, player);
+    buildit->availability_flags |= 4;
+    if ((player->pad->buttons_pressed & GAMEPAD_SPECIAL) != 0 ||
+        (objInNetWaitContext(player, LEGOCONTEXT_BUILDIT) != 0 && (player->pad->buttons_held & GAMEPAD_SPECIAL) != 0)) {
+        if (GizBuildIt_CanStartBuildingFn != NULL && GizBuildIt_CanStartBuildingFn(buildit, player) == 0)
+            return;
+        player->character_context = (i8)LEGOCONTEXT_BUILDIT;
+        player->context_timer = 0.4f;
+        player->flags_e20 &= ~0x4000;
+        player->field_7aa = LEGOACT_BUILD;
+        player->grapple = buildit;
+        player->big_jump_animation = 0;
+        GizBuildIt_SetStepTime((GIZBUILDIT_s *)buildit, player);
+        GameCam_Blend(GameCam, 0.5f, 0.0f, 1);
+        Hint_SetComplete(LEGOHINT_BUILD);
+    }
+    if ((player->flags_1fc & 0x80) != 0 && player->field_281 != 0)
+        GizBuildItPushAwayFromEnd(player);
+}
