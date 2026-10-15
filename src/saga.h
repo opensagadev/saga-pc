@@ -26899,6 +26899,7 @@ extern "C" {
 
     void __cdecl Hub_DrawPanel(WORLDINFO *);
     void __cdecl DrawShopPanel(void);
+    void __cdecl UpdateGameMessages(void);
     void __cdecl DrawGameMessages(void);
     void __cdecl Hint_Draw(i32);
     extern void(__cdecl *ShopDrawPanelFnPc)(void);

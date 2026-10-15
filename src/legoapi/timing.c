@@ -147,7 +147,7 @@ void __cdecl GameTiming(WORLDINFO *world, f32 *game_time) {
                     }
                 }
             }
-            STUBBED_NAMED("GameTiming: UpdateGameMessages at 0x00561020");
+            UpdateGameMessages();
             target = 0.0f;
             if (DoubleScore != 0 && GetMenuID() == -1) {
                 target = 1.0f;

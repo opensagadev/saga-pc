@@ -115,6 +115,92 @@ GAME_MESSAGE_PC *__cdecl AddGameMsg(ADD_GAME_MESSAGE_PC *message) {
     return slot;
 }
 
+void __cdecl UpdateGameMessages(void) {
+    GAME_MESSAGE_PC *message = GameMessage;
+    GAME_MESSAGE_CALLBACK_PC callback;
+    volatile f32 rounded_time, progress;
+    u32 flags;
+    i32 index, angle;
+    for (index = 0; index < 128; ++index, ++message) {
+        if (message->active == 0)
+            continue;
+        if (message->expired != 0) {
+            callback = message->end_fn;
+            message->active = 0;
+            if (callback != NULL && message->allow_temporary == 0)
+                callback(message);
+            continue;
+        }
+        if ((message->flags & 0x80) != 0) {
+            message->expired = 1;
+            message->elapsed = 1.0f;
+            message->duration = 1.0f;
+        }
+        if (message->delay > 0.0f) {
+            rounded_time = message->delay - FRAMETIME;
+            message->delay = rounded_time;
+            if (rounded_time <= 0.0f) {
+                callback = message->delay_fn;
+                if (callback != NULL)
+                    callback(message);
+            }
+            continue;
+        }
+        if (!(message->duration > message->elapsed))
+            continue;
+        rounded_time = message->elapsed + FRAMETIME;
+        message->elapsed = rounded_time;
+        if (message->elapsed >= message->duration) {
+            callback = message->end_fn;
+            message->elapsed = message->duration;
+            message->expired = 1;
+            if (callback != NULL && message->allow_temporary != 0)
+                callback(message);
+        }
+        flags = message->flags;
+        if ((flags & 0x50) != 0) {
+            progress = (f32)((f64)message->elapsed / (f64)message->duration);
+            if ((flags & 0x100) != 0) {
+                angle = (i32)((f64)progress * 16384.0 + 16384.0);
+                progress = (f32)(1.0 - (f64)NuTrigTable[(angle >> 1) & 0x7fff]);
+            } else if ((flags & 0x200) != 0) {
+                angle = (i32)((f64)progress * 16384.0);
+                progress = NuTrigTable[(angle >> 1) & 0x7fff];
+            } else if ((flags & 0x400) != 0) {
+                angle = (i32)((f64)progress * 32768.0);
+                progress = NuTrigTable[(angle >> 1) & 0x7fff];
+            } else if ((flags & 0x800) != 0) {
+                angle = (i32)((f64)progress * 32768.0);
+                progress = (f32)(1.0 - (f64)NuTrigTable[(angle >> 1) & 0x7fff]);
+            }
+            if ((flags & 0x10) != 0) {
+                message->position.x =
+                    (f32)(((f64)message->target_position.x - (f64)message->position_a.x) * (f64)progress +
+                          (f64)message->position_a.x);
+                message->position.y =
+                    (f32)(((f64)message->target_position.y - (f64)message->position_a.y) * (f64)progress +
+                          (f64)message->position_a.y);
+                message->position.z =
+                    (f32)(((f64)message->target_position.z - (f64)message->position_a.z) * (f64)progress +
+                          (f64)message->position_a.z);
+            }
+            if ((flags & 0x40) != 0)
+                message->scale_initial =
+                    (f32)(((f64)message->target_scale - (f64)message->scale_start) * (f64)progress +
+                          (f64)message->scale_start);
+        }
+        if ((flags & 0x8000) != 0) {
+            angle = (i32)(((f64)message->elapsed / (f64)message->duration) * 16384.0 + 16384.0);
+            message->alpha = (u8)(i32)((f64)NuTrigTable[(angle >> 1) & 0x7fff] * 128.0);
+        } else if ((flags & 0x4000) != 0) {
+            message->alpha = (u8)(i32)((1.0 - (f64)message->elapsed / (f64)message->duration) * 128.0);
+        }
+        callback = message->tick_fn;
+        if (callback != NULL)
+            callback(message);
+    }
+}
+
 void __cdecl ResetGameMessages(void) {
     i32 i;
     for (i = 0; i < 128; ++i)

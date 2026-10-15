@@ -3399,7 +3399,7 @@ address    , symbol                                                         , si
 0x560b40,_ResetGameMessages,32,void __cdecl (void)
 0x560b60,_AddGameMsg,1078,GAME_MESSAGE_PC * __cdecl (ADD_GAME_MESSAGE_PC *)
 0x560fa0,_AddGameMessage,123,"GAME_MESSAGE_PC * __cdecl (char *,NUVEC *,f32,NUVEC *,f32,u8,u8,u8,u32,f32)"
-0x561020,_UpdateGameMessages,718,
+0x561020,_UpdateGameMessages,718,void __cdecl(void)
 0x5612f0,_TransformGameMessages,267,"void __cdecl (NUVEC *, NUVEC *, NUVEC *)"
 0x561400,_DrawGameMessages,1235,
 0x5618e0,_FindGameMsgsWithID,88,"i32 __cdecl (i32,i32,i32,GAME_MESSAGE_PC *)"
