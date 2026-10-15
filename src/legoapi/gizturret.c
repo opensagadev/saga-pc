@@ -403,7 +403,8 @@ void __cdecl GizTurrets_Draw(void *world_pointer, void *system_pointer, f32 unus
     }
 }
 
-/* Append to gizturret.c; canonical316B PC record/system16 view already owned. */
+/* Append to gizturret.c; canonical316B PC record/system16 view already owned.
+ */
 STATIC_ASSERT(sizeof(AI_TURRET_RECORD_PC) == 0x13c);
 STATIC_ASSERT(offsetof(AI_TURRET_RECORD_PC, sfx12a) == 0x12a);
 STATIC_ASSERT(offsetof(AI_TURRET_RECORD_PC, sfx126) == 0x126);
@@ -456,5 +457,65 @@ i32 __cdecl GizmoTurret_ActivateRev(GIZMO_PC *gizmo, i32 reverse, i32 mode) {
         return reverse == 0;
     }
     turret->flags ^= (u16)(((reverse == 0) << 1) ^ turret->flags) & 2;
+    return 1;
+}
+
+STATIC_ASSERT(offsetof(AI_TURRET_RECORD_PC, primary_anim_obj) == 0x1c);
+STATIC_ASSERT(offsetof(AI_TURRET_RECORD_PC, completion_score) == 0x10c);
+STATIC_ASSERT(offsetof(AI_TURRET_RECORD_PC, short110) == 0x110);
+STATIC_ASSERT(offsetof(AI_TURRET_RECORD_PC, short112) == 0x112);
+STATIC_ASSERT(offsetof(AI_TURRET_RECORD_PC, blowup_type) == 0x124);
+STATIC_ASSERT(offsetof(AI_TURRET_RECORD_PC, state) == 0x12e);
+
+i32 __cdecl GizTurrets_Hit(WORLDINFO *world, AI_TURRET_RECORD_PC *turret, NUVEC *hit_position, i32 player, i32 damage) {
+    f32 judder;
+    GAMEANIMOBJ *object;
+    TURRET_ANIM_DATA_PC *data;
+    NUVEC centre, position, direction;
+    (void)hit_position;
+    if ((i8)turret->state <= 0)
+        return 0;
+    if (damage == -1)
+        turret->state = 0;
+    else
+        turret->state = (u8)(turret->state - (u8)damage);
+    if ((i8)turret->state <= 0) {
+        turret->state = 0;
+        judder = qrand() < 0x8000 ? 0.4f : -0.4f;
+        GameCam_Judder(GameCam, judder, 2, NULL);
+        NewRumbleAllPlayers(1.0f, 0.0f, 0, 0.0f);
+        if (turret->behavior_flags & 0x2000) {
+            turret->flags |= 0x10;
+        } else {
+            turret->flags |= 0x20;
+            GameAnimSet_SetVisibility(turret->anim_set, 0);
+            if (turret->anim_set != NULL) {
+                for (object = turret->anim_set->objects; object != NULL; object = object->next) {
+                    data = (TURRET_ANIM_DATA_PC *)object->object_data;
+                    if (data->role == 3)
+                        NuSpecialSetVisibility(&object->special, 1);
+                }
+            }
+        }
+        if (turret->blowup_type != -1)
+            GizmoBlowUpTypeBlowUp(world, turret->blowup_type, NuSpecialGetDrawPos(&turret->primary_anim_obj->special));
+        centre = turret->position;
+        GameAnimSet_GetCentreAndRadius(turret->anim_set, &centre, NULL, 2, 1, 1);
+        if (turret->sfx138 != -1)
+            GameAudio_PlaySfxById(turret->sfx138, &centre, 0, 0);
+        if (turret->completion_score != 0 &&
+            ((turret->flags & 0x400) == 0 || (turret->behavior_flags & 0x40000) != 0)) {
+            NuVecAdd(&position, &centre, &turret->vector114);
+            NuVecRotateX(&direction, &v010, (u16)turret->short110);
+            NuVecRotateY(&direction, &direction, (u16)turret->short112);
+            AddPickups((u16)turret->completion_score, 0, 0, 0, &position, &direction, 2.0f, -1, turret->radius,
+                       2000000.0f, NULL, 1, 0);
+            turret->flags |= 0x400;
+        }
+        if ((turret->behavior_flags & 0x4010) == 0x4000 && LEGOHINT_SHOOTCAMERAS != -1)
+            Hint_SetComplete(LEGOHINT_SHOOTCAMERAS);
+    } else if (player != -1 && (((GAMEOBJECT *)Player[player])->flags_1fc_word & 0x80) != 0) {
+        NewBuzz(((GAMEOBJECT *)Player[player])->pad->bound_pad, 0.1f, 0);
+    }
     return 1;
 }

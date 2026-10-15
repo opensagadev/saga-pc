@@ -4976,7 +4976,9 @@ typedef struct TORPEDOPACKET_PC {
     u8 count;
     u8 flags;
     u8 ricochet_count;
-    u8 unknown_03[9];
+    u8 unknown_03;
+    u8 target_type;
+    u8 unknown_05[7];
     f32 ricochet_time;
     u8 unknown_10[4];
     u32 pickup_data[5];
@@ -4989,6 +4991,7 @@ STATIC_ASSERT(sizeof(TORPEDOPACKET_PC) == 0x88);
 STATIC_ASSERT(offsetof(TORPEDOPACKET_PC, count) == 0);
 STATIC_ASSERT(offsetof(TORPEDOPACKET_PC, flags) == 1);
 STATIC_ASSERT(offsetof(TORPEDOPACKET_PC, ricochet_count) == 2);
+STATIC_ASSERT(offsetof(TORPEDOPACKET_PC, target_type) == 4);
 STATIC_ASSERT(offsetof(TORPEDOPACKET_PC, ricochet_time) == 0xc);
 STATIC_ASSERT(offsetof(TORPEDOPACKET_PC, ricochet_position) == 0x78);
 STATIC_ASSERT(offsetof(TORPEDOPACKET_PC, target) == 0x84);
@@ -8990,6 +8993,10 @@ extern "C" {
 
     void __cdecl LoseHelmet(GAMEOBJECT *, i32, i32);
     void __cdecl DropTorpedoPickups(TORPEDOPACKET_PC *, i32);
+    void __cdecl HomeNearestTorpTarget(BOLT_PC *, TORPEDOPACKET_PC *);
+    void __cdecl Torpedo_Ricochet(BOLT_PC *, TORPEDOPACKET_PC *);
+    void __cdecl Torpedo_InitBolt(BOLT_PC *);
+    void __cdecl Torpedo_UpdateBolt(BOLT_PC *);
     void __cdecl LetGoOfBalloon(GAMEOBJECT *);
     void __cdecl PopBalloon(GAMEOBJECT *);
 
@@ -15693,6 +15700,10 @@ void __cdecl PCSoundAlreadyPlayingHook(void);
     void __cdecl GizObstacle_SetPushControlled(GIZOBSTACLE *, GAMEOBJECT *, f32);
     GIZOBSTACLE *__cdecl GizObstacle_FindNearest(void *, NUVEC *, GAMEOBJECT *, f32 *, i32);
     i32 __cdecl GizObstacles_Hit(void *, GIZOBSTACLE *, NUVEC *, i32, i32);
+    struct AI_TURRET_RECORD_PC;
+    i32 __cdecl GizTurrets_Hit(WORLDINFO *, struct AI_TURRET_RECORD_PC *, NUVEC *, i32, i32);
+    void __cdecl TorpedoHitTarget(BOLT_PC *);
+    void __cdecl Torpedo_EndBolt(BOLT_PC *);
     GIZMO_PC *__cdecl GizObstacles_GetBestBoltTarget(GIZMOSET_PC *, f32 *, NUVEC *, NUVEC *, void *, NUVEC *, NUVEC *,
                                                      f32, f32, i32, i32, i32);
     void __cdecl ShoveObjectSysReset(void);

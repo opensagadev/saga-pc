@@ -1773,18 +1773,25 @@ address    , symbol                                                         , si
 0x4d1780,_TightRope_SnapTo,278,
 0x4d18a0,_TightRope_MoveCode,1098,"void __cdecl(GAMEOBJECT *, i32)"
 0x4d1cf0,_TightRope_SetTargetMom,384,i32 __cdecl(GAMEOBJECT *)
+0x4d1ea0,_TorpedoRatioPc,54,"f32 __cdecl(f32, f32)"
+0x4d1ee0,_TorpedoArcSinePc,320,i32 __cdecl(f32)
 0x4d22b0,_GetTorpedoPacket,52,TORPEDOPACKET_PC *__cdecl(void)
 0x4d22f0,_FreeTorpedoPacket,90,void __cdecl(TORPEDOPACKET_PC **)
 0x4d2350,_DropTorpedoPickups,133,"void __cdecl(TORPEDOPACKET_PC*,i32)"
 0x4d23e0,_getMaxTorpedos,72,i32 __cdecl(GAMEOBJECT*)
+0x4d2430,_TorpedoTargetPositionPc,91,
+0x4d2490,_TorpedoHitDispatchPc,85,
 0x4d24f0,_Torpedo_UpdateJobbies,1274,void __cdecl(GAMEOBJECT*)
 0x4d29f0,_FindNearestTorpTarget,582,"void *__cdecl(WORLDINFO*,NUVEC*,f32,u8*)"
-0x4d2c40,_HomeNearestTorpTarget,746,
+0x4d2c40,_HomeNearestTorpTarget,746,"void __cdecl(BOLT_PC *, TORPEDOPACKET_PC *)"
 0x4d2f30,_Torpedo_InitRicochet,89,"void __cdecl(void *, NUVEC *)"
-0x4d2f90,_Torpedo_Ricochet,438,
+0x4d2f90,_Torpedo_Ricochet,438,"void __cdecl(BOLT_PC *, TORPEDOPACKET_PC *)"
+0x4d3150,_TorpedoHitTarget,204,void __cdecl(BOLT_PC*)
 0x4d3220,_DrawGameMessage_Targets,546,"void __cdecl(GAME_MESSAGE_PC*,NUVEC*,f32)"
-0x4d3490,_Torpedo_UpdateBolt,340,
+0x4d3460,_Torpedo_InitBolt,41,void __cdecl(BOLT_PC *)
+0x4d3490,_Torpedo_UpdateBolt,340,void __cdecl(BOLT_PC *)
 0x4d35f0,_Torpedo_Scale,39,f32 __cdecl(void *)
+0x4d3620,_Torpedo_EndBolt,102,void __cdecl(BOLT_PC*)
 0x4d3690,_Torpedo_Shoot,196,
 0x4d3760,_PartDraw_Torp,133,i32 __cdecl (PART_PC *)
 0x4d3800,_TorpedoCode,1820,"void __cdecl(GAMEOBJECT*,i32,f32)"
@@ -4586,7 +4593,7 @@ address    , symbol                                                         , si
 0x5ad3a0,_GizTurrets_AllocateProgressData,21,"void * __cdecl(VARIPTR *, VARIPTR *)"
 0x5ad3c0,_GizTurrets_ClearProgress,70,"void __cdecl(void *, void *)"
 0x5ad460,_GizTurrets_StoreProgress,224,"void __cdecl(void *, void *, void *)"
-0x5ad540,_GizTurrets_Hit,672,
+0x5ad540,_GizTurrets_Hit,672,"i32 __cdecl(WORLDINFO*,struct AI_TURRET_RECORD_PC*,NUVEC*,i32,i32)"
 0x5ad7e0,_GizTurrets_BoltHitPlat,,"i32 __cdecl(WORLDINFO *, void *, BOLT_PC *, u8 *)"
 0x5ad8e0,_GizTurrets_GetBestBoltTarget,,"GIZMO_PC * __cdecl(GIZMOSET_PC *, f32 *, NUVEC *, NUVEC *, void *, NUVEC *, NUVEC *, f32, f32, i32, i32, i32)"
 0x5adc90,_GizTurrets_BoltHit,737,
@@ -10168,6 +10175,13 @@ address    , symbol                                                         , si
 0x755248,??_C@_0CB@MMDCPEJ@ep2_bonus_gunshipcavalry_explode@,33,char []
 0x75526c,??_C@_0BG@DBFKOMFA@ep1_podrace_outoftime?$AA@,22,char []
 0x755284,??_C@_0BH@IMAJGDCG@ep1_podrace_podexplode?$AA@,23,char []
+0x75529c,_BlowupSpawnWompratScriptPc,16,const char[16]
+0x7552ac,_BlowupBinNamePc,4,const char[4]
+0x7552b0,_BlowupBinLidNamePc,8,const char[8]
+0x7552b8,_BlowupSpawnSpiderScriptPc,14,const char[14]
+0x7552c8,_BlowupWebNamePc,4,const char[4]
+0x7552cc,_BlowupBushNamePc,5,const char[5]
+0x7552d4,_BlowupWompratGeneratorNamePc,9,const char[9]
 0x7552e0,??_C@_06NNBDCBAP@SwPPad?$AA@,7,const char[7]
 0x007552e0 , _GetSfxSwPPadName                                              , 7     , const char[7]
 0x007552e8 , __real@3c23d70a                                                , 4     , const f32

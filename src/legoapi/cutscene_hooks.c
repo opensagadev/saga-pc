@@ -200,9 +200,48 @@ i32 __cdecl Bolt_HitCustomFn_LSW(void *bolt, void *points) {
     return 0;
 }
 
-void __cdecl GameBlowUpBlownUpFn_LSW(void *blowup) {
-    STUBBED_NAMED("GameBlowUpBlownUpFn_LSW: womprat/spider dynamic-creature spawns"
-                  " from blowup special names in MoseIsley/HUB/Tatooine/LostTemple");
+const char BlowupSpawnWompratScriptPc[16] = "spawned_womprat";
+const char BlowupBinNamePc[4] = "bin";
+const char BlowupBinLidNamePc[8] = "bin_lid";
+const char BlowupSpawnSpiderScriptPc[14] = "blowup_spider";
+const char BlowupWebNamePc[4] = "web";
+const char BlowupBushNamePc[5] = "bush";
+const char BlowupWompratGeneratorNamePc[9] = "womp_gen";
+extern i16 CharacterFixupIdPc007f18c4;
+extern AREA_DATA_PC *MOSEISLEY_ADATA, *TATOOINE_ADATA;
+STATIC_ASSERT(offsetof(GIZMOBLOWUP_PC, position) == 0x30);
+STATIC_ASSERT(offsetof(GIZMOBLOWUP_PC, type) == 0xa4);
+STATIC_ASSERT(offsetof(GIZMOBLOWUPTYPE_PC, animated_special) == 0x30);
+
+void __cdecl GameBlowUpBlownUpFn_LSW(void *blowup_pointer) {
+    GIZMOBLOWUP_PC *blowup = (GIZMOBLOWUP_PC *)blowup_pointer;
+    char *name;
+    if (blowup == NULL || blowup->type == NULL || WORLD->area == NULL || netclient != 0)
+        return;
+    if (WORLD->area == MOSEISLEY_ADATA || WORLD->area == HUB_ADATA) {
+        name = NuSpecialGetName(&blowup->type->animated_special);
+        if (name == NULL || NuStrIStr(name, (char *)BlowupBinLidNamePc) != NULL ||
+            NuStrIStr(name, (char *)BlowupBinNamePc) == NULL || qrand() / 656 >= 75)
+            return;
+    } else if (WORLD->area == TATOOINE_ADATA) {
+        name = NuSpecialGetName(&blowup->type->animated_special);
+        if (name == NULL || NuStrIStr(name, (char *)BlowupWompratGeneratorNamePc) == NULL)
+            return;
+    } else if (WORLD->area == LOSTTEMPLE_ADATA) {
+        if (aicreature_sets_alive[15] >= 5)
+            return;
+        name = NuSpecialGetName(&blowup->type->animated_special);
+        if (name == NULL ||
+            (NuStrIStr(name, (char *)BlowupBushNamePc) == NULL && NuStrIStr(name, (char *)BlowupWebNamePc) == NULL))
+            return;
+        AddDynamicCreature(ZipUpLineCharacterIdPc, &blowup->position, 0, (char *)BlowupSpawnSpiderScriptPc, NULL, NULL,
+                           1, NULL, NULL, 0, 16);
+        return;
+    } else {
+        return;
+    }
+    AddDynamicCreature(CharacterFixupIdPc007f18c4, &blowup->position, 0, (char *)BlowupSpawnWompratScriptPc, NULL, NULL,
+                       1, NULL, NULL, 0, 16);
 }
 
 void __cdecl GizObstacle_SetDefaultSFXFn_LSW(void *world, GIZOBSTACLE *obstacle) {

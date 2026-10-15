@@ -1,5 +1,7 @@
 #include "saga.h"
 
+void __cdecl GizmoBlowupCreateStuff(GIZMOBLOWUP_PC *);
+
 i32 __cdecl GizmoBlowupBlowup(GIZMOBLOWUP_PC *blowup, i32 effects, i32 hit_type, i32 damage, GAMEOBJECT *object,
                               i32 hit_context) {
     NUINSTANIM_TIME_VIEW *animation;
@@ -81,7 +83,7 @@ i32 __cdecl GizmoBlowupBlowup(GIZMOBLOWUP_PC *blowup, i32 effects, i32 hit_type,
             burst->flags |= 1;
     }
     if (damage != -1)
-        blowup->remaining_health = (u8)(blowup->remaining_health - damage);
+        blowup->remaining_health = (u8)(blowup->remaining_health - (u8)damage);
     if (damage == -1 || (i8)blowup->remaining_health <= 0) {
         destroyed = 1;
         blowup->remaining_health = 0;
@@ -91,7 +93,7 @@ i32 __cdecl GizmoBlowupBlowup(GIZMOBLOWUP_PC *blowup, i32 effects, i32 hit_type,
         blowup->animation_time = 1.0f;
         if (object != NULL) {
             if (blowup->damage != 0)
-                STUBBED_NAMED("GizmoBlowupBlowup: ObjHitObj PC438230 direct target");
+                ObjHitObj(NULL, object, blowup->damage, 1, 0, hit_context);
         } else if ((blowup->draw_flags & 0x208) != 0 && blowup->damage != 0 &&
                    (!(blowup->proximity_radius <= 0.0f) || !(blowup->effect_delay > 0.0f))) {
             radius_squared = blowup->proximity_radius * blowup->proximity_radius;
@@ -103,14 +105,14 @@ i32 __cdecl GizmoBlowupBlowup(GIZMOBLOWUP_PC *blowup, i32 effects, i32 hit_type,
                     y = blowup->mid_position.y - target->collision_position.y;
                     z = blowup->mid_position.z - target->collision_position.z;
                     if (x * x + y * y + z * z < radius_squared)
-                        STUBBED_NAMED("GizmoBlowupBlowup: ObjHitObj PC438230 each eligible nearby player");
+                        ObjHitObj(NULL, target, blowup->damage, 1, 0, hit_context);
                 }
             }
         }
         if (blowup->platform_id != -1) {
-            STUBBED_NAMED("GizmoBlowupBlowup: PlatOnOff PC67c8e0 base platform off");
+            PlatOnOff(blowup->platform_id, 0);
             if (has_burst && blowup->burst_platform_id != -1)
-                STUBBED_NAMED("GizmoBlowupBlowup: PlatOnOff PC67c8e0 burst platform on");
+                PlatOnOff(blowup->burst_platform_id, 1);
             if ((type->animation_flags & 0x2000) != 0)
                 NuSpecialSetVisibility(&type->animated_special, 0);
         }
@@ -119,7 +121,7 @@ i32 __cdecl GizmoBlowupBlowup(GIZMOBLOWUP_PC *blowup, i32 effects, i32 hit_type,
             blowup->status_flags |= 0x20000;
         }
         if ((blowup->draw_flags & 0x800) != 0)
-            STUBBED_NAMED("GizmoBlowupBlowup: GizmoBlowupCreateStuff PC42d2a0");
+            GizmoBlowupCreateStuff(blowup);
         if (GameBlowUpBlownUpFn != NULL)
             GameBlowUpBlownUpFn(blowup);
         if ((blowup->status_flags & 1) != 0 && CheckLostDataFn != NULL)
@@ -128,7 +130,7 @@ i32 __cdecl GizmoBlowupBlowup(GIZMOBLOWUP_PC *blowup, i32 effects, i32 hit_type,
             blowup->respawn_timer = blowup->respawn_period;
         effect_flags = (blowup->draw_flags & 0x40000) != 0 ? 0x17 : 7;
         if (blowup->anti_node != NULL) {
-            STUBBED_NAMED("GizmoBlowupBlowup: GameAntinode_UnregisterAntiNode PC59a6b0");
+            GameAntinode_UnregisterAntiNode(WORLD->game_antinode_sys, blowup->anti_node);
             blowup->anti_node = NULL;
         }
     } else if ((blowup->status_flags & 0x200000) != 0) {
@@ -137,7 +139,7 @@ i32 __cdecl GizmoBlowupBlowup(GIZMOBLOWUP_PC *blowup, i32 effects, i32 hit_type,
     if (blowup->effect_delay > 0.0f && destroyed)
         effect_flags |= 8;
     if (effects)
-        STUBBED_NAMED("GizmoBlowupBlowup: GizmoBlowUp_AddEffects PC5672d0");
+        GizmoBlowUp_AddEffects(&blowup->mid_position, blowup, 1, effect_flags, object);
     return 1;
 }
 
