@@ -170,7 +170,7 @@ static void NuMainUpdateFrame(WORLDINFO *world, i32 *frame_flag) {
         }
         GameAnimSys_Update(world->game_anim_sys);
         LOG_INFO_IF(GameTimer.update_count < 2, "Update stage: after GameAnimSys_Update world=%p", (void *)WORLD);
-        STUBBED_NAMED("NuMainUpdateFrame: edanimUpdateObjects(1.0f) at 0x00686950");
+        edanimUpdateObjects(1.0f);
         NuBridgeUpdate(&plr_lastpos);
         if (Grass_Available != 0) {
             STUBBED_NAMED("NuMainUpdateFrame: NuWindUpdateArray at 0x00546380, NuFadeObjUpdateArray at 0x00545a80");

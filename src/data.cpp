@@ -10288,6 +10288,12 @@ extern "C" {
 #pragma bss_seg(".bss$GlobalSfxBits")
     u16 GlobalSfxBits[100];
 #pragma bss_seg()
+#pragma bss_seg(".bss$EdAnimLocalFrameCountPc")
+    i32 EdAnimLocalFrameCountPc;
+#pragma bss_seg()
+#pragma bss_seg(".bss$EdMainLocationVectorPc")
+    NUVEC *EdMainLocationVectorPc;
+#pragma bss_seg()
 #pragma bss_seg(".bss$edanim_page_on")
     i32 edanim_page_on[8];
 #pragma bss_seg()

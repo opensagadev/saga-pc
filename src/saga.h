@@ -2718,7 +2718,10 @@ typedef struct edanim_param_pc_s {
     i32 instance_id;
     i32 effect_count;
     i32 sound_count;
-    u8 unknown_c[0x10];
+    i32 control_mode;
+    i32 control_switch;
+    f32 control_distance;
+    f32 field_018;
     char effect_names[8][16];
     i32 effect_ids[8];
     i32 effect_intervals[8];
@@ -2740,6 +2743,24 @@ typedef struct edanim_param_pc_s {
     u8 unknown_2d1[3];
 } EDANIM_PARAM_PC;
 STATIC_ASSERT(sizeof(EDANIM_PARAM_PC) == 0x2d4);
+STATIC_ASSERT(offsetof(EDANIM_PARAM_PC, control_mode) == 0xc);
+STATIC_ASSERT(offsetof(EDANIM_PARAM_PC, control_switch) == 0x10);
+STATIC_ASSERT(offsetof(EDANIM_PARAM_PC, control_distance) == 0x14);
+STATIC_ASSERT(offsetof(EDANIM_PARAM_PC, field_018) == 0x18);
+STATIC_ASSERT(offsetof(EDANIM_PARAM_PC, effect_count) == 4);
+STATIC_ASSERT(offsetof(EDANIM_PARAM_PC, sound_count) == 8);
+STATIC_ASSERT(offsetof(EDANIM_PARAM_PC, effect_ids) == 0x9c);
+STATIC_ASSERT(offsetof(EDANIM_PARAM_PC, effect_intervals) == 0xbc);
+STATIC_ASSERT(offsetof(EDANIM_PARAM_PC, effect_flags) == 0xdc);
+STATIC_ASSERT(offsetof(EDANIM_PARAM_PC, effect_positions) == 0xfc);
+STATIC_ASSERT(offsetof(EDANIM_PARAM_PC, effect_angles) == 0x15c);
+STATIC_ASSERT(offsetof(EDANIM_PARAM_PC, effect_angle_ranges) == 0x16c);
+STATIC_ASSERT(offsetof(EDANIM_PARAM_PC, field_17c) == 0x17c);
+STATIC_ASSERT(offsetof(EDANIM_PARAM_PC, sound_names) == 0x180);
+STATIC_ASSERT(offsetof(EDANIM_PARAM_PC, sound_ids) == 0x200);
+STATIC_ASSERT(offsetof(EDANIM_PARAM_PC, sound_flags) == 0x220);
+STATIC_ASSERT(offsetof(EDANIM_PARAM_PC, sound_values) == 0x240);
+STATIC_ASSERT(offsetof(EDANIM_PARAM_PC, sound_positions) == 0x260);
 STATIC_ASSERT(offsetof(EDANIM_PARAM_PC, page) == 0x2d0);
 
 typedef struct levelspline_pc_s {
@@ -11756,6 +11777,8 @@ typedef struct PC_SHADER_OBJECT_FULL_VIEW PC_SHADER_OBJECT_FULL_VIEW;
     void __cdecl ClearLevelProgress(i32 index, WORLDINFO *world);
     void __cdecl GizmoSysClearLevelProgress(void *owner, i32 index);
     void __cdecl edanimParamReset(void);
+    void __cdecl edanimUpdateObjects(f32 elapsed);
+    NUVEC *__cdecl edmainQueryLocVec(void);
     void __cdecl edanimStartPage(i32 page);
     void __cdecl edanimStopPage(i32 page);
     void __cdecl edanimClearPage(i32 page);

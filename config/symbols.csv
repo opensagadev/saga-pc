@@ -5787,7 +5787,7 @@ address    , symbol                                                         , si
 0x60dd60,?initResources@NuSpeedBlurFilter@@UAEXXZ,81,native exactVT binding; unimplemented extent unclaimed
 0x6105b0,_refpack_init,211,
 0x617e30,_edmainExtCamera,19,
-0x617f80,_edmainQueryLocVec,6,
+0x617f80,_edmainQueryLocVec,6,NUVEC *__cdecl(void)
 0x618310,_eduiFntPrintEx,197,
 0x618c30,_eduiInitMaterials,418,
 0x618e10,_eduiMenuAddItem,54,
@@ -6268,6 +6268,7 @@ address    , symbol                                                         , si
 0x659350,_edanimDetermineNearestAnim,368,void __cdecl(f32)
 0x6594c0,_edanimDetermineNearestParticle,393,
 0x659650,_edanimDetermineNearestSound,393,
+0x659860,_edanimSoundDestroy,172,"void __cdecl(i32, i32)"
 0x659a30,_edanimParticleDestroy,185,
 0x00659d70 , _edanimRegisterBaseScene                                       , 1     , void __cdecl (NUGSCN *)
 0x659e70,_edanimcbSwitchTypeMenu,1222,
@@ -6553,7 +6554,7 @@ address    , symbol                                                         , si
 0x685eb0,_DebrisProcessAllocation,55,void __cdecl (void)
 0x685ef0,_DebrisProcessGeneration,2144,void __cdecl (void)
 0x686750,_DebrisPreCheckCollisions,317,"i32 __cdecl(NUVEC *,f32)"
-0x686950,_edanimUpdateObjects,1644,
+0x686950,_edanimUpdateObjects,1644,void __cdecl(f32)
 0x686fc0,_edanimParamCreate,338,
 0x6871c0,_edanimDoInput,1665,
 0x687850,_edanimLoadPage,1489,"i32 __cdecl(char *, NUGSCN *)"
@@ -22295,6 +22296,7 @@ address    , symbol                                                         , si
 0x2912e84,_ed_curr,4,struct ed_module_s *
 0x2912e8c,_ed_main_menu,4,struct eduimenu_s *
 0x2912e90,_edmain_auto_speed,4,i32
+0x2912e9c,_EdMainLocationVectorPc,4,NUVEC *
 0x2912ea0,_ed_fnt,4,void *
 0x2912eac,_eduiInteractLocked,4,struct edui_interact_s *
 0x2912ecc,_active_menu,4,struct eduimenu_s *
@@ -22701,6 +22703,7 @@ address    , symbol                                                         , si
 0x2962b54,_ScaleTerrainT2,,void *
 0x2962b58,_TerImpactData,,void *
 0x2962b5c,_PCSoundListenerLoopPositionPc,12,NUVEC
+0x2962b68,_EdAnimLocalFrameCountPc,4,i32
 0x2962b6c,_DebrisDmaCleanupDelayPc,,i32
 0x02962b70 , _nusound_special_positions                                     , 60    , NUVEC[5]
 0x02962bac , ?the_music_player@@3PAVNuMusic@@A                              , 4     , NuMusic *

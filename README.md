@@ -1,7 +1,7 @@
 # saga-pc
 
 <!-- matching-badge -->
-![fuzzy code](https://img.shields.io/badge/fuzzy%20code-42.162%25-orange)<!-- /matching-badge --> <!-- mapping-badge -->![mapped code](https://img.shields.io/badge/mapped%20code-66.610%25-orange) ![mapped data](https://img.shields.io/badge/mapped%20data-2.966%25-red) ![mapped code+data](https://img.shields.io/badge/mapped%20code%2Bdata-8.561%25-red)<!-- /mapping-badge --> [![Build](https://github.com/opensagadev/saga-pc/actions/workflows/build.yml/badge.svg)](https://github.com/opensagadev/saga-pc/actions/workflows/build.yml)
+![fuzzy code](https://img.shields.io/badge/fuzzy%20code-42.192%25-orange)<!-- /matching-badge --> <!-- mapping-badge -->![mapped code](https://img.shields.io/badge/mapped%20code-66.615%25-orange) ![mapped data](https://img.shields.io/badge/mapped%20data-2.966%25-red) ![mapped code+data](https://img.shields.io/badge/mapped%20code%2Bdata-8.561%25-red)<!-- /mapping-badge --> [![Build](https://github.com/opensagadev/saga-pc/actions/workflows/build.yml/badge.svg)](https://github.com/opensagadev/saga-pc/actions/workflows/build.yml)
 
 **saga-pc** is a matching decompilation of the GOG PC release of
 *LEGO Star Wars: The Complete Saga*: C/C++ source that compiles with the original
@@ -9,11 +9,12 @@ compiler (MSVC 2005) into the same x86 code as the retail executable. Most game
 code comes from the [Android decompilation](https://github.com/opensagadev/saga)
 and is adapted to the PC build.
 
-**Status:** incomplete. The rebuilt executable renders the Cantina and reaches
-Negotiations cinematics. Recent human testing showed missing scene geometry,
-white blades, black lamps, missing audio and a later post-cutscene crash. Fixes
-remain under validation; stable Story gameplay and complete visual fidelity are
-not established. See the [roadmap](docs/roadmap.md) and [matching report](matching.json).
+**Status:** incomplete. Human testing of the rebuilt executable confirmed visible,
+movable characters and audio in Negotiations after the ship cutscene. This covers
+the tested sequence, not the full game. Remaining reports include droids not
+shooting, unusable panels, white blades, UI/minikit visibility and unspecified
+audio issues. Complete visual fidelity remains unverified. See the
+[roadmap](docs/roadmap.md) and [matching report](matching.json).
 
 See [CONTRIBUTING.md](CONTRIBUTING.md) for setup, the workflow and the automated
 source-shape search (`tools/permute.py`).
