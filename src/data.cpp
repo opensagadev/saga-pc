@@ -34273,3 +34273,30 @@ extern "C" {
     NURND_VERTEX3D_PC NuRndrShadowVerticesPc[4];
 #pragma bss_seg()
 }
+
+extern "C" {
+#pragma bss_seg(".bss$fakeanimframe")
+    f32 fakeanimframe[1];
+#pragma bss_seg()
+#pragma bss_seg(".bss$DeathStarEscapeBNetPacketPc")
+    u8 *DeathStarEscapeBNetPacketPc;
+#pragma bss_seg()
+#pragma const_seg(".rdata$DeathStarEscapeBSpongePc")
+    extern const char DeathStarEscapeBSpongePc[7] = "sponge";
+#pragma const_seg()
+#pragma const_seg(".rdata$DeathStarEscapeBLiftDownPc")
+    extern const char DeathStarEscapeBLiftDownPc[10] = "lift_down";
+#pragma const_seg()
+#pragma const_seg(".rdata$DeathStarEscapeBLiftUpPc")
+    extern const char DeathStarEscapeBLiftUpPc[8] = "lift_up";
+#pragma const_seg()
+#pragma const_seg(".rdata$DeathStarEscapeBWindowCleanPc")
+    extern const char DeathStarEscapeBWindowCleanPc[12] = "WindowClean";
+#pragma const_seg()
+#pragma const_seg(".rdata$DeathStarEscapeBWasher2Pc")
+    extern const char DeathStarEscapeBWasher2Pc[9] = "WASHER_2";
+#pragma const_seg()
+#pragma const_seg(".rdata$DeathStarEscapeBWasher1Pc")
+    extern const char DeathStarEscapeBWasher1Pc[9] = "WASHER_1";
+#pragma const_seg()
+}

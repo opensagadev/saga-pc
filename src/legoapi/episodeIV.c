@@ -242,3 +242,54 @@ void CloudCityEscapeC_Init(WORLDINFO *world) {
     NuSpecialFind(world->current_gscn, &LevHSpecial[1], "gas_2_animin", 1);
     NuSpecialFind(world->current_gscn, &LevHSpecial[2], "gas_3_animin", 1);
 }
+
+/* Native 0x004e5170, 204 bytes. */
+void __cdecl DeathStarEscapeB_Init(WORLDINFO *world) {
+    NUINSTANIM_TIME_VIEW *animation;
+    void *data;
+    i32 index;
+    DeathStarEscapeBNetPacketPc = (u8 *)SetLevelHack(4);
+    LevAIMessage[0] = CheckGizAIMessage(gizaimessagesys, DeathStarEscapeBWindowCleanPc, NULL);
+    NuSpecialFind(world->current_gscn, &LevHSpecial[0], (char *)DeathStarEscapeBLiftUpPc, 1);
+    NuSpecialFind(world->current_gscn, &LevHSpecial[1], (char *)DeathStarEscapeBLiftDownPc, 1);
+    NuSpecialFind(world->current_gscn, &LevHSpecial[2], (char *)DeathStarEscapeBSpongePc, 1);
+    fakeanimendframe[0] = 0.0f;
+    for (index = 0; index < 2; ++index) {
+        animation = (NUINSTANIM_TIME_VIEW *)NuSpecialGetInstAnim(&LevHSpecial[index]);
+        if (animation != NULL) {
+            data = ((NUGSCN *)LevHSpecial[index].scene)->instance_animation_data[animation->animation_index];
+            if (data != NULL)
+                fakeanimendframe[0] = (f32)((f64)NuAnimEndFrameOld(data) + (f64)fakeanimendframe[0]);
+        }
+    }
+}
+
+/* Native 0x004e5240, 307 bytes. */
+void __cdecl DeathStarEscapeB_Update(WORLDINFO *world) {
+    NUINSTANIM_TIME_VIEW *animation[2] = {NULL, NULL};
+    void *data[2] = {NULL, NULL};
+    i32 index;
+    if (netclient == 0)
+        DeathStarEscapeBNetPacketPc[0] = (u8)(i32)LevAIMessage[0]->value;
+    if (LevGameObject[0] == NULL && DeathStarEscapeBNetPacketPc[0] == 0)
+        LevGameObject[0] = GetNamedGameObject(world->ai_sys, (char *)DeathStarEscapeBWasher1Pc);
+    if (LevGameObject[1] == NULL && DeathStarEscapeBNetPacketPc[0] == 0)
+        LevGameObject[1] = GetNamedGameObject(world->ai_sys, (char *)DeathStarEscapeBWasher2Pc);
+    for (index = 0; index < 2; ++index) {
+        animation[index] = (NUINSTANIM_TIME_VIEW *)NuSpecialGetInstAnim(&LevHSpecial[index]);
+        if (animation[index] != NULL)
+            data[index] =
+                ((NUGSCN *)LevHSpecial[index].scene)->instance_animation_data[animation[index]->animation_index];
+    }
+    if (data[0] != NULL && data[1] != NULL) {
+        if (NuSpecialGetVisibilityFn(&LevHSpecial[0]) != 0) {
+            fakeanimframe[0] = animation[0]->ltime;
+            return;
+        }
+        if (NuSpecialGetVisibilityFn(&LevHSpecial[1]) != 0) {
+            fakeanimframe[0] = (f32)((f64)NuAnimEndFrameOld(data[0]) + (f64)animation[1]->ltime);
+            return;
+        }
+        fakeanimframe[0] = 0.0f;
+    }
+}

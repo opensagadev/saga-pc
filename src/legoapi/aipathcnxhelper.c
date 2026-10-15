@@ -210,6 +210,8 @@ typedef struct controller_cut_animation_pc_s {
 typedef struct controller_cut_view_pc_s {
     u8 unknown_00[0x58];
     CONTROLLER_CUT_ANIMATION_PC *animation;
+    u8 unknown_5c[0x34];
+    f32 current_frame;
 } CONTROLLER_CUT_VIEW_PC;
 STATIC_ASSERT(offsetof(CONTROLLER_ANIMATION_VIEW_PC, animation_index) == 0x5c);
 STATIC_ASSERT(offsetof(CONTROLLER_CUT_ANIMATION_PC, end_frame) == 8);
@@ -260,4 +262,117 @@ void __cdecl AIPathCnxControllerSetOnRange(struct AIPATHCNXCONTROLLER_s *control
         last = end;
     for (frame = first - 1; frame <= last - 1; ++frame)
         controller->on_frames[frame / 32] |= 1u << (frame % 32);
+}
+
+STATIC_ASSERT(offsetof(CONTROLLER_CUT_VIEW_PC, current_frame) == 0x90);
+
+/* Native 0x0043d0c0, 840-byte owner including its internal ten-case table. */
+STATIC_ASSERT(offsetof(AIPATHCNX_PC, traversal_flags) == 0);
+STATIC_ASSERT(offsetof(AIPATHCNX_PC, open) == 0x16);
+STATIC_ASSERT(offsetof(GIZBUILDIT_PC, build_state) == 0x6d);
+STATIC_ASSERT(offsetof(struct ZIPUP_s, flags) == 0x68);
+void __cdecl AIPathCnxControlSysUpdate(AI_CONTROL_SYSTEM_PC *system) {
+    struct AIPATHCNXCONTROLLER_s *controller;
+    NUINSTANIM_TIME_VIEW *animation;
+    CONTROLLER_CUT_VIEW_PC *cut;
+    void *data;
+    i32 end, frame;
+    if (system == NULL)
+        return;
+    controller = (struct AIPATHCNXCONTROLLER_s *)NuLinkedListGetHead(&system->active);
+    while (controller != NULL) {
+        controller->flags_word &= (u16)~0x20u;
+        switch (controller->target_type) {
+            case 0:
+                if ((controller->flags_word & 4) != 0 && NuSpecialGetVisibilityFn(&controller->special) == 0)
+                    goto controller_off;
+                animation = (NUINSTANIM_TIME_VIEW *)NuSpecialGetInstAnim(&controller->special);
+                if (animation == NULL)
+                    goto frame_one;
+                data = ((NUGSCN *)controller->special.scene)->instance_animation_data[animation->animation_index];
+                if (data == NULL)
+                    goto frame_one;
+                end = (i32)NuAnimEndFrameOld(data);
+                if (end > 1024)
+                    end = 1024;
+                frame = (i32)animation->ltime;
+                goto clamp_frame;
+            case 1:
+                cut = (CONTROLLER_CUT_VIEW_PC *)controller->target;
+                end = (i32)cut->animation->end_frame;
+                if (end > 1024)
+                    end = 1024;
+                frame = (i32)cut->current_frame;
+                goto clamp_frame;
+            case 2:
+                if (((GIZBUILDIT_PC *)controller->target)->build_state == 2)
+                    goto controller_on;
+                goto controller_off;
+            case 3:
+                if (GizmoGetOutput(WORLD->gizmo_sys, controller->target, controller->gizmo_output, 1) != 0)
+                    goto controller_on;
+                goto controller_off;
+            case 4:
+                if ((((GIZMOBLOWUP_PC *)controller->target)->status_flags & 1) != 0)
+                    goto controller_off;
+                goto controller_on;
+            case 5:
+                end = (i32)fakeanimendframe[controller->fake_animation_id];
+                if (end > 1024)
+                    end = 1024;
+                frame = (i32)fakeanimframe[controller->fake_animation_id];
+                goto clamp_frame;
+            case 6:
+                if ((((FLOWBOX_PC *)controller->target)->state_flags_low & 2) != 0)
+                    goto controller_on;
+                goto controller_off;
+            case 7:
+                if (GizForce_Complete((GIZFORCE_PC *)controller->target) != 0)
+                    goto controller_on;
+                goto controller_off;
+            case 8:
+                if (((GIZOBSTACLE *)controller->target)->anim_set->state == 2)
+                    goto controller_on;
+                goto controller_off;
+            case 9:
+                if ((((struct ZIPUP_s *)controller->target)->flags & 0x40) != 0 &&
+                    (i8)((struct ZIPUP_s *)controller->target)->flags < 0)
+                    goto controller_on;
+                goto controller_off;
+            default:
+                goto controller_on;
+        }
+    clamp_frame:
+        if (frame < 1)
+            goto frame_one;
+        if (frame > end)
+            frame = end;
+        goto test_frame;
+    frame_one:
+        frame = 1;
+    test_frame:
+        --frame;
+        if ((controller->on_frames[frame / 32] & (1u << ((u32)(frame % 32) & 31))) == 0)
+            goto controller_off;
+    controller_on:
+        controller->flags_word |= 0x20;
+        controller->connection->open = (u8)((controller->flags_word >> 3) & 1);
+        controller->connection->traversal_flags[controller->flags_word & 1] &= ~controller->off_flags;
+        controller->connection->traversal_flags[controller->flags_word & 1] |= controller->on_flags;
+        if ((controller->flags_word & 2) != 0) {
+            controller->connection->traversal_flags[(~controller->flags_word) & 1] &= ~controller->off_flags;
+            controller->connection->traversal_flags[(~controller->flags_word) & 1] |= controller->on_flags;
+        }
+        goto next_controller;
+    controller_off:
+        controller->connection->open = (u8)((controller->flags_word >> 4) & 1);
+        controller->connection->traversal_flags[controller->flags_word & 1] &= ~controller->on_flags;
+        controller->connection->traversal_flags[controller->flags_word & 1] |= controller->off_flags;
+        if ((controller->flags_word & 2) != 0) {
+            controller->connection->traversal_flags[(~controller->flags_word) & 1] &= ~controller->on_flags;
+            controller->connection->traversal_flags[(~controller->flags_word) & 1] |= controller->off_flags;
+        }
+    next_controller:
+        controller = (struct AIPATHCNXCONTROLLER_s *)NuLinkedListGetNext(&system->active, &controller->links);
+    }
 }

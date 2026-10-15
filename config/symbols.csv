@@ -389,6 +389,7 @@ address    , symbol                                                         , si
 0x43cc30,_AIPathCnxControlSysReset,97,void __cdecl (AI_CONTROL_SYSTEM_PC *)
 0x43cca0,_AIPathCnxControllerCreate,712,
 0x43cfb0,_AIPathCnxControllerSetOnRange,272,"void __cdecl(struct AIPATHCNXCONTROLLER_s *,i32,i32)"
+0x0043d0c0,_AIPathCnxControlSysUpdate,840,void __cdecl (AI_CONTROL_SYSTEM_PC *)
 0x43d410   , _oneAtOnce_CanAttack                                           , 61    , "i32 __cdecl (GAMEOBJECT *, GAMEOBJECT *)"
 0x43d450   , _oneAtOnce_GetHoldRange                                        , 174   , f32 __cdecl (GAMEOBJECT *)
 0x43d500,_oneAtOnce_SetNumAttackers,32,void __cdecl(i32)
@@ -1909,7 +1910,8 @@ address    , symbol                                                         , si
 0x4e4a80,_MosEisleyC_PastBarrier,48,i32 __cdecl(GAMEOBJECT*)
 0x4e4b10,_MosEisleyE_Update,45,
 0x4e4f80,_DeathStarRescueB_Init,219,
-0x4e5240,_DeathStarEscapeB_Update,307,
+0x004e5170,_DeathStarEscapeB_Init,204,void __cdecl (WORLDINFO *)
+0x4e5240,_DeathStarEscapeB_Update,307,void __cdecl (WORLDINFO *)
 0x4e5520,_DeathStarEscapeC_Reset,27,
 0x4e5660,_DeathStarShieldDown,264,i32 __cdecl(void)
 0x4e5770,_TrenchMove,946,
@@ -12924,6 +12926,12 @@ address    , symbol                                                         , si
 0x75de44,??_C@_0P@LJGKHAC@boulder_range?$DN?$AA@,15,char []
 0x75decc,??_C@_0P@MDPIFKNK@VaderBComplete?$AA@,15,char []
 0x75df44,_EpisodeVI_obstacle21,11,const char[11]
+0x0075e004,_DeathStarEscapeBSpongePc,7,const char[7]
+0x0075e00c,_DeathStarEscapeBLiftDownPc,10,const char[10]
+0x0075e018,_DeathStarEscapeBLiftUpPc,8,const char[8]
+0x0075e020,_DeathStarEscapeBWindowCleanPc,12,const char[12]
+0x0075e02c,_DeathStarEscapeBWasher2Pc,9,const char[9]
+0x0075e038,_DeathStarEscapeBWasher1Pc,9,const char[9]
 0x75e08c,??_C@_0O@NDAEILHC@RescuedDroids?$AA@,14,char []
 0x75e0b0,??_C@_08FLIECBAD@bigbang1?$AA@,,const char[9]
 0x75e0bc,_EpisodeVI_ffieldoff,10,const char[10]
@@ -19605,6 +19613,7 @@ address    , symbol                                                         , si
 0x00876878 , _AtOnce_attackingPlayer                                        , 1088  , AIONCEATTACKER_PC[8][17]
 0x00876cb8 , _party_follow_offsets                                          , 32    , f32[8]
 0x876cd8,_alert_pos,,NUVEC
+0x00876ce4,_fakeanimframe,4,f32[1]
 0x876ce8   , _party_under_cover                                             , 4     , i32
 0x00876cec , _party_cant_be_under_cover                                     , 4     , i32
 0x00876cf0 , _ai_fighting                                                   , 4     , i32
@@ -20989,6 +20998,7 @@ address    , symbol                                                         , si
 0x88962c,_vader_b_complete_msg,4,struct gizaimessage_s *
 0x889630,_vader_b_playersDead,1,u8
 0x00889634 , _CarWashHack                                                   , 4     , GAMEOBJECT *
+0x00889658,_DeathStarEscapeBNetPacketPc,4,u8 *
 0x88a2a8,_minikitCounter_A,1,u8
 0x88a2a9,_minikitCounter_C,1,u8
 0x88a2b0,_escape,96,nuhspecial_s[8]

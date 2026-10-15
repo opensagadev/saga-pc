@@ -1,6 +1,12 @@
 #include "saga.h"
 #include <string.h>
 
+typedef struct main_controller_world_view_pc_s {
+    u8 unknown_0000[0x4670];
+    AI_CONTROL_SYSTEM_PC *control_system;
+} MAIN_CONTROLLER_WORLD_VIEW_PC;
+STATIC_ASSERT(offsetof(MAIN_CONTROLLER_WORLD_VIEW_PC, control_system) == 0x4670);
+
 extern "C" void __cdecl DrawSaveSlots(MENU *, f32);
 
 struct FADEINFO_s;
@@ -164,7 +170,8 @@ static void NuMainUpdateFrame(WORLDINFO *world, i32 *frame_flag) {
         LOG_INFO_IF(GameTimer.update_count < 2, "ProcessGizFlow before: world=%p", (void *)WORLD);
         ProcessGizFlow(world->giz_flow, FRAMETIME);
         LOG_INFO_IF(GameTimer.update_count < 2, "Update stage: after ProcessGizFlow world=%p", (void *)WORLD);
-        STUBBED_NAMED("NuMainUpdateFrame: AIPathCnxControlSysUpdate(world+0x4670) at 0x0043d0c0");
+        if (((MAIN_CONTROLLER_WORLD_VIEW_PC *)world)->control_system != NULL)
+            AIPathCnxControlSysUpdate(((MAIN_CONTROLLER_WORLD_VIEW_PC *)world)->control_system);
         if (world->current_gscn != NULL) {
             NuGScnUpdate(world->current_gscn, FRAMETIME * 60.0f);
         }

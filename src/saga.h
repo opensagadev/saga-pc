@@ -18485,6 +18485,17 @@ extern "C" {
     APIOBJECTSYS_PC *__cdecl APIObjectSysInit(i32, VARIPTR *, VARIPTR *);
     i32 __cdecl rtlGetDirection(RTL_SET_PC *, i32, NUVEC **);
     void __cdecl AIPathCnxControlSysReset(AI_CONTROL_SYSTEM_PC *);
+    void __cdecl AIPathCnxControlSysUpdate(AI_CONTROL_SYSTEM_PC *);
+    void __cdecl DeathStarEscapeB_Init(WORLDINFO *);
+    void __cdecl DeathStarEscapeB_Update(WORLDINFO *);
+    extern f32 fakeanimendframe[1], fakeanimframe[1];
+    extern u8 *DeathStarEscapeBNetPacketPc;
+    extern const char DeathStarEscapeBSpongePc[7];
+    extern const char DeathStarEscapeBLiftDownPc[10];
+    extern const char DeathStarEscapeBLiftUpPc[8];
+    extern const char DeathStarEscapeBWindowCleanPc[12];
+    extern const char DeathStarEscapeBWasher2Pc[9];
+    extern const char DeathStarEscapeBWasher1Pc[9];
     void __cdecl AITriggerSetSysReset(TRIGGER_SYSTEM_PC *);
 #ifdef __cplusplus
 }

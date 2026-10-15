@@ -714,8 +714,8 @@ extern "C" void __cdecl FixUpLevels(struct level_fixup_pc_s *fixup) {
             level = Level_FindByName("deathstarescape_b", NULL); /* Native call 0x48eb05. */
             DEATHSTARESCAPEB_LDATA = level;                      /* Native store 0x48eb0f. */
             if (level != NULL) {
-                STUBBED_NAMED(FixUpLevels_Callback_4e5170); /* Native 0x48eb16: callbacks[1] = entry 0x4e5170. */
-                STUBBED_NAMED(FixUpLevels_Callback_4e5240); /* Native 0x48eb23: callbacks[3] = entry 0x4e5240. */
+                level->callbacks[1] = (void *)DeathStarEscapeB_Init;   /* Native 0x48eb16. */
+                level->callbacks[3] = (void *)DeathStarEscapeB_Update; /* Native 0x48eb23. */
                 STUBBED_NAMED(FixUpLevels_Callback_4e5380); /* Native 0x48eb30: callbacks[4] = entry 0x4e5380. */
                 STUBBED_NAMED(FixUpLevels_Callback_4e53e0); /* Native 0x48eb3c: callbacks[5] = entry 0x4e53e0. */
             }
