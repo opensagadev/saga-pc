@@ -12309,7 +12309,6 @@ extern "C" {
 #pragma bss_seg(".bss$UpdateSockets_LDATA")
     LEVELDATA_PC *UpdateSockets_LDATA;
 #pragma bss_seg()
-// Mixed-field source access view; complete original adaptive state extent remains unknown.
 #pragma data_seg(".data$adtabentries")
     i8 adtabentries[9][4] = {{-1, -1, -1, -1}, {-1, -1, -1, 0}, {-1, -1, 0, 0}, {-1, 0, 0, 0}, {0, 0, 0, 0},
                              {1, 0, 0, 0},     {1, 1, 0, 0},    {1, 1, 1, 0},   {1, 1, 1, 1}};
@@ -12320,6 +12319,12 @@ extern "C" {
 #pragma bss_seg(".bss$adaptivedifficulty")
     ADAPTIVEDIFFICULTY_PC adaptivedifficulty;
 #pragma bss_seg()
+#pragma data_seg(".data$AdaptiveDifficultyRecoveryTimePc")
+    f32 AdaptiveDifficultyRecoveryTimePc = 30.0f;
+#pragma data_seg()
+#pragma data_seg(".data$AdaptiveDifficultyRecoveryThresholdPc")
+    f32 AdaptiveDifficultyRecoveryThresholdPc = 0.1f;
+#pragma data_seg()
 #pragma const_seg(".rdata$AIControlPlayerRunSpeedName")
     const char AIControlPlayerRunSpeedName[17] = "player_run_speed";
 #pragma const_seg()

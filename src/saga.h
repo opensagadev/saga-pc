@@ -14536,11 +14536,13 @@ void __cdecl PCSoundAlreadyPlayingHook(void);
         f32 accumulator;
         f32 time_elapsed;
     } ADAPTIVEDIFFICULTY_PC;
+    STATIC_ASSERT(sizeof(ADAPTIVEDIFFICULTY_PC) == 0xc);
     STATIC_ASSERT(offsetof(ADAPTIVEDIFFICULTY_PC, level) == 0);
     STATIC_ASSERT(offsetof(ADAPTIVEDIFFICULTY_PC, accumulator) == 4);
     STATIC_ASSERT(offsetof(ADAPTIVEDIFFICULTY_PC, time_elapsed) == 8);
-    /* Working source access view; complete original object extent unproved. */
     extern ADAPTIVEDIFFICULTY_PC adaptivedifficulty;
+    extern f32 AdaptiveDifficultyRecoveryTimePc, AdaptiveDifficultyRecoveryThresholdPc;
+    f32 __cdecl AdaptiveDifficultyUpdatePc(ADAPTIVEDIFFICULTY_PC *);
     f32 __cdecl AdaptiveDifficultyAdjustPc(ADAPTIVEDIFFICULTY_PC *difficulty, f32 amount);
     extern i8 adtabentries[9][4];
     extern i8 (*adtab)[4];

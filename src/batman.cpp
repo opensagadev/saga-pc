@@ -156,7 +156,7 @@ static void NuMainUpdateFrame(WORLDINFO *world, i32 *frame_flag) {
         CutScenes_Start(world);
         CutScenes_Update(world, Paused != 0 && !IsGrabbingScreen());
         LOG_INFO_IF(GameTimer.update_count < 2, "Update stage: after CutScenes_Update world=%p", (void *)WORLD);
-        STUBBED_NAMED("NuMainUpdateFrame: adaptive difficulty update(&adaptivedifficulty) at 0x00428a40");
+        AdaptiveDifficultyUpdatePc(&adaptivedifficulty);
         if ((world->current_level->flags & 8) != 0) {
             TerrainPlatformOldUpdate();
         }

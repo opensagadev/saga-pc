@@ -756,6 +756,33 @@ void GameAILoad(AISYS_PC *system, i32 version, NUGSCN *unused2, VARIPTR *buffer,
     }
 }
 
+f32 __cdecl AdaptiveDifficultyUpdatePc(ADAPTIVEDIFFICULTY_PC *difficulty) {
+    f32 threshold;
+    volatile f32 elapsed;
+    i32 increase;
+    if (difficulty != NULL && Cheat_IsOn(44) != 0 && BonusArea == 0 && GAMEDEMO == 0) {
+        threshold = AdaptiveDifficultyRecoveryThresholdPc;
+        if (difficulty->accumulator < 1.0f && (f64)difficulty->accumulator > 1.0 - (f64)threshold) {
+            increase = 1;
+        } else {
+            if (!(difficulty->accumulator > 0.0f) || !((f64)threshold + 0.0 > (f64)difficulty->accumulator))
+                return difficulty->accumulator;
+            increase = 0;
+        }
+        elapsed = difficulty->time_elapsed + FRAMETIME;
+        difficulty->time_elapsed = elapsed;
+        if (difficulty->time_elapsed >= AdaptiveDifficultyRecoveryTimePc) {
+            difficulty->accumulator = 0.5f;
+            if (increase != 0)
+                ++difficulty->level;
+            else
+                --difficulty->level;
+            difficulty->time_elapsed = 0.0f;
+        }
+    }
+    return difficulty->accumulator;
+}
+
 f32 __cdecl AdaptiveDifficultyAdjustPc(ADAPTIVEDIFFICULTY_PC *difficulty, f32 amount) {
     if (difficulty != NULL && Cheat_IsOn(44) && !BonusArea && !GAMEDEMO) {
         f32 sum = amount + difficulty->accumulator;

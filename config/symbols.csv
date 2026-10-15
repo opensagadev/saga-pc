@@ -209,6 +209,7 @@ address    , symbol                                                         , si
 0x427cd0,_DropOut,495,
 0x00427ec0,_PlayersDropInOut,2672,i32 __cdecl (void)
 0x4289a0,_AdaptiveDifficultyAdjustPc,156,"f32 __cdecl(ADAPTIVEDIFFICULTY_PC*,f32)"
+0x428a40,_AdaptiveDifficultyUpdatePc,219,f32 __cdecl(ADAPTIVEDIFFICULTY_PC *)
 0x428b20,?InitOptionsSaveDefaults@@YAXPAUoptionssave_s@@@Z,85,
 0x428b80,?MakeSaveHash@@YAHXZ,8,
 0x428b90,_InitGameBeforeConfig,466,
@@ -17935,6 +17936,8 @@ address    , symbol                                                         , si
 0x007f5d30 , __real@000000000000005a_2                                      , 2     , const u16
 0x007f5d34 , _GunshipADiePos                                                , 12    , NUVEC
 0x007f5d40 , _GunshipBDiePos                                                , 12    , NUVEC
+0x7f5db0,_AdaptiveDifficultyRecoveryTimePc,4,f32
+0x7f5db4,_AdaptiveDifficultyRecoveryThresholdPc,4,f32
 0x7f5dc4   , _FalconDebKey                                                   , 8     , i32[2]
 0x7f5dcc,_GunshipDustEmissionRatePc,,f32
 0x7f5dd0,_debris_name,,char *[147]
@@ -19554,7 +19557,7 @@ address    , symbol                                                         , si
 0x8569d8,_Detonator,560,DETONATOR_s[10]
 0x856c10,_OldBonusScore,,i32[2]
 0x00856c28 , _ChallengeMode                                                 , 4     , i32
-0x00856c2c , _adaptivedifficulty                                            ,       , ADAPTIVEDIFFICULTY_PC
+0x856c2c,_adaptivedifficulty,12,ADAPTIVEDIFFICULTY_PC
 0x856c38,_TempGame,32332,GAMESAVE
 0x85ea84,_ChallengeTimer,16,TIMER
 0x0085ea94 , _BonusCoinTotal                                                , 4     , i32
