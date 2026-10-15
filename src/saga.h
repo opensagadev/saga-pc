@@ -9380,6 +9380,7 @@ extern "C" {
     i32 __cdecl DrawPanel3DObject(f32, f32, f32, f32, f32, f32, u16, u16, u16, NUSPECIALHANDLE *, i32, f32);
     void __cdecl DrawCharIcon(i32, f32, f32, f32, f32, i32, f32, f32, i32, NUSPECIALHANDLE *);
     void __cdecl BackDrop_Draw(f32, i32);
+    void __cdecl DrawParallax(NUSPECIALHANDLE *);
     void __cdecl NoRender(void);
     void __cdecl CalcSplinePoint(FLIGHT_SPLINE_RESOURCE_PC *spline, NUVEC4 *result, f32 along);
     void __cdecl CalcSplinePointFromDist(FLIGHT_SPLINE_RESOURCE_PC *spline, NUVEC4 *result, f32 distance);

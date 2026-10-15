@@ -359,7 +359,7 @@ static void NuMainRenderWorld(WORLDINFO *world) {
         paused = 0;
     }
     if (world->level_objects[1].active != 0 && (CUTSTOPGAME == 0 || CUTDRAWWORLD != 0)) {
-        STUBBED_NAMED("NuMainRenderWorld: DrawParallax at 0x00564c30");
+        DrawParallax(&world->level_objects[1].special);
     }
     if (CUTSTOPGAME == 0) {
         WorldInfo_DrawScene(world);

@@ -237,6 +237,17 @@ void __cdecl BackDrop_Draw(f32 alpha, i32 flags) {
     }
 }
 
+void __cdecl DrawParallax(NUSPECIALHANDLE *special) {
+    NUVEC scale;
+    NUMTX matrix;
+    scale.x = scale.y = scale.z = (f32)((f64)pNuCam->far_clip * TerrainScanMargin10Pc * 0.5);
+    NuMtxSetScale(&matrix, &scale);
+    matrix.m30 = pNuCam->mtx.m30;
+    matrix.m31 = pNuCam->mtx.m31;
+    matrix.m32 = pNuCam->mtx.m32;
+    NuSpecialDrawAt(special, &matrix);
+}
+
 void GameFog_Reset() {
     GameFogSnap = 1;
     GameFogDuration = 0.0f;
