@@ -1238,7 +1238,7 @@ void __cdecl GameObjectStuffAfterAnimation(void) {
                         AddPart(&part);
                     }
                 } else {
-                    STUBBED_NAMED("AfterAnimation: Bolt_Shoot PC583af0");
+                    Bolt_Shoot(object, (i8)object->quick_shoot_bolt_id, object->quick_shoot_flags);
                     if (object->quick_shoot_bolt_id == 29)
                         object->context_variant_flags |= 0x40;
                 }

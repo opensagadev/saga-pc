@@ -3851,6 +3851,7 @@ address    , symbol                                                         , si
 0x57edc0,_CutScenes_Reset,254,void __cdecl (WORLDINFO *)
 0x0057eec0 , _CutScenes_End                                                 , 135   , void __cdecl (void)
 0x57ef50,_CutScenes_Update,1783,"void __cdecl (WORLDINFO *, i32)"
+0x57f700,_NuMtxSetRotationYInline,162,"static void(NUMTX *, NUANG)"
 0x57f970,_Bolts_Reset,45,
 0x57f9a0,?Bolt_RayCastPrivate@@YAHPAUbolt_s@@PAUnuvec_s@@1@Z,260,
 0x57fab0,?Bolt_GeneratePointsPrivate@@YAXPAUbolt_s@@PAUnuvec_s@@@Z,117,

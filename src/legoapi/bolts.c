@@ -53,22 +53,46 @@ u16 __cdecl Bolt_GetShootDirection_Default(GAMEOBJECT *object, NUVEC *direction)
     return angle;
 }
 
+extern i32 BoltNoSfxPc;
+
+static void NuMtxSetRotationYInline(NUMTX *matrix, NUANG angle) {
+    f32 cosine = NuTrigTable[((angle + 0x4000) >> 1) & 0x7fff];
+    f32 sine = NuTrigTable[(angle >> 1) & 0x7fff];
+    matrix->m00 = cosine;
+    matrix->m01 = 0.0f;
+    matrix->m02 = -sine;
+    matrix->m03 = 0.0f;
+    matrix->m10 = ANI3_EVAL_IDENTITY_MATRIX.m10;
+    matrix->m11 = ANI3_EVAL_IDENTITY_MATRIX.m11;
+    matrix->m12 = ANI3_EVAL_IDENTITY_MATRIX.m12;
+    matrix->m13 = ANI3_EVAL_IDENTITY_MATRIX.m13;
+    matrix->m20 = sine;
+    matrix->m21 = 0.0f;
+    matrix->m22 = cosine;
+    matrix->m23 = 0.0f;
+    matrix->m30 = ANI3_EVAL_IDENTITY_MATRIX.m30;
+    matrix->m31 = ANI3_EVAL_IDENTITY_MATRIX.m31;
+    matrix->m32 = ANI3_EVAL_IDENTITY_MATRIX.m32;
+    matrix->m33 = ANI3_EVAL_IDENTITY_MATRIX.m33;
+}
+
 void __cdecl Bolt_Shoot(GAMEOBJECT *object, i32 type_id, i32 fire_flags) {
     BOLTTYPE_PC *type = BoltType_FindByID(type_id, WORLD);
-    BOLTSYS_PC *system;
-    NUVEC origin;
-    NUVEC direction;
-    NUVEC adjusted_position;
-    NUVEC target_velocity;
+    u32 flags = type->flags_60;
+    f32 speed = type->field_10;
+    f32 duration = type->field_14;
+    NUVEC aimed_position, adjusted_position, delta, target_velocity, origin, direction;
     NUVEC *target_position = NULL;
     NUVEC *intercept_position = NULL;
     NUVEC *velocity = NULL;
     f32 target_distance = 0.0f;
-    u32 flags = type->flags_60;
-    f32 speed = type->field_10;
-    f32 duration = type->field_14;
-    i32 index;
+    i16 sounds[8];
+    NUVEC sound_positions[8];
+    i32 sound_count = 0;
+    i32 bolts[5], bolt_count = 0;
     i32 used_locator = 0;
+    i32 index;
+    u16 heading;
 
     if ((object->flags_1fc & 0x80) != 0) {
         flags |= 0x20;
@@ -79,102 +103,143 @@ void __cdecl Bolt_Shoot(GAMEOBJECT *object, i32 type_id, i32 fire_flags) {
     }
     if ((object->flags_ef0 & 8) != 0)
         flags |= 0x40;
-
-    system = BoltSys;
-    system->shoot_origin(object, &origin);
-    {
-        u16 heading;
-        system = BoltSys;
-        heading = system->shoot_direction(object, &direction);
-        if (object->character_context != -1) {
-            if (object->field_7aa == BoltShootClassId0)
-                heading = (u16)(heading + 0x4000);
-            else if (object->field_7aa == BoltShootClassId1)
-                heading = (u16)(heading - 0x4000);
-            else if (object->field_7aa == BoltShootClassId2)
-                heading = (u16)(heading + 0x8000);
-        }
-        (void)heading;
+    aimed_position = object->attack_target_position;
+    BoltSys->shoot_origin(object, &origin);
+    heading = BoltSys->shoot_direction(object, &direction);
+    if (object->character_context != -1 && object->field_7aa != -1) {
+        if ((u16)object->field_7aa == BoltShootClassId0)
+            heading = (u16)(heading + 0x4000);
+        else if ((u16)object->field_7aa == BoltShootClassId1)
+            heading = (u16)(heading - 0x4000);
+        else if ((u16)object->field_7aa == BoltShootClassId2)
+            heading = (u16)(heading + 0x8000);
     }
-
-    if ((object->portal_flags & 0x8000) != 0) {
-        target_position = &object->field_e4c;
-        intercept_position = target_position;
-        if ((object->portal_flags & 0x10000) == 0 && (object->portal_flags & 0x20000) != 0) {
-            STUBBED_NAMED("Bolt_Shoot: derive intercept velocity from target-position history");
+    if ((object->flags_e20 & 0x800) != 0) {
+        if ((object->portal_flags & 0x8000) == 0 && object->field_ea0_target == NULL && object->field_280 != 0xff &&
+            (object->field_c8c != 0.0f || object->field_c90 != 0.0f || object->field_c94 != 0.0f)) {
+            target_distance = duration * speed;
+            NuVecSub(&adjusted_position, &aimed_position, &origin);
+            NuVecNorm(&adjusted_position, &adjusted_position);
+            NuVecScale(&adjusted_position, &adjusted_position, target_distance);
+            NuVecAdd(&aimed_position, &origin, &adjusted_position);
+        } else {
+            target_distance = NuVecDist(&origin, &aimed_position, NULL);
         }
-    } else if (object->field_ea0_target != NULL) {
-        GAMEOBJECT *target = object->field_ea0_target;
-        velocity = &target->velocity;
-        target_position = &target->collision_position;
-        intercept_position = target_position;
-        if ((object->character_data->model_flags & 0x2000) == 0 && (object->flags_1f8 & 1) != 0) {
-            adjusted_position = target->collision_position;
-            adjusted_position.y += Bolt_ObjTargetPosYAdjust(target);
-            target_position = &adjusted_position;
+    }
+    if ((object->portal_flags & 0x8000) == 0) {
+        if (object->field_ea0_target != NULL) {
+            GAMEOBJECT *target = object->field_ea0_target;
+            velocity = &target->velocity;
+            target_position = intercept_position = &target->collision_position;
+            if ((object->character_data->model_flags & 0x2000) == 0 && (object->flags_1f8 & 1) != 0) {
+                adjusted_position = target->collision_position;
+                adjusted_position.y += Bolt_ObjTargetPosYAdjust(target);
+                target_position = &adjusted_position;
+            }
+        } else if ((object->flags_e20 & 0x800) != 0) {
+            target_position = intercept_position = &aimed_position;
         }
     } else {
-        if ((object->flags_e20 & 0x800) != 0) {
-            target_position = &object->field_e4c;
-            intercept_position = target_position;
+        target_position = intercept_position = &object->field_e4c;
+        if ((object->portal_flags & 0x10000) == 0 && (object->portal_flags & 0x20000) != 0) {
+            NuVecSub(&target_velocity, &object->field_e4c, &object->field_e58);
+            NuVecScale(&target_velocity, &target_velocity, 1.0f / FRAMETIME);
+            velocity = &target_velocity;
         }
     }
-
-    if ((object->flags_e20 & 0x800) != 0) {
-        STUBBED_NAMED("Bolt_Shoot: target-distance calculation and ordered +0xc8c/+0xc90/+0xc94 bounds");
-    }
-
     for (index = 0; index < 5; ++index) {
         NUVEC *shot_position;
-
+        NUMTX matrix;
+        BOLT_PC *bolt;
         if ((index == 1 && fire_flags == 1) || (index == 0 && fire_flags == 2))
             continue;
-        system = BoltSys;
-        if (system->alternate_fire != NULL && system->alternate_fire(object, index) == 0)
+        if (BoltSys->alternate_fire != NULL && BoltSys->alternate_fire(object, index) == 0)
             continue;
-
         if (index == 4) {
             if (used_locator != 0)
                 break;
             shot_position = &origin;
         } else {
+            PLAYERCHARACTERCONFIG_PC *data;
+            i32 locator;
             if (object->model_draw_result == 0)
                 continue;
-            used_locator = -1;
-            STUBBED_NAMED("Bolt_Shoot: select weapon locator through model point table and joint matrices");
-            continue;
+            data = object->character_data->game_character;
+            locator = data->weapon_shoot_joints[index];
+            if (locator == -1 || object->character_model->points_of_interest[locator] == NULL)
+                locator = data->weapon_joints[index];
+            if (locator == -1 || object->character_model->points_of_interest[locator] == NULL)
+                continue;
+            used_locator = 1;
+            shot_position = NUMTX_GET_ROW_VEC(&object->locator_matrices[locator], 3);
+            if (shot_position == NULL)
+                continue;
         }
-
-        /* The per-shot matrix helpers and Bolt_Add's NetMessage path are not mapped yet. */
         if ((flags & 0x600000) != 0) {
+            u16 pitch;
+            NUANGVEC angles;
+            if ((i32)flags < 0 && (object->flags_1fc & 0x80) == 0 && object->field_ea0_target != NULL) {
+                f32 distance =
+                    NuVecXZDist(&object->field_ea0_target->collision_position, &object->collision_position, NULL);
+                f32 degrees;
+                if (distance > 2.0f)
+                    distance = 2.0f;
+                degrees = (flags & 0x200000) != 0 ? -10.0f : -20.0f;
+                degrees = (f32)((f64)degrees * (f64)distance * 0.5);
+                pitch = (u16)(i32)(((f64)degrees * 65536.0) / 360.0);
+            } else {
+                pitch = (flags & 0x200000) != 0 ? 0xf8e4 : 0xf1c8;
+            }
             if (target_position != NULL)
-                STUBBED_NAMED("Bolt_Shoot: aimed pitch/heading matrix construction");
-            else
-                STUBBED_NAMED("Bolt_Shoot: direction matrix construction");
+                heading = NuAtan2D(target_position->x - shot_position->x, target_position->z - shot_position->z);
+            angles.x = pitch;
+            angles.y = heading;
+            NuMtxSetRotationXYVU0(&matrix, &angles);
         } else if (target_position != NULL) {
-            STUBBED_NAMED("Bolt_Shoot: target/intercept rotation helpers");
+            NUANGVEC angles;
+            if (velocity != NULL && (object->portal_flags & 0x20000) != 0)
+                CalculateInterceptVector(shot_position, intercept_position, velocity, speed, &delta, NULL);
+            else
+                NuVecSub(&delta, target_position, shot_position);
+            FindAnglesXY(&delta, NULL, NULL);
+            angles.x = temp_zrot;
+            angles.y = ConfigBuffer.fields.find_angles_y_rotation;
+            NuMtxSetRotationXYVU0(&matrix, &angles);
+        } else if (object->movement_mode == 4) {
+            NUANGVEC angles;
+            FindAnglesXY(&direction, NULL, NULL);
+            angles.x = temp_zrot;
+            angles.y = ConfigBuffer.fields.find_angles_y_rotation;
+            NuMtxSetRotationXYVU0(&matrix, &angles);
         } else {
-            STUBBED_NAMED("Bolt_Shoot: heading-only matrix construction");
+            NuMtxSetRotationYInline(&matrix, heading);
         }
-        STUBBED_NAMED("Bolt_Shoot: Bolt_Add network-message allocation/initialization");
-        (void)shot_position;
-
+        BoltNoSfxPc = 1;
+        bolt = Bolt_Add(object, shot_position, &matrix, type_id, 0);
+        if (bolt != NULL)
+            bolts[bolt_count++] = bolt->index;
+        if (BoltShootIdScratch != -1 && sound_count < 8) {
+            sounds[sound_count] = (i16)BoltShootIdScratch;
+            sound_positions[sound_count++] = BoltShootPositionScratch;
+        }
         if ((type->flags_60 & 0x20000000) != 0)
             object->field_d54 = BoltShootParameter;
     }
-
     object->flags_e20 |= 0x40000;
-    STUBBED_NAMED("Bolt_Shoot: collect and play Bolt_Add-selected shot sound");
-    if ((object->flags_e20 & 0x800) != 0)
-        STUBBED_NAMED("Bolt_Shoot: adjust multiple created bolt lifetimes to target range");
-
-    (void)speed;
-    (void)duration;
-    (void)target_distance;
-    (void)direction;
-    (void)intercept_position;
-    (void)velocity;
-    (void)target_velocity;
+    if (sound_count > 0) {
+        i32 sound = sound_count > 1 ? qrand() / (0xffff / sound_count + 1) : 0;
+        GameAudio_PlaySfxById(sounds[sound], &sound_positions[sound], 0, 0);
+    }
+    if ((object->flags_e20 & 0x800) != 0 && bolt_count > 1) {
+        for (index = 0; index < bolt_count; ++index) {
+            BOLT_PC *bolt = &Bolt[bolts[index]];
+            f32 distance = bolt->speed * bolt->lifetime;
+            f32 factor = target_distance == 0.0f || distance == 0.0f ? 0.0f : target_distance / distance;
+            f32 lifetime = factor * type->field_14;
+            if (bolt->lifetime > lifetime)
+                bolt->lifetime = lifetime;
+        }
+    }
 }
 
 void __cdecl Bolt_Debris_Default(BOLT_PC *bolt, NUVEC *points, i32 point, NUVEC *velocity, i32 flags) {
