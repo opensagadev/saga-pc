@@ -12,6 +12,18 @@ STATIC_ASSERT(offsetof(GAMEOBJECT, ai_packet) + offsetof(AIPACKET_PC, opponent) 
 STATIC_ASSERT(offsetof(GAMEOBJECT, ai_packet) + offsetof(AIPACKET_PC, opponent_metric) == 0x3b0);
 STATIC_ASSERT(offsetof(GAMEOBJECT, ai_packet) + offsetof(AIPACKET_PC, flags) == 0x4b0);
 
+void *__cdecl Condition_MessageInitPc(AISYS_PC *system, char *name, AISCRIPT_PC *script) {
+    if (name != NULL && system != NULL && gizaimessagesys != NULL)
+        return CheckGizAIMessage(gizaimessagesys, name, NULL);
+    return NULL;
+}
+
+f32 __cdecl Condition_MessagePc(AISYS_PC *system, AISCRIPTPROCESS_PC *process, AIPACKET_PC *packet, char *name,
+                                void *argument) {
+    GIZAIMESSAGE *message = (GIZAIMESSAGE *)argument;
+    return message != NULL ? message->value : 0.0f;
+}
+
 void *__cdecl Condition_IAmAInitPc(AISYS_PC *system, char *name, AISCRIPT_PC *script) {
     i32 index;
     if (name != NULL && system != NULL) {
