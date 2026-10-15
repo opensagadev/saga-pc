@@ -7043,9 +7043,11 @@ typedef struct nurndrlightrecord_s {
     f32 parameter_110;
     u8 opaque_114_120[0xc];
     NUVEC4 corners_pc[8];
-    u8 opaque_1a0_260[0xc0];
+    NUVEC4 planes_pc[12];
     i32 shadow_plane_count;
-    u8 opaque_264_2a4[0x40];
+    u8 opaque_264_270[0xc];
+    NUVEC4 far_plane_pc, endpoint0_pc, endpoint1_pc;
+    f32 shadow_radius_pc;
     NU_LIGHT_SHADOW_LIST_VIEW_PC shadow_lists_pc[2];
     NURNDRLIBSTATE *render_states[2];
     NUDISPLAYLISTITEM *list_items[2];
@@ -17098,14 +17100,26 @@ extern "C" DWORD __stdcall PCSoundStreamWorkerPc(void *);
 /* PC NuDynamicLight; its pool slots are 0x830 bytes. */
 struct PC_SPECIAL_SHADOW_LIGHT {
     NURNDRLIGHTRECORD render_sets[2];
-    u8 unknown_700[4];
-    f32 shadow_distance_pc;
-    u8 unknown_708[4];
+    union {
+        f32 split_distances_pc[3];
+        struct {
+            u8 unknown_700[4];
+            f32 shadow_distance_pc;
+            u8 unknown_708[4];
+        };
+    };
     i32 render_set_count;
     i32 active_render_set_count;
-    u8 unknown_714[0x5c];
-    NUVEC shadow_direction_pc;
-    u8 unknown_77c[4];
+    u8 unknown_714[0xc];
+    NUVEC4 split_planes_pc[2];
+    NUVEC4 camera_position_pc, camera_forward_pc, light_position_pc;
+    union {
+        NUVEC4 light_direction4_pc;
+        struct {
+            NUVEC shadow_direction_pc;
+            f32 light_direction_w_pc;
+        };
+    };
     NUMTX view;
     NUMTX projection;
     i32 parameter_4;
@@ -17116,6 +17130,8 @@ struct PC_SPECIAL_SHADOW_LIGHT {
     i32 used_on_specials;
 #ifdef __cplusplus
     PC_SPECIAL_SHADOW_LIGHT();
+    void LookAtPc(NUVEC *, NUVEC *, NUVEC *);
+    void SetupCustomCameraFrustumPc(NUCAMERA *, const f32 *, i32);
     void RenderSceneShadowPc(NUGSCN *scene);
     void ComputeShadowMatrixPc(NURNDRLIGHTRECORD *);
     void SetupShadowPc(NURNDRLIGHTRECORD *);
@@ -27266,6 +27282,32 @@ extern "C" {
     i32 __cdecl ShadowSetClipStatePc(i32, i32);
     void __cdecl ShadowResetClipResultsPc(void);
     void __cdecl DisplaySceneRndrSpecials(NUDISPLAY_LIST_PC *, i32, i32);
+#ifdef __cplusplus
+}
+#endif
+
+STATIC_ASSERT(offsetof(NURNDRLIGHTRECORD, planes_pc) == 0x1a0);
+STATIC_ASSERT(offsetof(NURNDRLIGHTRECORD, far_plane_pc) == 0x270);
+STATIC_ASSERT(offsetof(NURNDRLIGHTRECORD, endpoint0_pc) == 0x280);
+STATIC_ASSERT(offsetof(NURNDRLIGHTRECORD, endpoint1_pc) == 0x290);
+STATIC_ASSERT(offsetof(NURNDRLIGHTRECORD, shadow_radius_pc) == 0x2a0);
+#ifdef __cplusplus
+STATIC_ASSERT(offsetof(struct PC_SPECIAL_SHADOW_LIGHT, split_distances_pc) == 0x700);
+STATIC_ASSERT(offsetof(struct PC_SPECIAL_SHADOW_LIGHT, split_planes_pc) == 0x720);
+STATIC_ASSERT(offsetof(struct PC_SPECIAL_SHADOW_LIGHT, camera_position_pc) == 0x740);
+STATIC_ASSERT(offsetof(struct PC_SPECIAL_SHADOW_LIGHT, camera_forward_pc) == 0x750);
+STATIC_ASSERT(offsetof(struct PC_SPECIAL_SHADOW_LIGHT, light_position_pc) == 0x760);
+STATIC_ASSERT(offsetof(struct PC_SPECIAL_SHADOW_LIGHT, light_direction4_pc) == 0x770);
+#endif
+#ifdef __cplusplus
+extern "C" {
+#endif
+    void __cdecl SetShadowLight(void);
+    extern i32 PostShadowCubeFaceIndicesPc[6][4];
+    extern f32 PostShadowPlaneExtrusionPc;
+    void __cdecl PostShadowComputeFrustumCubePc(const NUCAMERA *, NUVEC4 *, NUVEC4 *);
+    i32 __cdecl PostShadowComputePlanesPc(const NUVEC4 *, const NUVEC4 *, NUVEC4 *);
+    void __cdecl PostShadowComputeCapsulePc(const NUVEC4 *, const NUVEC4 *, NUVEC4 *, NUVEC4 *, f32 *);
 #ifdef __cplusplus
 }
 #endif

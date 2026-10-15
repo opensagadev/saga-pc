@@ -205,3 +205,133 @@ void OcclusionManager::Init(u32 capacity, VARIPTR *buffer, VARIPTR buffer_end) {
 NUMTL *OccluderSet::ms_pZOnlyMtl3D;
 NUMTL *OccluderSet::ms_pZOnlyMtl2D;
 NUMTL *OccluderSet::ms_pAlphaMtl2D;
+
+/* Original same-TU register helper: EDI plane, ESI origin, ECX point_a, EAX point_b. */
+static __declspec(noinline) void PostShadowMakePlanePrivatePc(NUVEC4 *plane, const NUVEC4 *origin,
+                                                              const NUVEC4 *point_a, const NUVEC4 *point_b) {
+    NUVEC a = {point_a->x - origin->x, point_a->y - origin->y, point_a->z - origin->z};
+    NUVEC b = {point_b->x - origin->x, point_b->y - origin->y, point_b->z - origin->z};
+    NuVecCross(reinterpret_cast<NUVEC *>(plane), &a, &b);
+    NuVecNorm(reinterpret_cast<NUVEC *>(plane), reinterpret_cast<NUVEC *>(plane));
+    plane->w = 1.0f;
+    f32 dot = (plane->y * origin->y + origin->x * plane->x) + plane->z * origin->z;
+    plane->w = -dot;
+}
+extern "C" void __cdecl PostShadowComputeFrustumCubePc(const NUCAMERA *camera, NUVEC4 *corners, NUVEC4 *plane) {
+    f32 half_fov = (f32)((f64)camera->fov * 0.5);
+    i32 angle = (i32)((f64)half_fov * 10430.3779296875);
+    f32 height = NuTrigTable[(angle >> 1) & 0x7fff] * camera->near_clip /
+                 NuTrigTable[(((i32)((u32)angle + 0x4000u)) >> 1) & 0x7fff];
+    f32 width = height / camera->aspect;
+    f32 far_scale = camera->far_clip / camera->near_clip;
+    corners[0].x = -width;
+    corners[0].y = -height;
+    corners[0].z = camera->near_clip;
+    corners[0].w = 1.0f;
+    corners[1].x = -width;
+    corners[1].y = height;
+    corners[1].z = camera->near_clip;
+    corners[1].w = 1.0f;
+    corners[2].x = width;
+    corners[2].y = height;
+    corners[2].z = camera->near_clip;
+    corners[2].w = 1.0f;
+    corners[3].x = width;
+    corners[3].y = -height;
+    corners[3].z = camera->near_clip;
+    corners[3].w = 1.0f;
+    NUVEC4 scaled;
+    for (i32 i = 0; i < 4; ++i) {
+        scaled.x = corners[i].x * far_scale;
+        scaled.y = corners[i].y * far_scale;
+        scaled.z = corners[i].z * far_scale;
+        /* Original copies the unwritten fourth word of this XYZ scratch. */
+        corners[i + 4] = scaled;
+    }
+    NUMTX matrix;
+    OcclusionMtxCopyPrivate(&matrix, &camera->mtx);
+    for (i32 i = 0; i < 8; ++i)
+        NuVecMtxTransform(reinterpret_cast<NUVEC *>(&corners[i]), reinterpret_cast<NUVEC *>(&corners[i]), &matrix);
+    PostShadowMakePlanePrivatePc(plane, &corners[4], &corners[5], &corners[6]);
+}
+extern "C" i32 __cdecl PostShadowComputePlanesPc(const NUVEC4 *direction, const NUVEC4 *corners, NUVEC4 *planes) {
+    f32 extrusion = -PostShadowPlaneExtrusionPc;
+    NUVEC offset = {direction->x * extrusion, direction->y * extrusion, direction->z * extrusion};
+    u8 positive[6];
+    i32 count = 0;
+    NUVEC4 *output = planes;
+    for (i32 face = 0; face < 6; ++face) {
+        const NUVEC4 *origin = &corners[PostShadowCubeFaceIndicesPc[face][0]];
+        const NUVEC4 *point_a = &corners[PostShadowCubeFaceIndicesPc[face][1]];
+        const NUVEC4 *point_b = &corners[PostShadowCubeFaceIndicesPc[face][2]];
+        NUVEC b = {point_b->x - origin->x, point_b->y - origin->y, point_b->z - origin->z};
+        NUVEC a = {point_a->x - origin->x, point_a->y - origin->y, point_a->z - origin->z};
+        NUVEC normal;
+        NuVecCross(&normal, &a, &b);
+        f32 dot = (normal.y * offset.y + normal.x * offset.x) + normal.z * offset.z;
+        positive[face] = dot >= 0.0f;
+        if (positive[face] == 0) {
+            output->x = -normal.x;
+            output->y = -normal.y;
+            output->z = -normal.z;
+            output->w = 0.0f;
+            NuVecNorm(reinterpret_cast<NUVEC *>(output), reinterpret_cast<NUVEC *>(output));
+            ++count;
+            output->w = 1.0f;
+            f32 plane_dot = (output->y * origin->y + output->x * origin->x) + output->z * origin->z;
+            output->w = -plane_dot;
+            ++output;
+        }
+    }
+    output = planes + count;
+    for (i32 edge = 0; edge < 12 && count < 9; ++edge) {
+        u8 first_positive = positive[cubeEdgeTopologies[edge][0]];
+        if (first_positive != positive[cubeEdgeTopologies[edge][1]]) {
+            const NUVEC4 *origin = &corners[cubeEdgeIndices[edge][0]];
+            const NUVEC4 *other = &corners[cubeEdgeIndices[edge][1]];
+            NUVEC4 extruded;
+            extruded.x = origin->x + offset.x;
+            extruded.y = origin->y + offset.y;
+            extruded.z = origin->z + offset.z;
+            if (first_positive != 0)
+                PostShadowMakePlanePrivatePc(output, origin, other, &extruded);
+            else
+                PostShadowMakePlanePrivatePc(output, &extruded, other, origin);
+            ++count;
+            ++output;
+        }
+    }
+    return count;
+}
+extern "C" void __cdecl PostShadowComputeCapsulePc(const NUVEC4 *direction, const NUVEC4 *corners, NUVEC4 *center,
+                                                   NUVEC4 *endpoint, f32 *radius) {
+    *center = corners[0];
+    for (i32 i = 1; i < 8; ++i) {
+        center->x += corners[i].x;
+        center->y += corners[i].y;
+        center->z += corners[i].z;
+    }
+    center->x = (f32)((f64)center->x * 0.125);
+    center->y = (f32)((f64)center->y * 0.125);
+    center->z = (f32)((f64)center->z * 0.125);
+    *radius = 0.0f;
+    f32 distance;
+    NUVEC4 delta;
+    for (i32 i = 0; i < 8; ++i) {
+        delta.x = center->x - corners[i].x;
+        delta.y = center->y - corners[i].y;
+        delta.z = center->z - corners[i].z;
+        distance = (delta.x * delta.x + delta.y * delta.y) + delta.z * delta.z;
+        if (*radius < distance)
+            *radius = distance;
+    }
+    /* Native passes the final vertex distance, after all maximum stores. */
+    *radius = NuFsqrt(distance);
+    NUVEC scaled = {(f32)((f64)direction->x * 100.0), (f32)((f64)direction->y * 100.0),
+                    (f32)((f64)direction->z * 100.0)};
+    delta.x = center->x - scaled.x;
+    delta.y = center->y - scaled.y;
+    delta.z = center->z - scaled.z;
+    /* As in the retail stack scratch, the fourth component was not assigned. */
+    *endpoint = delta;
+}

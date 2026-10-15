@@ -34300,3 +34300,8 @@ extern "C" {
     extern const char DeathStarEscapeBWasher1Pc[9] = "WASHER_1";
 #pragma const_seg()
 }
+
+/* Native static-shadow frustum topology and mutable extrusion distance. */
+i32 PostShadowCubeFaceIndicesPc[6][4] = {{0, 1, 2, 3}, {3, 2, 6, 7}, {7, 6, 5, 4},
+                                         {4, 5, 1, 0}, {1, 5, 6, 2}, {4, 0, 3, 7}};
+f32 PostShadowPlaneExtrusionPc = 120.0f;

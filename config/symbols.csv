@@ -4302,7 +4302,7 @@ address    , symbol                                                         , si
 0x594b70,_Collection_GetIDList,185,"i32 __cdecl(COLLECTION_BUILD_PC*,u32,u32,i16*,i32*,i32*,i32)"
 0x00594c30,_Collection_DrawPc,1198,"void(COLLECTION_BUILD_PC *,f32,f32,f32,APICHARACTERMODELLIST *,f32,i32)"
 0x595110,_ZeroLightSetupPrivatePc,183,
-0x5952c0,_NuDynamicLightLookAt,148,
+0x5952c0,?LookAtPc@PC_SPECIAL_SHADOW_LIGHT@@QAEXPAUnuvec_s@@00@Z,148,three stack vector pointers thiscallRET12
 0x5953b0,?SetParameterfPc@PC_SPECIAL_SHADOW_LIGHT@@QAEXHM@Z,257,"void __thiscall PC_SPECIAL_SHADOW_LIGHT::SetParameterfPc(i32,f32)"
 0x5954f0,_SetLights,75,"void __cdecl(NUVEC *,NUVEC *,NUVEC *,NUVEC *,NUVEC *,NUVEC *,NUVEC *)"
 0x595540,_SetLights_RTLDATA,283,"void __cdecl(RTL_DATA_PC *,f32)"
@@ -4317,11 +4317,13 @@ address    , symbol                                                         , si
 0x595af0,_LightGameObject,769,"void __cdecl(GAMEOBJECT *,void *)"
 0x595e00,_SetCreatureLights,1812,void __cdecl(APIOBJECT_PC *)
 0x00596530 , _InitShadowLights                                              , 632   , void __cdecl (void)
+0x5967b0,_ShadowAveragePlayerBoundsPc,179,normalized native privateEDI output stackradius
 0x596870,_RenderShadowLights,172,void __cdecl(i32)
 0x596920,_EnableShadowMapRendering,33,void __cdecl(i32)
 0x596950,_ResetShadowMapRendering,5,void __cdecl(void)
 0x00596970,_ResetShadowMapRenderingFn,5,void __cdecl(void)
 0x00596980,_EnableShadowMapRenderingFn,31,void __cdecl(void)
+0x596a30,_SetShadowLight,1656,full native scene shadow-light setup
 0x00597250 , _InitSnakes                                                    , 99    , void __cdecl (WORLDINFO *)
 0x597350,_DestroySnakeBody,47,void __cdecl(GAMEOBJECT *)
 0x597380,_UpdateSnakeBody,670,
@@ -5047,6 +5049,10 @@ address    , symbol                                                         , si
 0x005c7050,?TestBoxes@PCFrustumClipSet@@QAEHPBUnuvec_s@@0@Z,69,"i32 __thiscall PCFrustumClipSet::TestBoxes(const NUVEC *,const NUVEC *)"
 0x5c70a0,?RenderConstantsPc@PC_SPECIAL_SHADOW_LIGHT@@QAEXPAX@Z,816,thiscall native light program argument unused
 0x5c73d0,_PostShadowProjectBoundsPc,247,normalized private EAX count ECX vertices; remaining stack args unchanged
+0x5c7fa0,?PostShadowMakePlanePrivatePc@@YAXPAUNUVEC4@@PBU1@11@Z,135,
+0x5c8030,_PostShadowComputeFrustumCubePc,558,"void __cdecl(const NUCAMERA *,NUVEC4 *,NUVEC4 *)"
+0x5c82c0,_PostShadowComputePlanesPc,626,"i32 __cdecl(const NUVEC4 *,const NUVEC4 *,NUVEC4 *)"
+0x5c8540,_PostShadowComputeCapsulePc,713,"void __cdecl(const NUVEC4 *,const NUVEC4 *,NUVEC4 *,NUVEC4 *,f32 *)"
 0x5c8810,?ShadowSegmentClipPc@@YAHPBUnuvec_s@@00MM@Z,417,
 0x5c8e80,??0NuDeferredFilterGen@@QAE@XZ,78,native ctor fullvptr/field proof
 0x5c8ed0,?isEnabled@NuDeferredFilterGen@@UAE_NXZ,30,native exactVT binding; unimplemented extent unclaimed
@@ -5434,6 +5440,7 @@ address    , symbol                                                         , si
 0x5e8190,?PrepareForQueries@OccluderSet@@QAEXPBUnumtx_s@@0@Z,668,"void __thiscall (const NUMTX *, const NUMTX *)"
 0x005e8430 , _NuOcclusionManagerBeginFrame                                  , 59    , void __cdecl (void)
 0x5e8790,_PostShadowNormalizePc,89,normalized native ECX input stack output returns output
+0x5e8950,?SetupCustomCameraFrustumPc@PC_SPECIAL_SHADOW_LIGHT@@QAEXPAUnucamera_s@@PBMH@Z,649,thiscall camera splits count RET12
 0x5e8be0,?resetGeometry@NuDynamicLight@@QAEXXZ,122,void __thiscall NuDynamicLight::resetGeometry(void)
 0x5e8c60,_PostShadowBuildBasisPc,318,cdecl
 0x5e8fe0,?resetAll@NuDeferredFilterGen@@UAEXXZ,50,native exactVT binding; unimplemented extent unclaimed
@@ -5878,6 +5885,7 @@ address    , symbol                                                         , si
 0x60dd00,?initResources@NuDeferredFilter@@UAEXXZ,93,native exactVT binding; unimplemented extent unclaimed
 0x60dd60,?initResources@NuSpeedBlurFilter@@UAEXXZ,81,native exactVT binding; unimplemented extent unclaimed
 0x6105b0,_refpack_init,211,
+0x617e20,_edmainGetCameraPc,6,NUCAMERA* current editor protocol pointer
 0x617e30,_edmainExtCamera,19,
 0x617f80,_edmainQueryLocVec,6,NUVEC *__cdecl(void)
 0x618310,_eduiFntPrintEx,197,
@@ -18957,6 +18965,14 @@ address    , symbol                                                         , si
 0x805090,_Lighting_BlueFlickerGreenPc,,f32
 0x805094,_Lighting_BlueFlickerBluePc,,f32
 0x805098,_BURNOUTON,4,i32 native initial 1
+0x805100,_ShadowLightSplitScalePc,4,genuine native data owner
+0x805104,_ShadowLightWarpPc,4,genuine native data owner
+0x805108,_ShadowLightUpPc,12,genuine native data owner
+0x805114,_ShadowLightNearOffsetPc,4,genuine native data owner
+0x805118,_ShadowLightBlendPowerPc,4,genuine native data owner
+0x80511c,_ShadowLightFallbackHeightPc,4,genuine native data owner
+0x805120,_ShadowLightEyeDistancePc,4,genuine native data owner
+0x805124,_ShadowLightFocusHeightPc,4,genuine native data owner
 0x805140,_SnakeSegmentHeightPc,,f32
 0x805144,_SnakeDebrisUpwardSpeedPc,,f32
 0x008051b4 , _SUPERCARRY_THROWSPEED_XZ                                      , 4     , f32
@@ -19053,6 +19069,7 @@ address    , symbol                                                         , si
 0x00806b78,_motionFactorPanClamp,4,private f32
 0x00806b7c,_motionFactorPull,4,private f32
 0x00806b9c , _nuspecial_const_alpha                                         , 4     , f32
+0x806ba0,_PostShadowCubeFaceIndicesPc,96,i32[6][4]
 0x00806c00 , _cubeEdgeIndices                                               , 96    , i32[12][2]
 0x00806c60 , _cubeEdgeTopologies                                            , 96    , i32[12][2]
 0x00806cc0 , _nuspecial_const_tint                                          , 12    , NUVEC
@@ -19111,6 +19128,7 @@ address    , symbol                                                         , si
 0x80bf20,_NuPostEffectBackBufferFramePc,,i32
 0x80bf30,??_R0?AVNuMotionAccumFilterGen@@@8,37,native exactVT binding; unimplemented extent unclaimed
 0x80bf58,??_R0?AVNuSpeedBlurFilterGen@@@8,35,native exactVT binding; unimplemented extent unclaimed
+0x80bf7c,_PostShadowPlaneExtrusionPc,4,f32
 0x80bf80,??_R0?AVNuDeferredFilterGen@@@8,34,native exactVT binding; unimplemented extent unclaimed
 0x80bfa8,_debris_box_corners,,const NUVEC[8]
 0x80c008,_PCShadowSurfaceSamplingEnabled,,i32
@@ -21954,6 +21972,7 @@ address    , symbol                                                         , si
 0x00955b54 , _ResetOldFStop                                                 , 4     , i32
 0x955b58,_PCShadowCurrentLight,,struct PC_SPECIAL_SHADOW_LIGHT *
 0x955b5c,_PCShadowSecondaryLight,4,struct PC_SPECIAL_SHADOW_LIGHT *
+0x955b60,_ShadowLightSplitCountPc,4,genuine native data owner
 0x00955b68 , _snake_hspecials                                               , 36    , NUSPECIALHANDLE[3]
 0x00955b90 , _snakebodies                                                   , 1088  , u8[1088]
 0x955fd0,_CanSuperCarryFn,,u32 (__cdecl *)(GAMEOBJECT *)
@@ -22305,9 +22324,9 @@ address    , symbol                                                         , si
 0x974040,_dlistItemPool,136,LightObjectPool<NUDISPLAYLISTITEM>
 0x9740c8,_dynamicLightPool,16776,LightObjectPool<PC_SPECIAL_SHADOW_LIGHT>
 0x978250,_rndrStatePool,520,LightObjectPool<NURNDRLIBSTATE>
-0x978460,_PostShadowProjectionPc,64,NUMTX standalone BSS; only writer5c6d90
+0x978460,_PostShadowProjectionPc,64,NUMTX standalone BSS; native outputs5e8950 and copysetter5c6d90
 0x9784a0,_PostResourceManagerPc,10240,PC_POST_DATA_PORT_MANAGER
-0x97aca0,_PostShadowViewPc,64,NUMTX standalone BSS; only writer5c6d90
+0x97aca0,_PostShadowViewPc,64,NUMTX standalone BSS; native outputs5e8950 and copysetter5c6d90
 0x97ace0,_NuPostEffectBackBufferCopyPc,,GRAPHICS_RENDER_TEXTURE_PC *
 0x97acf0,_debris_box_camera_cache,,NUMTX
 0x97ad30,?clip_inverse@?1??NuCameraCalcClipMtx@@9@9,,NUMTX
@@ -22483,6 +22502,7 @@ address    , symbol                                                         , si
 0x2912e84,_ed_curr,4,struct ed_module_s *
 0x2912e8c,_ed_main_menu,4,struct eduimenu_s *
 0x2912e90,_edmain_auto_speed,4,i32
+0x2912e98,_EdMainCurrentCameraPc,4,genuine native data owner
 0x2912e9c,_EdMainLocationVectorPc,4,NUVEC *
 0x2912ea0,_ed_fnt,4,void *
 0x2912eac,_eduiInteractLocked,4,struct edui_interact_s *

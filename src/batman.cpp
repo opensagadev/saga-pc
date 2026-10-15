@@ -348,7 +348,7 @@ static void NuMainRenderWorld(WORLDINFO *world) {
     if (CUTSTOPGAME == 0) {
         DrawGameObjectsProcess();
     }
-    STUBBED_NAMED("NuMainRenderWorld: 0x00596a30");
+    SetShadowLight();
     NuRndrBeginScene(1);
     STUBBED_NAMED("NuMainRenderWorld: SpeedBlur_Update at 0x0042df70");
     if (back_rgba[0] == back_rgba[1]) {
