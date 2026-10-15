@@ -253,7 +253,7 @@ static void NuMainUpdateFrame(WORLDINFO *world, i32 *frame_flag) {
         MoveGameCamera(GameCam);
         LOG_INFO_IF(GameTimer.update_count < 2, "Update stage: after MoveGameCamera world=%p", (void *)WORLD);
         GameObjectToCameraDistances();
-        STUBBED_NAMED("NuMainUpdateFrame: SetCameraMatrices at 0x0054a0d0");
+        SetCameraMatrices();
         if (CUTSTOPGAME == 0) {
             STUBBED_NAMED("NuMainUpdateFrame: UpdateStreaks at 0x005a3bd0");
         }

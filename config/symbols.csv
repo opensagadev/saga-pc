@@ -3012,6 +3012,8 @@ address    , symbol                                                         , si
 0x00549de0,_GameCam_Judder,301,"void __cdecl(GAMECAMERA *, f32, i32, NUVEC *)"
 0x549f10,_GameCam_HitJudder,186,void __cdecl (void)
 0x549fd0,_GameCam_HitRoll,138,void __cdecl (void)
+0x54a060,_SetCameraEffectMatrixPc,102,void __cdecl(void)
+0x54a0d0,_SetCameraMatrices,37,void __cdecl(void)
 0x54a100,_CentreTwoPlayerCamera,122,"void __cdecl (NUVEC *, NUVEC *, NUVEC *, NUVEC *)"
 0x54a180,_NarrowSockExceptions_Init,55,
 0x0054a1c0 , _NarrowSockPositionAllowed                                     , 123   , ""
@@ -5608,6 +5610,7 @@ address    , symbol                                                         , si
 0x5fdfd0,_NuDisplayListLegacyLightmapPc,115,void __cdecl(void*)
 0x5fe050,_NuDisplayListLegacyLightmapOffsetPc,121,void __cdecl(void*)
 0x005fe0d0,_NuDisplayListPacketAdPc,762,void __cdecl(void *)
+0x5fe3d0,_NuRndrSetFxMtx,6,i32 __cdecl(NUMTX *)
 0x005fe5a0,_NuRndrCreateBlendShapeDeformerWeightsArray,63,
 0x005fe5e0,_NuRndrCreateBlendShapeDWAPointers,39,
 0x5fe610,_NuRndrInitWorld,1,void __cdecl(void)

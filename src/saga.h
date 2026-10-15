@@ -17103,6 +17103,8 @@ extern "C" {
     void __cdecl NuMtxCalcFaceOn(NUMTX *, NUVEC *);
     i32 __cdecl NuCameraClipTestExtentsGeneric(NUVEC *, NUVEC *, NUMTX *, f32, i32, f32 *);
     i32 __cdecl NuRndrSetSpecularLightPS(const NUVEC *, const NUVEC4 *);
+    i32 __cdecl NuRndrSetFxMtx(NUMTX *);
+    void __cdecl SetCameraMatrices(void);
     void __cdecl NuRndrStateSetSpecularLightEx(const NUVEC *, const NUMTX *, const NUVEC *);
     extern NUVEC4 CameraNearClipPlanePc;
 

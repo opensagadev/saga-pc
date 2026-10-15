@@ -1394,3 +1394,7 @@ void __cdecl NuRndrFx(i32 paused, void *context) {
     else
         NuRndrFxPreviousHeightPc = NuRndrFxHeightPc;
 }
+
+i32 __cdecl NuRndrSetFxMtx(NUMTX *matrix) {
+    return 1;
+}

@@ -2107,3 +2107,28 @@ mode_selected:
         }
     }
 }
+
+static void __cdecl SetCameraEffectMatrixPc(void) {
+    NUMTX effect_matrix;
+    NUVEC scale;
+    scale.x = 0.5f;
+    scale.y = 0.5f;
+    scale.z = 0.5f;
+    NuMtxInvR(&effect_matrix, &global_camera.mtx);
+    NuMtxScale(&effect_matrix, &scale);
+    effect_matrix.m30 = 0.5f;
+    effect_matrix.m31 = 0.5f;
+    effect_matrix.m32 = 0.0f;
+    effect_matrix.m33 = 1.0f;
+    effect_matrix.m23 = 0.0f;
+    effect_matrix.m13 = 0.0f;
+    effect_matrix.m03 = 0.0f;
+    NuRndrSetFxMtx(&effect_matrix);
+}
+
+void __cdecl SetCameraMatrices(void) {
+    PCGlobalLightingState.specular_direction_missing = 1;
+    PCGlobalLightingState.specular_intensity_present = 0;
+    NuRndrSetSpecularLightPS(NULL, NULL);
+    SetCameraEffectMatrixPc();
+}
