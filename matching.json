@@ -37,7 +37,7 @@
     "config/data-members.json": "fe09365da4c355f220d724ca99394fc120b758891b4188d2c49707b6df0894f2",
     "config/library-objects.json": "e5ae24d3eac36fa0d0cb098f7690faaef3110f225db30c8cbf0f7d0d64f6ecfe",
     "config/project.json": "dc0e8cc85ae5650c6937b70ccaefb0153629c2460fa09cd4f6b625e251e623dd",
-    "config/symbols.csv": "75607fa78323963cc8e55c49284bb92a10ac0b81ff20b61c2f81563f8582e37d",
+    "config/symbols.csv": "5854d2c5798f6d4870fa9108b32a8ab231d9d3aad27d70315d44d494a6026fa0",
     "config/symbols.md": "dffbdaac86011e3aee74b404063c15bda97f88af3db337ffef9f1bad1785d212",
     "config/toolchain.json": "489d0782638d8033137cdb2834462416111945cbfa073147820e314b8576b95b",
     "config/tools.json": "50199f6b132a7abfabf251e98a75be0a957abfe50f1ff776188fba21e4c4436f",
@@ -100,7 +100,7 @@
     "src/legoapi/gizmo_lsw_registration_pc.cpp": "e9d6512adae2a64285f5cc2212b831c9aa3ceda36faa04f8bd01deac2949346e",
     "src/legoapi/gizpushblocks.cpp": "7fd4aef47f619454eb6f2cbf5e7731278b56b011a8cfc664764e56e061a8542a",
     "src/legoapi/gizspinner.cpp": "81553b0a6d2dd23da164ab08295d4f30f127d1ebe834574189b3f882c73e0dda",
-    "src/legoapi/grapples.cpp": "df448081beca92ac71517e3716f046fd62f212e58ce360f881d9be39dc482211",
+    "src/legoapi/grapples.cpp": "90afa9edf3e35e15c54ea1399c27386f58fa8eb14b7b5d486651c393badebd1c",
     "src/legoapi/hatmachine.cpp": "e4b7ec5e2d842580df21b4119b109ea3a64c0958a7010daebd7d927f6d6e7c47",
     "src/legoapi/hub.cpp": "c4fe5e0770bf89bd23e176df6f6c3f505854a73117eccb793a02dca5e8204e60",
     "src/legoapi/init_once.cpp": "cb0741fb96402c37292cb31b83efee77d616485dfa64fee5a5adc0b879225f3d",
@@ -292,16 +292,16 @@
     "src/legoapi/gizmo_registry_pc.c": "66f3439498e92ffefe55665cf43afcfae70558161c2321a524dfcf9e895762af",
     "src/legoapi/gizmoblowups.c": "1fc14ba78f05ea7d056c1a35a1de7d7292eb64f630ef142d6f1a4d66a01d7073",
     "src/legoapi/gizmopickups.c": "f7ddc034127474cd104cf829e0ab0ce4904a814396f6484b9766140b9fc5e5f9",
-    "src/legoapi/gizobstacle.c": "f0bca1d85601fdd042fc62e01888b12cbbcb40c045bcf58811c5342ac0a00d7a",
-    "src/legoapi/gizpanel_pc.c": "bb09fcd15258883c8cfd715070eafdecab2c7d1522ac32fcff3eac86ee8b905e",
+    "src/legoapi/gizobstacle.c": "eec4f51fa5b265a0f6a4a91e4de8a8e6b57e82ea80c5f0eb7a8791fc37b95a0b",
+    "src/legoapi/gizpanel_pc.c": "03a92221476de816ab1f6af309133b02ca5937b8738753196abb2c1ef784f207",
     "src/legoapi/gizportal.c": "a8a4f5dfe8f37df901d6a5ee1ad727a1717acc2090261955ea6af5e0d572b1d3",
     "src/legoapi/gizrandom.c": "ec56045834b658f7624271c81f9e1434458ecda6b004b19836844b320d04326d",
     "src/legoapi/gizspecial.c": "5e39cb5b80a0077d5ae065f0603bc6d601838c91d4751d6624992dac45d55f5e",
     "src/legoapi/gizspinner_load_pc.c": "ddba1e5af5aa31169ea3f34bc70961c457de29da31a4f6fb84bb8d953fe2579f",
     "src/legoapi/gizteleports.c": "8bf62481347a2ec0e591cdfcd8fcb358ffe321fc6e4a9b0f20ef0754dede7b72",
     "src/legoapi/giztimers.c": "b88fbdcf26ca7c39ba9fd9a95ad3e8de3391d7bb793be3527a89705d332c9f0f",
-    "src/legoapi/giztorpedo.c": "eea62d57b9e7eeaba1e3269af7140990d81a7d8e9e407a541214216f07f8b666",
-    "src/legoapi/gizturret.c": "879a36f83fd989582fe0f872e1af60b073769c5171bb5d72a875b2b926e24857",
+    "src/legoapi/giztorpedo.c": "e84e7a2262036a9864d3e68465d7fab84b9aced99c12770467601bf8d2e432ca",
+    "src/legoapi/gizturret.c": "02f5b443438bbd6d41dcbd19bf29d9341ae0dbf14f28d8bdccdae4b2d289eb96",
     "src/legoapi/grabber.c": "91d04f1077a4a42b6ba317a4a90df07c0aa714de2c4d65b9712c01dc8754d7ec",
     "src/legoapi/grabber_pc.c": "26a1b15ab475728f9600ce47f353a660e21f74e4db07e650e53bf59fdb405c5e",
     "src/legoapi/hint.c": "3f7b260348db778d33302bb502308dd63474857a6b36cd1efb96dc0ce405edc2",
@@ -587,8 +587,8 @@
     "build/obj/legoapi/gizmo_registry_pc.obj": "e4bd3d689e5deb086b6a683bc60290c70c5c28ff3b33fa88e0daabe55073db3b",
     "build/obj/legoapi/gizmoblowups.obj": "204c331ff4968231e33e8da68b80416240b03c2f9e169678d6b67c9065049571",
     "build/obj/legoapi/gizmopickups.obj": "fd123bd99297a066d40806304d5e49b51888902dad2f6cb04a249dfdbff1d72f",
-    "build/obj/legoapi/gizobstacle.obj": "e84f21a4af8859301a2279fe3246683ca9aef0988755b6dcd814dbfa43b44e38",
-    "build/obj/legoapi/gizpanel_pc.obj": "f0225576ad8b22908eeef3ddeac0bf5cbc133356ab2c2c7bbf59693b39e84d42",
+    "build/obj/legoapi/gizobstacle.obj": "afd3b6674209950e24691e340c860346c401cae7af76009ceb53aac4d92c4d76",
+    "build/obj/legoapi/gizpanel_pc.obj": "5082d9af555345dbaea9fffdaa3f90a8c09b2ae60f05a515589723953133818c",
     "build/obj/legoapi/gizportal.obj": "37729e22bc1b0a16d5f05a0a5d73f9df2fa9197cfe25f7e3ee9b6b28e96384d5",
     "build/obj/legoapi/gizpushblocks.obj": "03f577346291189cc9a6516f2982a6bc49acdc8e8ab1205edd5b02d58f87ad76",
     "build/obj/legoapi/gizrandom.obj": "ae3c0fc443256268e299c64e473e1a1564e8c2896ee0ddbcc07b0f066ba01f1f",
@@ -597,11 +597,11 @@
     "build/obj/legoapi/gizspinner_load_pc.obj": "3a692b3ef03a031c27d2b166a7b5e43f05ead7934a65d7d2f395cd908a7b543e",
     "build/obj/legoapi/gizteleports.obj": "613861ffe175fe76006f919762db5ca127a27d9130cb3179a8d8cfa1ddcc8d46",
     "build/obj/legoapi/giztimers.obj": "c05e71013b2525b44bbfe0275d6b0dcf7ebb5860a421c5ce2b7d063732ac5fff",
-    "build/obj/legoapi/giztorpedo.obj": "d9bcf03898e11754d8c86595144439b59577c6df1b1241f2fd3ccc862c6f0e3e",
-    "build/obj/legoapi/gizturret.obj": "335dacfdb7ab5e2ca295c474435305fb05ec10ccb6cf9e8e4e8efe6b06cf22f4",
+    "build/obj/legoapi/giztorpedo.obj": "77779ccbc05fefb4d2ba74787fbb48068f708e0ee02b64ac34ca8250a8679991",
+    "build/obj/legoapi/gizturret.obj": "e84cf789cac2a748d9f1bac71476c05155004ccec255e639e61432799b195d7a",
     "build/obj/legoapi/grabber.obj": "00768ecd4760c44b98fdc2ddc5fb53de4e81ecb181ec548aa5ececa05fcd94c7",
     "build/obj/legoapi/grabber_pc.obj": "56eec52e6353184a24557cc573aee7cc82ca7d9ec03c90217b64fa8bcf061cc0",
-    "build/obj/legoapi/grapples.obj": "bebf162320c31fd04c2ad2826e9a1346a3774e4193c3ffb86e0e064c5dd4154c",
+    "build/obj/legoapi/grapples.obj": "c147f0c0e0df138d7ebc98da945aa5c60120b2d37288201533c85853eec34f0a",
     "build/obj/legoapi/hatmachine.obj": "44ad3790bc344a8383c029f1c943333bd0f8fbf9cff48d78976a70fe623ec74e",
     "build/obj/legoapi/hint.obj": "b1f855fb459027088cdc9566efc8266bc0f224bcd58d4467dc685b04d1c8c882",
     "build/obj/legoapi/hits.obj": "bbffbb12e2ec7cfb6c14519992fdd09fa34ebde2379e73db540859b8578596b4",
@@ -18361,11 +18361,25 @@
       "name": "GizmoBombGen_GetGizmoName",
       "symbol": "_GizmoBombGen_GetGizmoName",
       "address": "0x00466580",
-      "units": [],
-      "target_size": null,
-      "exact_match": false,
-      "objects": [],
-      "status": "unknown size"
+      "units": [
+        "src/legoapi/gizobstacle.c"
+      ],
+      "target_size": 14,
+      "exact_match": true,
+      "objects": [
+        {
+          "unit": "src/legoapi/gizobstacle.c",
+          "base_size": 14,
+          "exact_match": true,
+          "target_sha256": "26690bbe535ad6119bdd37bf2f477a8f95d7f34860c3b971e777e17e835fc784",
+          "base_sha256": "26690bbe535ad6119bdd37bf2f477a8f95d7f34860c3b971e777e17e835fc784",
+          "relocation_count": 0,
+          "comparison_unit": "00466580-c6fd00303709",
+          "objdiff_percent": 100.0
+        }
+      ],
+      "status": "exact",
+      "objdiff_percent": 100.0
     },
     {
       "name": "GizmoBombGen_GetOutput",
@@ -21175,11 +21189,25 @@
       "name": "GizPanel_GetGizmoName",
       "symbol": "_GizPanel_GetGizmoName",
       "address": "0x0046eb30",
-      "units": [],
-      "target_size": null,
-      "exact_match": false,
-      "objects": [],
-      "status": "unknown size"
+      "units": [
+        "src/legoapi/gizpanel_pc.c"
+      ],
+      "target_size": 21,
+      "exact_match": true,
+      "objects": [
+        {
+          "unit": "src/legoapi/gizpanel_pc.c",
+          "base_size": 21,
+          "exact_match": true,
+          "target_sha256": "fe01a45b36c549d3f55c96150409613cb4bcd22c6451fe50b4b746ac79df4b9e",
+          "base_sha256": "fe01a45b36c549d3f55c96150409613cb4bcd22c6451fe50b4b746ac79df4b9e",
+          "relocation_count": 0,
+          "comparison_unit": "0046eb30-02da2c30d565",
+          "objdiff_percent": 100.0
+        }
+      ],
+      "status": "exact",
+      "objdiff_percent": 100.0
     },
     {
       "name": "GizPanel_GetOutput",
@@ -21591,11 +21619,25 @@
       "name": "GizTorp_GetGizmoName",
       "symbol": "_GizTorp_GetGizmoName",
       "address": "0x0046fec0",
-      "units": [],
-      "target_size": null,
-      "exact_match": false,
-      "objects": [],
-      "status": "unknown size"
+      "units": [
+        "src/legoapi/giztorpedo.c"
+      ],
+      "target_size": 17,
+      "exact_match": true,
+      "objects": [
+        {
+          "unit": "src/legoapi/giztorpedo.c",
+          "base_size": 17,
+          "exact_match": true,
+          "target_sha256": "f09d73b827a5e64e13afc29020acd967407c35570e4741d827e1d6939bad6125",
+          "base_sha256": "f09d73b827a5e64e13afc29020acd967407c35570e4741d827e1d6939bad6125",
+          "relocation_count": 0,
+          "comparison_unit": "0046fec0-3e0e28a6c3f5",
+          "objdiff_percent": 100.0
+        }
+      ],
+      "status": "exact",
+      "objdiff_percent": 100.0
     },
     {
       "name": "GizTorp_GetOutput",
@@ -66175,11 +66217,25 @@
       "name": "Grapple_GetGizmoName",
       "symbol": "_Grapple_GetGizmoName",
       "address": "0x0054df60",
-      "units": [],
-      "target_size": null,
-      "exact_match": false,
-      "objects": [],
-      "status": "unknown size"
+      "units": [
+        "src/legoapi/grapples.cpp"
+      ],
+      "target_size": 14,
+      "exact_match": true,
+      "objects": [
+        {
+          "unit": "src/legoapi/grapples.cpp",
+          "base_size": 14,
+          "exact_match": true,
+          "target_sha256": "26690bbe535ad6119bdd37bf2f477a8f95d7f34860c3b971e777e17e835fc784",
+          "base_sha256": "26690bbe535ad6119bdd37bf2f477a8f95d7f34860c3b971e777e17e835fc784",
+          "relocation_count": 0,
+          "comparison_unit": "0054df60-9a1d80c00733",
+          "objdiff_percent": 100.0
+        }
+      ],
+      "status": "exact",
+      "objdiff_percent": 100.0
     },
     {
       "name": "Grapple_GetOutput",
@@ -100633,11 +100689,25 @@
       "name": "GizmoTurret_GetGizmoName",
       "symbol": "_GizmoTurret_GetGizmoName",
       "address": "0x005ad2d0",
-      "units": [],
-      "target_size": null,
-      "exact_match": false,
-      "objects": [],
-      "status": "unknown size"
+      "units": [
+        "src/legoapi/gizturret.c"
+      ],
+      "target_size": 17,
+      "exact_match": true,
+      "objects": [
+        {
+          "unit": "src/legoapi/gizturret.c",
+          "base_size": 17,
+          "exact_match": true,
+          "target_sha256": "e4da10573f1229e5e88b09a88fb53730fc1cf079e2f1bbb6e4d4c29df59b8bff",
+          "base_sha256": "e4da10573f1229e5e88b09a88fb53730fc1cf079e2f1bbb6e4d4c29df59b8bff",
+          "relocation_count": 0,
+          "comparison_unit": "005ad2d0-020ed236fcd7",
+          "objdiff_percent": 100.0
+        }
+      ],
+      "status": "exact",
+      "objdiff_percent": 100.0
     },
     {
       "name": "GizmoTurret_GetOutput",
@@ -446691,17 +446761,17 @@
   ],
   "progress": {
     "text_bytes": 3471246,
-    "mapped_code_bytes": 2299373,
-    "matched_code_bytes": 428072,
-    "matching_percent": 12.331940749805689,
-    "fuzzy_coverage_percent": 41.963155291376985,
+    "mapped_code_bytes": 2299456,
+    "matched_code_bytes": 428155,
+    "matching_percent": 12.334331822060436,
+    "fuzzy_coverage_percent": 41.96554636363173,
     "mapped_functions": 8474,
-    "matched_functions": 3904,
-    "objdiff_fuzzy_percent": 74.338234,
-    "objdiff_total_code": 1962790,
+    "matched_functions": 3909,
+    "objdiff_fuzzy_percent": 74.33931,
+    "objdiff_total_code": 1962873,
     "image_bytes": 40067072,
-    "mapped_bytes": 3368756,
-    "mapping_percent": 8.407791814685137,
+    "mapped_bytes": 3368839,
+    "mapping_percent": 8.407998967331578,
     "mapping_denominator": "code_and_data_section_virtual_sizes",
     "mapping_sections": [
       {
@@ -446709,7 +446779,7 @@
         "kind": "code",
         "address": "0x401000",
         "size": 3471246,
-        "mapped_bytes": 2300567
+        "mapped_bytes": 2300650
       },
       {
         "name": ".rdata",
@@ -446726,17 +446796,17 @@
         "mapped_bytes": 990462
       }
     ],
-    "mapping_known_size_symbols": 15770,
-    "mapping_unknown_size_symbols": 7144,
-    "mapping_code_bytes": 2300567,
+    "mapping_known_size_symbols": 15775,
+    "mapping_unknown_size_symbols": 7139,
+    "mapping_code_bytes": 2300650,
     "mapping_code_total_bytes": 3471246,
-    "mapping_code_percent": 66.27496293838006,
+    "mapping_code_percent": 66.2773540106348,
     "mapping_data_bytes": 1068189,
     "mapping_data_total_bytes": 36018966,
     "mapping_data_percent": 2.9656292743106505,
-    "mapping_code_data_bytes": 3368756,
+    "mapping_code_data_bytes": 3368839,
     "mapping_code_data_total_bytes": 39490212,
-    "mapping_code_data_percent": 8.530610066109546,
+    "mapping_code_data_percent": 8.530820244773565,
     "matched_data_region_bytes": 1053580
   },
   "data_members": [
@@ -447796,7 +447866,7 @@
       "metadata_sha256": "fe09365da4c355f220d724ca99394fc120b758891b4188d2c49707b6df0894f2",
       "header_path": "src/saga.h",
       "header_sha256": "0fd8c5bbf7d1b16f8ef81d7273d2a88076a47e87f1d5be1b9d959ee0b637dc91",
-      "geometry_object_sha256": "eba61f219893fd6a48a94b259f0065218d9a2995d7a094dea4dac786ca667f14",
+      "geometry_object_sha256": "2926bcda25f752c45bd3b89331095964c4f61a856331fb4339da8999e3d5a02b",
       "toolchain_sha256": "489d0782638d8033137cdb2834462416111945cbfa073147820e314b8576b95b",
       "implementation_sha256": "9ad7521230f06fde31f0771b10bd001037ea32d2def455913a7f391f05dede9d",
       "headers": {

@@ -36,6 +36,15 @@ STATIC_ASSERT(offsetof(PANEL_MOVEMENT_PC, target_roll) == 0x84);
 STATIC_ASSERT(offsetof(PANEL_MOVEMENT_PC, field_86) == 0x86);
 STATIC_ASSERT(offsetof(PANEL_MOVEMENT_PC, activation_time) == 0x88);
 
+STATIC_ASSERT(offsetof(GIZMO_PC, object) == 0);
+
+char *__cdecl GizPanel_GetGizmoName(void *input) {
+    GIZMO_PC *gizmo = (GIZMO_PC *)input;
+    if (gizmo != NULL && gizmo->object != NULL)
+        return ((PANEL_MOVEMENT_PC *)gizmo->object)->name;
+    return NULL;
+}
+
 void __cdecl GizPanel_GetAbsTargetPos(void *context, NUVEC *target, i32 player_position) {
     PANEL_MOVEMENT_PC *panel = (PANEL_MOVEMENT_PC *)context;
     NUVEC offset;

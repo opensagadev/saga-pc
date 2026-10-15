@@ -11,7 +11,7 @@ i32 __cdecl PartDraw_Torp(PART_PC *part) {
 }
 
 typedef struct torpedo_machine_query_pc_s {
-    u8 unknown_00[0x10];
+    char name[16];
     NUVEC position;
     f32 activation_time;
     u16 y_rotation;
@@ -24,6 +24,16 @@ typedef struct torpedo_machine_query_sys_pc_s {
     f32 scale;
 } TORPEDO_MACHINE_QUERY_SYS_PC;
 STATIC_ASSERT(sizeof(TORPEDO_MACHINE_QUERY_PC) == 0x2c);
+STATIC_ASSERT(offsetof(TORPEDO_MACHINE_QUERY_PC, name) == 0);
+STATIC_ASSERT(offsetof(GIZMO_PC, object) == 0);
+
+char *__cdecl GizTorp_GetGizmoName(void *input) {
+    GIZMO_PC *gizmo = (GIZMO_PC *)input;
+    if (gizmo != NULL && gizmo->object != NULL)
+        return ((TORPEDO_MACHINE_QUERY_PC *)gizmo->object)->name;
+    return NULL;
+}
+
 STATIC_ASSERT(offsetof(TORPEDO_MACHINE_QUERY_PC, position) == 0x10);
 STATIC_ASSERT(offsetof(TORPEDO_MACHINE_QUERY_PC, activation_time) == 0x1c);
 STATIC_ASSERT(offsetof(TORPEDO_MACHINE_QUERY_PC, y_rotation) == 0x20);

@@ -1,5 +1,14 @@
 #include "saga.h"
 
+STATIC_ASSERT(offsetof(GIZMO_PC, object) == 0);
+STATIC_ASSERT(offsetof(GIZBOMBGEN_s, name) == 0);
+
+char *__cdecl GizmoBombGen_GetGizmoName(GIZMO_PC *gizmo) {
+    if (gizmo != NULL)
+        return ((GIZBOMBGEN_s *)gizmo->object)->name;
+    return NULL;
+}
+
 extern i32 obstacle_gizmotype_id;
 extern const char GizObstacleActionNamePC[5];
 extern const char GizObstacleActionBackwardPC[9];

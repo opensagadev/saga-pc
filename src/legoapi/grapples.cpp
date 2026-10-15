@@ -71,6 +71,15 @@ typedef struct GRAPPLE_MOTION_PC {
     NUVEC rope_points[6], target_rope_points[6];
     u8 display_special[12];
 } GRAPPLE_MOTION_PC;
+STATIC_ASSERT(offsetof(GRAPPLE_MOTION_PC, name) == 0);
+STATIC_ASSERT(offsetof(GIZMO_PC, object) == 0);
+
+extern "C" char *__cdecl Grapple_GetGizmoName(GIZMO_PC *gizmo) {
+    if (gizmo != NULL)
+        return ((GRAPPLE_MOTION_PC *)gizmo->object)->name;
+    return NULL;
+}
+
 typedef struct WORLD_GRAPPLE_MOTION_VIEW_PC {
     u8 unknown_0000[0x5080];
     GRAPPLE_MOTION_PC *grapples;
