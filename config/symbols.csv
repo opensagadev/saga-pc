@@ -3623,8 +3623,8 @@ address    , symbol                                                         , si
 0x570bb0,_CoinsGoToMainTotal,78,i32 __cdecl (void)
 0x570c00,_PartUpdate_Heart,129,void __cdecl (PART_PC *)
 0x570c90,_SpecialMiniKits_Configure,786,"void __cdecl(WORLDINFO *, char *)"
-0x570fb0,_SpecialMiniKits_Reset,126,
-0x571030,_SpecialMiniKits_Draw,760,
+0x570fb0,_SpecialMiniKits_Reset,126,void __cdecl(WORLDINFO *)
+0x571030,_SpecialMiniKits_Draw,760,void __cdecl(WORLDINFO *)
 0x00571330,_GizmoPickups_UpdateListPc,903,
 0x5716c0,_GizmoPickups_Update,55,"void __cdecl(void *, void *, f32)"
 0x571700,_GizmoPickups_RegisterGizmo,293,ADDGIZMOTYPE_PC * __cdecl(i32)

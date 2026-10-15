@@ -16271,6 +16271,8 @@ void __cdecl PCSoundAlreadyPlayingHook(void);
 
     void __cdecl PortalDoors_Configure(WORLDINFO *, char *);
     void __cdecl SpecialMiniKits_Configure(WORLDINFO *, char *);
+    void __cdecl SpecialMiniKits_Reset(WORLDINFO *);
+    void __cdecl SpecialMiniKits_Draw(WORLDINFO *);
 
     typedef struct char_category_record_pc_s {
         char *name;

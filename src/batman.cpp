@@ -373,7 +373,7 @@ static void NuMainRenderWorld(WORLDINFO *world) {
             "NuMainRenderWorld: DrawCables at 0x00409980, Detonators_Draw at 0x00427070, Batarangs_Draw at 0x00404dc0");
         TrafficAnimSys_Draw(world->trafficanim_sys);
         GizmoSysDraw(world->gizmo_sys, world, FRAMETIME);
-        STUBBED_NAMED("NuMainRenderWorld: SpecialMiniKits_Draw(world) at 0x00571030");
+        SpecialMiniKits_Draw(world);
         NuBridgeDraw(NULL);
     }
     if (Grass_Available != 0) {

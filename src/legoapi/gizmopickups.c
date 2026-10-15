@@ -255,7 +255,8 @@ typedef struct SPECIAL_MINIKIT_PC {
     f32 end_frame;
     char special_name[16];
     char pickup_name[8];
-    u8 unknown_30[8];
+    GIZMO_PC *at_gizmo;
+    GIZMO_PC *pickup;
     u32 flags;
 } SPECIAL_MINIKIT_PC;
 typedef struct SPECIAL_MINIKIT_SYSTEM_PC {
@@ -273,6 +274,8 @@ STATIC_ASSERT(offsetof(SPECIAL_MINIKIT_PC, animation_data) == 0x10);
 STATIC_ASSERT(offsetof(SPECIAL_MINIKIT_PC, end_frame) == 0x14);
 STATIC_ASSERT(offsetof(SPECIAL_MINIKIT_PC, special_name) == 0x18);
 STATIC_ASSERT(offsetof(SPECIAL_MINIKIT_PC, pickup_name) == 0x28);
+STATIC_ASSERT(offsetof(SPECIAL_MINIKIT_PC, at_gizmo) == 0x30);
+STATIC_ASSERT(offsetof(SPECIAL_MINIKIT_PC, pickup) == 0x34);
 STATIC_ASSERT(offsetof(SPECIAL_MINIKIT_PC, flags) == 0x38);
 STATIC_ASSERT(sizeof(SPECIAL_MINIKIT_SYSTEM_PC) == 8);
 STATIC_ASSERT(offsetof(SPECIAL_MINIKIT_SYSTEM_PC, items) == 0);
@@ -365,6 +368,85 @@ typedef struct PICKUP_COLLISION_FLAGS_PC {
 STATIC_ASSERT(offsetof(PICKUP_COLLISION_FLAGS_PC, config_flags) == 0x15);
 STATIC_ASSERT(offsetof(AREA_GLOBALS_PC, field_18) == 0x18);
 static PICKUP_TYPE_SYSTEM_PC *GizmoPickupSys = &GizmoPickupSys_Game;
+
+void __cdecl SpecialMiniKits_Reset(WORLDINFO *world) {
+    SPECIAL_MINIKIT_WORLD_PC *view = (SPECIAL_MINIKIT_WORLD_PC *)world;
+    SPECIAL_MINIKIT_PC *item;
+    i32 index;
+    if (view->special_minikits == NULL || GizmoPickupSys->gizmo_type_id == -1)
+        return;
+    item = view->special_minikits->items;
+    for (index = 0; index < view->special_minikits->count; ++index, ++item) {
+        item->pickup = (GIZMO_PC *)GizmoFindByName(world->gizmo_sys, gizmopickup_typeid, item->pickup_name);
+        if ((item->flags & 0x20) != 0)
+            item->at_gizmo = (GIZMO_PC *)GizmoFindByName(world->gizmo_sys, -1, item->special_name);
+    }
+}
+
+void __cdecl SpecialMiniKits_Draw(WORLDINFO *world) {
+    SPECIAL_MINIKIT_WORLD_PC *view = (SPECIAL_MINIKIT_WORLD_PC *)world;
+    SPECIAL_MINIKIT_PC *item;
+    GIZMOPICKUP_PC *pickup;
+    GIZMO_PICKUP_TYPE_PC *type;
+    NUINSTANIM_TIME_VIEW *animation;
+    NUVEC scale, *position;
+    NUMTX matrix;
+    u16 spin, tilt;
+    i32 index, type_index;
+    scale.x = scale.y = scale.z = AreaPickupScale;
+    if (view->special_minikits == NULL || GizmoPickupSys->gizmo_type_id == -1 ||
+        GizmoPickupSys->types[GizmoPickupSys->gizmo_type_id].field_0f != 0)
+        return;
+    spin = (u16)(i32)((f64)NuFmod(GameTimer.time_elapsed, 4.0f) * 0.25 * 65536.0);
+    tilt = (u16)(i32)((f64)NuTrigTable[(((i32)spin * 2) >> 1) & 0x7fff] * 1820.0);
+    item = view->special_minikits->items;
+    for (index = 0; index < view->special_minikits->count; ++index, ++item) {
+        if ((item->flags & 0x20) != 0) {
+            if (item->at_gizmo == NULL)
+                continue;
+            if (GizmoGetVisibility(world->gizmo_sys, item->at_gizmo) == 0)
+                continue;
+            position = GizmoGetPos((GIZMOSYS_PC *)world->gizmo_sys, item->at_gizmo);
+            if (position == NULL)
+                continue;
+            NuMtxSetScale(&matrix, &scale);
+            NuMtxTranslate(&matrix, position);
+        } else {
+            if (NuSpecialGetVisibilityFn(&item->special) == 0)
+                continue;
+            if ((item->flags & 1) == 0 && item->instance_animation != NULL && item->animation_data != NULL) {
+                animation = item->instance_animation;
+                if (!(((item->flags & 2) != 0 && (animation->flags & 8) == 0 && animation->ltime <= 1.0f) ||
+                      ((item->flags & 8) != 0 && (animation->flags & 8) == 0 && animation->ltime >= item->end_frame) ||
+                      ((item->flags & 4) != 0 && (animation->flags & 1) != 0)))
+                    continue;
+            }
+            position = NuSpecialGetDrawPos(&item->special);
+            matrix = *NuSpecialGetDrawMtx(&item->special);
+            NuVecNorm((NUVEC *)&matrix.m00, (NUVEC *)&matrix.m00);
+            NuVecNorm((NUVEC *)&matrix.m10, (NUVEC *)&matrix.m10);
+            NuVecNorm((NUVEC *)&matrix.m20, (NUVEC *)&matrix.m20);
+            NuMtxPreScale(&matrix, &scale);
+        }
+        if (item->pickup == NULL)
+            continue;
+        pickup = (GIZMOPICKUP_PC *)item->pickup->object;
+        if ((pickup->flags & 0x40) != 0 && GizmoPickupSys->alternate_type != -1)
+            type_index = GizmoPickupSys->alternate_type;
+        else
+            type_index = pickup->type_index;
+        type = &GizmoPickupSys->types[type_index];
+        if (type == NULL)
+            continue;
+        if ((item->flags & 0x10) == 0) {
+            NuMtxSetScale(&matrix, &scale);
+            NuMtxRotateY(&matrix, spin);
+            NuMtxRotateX(&matrix, tilt);
+            NuMtxTranslate(&matrix, position);
+        }
+        NuSpecialDrawAt(&world->level_objects[type->first_model_id].special, &matrix);
+    }
+}
 
 void __cdecl GizmoPickups_InitSys(PICKUP_TYPE_SYSTEM_PC *system) {
     GizmoPickupSys = system;
