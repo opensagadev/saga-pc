@@ -51,7 +51,9 @@ typedef struct NuSpecialSceneView {
 } NuSpecialSceneView;
 
 typedef struct NuSpecialLegacyObjectView {
-    u8 unknown_00[0x1c];
+    u8 unknown_00[0x14];
+    f32 origin_radius;
+    u8 unknown_18[4];
     NUVEC bounds_min;
     NUVEC bounds_max;
     NUVEC center;
@@ -115,6 +117,7 @@ STATIC_ASSERT(sizeof(NuSpecialDisplayView) == 0xd0);
 STATIC_ASSERT(offsetof(NuSpecialDisplayListView, special_count) == 0x6c);
 STATIC_ASSERT(offsetof(NuSpecialSceneView, special_count) == 0x24);
 STATIC_ASSERT(offsetof(NuSpecialSceneView, display_list) == 0x110);
+STATIC_ASSERT(offsetof(NuSpecialLegacyObjectView, origin_radius) == 0x14);
 STATIC_ASSERT(offsetof(NuSpecialLegacyObjectView, center) == 0x34);
 STATIC_ASSERT(offsetof(NuSpecialLegacyObjectView, radius) == 0x40);
 STATIC_ASSERT(offsetof(NuSpecialLegacyInstanceIndexView, object_index) == 0x40);
@@ -195,6 +198,24 @@ void __cdecl NuSpecialGetRadius(NUSPECIALHANDLE *special, NUVEC *position, f32 *
     display = (NuSpecialBoundsDisplayView *)special->display_special;
     *position = display->center;
     *radius = display->radius;
+}
+
+f32 __cdecl NuSpecialGetOriginRadius(NUSPECIALHANDLE *special) {
+    NuSpecialLegacyView *legacy;
+    NuSpecialLegacyInstanceIndexView *instance;
+    NuSpecialLegacySceneObjectsView *scene;
+    NuSpecialLegacyObjectView *object;
+    NuSpecialBoundsDisplayView *display;
+
+    legacy = (NuSpecialLegacyView *)special->special;
+    if (legacy != NULL) {
+        instance = (NuSpecialLegacyInstanceIndexView *)legacy->instance;
+        scene = (NuSpecialLegacySceneObjectsView *)special->scene;
+        object = scene->objects[instance->object_index];
+        return object->origin_radius;
+    }
+    display = (NuSpecialBoundsDisplayView *)special->display_special;
+    return NuVecMag(&display->center) + display->radius;
 }
 
 NUMTX *__cdecl NuSpecialGetMtx(NUSPECIALHANDLE *special) {

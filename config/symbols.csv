@@ -1751,7 +1751,6 @@ address    , symbol                                                         , si
 0x4d22f0,_FreeTorpedoPacket,90,void __cdecl(TORPEDOPACKET_PC **)
 0x4d2350,_DropTorpedoPickups,133,"void __cdecl(TORPEDOPACKET_PC*,i32)"
 0x4d23e0,_getMaxTorpedos,72,i32 __cdecl(GAMEOBJECT*)
-0x4d2430,_NuSpecialGetOriginRadius,91,
 0x4d24f0,_Torpedo_UpdateJobbies,1274,void __cdecl(GAMEOBJECT*)
 0x4d29f0,_FindNearestTorpTarget,582,"void *__cdecl(WORLDINFO*,NUVEC*,f32,u8*)"
 0x4d2c40,_HomeNearestTorpTarget,746,
@@ -5048,6 +5047,7 @@ address    , symbol                                                         , si
 0x005cffb0 , _NuSpecialGetInstanceix                                        , 66    , i32 __cdecl (NUSPECIALHANDLE *)
 0x5d0130,_NuSpecialGetBounds,157,"void __cdecl (NUSPECIALHANDLE *, NUVEC *, NUVEC *)"
 0x005d0260 , _NuSpecialGetRadius                                            , 127   , "void __cdecl (NUSPECIALHANDLE *special, NUVEC *centre, f32 *radius)"
+0x5d02e0,_NuSpecialGetOriginRadius,69,f32 __cdecl(NUSPECIALHANDLE *)
 0x005d0330 , _NuSpecialGetDrawMtx                                           , 53    , NUMTX *__cdecl (NUSPECIALHANDLE *)
 0x005d0370 , _NuSpecialGetInstanceMtx                                       , 29    , NUMTX *__cdecl (NUSPECIALHANDLE *)
 0x005d0420 , _NuSpecialGetInstAnim                                          , 43    , void *__cdecl (NUSPECIALHANDLE *)

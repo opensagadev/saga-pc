@@ -25464,7 +25464,7 @@ extern "C" {
     void *__cdecl GizRandom_ReserveBufferSpace(void *world_ptr);
     i32 __cdecl GizSpinner_GetTargetPoints(struct GIZSPINNER_s *spinner, struct nuvec_s *positions,
                                            struct nuvec_s *directions);
-    f32 __cdecl NuSpecialGetOriginRadius(void *special);
+    f32 __cdecl NuSpecialGetOriginRadius(NUSPECIALHANDLE *special);
     i32 __cdecl DrawPanel3DObjectNoAlpha(f32 x, f32 y, f32 z, f32 scale_x, f32 scale_y, f32 scale_z, u16 rotate_x,
                                          u16 rotate_y, u16 rotate_z, NUSPECIALHANDLE *special, i32 rotate_order);
     extern f32 PANEL_MINIKITCOUNTSCALE;
