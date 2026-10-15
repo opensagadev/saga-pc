@@ -3293,6 +3293,7 @@ address    , symbol                                                         , si
 0x55acd0,_Gizmo_FindNuSpecial,151,"i32 __cdecl (NUGSCN *, NUSPECIALHANDLE *, char *, i32, void *, char *, char *)"
 0x55ad70   , _LoadGizmoSys                                                  , 421   , "void __cdecl (void *, void *, char *)"
 0x55af20   , _GizmoSysAddGizmos                                              , 169   , "void __cdecl (void *, GIZFLOW_PC *, void *)"
+0x55b050,_GizmoTypeStoreProgress,139,"void __cdecl(GIZMOSYS_PC *, void *, i32, i32, char *)"
 0x0055b0e0 , _GizmoActivateReverse                                          , 146   , "void __cdecl(void *system, void *gizmo, i32 reverse, i32 visibility, i32 mode)"
 0x0055b1c0 , _CharIDFromName                                                , 69    , i32 __cdecl (char *)
 0x55b260,_RedirectAnim,112,"i32 __cdecl (char *, void *, CHARACTERANIM_CONFIG_PC *, char *)"
@@ -3802,6 +3803,7 @@ address    , symbol                                                         , si
 0x57a560,_Level_Draw,24,void __cdecl(WORLDINFO *)
 0x0057a580 , _GoToNewLevel                                                  , 43    ,
 0x0057a5b0 , _CompleteLevel                                                 , 97    ,
+0x57a620,_ResetLevel,176,"void __cdecl(WORLDINFO *, char *, i32)"
 0x0057a6d0,_NewLevelFromMenu,160,"void __cdecl(LEVELDATA_PC*, i32, i32, i32)"
 0x57a770,_LevelStreaming_DoorOverride,156,
 0x57a820,_CutSceneConfigMissingPc,1,void __cdecl(char *)
@@ -4316,7 +4318,7 @@ address    , symbol                                                         , si
 0x597350,_DestroySnakeBody,47,void __cdecl(GAMEOBJECT *)
 0x597380,_UpdateSnakeBody,670,
 0x597620,_DrawSnakeBody,340,
-0x597780,_BlowUpSnakeBody,583,
+0x597780,_BlowUpSnakeBody,583,void __cdecl (GAMEOBJECT *)
 0x5979d0,_SnakeBeenHit,549,void __cdecl(GAMEOBJECT*)
 0x597c20,_SuperCarry_TurnBlowupBackOn,213,"i32 __cdecl(GIZMOBLOWUP_PC *, NUVEC *, u16, i32)"
 0x597d00,_SuperCarry_PartImpact,134,void __cdecl(PART_PC *)
@@ -6835,6 +6837,7 @@ address    , symbol                                                         , si
 0x698990,_NuSound3LoadingSfx,12,i32 __cdecl(void)
 0x6989a0,_NuSound3CancelCheckStereo,1,
 0x00698a00 , _NuSound3SetLoopHoldTime                                       , 21    , void __cdecl (f32)
+0x698a20,_NuSound3ClearLoopHold,1,"void __cdecl (NUVEC *, i32)"
 0x698a40,_NuSound3GetStreamInfo,1,"void __cdecl(i32, void *)"
 0x698c50,?StopAllVoices@SoundVoiceManagerPC@@QAEXXZ,101,void __thiscall (SoundVoiceManagerPC *)
 0x698cc0,?UpdateVoices@SoundVoiceManagerPC@@QAEXXZ,336,void __thiscall (SoundVoiceManagerPC *)
@@ -10394,6 +10397,8 @@ address    , symbol                                                         , si
 0x00755c08 , __real@c08f400000000000                                        , 8     , const f64
 0x00755c10 , __real@c47a0000                                                , 4     , const f32
 0x00755c14 , ??_C@_0L@JOFCELND@veh_tie_by?$AA@                              , 11    , const char[11]
+0x755c20,_EP3DogfightDiePc,17,const char[17]
+0x755c34,_BeenKilledPc,11,const char[11]
 0x755c40,??_C@_0P@NOILOOGD@SpeedersKilled?$AA@,15,char []
 0x755c50,__real@bf400000,4,f32
 0x755c58,__real@40c8e38000000000,8,const f64
@@ -20186,6 +20191,7 @@ address    , symbol                                                         , si
 0x8804e0,_ShopSubMenuPc,4,i32
 0x8804e4,_ShopMoveSfxLockPc,4,i32
 0x8804e8,_ShopItemChangedPc,4,i32
+0x880578,_speeder_hitpoints_lost,4,i32
 0x00880584 , _players_cannot_exit_speeder                                   , 4     , i32
 0x0088058c , _legal_mtl                                                     , 4     , NUMTL *
 0x00880590 , _legal_tid                                                     , 4     , i32
@@ -21607,7 +21613,7 @@ address    , symbol                                                         , si
 0x950780,_CutBorderScale,,f32
 0x950788,_old_pause_state,4,i32
 0x95078c,_pause_rt,4,i32
-0x950790,_LevelCompletionFallbackFlagPC,,u32
+0x950790,_LevelCompletionFallbackFlagPC,4,u32
 0x950794,_ScreenPauseFadePc,,f32
 0x950798,_PauseRenderOffFn,,i32 (__cdecl *)(void)
 0x0095079c , _FadeSys                                                        , 44     , FADEINFO_PC

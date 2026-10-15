@@ -11662,6 +11662,7 @@ typedef struct PC_SHADER_OBJECT_FULL_VIEW PC_SHADER_OBJECT_FULL_VIEW;
     void __cdecl NuSound3SetDat(NUDATHDR *header);
     i32 __cdecl NuSound3SetReverb(i32 enable);
     void __cdecl NuSound3SetLoopHoldTime(f32 time);
+    void __cdecl NuSound3ClearLoopHold(NUVEC *, i32);
     void __cdecl NuSound3FlushLoops(void);
     void __cdecl NuSound3StopRumble(void);
     void __cdecl NuSound3SetRumblePads(void *pad0, void *pad1);
@@ -14104,6 +14105,10 @@ void __cdecl AIScriptMissingConditionDiagnostic();
     extern i32 ResetOldFStop;
     extern i32 new_level_from_menu;
     extern i32 reset_restart;
+    extern i32 reset_reimport;
+    void __cdecl NewGameMode(void);
+    void __cdecl ResetLevel(WORLDINFO *world, char *cutscene, i32 unused);
+    void __cdecl GizmoTypeStoreProgress(GIZMOSYS_PC *system, void *world, i32 progress_index, i32 type_id, char *name);
     extern i32 no_more_loads;
     extern i32 BonusWinner;
     extern i32 BonusCoinTotal;
@@ -15455,6 +15460,7 @@ void __cdecl PCSoundAlreadyPlayingHook(void);
     i32 __cdecl NewPlayerCharacter(GAMEOBJECT *, i32, i32, i32);
     void __cdecl Shards_HandleLostObj(WORLDINFO *, GAMEOBJECT *);
     void __cdecl DestroySnakeBody(GAMEOBJECT *);
+    void __cdecl BlowUpSnakeBody(GAMEOBJECT *);
     void __cdecl GizForce_ResetLOS(GAMEOBJECT *);
 
     /* Proposed finite public interfaces; UpdateAnimTimer remains original-TU private. */

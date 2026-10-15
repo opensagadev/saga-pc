@@ -397,6 +397,35 @@ void __cdecl GizmoSysStoreProgress(void *system_ptr, void *world, i32 progress_i
     }
 }
 
+STATIC_ASSERT(offsetof(GIZMOTYPE_PC, fns) + offsetof(GIZMOFNS_PC, clear_progress_fn) == 0x7c);
+STATIC_ASSERT(offsetof(GIZMOTYPE_PC, fns) + offsetof(GIZMOFNS_PC, store_progress_fn) == 0x80);
+STATIC_ASSERT(offsetof(GIZMOTYPE_PC, progress) == 0x98);
+STATIC_ASSERT(offsetof(GIZMOTYPES_PC, max_levels) == 4);
+STATIC_ASSERT(offsetof(GIZMOTYPES_PC, types) == 8);
+STATIC_ASSERT(offsetof(GIZMOSET_PC, data) == 0x10);
+
+void __cdecl GizmoTypeStoreProgress(GIZMOSYS_PC *system, void *world, i32 progress_index, i32 type_id, char *name) {
+    GIZMOTYPE_PC *type;
+    GIZMOSET_PC *set;
+    void *progress;
+    if (type_id == -1) {
+        if (name == NULL)
+            return;
+        type_id = GizmoGetTypeIDByName(system, name);
+        if (type_id == -1)
+            return;
+    }
+    type = &((GIZMOTYPES_PC *)gizmotypes)->types[type_id];
+    set = &system->sets[type_id];
+    progress = NULL;
+    if (type->progress != NULL && progress_index >= 0 && progress_index < ((GIZMOTYPES_PC *)gizmotypes)->max_levels)
+        progress = type->progress[progress_index];
+    if (type->fns.clear_progress_fn != NULL)
+        type->fns.clear_progress_fn(world, progress);
+    if (type->fns.store_progress_fn != NULL)
+        type->fns.store_progress_fn(world, set->data, progress);
+}
+
 void __cdecl GizmoSysReset(void *system_ptr, void *world, i32 progress_index) {
     GIZMOSYS_PC *system = (GIZMOSYS_PC *)system_ptr;
     GIZMOTYPE_PC *type;

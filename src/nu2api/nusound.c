@@ -952,3 +952,7 @@ void __cdecl SetLinkedCutSceneMusic(void *context, i32 state) {
     if (Music.state == 11 || Music.state == 12 || Music.state == 13)
         Music.state = state == 13 ? 13 : 11;
 }
+
+/* Retail 0x00698a20 is a one-byte RET and reads neither argument. */
+void __cdecl NuSound3ClearLoopHold(NUVEC *position, i32 mode) {
+}

@@ -1359,6 +1359,19 @@ void __cdecl GameObjectStuffAfterAnimation(void) {
     }
 }
 
+void __cdecl NuSound3ClearLoopHold(NUVEC *, i32);
+void __cdecl BlowUpSnakeBody(GAMEOBJECT *);
+void __cdecl ResetLevel(WORLDINFO *, char *, i32);
+void __cdecl DieRumble(GAMEOBJECT *);
+void __cdecl GetTakeOverPos(GAMEOBJECT *, NUVEC *);
+extern i16 CharacterFixupIdPc007f18c4;
+extern i32 FalconDebKey[2];
+extern const char BeenKilledPc[11];
+extern const char EP3DogfightDiePc[17];
+STATIC_ASSERT(offsetof(AREA_GLOBALS_PC, field_00) == 0);
+STATIC_ASSERT(offsetof(TORPEDOPACKET_PC, pickup_positions) == 0x3c);
+STATIC_ASSERT(offsetof(GAMEDEBRISENTRY_PC, effect) == 0);
+
 typedef struct kill_zipup_pc_s {
     u8 unknown_00[0x68];
     u16 runtime_flags;
@@ -1366,6 +1379,9 @@ typedef struct kill_zipup_pc_s {
 STATIC_ASSERT(offsetof(KILL_ZIPUP_PC, runtime_flags) == 0x68);
 
 i32 __cdecl KillGameObject(GAMEOBJECT *object, i32 requested_reason, i32 unused) {
+    NUVEC momentum, position;
+    i32 debris[4] = {-1, -1, -1, -1};
+    i32 part_debris = -1;
     i32 reason = requested_reason == 5 ? 4 : requested_reason;
     i32 terminal_kill = 0;
     GAMEOBJECT *rider;
@@ -1373,30 +1389,109 @@ i32 __cdecl KillGameObject(GAMEOBJECT *object, i32 requested_reason, i32 unused)
     GAMEOBJECT *candidate;
     i32 i;
     if ((object->flags_1fc_word & 0x80) != 0) {
-        STUBBED_NAMED("KillGameObject: increment AreaGlobals first value PC951244 and LevDeaths PC87b2f0");
+        ++AreaGlobals_PC.field_00;
+        ++LevDeaths;
     }
-    STUBBED_NAMED("KillGameObject: NuSound3ClearLoopHold upper position PC698a20");
-    STUBBED_NAMED("KillGameObject: NuSound3ClearLoopHold collision position PC698a20");
-    STUBBED_NAMED("KillGameObject: NuSound3ClearLoopHold lower position PC698a20");
-    STUBBED_NAMED("KillGameObject: Grapple_RemoveDynamic PC54e7d0");
-    STUBBED_NAMED("KillGameObject: Shards_HandleLostObj PC4c0c80");
+    NuSound3ClearLoopHold(&object->upper_position, 0);
+    NuSound3ClearLoopHold(&object->collision_position, 0);
+    NuSound3ClearLoopHold(&object->lower_position, 0);
+    Grapple_RemoveDynamic(object);
+    Shards_HandleLostObj(WORLD, object);
     if (reason != 4) {
-        STUBBED_NAMED(
-            "KillGameObject: PC identity-selected death debris/explosion/audio/rumble/snake actions PC436582..436996");
+        if ((object->character_data->model_flags & 0x4000000) != 0) {
+            debris[0] = 73;
+            debris[1] = 74;
+            debris[2] = 75;
+        } else if (object->character_data->move_fn == Move_CANNON) {
+            debris[0] = 75;
+            debris[1] = 117;
+        } else if (object->id == (u16)VehicleBoltId7f1910Pc) {
+            debris[0] = 38;
+            part_debris = 0;
+        } else if (object->id == (u16)id_CLONEWALKER || object->id == (u16)id_ATST_LOWRES) {
+            debris[1] = 130;
+            debris[2] = 133;
+            debris[3] = 132;
+        } else if (object->id == GameObjectRotationAtstId) {
+            debris[0] = 44;
+        } else if (object->id == (u16)id_ATAT) {
+            GameCam_NewShake(GameCam, 1.0f, 1.0f, 1.0f);
+            NewRumbleAllPlayers(0.7f, 0.0f, 0, 0);
+        } else if (object->id == (u16)id_XWING || object->id == (u16)VehicleBoltId7f1a24Pc ||
+                   object->id == (u16)VehicleBoltId7f19a4Pc || object->id == (u16)id_TIEFIGHTER ||
+                   object->id == (u16)VehicleBoltId7f1a28Pc || object->id == (u16)VehicleBoltId7f196cPc ||
+                   object->id == (u16)id_TIEBOMBER || object->id == (u16)VehicleBoltId7f1a2cPc ||
+                   object->id == (u16)VehicleBoltId7f195cPc) {
+            debris[0] = 34;
+            if (WORLD->current_level == DEATHSTARRESCUEE_LDATA && object->field_280 == 0xff) {
+                GameCam_Judder(GameCam, qrand() < 32768 ? -0.75f : 0.75f, 2, NULL);
+                NewRumbleAllPlayers(1.0f, 0.1f, 0, 0);
+            }
+        } else if (object->id == (u16)VehicleBoltId7f19a8Pc) {
+            debris[0] = 34;
+        } else if (object->id == (u16)id_MOUSEDROID) {
+            debris[0] = 69;
+            part_debris = 1;
+        } else if (object->id == id_DRAGBOMB) {
+            GameCam_NewShake(GameCam, 1.0f, 1.0f, 1.0f);
+            NewRumbleAllPlayers(1.0f, 0.1f, 0, 0);
+            AddExplosion(&object->collision_position, (f32)((f64)AreaPickupScale * (f64)0.6f), 0.5f, NULL, -1, 0x807);
+            if (Cheat_IsOn(5)) {
+                debris[0] = 125;
+                debris[1] = 126;
+            } else {
+                debris[0] = 82;
+                debris[1] = 83;
+                debris[2] = 84;
+                part_debris = 3;
+            }
+            PlaySfx("exp_thermalDet", &object->collision_position);
+        } else if (object->id == (u16)CharacterFixupIdPc007f18c4) {
+            part_debris = 5;
+        } else if (object->id == (u16)VehicleBoltId7f18b4Pc) {
+            debris[0] = 130;
+            debris[1] = 133;
+        }
+        if (object->character_context != 43)
+            PlayDieSfx(object);
+        if ((object->flags_1fc_word & 0x80) != 0)
+            DieRumble(object);
+        if ((object->character_data->model_flags & 0x2000) != 0) {
+            momentum.x = (f32)((f64)object->velocity.x * 0.5);
+            momentum.y = (f32)((f64)object->velocity.y * 0.5);
+            momentum.z = (f32)((f64)object->velocity.z * 0.5);
+        } else {
+            momentum = v000;
+        }
+        for (i = 0; i < 4; ++i) {
+            if (debris[i] != -1) {
+                if ((object->character_data->model_flags & 0x2000) != 0)
+                    AddGameDebrisMomentum(WORLD->game_debris_sys, debris[i], &object->collision_position, &momentum,
+                                          &momentum);
+                else
+                    AddGameDebris(WORLD->game_debris_sys, debris[i], &object->collision_position);
+            }
+        }
+        if (part_debris != -1)
+            AddPartDebris(WORLD->part_debris_sys, part_debris, &object->collision_position);
+        BlowUpSnakeBody(object);
     } else {
-        STUBBED_NAMED("KillGameObject: snake body destroy action PC597350");
+        DestroySnakeBody(object);
     }
     if (object->character_context == 43) {
         object->character_context = -1;
         if ((object->flags_1fc_word & 0x80) != 0 &&
             (WORLD->current_level == HOTHBATTLEA_LDATA || WORLD->current_level == GUNSHIPA_LDATA))
-            STUBBED_NAMED("KillGameObject: half-second GameCam_Blend PC54a3e0");
+            GameCam_Blend(GameCam, 0.5f, 0.0f, 1);
     }
     if (reason == 4) {
         terminal_kill = 1;
         reason = 2;
     } else if (WORLD->current_level == SPEEDERCHASEA_LDATA && object->ai_packet.creature_set == 2) {
-        STUBBED_NAMED("KillGameObject: SpeedersKilled message and lost hitpoint increment PC436a30..436a55");
+        GIZAIMESSAGE *message = CheckGizAIMessage(gizaimessagesys, "SpeedersKilled", NULL);
+        if (message != NULL)
+            message->value = (f32)((f64)message->value + 1.0);
+        ++speeder_hitpoints_lost;
     }
     if ((object->character_data->model_flags & 0x2000) != 0) {
         object->velocity.x = (f32)((f64)object->velocity.x * 0.5);
@@ -1413,30 +1508,34 @@ i32 __cdecl KillGameObject(GAMEOBJECT *object, i32 requested_reason, i32 unused)
     else if (object->character_context == 6 || object->field_e33 == 2)
         object->flags_e20 = object->flags_e20 & (~0x10000);
     if (object->helmet != 0)
-        STUBBED_NAMED("KillGameObject: LoseHelmet PC433aa0");
+        LoseHelmet(object, 1, 0);
     rider = object->rider;
-    STUBBED_NAMED("KillGameObject: Player_ClearContext PC55e4a0");
+    Player_ClearContext(object, 1);
     if (terminal_kill != 0 && NULL != rider)
         KillGameObject(rider, 4, 0);
-    STUBBED_NAMED("KillGameObject: ReleaseLever PC48ffc0");
-    STUBBED_NAMED("KillGameObject: Player_ResetContexts embedded packet6c4 PC55e4e0");
+    ReleaseLever(object);
+    Player_ResetContexts(object->ai_player_packet_pc);
     if ((object->flags_1fc_word & 0x80) != 0) {
         if (object->torpedo != NULL) {
             while (object->torpedo->count != 0) {
-                STUBBED_NAMED("KillGameObject: emit torpedo debris at actual position PC684c90");
+                AddVariableShotDebrisEffect(WORLD->game_debris_sys->entries[71].effect,
+                                            &object->torpedo->pickup_positions[object->torpedo->count], 30, 0, 0);
                 --object->torpedo->count;
             }
         }
-        if (object->dead == 0 || (object->character_data->model_flags & 0x2000) == 0 ||
+        if (object->dead == 0 || (object->flags_1fc_word & 0x80) == 0 ||
+            (object->character_data->model_flags & 0x2000) == 0 ||
             (WORLD->current_level == SPEEDERCHASEA_LDATA && disable_narrow_socks == 0))
-            STUBBED_NAMED("KillGameObject: one-second GameCam_Blend PC54a3e0");
+            GameCam_Blend(GameCam, 1.0f, 0.0f, 1);
         if ((object->flags_1f8 & 0x40000) == 0) {
             if ((object->takeover_owner != NULL &&
                  (object->takeover_owner->rider == NULL || object == object->takeover_owner->rider))) {
-                STUBBED_NAMED(
-                    "KillGameObject: real GetTakeOverPos output-dependent position/start/AI position writes PC4871a0");
+                GetTakeOverPos(object->takeover_owner, &position);
+                object->start_position = position;
+                object->position = position;
+                object->ai_update_position = position;
             } else {
-                STUBBED_NAMED("KillGameObject: SetToLastSafePos PC55cd80");
+                SetToLastSafePos(object);
             }
         }
         GameObjectOrigin(object);
@@ -1450,8 +1549,10 @@ i32 __cdecl KillGameObject(GAMEOBJECT *object, i32 requested_reason, i32 unused)
     object->death_delay = object->dead == 2 ? 0.0f : 0.5f;
     if (object->death_delay <= 0.0f)
         object->movement_lean_angle = 0;
-    if (0 == terminal_kill)
-        STUBBED_NAMED("KillGameObject: real BeenKilled script predicate/process using same packet2c8 PC52c790/52cc90");
+    if (terminal_kill == 0 &&
+        AIScriptSetBaseScriptStateByName(&object->ai_packet.script_processor, (char *)BeenKilledPc))
+        AIScriptProcess(WORLD->ai_sys, (APIOBJECT_PC *)object, &object->ai_packet, &object->ai_packet.script_processor,
+                        FRAMETIME);
     group = object->ai_packet.group;
     if (group != NULL) {
         group->member_is_alive &= ~(u32)((u64)1 << object->ai_packet.group_member_index);
@@ -1509,23 +1610,23 @@ i32 __cdecl KillGameObject(GAMEOBJECT *object, i32 requested_reason, i32 unused)
         ((KILL_ZIPUP_PC *)object->grapple)->runtime_flags &= ~0x100;
         object->grapple = NULL;
     }
-    STUBBED_NAMED("KillGameObject: Batarangs_CheckLostData PC404e30");
-    STUBBED_NAMED("KillGameObject: SpecialMove_ReleaseVictim PC58b0f0");
-    STUBBED_NAMED("KillGameObject: ReleaseEat PC49c4e0");
-    STUBBED_NAMED("KillGameObject: ReleaseBuildIt PC58ff10");
-    STUBBED_NAMED("KillGameObject: ReleasePush PC59cb00");
+    Batarangs_CheckLostData(object);
+    SpecialMove_ReleaseVictim(object);
+    ReleaseEat(object);
+    ReleaseBuildIt(object, 0);
+    ReleasePush(object);
     candidate = Obj;
     for (i = 0; HIGHGAMEOBJECT > i; ++i, ++candidate) {
         if ((candidate->flags_1fc_word & 0x1001) != 0x1001 || candidate == object)
             continue;
         if (candidate->character_context == 27 && candidate->force_target == object)
-            STUBBED_NAMED("KillGameObject: ReleaseForce target PC4a25b0");
+            ReleaseForce(candidate, 0);
         if (candidate->force_target == object)
             candidate->force_target = NULL;
         if (candidate->airborne_collision_target == object)
             candidate->airborne_collision_target = NULL;
     }
-    STUBBED_NAMED("KillGameObject: ReleaseForce source PC4a25b0");
+    ReleaseForce(object, 0);
     if (object->field_280 == 0xff) {
         for (i = 0; i < 32; ++i)
             if (Bolt[i].active != 0 && Bolt[i].owner == object)
@@ -1533,36 +1634,50 @@ i32 __cdecl KillGameObject(GAMEOBJECT *object, i32 requested_reason, i32 unused)
         for (i = 0; i < MAXPARTS; ++i)
             if ((Part[i].active & 1) != 0 && Part[i].owner == object)
                 Part[i].owner = NULL;
-        STUBBED_NAMED("KillGameObject: explosion owner cleanup (eight records38) PC43700c..43711e");
+        if (Explosions[0].duration > Explosions[0].time && Explosions[0].owner == object)
+            Explosions[0].owner = NULL;
+        if (Explosions[1].duration > Explosions[1].time && Explosions[1].owner == object)
+            Explosions[1].owner = NULL;
+        if (Explosions[2].duration > Explosions[2].time && Explosions[2].owner == object)
+            Explosions[2].owner = NULL;
+        if (Explosions[3].duration > Explosions[3].time && Explosions[3].owner == object)
+            Explosions[3].owner = NULL;
+        if (Explosions[4].duration > Explosions[4].time && Explosions[4].owner == object)
+            Explosions[4].owner = NULL;
+        if (Explosions[5].duration > Explosions[5].time && Explosions[5].owner == object)
+            Explosions[5].owner = NULL;
+        if (Explosions[6].duration > Explosions[6].time && Explosions[6].owner == object)
+            Explosions[6].owner = NULL;
+        if (Explosions[7].duration > Explosions[7].time && Explosions[7].owner == object)
+            Explosions[7].owner = NULL;
     }
     if (DOGFIGHTA_LDATA != NULL && DOGFIGHTA_LDATA == WorldInfo_CurrentlyActive()->current_level && BonusWinner == -1 &&
         (0x40000 & object->flags_1f8) == 0)
-        STUBBED_NAMED("KillGameObject: ResetLevel EP3_DOGFIGHT_DIE PC57a620");
+        ResetLevel(WorldInfo_CurrentlyActive(), (char *)EP3DogfightDiePc, 1);
     if (0 != terminal_kill && object->field_280 == 0xff) {
         AICREATURE_PC *creature = NULL;
         i32 remove = requested_reason == 5;
         i32 persistent = (object->portal_flags & 0x100000) != 0;
         i32 respawn = 0;
         if (!remove) {
-            u32 limit = object->portal_flags;
-            i32 respawn_flag = 0;
             if ((object->flags_1f8 & 0x4400) == 0x4400) {
                 creature = &WORLD->ai_sys->creatures[object->ai_packet.creature_index];
-                respawn_flag = (object->portal_flags & 0x200000) != 0;
-                if (!persistent) {
-                    limit = object->ai_packet.respawn_count + 1;
+                if (persistent) {
+                    respawn = (object->portal_flags & 0x200000) != 0;
+                } else {
+                    u32 limit = object->ai_packet.respawn_count + 1;
                     if (creature->max_respawn_count != -1 && object->ai_packet.respawn_locator == NULL)
                         limit =
                             creature->min_respawn_count +
                             ((creature->max_respawn_count - creature->min_respawn_count) * ((i32)Game.difficulty - 1)) /
                                 9 +
                             1;
+                    remove = object->ai_packet.respawn_count >= limit;
+                    respawn = !remove;
                 }
+            } else {
+                remove = !persistent;
             }
-            if (!persistent && object->ai_packet.respawn_count >= limit)
-                remove = 1;
-            else
-                respawn = creature != NULL && (!persistent || respawn_flag);
         }
         if (remove) {
             object->flags_1fc_word &= ~0x1000;
@@ -1585,7 +1700,7 @@ i32 __cdecl KillGameObject(GAMEOBJECT *object, i32 requested_reason, i32 unused)
         object->torpedo = NULL;
     }
     if (VehicleArea != 0 && object->field_280 < 2)
-        STUBBED_NAMED("KillGameObject: DebFreeInstantly Falcon key PC684400");
+        DebFreeInstantly(&FalconDebKey[object->field_280]);
     return 1;
 }
 

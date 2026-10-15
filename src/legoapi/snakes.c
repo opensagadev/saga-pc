@@ -95,3 +95,53 @@ void __cdecl DestroySnakeBody(GAMEOBJECT *object) {
         reader->snake_body = NULL;
     }
 }
+
+void __cdecl BlowUpSnakeBody(GAMEOBJECT *object) {
+    SNAKE_OBJECT_READER_PC *reader = (SNAKE_OBJECT_READER_PC *)object;
+    SNAKE_BODY_PC *body;
+    i32 index, special_index;
+    NUMTX matrix;
+    NUANGVEC angles;
+    NUVEC scale, momentum;
+    ADDPART_PC params;
+    NUSPECIALHANDLE *special;
+    if (object == NULL || reader->snake_body == NULL)
+        return;
+    for (index = 0; index < reader->snake_body->segment_count; ++index) {
+        angles.y = NuAngAdd(reader->snake_body->segments[index].yaw, 0x8000);
+        angles.x = reader->snake_body->segments[index].pitch;
+        NuMtxSetRotationXYVU0(&matrix, &angles);
+        body = reader->snake_body;
+        if (body->scale != 1.0f) {
+            scale.x = scale.y = scale.z = body->scale;
+            NuMtxPreScale(&matrix, &scale);
+        }
+        body = reader->snake_body;
+        matrix.m30 += body->segments[index].position.x;
+        matrix.m31 = (body->scale * SnakeSegmentHeightPc + body->segments[index].position.y) + matrix.m31;
+        matrix.m32 = body->segments[index].position.z + matrix.m32;
+        special_index = index == body->segment_count - 1 ? 2 : index % 2;
+        special = &snake_hspecials[special_index];
+        if (NuSpecialExistsFn(special)) {
+            SetKillPartMom(&momentum);
+            momentum.y += SnakeDebrisUpwardSpeedPc;
+            params = Default_ADDPART;
+            params.matrix = &matrix;
+            params.velocity = &momentum;
+            params.field_14 = params.field_18 = 0.1f;
+            params.gravity = -5.0f;
+            params.special = special;
+            params.flags = 0x90;
+            params.stop_fn = PartStop_Flickerer;
+            params.draw_fn = PartDraw_Flickerer;
+            params.impact_fn = PartImpact_Brick;
+            params.time_step = FRAMETIME;
+            params.lighting_data = &reader->lighting;
+            AddPart(&params);
+        }
+    }
+    if (reader->snake_body != NULL) {
+        memset(reader->snake_body, 0, sizeof(*reader->snake_body));
+        reader->snake_body = NULL;
+    }
+}

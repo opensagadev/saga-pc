@@ -34233,3 +34233,14 @@ extern "C" {
 }
 
 extern "C" f32 ExplosionKnockbackScalePc = 2.0f;
+
+extern "C" {
+#pragma bss_seg(".bss$speeder_hitpoints_lost")
+    i32 speeder_hitpoints_lost;
+#pragma bss_seg()
+#pragma const_seg(".rdata$BeenKilledPc")
+    extern const char BeenKilledPc[11] = "BeenKilled";
+#pragma const_seg(".rdata$EP3DogfightDiePc")
+    extern const char EP3DogfightDiePc[17] = "EP3_DOGFIGHT_DIE";
+#pragma const_seg()
+}
