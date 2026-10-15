@@ -8672,6 +8672,299 @@ zap:
     GizmoBlowupCheckProximity(WORLD, object);
 }
 
+/* Retail-private helpers and combo provider; keep in move.c with native callers. */
+typedef struct COMBO_STATE_VIEW_PC {
+    u8 unknown_000[0xe2e];
+    u8 blocked_attack_stage;
+    u8 unknown_e2f[0x12];
+    u8 combo_alternate;
+} COMBO_STATE_VIEW_PC;
+STATIC_ASSERT(offsetof(COMBO_STATE_VIEW_PC, blocked_attack_stage) == 0xe2e);
+STATIC_ASSERT(offsetof(COMBO_STATE_VIEW_PC, combo_alternate) == 0xe41);
+
+/* PC0049e2b0: object in ESI, variant on stack. */
+static __declspec(noinline) void ComboJumpStartPc(GAMEOBJECT *object, i32 variant) {
+    object->velocity.y = object->character_data->game_character->second_jump_speed;
+    object->context_variant_flags &= ~0x10000u;
+    object->character_context = 0;
+    object->action_movement_state = 2;
+    if (variant) {
+        object->field_7aa = 0xc;
+        object->context_variant_flags |= 0x2000;
+    } else {
+        object->field_7aa = 0x12;
+        object->context_variant_flags &= ~0x2000u;
+    }
+    object->flags_e20 |= 0x100000;
+    object->context_timer = 0.0f;
+    object->delayed_turn_timer = 0.0f;
+    object->context_variant_flags &= ~0x9000u;
+    object->airborne_input_timer = 0.0f;
+    object->field_281 = 0;
+    object->field_1050 = 0;
+    object->airborne_collision_target = NULL;
+    PlayJumpSfx(object, 2);
+    ResetAnimPacket(&object->anim_packet, object->field_7aa);
+    if ((object->flags_1fc_word & 0x80) != 0)
+        object->portal_flags |= 0x800;
+}
+
+/* PC0049e370: object in ESI; result in EAX. */
+static __declspec(noinline) i32 ComboBlockStartPc(GAMEOBJECT *object) {
+    COMBO_STATE_VIEW_PC *state = (COMBO_STATE_VIEW_PC *)object;
+    if (!NewBlockAction(object)) {
+        object->character_context = -1;
+        return 0;
+    }
+    object->character_context = 0xc;
+    object->block_latch = 0;
+    if (object->incoming_bolt != NULL) {
+        object->blocked_bolt = object->incoming_bolt;
+        object->blocked_part = NULL;
+        object->block_attacker = NULL;
+        state->blocked_attack_stage = 0;
+        object->context_timer = 0.3f;
+    } else {
+        object->blocked_bolt = NULL;
+        if (object->incoming_part != NULL) {
+            object->blocked_part = object->incoming_part;
+            object->block_attacker = NULL;
+            state->blocked_attack_stage = 0;
+            object->context_timer = 0.3f;
+        } else {
+            object->context_timer = 0.1f;
+            object->blocked_part = NULL;
+            if (object->incoming_special != NULL) {
+                object->block_attacker = object->incoming_special;
+                state->blocked_attack_stage = (u8)object->incoming_special->field_7aa;
+                object->flags_e20 |= 0x20000000;
+            } else {
+                object->block_attacker = object->incoming_melee;
+                state->blocked_attack_stage = object->incoming_melee->combo_stage + 1;
+            }
+        }
+    }
+    return 1;
+}
+
+/* PC004a10c0: object in EAX, action_pressed/action_held/jump_pressed/special_pressed on stack. */
+static __declspec(noinline) void LightSabreComboCode(GAMEOBJECT *object, i32 action_pressed, i32 action_held,
+                                                     i32 jump_pressed, i32 special_pressed) {
+    ANIMPACKET_PC *animation = &object->anim_packet;
+    COMBO_STATE_VIEW_PC *state = (COMBO_STATE_VIEW_PC *)object;
+    u32 previous_context_flags;
+    object->context_variant_flags &= ~2u;
+    previous_context_flags = object->context_variant_flags;
+    if (object->character_context == 5) {
+        object->portal_flags |= 0x800;
+        if ((object->context_variant_flags & 4) != 0) {
+            if ((!action_pressed && !object->combo_input_latched) || object->combo_stage >= 2) {
+                object->combo_input_timer -= FRAMETIME;
+                if (object->combo_input_timer <= 0.0f) {
+                    object->character_context = -1;
+                    object->context_variant_flags |= 2;
+                    if (action_held)
+                        StartHold(object);
+                } else if (object->combo_stage < 2 && jump_pressed &&
+                           object->character_model->model_data_b[0x12] != NULL) {
+                    SetComboOpponent(object, 1.0f, 0, 1);
+                    ComboJumpStartPc(object, 0);
+                }
+            } else if (object->combo_stage == 0 || object->combo_stage == 1) {
+                SetComboOpponent(object, 1.0f, 1, 0);
+                ++object->combo_stage;
+                object->context_variant_flags &= ~4u;
+                if (object->id != (u16)id_IMPERIALGUARD)
+                    PlaySabreSfx(NULL, object, NULL, 1);
+                if (object->combo_stage == 2) {
+                    NewRumble(object->pad->bound_pad, 0.35f, 0);
+                    if (object->combo_branch == 1) {
+                        if ((object->flags_e20 & 0x40) != 0 &&
+                            object->character_model->model_data_b[object->queued_context_animation + 4] == NULL)
+                            object->flags_e20 &= ~0x40u;
+                        object->combo_branch = (object->flags_e20 & 0x40) ? 4 : 3;
+                    } else {
+                        if ((object->flags_e20 & 0x40) != 0 &&
+                            object->character_model->model_data_b[object->queued_context_animation + 6] == NULL)
+                            object->flags_e20 &= ~0x40u;
+                        if ((object->flags_e20 & 0x40) != 0) {
+                            object->combo_branch = 6;
+                            NewRumble(object->pad->bound_pad, 0.6f, 0);
+                            if (object->id != (u16)id_IMPERIALGUARD)
+                                PlaySabreSfx((char *)ComboSaber1NamePc, object, &object->collision_position, 0);
+                        } else
+                            object->combo_branch = 5;
+                    }
+                } else {
+                    if ((object->flags_e20 & 0x40) != 0 &&
+                        object->character_model->model_data_b[object->queued_context_animation + 2] == NULL)
+                        object->flags_e20 &= ~0x40u;
+                    object->combo_branch = (object->flags_e20 & 0x40) ? 2 : 1;
+                    NewRumble(object->pad->bound_pad, object->combo_branch == 2 ? 0.5f : 0.35f, 0);
+                    if (object->combo_branch == 2 && object->id != (u16)id_IMPERIALGUARD)
+                        PlaySabreSfx((char *)ComboSaber2NamePc, object, &object->collision_position, 0);
+                }
+                object->field_7aa = object->queued_context_animation + object->combo_branch;
+                object->combo_input_latched = 0;
+                object->flags_e20 |= 0x40;
+                object->context_variant_flags &= ~0x50u;
+            }
+            goto combo_finished;
+        }
+        if (animation->animation_index == object->field_7aa && animation->blending == 0 &&
+            animation->requested_animation == object->field_7aa) {
+            if (object->combo_stage == 2) {
+                f32 *frames = AnimListFrameArray(object->character_model, object->field_7aa);
+                CHARACTERANIM_CONFIG_PC *info;
+                if ((object->context_variant_flags & 0x40) == 0 && frames[0] > 0.0f &&
+                    animation->current_time >= frames[0])
+                    ComboHitFrame(object, object->combo_branch == 6 ? 3 : 1);
+                if (frames[1] > 0.0f && animation->current_time >= frames[1])
+                    object->context_variant_flags |= 8;
+                if ((animation->flags & 1) != 0) {
+                    object->character_context = -1;
+                    object->context_variant_flags |= 2;
+                } else {
+                    info = object->character_model->animation_configs[object->field_7aa];
+                    if (info->blend_out_time > 0.0f &&
+                        AnimDuration((i16)object->id, object->field_7aa, animation->current_time, 0.0f, 0) <
+                            info->blend_out_time) {
+                        object->character_context = -1;
+                        object->context_variant_flags |= 2;
+                    }
+                }
+                object->sabre_flags |= 2;
+                if ((object->context_variant_flags & 0x40) == 0 &&
+                    (((object->context_variant_flags & 8) != 0 &&
+                      AnimListFrame(object->character_model, object->field_7aa, 0) == 0.0f) ||
+                     (object->context_variant_flags & 2) != 0))
+                    ComboHitFrame(object, object->combo_branch == 6 ? 3 : 1);
+                if (object->character_context == -1 && action_held &&
+                    (object->id != (u16)id_IMPERIALGUARD || object->combo_stage != 2))
+                    StartHold(object);
+                if ((object->context_variant_flags & 0x40) != 0 && (previous_context_flags & 0x40) == 0)
+                    NewRumble(object->pad->bound_pad, object->combo_branch == 6 ? 0.7f : 0.35f, 0);
+                goto combo_finished;
+            }
+            if ((animation->flags & 1) != 0) {
+                object->combo_input_timer = 0.2f;
+                object->context_variant_flags |= 4;
+                BlockSfx(object);
+                object->sabre_flags |= 2;
+                if ((object->context_variant_flags & 0x40) == 0)
+                    ComboHitFrame(object, 1);
+                goto combo_finished;
+            }
+        }
+        {
+            f32 *time = AnimPlaying(animation, object->field_7aa, 1, 0);
+            i32 can_queue = 0;
+            if (time != NULL && (object->context_variant_flags & 0x40) == 0) {
+                f32 frame = AnimListFrame(object->character_model, object->field_7aa, 0);
+                if (frame > 0.0f && *time >= frame)
+                    ComboHitFrame(object, object->combo_branch == 2 ? 2 : 1);
+            }
+            if (time != NULL) {
+                if ((object->context_variant_flags & 0x10) == 0) {
+                    f32 frame = AnimListFrame(object->character_model, object->field_7aa, 1);
+                    if (frame > 0.0f && *time >= frame)
+                        object->context_variant_flags |= 0x10;
+                }
+                can_queue = AnimDuration((i16)object->id, object->field_7aa, *time, 0.0f, 0) < 0.1f;
+                if (can_queue)
+                    object->flags_e20 |= 0x80000;
+            }
+            if (action_pressed && !object->combo_input_latched) {
+                if (can_queue)
+                    object->combo_input_latched = 1;
+                else
+                    object->flags_e20 &= ~0x40u;
+            }
+            object->sabre_flags |= 3;
+        }
+        goto combo_finished;
+    }
+    {
+        i8 context = object->character_context;
+        i32 player_active = (object->flags_1fc_word & 0x80) != 0;
+        if (!action_pressed || context == 0x15 || context == 0x5a || context == 0x13 || context == 0x2e ||
+            (!player_active && (context == 6 || context == 7)) || context == 8 || context == 0x1b || context == 0x2d ||
+            context == 0xf || context == 0x27 || context == 0x28 || context == 0x59 || context == 0x30 ||
+            context == 0x3d || context == 0x43 || context == 0x4a || context == 0x61 || context == 0x4b) {
+            if (((object->pad->runtime_flags & 4) != 0 || special_pressed) && (object->flags_e20 & 0x10000) != 0 &&
+                object->field_e33 == 0 && context != 6 && context != 7 && context != 0x12 && context != 0x1b &&
+                context != 0x1d && context != 0xd && context != 0xe && context != 0x2e &&
+                !(context == 0 && (object->action_movement_state == 3 || object->action_movement_state == 4)) &&
+                (object->flags_e20 & 0x1000000) == 0 && (CInfo[context].flags & 0x4000000) == 0 &&
+                ((CInfo[context].flags & 0x8000000) == 0 || (object->context_variant_flags & 0x20000) == 0) &&
+                context != 8) {
+                PLAYERCHARACTERCONFIG_PC *data = object->character_data->game_character;
+                i32 action = data->hover_fall_mode == 0 && (object->character_data->model_flags & 0x80) ? 0x7e : 0x10;
+                if (object->field_281 && object->pad->input_magnitude == 0.0f &&
+                    object->character_model->model_data_b[action] != NULL &&
+                    (context == -1 || (CInfo[context].flags & 4) != 0))
+                    SlowWeaponIn(object);
+                else
+                    FastWeaponIn(object, 1);
+            }
+            goto combo_finished;
+        }
+        if ((object->flags_e20 & 0x10000) == 0) {
+            PLAYERCHARACTERCONFIG_PC *data = object->character_data->game_character;
+            i32 draw_action = data->hover_fall_mode == 0 && (object->character_data->model_flags & 0x80) ? 0x7f : 0x11;
+            if (object->field_e33 == 0 && object->field_281 && object->pad->input_magnitude == 0.0f &&
+                object->character_model->model_data_b[draw_action] != NULL &&
+                (context == -1 || context == 1 || context == 2 || context == 4 || context == 3))
+                SlowWeaponOut(object);
+            else
+                FastWeaponOut(object, 1);
+            return;
+        }
+        if ((object->flags_e20 & 4) != 0 || (!player_active && object->field_e33 != 0) || !object->field_281 ||
+            (context != 1 && context != -1 && context != 2 && context != 4 && context != 3 && context != 6 &&
+             context != 7))
+            goto combo_finished;
+        SetWeaponOut(object);
+        if (object->incoming_bolt != NULL || object->incoming_melee != NULL || object->incoming_special != NULL ||
+            object->incoming_part != NULL) {
+            if (ComboBlockStartPc(object))
+                goto combo_finished;
+        }
+        if (!player_active && ((object->field_ef8 & 2) != 0 || (object->character_data->model_flags & 4) == 0) &&
+            (object->portal_flags & 0x400) == 0)
+            goto combo_finished;
+        SetComboOpponent(object, 1.0f, 1, 0);
+        object->combo_input_timer = 0.0f;
+        object->character_context = 5;
+        object->combo_stage = 0;
+        if (object->character_model->model_data_b[0x35] == NULL)
+            state->combo_alternate = 1;
+        if (!state->combo_alternate) {
+            state->combo_alternate = 1;
+            object->queued_context_animation = 0x35;
+        } else {
+            state->combo_alternate = 0;
+            object->queued_context_animation = 0x2e;
+        }
+        object->weapon_scale = 1.0f;
+        object->flags_e20 |= 0x10040;
+        object->context_variant_flags &= ~0x5cu;
+        object->velocity.y = 0.0f;
+        object->combo_branch = 0;
+        object->field_7aa = object->queued_context_animation;
+        object->field_e33 = 0;
+        object->combo_input_latched = 0;
+        if (object->id != (u16)id_IMPERIALGUARD)
+            PlaySabreSfx(NULL, object, NULL, 1);
+        if (object->character_model->model_data_b[object->field_7aa] == NULL)
+            object->character_context = -1;
+    }
+combo_finished:
+    if (object->weapon_scale == 1.0f && (object->flags_e20 & 0x80000) == 0 && object->character_context == 5 &&
+        (object->context_variant_flags & 4) != 0)
+        object->flags_e20 |= 0x80000;
+}
+
 void __cdecl Move_JEDI(GAMEOBJECT *object) {
     u32 action_pressed = object->pad->buttons_pressed & GAMEPAD_ACTION;
     u32 action_held = object->pad->buttons_held & GAMEPAD_ACTION;
@@ -8759,8 +9052,7 @@ void __cdecl Move_JEDI(GAMEOBJECT *object) {
     HoldCode(object);
     STUBBED_NAMED(0x0049e450); /* Native4b374e: BlockCode(object EAX,action_pressed,action_held,jump_pressed,0). */
     SwipeCode(object, action_pressed, action_held);
-    STUBBED_NAMED(0x004a10c0); /* Native4b3766: LightSabreComboCode(object
-                                  EAX,action_pressed,action_held,jump_pressed,special_pressed). */
+    LightSabreComboCode(object, action_pressed, action_held, jump_pressed, special_pressed);
     JediLightCode(object);
     if ((object->character_data->game_character->flags_090 & 0x8000) != 0) {
         effect = WORLD->game_debris_sys->entries[124].effect;

@@ -34003,3 +34003,12 @@ extern "C" {
     f32 fakeanimendframe[1];
 #pragma bss_seg()
 }
+
+extern "C" {
+#pragma const_seg(".rdata$ComboSaber1NamePc")
+    extern const char ComboSaber1NamePc[12] = "ComboSaber1";
+#pragma const_seg()
+#pragma const_seg(".rdata$ComboSaber2NamePc")
+    extern const char ComboSaber2NamePc[12] = "ComboSaber2";
+#pragma const_seg()
+}

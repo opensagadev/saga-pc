@@ -1359,7 +1359,7 @@ f32 NewCast(NUVEC *position, f32 height_above, f32 roof_range) {
                         }
                     }
                 } else {
-                    if (CAST_LINE(2, 1) == CAST_LINE(2, 1) == 0) {
+                    if (CAST_LINE(2, 1) == 0) {
                         if (CAST_LINE(3, 1) != 0 && CAST_LINE(2, 3) != 0) {
                             winding = 1;
                         second_plane:
@@ -1375,7 +1375,7 @@ f32 NewCast(NUVEC *position, f32 height_above, f32 roof_range) {
                                 (((terrain->groups[group_index].origin.y + surface->vertices[3].y))) + plane_quotient;
                             goto record_plane;
                         }
-                    } else if ((CAST_LINE(1, 0)) != (CAST_LINE(1, 0)) != 0 && 0 != (CAST_LINE(0, 2))) {
+                    } else if (CAST_LINE(1, 0) != 0 && CAST_LINE(0, 2) != 0) {
                         winding = 1;
                     first_plane:
                         normal_z = surface->normals[0].z;

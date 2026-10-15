@@ -26843,3 +26843,12 @@ STATIC_ASSERT(offsetof(GAMEOBJECT, special_move_progress_view_pc) + offsetof(AI_
               0x1074);
 STATIC_ASSERT(offsetof(GAMEOBJECT, special_move_timer_pc) == 0x1090);
 STATIC_ASSERT(offsetof(GAMEOBJECT, special_move_source_pc) == 0x1094);
+
+#ifdef __cplusplus
+extern "C" {
+#endif
+    extern const char ComboSaber1NamePc[12];
+    extern const char ComboSaber2NamePc[12];
+#ifdef __cplusplus
+}
+#endif

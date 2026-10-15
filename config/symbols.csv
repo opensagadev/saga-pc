@@ -1428,6 +1428,8 @@ address    , symbol                                                         , si
 0x49dc60,_StartJetPackFall,170,"void __cdecl(GAMEOBJECT *, i32)"
 0x49dd10,_JetPackCode,697,"void __cdecl(GAMEOBJECT *, i32, i32, i32)"
 0x49dfd0,_ComboRotateCode,258,
+0x0049e2b0,_ComboJumpStartPc,192,
+0x0049e370,_ComboBlockStartPc,213,
 0x49e450,_BlockCode,927,
 0x49ea00,_PunchRangesPc,107,
 0x0049ea70 , _PunchCode                                                     , 3000  ,
@@ -12364,6 +12366,8 @@ address    , symbol                                                         , si
 0x0075bdc0 , _SaberSparksName                                               , 12    , const char [12]
 0x75bdcc,__real@3c008081,4,f32
 0x75bdd0,__real@3b808081,4,f32
+0x0075bdd4,_ComboSaber2NamePc,12,const char[12]
+0x0075bde0,_ComboSaber1NamePc,12,const char[12]
 0x0075bdec , __real@3a83126f                                                , 4     , const f32
 0x75bdf0,??_C@_0L@GAFGMFNG@Jawa_Dizzy?$AA@,11,const char[11]
 0x75bdfc,??_C@_0BB@MDDPNKNA@ForceChokeCrunch?$AA@,17,const char[17]
