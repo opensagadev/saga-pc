@@ -156,7 +156,7 @@ int main(void) {
 }
 ''')
             logger = directory / "log.obj"
-            self.compile(ROOT / "diagnostics/log.c", logger, debug=True)
+            self.compile(ROOT / "src/log.c", logger, debug=True)
             _, wine, env = cc.environment()
             for kind in ("Matching", "Debug"):
                 with self.subTest(kind=kind):

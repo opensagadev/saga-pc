@@ -5177,8 +5177,13 @@ typedef struct gameobject_s {
         struct ZIPUP_s *attached_zipup;
     };
     i32 panel_use_request;
-    u8 unknown_7a0[0x3];
-    u8 field_7a3;
+    union {
+        void *panel_request_data;
+        struct {
+            u8 unknown_7a0[0x3];
+            u8 field_7a3;
+        };
+    };
     u16 field_7a4;
     u16 takeover_start_angle;
     u16 field_7a8;
@@ -5397,6 +5402,7 @@ typedef struct gameobject_s {
     union {
         u8 saved_hitpoints;
         u8 vehicle_secondary_hp;
+        u8 protocol_interface_action;
     };
     u8 bolt_fire_phase;
     u8 action_suppressed;
@@ -7055,6 +7061,7 @@ STATIC_ASSERT(sizeof(NURNDRLIBSCENE) == 0x218);
 STATIC_ASSERT(offsetof(NURNDRLIBSCENE, scene_id) == 0x00);
 STATIC_ASSERT(offsetof(NURNDRLIBSCENE, visibility_alternate_width) == 0);
 STATIC_ASSERT(offsetof(NURNDRLIBSCENE, visibility_occlusion_output) == 0x120);
+STATIC_ASSERT(offsetof(NURNDRLIBSCENE, clear_flags) == 0x04);
 STATIC_ASSERT(offsetof(NURNDRLIBSCENE, clear_flags_08) == 0x08);
 STATIC_ASSERT(offsetof(NURNDRLIBSCENE, bg_colour) == 0x0c);
 STATIC_ASSERT(offsetof(NURNDRLIBSCENE, render_post_alpha_cache) == 0x08);
@@ -10891,6 +10898,13 @@ extern OCCLUSIONMANAGER g_OcclusionManager;
     void __cdecl NuVpGetPosition2(f32 *x, f32 *y);
     extern i32 sceneParametersCount;
     i32 __cdecl NuRndrBeginScene(i32 begin_flags);
+    void __cdecl NuRndrFx(i32 paused, void *context);
+    void __cdecl NuLgtLaserDraw(i32 paused);
+    void __cdecl NuLgtArcLaserDraw(i32 paused);
+    extern f32 NuRndrFxHeightOverridePc;
+    extern f32 NuRndrFxHeightPc;
+    extern f32 NuRndrFxPreviousHeightPc;
+    extern u32 NuRndrFxColourPc;
     void __cdecl NuRndrClear(i32 clear_flags, i32 bg_colour, f32 alpha);
     void __cdecl NuRndrGradClear(i32 clear_flags, i32 top_colour, i32 bottom_colour, f32 alpha);
     extern f32 DEFAULTFRAMETIME;
@@ -26848,6 +26862,7 @@ STATIC_ASSERT(offsetof(GIZMOPICKUP_PC, filter_byte) == 0x14);
 extern "C" {
 #endif
     void __cdecl UpdateStats(void);
+    void __cdecl GizmoPickups_SetOnOff(void);
     f32 __cdecl CurrentHintAlpha(void);
     void __cdecl DrawMiniKitCount(f32, f32, i32, i32);
     u32 __cdecl Cheat_MultiplyScorePc(u32);
@@ -26888,6 +26903,14 @@ extern "C" {
 #endif
     extern const char ComboSaber1NamePc[12];
     extern const char ComboSaber2NamePc[12];
+#ifdef __cplusplus
+}
+#endif
+
+#ifdef __cplusplus
+extern "C" {
+#endif
+    void __cdecl GizPanel_MoveCode(WORLDINFO *, GAMEOBJECT *, i32);
 #ifdef __cplusplus
 }
 #endif

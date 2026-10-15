@@ -1379,3 +1379,18 @@ void __cdecl NuRndrRectUV2di(i32 x, i32 y, i32 width, i32 height, f32 u0, f32 v0
     --NuPrimCSPos;
     NuPrimSetCoordinateSystem(NuPrimCoordSystemStack[NuPrimCSPos]);
 }
+
+void __cdecl NuRndrFx(i32 paused, void *context) {
+    (void)context;
+    NuLgtLaserDraw(paused);
+    NuLgtArcLaserDraw(paused);
+    if (NuRndrFxHeightOverridePc != 0.0f) {
+        NuRndrFxHeightPc = NuRndrFxHeightOverridePc;
+        NuRndrFxColourPc = 0xc04080c0;
+    }
+    currentScene.clear_flags = 1;
+    if (paused != 0)
+        NuRndrFxHeightPc = NuRndrFxPreviousHeightPc;
+    else
+        NuRndrFxPreviousHeightPc = NuRndrFxHeightPc;
+}

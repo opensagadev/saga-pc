@@ -535,3 +535,195 @@ i32 __cdecl GizPanel_GetOutput(void *input, i32 output, i32 mode) {
         return (flags >> 1) & 1;
     return 0;
 }
+
+extern u8 PanelStormActivePc, PanelDroidActivePc, PanelBountyHunterActivePc;
+i32 __cdecl GizPanel_CanUsePanel(GAMEOBJECT *, void *);
+
+STATIC_ASSERT(offsetof(GAMEOBJECT, context_hover_target_y) == 0x778);
+STATIC_ASSERT(offsetof(GAMEOBJECT, context_timer) == 0x77c);
+STATIC_ASSERT(offsetof(GAMEOBJECT, panel_request_data) == 0x7a0);
+STATIC_ASSERT(offsetof(GAMEOBJECT, protocol_interface_action) == 0xe39);
+
+void __cdecl SetProtocolDroidInterfaceAction(GAMEOBJECT *object) {
+    if (object->protocol_interface_action == 3)
+        object->field_7aa = 0x45;
+    else if (object->protocol_interface_action == 2)
+        object->field_7aa = 0x46;
+    else if (object->protocol_interface_action == 1)
+        object->field_7aa = 0x47;
+}
+
+PANEL_MOVEMENT_PC *__cdecl GizPanel_FindNearest(WORLDINFO *world, NUVEC *position, GAMEOBJECT *object,
+                                                f32 *distance_squared, i32 check_eligibility) {
+    PANEL_SYSTEM_PC *system;
+    PANEL_MOVEMENT_PC *nearest = NULL;
+    f32 nearest_distance = 1.0e9f;
+    i32 index;
+    if (world == NULL || world->giz_panel_sys == NULL)
+        return NULL;
+    system = (PANEL_SYSTEM_PC *)world->giz_panel_sys;
+    for (index = 0; index < system->count; ++index, system = (PANEL_SYSTEM_PC *)world->giz_panel_sys) {
+        PANEL_MOVEMENT_PC *panel = &system->panels[index];
+        f32 distance;
+        if (object != NULL) {
+            NUVEC target;
+            if ((panel->flags & 0x0f) != 0x0c || panel->floor_position.y == 2000000.0f)
+                continue;
+            if (check_eligibility != 0 && GizPanel_CanUsePanel(object, panel) == 0)
+                continue;
+            GizPanel_GetAbsTargetPos(panel, &target, 0);
+            distance = NuVecDistSqr(position, &target, NULL);
+        } else {
+            distance = NuVecDistSqr(position, &panel->position, NULL);
+        }
+        if (distance < nearest_distance) {
+            nearest_distance = distance;
+            nearest = panel;
+        }
+    }
+    if (distance_squared != NULL)
+        *distance_squared = nearest_distance;
+    return nearest;
+}
+
+void __cdecl GizPanel_PlaySfx(char *name, NUVEC *position, i32 player_bits) {
+    i16 sfx_id;
+    if (name == NULL || position == NULL)
+        return;
+    sfx_id = (i16)GetSfxId(name);
+    if (sfx_id == -1)
+        return;
+    if (player_bits == 0) {
+        PlaySfxById(sfx_id, position);
+    } else {
+        if ((player_bits & 1) != 0) {
+            nusound_special_positions[1] = *position;
+            PlaySfxById(sfx_id, &nusound_special_positions[1]);
+            nusound_special_positions[1] = nusound_special_positions[0];
+        }
+        if ((player_bits & 2) != 0) {
+            nusound_special_positions[2] = *position;
+            PlaySfxById(sfx_id, &nusound_special_positions[2]);
+            nusound_special_positions[2] = nusound_special_positions[0];
+        }
+    }
+}
+
+void __cdecl GizPanel_MoveCode(WORLDINFO *world, GAMEOBJECT *object, i32 use) {
+    PANEL_MOVEMENT_PC *panel;
+    f32 distance;
+    f32 radius;
+    volatile f32 radius_squared;
+    (void)world;
+    if (object->field_db0 > 0.0f)
+        object->field_db0 -= FRAMETIME;
+    PanelStormActivePc = 0;
+    PanelDroidActivePc = 0;
+    PanelBountyHunterActivePc = 0;
+    if (object->character_context == 0x0b && object->grapple != NULL) {
+        if (object->character_model->model_data_b[object->field_7aa] == NULL ||
+            AnimPlaying(&object->anim_packet, object->field_7aa, 1, 0) != NULL) {
+            object->context_hover_target_y += FRAMETIME;
+            if (object->context_hover_target_y > 1.0f)
+                object->context_hover_target_y = 1.0f;
+            object->context_timer -= FRAMETIME;
+            if (object->context_timer <= 0.0f) {
+                object->character_context = -1;
+                ((PANEL_MOVEMENT_PC *)object->grapple)->flags &= (u8)~1;
+                ((PANEL_MOVEMENT_PC *)object->grapple)->flags |= 2;
+                object->grapple = NULL;
+            }
+            if ((object->flags_e20 & 0x1000) == 0)
+                object->flags_e20 |= 0x1000;
+        } else {
+            object->context_timer -= FRAMETIME;
+            if (object->context_timer <= 0.0f) {
+                if (object->grapple != NULL) {
+                    NewBuzz(object->pad->bound_pad, 0.1f, 0);
+                    if (((PANEL_MOVEMENT_PC *)object->grapple)->model_variant == 2)
+                        PlaySfx("Hunter_Granted", &object->collision_position);
+                    if (((PANEL_MOVEMENT_PC *)object->grapple)->model_variant == 3)
+                        PlaySfx("Trooper_Granted", &object->collision_position);
+                } else {
+                    NewRumble(object->pad->bound_pad, 0.5f, 0);
+                }
+                if ((object->flags_1fc & 0x80) != 0) {
+                    u8 variant = ((PANEL_MOVEMENT_PC *)object->grapple)->model_variant;
+                    if (variant == 0 || variant == 1) {
+                        if (StartupGameFlag1 != 0 && Mission_Active(NULL) != NULL) {
+                            Hint_SetComplete(0x2b9);
+                        } else {
+                            Hint_SetComplete(0x25f);
+                            LswForceUsedHintFlagsPc |= 4;
+                        }
+                    } else if (variant == 3) {
+                        Hint_SetComplete(0x260);
+                    } else if (variant == 2) {
+                        Hint_SetComplete(0x261);
+                    }
+                }
+                object->character_context = -1;
+                ((PANEL_MOVEMENT_PC *)object->grapple)->flags &= (u8)~1;
+                ((PANEL_MOVEMENT_PC *)object->grapple)->flags |= 2;
+                object->grapple = NULL;
+            } else if ((object->character_data->model_flags & 0x20) != 0) {
+                SetProtocolDroidInterfaceAction(object);
+            }
+        }
+        return;
+    }
+    if (object->character_context != -1 && object->character_context != 1 && object->character_context != 2 &&
+        !objInNetWaitContext(object, 0x0b))
+        return;
+    panel = GizPanel_FindNearest(WORLD, &object->position, object, &distance, 1);
+    if (panel != NULL) {
+        radius = (f32)((0.25 + object->bounds_radius) * panel->target_scale);
+        radius_squared = radius * radius;
+        if (!(distance < radius_squared) ||
+            (use == 0 && (object->panel_use_request != 1 || object->panel_request_data == NULL)))
+            return;
+        object->movement_facing_angle = panel->y_rotation;
+        object->context_hover_target_y = 0.0f;
+        object->delayed_turn_timer = 0.0f;
+        object->flags_e20 &= ~0x1000u;
+        object->character_context = 0x0b;
+        object->grapple = panel;
+        object->field_7b3 = 0;
+        FastWeaponIn(object, 0);
+        object->flags_e24 |= 0x200;
+        panel = (PANEL_MOVEMENT_PC *)object->grapple;
+        if (panel->model_variant == 2) {
+            object->field_7aa = object->character_model->model_data_b[0x46] != NULL ? 0x46 : 0x45;
+            Hint_SetComplete(0x261);
+            Hint_SetComplete(0x26a);
+        } else if (panel->model_variant == 3) {
+            object->field_7aa = object->character_model->model_data_b[0x45] != NULL
+                                    ? 0x45
+                                    : (object->character_model->model_data_b[0x46] != NULL ? 0x46 : 0x45);
+            MakeBaddiesForgetAboutParty(1);
+            Hint_SetComplete(0x260);
+            Hint_SetComplete(0x269);
+        } else {
+            object->field_7aa = 0x18;
+            if (panel->model_variant == 1) {
+                if (!InStory() || (((PANEL_MOVEMENT_PC *)object->grapple)->draw_flags & 4) == 0)
+                    GizPanel_PlaySfx("TC14_VLA", &object->collision_position, 1 << object->field_280);
+                if ((object->character_data->model_flags & 0x20) != 0)
+                    SetProtocolDroidInterfaceAction(object);
+            } else {
+                if (!InStory() || (((PANEL_MOVEMENT_PC *)object->grapple)->draw_flags & 4) == 0)
+                    GizPanel_PlaySfx("R2D2_VLA", &object->collision_position, 1 << object->field_280);
+            }
+            Hint_SetComplete(0x25f);
+            LswForceUsedHintFlagsPc |= 4;
+        }
+        object->context_timer = AnimDuration((i16)object->id, object->field_7aa, 0.0f, 0.0f, 1);
+        object->field_db0 = 0.0f;
+        if (object->context_timer <= 0.0f)
+            object->context_timer = 2.0f;
+    } else if (use != 0 && (object->flags_1fc & 0x80) != 0 && (object->character_data->model_flags & 0x20) != 0 &&
+               object->field_db0 <= 0.0f) {
+        GizPanel_PlaySfx("TC14_VLN", &object->collision_position, 1 << object->field_280);
+        object->field_db0 = 0.5f;
+    }
+}

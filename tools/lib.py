@@ -85,6 +85,8 @@ def compiled_objects():
     sources = sorted([*ROOT.glob("src/**/*.cpp"), *ROOT.glob("src/**/*.c")])
     objects = {}
     for source in sources:
+        if source == ROOT / "src/log.c":
+            continue
         unit = source.relative_to(ROOT).as_posix()
         path = object_path(unit)
         if not path.is_file():

@@ -6608,7 +6608,7 @@ after_gravity:
             animations |= 0x101;
         JumpCode(object, jump_pressed, jump_held, animations, action_pressed, action_held, -1);
     }
-    STUBBED_NAMED(0x0046eda0); /* Native4b4e7e: WORLD,object,special_pressed; GizPanel_MoveCode. */
+    GizPanel_MoveCode(WORLD, object, special_pressed);
     HatMachine_MoveCode(WORLD, object, special_pressed);
     ZipUp_MoveCode(object, special_pressed);
     if ((object->character_data->model_flags & 0x100000) != 0)
@@ -8470,7 +8470,7 @@ void __cdecl Move_GEONOSIAN(GAMEOBJECT *object) {
     TakeOverCode(object, object->pad->buttons_pressed & GAMEPAD_TAG);
     JetPackCode(object, jump_pressed, 0, 0);
     JumpCode(object, 0, 0, 0x80, 0, 0, -1);
-    STUBBED_NAMED(0x0046eda0); /* Native4b670f: GizPanel_MoveCode(WORLD,object,special_pressed), ignored action. */
+    GizPanel_MoveCode(WORLD, object, special_pressed);
     HatMachine_MoveCode(WORLD, object, special_pressed);
     Lever_MoveCode(WORLD, object);
     if ((object->character_data->model_flags & 0x40000) != 0)
@@ -8523,7 +8523,7 @@ void __cdecl Move_JAWA(GAMEOBJECT *object) {
     Lever_MoveCode(WORLD, object);
     STUBBED_NAMED(0x004d0290); /* Native4b3cd3: ThermalDetonator_MoveCode(object), ignored action. */
     HatMachine_MoveCode(WORLD, object, special_pressed);
-    STUBBED_NAMED(0x0046eda0); /* Native4b3cee: GizPanel_MoveCode(WORLD,object,special_pressed), ignored action. */
+    GizPanel_MoveCode(WORLD, object, special_pressed);
     WeaponOutCode(object);
     WeaponInCode(object);
     WeaponScalingCode(object);
@@ -8615,7 +8615,7 @@ void __cdecl Move_DROIDGENERIC(GAMEOBJECT *object) {
     }
     if ((object->character_data->model_flags & 0x40) != 0) {
         JumpCode(object, jump_pressed, jump_held, 4, 0, 0, -1);
-        STUBBED_NAMED(0x0046eda0); /* Native4b6045: GizPanel_MoveCode(WORLD,object,(ACTION|SPECIAL)&pressed). */
+        GizPanel_MoveCode(WORLD, object, (GAMEPAD_ACTION | GAMEPAD_SPECIAL) & object->pad->buttons_pressed);
     } else {
         Glide_MoveCode(object);
         if (object->id == (u16)id_SUPERBATTLEDROID) {
@@ -8663,7 +8663,7 @@ zap:
     if ((i8)object->character_data->game_character->flags_094_bytes[0] < 0)
         STUBBED_NAMED(0x004b29f0); /* Native4b6270: CommunicateCode(object EAX,SPECIAL&pressed,0). */
     if ((object->character_data->model_flags & 0x20) != 0) {
-        STUBBED_NAMED(0x0046eda0); /* Native4b629e: GizPanel_MoveCode(WORLD,object,(ACTION|SPECIAL)&pressed). */
+        GizPanel_MoveCode(WORLD, object, (GAMEPAD_ACTION | GAMEPAD_SPECIAL) & object->pad->buttons_pressed);
         if (WORLD->current_level == LevelFixupSlotPc0087b218)
             BigJumpCode(object);
     }
@@ -9026,7 +9026,7 @@ void __cdecl Move_JEDI(GAMEOBJECT *object) {
     if ((object->character_data->game_character->flags_090 & 0x400000) != 0)
         jump_animations |= 0x100;
     JumpCode(object, jump_pressed, jump_held, jump_animations, action_pressed, action_held, hit_effect);
-    STUBBED_NAMED(0x0046eda0); /* Native4b365a: GizPanel_MoveCode(WORLD,object,special_pressed). */
+    GizPanel_MoveCode(WORLD, object, special_pressed);
     HatMachine_MoveCode(WORLD, object, special_pressed);
     ZipUp_MoveCode(object, special_pressed);
     STUBBED_NAMED(0x00592280); /* Native4b3675: BuildIt_MoveCode(object), ignored action. */
@@ -9132,7 +9132,7 @@ void __cdecl Move_WEIRDO(GAMEOBJECT *object) {
     else if (!has_sabre)
         jump_animations |= 0x200;
     JumpCode(object, jump_pressed, jump_held, jump_animations, action_pressed, action_held, hit_effect);
-    STUBBED_NAMED(0x0046eda0); /* Native4b5a7b: GizPanel_MoveCode(WORLD,object,special_pressed). */
+    GizPanel_MoveCode(WORLD, object, special_pressed);
     HatMachine_MoveCode(WORLD, object, special_pressed);
     ZipUp_MoveCode(object, special_pressed);
     if ((object->character_data->model_flags & 0x100000) != 0)

@@ -218,7 +218,7 @@ def clang_tool(name):
 
 def source_files(headers=False):
     suffixes = {".c", ".cpp", ".h", ".inc"} if headers else {".c", ".cpp"}
-    return sorted(path.relative_to(ROOT).as_posix() for directory in (ROOT / "src", ROOT / "diagnostics")
+    return sorted(path.relative_to(ROOT).as_posix() for directory in (ROOT / "src",)
                   for path in directory.rglob("*")
                   if path.is_file() and path.suffix in suffixes)
 
@@ -264,7 +264,7 @@ def analysis_configuration():
 
 
 def analysis_language(source):
-    if source == "diagnostics/log.c":
+    if source == "src/log.c":
         return ["-x", "c", "-std=c89", "-DSAGA_DEBUG"]
     return ["-x", "c", "-std=c89"] if source.endswith(".c") else [
         "-x", "c++", "-std=c++98", "-fdelayed-template-parsing"]

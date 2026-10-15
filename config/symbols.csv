@@ -1019,6 +1019,7 @@ address    , symbol                                                         , si
 0x46eba0,_GizPanels_AllocateProgressData,21,"void * __cdecl(VARIPTR *, VARIPTR *)"
 0x46ebc0,_GizPanels_ClearProgress,24,"void __cdecl(void *, void *)"
 0x46ebe0,_GizPanels_StoreProgress,182,"void __cdecl(void *, void *, void *)"
+0x0046eca0,_GizPanel_PlaySfx,244,"void __cdecl(char *, NUVEC *, i32)"
 0x46eda0,_GizPanel_MoveCode,1387,
 0x46f4d0,_GizPanel_Reset,326,
 0x46f620,_GizPanels_Reset,197,"void __cdecl(void *, void *, void *)"
@@ -1508,6 +1509,7 @@ address    , symbol                                                         , si
 0x4a9e40,_Animate_ASTROMECH,283,void __cdecl(GAMEOBJECT *)
 0x4a9f60,_PostAnimate_ASTROMECH,660,void __cdecl(GAMEOBJECT *)
 0x4aa200,_SetProtocolDroidDeactivatedAction,52,void __cdecl(GAMEOBJECT *)
+0x004aa240,_SetProtocolDroidInterfaceAction,52,"void __cdecl(GAMEOBJECT *)"
 0x4aa280,_SetProtocolDroidFallAnim,50,i32 __cdecl(GAMEOBJECT *)
 0x4aa2c0,_Animate_PROTOCOL,459,void __cdecl(GAMEOBJECT *)
 0x4aa490,_Animate_BATTLEDROID,258,void __cdecl(GAMEOBJECT *)
@@ -5728,6 +5730,7 @@ address    , symbol                                                         , si
 0x60a5f0,_PCGraphicsInitializeFramebuffers,425,
 0x0060a7a0,_PCGraphicsCopyFramebufferTex2DPc,137,"void __cdecl(i32,GRAPHICS_RENDER_TEXTURE_PC *,i32,i32,i32,i32,i32)"
 0x60a8b0,??0NuMainFilter@@QAE@XZ,39,native ctor fullvptr/field proof
+0x0060af80,_NuRndrFx,100,"void __cdecl(i32,void *)"
 0x60aff0,_NuRndrSwapScreen,1465,i32 __cdecl(i32)
 0x60b5b0,_NuRndrSwapScreenEx,24,"i32 __cdecl(i32,void (__cdecl*)(void))"
 0x60b5d0,_BuildDebrisVerts,1360,"void __cdecl (DEBRIS_PART_HEADER_PC *, DEBRIS_PARTICLE_CHUNK_PC *, NUMTL *, f32, NUMTX *, i32, f32, f32, f32, f32)"
@@ -18979,6 +18982,8 @@ address    , symbol                                                         , si
 0x80e198,_NuDisplayHandlerOpacityPc,,f32
 0x0080e1a8,_DwaWeightCursorPc,,
 0x0080e1ac,_DwaPointerCursorPc,,
+0x0080e214,_NuRndrFxHeightPc,4,f32
+0x0080e218,_NuRndrFxPreviousHeightPc,4,f32
 0x80e228,_RenderPostViewportPrefixPc,,RENDER_POST_VIEWPORT_PREFIX_PC
 0x80e258,_PCSpecialProjectionAdjust,,PC_SPECIAL_PROJECTION_ADJUST
 0x80e268,_NuDebrisIdealDynamicVBSizePc,,u32
@@ -19536,6 +19541,9 @@ address    , symbol                                                         , si
 0x879378,_PowerUp_PanelPosMul,,f32[2]
 0x879380,_PowerUp_PanelYRot,,u16[2]
 0x879384,_coinimpactwait,,f32
+0x0087938c,_PanelStormActivePc,1,u8
+0x0087938d,_PanelDroidActivePc,1,u8
+0x0087938e,_PanelBountyHunterActivePc,1,u8
 0x879390,_GizmoRegistryGizPanelAddTypePc,120,ADDGIZMOTYPE_PC
 0x879408,_giztorpmachine_gizmotype_id,4,i32
 0x879410,_GizmoRegistryGizTorpMachineAddTypePc,120,ADDGIZMOTYPE_PC
@@ -22181,6 +22189,7 @@ address    , symbol                                                         , si
 0x280d3a4,_PCGraphicsFrameScratchCount,,PC_GRAPHICS_FRAME_SCRATCH_VIEW_PC
 0x280d3a8,_PcGeometryResetMatrixPc,,NUMTX
 0x280d3ec,_NuDebrisVertexBuffers,,PC_BUFFER_RESOURCE_PC *[4]
+0x0280d3fc,_NuRndrFxColourPc,4,u32
 0x280d800,_PCGraphicsRenderTextureActive,,u8[32] workingview
 0x280d828,_PcGeometryDistanceOriginPc,,NUVEC4
 0x280d840,_PcGeometryProjectionMatrixPc,,NUMTX
@@ -22226,6 +22235,7 @@ address    , symbol                                                         , si
 0x2854c68,_RendererConfigSecondEnabledPc,,i32
 0x2854ca4,_NuRndrShadowCnt,,i32
 0x02854cdc,_PCFramePresentationStatePc,,i32
+0x02854cec,_NuRndrFxHeightOverridePc,4,f32
 0x2854d04,_RenderFrameCallbackPc,,void (__cdecl*)(void)
 0x2854d08,_NuRndr_DebrisRotMtxPtr,,NUMTX *
 0x2854d0c,_NuDebrisUseSystemMemory,,i32

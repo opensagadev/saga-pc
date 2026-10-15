@@ -18,7 +18,7 @@ endif
 # Parallelize object compilation by default; explicit -j still overrides.
 MAKEFLAGS += -j$(shell nproc)
 
-SOURCES := $(shell find src -type f \( -name '*.cpp' -o -name '*.c' \) | LC_ALL=C sort)
+SOURCES := $(filter-out src/log.c,$(shell find src -type f \( -name '*.cpp' -o -name '*.c' \) | LC_ALL=C sort))
 SOURCE_DIRS := $(shell find src -type d)
 OBJECTS := $(patsubst src/%,$(OBJ_DIR)/%,$(SOURCES:.cpp=.obj))
 OBJECTS := $(OBJECTS:.c=.obj)
@@ -72,7 +72,7 @@ link-strict: $(OBJECTS) $(DIAGNOSTIC_OBJECTS) $(D3DX_LIB) $(DSOUND_LIB) $(D3D9_L
 	$(PYTHON) tools/cc.py --link $(EXE:.exe=.strict.exe) $(OBJECTS) $(DIAGNOSTIC_OBJECTS) -- $(LDFLAGS) $(LDLIBS)
 
 # Debug support contains diagnostics only and never enters Matching objects.
-build/Debug/log.obj: diagnostics/log.c src/diagnostics.h config/toolchain.json Makefile tools/cc.py | build/tools/wine/.ready
+build/Debug/log.obj: src/log.c src/diagnostics.h config/toolchain.json Makefile tools/cc.py | build/tools/wine/.ready
 	$(PYTHON) tools/cc.py $< $@ $(CPPFLAGS) $(CXXFLAGS)
 
 $(D3DX_LIB): tools/d3dx9_35.def tools/cc.py Makefile

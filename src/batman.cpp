@@ -93,7 +93,7 @@ static void NuMainUpdateFrame(WORLDINFO *world, i32 *frame_flag) {
     AddCoinDelay[0] = 0.0f;
     other_level_override = -1;
     Shadow_SetMode();
-    STUBBED_NAMED("NuMainUpdateFrame: GizmoPickups_SetOnOff at 0x0046c7d0");
+    GizmoPickups_SetOnOff();
     LOG_INFO_IF(GameTimer.update_count < 2, "NuMainUpdateFrame before DoInput: world=%p", (void *)WORLD);
     DoInput(WORLD);
     LOG_INFO_IF(GameTimer.update_count < 2, "NuMainUpdateFrame after DoInput: world=%p", (void *)WORLD);
@@ -400,7 +400,7 @@ static void NuMainRenderWorld(WORLDINFO *world) {
     STUBBED_NAMED("NuMainRenderWorld: 0x00596520, SetDepthOfField at 0x004017b0, BurnoutApply at 0x0042fbf0");
     STUBBED_NAMED("NuMainRenderWorld: 0x00491bd0(world->current_gscn) when 0x0087b580 is set");
     NuRndrEndScene();
-    STUBBED_NAMED("NuMainRenderWorld: NuRndrFx(paused, &plr_lastpos) at 0x0060af80");
+    NuRndrFx(paused, &plr_lastpos);
     NuRndrBeginScene(1);
     UpdateDebrisRenderStackPriority();
     SortDebrisRenderStack();

@@ -34143,3 +34143,28 @@ extern "C" {
     i32 ShopSubMoveSfxLockPc;
 #pragma bss_seg()
 }
+
+extern "C" {
+#pragma bss_seg(".bss$PanelStormActivePc")
+    u8 PanelStormActivePc;
+#pragma bss_seg(".bss$PanelDroidActivePc")
+    u8 PanelDroidActivePc;
+#pragma bss_seg(".bss$PanelBountyHunterActivePc")
+    u8 PanelBountyHunterActivePc;
+#pragma bss_seg()
+}
+
+extern "C" {
+#pragma bss_seg(".bss$NuRndrFxHeightOverridePc")
+    f32 NuRndrFxHeightOverridePc;
+#pragma bss_seg()
+#pragma data_seg(".data$NuRndrFxHeightPc")
+    f32 NuRndrFxHeightPc = -10000.0f;
+#pragma data_seg()
+#pragma data_seg(".data$NuRndrFxPreviousHeightPc")
+    f32 NuRndrFxPreviousHeightPc = -10000.0f;
+#pragma data_seg()
+#pragma bss_seg(".bss$NuRndrFxColourPc")
+    u32 NuRndrFxColourPc;
+#pragma bss_seg()
+}

@@ -186,11 +186,10 @@ NuMusic::Voice *NuMusic::FindIdleVoice(void) {
 }
 
 i32 NuMusic::StopAll(i32 mode) {
-    i32 voice_index;
-
-    if ((mode & 2) == 0) {
-        for (voice_index = 0; voice_index < 2; voice_index++) {
-            Voice *voice = &voices[voice_index];
+    (void)mode;
+    for (i32 voice_index = 0; voice_index < 2; ++voice_index) {
+        Voice *voice = &voices[voice_index];
+        if (voice->status != 0 && voice->status != 1) {
             NuSound3StopStereoStream(voice->stream_index * 2);
             if (voice->status != 1) {
                 voice->play_time = 0.0f;
@@ -202,45 +201,6 @@ i32 NuMusic::StopAll(i32 mode) {
             voice->tracks[1] = NULL;
             voice->gain = 0.0f;
         }
-        return 1;
-    }
-
-    {
-        Track *track = voices[0].tracks[voices[0].track_index];
-        if (track == NULL || track->clazz != 0x10) {
-            Voice *voice = &voices[0];
-            NuSound3StopStereoStream(voice->stream_index * 2);
-            if (voice->status != 1) {
-                voice->play_time = 0.0f;
-                voice->status = 1;
-            }
-            voice->fade_rate = 0.0f;
-            voice->track_index = 0;
-            voice->tracks[0] = NULL;
-            voice->tracks[1] = NULL;
-            voice->gain = 0.0f;
-        }
-    }
-
-    {
-        Track *track = voices[1].tracks[voices[1].track_index];
-        if (track != NULL && track->clazz == 0x10) {
-            return 1;
-        }
-    }
-
-    {
-        Voice *voice = &voices[1];
-        NuSound3StopStereoStream(voice->stream_index * 2);
-        if (voice->status != 1) {
-            voice->play_time = 0.0f;
-            voice->status = 1;
-        }
-        voice->fade_rate = 0.0f;
-        voice->track_index = 0;
-        voice->tracks[0] = NULL;
-        voice->tracks[1] = NULL;
-        voice->gain = 0.0f;
     }
     return 1;
 }

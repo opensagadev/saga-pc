@@ -1051,3 +1051,26 @@ void __cdecl GizmoPickup_Activate(GIZMO_PC *gizmo, i32 active) {
         }
     }
 }
+
+/* Native 0046c7d0..0046ca7d. */
+void __cdecl GizmoPickups_SetOnOff(void) {
+    u32 arcade_flags;
+    i32 index;
+    WORLDINFO *world;
+    Arcade_GetMode(&arcade_flags);
+    world = WORLD;
+    for (index = 0; index < 10; ++index) {
+        if (ChallengeMode != 0)
+            GizmoPickupType[index].field_0f = index != 7;
+        else if (index == 7)
+            GizmoPickupType[index].field_0f = 1;
+        else if (index == 6 && world->area_index != -1 && Game.area_save[world->area_index].red_brick_collected != 0)
+            GizmoPickupType[index].field_0f = 1;
+        else if (index == 4 && SuperStory != 0)
+            GizmoPickupType[index].field_0f = 1;
+        else if (index == 9 && world->area != NULL && (world->area->flags & 0x100) != 0)
+            GizmoPickupType[index].field_0f = 1;
+        else
+            GizmoPickupType[index].field_0f = (arcade_flags & 0x10) != 0 && index != 9 && index != 5;
+    }
+}
