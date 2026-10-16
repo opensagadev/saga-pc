@@ -12281,6 +12281,7 @@ typedef struct PC_SHADER_OBJECT_FULL_VIEW PC_SHADER_OBJECT_FULL_VIEW;
     extern const char TakeOverState_ReleasedTakeOver[17];
 
     EXPLOSION_PC *__cdecl AddExplosion(NUVEC *, f32, f32, GAMEOBJECT *, i32, u32);
+    void __cdecl AddSlamDebris(GAMEOBJECT *);
     void __cdecl ResetExplosions(void);
     void __cdecl DrawExplosions(void);
     void __cdecl UpdateExplosions(void);

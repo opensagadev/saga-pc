@@ -36,40 +36,6 @@ being recovered. The object check still requires its address binding and checks
 all relocations, but matching gives it no byte coverage or exact-match credit.
 Compiled functions require complete PC extents.
 
-### Coverage metrics
-
-The README and matcher output separate these measures:
-
-| Metric | Numerator | Denominator |
-| --- | --- | --- |
-| Exact code | Union of complete functions that match the original bytes exactly | Original `.text` virtual size |
-| Mapped code | Union of known symbol extents within code sections, including unimplemented symbols and import thunks | Original code-section virtual size |
-| Mapped file-backed data | Union of known data-section extents within the file-backed portion | Sum of `min(SizeOfRawData, VirtualSize)` for data sections |
-| Mapped zero-fill/BSS | Union of known data-section extents after the file-backed portion | Sum of `max(VirtualSize - SizeOfRawData, 0)` for data sections |
-
-The original PC executable merges most BSS into `.data`; that zero-filled tail
-dominates its virtual storage. Keeping it separate prevents large runtime buffers
-from overwhelming the file-backed data measure. File-backed data includes constants,
-import slots and in-section padding; it is not the size of the whole executable or
-a count of semantically initialized objects. Zero-fill/BSS measures storage, not
-implemented behavior. An empty storage group reports zero bytes and 0%.
-
-All mapping numerators count overlapping owners, aliases and reviewed named members
-once, clip ranges to their section and storage boundary, and give unknown extents
-no byte credit. Code/data classification follows the original section flags, so
-CRT code and storage remain included. Resources, relocations, headers, inter-section
-gaps, and raw alignment tails beyond `VirtualSize` are excluded from these section
-metrics. External import slots/thunks count as mapped extents but not as reconstructed
-or exact-matched definitions.
-
-`matching.json` retains `mapping_data_*`, `mapping_code_data_*` and the older
-whole-image `mapping_percent`/byte totals with their original virtual-storage
-semantics for compatibility; they are not headline progress measures. The split
-fields are `mapping_file_backed_data_*` and `mapping_zero_fill_data_*`, each with
-mapped bytes, total bytes and percent. Fuzzy code similarity remains in the report
-and CLI as a separate advisory measure; it is not exact matching. None of these
-percentages establishes gameplay completion or fidelity.
-
 Compiled COFF symbol and section metadata distinguish functions from data. For
 inventory reporting, an entry without a compiled definition inside the original
 `.text` section is unimplemented code; it never counts as a match. The `ctype`

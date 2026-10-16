@@ -1287,7 +1287,7 @@ void __cdecl GameObjectStuffAfterAnimation(void) {
             }
         }
         if (object->slam_effect != -1)
-            STUBBED_NAMED("AfterAnimation: AddSlamDebris PC42f9d0");
+            AddSlamDebris(object);
         if (object->batarang_release != 0)
             STUBBED_NAMED("AfterAnimation: Batarang_Release PC404620");
         if ((object->flags_e20 & 0x00800000) != 0)

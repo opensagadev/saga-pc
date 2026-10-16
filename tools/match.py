@@ -125,26 +125,22 @@ def repository_paths(value):
 def update_badge(stats):
     path = ROOT / "README.md"
     content = path.read_text()
-    metrics = [("matching", [("exact%20code%20match", "matching_percent", "exact code match")]),
-               ("mapping", [("mapped%20code", "mapping_code_percent", "mapped code"),
-                            ("mapped%20file--backed%20data", "mapping_file_backed_data_percent",
-                             "mapped file-backed data"),
-                            ("mapped%20zero--fill%2FBSS", "mapping_zero_fill_data_percent",
-                             "mapped zero-fill/BSS")])]
-    for metric, badges in metrics:
-        images = []
-        for label, field, alt in badges:
-            value = stats[field]
-            color = "red" if value < 25 else "orange" if value < 75 else "brightgreen"
-            images.append(f"![{alt}](https://img.shields.io/badge/{label}-{value:.3f}%25-{color})")
-        # Start the Markdown row with an image, then keep both closing markers
-        # and the mapping marker inline so HTML blocks do not split the badges.
-        newline = "\n" if metric == "matching" else ""
-        badge = (f"<!-- {metric}-badge -->{newline}"
-                 + " ".join(images) +
-                 f"<!-- /{metric}-badge -->")
+    value = stats["fuzzy_coverage_percent"]
+    color = "red" if value < 25 else "orange" if value < 75 else "brightgreen"
+    badge = ("<!-- matching-badge -->\n"
+             f"![fuzzy code match](https://img.shields.io/badge/fuzzy%20code%20match-{value:.3f}%25-{color})"
+             "<!-- /matching-badge -->")
+    rows = [("Exact code match", "matching_percent", "Byte-identical code."),
+            ("Mapped code", "mapping_code_percent", "Known code extents."),
+            ("Mapped file-backed data", "mapping_file_backed_data_percent", "Known data stored in the executable."),
+            ("Mapped zero-fill/BSS", "mapping_zero_fill_data_percent", "Known zero-initialized storage.")]
+    table = ("<!-- mapping-badge -->\n\n| Metric | Coverage | Meaning |\n"
+             "| --- | ---: | --- |\n"
+             + "\n".join(f"| {label} | {stats[field]:.3f}% | {meaning} |" for label, field, meaning in rows)
+             + "\n\n<!-- /mapping-badge -->")
+    for metric, replacement in (("matching", badge), ("mapping", table)):
         content, count = re.subn(f"<!-- {metric}-badge -->.*?<!-- /{metric}-badge -->",
-                                lambda _: badge, content, flags=re.S)
+                                lambda _: replacement, content, flags=re.S)
         if count != 1:
             raise ValueError(f"README must have one {metric}-badge marker pair")
     path.write_text(content)
