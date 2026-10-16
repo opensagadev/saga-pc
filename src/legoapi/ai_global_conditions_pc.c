@@ -466,3 +466,58 @@ f32 __cdecl Condition_OpponentIsAThreatPc(AISYS_PC *system, AISCRIPTPROCESS_PC *
     (void)argument;
     return packet != NULL && packet->opponent != NULL && (packet->flags & 0x800u) != 0 ? 1.0f : 0.0f;
 }
+
+f32 __cdecl Condition_GotGunPc(AISYS_PC *system, AISCRIPTPROCESS_PC *process, AIPACKET_PC *packet, char *name,
+                               void *argument) {
+    if (packet != NULL && packet->owner != NULL)
+        return (packet->owner->objptr->portal_flags & 4) != 0 ? 1.0f : 0.0f;
+    return 0.0f;
+}
+
+f32 __cdecl Condition_PrefersBrawlingPc(AISYS_PC *system, AISCRIPTPROCESS_PC *process, AIPACKET_PC *packet, char *name,
+                                        void *argument) {
+    if (packet != NULL && packet->owner != NULL)
+        return (packet->owner->character_data->model_flags & 0x80000000u) != 0 ? 1.0f : 0.0f;
+    return 0.0f;
+}
+
+f32 __cdecl Condition_OnGroundPc(AISYS_PC *system, AISCRIPTPROCESS_PC *process, AIPACKET_PC *packet, char *name,
+                                 void *argument) {
+    GAMEOBJECT *object;
+    if (packet != NULL && packet->owner != NULL) {
+        object = packet->owner->objptr;
+        if (object != NULL && (object->field_281 != 0 || object->field_282 != 0))
+            return 1.0f;
+    }
+    return 0.0f;
+}
+
+f32 __cdecl Condition_BeenAlertedPc(AISYS_PC *system, AISCRIPTPROCESS_PC *process, AIPACKET_PC *packet, char *name,
+                                    void *argument) {
+    if (packet != NULL && packet->owner != NULL)
+        return packet->owner->objptr->field_ec0 != 0 ? 1.0f : 0.0f;
+    return 0.0f;
+}
+
+void *__cdecl Condition_AnimationFinishedInitPc(AISYS_PC *system, char *name, AISCRIPT_PC *script) {
+    NUSPECIALHANDLE special;
+    NuSpecialFind(WORLD->current_gscn, &special, name, 1);
+    if (NuSpecialExistsFn(&special) != 0)
+        return NuSpecialGetInstAnim(&special);
+    return NULL;
+}
+
+f32 __cdecl Condition_AnimationFinishedPc(AISYS_PC *system, AISCRIPTPROCESS_PC *process, AIPACKET_PC *packet,
+                                          char *name, void *argument) {
+    NUINSTANIM_TIME_VIEW *instance = (NUINSTANIM_TIME_VIEW *)argument;
+    void *animation;
+    f64 time;
+    if (instance != NULL && (instance->flags & 1) == 0) {
+        animation = WORLD->current_gscn->instance_animation_data[instance->animation_index];
+        if (animation != NULL) {
+            time = (f64)instance->ltime;
+            return (f64)NuAnimEndFrameOld(animation) <= time ? 1.0f : 0.0f;
+        }
+    }
+    return 0.0f;
+}

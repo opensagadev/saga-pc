@@ -421,8 +421,8 @@ address    , symbol                                                         , si
 0x440810,_Condition_GlynTestPc,3,
 0x440820,_Condition_DebugPc,7,
 0x440830,_Condition_ActivePc,23,
-0x440850,_Condition_GotGunPc,35,
-0x440880,_Condition_PrefersBrawlingPc,36,
+0x440850,_Condition_GotGunPc,35,"f32 __cdecl (AISYS_PC *, AISCRIPTPROCESS_PC *, AIPACKET_PC *, char *, void *)"
+0x440880,_Condition_PrefersBrawlingPc,36,"f32 __cdecl (AISYS_PC *, AISCRIPTPROCESS_PC *, AIPACKET_PC *, char *, void *)"
 0x4408b0,_Condition_ObstacleAtEndInit,39,"void *__cdecl(AISYS_PC *,char *,AISCRIPT_PC *)"
 0x4408e0,_Condition_SpecialAtStartInitPc,39,
 0x440910,_Condition_ObstacleAtStartPc,43,
@@ -491,8 +491,8 @@ address    , symbol                                                         , si
 0x4417d0,_Condition_OffScreenTimerInitPc,38,
 0x441800,_Condition_OffScreenTimerPc,42,
 0x441830,_Condition_PlayerOnGroundPc,33,
-0x441860,_Condition_OnGroundPc,48,
-0x441890,_Condition_BeenAlertedPc,35,
+0x441860,_Condition_OnGroundPc,48,"f32 __cdecl (AISYS_PC *, AISCRIPTPROCESS_PC *, AIPACKET_PC *, char *, void *)"
+0x441890,_Condition_BeenAlertedPc,35,"f32 __cdecl (AISYS_PC *, AISCRIPTPROCESS_PC *, AIPACKET_PC *, char *, void *)"
 0x4418c0,_Condition_OnObjectInitPc,78,
 0x441910,_Condition_PlayerOnObjectPc,85,
 0x441970,_Condition_EitherPlayerOnObjectPc,157,
@@ -538,8 +538,8 @@ address    , symbol                                                         , si
 0x4424b0,_Condition_MessagePc,15,
 0x4424c0,_Condition_ScriptParamInitPc,71,
 0x442510,_Condition_ScriptParamPc,20,
-0x442530,_Condition_AnimationFinishedInitPc,72,
-0x442580,_Condition_AnimationFinishedPc,82,
+0x442530,_Condition_AnimationFinishedInitPc,72,"void *__cdecl (AISYS_PC *, char *, AISCRIPT_PC *)"
+0x442580,_Condition_AnimationFinishedPc,82,"f32 __cdecl (AISYS_PC *, AISCRIPTPROCESS_PC *, AIPACKET_PC *, char *, void *)"
 0x4425e0,_Condition_RigidAnimFrameInitPc,72,
 0x442630,_Condition_RigidAnimFramePc,15,
 0x442640,_Condition_CutSceneStartedInitPc,27,
