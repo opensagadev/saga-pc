@@ -26098,6 +26098,11 @@ extern "C" {
     extern f32 StatusMiniKitDirectionOffsetPc, StatusMiniKitProgressPc;
     extern STATUS_MINIKIT_DRAW_CACHE_PC StatusMiniKitDrawCachePc[10];
     void __cdecl DrawStatusMiniKit(f32, f32, f32, f32, f32, i32, STATUSPACKET_s *, f32);
+    void __cdecl MiniKit_LSW_Skip(STATUS_STAGE_s *, STATUSPACKET_s *);
+    void __cdecl MiniKit_LSW_Update(STATUS_STAGE_s *, STATUSPACKET_s *, f32);
+    void __cdecl MiniKit_LSW_Draw(STATUS_STAGE_s *, STATUSPACKET_s *, i32);
+    extern f32 StatusMiniKitEntranceHeightPc, StatusMiniKitScalePc, StatusMiniKitPieceDurationPc;
+    extern f32 StatusMiniKitXPc, StatusMiniKitYPc;
     i32 __cdecl UpdateNewMiniKits(STATUSPACKET_s *, STATUS_STAGE_s *);
     void __cdecl AddStatusMiniKitParts(void);
     extern f32 StatusMiniKitJibberLengthPc, StatusMiniKitSlideTimePc, StatusMiniKitPopTimerPc;

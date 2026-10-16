@@ -1437,3 +1437,290 @@ void __cdecl AddStatusMiniKitParts(void) {
     }
     SetPanelLights(1.0f);
 }
+
+extern "C" {
+    f32 StatusMiniKitEntranceHeightPc = 1.4f;
+    f32 StatusMiniKitScalePc = 0.333f;
+    f32 StatusMiniKitPieceDurationPc = 0.4f;
+    f32 StatusMiniKitXPc = 0.0f;
+    f32 StatusMiniKitYPc = 0.0f;
+}
+
+void __cdecl MiniKit_LSW_Skip(STATUS_STAGE_s *stage, STATUSPACKET_s *packet) {
+    if ((packet->field_0xb0 & 2) == 0) {
+        StatusCurrentMinikitPc = (i32)((u32)StatusCurrentMinikitPc + (u32)StatusNewMinikitCountPc);
+        if ((packet->field_0xb0 & 0x10) != 0 && (stage->field_0x14 != 6 || !(stage->field_0x18 >= stage->field_0x1c)))
+            IncreaseScore(packet->score, 50000, 0);
+    }
+    NextStatusStage(packet);
+}
+
+void __cdecl MiniKit_LSW_Update(STATUS_STAGE_s *stage, STATUSPACKET_s *packet, f32 elapsed) {
+    switch (stage->field_0x14) {
+        case 0:
+            StatusNewMinikitCountPc = packet->new_minikits;
+            if (StatusNewMinikitCountPc > 0)
+                StatusCurrentMinikitPc =
+                    (i32)((u32)Game.area_save[packet->area->index].minikit_count - (u32)StatusNewMinikitCountPc);
+            else
+                StatusCurrentMinikitPc = Game.area_save[packet->area->index].minikit_count;
+            stage->field_0x18 = 0.0f;
+            stage->field_0x14 = 1;
+            stage->field_0x1c = 1.0f;
+            break;
+        case 1: {
+            volatile f32 time = (f64)stage->field_0x18 + elapsed;
+            stage->field_0x18 = time;
+            if (stage->field_0x18 >= stage->field_0x1c) {
+                stage->field_0x18 = 0.0f;
+                if (StatusNewMinikitCountPc == 0) {
+                    PlaySfx("TrueJedi_NOT", NULL);
+                    stage->field_0x1c = 1.0f;
+                    stage->field_0x14 = 4;
+                } else {
+                    stage->field_0x14 = 2;
+                    stage->field_0x1c = 0.5f;
+                    StatusMiniKitProgressPc = 1.0f;
+                }
+            }
+            break;
+        }
+        case 2: {
+            volatile f32 time = (f64)stage->field_0x18 + elapsed;
+            stage->field_0x18 = time;
+            if (stage->field_0x18 >= stage->field_0x1c) {
+                stage->field_0x18 = 0.0f;
+                stage->field_0x14 = 3;
+                stage->field_0x1c = StatusMiniKitPieceDurationPc;
+                PlaySfx("Jp_Ana_Jump", NULL);
+            }
+            break;
+        }
+        case 3: {
+            if (StatusNewMinikitCountPc > 0) {
+                volatile f32 previous = stage->field_0x18;
+                volatile f32 time = (f64)stage->field_0x18 + elapsed;
+                stage->field_0x18 = time;
+                volatile f32 sound_start = (f64)stage->field_0x1c - StatusMiniKitJibberLengthPc;
+                if (previous < sound_start && stage->field_0x18 >= sound_start) {
+                    NewStatusRumbleBuzz(-1, 0.0f, 0.1f, 0);
+                    PlaySfx("MK-Panel", NULL);
+                }
+                if (UpdateNewMiniKits(packet, stage) == 1) {
+                    if (StatusCurrentMinikitPc < packet->minikit_count) {
+                        stage->field_0x14 = 2;
+                        stage->field_0x1c = 0.5f;
+                        stage->field_0x18 = 0.0f;
+                    } else {
+                        stage->field_0x1c = 1.0f;
+                        stage->field_0x18 = 0.0f;
+                        stage->field_0x14 = 4;
+                    }
+                }
+            } else {
+                stage->field_0x18 = 0.0f;
+                stage->field_0x1c = 3.0f;
+                stage->field_0x14 = 4;
+            }
+            if (stage->field_0x14 == 4) {
+                if ((packet->field_0xb0 & 0x10) != 0) {
+                    stage->field_0x14 = 6;
+                    stage->field_0x1c = 1.0f;
+                } else {
+                    PlaySfx("TrueJedi_NOT", NULL);
+                }
+            }
+            break;
+        }
+        case 4: {
+            volatile f32 time = (f64)stage->field_0x18 + elapsed;
+            stage->field_0x18 = time;
+            if (stage->field_0x18 >= stage->field_0x1c)
+                NextStatusStage(packet);
+            break;
+        }
+        case 6: {
+            SetDrawGoldBrick(packet, packet->current_gold_brick);
+            volatile f32 previous = stage->field_0x18;
+            volatile f32 time = (f64)stage->field_0x18 + elapsed;
+            stage->field_0x18 = time;
+            if (stage->field_0x18 >= stage->field_0x1c) {
+                if (previous < stage->field_0x1c) {
+                    AddStatusMiniKitParts();
+                    NewStatusRumbleBuzz(-1, 1.0f, 0.1f, 0);
+                    PlaySfx("Explode1", NULL);
+                } else if (FindGameMsgsWithID(1, 0, -1, NULL) == 0) {
+                    PlaySfx("Shop_BuyCheat", NULL);
+                    NextStatusStage(packet);
+                }
+            } else {
+                u32 frame = (u32)GameTimer.update_count;
+                if (frame % 6u < 3u && (frame - 1u) % 6u >= 3u)
+                    NewStatusRumbleBuzz(-1, 0.0f, 0.0f, 2);
+            }
+            break;
+        }
+    }
+}
+
+void __cdecl MiniKit_LSW_Draw(STATUS_STAGE_s *stage, STATUSPACKET_s *packet, i32 current) {
+    if (current != 0) {
+        volatile f32 title_alpha = 1.0f;
+        switch (stage->field_0x14) {
+            case 0:
+                title_alpha = 0.0f;
+                break;
+            case 1: {
+                title_alpha = stage->field_0x18;
+                volatile f32 angle_time;
+                if (stage->field_0x18 < 1.0f) {
+                    angle_time = stage->field_0x18;
+                } else {
+                    volatile i32 unused_duration_compare = stage->field_0x1c < stage->field_0x18;
+                    (void)unused_duration_compare;
+                    angle_time = 1.0f;
+                }
+                volatile i32 angle = (i32)((f64)angle_time * 32768.0 + 16384.0);
+                volatile f32 blend = 1.0 - ((f64)NuTrigTable[(angle >> 1) & 0x7fff] + 1.0) * 0.5;
+                if (stage->field_0x18 <= stage->field_0x1c) {
+                    volatile f32 y = ((f64)StatusMiniKitYPc - StatusMiniKitEntranceHeightPc) * (f64)blend +
+                                     StatusMiniKitEntranceHeightPc;
+                    DrawStatusMiniKit(StatusMiniKitXPc, y, StatusAllMiniKitsZPc, StatusMiniKitScalePc, 0.0f,
+                                      StatusCurrentMinikitPc, packet, 0.0f);
+                } else {
+                    DrawStatusMiniKit(StatusMiniKitXPc, StatusMiniKitYPc, StatusAllMiniKitsZPc, StatusMiniKitScalePc,
+                                      0.0f, StatusCurrentMinikitPc, packet, 0.0f);
+                }
+                i32 count = packet->new_minikits > 0 ? StatusCurrentMinikitPc
+                                                     : Game.area_save[packet->area->index].minikit_count;
+                if (count < 0)
+                    count = 0;
+                DrawMiniKitCount(blend, 1.0f, count, packet->minikit_max);
+                break;
+            }
+            case 2: {
+                volatile f32 collected_scale;
+                if (stage->field_0x18 < (f64)stage->field_0x1c - 0.25) {
+                    volatile f32 duration = (f64)stage->field_0x1c - 0.25;
+                    volatile i32 angle =
+                        (i32)(((f64)StatusCoinsRatioPc(stage->field_0x18, duration) * 16384.0 + 49152.0) + 16384.0);
+                    collected_scale = (f64)NuTrigTable[(angle >> 1) & 0x7fff] * StatusMiniKitScalePc;
+                } else {
+                    collected_scale = StatusMiniKitScalePc;
+                }
+                DrawStatusMiniKit(StatusMiniKitXPc, StatusMiniKitYPc, StatusAllMiniKitsZPc, StatusMiniKitScalePc,
+                                  collected_scale, (i32)((u32)StatusCurrentMinikitPc + 1u), packet, 0.0f);
+                i32 count = packet->new_minikits > 0 ? StatusCurrentMinikitPc
+                                                     : Game.area_save[packet->area->index].minikit_count;
+                if (count < 0)
+                    count = 0;
+                DrawMiniKitCount(1.0f, 1.0f, count, packet->minikit_max);
+                break;
+            }
+            case 3: {
+                volatile f32 blend = 0.0f;
+                if ((f64)stage->field_0x1c - StatusMiniKitJibberLengthPc < stage->field_0x18)
+                    blend = ((f64)stage->field_0x18 - ((f64)stage->field_0x1c - StatusMiniKitJibberLengthPc)) /
+                            StatusMiniKitJibberLengthPc;
+                DrawStatusMiniKit(StatusMiniKitXPc, StatusMiniKitYPc, StatusAllMiniKitsZPc, StatusMiniKitScalePc,
+                                  StatusMiniKitScalePc, (i32)((u32)StatusCurrentMinikitPc + 1u), packet, blend);
+                i32 count = packet->new_minikits > 0 ? StatusCurrentMinikitPc
+                                                     : Game.area_save[packet->area->index].minikit_count;
+                if (blend >= 0.5f)
+                    count = (i32)((u32)count + 1u);
+                if (count < 0)
+                    count = 0;
+                volatile i32 angle = (i32)((f64)blend * 32768.0 + 16384.0);
+                union {
+                    f32 value;
+                    u32 bits;
+                } pulse;
+                pulse.value = NuTrigTable[(angle >> 1) & 0x7fff];
+                pulse.bits &= 0x7fffffffu;
+                volatile f32 inverse = 1.0 - (f64)pulse.value;
+                volatile f32 size = (f64)inverse * 0.25 + 1.0;
+                DrawMiniKitCount(1.0f, size, count, packet->minikit_max);
+                break;
+            }
+            case 4: {
+                title_alpha = 1.0 - (f64)stage->field_0x18;
+                volatile i32 angle =
+                    (i32)((f64)StatusCoinsRatioPc(stage->field_0x18, stage->field_0x1c) * 32768.0 + 16384.0);
+                volatile f32 blend = 1.0 - ((f64)NuTrigTable[(angle >> 1) & 0x7fff] + 1.0) * 0.5;
+                volatile f32 scale =
+                    ((f64)StatusAllMiniKitsScalePc - StatusMiniKitScalePc) * (f64)blend + StatusMiniKitScalePc;
+                volatile f32 y = ((f64)StatusAllMiniKitsYPc - StatusMiniKitYPc) * (f64)blend + StatusMiniKitYPc;
+                volatile f32 x = ((f64)StatusAllMiniKitsXPc - StatusMiniKitXPc) * (f64)blend + StatusMiniKitXPc;
+                DrawStatusMiniKit(x, y, StatusAllMiniKitsZPc, scale, 1.0f,
+                                  Game.area_save[packet->area->index].minikit_count, packet, 0.0f);
+                volatile f32 off = stage->field_0x18 < 1.0f ? 1.0 - (f64)stage->field_0x18 : 0.0;
+                volatile i32 count_angle = (i32)((f64)off * 32768.0 + 16384.0);
+                volatile f32 count_blend = 1.0 - ((f64)NuTrigTable[(count_angle >> 1) & 0x7fff] + 1.0) * 0.5;
+                DrawMiniKitCount(count_blend, 1.0f, Game.area_save[packet->area->index].minikit_count,
+                                 packet->minikit_max);
+                break;
+            }
+            case 6: {
+                title_alpha = 1.0 - (f64)stage->field_0x18;
+                volatile f32 off = stage->field_0x18 < 1.0f ? 1.0 - (f64)stage->field_0x18 : 0.0;
+                if (stage->field_0x18 < stage->field_0x1c) {
+                    volatile i32 angle = (i32)((f64)off * 32768.0 + 16384.0);
+                    volatile f32 blend = 1.0 - ((f64)NuTrigTable[(angle >> 1) & 0x7fff] + 1.0) * 0.5;
+                    DrawMiniKitCount(blend, 1.0f, Game.area_save[packet->area->index].minikit_count,
+                                     packet->minikit_max);
+                    DrawStatusMiniKit(StatusMiniKitXPc, StatusMiniKitYPc, StatusAllMiniKitsZPc, StatusMiniKitScalePc,
+                                      1.0f, Game.area_save[packet->area->index].minikit_count, packet, 0.0f);
+                }
+                break;
+            }
+        }
+        if (title_alpha < 0.0f)
+            title_alpha = 0.0f;
+        else if (title_alpha > 1.0f)
+            title_alpha = 1.0f;
+        volatile u8 opacity = (u8)((f64)title_alpha * 128.0);
+        Text3DEx(TTab[TextIdPc8808d0], 0.0f, StatusCoinsTitleYPc, 1.0f, StatusCoinsTitleScalePc,
+                 StatusCoinsTitleScalePc, StatusCoinsTitleScalePc, 0, 255, 255, 255, opacity);
+        return;
+    }
+    if (stage->field_0x12 == 0)
+        return;
+    volatile f32 alpha = getFinishedStatusAlpha(packet);
+    volatile i32 reveal_angle = (i32)((f64)alpha * 16384.0);
+    volatile f32 reveal = NuTrigTable[(reveal_angle >> 1) & 0x7fff];
+    volatile i32 opacity = (i32)((f64)alpha * 128.0);
+    volatile f32 timer = GameTimer.time_elapsed_mod_seconds;
+    if (timer > 0.25f)
+        timer = 0.0f;
+    volatile i32 pulse_angle = (i32)((f64)timer * 32768.0 + 16384.0);
+    union {
+        f32 value;
+        u32 bits;
+    } pulse;
+    pulse.value = NuTrigTable[(pulse_angle >> 1) & 0x7fff];
+    pulse.bits &= 0x7fffffffu;
+    volatile f32 inverse = 1.0 - (f64)pulse.value;
+    volatile f32 pulse_scale = 1.0 + (f64)inverse;
+    if (Game.area_save[packet->area->index].minikit_count != 0) {
+        if (alpha > 0.0f) {
+            volatile f32 scale = (f64)StatusAllMiniKitsScalePc * (f64)reveal;
+            DrawStatusMiniKit(StatusAllMiniKitsXPc, StatusAllMiniKitsYPc, StatusAllMiniKitsZPc, scale, 1.0f,
+                              Game.area_save[packet->area->index].minikit_count, packet, 0.0f);
+        }
+    } else {
+        volatile f32 size = (f64)StatusAllMiniKitsQuestionScalePc * (f64)pulse_scale;
+        volatile f32 y = (f64)StatusAllMiniKitsQuestionYOffsetPc + StatusAllMiniKitsYPc;
+        Text3DEx("?", StatusAllMiniKitsXPc, y, StatusAllMiniKitsZPc, size, size, size, 0, 255, 255, 255, opacity);
+    }
+    if (Game.area_save[packet->area->index].minikit_count == packet->minikit_max) {
+        volatile f32 y = (f64)StatusAllMiniKitsCompleteYOffsetPc + StatusAllMiniKitsYPc;
+        Text3DEx("$", StatusAllMiniKitsXPc, y, 1.0f, StatusAllMiniKitsCompleteScalePc, StatusAllMiniKitsCompleteScalePc,
+                 StatusAllMiniKitsCompleteScalePc, 0, 255, 0, 127, opacity);
+    } else {
+        char text[60];
+        sprintf(text, "%i/%i", Game.area_save[packet->area->index].minikit_count, packet->minikit_max);
+        volatile f32 y = (f64)StatusAllMiniKitsCountYOffsetPc + StatusAllMiniKitsYPc;
+        Text3DEx(text, StatusAllMiniKitsXPc, y, 1.0f, StatusAllMiniKitsCountScalePc, StatusAllMiniKitsCountScalePc,
+                 StatusAllMiniKitsCountScalePc, 0, 255, 0, 127, opacity);
+    }
+}
