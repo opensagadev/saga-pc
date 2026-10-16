@@ -1047,18 +1047,11 @@ static void __cdecl Player_ToggledCharacter_Game(GAMEOBJECT *object, i32 owned) 
 
 // Source lease: build/analysis/publication-render-audio-next/source-contract-v2/private-type-proposal.hfrag
 // Working reader views only; never establishes native allocation/capacity.
-struct GAME_STATUS_STAGE_RENDER_VIEW_PC {
-    u8 unknown_00[0x0c];
-    i32 type;
-    u8 unknown_10[8];
-    f32 time;
-};
-GAME_PUBLISHER_ASSERT(offsetof(GAME_STATUS_STAGE_RENDER_VIEW_PC, type) == 0xc);
-GAME_PUBLISHER_ASSERT(offsetof(GAME_STATUS_STAGE_RENDER_VIEW_PC, time) == 0x18);
-
-GAME_PUBLISHER_ASSERT(offsetof(GAME_STATUS_RENDER_VIEW_PC, mode_flags) == 0);
-GAME_PUBLISHER_ASSERT(offsetof(GAME_STATUS_RENDER_VIEW_PC, active) == 4);
-GAME_PUBLISHER_ASSERT(offsetof(GAME_STATUS_RENDER_VIEW_PC, stage) == 0x74);
+GAME_PUBLISHER_ASSERT(offsetof(STATUSPACKET_s, flags_word) == 0xb0);
+GAME_PUBLISHER_ASSERT(offsetof(STATUSPACKET_s, status_flags) == 0xb4);
+GAME_PUBLISHER_ASSERT(offsetof(STATUSPACKET_s, stage) == 0x124);
+GAME_PUBLISHER_ASSERT(offsetof(STATUS_STAGE_s, type) == 0xc);
+GAME_PUBLISHER_ASSERT(offsetof(STATUS_STAGE_s, field_0x18) == 0x18);
 GAME_PUBLISHER_ASSERT(offsetof(WORLDINFO, current_level) == 0x128);
 GAME_PUBLISHER_ASSERT(offsetof(WORLDINFO, area) == 0x12c);
 GAME_PUBLISHER_ASSERT(offsetof(LEVELDATA_PC, flags) == 0x64);
@@ -1071,7 +1064,6 @@ GAME_PUBLISHER_ASSERT(offsetof(GAMEOBJECT, position) == 0x5c);
 GAME_PUBLISHER_ASSERT(offsetof(GAMEOBJECT, reflection_height) == 0x1014);
 GAME_PUBLISHER_ASSERT(offsetof(GAMEOBJECT, reflection_enabled) == 0x107b);
 // Declare only after sole-writer canonical audit. No backing supplied here.
-extern GAME_STATUS_RENDER_VIEW_PC PcGameStatusRenderState;
 extern i32 selectmodemode;
 extern f32 selectmodetime;
 extern i32 CruiserD_LiftChase;
@@ -1115,9 +1107,9 @@ static void __cdecl BackDrop_Alpha(f32 *alpha) {
             *alpha *= CreditsAlpha;
             return;
         }
-        if ((level->flags & 0x400) != 0 && PcGameStatusRenderState.active != 0 &&
-            PcGameStatusRenderState.stage->type == 12 && (PcGameStatusRenderState.mode_flags & 0x1000) == 0) {
-            const f32 time = PcGameStatusRenderState.stage->time;
+        if ((level->flags & 0x400) != 0 && StatusPacket.status_flags != 0 && StatusPacket.stage->type == 12 &&
+            (StatusPacket.flags_word & 0x1000) == 0) {
+            const f32 time = StatusPacket.stage->field_0x18;
             *alpha = time < 0.5f ? 1.0f - (time + time) : 0.0f;
             return;
         }

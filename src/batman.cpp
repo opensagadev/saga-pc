@@ -404,7 +404,7 @@ static void NuMainRenderWorld(WORLDINFO *world) {
     NuLgtLaserDraw(paused);
     if (world->current_level == TITLES_LDATA || (world->current_level->flags & 0x400) != 0 ||
         world->current_level == CREDITS_LDATA ||
-        (world->current_level == STATUS_LDATA && (PcGameStatusRenderState.mode_flags & 0x400) != 0)) {
+        (world->current_level == STATUS_LDATA && (StatusPacket.flags_word & 0x400) != 0)) {
         BackDrop_Draw(1.0f, 0);
     }
     if (MainRenderTime != 1.0f) {

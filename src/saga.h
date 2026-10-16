@@ -21022,17 +21022,6 @@ extern "C" {
 }
 #endif
 
-typedef struct GAME_STATUS_STAGE_RENDER_VIEW_PC GAME_STATUS_STAGE_RENDER_VIEW_PC;
-typedef struct GAME_STATUS_RENDER_VIEW_PC {
-    u32 mode_flags;
-    u8 active;
-    u8 unknown_05[0x6f];
-    GAME_STATUS_STAGE_RENDER_VIEW_PC *stage;
-} GAME_STATUS_RENDER_VIEW_PC;
-STATIC_ASSERT(sizeof(GAME_STATUS_RENDER_VIEW_PC) == 0x78);
-STATIC_ASSERT(offsetof(GAME_STATUS_RENDER_VIEW_PC, mode_flags) == 0);
-STATIC_ASSERT(offsetof(GAME_STATUS_RENDER_VIEW_PC, active) == 4);
-STATIC_ASSERT(offsetof(GAME_STATUS_RENDER_VIEW_PC, stage) == 0x74);
 typedef struct ANIM_REDIRECT_VIEW_PC {
     const char *name;
     i16 animation_id;
@@ -21086,7 +21075,6 @@ extern "C" {
     extern f32 BuckSnowmobJumpDurationPc;
     extern u8 CheatC3poBitsEnabledPc;
     extern i32 deathstar_hold_count;
-    extern GAME_STATUS_RENDER_VIEW_PC PcGameStatusRenderState;
     extern i32 selectmodemode;
     extern f32 selectmodetime;
     extern i32 CruiserD_LiftChase;

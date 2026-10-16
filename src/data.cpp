@@ -19699,7 +19699,6 @@ extern "C" {
     f32 BuckSnowmobJumpDurationPc = 1.0f;
     u8 CheatC3poBitsEnabledPc = 0;
     i32 deathstar_hold_count = 0;
-    GAME_STATUS_RENDER_VIEW_PC PcGameStatusRenderState = {0};
     i32 selectmodemode = 0;
     f32 selectmodetime = 0.0f;
     i32 CruiserD_LiftChase = 0;
