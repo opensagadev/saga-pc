@@ -1661,3 +1661,21 @@ i32 __cdecl Action_ThrowDetonatorPc(AISYS_PC *system, AISCRIPTPROCESS_PC *proces
         object->context_timer = 1.0f;
     return 1;
 }
+
+i32 __cdecl Action_SetAnimation(AISYS_PC *system, AISCRIPTPROCESS_PC *processor, AIPACKET_PC *packet, char **params,
+                                i32 count, i32 first_time, f32 elapsed) {
+    GAMEOBJECT *object;
+    i16 animation;
+    (void)system;
+    (void)processor;
+    (void)elapsed;
+    if (packet == NULL || packet->owner == NULL || packet->owner->objptr == NULL)
+        return 1;
+    object = packet->owner->objptr;
+    if (first_time != 0 && count == 1) {
+        animation = FindAnimIX(object->character_data, params[0]);
+        if (animation != -1)
+            ResetAnimPacket(&object->anim_packet, animation);
+    }
+    return 1;
+}

@@ -290,3 +290,93 @@ f32 __cdecl Condition_OriginRangePc(AISYS_PC *system, AISCRIPTPROCESS_PC *proces
     }
     return 0.0f;
 }
+
+STATIC_ASSERT(offsetof(APIOBJECT_PC, ai) == 4);
+STATIC_ASSERT(offsetof(AIPACKET_PC, group) == 0x144);
+STATIC_ASSERT(offsetof(AIGROUP_PC, member_count) == 7);
+STATIC_ASSERT(offsetof(AIGROUP_PC, members) == 0xc);
+STATIC_ASSERT(offsetof(GAMEOBJECT, flags_1fc_word) == 0x1fc);
+STATIC_ASSERT(offsetof(GAMEOBJECT, dead) == 0x28b);
+STATIC_ASSERT(offsetof(GAMEOBJECT, current_hp) == 0x107f);
+STATIC_ASSERT(offsetof(GAMEOBJECT, character_context) == 0x7b5);
+STATIC_ASSERT(offsetof(GAMEOBJECT, context_variant_flags) == 0x7bc);
+STATIC_ASSERT(sizeof(CHARACTER_CONTEXT_INFO_PC) == 0x10);
+STATIC_ASSERT(offsetof(CHARACTER_CONTEXT_INFO_PC, flags) == 8);
+
+void *__cdecl Condition_IsAliveInitPc(AISYS_PC *system, char *name, AISCRIPT_PC *script) {
+    (void)script;
+    if (name != NULL && GetNamedGameObjectCallback != NULL)
+        return GetNamedGameObjectCallback(system, name);
+    return NULL;
+}
+
+f32 __cdecl Condition_IsAlivePc(AISYS_PC *system, AISCRIPTPROCESS_PC *process, AIPACKET_PC *packet, char *name,
+                                void *argument) {
+    APIOBJECT_PC *object = (APIOBJECT_PC *)argument;
+    AIGROUP_PC *group;
+    GAMEOBJECT *member;
+    i32 index, count;
+    (void)system;
+    (void)process;
+    (void)packet;
+    (void)name;
+    if (object == NULL)
+        return 0.0f;
+    group = object->ai->group;
+    if (group != NULL) {
+        count = group->member_count;
+        for (index = 0; index < count; ++index) {
+            member = (GAMEOBJECT *)group->members[index];
+            if (member != NULL && (member->flags_1fc_word & 1u) != 0 && (member->flags_1fc_word & 0x1000u) != 0 &&
+                member->dead == 0)
+                return 1.0f;
+        }
+        return 0.0f;
+    }
+    member = (GAMEOBJECT *)object;
+    return (member->flags_1fc_word & 0x1000u) != 0 && member->dead == 0 ? 1.0f : 0.0f;
+}
+
+void *__cdecl Condition_HitPointsInitPc(AISYS_PC *system, char *name, AISCRIPT_PC *script) {
+    APIOBJECT_PC *object;
+    (void)script;
+    if (name != NULL && system != NULL) {
+        if (GetNamedGameObjectCallback != NULL) {
+            object = GetNamedGameObjectCallback(system, name);
+            if (object != NULL)
+                return object->owner;
+        }
+    }
+    return NULL;
+}
+
+f32 __cdecl Condition_HitPointsPc(AISYS_PC *system, AISCRIPTPROCESS_PC *process, AIPACKET_PC *packet, char *name,
+                                  void *argument) {
+    GAMEOBJECT *object = (GAMEOBJECT *)argument;
+    (void)system;
+    (void)process;
+    (void)name;
+    if (object == NULL) {
+        if (packet == NULL || packet->owner == NULL || packet->owner->objptr == NULL)
+            return 0.0f;
+        object = packet->owner->objptr;
+    }
+    return (f32)(i32)(i8)object->current_hp;
+}
+
+f32 __cdecl Condition_BlockingPc(AISYS_PC *system, AISCRIPTPROCESS_PC *process, AIPACKET_PC *packet, char *name,
+                                 void *argument) {
+    GAMEOBJECT *object;
+    u32 flags;
+    (void)system;
+    (void)process;
+    (void)name;
+    (void)argument;
+    if (packet == NULL || packet->owner == NULL || packet->owner->objptr == NULL)
+        return 0.0f;
+    object = packet->owner->objptr;
+    flags = CInfo[(i8)object->character_context].flags;
+    if ((flags & 0x04000000u) != 0 || ((flags & 0x08000000u) != 0 && (object->context_variant_flags & 0x20000u) != 0))
+        return 1.0f;
+    return 0.0f;
+}

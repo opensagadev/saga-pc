@@ -482,8 +482,8 @@ address    , symbol                                                         , si
 0x441610,_Condition_BuildItCompletePc,26,
 0x441630,_Condition_BlowupBlownupInitPc,39,
 0x441660,_Condition_BlowupBlownupPc,43,
-0x441690,_Condition_IsAliveInitPc,32,
-0x4416b0,_Condition_IsAlivePc,115,
+0x441690,_Condition_IsAliveInitPc,32,"void * __cdecl(AISYS_PC *,char *,AISCRIPT_PC *)"
+0x4416b0,_Condition_IsAlivePc,115,"f32 __cdecl(AISYS_PC *,AISCRIPTPROCESS_PC *,AIPACKET_PC *,char *,void *)"
 0x441730,_Condition_AIOverrideControlInitPc,32,
 0x441750,_Condition_AIOverrideControlPc,44,
 0x441780,_Condition_IsOnScreenInitPc,32,
@@ -504,12 +504,12 @@ address    , symbol                                                         , si
 0x441c00,_Condition_BehindCameraPc,122,
 0x441c80,_Condition_LocatorOnScreenInitPc,19,
 0x441ca0,_Condition_LocatorOnScreenPc,55,
-0x441ce0,_Condition_BlockingPc,105,
+0x441ce0,_Condition_BlockingPc,105,"f32 __cdecl(AISYS_PC *,AISCRIPTPROCESS_PC *,AIPACKET_PC *,char *,void *)"
 0x441d50,_Condition_BeenHitInitPc,38,
 0x441d80,_Condition_BeenHitPc,61,
 0x441dc0,_Condition_HoverPhasePc,39,
-0x441df0,_Condition_HitPointsInitPc,44,
-0x441e20,_Condition_HitPointsPc,51,
+0x441df0,_Condition_HitPointsInitPc,44,"void * __cdecl(AISYS_PC *,char *,AISCRIPT_PC *)"
+0x441e20,_Condition_HitPointsPc,51,"f32 __cdecl(AISYS_PC *,AISCRIPTPROCESS_PC *,AIPACKET_PC *,char *,void *)"
 0x441e60,_Condition_CollidingWithOpponentPc,62,
 0x441ea0,_Condition_CollidingPc,38,
 0x441ed0,_Condition_XPosInitPc,44,
