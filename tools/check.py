@@ -193,13 +193,59 @@ def check_headers():
 
 
 def check_diagnostic_boundaries():
-    """Build-kind conditionals belong to diagnostic support, never game code."""
+    """Allow diagnostics and the exact user-authorized Debug save-location blocks."""
     selector = re.compile(r"^\s*#\s*(?:if|ifdef|ifndef|elif|define|undef)\b[^\n]*\b(?:SAGA_DEBUG|SAGA_RUNTIME)\b",
                           re.MULTILINE)
+    # Exact user-authorized save-location blocks; other behavior forks stay forbidden.
+    save_exceptions = {
+        'src/data.cpp': (
+            (
+                '    /* User-approved Debug save-location exception; the game requires the res cwd. */\n'
+                '#ifdef SAGA_DEBUG\n'
+                '    char SaveFolderPathPc[256] = "SavedGames";\n'
+                '#else\n'
+                '    char SaveFolderPathPc[256] = {0};\n'
+                '#endif\n'
+            ),
+        ),
+        'src/gameapi/saveload.cpp': (
+            (
+                '    char *__cdecl fullslotname(i32 slot) {\n'
+                '#ifndef SAGA_DEBUG\n'
+                '        PCOptionsBuildFolder(SaveFolderPathPc);\n'
+                '        strcat(SaveFolderPathPc, "SavedGames");\n'
+                '#endif\n'
+            ),
+        ),
+        'src/gameapi/shop_persistence.cpp': (
+            (
+                '    /* User-approved Debug save-location exception; the game requires the res cwd. */\n'
+                '#ifdef SAGA_DEBUG\n'
+                '    char SaveCreateFolderPathPc[256] = "SavedGames";\n'
+                '#else\n'
+                '    char SaveCreateFolderPathPc[256] = {0};\n'
+                '#endif\n'
+            ),
+            (
+                '    void __cdecl createslotfolder(i32) {\n'
+                '#ifndef SAGA_DEBUG\n'
+                '        PCOptionsBuildFolder(SaveFolderPathPc);\n'
+                '        strcat(SaveFolderPathPc, "SavedGames");\n'
+                '        i32 i = 0;\n'
+                '        do {\n'
+                '            SaveCreateFolderPathPc[i] = SaveFolderPathPc[i];\n'
+                '        } while (SaveFolderPathPc[i++] != 0);\n'
+                '#endif\n'
+            ),
+        ),
+    }
     for path in (ROOT / "src").rglob("*"):
         if path.suffix not in {".c", ".cpp", ".h"} or path == ROOT / "src/diagnostics.h":
             continue
-        if selector.search(path.read_text(encoding="latin-1")):
+        text = path.read_text(encoding="latin-1")
+        for block in save_exceptions.get(path.relative_to(ROOT).as_posix(), ()):
+            text = text.replace(block, "", 1)
+        if selector.search(text):
             raise ValueError(f"Build-kind conditionals are diagnostics-only: {path.relative_to(ROOT)}")
 
 

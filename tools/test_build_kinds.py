@@ -71,6 +71,35 @@ class BuildKindTests(unittest.TestCase):
                 (root / "src/diagnostics.h").write_text("#ifdef SAGA_DEBUG\n#endif\n")
                 check.check_diagnostic_boundaries()
 
+    def test_only_exact_initialized_save_path_exceptions_are_accepted(self):
+        with tempfile.TemporaryDirectory() as temp:
+            root = Path(temp)
+            for unit in ("src/data.cpp", "src/gameapi/saveload.cpp", "src/gameapi/shop_persistence.cpp"):
+                source = root / unit
+                source.parent.mkdir(parents=True, exist_ok=True)
+                original = (ROOT / unit).read_text()
+                source.write_text(original)
+                with patch.object(check, "ROOT", root):
+                    check.check_diagnostic_boundaries()
+                    changed_cases = [
+                        original + "\n#ifdef SAGA_DEBUG\nvoid unrelated_work(void);\n#endif\n",
+                        original.replace('"SavedGames"', '"OtherGames"'),
+                    ]
+                    if unit == "src/gameapi/saveload.cpp":
+                        changed_cases.append(original.replace("fullslotname(i32 slot)", "other_slot(i32 slot)"))
+                    if unit == "src/gameapi/shop_persistence.cpp":
+                        changed_cases.append(original.replace("createslotfolder(i32)", "other_folder(i32)"))
+                    for changed in changed_cases:
+                        source.write_text(changed)
+                        with self.assertRaisesRegex(ValueError, "diagnostics-only"):
+                            check.check_diagnostic_boundaries()
+                    source.write_text(original)
+                    foreign = root / "src/unapproved.cpp"
+                    foreign.write_text(original)
+                    with self.assertRaisesRegex(ValueError, "diagnostics-only"):
+                        check.check_diagnostic_boundaries()
+                    foreign.unlink()
+
     def test_symbol_output_paths_are_explicit_and_windows_native_paths_survive(self):
         for option in ("/MAP",):
             self.assertEqual(cc.linker_output_path(option + ":build/Debug/game.map"),

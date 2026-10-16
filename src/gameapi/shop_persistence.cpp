@@ -26,7 +26,12 @@ STATIC_ASSERT(offsetof(PC_SAVE_HEADER_PC, date_time) == 0x1828);
 
 extern "C" {
     extern char SaveFolderPathPc[256];
-    char SaveCreateFolderPathPc[256];
+    /* User-approved Debug save-location exception; the game requires the res cwd. */
+#ifdef SAGA_DEBUG
+    char SaveCreateFolderPathPc[256] = "SavedGames";
+#else
+    char SaveCreateFolderPathPc[256] = {0};
+#endif
     u8 PcSaveHeaderMetadataPc[16];
     i32 saveload_slotid;
     extern i32 SaveloadPendingPc;
@@ -53,11 +58,14 @@ extern "C" {
         return CreateDirectoryA(path, &security);
     }
     void __cdecl createslotfolder(i32) {
-        SAGA_BUILD_SAVE_FOLDER(SaveFolderPathPc);
+#ifndef SAGA_DEBUG
+        PCOptionsBuildFolder(SaveFolderPathPc);
+        strcat(SaveFolderPathPc, "SavedGames");
         i32 i = 0;
         do {
             SaveCreateFolderPathPc[i] = SaveFolderPathPc[i];
         } while (SaveFolderPathPc[i++] != 0);
+#endif
         SaveCreateDirectoryPc(SaveCreateFolderPathPc);
     }
     i32 __cdecl PCSaveSlot(i32 slot, void *buffer, i32 size, u32 hash) {
