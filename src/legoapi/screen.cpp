@@ -1866,3 +1866,89 @@ void __cdecl CollectCharactersOff_Draw(STATUS_STAGE_s *stage, STATUSPACKET_s *pa
     }
     Collection_DrawPc(collection, 0.0f, StatusCollectionYPc, collection->scale, NULL, alpha, 0);
 }
+
+void __cdecl ChallangeCash_Skip(STATUS_STAGE_s *stage, STATUSPACKET_s *packet) {
+    (void)stage;
+    (void)packet;
+}
+
+void __cdecl ChallangeCash_Update(STATUS_STAGE_s *stage, STATUSPACKET_s *packet, f32 elapsed) {
+    NUVEC target = {0.0f, STATSPOSY, 1.0f};
+    switch (stage->field_0x14) {
+        case 0:
+            stage->field_0x14 = 1;
+            stage->field_0x18 = 0.0f;
+            stage->field_0x1c = 4.0f;
+            break;
+        case 1: {
+            volatile f32 previous = stage->field_0x18;
+            volatile f32 time = (f64)stage->field_0x18 + elapsed;
+            stage->field_0x18 = time;
+            if (stage->field_0x18 >= 1.5f && FindGameMsgsWithID(1, 0, -1, NULL) == 0) {
+                stage->field_0x18 = 0.0f;
+                stage->field_0x14 = 2;
+                stage->field_0x1c = 1.0f;
+                return;
+            }
+            if (previous < 1.0f && stage->field_0x18 >= 1.0f) {
+                f32 delay = 0.0f;
+                for (i32 coin = 0; coin < 50; ++coin) {
+                    NUVEC position = {0.0f, (f32)(((f64)qrand() * (f64)(1.0f / 65535.0f)) * (f64)0.1f), 1.0f};
+                    NuVecRotateZ(&position, &position, qrand());
+                    ADD_GAME_MESSAGE_PC message = AddGameMsg_Default;
+                    message.position = &position;
+                    message.target_scale = 0.75f;
+                    message.player_index = (i8)(qrand() / 0x8000);
+                    target.x = cointotal_x[(i32)message.player_index];
+                    message.icon = GizmoPickupType[2].first_model_id;
+                    message.target_scale = COINTOTAL_COINSIZE;
+                    message.target_position = &target;
+                    message.special = &WORLD->level_objects[message.icon].special;
+                    message.flags = 0x112d;
+                    message.target_is_coin_total = 1;
+                    message.duration = COINMSGTIME;
+                    message.score = GizmoPickupType[2].score;
+                    message.delay = delay;
+                    message.update_fn = GameMsg_DrawAdjustNewPos_CoinToTotal;
+                    message.end_fn = EndScoreMessage;
+                    AddGameMsg(&message);
+                    if (delay == 0.0f) {
+                        NewStatusRumbleBuzz(-1, 0.0f, 0.0f, 1);
+                        AddGameDebris(WORLD->game_debris_sys, 0x38, &position);
+                    }
+                    delay = (f32)((f64)delay + (f64)0.1f);
+                }
+            }
+            break;
+        }
+        case 2: {
+            volatile f32 time = (f64)stage->field_0x18 + elapsed;
+            stage->field_0x18 = time;
+            if (stage->field_0x18 > stage->field_0x1c) {
+                PlaySfx("Shop_BuyCheat", NULL);
+                NextStatusStage(packet);
+            }
+            break;
+        }
+    }
+}
+
+void __cdecl ChallangeCash_Draw(STATUS_STAGE_s *stage, STATUSPACKET_s *packet, i32 current) {
+    NUVEC position = {0.0f, StatusAllMiniKitsYPc, 1.0f};
+    if (current == 0)
+        return;
+    if (stage->field_0x14 == 0) {
+        iconalphaoverride = 0.0f;
+        return;
+    }
+    iconalphaoverride = stage->field_0x18 >= 0.5f ? 1.0 : (f64)stage->field_0x18 + stage->field_0x18;
+    if (stage->field_0x18 < 2.0f && NuFmod(stage->field_0x18, 0.2f) >= (f64)0.1f) {
+        i32 second_player = (packet->field_0xb0 >> 5) & 1;
+        volatile f32 winner_x = second_player != 0 ? 0.675f : -0.675f;
+        volatile i32 opacity = (i32)((f64)iconalphaoverride * 128.0);
+        SmartTextEx(TTab[TextIdPc88075c], winner_x, STATSPOSY, 1.0f, 0.7f, 0.7f, 0.7f, second_player != 0 ? 8 : 2, 0,
+                    255, 0, 0.35f, 1, NULL, 0, (u32)opacity);
+    }
+    if (stage->field_0x14 == 1)
+        AddGameMessage(TTab[TextIdPc8806e8], &position, 0.7f, &position, 0.7f, 255, 0, 127, 0x4020, 2.0f);
+}

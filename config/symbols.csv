@@ -913,7 +913,9 @@ address    , symbol                                                         , si
 0x463840,_BonusWin_LSW_Skip,1,"void __cdecl(STATUS_STAGE_s *, STATUSPACKET_s *)"
 0x463850,_BonusWin_LSW_Update,661,"void __cdecl(STATUS_STAGE_s *, STATUSPACKET_s *, f32)"
 0x463af0,_BonusWin_LSW_Draw,411,"void __cdecl(STATUS_STAGE_s *, STATUSPACKET_s *, i32)"
-0x463f30,_ChallangeCash_Draw,405,
+0x00463c90,_ChallangeCash_Skip,1,"void __cdecl(STATUS_STAGE_s *, STATUSPACKET_s *)"
+0x00463ca0,_ChallangeCash_Update,649,"void __cdecl(STATUS_STAGE_s *, STATUSPACKET_s *, f32)"
+0x463f30,_ChallangeCash_Draw,405,"void __cdecl(STATUS_STAGE_s *, STATUSPACKET_s *, i32)"
 0x00464140,_Save_LSW_Update,212,"void __cdecl(STATUS_STAGE_s *, STATUSPACKET_s *, f32)"
 0x464360,_GizAction_ActivateEffect,154,
 0x464400,_GizAction_ActivatePartEffect,125,

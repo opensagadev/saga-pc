@@ -26108,6 +26108,9 @@ extern "C" {
     void __cdecl CollectCharcters_Update(STATUS_STAGE_s *, STATUSPACKET_s *, f32);
     void __cdecl CollectCharcters_Draw(STATUS_STAGE_s *, STATUSPACKET_s *, i32);
     void __cdecl CollectCharactersOff_Draw(STATUS_STAGE_s *, STATUSPACKET_s *, i32);
+    void __cdecl ChallangeCash_Skip(STATUS_STAGE_s *, STATUSPACKET_s *);
+    void __cdecl ChallangeCash_Update(STATUS_STAGE_s *, STATUSPACKET_s *, f32);
+    void __cdecl ChallangeCash_Draw(STATUS_STAGE_s *, STATUSPACKET_s *, i32);
     i32 __cdecl AddToCollection(i32);
     void __cdecl Collection_GetPos(COLLECTION_s *, i32, f32 *, f32 *);
     extern f32 StatusCollectionIconYPc, StatusCollectionTextYPc, StatusCollectionYPc;
