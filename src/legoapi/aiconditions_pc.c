@@ -138,3 +138,37 @@ f32 __cdecl Condition_Side(AISYS_PC *system, AISCRIPTPROCESS_PC *process, AIPACK
         return (flags & 4) != 0 ? 1.0f : 0.0f;
     return 0.0f;
 }
+
+STATIC_ASSERT(offsetof(AISCRIPTPROCESS_PC, unknown_a0) == 0xa0);
+STATIC_ASSERT(offsetof(AISCRIPTPROCESS_PC, locator) == 0xa4);
+STATIC_ASSERT(offsetof(AIPACKET_PC, owner) == 0xd0);
+STATIC_ASSERT(offsetof(AIPACKET_PC, terrain_origin) == 0x14c);
+STATIC_ASSERT(offsetof(GAMEOBJECT, objptr) == 0);
+STATIC_ASSERT(offsetof(GAMEOBJECT, id) == 0x1064);
+STATIC_ASSERT(offsetof(AILOCATOR_PC, position) == 0x10);
+
+f32 __cdecl Condition_IAmAPc(AISYS_PC *system, AISCRIPTPROCESS_PC *process, AIPACKET_PC *packet, char *name,
+                             void *argument) {
+    return packet != NULL && packet->owner != NULL && packet->owner->objptr != NULL &&
+                   (i32)(i16)packet->owner->objptr->id == (i32)argument
+               ? 1.0f
+               : 0.0f;
+}
+
+f32 __cdecl Condition_GotTriggerAreaPc(AISYS_PC *system, AISCRIPTPROCESS_PC *process, AIPACKET_PC *packet, char *name,
+                                       void *argument) {
+    return process->unknown_a0 != 0 ? 1.0f : 0.0f;
+}
+
+f32 __cdecl Condition_LocatorRangeXZPc(AISYS_PC *system, AISCRIPTPROCESS_PC *process, AIPACKET_PC *packet, char *name,
+                                       void *argument) {
+    AILOCATOR_PC *locator = (AILOCATOR_PC *)argument;
+    NUVEC delta;
+    if (packet != NULL && packet->owner != NULL) {
+        if (locator == NULL)
+            locator = process->locator;
+        if (locator != NULL)
+            return NuVecXZDist(&packet->terrain_origin, &locator->position, &delta);
+    }
+    return FLT_MAX;
+}
