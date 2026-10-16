@@ -26869,6 +26869,8 @@ extern "C" {
     void __cdecl MenuUpdatePauseExit(MENU *);
     void __cdecl MenuDrawAutoSaveCancel(MENU *);
     void __cdecl MenuUpdateAutoSaveCancel(MENU *);
+    i32 __cdecl saveloadLoadSlot(i32 slot, void *buffer, i32 size);
+    void __cdecl saveloadASLoad(i32 slot, void *buffer, i32 size);
     void __cdecl saveloadASCallEachFrame(void);
 
     i32 __cdecl MenuInMemoryCard(void);

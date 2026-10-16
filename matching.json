@@ -31,13 +31,13 @@
     "src/audio/vorbis/window.h": "a10ede6832692ccec154bb9291be7ec236f9642a99a6af9b108ff7df030904b5",
     "src/diagnostics.h": "606cc907286f79484652222f457c34b014ac86f46226bc809e474c6317994e7f",
     "src/externals.h": "5b08276a7759c01921ac2a5239bf0978accdd38d2533b458c25d1b16f8a4402d",
-    "src/saga.h": "21984092d8e528fc546e26201a50d73f0a939673d8cf8b16efa2c04e6b5fef9a",
+    "src/saga.h": "3c31f5bd5827027ab26b7b277b916205b680f82819b176c8f635eb789cec175a",
     "config/candidate-only.json": "2f9b865d9f773f8a9e79d4e6d155fa387e8d7b8087d6bf3b61298055281cec09",
     "config/code-groups.json": "0c7700323db8a7240f98cd4ab349200bbf0a8f580d3ca93167477e00c7db77cc",
     "config/data-members.json": "fe09365da4c355f220d724ca99394fc120b758891b4188d2c49707b6df0894f2",
     "config/library-objects.json": "e5ae24d3eac36fa0d0cb098f7690faaef3110f225db30c8cbf0f7d0d64f6ecfe",
     "config/project.json": "dc0e8cc85ae5650c6937b70ccaefb0153629c2460fa09cd4f6b625e251e623dd",
-    "config/symbols.csv": "33bc5bd4a17676c61d7b129628af49a9802bf1aacfff5a96bdf7c18a061f6297",
+    "config/symbols.csv": "d66077d3de9b39b0dc7f5f30f7e0909ca56585b14317d8b53d59664330c9b2f4",
     "config/symbols.md": "dffbdaac86011e3aee74b404063c15bda97f88af3db337ffef9f1bad1785d212",
     "config/toolchain.json": "489d0782638d8033137cdb2834462416111945cbfa073147820e314b8576b95b",
     "config/tools.json": "50199f6b132a7abfabf251e98a75be0a957abfe50f1ff776188fba21e4c4436f",
@@ -80,7 +80,7 @@
     "src/data.cpp": "796687205d4918e054fa8d9485fb2df192bf9ca45fe89019911e61023b52e382",
     "src/gameapi/message.cpp": "3b6be1f89dfb4213e053cd290444a712bd1e0853f0d17a99fc716ad191d7ed9d",
     "src/gameapi/saveload.cpp": "a113cdc92882787d1fd415eb4d172c5df1a5f95c0e2abda9b5d7bb8410802f76",
-    "src/gameapi/shop_persistence.cpp": "f68688a4bed6966269ddbb2d517219f65664e0ef1495410881e1975679085327",
+    "src/gameapi/shop_persistence.cpp": "9049a43a4e53a20b3f40bcbe3a7bc397b390280f1ada553890330624bee475d0",
     "src/gamelib/util/VirtualStackAllocator.cpp": "98d724a680ef413962cb0e928cc20d5695ec4a968f588628e7c8c72a261705f4",
     "src/legoapi/ai_party_trigger_pc.cpp": "ac8f328e39dd8376ae207beddbe80f3094b28a4a78567921a230e4e3ededcedb",
     "src/legoapi/ai_spinner_targets_pc.cpp": "20e75924a6cfd06d2e594211301bbacd5814f89f145fd6d8116abf16ce21ecc5",
@@ -218,7 +218,7 @@
     "src/gameapi/aiscript_diagnostics.c": "16e689a9fa169e1baed3fc074f164232093b81c0af3c3b5dd4248ab787bc6a20",
     "src/gameapi/aisys.c": "c2b994dde76cad05a8220d3ae91b7f130a9d6619b87488f8648f6e0af1a33737",
     "src/gameapi/apiobject.c": "1da502c92439b5290d3419db7a0d8b7f6e54794b707e0bf4ff56348c9a241d13",
-    "src/gameapi/apisave.c": "29fdee0650f54eef0976a27ab9aab370e9b3a785ceb94de24f90e9de209ca4cc",
+    "src/gameapi/apisave.c": "a7fb1645544622b1c58f0e3215264710b8702e10b7ebb9c01a9e46475dc37f6a",
     "src/gameapi/edanim_load.c": "76521f786114c6f0fd2472a1167e692ae9a43e3a03eb7b6240ac69461ed6e311",
     "src/gameapi/edanim_update.c": "0e29171ecb796169c901bfd5674d7654a21133230aa756ff1a1afde53ae95d5c",
     "src/gameapi/edbits.c": "ed24fc37a564f4bbfbf2c0a0b7dc9acf519cce0939d181a34ad82a04ba39c829",
@@ -495,7 +495,7 @@
     "build/obj/gameapi/aiscript_diagnostics.obj": "55fd331780149d5b292f0fe9c4681ab2fe68dd600e2d0a8b56d06bcdd408f69d",
     "build/obj/gameapi/aisys.obj": "935f8b040837241d638c2437c244e5bb4edae0e25688667109ed14d2cf3e9b91",
     "build/obj/gameapi/apiobject.obj": "efbbb58db05fb19095bbcae58d420869a142f2b0ba6d6b3f20175535b6973b79",
-    "build/obj/gameapi/apisave.obj": "cb82334de882efddb83e085aebdac48c459971a4f9a473efc5cb2d2a314d5f8f",
+    "build/obj/gameapi/apisave.obj": "16bb458632266c79519163f42ed719c44be0a1cb5e4c6c1160ce057a2b3de692",
     "build/obj/gameapi/edanim_load.obj": "bb6b85d87cc2efb1bb91d2b90ddd441cd35fe447e33feaae7d94ecce29b34c18",
     "build/obj/gameapi/edanim_update.obj": "7d8d6ab5671692ed9daae55458d42ebcedb1b9bbd99e59156c6a4c9c595b9532",
     "build/obj/gameapi/edbits.obj": "2346d8f61cec649365d967e8b3dd4fa5392b61a13b0e069f7cfb8cc8081e3801",
@@ -510,7 +510,7 @@
     "build/obj/gameapi/gameaiactions.obj": "4c3e9b1d8101078f701c3408a4a6f39acc2d2a1a4fe43b53068f5b97b19f741d",
     "build/obj/gameapi/message.obj": "abf52c39246b30e856cb1b1c607d8dc76cf2e73d80f06992dd396f2c0d136775",
     "build/obj/gameapi/saveload.obj": "596bc2d6c5b9b8e1147d6c39956165f87152b6b8a4d0795061a3e1a677f5ecb9",
-    "build/obj/gameapi/shop_persistence.obj": "d9facc0ee17f4cece87a465c6b5b8c799a042fa4ecd5b4c7de3c0f7446ee467d",
+    "build/obj/gameapi/shop_persistence.obj": "24775253007609dc20da233219278ccbdc6310cff477d66dcfdb9ff871c74bfb",
     "build/obj/gamelib/nuwind.obj": "59ae8269edcc6c198e0826e79f63890403e26d4f64bd0acfd79f38c22b0c7f8b",
     "build/obj/gamelib/nuwind_groups.obj": "ee3495c4a15309add99d7bddae9f9b31fde0b9c87cbf74e1e77b08231a2643af",
     "build/obj/gamelib/util/VirtualStackAllocator.obj": "c000c193e1a14820ba6a07ee937566f631cb38b653ac267d7f06befed17aa010",
@@ -54136,17 +54136,17 @@
       "objects": [
         {
           "unit": "src/gameapi/apisave.c",
-          "base_size": 1589,
+          "base_size": 1591,
           "exact_match": false,
           "target_sha256": "05b2a3198447b82566e6dee50bb952672280943ed476a03e8d3f43dea33b5766",
-          "base_sha256": "caa6b72ce91a5b131a6c5d4e25d23d08a17a711112256358369f5be289b426f6",
-          "relocation_count": 162,
+          "base_sha256": "fd42183f1336431b5cc516a1fac4d42d548aed39727d53bff6fc5489460f55da",
+          "relocation_count": 165,
           "comparison_unit": "0050b9a0-8223a60f67f6",
-          "objdiff_percent": 74.89269
+          "objdiff_percent": 89.210045
         }
       ],
       "status": "different",
-      "objdiff_percent": 74.89269
+      "objdiff_percent": 89.210045
     },
     {
       "name": "TriggerAutoSave",
@@ -65098,11 +65098,25 @@
       "name": "saveloadLoadSlot",
       "symbol": "_saveloadLoadSlot",
       "address": "0x00543c30",
-      "units": [],
+      "units": [
+        "src/gameapi/shop_persistence.cpp"
+      ],
       "target_size": 186,
       "exact_match": false,
-      "objects": [],
-      "status": "not implemented"
+      "objects": [
+        {
+          "unit": "src/gameapi/shop_persistence.cpp",
+          "base_size": 187,
+          "exact_match": false,
+          "target_sha256": "2a2249a30dc10175426162589dd1f5bdd8c2a69b01ec2f71ef2af30c8ce58871",
+          "base_sha256": "d9675e4b270cd05cb3630d5c633e811dce13ae0b62a907fd70b3cb0da6732983",
+          "relocation_count": 11,
+          "comparison_unit": "00543c30-b8294e13cbcb",
+          "objdiff_percent": 65.75862
+        }
+      ],
+      "status": "different",
+      "objdiff_percent": 65.75862
     },
     {
       "name": "saveloadDeleteSlot",
@@ -65166,11 +65180,25 @@
       "name": "saveloadASLoad",
       "symbol": "_saveloadASLoad",
       "address": "0x00543d90",
-      "units": [],
+      "units": [
+        "src/gameapi/shop_persistence.cpp"
+      ],
       "target_size": 69,
-      "exact_match": false,
-      "objects": [],
-      "status": "not implemented"
+      "exact_match": true,
+      "objects": [
+        {
+          "unit": "src/gameapi/shop_persistence.cpp",
+          "base_size": 69,
+          "exact_match": true,
+          "target_sha256": "685ac3c349a87c1ea3614f5a2c91ba07a536ce031890f455cf43655435865355",
+          "base_sha256": "685ac3c349a87c1ea3614f5a2c91ba07a536ce031890f455cf43655435865355",
+          "relocation_count": 7,
+          "comparison_unit": "00543d90-b7ba421e97b3",
+          "objdiff_percent": 100.0
+        }
+      ],
+      "status": "exact",
+      "objdiff_percent": 100.0
     },
     {
       "name": "saveloadASCallEachFrame",
@@ -304955,6 +304983,7 @@
       "units": [
         "src/audio/vorbis/vorbisfile.c",
         "src/gameapi/saveload.cpp",
+        "src/gameapi/shop_persistence.cpp",
         "src/nu2api/input_runtime.cpp"
       ],
       "target_size": 3,
@@ -304970,6 +304999,14 @@
         },
         {
           "unit": "src/gameapi/saveload.cpp",
+          "exact_match": true,
+          "target_size": 3,
+          "base_size": 3,
+          "target_sha256": "ef4a3d25250e72708f6f82d59e29b96880728d971ae0b4862d37c9cd927bb082",
+          "base_sha256": "ef4a3d25250e72708f6f82d59e29b96880728d971ae0b4862d37c9cd927bb082"
+        },
+        {
+          "unit": "src/gameapi/shop_persistence.cpp",
           "exact_match": true,
           "target_size": 3,
           "base_size": 3,
@@ -457047,13 +457084,13 @@
   "progress": {
     "text_bytes": 3471246,
     "mapped_code_bytes": 2344601,
-    "matched_code_bytes": 436234,
-    "matching_percent": 12.567072457555586,
-    "fuzzy_coverage_percent": 43.81106253915521,
+    "matched_code_bytes": 436303,
+    "matching_percent": 12.569060216417967,
+    "fuzzy_coverage_percent": 43.823243256498486,
     "mapped_functions": 8612,
-    "matched_functions": 4024,
-    "objdiff_fuzzy_percent": 74.474495,
-    "objdiff_total_code": 2045328,
+    "matched_functions": 4025,
+    "objdiff_fuzzy_percent": 74.48589,
+    "objdiff_total_code": 2045583,
     "image_bytes": 40067072,
     "mapped_bytes": 3460025,
     "mapping_percent": 8.635582355506287,
@@ -458248,8 +458285,8 @@
     "inputs": {
       "metadata_sha256": "fe09365da4c355f220d724ca99394fc120b758891b4188d2c49707b6df0894f2",
       "header_path": "src/saga.h",
-      "header_sha256": "21984092d8e528fc546e26201a50d73f0a939673d8cf8b16efa2c04e6b5fef9a",
-      "geometry_object_sha256": "9af98a806fb97d47ba3a879cae7f4d15013250a753d4a04c8ae0ff3b298a9bae",
+      "header_sha256": "3c31f5bd5827027ab26b7b277b916205b680f82819b176c8f635eb789cec175a",
+      "geometry_object_sha256": "215fb56f5766398701392e81f4bac2a75114a516966e05e0062ccb5a930df55f",
       "toolchain_sha256": "489d0782638d8033137cdb2834462416111945cbfa073147820e314b8576b95b",
       "implementation_sha256": "d6a33be911d095a6d07dccd4443ccbfd6b514fd89fd7e200d9caa1827944e218",
       "headers": {
@@ -458279,7 +458316,7 @@
         "src/audio/vorbis/window.h": "a10ede6832692ccec154bb9291be7ec236f9642a99a6af9b108ff7df030904b5",
         "src/diagnostics.h": "606cc907286f79484652222f457c34b014ac86f46226bc809e474c6317994e7f",
         "src/externals.h": "5b08276a7759c01921ac2a5239bf0978accdd38d2533b458c25d1b16f8a4402d",
-        "src/saga.h": "21984092d8e528fc546e26201a50d73f0a939673d8cf8b16efa2c04e6b5fef9a"
+        "src/saga.h": "3c31f5bd5827027ab26b7b277b916205b680f82819b176c8f635eb789cec175a"
       },
       "owners": {
         "src/data.cpp": {

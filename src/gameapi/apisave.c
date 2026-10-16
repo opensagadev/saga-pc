@@ -158,7 +158,7 @@ void UpdateSaveSlots(void) {
                 memcard_loadfailed = 1;
                 return;
             }
-            STUBBED_NAMED("0x0050bc20: saveloadASLoad at 0x00543d90 (void, 3 arguments)");
+            saveloadASLoad(memcard_slot, memcard_savedatabuffer, memcard_savedatasize + 4);
             memcard_loadneeded = 0;
             memcard_loadcorrupt = 0;
             if (saveload_status == 1) {
