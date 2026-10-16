@@ -1246,8 +1246,9 @@ address    , symbol                                                         , si
 0x00483c10,_StatusPacketReset,96,void __cdecl(STATUSPACKET_s *)
 0x00483c70,_InitStatusScreen,5018,void __cdecl(WORLDINFO *)
 0x004850e0,_StatusIconsOnOff,58,f32 __cdecl(f32)
+0x00485120,_UpdateNewMiniKits,135,"i32 __cdecl(STATUSPACKET_s *, STATUS_STAGE_s *)"
 0x4851b0,_DrawStatusMiniKit,1520,"void __cdecl(f32, f32, f32, f32, f32, i32, STATUSPACKET_s *, f32)"
-0x4857d0,_AddStatusMiniKitParts,913,
+0x4857d0,_AddStatusMiniKitParts,913,void __cdecl(void)
 0x485b70,_Status_DrawPromptMenu,1124,
 0x485fe0,_DrawBonusTime,530,"void __cdecl(STATUSPACKET_s *, f32, i32)"
 0x00486940,_FinishStatusPacket,694,void __cdecl(i32)
@@ -18271,6 +18272,8 @@ address    , symbol                                                         , si
 0x7fa220,_HubStatsMiddleColourPc,,u32
 0x7fa224,_HubStatsHighColourPc,,u32
 0x7fa378,_LedgePiece,,LEDGEPIECE[6]
+0x7fa4b8,_StatusMiniKitJibberLengthPc,4,f32
+0x7fa4bc,_StatusMiniKitSlideTimePc,4,f32
 0x7fa4c0,_StatusCoinsTitleYPc,4,f32
 0x7fa4c8,_StatusRedPc,4,i32
 0x7fa4cc,_StatusGreenPc,4,i32
@@ -19946,12 +19949,14 @@ address    , symbol                                                         , si
 0x0087a1b0,_StatusNewCharacterIdsPc,16,i16[8]
 0x0087a1c0,_StatusCurrentMinikitPc,4,i32
 0x0087a1c4,_StatusCollectedSuitBitsPc,4,u32
+0x87a1c8,_StatusMiniKitPopTimerPc,4,f32
 0x0087a1cc,_StatusMiniKitProgressPc,4,f32
 0x87a1f0,_iconalphaoverride,4,f32
 0x87a1f4,_goldbrickmsgcount,4,i32
 0x87a1f8,_StatusPlayerActivePc,8,u8[8]
 0x0087a200,_StatusGoldBrickStagePc,4,i32
 0x0087a204,_StatusDrawPlayerIconsPc,4,i32
+0x87a208,_StatusMiniKitPartLightingPc,204,PART_LIGHTING_DATA_PC
 0x0087a34c,_StatusGoldBrickPhasePc,4,i32
 0x0087a350,_StatusMiniKitDrawCachePc,720,STATUS_MINIKIT_DRAW_CACHE_PC[10]
 0x87a620,_StatusStages,4,struct STATUS_STAGE_s *

@@ -5889,6 +5889,7 @@ struct PART_LIGHTING_DATA_PC {
     NUVEC values[7];
 };
 STATIC_ASSERT(offsetof(PART_LIGHTING_DATA_PC, values) == 0x78);
+STATIC_ASSERT(sizeof(PART_LIGHTING_DATA_PC) == 0xcc);
 
 typedef struct ADDPART_PC {
     NUMTX *matrix;
@@ -26097,6 +26098,10 @@ extern "C" {
     extern f32 StatusMiniKitDirectionOffsetPc, StatusMiniKitProgressPc;
     extern STATUS_MINIKIT_DRAW_CACHE_PC StatusMiniKitDrawCachePc[10];
     void __cdecl DrawStatusMiniKit(f32, f32, f32, f32, f32, i32, STATUSPACKET_s *, f32);
+    i32 __cdecl UpdateNewMiniKits(STATUSPACKET_s *, STATUS_STAGE_s *);
+    void __cdecl AddStatusMiniKitParts(void);
+    extern f32 StatusMiniKitJibberLengthPc, StatusMiniKitSlideTimePc, StatusMiniKitPopTimerPc;
+    extern PART_LIGHTING_DATA_PC StatusMiniKitPartLightingPc;
     i32 __cdecl DrawPanel3DObjectMtxNoAlpha(nuhspecial_s *, NUMTX *);
     extern i32 PauseSaveAndExitPc;
     extern TIMER BonusTimer, ChallengeTimer;

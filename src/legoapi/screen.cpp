@@ -1341,3 +1341,99 @@ void __cdecl TrueHero_LSW_Draw(STATUS_STAGE_s *stage, STATUSPACKET_s *packet, i3
     Text3DEx(text, 0.0f, StatusCoinsTitleYPc, 1.0f, StatusCoinsTitleScalePc, StatusCoinsTitleScalePc,
              StatusCoinsTitleScalePc, 0, 255, 255, 255, opacity);
 }
+
+extern "C" {
+    f32 StatusMiniKitJibberLengthPc = 0.1f;
+    f32 StatusMiniKitSlideTimePc = 0.25f;
+    f32 StatusMiniKitPopTimerPc = 0.0f;
+    PART_LIGHTING_DATA_PC StatusMiniKitPartLightingPc = {0};
+}
+
+i32 __cdecl UpdateNewMiniKits(STATUSPACKET_s *packet, STATUS_STAGE_s *stage) {
+    (void)packet;
+    if (stage->field_0x18 > stage->field_0x1c) {
+        stage->field_0x18 = 0.0f;
+        StatusCurrentMinikitPc = (i32)((u32)StatusCurrentMinikitPc + 1u);
+        StatusMiniKitPopTimerPc = 0.5f;
+        StatusMiniKitProgressPc = 1.0f;
+        return 1;
+    }
+    if (((f64)stage->field_0x1c - StatusMiniKitJibberLengthPc) - StatusMiniKitSlideTimePc < stage->field_0x18 &&
+        stage->field_0x18 <= (f64)stage->field_0x1c - StatusMiniKitJibberLengthPc) {
+        StatusMiniKitProgressPc = (f32)((((f64)stage->field_0x1c - stage->field_0x18) - StatusMiniKitJibberLengthPc) /
+                                        StatusMiniKitSlideTimePc);
+    }
+    return 0;
+}
+
+void __cdecl AddStatusMiniKitParts(void) {
+    NUVEC target_position = {0.0f, STATSPOSY, 1.0f};
+    for (i32 i = 0; i < 3; ++i) {
+        StatusMiniKitPartLightingPc.values[i] = PanelLightingColoursPc[i];
+        StatusMiniKitPartLightingPc.values[i + 3] = PanelLightingDirectionsPc[i];
+    }
+    StatusMiniKitPartLightingPc.values[6] = PanelLightingAmbientPc;
+    f32 delay = 0.0f;
+    for (i32 i = 0; i < 10; ++i) {
+        if (StatusMiniKitDrawCachePc[i].active == 0)
+            continue;
+        NUVEC velocity = {0.0f, (f32)(((f64)qrand() * (f64)(1.0f / 65535.0f)) * 0.25 + 0.25), 0.0f};
+        NuVecRotateZ(&velocity, &velocity, qrand());
+        ADDPART_PC part = Default_ADDPART;
+        part.matrix = &StatusMiniKitDrawCachePc[i].matrix;
+        part.velocity = &velocity;
+        part.flags = 0x480;
+        part.gravity = 0.0f;
+        part.special = &StatusMiniKitDrawCachePc[i].piece->special;
+        part.time_step = FRAMETIME;
+        part.lighting_data = &StatusMiniKitPartLightingPc;
+        AddPart(&part);
+        for (i32 coin = 0; coin < 5; ++coin) {
+            NUVEC position = {0.0f, (f32)(((f64)qrand() * (f64)(1.0f / 65535.0f)) * (f64)0.1f), 1.0f};
+            NuVecRotateZ(&position, &position, qrand());
+            ADD_GAME_MESSAGE_PC message = AddGameMsg_Default;
+            message.position = &position;
+            message.target_scale = 0.75f;
+            message.player_index = (i8)(qrand() / 0x8000);
+            target_position.x = cointotal_x[(i32)message.player_index];
+            message.target_position = &target_position;
+            message.target_scale = COINTOTAL_COINSIZE;
+            message.icon = GizmoPickupType[2].first_model_id;
+            message.special = &WORLD->level_objects[message.icon].special;
+            message.flags = 0x112d;
+            message.duration = COINMSGTIME;
+            message.score = GizmoPickupType[2].score;
+            message.end_fn = EndScoreMessage;
+            message.delay = delay;
+            message.update_fn = GameMsg_DrawAdjustNewPos_CoinToTotal;
+            message.target_is_coin_total = 1;
+            AddGameMsg(&message);
+            if (delay == 0.0f) {
+                i32 priority = 1;
+                if (StatusPacket.player_active[0] != 0) {
+                    if (StatusPacket.player0_buzz_amount < 0.0f)
+                        StatusPacket.player0_buzz_amount = 0.0f;
+                    if (priority > 0) {
+                        i32 previous_priority = StatusPacket.player0_rumble_priority;
+                        ++priority;
+                        if (priority > previous_priority)
+                            StatusPacket.player0_rumble_priority = (u8)priority;
+                    }
+                }
+                if (StatusPacket.player_active[1] != 0) {
+                    if (StatusPacket.player1_buzz_amount < 0.0f)
+                        StatusPacket.player1_buzz_amount = 0.0f;
+                    if (priority > 0) {
+                        i32 previous_priority = StatusPacket.player1_rumble_priority;
+                        ++priority;
+                        if (priority > previous_priority)
+                            StatusPacket.player1_rumble_priority = (u8)priority;
+                    }
+                }
+                AddGameDebris(WORLD->game_debris_sys, 0x38, &position);
+            }
+            delay = (f32)((f64)delay + (f64)0.1f);
+        }
+    }
+    SetPanelLights(1.0f);
+}
