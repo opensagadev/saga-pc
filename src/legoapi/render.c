@@ -1768,3 +1768,134 @@ void __cdecl BonusTime_LSW_Update(STATUS_STAGE_s *stage, STATUSPACKET_s *packet,
         }
     }
 }
+
+i32 StatusRedPc = 255;
+i32 StatusGreenPc = 191;
+i32 StatusBluePc = 0;
+f32 StatusTitleYPc = 0.1f;
+f32 StatusTextScalePc = 0.7f;
+f32 StatusBonusTimeYPc = -0.5f;
+
+f32 __cdecl getFinishedStatusAlpha(STATUSPACKET_s *packet) {
+    STATUS_STAGE_s *stage = packet->stage;
+    if (stage->type == 12 || stage->type == 11)
+        return 0.0f;
+    if (stage->type == 10) {
+        if (stage->field_0x18 < 1.0f) {
+            volatile f32 alpha = 1.0 - (f64)stage->field_0x18;
+            return alpha;
+        }
+        return 0.0f;
+    }
+    if (stage->type == 19) {
+        if (stage->field_0x14 == 0)
+            return 1.0f;
+        if (stage->field_0x18 < 1.0f) {
+            volatile f32 alpha = 1.0 - (f64)stage->field_0x18;
+            return alpha;
+        } else {
+            volatile f32 fade_start = (f64)stage->field_0x1c - 1.0;
+            if (stage->field_0x18 >= fade_start) {
+                volatile f32 alpha =
+                    ((f64)stage->field_0x18 - (f64)fade_start) / ((f64)stage->field_0x1c - (f64)fade_start);
+                return alpha;
+            }
+            return 0.0f;
+        }
+    }
+    return stage == NULL ? 0.0f : 1.0f;
+}
+
+void __cdecl DrawBonusTime(STATUSPACKET_s *packet, f32 position, i32 alpha) {
+    volatile f32 y = StatusBonusTimeYPc * position;
+    char time[256];
+    char previous[256];
+    char *title;
+    i32 red, green;
+    if (packet->new_best_time != 0.0f) {
+        title = TTab[TextIdPc88071c];
+        red = 0;
+        green = 255;
+    } else {
+        title = TTab[TextIdPc880734];
+        red = 255;
+        green = 0;
+    }
+    {
+        volatile f32 title_y = (f64)y + (f64)0.15f;
+        SmartTextEx(title, 0.0f, title_y, 1.0f, 0.7f, 0.7f, 0.7f, 0, (u8)red, (u8)green, 0, 1.7f, 1, NULL, 0,
+                    (u8)alpha);
+    }
+    {
+        volatile f32 value = packet->new_best_time != 0.0f ? packet->new_best_time : packet->elapsed_time;
+        Text_MakeTime(value, 1, 1, 1, time);
+    }
+    {
+        volatile f32 time_y = (f64)y + 0.0;
+        Text3DEx(time, 0.0f, time_y, 1.0f, 0.7f, 0.7f, 0.7f, 0, 255, 255, 255, alpha);
+    }
+    Text_MakeTime(packet->previous_best_time, 1, 1, 1, time);
+    NuStrCpy(previous, "(");
+    NuStrCat(previous, time);
+    NuStrCat(previous, ")");
+    {
+        volatile f32 previous_y = (f64)y - (f64)0.15f;
+        Text3DEx(previous, 0.0f, previous_y, 1.0f, 0.7f, 0.7f, 0.7f, 0, 255, 255, 255,
+                 (i32)(((u32)alpha & 0xffffff00u) | (((u32)alpha & 0xffu) >> 1)));
+    }
+}
+
+void __cdecl BonusComplete_LSW_Draw(STATUS_STAGE_s *stage, STATUSPACKET_s *packet, i32 current) {
+    if (current == 0)
+        return;
+    if (stage->field_0x14 > 0 && packet->newly_completed != 0) {
+        volatile f32 alpha;
+        if (stage->field_0x18 < 0.5f)
+            alpha = (f64)stage->field_0x18 * 2.0;
+        else if (stage->field_0x18 < 3.5)
+            alpha = 1.0f;
+        else
+            alpha = 1.0 - ((f64)stage->field_0x18 - 3.5) * 2.0;
+        if (alpha > 0.0f) {
+            volatile i32 opacity = (i32)((f64)alpha * 128.0);
+            SmartTextEx(TTab[TextIdPc880728], 0.0f, StatusTitleYPc, 1.0f, StatusTextScalePc, StatusTextScalePc,
+                        StatusTextScalePc, 0, (u8)StatusRedPc, (u8)StatusGreenPc, (u8)StatusBluePc, 1.7f, 1, NULL, 0,
+                        (u32)opacity);
+        }
+    }
+    if (stage->field_0x14 == 0)
+        iconalphaoverride = 0.0f;
+    else if (packet->newly_completed == 0)
+        iconalphaoverride = stage->field_0x18 / stage->field_0x1c;
+    else {
+        volatile f32 fade_start = (f64)stage->field_0x1c - 0.5;
+        if (stage->field_0x18 < fade_start)
+            iconalphaoverride = 0.0f;
+        else
+            iconalphaoverride = ((f64)stage->field_0x18 - (f64)fade_start) * 2.0;
+    }
+}
+
+void __cdecl BonusTime_LSW_Draw(STATUS_STAGE_s *stage, STATUSPACKET_s *packet, i32 current) {
+    if (current != 0) {
+        if (stage->field_0x14 > 0) {
+            volatile f32 alpha, time = 0.0f;
+            if (stage->field_0x18 < 0.5f)
+                alpha = (f64)stage->field_0x18 + (f64)stage->field_0x18;
+            else {
+                alpha = 1.0f;
+                if (!(stage->field_0x18 < 3.0f))
+                    time = (f64)stage->field_0x18 - 3.0;
+            }
+            {
+                volatile i32 opacity = (i32)((f64)alpha * 128.0);
+                volatile i32 angle = (i32)((f64)time * 32768.0 + 16384.0);
+                volatile f32 position = 1.0 - ((f64)NuTrigTable[(angle >> 1) & 0x7fff] + 1.0) * 0.5;
+                DrawBonusTime(packet, position, opacity);
+            }
+        }
+    } else if (stage->field_0x12 != 0) {
+        volatile i32 opacity = (i32)((f64)getFinishedStatusAlpha(packet) * 128.0);
+        DrawBonusTime(packet, 1.0f, opacity);
+    }
+}
