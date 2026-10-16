@@ -23642,6 +23642,8 @@ STATIC_ASSERT(offsetof(struct STATUSPACKET_s, previous_stage) == 0x120);
 STATIC_ASSERT(offsetof(struct STATUSPACKET_s, stage) == 0x124);
 STATIC_ASSERT(offsetof(struct STATUSPACKET_s, next_stage) == 0x128);
 STATIC_ASSERT(offsetof(struct STATUSPACKET_s, field_0x12c) == 0x12c);
+STATIC_ASSERT(offsetof(struct STATUSPACKET_s, previous_gold_bricks) == 0xbd);
+STATIC_ASSERT(sizeof(((struct STATUSPACKET_s *)0)->field_0x12c) == 32);
 
 struct STATUS_STAGE_s {
     void(__cdecl *draw_callback)(struct STATUS_STAGE_s *arg0, struct STATUSPACKET_s *arg1, i32 arg2);
@@ -26021,6 +26023,12 @@ extern "C" {
     i32 __cdecl InitStatusScreen_LSW(WORLDINFO *, STATUSPACKET_s *);
     i32 __cdecl FinishStatusPacket_LSW(WORLDINFO *, STATUSPACKET_s *, i32);
     void __cdecl DrawStatusBG_LSW(STATUSPACKET_s *);
+    extern i32 StatusGoldBrickStagePc, StatusGoldBrickPhasePc;
+    extern i16 TextIdPc880f9c;
+    extern const char CutPlayerTextSeparatorPc[4];
+    void __cdecl SetDrawGoldBrick(STATUSPACKET_s *, i32);
+    void __cdecl GoldBrick_LSW_Skip(STATUS_STAGE_s *, STATUSPACKET_s *);
+    void __cdecl GoldBrick_LSW_Update(STATUS_STAGE_s *, STATUSPACKET_s *, f32);
     extern f32 StatusIconYPc, STATSPOS2YPc;
     extern i32 StatusDrawPlayerIconsPc;
     f32 __cdecl StatusIconsOnOff(f32);
