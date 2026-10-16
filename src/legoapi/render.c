@@ -53,31 +53,20 @@ STATUS_STAGE_s *FindStatusStage(i32 type) {
 }
 
 void NewStatusRumbleBuzz(i32 player, float amount, float buzz, i32 priority) {
-    if (!(amount > 0.0f)) {
-        if (StatusPacket.player0_active != 0 && (player == 0 || player == -1)) {
-            goto player0_buzz;
-        }
-        if (StatusPacket.player1_active != 0 && (player == 1 || player == -1)) {
-            goto player1_buzz;
-        }
-        return;
-    }
-
     if (StatusPacket.player0_active != 0 && (player == 0 || player == -1)) {
-        if (StatusPacket.player0_rumble_time <= 0.0f || amount > StatusPacket.player0_rumble_time /
-                                                                     StatusPacket.player0_rumble_duration *
-                                                                     StatusPacket.player0_rumble_amount) {
+        if (amount > 0.0f && (StatusPacket.player0_rumble_time <= 0.0f ||
+                              amount > StatusPacket.player0_rumble_time / StatusPacket.player0_rumble_duration *
+                                           StatusPacket.player0_rumble_amount)) {
             StatusPacket.player0_rumble_amount = amount;
             StatusPacket.player0_rumble_duration = amount;
             StatusPacket.player0_rumble_time = amount;
         }
-    player0_buzz:
         if (buzz > StatusPacket.player0_buzz_amount) {
             StatusPacket.player0_buzz_amount = buzz;
         }
         if (priority > 0) {
             const i32 old_priority = StatusPacket.player0_rumble_priority;
-            ++priority;
+            priority = (i32)((u32)priority + 1u);
             if (priority > old_priority) {
                 StatusPacket.player0_rumble_priority = (u8)(priority);
             }
@@ -85,20 +74,19 @@ void NewStatusRumbleBuzz(i32 player, float amount, float buzz, i32 priority) {
     }
 
     if (StatusPacket.player1_active != 0 && (player == 1 || player == -1)) {
-        if (StatusPacket.player1_rumble_time <= 0.0f || amount > StatusPacket.player1_rumble_time /
-                                                                     StatusPacket.player1_rumble_duration *
-                                                                     StatusPacket.player1_rumble_amount) {
+        if (amount > 0.0f && (StatusPacket.player1_rumble_time <= 0.0f ||
+                              amount > StatusPacket.player1_rumble_time / StatusPacket.player1_rumble_duration *
+                                           StatusPacket.player1_rumble_amount)) {
             StatusPacket.player1_rumble_amount = amount;
             StatusPacket.player1_rumble_duration = amount;
             StatusPacket.player1_rumble_time = amount;
         }
-    player1_buzz:
         if (buzz > StatusPacket.player1_buzz_amount) {
             StatusPacket.player1_buzz_amount = buzz;
         }
         if (priority > 0) {
             const i32 old_priority = StatusPacket.player1_rumble_priority;
-            ++priority;
+            priority = (i32)((u32)priority + 1u);
             if (priority > old_priority) {
                 StatusPacket.player1_rumble_priority = (u8)(priority);
             }
@@ -1898,4 +1886,117 @@ void __cdecl BonusTime_LSW_Draw(STATUS_STAGE_s *stage, STATUSPACKET_s *packet, i
         volatile i32 opacity = (i32)((f64)getFinishedStatusAlpha(packet) * 128.0);
         DrawBonusTime(packet, 1.0f, opacity);
     }
+}
+
+void __cdecl SuperStoryTime_LSW_Skip(STATUS_STAGE_s *stage, STATUSPACKET_s *packet) {
+    (void)stage;
+    *packet->score = packet->time_reward_score;
+    NextStatusStage(packet);
+}
+
+void __cdecl SuperStoryTime_LSW_Update(STATUS_STAGE_s *stage, STATUSPACKET_s *packet, f32 elapsed) {
+    if (stage->field_0x14 == 0) {
+        stage->field_0x18 = 0.0f;
+        stage->field_0x14 = 1;
+        stage->field_0x1c = 5.0f;
+        packet->original_score = *packet->score;
+    } else if (stage->field_0x14 == 1) {
+        volatile f32 previous = stage->field_0x18;
+        volatile f32 accumulated = stage->field_0x18 + elapsed;
+        stage->field_0x18 = accumulated;
+        if (accumulated >= stage->field_0x1c) {
+            *packet->score = packet->time_reward_score;
+            NextStatusStage(packet);
+        } else if (previous < 0.5f && accumulated >= 0.5f) {
+            if (packet->new_best_time == 0.0f)
+                GameAudio_PlaySfx(0x32, NULL, 0, 0);
+            else
+                PlaySfx("StatusAward", NULL);
+            NewStatusRumbleBuzz(-1, 0.6f, 0.0f, 0);
+        }
+        if (packet->new_best_time != 0.0f) {
+            if (previous < 4.0f && stage->field_0x18 >= 4.0f) {
+                CoinTotalScale = 1.5f;
+                NewStatusRumbleBuzz(-1, 0.0f, 0.1f, 0);
+                PlaySfx("Shop_BuyCheat", NULL);
+            }
+            if (stage->field_0x18 >= 4.5f)
+                *packet->score = packet->time_reward_score;
+            else if (stage->field_0x18 >= 0.5f && stage->field_0x18 < 4.0f) {
+                u32 original = packet->original_score;
+                volatile f32 progress = ((f64)stage->field_0x18 - 0.5) / 3.5;
+                volatile i32 angle = (i32)((f64)progress * 16384.0);
+                u32 difference = packet->time_reward_score - original;
+                volatile i32 amount = (i32)((f64)difference * (f64)NuTrigTable[(angle >> 1) & 0x7fff]);
+                *packet->score = original;
+                IncreaseScore(packet->score, (u64)(i64)amount, 0);
+                {
+                    volatile i32 current_bucket = (i32)((f64)stage->field_0x18 / (f64)0.2f);
+                    volatile i32 previous_bucket = (i32)((f64)previous / (f64)0.2f);
+                    if (current_bucket != previous_bucket)
+                        PlaySfx("PickupCoin", NULL);
+                }
+            }
+        }
+    }
+}
+
+void __cdecl SuperStoryTime_LSW_Draw(STATUS_STAGE_s *stage, STATUSPACKET_s *packet, i32 current) {
+    char text[256], previous[256];
+    volatile f32 alpha, coin_progress;
+    volatile i32 opacity;
+    char *title;
+    i32 red, green;
+    if (current == 0 || stage->field_0x14 <= 0)
+        return;
+    if (stage->field_0x18 < 0.5f) {
+        alpha = (f64)stage->field_0x18 + (f64)stage->field_0x18;
+        coin_progress = alpha;
+    } else {
+        coin_progress = 1.0f;
+        if (stage->field_0x18 < 4.5f)
+            alpha = 1.0f;
+        else
+            alpha = 1.0 - (((f64)stage->field_0x18 - 4.5) + ((f64)stage->field_0x18 - 4.5));
+    }
+    opacity = (i32)((f64)alpha * 128.0);
+    {
+        volatile f32 coin_scale = CoinTotalScale;
+        volatile i32 angle = (i32)((f64)coin_progress * 16384.0);
+        volatile f32 coin_y =
+            ((f64)STATSPOSY - (f64)STATSPOS2YPc) * (f64)NuTrigTable[(angle >> 1) & 0x7fff] + (f64)STATSPOS2YPc;
+        CoinTotal_Draw((i32)*packet->score, coin_y, coin_scale, 1, 1.0f, 255, 191, 0);
+    }
+    if (packet->new_best_time != 0.0f) {
+        title = TTab[TextIdPc88071c];
+        red = 0;
+        green = 255;
+    } else {
+        title = TTab[TextIdPc880734];
+        red = 255;
+        green = 0;
+    }
+    SmartTextEx(title, 0.0f, 0.2f, 1.0f, 0.7f, 0.7f, 0.7f, 0, (u8)red, (u8)green, 0, 1.7f, 1, NULL, 0, (u32)opacity);
+    {
+        volatile f32 displayed_time;
+        if (packet->new_best_time != 0.0f) {
+            volatile f32 blend;
+            if (stage->field_0x18 < 0.5f)
+                blend = 0.0f;
+            else if (stage->field_0x18 < 4.0f)
+                blend = ((f64)stage->field_0x18 - 0.5) / 3.5;
+            else
+                blend = 1.0f;
+            displayed_time = ((f64)packet->new_best_time - (f64)packet->previous_best_time) * (f64)blend +
+                             (f64)packet->previous_best_time;
+        } else
+            displayed_time = packet->superstory_time;
+        Text_MakeTime(displayed_time, 1, 1, 1, text);
+    }
+    Text3DEx(text, 0.0f, 0.0f, 1.0f, 0.7f, 0.7f, 0.7f, 0, 255, 255, 255, opacity);
+    Text_MakeTime(packet->previous_best_time, 1, 1, 1, text);
+    NuStrCpy(previous, "(");
+    NuStrCat(previous, text);
+    NuStrCat(previous, ")");
+    Text3DEx(previous, 0.0f, -0.2f, 1.0f, 0.7f, 0.7f, 0.7f, 0, 255, 255, 255, opacity / 2);
 }
