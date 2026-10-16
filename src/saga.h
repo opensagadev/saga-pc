@@ -3373,6 +3373,7 @@ typedef struct LEVEL_OBJECT_RUNTIME_PC {
 } LEVEL_OBJECT_RUNTIME_PC;
 STATIC_ASSERT(sizeof(LEVEL_OBJECT_RUNTIME_PC) == 0x10);
 STATIC_ASSERT(offsetof(LEVEL_OBJECT_RUNTIME_PC, active) == 0xe);
+STATIC_ASSERT(offsetof(LEVEL_OBJECT_RUNTIME_PC, special) == 0);
 
 typedef struct game_antinode_data_pc_s {
     NUVEC position;
@@ -3928,6 +3929,7 @@ STATIC_ASSERT(sizeof(AREA_DATA_PC) == 0x9c);
 STATIC_ASSERT(offsetof(AREA_DATA_PC, flags) == 0x7a);
 STATIC_ASSERT(offsetof(AREA_DATA_PC, levels) == 0x60);
 STATIC_ASSERT(offsetof(AREA_DATA_PC, level_count) == 0x7d);
+STATIC_ASSERT(offsetof(AREA_DATA_PC, cheat) == 0x7e);
 STATIC_ASSERT(offsetof(AREA_DATA_PC, super_counters) == 0x80);
 STATIC_ASSERT(offsetof(AREA_DATA_PC, challenge_trial_time) == 0x84);
 STATIC_ASSERT(offsetof(AREA_DATA_PC, text_id) == 0x94);
@@ -26112,6 +26114,11 @@ extern "C" {
     void __cdecl Coins_LSW_Update(STATUS_STAGE_s *, STATUSPACKET_s *, f32);
     void __cdecl RedBrick_LSW_Skip(STATUS_STAGE_s *, STATUSPACKET_s *);
     void __cdecl RedBrick_LSW_Update(STATUS_STAGE_s *, STATUSPACKET_s *, f32);
+    void __cdecl RedBrick_LSW_Draw(STATUS_STAGE_s *, STATUSPACKET_s *, i32);
+    extern i16 TextIdPc880748;
+    extern CHEAT_PC ExtrasCheatsPc[46];
+    extern f32 StatusTextScalePc;
+    extern i32 StatusRedPc, StatusGreenPc, StatusBluePc;
     void __cdecl AllMiniKits_LSW_Skip(STATUS_STAGE_s *, STATUSPACKET_s *);
     void __cdecl AllMiniKits_LSW_Update(STATUS_STAGE_s *, STATUSPACKET_s *, f32);
     void __cdecl CollectCharactersOff_Skip(STATUS_STAGE_s *, STATUSPACKET_s *);

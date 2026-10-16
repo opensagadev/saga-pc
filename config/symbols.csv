@@ -874,7 +874,7 @@ address    , symbol                                                         , si
 0x0045fb60,_AllMiniKits_LSW_Update,233,"void __cdecl(STATUS_STAGE_s *, STATUSPACKET_s *, f32)"
 0x004601b0,_RedBrick_LSW_Skip,12,"void __cdecl(STATUS_STAGE_s *, STATUSPACKET_s *)"
 0x004601c0,_RedBrick_LSW_Update,180,"void __cdecl(STATUS_STAGE_s *, STATUSPACKET_s *, f32)"
-0x460280,_RedBrick_LSW_Draw,598,
+0x460280,_RedBrick_LSW_Draw,598,"void __cdecl(STATUS_STAGE_s *, STATUSPACKET_s *, i32)"
 0x004604e0,_Coins_LSW_Skip,79,"void __cdecl(STATUS_STAGE_s *, STATUSPACKET_s *)"
 0x00460530,_Coins_LSW_Update,452,"void __cdecl(STATUS_STAGE_s *, STATUSPACKET_s *, f32)"
 0x00460bf0,_GoldBrick_LSW_Skip,21,"void __cdecl(STATUS_STAGE_s *, STATUSPACKET_s *)"

@@ -487,3 +487,35 @@ destination_selected:
     }
     NuSound3StopRumble();
 }
+
+void __cdecl RedBrick_LSW_Draw(STATUS_STAGE_s *stage, STATUSPACKET_s *packet, i32 current) {
+    volatile f32 blend;
+    volatile i32 opacity;
+    volatile u16 rotation, pitch;
+    volatile f32 panel_y, text_y;
+    if (current == 0 || stage->field_0x14 <= 0)
+        return;
+    if (stage->field_0x18 < 1.0f) {
+        volatile i32 angle = (i32)((f64)stage->field_0x18 * 16384.0);
+        blend = NuTrigTable[(angle >> 1) & 0x7fff];
+    } else {
+        volatile f32 fade_start = (f64)stage->field_0x1c - 1.0;
+        if (fade_start > stage->field_0x18)
+            blend = 1.0f;
+        else {
+            volatile i32 angle = (i32)((1.0 - ((f64)stage->field_0x18 - (f64)fade_start)) * 16384.0);
+            blend = NuTrigTable[(angle >> 1) & 0x7fff];
+        }
+    }
+    opacity = (i32)((f64)blend * 128.0);
+    SmartTextEx(TTab[TextIdPc880748], 0.0f, 0.05f, 1.0f, StatusTextScalePc, StatusTextScalePc, StatusTextScalePc, 0,
+                (u8)StatusRedPc, (u8)StatusGreenPc, (u8)StatusBluePc, 1.7f, 1, NULL, 0, (u32)opacity);
+    rotation = (u16)((f64)NuFmod(GlobalTimer.time_elapsed, 4.0f) * 0.25 * 65536.0);
+    pitch = (u16)((f64)NuTrigTable[rotation & 0x7fff] * 1820.0);
+    panel_y = (f64)blend - 1.5;
+    DrawPanel3DObjectNoAlpha(0.0f, panel_y, 1.0f, 1.0f, 1.0f, 1.0f, pitch, rotation, 0,
+                             &WORLD->level_objects[210].special, 2);
+    text_y = (f64)blend * -1.0 + 1.5;
+    SmartTextEx(TTab[*ExtrasCheatsPc[packet->area->cheat].text_id], 0.0f, text_y, 1.0f, StatusTextScalePc,
+                StatusTextScalePc, StatusTextScalePc, 0, 255, 255, 255, 1.7f, 1, NULL, 0, 128);
+}
