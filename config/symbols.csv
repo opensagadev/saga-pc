@@ -272,7 +272,7 @@ address    , symbol                                                         , si
 0x42b4c0,_InitChallenge,47,
 0x42b550,_MenuDrawEndChallenge,410,
 0x42b6f0,_SetBonusWinner,55,void __cdecl (i32)
-0x42b730,_BuyAllShopExtras,137,
+0x42b730,_BuyAllShopExtras,137,void __cdecl(void)
 0x42b7c0,_InitGameMode,393,
 0x0042b950,?Game_IgnoreInput@@YAHXZ,12,
 0x0042b960 , _CheckResetBits                                                , 2966  , void __cdecl (void)
@@ -3408,7 +3408,7 @@ address    , symbol                                                         , si
 0x561400,_DrawGameMessages,1235,
 0x5618e0,_FindGameMsgsWithID,88,"i32 __cdecl (i32,i32,i32,GAME_MESSAGE_PC *)"
 0x561940,_AddGameMsgCount,191,
-0x561a00,_AddFancyMessageRGB,282,
+0x561a00,_AddFancyMessageRGB,282,"void __cdecl(char *,f32,f32,f32,f32,i32,u8,u8,u8)"
 0x561b20,_AddFancyMessage,94,
 0x00561ba0,_StartJump,244,"void __cdecl (GAMEOBJECT *, i32)"
 0x561ca0,_MakeJumpReachHeight,126,"void __cdecl (GAMEOBJECT *, f32, i32)"

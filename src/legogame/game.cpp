@@ -1350,11 +1350,14 @@ static i32 __cdecl GizBuildIt_CanStartBuildingFn_Game(GIZBUILDIT_PC *input, GAME
     return 1;
 }
 
+extern "C" void __cdecl BuyAllShopExtras(void);
+extern "C" i16 TextIdPc880ff0;
+
 static void __cdecl GizBuildIt_FinishFn_Game(GIZBUILDIT_PC *input) {
     if (WORLD->area != NULL && (WORLD->area->flags & 0x40) != 0 && HubBuildItPc == input &&
         (Game.purchased_extra_bits_high & 0x80) == 0) {
-        STUBBED_NAMED("GizBuildIt_FinishFn_Game: AddFancyMessageRGB native 42e12e -> 561a00");
-        STUBBED_NAMED("GizBuildIt_FinishFn_Game: BuyAllShopExtras native 42e133 -> 42b730");
+        AddFancyMessageRGB(TTab[TextIdPc880ff0], 0.0f, 0.0f, 0.6f, 1.25f, 1, 255, 0, 0);
+        BuyAllShopExtras();
         ReCalculateCompletionPoints();
         AddPartDebris(WORLD->part_debris_sys, 15, &((GAME_BUILDIT_READER_PC *)HubBuildItPc)->position);
     }

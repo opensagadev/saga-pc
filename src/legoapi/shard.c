@@ -2087,3 +2087,18 @@ void __cdecl DrawSubItemMenu2D(void) {
         CoinTotal_Draw(price, HubEpisodeSubtitleYPc, 1.2f, 0, ShopNameAlpha, 255, 191, 0);
     }
 }
+
+void __cdecl BuyAllShopExtras(void) {
+    SHOP_SAVE_VIEW_PC *save = (SHOP_SAVE_VIEW_PC *)&Game;
+    i32 index, area;
+    for (index = 0; index < 44; ++index) {
+        save->extra_purchased_bits[(u32)index >> 5] |= 1u << (index & 31);
+        if (WORLD->current_level == HUB_LDATA)
+            ExtraItems[index].unlocked = 1;
+        area = ExtrasCheatsPc[index].area_index;
+        if (area != -1 && Game.area_save[area].red_brick_collected == 0)
+            Game.area_save[area].red_brick_collected = 1;
+    }
+    save->extra_unlocked_bits[0] = 0xffffffffu;
+    save->extra_unlocked_bits[1] = 0xffffffffu;
+}

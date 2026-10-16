@@ -332,6 +332,28 @@ void AddGameMsgCount(NUVEC *position, i32 count, i32 total, unsigned char red, u
     }
 }
 
+void __cdecl AddFancyMessageRGB(char *text, f32 x, f32 y, f32 scale, f32 duration, i32 message_id, u8 red, u8 green,
+                                u8 blue) {
+    NUVEC position;
+    volatile f32 doubled_scale;
+    f64 half_scale;
+    if (message_id != 0) {
+        GameAudio_PlaySfx(0x2c, NULL, 0, 0);
+        GameAudio_PlaySfx(0x26, NULL, 0, 0);
+        NewRumbleAllPlayers(0.7f, 0.0f, 0, 0.0f);
+        GameCam_NewShake(GameCam, 1.0f, 1.0f, 1.0f);
+    }
+    doubled_scale = (f64)scale + (f64)scale;
+    position.x = x;
+    position.y = y;
+    position.z = 1.0f;
+    half_scale = (f64)doubled_scale * 0.5;
+    AddGameMessage(text, &position, doubled_scale, &position, (f32)((f64)doubled_scale + half_scale), red, green, blue,
+                   0x4020, duration);
+    AddGameMessage(text, &position, doubled_scale, &position, (f32)((f64)doubled_scale - half_scale), red, green, blue,
+                   0x4020, duration);
+}
+
 void AddFancyMessage(char *text, float x, float y, float scale, float duration, i32 message_id, i32 colour_type) {
     const i32 red = 0xff;
     const i32 green = 0xff - ((((u32)(colour_type)) < 1) << 6);
