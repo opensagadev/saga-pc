@@ -229,3 +229,8 @@ extern "C" void __cdecl PcShutdown(void) {
     PcRelaunchMediaCenter();
     SetThreadExecutionState((EXECUTION_STATE)0x80000000);
 }
+
+extern "C" __declspec(noreturn) void __cdecl PcQuitToWindows(void) {
+    PcShutdown();
+    exit(0);
+}

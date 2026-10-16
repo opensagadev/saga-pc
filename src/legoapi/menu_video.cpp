@@ -443,3 +443,26 @@ extern "C" void __cdecl MenuUpdateHiresNoticePc(MENU *menu) {
 }
 extern "C" void __cdecl MenuExitHiresNoticePc(MENU *) {
 }
+
+extern "C" void __cdecl MenuEnterQuitPc(MENU *menu) {
+    menu->selected_row = 0;
+}
+extern "C" void __cdecl MenuExitQuitPc(MENU *) {
+}
+extern "C" void __cdecl MenuDrawQuitPc(MENU *menu) {
+    if (!MenuPcStringsInitialized)
+        MenuPcStringsInit();
+    DrawMenuEntryEx(menu, (char *)MenuPcStrings[3], (u8)MenuA);
+    if (!MenuPcStringsInitialized)
+        MenuPcStringsInit();
+    DrawMenuEntryEx(menu, (char *)MenuPcStrings[1], (u8)MenuA);
+}
+extern "C" void __cdecl MenuUpdateQuitPc(MENU *menu) {
+    if ((menu->selected_row == 0 && menu->confirm_pressed != 0) || menu->cancel_pressed != 0) {
+        MenuSFX = MENUSFX_MENUBACK;
+        BackupMenu();
+        return;
+    }
+    if (menu->selected_row == 1 && menu->confirm_pressed != 0)
+        PcQuitToWindows();
+}

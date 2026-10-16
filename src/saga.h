@@ -26895,6 +26895,11 @@ extern "C" {
     void __cdecl MenuDrawHiresNoticePc(MENU *);
     void __cdecl MenuUpdateHiresNoticePc(MENU *);
     void __cdecl MenuExitHiresNoticePc(MENU *);
+    void __cdecl MenuEnterQuitPc(MENU *);
+    void __cdecl MenuDrawQuitPc(MENU *);
+    void __cdecl MenuUpdateQuitPc(MENU *);
+    void __cdecl MenuExitQuitPc(MENU *);
+    __declspec(noreturn) void __cdecl PcQuitToWindows(void);
     void __cdecl PauseGame(i32);
     void __cdecl PadOutPause(i32, WORLDINFO *);
     void __cdecl DropOut(i32, i32, i32, i32);

@@ -10353,7 +10353,7 @@ extern "C" {
          -1, 0, 0, 0, 0},
         {1028, MenuEnterHiresNoticePc, MenuDrawHiresNoticePc, MenuUpdateHiresNoticePc, MenuExitHiresNoticePc, -1, -1, 0,
          0, 0, 0},
-        {1029, NULL, NULL, NULL, NULL, -1, -1, 0, 0, 0, 0},
+        {1029, MenuEnterQuitPc, MenuDrawQuitPc, MenuUpdateQuitPc, MenuExitQuitPc, -1, -1, 0, 0, 0, 0},
         {1030, NULL, NULL, NULL, NULL, -1, -1, 0, 0, 0, 0},
     };
     MENU GameMenu[10] = {0};
