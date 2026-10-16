@@ -879,6 +879,7 @@ address    , symbol                                                         , si
 0x00460530,_Coins_LSW_Update,452,"void __cdecl(STATUS_STAGE_s *, STATUSPACKET_s *, f32)"
 0x00460bf0,_GoldBrick_LSW_Skip,21,"void __cdecl(STATUS_STAGE_s *, STATUSPACKET_s *)"
 0x00460c10,_GoldBrick_LSW_Update,824,"void __cdecl(STATUS_STAGE_s *, STATUSPACKET_s *, f32)"
+0x460f50,_GoldBrick_LSW_Draw,883,"void __cdecl(STATUS_STAGE_s *, STATUSPACKET_s *, i32)"
 0x461720,_CollectCharcters_Draw,1022,
 0x00461b20,_CollectCharactersOff_Skip,1,"void __cdecl(STATUS_STAGE_s *, STATUSPACKET_s *)"
 0x00461b30,_CollectCharactersOff_Update,79,"void __cdecl(STATUS_STAGE_s *, STATUSPACKET_s *, f32)"
@@ -11434,6 +11435,7 @@ address    , symbol                                                         , si
 0x758804,??_C@_01EPMOAMKG@$?$AA@,2,const char[2]
 0x00758808 , __real@3fefffffe0000000                                        , 8     , const f64
 0x758810,__real@3ff4ccccc0000000,8,const f64
+0x758818,__real@bfefffffe0000000,8,const f64
 0x758820,__real@3fec000000000000,8,f64
 0x758828,??_C@_02DKCKIIND@?$CFs?$AA@,3,const char[3]
 0x00758828 , _GizAIMessage_NameFormat                                       , 3     , const char[3]

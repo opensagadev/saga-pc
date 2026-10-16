@@ -1,4 +1,5 @@
 #include "saga.h"
+#include <stdio.h>
 
 typedef struct STILL_RENDER_MATERIAL_PC {
     u8 unknown_00[0x40];
@@ -518,4 +519,53 @@ void __cdecl RedBrick_LSW_Draw(STATUS_STAGE_s *stage, STATUSPACKET_s *packet, i3
     text_y = (f64)blend * -1.0 + 1.5;
     SmartTextEx(TTab[*ExtrasCheatsPc[packet->area->cheat].text_id], 0.0f, text_y, 1.0f, StatusTextScalePc,
                 StatusTextScalePc, StatusTextScalePc, 0, 255, 255, 255, 1.7f, 1, NULL, 0, 128);
+}
+
+void __cdecl GoldBrick_LSW_Draw(STATUS_STAGE_s *stage, STATUSPACKET_s *packet, i32 current) {
+    if (current == 0)
+        return;
+    if (stage->field_0x14 > 0 && stage->field_0x18 >= 1.0f && (f64)stage->field_0x18 < (f64)stage->field_0x1c - 1.0) {
+        char text[256];
+        i32 total = (i32)Game.gold_bricks;
+        i32 previous = (i32)packet->previous_gold_bricks;
+        i32 last = total - previous - 1;
+        i32 displayed;
+        volatile f32 blend, text_y, panel_y;
+        volatile i32 opacity;
+        volatile u16 rotation, pitch;
+        if (stage->field_0x18 < 2.0f) {
+            volatile i32 angle = (i32)(((f64)stage->field_0x18 - 1.0) * 16384.0);
+            blend = NuTrigTable[(angle >> 1) & 0x7fff];
+        } else {
+            volatile f32 fade_start = (f64)stage->field_0x1c - 2.0;
+            if (fade_start > stage->field_0x18)
+                blend = 1.0f;
+            else {
+                volatile i32 angle = (i32)((1.0 - ((f64)stage->field_0x18 - (f64)fade_start)) * 16384.0);
+                blend = NuTrigTable[(angle >> 1) & 0x7fff];
+            }
+        }
+        if (stage->field_0x18 < 2.0f)
+            displayed = previous;
+        else if ((f64)last * 2.5 + 2.0 > (f64)stage->field_0x18)
+            displayed = (i32)(((f64)stage->field_0x18 - 2.0) / 2.5 + (f64)(previous + 1));
+        else
+            displayed = total;
+        sprintf(text, "%i/%i", displayed, GOLDBRICKPOINTS);
+        opacity = (i32)((f64)blend * 128.0);
+        text_y = (f64)blend * (f64)-0.99999994f + (f64)1.3f;
+        SmartTextEx(text, 0.0f, text_y, 1.0f, 1.5f, 1.5f, 1.5f, 0, 255, 255, 255, 1.7f, 1, NULL, 0, (u32)opacity);
+        rotation = (u16)((f64)NuFmod(GlobalTimer.time_elapsed, 4.0f) * 0.25 * 65536.0);
+        pitch = (u16)((f64)NuTrigTable[rotation & 0x7fff] * 1820.0);
+        panel_y = (f64)blend * (f64)0.99999994f - (f64)1.3f;
+        DrawPanel3DObjectNoAlpha(0.0f, panel_y, 1.0f, 1.0f, 1.0f, 1.0f, pitch, rotation, 0,
+                                 &WORLD->level_objects[211].special, 2);
+        if (Game.gold_bricks > 60) {
+            volatile f32 coin_y = ((f64)STATSPOSY - (f64)STATSPOS2YPc) * (f64)blend + (f64)STATSPOS2YPc;
+            CoinTotal_Draw((i32)*packet->score, coin_y, CoinTotalScale, 1, 1.0f, 255, 191, 0);
+        }
+    }
+    if ((stage->field_0x14 == 0 || stage->field_0x18 < 1.0f) && packet->mission_state != 0 &&
+        Game.gold_bricks > packet->previous_gold_bricks)
+        iconalphaoverride = 0.0f;
 }

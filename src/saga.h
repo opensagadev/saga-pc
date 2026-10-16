@@ -26084,6 +26084,7 @@ extern "C" {
     void __cdecl SetDrawGoldBrick(STATUSPACKET_s *, i32);
     void __cdecl GoldBrick_LSW_Skip(STATUS_STAGE_s *, STATUSPACKET_s *);
     void __cdecl GoldBrick_LSW_Update(STATUS_STAGE_s *, STATUSPACKET_s *, f32);
+    void __cdecl GoldBrick_LSW_Draw(STATUS_STAGE_s *, STATUSPACKET_s *, i32);
     void __cdecl BonusComplete_LSW_Skip(STATUS_STAGE_s *, STATUSPACKET_s *);
     void __cdecl BonusComplete_LSW_Update(STATUS_STAGE_s *, STATUSPACKET_s *, f32);
     void __cdecl BonusTime_LSW_Skip(STATUS_STAGE_s *, STATUSPACKET_s *);
