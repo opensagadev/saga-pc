@@ -744,3 +744,101 @@ void __cdecl DrawStatusMiniKit(f32 x, f32 y, f32 z, f32 scale, f32 collected_sca
                 (nuhspecial_s *)&((STATUS_WORLD_MINIKIT_READER_PC *)world)->minikit.pieces[index].special, &matrix);
     }
 }
+
+extern "C" {
+    f32 StatusAllMiniKitsTitleScalePc = 0.7f;
+    f32 StatusAllMiniKitsCharacterTextScalePc = 0.6f;
+    f32 StatusAllMiniKitsXPc = -0.6f;
+    f32 StatusAllMiniKitsYPc = -0.5f;
+    f32 StatusAllMiniKitsScalePc = 0.15f;
+    f32 StatusAllMiniKitsZPc = 1.1f;
+    f32 StatusAllMiniKitsCountYOffsetPc = -0.3f;
+    f32 StatusAllMiniKitsCountScalePc = 0.5f;
+    f32 StatusAllMiniKitsQuestionScalePc = 1.2f;
+    f32 StatusAllMiniKitsQuestionYOffsetPc = -0.1f;
+    f32 StatusAllMiniKitsCompleteScalePc = 0.8f;
+    f32 StatusAllMiniKitsCompleteYOffsetPc = -0.2f;
+}
+
+void __cdecl AllMiniKits_LSW_Draw(STATUS_STAGE_s *stage, STATUSPACKET_s *packet, i32 current) {
+    if (current != 0) {
+        if (stage->field_0x14 <= 0)
+            return;
+        volatile f32 title_alpha;
+        volatile f32 icon_alpha = 0.0f;
+        volatile f32 icon_y = 0.225f;
+        if (stage->field_0x18 < 0.5f) {
+            title_alpha = (f64)stage->field_0x18 + (f64)stage->field_0x18;
+        } else if ((f64)stage->field_0x18 < 3.5) {
+            title_alpha = 1.0f;
+        } else if (stage->field_0x18 < 4.0f) {
+            icon_alpha = ((f64)stage->field_0x18 - 3.5) * 2.0;
+            title_alpha = 1.0 - (f64)icon_alpha;
+            volatile i32 angle = (i32)((f64)icon_alpha * 16384.0);
+            icon_y = (1.0 - (f64)NuTrigTable[(angle >> 1) & 0x7fff]) * -0.5 + (f64)0.225f;
+        } else if (stage->field_0x18 < 6.0f) {
+            title_alpha = 0.0f;
+            icon_alpha = 1.0f;
+            volatile i32 angle = (i32)((f64)icon_alpha * 16384.0);
+            icon_y = (1.0 - (f64)NuTrigTable[(angle >> 1) & 0x7fff]) * -0.5 + (f64)0.225f;
+        } else if ((f64)stage->field_0x18 < 6.5) {
+            title_alpha = 0.0f;
+            icon_alpha = 1.0 - ((f64)stage->field_0x18 - 6.0) * 2.0;
+        } else {
+            return;
+        }
+        if (icon_alpha > 0.0f) {
+            DrawCharIcon(VehicleBoltId7f195cPc, 0.0f, icon_y, 0.0f, 0.4f, 0xa7, icon_alpha, icon_alpha, 1, NULL);
+            volatile i32 opacity = (i32)((f64)icon_alpha * 128.0);
+            SmartTextEx(TTab[CDataList[VehicleBoltId7f195cPc].name_id], 0.0f, -0.1f, 1.0f,
+                        StatusAllMiniKitsCharacterTextScalePc, StatusAllMiniKitsCharacterTextScalePc,
+                        StatusAllMiniKitsCharacterTextScalePc, 0, (u8)StatusRedPc, (u8)StatusGreenPc, (u8)StatusBluePc,
+                        1.7f, 1, NULL, 0, (u32)opacity);
+        }
+        if (title_alpha > 0.0f) {
+            volatile u8 opacity = (u8)((f64)title_alpha * 128.0);
+            Text3DEx(TTab[TextIdPc880740], 0.0f, 0.225f, 1.0f, StatusAllMiniKitsTitleScalePc,
+                     StatusAllMiniKitsTitleScalePc, StatusAllMiniKitsTitleScalePc, 0, (u8)StatusRedPc,
+                     (u8)StatusGreenPc, (u8)StatusBluePc, opacity);
+        }
+        return;
+    }
+    if (stage->field_0x12 == 0)
+        return;
+    volatile f32 alpha = getFinishedStatusAlpha(packet);
+    volatile i32 reveal_angle = (i32)((f64)alpha * 16384.0);
+    volatile f32 reveal = NuTrigTable[(reveal_angle >> 1) & 0x7fff];
+    volatile i32 opacity = (i32)((f64)alpha * 128.0);
+    volatile f32 timer = GameTimer.time_elapsed_mod_seconds;
+    if (timer > 0.25f)
+        timer = 0.0f;
+    volatile i32 pulse_angle = (i32)((f64)timer * 32768.0 + 16384.0);
+    union {
+        f32 value;
+        u32 bits;
+    } pulse;
+    pulse.value = NuTrigTable[(pulse_angle >> 1) & 0x7fff];
+    pulse.bits &= 0x7fffffffu;
+    volatile f32 inverse_pulse = 1.0 - (f64)pulse.value;
+    volatile f32 pulse_scale = 1.0 + (f64)inverse_pulse;
+    if (Game.area_save[packet->area->index].minikit_count != 0) {
+        volatile f32 scale = (f64)StatusAllMiniKitsScalePc * (f64)reveal;
+        DrawStatusMiniKit(StatusAllMiniKitsXPc, StatusAllMiniKitsYPc, StatusAllMiniKitsZPc, scale, 1.0f,
+                          Game.area_save[packet->area->index].minikit_count, packet, 0.0f);
+    } else {
+        volatile f32 size = (f64)StatusAllMiniKitsQuestionScalePc * (f64)pulse_scale;
+        volatile f32 y = (f64)StatusAllMiniKitsQuestionYOffsetPc + (f64)StatusAllMiniKitsYPc;
+        Text3DEx("?", StatusAllMiniKitsXPc, y, StatusAllMiniKitsZPc, size, size, size, 0, 255, 255, 255, opacity);
+    }
+    if (Game.area_save[packet->area->index].minikit_count == packet->minikit_max) {
+        volatile f32 y = (f64)StatusAllMiniKitsCompleteYOffsetPc + (f64)StatusAllMiniKitsYPc;
+        Text3DEx("$", StatusAllMiniKitsXPc, y, 1.0f, StatusAllMiniKitsCompleteScalePc, StatusAllMiniKitsCompleteScalePc,
+                 StatusAllMiniKitsCompleteScalePc, 0, 255, 0, 127, opacity);
+    } else {
+        char text[60];
+        sprintf(text, "%i/%i", Game.area_save[packet->area->index].minikit_count, packet->minikit_max);
+        volatile f32 y = (f64)StatusAllMiniKitsCountYOffsetPc + (f64)StatusAllMiniKitsYPc;
+        Text3DEx(text, StatusAllMiniKitsXPc, y, 1.0f, StatusAllMiniKitsCountScalePc, StatusAllMiniKitsCountScalePc,
+                 StatusAllMiniKitsCountScalePc, 0, 255, 0, 127, opacity);
+    }
+}

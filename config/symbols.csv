@@ -872,6 +872,7 @@ address    , symbol                                                         , si
 0x45e430,_getFinishedStatusAlpha,171,f32 __cdecl(STATUSPACKET_s *)
 0x0045fb40,_AllMiniKits_LSW_Skip,27,"void __cdecl(STATUS_STAGE_s *, STATUSPACKET_s *)"
 0x0045fb60,_AllMiniKits_LSW_Update,233,"void __cdecl(STATUS_STAGE_s *, STATUSPACKET_s *, f32)"
+0x0045fc50,_AllMiniKits_LSW_Draw,1372,"void __cdecl(STATUS_STAGE_s *, STATUSPACKET_s *, i32)"
 0x004601b0,_RedBrick_LSW_Skip,12,"void __cdecl(STATUS_STAGE_s *, STATUSPACKET_s *)"
 0x004601c0,_RedBrick_LSW_Update,180,"void __cdecl(STATUS_STAGE_s *, STATUSPACKET_s *, f32)"
 0x460280,_RedBrick_LSW_Draw,598,"void __cdecl(STATUS_STAGE_s *, STATUSPACKET_s *, i32)"
@@ -11425,7 +11426,9 @@ address    , symbol                                                         , si
 0x758774   , _PCContextName_Jump                                            , 5     , const char [5]
 0x75877c,??_C@_0O@JLLKHNHH@Char_Icon_App?$AA@,14,const char[14]
 0x75878c,??_C@_0M@HBOGFPCF@StatusAward?$AA@,12,const char[12]
-0x7587a8,__real@bfe0000000000000,,
+0x758798,__real@3e666666,4,f32
+0x7587a0,__real@401a000000000000,8,f64
+0x7587a8,__real@bfe0000000000000,8,f64
 0x7587b0,__real@400c000000000000,8,f64
 0x7587b8,__real@409c700000000000,8,const f64
 0x7587c0,??_C@_0L@FMEHDMAG@PickupCoin?$AA@,11,const char[11]
@@ -18159,6 +18162,18 @@ address    , symbol                                                         , si
 0x7f7a88,_Hints_LSW,1820,HINT_PC[65]
 0x7f85f4,_StatusTitleYPc,4,f32
 0x7f85f8,_StatusTextScalePc,4,f32
+0x7f8600,_StatusAllMiniKitsTitleScalePc,4,f32
+0x7f860c,_StatusAllMiniKitsCharacterTextScalePc,4,f32
+0x7f862c,_StatusAllMiniKitsXPc,4,f32
+0x7f8634,_StatusAllMiniKitsYPc,4,f32
+0x7f8638,_StatusAllMiniKitsScalePc,4,f32
+0x7f8640,_StatusAllMiniKitsZPc,4,f32
+0x7f8644,_StatusAllMiniKitsCountYOffsetPc,4,f32
+0x7f8648,_StatusAllMiniKitsCountScalePc,4,f32
+0x7f864c,_StatusAllMiniKitsQuestionScalePc,4,f32
+0x7f8650,_StatusAllMiniKitsQuestionYOffsetPc,4,f32
+0x7f8654,_StatusAllMiniKitsCompleteScalePc,4,f32
+0x7f8658,_StatusAllMiniKitsCompleteYOffsetPc,4,f32
 0x7f8b18,_game_gizactiondefs,192,GIZACTIONDEF_PC[24]
 0x7f8c44,_bombgen_gizmotype_id,4,i32
 0x7f8cb0,_GizmoRegistryGizBombGenNamePtrPc,4,char *
