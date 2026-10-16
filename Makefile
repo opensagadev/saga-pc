@@ -4,9 +4,11 @@ BUILD_KIND ?= Matching
 ifeq ($(BUILD_KIND),Matching)
 OBJ_DIR := build/obj
 EXE := build/LEGOStarWarsSaga.exe
+STRICT_EXE := build/strict/LEGOStarWarsSaga.strict.exe
 else ifeq ($(BUILD_KIND),Debug)
 OBJ_DIR := build/Debug/obj
-EXE := build/Debug/LEGOStarWarsSaga.exe
+EXE := build/LEGOStarWarsSaga_debug.exe
+STRICT_EXE := build/Debug/LEGOStarWarsSaga.strict_debug.exe
 DIAGNOSTIC_OBJECTS := build/Debug/log.obj
 ifneq ($(filter match diff check-objects,$(MAKECMDGOALS)),)
 $(error Matching comparisons require BUILD_KIND=Matching; Debug artifacts are never comparison inputs)
@@ -31,11 +33,11 @@ endif
 # cookie. vorbisfile keeps them, so it was built with the game's flags.
 $(filter-out $(OBJ_DIR)/audio/vorbis/vorbisfile.obj,$(filter $(OBJ_DIR)/audio/vorbis/% $(OBJ_DIR)/audio/vorbis_%,$(OBJECTS))): CXXFLAGS += /GS-
 $(filter $(OBJ_DIR)/nu2api/oggreader.obj $(OBJ_DIR)/nu2api/nustream.obj,$(OBJECTS)): $(VORBIS_HEADERS)
-D3DX_LIB := build/d3dx9_35.lib
-DSOUND_LIB := build/dsound.lib
-D3D9_LIB := build/d3d9.lib
-DINPUT8_LIB := build/dinput8.lib
-XINPUT_LIB := build/xinput1_3.lib
+D3DX_LIB := build/lib/imports/d3dx9_35.lib
+DSOUND_LIB := build/lib/imports/dsound.lib
+D3D9_LIB := build/lib/imports/d3d9.lib
+DINPUT8_LIB := build/lib/imports/dinput8.lib
+XINPUT_LIB := build/lib/imports/xinput1_3.lib
 CPPFLAGS := /Isrc /Ibuild/tools/msvc8/include /Ibuild/tools/msvc8/PlatformSDK/Include
 CXXFLAGS := /nologo /c /O2 /Gy /GS /MT
 LDFLAGS := /nologo /machine:x86 /subsystem:windows /incremental:no /manifest:no /opt:noref /opt:noicf
@@ -43,7 +45,7 @@ ifeq ($(BUILD_KIND),Debug)
 CPPFLAGS += /DSAGA_DEBUG
 CXXFLAGS += /Z7
 # Keep native linker defaults: the pinned PDB writer cannot emit a PDB.
-LDFLAGS += /MAP:$(EXE:.exe=.map)
+LDFLAGS += /MAP:build/Debug/LEGOStarWarsSaga_debug.map
 endif
 LDLIBS := user32.lib gdi32.lib winmm.lib ole32.lib oleaut32.lib shell32.lib advapi32.lib $(abspath $(D3D9_LIB)) $(abspath $(D3DX_LIB)) $(abspath $(DSOUND_LIB)) $(abspath $(DINPUT8_LIB)) $(abspath $(XINPUT_LIB))
 
@@ -69,7 +71,7 @@ $(EXE): $(OBJECTS) $(DIAGNOSTIC_OBJECTS) $(D3DX_LIB) $(DSOUND_LIB) $(D3D9_LIB) $
 
 # The complete link: every referenced function must be implemented.
 link-strict: $(OBJECTS) $(DIAGNOSTIC_OBJECTS) $(D3DX_LIB) $(DSOUND_LIB) $(D3D9_LIB) $(DINPUT8_LIB) $(XINPUT_LIB)
-	$(PYTHON) tools/cc.py --link $(EXE:.exe=.strict.exe) $(OBJECTS) $(DIAGNOSTIC_OBJECTS) -- $(LDFLAGS) $(LDLIBS)
+	$(PYTHON) tools/cc.py --link $(STRICT_EXE) $(OBJECTS) $(DIAGNOSTIC_OBJECTS) -- $(LDFLAGS) $(LDLIBS)
 
 # Debug support contains diagnostics only and never enters Matching objects.
 build/Debug/log.obj: src/log.c src/diagnostics.h config/toolchain.json Makefile tools/cc.py | build/tools/wine/.ready
@@ -138,6 +140,6 @@ inspect:
 
 clean:
 	rm -rf build/obj build/objdiff build/Debug/obj
-	rm -f build/LEGOStarWarsSaga.exe build/LEGOStarWarsSaga.strict.exe
-	rm -f build/Debug/log.obj build/Debug/LEGOStarWarsSaga.exe build/Debug/LEGOStarWarsSaga.strict.exe
-	rm -f build/Debug/LEGOStarWarsSaga.pdb build/Debug/LEGOStarWarsSaga.map
+	rm -f build/LEGOStarWarsSaga.exe build/LEGOStarWarsSaga_debug.exe
+	rm -f build/strict/LEGOStarWarsSaga.strict.exe build/Debug/LEGOStarWarsSaga.strict_debug.exe
+	rm -f build/Debug/log.obj build/Debug/LEGOStarWarsSaga_debug.pdb build/Debug/LEGOStarWarsSaga_debug.map

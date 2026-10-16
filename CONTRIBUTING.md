@@ -36,8 +36,9 @@ make Debug                                # BUILD_KIND=Debug
 make BUILD_KIND=Debug run                  # explicitly run the Debug executable
 ```
 
-Matching keeps `build/obj/` and `build/LEGOStarWarsSaga.exe`. Debug uses only
-`build/Debug/obj/` and `build/Debug/LEGOStarWarsSaga.exe`, with embedded CodeView
+The executables are `build/LEGOStarWarsSaga.exe` (Matching) and
+`build/LEGOStarWarsSaga_debug.exe` (Debug). Objects stay in `build/obj/` and
+`build/Debug/obj/`; Debug uses embedded CodeView
 symbols in its objects and an isolated linker map. The two kinds use the same source, `/O2 /Gy /GS /MT`, native linker
 optimization settings and unresolved-symbol policy. Debug adds `/Z7`, linker
 `/MAP`, and `SAGA_DEBUG` for diagnostic support; it does not define

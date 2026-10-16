@@ -4,7 +4,7 @@
   "compiler": "14.00.50727.42",
   "objdiff_version": "3.8.1",
   "inputs": {
-    "Makefile": "34ea1e2e40cde122810a014ddd4b1c3590f5f84b7688cf4105cd3d33bc0a3eb4",
+    "Makefile": "ecc8b9018cc9f242210e5eabd383592c8232d80844a2f22481cf4ad12940cb1f",
     "src/audio/vorbis/backends.h": "c4a374768dc777c17fe838fc8abb7e4653887f5cb447e52097920cbe3009bca7",
     "src/audio/vorbis/bitrate.h": "7f1c407e54253035f9fd182ad0706e73543f040c66c6e9c0d55bc28e9a72a841",
     "src/audio/vorbis/codebook.h": "6173022f6c04cc9a29e3c949450bb47577922985988d40237a375e847a211a61",
@@ -58,7 +58,7 @@
     "tools/rewrite.py": "6d3b097d55cd47d8f47a050c9cc7b256028853abc606cb053e293941c41304b1",
     "tools/setup.py": "a7a9bd71e63f0039de5211e3e9976d87d57e357be9f7a62a68cfb33758b4e56c",
     "tools/test_binary.py": "fdd66ca0f332ee3c67a9a10308e6f9d94b900f707be39894296deb3b92e3eead",
-    "tools/test_build_kinds.py": "ae6e6a004ea9d2851a8727f50ebe2cd209544aee4bbbf388bb943a7470bfcd71",
+    "tools/test_build_kinds.py": "0b9c6bc6398b956f36ee482f3d7fca0129cd9085a0829c2f5e9c555f5fe6fe32",
     "tools/test_check.py": "0e6ae68ea9e7cfbcd7d350518c7545952e944cb3a6a3ee2c7d4733ea869acebe",
     "tools/test_cli_imports.py": "028c3abd2cd218eea3eaa515c4f675f8e1b00863319428b03af6e804a1649ddd",
     "tools/test_code_groups.py": "505d288651a7a6a7edfb81ef9e9fe833e4e0c955254cd06cf369d759f592ef78",
@@ -459131,7 +459131,7 @@
       "metadata_sha256": "fe09365da4c355f220d724ca99394fc120b758891b4188d2c49707b6df0894f2",
       "header_path": "src/saga.h",
       "header_sha256": "fbf3ede17ad3e1ea615eccf2b93f9abee031ab5560427f62664c588ef00ce2af",
-      "geometry_object_sha256": "030fe036c459139d5a21b2d0f0679ee092fb1f26705b3b9fa9b794a4575370dc",
+      "geometry_object_sha256": "c129b614d00e80f169db55ebdfa76d1c899ea24f5f82a7604839d888ba357ea3",
       "toolchain_sha256": "489d0782638d8033137cdb2834462416111945cbfa073147820e314b8576b95b",
       "implementation_sha256": "d6a33be911d095a6d07dccd4443ccbfd6b514fd89fd7e200d9caa1827944e218",
       "headers": {

@@ -22,14 +22,14 @@ class BuildKindTests(unittest.TestCase):
     def test_debug_outputs_and_flags_are_isolated(self):
         result = self.make("BUILD_KIND=Debug", "build")
         self.assertEqual(result.returncode, 0, result.stderr)
-        self.assertIn("build/Debug/LEGOStarWarsSaga.exe", result.stdout)
+        self.assertIn("build/LEGOStarWarsSaga_debug.exe", result.stdout)
         self.assertIn("build/Debug/obj/", result.stdout)
         self.assertIn("/DSAGA_DEBUG", result.stdout)
         self.assertIn("/O2 /Gy /GS /MT /Z7", result.stdout)
-        self.assertIn("/opt:noref /opt:noicf /MAP:build/Debug/LEGOStarWarsSaga.map", result.stdout)
+        self.assertIn("/opt:noref /opt:noicf /MAP:build/Debug/LEGOStarWarsSaga_debug.map", result.stdout)
         self.assertNotIn("/DEBUG", result.stdout)
         self.assertNotIn("/PDB:", result.stdout)
-        self.assertIn("/MAP:build/Debug/LEGOStarWarsSaga.map", result.stdout)
+        self.assertIn("/MAP:build/Debug/LEGOStarWarsSaga_debug.map", result.stdout)
         self.assertIn("--allow-unresolved", result.stdout)
         self.assertNotIn("build/obj/", result.stdout)
         self.assertNotIn("traps", result.stdout)
@@ -43,6 +43,21 @@ class BuildKindTests(unittest.TestCase):
         self.assertIn("OBJ_DIR := build/obj", result.stdout)
         self.assertNotIn("SAGA_RUNTIME", result.stdout)
         self.assertNotEqual(self.make("runtime").returncode, 0)
+
+    def test_public_executables_and_internal_support_outputs(self):
+        for kind, executable, strict in (
+                ("Matching", "build/LEGOStarWarsSaga.exe", "build/strict/LEGOStarWarsSaga.strict.exe"),
+                ("Debug", "build/LEGOStarWarsSaga_debug.exe", "build/Debug/LEGOStarWarsSaga.strict_debug.exe")):
+            with self.subTest(kind=kind):
+                result = self.make("BUILD_KIND=" + kind, "run")
+                self.assertEqual(result.returncode, 0, result.stderr)
+                self.assertIn("wine ../" + executable, result.stdout)
+                self.assertIn("/build/tools/wine", result.stdout)
+                self.assertIn("build/lib/imports/d3d9.lib", result.stdout)
+                result = self.make("BUILD_KIND=" + kind, "link-strict")
+                self.assertEqual(result.returncode, 0, result.stderr)
+                self.assertIn("--link " + strict, result.stdout)
+                self.assertNotIn("--allow-unresolved", result.stdout)
 
     def test_debug_cannot_enter_matching_tools_and_unknown_kinds_fail(self):
         for target in ("match", "diff", "check-objects"):
