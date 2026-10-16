@@ -26091,6 +26091,11 @@ extern "C" {
     void __cdecl SuperStoryTime_LSW_Skip(STATUS_STAGE_s *, STATUSPACKET_s *);
     void __cdecl SuperStoryTime_LSW_Update(STATUS_STAGE_s *, STATUSPACKET_s *, f32);
     void __cdecl SuperStoryTime_LSW_Draw(STATUS_STAGE_s *, STATUSPACKET_s *, i32);
+    void __cdecl SuperStoryScore_LSW_Skip(STATUS_STAGE_s *, STATUSPACKET_s *);
+    void __cdecl SuperStoryScore_LSW_Update(STATUS_STAGE_s *, STATUSPACKET_s *, f32);
+    void __cdecl SuperStoryScore_LSW_Draw(STATUS_STAGE_s *, STATUSPACKET_s *, i32);
+    extern i16 TextIdPc880720;
+    extern i16 TextIdPc880738;
     void __cdecl CoinTotal_Draw(i32, f32, f32, i32, f32, i32, i32, i32);
     f32 __cdecl getFinishedStatusAlpha(STATUSPACKET_s *);
     void __cdecl DrawBonusTime(STATUSPACKET_s *, f32, i32);

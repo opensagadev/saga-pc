@@ -891,6 +891,9 @@ address    , symbol                                                         , si
 0x462d50,_SuperStoryTime_LSW_Skip,20,"void __cdecl(STATUS_STAGE_s *, STATUSPACKET_s *)"
 0x462d70,_SuperStoryTime_LSW_Update,553,"void __cdecl(STATUS_STAGE_s *, STATUSPACKET_s *, f32)"
 0x462fa0,_SuperStoryTime_LSW_Draw,788,"void __cdecl(STATUS_STAGE_s *, STATUSPACKET_s *, i32)"
+0x4632c0,_SuperStoryScore_LSW_Skip,23,"void __cdecl(STATUS_STAGE_s *, STATUSPACKET_s *)"
+0x4632e0,_SuperStoryScore_LSW_Update,563,"void __cdecl(STATUS_STAGE_s *, STATUSPACKET_s *, f32)"
+0x463520,_SuperStoryScore_LSW_Draw,794,"void __cdecl(STATUS_STAGE_s *, STATUSPACKET_s *, i32)"
 0x463f30,_ChallangeCash_Draw,405,
 0x00464140,_Save_LSW_Update,212,"void __cdecl(STATUS_STAGE_s *, STATUSPACKET_s *, f32)"
 0x464360,_GizAction_ActivateEffect,154,
