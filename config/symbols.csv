@@ -865,6 +865,10 @@ address    , symbol                                                         , si
 0x457ec0,_CurrentHintAlpha,145,
 0x457f70,_DrawHint_LSW,1217,"void __cdecl (HINT_PC *, i32)"
 0x458440,_initGameHintSys_LSW,33,void __cdecl(void)
+0x0045e3d0,_ResetStatusPacket_LSW,13,void __cdecl(STATUSPACKET_s *)
+0x0045e3e0,_InitStatusScreen_LSW,3,"i32 __cdecl(WORLDINFO *, STATUSPACKET_s *)"
+0x0045e3f0,_FinishStatusPacket_LSW,3,"i32 __cdecl(WORLDINFO *, STATUSPACKET_s *, i32)"
+0x0045e400,_DrawStatusBG_LSW,37,void __cdecl(STATUSPACKET_s *)
 0x460280,_RedBrick_LSW_Draw,598,
 0x460c10,_GoldBrick_LSW_Update,824,
 0x461720,_CollectCharcters_Draw,1022,
@@ -1191,8 +1195,9 @@ address    , symbol                                                         , si
 0x482f40,_DrawStatusText,583,"void __cdecl (char *,u16,f32,f32,f32,u32,i32)"
 0x483190,_DrawStatusTextFraction,1265,
 0x483690,_FindStatusStage,54,
+0x004836d0,_StatusStage_Reset,30,void __cdecl(STATUS_STAGE_s *)
 0x4836f0,_NewStatusRumbleBuzz,321,
-0x4838f0,_NextStatusStage,410,
+0x004838f0,_NextStatusStage,410,void __cdecl(STATUSPACKET_s *)
 0x483a90,_AddGoldBrickMessage,46,
 0x483ac0,_AddStatusStage,48,
 0x483c70,_InitStatusScreen,5018,
@@ -1201,6 +1206,7 @@ address    , symbol                                                         , si
 0x485b70,_Status_DrawPromptMenu,1124,
 0x486940,_FinishStatusPacket,694,
 0x486c00,_NuMainStatusHelperPc,1,void __cdecl(STATUSPACKET_s *)
+0x00486c10,_RegisterStatusScreen,67,"void __cdecl(STATUS_STAGE_s *, i32 *, const REGISTER_STATUS_PACKET_PC *)"
 0x486c60,_UpdateStatusScreen,698,
 0x486f50,_Tag_SetMode,10,void __cdecl (i32)
 0x00486f60 , _Tag_FindGameObject_CYCLICAL                                   , 187   , i32 __cdecl (GAMEOBJECT *)

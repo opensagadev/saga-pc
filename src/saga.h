@@ -23487,6 +23487,11 @@ struct ZIPUP_s {
 };
 STATIC_ASSERT(sizeof(struct ZIPUP_s) == 124);
 
+struct STATUSPACKET_LSW_s {
+    i32 field_0x00;
+};
+STATIC_ASSERT(sizeof(struct STATUSPACKET_LSW_s) == 4);
+
 struct STATUSPACKET_s {
     struct STATUSPACKET_LSW_s *lsw_packet;
     i32(__cdecl *init_callback)(struct WORLDINFO_s *arg0, struct STATUSPACKET_s *arg1);
@@ -23544,26 +23549,32 @@ struct STATUSPACKET_s {
     f32 superstory_time;
     u32 superstory_score;
     union {
-        u8 field_0xb0;
+        u32 flags_word;
         struct {
-            u8 : 2;
-            u8 true_hero_complete : 1;
-            u8 next_area_unlocked : 1;
-            u8 new_minikit_complete : 1;
-            u8 bonus_winner : 1;
-            u8 free_play : 1;
-            u8 vehicle_area : 1;
-        };
-    };
-    union {
-        u8 mode_flags;
-        struct {
-            u8 bonus_mode : 1;
-            u8 super_bonus_mode : 1;
-            u8 super_story_mode : 1;
-            u8 saved_and_exited : 1;
-            u8 continue_story : 1;
-            u8 : 3;
+            union {
+                u8 field_0xb0;
+                struct {
+                    u8 : 2;
+                    u8 true_hero_complete : 1;
+                    u8 next_area_unlocked : 1;
+                    u8 new_minikit_complete : 1;
+                    u8 bonus_winner : 1;
+                    u8 free_play : 1;
+                    u8 vehicle_area : 1;
+                };
+            };
+            union {
+                u8 mode_flags;
+                struct {
+                    u8 bonus_mode : 1;
+                    u8 super_bonus_mode : 1;
+                    u8 super_story_mode : 1;
+                    u8 saved_and_exited : 1;
+                    u8 continue_story : 1;
+                    u8 : 3;
+                };
+            };
+            u8 reserved_flags_b2[2];
         };
     };
     u8 status_flags;
@@ -23584,7 +23595,7 @@ struct STATUSPACKET_s {
     u8 gold_brick_enabled[40];
     i16 next_area;
     i8 chapter;
-    u8 field_0x119[3];
+    u8 field_0x119[1];
     struct STATUS_STAGE_s *previous_stage_2;
     struct STATUS_STAGE_s *previous_stage;
     struct STATUS_STAGE_s *stage;
@@ -23592,6 +23603,33 @@ struct STATUSPACKET_s {
     u8 field_0x12c[32];
 };
 STATIC_ASSERT(sizeof(struct STATUSPACKET_s) == 332);
+STATIC_ASSERT(offsetof(struct STATUSPACKET_s, lsw_packet) == 0x0);
+STATIC_ASSERT(offsetof(struct STATUSPACKET_s, init_callback) == 0x4);
+STATIC_ASSERT(offsetof(struct STATUSPACKET_s, finish_callback) == 0x8);
+STATIC_ASSERT(offsetof(struct STATUSPACKET_s, reset_callback) == 0xc);
+STATIC_ASSERT(offsetof(struct STATUSPACKET_s, draw_background_callback) == 0x10);
+STATIC_ASSERT(offsetof(struct STATUSPACKET_s, player0_rumble_amount) == 0x24);
+STATIC_ASSERT(offsetof(struct STATUSPACKET_s, player1_rumble_amount) == 0x38);
+STATIC_ASSERT(offsetof(struct STATUSPACKET_s, field_0x68) == 0x68);
+STATIC_ASSERT(offsetof(struct STATUSPACKET_s, player0_model) == 0x9c);
+STATIC_ASSERT(offsetof(struct STATUSPACKET_s, player_active) == 0xa4);
+STATIC_ASSERT(offsetof(struct STATUSPACKET_s, flags_word) == 0xb0);
+STATIC_ASSERT(offsetof(struct STATUSPACKET_s, field_0xb0) == 0xb0);
+STATIC_ASSERT(offsetof(struct STATUSPACKET_s, mode_flags) == 0xb1);
+STATIC_ASSERT(offsetof(struct STATUSPACKET_s, status_flags) == 0xb4);
+STATIC_ASSERT(offsetof(struct STATUSPACKET_s, minikit_count) == 0xb5);
+STATIC_ASSERT(offsetof(struct STATUSPACKET_s, minikit_max) == 0xb6);
+STATIC_ASSERT(offsetof(struct STATUSPACKET_s, stage_count) == 0xb7);
+STATIC_ASSERT(offsetof(struct STATUSPACKET_s, current_gold_brick) == 0xb8);
+STATIC_ASSERT(offsetof(struct STATUSPACKET_s, stage_types) == 0xc8);
+STATIC_ASSERT(offsetof(struct STATUSPACKET_s, gold_brick_enabled) == 0xf0);
+STATIC_ASSERT(offsetof(struct STATUSPACKET_s, next_area) == 0x118);
+STATIC_ASSERT(offsetof(struct STATUSPACKET_s, chapter) == 0x11a);
+STATIC_ASSERT(offsetof(struct STATUSPACKET_s, previous_stage_2) == 0x11c);
+STATIC_ASSERT(offsetof(struct STATUSPACKET_s, previous_stage) == 0x120);
+STATIC_ASSERT(offsetof(struct STATUSPACKET_s, stage) == 0x124);
+STATIC_ASSERT(offsetof(struct STATUSPACKET_s, next_stage) == 0x128);
+STATIC_ASSERT(offsetof(struct STATUSPACKET_s, field_0x12c) == 0x12c);
 
 struct STATUS_STAGE_s {
     void(__cdecl *draw_callback)(struct STATUS_STAGE_s *arg0, struct STATUSPACKET_s *arg1, i32 arg2);
@@ -23606,6 +23644,26 @@ struct STATUS_STAGE_s {
     f32 field_0x1c;
 };
 STATIC_ASSERT(sizeof(struct STATUS_STAGE_s) == 32);
+STATIC_ASSERT(offsetof(struct STATUS_STAGE_s, type) == 0xc);
+STATIC_ASSERT(offsetof(struct STATUS_STAGE_s, field_0x12) == 0x12);
+STATIC_ASSERT(offsetof(struct STATUS_STAGE_s, field_0x14) == 0x14);
+STATIC_ASSERT(offsetof(struct STATUS_STAGE_s, field_0x18) == 0x18);
+STATIC_ASSERT(offsetof(struct STATUS_STAGE_s, field_0x1c) == 0x1c);
+typedef struct REGISTER_STATUS_PACKET_PC {
+    struct STATUSPACKET_LSW_s *lsw_packet;
+    i32(__cdecl *init_callback)(WORLDINFO *, STATUSPACKET_s *);
+    i32(__cdecl *finish_callback)(WORLDINFO *, STATUSPACKET_s *, i32);
+    void(__cdecl *reset_callback)(STATUSPACKET_s *);
+    void(__cdecl *draw_background_callback)(STATUSPACKET_s *);
+    f32 stage_delay;
+} REGISTER_STATUS_PACKET_PC;
+STATIC_ASSERT(sizeof(REGISTER_STATUS_PACKET_PC) == 0x18);
+STATIC_ASSERT(offsetof(REGISTER_STATUS_PACKET_PC, lsw_packet) == 0);
+STATIC_ASSERT(offsetof(REGISTER_STATUS_PACKET_PC, init_callback) == 4);
+STATIC_ASSERT(offsetof(REGISTER_STATUS_PACKET_PC, finish_callback) == 8);
+STATIC_ASSERT(offsetof(REGISTER_STATUS_PACKET_PC, reset_callback) == 0xc);
+STATIC_ASSERT(offsetof(REGISTER_STATUS_PACKET_PC, draw_background_callback) == 0x10);
+STATIC_ASSERT(offsetof(REGISTER_STATUS_PACKET_PC, stage_delay) == 0x14);
 
 struct COLLECTION_s {
     struct COLLECTID *list;
@@ -25945,6 +26003,12 @@ extern "C" {
     void __cdecl ReCalculateCompletionPoints(void);
     extern STATUSPACKET_s StatusPacket;
     void __cdecl StatusStage_Reset(struct STATUS_STAGE_s *stage);
+    void __cdecl NextStatusStage(STATUSPACKET_s *);
+    void __cdecl RegisterStatusScreen(STATUS_STAGE_s *, i32 *, const REGISTER_STATUS_PACKET_PC *);
+    void __cdecl ResetStatusPacket_LSW(STATUSPACKET_s *);
+    i32 __cdecl InitStatusScreen_LSW(WORLDINFO *, STATUSPACKET_s *);
+    i32 __cdecl FinishStatusPacket_LSW(WORLDINFO *, STATUSPACKET_s *, i32);
+    void __cdecl DrawStatusBG_LSW(STATUSPACKET_s *);
     extern struct STATUS_STAGE_s *StatusStages;
     extern i32 goldbrickmsgcount;
     extern f32 menu_pulse;

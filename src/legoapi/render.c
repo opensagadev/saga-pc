@@ -804,3 +804,87 @@ void __cdecl DrawHint_LSW(HINT_PC *hint, i32 max_lines) {
                                  &WORLD->level_objects[0xd4].special, 2);
     }
 }
+
+/* Complete native status-control foundation. No registration/table activation. */
+void __cdecl StatusStage_Reset(STATUS_STAGE_s *stage) {
+    if (stage != NULL) {
+        stage->field_0x14 = -1;
+        stage->field_0x18 = 0.0f;
+        stage->field_0x12 = 0;
+        stage->field_0x1c = 1.0f;
+    }
+}
+
+void __cdecl NextStatusStage(STATUSPACKET_s *packet) {
+    STATUS_STAGE_s *stage = packet->stage;
+    if (stage != NULL) {
+        if (stage->field_0x14 == -1 && packet->field_0x68 > stage->field_0x18) {
+            packet->flags_word |= 2;
+            return;
+        }
+        stage->field_0x12 = 1;
+    }
+    packet->previous_stage_2 = packet->previous_stage;
+    packet->current_gold_brick = (i8)((u8)packet->current_gold_brick + 1);
+    packet->previous_stage = packet->stage;
+    packet->stage = packet->next_stage;
+    packet->next_stage = FindStatusStage(packet->stage_types[packet->current_gold_brick + 1]);
+    while (packet->stage == NULL || packet->next_stage == NULL) {
+        if (packet->stage == NULL && packet->next_stage != NULL) {
+            packet->stage = packet->next_stage;
+            packet->next_stage = NULL;
+        }
+        packet->current_gold_brick = (i8)((u8)packet->current_gold_brick + 1);
+        if (packet->current_gold_brick + 1 >= packet->stage_count)
+            packet->next_stage = FindStatusStage(10);
+        else
+            packet->next_stage = FindStatusStage(packet->stage_types[packet->current_gold_brick + 1]);
+    }
+    StatusStage_Reset(packet->stage);
+    packet->flags_word &= ~2u;
+    status_prompt = 0;
+    stage = packet->stage;
+    if ((stage != NULL && stage->type == 11) || stage->type == 10) {
+        ResetRumble((RUMBLE_PACKET_RESOURCE_PC *)&packet->player0_rumble_amount);
+        ResetRumble((RUMBLE_PACKET_RESOURCE_PC *)&packet->player1_rumble_amount);
+    }
+    stage = packet->stage;
+    if (stage != NULL && stage->type == 11)
+        ReCalculateCompletionPoints();
+}
+
+void __cdecl RegisterStatusScreen(STATUS_STAGE_s *stages, i32 *unused, const REGISTER_STATUS_PACKET_PC *registration) {
+    (void)unused;
+    StatusStages = stages;
+    StatusPacket.lsw_packet = registration->lsw_packet;
+    StatusPacket.init_callback = registration->init_callback;
+    StatusPacket.finish_callback = registration->finish_callback;
+    StatusPacket.reset_callback = registration->reset_callback;
+    StatusPacket.draw_background_callback = registration->draw_background_callback;
+    StatusPacket.field_0x68 = registration->stage_delay;
+}
+
+void __cdecl ResetStatusPacket_LSW(STATUSPACKET_s *packet) {
+    packet->lsw_packet->field_0x00 = 0;
+}
+
+i32 __cdecl InitStatusScreen_LSW(WORLDINFO *world, STATUSPACKET_s *packet) {
+    (void)world;
+    (void)packet;
+    return 0;
+}
+
+i32 __cdecl FinishStatusPacket_LSW(WORLDINFO *world, STATUSPACKET_s *packet, i32 result) {
+    (void)world;
+    (void)packet;
+    (void)result;
+    return 0;
+}
+
+void __cdecl DrawStatusBG_LSW(STATUSPACKET_s *packet) {
+    STATUS_STAGE_s *stage = packet->stage;
+    if (stage->field_0x14 == -1) {
+        stage->field_0x18 = 0.0f;
+        packet->stage->field_0x14 = 0;
+    }
+}
