@@ -730,6 +730,11 @@ void __cdecl DrawGameMessages(void) {
     }
 }
 
+void __cdecl initGameHintSys_LSW(void) {
+    RegisterWithHintSys(DrawHint_LSW, Hints_LSW, Game.hint_completion_bits, 3);
+    LswForceUsedHintFlagsPc &= ~7u;
+}
+
 /* Add to render.c. Native PC 552e00/78; cdecl (special,matrix,alpha). */
 i32 __cdecl DrawPanel3DObjectMtx(NUSPECIALHANDLE *special, NUMTX *matrix, f32 alpha) {
     if (!(alpha <= 0.0f) && special != NULL && NuSpecialExistsFn(special) != 0) {
@@ -737,4 +742,65 @@ i32 __cdecl DrawPanel3DObjectMtx(NUSPECIALHANDLE *special, NUMTX *matrix, f32 al
         NuSpecialDrawAtAlpha(special, matrix, alpha);
     }
     return 0;
+}
+
+void __cdecl Text_ExpandAllButtonStrings(char *, char *);
+const u8 HintRGB[5][3] = {{255, 0, 0}, {0, 255, 0}, {0, 127, 255}, {127, 0, 255}, {255, 255, 0}};
+
+void __cdecl DrawHint_LSW(HINT_PC *hint, i32 max_lines) {
+    f32 alpha, text_x, text_y, icon_x, pulse, base, wave_x;
+    i32 alignment, lines, colour_index, channel;
+    u16 pulse_angle, rotation;
+    u8 colours[3], text_alpha;
+    char *text;
+    char expanded[1024];
+    LEVEL_OBJECT_RUNTIME_PC *icon;
+    if (hint == NULL || FadeSys.fade != 0.0f)
+        return;
+    alpha = CurrentHintAlpha();
+    if (!(alpha > 0.0f))
+        return;
+    text_y = (WORLD->current_level->flags & 0x400) != 0 ? 0.0f : -0.7f;
+    if ((hint->flags & 4) != 0) {
+        alignment = 0;
+        text_x = 0.0f;
+    } else {
+        alignment = 2;
+        text_x = (f32)((f64)0.09f - (f64)ICONX);
+    }
+    icon_x = -ICONX;
+    text = TTab[hint->id];
+    if (text != NULL) {
+        Text_ExpandAllButtonStrings(text, expanded);
+        pulse_angle = (u16)(i32)((f64)NuFmod(GlobalTimer.time_elapsed_mod_seconds, 0.5f) * 2.0 * 65536.0);
+        pulse = (f32)((f64)NU_SIN_LUT(pulse_angle) * 0.5 + 0.5);
+        colour_index = hint->colour_index;
+        if (colour_index == -1)
+            colour_index = hintsys.state;
+        for (channel = 0; channel < 3; ++channel) {
+            base = (f32)HintRGB[colour_index][channel];
+            colours[channel] = (u8)(i32)((((f64)base + 255.0) * 0.5 - (f64)base) * (f64)pulse + (f64)base);
+        }
+        lines = max_lines == -1 ? 3 : max_lines;
+        text_alpha = (u8)(i32)((f64)alpha * 128.0);
+        if (alignment == 0) {
+            SmartTextEx(expanded, text_x, text_y, 1.0f, 0.5f, 0.5f, 0.5f, 0, colours[0], colours[1], colours[2], 1.4f,
+                        lines, NULL, 0, text_alpha);
+            icon_x = (f32)(-(f64)SmartTextLongestWidthPc * 0.5 - (f64)0.075f);
+        } else {
+            SmartTextEx(expanded, text_x, text_y, 1.0f, 0.5f, 0.5f, 0.5f, alignment, colours[0], colours[1], colours[2],
+                        (f32)(2.0 - (1.0 + (f64)text_x) - (f64)0.15f), lines, NULL, 0, text_alpha);
+        }
+    }
+    icon = &WORLD->level_objects[0xd4];
+    if (icon->active == 0)
+        return;
+    wave_x = (f32)(((f64)icon_x - (f64)-1.1f) * (f64)NU_SIN_LUT((i32)((f64)alpha * 16384.0)) - (f64)1.1f);
+    rotation = (u16)(i32)((f64)NuFmod(GameTimer.time_elapsed, 2.5f) / 2.5 * 65536.0);
+    DrawPanel3DObjectNoAlpha(wave_x, text_y, 1.0f, 0.5f, 0.5f, 0.5f, 0, rotation, 0, &icon->special, 2);
+    if (alignment == 0) {
+        rotation = (u16)(i32)((f64)NuFmod(GameTimer.time_elapsed, 2.5f) / 2.5 * 65536.0);
+        DrawPanel3DObjectNoAlpha(-wave_x, text_y, 1.0f, 0.5f, 0.5f, 0.5f, 0, rotation, 0,
+                                 &WORLD->level_objects[0xd4].special, 2);
+    }
 }

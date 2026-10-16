@@ -365,7 +365,8 @@ extern "C" {
         } else if (StartupGameFlag1 != 0) {
             RegisterLswGizmoTypesPc(&permbuffer_ptr, &permbuffer_end);
             GameAnimSys_AllocateLevelProgressData(&permbuffer_ptr, &permbuffer_end, 0x280, 0xc);
-            STUBBED_NAMED("LoadPermData: registration pair (0x4642e0, 0x458440)");
+            STUBBED_NAMED("LoadPermData: LSW_registerStatusScreen at 0x004642e0");
+            initGameHintSys_LSW();
             CutScene_StartFn = CutScene_StartFn_LSW;
             CutScene_PreUpdateFn = CutScene_PreUpdateFn_LSW;
             CutScene_PostUpdateFn = CutScene_PostUpdateFn_LSW;

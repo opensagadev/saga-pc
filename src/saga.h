@@ -1713,7 +1713,10 @@ typedef struct gamesave_s {
             union {
                 u8 newgame_reserved_7c08[0x10];
                 struct {
-                    u8 hud_coin_reserved_7c08[0xc];
+                    union {
+                        u8 hud_coin_reserved_7c08[0xc];
+                        u32 hint_completion_bits[3];
+                    };
                     u32 coins;
                 };
             };
@@ -1735,6 +1738,7 @@ STATIC_ASSERT(offsetof(GAMESAVE, save_version) == 1);
 STATIC_ASSERT(offsetof(GAMESAVE, options_save) == 4);
 STATIC_ASSERT(offsetof(GAMESAVE, area_save) == 0x782c);
 STATIC_ASSERT(offsetof(GAMESAVE, episode_start) == 0x7b8c);
+STATIC_ASSERT(offsetof(GAMESAVE, hint_completion_bits) == 0x7c08);
 STATIC_ASSERT(offsetof(GAMESAVE, coins) == 0x7c14);
 STATIC_ASSERT(offsetof(GAMESAVE, initial_store_pack_flags) == 0x7bfc);
 STATIC_ASSERT(offsetof(GAMESAVE, purchased_extra_bits_high) == 0x7c04);
@@ -8741,28 +8745,40 @@ STATIC_ASSERT(offsetof(NEW_MINI_PIECE_PC, level) == 8);
 typedef struct HINT_PC {
     union {
         struct {
-            u8 unknown_duration_prefix[8];
-            f32 display_duration;
-        };
-        struct {
             i16 id;
             u8 flags;
+            i8 colour_index;
+            u32 price;
+            f32 display_duration;
+        };
+        u8 unknown_duration_prefix[8];
+        u8 unknown_price_prefix[4];
+        struct {
+            u8 unknown3_prefix[3];
             u8 unknown3[9];
         };
         struct {
-            u8 unknown_price_prefix[4];
-            u32 price;
+            u8 unknown_price_prefix_08[8];
             u8 unknown_price_suffix[4];
         };
     };
     f32 repeat_delay;
-    u8 unknown10[4];
+    union {
+        i32(__cdecl *update_fn)(struct HINT_PC *);
+        u8 unknown10[4];
+    };
     u8 completed;
     u8 unknown15[3];
     f32 cooldown;
 } HINT_PC;
 STATIC_ASSERT(sizeof(HINT_PC) == 0x1c);
+STATIC_ASSERT(offsetof(HINT_PC, id) == 0);
 STATIC_ASSERT(offsetof(HINT_PC, flags) == 2);
+STATIC_ASSERT(offsetof(HINT_PC, colour_index) == 3);
+STATIC_ASSERT(offsetof(HINT_PC, unknown3) == 3);
+STATIC_ASSERT(offsetof(HINT_PC, price) == 4);
+STATIC_ASSERT(offsetof(HINT_PC, display_duration) == 8);
+STATIC_ASSERT(offsetof(HINT_PC, update_fn) == 0x10);
 STATIC_ASSERT(offsetof(HINT_PC, repeat_delay) == 0xc);
 STATIC_ASSERT(offsetof(HINT_PC, completed) == 0x14);
 STATIC_ASSERT(offsetof(HINT_PC, cooldown) == 0x18);
@@ -10138,6 +10154,26 @@ void __cdecl PCStereoUnknownToken(void);
     void __cdecl CollectPowerUp(GAMEOBJECT *, NUVEC *, u16, i32);
     void __cdecl MiniKit_GameMsg_Update(GAME_MESSAGE_PC *);
     void __cdecl MiniKit_GameMsg_End(GAME_MESSAGE_PC *);
+    extern HINT_PC Hints_LSW[65];
+    void __cdecl DrawHint_LSW(HINT_PC *, i32);
+    i32 __cdecl Tag_UpdateHint(HINT_PC *);
+    i32 __cdecl GizForce_UpdateHint(HINT_PC *);
+    i32 __cdecl GizBuildIts_UpdateHint(HINT_PC *);
+    i32 __cdecl GizPanel_UpdateHint(HINT_PC *);
+    i32 __cdecl ZipUps_UpdateHint(HINT_PC *);
+    i32 __cdecl Dodge_UpdateHint(HINT_PC *);
+    i32 __cdecl GizTurrets_UpdateHint(HINT_PC *);
+    i32 __cdecl Push_UpdateHints(HINT_PC *);
+    i32 __cdecl Teleport_UpdateHints(HINT_PC *);
+    i32 __cdecl ShinyMetal_UpdateHint(HINT_PC *);
+    i32 __cdecl Shop_UpdateHint(HINT_PC *);
+    i32 __cdecl Percent_UpdateHint(HINT_PC *);
+    i32 __cdecl IndyUnlocked_UpdateHint(HINT_PC *);
+    i32 __cdecl Hint_isComplete(HINT_PC *);
+    void __cdecl Hint_SetCompletePc(HINT_PC *);
+    void __cdecl RegisterWithHintSys(void(__cdecl *draw_fn)(HINT_PC *, i32), HINT_PC *hints, u32 *save_bits,
+                                     i32 save_word_count);
+    void __cdecl initGameHintSys_LSW(void);
     i32 __cdecl Hint_CurrentId(void);
     void __cdecl Hint_SetHintFromId(i32, i32, i32);
     u16 __cdecl GameCam_GetAdjustedYRot(GAMECAMERA *);
