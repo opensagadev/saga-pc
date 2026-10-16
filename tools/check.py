@@ -12,11 +12,11 @@ import sys
 
 if __package__:
     from .binary import _COFFAnalysis, _PreparedBindings, relocate_data, relocate_function
-    from .lib import ROOT, bindings_for, changed_trees, compiled_objects, load_code_groups, prepare_code_group_objects, load_json, load_symbols, map_errors, mapping_progress, number, project, retail
+    from .lib import ROOT, bindings_for, changed_trees, compiled_objects, load_code_groups, prepare_code_group_objects, load_json, load_symbols, map_errors, number, project, retail
 else:
     sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
     from tools.binary import _COFFAnalysis, _PreparedBindings, relocate_data, relocate_function
-    from tools.lib import ROOT, bindings_for, changed_trees, compiled_objects, load_code_groups, prepare_code_group_objects, load_json, load_symbols, map_errors, mapping_progress, number, project, retail
+    from tools.lib import ROOT, bindings_for, changed_trees, compiled_objects, load_code_groups, prepare_code_group_objects, load_json, load_symbols, map_errors, number, project, retail
 
 
 def compiler_label_inside_mapped_function(obj, symbol, definitions, rows_by_name):
@@ -414,9 +414,6 @@ def main():
     inlined = sum(row["address"] is None for row in records)
     print(f"Checked {len(records) - inlined} address mappings and {inlined} inlined symbols, "
           "source-header layout and Git input boundaries.")
-    mapping = mapping_progress(records, config["target"])
-    print(f"Mapped {mapping['mapped_bytes']}/{mapping['image_bytes']} virtual image bytes "
-          f"({mapping['mapping_percent']:.3f}%).")
     if args.objects:
         objects = compiled_objects()
         from tools.candidate_only import load as load_candidate_only

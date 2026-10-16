@@ -125,13 +125,12 @@ def repository_paths(value):
 def update_badge(stats):
     path = ROOT / "README.md"
     content = path.read_text()
-    metrics = [("matching", [("fuzzy%20code", "fuzzy_coverage_percent", "fuzzy code")])]
-    if "mapping_code_data_percent" in stats:
-        metrics.append(("mapping", [("mapped%20code", "mapping_code_percent", "mapped code"),
-                                    ("mapped%20data", "mapping_data_percent", "mapped data"),
-                                    ("mapped%20code%2Bdata", "mapping_code_data_percent", "mapped code+data")]))
-    else:
-        metrics.append(("mapping", [("mapping", "mapping_percent", "mapping")]))
+    metrics = [("matching", [("exact%20code%20match", "matching_percent", "exact code match")]),
+               ("mapping", [("mapped%20code", "mapping_code_percent", "mapped code"),
+                            ("mapped%20file--backed%20data", "mapping_file_backed_data_percent",
+                             "mapped file-backed data"),
+                            ("mapped%20zero--fill%2FBSS", "mapping_zero_fill_data_percent",
+                             "mapped zero-fill/BSS")])]
     for metric, badges in metrics:
         images = []
         for label, field, alt in badges:
@@ -358,10 +357,9 @@ def main():
         print(f"Fuzzy code coverage: {stats['fuzzy_coverage_percent']:.3f}% of original .text")
         print(f"Exact code: {stats['matched_code_bytes']}/{stats['text_bytes']} bytes "
               f"({stats['matching_percent']:.3f}% of original .text)")
-        print(f"Mapped image: {stats['mapped_bytes']}/{stats['image_bytes']} bytes "
-              f"({stats['mapping_percent']:.3f}% of original virtual image)")
-        for kind in ("code", "data", "code_data"):
-            print(f"Mapped {kind.replace('_', '+')}: {stats[f'mapping_{kind}_bytes']}/"
+        for kind, label in (("code", "code"), ("file_backed_data", "file-backed data"),
+                            ("zero_fill_data", "zero-fill/BSS")):
+            print(f"Mapped {label}: {stats[f'mapping_{kind}_bytes']}/"
                   f"{stats[f'mapping_{kind}_total_bytes']} bytes "
                   f"({stats[f'mapping_{kind}_percent']:.3f}% of original section storage)")
     if args.function and units:

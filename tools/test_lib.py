@@ -321,7 +321,7 @@ class ProjectInputTests(unittest.TestCase):
         self.assertEqual(legacy["image_bytes"], 65536)
         self.assertGreater(legacy["mapped_bytes"], result["mapping_code_data_bytes"])
 
-    def test_section_mapping_uses_virtual_bss_and_ignores_raw_size(self):
+    def test_legacy_virtual_totals_are_unchanged_when_raw_storage_changes(self):
         target, sections = self.section_mapping_fixture()
         rows = [{"symbol": "_uninitialized", "address": 0x404000, "size": 0x1000}]
         original = lib.section_mapping_progress(rows, target, sections)
@@ -329,12 +329,58 @@ class ProjectInputTests(unittest.TestCase):
         altered = [dict(section, raw_size=0x7000) for section in sections]
         result = lib.section_mapping_progress(rows, target, altered)
         for field, value in original.items():
-            if field != "mapping_sections":
+            if field != "mapping_sections" and not field.startswith(
+                    ("mapping_file_backed_data_", "mapping_zero_fill_data_")):
                 self.assertEqual(result[field], value)
+        self.assertEqual(original["mapping_zero_fill_data_bytes"], 4096)
+        self.assertEqual(result["mapping_file_backed_data_bytes"], 4096)
+        self.assertEqual(result["mapping_zero_fill_data_total_bytes"], 0)
+        self.assertEqual(result["mapping_zero_fill_data_percent"], 0)
         unknown = lib.section_mapping_progress(
             [{"symbol": "_unknown", "address": 0x404000, "size": None}], target, sections)
         self.assertEqual(unknown["mapping_code_data_bytes"], 0)
         self.assertEqual(unknown["mapping_unknown_size_symbols"], 1)
+        self.assertEqual(unknown["mapping_file_backed_data_bytes"], 0)
+        self.assertEqual(unknown["mapping_zero_fill_data_bytes"], 0)
+
+    def test_bss_dominated_data_does_not_dilute_file_backed_mapping(self):
+        target, sections = self.section_mapping_fixture()
+        data = dict(sections[1], name=".data", virtual_size=0x9000, raw_size=0x100)
+        rows = [{"address": 0x403000, "size": 0x100}]
+        rows = [dict(symbol=f"_owner{index}", **row) for index, row in enumerate(rows)]
+        result = lib.section_mapping_progress(rows, target, [sections[0], data])
+        self.assertEqual(result["mapping_file_backed_data_total_bytes"], 0x100)
+        self.assertEqual(result["mapping_file_backed_data_percent"], 100)
+        self.assertEqual(result["mapping_zero_fill_data_total_bytes"], 0x8f00)
+        self.assertEqual(result["mapping_zero_fill_data_percent"], 0)
+        self.assertAlmostEqual(result["mapping_data_percent"], 100 / 144)
+
+    def test_file_alignment_tail_beyond_virtual_size_is_excluded(self):
+        target, sections = self.section_mapping_fixture()
+        rows = [{"address": 0x4030f0, "size": 0x30},
+                {"address": 0x403110, "size": 0x10}]
+        rows = [dict(symbol=f"_owner{index}", **row) for index, row in enumerate(rows)]
+        result = lib.section_mapping_progress(rows, target, [sections[0], sections[1]])
+        self.assertEqual(result["mapping_file_backed_data_total_bytes"], 0x100)
+        self.assertEqual(result["mapping_file_backed_data_bytes"], 0x10)
+        self.assertEqual(result["mapping_zero_fill_data_total_bytes"], 0)
+
+    def test_overlapping_owners_and_members_split_at_raw_zero_boundary(self):
+        target, sections = self.section_mapping_fixture()
+        data = dict(sections[2], name=".data", raw_size=0x100)
+        rows = [{"address": 0x4040f0, "size": 0x30},
+                {"address": 0x4040f0, "size": 0x30},
+                {"address": 0x4040f8, "size": 0x20},
+                {"address": 0x404200, "size": None}]
+        rows = [dict(symbol=f"_owner{index}", **row) for index, row in enumerate(rows)]
+        result = lib.section_mapping_progress(rows, target, [sections[0], data],
+                                              [(0x404100, 0x40)])
+        self.assertEqual(result["mapping_file_backed_data_bytes"], 0x10)
+        self.assertEqual(result["mapping_zero_fill_data_bytes"], 0x40)
+        self.assertEqual(result["mapping_data_bytes"], 0x50)
+        self.assertEqual(result["mapping_file_backed_data_total_bytes"], 0x100)
+        self.assertEqual(result["mapping_zero_fill_data_total_bytes"], 0xf00)
+        self.assertEqual(result["mapping_unknown_size_symbols"], 1)
 
     def test_section_mapping_rejects_invalid_extents_and_overlap(self):
         target, sections = self.section_mapping_fixture()
@@ -342,6 +388,8 @@ class ProjectInputTests(unittest.TestCase):
             [dict(sections[0], virtual_address=-1), *sections[1:]],
             [dict(sections[0], virtual_size=0x10000), *sections[1:]],
             [dict(sections[0], virtual_size=True), *sections[1:]],
+            [dict(sections[1], raw_size=-1), sections[0]],
+            [dict(sections[1], raw_size=True), sections[0]],
             [*sections, dict(sections[1], name=".other", virtual_address=0x3080)],
             [sections[0]],
             [dict(sections[0], virtual_size=0x800), *sections[1:]],

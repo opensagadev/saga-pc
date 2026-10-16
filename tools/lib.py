@@ -420,9 +420,10 @@ def mapping_progress(records, target, member_ranges=()):
 def section_mapping_progress(records, target, sections, member_ranges=()):
     """Known symbol bytes against code/data section storage, not unknown symbol sizes.
 
-    Virtual sizes include genuine zero-initialized data. Resource/relocation
-    metadata, headers and inter-section gaps are outside this denominator.
-    Keep the legacy image metric separate so old reports remain comparable.
+    Split data into file-backed storage and zero-fill (including BSS merged into
+    .data). Raw file-alignment tails beyond VirtualSize are not image storage.
+    Resource/relocation metadata, headers and inter-section gaps are excluded.
+    Retain the original virtual-storage totals for report compatibility only.
     """
     records, member_ranges = list(records), list(member_ranges)
     mapping_progress(records, target, member_ranges)
@@ -432,10 +433,12 @@ def section_mapping_progress(records, target, sections, member_ranges=()):
               if r["address"] is not None and r["size"]]
     ranges.extend(member_ranges)
     selected, occupied = [], []
+    storage_totals = {kind: 0 for kind in ("file_backed_data", "zero_fill_data")}
+    storage_mapped = dict(storage_totals)
     for section in sections:
         flags = section["characteristics"]
-        size, rva = section["virtual_size"], section["virtual_address"]
-        if any(type(v) is not int or v < 0 for v in (flags, size, rva)):
+        size, rva, raw = section["virtual_size"], section["virtual_address"], section["raw_size"]
+        if any(type(v) is not int or v < 0 for v in (flags, size, rva, raw)):
             raise ValueError("Invalid original section coverage extent")
         if not size:
             continue
@@ -452,8 +455,19 @@ def section_mapping_progress(records, target, sections, member_ranges=()):
             continue
         clipped = [(max(start, a), min(end, a + n) - max(start, a))
                    for a, n in ranges if a < end and a + n > start]
-        selected.append(dict(name=section["name"], kind=kind, address=hex(start),
-                             size=size, mapped_bytes=covered_bytes(clipped)))
+        entry = dict(name=section["name"], kind=kind, address=hex(start),
+                     size=size, mapped_bytes=covered_bytes(clipped))
+        if kind == "data":
+            boundary = start + min(raw, size)
+            for storage, lower, upper in (("file_backed_data", start, boundary),
+                                          ("zero_fill_data", boundary, end)):
+                count = covered_bytes((max(lower, a), min(upper, a + n) - max(lower, a))
+                                      for a, n in ranges if a < upper and a + n > lower)
+                storage_totals[storage] += upper - lower
+                storage_mapped[storage] += count
+                entry[f"{storage}_bytes"] = upper - lower
+                entry[f"mapped_{storage}_bytes"] = count
+        selected.append(entry)
     totals = {kind: sum(s["size"] for s in selected if s["kind"] == kind)
               for kind in ("code", "data")}
     mapped = {kind: sum(s["mapped_bytes"] for s in selected if s["kind"] == kind)
@@ -473,4 +487,9 @@ def section_mapping_progress(records, target, sections, member_ranges=()):
         result[f"mapping_{kind}_bytes"] = mapped[kind]
         result[f"mapping_{kind}_total_bytes"] = totals[kind]
         result[f"mapping_{kind}_percent"] = 100 * mapped[kind] / totals[kind]
+    for kind in storage_totals:
+        result[f"mapping_{kind}_bytes"] = storage_mapped[kind]
+        result[f"mapping_{kind}_total_bytes"] = storage_totals[kind]
+        result[f"mapping_{kind}_percent"] = (100 * storage_mapped[kind] / storage_totals[kind]
+                                             if storage_totals[kind] else 0.0)
     return result
