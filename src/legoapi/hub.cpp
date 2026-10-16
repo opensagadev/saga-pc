@@ -2177,7 +2177,6 @@ static void HubDrawSuperBonusStatsPc(AREA_DATA_PC *, f32);
 static void HubDrawSelectModePc(void);
 static void HubDrawBonusModePc(void);
 static void HubDrawBuildUpBarPc(f32, f32, i32, i32, f32, f32, f32, i32);
-static void HubDrawArcadeScorePc(f32, i32, i32, f32, i32 *);
 static void HubDrawIconCursorsPc(COLLECTION_BUILD_PC *, i32, f32, f32);
 static void HubDrawFreePlaySelectPc(void);
 
@@ -2391,8 +2390,8 @@ static void HubDrawArcadeMenuPc(i32 selected, f32 alpha) {
     }
 }
 
-/* PC4b8cf0,707bytes. Fiveargs y,active0,active1,alpha,scores. */
-static void HubDrawArcadeScorePc(f32 y, i32 active0, i32 active1, f32 alpha, i32 *scores) {
+/* PC4b8cf0,718bytes. Fiveargs y,active0,active1,alpha,scores. */
+void __cdecl DrawBonusScore(f32 y, i32 active0, i32 active1, f32 alpha, i32 *scores) {
     i32 in_arcade = 0, goal = 0;
     if (Arcade != 0 && (WORLD->area == NULL || WORLD->area != HUB_ADATA)) {
         goal = PCArcadePointGoals[ArcadeItem.entries[2].index];
@@ -2429,7 +2428,7 @@ static void HubDrawArcadeStatsPc(f32 alpha) {
         first = MissionMenuPacketPc.active_player[0];
         second = MissionMenuPacketPc.active_player[1];
     }
-    HubDrawArcadeScorePc(STATSPOSY, first, second, alpha, Arcade_Score);
+    DrawBonusScore(STATSPOSY, first, second, alpha, Arcade_Score);
     i32 text;
     if (GetMenuID() == 16) {
         if (bonusmodearcade == 0 || hub_bonusmode != 4)
@@ -5061,9 +5060,9 @@ extern "C" {
                 DrawInDoubleScoreZone(DoubleScoreTime);
         }
         if (BonusArea != 0 && WORLD->area != NULL && (WORLD->area->flags & 0x104) == 4)
-            HubDrawArcadeScorePc(status_y, Player[0] != NULL && (((GAMEOBJECT *)Player[0])->flags_1fc & 0x80) != 0,
-                                 Player[1] != NULL && (((GAMEOBJECT *)Player[1])->flags_1fc & 0x80) != 0, 1.0f,
-                                 Arcade != 0 ? Arcade_Points : BonusScore);
+            DrawBonusScore(status_y, Player[0] != NULL && (((GAMEOBJECT *)Player[0])->flags_1fc & 0x80) != 0,
+                           Player[1] != NULL && (((GAMEOBJECT *)Player[1])->flags_1fc & 0x80) != 0, 1.0f,
+                           Arcade != 0 ? Arcade_Points : BonusScore);
         if (HUB_ADATA != NULL && WORLD->area == HUB_ADATA && goldbricktime > 0.0f) {
             f32 y = (STATSPOS2YPc - STATSPOSY) * NuTrigTable[((i32)((f64)goldbricktime * 16384.0) >> 1) & 0x7fff] -
                     STATSPOS2YPc;

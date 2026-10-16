@@ -894,6 +894,9 @@ address    , symbol                                                         , si
 0x4632c0,_SuperStoryScore_LSW_Skip,23,"void __cdecl(STATUS_STAGE_s *, STATUSPACKET_s *)"
 0x4632e0,_SuperStoryScore_LSW_Update,563,"void __cdecl(STATUS_STAGE_s *, STATUSPACKET_s *, f32)"
 0x463520,_SuperStoryScore_LSW_Draw,794,"void __cdecl(STATUS_STAGE_s *, STATUSPACKET_s *, i32)"
+0x463840,_BonusWin_LSW_Skip,1,"void __cdecl(STATUS_STAGE_s *, STATUSPACKET_s *)"
+0x463850,_BonusWin_LSW_Update,661,"void __cdecl(STATUS_STAGE_s *, STATUSPACKET_s *, f32)"
+0x463af0,_BonusWin_LSW_Draw,411,"void __cdecl(STATUS_STAGE_s *, STATUSPACKET_s *, i32)"
 0x463f30,_ChallangeCash_Draw,405,
 0x00464140,_Save_LSW_Update,212,"void __cdecl(STATUS_STAGE_s *, STATUSPACKET_s *, f32)"
 0x464360,_GizAction_ActivateEffect,154,
@@ -1645,7 +1648,7 @@ address    , symbol                                                         , si
 0x4b84d0,_DrawCoinTotalPc,530,"static void (i32,i32); source ECX plus stack hide flag"
 0x004b86f0,?HubDrawBuildUpBarPc@@YAXMMHHMMMH@Z,444,
 0x4b88b0,_DrawHitPointsPc,1084,
-0x004b8cf0,?HubDrawArcadeScorePc@@YAXMHHMPAH@Z,718,
+0x004b8cf0,_DrawBonusScore,718,"void __cdecl(f32, i32, i32, f32, i32 *)"
 0x004b8fc0 , _InDoubleScoreZone                                             , 116   , i32 __cdecl (GAMEOBJECT *)
 0x4b9040,_DoubleScoreAlpha,79,f32 __cdecl (void)
 0x4b9090,_DrawInDoubleScoreZone,122,void __cdecl (f32)
@@ -11438,8 +11441,8 @@ address    , symbol                                                         , si
 0x758830,__real@4012000000000000,,f64
 0x758838,_GameAudioName00758838Pc,12,const char[12]
 0x758844,__real@bc75c28f,4,const f32
-0x758848,__real@bf2ccccd,,
-0x75884c,__real@3f2ccccd,,
+0x758848,__real@3f2ccccd,,
+0x75884c,__real@bf2ccccd,,
 0x758850,_GizActionNameActivateBeltPc,13,const char[13]
 0x758860,_GizActionNameHitBlowupPc,10,const char[10]
 0x75886c,_GizActionNamePlayCutscenePc,13,const char[13]

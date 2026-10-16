@@ -2110,3 +2110,78 @@ void __cdecl SuperStoryScore_LSW_Draw(STATUS_STAGE_s *stage, STATUSPACKET_s *pac
         CoinTotal_Draw((i32)*packet->score, coin_y, coin_scale, 1, 1.0f, 255, 191, 0);
     }
 }
+
+void __cdecl BonusWin_LSW_Skip(STATUS_STAGE_s *stage, STATUSPACKET_s *packet) {
+    (void)stage;
+    (void)packet;
+}
+
+void __cdecl BonusWin_LSW_Update(STATUS_STAGE_s *stage, STATUSPACKET_s *packet, f32 elapsed) {
+    if (stage->field_0x14 == 0) {
+        stage->field_0x14 = 1;
+        stage->field_0x18 = 0.0f;
+        stage->field_0x1c = 4.0f;
+        StatusDrawPlayerIconsPc = 1;
+    } else if (stage->field_0x14 == 1) {
+        volatile f32 previous = stage->field_0x18;
+        volatile f32 accumulated = stage->field_0x18 + elapsed;
+        stage->field_0x18 = accumulated;
+        if (accumulated >= stage->field_0x1c) {
+            NextStatusStage(packet);
+        } else if (previous < 2.0f && accumulated >= 2.0f) {
+            ADD_GAME_MESSAGE_PC message = AddGameMsg_Default;
+            char text[256];
+            NUVEC position;
+            i32 player;
+            PlaySfx("TrueJedi_100pc", NULL);
+            NewStatusRumbleBuzz(-1, 0.6f, 0.0f, 0);
+            player = (packet->flags_word >> 5) & 1;
+            BonusScore[player] = (i32)((u32)BonusScore[player] + 1u);
+            sprintf(text, "%i", BonusScore[(packet->flags_word >> 5) & 1]);
+            if ((packet->field_0xb0 & 0x20) == 0) {
+                position.x = -0.015f;
+                message.unknown_4f = 8;
+            } else {
+                position.x = 0.015f;
+                message.unknown_4f = 2;
+            }
+            position.y = STATSPOSY;
+            position.z = 1.0f;
+            message.text = text;
+            message.position = &position;
+            message.target_position = &position;
+            message.scale = 0.7f;
+            message.target_scale = 2.1f;
+            message.flags = 0x4028;
+            message.duration = 1.0f;
+            AddGameMsg(&message);
+        } else if ((f64)NuFmod(previous, 0.2f) < (f64)0.1f && (f64)NuFmod(stage->field_0x18, 0.2f) >= (f64)0.1f) {
+            PlaySfx((char *)GameAudioName00758838Pc, NULL);
+        }
+    }
+}
+
+void __cdecl BonusWin_LSW_Draw(STATUS_STAGE_s *stage, STATUSPACKET_s *packet, i32 current) {
+    if (current != 0) {
+        if (stage->field_0x14 == 0) {
+            iconalphaoverride = 0.0f;
+            return;
+        }
+        if (stage->field_0x18 >= 0.5f)
+            iconalphaoverride = 1.0f;
+        else
+            iconalphaoverride = (f64)stage->field_0x18 + (f64)stage->field_0x18;
+        if (stage->field_0x18 < 2.0f && (f64)NuFmod(stage->field_0x18, 0.2f) >= (f64)0.1f) {
+            i32 second = (packet->flags_word >> 5) & 1;
+            volatile f32 winner_x = second != 0 ? 0.675f : -0.675f;
+            volatile i32 opacity = (i32)((f64)iconalphaoverride * 128.0);
+            SmartTextEx(TTab[TextIdPc88075c], winner_x, STATSPOSY, 1.0f, 0.7f, 0.7f, 0.7f, second != 0 ? 8 : 2, 0, 255,
+                        0, 0.35f, 1, NULL, 0, (u32)opacity);
+        }
+        DrawBonusScore(STATSPOSY, StatusPacket.player0_active, StatusPacket.player1_active, iconalphaoverride,
+                       BonusScore);
+    } else if (stage->field_0x12 != 0 && packet->stage->type != 25) {
+        volatile f32 alpha = getFinishedStatusAlpha(packet);
+        DrawBonusScore(STATSPOSY, StatusPacket.player0_active, StatusPacket.player1_active, alpha, BonusScore);
+    }
+}
