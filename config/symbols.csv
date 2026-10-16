@@ -2521,11 +2521,11 @@ address    , symbol                                                         , si
 0x50c3e0,_TextDecode,611,"void __cdecl(char*,u8*)"
 0x50c650,_TextPrintSubstring,286,"f32 __cdecl(u8*,f32,f32,f32,f32,f32,i32,i32)"
 0x0050c770 , _SmartTextSetFWNMode                                           , 10    , void __cdecl (i32)
-0x50c780,_Text3DEx,2616,"void __cdecl(char*,f32,f32,f32,f32,f32,f32,u32,u8,u8,u8,i32)"
+0x50c780,_Text3DEx,2616,"void __cdecl(char*,f32,f32,f32,f32,f32,f32,u32,u32,u32,u32,i32)"
 0x50d1c0,_Text3DEx2,117,"void __cdecl(char*,f32,f32,f32,f32,f32,f32,u32,u8,u8,u8,i32)"
 0x50d240,_FindNextBreak,375,"i32 __cdecl(u8*,i32)"
 0x50d3c0,_FindNearestBreak,690,"i32 __cdecl(u8*,i32)"
-0x50d910,_SmartTextEx,2661,"void __cdecl(char*,f32,f32,f32,f32,f32,f32,u32,u8,u8,u8,f32,i32,void*,i32,u32)"
+0x50d910,_SmartTextEx,2661,"void __cdecl(char*,f32,f32,f32,f32,f32,f32,u32,u32,u32,u32,f32,i32,void*,i32,u32)"
 0x50e380,_SmartTextEx2,140,"void __cdecl(char*,f32,f32,f32,f32,f32,f32,u32,u8,u8,u8,f32,i32,void*,i32,u32)"
 0x50e410,_SmartTextExDrop,252,
 0x0050e520 , _SmartTextSetFont                                              , 10    , void __cdecl (VUFNT *)

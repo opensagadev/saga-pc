@@ -712,8 +712,11 @@ f32 __cdecl TextPrintSubstring(u8 *text, f32 x, f32 y, f32 z, f32 x_scale, f32 y
     NuQFntPrintW(font, encoded);
     return width;
 }
-void __cdecl Text3DEx(char *text, f32 x, f32 y, f32 z, f32 x_scale, f32 y_scale, f32 z_scale, u32 alignment, u8 red,
-                      u8 green, u8 blue, i32 alpha) {
+void __cdecl Text3DEx(char *text, f32 x, f32 y, f32 z, f32 x_scale, f32 y_scale, f32 z_scale, u32 alignment,
+                      u32 red_slot, u32 green_slot, u32 blue_slot, i32 alpha) {
+    u8 red = (u8)red_slot;
+    u8 green = (u8)green_slot;
+    u8 blue = (u8)blue_slot;
     VUFNT *font;
     f32 draw_x_scale, draw_y_scale, width, height, baseline_y, draw_y;
     f32 button_scale, button_width, normal_width, ratio, scaled_width;
@@ -896,8 +899,8 @@ extern f32 STCOORDSCALE, SmartTextDefaultWidthPc, SmartTextLongestWidthPc;
 i32 __cdecl FindNextBreak(u8 *, i32);
 i32 __cdecl FindNearestBreak(u8 *, i32);
 i32 __cdecl NuStrFindPosU(u8 *, i32);
-void SmartTextEx(char *text, f32 x, f32 y, f32 z, f32 x_scale, f32 y_scale, f32 z_scale, u32 alignment, u8 red,
-                 u8 green, u8 blue, f32 max_width, i32 max_lines, void *message_box, i32 suppress_draw, u32 alpha) {
+void SmartTextEx(char *text, f32 x, f32 y, f32 z, f32 x_scale, f32 y_scale, f32 z_scale, u32 alignment, u32 red,
+                 u32 green, u32 blue, f32 max_width, i32 max_lines, void *message_box, i32 suppress_draw, u32 alpha) {
     typedef struct box_geometry_pc_s {
         f32 reserved, x, y, z, width, height;
     } BOX_GEOMETRY_PC;
@@ -1143,7 +1146,7 @@ void SmartTextEx(char *text, f32 x, f32 y, f32 z, f32 x_scale, f32 y_scale, f32 
     TextScaleX_candidate = saved_x_scale;
     TextScaleY_candidate = saved_y_scale;
 }
-void __cdecl SmartTextEx(char *, f32, f32, f32, f32, f32, f32, u32, u8, u8, u8, f32, i32, void *, i32, u32);
+void __cdecl SmartTextEx(char *, f32, f32, f32, f32, f32, f32, u32, u32, u32, u32, f32, i32, void *, i32, u32);
 void __cdecl SmartTextEx2(char *text, f32 x, f32 y, f32 z, f32 sx, f32 sy, f32 sz, u32 alignment, u8 red, u8 green,
                           u8 blue, f32 max_width, i32 max_lines, void *box, i32 suppress, u32 alpha) {
     VUFNT *saved_font = SmartTextFont;

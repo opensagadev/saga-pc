@@ -9343,8 +9343,8 @@ extern "C" {
     void __cdecl TextDecode(char *source, u8 *destination);
     f32 __cdecl TextPrintSubstring(u8 *text, f32 x, f32 y, f32 z, f32 x_scale, f32 y_scale, i32 colour,
                                    i32 button_font);
-    void __cdecl Text3DEx(char *text, f32 x, f32 y, f32 z, f32 x_scale, f32 y_scale, f32 z_scale, u32 alignment, u8 red,
-                          u8 green, u8 blue, i32 alpha);
+    void __cdecl Text3DEx(char *text, f32 x, f32 y, f32 z, f32 x_scale, f32 y_scale, f32 z_scale, u32 alignment,
+                          u32 red, u32 green, u32 blue, i32 alpha);
     void Text3D(char *text, f32 x, f32 y, f32 z, f32 x_scale, f32 y_scale, f32 z_scale, u32 alignment, u8 red, u8 green,
                 u8 blue);
     void FadeLoop_DrawObj(f32 alpha);
@@ -9873,7 +9873,7 @@ extern "C" {
     extern i32 EdppUnresolvedInstancesPc;
     extern char **PartDebrisNameListPc;
 
-    void __cdecl SmartTextEx(char *, f32, f32, f32, f32, f32, f32, u32, u8, u8, u8, f32, i32, void *, i32, u32);
+    void __cdecl SmartTextEx(char *, f32, f32, f32, f32, f32, f32, u32, u32, u32, u32, f32, i32, void *, i32, u32);
     i32 __cdecl FindNextBreak(u8 *, i32);
     i32 __cdecl FindNearestBreak(u8 *, i32);
     i32 __cdecl NuStrFindPosU(u8 *, i32);
