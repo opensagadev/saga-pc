@@ -983,3 +983,85 @@ void __cdecl Save_LSW_Update(STATUS_STAGE_s *stage, STATUSPACKET_s *packet, f32 
     } else if (memcard_autosaveinprogress == 0)
         packet->save_state = 3;
 }
+
+f32 StatusIconYPc = 0;
+i32 StatusDrawPlayerIconsPc = 0;
+
+f32 __cdecl StatusIconsOnOff(f32 blend) {
+    i32 angle;
+    f32 high, low;
+    volatile f32 position;
+    angle = (i32)((f64)blend * 16384.0);
+    high = STATSPOSY;
+    low = STATSPOS2YPc;
+    position = ((f64)high - (f64)low) * (f64)NuTrigTable[(angle >> 1) & 0x7fff] + (f64)low;
+    return position;
+}
+
+void __cdecl Coins_LSW_Skip(STATUS_STAGE_s *stage, STATUSPACKET_s *packet) {
+    u32 remaining;
+    (void)stage;
+    StatusIconYPc = StatusIconsOnOff(1.0f);
+    remaining = packet->coins_remaining[0] + packet->coins_remaining[1];
+    IncreaseScore(packet->score, (u64)remaining, 0);
+    packet->coins_remaining[0] = 0;
+    packet->coins_remaining[1] = 0;
+    NextStatusStage(packet);
+}
+
+void __cdecl Coins_LSW_Update(STATUS_STAGE_s *stage, STATUSPACKET_s *packet, f32 elapsed) {
+    switch (stage->field_0x14) {
+        case 0:
+            stage->field_0x18 = 0.0f;
+            stage->field_0x14 = 1;
+            stage->field_0x1c = 1.0f;
+            StatusDrawPlayerIconsPc = 1;
+            break;
+        case 1: {
+            volatile f32 accumulated = elapsed + stage->field_0x18;
+            stage->field_0x18 = accumulated;
+            if (stage->field_0x18 >= stage->field_0x1c)
+                stage->field_0x14 = 2;
+            break;
+        }
+        case 2: {
+            i32 player, finished = 0;
+            for (player = 0; player < 2; ++player) {
+                u32 remaining = packet->coins_remaining[player];
+                if (remaining != 0) {
+                    u32 rate = 35, threshold = 100, amount;
+                    while (remaining >= threshold) {
+                        threshold *= 10u;
+                        rate *= 10u;
+                    }
+                    amount = (u32)((f64)rate * (f64)elapsed);
+                    if (amount > remaining)
+                        amount = remaining;
+                    else if (amount == 0)
+                        amount = 1;
+                    packet->coins_remaining[player] = remaining - amount;
+                    IncreaseScore(packet->score, (u64)amount, 0);
+                }
+                finished += packet->coins_remaining[player] == 0;
+            }
+            PlaySfx("PickupCoin", NULL);
+            if (finished == 2) {
+                stage->field_0x14 = 3;
+                stage->field_0x18 = 0.0f;
+                stage->field_0x1c = 1.0f;
+                if (packet->coins_collected[0] + packet->coins_collected[1] == 0)
+                    GameAudio_PlaySfx(0x32, NULL, 0, 0);
+                else
+                    PlaySfx("Shop_BuyCheat", NULL);
+            }
+            break;
+        }
+        case 3: {
+            volatile f32 accumulated = elapsed + stage->field_0x18;
+            stage->field_0x18 = accumulated;
+            if (stage->field_0x18 >= stage->field_0x1c)
+                NextStatusStage(packet);
+            break;
+        }
+    }
+}
