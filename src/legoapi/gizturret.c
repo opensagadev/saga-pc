@@ -640,3 +640,111 @@ i32 __cdecl GizTurrets_BoltHit(WORLDINFO *world, void *system_pointer, GAMEOBJEC
         BoltSys->stop_targeting(object, points);
     return 1;
 }
+
+STATIC_ASSERT(offsetof(GIZMOSET_PC, count) == 4);
+STATIC_ASSERT(offsetof(GIZMOSET_PC, gizmos) == 0xc);
+STATIC_ASSERT(sizeof(GIZMO_PC) == 8);
+
+GIZMO_PC *__cdecl GizTurrets_GetBestBoltTarget(GIZMOSET_PC *set, f32 *output_distance, NUVEC *output_position,
+                                               NUVEC *output_velocity, void *object_pointer, NUVEC *origin,
+                                               NUVEC *direction, f32 radius, f32 range_squared, i32 directional,
+                                               i32 planar, i32 bolt_id) {
+    BOLTTYPE_PC *type = BoltType_FindByID(bolt_id, WORLD);
+    f32 near_distance = TargetDist_Near2;
+    u16 near_angle = TargetDeg_Near;
+    f32 mid_distance = TargetDist_Mid2;
+    u16 far_angle = TargetDeg_Far;
+    u16 mid_angle = TargetDeg_Mid;
+    GAMEOBJECT *object = (GAMEOBJECT *)object_pointer;
+    GIZMO_PC *gizmo;
+    AI_TURRET_RECORD_PC *turret;
+    NUVEC *position;
+    GIZMO_PC *best = NULL;
+    GIZMO_PC *previous = NULL;
+    NUVEC *best_position = NULL;
+    NUVEC *previous_position = NULL;
+    f32 best_distance = 1000000000.0f;
+    NUVEC direction_copy, delta;
+    volatile f32 minimum_x, minimum_z, maximum_x, maximum_z;
+    volatile f32 distance_spill, dot_spill, dx_spill, dz_spill;
+    f32 distance, dot;
+    u16 target_angle;
+    NUANG angle;
+    i32 index;
+    if (set == NULL || type == NULL)
+        return NULL;
+    direction_copy = *direction;
+    minimum_x = (f64)origin->x - (f64)radius;
+    minimum_z = (f64)origin->z - (f64)radius;
+    maximum_x = (f64)origin->x + (f64)radius;
+    maximum_z = (f64)radius + (f64)origin->z;
+    if (directional != 0 && (type->flags_60 & 0x20000) != 0) {
+        direction_copy.y = 0.0f;
+        NuVecNorm(&direction_copy, &direction_copy);
+    }
+    gizmo = set->gizmos;
+    for (index = 0; index < set->count; ++index, ++gizmo) {
+        turret = (AI_TURRET_RECORD_PC *)gizmo->object;
+        if ((turret->flags & 4) == 0 || (turret->flags & 2) == 0 || (turret->flags & 0x30) != 0 ||
+            turret->primary_anim_obj == NULL)
+            continue;
+        position = NuSpecialGetDrawPos(&turret->primary_anim_obj->special);
+        if (position == NULL)
+            continue;
+        if (minimum_x > position->x || maximum_x < position->x || minimum_z > position->z || maximum_z < position->z)
+            continue;
+        if (planar == 0)
+            distance_spill = NuVecDistSqr(position, origin, &delta);
+        else
+            distance_spill = NuVecXZDistSqr(position, origin, &delta);
+        distance = distance_spill;
+        if (!(range_squared > distance))
+            continue;
+        if (directional == 0) {
+            dz_spill = (f64)position->z - (f64)origin->z;
+            dx_spill = (f64)position->x - (f64)origin->x;
+            angle = NuAtan2D(dx_spill, dz_spill);
+            NuVecRotateY(&delta, &v001, angle);
+        }
+        if ((type->flags_60 & 0x20000) != 0)
+            delta.y = 0.0f;
+        NuVecNorm(&delta, &delta);
+        dot_spill = NuVecDot(&delta, &direction_copy);
+        dot = dot_spill;
+        if (near_distance > distance && directional != 0)
+            target_angle = near_angle;
+        else if (mid_distance > distance)
+            target_angle = mid_angle;
+        else
+            target_angle = far_angle;
+        if (!(NuTrigTable[(((i32)target_angle + 0x4000) >> 1) & 0x7fff] < dot))
+            continue;
+        if (!(best_distance > distance))
+            continue;
+        if (object != NULL && (void *)gizmo == (void *)object->collision_target) {
+            previous = gizmo;
+            previous_position = position;
+        } else {
+            best_distance = distance;
+            best = gizmo;
+            best_position = position;
+        }
+    }
+    if (best != NULL) {
+        *output_position = *best_position;
+        *output_distance = best_distance;
+        output_velocity->x = 0.0f;
+        output_velocity->y = 0.0f;
+        output_velocity->z = 0.0f;
+        return best;
+    }
+    if (previous != NULL) {
+        *output_position = *previous_position;
+        *output_distance = 1000000000.0f;
+        output_velocity->x = 0.0f;
+        output_velocity->y = 0.0f;
+        output_velocity->z = 0.0f;
+        return previous;
+    }
+    return NULL;
+}

@@ -4613,7 +4613,7 @@ address    , symbol                                                         , si
 0x5ad460,_GizTurrets_StoreProgress,224,"void __cdecl(void *, void *, void *)"
 0x5ad540,_GizTurrets_Hit,672,"i32 __cdecl(WORLDINFO*,struct AI_TURRET_RECORD_PC*,NUVEC*,i32,i32)"
 0x5ad7e0,_GizTurrets_BoltHitPlat,246,"i32 __cdecl(WORLDINFO *, void *, BOLT_PC *, u8 *)"
-0x5ad8e0,_GizTurrets_GetBestBoltTarget,,"GIZMO_PC * __cdecl(GIZMOSET_PC *, f32 *, NUVEC *, NUVEC *, void *, NUVEC *, NUVEC *, f32, f32, i32, i32, i32)"
+0x5ad8e0,_GizTurrets_GetBestBoltTarget,932,"GIZMO_PC * __cdecl(GIZMOSET_PC *, f32 *, NUVEC *, NUVEC *, void *, NUVEC *, NUVEC *, f32, f32, i32, i32, i32)"
 0x5adc90,_GizTurrets_BoltHit,737,"i32 __cdecl(WORLDINFO *, void *, GAMEOBJECT *, NUVEC *, i32, f32, NUVEC *, NUVEC *, BOLT_PC *, i32, u8 *)"
 0x5adfc0,_GizTurrets_RegisterGizmo,318,ADDGIZMOTYPE_PC * __cdecl(i32)
 0x5ae130,_GizSpecial_GetMaxGizmos,18,
