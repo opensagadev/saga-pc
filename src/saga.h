@@ -12590,18 +12590,37 @@ void __cdecl AIScriptMissingConditionDiagnostic();
     extern f32 pod_roll_target[2];
     extern f32 Hub_PadSpeed[2];
     extern u16 Hub_PadAngle[2];
+    struct mission_data_pc_s {
+        i16 find_character;
+        i16 level;
+        i16 name_id;
+        i16 text_id;
+        i32 bounty;
+        i32 alternate_bounty;
+        u16 time;
+        u8 index;
+        u8 unknown_13[5];
+    };
     typedef struct mission_data_pc_s MISSIONDATA_PC;
     typedef struct mission_sys_pc_s {
-        u8 unknown_00[4];
+        union {
+            u8 unknown_00[4];
+            MISSIONDATA_PC *missions;
+        };
         MISSIONDATA_PC *active_mission;
         union {
             u8 unknown_08[0x15];
             struct {
                 u8 unknown_count_prefix[0x14];
                 u8 count;
+                u8 state;
+                u8 reserved_1e[2];
+            };
+            struct {
+                TIMER timer;
+                u8 reserved_18[8];
             };
         };
-        u8 state;
     } MISSIONSYS_PC;
     STATIC_ASSERT(offsetof(MISSIONSYS_PC, active_mission) == 4);
     STATIC_ASSERT(offsetof(MISSIONSYS_PC, state) == 0x1d);
@@ -15597,9 +15616,15 @@ void __cdecl PCSoundAlreadyPlayingHook(void);
 
     /* Additive shared contracts only; existing RTL/flight/game/player types reused. */
     typedef struct RUMBLE_PACKET_RESOURCE_PC {
-        u8 unknown_00[4];
+        union {
+            u8 unknown_00[4];
+            f32 intensity;
+        };
         f32 amount;
-        u8 unknown_08[4];
+        union {
+            u8 unknown_08[4];
+            f32 decay_duration;
+        };
         f32 duration;
         u8 active;
     } RUMBLE_PACKET_RESOURCE_PC;
@@ -21130,6 +21155,21 @@ STATIC_ASSERT(offsetof(COLLECTID_PC, selection_type) == 2);
 STATIC_ASSERT(offsetof(COLLECTID_PC, price) == 4);
 STATIC_ASSERT(offsetof(COLLECTID_PC, shop_enabled) == 8);
 STATIC_ASSERT(sizeof(MISSIONSYS_PC) == 0x20);
+STATIC_ASSERT(offsetof(MISSIONSYS_PC, unknown_00) == 0);
+STATIC_ASSERT(offsetof(MISSIONSYS_PC, unknown_count_prefix) == 8);
+STATIC_ASSERT(sizeof(((MISSIONSYS_PC *)0)->unknown_08) == 0x15);
+STATIC_ASSERT(sizeof(((MISSIONSYS_PC *)0)->unknown_count_prefix) == 0x14);
+STATIC_ASSERT(offsetof(MISSIONSYS_PC, missions) == 0);
+STATIC_ASSERT(offsetof(MISSIONSYS_PC, timer) == 8);
+STATIC_ASSERT(sizeof(MISSIONDATA_PC) == 0x18);
+STATIC_ASSERT(offsetof(MISSIONDATA_PC, level) == 2);
+STATIC_ASSERT(offsetof(MISSIONDATA_PC, index) == 0x12);
+STATIC_ASSERT(offsetof(RUMBLE_PACKET_RESOURCE_PC, intensity) == 0);
+STATIC_ASSERT(offsetof(RUMBLE_PACKET_RESOURCE_PC, decay_duration) == 8);
+STATIC_ASSERT(sizeof(RUMBLE_PACKET_RESOURCE_PC) == 0x14);
+STATIC_ASSERT(offsetof(GAMESAVE, options_save) == 4);
+STATIC_ASSERT(offsetof(OPTIONSSAVE, unknown_0000) == 0);
+
 STATIC_ASSERT(offsetof(MISSIONSYS_PC, active_mission) == 4);
 STATIC_ASSERT(offsetof(MISSIONSYS_PC, unknown_08) == 8);
 STATIC_ASSERT(offsetof(MISSIONSYS_PC, count) == 0x1c);
@@ -26023,6 +26063,14 @@ extern "C" {
     i32 __cdecl InitStatusScreen_LSW(WORLDINFO *, STATUSPACKET_s *);
     i32 __cdecl FinishStatusPacket_LSW(WORLDINFO *, STATUSPACKET_s *, i32);
     void __cdecl DrawStatusBG_LSW(STATUSPACKET_s *);
+    extern i32 StatusDemoOptionPc;
+    extern AREA_DATA_PC *NEGOTIATIONS_ADATA;
+    void __cdecl StatusRumbleUpdatePc(void);
+    void __cdecl UpdateStatusScreen(WORLDINFO *);
+    void __cdecl FinishStatusPacket(i32);
+    void __cdecl InitMission(MISSIONSYS_PC *, i32);
+    void __cdecl NuPadSetMotorsPc(NUPAD_INIT_STATE *, i32, i32);
+    void __cdecl NeedScreenGrab(i32);
     extern i32 StatusGoldBrickStagePc, StatusGoldBrickPhasePc;
     extern i16 TextIdPc880f9c;
     extern const char CutPlayerTextSeparatorPc[4];

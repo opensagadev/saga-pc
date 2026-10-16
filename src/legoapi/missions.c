@@ -93,17 +93,6 @@ void __cdecl CheckMissionEnd(MISSIONSYS_PC *system) {
     }
 }
 
-struct mission_data_pc_s {
-    i16 find_character;
-    i16 level;
-    i16 name_id;
-    i16 text_id;
-    i32 bounty;
-    i32 alternate_bounty;
-    u16 time;
-    u8 index;
-    u8 unknown_13[5];
-};
 typedef struct MISSION_SYSTEM_READER_PC {
     MISSIONDATA_PC *missions;
     MISSIONDATA_PC *active_mission;
@@ -215,4 +204,11 @@ i32 __cdecl Missions_PickupsOff(MISSIONSYS_PC *system) {
     if (reader->state == 0 || reader->active_mission == NULL)
         return 0;
     return (reader->flags ^ 1) & 1;
+}
+
+void __cdecl InitMission(MISSIONSYS_PC *system, i32 index) {
+    system->active_mission = &system->missions[index];
+    system->state = 1;
+    ResetTimer(&system->timer, 0.0f);
+    Cheats_TurnOff(0);
 }

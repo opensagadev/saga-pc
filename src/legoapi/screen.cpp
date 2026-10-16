@@ -413,3 +413,77 @@ extern "C" void __cdecl HandleStillRender(void) {
     LevelCompletionFallbackFlagPC = 0;
     clear_screen_onstill = 1;
 }
+
+extern "C" void __cdecl FinishStatusPacket(i32 choice) {
+    u32 flags;
+    i32 network;
+    LEVELDATA_PC *destination;
+    if (LOSTTEMPLE_ADATA != NULL && StatusPacket.area_id == (i16)LOSTTEMPLE_ADATA->index) {
+        if (StatusPacket.player0_model == (u16)VehicleBoltId7f17d0Pc)
+            StatusPacket.player0_model = (u16)VehicleBoltId7f17d4Pc;
+        else if (StatusPacket.player1_model == (u16)VehicleBoltId7f17d0Pc)
+            StatusPacket.player1_model = (u16)VehicleBoltId7f17d4Pc;
+    }
+    RememberPlayerIDs(1, (i16)StatusPacket.player0_model, (i16)StatusPacket.player1_model);
+    if (StatusPacket.finish_callback(WORLD, &StatusPacket, choice) != 0)
+        return;
+    destination = HUB_LDATA;
+    network = StartupGameFlag1;
+    flags = StatusPacket.flags_word;
+    NewLData = destination;
+    if (choice == 0) {
+        if ((flags & 0x100) != 0 ||
+            (network != 0 && (StatusPacket.challenge_state != 0 || StatusPacket.mission_state != 0))) {
+            FADETYPE fade = {FADE_TYPE_STILL_WIPE};
+            NewLData = Area_FindNextPlayLevel(ADataList[StatusPacket.area->index].levels[0]);
+            ResetBits = 0xffffffbfu;
+            reset_area = 1;
+            FadeSys.SetFade(fade, 0);
+            NeedScreenGrab(1);
+            GrabStillScreen();
+            if (StatusPacket.challenge_state != 0)
+                InitChallenge(StatusPacket.area->index);
+            if (StatusPacket.mission_state != 0) {
+                InitMission(MissionSys, (i8)MissionSys->active_mission->index);
+                NewLData = &LDataList[MissionSys->active_mission->level];
+            }
+            destination = NewLData;
+            flags = StatusPacket.flags_word;
+            goto destination_selected;
+        }
+        if (StatusPacket.next_area != -1) {
+            AREA_DATA_PC *area = &ADataList[StatusPacket.next_area];
+            destination = &LDataList[area->levels[0]];
+            NewLData = destination;
+            if ((area->flags & 2) != 0)
+                LevelCompletionFallbackFlagPC = 1;
+            else {
+                loadareacharacters_no_backdrop_reset = 1;
+                if ((flags & 0x400) != 0)
+                    finishloop_backdroponly = 1;
+            }
+            goto destination_selected;
+        }
+    }
+    if (network != 0 &&
+        ((flags & 0x400) != 0 || ((StatusPacket.area->flags & 4) != 0 && (StatusPacket.field_0xb0 & 0x40) == 0))) {
+        destination = CREDITS_LDATA;
+        NewLData = destination;
+    }
+destination_selected:
+    if ((flags & 0x800) != 0) {
+        destination = HUB_LDATA;
+        NewLData = destination;
+    }
+    if (destination->area_index != -1 && (ADataList[destination->area_index].flags & 0x40) != 0 &&
+        StatusPacket.mission_state != 0 && MissionSys->active_mission != NULL)
+        hub_from_mission = (i8)MissionSys->active_mission->index;
+    if (destination == HUB_LDATA) {
+        OldBonusScore[0] = 0;
+        OldBonusScore[1] = 0;
+    } else {
+        OldBonusScore[0] = BonusScore[0];
+        OldBonusScore[1] = BonusScore[1];
+    }
+    NuSound3StopRumble();
+}

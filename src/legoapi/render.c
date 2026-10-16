@@ -1138,3 +1138,99 @@ void __cdecl GoldBrick_LSW_Update(STATUS_STAGE_s *stage, STATUSPACKET_s *packet,
         }
     }
 }
+
+i32 StatusDemoOptionPc = 0;
+
+void __cdecl StatusRumbleUpdatePc(void) {
+    RUMBLE_PACKET_RESOURCE_PC *packets[2] = {(RUMBLE_PACKET_RESOURCE_PC *)&StatusPacket.player0_rumble_amount,
+                                             (RUMBLE_PACKET_RESOURCE_PC *)&StatusPacket.player1_rumble_amount};
+    i32 player;
+    for (player = 0; player < 2; ++player) {
+        RUMBLE_PACKET_RESOURCE_PC *packet = packets[player];
+        i32 motor0, motor1;
+        UpdateRumble(packet);
+        if (Game.options_save.unknown_0000[player] != 0 && StatusPacket.player_active[player] != 0 &&
+            ((u8)GamePadStorage[player].allocated & 0x20) != 0) {
+            if (packet->amount > 0.0f)
+                motor1 = (i32)((f64)packet->intensity * (f64)packet->amount * 255.0 / (f64)packet->decay_duration);
+            else
+                motor1 = 0;
+            motor0 = packet->duration > 0.0f || packet->active > 0;
+        } else {
+            motor0 = 0;
+            motor1 = 0;
+        }
+        NuPadSetMotorsPc(GamePadStorage[player].pad, motor0, motor1);
+    }
+}
+
+void __cdecl UpdateStatusScreen(WORLDINFO *world) {
+    const f32 elapsed = FRAMETIME;
+    volatile f32 seek_step = (f64)elapsed * 3.0;
+    i32 player;
+    (void)world;
+    CoinTotalScale = SeekLinearF(CoinTotalScale, 1.0f, seek_step);
+    StatusGoldBrickPhasePc = -1;
+    StatusGoldBrickStagePc = -1;
+    if (GAMEDEMO != 0) {
+        if (GAMEDEMO == 2) {
+            if (GameTimer.time_elapsed >= 8.0f)
+                SendMessageA(PCInputInstance_candidate, WM_CLOSE, 0, 0);
+            return;
+        }
+        if (GAMEDEMO != 1 || FadeSys.fade != 0.0f || NewLData != NULL)
+            return;
+        for (player = 0; player < 2; ++player) {
+            u32 pressed, directions;
+            if (StatusPacket.player_active[player] == 0)
+                continue;
+            pressed = GamePadStorage[player].menu_buttons_pressed;
+            if ((pressed & GAMEPAD_MENUSELECT) != 0) {
+                GameAudio_PlaySfx(0x30, NULL, 0, 0);
+                if (StatusDemoOptionPc == 0) {
+                    GAMEDEMO = 2;
+                    NewLData = HUB_LDATA;
+                    new_level_from_menu = 1;
+                } else if (StatusDemoOptionPc == 1)
+                    SendMessageA(PCInputInstance_candidate, WM_CLOSE, 0, 0);
+                return;
+            }
+            directions = GamePadStorage[player].menu_directions;
+            if (((pressed | directions) & GAMEPAD_DUP) != 0) {
+                if (StatusDemoOptionPc > 0) {
+                    --StatusDemoOptionPc;
+                    GameAudio_PlaySfx(0x2f, NULL, 0, 0);
+                }
+                return;
+            }
+            if (((pressed | directions) & GAMEPAD_DDOWN) != 0) {
+                if (StatusDemoOptionPc < 1) {
+                    ++StatusDemoOptionPc;
+                    GameAudio_PlaySfx(0x2f, NULL, 0, 0);
+                }
+                return;
+            }
+        }
+        return;
+    }
+    if (StatusPacket.status_flags == 0)
+        return;
+    if (!(StatusPacket.newly_completed != 0 && StatusPacket.area != NULL && StatusPacket.area == NEGOTIATIONS_ADATA)) {
+        u32 button = Text_Language != 0 ? GAMEPAD_JUMP : GAMEPAD_MENUSELECT;
+        if ((StatusPacket.player0_active != 0 && (GamePadStorage[0].menu_buttons_pressed & button) != 0) ||
+            (StatusPacket.player1_active != 0 && (GamePadStorage[1].menu_buttons_pressed & button) != 0) ||
+            (StatusPacket.field_0xb0 & 2) != 0) {
+            STATUS_STAGE_s *stage = StatusPacket.stage;
+            if (stage == NULL)
+                goto status_done;
+            if (stage->skip_callback != NULL)
+                stage->skip_callback(stage, &StatusPacket);
+        }
+    }
+    if (StatusPacket.stage != NULL && StatusPacket.stage->update_callback != NULL)
+        StatusPacket.stage->update_callback(StatusPacket.stage, &StatusPacket, elapsed);
+status_done:
+    StatusRumbleUpdatePc();
+    if (StatusPacket.status_flags == 0 && GameTimer.time_elapsed >= 5.0f)
+        FinishStatusPacket(0);
+}

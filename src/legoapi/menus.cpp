@@ -149,17 +149,6 @@ extern "C" {
     }
 }
 
-struct mission_data_pc_s {
-    i16 find_character;
-    i16 level;
-    i16 name_id;
-    i16 text_id;
-    i32 bounty;
-    i32 alternate_bounty;
-    u16 time;
-    u8 index;
-    u8 unknown_13[5];
-};
 typedef struct MISSION_SYSTEM_READER_PC {
     MISSIONDATA_PC *missions;
     MISSIONDATA_PC *active_mission;

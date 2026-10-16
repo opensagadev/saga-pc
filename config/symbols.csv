@@ -1208,6 +1208,7 @@ address    , symbol                                                         , si
 0x483690,_FindStatusStage,54,
 0x004836d0,_StatusStage_Reset,30,void __cdecl(STATUS_STAGE_s *)
 0x4836f0,_NewStatusRumbleBuzz,321,
+0x00483840,_StatusRumbleUpdatePc,166,void __cdecl(void)
 0x004838f0,_NextStatusStage,410,void __cdecl(STATUSPACKET_s *)
 0x483a90,_AddGoldBrickMessage,46,
 0x483ac0,_AddStatusStage,48,
@@ -1216,10 +1217,10 @@ address    , symbol                                                         , si
 0x4853f0,_DrawStatusMiniKit,944,
 0x4857d0,_AddStatusMiniKitParts,913,
 0x485b70,_Status_DrawPromptMenu,1124,
-0x486940,_FinishStatusPacket,694,
+0x00486940,_FinishStatusPacket,694,void __cdecl(i32)
 0x486c00,_NuMainStatusHelperPc,1,void __cdecl(STATUSPACKET_s *)
 0x00486c10,_RegisterStatusScreen,67,"void __cdecl(STATUS_STAGE_s *, i32 *, const REGISTER_STATUS_PACKET_PC *)"
-0x486c60,_UpdateStatusScreen,698,
+0x00486c60,_UpdateStatusScreen,698,void __cdecl(WORLDINFO *)
 0x486f50,_Tag_SetMode,10,void __cdecl (i32)
 0x00486f60 , _Tag_FindGameObject_CYCLICAL                                   , 187   , i32 __cdecl (GAMEOBJECT *)
 0x00487020 , _Tag_FindGameObject_TRANSFER                                   , 378   , GAMEOBJECT * __cdecl (GAMEOBJECT *)
@@ -1405,7 +1406,7 @@ address    , symbol                                                         , si
 0x496eb0,?MissionIconPositionsPc@@YAXPAUMISSION_SYSTEM_READER_PC@@H@Z,214,
 0x496f90,_MenuInitMissions,97,void __cdecl(MENU *)
 0x497000,_MenuDrawMissions,1340,void __cdecl(MENU *)
-0x497720,_InitMission,49,
+0x00497720,_InitMission,49,"void __cdecl(MISSIONSYS_PC *, i32)"
 0x497760,_EndMission,144,"void __cdecl(MISSIONSYS_PC *, i32, i32)"
 0x4977f0,_CheckMissionEnd,336,void __cdecl(MISSIONSYS_PC*)
 0x497940,_MenuUpdateMissions,709,void __cdecl(MENU *)
@@ -7570,6 +7571,7 @@ address    , symbol                                                         , si
 0x6de1b0,_PcQuitToWindows,12,void __cdecl(void)
 0x6de1c0,_WindowProcPc@16,751,"LRESULT __stdcall(HWND,UINT,WPARAM,LPARAM)"
 0x6de4b0,_CreateWindowPc,420,"i32 __cdecl(HINSTANCE,i32,u16)"
+0x006de6d0,_NuPadSetMotorsPc,1,"void __cdecl(NUPAD_INIT_STATE *, i32, i32)"
 0x6de750,_PcEnableThreadSwap,1,void __cdecl(void)
 0x6de760,_PcDisableThreadSwap,1,void __cdecl(void)
 0x006de8d0 , _NuScratchAlloc32                                             , 37    ,
@@ -19879,6 +19881,7 @@ address    , symbol                                                         , si
 0x87a624,_status_prompt,4,i32
 0x87a648,_StatusPacket,332,STATUSPACKET_s
 0x87a6f8,_PcGameStatusRenderState,,GAME_STATUS_RENDER_VIEW_PC
+0x0087a798,_StatusDemoOptionPc,4,i32
 0x87a7a0,_RenderStatusMatrixPrivate,,static NUMTX
 0x87a7e0,_Tag_DoneAny,,i32
 0x87a7e4,_Tag_DoneFirst,,i32
