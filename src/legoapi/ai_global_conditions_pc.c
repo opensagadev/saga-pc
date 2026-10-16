@@ -380,3 +380,89 @@ f32 __cdecl Condition_BlockingPc(AISYS_PC *system, AISCRIPTPROCESS_PC *process, 
         return 1.0f;
     return 0.0f;
 }
+
+STATIC_ASSERT(offsetof(AIPACKET_PC, owner) == 0xd0);
+STATIC_ASSERT(offsetof(AIPACKET_PC, nearest_opponent) == 0xd4);
+STATIC_ASSERT(offsetof(AIPACKET_PC, nearest_opponent_metric) == 0xd8);
+STATIC_ASSERT(offsetof(AIPACKET_PC, opponent) == 0xe4);
+STATIC_ASSERT(offsetof(AIPACKET_PC, flags) == 0x1e8);
+STATIC_ASSERT(offsetof(GAMEOBJECT, last_attacker) == 0x10a8);
+STATIC_ASSERT(offsetof(GAMEOBJECT, position) == 0x5c);
+STATIC_ASSERT(offsetof(GAMEOBJECT, flags_1fc) == 0x1fc);
+STATIC_ASSERT(offsetof(APIOBJECT_PC, ai) == 4);
+STATIC_ASSERT(offsetof(AIPACKET_PC, path_info) + offsetof(AIPATHINFO_PC, flags) == 0x166);
+
+f32 __cdecl Condition_LastAttackerRangePc(AISYS_PC *system, AISCRIPTPROCESS_PC *process, AIPACKET_PC *packet,
+                                          char *name, void *argument) {
+    GAMEOBJECT *object;
+    NUVEC difference;
+    (void)system;
+    (void)process;
+    (void)name;
+    (void)argument;
+    if (packet == NULL || packet->owner == NULL)
+        return AIPositionUnsetPc;
+    object = packet->owner->objptr;
+    if (object->last_attacker == NULL)
+        return AIPositionUnsetPc;
+    return NuVecDist(&object->position, &object->last_attacker->position, &difference);
+}
+
+f32 __cdecl Condition_LastAttackerIsActivePlayerPc(AISYS_PC *system, AISCRIPTPROCESS_PC *process, AIPACKET_PC *packet,
+                                                   char *name, void *argument) {
+    GAMEOBJECT *object;
+    GAMEOBJECT *attacker;
+    (void)system;
+    (void)process;
+    (void)name;
+    (void)argument;
+    if (packet == NULL || packet->owner == NULL)
+        return 0.0f;
+    object = packet->owner->objptr;
+    attacker = object->last_attacker;
+    return attacker != NULL && (attacker->flags_1fc & 0x80) != 0 ? 1.0f : 0.0f;
+}
+
+f32 __cdecl Condition_NearestOpponentRangePc(AISYS_PC *system, AISCRIPTPROCESS_PC *process, AIPACKET_PC *packet,
+                                             char *name, void *argument) {
+    (void)system;
+    (void)process;
+    (void)name;
+    (void)argument;
+    if (packet != NULL && packet->nearest_opponent != NULL)
+        return packet->nearest_opponent_metric;
+    return FLT_MAX;
+}
+
+f32 __cdecl Condition_OpponentBelowPc(AISYS_PC *system, AISCRIPTPROCESS_PC *process, AIPACKET_PC *packet, char *name,
+                                      void *argument) {
+    (void)system;
+    (void)process;
+    (void)name;
+    (void)argument;
+    if (packet != NULL && packet->opponent != NULL &&
+        (f64)packet->owner->position.y - (f64)0.1f > (f64)packet->opponent->position.y)
+        return 1.0f;
+    return 0.0f;
+}
+
+f32 __cdecl Condition_OpponentOnPathPc(AISYS_PC *system, AISCRIPTPROCESS_PC *process, AIPACKET_PC *packet, char *name,
+                                       void *argument) {
+    (void)system;
+    (void)process;
+    (void)name;
+    (void)argument;
+    return packet != NULL && packet->opponent != NULL &&
+                   ((((APIOBJECT_PC *)packet->opponent)->ai->path_info.flags & 1) != 0)
+               ? 1.0f
+               : 0.0f;
+}
+
+f32 __cdecl Condition_OpponentIsAThreatPc(AISYS_PC *system, AISCRIPTPROCESS_PC *process, AIPACKET_PC *packet,
+                                          char *name, void *argument) {
+    (void)system;
+    (void)process;
+    (void)name;
+    (void)argument;
+    return packet != NULL && packet->opponent != NULL && (packet->flags & 0x800u) != 0 ? 1.0f : 0.0f;
+}

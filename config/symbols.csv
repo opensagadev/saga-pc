@@ -603,8 +603,8 @@ address    , symbol                                                         , si
 0x4432d0,_Condition_CharacterExistsPc,13,
 0x4432e0,_Condition_CharacterTypeExistsInitPc,82,
 0x443340,_Condition_CharacterTypeExistsPc,68,
-0x443390,_Condition_LastAttackerRangePc,67,
-0x4433e0,_Condition_LastAttackerIsActivePlayerPc,45,
+0x443390,_Condition_LastAttackerRangePc,67,"f32 __cdecl(AISYS_PC *,AISCRIPTPROCESS_PC *,AIPACKET_PC *,char *,void *)"
+0x4433e0,_Condition_LastAttackerIsActivePlayerPc,45,"f32 __cdecl(AISYS_PC *,AISCRIPTPROCESS_PC *,AIPACKET_PC *,char *,void *)"
 0x443410,_Condition_GotLocatorInSetInitPc,19,
 0x443430,_Condition_GotLocatorInSetPc,84,
 0x443490,_Condition_GotOpponentLOSPc,111,
@@ -2563,7 +2563,7 @@ address    , symbol                                                         , si
 0x514b00,_Condition_GotLocatorSetPc,19,
 0x514b20,_Condition_OnPathPc,23,
 0x514b40,_Condition_PlayerOnPathPc,32,
-0x514b60,_Condition_OpponentOnPathPc,36,
+0x514b60,_Condition_OpponentOnPathPc,36,"f32 __cdecl(AISYS_PC *,AISCRIPTPROCESS_PC *,AIPACKET_PC *,char *,void *)"
 0x514b90,_Condition_TimeOffPathPc,18,
 0x514bb0,_Condition_CurrentLocatorIsPc,26,
 0x514bd0,_Condition_InTriggerAreaPc,86,
@@ -2582,12 +2582,12 @@ address    , symbol                                                         , si
 0x515130,_Condition_GoodyInTriggerAreaPc,34,
 0x515160,_Condition_OpponentInTriggerAreaPc,95,
 0x5151c0,_Condition_GotOpponent,23,"f32 __cdecl(AISYS_PC *,AISCRIPTPROCESS_PC *,AIPACKET_PC *,char *,void *)"
-0x5151e0,_Condition_OpponentIsAThreatPc,35,
+0x5151e0,_Condition_OpponentIsAThreatPc,35,"f32 __cdecl(AISYS_PC *,AISCRIPTPROCESS_PC *,AIPACKET_PC *,char *,void *)"
 0x515210,_Condition_OpponentOnSamePath,49,"f32 __cdecl(AISYS_PC *,AISCRIPTPROCESS_PC *,AIPACKET_PC *,char *,void *)"
 0x515250,_Condition_OpponentRange,31,"f32 __cdecl(AISYS_PC *,AISCRIPTPROCESS_PC *,AIPACKET_PC *,char *,void *)"
-0x515270,_Condition_NearestOpponentRangePc,31,
+0x515270,_Condition_NearestOpponentRangePc,31,"f32 __cdecl(AISYS_PC *,AISCRIPTPROCESS_PC *,AIPACKET_PC *,char *,void *)"
 0x515290,_Condition_YawToOpponentPc,135,
-0x515320,_Condition_OpponentBelowPc,51,
+0x515320,_Condition_OpponentBelowPc,51,"f32 __cdecl(AISYS_PC *,AISCRIPTPROCESS_PC *,AIPACKET_PC *,char *,void *)"
 0x515360,_Condition_OriginRangePc,91,
 0x5153c0,_Condition_OpponentToOriginPc,129,
 0x515450,_Condition_PlayerToOriginPc,129,
