@@ -465,10 +465,10 @@ address    , symbol                                                         , si
 0x441020,_Condition_UsingForcePc,36,
 0x441050,_Condition_PlayerUsingForcePc,30,
 0x441070,_Condition_EitherPlayerUsingForce,52,"f32 __cdecl (AISYS_PC *, AISCRIPTPROCESS_PC *, AIPACKET_PC *, char *, void *)"
-0x4410b0,_Condition_OnForcePlatformInitPc,58,
-0x4410f0,_Condition_OnForcePlatformPc,133,
-0x441180,_Condition_PlayerOnForcePlatformPc,117,
-0x441200,_Condition_EitherPlayerOnForcePlatformPc,253,
+0x4410b0,_Condition_OnForcePlatformInitPc,58,"void *__cdecl (AISYS_PC *, char *, AISCRIPT_PC *)"
+0x4410f0,_Condition_OnForcePlatformPc,133,"f32 __cdecl (AISYS_PC *, AISCRIPTPROCESS_PC *, AIPACKET_PC *, char *, void *)"
+0x441180,_Condition_PlayerOnForcePlatformPc,117,"f32 __cdecl (AISYS_PC *, AISCRIPTPROCESS_PC *, AIPACKET_PC *, char *, void *)"
+0x441200,_Condition_EitherPlayerOnForcePlatformPc,253,"f32 __cdecl (AISYS_PC *, AISCRIPTPROCESS_PC *, AIPACKET_PC *, char *, void *)"
 0x441300,_Condition_ForceBeingUsedPc,32,
 0x441320,_Condition_PlayerDeflectingPartPc,24,
 0x441400,_Condition_EitherPlayerPullingLeverPc,111,

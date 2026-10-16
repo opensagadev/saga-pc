@@ -1497,3 +1497,127 @@ i32 __cdecl GizmoForce_ActivateRev(GIZMO_PC *gizmo, i32 reverse, i32 mode) {
     }
     return 1;
 }
+
+typedef struct ai_force_platform_record_pc_s {
+    u8 unknown_00[0x40];
+    NUMTX *scene_matrix;
+    u8 unknown_44[0x28];
+} AI_FORCE_PLATFORM_RECORD_PC;
+STATIC_ASSERT(sizeof(AI_FORCE_PLATFORM_RECORD_PC) == 0x6c);
+STATIC_ASSERT(offsetof(AI_FORCE_PLATFORM_RECORD_PC, scene_matrix) == 0x40);
+typedef struct ai_force_platform_terrain_pc_s {
+    u8 unknown_00[0x68];
+    AI_FORCE_PLATFORM_RECORD_PC *platforms;
+} AI_FORCE_PLATFORM_TERRAIN_PC;
+STATIC_ASSERT(offsetof(AI_FORCE_PLATFORM_TERRAIN_PC, platforms) == 0x68);
+typedef struct ai_force_platform_object_data_pc_s {
+    u8 unknown_00[2];
+    i16 platform_id;
+} AI_FORCE_PLATFORM_OBJECT_DATA_PC;
+STATIC_ASSERT(offsetof(AI_FORCE_PLATFORM_OBJECT_DATA_PC, platform_id) == 2);
+
+void *__cdecl Condition_OnForcePlatformInitPc(AISYS_PC *system, char *name, AISCRIPT_PC *script) {
+    GIZMO_PC *gizmo = GizmoFindByName(WORLD->gizmo_sys, force_gizmotype_id, name);
+    GIZFORCE_PC *force;
+    if (gizmo != NULL) {
+        force = (GIZFORCE_PC *)gizmo->object;
+        if (force != NULL && (force->runtime_flags & 0x100) != 0)
+            return force;
+    }
+    return NULL;
+}
+
+f32 __cdecl Condition_OnForcePlatformPc(AISYS_PC *system, AISCRIPTPROCESS_PC *process, AIPACKET_PC *packet, char *name,
+                                        void *argument) {
+    GIZFORCE_PC *force = (GIZFORCE_PC *)argument;
+    GAMEOBJECT *object;
+    i16 platform_id;
+    AI_FORCE_PLATFORM_TERRAIN_PC *terrain;
+    GAMEANIMOBJ *animation;
+    if (force == NULL || packet == NULL || packet->owner == NULL)
+        return 0.0f;
+    object = packet->owner->objptr;
+    if (object->field_281 == 0 && object->field_282 == 0)
+        return 0.0f;
+    platform_id = object->supporting_platform_id;
+    if (platform_id == -1)
+        return 0.0f;
+    terrain = (AI_FORCE_PLATFORM_TERRAIN_PC *)CurrentTerrain;
+    if (!((f64)terrain->platforms[platform_id].scene_matrix->m31 <= (f64)object->position.y))
+        return 0.0f;
+    animation = force->anim_set->objects;
+    while (animation != NULL) {
+        if (platform_id == ((AI_FORCE_PLATFORM_OBJECT_DATA_PC *)animation->object_data)->platform_id)
+            return 1.0f;
+        animation = animation->next;
+    }
+    return 0.0f;
+}
+
+f32 __cdecl Condition_PlayerOnForcePlatformPc(AISYS_PC *system, AISCRIPTPROCESS_PC *process, AIPACKET_PC *packet,
+                                              char *name, void *argument) {
+    GIZFORCE_PC *force = (GIZFORCE_PC *)argument;
+    GAMEOBJECT *object;
+    i16 platform_id;
+    AI_FORCE_PLATFORM_TERRAIN_PC *terrain;
+    GAMEANIMOBJ *animation;
+    if (force == NULL)
+        return 0.0f;
+    object = (GAMEOBJECT *)Player[0];
+    if (object == NULL || (object->field_281 == 0 && object->field_282 == 0))
+        return 0.0f;
+    platform_id = object->supporting_platform_id;
+    if (platform_id == -1)
+        return 0.0f;
+    terrain = (AI_FORCE_PLATFORM_TERRAIN_PC *)CurrentTerrain;
+    if (!((f64)terrain->platforms[platform_id].scene_matrix->m31 <= (f64)object->position.y))
+        return 0.0f;
+    animation = force->anim_set->objects;
+    while (animation != NULL) {
+        if (platform_id == ((AI_FORCE_PLATFORM_OBJECT_DATA_PC *)animation->object_data)->platform_id)
+            return 1.0f;
+        animation = animation->next;
+    }
+    return 0.0f;
+}
+
+f32 __cdecl Condition_EitherPlayerOnForcePlatformPc(AISYS_PC *system, AISCRIPTPROCESS_PC *process, AIPACKET_PC *packet,
+                                                    char *name, void *argument) {
+    GIZFORCE_PC *force = (GIZFORCE_PC *)argument;
+    GAMEOBJECT *first;
+    GAMEOBJECT *second;
+    AI_FORCE_PLATFORM_TERRAIN_PC *terrain;
+    i32 eligible = 0;
+    i16 platform_id;
+    GAMEANIMOBJ *animation;
+    if (force == NULL)
+        return 0.0f;
+    first = (GAMEOBJECT *)Player[0];
+    if (first == NULL)
+        return 0.0f;
+    terrain = (AI_FORCE_PLATFORM_TERRAIN_PC *)CurrentTerrain;
+    if (first->field_281 != 0 || first->field_282 != 0) {
+        platform_id = first->supporting_platform_id;
+        if (platform_id != -1 && (f64)terrain->platforms[platform_id].scene_matrix->m31 <= (f64)first->position.y)
+            eligible = 1;
+    }
+    second = (GAMEOBJECT *)Player[1];
+    if (second != NULL && (second->field_281 != 0 || second->field_282 != 0)) {
+        platform_id = second->supporting_platform_id;
+        if (platform_id != -1 && (f64)terrain->platforms[platform_id].scene_matrix->m31 <= (f64)second->position.y)
+            eligible |= 2;
+    }
+    if (eligible == 0)
+        return 0.0f;
+    animation = force->anim_set->objects;
+    while (animation != NULL) {
+        if ((eligible & 1) != 0 &&
+            first->supporting_platform_id == ((AI_FORCE_PLATFORM_OBJECT_DATA_PC *)animation->object_data)->platform_id)
+            return 1.0f;
+        if ((eligible & 2) != 0 &&
+            second->supporting_platform_id == ((AI_FORCE_PLATFORM_OBJECT_DATA_PC *)animation->object_data)->platform_id)
+            return 1.0f;
+        animation = animation->next;
+    }
+    return 0.0f;
+}
