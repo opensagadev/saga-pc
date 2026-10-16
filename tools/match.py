@@ -125,18 +125,23 @@ def repository_paths(value):
 def update_badge(stats):
     path = ROOT / "README.md"
     content = path.read_text()
-    value = stats["fuzzy_coverage_percent"]
-    color = "red" if value < 25 else "orange" if value < 75 else "brightgreen"
+    def image(label, field, alt):
+        value = stats[field]
+        color = "red" if value < 25 else "orange" if value < 75 else "brightgreen"
+        return f"![{alt}](https://img.shields.io/badge/{label}-{value:.3f}%25-{color})"
+
     badge = ("<!-- matching-badge -->\n"
-             f"![fuzzy code match](https://img.shields.io/badge/fuzzy%20code%20match-{value:.3f}%25-{color})"
-             "<!-- /matching-badge -->")
-    rows = [("Exact code match", "matching_percent", "Byte-identical code."),
-            ("Mapped code", "mapping_code_percent", "Known code extents."),
-            ("Mapped file-backed data", "mapping_file_backed_data_percent", "Known data stored in the executable."),
-            ("Mapped zero-fill/BSS", "mapping_zero_fill_data_percent", "Known zero-initialized storage.")]
-    table = ("<!-- mapping-badge -->\n\n| Metric | Coverage | Meaning |\n"
-             "| --- | ---: | --- |\n"
-             + "\n".join(f"| {label} | {stats[field]:.3f}% | {meaning} |" for label, field, meaning in rows)
+             + image("fuzzy%20code%20match", "fuzzy_coverage_percent", "fuzzy code match")
+             + "<!-- /matching-badge -->")
+    rows = [("exact%20code%20match", "matching_percent", "exact code match", "Byte-identical code."),
+            ("mapped%20code", "mapping_code_percent", "mapped code", "Known code extents."),
+            ("mapped%20file--backed%20data", "mapping_file_backed_data_percent", "mapped file-backed data",
+             "Known data stored in the executable."),
+            ("mapped%20zero--fill%2FBSS", "mapping_zero_fill_data_percent", "mapped zero-fill/BSS",
+             "Known zero-initialized storage.")]
+    table = ("<!-- mapping-badge -->\n\n| Metric / coverage | Meaning |\n"
+             "| --- | --- |\n"
+             + "\n".join(f"| {image(label, field, alt)} | {meaning} |" for label, field, alt, meaning in rows)
              + "\n\n<!-- /mapping-badge -->")
     for metric, replacement in (("matching", badge), ("mapping", table)):
         content, count = re.subn(f"<!-- {metric}-badge -->.*?<!-- /{metric}-badge -->",

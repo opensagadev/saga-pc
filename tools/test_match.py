@@ -82,14 +82,16 @@ class ProgressTests(unittest.TestCase):
             self.assertTrue(updated.startswith("before\n"))
             self.assertTrue(updated.endswith("\nafter\n"))
             self.assertIn("fuzzy%20code%20match-1.294%25-red", updated)
-            self.assertEqual(updated.count("https://img.shields.io/badge/"), 1)
+            self.assertEqual(updated.count("https://img.shields.io/badge/"), 5)
             self.assertIn("![fuzzy code match]", updated)
             self.assertIn(build_badge, updated)
-            self.assertIn("| Metric | Coverage | Meaning |", updated)
-            self.assertIn("| Exact code match | 0.013% | Byte-identical code. |", updated)
-            self.assertIn("| Mapped code | 25.000% | Known code extents. |", updated)
-            self.assertIn("| Mapped file-backed data | 25.000% | Known data stored in the executable. |", updated)
-            self.assertIn("| Mapped zero-fill/BSS | 75.000% | Known zero-initialized storage. |", updated)
+            self.assertIn("| Metric / coverage | Meaning |", updated)
+            self.assertIn("![exact code match](https://img.shields.io/badge/exact%20code%20match-0.013%25-red) | Byte-identical code. |", updated)
+            self.assertIn("![mapped code](https://img.shields.io/badge/mapped%20code-25.000%25-red) | Known code extents. |", updated)
+            self.assertIn("mapped%20file--backed%20data-25.000%25-orange) | Known data stored in the executable. |", updated)
+            self.assertIn("mapped%20zero--fill%2FBSS-75.000%25-brightgreen) | Known zero-initialized storage. |", updated)
+            self.assertEqual(sum(line.startswith("| ![") for line in updated.splitlines()), 4)
+            self.assertTrue(updated.splitlines()[1].startswith("<!-- matching-badge -->"))
             match.update_badge(stats)
             self.assertEqual(path.read_text(), updated)
             for content in ("missing", marker + marker):
@@ -106,10 +108,12 @@ class ProgressTests(unittest.TestCase):
             for value, color in ((0, "red"), (24.999, "red"), (25, "orange"),
                                  (74.999, "orange"), (75, "brightgreen"), (100, "brightgreen")):
                 with self.subTest(value=value):
-                    match.update_badge({"fuzzy_coverage_percent": value, "matching_percent": 0,
-                                        "mapping_code_percent": 0, "mapping_file_backed_data_percent": 0,
-                                        "mapping_zero_fill_data_percent": 0})
-                    self.assertIn(f"fuzzy%20code%20match-{value:.3f}%25-{color}", path.read_text())
+                    match.update_badge({"fuzzy_coverage_percent": value, "matching_percent": value,
+                                        "mapping_code_percent": value, "mapping_file_backed_data_percent": value,
+                                        "mapping_zero_fill_data_percent": value})
+                    for label in ("fuzzy%20code%20match", "exact%20code%20match", "mapped%20code",
+                                  "mapped%20file--backed%20data", "mapped%20zero--fill%2FBSS"):
+                        self.assertIn(f"{label}-{value:.3f}%25-{color}", path.read_text())
 
 
 class ObjdiffProgressTests(unittest.TestCase):
