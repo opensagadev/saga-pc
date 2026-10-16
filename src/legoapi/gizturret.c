@@ -519,3 +519,124 @@ i32 __cdecl GizTurrets_Hit(WORLDINFO *world, AI_TURRET_RECORD_PC *turret, NUVEC 
     }
     return 1;
 }
+
+STATIC_ASSERT(offsetof(TURRET_ANIM_DATA_PC, platform_id) == 2);
+STATIC_ASSERT(offsetof(BOLTTYPE_PC, field_3c) == 0x3c);
+STATIC_ASSERT(offsetof(BOLT_PC, hit_platform) == 0xfa);
+STATIC_ASSERT(offsetof(BOLT_PC, type_id) == 0x101);
+
+i32 __cdecl GizTurrets_BoltHitPlat(WORLDINFO *world, void *system_pointer, BOLT_PC *bolt, u8 *hit_flags) {
+    AI_TURRET_SYSTEM_PC *system = (AI_TURRET_SYSTEM_PC *)system_pointer;
+    AI_TURRET_RECORD_PC *turret;
+    GAMEANIMOBJ *animation;
+    BOLTTYPE_PC *type;
+    GAMEOBJECT *owner;
+    i32 count, index, damage, player;
+    if (system == NULL)
+        return 0;
+    count = system->count;
+    turret = system->turrets;
+    for (index = 0; index < count; ++index, ++turret) {
+        if ((turret->flags & 4) == 0 || (turret->flags & 2) == 0 || (turret->flags & 0x30) != 0 ||
+            (turret->flags & 0x200) == 0)
+            continue;
+        animation = turret->anim_set->objects;
+        while (animation != NULL) {
+            if (((TURRET_ANIM_DATA_PC *)animation->object_data)->platform_id == bolt->hit_platform) {
+                type = BoltType_FindByID((u8)bolt->type_id, world);
+                owner = (GAMEOBJECT *)bolt->owner;
+                if (owner != NULL && (turret->behavior_flags & 0x10000) != 0 && owner->rider == NULL)
+                    damage = 0;
+                else if (owner != NULL && (turret->behavior_flags & 0x20000) != 0 &&
+                         (owner->flags_1fc_word & 0x80) == 0)
+                    damage = 0;
+                else
+                    damage = (u8)type->field_3c;
+                player = owner != NULL ? (i8)owner->field_280 : -1;
+                GizTurrets_Hit(world, turret, &bolt->position, player, damage);
+                return 1;
+            }
+            animation = animation->next;
+        }
+    }
+    return 0;
+}
+
+i32 __cdecl GizTurrets_BoltHit(WORLDINFO *world, void *system_pointer, GAMEOBJECT *object, NUVEC *points,
+                               i32 point_count, f32 radius, NUVEC *minimum, NUVEC *maximum, BOLT_PC *bolt, i32 hit_type,
+                               u8 *hit_flags) {
+    AI_TURRET_SYSTEM_PC *system = (AI_TURRET_SYSTEM_PC *)system_pointer;
+    AI_TURRET_RECORD_PC *turret;
+    AI_TURRET_RECORD_PC *best = NULL;
+    BOLTTYPE_PC *type;
+    GAMEOBJECT *owner;
+    NUVEC *centre, *origin;
+    NUVEC normal;
+    volatile f32 turret_radius_spill, distance_spill;
+    f32 turret_radius, distance;
+    f32 best_distance = 1000000000.0f;
+    i32 index, point, player, damage;
+    if (system == NULL)
+        return 0;
+    turret = system->turrets;
+    if (system->count == 0)
+        return 0;
+    for (index = 0; index < system->count; ++index, ++turret) {
+        if ((turret->flags & 4) == 0 || (turret->flags & 2) == 0 || (turret->flags & 0x30) != 0 ||
+            turret->primary_anim_obj == NULL || (turret->flags & 0x200) != 0)
+            continue;
+        turret_radius_spill = NuSpecialGetOriginRadius(&turret->primary_anim_obj->special);
+        turret_radius = turret_radius_spill;
+        centre = NuSpecialGetDrawPos(&turret->primary_anim_obj->special);
+        if ((f64)maximum->x < (f64)centre->x - (f64)turret_radius)
+            continue;
+        if ((f64)centre->x + (f64)turret_radius < (f64)minimum->x)
+            continue;
+        if ((f64)centre->z - (f64)turret_radius > (f64)maximum->z)
+            continue;
+        if ((f64)centre->z + (f64)turret_radius < (f64)minimum->z)
+            continue;
+        if ((f64)centre->y - (f64)turret_radius > (f64)maximum->y)
+            continue;
+        if ((f64)centre->y + (f64)turret_radius < (f64)minimum->y)
+            continue;
+        point = (i32)((u32)point_count - 1u);
+        while (point >= 0) {
+            if (SphereSphereOverlap(centre, turret_radius, &points[point], radius) != 0)
+                break;
+            --point;
+        }
+        if (point < 0)
+            continue;
+        origin = object != NULL ? &object->collision_position : &points[point];
+        distance_spill = NuVecDistSqr(origin, centre, NULL);
+        distance = distance_spill;
+        if (best_distance > distance) {
+            best_distance = distance;
+            best = turret;
+        }
+    }
+    if (best == NULL)
+        return 0;
+    if (hit_type != 2 && hit_type != 7 && bolt != NULL) {
+        (void)BoltType_FindByID((u8)bolt->type_id, WORLD);
+        (void)Cheats_CheckFlags(2);
+    }
+    type = BoltType_FindByID((u8)bolt->type_id, world);
+    owner = (GAMEOBJECT *)bolt->owner;
+    player = owner != NULL ? (i8)owner->field_280 : -1;
+    damage = (u8)type->field_3c;
+    if (GizTurrets_Hit(world, best, &bolt->position, player, damage) != 0) {
+        if (object != NULL) {
+            NewRumble(object->pad->bound_pad, 0.4f, 0);
+            GameCam_HitJudder();
+        }
+    } else {
+        NuVecSub(&normal, &best->position, &bolt->position);
+        NuVecNorm(&normal, &normal);
+        Bolt_AddDeflectedBolt(bolt, &bolt->direction, &normal, hit_flags);
+    }
+    if (BoltSys->stop_targeting != NULL)
+        BoltSys->stop_targeting(object, points);
+    return 1;
+}

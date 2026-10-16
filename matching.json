@@ -37,7 +37,7 @@
     "config/data-members.json": "fe09365da4c355f220d724ca99394fc120b758891b4188d2c49707b6df0894f2",
     "config/library-objects.json": "e5ae24d3eac36fa0d0cb098f7690faaef3110f225db30c8cbf0f7d0d64f6ecfe",
     "config/project.json": "dc0e8cc85ae5650c6937b70ccaefb0153629c2460fa09cd4f6b625e251e623dd",
-    "config/symbols.csv": "858721ac715b88501bf10f36b4f9bf54a981ef02cc2e96c77acd6017525e8955",
+    "config/symbols.csv": "0b4e9f34c9e59ea2aaa685502cd9e357b71d47a6923cab2436d46ccf749021ba",
     "config/symbols.md": "dffbdaac86011e3aee74b404063c15bda97f88af3db337ffef9f1bad1785d212",
     "config/toolchain.json": "489d0782638d8033137cdb2834462416111945cbfa073147820e314b8576b95b",
     "config/tools.json": "50199f6b132a7abfabf251e98a75be0a957abfe50f1ff776188fba21e4c4436f",
@@ -312,7 +312,7 @@
     "src/legoapi/gizteleports.c": "40537702ddacb24cab1047cbece578922d0c16b001bd3c79de4bb3a2d123d390",
     "src/legoapi/giztimers.c": "b88fbdcf26ca7c39ba9fd9a95ad3e8de3391d7bb793be3527a89705d332c9f0f",
     "src/legoapi/giztorpedo.c": "eec905973baf73328ec47c7946188ef957242ac696828c10f08d5595534dd7a7",
-    "src/legoapi/gizturret.c": "188d0f71097df7ee8a40c47e000e43faa8131d0b89c21c707b3f59f13efe0607",
+    "src/legoapi/gizturret.c": "ee99cd2af48b5ee26888fb052911a3b6e9e18ec72d0c93c4cef9e0ac81bbc5d3",
     "src/legoapi/grabber.c": "91d04f1077a4a42b6ba317a4a90df07c0aa714de2c4d65b9712c01dc8754d7ec",
     "src/legoapi/grabber_pc.c": "26a1b15ab475728f9600ce47f353a660e21f74e4db07e650e53bf59fdb405c5e",
     "src/legoapi/hint.c": "9efc223c367bb2287c5fee1c4f2abb28ee784574effc0efc81ec94371968226c",
@@ -613,7 +613,7 @@
     "build/obj/legoapi/gizteleports.obj": "c4f9f7100a62086b4b42774eddef08b68d96550ab077c77205b4420e8acf159f",
     "build/obj/legoapi/giztimers.obj": "eff7b10345305ac4d4c411c71cf5eeeeb8ee8060b6f47e5e828f879c6f3a575a",
     "build/obj/legoapi/giztorpedo.obj": "f01b97c984d296506ec78e4ba82d52046d2b33272916992dd0a5b62990245d72",
-    "build/obj/legoapi/gizturret.obj": "4a500a1ed4b26ec68e39c0cae79ebd899381dbbc38d285c7297c017b8403199c",
+    "build/obj/legoapi/gizturret.obj": "a39fe8f423abaace4ad2e9e941669e68019b6fd44cc676f157bc80ea781d53f8",
     "build/obj/legoapi/grabber.obj": "7c07d85731fdc88f8b27ce73037c36fa8bd92626aac7aa49b28b269e416f4816",
     "build/obj/legoapi/grabber_pc.obj": "3abb6104c8b44a3f6becd1e55f7bbf3b61670c182150227be3e81fd0413cde45",
     "build/obj/legoapi/grapples.obj": "39bef1e02d102e6472a50100506594408bf09f48ba46f70f3fc8c2fd0e3ec1f9",
@@ -104060,11 +104060,25 @@
       "name": "GizTurrets_BoltHitPlat",
       "symbol": "_GizTurrets_BoltHitPlat",
       "address": "0x005ad7e0",
-      "units": [],
-      "target_size": null,
+      "units": [
+        "src/legoapi/gizturret.c"
+      ],
+      "target_size": 246,
       "exact_match": false,
-      "objects": [],
-      "status": "unknown size"
+      "objects": [
+        {
+          "unit": "src/legoapi/gizturret.c",
+          "base_size": 240,
+          "exact_match": false,
+          "target_sha256": "8399fe52e190ae8a73bb61042dcca274e8afb5b5e8acc6f095f26e0967f703b1",
+          "base_sha256": "6d599f49272ba91722548821c354d45b545d0d848155648516edb576ea038d9a",
+          "relocation_count": 2,
+          "comparison_unit": "005ad7e0-20212833e338",
+          "objdiff_percent": 89.55056
+        }
+      ],
+      "status": "different",
+      "objdiff_percent": 89.55056
     },
     {
       "name": "GizTurrets_GetBestBoltTarget",
@@ -104080,11 +104094,25 @@
       "name": "GizTurrets_BoltHit",
       "symbol": "_GizTurrets_BoltHit",
       "address": "0x005adc90",
-      "units": [],
+      "units": [
+        "src/legoapi/gizturret.c"
+      ],
       "target_size": 737,
       "exact_match": false,
-      "objects": [],
-      "status": "not implemented"
+      "objects": [
+        {
+          "unit": "src/legoapi/gizturret.c",
+          "base_size": 777,
+          "exact_match": false,
+          "target_sha256": "2c000d572e1b24353f2d0513fbca5ef671fef3c9da603b57fd6dd01c89e35e16",
+          "base_sha256": "4748b03f09b1ffae3f9dbe790d37e8dfb2781f1e12e39760d97805e6d053eda0",
+          "relocation_count": 17,
+          "comparison_unit": "005adc90-12dc0b3e2041",
+          "objdiff_percent": 72.79592
+        }
+      ],
+      "status": "different",
+      "objdiff_percent": 72.79592
     },
     {
       "name": "GizTurrets_RegisterGizmo",
@@ -456841,17 +456869,17 @@
   ],
   "progress": {
     "text_bytes": 3471246,
-    "mapped_code_bytes": 2343423,
+    "mapped_code_bytes": 2343669,
     "matched_code_bytes": 436066,
     "matching_percent": 12.562232696847184,
-    "fuzzy_coverage_percent": 43.75053908117816,
+    "fuzzy_coverage_percent": 43.77234105971843,
     "mapped_functions": 8612,
     "matched_functions": 4020,
-    "objdiff_fuzzy_percent": 74.468994,
-    "objdiff_total_code": 2042658,
+    "objdiff_fuzzy_percent": 74.47021,
+    "objdiff_total_code": 2043641,
     "image_bytes": 40067072,
-    "mapped_bytes": 3458843,
-    "mapping_percent": 8.632632302155745,
+    "mapped_bytes": 3459089,
+    "mapping_percent": 8.63324627265002,
     "mapping_denominator": "code_and_data_section_virtual_sizes",
     "mapping_sections": [
       {
@@ -456859,7 +456887,7 @@
         "kind": "code",
         "address": "0x401000",
         "size": 3471246,
-        "mapped_bytes": 2344617
+        "mapped_bytes": 2344863
       },
       {
         "name": ".rdata",
@@ -456876,17 +456904,17 @@
         "mapped_bytes": 1032081
       }
     ],
-    "mapping_known_size_symbols": 16105,
-    "mapping_unknown_size_symbols": 7102,
-    "mapping_code_bytes": 2344617,
+    "mapping_known_size_symbols": 16106,
+    "mapping_unknown_size_symbols": 7101,
+    "mapping_code_bytes": 2344863,
     "mapping_code_total_bytes": 3471246,
-    "mapping_code_percent": 67.54395971936302,
+    "mapping_code_percent": 67.5510465118289,
     "mapping_data_bytes": 1114226,
     "mapping_data_total_bytes": 36018966,
     "mapping_data_percent": 3.093442493601843,
-    "mapping_code_data_bytes": 3458843,
+    "mapping_code_data_bytes": 3459089,
     "mapping_code_data_total_bytes": 39490212,
-    "mapping_code_data_percent": 8.758734949308451,
+    "mapping_code_data_percent": 8.759357888481327,
     "matched_data_region_bytes": 1098306
   },
   "data_members": [
@@ -457946,7 +457974,7 @@
       "metadata_sha256": "fe09365da4c355f220d724ca99394fc120b758891b4188d2c49707b6df0894f2",
       "header_path": "src/saga.h",
       "header_sha256": "8604bc3cbcc9f1de8406b0ae4b94b53a0afd63549b867234114e1d07b563ef2f",
-      "geometry_object_sha256": "8c21b39b6227264e8f9d87d5f2101369cac3428206ea87187b50fb9b9aac3c59",
+      "geometry_object_sha256": "7d38e587cf3f553930e8fd2dd6f5a1e1676ceb636e196991f34129f4bc664211",
       "toolchain_sha256": "489d0782638d8033137cdb2834462416111945cbfa073147820e314b8576b95b",
       "implementation_sha256": "9ad7521230f06fde31f0771b10bd001037ea32d2def455913a7f391f05dede9d",
       "headers": {
