@@ -929,3 +929,228 @@ void __cdecl Coins_LSW_Draw(STATUS_STAGE_s *stage, STATUSPACKET_s *packet, i32 c
     Text3DEx(TTab[TextIdPc8808d4], 0.0f, StatusCoinsTitleYPc, 1.0f, StatusCoinsTitleScalePc, StatusCoinsTitleScalePc,
              StatusCoinsTitleScalePc, 0, 255, 255, 255, opacity);
 }
+
+extern "C" {
+    f32 StatusSecondaryTitleYPc = -0.1f;
+}
+
+void __cdecl LevelComplete_LSW_Skip(STATUS_STAGE_s *stage, STATUSPACKET_s *packet) {
+    if (stage->type == 26 && packet->mission_state == 2)
+        *packet->score = packet->reward_score;
+    if (stage->type == 23 && packet->challenge_state == 2)
+        *packet->score = packet->reward_score;
+    NextStatusStage(packet);
+}
+
+void __cdecl LevelComplete_LSW_Update(STATUS_STAGE_s *stage, STATUSPACKET_s *packet, f32 elapsed) {
+    if (stage->field_0x14 == 0) {
+        stage->field_0x14 = 1;
+        stage->field_0x18 = 0.0f;
+        stage->field_0x1c = 4.0f;
+    } else if (stage->field_0x14 == 1) {
+        SetDrawGoldBrick(packet, packet->current_gold_brick);
+        volatile f32 previous = stage->field_0x18;
+        volatile f32 accumulated = (f64)stage->field_0x18 + (f64)elapsed;
+        stage->field_0x18 = accumulated;
+        if (stage->field_0x18 >= stage->field_0x1c) {
+            if (stage->type == 26 && packet->mission_state == 2)
+                *packet->score = packet->reward_score;
+            if (stage->type == 23 && packet->challenge_state == 2)
+                *packet->score = packet->reward_score;
+            NextStatusStage(packet);
+            return;
+        }
+        if (previous < 0.5f && stage->field_0x18 >= 0.5f) {
+            if ((stage->type == 23 && packet->challenge_state == 3) ||
+                (stage->type == 26 && packet->mission_state == 3))
+                GameAudio_PlaySfx(0x32, NULL, 0, 0);
+            else
+                PlaySfx("StatusAward", NULL);
+            NewStatusRumbleBuzz(-1, 0.6f, 0.0f, 0);
+            return;
+        }
+        if ((stage->type != 26 || packet->mission_state != 2) && (stage->type != 23 || packet->challenge_state != 2))
+            return;
+        volatile f32 reward_end = (f64)stage->field_0x1c - 0.75;
+        if (previous < reward_end && stage->field_0x18 >= reward_end) {
+            CoinTotalScale = 1.5f;
+            NewStatusRumbleBuzz(-1, 0.0f, 0.1f, 0);
+            PlaySfx("Shop_BuyCheat", NULL);
+        } else if (stage->field_0x18 >= 0.75f && stage->field_0x18 < reward_end) {
+            PlaySfx("PickupCoin", NULL);
+        }
+    }
+}
+
+void __cdecl LevelComplete_LSW_Draw(STATUS_STAGE_s *stage, STATUSPACKET_s *packet, i32 current) {
+    char text[256];
+    if (current == 0) {
+        if (stage->field_0x12 != 0) {
+            volatile f32 alpha = getFinishedStatusAlpha(packet);
+            if ((stage->type == 26 && packet->mission_state == 2) ||
+                (stage->type == 23 && packet->challenge_state == 2))
+                CoinTotal_Draw((i32)*packet->score, STATSPOSY, CoinTotalScale, 1, alpha, 255, 191, 0);
+        }
+        return;
+    }
+    if (stage->field_0x14 > 0) {
+        volatile f32 alpha;
+        if (stage->field_0x18 < 0.5f)
+            alpha = (f64)stage->field_0x18 * 2.0;
+        else if ((f64)stage->field_0x18 < 3.5)
+            alpha = 1.0f;
+        else
+            alpha = 1.0 - ((f64)stage->field_0x18 - 3.5) * 2.0;
+        if (alpha > 0.0f) {
+            volatile i32 opacity = (i32)((f64)alpha * 128.0);
+            if (stage->type == 14) {
+                sprintf(text, "%s", TTab[EDataList[packet->episode_id].text_id]);
+                volatile f32 scale = (f64)StatusTextScalePc * 0.75;
+                SmartTextEx(text, 0.0f, StatusTitleYPc, 1.0f, scale, scale, scale, 0, (u8)StatusRedPc,
+                            (u8)StatusGreenPc, (u8)StatusBluePc, 1.7f, 1, NULL, 0, (u32)opacity);
+                SmartTextEx(TTab[TextIdPc88073c], 0.0f, StatusSecondaryTitleYPc, 1.0f, StatusTextScalePc,
+                            StatusTextScalePc, StatusTextScalePc, 0, (u8)StatusRedPc, (u8)StatusGreenPc,
+                            (u8)StatusBluePc, 1.7f, 1, NULL, 0, (u32)opacity);
+            } else if (stage->type == 13) {
+                if ((PODRACE_ADATA != NULL && packet->area == PODRACE_ADATA) ||
+                    (BONUS_GUNSHIP_ADATA != NULL && packet->area == BONUS_GUNSHIP_ADATA)) {
+                    volatile f32 y = ((f64)StatusSecondaryTitleYPc + (f64)StatusTitleYPc) * 0.5;
+                    SmartTextEx(TTab[TextIdPc880728], 0.0f, y, 1.0f, StatusTextScalePc, StatusTextScalePc,
+                                StatusTextScalePc, 0, (u8)StatusRedPc, (u8)StatusGreenPc, (u8)StatusBluePc, 1.7f, 1,
+                                NULL, 0, (u32)opacity);
+                } else {
+                    SmartTextEx(TTab[TextIdPc880728], 0.0f, StatusTitleYPc, 1.0f, StatusTextScalePc, StatusTextScalePc,
+                                StatusTextScalePc, 0, (u8)StatusRedPc, (u8)StatusGreenPc, (u8)StatusBluePc, 1.7f, 1,
+                                NULL, 0, (u32)opacity);
+                    SmartTextEx(TTab[TextIdPc88072c], 0.0f, StatusSecondaryTitleYPc, 1.0f, StatusTextScalePc,
+                                StatusTextScalePc, StatusTextScalePc, 0, (u8)StatusRedPc, (u8)StatusGreenPc,
+                                (u8)StatusBluePc, 1.7f, 1, NULL, 0, (u32)opacity);
+                }
+            } else if (stage->type == 8) {
+                SmartTextEx(TTab[TextIdPc8810cc], 0.0f, StatusTitleYPc, 1.0f, StatusTextScalePc, StatusTextScalePc,
+                            StatusTextScalePc, 0, (u8)StatusRedPc, (u8)StatusGreenPc, (u8)StatusBluePc, 1.7f, 1, NULL,
+                            0, (u32)opacity);
+                SmartTextEx(TTab[TextIdPc8810d0], 0.0f, StatusSecondaryTitleYPc, 1.0f, StatusTextScalePc,
+                            StatusTextScalePc, StatusTextScalePc, 0, (u8)StatusRedPc, (u8)StatusGreenPc,
+                            (u8)StatusBluePc, 1.7f, 1, NULL, 0, (u32)opacity);
+            } else if (stage->type == 28) {
+                SmartTextEx(TTab[TextIdPc880710], 0.0f, 0.0f, 1.0f, StatusTextScalePc, StatusTextScalePc,
+                            StatusTextScalePc, 0, (u8)StatusRedPc, (u8)StatusGreenPc, (u8)StatusBluePc, 1.7f, 1, NULL,
+                            0, (u32)opacity);
+            } else if (stage->type == 23) {
+                i16 label;
+                i32 red, green, blue;
+                if (packet->challenge_state == 2) {
+                    label = TextIdPc8806e8;
+                    red = green = blue = 255;
+                } else {
+                    red = StatusRedPc;
+                    green = StatusGreenPc;
+                    blue = StatusBluePc;
+                    label = packet->challenge_state == 3 ? TextIdPc8806f4 : TextIdPc88100c;
+                }
+                SmartTextEx(TTab[label], 0.0f, 0.0f, 1.0f, StatusTextScalePc, StatusTextScalePc, StatusTextScalePc, 0,
+                            (u8)red, (u8)green, (u8)blue, 1.7f, 1, NULL, 0, (u32)opacity);
+            } else if (stage->type == 26) {
+                i16 label;
+                i32 red, green, blue;
+                if (packet->mission_state == 2) {
+                    label = TextIdPc8806e4;
+                    red = green = blue = 255;
+                } else {
+                    red = StatusRedPc;
+                    green = StatusGreenPc;
+                    blue = StatusBluePc;
+                    label = TextIdPc8806f4;
+                }
+                SmartTextEx(TTab[label], 0.0f, 0.0f, 1.0f, StatusTextScalePc, StatusTextScalePc, StatusTextScalePc, 0,
+                            (u8)red, (u8)green, (u8)blue, 1.7f, 1, NULL, 0, (u32)opacity);
+            } else {
+                i16 label;
+                if (stage->type == 29)
+                    label = TextIdPc881014;
+                else if (stage->type == 30)
+                    label = TextIdPc88101c;
+                else if (stage->type == 31)
+                    label = TextIdPc881024;
+                else if (stage->type == 32)
+                    label = TextIdPc88102c;
+                else if (stage->type == 33)
+                    label = TextIdPc881034;
+                else
+                    label = TextIdPc88103c;
+                SmartTextEx(TTab[label], 0.0f, StatusTitleYPc, 1.0f, StatusTextScalePc, StatusTextScalePc,
+                            StatusTextScalePc, 0, (u8)StatusRedPc, (u8)StatusGreenPc, (u8)StatusBluePc, 1.7f, 1, NULL,
+                            0, (u32)opacity);
+                SmartTextEx(TTab[TextIdPc880730], 0.0f, StatusSecondaryTitleYPc, 1.0f, StatusTextScalePc,
+                            StatusTextScalePc, StatusTextScalePc, 0, (u8)StatusRedPc, (u8)StatusGreenPc,
+                            (u8)StatusBluePc, 1.7f, 1, NULL, 0, (u32)opacity);
+            }
+        }
+    }
+    if (stage->type != 23 && stage->type != 26)
+        return;
+    if (stage->field_0x14 == 0)
+        iconalphaoverride = 0.0f;
+    else {
+        volatile f32 fade_start = (f64)stage->field_0x1c - 0.5;
+        if (fade_start > stage->field_0x18)
+            iconalphaoverride = 0.0f;
+        else
+            iconalphaoverride = ((f64)stage->field_0x18 - (f64)fade_start) * 2.0;
+    }
+    if (stage->type == 26) {
+        if (packet->mission_state != 2)
+            return;
+        if (packet->previous_gold_bricks < Game.gold_bricks)
+            iconalphaoverride = 0.0f;
+    } else if (packet->challenge_state != 2) {
+        return;
+    }
+    volatile f32 progress, slide;
+    if (stage->field_0x18 < 0.75f) {
+        progress = 0.0f;
+        slide = (f64)stage->field_0x18 / (f64)0.7f;
+    } else {
+        volatile f32 end = (f64)stage->field_0x1c - 0.75;
+        if (end > stage->field_0x18) {
+            progress = ((f64)stage->field_0x18 - 0.75) / ((f64)end - 0.75);
+            slide = 1.0f;
+        } else {
+            progress = 1.0f;
+            slide = 1.0 - ((f64)stage->field_0x18 - (f64)end) / 0.75;
+        }
+    }
+    volatile f32 coin_slide = slide;
+    if (stage->field_0x18 >= 0.75f)
+        coin_slide = 1.0f;
+    u32 score = packet->original_score;
+    volatile i32 amount = (i32)((f64)(u32)(packet->reward_score - score) * (f64)progress);
+    IncreaseScore(&score, (u64)(i64)amount, 0);
+    volatile i32 coin_angle = (i32)((f64)coin_slide * 16384.0);
+    volatile f32 coin_y =
+        ((f64)STATSPOSY - (f64)STATSPOS2YPc) * (f64)NuTrigTable[(coin_angle >> 1) & 0x7fff] + (f64)STATSPOS2YPc;
+    CoinTotal_Draw((i32)score, coin_y, CoinTotalScale, 1, 1.0f, 255, 191, 0);
+    if (stage->type == 26) {
+        volatile f32 remaining = (f64)(u16)packet->mission->time - (f64)packet->elapsed_time;
+        if (remaining < 0.0f)
+            remaining = 0.0f;
+        volatile f32 time = (1.0 - (f64)progress) * (f64)remaining;
+        Text_MakeTime(time, 0, 1, 1, text);
+        volatile i32 angle = (i32)((f64)slide * 16384.0);
+        volatile f32 y =
+            -(((f64)STATSPOSY - (f64)STATSPOS2YPc) * (f64)NuTrigTable[(angle >> 1) & 0x7fff] + (f64)STATSPOS2YPc);
+        Text3D(text, 0.0f, y, 1.0f, 0.6f, 0.6f, 0.6f, 0, 255, 191, 0);
+    }
+    if (stage->type == 23) {
+        volatile f32 remaining = (f64)(u16)packet->area->challenge_trial_time - (f64)packet->elapsed_time;
+        if (remaining < 0.0f)
+            remaining = 0.0f;
+        volatile f32 time = (1.0 - (f64)progress) * (f64)remaining;
+        Text_MakeTime(time, 0, 1, 1, text);
+        volatile i32 angle = (i32)((f64)slide * 16384.0);
+        volatile f32 y =
+            -(((f64)STATSPOSY - (f64)STATSPOS2YPc) * (f64)NuTrigTable[(angle >> 1) & 0x7fff] + (f64)STATSPOS2YPc);
+        Text3D(text, 0.0f, y, 1.0f, 0.6f, 0.6f, 0.6f, 0, 255, 191, 0);
+    }
+}

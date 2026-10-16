@@ -886,6 +886,9 @@ address    , symbol                                                         , si
 0x461720,_CollectCharcters_Draw,1022,
 0x00461b20,_CollectCharactersOff_Skip,1,"void __cdecl(STATUS_STAGE_s *, STATUSPACKET_s *)"
 0x00461b30,_CollectCharactersOff_Update,79,"void __cdecl(STATUS_STAGE_s *, STATUSPACKET_s *, f32)"
+0x00461c30,_LevelComplete_LSW_Skip,66,"void __cdecl(STATUS_STAGE_s *, STATUSPACKET_s *)"
+0x00461c80,_LevelComplete_LSW_Update,500,"void __cdecl(STATUS_STAGE_s *, STATUSPACKET_s *, f32)"
+0x00461e80,_LevelComplete_LSW_Draw,2623,"void __cdecl(STATUS_STAGE_s *, STATUSPACKET_s *, i32)"
 0x4628c0,_BonusComplete_LSW_Skip,12,"void __cdecl(STATUS_STAGE_s *, STATUSPACKET_s *)"
 0x4628d0,_BonusComplete_LSW_Update,281,"void __cdecl(STATUS_STAGE_s *, STATUSPACKET_s *, f32)"
 0x4629f0,_BonusComplete_LSW_Draw,367,"void __cdecl(STATUS_STAGE_s *, STATUSPACKET_s *, i32)"
@@ -18164,6 +18167,7 @@ address    , symbol                                                         , si
 0x7f7a88,_Hints_LSW,1820,HINT_PC[65]
 0x7f85f4,_StatusTitleYPc,4,f32
 0x7f85f8,_StatusTextScalePc,4,f32
+0x7f85fc,_StatusSecondaryTitleYPc,4,f32
 0x7f8600,_StatusAllMiniKitsTitleScalePc,4,f32
 0x7f860c,_StatusAllMiniKitsCharacterTextScalePc,4,f32
 0x7f8620,_StatusCoinsTotalYPc,4,f32
