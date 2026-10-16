@@ -5197,7 +5197,7 @@ void __cdecl GameAIProcess(void) {
                 object->pad->buttons_pressed |= GAMEPAD_JUMP;
                 object->respawn_timer = 0.0f;
             } else {
-                AI_PACKET(&object->ai_packet)->route_flags |= 1;
+                AI_PACKET(&object->ai_packet)->route_flags |= 0x40;
             }
             goto ai_after_wall_shuffle;
         ai_after_wall_shuffle:;
@@ -5222,12 +5222,12 @@ void __cdecl GameAIProcess(void) {
                     AddGameDebris(WORLD->game_debris_sys, 0x5c, &object->collision_position);
                     goto ai_combat;
                 }
-                if ((AI_PACKET(&object->ai_packet)->route_flags & 0x20) != 0) {
+                if ((AI_PACKET(&object->ai_packet)->route_flags & 0x10) != 0) {
                     object->ai_packet.current_route = 0xff;
                     AI_OBJECT(object)->route_character_id = -1;
                     AI_OBJECT(object)->route_frame_state = 0;
-                } else if ((1 & (AI_PACKET(&object->ai_packet)->route_flags)) != 0 &&
-                           ((AI_PACKET(&object->ai_packet)->route_flags & 0x40) != 0 ||
+                } else if ((0x40 & (AI_PACKET(&object->ai_packet)->route_flags)) != 0 &&
+                           ((AI_PACKET(&object->ai_packet)->route_flags & 0x20) != 0 ||
                             (object->ai_packet.path_info.connection != NULL &&
                              object->ai_packet.path_info.connection->route_mask != 0))) {
                     if ((object->flags_ef0 & 0x40) != 0) {
@@ -5279,7 +5279,7 @@ void __cdecl GameAIProcess(void) {
                     AI_OBJECT(object)->route_search_index = 0;
                 }
             }
-        } else if ((AI_PACKET(&object->ai_packet)->route_flags & 1) != 0) {
+        } else if ((AI_PACKET(&object->ai_packet)->route_flags & 0x40) != 0) {
             AISysFindRoute(&object->ai_packet);
         }
         goto ai_combat;
