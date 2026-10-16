@@ -825,7 +825,7 @@ address    , symbol                                                         , si
 0x454e30,_Action_AddMiscPickups,294,"i32 __cdecl (AISYS_PC *, AISCRIPTPROCESS_PC *, AIPACKET_PC *, char **, i32, i32, f32)"
 0x454f60,_Action_SetLayer,318,"i32 __cdecl(AISYS_PC *,AISCRIPTPROCESS_PC *,AIPACKET_PC *,char **,i32,i32,f32)"
 0x4550a0,_Action_CreateRider,275,"i32 __cdecl (AISYS_PC *, AISCRIPTPROCESS_PC *, AIPACKET_PC *, char **, i32, i32, f32)"
-0x4551c0,_Action_ThrowDetonatorPc,198,
+0x4551c0,_Action_ThrowDetonatorPc,198,"i32 __cdecl(AISYS_PC *,AISCRIPTPROCESS_PC *,AIPACKET_PC *,char **,i32,i32,f32)"
 0x455290,_Action_UseTimeBasedUpdate,141,"i32 __cdecl (AISYS_PC *, AISCRIPTPROCESS_PC *, AIPACKET_PC *, char **, i32, i32, f32)"
 0x455320,_Action_WalkBackwards,201,"i32 __cdecl (AISYS_PC *, AISCRIPTPROCESS_PC *, AIPACKET_PC *, char **, i32, i32, f32)"
 0x4553f0,_Action_AddScriptProcessor,1005,

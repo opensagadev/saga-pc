@@ -1621,3 +1621,43 @@ i32 __cdecl Action_SetShootOpponentsPc(AISYS_PC *system, AISCRIPTPROCESS_PC *pro
     }
     return 1;
 }
+
+STATIC_ASSERT(offsetof(GAMEOBJECT, jump_variant_state) == 0xe32);
+STATIC_ASSERT(offsetof(GAMEOBJECT, flags_e20) == 0xe20);
+STATIC_ASSERT(offsetof(GAMEOBJECT, character_context) == 0x7b5);
+STATIC_ASSERT(offsetof(GAMEOBJECT, field_7aa) == 0x7aa);
+STATIC_ASSERT(offsetof(GAMEOBJECT, context_variant_flags) == 0x7bc);
+STATIC_ASSERT(offsetof(GAMEOBJECT, context_timer) == 0x77c);
+STATIC_ASSERT(offsetof(GAMEOBJECT, id) == 0x1064);
+STATIC_ASSERT(offsetof(CHARACTER_MODEL_LAYERS_PC, model_data_b) == 0xc);
+
+i32 __cdecl Action_ThrowDetonatorPc(AISYS_PC *system, AISCRIPTPROCESS_PC *processor, AIPACKET_PC *packet, char **params,
+                                    i32 count, i32 first_time, f32 elapsed) {
+    GAMEOBJECT *object;
+    CHARACTER_MODEL_LAYERS_PC *model;
+    (void)system;
+    (void)processor;
+    (void)params;
+    (void)count;
+    (void)first_time;
+    (void)elapsed;
+    if (packet == NULL || packet->owner == NULL)
+        return 1;
+    object = ((APIOBJECT_PC *)packet->owner)->owner;
+    object->character_context = 0x2e;
+    if (object->jump_variant_state == 1)
+        object->field_7aa = 0x6f;
+    else if ((object->flags_e20 & 0x10000u) != 0)
+        object->field_7aa = 0x6e;
+    else
+        object->field_7aa = 0x65;
+    model = object->character_model;
+    if (model->model_data_b[(i16)object->field_7aa] == NULL)
+        object->field_7aa = 0x65;
+    object->context_variant_flags &= ~0x40u;
+    if (model->model_data_b[(i16)object->field_7aa] != NULL)
+        object->context_timer = AnimDuration((i16)object->id, (i16)object->field_7aa, 0.0f, 0.0f, 1);
+    else
+        object->context_timer = 1.0f;
+    return 1;
+}
