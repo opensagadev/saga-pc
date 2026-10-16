@@ -869,10 +869,17 @@ address    , symbol                                                         , si
 0x0045e3e0,_InitStatusScreen_LSW,3,"i32 __cdecl(WORLDINFO *, STATUSPACKET_s *)"
 0x0045e3f0,_FinishStatusPacket_LSW,3,"i32 __cdecl(WORLDINFO *, STATUSPACKET_s *, i32)"
 0x0045e400,_DrawStatusBG_LSW,37,void __cdecl(STATUSPACKET_s *)
+0x0045fb40,_AllMiniKits_LSW_Skip,27,"void __cdecl(STATUS_STAGE_s *, STATUSPACKET_s *)"
+0x0045fb60,_AllMiniKits_LSW_Update,233,"void __cdecl(STATUS_STAGE_s *, STATUSPACKET_s *, f32)"
+0x004601b0,_RedBrick_LSW_Skip,12,"void __cdecl(STATUS_STAGE_s *, STATUSPACKET_s *)"
+0x004601c0,_RedBrick_LSW_Update,180,"void __cdecl(STATUS_STAGE_s *, STATUSPACKET_s *, f32)"
 0x460280,_RedBrick_LSW_Draw,598,
 0x460c10,_GoldBrick_LSW_Update,824,
 0x461720,_CollectCharcters_Draw,1022,
+0x00461b20,_CollectCharactersOff_Skip,1,"void __cdecl(STATUS_STAGE_s *, STATUSPACKET_s *)"
+0x00461b30,_CollectCharactersOff_Update,79,"void __cdecl(STATUS_STAGE_s *, STATUSPACKET_s *, f32)"
 0x463f30,_ChallangeCash_Draw,405,
+0x00464140,_Save_LSW_Update,212,"void __cdecl(STATUS_STAGE_s *, STATUSPACKET_s *, f32)"
 0x464360,_GizAction_ActivateEffect,154,
 0x464400,_GizAction_ActivatePartEffect,125,
 0x464480,_GizActions_SetVisibilityPc,172,"void __cdecl(GIZFLOW_PC *, FLOWBOX_PC *, char **, i32)"

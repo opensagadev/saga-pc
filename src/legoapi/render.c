@@ -888,3 +888,98 @@ void __cdecl DrawStatusBG_LSW(STATUSPACKET_s *packet) {
         packet->stage->field_0x14 = 0;
     }
 }
+
+i32 __cdecl AddToCollection(i32);
+void __cdecl Text_FillInExtendedSaveInfo(void);
+i32 __cdecl TriggerAutoSave(void);
+
+void __cdecl RedBrick_LSW_Skip(STATUS_STAGE_s *stage, STATUSPACKET_s *packet) {
+    (void)stage;
+    NextStatusStage(packet);
+}
+
+void __cdecl RedBrick_LSW_Update(STATUS_STAGE_s *stage, STATUSPACKET_s *packet, f32 elapsed) {
+    if (stage->field_0x14 == 0) {
+        stage->field_0x14 = 1;
+        stage->field_0x18 = 0.0f;
+        stage->field_0x1c = 5.0f;
+    } else if (stage->field_0x14 == 1) {
+        f32 previous = stage->field_0x18;
+        volatile f32 accumulated = stage->field_0x18 + elapsed;
+        stage->field_0x18 = accumulated;
+        if (stage->field_0x18 >= stage->field_0x1c)
+            NextStatusStage(packet);
+        else if (previous < 0.75f && stage->field_0x18 >= 0.75f) {
+            PlaySfx("TrueJedi_100pc", NULL);
+            NewStatusRumbleBuzz(-1, 0.6f, 0.0f, 0);
+        }
+    }
+}
+
+void __cdecl AllMiniKits_LSW_Skip(STATUS_STAGE_s *stage, STATUSPACKET_s *packet) {
+    (void)stage;
+    AddToCollection(VehicleBoltId7f195cPc);
+    NextStatusStage(packet);
+}
+
+void __cdecl AllMiniKits_LSW_Update(STATUS_STAGE_s *stage, STATUSPACKET_s *packet, f32 elapsed) {
+    if (stage->field_0x14 == 0) {
+        stage->field_0x14 = 1;
+        stage->field_0x18 = 0.0f;
+        stage->field_0x1c = 6.5f;
+    } else if (stage->field_0x14 == 1) {
+        f32 previous = stage->field_0x18;
+        volatile f32 accumulated = stage->field_0x18 + elapsed;
+        stage->field_0x18 = accumulated;
+        if (stage->field_0x18 >= stage->field_0x1c)
+            NextStatusStage(packet);
+        else if (previous < 0.5f && stage->field_0x18 >= 0.5f) {
+            PlaySfx("StatusAward", NULL);
+            NewStatusRumbleBuzz(-1, 0.6f, 0.0f, 0);
+        } else if (previous < 4.0f && stage->field_0x18 >= 4.0f)
+            PlaySfx("Char_Icon_App", NULL);
+    }
+}
+
+void __cdecl CollectCharactersOff_Skip(STATUS_STAGE_s *stage, STATUSPACKET_s *packet) {
+    (void)stage;
+    (void)packet;
+}
+
+void __cdecl CollectCharactersOff_Update(STATUS_STAGE_s *stage, STATUSPACKET_s *packet, f32 elapsed) {
+    if (stage->field_0x14 == 0) {
+        stage->field_0x14 = 1;
+        stage->field_0x18 = 0.0f;
+        stage->field_0x1c = 1.0f;
+    } else if (stage->field_0x14 == 1) {
+        volatile f32 accumulated = stage->field_0x18 + elapsed;
+        stage->field_0x18 = accumulated;
+        if (stage->field_0x18 >= stage->field_0x1c)
+            NextStatusStage(packet);
+    }
+}
+
+void __cdecl Save_LSW_Update(STATUS_STAGE_s *stage, STATUSPACKET_s *packet, f32 elapsed) {
+    if (packet->save_state == 3) {
+        volatile f32 accumulated = elapsed + stage->field_0x18;
+        stage->field_0x18 = accumulated;
+        if (stage->field_0x18 >= stage->field_0x1c) {
+            u32 flags = packet->flags_word;
+            if ((flags & 0x400) == 0 && packet->prompt_choice == 0 && (flags & 0x40) == 0 &&
+                packet->mission_state == 0 && packet->challenge_state == 0)
+                packet->flags_word = flags | 0x1000;
+            NextStatusStage(packet);
+        }
+    } else if (packet->save_state == 2) {
+        if (MenuInMemoryCard() == 0)
+            packet->save_state = 3;
+    } else if (packet->save_state == 0) {
+        packet->save_state = 1;
+        Text_FillInExtendedSaveInfo();
+        if (TriggerAutoSave() == 0) {
+            packet->save_state = 2;
+            NewMenu(1000, -1, -1);
+        }
+    } else if (memcard_autosaveinprogress == 0)
+        packet->save_state = 3;
+}
