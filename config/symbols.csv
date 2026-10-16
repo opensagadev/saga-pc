@@ -865,6 +865,7 @@ address    , symbol                                                         , si
 0x457ec0,_CurrentHintAlpha,145,
 0x457f70,_DrawHint_LSW,1217,"void __cdecl (HINT_PC *, i32)"
 0x458440,_initGameHintSys_LSW,33,void __cdecl(void)
+0x0045e370,?StatusCoinsRatioPc@@YAMMM@Z,54,"static f32 __cdecl(f32, f32)"
 0x0045e3d0,_ResetStatusPacket_LSW,13,void __cdecl(STATUSPACKET_s *)
 0x0045e3e0,_InitStatusScreen_LSW,3,"i32 __cdecl(WORLDINFO *, STATUSPACKET_s *)"
 0x0045e3f0,_FinishStatusPacket_LSW,3,"i32 __cdecl(WORLDINFO *, STATUSPACKET_s *, i32)"
@@ -878,6 +879,7 @@ address    , symbol                                                         , si
 0x460280,_RedBrick_LSW_Draw,598,"void __cdecl(STATUS_STAGE_s *, STATUSPACKET_s *, i32)"
 0x004604e0,_Coins_LSW_Skip,79,"void __cdecl(STATUS_STAGE_s *, STATUSPACKET_s *)"
 0x00460530,_Coins_LSW_Update,452,"void __cdecl(STATUS_STAGE_s *, STATUSPACKET_s *, f32)"
+0x00460700,_Coins_LSW_Draw,1243,"void __cdecl(STATUS_STAGE_s *, STATUSPACKET_s *, i32)"
 0x00460bf0,_GoldBrick_LSW_Skip,21,"void __cdecl(STATUS_STAGE_s *, STATUSPACKET_s *)"
 0x00460c10,_GoldBrick_LSW_Update,824,"void __cdecl(STATUS_STAGE_s *, STATUSPACKET_s *, f32)"
 0x460f50,_GoldBrick_LSW_Draw,883,"void __cdecl(STATUS_STAGE_s *, STATUSPACKET_s *, i32)"
@@ -18164,6 +18166,9 @@ address    , symbol                                                         , si
 0x7f85f8,_StatusTextScalePc,4,f32
 0x7f8600,_StatusAllMiniKitsTitleScalePc,4,f32
 0x7f860c,_StatusAllMiniKitsCharacterTextScalePc,4,f32
+0x7f8620,_StatusCoinsTotalYPc,4,f32
+0x7f8624,_StatusCoinsScalePc,4,f32
+0x7f8628,_StatusCoinsTitleScalePc,4,f32
 0x7f862c,_StatusAllMiniKitsXPc,4,f32
 0x7f8634,_StatusAllMiniKitsYPc,4,f32
 0x7f8638,_StatusAllMiniKitsScalePc,4,f32
@@ -18252,6 +18257,7 @@ address    , symbol                                                         , si
 0x7fa220,_HubStatsMiddleColourPc,,u32
 0x7fa224,_HubStatsHighColourPc,,u32
 0x7fa378,_LedgePiece,,LEDGEPIECE[6]
+0x7fa4c0,_StatusCoinsTitleYPc,4,f32
 0x7fa4c8,_StatusRedPc,4,i32
 0x7fa4cc,_StatusGreenPc,4,i32
 0x7fa4dc,_DrawStatusScaleXPc,,f32

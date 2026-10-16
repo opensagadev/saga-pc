@@ -26140,6 +26140,13 @@ extern "C" {
     f32 __cdecl StatusIconsOnOff(f32);
     void __cdecl Coins_LSW_Skip(STATUS_STAGE_s *, STATUSPACKET_s *);
     void __cdecl Coins_LSW_Update(STATUS_STAGE_s *, STATUSPACKET_s *, f32);
+    void __cdecl Coins_LSW_Draw(STATUS_STAGE_s *, STATUSPACKET_s *, i32);
+    extern i16 TextIdPc8808d4;
+    extern f32 HudScoreXPc, HudScoreScalePc;
+    extern f32 StatusCoinsTotalYPc;
+    extern f32 StatusCoinsScalePc;
+    extern f32 StatusCoinsTitleScalePc;
+    extern f32 StatusCoinsTitleYPc;
     void __cdecl RedBrick_LSW_Skip(STATUS_STAGE_s *, STATUSPACKET_s *);
     void __cdecl RedBrick_LSW_Update(STATUS_STAGE_s *, STATUSPACKET_s *, f32);
     void __cdecl RedBrick_LSW_Draw(STATUS_STAGE_s *, STATUSPACKET_s *, i32);

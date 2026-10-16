@@ -842,3 +842,90 @@ void __cdecl AllMiniKits_LSW_Draw(STATUS_STAGE_s *stage, STATUSPACKET_s *packet,
                  StatusAllMiniKitsCountScalePc, 0, 255, 0, 127, opacity);
     }
 }
+
+extern "C" {
+    f32 StatusCoinsTotalYPc = 0.3f;
+    f32 StatusCoinsScalePc = 2.0f;
+    f32 StatusCoinsTitleScalePc = 0.5f;
+    f32 StatusCoinsTitleYPc = 0.5f;
+}
+
+static f32 __cdecl StatusCoinsRatioPc(f32 numerator, f32 denominator) {
+    if (numerator != 0.0f && denominator != 0.0f) {
+        volatile f32 result = (f64)numerator / (f64)denominator;
+        return result;
+    }
+    return 0.0f;
+}
+
+void __cdecl Coins_LSW_Draw(STATUS_STAGE_s *stage, STATUSPACKET_s *packet, i32 current) {
+    if (current == 0) {
+        if (stage->field_0x12 != 0) {
+            volatile i32 angle = (i32)((f64)getFinishedStatusAlpha(packet) * 16384.0);
+            volatile f32 y =
+                ((f64)STATSPOSY - (f64)STATSPOS2YPc) * (f64)NuTrigTable[(angle >> 1) & 0x7fff] + (f64)STATSPOS2YPc;
+            CoinTotal_Draw((i32)*packet->score, y, CoinTotalScale, 1, 1.0f, 255, 191, 0);
+        }
+        return;
+    }
+    volatile f32 alpha = 1.0f;
+    volatile f32 coin_y = STATSPOS2YPc;
+    volatile f32 total_y = STATSPOS2YPc;
+    volatile f32 scale = StatusCoinsScalePc;
+    switch (stage->field_0x14) {
+        case 0:
+            alpha = 0.0f;
+            break;
+        case 1: {
+            alpha = stage->field_0x18;
+            volatile f32 ratio = (f64)stage->field_0x18 / (f64)stage->field_0x1c;
+            volatile i32 angle = (i32)((f64)ratio * 32768.0 + 16384.0);
+            volatile f32 blend = 1.0 - ((f64)NuTrigTable[(angle >> 1) & 0x7fff] + 1.0) * 0.5;
+            StatusIconYPc = StatusIconsOnOff(StatusCoinsRatioPc(stage->field_0x18, stage->field_0x1c));
+            total_y = ((f64)StatusCoinsTotalYPc - (f64)STATSPOS2YPc) * (f64)blend + (f64)STATSPOS2YPc;
+            coin_y = ((f64)STATSPOSY - (f64)STATSPOS2YPc) * (f64)blend + (f64)STATSPOS2YPc;
+            scale = StatusCoinsScalePc;
+            break;
+        }
+        case 2:
+            total_y = StatusCoinsTotalYPc;
+            coin_y = STATSPOSY;
+            break;
+        case 3: {
+            alpha = 1.0 - (f64)stage->field_0x18;
+            volatile f32 ratio = 1.0 - (f64)stage->field_0x18 / (f64)stage->field_0x1c;
+            volatile i32 angle = (i32)((f64)ratio * 32768.0 + 16384.0);
+            volatile f32 blend = 1.0 - ((f64)NuTrigTable[(angle >> 1) & 0x7fff] + 1.0) * 0.5;
+            total_y = ((f64)StatusCoinsTotalYPc - (f64)STATSPOSY) * (f64)blend + (f64)STATSPOSY;
+            coin_y = ((f64)STATSPOSY - (f64)STATSPOS2YPc) * (f64)blend + (f64)STATSPOS2YPc;
+            scale = ((f64)StatusCoinsScalePc - (f64)CoinTotalScale) * (f64)blend + (f64)CoinTotalScale;
+            break;
+        }
+    }
+    if (stage->field_0x14 > 0) {
+        for (i32 player = 0; player < 2; ++player) {
+            volatile f32 player_alpha = packet->player_active[player] != 0 ? 1.0f : MissionDropInAlphaPc;
+            volatile f32 coin_x = player == 0 ? -PANEL_COINX : PANEL_COINX;
+            volatile f32 score_x = player == 0 ? -HudScoreXPc : HudScoreXPc;
+            u32 coins = packet->coins_remaining[player];
+            i32 object_index = coins >= 1000u ? 0xc3 : coins >= 100u ? 0xbb : 0xb3;
+            if (WORLD->level_objects[object_index].active != 0) {
+                DrawPanel3DObject(coin_x, coin_y, 1.0f, PANEL_COINSCALE_END, PANEL_COINSCALE_END, PANEL_COINSCALE_END,
+                                  0, 0, 0, &WORLD->level_objects[object_index].special, 0, player_alpha);
+            }
+            char text[256];
+            Text_MakeScore(packet->coins_remaining[player], text);
+            volatile u8 opacity = (u8)((f64)player_alpha * 128.0);
+            Text3DEx(text, score_x, coin_y, 1.0f, HudScoreScalePc, HudScoreScalePc, HudScoreScalePc,
+                     player == 0 ? 2 : 8, 255, 191, 0, opacity);
+        }
+        CoinTotal_Draw((i32)*packet->score, total_y, scale, 1, 1.0f, 255, 191, 0);
+    }
+    if (alpha < 0.0f)
+        alpha = 0.0f;
+    else if (alpha > 1.0f)
+        alpha = 1.0f;
+    volatile u8 opacity = (u8)((f64)alpha * 128.0);
+    Text3DEx(TTab[TextIdPc8808d4], 0.0f, StatusCoinsTitleYPc, 1.0f, StatusCoinsTitleScalePc, StatusCoinsTitleScalePc,
+             StatusCoinsTitleScalePc, 0, 255, 255, 255, opacity);
+}
