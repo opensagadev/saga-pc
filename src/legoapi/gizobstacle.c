@@ -1254,7 +1254,7 @@ static i32 __cdecl GizObstacles_BoltHit(void *world, void *data, void *attacker_
 }
 
 ADDGIZMOTYPE_PC *__cdecl GizObstacles_RegisterGizmo(i32 type_id) {
-    static ADDGIZMOTYPE_PC GizObstaclesAddTypePc;
+    static ADDGIZMOTYPE_PC GizObstaclesAddTypePc = {0};
     ADDGIZMOTYPE_PC *addtype = &GizObstaclesAddTypePc;
     *addtype = Default_ADDGIZMOTYPE;
     addtype->name = GizObstacleRegistrationNamePtrPc;

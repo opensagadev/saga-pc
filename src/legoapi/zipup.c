@@ -912,7 +912,7 @@ void DrawRopeSingle(NUVEC *start, NUVEC *end, float amount, NUMTL *material, flo
     i32 segment_index;
     i32 segment_count;
 
-    static f32 ROPELEN;
+    static f32 ROPELEN = 0;
     static u32 ropedif = 0xff505050;
     ROPELEN = ZipUpRopeHalfWidthPc * 4.0;
     ropedif = Cheat_IsOn(3) ? ZipUpRopeCheatColourPc : 0xff505050;
@@ -1208,7 +1208,7 @@ static i32 ZipUp_GetNumOutputs(GIZMO_PC *gizmo) {
 }
 extern char *ZipUpTypeNamePtrPc;
 extern i32 zipup_gizmotype_id;
-static ADDGIZMOTYPE_PC ZipUpAddTypePc;
+static ADDGIZMOTYPE_PC ZipUpAddTypePc = {0};
 extern ADDGIZMOTYPE_PC *ZipUps_RegisterGizmo(i32 type_id) {
     ZipUpAddTypePc = Default_ADDGIZMOTYPE;
     ZipUpAddTypePc.name = ZipUpTypeNamePtrPc;

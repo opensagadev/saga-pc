@@ -1614,8 +1614,8 @@ extern "C" void __cdecl PcInputSaveConfigurationPc() {
     ((PC_INPUT_RUNTIME_PC *)nu_input_state)->SaveConfigurationPc();
 }
 
-u8 PcInputAxisRemap[16];
-u32 PcInputAxisRemapInitialized;
+u8 PcInputAxisRemap[16] = {0};
+u32 PcInputAxisRemapInitialized = 0;
 extern const char PcInputProfileHeader[21] = "\t\"%s\",\t0x%x,%d,%d, {";
 extern const char PcInputProfileGuidChar[5] = "'%s'";
 extern const char PcInputProfileGuidEnd[17] = "}, //Guid stuff\n";

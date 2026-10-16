@@ -406,7 +406,7 @@ static i32 __cdecl Technos_Load(void *world_ptr, void *data) {
     return 1;
 }
 ADDGIZMOTYPE_PC *__cdecl Technos_RegisterGizmo(i32 type_id) {
-    static ADDGIZMOTYPE_PC addtype;
+    static ADDGIZMOTYPE_PC addtype = {0};
     addtype = Default_ADDGIZMOTYPE;
     addtype.name = TechnoRegistrationNamePc;
     addtype.prefix = "";

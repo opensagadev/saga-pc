@@ -1008,9 +1008,9 @@ STATIC_ASSERT(offsetof(BURN_SET_PC, field_558) == 0x558);
 STATIC_ASSERT(offsetof(BURN_SET_PC, field_55c) == 0x55c);
 STATIC_ASSERT(offsetof(BURN_SET_PC, field_560) == 0x560);
 
-static NUVEC burn_editor_position_pc;
+static NUVEC burn_editor_position_pc = {0};
 // NOLINTNEXTLINE(readability-identifier-naming) -- original same-TU public state name.
-BURN_SET_PC *edrtl_edit_burnset;
+BURN_SET_PC *edrtl_edit_burnset = 0;
 // NOLINTNEXTLINE(readability-identifier-naming) -- retained genuine subsystem public identity.
 void edrtlInitBurnset(BURN_SET_PC *set) {
     i32 i;

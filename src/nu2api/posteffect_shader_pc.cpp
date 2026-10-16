@@ -32,7 +32,7 @@ STATIC_ASSERT(offsetof(POST_SHADER_PROGRAM_POOL_PC, cursor) == 0x408);
 STATIC_ASSERT(sizeof(POST_SHADER_PROGRAM_POOL_PC) == 0x40c);
 extern "C" {
 #pragma bss_seg(".bss$PostShaderProgramPoolPc")
-    POST_SHADER_PROGRAM_POOL_PC PostShaderProgramPoolPc;
+    POST_SHADER_PROGRAM_POOL_PC PostShaderProgramPoolPc = {0};
 #pragma bss_seg(".bss$PostVertexShaderCachePc")
     std::vector<POST_VERTEX_SHADER_CACHE_ENTRY_PC> PostVertexShaderCachePc;
 #pragma bss_seg(".bss$PostPixelShaderCachePc")
@@ -107,19 +107,19 @@ extern "C" {
     extern const DWORD PostShaderTokens765f30[];
     extern const DWORD PostShaderTokens7660d0[];
 #pragma bss_seg(".bss$PostCopyTexProgramPc")
-    POST_SHADER_PROGRAM_PC *PostCopyTexProgramPc;
+    POST_SHADER_PROGRAM_PC *PostCopyTexProgramPc = 0;
 #pragma bss_seg(".bss$PostCopyTexLodProgramPc")
-    POST_SHADER_PROGRAM_PC *PostCopyTexLodProgramPc;
+    POST_SHADER_PROGRAM_PC *PostCopyTexLodProgramPc = 0;
 #pragma bss_seg(".bss$PostBlendTexProgramPc")
-    POST_SHADER_PROGRAM_PC *PostBlendTexProgramPc;
+    POST_SHADER_PROGRAM_PC *PostBlendTexProgramPc = 0;
 #pragma bss_seg(".bss$PostBlur5x5ProgramPc")
-    POST_SHADER_PROGRAM_PC *PostBlur5x5ProgramPc;
+    POST_SHADER_PROGRAM_PC *PostBlur5x5ProgramPc = 0;
 #pragma bss_seg(".bss$PostBlur7x7ProgramPc")
-    POST_SHADER_PROGRAM_PC *PostBlur7x7ProgramPc;
+    POST_SHADER_PROGRAM_PC *PostBlur7x7ProgramPc = 0;
 #pragma bss_seg(".bss$PostCopyAuxProgramPc")
-    POST_SHADER_PROGRAM_PC *PostCopyAuxProgramPc;
+    POST_SHADER_PROGRAM_PC *PostCopyAuxProgramPc = 0;
 #pragma bss_seg(".bss$PostBlurAuxProgramPc")
-    POST_SHADER_PROGRAM_PC *PostBlurAuxProgramPc;
+    POST_SHADER_PROGRAM_PC *PostBlurAuxProgramPc = 0;
 #pragma bss_seg()
 }
 

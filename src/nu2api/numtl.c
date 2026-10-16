@@ -289,8 +289,8 @@ STATIC_ASSERT(offsetof(FRAME_MTL_ANIM_SET_PC, scene) == 0x0);
 STATIC_ASSERT(offsetof(FRAME_MTL_ANIM_SET_PC, material_count) == 0x4);
 STATIC_ASSERT(offsetof(FRAME_MTL_ANIM_SET_PC, material_indices) == 0x8);
 
-static NUMTL *RendererZClearMaterialPc;
-static NUMTL *RendererAlphaMaskMaterialPc;
+static NUMTL *RendererZClearMaterialPc = 0;
+static NUMTL *RendererAlphaMaskMaterialPc = 0;
 STATIC_ASSERT(offsetof(PC_MATERIAL_CREATE_VIEW, version) == 0x2c0);
 
 void __cdecl NuRndrInitGeneric(void) {

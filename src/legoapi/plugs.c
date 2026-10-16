@@ -215,7 +215,7 @@ static void __cdecl Plugs_StoreProgress(void *world_ptr, void *data, void *progr
 }
 
 ADDGIZMOTYPE_PC *__cdecl Plugs_RegisterGizmo(i32 type_id) {
-    static ADDGIZMOTYPE_PC PlugsAddTypePc;
+    static ADDGIZMOTYPE_PC PlugsAddTypePc = {0};
     PlugsAddTypePc = Default_ADDGIZMOTYPE;
     PlugsAddTypePc.name = PlugGizmoNamePc;
     PlugsAddTypePc.prefix = "";

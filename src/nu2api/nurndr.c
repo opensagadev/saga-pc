@@ -2,28 +2,28 @@
 
 #include <string.h>
 
-NURNDRLIBSCENE currentScene;
-NUVPCURRENT vpCurrent;
-i32 sceneParametersCount;
-NUDISPLAYLIST PCDisplayList2dPc;
-i32 nused_sort_pris;
-NUSORTPRI *sort_list;
-i32 render_scene_index;
-NURNDRLIBSCENE sceneParameters[32];
-NUDISPLAYLISTRENDERSCENE *render_scene_ptrs[24];
-i32 nudlist_alloc_count;
-u32 nudlist_alloc_base;
-u32 nudlist_alloc_end;
-u32 nudlist_item_base;
-i32 nudlist_frame_active;
-u32 nudlist_field_e80;
-u32 nudlist_field_fc8;
-i32 nudlist_field_fc4;
-u32 nudlist_field_9d0;
-u32 nudlist_field_9d8;
-u32 nudlist_field_fe4;
-NUDISPLAYLISTITEM nudlist_2d_static;
-VARIPTR nudlist_stream_cursor;
+NURNDRLIBSCENE currentScene = {0};
+NUVPCURRENT vpCurrent = {0};
+i32 sceneParametersCount = 0;
+NUDISPLAYLIST PCDisplayList2dPc = {0};
+i32 nused_sort_pris = 0;
+NUSORTPRI *sort_list = 0;
+i32 render_scene_index = 0;
+NURNDRLIBSCENE sceneParameters[32] = {0};
+NUDISPLAYLISTRENDERSCENE *render_scene_ptrs[24] = {0};
+extern i32 nudlist_alloc_count;
+extern u32 nudlist_alloc_base;
+extern u32 nudlist_alloc_end;
+extern u32 nudlist_item_base;
+extern i32 nudlist_frame_active;
+extern u32 nudlist_field_e80;
+extern u32 nudlist_field_fc8;
+extern i32 nudlist_field_fc4;
+extern u32 nudlist_field_9d0;
+extern u32 nudlist_field_9d8;
+extern u32 nudlist_field_fe4;
+extern NUDISPLAYLISTITEM nudlist_2d_static;
+extern VARIPTR nudlist_stream_cursor;
 
 i32 __cdecl NuRndrBeginScene(i32 begin_flags) {
     currentScene.clear_alpha_4c = 0.0f;
@@ -780,10 +780,10 @@ void DrawAlphaImage(i32 rows, i32 cols, NUMTL *material, i32 use_pixel_offsets,
     RENDER_POST_VIEWPORT_PREFIX_PC saved_prefix = RenderPostViewportPrefixPc;
     PC_SPECIAL_PROJECTION_ADJUST saved_adjust = PCSpecialProjectionAdjust;
     NUCAMERA camera;
-    static f32 pixelOffsetX, pixelOffsetY;
+    static f32 pixelOffsetX = 0, pixelOffsetY = 0;
     static i32 first = 1;
-    static f32 camFov, adjacent;
-    static i32 row, col;
+    static f32 camFov = 0, adjacent = 0;
+    static i32 row = 0, col = 0;
     RenderPostViewportResetPc();
 
     NuCameraGet(&camera);
@@ -1059,7 +1059,7 @@ STATIC_ASSERT(offsetof(FRAME_MTL_SCENE_PC, shader_texture_animation_enabled) == 
 
 extern void NuDisplayListAnimateMtls(f32);
 
-static f32 FrameShaderMaterialAnimationTimePc;
+static f32 FrameShaderMaterialAnimationTimePc = 0;
 static i32 FrameShaderMaterialFirstCallPc = 1;
 extern f32 FrameMaterialAnimationSpeedPc;
 void NuMtlAnimateShaderMtlTextures(f32 frame_time) {
@@ -1103,15 +1103,15 @@ void __cdecl NuRndrInitEx(i32 size, VARIPTR *buffer, VARIPTR end) {
     NuRndrInitConfigPc(buffer, end);
 }
 
-static i32 RendererConfigEnabledPc, RendererConfigSecondEnabledPc;
-static NUMTX RendererConfigMatrixPc;
-static PC_TEXTURE_RESOURCE_PC *RendererVertexDeclarationPc;
-static PC_BUFFER_RESOURCE_PC *RendererQuadVertexBufferPc;
-static PC_BUFFER_RESOURCE_PC *RendererGeometryVertexBufferPc;
-static PC_BUFFER_RESOURCE_PC *RendererGeometryIndexBufferPc;
-static u8 *RendererArenaDataPc;
-static u32 *RendererArenaOffsetsPc;
-static i32 *RendererArenaTypesPc;
+static i32 RendererConfigEnabledPc = 0, RendererConfigSecondEnabledPc = 0;
+static NUMTX RendererConfigMatrixPc = {0};
+static PC_TEXTURE_RESOURCE_PC *RendererVertexDeclarationPc = 0;
+static PC_BUFFER_RESOURCE_PC *RendererQuadVertexBufferPc = 0;
+static PC_BUFFER_RESOURCE_PC *RendererGeometryVertexBufferPc = 0;
+static PC_BUFFER_RESOURCE_PC *RendererGeometryIndexBufferPc = 0;
+static u8 *RendererArenaDataPc = 0;
+static u32 *RendererArenaOffsetsPc = 0;
+static i32 *RendererArenaTypesPc = 0;
 
 void __cdecl NuRndrGeometryBufferReleasePc(void) {
     PCDeviceReleaseTexture((PC_TEXTURE_RESOURCE_PC **)&RendererGeometryVertexBufferPc);
@@ -1130,7 +1130,7 @@ typedef struct RENDERER_CLEAR_RECORD_PC {
 } RENDERER_CLEAR_RECORD_PC;
 STATIC_ASSERT(sizeof(RENDERER_CLEAR_RECORD_PC) == 0x28);
 STATIC_ASSERT(offsetof(RENDERER_CLEAR_RECORD_PC, active) == 0x20);
-static RENDERER_CLEAR_RECORD_PC RendererClearRecordsPc[32];
+static RENDERER_CLEAR_RECORD_PC RendererClearRecordsPc[32] = {0};
 
 typedef struct RENDERER_SHADOW_DEFAULTS_PC {
     f32 state0, state1, state2;

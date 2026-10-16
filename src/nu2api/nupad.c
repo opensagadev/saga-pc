@@ -10,11 +10,11 @@ typedef struct FRAME_PAD_RAMP_PC {
     f32 threshold, value;
 } FRAME_PAD_RAMP_PC;
 
-static FRAME_SCANNED_PAD_PC g_nupadScannedPads[16];
+static FRAME_SCANNED_PAD_PC g_nupadScannedPads[16] = {0};
 static f32 FramePadRampRatePc = 0.1f;
 static FRAME_PAD_RAMP_PC FramePadRampValuesPc[5] = {
     {0.0f, 0.0f}, {0.5f, 0.1f}, {0.75f, 0.25f}, {0.85f, 0.5f}, {1.0f, 1.0f}};
-static i32 FramePadDirectMappingPc, FramePadActivatedPc;
+static i32 FramePadDirectMappingPc = 0, FramePadActivatedPc = 0;
 
 static void DeadZoneValueXYProper(i32 *x_value, i32 *y_value, i32 deadzone) {
     i32 inverse;

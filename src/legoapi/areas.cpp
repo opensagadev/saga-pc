@@ -1312,9 +1312,9 @@ STATIC_ASSERT(offsetof(AREA_LOADING_PAD_READER_PC, buttons_pressed) == 8);
 STATIC_ASSERT(offsetof(AREA_GLOBALS_PC, field_04) == 4);
 extern "C" {
     extern i32 netnewgame, textcrawlactive;
-    static f32 LoadTime;
-    static f32 LOADWAITTIME;
-    static f32 LoadWait;
+    static f32 LoadTime = 0;
+    static f32 LOADWAITTIME = 0;
+    static f32 LoadWait = 0;
     extern f32 AreaCrawlMaximumTimePc, AreaCrawlSoundWaitTimePc;
     extern i32 loadareacharacters_no_backdrop_reset;
     extern i32 AreaCrawlMusicEnabledPc;

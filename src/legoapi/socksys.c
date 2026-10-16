@@ -23,10 +23,10 @@ STATIC_ASSERT(offsetof(NUMTX, m12) == 0x18);
 STATIC_ASSERT(offsetof(NUMTX, m20) == 0x20);
 STATIC_ASSERT(offsetof(NUMTX, m21) == 0x24);
 STATIC_ASSERT(offsetof(NUMTX, m22) == 0x28);
-NUGSCN *sockpar_scene;
-SOCK_PC *sockpar_sock;
-static VARIPTR *sockpar_buffer_ptr;
-static VARIPTR *sockpar_buffer_end;
+NUGSCN *sockpar_scene = 0;
+SOCK_PC *sockpar_sock = 0;
+static VARIPTR *sockpar_buffer_ptr = 0;
+static VARIPTR *sockpar_buffer_end = 0;
 i32 GetSockEdgeEnum(char *name) {
     if (NuStrICmp(name, "SIDE") == 0)
         return 0;
@@ -969,14 +969,14 @@ void SockSys_GenerateData(SOCKSYS_PC *sock_sys, VARIPTR *buf, VARIPTR buf_end) {
         }
     }
 }
-SOCKPOSITION_PC TempSPosList[4];
-SOCKPOSITION_PC *TempBestSPos;
-i32 TempSPosCount;
-NUVEC temp_pos;
-u32 TempSLoc[2];
+SOCKPOSITION_PC TempSPosList[4] = {0};
+SOCKPOSITION_PC *TempBestSPos = 0;
+i32 TempSPosCount = 0;
+NUVEC temp_pos = {0};
+u32 TempSLoc[2] = {0};
 i32 complexsockposition_forcesock = -1;
-static NUVEC temp_sockmidpos;
-static NUVEC temp_sockcampos;
+static NUVEC temp_sockmidpos = {0};
+static NUVEC temp_sockcampos = {0};
 
 static i32 OnOrOutsidePlane(NUVEC *point, NUVEC *plane_point, NUVEC *normal) {
     return normal->x * (point->x - plane_point->x) + normal->y * (point->y - plane_point->y) +

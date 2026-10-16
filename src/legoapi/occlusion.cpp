@@ -202,9 +202,9 @@ void OcclusionManager::Init(u32 capacity, VARIPTR *buffer, VARIPTR buffer_end) {
 }
 
 /* Genuine original occlusion.cpp static members; outside extern C. */
-NUMTL *OccluderSet::ms_pZOnlyMtl3D;
-NUMTL *OccluderSet::ms_pZOnlyMtl2D;
-NUMTL *OccluderSet::ms_pAlphaMtl2D;
+NUMTL *OccluderSet::ms_pZOnlyMtl3D = 0;
+NUMTL *OccluderSet::ms_pZOnlyMtl2D = 0;
+NUMTL *OccluderSet::ms_pAlphaMtl2D = 0;
 
 /* Original same-TU register helper: EDI plane, ESI origin, ECX point_a, EAX point_b. */
 static __declspec(noinline) void PostShadowMakePlanePrivatePc(NUVEC4 *plane, const NUVEC4 *origin,

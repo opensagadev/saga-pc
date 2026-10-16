@@ -231,7 +231,7 @@ i32 __cdecl GizMiniCut_Load(void *world_ptr, void *data) {
 }
 
 ADDGIZMOTYPE_PC *__cdecl MiniCut_RegisterGizmo(i32 type_id) {
-    static ADDGIZMOTYPE_PC MiniCutAddTypePc;
+    static ADDGIZMOTYPE_PC MiniCutAddTypePc = {0};
     (void)type_id;
     MiniCutAddTypePc = Default_ADDGIZMOTYPE;
     MiniCutAddTypePc.name = "MiniCut";

@@ -2769,8 +2769,8 @@ STATIC_ASSERT(sizeof(PLAYER_ITEM_TYPE_RESET_PC) == 12);
 STATIC_ASSERT(offsetof(PLAYER_ITEM_TYPE_RESET_PC, id) == 0);
 STATIC_ASSERT(offsetof(PLAYER_ITEM_TYPE_RESET_PC, bolt_name) == 4);
 STATIC_ASSERT(offsetof(PLAYER_ITEM_TYPE_RESET_PC, bolt_id) == 9);
-static PLAYER_ITEM_TYPE_RESET_PC *PlayerItemTypePc;
-static i32 PlayerItemTypeCountPc;
+static PLAYER_ITEM_TYPE_RESET_PC *PlayerItemTypePc = 0;
+static i32 PlayerItemTypeCountPc = 0;
 i8 __cdecl BoltType_FindIDByName(const char *, WORLDINFO *);
 void __cdecl PlayerItemTypes_Init(PLAYER_ITEM_TYPE_RESET_PC *types) {
     i32 count = 0;

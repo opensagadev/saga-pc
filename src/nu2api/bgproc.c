@@ -1,7 +1,7 @@
 #include "saga.h"
 
-NULSTHDR *bgproc_procinfo_pool;
-volatile u32 nu_current_thread_id;
+NULSTHDR *bgproc_procinfo_pool = 0;
+volatile u32 nu_current_thread_id = 0;
 void __cdecl PcEnableThreadSwap(void) {
 }
 void __cdecl PcDisableThreadSwap(void) {

@@ -68,8 +68,12 @@ class NamedMemberTests(unittest.TestCase):
         self.geometry = {self.row["id"]: (8, 4, 2)}
         self.prepare(bytes(8), bytes(8))
 
-    def prepare(self, original, compiled, **options):
-        self.obj_path.write_bytes(object_data(compiled, **options))
+    def prepare(self, original, compiled, alignment=None, **options):
+        data = bytearray(object_data(compiled, **options))
+        if alignment is not None:
+            flags = struct.unpack_from("<I", data, 56)[0]
+            struct.pack_into("<I", data, 56, flags | (alignment.bit_length() << 20))
+        self.obj_path.write_bytes(data)
         self.pe_path.write_bytes(image(original))
         self.objects = {UNIT: COFF(self.obj_path)}
         self.pe = PE(self.pe_path)
@@ -136,6 +140,56 @@ class NamedMemberTests(unittest.TestCase):
         self.prepare(bytes(8), bytes(8), relocations=[(4, 3, 6)])
         with self.assertRaisesRegex(ValueError, "crosses complete member"):
             self.compare(bindings={"_data": VA, "_ref": VA})
+
+    def test_typed_owner_accepts_only_bounded_zero_alignment_tail(self):
+        self.prepare(bytes(8), bytes(8), alignment=4)
+        result = self.compare(geometry={self.row["id"]: (6, 4, 2)})
+        self.assertTrue(result["exact_match"])
+        self.assertEqual(result["compiler_owner_size"], 6)
+        self.assertEqual(result["coff_owner_span_size"], 8)
+        self.assertEqual(result["coff_owner_padding_size"], 2)
+        self.assertEqual(covered_bytes(members.exact_member_ranges([result])), 2)
+        self.assertEqual(result["physical_definition_credit"], 0)
+        self.assertEqual(result["full_parent_relocated_sha256"], digest(bytes(8)))
+
+    def test_surplus_needs_explicit_alignment_and_must_be_smaller(self):
+        for size, alignment in [(9, None), (12, 4), (13, 4)]:
+            with self.subTest(size=size, alignment=alignment):
+                self.prepare(bytes(8), bytes(size), alignment=alignment)
+                with self.assertRaisesRegex(ValueError, "alignment padding"):
+                    self.compare()
+
+    def test_zero_surplus_must_end_at_a_possible_alignment_boundary(self):
+        self.prepare(bytes(8), bytes(10), alignment=4)
+        with self.assertRaisesRegex(ValueError, "alignment padding"):
+            self.compare()
+
+    def test_full_physical_parent_must_fit_original_image_and_avoid_code(self):
+        self.prepare(bytes(8), bytes(8), alignment=4)
+        for address, message in [(0x40fffa, "outside original image"),
+                                 (0x407ffa, "overlaps original code")]:
+            with self.subTest(address=address):
+                records = [dict(self.records[0], address=address)]
+                with self.assertRaisesRegex(ValueError, message):
+                    self.compare(row=dict(self.row, original_address=address + 4),
+                                 geometry={self.row["id"]: (6, 4, 2)}, records=records)
+
+    def test_sectionless_common_surplus_is_rejected(self):
+        self.prepare(bytes(8), bytes(10), alignment=4)
+        common = dict(self.objects[UNIT].extract_data("_data"), section=None)
+        with patch.object(self.objects[UNIT], "extract_data", return_value=common):
+            with self.assertRaisesRegex(ValueError, "alignment padding"):
+                self.compare()
+
+    def test_nonzero_or_relocated_surplus_is_rejected(self):
+        self.prepare(bytes(8), bytes(8) + b"\1\0", alignment=4)
+        with self.assertRaisesRegex(ValueError, "alignment padding"):
+            self.compare()
+        for offset in (7, 8):
+            with self.subTest(offset=offset):
+                self.prepare(bytes(8), bytes(12), alignment=16, relocations=[(offset, 3, 6)])
+                with self.assertRaisesRegex(ValueError, "alignment padding"):
+                    self.compare(bindings={"_data": VA, "_ref": VA})
 
     def test_wrong_va_width_or_geometry_rejected(self):
         cases = [(dict(self.row, original_address=VA+5), self.geometry),

@@ -1552,7 +1552,7 @@ extern "C" i32 NewRayCastSetMask(NUVEC *position, NUVEC *movement, f32 radius, f
 extern "C" {
     extern void *TempScanStack;
 }
-static u8 *TempStackPtrPc;
+static u8 *TempStackPtrPc = 0;
 struct TERRAIN_HANDLE_WALL_PAIR_PC {
     TERRAIN_WALL_POINT *first;
     TERRAIN_WALL_POINT *second;

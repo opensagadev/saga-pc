@@ -898,9 +898,9 @@ extern "C" {
     u8 __cdecl NuAnimSetForceEulerToQuat(u8 force);
     i32 __cdecl NuWindowsGetConfigValuePc(i32 index);
 
-    u8 *Game_LevelSave;
-    MISSION_SAVE_READER_PC *Game_MissionSave;
-    TIMER OverallGamePlayTimer;
+    u8 *Game_LevelSave = 0;
+    MISSION_SAVE_READER_PC *Game_MissionSave = 0;
+    TIMER OverallGamePlayTimer = {0};
     i32 GameDrawCharacterModelFlagPc = 1;
     char *partdebris_name[] = {"TRAINING_P",   "PART_MOUSE", "PART_BLACK_3", "DRAG_PART_1", "SMALL_PART_2", "RAT_PART",
                                "BOULDER_PART", "POPCORN",    "PART_THROW",   "ENG_POP",     "DOOKU_PART",   "MAUL_P_1",

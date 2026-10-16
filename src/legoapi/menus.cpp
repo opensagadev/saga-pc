@@ -205,11 +205,11 @@ extern "C" {
     extern TIMER JoinInTimer;
     extern f32 MissionIconGapPc, MissionIconStepPc;
 }
-static f32 MissionsAlphaPc;
-static i32 MissionMenuSelectionPc;
-static f32 MissionIconScalePc[20];
-static f32 MissionIconTargetXPc[20];
-static f32 MissionIconXPc[20];
+static f32 MissionsAlphaPc = 0;
+static i32 MissionMenuSelectionPc = 0;
+static f32 MissionIconScalePc[20] = {0};
+static f32 MissionIconTargetXPc[20] = {0};
+static f32 MissionIconXPc[20] = {0};
 
 static void MissionIconPositionsPc(MISSION_SYSTEM_READER_PC *system, i32 initialize) {
     i32 index;

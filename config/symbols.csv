@@ -22551,6 +22551,7 @@ address    , symbol                                                         , si
 0x29130e4,?PadRepeat@?1??FS_GetPadWithRepeat@@9@9,,
 0x29130e8,?LastPad@?1??FS_GetPadWithRepeat@@9@9,,
 0x29130ec,?tpent@?1??eduiAddTextPickEntEx@@9@9,,
+0x29130f0,?gpcfg@?2??eduicbProcessGradPick@@9@9,4,eduimenu_s *
 0x29130f4,?down_rept@?1??eduiMenuProcessInput@@9@9,,
 0x29130f8,?up_rept@?1??eduiMenuProcessInput@@9@9,,
 0x02913104 , _apicharsys                                                    , 4     , APICHARSYS *

@@ -44,7 +44,7 @@ STATIC_ASSERT(offsetof(GAMEOBJECT, big_jump_animation) == 0x7b4);
 STATIC_ASSERT(offsetof(GAMEOBJECT, context_variant_flags) == 0x7bc);
 STATIC_ASSERT(offsetof(GAMEOBJECT, field_7a4) == 0x7a4);
 STATIC_ASSERT(offsetof(GAMEOBJECT, context_duration) == 0x784);
-static i32 FindTeleport_Direction;
+static i32 FindTeleport_Direction = 0;
 static void TeleportGetSegmentPc(GAMEOBJECT *object, i32 *start, i32 *end) {
     TELEPORT_MOTION_PC *teleport = (TELEPORT_MOTION_PC *)object->grapple;
     const bool forwards = (object->context_variant_flags & 0x400) != 0;

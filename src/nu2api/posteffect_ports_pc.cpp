@@ -60,11 +60,11 @@ extern "C" {
     PC_POST_DATA_PORT PostResourcePortsPc[6] = {{-1, NULL}, {-1, NULL}, {-1, NULL}, {-1, NULL}, {-1, NULL}, {-1, NULL}};
 #pragma data_seg()
 #pragma bss_seg(".bss$PostResourceManagerPc")
-    PC_POST_DATA_PORT_MANAGER PostResourceManagerPc;
+    PC_POST_DATA_PORT_MANAGER PostResourceManagerPc = {0};
 #pragma bss_seg(".bss$PostBlurFramebufferPc")
-    PC_FRAMEBUFFER_PC *PostBlurFramebufferPc;
+    PC_FRAMEBUFFER_PC *PostBlurFramebufferPc = 0;
 #pragma bss_seg(".bss$PostCopyFramebufferPc")
-    PC_FRAMEBUFFER_PC *PostCopyFramebufferPc;
+    PC_FRAMEBUFFER_PC *PostCopyFramebufferPc = 0;
 #pragma bss_seg()
 }
 

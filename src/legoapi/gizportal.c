@@ -103,7 +103,7 @@ STATIC_ASSERT(offsetof(PORTAL_CALLBACK_PC, flags) == 0x1c);
 extern const char *PortalRegistrationPrefixPc;
 extern i32 portal_gizmotype_id;
 static char portal_output_name_pc[64] = "Active";
-static char portal_gizmo_name_pc[16];
+static char portal_gizmo_name_pc[16] = {0};
 
 void __cdecl PortalDoors_Reset(WORLDINFO *world) {
     PORTAL_DOOR_WORLD_PC *view = (PORTAL_DOOR_WORLD_PC *)world;
@@ -210,7 +210,7 @@ static void __cdecl Portals_Reset(void *world_ptr, void *data, void *progress_pt
     }
 }
 ADDGIZMOTYPE_PC *__cdecl Portal_RegisterGizmo(i32 type_id) {
-    static ADDGIZMOTYPE_PC addtype;
+    static ADDGIZMOTYPE_PC addtype = {0};
     addtype = Default_ADDGIZMOTYPE;
     addtype.name = "Portal";
     addtype.prefix = PortalRegistrationPrefixPc;

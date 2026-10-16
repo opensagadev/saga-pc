@@ -160,7 +160,7 @@ GIZMO_PC *__cdecl createGizRandom(void *unused, i32 output_count, i32 *weights, 
 }
 
 ADDGIZMOTYPE_PC *GizRandom_RegisterGizmo(i32 type_id) {
-    static ADDGIZMOTYPE_PC addtype;
+    static ADDGIZMOTYPE_PC addtype = {0};
 
     addtype = Default_ADDGIZMOTYPE;
     addtype.name = "GizRandom";

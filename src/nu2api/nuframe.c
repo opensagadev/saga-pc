@@ -96,7 +96,7 @@ void __cdecl NuRegisterEndFrameCallBackFn(void (*callback)(void)) {
     nuapi_endframe_callbackfn = callback;
 }
 
-static f32 nu2api_paused;
+static f32 nu2api_paused = 0;
 
 void __cdecl NuPause(i32 paused) {
     nu2api_paused = (f32)paused;

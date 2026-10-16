@@ -810,7 +810,7 @@ i32 __cdecl NuCameraClipTestExtentsGeneric(NUVEC *min, NUVEC *max, NUMTX *world_
 }
 
 void __cdecl NuCameraCalcClipMtx(CAMERA_CLIP_PACKET_PC *clip, NUCAMERA *camera, i32 use_cached_projection) {
-    static NUMTX clip_inverse;
+    static NUMTX clip_inverse = {0};
     if (use_cached_projection == 0 || (clip->flags & 1) == 0) {
         i32 angle;
         f32 half_fov, cotangent, x, y;

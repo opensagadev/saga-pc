@@ -3,7 +3,7 @@
 #include <string.h>
 
 extern u8 snakebodies[0x440];
-static NUSPECIALHANDLE snake_hspecials[3];
+static NUSPECIALHANDLE snake_hspecials[3] = {0};
 
 void __cdecl InitSnakes(WORLDINFO *world) {
     memset(snakebodies, 0, sizeof(snakebodies));

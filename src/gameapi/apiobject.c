@@ -1,7 +1,7 @@
 #include "saga.h"
 
-static API_ACTION_INFO_PC *APIActionInfo;
-static API_EXTRA_ACTION_PC *APIExtraActionData;
+static API_ACTION_INFO_PC *APIActionInfo = 0;
+static API_EXTRA_ACTION_PC *APIExtraActionData = 0;
 
 void __cdecl SetActionInfo(API_ACTION_INFO_PC *info, API_EXTRA_ACTION_PC *extra) {
     APIActionInfo = info;
@@ -88,7 +88,7 @@ i32 __cdecl CurrentAnim(ANIMPACKET_PC *packet) {
     return packet->animation_index;
 }
 
-f32 animduration_blendouttime;
+f32 animduration_blendouttime = 0;
 f32 __cdecl AnimDuration(i32 character_id, i32 animation, f32 start_frame, f32 end_frame, i32 subtract_blend_out) {
     i16 model_id;
     CHARACTER_MODEL_LAYERS_PC *model;

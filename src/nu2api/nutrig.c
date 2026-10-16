@@ -137,7 +137,7 @@ i32 __cdecl NuASin(f32 value) {
 
 extern double __cdecl pow(double, double);
 static i32 NuExp10FirstTimePc = 1;
-static f32 *NuExp10TablePc;
+static f32 *NuExp10TablePc = 0;
 static const char NuExp10SourcePathPc[] = "d:\\projects\\game_saga\\nu2api.saga\\numath\\nutrig.c";
 f32 __cdecl NuExp10(f32 value) {
     f32 result, counter, position, fraction;
@@ -240,7 +240,7 @@ i32 __cdecl RenderPostASinPc(f32 sin) {
 
 extern double __cdecl log10(double);
 static i32 RenderPostLogFirstPc = 1;
-static f32 *RenderPostLogTablePc;
+static f32 *RenderPostLogTablePc = 0;
 f32 __cdecl RenderPostLogPc(f32 value) {
     f32 exponent, counter, position, fraction;
     i32 index;

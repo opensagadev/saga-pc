@@ -126,7 +126,7 @@ static i32 GizAIMessage_GetOutput(GIZMO_PC *gizmo, i32 output_index, i32 unused2
 
 static char *GizAIMessage_GetOutputName(GIZMO_PC *gizmo, i32 output_index) {
     struct gizaimessage_s *message;
-    static char returnstr[4];
+    static char returnstr[4] = {0};
 
     if ((gizmo == NULL) || (gizmo->object == NULL) || ((u32)output_index > 7)) {
         return NULL;
@@ -145,7 +145,7 @@ static i32 GizAIMessage_GetNumOutputs(GIZMO_PC *gizmo) {
 }
 
 ADDGIZMOTYPE_PC *GizAIMessage_RegisterGizmo(i32 type_id) {
-    static ADDGIZMOTYPE_PC addtype;
+    static ADDGIZMOTYPE_PC addtype = {0};
 
     addtype = Default_ADDGIZMOTYPE;
     addtype.name = "Message";

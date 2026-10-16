@@ -48,7 +48,10 @@ PDB; its object symbols and map are the supported symbol outputs.
 objects. `make clean` removes the managed outputs of both kinds, leaving legacy
 investigation archives alone.
 
-**Only diagnostics may differ.** Both kinds must share native game behavior,
+**Only diagnostics may differ, except for the user-requested Debug save location.**
+Debug initializes the save-path buffers to `SavedGames` under the required `res`
+working directory; Matching retains the native profile-folder behavior.
+Apart from that save-path exception, both kinds must share native game behavior,
 including initialization, required calls, correctness, error handling, bugs,
 crashes and incomplete paths. Never use a build-kind `#ifdef` to add guards,
 crash avoidance, fallbacks, return values, or Matching-only real logic. Fixes
@@ -98,6 +101,11 @@ Never commit original game files, assets, compiler binaries or extracted objects
    or original address).
 4. Run `make -j"$(nproc)" match` to refresh `matching.json` and the README
    badges, then commit.
+
+Explicitly initialize globals and function statics that would otherwise receive
+zero initialization (`= 0` or `= {0}`). Preserve existing nonzero initializers and
+C++ constructor semantics. Never zero automatic locals merely to hide an original
+bug or uninitialized read.
 
 The PC executable is authoritative for identity, ABI, constants, layouts and
 control flow. Android bodies are the starting point, not the answer. Use named

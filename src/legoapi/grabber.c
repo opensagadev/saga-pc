@@ -88,7 +88,7 @@ STATIC_ASSERT(offsetof(WORLD_GRABBER_CONFIG_PC, current_level) == 0x128);
 STATIC_ASSERT(offsetof(WORLD_GRABBER_CONFIG_PC, scene) == 0x13c);
 STATIC_ASSERT(offsetof(WORLD_GRABBER_CONFIG_PC, grabber) == 0x46ec);
 extern i16 GrabMachineIdPc, GrabMagnetIdPc, RobotBaseIdPc;
-GRABBER_CONFIG_PC *GrabCurrentPc;
+GRABBER_CONFIG_PC *GrabCurrentPc = 0;
 static void __cdecl Grab_radius(NUFPAR_PC *parser) {
     GrabCurrentPc->radius = NuFParGetFloat(parser);
 }

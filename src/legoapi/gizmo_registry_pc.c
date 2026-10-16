@@ -147,23 +147,23 @@ extern const char PCContextName_Grapple[8];
 const char GizmoRegistryGizBuildItsNamePc[] = "GizBuildit";
 #pragma const_seg()
 char *GizmoRegistryGizBuildItsNamePtrPc = (char *)GizmoRegistryGizBuildItsNamePc;
-static ADDGIZMOTYPE_PC GizmoRegistryGizBuildItsAddTypePc;
+static ADDGIZMOTYPE_PC GizmoRegistryGizBuildItsAddTypePc = {0};
 #pragma const_seg(".rdata$GizmoRegistryGizForceNamePc")
 const char GizmoRegistryGizForceNamePc[] = "GizForce";
 #pragma const_seg()
 char *GizmoRegistryGizForceNamePtrPc = (char *)GizmoRegistryGizForceNamePc;
-static ADDGIZMOTYPE_PC GizmoRegistryGizForceAddTypePc;
+static ADDGIZMOTYPE_PC GizmoRegistryGizForceAddTypePc = {0};
 #pragma const_seg(".rdata$GizmoRegistryNewBlowupNamePc")
 const char GizmoRegistryNewBlowupNamePc[] = "blowup";
 #pragma const_seg()
 char *GizmoRegistryNewBlowupNamePtrPc = (char *)GizmoRegistryNewBlowupNamePc;
-static ADDGIZMOTYPE_PC GizmoRegistryNewBlowupAddTypePc;
+static ADDGIZMOTYPE_PC GizmoRegistryNewBlowupAddTypePc = {0};
 #pragma const_seg(".rdata$GizmoRegistryGizmoPickupsNamePc")
 const char GizmoRegistryGizmoPickupsNamePc[] = "GizmoPickup";
 #pragma const_seg()
 char *GizmoRegistryGizmoPickupsNamePtrPc = (char *)GizmoRegistryGizmoPickupsNamePc;
-static ADDGIZMOTYPE_PC GizmoRegistryGizmoPickupsAddTypePc;
-static ADDGIZMOTYPE_PC GizmoRegistrySpinnerAddTypePc;
+static ADDGIZMOTYPE_PC GizmoRegistryGizmoPickupsAddTypePc = {0};
+static ADDGIZMOTYPE_PC GizmoRegistrySpinnerAddTypePc = {0};
 #pragma const_seg(".rdata$GizmoRegistrySpinnerNamePc")
 const char GizmoRegistrySpinnerNamePc[] = "Spinner";
 #pragma const_seg()
@@ -171,27 +171,27 @@ const char GizmoRegistrySpinnerNamePc[] = "Spinner";
 const char GizmoRegistryGizTurretsNamePc[] = "GizTurret";
 #pragma const_seg()
 char *GizmoRegistryGizTurretsNamePtrPc = (char *)GizmoRegistryGizTurretsNamePc;
-static ADDGIZMOTYPE_PC GizmoRegistryGizTurretsAddTypePc;
+static ADDGIZMOTYPE_PC GizmoRegistryGizTurretsAddTypePc = {0};
 char *GizmoRegistryGizBombGenNamePtrPc = "BombGenerator";
-static ADDGIZMOTYPE_PC GizmoRegistryGizBombGenAddTypePc;
-static ADDGIZMOTYPE_PC GizmoRegistryAIAddTypePc;
+static ADDGIZMOTYPE_PC GizmoRegistryGizBombGenAddTypePc = {0};
+static ADDGIZMOTYPE_PC GizmoRegistryAIAddTypePc = {0};
 #pragma const_seg(".rdata$GizmoRegistryAINamePc")
 const char GizmoRegistryAINamePc[] = "AIProcessor";
 #pragma const_seg()
 #pragma const_seg(".rdata$GizmoRegistryAIPrefixPc")
 const char GizmoRegistryAIPrefixPc[] = "ai_";
 #pragma const_seg()
-static ADDGIZMOTYPE_PC GizmoRegistryGizPanelAddTypePc;
+static ADDGIZMOTYPE_PC GizmoRegistryGizPanelAddTypePc = {0};
 #pragma const_seg(".rdata$GizmoRegistryGizPanelNamePc")
 const char GizmoRegistryGizPanelNamePc[] = "Panel";
 #pragma const_seg()
-static ADDGIZMOTYPE_PC GizmoRegistryGizTorpMachineAddTypePc;
+static ADDGIZMOTYPE_PC GizmoRegistryGizTorpMachineAddTypePc = {0};
 i32 giztorpmachine_gizmotype_id = 0;
 #pragma const_seg(".rdata$GizmoRegistryGizTorpMachineNamePc")
 const char GizmoRegistryGizTorpMachineNamePc[] = "Torp Machine";
 #pragma const_seg()
 char *GizmoRegistryGrapplesNamePtrPc = (char *)PCContextName_Grapple;
-static ADDGIZMOTYPE_PC GizmoRegistryGrapplesAddTypePc;
+static ADDGIZMOTYPE_PC GizmoRegistryGrapplesAddTypePc = {0};
 
 ADDGIZMOTYPE_PC *__cdecl GizBuildIts_RegisterGizmo(i32 type_id) {
     ADDGIZMOTYPE_PC *addtype = &GizmoRegistryGizBuildItsAddTypePc;

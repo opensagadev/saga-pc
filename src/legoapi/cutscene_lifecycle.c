@@ -1879,11 +1879,11 @@ static void CutSceneStreamSkipPc(CUT_INSTANCE_LOAD_PC *instance, f32 elapsed) {
     }
 }
 
-static i32 CutSceneSynchroCounterPc;
-static i32 CutSceneQuitPromptPc;
-static i32 CutSceneHasQuitPc;
-static i32 CutSceneLockPlayerPc;
-static i32 CutSceneTerminateStreamPc;
+static i32 CutSceneSynchroCounterPc = 0;
+static i32 CutSceneQuitPromptPc = 0;
+static i32 CutSceneHasQuitPc = 0;
+static i32 CutSceneLockPlayerPc = 0;
+static i32 CutSceneTerminateStreamPc = 0;
 extern i32 CutSceneUpdateCamerasPc;
 extern void(__cdecl *CutSceneInstanceSfxRequestPc)(INSTNUGCUTSCENE *);
 extern void(__cdecl *NuCutSceneCharacterProcess)(INSTNUGCUTSCENE *, void *, void *, void *, f32, i32);

@@ -21,7 +21,7 @@ STATIC_ASSERT(offsetof(EDGIZSHADOW_PC, preset) == 0x34);
 STATIC_ASSERT(offsetof(SHADOW_WORLD_VIEW_PC, shadow_editor) == 0x5110);
 extern const char *ShadowGizmoNamePc;
 extern const char *ShadowOutputNamePc;
-i32 edGizShadow_gizmotype_id;
+i32 edGizShadow_gizmotype_id = 0;
 
 static void Shadow_ApplyPreset(EDGIZSHADOW_PC *shadow, i32 preset) {
     switch (preset) {
@@ -144,7 +144,7 @@ static i32 __cdecl Shadow_Load(void *world_ptr, void *data) {
     return 1;
 }
 ADDGIZMOTYPE_PC *__cdecl EdGizShadowMachine_RegisterGizmo(i32 type_id) {
-    static ADDGIZMOTYPE_PC addtype;
+    static ADDGIZMOTYPE_PC addtype = {0};
     addtype = Default_ADDGIZMOTYPE;
     addtype.name = "ShadowEditor";
     addtype.prefix = "";

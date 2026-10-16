@@ -1,13 +1,13 @@
 #include "saga.h"
 
-LEVEL_OBJECT_CONFIG_PC *ObjTabList;
-i32 LEVELOBJECTCOUNT;
-i32 EXTRALEVELOBJECTCOUNT;
+LEVEL_OBJECT_CONFIG_PC *ObjTabList = 0;
+i32 LEVELOBJECTCOUNT = 0;
+i32 EXTRALEVELOBJECTCOUNT = 0;
 
-static i32 LEVELOBJECTMAX;
-static char *ExtraLevelObject_NameTable;
-static i32 ExtraLevelObject_NameTableSize;
-static i32 ExtraLevelObject_NameTableIndex;
+static i32 LEVELOBJECTMAX = 0;
+static char *ExtraLevelObject_NameTable = 0;
+static i32 ExtraLevelObject_NameTableSize = 0;
+static i32 ExtraLevelObject_NameTableIndex = 0;
 
 i32 LEVOBJREF_FIRSTOBJ = -1;
 i32 LEVOBJREF_LASTOBJ = -1;

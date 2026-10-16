@@ -60,8 +60,8 @@ STATIC_ASSERT(offsetof(WORLD_TELEPORT_CONFIG_PC, teleport_count) == 0x4684);
 i32 __cdecl GizmoGetUniqueName(GIZMOSYS_PREFIX_PC *, char *, char *, char *, i32);
 NUGSPLINE *__cdecl edSpline_SplineFind(NUGSCN *, char *);
 
-static TELEPORT_CONFIG_PC *Tel_teleport;
-static WORLD_TELEPORT_CONFIG_PC *Tel_worldinfo;
+static TELEPORT_CONFIG_PC *Tel_teleport = 0;
+static WORLD_TELEPORT_CONFIG_PC *Tel_worldinfo = 0;
 typedef struct TELEPORT_KEYWORDS_PC {
     char *name_prefix;
     NUFPCOMJMP keywords[12];
@@ -226,7 +226,7 @@ i32 __cdecl Teleport_GetNumOutputs(GIZMO_PC *);
 void __cdecl Teleport_Activate(GIZMO_PC *, i32);
 i32 __cdecl Teleport_ActivateRev(GIZMO_PC *, i32, i32);
 
-static ADDGIZMOTYPE_PC GizmoRegistryTeleportAddTypePc;
+static ADDGIZMOTYPE_PC GizmoRegistryTeleportAddTypePc = {0};
 extern const char PCContextName_Teleport[9];
 i32 teleport_gizmotype_id = -1;
 

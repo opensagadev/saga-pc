@@ -325,7 +325,7 @@ void NuCopyFilter::initResources() {
 }
 
 extern "C" u8 NuPostFilterMemoryPc[0x800];
-u8 NuPostFilterMemoryPc[0x800];
+u8 NuPostFilterMemoryPc[0x800] = {0};
 VirtualStackAllocator NuPostFilterAllocatorPc(NuPostFilterMemoryPc, sizeof(NuPostFilterMemoryPc));
 NuCopyFilter *NuPostCopyFilterPc = NULL;
 u32 NuPostShaderEngineFlagsPc = 0;

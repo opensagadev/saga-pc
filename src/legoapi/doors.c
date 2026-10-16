@@ -271,7 +271,7 @@ void Door_Activate(GIZMO_PC *gizmo, i32 value) {
 }
 
 ADDGIZMOTYPE_PC *Door_RegisterGizmo(i32 type_id) {
-    static ADDGIZMOTYPE_PC addtype;
+    static ADDGIZMOTYPE_PC addtype = {0};
 
     addtype = Default_ADDGIZMOTYPE;
     addtype.name = "Door";
@@ -409,8 +409,8 @@ STATIC_ASSERT(offsetof(WORLD_DOOR_CONFIG_PC, giz_buffer) == 0x104);
 STATIC_ASSERT(offsetof(WORLD_DOOR_CONFIG_PC, scene) == 0x13c);
 STATIC_ASSERT(offsetof(WORLD_DOOR_CONFIG_PC, doors) == 0x4698);
 STATIC_ASSERT(offsetof(WORLD_DOOR_CONFIG_PC, door_count) == 0x469c);
-static WORLD_DOOR_CONFIG_PC *D_worldinfo;
-static DOOR_CONFIG_PC *D_door;
+static WORLD_DOOR_CONFIG_PC *D_worldinfo = 0;
+static DOOR_CONFIG_PC *D_door = 0;
 static void __cdecl D_spline(NUFPAR_PC *parser) {
     i32 i;
     if (NuFParGetWord(parser) == 0 || NuStrLen(parser->word_buffer_ptr) >= 64)

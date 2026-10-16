@@ -456,7 +456,7 @@ static void Levers_Update(void *world_ptr, void *data, f32 elapsed) {
     }
 }
 ADDGIZMOTYPE_PC *Levers_RegisterGizmo(i32 type_id) {
-    static ADDGIZMOTYPE_PC LeversAddTypePc;
+    static ADDGIZMOTYPE_PC LeversAddTypePc = {0};
     LeversAddTypePc = Default_ADDGIZMOTYPE;
     LeversAddTypePc.name = LeverTypeNamePtrPc;
     LeversAddTypePc.prefix = "";

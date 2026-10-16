@@ -446,7 +446,7 @@ typedef struct torpedo_packet_alloc_pc_s {
 } TORPEDO_PACKET_ALLOC_PC;
 STATIC_ASSERT(sizeof(TORPEDO_PACKET_ALLOC_PC) == 0x88);
 STATIC_ASSERT(offsetof(TORPEDO_PACKET_ALLOC_PC, flags) == 1);
-static TORPEDO_PACKET_ALLOC_PC TorpedoPackets[16];
+static TORPEDO_PACKET_ALLOC_PC TorpedoPackets[16] = {0};
 TORPEDOPACKET_PC *__cdecl GetTorpedoPacket(void) {
     i32 index;
     for (index = 0; index < 16; ++index) {

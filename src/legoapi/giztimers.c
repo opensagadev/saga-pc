@@ -173,7 +173,7 @@ i32 GizTimer_Load(void *world_info, void *unused1) {
 }
 
 ADDGIZMOTYPE_PC *GizTimer_RegisterGizmo(i32 type_id) {
-    static ADDGIZMOTYPE_PC addtype;
+    static ADDGIZMOTYPE_PC addtype = {0};
 
     addtype = Default_ADDGIZMOTYPE;
     addtype.name = "GizTimer";

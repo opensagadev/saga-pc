@@ -3185,8 +3185,8 @@ void __cdecl PartTimeSlip(void) {
     partglobaltime -= 800.0f;
 }
 
-static i32 PartCleanupCursorPrivate;
-static i32 PartCleanupFramesPrivate;
+static i32 PartCleanupCursorPrivate = 0;
+static i32 PartCleanupFramesPrivate = 0;
 void __cdecl PartCleanupTypes(void) {
     PART_RUNTIME_TYPE_PC *types = (PART_RUNTIME_TYPE_PC *)part_types;
     i32 i;
@@ -3927,7 +3927,7 @@ typedef struct PART_TERRAIN_STATE_PC {
 } PART_TERRAIN_STATE_PC;
 STATIC_ASSERT(offsetof(PART_TERRAIN_STATE_PC, platform_id) == 0x200);
 STATIC_ASSERT(offsetof(PART_TERRAIN_STATE_PC, impact_material) == 0x209);
-static NUVEC PartImpactNormalPrivate;
+static NUVEC PartImpactNormalPrivate = {0};
 #define PART_NORM PartImpactNormalPrivate
 extern i32 __cdecl NewRayCast(NUVEC *, NUVEC *, f32, i32);
 extern f32 __cdecl NewRayCastGetEmbedDist(void);

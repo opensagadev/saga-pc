@@ -28,7 +28,7 @@ STATIC_ASSERT(offsetof(CHARCONFIG_PC, animation_count) == 0x1e);
 STATIC_ASSERT(offsetof(CHARCONFIG_PC, arena) == 0x20);
 STATIC_ASSERT(offsetof(CHARCONFIG_PC, arena_end) == 0x24);
 STATIC_ASSERT(offsetof(CHARCONFIG_PC, animation_names) == 0x28);
-CHARCONFIG_PC charconfig;
+CHARCONFIG_PC charconfig = {0};
 
 static __declspec(noinline) f32 CharConfigAbsFloat(f32 value) {
     union {
@@ -2048,9 +2048,9 @@ static NUFPCOMJMP ConfigChar_Keywords[] = {{"name_id", CC_name_id},
                                            {"timebaseupdate4", CC_set_timebaseupdate4},
                                            {NULL, NULL}};
 
-i32 SecondCharConfigure;
-i32 configureallcharacters_perm;
-char MiniBuffer[0x4000];
+i32 SecondCharConfigure = 0;
+i32 configureallcharacters_perm = 0;
+char MiniBuffer[0x4000] = {0};
 extern i32 CHARPAK;
 
 static i32 RedirectTextFile(char *text, char *filename, i32 filename_capacity) {
@@ -2406,8 +2406,8 @@ i32 __cdecl CharCategory_IsCategory(GAMEOBJECT *object, i32 index) {
     return 1;
 }
 
-static char **CustomiserVariantNamesPc;
-static i32 CustomiserVariantCountPc;
+static char **CustomiserVariantNamesPc = 0;
+static i32 CustomiserVariantCountPc = 0;
 i32 __cdecl CharVariant_Find(char *name) {
     i32 index;
     if (CustomiserVariantNamesPc != NULL && CustomiserVariantCountPc > 0) {

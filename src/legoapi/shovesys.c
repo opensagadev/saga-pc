@@ -17,7 +17,7 @@ STATIC_ASSERT(offsetof(SHOVE_OBJECT_PC, radius) == 0x10);
 STATIC_ASSERT(offsetof(SHOVE_OBJECT_PC, platform_id) == 0x14);
 STATIC_ASSERT(sizeof(SHOVE_SYSTEM_PC) == 0x184);
 STATIC_ASSERT(offsetof(SHOVE_SYSTEM_PC, count) == 0x180);
-static SHOVE_SYSTEM_PC ShoveSystemPc;
+static SHOVE_SYSTEM_PC ShoveSystemPc = {0};
 void __cdecl AddShoveObject(NUSPECIALHANDLE *special, i16 platform_id) {
     if (NuSpecialExistsFn(special) && ShoveSystemPc.count < 16) {
         ShoveSystemPc.objects[ShoveSystemPc.count].special = special;

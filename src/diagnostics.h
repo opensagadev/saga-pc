@@ -34,7 +34,7 @@ extern "C" {
     } while (0)
 #define LOG_WARN_ONCE(...)                                                                                             \
     do {                                                                                                               \
-        static volatile LONG saga_logged_once;                                                                         \
+        static volatile LONG saga_logged_once = 0;                                                                     \
         if (_InterlockedExchange(&saga_logged_once, 1) == 0) {                                                         \
             LOG_WARN(__VA_ARGS__);                                                                                     \
         }                                                                                                              \

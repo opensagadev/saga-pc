@@ -1,13 +1,13 @@
 #include "saga.h"
 
-static i32 edfile_media;
-static void *edfile_pakfile;
+static i32 edfile_media = 0;
+static void *edfile_pakfile = 0;
 i32 edfile_handle = -1;
-i32 edfile_write_flag;
-char edfile_buffer[0x1000];
-i32 edfile_buffer_pointer;
-i32 edfile_lock[2];
-i32 edfile_readwrongendianess;
+i32 edfile_write_flag = 0;
+char edfile_buffer[0x1000] = {0};
+i32 edfile_buffer_pointer = 0;
+i32 edfile_lock[2] = {0};
+i32 edfile_readwrongendianess = 0;
 
 extern i32 __cdecl NuFileWrite(NUFILE file, const void *data, i32 size);
 
@@ -301,8 +301,8 @@ i32 EdFileBackup(char *source, char *destination) {
 }
 
 i32 FS_GetPadWithRepeat(FRAME_PAD_PC *pad, float repeat, float elapsed) {
-    static i32 LastPad;
-    static float PadRepeat;
+    static i32 LastPad = 0;
+    static float PadRepeat = 0;
 
     if (pad->digital_buttons != LastPad) {
         LastPad = pad->digital_buttons;
@@ -608,7 +608,7 @@ eduiitem_s *eduiItemToggleCreate(size_t data, const void *colours, i32 selected,
 
 edui_textpicker_s *eduiAddTextPickEntEx(eduimenu_s *menu, eduiitem_s *source, EdUiItemCallback callback) {
     struct edui_textpicker_s *picker;
-    static eduimenu_s *tpent;
+    static eduimenu_s *tpent = 0;
     tpent = eduiMenuCreate(source->x + 10, source->y + 10, 180, 50, menu->font, NULL, ((char *)("Enter Text")));
     tpent->flags |= 2;
     picker = ((edui_textpicker_s *)(eduiItemTextPickCreate(((size_t)(source)), &ed_attr, callback, ((char *)("")))));
@@ -657,7 +657,7 @@ static i32 eduicbProcessGradPick(eduimenu_s *menu, eduiitem_s *item, f32 delta_t
         gradient->changed(menu, item, pad->digital_buttons);
     if (pad->digital_buttons_pressed & 0x40) {
         struct eduiitem_s *pick;
-        static eduimenu_s *gpcfg;
+        static eduimenu_s *gpcfg = 0;
         gpcfg =
             eduiMenuCreate(menu->x + 10, menu->y + 40, 180, 250, menu->font, eduicbPickCFGCancel, "GradPick Adjust");
         if (!gpcfg)
@@ -786,8 +786,8 @@ i32 eduiMenuProcessInput(eduimenu_s *menu, f32 delta_time, FRAME_PAD_PC *pad, i3
     i32 page_up;
     i32 page_down;
     i32 to_last;
-    static f32 up_rept;
-    static f32 down_rept;
+    static f32 up_rept = 0;
+    static f32 down_rept = 0;
     cbInteractMenuKeySelect(menu);
     if (item_result || !pad)
         return 0;

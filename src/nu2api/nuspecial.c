@@ -699,7 +699,7 @@ i32 __cdecl NuSpecialGetInstanceix(NUSPECIALHANDLE *handle) {
     return -1;
 }
 
-i32 special_debug;
+i32 special_debug = 0;
 
 i32 __cdecl NuSpecialFindDisplay(NUGSCN *scene, NUSPECIALHANDLE *handle, char *name, i32 flags) {
     NUDISPLAY_SPECIAL_PC *special;

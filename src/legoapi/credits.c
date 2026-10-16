@@ -42,8 +42,8 @@ extern f32 CreditsTime;
 extern f32 CreditsFinishedTime;
 extern i32 CreditsFlag;
 static f32 CreditsDurationPc = 120.0f;
-static f32 CreditsSizePc;
-static i32 CreditCountPc;
+static f32 CreditsSizePc = 0;
+static i32 CreditCountPc = 0;
 static CREDIT_TYPE_PC CreditTypePc[5] = {
     {"heading", 0.4f, 1.65f, {255, 255, 255, 128}, {0, 0, 0, 0}, {0, 0, 0}, 0},
     {"company", 0.6f, 1.65f, {255, 255, 255, 128}, {0, 0, 0, 0}, {0, 0, 0}, 0},

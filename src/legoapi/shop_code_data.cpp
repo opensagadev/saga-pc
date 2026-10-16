@@ -1,11 +1,11 @@
 #include "saga.h"
 
 extern "C" {
-    i32 ShopCodeCharacterPc;
-    i32 ShopCodeValidPc;
-    i32 ShopCodeMoveSfxLockPc;
-    i32 ShopCodeItemChangedPc;
-    f32 ShopCodeRepeatTimerPc;
+    i32 ShopCodeCharacterPc = 0;
+    i32 ShopCodeValidPc = 0;
+    i32 ShopCodeMoveSfxLockPc = 0;
+    i32 ShopCodeItemChangedPc = 0;
+    f32 ShopCodeRepeatTimerPc = 0;
     f32 ShopCodeRepeatIntervalPc = 0.125f;
     f32 ShopCodeExitPushPc = 0.05f;
     char ShopCodeCharactersPc[37] = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";

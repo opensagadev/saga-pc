@@ -166,7 +166,7 @@ void __cdecl PodRaceSnipersReset(void) {
 void PodRaceSnipersUpdate(void) {
     i32 i;
     NUVEC direction;
-    static i32 player_ix;
+    static i32 player_ix = 0;
     i32 bolttype = (WORLD->current_level == PODSPRINTA_LDATA) ? 0x29 : 0x28;
     BOLTTYPE_PC *type = BoltType_FindByID(bolttype, WORLD);
     i32 n = PodRace_nsnipers;

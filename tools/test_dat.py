@@ -99,7 +99,7 @@ def write_file_constants(directory):
     required = {"NuFileSourcePathPC", "SceneFileExtensionPc"}
     if not required.issubset({name for name, _, _ in definitions}):
         raise ValueError("DAT fixture is missing the production file source literals")
-    writer_state = re.findall(r"^\s*i32 NuFile_SwapEndianOnWrite;\s*$",
+    writer_state = re.findall(r"^\s*i32 NuFile_SwapEndianOnWrite\s*=\s*0;\s*$",
                               production, re.MULTILINE)
     if len(writer_state) != 1:
         raise ValueError("DAT fixture needs the production file-writer endian state")
@@ -125,7 +125,7 @@ def write_clock_provider(directory):
     data = (ROOT / "src/data.cpp").read_text()
     definitions = []
     for name in ("NuTime_TickBase", "NuTime_PerformanceFrequency"):
-        definition = re.search(rf"^\s*i64 {name};\s*$", data, re.MULTILINE)
+        definition = re.search(rf"^\s*i64 {name}\s*=\s*0;\s*$", data, re.MULTILINE)
         if definition is None:
             raise ValueError(f"DAT clock provider is missing the production {name} definition")
         definitions.append(definition.group().strip())

@@ -1634,10 +1634,10 @@ extern "C" {
     extern f32 LevelNameMul, LevelNameTime;
     extern u32 texanimbits;
     extern i32 CUTNOFOG, CUTDRAWWORLD, ACTIVECUTCOUNT, cut_waiting_for_new_level, CutInstEndCount;
-    static INSTNUGCUTSCENE *CutInstEnd[4];
-    static i32 CutInstEndStop;
-    static i32 cutaudiopaused;
-    static i32 CutFramePc;
+    static INSTNUGCUTSCENE *CutInstEnd[4] = {0};
+    static i32 CutInstEndStop = 0;
+    static i32 cutaudiopaused = 0;
+    static i32 CutFramePc = 0;
     void __cdecl instNuGCutScenePause(INSTNUGCUTSCENE *, i32);
     void __cdecl instNuGCutSceneStop(INSTNUGCUTSCENE *);
     void __cdecl CutScenePlayer_SetObjects(CUTINFO *);
@@ -1863,7 +1863,7 @@ STATIC_ASSERT(sizeof(FadeSystem) == 0x2c);
 STATIC_ASSERT(sizeof(FADETYPE) == 4);
 extern "C" {
     extern i32 CUTCAMONLY;
-    static f32 CutReflectRange;
+    static f32 CutReflectRange = 0;
     i32 __cdecl instNuGCutSceneIsFinished(INSTNUGCUTSCENE *);
     void __cdecl GizmoSysDraw(void *, WORLDINFO *, f32);
     static void CutSceneUpdateTextureAnimationsPrivatePc(CUT_LOAD_RECORD_PC *cut) {

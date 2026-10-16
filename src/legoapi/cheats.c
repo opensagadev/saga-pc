@@ -1,7 +1,7 @@
 #include "saga.h"
 
 extern i32 ONEPLAYERPOWERUPS;
-static f32 Cheat_PowerUpTime;
+static f32 Cheat_PowerUpTime = 0;
 
 i32 __cdecl Cheat_IsOn(i32 cheat) {
     CHEAT_PC *entry;

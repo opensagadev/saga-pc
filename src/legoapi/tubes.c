@@ -388,7 +388,7 @@ static void __cdecl Tubes_Update(void *world_ptr, void *data, f32 frame_time) {
 }
 
 ADDGIZMOTYPE_PC *__cdecl Tubes_RegisterGizmo(i32 type_id) {
-    static ADDGIZMOTYPE_PC TubesAddTypePc;
+    static ADDGIZMOTYPE_PC TubesAddTypePc = {0};
     TubesAddTypePc = Default_ADDGIZMOTYPE;
     TubesAddTypePc.name = TubeGizmoNamePc;
     TubesAddTypePc.prefix = "";

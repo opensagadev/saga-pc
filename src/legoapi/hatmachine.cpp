@@ -469,7 +469,7 @@ extern "C" {
     }
 }
 extern "C" ADDGIZMOTYPE_PC *HatMachine_RegisterGizmo(i32 type_id) {
-    static ADDGIZMOTYPE_PC HatMachineAddTypePc;
+    static ADDGIZMOTYPE_PC HatMachineAddTypePc = {0};
     HatMachineAddTypePc = Default_ADDGIZMOTYPE;
     HatMachineAddTypePc.name = (char *)"HatMachine";
     HatMachineAddTypePc.prefix = (char *)"";

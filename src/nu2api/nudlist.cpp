@@ -1576,7 +1576,7 @@ typedef struct FRAME_MTL_SCENE_PC {
     i32 shader_texture_animation_enabled;
 } FRAME_MTL_SCENE_PC;
 STATIC_ASSERT(offsetof(FRAME_MTL_SCENE_PC, shader_texture_animation_enabled) == 0x158);
-static f32 FrameMaterialAnimationTimePc;
+static f32 FrameMaterialAnimationTimePc = 0;
 extern "C" void __cdecl NuMtlSetUVOffsetPS(NUMTL *mtl, u32 layer, f32 u, f32 v);
 void __cdecl NuDisplayListAnimateMtls(f32 frame_time) {
     FRAME_MTL_ANIM_SET_PC *set;

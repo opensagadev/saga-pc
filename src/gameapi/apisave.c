@@ -742,9 +742,9 @@ void __cdecl MenuUpdateFormatCancel(MENU *menu) {
 
 STATIC_ASSERT(offsetof(SAVE_MENU_VIEW_PC, first_row) == 0xe);
 
-static i32 SaveMenuLastSlotPc;
-static i32 SaveMenuSlideLeftPc;
-static i32 SaveMenuSlideRightPc;
+static i32 SaveMenuLastSlotPc = 0;
+static i32 SaveMenuSlideLeftPc = 0;
+static i32 SaveMenuSlideRightPc = 0;
 extern i32 Menu_LastFlow;
 extern i32 saveload_filecorrupt;
 extern i32 SAVESIZE;
@@ -1098,7 +1098,7 @@ static void MenuDrawLoadCorruptMessagePc(void) {
     MenuSmartTextEx(apitxt_CORRUPTLOAD, 0.0f, 0.0f, 1.0f, scale, scale, scale, 0, MENUNORMALR, MENUNORMALG, MENUNORMALB,
                     1.5f, 3, NULL, 0, MenuA);
 }
-static i32 MenuLoadResultShownPc;
+static i32 MenuLoadResultShownPc = 0;
 void __cdecl MenuDrawLoading(MENU *menu) {
     (void)menu;
     NuStrCpy(MenuHeader, apitxt_LOADGAME);
@@ -1194,7 +1194,7 @@ void __cdecl MenuDrawNotEnoughSpace(MENU *menu) {
     MenuDrawNotEnoughSpaceMessagePc();
 }
 
-static i32 MenuSaveResultShownPc;
+static i32 MenuSaveResultShownPc = 0;
 void __cdecl MenuDrawSaving(MENU *menu) {
     (void)menu;
     NuStrCpy(MenuHeader, apitxt_SAVEGAME);
@@ -1217,7 +1217,7 @@ void __cdecl MenuDrawSaving(MENU *menu) {
     }
 }
 
-static i32 MenuDeleteResultShownPc;
+static i32 MenuDeleteResultShownPc = 0;
 void __cdecl MenuDrawDeleting(MENU *menu) {
     (void)menu;
     NuStrCpy(MenuHeader, apitxt_DELETEGAME);

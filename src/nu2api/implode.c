@@ -22,10 +22,10 @@ extern char *implode_outbuffer;
 extern u32 implode_origsize;
 extern u32 implode_compsize;
 
-static i32 ImplodePendingCopyPc;
+static i32 ImplodePendingCopyPc = 0;
 
 static void ImplodeDecodeRingPrivatePc(u32 size, unsigned char *buf) {
-    static u32 ImplodeRingCursorPc;
+    static u32 ImplodeRingCursorPc = 0;
 
     u32 c;
     u32 n;
@@ -66,7 +66,7 @@ static void ImplodeDecodeRingPrivatePc(u32 size, unsigned char *buf) {
     }
 }
 
-static unsigned char ImplodeRingBufferPc[0x2000];
+static unsigned char ImplodeRingBufferPc[0x2000] = {0};
 
 i32 ExplodeBufferNoHeader(char *in_buf, char *out_buf, i32 compressed_size, i32 orig_size) {
     i32 total_read;
@@ -121,10 +121,10 @@ i32 ExplodeBufferNoHeader(char *in_buf, char *out_buf, i32 compressed_size, i32 
         ImplodeFillBuf((len)[(dst)]);                                                                                  \
     } while (0)
 
-static u32 ImplodeBlockRemainingPc;
+static u32 ImplodeBlockRemainingPc = 0;
 
-static u16 ImplodeOffsetTablePc[0x100];
-static u8 ImplodeOffsetLengthsPc[0x13];
+static u16 ImplodeOffsetTablePc[0x100] = {0};
+static u8 ImplodeOffsetLengthsPc[0x13] = {0};
 
 static void ImplodeReadOffsetLengthsPrivatePc(i32 table_size, i32 bit_count, i32 zero_value) {
     i32 n;
@@ -178,8 +178,8 @@ static void ImplodeReadOffsetLengthsPrivatePc(i32 table_size, i32 bit_count, i32
     ImplodeMakeTable(table_size, ImplodeOffsetLengthsPc, 8, ImplodeOffsetTablePc);
 }
 
-static u16 ImplodeLiteralTablePc[0x1000];
-static u8 ImplodeLiteralLengthsPc[0x1fe];
+static u16 ImplodeLiteralTablePc[0x1000] = {0};
+static u8 ImplodeLiteralLengthsPc[0x1fe] = {0};
 
 static void ImplodeReadLiteralLengthsPrivatePc() {
     i32 n;
@@ -364,8 +364,8 @@ void ImplodeHufDecodeStart() {
 }
 
 extern u32 implode_bitbuf;
-static u32 ImplodeSubBitsPc;
-static u32 ImplodeAvailableBitsPc;
+static u32 ImplodeSubBitsPc = 0;
+static u32 ImplodeAvailableBitsPc = 0;
 
 void ImplodeInitGetBits() {
     implode_bitbuf = 0;

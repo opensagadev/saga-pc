@@ -1498,8 +1498,8 @@ void NewTerrPlatformsOff(void) {
 #define MIN(a, b) ((a) < (b) ? (a) : (b))
 #define MAX(a, b) ((a) > (b) ? (a) : (b))
 void TerrainDiagnosticNoOpPC(const void *, ...);
-u8 *TerrainCrashDataPc;
-const f32 TerrainUnusedSpatialBlockPc;
+extern u8 *TerrainCrashDataPc;
+extern const f32 TerrainUnusedSpatialBlockPc;
 i32 ReadTerrain(unsigned char *base_path, i32 first_group, i16 **buffer, TERRSET *terrain) {
     i32 diagnostic_index;
     i32 point;
@@ -2379,7 +2379,7 @@ STATIC_ASSERT(offsetof(TERRAIN_PLATFORM_PC, bounce_5c) == 0x5c);
 STATIC_ASSERT(offsetof(TERRAIN_PLATFORM_PC, bounce_60) == 0x60);
 STATIC_ASSERT(offsetof(TERRAIN_PLATFORM_PC, bounce_64) == 0x64);
 STATIC_ASSERT(offsetof(TERRAIN_SET_PC, removed_platforms) == 0x158);
-static TERRAIN_PICKUP_SET_PC *PickupTerrainPc;
+static TERRAIN_PICKUP_SET_PC *PickupTerrainPc = 0;
 
 i32 ReadTerrainPickup(unsigned char *base_path, i16 **buffer, TERRAIN_PICKUP_SET_PC *terrain) {
     char path[100];
@@ -3094,8 +3094,8 @@ void DrawWallSplinePc(f32 height) {
     }
 }
 
-static i32 TerrainSkinInfoCapacityPc;
-static u8 *TerrainSkinArenaEndPc;
+static i32 TerrainSkinInfoCapacityPc = 0;
+static u8 *TerrainSkinArenaEndPc = 0;
 static i32 TerrainSkinOriginalGroupCountPc = -1;
 STATIC_ASSERT(offsetof(TERRAIN_SET_PC, max_groups) == 0xa488);
 STATIC_ASSERT(offsetof(TERRAIN_SET_PC, max_platforms) == 0xa48c);

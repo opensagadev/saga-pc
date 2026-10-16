@@ -387,7 +387,7 @@ i32 __cdecl Action_AttackOpponent(AISYS_PC *system, AISCRIPTPROCESS_PC *processo
 }
 
 #pragma bss_seg(".bss$prev_droid_ix")
-static i32 prev_droid_ix;
+static i32 prev_droid_ix = 0;
 #pragma bss_seg()
 
 static __declspec(noinline) i32 __cdecl PartyMemberInWay(GAMEOBJECT *object, GAMEOBJECT *opponent) {

@@ -34,10 +34,10 @@ typedef struct TRAFFIC_WORLD_VIEW_PC {
 } TRAFFIC_WORLD_VIEW_PC;
 STATIC_ASSERT(offsetof(TRAFFIC_WORLD_VIEW_PC, trafficanim_sys) == 0x5168);
 
-static TRAFFICANIM_PC reference_trafficanim;
-static TRAFFICANIM_PC *parse_trafficanim;
-static TRAFFICANIMSYS_PC *parse_trafficanimsys;
-static WORLDINFO *parse_worldinfo;
+static TRAFFICANIM_PC reference_trafficanim = {0};
+static TRAFFICANIM_PC *parse_trafficanim = 0;
+static TRAFFICANIMSYS_PC *parse_trafficanimsys = 0;
+static WORLDINFO *parse_worldinfo = 0;
 static void Traffic_tfactor(NUFPAR_PC *parser) {
     reference_trafficanim.tfactor = NuFParGetFloat(parser);
 }

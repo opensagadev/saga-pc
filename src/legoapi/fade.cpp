@@ -52,10 +52,10 @@ extern "C" {
     FadeWipe fadeWipe;
     FadeStillWipe fadeStillWipe;
     FadeStill fadeStill;
-    FADEINFO_s *pFadeInfo;
-    NUMTL *FadeMtl;
-    NUMTL *ScreenFadeMtl;
-    i32 wait_till_next_frame;
+    FADEINFO_s *pFadeInfo = 0;
+    NUMTL *FadeMtl = 0;
+    NUMTL *ScreenFadeMtl = 0;
+    i32 wait_till_next_frame = 0;
     i32 FRAMES_TO_WAIT = 1;
 }
 

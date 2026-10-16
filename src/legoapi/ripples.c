@@ -295,8 +295,8 @@ void __cdecl InitRippleMtl(char *name, NUMTL **result, VARIPTR *buffer, VARIPTR 
     }
     *result = NULL;
 }
-static WORLDINFO *RippleEffectsWorldInfoPc;
-static RIPPLE_EFFECT_PC *RippleEffectsCurrentPc;
+static WORLDINFO *RippleEffectsWorldInfoPc = 0;
+static RIPPLE_EFFECT_PC *RippleEffectsCurrentPc = 0;
 static const char *RippleEffectNamesPc[2] = {"water", "forcefield"};
 i32 __cdecl LookupRippleEffectIndex(char *name) {
     i32 i;
@@ -404,8 +404,8 @@ void __cdecl RippleEffects_Configure(WORLDINFO *world, char *config) {
 
 /* Original ripples.cpp private erase worklist. Native allocation derives its
  * pointer-array working view from the serialized caller count, clamped to64. */
-static RIPPLE_NODE_PC **RippleEraseListPc;
-static i32 RippleEraseCountPc;
+static RIPPLE_NODE_PC **RippleEraseListPc = 0;
+static i32 RippleEraseCountPc = 0;
 
 static void RippleLinkNodesPc(RIPPLE_NODE_PC *nodes, i32 count) {
     i32 i;

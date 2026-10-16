@@ -124,11 +124,11 @@ typedef struct TEXTURE_ANIM_MATERIAL_PC {
 STATIC_ASSERT(offsetof(TEXTURE_ANIM_MATERIAL_PC, texture_id) == 0x74);
 STATIC_ASSERT(offsetof(TEXTURE_ANIM_MATERIAL_PC, diffuse_texture_id) == 0xb8);
 
-static u32 TextureAnimationSignalsOffPc, TextureAnimationSignalsOnPc;
-static i32 TextureAnimationFrameTimePc;
-static u16 TextureAnimationActiveMaskPc;
+static u32 TextureAnimationSignalsOffPc = 0, TextureAnimationSignalsOnPc = 0;
+static i32 TextureAnimationFrameTimePc = 0;
+static u16 TextureAnimationActiveMaskPc = 0;
 extern NURAND TextureAnimationRandomPc;
-static u32 TextureAnimationPreviousSignalsPc;
+static u32 TextureAnimationPreviousSignalsPc = 0;
 extern u16 TextureAnimationScriptMaskPc;
 
 void __cdecl NuTexAnimSetSignals(u32 signals) {
@@ -407,14 +407,14 @@ void __cdecl NuTexAnimDestroy(TEXTURE_ANIMATION_PC *animation) {
         NuFree(animation, NuTextureAnimationSourcePathPC, 1690);
 }
 
-static TEXTURE_ANIM_PROGRAM_PC *TextureAnimationParseProgramPrivatePc;
-static char TextureAnimationLabelsPrivatePc[64][21];
-static i32 TextureAnimationLabelCountPrivatePc;
-static char TextureAnimationExternalLabelsPrivatePc[256][21];
-static i32 TextureAnimationExternalLabelCountPrivatePc;
-static i32 TextureAnimationLabelOffsetsPrivatePc[64];
+static TEXTURE_ANIM_PROGRAM_PC *TextureAnimationParseProgramPrivatePc = 0;
+static char TextureAnimationLabelsPrivatePc[64][21] = {0};
+static i32 TextureAnimationLabelCountPrivatePc = 0;
+static char TextureAnimationExternalLabelsPrivatePc[256][21] = {0};
+static i32 TextureAnimationExternalLabelCountPrivatePc = 0;
+static i32 TextureAnimationLabelOffsetsPrivatePc[64] = {0};
 
-static PC_TEXTURE_ANIM_LIST TextureAnimationListBufferPc[64];
+static PC_TEXTURE_ANIM_LIST TextureAnimationListBufferPc[64] = {0};
 
 void __cdecl NuTexAnimProgSysInit(void) {
     PC_TEXTURE_ANIM_LIST *list;

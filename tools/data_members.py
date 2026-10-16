@@ -142,8 +142,26 @@ def compare_members(rows, geometry, objects, records, bindings, target, pe=None)
         owner_size, offset, width = geometry[row["id"]]
         parent = obj.extract_data(owner)
         if (type(owner_size) is not int or owner_size <= 0 or type(offset) is not int or type(width) is not int or offset < 0 or width <= 0
-                or len(parent["bytes"]) != owner_size or offset + width > owner_size):
+                or len(parent["bytes"]) < owner_size or offset + width > owner_size):
             raise ValueError("Complete typed geometry does not fit complete COFF owner")
+        padding = len(parent["bytes"]) - owner_size
+        if padding:
+            # COFF intervals include alignment after the compiler-proven object.
+            section = parent["section"]
+            align_code = (section["characteristics"] >> 20) & 15 if section is not None else 0
+            alignment = 1 << (align_code - 1) if 1 <= align_code <= 14 else 0
+            physical_end = parent["offset"] + len(parent["bytes"])
+            boundary_alignment = alignment
+            while boundary_alignment and physical_end % boundary_alignment:
+                boundary_alignment //= 2
+            typed_end = parent["offset"] + owner_size
+            aligned_end = ((typed_end + boundary_alignment - 1) // boundary_alignment
+                           * boundary_alignment) if boundary_alignment else typed_end
+            if (not alignment or padding >= alignment or aligned_end != physical_end
+                    or any(parent["bytes"][owner_size:])
+                    or any(rel["type"] != 0 and rel["offset"] + 4 > owner_size
+                           for rel in parent["relocations"])):
+                raise ValueError("COFF surplus is not unrelocated zero alignment padding")
         if owner_row["size"] is not None and owner_row["size"] != owner_size:
             raise ValueError("Known parent extent differs from complete typed owner")
         address, known = row["original_address"], row["original_size"]
@@ -151,9 +169,9 @@ def compare_members(rows, geometry, objects, records, bindings, target, pe=None)
             raise ValueError("Original member VA/extent differs from complete typed field")
         image = number(target["image_base"])
         text = number(target["text_va"])
-        if not image <= bindings[owner] < bindings[owner] + owner_size <= image + number(target["image_size"]):
+        if not image <= bindings[owner] < bindings[owner] + len(parent["bytes"]) <= image + number(target["image_size"]):
             raise ValueError("Complete COFF parent placement outside original image")
-        if bindings[owner] < text + number(target["text_size"]) and bindings[owner] + owner_size > text:
+        if bindings[owner] < text + number(target["text_size"]) and bindings[owner] + len(parent["bytes"]) > text:
             raise ValueError("Complete data owner placement overlaps original code")
         if not image <= address < address + width <= image + number(target["image_size"]):
             raise ValueError("Member outside configured original image")
@@ -173,7 +191,8 @@ def compare_members(rows, geometry, objects, records, bindings, target, pe=None)
         results.append(dict(kind="data_member", id=row["id"], owner_symbol=owner, units=[unit],
             member_path=row["member_path"], ctype=row["ctype"], address=f"0x{address:08x}",
             target_size=known, compiler_owner_size=owner_size, compiler_offset=offset,
-            compiler_member_size=width, coff_definition=False, physical_definition_credit=0,
+            compiler_member_size=width, coff_owner_span_size=len(parent["bytes"]),
+            coff_owner_padding_size=padding, coff_definition=False, physical_definition_credit=0,
             exact_match=bool(known is not None and equal),
             status="unknown original size" if known is None else "checked" if original is None else "exact" if equal else "different",
             base_sha256=digest(member), target_sha256=digest(original) if original is not None else None,

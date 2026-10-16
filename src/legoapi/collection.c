@@ -1,8 +1,8 @@
 #include "saga.h"
 
-static i32 CollectCount;
-static COLLECTID_PC *CollectList;
-COLLECTID_PC *TempCollectID;
+static i32 CollectCount = 0;
+static COLLECTID_PC *CollectList = 0;
+COLLECTID_PC *TempCollectID = 0;
 
 i32 __cdecl InCollectList_Index(i32 id, COLLECTID_PC *list, i32 count) {
     i32 index;

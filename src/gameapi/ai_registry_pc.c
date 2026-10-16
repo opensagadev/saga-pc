@@ -2415,7 +2415,7 @@ AICONDITIONDEF_PC api_aiconditiondefs[50] = {
 #pragma data_seg()
 
 #pragma bss_seg(".bss$game_aiactiondefs")
-AIACTIONDEF_PC *game_aiactiondefs;
+AIACTIONDEF_PC *game_aiactiondefs = 0;
 #pragma bss_seg(".bss$game_aiconditiondefs")
-AICONDITIONDEF_PC *game_aiconditiondefs;
+AICONDITIONDEF_PC *game_aiconditiondefs = 0;
 #pragma bss_seg()

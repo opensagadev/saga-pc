@@ -6,7 +6,7 @@
 extern const char LevelObjectNamePc00754364[20];
 extern const char LevelObjectNamePc00754378[21];
 extern const char GizmoRegistrySpinnerNamePc[8];
-nuhspecial_s thingsSceneArm;
+nuhspecial_s thingsSceneArm = {0};
 STATIC_ASSERT(sizeof(thingsSceneArm) == 12);
 STATIC_ASSERT(sizeof(GIZSPINNER_s) == 0x304);
 STATIC_ASSERT(offsetof(GIZSPINNER_s, name) == 0x40);

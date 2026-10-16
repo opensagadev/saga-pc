@@ -1,6 +1,6 @@
 #include "saga.h"
 
-NETMESSAGE_PC::MessageData NETMESSAGE_PC::sm_poolMessageData[512];
+NETMESSAGE_PC::MessageData NETMESSAGE_PC::sm_poolMessageData[512] = {0};
 NETMESSAGE_PC::NETMESSAGE_PC(u32 offset) {
     MessageData *entry = sm_poolMessageData;
     for (; entry != sm_poolMessageData + 512; ++entry)

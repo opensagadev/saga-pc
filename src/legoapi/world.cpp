@@ -1595,8 +1595,8 @@ extern "C" {
     void __cdecl Door_Reset(void);
     void __cdecl NuSpecialSetVisibility(NUSPECIALHANDLE *, i32);
 }
-static i32 PicturesNumLevelsPc;
-static NUVEC TitlesStartPositionPc;
+static i32 PicturesNumLevelsPc = 0;
+static NUVEC TitlesStartPositionPc = {0};
 STATIC_ASSERT(offsetof(WORLDINFO, current_gscn) == 0x13c);
 STATIC_ASSERT(offsetof(WORLDINFO, secondary_gscn) == 0x140);
 STATIC_ASSERT(offsetof(PLAYERPROGRESS, active) == 6);

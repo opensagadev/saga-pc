@@ -155,7 +155,7 @@ STATIC_ASSERT(offsetof(USEFUL_MATERIAL_PC, attributes) == 0x40);
 
 extern "C" {
     extern NUMTL *FadeMtl2;
-    NUMTL *SolidMtl;
+    NUMTL *SolidMtl = 0;
     void __cdecl NuRndrGradRect2di(i32, i32, i32, i32, u32 *, NUMTL *);
 }
 

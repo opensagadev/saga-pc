@@ -56,9 +56,9 @@ template <typename T> T *LightObjectPool<T>::allocate() {
     }
     return NULL;
 }
-static LightObjectPool<NUDISPLAYLISTITEM> dlistItemPool;
-static LightObjectPool<PC_SPECIAL_SHADOW_LIGHT> dynamicLightPool;
-static LightObjectPool<NURNDRLIBSTATE> rndrStatePool;
+static LightObjectPool<NUDISPLAYLISTITEM> dlistItemPool = {0};
+static LightObjectPool<PC_SPECIAL_SHADOW_LIGHT> dynamicLightPool = {0};
+static LightObjectPool<NURNDRLIBSTATE> rndrStatePool = {0};
 STATIC_ASSERT(sizeof(dlistItemPool) == 0x88);
 STATIC_ASSERT(sizeof(dynamicLightPool) == 0x4188);
 STATIC_ASSERT(sizeof(rndrStatePool) == 0x208);

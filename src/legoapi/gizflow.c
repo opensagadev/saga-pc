@@ -487,23 +487,23 @@ STATIC_ASSERT(offsetof(GIZFLOW_BOX_LOADER_PREFIX_PC, assist_id) == 4);
 STATIC_ASSERT(sizeof(((GIZFLOW_BOX_LOADER_PREFIX_PC *)0)->assist_id) == 1);
 STATIC_ASSERT(offsetof(GIZFLOW_BOX_LOADER_PREFIX_PC, state_flags) == 0xa);
 STATIC_ASSERT(sizeof(((GIZFLOW_BOX_LOADER_PREFIX_PC *)0)->state_flags) == 2);
-static VARIPTR *load_buff;
-static VARIPTR *load_endbuff;
-static FLOWBOX_PC *load_flowbox;
-static i32 load_conditiontype;
-static u8 load_conditionParam;
-static char load_gizmoname[32];
-static GIZFLOW_PC *load_gizflow;
-static i32 load_gizmotype;
-static i32 load_numgizmos;
-static u16 load_g_flags;
-static i8 load_t_randomTime;
-static float load_t_time;
-static i32 load_r_noutputs;
-static i32 load_r_outputChance[8];
-static i32 load_nflowboxes;
-static char load_name[32];
-GIZACTIONDEF_PC *gizactiondefs;
+static VARIPTR *load_buff = 0;
+static VARIPTR *load_endbuff = 0;
+static FLOWBOX_PC *load_flowbox = 0;
+static i32 load_conditiontype = 0;
+static u8 load_conditionParam = 0;
+static char load_gizmoname[32] = {0};
+static GIZFLOW_PC *load_gizflow = 0;
+static i32 load_gizmotype = 0;
+static i32 load_numgizmos = 0;
+static u16 load_g_flags = 0;
+static i8 load_t_randomTime = 0;
+static float load_t_time = 0;
+static i32 load_r_noutputs = 0;
+static i32 load_r_outputChance[8] = {0};
+static i32 load_nflowboxes = 0;
+static char load_name[32] = {0};
+GIZACTIONDEF_PC *gizactiondefs = 0;
 
 static void GizFlowConfigGizmoTypePc(NUFPAR_PC *parser) {
 
@@ -657,13 +657,13 @@ struct GIZFLOW_REMAP_PC {
 STATIC_ASSERT(sizeof(GIZFLOW_REMAP_PC) == 0x70);
 STATIC_ASSERT(offsetof(GIZFLOW_REMAP_PC, children) == 0x20);
 STATIC_ASSERT(offsetof(GIZFLOW_REMAP_PC, parent_outputs) == 0x60);
-static GIZFLOW_REMAP_PC *remap;
-static i32 numRemaps;
-static i32 load_nparents;
-static i32 load_nchildren;
-static i32 load_parents[16];
-static i32 load_children[32];
-static u8 load_parent_output_ix[16];
+static GIZFLOW_REMAP_PC *remap = 0;
+static i32 numRemaps = 0;
+static i32 load_nparents = 0;
+static i32 load_nchildren = 0;
+static i32 load_parents[16] = {0};
+static i32 load_children[32] = {0};
+static u8 load_parent_output_ix[16] = {0};
 
 static void GizFlowConfigRemapChildrenPc(i32 id) {
     i32 i;

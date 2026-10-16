@@ -41,8 +41,8 @@ i32 __cdecl NuRndrStateUpdateCameraState(void) {
 
 #include <string.h>
 
-static NUMTX RndrStateTransformPc;
-static NUMTX RndrStateScaledTransformPc;
+static NUMTX RndrStateTransformPc = {0};
+static NUMTX RndrStateScaledTransformPc = {0};
 static f32 RndrStateTransformScalePc = 1.0f;
 STATIC_ASSERT(offsetof(NUGLOBALRNDRSTATE_PC, counter_0020) == 0x20);
 STATIC_ASSERT(offsetof(NUGLOBALRNDRSTATE_PC, fog_id) == 0x2e);

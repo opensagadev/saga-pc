@@ -44,7 +44,7 @@ STATIC_ASSERT(sizeof(AIONCEATTACKER_PC) == 8);
 STATIC_ASSERT(offsetof(AIONCEATTACKER_PC, distance) == 4);
 
 #pragma bss_seg(".bss$AtOnce_attackingPlayer")
-static AIONCEATTACKER_PC AtOnce_attackingPlayer[8][17];
+static AIONCEATTACKER_PC AtOnce_attackingPlayer[8][17] = {0};
 #pragma bss_seg()
 #pragma data_seg(".data$AtOnce_attackersPerRow")
 static i32 AtOnce_attackersPerRow = 32;

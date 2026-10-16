@@ -547,8 +547,8 @@ typedef struct world_force_sfx_pc_s {
 } WORLD_FORCE_SFX_PC;
 STATIC_ASSERT(offsetof(WORLD_FORCE_SFX_PC, force_system) == 0x46ac);
 static i32 GizForceSFX_load_version = 99999;
-static FORCE_SFX_CONFIG_PC *GizForceSFX_force;
-static WORLD_FORCE_SFX_PC *GizForceSFX_worldinfo;
+static FORCE_SFX_CONFIG_PC *GizForceSFX_force = 0;
+static WORLD_FORCE_SFX_PC *GizForceSFX_worldinfo = 0;
 static FORCE_SFX_CONFIG_PC *FindForceForSfxPc(WORLD_FORCE_SFX_PC *world, char *name) {
     FORCE_SFX_SYSTEM_PC *system = world->force_system;
     FORCE_SFX_CONFIG_PC *force;

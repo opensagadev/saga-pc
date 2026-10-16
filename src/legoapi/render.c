@@ -4,7 +4,7 @@
 
 extern f32 DrawStatusScaleXPc, DrawStatusScaleYPc;
 void __cdecl NuQFntSetMtx(VUFNT *, NUMTX *);
-static NUMTX RenderStatusMatrixPrivate;
+static NUMTX RenderStatusMatrixPrivate = {0};
 void __cdecl DrawStatusText(char *text, u16 angle, f32 x, f32 y, f32 scale, u32 colour, i32 alignment) {
     NUVEC origin = {0.0f, 0.0f, 800.0f};
     NUVEC position = {x * DrawStatusScaleXPc, y * DrawStatusScaleYPc, 0.0f};
@@ -465,9 +465,9 @@ void DrawAlphaGrid(i32 rows, i32 cols, RENDER_POST_BLOOM_READER_PC *parameters) 
     NUCAMERA camera;
     f32 brightness;
     static i32 first = 1;
-    static f32 saved_fov;
-    static f32 adjacent;
-    static i32 row, col;
+    static f32 saved_fov = 0;
+    static f32 adjacent = 0;
+    static i32 row = 0, col = 0;
     NuCameraGet(&camera);
     if (first) {
         f32 half_fov = 0.5f * camera.fov;

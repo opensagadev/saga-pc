@@ -731,7 +731,7 @@ extern "C" void __cdecl PostBlur7x7DispatchPc(GRAPHICS_RENDER_TEXTURE_PC *source
 
 extern "C" {
 #pragma bss_seg(".bss$PostBlurInputBiasPc")
-    f32 PostBlurInputBiasPc;
+    f32 PostBlurInputBiasPc = 0;
 #pragma bss_seg()
 }
 

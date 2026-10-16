@@ -1,6 +1,6 @@
 #include "saga.h"
 
-u32 fseed;
+u32 fseed = 0;
 static NURAND global_rand = {1};
 
 i32 NuRand(NURAND *rand) {

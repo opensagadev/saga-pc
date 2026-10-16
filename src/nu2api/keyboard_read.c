@@ -132,8 +132,8 @@ static void cbGradChange(void) {
 }
 
 i32 cbInteractMenuTitle(edui_interact_s *interact) {
-    static f32 offsetx;
-    static f32 offsety;
+    static f32 offsetx = 0;
+    static f32 offsety = 0;
     i32 result = (edui_cursor_buttons & EDUI_CURSOR_PRIMARY) != 0;
     eduimenu_s *menu = interact->menu;
     if (!(menu->flags & 1)) {

@@ -1,7 +1,7 @@
 #include "saga.h"
 
 /* Original episodeVI.cpp private owner, PC 0x0088a668, two player timers. */
-static f32 slowDownTimer[2];
+static f32 slowDownTimer[2] = {0};
 
 f32 __cdecl DeathStar2BattleFire_GetSlowDownMul(GAMEOBJECT *object) {
     i32 player;

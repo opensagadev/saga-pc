@@ -906,13 +906,14 @@ STATIC_ASSERT(offsetof(CUSTOM_MATERIAL_UPDATE_PC, material_tag) == 0x9a);
 STATIC_ASSERT(offsetof(WORLDINFO, customiser_resources) == 0x5120);
 STATIC_ASSERT(offsetof(NUMTL, texture_id) == 0x74);
 
-static CUSTOM_PIECE_ANIM_PC CustomiseArmsAnimPc[2], CustomiseLegsAnimPc[2], CustomiseHeadAnimPc[2];
-static u16 CustomiseTiltXPc[2], CustomiseBobPc[2], CustomiseTiltZPc[2], CustomiseRotYPc[2], CustomiseYRotPc[2];
-static f32 CustomiseMenuTimePc[2];
-static i32 CustomiseMenuYPc[2];
-static NUVEC CustomiseNoHatPosPc[2];
-static f32 CustomiseNameAlphaPc;
-i32 customiser_quit;
+static CUSTOM_PIECE_ANIM_PC CustomiseArmsAnimPc[2] = {0}, CustomiseLegsAnimPc[2] = {0}, CustomiseHeadAnimPc[2] = {0};
+static u16 CustomiseTiltXPc[2] = {0}, CustomiseBobPc[2] = {0}, CustomiseTiltZPc[2] = {0}, CustomiseRotYPc[2] = {0},
+           CustomiseYRotPc[2] = {0};
+static f32 CustomiseMenuTimePc[2] = {0};
+static i32 CustomiseMenuYPc[2] = {0};
+static NUVEC CustomiseNoHatPosPc[2] = {0};
+static f32 CustomiseNameAlphaPc = 0;
+i32 customiser_quit = 0;
 static f32 CustomiseHeadOffsetPc = 0.21f;
 /* Canonical existing InitAsciiLeftPc, Game.customiser_start and AddGameMsg_Default are reused. */
 
@@ -1077,7 +1078,7 @@ void __cdecl Customiser_Update(CUSTOMISER_LAYERS_PC *input, WORLDINFO *world) {
 /* Append to customise.c after existing update/runtime types and state. */
 #include <stdio.h>
 extern NUVEC CustomisePos[2];
-static f32 CustomiseNameBoardTMulPc[2], CustomiseNameBoardMulPc[2], CustomiseNameLetterBlipScalePc[2];
+static f32 CustomiseNameBoardTMulPc[2] = {0}, CustomiseNameBoardMulPc[2] = {0}, CustomiseNameLetterBlipScalePc[2] = {0};
 static i32 CustomiserUseBigScenesPc = 1;
 void __cdecl Customiser_SetNameAndIcon(CUSTOMISER_LAYERS_PC *, i32);
 
@@ -1448,7 +1449,7 @@ void __cdecl Customiser_SetNameAndIcon(CUSTOMISER_LAYERS_PC *input, i32 index) {
     }
 }
 
-static NUVEC CustomiseScreenPosPc[2];
+static NUVEC CustomiseScreenPosPc[2] = {0};
 /* 004243b0 / 42 */
 void __cdecl Customiser_TransformToPanel(CUSTOMISER_LAYERS_PC *unused) {
     (void)unused;

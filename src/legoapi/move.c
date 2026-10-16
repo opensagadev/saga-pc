@@ -1040,7 +1040,7 @@ static i32 MovementArcSine(f32 value) {
     return (i32)(polynomial * (f64)10430.4f);
 }
 
-static f32 magdif;
+static f32 magdif = 0;
 
 void __cdecl VehicleCollisionCode(GAMEOBJECT *object) {
     i32 speeder_level;

@@ -51,10 +51,10 @@ STATIC_ASSERT(offsetof(AISCRIPT_CONST_RECORD_PC, default_val) == 32);
 STATIC_ASSERT(offsetof(AICONDITION_PC, next_state_name) == 0x20);
 STATIC_ASSERT(offsetof(NUFPCOMJMP, keyword) == 0);
 
-static void *AIScriptLoadPakPc;
-static char *AIScriptLoadPathPc;
-static AISCRIPT_CONST_RECORD_PC AIScriptConstantRecordsPc[8];
-static i32 AIScriptConstCursorPc;
+static void *AIScriptLoadPakPc = 0;
+static char *AIScriptLoadPathPc = 0;
+static AISCRIPT_CONST_RECORD_PC AIScriptConstantRecordsPc[8] = {0};
+static i32 AIScriptConstCursorPc = 0;
 
 static char *AIScriptCopyStringPc(char *text, VARIPTR *buffer, VARIPTR *end);
 static void *AIScriptBufferAlloc(VARIPTR *buf, VARIPTR *buf_end, u32 size);
@@ -569,9 +569,9 @@ extern AICONDITIONDEF_PC *game_aiconditiondefs;
 extern AIACTIONDEF_PC api_aiactiondefs[];
 extern AICONDITIONDEF_PC api_aiconditiondefs[];
 
-static i32 ExpressionRequiredNameLookup;
-static i32 ExpressionNameLookupFailed;
-i32 AiParseExpressionFailed;
+static i32 ExpressionRequiredNameLookup = 0;
+static i32 ExpressionNameLookupFailed = 0;
+i32 AiParseExpressionFailed = 0;
 
 static i32 AiParseExpressionNameLoopup(char *name, f32 *float_out, i32 *int_out) {
     f32 value;

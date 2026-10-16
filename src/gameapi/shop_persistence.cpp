@@ -32,8 +32,8 @@ extern "C" {
 #else
     char SaveCreateFolderPathPc[256] = {0};
 #endif
-    u8 PcSaveHeaderMetadataPc[16];
-    i32 saveload_slotid;
+    u8 PcSaveHeaderMetadataPc[16] = {0};
+    i32 saveload_slotid = 0;
     extern i32 SaveloadPendingPc;
     extern u32 SaveloadStartedTickPc;
     extern i32 saveload_slotused[6];

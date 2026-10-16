@@ -54,7 +54,7 @@ extern "C" {
     void __cdecl ReleaseAllTakeOvers(void);
     void __cdecl Mission_Clear(MISSIONSYS_s *mission_sys);
     void __cdecl RestoreGameCut(void);
-    TIMER BonusTimer;
+    TIMER BonusTimer = {0};
 
     void __cdecl NuAllocDumpRecords(i32 min_size);
     void __cdecl WorldInfo_DrawScene(WORLDINFO *world);
@@ -81,10 +81,10 @@ extern "C" {
     void __cdecl NuLgtLaserDraw(i32 paused);
     void __cdecl SpeedBlur_Apply(WORLDINFO *world);
 
-    u8 NuAllocDumpOnLevelPc;
-    i32 AreaGlobalsChallengeCountPc;
-    i32 NuMainSkipCutBordersPc;
-    i64 frameout_count;
+    u8 NuAllocDumpOnLevelPc = 0;
+    i32 AreaGlobalsChallengeCountPc = 0;
+    i32 NuMainSkipCutBordersPc = 0;
+    i64 frameout_count = 0;
     extern i16 TextIdPc8810c0;
     char *Trailer[6] = {"demointro", (char *)&tINTRO, NULL, "indy", (char *)&TextIdPc8810c0, NULL};
 }
@@ -451,7 +451,7 @@ STATIC_ASSERT(offsetof(PLAYERPROGRESS, field_7) == 7);
 STATIC_ASSERT(offsetof(PLAYERPROGRESS, coins) == 0);
 
 extern "C" {
-    u8 StatusPlayerActivePc[8];
+    u8 StatusPlayerActivePc[8] = {0};
     void __cdecl InitStatusScreen(WORLDINFO *);
     void __cdecl NuMainStatusHelperPc(STATUSPACKET_s *);
     void __cdecl MusicClearAll(void);

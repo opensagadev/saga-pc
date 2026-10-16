@@ -7,7 +7,7 @@ STATIC_ASSERT(offsetof(CHARPIVOT_PC, start_frame) == 8);
 STATIC_ASSERT(offsetof(CHARPIVOT_PC, end_frame) == 0xc);
 STATIC_ASSERT(offsetof(CHARPIVOT_PC, character_id) == 0x10);
 
-static CHARPIVOT_PC *CharPivot;
+static CHARPIVOT_PC *CharPivot = 0;
 
 void __cdecl CharPivot_Init(CHARPIVOT_PC *table) {
     CharPivot = table;

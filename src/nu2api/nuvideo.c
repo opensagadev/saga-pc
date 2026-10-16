@@ -145,9 +145,9 @@ static void NuDebugMsgFunction(char *format, ...) {
     }
 }
 
-GAMECAMERA GameCamera;
+GAMECAMERA GameCamera = {0};
 GAMECAMERA *GameCam = &GameCamera;
-i32 part_debris_count;
+i32 part_debris_count = 0;
 
 STATIC_ASSERT(offsetof(GAMEOBJECT, pad) == 0xca4);
 STATIC_ASSERT(offsetof(GAMEPAD_PC, bound_pad) == 0);

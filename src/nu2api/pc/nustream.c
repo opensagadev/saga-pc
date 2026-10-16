@@ -1,12 +1,12 @@
 #include "saga.h"
 #include <string.h>
 
-static VARIPTR RndrStreamFirstPc;
-static VARIPTR RndrStreamSecondPc;
-static i32 RndrStreamSizePc;
-static i32 RndrStreamIndexPc;
-static u32 RndrStreamUsedPc;
-static u32 RndrStreamMaxUsedPc;
+static VARIPTR RndrStreamFirstPc = {0};
+static VARIPTR RndrStreamSecondPc = {0};
+static i32 RndrStreamSizePc = 0;
+static i32 RndrStreamIndexPc = 0;
+static u32 RndrStreamUsedPc = 0;
+static u32 RndrStreamMaxUsedPc = 0;
 
 static void __cdecl NuRndrResetStreamBufferPc(void) {
     if (RndrStreamIndexPc == 0) {

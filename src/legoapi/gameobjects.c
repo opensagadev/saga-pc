@@ -5395,7 +5395,7 @@ void __cdecl GameLoadCharacterModels(APICHARACTERMODELLIST *list, i32 append_mod
     APILoadCharacterModels(list, append_models, buffer, *end, area_models);
 }
 
-i32 AutoSaveIconPendingPc;
+i32 AutoSaveIconPendingPc = 0;
 
 void __cdecl DrawAutoSaveIcon(void) {
     AutoSaveIconPendingPc = 1;
