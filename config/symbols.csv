@@ -14929,7 +14929,7 @@ address    , symbol                                                         , si
 0x76eff8,__real@c060600000000000,,
 0x76f000,??_C@_04CBBONHGF@pcmR?$AA@,,
 0x76f008,??_C@_04PFFPOILK@pcmL?$AA@,,
-0x76f010,_crc_lookup,,const ogg_uint32_t[256]
+0x76f010,_crc_lookup,1024,const ogg_uint32_t[256]
 0x76f410,??_C@_04JJIBNLPC@OggS?$AA@,5,const char[5]
 0x76f418,??_C@_06EFKACOKC@vorbis?$AA@,,
 0x76f420,??_C@_0BO@DBKHJHOI@Xiph?4Org?5libVorbis?5I?520070622?$AA@,,
@@ -19362,7 +19362,7 @@ address    , symbol                                                         , si
 0x811048,_OV_CALLBACKS_STREAMONLY_NOCLOSE,,
 0x811058,_analysis_noisy,,
 0x811060,_ATH,,
-0x8111c0,_tonemasks,,
+0x8111c0,_tonemasks,22848,
 0x816b00,_stereo_threshholds,,
 0x816b48,_stereo_threshholds_limited,,
 0x816b90,_FLOOR1_fromdB_INV_LOOKUP,,
@@ -19384,8 +19384,8 @@ address    , symbol                                                         , si
 0x8173d8,_vwin512,,
 0x8177d8,_vwin1024,,
 0x817fd8,_vwin2048,,
-0x818fd8,_vwin4096,,
-0x81afd8,_vwin8192,,
+0x818fd8,_vwin4096,8192,
+0x81afd8,_vwin8192,16384,
 0x81efd8,_vwin,,
 0x81eff8,_mapping0_exportbundle,,
 0x81f00c,_residue0_exportbundle,,
@@ -22505,7 +22505,7 @@ address    , symbol                                                         , si
 0x2857250,_PCSpecialProjectionScale,,NUMTX
 0x2857290,_PostBlurInputBiasPc,4,f32 private BSS scalar only native read60635a
 0x2857294,_RenderFrameShaderTimePc,,f32
-0x02868400,?sm_poolMessageData@NETMESSAGE_PC@@2PAUMessageData@1@A,,NETMESSAGE_PC::MessageData[512]
+0x02868400,?sm_poolMessageData@NETMESSAGE_PC@@2PAUMessageData@1@A,616448,NETMESSAGE_PC::MessageData[512]
 0x2900a74,?initial_colours@?1??eduiCreateMessageMenu@@9@9,,
 0x2900a74,_edui_messagemenu,4,struct eduimenu_s *
 0x2900a7c  , _edfile_buffer_pointer                                         , 4     , i32
