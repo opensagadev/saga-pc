@@ -4236,7 +4236,7 @@ address    , symbol                                                         , si
 0x58ecf0,_GizBuildIt_AtEnd,23,
 0x58ed40,_GizBuildIt_SetHeadTarget,76,
 0x58ed90,_GizMoveAttractoBuildItPiece,474,
-0x58ef70,_GizDrawBuildItPiece,629,
+0x58ef70,_GizDrawBuildItPiece,629,"void __cdecl(GAMEOBJECT *,i32)"
 0x58f1f0,_GizGetBuildItPlayerPos,502,"void __cdecl(GAMEOBJECT *,NUVEC *,NUVEC *)"
 0x58f3f0,_GizBuildItPushAwayFromStart,1774,"void __cdecl(GAMEOBJECT *,void *)"
 0x58fae0,_GizBuildItPushAwayFromEnd,918,

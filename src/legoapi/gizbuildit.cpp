@@ -83,3 +83,58 @@ extern "C" void GizMoveAttractoBuildItPiece(GIZBUILDIT_s *buildit_pointer, GAMEA
     else
         NuSpecialSetDrawMtx(&piece->special, draw);
 }
+
+STATIC_ASSERT(offsetof(GIZBUILDIT_PC, step_timer) == 0x44);
+STATIC_ASSERT(offsetof(GIZBUILDIT_PC, step_duration) == 0x48);
+STATIC_ASSERT(offsetof(GIZBUILDIT_PC, anim_object_count) == 0x6c);
+STATIC_ASSERT(offsetof(GIZBUILDIT_PC, build_state) == 0x6d);
+STATIC_ASSERT(offsetof(GIZBUILDIT_PC, builders_active) == 0x6e);
+STATIC_ASSERT(offsetof(GIZBUILDIT_PC, built_object_count) == 0x6f);
+STATIC_ASSERT(offsetof(GAMEANIMOBJ, object_data) == 0x24);
+STATIC_ASSERT(offsetof(GIZBUILDITANIMDATA_s, end_mtx) == 0x40);
+STATIC_ASSERT(offsetof(GIZBUILDITANIMDATA_s, draw_mtx) == 0x80);
+STATIC_ASSERT(offsetof(GAMEOBJECT, reflection_height) == 0x1014);
+STATIC_ASSERT(offsetof(GAMEOBJECT, reflection_enabled) == 0x107b);
+STATIC_ASSERT(offsetof(LEVELDATA_PC, reflection_y) == 0xc0);
+
+extern "C" void __cdecl GizDrawBuildItPiece(GAMEOBJECT *object, i32 draw_reflection) {
+    GIZBUILDIT_PC *buildit = static_cast<GIZBUILDIT_PC *>(object->grapple);
+    if (buildit == NULL || buildit->builders_active == 0 || buildit->build_state != 0 ||
+        buildit->anim_object_count == 0)
+        return;
+    volatile f32 progress = 1.0 - (f64)buildit->step_timer / (f64)buildit->step_duration;
+    GAMEANIMOBJ *piece = buildit->anim_objects[buildit->built_object_count];
+    GIZBUILDITANIMDATA_s *data = static_cast<GIZBUILDITANIMDATA_s *>(piece->object_data);
+    NUMTX matrix = data->start_mtx;
+    if (progress > 0.0f) {
+        NUMTX from = matrix;
+        NUMTX to = data->end_mtx;
+        NUMTX result;
+        NUQUAT from_rotation, to_rotation, rotation;
+        from.m30 = from.m31 = from.m32 = 0.0f;
+        to.m30 = to.m31 = to.m32 = 0.0f;
+        NuMtxToQuat(&from, &from_rotation);
+        NuMtxToQuat(&to, &to_rotation);
+        NuQuatSlerp(&rotation, &from_rotation, &to_rotation, progress);
+        NuQuatToMtx(&rotation, &result);
+        result.m30 = ((f64)data->end_mtx.m30 - matrix.m30) * (f64)progress + matrix.m30;
+        result.m31 = ((f64)data->end_mtx.m31 - matrix.m31) * (f64)progress + matrix.m31 +
+                     (f64)NU_SIN_LUT((f64)progress * 32768.0) * (f64)0.1f;
+        result.m32 = ((f64)data->end_mtx.m32 - matrix.m32) * (f64)progress + matrix.m32;
+        matrix = result;
+    }
+    if (buildit->linked_buildit != NULL) {
+        data->draw_mtx = matrix;
+        return;
+    }
+    NuSpecialDrawAt(&piece->special, &matrix);
+    if (draw_reflection != 0) {
+        NUMTX reflected;
+        if (MatrixReflection(&matrix, object->reflection_enabled, object->reflection_height,
+                             WORLD->current_level->reflection_y, &reflected) != 0) {
+            NuRndrStartReflectionRender(0);
+            NuSpecialDrawAt(&piece->special, &reflected);
+            NuRndrEndReflectionRender();
+        }
+    }
+}
