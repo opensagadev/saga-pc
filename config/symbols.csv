@@ -1220,6 +1220,9 @@ address    , symbol                                                         , si
 0x482310,?LedgeAttachPointPc@@YAPAULEDGE_MOTION_PC@@PAUWORLDINFO_s@@PAUnuvec_s@@11PAG@Z,1165,
 0x4827a0,_Ledge_MoveCode,1105,"void __cdecl(WORLDINFO *, GAMEOBJECT *)"
 0x00482c10,_StatusScoreRatioPc,54,"f32 __cdecl(f32, f32)"
+0x482c70,?StatusMiniKitRotateXPc@@YAXPAUnumtx_s@@H@Z,217,"static void (NUMTX *, i32)"
+0x482d50,?StatusMiniKitRotateYPc@@YAXPAUnumtx_s@@H@Z,219,"static void (NUMTX *, i32)"
+0x482e30,?StatusMiniKitRotateZPc@@YAXPAUnumtx_s@@H@Z,215,"static void (NUMTX *, i32)"
 0x00482f10,_SetDrawGoldBrick,43,"void __cdecl(STATUSPACKET_s *, i32)"
 0x482f40,_DrawStatusText,583,"void __cdecl (char *,u16,f32,f32,f32,u32,i32)"
 0x483190,_DrawStatusTextFraction,1265,
@@ -1234,7 +1237,7 @@ address    , symbol                                                         , si
 0x00483c10,_StatusPacketReset,96,void __cdecl(STATUSPACKET_s *)
 0x00483c70,_InitStatusScreen,5018,void __cdecl(WORLDINFO *)
 0x004850e0,_StatusIconsOnOff,58,f32 __cdecl(f32)
-0x4853f0,_DrawStatusMiniKit,944,
+0x4851b0,_DrawStatusMiniKit,1520,"void __cdecl(f32, f32, f32, f32, f32, i32, STATUSPACKET_s *, f32)"
 0x4857d0,_AddStatusMiniKitParts,913,
 0x485b70,_Status_DrawPromptMenu,1124,
 0x485fe0,_DrawBonusTime,530,"void __cdecl(STATUSPACKET_s *, f32, i32)"
@@ -11840,7 +11843,10 @@ address    , symbol                                                         , si
 0x7598f8,__real@406f400000000000,8,const f64
 0x759900,__real@4079000000000000,8,const f64
 0x00759908,__real@4f6e6b28,4,const f32
-0x759920,__real@4001eb8520000000,,
+0x759910,__real@3ffdeb8520000000,8,f64
+0x759918,__real@3fef5c29,4,f32
+0x759920,__real@4001eb8520000000,8,f64
+0x759928,__real@400f5c29,4,f32
 0x75992c,__real@3ea66666,4,const f32
 0x00759950 , __real@3efae147                                                , 4     , f32
 0x00759954 , __real@3fb851ec                                                , 4     , f32
@@ -18235,6 +18241,7 @@ address    , symbol                                                         , si
 0x7fa4cc,_StatusGreenPc,4,i32
 0x7fa4dc,_DrawStatusScaleXPc,,f32
 0x7fa4e0,_DrawStatusScaleYPc,,f32
+0x7fa4e4,_StatusMiniKitDirectionOffsetPc,4,f32
 0x7fa4f4,_StatusBonusTimeYPc,4,f32
 0x007fa564 , _Tag_Mode                                                      , 4     , i32
 0x007fa568 , _TakeOverATATJumpScale                                         , 4     , f32
@@ -19903,12 +19910,14 @@ address    , symbol                                                         , si
 0x0087a1b0,_StatusNewCharacterIdsPc,16,i16[8]
 0x0087a1c0,_StatusCurrentMinikitPc,4,i32
 0x0087a1c4,_StatusCollectedSuitBitsPc,4,u32
+0x0087a1cc,_StatusMiniKitProgressPc,4,f32
 0x87a1f0,_iconalphaoverride,4,f32
 0x87a1f4,_goldbrickmsgcount,4,i32
 0x87a1f8,_StatusPlayerActivePc,8,u8[8]
 0x0087a200,_StatusGoldBrickStagePc,4,i32
 0x0087a204,_StatusDrawPlayerIconsPc,4,i32
 0x0087a34c,_StatusGoldBrickPhasePc,4,i32
+0x0087a350,_StatusMiniKitDrawCachePc,720,STATUS_MINIKIT_DRAW_CACHE_PC[10]
 0x87a620,_StatusStages,4,struct STATUS_STAGE_s *
 0x87a624,_status_prompt,4,i32
 0x87a648,_StatusPacket,332,STATUSPACKET_s

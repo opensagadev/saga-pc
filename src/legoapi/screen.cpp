@@ -569,3 +569,178 @@ void __cdecl GoldBrick_LSW_Draw(STATUS_STAGE_s *stage, STATUSPACKET_s *packet, i
         Game.gold_bricks > packet->previous_gold_bricks)
         iconalphaoverride = 0.0f;
 }
+
+static void StatusMiniKitRotateXPc(NUMTX *m, i32 a) {
+    f32 cosx = NuTrigTable[(((i32)((u32)a + 0x4000u)) >> 1) & 0x7fff];
+    f32 sinx = NuTrigTable[(a >> 1) & 0x7fff];
+    f32 m01 = m->m01;
+    f32 m11 = m->m11;
+    f32 m21 = m->m21;
+    f32 m31 = m->m31;
+
+    m->m01 = m01 * cosx - m->m02 * sinx;
+    m->m02 = m01 * sinx + m->m02 * cosx;
+    m->m11 = m11 * cosx - m->m12 * sinx;
+    m->m12 = m11 * sinx + m->m12 * cosx;
+    m->m21 = m21 * cosx - m->m22 * sinx;
+    m->m22 = m21 * sinx + m->m22 * cosx;
+    m->m31 = m31 * cosx - m->m32 * sinx;
+    m->m32 = m31 * sinx + m->m32 * cosx;
+}
+
+static void StatusMiniKitRotateYPc(NUMTX *m, i32 a) {
+    f32 cosx = NuTrigTable[(((i32)((u32)a + 0x4000u)) >> 1) & 0x7fff];
+    f32 sinx = NuTrigTable[(a >> 1) & 0x7fff];
+    f32 m00 = m->m00;
+    f32 m10 = m->m10;
+    f32 m20 = m->m20;
+    f32 m30 = m->m30;
+
+    m->m00 = m00 * cosx + m->m02 * sinx;
+    m->m02 = m->m02 * cosx - m00 * sinx;
+    m->m10 = m10 * cosx + m->m12 * sinx;
+    m->m12 = m->m12 * cosx - m10 * sinx;
+    m->m20 = m20 * cosx + m->m22 * sinx;
+    m->m22 = m->m22 * cosx - m20 * sinx;
+    m->m30 = m30 * cosx + m->m32 * sinx;
+    m->m32 = m->m32 * cosx - m30 * sinx;
+}
+
+static void StatusMiniKitRotateZPc(NUMTX *m, i32 a) {
+    f32 cosx = NuTrigTable[(((i32)((u32)a + 0x4000u)) >> 1) & 0x7fff];
+    f32 sinx = NuTrigTable[(a >> 1) & 0x7fff];
+    f32 m00 = m->m00;
+    f32 m10 = m->m10;
+    f32 m20 = m->m20;
+    f32 m30 = m->m30;
+
+    m->m00 = m00 * cosx - m->m01 * sinx;
+    m->m01 = m00 * sinx + m->m01 * cosx;
+    m->m10 = m10 * cosx - m->m11 * sinx;
+    m->m11 = m10 * sinx + m->m11 * cosx;
+    m->m20 = m20 * cosx - m->m21 * sinx;
+    m->m21 = m20 * sinx + m->m21 * cosx;
+    m->m30 = m30 * cosx - m->m31 * sinx;
+    m->m31 = m30 * sinx + m->m31 * cosx;
+}
+
+typedef struct status_world_minikit_reader_pc_s {
+    u8 unknown_0000[0x2968];
+    MINIKIT_PC minikit;
+} STATUS_WORLD_MINIKIT_READER_PC;
+STATIC_ASSERT(offsetof(STATUS_WORLD_MINIKIT_READER_PC, minikit) == 0x2968);
+
+extern "C" {
+    f32 StatusMiniKitDirectionOffsetPc = 0.035f;
+    f32 StatusMiniKitProgressPc = 0.0f;
+    STATUS_MINIKIT_DRAW_CACHE_PC StatusMiniKitDrawCachePc[10] = {0};
+}
+
+void __cdecl DrawStatusMiniKit(f32 x, f32 y, f32 z, f32 scale, f32 collected_scale, i32 max_pieces,
+                               STATUSPACKET_s *packet, f32 phase) {
+    STATUS_WORLD_MINIKIT_READER_PC *view = (STATUS_WORLD_MINIKIT_READER_PC *)WORLD;
+    if (view->minikit.scene == NULL || view->minikit.pieces == NULL)
+        return;
+    volatile f32 base_scale = scale;
+    volatile f32 previous_scale = collected_scale;
+    NUVEC base = {base_scale, base_scale, base_scale};
+    NUVEC collected = {previous_scale, previous_scale, previous_scale};
+    volatile NUVEC offset = v000;
+    i32 direction = (i8)view->minikit.pieces[StatusCurrentMinikitPc].direction;
+    if ((u32)direction <= 5u) {
+        volatile i32 angle = (i32)((f64)phase * 32768.0);
+        switch (direction) {
+            case 0:
+                offset.x =
+                    (f64)NuTrigTable[(angle >> 1) & 0x7fff] * (f64)StatusMiniKitDirectionOffsetPc + (f64)offset.x;
+                break;
+            case 1:
+                offset.x =
+                    (f64)offset.x - (f64)NuTrigTable[(angle >> 1) & 0x7fff] * (f64)StatusMiniKitDirectionOffsetPc;
+                break;
+            case 2:
+                offset.y =
+                    (f64)NuTrigTable[(angle >> 1) & 0x7fff] * (f64)StatusMiniKitDirectionOffsetPc + (f64)offset.y;
+                break;
+            case 3:
+                offset.y =
+                    (f64)offset.y - (f64)NuTrigTable[(angle >> 1) & 0x7fff] * (f64)StatusMiniKitDirectionOffsetPc;
+                break;
+            case 4:
+                offset.z =
+                    (f64)offset.z - (f64)NuTrigTable[(angle >> 1) & 0x7fff] * (f64)StatusMiniKitDirectionOffsetPc;
+                break;
+            case 5:
+                offset.z =
+                    (f64)NuTrigTable[(angle >> 1) & 0x7fff] * (f64)StatusMiniKitDirectionOffsetPc + (f64)offset.z;
+                break;
+        }
+    }
+    for (i32 index = 0; index < (i32)packet->minikit_max; ++index) {
+        view = (STATUS_WORLD_MINIKIT_READER_PC *)WORLD;
+        if (index >= (i32)view->minikit.piece_count || index >= max_pieces)
+            break;
+        NUMTX matrix = view->minikit.pieces[index].matrix;
+        if (index >= StatusCurrentMinikitPc) {
+            NuMtxScale(&matrix, &base);
+            volatile f32 progress = index == StatusCurrentMinikitPc ? StatusMiniKitProgressPc : 1.0f;
+            volatile i32 angle = (i32)(((f64)progress * 16384.0 + 49152.0) + 16384.0);
+            volatile f32 reveal = NuTrigTable[(angle >> 1) & 0x7fff];
+            view = (STATUS_WORLD_MINIKIT_READER_PC *)WORLD;
+            MINIKIT_PIECE_PC *piece = &view->minikit.pieces[index];
+            switch ((i8)piece->direction) {
+                case 0:
+                    matrix.m30 =
+                        (f64)matrix.m30 - ((f64)(i32)piece->direction_index * (f64)0.025f + 0.25) * (f64)reveal;
+                    break;
+                case 1:
+                    matrix.m30 =
+                        ((f64)(i32)piece->direction_index * (f64)0.025f + 0.25) * (f64)reveal + (f64)matrix.m30;
+                    break;
+                case 2:
+                    matrix.m31 =
+                        (f64)matrix.m31 - ((f64)(i32)piece->direction_index * (f64)0.025f + 0.25) * (f64)reveal;
+                    break;
+                case 3:
+                    matrix.m31 =
+                        ((f64)(i32)piece->direction_index * (f64)0.025f + 0.25) * (f64)reveal + (f64)matrix.m31;
+                    break;
+                case 4:
+                    matrix.m32 =
+                        ((f64)(i32)piece->direction_index * (f64)0.025f + 0.25) * (f64)reveal + (f64)matrix.m32;
+                    break;
+                case 5:
+                    matrix.m32 =
+                        (f64)matrix.m32 - ((f64)(i32)piece->direction_index * (f64)0.025f + 0.25) * (f64)reveal;
+                    break;
+            }
+        } else {
+            NuMtxScale(&matrix, &collected);
+        }
+        if (index <= StatusCurrentMinikitPc) {
+            matrix.m30 = (f64)matrix.m30 + (f64)offset.x;
+            matrix.m31 = (f64)matrix.m31 + (f64)offset.y;
+            matrix.m32 = (f64)matrix.m32 + (f64)offset.z;
+        }
+        volatile u16 rotation_y = (u16)((f64)NuFmod(GameTimer.time_elapsed, 2.0f) * 0.5 * 65536.0);
+        StatusMiniKitRotateYPc(&matrix, (i32)rotation_y);
+        volatile u16 phase_z = (u16)((f64)NuFmod(GameTimer.time_elapsed, 2.24f) / (f64)2.24f * 65536.0);
+        volatile u16 rotation_z = (u16)((f64)NuTrigTable[phase_z >> 1] * 2730.0);
+        StatusMiniKitRotateZPc(&matrix, (i32)rotation_z);
+        volatile u16 phase_x = (u16)((f64)NuFmod(GameTimer.time_elapsed, 1.87f) / (f64)1.87f * 65536.0);
+        volatile u16 rotation_x = (u16)((f64)NuTrigTable[phase_x >> 1] * 2730.0 - 5461.0);
+        StatusMiniKitRotateXPc(&matrix, (i32)rotation_x);
+        WORLDINFO *world = WORLD;
+        matrix.m30 = (f64)PANEL3DMULX * (f64)x + (f64)matrix.m30;
+        matrix.m31 = (f64)PANEL3DMULY * (f64)y + (f64)matrix.m31;
+        matrix.m32 = (f64)matrix.m32 + (f64)z;
+        if (index < 10) {
+            StatusMiniKitDrawCachePc[index].matrix = matrix;
+            StatusMiniKitDrawCachePc[index].piece = &((STATUS_WORLD_MINIKIT_READER_PC *)world)->minikit.pieces[index];
+            StatusMiniKitDrawCachePc[index].active = 1;
+        }
+        if (world->level_objects[206].active != 0)
+            DrawPanel3DObjectMtxNoAlpha(
+                (nuhspecial_s *)&((STATUS_WORLD_MINIKIT_READER_PC *)world)->minikit.pieces[index].special, &matrix);
+    }
+}

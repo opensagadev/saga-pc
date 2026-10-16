@@ -6237,6 +6237,17 @@ typedef struct instnugcutscene_s {
     u8 opaque_94[0x4];
 } INSTNUGCUTSCENE;
 STATIC_ASSERT(sizeof(NUMTX) == 0x40);
+STATIC_ASSERT(offsetof(NUMTX, m00) == 0x0);
+STATIC_ASSERT(offsetof(NUMTX, m01) == 0x4);
+STATIC_ASSERT(offsetof(NUMTX, m02) == 0x8);
+STATIC_ASSERT(offsetof(NUMTX, m10) == 0x10);
+STATIC_ASSERT(offsetof(NUMTX, m11) == 0x14);
+STATIC_ASSERT(offsetof(NUMTX, m12) == 0x18);
+STATIC_ASSERT(offsetof(NUMTX, m20) == 0x20);
+STATIC_ASSERT(offsetof(NUMTX, m21) == 0x24);
+STATIC_ASSERT(offsetof(NUMTX, m22) == 0x28);
+STATIC_ASSERT(offsetof(NUMTX, m31) == 0x34);
+STATIC_ASSERT(offsetof(NUMTX, m32) == 0x38);
 STATIC_ASSERT(offsetof(NUMTX, m30) == 0x30);
 STATIC_ASSERT(offsetof(NUMTX, m33) == 0x3c);
 
@@ -19337,6 +19348,15 @@ STATIC_ASSERT(offsetof(MINIKIT_PC, piece_count) == 8);
 STATIC_ASSERT(offsetof(MINIKIT_PC, area_index) == 9);
 STATIC_ASSERT(offsetof(MINIKIT_PC, model_id) == 0xa);
 STATIC_ASSERT(offsetof(MINIKIT_PC, shadow) == 0xc);
+typedef struct status_minikit_draw_cache_pc_s {
+    NUMTX matrix;
+    MINIKIT_PIECE_PC *piece;
+    i32 active;
+} STATUS_MINIKIT_DRAW_CACHE_PC;
+STATIC_ASSERT(sizeof(STATUS_MINIKIT_DRAW_CACHE_PC) == 0x48);
+STATIC_ASSERT(offsetof(STATUS_MINIKIT_DRAW_CACHE_PC, matrix) == 0);
+STATIC_ASSERT(offsetof(STATUS_MINIKIT_DRAW_CACHE_PC, piece) == 0x40);
+STATIC_ASSERT(offsetof(STATUS_MINIKIT_DRAW_CACHE_PC, active) == 0x44);
 #ifdef __cplusplus
 extern "C" {
 #endif
@@ -22430,6 +22450,9 @@ struct nuhspecial_s {
     struct nudisplay_special_pc_s *display_special;
 };
 STATIC_ASSERT(sizeof(struct nuhspecial_s) == 12);
+STATIC_ASSERT(offsetof(struct nuhspecial_s, scene) == 0);
+STATIC_ASSERT(offsetof(struct nuhspecial_s, special) == 4);
+STATIC_ASSERT(offsetof(struct nuhspecial_s, display_special) == 8);
 
 struct GIZFORCE_s {
     char name[16];
@@ -26062,6 +26085,10 @@ extern "C" {
     extern i32 StatusNewMinikitCountPc, StatusCurrentMinikitPc;
     extern i16 StatusNewCharacterIdsPc[8];
     extern u32 StatusCollectedSuitBitsPc;
+    extern f32 StatusMiniKitDirectionOffsetPc, StatusMiniKitProgressPc;
+    extern STATUS_MINIKIT_DRAW_CACHE_PC StatusMiniKitDrawCachePc[10];
+    void __cdecl DrawStatusMiniKit(f32, f32, f32, f32, f32, i32, STATUSPACKET_s *, f32);
+    i32 __cdecl DrawPanel3DObjectMtxNoAlpha(nuhspecial_s *, NUMTX *);
     extern i32 PauseSaveAndExitPc;
     extern TIMER BonusTimer, ChallengeTimer;
     extern MISSION_SAVE_READER_PC *Game_MissionSave;
