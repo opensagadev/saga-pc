@@ -5884,6 +5884,8 @@ address    , symbol                                                         , si
 0x60dbe0,?initResources@NuMainFilter@@UAEXXZ,281,native exactVT binding; unimplemented extent unclaimed
 0x60dd00,?initResources@NuDeferredFilter@@UAEXXZ,93,native exactVT binding; unimplemented extent unclaimed
 0x60dd60,?initResources@NuSpeedBlurFilter@@UAEXXZ,81,native exactVT binding; unimplemented extent unclaimed
+0x60ddc0,_NuMtlInitShaderResourcesPc,265,"void __cdecl(void)"
+0x60ded0,_NuMtlInitExPS,5,"void __cdecl(VARIPTR*)"
 0x6105b0,_refpack_init,211,
 0x617e20,_edmainGetCameraPc,6,NUCAMERA* current editor protocol pointer
 0x617e30,_edmainExtCamera,19,
@@ -14534,6 +14536,17 @@ address    , symbol                                                         , si
 0x7690b0,_PostShaderTokens7690b0,524,const DWORD[131]
 0x7692c0,_PostShaderTokens7692c0,700,const DWORD[175]
 0x769580,_PostShaderTokens769580,400,const DWORD[100]
+0x769710,_NuMaterialShaderTokens769710Pc,304,"const DWORD[76]"
+0x769840,_NuMaterialShaderTokens769840Pc,176,"const DWORD[44]"
+0x7698f0,_NuMaterialShaderTokens7698f0Pc,356,"const DWORD[89]"
+0x769a58,_NuMaterialShaderTokens769a58Pc,496,"const DWORD[124]"
+0x769c48,_NuMaterialShaderTokens769c48Pc,348,"const DWORD[87]"
+0x769da8,_NuMaterialShaderTokens769da8Pc,216,"const DWORD[54]"
+0x769e80,_NuMaterialShaderTokens769e80Pc,1048,"const DWORD[262]"
+0x76a298,_NuMaterialShaderTokens76a298Pc,304,"const DWORD[76]"
+0x76a3c8,_NuMaterialShaderTokens76a3c8Pc,364,"const DWORD[91]"
+0x76a538,_NuMaterialShaderTokens76a538Pc,172,"const DWORD[43]"
+0x76a5e8,_NuMaterialShaderTokens76a5e8Pc,176,"const DWORD[44]"
 0x76a698,_NuTextureSourcePathPC,55,const char[55]
 0x76a6d0,_NuTextureDdsExtensionPc,,const char[4]
 0x76a6d4,_NuTexturePhongCubePathPc,,const char[25]
@@ -14558,6 +14571,7 @@ address    , symbol                                                         , si
 0x76a8b4,??_7logic_error@std@@6B@,,native exactVT binding; unimplemented extent unclaimed
 0x76a8c0,??_7length_error@std@@6B@,,native exactVT binding; unimplemented extent unclaimed
 0x76a8c8,??_C@_0BD@OLBABOEK@vector?$DMT?$DO?5too?5long?$AA@,,const char[19]
+0x76a8dc,_NuMaterialSourcePathPc,56,"const char[56]"
 0x76aa2c,??_C@_02PCIJFNDE@?$AN?6?$AA@,3,
 0x76ad60,_EduiSourcePathPc,52,const char[52]
 0x76ada0,??_C@_05DNIIFBMG@?$CFs?5?$CFs?$AA@,6,char[6]
@@ -19160,6 +19174,10 @@ address    , symbol                                                         , si
 0x0080e270 , _numtx_identity                                                , 64    , NUMTX
 0x0080e2b0 , _NuPrimXScale                                                  , 4     , f32
 0x0080e2b4 , _NuPrimYScale                                                  , 4     , f32
+0x80e2b8,_NuMaterialDistortImagePc,824,"u8[824]"
+0x80e5f0,_NuMaterialDefaultElementsPc,32,"PC_VERTEX_ELEMENT_PC[4]"
+0x80e610,_NuMaterialDebrisElementsPc,32,"PC_VERTEX_ELEMENT_PC[4]"
+0x80e630,_NuMaterialFaceOnElementsPc,40,"PC_VERTEX_ELEMENT_PC[5]"
 0x80e690,_NuDisplayHandlerZModePc,,i32
 0x0080e694 , _PS2_VREZ_W                                                    , 4     , i32
 0x0080e698 , _PS2_VREZ_H                                                    , 4     , i32

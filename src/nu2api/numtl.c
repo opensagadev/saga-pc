@@ -320,12 +320,11 @@ void __cdecl NuRndrInitGeneric(void) {
 STATIC_ASSERT(offsetof(PC_MATERIAL_CREATE_SHADER, flags) == 0);
 STATIC_ASSERT(offsetof(PC_MATERIAL_CREATE_SHADER, diffuse_map_id) == 4);
 STATIC_ASSERT(offsetof(PC_MATERIAL_CREATE_SHADER, default_scale) == 0x24);
-/* Native void platform initializer60ded0 tails60ddc0. Its shader-cache
-   value-producing closure is genuinely absent; no replacement result exists. */
+void __cdecl NuMtlInitExPS(VARIPTR *buffer);
 void __cdecl NuMtlInitEx(VARIPTR *buffer, i32 material_count) {
     PC_MATERIAL_CREATE_SHADER desc2d, desc3d;
     PC_MATERIAL_CREATE_VIEW *material;
-    STUBBED_NAMED(0x0060ded0); /* NuMtlInitExPS(buffer): nativevoid; shader-factory closure held. */
+    NuMtlInitExPS(buffer);
     PCMaterialPoolCountPc = material_count;
     PCMaterialPoolPc = (NUMTL *)((buffer->addr + 15u) & ~15u);
     buffer->addr = (u32)PCMaterialPoolPc + material_count * sizeof(PC_MATERIAL_CREATE_VIEW);
