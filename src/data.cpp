@@ -10462,7 +10462,7 @@ extern "C" {
         {9, NULL, NULL, NULL, NULL, -1, -1, 0, 0, 0, 0},
         {10, NULL, NULL, NULL, NULL, -1, -1, 0, 0, 0, 0},
         {11, NULL, NULL, NULL, NULL, -1, -1, 0, 0, 0, 0},
-        {12, NULL, NULL, NULL, NULL, -1, -1, 0, 0, 0, 0},
+        {12, NULL, MenuDrawCustomiserPc, MenuUpdateCustomiserPc, NULL, -1, -1, 0, 0, 0, 0},
         {13, NULL, MenuDrawShop, MenuUpdateShop, NULL, -1, -1, 0, 0, 0, 0},
         {14, NULL, NULL, NULL, NULL, -1, -1, 0, 0, 0, 0},
         {15, MenuInitSelectMode, MenuDrawSelectMode, MenuUpdateSelectMode, NULL, -1, -1, 0, 0, 0, 0},
@@ -19267,6 +19267,7 @@ extern "C" {
     i16 PermanentWeirdo1IdPc = -1;
     i16 PermanentWeirdo2IdPc = -1;
     i16 PermanentCustomiserActionsPc[5] = {97, 190, 98, 99, -1};
+    char CustomiseLetter[39] = "ABCDEFGHIJKLMNOPQRSTUVWXYZ- 0123456789";
 }
 
 extern "C" {

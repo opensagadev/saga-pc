@@ -267,6 +267,17 @@ def main():
         if not definitions:
             row["status"] = "not implemented"
             continue
+        if candidate_only is not None:
+            uncompared = []
+            for unit, obj in definitions:
+                extract = obj.extract_function if is_function else obj.extract_data
+                references = candidate_only.uncompared_references(unit, obj, extract(symbol), va, bindings)
+                if references:
+                    uncompared.append({"unit": unit, "references": references})
+            if uncompared:
+                row["status"] = "uncompared candidate-only relocations"
+                row["candidate_only_references"] = uncompared
+                continue
         for unit, obj in definitions:
             result = {"unit": unit}
             if not is_function:

@@ -177,7 +177,10 @@ address    , symbol                                                         , si
 0x4234a0,_PcControlDrawPc,10,
 0x4234b0,?Initialize@PC_CONTROL_SCREEN_PC@@QAEXHHHE@Z,349,
 0x423610,_PcControlInitializePc,31,
-0x4238d0,_Customise_FindLetter,40,
+0x00423670,_CustomiserMtxSetRotateZPc,160,code
+0x00423710,_CustomiserMtxRotateXPc,217,code
+0x004237f0,_CustomiserMtxRotateYPc,219,code
+0x004238d0,_Customise_FindLetter,40,i32 __cdecl(char)
 0x423900,_FinishWeirdoNames,146,void __cdecl(i32)
 0x4239e0,_UpdateCustomPieceAnim,389,
 0x423b70,_PermanentCustomPieceConfigPc,72,"void __cdecl(CUSTOMPIECE_LAYERS_PC *,NUFPAR_PC *)"
@@ -190,10 +193,14 @@ address    , symbol                                                         , si
 0x4243e0,_CustomiserPreviewLayerMaskPc,273,
 0x4246f0,_Customiser_GetActiveWeirdoIndex,90,"void __cdecl (i32 *, i32 *)"
 0x424750,_Customiser_MenuAvailable,92,
-0x424810,_CustomiserMenu_Update,2732,
+0x004247d0,_Customise_GetToggleString,55,code
+0x00424810,_CustomiserMenu_Update,2732,i32 __cdecl(void)
 0x4252c0,_CustomiserMenu_End,136,
+0x00425350,_CustomiserDrawNameEditorPc,1472,code
 0x425910,_Customiser_Update,1673,
 0x425fa0,_Customiser_Draw3D,1087,
+0x004263e0,_MenuUpdateCustomiserPc,446,void __cdecl(MENU *)
+0x004265a0,_MenuDrawCustomiserPc,1382,code
 0x426b30,_Detonators_Reset,21,void __cdecl (void)
 0x426b50,_DetonatorPlacementSlot,81,
 0x426bb0,_Detonator_FindNearest,146,
@@ -4294,6 +4301,7 @@ address    , symbol                                                         , si
 0x592660,_CustomiserPieceAvailableDefaultPrivatePc,28,i32 __cdecl(CUSTOMPIECE_LAYERS_PC *)
 0x592680,_CustomiserFindSetFromNamePrivatePc,212,
 0x592760,_Customiser_SetAnimsToLoad,178,"void __cdecl (CUSTOMISER_LAYERS_PC *, i32)"
+0x00592820,_Customiser_NextPieceLeft,281,"i32 __cdecl(CUSTOMISER_LAYERS_PC *,i32,i32,i32,i32)"
 0x592940,_Customiser_NextPieceRight,291,
 0x592a70,_Customiser_LoadAccessories,648,"void __cdecl(CUSTOMISER_LAYERS_PC*,APICHARACTERMODELLIST*)"
 0x592d00,_CustomiserDrawAccessoriesPc,450,
@@ -9686,7 +9694,10 @@ address    , symbol                                                         , si
 0x753334,??_C@_05INKFKLBN@?$CFs?5?$CFi?$AA@,,const char[6]
 0x753340,__real@40c5550000000000,8,const f64
 0x753348,__real@408c700000000000,8,const f64
+0x00753350,__real@3e570a3d,4,const f32
 0x753354,_GameAudioName00753354Pc,11,const char[11]
+0x00753360,_CustomiserBadWordReplacementPc,9,const char[9]
+0x0075336c,__real@bef5c28f,4,const f32
 0x753370,??_C@_01LBDDMOBJ@?$FN?$AA@,,const char []
 0x753370,_TextInputKeyNameTextPc753370,,char[2]
 0x753374,??_C@_01OHGJGJJP@?$FL?$AA@,,const char []
@@ -9694,6 +9705,7 @@ address    , symbol                                                         , si
 0x753380,__real@40d3bb8000000000,8,const f64
 0x753388,__real@40c4440000000000,8,const f64
 0x753390,__real@40c82d8000000000,8,const f64
+0x00753398,_CustomiserMenuBackSfxPc,9,const char[9]
 0x7533a8,__real@3fd8000000000000,8,f64
 0x7533b0,__real@3fb1eb8520000000,8,f64
 0x7533b8,__real@bfb1eb8520000000,8,f64
@@ -17999,7 +18011,10 @@ address    , symbol                                                         , si
 0x007f295c,_PlayerDevicePortsPc,8,i32[2]
 0x7f37d8,_CustomiseHeadOffsetPc,4,f32
 007f37e0,_PermanentCustomiserActionsPc,,i16[5]
+0x007f37ec,_CustomiseLetter,39,char[39]
 0x7f3820,_CustomiserGameSettingsPrivatePc,,CUSTOMISER_GAME_SETTING_PC[7]
+0x007f3874,__real@3d570a3d,4,const f32
+0x007f3878,__real@3d75c28f,4,const f32
 0x7f3964,_drop_in_teleport,,i32
 0x7f3968,_teleport_all_freeplay_modes,,i32
 0x007f396c,_DropInPendingPlayerPc,1,i8
@@ -19663,6 +19678,7 @@ address    , symbol                                                         , si
 0x856890,_BlipD,8,f32[2]
 0x856898,_CustomiseArmsAnimPc,40,CUSTOM_PIECE_ANIM_PC[2]
 0x8568c0,_CustomiseScreenPosPc,24,NUVEC[2]
+0x008568d8,_CustomiseNameYPc,8,i32[2]
 0x8568e0,_CustomiseNameBoardTMulPc,8,f32[2]
 0x8568e8,_CustomiseLegsAnimPc,40,CUSTOM_PIECE_ANIM_PC[2]
 0x856910,_CustomiseMode,8,i32[2]
@@ -19686,6 +19702,7 @@ address    , symbol                                                         , si
 0x8569c4,_CustomiseNameAlphaPc,4,f32
 0x8569c8,_customiser_save_done,4,i32
 0x8569cc,_customiser_quit,4,i32
+0x008569d0,_CustomiseNameXPc,8,i32[2]
 0x8569d8,_Detonator,560,DETONATOR_s[10]
 0x856c10,_OldBonusScore,,i32[2]
 0x00856c28 , _ChallengeMode                                                 , 4     , i32
@@ -20128,7 +20145,7 @@ address    , symbol                                                         , si
 0x87b548,_frameout_count,,i64
 0x0087b55c , _HubMainRenderTimeHack                                         , 4     , i32
 0x0087b560 , _NuDatHandles                                                  , 28    , DAT_HANDLES_PC
-0x87b58d,_rightrepeatcount,2,u8[2]
+0x87b58c,_rightrepeatcount,2,u8[2]
 0x87b590,_rightrepeattime,8,f32[2]
 0x87b5a4,_downrepeattime,8,f32[2]
 0x87b5ac,_uprepeattime,8,f32[2]

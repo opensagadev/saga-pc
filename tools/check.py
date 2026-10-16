@@ -129,6 +129,9 @@ def check_objects(objects, records, target, code_groups=(), candidate_only=None)
             try:
                 extract = obj.extract_function if kind == "function" else obj.extract_data
                 definition = extract(name)
+                references = (candidate_only.uncompared_references(unit, obj, definition, row["address"], bindings)
+                              if candidate_only is not None else [])
+                classified = {(r["offset"], r["symbol_index"]) for r in references}
                 missing = []
                 for rel in definition["relocations"]:
                     if rel["type"] == 0:
@@ -145,7 +148,8 @@ def check_objects(objects, records, target, code_groups=(), candidate_only=None)
                         missing.append(f"{where}: relocation to inlined-only symbol {ref_name!r}; "
                                        "no standalone original address is established. Compare it as "
                                        "part of its caller, or recover a standalone mapping")
-                    elif (ref_name not in bindings and
+                    elif ((rel["offset"], rel["symbol_index"]) not in classified and
+                          ref_name not in bindings and
                           ref["section"] not in (symbol["section"], -1) and
                           not (ref["storage_class"] == 6 and ref["type"] == 0
                                and ref_name.startswith("$LN") and ref["section"] > 0)):
@@ -157,14 +161,20 @@ def check_objects(objects, records, target, code_groups=(), candidate_only=None)
                 relocate = relocate_function if kind == "function" else relocate_data
                 # Cross-section compiler labels are resolved here by binary.py,
                 # which requires one mapped complete owner and an in-extent label.
-                rebuilt, _ = relocate(obj, name, row["address"], prepared_bindings)
+                if references:
+                    result.setdefault("candidate_only_references", []).append(
+                        {"unit": unit, "symbol": name, "references": references})
+                    rebuilt_size = definition["size"]
+                else:
+                    rebuilt, _ = relocate(obj, name, row["address"], prepared_bindings)
+                    rebuilt_size = len(rebuilt)
             except ValueError as error:
                 errors.append(f"{context}: {error}")
                 continue
             result["functions" if kind == "function" else "data"] += 1
-            if row["size"] is not None and len(rebuilt) != row["size"]:
+            if row["size"] is not None and rebuilt_size != row["size"]:
                 result["size_differences"].append({"unit": unit, "symbol": name,
-                                                  "original": row["size"], "rebuilt": len(rebuilt)})
+                                                  "original": row["size"], "rebuilt": rebuilt_size})
     for name, definitions in sorted(kinds.items()):
         if len({kind for _, kind in definitions}) > 1:
             sites = ", ".join(f"{unit} ({kind})" for unit, kind in definitions)

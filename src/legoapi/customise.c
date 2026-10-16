@@ -1470,3 +1470,518 @@ void __cdecl Customiser_Reset(CUSTOMISER_LAYERS_PC *customiser) {
         runtime->animation_state[side] = 2;
     }
 }
+
+/* Native customiser menu drawing and private matrix helpers; append to customise.c. */
+extern i16 TextIdPc880750, TextIdPc880754, TextIdPc880758, TextIdPc880760, TextIdPc880858;
+static i32 CustomiseNameXPc[2] = {0};
+static i32 CustomiseNameYPc[2] = {0};
+static void CustomiserMtxSetRotateZPc(NUMTX *matrix, i32 angle) {
+    const f32 cosine = NuTrigTable[((angle + 0x4000) >> 1) & 0x7fff];
+    const f32 sine = NuTrigTable[(angle >> 1) & 0x7fff];
+    matrix->m00 = cosine;
+    matrix->m01 = sine;
+    matrix->m02 = matrix->m03 = 0.0f;
+    matrix->m10 = -sine;
+    matrix->m11 = cosine;
+    matrix->m12 = matrix->m13 = 0.0f;
+    matrix->m20 = ANI3_EVAL_IDENTITY_MATRIX.m20;
+    matrix->m21 = ANI3_EVAL_IDENTITY_MATRIX.m21;
+    matrix->m22 = ANI3_EVAL_IDENTITY_MATRIX.m22;
+    matrix->m23 = ANI3_EVAL_IDENTITY_MATRIX.m23;
+    matrix->m30 = ANI3_EVAL_IDENTITY_MATRIX.m30;
+    matrix->m31 = ANI3_EVAL_IDENTITY_MATRIX.m31;
+    matrix->m32 = ANI3_EVAL_IDENTITY_MATRIX.m32;
+    matrix->m33 = ANI3_EVAL_IDENTITY_MATRIX.m33;
+}
+static void CustomiserMtxRotateXPc(NUMTX *matrix, i32 angle) {
+    const f32 cosine = NuTrigTable[((angle + 0x4000) >> 1) & 0x7fff];
+    const f32 sine = NuTrigTable[(angle >> 1) & 0x7fff];
+    const f32 a = matrix->m01, b = matrix->m11, c = matrix->m21, d = matrix->m31;
+    matrix->m01 = a * cosine - matrix->m02 * sine;
+    matrix->m02 = matrix->m02 * cosine + a * sine;
+    matrix->m11 = b * cosine - matrix->m12 * sine;
+    matrix->m12 = matrix->m12 * cosine + b * sine;
+    matrix->m21 = c * cosine - matrix->m22 * sine;
+    matrix->m22 = c * sine + matrix->m22 * cosine;
+    matrix->m31 = d * cosine - matrix->m32 * sine;
+    matrix->m32 = matrix->m32 * cosine + d * sine;
+}
+static void CustomiserMtxRotateYPc(NUMTX *matrix, i32 angle) {
+    const f32 cosine = NuTrigTable[((angle + 0x4000) >> 1) & 0x7fff];
+    const f32 sine = NuTrigTable[(angle >> 1) & 0x7fff];
+    const f32 a = matrix->m00, b = matrix->m10, c = matrix->m20, d = matrix->m30;
+    matrix->m00 = a * cosine + matrix->m02 * sine;
+    matrix->m02 = matrix->m02 * cosine - a * sine;
+    matrix->m10 = matrix->m12 * sine + b * cosine;
+    matrix->m12 = matrix->m12 * cosine - b * sine;
+    matrix->m20 = c * cosine + matrix->m22 * sine;
+    matrix->m22 = matrix->m22 * cosine - c * sine;
+    matrix->m30 = matrix->m32 * sine + d * cosine;
+    matrix->m32 = matrix->m32 * cosine - d * sine;
+}
+i32 __cdecl Customise_GetToggleString(i32 index) {
+    i32 mode = CustomiseMode[index];
+    if (mode == 1)
+        return TextIdPc880890;
+    if (mode != 0) {
+        do {
+            mode = (mode + 1) % 3;
+        } while (mode == 0);
+    }
+    return TextIdPc880780;
+}
+static void CustomiserDrawNameEditorPc(CUSTOMISER_LAYERS_PC *input) {
+    CUSTOMISER_CONFIG_PC *customiser = (CUSTOMISER_CONFIG_PC *)input;
+    i32 side, active_count, index;
+    char name[64];
+    if (customiser == NULL || CustomiseNameAlphaPc <= 0.0f)
+        return;
+    Customiser_GetActiveWeirdoIndex(&side, &active_count);
+    if (active_count == 1 && MissionMenuPacketPc.customise_other_player[side] != 0)
+        side = side == 0;
+    for (index = 0; index < active_count; ++index, ++side) {
+        const i32 red = side == 0 ? 0 : 127;
+        const i32 green = side == 0 ? 191 : 255;
+        const i32 blue = side == 0 ? 255 : 0;
+        f32 x, alpha;
+        i32 icon;
+        if (CustomiseMode[side] == 1) {
+            char letter[2];
+            f32 gap = 0.05249999836087227f;
+            i32 length, column;
+            letter[1] = 0;
+            if (Game.options_save.widescreen != 0)
+                gap = (f32)(gap * 0.800000011920929);
+            for (length = 15; length > 0; --length) {
+                if (Game.customiser_start[side].name[length - 1] != ' ')
+                    break;
+            }
+            x = (f32)(CustomiseScreenPosPc[side].x - gap * 7.0);
+            if (active_count == 2)
+                x += side == 0 ? -0.05999999865889549f : 0.05999999865889549f;
+            for (column = 0; column < 15; ++column) {
+                f32 scale = 1.0f;
+                i32 letter_red = red, letter_green = green, letter_blue = blue;
+                if (column == CustomiseNameXPc[side]) {
+                    const i32 colour = menu_flash == 0 ? 255 : 191;
+                    letter[0] = CustomiseLetter[CustomiseNameYPc[side]];
+                    Text3D((char *)InitAsciiUpPc, x, (f32)(0.10000000149011612f - 0.6499999761581421), 1.0f,
+                           0.6000000238418579f, 0.6000000238418579f, 0.6000000238418579f, 0, colour, colour, colour);
+                    Text3D((char *)TagAsciiDownPc, x, (f32)(-0.6499999761581421 - 0.10000000149011612f), 1.0f,
+                           0.6000000238418579f, 0.6000000238418579f, 0.6000000238418579f, 0, colour, colour, colour);
+                    scale = CustomiseNameLetterBlipScalePc[side];
+                    letter_red = letter_blue = 255;
+                    letter_green = menu_flash == 0 ? 255 : 0;
+                } else {
+                    letter[0] = Game.customiser_start[side].name[column];
+                    if (column > CustomiseNameXPc[side] && column >= length && letter[0] == ' ')
+                        letter[0] = '.';
+                }
+                Text3D(letter, x, -0.6499999761581421f, 1.0f, scale * 0.5f, (f32)(scale * 0.5), 0.5f, 0, letter_red,
+                       letter_green, letter_blue);
+                if (column == 0)
+                    Text3D("[", (x - gap) + 0.009999999776482582f, (f32)(0.007499999832361937f - 0.6499999761581421),
+                           1.0f, 0.5f, 0.6000000238418579f, 0.5f, 0, red, green, blue);
+                else if (column == 14)
+                    Text3D("]", (x + gap) - 0.009999999776482582f, (f32)(0.007499999832361937f - 0.6499999761581421),
+                           1.0f, 0.5f, 0.6000000238418579f, 0.5f, 0, red, green, blue);
+                x += gap;
+            }
+        } else {
+            GameObj_GetNamePc(customiser->character_ids[side], NULL, name);
+            SmartTextEx(name, CustomiseScreenPosPc[side].x, -0.6499999761581421f, 1.0f, 0.5f, 0.5f, 0.5f, 0, red, green,
+                        blue, 0.75f, 2, NULL, 0, (i32)(CustomiseNameAlphaPc * 128.0));
+        }
+        x = CustomiseScreenPosPc[side].x;
+        alpha = (1.0f - CustomiseNameBoardMulPc[side]) * CustomiseNameAlphaPc;
+        DrawPanel3DObject(x, -0.47999998927116394f, 1.0f, MissionPlayerIconSizePc, MissionPlayerIconSizePc,
+                          MissionPlayerIconSizePc, 0, 0, 0, &WORLD->level_objects[167].special, 0, alpha);
+        icon = Customiser_GetIcon(input, &Game.customiser_start[side], index);
+        if (icon != -1) {
+            if (icon != PCArcadeUnpairedIconModel)
+                ++icon;
+            DrawPanel3DObject(x, -0.47999998927116394f, 1.0f, MissionPlayerIconSizePc, MissionPlayerIconSizePc,
+                              MissionPlayerIconSizePc, 0, 0, 0, &WORLD->level_objects[icon].special, 0, alpha);
+        }
+    }
+}
+void __cdecl MenuDrawCustomiserPc(MENU *menu) {
+    i32 active_index, active_count, player;
+    i32 select[2], action[2], cancel[2], toggle[2];
+    i32 colour;
+    f32 x;
+    (void)menu;
+    if (MenuStopDraw != 0 || customiser_quit != 0 || CharacterCustomiser == NULL)
+        return;
+    CustomiserDrawNameEditorPc(CharacterCustomiser);
+    Customiser_GetActiveWeirdoIndex(&active_index, &active_count);
+    DrawCharIcon(MissionMenuPacketPc.player_model[0], -ICONX, STATSPOSY, 0.0f, MissionPlayerIconSizePc, 0xa6,
+                 MissionMenuPacketPc.active_player[0] != 0 ? 1.0f : MissionDropInAlphaPc,
+                 MissionMenuPacketPc.active_player[0] != 0 ? 1.0f : MissionDropInAlphaPc, 1, NULL);
+    DrawCharIcon(MissionMenuPacketPc.player_model[1], ICONX, STATSPOSY, 0.0f, MissionPlayerIconSizePc, 0xa5,
+                 MissionMenuPacketPc.active_player[1] != 0 ? 1.0f : MissionDropInAlphaPc,
+                 MissionMenuPacketPc.active_player[1] != 0 ? 1.0f : MissionDropInAlphaPc, 1, NULL);
+    select[0] = select[1] = active_count == 1 ? TextIdPc880750 : -1;
+    action[0] = action[1] = TextIdPc880758;
+    cancel[0] = cancel[1] = toggle[0] = toggle[1] = -1;
+    if (GAMEDEMO != 0) {
+        if (MissionMenuPacketPc.active_player[0] != 0 && MissionMenuPacketPc.active_player[1] != 0) {
+            for (player = 0; player < 2; ++player) {
+                if (MissionMenuPacketPc.selected[player] != 0) {
+                    select[player] = action[player] = -1;
+                    cancel[player] = TextIdPc880890;
+                } else
+                    cancel[player] = TextIdPc880760;
+            }
+        } else
+            cancel[0] = cancel[1] = TextIdPc880858;
+    } else {
+        for (player = 0; player < 2; ++player) {
+            i32 side = player;
+            if (active_count == 1 && MissionMenuPacketPc.customise_other_player[player] != 0)
+                side = player == 0;
+            if (CustomiseMode[side] == 1) {
+                select[player] = tACCEPT;
+                action[player] = cancel[player] = -1;
+            }
+            toggle[player] = Customise_GetToggleString(side);
+            cancel[player] = -1;
+            if (CustomiseMode[0] != 1 && CustomiseMode[1] != 1)
+                cancel[player] = customiser_changed != 0 ? TextIdPc880754 : TextIdPc880844;
+        }
+    }
+    DrawPlayerIconPrompts(MissionMenuPacketPc.active_player[0], select[0], 1.0f, action[0], cancel[0], toggle[0],
+                          TextIdPc880eac, MissionMenuPacketPc.active_player[1], select[1], 1.0f, action[1], cancel[1],
+                          toggle[1], TextIdPc880eac);
+    x = -ICONX;
+    colour = menu_flash == 0 ? 255 : 191;
+    for (player = 0; player < 2; ++player) {
+        i32 side = player;
+        if (active_count == 1 && MissionMenuPacketPc.customise_other_player[player] != 0)
+            side = player == 0;
+        if (MissionMenuPacketPc.active_player[player] != 0 && CustomiseMode[side] != 1) {
+            const f32 y = (f32)(STATSPOSY - 0.22499999403953552);
+            const f32 left = BlipL[player] > 0.0f ? 0.015000000596046448f : 0.0f;
+            const f32 right = BlipR[player] > 0.0f ? 0.015000000596046448f : 0.0f;
+            const f32 up = BlipU[player] > 0.0f ? -0.021000001579523087f : 0.0f;
+            const f32 down = BlipD[player] > 0.0f ? -0.021000001579523087f : 0.0f;
+            Text3D("<", (f32)(x - 0.05000000074505806 - left), y, 1.0f, 0.5f, 0.5f, 0.5f, 0, colour, colour, colour);
+            Text3D(">", (f32)(x + 0.05000000074505806 + right), y, 1.0f, 0.5f, 0.5f, 0.5f, 0, colour, colour, colour);
+            Text3DEx((char *)InitAsciiUpPc, x, (f32)(y - -0.07000000029802322 - up), 1.0f, 0.5f, 0.5f, 0.5f, 0, colour,
+                     colour, colour, CustomiseMenuYPc[side] > 0 ? 128 : 32);
+            Text3DEx((char *)TagAsciiDownPc, x, (f32)(y - 0.07000000029802322 + down), 1.0f, 0.5f, 0.5f, 0.5f, 0,
+                     colour, colour, colour, CustomiseMenuYPc[side] < 8 ? 128 : 32);
+            SmartTextEx(TTab[TextIdPc880888], x, (f32)(STATSPOSY - 0.375), 1.0f, 0.30000001192092896f,
+                        0.30000001192092896f, 0.30000001192092896f, 0, colour, colour, colour, 0.15000000596046448f, 1,
+                        NULL, 0, 128);
+        }
+        x += ICONX + ICONX;
+    }
+}
+
+extern i16 TextIdPc880894, TextIdPc880898;
+static const char CustomiserBadWordReplacementPc[9] = "Stranger";
+static const char CustomiserMenuBackSfxPc[9] = "menuBack";
+void __cdecl CustomiserMenu_End(void);
+void __cdecl Hub_ClearStats(void);
+void __cdecl Text_FillInExtendedSaveInfo(void);
+i32 __cdecl TriggerAutoSave(void);
+static i32 __cdecl Customise_FindLetter(char character) {
+    i32 letter;
+    for (letter = 0; letter < 38; ++letter)
+        if (CustomiseLetter[letter] == character)
+            return letter;
+    return 0;
+}
+
+/* 00592820..00592939, including the separate native NULL return. */
+i32 __cdecl Customiser_NextPieceLeft(CUSTOMISER_LAYERS_PC *input, i32 index, i32 count, i32 unused, i32 category) {
+    CUSTOMISER_CONFIG_PC *customiser = (CUSTOMISER_CONFIG_PC *)input;
+    i32 attempts = 0;
+    (void)unused;
+    if (customiser != NULL) {
+        while (attempts < count) {
+            i32 available = 1;
+            --index;
+            if (index < 0)
+                index += count;
+            if (category != 2) {
+                WORLDINFO *world = WorldInfo_CurrentlyActive();
+                if (world != NULL && HUB_ADATA != NULL && world->area == HUB_ADATA) {
+                    CUSTOM_ACCESSORY_RESOURCE_PC *resources =
+                        (CUSTOM_ACCESSORY_RESOURCE_PC *)world->customiser_resources[category];
+                    if (resources == NULL)
+                        available = 0;
+                    else if (customiser->categories[category]->uses_special != 0)
+                        available = NuSpecialExistsFn(&resources[index].special) != 0;
+                    else
+                        available = resources[index].texture_id != 0;
+                }
+            }
+            if (available != 0 &&
+                ((customiser->piece_sets[category][index].availability_flags & 0x180) == 0 ||
+                 Game_100PercentComplete() != 0) &&
+                customiser->piece_available((CUSTOMPIECE_LAYERS_PC *)&customiser->piece_sets[category][index]) != 0)
+                break;
+            ++attempts;
+        }
+    }
+    return index;
+}
+
+/* 00424810..004252bc: PC control returns its quit decision to the wrapper. */
+i32 __cdecl CustomiserMenu_Update(void) {
+    CUSTOMISER_CONFIG_PC *customiser = (CUSTOMISER_CONFIG_PC *)CharacterCustomiser;
+    i32 active_index, active_count, select[2], cancel = 0, player;
+    i32 cancel_name = 0;
+    Customiser_GetActiveWeirdoIndex(&active_index, &active_count);
+    BlipL[0] = BlipL[1] = BlipR[0] = BlipR[1] = 0.0f;
+    BlipU[0] = BlipU[1] = BlipD[0] = BlipD[1] = 0.0f;
+    for (player = 0; player < 2; ++player) {
+        GAMEPAD_RUNTIME_INPUT_PC *pad = (GAMEPAD_RUNTIME_INPUT_PC *)&GamePadStorage[player];
+        select[player] = 0;
+        CustomiseNameBoardTMulPc[player] = CustomiseMode[player] == 1 ? 1.0f : 0.0f;
+        CustomiseNameBoardMulPc[player] =
+            SeekLinearF(CustomiseNameBoardMulPc[player], CustomiseNameBoardTMulPc[player], (f32)((f64)FRAMETIME * 4.0));
+        CustomiseNameLetterBlipScalePc[player] =
+            SeekLinearF(CustomiseNameLetterBlipScalePc[player], 1.0f, (f32)((f64)FRAMETIME * 5.0));
+        if (MissionMenuPacketPc.active_player[player] != 0) {
+            if ((pad->pressed & GAMEPAD_MENUSELECT) != 0)
+                select[player] = 1;
+            else if ((pad->pressed & GAMEPAD_MENUCANCEL) != 0)
+                cancel = 1;
+        }
+    }
+    if (cancel != 0 && CustomiseMode[0] != 1 && CustomiseMode[1] != 1) {
+        if (GAMEDEMO != 0 && MissionMenuPacketPc.active_player[0] != 0 && MissionMenuPacketPc.active_player[1] != 0) {
+            for (player = 0; player < 2; ++player) {
+                GAMEPAD_RUNTIME_INPUT_PC *pad = (GAMEPAD_RUNTIME_INPUT_PC *)&GamePadStorage[player];
+                if ((pad->pressed & GAMEPAD_MENUCANCEL) != 0)
+                    MissionMenuPacketPc.selected[player] = MissionMenuPacketPc.selected[player] == 0;
+            }
+            if (MissionMenuPacketPc.selected[0] != 0 && MissionMenuPacketPc.selected[1] != 0)
+                return 1;
+        } else
+            return 1;
+        return customiser == NULL;
+    }
+    if ((select[0] != 0 || select[1] != 0) && active_count == 1 && CustomiseMode[0] != 1 && CustomiseMode[1] != 1) {
+        if (customiser == NULL)
+            return 1;
+        {
+            GAMEOBJECT *object;
+            MissionMenuPacketPc.customise_other_player[active_index] =
+                MissionMenuPacketPc.customise_other_player[active_index] == 0;
+            GameCam_Blend(GameCam, 1.0f, 0.0f, 1);
+            object = (GAMEOBJECT *)Player[active_index];
+            NewBuzzFrames(object->pad->bound_pad, 1, 0);
+        }
+        return 0;
+    }
+    for (player = 0; player < 2; ++player) {
+        GAMEPAD_RUNTIME_INPUT_PC *pad;
+        u32 pressed, held;
+        i32 side, old_mode, new_mode = -1;
+        if (MissionMenuPacketPc.active_player[player] == 0)
+            continue;
+        pad = (GAMEPAD_RUNTIME_INPUT_PC *)&GamePadStorage[player];
+        pressed = pad->pressed | pad->left_pressed;
+        held = pad->held | pad->left_held;
+        side = player;
+        if (active_count == 1 && MissionMenuPacketPc.customise_other_player[player] != 0)
+            side = player == 0;
+        old_mode = CustomiseMode[side];
+        if ((pressed & GAMEPAD_ACTION) != 0 && old_mode != 1) {
+            NUVEC *position = &CustomisePos[side];
+            NUVEC debris_position;
+            NUMTX matrix;
+            i32 category, angle;
+            PlaySfx((char *)GameAudioName00753354Pc, position);
+            NewBuzzFrames(pad->bound_pad, 1, 0);
+            for (category = 0; category < 9; ++category) {
+                if (customiser->piece_counts[category] > 0) {
+                    i32 piece;
+                    do {
+                        piece = qrand() / (65535 / customiser->piece_counts[category] + 1);
+                    } while (customiser->piece_available(
+                                 (CUSTOMPIECE_LAYERS_PC *)&customiser->piece_sets[category][piece]) == 0);
+                    Game.customiser_start[side].pieces[category] = (u16)piece;
+                }
+            }
+            Customiser_SetNameAndIcon((CUSTOMISER_LAYERS_PC *)customiser, side);
+            debris_position.x = 0.0f;
+            debris_position.y = 0.21f;
+            debris_position.z = 0.0f;
+            angle = (i32)((f64)NuTrigTable[CustomiseTiltZPc[side] >> 1] * 910.0);
+            CustomiserMtxSetRotateZPc(&matrix, angle);
+            angle = (i32)((f64)NuTrigTable[CustomiseTiltXPc[side] >> 1] * 910.0);
+            CustomiserMtxRotateXPc(&matrix, angle);
+            angle = (i32)((f64)NuTrigTable[CustomiseRotYPc[side] >> 1] * 10922.0);
+            CustomiserMtxRotateYPc(&matrix, angle);
+            NuVecMtxRotate(&debris_position, &debris_position, &matrix);
+            NuVecAdd(&debris_position, &debris_position, position);
+            AddGameDebris(WORLD->game_debris_sys, 0x7b, &debris_position);
+            AddGameDebris(WORLD->game_debris_sys, 0x5c, &debris_position);
+            continue;
+        }
+        if ((pressed & GAMEPAD_TAG) != 0)
+            new_mode = 1;
+        else if ((pressed & GAMEPAD_SPECIAL) != 0) {
+            new_mode = old_mode;
+            do {
+                new_mode = (new_mode + 1) % 3;
+            } while (new_mode == 0);
+            cancel_name = 1;
+            GameAudio_PlaySfx(0x30, NULL, 0, 0);
+        } else if (select[player] != 0 && (CustomiseMode[0] == 1 || CustomiseMode[1] == 1)) {
+            new_mode = old_mode;
+            do {
+                new_mode = (new_mode + 1) % 3;
+            } while (new_mode == 0);
+            GameAudio_PlaySfx(0x30, NULL, 0, 0);
+        } else {
+            f32 repeat_delay = old_mode == 1 ? 0.1f : 0.25f;
+            i32 category = CustomiseMenuYPc[side];
+            i32 piece_count = customiser->piece_counts[category];
+            u16 *pieces = Game.customiser_start[side].pieces;
+            i32 old_piece = pieces[category];
+            i32 up = pressed & GAMEPAD_DUP, down = pressed & GAMEPAD_DDOWN;
+            i32 left = pressed & GAMEPAD_DLEFT, right = pressed & GAMEPAD_DRIGHT;
+            i32 up_held = held & GAMEPAD_DUP, down_held = held & GAMEPAD_DDOWN;
+            i32 left_held = held & GAMEPAD_DLEFT, right_held = held & GAMEPAD_DRIGHT;
+            if (up != 0 && down != 0)
+                up = down = 0;
+            if (left != 0 && right != 0)
+                left = right = 0;
+            if (up_held != 0 && down_held != 0)
+                up_held = down_held = 0;
+            if (left_held != 0 && right_held != 0)
+                left_held = right_held = 0;
+            MenuRepeat(&up_held, &up, &uprepeattime[player], &uprepeatcount[player], 0.1f, FRAMETIME);
+            MenuRepeat(&down_held, &down, &downrepeattime[player], &downrepeatcount[player], 0.1f, FRAMETIME);
+            MenuRepeat(&left_held, &left, &leftrepeattime[player], &leftrepeatcount[player], repeat_delay, FRAMETIME);
+            MenuRepeat(&right_held, &right, &rightrepeattime[player], &rightrepeatcount[player], repeat_delay,
+                       FRAMETIME);
+            if (CustomiseMode[side] == 1) {
+                char *name = Game.customiser_start[side].name;
+                i32 old_x = CustomiseNameXPc[side], old_y = CustomiseNameYPc[side];
+                if (left != 0) {
+                    if (old_x > 0) {
+                        name[old_x] = CustomiseLetter[old_y];
+                        CustomiseNameXPc[side] = old_x - 1;
+                        CustomiseNameYPc[side] = Customise_FindLetter(name[CustomiseNameXPc[side]]);
+                    }
+                } else if (right != 0) {
+                    NuStrLen(name);
+                    if (CustomiseNameXPc[side] < 14) {
+                        name[CustomiseNameXPc[side]] = CustomiseLetter[CustomiseNameYPc[side]];
+                        ++CustomiseNameXPc[side];
+                        CustomiseNameYPc[side] = Customise_FindLetter(name[CustomiseNameXPc[side]]);
+                    }
+                } else if (up != 0)
+                    CustomiseNameYPc[side] = old_y + 1 == 38 ? 0 : old_y + 1;
+                else if (down != 0)
+                    CustomiseNameYPc[side] = old_y - 1 == -1 ? 37 : old_y - 1;
+                if (old_x != CustomiseNameXPc[side] || old_y != CustomiseNameYPc[side]) {
+                    GameAudio_PlaySfx(0x2f, NULL, 0, 0);
+                    CustomiseNameLetterBlipScalePc[side] = 1.5f;
+                }
+            } else {
+                i32 next_category = category, next_piece = old_piece;
+                if (up_held != 0 && category > 0)
+                    BlipU[player] = 1.0f;
+                else if (down_held != 0 && category < 8)
+                    BlipD[player] = 1.0f;
+                if (left_held != 0)
+                    BlipL[player] = 1.0f;
+                else if (right_held != 0)
+                    BlipR[player] = 1.0f;
+                if (up != 0) {
+                    if (category > 0)
+                        --next_category;
+                } else if (down != 0) {
+                    if (category < 8)
+                        ++next_category;
+                } else if (left != 0)
+                    next_piece = Customiser_NextPieceLeft((CUSTOMISER_LAYERS_PC *)customiser, old_piece, piece_count,
+                                                          side, category);
+                else if (right != 0)
+                    next_piece = Customiser_NextPieceRight((CUSTOMISER_LAYERS_PC *)customiser, old_piece, piece_count,
+                                                           side, category);
+                pieces[category] = (u16)next_piece;
+                CustomiseMenuYPc[side] = next_category;
+                if (next_piece != old_piece || next_category != category) {
+                    GameAudio_PlaySfx(0x2f, NULL, 0, 0);
+                    CustomiseMenuTimePc[side] = 0.0f;
+                }
+                if (next_piece != old_piece)
+                    Customiser_SetNameAndIcon((CUSTOMISER_LAYERS_PC *)customiser, side);
+            }
+        }
+        if (new_mode != -1) {
+            char *name = Game.customiser_start[side].name;
+            CustomiseMode[side] = new_mode;
+            if (new_mode == 1) {
+                i32 length;
+                NuStrCpy(name + 16, name);
+                length = NuStrLen(name);
+                if (length < 15)
+                    name[length] = ' ';
+                CustomiseNameYPc[side] = Customise_FindLetter(name[CustomiseNameXPc[side]]);
+                CustomiseNameLetterBlipScalePc[side] = 1.0f;
+            } else if (old_mode == 1) {
+                if (cancel_name != 0)
+                    NuStrCpy(name, name + 16);
+                else {
+                    i32 last = 14;
+                    name[CustomiseNameXPc[side]] = CustomiseLetter[CustomiseNameYPc[side]];
+                    if (name[14] == ' ') {
+                        do {
+                            --last;
+                        } while (name[last] == ' ');
+                        if (last < 0) {
+                            NuStrCpy(name, TTab[side == 0 ? TextIdPc880894 : TextIdPc880898]);
+                            FinishWeirdoNames(side);
+                        } else
+                            name[last + 1] = 0;
+                    } else
+                        name[15] = 0;
+                    if (NuStringFilterBadWords((u8 *)name, (u8 *)name, (u8 *)CustomiserBadWordReplacementPc) != 0)
+                        NuStrCpy(name, name + 16);
+                }
+            }
+            Game.customiser_start[side].use_saved_name = 1;
+        }
+    }
+    return 0;
+}
+
+void __cdecl MenuUpdateCustomiserPc(MENU *menu) {
+    i32 quit;
+    (void)menu;
+    if (customiser_save_done != 0) {
+        CustomiserMenu_End();
+        customiser_save_done = 0;
+        return;
+    }
+    quit = CustomiserMenu_Update();
+    customiser_changed =
+        memcmp(Game.customiser_start, OldCustomiseGame.customiser_start, 0x70) != 0 ||
+        memcmp(Game.customiser_start[0].name, OldCustomiseGame.customiser_start[0].name, 0x20) != 0 ||
+        Game.customiser_start[0].use_saved_name != OldCustomiseGame.customiser_start[0].use_saved_name ||
+        Game.customiser_start[1].use_saved_name != OldCustomiseGame.customiser_start[1].use_saved_name;
+    if (quit == 0)
+        return;
+    PlaySfx((char *)CustomiserMenuBackSfxPc, NULL);
+    customiser_quit = 1;
+    if (GAMEDEMO == 0 && customiser_changed != 0) {
+        Hub_ClearStats();
+        Text_FillInExtendedSaveInfo();
+        if (TriggerAutoSave() == 0) {
+            customiser_save_done = 1;
+            NewMenu(1000, -1, -1);
+            return;
+        }
+    }
+    CustomiserMenu_End();
+}

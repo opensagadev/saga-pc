@@ -26942,6 +26942,10 @@ extern "C" {
     void __cdecl Customiser_Reset(CUSTOMISER_LAYERS_PC *);
     void __cdecl Customiser_Draw3D(CUSTOMISER_LAYERS_PC *);
     void __cdecl Customiser_TransformToPanel(CUSTOMISER_LAYERS_PC *);
+    void __cdecl MenuDrawCustomiserPc(MENU *);
+    void __cdecl MenuUpdateCustomiserPc(MENU *);
+    i32 __cdecl CustomiserMenu_Update(void);
+    i32 __cdecl Customiser_NextPieceLeft(CUSTOMISER_LAYERS_PC *, i32, i32, i32, i32);
     void __cdecl Hub_Load(WORLDINFO *, VARIPTR *, VARIPTR *);
 
     /* Append declarations inside saga.h extern "C" block. */

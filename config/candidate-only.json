@@ -1195,6 +1195,26 @@
    "unit": "src/nu2api/posteffect_shader_pc.cpp",
    "symbol": "??0?$vector@UPOST_PIXEL_SHADER_CACHE_ENTRY_PC@@V?$allocator@UPOST_PIXEL_SHADER_CACHE_ENTRY_PC@@@std@@@std@@QAE@XZ",
    "kind": "function"
+  },
+  {
+   "unit": "src/legoapi/customise.c",
+   "symbol": "__real@3d2c0831",
+   "kind": "data"
+  },
+  {
+   "unit": "src/legoapi/customise.c",
+   "symbol": "__real@bd75c28f",
+   "kind": "data"
+  },
+  {
+   "unit": "src/legoapi/customise.c",
+   "symbol": "__real@bf0ccccc",
+   "kind": "data"
+  },
+  {
+   "unit": "src/legoapi/customise.c",
+   "symbol": "__real@bf247ae1",
+   "kind": "data"
   }
  ]
 }
