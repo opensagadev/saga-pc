@@ -1,10 +1,13 @@
 #ifndef SAGA_DIAGNOSTICS_H
 #define SAGA_DIAGNOSTICS_H
 
-/* Project diagnostics only. Never condition game behavior on SAGA_DEBUG.
+/* Only diagnostics and the explicitly authorized Debug save location differ.
  * All logging arguments and conditions must be free of side effects. */
 #ifdef SAGA_DEBUG
 #include <windows.h>
+
+/* User-authorized exception: Debug saves beside the assets in the required res cwd. */
+#define SAGA_BUILD_SAVE_FOLDER(destination) strcpy(destination, "SavedGames")
 
 enum log_level { LOG_LEVEL_ERROR, LOG_LEVEL_WARN, LOG_LEVEL_INFO, LOG_LEVEL_DEBUG };
 
@@ -45,6 +48,11 @@ extern "C" {
 #define STUBBED_NAMED(name) LOG_WARN_ONCE("STUBBED: %s", #name)
 #define UNIMPLEMENTED(...) LOG_ERR("UNIMPLEMENTED: %s", #__VA_ARGS__)
 #else
+#define SAGA_BUILD_SAVE_FOLDER(destination)                                                                            \
+    do {                                                                                                               \
+        PCOptionsBuildFolder(destination);                                                                             \
+        strcat(destination, "SavedGames");                                                                             \
+    } while (0)
 #define LOG(level, ...) ((void)0)
 #define LOG_ERR(...) ((void)0)
 #define LOG_WARN(...) ((void)0)

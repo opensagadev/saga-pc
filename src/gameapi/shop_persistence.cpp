@@ -53,8 +53,7 @@ extern "C" {
         return CreateDirectoryA(path, &security);
     }
     void __cdecl createslotfolder(i32) {
-        PCOptionsBuildFolder(SaveFolderPathPc);
-        strcat(SaveFolderPathPc, "SavedGames");
+        SAGA_BUILD_SAVE_FOLDER(SaveFolderPathPc);
         i32 i = 0;
         do {
             SaveCreateFolderPathPc[i] = SaveFolderPathPc[i];

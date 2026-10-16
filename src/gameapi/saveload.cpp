@@ -8,8 +8,7 @@ extern "C" {
     extern char SaveSlotNamePc[256];
     extern i32 saveload_slotcode[6];
     char *__cdecl fullslotname(i32 slot) {
-        PCOptionsBuildFolder(SaveFolderPathPc);
-        strcat(SaveFolderPathPc, "SavedGames");
+        SAGA_BUILD_SAVE_FOLDER(SaveFolderPathPc);
         i32 i = 0;
         do {
             SaveFullSlotPathPc[i] = SaveFolderPathPc[i];
