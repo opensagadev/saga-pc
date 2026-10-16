@@ -1,7 +1,7 @@
 # saga-pc
 
 <!-- matching-badge -->
-![fuzzy code](https://img.shields.io/badge/fuzzy%20code-43.707%25-orange)<!-- /matching-badge --> <!-- mapping-badge -->![mapped code](https://img.shields.io/badge/mapped%20code-67.511%25-orange) ![mapped data](https://img.shields.io/badge/mapped%20data-3.093%25-red) ![mapped code+data](https://img.shields.io/badge/mapped%20code%2Bdata-8.756%25-red)<!-- /mapping-badge --> [![Build](https://github.com/opensagadev/saga-pc/actions/workflows/build.yml/badge.svg)](https://github.com/opensagadev/saga-pc/actions/workflows/build.yml)
+![fuzzy code](https://img.shields.io/badge/fuzzy%20code-43.729%25-orange)<!-- /matching-badge --> <!-- mapping-badge -->![mapped code](https://img.shields.io/badge/mapped%20code-67.517%25-orange) ![mapped data](https://img.shields.io/badge/mapped%20data-3.093%25-red) ![mapped code+data](https://img.shields.io/badge/mapped%20code%2Bdata-8.756%25-red)<!-- /mapping-badge --> [![Build](https://github.com/opensagadev/saga-pc/actions/workflows/build.yml/badge.svg)](https://github.com/opensagadev/saga-pc/actions/workflows/build.yml)
 
 **saga-pc** is a matching decompilation of the GOG PC release of
 *LEGO Star Wars: The Complete Saga*: C/C++ source that compiles with the original

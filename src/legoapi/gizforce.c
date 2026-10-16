@@ -1621,3 +1621,162 @@ f32 __cdecl Condition_EitherPlayerOnForcePlatformPc(AISYS_PC *system, AISCRIPTPR
     }
     return 0.0f;
 }
+
+STATIC_ASSERT(offsetof(GIZFORCESYS_s, hit_test_gizmos) == 8);
+STATIC_ASSERT(offsetof(GIZFORCESYS_s, hit_test_gizmo_count) == 0x12);
+STATIC_ASSERT(offsetof(GIZFORCEANIMDATA_s, platform_id) == 2);
+STATIC_ASSERT(offsetof(BOLT_PC, owner) == 4);
+STATIC_ASSERT(offsetof(BOLT_PC, hit_platform) == 0xfa);
+STATIC_ASSERT(offsetof(BOLT_PC, type_id) == 0x101);
+STATIC_ASSERT(offsetof(GAMEOBJECT, field_280) == 0x280);
+STATIC_ASSERT(offsetof(GAMEPAD_PC, bound_pad) == 0);
+
+/* Retail uses private EDI FORCE and two stack arguments; all three callers
+ * are rebuilt below with this ordinary C contract. */
+static __declspec(noinline) i32 __cdecl GizForces_BoltHitPlat(GIZFORCE_PC *force, WORLDINFO *world, i32 player_index) {
+    u32 flags = force->runtime_flags;
+    u32 config;
+    GAMEANIMOBJ *animation;
+    GAMEOBJECT *player;
+    NUVEC *position;
+    if ((flags & 2) == 0 || (flags & 1) == 0 || (flags & 0x10000) != 0)
+        return 0;
+    config = force->config_flags;
+    if ((config & 0x100) != 0) {
+        force->runtime_flags = flags | 0x8000;
+    } else if ((config & 0x200) != 0) {
+        if (force->blowup_type != -1) {
+            if ((config & 0x20) != 0) {
+                if (force->anim_set != NULL) {
+                    animation = force->anim_set->objects;
+                    while (animation != NULL) {
+                        position = NuSpecialGetDrawPos(&animation->special);
+                        if (position != NULL)
+                            GizmoBlowUpTypeBlowUp(world, force->blowup_type, position);
+                        animation = animation->next;
+                    }
+                }
+            } else {
+                GizmoBlowUpTypeBlowUp(world, force->blowup_type, &force->position);
+            }
+        }
+        GameAnimSet_JumpToEnd(force->anim_set);
+        ForceUpdateCentrePc(force, 2);
+        GameAnimSet_SetVisibility(force->anim_set, 0);
+        force->runtime_flags |= 0x10000;
+    } else {
+        return 0;
+    }
+    if (player_index != -1) {
+        player = (GAMEOBJECT *)Player[player_index];
+        if ((player->flags_1fc_word & 0x80) != 0)
+            NewBuzz(player->pad->bound_pad, 0.1f, 0);
+    }
+    return 1;
+}
+
+i32 __cdecl GizForces_BoltHitPlatPc(WORLDINFO *world, void *system_pointer, BOLT_PC *bolt, u8 *hit_flags) {
+    GIZFORCESYS_s *system = (GIZFORCESYS_s *)system_pointer;
+    GIZFORCE_PC *force;
+    GAMEANIMOBJ *animation;
+    GIZMO_PC **gizmos;
+    i32 count;
+    i32 index;
+    if (system == NULL)
+        return 0;
+    count = system->hit_test_gizmo_count;
+    if (count <= 0)
+        return 0;
+    gizmos = system->hit_test_gizmos;
+    for (index = 0; index < count; ++index) {
+        force = (GIZFORCE_PC *)gizmos[index]->object;
+        if ((force->runtime_flags & 2) == 0 || (force->runtime_flags & 1) == 0 || (force->runtime_flags & 0x100) == 0 ||
+            (force->runtime_flags & 0x10000) != 0)
+            continue;
+        animation = force->anim_set->objects;
+        while (animation != NULL) {
+            if (((GIZFORCEANIMDATA_s *)animation->object_data)->platform_id == bolt->hit_platform) {
+                (void)BoltType_FindByID((u8)bolt->type_id, world);
+                if (bolt->owner != NULL)
+                    GizForces_BoltHitPlat(force, world, (i8)((GAMEOBJECT *)bolt->owner)->field_280);
+                else
+                    GizForces_BoltHitPlat(force, world, -1);
+                return 1;
+            }
+            animation = animation->next;
+        }
+    }
+    return 0;
+}
+
+i32 __cdecl GizForces_BoltHit(WORLDINFO *world, void *system_pointer, GAMEOBJECT *object, NUVEC *points,
+                              i32 point_count, f32 radius, NUVEC *minimum, NUVEC *maximum, BOLT_PC *bolt, i32 hit_type,
+                              u8 *hit_flags) {
+    GIZFORCESYS_s *system = (GIZFORCESYS_s *)system_pointer;
+    GIZFORCE_PC *force;
+    GIZFORCE_PC *best = NULL;
+    f32 best_distance = 1000000000.0f;
+    volatile f32 distance_spill;
+    f32 distance;
+    NUVEC *origin;
+    NUVEC normal;
+    i32 index;
+    i32 point;
+    i32 player_index;
+    if (system == NULL || system->hit_test_gizmo_count == 0)
+        return 0;
+    for (index = 0; index < system->hit_test_gizmo_count; ++index) {
+        force = (GIZFORCE_PC *)system->hit_test_gizmos[index]->object;
+        if ((force->runtime_flags & 2) == 0 || (force->runtime_flags & 1) == 0 || (force->runtime_flags & 0x10000) != 0)
+            continue;
+        if ((f64)force->position.x - (f64)force->radius > (f64)maximum->x)
+            continue;
+        if ((f64)force->radius + (f64)force->position.x < (f64)minimum->x)
+            continue;
+        if ((f64)force->position.z - (f64)force->radius > (f64)maximum->z)
+            continue;
+        if ((f64)force->position.z + (f64)force->radius < (f64)minimum->z)
+            continue;
+        if ((f64)force->position.y - (f64)force->radius > (f64)maximum->y)
+            continue;
+        if ((f64)force->radius + (f64)force->position.y < (f64)minimum->y)
+            continue;
+        point = (i32)((u32)point_count - 1u);
+        while (point >= 0) {
+            if (SphereSphereOverlap(&force->position, force->radius, &points[point], radius) != 0)
+                break;
+            --point;
+        }
+        if (point < 0)
+            continue;
+        origin = object != NULL ? &object->collision_position : &points[point];
+        distance_spill = NuVecDistSqr(origin, &force->position, NULL);
+        distance = distance_spill;
+        if (best_distance > distance) {
+            best_distance = distance;
+            best = force;
+        }
+    }
+    if (best == NULL)
+        return 0;
+    if (hit_type != 2 && hit_type != 7 && bolt != NULL) {
+        (void)BoltType_FindByID((u8)bolt->type_id, WORLD);
+        (void)Player_HasDoubleBoltDamage_FromBolt(bolt);
+    }
+    (void)BoltType_FindByID((u8)bolt->type_id, world);
+    player_index = bolt->owner != NULL ? (i8)((GAMEOBJECT *)bolt->owner)->field_280 : -1;
+    if (GizForces_BoltHitPlat(best, world, player_index) != 0) {
+        if (object != NULL) {
+            NewRumble(object->pad->bound_pad, 0.4f, 0);
+            GameCam_HitJudder();
+        }
+    } else {
+        NuVecSub(&normal, &best->position, &bolt->position);
+        NuVecNorm(&normal, &normal);
+        GameAudio_PlaySfx(0x29, &bolt->position, 0, 0);
+        Bolt_AddDeflectedBolt(bolt, &bolt->direction, &normal, hit_flags);
+    }
+    if (BoltSys->stop_targeting != NULL)
+        BoltSys->stop_targeting(object, points);
+    return 1;
+}
