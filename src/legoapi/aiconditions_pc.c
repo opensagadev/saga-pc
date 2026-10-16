@@ -172,3 +172,48 @@ f32 __cdecl Condition_LocatorRangeXZPc(AISYS_PC *system, AISCRIPTPROCESS_PC *pro
     }
     return FLT_MAX;
 }
+
+STATIC_ASSERT(offsetof(WORLDINFO, gizmo_sys) == 0x2ac8);
+
+void *__cdecl Condition_GizmoOutput0InitPc(AISYS_PC *system, char *name, AISCRIPT_PC *script) {
+    return name != NULL ? GizmoFindByName(WORLD->gizmo_sys, -1, name) : NULL;
+}
+
+f32 __cdecl Condition_GizmoOutput0Pc(AISYS_PC *system, AISCRIPTPROCESS_PC *process, AIPACKET_PC *packet, char *name,
+                                     void *argument) {
+    if (argument == NULL)
+        return 0.0f;
+    return (f32)(u32)GizmoGetOutput(WORLD->gizmo_sys, argument, 0, 1);
+}
+
+f32 __cdecl Condition_GizmoOutput1Pc(AISYS_PC *system, AISCRIPTPROCESS_PC *process, AIPACKET_PC *packet, char *name,
+                                     void *argument) {
+    if (argument == NULL)
+        return 0.0f;
+    return (f32)(u32)GizmoGetOutput(WORLD->gizmo_sys, argument, 1, 1);
+}
+
+f32 __cdecl Condition_GizmoOutput2Pc(AISYS_PC *system, AISCRIPTPROCESS_PC *process, AIPACKET_PC *packet, char *name,
+                                     void *argument) {
+    if (argument == NULL)
+        return 0.0f;
+    return (f32)(u32)GizmoGetOutput(WORLD->gizmo_sys, argument, 2, 1);
+}
+
+f32 __cdecl Condition_GizmoOutput3Pc(AISYS_PC *system, AISCRIPTPROCESS_PC *process, AIPACKET_PC *packet, char *name,
+                                     void *argument) {
+    if (argument == NULL)
+        return 0.0f;
+    return (f32)(u32)GizmoGetOutput(WORLD->gizmo_sys, argument, 3, 1);
+}
+
+void *__cdecl Condition_GizmoVisibilityInitPc(AISYS_PC *system, char *name, AISCRIPT_PC *script) {
+    return name != NULL ? GizmoFindByName(WORLD->gizmo_sys, -1, name) : NULL;
+}
+
+f32 __cdecl Condition_GizmoVisibilityPc(AISYS_PC *system, AISCRIPTPROCESS_PC *process, AIPACKET_PC *packet, char *name,
+                                        void *argument) {
+    if (argument == NULL)
+        return 0.0f;
+    return (f32)GizmoGetVisibility(WORLD->gizmo_sys, argument);
+}

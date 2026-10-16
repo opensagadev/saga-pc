@@ -621,13 +621,13 @@ address    , symbol                                                         , si
 0x443890,_Condition_NearestPartyXZRangePc,191,
 0x443950,_Condition_OpponentToPlayerRangePc,82,
 0x4439b0,_Condition_OpponentPathPosRangePc,74,
-0x443a00,_Condition_GizmoOutput0InitPc,43,
-0x443a30,_Condition_GizmoOutput0Pc,55,
-0x443a70,_Condition_GizmoOutput1Pc,55,
-0x443ab0,_Condition_GizmoOutput2Pc,55,
-0x443af0,_Condition_GizmoOutput3Pc,55,
-0x443b30,_Condition_GizmoVisibilityInitPc,43,
-0x443b60,_Condition_GizmoVisibilityPc,41,
+0x443a00,_Condition_GizmoOutput0InitPc,43,"void * __cdecl(AISYS_PC *, char *, AISCRIPT_PC *)"
+0x443a30,_Condition_GizmoOutput0Pc,55,"f32 __cdecl(AISYS_PC *, AISCRIPTPROCESS_PC *, AIPACKET_PC *, char *, void *)"
+0x443a70,_Condition_GizmoOutput1Pc,55,"f32 __cdecl(AISYS_PC *, AISCRIPTPROCESS_PC *, AIPACKET_PC *, char *, void *)"
+0x443ab0,_Condition_GizmoOutput2Pc,55,"f32 __cdecl(AISYS_PC *, AISCRIPTPROCESS_PC *, AIPACKET_PC *, char *, void *)"
+0x443af0,_Condition_GizmoOutput3Pc,55,"f32 __cdecl(AISYS_PC *, AISCRIPTPROCESS_PC *, AIPACKET_PC *, char *, void *)"
+0x443b30,_Condition_GizmoVisibilityInitPc,43,"void * __cdecl(AISYS_PC *, char *, AISCRIPT_PC *)"
+0x443b60,_Condition_GizmoVisibilityPc,41,"f32 __cdecl(AISYS_PC *, AISCRIPTPROCESS_PC *, AIPACKET_PC *, char *, void *)"
 0x443b90,_Condition_FlowBoxCompleteInitPc,33,
 0x443bc0,_Condition_FlowBoxCompletePc,39,
 0x443bf0,_Condition_AngleAboutMyLocatorToPlayerInit,36,
