@@ -37,7 +37,7 @@
     "config/data-members.json": "fe09365da4c355f220d724ca99394fc120b758891b4188d2c49707b6df0894f2",
     "config/library-objects.json": "e5ae24d3eac36fa0d0cb098f7690faaef3110f225db30c8cbf0f7d0d64f6ecfe",
     "config/project.json": "dc0e8cc85ae5650c6937b70ccaefb0153629c2460fa09cd4f6b625e251e623dd",
-    "config/symbols.csv": "0f23a5ca2158e0b95f9456111ea4d70b9c43cee7990880779379cd9a49910712",
+    "config/symbols.csv": "858721ac715b88501bf10f36b4f9bf54a981ef02cc2e96c77acd6017525e8955",
     "config/symbols.md": "dffbdaac86011e3aee74b404063c15bda97f88af3db337ffef9f1bad1785d212",
     "config/toolchain.json": "489d0782638d8033137cdb2834462416111945cbfa073147820e314b8576b95b",
     "config/tools.json": "50199f6b132a7abfabf251e98a75be0a957abfe50f1ff776188fba21e4c4436f",
@@ -293,7 +293,7 @@
     "src/legoapi/gizbuildit_pc.c": "362ecccf33c4a04f78e658ac4173ed562862642a9b8d82c442b7fbeb5ae923d6",
     "src/legoapi/gizflow.c": "142b40d6ac8b95651ebbb6fb5c4668eae774247e1a1cbad21f8c01bbadf22fcf",
     "src/legoapi/gizflow_diagnostic.c": "9946570a4833573c3c33e1b8ed2883a87ea5ea5fcd776762f80a4dde3d19a24e",
-    "src/legoapi/gizforce.c": "c79eef65d9ef8db56ae8dddc1479a96ef84277b88f1eb77c5addb8abc0ef233b",
+    "src/legoapi/gizforce.c": "d4d7d395ebe0141ecaa19316e3ab4f6d878a98a5752a31bf938091f5802596ec",
     "src/legoapi/gizmessage.c": "3d15ed62878479ad0f7f1d30ac530b3c317c78649e9997a9667bece8041d577b",
     "src/legoapi/gizminicut.c": "f2778105fdbb3b246b994b4c27e7cfc32fab20c178e9201c3ca941b573b5ac67",
     "src/legoapi/gizmo.c": "53075827c2286794e84ef42bec91033e5e97ff37f112c273716c708cb4070866",
@@ -588,10 +588,10 @@
     "build/obj/legoapi/gcutscn_locators.obj": "c26bc0a00643e703ead11a0c100fd912f7501c42980804349a7437b6dd2cf8cb",
     "build/obj/legoapi/gizactions.obj": "c6dc4c57bfe49b4fe42beebf546fa854e37aef855dcf70e32c3665fcf9011bb4",
     "build/obj/legoapi/gizbuildit.obj": "6e6a9c1deb7df0fd8bcec14b36fa400cddd6d755f038b636d7badd8ee23c0457",
-    "build/obj/legoapi/gizbuildit_pc.obj": "f6dae0d055e0cf2d0ccb1a7b360009d3d92b179b19641169f71d3d6c47aac88e",
+    "build/obj/legoapi/gizbuildit_pc.obj": "7c7fe5fee2d7d2e4032a6c80b65106a435e75c0fc5e8ba447d310cb8f77393a8",
     "build/obj/legoapi/gizflow.obj": "e9c19bfeb2ac685ac232f38fc40999b2447bdd9a6fe6b323dfc7a5e4bdf44d0a",
     "build/obj/legoapi/gizflow_diagnostic.obj": "55a19f29bc86220096f9d58d06f24a51ade3230bdc12b48dea641324083f70e6",
-    "build/obj/legoapi/gizforce.obj": "dc6b0440030f831c94149424cd417e032b3b2a557eacda015c8aa24c560abbe9",
+    "build/obj/legoapi/gizforce.obj": "6a1a7f2f5756ffe4c43c2fc4d83733419ecb0b8c0aaace8188903e5f0fb6c089",
     "build/obj/legoapi/gizmessage.obj": "df73962ebbe5a5d8e6789c424d9640d1449f4aa3aad8a57f1b46424b9289d737",
     "build/obj/legoapi/gizminicut.obj": "bb7232f6703ca776cf4f2e7efe930c3eb21bb4725ae6565da3faa02051c7a946",
     "build/obj/legoapi/gizmo.obj": "1c7a360dbd4565c69e7772a00c80d0357c4e90e921a6feaf27631f7a86930b85",
@@ -620,7 +620,7 @@
     "build/obj/legoapi/hatmachine.obj": "51a0f9a30845035eb6468302bf81c1471af7687492a896aa363dd7e611e5ccb7",
     "build/obj/legoapi/hint.obj": "e1a159b420f71ebcc16141bf77fb7d537bdcf8adedd1c3a8f89e84bd56acda8d",
     "build/obj/legoapi/hits.obj": "35074b50ac4a4ee408a9c2960eaf7a0ccab05d67bc5fafc921ad2679fa9840e0",
-    "build/obj/legoapi/hub.obj": "063b138300c1723bc34dfda9491f527c8859d4fd70d3068156077f84b1e034a4",
+    "build/obj/legoapi/hub.obj": "3e4592184a72d0700f93c490dbc5b5ee8696513a1e0f2646ab7727dc477b4e3d",
     "build/obj/legoapi/hub_model.obj": "2742c5f63c35613079cfad777dc0b09337bd063f24ecfc669563c4e13eccee6c",
     "build/obj/legoapi/init_once.obj": "cfb6c5ff761574644e512889af23be09f0325e48ed25fb94fc8a853169f053f7",
     "build/obj/legoapi/input.obj": "c84b3d356eb3c0fdd80d1cc04673fbb0bef64d489141429c4a5bd374a00a74e4",
@@ -20402,11 +20402,25 @@
       "name": "GizForces_GetBestBoltTarget",
       "symbol": "_GizForces_GetBestBoltTarget",
       "address": "0x004680b0",
-      "units": [],
-      "target_size": null,
+      "units": [
+        "src/legoapi/gizforce.c"
+      ],
+      "target_size": 943,
       "exact_match": false,
-      "objects": [],
-      "status": "unknown size"
+      "objects": [
+        {
+          "unit": "src/legoapi/gizforce.c",
+          "base_size": 925,
+          "exact_match": false,
+          "target_sha256": "3691af26e9b3dd7d69588372b1428934500a53cc002145860d6f3d023613af80",
+          "base_sha256": "d90bf0bd9871c8d690428abf626dc5641ea138b872bf40b605fcd5a39cc4e35d",
+          "relocation_count": 18,
+          "comparison_unit": "004680b0-4fae9d83f33a",
+          "objdiff_percent": 79.9319
+        }
+      ],
+      "status": "different",
+      "objdiff_percent": 79.9319
     },
     {
       "name": "GizForces_BoltHit",
@@ -456827,17 +456841,17 @@
   ],
   "progress": {
     "text_bytes": 3471246,
-    "mapped_code_bytes": 2342480,
+    "mapped_code_bytes": 2343423,
     "matched_code_bytes": 436066,
     "matching_percent": 12.562232696847184,
-    "fuzzy_coverage_percent": 43.728824751021214,
+    "fuzzy_coverage_percent": 43.75053908117816,
     "mapped_functions": 8612,
     "matched_functions": 4020,
-    "objdiff_fuzzy_percent": 74.46648,
-    "objdiff_total_code": 2041715,
+    "objdiff_fuzzy_percent": 74.468994,
+    "objdiff_total_code": 2042658,
     "image_bytes": 40067072,
-    "mapped_bytes": 3457900,
-    "mapping_percent": 8.630278748594357,
+    "mapped_bytes": 3458843,
+    "mapping_percent": 8.632632302155745,
     "mapping_denominator": "code_and_data_section_virtual_sizes",
     "mapping_sections": [
       {
@@ -456845,7 +456859,7 @@
         "kind": "code",
         "address": "0x401000",
         "size": 3471246,
-        "mapped_bytes": 2343674
+        "mapped_bytes": 2344617
       },
       {
         "name": ".rdata",
@@ -456862,17 +456876,17 @@
         "mapped_bytes": 1032081
       }
     ],
-    "mapping_known_size_symbols": 16104,
-    "mapping_unknown_size_symbols": 7103,
-    "mapping_code_bytes": 2343674,
+    "mapping_known_size_symbols": 16105,
+    "mapping_unknown_size_symbols": 7102,
+    "mapping_code_bytes": 2344617,
     "mapping_code_total_bytes": 3471246,
-    "mapping_code_percent": 67.51679368157717,
+    "mapping_code_percent": 67.54395971936302,
     "mapping_data_bytes": 1114226,
     "mapping_data_total_bytes": 36018966,
     "mapping_data_percent": 3.093442493601843,
-    "mapping_code_data_bytes": 3457900,
+    "mapping_code_data_bytes": 3458843,
     "mapping_code_data_total_bytes": 39490212,
-    "mapping_code_data_percent": 8.756347015812425,
+    "mapping_code_data_percent": 8.758734949308451,
     "matched_data_region_bytes": 1098306
   },
   "data_members": [
@@ -457932,7 +457946,7 @@
       "metadata_sha256": "fe09365da4c355f220d724ca99394fc120b758891b4188d2c49707b6df0894f2",
       "header_path": "src/saga.h",
       "header_sha256": "8604bc3cbcc9f1de8406b0ae4b94b53a0afd63549b867234114e1d07b563ef2f",
-      "geometry_object_sha256": "32d4b79649d3aaad9a6c0c538298ca1fb8814f7ea5b58a57694055221430e484",
+      "geometry_object_sha256": "8c21b39b6227264e8f9d87d5f2101369cac3428206ea87187b50fb9b9aac3c59",
       "toolchain_sha256": "489d0782638d8033137cdb2834462416111945cbfa073147820e314b8576b95b",
       "implementation_sha256": "9ad7521230f06fde31f0771b10bd001037ea32d2def455913a7f391f05dede9d",
       "headers": {

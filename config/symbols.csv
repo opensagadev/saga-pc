@@ -945,7 +945,7 @@ address    , symbol                                                         , si
 0x467d50,_GizForces_StoreProgress,294,"void __cdecl(void *, void *, void *)"
 0x467e80,_GizForces_BoltHitPlat,352,"i32 __cdecl (GIZFORCE_PC *, WORLDINFO *, i32)"
 0x467fe0,_GizForces_BoltHitPlatPc,199,"i32 __cdecl(WORLDINFO *, void *, BOLT_PC *, u8 *)"
-0x4680b0,_GizForces_GetBestBoltTarget,,"GIZMO_PC * __cdecl(GIZMOSET_PC *, f32 *, NUVEC *, NUVEC *, void *, NUVEC *, NUVEC *, f32, f32, i32, i32, i32)"
+0x4680b0,_GizForces_GetBestBoltTarget,943,"GIZMO_PC * __cdecl(GIZMOSET_PC *, f32 *, NUVEC *, NUVEC *, void *, NUVEC *, NUVEC *, f32, f32, i32, i32, i32)"
 0x468460,_GizForces_BoltHit,684,"i32 __cdecl (WORLDINFO *, void *, GAMEOBJECT *, NUVEC *, i32, f32, NUVEC *, NUVEC *, BOLT_PC *, i32, u8 *)"
 0x468710,_GizForces_FindForce,41,
 0x468780,_GizmoForce_Activate,183,
