@@ -23529,7 +23529,7 @@ struct STATUSPACKET_s {
     struct area_data_pc_s *area;
     struct episode_data_pc_s *episode;
     u32 *score;
-    struct MISSIONDATA_s *mission;
+    MISSIONDATA_PC *mission;
     f32 player0_rumble_amount;
     f32 player0_rumble_time;
     f32 player0_rumble_duration;
@@ -23670,6 +23670,11 @@ STATIC_ASSERT(offsetof(struct STATUSPACKET_s, previous_stage) == 0x120);
 STATIC_ASSERT(offsetof(struct STATUSPACKET_s, stage) == 0x124);
 STATIC_ASSERT(offsetof(struct STATUSPACKET_s, next_stage) == 0x128);
 STATIC_ASSERT(offsetof(struct STATUSPACKET_s, field_0x12c) == 0x12c);
+STATIC_ASSERT(offsetof(STATUSPACKET_s, mission) == 0x20);
+STATIC_ASSERT(offsetof(WORLDINFO, area_index) == 0x120);
+STATIC_ASSERT(offsetof(GAMESAVE, save_hash) == 0x7c18);
+STATIC_ASSERT(offsetof(COLLECTID_PC, unknown_price_tail) == 9);
+STATIC_ASSERT(offsetof(NEW_MINI_PIECE_PC, level) == 8);
 STATIC_ASSERT(offsetof(struct STATUSPACKET_s, previous_gold_bricks) == 0xbd);
 STATIC_ASSERT(sizeof(((struct STATUSPACKET_s *)0)->field_0x12c) == 32);
 
@@ -24892,6 +24897,7 @@ struct LEVELSAVE_s {
     u8 arcade_flags;
 };
 STATIC_ASSERT(sizeof(struct LEVELSAVE_s) == 84);
+STATIC_ASSERT(offsetof(struct LEVELSAVE_s, minikit_count) == 0x50);
 
 struct SPECIALMINIKITSYS_s {
     struct SPECIALMINIKIT_s *items;
@@ -25972,7 +25978,7 @@ extern "C" {
     extern i32 PauseMenus_Align;
     extern f32 PauseMenus_X;
     extern TIMER SuperStoryTimer;
-    extern struct area_data_pc_s *VEHICLES_ADATA;
+    extern AREA_DATA_PC *GOTHAMSTREETS_ADATA;
     extern i16 tALLLEVELPROGRESSWILLBELOST;
     extern i16 tALLSUPERSTORYPROGRESSWILLBELOST;
     extern i16 tARCADE_NOWIN;
@@ -26051,6 +26057,17 @@ extern "C" {
     i32 __cdecl InitStatusScreen_LSW(WORLDINFO *, STATUSPACKET_s *);
     i32 __cdecl FinishStatusPacket_LSW(WORLDINFO *, STATUSPACKET_s *, i32);
     void __cdecl DrawStatusBG_LSW(STATUSPACKET_s *);
+    extern i32 StatusNewMinikitCountPc, StatusCurrentMinikitPc;
+    extern i16 StatusNewCharacterIdsPc[8];
+    extern u32 StatusCollectedSuitBitsPc;
+    extern i32 PauseSaveAndExitPc;
+    extern TIMER BonusTimer, ChallengeTimer;
+    extern MISSION_SAVE_READER_PC *Game_MissionSave;
+    extern i16 TextIdPc88073c, TextIdPc88071c, TextIdPc880728, TextIdPc8806e4, TextIdPc8808d0;
+    void __cdecl StatusPacketReset(STATUSPACKET_s *);
+    f32 __cdecl StatusScoreRatioPc(f32, f32);
+    i32 __cdecl newCharactersCollected(STATUSPACKET_s *);
+    void __cdecl InitStatusScreen(WORLDINFO *);
     extern i32 StatusDemoOptionPc;
     extern AREA_DATA_PC *NEGOTIATIONS_ADATA;
     void __cdecl StatusRumbleUpdatePc(void);

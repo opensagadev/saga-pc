@@ -1234,3 +1234,478 @@ status_done:
     if (StatusPacket.status_flags == 0 && GameTimer.time_elapsed >= 5.0f)
         FinishStatusPacket(0);
 }
+
+i32 StatusNewMinikitCountPc = 0;
+i16 StatusNewCharacterIdsPc[8] = {0};
+i32 StatusCurrentMinikitPc = 0;
+u32 StatusCollectedSuitBitsPc = 0;
+
+void __cdecl StatusPacketReset(STATUSPACKET_s *packet) {
+    struct STATUSPACKET_LSW_s *lsw = packet->lsw_packet;
+    i32(__cdecl * init)(WORLDINFO *, STATUSPACKET_s *) = packet->init_callback;
+    i32(__cdecl * finish)(WORLDINFO *, STATUSPACKET_s *, i32) = packet->finish_callback;
+    void(__cdecl * reset)(STATUSPACKET_s *) = packet->reset_callback;
+    void(__cdecl * draw)(STATUSPACKET_s *) = packet->draw_background_callback;
+    volatile f32 delay = packet->field_0x68;
+    reset(packet);
+    memset(packet, 0, sizeof(*packet));
+    packet->field_0x68 = delay;
+    packet->reset_callback = reset;
+    packet->lsw_packet = lsw;
+    packet->init_callback = init;
+    packet->finish_callback = finish;
+    packet->draw_background_callback = draw;
+}
+
+f32 __cdecl StatusScoreRatioPc(f32 numerator, f32 denominator) {
+    if (numerator != 0.0f && denominator != 0.0f) {
+        volatile f32 result = (f64)numerator / (f64)denominator;
+        return result;
+    }
+    return 0.0f;
+}
+
+i32 __cdecl newCharactersCollected(STATUSPACKET_s *packet) {
+    i32 count = 0;
+    if (StartupGameFlag1 == 0) {
+        if (((u32)packet->lsw_packet->field_0x00 & 0x01000000u) != 0 && Game.initial_store_pack_flags != areaSuitBits)
+            return 1;
+    } else {
+        i16 temple_ids[2];
+        i16 *ids;
+        temple_ids[0] = VehicleBoltId7f17d4Pc;
+        temple_ids[1] = -1;
+        ids = packet->area != NULL && packet->area == LOSTTEMPLE_ADATA ? temple_ids : Area_PlayerIDList;
+        while (*ids != -1 && count < 7) {
+            i32 id = *ids, previous = 0;
+            while (previous < count && StatusNewCharacterIdsPc[previous] != id)
+                ++previous;
+            if (previous == count && (Game_CharacterSave == NULL || (Game_CharacterSave[id] & 1) == 0)) {
+                i32 found = InCollectList_Index(id, MasterCollectionPc.list, MasterCollectionPc.count);
+                if (found != -1) {
+                    COLLECTID_PC *entry = &MasterCollectionPc.list[found];
+                    if (entry->shop_enabled == 0) {
+                        StatusNewCharacterIdsPc[count++] = (i16)id;
+                        if (entry->unknown_price_tail[0] != 0)
+                            AddToCompletionPoints(POINTS_PER_CHARACTER);
+                    }
+                }
+            }
+            ++ids;
+        }
+        StatusNewCharacterIdsPc[count] = -1;
+    }
+    return count;
+}
+
+void __cdecl InitStatusScreen(WORLDINFO *world) {
+    STATUSPACKET_s *p = &StatusPacket;
+    i32 i, area, episode = -1;
+    if (p->lsw_packet == NULL)
+        return;
+    for (i = 0; StatusStages[i].type != -1; ++i)
+        StatusStage_Reset(&StatusStages[i]);
+    StatusPacketReset(p);
+    StatusIconYPc = STATSPOSY;
+    p->flags_word &= ~1u;
+    StatusNewMinikitCountPc = 0;
+    StatusCurrentMinikitPc = 0;
+    ResetRumble((RUMBLE_PACKET_RESOURCE_PC *)&p->player0_rumble_amount);
+    ResetRumble((RUMBLE_PACKET_RESOURCE_PC *)&p->player1_rumble_amount);
+    CoinTotalScale = 1.0f;
+    goldbrickmsgcount = 0;
+    if (netclient == 0) {
+        for (i = 0; i < 2; ++i) {
+            GAMEOBJECT *object = Player[i];
+            if (object != NULL) {
+                if (i == 0)
+                    p->player0_model = (u16)object->id;
+                else
+                    p->player1_model = (u16)object->id;
+                p->player_active[i] = (u8)((object->flags_1fc_word >> 7) & 1);
+                p->coins_remaining[i] =
+                    object->coin_packet == NULL ? 0 : ((PLAYER_COIN_PACKET_PC *)object->coin_packet)->coins;
+                ++p->status_flags;
+            } else if (i == 0)
+                p->player0_model = 0xffff;
+            else
+                p->player1_model = 0xffff;
+        }
+    }
+    if (p->status_flags != 2) {
+        p->status_flags = 0;
+        return;
+    }
+    p->flags_word = (p->flags_word & ~0x400u) | (((u32)SuperStory << 10) & 0x400u);
+    p->flags_word = (p->flags_word & ~0x40u) | (((u32)FreePlay << 6) & 0x40u);
+    p->flags_word = (p->flags_word & ~0x800u) | (((u32)PauseSaveAndExitPc << 11) & 0x800u);
+    p->flags_word &= ~0x1000u;
+    p->stage_count = 0;
+    p->mission = Mission_Active(NULL);
+    p->mission_state = p->mission == NULL ? 0 : (u8)Mission_CurrentState(NULL);
+    p->challenge_state = (u8)ChallengeMode;
+    PauseSaveAndExitPc = 0;
+    area = (i8)world->area_index;
+    p->flags_word &= ~8u;
+    p->previous_completion = (u8)Game.save_hash;
+    p->flags_word &= ~0x380u;
+    p->next_area = -1;
+    p->field_0xbe = -1;
+    p->score = &Game.coins;
+    p->previous_gold_bricks = Game.gold_bricks;
+    p->displayed_gold_bricks = Game.gold_bricks;
+    p->newly_completed = 0;
+    p->field_0xbd = 0;
+    p->area_id = (i16)area;
+    if (area != -1) {
+        p->area = &ADataList[area];
+        p->episode_id = p->area->episode_index;
+        episode = p->episode_id;
+        if (episode != -1)
+            p->episode = &EDataList[(i8)p->area->episode_index];
+        p->chapter = p->area->area_index;
+        if ((p->area->flags & 1) != 0)
+            p->flags_word |= 0x80;
+        if ((p->area->flags & 4) != 0)
+            p->flags_word |= 0x100;
+        if ((p->area->flags & 0x100) != 0)
+            p->flags_word |= 0x200;
+    } else {
+        p->area = NULL;
+        p->episode = NULL;
+        p->chapter = -1;
+    }
+    if (p->init_callback(world, p) != 0)
+        return;
+    if ((p->flags_word & 0x400) != 0) {
+        if (NewLData == STATUS_LDATA || WORLD->current_level == STATUS_LDATA) {
+            GAME_EPISODE_START_PC *save = &Game.episode_start[episode];
+            i32 gold = 0;
+            p->previous_best_time = save->superstory_time_limit;
+            p->previous_best_score = save->superstory_score_target;
+            p->superstory_time = SuperStoryTimer.time_elapsed;
+            p->superstory_score = SuperStoryScore;
+            if (episode != -1) {
+                if (p->previous_best_time > p->superstory_time) {
+                    p->new_best_time = p->superstory_time;
+                    save->superstory_time_limit = p->superstory_time;
+                } else
+                    p->new_best_time = 0.0f;
+                if (p->superstory_score > p->previous_best_score) {
+                    p->new_best_score = p->superstory_score;
+                    save->superstory_score_target = p->superstory_score;
+                } else
+                    p->new_best_score = 0;
+                if (save->complete == 0) {
+                    save->complete = 1;
+                    AddToCompletionPoints(POINTS_PER_SUPERSTORY);
+                    if (EpisodeGoldBrickForSuperStoryPc != 0)
+                        gold = AddGoldBrickMessage(p, TextIdPc88073c);
+                }
+            } else {
+                p->new_best_score = 0;
+                p->new_best_time = 0.0f;
+            }
+            p->time_reward_score = *p->score;
+            if (p->new_best_time != 0.0f) {
+                volatile i32 whole = (i32)((f64)p->previous_best_time - (f64)p->new_best_time);
+                i32 scaled = (i32)((u32)whole * 100u);
+                u64 reward = (u64)(i64)scaled;
+                if (reward < 100)
+                    reward = 100;
+                IncreaseScore(&p->time_reward_score, reward, 0);
+            }
+            p->final_reward_score = p->time_reward_score;
+            IncreaseScore(&p->final_reward_score, (u64)p->superstory_score, 0);
+            AddStatusStage(p, 14, gold);
+            AddStatusStage(p, 15, 0);
+            AddStatusStage(p, 16, 0);
+            if (Game.gold_bricks > p->previous_gold_bricks)
+                AddStatusStage(p, 19, 0);
+            if (netclient == 0 && (p->new_best_time != 0.0f || p->new_best_score != 0 || p->superstory_score != 0))
+                AddStatusStage(p, 11, 0);
+            hub_from_superstory = (i8)p->area->episode_index;
+        }
+        AddStatusStage(p, 10, 0);
+        p->stage_types[p->stage_count] = -1;
+        p->current_gold_brick = -1;
+        p->next_stage = FindStatusStage(p->stage_types[0]);
+        NextStatusStage(p);
+        if (episode != -1 && p->chapter < EDataList[episode].regular_areas) {
+            p->next_area = EDataList[episode].area_ids[p->chapter + 1];
+            if (p->next_area != -1 && (ADataList[p->next_area].flags & 2) != 0)
+                hub_from_superstory = episode;
+        }
+        return;
+    }
+    if ((p->flags_word & 0x100) != 0 && area != -1) {
+        i32 gold = 0;
+        p->elapsed_time = BonusTimer.time_elapsed;
+        p->flags_word = (p->flags_word & ~0x20u) | (((u32)BonusWinner << 5) & 0x20u);
+        p->previous_best_time = Game.area_save[area].challenge_trial_time;
+        if (p->previous_best_time <= 0.0f || p->previous_best_time > p->elapsed_time) {
+            if (WORLD->area->challenge_trial_time != 0 && p->previous_best_time >= WORLD->area->challenge_trial_time) {
+                AddToCompletionPoints(POINTS_PER_TIMETRIAL);
+                gold = AddGoldBrickMessage(p, TextIdPc88071c);
+            }
+            p->new_best_time = p->elapsed_time;
+            Game.area_save[area].challenge_trial_time = p->elapsed_time;
+        }
+        if ((p->flags_word & 0x200) != 0) {
+            if (Game.area_save[p->area_id].area_complete == 0) {
+                Game.area_save[p->area_id].area_complete = 1;
+                AddToCompletionPoints(POINTS_PER_SUPERBONUSCOMPLETE);
+                p->newly_completed = 1;
+                if (EpisodeGoldBrickForSuperBonusPc != 0)
+                    gold = AddGoldBrickMessage(p, TextIdPc880728);
+            }
+            AddStatusStage(p, 22, gold);
+            gold = 0;
+        } else
+            AddStatusStage(p, 20, 0);
+        AddStatusStage(p, 21, gold);
+        if (Game.gold_bricks > p->previous_gold_bricks)
+            AddStatusStage(p, 19, 0);
+        AddStatusStage(p, 9, 0);
+        AddStatusStage(p, 10, 0);
+        if (netclient == 0)
+            AddStatusStage(p, 11, 0);
+        AddStatusStage(p, 12, 0);
+        p->stage_types[p->stage_count] = -1;
+        p->current_gold_brick = -1;
+        p->next_stage = FindStatusStage(p->stage_types[0]);
+        NextStatusStage(p);
+        StatusDrawPlayerIconsPc = 1;
+        return;
+    }
+    if (p->mission_state != 0) {
+        i32 gold = 0;
+        p->newly_completed = 0;
+        p->original_score = *p->score;
+        p->reward_score = p->original_score;
+        p->elapsed_time = MissionSys->timer.time_elapsed;
+        if (p->mission_state == 2) {
+            if (Game_MissionSave == NULL || Game_MissionSave->completed[(i8)MissionSys->active_mission->index] == 0) {
+                if (Game_MissionSave != NULL)
+                    Game_MissionSave->completed[(i8)MissionSys->active_mission->index] = 1;
+                AddToCompletionPoints(POINTS_PER_MISSION);
+                gold = AddGoldBrickMessage(p, TextIdPc8806e4);
+            }
+            {
+                volatile i32 whole = (i32)((f64)p->mission->time - (f64)p->elapsed_time);
+                i32 scaled = (i32)((u32)whole * 150u);
+                u64 reward = (u64)(i64)scaled;
+                if (reward < 150)
+                    reward = 150;
+                IncreaseScore(&p->reward_score, reward, 0);
+            }
+            if (Game_MissionSave != NULL) {
+                f32 *best = &Game_MissionSave->best_times[(i8)MissionSys->active_mission->index];
+                if (*best == 0.0f || *best > p->elapsed_time)
+                    *best = p->elapsed_time;
+            }
+        }
+        AddStatusStage(p, 26, gold);
+        if (Game.gold_bricks > p->previous_gold_bricks)
+            AddStatusStage(p, 19, 0);
+        AddStatusStage(p, 9, 0);
+        AddStatusStage(p, 10, 0);
+        if (netclient == 0)
+            AddStatusStage(p, 11, 0);
+        AddStatusStage(p, 12, 0);
+        p->stage_types[p->stage_count] = -1;
+        p->current_gold_brick = -1;
+        p->next_stage = FindStatusStage(p->stage_types[0]);
+        NextStatusStage(p);
+        StatusDrawPlayerIconsPc = 1;
+        cointotal_i_obj[1] = cointotal_i_obj[0] = 0xc3;
+        return;
+    }
+    if (p->challenge_state != 0) {
+        i32 first = 0;
+        p->elapsed_time = ChallengeTimer.time_elapsed;
+        p->original_score = *p->score;
+        p->reward_score = p->original_score;
+        if (p->challenge_state == 2) {
+            if (Game.area_save[p->area_id].challenge_unlocked == 0) {
+                AddToCompletionPoints(POINTS_PER_CHALLENGE);
+                Game.area_save[p->area_id].challenge_unlocked = 1;
+                first = 1;
+            }
+            {
+                volatile i32 whole = (i32)((f64)ADataList[p->area_id].challenge_trial_time - (f64)p->elapsed_time);
+                i32 scaled = (i32)((u32)whole * 500u);
+                u64 reward = (u64)(i64)scaled;
+                if (reward < 500)
+                    reward = 500;
+                IncreaseScore(&p->reward_score, reward, 0);
+            }
+        }
+        AddStatusStage(p, 23, 0);
+        if (p->challenge_state == 2 && first != 0)
+            AddStatusStage(p, 25, 0);
+        AddStatusStage(p, 9, 0);
+        AddStatusStage(p, 10, 0);
+        if (netclient == 0)
+            AddStatusStage(p, 11, 0);
+        AddStatusStage(p, 12, 0);
+        p->stage_types[p->stage_count] = -1;
+        p->current_gold_brick = -1;
+        p->next_stage = FindStatusStage(p->stage_types[0]);
+        NextStatusStage(p);
+        StatusDrawPlayerIconsPc = 1;
+        cointotal_i_obj[1] = cointotal_i_obj[0] = 0xc3;
+        return;
+    }
+    if (area != -1) {
+        if (BuildUpDone != 0)
+            p->flags_word |= 4;
+        p->minikit_count = (u8)(Game.area_save[area].minikit_count + (u8)AreaGlobals_PC.new_minikit_count);
+        p->minikit_max = (p->area->flags & 0x10) != 0 ? 10 : 0;
+        if (p->minikit_count > p->minikit_max)
+            p->minikit_count = p->minikit_max;
+        p->true_hero_target = (f32)p->area->true_hero_targets[(p->flags_word >> 6) & 1];
+    }
+    p->area_time = AreaTimer.time_elapsed;
+    if ((u64)p->coins_remaining[0] + (u64)p->coins_remaining[1] >= 4000000000ULL)
+        p->collected_score = 4000000000.0f;
+    else
+        p->collected_score = (f32)(p->coins_remaining[0] + p->coins_remaining[1]);
+    p->newly_completed = 0;
+    if ((p->field_0xb0 & 4) != 0)
+        p->true_hero_percent = 100.0f;
+    else {
+        volatile f32 target = p->true_hero_target;
+        volatile f32 numerator = (f64)p->collected_score * 100.0;
+        p->true_hero_percent = StatusScoreRatioPc(numerator, target);
+        if (99.0f < p->true_hero_percent)
+            p->true_hero_percent = 99.0f;
+    }
+    p->coins_collected[0] = p->coins_remaining[0];
+    p->coins_collected[1] = p->coins_remaining[1];
+    if (area != -1 && (p->field_0xb0 & 0x40) == 0 && p->episode != NULL && p->chapter < p->episode->regular_areas) {
+        p->next_area = p->episode->area_ids[p->chapter + 1];
+        if (p->chapter < p->episode->regular_areas - 1)
+            p->flags_word |= 8;
+    }
+    StatusDrawPlayerIconsPc = 0;
+    if (area != -1) {
+        for (i = 0; i < AreaGlobals_PC.new_minikit_count; ++i) {
+            LEVELSAVE_s *save = &((LEVELSAVE_s *)Game.unknown_0011)[NewMiniPiece[i].level];
+            if (Game.area_save[area].minikit_count < 10)
+                ++Game.area_save[area].minikit_count;
+            if (save->minikit_count < 10) {
+                NuStrCpy(save->minikit_names[save->minikit_count], NewMiniPiece[i].name);
+                ++save->minikit_count;
+            }
+        }
+    }
+    {
+        i32 gold = 0, completed_episode = 0;
+        if (area != -1 && (p->field_0xb0 & 0x40) == 0 && Game.area_save[area].area_complete == 0 &&
+            (p->area->flags & 0x26) == 0) {
+            p->newly_completed = 1;
+            Game.area_save[area].area_complete = 1;
+            AddToCompletionPoints(POINTS_PER_STORY);
+            if ((p->flags_word & 0x100) == 0 && (p->area->flags & 0x800) == 0)
+                gold = AddGoldBrickMessage(p, TextIdPc880728);
+            if (p->episode != NULL && Episode_IsComplete(p->episode, NULL) != 0)
+                completed_episode = (i8)p->area->episode_index;
+            if (StartupGameFlag1 != 0 && p->area == NEGOTIATIONS_ADATA) {
+                for (i = 1; i < 6; ++i)
+                    Game.area_save[EDataList[i].area_ids[0]].complete = 1;
+            }
+            if ((p->field_0xb0 & 8) != 0)
+                Game.area_save[p->next_area].complete = 1;
+            else if (p->episode != NULL) {
+                i32 bonus = Episode_FindAreaFromFlags(p->episode, 5, 4);
+                i32 bonus2 = Episode_FindAreaFromFlags(p->episode, 5, 5);
+                if (bonus != -1)
+                    Game.area_save[bonus].complete = 1;
+                if (bonus2 != -1)
+                    Game.area_save[bonus2].complete = 1;
+                hub_startoutsidebonusdoor_area = bonus2;
+            }
+        }
+        if (p->newly_completed != 0)
+            AddStatusStage(p, 13, gold);
+        if (completed_episode != 0)
+            AddStatusStage(p, completed_episode + 29, 0);
+    }
+    if (GOTHAMSTREETS_ADATA != NULL && p->newly_completed != 0 && p->area == GOTHAMSTREETS_ADATA)
+        AddStatusStage(p, 8, 0);
+    if (p->area != NULL && (u8)p->area->cheat != 0xff && Game.area_save[area].red_brick_collected == 0 &&
+        AreaGlobals_PC.field_08 != 0) {
+        AddToCompletionPoints(POINTS_PER_REDBRICK);
+        Game.area_save[area].red_brick_collected = 1;
+        AddStatusStage(p, 18, 0);
+    }
+    if (p->newly_completed != 0 && newCharactersCollected(p) > 0) {
+        if (StartupGameFlag1 == 0) {
+            if (((u32)p->lsw_packet->field_0x00 & 0x01000000u) != 0)
+                AddStatusStage(p, 5, 0);
+            else {
+                AddStatusStage(p, 6, 0);
+                AddStatusStage(p, 7, 0);
+            }
+        } else {
+            AddStatusStage(p, 35, 0);
+            AddStatusStage(p, 36, 0);
+        }
+        RememberPlayerIDs(1, (i16)p->player0_model, (i16)p->player1_model);
+    }
+    if (area != -1 && (p->area->flags & 0x136) == 0x10) {
+        if (HubBothTrueJediGoldBricksPc != 0) {
+            u8 *complete = &Game.area_save[area].true_hero_complete[(p->flags_word >> 6) & 1];
+            if (*complete == 0) {
+                if ((p->field_0xb0 & 4) != 0) {
+                    *complete = 1;
+                    AddToCompletionPoints(POINTS_PER_TRUEJEDI);
+                    AddStatusStage(p, 1, AddGoldBrickMessage(p, TextIdPc880818));
+                } else if (p->collected_score > 0.0f)
+                    AddStatusStage(p, 2, 0);
+            }
+        } else if (Game.area_save[area].true_hero_complete[0] == 0 && Game.area_save[area].true_hero_complete[1] == 0) {
+            if ((p->field_0xb0 & 4) != 0) {
+                Game.area_save[area].true_hero_complete[1] = 1;
+                Game.area_save[area].true_hero_complete[0] = 1;
+                AddToCompletionPoints(POINTS_PER_TRUEJEDI);
+                AddStatusStage(p, 1, AddGoldBrickMessage(p, TextIdPc880818));
+            } else if (p->collected_score > 0.0f && (p->flags_word & 0x800) == 0)
+                AddStatusStage(p, 2, 0);
+        }
+    }
+    if (p->collected_score > 0.0f)
+        AddStatusStage(p, 3, 0);
+    if (p->minikit_max != 0 && (p->area->flags & 0x36) == 0x10 && Game.area_save[area].minikit_complete == 0 &&
+        AreaGlobals_PC.new_minikit_count > 0) {
+        i32 gold = 0;
+        p->new_minikits = AreaGlobals_PC.new_minikit_count;
+        if (Game.area_save[area].minikit_count >= p->minikit_max) {
+            Game.area_save[area].minikit_complete = 1;
+            p->flags_word |= 0x10;
+            AddToCompletionPoints(POINTS_PER_MINIKIT);
+            gold = AddGoldBrickMessage(p, TextIdPc8808d0);
+        }
+        if (PauseSaveAndExitPc == 0 || p->new_minikits != 0)
+            AddStatusStage(p, 4, gold);
+        if ((p->field_0xb0 & 0x10) != 0 && AllMiniKitsDone(Game.area_save) != 0) {
+            AddToCollection(VehicleBoltId7f195cPc);
+            AddStatusStage(p, 17, 0);
+        }
+    }
+    if (Game.gold_bricks > p->previous_gold_bricks)
+        AddStatusStage(p, 19, 0);
+    if ((p->flags_word & 0x800) == 0)
+        AddStatusStage(p, 9, 0);
+    AddStatusStage(p, 10, 0);
+    if (netclient == 0)
+        AddStatusStage(p, 11, 0);
+    AddStatusStage(p, 12, 0);
+    p->stage_types[p->stage_count] = -1;
+    p->current_gold_brick = -1;
+    p->next_stage = FindStatusStage(p->stage_types[0]);
+    NextStatusStage(p);
+    StatusCollectedSuitBitsPc = Game.initial_store_pack_flags;
+    Game.initial_store_pack_flags = areaSuitBits;
+}

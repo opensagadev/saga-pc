@@ -1215,6 +1215,11 @@
    "unit": "src/legoapi/customise.c",
    "symbol": "__real@bf247ae1",
    "kind": "data"
+  },
+  {
+   "unit": "src/legoapi/render.c",
+   "symbol": "__real@4058c00000000000",
+   "kind": "data"
   }
  ]
 }
