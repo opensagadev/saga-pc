@@ -2176,7 +2176,7 @@ static void HubDrawBonusStatsPc(f32, i32, i32, i32);
 static void HubDrawSuperBonusStatsPc(AREA_DATA_PC *, f32);
 static void HubDrawSelectModePc(void);
 static void HubDrawBonusModePc(void);
-static void HubDrawBuildUpBarPc(f32, f32, i32, i32, f32, f32, f32, i32);
+void __cdecl DrawBuildUpBar(f32, f32, i32, i32, f32, f32, f32, i32);
 static void HubDrawIconCursorsPc(COLLECTION_BUILD_PC *, i32, f32, f32);
 static void HubDrawFreePlaySelectPc(void);
 
@@ -2628,10 +2628,10 @@ extern "C" void DrawPlayerIconPrompts(i32 active0, i32 select0, f32 alpha0, i32 
     TextInputSetLastDevicePc(last_device);
 }
 
-/* PC4b86f0,441 bytes; x,y,count,total,scale_x,scale_y,alpha,angle full stack. */
+/* PC4b86f0,444 bytes; x,y,count,total,scale_x,scale_y,alpha,angle full stack. */
 extern "C" i32 HubBuildBarSegmentsPc;
 extern "C" f32 HubBuildBarSpacingPc, HubBuildBarScalePc, HubBuildBarOverallScalePc;
-static void HubDrawBuildUpBarPc(f32 x, f32 y, i32 count, i32 total, f32 scale_x, f32 scale_y, f32 alpha, i32 angle) {
+void __cdecl DrawBuildUpBar(f32 x, f32 y, i32 count, i32 total, f32 scale_x, f32 scale_y, f32 alpha, i32 angle) {
     const f32 progress = (f32)(HubBuildBarSegmentsPc * count) / (f32)total;
     const i32 filled = (i32)progress;
     const f32 fraction = NuFmod(progress, 1.0f);
@@ -2691,7 +2691,7 @@ static void HubDrawAreaStatsPc(f32 phase, i32 area_index, i32 mode) {
         const f32 bar_y = HubEpisodeTitleYPc + PANEL_MINIKITY - PANEL_MINIKITCOUNTY;
         char text[128];
         if (HubBothTrueJediGoldBricksPc != 0) {
-            HubDrawBuildUpBarPc(HubAreaPanelXPc[1], bar_y, 100, 100, sine, 1.0f, 1.0f, 0);
+            DrawBuildUpBar(HubAreaPanelXPc[1], bar_y, 100, 100, sine, 1.0f, 1.0f, 0);
             NuStrCpy(text, save->true_hero_complete[0] != 0 ? "$" : "X");
             Text3DEx(text, HubAreaPanelXPc[1], HubEpisodeTitleYPc, 1.0f, PANEL_MINIKITCOUNTSCALE,
                      PANEL_MINIKITCOUNTSCALE, PANEL_MINIKITCOUNTSCALE, 0, 255, 0, 127, (u8)alpha);
@@ -2699,7 +2699,7 @@ static void HubDrawAreaStatsPc(f32 phase, i32 area_index, i32 mode) {
                         HubTrueJediLabelScalePc, HubTrueJediLabelScalePc, HubTrueJediLabelScalePc, 0,
                         HubTrueJediLabelRedPc, HubTrueJediLabelGreenPc, HubTrueJediLabelBluePc, HubTrueJediLabelWidthPc,
                         1, NULL, 0, (i32)(HubTrueJediTypeAlphaPc * phase));
-            HubDrawBuildUpBarPc(HubAreaPanelXPc[4], bar_y, 100, 100, sine, 1.0f, 1.0f, 0);
+            DrawBuildUpBar(HubAreaPanelXPc[4], bar_y, 100, 100, sine, 1.0f, 1.0f, 0);
             NuStrCpy(text, save->true_hero_complete[1] != 0 ? "$" : "X");
             Text3DEx(text, HubAreaPanelXPc[4], HubEpisodeTitleYPc, 1.0f, PANEL_MINIKITCOUNTSCALE,
                      PANEL_MINIKITCOUNTSCALE, PANEL_MINIKITCOUNTSCALE, 0, 255, 0, 127, (u8)alpha);
@@ -2708,7 +2708,7 @@ static void HubDrawAreaStatsPc(f32 phase, i32 area_index, i32 mode) {
                         HubTrueJediLabelRedPc, HubTrueJediLabelGreenPc, HubTrueJediLabelBluePc, HubTrueJediLabelWidthPc,
                         1, NULL, 0, (i32)(HubTrueJediTypeAlphaPc * phase));
         } else {
-            HubDrawBuildUpBarPc(HubAreaPanelXPc[1], bar_y, 100, 100, sine, 1.0f, 1.0f, 0);
+            DrawBuildUpBar(HubAreaPanelXPc[1], bar_y, 100, 100, sine, 1.0f, 1.0f, 0);
             NuStrCpy(text, save->true_hero_complete[0] != 0 || save->true_hero_complete[1] != 0 ? "$" : "X");
             Text3DEx(text, HubAreaPanelXPc[1], HubEpisodeTitleYPc, 1.0f, PANEL_MINIKITCOUNTSCALE,
                      PANEL_MINIKITCOUNTSCALE, PANEL_MINIKITCOUNTSCALE, 0, 255, 0, 127, (u8)alpha);
@@ -4078,8 +4078,8 @@ static void HubDrawEpisodeStatsPc(i32 episode_index, f32 phase) {
     Episode_CountOpenAreas(episode_index, -1, (COLLECTION_AREA_SAVE_PC *)Game.area_save);
     if (EpCompleteCount) {
         if (HubBothTrueJediGoldBricksPc) {
-            HubDrawBuildUpBarPc(HubAreaPanelXPc[1], HubEpisodeTitleYPc + PANEL_MINIKITY - PANEL_MINIKITCOUNTY, 100, 100,
-                                NuTrigTable[((i32)(16384.0 * phase) >> 1) & 0x7fff], 1.0f, 1.0f, 0);
+            DrawBuildUpBar(HubAreaPanelXPc[1], HubEpisodeTitleYPc + PANEL_MINIKITY - PANEL_MINIKITCOUNTY, 100, 100,
+                           NuTrigTable[((i32)(16384.0 * phase) >> 1) & 0x7fff], 1.0f, 1.0f, 0);
             sprintf(text, "%i/%i", EpStoryBuildUpCount, EpStoryBuildUpTotal);
             Text3DEx(text, HubAreaPanelXPc[1], HubEpisodeTitleYPc, 1.0f, PANEL_MINIKITCOUNTSCALE,
                      PANEL_MINIKITCOUNTSCALE, PANEL_MINIKITCOUNTSCALE, 0, 255, 0, 127, static_cast<u8>(alpha));
@@ -4087,8 +4087,8 @@ static void HubDrawEpisodeStatsPc(i32 episode_index, f32 phase) {
                         HubTrueJediLabelScalePc, HubTrueJediLabelScalePc, HubTrueJediLabelScalePc, 0,
                         HubTrueJediLabelRedPc, HubTrueJediLabelGreenPc, HubTrueJediLabelBluePc, HubTrueJediLabelWidthPc,
                         1, NULL, 0, static_cast<i32>(static_cast<f32>(HubTrueJediTypeAlphaPc) * phase));
-            HubDrawBuildUpBarPc(HubAreaPanelXPc[4], HubEpisodeTitleYPc + PANEL_MINIKITY - PANEL_MINIKITCOUNTY, 100, 100,
-                                NuTrigTable[((i32)(16384.0 * phase) >> 1) & 0x7fff], 1.0f, 1.0f, 0);
+            DrawBuildUpBar(HubAreaPanelXPc[4], HubEpisodeTitleYPc + PANEL_MINIKITY - PANEL_MINIKITCOUNTY, 100, 100,
+                           NuTrigTable[((i32)(16384.0 * phase) >> 1) & 0x7fff], 1.0f, 1.0f, 0);
             sprintf(text, "%i/%i", EpFreePlayBuildUpCount, EpFreePlayBuildUpTotal);
             Text3DEx(text, HubAreaPanelXPc[4], HubEpisodeTitleYPc, 1.0f, PANEL_MINIKITCOUNTSCALE,
                      PANEL_MINIKITCOUNTSCALE, PANEL_MINIKITCOUNTSCALE, 0, 255, 0, 127, static_cast<u8>(alpha));
@@ -4097,8 +4097,8 @@ static void HubDrawEpisodeStatsPc(i32 episode_index, f32 phase) {
                         HubTrueJediLabelRedPc, HubTrueJediLabelGreenPc, HubTrueJediLabelBluePc, HubTrueJediLabelWidthPc,
                         1, NULL, 0, static_cast<i32>(static_cast<f32>(HubTrueJediTypeAlphaPc) * phase));
         } else {
-            HubDrawBuildUpBarPc(HubAreaPanelXPc[1], HubEpisodeTitleYPc + PANEL_MINIKITY - PANEL_MINIKITCOUNTY, 100, 100,
-                                NuTrigTable[((i32)(16384.0 * phase) >> 1) & 0x7fff], 1.0f, 1.0f, 0);
+            DrawBuildUpBar(HubAreaPanelXPc[1], HubEpisodeTitleYPc + PANEL_MINIKITY - PANEL_MINIKITCOUNTY, 100, 100,
+                           NuTrigTable[((i32)(16384.0 * phase) >> 1) & 0x7fff], 1.0f, 1.0f, 0);
             sprintf(text, "%i/%i", EpBuildUpCount, EpBuildUpTotal);
             Text3DEx(text, HubAreaPanelXPc[1], HubEpisodeTitleYPc, 1.0f, PANEL_MINIKITCOUNTSCALE,
                      PANEL_MINIKITCOUNTSCALE, PANEL_MINIKITCOUNTSCALE, 0, 255, 0, 127, static_cast<u8>(alpha));
@@ -4205,9 +4205,8 @@ extern "C" void Hub_DrawPanel(WORLDINFO *) {
                 both_true_jedi_bricks = HubBothTrueJediGoldBricksPc;
             stats_xscale = 0.8f;
             if (both_true_jedi_bricks) {
-                HubDrawBuildUpBarPc(HubAreaPanelXPc[1], HubEpisodeSubtitleYPc + PANEL_MINIKITY - PANEL_MINIKITCOUNTY,
-                                    100, 100, NuTrigTable[((i32)(16384.0 * HubAreaTimePc) >> 1) & 0x7fff], 1.0f, 1.0f,
-                                    0);
+                DrawBuildUpBar(HubAreaPanelXPc[1], HubEpisodeSubtitleYPc + PANEL_MINIKITY - PANEL_MINIKITCOUNTY, 100,
+                               100, NuTrigTable[((i32)(16384.0 * HubAreaTimePc) >> 1) & 0x7fff], 1.0f, 1.0f, 0);
                 sprintf(text, "%i/%i", story_count, story_total);
                 Text3DEx(text, HubAreaPanelXPc[1], HubEpisodeSubtitleYPc, 1.0f, PANEL_MINIKITCOUNTSCALE * stats_xscale,
                          PANEL_MINIKITCOUNTSCALE, PANEL_MINIKITCOUNTSCALE, 0, 255, 0, 127, static_cast<u8>(alpha));
@@ -4216,9 +4215,8 @@ extern "C" void Hub_DrawPanel(WORLDINFO *) {
                             HubTrueJediLabelRedPc, HubTrueJediLabelGreenPc, HubTrueJediLabelBluePc,
                             HubTrueJediLabelWidthPc, 1, NULL, 0,
                             static_cast<i32>(static_cast<f32>(HubTrueJediTypeAlphaPc) * HubAreaTimePc));
-                HubDrawBuildUpBarPc(HubAreaPanelXPc[4], HubEpisodeSubtitleYPc + PANEL_MINIKITY - PANEL_MINIKITCOUNTY,
-                                    100, 100, NuTrigTable[((i32)(16384.0 * HubAreaTimePc) >> 1) & 0x7fff], 1.0f, 1.0f,
-                                    0);
+                DrawBuildUpBar(HubAreaPanelXPc[4], HubEpisodeSubtitleYPc + PANEL_MINIKITY - PANEL_MINIKITCOUNTY, 100,
+                               100, NuTrigTable[((i32)(16384.0 * HubAreaTimePc) >> 1) & 0x7fff], 1.0f, 1.0f, 0);
                 sprintf(text, "%i/%i", free_count, free_total);
                 Text3DEx(text, HubAreaPanelXPc[4], HubEpisodeSubtitleYPc, 1.0f, PANEL_MINIKITCOUNTSCALE * stats_xscale,
                          PANEL_MINIKITCOUNTSCALE, PANEL_MINIKITCOUNTSCALE, 0, 255, 0, 127, static_cast<u8>(alpha));
@@ -4228,9 +4226,8 @@ extern "C" void Hub_DrawPanel(WORLDINFO *) {
                             HubTrueJediLabelWidthPc, 1, NULL, 0,
                             static_cast<i32>(static_cast<f32>(HubTrueJediTypeAlphaPc) * HubAreaTimePc));
             } else {
-                HubDrawBuildUpBarPc(HubAreaPanelXPc[1], HubEpisodeSubtitleYPc + PANEL_MINIKITY - PANEL_MINIKITCOUNTY,
-                                    100, 100, NuTrigTable[((i32)(16384.0 * HubAreaTimePc) >> 1) & 0x7fff], 1.0f, 1.0f,
-                                    0);
+                DrawBuildUpBar(HubAreaPanelXPc[1], HubEpisodeSubtitleYPc + PANEL_MINIKITY - PANEL_MINIKITCOUNTY, 100,
+                               100, NuTrigTable[((i32)(16384.0 * HubAreaTimePc) >> 1) & 0x7fff], 1.0f, 1.0f, 0);
                 sprintf(text, "%i/%i", buildup_count, buildup_total);
                 Text3DEx(text, HubAreaPanelXPc[1], HubEpisodeSubtitleYPc, 1.0f, PANEL_MINIKITCOUNTSCALE * stats_xscale,
                          PANEL_MINIKITCOUNTSCALE, PANEL_MINIKITCOUNTSCALE, 0, 255, 0, 127, static_cast<u8>(alpha));
@@ -5032,8 +5029,8 @@ extern "C" {
                         status_y = (STATSPOSY - STATSPOS2YPc) *
                                        NuTrigTable[((i32)((f64)builduptime * 16384.0) >> 1) & 0x7fff] +
                                    STATSPOS2YPc;
-                        HubDrawBuildUpBarPc(0.0f, status_y + PANEL_COINY, BuildUpTotal != 0 ? maximum : BuildUpDone,
-                                            maximum, 1.0f, BuildUpScale, 1.0f, 0);
+                        DrawBuildUpBar(0.0f, status_y + PANEL_COINY, BuildUpTotal != 0 ? maximum : BuildUpDone, maximum,
+                                       1.0f, BuildUpScale, 1.0f, 0);
                     }
                 }
                 if (SuperStory == 0 && Mission_Active(NULL) == NULL && Arcade == 0 &&
