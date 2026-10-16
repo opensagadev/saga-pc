@@ -1709,3 +1709,62 @@ void __cdecl InitStatusScreen(WORLDINFO *world) {
     StatusCollectedSuitBitsPc = Game.initial_store_pack_flags;
     Game.initial_store_pack_flags = areaSuitBits;
 }
+
+void __cdecl BonusComplete_LSW_Skip(STATUS_STAGE_s *stage, STATUSPACKET_s *packet) {
+    (void)stage;
+    NextStatusStage(packet);
+}
+
+void __cdecl BonusComplete_LSW_Update(STATUS_STAGE_s *stage, STATUSPACKET_s *packet, f32 elapsed) {
+    if (stage->field_0x14 == 0) {
+        stage->field_0x18 = 0.0f;
+        stage->field_0x14 = 1;
+        {
+            volatile f32 duration = packet->newly_completed != 0 ? 4.0f : 0.5f;
+            stage->field_0x1c = duration;
+        }
+        StatusDrawPlayerIconsPc = 1;
+    } else if (stage->field_0x14 == 1) {
+        SetDrawGoldBrick(packet, packet->current_gold_brick);
+        {
+            volatile f32 previous = stage->field_0x18;
+            volatile f32 accumulated = stage->field_0x18 + elapsed;
+            stage->field_0x18 = accumulated;
+            if (accumulated >= stage->field_0x1c)
+                NextStatusStage(packet);
+            else if (packet->newly_completed != 0 && previous < 0.5f && accumulated >= 0.5f) {
+                PlaySfx("StatusAward", NULL);
+                NewStatusRumbleBuzz(-1, 0.6f, 0.0f, 0);
+            }
+        }
+    }
+}
+
+void __cdecl BonusTime_LSW_Skip(STATUS_STAGE_s *stage, STATUSPACKET_s *packet) {
+    (void)stage;
+    (void)packet;
+}
+
+void __cdecl BonusTime_LSW_Update(STATUS_STAGE_s *stage, STATUSPACKET_s *packet, f32 elapsed) {
+    if (stage->field_0x14 == 0) {
+        stage->field_0x14 = 1;
+        stage->field_0x18 = 0.0f;
+        stage->field_0x1c = 4.0f;
+    } else if (stage->field_0x14 == 1) {
+        SetDrawGoldBrick(packet, packet->current_gold_brick);
+        {
+            volatile f32 previous = stage->field_0x18;
+            volatile f32 accumulated = stage->field_0x18 + elapsed;
+            stage->field_0x18 = accumulated;
+            if (accumulated >= stage->field_0x1c)
+                NextStatusStage(packet);
+            else if (previous < 0.5f && accumulated >= 0.5f) {
+                if (packet->new_best_time == 0.0f)
+                    GameAudio_PlaySfx(0x32, NULL, 0, 0);
+                else
+                    PlaySfx("StatusAward", NULL);
+                NewStatusRumbleBuzz(-1, 0.6f, 0.0f, 0);
+            }
+        }
+    }
+}

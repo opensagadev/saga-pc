@@ -881,6 +881,10 @@ address    , symbol                                                         , si
 0x461720,_CollectCharcters_Draw,1022,
 0x00461b20,_CollectCharactersOff_Skip,1,"void __cdecl(STATUS_STAGE_s *, STATUSPACKET_s *)"
 0x00461b30,_CollectCharactersOff_Update,79,"void __cdecl(STATUS_STAGE_s *, STATUSPACKET_s *, f32)"
+0x4628c0,_BonusComplete_LSW_Skip,12,"void __cdecl(STATUS_STAGE_s *, STATUSPACKET_s *)"
+0x4628d0,_BonusComplete_LSW_Update,281,"void __cdecl(STATUS_STAGE_s *, STATUSPACKET_s *, f32)"
+0x462b60,_BonusTime_LSW_Skip,1,"void __cdecl(STATUS_STAGE_s *, STATUSPACKET_s *)"
+0x462b70,_BonusTime_LSW_Update,236,"void __cdecl(STATUS_STAGE_s *, STATUSPACKET_s *, f32)"
 0x463f30,_ChallangeCash_Draw,405,
 0x00464140,_Save_LSW_Update,212,"void __cdecl(STATUS_STAGE_s *, STATUSPACKET_s *, f32)"
 0x464360,_GizAction_ActivateEffect,154,
