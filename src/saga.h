@@ -23364,6 +23364,10 @@ struct COLLECTID {
     };
 };
 STATIC_ASSERT(sizeof(struct COLLECTID) == 28);
+STATIC_ASSERT(offsetof(COLLECTID, grid_x) == 20);
+STATIC_ASSERT(offsetof(COLLECTID, grid_y) == 24);
+STATIC_ASSERT(offsetof(COLLECTID_PC, grid_x) == 20);
+STATIC_ASSERT(offsetof(COLLECTID_PC, grid_y) == 24);
 
 struct HINT_s {
     i16 control_mode_ids[2];
@@ -23757,6 +23761,8 @@ struct COLLECTION_s {
     f32 field_14;
 };
 STATIC_ASSERT(sizeof(struct COLLECTION_s) == 24);
+STATIC_ASSERT(offsetof(COLLECTION_s, list) == 0);
+STATIC_ASSERT(offsetof(COLLECTION_s, count_y) == 6);
 
 struct DOOR_s {
     char name[64];
@@ -26098,6 +26104,14 @@ extern "C" {
     extern f32 StatusMiniKitDirectionOffsetPc, StatusMiniKitProgressPc;
     extern STATUS_MINIKIT_DRAW_CACHE_PC StatusMiniKitDrawCachePc[10];
     void __cdecl DrawStatusMiniKit(f32, f32, f32, f32, f32, i32, STATUSPACKET_s *, f32);
+    void __cdecl CollectCharcters_Skip(STATUS_STAGE_s *, STATUSPACKET_s *);
+    void __cdecl CollectCharcters_Update(STATUS_STAGE_s *, STATUSPACKET_s *, f32);
+    void __cdecl CollectCharcters_Draw(STATUS_STAGE_s *, STATUSPACKET_s *, i32);
+    void __cdecl CollectCharactersOff_Draw(STATUS_STAGE_s *, STATUSPACKET_s *, i32);
+    i32 __cdecl AddToCollection(i32);
+    void __cdecl Collection_GetPos(COLLECTION_s *, i32, f32 *, f32 *);
+    extern f32 StatusCollectionIconYPc, StatusCollectionTextYPc, StatusCollectionYPc;
+    extern i32 StatusCollectionAppearSoundPlayedPc, StatusCollectionMoveSoundPlayedPc;
     void __cdecl MiniKit_LSW_Skip(STATUS_STAGE_s *, STATUSPACKET_s *);
     void __cdecl MiniKit_LSW_Update(STATUS_STAGE_s *, STATUSPACKET_s *, f32);
     void __cdecl MiniKit_LSW_Draw(STATUS_STAGE_s *, STATUSPACKET_s *, i32);

@@ -1724,3 +1724,145 @@ void __cdecl MiniKit_LSW_Draw(STATUS_STAGE_s *stage, STATUSPACKET_s *packet, i32
                  StatusAllMiniKitsCountScalePc, 0, 255, 0, 127, opacity);
     }
 }
+
+extern "C" {
+    f32 StatusCollectionIconYPc = 0.5f;
+    f32 StatusCollectionTextYPc = 0.025f;
+    f32 StatusCollectionYPc = -0.5f;
+    i32 StatusCollectionAppearSoundPlayedPc = 0;
+    i32 StatusCollectionMoveSoundPlayedPc = 0;
+}
+
+void __cdecl CollectCharcters_Skip(STATUS_STAGE_s *stage, STATUSPACKET_s *packet) {
+    if (stage->field_0x14 == 0)
+        stage->field_0x14 = 1;
+    while (StatusNewCharacterIdsPc[(i32)((u32)stage->field_0x14 - 1u)] != -1) {
+        AddToCollection(StatusNewCharacterIdsPc[(i32)((u32)stage->field_0x14 - 1u)]);
+        stage->field_0x14 = (i32)((u32)stage->field_0x14 + 1u);
+    }
+    NextStatusStage(packet);
+    NextStatusStage(packet);
+}
+
+void __cdecl CollectCharcters_Update(STATUS_STAGE_s *stage, STATUSPACKET_s *packet, f32 elapsed) {
+    if (stage->field_0x14 == 0) {
+        stage->field_0x1c = 1.0f;
+        volatile f32 time = (f64)elapsed + stage->field_0x18;
+        stage->field_0x18 = time;
+        if (stage->field_0x18 >= 1.0f) {
+            stage->field_0x14 = 1;
+            if (StatusNewCharacterIdsPc[0] == -1) {
+                GameAudio_PlaySfx(0x32, NULL, 0, 0);
+                NewStatusRumbleBuzz(-1, 0.6f, 0.0f, 0);
+                NextStatusStage(packet);
+            } else {
+                stage->field_0x18 = 0.0f;
+                stage->field_0x1c = 3.0f;
+            }
+        }
+    } else {
+        i32 index = stage->field_0x14;
+        volatile f32 time = (f64)elapsed + stage->field_0x18;
+        stage->field_0x18 = time;
+        if (stage->field_0x18 >= stage->field_0x1c) {
+            AddToCollection(StatusNewCharacterIdsPc[(i32)((u32)index - 1u)]);
+            PlaySfx("LegoClicks", NULL);
+            stage->field_0x14 = (i32)((u32)stage->field_0x14 + 1u);
+            stage->field_0x18 = 0.0f;
+            stage->field_0x1c = 3.0f;
+            if (StatusNewCharacterIdsPc[(i32)((u32)stage->field_0x14 - 1u)] == -1)
+                NextStatusStage(packet);
+        }
+    }
+}
+
+void __cdecl CollectCharcters_Draw(STATUS_STAGE_s *stage, STATUSPACKET_s *packet, i32 current) {
+    COLLECTION_BUILD_PC *collection = (packet->field_0xb0 & 0x80) != 0 ? &VehicleCollectionPc : &CharacterCollectionPc;
+    if (current == 0)
+        return;
+    if (stage->field_0x14 == 0) {
+        union {
+            f32 value;
+            u32 bits;
+        } absolute_y;
+        absolute_y.value = StatusCollectionYPc;
+        absolute_y.bits &= 0x7fffffffu;
+        volatile f32 start_y = -((1.0 - (f64)absolute_y.value) + 1.0);
+        volatile f32 time = stage->field_0x18;
+        volatile f32 duration = stage->field_0x1c;
+        volatile f32 ratio = 0.0f;
+        if (time != 0.0f && duration != 0.0f)
+            ratio = (f64)time / duration;
+        volatile i32 angle = (i32)((f64)ratio * 16384.0);
+        volatile f32 y = ((f64)StatusCollectionYPc - start_y) * (f64)NuTrigTable[(angle >> 1) & 0x7fff] + start_y;
+        Collection_DrawPc(collection, 0.0f, y, collection->scale, NULL, 1.0f, 0);
+        return;
+    }
+    i32 id = StatusNewCharacterIdsPc[(i32)((u32)stage->field_0x14 - 1u)];
+    if (id == -1)
+        return;
+    Collection_DrawPc(collection, 0.0f, StatusCollectionYPc, collection->scale, NULL, 1.0f, 0);
+    volatile f32 x = 0.0f;
+    volatile f32 y = StatusCollectionIconYPc;
+    volatile f32 size = 0.4f;
+    volatile f32 icon_alpha = 1.0f;
+    volatile f32 text_alpha;
+    if (stage->field_0x18 < 0.5f) {
+        if (stage->field_0x18 > 0.25f && StatusCollectionAppearSoundPlayedPc == 0) {
+            PlaySfx("Char_Icon_App", NULL);
+            StatusCollectionAppearSoundPlayedPc = 1;
+        }
+        volatile f32 time = (f64)stage->field_0x18 + stage->field_0x18;
+        icon_alpha = time;
+        volatile i32 angle = (i32)((f64)time * 16384.0);
+        text_alpha = NuTrigTable[(angle >> 1) & 0x7fff];
+        x = 0.0f;
+    } else if (stage->field_0x18 < 2.0f) {
+        text_alpha = 1.0f;
+        StatusCollectionAppearSoundPlayedPc = 0;
+        StatusCollectionMoveSoundPlayedPc = 0;
+        icon_alpha = 1.0f;
+    } else {
+        volatile f32 time = (f64)stage->field_0x18 - 2.0;
+        icon_alpha = 1.0f;
+        volatile i32 fade_angle = (i32)((f64)time * 16384.0);
+        text_alpha = 1.0 - (f64)NuTrigTable[(fade_angle >> 1) & 0x7fff];
+        if (StatusCollectionMoveSoundPlayedPc == 0) {
+            PlaySfx("Char_Icon_Slide", NULL);
+            StatusCollectionMoveSoundPlayedPc = 1;
+        }
+        volatile i32 angle = (i32)((f64)time * 32768.0 + 16384.0);
+        volatile f32 blend = 1.0 - ((f64)NuTrigTable[(angle >> 1) & 0x7fff] + 1.0) * 0.5;
+        if (InCollectList_Index(id, collection->list, collection->count) != -1) {
+            f32 target_x, target_y;
+            Collection_GetPos((COLLECTION_s *)collection, id, &target_x, &target_y);
+            volatile f32 target_size = (f64)collection->scale * MissionPlayerIconSizePc;
+            if (Game_OptionsSave != NULL && Game_OptionsSave->widescreen != 0)
+                target_size = (f64)target_size * 0.875;
+            x = ((f64)target_x - 0.0) * (f64)blend + 0.0;
+            y = ((f64)target_y - y) * (f64)blend + y;
+            size = ((f64)target_size - (f64)0.4f) * (f64)blend + (f64)0.4f;
+        }
+    }
+    DrawCharIcon(id, x, y, 0.0f, size, 0xa7, icon_alpha, icon_alpha, 1, NULL);
+    volatile i32 opacity = (i32)((f64)text_alpha * 128.0);
+    SmartTextEx(TTab[CDataList[id].name_id], 0.0f, StatusCollectionTextYPc, 1.0f, StatusAllMiniKitsCharacterTextScalePc,
+                StatusAllMiniKitsCharacterTextScalePc, StatusAllMiniKitsCharacterTextScalePc, 0, (u8)StatusRedPc,
+                (u8)StatusGreenPc, (u8)StatusBluePc, 1.7f, 1, NULL, 0, (u32)opacity);
+}
+
+void __cdecl CollectCharactersOff_Draw(STATUS_STAGE_s *stage, STATUSPACKET_s *packet, i32 current) {
+    COLLECTION_BUILD_PC *collection = (packet->field_0xb0 & 0x80) != 0 ? &VehicleCollectionPc : &CharacterCollectionPc;
+    if (current == 0)
+        return;
+    volatile f32 alpha = 1.0f;
+    if (stage->field_0x14 > 0) {
+        volatile f32 time = stage->field_0x18;
+        volatile f32 duration = stage->field_0x1c;
+        volatile f32 ratio = 0.0f;
+        if (time != 0.0f && duration != 0.0f)
+            ratio = (f64)time / duration;
+        alpha = 1.0 - (f64)ratio;
+    }
+    Collection_DrawPc(collection, 0.0f, StatusCollectionYPc, collection->scale, NULL, alpha, 0);
+}
