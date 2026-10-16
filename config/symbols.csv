@@ -432,9 +432,9 @@ address    , symbol                                                         , si
 0x4409b0,_Condition_ObstacleLockedOpenInitPc,43,
 0x4409e0,_Condition_ObstacleOpenedByPlayerPc,28,
 0x440a00,_Condition_ObstacleOpenedByEitherPlayerPc,42,
-0x440a30,_Condition_ForceAtStartInitPc,39,
-0x440a60,_Condition_ForceAtStartPc,43,
-0x440a90,_Condition_ForceAtEndPc,43,
+0x440a30,_Condition_ForceAtStartInitPc,39,"void * __cdecl(AISYS_PC *, char *, AISCRIPT_PC *)"
+0x440a60,_Condition_ForceAtStartPc,43,"f32 __cdecl(AISYS_PC *, AISCRIPTPROCESS_PC *, AIPACKET_PC *, char *, void *)"
+0x440a90,_Condition_ForceAtEndPc,43,"f32 __cdecl(AISYS_PC *, AISCRIPTPROCESS_PC *, AIPACKET_PC *, char *, void *)"
 0x440ac0,_Condition_IsVisibleInitPc,5,
 0x440ad0,_Condition_IsVisible,95,"f32 __cdecl (AISYS_PC *, AISCRIPTPROCESS_PC *, AIPACKET_PC *, char *, void *)"
 0x440b30,_Condition_MySetPc,20,
@@ -461,15 +461,15 @@ address    , symbol                                                         , si
 0x440f60,_Condition_Player1IsPc,30,
 0x440f80,_Condition_Player2IsPc,30,
 0x440fa0,_Condition_IAmPlayer2Pc,65,
-0x440ff0,_Condition_PlayerUsingForceInitPc,43,
-0x441020,_Condition_UsingForcePc,36,
-0x441050,_Condition_PlayerUsingForcePc,30,
+0x440ff0,_Condition_PlayerUsingForceInitPc,43,"void * __cdecl(AISYS_PC *, char *, AISCRIPT_PC *)"
+0x441020,_Condition_UsingForcePc,36,"f32 __cdecl(AISYS_PC *, AISCRIPTPROCESS_PC *, AIPACKET_PC *, char *, void *)"
+0x441050,_Condition_PlayerUsingForcePc,30,"f32 __cdecl(AISYS_PC *, AISCRIPTPROCESS_PC *, AIPACKET_PC *, char *, void *)"
 0x441070,_Condition_EitherPlayerUsingForce,52,"f32 __cdecl (AISYS_PC *, AISCRIPTPROCESS_PC *, AIPACKET_PC *, char *, void *)"
 0x4410b0,_Condition_OnForcePlatformInitPc,58,"void *__cdecl (AISYS_PC *, char *, AISCRIPT_PC *)"
 0x4410f0,_Condition_OnForcePlatformPc,133,"f32 __cdecl (AISYS_PC *, AISCRIPTPROCESS_PC *, AIPACKET_PC *, char *, void *)"
 0x441180,_Condition_PlayerOnForcePlatformPc,117,"f32 __cdecl (AISYS_PC *, AISCRIPTPROCESS_PC *, AIPACKET_PC *, char *, void *)"
 0x441200,_Condition_EitherPlayerOnForcePlatformPc,253,"f32 __cdecl (AISYS_PC *, AISCRIPTPROCESS_PC *, AIPACKET_PC *, char *, void *)"
-0x441300,_Condition_ForceBeingUsedPc,32,
+0x441300,_Condition_ForceBeingUsedPc,32,"f32 __cdecl(AISYS_PC *, AISCRIPTPROCESS_PC *, AIPACKET_PC *, char *, void *)"
 0x441320,_Condition_PlayerDeflectingPartPc,24,
 0x441400,_Condition_EitherPlayerPullingLeverPc,111,
 0x441470,_Condition_EitherPlayerUsingHatMachinePc,111,

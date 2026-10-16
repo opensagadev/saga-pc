@@ -1882,3 +1882,45 @@ GIZMO_PC *__cdecl GizForces_GetBestBoltTarget(GIZMOSET_PC *set, f32 *output_dist
     }
     return NULL;
 }
+
+STATIC_ASSERT(offsetof(WORLDINFO, gizmo_sys) == 0x2ac8);
+STATIC_ASSERT(offsetof(GIZMO_PC, object) == 0);
+STATIC_ASSERT(offsetof(GIZFORCE_PC, reset_word) == 0x3c);
+STATIC_ASSERT(offsetof(GIZFORCE_PC, runtime_flags) == 0xa0);
+STATIC_ASSERT(offsetof(AIPACKET_PC, owner) == 0xd0);
+STATIC_ASSERT(offsetof(GAMEOBJECT, objptr) == 0);
+
+void *__cdecl Condition_ForceAtStartInitPc(AISYS_PC *system, char *name, AISCRIPT_PC *script) {
+    return GizmoFindByName(WORLD->gizmo_sys, force_gizmotype_id, name);
+}
+
+f32 __cdecl Condition_ForceAtStartPc(AISYS_PC *system, AISCRIPTPROCESS_PC *process, AIPACKET_PC *packet, char *name,
+                                     void *argument) {
+    return argument != NULL && GizmoGetOutput(WORLD->gizmo_sys, argument, 1, 1) == 0 ? 1.0f : 0.0f;
+}
+
+f32 __cdecl Condition_ForceAtEndPc(AISYS_PC *system, AISCRIPTPROCESS_PC *process, AIPACKET_PC *packet, char *name,
+                                   void *argument) {
+    return argument != NULL && GizmoGetOutput(WORLD->gizmo_sys, argument, 0, 1) != 0 ? 1.0f : 0.0f;
+}
+
+void *__cdecl Condition_PlayerUsingForceInitPc(AISYS_PC *system, char *name, AISCRIPT_PC *script) {
+    GIZMO_PC *gizmo = (GIZMO_PC *)GizmoFindByName(WORLD->gizmo_sys, force_gizmotype_id, name);
+    return gizmo != NULL ? gizmo->object : NULL;
+}
+
+f32 __cdecl Condition_UsingForcePc(AISYS_PC *system, AISCRIPTPROCESS_PC *process, AIPACKET_PC *packet, char *name,
+                                   void *argument) {
+    return GizForce_GameObjUsingForce(packet->owner->objptr, (GIZFORCE_PC *)argument) != 0 ? 1.0f : 0.0f;
+}
+
+f32 __cdecl Condition_PlayerUsingForcePc(AISYS_PC *system, AISCRIPTPROCESS_PC *process, AIPACKET_PC *packet, char *name,
+                                         void *argument) {
+    return GizForce_GameObjUsingForce(player, (GIZFORCE_PC *)argument) != 0 ? 1.0f : 0.0f;
+}
+
+f32 __cdecl Condition_ForceBeingUsedPc(AISYS_PC *system, AISCRIPTPROCESS_PC *process, AIPACKET_PC *packet, char *name,
+                                       void *argument) {
+    GIZFORCE_PC *force = (GIZFORCE_PC *)argument;
+    return force != NULL && ((force->runtime_flags & 0x200000) != 0 || force->reset_word != 0) ? 1.0f : 0.0f;
+}

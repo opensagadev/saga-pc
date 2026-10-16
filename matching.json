@@ -37,7 +37,7 @@
     "config/data-members.json": "fe09365da4c355f220d724ca99394fc120b758891b4188d2c49707b6df0894f2",
     "config/library-objects.json": "e5ae24d3eac36fa0d0cb098f7690faaef3110f225db30c8cbf0f7d0d64f6ecfe",
     "config/project.json": "dc0e8cc85ae5650c6937b70ccaefb0153629c2460fa09cd4f6b625e251e623dd",
-    "config/symbols.csv": "58406b4b3d53a68f4ae514d08bee8e7989b54c3d56b0153e4a699b2d83e18ee4",
+    "config/symbols.csv": "0508c0a3a135d1210d53d40a3ecf766d487fe34b6273c8a48ba245b1a2075040",
     "config/symbols.md": "dffbdaac86011e3aee74b404063c15bda97f88af3db337ffef9f1bad1785d212",
     "config/toolchain.json": "489d0782638d8033137cdb2834462416111945cbfa073147820e314b8576b95b",
     "config/tools.json": "50199f6b132a7abfabf251e98a75be0a957abfe50f1ff776188fba21e4c4436f",
@@ -293,7 +293,7 @@
     "src/legoapi/gizbuildit_pc.c": "362ecccf33c4a04f78e658ac4173ed562862642a9b8d82c442b7fbeb5ae923d6",
     "src/legoapi/gizflow.c": "142b40d6ac8b95651ebbb6fb5c4668eae774247e1a1cbad21f8c01bbadf22fcf",
     "src/legoapi/gizflow_diagnostic.c": "9946570a4833573c3c33e1b8ed2883a87ea5ea5fcd776762f80a4dde3d19a24e",
-    "src/legoapi/gizforce.c": "d4d7d395ebe0141ecaa19316e3ab4f6d878a98a5752a31bf938091f5802596ec",
+    "src/legoapi/gizforce.c": "57ba0d9ad91d0e402aefe6f043ebec3c5efc737cdfb8c4d62934beef4cd8489f",
     "src/legoapi/gizmessage.c": "3d15ed62878479ad0f7f1d30ac530b3c317c78649e9997a9667bece8041d577b",
     "src/legoapi/gizminicut.c": "f2778105fdbb3b246b994b4c27e7cfc32fab20c178e9201c3ca941b573b5ac67",
     "src/legoapi/gizmo.c": "53075827c2286794e84ef42bec91033e5e97ff37f112c273716c708cb4070866",
@@ -591,7 +591,7 @@
     "build/obj/legoapi/gizbuildit_pc.obj": "31de045d9a3055f8c740da89fa6f9913467c1694e3facda3ad114609ec26480b",
     "build/obj/legoapi/gizflow.obj": "e9c19bfeb2ac685ac232f38fc40999b2447bdd9a6fe6b323dfc7a5e4bdf44d0a",
     "build/obj/legoapi/gizflow_diagnostic.obj": "55a19f29bc86220096f9d58d06f24a51ade3230bdc12b48dea641324083f70e6",
-    "build/obj/legoapi/gizforce.obj": "6a1a7f2f5756ffe4c43c2fc4d83733419ecb0b8c0aaace8188903e5f0fb6c089",
+    "build/obj/legoapi/gizforce.obj": "fab8dadeb5d4f6149784ad438bcd2a9bc7dcedf125e703cc4cad3192be1c4d31",
     "build/obj/legoapi/gizmessage.obj": "df73962ebbe5a5d8e6789c424d9640d1449f4aa3aad8a57f1b46424b9289d737",
     "build/obj/legoapi/gizminicut.obj": "bb7232f6703ca776cf4f2e7efe930c3eb21bb4725ae6565da3faa02051c7a946",
     "build/obj/legoapi/gizmo.obj": "1c7a360dbd4565c69e7772a00c80d0357c4e90e921a6feaf27631f7a86930b85",
@@ -10554,31 +10554,73 @@
       "name": "Condition_ForceAtStartInitPc",
       "symbol": "_Condition_ForceAtStartInitPc",
       "address": "0x00440a30",
-      "units": [],
+      "units": [
+        "src/legoapi/gizforce.c"
+      ],
       "target_size": 39,
-      "exact_match": false,
-      "objects": [],
-      "status": "not implemented"
+      "exact_match": true,
+      "objects": [
+        {
+          "unit": "src/legoapi/gizforce.c",
+          "base_size": 39,
+          "exact_match": true,
+          "target_sha256": "86fdb3655c2cddb02f089b308eb0433e6af83135eafcb1061c8f5cc0a82b7c53",
+          "base_sha256": "86fdb3655c2cddb02f089b308eb0433e6af83135eafcb1061c8f5cc0a82b7c53",
+          "relocation_count": 3,
+          "comparison_unit": "00440a30-366c373516df",
+          "objdiff_percent": 100.0
+        }
+      ],
+      "status": "exact",
+      "objdiff_percent": 100.0
     },
     {
       "name": "Condition_ForceAtStartPc",
       "symbol": "_Condition_ForceAtStartPc",
       "address": "0x00440a60",
-      "units": [],
+      "units": [
+        "src/legoapi/gizforce.c"
+      ],
       "target_size": 43,
       "exact_match": false,
-      "objects": [],
-      "status": "not implemented"
+      "objects": [
+        {
+          "unit": "src/legoapi/gizforce.c",
+          "base_size": 59,
+          "exact_match": false,
+          "target_sha256": "65a8ed28690773f8e348a1d2de1c58e2956dda091acbe743976c298a0737de1d",
+          "base_sha256": "180433405d99517565de2b7426a6344cb4b8685cc3546a0162a3ee4eac454f89",
+          "relocation_count": 2,
+          "comparison_unit": "00440a60-cb0d6bb05d69",
+          "objdiff_percent": 76.47059
+        }
+      ],
+      "status": "different",
+      "objdiff_percent": 76.47059
     },
     {
       "name": "Condition_ForceAtEndPc",
       "symbol": "_Condition_ForceAtEndPc",
       "address": "0x00440a90",
-      "units": [],
+      "units": [
+        "src/legoapi/gizforce.c"
+      ],
       "target_size": 43,
       "exact_match": false,
-      "objects": [],
-      "status": "not implemented"
+      "objects": [
+        {
+          "unit": "src/legoapi/gizforce.c",
+          "base_size": 59,
+          "exact_match": false,
+          "target_sha256": "971460762f212e080af8ca174003f6809534916677baeadbe34d4b01300ba463",
+          "base_sha256": "b1a2b29496da10bf30b632db113ceef32f512a35568ed07f57311ace5002be5c",
+          "relocation_count": 2,
+          "comparison_unit": "00440a90-f4f2e2cda6e4",
+          "objdiff_percent": 76.47059
+        }
+      ],
+      "status": "different",
+      "objdiff_percent": 76.47059
     },
     {
       "name": "Condition_IsVisibleInitPc",
@@ -10998,31 +11040,73 @@
       "name": "Condition_PlayerUsingForceInitPc",
       "symbol": "_Condition_PlayerUsingForceInitPc",
       "address": "0x00440ff0",
-      "units": [],
+      "units": [
+        "src/legoapi/gizforce.c"
+      ],
       "target_size": 43,
-      "exact_match": false,
-      "objects": [],
-      "status": "not implemented"
+      "exact_match": true,
+      "objects": [
+        {
+          "unit": "src/legoapi/gizforce.c",
+          "base_size": 43,
+          "exact_match": true,
+          "target_sha256": "f1a340b2f8adec7749ebf4ee56d501b5df497f85fddc532bb4584c3673959e92",
+          "base_sha256": "f1a340b2f8adec7749ebf4ee56d501b5df497f85fddc532bb4584c3673959e92",
+          "relocation_count": 3,
+          "comparison_unit": "00440ff0-854f917aaf8d",
+          "objdiff_percent": 100.0
+        }
+      ],
+      "status": "exact",
+      "objdiff_percent": 100.0
     },
     {
       "name": "Condition_UsingForcePc",
       "symbol": "_Condition_UsingForcePc",
       "address": "0x00441020",
-      "units": [],
+      "units": [
+        "src/legoapi/gizforce.c"
+      ],
       "target_size": 36,
       "exact_match": false,
-      "objects": [],
-      "status": "not implemented"
+      "objects": [
+        {
+          "unit": "src/legoapi/gizforce.c",
+          "base_size": 63,
+          "exact_match": false,
+          "target_sha256": "5044f97fc933df9529992e20bf7b8740b07a77809249dbff03754c48f4d2989b",
+          "base_sha256": "7fe517f6bd1835dc84afffbbf7d0c5b3297d70f86dce408c1d05ff6efb2526de",
+          "relocation_count": 0,
+          "comparison_unit": "00441020-3078f6a0adfc",
+          "objdiff_percent": 0.0
+        }
+      ],
+      "status": "different",
+      "objdiff_percent": 0.0
     },
     {
       "name": "Condition_PlayerUsingForcePc",
       "symbol": "_Condition_PlayerUsingForcePc",
       "address": "0x00441050",
-      "units": [],
+      "units": [
+        "src/legoapi/gizforce.c"
+      ],
       "target_size": 30,
       "exact_match": false,
-      "objects": [],
-      "status": "not implemented"
+      "objects": [
+        {
+          "unit": "src/legoapi/gizforce.c",
+          "base_size": 56,
+          "exact_match": false,
+          "target_sha256": "fa362bf7856638442ee5b0eb9d5a2312a632b2ae87a252c790fdc98feb6a40ba",
+          "base_sha256": "975c0026d7e49e66f40c316f1db60419f7d0035e454a1e3f13a5e3db50555541",
+          "relocation_count": 1,
+          "comparison_unit": "00441050-967497491847",
+          "objdiff_percent": 0.0
+        }
+      ],
+      "status": "different",
+      "objdiff_percent": 0.0
     },
     {
       "name": "Condition_EitherPlayerUsingForce",
@@ -11148,11 +11232,25 @@
       "name": "Condition_ForceBeingUsedPc",
       "symbol": "_Condition_ForceBeingUsedPc",
       "address": "0x00441300",
-      "units": [],
+      "units": [
+        "src/legoapi/gizforce.c"
+      ],
       "target_size": 32,
       "exact_match": false,
-      "objects": [],
-      "status": "not implemented"
+      "objects": [
+        {
+          "unit": "src/legoapi/gizforce.c",
+          "base_size": 48,
+          "exact_match": false,
+          "target_sha256": "379ab8d43563718926728567fd8eb9c391505b0cee627249628da9990e208940",
+          "base_sha256": "17d02083a1920b38cde58003e2652e3665cc8a00eecdc3d889b9a048e0a60f92",
+          "relocation_count": 0,
+          "comparison_unit": "00441300-0059344e0e2b",
+          "objdiff_percent": 63.636364
+        }
+      ],
+      "status": "different",
+      "objdiff_percent": 63.636364
     },
     {
       "name": "Condition_PlayerDeflectingPartPc",
@@ -457024,13 +457122,13 @@
   "progress": {
     "text_bytes": 3471246,
     "mapped_code_bytes": 2344601,
-    "matched_code_bytes": 436152,
-    "matching_percent": 12.564710193400295,
-    "fuzzy_coverage_percent": 43.80549401536807,
+    "matched_code_bytes": 436234,
+    "matching_percent": 12.567072457555586,
+    "fuzzy_coverage_percent": 43.81033747341972,
     "mapped_functions": 8612,
-    "matched_functions": 4022,
-    "objdiff_fuzzy_percent": 74.47473,
-    "objdiff_total_code": 2045062,
+    "matched_functions": 4024,
+    "objdiff_fuzzy_percent": 74.47326,
+    "objdiff_total_code": 2045328,
     "image_bytes": 40067072,
     "mapped_bytes": 3460021,
     "mapping_percent": 8.635572372246218,
@@ -458128,7 +458226,7 @@
       "metadata_sha256": "fe09365da4c355f220d724ca99394fc120b758891b4188d2c49707b6df0894f2",
       "header_path": "src/saga.h",
       "header_sha256": "8604bc3cbcc9f1de8406b0ae4b94b53a0afd63549b867234114e1d07b563ef2f",
-      "geometry_object_sha256": "203052bf43a923032ff628b9b8232f0ccd29f4fefcbcb603512f308cca2670a1",
+      "geometry_object_sha256": "655ab81d1945e92c0c3d330080fc21284d4f562a2372cb00140435a9b029832e",
       "toolchain_sha256": "489d0782638d8033137cdb2834462416111945cbfa073147820e314b8576b95b",
       "implementation_sha256": "9ad7521230f06fde31f0771b10bd001037ea32d2def455913a7f391f05dede9d",
       "headers": {
