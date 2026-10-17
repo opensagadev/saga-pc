@@ -19,7 +19,7 @@ from tools.check import analysis_configuration, analysis_language
 from tools.lib import ROOT
 
 # Bump when rules change materially: batch runs retry functions searched with older rules.
-VERSION = 3
+VERSION = 4
 K = ci.CursorKind
 FLOATS = {ci.TypeKind.FLOAT, ci.TypeKind.DOUBLE, ci.TypeKind.LONGDOUBLE}
 NEGATE = {"==": "!=", "!=": "==", "<": ">=", ">=": "<", ">": "<=", "<=": ">"}
@@ -300,15 +300,30 @@ def rule_compare(source):
             if op in swaps:
                 new_op, new_value = swaps[op]
                 yield Candidate(source.edit([(a, b, f"{ltext} {new_op} {new_value}")]), "bound_compare",
-                                f"line {node.location.line}", True)
+                                f"line {node.location.line}", _safe_integer_bound(left, value, new_value))
             if op in ("==", "!="):
                 # Valid only when a dominating guard fixes the range; otherwise exact-only.
                 low = _guarded_lower_bound(source, node, ltext)
                 for new in ((f"<", value + 1), (">", value - 1), ("<=", value), (">=", value)):
                     shown = new[0] if op == "==" else NEGATE[new[0]]
-                    safe = low is not None and low == value and new[0] in ("<", "<=")
+                    safe = (low is not None and low == value and new[0] in ("<", "<=")
+                            and _safe_integer_bound(left, value, new[1]))
                     yield Candidate(source.edit([(a, b, f"{ltext} {shown} {new[1]}")]), "range_compare",
                                     f"line {node.location.line}", safe)
+
+
+def _safe_integer_bound(left, value, replacement):
+    # Keep both literal expressions representable as int. Hexadecimal literals
+    # outside this range can make the original comparison unsigned; emitting a
+    # decimal replacement can then change which values of the left side compare.
+    # Exclude INT_MIN too: its positive literal is wider before unary negation.
+    if not all(-0x7fffffff <= bound <= 0x7fffffff for bound in (value, replacement)):
+        return False
+    signed = left.type.get_canonical().kind in (ci.TypeKind.INT, ci.TypeKind.LONG,
+                                               ci.TypeKind.LONGLONG)
+    # Negative int constants wrap in an unsigned comparison. Adjacent bounds
+    # remain ordered only when the rewrite does not cross that wrap at zero.
+    return signed or (value < 0) == (replacement < 0)
 
 
 def _guard_bound(source, stmt, ltext):

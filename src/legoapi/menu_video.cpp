@@ -420,7 +420,7 @@ extern "C" void __cdecl MenuUpdateVideoConfirmPc(MENU *menu) {
 }
 extern "C" void __cdecl MenuExitVideoConfirmPc(MENU *) {
 }
-extern "C" void __cdecl MenuDrawNoticePc(char *text, u8 red, u8 green, u8 blue) {
+extern "C" void __cdecl MenuDrawNoticePc(char *text, u32 red, u32 green, u32 blue) {
     MenuSmartTextEx(text, 0.0f, 0.15f, 1.0f, MenuTextScalePc, MenuTextScalePc, MenuTextScalePc, 0, red, green, blue,
                     1.5f, 4, NULL, 0, MenuA);
 }

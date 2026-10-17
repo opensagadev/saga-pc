@@ -228,10 +228,13 @@ void __cdecl NuTexAnimEnvProc(PC_TEXTURE_ANIM_ENV *environment) {
                 environment->texture_index = instruction[1];
                 environment->instruction_index += 2;
                 break;
-            case 1:
-                environment->texture_index = NuRand(&TextureAnimationRandomPc) % instruction[1];
+            case 1: {
+                i32 random = NuRand(&TextureAnimationRandomPc);
+                instruction = program->instructions + environment->instruction_index;
+                environment->texture_index = random % instruction[1];
                 environment->instruction_index += 2;
                 break;
+            }
             case 2: {
                 i32 texture = environment->texture_index + instruction[1];
                 if (texture < instruction[2])
@@ -243,7 +246,11 @@ void __cdecl NuTexAnimEnvProc(PC_TEXTURE_ANIM_ENV *environment) {
                 break;
             }
             case 3: {
-                i32 texture = NuRand(&TextureAnimationRandomPc) % (instruction[2] - instruction[1] + 1);
+                i32 range = instruction[2] - instruction[1] + 1;
+                i32 instruction_index = environment->instruction_index;
+                i32 random = NuRand(&TextureAnimationRandomPc);
+                i32 texture = random % range;
+                instruction = program->instructions + instruction_index;
                 texture += instruction[1] + environment->texture_index;
                 if (texture < instruction[3])
                     texture = instruction[3];
@@ -290,9 +297,12 @@ void __cdecl NuTexAnimEnvProc(PC_TEXTURE_ANIM_ENV *environment) {
                 if (environment->loop_depth >= 16)
                     ((void(__cdecl *)(i32))AnimationDiagnosticNoOpPc)(environment->instruction_index);
                 environment->loop_counts[environment->loop_depth] = instruction[1];
-                if (instruction[2] != 0)
-                    environment->loop_counts[environment->loop_depth] +=
-                        NuRand(&TextureAnimationRandomPc) % instruction[2];
+                if (instruction[2] != 0) {
+                    i32 *loop_count = &environment->loop_counts[environment->loop_depth];
+                    i32 random = NuRand(&TextureAnimationRandomPc);
+                    instruction = program->instructions + environment->instruction_index;
+                    *loop_count += random % instruction[2];
+                }
                 environment->instruction_index += 3;
                 environment->loop_starts[environment->loop_depth++] = environment->instruction_index;
                 continue;

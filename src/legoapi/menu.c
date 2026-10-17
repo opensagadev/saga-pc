@@ -308,9 +308,8 @@ extern f32 MenuTextScalePc, MenuPromptPositionScalePc, MENUDY;
 extern char **__cdecl TextInputGetKeyNamesPc(void);
 extern i32 __cdecl TextInputIsKeyboardDevicePc(i32);
 extern i32 __cdecl TextInputIsPrimaryDevicePc(i32);
-void __cdecl MenuText3DEx(char *, f32, f32, f32, f32, f32, f32, u32, u8, u8, u8, i32);
-void __cdecl DrawMenuButtonPromptsEx(i32 confirm, i32 cancel, i32 flags, i32 enabled, u8 red, u8 green, u8 blue,
-                                     u8 alpha) {
+void __cdecl DrawMenuButtonPromptsEx(i32 confirm, i32 cancel, i32 flags, i32 enabled, u32 red, u32 green, u32 blue,
+                                     u32 alpha) {
     char accept_text[128], cancel_text[128], axes_text[128];
     char *accept = "[[accept]]", *back = "[[back]]", *left = "[[padleft]]", *right = "[[padright]]";
     char **keys;
@@ -368,7 +367,7 @@ void __cdecl DrawMenuButtonPromptsEx(i32 confirm, i32 cancel, i32 flags, i32 ena
     }
 }
 
-void __cdecl DrawMenuButtonPrompts(i32 confirm, i32 cancel, i32 enabled, u8 red, u8 green, u8 blue, u8 alpha) {
+void __cdecl DrawMenuButtonPrompts(i32 confirm, i32 cancel, i32 enabled, u32 red, u32 green, u32 blue, u32 alpha) {
     DrawMenuButtonPromptsEx(confirm, cancel, 0, enabled, red, green, blue, alpha);
 }
 
@@ -406,7 +405,6 @@ extern void(__cdecl *headerdrawfn)(void);
 extern f32 MENUDY;
 extern i32 g_enableButtonPrompts;
 extern u8 MENUNORMALR, MENUNORMALG, MENUNORMALB;
-void __cdecl DrawMenuButtonPromptsEx(i32, i32, i32, i32, u8, u8, u8, u8);
 void __cdecl DrawMenu(i32 paused) {
     MENU *menu;
     MENU_DRAW_STATE_PC *view;
@@ -461,7 +459,6 @@ void __cdecl DrawMenu(i32 paused) {
 
 extern i32 MenuDisableHeaders;
 extern f32 MenuTopYPc, MenuTextScalePc;
-void __cdecl MenuSmartTextEx(char *, f32, f32, f32, f32, f32, f32, u32, u8, u8, u8, f32, i32, void *, i32, i32);
 void __cdecl DrawMenuHeader(void) {
     if (MenuDisableHeaders == 0)
         MenuSmartTextEx(MenuHeader, 0, MenuTopYPc, 1, MenuTextScalePc, MenuTextScalePc, MenuTextScalePc, 0,
@@ -1107,7 +1104,11 @@ void __cdecl DrawMenuEntryEx(MENU *menu, char *text, i32 alpha) {
     MENU_DRAW_VIEW_PC *view = (MENU_DRAW_VIEW_PC *)menu;
     f32 scale = view->item_scale_x;
     f32 spacing = view->item_spacing;
-    u8 red, green, blue;
+    /* Retail writes low bytes, then forwards each partially written 32-bit color slot. */
+    union {
+        u8 byte;
+        u32 slot;
+    } red, green, blue;
     u32 alpha_bits = (u32)alpha;
     if ((u8)alpha_bits > 128)
         alpha_bits = (alpha_bits & 0xffffff00u) | 128;
@@ -1125,34 +1126,34 @@ void __cdecl DrawMenuEntryEx(MENU *menu, char *text, i32 alpha) {
     if (view->draw_item >= view->first_row && view->draw_item <= view->last_row) {
         if (view->draw_item == menu->selected_row) {
             if (menu_flash != 0) {
-                red = MENUFLASH0R;
-                green = MENUFLASH0G;
-                blue = MENUFLASH0B;
+                red.byte = MENUFLASH0R;
+                green.byte = MENUFLASH0G;
+                blue.byte = MENUFLASH0B;
             } else {
-                red = MENUFLASH1R;
-                green = MENUFLASH1G;
-                blue = MENUFLASH1B;
+                red.byte = MENUFLASH1R;
+                green.byte = MENUFLASH1G;
+                blue.byte = MENUFLASH1B;
             }
             if (menu_pulsate > 0.0f) {
-                red = (u8)(MENUFLASH0R * (f64)menu_pulsate + MENUFLASH1R * (1.0 - menu_pulsate));
-                green = (u8)(MENUFLASH0G * (f64)menu_pulsate + MENUFLASH1G * (1.0 - menu_pulsate));
-                blue = (u8)(MENUFLASH0B * (f64)menu_pulsate + MENUFLASH1B * (1.0 - menu_pulsate));
+                red.byte = (u8)(MENUFLASH0R * (f64)menu_pulsate + MENUFLASH1R * (1.0 - menu_pulsate));
+                green.byte = (u8)(MENUFLASH0G * (f64)menu_pulsate + MENUFLASH1G * (1.0 - menu_pulsate));
+                blue.byte = (u8)(MENUFLASH0B * (f64)menu_pulsate + MENUFLASH1B * (1.0 - menu_pulsate));
             }
         } else if (dme_rgb != 0) {
-            red = dme_r;
-            green = dme_g;
-            blue = dme_b;
+            red.byte = dme_r;
+            green.byte = dme_g;
+            blue.byte = dme_b;
         } else {
-            red = MENUENTRYR;
-            green = MENUENTRYG;
-            blue = MENUENTRYB;
+            red.byte = MENUENTRYR;
+            green.byte = MENUENTRYG;
+            blue.byte = MENUENTRYB;
         }
         if (view->item_offsets != NULL) {
             Text3DEx(text, view->draw_x, view->draw_y, view->draw_z, (f32)((f64)scale * dme_sx), scale, scale,
-                     dme_align, red, green, blue, (i32)alpha_bits);
+                     dme_align, red.slot, green.slot, blue.slot, (i32)alpha_bits);
         } else {
             MenuSmartTextEx(text, view->draw_x, view->draw_y, view->draw_z, (f32)((f64)scale * dme_sx), scale, scale,
-                            dme_align, red, green, blue, MENUENTRYEXWIDTH, 1, NULL, 0, (u8)alpha_bits);
+                            dme_align, red.slot, green.slot, blue.slot, MENUENTRYEXWIDTH, 1, NULL, 0, (u8)alpha_bits);
         }
     }
     ++view->draw_item;

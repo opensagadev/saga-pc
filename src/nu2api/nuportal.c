@@ -208,31 +208,27 @@ i32 __cdecl NuPortalClipTestBox(NUVEC *center, NUVEC *extent, NUPORTAL_FRUSTUM_P
 }
 
 static void transposeClipPlanes(NUPORTAL_FRUSTUM_PC *frustum) {
-    f32 cam_a = NuPortalCameraPlane.a;
-    f32 cam_d = NuPortalCameraPlane.d;
-    f32 cam_b = NuPortalCameraPlane.b;
-    f32 cam_c = NuPortalCameraPlane.c;
     NUPLANE *planes = frustum->planes;
-    frustum->transposed_planes[3] = cam_a;
-    frustum->transposed_planes[7] = cam_b;
-    frustum->transposed_planes[11] = cam_c;
-    frustum->transposed_planes[15] = cam_d;
-    frustum->transposed_planes[16] = cam_a;
-    frustum->transposed_planes[20] = cam_b;
-    frustum->transposed_planes[24] = cam_c;
-    frustum->transposed_planes[28] = cam_d;
-    frustum->transposed_planes[17] = cam_a;
-    frustum->transposed_planes[21] = cam_b;
-    frustum->transposed_planes[25] = cam_c;
-    frustum->transposed_planes[29] = cam_d;
-    frustum->transposed_planes[18] = cam_a;
-    frustum->transposed_planes[22] = cam_b;
-    frustum->transposed_planes[26] = cam_c;
-    frustum->transposed_planes[30] = cam_d;
-    frustum->transposed_planes[19] = cam_a;
-    frustum->transposed_planes[23] = cam_b;
-    frustum->transposed_planes[27] = cam_c;
-    frustum->transposed_planes[31] = cam_d;
+    frustum->transposed_planes[3] = NuPortalCameraPlane.a;
+    frustum->transposed_planes[7] = NuPortalCameraPlane.b;
+    frustum->transposed_planes[11] = NuPortalCameraPlane.c;
+    frustum->transposed_planes[15] = NuPortalCameraPlane.d;
+    frustum->transposed_planes[16] = NuPortalCameraPlane.a;
+    frustum->transposed_planes[20] = NuPortalCameraPlane.b;
+    frustum->transposed_planes[24] = NuPortalCameraPlane.c;
+    frustum->transposed_planes[28] = NuPortalCameraPlane.d;
+    frustum->transposed_planes[17] = NuPortalCameraPlane.a;
+    frustum->transposed_planes[21] = NuPortalCameraPlane.b;
+    frustum->transposed_planes[25] = NuPortalCameraPlane.c;
+    frustum->transposed_planes[29] = NuPortalCameraPlane.d;
+    frustum->transposed_planes[18] = NuPortalCameraPlane.a;
+    frustum->transposed_planes[22] = NuPortalCameraPlane.b;
+    frustum->transposed_planes[26] = NuPortalCameraPlane.c;
+    frustum->transposed_planes[30] = NuPortalCameraPlane.d;
+    frustum->transposed_planes[19] = NuPortalCameraPlane.a;
+    frustum->transposed_planes[23] = NuPortalCameraPlane.b;
+    frustum->transposed_planes[27] = NuPortalCameraPlane.c;
+    frustum->transposed_planes[31] = NuPortalCameraPlane.d;
 
     frustum->transposed_planes[0] = planes[0].a;
     frustum->transposed_planes[4] = planes[0].b;
@@ -246,35 +242,35 @@ static void transposeClipPlanes(NUPORTAL_FRUSTUM_PC *frustum) {
     frustum->transposed_planes[6] = planes[2].b;
     frustum->transposed_planes[10] = planes[2].c;
     frustum->transposed_planes[14] = planes[2].d;
-    if (frustum->plane_count <= 3) {
+    if (frustum->plane_count < 4) {
         return;
     }
     frustum->transposed_planes[3] = planes[3].a;
     frustum->transposed_planes[7] = planes[3].b;
     frustum->transposed_planes[11] = planes[3].c;
     frustum->transposed_planes[15] = planes[3].d;
-    if (frustum->plane_count == 4) {
+    if (frustum->plane_count < 5) {
         return;
     }
     frustum->transposed_planes[16] = planes[4].a;
     frustum->transposed_planes[20] = planes[4].b;
     frustum->transposed_planes[24] = planes[4].c;
     frustum->transposed_planes[28] = planes[4].d;
-    if (frustum->plane_count == 5) {
+    if (frustum->plane_count < 6) {
         return;
     }
     frustum->transposed_planes[17] = planes[5].a;
     frustum->transposed_planes[21] = planes[5].b;
     frustum->transposed_planes[25] = planes[5].c;
     frustum->transposed_planes[29] = planes[5].d;
-    if (frustum->plane_count == 6) {
+    if (frustum->plane_count < 7) {
         return;
     }
     frustum->transposed_planes[18] = planes[6].a;
     frustum->transposed_planes[22] = planes[6].b;
     frustum->transposed_planes[26] = planes[6].c;
     frustum->transposed_planes[30] = planes[6].d;
-    if (frustum->plane_count == 7) {
+    if (frustum->plane_count < 8) {
         return;
     }
     frustum->transposed_planes[19] = planes[7].a;
@@ -636,31 +632,41 @@ static void roomRecursive(NUGSCN *scene, NUPORTAL_FRUSTUM_PC *frustum, i16 room_
     room->flags |= 4;
     if (depth >= scene->portal_depth)
         return;
-    for (i = 0; i < room->portal_count; ++i) {
+    for (i = 0; (u32)i < room->portal_count; ++i) {
         NUPORTAL *portal = &scene->portals[room->portal_indices[i]];
         i16 next_room = (i16)(portal->front_room == (u16)room_id ? portal->back_room : portal->front_room);
         i32 clip;
         if (next_room == previous_room)
             continue;
         clip = (portal->flags & 1) != 0 ? clipPortalAgainstFrustrum(scene, room_id, portal, frustum, next_room) : 0;
-        if (clip == 0)
-            continue;
-        if (clip == 1) {
-            NUPORTAL_FRUSTUM_PC *next;
-            drawFullPortal(portal, &scene->rooms[next_room]);
-            next = buildPortalFrustrum(portal, next_room);
-            roomRecursive(scene, next, next_room, room_id, depth + 1);
-        } else if (clip == 2) {
-            NUPORTAL_FRUSTUM_PC *next;
-            i32 partial = clipPartialPortal(portal, &scene->rooms[next_room], next_room, frustum, &next);
-            if (partial == 4) {
-                next = copyFrustrum(frustum);
-                next->room_id = next_room;
-            } else if (partial != 1)
-                continue;
-            roomRecursive(scene, next, next_room, room_id, depth + 1);
-        } else
-            roomRecursive(scene, frustum, next_room, room_id, depth + 1);
+        switch (clip) {
+            case 0:
+                break;
+            case 1: {
+                NUPORTAL_FRUSTUM_PC *next;
+                drawFullPortal(portal, &scene->rooms[next_room]);
+                next = buildPortalFrustrum(portal, next_room);
+                roomRecursive(scene, next, next_room, room_id, depth + 1);
+                break;
+            }
+            case 2: {
+                NUPORTAL_FRUSTUM_PC *next;
+                switch (clipPartialPortal(portal, &scene->rooms[next_room], next_room, frustum, &next)) {
+                    case 1:
+                        roomRecursive(scene, next, next_room, room_id, depth + 1);
+                        break;
+                    case 4:
+                        next = copyFrustrum(frustum);
+                        next->room_id = next_room;
+                        roomRecursive(scene, next, next_room, room_id, depth + 1);
+                        break;
+                }
+                break;
+            }
+            default:
+                roomRecursive(scene, frustum, next_room, room_id, depth + 1);
+                break;
+        }
     }
 }
 

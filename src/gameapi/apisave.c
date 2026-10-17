@@ -291,8 +291,8 @@ void __cdecl loadsaveCallEachFrame(void) {
     }
 }
 
-void Text3D(char *text, f32 x, f32 y, f32 z, f32 x_scale, f32 y_scale, f32 z_scale, u32 alignment, u8 red, u8 green,
-            u8 blue) {
+void Text3D(char *text, f32 x, f32 y, f32 z, f32 x_scale, f32 y_scale, f32 z_scale, u32 alignment, u32 red, u32 green,
+            u32 blue) {
     Text3DEx(text, x, y, z, x_scale, y_scale, z_scale, alignment, red, green, blue, 128);
 }
 
@@ -873,8 +873,7 @@ void __cdecl APIMenuDrawMemCardSlots(MENU *menu, f32 y) {
                 blue = MENUENTRYB;
             }
             MenuText3DEx(apitxt_NEWSAVE, x, y, 1.0f, (f32)(MenuTextScalePc * (f64)0.85f),
-                         (f32)(MenuTextScalePc * (f64)0.85f), MenuTextScalePc, 0, (u8)red, (u8)green, (u8)blue,
-                         (u8)MenuA);
+                         (f32)(MenuTextScalePc * (f64)0.85f), MenuTextScalePc, 0, red, green, blue, (u8)MenuA);
         }
     }
     if (view->selected_row == 0) {
@@ -900,9 +899,9 @@ void __cdecl APIMenuDrawMemCardSlots(MENU *menu, f32 y) {
     scale = MenuTextScalePc + MenuTextScalePc;
     if (SaveMenuSlideLeftPc == 0 && SaveMenuSlideRightPc == 0) {
         if (first > 0)
-            MenuText3DEx("<", -0.8f, y, 1.0f, scale, scale, scale, 0, (u8)red, (u8)green, (u8)blue, (u8)MenuA);
+            MenuText3DEx("<", -0.8f, y, 1.0f, scale, scale, scale, 0, red, green, blue, (u8)MenuA);
         if (view->last_column > last)
-            MenuText3DEx(">", 0.8f, y, 1.0f, scale, scale, scale, 0, (u8)red, (u8)green, (u8)blue, (u8)MenuA);
+            MenuText3DEx(">", 0.8f, y, 1.0f, scale, scale, scale, 0, red, green, blue, (u8)MenuA);
     }
 }
 
@@ -1046,8 +1045,7 @@ void __cdecl APIMenuDrawGameState(f32 x, f32 y, i32 highlight, i32 slot) {
         blue = MENUFLASH1B;
     }
     sprintf(label, "%s %i", apitxt_SLOT, slot + 1);
-    MenuText3DEx(label, x, y, 1.0f, MenuTextScalePc, MenuTextScalePc, MenuTextScalePc, 0, (u8)red, (u8)green, (u8)blue,
-                 (u8)MenuA);
+    MenuText3DEx(label, x, y, 1.0f, MenuTextScalePc, MenuTextScalePc, MenuTextScalePc, 0, red, green, blue, (u8)MenuA);
     if (saveload_slotused[slot] != 0) {
         MenuSmartTextEx(apitxt_PRESENT, x, (f32)(y + MenuTextScalePc * 0.5), 1.0f, MenuTextScalePc, MenuTextScalePc,
                         MenuTextScalePc, 0, MENUNORMALR, MENUNORMALG, MENUNORMALB, 0.4f, 2, NULL, 0, MenuA);

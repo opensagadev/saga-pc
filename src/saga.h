@@ -9345,8 +9345,8 @@ extern "C" {
                                    i32 button_font);
     void __cdecl Text3DEx(char *text, f32 x, f32 y, f32 z, f32 x_scale, f32 y_scale, f32 z_scale, u32 alignment,
                           u32 red, u32 green, u32 blue, i32 alpha);
-    void Text3D(char *text, f32 x, f32 y, f32 z, f32 x_scale, f32 y_scale, f32 z_scale, u32 alignment, u8 red, u8 green,
-                u8 blue);
+    void Text3D(char *text, f32 x, f32 y, f32 z, f32 x_scale, f32 y_scale, f32 z_scale, u32 alignment, u32 red,
+                u32 green, u32 blue);
     void FadeLoop_DrawObj(f32 alpha);
     void EdFileWriteFloat(f32 value);
     void AddGameMsgCount(NUVEC *position, i32 count, i32 total, u8 red, u8 green, u8 blue, f32 field_0xd4);
@@ -9846,9 +9846,9 @@ extern "C" {
     extern struct RTL_INDEX_PC *dbg_rtlindex;
     extern const char RtlSearchTimebarNamePc[];
 
-    void __cdecl Text3DEx2(char *, f32, f32, f32, f32, f32, f32, u32, u8, u8, u8, i32);
-    void __cdecl MenuText3DEx(char *, f32, f32, f32, f32, f32, f32, u32, u8, u8, u8, i32);
-    void __cdecl DrawMenuButtonPromptsEx(i32, i32, i32, i32, u8, u8, u8, u8);
+    void __cdecl Text3DEx2(char *, f32, f32, f32, f32, f32, f32, u32, u32, u32, u32, i32);
+    void __cdecl MenuText3DEx(char *, f32, f32, f32, f32, f32, f32, u32, u32, u32, u32, i32);
+    void __cdecl DrawMenuButtonPromptsEx(i32, i32, i32, i32, u32, u32, u32, u32);
     char **__cdecl TextInputGetKeyNamesPc(void);
     i32 __cdecl TextInputIsPrimaryDevicePc(i32);
     extern VUFNT *QFont2DLower;
@@ -9856,7 +9856,7 @@ extern "C" {
     extern char UiSelectPromptLiteralPc[7], UiBackPromptLiteralPc[5];
     extern f32 MenuTextScalePc, MenuPromptPositionScalePc, MENUDY;
 
-    void __cdecl DrawMenuButtonPrompts(i32, i32, i32, u8, u8, u8, u8);
+    void __cdecl DrawMenuButtonPrompts(i32, i32, i32, u32, u32, u32, u32);
 
     void __cdecl NuBackbufferCopy(i32);
     void __cdecl GrabStillScreen(void);
@@ -9877,8 +9877,8 @@ extern "C" {
     i32 __cdecl FindNextBreak(u8 *, i32);
     i32 __cdecl FindNearestBreak(u8 *, i32);
     i32 __cdecl NuStrFindPosU(u8 *, i32);
-    void __cdecl SmartTextEx2(char *, f32, f32, f32, f32, f32, f32, u32, u8, u8, u8, f32, i32, void *, i32, u32);
-    void __cdecl MenuSmartTextEx(char *, f32, f32, f32, f32, f32, f32, u32, u8, u8, u8, f32, i32, void *, i32, i32);
+    void __cdecl SmartTextEx2(char *, f32, f32, f32, f32, f32, f32, u32, u32, u32, u32, f32, i32, void *, i32, u32);
+    void __cdecl MenuSmartTextEx(char *, f32, f32, f32, f32, f32, f32, u32, u32, u32, u32, f32, i32, void *, i32, i32);
     void __cdecl DrawMenuHeader(void);
     void __cdecl DrawMenu(i32);
     void __cdecl DrawPanel(void);
@@ -27186,7 +27186,7 @@ extern "C" {
     void __cdecl MenuDrawVideoConfirmPc(MENU *);
     void __cdecl MenuUpdateVideoConfirmPc(MENU *);
     void __cdecl MenuExitVideoConfirmPc(MENU *);
-    void __cdecl MenuDrawNoticePc(char *, u8, u8, u8);
+    void __cdecl MenuDrawNoticePc(char *, u32, u32, u32);
     void __cdecl MenuEnterHiresNoticePc(MENU *);
     void __cdecl MenuDrawHiresNoticePc(MENU *);
     void __cdecl MenuUpdateHiresNoticePc(MENU *);

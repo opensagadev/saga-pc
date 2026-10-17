@@ -202,7 +202,7 @@ extern "C" i32 __cdecl PushBlock(GAMEOBJECT *object) {
     PUSH_BLOCK_PC *block = NearestFacingPushBlock(WORLD, object, 2.0f);
     if (block != NULL) {
         block->pushing_object = object;
-        block->runtime_flags_0c8 |= 1;
+        block->packed_state_flags |= 1;
         AlertSurroundingCreatures(object, &object->collision_position);
         return 1;
     }

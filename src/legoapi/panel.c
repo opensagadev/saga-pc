@@ -91,12 +91,12 @@ void Panel_Clear() {
     DrawBuildUpTime = 0.0f;
     builduptime = 0.0f;
     BuildUpScale = 1.0f;
+    redbrickslidetime = 0.0f;
     DrawRedBrickTime = 0.0f;
     RedBrickScale = 1.0f;
     DrawCoinTotalTime = 0.0f;
     cointotaltime = 0.0f;
     CoinTotalScale = 1.0f;
-    redbrickslidetime = 0.0f;
     goldbricktime = 0.0f;
     Arcade_ResetPanel();
 }

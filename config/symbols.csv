@@ -2522,11 +2522,11 @@ address    , symbol                                                         , si
 0x50c650,_TextPrintSubstring,286,"f32 __cdecl(u8*,f32,f32,f32,f32,f32,i32,i32)"
 0x0050c770 , _SmartTextSetFWNMode                                           , 10    , void __cdecl (i32)
 0x50c780,_Text3DEx,2616,"void __cdecl(char*,f32,f32,f32,f32,f32,f32,u32,u32,u32,u32,i32)"
-0x50d1c0,_Text3DEx2,117,"void __cdecl(char*,f32,f32,f32,f32,f32,f32,u32,u8,u8,u8,i32)"
+0x50d1c0,_Text3DEx2,117,"void __cdecl(char*,f32,f32,f32,f32,f32,f32,u32,u32,u32,u32,i32)"
 0x50d240,_FindNextBreak,375,"i32 __cdecl(u8*,i32)"
 0x50d3c0,_FindNearestBreak,690,"i32 __cdecl(u8*,i32)"
 0x50d910,_SmartTextEx,2661,"void __cdecl(char*,f32,f32,f32,f32,f32,f32,u32,u32,u32,u32,f32,i32,void*,i32,u32)"
-0x50e380,_SmartTextEx2,140,"void __cdecl(char*,f32,f32,f32,f32,f32,f32,u32,u8,u8,u8,f32,i32,void*,i32,u32)"
+0x50e380,_SmartTextEx2,140,"void __cdecl(char*,f32,f32,f32,f32,f32,f32,u32,u32,u32,u32,f32,i32,void*,i32,u32)"
 0x50e410,_SmartTextExDrop,252,
 0x0050e520 , _SmartTextSetFont                                              , 10    , void __cdecl (VUFNT *)
 0x0050e530 , _SetGameFont                                                   , 10    , void __cdecl (VUFNT *)
@@ -2549,13 +2549,13 @@ address    , symbol                                                         , si
 0x50f260,_MenuUpdateVideoConfirmPc,227,void __cdecl(MENU *)
 0x50f350,_MenuUpdateHiresNoticePc,32,void __cdecl(MENU *)
 0x50f370,_MenuUpdateQuitPc,58,void __cdecl(MENU *)
-0x50f3b0,_MenuSmartTextEx,260,"void __cdecl(char*,f32,f32,f32,f32,f32,f32,u32,u8,u8,u8,f32,i32,void*,i32,i32)"
-0x50f4c0,_MenuText3DEx,217,"void __cdecl(char*,f32,f32,f32,f32,f32,f32,u32,u8,u8,u8,i32)"
+0x50f3b0,_MenuSmartTextEx,260,"void __cdecl(char*,f32,f32,f32,f32,f32,f32,u32,u32,u32,u32,f32,i32,void*,i32,i32)"
+0x50f4c0,_MenuText3DEx,217,"void __cdecl(char*,f32,f32,f32,f32,f32,f32,u32,u32,u32,u32,i32)"
 0x50f5a0,_DrawMenuHeader,113,void __cdecl(void)
-0x50f680,_MenuDrawNoticePc,95,"void __cdecl(char *, u8, u8, u8)"
+0x50f680,_MenuDrawNoticePc,95,"void __cdecl(char *, u32, u32, u32)"
 0x50f740,_DrawMenuEntryEx,998,"void __cdecl(MENU *,char *,i32)"
-0x50fb30,_DrawMenuButtonPromptsEx,876,"void __cdecl(i32,i32,i32,i32,u8,u8,u8,u8)"
-0x50fea0,_DrawMenuButtonPrompts,46,"void __cdecl(i32,i32,i32,u8,u8,u8,u8)"
+0x50fb30,_DrawMenuButtonPromptsEx,876,"void __cdecl(i32,i32,i32,i32,u32,u32,u32,u32)"
+0x50fea0,_DrawMenuButtonPrompts,46,"void __cdecl(i32,i32,i32,u32,u32,u32,u32)"
 0x50fed0,_DrawMenu,543,void __cdecl(i32)
 0x5100f0,_APIMenuDrawGameState,746,"void __cdecl(f32,f32,i32,i32)"
 0x5103e0,_APIMenuDrawMemCardSlots,1235,"void __cdecl(MENU *,f32)"

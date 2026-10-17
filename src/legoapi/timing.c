@@ -57,7 +57,7 @@ void UpdateTimer(TIMER *timer) {
         timer->time_elapsed_mod_seconds -= 1.0f;
     }
 
-    if (timer->update_count == -1)
+    if ((u32)timer->update_count >= 0xffffffffu)
         return;
 
     timer->update_count++;

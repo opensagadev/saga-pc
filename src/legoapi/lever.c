@@ -235,14 +235,22 @@ static i32 Lever_GetOutput(GIZMO_PC *gizmo, i32 output, i32 mode) {
     GIZMO_LEVER_PC *lever;
     (void)mode;
     lever = (GIZMO_LEVER_PC *)gizmo->object;
-    if ((lever->flags & 0x80) == 0)
-        return 0;
-    if (output == 0)
-        return Lever_FullyPulledDown(lever);
-    if (output == 1)
-        return (lever->flags & 4) != 0 && Lever_FullyPulledDown(lever);
-    if (output == 2)
-        return (lever->flags & 8) != 0 && Lever_FullyPulledDown(lever);
+    if ((lever->flags & 0x80) != 0) {
+        switch (output) {
+            case 0:
+                if (Lever_FullyPulledDown(lever) != 0)
+                    return 1;
+                break;
+            case 1:
+                if ((lever->flags & 4) != 0 && Lever_FullyPulledDown(lever) != 0)
+                    return 1;
+                break;
+            case 2:
+                if ((lever->flags & 8) != 0 && Lever_FullyPulledDown(lever) != 0)
+                    return 1;
+                break;
+        }
+    }
     return 0;
 }
 static char *Lever_GetOutputName(GIZMO_PC *gizmo, i32 output) {
