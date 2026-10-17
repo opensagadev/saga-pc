@@ -668,3 +668,7 @@ void __cdecl NuVecRotateYValX(NUVEC *out, f32 value, NUANG angle) {
     out->y = 0.0f;
     out->z = -value * sine;
 }
+
+void __cdecl NuVec4MtxTransformHVU0(NUVEC4 *out, NUVEC4 *v, NUMTX *matrix) {
+    NuVec4MtxTransformVU0(out, v, matrix);
+}

@@ -999,7 +999,7 @@ address    , symbol                                                         , si
 0x467b30,_GizmoForce_GetGizmoName,14,char * __cdecl(GIZMO_PC *)
 0x467b40,_GizmoForce_GetOutput,193,"i32 __cdecl(GIZMO_PC *, i32, i32)"
 0x467c30,_GizmoForce_GetOutputName,100,
-0x467ca0,_GizmoForce_GetNumOutputs,,i32 __cdecl(GIZMO_PC *)
+0x467ca0,_GizmoForce_GetNumOutputs,6,i32 __cdecl(GIZMO_PC *)
 0x467cb0,_GizForces_AllocateProgressData,24,"void * __cdecl(VARIPTR *, VARIPTR *)"
 0x467cd0,_GizForces_ClearProgress,115,"void __cdecl(void *, void *)"
 0x467d50,_GizForces_StoreProgress,294,"void __cdecl(void *, void *, void *)"
@@ -1081,7 +1081,7 @@ address    , symbol                                                         , si
 0x46eb30,_GizPanel_GetGizmoName,21,char * __cdecl(GIZMO_PC *)
 0x46eb60,_GizPanel_GetOutput,27,"i32 __cdecl(GIZMO_PC *, i32, i32)"
 0x46eb80,_GizPanel_GetOutputName,,"char * __cdecl(GIZMO_PC *, i32)"
-0x46eb90,_GizPanel_GetNumOutputs,,i32 __cdecl(GIZMO_PC *)
+0x46eb90,_GizPanel_GetNumOutputs,6,i32 __cdecl(void *)
 0x46eba0,_GizPanels_AllocateProgressData,21,"void * __cdecl(VARIPTR *, VARIPTR *)"
 0x46ebc0,_GizPanels_ClearProgress,24,"void __cdecl(void *, void *)"
 0x46ebe0,_GizPanels_StoreProgress,182,"void __cdecl(void *, void *, void *)"
@@ -3186,7 +3186,7 @@ address    , symbol                                                         , si
 0x54df60,_Grapple_GetGizmoName,14,char * __cdecl(GIZMO_PC *)
 0x54df70,_Grapple_GetOutput,72,"i32 __cdecl(GIZMO_PC *, i32, i32)"
 0x54dfc0,_Grapple_GetOutputName,32,
-0x54dfe0,_Grapple_GetNumOutputs,,i32 __cdecl(GIZMO_PC *)
+0x54dfe0,_Grapple_GetNumOutputs,6,i32 __cdecl(GIZMO_PC *)
 0x54dff0,_Grapples_AllocateProgressData,21,"void * __cdecl(VARIPTR *, VARIPTR *)"
 0x54e010,_Grapples_ClearProgress,22,"void __cdecl(void *, void *)"
 0x54e030,_Grapples_StoreProgress,129,"void __cdecl(void *, void *, void *)"
@@ -3567,7 +3567,7 @@ address    , symbol                                                         , si
 0x5668e0,_Blowup_GetGizmoName,19,char * __cdecl(GIZMO_PC *)
 0x566900,_Blowup_GetOutput,76,"i32 __cdecl(GIZMO_PC *, i32, i32)"
 0x566950,_Blowup_GetOutputName,,"char * __cdecl(GIZMO_PC *, i32)"
-0x566970,_Blowup_GetNumOutputs,,i32 __cdecl(GIZMO_PC *)
+0x566970,_Blowup_GetNumOutputs,6,i32 __cdecl(GIZMO_PC *)
 0x566980,_Blowup_SetVisibility,159,
 0x566a20,_Blowup_GetVisibility,,i32 __cdecl(GIZMO_PC *)
 0x566a40,_GizmoBlowup_GetPos,15,NUVEC * __cdecl(GIZMO_PC *)
@@ -3685,7 +3685,7 @@ address    , symbol                                                         , si
 0x56f650,_GizmoPickup_GetGizmoName,14,char * __cdecl(GIZMO_PC *)
 0x56f660,_GizmoPickup_GetOutput,17,"i32 __cdecl(GIZMO_PC *, i32, i32)"
 0x56f680,_GizmoPickup_GetOutputName,,"char * __cdecl(GIZMO_PC *, i32)"
-0x56f690,_GizmoPickup_GetNumOutputs,,i32 __cdecl(GIZMO_PC *)
+0x56f690,_GizmoPickup_GetNumOutputs,6,i32 __cdecl(GIZMO_PC *)
 0x56f6a0,_GizmoPickup_Activate,335,
 0x56f7f0,_GizmoPickups_AllocateProgressData,24,"void * __cdecl(VARIPTR *, VARIPTR *)"
 0x56f810,_GizmoPickups_ClearProgress,69,"void __cdecl(void *, void *)"
@@ -11510,6 +11510,8 @@ address    , symbol                                                         , si
 0x758aa4,_GizObstacleActionBackwardPC,9,const char[9]
 0x758ab0,??_C@_08JFAKOGGE@Special?$DN?$AA@,9,char []
 0x758abc,??_C@_07MNOJJNLJ@BlowUp?$DN?$AA@,8,char []
+0x758ac4,??_C@_06GCBLPIJI@TURRET?$AA@,7,const char[]
+0x758acc,??_C@_06JFCIMHEK@BLOWUP?$AA@,7,const char[]
 0x758ad4,??_C@_0O@DHEPKDHM@BombGenerator?$AA@,14,char []
 0x758ae4,??_C@_09NMKJEINJ@returnsfx?$AA@,10,
 0x758af0,??_C@_0M@IBONIDMB@completesfx?$AA@,12,

@@ -1,6 +1,11 @@
 #include <stdio.h>
 #include "saga.h"
 
+extern "C" i32 __cdecl Grapple_GetNumOutputs(GIZMO_PC *unused) {
+    (void)unused;
+    return 3;
+}
+
 GRAPPLE_DYNAMIC_PC *__cdecl Grapple_AddDynamic(void *attached_object, i32 retain_attachment) {
     i32 index;
     GRAPPLE_DYNAMIC_PC *grapple;

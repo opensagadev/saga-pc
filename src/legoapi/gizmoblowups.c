@@ -1,5 +1,10 @@
 #include "saga.h"
 
+i32 __cdecl Blowup_GetNumOutputs(GIZMO_PC *unused) {
+    (void)unused;
+    return 3;
+}
+
 void __cdecl GizmoBlowupCreateStuff(GIZMOBLOWUP_PC *);
 
 i32 __cdecl GizmoBlowupBlowup(GIZMOBLOWUP_PC *blowup, i32 effects, i32 hit_type, i32 damage, GAMEOBJECT *object,

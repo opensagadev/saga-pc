@@ -1,4 +1,9 @@
 #include "saga.h"
+
+i32 __cdecl GizmoPickup_GetNumOutputs(GIZMO_PC *unused) {
+    (void)unused;
+    return 1;
+}
 typedef struct lose_coins_packet_pc_s {
     u32 coins;
 } LOSE_COINS_PACKET_PC;

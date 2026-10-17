@@ -510,6 +510,47 @@ void locatorEditorSaveData(AIPATHSYS_PC *path_system) {
     }
 }
 
+extern void __cdecl AiRndrLine3d(NURND_VERTEX3D_PC *, NUMTL *, NUMTX *);
+
+void __cdecl DrawLocator(NUVEC *position, f32 width, i32 direction, i32 colour) {
+    NUVEC offset;
+    NUVEC centre;
+    NUVEC arrow;
+    NURND_VERTEX3D_PC vertices[2];
+    vertices[0].colour = colour;
+    vertices[1].colour = colour;
+    centre = *position;
+    centre.y += 0.25f;
+    offset.x = width;
+    offset.y = 0.0f;
+    offset.z = 0.0f;
+    NuVecRotateY(&offset, &offset, direction);
+    NuVecAdd(&vertices[0].position, &centre, &offset);
+    NuVecSub(&vertices[1].position, &centre, &offset);
+    AiRndrLine3d(vertices, NULL, NULL);
+    vertices[0].position.x = centre.x;
+    vertices[0].position.y = centre.y - width;
+    vertices[0].position.z = centre.z;
+    vertices[1].position.x = centre.x;
+    vertices[1].position.y = centre.y + width;
+    vertices[1].position.z = centre.z;
+    AiRndrLine3d(vertices, NULL, NULL);
+    offset.x = 0.0f;
+    offset.y = 0.0f;
+    offset.z = width;
+    NuVecRotateY(&offset, &offset, direction);
+    NuVecAdd(&vertices[0].position, &centre, &offset);
+    NuVecSub(&vertices[1].position, &centre, &offset);
+    AiRndrLine3d(vertices, NULL, NULL);
+    arrow.x = -offset.z * (f64)0.2f;
+    arrow.y = 0.0f;
+    arrow.z = offset.x * (f64)0.2f;
+    NuVecAdd(&vertices[1].position, &centre, &arrow);
+    AiRndrLine3d(vertices, NULL, NULL);
+    NuVecSub(&vertices[1].position, &centre, &arrow);
+    AiRndrLine3d(vertices, NULL, NULL);
+}
+
 void locatorEditorDrawLocators(void) {
     AIEDITOR_RENDER_STATE *const *state = &aieditor;
     EDLOCATOR_s *locator = (EDLOCATOR_s *)NuLinkedListGetHead(&(*state)->locators);

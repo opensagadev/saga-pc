@@ -1,5 +1,10 @@
 #include "saga.h"
 
+i32 __cdecl GizmoForce_GetNumOutputs(GIZMO_PC *unused) {
+    (void)unused;
+    return 8;
+}
+
 void __cdecl ForceLightning_Origin(GAMEOBJECT *object, NUVEC *primary, NUVEC *secondary) {
     PLAYERCHARACTERCONFIG_PC *config;
     i32 joint;

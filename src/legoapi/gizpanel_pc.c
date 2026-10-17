@@ -1,5 +1,10 @@
 #include "saga.h"
 
+i32 __cdecl GizPanel_GetNumOutputs(void *unused) {
+    (void)unused;
+    return 1;
+}
+
 extern const f32 PlayerPanelVariantZeroX, PlayerPanelVariantZeroZ, PlayerPanelVariantOneX, PlayerPanelVariantOneZ;
 
 typedef struct panel_movement_pc_s {

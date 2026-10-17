@@ -7,6 +7,47 @@ extern "C" void __cdecl SockOff(SOCKSYS_PC *system, i32 index);
 extern "C" void __cdecl GizForce_PlayForwards(GIZFORCE_PC *force);
 extern "C" void __cdecl GizForce_PlayBackwards(GIZFORCE_PC *force);
 
+extern "C" i32 turret_gizmotype_id;
+
+extern "C" void __cdecl GizActions_HitBlowup(GIZFLOW_PC *unused0, FLOWBOX_PC *unused1, char **params, i32 count) {
+    i8 gizmo_type = 0;
+    char *name = NULL;
+    i32 damage = 0;
+    (void)unused0;
+    (void)unused1;
+    if (0 >= count)
+        return;
+    for (i32 index = 0; index < count; ++index) {
+        char *value = NuStrIStr(params[index], (char *)"name=");
+        if (value != NULL)
+            name = value + NuStrLen("name=");
+        else if (NuStrICmp(params[index], "BLOWUP") == 0)
+            gizmo_type = 0;
+        else if (NuStrICmp(params[index], "TURRET") == 0)
+            gizmo_type = 1;
+        else if ((value = NuStrIStr(params[index], (char *)"damage=")) != NULL) {
+            value += NuStrLen("damage=");
+            damage = (i32)NuAToF(value);
+        }
+    }
+    if (name == NULL || damage == 0)
+        return;
+    switch (gizmo_type) {
+        case 0: {
+            GIZMO_PC *gizmo = (GIZMO_PC *)GizmoFindByName(WORLD->gizmo_sys, blowup_gizmotype_id, name);
+            if (gizmo != NULL && gizmo->object != NULL)
+                GizmoBlowupBlowup((GIZMOBLOWUP_PC *)gizmo->object, 1, -1, damage, NULL, 1);
+            break;
+        }
+        case 1: {
+            GIZMO_PC *gizmo = (GIZMO_PC *)GizmoFindByName(WORLD->gizmo_sys, turret_gizmotype_id, name);
+            if (gizmo != NULL && gizmo->object != NULL)
+                GizTurrets_Hit(WORLD, (AI_TURRET_RECORD_PC *)gizmo->object, NULL, -1, damage);
+            break;
+        }
+    }
+}
+
 struct GIZACTION_FORCE_ANIMATION_PC {
     u8 unknown_000[0x28];
     GAMEANIMSET *anim_set;
