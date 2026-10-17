@@ -127,6 +127,9 @@ def main():
         elif not args.implib:
             if not source.is_file():
                 raise ValueError(f"Source not found: {source}")
+            if source == ROOT / "src/log.c":
+                from tools.debug_identity import build_identity
+                flags = [*flags, '/DSAGA_BUILD_ID="' + build_identity(ROOT) + '"']
             command = [wine, str(compiler / "cl.exe"), *flags,
                        "/Fo" + windows(output), windows(source)]
         output.parent.mkdir(parents=True, exist_ok=True)

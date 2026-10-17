@@ -993,6 +993,7 @@ i32 __cdecl WorldInfo_Reset(WORLDINFO *world, i32 level_index) {
 extern "C" void __cdecl WorldInfo_StreamLevel(BGPROCINFO *);
 void __cdecl WorldInfo_StreamLevel(BGPROCINFO *bg_info) {
     (void)bg_info;
+    LOG_INFO("Stream level begin: next_level=%d", next_level);
     PCDeviceResetState();
     if (LWORLD == WORLD && (Area == -1 || (ADataList[Area].flags & 8) == 0))
         LWORLD = WORLD == &WorldInfo[0] ? &WorldInfo[1] : &WorldInfo[0];
@@ -1003,6 +1004,7 @@ void __cdecl WorldInfo_StreamLevel(BGPROCINFO *bg_info) {
     waiting_for_level = -1;
     if (LWORLD->loaded != 0)
         level_already_loaded = next_level;
+    LOG_INFO("Stream level complete: next_level=%d world=%p loaded=%d", next_level, (void *)LWORLD, LWORLD->loaded);
 }
 
 typedef struct world_minikit_load_pc_s {
@@ -1098,6 +1100,8 @@ void __cdecl WorldInfo_Load(WORLDINFO *world) {
     WORLD_LOAD_READER_PC *resource = (WORLD_LOAD_READER_PC *)world;
     i32 index;
     i32 selected_archive;
+    LOG_INFO("World load begin: world=%p area=%d level=%d config=%s", (void *)world, world->area_index,
+             world->level_idx, world->config_file);
     Level_LoadConfigFile(world);
     if (abort_load != 0)
         goto abort;
@@ -1132,11 +1136,14 @@ void __cdecl WorldInfo_Load(WORLDINFO *world) {
                 }
             }
         }
+        LOG_INFO("Scene load begin: path=%s archive=%d shadowmethod=%d", path, selected_archive,
+                 PcWindowOptions.shadowmethod);
         StartupDatsSelectPc(selected_archive);
         if (PcWindowOptions.shadowmethod == 2)
             world->current_gscn = PCGraphicsSceneReadClones(&world->giz_buffer, world->buffer_end, path, 2);
         else
             world->current_gscn = NuGScnRead(&world->giz_buffer, world->buffer_end, path);
+        LOG_INFO("Scene load returned: path=%s scene=%p", path, (void *)world->current_gscn);
         StartupDatsSelectPc(0);
         numtl_force_mipmode = 0;
         StoreSceneProgress(world->current_gscn, &world->scene_progress, 1);
@@ -1297,9 +1304,12 @@ void __cdecl WorldInfo_Load(WORLDINFO *world) {
             world, &world->giz_buffer, &world->buffer_end);
     SetAreaPickupGravity(world->area_index, world->level_idx); /* Native 48d683: cdecl(area,level). */
     world->loaded = 1;
-    LOG_INFO("WorldInfo_Load complete: world=%p", (void *)world);
+    LOG_INFO("World load complete: world=%p area=%d level=%d scene=%p", (void *)world, world->area_index,
+             world->level_idx, (void *)world->current_gscn);
     return;
 abort:
+    LOG_WARN("World load aborted: world=%p area=%d level=%d abort_load=%d", (void *)world, world->area_index,
+             world->level_idx, abort_load);
     WorldInfo_Dump(world);
     WorldInfo_Reset(world, -1);
 }

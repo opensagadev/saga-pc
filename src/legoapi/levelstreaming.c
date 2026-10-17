@@ -124,6 +124,7 @@ void __cdecl LevelStreaming_Update(WORLDINFO *world) {
         next_level = other_level;
         abort_load = 0;
         WaitingForLevelTime = 0.0f;
+        LOG_INFO("Stream level request: current=%d next=%d area=%d", world->level_idx, next_level, world->area_index);
         bgPostRequest(WorldInfo_StreamLevel, NULL, NULL, 0);
     } else if (waiting_for_level != -1 && bgGetProcActive() != NULL && other_level != -1 &&
                other_level != waiting_for_level && LDataList[other_level].area_index == world->area_index) {
@@ -132,6 +133,7 @@ void __cdecl LevelStreaming_Update(WORLDINFO *world) {
 }
 
 void __cdecl WorldInfo_Activate(void) {
+    LOG_INFO("World activate begin: previous=%p next=%p", (void *)WORLD, (void *)LWORLD);
     WORLD = LWORLD;
     WorldInfo_Init(LWORLD);
     LOG_INFO("WorldInfo_Activate complete: world=%p", (void *)WORLD);

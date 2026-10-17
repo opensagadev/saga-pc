@@ -10,6 +10,7 @@ extern i32 newlevelfrommenu_newmenuid, newlevelfrommenu_newmenuy;
 void __cdecl NewLevelFromMenu(LEVELDATA_PC *level, i32 menu_id, i32 menu_y, i32 ignored) {
     MISSIONDATA_PC *mission;
     (void)ignored;
+    LOG_INFO("Menu level request: level=%p menu=%d row=%d", (void *)level, menu_id, menu_y);
     if (no_more_loads == 0) {
         abort_load = 1;
         no_more_loads = 1;

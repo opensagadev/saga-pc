@@ -74,7 +74,9 @@ link-strict: $(OBJECTS) $(DIAGNOSTIC_OBJECTS) $(D3DX_LIB) $(DSOUND_LIB) $(D3D9_L
 	$(PYTHON) tools/cc.py --link $(STRICT_EXE) $(OBJECTS) $(DIAGNOSTIC_OBJECTS) -- $(LDFLAGS) $(LDLIBS)
 
 # Debug support contains diagnostics only and never enters Matching objects.
-build/Debug/log.obj: src/log.c src/diagnostics.h config/toolchain.json Makefile tools/cc.py | build/tools/wine/.ready
+# Recompile this small Debug-only object so its identity tracks source edits and commits.
+.PHONY: debug-identity
+build/Debug/log.obj: src/log.c src/diagnostics.h config/toolchain.json Makefile tools/cc.py tools/debug_identity.py debug-identity | build/tools/wine/.ready
 	$(PYTHON) tools/cc.py $< $@ $(CPPFLAGS) $(CXXFLAGS)
 
 $(D3DX_LIB): tools/d3dx9_35.def tools/cc.py Makefile

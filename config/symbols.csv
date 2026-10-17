@@ -3296,7 +3296,7 @@ address    , symbol                                                         , si
 0x5568e0,_GizSpinners_Update,998,
 0x556cd0,_GizSpinner_GetNearestTargetPoint,454,
 0x556ea0,_GizSpinner_ResetAllPc,151,"void __cdecl(void *, void *, void *)"
-0x556f40,_GizSpinner_HasBoltHit,,"i32 __cdecl(WORLDINFO *, void *, GAMEOBJECT *, NUVEC *, i32, f32, NUVEC *, NUVEC *, BOLT_PC *, i32, u8 *)"
+0x556f40,_GizSpinner_HasBoltHit,3,"i32 __cdecl(WORLDINFO *, void *, GAMEOBJECT *, NUVEC *, i32, f32, NUVEC *, NUVEC *, BOLT_PC *, i32, u8 *)"
 0x556f50,_Spinner_RegisterGizmo,312,
 0x5570c0,_Gizobstacle_ReadAnimSetData,53,
 0x557100,_GizObstacles_Load,732,"i32 __cdecl (void *, void *)"

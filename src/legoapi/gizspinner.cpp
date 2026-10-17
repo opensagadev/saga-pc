@@ -896,3 +896,8 @@ extern "C" i32 *__cdecl GizSpinner_GetBestBoltTarget(GIZMOSET_PC *, f32 *, NUVEC
     }
     return (i32 *)result;
 }
+
+extern "C" i32 __cdecl GizSpinner_HasBoltHit(void *, void *, void *, NUVEC *, i32, f32, NUVEC *, NUVEC *, BOLT_PC *,
+                                             u32, u8 *) {
+    return 0;
+}

@@ -65,8 +65,16 @@ The logging conventions follow the sibling saga repo's `src/decomp.h`:
 `LOG(level, ...)`, `LOG_ERR`, `LOG_WARN`, `LOG_INFO`, `LOG_DEBUG`,
 `LOG_INFO_IF`, `LOG_WARN_ONCE`, `STUBBED()` and `UNIMPLEMENTED(...)`.
 `STUBBED_NAMED(description)` retains existing PC call-site descriptions.
-Debug writes timestamped, colored severity/file/line/function messages to
-stderr (redirect it when needed), filtering above INFO as saga does.
+Debug writes timestamped severity/file/line/function messages simultaneously to
+stdout and a best-effort `log/` directory beside its executable (`build/log/` in
+the normal layout), filtering above INFO as saga does. Each run creates a fresh
+file named with local timestamp, git revision, deterministic build-input hash,
+process ID and collision suffix. The startup banner identifies the build. File
+creation/write failure leaves stdout active. Records are serialized across
+threads and flushed immediately; stdout can also be redirected to capture Wine
+crash diagnostics, for example `make BUILD_KIND=Debug run >build/human-test.log 2>&1`.
+World, scene and streaming lifecycle events use INFO; missing native work
+continues to use WARN/ERROR. Logging does not intercept exceptions.
 WARN_ONCE and STUBBED use an atomic flag per site. The logger preserves
 `errno` and Win32 `GetLastError`. STUBBED and UNIMPLEMENTED only report missing
 work: they do not implement it, return a safe alternative, or suppress a crash.

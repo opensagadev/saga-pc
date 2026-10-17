@@ -476,6 +476,7 @@ extern "C" int __cdecl NuMain(int argc, char **argv) {
     i32 player_index;
     NU_MAIN_STATUS_PACKET_PC *status = (NU_MAIN_STATUS_PACKET_PC *)&StatusPacket;
 
+    LOG_INFO("Game startup: argc=%d", argc);
     NuCommandLine(&argc, &argv);
     WorldInfo_InitOnce();
     InitOnce(argc, argv);
