@@ -328,11 +328,10 @@ void __cdecl CalculateInterceptVector(NUVEC *origin, NUVEC *target, NUVEC *veloc
 }
 
 void __cdecl VecRotateAxis(NUVEC *vector, u16 angle, NUVEC *axis) {
-    f32 cosine, sine, partial, x_result, y_result, z_result;
+    f32 cosine, sine, partial;
+    NUVEC result;
     f64 complement, tx, ty, tz, xy, xz, yz, sx, sy, sz;
-    NUVEC input;
     NuVecNorm(axis, axis);
-    input = *vector;
     cosine = NuTrigTable[((angle + 0x4000) >> 1) & 0x7fff];
     sine = NuTrigTable[angle >> 1];
     complement = 1.0 - (f64)cosine;
@@ -345,42 +344,44 @@ void __cdecl VecRotateAxis(NUVEC *vector, u16 angle, NUVEC *axis) {
     sx = (f64)sine * axis->x;
     sy = (f64)sine * axis->y;
     sz = (f64)sine * axis->z;
-    partial = (f32)(((tx * (f64)axis->x + (f64)cosine) * (f64)input.x) + 0.0);
-    partial = (f32)((f64)partial + (xy - sz) * (f64)input.y);
-    x_result = (f32)((f64)partial + (xz + sy) * (f64)input.z);
-    partial = (f32)(((xy + sz) * (f64)input.x) + 0.0);
-    partial = (f32)((f64)partial + (ty * (f64)axis->y + (f64)cosine) * (f64)input.y);
-    y_result = (f32)((f64)partial + (yz - sx) * (f64)input.z);
-    partial = (f32)(((xz - sy) * (f64)input.x) + 0.0);
-    partial = (f32)((f64)partial + (sx + yz) * (f64)input.y);
-    z_result = (f32)((f64)partial + (tz * (f64)axis->z + (f64)cosine) * (f64)input.z);
-    vector->x = x_result;
-    vector->y = y_result;
-    vector->z = z_result;
+    partial = (f32)(((tx * (f64)axis->x + (f64)cosine) * (f64)vector->x) + 0.0);
+    partial = (f32)((f64)partial + (xy - sz) * (f64)vector->y);
+    result.x = (f32)((f64)partial + (xz + sy) * (f64)vector->z);
+    partial = (f32)(((xy + sz) * (f64)vector->x) + 0.0);
+    partial = (f32)((f64)partial + (ty * (f64)axis->y + (f64)cosine) * (f64)vector->y);
+    result.y = (f32)((f64)partial + (yz - sx) * (f64)vector->z);
+    partial = (f32)(((xz - sy) * (f64)vector->x) + 0.0);
+    partial = (f32)((f64)partial + (sx + yz) * (f64)vector->y);
+    result.z = (f32)((f64)partial + (tz * (f64)axis->z + (f64)cosine) * (f64)vector->z);
+    vector->x = result.x;
+    vector->y = result.y;
+    vector->z = result.z;
 }
 
 i32 __cdecl OnOrInsidePlane(NUVEC *point, NUVEC *plane_point, NUVEC *plane_normal, NUVEC *corrected_point,
                             f32 normal_offset, f32 *distance_out) {
     NUVEC test_point;
     f32 distance, correction;
-    if (normal_offset != 0.0f) {
+    if (normal_offset == 0.0f)
+        test_point = *point;
+    else {
         NuVecScale(&test_point, plane_normal, normal_offset);
         NuVecAdd(&test_point, &test_point, point);
-    } else
-        test_point = *point;
+    }
     distance = (f32)(((f64)test_point.x - (f64)plane_point->x) * (f64)plane_normal->x +
                      ((f64)test_point.y - (f64)plane_point->y) * (f64)plane_normal->y +
                      ((f64)test_point.z - (f64)plane_point->z) * (f64)plane_normal->z);
     if (distance_out != NULL)
         *distance_out = distance;
-    if (!(distance <= 0.0f))
-        return 0;
-    if (corrected_point != NULL) {
-        correction = (f32)(0.5 - (f64)distance);
-        NuVecScale(corrected_point, plane_normal, correction);
-        NuVecAdd(corrected_point, corrected_point, point);
+    if (distance <= 0.0f) {
+        if (corrected_point != NULL) {
+            correction = (f32)(-((f64)distance - 0.5));
+            NuVecScale(corrected_point, plane_normal, correction);
+            NuVecAdd(corrected_point, corrected_point, point);
+        }
+        return 1;
     }
-    return 1;
+    return 0;
 }
 
 static __declspec(noinline) void ReflectionCopyMatrixPc(NUMTX *source, NUMTX *result) {
