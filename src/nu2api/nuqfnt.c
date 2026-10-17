@@ -496,6 +496,13 @@ void NuQFntPrintV(VUFNT *font, const char *format, va_list arguments) {
 
 #include <string.h>
 #include <stdio.h>
+
+f32 __cdecl NuQFntPrintLenV(VUFNT *font, const char *format, va_list arguments) {
+    char text[1024];
+    vsprintf(text, format, arguments);
+    return NuQFntPrintLenU(font, text);
+}
+
 void __cdecl PCSpecialEmptyHandler_candidate(void);
 struct PC_MATERIAL_CREATE_SHADER {
     u32 flags;

@@ -323,6 +323,30 @@ i32 NuStrLenW(const NUWCHAR *str) {
     return count;
 }
 
+i32 __cdecl NuStrICmpW(NUWCHAR *a, NUWCHAR *b) {
+    NUWCHAR a_cursor;
+    NUWCHAR b_cursor;
+    if (a == NULL)
+        return -1;
+    if (b == NULL)
+        return 1;
+    do {
+        a_cursor = *a;
+        if ((u16)(a_cursor - 'a') <= 'z' - 'a' || (u16)(a_cursor - 0xe0) <= 0x1f)
+            a_cursor -= 0x20;
+        b_cursor = *b;
+        if ((u16)(b_cursor - 'a') <= 'z' - 'a' || (u16)(b_cursor - 0xe0) <= 0x1f)
+            b_cursor -= 0x20;
+        if (a_cursor > b_cursor)
+            return 1;
+        if (a_cursor < b_cursor)
+            return -1;
+        ++a;
+        ++b;
+    } while (a_cursor != 0 && b_cursor != 0);
+    return 0;
+}
+
 i32 __cdecl NuStrICmp(const char *a, const char *b) {
     char a_cursor;
     char b_cursor;

@@ -704,7 +704,7 @@ i32 __cdecl GizForce_GameObjUsingForce(GAMEOBJECT *object, GIZFORCE_PC *force) {
            ((TRIGGER_FORCE_OBJECT_PC *)object)->force == force;
 }
 
-static char *GizmoForce_GetOutputName(GIZMO_PC *unused0, i32 output_index) {
+char *__cdecl GizmoForce_GetOutputName(GIZMO_PC *unused0, i32 output_index) {
     switch (output_index) {
         case 0:
             return ((char *)("AtEnd"));

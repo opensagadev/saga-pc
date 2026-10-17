@@ -3086,6 +3086,16 @@ void __cdecl NuAnimInit(i32 max_joints, VARIPTR *buffer, VARIPTR end) {
     globalbuffer = header;
 }
 
+void __cdecl NuAnimBuffCreateScratch(ANI3_BUFFER_PC *buffer) {
+    if (buffer == NULL)
+        return;
+    buffer->max_joints = globalbuffer->scratch_joint_capacity;
+    buffer->joint_count = 0;
+    buffer->joints = (ANI3_JOINT_PC *)NuScratchAlloc32((buffer->max_joints + 1) * 3 * 16);
+    buffer->joints = (ANI3_JOINT_PC *)(((u32)buffer->joints + 15) & ~15u);
+    buffer->joint_flags = (u8 *)NuScratchAlloc32(buffer->max_joints);
+}
+
 u8 __cdecl NuAnimSetForceEulerToQuat(u8 force) {
     u8 previous = ForceEulerToQuat;
 

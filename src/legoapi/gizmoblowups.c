@@ -1630,6 +1630,36 @@ GIZMOBLOWUP_PC *__cdecl GizmoBlowUp_Hit(GAMEOBJECT *object, NUVEC *points, i32 p
     return nearest;
 }
 
+STATIC_ASSERT(offsetof(BOLT_PC, owner) == 4);
+STATIC_ASSERT(offsetof(BOLT_PC, position) == 0x88);
+STATIC_ASSERT(offsetof(BOLT_PC, direction) == 0xac);
+void __cdecl GizmoBlowup_HitBlowup(GAMEOBJECT *object, GIZMOBLOWUP_PC *blowup, i32 hit_type, BOLT_PC *bolt,
+                                   NUVEC *position, u8 *hit_data, u32 mode, i32 unused) {
+    (void)unused;
+    if (GizmoBlowupBlowup(blowup, 1, hit_type, 1, NULL, 1)) {
+        if (object != NULL) {
+            NewRumble(object->pad->bound_pad, 0.4f, 0);
+            GameCam_HitJudder();
+        }
+    } else if (bolt != NULL) {
+        NUVEC direction;
+        NuVecSub(&direction, &blowup->position, &bolt->position);
+        NuVecNorm(&direction, &direction);
+        Bolt_AddDeflectedBolt(bolt, &bolt->direction, &direction, hit_data);
+    }
+    if (BoltSys->stop_targeting != NULL)
+        BoltSys->stop_targeting(object, position);
+    switch (mode) {
+        case 1:
+            BoltSys->debris(bolt, position, -1, NULL, 0);
+            if (bolt->owner != NULL)
+                NewRumble(((GAMEOBJECT *)bolt->owner)->pad->bound_pad, 0.6f, 0);
+            Bolt_End(bolt, 1);
+            Bolt_PlayHitSfx(bolt);
+            break;
+    }
+}
+
 typedef struct {
     u32 active[16], hidden[16], terrain[16], alternate[16];
 } BLOWUP_RESET_PROGRESS_PC;

@@ -13715,6 +13715,7 @@ void __cdecl AIScriptMissingConditionDiagnostic();
     void __cdecl SmartTextGetWidescreen(f32 *font_scale_x, f32 *coordinate_scale);
     i32 __cdecl NuStrLen(const char *text);
     i32 __cdecl NuStrICmp(const char *a, const char *b);
+    i32 __cdecl NuStrICmpW(NUWCHAR *a, NUWCHAR *b);
     char *__cdecl NuStrIStr(char *text, char *substring);
     void __cdecl NuLinkedListAppend(NULISTHDR *list, NULISTLNK *node);
     void __cdecl NuLinkedListRemove(NULISTHDR *list, NULISTLNK *node);
@@ -17259,6 +17260,7 @@ extern "C" {
     void __cdecl NuAPIInit(void);
     void __cdecl NuWindInitialise(NUWIND *);
     void __cdecl NuAnimInit(i32, VARIPTR *, VARIPTR);
+    void __cdecl NuAnimBuffCreateScratch(ANI3_BUFFER_PC *buffer);
     i32 __cdecl rtlInitDynamic(VARIPTR *, VARIPTR, i32);
     void *__cdecl LoadGizFlow(void *, void *, char *, VARIPTR *, VARIPTR *);
     void __cdecl GizmoSysAddGizmos(void *, GIZFLOW_PC *, void *);
@@ -17663,6 +17665,7 @@ extern "C" {
     void __cdecl NuPadInitPS(FRAME_SCANNED_PAD_PC *pad);
     char *__cdecl NuGetErrN(i32 entry);
     void __cdecl NuQFntPrintV(VUFNT *font, const char *format, char *arguments);
+    f32 __cdecl NuQFntPrintLenV(VUFNT *font, const char *format, char *arguments);
     f32 __cdecl NuTimeGetFrameTime(void);
     void __cdecl NuDisplayListAnimateMtls(f32 frame_time);
     void __cdecl NuMtlSetUVOffsetPS(NUMTL *material, u32 layer, f32 u, f32 v);

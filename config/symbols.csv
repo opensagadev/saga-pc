@@ -11525,6 +11525,11 @@ address    , symbol                                                         , si
 0x00758b54 , __real@ce6e6b28                                                , 4     , const f32
 0x758b58,??_C@_0L@CDJCMAFF@JForcePush?$AA@,11,compiler literal
 0x758b58,_ForcePushSoundNamePc,11,const char[11]
+0x758b64,??_C@_09FHOGNPJE@BeingUsed?$AA@,10,const char[]
+0x758b70,??_C@_08NCJIEHD@Complete?$AA@,9,const char[]
+0x758b7c,??_C@_0BB@NFBIIFFA@Destroyed?1Thrown?$AA@,17,const char[]
+0x758b90,??_C@_0BF@IOMLDBFA@StackCompleteInOrder?$AA@,21,const char[]
+0x758ba8,??_C@_0O@EIHKDOJH@StackComplete?$AA@,14,const char[]
 0x758bb8,??_C@_07HODJLKCB@AtStart?$AA@,,const char[]
 0x758bc0,??_C@_0L@HJABCLGJ@NotAtStart?$AA@,,const char[]
 0x758bcc,??_C@_05GJHJCBBM@AtEnd?$AA@,,const char[]
