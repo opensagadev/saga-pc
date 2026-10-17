@@ -58,6 +58,12 @@ def environment():
     return compiler, wine, env
 
 
+def import_library_command(dlltool, source, output, decorated_exports=False):
+    """Preserve decorated DLL exports only when the definition explicitly requires them."""
+    flags = [] if decorated_exports else ["-k"]
+    return [dlltool, "-m", "i386", *flags, "-d", str(source), "-l", str(output)]
+
+
 def main():
     parser = argparse.ArgumentParser(description=__doc__, epilog=(
         "Compile: cc.py SOURCE OUTPUT [FLAGS...]. "
@@ -69,9 +75,13 @@ def main():
                         help="With --link: link while functions are still unported (/FORCE:UNRESOLVED); "
                              "unresolved symbols are reported, not fatal")
     mode.add_argument("--implib", action="store_true", help="Build an import library from a module definition")
+    parser.add_argument("--decorated-exports", action="store_true",
+                        help="With --implib: preserve the DLL export decorations in the .def")
     parser.add_argument("first", type=Path, help="Source when compiling; output for --link/--implib")
     parser.add_argument("arguments", nargs=argparse.REMAINDER)
     args = parser.parse_args()
+    if args.decorated_exports and not args.implib:
+        parser.error("--decorated-exports requires --implib")
     if args.implib:
         output = args.first.resolve()
         if len(args.arguments) != 1:
@@ -105,7 +115,7 @@ def main():
                        else shutil.which("llvm-dlltool-18") or shutil.which("llvm-dlltool"))
             if dlltool is None:
                 raise ValueError("llvm-dlltool is required; see the prerequisites in CONTRIBUTING.md")
-            command = [dlltool, "-m", "i386", "-k", "-d", str(source), "-l", str(output)]
+            command = import_library_command(dlltool, source, output, args.decorated_exports)
             env = dict(os.environ)
         else:
             compiler, wine, env = environment()

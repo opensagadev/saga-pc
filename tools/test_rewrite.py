@@ -18,7 +18,7 @@ class IntegerBoundTests(unittest.TestCase):
         cls.rewrite = rewrite
         cls.index = rewrite.ci.Index.create()
 
-    def candidates(self, text):
+    def source(self, text):
         rewrite = self.rewrite
         name = str(rewrite.ROOT / "src/rewrite_fixture.c")
 
@@ -31,7 +31,10 @@ class IntegerBoundTests(unittest.TestCase):
 
         with patch.object(rewrite, "_parse", side_effect=parse):
             source = rewrite.Source(text, "src/rewrite_fixture.c", "f")
-        return list(rewrite.rule_compare(source))
+        return source
+
+    def candidates(self, text):
+        return list(self.rewrite.rule_compare(self.source(text)))
 
     def bound(self, type_name, expression):
         text = f"int f({type_name} x) {{ return {expression}; }}"
@@ -97,6 +100,67 @@ class IntegerBoundTests(unittest.TestCase):
             with self.subTest(expression=expression):
                 candidates = self.candidates(f"int f(int x) {{ return {expression}; }}")
                 self.assertFalse([c for c in candidates if c.kind == "bound_compare"])
+
+
+    def test_macro_expansion_cannot_borrow_enclosing_comparison(self):
+        text = ("#define TAKE(ap) (*(int *)((ap += 4) - 4))\n"
+                "int f(char *args) { return TAKE(args) == 3; }")
+        source = self.source(text)
+        expanded = [node for node in source.walk()
+                    if node.kind == self.rewrite.K.BINARY_OPERATOR and source.src(node) == "TAKE(args)"]
+        self.assertTrue(expanded)
+        self.assertTrue(all(source.operator(node) is None for node in expanded))
+        mirrors = [candidate for candidate in self.rewrite.rule_compare(source)
+                   if candidate.kind == "mirror_compare"]
+        self.assertEqual(len(mirrors), 1)
+        self.assertTrue(mirrors[0].safe)
+        self.assertIn("return 3 == TAKE(args);", mirrors[0].text)
+        for rule in self.rewrite.RULES:
+            for candidate in rule(source):
+                if candidate.safe:
+                    self.assertEqual(candidate.text.split("int f", 1)[1].count("TAKE(args)"), 1,
+                                     candidate.kind)
+                    rewritten = self.source(candidate.text)
+                    consumes = [node for node in rewritten.walk()
+                                if node.kind == self.rewrite.K.COMPOUND_ASSIGNMENT_OPERATOR]
+                    self.assertEqual(len(consumes), 1, candidate.kind)
+
+    def test_comparisons_inside_macros_are_not_spliced(self):
+        for macro, expression in (("#define LESS(x) ((x) < 3)", "LESS(x)"),
+                                  ("#define INNER(x) ((x) + 1)\n#define OUTER(x) INNER(x)", "OUTER(x) == 3"),
+                                  ("#define VALUE 2 + 1", "VALUE == x")):
+            with self.subTest(macro=macro):
+                text = macro + "\nint f(int x) { return " + expression + "; }"
+                candidates = self.candidates(text)
+                for candidate in candidates:
+                    self.assertEqual(candidate.text.split("int f", 1)[1].count(expression.split()[0]), 1)
+
+    def test_operator_comments_and_long_trivia_remain_supported(self):
+        gap = " /* " + "padding " * 20 + " */ <= /* right */ "
+        candidates = self.candidates("int f(int x) { return x" + gap + "8; }")
+        self.assertEqual(len([c for c in candidates if c.kind == "mirror_compare"]), 1)
+        self.assertEqual(len([c for c in candidates if c.kind == "bound_compare"]), 1)
+
+    def test_edits_reject_overlapping_and_out_of_source_ranges(self):
+        source = self.source("int f(int x) { return x < 8; }")
+        for edits in ([(20, 25, "x"), (24, 26, "y")],
+                      [(20, 25, "x"), (22, 22, "y")],
+                      [(-1, 2, "x")], [(5, 1000, "x")]):
+            with self.subTest(edits=edits):
+                with self.assertRaises(ValueError):
+                    source.edit(edits)
+        self.assertTrue(source.edit([(20, 22, "x"), (22, 24, "y")]))
+
+    def test_insertions_at_replacement_boundaries_keep_original_offsets(self):
+        source = self.source("int f(int x) { return x < 8; }")
+        source.data = b"abcdef"
+        for edits, expected in (([(1, 1, "X"), (1, 3, "Y")], "aXYdef"),
+                                ([(1, 3, "Y"), (1, 1, "X")], "aXYdef"),
+                                ([(1, 3, "Y"), (3, 3, "X")], "aYXdef"),
+                                ([(3, 3, "X"), (1, 3, "Y")], "aYXdef")):
+            with self.subTest(edits=edits):
+                _, ordered = source.edit(edits)
+                self.assertEqual(source.apply(ordered), expected)
 
 
 if __name__ == "__main__":

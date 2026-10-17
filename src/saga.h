@@ -7856,7 +7856,9 @@ typedef struct GRAPHICS_CAPS_PC {
     u32 caps2;
     u8 unknown_018[4];
     u32 device_caps;
-    u8 unknown_020[0x78];
+    u8 unknown_020[0x1c];
+    u32 texture_caps;
+    u8 unknown_040[0x58];
     u32 sampler_count_pc;
     u8 unknown_09c[0x28];
     u32 vertex_shader_version;
@@ -27667,6 +27669,30 @@ extern "C" {
 #endif
     void __cdecl NuSound3SuspendForFocusPc(void);
     void __cdecl NuSound3ResumeAfterFocusPc(void);
+#ifdef __cplusplus
+}
+#endif
+
+// Native PC Bink ABI: opaque decoder records and the verified 32-bit DLL exports.
+typedef struct PC_FMV_BINK_PC PC_FMV_BINK_PC;
+typedef struct PC_FMV_REALTIME_PC PC_FMV_REALTIME_PC;
+typedef void *(__stdcall *FMV_SOUND_SYSTEM_OPEN_PC)(IDirectSound8 *);
+#ifdef __cplusplus
+extern "C" {
+#endif
+    __declspec(dllimport) i32 __stdcall BinkSetSoundSystem(FMV_SOUND_SYSTEM_OPEN_PC, IDirectSound8 *);
+    __declspec(dllimport) void *__stdcall BinkOpenDirectSound(IDirectSound8 *);
+    __declspec(dllimport) void __stdcall BinkSetSoundTrack(u32, u32 *);
+    __declspec(dllimport) PC_FMV_BINK_PC *__stdcall BinkOpen(const char *, u32);
+    __declspec(dllimport) void __stdcall BinkClose(PC_FMV_BINK_PC *);
+    __declspec(dllimport) void __stdcall BinkSetVolume(PC_FMV_BINK_PC *, u32, i32);
+    __declspec(dllimport) i32 __stdcall BinkDoFrame(PC_FMV_BINK_PC *);
+    __declspec(dllimport) i32 __stdcall BinkCopyToBufferRect(PC_FMV_BINK_PC *, void *, i32, u32, u32, u32, u32, u32,
+                                                             u32, u32, u32);
+    __declspec(dllimport) i32 __stdcall BinkWait(PC_FMV_BINK_PC *);
+    __declspec(dllimport) void __stdcall BinkNextFrame(PC_FMV_BINK_PC *);
+    __declspec(dllimport) void __stdcall BinkGetRealtime(PC_FMV_BINK_PC *, PC_FMV_REALTIME_PC *, u32);
+    __declspec(dllimport) void __stdcall BinkGoto(PC_FMV_BINK_PC *, u32, u32);
 #ifdef __cplusplus
 }
 #endif

@@ -3145,7 +3145,7 @@ address    , symbol                                                         , si
 0x54b090,_ReadPads,32,void __cdecl(void)
 0x0054b0b0 , _DoInput                                                       , 786   , void __cdecl (WORLD *)
 0x54b3d0,_GamePad_InputAngle,99,"u16 __cdecl (GAMEOBJECT *, GAMEPAD_PC *)"
-0x54b440,_GamePads_SkipMovie,,i32 __cdecl(void)
+0x54b440,_GamePads_SkipMovie,204,i32 __cdecl(void)
 0x0054b540 , _Text_InitLanguageList                                         , 49    , void __cdecl (LANGUAGEDATA *)
 0x0054b580 , _Text_SetLanguage                                              , 27    , void __cdecl (i32)
 0x0054b5a0 , _Text_GetLanguagePath                                          , 96    , char *__cdecl (i32)
@@ -6178,7 +6178,48 @@ address    , symbol                                                         , si
 0x00630740 , _ActionFromName                                                , 127   , i32 __cdecl (const char *)
 0x6307c0,_ConfigureCharacterList,892,"CHARACTERDATA_PC *__cdecl(char *,VARIPTR *,VARIPTR *,i32,i32 *,i32,PLAYERCHARACTERCONFIG_PC **)"
 0x00630b40,_APICharacterSysInit,541,"void __cdecl (VARIPTR *, VARIPTR, i32, i32, i32, i32, APICHARACTERDATA *, void (__cdecl *)(APIOBJECT_PC *))"
-0x630e00,_NuFmvPlayV,,"i32 __cdecl(i32, ...)"
+0x630d60,_FmvOptionErrorPc,1,
+0x630e00,_NuFmvPlayV,612,
+0x631160,_FmvStopPc,12,
+0x631170,_FmvStartPc,151,
+0x631210,_FmvStepPc,27,
+0x631270,_FmvSkipPc,24,
+0x6312f0,_FmvInitializeFormatsPc,101,
+0x631360,_FmvSleepPc,224,
+0x631440,_FmvDrawPc,871,
+0x6317b0,_FmvDecodePc,219,
+0x631890,_FmvInitializePc,169,
+0x631940,_FmvOpenPc,748,
+0x631c30,_FmvFramePc,173,
+0x631d00,_FmvClosePc,119,
+0x631e40,_FmvFadePc,28,
+0x631e90,_RadFmvInitializeFormatsPc,396,
+0x6321b0,_RadFmvBeginScenePc,58,
+0x6321f0,_RadFmvEndScenePc,44,
+0x632220,_RadFmvResizePc,86,
+0x632280,?RadFmvRoundTexturePc@@YAII@Z,94,
+0x6322e0,?RadFmvCreateTexturePc@@YAPAURADFMV_TEXTURE_PC@@PAUPC_D3D9_DEVICE_PC@@IIIII@Z,179,
+0x6323a0,?RadFmvDrawQuadPc@@YAXPAUPC_D3D9_DEVICE_PC@@MMMMHHM@Z,312,
+0x6324e0,?RadFmvDrawOutlinePc@@YAXPAUPC_D3D9_DEVICE_PC@@MMMMHH@Z,462,
+0x6326b0,?RadFmvSetDrawStatePc@@YAXPAURADFMV_IMAGE_PC@@M@Z,216,
+0x632790,?RadFmvCreateTiledPc@@YAPAURADFMV_IMAGE_PC@@PAURADFMV_CONTEXT_PC@@IIII@Z,638,
+0x632a10,?RadFmvDestroyTiledPc@@YAXPAURADFMV_IMAGE_PC@@@Z,68,
+0x632a60,?RadFmvLockTiledPc@@YAHPAURADFMV_IMAGE_PC@@PAPAXPAI22222I@Z,256,
+0x632b60,?RadFmvUnlockTiledPc@@YAXPAURADFMV_IMAGE_PC@@@Z,25,
+0x632b80,?RadFmvBlitTiledPc@@YAXPAURADFMV_IMAGE_PC@@MMMMM@Z,550,
+0x632db0,?RadFmvOutlineTiledPc@@YAXPAURADFMV_IMAGE_PC@@MMMM@Z,408,
+0x632f50,?RadFmvBlitSinglePc@@YAXPAURADFMV_IMAGE_PC@@MMMMM@Z,106,
+0x632fc0,?RadFmvOutlineSinglePc@@YAXPAURADFMV_IMAGE_PC@@MMMM@Z,59,
+0x633000,?RadFmvLockSinglePc@@YAHPAURADFMV_IMAGE_PC@@PAPAXPAI22222I@Z,200,
+0x6330d0,?RadFmvUnlockSinglePc@@YAXPAURADFMV_IMAGE_PC@@@Z,18,
+0x6330f0,?RadFmvCreateSinglePc@@YAPAURADFMV_IMAGE_PC@@PAURADFMV_CONTEXT_PC@@IIII@Z,170,
+0x6331a0,?RadFmvDestroySinglePc@@YAXPAURADFMV_IMAGE_PC@@@Z,33,
+0x6331d0,_RadFmvBlitImagePc,75,
+0x633220,_RadFmvDrawLinesPc,109,
+0x633290,_RadFmvLockImagePc,33,
+0x6332c0,_RadFmvUnlockImagePc,47,
+0x6332f0,_RadFmvCreateImagePc,93,
+0x633350,_RadFmvDestroyImagePc,54,
 0x633df0,_rtlSwapSetEndianess,1,void __cdecl rtlSwapSetEndianess(void *)
 0x633e40,_RtlDirectionStatePc,183,
 0x6354a0,_edrtlInitBurnset,259,void __cdecl edrtlInitBurnset(BURN_SET_PC *)
@@ -6964,6 +7005,7 @@ address    , symbol                                                         , si
 0x00697880 , ?Setup3DVoice@SoundVoiceManagerPC@@QAEXHPBUnuvec_s@@H@Z        , 149   , "void __thiscall (SoundVoiceManagerPC *, i32, const NUVEC *, i32)"
 0x00697920 , ?SetVolumeTableIndex@SoundVoiceManagerPC@@QAEXHH@Z             , 104   , "void __thiscall (SoundVoiceManagerPC *, i32, i32)"
 0x00697990 , ?SetFrequencyParameter@SoundVoiceManagerPC@@QAEXHH@Z           , 135   , "void __thiscall (SoundVoiceManagerPC *, i32, i32)"
+0x697a20,_NuFmvGetSoundFactoryPc,6,IDirectSound8 *__cdecl(void)
 0x00697a30 , _NuSound3SetReverb                                             , 22    , i32 __cdecl (i32)
 0x697a50,_NuSound3SetSampleTable,354,"void __cdecl(SFX_FILE_INFO_PC *,VARIPTR *,VARIPTR)"
 0x697bc0,_PCSoundSampleWorkerPc@4,464,DWORD __stdcall(void *)
@@ -6988,6 +7030,7 @@ address    , symbol                                                         , si
 0x00698930 , _NuSound3SetRumblePads                                         , 1     , "void __cdecl (void *, void *)"
 0x698990,_NuSound3LoadingSfx,12,i32 __cdecl(void)
 0x6989a0,_NuSound3CancelCheckStereo,1,
+0x6989b0,_PCSoundStopStereoChannelPc,79,void __cdecl(i32)
 0x00698a00 , _NuSound3SetLoopHoldTime                                       , 21    , void __cdecl (f32)
 0x698a20,_NuSound3ClearLoopHold,1,"void __cdecl (NUVEC *, i32)"
 0x698a40,_NuSound3GetStreamInfo,1,"void __cdecl(i32, void *)"
@@ -6996,6 +7039,7 @@ address    , symbol                                                         , si
 0x00698e70 , _NuSound3Update                                                , 86    , void (void)
 0x00698ed0 , _NuSound3KillAllAudio                                          , 32    , void __cdecl (void)
 0x698f10,_NuSound3StopSFX,10,void __cdecl(void)
+0x698f20,_NuFmvStopSoundPc,118,void __cdecl(i32)
 0x698fa0,_NuSound3SuspendForFocusPc,42,void __cdecl(void)
 0x699070,?SetFormatPc@SoundQueue@@QAEHPBUtWAVEFORMATEX@@@Z,266,"i32 __thiscall(SoundQueue *,const WAVEFORMATEX *)"
 0x00699180 , ?SendCommand@SoundQueue@@QAEHHH@Z                              , 117   , "i32 __thiscall (SoundQueue *, i32, i32)"
@@ -7410,6 +7454,7 @@ address    , symbol                                                         , si
 0x6d07a0,_cbEdLevelSettingsMenu,137,
 0x6d3150,_PcConfigureInputGraphicsCaps,632,i32 __cdecl(void)
 0x6d33d0,_NuKeyboardPlatformStartup_candidate,59,i32 __cdecl(void)
+0x6d3420,_FmvPlatformUpdatePc,1,
 0x006d3430 , _StartupParseArgument                                          , 3     , "i32 __cdecl (i32, char **)"
 0x006d3440 , _StartupOpenDats                                               , 116   , "void __cdecl (const char **, i32, VARIPTR *)"
 0x6d34c0,_StartupDatsSelectPc,39,void __cdecl (i32)
@@ -7485,6 +7530,7 @@ address    , symbol                                                         , si
 0x6d6a10,_PcKeyDown,276,void __cdecl(i32)
 0x006d6b30 , _MenuSetPlatformState                                          , 1     , void __cdecl (i32)
 0x006d6b40,_PCPresentationPlatformLeafPc,1,void __cdecl(void)
+0x6d6b50,_FmvPlatformFinishPc,1,
 0x6d6c20,_NuKeyboard,23,
 0x6d6c40,_NuKeyboard_db,53,i32 __cdecl(i32)
 0x6d6d70,_PcKeyUp,12,void __cdecl(i32)
@@ -8906,6 +8952,7 @@ address    , symbol                                                         , si
 0x750010,??__EPcFramebufferPool@@YAXXZ,58,
 0x750050,??__EPostVertexShaderCachePc@@YAXXZ,12,native atexit initializer
 0x750060,??__EPostPixelShaderCachePc@@YAXXZ,12,native atexit initializer
+0x750170,??__EFmvSurfacePc@@YAXXZ,22,
 0x750280,??__EPCDeviceBackend@@YAXXZ,22,void __cdecl(void)
 0x7502a0,??__Enu_keyboard_owner@@YAXXZ,22,void __cdecl (void)
 0x7502f0,??__ECRC16InstancePC@@YAXXZ,10,void __cdecl(void)
@@ -8917,6 +8964,7 @@ address    , symbol                                                         , si
 0x750540,??__FPcFramebufferPool@@YAXXZ,37,
 0x750570,??__FPostVertexShaderCachePc@@YAXXZ,49,native vector cleanup
 0x7505b0,??__FPostPixelShaderCachePc@@YAXXZ,49,native vector cleanup
+0x750670,??__FFmvSurfacePc@@YAXXZ,10,
 0x750750,??__FPCDeviceBackend@@YAXXZ,10,void __cdecl(void)
 0x750760,??__Fnu_keyboard_owner@@YAXXZ,10,void __cdecl (void)
 0x00751000 , __imp__RegCloseKey@4                                           , 4     , LONG (__stdcall *)(HKEY)
@@ -9083,17 +9131,29 @@ address    , symbol                                                         , si
 0x007512a8 , __imp__XInputGetState@8                                        , 4     , "DWORD (__stdcall *)(DWORD, XINPUT_STATE *)"
 0x007512ac , __imp__XInputSetState@8                                        , 4     , "DWORD (__stdcall *)(DWORD, XINPUT_VIBRATION *)"
 0x007512b4 , _saga_import_binkw32_dll__BinkSetSoundTrack_8                  , 4     , void *
+0x7512b4,__imp__BinkSetSoundTrack@8,4,"void (__stdcall *)(u32, u32 *)"
 0x007512b8 , _saga_import_binkw32_dll__BinkOpen_8                           , 4     , void *
+0x7512b8,__imp__BinkOpen@8,4,"PC_FMV_BINK_PC *(__stdcall *)(const char *, u32)"
 0x007512bc , _saga_import_binkw32_dll__BinkNextFrame_4                      , 4     , void *
+0x7512bc,__imp__BinkNextFrame@4,4,void (__stdcall *)(PC_FMV_BINK_PC *)
 0x007512c0 , _saga_import_binkw32_dll__BinkSetVolume_12                     , 4     , void *
+0x7512c0,__imp__BinkSetVolume@12,4,"void (__stdcall *)(PC_FMV_BINK_PC *, u32, i32)"
 0x007512c4 , _saga_import_binkw32_dll__BinkOpenDirectSound_4                , 4     , void *
+0x7512c4,__imp__BinkOpenDirectSound@4,4,void *(__stdcall *)(IDirectSound8 *)
 0x007512c8 , _saga_import_binkw32_dll__BinkSetSoundSystem_8                 , 4     , void *
+0x7512c8,__imp__BinkSetSoundSystem@8,4,"i32 (__stdcall *)(FMV_SOUND_SYSTEM_OPEN_PC, IDirectSound8 *)"
 0x007512cc , _saga_import_binkw32_dll__BinkDoFrame_4                        , 4     , void *
+0x7512cc,__imp__BinkDoFrame@4,4,i32 (__stdcall *)(PC_FMV_BINK_PC *)
 0x007512d0 , _saga_import_binkw32_dll__BinkCopyToBufferRect_44              , 4     , void *
+0x7512d0,__imp__BinkCopyToBufferRect@44,4,"i32 (__stdcall *)(PC_FMV_BINK_PC *, void *, i32, u32, u32, u32, u32, u32, u32, u32, u32)"
 0x007512d4 , _saga_import_binkw32_dll__BinkGetRealtime_12                   , 4     , void *
+0x7512d4,__imp__BinkGetRealtime@12,4,"void (__stdcall *)(PC_FMV_BINK_PC *, PC_FMV_REALTIME_PC *, u32)"
 0x007512d8 , _saga_import_binkw32_dll__BinkWait_4                           , 4     , void *
+0x7512d8,__imp__BinkWait@4,4,i32 (__stdcall *)(PC_FMV_BINK_PC *)
 0x007512dc , _saga_import_binkw32_dll__BinkGoto_12                          , 4     , void *
+0x7512dc,__imp__BinkGoto@12,4,"void (__stdcall *)(PC_FMV_BINK_PC *, u32, u32)"
 0x007512e0 , _saga_import_binkw32_dll__BinkClose_4                          , 4     , void *
+0x7512e0,__imp__BinkClose@4,4,void (__stdcall *)(PC_FMV_BINK_PC *)
 0x007512e8 , __imp__Direct3DCreate9@4                                       , 4     , IDirect3D9 * (__stdcall *)(UINT)
 0x007512ec , __imp__D3DPERF_EndEvent@0                                      , 4     , int (__stdcall *)(void)
 0x007512f0 , __imp__D3DPERF_BeginEvent@8                                    , 4     , "int (__stdcall *)(D3DCOLOR, const WCHAR *)"
@@ -9126,6 +9186,7 @@ address    , symbol                                                         , si
 0x7513b0,_PcFramebufferPool$initializer$,4,constructor initializer pointer
 0x7513b4,_PostVertexShaderCachePc$initializer$,4,native CRT pointer
 0x7513b8,_PostPixelShaderCachePc$initializer$,4,native CRT pointer
+0x7513c8,_FmvSurfacePc$initializer$,4,void (__cdecl *)(void)
 0x7513fc,_PCDeviceBackend$initializer$,4,constructor initializer pointer
 0x00751400,_nu_keyboard_owner$initializer$,4,void (__cdecl *)(void)
 0x75140c,_CRC16InstancePC$initializer$,4,void (__cdecl *)(void)
@@ -13223,6 +13284,7 @@ address    , symbol                                                         , si
 0x75ead4,_NuFileExt_lr_pc_ghg_PC,11,const char[11]
 0x75eae0,_NuFileExt_pc_gsc_PC,8,const char[8]
 0x75eae8,_NuFileExt_bik_PC,5,const char[5]
+0x75eae8,??_C@_04BHAMOEMM@?4bik?$AA@,5,const char[]
 0x75eaf0,_NuFileExt_wav_PC,5,const char[5]
 0x75eaf8,_NuFileExt_cu2_PC,5,const char[5]
 0x75eb00,_NuFileExt_pc_dds_PC,8,const char[8]
@@ -14727,6 +14789,12 @@ address    , symbol                                                         , si
 0x0076b190 , __real@3fa1111120000000                                        , 8     , const f64
 0x76b198,??_C@_0L@PBNGMJDA@char_start?$AA@,,const char[]
 0x76b1a4,??_C@_08OBFOBBAH@char_end?$AA@,,const char[]
+0x76b1b4,??_C@_02FGFKDEHA@rd?$AA@,3,const char[]
+0x76b1b8,??_C@_02EDGGGOGE@nd?$AA@,3,const char[]
+0x76b1bc,??_C@_02BNFKEMBG@st?$AA@,3,const char[]
+0x76b1c0,??_C@_02POGCAHMO@th?$AA@,3,const char[]
+0x76b1c8,__real@4040aaaac0000000,8,const double
+0x76b1d0,??_C@_0BK@POOFCPDO@?4?2pc?2Bink?2dsplay_bink?4cpp?$AA@,26,const char[]
 0x76b274,_MenuPcString76b274,4,const char[4]
 0x76b77c,__real@3ff33333,,
 0x76b780,__real@3f13b646,,
@@ -15041,6 +15109,7 @@ address    , symbol                                                         , si
 0x76ef08,__real@409f400000000000,8,const f64
 0x76ef10,??_C@_0BC@OEIOIPPM@SpotManager?5Event?$AA@,,const char[18]
 0x76ef24,??_C@_0BB@DHOCNDB@?4?2pc?2nusound?4cpp?$AA@,,const char[17]
+0x76ef38,??_C@_0BJ@BHFHENMF@?$DO?$DO?$DO?5NuSoundStopStereo?5?$CFd?$AA@,25,const char[25]
 0x0076ef78,__real@c0ab580000000000,8,f64
 0x76ef84,??_7WavReader@@6B@,,native exactVT binding; unimplemented extent unclaimed
 0x76efa8,??_C@_04PJOLNDGD@data?$AA@,5,const char[5]
@@ -19416,6 +19485,9 @@ address    , symbol                                                         , si
 0x80fb90,_AnimBlendModePc,,i32
 0x0080fb94,_ModelAnimLayerListDispatchPc,,
 0x0080fb98,_RedirectAnimDir,,char[64]
+0x80fc60,_FmvCopyFlagsPc,4,i32
+0x80fc64,_FmvVolumePc,4,f32
+0x80fcd0,_FmvFrequencyPc,8,LARGE_INTEGER
 0x80fde4,_rtl_dynamic_lights_enabled,,i32
 0x80fde8,_RtlFileVersionPc,,i32
 0x80fdec,_rtl_shadow_blend_rate,,f32
@@ -22287,6 +22359,7 @@ address    , symbol                                                         , si
 0x95e3b8,?MiniCutAddTypePc@?1??MiniCut_RegisterGizmo@@9@9,,
 0x95e430,_wait_till_next_frame,,i32
 0x0095e434 , ?fade_draw_suppressed@@3HA                                     , 4     , i32
+0x95e438,_GameThingManagerPc,4,GAME_THING_MANAGER_PC *
 0x95e43c,_splineStore,,NUGSPLINE *
 0x95e440,_numSplinesLoaded,,i32
 0x95e444,_MoviePlayTime,4,f32
@@ -22753,6 +22826,20 @@ address    , symbol                                                         , si
 0x2913138,_APIObjEnableShadowMapRenderingFn,,void (__cdecl *)(void)
 0x0291313c , _APIActionInfo                                                 , 4     , API_ACTION_INFO_PC *
 0x02913140 , _APIExtraActionData                                            , 4     , API_EXTRA_ACTION_PC *
+0x2913170,_FmvDrawCallbackPc,4,void (__cdecl *)(void)
+0x2913198,_FmvMoviePc,72,PC_FMV_MOVIE_PC
+0x29131e0,_FmvInitializedPc,4,i32
+0x29131e4,_FmvState1Pc,4,i32
+0x29131e8,_FmvState2Pc,4,i32
+0x29131ec,_FmvContextPc,4,RADFMV_CONTEXT_PC *
+0x29131f0,_FmvSoundPc,4,IDirectSound8 *
+0x29131f4,_FmvFormatsPc,40,u32[10]
+0x291321c,_FmvWindowPc,4,HWND
+0x2913220,_FmvMutedPc,4,i32
+0x2913224,?FmvSurfacePc@@3UPC_EFFECT_SURFACE_PC@@A,28,PC_EFFECT_SURFACE_PC
+0x2913240,_FmvSleepErrorPc,4,i32
+0x2913244,_FmvSleepCarryPc,4,i32
+0x2913248,_FmvFrequencyReadyPc,4,i32
 0x002913270, _theMemoryManager                                              , 584   , MEMORYMANAGER
 0x29134c4,_burn_editor_position_pc,,
 0x291398c,_edrtl_edit_burnset,,

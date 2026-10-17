@@ -213,3 +213,24 @@ void __cdecl ReadPads(void) {
         ReadPad(port);
     readpads_always = 0;
 }
+
+i32 __cdecl GamePads_SkipMovie(void) {
+    WORLDINFO *world = WorldInfo_CurrentlyActive();
+    i32 skipped = 0;
+    i32 pressed_device = 0;
+    i32 kind, value, port;
+    for (port = 0; port < 2; ++port)
+        ReadPad(port);
+    readpads_always = 0;
+    if ((world == NULL && GAMEDEMO != 0) || (world != NULL && world->current_level == TITLES_LDATA)) {
+        if (PcInputSelectPressedDevicePc(0, 0x1a, &kind, &value, 1) >= 0)
+            pressed_device = 1;
+    }
+    if ((GamePadStorage[0].menu_buttons_held & GAMEPAD_SKIP) != 0 || pressed_device != 0 ||
+        (GamePadStorage[1].menu_buttons_held & GAMEPAD_SKIP) != 0)
+        skipped = 1;
+    PCPresentationPlatformLeafPc();
+    if (NuKeyboard_db(0x1c) != 0 || NuKeyboard_db(0x39) != 0 || 0 != NuKeyboard_db(1))
+        return 1;
+    return skipped;
+}

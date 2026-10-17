@@ -24,6 +24,8 @@ SOURCES := $(filter-out src/log.c,$(shell find src -type f \( -name '*.cpp' -o -
 SOURCE_DIRS := $(shell find src -type d)
 OBJECTS := $(patsubst src/%,$(OBJ_DIR)/%,$(SOURCES:.cpp=.obj))
 OBJECTS := $(OBJECTS:.c=.obj)
+$(filter $(OBJ_DIR)/nu2api/pc_fmv%.obj,$(OBJECTS)): src/nu2api/pc_fmv_native.h
+
 # Original Vorbis private headers/textual tables belong to these owners only.
 VORBIS_HEADERS := $(shell find src/audio/vorbis -type f \( -name '*.h' -o -name '*.inc' \) 2>/dev/null)
 ifneq ($(filter $(OBJ_DIR)/audio/vorbis/%,$(OBJECTS)),)
@@ -38,6 +40,7 @@ DSOUND_LIB := build/lib/imports/dsound.lib
 D3D9_LIB := build/lib/imports/d3d9.lib
 DINPUT8_LIB := build/lib/imports/dinput8.lib
 XINPUT_LIB := build/lib/imports/xinput1_3.lib
+BINK_LIB := build/lib/imports/binkw32.lib
 CPPFLAGS := /Isrc /Ibuild/tools/msvc8/include /Ibuild/tools/msvc8/PlatformSDK/Include
 CXXFLAGS := /nologo /c /O2 /Gy /GS /MT
 LDFLAGS := /nologo /machine:x86 /subsystem:windows /incremental:no /manifest:no /opt:noref /opt:noicf
@@ -47,7 +50,7 @@ CXXFLAGS += /Z7
 # Keep native linker defaults: the pinned PDB writer cannot emit a PDB.
 LDFLAGS += /MAP:build/Debug/LEGOStarWarsSaga_debug.map
 endif
-LDLIBS := user32.lib gdi32.lib winmm.lib ole32.lib oleaut32.lib shell32.lib advapi32.lib $(abspath $(D3D9_LIB)) $(abspath $(D3DX_LIB)) $(abspath $(DSOUND_LIB)) $(abspath $(DINPUT8_LIB)) $(abspath $(XINPUT_LIB))
+LDLIBS := user32.lib gdi32.lib winmm.lib ole32.lib oleaut32.lib shell32.lib advapi32.lib $(abspath $(D3D9_LIB)) $(abspath $(D3DX_LIB)) $(abspath $(DSOUND_LIB)) $(abspath $(DINPUT8_LIB)) $(abspath $(XINPUT_LIB)) $(abspath $(BINK_LIB))
 
 .DEFAULT_GOAL := build
 .DELETE_ON_ERROR:
@@ -66,11 +69,11 @@ run: $(EXE)
 	cd res && WINEPREFIX="$(CURDIR)/build/tools/wine" WINEDEBUG=-all WINEDLLOVERRIDES="winemenubuilder.exe=d" wine ../$(EXE)
 
 # Directory dependencies also relink when a source is removed from the input list.
-$(EXE): $(OBJECTS) $(DIAGNOSTIC_OBJECTS) $(D3DX_LIB) $(DSOUND_LIB) $(D3D9_LIB) $(DINPUT8_LIB) $(XINPUT_LIB) $(SOURCE_DIRS) config/toolchain.json Makefile tools/cc.py tools/lib.py
+$(EXE): $(OBJECTS) $(DIAGNOSTIC_OBJECTS) $(D3DX_LIB) $(DSOUND_LIB) $(D3D9_LIB) $(DINPUT8_LIB) $(XINPUT_LIB) $(BINK_LIB) $(SOURCE_DIRS) config/toolchain.json Makefile tools/cc.py tools/lib.py
 	$(PYTHON) tools/cc.py --link --allow-unresolved $@ $(OBJECTS) $(DIAGNOSTIC_OBJECTS) -- $(LDFLAGS) $(LDLIBS)
 
 # The complete link: every referenced function must be implemented.
-link-strict: $(OBJECTS) $(DIAGNOSTIC_OBJECTS) $(D3DX_LIB) $(DSOUND_LIB) $(D3D9_LIB) $(DINPUT8_LIB) $(XINPUT_LIB)
+link-strict: $(OBJECTS) $(DIAGNOSTIC_OBJECTS) $(D3DX_LIB) $(DSOUND_LIB) $(D3D9_LIB) $(DINPUT8_LIB) $(XINPUT_LIB) $(BINK_LIB)
 	$(PYTHON) tools/cc.py --link $(STRICT_EXE) $(OBJECTS) $(DIAGNOSTIC_OBJECTS) -- $(LDFLAGS) $(LDLIBS)
 
 # Debug support contains diagnostics only and never enters Matching objects.
@@ -87,6 +90,9 @@ $(DSOUND_LIB): tools/dsound.def tools/cc.py Makefile
 
 $(D3D9_LIB): tools/d3d9.def tools/cc.py Makefile
 	$(PYTHON) tools/cc.py --implib $@ $<
+
+$(BINK_LIB): tools/binkw32.def tools/cc.py Makefile
+	$(PYTHON) tools/cc.py --implib --decorated-exports $@ $<
 
 $(DINPUT8_LIB): tools/dinput8.def tools/cc.py Makefile
 	$(PYTHON) tools/cc.py --implib $@ $<

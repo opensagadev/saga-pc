@@ -1,0 +1,27 @@
+; Shipped DLL exports retain their leading underscore and stdcall suffix.
+LIBRARY binkw32.dll
+EXPORTS
+    _BinkGetRealtime@12
+    BinkGetRealtime@12 == _BinkGetRealtime@12
+    _BinkCopyToBufferRect@44
+    BinkCopyToBufferRect@44 == _BinkCopyToBufferRect@44
+    _BinkDoFrame@4
+    BinkDoFrame@4 == _BinkDoFrame@4
+    _BinkSetSoundSystem@8
+    BinkSetSoundSystem@8 == _BinkSetSoundSystem@8
+    _BinkOpenDirectSound@4
+    BinkOpenDirectSound@4 == _BinkOpenDirectSound@4
+    _BinkSetVolume@12
+    BinkSetVolume@12 == _BinkSetVolume@12
+    _BinkClose@4
+    BinkClose@4 == _BinkClose@4
+    _BinkOpen@8
+    BinkOpen@8 == _BinkOpen@8
+    _BinkSetSoundTrack@8
+    BinkSetSoundTrack@8 == _BinkSetSoundTrack@8
+    _BinkNextFrame@4
+    BinkNextFrame@4 == _BinkNextFrame@4
+    _BinkWait@4
+    BinkWait@4 == _BinkWait@4
+    _BinkGoto@12
+    BinkGoto@12 == _BinkGoto@12

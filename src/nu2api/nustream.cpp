@@ -1,5 +1,6 @@
 #include "saga.h"
 #include "../audio/vorbis/vorbis/vorbisfile.h"
+#include <stdio.h>
 struct PC_OGG_CACHE_RECORD_PC {
     char path[0x104];
     u8 *data;
@@ -736,4 +737,28 @@ extern "C" void __cdecl NuSound3ResumeAfterFocusPc(void) {
         NuSound3StereoStreams[0]->CancelPausePc();
         NuSound3StereoStreams[1]->CancelPausePc();
     }
+}
+
+extern "C" void __cdecl PCSoundStopStereoChannelPc(i32 channel) {
+    char message[64];
+    sprintf(message, ">>> NuSoundStopStereo %d", channel);
+    SoundQueue *stream = NuSound3StereoStreams[0];
+    if (channel != PCStereoChannel0A)
+        stream = NuSound3StereoStreams[1];
+    stream->Stop();
+}
+
+extern "C" void __cdecl NuFmvStopSoundPc(i32 wait) {
+    SoundVoiceManager.StopAllVoices();
+    if (wait != 0) {
+        PCSoundStopStereoChannelPc(PCStereoChannel0A);
+        PCSoundStopStereoChannelPc(PCStereoChannel1A);
+        while (NuSound3GetStereoStreamStatus(PCStereoChannel0A) != 0 ||
+               NuSound3GetStereoStreamStatus(PCStereoChannel1A) != 0)
+            Sleep(10);
+    }
+}
+
+extern "C" IDirectSound8 *__cdecl NuFmvGetSoundFactoryPc(void) {
+    return SoundVoiceManager.factory;
 }

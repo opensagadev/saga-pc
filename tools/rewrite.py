@@ -19,7 +19,7 @@ from tools.check import analysis_configuration, analysis_language
 from tools.lib import ROOT
 
 # Bump when rules change materially: batch runs retry functions searched with older rules.
-VERSION = 4
+VERSION = 5
 K = ci.CursorKind
 FLOATS = {ci.TypeKind.FLOAT, ci.TypeKind.DOUBLE, ci.TypeKind.LONGDOUBLE}
 NEGATE = {"==": "!=", "!=": "==", "<": ">=", ">=": "<", ">": "<=", "<=": ">"}
@@ -125,7 +125,12 @@ class Source:
 
     def edit(self, edits):
         """Describe a rewrite without materializing the whole file."""
-        return (self, tuple(sorted(edits, key=lambda e: -e[0])))
+        ordered = sorted(edits, key=lambda e: (e[0], e[1]))
+        if any(not 0 <= a <= b <= len(self.data) for a, b, _ in ordered):
+            raise ValueError("Rewrite range is outside the source")
+        if any(right[0] < left[1] for left, right in zip(ordered, ordered[1:])):
+            raise ValueError("Rewrite ranges overlap")
+        return (self, tuple(sorted(ordered, key=lambda e: (-e[0], -e[1]))))
 
     def apply(self, edits):
         data = self.data
@@ -142,12 +147,18 @@ class Source:
 
     def _operator(self, cursor):
         children = list(cursor.get_children())
-        if len(children) != 2:
+        if len(children) != 2 or not all(self.mine(child) for child in children):
             return None
-        end = children[0].extent.end.offset
-        # Skip whitespace and comments after the left operand; read the operator text.
-        match = re.match(rb"(?:\s|/\*.*?\*/|//[^\n]*\n)*(<<=|>>=|&&|\|\||==|!=|<=|>=|<<|>>|\+=|-=|\*=|/=|%=|&=|\|=|\^=|[-+*/%<>&|^=,])",
-                         self.data[end:end + 64], re.S)
+        start, end = self.span(cursor)
+        left_start, left_end = self.span(children[0])
+        right_start, right_end = self.span(children[1])
+        # Macro expansion children can all name the same invocation. Reading past
+        # that range can mistake an enclosing operator for the expanded one.
+        if not start <= left_start < left_end <= right_start < right_end <= end:
+            return None
+        trivia = rb"(?:\s|/\*.*?\*/|//[^\n]*\n)*"
+        match = re.fullmatch(trivia + rb"(<<=|>>=|&&|\|\||==|!=|<=|>=|<<|>>|\+=|-=|\*=|/=|%=|&=|\|=|\^=|[-+*/%<>&|^=,])" + trivia,
+                             self.data[left_end:right_start], re.S)
         return match.group(1).decode() if match else None
 
 

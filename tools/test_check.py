@@ -351,6 +351,18 @@ class CommonMatchTests(unittest.TestCase):
 
 
 class HeaderLayoutTests(unittest.TestCase):
+    def test_reviewed_native_fmv_header_is_scoped(self):
+        with tempfile.TemporaryDirectory() as temp, patch.object(check_module, "ROOT", Path(temp)):
+            src = Path(temp) / "src"
+            native = src / "nu2api"
+            native.mkdir(parents=True)
+            (src / "saga.h").write_text("// shared contract\n")
+            (native / "pc_fmv_native.h").write_text("// reviewed native FMV ABI\n")
+            check_module.check_headers()
+            (native / "unreviewed.h").write_text("// unrelated headers remain forbidden\n")
+            with self.assertRaisesRegex(ValueError, "native PC FMV ABI header"):
+                check_module.check_headers()
+
     def test_only_common_and_external_headers_are_allowed(self):
         with tempfile.TemporaryDirectory() as temp, patch.object(check_module, "ROOT", Path(temp)):
             src = Path(temp) / "src"

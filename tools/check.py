@@ -195,11 +195,12 @@ def check_headers():
         "window.h", "ogg/ogg.h", "ogg/os_types.h", "vorbis/codec.h",
         "vorbis/vorbisenc.h", "vorbis/vorbisfile.h",
     }
-    allowed = {"src/saga.h", "src/externals.h", "src/diagnostics.h"} | {
+    # The native FMV ABI is shared only by its reviewed PC subsystem owners.
+    allowed = {"src/saga.h", "src/externals.h", "src/diagnostics.h", "src/nu2api/pc_fmv_native.h"} | {
         "src/audio/vorbis/" + name for name in vorbis_headers}
     if "src/saga.h" not in headers or headers - allowed:
         raise ValueError("Project headers must be src/saga.h, src/diagnostics.h and optional src/externals.h "
-                         "or the reviewed original Vorbis header catalog")
+                         "or the reviewed original Vorbis header catalog or native PC FMV ABI header")
 
 
 def check_diagnostic_boundaries():
