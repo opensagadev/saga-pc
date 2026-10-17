@@ -369,6 +369,43 @@ STATIC_ASSERT(offsetof(PICKUP_COLLISION_FLAGS_PC, config_flags) == 0x15);
 STATIC_ASSERT(offsetof(AREA_GLOBALS_PC, field_18) == 0x18);
 static PICKUP_TYPE_SYSTEM_PC *GizmoPickupSys = &GizmoPickupSys_Game;
 
+GIZMOPICKUP_PC *__cdecl GizmoPickup_InBox(WORLDINFO *world, i32 type_index, NUVEC *minimum, NUVEC *maximum) {
+    PICKUP_COLLISION_RUNTIME_PC *runtime = (PICKUP_COLLISION_RUNTIME_PC *)world->pickup_runtime_sys;
+    GIZMOPICKUP_PC *pickup = runtime->pickups;
+    GIZMO_PICKUP_TYPE_PC *type;
+    f32 radius;
+    NUVEC low, high;
+    i32 count, index;
+    if (pickup == NULL)
+        return NULL;
+    type = &GizmoPickupSys->types[type_index];
+    if (type->field_0f != 0)
+        return NULL;
+    radius = type->shadow_extent_x * AreaPickupScale;
+    count = runtime->pickup_count;
+    low.x = minimum->x - radius;
+    high.x = maximum->x + radius;
+    low.y = minimum->y - radius;
+    high.y = maximum->y + radius;
+    low.z = minimum->z - radius;
+    high.z = maximum->z + radius;
+    for (index = 0; index < count; ++index, ++pickup) {
+        if (pickup->type_index != type_index)
+            continue;
+        if ((pickup->flags & 2) == 0)
+            continue;
+        if ((pickup->flags & 4) == 0)
+            continue;
+        if ((pickup->flags & 8) != 0)
+            continue;
+        if (low.x > pickup->position.x || pickup->position.x > high.x || low.z > pickup->position.z ||
+            pickup->position.z > high.z || low.y > pickup->position.y || pickup->position.y > high.y)
+            continue;
+        return pickup;
+    }
+    return NULL;
+}
+
 void __cdecl SpecialMiniKits_Reset(WORLDINFO *world) {
     SPECIAL_MINIKIT_WORLD_PC *view = (SPECIAL_MINIKIT_WORLD_PC *)world;
     SPECIAL_MINIKIT_PC *item;

@@ -11677,6 +11677,7 @@ typedef struct PC_SHADER_OBJECT_FULL_VIEW PC_SHADER_OBJECT_FULL_VIEW;
     NUFILE_DEVICE *__cdecl NuFileAddDevice(NUFILE_DEVICE *device);
     i32 __cdecl NuFileGetCurrentDirectory(char *destination);
     void __cdecl NuFileSetCurrentDirectory(const char *path);
+    void __cdecl NuFileSetCurrentSysDirectory(char *path);
     void __cdecl NuFileGetCurrentDllPath(char *destination);
     void __cdecl NuFileSetCurrentDllDirectory(const char *path);
     i32 __cdecl DEV_FormatName(NUFILE_DEVICE *device, char *destination, char *source, i32 capacity);
@@ -26755,6 +26756,7 @@ extern "C" {
     extern NUVEC4 RadialMoveCentre;
     void __cdecl NuFileUpCase(struct nufile_device_s *device, char *filepath);
     extern char *iop_image_name;
+    extern const char NuFileIopImageNamePc[13];
     void __cdecl MakePlayCorner(struct gamecamera_s *camera, f32 screen_x, f32 screen_y, struct nuvec_s *near_corner,
                                 struct nuvec_s *far_corner);
     void __cdecl SetPlayPlane(struct KEEP_SCREEN_PLANE_PC *plane, struct nuvec_s *a, struct nuvec_s *b,

@@ -214,6 +214,33 @@ void __cdecl NuFileSetCurrentDirectory(const char *path) {
     }
 }
 
+void __cdecl NuFileSetCurrentSysDirectory(char *path) {
+    char *source;
+    char *destination;
+    if (*path != '\0') {
+        destination = default_device->sys_dir;
+        source = path;
+        while (*source != '\0')
+            *destination++ = *source++;
+        *destination = '\0';
+        NuStrCat(default_device->sys_dir, "\\");
+    } else {
+        destination = default_device->sys_dir;
+        source = "sys";
+        while (*source != '\0')
+            *destination++ = *source++;
+        *destination = '\0';
+        source = iop_image_name + 5;
+        destination = default_device->sys_dir + strlen(default_device->sys_dir);
+        while (*source != '.') {
+            *destination++ = *source++;
+        }
+        *destination++ = '\\';
+        *destination = '\0';
+    }
+    NuFileCorrectSlashes(default_device, default_device->sys_dir);
+}
+
 void __cdecl NuFileGetCurrentDllPath(char *destination) {
     i32 root_length;
 

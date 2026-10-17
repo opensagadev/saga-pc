@@ -3,6 +3,20 @@ void __cdecl SpawnCreatureFromCrate(GAMEOBJECT *, f32, f32);
 void __cdecl DestroyAIGroup(AIGROUP_PC *);
 void __cdecl FreeTorpedoPacket(TORPEDOPACKET_PC **);
 
+STATIC_ASSERT(offsetof(PART_PC, field_206) == 0x206);
+void __cdecl Game_KillPart(PART_PC *part, i32 reason) {
+    if (reason == 1 && part->field_206 != -1) {
+        if ((part->field_206 & 1) != 0 && Player[0] != NULL) {
+            NewBuzz(((GAMEOBJECT *)Player[0])->pad->bound_pad, 0.2f, 0);
+            NewRumble(((GAMEOBJECT *)Player[0])->pad->bound_pad, 0.8f, 0);
+        }
+        if ((part->field_206 & 2) != 0 && Player[1] != NULL) {
+            NewBuzz(((GAMEOBJECT *)Player[1])->pad->bound_pad, 0.2f, 0);
+            NewRumble(((GAMEOBJECT *)Player[1])->pad->bound_pad, 0.8f, 0);
+        }
+    }
+}
+
 typedef struct grapple_rotation_pc_s {
     u8 unknown_00[0x30];
     NUVEC hook_position;

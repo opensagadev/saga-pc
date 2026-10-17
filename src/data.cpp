@@ -8703,6 +8703,8 @@ extern "C" {
         DEV_FormatName,
         DEVHOST_Interrogate,
     };
+    extern const char NuFileIopImageNamePc[13] = "ioprp300.img";
+    char *iop_image_name = (char *)NuFileIopImageNamePc;
     NUFILE_DEVICE *default_device = &host_device;
     i32 DontDoFileUpperCaseHack = 0;
     NuKeyboardState_PC *nu_input_state = 0;

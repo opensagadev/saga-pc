@@ -28,6 +28,12 @@ def linker_output_path(flag):
     return flag
 
 
+def unresolved_symbols(log):
+    """Collect full linker names, excluding LNK2019's referring function."""
+    names = re.findall(r"\bLNK(?:2001|2019)\b[^\r\n]*?unresolved external symbol ([^\r\n]+)", log)
+    return sorted({name.split(" referenced in function ", 1)[0].strip() for name in names})
+
+
 def environment():
     """Verify the toolchain and isolate both compiler and linker from host options."""
     pin = load_json(ROOT / "config/toolchain.json")
@@ -132,7 +138,7 @@ def main():
         # Ignored options and forced unresolved links can otherwise exit successfully.
         if args.link and args.allow_unresolved:
             # Unported callees are expected here; report how many and keep option checks strict.
-            unresolved = sorted(set(re.findall(r"unresolved external symbol (\S+)", log)))
+            unresolved = unresolved_symbols(log)
             print(f"Linked with {len(unresolved)} unresolved symbols (make link-strict requires none)", flush=True)
             log = re.sub(r"[^\n]*\b(?:LNK2001|LNK2019|LNK4088)\b[^\n]*", "", log)
         rejected = re.search(r"\b(?:D900[12]|LNK4044|LNK2001|LNK2019|LNK1120|LNK4088)\b", log)
