@@ -15734,6 +15734,7 @@ void __cdecl PCSoundAlreadyPlayingHook(void);
     void __cdecl DestroySnakeBody(GAMEOBJECT *);
     void __cdecl BlowUpSnakeBody(GAMEOBJECT *);
     void __cdecl GizForce_ResetLOS(GAMEOBJECT *);
+    void __cdecl AICreatureResumeScript(GAMEOBJECT *);
 
     /* Proposed finite public interfaces; UpdateAnimTimer remains original-TU private. */
     void __cdecl AnimatePlayer(GAMEOBJECT *);
@@ -27910,6 +27911,8 @@ extern "C" {
     void __cdecl Batarangs_Update(void);
     void __cdecl Batarangs_Draw(void);
     extern f32 BatarangCatwomanStunTimePc, BatarangDetonatorHitDelayPc;
+    void __cdecl APIObjectRemoveFromLOSTable(APIOBJECTSYS_PC *system, GAMEOBJECT *source, GAMEOBJECT *target);
+    void __cdecl APIObjectDestroy(APIOBJECTSYS_PC *system, GAMEOBJECT *object);
 #ifdef __cplusplus
 }
 #endif

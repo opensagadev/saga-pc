@@ -6148,6 +6148,8 @@ address    , symbol                                                         , si
 0x62a7b0,_SetAnimBlendMode,10,
 0x62a7d0,_APIObjectSysInit,111,"APIOBJECTSYS_PC * __cdecl (i32, VARIPTR *, VARIPTR *)"
 0x62a870,_APIObjectCreate,75,GAMEOBJECT * __cdecl(APIOBJECTSYS_PC *)
+0x62a8c0,_APIObjectRemoveFromLOSTable,80,"void __cdecl(APIOBJECTSYS_PC *, GAMEOBJECT *, GAMEOBJECT *)"
+0x62a910,_APIObjectDestroy,109,"void __cdecl(APIOBJECTSYS_PC *, GAMEOBJECT *)"
 0x0062a980,_APIObjectDestroyAll,29,void __cdecl(APIOBJECTSYS_PC *)
 0x0062a9a0,_QuickNewRayCast,492,
 0x0062ab90,_APIObjectLOSChecks,1196,"void __cdecl(APIOBJECTSYS_PC *,i32,i32,APIOBJECT_PC **,i32,APIOBJECT_PC **,f32)"

@@ -1891,8 +1891,8 @@ i32 __cdecl TagCode(GAMEOBJECT *source, GAMEOBJECT *destination, i32 takeover, i
         source_ai = source->flags_1fc_word & 0x100;
         destination_ai = destination->flags_1fc_word & 0x100;
     }
-    STUBBED_NAMED("TagCode: ResetForceGlow source player packet PC4a4ca0");
-    STUBBED_NAMED("TagCode: ResetForceGlow destination player packet PC4a4ca0");
+    ResetForceGlow(source->ai_player_packet_pc);
+    ResetForceGlow(destination->ai_player_packet_pc);
     destination->pad = source_pad;
     source->pad = destination_pad;
     source->flags_1fc_word = (source->flags_1fc_word & ~0x80u) | destination_player;
@@ -1911,7 +1911,8 @@ i32 __cdecl TagCode(GAMEOBJECT *source, GAMEOBJECT *destination, i32 takeover, i
     pointer = source->gizforce_los_info;
     source->gizforce_los_info = destination->gizforce_los_info;
     destination->gizforce_los_info = pointer;
-    STUBBED_NAMED("TagCode: real two GizForce_ResetLOS calls PC466820, no Android task operations");
+    GizForce_ResetLOS(source);
+    GizForce_ResetLOS(destination);
     mask = takeover != 0 ? 0x146fd : 0x46f8;
     source_flags = source->flags_1f8;
     source->flags_1f8 = (source_flags & ~mask) | (destination->flags_1f8 & mask);
@@ -1922,7 +1923,7 @@ i32 __cdecl TagCode(GAMEOBJECT *source, GAMEOBJECT *destination, i32 takeover, i
     timer = source->spawn_protection_timer;
     source->spawn_protection_timer = destination->spawn_protection_timer;
     destination->spawn_protection_timer = timer;
-    STUBBED_NAMED("TagCode: AICreatureResumeScript source PC415000");
+    AICreatureResumeScript(source);
     if (takeover != 0) {
         if (source->field_280 != 0xff) {
             Player[(i8)source->field_280] = source;
@@ -1939,7 +1940,7 @@ i32 __cdecl TagCode(GAMEOBJECT *source, GAMEOBJECT *destination, i32 takeover, i
         destination->hud_icon_timer = 2.0f;
         destination->input_toggle_hold_time = TOGGLEHOLDTIME;
         destination->flags_ef0 |= 0x80;
-        STUBBED_NAMED("TagCode: NewBuzzFrames destination pad 2,0 PC54a8d0");
+        NewBuzzFrames(destination->pad->bound_pad, 2, 0);
         if (source->field_280 != 0xff) {
             Player[(i8)source->field_280] = source;
             if (source->rider != NULL) {
@@ -1957,7 +1958,6 @@ i32 __cdecl TagCode(GAMEOBJECT *source, GAMEOBJECT *destination, i32 takeover, i
             } else if (WORLD->current_level != VADERC_LDATA) {
                 destination->field_107e = DEFAULT_PLAYERHITPOINTS;
             }
-            STUBBED_NAMED("TagCode: GameCam_Blend GameCam,0.5f,0,1 PC54a3e0");
         } else {
             destination->field_107e = destination->character_data->game_character->hitpoints;
         }
@@ -1998,15 +1998,15 @@ i32 __cdecl TagCode(GAMEOBJECT *source, GAMEOBJECT *destination, i32 takeover, i
         destination->ai_packet.takeover_script_link = source_script.script_link;
         source->ai_packet.creature_set = source_set;
         destination->ai_packet.creature_set = destination_set;
-        STUBBED_NAMED("TagCode: AICreatureResumeScript source PC415000");
+        AICreatureResumeScript(source);
         source->flags_1fc_word = (source->flags_1fc_word & ~0x100u) | destination_ai;
         destination->flags_1fc_word = (destination->flags_1fc_word & ~0x100u) | source_ai;
-        STUBBED_NAMED("TagCode: ReleaseForce source,0 PC4a25b0");
-        STUBBED_NAMED("TagCode: ReleaseBuildIt source,0 PC58ff10");
-        STUBBED_NAMED("TagCode: ReleasePush source PC59cb00");
-        STUBBED_NAMED("TagCode: Player_ResetContexts source player packet PC55e4e0");
+        ReleaseForce(source, 0);
+        ReleaseBuildIt(source, 0);
+        ReleasePush(source);
+        Player_ResetContexts(source->ai_player_packet_pc);
         if ((source->portal_flags & 0x10) == 0) {
-            STUBBED_NAMED("TagCode: SetWeaponIn source PC58d8e0");
+            SetWeaponIn(source);
         }
         source->rider = destination;
         destination->rider = source;
@@ -2018,7 +2018,7 @@ i32 __cdecl TagCode(GAMEOBJECT *source, GAMEOBJECT *destination, i32 takeover, i
         source->takeover_timer = 1.0f;
         source->external_force = source->position;
         if (blend_camera != 0) {
-            STUBBED_NAMED("TagCode: GameCam_Blend GameCam,0.5f,0,1 PC54a3e0");
+            GameCam_Blend(GameCam, 0.5f, 0.0f, 1);
         }
         if (destination->character_data->game_character->field_028 > 0.0f) {
             destination->velocity.y -= (f64)source->character_data->game_character->jump_speed * 0.5;
@@ -2552,8 +2552,8 @@ void __cdecl RemoveGameObject(GAMEOBJECT *object, i32 unused) {
     }
     if (object->pad != NULL)
         object->pad->runtime_flags &= ~1u;
-    STUBBED_NAMED("RemoveGameObject: DestroySnakeBody PC597350");
-    STUBBED_NAMED("RemoveGameObject: APIObjectDestroy WORLD->object_sys,object PC62a910");
+    DestroySnakeBody(object);
+    APIObjectDestroy(WORLD->object_sys, object);
     RecomputeHighGameObject();
     for (i = 0; i < 8; ++i) {
         if (LevGameObject[i] == object)

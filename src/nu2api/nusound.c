@@ -534,7 +534,7 @@ void PauseGameCut(void) {
         return;
     }
     NuSound3CancelCheckStereo();
-    NuSound3PauseStereoStream(1 - music->primary_stream);
+    NuSound3ResumeStereoStream(1 - music->primary_stream);
 }
 
 void RestoreGameCut(void) {

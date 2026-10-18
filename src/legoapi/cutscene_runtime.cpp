@@ -1,4 +1,6 @@
 #include "saga.h"
+extern "C" void __cdecl GameFog_Reset(void);
+extern "C" void __cdecl PauseGameCut(void);
 
 CUTINFO *__cdecl CutScene_Find(CUTSYS_PC *system, char *name) {
     i32 index;
@@ -2004,7 +2006,7 @@ extern "C" {
         if (stop_index == -1)
             return;
         CUT_LOAD_RECORD_PC *stop_cut = reinterpret_cast<CUT_LOAD_RECORD_PC *>(world->cutscene_sys->records[stop_index]);
-        STUBBED_NAMED(0x00564ca0); /* Native GameFog_Reset(). */
+        GameFog_Reset();
         if (instNuGCutSceneIsFinished(stop_cut->instance) == 0)
             return;
         if (NewLData == NULL || NewLData == WORLD->current_level || NewLData != HUB_LDATA) {
@@ -2031,7 +2033,7 @@ extern "C" {
             }
             if (waiting_for_level != -1) {
                 cut_waiting_for_new_level = 1;
-                STUBBED_NAMED(0x00652fb0); /* Native PauseGameCut(). */
+                PauseGameCut();
                 music_man.PauseTrack(16);
                 NuSound3Update();
                 newlevel_resumecutaudio = 1;
@@ -2047,11 +2049,11 @@ extern "C" {
             else if (stop_cut->door_name[0] != 0) {
                 void *door = Door_FindByName(world, stop_cut->door_name);
                 if (door != NULL)
-                    STUBBED_NAMED(0x00575c20); /* Native Door_GoThrough(world,door,1). */
+                    Door_GoThrough(world, static_cast<DOOR_s *>(door), 1);
             } else if ((stop_cut->flags & 0x100) != 0) {
                 FADETYPE type = {FADE_TYPE_STILL_WIPE};
                 FadeSys.SetFade(type, 0);
-                STUBBED_NAMED(0x00565be0); /* Native NeedScreenGrab(1). */
+                NeedScreenGrab(1);
                 FadeSys.SetStage(1);
                 GameAudio_PlaySfx(0x2d, NULL, 0, 0);
             }

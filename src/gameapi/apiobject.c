@@ -2702,3 +2702,37 @@ void __cdecl APIDumpCharacterModels(i32 mode) {
         ++model_index;
     }
 }
+
+STATIC_ASSERT(offsetof(APIOBJECTSYS_PC, object_size) == 0);
+STATIC_ASSERT(offsetof(APIOBJECTSYS_PC, objects) == 4);
+STATIC_ASSERT(offsetof(APIOBJECTSYS_PC, hostility_masks) == 8);
+STATIC_ASSERT(offsetof(GAMEOBJECT, hostility_group) == 0x28d);
+STATIC_ASSERT(offsetof(GAMEOBJECT, flags_1fc) == 0x1fc);
+void __cdecl APIObjectRemoveFromLOSTable(APIOBJECTSYS_PC *system, GAMEOBJECT *source, GAMEOBJECT *target) {
+    u8 index;
+    if (source != NULL) {
+        u64 mask = ~((u64)1 << target->hostility_group);
+        index = source->hostility_group;
+        system->hostility_masks[index][0] &= (u32)mask;
+        system->hostility_masks[index][1] &= (u32)(mask >> 32);
+    } else {
+        index = target->hostility_group;
+        system->hostility_masks[index][0] = 0;
+        system->hostility_masks[index][1] = 0;
+    }
+}
+void __cdecl APIObjectDestroy(APIOBJECTSYS_PC *system, GAMEOBJECT *object) {
+    i32 index;
+    GAMEOBJECT *other;
+    if (system != NULL && object != NULL && system->object_size != 0) {
+        if (system->hostility_masks != NULL) {
+            other = system->objects;
+            for (index = 0; index < 64; ++index, other = (GAMEOBJECT *)((u8 *)other + system->object_size)) {
+                if ((other->flags_1fc & 1) != 0)
+                    APIObjectRemoveFromLOSTable(system, other, object);
+            }
+            APIObjectRemoveFromLOSTable(system, NULL, object);
+        }
+        memset(object, 0, system->object_size);
+    }
+}
