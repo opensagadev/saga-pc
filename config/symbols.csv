@@ -2002,7 +2002,10 @@ address,symbol,size,ctype
 0x4e2300,_KaminoInside,101,i32 __cdecl(void)
 0x4e23a0,_KaminoDiscoOn,13,i32 __cdecl(void)
 0x4e23e0,_GunshipA_Init,231,
+0x4e24d0,_GunshipA_Update,5,void __cdecl (WORLDINFO *)
+0x4e24e0,_GunshipA_DrawPc,5,void __cdecl (WORLDINFO *)
 0x4e24f0,_GunshipB_Reset,242,
+0x4e25f0,_GunShip_DragBombSeekBlowUp,336,void __cdecl (GAMEOBJECT *)
 0x4e2b20,_InitPaintPuzzle,311,
 0x4e2de0,_CruiserCUpdate,352,
 0x4e3040,_CruiserDReset,219,
@@ -13201,6 +13204,7 @@ address,symbol,size,ctype
 0x75d7cc,_HothBattleCMinifig11Pc,12,const char[12]
 0x75d7d8,??_C@_0M@KBNCLANM@trooper_red?$AA@,12,char []
 0x75d7d8,_HothBattleCRedBoltPc,12,const char[12]
+0x75d7d8,_GunshipARedBoltPc,12,const char[12]
 0x75d818,_PodCreateDamagedKeywordPc,,char[8]
 0x75d820,_PodCreatePacemakerKeywordPc,,char[10]
 0x75d82c,_PodCreateTimeKeywordPc,,char[13]
@@ -13215,11 +13219,16 @@ address,symbol,size,ctype
 0x75dbfc,??_C@_0N@GEECAJGO@endblock_b08?$AA@,13,char []
 0x75dc90,__real@4076800000000000,,f64
 0x75dcc0,??_C@_09JKMJFKLL@power_b21?$AA@,10,char []
+0x75dcc0,_GunshipAPowerB21Pc,12,const char[12]
 0x75dccc,??_C@_09IIHMPFFF@power_a21?$AA@,10,char []
+0x75dccc,_GunshipAPowerA21Pc,12,const char[12]
 0x75dcd8,??_C@_09JIIPOEOC@power_b11?$AA@,10,char []
+0x75dcd8,_GunshipAPowerB11Pc,12,const char[12]
 0x75dce4,??_C@_09IKDKELAM@power_a11?$AA@,10,char []
+0x75dce4,_GunshipAPowerA11Pc,12,const char[12]
 0x75dcf0,??_C@_0O@GKOJGIHA@trooper_green?$AA@,14,char []
 0x75dcf0,_HothBattleCGreenBoltPc,16,const char[16]
+0x75dcf0,_GunshipAGreenBoltPc,16,const char[16]
 0x75dd00,??_C@_07CDOIBGJA@gun_d21?$AA@,8,char []
 0x75dd08,??_C@_07CBKOKIMJ@gun_d11?$AA@,8,char []
 0x75dd10,??_C@_07LODPCOCJ@gun_c21?$AA@,8,char []
@@ -18784,6 +18793,9 @@ address,symbol,size,ctype
 0x7ffd68,_PodRaceKeyPc,,i32[8]
 0x7ffe44,_paint_name,,
 0x7ffe5c,_paint_panel_name,,
+0x7fffe0,_gunshipb_seekrange,4,f32
+0x7fffe4,_gunshipb_seekmom,4,f32
+0x7fffe8,_gunshipb_seekmomseek,4,f32
 0x007fffec,_GUNSHIPAHACK,4,i32
 0x8000ac,_TempleC_StreamStatusPos,,
 0x800224,_melee_wavePhase,1,i8

@@ -1,5 +1,7 @@
 #include "saga.h"
 
+void __cdecl GunShip_DragBombSeekBlowUp(GAMEOBJECT *);
+
 void __cdecl SuperCarry_MoveCode(WORLDINFO *, GAMEOBJECT *);
 
 void __cdecl Buck_MoveCode(GAMEOBJECT *, i32);
@@ -1738,7 +1740,7 @@ void __cdecl MovePlayer_ROLLING(GAMEOBJECT *object) {
     object->velocity.x = SeekValF(object->velocity.x, object->target_velocity.x, seek_rate);
     object->velocity.z = SeekValF(object->velocity.z, object->target_velocity.z, seek_rate);
     if (WORLD->area != NULL && WORLD->area == GUNSHIP_ADATA)
-        STUBBED_NAMED("GunShip_DragBombSeekBlowUp(object)");
+        GunShip_DragBombSeekBlowUp(object);
     matrix = object->transform;
     matrix.m30 = matrix.m31 = matrix.m32 = 0.0f;
     object->movement_mode = 0;

@@ -1,5 +1,10 @@
 #include "saga.h"
 
+extern "C" void __cdecl GunshipA_Init(WORLDINFO *);
+extern "C" void __cdecl GunshipA_Update(WORLDINFO *);
+extern "C" void __cdecl GunshipA_DrawPc(WORLDINFO *);
+extern "C" void __cdecl GunshipB_Reset(WORLDINFO *);
+
 extern "C" void __cdecl HothBattleE_Init(WORLDINFO *);
 extern "C" void __cdecl HothBattleE_Update(WORLDINFO *);
 extern "C" void __cdecl HothBattleE_DrawPc(WORLDINFO *);
@@ -454,14 +459,14 @@ extern "C" void __cdecl FixUpLevels(struct level_fixup_pc_s *fixup) {
             level = Level_FindByName("gunship_a", NULL);  /* Native call 0x48e236. */
             GUNSHIPA_LDATA = level;                       /* Native store 0x48e240. */
             if (level != NULL) {
-                STUBBED_NAMED(FixUpLevels_Callback_4e23e0); /* Native 0x48e247: callbacks[1] = entry 0x4e23e0. */
-                STUBBED_NAMED(FixUpLevels_Callback_4e24d0); /* Native 0x48e254: callbacks[3] = entry 0x4e24d0. */
-                STUBBED_NAMED(FixUpLevels_Callback_4e24e0); /* Native 0x48e260: callbacks[5] = entry 0x4e24e0. */
+                level->callbacks[1] = (void *)GunshipA_Init;   /* Native 0x48e247: callbacks[1] = entry 0x4e23e0. */
+                level->callbacks[3] = (void *)GunshipA_Update; /* Native 0x48e254: callbacks[3] = entry 0x4e24d0. */
+                level->callbacks[5] = (void *)GunshipA_DrawPc; /* Native 0x48e260: callbacks[5] = entry 0x4e24e0. */
             }
             level = Level_FindByName("gunship_b", NULL); /* Native call 0x48e26e. */
             GUNSHIPB_LDATA = level;                      /* Native store 0x48e278. */
             if (level != NULL) {
-                STUBBED_NAMED(FixUpLevels_Callback_4e24f0); /* Native 0x48e27f: callbacks[2] = entry 0x4e24f0. */
+                level->callbacks[2] = (void *)GunshipB_Reset; /* Native 0x48e27f: callbacks[2] = entry 0x4e24f0. */
             }
             level = Level_FindByName("bonus_gunship_a", NULL); /* Native call 0x48e28d. */
             BONUS_GUNSHIPA_LDATA = level;                      /* Native store 0x48e297. */
