@@ -1038,9 +1038,7 @@ extern "C" {
                                     f32 length =
                                         NuFsqrt(normal->x * normal->x + normal->y * normal->y * query->object_scale_sq +
                                                 normal->z * normal->z);
-                                    f32 inverse = 0.0f;
-                                    if (length != 0.0f)
-                                        inverse = 1.0f / length;
+                                    f32 inverse = TerrainDivideNonzeroPC(1.0f, length);
                                     query = (TerrainQuery_s *)TerI;
                                     surface = &TerrainScaledShapeCursorPc[scaled_count];
                                     surface->normals[1].x = normal->x * inverse;
@@ -1053,9 +1051,7 @@ extern "C" {
                                 f32 length =
                                     NuFsqrt(normal->x * normal->x + normal->y * normal->y * query->object_scale_sq +
                                             normal->z * normal->z);
-                                f32 inverse = 0.0f;
-                                if (length != 0.0f)
-                                    inverse = 1.0f / length;
+                                f32 inverse = TerrainDivideNonzeroPC(1.0f, length);
                                 query = (TerrainQuery_s *)TerI;
                                 surface = &TerrainScaledShapeCursorPc[scaled_count];
                                 surface->normals[0].x = normal->x * inverse;

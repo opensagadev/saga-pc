@@ -923,7 +923,10 @@ struct AIPACKET_PC {
         u8 unknown_138;
         u8 creature_index;
     };
-    u8 path_update_flag;
+    union {
+        u8 path_update_flag;
+        u8 path_connection_state;
+    };
     u16 available_routes;
     u8 current_route;
     u8 next_route;
@@ -5239,6 +5242,7 @@ typedef struct gameobject_s {
         void *grapple;
         TECHNO_PC *techno;
         struct ZIPUP_s *attached_zipup;
+        TUBE_PC *attached_tube_pc;
     };
     i32 panel_use_request;
     union {
@@ -5506,7 +5510,10 @@ typedef struct gameobject_s {
     f32 field_ec4;
     f32 movement_speed_scale_pc;
     f32 timer_ecc;
-    f32 alert_target_timer;
+    union {
+        f32 alert_target_timer;
+        f32 ai_jump_destination_distance_pc;
+    };
     f32 run_speed_override;
     f32 walk_speed_override;
     f32 jump_destination_distance;
@@ -27516,6 +27523,14 @@ STATIC_ASSERT(offsetof(AIPACKET_PC, goal_path_node) == 0x17c);
 extern "C" {
 #endif
     void __cdecl SetSpecialMove(GAMEOBJECT *, AIPATHNODE_PC *, AIPATHNODE_PC *, i8);
+    i32 __cdecl TryToTeleportToNextNode(GAMEOBJECT *, AIPATHNODE_PC *, i32);
+    i32 __cdecl StarWars_PrepareR2D2Glide(AIPACKET_PC *, APIOBJECT_PC *, i32);
+    i32 __cdecl StarWars_PrepareHatch(AIPACKET_PC *, APIOBJECT_PC *, i32);
+    i32 __cdecl StarWars_PrepareHoverTube(AIPACKET_PC *, APIOBJECT_PC *, i32);
+    i32 __cdecl StarWars_PrepareBigJump(AIPACKET_PC *, APIOBJECT_PC *, i32);
+    i32 __cdecl StarWars_PrepareTakeOverJump(AIPACKET_PC *, APIOBJECT_PC *, i32);
+    i32 __cdecl StarWars_PrepareObstacle(AIPACKET_PC *, APIOBJECT_PC *, i32);
+    i32 __cdecl StarWars_PrepareJump(AIPACKET_PC *, APIOBJECT_PC *, i32);
 #ifdef __cplusplus
 }
 #endif
@@ -27557,6 +27572,9 @@ extern "C" {
 }
 #endif
 
+STATIC_ASSERT(offsetof(AIPACKET_PC, path_connection_state) == 0x139);
+STATIC_ASSERT(offsetof(GAMEOBJECT, ai_jump_destination_distance_pc) == 0xed0);
+STATIC_ASSERT(offsetof(GAMEOBJECT, attached_tube_pc) == 0x798);
 STATIC_ASSERT(offsetof(GAMEOBJECT, ai_collision_priority_pc) == 0x292);
 STATIC_ASSERT(offsetof(GAMEOBJECT, ai_player_packet_pc) == 0x6c4);
 STATIC_ASSERT(offsetof(GAMEOBJECT, special_move_progress_view_pc) + offsetof(AI_SPECIAL_PROGRESS_PC, flags) == 0x1073);
