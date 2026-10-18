@@ -12341,3 +12341,29 @@ AIGROUP_PC *__cdecl CreateAIGroup(AISYS_PC *system, i32 count_across, f32 x_spac
     }
     return NULL;
 }
+
+f32 __cdecl Condition_TimeOffPathPc(AISYS_PC *system, AISCRIPTPROCESS_PC *processor, AIPACKET_PC *packet,
+                                    char *parameter, void *argument) {
+    if (packet != NULL)
+        return packet->time_off_path;
+    return 0.0f;
+}
+
+f32 __cdecl Condition_InterruptIDPc(AISYS_PC *system, AISCRIPTPROCESS_PC *processor, AIPACKET_PC *packet,
+                                    char *parameter, void *argument) {
+    if (processor != NULL)
+        return (f32)processor->interrupt_id;
+    return -1.0f;
+}
+
+f32 __cdecl Condition_StuckTimePc(AISYS_PC *system, AISCRIPTPROCESS_PC *processor, AIPACKET_PC *packet, char *parameter,
+                                  void *argument) {
+    if (packet != NULL && packet->owner != NULL)
+        return packet->owner->respawn_timer;
+    return 0.0f;
+}
+
+f32 __cdecl Condition_ParamPc(AISYS_PC *system, AISCRIPTPROCESS_PC *processor, AIPACKET_PC *packet, char *parameter,
+                              void *argument) {
+    return AIParamToFloatEx(packet, processor, parameter);
+}

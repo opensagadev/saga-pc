@@ -11474,6 +11474,8 @@ address    , symbol                                                         , si
 0x00758464,??_C@_05LJDNNBIK@param?$AA@,6,const char[6]
 0x00758464 , _AIScriptParamPrefix                                           , 6     , const char[6]
 0x75846c,??_C@_0N@GACGPICE@locator_set?$DN?$AA@,13,char []
+0x75847c,??_C@_05CBICNPJE@area?$DN?$AA@,6,const char[6]
+0x758484,??_C@_07ICLLHBMF@script?$DN?$AA@,8,const char[8]
 0x75848c,??_C@_0BB@PGCHANHM@ForceLightningLp?$AA@,17,const char[17]
 0x007584a8 , _AIExpressionMaxName                                           , 4     , const char [4]
 0x007584ac,_AIActionNumName,4,const char[4]

@@ -1679,3 +1679,99 @@ i32 __cdecl Action_SetAnimation(AISYS_PC *system, AISCRIPTPROCESS_PC *processor,
     }
     return 1;
 }
+
+typedef struct AI_ADD_SCRIPT_WORLD_PC {
+    u8 unknown_0000[0x2aec];
+    i32 processor_count;
+    LEVEL_SCRIPT_PROCESS_PC processors[32];
+} AI_ADD_SCRIPT_WORLD_PC;
+STATIC_ASSERT(offsetof(AI_ADD_SCRIPT_WORLD_PC, processor_count) == 0x2aec);
+STATIC_ASSERT(offsetof(AI_ADD_SCRIPT_WORLD_PC, processors) == 0x2af0);
+STATIC_ASSERT(sizeof(LEVEL_SCRIPT_PROCESS_PC) == 0xdc);
+STATIC_ASSERT(offsetof(LEVEL_SCRIPT_PROCESS_PC, processor) == 0x10);
+STATIC_ASSERT(offsetof(AISCRIPTPROCESS_PC, unknown_a0) == 0xa0);
+STATIC_ASSERT(offsetof(AISCRIPTPROCESS_PC, locator) == 0xa4);
+STATIC_ASSERT(offsetof(AISCRIPTPROCESS_PC, locator_set) == 0xa8);
+STATIC_ASSERT(offsetof(AISCRIPTPROCESS_PC, myspline) == 0xac);
+STATIC_ASSERT(offsetof(AISCRIPTPROCESS_PC, creature_set) == 0xb0);
+void __cdecl LevelScriptReStoreProgress(WORLDINFO *, LEVEL_SCRIPT_PROCESS_PC *);
+
+i32 __cdecl Action_AddScriptProcessor(AISYS_PC *system, AISCRIPTPROCESS_PC *processor, AIPACKET_PC *packet,
+                                      char **params, i32 count, i32 first_time, f32 elapsed) {
+    char *script_name = NULL;
+    char *name = NULL;
+    AIAREA_PC *area = NULL;
+    AILOCATORSET_PC *locator_set = NULL;
+    AILOCATOR_PC *locator = NULL;
+    i32 set = 0;
+    NUGSPLINE *spline = NULL;
+    i32 override_count = 0;
+    char override_names[4][32];
+    f32 override_values[4];
+    i32 index, slot;
+    char *value, *separator;
+    AISCRIPTPROCESS_PC *created;
+    AI_ADD_SCRIPT_WORLD_PC *world;
+    (void)packet;
+    (void)elapsed;
+    if (first_time != 0 && 0 < count) {
+        for (index = 0; index < count; ++index) {
+            if ((value = NuStrIStr(params[index], "script=")) != NULL) {
+                value += 7;
+                if (AIScriptFind(WORLD->ai_sys, value, 0, 1, 1) != NULL)
+                    script_name = value;
+            } else if ((value = NuStrIStr(params[index], (char *)AIScriptActionNameArgPrefix)) != NULL) {
+                name = value + 5;
+            } else if ((value = NuStrIStr(params[index], "area=")) != NULL) {
+                area = AISysFindArea(system, value + 5);
+            } else if ((value = NuStrIStr(params[index], "locator_set=")) != NULL) {
+                locator_set = AIPathFindLocatorSet(system, value + 12);
+            } else if ((value = NuStrIStr(params[index], (char *)AIPathLocatorName)) != NULL) {
+                locator = AIPathFindLocator(system, value + 8);
+            } else if ((value = NuStrIStr(params[index], (char *)AIGameSetName)) != NULL) {
+                set = (i32)AIParamToFloat(processor, value + 4);
+                if (set < 0 || set > 16)
+                    set = 0;
+            } else if ((value = NuStrIStr(params[index], (char *)AITransferLiteral757a84)) != NULL) {
+                spline = NuSplineFind(WORLD->current_gscn, value + 7);
+            } else if ((value = NuStrIStr(params[index], (char *)AIScriptParamPrefix)) != NULL && override_count < 4) {
+                NuStrNCpy(override_names[override_count], value + 6, 32);
+                separator = NuStrIStr(override_names[override_count], "=");
+                if (separator != NULL) {
+                    override_values[override_count] = AIParamToFloat(processor, separator + 1);
+                    *separator = '\0';
+                    ++override_count;
+                }
+            }
+        }
+        world = (AI_ADD_SCRIPT_WORLD_PC *)WORLD;
+        if (script_name != NULL && world->processor_count < 32) {
+            created = &world->processors[world->processor_count].processor;
+            AIScriptProcessorInit(system, NULL, created, NULL, script_name, NULL, 0, NULL, NULL);
+            created->locator_set = locator_set;
+            created->locator = locator;
+            created->unknown_a0 = (u32)area;
+            created->creature_set = (u8)set;
+            created->myspline = spline;
+            if (name != NULL) {
+                world = (AI_ADD_SCRIPT_WORLD_PC *)WORLD;
+                NuStrCpy(world->processors[world->processor_count].name, name);
+            }
+            world = (AI_ADD_SCRIPT_WORLD_PC *)WORLD;
+            LevelScriptReStoreProgress(WORLD, &world->processors[world->processor_count]);
+            if (override_count != 0 && created->script != NULL) {
+                for (index = 0; index < override_count; ++index) {
+                    for (slot = 0; slot < 4; ++slot) {
+                        if (NuStrICmp(override_names[index], created->script->params[slot].name) == 0) {
+                            created->params[slot] = override_values[index];
+                            break;
+                        }
+                    }
+                }
+            }
+            ++((AI_ADD_SCRIPT_WORLD_PC *)WORLD)->processor_count;
+            GizmoSysAddGizmos(WORLD->gizmo_sys, WORLD->giz_flow, WORLD);
+        }
+    }
+    return 1;
+}
