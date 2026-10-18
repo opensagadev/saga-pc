@@ -82,26 +82,18 @@ i32 HothBattle_StartNewWave() {
     if (melee.field_0x2 != 0) {
         switch (melee.field_0x1) {
             case 1:
-                melee.waves[0].field_0x18 = 9;
-                melee.waves[0].field_0x19 = 9;
-                melee.waves[0].character_id = id_ATST_LOWRES;
+                melee.waves[0].field_0x18 = 11;
+                melee.waves[0].field_0x19 = 11;
+                melee.waves[0].character_id = VehicleBoltId7f18b4Pc;
                 NuStrCpy(melee.waves[0].name, "Probe");
                 melee.creature_count = 1;
-                if (g_lowEndLevelBehaviour != 0) {
-                    melee.waves[0].field_0x18 = 5;
-                    melee.waves[0].field_0x19 = 5;
-                }
                 break;
             case 2:
-                melee.waves[0].field_0x18 = 9;
-                melee.waves[0].field_0x19 = 9;
+                melee.waves[0].field_0x18 = 11;
+                melee.waves[0].field_0x19 = 11;
                 melee.waves[0].character_id = id_ATST_LOWRES;
                 NuStrCpy(melee.waves[0].name, "rider");
                 melee.creature_count = 1;
-                if (g_lowEndLevelBehaviour != 0) {
-                    melee.waves[0].field_0x18 = 5;
-                    melee.waves[0].field_0x19 = 5;
-                }
                 break;
             case 3:
                 melee.waves[0].field_0x18 = 2;
@@ -111,12 +103,12 @@ i32 HothBattle_StartNewWave() {
                 melee.creature_count = 1;
                 break;
             case 4:
-                melee.waves[0].field_0x18 = 3;
-                melee.waves[0].field_0x19 = 3;
-                melee.waves[0].character_id = id_ATST_LOWRES;
+                melee.waves[0].field_0x18 = 4;
+                melee.waves[0].field_0x19 = 4;
+                melee.waves[0].character_id = VehicleBoltId7f18b4Pc;
                 NuStrCpy(melee.waves[0].name, "Probe");
-                melee.waves[1].field_0x18 = 5;
-                melee.waves[1].field_0x19 = 5;
+                melee.waves[1].field_0x18 = 6;
+                melee.waves[1].field_0x19 = 6;
                 melee.waves[1].character_id = id_ATST_LOWRES;
                 NuStrCpy(melee.waves[1].name, "rider");
                 melee.waves[2].field_0x18 = 1;
@@ -124,12 +116,6 @@ i32 HothBattle_StartNewWave() {
                 melee.waves[2].character_id = id_ATAT;
                 NuStrCpy(melee.waves[2].name, "ATAT");
                 melee.creature_count = 3;
-                if (g_lowEndLevelBehaviour != 0) {
-                    melee.waves[0].field_0x18 = 2;
-                    melee.waves[0].field_0x19 = 2;
-                    melee.waves[1].field_0x18 = 2;
-                    melee.waves[1].field_0x19 = 2;
-                }
                 break;
         }
     }
@@ -471,4 +457,394 @@ void __cdecl HothBattleA_Update(WORLDINFO *world) {
 
 void __cdecl HothBattleA_DrawPc(WORLDINFO *world) {
     DrawMiniSnowTroopers(world);
+}
+
+f32 HothBattleEPanelAlphaPc[16] = {0};
+HOTHBATTLEE_NETPACKET_PC *HothBattleENetPacketPc = NULL;
+f32 MeleeRowsScalePc = 0.8f;
+f32 MeleeRowsYPc = 0.475f;
+f32 MeleeRowsSpacingPc = 0.15f;
+f32 MeleeRowsYOffsetPc = -0.175f;
+extern f32 HudBossIconScalePc;
+
+/* PC level-script and antinode views retain the surrounding canonical layouts.
+ */
+typedef struct HOTH_WORLD_SCRIPT_PC {
+    u8 reserved[0x2b00];
+    AISCRIPTPROCESS_PC processor;
+} HOTH_WORLD_SCRIPT_PC;
+typedef struct HOTH_ANTINODE_PC {
+    u8 reserved[0x50];
+    i64 excluded_character_types;
+} HOTH_ANTINODE_PC;
+STATIC_ASSERT(offsetof(HOTH_WORLD_SCRIPT_PC, processor) == 0x2b00);
+STATIC_ASSERT(offsetof(HOTH_ANTINODE_PC, excluded_character_types) == 0x50);
+STATIC_ASSERT(offsetof(GAMEOBJECT, portal_flags) == 0xeec);
+STATIC_ASSERT(offsetof(GAMEOBJECT, ai_packet.locator) == 0x36c);
+STATIC_ASSERT(offsetof(GAMEOBJECT, ai_packet.creature_set) == 0x378);
+STATIC_ASSERT(offsetof(GAMEOBJECT, hostility_group) == 0x28d);
+STATIC_ASSERT(offsetof(GAMEOBJECT, bounds_radius) == 0x1dc);
+
+void __cdecl DrawMeleeTargetsRowsPc(i16 *targets, char *defeated, f32 *values, i32 count) {
+    i32 row_counts[3] = {0, 0, 0};
+    i32 row = 0, i;
+    f32 size, spacing, offset, x, y;
+    if (FadeSys.fade != 0.0f || count <= 0)
+        return;
+    for (i = 0; i < count; ++i) {
+        if (targets[i] == -1)
+            ++row;
+        else
+            ++row_counts[row];
+    }
+    size = MeleeRowsScalePc * HudBossIconScalePc;
+    spacing = MeleeRowsSpacingPc * MeleeRowsScalePc;
+    offset = MeleeRowsScalePc * MeleeRowsYOffsetPc;
+    x = (f32) - ((row_counts[0] - 1) * (f64)spacing * 0.5);
+    y = MeleeRowsYPc - offset;
+    row = 0;
+    for (i = 0; i < count; ++i) {
+        if (targets[i] == -1) {
+            i32 previous_row = row++;
+            ++i;
+            y += offset;
+            x = (f32) - (row_counts[row] * (f64)spacing * 0.5);
+            if (((row_counts[row] - row_counts[previous_row] % 2) + row) & 1) {
+            } else {
+                x = (f32)((f64)spacing * 0.5 + x);
+            }
+        }
+        DrawCharIcon(targets[i], x, y, 0.0f, size, 0xa7, values[i], values[i], 1, NULL);
+        x += spacing;
+    }
+}
+
+void __cdecl HothBattleE_PanelPc(WORLDINFO *world) {
+    i16 targets[16];
+    char defeated[16];
+    i32 count = 0, index;
+    if (MiniCutCam != 0)
+        return;
+    if (netclient != 0) {
+        DrawMeleeTargetsRowsPc(HothBattleENetPacketPc->targets, (char *)HothBattleENetPacketPc->defeated,
+                               HothBattleENetPacketPc->alpha, HothBattleENetPacketPc->count);
+        return;
+    }
+    switch (melee.current_wave) {
+        case 1:
+        case 2:
+            for (index = 0; index < melee.waves[0].initial_count; ++index) {
+                if (index == (melee.waves[0].initial_count >> 1) + 1) {
+                    targets[count] = -1;
+                    defeated[count++] = 0;
+                }
+                targets[count] = melee.waves[0].character_id;
+                defeated[count++] = index >= melee.waves[0].remaining_count;
+            }
+            break;
+        case 3:
+            for (index = 0; index < melee.waves[0].initial_count; ++index) {
+                targets[count] = melee.waves[0].character_id;
+                defeated[count++] = index >= melee.waves[0].remaining_count;
+            }
+            break;
+        case 4:
+            targets[count] = melee.waves[2].character_id;
+            defeated[count++] = melee.waves[2].remaining_count == 0;
+            for (index = 0; index < melee.waves[0].initial_count; ++index) {
+                targets[count] = melee.waves[0].character_id;
+                defeated[count++] = index >= melee.waves[0].remaining_count;
+            }
+            targets[count++] = -1;
+            for (index = 0; index < melee.waves[1].initial_count; ++index) {
+                targets[count] = melee.waves[1].character_id;
+                defeated[count++] = index >= melee.waves[1].remaining_count;
+            }
+            break;
+    }
+    for (index = 0; index < count; ++index) {
+        if (targets[index] != -1 && defeated[index] != 0)
+            HothBattleEPanelAlphaPc[index] = SeekLinearF(HothBattleEPanelAlphaPc[index], 0.4f, 0.1f);
+        else
+            HothBattleEPanelAlphaPc[index] = 1.0f;
+    }
+    DrawMeleeTargetsRowsPc(targets, defeated, HothBattleEPanelAlphaPc, count);
+}
+
+void __cdecl HothBattle_ManageBackgroundCreatures(void) {
+    AILOCATORSET_PC *set = AIPathFindLocatorSet(WORLD->ai_sys, "spawn");
+    u8 wave_types = 0;
+    i32 type, last, index;
+    f32 radius;
+    AILOCATOR_PC *spawn, *entry;
+    GAMEOBJECT *object;
+    if (NOAICREATURES != 0)
+        return;
+    for (type = 0; type < melee.creature_count; ++type) {
+        i16 id = melee.waves[type].character_id;
+        if (id == VehicleBoltId7f18b4Pc)
+            wave_types |= 1;
+        else if (id == VehicleBoltId7f19a8Pc)
+            wave_types |= 2;
+        else if (id == id_ATST_LOWRES)
+            wave_types |= 4;
+        else if (id == id_ATAT)
+            wave_types |= 8;
+    }
+    radius = apicharsys->char_data[VehicleBoltId7f18b4Pc].collision_radius;
+    while (aicreature_sets_alive[0] < 5 && (wave_types & 1) == 0) {
+        spawn = getSpawnLocator(radius, "spawn");
+        if (spawn == NULL)
+            return;
+        object = AddDynamicCreature(VehicleBoltId7f18b4Pc, &spawn->position, spawn->rotation, "Probe",
+                                    &spawn->path_info, NULL, 1, NULL, NULL, 0, 1);
+        if (object == NULL)
+            break;
+        object->portal_flags |= 0x10000000;
+        for (index = 0; index < set->locator_count; ++index) {
+            entry = &WORLD->ai_sys->locators[set->locator_entries[index]];
+            if (entry == spawn) {
+                object->ai_packet.locator = entry;
+                set->assigned[index] = object->hostility_group;
+                break;
+            }
+        }
+    }
+    last = -1;
+    for (index = 5; index >= 0; --index) {
+        object = melee.background_creatures[index];
+        if (object == NULL)
+            continue;
+        if ((object->flags_1fc_word & 0x1000) != 0 && object->dead == 0 && object->ai_packet.creature_set == 3) {
+            if (last == -1)
+                last = index;
+        } else if (last == -1)
+            melee.background_creatures[index] = NULL;
+        else {
+            melee.background_creatures[index] = melee.background_creatures[last];
+            melee.background_creatures[last--] = NULL;
+        }
+    }
+    radius = apicharsys->char_data[id_ATST_LOWRES].collision_radius * 2.0f;
+    while (aicreature_sets_alive[2] < 6 && (wave_types & 4) == 0) {
+        spawn = getSpawnLocator(radius, "spawn");
+        if (spawn == NULL)
+            return;
+        object = AddDynamicCreature(id_ATST_LOWRES, &spawn->position, spawn->rotation, "rider", &spawn->path_info, NULL,
+                                    1, NULL, NULL, 0, 3);
+        melee.background_creatures[++last] = object;
+        if (object == NULL)
+            return;
+        object->portal_flags |= 0x10000000;
+        for (index = 0; index < set->locator_count; ++index) {
+            entry = &WORLD->ai_sys->locators[set->locator_entries[index]];
+            if (entry == spawn) {
+                object->ai_packet.locator = entry;
+                set->assigned[index] = object->hostility_group;
+                break;
+            }
+        }
+    }
+}
+
+void __cdecl HothBattleE_Init(WORLDINFO *world) {
+    i32 count;
+    gunship_bolts[1] = (i16)BoltType_FindIDByName("trooper_green", world);
+    gunship_bolts[0] = (i16)BoltType_FindIDByName("trooper_red", world);
+    trooper_side[0] = 0;
+    trooper_side[1] = 0;
+    trooper_side[2] = 0;
+    trooper_side[3] = 0;
+    trooper_side[4] = 0;
+    trooper_side[5] = 1;
+    trooper_side[6] = 1;
+    trooper_side[7] = 1;
+    trooper_side[8] = 1;
+    trooper_side[9] = 1;
+    InitMiniSnowTroopers(world, 10, 32, 0);
+    memset(melee.waves, 0, sizeof(melee) - offsetof(HOTHBATTLE_MELEE_s, waves));
+    melee.wave_delay = 0.0f;
+    melee.current_wave = 0;
+    melee.next_wave = 0;
+    melee.initialize_wave = 1;
+    melee.transition_phase = -1;
+    count = NuSpecialFind(world->current_gscn, &LevHSpecial[0], "minifig_1_1", 1);
+    count += NuSpecialFind(world->current_gscn, &LevHSpecial[1], "minifig_1_2", 1);
+    count += NuSpecialFind(world->current_gscn, &LevHSpecial[2], "minifig_1_3", 1);
+    count += NuSpecialFind(world->current_gscn, &LevHSpecial[3], "minifig_2_1", 1);
+    count += NuSpecialFind(world->current_gscn, &LevHSpecial[4], "minifig_2_2", 1);
+    count += NuSpecialFind(world->current_gscn, &LevHSpecial[5], "minifig_2_3", 1);
+    if (count == 6)
+        hothtroopers = LevHSpecial;
+    if (netclient == 0)
+        HothBattle_ManageBackgroundCreatures();
+    HothBattleENetPacketPc = (HOTHBATTLEE_NETPACKET_PC *)SetLevelHack(0x58);
+}
+
+void __cdecl HothBattleE_DrawPc(WORLDINFO *world) {
+    DrawMiniSnowTroopers(world);
+}
+
+void __cdecl HothBattleE_Update(WORLDINFO *world) {
+    UpdateMiniSnowTroopers(world);
+    if (netclient == 0)
+        HothBattleE_UpdateWave();
+}
+
+i32 __cdecl SpawnMeleeCreatureType(i32 type) {
+    i32 index, slot, attempts;
+    f32 radius = apicharsys->char_data[melee.waves[type].character_id].collision_radius;
+    AILOCATOR_PC *locator;
+    GAMEOBJECT *object;
+    NUVEC offset;
+    for (index = 0; index < melee.waves[type].active_count; ++index) {
+        if (melee.waves[type].character_id != id_ATAT && melee.waves[type].creatures[index] != NULL &&
+            melee.waves[type].creatures[index]->field_f10 > 5.0f) {
+            KillGameObject(melee.waves[type].creatures[index], 4, 0);
+            melee.waves[type].creatures[index] = NULL;
+            --melee.waves[type].active_count;
+        }
+    }
+    while (melee.waves[type].remaining_count > melee.waves[type].active_count) {
+        if (melee.waves[type].active_count >= 4)
+            break;
+        slot = -1;
+        for (index = 0; index < 4 && slot == -1; ++index) {
+            if (melee.waves[type].creatures[index] == NULL)
+                slot = index;
+        }
+        if (slot == -1)
+            return 0;
+        if (melee.waves[type].character_id == id_ATAT && melee.waves[type].active_count == 0) {
+            object = GetNamedGameObject(WORLD->ai_sys, "ATAT_EDIT");
+            melee.waves[type].creatures[slot] = object;
+            if (object != NULL && object->dead == 0 && (object->flags_1fc_word & 0x1000) != 0) {
+                ++melee.waves[type].active_count;
+                continue;
+            }
+            melee.waves[type].creatures[slot] = NULL;
+        }
+        locator = NULL;
+        for (attempts = 50; attempts > 0; --attempts) {
+            locator = getSpawnLocator(5.0f, "spawn");
+            if (locator != NULL) {
+                if (OnOrInsidePlane(&locator->position, &PlayPlanePc[1].point, &PlayPlanePc[1].normal, NULL, 0.5f,
+                                    NULL) == 0 ||
+                    OnOrInsidePlane(&locator->position, &PlayPlanePc[2].point, &PlayPlanePc[2].normal, NULL, 0.5f,
+                                    NULL) == 0) {
+                    if (OnOrInsidePlane(&locator->position, &PlayPlanePc[1].point, &PlayPlanePc[1].normal, NULL, 2.5f,
+                                        NULL) != 0 ||
+                        OnOrInsidePlane(&locator->position, &PlayPlanePc[2].point, &PlayPlanePc[2].normal, NULL, 2.5f,
+                                        NULL) != 0)
+                        break;
+                }
+                locator = NULL;
+            }
+        }
+        if (locator == NULL)
+            return 0;
+        offset.y = offset.z = 0.0f;
+        offset.x = (f32)(((f64)NuFloatRand((NURAND *)&GAMERAND) + 1.0) * radius * 2.0);
+        NuVecRotateY(&offset, &offset, qrand());
+        NuVecAdd(&offset, &offset, &locator->position);
+        if (melee.waves[type].character_id == id_ATAT)
+            object = AddDynamicCreature(melee.waves[type].character_id, &locator->position, locator->rotation,
+                                        melee.waves[type].name, &locator->path_info, NULL, 1, NULL, NULL, 0, 0);
+        else
+            object = AddDynamicCreature(melee.waves[type].character_id, &offset, locator->rotation,
+                                        melee.waves[type].name, &locator->path_info, NULL, 1, NULL, NULL, 0, 0);
+        if (object == NULL)
+            return 0;
+        melee.waves[type].creatures[slot] = object;
+        ++melee.waves[type].active_count;
+        object->ai_packet.locator = locator;
+    }
+    return 1;
+}
+
+void __cdecl HothBattleE_UpdateWave(void) {
+    i32 pending = 0, type, wave_index, index;
+    char state[16];
+    GAMEOBJECT *object;
+    HOTHBATTLE_MELEE_WAVE_s *wave;
+    HOTH_ANTINODE_PC *node;
+    f32 radius;
+    i32 count;
+    if (melee.current_wave != melee.next_wave) {
+        if (melee.transition_phase == -1) {
+            if (melee.wave_delay < 5.0f && melee.next_wave != 1) {
+                melee.wave_delay += FRAMETIME;
+                return;
+            }
+            if (melee.next_wave == 5) {
+                memset(melee.waves, 0, sizeof(melee) - offsetof(HOTHBATTLE_MELEE_s, waves));
+                if (FreePlay != 0)
+                    CompleteLevel(WORLD);
+                else
+                    GoToNewLevel(LevelFixupSlotPc0087b210->index);
+            }
+            melee.wave_delay = 0.0f;
+            sprintf(state, "CamCut_%d", melee.next_wave);
+            if (AIScriptSetBaseScriptStateByName(&((HOTH_WORLD_SCRIPT_PC *)WORLD)->processor, state) != 0)
+                AIScriptProcess(WORLD->ai_sys, NULL, NULL, &((HOTH_WORLD_SCRIPT_PC *)WORLD)->processor, FRAMETIME);
+            melee.transition_phase = 0;
+            melee.wave_delay = 0.0f;
+            melee.initialize_wave = 1;
+            pending = 1;
+        } else if (melee.transition_phase > 0) {
+            if (MiniCutCam == 0) {
+                if (melee.transition_phase == 1) {
+                    object = Obj;
+                    for (index = 0; index < HIGHGAMEOBJECT; ++index, ++object) {
+                        if ((object->flags_1fc_word & 1) != 0 && (object->flags_1fc_word & 0x1000) != 0 &&
+                            object->id != (u16)id_ATAT && object->field_280 == 0xff &&
+                            (object->character_data->model_flags & 4) != 0)
+                            KillGameObject(object, 4, 0);
+                    }
+                    for (index = 0; index < 6; ++index)
+                        melee.background_creatures[index] = NULL;
+                    melee.transition_phase = 2;
+                }
+                if (HothBattle_StartNewWave() == 0)
+                    return;
+                melee.transition_phase = -1;
+                melee.current_wave = melee.next_wave;
+                pending = 1;
+            }
+        } else if (melee.transition_phase == 0 && MiniCutCam != 0)
+            melee.transition_phase = 1;
+    }
+    for (type = 0; type < melee.creature_count; ++type)
+        SpawnMeleeCreatureType(type);
+    HothBattle_ManageBackgroundCreatures();
+    if (melee.current_wave == 3 && melee.waves[0].creatures[0] != NULL && melee.waves[0].creatures[1] != NULL) {
+        radius = (f32)((f64)melee.waves[0].creatures[type]->bounds_radius * 3.0);
+        node = (HOTH_ANTINODE_PC *)AIAntinodeCreateSingleFrame(&melee.waves[0].creatures[0]->position, radius);
+        node->excluded_character_types = (i64)(i32) ~(1u << (melee.waves[0].creatures[1]->hostility_group & 31));
+        radius = (f32)((f64)melee.waves[0].creatures[type]->bounds_radius * 3.0);
+        node = (HOTH_ANTINODE_PC *)AIAntinodeCreateSingleFrame(&melee.waves[0].creatures[1]->position, radius);
+        node->excluded_character_types = (i64)(i32) ~(1u << (melee.waves[0].creatures[0]->hostility_group & 31));
+    }
+    for (wave_index = 0; wave_index < 4; ++wave_index) {
+        wave = &melee.waves[wave_index];
+        count = 0;
+        for (index = 0; index < 4; ++index) {
+            object = wave->creatures[index];
+            if (object != NULL) {
+                if ((object->flags_1fc_word & 0x1000) == 0 || object->dead != 0) {
+                    --wave->active_count;
+                    --wave->remaining_count;
+                    wave->creatures[index] = NULL;
+                    PlaySfxAndSetPitch("TrueJedi_100pc", NULL, 1.5f);
+                } else
+                    ++count;
+            }
+        }
+        if (wave->active_count != count)
+            wave->active_count = (u8)count;
+        if (wave->remaining_count != 0)
+            pending = 1;
+    }
+    if ((pending | MiniCutCam) == 0 && NOAICREATURES == 0 && melee.current_wave == melee.next_wave)
+        ++melee.next_wave;
 }

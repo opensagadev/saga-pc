@@ -1,5 +1,10 @@
 #include "saga.h"
 
+extern "C" void __cdecl HothBattleE_Init(WORLDINFO *);
+extern "C" void __cdecl HothBattleE_Update(WORLDINFO *);
+extern "C" void __cdecl HothBattleE_DrawPc(WORLDINFO *);
+extern "C" void __cdecl HothBattleE_PanelPc(WORLDINFO *);
+
 extern "C" void __cdecl HothBattleA_Init(WORLDINFO *);
 extern "C" void __cdecl HothBattleA_Reset(WORLDINFO *);
 extern "C" void __cdecl HothBattleA_Update(WORLDINFO *);
@@ -790,10 +795,10 @@ extern "C" void __cdecl FixUpLevels(struct level_fixup_pc_s *fixup) {
             level = Level_FindByName("hothbattle_e", NULL); /* Native call 0x48ecd4. */
             LevelFixupSlotPc0087b20c = level;               /* Native store 0x48ecde. */
             if (level != NULL) {
-                STUBBED_NAMED(FixUpLevels_Callback_4e9800); /* Native 0x48ece5: callbacks[1] = entry 0x4e9800. */
-                STUBBED_NAMED(FixUpLevels_Callback_4e9ef0); /* Native 0x48ecf1: callbacks[3] = entry 0x4e9ef0. */
-                STUBBED_NAMED(FixUpLevels_Callback_4e8d40); /* Native 0x48ecfe: callbacks[5] = entry 0x4e8d40. */
-                STUBBED_NAMED(FixUpLevels_Callback_4e8d50); /* Native 0x48ed0b: callbacks[6] = entry 0x4e8d50. */
+                level->callbacks[1] = (void *)HothBattleE_Init;
+                level->callbacks[3] = (void *)HothBattleE_Update;
+                level->callbacks[5] = (void *)HothBattleE_DrawPc;
+                level->callbacks[6] = (void *)HothBattleE_PanelPc;
             }
             level = Level_FindByName("HothBattle_Outro", NULL); /* Native call 0x48ed1c. */
             LevelFixupSlotPc0087b210 = level;                   /* Native store 0x48ed28. */

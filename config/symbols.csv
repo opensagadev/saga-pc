@@ -1703,6 +1703,7 @@ address,symbol,size,ctype
 0x4ba190,_Panel_Clear,87,
 0x4ba1f0,_DrawBossHitPointsPc,211,static i32 (GAMEOBJECT *); boss ESI
 0x4ba2d0,_DrawBossHitPoints,10,
+0x4ba4d0,_DrawMeleeTargetsRowsPc,430,"void __cdecl (i16 *, char *, f32 *, i32)"
 0x004badd0,_InitPanel,106,void __cdecl (i32)
 0x4bae40,_DrawPanel,3501,void __cdecl (void)
 0x4bbbf0,_PanelRender,286,void __cdecl (WORLDINFO *)
@@ -2066,6 +2067,8 @@ address,symbol,size,ctype
 0x4e8c50,_HothBattleC_Reset,120,
 0x4e8cd0,_HothBattleC_Update,59,
 0x4e8d10,_HothBattleC_DrawPc,5,void __cdecl (WORLDINFO *)
+0x4e8d40,_HothBattleE_DrawPc,5,void __cdecl (WORLDINFO *)
+0x4e8d50,_HothBattleE_PanelPc,624,void __cdecl (WORLDINFO *)
 0x4e9000,_getSpawnLocator,220,
 0x4e90e0,_HothBattle_ManageBackgroundCreatures,987,
 0x4e94c0,_SpawnMeleeCreatureType,829,
@@ -13298,7 +13301,9 @@ address,symbol,size,ctype
 0x75e440,??_C@_05HLKEJFEB@rider?$AA@,,
 0x75e448,??_C@_05PBDNICPN@Probe?$AA@,6,char []
 0x75e450,??_C@_05BDADGJGG@spawn?$AA@,6,char []
+0x75e458,??_C@_09KIDPGINE@ATAT_EDIT?$AA@,10,const char[10]
 0x75e464,??_C@_04LHKOJOEJ@ATAT?$AA@,5,char []
+0x75e46c,??_C@_09OHCJILGC@CamCut_?$CFd?$AA@,10,const char[10]
 0x75e4ac,__real@c2200000,4,const f32
 0x75e4b0,_EpisodeVI_doton12,10,const char[10]
 0x75e4bc,_EpisodeVI_doton11,10,const char[10]
@@ -18697,6 +18702,10 @@ address,symbol,size,ctype
 0x7fc39c,_HudBossHeartScalePc,4,f32
 0x7fc3a0,_HudBossIconYPc,4,f32
 0x7fc3a4,_HudBossIconScalePc,4,f32
+0x7fc3a8,_MeleeRowsScalePc,4,f32
+0x7fc3ac,_MeleeRowsYPc,4,f32
+0x7fc3b0,_MeleeRowsSpacingPc,4,f32
+0x7fc3b4,_MeleeRowsYOffsetPc,4,f32
 0x007fc3c4,_PanelWideWidth,4,f32
 0x007fc3c8,_PanelWideHeight,4,f32
 0x7fc5b8,_GameAudioLswPc,512,GAMEAUDIO_PC
@@ -21467,12 +21476,14 @@ address,symbol,size,ctype
 0x889630,_vader_b_playersDead,1,u8
 0x00889634,_CarWashHack,4,GAMEOBJECT *
 0x00889658,_DeathStarEscapeBNetPacketPc,4,u8 *
+0x88a264,_HothBattleENetPacketPc,4,HOTHBATTLEE_NETPACKET_PC *
 0x88a2a8,_minikitCounter_A,1,u8
 0x88a2a9,_minikitCounter_C,1,u8
 0x88a2b0,_escape,96,nuhspecial_s[8]
 0x88a320,_melee,200,HOTHBATTLE_MELEE_s
 0x88a3e8,_StarDestroyerTurrets,64,struct GIZTURRET_s *[16]
 0x88a430,_troopercannons,192,TROOPERCANNON_PC[4]
+0x88a510,_HothBattleEPanelAlphaPc,64,f32[16]
 0x88a550,_troopercannons_beenReset,1,u8
 0x88a552,_turretAliveCount,1,u8
 0x88a568,_melee_waveDelay,4,f32

@@ -24614,6 +24614,18 @@ struct PLAYERSUBOBJ_s {
 };
 STATIC_ASSERT(sizeof(struct PLAYERSUBOBJ_s) == 40);
 
+typedef struct HOTHBATTLEE_NETPACKET_PC {
+    i16 targets[12];
+    i8 defeated[12];
+    f32 alpha[12];
+    i32 count;
+} HOTHBATTLEE_NETPACKET_PC;
+STATIC_ASSERT(sizeof(HOTHBATTLEE_NETPACKET_PC) == 0x58);
+STATIC_ASSERT(offsetof(HOTHBATTLEE_NETPACKET_PC, targets) == 0);
+STATIC_ASSERT(offsetof(HOTHBATTLEE_NETPACKET_PC, defeated) == 0x18);
+STATIC_ASSERT(offsetof(HOTHBATTLEE_NETPACKET_PC, alpha) == 0x24);
+STATIC_ASSERT(offsetof(HOTHBATTLEE_NETPACKET_PC, count) == 0x54);
+
 struct HOTHBATTLE_MELEE_WAVE_s {
     i16 character_id;
     u8 reserved_02[2];
@@ -24634,6 +24646,12 @@ struct HOTHBATTLE_MELEE_WAVE_s {
     u8 reserved_24[4];
 };
 STATIC_ASSERT(sizeof(struct HOTHBATTLE_MELEE_WAVE_s) == 40);
+STATIC_ASSERT(offsetof(struct HOTHBATTLE_MELEE_WAVE_s, character_id) == 0);
+STATIC_ASSERT(offsetof(struct HOTHBATTLE_MELEE_WAVE_s, creatures) == 4);
+STATIC_ASSERT(offsetof(struct HOTHBATTLE_MELEE_WAVE_s, remaining_count) == 0x14);
+STATIC_ASSERT(offsetof(struct HOTHBATTLE_MELEE_WAVE_s, initial_count) == 0x15);
+STATIC_ASSERT(offsetof(struct HOTHBATTLE_MELEE_WAVE_s, active_count) == 0x16);
+STATIC_ASSERT(offsetof(struct HOTHBATTLE_MELEE_WAVE_s, name) == 0x17);
 
 struct HOTHBATTLE_MELEE_s {
     union {
@@ -24661,6 +24679,14 @@ struct HOTHBATTLE_MELEE_s {
     u8 reserved_0xc5[3];
 };
 STATIC_ASSERT(sizeof(struct HOTHBATTLE_MELEE_s) == 200);
+STATIC_ASSERT(offsetof(struct HOTHBATTLE_MELEE_s, current_wave) == 0);
+STATIC_ASSERT(offsetof(struct HOTHBATTLE_MELEE_s, next_wave) == 1);
+STATIC_ASSERT(offsetof(struct HOTHBATTLE_MELEE_s, initialize_wave) == 2);
+STATIC_ASSERT(offsetof(struct HOTHBATTLE_MELEE_s, transition_phase) == 4);
+STATIC_ASSERT(offsetof(struct HOTHBATTLE_MELEE_s, wave_delay) == 8);
+STATIC_ASSERT(offsetof(struct HOTHBATTLE_MELEE_s, waves) == 0xc);
+STATIC_ASSERT(offsetof(struct HOTHBATTLE_MELEE_s, background_creatures) == 0xac);
+STATIC_ASSERT(offsetof(struct HOTHBATTLE_MELEE_s, creature_count) == 0xc4);
 
 struct GIZSPECIAL_s {
     char name[32];
