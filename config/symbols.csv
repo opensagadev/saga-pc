@@ -1080,6 +1080,7 @@ address    , symbol                                                         , si
 0x46dbb0,_GizPanel_SetVisibility,94,
 0x46dc10,_GizPanel_GetAbsTargetPos,195,"void __cdecl(void *,NUVEC *,i32)"
 0x46dce0,_GizPanel_CanUsePanel,264,
+0x46ddf0,_GizPanel_FindByName,89,"struct panel_movement_pc_s *__cdecl (WORLDINFO *, char *)"
 0x46de50,_GizPanel_FindNearest,280,
 0x46df70,_GizPanel_Update,790,"void __cdecl(void *, void *, f32)"
 0x46e290,_GizPanel_Draw,2052,
@@ -2045,6 +2046,10 @@ address    , symbol                                                         , si
 0x4e7dc0,_CloudCityTrapB_Init,77,
 0x4e7e10,_CloudCityTrapB_Update,183,
 0x4e7ed0,_CloudCityTrapC_Reset,190,
+0x4e8080,_CloudCityEscapeA_Init,128,void __cdecl (WORLDINFO *)
+0x4e8100,_CloudCityEscapeA_Reset,84,void __cdecl (WORLDINFO *)
+0x4e8160,_CloudCityEscapeA_Update,218,void __cdecl (WORLDINFO *)
+0x4e8240,_CloudCityEscapeA_Panel,100,void __cdecl (WORLDINFO *)
 0x4e82b0,_CloudCityEscapeC_Init,82,
 0x004e8380 , _TakeOverYodaSeekDistanceHack                                  , 129   , "i32 __cdecl (GAMEOBJECT *, GAMEOBJECT *, NUVEC *)"
 0x4e8420,_DagobahB_Reset,148,
@@ -12913,6 +12918,7 @@ address    , symbol                                                         , si
 0x75c63c,??_C@_0N@NHDKEBAJ@exp_minecart?$AA@,13,const char[13]
 0x75c64c,??_C@_0BB@ECOJCBKD@Env_ctrl_desk_on?$AA@,17,const char[17]
 0x75c660,??_C@_0N@BLJABCCO@env_steam_lp?$AA@,13,const char[13]
+0x75c660,_CloudCityEscapeSteamSfxPc,16,const char[16]
 0x75c670,??_C@_0N@BCFCJNJI@Env_Steam_Lp?$AA@,13,const char[13]
 0x75c680,??_C@_0N@PIDFMLLP@exp_asteroid?$AA@,13,const char[13]
 0x75c690,??_C@_0BA@NFDJPKN@ThermalDet_Beep?$AA@,16,const char[16]
@@ -13236,7 +13242,15 @@ address    , symbol                                                         , si
 0x75e29c,??_C@_06EFGJMCHF@gap1_a?$AA@,7,char []
 0x75e2a4,??_C@_06GOEEJBLG@gap1_b?$AA@,7,char []
 0x75e2b0,__real@c1a00000,,
+0x75e2b4,_CloudCityEscapePanelNamePc,8,const char[8]
+0x75e2bc,_CloudCityEscapeGas3Pc,8,const char[8]
+0x75e2c4,_CloudCityEscapeGas2Pc,8,const char[8]
+0x75e2cc,_CloudCityEscapeGas1Pc,8,const char[8]
 0x75e2d4,??_C@_0BB@GFEMDJAG@BobaFightStarted?$AA@,17,char []
+0x75e2d4,_CloudCityEscapeFightMessagePc,20,const char[20]
+0x75e2e8,_CloudCityEscapeBuilditNamePc,12,const char[12]
+0x75e2f4,_CloudCityEscapeBuiltMessagePc,12,const char[12]
+0x75e300,_CloudCityEscapeDeskSfxPc,20,const char[20]
 0x75e314,??_C@_0N@HKLABEEJ@gas_3_animin?$AA@,13,char []
 0x75e324,??_C@_0N@GNMLAAAK@gas_2_animin?$AA@,13,char []
 0x75e334,??_C@_0N@FEEGDMMP@gas_1_animin?$AA@,13,char []
@@ -20152,6 +20166,7 @@ address    , symbol                                                         , si
 0x0087a928 , _LevGizObst                                                    , 32    , GIZOBSTACLE *[8]
 0x87a948,_LevLock,5,u8[5]
 0x87a950   , _TargetDist_Near2                                              , 4     , f32
+0x87a954,_LevGizPanel,4,struct panel_movement_pc_s *
 0x87a958,_LevPlatID,,i32[2]
 0x87a960,_LOADWAITTIME,,f32
 0x87a964,_TitlesStartPositionPc,,NUVEC

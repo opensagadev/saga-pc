@@ -1,5 +1,29 @@
 #include "saga.h"
 #include <string.h>
+extern i32 gizbuildit_gizmotype_id;
+struct panel_movement_pc_s;
+struct panel_movement_pc_s *__cdecl GizPanel_FindByName(WORLDINFO *, char *);
+typedef struct CLOUDCITY_PANEL_FLAGS_VIEW_PC {
+    u8 unknown_00[0x62];
+    u8 flags;
+} CLOUDCITY_PANEL_FLAGS_VIEW_PC;
+STATIC_ASSERT(offsetof(CLOUDCITY_PANEL_FLAGS_VIEW_PC, flags) == 0x62);
+STATIC_ASSERT(offsetof(GIZBUILDIT_PC, build_state) == 0x6d);
+typedef struct CLOUDCITY_LEVEL_FLAG_VIEW_PC {
+    u8 started;
+} CLOUDCITY_LEVEL_FLAG_VIEW_PC;
+STATIC_ASSERT(offsetof(CLOUDCITY_LEVEL_FLAG_VIEW_PC, started) == 0);
+struct panel_movement_pc_s *LevGizPanel = NULL;
+static const char CloudCityEscapePanelNamePc[8] = "panel5";
+static const char CloudCityEscapeGas3Pc[8] = "gas_3";
+static const char CloudCityEscapeGas2Pc[8] = "gas_2";
+static const char CloudCityEscapeGas1Pc[8] = "gas_1";
+static const char CloudCityEscapeFightMessagePc[20] = "BobaFightStarted";
+static const char CloudCityEscapeBuilditNamePc[12] = "buildit2";
+static const char CloudCityEscapeBuiltMessagePc[12] = "Built_C3PO";
+static const char CloudCityEscapeDeskSfxPc[20] = "env_ctrl_desk_on";
+static const char CloudCityEscapeSteamSfxPc[16] = "env_steam_lp";
+
 extern LEVELDATA_PC *MOSEISLEYC_LDATA;
 i32 __cdecl MosEisleyC_PastBarrier(GAMEOBJECT *object) {
     if (WORLD->current_level == MOSEISLEYC_LDATA)
@@ -305,4 +329,52 @@ void __cdecl CloudCityTrapA_Init(WORLDINFO *world) {
 void __cdecl CloudCityTrapA_Reset(WORLDINFO *world) {
     if (netclient == 0)
         troopercannons_beenReset = 0;
+}
+
+void __cdecl CloudCityEscapeA_Init(WORLDINFO *world) {
+    LevAIMessage[0] = CheckGizAIMessage(gizaimessagesys, (char *)CloudCityEscapeFightMessagePc, NULL);
+    ((CLOUDCITY_LEVEL_FLAG_VIEW_PC *)LevFlag)->started = 0;
+    NuSpecialFind(world->current_gscn, &LevHSpecial[1], (char *)CloudCityEscapeGas1Pc, 1);
+    NuSpecialFind(world->current_gscn, &LevHSpecial[2], (char *)CloudCityEscapeGas2Pc, 1);
+    NuSpecialFind(world->current_gscn, &LevHSpecial[3], (char *)CloudCityEscapeGas3Pc, 1);
+    LevGizPanel = GizPanel_FindByName(world, (char *)CloudCityEscapePanelNamePc);
+}
+void __cdecl CloudCityEscapeA_Reset(WORLDINFO *world) {
+    LevAIMessage[0] = CheckGizAIMessage(gizaimessagesys, (char *)CloudCityEscapeFightMessagePc, NULL);
+    LevAIMessage[1] = CheckGizAIMessage(gizaimessagesys, (char *)CloudCityEscapeBuiltMessagePc, NULL);
+    LevGizmo[0] =
+        (GIZMO_PC *)GizmoFindByName(world->gizmo_sys, gizbuildit_gizmotype_id, (char *)CloudCityEscapeBuilditNamePc);
+}
+void __cdecl CloudCityEscapeA_Update(WORLDINFO *world) {
+    i32 i;
+    NUINSTANIM_TIME_VIEW *animation;
+    if (((CLOUDCITY_LEVEL_FLAG_VIEW_PC *)LevFlag)->started == 0 && NuSpecialGetVisibilityFn(&LevHSpecial[0]) != 0) {
+        PlaySfx((char *)CloudCityEscapeDeskSfxPc, NuSpecialGetDrawPos(&LevHSpecial[0]));
+        ((CLOUDCITY_LEVEL_FLAG_VIEW_PC *)LevFlag)->started = 1;
+    }
+    TerSurface[14].flags = 0x2002;
+    if (LevGizPanel == NULL || (((CLOUDCITY_PANEL_FLAGS_VIEW_PC *)LevGizPanel)->flags & 2) == 0) {
+        for (i = 1; i < 4; ++i) {
+            if (NuSpecialExistsFn(&LevHSpecial[i])) {
+                animation = (NUINSTANIM_TIME_VIEW *)NuSpecialGetInstAnim(&LevHSpecial[i]);
+                if (animation != NULL && animation->ltime > 1.0f) {
+                    PlaySfx((char *)CloudCityEscapeSteamSfxPc, NuSpecialGetDrawPos(&LevHSpecial[i]));
+                    TerSurface[14].flags |= 0x4042;
+                }
+            }
+        }
+    }
+    if (LevGizmo[0] != NULL && LevAIMessage[1] != NULL && LevAIMessage[1]->value == 0.0f &&
+        LevGizmo[0]->object != NULL && ((GIZBUILDIT_PC *)LevGizmo[0]->object)->build_state == 2)
+        LevAIMessage[1]->value = 1.0f;
+}
+void __cdecl CloudCityEscapeA_Panel(WORLDINFO *world) {
+    GAMEOBJECT *boba;
+    if (netclient == 0) {
+        boba = FindGameObject(id_BOBAFETT, 1, 1, 1, 0);
+        if (boba != NULL && LevAIMessage[0] != NULL && LevAIMessage[0]->value == 1.0f)
+            DrawBossHitPoints(boba);
+        else if (LevAIMessage[0] != NULL && LevAIMessage[0]->value == 0.0f)
+            DrawBossHitPoints(NULL);
+    }
 }

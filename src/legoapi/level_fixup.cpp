@@ -1,5 +1,10 @@
 #include "saga.h"
 
+extern "C" void __cdecl CloudCityEscapeA_Init(WORLDINFO *);
+extern "C" void __cdecl CloudCityEscapeA_Reset(WORLDINFO *);
+extern "C" void __cdecl CloudCityEscapeA_Update(WORLDINFO *);
+extern "C" void __cdecl CloudCityEscapeA_Panel(WORLDINFO *);
+
 extern "C" void __cdecl CloudCityTrapA_Init(WORLDINFO *);
 extern "C" void __cdecl CloudCityTrapA_Reset(WORLDINFO *);
 extern "C" void __cdecl CloudCityTrapA_Update(WORLDINFO *);
@@ -889,10 +894,10 @@ extern "C" void __cdecl FixUpLevels(struct level_fixup_pc_s *fixup) {
             level = Level_FindByName("cloudcityescape_a", NULL);   /* Native call 0x48f06a. */
             CLOUDCITYESCAPEA_LDATA = level;                        /* Native store 0x48f074. */
             if (level != NULL) {
-                STUBBED_NAMED(FixUpLevels_Callback_4e8080); /* Native 0x48f07b: callbacks[1] = entry 0x4e8080. */
-                STUBBED_NAMED(FixUpLevels_Callback_4e8100); /* Native 0x48f087: callbacks[2] = entry 0x4e8100. */
-                STUBBED_NAMED(FixUpLevels_Callback_4e8160); /* Native 0x48f094: callbacks[3] = entry 0x4e8160. */
-                STUBBED_NAMED(FixUpLevels_Callback_4e8240); /* Native 0x48f0a1: callbacks[6] = entry 0x4e8240. */
+                level->callbacks[1] = (void *)CloudCityEscapeA_Init;
+                level->callbacks[2] = (void *)CloudCityEscapeA_Reset;
+                level->callbacks[3] = (void *)CloudCityEscapeA_Update;
+                level->callbacks[6] = (void *)CloudCityEscapeA_Panel;
             }
             level = Level_FindByName("cloudcityescape_b", NULL); /* Native call 0x48f0b2. */
             LevelFixupSlotPc0087b23c = level;                    /* Native store 0x48f0be. */

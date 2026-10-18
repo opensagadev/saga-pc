@@ -732,3 +732,16 @@ void __cdecl GizPanel_MoveCode(WORLDINFO *world, GAMEOBJECT *object, i32 use) {
         object->field_db0 = 0.5f;
     }
 }
+
+PANEL_MOVEMENT_PC *__cdecl GizPanel_FindByName(WORLDINFO *world, char *name) {
+    PANEL_MOVEMENT_PC *panel;
+    i32 index;
+    if (world == NULL || world->giz_panel_sys == NULL)
+        return NULL;
+    panel = ((PANEL_SYSTEM_PC *)world->giz_panel_sys)->panels;
+    for (index = 0; index < ((PANEL_SYSTEM_PC *)world->giz_panel_sys)->count; index++, panel++) {
+        if (NuStrICmp(panel->name, name) == 0)
+            return panel;
+    }
+    return NULL;
+}
