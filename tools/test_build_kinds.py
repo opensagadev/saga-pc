@@ -240,6 +240,120 @@ int main(void) {
                                   "/incremental:no", "/manifest:no"])
                     self.command([wine, cc.windows(executable)], env=env)
 
+    def test_shared_standard_stream_capture_and_partial_setup_rollback(self):
+        with tempfile.TemporaryDirectory(prefix="saga-shared-stdio-") as temp:
+            directory = Path(temp)
+            source = directory / "probe.c"
+            source.write_text(r'''#define WIN32_LEAN_AND_MEAN
+#include <windows.h>
+#include <stdio.h>
+#include <string.h>
+#include <errno.h>
+#include <io.h>
+static int fail_dup, fail_std, fail_save, dup_calls, std_calls, save_calls;
+static int test_dup(int source) {
+    if (++save_calls == fail_save) return -1;
+    return _dup(source);
+}
+static int test_dup2(int source, int target) {
+    if (++dup_calls == fail_dup) return -1;
+    return _dup2(source, target);
+}
+static BOOL WINAPI test_set_std(DWORD which, HANDLE value) {
+    if (++std_calls == fail_std) return FALSE;
+    return SetStdHandle(which, value);
+}
+#define _dup test_dup
+#define _dup2 test_dup2
+#define SetStdHandle test_set_std
+#include "log.c"
+#undef SetStdHandle
+#undef _dup2
+#undef _dup
+static void emit(const char *name) {
+    DWORD written;
+    char text[64];
+    printf("%s-crt-out\n", name); fflush(stdout);
+    fprintf(stderr, "%s-crt-err\n", name); fflush(stderr);
+    sprintf(text, "%s-win-out\n", name);
+    WriteFile(GetStdHandle(STD_OUTPUT_HANDLE), text, (DWORD)strlen(text), &written, NULL);
+    sprintf(text, "%s-win-err\n", name);
+    WriteFile(GetStdHandle(STD_ERROR_HANDLE), text, (DWORD)strlen(text), &written, NULL);
+}
+int main(int argc, char **argv) {
+    STARTUPINFOA startup = {0};
+    PROCESS_INFORMATION child;
+    char executable[MAX_PATH], command[MAX_PATH + 32];
+    DWORD flags, exit_code;
+    int closed = argc > 1 && strcmp(argv[1], "closed") == 0;
+    int closed_err = argc > 1 && strncmp(argv[1], "closederr", 9) == 0;
+    if (argc > 1 && strcmp(argv[1], "child") == 0) { emit("child"); return 0; }
+    if (argc > 1 && argv[1][0] == 'b') fail_save = 2;
+    if (argc > 1 && argv[1][0] == 'd') fail_dup = argv[1][1] - '0';
+    if (argc > 1 && argv[1][0] == 's') fail_std = argv[1][1] - '0';
+    if (closed) CloseHandle(GetStdHandle(STD_OUTPUT_HANDLE));
+    if (closed_err) CloseHandle(GetStdHandle(STD_ERROR_HANDLE));
+    errno = EDOM; SetLastError(0x1234);
+    LOG_INFO("capture-parent");
+    if (errno != EDOM || GetLastError() != 0x1234) return 1;
+    if (log_capture != !(fail_dup || fail_std || fail_save || closed || closed_err)) return 2;
+    if (closed || closed_err) {
+        LOG_WARN("capture-finished");
+        return errno != EDOM || GetLastError() != 0x1234;
+    }
+    if (!GetHandleInformation((HANDLE)_get_osfhandle(log_original_out), &flags) ||
+        (flags & HANDLE_FLAG_INHERIT)) return 3;
+    if (!fail_save && (!GetHandleInformation((HANDLE)_get_osfhandle(log_original_err), &flags) ||
+        (flags & HANDLE_FLAG_INHERIT))) return 4;
+    emit("parent");
+    startup.cb = sizeof(startup);
+    if (!GetModuleFileNameA(NULL, executable, sizeof(executable))) return 5;
+    sprintf(command, "\"%s\" child", executable);
+    if (!CreateProcessA(NULL, command, NULL, NULL, TRUE, 0, NULL, NULL, &startup, &child)) return 6;
+    if (WaitForSingleObject(child.hProcess, 10000) != WAIT_OBJECT_0) return 7;
+    GetExitCodeProcess(child.hProcess, &exit_code);
+    CloseHandle(child.hThread); CloseHandle(child.hProcess);
+    if (exit_code) return 8;
+    errno = EDOM; SetLastError(0x1234);
+    LOG_WARN("capture-finished");
+    if (errno != EDOM || GetLastError() != 0x1234) return 9;
+    return 0;
+}
+''')
+            obj = directory / "probe.obj"
+            crash = directory / "crash.obj"
+            self.compile(source, obj, debug=True)
+            self.compile(ROOT / "src/crash_diagnostics.cpp", crash, debug=True)
+            _, wine, env = cc.environment()
+            for mode in ("normal", "d1", "d2", "s1", "s2", "closed", "closederr", "backup2", "closederrblocked"):
+                with self.subTest(mode=mode):
+                    run = directory / mode
+                    run.mkdir()
+                    executable = run / "probe.exe"
+                    self.command([sys.executable, ROOT / "tools/cc.py", "--link", executable,
+                                  obj, crash, "--", "/nologo", "/machine:x86", "/subsystem:console",
+                                  "/incremental:no", "/manifest:no"])
+                    if mode == "closederrblocked":
+                        (run / "log").write_text("blocked")
+                    result = self.command([wine, cc.windows(executable), mode], env=env)
+                    if mode == "closederrblocked":
+                        self.assertEqual((run / "log").read_text(), "blocked")
+                        for marker in ("capture-parent", "capture-finished", "Debug build"):
+                            self.assertEqual(result.stdout.count(marker), 1)
+                        continue
+                    logs = [p for p in (run / "log").glob("*.log") if not p.name.endswith(".fault.log")]
+                    self.assertEqual(len(logs), 1)
+                    text = logs[0].read_text()
+                    for marker in ("capture-parent", "capture-finished", "Debug build"):
+                        self.assertEqual(text.count(marker), 1)
+                        self.assertEqual(result.stdout.count(marker), int(mode != "closed"))
+                    self.assertNotIn("\x1b[", text)
+                    for origin in ("parent", "child"):
+                        for stream in ("crt-out", "crt-err", "win-out", "win-err"):
+                            marker = origin + "-" + stream
+                            self.assertEqual(text.count(marker), int(mode == "normal"))
+                            self.assertEqual((result.stdout + result.stderr).count(marker), int(mode not in ("normal", "closed", "closederr")))
+
     def test_fault_log_stem_collision_and_latest_record_bounds(self):
         with tempfile.TemporaryDirectory(prefix="saga-fault-name-") as temp:
             directory = Path(temp)

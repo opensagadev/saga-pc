@@ -1,8 +1,10 @@
-/* Linked only by Debug. No hooks, handlers, threads or game initialization. */
+/* Debug-only logging and initialization of the bounded exception observer. */
 #define _CRT_SECURE_NO_DEPRECATE // NOLINT(readability-identifier-naming): required VC8 CRT selector.
 #define WIN32_LEAN_AND_MEAN
 #include "diagnostics.h"
 #include <errno.h>
+#include <fcntl.h>
+#include <io.h>
 #include <stdarg.h>
 #include <stdio.h>
 #include <string.h>
@@ -15,6 +17,70 @@ static volatile LONG log_lock = 0;
 static int log_initialized = 0;
 static HANDLE log_file = INVALID_HANDLE_VALUE;
 static char log_filename[MAX_PATH] = {0};
+/* Retained for process lifetime: _dup2 closes the original CRT-owned handles. */
+static int log_original_out = -1;
+static int log_original_err = -1;
+static int log_capture = 0;
+static int log_capture_eligible = 0;
+
+static void save_original_streams(void) {
+    int out = _fileno(stdout), err = _fileno(stderr);
+    HANDLE out_handle = out < 0 ? INVALID_HANDLE_VALUE : (HANDLE)_get_osfhandle(out);
+    HANDLE err_handle = err < 0 ? INVALID_HANDLE_VALUE : (HANDLE)_get_osfhandle(err);
+    DWORD flags;
+    /* Validate both before any _dup/CreateFile can reuse a closed handle number. */
+    BOOL out_valid = GetHandleInformation(out_handle, &flags);
+    BOOL err_valid = GetHandleInformation(err_handle, &flags);
+    log_capture_eligible = out_valid && err_valid && GetStdHandle(STD_OUTPUT_HANDLE) == out_handle &&
+                           GetStdHandle(STD_ERROR_HANDLE) == err_handle;
+    if (out_valid) {
+        fflush(stdout);
+        log_original_out = _dup(out);
+        if (log_original_out >= 0 &&
+            !SetHandleInformation((HANDLE)_get_osfhandle(log_original_out), HANDLE_FLAG_INHERIT, 0)) {
+            _close(log_original_out);
+            log_original_out = -1;
+        }
+    }
+    if (err_valid) {
+        fflush(stderr);
+        log_original_err = _dup(err);
+        if (log_original_err >= 0 &&
+            !SetHandleInformation((HANDLE)_get_osfhandle(log_original_err), HANDLE_FLAG_INHERIT, 0)) {
+            _close(log_original_err);
+            log_original_err = -1;
+        }
+    }
+}
+
+static void capture_standard_streams(void) {
+    int out = _fileno(stdout), err = _fileno(stderr);
+    int file;
+    HANDLE duplicate;
+    if (log_file == INVALID_HANDLE_VALUE || !log_capture_eligible || log_original_out < 0 || log_original_err < 0)
+        return;
+    if (!DuplicateHandle(GetCurrentProcess(), log_file, GetCurrentProcess(), &duplicate, 0, TRUE,
+                         DUPLICATE_SAME_ACCESS))
+        return;
+    file = _open_osfhandle((intptr_t)duplicate, _O_WRONLY | _O_BINARY);
+    if (file < 0) {
+        CloseHandle(duplicate);
+        return;
+    }
+    /* All handles duplicate one file object/position, including inherited WineDbg
+     * output. A second fopen of the path would allow streams to overwrite each other. */
+    if (SetStdHandle(STD_OUTPUT_HANDLE, log_file) && SetStdHandle(STD_ERROR_HANDLE, log_file) &&
+        _dup2(file, out) == 0 && _dup2(file, err) == 0) {
+        log_capture = 1;
+    } else {
+        /* Restore CRT ownership first: its old numeric handles may already be closed. */
+        int restored_out = _dup2(log_original_out, out);
+        int restored_err = _dup2(log_original_err, err);
+        SetStdHandle(STD_OUTPUT_HANDLE, (HANDLE)_get_osfhandle(restored_out == 0 ? out : log_original_out));
+        SetStdHandle(STD_ERROR_HANDLE, (HANDLE)_get_osfhandle(restored_err == 0 ? err : log_original_err));
+    }
+    _close(file);
+}
 
 /* CREATE_NEW prevents overwriting a previous run, even after PID reuse. */
 static void open_log_file(const SYSTEMTIME *time) {
@@ -22,6 +88,7 @@ static void open_log_file(const SYSTEMTIME *time) {
     char *slash;
     DWORD length;
     unsigned int attempt;
+    SECURITY_ATTRIBUTES security = {sizeof(SECURITY_ATTRIBUTES), NULL, TRUE};
 
     length = GetModuleFileNameA(NULL, directory, sizeof(directory));
     if (length == 0 || length >= sizeof(directory))
@@ -40,7 +107,7 @@ static void open_log_file(const SYSTEMTIME *time) {
                               time->wSecond, time->wMilliseconds, SAGA_BUILD_ID, GetCurrentProcessId(), attempt);
         if (count < 0 || count >= sizeof(log_filename))
             return;
-        log_file = CreateFileA(log_filename, GENERIC_WRITE, FILE_SHARE_READ | FILE_SHARE_WRITE, NULL, CREATE_NEW,
+        log_file = CreateFileA(log_filename, GENERIC_WRITE, FILE_SHARE_READ | FILE_SHARE_WRITE, &security, CREATE_NEW,
                                FILE_ATTRIBUTE_NORMAL, NULL);
         if (log_file != INVALID_HANDLE_VALUE || GetLastError() != ERROR_FILE_EXISTS)
             return;
@@ -51,18 +118,23 @@ static void write_record(enum log_level level, const char *record) {
     static const WORD colors[] = {FOREGROUND_RED, FOREGROUND_RED | FOREGROUND_GREEN, FOREGROUND_GREEN,
                                   FOREGROUND_INTENSITY};
     CONSOLE_SCREEN_BUFFER_INFO console;
-    HANDLE output = GetStdHandle(STD_OUTPUT_HANDLE);
+    HANDLE output = log_original_out >= 0 ? (HANDLE)_get_osfhandle(log_original_out) : INVALID_HANDLE_VALUE;
     BOOL colored = FALSE;
     DWORD written;
     DWORD length = (DWORD)strlen(record);
     /* Console attributes give saga's severity colors without adding escapes to files or pipes. */
     if (GetConsoleScreenBufferInfo(output, &console))
         colored = SetConsoleTextAttribute(output, (console.wAttributes & 0xfff0) | colors[level]);
-    fputs(record, stdout);
-    fflush(stdout);
+    if (log_original_out >= 0)
+        WriteFile(output, record, length, &written, NULL);
     if (colored)
         SetConsoleTextAttribute(output, console.wAttributes);
-    if (log_file != INVALID_HANDLE_VALUE) {
+    if (log_capture) {
+        /* CRT stdout/stderr and Win32 standard handles share the dated file.
+         * Write this record once, not again through the original raw file sink. */
+        fputs(record, stdout);
+        fflush(stdout);
+    } else if (log_file != INVALID_HANDLE_VALUE) {
         /* Unbuffered WriteFile keeps completed records available after a crash. */
         if (!WriteFile(log_file, record, length, &written, NULL) || written != length) {
             CloseHandle(log_file);
@@ -93,13 +165,18 @@ void __cdecl _saga_log(enum log_level level, const char *file, int line, const c
     GetLocalTime(&time);
     if (!log_initialized) {
         log_initialized = 1;
+        /* Save first: a closed stdout handle number can be reused by CreateFile. */
+        save_original_streams();
         open_log_file(&time);
+        capture_standard_streams();
         SagaDebugCrashInitPc(log_file, SAGA_BUILD_ID, log_file == INVALID_HANDLE_VALUE ? NULL : log_filename);
         _snprintf(record, sizeof(record),
-                  "%04u-%02u-%02u %02u:%02u:%02u.%03u [INFO] Debug build %s; pid %lu; file logging %s\n", time.wYear,
-                  time.wMonth, time.wDay, time.wHour, time.wMinute, time.wSecond, time.wMilliseconds, SAGA_BUILD_ID,
-                  GetCurrentProcessId(),
-                  log_file == INVALID_HANDLE_VALUE ? "unavailable (stdout active)" : log_filename);
+                  "%04u-%02u-%02u %02u:%02u:%02u.%03u [INFO] Debug build %s; pid %lu; file logging %s; standard-stream "
+                  "capture %s\n",
+                  time.wYear, time.wMonth, time.wDay, time.wHour, time.wMinute, time.wSecond, time.wMilliseconds,
+                  SAGA_BUILD_ID, GetCurrentProcessId(),
+                  log_file == INVALID_HANDLE_VALUE ? "unavailable (stdout active)" : log_filename,
+                  log_capture ? "active" : "unavailable");
         record[sizeof(record) - 1] = 0;
         write_record(LOG_LEVEL_INFO, record);
     }

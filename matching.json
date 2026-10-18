@@ -63,7 +63,7 @@
     "tools/setup.py": "c8ef721b27fabd2968798b781616f81994d191ada62fb734de0dc10f200b8528",
     "tools/test_binary.py": "fdd66ca0f332ee3c67a9a10308e6f9d94b900f707be39894296deb3b92e3eead",
     "tools/test_bink_imports.py": "51fdaeb952f0f4f4d38fe412dd9d659a04381ef34f796b03101a1e335d4b8506",
-    "tools/test_build_kinds.py": "a1919f8839ff6ae3574b1fbde58bdc28cf0c5640ab2cf8696936d8bff4fde6cc",
+    "tools/test_build_kinds.py": "03f5c94edbc43ba8d0e48165eb707dc4939e789fde86da5a2e828d3c629a6afb",
     "tools/test_candidate_only.py": "49290bea1357029a2340a07613e24cf2c7af9610fe77f2fc18a50b0fc00dc379",
     "tools/test_cc.py": "16970ee4548035a57e295b5991ff8c1735b729307b94484657c0528748f0368e",
     "tools/test_check.py": "63d759c4299aa643890908765fecb45ecd1631146761604ea6c0d3e41b1233c2",
@@ -236,7 +236,7 @@
     "src/gameapi/ai_registry_pc.c": "c6fdc3b0273731fedf19c5be8c800f6573c760213effaa55ec46e0d8f5cf55d0",
     "src/gameapi/aiscript.c": "4028fc6fd1767a6b8724e71881841b82e12fd003a37300b08118a53497c5f1e5",
     "src/gameapi/aiscript_diagnostics.c": "16e689a9fa169e1baed3fc074f164232093b81c0af3c3b5dd4248ab787bc6a20",
-    "src/gameapi/aisys.c": "62ac12a8c0653e44a08af148d5cd1efe232726a8b764feabe79b4922bb703981",
+    "src/gameapi/aisys.c": "6bc8909eefc7c86020e55f50d58f05417e44b66eb59a4f7733479132cc7f0a63",
     "src/gameapi/apiobject.c": "291aca3dc35e8b5a69bcdd4d266f2f911b9aae34f4ca634101c5ac78fefe37cf",
     "src/gameapi/apisave.c": "cd5daa60ac1b21b037c481ddfe4ef603f1a596edaca9032d0b6b03dc99cdedc5",
     "src/gameapi/edanim_load.c": "76521f786114c6f0fd2472a1167e692ae9a43e3a03eb7b6240ac69461ed6e311",
@@ -404,7 +404,7 @@
     "src/legoapi/utilities.c": "c6ba5346c7705484b9165deab49db1af37e53d042f651be70165839760f8f971",
     "src/legoapi/whip.c": "184316c2a34699bc02452f20b87d019a87b5851ad13226ffb92c0eac983fd5b6",
     "src/legoapi/zipup.c": "14d25740038843e8e2c244592637ac353361ca8e6371af80eaa36f95d85b0f71",
-    "src/log.c": "456eb660fdbd247646b3c9ff371c33cfb89263c016754dcd177ecd0d64f0570f",
+    "src/log.c": "fed1b37463467f43d0bfae2bc0a522973a55105c9dda6f17815a01da34ae4f88",
     "src/nu2api/bgproc.c": "8d53270cb26c59dcf8511c1c5e4e2bab545fcf053483e427033dd90475c0280c",
     "src/nu2api/glutils.c": "562d5438332dfb4654aaab1e9dd0a7b017b65a9e9fc8c786e5b1f7e5331af251",
     "src/nu2api/implode.c": "dcd62b4b33d1d9a4add4e1c9ddccf1c6dd2365bfdb02a1dc099bd60873407a04",
@@ -518,7 +518,7 @@
     "build/obj/gameapi/ai_registry_pc.obj": "cb7f67b75f6b2c8995ed7b52b145049f52b08ac622ddd9229ea58bd4d03451aa",
     "build/obj/gameapi/aiscript.obj": "e6201e7692a77a721a2374752b7b82681e2a0af3f6aba4711d2ae803ceaed3ee",
     "build/obj/gameapi/aiscript_diagnostics.obj": "a279e5511932363c6fa391596b156be47c140a2343c20485f9f414cf003f563f",
-    "build/obj/gameapi/aisys.obj": "8c4acdcd15103ad55c1b1485461bf68295ca69b3945a6bf166cef6f258a068f0",
+    "build/obj/gameapi/aisys.obj": "ee39f4196ecece409a85192c6da677a836f68ce2c37f5a775158fec238dd5cba",
     "build/obj/gameapi/apiobject.obj": "f83676303b226b8efae199a71b3fa818f1c9c9555ed9ade40381aca0468a9db8",
     "build/obj/gameapi/apisave.obj": "79d6857974be875f78ca72b09d6c2c561070fa092795f67f2a0b5ed9b2283fce",
     "build/obj/gameapi/edanim_load.obj": "6e601660b57f3ae0e0f58d31b42f68a5be7f0d9314047925b52aa1d418f1282a",
@@ -61129,21 +61129,49 @@
       "name": "Condition_PlayerToLocatorPc",
       "symbol": "_Condition_PlayerToLocatorPc",
       "address": "0x005155c0",
-      "units": [],
+      "units": [
+        "src/gameapi/aisys.c"
+      ],
       "target_size": 84,
-      "exact_match": false,
-      "objects": [],
-      "status": "not implemented"
+      "exact_match": true,
+      "objects": [
+        {
+          "unit": "src/gameapi/aisys.c",
+          "base_size": 84,
+          "exact_match": true,
+          "target_sha256": "235bf300ced5b31fe99e4e3be6a8905671d55fe50feb949f5afc37441712d260",
+          "base_sha256": "235bf300ced5b31fe99e4e3be6a8905671d55fe50feb949f5afc37441712d260",
+          "relocation_count": 2,
+          "comparison_unit": "005155c0-b0cccb3e7673",
+          "objdiff_percent": 100.0
+        }
+      ],
+      "status": "exact",
+      "objdiff_percent": 100.0
     },
     {
       "name": "Condition_NearestPlayerToLocatorPc",
       "symbol": "_Condition_NearestPlayerToLocatorPc",
       "address": "0x00515620",
-      "units": [],
+      "units": [
+        "src/gameapi/aisys.c"
+      ],
       "target_size": 206,
-      "exact_match": false,
-      "objects": [],
-      "status": "not implemented"
+      "exact_match": true,
+      "objects": [
+        {
+          "unit": "src/gameapi/aisys.c",
+          "base_size": 206,
+          "exact_match": true,
+          "target_sha256": "82f0ce157219fbd3ae8103524cdd12c57aa6b703611a91b3db83f144d606c08b",
+          "base_sha256": "82f0ce157219fbd3ae8103524cdd12c57aa6b703611a91b3db83f144d606c08b",
+          "relocation_count": 5,
+          "comparison_unit": "00515620-46b786de8081",
+          "objdiff_percent": 100.0
+        }
+      ],
+      "status": "exact",
+      "objdiff_percent": 100.0
     },
     {
       "name": "Condition_PathBlockedPc",
@@ -64921,11 +64949,25 @@
       "name": "Condition_PlayerToLocatorInitPc",
       "symbol": "_Condition_PlayerToLocatorInitPc",
       "address": "0x0052d200",
-      "units": [],
+      "units": [
+        "src/gameapi/aisys.c"
+      ],
       "target_size": 26,
-      "exact_match": false,
-      "objects": [],
-      "status": "not implemented"
+      "exact_match": true,
+      "objects": [
+        {
+          "unit": "src/gameapi/aisys.c",
+          "base_size": 26,
+          "exact_match": true,
+          "target_sha256": "12cf657ec3f40fb463fd93a4dd404364e11ae423618a8f12657ce9c775853b53",
+          "base_sha256": "12cf657ec3f40fb463fd93a4dd404364e11ae423618a8f12657ce9c775853b53",
+          "relocation_count": 1,
+          "comparison_unit": "0052d200-3c9b62fda3cb",
+          "objdiff_percent": 100.0
+        }
+      ],
+      "status": "exact",
+      "objdiff_percent": 100.0
     },
     {
       "name": "Action_FaceLocator",
@@ -467651,13 +467693,13 @@
   "progress": {
     "text_bytes": 3471246,
     "mapped_code_bytes": 2395863,
-    "matched_code_bytes": 445613,
-    "matching_percent": 12.837263622341949,
-    "fuzzy_coverage_percent": 45.504235193796255,
+    "matched_code_bytes": 445929,
+    "matching_percent": 12.846366981769659,
+    "fuzzy_coverage_percent": 45.51333855322397,
     "mapped_functions": 8789,
-    "matched_functions": 4127,
-    "objdiff_fuzzy_percent": 74.319374,
-    "objdiff_total_code": 2128752,
+    "matched_functions": 4130,
+    "objdiff_fuzzy_percent": 74.3232,
+    "objdiff_total_code": 2129068,
     "image_bytes": 40067072,
     "mapped_bytes": 4180015,
     "mapping_percent": 10.432544209868892,
@@ -468853,7 +468895,7 @@
       "metadata_sha256": "fe09365da4c355f220d724ca99394fc120b758891b4188d2c49707b6df0894f2",
       "header_path": "src/saga.h",
       "header_sha256": "6e86901507634d521341e2c73c437f12e4a8c2a04cc3989988a844a15adfcf84",
-      "geometry_object_sha256": "6a1ac59e59ba694b2552f45625aa665a387ad588534f7c9311af6c844e89c1f9",
+      "geometry_object_sha256": "2dd9c4bb4e98d62c06d44bcf0f373a6a234a6afa3733bbac59bfa00827b6e021",
       "toolchain_sha256": "b8808088bb2c7eb239785f69c9e464ae8545216d5705fb37216bc0cf926732f3",
       "implementation_sha256": "d6a33be911d095a6d07dccd4443ccbfd6b514fd89fd7e200d9caa1827944e218",
       "headers": {

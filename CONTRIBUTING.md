@@ -44,7 +44,8 @@ optimization settings and unresolved-symbol policy. Debug adds `/Z7`, linker
 `/DEBUG`, `/PDB`, `/MAP`, and `SAGA_DEBUG` for diagnostic support. Its PE uses the console subsystem
 with an explicit `WinMainCRTStartup` entry so Wine terminal launches inherit working
 stdout; the native `WinMain` startup path stays the same. Matching retains the GUI
-subsystem. Debug preserves inherited terminal, pipe and file redirection, and does not define
+subsystem. Debug application records retain the inherited terminal, pipe or file
+destination. Debug does not define
 `DEBUG` or `_DEBUG`, select a debug CRT, or change assertion policy.
 Setup installs the matching PDB helper closure (`mspdbsrv.exe`, `mspdbcore.dll`,
 `msobj80.dll`, version 8.0.50727.42) from separate immutable URLs and SHA-256 pins;
@@ -93,9 +94,18 @@ stdout and a best-effort `log/` directory beside its executable (`build/log/` in
 the normal layout), filtering above INFO as saga does. Each run creates a fresh
 file named with local timestamp, git revision, deterministic build-input hash,
 process ID and collision suffix. The startup banner identifies the build. File
-creation/write failure leaves stdout active. Records are serialized across
-threads and flushed immediately; stdout can also be redirected to capture Wine
-crash diagnostics, for example `make BUILD_KIND=Debug run >build/human-test.log 2>&1`.
+creation/write failure leaves application console output active. Application records
+are serialized across threads and flushed immediately. At first log initialization,
+the dated file is also shared by CRT stdout/stderr and the inheritable Windows
+standard handles. Application records write once to this file and separately to the
+saved original output handle with terminal colors. Raw CRT/Win32 output and inherited
+WineDbg output go to the dated file; they may be file-only and follow their own
+buffering/interleaving. Wine's Unix-host stderr remains separate, so not every Wine
+message is captured. There is no tee process, wrapper, debugger override or added
+thread. If stream setup fails, the logger retains its original console/file sinks;
+the startup banner reports whether standard-stream capture is active. Explicit host
+redirection remains useful for Wine's Unix messages, for example
+`make BUILD_KIND=Debug run >build/human-test.log 2>&1`.
 World, scene and streaming lifecycle events use INFO; missing native work
 continues to use WARN/ERROR.
 The first logged event also initializes a Debug-only observer for selected exception

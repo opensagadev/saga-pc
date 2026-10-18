@@ -12379,3 +12379,51 @@ f32 __cdecl Condition_PlayerToOriginPc(AISYS_PC *system, AISCRIPTPROCESS_PC *pro
     }
     return FLT_MAX;
 }
+
+STATIC_ASSERT(offsetof(AISYS_PC, player_1) == 0x138c);
+STATIC_ASSERT(offsetof(AISYS_PC, player_2) == 0x1390);
+STATIC_ASSERT(offsetof(AISCRIPTPROCESS_PC, locator) == 0xa4);
+STATIC_ASSERT(offsetof(AILOCATOR_PC, position) == 0x10);
+STATIC_ASSERT(offsetof(APIOBJECT_PC, position) == 0x5c);
+
+void *__cdecl Condition_PlayerToLocatorInitPc(AISYS_PC *system, char *name, AISCRIPT_PC *script) {
+    if (name != NULL)
+        return AIPathFindLocator(system, name);
+    return NULL;
+}
+
+f32 __cdecl Condition_PlayerToLocatorPc(AISYS_PC *system, AISCRIPTPROCESS_PC *process, AIPACKET_PC *packet, char *name,
+                                        void *argument) {
+    NUVEC difference;
+    if (packet != NULL && system != NULL && system->player_1 != NULL) {
+        AILOCATOR_PC *locator = (AILOCATOR_PC *)argument;
+        if (locator == NULL)
+            locator = process->locator;
+        if (locator != NULL)
+            return NuVecDist(&system->player_1->position, &locator->position, &difference);
+    }
+    return FLT_MAX;
+}
+
+f32 __cdecl Condition_NearestPlayerToLocatorPc(AISYS_PC *system, AISCRIPTPROCESS_PC *process, AIPACKET_PC *packet,
+                                               char *name, void *argument) {
+    NUVEC difference;
+    f32 distance = FLT_MAX;
+    if (packet != NULL && system != NULL) {
+        AILOCATOR_PC *locator = (AILOCATOR_PC *)argument;
+        if (locator == NULL)
+            locator = process->locator;
+        if (locator != NULL) {
+            if (system->player_1 != NULL)
+                distance = NuVecDistSqr(&system->player_1->position, &locator->position, &difference);
+            if (system->player_2 != NULL) {
+                f32 second = NuVecDistSqr(&system->player_2->position, &locator->position, &difference);
+                if (second < distance)
+                    distance = second;
+            }
+        }
+        if ((f64)distance != (f64)FLT_MAX)
+            distance = NuFsqrt(distance);
+    }
+    return distance;
+}
