@@ -848,3 +848,24 @@ void __cdecl HothBattleE_UpdateWave(void) {
     if ((pending | MiniCutCam) == 0 && NOAICREATURES == 0 && melee.current_wave == melee.next_wave)
         ++melee.next_wave;
 }
+
+void __cdecl DrawMeleeTargetsAlphaPc(i16 *targets, u8 *dimmed, f32 *values, i32 count) {
+    f32 size, spacing, offset, x;
+    i32 i;
+    if (FadeSys.fade != 0.0f || count <= 0)
+        return;
+    size = MeleeRowsScalePc * HudBossIconScalePc;
+    spacing = (f32)((f64)MeleeRowsSpacingPc * 0.5 * (f64)MeleeRowsScalePc);
+    offset = (f32)((f64)MeleeRowsYOffsetPc * 0.5 * (f64)MeleeRowsScalePc);
+    x = (f32)((f64)(1 - count) * (f64)spacing * 0.5);
+    for (i = 0; i < count; ++i) {
+        f32 y = (i & 1) != 0 ? offset + MeleeRowsYPc : MeleeRowsYPc - offset;
+        if (values != NULL) {
+            DrawCharIcon(targets[i], x, y, 0.0f, size, 0xa7, values[i], values[i], 1, NULL);
+        } else {
+            f32 alpha = dimmed[i] != 0 ? 0.25f : 1.0f;
+            DrawCharIcon(targets[i], x, y, 0.0f, size, 0xa7, alpha, alpha, 1, NULL);
+        }
+        x += spacing;
+    }
+}

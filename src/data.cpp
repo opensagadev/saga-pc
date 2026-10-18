@@ -34290,6 +34290,10 @@ extern "C" {
     f32 boulder_wait = 0.0f;
     PART_PC *boulder_part[2] = {NULL, NULL};
     i32 i_boulder = 0;
+#pragma bss_seg(".bss$JediBArenaStatePc")
+    i32 JediBActiveCountPc = 0;
+    JEDIB_NETPACKET_PC *jedib_netpacket = NULL;
+    JEDIB_STATE_PC jedi_b = {0};
 #pragma bss_seg(".bss$DeathStarEscapeBNetPacketPc")
     u8 *DeathStarEscapeBNetPacketPc = 0;
 #pragma bss_seg()
@@ -34422,5 +34426,38 @@ extern "C" {
 #pragma data_seg(".data$ForceDeflectTuningPc")
     f32 ForceDeflectSpeedPc = 4.0f;
     f32 ForceDeflectSeekRatePc = 3.0f;
+#pragma data_seg()
+}
+
+extern "C" {
+#pragma data_seg(".data$JediBArenaTuningPc")
+    i32 jedib_seed = 17;
+    i32 jedib_min_baddies_per_goody = 1;
+    i32 jedib_max_baddies_per_goody = 3;
+    f32 jedib_outer_r = 8.0f;
+    f32 jedib_safe_r = 9.0f;
+    f32 jedib_inner = 3.0f;
+    f32 jedib_offset = 0.5f;
+    f32 jedib_proximity = 0.5f;
+    f32 jedib_create_step_Normal = 2.0f;
+    NUVEC jedib_offsets[3] = {{0.1f, -0.1f, -0.1f}, {-0.1f, -0.1f, -0.1f}, {-0.1f, -0.1f, 0.1f}};
+    i32 jedib_yrot[3] = {0x6000, 0xa000, 0xe000};
+    i16 *JediB_playerids[3] = {&CharacterFixupIdPc007f19c8, &id_ANAKINPADAWAN, &CharacterFixupIdPc007f19d0};
+    JEDIB_PHASE_PC jedi_b_phase1[8] = {{&id_DROIDEKA, "phase_droids"},
+                                       {&id_DROIDEKA, "phase_droids"},
+                                       {&id_BATTLEDROIDSECURITY, "phase_droids"},
+                                       {&id_BATTLEDROIDSECURITY, "phase_droids"},
+                                       {&id_BATTLEDROIDSECURITY, "phase_droids"},
+                                       {&id_BATTLEDROIDSECURITY, "phase_droids"},
+                                       {&id_BATTLEDROIDSECURITY, "phase_droids"},
+                                       {NULL, NULL}};
+    JEDIB_PHASE_PC jedi_b_phase2[8] = {{&id_DROIDEKA, "phase_droids"},         {&id_DROIDEKA, "phase_droids"},
+                                       {&id_SUPERBATTLEDROID, "phase_droids"}, {&id_SUPERBATTLEDROID, "phase_droids"},
+                                       {&id_SUPERBATTLEDROID, "phase_droids"}, {&id_SUPERBATTLEDROID, "phase_droids"},
+                                       {&id_SUPERBATTLEDROID, "phase_droids"}, {NULL, NULL}};
+    JEDIB_PHASE_PC jedi_b_phase3[8] = {{&id_SUPERBATTLEDROID, "phase_droids"}, {&id_SUPERBATTLEDROID, "phase_droids"},
+                                       {&id_DROIDEKA, "phase_droids"},         {&id_DROIDEKA, "phase_droids"},
+                                       {&id_DROIDEKA, "phase_droids"},         {&id_DROIDEKA, "phase_droids"},
+                                       {&id_DROIDEKA, "phase_droids"},         {NULL, NULL}};
 #pragma data_seg()
 }

@@ -1,5 +1,10 @@
 #include "saga.h"
 
+extern "C" void __cdecl JediB_Init(WORLDINFO *);
+extern "C" void __cdecl JediB_Reset(WORLDINFO *);
+extern "C" void __cdecl JediB_Update(WORLDINFO *);
+extern "C" void __cdecl JediB_DrawPanelPc(WORLDINFO *);
+
 extern "C" void __cdecl KashyyykD_Init(WORLDINFO *);
 extern "C" void __cdecl KashyyykD_Reset(WORLDINFO *);
 extern "C" void __cdecl KashyyykD_Update(WORLDINFO *);
@@ -454,10 +459,10 @@ extern "C" void __cdecl FixUpLevels(struct level_fixup_pc_s *fixup) {
             level = Level_FindByName("Jedi_B", NULL); /* Native call 0x48e1dd. */
             JEDI_B_LDATA = level;                     /* Native store 0x48e1e7. */
             if (level != NULL) {
-                STUBBED_NAMED(FixUpLevels_Callback_4de360); /* Native 0x48e1ee: callbacks[1] = entry 0x4de360. */
-                STUBBED_NAMED(FixUpLevels_Callback_4de740); /* Native 0x48e1fb: callbacks[2] = entry 0x4de740. */
-                STUBBED_NAMED(FixUpLevels_Callback_4df120); /* Native 0x48e207: callbacks[3] = entry 0x4df120. */
-                STUBBED_NAMED(FixUpLevels_Callback_4df9b0); /* Native 0x48e214: callbacks[6] = entry 0x4df9b0. */
+                level->callbacks[1] = (void *)JediB_Init;        /* Native 0x48e1ee: callbacks[1] = entry 0x4de360. */
+                level->callbacks[2] = (void *)JediB_Reset;       /* Native 0x48e1fb: callbacks[2] = entry 0x4de740. */
+                level->callbacks[3] = (void *)JediB_Update;      /* Native 0x48e207: callbacks[3] = entry 0x4df120. */
+                level->callbacks[6] = (void *)JediB_DrawPanelPc; /* Native 0x48e214: callbacks[6] = entry 0x4df9b0. */
             }
             level = Level_FindByName("Jedi_Outro", NULL); /* Native call 0x48e225. */
             LevelFixupSlotPc0087b0f0 = level;             /* Native store 0x48e231. */
