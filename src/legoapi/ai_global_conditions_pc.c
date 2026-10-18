@@ -650,3 +650,22 @@ f32 __cdecl Condition_TakeOverRangePc(AISYS_PC *system, AISCRIPTPROCESS_PC *proc
     }
     return 1000000000.0f;
 }
+
+STATIC_ASSERT(sizeof(NUSPECIALHANDLE) == 0xc);
+STATIC_ASSERT(offsetof(WORLDINFO, current_gscn) == 0x13c);
+STATIC_ASSERT(offsetof(NUINSTANIM_TIME_VIEW, ltime) == 0x4c);
+
+void *__cdecl Condition_RigidAnimFrameInitPc(AISYS_PC *system, char *name, AISCRIPT_PC *script) {
+    NUSPECIALHANDLE special;
+    NuSpecialFind(WORLD->current_gscn, &special, name, 1);
+    if (NuSpecialExistsFn(&special))
+        return NuSpecialGetInstAnim(&special);
+    return NULL;
+}
+
+f32 __cdecl Condition_RigidAnimFramePc(AISYS_PC *system, AISCRIPTPROCESS_PC *process, AIPACKET_PC *packet, char *name,
+                                       void *argument) {
+    if (argument != NULL)
+        return ((NUINSTANIM_TIME_VIEW *)argument)->ltime;
+    return 1.0f;
+}
