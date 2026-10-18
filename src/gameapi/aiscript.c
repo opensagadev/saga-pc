@@ -2110,6 +2110,8 @@ static void AIScriptFindRefScripts(AISYS_PC *sys, AISCRIPT_PC *script) {
     }
 }
 
+extern IMAGE_DOS_HEADER __ImageBase;
+
 void __cdecl AIScriptInitConditions(AISYS_PC *sys) {
     AISCRIPT_PC *script;
     AISTATE_PC *state;
@@ -2129,6 +2131,12 @@ void __cdecl AIScriptInitConditions(AISYS_PC *sys) {
 
                 while (condition != NULL) {
                     if (condition->definition->init_fn != NULL) {
+                        LOG_WARN_ONCE_IF((u32)condition->definition->init_fn == (u32)&__ImageBase,
+                                         "AI condition init unresolved: name=%.64s def=%p fn=%p sys=%p script=%p "
+                                         "state=%p condition=%p arg=%p; build=log-banner",
+                                         condition->definition->name, (void *)condition->definition,
+                                         (void *)condition->definition->init_fn, (void *)sys, (void *)script,
+                                         (void *)state, (void *)condition, (void *)condition->argument);
                         condition->initialized_argument =
                             (*condition->definition->init_fn)(sys, condition->argument, script);
                     }

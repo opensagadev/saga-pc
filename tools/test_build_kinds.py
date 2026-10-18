@@ -189,6 +189,7 @@ class DiagnosticCompilerTests(unittest.TestCase):
                     source.write_text(include + linkage +
                                       'int probe(int value) { LOG_INFO("marker %d", value); '
                                       'LOG_INFO_IF(value != 0, "conditional"); LOG_WARN_ONCE("once"); '
+                                      'LOG_WARN_ONCE_IF(value != 0, "conditional once"); '
                                       'LOG(LOG_LEVEL_WARN, "level"); LOG_DEBUG("filtered"); '
                                       'STUBBED(); STUBBED_NAMED(missing_target); '
                                       'UNIMPLEMENTED(missing_work); return value + 7; }\n')
@@ -204,6 +205,123 @@ class DiagnosticCompilerTests(unittest.TestCase):
                     self.assertEqual([s["name"] for s in matching.defined_symbols()], ["_probe"])
                     self.assertFalse(matching.extract_function("_probe")["relocations"])
                     self.assertNotIn(b"marker", matching.data)
+
+    def test_conditional_warning_once_preserves_required_calls_in_both_kinds(self):
+        # Side effects are deliberate probes here, never production macro inputs.
+        with tempfile.TemporaryDirectory(prefix="saga-warning-once-") as temp:
+            directory = Path(temp)
+            source = directory / "probe.c"
+            source.write_text('''#include "diagnostics.h"
+static int conditions, arguments, warnings, calls;
+#ifdef SAGA_DEBUG
+void __cdecl _saga_log(enum log_level level, const char *file, int line, const char *function, const char *format, ...) { ++warnings; }
+#endif
+static void dispatch(int missing) {
+    LOG_WARN_ONCE_IF((++conditions, missing), "missing %d", ++arguments);
+    ++calls;
+}
+int main(void) {
+    dispatch(0); dispatch(1); dispatch(1);
+#ifdef SAGA_DEBUG
+    return !(conditions == 3 && arguments == 1 && warnings == 1 && calls == 3);
+#else
+    return !(conditions == 0 && arguments == 0 && warnings == 0 && calls == 3);
+#endif
+}
+''')
+            _, wine, env = cc.environment()
+            for debug in (False, True):
+                with self.subTest(debug=debug):
+                    obj = directory / ("debug.obj" if debug else "matching.obj")
+                    self.compile(source, obj, debug=debug)
+                    executable = obj.with_suffix(".exe")
+                    self.command([sys.executable, ROOT / "tools/cc.py", "--link", executable, obj,
+                                  "--", "/nologo", "/machine:x86", "/subsystem:console",
+                                  "/incremental:no", "/manifest:no"])
+                    self.command([wine, cc.windows(executable)], env=env)
+
+    def test_fault_log_stem_collision_and_latest_record_bounds(self):
+        with tempfile.TemporaryDirectory(prefix="saga-fault-name-") as temp:
+            directory = Path(temp)
+            source = directory / "fault.c"
+            source.write_text(r'''#include <windows.h>
+#include <errno.h>
+#include "diagnostics.h"
+int main(int argc, char **argv) {
+    HANDLE file, collision;
+    DWORD written;
+    unsigned i;
+    char long_path[MAX_PATH];
+    const char *path = "fixture.log";
+    char mode = argc > 1 ? argv[1][0] : 'n';
+    file = CreateFileA("fixture.log", GENERIC_WRITE, FILE_SHARE_READ | FILE_SHARE_WRITE,
+                       NULL, CREATE_NEW, FILE_ATTRIBUTE_NORMAL, NULL);
+    if (file == INVALID_HANDLE_VALUE) return 1;
+    if (mode == 'c') {
+        collision = CreateFileA("fixture.fault.log", GENERIC_WRITE, 0, NULL, CREATE_NEW,
+                                FILE_ATTRIBUTE_NORMAL, NULL);
+        if (collision == INVALID_HANDLE_VALUE) return 2;
+        WriteFile(collision, "preserve", 8, &written, NULL);
+        CloseHandle(collision);
+    } else if (mode == 'm') {
+        path = NULL;
+    } else if (mode == 'l') {
+        for (i = 0; i < MAX_PATH - 5; ++i) long_path[i] = 'x';
+        long_path[MAX_PATH - 5] = '.';
+        long_path[MAX_PATH - 4] = 'l';
+        long_path[MAX_PATH - 3] = 'o';
+        long_path[MAX_PATH - 2] = 'g';
+        long_path[MAX_PATH - 1] = 0;
+        path = long_path;
+    } else if (mode == 'e') {
+        path = "fixture.txt";
+    }
+    errno = EDOM;
+    SetLastError(0x1234);
+    SagaDebugCrashInitPc(file, "fixture-build", path);
+    if (GetLastError() != 0x1234 || errno != EDOM) return 3;
+    CloseHandle(file);
+    for (i = 0; i < 11; ++i) {
+        errno = EDOM;
+        SetLastError(0x1234);
+        __try { RaiseException(EXCEPTION_INT_DIVIDE_BY_ZERO, 0, 0, NULL); }
+        __except(EXCEPTION_EXECUTE_HANDLER) {}
+        if (GetLastError() != 0x1234 || errno != EDOM) return 4;
+    }
+    return 0;
+}
+''')
+            fixture = directory / "fault.obj"
+            crash = directory / "crash.obj"
+            self.compile(source, fixture, debug=True)
+            self.compile(ROOT / "src/crash_diagnostics.cpp", crash, debug=True)
+            executable = directory / "fault.exe"
+            self.command([sys.executable, ROOT / "tools/cc.py", "--link", executable,
+                          fixture, crash, "--", "/nologo", "/machine:x86", "/subsystem:console",
+                          "/incremental:no", "/manifest:no"])
+            _, wine, env = cc.environment()
+            for mode in ("normal", "collision", "missing", "long", "extension"):
+                with self.subTest(mode=mode):
+                    run = directory / mode
+                    run.mkdir()
+                    result = subprocess.run([wine, cc.windows(executable), mode], cwd=run, env=env,
+                                            capture_output=True, text=True, timeout=30)
+                    self.assertEqual(result.returncode, 0, result.stdout + result.stderr)
+                    normal = (run / "fixture.log").read_text()
+                    self.assertEqual(normal.count("[FAULT-DIAGNOSTIC FIRST-CHANCE"), 8)
+                    self.assertIn("Normal-log capture limit reached", normal)
+                    if mode == "normal":
+                        fault = (run / "fixture.fault.log").read_bytes()
+                        self.assertLessEqual(len(fault), 4096)
+                        self.assertEqual(fault.count(b"[FAULT-DIAGNOSTIC FIRST-CHANCE"), 1)
+                        self.assertIn(b"event=0x0000000B", fault)
+                        self.assertEqual({p.name for p in run.iterdir()}, {"fixture.log", "fixture.fault.log"})
+                    elif mode == "collision":
+                        self.assertEqual((run / "fixture.fault.log").read_bytes(), b"preserve")
+                        self.assertIn("fault-log=unavailable", normal)
+                    else:
+                        self.assertEqual({p.name for p in run.iterdir()}, {"fixture.log"})
+                        self.assertIn("fault-log=unavailable", normal)
 
     def test_debug_logging_is_once_per_site_and_preserves_error_state(self):
         with tempfile.TemporaryDirectory(prefix="saga-debug-log-") as temp:
@@ -251,9 +369,12 @@ int main(void) {
                         self.assertNotIn("diagnostic value", result.stdout)
                         self.assertFalse((directory / "log").exists())
                     else:
-                        logs = list((directory / "log").glob("[0-9]*.log"))
+                        logs = [p for p in (directory / "log").glob("[0-9]*.log") if not p.name.endswith(".fault.log")]
                         self.assertEqual(len(logs), 1)
                         self.assertEqual(logs[0].read_text(), result.stdout)
+                        fault = logs[0].with_suffix(".fault.log")
+                        self.assertTrue(fault.is_file())
+                        self.assertEqual(fault.read_bytes(), b"")
                         self.assertNotIn("\x1b[", result.stdout)
                         self.assertRegex(logs[0].name, r"\d{8}-\d{6}-\d{3}-[0-9a-f]{12}-[0-9a-f]{12}-\d+-0\.log")
                         self.assertIn("Debug build ", result.stdout)
@@ -263,7 +384,9 @@ int main(void) {
                         self.assertEqual(result.stdout.count("UNIMPLEMENTED: required_dependency"), 2)
                         self.assertNotIn("filtered debug message", result.stdout)
                         repeated = self.command([wine, cc.windows(executable)], env=env)
-                        self.assertEqual(len(list((directory / "log").glob("[0-9]*.log"))), 2)
+                        self.assertEqual(len([p for p in (directory / "log").glob("[0-9]*.log")
+                                              if not p.name.endswith(".fault.log")]), 2)
+                        self.assertEqual(len(list((directory / "log").glob("*.fault.log"))), 2)
                         self.assertEqual(logs[0].read_text(), result.stdout)
                         self.assertIn("diagnostic value 1", repeated.stdout)
                         shutil.rmtree(directory / "log")

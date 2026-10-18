@@ -94,7 +94,7 @@ void __cdecl _saga_log(enum log_level level, const char *file, int line, const c
     if (!log_initialized) {
         log_initialized = 1;
         open_log_file(&time);
-        SagaDebugCrashInitPc(log_file, SAGA_BUILD_ID);
+        SagaDebugCrashInitPc(log_file, SAGA_BUILD_ID, log_file == INVALID_HANDLE_VALUE ? NULL : log_filename);
         _snprintf(record, sizeof(record),
                   "%04u-%02u-%02u %02u:%02u:%02u.%03u [INFO] Debug build %s; pid %lu; file logging %s\n", time.wYear,
                   time.wMonth, time.wDay, time.wHour, time.wMinute, time.wSecond, time.wMilliseconds, SAGA_BUILD_ID,

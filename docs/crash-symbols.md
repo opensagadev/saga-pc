@@ -23,7 +23,7 @@ provenance for the supplied pair; it cannot prove how a manually edited map was
 produced. Preserve the pair and manifest together. Source files or the current git
 revision are not substitutes for the executable's embedded identity.
 
-For a record in `build/log/latest-fault-*.log` or its timestamped normal log, take
+For a record in `build/log/<normal-log-stem>.fault.log` or its timestamped normal log, take
 `build=`, the main executable's `module-at-init` `base=`, and `EIP=` from the **same
 record**. Hexadecimal command arguments require `0x`. For example (replace the
 illustrative build ID and addresses with your record):

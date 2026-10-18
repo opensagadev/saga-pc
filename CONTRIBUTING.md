@@ -14,7 +14,7 @@ Linux x86-64 with Python 3.11+, GNU Make, Git, Wine (32-bit), LLVM's
 sudo dpkg --add-architecture i386
 sudo apt-get update
 sudo apt-get install --no-install-recommends \
-    ca-certificates git make python3 wine wine64 wine32:i386 clang-format-18 clang-tidy-18 llvm-18
+    ca-certificates git make python3 wine wine64 wine32:i386 winbind clang-format-18 clang-tidy-18 llvm-18
 python3 -m pip install libclang        # only for tools/permute.py
 make setup                             # pinned MSVC 2005 + objdiff-cli into build/tools/
 make check
@@ -51,9 +51,10 @@ Setup installs the matching PDB helper closure (`mspdbsrv.exe`, `mspdbcore.dll`,
 the original compiler archive and compiler/linker binaries remain unchanged. These
 legacy helpers come from the immutable `archaic-msvc/msvc800` mirror revision pinned
 in `config/toolchain.json`; hashes/version agreement and identical compiler/PDB
-companions establish reproducibility, not vendor authentication for unsigned DLLs. An
-older cache needs `python3 tools/setup.py --compiler-only` once; even `--archive`
-installs these separately downloaded helpers. Missing or changed helpers are rejected
+companions establish reproducibility, not vendor authentication for unsigned DLLs.
+Wine 9 also needs `ntlm_auth` (the `winbind` package) for the PDB server's NTLM RPC
+authentication. An older cache needs `python3 tools/setup.py --compiler-only` once;
+even `--archive` installs these separately downloaded helpers. Missing or changed helpers are rejected
 before compilation/linking. Debug emits `build/LEGOStarWarsSaga_debug.pdb` alongside
 the executable; strict Debug links use their own adjacent PDB. Explicit
 `/OPT:NOREF /OPT:NOICF` preserve the existing link optimization policy under `/DEBUG`.
@@ -101,8 +102,10 @@ The first logged event also initializes a Debug-only observer for selected excep
 codes. It records raw x86 fault context as **FIRST-CHANCE**, which can include handled
 exceptions; a record alone does not establish a crash. It continues normal exception
 routing without recovery. Up to eight records append through a duplicated log handle,
-and a separate `build/log/latest-fault-*.log` file retains the latest observed fault
-after that limit. The observer uses preallocated buffers and raw file writes, not the
+and a separate `.fault.log` file with the same timestamp/build-hash stem as the normal
+log retains the latest observed fault after that limit. It is preopened at initialization
+without overwriting an existing file; unavailable or overlong paths leave this extra sink
+unavailable. Existing logs are preserved. The observer uses preallocated buffers and raw file writes, not the
 normal logger lock. Unreadable context is marked unavailable; stack overflow is
 excluded because the observer cannot guarantee handler stack space. Logging does not intercept exceptions.
 WARN_ONCE and STUBBED use an atomic flag per site. The logger preserves

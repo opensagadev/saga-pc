@@ -13,7 +13,7 @@ extern "C" {
 #endif
     /* Exact VC8 intrinsic signature; avoid intrin.h C++ vector overloads. */
     LONG __cdecl _InterlockedExchange(LONG volatile *target, LONG value);
-    void __cdecl SagaDebugCrashInitPc(HANDLE existing_log_file, const char *build_id);
+    void __cdecl SagaDebugCrashInitPc(HANDLE existing_log_file, const char *build_id, const char *log_path);
     void __cdecl _saga_log(enum log_level level, const char *file, int line, const char *function, const char *format,
                            ...);
 #ifdef __cplusplus
@@ -66,6 +66,12 @@ extern "C" {
             LOG_WARN(__VA_ARGS__);                                                                                     \
         }                                                                                                              \
     } while (0)
+#define LOG_WARN_ONCE_IF(condition, ...)                                                                               \
+    do {                                                                                                               \
+        if (condition) {                                                                                               \
+            LOG_WARN_ONCE(__VA_ARGS__);                                                                                \
+        }                                                                                                              \
+    } while (0)
 #undef STUBBED
 #undef STUBBED_NAMED
 #define STUBBED() LOG_WARN_ONCE("STUBBED: %s", __FUNCTION__)
@@ -80,6 +86,7 @@ extern "C" {
 #define LOG_DEBUG(...) ((void)0)
 #define LOG_INFO_IF(condition, ...) ((void)0)
 #define LOG_WARN_ONCE(...) ((void)0)
+#define LOG_WARN_ONCE_IF(condition, ...) ((void)0)
 #ifndef STUBBED
 #define STUBBED() ((void)0)
 #endif

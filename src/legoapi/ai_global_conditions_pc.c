@@ -521,3 +521,35 @@ f32 __cdecl Condition_AnimationFinishedPc(AISYS_PC *system, AISCRIPTPROCESS_PC *
     }
     return 0.0f;
 }
+
+typedef struct ai_been_to_level_progress_pc_s {
+    u8 unknown_0000[0x2800];
+    u32 visited_flags;
+    u8 unknown_2804[0x624];
+} AI_BEEN_TO_LEVEL_PROGRESS_PC;
+STATIC_ASSERT(sizeof(AI_BEEN_TO_LEVEL_PROGRESS_PC) == sizeof(LEVEL_PROGRESS));
+STATIC_ASSERT(offsetof(AI_BEEN_TO_LEVEL_PROGRESS_PC, visited_flags) == 0x2800);
+STATIC_ASSERT(offsetof(WORLDINFO, area) == 0x12c);
+STATIC_ASSERT(offsetof(AREA_DATA_PC, levels) == 0x60);
+STATIC_ASSERT(offsetof(AREA_DATA_PC, level_count) == 0x7d);
+STATIC_ASSERT(offsetof(LEVELDATA_PC, name) == 0x40);
+STATIC_ASSERT(sizeof(LEVELDATA_PC) == 0x130);
+
+void *__cdecl Condition_BeenToLevelInitPc(AISYS_PC *system, char *name, AISCRIPT_PC *script) {
+    i32 index;
+    if (name != NULL && system != NULL && WORLD->area != NULL) {
+        for (index = 0; index < WORLD->area->level_count; ++index) {
+            if (NuStrICmp(name, LDataList[WORLD->area->levels[index]].name) == 0)
+                return (void *)index;
+        }
+    }
+    return (void *)-1;
+}
+
+f32 __cdecl Condition_BeenToLevelPc(AISYS_PC *system, AISCRIPTPROCESS_PC *process, AIPACKET_PC *packet, char *name,
+                                    void *argument) {
+    i32 index = (i32)argument;
+    if (index != -1)
+        return (f32)(((AI_BEEN_TO_LEVEL_PROGRESS_PC *)LevelProgressData)[index].visited_flags & 1u);
+    return 0.0f;
+}

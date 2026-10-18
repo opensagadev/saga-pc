@@ -152,14 +152,14 @@ static LONG CALLBACK fault_observe(EXCEPTION_POINTERS *pointers) {
     } else {
         fault_append("\r\ncontext unreadable");
     }
-    fault_append("\r\nlatest-selected-fault-sidecar=");
+    fault_append("\r\nfault-log=");
     fault_append(fault_latest == INVALID_HANDLE_VALUE ? "unavailable" : fault_path);
     fault_append("\r\nThis is first-chance evidence, not proof the exception was unhandled.\r\n");
     if (fault_count == 8) {
         if (fault_latest != INVALID_HANDLE_VALUE)
-            fault_append("Normal-log capture limit reached; bounded latest-selected-fault sidecar remains active.\r\n");
+            fault_append("Normal-log capture limit reached; bounded fault log remains active.\r\n");
         else
-            fault_append("Normal-log capture limit reached; latest-selected-fault sidecar is unavailable.\r\n");
+            fault_append("Normal-log capture limit reached; fault log is unavailable.\r\n");
     }
     if (fault_file != INVALID_HANDLE_VALUE && fault_count <= 8)
         WriteFile(fault_file, fault_text, fault_used, &written, NULL);
@@ -177,17 +177,12 @@ finished:
     return EXCEPTION_CONTINUE_SEARCH;
 }
 
-extern "C" void __cdecl SagaDebugCrashInitPc(HANDLE existing_log_file, const char *build_id) {
+extern "C" void __cdecl SagaDebugCrashInitPc(HANDLE existing_log_file, const char *build_id, const char *log_path) {
     DWORD saved_error = GetLastError();
     HANDLE modules;
     MODULEENTRY32 entry;
-    unsigned length, slash, attempt;
-    char suffix[64];
-    unsigned suffix_used;
-    DWORD tokens[3];
-    unsigned token, digit;
-    static const char hex[] = "0123456789ABCDEF";
-    static const char prefix[] = "log\\latest-fault-";
+    unsigned length;
+    static const char suffix[] = ".fault.log";
     if (InterlockedCompareExchange(&fault_initialized, 1, 0) != 0) {
         SetLastError(saved_error);
         return;
@@ -211,38 +206,21 @@ extern "C" void __cdecl SagaDebugCrashInitPc(HANDLE existing_log_file, const cha
         }
         CloseHandle(modules);
     }
+    /* Reuse the successful normal log's collision-safe timestamp/build stem.
+     * Preopen once; the handler only rewrites this bounded record. Never truncate
+     * an existing file or invent a second naming scheme when the path is absent. */
     length = 0;
-    slash = 0;
-    while (fault_image[length] != 0) {
-        if (fault_image[length] == '\\' || fault_image[length] == '/')
-            slash = length + 1;
-        ++length;
-    }
-    if (slash != 0 && slash + 64 < sizeof(fault_path)) {
-        for (attempt = 0; attempt < 16; ++attempt) {
-            for (length = 0; length < slash; ++length)
-                fault_path[length] = fault_image[length];
-            fault_copy(fault_path + slash, sizeof(fault_path) - slash, prefix);
-            length = slash + sizeof(prefix) - 1;
-            tokens[0] = GetCurrentProcessId();
-            tokens[1] = GetTickCount();
-            tokens[2] = attempt;
-            suffix_used = 0;
-            for (token = 0; token < 3; ++token) {
-                for (digit = 0; digit < 8; ++digit)
-                    suffix[suffix_used++] = hex[(tokens[token] >> (28 - digit * 4)) & 15];
-                suffix[suffix_used++] = '-';
-            }
-            suffix[suffix_used - 1] = '.';
-            suffix[suffix_used++] = 'l';
-            suffix[suffix_used++] = 'o';
-            suffix[suffix_used++] = 'g';
-            suffix[suffix_used] = 0;
-            fault_copy(fault_path + length, sizeof(fault_path) - length, suffix);
+    if (log_path != NULL) {
+        while (length < sizeof(fault_path) && log_path[length] != 0)
+            ++length;
+        if (length >= 4 && length - 4 + sizeof(suffix) <= sizeof(fault_path) && log_path[length - 4] == '.' &&
+            log_path[length - 3] == 'l' && log_path[length - 2] == 'o' && log_path[length - 1] == 'g') {
+            unsigned i;
+            for (i = 0; i < length - 4; ++i)
+                fault_path[i] = log_path[i];
+            fault_copy(fault_path + length - 4, sizeof(fault_path) - length + 4, suffix);
             fault_latest = CreateFileA(fault_path, GENERIC_WRITE, FILE_SHARE_READ | FILE_SHARE_WRITE, NULL, CREATE_NEW,
                                        FILE_ATTRIBUTE_NORMAL, NULL);
-            if (fault_latest != INVALID_HANDLE_VALUE || GetLastError() != ERROR_FILE_EXISTS)
-                break;
         }
     }
     AddVectoredExceptionHandler(1, fault_observe);
