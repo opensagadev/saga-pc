@@ -627,3 +627,26 @@ f32 __cdecl Condition_OnObjectPc(AISYS_PC *system, AISCRIPTPROCESS_PC *process, 
     }
     return 0.0f;
 }
+
+STATIC_ASSERT(offsetof(AIPACKET_PC, owner) == 0xd0);
+STATIC_ASSERT(offsetof(GAMEOBJECT, objptr) == 0);
+STATIC_ASSERT(offsetof(GAMEOBJECT, takeover_target) == 0xea4);
+STATIC_ASSERT(offsetof(GAMEOBJECT, position) == 0x5c);
+
+f32 __cdecl Condition_HasTakeOverTargetPc(AISYS_PC *system, AISCRIPTPROCESS_PC *process, AIPACKET_PC *packet,
+                                          char *name, void *argument) {
+    if (packet != NULL && packet->owner != NULL && packet->owner->objptr != NULL &&
+        packet->owner->objptr->takeover_target != NULL)
+        return 1.0f;
+    return 0.0f;
+}
+
+f32 __cdecl Condition_TakeOverRangePc(AISYS_PC *system, AISCRIPTPROCESS_PC *process, AIPACKET_PC *packet, char *name,
+                                      void *argument) {
+    if (packet != NULL && packet->owner != NULL && packet->owner->objptr != NULL) {
+        GAMEOBJECT *target = packet->owner->objptr->takeover_target;
+        if (target != NULL)
+            return NuVecDist(&target->position, &packet->owner->position, NULL);
+    }
+    return 1000000000.0f;
+}

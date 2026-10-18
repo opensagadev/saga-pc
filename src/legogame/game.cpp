@@ -1390,6 +1390,7 @@ extern "C" void __cdecl Game_WorldInfo_InitMenu(WORLDINFO *world, i32 *menu_id, 
 }
 
 extern "C" void __cdecl GizSpinners_InitTerrain(WORLDINFO *world);
+extern "C" void __cdecl InitClimbObjectSys(WORLDINFO *world);
 extern "C" void __cdecl GizmoPushBlockInitAndReset(WORLDINFO *, void *);
 
 extern "C" void __cdecl Game_WorldInfo_InitLast(WORLDINFO *world) {
@@ -1401,7 +1402,7 @@ extern "C" void __cdecl Game_WorldInfo_InitLast(WORLDINFO *world) {
     GizPanel_InitTerrain(world);
     HatMachines_InitTerrain(world);
     GizmoBlowupsFinalSetup(world);
-    STUBBED_NAMED("Game_WorldInfo_InitLast: InitClimbObjectSys 48f726 -> 56cc00");
+    InitClimbObjectSys(world);
     GizmoPushBlockInitAndReset(world, NULL);
 }
 

@@ -110,3 +110,36 @@ i32 __cdecl IndyGrappleCanJumpPc(GAMEOBJECT *object) {
         return 1;
     return 0;
 }
+
+STATIC_ASSERT(offsetof(AIPATH_PC, connection_count) == 0x12);
+STATIC_ASSERT(offsetof(AIPATH_PC, connections) == 0x80);
+STATIC_ASSERT(offsetof(CLIMB_SYSTEM_PC, objects) == 0);
+extern i32 LEGO_AIPATHCNX_VARIANT_FLAG0_PC, LEGO_AIPATHCNX_VARIANT_FLAG1_PC;
+void __cdecl InitClimbObjectSys(WORLDINFO *world) {
+    i32 index, connection_index;
+    AIPATH_PC *path;
+    AIPATHCNX_PC *connection;
+    CLIMB_SYSTEM_PC *system;
+    CLIMB_SLOT_PC *object;
+    if (world == NULL || world->ai_sys == NULL || world->ai_sys->path_sys == NULL || world->climb_objects == NULL)
+        return;
+    world->climb_objects->count = 0;
+    memset(world->climb_objects->objects, 0, world->climb_objects->capacity * sizeof(CLIMB_SLOT_PC));
+    for (index = 0; index < world->ai_sys->path_sys->path_count; ++index) {
+        path = world->ai_sys->path_sys->paths[index];
+        if (path == NULL)
+            continue;
+        connection = path->connections;
+        for (connection_index = 0; connection_index < path->connection_count; ++connection_index, ++connection) {
+            system = world->climb_objects;
+            if (system->count < system->capacity &&
+                (connection->traversal_flags[0] &
+                 (LEGO_AIPATHCNX_VARIANT_FLAG0_PC | LEGO_AIPATHCNX_VARIANT_FLAG1_PC)) != 0) {
+                object = &system->objects[system->count++];
+                object->connection = connection;
+                object->path = path;
+                ClimbObject_FindNormalPc(object);
+            }
+        }
+    }
+}

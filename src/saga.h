@@ -27882,6 +27882,7 @@ extern "C" {
     i32 __cdecl IndyGrappleHelperOccupiedPc(AI_HELPER_SLOT_PC *helper, GAMEOBJECT *owner, AIPATHCNX_PC *connection,
                                             u8 direction, u8 type);
     i32 __cdecl Indy_PrepareGrapplePc(AIPACKET_PC *packet, APIOBJECT_PC *object, i32 checks);
+    void __cdecl InitClimbObjectSys(WORLDINFO *world);
     void __cdecl ClimbObject_FindNormalPc(CLIMB_SLOT_PC *object);
     CLIMB_SLOT_PC *__cdecl FindClimbObject(CLIMB_SYSTEM_PC *system, AIPATHCNX_PC *connection);
     INDY_GUIDELINE_PC *__cdecl GuideLine_FindNearest(NUVEC *position, WORLDINFO *world, i32 *endpoint, f32 *distance);
