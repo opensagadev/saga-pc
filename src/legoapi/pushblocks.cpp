@@ -218,7 +218,18 @@ typedef struct PUSH_SUPPORT_BLOCK_VIEW_PC {
     NUVEC *position;
     u8 unknown_05c[0xb0 - 0x5c];
     NUVEC bounds_min, bounds_max;
-    u32 packed_state_flags;
+    union {
+        u32 packed_state_flags;
+        struct {
+            u32 unknown_flags_000_011 : 12;
+            u32 animation_positions : 3;
+            u32 unknown_flags_015_017 : 3;
+            u32 push_visible : 1;
+            u32 unknown_flags_019_024 : 6;
+            u32 progress_state : 1;
+            u32 unknown_flags_026_031 : 6;
+        };
+    };
     u8 unknown_0cc[4];
     u8 completed_snap_positions;
     u8 end_position_count;
@@ -323,13 +334,25 @@ typedef struct PUSH_RUNTIME_BLOCK_VIEW_PC {
     NUSPECIALHANDLE end_position_specials[2];
     NUVEC end_position_origins[2];
     NUVEC velocity, target_velocity, snap_origin, bounds_min, bounds_max;
-    u32 packed_state_flags;
+    union {
+        u32 packed_state_flags;
+        struct {
+            u32 unknown_flags_000_011 : 12;
+            u32 animation_positions : 3;
+            u32 unknown_flags_015_017 : 3;
+            u32 push_visible : 1;
+            u32 unknown_flags_019_024 : 6;
+            u32 progress_state : 1;
+            u32 unknown_flags_026_031 : 6;
+        };
+    };
     u8 unknown_0cc[4];
     u8 completed_snap_positions, end_position_count, output_count, unknown_0d3;
 } PUSH_RUNTIME_BLOCK_VIEW_PC;
 typedef struct PUSH_RUNTIME_LEVEL_VIEW_PC {
     u8 unknown_000[0xff];
     u8 max_push_blocks;
+    u8 max_push_block_positions;
 } PUSH_RUNTIME_LEVEL_VIEW_PC;
 typedef struct PUSH_RUNTIME_WORLD_VIEW_PC {
     u8 unknown_000[0x104];
@@ -343,6 +366,8 @@ typedef struct PUSH_RUNTIME_WORLD_VIEW_PC {
     u8 unknown_2acc[0x46bc - 0x2acc];
     PUSH_RUNTIME_BLOCK_VIEW_PC *blocks;
     i32 count;
+    NUVEC *positions;
+    i32 position_count;
 } PUSH_RUNTIME_WORLD_VIEW_PC;
 STATIC_ASSERT(sizeof(PUSH_RUNTIME_BLOCK_VIEW_PC) == 0xd4);
 STATIC_ASSERT(offsetof(PUSH_RUNTIME_LEVEL_VIEW_PC, max_push_blocks) == 0xff);
@@ -416,4 +441,209 @@ extern "C" PUSH_BLOCK_PC *__cdecl NearestPushBlock(WORLDINFO *opaque_world, NUVE
         }
     }
     return reinterpret_cast<PUSH_BLOCK_PC *>(nearest);
+}
+
+// Full PC runtime views; the Android/shared pushblock_s has a shorter tail.
+STATIC_ASSERT(offsetof(PUSH_RUNTIME_LEVEL_VIEW_PC, max_push_block_positions) == 0x100);
+STATIC_ASSERT(offsetof(PUSH_RUNTIME_WORLD_VIEW_PC, positions) == 0x46c4);
+STATIC_ASSERT(offsetof(PUSH_RUNTIME_WORLD_VIEW_PC, position_count) == 0x46c8);
+typedef struct PUSH_RESET_PROGRESS_PC {
+    u32 visible_mask[1], state_mask[1], position_mask[1];
+    NUVEC positions[16];
+    NUVEC end_positions[2][16];
+} PUSH_RESET_PROGRESS_PC;
+STATIC_ASSERT(sizeof(PUSH_RESET_PROGRESS_PC) == 0x24c);
+STATIC_ASSERT(offsetof(PUSH_RESET_PROGRESS_PC, positions) == 0xc);
+STATIC_ASSERT(offsetof(PUSH_RESET_PROGRESS_PC, end_positions) == 0xcc);
+extern "C" {
+    extern NUVEC PushBlockMissingSpecialPositionPc;
+    extern i32 RunOutOfPosTabSpacePc;
+    extern f32 PushInitGroundOffsetPc, PushInitCornerInsetPc;
+}
+
+extern "C" void __cdecl ResetSinglePushBlock(WORLDINFO *, struct pushblock_s *opaque, i32) {
+    PUSH_RUNTIME_BLOCK_VIEW_PC *block = reinterpret_cast<PUSH_RUNTIME_BLOCK_VIEW_PC *>(opaque);
+    block->platform_id = FindPlatInst(NuSpecialGetInstanceix(&block->special));
+    SetAnimFrame(reinterpret_cast<struct nuhspecial_s *>(&block->special), 1.0f);
+    block->packed_state_flags &= 0xfdfc70f2u;
+    block->pushing_object = NULL;
+    block->completed_snap_positions = 0;
+    if (NuSpecialExistsFn(&block->special) != 0) {
+        NuSpecialGetBounds(&block->special, &block->bounds_min, &block->bounds_max);
+        block->position = reinterpret_cast<NUVEC *>(&NuSpecialGetInstanceMtx(&block->special)->m30);
+        if (block->animation_positions != 0 && RunOutOfPosTabSpacePc == 0)
+            *block->position = block->snap_positions[0];
+    } else {
+        // Retail uses this distinct mutable vector, not the canonical v000.
+        block->bounds_min = PushBlockMissingSpecialPositionPc;
+        block->bounds_max = PushBlockMissingSpecialPositionPc;
+        block->position = &PushBlockMissingSpecialPositionPc;
+    }
+}
+
+extern "C" void __cdecl ResetPushProgress(WORLDINFO *opaque, void *progress_data) {
+    PUSH_RUNTIME_WORLD_VIEW_PC *world = reinterpret_cast<PUSH_RUNTIME_WORLD_VIEW_PC *>(opaque);
+    PUSH_RUNTIME_BLOCK_VIEW_PC *block = world->blocks;
+    if (block == NULL || world->count <= 0)
+        return;
+    PUSH_RESET_PROGRESS_PC *progress = static_cast<PUSH_RESET_PROGRESS_PC *>(progress_data);
+    for (i32 index = 0; index < world->count; ++index, ++block) {
+        if (progress != NULL && index < 16) {
+            const u32 bit = 1u << (index & 31);
+            block->progress_state = (progress->state_mask[index / 32] & bit) != 0;
+            block->push_visible = (progress->visible_mask[index / 32] & bit) != 0;
+            if (block->push_visible == 0) {
+                NuSpecialSetVisibility(&block->special, 0);
+                block->push_visible = 0;
+                for (i32 output = 0; output < block->end_position_count; ++output)
+                    NuSpecialSetVisibility(&block->end_position_specials[output], 0);
+            }
+            if ((progress->position_mask[index / 32] & bit) == 0)
+                continue;
+            void *animation = NuSpecialGetInstAnim(&block->special);
+            if (block->push_visible == 0 && animation != NULL) {
+                NUMTX evaluated;
+                NUMTX *matrix = NuSpecialGetInstanceMtx(&block->special);
+                EvalAnim(&block->special, 1.0f, &evaluated, 0);
+                *reinterpret_cast<NUVEC *>(&matrix->m30) = *reinterpret_cast<NUVEC *>(&evaluated.m30);
+                NuSpecialUpdate(&block->special);
+                for (i32 output = 0; output < block->end_position_count; ++output) {
+                    NUSPECIALHANDLE *special = &block->end_position_specials[output];
+                    if (special != NULL) {
+                        matrix = NuSpecialGetInstanceMtx(special);
+                        EvalAnim(special, 1.0f, &evaluated, 0);
+                        *reinterpret_cast<NUVEC *>(&matrix->m30) = *reinterpret_cast<NUVEC *>(&evaluated.m30);
+                        NuSpecialUpdate(special);
+                    }
+                }
+            } else {
+                NUMTX *matrix = NuSpecialGetInstanceMtx(&block->special);
+                *reinterpret_cast<NUVEC *>(&matrix->m30) = progress->positions[index];
+                NuSpecialUpdate(&block->special);
+                for (i32 output = 0; output < block->end_position_count; ++output) {
+                    NUSPECIALHANDLE *special = &block->end_position_specials[output];
+                    if (special != NULL) {
+                        matrix = NuSpecialGetInstanceMtx(special);
+                        *reinterpret_cast<NUVEC *>(&matrix->m30) = progress->end_positions[output][index];
+                        NuSpecialUpdate(special);
+                    }
+                }
+            }
+        }
+    }
+}
+
+extern "C" void __cdecl ResetSinglePushBlockHeight(WORLDINFO *world, struct pushblock_s *opaque, i32 index) {
+    PUSH_RUNTIME_BLOCK_VIEW_PC *block = reinterpret_cast<PUSH_RUNTIME_BLOCK_VIEW_PC *>(opaque);
+    BlockInBlock(world, reinterpret_cast<PUSH_BLOCK_PC *>(block), index, &block->supporting_block);
+    if (block->supporting_block != NULL) {
+        PUSH_RUNTIME_BLOCK_VIEW_PC *support = reinterpret_cast<PUSH_RUNTIME_BLOCK_VIEW_PC *>(block->supporting_block);
+        block->ground_height = support->position->y + support->bounds_max.y + PushBlockGapEpsilonPc;
+    }
+    f32 height = block->bounds_min.y + block->position->y;
+    height -= block->ground_height;
+    block->ground_offset = height;
+    if (height > (f64)PushBlockGapEpsilonPc + 0.0) {
+        block->position->y -= height;
+        block->ground_offset = 0.0f;
+    }
+}
+
+extern "C" void __cdecl GizmoPushBlockInitAndReset(WORLDINFO *opaque, void *progress) {
+    PUSH_RUNTIME_WORLD_VIEW_PC *world = reinterpret_cast<PUSH_RUNTIME_WORLD_VIEW_PC *>(opaque);
+    world->position_count = 0;
+    RunOutOfPosTabSpacePc = 0;
+    pushposincrease = 0;
+    world->positions = static_cast<NUVEC *>(world->giz_buffer.void_ptr);
+    world->giz_buffer.addr =
+        (world->giz_buffer.addr + world->current_level->max_push_block_positions * sizeof(NUVEC) + 3) & ~3u;
+    PUSH_RUNTIME_BLOCK_VIEW_PC *block = world->blocks;
+    ResetPushProgress(opaque, progress);
+    for (i32 index = 0; index < world->count; ++index, ++block) {
+        block->animation_positions = 0;
+        NUINSTANIM_TIME_VIEW *animation = static_cast<NUINSTANIM_TIME_VIEW *>(NuSpecialGetInstAnim(&block->special));
+        if (animation != NULL) {
+            block->animation_positions = static_cast<i32>(NuAnimEndFrameOld(
+                static_cast<NUGSCN *>(block->special.scene)->instance_animation_data[animation->animation_index]));
+            block->output_count = static_cast<u8>(block->animation_positions);
+            i32 required = world->position_count + block->animation_positions;
+            if (required > world->current_level->max_push_block_positions) {
+                if (RunOutOfPosTabSpacePc != 0)
+                    pushposincrease += block->animation_positions;
+                else {
+                    RunOutOfPosTabSpacePc = 1;
+                    pushposincrease += required - world->current_level->max_push_block_positions;
+                }
+            }
+            if (block->animation_positions != 0 && RunOutOfPosTabSpacePc == 0) {
+                block->snap_positions = &world->positions[world->position_count];
+                f32 frame = 1.0f;
+                for (i32 position = 0; position < static_cast<i32>(block->animation_positions);
+                     ++position, frame += 1.0) {
+                    NUMTX evaluated;
+                    EvalAnim(&block->special, frame, &evaluated, 0);
+                    block->snap_positions[position] = *reinterpret_cast<NUVEC *>(&evaluated.m30);
+                    evaluated = *NuSpecialGetMtx(&block->special);
+                    block->snap_positions[position].x += evaluated.m30;
+                    block->snap_positions[position].y += evaluated.m31;
+                    block->snap_positions[position].z += evaluated.m32;
+                    ++world->position_count;
+                }
+            }
+        }
+        ResetSinglePushBlock(opaque, reinterpret_cast<struct pushblock_s *>(block), index);
+    }
+    block = world->blocks;
+    for (i32 index = 0; index < world->count; ++index, ++block) {
+        NUVEC centre = *block->position;
+        block->velocity = v000;
+        block->target_velocity = v000;
+        block->snap_origin = centre;
+        f32 left = static_cast<f32>(fabs(static_cast<f64>(block->bounds_min.x))) + PushInitCornerInsetPc;
+        f32 right = static_cast<f32>(fabs(static_cast<f64>(block->bounds_max.x))) + PushInitCornerInsetPc;
+        f32 back = static_cast<f32>(fabs(static_cast<f64>(block->bounds_min.z))) + PushInitCornerInsetPc;
+        f32 front = static_cast<f32>(fabs(static_cast<f64>(block->bounds_max.z))) + PushInitCornerInsetPc;
+        f32 base_y = centre.y - static_cast<f32>(fabs(static_cast<f64>(block->bounds_min.y))) - PushInitGroundOffsetPc;
+        f32 y = base_y + static_cast<f64>(0.025f);
+        NUVEC corners[4] = {centre, centre, centre, centre};
+        corners[0].y = corners[1].y = corners[2].y = corners[3].y = y;
+        corners[0].x -= left;
+        corners[0].z -= back;
+        corners[1].x += right;
+        corners[1].z -= back;
+        corners[2].x += right;
+        corners[2].z += front;
+        corners[3].x -= left;
+        corners[3].z += front;
+        PlatOnOff(block->platform_id, 0);
+        NewTerrPlatformsOff();
+        f32 height0 = GameShadow(NULL, &corners[0], 0.1f, -1);
+        block->terrain_info[0] = static_cast<i8>(ShadowInfo());
+        block->extra_terrain_info.bytes[0] = static_cast<i8>(EShadowInfo());
+        NewTerrPlatformsOff();
+        f32 height1 = GameShadow(NULL, &corners[1], 0.1f, -1);
+        block->terrain_info[1] = static_cast<i8>(ShadowInfo());
+        block->extra_terrain_info.bytes[1] = static_cast<i8>(EShadowInfo());
+        NewTerrPlatformsOff();
+        f32 height2 = GameShadow(NULL, &corners[2], 0.1f, -1);
+        block->terrain_info[2] = static_cast<i8>(ShadowInfo());
+        block->extra_terrain_info.bytes[2] = static_cast<i8>(EShadowInfo());
+        NewTerrPlatformsOff();
+        f32 height3 = GameShadow(NULL, &corners[3], 0.1f, -1);
+        block->terrain_info[3] = static_cast<i8>(ShadowInfo());
+        block->extra_terrain_info.bytes[3] = static_cast<i8>(EShadowInfo());
+        PlatOnOff(block->platform_id, 1);
+        if (height1 == height0 && height0 == height3 && height3 == height2) {
+            NewTerrPlatformsOff();
+            centre.y = GameShadow(NULL, &centre, 5.0f, -1);
+            if (centre.y == 2000000.0)
+                centre.y = 0.0f;
+            block->ground_height = centre.y;
+        } else
+            block->ground_height = (height3 + (height1 + height0 + height2)) * 0.25;
+        // PC has no Android TerrainBlockOnBlock call here.
+        block->previous_extra_terrain_info = block->extra_terrain_info.word;
+    }
+    for (i32 index = 0; index < world->count; ++index)
+        ResetSinglePushBlockHeight(opaque, reinterpret_cast<struct pushblock_s *>(&world->blocks[index]), index);
 }

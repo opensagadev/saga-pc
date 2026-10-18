@@ -34383,5 +34383,17 @@ extern "C" {
         {{{-1, 0, -1, 1000, 1.0f}}, 1.0f, {NULL}, 0, {0, 0, 0}, 0.0f},
     };
 
+#pragma bss_seg(".bss$PushBlockMissingSpecialPositionPc")
+    NUVEC PushBlockMissingSpecialPositionPc = {0.0f, 0.0f, 0.0f};
+#pragma bss_seg(".bss$RunOutOfPosTabSpacePc")
+    i32 RunOutOfPosTabSpacePc = 0;
+#pragma bss_seg(".bss$pushposincrease")
+    i32 pushposincrease = 0;
+#pragma bss_seg()
+#pragma data_seg(".data$PushInitGroundOffsetPc")
+    f32 PushInitGroundOffsetPc = -0.0010000000474974513f;
+#pragma data_seg(".data$PushInitCornerInsetPc")
+    f32 PushInitCornerInsetPc = -0.0060000000521540642f;
+
 #pragma data_seg()
 }

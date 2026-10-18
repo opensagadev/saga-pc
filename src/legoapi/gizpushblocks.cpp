@@ -582,11 +582,11 @@ static i32 __cdecl edpush_Load(void *world_ptr, void *) {
     return 1;
 }
 
+extern "C" void __cdecl ResetPushProgress(WORLDINFO *, void *);
+extern "C" void __cdecl ResetSinglePushBlock(WORLDINFO *, struct pushblock_s *, i32);
+
 static void __cdecl Push_Reset(void *world, void *, void *progress) {
-    // Native5a6f2a passes (world,progress) to the currently unreconstructed5a4540.
-    STUBBED_NAMED("ResetPushProgress_5a4540");
-    (void)world;
-    (void)progress;
+    ResetPushProgress(static_cast<WORLDINFO *>(world), progress);
 }
 
 static void __cdecl Push_Activate(GIZMO_PC *gizmo, i32 active) {
@@ -603,8 +603,7 @@ static void __cdecl Push_Activate(GIZMO_PC *gizmo, i32 active) {
             if (candidate == block)
                 break;
         if (index < count) {
-            // Native5a6fa0 passes (world,block,index), not a guessed reset or returned value.
-            STUBBED_NAMED("ResetSinglePushBlock_5a4450");
+            ResetSinglePushBlock(WORLD, reinterpret_cast<struct pushblock_s *>(block), index);
         }
         block->packed_state_flags |= 0x00040000u;
     }

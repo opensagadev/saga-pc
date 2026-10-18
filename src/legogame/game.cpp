@@ -1390,6 +1390,7 @@ extern "C" void __cdecl Game_WorldInfo_InitMenu(WORLDINFO *world, i32 *menu_id, 
 }
 
 extern "C" void __cdecl GizSpinners_InitTerrain(WORLDINFO *world);
+extern "C" void __cdecl GizmoPushBlockInitAndReset(WORLDINFO *, void *);
 
 extern "C" void __cdecl Game_WorldInfo_InitLast(WORLDINFO *world) {
     GizSpinners_InitTerrain(world);
@@ -1401,7 +1402,7 @@ extern "C" void __cdecl Game_WorldInfo_InitLast(WORLDINFO *world) {
     HatMachines_InitTerrain(world);
     GizmoBlowupsFinalSetup(world);
     STUBBED_NAMED("Game_WorldInfo_InitLast: InitClimbObjectSys 48f726 -> 56cc00");
-    STUBBED_NAMED("Game_WorldInfo_InitLast: GizmoPushBlockInitAndReset 48f72e -> 5a7a00 (world,NULL)");
+    GizmoPushBlockInitAndReset(world, NULL);
 }
 
 // These two genuine Hub functions belong in the Hub owner, not game.cpp.

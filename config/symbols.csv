@@ -4669,6 +4669,7 @@ address    , symbol                                                         , si
 0x5a73e0,?edpush_Load@@YAHPAX0@Z,734,
 0x5a76c0,?Pushblocks_BoltHitPlat@@YAHPAX0PAUbolt_s@@PAE@Z,402,
 0x5a7860,?Push_RegisterGizmo@@YAPAUaddgizmotype_pc_s@@H@Z,278,
+0x5a7980,_ResetSinglePushBlockHeight,126,"void __cdecl (WORLDINFO_s *, pushblock_s *, i32)"
 0x5a7a00,_GizmoPushBlockInitAndReset,1634,
 0x5a8090,_Particles_Load,188,"void __cdecl(WORLDINFO *,char **,i32,i32)"
 0x5a8150,_Particles_LoadAreaPage,48,
@@ -19329,6 +19330,8 @@ address    , symbol                                                         , si
 0x805b1c,?snap_time@?1??UpdatePushBlocks@@9@4MA,,
 0x805b20,?version@?1??edpush_Load@@YAHPAX0@Z@4HA,,
 0x805b24,_PushBlocksNamePc,,char *
+0x805b28,_PushInitGroundOffsetPc,4,f32
+0x805b2c,_PushInitCornerInsetPc,4,f32
 0x805b34,_DEBPAGE_GENERAL,,i32
 0x805b38,_DEBPAGE_CHARACTER,,i32
 0x805b3c,_DEBPAGE_AREA,,i32
@@ -22389,7 +22392,9 @@ address    , symbol                                                         , si
 0x95de68,_RenderHubFromCutscenePlayerPc,,i32
 0x95de6c,_Hub_PanelBusyFn,,i32 (__cdecl *)(void)
 0x95de8c,?pushblock_gizmotype_id@@3HA,,
-0x0095deb4 , _RunOutOfPosTabSpacePc                                         ,       ,
+0x95dea8,_PushBlockMissingSpecialPositionPc,12,NUVEC
+0x95deb4,_RunOutOfPosTabSpacePc,4,i32
+0x95deb8,_pushposincrease,4,i32
 0x95dec0,_CanPushBlocksFn,,u32 (__cdecl *)(GAMEOBJECT *)
 0x95dec4,_PushBlockOverlapShrinkPc,,f32
 0x95dec8,?addtype@?1??Push_RegisterGizmo@@YAPAUaddgizmotype_pc_s@@H@Z@4U2@A,,

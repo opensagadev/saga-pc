@@ -26908,6 +26908,9 @@ extern "C" {
     extern void *newmode_cutinfo;
     extern nuhspecial_s thingsSceneArm;
     f32 __cdecl NuFmax(f32 a, f32 b);
+    void __cdecl ResetSinglePushBlock(struct WORLDINFO_s *world, struct pushblock_s *block, i32 index);
+    void __cdecl ResetPushProgress(struct WORLDINFO_s *world, void *progress);
+    void __cdecl GizmoPushBlockInitAndReset(struct WORLDINFO_s *world, void *progress);
     void __cdecl ResetSinglePushBlockHeight(struct WORLDINFO_s *arg0, struct pushblock_s *arg1, i32 arg2);
     extern i32 pushposincrease;
     void __cdecl GizSpinner_Update(struct GIZSPINNER_s *spinner);

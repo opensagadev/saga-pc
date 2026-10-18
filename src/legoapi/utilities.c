@@ -384,7 +384,7 @@ i32 __cdecl OnOrInsidePlane(NUVEC *point, NUVEC *plane_point, NUVEC *plane_norma
     return 0;
 }
 
-static __declspec(noinline) void ReflectionCopyMatrixPc(NUMTX *source, NUMTX *result) {
+static __declspec(noinline) void ReflectionCopyMatrixPc(NUMTX *result, NUMTX *source) {
     result->m00 = source->m00;
     result->m01 = source->m01;
     result->m02 = source->m02;
@@ -406,10 +406,40 @@ i32 __cdecl MatrixReflectionVU0_AXISY(NUMTX *matrix, f32 plane, f32 override_pla
     if ((f64)override_plane != 2000000.0 &&
         (MatrixReflection_CanOverrideFn == NULL || MatrixReflection_CanOverrideFn() != 0))
         plane = override_plane;
-    ReflectionCopyMatrixPc(matrix, result);
+    ReflectionCopyMatrixPc(result, matrix);
     result->m01 = -result->m01;
     result->m11 = -result->m11;
     result->m21 = -result->m21;
     result->m31 = plane - (result->m31 - plane);
     return 1;
+}
+
+void __cdecl SetAnimFrame(struct nuhspecial_s *special, f32 frame) {
+    NUMTX matrix;
+    NUINSTANIM_TIME_VIEW *instance_animation;
+    f32 **animation;
+    NUMTX *instance_matrix;
+    f32 end_frame;
+    if (NuSpecialExistsFn((NUSPECIALHANDLE *)special) == 0)
+        return;
+    ReflectionCopyMatrixPc(&matrix, (NUMTX *)&ANI3_EVAL_IDENTITY_MATRIX);
+    instance_animation = NuSpecialGetInstAnim((NUSPECIALHANDLE *)special);
+    if (instance_animation == NULL)
+        return;
+    animation = (f32 **)&special->scene->instance_animation_data[instance_animation->animation_index];
+    if (*animation == NULL)
+        return;
+    end_frame = **animation;
+    if ((f64)frame == 1000000000.0)
+        frame = end_frame;
+    if (!(frame >= 1.0f && frame <= end_frame))
+        return;
+    if (*animation != NULL)
+        NuAnimData2CalcMatrix((ANI3_HEADER_PC *)*animation, 0, frame, &matrix);
+    instance_animation->matrix = matrix;
+    instance_matrix = NuSpecialGetInstanceMtx((NUSPECIALHANDLE *)special);
+    instance_animation->matrix.m30 = instance_matrix->m30;
+    instance_animation->matrix.m31 = instance_matrix->m31;
+    instance_animation->matrix.m32 = instance_matrix->m32;
+    instance_animation->ltime = frame;
 }
