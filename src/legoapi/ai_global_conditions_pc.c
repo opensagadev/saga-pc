@@ -553,3 +553,77 @@ f32 __cdecl Condition_BeenToLevelPc(AISYS_PC *system, AISCRIPTPROCESS_PC *proces
         return (f32)(((AI_BEEN_TO_LEVEL_PROGRESS_PC *)LevelProgressData)[index].visited_flags & 1u);
     return 0.0f;
 }
+
+typedef struct ai_on_object_platform_pc_s {
+    u8 unknown_00[0x40];
+    NUMTX *scene_object;
+    u8 unknown_44[0x28];
+} AI_ON_OBJECT_PLATFORM_PC;
+typedef struct ai_on_object_terrain_pc_s {
+    u8 unknown_00[0x68];
+    AI_ON_OBJECT_PLATFORM_PC *platforms;
+} AI_ON_OBJECT_TERRAIN_PC;
+STATIC_ASSERT(sizeof(AI_ON_OBJECT_PLATFORM_PC) == 0x6c);
+STATIC_ASSERT(offsetof(AI_ON_OBJECT_PLATFORM_PC, scene_object) == 0x40);
+STATIC_ASSERT(offsetof(AI_ON_OBJECT_TERRAIN_PC, platforms) == 0x68);
+STATIC_ASSERT(offsetof(NUMTX, m31) == 0x34);
+STATIC_ASSERT(offsetof(GAMEOBJECT, supporting_platform_id) == 0x27e);
+STATIC_ASSERT(sizeof(((GAMEOBJECT *)0)->supporting_platform_id) == 2);
+STATIC_ASSERT(offsetof(GAMEOBJECT, field_281) == 0x281);
+STATIC_ASSERT(offsetof(GAMEOBJECT, field_282) == 0x282);
+STATIC_ASSERT(offsetof(GAMEOBJECT, position) + offsetof(NUVEC, y) == 0x60);
+
+void *__cdecl Condition_OnObjectInitPc(AISYS_PC *system, char *name, AISCRIPT_PC *script) {
+    NUSPECIALHANDLE special;
+    if (CurrentTerrain != NULL) {
+        if (NuSpecialFind(WORLD->current_gscn, &special, name, 1) != 0)
+            return (void *)FindPlatInst(NuSpecialGetInstanceix(&special));
+    }
+    return (void *)-1;
+}
+
+f32 __cdecl Condition_PlayerOnObjectPc(AISYS_PC *system, AISCRIPTPROCESS_PC *process, AIPACKET_PC *packet, char *name,
+                                       void *argument) {
+    i32 platform = (i32)argument;
+    if (player != NULL && platform != -1 && (player->field_281 != 0 || player->field_282 != 0) &&
+        platform == player->supporting_platform_id) {
+        NUMTX *transform = ((AI_ON_OBJECT_TERRAIN_PC *)CurrentTerrain)->platforms[platform].scene_object;
+        if (player->position.y >= transform->m31)
+            return 1.0f;
+    }
+    return 0.0f;
+}
+
+f32 __cdecl Condition_EitherPlayerOnObjectPc(AISYS_PC *system, AISCRIPTPROCESS_PC *process, AIPACKET_PC *packet,
+                                             char *name, void *argument) {
+    i32 platform = (i32)argument;
+
+    if (player != NULL && platform != -1 && (player->field_281 != 0 || player->field_282 != 0) &&
+        player->supporting_platform_id == platform) {
+        NUMTX *transform = ((AI_ON_OBJECT_TERRAIN_PC *)CurrentTerrain)->platforms[platform].scene_object;
+        if (player->position.y >= transform->m31)
+            return 1.0f;
+    }
+    if (player2 != NULL && platform != -1 && (player2->field_281 != 0 || player2->field_282 != 0) &&
+        player2->supporting_platform_id == platform) {
+        NUMTX *transform = ((AI_ON_OBJECT_TERRAIN_PC *)CurrentTerrain)->platforms[platform].scene_object;
+        if (player2->position.y >= transform->m31)
+            return 1.0f;
+    }
+    return 0.0f;
+}
+
+f32 __cdecl Condition_OnObjectPc(AISYS_PC *system, AISCRIPTPROCESS_PC *process, AIPACKET_PC *packet, char *name,
+                                 void *argument) {
+    if (packet != NULL && packet->owner != NULL) {
+        GAMEOBJECT *object = packet->owner->objptr;
+        i32 platform = (i32)argument;
+        if (object != NULL && platform != -1 && (object->field_281 != 0 || object->field_282 != 0) &&
+            platform == object->supporting_platform_id) {
+            NUMTX *transform = ((AI_ON_OBJECT_TERRAIN_PC *)CurrentTerrain)->platforms[platform].scene_object;
+            if (object->position.y >= transform->m31)
+                return 1.0f;
+        }
+    }
+    return 0.0f;
+}
