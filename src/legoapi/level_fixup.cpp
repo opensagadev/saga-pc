@@ -1,5 +1,10 @@
 #include "saga.h"
 
+extern "C" void __cdecl HothBattleC_Init(WORLDINFO *);
+extern "C" void __cdecl HothBattleC_Reset(WORLDINFO *);
+extern "C" void __cdecl HothBattleC_Update(WORLDINFO *);
+extern "C" void __cdecl HothBattleC_DrawPc(WORLDINFO *);
+
 extern "C" void __cdecl CloudCityEscapeA_Init(WORLDINFO *);
 extern "C" void __cdecl CloudCityEscapeA_Reset(WORLDINFO *);
 extern "C" void __cdecl CloudCityEscapeA_Update(WORLDINFO *);
@@ -770,10 +775,10 @@ extern "C" void __cdecl FixUpLevels(struct level_fixup_pc_s *fixup) {
             level = Level_FindByName("hothbattle_c", NULL); /* Native call 0x48ec7e. */
             LevelFixupSlotPc0087b204 = level;               /* Native store 0x48ec88. */
             if (level != NULL) {
-                STUBBED_NAMED(FixUpLevels_Callback_4e8ad0); /* Native 0x48ec8f: callbacks[1] = entry 0x4e8ad0. */
-                STUBBED_NAMED(FixUpLevels_Callback_4e8c50); /* Native 0x48ec9b: callbacks[2] = entry 0x4e8c50. */
-                STUBBED_NAMED(FixUpLevels_Callback_4e8cd0); /* Native 0x48eca8: callbacks[3] = entry 0x4e8cd0. */
-                STUBBED_NAMED(FixUpLevels_Callback_4e8d10); /* Native 0x48ecb5: callbacks[5] = entry 0x4e8d10. */
+                level->callbacks[1] = (void *)HothBattleC_Init;
+                level->callbacks[2] = (void *)HothBattleC_Reset;
+                level->callbacks[3] = (void *)HothBattleC_Update;
+                level->callbacks[5] = (void *)HothBattleC_DrawPc;
             }
             level = Level_FindByName("hothbattle_d", NULL); /* Native call 0x48ecc3. */
             LevelFixupSlotPc0087b208 = level;               /* Native store 0x48eccf. */

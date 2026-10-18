@@ -1399,53 +1399,6 @@ i32 __cdecl PlayerItem_GotAmmo(WEAPON_AMMO_PC *item) {
     return 1;
 }
 
-static void TrooperTeamSetStateCode(minitrooperteam_s *team) {
-    i32 waypoint_count;
-    i32 waypoint;
-    NUVEC *destination;
-    NUVEC *origin;
-    i32 i;
-    team->route_state = (team->route_state & 0x1f) | ((team->waypoint_state >> 3) << 5);
-
-    waypoint_count = (*((u16 *)(&team->waypoint_state)) >> 6) & 7;
-    waypoint = qrand() / (0xffff / waypoint_count + 1);
-    team->waypoint_state = (team->waypoint_state & 0xc7) | ((waypoint & 7) << 3);
-
-    team->route_point = &team->path->pts[team->route_state >> 5];
-    team->formation_state = (team->formation_state & 0xf) | ((qrand() / 0x4000) << 4);
-    team->state_timer = ((f32)(qrand())) * (4.0f / 65536.0f) + 1.0f;
-
-    destination = &(team->path->pts[(team->waypoint_state >> 3) & 7]);
-    origin = &(team->path->pts[team->route_state >> 5]);
-    team->facing_angle = NuAtan2D((*destination).x - (*origin).x, (*destination).z - (*origin).z);
-
-    if (droid_hack == 0) {
-        if ((team->formation_state & 0xf0) == 0x10)
-            team->formation_state = 0x11;
-        else
-            team->formation_state = (team->formation_state & 0xf0) | (qrand() / (0xffff / 3 + 1) & 0xf);
-    } else {
-        team->formation_state = (team->formation_state & 0xf0) | 4;
-    }
-
-    GenerateTrooperTeamShape(team, 0);
-    for (i = 0; i < team->trooper_count; ++i) {
-        minisnowtrooper_s *trooper = &(team->troopers[i]);
-        (*trooper).state_flags &= ~0x40;
-        if (droid_hack != 0) {
-            (*trooper).state_flags = ((*trooper).state_flags & 0x8f) | 0x20;
-        } else {
-            (*trooper).state_flags = ((*trooper).state_flags & 0xcf) | (((qrand() / (0xffff / 3 + 1) + 1) & 3) << 4);
-        }
-        (*trooper).formation_index = ((u8)(i));
-    }
-    team->route_state |= 0x10;
-}
-
-static __inline f32 MiniTrooperTurnSpeed() {
-    return ((f32)(qrand())) * (3.0f / 65535.0f);
-}
-
 void __cdecl Move_VEHICLE(GAMEOBJECT *);
 void __cdecl PostResetCode(GAMEOBJECT *object) {
     PLAYERCHARACTERCONFIG_PC *character;
@@ -2771,7 +2724,6 @@ STATIC_ASSERT(offsetof(PLAYER_ITEM_TYPE_RESET_PC, bolt_name) == 4);
 STATIC_ASSERT(offsetof(PLAYER_ITEM_TYPE_RESET_PC, bolt_id) == 9);
 static PLAYER_ITEM_TYPE_RESET_PC *PlayerItemTypePc = 0;
 static i32 PlayerItemTypeCountPc = 0;
-i8 __cdecl BoltType_FindIDByName(const char *, WORLDINFO *);
 void __cdecl PlayerItemTypes_Init(PLAYER_ITEM_TYPE_RESET_PC *types) {
     i32 count = 0;
     PlayerItemTypePc = NULL;

@@ -16469,7 +16469,7 @@ void __cdecl PCSoundAlreadyPlayingHook(void);
        declaration needed for natural WorldInfo_Init member caller later. No adapter. */
 
     typedef struct player_item_type_reset_pc_s PLAYER_ITEM_TYPE_RESET_PC;
-    i8 __cdecl BoltType_FindIDByName(const char *, WORLDINFO *);
+    i32 __cdecl BoltType_FindIDByName(const char *, WORLDINFO *);
     void __cdecl Bolt_PlayHitSfx(BOLT_PC *);
     i32 __cdecl Bolt_HitPartMode(BOLT_PC *);
     PART_PC *__cdecl Bolt_HitParts(BOLT_PC *, NUVEC *, NUVEC *, NUVEC *, f32, i32);
@@ -25260,7 +25260,15 @@ STATIC_ASSERT(sizeof(struct PUSHPROGRESS) == 588);
 
 struct minisnowtrooper_s {
     u8 formation_index;
-    u8 state_flags;
+    union {
+        u8 state_flags;
+        struct {
+            u8 state_low : 2;
+            u8 step_frame : 2;
+            u8 slot : 2;
+            u8 state_high : 2;
+        };
+    };
     u8 reserved_002;
     u8 speed_divisor;
     u16 rotation;
@@ -25279,12 +25287,30 @@ struct minitrooperteam_s {
     f32 formation_width;
     f32 formation_depth;
     u16 facing_angle;
-    u8 formation_state;
-    u8 route_state;
-    u8 waypoint_state;
-    u8 team_flags;
+    u8 reserved_016[2];
+    union {
+        u32 packed_state;
+        struct {
+            u32 formation_shape : 4;
+            u32 formation_mode : 4;
+            u32 previous_mode : 4;
+            u32 mode_changed : 1;
+            u32 route_index : 3;
+            u32 waypoint_current : 3;
+            u32 waypoint_index : 3;
+            u32 waypoint_count : 3;
+            u32 team_side : 1;
+            u32 team_bits : 6;
+        };
+        struct {
+            u8 formation_state;
+            u8 route_state;
+            u8 waypoint_state;
+            u8 team_flags;
+        };
+    };
     u8 trooper_count;
-    u8 reserved_01b;
+    u8 reserved_01d[3];
     u32 state_flags;
     f32 state_timer;
     f32 debris_timer;
@@ -25297,7 +25323,35 @@ struct minitrooperteam_s {
     NUVEC position;
     i32 target_index;
 };
-STATIC_ASSERT(sizeof(struct minitrooperteam_s) == 80);
+STATIC_ASSERT(sizeof(struct minitrooperteam_s) == 0x54);
+STATIC_ASSERT(offsetof(struct minitrooperteam_s, facing_angle) == 0x14);
+STATIC_ASSERT(offsetof(struct minitrooperteam_s, packed_state) == 0x18);
+STATIC_ASSERT(offsetof(struct minitrooperteam_s, formation_state) == 0x18);
+STATIC_ASSERT(offsetof(struct minitrooperteam_s, route_state) == 0x19);
+STATIC_ASSERT(offsetof(struct minitrooperteam_s, waypoint_state) == 0x1a);
+STATIC_ASSERT(offsetof(struct minitrooperteam_s, team_flags) == 0x1b);
+STATIC_ASSERT(offsetof(struct minitrooperteam_s, trooper_count) == 0x1c);
+STATIC_ASSERT(offsetof(struct minitrooperteam_s, state_flags) == 0x20);
+STATIC_ASSERT(offsetof(struct minitrooperteam_s, state_timer) == 0x24);
+STATIC_ASSERT(offsetof(struct minitrooperteam_s, debris_timer) == 0x28);
+STATIC_ASSERT(offsetof(struct minitrooperteam_s, fire_timer) == 0x2c);
+STATIC_ASSERT(offsetof(struct minitrooperteam_s, reserved_02c) == 0x30);
+STATIC_ASSERT(offsetof(struct minitrooperteam_s, bolt_type) == 0x34);
+STATIC_ASSERT(offsetof(struct minitrooperteam_s, route_point) == 0x38);
+STATIC_ASSERT(offsetof(struct minitrooperteam_s, path) == 0x3c);
+STATIC_ASSERT(offsetof(struct minitrooperteam_s, troopers) == 0x40);
+STATIC_ASSERT(offsetof(struct minitrooperteam_s, position) == 0x44);
+STATIC_ASSERT(offsetof(struct minitrooperteam_s, target_index) == 0x50);
+STATIC_ASSERT(offsetof(struct minisnowtrooper_s, state_flags) == 1);
+STATIC_ASSERT(offsetof(struct minisnowtrooper_s, rotation) == 4);
+STATIC_ASSERT(offsetof(struct minisnowtrooper_s, target_rotation) == 6);
+STATIC_ASSERT(offsetof(struct minisnowtrooper_s, timer) == 8);
+STATIC_ASSERT(offsetof(struct minisnowtrooper_s, formation_x) == 0xc);
+STATIC_ASSERT(offsetof(struct minisnowtrooper_s, formation_z) == 0x10);
+STATIC_ASSERT(offsetof(struct minisnowtrooper_s, shot_position) == 0x14);
+STATIC_ASSERT(offsetof(WORLDINFO, mini_trooper_packets) == 0x503c);
+STATIC_ASSERT(offsetof(WORLDINFO, mini_trooper_teams) == 0x5040);
+STATIC_ASSERT(offsetof(WORLDINFO, mini_trooper_storage) == 0x5044);
 
 struct GIZTURRETSYS_s {
     struct GIZTURRET_s *turrets;
@@ -26172,7 +26226,6 @@ extern "C" {
     extern i16 tRESTARTLEVEL;
     extern i16 tSAVEANDEXIT;
     extern i16 tYES;
-    i16 __cdecl BoltType_FindIDByNameWide(char *arg0, struct WORLDINFO_s *arg1);
     i32 __cdecl SpawnMeleeCreatureType(i32 type);
     extern i16 id_PROBEDROID;
     extern HOTHBATTLE_MELEE_s melee;
@@ -26720,6 +26773,7 @@ extern "C" {
     void __cdecl HothBattleE_UpdateWave(void);
     i32 __cdecl NuIOS_IsLowEndDevice(void);
     void __cdecl UpdateMiniSnowTroopers(struct WORLDINFO_s *arg0);
+    void __cdecl DrawMiniSnowTroopers(struct WORLDINFO_s *world);
     extern struct EPISODESAVE_s *Game_EpisodeSave;
     void __cdecl edpartDoInput(struct FRAME_PAD_PC *pad);
     extern i32 edpart_count;
@@ -27101,7 +27155,6 @@ extern "C" {
     f32 __cdecl NuMouseReadYRel(void);
     f32 __cdecl NuMouseReadZRel(void);
     i32 __cdecl NuPs2ApplyDeadZone(i32 raw_value, i32 dead_zone);
-    void __cdecl GenerateTrooperTeamShape(struct minitrooperteam_s *team, i32 initialize_rotation);
 #ifdef __cplusplus
 }
 #endif

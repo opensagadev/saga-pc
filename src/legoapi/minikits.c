@@ -1,5 +1,19 @@
 #include "saga.h"
 
+static const char HothBattleCBombMessagePc[20] = "BombGen_ATAT_Killed";
+static const char HothBattleCIceBPc[8] = "ice_b";
+static const char HothBattleCIceAPc[8] = "ice_a";
+static const char HothBattleCObstaclePc[12] = "obstacle3";
+static const char HothBattleCPickupPc[8] = "m_pup7";
+static const char HothBattleCGreenBoltPc[16] = "trooper_green";
+static const char HothBattleCRedBoltPc[12] = "trooper_red";
+static const char HothBattleCMinifig11Pc[12] = "minifig_1_1";
+static const char HothBattleCMinifig12Pc[12] = "minifig_1_2";
+static const char HothBattleCMinifig13Pc[12] = "minifig_1_3";
+static const char HothBattleCMinifig21Pc[12] = "minifig_2_1";
+static const char HothBattleCMinifig22Pc[12] = "minifig_2_2";
+static const char HothBattleCMinifig23Pc[12] = "minifig_2_3";
+
 void __cdecl ResetMinikitCounter(void) {
     minikitCounter_C = 0;
     minikitCounter_A = 0;
@@ -387,4 +401,32 @@ i32 AllMiniKitsDone(AREASAVE_s *save) {
         }
     }
     return 1;
+}
+
+void __cdecl HothBattleC_Init(WORLDINFO *world) {
+    i32 direction;
+    i32 count;
+    LevAIMessage[0] = CheckGizAIMessage(gizaimessagesys, (char *)HothBattleCBombMessagePc, NULL);
+    LevPathCnx[0] = AIPAthFindPathCnx(world->ai_sys, world->ai_sys->path_sys->active_path, (char *)HothBattleCIceAPc,
+                                      (char *)HothBattleCIceBPc, &direction);
+    LevGizmo[0] = (GIZMO_PC *)GizmoFindByName(world->gizmo_sys, obstacle_gizmotype_id, (char *)HothBattleCObstaclePc);
+    LevGizmo[1] = (GIZMO_PC *)GizmoFindByName(world->gizmo_sys, gizmopickup_typeid, (char *)HothBattleCPickupPc);
+    NuSpecialSetVisibility(&LevHSpecial[10], 0);
+    gunship_bolts[1] = BoltType_FindIDByName((char *)HothBattleCGreenBoltPc, world);
+    gunship_bolts[0] = BoltType_FindIDByName((char *)HothBattleCRedBoltPc, world);
+    trooper_side[0] = 0;
+    trooper_side[1] = 1;
+    InitMiniSnowTroopers(world, 2, 32, 0);
+    count = NuSpecialFind(world->current_gscn, &LevHSpecial[0], (char *)HothBattleCMinifig11Pc, 1);
+    count += NuSpecialFind(world->current_gscn, &LevHSpecial[1], (char *)HothBattleCMinifig12Pc, 1);
+    count += NuSpecialFind(world->current_gscn, &LevHSpecial[2], (char *)HothBattleCMinifig13Pc, 1);
+    count += NuSpecialFind(world->current_gscn, &LevHSpecial[3], (char *)HothBattleCMinifig21Pc, 1);
+    count += NuSpecialFind(world->current_gscn, &LevHSpecial[4], (char *)HothBattleCMinifig22Pc, 1);
+    count += NuSpecialFind(world->current_gscn, &LevHSpecial[5], (char *)HothBattleCMinifig23Pc, 1);
+    if (count == 6)
+        hothtroopers = LevHSpecial;
+}
+
+void __cdecl HothBattleC_DrawPc(WORLDINFO *world) {
+    DrawMiniSnowTroopers(world);
 }

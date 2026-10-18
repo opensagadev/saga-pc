@@ -2061,6 +2061,7 @@ address    , symbol                                                         , si
 0x4e8ad0,_HothBattleC_Init,383,
 0x4e8c50,_HothBattleC_Reset,120,
 0x4e8cd0,_HothBattleC_Update,59,
+0x4e8d10,_HothBattleC_DrawPc,5,void __cdecl (WORLDINFO *)
 0x4e9000,_getSpawnLocator,220,
 0x4e90e0,_HothBattle_ManageBackgroundCreatures,987,
 0x4e94c0,_SpawnMeleeCreatureType,829,
@@ -4062,7 +4063,7 @@ address    , symbol                                                         , si
 0x580680,_BT_trooper_bolt,13,void __cdecl(NUFPAR_PC *)
 0x580690,_BT_single_debris,13,void __cdecl(NUFPAR_PC *)
 0x005806a0 , _BoltType_FindByID                                             , 71    , "BOLTTYPE_PC *__cdecl (i32, WORLDINFO *)"
-0x5806f0,_BoltType_FindIDByName,148,"i8 __cdecl(char*,WORLDINFO*)"
+0x5806f0,_BoltType_FindIDByName,148,"i32 __cdecl (const char *, WORLDINFO *)"
 0x580790,_BoltTypes_Init,357,void __cdecl(WORLDINFO *)
 0x00580920 , _Bolt_GetShootOrigin_Default                                   , 35    , "void __cdecl (GAMEOBJECT *, NUVEC *)"
 0x00580950 , _Bolt_GetShootDirection_Default                                , 74    , "u16 __cdecl (GAMEOBJECT *, NUVEC *)"
@@ -4692,10 +4693,18 @@ address    , symbol                                                         , si
 0x5a85d0,_PlayerItemTypes_Reset,74,void __cdecl(WORLDINFO*)
 0x5a8650,_PlayerItemType_Find,65,PLAYER_ITEM_TYPE_RESET_PC* __cdecl(i32)
 0x5a86a0,_PlayerItem_GotAmmo,36,i32 __cdecl(WEAPON_AMMO_PC *)
+0x5a8730,_MiniTrooperPitchMatrixPc,160,"void (NUMTX *, i32)"
+0x5a87d0,_MiniTrooperYawMatrixPc,162,"void (NUMTX *, i32)"
+0x5a8880,_MiniTrooperRotateYawPc,219,"void (NUMTX *, i32)"
 0x5a8960,_GenerateTrooperTeamShape,1130,
 0x5a8dd0,_InitMiniSnowTroopers,1492,
-0x5a9750,_MiniTrooperTurnSpeed,112,
+0x5a93b0,_MiniTrooperFindTargetTeamPc,829,"struct minitrooperteam_s *(WORLDINFO *, struct minitrooperteam_s *, i32, f32 *)"
+0x5a96f0,_MiniTrooperCheckFormationPc,91,"i32 (struct minitrooperteam_s *, struct minisnowtrooper_s *)"
+0x5a9750,_MiniTrooperMovePc,112,void (struct minisnowtrooper_s *)
+0x5a97c0,_MiniTrooperStepPc,85,void (struct minisnowtrooper_s *)
 0x5a9820,_TrooperTeamSetStateCode,444,
+0x5a99e0,_MiniTrooperDebrisPc,199,"void (WORLDINFO *, struct minitrooperteam_s *, i32)"
+0x5a9ab0,_MiniTrooperNearestPlayerPc,125,GAMEOBJECT *(struct minitrooperteam_s *)
 0x5a9b30,_TrooperShoot,515,
 0x5a9d40,_UpdateMiniSnowTroopers,2725,
 0x5aa7f0,_DrawMiniSnowTroopers,821,
@@ -13178,9 +13187,13 @@ address    , symbol                                                         , si
 0x75d7a8,??_C@_0L@IPAIBOOK@ShowHearts?$AA@,11,char []
 0x75d7a8,_EpisodeVI_ShowHearts,11,const char[11]
 0x75d7b4,??_C@_0M@FKKEKLHM@minifig_1_3?$AA@,12,char []
+0x75d7b4,_HothBattleCMinifig13Pc,12,const char[12]
 0x75d7c0,??_C@_0M@EDLPJKDN@minifig_1_2?$AA@,12,char []
+0x75d7c0,_HothBattleCMinifig12Pc,12,const char[12]
 0x75d7cc,??_C@_0M@GIJCMJPO@minifig_1_1?$AA@,12,char []
+0x75d7cc,_HothBattleCMinifig11Pc,12,const char[12]
 0x75d7d8,??_C@_0M@KBNCLANM@trooper_red?$AA@,12,char []
+0x75d7d8,_HothBattleCRedBoltPc,12,const char[12]
 0x75d818,_PodCreateDamagedKeywordPc,,char[8]
 0x75d820,_PodCreatePacemakerKeywordPc,,char[10]
 0x75d82c,_PodCreateTimeKeywordPc,,char[13]
@@ -13199,6 +13212,7 @@ address    , symbol                                                         , si
 0x75dcd8,??_C@_09JIIPOEOC@power_b11?$AA@,10,char []
 0x75dce4,??_C@_09IKDKELAM@power_a11?$AA@,10,char []
 0x75dcf0,??_C@_0O@GKOJGIHA@trooper_green?$AA@,14,char []
+0x75dcf0,_HothBattleCGreenBoltPc,16,const char[16]
 0x75dd00,??_C@_07CDOIBGJA@gun_d21?$AA@,8,char []
 0x75dd08,??_C@_07CBKOKIMJ@gun_d11?$AA@,8,char []
 0x75dd10,??_C@_07LODPCOCJ@gun_c21?$AA@,8,char []
@@ -13239,6 +13253,7 @@ address    , symbol                                                         , si
 0x75e27c,??_C@_0O@NFAJCHNC@TrapBEndFight?$AA@,14,char []
 0x75e28c,??_C@_03BBKEAIF@?$DP?$DP?$DP?$AA@,4,char []
 0x75e290,??_C@_09KCEJPGDP@obstacle3?$AA@,10,char []
+0x75e290,_HothBattleCObstaclePc,12,const char[12]
 0x75e29c,??_C@_06EFGJMCHF@gap1_a?$AA@,7,char []
 0x75e2a4,??_C@_06GOEEJBLG@gap1_b?$AA@,7,char []
 0x75e2b0,__real@c1a00000,,
@@ -13257,16 +13272,23 @@ address    , symbol                                                         , si
 0x75e344,??_C@_0N@EJNKIMLE@pad_4_base_2?$AA@,13,char []
 0x75e354,??_C@_0N@DKMAPFDO@pad_2_base_2?$AA@,13,char []
 0x75e3a8,??_C@_0M@EIBBAEJC@minifig_2_3?$AA@,12,char []
+0x75e3a8,_HothBattleCMinifig23Pc,12,const char[12]
 0x75e3b4,??_C@_0M@FBAKDFND@minifig_2_2?$AA@,12,char []
+0x75e3b4,_HothBattleCMinifig22Pc,12,const char[12]
 0x75e3c0,??_C@_0M@HKCHGGBA@minifig_2_1?$AA@,12,char []
+0x75e3c0,_HothBattleCMinifig21Pc,12,const char[12]
 0x75e3d4,??_C@_0M@MDANAOJP@snow_ball_4?$AA@,12,char []
 0x75e3e0,??_C@_0M@IMEMJIFI@snow_ball_3?$AA@,12,char []
 0x75e3ec,??_C@_0M@JFFHKJBJ@snow_ball_2?$AA@,12,char []
 0x75e3f8,??_C@_0M@LOHKPKNK@snow_ball_1?$AA@,12,char []
 0x75e404,??_C@_06BEOPMPID@m_pup7?$AA@,7,char []
+0x75e404,_HothBattleCPickupPc,8,const char[8]
 0x75e40c,??_C@_05KIKKDJAJ@ice_a?$AA@,6,char []
+0x75e40c,_HothBattleCIceAPc,8,const char[8]
 0x75e414,??_C@_05IDIHGKMK@ice_b?$AA@,6,char []
+0x75e414,_HothBattleCIceBPc,8,const char[8]
 0x75e41c,??_C@_0BE@OFBNHBFL@BombGen_ATAT_Killed?$AA@,20,char []
+0x75e41c,_HothBattleCBombMessagePc,20,const char[20]
 0x75e430,??_C@_0BA@KEJPHAGH@bomb_generator1?$AA@,16,char []
 0x75e440,??_C@_05HLKEJFEB@rider?$AA@,,
 0x75e448,??_C@_05PBDNICPN@Probe?$AA@,6,char []
@@ -14602,6 +14624,10 @@ address    , symbol                                                         , si
 0x763da0,??_C@_09DEFMBCMB@PushBlock?$AA@,,
 0x763dac,??_C@_0L@OIEFIEAB@PushBlocks?$AA@,,const char[11]
 0x763db8,??_C@_06PNNOJMAL@?$CFs?4ptl?$AA@,7,
+0x763dc0,__real@3f00001000000000,8,const f64
+0x763dc8,__real@3f24001400000000,8,const f64
+0x763dd0,??_C@_07KHLMBADC@group?$CFd?$AA@,8,const char[8]
+0x763dd8,__real@3f10001000000000,8,const f64
 0x763de0,__real@461c3c00,4,const f32
 0x763de4,_GizmoRegistryGizTurretsNamePc,10,const char[10]
 0x763df0,__real@42100000,4,const f32
@@ -19362,7 +19388,10 @@ address    , symbol                                                         , si
 0x805b40,_LegoGameDebrisSplashPc,,i32
 0x00805c94 , _TrooperStepFrames                                             , 16    , i32[4]
 0x00805ca4 , _trooperspeedtab                                               , 16    , f32[4]
-0x805cb4,_TrooperGameDebrisPc,,i32[4]
+0x805cb4,_TrooperGameDebrisPc,16,i32[4]
+0x805d30,_MiniTrooperTurnRatePc,4,f32
+0x805d34,_MiniTrooperHopHeightPc,4,f32
+0x805d38,_MiniTrooperGroundRefreshMaskPc,4,i32
 0x805d44,_gizaimessage_gizmotype_id,4,i32
 0x00805d48 , _gizaimessage_prefix                                           , 5     , char[5]
 0x805e24,_turret_gizmotype_id,4,i32
@@ -22429,9 +22458,13 @@ address    , symbol                                                         , si
 0x0095df40 , _CharPivot                                                     , 4     , struct CHARPIVOT_PC *
 0x95df44,_PlayerItemTypePc,,PLAYER_ITEM_TYPE_RESET_PC*
 0x95df48,_PlayerItemTypeCountPc,,i32
+0x95df4c,_droid_hack,4,i32
 0x95df50,_hothtroopers,4,void *
 0x95df54,_gunship_bolts,4,i16[2]
+0x95df58,_trooperteamcount,4,i32
 0x95df5c,_gunship_flags,10,u8[10]
+0x95df5c,_trooper_side,12,i8[10]
+0x95df68,_teamswitchtimer,4,f32
 0x0095df6c , _gizaimessagesys                                               , 4     , GIZAIMESSAGESYS *
 0x95df70,?returnstr@?1??GizAIMessage_GetOutputName@@9@9,,
 0x95df78,?addtype@?1??GizAIMessage_RegisterGizmo@@9@9,,
