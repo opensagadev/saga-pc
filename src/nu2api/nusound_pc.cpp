@@ -456,6 +456,7 @@ void __thiscall SoundVoiceManagerPC::UpdateVoices(void) {
 }
 
 extern "C" void __cdecl NuSound3Update(void) {
+    SAGA_SOUND_CHECK("NuSound3Update before request copy");
     if (PCSoundMixDestination != NULL) {
         if (PCSoundMixSource != NULL && PCSoundMixSampleCount != 0) {
             memcpy(PCSoundMixDestination, PCSoundMixSource, (u32)PCSoundMixSampleCount * 2u);
@@ -763,6 +764,7 @@ void __cdecl NuSound3SetSampleTable(SFX_FILE_INFO_PC *info, VARIPTR *cursor, VAR
     }
 }
 void __cdecl NuSound3SetRequestTable(u16 *request_bits, i32 short_count) {
+    SAGA_SOUND_SETTER_BEGIN();
     if (PCSoundMixSampleCount != short_count) {
         if (PCSoundMixDestination != NULL)
             PCSoundAlreadyPlayingHook();
@@ -771,6 +773,7 @@ void __cdecl NuSound3SetRequestTable(u16 *request_bits, i32 short_count) {
     }
     PCSoundMixSampleCount = short_count;
     PCSoundMixSource = request_bits;
+    SAGA_SOUND_SETTER_END(request_bits, short_count, PCSoundMixDestination);
 }
 
 extern "C" {

@@ -15,6 +15,11 @@ extern "C" {
     LONG __cdecl _InterlockedExchange(LONG volatile *target, LONG value);
     int __cdecl SagaDebugCaptureStreamsPc(HANDLE file, int saved_out, int saved_err);
     void __cdecl SagaDebugCrashInitPc(HANDLE existing_log_file, const char *build_id, const char *log_path);
+    void *__cdecl _ReturnAddress(void);
+    void __cdecl SagaDebugSoundSetterBeginPc(void);
+    void __cdecl SagaDebugSoundSetterEndPc(const void *source, int count, const void *destination, const void *caller);
+    void __cdecl SagaDebugSoundCheckpointPc(const char *stage, void *volatile const *source, volatile const int *count,
+                                            void *volatile const *destination);
     void __cdecl _saga_log(enum log_level level, const char *file, int line, const char *function, const char *format,
                            ...);
 #ifdef __cplusplus
@@ -22,6 +27,7 @@ extern "C" {
 #endif
 
 #pragma intrinsic(_InterlockedExchange)
+#pragma intrinsic(_ReturnAddress)
 
 #ifdef __cplusplus
 extern "C" {
@@ -73,12 +79,20 @@ extern "C" {
             LOG_WARN_ONCE(__VA_ARGS__);                                                                                \
         }                                                                                                              \
     } while (0)
+#define SAGA_SOUND_SETTER_BEGIN() SagaDebugSoundSetterBeginPc()
+#define SAGA_SOUND_SETTER_END(source, count, destination)                                                              \
+    SagaDebugSoundSetterEndPc(source, count, destination, _ReturnAddress())
+#define SAGA_SOUND_CHECK(stage)                                                                                        \
+    SagaDebugSoundCheckpointPc(stage, &PCSoundMixSource, &PCSoundMixSampleCount, &PCSoundMixDestination)
 #undef STUBBED
 #undef STUBBED_NAMED
 #define STUBBED() LOG_WARN_ONCE("STUBBED: %s", __FUNCTION__)
 #define STUBBED_NAMED(name) LOG_WARN_ONCE("STUBBED: %s", #name)
 #define UNIMPLEMENTED(...) LOG_ERR("UNIMPLEMENTED: %s", #__VA_ARGS__)
 #else
+#define SAGA_SOUND_SETTER_BEGIN() ((void)0)
+#define SAGA_SOUND_SETTER_END(source, count, destination) ((void)0)
+#define SAGA_SOUND_CHECK(stage) ((void)0)
 #define SAGA_SKIN_CALL(function, ...) ((void)0)
 #define LOG(level, ...) ((void)0)
 #define LOG_ERR(...) ((void)0)
