@@ -1,5 +1,7 @@
 #include "saga.h"
 
+void __cdecl SuperCarry_MoveCode(WORLDINFO *, GAMEOBJECT *);
+
 void __cdecl Buck_MoveCode(GAMEOBJECT *, i32);
 void __cdecl TakeOverCode(GAMEOBJECT *, i32);
 
@@ -9160,7 +9162,7 @@ void __cdecl Move_WEIRDO(GAMEOBJECT *object) {
         if ((object->character_data->model_flags & 8) == 0)
             STUBBED_NAMED(0x004d4dc0); /* Native4b5bb3: WORLD,object; native action. */
     }
-    STUBBED_NAMED(0x00598880); /* Native4b5bc3: SuperCarry_MoveCode(WORLD,object). */
+    SuperCarry_MoveCode(WORLD, object);
     GizmoBlowupCheckProximity(WORLD, object);
     STUBBED_NAMED(0x0049dfd0); /* Native4b5bda: ComboRotateCode(object,action_held). */
     WeaponOutCode(object);

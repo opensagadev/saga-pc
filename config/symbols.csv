@@ -4423,11 +4423,11 @@ address    , symbol                                                         , si
 0x597c20,_SuperCarry_TurnBlowupBackOn,213,"i32 __cdecl(GIZMOBLOWUP_PC *, NUVEC *, u16, i32)"
 0x597d00,_SuperCarry_PartImpact,134,void __cdecl(PART_PC *)
 0x597d90,_SuperCarry_PartKill,61,"void __cdecl(PART_PC *, i32)"
-0x597dd0,_SuperCarry_DrawObject,444,
+0x597dd0,_SuperCarry_DrawObject,444,void __cdecl(GAMEOBJECT *)
 0x597f90,_SuperCarry_GetObjectPos,295,"void __cdecl(GAMEOBJECT*,NUVEC*,NUVEC*)"
 0x5980c0,_SuperCarry_Throw,1171,"void __cdecl(GAMEOBJECT *, i32)"
-0x5985b0,_SuperCarry_Start,717,
-0x598880,_SuperCarry_MoveCode,3768,
+0x5985b0,_SuperCarry_Start,717,"void __cdecl(GAMEOBJECT *, GIZMOBLOWUP_PC *, i32)"
+0x598880,_SuperCarry_MoveCode,3768,"void __cdecl(WORLDINFO *, GAMEOBJECT *)"
 0x599740,_SuperCarry_SetTargetMom,228,"i32 __cdecl(GAMEOBJECT *,float)"
 0x599830,_SuperCarry_YRotation,290,"i32 __cdecl(GAMEOBJECT *,u16)"
 0x599960,_SuperCarry_Carrying,53,i32 __cdecl(GAMEOBJECT *)
@@ -10617,6 +10617,7 @@ address    , symbol                                                         , si
 0x755ba8,??_C@_01OGPIMHDM@?$DP?$AA@,,const char[2]
 0x00755ba8 , _Text_UnknownText                                              , 2     , const char[2]
 0x755bb0,__real@4054000000000000,8,f64
+0x755bb8,__real@4048000000000000,8,f64
 0x755bc0,__real@3f2a7efa,4,const f32
 0x00755bd0,__real@4038000000000000,8,const f64
 0x755bf8,__real@3fcae147a0000000,8,const f64
@@ -18989,6 +18990,7 @@ address    , symbol                                                         , si
 0x802b64,_grapple_attach_frames,,u8
 0x00802bd4 , _DEFAULT_PLAYERHITPOINTS                                       , 4     , i32
 0x00802bd8 , _PlayerID                                                      , 8     , i32[2]
+0x802be0,_SuperCarryPlayerRgbPc,6,u8[2][3]
 0x00802be8 , _TOGGLEHOLDTIME                                                , 4     , f32
 0x802bec,_TOGGLEREPEATTIME,,f32
 0x00802c54 , _WORLD                                                         , 4     , WORLDINFO *
@@ -19235,6 +19237,8 @@ address    , symbol                                                         , si
 0x008051c8 , _SUPERCARRY_OBJGRAVITY                                         , 4     , f32
 0x008051cc , _SuperCarry_KeepObjectLevel                                    , 4     , i32
 0x008051d0 , _SuperCarry_AlignObject                                        , 4     , i32
+0x8051d4,_SuperCarry_PutDownDrop,4,i32
+0x8051d8,_SUPERCARRY_JUMPSPEED,4,f32
 0x8051dc,_SuperCarryImpactSpeedPc,,f32
 0x805244,_MiniKitDirectionNamesPc,,
 0x80525c,_KITPOSX,,f32

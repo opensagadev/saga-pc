@@ -455,7 +455,7 @@ i32 __cdecl StarWars_PrepareJump(AIPACKET_PC *packet, APIOBJECT_PC *object, i32 
             if ((connection->traversal_flags[packet->path_info.direction] & 0x200) == 0) {
                 other = Obj;
                 for (index = 0; index < HIGHGAMEOBJECT; ++index, ++other) {
-                    if ((other->flags_1fc & 1) == 0 || other == owner || (other->flags_1fc & 0x1000) == 0 ||
+                    if ((other->flags_1fc_word & 1) == 0 || other == owner || (other->flags_1fc_word & 0x1000) == 0 ||
                         other->dead != 0) {
                         continue;
                     }
