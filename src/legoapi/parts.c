@@ -4846,3 +4846,16 @@ PART_PC *__cdecl FindIncomingPart(void *owner, NUVEC *position, f32 radius, u32 
     }
     return nearest;
 }
+
+PART_PC *__cdecl Part_FindFromHSpecial(NUSPECIALHANDLE *special) {
+    PART_PC *part;
+    i32 index;
+    if (special == NULL)
+        return NULL;
+    part = Part;
+    for (index = 0; index < MAXPARTS; index++, part++) {
+        if ((part->active & 1) != 0 && NuSpecialCompare(&part->special, special))
+            return part;
+    }
+    return NULL;
+}

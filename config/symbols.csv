@@ -1000,7 +1000,7 @@ address,symbol,size,ctype
 0x467860,_ForceAnimationDonePc,48,
 0x467890,_GizForce_Complete,93,i32 __cdecl(GIZFORCE_PC *)
 0x4678f0,_GizForce_GameObjUsingForce,42,"i32 __cdecl(GAMEOBJECT *, GIZFORCE_PC *)"
-0x467920,_GizForce_Throw,386,
+0x467920,_GizForce_Throw,386,"PART_PC *__cdecl(GAMEOBJECT *, GIZFORCE_PC *, f32, f32, i32)"
 0x467ab0,_GizForces_GetMaxGizmos,25,i32 __cdecl(void *)
 0x467ad0,_GizForces_AddGizmos,92,"void __cdecl(GIZMOSYS_PC *, i32, void *, void *)"
 0x467b30,_GizmoForce_GetGizmoName,14,char * __cdecl(GIZMO_PC *)
@@ -1566,7 +1566,7 @@ address,symbol,size,ctype
 0x004a3eb0,_ForcePushed_SetTargetMom,1014,"i32 __cdecl (GAMEOBJECT *, f32 *)"
 0x004a42b0,_ForcePushed_YRotation,146,i32 __cdecl (GAMEOBJECT *)
 0x4a4350,_ForcePushed_SuperPush_Occurring,196,"i32 __cdecl (GAMEOBJECT *, GAMEOBJECT *)"
-0x4a4420,_ForceThrowCode,1223,
+0x4a4420,_ForceThrowCode,1223,"static void(GAMEOBJECT *, i32)"
 0x004a48f0,_ResetForceBack,13,void __cdecl (void)
 0x004a4900,_SetForceBack,58,"void __cdecl (GAMEOBJECT *, NUVEC *, f32, i32)"
 0x4a4940,_DrawForceBackEffect,220,
@@ -3804,6 +3804,7 @@ address,symbol,size,ctype
 0x571cf0,_FindIncomingPart,418,"PART_PC *__cdecl(void *, NUVEC *, f32, u32, f32)"
 0x571ea0,_MakePartVector,380,"void __cdecl (NUVEC *, NUVEC *, f32)"
 0x572020,_TargetPart,692,"PART_PC* __cdecl(GAMEOBJECT*,NUVEC*,NUVEC*,f32,f32,i32,i32)"
+0x5722e0,_Part_FindFromHSpecial,90,PART_PC *__cdecl(NUSPECIALHANDLE *)
 0x00572380,_Surfaces_Reset,182,void __cdecl (void)
 0x00572440,_GetSurfaceInfo,536,
 0x00572660,_SetObjOnSurface,233,
@@ -18481,6 +18482,7 @@ address,symbol,size,ctype
 0x007f8cc8,_GizForceSfxLoadVersionPc,,
 0x007f8ccc,_GizForceSFX_ConfigKeywords,,
 0x7f8d60,_ForceAnimationSeekRatePc,4,f32
+0x7f8d64,_ForceThrowMaulPositionPc,12,NUVEC
 0x7f8d70,_GizmoRegistryGizForceNamePtrPc,4,char *
 0x7f8df4,_PartExtraCoinRate_PC,,f32
 0x7f8df8,_GizmoPickupType,,GIZMO_PICKUP_TYPE_PC[10]
@@ -18629,6 +18631,10 @@ address,symbol,size,ctype
 0x007fb080,_VEHICLE_WATER_SPEED_MUL,4,f32
 0x007fb084,_GameDeflectPartGravity,4,f32
 0x007fb088,_GameDeflectPartSpeed,4,f32
+0x7fb08c,_MaulF_ForceThrowGravity,4,f32
+0x7fb090,_MaulF_ForceThrowSpeed,4,f32
+0x7fb094,_DookuC_ForceThrowGravity,4,f32
+0x7fb098,_DookuC_ForceThrowSpeed,4,f32
 0x7fb09c,_ForcePush_Speed,4,f32
 0x7fb0a0,_SHIELDFLICKERTIME,,f32
 0x7fb0a4,_PlayerBackwardMomentumScalePc,,f32

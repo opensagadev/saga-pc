@@ -34461,3 +34461,13 @@ extern "C" {
                                        {&id_DROIDEKA, "phase_droids"},         {NULL, NULL}};
 #pragma data_seg()
 }
+
+extern "C" {
+#pragma data_seg(".data$ForceThrowTuningPc")
+    f32 MaulF_ForceThrowGravity = -0.5f;
+    f32 MaulF_ForceThrowSpeed = 1.0f;
+    f32 DookuC_ForceThrowGravity = -2.5f;
+    f32 DookuC_ForceThrowSpeed = 2.5f;
+    NUVEC ForceThrowMaulPositionPc = {19.05f, 4.0f, -105.23f};
+#pragma data_seg()
+}

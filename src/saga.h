@@ -5305,6 +5305,7 @@ typedef struct gameobject_s {
     BLOWUP_TARGET_PC *blowup_target;
     union {
         void *grapple;
+        struct PART_PC *force_throw_part;
         TECHNO_PC *techno;
         struct ZIPUP_s *attached_zipup;
         TUBE_PC *attached_tube_pc;
@@ -5803,6 +5804,7 @@ STATIC_ASSERT(offsetof(GAMEOBJECT, extra_layer_mask) == 0x104c);
 STATIC_ASSERT(offsetof(GAMEOBJECT, current_hp) == 0x107f);
 STATIC_ASSERT(sizeof(GAMEOBJECT) == 0x10d8);
 STATIC_ASSERT(offsetof(GAMEOBJECT, techno) == 0x798);
+STATIC_ASSERT(offsetof(GAMEOBJECT, force_throw_part) == 0x798);
 STATIC_ASSERT(offsetof(GAMEOBJECT, anim_blending) == 0x39);
 STATIC_ASSERT(offsetof(GAMEOBJECT, animation_index) == 0x3e);
 STATIC_ASSERT(offsetof(GAMEOBJECT, water_height) == 0x220);
@@ -12810,6 +12812,15 @@ void __cdecl AIScriptMissingConditionDiagnostic();
     extern BLADE_PC BladeTab[4];
     extern f32 GameDeflectPartGravity;
     extern f32 GameDeflectPartSpeed;
+    extern f32 MaulF_ForceThrowGravity;
+    extern f32 MaulF_ForceThrowSpeed;
+    extern f32 DookuC_ForceThrowGravity;
+    extern f32 DookuC_ForceThrowSpeed;
+    extern NUVEC ForceThrowMaulPositionPc;
+    extern LEVELDATA_PC *MAULF_LDATA;
+    PART_PC *__cdecl GizForce_Throw(GAMEOBJECT *, GIZFORCE_PC *, f32, f32, i32);
+    PART_PC *__cdecl Part_FindFromHSpecial(NUSPECIALHANDLE *);
+    void __cdecl PartKill_ForceThrow(PART_PC *, i32);
     extern f32 PARTSCALEUPTIME;
 
     extern NARROWSOCKEXCEPTION_PC *NarrowSockException;

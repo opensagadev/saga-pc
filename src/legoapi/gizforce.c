@@ -1929,3 +1929,48 @@ f32 __cdecl Condition_ForceBeingUsedPc(AISYS_PC *system, AISCRIPTPROCESS_PC *pro
     GIZFORCE_PC *force = (GIZFORCE_PC *)argument;
     return force != NULL && ((force->runtime_flags & 0x200000) != 0 || force->reset_word != 0) ? 1.0f : 0.0f;
 }
+
+typedef struct force_throw_target_view_pc_s {
+    u8 unknown_0000[0xd10];
+    GAMEOBJECT *target;
+} FORCE_THROW_TARGET_VIEW_PC;
+STATIC_ASSERT(offsetof(FORCE_THROW_TARGET_VIEW_PC, target) == 0xd10);
+
+PART_PC *__cdecl GizForce_Throw(GAMEOBJECT *object, GIZFORCE_PC *force, f32 speed, f32 gravity, i32 unused) {
+    NUSPECIALHANDLE *special = &force->anim_set->objects->special;
+    NUMTX translated;
+    NUMTX *matrix;
+    NUVEC velocity;
+    ADDPART_PC params;
+    PART_PC *part;
+    (void)unused;
+    if (WORLD->current_level == MAULF_LDATA) {
+        NuMtxSetTranslation(&translated, &ForceThrowMaulPositionPc);
+        matrix = &translated;
+    } else {
+        matrix = NuSpecialGetMtx(special);
+    }
+    if (object == NULL || ((FORCE_THROW_TARGET_VIEW_PC *)object)->target == NULL)
+        return NULL;
+    MakeThrowVector(&velocity, (NUVEC *)&matrix->m30,
+                    &((FORCE_THROW_TARGET_VIEW_PC *)object)->target->collision_position, &v000, speed, gravity);
+    params = Default_ADDPART;
+    params.matrix = matrix;
+    params.velocity = &velocity;
+    params.owner = object;
+    params.field_14 = 0.15f;
+    params.field_18 = 0.15f;
+    params.gravity = gravity;
+    params.special = special;
+    params.flags = 0xc39b;
+    params.collision_fn = PartCollide_3D;
+    params.kill_fn = PartKill_ForceThrow;
+    params.time_step = FRAMETIME;
+    params.hostility_group = object->hostility_group;
+    part = AddPart(&params);
+    NewRumble(object->pad->bound_pad, 0.5f, 0);
+    PlaySfx((char *)ForcePushSoundNamePc, &object->collision_position);
+    GameAnimSet_SetVisibility(force->anim_set, 0);
+    force->runtime_flags |= 0x10000;
+    return part;
+}

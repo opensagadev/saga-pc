@@ -5853,7 +5853,9 @@ struct gizforce_pc_s {
     GAMEOBJECT *using_object;
     u8 unknown_03c[0x34];
     f32 horizontal_range;
+    u8 config_flags_byte;
 };
+STATIC_ASSERT(offsetof(GIZFORCE_PC, config_flags_byte) == 0x74);
 STATIC_ASSERT(offsetof(GIZFORCE_PC, file_position) == 0x10);
 STATIC_ASSERT(offsetof(GIZFORCE_PC, anim_set) == 0x28);
 STATIC_ASSERT(offsetof(GIZFORCE_PC, using_object) == 0x38);
@@ -8973,6 +8975,123 @@ combo_finished:
 extern f32 ForceDeflectSpeedPc;
 extern f32 ForceDeflectSeekRatePc;
 
+extern LEVELDATA_PC *MAULF_LDATA;
+extern f32 MaulF_ForceThrowGravity;
+extern f32 MaulF_ForceThrowSpeed;
+extern f32 DookuC_ForceThrowGravity;
+extern f32 DookuC_ForceThrowSpeed;
+PART_PC *__cdecl Part_FindFromHSpecial(NUSPECIALHANDLE *);
+PART_PC *__cdecl GizForce_Throw(GAMEOBJECT *, GIZFORCE_PC *, f32, f32, i32);
+
+static void ForceThrowCode(GAMEOBJECT *object, i32 pressed) {
+    f32 distance = 1.0e9f;
+    FORCE_TARGET_PC *target = (FORCE_TARGET_PC *)object;
+    BEAST_GRAB_TARGET_VIEW_PC *grab = (BEAST_GRAB_TARGET_VIEW_PC *)object;
+    FORCE_GLOW_PC *glow = (FORCE_GLOW_PC *)object;
+    PART_PC *part;
+    if (object->character_context == 0x12) {
+        f32 previous, remaining, speed, gravity;
+        GIZFORCE_PC *force;
+        AlertSurroundingCreatures(object, &object->collision_position);
+        if (object->character_model->model_data_b[object->field_7aa] != NULL &&
+            CurrentAnim(&object->anim_packet) != object->field_7aa)
+            return;
+        previous = object->context_timer;
+        remaining = object->context_timer - FRAMETIME;
+        object->context_timer = remaining;
+        if (remaining <= 0.0f) {
+            object->character_context = -1;
+            target->force = NULL;
+            return;
+        }
+        NewRumble(object->pad->bound_pad, (f32)((f64)qrand() * (f64)(1.0f / 65535.0f) * 0.5), 0);
+        part = object->force_throw_part;
+        if (part != NULL) {
+            if ((part->active & 1) == 0)
+                object->character_context = -1;
+            else {
+                object->force_heading =
+                    NuAtan2D(part->position.x - object->position.x, part->position.z - object->position.z);
+                SetHeadTarget(object, &object->force_throw_part->position, 2, 1.0f, 0.0f, 0.0f);
+            }
+        } else {
+            force = target->force;
+            if (force != NULL) {
+                if ((object->context_flags_pc & 0x40) == 0) {
+                    ForceGlowTargetPc(object, force, target->animation);
+                    object->force_heading = GizForces_AngleToForce(&object->position, target->force);
+                } else {
+                    object->flags_e20 |= 0x20000;
+                    if (force->anim_set != NULL && force->anim_set->object_count == 1) {
+                        part = Part_FindFromHSpecial(&force->anim_set->objects->special);
+                        if (part != NULL) {
+                            glow->candidate = part;
+                            glow->candidate_kind = 3;
+                            SetHeadTarget(object, &part->position, 2, 1.0f, 0.0f, 0.0f);
+                            object->force_heading =
+                                NuAtan2D(part->position.x - object->position.x, part->position.z - object->position.z);
+                            ((GLOW_OBJECT_PC *)object)->object = glow->candidate;
+                            ((GLOW_OBJECT_PC *)object)->kind = glow->candidate_kind;
+                        }
+                    }
+                }
+            }
+        }
+        if (!(previous > 1.0f) || !(object->context_timer <= 1.0f))
+            return;
+        if (WORLD->current_level == MAULF_LDATA) {
+            speed = MaulF_ForceThrowSpeed;
+            gravity = MaulF_ForceThrowGravity;
+        } else if (WORLD->current_level == DOOKUC_LDATA) {
+            speed = DookuC_ForceThrowSpeed;
+            gravity = DookuC_ForceThrowGravity;
+        } else {
+            speed = GameDeflectPartSpeed;
+            gravity = GameDeflectPartGravity;
+        }
+        object->force_throw_part = GizForce_Throw(object, target->force, speed, gravity, 1);
+        object->context_variant_flags |= 0x40;
+        return;
+    }
+    if (pressed == 0 && (object->pad->runtime_flags & 4) == 0)
+        return;
+    if ((object->flags_1fc_word & 0x180) == 0x80)
+        GizForce_FindBestForceTarget(((WORLD_FORCE_PC *)WORLD)->force_system, object);
+    if (target->force == NULL || (target->force->config_flags_byte & 0x80) == 0)
+        return;
+    object->character_context = 0x12;
+    object->field_7aa = 0x27;
+    if (object->character_model->model_data_b[0x27] == NULL)
+        object->field_7aa = 0xb;
+    object->context_variant_flags &= ~0x40u;
+    object->context_timer = 2.0f;
+    object->force_throw_part = NULL;
+    grab->force_throw_target = NULL;
+    {
+        i32 i;
+        for (i = 0; i < 8; ++i) {
+            GAMEOBJECT *player = Player[i];
+            f32 next;
+            if (player == NULL || (player->flags_1fc_word & 0x1001) != 0x1001 || player->dead != 0 ||
+                (player->character_data->model_flags & 0x80000) != 0)
+                continue;
+            next = NuVecDistSqr(&object->position, &player->position, NULL);
+            if (grab->force_throw_target == NULL ||
+                (((object->flags_1fc_word & 0x80) != 0 || (grab->force_throw_target->flags_1fc_word & 0x80) == 0) &&
+                 next < distance)) {
+                grab->force_throw_target = Player[i];
+                distance = next;
+            }
+        }
+    }
+    NewRumble(object->pad->bound_pad, 0.6f, 0);
+    target->force->using_object = object;
+    GameCam_Blend(GameCam, 0.5f, 0.0f, 1);
+    object->force_heading = GizForces_AngleToForce(&object->position, target->force);
+    if (object->flags_1fc_word & 0x80)
+        Hint_SetComplete(0x259);
+}
+
 static void ForceDeflectCode(GAMEOBJECT *object, i32 pressed, i32 held) {
     i32 waiting = objInNetWaitContext(object, 0x1d);
     PART_PC *assist = NULL;
@@ -9143,7 +9262,7 @@ void __cdecl Move_JEDI(GAMEOBJECT *object) {
         ForceDeflectCode(object, special_pressed, special_held);
         STUBBED_NAMED(0x004a28e0); /* Native4b36ae: ForcePushCode(object EDI,special_held). */
         FindForcePushTarget(object, special_pressed, 1);
-        STUBBED_NAMED(0x004a4420); /* Native4b36bf: ForceThrowCode(object EAX,special_pressed). */
+        ForceThrowCode(object, special_pressed);
         ForceCode(object, special_pressed, special_held, 0);
         FindForcePushTarget(object, special_pressed, 2);
         ForceGlowCode(object, glow_model);
@@ -9250,7 +9369,7 @@ void __cdecl Move_WEIRDO(GAMEOBJECT *object) {
         ForceDeflectCode(object, special_pressed, special_held);
         STUBBED_NAMED(0x004a28e0); /* Native4b5ad9: ForcePushCode(object EDI,special_held). */
         FindForcePushTarget(object, special_pressed, 1);
-        STUBBED_NAMED(0x004a4420); /* Native4b5aea: ForceThrowCode(object EAX,special_pressed). */
+        ForceThrowCode(object, special_pressed);
         ForceCode(object, special_pressed, special_held, 0);
         FindForcePushTarget(object, special_pressed, 2);
         ForceGlowCode(object, glow_model);
