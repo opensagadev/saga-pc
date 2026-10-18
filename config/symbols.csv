@@ -845,7 +845,7 @@ address,symbol,size,ctype
 0x455290,_Action_UseTimeBasedUpdate,141,"i32 __cdecl (AISYS_PC *, AISCRIPTPROCESS_PC *, AIPACKET_PC *, char **, i32, i32, f32)"
 0x455320,_Action_WalkBackwards,201,"i32 __cdecl (AISYS_PC *, AISCRIPTPROCESS_PC *, AIPACKET_PC *, char **, i32, i32, f32)"
 0x4553f0,_Action_AddScriptProcessor,1005,
-0x4557e0,_Action_ForceLightning,510,
+0x4557e0,_Action_ForceLightning,510,"i32 __cdecl (AISYS_PC *, AISCRIPTPROCESS_PC *, AIPACKET_PC *, char **, i32, i32, f32)"
 0x4559e0,_Action_SetUseOneAtOnce,250,"i32 __cdecl (AISYS_PC *, AISCRIPTPROCESS_PC *, AIPACKET_PC *, char **, i32, i32, f32)"
 0x455ae0,_Action_SetAO_MaxAttackers,116,"i32 __cdecl (AISYS_PC *, AISCRIPTPROCESS_PC *, AIPACKET_PC *, char **, i32, i32, f32)"
 0x455b60,_Action_SetAO_AttackersPerRow,116,"i32 __cdecl (AISYS_PC *, AISCRIPTPROCESS_PC *, AIPACKET_PC *, char **, i32, i32, f32)"
@@ -1560,7 +1560,7 @@ address,symbol,size,ctype
 0x4a24d0,_ForceLightning_Origin,210,"void __cdecl (GAMEOBJECT *, NUVEC *, NUVEC *)"
 0x4a25b0,_ReleaseForce,246,"void __cdecl(GAMEOBJECT*,i32)"
 0x4a26b0,_DrawLightningBolts,551,
-0x4a3270,_FindForcePushTarget,2274,
+0x4a3270,_FindForcePushTarget,2274,"void __cdecl (GAMEOBJECT *, i32, i32)"
 0x004a3b60,_ForcePushEligible,123,"i32 (GAMEOBJECT *, GAMEOBJECT *, GAMEOBJECT *) [private EAX first input; two stack pointers]"
 0x4a3be0,_ForcePushed_MoveCode,712,
 0x004a3eb0,_ForcePushed_SetTargetMom,1014,"i32 __cdecl (GAMEOBJECT *, f32 *)"
@@ -1703,6 +1703,7 @@ address,symbol,size,ctype
 0x4ba190,_Panel_Clear,87,
 0x4ba1f0,_DrawBossHitPointsPc,211,static i32 (GAMEOBJECT *); boss ESI
 0x4ba2d0,_DrawBossHitPoints,10,
+0x4ba2e0,_DrawMeleeTargetsPc,496,"void __cdecl (i16 *, u8 *, i32)"
 0x4ba4d0,_DrawMeleeTargetsRowsPc,430,"void __cdecl (i16 *, char *, f32 *, i32)"
 0x4bac60,_DrawTimerPc,367,"void __cdecl (i32, i32, i32)"
 0x004badd0,_InitPanel,106,void __cdecl (i32)
@@ -1765,9 +1766,11 @@ address,symbol,size,ctype
 0x4c7a90,_Signal_SetGizmoVisibility,79,
 0x4c7b20,_Signals_Reset,319,
 0x4c8030,_Signals_Draw,653,
-0x4c8bd0,_SpeederBlowupHack,98,
-0x4c8c40,_SpeederChaseA_Init,323,
-0x4c8d90,_SpeederChaseA_Reset,168,
+0x4c8bd0,_SpeederBlowupHack,98,"i32 __cdecl (GIZMOBLOWUP_PC *, i32)"
+0x4c8c40,_SpeederChaseA_Init,323,void __cdecl (WORLDINFO *)
+0x4c8d90,_SpeederChaseA_Reset,168,void __cdecl (WORLDINFO *)
+0x4c8e40,_SpeederChaseA_Update,568,void __cdecl (WORLDINFO *)
+0x4c9080,_SpeederChaseA_Panel,340,void __cdecl (WORLDINFO *)
 0x4c91e0,_ObjIsTargetSpeeder,47,i32 __cdecl(GAMEOBJECT*)
 0x4c9290,_Action_SpeederBeingChased,1812,
 0x004c99b0,_SpeederChaseATATInOutMul,85,f32 __cdecl (GAMEOBJECT *)
@@ -3615,6 +3618,7 @@ address,symbol,size,ctype
 0x00566290,_FinishLoop,271,void __cdecl (i32)
 0x5663a0,_FadeLoop,601,
 0x00566630,_SetLevelExBlowupFlags,10,void __cdecl (u32)
+0x566640,_SetLevelBlowupCallbackPc,14,void __cdecl (LEVEL_BLOWUP_CALLBACK_PC)
 0x5666d0,_InitGizmoBlowupTypes,93,i32 __cdecl (WORLDINFO *)
 0x566730,_InitGizmoBlowups,112,i32 __cdecl (WORLDINFO *)
 0x5667a0,_InitGizmoBlowupsMtxBuffer,73,i32 __cdecl (WORLDINFO *)
@@ -11163,6 +11167,16 @@ address,symbol,size,ctype
 0x007575d8,__real@3fc0000000000000,8,const f64
 0x7575e0,??_C@_05HCFAHKCN@myset?$AA@,6,char []
 0x007575e0,_AIConditionMySetNamePc,6,const char[6]
+0x007575e8,??_C@_05GGMHDFKJ@FLOAT?$AA@,6,const char[6]
+0x007575f0,??_C@_07LEOBIMFP@STUNNED?$AA@,8,const char[8]
+0x007575f8,??_C@_0L@KFBOJAKM@BALLOONING?$AA@,11,const char[11]
+0x00757604,??_C@_05JJKNPPIA@GETIN?$AA@,6,const char[6]
+0x0075760c,??_C@_09CBBFEJIH@FORCEPUSH?$AA@,10,const char[10]
+0x00757618,??_C@_0M@JJIGBDIH@FORCEPUSHED?$AA@,12,const char[12]
+0x00757624,??_C@_03NNPOPHEL@EAT?$AA@,4,const char[4]
+0x00757628,??_C@_04BBNIBOC@GRAB?$AA@,5,const char[5]
+0x00757630,??_C@_0L@NMLCOOOO@FORCEDBACK?$AA@,11,const char[11]
+0x0075763c,??_C@_0M@JPKHFJLE@DEACTIVATED?$AA@,12,const char[12]
 0x757648,??_C@_07OCKDJMPO@inrange?$AA@,,const char[8]
 0x757650,??_C@_09ONPKMKJM@throwable?$AA@,,const char[10]
 0x00757670,_AIConditionTakeoverTargetNamePc,15,const char[15]
@@ -11404,7 +11418,10 @@ address,symbol,size,ctype
 0x757ee8,??_C@_07HBIAAFDA@damage?$DN?$AA@,,const char[8]
 0x757ef0,??_C@_07CKHJGIMH@hitter?$DN?$AA@,,const char[8]
 0x757ef8,??_C@_0BB@DMOBOFF@triggered_by_hit?$AA@,,const char[17]
+0x757f0c,??_C@_0BJ@GODHOAHG@forcepush_highlight_only?$AA@,25,const char[25]
 0x757f28,_AITransferLiteral757f28,8,const char[8]
+0x757f28,??_C@_07MHBGHADJ@target?$DN?$AA@,8,const char[8]
+0x757f30,??_C@_0BA@OBPAGLLE@target?$DNopponent?$AA@,16,const char[16]
 0x757f40,??_C@_04HNEBHLOP@from?$AA@,5,const char[5]
 0x00757f40,_AIActionFromName,5,const char[5]
 0x00757f48,_CharacterPosArgPrefix,15,const char[15]
@@ -11516,6 +11533,7 @@ address,symbol,size,ctype
 0x75847c,??_C@_05CBICNPJE@area?$DN?$AA@,6,const char[6]
 0x758484,??_C@_07ICLLHBMF@script?$DN?$AA@,8,const char[8]
 0x75848c,??_C@_0BB@PGCHANHM@ForceLightningLp?$AA@,17,const char[17]
+0x7584a0,??_C@_07JKCAGDMG@randxz?$DN?$AA@,8,const char[8]
 0x007584a8,_AIExpressionMaxName,4,const char [4]
 0x007584ac,_AIActionNumName,4,const char[4]
 0x007584b0,_AIActionDistName,5,const char[5]
@@ -13083,11 +13101,22 @@ address,symbol,size,ctype
 0x75cec4,??_C@_0BA@CAGBIHNH@thermocrate_031?$AA@,16,char []
 0x75ced4,??_C@_0BA@CBKDONOA@thermocrate_021?$AA@,16,char []
 0x75cee4,??_C@_0BA@CDOFFDLJ@thermocrate_011?$AA@,16,char []
+0x75cef4,??_C@_0P@EEEEMKAB@clear4_ffield2?$AA@,15,const char[15]
+0x75cf04,??_C@_0P@GPGJJJMC@clear4_ffield1?$AA@,15,const char[15]
+0x75cf14,??_C@_0P@KGJINBHI@clear3_ffield2?$AA@,15,const char[15]
+0x75cf24,??_C@_0P@INLFICLL@clear3_ffield1?$AA@,15,const char[15]
+0x75cf34,??_C@_0P@EJFKLKEG@clear2_ffield2?$AA@,15,const char[15]
+0x75cf44,??_C@_0P@GCHHOJIF@clear2_ffield1?$AA@,15,const char[15]
+0x75cf54,??_C@_0P@KCGNABEF@clear1_ffield2?$AA@,15,const char[15]
+0x75cf64,??_C@_0P@IJEAFCIG@clear1_ffield1?$AA@,15,const char[15]
 0x75cf74,??_C@_0M@EPGAAODK@SpeederMode?$AA@,12,char []
 0x75cf80,??_C@_0BG@EELELJAI@KeepPlayersOnSpeeders?$AA@,22,char []
 0x75cf98,??_C@_05CGFGLDKK@Phase?$AA@,6,char []
 0x75cfa0,??_C@_05BOPNLACL@Stage?$AA@,6,char []
 0x75cfa8,??_C@_0P@BKHDFDPI@SpeedersToKill?$AA@,15,char []
+0x75cfb8,??_C@_0BC@GMKNGJDD@env_laser_gate_lp?$AA@,18,const char[18]
+0x75cfcc,??_C@_0BD@IGAFHAHC@env_laser_gate_off?$AA@,19,const char[19]
+0x75cfe0,??_C@_0BC@LKKKOILF@env_laser_gate_on?$AA@,18,const char[18]
 0x0075cff4,??_C@_01IDAFKMJL@_?$AA@,2,const char[2]
 0x0075cff4,_PermLegalSeparator,2,const char[2]
 0x0075cff8,_PermLegalSpanish,11,const char[11]
@@ -18595,6 +18624,11 @@ address,symbol,size,ctype
 0x7fbec8,_PlayerBlockActionInfoPc,,void *
 0x7fbecc,_ApplyGravityContextHoverHeight,4,f32
 0x007fbed0,_PlayerExtraActionInfoPc,264,API_EXTRA_ACTION_PC[33]
+0x7fbfd8,_lightning_sizew,8,f32[2]
+0x7fbfe0,_lightning_sizel,8,f32[2]
+0x7fbfe8,_lightning_sizewab,8,f32[2]
+0x7fbff0,_lightning_endw,8,f32[2]
+0x7fbff8,_lightning_col,8,u32[2]
 0x7fc000,_ApplyGravityContext22HoverHeight,4,f32
 0x7fc004,_ApplyGravityWallRunAcceleration,4,f32
 0x7fc008,_ApplyGravityContext42HoverHeight,4,f32
@@ -20718,7 +20752,12 @@ address,symbol,size,ctype
 0x8804e0,_ShopSubMenuPc,4,i32
 0x8804e4,_ShopMoveSfxLockPc,4,i32
 0x8804e8,_ShopItemChangedPc,4,i32
+0x880568,_SpeederChaseNetPacketPc,4,SPEEDERCHASE_NETPACKET_PC *
+0x880570,_SpeederChaseState0Pc,4,i32
+0x880574,_SpeederChaseState1Pc,4,i32
 0x880578,_speeder_hitpoints_lost,4,i32
+0x88057c,_SpeederChaseTime0Pc,4,f32
+0x880580,_SpeederChaseTime1Pc,4,f32
 0x00880584,_players_cannot_exit_speeder,4,i32
 0x0088058c,_legal_mtl,4,NUMTL *
 0x00880590,_legal_tid,4,i32
@@ -22160,7 +22199,7 @@ address,symbol,size,ctype
 0x950bd0,_GizmoBlowUpOpponent_Behind,,i32
 0x950bd4,_GizmoBlowUpOpponent_Range2,,f32
 0x00950bd8,_GameBlowUpBlownUpFn,4,void (__cdecl *)(void *)
-0x950bdc,_BlowupExFunc,,"i32(__cdecl *)(GIZMOBLOWUP_PC *,i32)"
+0x950bdc,_BlowupExFunc,4,"i32(__cdecl *)(GIZMOBLOWUP_PC *,i32)"
 0x950be0,_GizmoBlowup_TransformDrawFn,,void (__cdecl *)(GIZMOBLOWUP_PC *target)
 0x00950be4,_GizmoBlowUp_SfxFn,,"void (__cdecl *)(GIZMOBLOWUP_PC *, NUVEC *)"
 0x950be8,_GizmoBlowUp_NoTargetFn,,"i32(__cdecl*)(WORLDINFO*,GAMEOBJECT*)"

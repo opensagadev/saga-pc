@@ -76,3 +76,8 @@ void FadeLoop(char *text, i32 direction, float duration, void (*draw)(float)) {
 void SetLevelExBlowupFlags(u32 flags) {
     EXBLOWUPFLAGS = flags;
 }
+
+void __cdecl SetLevelBlowupCallbackPc(LEVEL_BLOWUP_CALLBACK_PC callback) {
+    if (callback != NULL)
+        BlowupExFunc = callback;
+}

@@ -330,12 +330,14 @@ static void Signal_SetGizmoVisibility(GIZMO_PC *gizmo, i32 visible) {
     }
 }
 
-i32 SpeederBlowupHack(GIZMOBLOWUP_PC *blowup, i32 unused1) {
-    if (blowup == NULL) {
-        return 1;
+i32 __cdecl SpeederBlowupHack(GIZMOBLOWUP_PC *blowup, i32 hit_type) {
+    (void)hit_type;
+    if (blowup != NULL) {
+        if (NuStrCmp(blowup->name, "thermocrate_011") == 0 || NuStrCmp(blowup->name, "thermocrate_021") == 0 ||
+            NuStrCmp(blowup->name, "thermocrate_031") == 0 || NuStrCmp(blowup->name, "minikit101") == 0)
+            return 0;
     }
-    return NuStrCmp(blowup->name, "thermocrate_011") != 0 && NuStrCmp(blowup->name, "thermocrate_021") != 0 &&
-           NuStrCmp(blowup->name, "thermocrate_031") != 0 && NuStrCmp(blowup->name, "minikit101") != 0;
+    return 1;
 }
 
 void SpeederChaseA_Reset(WORLDINFO *unused0) {

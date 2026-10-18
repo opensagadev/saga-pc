@@ -28085,3 +28085,38 @@ extern "C" {
 }
 #endif
 #endif
+
+#ifndef SAGA_SPEEDERCHASE_A_NATIVE_PC
+#define SAGA_SPEEDERCHASE_A_NATIVE_PC
+typedef struct SPEEDERCHASE_NETPACKET_PC {
+    u8 reserved_0;
+    u8 target_count;
+    u8 killed_count;
+    u8 reserved_3;
+    u8 phase;
+    u8 reserved_5[2];
+} SPEEDERCHASE_NETPACKET_PC;
+STATIC_ASSERT(sizeof(SPEEDERCHASE_NETPACKET_PC) == 7);
+STATIC_ASSERT(offsetof(SPEEDERCHASE_NETPACKET_PC, target_count) == 1);
+STATIC_ASSERT(offsetof(SPEEDERCHASE_NETPACKET_PC, killed_count) == 2);
+STATIC_ASSERT(offsetof(SPEEDERCHASE_NETPACKET_PC, phase) == 4);
+typedef i32(__cdecl *LEVEL_BLOWUP_CALLBACK_PC)(GIZMOBLOWUP_PC *, i32);
+#ifdef __cplusplus
+extern "C" {
+#endif
+    extern SPEEDERCHASE_NETPACKET_PC *SpeederChaseNetPacketPc;
+    extern i32 SpeederChaseState0Pc;
+    extern i32 SpeederChaseState1Pc;
+    extern f32 SpeederChaseTime0Pc;
+    extern f32 SpeederChaseTime1Pc;
+    void __cdecl SpeederChaseA_Init(WORLDINFO *);
+    void __cdecl SpeederChaseA_Reset(WORLDINFO *);
+    void __cdecl SpeederChaseA_Update(WORLDINFO *);
+    void __cdecl SpeederChaseA_Panel(WORLDINFO *);
+    void __cdecl DrawMeleeTargetsPc(i16 *, u8 *, i32);
+    void __cdecl SetLevelBlowupCallbackPc(LEVEL_BLOWUP_CALLBACK_PC callback);
+    i32 __cdecl SpeederBlowupHack(GIZMOBLOWUP_PC *, i32);
+#ifdef __cplusplus
+}
+#endif
+#endif

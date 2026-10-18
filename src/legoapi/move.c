@@ -1,4 +1,5 @@
 #include "saga.h"
+void __cdecl FindForcePushTarget(GAMEOBJECT *, i32, i32);
 
 void __cdecl GunShip_DragBombSeekBlowUp(GAMEOBJECT *);
 
@@ -9038,10 +9039,10 @@ void __cdecl Move_JEDI(GAMEOBJECT *object) {
     if ((object->character_data->game_character->flags_094 & 0x8000) == 0) {
         STUBBED_NAMED(0x004b15c0); /* Native4b36a6: ForceDeflectCode(object EAX,special_pressed,special_held). */
         STUBBED_NAMED(0x004a28e0); /* Native4b36ae: ForcePushCode(object EDI,special_held). */
-        STUBBED_NAMED(0x004a3270); /* Native4b36b7: FindForcePushTarget(object,special_pressed,1). */
+        FindForcePushTarget(object, special_pressed, 1);
         STUBBED_NAMED(0x004a4420); /* Native4b36bf: ForceThrowCode(object EAX,special_pressed). */
         ForceCode(object, special_pressed, special_held, 0);
-        STUBBED_NAMED(0x004a3270); /* Native4b36d4: FindForcePushTarget(object,special_pressed,2). */
+        FindForcePushTarget(object, special_pressed, 2);
         ForceGlowCode(object, glow_model);
     }
     if ((object->character_data->model_flags & 0x40000) != 0)
@@ -9145,10 +9146,10 @@ void __cdecl Move_WEIRDO(GAMEOBJECT *object) {
     if (has_sabre || SuperWeirdo(object)) {
         STUBBED_NAMED(0x004b15c0); /* Native4b5ad1: ForceDeflectCode(object EAX,special_pressed,special_held). */
         STUBBED_NAMED(0x004a28e0); /* Native4b5ad9: ForcePushCode(object EDI,special_held). */
-        STUBBED_NAMED(0x004a3270); /* Native4b5ae2: FindForcePushTarget(object,special_pressed,1). */
+        FindForcePushTarget(object, special_pressed, 1);
         STUBBED_NAMED(0x004a4420); /* Native4b5aea: ForceThrowCode(object EAX,special_pressed). */
         ForceCode(object, special_pressed, special_held, 0);
-        STUBBED_NAMED(0x004a3270); /* Native4b5aff: FindForcePushTarget(object,special_pressed,2). */
+        FindForcePushTarget(object, special_pressed, 2);
         ForceGlowCode(object, glow_model);
     }
     ForcePushed_MoveCode(object);
@@ -9252,3 +9253,279 @@ STATIC_ASSERT(offsetof(GAMECAMERA, render_mtx) == 0xb8);
 STATIC_ASSERT(offsetof(WORLDINFO, level_objects) == 0x2ac0);
 STATIC_ASSERT(sizeof(LEVEL_OBJECT_RUNTIME_PC) == 0x10);
 STATIC_ASSERT(offsetof(LEVEL_OBJECT_RUNTIME_PC, active) == 0xe);
+
+extern AREA_DATA_PC *EMPERORFIGHT_ADATA;
+typedef struct forcepush_feedback_view_pc_s {
+    u8 reserved[0xd18];
+    GAMEOBJECT *candidate;
+    u8 reserved_d1c[0xe2d - 0xd1c];
+    u8 candidate_kind;
+} FORCEPUSH_FEEDBACK_VIEW_PC;
+STATIC_ASSERT(offsetof(FORCEPUSH_FEEDBACK_VIEW_PC, candidate) == 0xd18);
+STATIC_ASSERT(offsetof(FORCEPUSH_FEEDBACK_VIEW_PC, candidate_kind) == 0xe2d);
+void __cdecl FindForcePushTarget(GAMEOBJECT *object, i32 activate, i32 target_filter) {
+    NUVEC delta;
+    i32 index;
+    i32 choke_style;
+    i32 second_style;
+    GAMEOBJECT *best;
+    i32 selected_choke;
+    i32 selected_second;
+    i32 selected_direct;
+    i32 target_special;
+    i32 continuing_direct;
+    i32 super_weirdo;
+    i32 random;
+    i32 object_count;
+    f32 best_distance;
+    GAMEOBJECT *candidate;
+    const u32 *mask;
+    u64 bit;
+    i32 candidate_choke;
+    i32 candidate_second;
+    i32 candidate_direct;
+    f32 distance;
+
+    if (object->character_context == 0x1b || (object->field_e22 & 2) != 0 ||
+        (object->field_280 != 0xff && MiniCutCam != 0) || (object->field_e23 & 1) != 0) {
+        return;
+    }
+
+    if ((object->pad->runtime_flags & 0x10) != 0) {
+        activate = 1;
+    } else if (!(object->flags_1fc & 0x80)) {
+        return;
+    }
+    if (object->field_281 == 0) {
+        return;
+    }
+    if (object->character_context != -1 && !objInNetWaitContext(object, 0x1b) &&
+        (CInfo[object->character_context].flags & 4) == 0 && object->character_context != 6 &&
+        object->character_context != 7) {
+        return;
+    }
+
+    choke_style = object->character_data->game_character->flags_090 & 2;
+    second_style = object->character_data->game_character->flags_090 & 4;
+    best = NULL;
+
+    if ((object->pad->runtime_flags & 0x10) != 0 && ((GAMEOBJECT *)object->field_d20) != NULL) {
+        best = ((GAMEOBJECT *)object->field_d20);
+        if (choke_style == 0 && object->character_data->game_character->weapon_action == 0x0c &&
+            (object->character_data->model_flags & 8) != 0) {
+            choke_style = best->id == (u16)id_GAMORREANGUARD;
+        }
+        target_special = best->character_data->model_flags & 0x10;
+        continuing_direct = 0;
+        if (target_special == 0 && (best->character_data->game_character->flags_090 & 0x40) != 0 &&
+            best->character_model->model_data_b[0x41] != NULL) {
+            continuing_direct = 1;
+        } else if ((choke_style | second_style) != 0) {
+            if (second_style != 0) {
+                if (best->character_model->model_data_b[0x54] == NULL) {
+                    if (target_special == 0)
+                        return;
+                    choke_style = 0;
+                    second_style = 0;
+                }
+            } else if (best->character_model->model_data_b[0x53] == NULL) {
+                if (target_special == 0)
+                    return;
+                choke_style = 0;
+            }
+        } else if (target_special == 0) {
+            if (best->character_model->model_data_b[0x41] != NULL) {
+                continuing_direct = 1;
+            } else if (best->character_model->model_data_b[0x2b] == NULL) {
+                return;
+            }
+        } else if (best->character_model->model_data_b[0x2b] == NULL &&
+                   best->character_model->model_data_b[5] == NULL) {
+            return;
+        }
+        selected_choke = choke_style;
+        selected_second = second_style;
+        selected_direct = continuing_direct;
+    } else {
+        super_weirdo = SuperWeirdo(object);
+        if (super_weirdo != 0) {
+            random = qrand();
+            second_style = random > 0x7fff;
+            choke_style = random <= 0x7fff;
+        }
+
+        object_count = HIGHGAMEOBJECT;
+        best_distance = 1.5625f;
+        candidate = Obj;
+        selected_choke = 0;
+        selected_second = 0;
+        selected_direct = 0;
+        for (index = 0; index < object_count; ++index, ++candidate) {
+            if ((candidate->flags_1fc_word & 1) == 0 || candidate == object ||
+                (candidate->flags_1fc_word & 0x1000) == 0 || candidate->dead != 0 ||
+                candidate->model_draw_result == 0 || candidate->character_context == 0x3c ||
+                candidate->character_context == 0x39 || candidate->character_context == 0x3b ||
+                candidate->character_context == 0x41 || candidate->character_context == 0x17 ||
+                candidate->character_context == 0x0f || candidate->character_context == 0x47 ||
+                candidate->character_context == 0x46 ||
+                (candidate->character_data->game_character->flags_090 & 0x8000) != 0 ||
+                (CInfo[candidate->character_context].flags & 0x8000) != 0 ||
+                (candidate->character_data->game_character->flags_094 & 0x200) != 0 ||
+                (candidate->flags_ef0 & 0x400010) != 0) {
+                continue;
+            }
+            if (!(WORLD->area != NULL && WORLD->area == EMPERORFIGHT_ADATA &&
+                  ((candidate->portal_flags & 0x08000000) != 0 || candidate->field_280 != 0xff)) &&
+                candidate->id != (u16)id_BODYGUARD) {
+                if (target_filter == 1) {
+                    if (candidate->field_280 != 0xff) {
+                        goto reload_object_count;
+                    }
+                    if ((candidate->flags_1f8 & 5) != 0) {
+                        mask = WORLD->object_sys->hostility_masks[object->hostility_group];
+                        bit = (u64)1 << candidate->hostility_group;
+                        if (((u32)bit & mask[0]) == 0 && ((u32)(bit >> 32) & mask[1]) == 0) {
+                            goto reload_object_count;
+                        }
+                    }
+                } else if (target_filter == 2 && candidate->field_280 == 0xff) {
+                    goto reload_object_count;
+                }
+                if ((candidate->portal_flags & 0x08000000) != 0) {
+                    goto reload_object_count;
+                }
+
+                candidate_choke = choke_style;
+                candidate_second = second_style;
+                candidate_direct = 0;
+                if (candidate_choke == 0 && object->character_data->game_character->weapon_action == 0x0c &&
+                    (object->character_data->model_flags & 8) != 0) {
+                    candidate_choke = candidate->id == (u16)id_GAMORREANGUARD;
+                }
+                if ((candidate->character_data->model_flags & 0x10) == 0 &&
+                    (candidate->character_data->game_character->flags_090 & 0x40) != 0 &&
+                    candidate->character_model->model_data_b[0x41] != NULL) {
+                    candidate_direct = 1;
+                } else if ((candidate_choke | second_style) != 0) {
+                    if (super_weirdo != 0 && qrand() <= 0x7fff &&
+                        (candidate->character_data->model_flags & 0x10) == 0 &&
+                        candidate->character_model->model_data_b[0x41] != NULL) {
+                        candidate_direct = 1;
+                    } else if (second_style != 0) {
+                        if (candidate->character_model->model_data_b[0x54] == NULL) {
+                            if ((candidate->character_data->model_flags & 0x10) == 0)
+                                goto reload_object_count;
+                            candidate_choke = 0;
+                            candidate_second = 0;
+                        }
+                    } else if (candidate->character_model->model_data_b[0x53] == NULL) {
+                        if ((candidate->character_data->model_flags & 0x10) == 0)
+                            goto reload_object_count;
+                        candidate_choke = 0;
+                    }
+                } else if ((candidate->character_data->model_flags & 0x10) == 0) {
+                    if (candidate->character_model->model_data_b[0x41] != NULL) {
+                        candidate_direct = 1;
+                    } else if (candidate->character_model->model_data_b[0x2b] == NULL) {
+                        goto reload_object_count;
+                    }
+                } else if (candidate->character_model->model_data_b[0x2b] == NULL &&
+                           candidate->character_model->model_data_b[5] == NULL) {
+                    goto reload_object_count;
+                }
+
+                distance = NuVecDistSqr(&object->collision_position, &candidate->collision_position, &delta);
+                if (candidate->id == GameObjectRotationAtstId) {
+                    distance = (f32)((f64)distance * (f64)(1.0f / 3.0f));
+                }
+                if (!(distance < best_distance)) {
+                    goto reload_object_count;
+                }
+                object_count = HIGHGAMEOBJECT;
+                if (delta.x * object->facing_direction.x + delta.z * object->facing_direction.z < 0.0f) {
+                    best = candidate;
+                    best_distance = distance;
+                    selected_choke = candidate_choke;
+                    selected_second = candidate_second;
+                    selected_direct = candidate_direct;
+                }
+                continue;
+            }
+        reload_object_count:
+            object_count = HIGHGAMEOBJECT;
+        }
+    }
+    if (best != NULL && best->character_context != 0x0f) {
+
+        object->flags_e20 |= 0x20000;
+        ((FORCEPUSH_FEEDBACK_VIEW_PC *)object)->candidate = best;
+        ((FORCEPUSH_FEEDBACK_VIEW_PC *)object)->candidate_kind = 2;
+        SetObjAsHeadTarget(object, best, 2, 1.0f, 0.0f, 0.0f);
+        if (activate == 0 && !objInNetWaitContext(object, 0x1b)) {
+            return;
+        }
+
+        if (object->id == (u16)id_LUKESKYWALKERDAGOBAH && dagobah_training != 0 && object->rider == NULL &&
+            FreePlay == 0) {
+            if (AnimPlaying(&object->anim_packet, 0x0b, 1, 1) == NULL &&
+                AnimPlaying(&object->anim_packet, 0x27, 1, 1) == NULL) {
+                PlaySfx("JForcePush", &object->collision_position);
+                PlayGruntSfx(object);
+            }
+            NewBuzzFrames(object->pad->bound_pad, 2, 0);
+            object->movement_facing_angle = NuAtan2D(best->collision_position.x - object->collision_position.x,
+                                                     best->collision_position.z - object->collision_position.z);
+            object->flags_e20 |= 0x1000000;
+            GameCam_HitRoll();
+            return;
+        }
+
+        object->character_context = 0x1b;
+        object->force_target = best;
+        object->field_7b3 = 0;
+        object->context_timer = 0.0f;
+        object->context_duration = 0.3f;
+        GameCam_Blend(GameCam, 0.5f, 0.0f, 1);
+        object->flags_e20 &= ~0x380u;
+        if (selected_direct != 0) {
+            object->flags_e20 |= 0x200;
+        } else if (selected_choke != 0 || selected_second != 0) {
+            object->flags_e20 |= 0x80;
+            if (selected_second != 0) {
+                object->flags_e20 |= 0x100;
+            }
+        }
+
+        if ((object->field_e21 & 4) == 0) {
+            FaceOpponent(object, NULL);
+            if ((object->field_e21 & 2) == 0) {
+                Player_ClearContext(best, 1);
+                Player_ResetContexts(best->ai_player_packet_pc);
+                if ((object->field_e21 & 1) != 0) {
+                    best->field_7aa = 0x54;
+                    best->action_movement_state = 2;
+                } else if ((object->field_e20 & 0x80) != 0) {
+                    PlaySfx("ForceChokeCrunch", &best->collision_position);
+                    best->field_7aa = 0x53;
+                    best->action_movement_state = 3;
+                } else {
+                    best->field_7aa = best->character_model->model_data_b[0x2b] != NULL
+                                          ? 0x2b
+                                          : (best->character_model->model_data_b[5] != NULL ? 5 : 0x2b);
+                    best->action_movement_state = 0;
+                    if ((object->flags_1fc & 0x80) && Cheat_IsOn(0x13)) {
+                        best->action_movement_state = 4;
+                    }
+                }
+                best->force_target = object;
+                best->character_context = 0x1c;
+                FastWeaponIn(best, 0);
+                FaceOpponent(best, NULL);
+            } else {
+                PlaySfx("ForceMindTrick", &object->collision_position);
+            }
+        }
+        PlaySfx("JForcePush", &object->collision_position);
+        PlayGruntSfx(best);
+    }
+}

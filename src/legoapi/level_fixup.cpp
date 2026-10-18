@@ -311,10 +311,11 @@ extern "C" void __cdecl FixUpLevels(struct level_fixup_pc_s *fixup) {
             level = Level_FindByName("speederchase_a", NULL); /* Native call 0x48dd09. */
             SPEEDERCHASEA_LDATA = level;                      /* Native store 0x48dd13. */
             if (level != NULL) {
-                STUBBED_NAMED(FixUpLevels_Callback_4c8c40); /* Native 0x48dd1a: callbacks[1] = entry 0x4c8c40. */
-                STUBBED_NAMED(FixUpLevels_Callback_4c8d90); /* Native 0x48dd27: callbacks[2] = entry 0x4c8d90. */
-                STUBBED_NAMED(FixUpLevels_Callback_4c8e40); /* Native 0x48dd33: callbacks[3] = entry 0x4c8e40. */
-                STUBBED_NAMED(FixUpLevels_Callback_4c9080); /* Native 0x48dd40: callbacks[6] = entry 0x4c9080. */
+                level->callbacks[1] = (void *)SpeederChaseA_Init;  /* Native 0x48dd1a: callbacks[1] = entry 0x4c8c40. */
+                level->callbacks[2] = (void *)SpeederChaseA_Reset; /* Native 0x48dd27: callbacks[2] = entry 0x4c8d90. */
+                level->callbacks[3] =
+                    (void *)SpeederChaseA_Update;                  /* Native 0x48dd33: callbacks[3] = entry 0x4c8e40. */
+                level->callbacks[6] = (void *)SpeederChaseA_Panel; /* Native 0x48dd40: callbacks[6] = entry 0x4c9080. */
             }
             level = Level_FindByName("negotiations_a", NULL); /* Native call 0x48dd51. */
             NEGOTIATIONSA_LDATA = level;                      /* Native store 0x48dd5d. */

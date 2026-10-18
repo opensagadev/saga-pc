@@ -8700,13 +8700,88 @@ i32 __cdecl Action_WalkBackwards(AISYS_PC *sys, AISCRIPTPROCESS_PC *processor, A
     return 0;
 }
 
-static i32 Action_ForceLightning(AISYS_PC *sys, AISCRIPTPROCESS_PC *processor, AIPACKET_PC *packet, char **params,
-                                 i32 param_4, i32 param_5, f32 param_6) {
+void __cdecl FindForcePushTarget(GAMEOBJECT *object, i32 activate, i32 target_filter);
+STATIC_ASSERT(offsetof(GAMEOBJECT, force_target) == 0x790);
+STATIC_ASSERT(offsetof(GAMEOBJECT, pad) == 0xca4);
+STATIC_ASSERT(offsetof(GAMEOBJECT, field_d20) == 0xd20);
+STATIC_ASSERT(offsetof(GAMEOBJECT, character_context) == 0x7b5);
+STATIC_ASSERT(offsetof(GAMEOBJECT, flags_e20) == 0xe20);
+STATIC_ASSERT(offsetof(GAMEPAD_PC, runtime_flags) == 0x5a);
+STATIC_ASSERT(offsetof(AISCRIPTPROCESS_PC, action_data_1) == 0x68);
+STATIC_ASSERT(offsetof(AISCRIPTPROCESS_PC, action_data_3) == 0x6c);
+STATIC_ASSERT(offsetof(AISCRIPTPROCESS_PC, action_data_4) == 0x70);
+STATIC_ASSERT(offsetof(AISCRIPTPROCESS_PC, action_timer) == 0x9c);
+
+i32 __cdecl Action_ForcePush(AISYS_PC *system, AISCRIPTPROCESS_PC *processor, AIPACKET_PC *packet, char **params,
+                             i32 param_count, i32 first_time, f32 elapsed) {
+    GAMEOBJECT *object;
+    GAMEOBJECT *action_object;
+    i32 index;
+    if (packet == NULL || packet->owner == NULL || packet->owner->objptr == NULL) {
+        return 1;
+    }
+    object = packet->owner->objptr;
+    if (first_time != 0) {
+        processor->action_data_3 = NULL;
+        for (index = 0; index < param_count; ++index) {
+            if (NuStrICmp(params[index], "target=opponent") == 0) {
+                processor->action_data_3 = packet->opponent;
+                if (processor->action_data_3 == NULL) {
+                    return 1;
+                }
+            } else {
+                char *value = NuStrIStr(params[index], "target=");
+                if (value != NULL) {
+                    processor->action_data_3 = GetNamedGameObject(system, value + 7);
+                    if (processor->action_data_3 == NULL) {
+                        return 1;
+                    }
+                } else if (NuStrICmp(params[index], "forcepush_highlight_only") == 0) {
+                    processor->action_data_1 = 1;
+                }
+            }
+        }
+        if (object->character_context == 0x1b && processor->action_data_1 == 0 && object->force_target != NULL &&
+            processor->action_data_3 == NULL) {
+            object->pad->runtime_flags |= 0x10;
+            object->field_d20 = (u32)object->force_target;
+            object->flags_e20 = (object->flags_e20 & ~0x400u) | ((processor->action_data_1 << 10) & 0x400u);
+            object->flags_e20 &= ~0x20000u;
+            object->character_context = -1;
+            FindForcePushTarget(object, 0, 0);
+        }
+    }
+    if (CharCategory_IsCategory(object, 0) == 0) {
+        if (FreePlay != 0) {
+            f32 timer = processor->action_timer - elapsed;
+            processor->action_timer = timer;
+            if (timer < 0.0f) {
+                processor->action_timer = 0.5f;
+                object->pad->buttons_pressed |= GAMEPAD_TOGGLERIGHT;
+            }
+        }
+        return 0;
+    }
+    object->pad->runtime_flags |= 0x10;
+    object->field_d20 = (u32)processor->action_data_3;
+    object->flags_e20 = (object->flags_e20 & ~0x400u) | ((processor->action_data_1 << 10) & 0x400u);
+    memcpy(&action_object, &processor->action_data_4, sizeof(action_object));
+    if (action_object != NULL) {
+        return action_object != object->force_target;
+    }
+    if (object->character_context == 0x1b && object->force_target != NULL) {
+        memcpy(&processor->action_data_4, &object->force_target, sizeof(object->force_target));
+    }
+    return 0;
+}
+
+i32 __cdecl Action_ForceLightning(AISYS_PC *sys, AISCRIPTPROCESS_PC *processor, AIPACKET_PC *packet, char **params,
+                                  i32 param_4, i32 param_5, f32 param_6) {
     struct gameobject_s *object;
     NUVEC target;
     NUVEC direction;
-    NUVEC primary;
-    NUVEC secondary;
+    NUVEC origins[2];
+    i32 origin_index;
     (void)param_6;
     object = NULL;
     if (packet != NULL && packet->owner != NULL) {
@@ -8714,7 +8789,7 @@ static i32 Action_ForceLightning(AISYS_PC *sys, AISCRIPTPROCESS_PC *processor, A
     }
 
     if (param_5 != 0) {
-        if (param_4 != 0) {
+        if (param_4 > 0) {
             i32 index;
             for (index = 0; index < param_4; ++index) {
                 char *value = NuStrIStr(params[index], "locator=");
@@ -8738,29 +8813,24 @@ static i32 Action_ForceLightning(AISYS_PC *sys, AISCRIPTPROCESS_PC *processor, A
         return 0;
     }
 
-    target = target;
-    direction = direction;
-    primary = primary;
-    secondary = secondary;
-    ForceLightning_Origin(object, &primary, &secondary);
+    ForceLightning_Origin(object, &origins[0], &origins[1]);
 
     target = processor->action_pos;
     if (processor->action_data_4 > 0.0f) {
-        target.x += processor->action_data_4 - NuRandFloat() * (processor->action_data_4 + processor->action_data_4);
-        target.z += processor->action_data_4 - NuRandFloat() * (processor->action_data_4 + processor->action_data_4);
+        f64 range = processor->action_data_4;
+        target.x += range - NuRandFloat() * (range + range);
+        range = processor->action_data_4;
+        target.z += range - NuRandFloat() * (range + range);
     }
 
-    if (primary.y != 1000000000.0f) {
-        f32 distance = NuVecDist(&target, &primary, &direction);
-        NuLgtLaser(lightning_type, lightning_sizew[0], lightning_sizel[0], lightning_sizewab[0], &primary, &direction,
-                   lightning_col[0], lightning_endw[0], distance);
-        PlaySfx("ForceLightningLp", &processor->action_pos);
-    }
-    if (secondary.y != 1000000000.0f) {
-        f32 distance = NuVecDist(&target, &secondary, &direction);
-        NuLgtLaser(lightning_type, lightning_sizew[0], lightning_sizel[0], lightning_sizewab[0], &secondary, &direction,
-                   lightning_col[0], lightning_endw[0], distance);
-        PlaySfx("ForceLightningLp", &processor->action_pos);
+    for (origin_index = 0; origin_index < 2; ++origin_index) {
+        NUVEC *origin = &origins[origin_index];
+        if (origin->y != 1000000000.0) {
+            f32 distance = NuVecDist(&target, origin, &direction);
+            NuLgtLaser(lightning_type, lightning_sizew[0], lightning_sizel[0], lightning_sizewab[0], origin, &direction,
+                       lightning_col[0], lightning_endw[0], distance);
+            PlaySfx("ForceLightningLp", &processor->action_pos);
+        }
     }
     packet->movement_look_target = &processor->action_pos;
     return 0;

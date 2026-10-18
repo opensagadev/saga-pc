@@ -669,3 +669,131 @@ f32 __cdecl Condition_RigidAnimFramePc(AISYS_PC *system, AISCRIPTPROCESS_PC *pro
         return ((NUINSTANIM_TIME_VIEW *)argument)->ltime;
     return 1.0f;
 }
+
+STATIC_ASSERT(offsetof(GAMEOBJECT, rider) == 0xcd0);
+STATIC_ASSERT(offsetof(GAMEOBJECT, character_context) == 0x7b5);
+STATIC_ASSERT(offsetof(GAMEOBJECT, id) == 0x1064);
+STATIC_ASSERT(offsetof(APIOBJECT_PC, owner) == 0);
+
+void *__cdecl Condition_OnSpeederBikeInitPc(AISYS_PC *system, char *name, AISCRIPT_PC *script) {
+    APIOBJECT_PC *object;
+    if (name != NULL && system != NULL && GetNamedGameObjectCallback != NULL) {
+        object = GetNamedGameObjectCallback(system, name);
+        if (object != NULL)
+            return object->owner;
+    }
+    return NULL;
+}
+
+f32 __cdecl Condition_OnSpeederBikePc(AISYS_PC *system, AISCRIPTPROCESS_PC *process, AIPACKET_PC *packet, char *name,
+                                      void *argument) {
+    GAMEOBJECT *object = (GAMEOBJECT *)argument;
+    if (object == NULL && packet->owner != NULL)
+        object = packet->owner->objptr;
+    if (object != NULL && object->rider != NULL && object->character_context == 0x3b &&
+        object->rider->id == (u16)id_SPEEDERBIKE)
+        return 1.0f;
+    return 0.0f;
+}
+
+STATIC_ASSERT(offsetof(WORLDINFO, cutscene_sys) == 0x2ab0);
+STATIC_ASSERT(offsetof(CUTINFO, instance) == 4);
+
+void *__cdecl Condition_CutSceneFinishedInitPc(AISYS_PC *system, char *name, AISCRIPT_PC *script) {
+    return CutScene_Find(WORLD->cutscene_sys, name);
+}
+
+f32 __cdecl Condition_CutSceneFinishedPc(AISYS_PC *system, AISCRIPTPROCESS_PC *process, AIPACKET_PC *packet, char *name,
+                                         void *argument) {
+    CUTINFO *cutscene = (CUTINFO *)argument;
+    if (cutscene != NULL && cutscene->instance != NULL &&
+        instNuGCutSceneIsFinished((INSTNUGCUTSCENE *)cutscene->instance) != 0)
+        return 1.0f;
+    return 0.0f;
+}
+
+STATIC_ASSERT(offsetof(AIPACKET_PC, opponent) == 0xe4);
+STATIC_ASSERT(offsetof(GAMEOBJECT, character_context) == 0x7b5);
+
+void *__cdecl Condition_InContextInitPc(AISYS_PC *system, char *name, AISCRIPT_PC *script) {
+    if (NuStrICmp(name, "DEACTIVATED") == 0)
+        return (void *)23;
+    if (NuStrICmp(name, "FORCEDBACK") == 0)
+        return (void *)34;
+    if (NuStrICmp(name, "GRAB") == 0)
+        return (void *)56;
+    if (NuStrICmp(name, "EAT") == 0)
+        return (void *)63;
+    if (NuStrICmp(name, "FORCEPUSHED") == 0)
+        return (void *)28;
+    if (NuStrICmp(name, "FORCEPUSH") == 0)
+        return (void *)27;
+    if (NuStrICmp(name, "GETIN") == 0)
+        return (void *)60;
+    if (NuStrICmp(name, "BALLOONING") == 0)
+        return (void *)93;
+    if (NuStrICmp(name, "STUNNED") == 0)
+        return (void *)90;
+    if (NuStrICmp(name, "FLOAT") == 0)
+        return (void *)75;
+    return (void *)(NuStrICmp(name, "GRAPPLE") == 0 ? 70 : 100);
+}
+
+f32 __cdecl Condition_InContextPc(AISYS_PC *system, AISCRIPTPROCESS_PC *process, AIPACKET_PC *packet, char *name,
+                                  void *argument) {
+    if (packet != NULL && packet->owner != NULL && packet->owner->objptr != NULL &&
+        packet->owner->objptr->character_context == (i32)argument)
+        return 1.0f;
+    return 0.0f;
+}
+
+f32 __cdecl Condition_OpponentContextPc(AISYS_PC *system, AISCRIPTPROCESS_PC *process, AIPACKET_PC *packet, char *name,
+                                        void *argument) {
+    if (packet != NULL && packet->opponent != NULL && packet->opponent->objptr->character_context == (i32)argument)
+        return 1.0f;
+    return 0.0f;
+}
+
+STATIC_ASSERT(offsetof(GAMEOBJECT, flags_1fc_word) == 0x1fc);
+STATIC_ASSERT(offsetof(AIPACKET_PC, owner) == 0xd0);
+STATIC_ASSERT(offsetof(APIOBJECT_PC, position) == 0x5c);
+
+f32 __cdecl Condition_NearestPartyRangePc(AISYS_PC *system, AISCRIPTPROCESS_PC *process, AIPACKET_PC *packet,
+                                          char *name, void *argument) {
+    f32 nearest = 1000000000.0f;
+    if (packet != NULL && packet->owner != NULL && system != NULL) {
+        NUVEC difference;
+        i32 index;
+        for (index = 0; index < 8; ++index) {
+            GAMEOBJECT *member = (GAMEOBJECT *)Player[index];
+            if (member != NULL && (member->flags_1fc_word & 1u) != 0 && (member->flags_1fc_word & 0x1000u) != 0) {
+                f32 distance = NuVecDistSqr(&member->position, &packet->owner->position, &difference);
+                if (distance < nearest)
+                    nearest = distance;
+            }
+        }
+        if ((f64)nearest != 1000000000.0)
+            nearest = NuFsqrt(nearest);
+    }
+    return nearest;
+}
+
+f32 __cdecl Condition_NearestPartyXZRangePc(AISYS_PC *system, AISCRIPTPROCESS_PC *process, AIPACKET_PC *packet,
+                                            char *name, void *argument) {
+    f32 nearest = 1000000000.0f;
+    if (packet != NULL && packet->owner != NULL && system != NULL) {
+        NUVEC difference;
+        i32 index;
+        for (index = 0; index < 8; ++index) {
+            GAMEOBJECT *member = (GAMEOBJECT *)Player[index];
+            if (member != NULL && (member->flags_1fc_word & 1u) != 0 && (member->flags_1fc_word & 0x1000u) != 0) {
+                f32 distance = NuVecXZDistSqr(&member->position, &packet->owner->position, &difference);
+                if (distance < nearest)
+                    nearest = distance;
+            }
+        }
+        if ((f64)nearest != 1000000000.0)
+            nearest = NuFsqrt(nearest);
+    }
+    return nearest;
+}

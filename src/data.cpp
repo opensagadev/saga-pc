@@ -34397,3 +34397,11 @@ extern "C" {
 
 #pragma data_seg()
 }
+
+extern "C" {
+    f32 lightning_sizew[2] = {0.02f, 0.02f};
+    f32 lightning_sizel[2] = {0.1f, 0.1f};
+    f32 lightning_sizewab[2] = {0.01f, 0.01f};
+    f32 lightning_endw[2] = {0.1f, 0.1f};
+    u32 lightning_col[2] = {0xff808040, 0xff808040};
+}
