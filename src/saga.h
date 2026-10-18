@@ -12686,6 +12686,8 @@ void __cdecl AIScriptMissingConditionDiagnostic();
     GAMEPAD_PC *__cdecl ViewCamGetGamePad(void);
     STATIC_ASSERT(offsetof(GAMEOBJECT, last_attacker) == 0x10a8);
     i32 __cdecl LineIntersectSphere(NUVEC *, NUVEC *, NUVEC *, f32, f32 *);
+    BOLT_PC *__cdecl FindIncomingBolt(GAMEOBJECT *, i32, i32);
+    i32 __cdecl LineIntersectSphereXZPc(NUVEC *, NUVEC *, NUVEC *, f32);
     i32 __cdecl InDoubleScoreZone(GAMEOBJECT *);
     i32 __cdecl TakeOverYodaSeekDistanceHack(GAMEOBJECT *, GAMEOBJECT *, NUVEC *);
     extern const char AIGamePunch2Name[8];

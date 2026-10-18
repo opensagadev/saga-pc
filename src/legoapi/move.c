@@ -1,4 +1,6 @@
 #include "saga.h"
+static void BlockCode(GAMEOBJECT *, i32, i32, i32, i32);
+BOLT *__cdecl FindIncomingBolt(GAMEOBJECT *, i32, i32);
 void __cdecl FindForcePushTarget(GAMEOBJECT *, i32, i32);
 
 void __cdecl GunShip_DragBombSeekBlowUp(GAMEOBJECT *);
@@ -6648,7 +6650,7 @@ after_gravity:
     WeaponScalingCode(object);      /* Native4b4fc3: object; WeaponScalingCode. */
     SpecialMove_VictimCode(object); /* Native4b4fc9: true cdecl object. */
     HoldCode(object);               /* Native4b4fcf: true cdecl object. */
-    STUBBED_NAMED(0x0049e450); /* Native4b4fe9: object EAX +action_pressed,action_held,0,!model_flags80; BlockCode. */
+    BlockCode(object, action_pressed, action_held, 0, (object->character_data->model_flags & 0x80) == 0);
     PunchCode(object, action_pressed, action_held, object->character_data->model_flags & 0x80, 0, 0.0f);
     if ((object->character_data->game_character->flags_094 & 0x20000000) != 0 &&
         object->id == (u16)VehicleBoltId7f17d0Pc && StartupGameFlag0 != 0)
@@ -8754,6 +8756,154 @@ static __declspec(noinline) i32 ComboBlockStartPc(GAMEOBJECT *object) {
     return 1;
 }
 
+static __declspec(noinline) GAMEOBJECT *BlockFindAttackPc(GAMEOBJECT *object) {
+    i32 i;
+    GAMEOBJECT *candidate;
+    void **animations = object->character_model->model_data_b;
+    if (animations[0x1a] == NULL && animations[0x1b] == NULL && animations[0x1c] == NULL)
+        return NULL;
+    candidate = Obj;
+    for (i = 0; i < HIGHGAMEOBJECT; ++i, ++candidate) {
+        if (candidate != object && (candidate->flags_1fc_word & 0x1000) != 0 && candidate->dead == 0 &&
+            candidate->character_context == 5 && (candidate->context_flags_pc & 0xc) == 0 &&
+            candidate->force_target == object)
+            return candidate;
+    }
+    return NULL;
+}
+
+static __declspec(noinline) GAMEOBJECT *BlockFindSpecialAttackPc(GAMEOBJECT *object) {
+    i32 i;
+    GAMEOBJECT *candidate;
+    void **animations;
+    if ((object->character_data->model_flags & 8) == 0 && object->id != (u16)id_BODYGUARD &&
+        object->id != (u16)id_IMPERIALGUARD)
+        return NULL;
+    animations = object->character_model->model_data_b;
+    if (animations[0x1a] == NULL && animations[0x1b] == NULL && animations[0x1c] == NULL)
+        return NULL;
+    candidate = Obj;
+    for (i = 0; i < HIGHGAMEOBJECT; ++i, ++candidate) {
+        if (candidate != object && (candidate->flags_1fc_word & 0x1000) != 0 && candidate->dead == 0 &&
+            candidate->character_context == 0x26 && candidate->force_target == object &&
+            (candidate->id != (u16)id_GAMORREANGUARD || candidate->field_7aa != 0x56 ||
+             (candidate->context_flags_pc & 0x40) == 0))
+            return candidate;
+    }
+    return NULL;
+}
+
+static __declspec(noinline) PART_PC *BlockFindIncomingPartPc(GAMEOBJECT *object) {
+    void **animations;
+    f32 radius;
+    if (object->field_280 == 0xff)
+        return NULL;
+    animations = object->character_model->model_data_b;
+    if (animations[0x1a] == NULL && animations[0x1b] == NULL && animations[0x1c] == NULL)
+        return NULL;
+    radius = object->bounds_half_height > object->bounds_radius ? object->bounds_half_height : object->bounds_radius;
+    return FindIncomingPart(object, &object->collision_position, radius, 0xa, 0.0f);
+}
+
+static void BlockCode(GAMEOBJECT *object, i32 pressed, i32 held, i32 jump_pressed, i32 allow_start) {
+    GAMEOBJECT *attacker;
+    f32 remaining;
+    COMBO_STATE_VIEW_PC *state = (COMBO_STATE_VIEW_PC *)object;
+    if ((object->field_e22 & 1) != 0 && object->field_e33 == 0) {
+        void **animations = object->character_model->model_data_b;
+        BOLT *bolt;
+        GAMEOBJECT *melee;
+        if (animations[0x1a] != NULL || animations[0x1b] != NULL || animations[0x1c] != NULL)
+            bolt = FindIncomingBolt(object, 0, 0);
+        else
+            bolt = NULL;
+        object->incoming_bolt = bolt;
+        melee = BlockFindAttackPc(object);
+        object->incoming_melee = melee;
+        object->incoming_special = BlockFindSpecialAttackPc(object);
+        if (bolt == NULL && melee == NULL)
+            object->incoming_part = BlockFindIncomingPartPc(object);
+        if ((object->flags_e20 & 0x80000) == 0 &&
+            (object->incoming_bolt != NULL || object->incoming_melee != NULL || object->incoming_part != NULL) &&
+            object->character_context == -1)
+            object->flags_e20 |= 0x80000;
+    }
+    if (object->character_context == 0xc) {
+        attacker = object->block_attacker;
+        if (attacker != NULL && jump_pressed != 0 && object->character_model->model_data_b[0x12] != NULL) {
+            SetComboOpponent(object, 1.0f, 0, 1);
+            ComboJumpStartPc(object, 0);
+            return;
+        }
+        if (object->block_latch == 0) {
+            if (attacker != NULL && state->blocked_attack_stage != 0) {
+                if ((attacker->flags_1fc_word & 0x1000) != 0 && attacker->dead == 0) {
+                    if ((object->flags_e20 & 0x20000000) != 0) {
+                        if (attacker->character_context == 0x26 &&
+                            (u16)attacker->field_7aa == (u16)state->blocked_attack_stage &&
+                            (attacker->id != (u16)id_GAMORREANGUARD || attacker->field_7aa != 0x56 ||
+                             (attacker->context_flags_pc & 0x40) == 0))
+                            return;
+                    } else if (attacker->character_context == 5 &&
+                               (i32)attacker->combo_stage + 1 <= (i32)state->blocked_attack_stage)
+                        return;
+                }
+                state->blocked_attack_stage = 0;
+                return;
+            }
+            remaining = object->context_timer - FRAMETIME;
+            object->context_timer = remaining;
+            if (remaining <= 0.0f) {
+                object->block_latch = 1;
+                object->context_timer = 0.2f;
+            }
+            return;
+        }
+        if (object->id == (u16)id_GAMORREANGUARD && (object->flags_1fc_word & 0x80) == 0) {
+            remaining = object->context_timer - FRAMETIME;
+            object->context_timer = remaining;
+            if (remaining <= 0.0f) {
+                object->character_context = -1;
+                object->block_cooldown = 1.5f;
+            }
+            return;
+        }
+        if (pressed != 0 && (object->incoming_bolt != NULL || object->incoming_melee != NULL ||
+                             object->incoming_special != NULL || object->incoming_part != NULL)) {
+            if (ComboBlockStartPc(object))
+                return;
+        }
+        if (held != 0 && object->incoming_bolt != NULL) {
+            object->context_timer = 0.2f;
+            return;
+        }
+        remaining = object->context_timer - FRAMETIME;
+        object->context_timer = remaining;
+        if (remaining <= 0.0f) {
+            if (held != 0) {
+                attacker = object->block_attacker;
+                if (attacker == NULL || attacker->id != (u16)id_GAMORREANGUARD || attacker->character_context != 0x26 ||
+                    attacker->field_7aa != 0x56 || (attacker->context_flags_pc & 0x40) == 0) {
+                    StartHold(object);
+                    return;
+                }
+            }
+            object->character_context = -1;
+        }
+        return;
+    }
+    if (object->block_cooldown > 0.0f) {
+        object->block_cooldown -= FRAMETIME;
+        return;
+    }
+    if (allow_start == 0 || pressed == 0 || object->field_281 == 0 ||
+        (CInfo[object->character_context].flags & 0x20) != 0 || (object->portal_flags & 2) == 0 ||
+        (object->incoming_bolt == NULL && object->incoming_melee == NULL && object->incoming_special == NULL &&
+         object->incoming_part == NULL))
+        return;
+    ComboBlockStartPc(object);
+}
+
 /* PC004a10c0: object in EAX, action_pressed/action_held/jump_pressed/special_pressed on stack. */
 static __declspec(noinline) void LightSabreComboCode(GAMEOBJECT *object, i32 action_pressed, i32 action_held,
                                                      i32 jump_pressed, i32 special_pressed) {
@@ -9277,7 +9427,7 @@ void __cdecl Move_JEDI(GAMEOBJECT *object) {
     WeaponInCode(object);
     WeaponScalingCode(object);
     HoldCode(object);
-    STUBBED_NAMED(0x0049e450); /* Native4b374e: BlockCode(object EAX,action_pressed,action_held,jump_pressed,0). */
+    BlockCode(object, action_pressed, action_held, jump_pressed, 0);
     SwipeCode(object, action_pressed, action_held);
     LightSabreComboCode(object, action_pressed, action_held, jump_pressed, special_pressed);
     JediLightCode(object);
@@ -9398,7 +9548,7 @@ void __cdecl Move_WEIRDO(GAMEOBJECT *object) {
     STUBBED_NAMED(0x004036a0); /* Native4b5c05: Attracto_MoveCode(WORLD,object). */
     STUBBED_NAMED(0x004bdaf0); /* Native4b5c11: SecurityDoor_MoveCode(WORLD,object). */
     if (has_sabre) {
-        STUBBED_NAMED(0x0049e450); /* Native4b5c2f: BlockCode(object EAX,action_pressed,action_held,jump_pressed,0). */
+        BlockCode(object, action_pressed, action_held, jump_pressed, 0);
         SwipeCode(object, action_pressed, action_held);
         if (detonator_used == 1)
             special_pressed = 0;
@@ -9406,7 +9556,7 @@ void __cdecl Move_WEIRDO(GAMEOBJECT *object) {
                                       EAX,action_pressed,action_held,jump_pressed,special_pressed). */
         JediLightCode(object);
     } else {
-        STUBBED_NAMED(0x0049e450); /* Native4b5c71: BlockCode(object EAX,action_pressed,action_held,0,0). */
+        BlockCode(object, action_pressed, action_held, 0, 0);
         PunchCode(object, action_pressed, action_held, 1, 0, 0.0f);
         STUBBED_NAMED(0x004b13e0); /* Native4b5c98: DodgeCode(object ECX,action_pressed EAX,jump_pressed). */
         if ((object->character_data->model_flags & 0x80) != 0) {

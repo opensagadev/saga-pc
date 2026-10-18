@@ -1539,9 +1539,12 @@ address,symbol,size,ctype
 0x49dc60,_StartJetPackFall,170,"void __cdecl(GAMEOBJECT *, i32)"
 0x49dd10,_JetPackCode,697,"void __cdecl(GAMEOBJECT *, i32, i32, i32)"
 0x49dfd0,_ComboRotateCode,258,
+0x49e110,_BlockFindAttackPc,114,static GAMEOBJECT *(GAMEOBJECT *)
+0x49e190,_BlockFindSpecialAttackPc,172,static GAMEOBJECT *(GAMEOBJECT *)
+0x49e240,_BlockFindIncomingPartPc,110,static PART_PC *(GAMEOBJECT *)
 0x0049e2b0,_ComboJumpStartPc,192,
 0x0049e370,_ComboBlockStartPc,213,
-0x49e450,_BlockCode,927,
+0x49e450,_BlockCode,927,"static void(GAMEOBJECT *, i32, i32, i32, i32)"
 0x49e990,_Dodge_UpdateHint,111,i32 __cdecl(HINT_PC*)
 0x49ea00,_PunchRangesPc,107,
 0x0049ea70,_PunchCode,3000,
@@ -3305,6 +3308,7 @@ address,symbol,size,ctype
 0x551170,_XZLinesIntersect,505,
 0x5513e0,_XZLinesClosest,838,
 0x551730,_LineIntersectSphere,205,"i32 __cdecl (NUVEC *, NUVEC *, NUVEC *, f32, f32 *)"
+0x551800,_LineIntersectSphereXZPc,153,"i32 __cdecl(NUVEC *, NUVEC *, NUVEC *, f32)"
 0x005518a0,_MoveSplinePosition,915,"void __cdecl (SPLINEPOS *position, f32 distance)"
 0x00551c40,_GetNearestSplinePos,367,"void __cdecl (NUVEC *origin, SPLINEPOS *result, NUGSPLINE *spline, i32 looping, i16 first_point, i16 last_point)"
 0x551db0,_EvaluateSplineXZIntersection,622,
@@ -4069,7 +4073,7 @@ address,symbol,size,ctype
 0x57fc30,_Bolt_Reflect,79,"void __cdecl(NUVEC *,NUVEC *,NUVEC *)"
 0x57fc80,_Bolt_AddDeflectedBolt,512,"void __cdecl(BOLT_PC*,NUVEC*,NUVEC*,u8*)"
 0x57fe80,_Bolt_PlayHitSfx,50,void __cdecl (BOLT_PC *)
-0x57fec0,_FindIncomingBolt,428,
+0x57fec0,_FindIncomingBolt,428,"BOLT_PC *__cdecl(GAMEOBJECT *, i32, i32)"
 0x580070,_Bolt_Find,165,"BOLT_PC *__cdecl(i32,NUVEC*,GAMEOBJECT*)"
 0x580120,_Bolt_End,36,"void __cdecl(BOLT_PC*,i32)"
 0x580150,_BoltTypeStoreConfigPrivatePc,79,

@@ -1967,3 +1967,45 @@ BOLTSYS_PC BoltSys_LSW = {GlobalBoltType,
                           Bolt_AlternateFire_LSW};
 BOLTSYS_PC BoltSys_Batman = {GlobalBoltType, 44,  AlertSurroundingCreatures, NULL, NULL, GetShootDirection_Batman,
                              NULL,           NULL};
+
+BOLT_PC *__cdecl FindIncomingBolt(GAMEOBJECT *object, i32 check_owner, i32 mark_hit) {
+    f32 radius;
+    f32 radius_squared;
+    f32 nearest = 100000000.0f;
+    BOLT_PC *result = NULL;
+    BOLT_PC *bolt;
+    f32 half_speed;
+    f32 limit;
+    f32 distance;
+    i32 index;
+    if (object->bounds_radius < object->bounds_half_height)
+        radius = object->bounds_half_height;
+    else
+        radius = object->bounds_radius;
+    radius_squared = radius * radius;
+    for (index = 0; index < 32; ++index) {
+        bolt = &Bolt[index];
+        if (bolt->active == 0)
+            continue;
+        if (check_owner != 0 && bolt->owner != NULL &&
+            (((GAMEOBJECT *)bolt->owner)->flags_1fc_word & 0x1001) == 0x1001 &&
+            ((GAMEOBJECT *)bolt->owner)->dead == 0 && ((GAMEOBJECT *)bolt->owner)->field_280 != 0xff)
+            continue;
+        half_speed = (f32)((f64)bolt->speed * 0.5);
+        distance = NuVecDistSqr(&bolt->position, &object->collision_position, NULL);
+        limit = half_speed * half_speed;
+        if (distance < limit &&
+            LineIntersectSphere(&bolt->position, &bolt->direction, &object->collision_position, radius_squared, NULL) &&
+            distance < nearest) {
+            nearest = distance;
+            result = bolt;
+        }
+    }
+    if (result != NULL && mark_hit != 0) {
+        radius = (f32)((f64)object->bounds_radius * 0.75);
+        radius_squared = radius * radius;
+        if (LineIntersectSphereXZPc(&result->position, &result->direction, &object->collision_position, radius_squared))
+            object->flags_e20 |= 0x2000;
+    }
+    return result;
+}

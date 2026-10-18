@@ -443,3 +443,20 @@ void __cdecl SetAnimFrame(struct nuhspecial_s *special, f32 frame) {
     instance_animation->matrix.m32 = instance_matrix->m32;
     instance_animation->ltime = frame;
 }
+
+i32 __cdecl LineIntersectSphereXZPc(NUVEC *origin, NUVEC *direction, NUVEC *center, f32 radius_squared) {
+    f32 x = center->x - origin->x;
+    f32 z = center->z - origin->z;
+    f32 projection = direction->x * x + direction->z * z;
+    f32 point_squared;
+    f32 projection_squared;
+    f32 distance;
+    if (projection < 0.0f)
+        return 0;
+    point_squared = x * x + z * z;
+    projection_squared = projection * projection;
+    distance = point_squared - projection_squared;
+    if (!(radius_squared >= distance))
+        return 0;
+    return 1;
+}
