@@ -21,6 +21,10 @@ make check
 make -j"$(nproc)" build check-objects
 ```
 
+`make setup` also materializes the pinned adapted Ogg/Vorbis sources in ignored
+`lib/ogg-vorbis/`; see [DEPENDENCIES.md](DEPENDENCIES.md) for provenance and offline
+cache setup. `make build` and checks prepare this dependency automatically.
+
 `make setup` verifies every compiler, header, library and objdiff hash. For
 compiler-only work use `python3 tools/setup.py --compiler-only`; an existing
 pinned archive can be passed with `--archive`.
@@ -325,7 +329,7 @@ src/saga.h     Shared declarations and layout checks
 src/nu2api/    Engine, resources, rendering and Windows platform services
 src/legoapi/   Characters, movement, world loading, menus and gameplay
 src/gameapi/   Objects, AI, scripts and collision
-src/vendored/  Modified Xiph Ogg/Vorbis sources; provenance and links in README.md
+lib/ogg-vorbis/  Fetched adapted Xiph Ogg/Vorbis sources; provenance in DEPENDENCIES.md
 tools/         setup.py, cc.py (VC8 via Wine), check.py, match.py, permute.py
 build/         Objects, linked EXE, objdiff reports, tools (ignored)
 ```

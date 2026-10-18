@@ -80,7 +80,8 @@ class Scorer:
         self.objdiff = ROOT / "build/tools/bin/objdiff-cli"
         self.work = OUT / "work" / (worker or f"p{os.getpid()}")
         self.work.mkdir(parents=True, exist_ok=True)
-        self.includes = ["/I" + windows(ROOT / "src"), "/I" + windows((ROOT / self.unit).parent),
+        self.includes = ["/I" + windows(ROOT / "src"),
+                         "/I" + windows(ROOT / "lib/ogg-vorbis/vorbis"), "/I" + windows((ROOT / self.unit).parent),
                          "/I" + windows(self.compiler.parent / "include"),
                          "/I" + windows(self.compiler.parent / "PlatformSDK/Include")]
         self._lock = threading.Lock()

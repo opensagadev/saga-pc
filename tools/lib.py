@@ -80,9 +80,17 @@ def retail(target):
     return pe
 
 
+def dependency_files(root=None):
+    """Declare ignored dependency inputs even before first materialization."""
+    root = ROOT if root is None else Path(root)
+    pin = root / "config/ogg-vorbis.json"
+    return [root / "lib/ogg-vorbis" / name for name in load_json(pin)["files"]] if pin.is_file() else []
+
+
 def compiled_objects():
     """Read outputs for current sources only, ignoring stale objects."""
-    sources = sorted([*ROOT.glob("src/**/*.cpp"), *ROOT.glob("src/**/*.c")])
+    sources = sorted([*ROOT.glob("src/**/*.cpp"), *ROOT.glob("src/**/*.c"),
+                      *(p for p in dependency_files() if p.suffix in {".c", ".cpp"})])
     objects = {}
     for source in sources:
         unit = source.relative_to(ROOT).as_posix()
@@ -167,7 +175,12 @@ def library_objects():
 
 
 def object_path(unit):
-    return ROOT / "build/obj" / Path(unit).relative_to("src").with_suffix(".obj")
+    path = Path(unit)
+    if path.parts[:2] == ("lib", "ogg-vorbis"):
+        path = Path("vendored") / path.relative_to("lib/ogg-vorbis")
+    else:
+        path = path.relative_to("src")
+    return ROOT / "build/obj" / path.with_suffix(".obj")
 
 
 def load_symbols(path=None):

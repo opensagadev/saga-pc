@@ -21,6 +21,21 @@ class BuildKindTests(unittest.TestCase):
                               env=dict(os.environ, MAKEFLAGS=""), capture_output=True,
                               text=True, timeout=30)
 
+    def test_build_managed_vorbis_inputs_and_flags(self):
+        result = self.make("build")
+        self.assertEqual(result.returncode, 0, result.stderr)
+        commands = [line for line in result.stdout.splitlines()
+                    if line.startswith("python3 tools/cc.py lib/ogg-vorbis/")]
+        self.assertEqual(len(commands), 22)
+        for command in commands:
+            is_vorbis = "/vorbis/" in command.split()[2] or "vorbis_smallft.c" in command
+            exception = "vorbisfile.c" in command
+            self.assertEqual("/GS-" in command, is_vorbis and not exception, command)
+            self.assertIn("/Ilib/ogg-vorbis/vorbis", command)
+        self.assertIn("python3 tools/dependencies.py", result.stdout)
+        clean = self.make("clean")
+        self.assertNotIn("rm -rf lib", clean.stdout)
+
     def test_debug_outputs_and_flags_are_isolated(self):
         result = self.make("BUILD_KIND=Debug", "build")
         self.assertEqual(result.returncode, 0, result.stderr)

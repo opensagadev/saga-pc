@@ -12,11 +12,11 @@ import sys
 
 if __package__:
     from .binary import _COFFAnalysis, _PreparedBindings, relocate_data, relocate_function
-    from .lib import ROOT, bindings_for, changed_trees, compiled_objects, load_code_groups, prepare_code_group_objects, load_json, load_symbols, map_errors, number, project, retail
+    from .lib import ROOT, bindings_for, changed_trees, compiled_objects, dependency_files, load_code_groups, prepare_code_group_objects, load_json, load_symbols, map_errors, number, project, retail
 else:
     sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
     from tools.binary import _COFFAnalysis, _PreparedBindings, relocate_data, relocate_function
-    from tools.lib import ROOT, bindings_for, changed_trees, compiled_objects, load_code_groups, prepare_code_group_objects, load_json, load_symbols, map_errors, number, project, retail
+    from tools.lib import ROOT, bindings_for, changed_trees, compiled_objects, dependency_files, load_code_groups, prepare_code_group_objects, load_json, load_symbols, map_errors, number, project, retail
 
 
 def compiler_label_inside_mapped_function(obj, symbol, definitions, rows_by_name):
@@ -185,7 +185,8 @@ def check_objects(objects, records, target, code_groups=(), candidate_only=None)
 
 
 def check_headers():
-    headers = {p.relative_to(ROOT).as_posix() for p in (ROOT / "src").rglob("*.h")}
+    headers = {p.relative_to(ROOT).as_posix() for directory in (ROOT / "src", ROOT / "lib/ogg-vorbis")
+               for p in directory.rglob("*.h")}
     # Verified original libvorbis 1.2.0 headers retain their local include graph;
     # unrelated project/vendor headers remain forbidden.
     vorbis_headers = {
@@ -199,7 +200,7 @@ def check_headers():
     allowed = {"src/saga.h", "src/externals.h", "src/debug/diagnostics.h", "src/debug/skin_trace.h",
                "src/debug/support.h",
                "src/nu2api/pc_fmv_native.h"} | {
-        "src/vendored/vorbis/" + name for name in vorbis_headers}
+        "lib/ogg-vorbis/vorbis/" + name for name in vorbis_headers}
     if "src/saga.h" not in headers or headers - allowed:
         raise ValueError("Project headers must be src/saga.h, src/debug/diagnostics.h and optional src/externals.h "
                          "or the reviewed original Vorbis header catalog, native PC FMV ABI header "
@@ -278,9 +279,9 @@ def clang_tool(name):
 
 def source_files(headers=False):
     suffixes = {".c", ".cpp", ".h", ".inc"} if headers else {".c", ".cpp"}
-    return sorted(path.relative_to(ROOT).as_posix() for directory in (ROOT / "src",)
-                  for path in directory.rglob("*")
-                  if path.is_file() and path.suffix in suffixes)
+    paths = [*(ROOT / "src").rglob("*"), *dependency_files(ROOT)]
+    return sorted(path.relative_to(ROOT).as_posix() for path in paths
+                  if path.suffix in suffixes and (path.is_file() or path in dependency_files(ROOT)))
 
 
 def check_format():
@@ -310,7 +311,7 @@ def analysis_configuration():
         for directory in include_dirs for path in sorted(directory.rglob("*")) if path.is_file()
     ]}) + "\n")
     flags = ["--target=i686-pc-windows-msvc", "-fms-extensions", "-fms-compatibility",
-             "-fms-compatibility-version=14.00", "-nostdinc", "-D_MT", "-Isrc"]
+             "-fms-compatibility-version=14.00", "-nostdinc", "-D_MT", "-Isrc", "-Ilib/ogg-vorbis/vorbis"]
     for directory in include_dirs:
         flags.extend(["-isystem", str(directory)])
     # VC8's SDK declares these using LONG*, while Clang's modern intrinsic uses
@@ -463,7 +464,7 @@ def main():
     forbidden = {".exe", ".dll", ".obj", ".o", ".pdb", ".lib", ".zip", ".7z", ".dat", ".obb", ".apk"}
     for name in filter(None, files):
         path = Path(name)
-        if (path.parts[0] in {"build"} or path.suffix.lower() in forbidden
+        if (path.parts[0] in {"build", "lib"} or path.suffix.lower() in forbidden
                 or (path.parts[0] == "res" and name not in {"res/README.md", "res/.gitignore"})):
             raise ValueError(f"Generated/proprietary input would enter Git: {name}")
         full = ROOT / path

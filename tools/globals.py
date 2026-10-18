@@ -50,7 +50,7 @@ CFLAGS = ["/nologo", "/c", "/O2", "/Gy", "/GS", "/MT", "/W3"]  # /W3 reports C40
 
 def compile_unit(unit, output):
     compiler, wine, env = environment()
-    includes = ["/I" + windows(ROOT / "src"), "/I" + windows(compiler.parent / "include"),
+    includes = ["/I" + windows(ROOT / "src"), "/I" + windows(ROOT / "lib/ogg-vorbis/vorbis"), "/I" + windows(compiler.parent / "include"),
                 "/I" + windows(compiler.parent / "PlatformSDK/Include")]
     result = subprocess.run([wine, str(compiler / "cl.exe"), *CFLAGS, *includes, "/Fo" + windows(output),
                              windows(ROOT / unit)], cwd=ROOT, env=env, capture_output=True, text=True,

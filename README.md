@@ -33,3 +33,6 @@ game behavior; build-kind differences are strictly diagnostics only. See
 Source is distributed under [GNU GPL version 3](LICENSE). This independent
 project does not distribute the original game or its assets, which remain the
 property of their respective owners.
+
+Ogg/Vorbis sources are fetched into ignored `lib/ogg-vorbis/` during the build;
+see [dependency setup and provenance](DEPENDENCIES.md).

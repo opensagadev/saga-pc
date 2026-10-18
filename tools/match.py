@@ -10,12 +10,12 @@ import sys
 
 if __package__:
     from .binary import compare_data, relocate_function, write_function
-    from .lib import (ROOT, DefinitionIndex, bindings_for, compiled_objects, covered_bytes,
+    from .lib import (ROOT, DefinitionIndex, bindings_for, compiled_objects, dependency_files, covered_bytes,
                       digest, external_symbols, load_code_groups, prepare_code_group_objects, library_objects, load_json, load_symbols, mapping_progress, number, object_path, project, retail, section_mapping_progress, sha256)
 else:
     sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
     from tools.binary import compare_data, relocate_function, write_function
-    from tools.lib import (ROOT, DefinitionIndex, bindings_for, compiled_objects, covered_bytes,
+    from tools.lib import (ROOT, DefinitionIndex, bindings_for, compiled_objects, dependency_files, covered_bytes,
                      digest, external_symbols, load_code_groups, prepare_code_group_objects, library_objects, load_json, load_symbols, mapping_progress, number, object_path, project, retail, section_mapping_progress, sha256)
 
 OUT = ROOT / "build/objdiff"
@@ -330,6 +330,7 @@ def main():
               *sorted((ROOT / "tools").glob("*.py")), *sorted((ROOT / "tools").glob("*.def")),
               *sorted((ROOT / "src").rglob("*.cpp")),
               *sorted((ROOT / "src").rglob("*.c"))]
+    inputs.extend(dependency_files(ROOT))
     if config.get("code_groups") and ROOT / config["code_groups"] not in inputs:
         inputs.append(ROOT / config["code_groups"])
     result = {"format_version": 2, "target_sha256": target["sha256"],

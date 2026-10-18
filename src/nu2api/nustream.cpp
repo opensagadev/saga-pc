@@ -1,5 +1,5 @@
 #include "saga.h"
-#include "../vendored/vorbis/vorbis/vorbisfile.h"
+#include "vorbis/vorbisfile.h"
 #include <stdio.h>
 struct PC_OGG_CACHE_RECORD_PC {
     char path[0x104];

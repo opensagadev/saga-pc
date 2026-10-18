@@ -23,13 +23,16 @@ endif
 MAKEFLAGS += -j$(shell nproc)
 
 SOURCES := $(filter-out src/debug/sound_monitor.c src/debug/stream_capture.c src/debug/log_copier.c src/debug/log.c src/debug/crash_diagnostics.cpp src/debug/skin_trace.cpp src/debug/skin_trace_windows.cpp,$(shell find src -type f \( -name '*.cpp' -o -name '*.c' \) | LC_ALL=C sort))
+DEPENDENCY_SOURCES := $(shell $(PYTHON) tools/dependencies.py --sources)
+DEPENDENCY_FILES := $(shell $(PYTHON) -c 'import json; print(" ".join("lib/ogg-vorbis/"+p for p in json.load(open("config/ogg-vorbis.json"))["files"]))')
 SOURCE_DIRS := $(shell find src -type d)
 OBJECTS := $(patsubst src/%,$(OBJ_DIR)/%,$(SOURCES:.cpp=.obj))
 OBJECTS := $(OBJECTS:.c=.obj)
+OBJECTS += $(patsubst lib/ogg-vorbis/%,$(OBJ_DIR)/vendored/%,$(DEPENDENCY_SOURCES:.c=.obj))
 $(filter $(OBJ_DIR)/nu2api/pc_fmv%.obj,$(OBJECTS)): src/nu2api/pc_fmv_native.h
 
 # Original Vorbis private headers/textual tables belong to these owners only.
-VORBIS_HEADERS := $(shell find src/vendored/vorbis -type f \( -name '*.h' -o -name '*.inc' \) 2>/dev/null)
+VORBIS_HEADERS := $(filter %.h %.inc,$(DEPENDENCY_FILES))
 ifneq ($(filter $(OBJ_DIR)/vendored/vorbis/%,$(OBJECTS)),)
 $(filter $(OBJ_DIR)/vendored/vorbis/%,$(OBJECTS)): $(VORBIS_HEADERS)
 endif
@@ -43,7 +46,7 @@ D3D9_LIB := build/lib/imports/d3d9.lib
 DINPUT8_LIB := build/lib/imports/dinput8.lib
 XINPUT_LIB := build/lib/imports/xinput1_3.lib
 BINK_LIB := build/lib/imports/binkw32.lib
-CPPFLAGS := /Isrc /Ibuild/tools/msvc8/include /Ibuild/tools/msvc8/PlatformSDK/Include
+CPPFLAGS := /Isrc /Ilib/ogg-vorbis/vorbis /Ibuild/tools/msvc8/include /Ibuild/tools/msvc8/PlatformSDK/Include
 CXXFLAGS := /nologo /c /O2 /Gy /GS /MT
 LDFLAGS := /nologo /machine:x86 /subsystem:windows /incremental:no /manifest:no /opt:noref /opt:noicf
 ifeq ($(BUILD_KIND),Debug)
@@ -61,7 +64,7 @@ LDLIBS := user32.lib gdi32.lib winmm.lib ole32.lib oleaut32.lib shell32.lib adva
 
 .DEFAULT_GOAL := build
 .DELETE_ON_ERROR:
-.PHONY: all build objects link Matching Debug run setup editor check check-core lint check-objects test match diff inspect clean
+.PHONY: dependencies all build objects link Matching Debug run setup editor check check-core lint check-objects test match diff inspect clean
 
 all: build
 build: link
@@ -76,7 +79,7 @@ run: $(EXE)
 	cd res && WINEPREFIX="$(CURDIR)/build/tools/wine" WINEDEBUG=-all WINEDLLOVERRIDES="winemenubuilder.exe=d" wine ../$(EXE)
 
 # Directory dependencies also relink when a source is removed from the input list.
-$(EXE): $(DEBUG_CAPTURE_HELPER) $(OBJECTS) $(DIAGNOSTIC_OBJECTS) $(D3DX_LIB) $(DSOUND_LIB) $(D3D9_LIB) $(DINPUT8_LIB) $(XINPUT_LIB) $(BINK_LIB) $(SOURCE_DIRS) config/toolchain.json Makefile tools/cc.py tools/lib.py
+$(EXE): $(DEBUG_CAPTURE_HELPER) $(OBJECTS) $(DIAGNOSTIC_OBJECTS) $(D3DX_LIB) $(DSOUND_LIB) $(D3D9_LIB) $(DINPUT8_LIB) $(XINPUT_LIB) $(BINK_LIB) $(SOURCE_DIRS) config/ogg-vorbis.json tools/dependencies.py config/toolchain.json Makefile tools/cc.py tools/lib.py
 	$(PYTHON) tools/cc.py --link --allow-unresolved $@ $(OBJECTS) $(DIAGNOSTIC_OBJECTS) -- $(LDFLAGS) $(call pdb_flag,$@) $(LDLIBS)
 
 # The complete link: every referenced function must be implemented.
@@ -119,20 +122,29 @@ build/tools/wine/.ready:
 	WINEPREFIX="$(CURDIR)/build/tools/wine" WINEDEBUG=-all WINEDLLOVERRIDES="winemenubuilder.exe=d" wineboot -i
 	touch $@
 
-setup:
+dependencies:
+	$(PYTHON) tools/dependencies.py
+
+$(DEPENDENCY_FILES): | dependencies
+	@test -f $@
+
+$(OBJ_DIR)/vendored/%.obj: lib/ogg-vorbis/%.c $(DEPENDENCY_FILES) src/saga.h src/externals.h src/debug/diagnostics.h src/debug/support.h config/ogg-vorbis.json tools/dependencies.py config/toolchain.json Makefile tools/cc.py tools/lib.py | build/tools/wine/.ready
+	$(PYTHON) tools/cc.py $< $@ $(CPPFLAGS) $(CXXFLAGS)
+
+setup: dependencies
 	$(PYTHON) tools/setup.py
 	$(PYTHON) tools/check.py --editor
 
-editor:
+editor: dependencies
 	$(PYTHON) tools/check.py --editor
 
 check: lint check-core
 
-lint:
+lint: dependencies
 	$(PYTHON) tools/check.py --format
 	$(PYTHON) tools/check.py --tidy
 
-check-core:
+check-core: dependencies
 	$(PYTHON) tools/check.py
 	$(PYTHON) -m unittest discover -s tools -p 'test_*.py'
 
