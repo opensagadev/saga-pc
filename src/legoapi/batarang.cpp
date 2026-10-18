@@ -117,3 +117,703 @@ void __cdecl Batarangs_Reset(void) {
         slot[i].cooldown = 50;
     }
 }
+
+typedef PLAYER_BATARANG_SLOT_PC BATARANG_NATIVE_PC;
+#define BATARANG_PACKET_PC(object) ((object)->batarang)
+
+STATIC_ASSERT(offsetof(GAMEOBJECT, locator_matrices) == 0x804);
+STATIC_ASSERT(offsetof(DETONATOR_s, field_0x0c) == 0xc);
+STATIC_ASSERT(offsetof(GIZMOBLOWUP_PC, mid_position) == 0x4c);
+STATIC_ASSERT(offsetof(GIZMOBLOWUP_PC, platform_id) == 0x102);
+STATIC_ASSERT(offsetof(GAMEOBJECT, camera_screen_position) + 8 == 0xc64);
+STATIC_ASSERT(offsetof(GAMEOBJECT, field_7b3) == 0x7b3);
+STATIC_ASSERT(offsetof(GAMEOBJECT, context_timer) == 0x77c);
+STATIC_ASSERT(offsetof(GAMEOBJECT, context_duration) == 0x784);
+STATIC_ASSERT(offsetof(GAMEOBJECT, field_281) == 0x281);
+
+extern "C" void Batarang_GetSightInfo(i32, i32 *, i32 *, i32 *, char *);
+extern "C" f32 __cdecl NuFdiv(f32 a, f32 b) {
+    if (a == 0.0f || b == 0.0f)
+        return 0.0f;
+    f32 result = a / b;
+    return result;
+}
+#define MIN(a, b) ((a) < (b) ? (a) : (b))
+#define MAX(a, b) ((a) > (b) ? (a) : (b))
+#define PI_OVER_4 0.785398f
+#define NEG_1_OVER_6 PCPathArcSineCoefficient3
+#define NEG_3_OVER_40 PCPathArcSineCoefficient5
+#define NEG_5_OVER_112 PCPathArcSineCoefficient7
+#define NEG_35_OVER_1152 PCPathArcSineCoefficient9
+#define MAX_SHORT_OVER_PI 10430.4f
+#define POW2(x) ((x) * (x))
+#define POW3(x) ((x) * POW2(x))
+#define POW4(x) (POW2(x) * POW2(x))
+#define POW5(x) (POW2(x) * POW3(x))
+static i32 __cdecl BatarangASinPc(f32 sin) {
+    f32 abs;
+    f32 sqrt;
+    f32 unknown_a;
+    f32 unknown_b;
+    f32 unknown_c;
+    f32 unknown_d;
+
+    union {
+        f32 value;
+        u32 bits;
+    } magnitude;
+    magnitude.value = sin;
+    magnitude.bits &= 0x7fffffff;
+    abs = magnitude.value;
+    sqrt = NuFsqrt(1.0f - sin * sin);
+
+    unknown_a = MIN(sqrt, abs);
+
+    unknown_b = MAX(MIN((abs - 0.70710677f) * 3.40282e+38f, 1.0f), -1.0f);
+
+    unknown_c = MIN(sin * 3.40282e+38f, 1.0f);
+    unknown_c = MAX(unknown_c, -1.0f);
+
+    unknown_d = unknown_b * unknown_c + unknown_c;
+
+    return (NEG_3_OVER_40 * POW2(unknown_b * unknown_c * unknown_a) * POW3(unknown_b * unknown_c * unknown_a) +
+            (unknown_d * PI_OVER_4 - (unknown_b * unknown_c * unknown_a) +
+             NEG_1_OVER_6 * (unknown_b * unknown_c * unknown_a) * POW2(unknown_b * unknown_c * unknown_a)) +
+            NEG_5_OVER_112 * POW3(unknown_b * unknown_c * unknown_a) * POW4(unknown_b * unknown_c * unknown_a) +
+            NEG_35_OVER_1152 * POW4(unknown_b * unknown_c * unknown_a) * POW5(unknown_b * unknown_c * unknown_a)) *
+           MAX_SHORT_OVER_PI;
+}
+
+#undef MIN
+#undef MAX
+#undef PI_OVER_4
+#undef NEG_1_OVER_6
+#undef NEG_3_OVER_40
+#undef NEG_5_OVER_112
+#undef NEG_35_OVER_1152
+#undef MAX_SHORT_OVER_PI
+#undef POW2
+#undef POW3
+#undef POW4
+#undef POW5
+extern "C" {
+    static u32 Batarang_GetTargetPos(BATARANG_NATIVE_PC *batarang, int index, NUVEC *position) {
+        if (batarang->flight_state.in_flight != 0 && batarang->active != 0 && batarang->active == index) {
+            GAMEOBJECT *owner = batarang->owner;
+            *position = owner->collision_position;
+            if ((owner->flags_e24 & 8) != 0) {
+                i32 joint = owner->character_data->game_character->throw_locator;
+                if (joint != -1 && owner->character_model->points_of_interest[joint] != NULL)
+                    *position = *reinterpret_cast<NUVEC *>(&owner->locator_matrices[joint].m30);
+            }
+            return 1;
+        }
+        if (index >= batarang->active)
+            return 0;
+        BATARANG_TARGET_s *target = &batarang->targets[index];
+        if (target->type == 0) {
+            *position = static_cast<GAMEOBJECT *>(target->object)->collision_position;
+        } else if (target->type == 1) {
+            *position = static_cast<DETONATOR_s *>(target->object)->field_0x0c;
+        } else if (target->type == 2) {
+            *position = static_cast<GIZMOBLOWUP_PC *>(target->object)->mid_position;
+        } else if (target->type == 3) {
+            *position = *static_cast<NUVEC *>(target->object);
+        } else {
+            return 0;
+        }
+        return 1;
+    }
+}
+
+extern "C" i32 Batarang_InitRicochet(BATARANG_NATIVE_PC *batarang, NUVEC *normal) {
+    if (batarang == NULL || normal == NULL) {
+        return 0;
+    }
+    if (batarang->ricochet_state.count >= 5) {
+        --batarang->ricochet_state.count;
+        batarang->ricochet_state.flags &= ~1u;
+        batarang->ricochet_normal = v000;
+        return 0;
+    }
+    batarang->ricochet_state.flags |= 1;
+    batarang->ricochet_normal = *normal;
+    ++batarang->ricochet_state.count;
+    batarang->ricochet_state.timer = 0.0f;
+    NUVEC original_velocity = batarang->velocity;
+    NUVEC reflected_velocity = batarang->velocity;
+    NUVEC axis;
+    NuVecCross(&axis, &batarang->ricochet_normal, &reflected_velocity);
+    NuVecNorm(&axis, &axis);
+    NUMTX rotation;
+    NuMtxSetIdentity(&rotation);
+    f32 magnitudes = NuVecMag(&batarang->ricochet_normal) * NuVecMag(&reflected_velocity);
+    f32 dot = NuVecDot(&batarang->ricochet_normal, &reflected_velocity);
+    f32 cosine = NuFdiv(dot, magnitudes);
+    i16 angle = 0x4000 - BatarangASinPc(cosine);
+    NuMtxSetRotationAxis(&rotation, 0x8000 - angle * 2, &axis);
+    NuVecMtxRotate(&reflected_velocity, &reflected_velocity, &rotation);
+    f32 speed = NuVecNorm(&original_velocity, &original_velocity);
+    NuVecNorm(&reflected_velocity, &reflected_velocity);
+    NuVecAdd(&reflected_velocity, &reflected_velocity, &original_velocity);
+    NuVecNorm(&reflected_velocity, &reflected_velocity);
+    NuVecScale(&reflected_velocity, &reflected_velocity, speed * 0.8f);
+    batarang->velocity.x = SeekLinearF(batarang->velocity.x, reflected_velocity.x, 10.0f);
+    batarang->velocity.y = SeekLinearF(batarang->velocity.y, reflected_velocity.y, 10.0f);
+    batarang->velocity.z = SeekLinearF(batarang->velocity.z, reflected_velocity.z, 10.0f);
+    return 1;
+}
+
+static void Batarang_Ricochet(BATARANG_NATIVE_PC *batarang) {
+    if (batarang == NULL || (batarang->ricochet_state.flags & 1) == 0) {
+        return;
+    }
+    if (batarang->ricochet_state.timer < 0.2f) {
+        batarang->ricochet_state.timer += FRAMETIME;
+    } else {
+        batarang->ricochet_state.timer = 0.0f;
+        batarang->ricochet_state.flags &= ~1u;
+        batarang->ricochet_normal = v000;
+    }
+}
+
+static i32 Batarang_ShouldRicochet(BATARANG_NATIVE_PC *batarang) {
+    NUVEC travel, destination;
+    NuVecScale(&travel, &batarang->velocity, FRAMETIME * 2.0f);
+    NuVecAdd(&destination, &batarang->position, &travel);
+    if (!NewRayCastScaleYMask(&batarang->position, &travel, 0.0f, 1.0f, 0, 0x1f))
+        return 0;
+    i32 platform = TerrainPlatId();
+    if (batarang->flight_state.in_flight != 0 && batarang->flight_state.current_target >= batarang->active)
+        return 1;
+    BATARANG_TARGET_s *current = &batarang->targets[batarang->flight_state.current_target];
+    switch (current->type) {
+        case 0:
+        case 1:
+        case 3:
+            return 1;
+        case 2:
+            return platform != static_cast<GIZMOBLOWUP_PC *>(current->object)->platform_id;
+        default:
+            return 0;
+    }
+}
+
+extern "C" i32 Batarang_SeekToTarget(BATARANG_NATIVE_PC *batarang) {
+    if (batarang == NULL) {
+        return 0;
+    }
+    NUVEC target;
+    if (batarang->flight_state.current_target > batarang->active ||
+        batarang->targets[batarang->flight_state.current_target].lost != 0) {
+        target = batarang->owner->collision_position;
+    } else if (!Batarang_GetTargetPos(batarang, batarang->flight_state.current_target, &target)) {
+        return 0;
+    }
+
+    const f32 rate =
+        batarang->flight_state.flight_time > 1.0f ? (batarang->flight_state.flight_time - 1.0f) * 5.0f + 5.0f : 5.0f;
+    if (batarang->flight_state.flight_time < 4.0f) {
+        if (Batarang_ShouldRicochet(batarang)) {
+            NUVEC normal;
+            NewRayCastGetImpactNormal(&normal);
+            Batarang_InitRicochet(batarang, &normal);
+        }
+    }
+
+    if ((batarang->ricochet_state.flags & 1) != 0) {
+        Batarang_Ricochet(batarang);
+    } else {
+        NUVEC desired;
+        NuVecSub(&desired, &target, &batarang->position);
+        NuVecNorm(&desired, &desired);
+        NuVecScale(&desired, &desired, 5.0f);
+        batarang->velocity.x = SeekValF(batarang->velocity.x, desired.x, rate);
+        batarang->velocity.y = SeekValF(batarang->velocity.y, desired.y, rate);
+        batarang->velocity.z = SeekValF(batarang->velocity.z, desired.z, rate);
+        batarang->ricochet_state.timer += FRAMETIME;
+        if (batarang->ricochet_state.timer > 0.2f && batarang->ricochet_state.count > 0) {
+            --batarang->ricochet_state.count;
+            batarang->ricochet_state.timer = 0.0f;
+        }
+    }
+    batarang->position.x += batarang->velocity.x * FRAMETIME;
+    batarang->position.y += batarang->velocity.y * FRAMETIME;
+    batarang->position.z += batarang->velocity.z * FRAMETIME;
+    return NuVecDistSqr(&batarang->position, &target, NULL) < 0.0625f;
+}
+
+extern "C" void Batarang_MoveCode(GAMEOBJECT *object) {
+    i32 colour[3];
+    BATARANG_NATIVE_PC *batarang = BATARANG_PACKET_PC(object);
+    if (object->character_context == 0x50) {
+        object->flags_e20 |= 0x00400000;
+        if (object->hold_timer >= 0.25f) {
+            Batarang_StartTargetting(object);
+            return;
+        }
+        if (AnimPlaying(&object->anim_packet, object->field_7aa, 0, 0) == NULL) {
+            return;
+        }
+        if (!(object->pad->input_magnitude > 0.0f)) {
+            object->context_timer -= FRAMETIME;
+            if (0.0f < object->context_timer) {
+                return;
+            }
+            if ((object->pad->buttons_held & GAMEPAD_ACTION) != 0) {
+                if (Batarang_StartTargetting(object) != 0) {
+                    return;
+                }
+                object->hold_timer = 0.0f;
+            }
+        }
+        object->character_context = -1;
+        return;
+    }
+    if (object->character_context != 0x4d) {
+        PLAYERCHARACTERCONFIG_PC *runtime = object->character_data->game_character;
+        if (((object->flags_1fc & 0x80) == 0 || (runtime->flags_090 & 0x20000000) == 0 || batarang == NULL ||
+             batarang->flight_state.in_flight != 0 || object->use_model_origin == 0 || (object->flags_e24 & 8) == 0 ||
+             object->model_draw_result == 0 || !(object->camera_screen_position.z > 0.0f) ||
+             !(object->hold_timer >= 0.25f) || object->field_281 == 0 || ObjLandReady(object) == 0)) {
+            return;
+        }
+        object->flags_e20 |= 0x00400000;
+        if (0.25f <= object->hold_timer - FRAMETIME) {
+            return;
+        }
+        Batarang_StartTargetting(object);
+        return;
+    }
+    if (object->field_7b3 == 0) {
+        object->flags_e20 |= 0x00400000;
+        object->context_variant_flags |= 0x20000;
+        if (((object->pad->buttons_pressed & GAMEPAD_JUMP) != 0)) {
+            StartJump(object, 0);
+            return;
+        }
+        if ((object->pad->buttons_held & GAMEPAD_ACTION) == 0 && !(object->context_timer < 0.3f)) {
+            if (BATARANG_PACKET_PC(object)->active != 0) {
+                object->context_variant_flags &= ~0x20000U;
+                object->field_7b3 = 1;
+                object->field_7aa = 0x65;
+                f32 duration = AnimDuration((i16)object->id, 0x65, 0.0f, 0.0f, 1);
+                object->context_timer = 0.0f;
+                object->context_variant_flags &= ~0x40U;
+                object->context_duration = duration <= 0.0f ? 0.5f : duration;
+                if (object->character_model->model_data_b[object->field_7aa] == NULL ||
+                    AnimListFrame(object->character_model, object->field_7aa, 0) != 0.0f) {
+                    object->batarang_release = 1;
+                    object->context_variant_flags |= 0x40;
+                    return;
+                }
+                object->context_variant_flags &= ~0x40U;
+            } else {
+                object->character_context = -1;
+            }
+        } else {
+            if ((object->character_model->model_data_b[object->field_7aa] == NULL ||
+                 AnimPlaying(&object->anim_packet, object->field_7aa, 1, 0) != NULL)) {
+                GAMEPAD_PC *pad = object->pad;
+                object->context_timer += FRAMETIME;
+                f32 x = pad->input_direction_z * 1.25f;
+                f32 y = 1.25f * pad->input_direction_x;
+                if (object->context_timer < 0.25f) {
+                    const f32 ramp = object->context_timer * 4.0f;
+                    x *= ramp;
+                    y *= ramp;
+                }
+                BATARANG_NATIVE_PC *aim = BATARANG_PACKET_PC(object);
+                aim->sight_velocity.x = SeekValF(aim->sight_velocity.x, x, 10.0f);
+                aim = BATARANG_PACKET_PC(object);
+                aim->sight_velocity.y = SeekValF(aim->sight_velocity.y, y, 10.0f);
+                aim = BATARANG_PACKET_PC(object);
+                aim->sight_position.x = aim->sight_velocity.x * FRAMETIME + aim->sight_position.x;
+                aim->sight_position.y = FRAMETIME * aim->sight_velocity.y + aim->sight_position.y;
+            }
+            batarang = BATARANG_PACKET_PC(object);
+            KeepPointOnScreen(&batarang->sight_position, &batarang->sight_velocity);
+            if (Batarang_FindTarget(WORLD, object, 0) != 0) {
+                NewBuzzFrames(object->pad->bound_pad, 1, 0);
+            }
+
+            char text[32];
+            Batarang_GetSightInfo((i16)object->id, &colour[0], &colour[1], &colour[2], text);
+            ADD_GAME_MESSAGE_PC message;
+            memcpy(&message, &AddGameMsg_Default, sizeof(message));
+            message.position = &BATARANG_PACKET_PC(object)->sight_position;
+            message.flags = 0x1080;
+            message.scale = 1.0f;
+            message.green = static_cast<u8>(colour[1]);
+            message.red = static_cast<u8>(colour[0]);
+            message.alpha = static_cast<i32>(((f64)0.2f * game_pulse + (f64)0.8f) * 128.0);
+            message.blue = static_cast<u8>(colour[2]);
+            message.text = text;
+            AddGameMsg(&message);
+            message.flags = 0x87;
+            message.unknown_4f = 4;
+            message.scale = 3.0f;
+            message.text = LEGOASCII_DOWN;
+            message.alpha = static_cast<i32>(128.0 * ((f64)0.8f - (f64)0.2f * game_pulse));
+            batarang = BATARANG_PACKET_PC(object);
+            for (i32 i = 0; i < batarang->active; ++i) {
+                NUVEC position;
+                if (Batarang_GetTargetPos(batarang, i, &position) != 0) {
+                    message.position = &position;
+                    AddGameMsg(&message);
+                }
+                batarang = BATARANG_PACKET_PC(object);
+            }
+        }
+    } else if (object->field_7b3 == 1) {
+        object->context_variant_flags &= ~0x20000U;
+        if ((object->pad->buttons_pressed & GAMEPAD_JUMP) != 0) {
+            object->landing_followup = 1;
+        }
+        if ((object->context_variant_flags & 0x40) != 0) {
+            if ((object->landing_followup == 1 && 0.2f <= object->context_timer)) {
+                StartJump(object, 0);
+                object->flags_e24 |= 0x1000;
+                goto finish;
+            }
+            if (0.0f < object->pad->input_magnitude && 0.3f <= object->context_timer) {
+                object->character_context = -1;
+                return;
+            }
+        }
+        f32 *frame = NULL;
+        if (object->character_model->model_data_b[object->field_7aa] != NULL) {
+            frame = AnimPlaying(&object->anim_packet, object->field_7aa, 1, 0);
+            if (frame == NULL) {
+                goto finish;
+            }
+        }
+        object->context_timer += FRAMETIME;
+        if (object->context_duration <= object->context_timer) {
+            object->character_context = -1;
+            if ((object->context_variant_flags & 0x40) != 0) {
+                return;
+            }
+        } else {
+            if ((object->context_variant_flags & 0x40) != 0) {
+                return;
+            }
+            if (object->character_model->model_data_b[object->field_7aa] != NULL) {
+                f32 marker = AnimListFrame(object->character_model, object->field_7aa, 2);
+                if (frame == NULL || !(0.0f < *frame) || !(marker <= *frame)) {
+                    goto finish;
+                }
+            }
+        }
+        object->batarang_release = 1;
+        object->context_variant_flags |= 0x40;
+        return;
+    }
+finish:
+    if ((object->context_variant_flags & 0x40) == 0 && object->batarang_release == 0) {
+        object->flags_e20 |= 0x00400000;
+    }
+}
+
+extern "C" void Batarang_StartThrowQuick(GAMEOBJECT *object) {
+    ResetAnimPacket(&object->anim_packet, -1);
+    object->character_context = 0x5e;
+    object->field_7aa = 0xb2;
+    object->context_timer = AnimDuration((i16)object->id, 0xb2, 0.0f, 0.0f, 1);
+}
+
+static i32 BatarangContainsTargetPc(BATARANG_NATIVE_PC *batarang, void *target) {
+    i32 index = 0;
+    for (; index < batarang->active; ++index)
+        if (batarang->targets[index].object == target)
+            break;
+    return index < batarang->active;
+}
+static i32 BatarangAppendTargetPc(BATARANG_NATIVE_PC *batarang, void *selected, i32 type) {
+    if (selected == NULL)
+        return 0;
+    if (batarang->active >= 5) {
+        if ((i32)((f64)GameTimer.time_elapsed / (f64)0.2f) == (i32)((f64)GameTimer.last_time_elapsed / (f64)0.2f))
+            return 1;
+        for (i32 index = 0; index < batarang->active - 1; ++index)
+            batarang->targets[index] = batarang->targets[index + 1];
+        --batarang->active;
+    }
+    batarang->targets[batarang->active].object = selected;
+    batarang->targets[batarang->active].type = (u8)type;
+    batarang->targets[batarang->active].lost = 0;
+    ++batarang->active;
+    return 2;
+}
+extern "C" i32 __cdecl Batarang_FindTarget(WORLDINFO *world, GAMEOBJECT *object, i32 automatic) {
+    NUVEC delta;
+    union {
+        f32 value;
+        u32 bits;
+    } absolute;
+    BATARANG_NATIVE_PC *batarang = BATARANG_PACKET_PC(object);
+    NUVEC forward;
+    NuVecRotateY(&forward, &v001, object->movement_facing_angle);
+    void *selected = NULL;
+    i32 selected_type = -1;
+    NUVEC selected_position;
+    f32 selected_distance = 64.0f;
+    GAMEOBJECT *nearest_object = NULL;
+    f32 nearest_distance = 16.0f;
+    GAMEOBJECT *first_object = NULL;
+    GAMEOBJECT *candidate = Obj;
+    for (i32 i = 0; i < HIGHGAMEOBJECT; ++i, ++candidate) {
+        const i8 context = candidate->character_context;
+        if ((candidate->flags_1fc_word & 0x1001) != 0x1001 || candidate->dead != 0 ||
+            (CInfo[context].flags & 0x8000) != 0 || candidate->model_draw_result == 0 || candidate == object ||
+            candidate->field_280 != 0xff || (static_cast<u8>(context) & 0xfd) == 0x39 || context == 0x3c ||
+            (object->flags_1f8 & 0x10004) != 0 || ((object->flags_1f8 ^ candidate->flags_1f8) & 1) == 0) {
+            continue;
+        }
+        if (BatarangContainsTargetPc(batarang, candidate))
+            continue;
+
+        if (automatic != 0) {
+            f32 distance = NuVecDistSqr(&candidate->collision_position, &object->collision_position, &delta);
+            if (!(delta.x * forward.x + delta.z * forward.z > 0.0f)) {
+                continue;
+            }
+            if (distance < nearest_distance) {
+                nearest_distance = distance;
+                nearest_object = candidate;
+            }
+        } else {
+            if (((absolute.value = (candidate->camera_screen_position.x - batarang->sight_position.x)),
+                 (absolute.bits &= 0x7fffffff), absolute.value) < (f64)0.1f &&
+                ((absolute.value = (candidate->camera_screen_position.y - batarang->sight_position.y)),
+                 (absolute.bits &= 0x7fffffff), absolute.value) < (f64)0.2f &&
+                NuVecDistSqr(&candidate->collision_position, &object->collision_position, &delta) < selected_distance) {
+                first_object = candidate;
+                break;
+            }
+        }
+    }
+    if (nearest_object != NULL && selected_distance > nearest_distance) {
+        selected = nearest_object;
+        selected_distance = nearest_distance;
+    } else if (first_object != NULL) {
+        selected = first_object;
+    }
+    if (selected != NULL) {
+        GAMEOBJECT *candidate = static_cast<GAMEOBJECT *>(selected);
+        selected_position = candidate->collision_position;
+        selected_position.y = (f32)((candidate->collision_position.y + candidate->upper_position.y) * 0.5);
+        selected_type = 0;
+    }
+    if (automatic == 0) {
+        for (DETONATOR_s *candidate = Detonator; candidate != Detonator + 10; ++candidate) {
+            if (candidate->active == 0 || candidate->draw_result == 0 || candidate->timer == 0.0f) {
+                continue;
+            }
+            i32 target;
+            for (target = 0; target < batarang->active; ++target) {
+                if (batarang->targets[target].object == candidate) {
+                    break;
+                }
+            }
+            if (target != batarang->active ||
+                !(((absolute.value = (candidate->field_0x18.x - batarang->sight_position.x)),
+                   (absolute.bits &= 0x7fffffff), absolute.value) < (f64)0.1f) ||
+                !(((absolute.value = (candidate->field_0x18.y - batarang->sight_position.y)),
+                   (absolute.bits &= 0x7fffffff), absolute.value) < (f64)0.1f)) {
+                continue;
+            }
+            f32 distance = NuVecDistSqr(&candidate->field_0x0c, &object->collision_position, NULL);
+            if (distance < selected_distance) {
+                selected_position = candidate->field_0x0c;
+                selected_type = 1;
+                selected_distance = distance;
+                selected = candidate;
+            }
+        }
+    }
+    GIZMOBLOWUP_PC *nearest_blowup = NULL;
+    GIZMOBLOWUP_PC *blowup = NULL;
+    nearest_distance = 16.0f;
+    GIZMOBLOWUP_PC *candidate_blowup = world->gizmo_blowups;
+    i32 world_gizmo_blowup_count = world->gizmo_blowup_count;
+    for (i32 i = 0; i < world_gizmo_blowup_count; ++i, ++candidate_blowup) {
+        GIZMOBLOWUP_PC *candidate = candidate_blowup;
+        if ((candidate->status_flags & 0x80c001) != 0x80c000 || (candidate->draw_flags & 1) == 0 ||
+            ((candidate->draw_flags & 0x20) != 0 && ShadowMode == 0)) {
+            continue;
+        }
+        i32 target;
+        for (target = 0; target < batarang->active; ++target) {
+            if (batarang->targets[target].object == candidate) {
+                break;
+            }
+        }
+        if (target != batarang->active) {
+            continue;
+        }
+        NUVEC delta;
+        if (automatic == 0) {
+            if (!(((absolute.value = (candidate->screen_position.x - batarang->sight_position.x)),
+                   (absolute.bits &= 0x7fffffff), absolute.value) < (f64)0.1f) ||
+                !(((absolute.value = (candidate->screen_position.y - batarang->sight_position.y)),
+                   (absolute.bits &= 0x7fffffff), absolute.value) < (f64)0.1f)) {
+                continue;
+            }
+            if (NuVecDistSqr(&candidate->mid_position, &object->collision_position, &delta) < selected_distance) {
+                blowup = candidate;
+                break;
+            }
+        } else {
+            f32 distance = NuVecDistSqr(&candidate->mid_position, &object->collision_position, &delta);
+            if (!(delta.x * forward.x + delta.z * forward.z > 0.0f)) {
+                continue;
+            }
+            if (distance < nearest_distance) {
+                nearest_distance = distance;
+                nearest_blowup = candidate;
+            }
+        }
+    }
+    if (nearest_blowup != NULL && nearest_distance < selected_distance) {
+        blowup = nearest_blowup;
+    }
+    i16 platform = -1;
+    if (blowup != NULL) {
+        selected_position = blowup->mid_position;
+        platform = blowup->platform_id;
+        selected = blowup;
+        selected_type = 2;
+    }
+    if (selected == NULL) {
+        return 0;
+    }
+    NUVEC origin = object->collision_position;
+    origin.y = (f32)((origin.y + object->upper_position.y) * 0.5);
+    NUVEC ray;
+    NuVecSub(&ray, &selected_position, &origin);
+    if (NewRayCastScaleYMask(&origin, &ray, 0.0f, 1.0f, 0, 0x1f) != 0) {
+        if (selected_type != 2 || platform == -1 || TerrainPlatId() != platform) {
+            return 0;
+        }
+    }
+    if (selected_type == -1)
+        return 0;
+    return BatarangAppendTargetPc(batarang, selected, selected_type) == 2;
+}
+
+extern "C" void __cdecl Batarang_Release(GAMEOBJECT *object, i32 mode) {
+    BATARANG_PACKET_PC(object)->owner = object;
+    BATARANG_PACKET_PC(object)->flight_state.in_flight = 1;
+    BATARANG_PACKET_PC(object)->flight_state.current_target = 0;
+    BATARANG_PACKET_PC(object)->flight_state.flight_time = 0.0f;
+    BATARANG_PACKET_PC(object)->velocity.x = (f32)(NU_SIN_LUT(object->movement_facing_angle) * 4.0);
+    BATARANG_PACKET_PC(object)->velocity.y = (f32)(object->velocity.y * 0.5);
+    BATARANG_PACKET_PC(object)->velocity.z = (f32)(4.0 * NU_COS_LUT(object->movement_facing_angle));
+    NewRumble(object->pad->bound_pad, 0.5f, 0);
+    BATARANG_PACKET_PC(object)->position = object->collision_position;
+    if (object->flags_e24 & 8) {
+        i32 joint = object->character_data->game_character->throw_locator;
+        if (joint != -1 && object->character_model->points_of_interest[joint] != NULL)
+            BATARANG_PACKET_PC(object)->position = *reinterpret_cast<NUVEC *>(&object->locator_matrices[joint].m30);
+    }
+    if (BATARANG_PACKET_PC(object)->active == 0 && mode == 2) {
+        Batarang_FindTarget(WORLD, object, 1);
+        if (BATARANG_PACKET_PC(object)->active == 0) {
+            BATARANG_PACKET_PC(object)->targets[BATARANG_PACKET_PC(object)->active].fallback_position.x =
+                (f32)(NU_SIN_LUT(object->movement_facing_angle) * 2.0 + object->collision_position.x);
+            BATARANG_PACKET_PC(object)->targets[BATARANG_PACKET_PC(object)->active].fallback_position.y =
+                object->collision_position.y;
+            BATARANG_PACKET_PC(object)->targets[BATARANG_PACKET_PC(object)->active].fallback_position.z =
+                (f32)(2.0 * NU_COS_LUT(object->movement_facing_angle) + object->collision_position.z);
+            BATARANG_PACKET_PC(object)->targets[BATARANG_PACKET_PC(object)->active].object =
+                &BATARANG_PACKET_PC(object)->targets[BATARANG_PACKET_PC(object)->active].fallback_position;
+            BATARANG_PACKET_PC(object)->targets[BATARANG_PACKET_PC(object)->active].type = 3;
+            BATARANG_PACKET_PC(object)->targets[BATARANG_PACKET_PC(object)->active].lost = 0;
+            ++BATARANG_PACKET_PC(object)->active;
+        }
+    }
+}
+
+f32 BatarangCatwomanStunTimePc = 2.0f;
+extern "C" void __cdecl Batarangs_Update(void) {
+    BATARANG_NATIVE_PC *batarang = reinterpret_cast<BATARANG_NATIVE_PC *>(BatarangPacketsPc);
+    for (i32 index = 0; index < 8; ++index, ++batarang) {
+        if (batarang->flight_state.in_flight == 0)
+            continue;
+        batarang->flight_state.flight_time += FRAMETIME;
+        if (!(batarang->flight_state.flight_time < 2.0f) && batarang->flight_state.flight_time > 4.0f)
+            batarang->flight_state.flight_time = 4.0f;
+        while (batarang->targets[batarang->flight_state.current_target].lost != 0 &&
+               batarang->flight_state.current_target < batarang->active)
+            ++batarang->flight_state.current_target;
+        if (!Batarang_SeekToTarget(batarang))
+            continue;
+        if (batarang->flight_state.current_target >= batarang->active) {
+            batarang->owner->hold_timer = 0;
+            NewBuzzFrames(batarang->owner->pad->bound_pad, 1, 0);
+            GAMEOBJECT *owner = batarang->owner;
+            if (owner->pad->buttons_held & GAMEPAD_ACTION)
+                Batarang_StartTargetting(owner);
+            else if (owner->pad->input_magnitude == 0 && owner->character_context == -1 &&
+                     owner->character_model->model_data_b[0x98] != NULL) {
+                owner->character_context = 0x50;
+                owner->field_7aa = 0x98;
+                batarang->owner->context_timer =
+                    AnimDuration((i16)batarang->owner->id, batarang->owner->field_7aa, 0, 0, 1);
+            }
+            batarang->flight_state.in_flight = 0;
+            batarang->active = 0;
+            batarang->owner = NULL;
+            batarang->cooldown = 50;
+            continue;
+        }
+        BATARANG_TARGET_s target = batarang->targets[batarang->flight_state.current_target];
+        if (target.type != 3) {
+            NewRumble(batarang->owner->pad->bound_pad, 0.5f, 0);
+            NewBuzzFrames(batarang->owner->pad->bound_pad, 1, 0);
+            GameCam_HitJudder();
+        }
+        ++batarang->flight_state.current_target;
+        batarang->flight_state.flight_time = 0;
+        if (target.type == 0) {
+            GAMEOBJECT *victim = static_cast<GAMEOBJECT *>(target.object);
+            if (victim->id == (u16)PunchRangeUnitIdPc && victim->field_280 == 0xff) {
+                victim->portal_flags |= 1;
+                PlayerTakeHitReactionPc(victim, batarang->owner, BatarangCatwomanStunTimePc, 0);
+            } else if (!(victim->portal_flags & 0x8000000))
+                ObjHitObj(batarang->owner, victim, 1, 0, 0, 1);
+        } else if (target.type == 1)
+            Detonator_Detonate(static_cast<DETONATOR_s *>(target.object));
+        else if (target.type == 2)
+            GizmoBlowupBlowup(static_cast<GIZMOBLOWUP_PC *>(target.object), 1, 2, 2, NULL, 1);
+    }
+}
+extern "C" void __cdecl Batarangs_Draw(void) {
+    BATARANG_NATIVE_PC *batarang = reinterpret_cast<BATARANG_NATIVE_PC *>(BatarangPacketsPc);
+    for (i32 index = 0; index < 8; ++index, ++batarang) {
+        if (batarang->flight_state.in_flight && WORLD->level_objects[batarang->cooldown].active) {
+            NUMTX matrix;
+            NuMtxSetTranslation(&matrix, &batarang->position);
+            NuSpecialDrawAt(&WORLD->level_objects[batarang->cooldown].special, &matrix);
+        }
+    }
+}
+struct BATARANG_DETONATOR_HIT_VIEW_PC {
+    u8 unknown00[0x20];
+    f32 delay;
+};
+STATIC_ASSERT(offsetof(BATARANG_DETONATOR_HIT_VIEW_PC, delay) == 0x20);
+extern "C" {
+    f32 BatarangDetonatorHitDelayPc = 2.0f;
+}
+extern "C" void __cdecl Detonator_Detonate(DETONATOR_s *detonator) {
+    Batarangs_CheckLostData(detonator);
+    Detonate(&detonator->field_0x0c, 0);
+    BATARANG_DETONATOR_HIT_VIEW_PC *hit_data = static_cast<BATARANG_DETONATOR_HIT_VIEW_PC *>(detonator->field_0x34);
+    detonator->active = 0;
+    if (hit_data != NULL) {
+        hit_data->delay = BatarangDetonatorHitDelayPc;
+        detonator->field_0x34 = NULL;
+    }
+}

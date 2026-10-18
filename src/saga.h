@@ -3419,7 +3419,10 @@ typedef struct GIZMOBLOWUP_PC {
             u32 field_3c;
         };
     };
-    u8 unknown_40[0xc];
+    union {
+        u8 unknown_40[0xc];
+        NUVEC screen_position;
+    };
     NUVEC mid_position;
     NUVEC bounds_min, bounds_max, decal_offset;
     NUVEC field_07c;
@@ -3461,6 +3464,7 @@ typedef struct GIZMOBLOWUP_PC {
     u8 unknown_112[2];
 } GIZMOBLOWUP_PC;
 STATIC_ASSERT(sizeof(GIZMOBLOWUP_PC) == 0x114);
+STATIC_ASSERT(offsetof(GIZMOBLOWUP_PC, screen_position) == 0x40);
 STATIC_ASSERT(offsetof(GIZMOBLOWUP_PC, mid_position) == 0x4c);
 STATIC_ASSERT(offsetof(GIZMOBLOWUP_PC, status_flags) == 0x94);
 STATIC_ASSERT(offsetof(GIZMOBLOWUP_PC, draw_flags) == 0x98);
@@ -6126,7 +6130,10 @@ struct PART_PC {
     u32 field_210;
     f32 field_214;
     u32 force_flags;
-    u32 field_21c;
+    union {
+        u32 field_21c;
+        f32 reflection_height;
+    };
 };
 STATIC_ASSERT(offsetof(PART_PC, guided_target) == 0xbc);
 STATIC_ASSERT(offsetof(PART_PC, rotation_axes) == 0x142);
@@ -9551,30 +9558,79 @@ extern "C" {
 
     void __cdecl Shadow_SetMode(void);
 
-    /* Refine the existing PLAYER_BATARANG_SLOT_PC declaration, retaining the whole
-     * previous unknown view through an explicit alias. Working fields only; this
-     * does not establish original allocation beyond existing reviewed b4 stride. */
+    typedef struct BATARANG_TARGET_s {
+        void *object;
+        u8 type, lost;
+        u16 reserved_06_word;
+        union {
+            u8 reserved_08[12];
+            NUVEC fallback_position;
+        };
+    } BATARANG_TARGET_s;
+#pragma pack(push, 1)
+    typedef struct BATARANG_FLIGHT_STATE_PC {
+        u8 in_flight, current_target, reserved_7f;
+        f32 flight_time;
+    } BATARANG_FLIGHT_STATE_PC;
+    typedef struct BATARANG_RICOCHET_STATE_PC {
+        i8 count;
+        u8 flags;
+        f32 timer;
+    } BATARANG_RICOCHET_STATE_PC;
+#pragma pack(pop)
     typedef struct player_batarang_slot_pc_s {
         union {
             u8 unknown_00[0xb4];
             struct {
-                u8 targeting_reserved_00[0x7c];
+                union {
+                    u8 targeting_reserved_00[0x7c];
+                    struct {
+                        BATARANG_TARGET_s targets[5];
+                        NUVEC position, velocity;
+                    };
+                };
                 u8 active;
-                u8 targeting_reserved_7d[7];
+                union {
+                    u8 targeting_reserved_7d[7];
+                    BATARANG_FLIGHT_STATE_PC flight_state;
+                };
                 GAMEOBJECT *owner;
                 NUVEC sight_position, sight_velocity;
-                u8 targeting_reserved_a0[12];
+                union {
+                    u8 targeting_reserved_a0[12];
+                    NUVEC ricochet_normal;
+                };
                 i16 cooldown;
-                u8 targeting_reserved_ae[6];
+                union {
+                    u8 targeting_reserved_ae[6];
+                    BATARANG_RICOCHET_STATE_PC ricochet_state;
+                };
             };
         };
     } PLAYER_BATARANG_SLOT_PC;
+    STATIC_ASSERT(sizeof(BATARANG_TARGET_s) == 0x14);
+    STATIC_ASSERT(offsetof(BATARANG_TARGET_s, fallback_position) == 8);
+    STATIC_ASSERT(sizeof(BATARANG_FLIGHT_STATE_PC) == 7);
+    STATIC_ASSERT(__alignof(BATARANG_FLIGHT_STATE_PC) == 1);
+    STATIC_ASSERT(sizeof(BATARANG_RICOCHET_STATE_PC) == 6);
+    STATIC_ASSERT(__alignof(BATARANG_RICOCHET_STATE_PC) == 1);
     STATIC_ASSERT(sizeof(PLAYER_BATARANG_SLOT_PC) == 0xb4);
+    STATIC_ASSERT(offsetof(PLAYER_BATARANG_SLOT_PC, position) == 0x64);
+    STATIC_ASSERT(offsetof(PLAYER_BATARANG_SLOT_PC, velocity) == 0x70);
     STATIC_ASSERT(offsetof(PLAYER_BATARANG_SLOT_PC, active) == 0x7c);
+    STATIC_ASSERT(offsetof(PLAYER_BATARANG_SLOT_PC, targeting_reserved_7d) == 0x7d);
+    STATIC_ASSERT(offsetof(PLAYER_BATARANG_SLOT_PC, flight_state.in_flight) == 0x7d);
+    STATIC_ASSERT(offsetof(PLAYER_BATARANG_SLOT_PC, flight_state.current_target) == 0x7e);
+    STATIC_ASSERT(offsetof(PLAYER_BATARANG_SLOT_PC, flight_state.flight_time) == 0x80);
     STATIC_ASSERT(offsetof(PLAYER_BATARANG_SLOT_PC, owner) == 0x84);
     STATIC_ASSERT(offsetof(PLAYER_BATARANG_SLOT_PC, sight_position) == 0x88);
     STATIC_ASSERT(offsetof(PLAYER_BATARANG_SLOT_PC, sight_velocity) == 0x94);
+    STATIC_ASSERT(offsetof(PLAYER_BATARANG_SLOT_PC, ricochet_normal) == 0xa0);
     STATIC_ASSERT(offsetof(PLAYER_BATARANG_SLOT_PC, cooldown) == 0xac);
+    STATIC_ASSERT(offsetof(PLAYER_BATARANG_SLOT_PC, targeting_reserved_ae) == 0xae);
+    STATIC_ASSERT(offsetof(PLAYER_BATARANG_SLOT_PC, ricochet_state.count) == 0xae);
+    STATIC_ASSERT(offsetof(PLAYER_BATARANG_SLOT_PC, ricochet_state.flags) == 0xaf);
+    STATIC_ASSERT(offsetof(PLAYER_BATARANG_SLOT_PC, ricochet_state.timer) == 0xb0);
 
     typedef struct player_force_los_slot_pc_s {
         u8 unknown_00[0x630];
@@ -22332,7 +22388,6 @@ typedef struct AITRIGGERSET_s AITRIGGERSET_s;
 typedef struct AREASAVE_s AREASAVE_s;
 typedef struct AREA_GLOBAL_VALUES AREA_GLOBAL_VALUES;
 typedef struct ATTRACTO_s ATTRACTO_s;
-typedef struct BATARANG_TARGET_s BATARANG_TARGET_s;
 typedef struct CABLE_s CABLE_s;
 typedef struct CHARACTER_SHADOW_s CHARACTER_SHADOW_s;
 typedef struct CHARPLATFORMSYS_s CHARPLATFORMSYS_s;
@@ -22832,18 +22887,6 @@ struct DETONATOR_s {
     void *field_0x34;
 };
 STATIC_ASSERT(sizeof(struct DETONATOR_s) == 56);
-
-struct BATARANG_TARGET_s {
-    void *object;
-    u8 type;
-    u8 lost;
-    u16 reserved_06_word;
-    union {
-        u8 reserved_08[12];
-        NUVEC fallback_position;
-    };
-};
-STATIC_ASSERT(sizeof(struct BATARANG_TARGET_s) == 20);
 
 struct EXPLOSION {
     i32 field_0x00;
@@ -27843,6 +27886,30 @@ extern "C" {
                                                        AI_HELPER_FILTER_PC filter);
     GRAPPLE_DYNAMIC_PC *__cdecl Grapple_FindNearestToPos(WORLDINFO *world, NUVEC *position);
     i32 __cdecl IndyGrappleCanJumpPc(GAMEOBJECT *object);
+    void __cdecl PartImpact_ThermalDetonator(PART_PC *part);
+    void __cdecl PartUpdate_ThermalDetonator(PART_PC *part);
+    i32 __cdecl PartDraw_ThermalDetonator(PART_PC *part);
+    void __cdecl PartKill_ThermalDetonator(PART_PC *part, i32 unused);
+    void __cdecl ThermalDetonator_Throw(GAMEOBJECT *object);
+#ifdef __cplusplus
+}
+#endif
+#endif
+
+#ifndef SAGA_BATARANG_NATIVE_PC_DECLARATIONS
+#define SAGA_BATARANG_NATIVE_PC_DECLARATIONS
+#ifdef __cplusplus
+extern "C" {
+#endif
+    i32 __cdecl Batarang_FindTarget(WORLDINFO *, GAMEOBJECT *, i32);
+    void __cdecl Batarang_Release(GAMEOBJECT *, i32);
+    i32 __cdecl Batarang_InitRicochet(PLAYER_BATARANG_SLOT_PC *, NUVEC *);
+    i32 __cdecl Batarang_SeekToTarget(PLAYER_BATARANG_SLOT_PC *);
+    void __cdecl Batarang_MoveCode(GAMEOBJECT *);
+    void __cdecl Batarang_StartThrowQuick(GAMEOBJECT *);
+    void __cdecl Batarangs_Update(void);
+    void __cdecl Batarangs_Draw(void);
+    extern f32 BatarangCatwomanStunTimePc, BatarangDetonatorHitDelayPc;
 #ifdef __cplusplus
 }
 #endif

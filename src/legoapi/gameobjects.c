@@ -1303,7 +1303,7 @@ void __cdecl GameObjectStuffAfterAnimation(void) {
         if (object->slam_effect != -1)
             AddSlamDebris(object);
         if (object->batarang_release != 0)
-            STUBBED_NAMED("AfterAnimation: Batarang_Release PC404620");
+            Batarang_Release(object, object->batarang_release);
         if ((object->flags_e20 & 0x00800000) != 0)
             SuperCarry_Throw(object, 0);
         if ((object->flags_e20 & 0x10) != 0) {
@@ -1355,7 +1355,7 @@ void __cdecl GameObjectStuffAfterAnimation(void) {
             }
         }
         if ((object->flags_e24 & 0x4000) != 0)
-            STUBBED_NAMED("AfterAnimation: ThermalDetonator_Throw PC4cfbb0");
+            ThermalDetonator_Throw(object);
         if ((object->flags_e20 & 0x02000000) != 0 && object->force_target != NULL) {
             GAMEOBJECT *target = object->force_target;
             NUVEC *origin = GetZapOrigin(object);

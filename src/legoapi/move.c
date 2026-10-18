@@ -6654,7 +6654,7 @@ after_gravity:
     if ((object->character_data->model_flags & 0x80) != 0)
         ShootCode(object, action_pressed, special_pressed, 1, 1, 0);
     else if (((DEFAULT_MOTION_BATARANG_POINTER_PC *)object)->batarang != NULL)
-        STUBBED_NAMED(0x004050c0); /* Native4b5095: object; Batarang_MoveCode. */
+        Batarang_MoveCode(object);
     if ((i8)object->character_data->game_character->flags_094_bytes[0] < 0)
         STUBBED_NAMED(0x004b29f0); /* Native4b50c0: object EAX+current SPECIAL pressed,0; CommunicateCode. */
     STUBBED_NAMED(0x004a69e0);     /* Native4b50c8: object ESI; actual void source action. */
@@ -9189,7 +9189,7 @@ void __cdecl Move_WEIRDO(GAMEOBJECT *object) {
                 special_pressed = 0;
             ShootCode(object, action_pressed, special_pressed, 1, 1, 0);
         } else if (((WEIRDO_BATARANG_READER_PC *)object)->batarang != NULL) {
-            STUBBED_NAMED(0x004050c0); /* Native4b5ccf: Batarang_MoveCode(object). */
+            Batarang_MoveCode(object);
         }
     }
     if ((i8)object->character_data->game_character->flags_094_bytes[0] < 0)

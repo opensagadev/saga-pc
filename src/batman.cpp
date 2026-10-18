@@ -222,8 +222,9 @@ static void NuMainUpdateFrame(WORLDINFO *world, i32 *frame_flag) {
             }
             Teleports_UpdateAfterGameObjects(world);
             Pulses_Update((LEVEL_SFX_PULSE_PC *)world->pulses_sys);
-            STUBBED_NAMED("NuMainUpdateFrame: Detonators_Update at 0x00426fa0, Batarangs_Update at 0x00405ac0, "
-                          "UpdateCables at 0x00408af0");
+            STUBBED_NAMED("NuMainUpdateFrame: Detonators_Update at 0x00426fa0");
+            Batarangs_Update();
+            STUBBED_NAMED("NuMainUpdateFrame: UpdateCables at 0x00408af0");
             LOG_INFO_IF(GameTimer.update_count < 2, "Update stage: before Level_Update world=%p", (void *)WORLD);
             Level_Update(world);
             LOG_INFO_IF(GameTimer.update_count < 2, "Update stage: after Level_Update world=%p", (void *)WORLD);
@@ -388,8 +389,8 @@ static void NuMainRenderWorld(WORLDINFO *world) {
         Bolts_Draw(world);
         DrawExplosions();
         ZipUps_DrawLines();
-        STUBBED_NAMED(
-            "NuMainRenderWorld: DrawCables at 0x00409980, Detonators_Draw at 0x00427070, Batarangs_Draw at 0x00404dc0");
+        STUBBED_NAMED("NuMainRenderWorld: DrawCables at 0x00409980, Detonators_Draw at 0x00427070");
+        Batarangs_Draw();
         TrafficAnimSys_Draw(world->trafficanim_sys);
         GizmoSysDraw(world->gizmo_sys, world, FRAMETIME);
         SpecialMiniKits_Draw(world);

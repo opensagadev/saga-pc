@@ -283,7 +283,7 @@ void PartKill_ThermalDetonator(PART_PC *part, i32 unused1) {
     }
 
     flags = 0x200;
-    if (part->owner != NULL && part->owner->flags_1fc && Cheat_IsOn(0x17) != 0) {
+    if (part->owner != NULL && (part->owner->flags_1fc & 0x80) != 0 && Cheat_IsOn(0x17) != 0) {
         flags = 0x1200;
     }
 
