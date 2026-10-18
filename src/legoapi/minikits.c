@@ -430,3 +430,45 @@ void __cdecl HothBattleC_Init(WORLDINFO *world) {
 void __cdecl HothBattleC_DrawPc(WORLDINFO *world) {
     DrawMiniSnowTroopers(world);
 }
+
+static const char HothBattleAPickupPc[8] = "m_pup3";
+
+void __cdecl HothBattleA_Init(WORLDINFO *world) {
+    i32 count;
+    LevGizmo[0] = (GIZMO_PC *)GizmoFindByName(world->gizmo_sys, gizmopickup_typeid, (char *)HothBattleAPickupPc);
+    GizmoSetVisibility(world->gizmo_sys, LevGizmo[0], 0, 1);
+    gunship_bolts[1] = BoltType_FindIDByName((char *)HothBattleCGreenBoltPc, world);
+    gunship_bolts[0] = BoltType_FindIDByName((char *)HothBattleCRedBoltPc, world);
+    trooper_side[0] = 0;
+    trooper_side[1] = 1;
+    InitMiniSnowTroopers(world, 2, 32, 0);
+    count = NuSpecialFind(world->current_gscn, &LevHSpecial[0], (char *)HothBattleCMinifig11Pc, 1);
+    count += NuSpecialFind(world->current_gscn, &LevHSpecial[1], (char *)HothBattleCMinifig12Pc, 1);
+    count += NuSpecialFind(world->current_gscn, &LevHSpecial[2], (char *)HothBattleCMinifig13Pc, 1);
+    count += NuSpecialFind(world->current_gscn, &LevHSpecial[3], (char *)HothBattleCMinifig21Pc, 1);
+    count += NuSpecialFind(world->current_gscn, &LevHSpecial[4], (char *)HothBattleCMinifig22Pc, 1);
+    count += NuSpecialFind(world->current_gscn, &LevHSpecial[5], (char *)HothBattleCMinifig23Pc, 1);
+    if (count == 6)
+        hothtroopers = LevHSpecial;
+}
+
+void __cdecl HothBattleA_Reset(WORLDINFO *world) {
+    GIZMO_PC *gizmo = LevGizmo[0];
+    GIZMOPICKUP_PC *pickup;
+    if (gizmo == NULL || gizmo->object == NULL)
+        return;
+    pickup = (GIZMOPICKUP_PC *)gizmo->object;
+    if (minikitCounter_A == 10 && (pickup->flags & 8) == 0) {
+        GizmoActivate(world->gizmo_sys, gizmo, 1, 1);
+        return;
+    }
+    GizmoSetVisibility(world->gizmo_sys, gizmo, 0, 1);
+}
+
+void __cdecl HothBattleA_Update(WORLDINFO *world) {
+    UpdateMiniSnowTroopers(world);
+}
+
+void __cdecl HothBattleA_DrawPc(WORLDINFO *world) {
+    DrawMiniSnowTroopers(world);
+}
