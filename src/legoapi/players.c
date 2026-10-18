@@ -3844,9 +3844,9 @@ i32 __cdecl GameDrawCharacterModel(CHARACTER_MODEL_LAYERS_PC *, ANIMPACKET_PC *,
                                    GAMEOBJECT *, u32);
 void __cdecl DrawCharacterAttachments(GAMEOBJECT *, NUMTX *);
 void __cdecl CustomiserDrawAccessoriesPc(CUSTOMISER_LAYERS_PC *, GAMEOBJECT *, NUMTX *);
-void __cdecl ParaphernaliaShieldPc(GAMEOBJECT *, i32);
+static void ParaphernaliaShieldPc(GAMEOBJECT *, i32);
 void __cdecl ParaphernaliaCommunicatePc(GAMEOBJECT *, i32);
-void __cdecl ParaphernaliaThrustPc(GAMEOBJECT *, i32);
+static void ParaphernaliaThrustPc(GAMEOBJECT *, i32);
 void __cdecl DrawForceGlowSpritePc(NUVEC *, f32, i32, f32, GAMEOBJECT *);
 void __cdecl ParaphernaliaPlacePc(GAMEOBJECT *, i32, i32, i32);
 void __cdecl ParaphernaliaRemovePc(GAMEOBJECT *, i32, i32, i32);
@@ -4204,4 +4204,115 @@ void __cdecl InitAICreatures(AISYS_PC *system) {
         }
     }
     system->reset_flags &= ~1u;
+}
+
+static void ParaphernaliaShieldPc(GAMEOBJECT *object, i32 reflection) {
+    PLAYERCHARACTERCONFIG_PC *config = object->character_data->game_character;
+    i32 locator = config->shield_locator;
+    f32 scale;
+    NUVEC scaling;
+    NUMTX matrix, reflected;
+    if (object->shield_hitpoints != 0 || config->shield_hitpoints == 0 || !(object->timer_d34 > 0.0f)) {
+        scale = object->origin_scale_override;
+        if (scale <= 0.0f)
+            return;
+    } else {
+        if ((GameTimer.update_count & 3) >= 2)
+            return;
+        scale = 1.0f;
+    }
+    scaling.x = scaling.y = scaling.z = scale;
+    NuMtxSetScale(&matrix, &scaling);
+    if (locator != -1 && object->character_model->points_of_interest[locator] != NULL)
+        NuMtxTranslate(&matrix, (NUVEC *)&object->locator_matrices[locator].m30);
+    else
+        NuMtxTranslate(&matrix, &object->collision_position);
+    Draw3DObjectMtx(NULL, 0x6f + (object->timer_d34 > 0.0f), &matrix);
+    if (reflection != 0 && MatrixReflection(&matrix, object->reflection_enabled, object->reflection_height,
+                                            WORLD->current_level->reflection_y, &reflected)) {
+        NuRndrStartReflectionRender(0);
+        Draw3DObjectMtx(NULL, 0x92 + (object->timer_d34 > 0.0f), &reflected);
+        NuRndrEndReflectionRender();
+    }
+}
+
+static void ParaphernaliaThrustPc(GAMEOBJECT *object, i32 reflection) {
+    i32 locator, effect_index = 0;
+    if (WORLD->level_objects[0x77].active == 0 || WORLD->level_objects[0x78].active == 0)
+        return;
+    for (locator = 0; locator < 16; ++locator) {
+        f32 ratio, scale;
+        NUVEC scaling;
+        NUMTX matrix, reflected;
+        i32 first, second;
+        if ((object->character_data->game_character->thrust_locators & (1u << locator)) == 0 ||
+            object->character_model->points_of_interest[locator] == NULL)
+            continue;
+        ratio = (f32)((f64)((u8 *)object)[0xe28 + effect_index++] / 255.0);
+        scale = (f32)((((f64)ratio - 0.5) * 0.5) * object->thrust_effect_scale + object->thrust_effect_scale);
+        if (scale <= 0.0f)
+            continue;
+        scaling.x = scaling.y = scaling.z = scale;
+        matrix = object->locator_matrices[locator];
+        NuMtxPreScale(&matrix, &scaling);
+        Draw3DObjectMtx(NULL, 0x77, &matrix);
+        Draw3DObjectMtx(NULL, 0x78, &matrix);
+        if (reflection != 0 && MatrixReflection(&matrix, object->reflection_enabled, object->reflection_height,
+                                                WORLD->current_level->reflection_y, &reflected)) {
+            first = LevelObject_GetReflection(0x77);
+            if (WORLD->level_objects[first].active == 0)
+                first = 0x77;
+            second = LevelObject_GetReflection(0x78);
+            if (WORLD->level_objects[second].active == 0)
+                second = 0x77;
+            NuRndrStartReflectionRender(0);
+            /* Retail draws the original matrix in this reflection pass. */
+            Draw3DObjectMtx(NULL, first, &matrix);
+            Draw3DObjectMtx(NULL, second, &matrix);
+            NuRndrEndReflectionRender();
+        }
+    }
+}
+
+void __cdecl ParaphernaliaCommunicatePc(GAMEOBJECT *object, i32 reflection) {
+    PLAYERCHARACTERCONFIG_PC *config = object->character_data->game_character;
+    i32 locator = config->thingy_locator;
+    i32 model = -1, reflection_model;
+    NUMTX matrix, reflected;
+    NUVEC scaling;
+    if (locator == -1 || object->character_model->points_of_interest[locator] == NULL)
+        return;
+    if ((object->character_data->model_flags & 0x40) != 0) {
+        f32 scale = object->communicate_blend * object->origin_scale;
+        scaling.x = scaling.y = scaling.z = scale;
+        NuMtxSetScale(&matrix, &scaling);
+        GameDrawMtxRotateYPc(&matrix, (NUANG)(object->field_0x276 + 0x8000));
+        matrix.m30 = object->locator_matrices[locator].m30;
+        matrix.m31 = object->locator_matrices[locator].m31;
+        matrix.m32 = object->locator_matrices[locator].m32;
+        if (object->field_283 == 9 && object->water_height > matrix.m31)
+            matrix.m31 = object->water_height;
+        model = 0x19;
+    } else {
+        if ((config->flags_094 & 0x80) != 0)
+            model = 0xe;
+        matrix = object->locator_matrices[locator];
+        if (object->communicate_blend != 1.0f) {
+            scaling.x = scaling.y = scaling.z = object->communicate_blend;
+            NuMtxPreScale(&matrix, &scaling);
+        }
+        if (model == -1)
+            return;
+    }
+    if (WORLD->level_objects[model].active == 0)
+        return;
+    NuSpecialDrawAt(&WORLD->level_objects[model].special, &matrix);
+    reflection_model = LevelObject_GetReflection(model);
+    if (reflection_model != -1 && WORLD->level_objects[reflection_model].active != 0 && reflection != 0 &&
+        MatrixReflection(&matrix, object->reflection_enabled, object->reflection_height,
+                         WORLD->current_level->reflection_y, &reflected)) {
+        NuRndrStartReflectionRender(0);
+        NuSpecialDrawAt(&WORLD->level_objects[reflection_model].special, &reflected);
+        NuRndrEndReflectionRender();
+    }
 }
