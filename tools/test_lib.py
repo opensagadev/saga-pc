@@ -430,6 +430,20 @@ class ProjectInputTests(unittest.TestCase):
             with self.assertRaisesRegex(ValueError, "Missing build/obj/current.obj"):
                 lib.compiled_objects()
 
+    def test_debug_support_is_excluded_without_hiding_native_sources(self):
+        with tempfile.TemporaryDirectory() as temp, patch.object(lib, "ROOT", Path(temp)):
+            root = Path(temp)
+            (root / "src").mkdir()
+            for name in ("log.c", "skin_trace.cpp", "skin_trace_windows.cpp"):
+                (root / "src" / name).write_text("// Debug-only support\n")
+                stale = root / "build/obj" / Path(name).with_suffix(".obj")
+                stale.parent.mkdir(parents=True, exist_ok=True)
+                stale.write_bytes(b"must not read stale diagnostic objects")
+            self.assertEqual(lib.compiled_objects(), {})
+            (root / "src/skin_trace_extra.cpp").write_text("// native source\n")
+            with self.assertRaisesRegex(ValueError, "Missing build/obj/skin_trace_extra.obj"):
+                lib.compiled_objects()
+
 
 class ExternalInventoryTests(unittest.TestCase):
     def setUp(self):

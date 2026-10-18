@@ -9184,6 +9184,7 @@ extern "C" {
 
     void __cdecl LoseHelmet(GAMEOBJECT *, i32, i32);
     void __cdecl DropTorpedoPickups(TORPEDOPACKET_PC *, i32);
+    void __cdecl Torpedo_Shoot(GAMEOBJECT *);
     void __cdecl HomeNearestTorpTarget(BOLT_PC *, TORPEDOPACKET_PC *);
     void __cdecl Torpedo_Ricochet(BOLT_PC *, TORPEDOPACKET_PC *);
     void __cdecl Torpedo_InitBolt(BOLT_PC *);

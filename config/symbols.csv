@@ -1874,6 +1874,7 @@ address    , symbol                                                         , si
 0x4d1cf0,_TightRope_SetTargetMom,384,i32 __cdecl(GAMEOBJECT *)
 0x4d1ea0,_TorpedoRatioPc,54,"f32 __cdecl(f32, f32)"
 0x4d1ee0,_TorpedoArcSinePc,320,i32 __cdecl(f32)
+0x4d2100,_TorpedoSetRotationYPc,162,"static void(NUMTX *, NUANG)"
 0x4d22b0,_GetTorpedoPacket,52,TORPEDOPACKET_PC *__cdecl(void)
 0x4d22f0,_FreeTorpedoPacket,90,void __cdecl(TORPEDOPACKET_PC **)
 0x4d2350,_DropTorpedoPickups,133,"void __cdecl(TORPEDOPACKET_PC*,i32)"
@@ -1891,7 +1892,7 @@ address    , symbol                                                         , si
 0x4d3490,_Torpedo_UpdateBolt,340,void __cdecl(BOLT_PC *)
 0x4d35f0,_Torpedo_Scale,39,f32 __cdecl(BOLT_PC *)
 0x4d3620,_Torpedo_EndBolt,102,void __cdecl(BOLT_PC*)
-0x4d3690,_Torpedo_Shoot,196,
+0x4d3690,_Torpedo_Shoot,196,void __cdecl(GAMEOBJECT *)
 0x4d3760,_PartDraw_Torp,133,i32 __cdecl (PART_PC *)
 0x4d3800,_TorpedoCode,1820,"void __cdecl(GAMEOBJECT*,i32,f32)"
 0x4d3f20,_DrawTorpedos,663,

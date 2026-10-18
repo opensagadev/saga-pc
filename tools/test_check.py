@@ -351,6 +351,25 @@ class CommonMatchTests(unittest.TestCase):
 
 
 class HeaderLayoutTests(unittest.TestCase):
+    def test_debug_analysis_is_limited_to_diagnostic_support(self):
+        for source in ("src/log.c", "src/skin_trace.cpp", "src/skin_trace_windows.cpp"):
+            with self.subTest(source=source):
+                flags = check_module.analysis_language(source)
+                self.assertIn("-DSAGA_DEBUG", flags)
+                self.assertIn("c" if source.endswith(".c") else "c++", flags)
+        self.assertNotIn("-DSAGA_DEBUG", check_module.analysis_language("src/nu2api/pc_device.cpp"))
+
+    def test_reviewed_debug_trace_header_is_scoped(self):
+        with tempfile.TemporaryDirectory() as temp, patch.object(check_module, "ROOT", Path(temp)):
+            src = Path(temp) / "src"
+            src.mkdir()
+            (src / "saga.h").write_text("// shared contract\n")
+            (src / "skin_trace.h").write_text("// reviewed Debug trace ABI\n")
+            check_module.check_headers()
+            (src / "skin_trace_extra.h").write_text("// unrelated headers remain forbidden\n")
+            with self.assertRaisesRegex(ValueError, "Debug skin-trace header"):
+                check_module.check_headers()
+
     def test_reviewed_native_fmv_header_is_scoped(self):
         with tempfile.TemporaryDirectory() as temp, patch.object(check_module, "ROOT", Path(temp)):
             src = Path(temp) / "src"

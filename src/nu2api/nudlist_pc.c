@@ -339,6 +339,7 @@ void __cdecl NuDisplayListSkinPalettePc(void *arg) {
         if (count > 8)
             NuPtlDmaSlotsExhaustedPc();
         NuShaderObjectSetElementsfv(shader, 0x18, 0, count, packet->elements);
+        SAGA_SKIN_CALL(skin_trace_palette, (unsigned)arg, count);
     }
 }
 
@@ -750,10 +751,16 @@ void __cdecl NuDisplayListDrawGeometryPc(void *arg) {
                 PCDeviceUnlockVertexBuffer(packet->dynamic_buffer);
                 PCDeviceSetStreamSourcePc(0, packet->dynamic_buffer, 0, packet->vertex_stride);
                 PCDeviceSetIndicesPc(packet->index_buffer);
+                SAGA_SKIN_CALL(skin_trace_capture_geometry, (unsigned)packet, (unsigned)NuDisplayHandlerMaterialPc,
+                               PCShaderSlots, (unsigned)packet->dynamic_buffer, (unsigned)packet->index_buffer, 0,
+                               packet->start_index);
                 PCDeviceDrawIndexedPrimitivePc(5, 0, 0, packet->vertex_count, packet->start_index, primitive_count);
             } else {
                 PCDeviceSetStreamSourcePc(0, packet->vertex_buffer, 0, packet->vertex_stride);
                 PCDeviceSetIndicesPc(packet->index_buffer);
+                SAGA_SKIN_CALL(skin_trace_capture_geometry, (unsigned)packet, (unsigned)NuDisplayHandlerMaterialPc,
+                               PCShaderSlots, (unsigned)packet->vertex_buffer, (unsigned)packet->index_buffer,
+                               packet->base_vertex, packet->start_index);
                 PCDeviceDrawIndexedPrimitivePc(5, packet->base_vertex, 0, packet->vertex_count, packet->start_index,
                                                primitive_count);
             }

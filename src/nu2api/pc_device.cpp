@@ -625,6 +625,7 @@ void __thiscall PC_DEVICE_BACKEND_PC::CreateOrResetDevice(i32 reposition_window)
     parameters.multisample_type = PCGraphicsMultisampleTypes[multisample_index];
     parameters.multisample_quality = quality[multisample_index] < 0 ? 0 : quality[multisample_index];
     if (device == NULL) {
+        SAGA_SKIN_CALL(skin_trace_invalidate, 0);
         PCDeviceLastResult = PCDeviceBackend.factory->methods->create_device(
             PCDeviceBackend.factory, adapter, device_type, parameters.window, creation_flags, &parameters, &device);
         for (i32 retries = 15; PCDeviceLastResult < 0 && retries != 0; --retries) {
@@ -664,9 +665,13 @@ void __thiscall PC_DEVICE_BACKEND_PC::CreateOrResetDevice(i32 reposition_window)
             if (cooperative == static_cast<HRESULT>(0x88760869)) {
                 PCDeviceEvictManagedResources();
                 PcRendererShutdown(0);
+                SAGA_SKIN_CALL(skin_trace_reset_begin, (unsigned)device);
                 if (view->methods->reset(view, &parameters) >= 0) {
+                    SAGA_SKIN_CALL(skin_trace_reset_end, (unsigned)device);
                     PCGraphicsRecreateResources(0);
                     rebuild_resources = 0;
+                } else {
+                    SAGA_SKIN_CALL(skin_trace_reset_end, (unsigned)device);
                 }
             } else if (cooperative == static_cast<HRESULT>(0x88760868)) {
                 if (PCGraphicsDeviceLostCallback != NULL)
@@ -676,7 +681,9 @@ void __thiscall PC_DEVICE_BACKEND_PC::CreateOrResetDevice(i32 reposition_window)
         } else {
             PCDeviceEvictManagedResources();
             PcRendererShutdown(1);
+            SAGA_SKIN_CALL(skin_trace_reset_begin, (unsigned)device);
             view->methods->reset(view, &parameters);
+            SAGA_SKIN_CALL(skin_trace_reset_end, (unsigned)device);
             PS2_REZ_W = parameters.width;
             PS2_REZ_H = parameters.height;
             PS2_VCNTR_X = PS2_REZ_W / 2;
@@ -1347,10 +1354,12 @@ void PC_DEVICE_BACKEND_PC::CopyCurrentSurface(GRAPHICS_RENDER_TEXTURE_PC *textur
 extern "C" void __cdecl PCDeviceSetVertexShaderConstantsF(UINT start, const f32 *values, UINT count) {
     PCDeviceLastResult =
         PCDeviceBackend.device->methods->set_vertex_shader_constant_f(PCDeviceBackend.device, start, values, count);
+    SAGA_SKIN_CALL(skin_trace_upload, 0, start, count, values, (long)PCDeviceLastResult);
 }
 extern "C" void __cdecl PCDeviceSetPixelShaderConstantsF(UINT start, const f32 *values, UINT count) {
     PCDeviceLastResult =
         PCDeviceBackend.device->methods->set_pixel_shader_constant_f(PCDeviceBackend.device, start, values, count);
+    SAGA_SKIN_CALL(skin_trace_upload, 1, start, count, values, (long)PCDeviceLastResult);
 }
 
 HRESULT __thiscall PC_DEVICE_BACKEND_PC::CopySurfaceTargetPc(PC_EFFECT_SURFACE_PC *target, i32 filter, i32 unused) {
@@ -1413,10 +1422,12 @@ extern "C" void __cdecl PCDeviceSetVertexDeclarationPc(PC_TEXTURE_RESOURCE_PC *d
 
 extern "C" void __cdecl PCDeviceSetVertexShaderPc(PC_TEXTURE_RESOURCE_PC *shader) {
     PCDeviceLastResult = PCDeviceBackend.device->methods->set_vertex_shader(PCDeviceBackend.device, shader);
+    SAGA_SKIN_CALL(skin_trace_bind, 0, (unsigned)shader, (long)PCDeviceLastResult);
 }
 
 extern "C" void __cdecl PCDeviceSetPixelShaderPc(PC_TEXTURE_RESOURCE_PC *shader) {
     PCDeviceLastResult = PCDeviceBackend.device->methods->set_pixel_shader(PCDeviceBackend.device, shader);
+    SAGA_SKIN_CALL(skin_trace_bind, 1, (unsigned)shader, (long)PCDeviceLastResult);
 }
 
 void __thiscall PC_DEVICE_BACKEND_PC::SetColorWriteMaskPc(u8 colour_enabled, u8 alpha_enabled, i32 target) {

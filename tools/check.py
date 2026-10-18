@@ -195,12 +195,14 @@ def check_headers():
         "window.h", "ogg/ogg.h", "ogg/os_types.h", "vorbis/codec.h",
         "vorbis/vorbisenc.h", "vorbis/vorbisfile.h",
     }
-    # The native FMV ABI is shared only by its reviewed PC subsystem owners.
-    allowed = {"src/saga.h", "src/externals.h", "src/diagnostics.h", "src/nu2api/pc_fmv_native.h"} | {
+    # Private headers are limited to the reviewed native FMV and Debug trace owners.
+    allowed = {"src/saga.h", "src/externals.h", "src/diagnostics.h", "src/skin_trace.h",
+               "src/nu2api/pc_fmv_native.h"} | {
         "src/audio/vorbis/" + name for name in vorbis_headers}
     if "src/saga.h" not in headers or headers - allowed:
         raise ValueError("Project headers must be src/saga.h, src/diagnostics.h and optional src/externals.h "
-                         "or the reviewed original Vorbis header catalog or native PC FMV ABI header")
+                         "or the reviewed original Vorbis header catalog, native PC FMV ABI header "
+                         "or Debug skin-trace header")
 
 
 def check_diagnostic_boundaries():
@@ -321,10 +323,11 @@ def analysis_configuration():
 
 
 def analysis_language(source):
-    if source == "src/log.c":
-        return ["-x", "c", "-std=c89", "-DSAGA_DEBUG"]
-    return ["-x", "c", "-std=c89"] if source.endswith(".c") else [
+    flags = ["-x", "c", "-std=c89"] if source.endswith(".c") else [
         "-x", "c++", "-std=c++98", "-fdelayed-template-parsing"]
+    if source in {"src/log.c", "src/skin_trace.cpp", "src/skin_trace_windows.cpp"}:
+        flags.append("-DSAGA_DEBUG")
+    return flags
 
 
 def prepare_editor():

@@ -682,6 +682,8 @@ i32 NuHGobjRndrMtxDwa(NUHGOBJ_EVAL_PC *hierarchy, NUMTX *world, i32 render_count
             }
         if (part->smooth != NULL || part->alternate_smooth != NULL) {
             NuMtxMulHArrayPc(skin, object->inverse_bind, joints, object->joint_count);
+            SAGA_SKIN_CALL(skin_trace_skin, (unsigned)hierarchy, (unsigned)joints, world, (unsigned)skin,
+                           object->joint_count);
             if (part->smooth != NULL && part->smooth->scene != NULL && part->smooth->display_special != NULL)
                 drawn |= NuDisplayListRndrSpecial(part->smooth, world, 2, skin, blend);
             if (part->alternate_smooth != NULL && part->alternate_smooth->scene != NULL &&

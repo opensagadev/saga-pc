@@ -717,3 +717,45 @@ void __cdecl Torpedo_EndBolt(BOLT_PC *bolt) {
     GameCam_Judder(GameCam, judder, 2, NULL);
     NewRumbleAllPlayers(0.7f, 0.0f, 0, 0.0f);
 }
+
+STATIC_ASSERT(offsetof(GAMEOBJECT, torpedo) == 0xcc4);
+STATIC_ASSERT(offsetof(TORPEDOPACKET_PC, pickup_positions) == 0x3c);
+STATIC_ASSERT(offsetof(WORLDINFO, area) == 0x12c);
+STATIC_ASSERT(offsetof(AREA_DATA_PC, flags) == 0x7a);
+
+static void TorpedoSetRotationYPc(NUMTX *matrix, NUANG angle) {
+    f32 cosine = NuTrigTable[((angle + 0x4000) >> 1) & 0x7fff];
+    f32 sine = NuTrigTable[(angle >> 1) & 0x7fff];
+    matrix->m00 = cosine;
+    matrix->m01 = 0.0f;
+    matrix->m02 = -sine;
+    matrix->m03 = 0.0f;
+    matrix->m10 = ANI3_EVAL_IDENTITY_MATRIX.m10;
+    matrix->m11 = ANI3_EVAL_IDENTITY_MATRIX.m11;
+    matrix->m12 = ANI3_EVAL_IDENTITY_MATRIX.m12;
+    matrix->m13 = ANI3_EVAL_IDENTITY_MATRIX.m13;
+    matrix->m20 = sine;
+    matrix->m21 = 0.0f;
+    matrix->m22 = cosine;
+    matrix->m23 = 0.0f;
+    matrix->m30 = ANI3_EVAL_IDENTITY_MATRIX.m30;
+    matrix->m31 = ANI3_EVAL_IDENTITY_MATRIX.m31;
+    matrix->m32 = ANI3_EVAL_IDENTITY_MATRIX.m32;
+    matrix->m33 = ANI3_EVAL_IDENTITY_MATRIX.m33;
+}
+
+void __cdecl Torpedo_Shoot(GAMEOBJECT *object) {
+    NUVEC position = object->torpedo->pickup_positions[object->torpedo->count - 1];
+    NUVEC direction;
+    u16 angle = BoltSys->shoot_direction(object, &direction);
+    NUMTX matrix;
+    TorpedoSetRotationYPc(&matrix, angle);
+    if (WORLD != NULL && WORLD->area != NULL && (WORLD->area->flags & 4) != 0)
+        Bolt_Add(object, &position, &matrix, 16, 0);
+    else
+        Bolt_Add(object, &position, &matrix, 15, 0);
+    --object->torpedo->count;
+    object->torpedo->flags |= 2;
+    if ((object->flags_1fc & 0x80) != 0)
+        Hint_SetComplete(0x289);
+}

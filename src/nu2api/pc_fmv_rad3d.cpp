@@ -138,6 +138,7 @@ static void RadFmvDrawQuadPc(PC_D3D9_DEVICE_PC *device, f32 x, f32 y, f32 x_scal
     vertices[3] = vertices[1];
     vertices[3].y = vertices[2].y;
     vertices[3].v = 1;
+    SAGA_SKIN_CALL(skin_trace_invalidate, (unsigned)device);
     device->methods->set_vertex_shader(device, NULL);
     RAD_DEVICE_METHODS(device)->set_fvf(device, 0x1c4);
     RAD_DEVICE_METHODS(device)->draw_primitive_up(device, 5, 2, vertices, 32);
@@ -172,6 +173,7 @@ static void RadFmvDrawOutlinePc(PC_D3D9_DEVICE_PC *device, f32 x, f32 y, f32 xs,
         vertices[i].diffuse = vertices[i].specular = 0xffff0000;
     device->methods->set_texture_stage_state(device, 0, 2, 0);
     device->methods->set_texture_stage_state(device, 0, 5, 0);
+    SAGA_SKIN_CALL(skin_trace_invalidate, (unsigned)device);
     device->methods->set_vertex_shader(device, NULL);
     RAD_DEVICE_METHODS(device)->set_fvf(device, 0x1c4);
     RAD_DEVICE_METHODS(device)->draw_primitive_up(device, 2, 6, vertices, 32);

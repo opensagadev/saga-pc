@@ -18,6 +18,8 @@ static void __cdecl NuRndrResetStreamBufferPc(void) {
     }
     if (nudlist_stream_cursor.addr & 15)
         nudlist_stream_cursor.addr = (nudlist_stream_cursor.addr + 15) & ~15u;
+    SAGA_SKIN_CALL(skin_trace_stream, (unsigned)RndrStreamIndexPc, nudlist_stream_cursor.addr,
+                   nuprim_field_ba8 - nudlist_stream_cursor.addr);
 }
 
 void __cdecl NuRndrStreamInit(i32 size, VARIPTR *buffer) {

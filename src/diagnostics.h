@@ -21,6 +21,32 @@ extern "C" {
 
 #pragma intrinsic(_InterlockedExchange)
 
+#ifdef __cplusplus
+extern "C" {
+#endif
+    extern int skin_trace_gate;
+    void skin_trace_stream(unsigned, unsigned, unsigned);
+    void skin_trace_skin(unsigned, unsigned, const void *, unsigned, unsigned);
+    void skin_trace_item(unsigned, unsigned, unsigned, unsigned);
+    void skin_trace_enter_item(unsigned);
+    void skin_trace_leave_item(void);
+    void skin_trace_palette(unsigned, int);
+    void skin_trace_upload(int, unsigned, unsigned, const void *,
+                           long);              // NOLINT(google-runtime-int): Win32 HRESULT ABI.
+    void skin_trace_bind(int, unsigned, long); // NOLINT(google-runtime-int): Win32 HRESULT ABI.
+    void skin_trace_invalidate(unsigned);
+    void skin_trace_reset_begin(unsigned);
+    void skin_trace_reset_end(unsigned);
+    void skin_trace_capture_geometry(unsigned, unsigned, void *, unsigned, unsigned, unsigned, unsigned);
+#ifdef __cplusplus
+}
+#endif
+#define SAGA_SKIN_CALL(function, ...)                                                                                  \
+    do {                                                                                                               \
+        if (skin_trace_gate)                                                                                           \
+            function(__VA_ARGS__);                                                                                     \
+    } while (0)
+
 #define LOG(level, ...) _saga_log(level, __FILE__, __LINE__, __FUNCTION__, __VA_ARGS__)
 #define LOG_ERR(...) LOG(LOG_LEVEL_ERROR, __VA_ARGS__)
 #define LOG_WARN(...) LOG(LOG_LEVEL_WARN, __VA_ARGS__)
@@ -45,6 +71,7 @@ extern "C" {
 #define STUBBED_NAMED(name) LOG_WARN_ONCE("STUBBED: %s", #name)
 #define UNIMPLEMENTED(...) LOG_ERR("UNIMPLEMENTED: %s", #__VA_ARGS__)
 #else
+#define SAGA_SKIN_CALL(function, ...) ((void)0)
 #define LOG(level, ...) ((void)0)
 #define LOG_ERR(...) ((void)0)
 #define LOG_WARN(...) ((void)0)

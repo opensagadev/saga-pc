@@ -1276,7 +1276,7 @@ void __cdecl GameObjectStuffAfterAnimation(void) {
                 }
             }
             if ((object->flags_e20 & 0x04000000) != 0)
-                STUBBED_NAMED("AfterAnimation: Torpedo_Shoot PC4d3690");
+                Torpedo_Shoot(object);
         }
         if (drawn && ((object->character_data->model_flags & 8) != 0 || object->id == (u16)id_BODYGUARD ||
                       object->id == (u16)id_IMPERIALGUARD)) {
@@ -1386,7 +1386,7 @@ void __cdecl GameObjectStuffAfterAnimation(void) {
             position.y =
                 (f32)((f64)(object->position.y + object->character_bottom * object->origin_scale) + (f64)0.05f);
             position.z = object->position.z + radius * NuTrigTable[((u16)(angle + 0x4000) >> 1) & 0x7fff];
-            STUBBED_NAMED("AfterAnimation: PowerUp_Particles PC46a8d0");
+            PowerUp_Particles(WORLD, &position);
         }
     }
 }

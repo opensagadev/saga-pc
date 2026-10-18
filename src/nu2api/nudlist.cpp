@@ -1022,6 +1022,8 @@ extern "C" {
         item->type = 0x98;
         item->id = 3;
         item->next = render_geometry;
+        SAGA_SKIN_CALL(skin_trace_item, (unsigned)item, (unsigned)skin_packet, (unsigned)render_geometry,
+                       (unsigned)skin);
         output[1] = item++;
         list->items = item;
         DisplayListSetAlphaPS(output[0], output[1], 1.0f);
@@ -1373,8 +1375,11 @@ extern "C" void __cdecl NuDisplayListExecute(NUDISPLAYLISTITEM *item, void(__cde
                 item = (NUDISPLAYLISTITEM *)item->next;
                 break;
             case 3:
-                if (handlers[item->type - 0x80] != NULL)
+                if (handlers[item->type - 0x80] != NULL) {
+                    SAGA_SKIN_CALL(skin_trace_enter_item, (unsigned)item);
                     handlers[item->type - 0x80](item->next);
+                    SAGA_SKIN_CALL(skin_trace_leave_item);
+                }
                 ++item;
                 break;
             case 4:

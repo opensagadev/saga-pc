@@ -66,6 +66,7 @@ extern "C" void __cdecl FmvDrawPc(PC_FMV_MOVIE_PC *movie) {
     if (movie->fading != 0)
         opacity = movie->fade_remaining / movie->fade_duration;
     RadFmvBeginScenePc(FmvContextPc);
+    SAGA_SKIN_CALL(skin_trace_invalidate, (unsigned)device);
     device->methods->set_vertex_shader(device, NULL);
     device->methods->set_pixel_shader(device, NULL);
     device->methods->set_render_state(device, 22, 1);

@@ -9,7 +9,7 @@ else ifeq ($(BUILD_KIND),Debug)
 OBJ_DIR := build/Debug/obj
 EXE := build/LEGOStarWarsSaga_debug.exe
 STRICT_EXE := build/Debug/LEGOStarWarsSaga.strict_debug.exe
-DIAGNOSTIC_OBJECTS := build/Debug/log.obj
+DIAGNOSTIC_OBJECTS := build/Debug/log.obj build/Debug/skin_trace.obj build/Debug/skin_trace_windows.obj
 ifneq ($(filter match diff check-objects,$(MAKECMDGOALS)),)
 $(error Matching comparisons require BUILD_KIND=Matching; Debug artifacts are never comparison inputs)
 endif
@@ -20,7 +20,7 @@ endif
 # Parallelize object compilation by default; explicit -j still overrides.
 MAKEFLAGS += -j$(shell nproc)
 
-SOURCES := $(filter-out src/log.c,$(shell find src -type f \( -name '*.cpp' -o -name '*.c' \) | LC_ALL=C sort))
+SOURCES := $(filter-out src/log.c src/skin_trace.cpp src/skin_trace_windows.cpp,$(shell find src -type f \( -name '*.cpp' -o -name '*.c' \) | LC_ALL=C sort))
 SOURCE_DIRS := $(shell find src -type d)
 OBJECTS := $(patsubst src/%,$(OBJ_DIR)/%,$(SOURCES:.cpp=.obj))
 OBJECTS := $(OBJECTS:.c=.obj)
@@ -150,4 +150,10 @@ clean:
 	rm -rf build/obj build/objdiff build/Debug/obj
 	rm -f build/LEGOStarWarsSaga.exe build/LEGOStarWarsSaga_debug.exe
 	rm -f build/strict/LEGOStarWarsSaga.strict.exe build/Debug/LEGOStarWarsSaga.strict_debug.exe
-	rm -f build/Debug/log.obj build/Debug/LEGOStarWarsSaga_debug.pdb build/Debug/LEGOStarWarsSaga_debug.map
+	rm -f build/Debug/log.obj build/Debug/skin_trace.obj build/Debug/skin_trace_windows.obj build/Debug/LEGOStarWarsSaga_debug.pdb build/Debug/LEGOStarWarsSaga_debug.map
+
+build/Debug/skin_trace.obj: src/skin_trace.cpp src/skin_trace.h src/diagnostics.h config/toolchain.json Makefile tools/cc.py tools/lib.py | build/tools/wine/.ready
+	$(PYTHON) tools/cc.py $< $@ $(CPPFLAGS) $(CXXFLAGS)
+
+build/Debug/skin_trace_windows.obj: src/skin_trace_windows.cpp src/skin_trace.h src/diagnostics.h src/saga.h config/toolchain.json Makefile tools/cc.py tools/lib.py | build/tools/wine/.ready
+	$(PYTHON) tools/cc.py $< $@ $(CPPFLAGS) $(CXXFLAGS)
