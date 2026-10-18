@@ -1,5 +1,9 @@
 #include "saga.h"
 
+extern "C" void __cdecl KashyyykD_Init(WORLDINFO *);
+extern "C" void __cdecl KashyyykD_Reset(WORLDINFO *);
+extern "C" void __cdecl KashyyykD_Update(WORLDINFO *);
+
 extern "C" void __cdecl GunshipA_Init(WORLDINFO *);
 extern "C" void __cdecl GunshipA_Update(WORLDINFO *);
 extern "C" void __cdecl GunshipA_DrawPc(WORLDINFO *);
@@ -650,9 +654,9 @@ extern "C" void __cdecl FixUpLevels(struct level_fixup_pc_s *fixup) {
             level = Level_FindByName("Kashyyyk_D", NULL); /* Native call 0x48e7f9. */
             KASHYYYKD_LDATA = level;                      /* Native store 0x48e803. */
             if (level != NULL) {
-                STUBBED_NAMED(FixUpLevels_Callback_4e3590); /* Native 0x48e80a: callbacks[1] = entry 0x4e3590. */
-                STUBBED_NAMED(FixUpLevels_Callback_4e35d0); /* Native 0x48e817: callbacks[2] = entry 0x4e35d0. */
-                STUBBED_NAMED(FixUpLevels_Callback_4e3990); /* Native 0x48e823: callbacks[3] = entry 0x4e3990. */
+                level->callbacks[1] = (void *)KashyyykD_Init;   /* Native 0x48e80a: callbacks[1] = entry 0x4e3590. */
+                level->callbacks[2] = (void *)KashyyykD_Reset;  /* Native 0x48e817: callbacks[2] = entry 0x4e35d0. */
+                level->callbacks[3] = (void *)KashyyykD_Update; /* Native 0x48e823: callbacks[3] = entry 0x4e3990. */
             }
             level = Level_FindByName("vader_a", NULL); /* Native call 0x48e831. */
             VADERA_LDATA = level;                      /* Native store 0x48e83b. */

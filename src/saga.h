@@ -16394,6 +16394,7 @@ void __cdecl PCSoundAlreadyPlayingHook(void);
 
     typedef union LEVEL_INST_ANIM_RESET_VIEW_PC {
         u32 reset_words[12];
+        NUINSTANIM_TIME_VIEW *animations[12];
         struct {
             u8 unknown_00[0x20];
             f32 miscellaneous_time;
@@ -16404,6 +16405,7 @@ void __cdecl PCSoundAlreadyPlayingHook(void);
         } fields;
     } LEVEL_INST_ANIM_RESET_VIEW_PC;
     STATIC_ASSERT(sizeof(LEVEL_INST_ANIM_RESET_VIEW_PC) == 48);
+    STATIC_ASSERT(offsetof(LEVEL_INST_ANIM_RESET_VIEW_PC, animations) == 0);
     STATIC_ASSERT(offsetof(LEVEL_INST_ANIM_RESET_VIEW_PC, fields.miscellaneous_time) == 0x20);
     STATIC_ASSERT(offsetof(LEVEL_INST_ANIM_RESET_VIEW_PC, fields.target_deg_mid) == 0x24);
     STATIC_ASSERT(offsetof(LEVEL_INST_ANIM_RESET_VIEW_PC, fields.target_deg_far) == 0x28);
@@ -26900,6 +26902,8 @@ extern "C" {
     extern f32 test_factor;
     extern f32 test_seek_rate;
     extern struct PART_PC *boulder_part[2];
+    void __cdecl Boulder_Move(PART_PC *, f32);
+    void __cdecl Boulder_Kill(PART_PC *, i32);
     void __cdecl HothBattle_AssignSpawnLocator(struct gameobject_s *object, struct AILOCATOR_PC *locator,
                                                struct AILOCATORSET_PC *set);
     struct AILOCATOR_PC *__cdecl getSpawnLocator(f32 clip_radius, char *name);

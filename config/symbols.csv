@@ -2022,8 +2022,12 @@ address,symbol,size,ctype
 0x4e3040,_CruiserDReset,219,
 0x4e3380,_GrievousA_Update,89,
 0x4e33f0,_KashyyykA_Reset,51,
-0x4e35d0,_KashyyykD_Reset,241,
-0x4e36d0,_Boulder_Move,313,
+0x4e3590,_KashyyykD_Init,49,void __cdecl(WORLDINFO *)
+0x4e35d0,_KashyyykD_Reset,241,void __cdecl(WORLDINFO *)
+0x4e36d0,_Boulder_Move,313,"void __cdecl(PART_PC *, f32)"
+0x4e3810,_Boulder_Kill,121,"void __cdecl(PART_PC *, i32)"
+0x4e3890,_BoulderSpawnPc,250,private same-TU void __cdecl(i32)
+0x4e3990,_KashyyykD_Update,108,void __cdecl(WORLDINFO *)
 0x4e3a00,_Action_BoulderSection,546,
 0x4e3c30,_TempleC_AlwaysUpdate,82,
 0x4e3c90,_VaderA_StartCollapseStage,284,
@@ -13284,6 +13288,9 @@ address,symbol,size,ctype
 0x75ddd4,??_C@_0BK@CMHBPGDI@ep3_GeneralGrievous_Outro?$AA@,26,char []
 0x75ddf0,??_C@_0BA@JNHADNCO@WookiesToRescue?$AA@,16,char []
 0x75de00,??_C@_0N@JAIKINBL@TotalWookies?$AA@,13,char []
+0x75de10,??_C@_0BB@KEBGLIMD@ball_blowup_null?$AA@,17,const char[17]
+0x75de24,??_C@_06BKJJCHKA@ball?$CFi?$AA@,7,const char[7]
+0x75de2c,??_C@_07IBAHDDOK@ball?$CFib?$AA@,8,const char[8]
 0x75de34,??_C@_0N@KAKHOCIA@attack_time?$DN?$AA@,13,char []
 0x75de44,??_C@_0P@LJGKHAC@boulder_range?$DN?$AA@,15,char []
 0x75de88,_CloudCityTrapAForceNamePc,7,const char[7]
@@ -18847,6 +18854,8 @@ address,symbol,size,ctype
 0x7fffe4,_gunshipb_seekmom,4,f32
 0x7fffe8,_gunshipb_seekmomseek,4,f32
 0x007fffec,_GUNSHIPAHACK,4,i32
+0x8000a4,_boulder_radius,4,f32
+0x8000a8,_boulder_blowup_type,4,i32
 0x8000ac,_TempleC_StreamStatusPos,,
 0x800224,_melee_wavePhase,1,i8
 0x80029c,?pos@?1??CloudCityTrapA_Update@@9@9,,
@@ -21536,11 +21545,14 @@ address,symbol,size,ctype
 0x8890bc,_paintpanel,,
 0x8890c8,_KaminoDiscoMusicStatePc,,KAMINO_DISCO_MUSIC_VIEW_PC
 0x8894dc,_bonus_gunship_store_progress_flag,,i32
-0x8895e0,_boulder_part,,
+0x88958c,_boulder_old_pos,24,NUVEC[2]
+0x8895cc,_boulder_wait,4,f32
+0x8895e0,_boulder_part,8,PART_PC *[2]
 0x889618,_CruiserD_LiftChase,,i32
 0x88961c,_Grievous_obj,4,struct gameobject_s *
 0x889620,_KashyyykA_msg_TotalWookies,4,struct gizaimessage_s *
 0x889624,_KashyyykA_msg_WookiesToRescue,4,struct gizaimessage_s *
+0x889628,_i_boulder,4,i32
 0x88962c,_vader_b_complete_msg,4,struct gizaimessage_s *
 0x889630,_vader_b_playersDead,1,u8
 0x00889634,_CarWashHack,4,GAMEOBJECT *

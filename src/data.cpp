@@ -34285,6 +34285,11 @@ extern "C" {
 #pragma bss_seg(".bss$fakeanimframe")
     f32 fakeanimframe[1] = {0};
 #pragma bss_seg()
+#pragma bss_seg(".bss$KashyyykDBoulderStatePc")
+    NUVEC boulder_old_pos[2] = {0};
+    f32 boulder_wait = 0.0f;
+    PART_PC *boulder_part[2] = {NULL, NULL};
+    i32 i_boulder = 0;
 #pragma bss_seg(".bss$DeathStarEscapeBNetPacketPc")
     u8 *DeathStarEscapeBNetPacketPc = 0;
 #pragma bss_seg()
@@ -34404,4 +34409,11 @@ extern "C" {
     f32 lightning_sizewab[2] = {0.01f, 0.01f};
     f32 lightning_endw[2] = {0.1f, 0.1f};
     u32 lightning_col[2] = {0xff808040, 0xff808040};
+}
+
+extern "C" {
+#pragma data_seg(".data$KashyyykDBoulderTuningPc")
+    f32 boulder_radius = 0.3f;
+    i32 boulder_blowup_type = -1;
+#pragma data_seg()
 }
