@@ -12126,6 +12126,8 @@ address    , symbol                                                         , si
 0x75a170,??_C@_0L@EMODJLOD@Characters?$AA@,,const char[]
 0x75a17c,__real@3f03d70a,,const f32
 0x0075a180,??_C@_03HFJGAJFE@All?$AA@,,
+0x75a184,??_C@_0BE@FBONNMKJ@stuff?2char_lsw1?4ptl?$AA@,20,const char[20]
+0x75a198,??_C@_0CB@GFJMLDPM@levels?2losttemple?2losttemple?4ptl@,33,const char[33]
 0x75a1bc,??_C@_0CD@LGPIPCNC@stuff?2icons?2starwars_icons_all?4g@,,const char[35]
 0x75a1e0,??_C@_0BJ@FPOGABF@stuff?2vehicle_things?4gsc?$AA@,,const char[25]
 0x75a1fc,??_C@_04PJLKLIFA@?4gsc?$AA@,,const char[5]

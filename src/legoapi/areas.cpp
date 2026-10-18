@@ -1,4 +1,5 @@
 #include "saga.h"
+extern "C" void __cdecl Particles_LoadAreaPage(char *);
 extern "C" {
     void __cdecl MakeFreePlayModelList(i32, i32, i32, i32, i32);
     void __cdecl Customiser_LoadAccessories(CUSTOMISER_LAYERS_PC *, APICHARACTERMODELLIST *);
@@ -1228,13 +1229,13 @@ extern "C" {
         IconScenes_Load(list, 1, &characterbuffer_ptr, &characterbuffer_end);
         Customiser_SetAnimsToLoad(CharacterCustomiser, HUB_ADATA != NULL && area == HUB_ADATA->index);
         if (LOSTTEMPLE_ADATA != NULL && area == LOSTTEMPLE_ADATA->index) {
-            STUBBED_NAMED(Particles_LoadAreaPage); /* Native 48b398: stuff\\char_indy.ptl. */
+            Particles_LoadAreaPage("levels\\losttemple\\losttemple.ptl");
         } else if (area != -1 && (ADataList[area].flags & 0x62) == 0 &&
-                   (((i8)ADataList[area].episode_index >= 0 && (i8)ADataList[area].episode_index < 3) ||
+                   (((i8)ADataList[area].episode_index >= 0 && (i8)ADataList[area].episode_index <= 2) ||
                     (ANEWHOPE_ADATA != NULL && area == ANEWHOPE_ADATA->index) ||
                     (PODSPRINT_ADATA != NULL && area == PODSPRINT_ADATA->index) ||
                     (BONUS_GUNSHIP_ADATA != NULL && area == BONUS_GUNSHIP_ADATA->index))) {
-            STUBBED_NAMED(Particles_LoadAreaPage); /* Native 48b398: stuff\\char_lsw1.ptl. */
+            Particles_LoadAreaPage("stuff\\char_lsw1.ptl");
         }
         nopakfile = CHARPAK == 0;
         APIResetCharacterRemap();
