@@ -732,7 +732,7 @@ extern "C" void __cdecl CheckResetBits(void) {
     }
     ResetRadios();
     SpecialMiniKits_Reset(WORLD);
-    STUBBED_NAMED("CheckResetBits: SuperCounters_FixUpGizmos(WORLD) at 0x00573690");
+    SuperCounters_FixUpGizmos(WORLD);
     AITriggerSetSysReset(((CHECK_RESET_WORLD_VIEW_PC *)WORLD)->ai_trigger_set_sys);
     AITriggerSysAutoSetUp(WORLD, (AITRIGGERSETSYS_s *)((CHECK_RESET_WORLD_VIEW_PC *)WORLD)->ai_trigger_set_sys);
     if ((ResetBits & 0x10) != 0) {

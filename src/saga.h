@@ -11986,6 +11986,7 @@ typedef struct PC_SHADER_OBJECT_FULL_VIEW PC_SHADER_OBJECT_FULL_VIEW;
     extern AREAFIXUP_PC AreaFixUpGotham[5];
     extern AREA_DATA_PC *LOSTTEMPLE_ADATA;
     void __cdecl SuperCounters_Reset(i32 area_index);
+    void __cdecl SuperCounters_FixUpGizmos(WORLDINFO *world);
     AREA_SUPERCOUNTER_PC *__cdecl SuperCounter_FindFromNameAndLevel(char *name, WORLDINFO *world,
                                                                     AREA_SUPERCOUNTER_PICKUP_PC **pickup_out);
     void __cdecl SuperCounters_ResetProcessed(WORLDINFO *world);

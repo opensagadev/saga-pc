@@ -12501,3 +12501,52 @@ f32 __cdecl Condition_OpponentInTriggerAreaPc(AISYS_PC *system, AISCRIPTPROCESS_
     }
     return 0.0f;
 }
+
+STATIC_ASSERT(offsetof(AIPACKET_PC, opponent) == 0xe4);
+STATIC_ASSERT(offsetof(AISCRIPTPROCESS_PC, locator) == 0xa4);
+STATIC_ASSERT(offsetof(AILOCATOR_PC, position) == 0x10);
+STATIC_ASSERT(offsetof(GAMEOBJECT, position) == 0x5c);
+
+void *__cdecl Condition_OpponentToLocatorInitPc(AISYS_PC *system, char *name, AISCRIPT_PC *script) {
+    if (name != NULL)
+        return AIPathFindLocator(system, name);
+    return NULL;
+}
+
+f32 __cdecl Condition_OpponentToLocatorPc(AISYS_PC *system, AISCRIPTPROCESS_PC *process, AIPACKET_PC *packet,
+                                          char *name, void *argument) {
+    NUVEC difference;
+    if (packet != NULL && packet->opponent != NULL) {
+        AILOCATOR_PC *locator = (AILOCATOR_PC *)argument;
+        if (locator == NULL)
+            locator = process->locator;
+        if (locator != NULL)
+            return NuVecDist(&packet->opponent->position, &locator->position, &difference);
+    }
+    return FLT_MAX;
+}
+
+f32 __cdecl Condition_OpponentToLocatorXZPc(AISYS_PC *system, AISCRIPTPROCESS_PC *process, AIPACKET_PC *packet,
+                                            char *name, void *argument) {
+    NUVEC difference;
+    if (packet != NULL && packet->opponent != NULL) {
+        AILOCATOR_PC *locator = (AILOCATOR_PC *)argument;
+        if (locator == NULL)
+            locator = process->locator;
+        if (locator != NULL)
+            return NuVecXZDist(&packet->opponent->position, &locator->position, &difference);
+    }
+    return FLT_MAX;
+}
+
+f32 __cdecl Condition_OpponentToLocatorYPc(AISYS_PC *system, AISCRIPTPROCESS_PC *process, AIPACKET_PC *packet,
+                                           char *name, void *argument) {
+    if (packet != NULL && packet->opponent != NULL) {
+        AILOCATOR_PC *locator = (AILOCATOR_PC *)argument;
+        if (locator == NULL)
+            locator = process->locator;
+        if (locator != NULL)
+            return packet->opponent->position.y - locator->position.y;
+    }
+    return FLT_MAX;
+}

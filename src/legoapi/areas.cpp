@@ -1678,3 +1678,27 @@ extern "C" void __cdecl SuperCounter_ActivateGizmoPickup(GIZMO_PC *gizmo, GIZMOP
         }
     }
 }
+
+STATIC_ASSERT(offsetof(AREA_DATA_PC, super_counter_count) == 0x7f);
+STATIC_ASSERT(offsetof(AREA_DATA_PC, super_counters) == 0x80);
+STATIC_ASSERT(offsetof(AREA_SUPERCOUNTER_PICKUP_PC, position_special) == 8);
+STATIC_ASSERT(sizeof(((AREA_SUPERCOUNTER_PICKUP_PC *)0)->position_special) == 12);
+extern "C" void __cdecl SuperCounters_FixUpGizmos(WORLDINFO *world) {
+    if (world->area == NULL || world->area->super_counters == NULL)
+        return;
+    for (i32 counter_index = 0; counter_index < world->area->super_counter_count; ++counter_index) {
+        AREA_SUPERCOUNTER_PICKUP_PC *pickup = world->area->super_counters[counter_index].pickups;
+        for (i32 index = 0; index < world->area->super_counters[counter_index].pickup_count; ++index, ++pickup) {
+            pickup->gizmo = GizmoFindByName(world->gizmo_sys, -1, pickup->name);
+            pickup->position_gizmo = NULL;
+            memset(pickup->position_special, 0, sizeof(pickup->position_special));
+            if (pickup->position_name[0] != '\0') {
+                if (pickup->use_special == 0)
+                    pickup->position_gizmo = GizmoFindByName(world->gizmo_sys, -1, pickup->position_name);
+                else
+                    NuSpecialFind(world->current_gscn, reinterpret_cast<NUSPECIALHANDLE *>(pickup->position_special),
+                                  pickup->position_name, 1);
+            }
+        }
+    }
+}
