@@ -9,7 +9,7 @@ else ifeq ($(BUILD_KIND),Debug)
 OBJ_DIR := build/Debug/obj
 EXE := build/LEGOStarWarsSaga_debug.exe
 STRICT_EXE := build/Debug/LEGOStarWarsSaga.strict_debug.exe
-DIAGNOSTIC_OBJECTS := build/Debug/stream_capture.obj build/Debug/log.obj build/Debug/crash_diagnostics.obj build/Debug/skin_trace.obj build/Debug/skin_trace_windows.obj
+DIAGNOSTIC_OBJECTS := build/Debug/stream_capture.obj build/Debug/log.obj build/Debug/sound_monitor.obj build/Debug/crash_diagnostics.obj build/Debug/skin_trace.obj build/Debug/skin_trace_windows.obj
 DEBUG_CAPTURE_HELPER := build/saga_debug_capture.exe
 DEBUG_STRICT_CAPTURE_HELPER := build/Debug/saga_debug_capture.exe
 ifneq ($(filter match diff check-objects,$(MAKECMDGOALS)),)
@@ -22,7 +22,7 @@ endif
 # Parallelize object compilation by default; explicit -j still overrides.
 MAKEFLAGS += -j$(shell nproc)
 
-SOURCES := $(filter-out src/stream_capture.c src/log_copier.c src/log.c src/crash_diagnostics.cpp src/skin_trace.cpp src/skin_trace_windows.cpp,$(shell find src -type f \( -name '*.cpp' -o -name '*.c' \) | LC_ALL=C sort))
+SOURCES := $(filter-out src/debug/sound_monitor.c src/debug/stream_capture.c src/debug/log_copier.c src/debug/log.c src/debug/crash_diagnostics.cpp src/debug/skin_trace.cpp src/debug/skin_trace_windows.cpp,$(shell find src -type f \( -name '*.cpp' -o -name '*.c' \) | LC_ALL=C sort))
 SOURCE_DIRS := $(shell find src -type d)
 OBJECTS := $(patsubst src/%,$(OBJ_DIR)/%,$(SOURCES:.cpp=.obj))
 OBJECTS := $(OBJECTS:.c=.obj)
@@ -86,7 +86,7 @@ link-strict: $(DEBUG_STRICT_CAPTURE_HELPER) $(OBJECTS) $(DIAGNOSTIC_OBJECTS) $(D
 # Debug support contains diagnostics only and never enters Matching objects.
 # Recompile this small Debug-only object so its identity tracks source edits and commits.
 .PHONY: debug-identity
-build/Debug/log.obj: src/log.c src/diagnostics.h config/toolchain.json Makefile tools/cc.py tools/debug_identity.py debug-identity | build/tools/wine/.ready
+build/Debug/log.obj: src/debug/log.c src/debug/diagnostics.h src/debug/support.h config/toolchain.json Makefile tools/cc.py tools/debug_identity.py debug-identity | build/tools/wine/.ready
 	$(PYTHON) tools/cc.py $< $@ $(CPPFLAGS) $(CXXFLAGS)
 
 $(D3DX_LIB): tools/d3dx9_35.def tools/cc.py Makefile
@@ -107,10 +107,10 @@ $(DINPUT8_LIB): tools/dinput8.def tools/cc.py Makefile
 $(XINPUT_LIB): tools/xinput1_3.def tools/cc.py Makefile
 	$(PYTHON) tools/cc.py --implib $@ $<
 
-$(OBJ_DIR)/%.obj: src/%.cpp src/saga.h src/externals.h src/diagnostics.h config/toolchain.json Makefile tools/cc.py tools/lib.py | build/tools/wine/.ready
+$(OBJ_DIR)/%.obj: src/%.cpp src/saga.h src/externals.h src/debug/diagnostics.h src/debug/support.h config/toolchain.json Makefile tools/cc.py tools/lib.py | build/tools/wine/.ready
 	$(PYTHON) tools/cc.py $< $@ $(CPPFLAGS) $(CXXFLAGS)
 
-$(OBJ_DIR)/%.obj: src/%.c src/saga.h src/externals.h src/diagnostics.h config/toolchain.json Makefile tools/cc.py tools/lib.py | build/tools/wine/.ready
+$(OBJ_DIR)/%.obj: src/%.c src/saga.h src/externals.h src/debug/diagnostics.h src/debug/support.h config/toolchain.json Makefile tools/cc.py tools/lib.py | build/tools/wine/.ready
 	$(PYTHON) tools/cc.py $< $@ $(CPPFLAGS) $(CXXFLAGS)
 
 # Serialize first-time Wine setup, then compile distinct objects concurrently.
@@ -158,23 +158,23 @@ clean:
 	rm -f build/LEGOStarWarsSaga.exe build/LEGOStarWarsSaga_debug.exe build/LEGOStarWarsSaga_debug.pdb
 	rm -f build/strict/LEGOStarWarsSaga.strict.exe build/Debug/LEGOStarWarsSaga.strict_debug.exe build/Debug/LEGOStarWarsSaga.strict_debug.pdb
 	rm -f build/saga_debug_capture.exe build/saga_debug_capture.pdb build/Debug/saga_debug_capture.exe build/Debug/saga_debug_capture.pdb build/Debug/stream_capture.obj build/Debug/log_copier.obj
-	rm -f build/Debug/log.obj build/Debug/crash_diagnostics.obj build/Debug/skin_trace.obj build/Debug/skin_trace_windows.obj build/Debug/LEGOStarWarsSaga_debug.pdb build/Debug/LEGOStarWarsSaga_debug.map
+	rm -f build/Debug/log.obj build/Debug/sound_monitor.obj build/Debug/crash_diagnostics.obj build/Debug/skin_trace.obj build/Debug/skin_trace_windows.obj build/Debug/LEGOStarWarsSaga_debug.pdb build/Debug/LEGOStarWarsSaga_debug.map
 
-build/Debug/skin_trace.obj: src/skin_trace.cpp src/skin_trace.h src/diagnostics.h config/toolchain.json Makefile tools/cc.py tools/lib.py | build/tools/wine/.ready
+build/Debug/skin_trace.obj: src/debug/skin_trace.cpp src/debug/skin_trace.h src/debug/diagnostics.h config/toolchain.json Makefile tools/cc.py tools/lib.py | build/tools/wine/.ready
 	$(PYTHON) tools/cc.py $< $@ $(CPPFLAGS) $(CXXFLAGS)
 
-build/Debug/skin_trace_windows.obj: src/skin_trace_windows.cpp src/skin_trace.h src/diagnostics.h src/saga.h config/toolchain.json Makefile tools/cc.py tools/lib.py | build/tools/wine/.ready
+build/Debug/skin_trace_windows.obj: src/debug/skin_trace_windows.cpp src/debug/skin_trace.h src/debug/diagnostics.h src/saga.h src/debug/support.h config/toolchain.json Makefile tools/cc.py tools/lib.py | build/tools/wine/.ready
 	$(PYTHON) tools/cc.py $< $@ $(CPPFLAGS) $(CXXFLAGS)
 
-build/Debug/crash_diagnostics.obj: src/crash_diagnostics.cpp src/diagnostics.h config/toolchain.json Makefile tools/cc.py tools/lib.py | build/tools/wine/.ready
+build/Debug/crash_diagnostics.obj: src/debug/crash_diagnostics.cpp src/debug/diagnostics.h src/debug/support.h config/toolchain.json Makefile tools/cc.py tools/lib.py | build/tools/wine/.ready
 	$(PYTHON) tools/cc.py $< $@ $(CPPFLAGS) $(CXXFLAGS)
 
 ifeq ($(BUILD_KIND),Debug)
 # The copier is a separate process: its main never enters the game executable.
-build/Debug/stream_capture.obj: src/stream_capture.c src/diagnostics.h config/toolchain.json Makefile tools/cc.py tools/lib.py | build/tools/wine/.ready
+build/Debug/stream_capture.obj: src/debug/stream_capture.c src/debug/diagnostics.h src/debug/support.h config/toolchain.json Makefile tools/cc.py tools/lib.py | build/tools/wine/.ready
 	$(PYTHON) tools/cc.py $< $@ $(CPPFLAGS) $(CXXFLAGS)
 
-build/Debug/log_copier.obj: src/log_copier.c config/toolchain.json Makefile tools/cc.py tools/lib.py | build/tools/wine/.ready
+build/Debug/log_copier.obj: src/debug/log_copier.c config/toolchain.json Makefile tools/cc.py tools/lib.py | build/tools/wine/.ready
 	$(PYTHON) tools/cc.py $< $@ $(CPPFLAGS) $(CXXFLAGS)
 
 build/saga_debug_capture.exe: build/Debug/log_copier.obj config/toolchain.json Makefile tools/cc.py
@@ -185,3 +185,6 @@ build/Debug/saga_debug_capture.exe: build/saga_debug_capture.exe
 	cp $< $@
 	cp build/saga_debug_capture.pdb build/Debug/saga_debug_capture.pdb
 endif
+
+build/Debug/sound_monitor.obj: src/debug/sound_monitor.c src/debug/diagnostics.h src/debug/support.h config/toolchain.json Makefile tools/cc.py tools/lib.py | build/tools/wine/.ready
+	$(PYTHON) tools/cc.py $< $@ $(CPPFLAGS) $(CXXFLAGS)

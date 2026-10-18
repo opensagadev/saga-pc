@@ -45,12 +45,16 @@ class BuildKindTests(unittest.TestCase):
         self.assertNotIn("stream_capture.obj", matching.stdout)
         self.assertNotIn("log_copier.obj", matching.stdout)
         self.assertNotIn("saga_debug_capture.exe", matching.stdout)
+        for name in ("log.c", "crash_diagnostics.cpp", "stream_capture.c", "log_copier.c",
+                     "skin_trace.cpp", "skin_trace_windows.cpp", "sound_monitor.c"):
+            self.assertNotIn("src/debug/" + name, matching.stdout)
         debug = self.make("BUILD_KIND=Debug", "build")
         self.assertEqual(debug.returncode, 0, debug.stderr)
         self.assertIn("--link build/saga_debug_capture.exe build/Debug/log_copier.obj", debug.stdout)
         game = next(line for line in debug.stdout.splitlines()
                     if "--link --allow-unresolved build/LEGOStarWarsSaga_debug.exe " in line)
         self.assertIn("build/Debug/stream_capture.obj", game)
+        self.assertIn("build/Debug/sound_monitor.obj", game)
         self.assertNotIn("log_copier.obj", game)
         strict = self.make("BUILD_KIND=Debug", "link-strict")
         self.assertEqual(strict.returncode, 0, strict.stderr)
@@ -116,8 +120,16 @@ class BuildKindTests(unittest.TestCase):
                     with self.assertRaisesRegex(ValueError, "diagnostics-only"):
                         check.check_diagnostic_boundaries()
                 source.unlink()
-                (root / "src/diagnostics.h").write_text("#ifdef SAGA_DEBUG\n#endif\n")
+                (root / "src/debug").mkdir()
+                (root / "src/debug/diagnostics.h").write_text("#ifdef SAGA_DEBUG\n#endif\n")
                 check.check_diagnostic_boundaries()
+                for relative in ("src/diagnostics.h", "src/debug/support.h", "src/debug/game.c"):
+                    with self.subTest(source=relative):
+                        foreign = root / relative
+                        foreign.write_text("#ifdef SAGA_DEBUG\n#endif\n")
+                        with self.assertRaisesRegex(ValueError, "diagnostics-only"):
+                            check.check_diagnostic_boundaries()
+                        foreign.unlink()
 
     def test_only_exact_initialized_save_path_exceptions_are_accepted(self):
         with tempfile.TemporaryDirectory() as temp:
@@ -168,6 +180,36 @@ class BuildKindTests(unittest.TestCase):
                 with self.assertRaisesRegex(ValueError, "mspdbcore.dll"):
                     cc.environment()
 
+    def test_relocated_logger_gets_the_current_build_identity(self):
+        with tempfile.TemporaryDirectory() as temp:
+            root = Path(temp)
+            for relative in ("src/debug/log.c", "src/log.c", "src/debug/sound_monitor.c"):
+                with self.subTest(source=relative):
+                    source = root / relative
+                    source.parent.mkdir(parents=True, exist_ok=True)
+                    source.write_text("// synthetic compiler input\n")
+                    output = root / "probe.obj"
+
+                    def invoke(command, environment):
+                        output.write_bytes(b"compiled fixture")
+                        return subprocess.CompletedProcess(command, 0), ""
+
+                    arguments = ["cc.py", str(source), str(output), "/DSAGA_DEBUG"]
+                    with patch.object(cc, "ROOT", root), \
+                            patch.object(cc, "environment", return_value=(root / "compiler", "wine", {})), \
+                            patch.object(cc, "run_tool", side_effect=invoke) as tool, \
+                            patch.object(cc.sys, "argv", arguments), \
+                            patch("tools.debug_identity.build_identity", return_value="revision-inputs") as identity:
+                        self.assertEqual(cc.main(), 0)
+                    flags = tool.call_args.args[0]
+                    marker = '/DSAGA_BUILD_ID="revision-inputs"'
+                    if relative == "src/debug/log.c":
+                        identity.assert_called_once_with(root)
+                        self.assertIn(marker, flags)
+                    else:
+                        identity.assert_not_called()
+                        self.assertNotIn(marker, flags)
+
     def test_symbol_output_paths_are_explicit_and_windows_native_paths_survive(self):
         for option in ("/MAP", "/PDB"):
             self.assertEqual(cc.linker_output_path(option + ":build/Debug/game.map"),
@@ -201,7 +243,7 @@ class DiagnosticCompilerTests(unittest.TestCase):
     def compile_capture_helper(self, directory):
         obj = directory / "log_copier.obj"
         executable = directory / "saga_debug_capture.exe"
-        self.compile(ROOT / "src/log_copier.c", obj, debug=True)
+        self.compile(ROOT / "src/debug/log_copier.c", obj, debug=True)
         self.command([sys.executable, ROOT / "tools/cc.py", "--link", executable, obj,
                       "--", "/nologo", "/machine:x86", "/subsystem:console",
                       "/incremental:no", "/manifest:no"])
@@ -214,8 +256,8 @@ class DiagnosticCompilerTests(unittest.TestCase):
                 with self.subTest(language=extension):
                     source = directory / ("probe." + extension)
                     linkage = 'extern "C" ' if extension == "cpp" else ""
-                    include = ('extern "C" {\n#include "diagnostics.h"\n}\n' if extension == "cpp"
-                               else '#include "diagnostics.h"\n')
+                    include = ('extern "C" {\n#include "debug/diagnostics.h"\n}\n' if extension == "cpp"
+                               else '#include "debug/diagnostics.h"\n')
                     source.write_text(include + linkage +
                                       'int probe(int value) { LOG_INFO("marker %d", value); '
                                       'LOG_INFO_IF(value != 0, "conditional"); LOG_WARN_ONCE("once"); '
@@ -241,7 +283,7 @@ class DiagnosticCompilerTests(unittest.TestCase):
         with tempfile.TemporaryDirectory(prefix="saga-warning-once-") as temp:
             directory = Path(temp)
             source = directory / "probe.c"
-            source.write_text('''#include "diagnostics.h"
+            source.write_text('''#include "debug/diagnostics.h"
 static int conditions, arguments, warnings, calls;
 #ifdef SAGA_DEBUG
 void __cdecl _saga_log(enum log_level level, const char *file, int line, const char *function, const char *format, ...) { ++warnings; }
@@ -293,11 +335,12 @@ static BOOL WINAPI test_set_std(DWORD which, HANDLE value) {
     if (++std_calls == fail_std) return FALSE;
     return SetStdHandle(which, value);
 }
+#include "debug/diagnostics.h"
 #define _dup test_dup
 #define _dup2 test_dup2
 #define SetStdHandle test_set_std
-#include "stream_capture.c"
-#include "log.c"
+#include "debug/stream_capture.c"
+#include "debug/log.c"
 #undef SetStdHandle
 #undef _dup2
 #undef _dup
@@ -354,7 +397,7 @@ int main(int argc, char **argv) {
             obj = directory / "probe.obj"
             crash = directory / "crash.obj"
             self.compile(source, obj, debug=True)
-            self.compile(ROOT / "src/crash_diagnostics.cpp", crash, debug=True)
+            self.compile(ROOT / "src/debug/crash_diagnostics.cpp", crash, debug=True)
             helper = self.compile_capture_helper(directory)
             _, wine, env = cc.environment()
             for mode in ("normal", "d1", "d2", "s1", "s2", "closed", "closederr", "backup2", "closederrblocked"):
@@ -393,7 +436,7 @@ int main(int argc, char **argv) {
             source = directory / "fault.c"
             source.write_text(r'''#include <windows.h>
 #include <errno.h>
-#include "diagnostics.h"
+#include "debug/diagnostics.h"
 int main(int argc, char **argv) {
     HANDLE file, collision;
     DWORD written;
@@ -441,7 +484,7 @@ int main(int argc, char **argv) {
             fixture = directory / "fault.obj"
             crash = directory / "crash.obj"
             self.compile(source, fixture, debug=True)
-            self.compile(ROOT / "src/crash_diagnostics.cpp", crash, debug=True)
+            self.compile(ROOT / "src/debug/crash_diagnostics.cpp", crash, debug=True)
             executable = directory / "fault.exe"
             self.command([sys.executable, ROOT / "tools/cc.py", "--link", executable,
                           fixture, crash, "--", "/nologo", "/machine:x86", "/subsystem:console",
@@ -476,7 +519,7 @@ int main(int argc, char **argv) {
             source = directory / "fixture.c"
             source.write_text('''#include <windows.h>
 #include <errno.h>
-#include "diagnostics.h"
+#include "debug/diagnostics.h"
 static int probe(int value) {
     LOG_INFO_IF(value != 0, "diagnostic value %d", value);
     LOG_DEBUG("filtered debug message");
@@ -497,12 +540,12 @@ int main(void) {
 }
 ''')
             logger = directory / "log.obj"
-            self.compile(ROOT / "src/log.c", logger, debug=True)
+            self.compile(ROOT / "src/debug/log.c", logger, debug=True)
             capture = directory / "stream_capture.obj"
-            self.compile(ROOT / "src/stream_capture.c", capture, debug=True)
+            self.compile(ROOT / "src/debug/stream_capture.c", capture, debug=True)
             self.compile_capture_helper(directory)
             crash = directory / "crash_diagnostics.obj"
-            self.compile(ROOT / "src/crash_diagnostics.cpp", crash, debug=True)
+            self.compile(ROOT / "src/debug/crash_diagnostics.cpp", crash, debug=True)
             _, wine, env = cc.environment()
             for kind in ("Matching", "Debug"):
                 with self.subTest(kind=kind):

@@ -1,4 +1,4 @@
-/* Debug-only adapter. Compile alongside src/log.c; never link into Matching. */
+/* Debug-only adapter. Compile alongside src/debug/log.c; never link into Matching. */
 #include "saga.h"
 #include "skin_trace.h"
 #include <errno.h>

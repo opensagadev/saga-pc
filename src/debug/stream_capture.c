@@ -6,7 +6,7 @@
 #include <io.h>
 #include <stdio.h>
 #include <string.h>
-#include "diagnostics.h"
+#include "support.h"
 
 typedef BOOL(WINAPI *InitAttributes)(void *, DWORD, DWORD, SIZE_T *);
 typedef BOOL(WINAPI *UpdateAttribute)(void *, DWORD, ULONG_PTR, void *, SIZE_T, void *, SIZE_T *);

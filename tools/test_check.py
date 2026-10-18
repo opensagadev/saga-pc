@@ -352,27 +352,34 @@ class CommonMatchTests(unittest.TestCase):
 
 class HeaderLayoutTests(unittest.TestCase):
     def test_debug_analysis_is_limited_to_diagnostic_support(self):
-        for source in ("src/log.c", "src/skin_trace.cpp", "src/skin_trace_windows.cpp", "src/crash_diagnostics.cpp",
-                       "src/stream_capture.c", "src/log_copier.c"):
+        for source in ("src/debug/log.c", "src/debug/skin_trace.cpp", "src/debug/skin_trace_windows.cpp",
+                       "src/debug/crash_diagnostics.cpp", "src/debug/stream_capture.c",
+                       "src/debug/log_copier.c", "src/debug/sound_monitor.c"):
             with self.subTest(source=source):
                 flags = check_module.analysis_language(source)
                 self.assertIn("-DSAGA_DEBUG", flags)
                 self.assertIn("c" if source.endswith(".c") else "c++", flags)
-        self.assertNotIn("-DSAGA_DEBUG", check_module.analysis_language("src/nu2api/pc_device.cpp"))
-        self.assertNotIn("-DSAGA_DEBUG", check_module.analysis_language("src/crash_diagnostics_extra.cpp"))
-        self.assertNotIn("-DSAGA_DEBUG", check_module.analysis_language("src/stream_capture_extra.c"))
-        self.assertNotIn("-DSAGA_DEBUG", check_module.analysis_language("src/log_copier_extra.c"))
+        for source in ("src/nu2api/pc_device.cpp", "src/crash_diagnostics_extra.cpp", "src/log.c",
+                       "src/debug/crash_diagnostics_extra.cpp", "src/debug/stream_capture_extra.c",
+                       "src/debug/log_copier_extra.c", "src/debug/sound_monitor_extra.c"):
+            with self.subTest(source=source):
+                self.assertNotIn("-DSAGA_DEBUG", check_module.analysis_language(source))
 
-    def test_reviewed_debug_trace_header_is_scoped(self):
+    def test_reviewed_debug_headers_are_scoped(self):
         with tempfile.TemporaryDirectory() as temp, patch.object(check_module, "ROOT", Path(temp)):
             src = Path(temp) / "src"
-            src.mkdir()
+            debug = src / "debug"
+            debug.mkdir(parents=True)
             (src / "saga.h").write_text("// shared contract\n")
-            (src / "skin_trace.h").write_text("// reviewed Debug trace ABI\n")
+            for name in ("diagnostics.h", "skin_trace.h", "support.h"):
+                (debug / name).write_text("// reviewed Debug support ABI\n")
             check_module.check_headers()
-            (src / "skin_trace_extra.h").write_text("// unrelated headers remain forbidden\n")
-            with self.assertRaisesRegex(ValueError, "Debug skin-trace header"):
-                check_module.check_headers()
+            for path in (debug / "skin_trace_extra.h", debug / "other.h", src / "skin_trace.h"):
+                with self.subTest(path=path):
+                    path.write_text("// unrelated headers remain forbidden\n")
+                    with self.assertRaisesRegex(ValueError, "Debug skin-trace header"):
+                        check_module.check_headers()
+                    path.unlink()
 
     def test_reviewed_native_fmv_header_is_scoped(self):
         with tempfile.TemporaryDirectory() as temp, patch.object(check_module, "ROOT", Path(temp)):

@@ -1,4 +1,4 @@
-#include "diagnostics.h"
+#include "debug/diagnostics.h"
 #include "pc_fmv_native.h"
 #include <stdarg.h>
 #include <string.h>

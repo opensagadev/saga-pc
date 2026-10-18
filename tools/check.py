@@ -195,14 +195,15 @@ def check_headers():
         "window.h", "ogg/ogg.h", "ogg/os_types.h", "vorbis/codec.h",
         "vorbis/vorbisenc.h", "vorbis/vorbisfile.h",
     }
-    # Private headers are limited to the reviewed native FMV and Debug trace owners.
-    allowed = {"src/saga.h", "src/externals.h", "src/diagnostics.h", "src/skin_trace.h",
+    # Private headers are limited to the reviewed native FMV and exact Debug support owners.
+    allowed = {"src/saga.h", "src/externals.h", "src/debug/diagnostics.h", "src/debug/skin_trace.h",
+               "src/debug/support.h",
                "src/nu2api/pc_fmv_native.h"} | {
         "src/audio/vorbis/" + name for name in vorbis_headers}
     if "src/saga.h" not in headers or headers - allowed:
-        raise ValueError("Project headers must be src/saga.h, src/diagnostics.h and optional src/externals.h "
+        raise ValueError("Project headers must be src/saga.h, src/debug/diagnostics.h and optional src/externals.h "
                          "or the reviewed original Vorbis header catalog, native PC FMV ABI header "
-                         "or Debug skin-trace header")
+                         "or the exact Debug skin-trace header, diagnostics header or support header")
 
 
 def check_diagnostic_boundaries():
@@ -253,7 +254,7 @@ def check_diagnostic_boundaries():
         ),
     }
     for path in (ROOT / "src").rglob("*"):
-        if path.suffix not in {".c", ".cpp", ".h"} or path == ROOT / "src/diagnostics.h":
+        if path.suffix not in {".c", ".cpp", ".h"} or path == ROOT / "src/debug/diagnostics.h":
             continue
         text = path.read_text(encoding="latin-1")
         for block in save_exceptions.get(path.relative_to(ROOT).as_posix(), ()):
@@ -325,8 +326,9 @@ def analysis_configuration():
 def analysis_language(source):
     flags = ["-x", "c", "-std=c89"] if source.endswith(".c") else [
         "-x", "c++", "-std=c++98", "-fdelayed-template-parsing"]
-    if source in {"src/log.c", "src/skin_trace.cpp", "src/skin_trace_windows.cpp", "src/crash_diagnostics.cpp",
-                   "src/stream_capture.c", "src/log_copier.c"}:
+    if source in {"src/debug/log.c", "src/debug/skin_trace.cpp", "src/debug/skin_trace_windows.cpp",
+                   "src/debug/crash_diagnostics.cpp",
+                   "src/debug/stream_capture.c", "src/debug/log_copier.c", "src/debug/sound_monitor.c"}:
         flags.append("-DSAGA_DEBUG")
     return flags
 

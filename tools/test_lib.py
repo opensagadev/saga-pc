@@ -433,21 +433,25 @@ class ProjectInputTests(unittest.TestCase):
     def test_debug_support_is_excluded_without_hiding_native_sources(self):
         with tempfile.TemporaryDirectory() as temp, patch.object(lib, "ROOT", Path(temp)):
             root = Path(temp)
-            (root / "src").mkdir()
+            support = root / "src/debug"
+            support.mkdir(parents=True)
             for name in ("log.c", "skin_trace.cpp", "skin_trace_windows.cpp", "crash_diagnostics.cpp",
-                         "stream_capture.c", "log_copier.c"):
-                (root / "src" / name).write_text("// Debug-only support\n")
-                stale = root / "build/obj" / Path(name).with_suffix(".obj")
+                         "stream_capture.c", "log_copier.c", "sound_monitor.c"):
+                (support / name).write_text("// Debug-only support\n")
+                stale = root / "build/obj/debug" / Path(name).with_suffix(".obj")
                 stale.parent.mkdir(parents=True, exist_ok=True)
                 stale.write_bytes(b"must not read stale diagnostic objects")
             self.assertEqual(lib.compiled_objects(), {})
-            for name in ("skin_trace_extra.cpp", "crash_diagnostics_extra.cpp",
-                         "stream_capture_extra.c", "log_copier_extra.c"):
-                native = root / "src" / name
-                native.write_text("// native source\n")
-                with self.assertRaisesRegex(ValueError, "Missing build/obj/" + native.stem + ".obj"):
-                    lib.compiled_objects()
-                native.unlink()
+            for unit in ("src/debug/skin_trace_extra.cpp", "src/debug/crash_diagnostics_extra.cpp",
+                         "src/debug/stream_capture_extra.c", "src/debug/log_copier_extra.c",
+                         "src/debug/sound_monitor_extra.c", "src/log.c"):
+                with self.subTest(unit=unit):
+                    native = root / unit
+                    native.write_text("// native source\n")
+                    expected = lib.object_path(unit).relative_to(root).as_posix()
+                    with self.assertRaisesRegex(ValueError, "Missing " + expected):
+                        lib.compiled_objects()
+                    native.unlink()
 
 
 class ExternalInventoryTests(unittest.TestCase):

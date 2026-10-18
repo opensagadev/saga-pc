@@ -27292,7 +27292,7 @@ enum { MUSIC_PLAYBACK_DUAL_STREAM_PENDING = 13 };
 enum { NUPORTAL_FLAG_ACTIVE = 1 };
 enum { AREAFLAG_SINGLE_BUFFER = 8 };
 
-// Project diagnostics are selected at the end of this header; see diagnostics.h.
+// Project diagnostics are selected at the end of this header; see debug/diagnostics.h.
 // Kept at the end so Matching line numbers and native declarations stay unchanged.
 
 #ifdef __cplusplus
@@ -27741,7 +27741,7 @@ extern "C" {
 }
 #endif
 
-#include "diagnostics.h"
+#include "debug/diagnostics.h"
 
 STATIC_ASSERT(offsetof(AREA_DATA_PC, true_hero_targets) == 0x8c);
 STATIC_ASSERT(offsetof(HINT_PC, display_duration) == 8);

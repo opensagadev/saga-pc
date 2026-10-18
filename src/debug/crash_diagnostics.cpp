@@ -4,7 +4,7 @@
 #define _WIN32_WINNT 0x0501 // NOLINT(readability-identifier-naming): SDK-required Windows XP API selector.
 #endif
 #define WIN32_LEAN_AND_MEAN
-#include <windows.h>
+#include "support.h"
 #include <tlhelp32.h>
 
 struct FAULT_MODULE_PC {

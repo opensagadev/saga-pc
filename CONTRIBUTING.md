@@ -80,7 +80,13 @@ crash avoidance, fallbacks, return values, or Matching-only real logic. Fixes
 belong in both kinds. Never replace a required native call with a diagnostic
 macro. Original retail logging and error functions remain native code in both
 kinds. The project check rejects build-kind conditionals in game source; the
-private selector belongs only in `src/diagnostics.h`.
+private selector belongs only in `src/debug/diagnostics.h`.
+
+Project logging, exception observation, raw stream capture, skin tracing and the
+sound request monitor are implemented in `src/debug/`. Its `support.h` owns their
+shared C/C++ ABI; `diagnostics.h` owns the native call-site macros and the sole
+build-kind selector. Native retail diagnostic/error providers remain with their
+game subsystems and compile in both kinds.
 
 The logging conventions follow the sibling saga repo's `src/decomp.h`:
 `LOG(level, ...)`, `LOG_ERR`, `LOG_WARN`, `LOG_INFO`, `LOG_DEBUG`,
