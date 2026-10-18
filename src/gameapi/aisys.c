@@ -12367,3 +12367,15 @@ f32 __cdecl Condition_ParamPc(AISYS_PC *system, AISCRIPTPROCESS_PC *processor, A
                               void *argument) {
     return AIParamToFloatEx(packet, processor, parameter);
 }
+
+f32 __cdecl Condition_PlayerToOriginPc(AISYS_PC *system, AISCRIPTPROCESS_PC *processor, AIPACKET_PC *packet,
+                                       char *parameter, void *argument) {
+    if (packet != NULL && system != NULL && system->player_1 != NULL) {
+        NUVEC *origin;
+        if (GetOriginPositionFn != NULL && (origin = GetOriginPositionFn(system, packet)) != NULL)
+            return NuVecDist(&system->player_1->position, origin, NULL);
+        if (packet->creature_index != 0xff)
+            return NuVecDist(&system->player_1->position, &system->creatures[packet->creature_index].position, NULL);
+    }
+    return FLT_MAX;
+}

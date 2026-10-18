@@ -47,11 +47,21 @@ static void open_log_file(const SYSTEMTIME *time) {
     }
 }
 
-static void write_record(const char *record) {
+static void write_record(enum log_level level, const char *record) {
+    static const WORD colors[] = {FOREGROUND_RED, FOREGROUND_RED | FOREGROUND_GREEN, FOREGROUND_GREEN,
+                                  FOREGROUND_INTENSITY};
+    CONSOLE_SCREEN_BUFFER_INFO console;
+    HANDLE output = GetStdHandle(STD_OUTPUT_HANDLE);
+    BOOL colored = FALSE;
     DWORD written;
     DWORD length = (DWORD)strlen(record);
+    /* Console attributes give saga's severity colors without adding escapes to files or pipes. */
+    if (GetConsoleScreenBufferInfo(output, &console))
+        colored = SetConsoleTextAttribute(output, (console.wAttributes & 0xfff0) | colors[level]);
     fputs(record, stdout);
     fflush(stdout);
+    if (colored)
+        SetConsoleTextAttribute(output, console.wAttributes);
     if (log_file != INVALID_HANDLE_VALUE) {
         /* Unbuffered WriteFile keeps completed records available after a crash. */
         if (!WriteFile(log_file, record, length, &written, NULL) || written != length) {
@@ -84,13 +94,14 @@ void __cdecl _saga_log(enum log_level level, const char *file, int line, const c
     if (!log_initialized) {
         log_initialized = 1;
         open_log_file(&time);
+        SagaDebugCrashInitPc(log_file, SAGA_BUILD_ID);
         _snprintf(record, sizeof(record),
                   "%04u-%02u-%02u %02u:%02u:%02u.%03u [INFO] Debug build %s; pid %lu; file logging %s\n", time.wYear,
                   time.wMonth, time.wDay, time.wHour, time.wMinute, time.wSecond, time.wMilliseconds, SAGA_BUILD_ID,
                   GetCurrentProcessId(),
                   log_file == INVALID_HANDLE_VALUE ? "unavailable (stdout active)" : log_filename);
         record[sizeof(record) - 1] = 0;
-        write_record(record);
+        write_record(LOG_LEVEL_INFO, record);
     }
     slash = strrchr(file, '/');
     backslash = strrchr(file, '\\');
@@ -106,7 +117,7 @@ void __cdecl _saga_log(enum log_level level, const char *file, int line, const c
     _snprintf(record, sizeof(record), "%02u:%02u:%02u.%06u [%s] %s:%d: %s: %s\n", time.wHour, time.wMinute,
               time.wSecond, time.wMilliseconds * 1000u, names[level], file, line, function, message);
     record[sizeof(record) - 1] = 0;
-    write_record(record);
+    write_record(level, record);
     InterlockedExchange(&log_lock, 0);
     errno = saved_errno;
     SetLastError(saved_error);

@@ -86,7 +86,7 @@ def compiled_objects():
     objects = {}
     for source in sources:
         unit = source.relative_to(ROOT).as_posix()
-        if unit in {"src/log.c", "src/skin_trace.cpp", "src/skin_trace_windows.cpp"}:
+        if unit in {"src/log.c", "src/skin_trace.cpp", "src/skin_trace_windows.cpp", "src/crash_diagnostics.cpp"}:
             continue
         path = object_path(unit)
         if not path.is_file():

@@ -325,7 +325,7 @@ def analysis_configuration():
 def analysis_language(source):
     flags = ["-x", "c", "-std=c89"] if source.endswith(".c") else [
         "-x", "c++", "-std=c++98", "-fdelayed-template-parsing"]
-    if source in {"src/log.c", "src/skin_trace.cpp", "src/skin_trace_windows.cpp"}:
+    if source in {"src/log.c", "src/skin_trace.cpp", "src/skin_trace_windows.cpp", "src/crash_diagnostics.cpp"}:
         flags.append("-DSAGA_DEBUG")
     return flags
 

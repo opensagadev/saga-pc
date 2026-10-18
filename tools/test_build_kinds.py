@@ -26,6 +26,8 @@ class BuildKindTests(unittest.TestCase):
         self.assertIn("build/Debug/obj/", result.stdout)
         self.assertIn("/DSAGA_DEBUG", result.stdout)
         self.assertIn("/O2 /Gy /GS /MT /Z7", result.stdout)
+        self.assertIn("/subsystem:console /entry:WinMainCRTStartup", result.stdout)
+        self.assertNotIn("/subsystem:windows", result.stdout)
         self.assertIn("/opt:noref /opt:noicf /MAP:build/Debug/LEGOStarWarsSaga_debug.map", result.stdout)
         self.assertNotIn("/DEBUG", result.stdout)
         self.assertNotIn("/PDB:", result.stdout)
@@ -41,6 +43,9 @@ class BuildKindTests(unittest.TestCase):
         self.assertIn("BUILD_KIND = Matching", result.stdout)
         self.assertIn("EXE := build/LEGOStarWarsSaga.exe", result.stdout)
         self.assertIn("OBJ_DIR := build/obj", result.stdout)
+        self.assertIn("/subsystem:windows", result.stdout)
+        self.assertNotIn("/subsystem:console", result.stdout)
+        self.assertNotIn("/entry:WinMainCRTStartup", result.stdout)
         self.assertNotIn("SAGA_RUNTIME", result.stdout)
         self.assertNotEqual(self.make("runtime").returncode, 0)
 
@@ -201,13 +206,15 @@ int main(void) {
 ''')
             logger = directory / "log.obj"
             self.compile(ROOT / "src/log.c", logger, debug=True)
+            crash = directory / "crash_diagnostics.obj"
+            self.compile(ROOT / "src/crash_diagnostics.cpp", crash, debug=True)
             _, wine, env = cc.environment()
             for kind in ("Matching", "Debug"):
                 with self.subTest(kind=kind):
                     obj = directory / (kind + ".obj")
                     self.compile(source, obj, debug=kind == "Debug")
                     executable = directory / (kind + ".exe")
-                    objects = [obj, logger] if kind == "Debug" else [obj]
+                    objects = [obj, logger, crash] if kind == "Debug" else [obj]
                     self.command([sys.executable, ROOT / "tools/cc.py", "--link", executable,
                                   *objects, "--", "/nologo", "/machine:x86", "/subsystem:console",
                                   "/incremental:no", "/manifest:no"])
@@ -217,9 +224,10 @@ int main(void) {
                         self.assertNotIn("diagnostic value", result.stdout)
                         self.assertFalse((directory / "log").exists())
                     else:
-                        logs = list((directory / "log").glob("*.log"))
+                        logs = list((directory / "log").glob("[0-9]*.log"))
                         self.assertEqual(len(logs), 1)
                         self.assertEqual(logs[0].read_text(), result.stdout)
+                        self.assertNotIn("\x1b[", result.stdout)
                         self.assertRegex(logs[0].name, r"\d{8}-\d{6}-\d{3}-[0-9a-f]{12}-[0-9a-f]{12}-\d+-0\.log")
                         self.assertIn("Debug build ", result.stdout)
                         self.assertEqual(result.stdout.count("STUBBED: probe"), 1)
@@ -228,7 +236,7 @@ int main(void) {
                         self.assertEqual(result.stdout.count("UNIMPLEMENTED: required_dependency"), 2)
                         self.assertNotIn("filtered debug message", result.stdout)
                         repeated = self.command([wine, cc.windows(executable)], env=env)
-                        self.assertEqual(len(list((directory / "log").glob("*.log"))), 2)
+                        self.assertEqual(len(list((directory / "log").glob("[0-9]*.log"))), 2)
                         self.assertEqual(logs[0].read_text(), result.stdout)
                         self.assertIn("diagnostic value 1", repeated.stdout)
                         shutil.rmtree(directory / "log")

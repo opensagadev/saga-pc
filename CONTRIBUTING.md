@@ -41,7 +41,10 @@ The executables are `build/LEGOStarWarsSaga.exe` (Matching) and
 `build/Debug/obj/`; Debug uses embedded CodeView
 symbols in its objects and an isolated linker map. The two kinds use the same source, `/O2 /Gy /GS /MT`, native linker
 optimization settings and unresolved-symbol policy. Debug adds `/Z7`, linker
-`/MAP`, and `SAGA_DEBUG` for diagnostic support; it does not define
+`/MAP`, and `SAGA_DEBUG` for diagnostic support. Its PE uses the console subsystem
+with an explicit `WinMainCRTStartup` entry so Wine terminal launches inherit working
+stdout; the native `WinMain` startup path stays the same. Matching retains the GUI
+subsystem. Debug preserves inherited terminal, pipe and file redirection, and does not define
 `DEBUG` or `_DEBUG`, select a debug CRT, or change assertion policy.
 The pinned PDB writer rejects `/DEBUG` with LNK1101, so Debug does not emit a
 PDB; its object symbols and map are the supported symbol outputs.
@@ -65,6 +68,9 @@ The logging conventions follow the sibling saga repo's `src/decomp.h`:
 `LOG(level, ...)`, `LOG_ERR`, `LOG_WARN`, `LOG_INFO`, `LOG_DEBUG`,
 `LOG_INFO_IF`, `LOG_WARN_ONCE`, `STUBBED()` and `UNIMPLEMENTED(...)`.
 `STUBBED_NAMED(description)` retains existing PC call-site descriptions.
+Console output uses saga's red errors, yellow warnings and green INFO messages,
+restoring the terminal's original attributes after each record. Redirected stdout,
+pipes and log files stay plain text. No environment flag is needed for default logs.
 Debug writes timestamped severity/file/line/function messages simultaneously to
 stdout and a best-effort `log/` directory beside its executable (`build/log/` in
 the normal layout), filtering above INFO as saga does. Each run creates a fresh
@@ -74,7 +80,15 @@ creation/write failure leaves stdout active. Records are serialized across
 threads and flushed immediately; stdout can also be redirected to capture Wine
 crash diagnostics, for example `make BUILD_KIND=Debug run >build/human-test.log 2>&1`.
 World, scene and streaming lifecycle events use INFO; missing native work
-continues to use WARN/ERROR. Logging does not intercept exceptions.
+continues to use WARN/ERROR.
+The first logged event also initializes a Debug-only observer for selected exception
+codes. It records raw x86 fault context as **FIRST-CHANCE**, which can include handled
+exceptions; a record alone does not establish a crash. It continues normal exception
+routing without recovery. Up to eight records append through a duplicated log handle,
+and a separate `build/log/latest-fault-*.log` file retains the latest observed fault
+after that limit. The observer uses preallocated buffers and raw file writes, not the
+normal logger lock. Unreadable context is marked unavailable; stack overflow is
+excluded because the observer cannot guarantee handler stack space. Logging does not intercept exceptions.
 WARN_ONCE and STUBBED use an atomic flag per site. The logger preserves
 `errno` and Win32 `GetLastError`. STUBBED and UNIMPLEMENTED only report missing
 work: they do not implement it, return a safe alternative, or suppress a crash.

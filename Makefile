@@ -9,7 +9,7 @@ else ifeq ($(BUILD_KIND),Debug)
 OBJ_DIR := build/Debug/obj
 EXE := build/LEGOStarWarsSaga_debug.exe
 STRICT_EXE := build/Debug/LEGOStarWarsSaga.strict_debug.exe
-DIAGNOSTIC_OBJECTS := build/Debug/log.obj build/Debug/skin_trace.obj build/Debug/skin_trace_windows.obj
+DIAGNOSTIC_OBJECTS := build/Debug/log.obj build/Debug/crash_diagnostics.obj build/Debug/skin_trace.obj build/Debug/skin_trace_windows.obj
 ifneq ($(filter match diff check-objects,$(MAKECMDGOALS)),)
 $(error Matching comparisons require BUILD_KIND=Matching; Debug artifacts are never comparison inputs)
 endif
@@ -20,7 +20,7 @@ endif
 # Parallelize object compilation by default; explicit -j still overrides.
 MAKEFLAGS += -j$(shell nproc)
 
-SOURCES := $(filter-out src/log.c src/skin_trace.cpp src/skin_trace_windows.cpp,$(shell find src -type f \( -name '*.cpp' -o -name '*.c' \) | LC_ALL=C sort))
+SOURCES := $(filter-out src/log.c src/crash_diagnostics.cpp src/skin_trace.cpp src/skin_trace_windows.cpp,$(shell find src -type f \( -name '*.cpp' -o -name '*.c' \) | LC_ALL=C sort))
 SOURCE_DIRS := $(shell find src -type d)
 OBJECTS := $(patsubst src/%,$(OBJ_DIR)/%,$(SOURCES:.cpp=.obj))
 OBJECTS := $(OBJECTS:.c=.obj)
@@ -47,7 +47,10 @@ LDFLAGS := /nologo /machine:x86 /subsystem:windows /incremental:no /manifest:no 
 ifeq ($(BUILD_KIND),Debug)
 CPPFLAGS += /DSAGA_DEBUG
 CXXFLAGS += /Z7
-# Keep native linker defaults: the pinned PDB writer cannot emit a PDB.
+# Wine can give GUI applications no stdout when launched from a terminal. Keep the
+# native WinMain CRT path, but let the loader provide diagnostic console handles.
+LDFLAGS := $(subst /subsystem:windows,/subsystem:console /entry:WinMainCRTStartup,$(LDFLAGS))
+# Keep native linker optimization defaults; the pinned PDB writer cannot emit a PDB.
 LDFLAGS += /MAP:build/Debug/LEGOStarWarsSaga_debug.map
 endif
 LDLIBS := user32.lib gdi32.lib winmm.lib ole32.lib oleaut32.lib shell32.lib advapi32.lib $(abspath $(D3D9_LIB)) $(abspath $(D3DX_LIB)) $(abspath $(DSOUND_LIB)) $(abspath $(DINPUT8_LIB)) $(abspath $(XINPUT_LIB)) $(abspath $(BINK_LIB))
@@ -150,10 +153,13 @@ clean:
 	rm -rf build/obj build/objdiff build/Debug/obj
 	rm -f build/LEGOStarWarsSaga.exe build/LEGOStarWarsSaga_debug.exe
 	rm -f build/strict/LEGOStarWarsSaga.strict.exe build/Debug/LEGOStarWarsSaga.strict_debug.exe
-	rm -f build/Debug/log.obj build/Debug/skin_trace.obj build/Debug/skin_trace_windows.obj build/Debug/LEGOStarWarsSaga_debug.pdb build/Debug/LEGOStarWarsSaga_debug.map
+	rm -f build/Debug/log.obj build/Debug/crash_diagnostics.obj build/Debug/skin_trace.obj build/Debug/skin_trace_windows.obj build/Debug/LEGOStarWarsSaga_debug.pdb build/Debug/LEGOStarWarsSaga_debug.map
 
 build/Debug/skin_trace.obj: src/skin_trace.cpp src/skin_trace.h src/diagnostics.h config/toolchain.json Makefile tools/cc.py tools/lib.py | build/tools/wine/.ready
 	$(PYTHON) tools/cc.py $< $@ $(CPPFLAGS) $(CXXFLAGS)
 
 build/Debug/skin_trace_windows.obj: src/skin_trace_windows.cpp src/skin_trace.h src/diagnostics.h src/saga.h config/toolchain.json Makefile tools/cc.py tools/lib.py | build/tools/wine/.ready
+	$(PYTHON) tools/cc.py $< $@ $(CPPFLAGS) $(CXXFLAGS)
+
+build/Debug/crash_diagnostics.obj: src/crash_diagnostics.cpp src/diagnostics.h config/toolchain.json Makefile tools/cc.py tools/lib.py | build/tools/wine/.ready
 	$(PYTHON) tools/cc.py $< $@ $(CPPFLAGS) $(CXXFLAGS)
