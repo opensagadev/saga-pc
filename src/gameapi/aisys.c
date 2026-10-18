@@ -12427,3 +12427,77 @@ f32 __cdecl Condition_NearestPlayerToLocatorPc(AISYS_PC *system, AISCRIPTPROCESS
     }
     return distance;
 }
+
+typedef struct condition_trigger_process_pc_s {
+    u8 unknown_000[0xa0];
+    AIAREA_PC *trigger_area;
+} CONDITION_TRIGGER_PROCESS_PC;
+STATIC_ASSERT(offsetof(CONDITION_TRIGGER_PROCESS_PC, trigger_area) == 0xa0);
+STATIC_ASSERT(offsetof(AISCRIPTPROCESS_PC, unknown_a0) == 0xa0);
+STATIC_ASSERT(sizeof(AIAREA_PC) == 0x40);
+STATIC_ASSERT(offsetof(AIAREA_PC, system) == 0x38);
+STATIC_ASSERT(offsetof(AISYS_PC, areas) == 0x38);
+STATIC_ASSERT(offsetof(AISYS_PC, player_1) == 0x138c);
+STATIC_ASSERT(offsetof(AIPACKET_PC, owner) == 0xd0);
+STATIC_ASSERT(offsetof(AIPACKET_PC, opponent) == 0xe4);
+STATIC_ASSERT(offsetof(GAMEOBJECT, ai_area_mask) == 0x2b0);
+
+void *__cdecl Condition_InTriggerAreaInitPc(AISYS_PC *system, char *name, AISCRIPT_PC *script) {
+    if (name != NULL)
+        return AISysFindArea(system, name);
+    return NULL;
+}
+
+f32 __cdecl Condition_InTriggerAreaPc(AISYS_PC *system, AISCRIPTPROCESS_PC *process, AIPACKET_PC *packet, char *name,
+                                      void *argument) {
+    if (packet != NULL && packet->owner != NULL) {
+        GAMEOBJECT *object = packet->owner;
+        AIAREA_PC *area = (AIAREA_PC *)argument;
+        if (area == NULL)
+            area = ((CONDITION_TRIGGER_PROCESS_PC *)process)->trigger_area;
+        if (area != NULL && area->system != NULL) {
+            i32 index = (i32)(area - area->system->areas);
+            i64 mask = (i32)(1u << (index & 31));
+            u64 membership = ((u64)object->ai_area_mask[1] << 32) | object->ai_area_mask[0];
+            if ((membership & mask) != 0)
+                return 1.0f;
+        }
+    }
+    return 0.0f;
+}
+
+f32 __cdecl Condition_PlayerInTriggerAreaPc(AISYS_PC *system, AISCRIPTPROCESS_PC *process, AIPACKET_PC *packet,
+                                            char *name, void *argument) {
+    if (system != NULL && system->player_1 != NULL && system->areas != NULL) {
+        GAMEOBJECT *object = (GAMEOBJECT *)system->player_1;
+        AIAREA_PC *area = (AIAREA_PC *)argument;
+        if (area == NULL)
+            area = ((CONDITION_TRIGGER_PROCESS_PC *)process)->trigger_area;
+        if (area != NULL && area->system != NULL) {
+            i32 index = (i32)(area - area->system->areas);
+            i64 mask = (i32)(1u << (index & 31));
+            u64 membership = ((u64)object->ai_area_mask[1] << 32) | object->ai_area_mask[0];
+            if ((membership & mask) != 0)
+                return 1.0f;
+        }
+    }
+    return 0.0f;
+}
+
+f32 __cdecl Condition_OpponentInTriggerAreaPc(AISYS_PC *system, AISCRIPTPROCESS_PC *process, AIPACKET_PC *packet,
+                                              char *name, void *argument) {
+    if (packet != NULL && packet->opponent != NULL && packet->owner != NULL) {
+        GAMEOBJECT *object = packet->opponent;
+        AIAREA_PC *area = (AIAREA_PC *)argument;
+        if (area == NULL)
+            area = ((CONDITION_TRIGGER_PROCESS_PC *)process)->trigger_area;
+        if (area != NULL && area->system != NULL) {
+            i32 index = (i32)(area - area->system->areas);
+            i64 mask = (i32)(1u << (index & 31));
+            u64 membership = ((u64)object->ai_area_mask[1] << 32) | object->ai_area_mask[0];
+            if ((membership & mask) != 0)
+                return 1.0f;
+        }
+    }
+    return 0.0f;
+}

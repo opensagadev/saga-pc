@@ -2122,7 +2122,7 @@ void __cdecl TakeOverGameObject2(GAMEOBJECT *rider, GAMEOBJECT *vehicle, i32 ble
             (rider->flags_1fc_word & 0x80) != 0) {
             blend_camera = 1;
         }
-        STUBBED_NAMED("TakeOverGameObject2: RegisterTakeOverObject vehicle PC59f990");
+        RegisterTakeOverObject(vehicle);
         result = TagCode(rider, vehicle, 1, blend_camera, 1);
     }
     if (result == 2) {
@@ -2174,7 +2174,7 @@ void __cdecl ReleaseTakeOver(GAMEOBJECT *object, i32 unused) {
     object->ai_packet.takeover_script_link = rider_script.script_link;
     rider->ai_packet.creature_set = rider_set;
     object->ai_packet.creature_set = object_set;
-    STUBBED_NAMED("ReleaseTakeOver: AICreatureResumeScript object PC415000");
+    AICreatureResumeScript(object);
     rider->flags_1fc_word = (rider->flags_1fc_word & ~0x100u) | object_flag;
     object->flags_1fc_word = (object->flags_1fc_word & ~0x100u) | rider_flag;
     if (rider->rider != NULL) {
