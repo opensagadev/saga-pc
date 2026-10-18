@@ -832,3 +832,10 @@ f32 __cdecl Condition_MaulShouldRunAway(AISYS_PC *system, AISCRIPTPROCESS_PC *pr
     }
     return 0.0f;
 }
+
+f32 __cdecl Condition_PlayerOnGroundPc(AISYS_PC *system, AISCRIPTPROCESS_PC *process, AIPACKET_PC *packet, char *name,
+                                       void *argument) {
+    if (player != NULL && (player->field_281 != 0 || player->field_282 != 0))
+        return 1.0f;
+    return 0.0f;
+}

@@ -217,7 +217,7 @@
     "src/gamelib/nuwind.c": "1ac67babc9fa0b5f872c3e88d1ae55ec552fcf36d82b790780c237249941c10c",
     "src/gamelib/nuwind_groups.c": "e2e5d2ed1211c9ddbbbfac12d1c4ab1449dbee4750b20962390f59dcf492b9f8",
     "src/legoapi/action_sound.c": "e75a3403e832ef31b7a4e0d53e7f4af6969daa56b0fe88850479dc40eb66da8d",
-    "src/legoapi/ai_global_conditions_pc.c": "82673589e0cb3495cbe394b5b866e432c1d77320d4a7662183738531d071e264",
+    "src/legoapi/ai_global_conditions_pc.c": "449363e76914bdbc9f806a882c30b415cf244729e915d6f567fe49293d2ead53",
     "src/legoapi/ai_map_actions_pc.c": "aef95243cb0df58a690449da70888b0025a16705f1cdb407618823a70fa95780",
     "src/legoapi/ai_sys.c": "68ee949e722b77720de76b2bc52ef73c23a808def3e735fcafc3e70d1f3033bf",
     "src/legoapi/ai_trigger_setup_pc.c": "ed5a0d3fb273c2854b7c3dc2b7faeb1e40dcad4a730c488e1b62de2e65980dd7",
@@ -552,7 +552,7 @@
     "build/obj/gamelib/nuwind_groups.obj": "29b6c0cc35fa995bdac8d82ea721f7710131ca93f8f9e05317eb24c1cf489f95",
     "build/obj/gamelib/util/VirtualStackAllocator.obj": "5d2fd66cb1e60a13dfbc45005debbf2c61d71098340aceea03a930d319362dca",
     "build/obj/legoapi/action_sound.obj": "1b3f2eb0a27815913c7831bf3426ed339930e20a3047654a756fadf367de8b4f",
-    "build/obj/legoapi/ai_global_conditions_pc.obj": "9a09198f92f233c5520c47d1347e2d75aca01f2b40b1d29d74bd9ecb3c42f7bf",
+    "build/obj/legoapi/ai_global_conditions_pc.obj": "298307ab6de0c8e4d02a04568d237fcde6ea71d577ff6d960b85553dc609af41",
     "build/obj/legoapi/ai_map_actions_pc.obj": "728437c1f30c4d28552cf051ed74027795d1c368f3010729670c046001850c29",
     "build/obj/legoapi/ai_party_trigger_pc.obj": "c75f628aab7ae7649dc2c488e1eb207c252bbfd86b2063a18e57ed7373ab248b",
     "build/obj/legoapi/ai_spinner_targets_pc.obj": "a20c5595402cc61034b631618169ddd0643f20b0941434048363c63acbe02dbb",
@@ -12226,11 +12226,25 @@
       "name": "Condition_PlayerOnGroundPc",
       "symbol": "_Condition_PlayerOnGroundPc",
       "address": "0x00441830",
-      "units": [],
+      "units": [
+        "src/legoapi/ai_global_conditions_pc.c"
+      ],
       "target_size": 33,
-      "exact_match": false,
-      "objects": [],
-      "status": "not implemented"
+      "exact_match": true,
+      "objects": [
+        {
+          "unit": "src/legoapi/ai_global_conditions_pc.c",
+          "base_size": 33,
+          "exact_match": true,
+          "target_sha256": "ce442359d2787546135201e59596b09dde06ba242d1959e42685b540688fc7af",
+          "base_sha256": "ce442359d2787546135201e59596b09dde06ba242d1959e42685b540688fc7af",
+          "relocation_count": 1,
+          "comparison_unit": "00441830-90e2bf50bc1a",
+          "objdiff_percent": 100.0
+        }
+      ],
+      "status": "exact",
+      "objdiff_percent": 100.0
     },
     {
       "name": "Condition_OnGroundPc",
@@ -474137,13 +474151,13 @@
   "progress": {
     "text_bytes": 3471246,
     "mapped_code_bytes": 2408694,
-    "matched_code_bytes": 453617,
-    "matching_percent": 13.067843650377991,
-    "fuzzy_coverage_percent": 46.54767421251459,
+    "matched_code_bytes": 453650,
+    "matching_percent": 13.068794317659998,
+    "fuzzy_coverage_percent": 46.5486248797966,
     "mapped_functions": 8844,
-    "matched_functions": 4197,
-    "objdiff_fuzzy_percent": 74.52029,
-    "objdiff_total_code": 2171619,
+    "matched_functions": 4198,
+    "objdiff_fuzzy_percent": 74.52067,
+    "objdiff_total_code": 2171652,
     "image_bytes": 40067072,
     "mapped_bytes": 4220148,
     "mapping_percent": 10.532708753961357,
@@ -475339,7 +475353,7 @@
       "metadata_sha256": "fe09365da4c355f220d724ca99394fc120b758891b4188d2c49707b6df0894f2",
       "header_path": "src/saga.h",
       "header_sha256": "5374f153d195c75b1224fbe2959fe9f1046a3c0901a1796a25c13279367c4a78",
-      "geometry_object_sha256": "51116ae3f3b4ac6faad33dafc20e43e109047413b33a91bbbe813e4bfbd0445d",
+      "geometry_object_sha256": "c57855178b6c866253eabb3428d9598349d90c001aa7de65a369cc8ba225d359",
       "toolchain_sha256": "b8808088bb2c7eb239785f69c9e464ae8545216d5705fb37216bc0cf926732f3",
       "implementation_sha256": "d6a33be911d095a6d07dccd4443ccbfd6b514fd89fd7e200d9caa1827944e218",
       "headers": {
