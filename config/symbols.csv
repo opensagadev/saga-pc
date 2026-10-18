@@ -11191,6 +11191,8 @@ address,symbol,size,ctype
 0x0075763c,??_C@_0M@JPKHFJLE@DEACTIVATED?$AA@,12,const char[12]
 0x757648,??_C@_07OCKDJMPO@inrange?$AA@,,const char[8]
 0x757650,??_C@_09ONPKMKJM@throwable?$AA@,,const char[10]
+0x757660,__real@400d333340000000,8,const f64
+0x757668,__real@4016000000000000,8,const f64
 0x00757670,_AIConditionTakeoverTargetNamePc,15,const char[15]
 0x00757680,_AIGameOpponentName,9,const char[9]
 0x75768c,_AITransferLiteral75768c,13,const char[13]

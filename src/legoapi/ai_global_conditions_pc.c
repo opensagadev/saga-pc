@@ -804,3 +804,31 @@ f32 __cdecl Condition_CurrentLocatorIsPc(AISYS_PC *system, AISCRIPTPROCESS_PC *p
         return 1.0f;
     return 0.0f;
 }
+
+STATIC_ASSERT(offsetof(GAMEOBJECT, collision_position) == 0x80);
+STATIC_ASSERT(offsetof(GAMEOBJECT, flags_1fc_word) == 0x1fc);
+f32 __cdecl Condition_MaulShouldRunAway(AISYS_PC *system, AISCRIPTPROCESS_PC *process, AIPACKET_PC *packet, char *name,
+                                        void *argument) {
+    f32 dx;
+    f32 dz;
+    NUANG owner_angle;
+    GAMEOBJECT *player;
+    i32 i;
+    if (packet->owner == NULL)
+        return 0.0f;
+    dx = (f32)((f64)packet->owner->collision_position.x - 5.5);
+    dz = (f32)((f64)packet->owner->collision_position.z - (f64)3.65f);
+    owner_angle = NuAtan2D(dx, dz);
+    for (i = 0; i < 2; i++) {
+        player = Player[i];
+        if (player != NULL && (player->flags_1fc_word & 0x1001) == 0x1001) {
+            dx = (f32)((f64)player->collision_position.x - 5.5);
+            dz = (f32)((f64)player->collision_position.z - (f64)3.65f);
+            if ((f64)dx * dx + (f64)dz * dz < 25.0) {
+                if (NuAngSub(NuAtan2D(dx, dz), owner_angle) < 0xe38)
+                    return 1.0f;
+            }
+        }
+    }
+    return 0.0f;
+}
