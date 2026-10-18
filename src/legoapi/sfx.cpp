@@ -459,3 +459,15 @@ extern "C" void __cdecl BlockSfx(GAMEOBJECT *object) {
         }
     }
 }
+
+i32 TickTockStatePc = 0;
+
+void __cdecl TickTockSfxPc(void) {
+    if (TickTockStatePc != 0) {
+        PlaySfxById(GameAudio->sfx_ids[0x1d], NULL);
+        TickTockStatePc = 0;
+    } else {
+        PlaySfxById(GameAudio->sfx_ids[0x1e], NULL);
+        TickTockStatePc = 1;
+    }
+}

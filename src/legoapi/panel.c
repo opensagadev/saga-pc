@@ -318,3 +318,33 @@ i32 __cdecl Tag_UpdateHint(HINT_PC *hint) {
             return 0;
     }
 }
+
+extern f32 HudBossIconYPc;
+
+f32 TimerBaseScalePc = 0.75f;
+f32 TimerScalePc = 1.0f;
+f32 TimerAlphaPc = 1.0f;
+static const char DrawTimerFormatPc[3] = "%d";
+
+void __cdecl DrawTimerPc(i32 time, i32 expanded, i32 reset) {
+    char text[16];
+    f32 scale;
+    if (reset != 0) {
+        TimerScalePc = 1.0f;
+        TimerAlphaPc = 0.0f;
+        return;
+    }
+    if (expanded != 0)
+        TimerScalePc = 2.0f;
+    TimerScalePc = SeekLinearF(TimerScalePc, 1.0f, FRAMETIME * 2.0f);
+    if (FadeSys.fade != 0.0f)
+        return;
+    if (TimerAlphaPc < 1.0f) {
+        TimerAlphaPc += FRAMETIME * 2.0f;
+        if (TimerAlphaPc > 1.0f)
+            TimerAlphaPc = 1.0f;
+    }
+    sprintf(text, DrawTimerFormatPc, time);
+    scale = TimerBaseScalePc * TimerScalePc;
+    Text3DEx(text, 0.0f, HudBossIconYPc, 1.0f, scale, scale, scale, 0, 255, 0, 255, (u8)((f64)TimerAlphaPc * 128.0));
+}

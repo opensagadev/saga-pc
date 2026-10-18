@@ -28048,3 +28048,40 @@ extern "C" {
 #endif
 STATIC_ASSERT(sizeof(troopercannons) == 0xc0);
 #endif
+
+#ifndef SAGA_BONUS_GUNSHIP_NATIVE_PC
+#define SAGA_BONUS_GUNSHIP_NATIVE_PC
+typedef struct BONUS_GUNSHIP_B_NETPACKET_PC {
+    u8 progress;
+    u8 secondary;
+    u8 reserved_2[2];
+    f32 time;
+    u8 reserved_8[4];
+} BONUS_GUNSHIP_B_NETPACKET_PC;
+STATIC_ASSERT(sizeof(BONUS_GUNSHIP_B_NETPACKET_PC) == 12);
+STATIC_ASSERT(offsetof(BONUS_GUNSHIP_B_NETPACKET_PC, progress) == 0);
+STATIC_ASSERT(offsetof(BONUS_GUNSHIP_B_NETPACKET_PC, secondary) == 1);
+STATIC_ASSERT(offsetof(BONUS_GUNSHIP_B_NETPACKET_PC, time) == 4);
+STATIC_ASSERT(offsetof(BONUS_GUNSHIP_B_NETPACKET_PC, reserved_8) == 8);
+#ifdef __cplusplus
+extern "C" {
+#endif
+    extern BONUS_GUNSHIP_B_NETPACKET_PC *BonusGunshipBNetPacketPc;
+    extern i32 GunshipPlayerDeadPc;
+    extern f32 TimerBaseScalePc;
+    extern f32 TimerScalePc;
+    extern f32 TimerAlphaPc;
+    extern i32 TickTockStatePc;
+    void __cdecl DrawTimerPc(i32 time, i32 expanded, i32 reset);
+    void __cdecl TickTockSfxPc(void);
+    void __cdecl Doors_SetLastDoor(DOOR_s *door);
+    void __cdecl BonusGunshipA_ResetPc(WORLDINFO *);
+    void __cdecl BonusGunshipA_UpdatePc(WORLDINFO *);
+    void __cdecl BonusGunshipB_InitPc(WORLDINFO *);
+    void __cdecl BonusGunshipB_ResetPc(WORLDINFO *);
+    void __cdecl BonusGunshipB_UpdatePc(WORLDINFO *);
+    void __cdecl BonusGunshipB_PanelPc(WORLDINFO *);
+#ifdef __cplusplus
+}
+#endif
+#endif

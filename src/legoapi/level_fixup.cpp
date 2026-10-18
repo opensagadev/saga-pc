@@ -471,16 +471,22 @@ extern "C" void __cdecl FixUpLevels(struct level_fixup_pc_s *fixup) {
             level = Level_FindByName("bonus_gunship_a", NULL); /* Native call 0x48e28d. */
             BONUS_GUNSHIPA_LDATA = level;                      /* Native store 0x48e297. */
             if (level != NULL) {
-                STUBBED_NAMED(FixUpLevels_Callback_4e2740); /* Native 0x48e29e: callbacks[2] = entry 0x4e2740. */
-                STUBBED_NAMED(FixUpLevels_Callback_4e2770); /* Native 0x48e2ab: callbacks[3] = entry 0x4e2770. */
+                level->callbacks[2] =
+                    (void *)BonusGunshipA_ResetPc; /* Native 0x48e29e: callbacks[2] = entry 0x4e2740. */
+                level->callbacks[3] =
+                    (void *)BonusGunshipA_UpdatePc; /* Native 0x48e2ab: callbacks[3] = entry 0x4e2770. */
             }
             level = Level_FindByName("bonus_gunship_b", NULL); /* Native call 0x48e2b9. */
             BONUS_GUNSHIPB_LDATA = level;                      /* Native store 0x48e2c3. */
             if (level != NULL) {
-                STUBBED_NAMED(FixUpLevels_Callback_4e2860); /* Native 0x48e2ca: callbacks[1] = entry 0x4e2860. */
-                STUBBED_NAMED(FixUpLevels_Callback_4e2890); /* Native 0x48e2d7: callbacks[2] = entry 0x4e2890. */
-                STUBBED_NAMED(FixUpLevels_Callback_4e28b0); /* Native 0x48e2e3: callbacks[3] = entry 0x4e28b0. */
-                STUBBED_NAMED(FixUpLevels_Callback_4e2ae0); /* Native 0x48e2f0: callbacks[6] = entry 0x4e2ae0. */
+                level->callbacks[1] =
+                    (void *)BonusGunshipB_InitPc; /* Native 0x48e2ca: callbacks[1] = entry 0x4e2860. */
+                level->callbacks[2] =
+                    (void *)BonusGunshipB_ResetPc; /* Native 0x48e2d7: callbacks[2] = entry 0x4e2890. */
+                level->callbacks[3] =
+                    (void *)BonusGunshipB_UpdatePc; /* Native 0x48e2e3: callbacks[3] = entry 0x4e28b0. */
+                level->callbacks[6] =
+                    (void *)BonusGunshipB_PanelPc; /* Native 0x48e2f0: callbacks[6] = entry 0x4e2ae0. */
             }
             level = Level_FindByName("pursuit_a", NULL); /* Native call 0x48e301. */
             CollisionVehicleExcludedLevelPc = level;     /* Native store 0x48e30b. */

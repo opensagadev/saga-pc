@@ -197,3 +197,124 @@ void __cdecl GunShip_DragBombSeekBlowUp(GAMEOBJECT *object) {
     object->velocity.x = SeekValF(object->velocity.x, direction.x, gunshipb_seekmomseek);
     object->velocity.z = SeekValF(object->velocity.z, direction.z, gunshipb_seekmomseek);
 }
+
+BONUS_GUNSHIP_B_NETPACKET_PC *BonusGunshipBNetPacketPc = NULL;
+i32 GunshipPlayerDeadPc = 0;
+
+typedef struct BONUS_GUNSHIP_FLAGS_PC {
+    u8 progress;
+    u8 secondary;
+    u8 reserved[14];
+} BONUS_GUNSHIP_FLAGS_PC;
+STATIC_ASSERT(sizeof(BONUS_GUNSHIP_FLAGS_PC) == sizeof(LevFlag));
+STATIC_ASSERT(offsetof(BONUS_GUNSHIP_FLAGS_PC, progress) == 0);
+STATIC_ASSERT(offsetof(BONUS_GUNSHIP_FLAGS_PC, secondary) == 1);
+STATIC_ASSERT(offsetof(GAMEOBJECT, sock_position.sock_index) == 0x671);
+STATIC_ASSERT(offsetof(GAMEOBJECT, sock_position.distance) == 0x69c);
+STATIC_ASSERT(offsetof(GAMEOBJECT, dead) == 0x28b);
+STATIC_ASSERT(offsetof(GAMEOBJECT, flags_1fc) == 0x1fc);
+STATIC_ASSERT(offsetof(GIZOBSTACLE, runtime_flags) == 0x9c);
+#define BONUS_GUNSHIP_FLAGS_PC_VIEW ((BONUS_GUNSHIP_FLAGS_PC *)LevFlag)
+
+void __cdecl BonusGunshipA_ResetPc(WORLDINFO *world) {
+    GunshipPlayerDeadPc = 0;
+    BONUS_GUNSHIP_FLAGS_PC_VIEW->secondary = 0;
+    bonus_gunship_store_progress_flag = 0;
+    if (BONUS_GUNSHIP_FLAGS_PC_VIEW->progress == 1)
+        BONUS_GUNSHIP_FLAGS_PC_VIEW->progress = 2;
+}
+
+void __cdecl BonusGunshipA_UpdatePc(WORLDINFO *world) {
+    GAMEOBJECT *first = (GAMEOBJECT *)Player[0];
+    GAMEOBJECT *second = (GAMEOBJECT *)Player[1];
+    if (BONUS_GUNSHIP_FLAGS_PC_VIEW->progress == 0) {
+        if ((first != NULL && first->sock_position.sock_index == 0 && first->sock_position.distance > 12.1f) ||
+            (second != NULL && second->sock_position.sock_index == 0 && second->sock_position.distance > 12.1f)) {
+            if (netclient == 0) {
+                Doors_SetLastDoor((DOOR_s *)Door_FindByName(world, "gunshipa_mid"));
+                bonus_gunship_store_progress_flag = 1;
+                StoreLevelProgress(world);
+                second = (GAMEOBJECT *)Player[1];
+                first = (GAMEOBJECT *)Player[0];
+                bonus_gunship_store_progress_flag = 0;
+            }
+            BONUS_GUNSHIP_FLAGS_PC_VIEW->progress = 1;
+        }
+    }
+    if (GunshipPlayerDeadPc == 0 && ((first != NULL && first->dead != 0) || (second != NULL && second->dead != 0))) {
+        GunshipPlayerDeadPc = 1;
+        ResetLevel(world, "ep2_bonus_gunshipcavalry_explode", 1);
+    }
+}
+
+void __cdecl BonusGunshipB_InitPc(WORLDINFO *world) {
+    BonusGunshipBNetPacketPc = (BONUS_GUNSHIP_B_NETPACKET_PC *)SetLevelHack(12);
+    LevGizObst[0] = GizObstacle_FindByName((GIZOBSTACLESYS_s *)world->giz_obstacle_sys, "obstacle9");
+}
+
+void __cdecl BonusGunshipB_ResetPc(WORLDINFO *world) {
+    MiscTime = 0.0f;
+    BONUS_GUNSHIP_FLAGS_PC_VIEW->progress = 0;
+    BONUS_GUNSHIP_FLAGS_PC_VIEW->secondary = 0;
+    GunshipPlayerDeadPc = 0;
+    bonus_gunship_store_progress_flag = 0;
+}
+
+void __cdecl BonusGunshipB_UpdatePc(WORLDINFO *world) {
+    if (netclient == 0) {
+        if (GunshipPlayerDeadPc == 0 && ((Player[0] != NULL && ((GAMEOBJECT *)Player[0])->dead != 0) ||
+                                         (Player[1] != NULL && ((GAMEOBJECT *)Player[1])->dead != 0))) {
+            GunshipPlayerDeadPc = 1;
+            ResetLevel(world, "ep2_bonus_gunshipcavalry_explode", 1);
+        }
+        if (BONUS_GUNSHIP_FLAGS_PC_VIEW->progress == 0) {
+            f32 delay = 15.0f;
+            if (LevDeaths >= 3) {
+                delay = (f32)((f64)LevDeaths + 15.0);
+                if (delay > 30.0f)
+                    delay = 30.0f;
+            }
+            if (GameTimer.time_elapsed >= delay) {
+                BONUS_GUNSHIP_FLAGS_PC_VIEW->progress = 1;
+                if (LevGizObst[0] != NULL)
+                    LevGizObst[0]->runtime_flags |= 4;
+                MiscTime = 45.0f;
+                TimerScalePc = 1.0f;
+                TimerAlphaPc = 0.0f;
+            }
+        } else if (BONUS_GUNSHIP_FLAGS_PC_VIEW->progress == 1) {
+            f32 previous_time;
+            NuFmod(MiscTime, 5.0f);
+            previous_time = MiscTime;
+            MiscTime -= FRAMETIME;
+            if (MiscTime <= 0.0f) {
+                if (Player[0] != NULL && (((GAMEOBJECT *)Player[0])->flags_1fc & 0x80) != 0)
+                    LoseCoins((GAMEOBJECT *)Player[0], 1);
+                if (Player[1] != NULL && (((GAMEOBJECT *)Player[1])->flags_1fc & 0x80) != 0)
+                    LoseCoins((GAMEOBJECT *)Player[1], 1);
+                if (GunshipPlayerDeadPc == 0) {
+                    GunshipPlayerDeadPc = 1;
+                    ResetLevel(world, "ep2_bonus_gunshipcavalry_explode", 1);
+                }
+                BONUS_GUNSHIP_FLAGS_PC_VIEW->progress = 2;
+            } else if (MiscTime > 0.0f && (i32)MiscTime != (i32)previous_time) {
+                TimerScalePc = 1.25f;
+                TickTockSfxPc();
+            }
+        }
+        BonusGunshipBNetPacketPc->progress = BONUS_GUNSHIP_FLAGS_PC_VIEW->progress;
+        BonusGunshipBNetPacketPc->secondary = BONUS_GUNSHIP_FLAGS_PC_VIEW->secondary;
+        BonusGunshipBNetPacketPc->time = MiscTime;
+    } else {
+        BONUS_GUNSHIP_FLAGS_PC_VIEW->progress = BonusGunshipBNetPacketPc->progress;
+        BONUS_GUNSHIP_FLAGS_PC_VIEW->secondary = BonusGunshipBNetPacketPc->secondary;
+        MiscTime = BonusGunshipBNetPacketPc->time;
+    }
+}
+
+void __cdecl BonusGunshipB_PanelPc(WORLDINFO *world) {
+    if (BONUS_GUNSHIP_FLAGS_PC_VIEW->progress == 1) {
+        if (MiscTime > 0.0f)
+            DrawTimerPc((i32)MiscTime + 1, 0, 0);
+    }
+}

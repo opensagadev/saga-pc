@@ -1704,6 +1704,7 @@ address,symbol,size,ctype
 0x4ba1f0,_DrawBossHitPointsPc,211,static i32 (GAMEOBJECT *); boss ESI
 0x4ba2d0,_DrawBossHitPoints,10,
 0x4ba4d0,_DrawMeleeTargetsRowsPc,430,"void __cdecl (i16 *, char *, f32 *, i32)"
+0x4bac60,_DrawTimerPc,367,"void __cdecl (i32, i32, i32)"
 0x004badd0,_InitPanel,106,void __cdecl (i32)
 0x4bae40,_DrawPanel,3501,void __cdecl (void)
 0x4bbbf0,_PanelRender,286,void __cdecl (WORLDINFO *)
@@ -2006,6 +2007,12 @@ address,symbol,size,ctype
 0x4e24e0,_GunshipA_DrawPc,5,void __cdecl (WORLDINFO *)
 0x4e24f0,_GunshipB_Reset,242,
 0x4e25f0,_GunShip_DragBombSeekBlowUp,336,void __cdecl (GAMEOBJECT *)
+0x4e2740,_BonusGunshipA_ResetPc,34,void __cdecl (WORLDINFO *)
+0x4e2770,_BonusGunshipA_UpdatePc,233,void __cdecl (WORLDINFO *)
+0x4e2860,_BonusGunshipB_InitPc,42,void __cdecl (WORLDINFO *)
+0x4e2890,_BonusGunshipB_ResetPc,31,void __cdecl (WORLDINFO *)
+0x4e28b0,_BonusGunshipB_UpdatePc,559,void __cdecl (WORLDINFO *)
+0x4e2ae0,_BonusGunshipB_PanelPc,53,void __cdecl (WORLDINFO *)
 0x4e2b20,_InitPaintPuzzle,311,
 0x4e2de0,_CruiserCUpdate,352,
 0x4e3040,_CruiserDReset,219,
@@ -3131,6 +3138,7 @@ address,symbol,size,ctype
 0x5485f0,_AddLevelSfxFromName,73,"void __cdecl (char *, i32 *, i32 *, i32)"
 0x548640,_AddLevelSfxFromId,69,"void __cdecl (i32, i32 *, i32 *, i32)"
 0x00548690,_UpdateLevelSfx,121,"void __cdecl (WORLDINFO *, i32)"
+0x548710,_TickTockSfxPc,76,void __cdecl (void)
 0x548780,_ResetRepeatSfx,61,void __cdecl (void)
 0x005487c0,_PlayRepeatSfx,209,"void __cdecl (char *, i32, f32, i32, f32, NUVEC *)"
 0x005488a0,_UpdateRepeatSfx,135,void __cdecl (void)
@@ -3838,7 +3846,7 @@ address,symbol,size,ctype
 0x575b10,_Door_Activate,29,
 0x575b30,_Door_RegisterGizmo,234,
 0x575c20,_Door_GoThrough,751,
-0x575f10,_Doors_SetLastDoor,50,
+0x575f10,_Doors_SetLastDoor,50,void __cdecl (DOOR_s *)
 0x575f50,_Doors_Check,974,
 0x576340,_Hint_ExpandButtons,279,
 0x576460,_Hint_CurrentId,17,i32 __cdecl (void)
@@ -12835,6 +12843,7 @@ address,symbol,size,ctype
 0x75c050,__real@3ff028f5c0000000,8,const f64
 0x75c058,??_C@_02DPKJAMEF@?$CFd?$AA@,3,
 0x0075c058,_NuTimeBarValueFormat,3,const char[3]
+0x75c058,_DrawTimerFormatPc,3,const char[3]
 0x0075c060,__real@406c000000000000,8,const f64
 0x0075c068,__real@4084000000000000,8,const f64
 0x0075c070,__real@43e00000,4,const f32
@@ -13237,6 +13246,9 @@ address,symbol,size,ctype
 0x75dd28,??_C@_07EMFPHBF@gun_b11?$AA@,8,char []
 0x75dd30,??_C@_07BEDGOGKC@gun_a21?$AA@,8,char []
 0x75dd38,??_C@_07BGHAFIPL@gun_a11?$AA@,8,char []
+0x75dd40,??_C@_0N@BCHJKNAK@gunshipa_mid?$AA@,13,const char[13]
+0x75dd50,__real@4141999a,4,const f32
+0x75dd54,??_C@_09FIKGBOLF@obstacle9?$AA@,10,const char[10]
 0x75dd60,??_C@_0BA@NMGMNNLJ@green_light_on1?$AA@,16,char []
 0x75dd70,??_C@_0L@BKDJPJOF@FORCE_TUBE?$AA@,11,char []
 0x75ddd4,??_C@_0BK@CMHBPGDI@ep3_GeneralGrievous_Outro?$AA@,26,char []
@@ -18715,6 +18727,9 @@ address,symbol,size,ctype
 0x7fc3ac,_MeleeRowsYPc,4,f32
 0x7fc3b0,_MeleeRowsSpacingPc,4,f32
 0x7fc3b4,_MeleeRowsYOffsetPc,4,f32
+0x7fc3b8,_TimerBaseScalePc,4,f32
+0x7fc3bc,_TimerScalePc,4,f32
+0x7fc3c0,_TimerAlphaPc,4,f32
 0x007fc3c4,_PanelWideWidth,4,f32
 0x007fc3c8,_PanelWideHeight,4,f32
 0x7fc5b8,_GameAudioLswPc,512,GAMEAUDIO_PC
@@ -21476,6 +21491,8 @@ address,symbol,size,ctype
 0x00889074,_kamino_plate_3_active,4,i32
 0x00889078,_kamino_plate_4_active,4,i32
 0x008890a6,_kamino_plate_id,2,u16
+0x8890a8,_BonusGunshipBNetPacketPc,4,BONUS_GUNSHIP_B_NETPACKET_PC *
+0x8890b8,_GunshipPlayerDeadPc,4,i32
 0x8890bc,_paintpanel,,
 0x8890c8,_KaminoDiscoMusicStatePc,,KAMINO_DISCO_MUSIC_VIEW_PC
 0x8894dc,_bonus_gunship_store_progress_flag,,i32
@@ -21904,6 +21921,7 @@ address,symbol,size,ctype
 0x924dfc,_TerrainChatterWaitPc,,f32
 0x924e00,_ExtraHurtSfxFn,,void (__cdecl *)(GAMEOBJECT *)
 0x924e04,_ExtraDieSfxFn,,void (__cdecl *)(GAMEOBJECT *)
+0x924e08,_TickTockStatePc,4,i32
 0x00924e0c,_BeenAttacked,4,i32
 0x924e10,_MusicInside,4,i32
 0x924e14,_CheckMusicOtherFn,,i32 (__cdecl *)(void)

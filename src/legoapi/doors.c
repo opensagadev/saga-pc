@@ -834,3 +834,14 @@ void __cdecl Hub_ActivateDoorMenu(void *argument) {
     Hint_CancelCurrent();
     NewMenu(menu, -1, -1);
 }
+
+STATIC_ASSERT(offsetof(DOOR_s, name) == 0);
+
+void __cdecl Doors_SetLastDoor(DOOR_s *door) {
+    if (door != NULL && door != LastDoorPointerPc) {
+        NuStrCpy(DoorExitNamePc, door->name);
+        StartDoorPositions();
+        LastDoorPointerPc = door;
+        Door_Last = door;
+    }
+}
