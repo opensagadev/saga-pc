@@ -1223,9 +1223,26 @@ address    , symbol                                                         , si
 0x47ecb0,?HubUpdateBonusModePc@@YAXXZ,2344,
 0x47f5e0,_MenuUpdateSelectMode,5,
 0x47f5f0,_MenuUpdateBonusMode,5,
-0x4813d0,_Indy_PreparingForSpecialMove,302,
-0x481500,_Indy_MidSpecialMove,103,
-0x481570,_Indy_AIPathCnxHelperSysInit,318,
+0x47f660,_Indy_MidSpecialMove_DefaultPc,647,"i32 __cdecl(AISYS_PC *, AIPACKET_PC *, APIOBJECT_PC *)"
+0x47f8f0,_Indy_PrepareClimbPc,238,"i32 __cdecl(AIPACKET_PC *, APIOBJECT_PC *, i32)"
+0x47f9e0,_Indy_MidSpecialMove_ClimbUpPc,589,"i32 __cdecl(AISYS_PC *, AIPACKET_PC *, APIOBJECT_PC *)"
+0x47fc30,_Indy_MidSpecialMove_ClimbDownPc,609,"i32 __cdecl(AISYS_PC *, AIPACKET_PC *, APIOBJECT_PC *)"
+0x47fea0,_IndyGrappleHelperOccupiedPc,35,"i32 __cdecl(AI_HELPER_SLOT_PC *, GAMEOBJECT *, AIPATHCNX_PC *, u8, u8)"
+0x47fed0,_Indy_PrepareGrapplePc,753,"i32 __cdecl(AIPACKET_PC *, APIOBJECT_PC *, i32)"
+0x4801d0,_Indy_MidSpecialMove_GrappleStartPc,263,"i32 __cdecl(AISYS_PC *, AIPACKET_PC *, APIOBJECT_PC *)"
+0x4802e0,_Indy_MidSpecialMove_GrappleClimbPc,414,"i32 __cdecl(AISYS_PC *, AIPACKET_PC *, APIOBJECT_PC *)"
+0x480480,_Indy_MidSpecialMove_GrappleEndPc,290,"i32 __cdecl(AISYS_PC *, AIPACKET_PC *, APIOBJECT_PC *)"
+0x4805b0,_Indy_MidSpecialMove_SwingPc,304,"i32 __cdecl(AISYS_PC *, AIPACKET_PC *, APIOBJECT_PC *)"
+0x4806e0,_Indy_MidSpecialMove_StartJumpPc,118,"i32 __cdecl(AISYS_PC *, AIPACKET_PC *, APIOBJECT_PC *)"
+0x480760,_Indy_PrepareJumpPc,1804,"i32 __cdecl(AIPACKET_PC *, APIOBJECT_PC *, i32)"
+0x480e70,_Indy_PrepareBigJumpPc,213,"i32 __cdecl(AIPACKET_PC *, APIOBJECT_PC *, i32)"
+0x480f50,_Indy_MidSpecialMove_BigJumpPc,75,"i32 __cdecl(AISYS_PC *, AIPACKET_PC *, APIOBJECT_PC *)"
+0x480fa0,_Indy_PrepareObstaclePc,477,"i32 __cdecl(AIPACKET_PC *, APIOBJECT_PC *, i32)"
+0x481180,_Indy_PrepareWhipSwingPc,347,"i32 __cdecl(AIPACKET_PC *, APIOBJECT_PC *, i32)"
+0x4812e0,_Indy_MidSpecialMove_WhipSwingPc,240,"i32 __cdecl(AISYS_PC *, AIPACKET_PC *, APIOBJECT_PC *)"
+0x4813d0,_Indy_PreparingForSpecialMove,302,"i32 __cdecl(AIPACKET_PC *, APIOBJECT_PC *, i32)"
+0x481500,_Indy_MidSpecialMove,103,"i32 __cdecl(AISYS_PC *, AIPACKET_PC *, APIOBJECT_PC *)"
+0x481570,_Indy_AIPathCnxHelperSysInit,318,void __cdecl(WORLDINFO *)
 0x4816b0,_Indy_GameAISysInit,144,
 0x481740,_PlayerInitCapabilitiesVariant0Pc,152,void __cdecl(GAMEOBJECT *)
 0x4817e0,_AIPathParseIndyFlagPc,310,
@@ -3175,6 +3192,7 @@ address    , symbol                                                         , si
 0x54d410,_Grapple_Occupied,140,"GAMEOBJECT * __cdecl(void *, GAMEOBJECT *, AIPATHCNX_PC *)"
 0x54d4a0,?Grapple_FindNearestInList@@YAXPAUnuvec_s@@PAUGRAPPLE_MOTION_PC@@HPAUgameobject_s@@PAPAU2@PAM@Z,501,
 0x54d6a0,_Grapple_FindNearest,190,"GRAPPLE_MOTION_PC * __cdecl(WORLDINFO *, NUVEC *, GAMEOBJECT *, f32 *)"
+0x54d760,_Grapple_FindNearestToPos,184,"GRAPPLE_DYNAMIC_PC *__cdecl(WORLDINFO *, NUVEC *)"
 0x54d820,_GrapplesDrawListPc,787,
 0x54db40,_Grapples_Draw,231,
 0x0054dc30,?GrappleAttachmentPositionsPc@@YAHPAUgameobject_s@@PAPAUnuvec_s@@@Z,126,
@@ -3199,6 +3217,7 @@ address    , symbol                                                         , si
 0x54e8c0,?Grapple_InitializeSwingAnglePc@@YAXPAUgameobject_s@@@Z,183,
 0x54e980,?Grapple_JumpPc@@YAXPAUgameobject_s@@@Z,184,
 0x54ea40,_Grapple_MoveCode,3392,void __cdecl(GAMEOBJECT *)
+0x54f780,_IndyGrappleCanJumpPc,67,i32 __cdecl(GAMEOBJECT *)
 0x0054f7d0,_Grapple_SetPlayerTargetPoint,141,"void __cdecl (GAMEOBJECT *, NUVEC *)"
 0x54f860,_Grapple_SetTargetMom,159,i32 __cdecl(GAMEOBJECT *)
 0x54f900,_Grapple_SetRotOrder,21,void __cdecl(GAMEOBJECT *)
@@ -3627,7 +3646,10 @@ address    , symbol                                                         , si
 0x56c7a0,_Hang_MoveCode,467,void __cdecl(GAMEOBJECT *)
 0x56c980,_Hang_SetTargetMom,213,i32 __cdecl(GAMEOBJECT *)
 0x56ca60,_CreateClimbObjectSys,70,"void * __cdecl (VARIPTR *, VARIPTR *, i32)"
+0x56cab0,_ClimbObject_FindNormalPc,328,void __cdecl(CLIMB_SLOT_PC *)
 0x56cc00,_InitClimbObjectSys,262,
+0x56cd10,_FindClimbObject,114,"CLIMB_SLOT_PC *__cdecl(CLIMB_SYSTEM_PC *, AIPATHCNX_PC *)"
+0x56cf30,_GuideLine_FindNearest,179,"INDY_GUIDELINE_PC *__cdecl(NUVEC *, WORLDINFO *, i32 *, f32 *)"
 0x56d340,_Tubes_Load,158,
 0x56d3e0,_Tubes_ReserveBufferSpace,77,
 0x56d430,_Tube_Activate,28,
@@ -4674,7 +4696,8 @@ address    , symbol                                                         , si
 0x005ab050 , _SetGizAIMessage                                               , 35    , "GIZAIMESSAGE *__cdecl (GIZAIMESSAGESYS *, const char *, f32, GIZAIMESSAGE *)"
 0x5ab0a0,_AIPathCnxHelperSysCreate,73,"void * __cdecl (VARIPTR *, VARIPTR *, i32)"
 0x5ab0f0,_AIPathCnxHelperSysReset,66,"void __cdecl(WORLDINFO *, AI_HELPER_SYSTEM_PC *)"
-0x5ab140,_AIPathCnxHelperSys_AddHelper,153,
+0x5ab140,_AIPathCnxHelperSys_AddHelper,153,"AI_HELPER_SLOT_PC *__cdecl(AI_HELPER_SYSTEM_PC *, AIPATHCNX_PC *, u8, void *, u8)"
+0x5ab1e0,_AIPathCnxHelperSys_Find,148,"AI_HELPER_SLOT_PC *__cdecl(AI_HELPER_SYSTEM_PC *, GAMEOBJECT *, AIPATHCNX_PC *, u8, u8, AI_HELPER_FILTER_PC)"
 0x005ab2d0,_GizTurretClearPc,185,
 0x005ab390,_GizTurretReadAnimSetDataPc,62,"void __cdecl(GAMEANIMOBJ *, u8)"
 0x5ab3d0,_GizTurrets_Load,857,
@@ -18365,6 +18388,12 @@ address    , symbol                                                         , si
 0x7fa21c,_HubStatsBobAmplitudePc,,f32
 0x7fa220,_HubStatsMiddleColourPc,,u32
 0x7fa224,_HubStatsHighColourPc,,u32
+0x7fa294,_IndyGrappleHeightTolerancePc,4,f32
+0x7fa298,_IndyGrappleReleaseRadiusPc,4,f32
+0x7fa29c,_IndyGrappleTimeoutPc,4,f32
+0x7fa2a0,_IndyJumpDistancePc,8,f32[2]
+0x7fa2a8,_IndyMidSpecialMoveFnsPc,40,AI_MID_SPECIAL_MOVE_PC[10]
+0x7fa2d0,_IndyPrepareSpecialMovePc,56,INDY_PREPARE_SPECIAL_MOVE_PC[7]
 0x7fa378,_LedgePiece,,LEDGEPIECE[6]
 0x7fa4b8,_StatusMiniKitJibberLengthPc,4,f32
 0x7fa4bc,_StatusMiniKitSlideTimePc,4,f32
@@ -19029,6 +19058,7 @@ address    , symbol                                                         , si
 0x8030d0,_GizmoRegistryNewBlowupNamePtrPc,4,char *
 0x8030e4,_LedgeTerrain_CheckAnims,,i32
 0x8030e8,_LEDGETERRAINLOOKAHEAD,,f32
+0x8030ec,_ClimbNormalProbeCountPc,4,i32
 0x8031d4,_TubeOutputNamePc,,const char *
 0x803240,_TubeGizmoNamePc,,const char *
 0x008032c4 , _CheatSystemPtr                                                , 4     , CHEATSYSTEM_PC *

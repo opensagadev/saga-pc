@@ -1,34 +1,14 @@
 #include "saga.h"
 
-typedef struct bulk_ai_helper_pc_s {
-    AIPATHCNX_PC *connection;
-    void *target;
-    u8 direction, type;
-    u8 padding[2];
-    f32 jump_off_dy;
-} BULK_AI_HELPER_PC;
-typedef struct bulk_ai_helper_system_pc_s {
-    i16 capacity, count;
-    BULK_AI_HELPER_PC *helpers;
-} BULK_AI_HELPER_SYSTEM_PC;
-typedef struct bulk_ai_world_pc_s {
-    u8 unknown_0[0x4674];
-    BULK_AI_HELPER_SYSTEM_PC *helper_system;
-} BULK_AI_WORLD_PC;
-STATIC_ASSERT(sizeof(BULK_AI_HELPER_PC) == 0x10);
-STATIC_ASSERT(offsetof(BULK_AI_HELPER_PC, jump_off_dy) == 0xc);
-STATIC_ASSERT(offsetof(BULK_AI_WORLD_PC, helper_system) == 0x4674);
-STATIC_ASSERT(sizeof(BULK_AI_HELPER_SYSTEM_PC) == 8);
-
 extern "C" i32 special_debug;
 extern "C" void __cdecl PCSpecialEmptyHandler_candidate(void);
 extern "C" {
-    BULK_AI_HELPER_PC *__cdecl AIPathCnxHelperSys_AddHelper(BULK_AI_HELPER_SYSTEM_PC *system, AIPATHCNX_PC *connection,
+    AI_HELPER_SLOT_PC *__cdecl AIPathCnxHelperSys_AddHelper(AI_HELPER_SYSTEM_PC *system, AIPATHCNX_PC *connection,
                                                             u8 direction, void *target, u8 type) {
         if (system == NULL || system->count >= system->capacity || connection == NULL || target == NULL)
             return NULL;
         i32 count = system->count;
-        BULK_AI_HELPER_PC *helper = system->helpers;
+        AI_HELPER_SLOT_PC *helper = system->helpers;
         for (i32 index = 0; index < count; ++index, ++helper) {
             if (helper->connection == connection && helper->type == type && helper->target == target) {
                 if (helper->direction != direction)
@@ -777,8 +757,8 @@ extern "C" {
                     direction = 0xff;
                 }
                 if (grapple != NULL) {
-                    BULK_AI_HELPER_PC *helper = AIPathCnxHelperSys_AddHelper(
-                        ((BULK_AI_WORLD_PC *)WORLD)->helper_system, connection, static_cast<u8>(direction), grapple, 1);
+                    AI_HELPER_SLOT_PC *helper = AIPathCnxHelperSys_AddHelper(WORLD->ai_connection_helpers, connection,
+                                                                             static_cast<u8>(direction), grapple, 1);
                     if (helper != NULL) {
                         helper->jump_off_dy = jump_off_dy;
                     }

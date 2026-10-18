@@ -10,22 +10,6 @@ typedef struct ai_control_system_pc_s {
     NULISTHDR available;
     NULISTHDR active;
 } AI_CONTROL_SYSTEM_PC;
-typedef struct ai_helper_slot_pc_s {
-    u8 unknown_00[0x10];
-} AI_HELPER_SLOT_PC;
-typedef struct ai_helper_system_pc_s {
-    i16 capacity;
-    i16 count;
-    AI_HELPER_SLOT_PC *helpers;
-} AI_HELPER_SYSTEM_PC;
-typedef struct climb_slot_pc_s {
-    u8 unknown_00[0x20];
-} CLIMB_SLOT_PC;
-typedef struct climb_system_pc_s {
-    CLIMB_SLOT_PC *objects;
-    u16 count;
-    u16 capacity;
-} CLIMB_SYSTEM_PC;
 STATIC_ASSERT(sizeof(AI_CONTROL_SLOT_PC) == 0xa8);
 STATIC_ASSERT(offsetof(AI_CONTROL_SLOT_PC, links) == 0);
 STATIC_ASSERT(sizeof(AI_CONTROL_SYSTEM_PC) == 0x18);

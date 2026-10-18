@@ -3524,6 +3524,52 @@ typedef struct edgizshadow_pc_s {
     i32 preset;
 } EDGIZSHADOW_PC;
 STATIC_ASSERT(sizeof(EDGIZSHADOW_PC) == 0x38);
+typedef struct ai_helper_slot_pc_s {
+    AIPATHCNX_PC *connection;
+    void *target;
+    u8 direction, type;
+    u8 padding[2];
+    f32 jump_off_dy;
+} AI_HELPER_SLOT_PC;
+typedef struct ai_helper_system_pc_s {
+    i16 capacity, count;
+    AI_HELPER_SLOT_PC *helpers;
+} AI_HELPER_SYSTEM_PC;
+typedef struct climb_slot_pc_s {
+    NUVEC normal;
+    f32 impact_x, impact_z;
+    AIPATHCNX_PC *connection;
+    AIPATH_PC *path;
+    u32 flags;
+} CLIMB_SLOT_PC;
+typedef struct climb_system_pc_s {
+    CLIMB_SLOT_PC *objects;
+    u16 count, capacity;
+} CLIMB_SYSTEM_PC;
+typedef struct indy_guideline_pc_s {
+    char name[8];
+    NUVEC endpoints[2];
+    u32 flags;
+} INDY_GUIDELINE_PC;
+STATIC_ASSERT(sizeof(AI_HELPER_SLOT_PC) == 0x10);
+STATIC_ASSERT(offsetof(AI_HELPER_SLOT_PC, connection) == 0);
+STATIC_ASSERT(offsetof(AI_HELPER_SLOT_PC, target) == 4);
+STATIC_ASSERT(offsetof(AI_HELPER_SLOT_PC, direction) == 8);
+STATIC_ASSERT(offsetof(AI_HELPER_SLOT_PC, type) == 9);
+STATIC_ASSERT(offsetof(AI_HELPER_SLOT_PC, jump_off_dy) == 0xc);
+STATIC_ASSERT(sizeof(AI_HELPER_SYSTEM_PC) == 8);
+STATIC_ASSERT(offsetof(AI_HELPER_SYSTEM_PC, count) == 2);
+STATIC_ASSERT(offsetof(AI_HELPER_SYSTEM_PC, helpers) == 4);
+STATIC_ASSERT(sizeof(CLIMB_SLOT_PC) == 0x20);
+STATIC_ASSERT(offsetof(CLIMB_SLOT_PC, connection) == 0x14);
+STATIC_ASSERT(offsetof(CLIMB_SLOT_PC, path) == 0x18);
+STATIC_ASSERT(offsetof(CLIMB_SLOT_PC, flags) == 0x1c);
+STATIC_ASSERT(sizeof(CLIMB_SYSTEM_PC) == 8);
+STATIC_ASSERT(offsetof(CLIMB_SYSTEM_PC, count) == 4);
+STATIC_ASSERT(offsetof(CLIMB_SYSTEM_PC, capacity) == 6);
+STATIC_ASSERT(sizeof(INDY_GUIDELINE_PC) == 0x24);
+STATIC_ASSERT(offsetof(INDY_GUIDELINE_PC, endpoints) == 8);
+
 typedef struct WORLDINFO_s {
     char name[0x80];
     char config_file[0x80];
@@ -3574,7 +3620,11 @@ typedef struct WORLDINFO_s {
     struct HUBMINIKIT_s *hub_minikits;
     i32 ai_loaded;
     AISYS_PC *ai_sys;
-    u8 unknown_2aec[0x1b9c];
+    u8 unknown_2aec[0x1b88];
+    AI_HELPER_SYSTEM_PC *ai_connection_helpers;
+    void *ai_trigger_set;
+    CLIMB_SYSTEM_PC *climb_objects;
+    u8 unknown_4680[8];
     ZIPUP_PC *zipups;
     i32 zipup_count;
     TUBE_PC *tubes;
@@ -5062,6 +5112,11 @@ typedef struct AI_SPECIAL_PROGRESS_PC {
     u8 flags;
     f32 progress;
 } AI_SPECIAL_PROGRESS_PC;
+typedef struct INDY_GUIDELINE_STATE_PC {
+    u8 movement_direction;
+    i8 endpoint;
+    INDY_GUIDELINE_PC *guideline;
+} INDY_GUIDELINE_STATE_PC;
 #pragma pack(pop)
 STATIC_ASSERT(sizeof(AI_SPECIAL_PROGRESS_PC) == 6);
 STATIC_ASSERT(offsetof(AI_SPECIAL_PROGRESS_PC, progress) == 2);
@@ -5610,6 +5665,7 @@ typedef struct gameobject_s {
     union {
         u8 unknown_1072[6];
         AI_SPECIAL_PROGRESS_PC special_move_progress_view_pc;
+        INDY_GUIDELINE_STATE_PC indy_guideline_state;
     };
     u8 contact_count;
     u8 use_model_origin;
@@ -5631,9 +5687,15 @@ typedef struct gameobject_s {
     u8 field_1087;
     u8 field_1088;
     u8 field_1089;
-    u8 unknown_108a[0x4];
-    u8 field_108e;
-    u8 field_108f;
+    u8 unknown_108a[2];
+    union {
+        struct {
+            u8 unknown_108c[2];
+            u8 field_108e;
+            u8 field_108f;
+        };
+        AI_HELPER_SLOT_PC *indy_connection_helper;
+    };
     union {
         struct {
             u8 unknown_1090[2];
@@ -5662,7 +5724,10 @@ typedef struct gameobject_s {
     struct gameobject_s *last_attacker;
     void *snake_body;
     void(__cdecl *move_override)(struct gameobject_s *);
-    u8 unknown_10b4[4];
+    union {
+        u8 unknown_10b4[4];
+        CLIMB_SLOT_PC *indy_climb;
+    };
     f32 ai_elapsed_time;
     NUVEC ai_update_position;
     f32 ai_vertical_velocity;
@@ -27449,7 +27514,6 @@ extern "C" {
 #endif
 
 /* PC level AI reset/population ABI. */
-typedef struct ai_helper_system_pc_s AI_HELPER_SYSTEM_PC;
 typedef struct level_script_process_pc_s {
     char name[16];
     AISCRIPTPROCESS_PC processor;
@@ -27712,4 +27776,73 @@ extern "C" {
     __declspec(dllimport) void __stdcall BinkGoto(PC_FMV_BINK_PC *, u32, u32);
 #ifdef __cplusplus
 }
+#endif
+
+#ifndef SAGA_INDY_PATH_CONNECTION_PC_DECLARATIONS
+#define SAGA_INDY_PATH_CONNECTION_PC_DECLARATIONS
+/* Native Indy path-connection movement and lookup ABI. */
+typedef i32(__cdecl *AI_HELPER_FILTER_PC)(AI_HELPER_SLOT_PC *, GAMEOBJECT *, AIPATHCNX_PC *, u8, u8);
+typedef struct INDY_PREPARE_SPECIAL_MOVE_PC {
+    u32 capabilities;
+    AI_PREPARING_SPECIAL_MOVE_PC prepare;
+} INDY_PREPARE_SPECIAL_MOVE_PC;
+STATIC_ASSERT(sizeof(INDY_PREPARE_SPECIAL_MOVE_PC) == 8);
+STATIC_ASSERT(sizeof(INDY_GUIDELINE_STATE_PC) == 6);
+STATIC_ASSERT(__alignof(INDY_GUIDELINE_STATE_PC) == 1);
+STATIC_ASSERT(offsetof(GAMEOBJECT, indy_guideline_state) == 0x1072);
+STATIC_ASSERT(offsetof(GAMEOBJECT, indy_guideline_state.endpoint) == 0x1073);
+STATIC_ASSERT(offsetof(GAMEOBJECT, indy_guideline_state.guideline) == 0x1074);
+STATIC_ASSERT(offsetof(GAMEOBJECT, contact_count) == 0x1078);
+STATIC_ASSERT(offsetof(GAMEOBJECT, unknown_108a) == 0x108a);
+STATIC_ASSERT(offsetof(GAMEOBJECT, indy_connection_helper) == 0x108c);
+STATIC_ASSERT(offsetof(GAMEOBJECT, field_108e) == 0x108e);
+STATIC_ASSERT(offsetof(GAMEOBJECT, field_108f) == 0x108f);
+STATIC_ASSERT(offsetof(GAMEOBJECT, indy_climb) == 0x10b4);
+STATIC_ASSERT(offsetof(WORLDINFO, ai_connection_helpers) == 0x4674);
+STATIC_ASSERT(offsetof(WORLDINFO, ai_trigger_set) == 0x4678);
+STATIC_ASSERT(offsetof(WORLDINFO, climb_objects) == 0x467c);
+STATIC_ASSERT(offsetof(WORLDINFO, unknown_4680) == 0x4680);
+STATIC_ASSERT(sizeof(((WORLDINFO *)0)->unknown_4680) == 8);
+STATIC_ASSERT(offsetof(WORLDINFO, zipups) == 0x4688);
+#ifdef __cplusplus
+extern "C" {
+#endif
+    extern i32 ClimbNormalProbeCountPc;
+    extern f32 IndyGrappleHeightTolerancePc, IndyGrappleReleaseRadiusPc, IndyGrappleTimeoutPc;
+    extern f32 IndyJumpDistancePc[2];
+    extern INDY_PREPARE_SPECIAL_MOVE_PC IndyPrepareSpecialMovePc[7];
+    extern AI_MID_SPECIAL_MOVE_PC IndyMidSpecialMoveFnsPc[10];
+    AI_HELPER_SLOT_PC *__cdecl AIPathCnxHelperSys_AddHelper(AI_HELPER_SYSTEM_PC *, AIPATHCNX_PC *, u8, void *, u8);
+    i32 __cdecl Indy_MidSpecialMove_DefaultPc(AISYS_PC *system, AIPACKET_PC *packet, APIOBJECT_PC *object);
+    i32 __cdecl Indy_MidSpecialMove_StartJumpPc(AISYS_PC *system, AIPACKET_PC *packet, APIOBJECT_PC *object);
+    i32 __cdecl Indy_MidSpecialMove_BigJumpPc(AISYS_PC *system, AIPACKET_PC *packet, APIOBJECT_PC *object);
+    i32 __cdecl Indy_PrepareObstaclePc(AIPACKET_PC *packet, APIOBJECT_PC *object, i32 checks_unused);
+    i32 __cdecl Indy_PrepareWhipSwingPc(AIPACKET_PC *packet, APIOBJECT_PC *object, i32 checks_unused);
+    i32 __cdecl Indy_MidSpecialMove_WhipSwingPc(AISYS_PC *system, AIPACKET_PC *packet, APIOBJECT_PC *object);
+    i32 __cdecl Indy_PrepareBigJumpPc(AIPACKET_PC *packet, APIOBJECT_PC *apiobject, i32 checks_unused);
+    i32 __cdecl Indy_PreparingForSpecialMove(AIPACKET_PC *packet, APIOBJECT_PC *apiobject, i32 checks);
+    i32 __cdecl Indy_MidSpecialMove(AISYS_PC *system, AIPACKET_PC *packet, APIOBJECT_PC *apiobject);
+    void __cdecl Indy_AIPathCnxHelperSysInit(WORLDINFO *world);
+    i32 __cdecl Indy_PrepareClimbPc(AIPACKET_PC *packet, APIOBJECT_PC *object, i32 checks);
+    i32 __cdecl Indy_MidSpecialMove_ClimbUpPc(AISYS_PC *system, AIPACKET_PC *packet, APIOBJECT_PC *object);
+    i32 __cdecl Indy_MidSpecialMove_ClimbDownPc(AISYS_PC *system, AIPACKET_PC *packet, APIOBJECT_PC *object);
+    i32 __cdecl Indy_MidSpecialMove_GrappleStartPc(AISYS_PC *system, AIPACKET_PC *packet, APIOBJECT_PC *object);
+    i32 __cdecl Indy_MidSpecialMove_GrappleClimbPc(AISYS_PC *system, AIPACKET_PC *packet, APIOBJECT_PC *object);
+    i32 __cdecl Indy_MidSpecialMove_GrappleEndPc(AISYS_PC *system, AIPACKET_PC *packet, APIOBJECT_PC *object);
+    i32 __cdecl Indy_MidSpecialMove_SwingPc(AISYS_PC *system, AIPACKET_PC *packet, APIOBJECT_PC *object);
+    i32 __cdecl Indy_PrepareJumpPc(AIPACKET_PC *packet, APIOBJECT_PC *object, i32 checks);
+    i32 __cdecl IndyGrappleHelperOccupiedPc(AI_HELPER_SLOT_PC *helper, GAMEOBJECT *owner, AIPATHCNX_PC *connection,
+                                            u8 direction, u8 type);
+    i32 __cdecl Indy_PrepareGrapplePc(AIPACKET_PC *packet, APIOBJECT_PC *object, i32 checks);
+    void __cdecl ClimbObject_FindNormalPc(CLIMB_SLOT_PC *object);
+    CLIMB_SLOT_PC *__cdecl FindClimbObject(CLIMB_SYSTEM_PC *system, AIPATHCNX_PC *connection);
+    INDY_GUIDELINE_PC *__cdecl GuideLine_FindNearest(NUVEC *position, WORLDINFO *world, i32 *endpoint, f32 *distance);
+    AI_HELPER_SLOT_PC *__cdecl AIPathCnxHelperSys_Find(AI_HELPER_SYSTEM_PC *system, GAMEOBJECT *object,
+                                                       AIPATHCNX_PC *connection, u8 direction, u8 type,
+                                                       AI_HELPER_FILTER_PC filter);
+    GRAPPLE_DYNAMIC_PC *__cdecl Grapple_FindNearestToPos(WORLDINFO *world, NUVEC *position);
+    i32 __cdecl IndyGrappleCanJumpPc(GAMEOBJECT *object);
+#ifdef __cplusplus
+}
+#endif
 #endif
