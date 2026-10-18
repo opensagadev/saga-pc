@@ -270,3 +270,42 @@ extern "C" i32 __cdecl PlayersDropInOut(void) {
 
 #undef DROPIN_SCREEN_INSIDE
 #undef DROPIN_SCREEN_OUTSIDE
+
+STATIC_ASSERT(offsetof(GAMEOBJECT, takeover_source) == 0xcd0);
+STATIC_ASSERT(offsetof(GAMEOBJECT, character_context) == 0x7b5);
+STATIC_ASSERT(offsetof(GAMEOBJECT, model_draw_result) == 0x288);
+STATIC_ASSERT(offsetof(GAMEOBJECT, tag_flags) == 0x7c5);
+STATIC_ASSERT(offsetof(GAMEOBJECT, last_safe_position) == 0x1b4);
+STATIC_ASSERT(offsetof(GAMEOBJECT, bounds_half_height) == 0x1e0);
+STATIC_ASSERT(offsetof(GAMEOBJECT, ai_player_packet_pc) == 0x6c4);
+STATIC_ASSERT(offsetof(GAMEOBJECT, respawn_timer) == 0x1d8);
+STATIC_ASSERT(offsetof(GAMEOBJECT, field_0x276) == 0x27a);
+
+extern "C" i32 __cdecl FreePlay_DropInToPlayerPos(GAMEOBJECT *object) {
+    if ((WORLD == NULL || WORLD->current_level != FACTORYF_LDATA) && player != NULL && FreePlay != 0 &&
+        drop_in_teleport >= 2 && VehicleArea == 0 && (Arcade != 0 || teleport_all_freeplay_modes != 0) &&
+        object->takeover_source == NULL && (CInfo[(i8)object->character_context].flags & 0x8000) == 0 &&
+        object->character_context != 0x2b && object->model_draw_result == 0 && (object->tag_flags & 2) == 0) {
+        NUVEC position = player->last_safe_position;
+        if (position.x == player->position.x && position.y == player->position.y && position.z == player->position.z) {
+            position.z = (f32)((f64)position.z + (f64)0.01f);
+        }
+        if (NuCameraClipTestSphere(&position, object->bounds_half_height, &NuMtxSetIdentityTemplate) == 0) {
+            ResetPlayerMoves(object);
+            Player_ClearContext(object, 1);
+            Player_ResetContexts(object->ai_player_packet_pc);
+            object->start_position = position;
+            object->position = position;
+            object->velocity = v000;
+            object->field_0x276 = player->field_0x276;
+            ResetPlayerMoves(object);
+            object->respawn_timer = 0.0f;
+            InitSurfaceInfo(object);
+            SetObjOnSurface(object, 1);
+            GameObjectOrigin(object);
+            AddGameDebris(WORLD->game_debris_sys, 0x5c, &object->collision_position);
+            return 1;
+        }
+    }
+    return 0;
+}

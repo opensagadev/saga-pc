@@ -130,7 +130,7 @@
     "src/legoapi/occlusion.cpp": "3a327350ae54d37e2c4a14753ef03631d6aff1424c41696d670b481705b6bec2",
     "src/legoapi/parts_breakup.cpp": "333cd53e4ecfc9b73e5b9f3b8fab63b38dee01cf81f707a8c85a4e85352541ef",
     "src/legoapi/playercombat.cpp": "e6542fbb9adb3f28ad208c5467d2272427a3663e55f93c8621627f638bb2dd6e",
-    "src/legoapi/players_dropin.cpp": "172077dc2337a99b90d79bf0d3bd30a68d1cb19d4567f9c3923c9a86ccbf12d9",
+    "src/legoapi/players_dropin.cpp": "71fecf274c8c261d679059371d5ac59ffa55d5f00765301f95f337152b1dacb4",
     "src/legoapi/pushblocks.cpp": "0038dee2aadc8184fdb734fd5e714fd2abf56e84b42627e7cddf1c828f3654a7",
     "src/legoapi/pushing.cpp": "9f2f8252920f77db8e0b562cead218a31a00a6c520ef7c6334d2be0a9ebd24d3",
     "src/legoapi/radio.cpp": "9713626946140e8320e9d832a92490f327a59d56e3e3cc87420c0fbeb5cca363",
@@ -694,7 +694,7 @@
     "build/obj/legoapi/playercombat.obj": "30629ab4970823fbadc97207796c9a011cc3549ee8f7d2261f4ffc0c87f5eb24",
     "build/obj/legoapi/playeritems.obj": "d4ad024c2692f56f4598e5d5dafb7e11952f30b3e36df58a3b95a32e498e0eef",
     "build/obj/legoapi/players.obj": "e2c83763c773b0b4bbeac4a5463e2f2f5f6bd619b9f93fe17b84aa722d1d59e6",
-    "build/obj/legoapi/players_dropin.obj": "be81e214082156d53a01e7c0b868777017eabee064e4ce2549384accfe5254ef",
+    "build/obj/legoapi/players_dropin.obj": "5992a9cca4c9ea0413ebe2e4be0f8448a3d12ee1c102ad3f2aef32e456dca461",
     "build/obj/legoapi/plugs.obj": "18603832da43b604d9430c2df91335556215bec16ae9594770af3f81c6d1ddcf",
     "build/obj/legoapi/pulses.obj": "e543b43ecc7f71d81cc33d7bad6bdc8ee1851e31a3ce1ee8f77c46c27678f3de",
     "build/obj/legoapi/pushblocks.obj": "252431596e9327eeffd1928b9a59f01d0bc06e34326aabe9cac849e34d2531b7",
@@ -5857,11 +5857,25 @@
       "name": "FreePlay_DropInToPlayerPos",
       "symbol": "_FreePlay_DropInToPlayerPos",
       "address": "0x004278c0",
-      "units": [],
+      "units": [
+        "src/legoapi/players_dropin.cpp"
+      ],
       "target_size": 521,
       "exact_match": false,
-      "objects": [],
-      "status": "not implemented"
+      "objects": [
+        {
+          "unit": "src/legoapi/players_dropin.cpp",
+          "base_size": 518,
+          "exact_match": false,
+          "target_sha256": "b8e079fbc30f4fac7cd8c27ebecebf55173963ca63e29ce6802579ce1d51aeb7",
+          "base_sha256": "9edf868ccaca070af2a4a1a8d44a10ea21a5007d2508f5dc842d37a663bc272f",
+          "relocation_count": 25,
+          "comparison_unit": "004278c0-6312010c73f4",
+          "objdiff_percent": 86.95621
+        }
+      ],
+      "status": "different",
+      "objdiff_percent": 86.95621
     },
     {
       "name": "DropInOutScale",
@@ -231242,6 +231256,7 @@
         "src/legoapi/hatmachine.cpp",
         "src/legoapi/hub.cpp",
         "src/legoapi/objectsall.c",
+        "src/legoapi/players_dropin.cpp",
         "src/legoapi/render.c",
         "src/legoapi/specialsfx.c",
         "src/legoapi/terrain_player_pc.c",
@@ -231302,6 +231317,14 @@
         },
         {
           "unit": "src/legoapi/objectsall.c",
+          "exact_match": true,
+          "target_size": 8,
+          "base_size": 8,
+          "target_sha256": "595700f5c0ba132c9ede02f9ad9a19cffe697fd8fd52890abb10fd78f47d9aa1",
+          "base_sha256": "595700f5c0ba132c9ede02f9ad9a19cffe697fd8fd52890abb10fd78f47d9aa1"
+        },
+        {
+          "unit": "src/legoapi/players_dropin.cpp",
           "exact_match": true,
           "target_size": 8,
           "base_size": 8,
@@ -468663,11 +468686,11 @@
     "mapped_code_bytes": 2397303,
     "matched_code_bytes": 447311,
     "matching_percent": 12.886179775216162,
-    "fuzzy_coverage_percent": 45.71985931396838,
+    "fuzzy_coverage_percent": 45.732910588758465,
     "mapped_functions": 8795,
     "matched_functions": 4150,
-    "objdiff_fuzzy_percent": 74.369225,
-    "objdiff_total_code": 2137390,
+    "objdiff_fuzzy_percent": 74.37229,
+    "objdiff_total_code": 2137911,
     "image_bytes": 40067072,
     "mapped_bytes": 4181880,
     "mapping_percent": 10.437198904876304,
@@ -469863,7 +469886,7 @@
       "metadata_sha256": "fe09365da4c355f220d724ca99394fc120b758891b4188d2c49707b6df0894f2",
       "header_path": "src/saga.h",
       "header_sha256": "17bcd01606f8f16f5186a6c6acb6ea4883fa2c36d60ffe7a5c95ab084e78e80d",
-      "geometry_object_sha256": "e0a2ff26094d0b1cea4fb2a54b2c4e126bd2199aca4c5b0553017c5b1edf9a3c",
+      "geometry_object_sha256": "4a1fc0f1b20eef877e68a1719dfcacffb7f69dc798b57884383c3d812968aace",
       "toolchain_sha256": "b8808088bb2c7eb239785f69c9e464ae8545216d5705fb37216bc0cf926732f3",
       "implementation_sha256": "d6a33be911d095a6d07dccd4443ccbfd6b514fd89fd7e200d9caa1827944e218",
       "headers": {
@@ -470128,7 +470151,7 @@
         4
       ]
     },
-    "clang_source_sha256": "ade6feaab3405ccda92fb8c0f69521d60567dddfbbf7ccc5453c7b93ff4fa512",
+    "clang_source_sha256": "462cb00af02f96c27d634885752a027ed473a811be8bda327333b2ee3b337fc1",
     "member_count": 42,
     "physical_definition_credit": 0
   },
