@@ -797,3 +797,10 @@ f32 __cdecl Condition_NearestPartyXZRangePc(AISYS_PC *system, AISCRIPTPROCESS_PC
     }
     return nearest;
 }
+
+f32 __cdecl Condition_CurrentLocatorIsPc(AISYS_PC *system, AISCRIPTPROCESS_PC *process, AIPACKET_PC *packet, char *name,
+                                         void *argument) {
+    if (argument != NULL && process->locator == argument)
+        return 1.0f;
+    return 0.0f;
+}

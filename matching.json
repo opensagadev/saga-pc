@@ -217,7 +217,7 @@
     "src/gamelib/nuwind.c": "1ac67babc9fa0b5f872c3e88d1ae55ec552fcf36d82b790780c237249941c10c",
     "src/gamelib/nuwind_groups.c": "e2e5d2ed1211c9ddbbbfac12d1c4ab1449dbee4750b20962390f59dcf492b9f8",
     "src/legoapi/action_sound.c": "e75a3403e832ef31b7a4e0d53e7f4af6969daa56b0fe88850479dc40eb66da8d",
-    "src/legoapi/ai_global_conditions_pc.c": "7afecc89b2e3a5fd35aaa709ba9b6824ea577baf720ec54bea7d86ca3e04b99c",
+    "src/legoapi/ai_global_conditions_pc.c": "623bd7e7974323aa217f24dd22b2d278d6175cb2ec2d6296bd228ef8a934d42f",
     "src/legoapi/ai_map_actions_pc.c": "aef95243cb0df58a690449da70888b0025a16705f1cdb407618823a70fa95780",
     "src/legoapi/ai_sys.c": "68ee949e722b77720de76b2bc52ef73c23a808def3e735fcafc3e70d1f3033bf",
     "src/legoapi/ai_trigger_setup_pc.c": "ed5a0d3fb273c2854b7c3dc2b7faeb1e40dcad4a730c488e1b62de2e65980dd7",
@@ -552,7 +552,7 @@
     "build/obj/gamelib/nuwind_groups.obj": "f3600d1585f5a09f541062f5e6322b0e82d45b1c64980b28df13b943c5f1434b",
     "build/obj/gamelib/util/VirtualStackAllocator.obj": "e96ffd1ac06bb923d2f49933809e92038448d3a1e2ff8056d43ba29cb635a0ee",
     "build/obj/legoapi/action_sound.obj": "8b0c35aea05e5d2527e3d2cdb3da3ec7fc8adaf4b5c9381af36c2a3e6e5e146d",
-    "build/obj/legoapi/ai_global_conditions_pc.obj": "445b415c67497ddf76a85c73427acd8fd7401b6632f26860a202da8c632a34bd",
+    "build/obj/legoapi/ai_global_conditions_pc.obj": "6790be08cfa344d0bbb0b4e128c7884037835cffafc1925ca3de53705a3f02f9",
     "build/obj/legoapi/ai_map_actions_pc.obj": "a285d4676caf94975be4a2543c377061f1c10008278ba109d5a4c141b2fdf870",
     "build/obj/legoapi/ai_party_trigger_pc.obj": "b2374e45b5edc7c505956f3c449d31ecdbe7838f54b2968c7370c7b087e2e70d",
     "build/obj/legoapi/ai_spinner_targets_pc.obj": "0a0ac5b8a482fb87e53921bb682f6c39883c2ca90ad9d289e1b2d944db3ea1f9",
@@ -62048,11 +62048,25 @@
       "name": "Condition_CurrentLocatorIsPc",
       "symbol": "_Condition_CurrentLocatorIsPc",
       "address": "0x00514bb0",
-      "units": [],
+      "units": [
+        "src/legoapi/ai_global_conditions_pc.c"
+      ],
       "target_size": 26,
-      "exact_match": false,
-      "objects": [],
-      "status": "not implemented"
+      "exact_match": true,
+      "objects": [
+        {
+          "unit": "src/legoapi/ai_global_conditions_pc.c",
+          "base_size": 26,
+          "exact_match": true,
+          "target_sha256": "1e735bc7205b82ff72346461796f703f61c87bc49745a1f242e8c4cf0c0d8cf4",
+          "base_sha256": "1e735bc7205b82ff72346461796f703f61c87bc49745a1f242e8c4cf0c0d8cf4",
+          "relocation_count": 0,
+          "comparison_unit": "00514bb0-4d1adaffe187",
+          "objdiff_percent": 100.0
+        }
+      ],
+      "status": "exact",
+      "objdiff_percent": 100.0
     },
     {
       "name": "Condition_InTriggerAreaPc",
@@ -473125,13 +473139,13 @@
   "progress": {
     "text_bytes": 3471246,
     "mapped_code_bytes": 2405564,
-    "matched_code_bytes": 452660,
-    "matching_percent": 13.040274299199769,
-    "fuzzy_coverage_percent": 46.37009812400055,
+    "matched_code_bytes": 452686,
+    "matching_percent": 13.041023309785594,
+    "fuzzy_coverage_percent": 46.37084713458637,
     "mapped_functions": 8837,
-    "matched_functions": 4193,
-    "objdiff_fuzzy_percent": 74.48455,
-    "objdiff_total_code": 2164385,
+    "matched_functions": 4194,
+    "objdiff_fuzzy_percent": 74.484856,
+    "objdiff_total_code": 2164411,
     "image_bytes": 40067072,
     "mapped_bytes": 4190954,
     "mapping_percent": 10.459845930343999,
@@ -474327,7 +474341,7 @@
       "metadata_sha256": "fe09365da4c355f220d724ca99394fc120b758891b4188d2c49707b6df0894f2",
       "header_path": "src/saga.h",
       "header_sha256": "d88c898ee9f1645fcc2c9f531bfac630e96f6fe282fb29b4938445b095604fed",
-      "geometry_object_sha256": "ac0a17dc3f8ac4ec1ebfe7c226b78314d97d7b28afa494b179201d74ea2285fb",
+      "geometry_object_sha256": "183dc10a829b344c5e77fc5f1233858de4b32b4b0d40f204546bb130271daaa6",
       "toolchain_sha256": "b8808088bb2c7eb239785f69c9e464ae8545216d5705fb37216bc0cf926732f3",
       "implementation_sha256": "d6a33be911d095a6d07dccd4443ccbfd6b514fd89fd7e200d9caa1827944e218",
       "headers": {
