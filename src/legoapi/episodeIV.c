@@ -1,4 +1,5 @@
 #include "saga.h"
+#include <string.h>
 extern LEVELDATA_PC *MOSEISLEYC_LDATA;
 i32 __cdecl MosEisleyC_PastBarrier(GAMEOBJECT *object) {
     if (WORLD->current_level == MOSEISLEYC_LDATA)
@@ -292,4 +293,16 @@ void __cdecl DeathStarEscapeB_Update(WORLDINFO *world) {
         }
         fakeanimframe[0] = 0.0f;
     }
+}
+
+static const char CloudCityTrapAForceNamePc[7] = "force3";
+void __cdecl CloudCityTrapA_Init(WORLDINFO *world) {
+    if (netclient == 0)
+        memset(troopercannons, 0, sizeof(troopercannons));
+    LevAIMessage[0] = CheckGizAIMessage(gizaimessagesys, EpisodeVI_ShowHearts, NULL);
+    LevGizmo[0] = GizmoFindByName(world->gizmo_sys, force_gizmotype_id, (char *)CloudCityTrapAForceNamePc);
+}
+void __cdecl CloudCityTrapA_Reset(WORLDINFO *world) {
+    if (netclient == 0)
+        troopercannons_beenReset = 0;
 }

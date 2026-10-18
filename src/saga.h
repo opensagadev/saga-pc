@@ -2801,7 +2801,13 @@ typedef struct level_progress_pc_s {
     SCENEPROGRESS scene_progress;
     u8 unknown_2800[0x14];
     f32 minimum_tfactor;
-    u8 unknown_2818[8];
+    union {
+        u8 unknown_2818[8];
+        struct {
+            u8 unknown_2818_prefix_pc[4];
+            u32 destroyed_trooper_cannon_mask;
+        };
+    };
     u32 progress_state;
     u8 unknown_2824[0x544];
     char disabled_effect_names[12][16];
@@ -27930,4 +27936,36 @@ extern "C" {
 #ifdef __cplusplus
 }
 #endif
+#endif
+
+#ifndef SAGA_TROOPER_CANNONS_NATIVE_PC_LAYOUT
+#define SAGA_TROOPER_CANNONS_NATIVE_PC_LAYOUT
+typedef struct TROOPERCANNON_PC {
+    GIZMO_PC *base;
+    GIZBUILDIT_s *buildit;
+    GAMEOBJECT *object;
+    char character_name[32];
+    u8 rebuilding;
+    u8 padding[3];
+} TROOPERCANNON_PC;
+STATIC_ASSERT(sizeof(TROOPERCANNON_PC) == 0x30);
+STATIC_ASSERT(offsetof(TROOPERCANNON_PC, base) == 0);
+STATIC_ASSERT(offsetof(TROOPERCANNON_PC, buildit) == 4);
+STATIC_ASSERT(offsetof(TROOPERCANNON_PC, object) == 8);
+STATIC_ASSERT(offsetof(TROOPERCANNON_PC, character_name) == 0xc);
+STATIC_ASSERT(offsetof(TROOPERCANNON_PC, rebuilding) == 0x2c);
+STATIC_ASSERT(offsetof(LEVEL_PROGRESS, destroyed_trooper_cannon_mask) == 0x281c);
+STATIC_ASSERT(sizeof(((LEVEL_PROGRESS *)0)->unknown_2818) == 8);
+STATIC_ASSERT(sizeof(((LEVEL_PROGRESS *)0)->destroyed_trooper_cannon_mask) == 4);
+STATIC_ASSERT(offsetof(GIZBUILDIT_s, anim_set) == 0x10);
+STATIC_ASSERT(offsetof(GIZBUILDIT_s, state_flags) == 0x7a);
+STATIC_ASSERT(offsetof(GAMEOBJECT, tag_object_callback) == 0xea8);
+#ifdef __cplusplus
+extern "C" {
+#endif
+    extern TROOPERCANNON_PC troopercannons[4];
+#ifdef __cplusplus
+}
+#endif
+STATIC_ASSERT(sizeof(troopercannons) == 0xc0);
 #endif

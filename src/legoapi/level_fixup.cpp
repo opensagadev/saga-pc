@@ -1,5 +1,9 @@
 #include "saga.h"
 
+extern "C" void __cdecl CloudCityTrapA_Init(WORLDINFO *);
+extern "C" void __cdecl CloudCityTrapA_Reset(WORLDINFO *);
+extern "C" void __cdecl CloudCityTrapA_Update(WORLDINFO *);
+
 /* Original level.cpp FixUpLevels family; PC-specific startup gates verified. */
 extern "C" {
     extern LEVELDATA_PC *WorldArchiveOneLevelsPc[11];
@@ -863,9 +867,9 @@ extern "C" void __cdecl FixUpLevels(struct level_fixup_pc_s *fixup) {
             level = Level_FindByName("CloudCityTrap_A", NULL); /* Native call 0x48efb9. */
             CLOUDCITYTRAPA_LDATA = level;                      /* Native store 0x48efc3. */
             if (level != NULL) {
-                STUBBED_NAMED(FixUpLevels_Callback_4e7c90); /* Native 0x48efca: callbacks[1] = entry 0x4e7c90. */
-                STUBBED_NAMED(FixUpLevels_Callback_4e7d10); /* Native 0x48efd7: callbacks[3] = entry 0x4e7d10. */
-                STUBBED_NAMED(FixUpLevels_Callback_4e7cf0); /* Native 0x48efe4: callbacks[2] = entry 0x4e7cf0. */
+                level->callbacks[1] = (void *)CloudCityTrapA_Init;   /* Native 0x48efca. */
+                level->callbacks[3] = (void *)CloudCityTrapA_Update; /* Native 0x48efd7. */
+                level->callbacks[2] = (void *)CloudCityTrapA_Reset;  /* Native 0x48efe4. */
             }
             level = Level_FindByName("CloudCityTrap_B", NULL); /* Native call 0x48eff2. */
             CLOUDCITYTRAPB_LDATA = level;                      /* Native store 0x48effc. */

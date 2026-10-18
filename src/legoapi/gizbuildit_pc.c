@@ -1201,3 +1201,10 @@ void __cdecl BuildIt_MoveCode(GAMEOBJECT *player) {
     if ((player->flags_1fc & 0x80) != 0 && player->field_281 != 0)
         GizBuildItPushAwayFromEnd(player);
 }
+
+void __cdecl GizBuildit_SetVisibility(GIZBUILDIT_s *buildit, i32 visible) {
+    if (buildit != NULL) {
+        GameAnimSet_SetVisibility(buildit->anim_set, visible);
+        buildit->state_flags = (buildit->state_flags & ~2u) | ((visible != 0) << 1);
+    }
+}

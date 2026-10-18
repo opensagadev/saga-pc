@@ -2025,6 +2025,7 @@ address    , symbol                                                         , si
 0x4e5770,_TrenchMove,946,
 0x4e5ba0,_DeathStarBattleDUpdate,762,
 0x4e5f10,_KilledTrooperCannon,198,
+0x4e5fe0,_InitTrooperCannons,21,void __cdecl(WORLDINFO *)
 0x4e6000,_ResetTrooperCannons,600,
 0x4e6260,_UpdateTrooperCannons,250,
 0x4e63b0,_HothEscapeB_Init,90,
@@ -2038,6 +2039,8 @@ address    , symbol                                                         , si
 0x4e7230,_AsteroidChaseB_Draw,43,
 0x4e73d0,_AsteroidChaseC_Update,595,
 0x4e77e0,_AsteroidChaseD_Update,1151,
+0x4e7c90,_CloudCityTrapA_Init,89,void __cdecl(WORLDINFO *)
+0x4e7cf0,_CloudCityTrapA_Reset,17,void __cdecl(WORLDINFO *)
 0x4e7d10,_CloudCityTrapA_Update,170,
 0x4e7dc0,_CloudCityTrapB_Init,77,
 0x4e7e10,_CloudCityTrapB_Update,183,
@@ -4364,6 +4367,7 @@ address    , symbol                                                         , si
 0x58ff10,_ReleaseBuildIt,91,"void __cdecl(GAMEOBJECT*,i32)"
 0x58ff70,_GizBuildIts_PostLoad,79,"void __cdecl(void *, void *)"
 0x58ffc0,_GizBuildIts_ReserveBufferSpace,215,void * __cdecl(void *)
+0x5900a0,_GizBuildit_SetVisibility,49,"void __cdecl(GIZBUILDIT_s *, i32)"
 0x5900e0,_GizmoBuildit_SetVisibility,55,"void __cdecl(GIZMO_PC *, i32)"
 0x590120,_GizmoBuildit_GetPos,21,NUVEC * __cdecl(GIZMO_PC *)
 0x590140,_GizBuildit_Reset,996,
@@ -13204,6 +13208,7 @@ address    , symbol                                                         , si
 0x75de00,??_C@_0N@JAIKINBL@TotalWookies?$AA@,13,char []
 0x75de34,??_C@_0N@KAKHOCIA@attack_time?$DN?$AA@,13,char []
 0x75de44,??_C@_0P@LJGKHAC@boulder_range?$DN?$AA@,15,char []
+0x75de88,_CloudCityTrapAForceNamePc,7,const char[7]
 0x75decc,??_C@_0P@MDPIFKNK@VaderBComplete?$AA@,15,char []
 0x75df44,_EpisodeVI_obstacle21,11,const char[11]
 0x0075e004,_DeathStarEscapeBSpongePc,7,const char[7]
@@ -13215,6 +13220,10 @@ address    , symbol                                                         , si
 0x75e08c,??_C@_0O@NDAEILHC@RescuedDroids?$AA@,14,char []
 0x75e0b0,??_C@_08FLIECBAD@bigbang1?$AA@,,const char[9]
 0x75e0bc,_EpisodeVI_ffieldoff,10,const char[10]
+0x75e108,_TrooperCannonAINamePc,14,const char[14]
+0x75e118,_TrooperCannonBaseFormatPc,8,const char[7]
+0x75e120,_TrooperCannonCharacterFormatPc,20,const char[17]
+0x75e134,_TrooperCannonBuilditFormatPc,20,const char[17]
 0x75e21c,??_C@_0L@ECGCGBCO@transport4?$AA@,11,char []
 0x75e228,??_C@_0O@CBDKBILO@rebelcruiser1?$AA@,14,char []
 0x75e238,??_C@_0L@DPBFJFGL@transport1?$AA@,11,char []
@@ -21414,6 +21423,7 @@ address    , symbol                                                         , si
 0x88a2b0,_escape,96,nuhspecial_s[8]
 0x88a320,_melee,200,HOTHBATTLE_MELEE_s
 0x88a3e8,_StarDestroyerTurrets,64,struct GIZTURRET_s *[16]
+0x88a430,_troopercannons,192,TROOPERCANNON_PC[4]
 0x88a550,_troopercannons_beenReset,1,u8
 0x88a552,_turretAliveCount,1,u8
 0x88a568,_melee_waveDelay,4,f32
