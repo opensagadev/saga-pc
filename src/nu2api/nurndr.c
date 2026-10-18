@@ -1442,3 +1442,25 @@ void __cdecl NuRndrFx(i32 paused, void *context) {
 i32 __cdecl NuRndrSetFxMtx(NUMTX *matrix) {
     return 1;
 }
+
+/* Native speed-blur state has distinct writable storage. */
+i32 NuLightSpeedBlurEnabledPc = 1;
+static NUMTX NuLightSpeedBlurViewProjectionPc = {0};
+static NUMTX NuLightSpeedBlurPreviousViewProjectionPc = {0};
+STATIC_ASSERT(offsetof(NUAPI, frame_time) == 0x3c);
+void __cdecl NuLightSpeedBlur(i32 reuse_camera, f32 scale) {
+    NU_POST_SPEED_PARAMETERS_PC *parameters = (NU_POST_SPEED_PARAMETERS_PC *)&currentScene.unknown_188;
+    f32 frame_time;
+    if (NuLightSpeedBlurEnabledPc == 0)
+        return;
+    parameters->enabled = 1;
+    if (reuse_camera == 0) {
+        NuMtxMulH(&NuLightSpeedBlurPreviousViewProjectionPc, &parameters->current, &pmtx);
+        NuMtxMulH(&NuLightSpeedBlurViewProjectionPc, &vmtx, &pmtx);
+    }
+    frame_time = nuapi.frame_time;
+    parameters->previous = NuLightSpeedBlurViewProjectionPc;
+    parameters->current = NuLightSpeedBlurPreviousViewProjectionPc;
+    parameters->frame_time = frame_time;
+    parameters->scale = scale;
+}

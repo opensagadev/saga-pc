@@ -86,8 +86,8 @@ extern "C" i32 __cdecl NuRndrSwapScreen(i32 mode) {
             rendered_effect = true;
         }
         if (scene->unknown_188 != 0) {
-            STUBBED_NAMED(0x005c32d0); /* Activate(0x80),60b2e2 */
-            STUBBED_NAMED(0x005c37d0); /* (&scene->unknown_188),60b2e8 */
+            NuPostEffectEnable(0x80);
+            NuPostEffectSpeedBlur(reinterpret_cast<const NU_POST_SPEED_PARAMETERS_PC *>(&scene->unknown_188));
             rendered_effect = true;
         }
         if (i <= last_effect_scene) {

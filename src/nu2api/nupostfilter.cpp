@@ -484,3 +484,43 @@ extern "C" void __cdecl NuPostEffectEnd(void) {
     PostProxyBuffersPc[4].kind = 4;
     PostProxyBuffersPc[4].enabled = true;
 }
+
+extern "C" void __cdecl NuVec4Scale(NUVEC4 *, NUVEC4 *, f32);
+void NuSpeedBlurFilterGen::computeSpeedBlur(NUVEC4 *result) {
+    NUMTX previous_inverse, current_inverse;
+    NUVEC4 motion;
+    NuMtxInvH(&previous_inverse, const_cast<NUMTX *>(&parameters->previous));
+    NuMtxInvH(&current_inverse, const_cast<NUMTX *>(&parameters->current));
+    NuVec4MtxTransformH(&motion, reinterpret_cast<NUVEC4 *>(&previous_inverse) + 3,
+                        const_cast<NUMTX *>(&parameters->current));
+    if (motion.z < 0.0f) {
+        NuVec4MtxTransformH(&motion, reinterpret_cast<NUVEC4 *>(&current_inverse) + 3,
+                            const_cast<NUMTX *>(&parameters->previous));
+        motion.x = (f32)((f64)motion.x * -1.0);
+        motion.y = (f32)((f64)motion.y * -1.0);
+        motion.z = (f32)((f64)motion.z * -1.0);
+    }
+    NuVec4Scale(&motion, &motion, 1.0f / motion.w);
+    motion.x *= motionFactorPan;
+    motion.y *= motionFactorPan;
+    motion.z *= motionFactorPull;
+    NuVec4Scale(&motion, &motion, parameters->scale);
+    motion.x = motion.x < -motionFactorPanClamp ? -motionFactorPanClamp
+                                                : (motion.x > motionFactorPanClamp ? motionFactorPanClamp : motion.x);
+    motion.y = motion.y < -motionFactorPanClamp ? -motionFactorPanClamp
+                                                : (motion.y > motionFactorPanClamp ? motionFactorPanClamp : motion.y);
+    memcpy(result, &motion, sizeof(NUVEC));
+    result->w = 0.0f;
+}
+void NuSpeedBlurFilter::destroyTextureResources() {
+    texture_surface.Reset();
+}
+
+extern "C" void __cdecl PCGraphicsDestroyFramebuffer(PC_FRAMEBUFFER_PC *);
+void NuPostFilterGen::destroyResources() {
+    PCGraphicsDestroyFramebuffer(input_fbo);
+    input_fbo = NULL;
+}
+PC_FRAMEBUFFER_PC *NuPostFilterGen::getInputFbo() {
+    return input_fbo;
+}

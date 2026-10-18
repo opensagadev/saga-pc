@@ -5115,7 +5115,7 @@ address    , symbol                                                         , si
 0x5c22d0,?reset@NuPostFilterGen@@UAEXXZ,5,clears enabled
 0x5c22e0,?resetAll@NuPostFilterGen@@UAEXXZ,1,native exactVT binding; unimplemented extent unclaimed
 0x5c22f0,?isEnabled@NuPostFilterGen@@UAE_NXZ,4,native exactVT binding; unimplemented extent unclaimed
-0x5c2300,?getInputFbo@NuPostFilterGen@@UAEPAUPC_FRAMEBUFFER_PC@@XZ,,native exactVT binding; unimplemented extent unclaimed
+0x5c2300,?getInputFbo@NuPostFilterGen@@UAEPAUPC_FRAMEBUFFER_PC@@XZ,4,native exactVT binding; unimplemented extent unclaimed
 0x5c2760,_PostShaderProgramBindPc,98,normalized source ABI; native private ESI program
 0x5c2800,??0NuPostFilter@@QAE@XZ,17,native ctor fullvptr/field proof
 0x5c2830,??_ENuPostFilter@@UAEPAXI@Z,,COFF weak alias of ??_GNuPostFilter@@UAEPAXI@Z; no independent body
@@ -5144,7 +5144,7 @@ address    , symbol                                                         , si
 0x5c3990,_PCGraphicsCreatePostEffectWorkTexture,33,"void __cdecl(i32,i32)"
 0x5c3da0,_PostBlur7x7HighPc,1959,"void __cdecl(GRAPHICS_RENDER_TEXTURE_PC*,i32,GRAPHICS_RENDER_TEXTURE_PC*,i32,i32,i32,bool,f32,POST_SHADER_PROGRAM_PC*)"
 0x5c4d40,?initResources@NuPostFilterGen@@UAEXXZ,13,native exactVT binding; unimplemented extent unclaimed
-0x5c4d50,?destroyResources@NuPostFilterGen@@UAEXXZ,,native exactVT binding; unimplemented extent unclaimed
+0x5c4d50,?destroyResources@NuPostFilterGen@@UAEXXZ,24,native exactVT binding; unimplemented extent unclaimed
 0x5c4d70,?initResources@NuCopyFilter@@UAEXXZ,47,native exactVT binding; unimplemented extent unclaimed
 0x5c4da0,?destroyResources@NuCopyFilter@@UAEXXZ,,native exactVT binding; unimplemented extent unclaimed
 0x5c4dd0,?render@NuCopyFilter@@UAEXPAUPC_FRAMEBUFFER_PC@@@Z,,native exactVT binding; unimplemented extent unclaimed
@@ -5161,6 +5161,7 @@ address    , symbol                                                         , si
 0x5c4fa0,??_GNuSpeedBlurFilterGen@@UAEPAXI@Z,31,native scalar-deleting dtor exactVTidentity
 0x5c4fc0,?initTextureResources@NuSpeedBlurFilterGen@@UAEXHH@Z,,native exactVT binding; unimplemented extent unclaimed
 0x5c5010,?destroyTextureResources@NuSpeedBlurFilterGen@@UAEXXZ,,native exactVT binding; unimplemented extent unclaimed
+0x5c5020,?computeSpeedBlur@NuSpeedBlurFilterGen@@QAEXPAUNUVEC4@@@Z,379,void __thiscall(NUVEC4*)
 0x5c51a0,_NuSpeedBlurSetMotionFactors,31,
 0x5c51c0,?Register@PC_POST_DATA_PORT_MANAGER@@QAEHPBDPAX@Z,142,
 0x5c5420,?SortByDepth@OccluderSet@@SAHPBX0@Z,75,"i32 __cdecl (const void *, const void *)"
@@ -5761,7 +5762,7 @@ address    , symbol                                                         , si
 0x5fba60,?initTextureResources@NuDeferredFilter@@UAEXHH@Z,5,native exactVT binding; unimplemented extent unclaimed
 0x5fbae0,?initResources@NuMotionAccumFilter@@UAEXXZ,17,native exactVT binding; unimplemented extent unclaimed
 0x5fbb00,?initTextureResources@NuSpeedBlurFilter@@UAEXHH@Z,21,native exactVT binding; unimplemented extent unclaimed
-0x5fbb20,?destroyTextureResources@NuSpeedBlurFilter@@UAEXXZ,,native exactVT binding; unimplemented extent unclaimed
+0x5fbb20,?destroyTextureResources@NuSpeedBlurFilter@@UAEXXZ,8,native exactVT binding; unimplemented extent unclaimed
 0x5fbb40,_PcGeometryBackendAvailablePc,13,i32 __cdecl(void)
 0x5fbb50,_PcInitializeDynamicGeometryBuffersPc,404,"i32 __cdecl (PC_DYNAMIC_GEOMETRY_PC *, i32)"
 0x5fbd80,_PcTransformDynamicGeometryPc,1704,"u8 __cdecl (PC_GEOMETRY_SKIN_PC *, PC_GEOMETRY_MESH_PC *, u32 *)"
@@ -5917,7 +5918,7 @@ address    , symbol                                                         , si
 0x606990,?destroyTextureResources@NuMainFilter@@UAEXXZ,,native exactVT binding; unimplemented extent unclaimed
 0x6069a0,??0PC_EFFECT_SURFACE_PC@@QAE@XZ,120,
 0x606a20,??1PC_EFFECT_SURFACE_PC@@QAE@XZ,25,
-0x606a40,?render@NuSpeedBlurFilter@@UAEXXZ,,native exactVT binding; unimplemented extent unclaimed
+0x606a40,?render@NuSpeedBlurFilter@@UAEXXZ,723,native exactVT binding; unimplemented extent unclaimed
 0x606d20,_PcInitializeGeometryBasisPc,2064,"u8 __cdecl(PC_GEOMETRY_BASIS_SOURCE_PC*,NUMTX*,PC_GEOMETRY_MORPH_WEIGHTS_PC*)"
 0x607530,_NuRndrSetAmbientLightSpecular,96,i32 __cdecl(const NUVEC4 *)
 0x00607590 , _DisplayListUpdateRenderState                                  , 649   , "void __cdecl (NUDISPLAYLIST_PC *, NUGLOBALRNDRSTATE_PC *)"
@@ -19394,6 +19395,7 @@ address    , symbol                                                         , si
 0x80b6d4,_g_texAnimCriticalSection,,i32
 0x80b6d8,_global_windscale,,f32
 0x80b6dc,_global_windspeed,,f32
+0x80b6e8,_NuLightSpeedBlurEnabledPc,4,writable i32 native initial1
 0x80b6f4,_VisibilityEvaluateEnabledPc,,i32
 0x80b6f8,_VisibilityOcclusionEnabledPc,,i32
 0x0080b6fc , _cam_axes                                                      , 12    , NUVEC
@@ -19501,6 +19503,7 @@ address    , symbol                                                         , si
 0x80e9e4,_FrameShaderMaterialFirstCallPc,,i32
 0x80e9e8,_NuDisplayHandlerDefaultTintPc,,NUVEC4
 0x80e9f8,_NuDisplayHandlerCameraIdPc,,i32
+0x80ea00,_NuSpeedBlurVertexScalePc,4,writable f32 initial40000
 0x80ea04,??_R0?AVNuMainFilter@@@8,27,native exactVT binding; unimplemented extent unclaimed
 0x80ea1f,_PostBloomAttachPendingPc,1,u8 native initial 1
 0x0080ea20 , ??_R0?AVlogic_error@std@@@8                                    , 30    ,
@@ -22677,6 +22680,8 @@ address    , symbol                                                         , si
 0x97adfc,?adjacent@?1??DrawAlphaGrid@@9@9,,f32
 0x97ae00,?saved_fov@?1??DrawAlphaGrid@@9@9,,f32
 0x0097ae08 , _ANI3_EVAL_SCALE_ARRAY                                         ,       , NUVEC[]
+0x97ba08,_NuLightSpeedBlurViewProjectionPc,64,private NUMTX zero
+0x97ba48,_NuLightSpeedBlurPreviousViewProjectionPc,64,private NUMTX zero
 0x0097bab0 , _NuCameraScissorProjectionScratch                              , 64    , NUMTX
 0x97baf0,?col@?1??DrawAlphaImage@@9@9,,i32
 0x97baf4,?row@?1??DrawAlphaImage@@9@9,,i32

@@ -21813,7 +21813,15 @@ STATIC_ASSERT(offsetof(PC_POST_DATA_PORT, manager) == 4);
 extern "C" PC_POST_DATA_PORT PostResourcePortsPc[6];
 #endif
 
-typedef struct NU_POST_SPEED_PARAMETERS_PC NU_POST_SPEED_PARAMETERS_PC;
+typedef struct NU_POST_SPEED_PARAMETERS_PC {
+    i32 enabled;
+    NUMTX previous, current;
+    f32 frame_time, scale;
+} NU_POST_SPEED_PARAMETERS_PC;
+STATIC_ASSERT(sizeof(NU_POST_SPEED_PARAMETERS_PC) == 0x8c);
+STATIC_ASSERT(offsetof(NU_POST_SPEED_PARAMETERS_PC, previous) == 4);
+STATIC_ASSERT(offsetof(NU_POST_SPEED_PARAMETERS_PC, current) == 0x44);
+STATIC_ASSERT(offsetof(NU_POST_SPEED_PARAMETERS_PC, scale) == 0x88);
 typedef struct NU_POST_DOF_PARAMETERS_PC {
     i32 enabled;
     f32 strength, near_distance, far_distance;
@@ -22019,6 +22027,7 @@ class NuMotionAccumFilter : public NuMotionAccumFilterGen {
 };
 class NuSpeedBlurFilterGen : public NuPostFilter {
   public:
+    void computeSpeedBlur(NUVEC4 *);
     virtual void initTextureResources(i32, i32);
     virtual void destroyTextureResources();
     virtual void render();

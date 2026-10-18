@@ -873,3 +873,56 @@ void NuMainFilter::RenderBloomPc() {
     color->resolved = false;
     PostResourcePortsPc[1].manager->entries[PostResourcePortsPc[1].index].data = color;
 }
+
+extern "C" f32 NuSpeedBlurVertexScalePc;
+f32 NuSpeedBlurVertexScalePc = 40000.0f;
+void NuSpeedBlurFilter::render() {
+    extern POST_SHADER_PROGRAM_PC *PostCopyTexProgramPc;
+    PC_FRAMEBUFFER_PC *output =
+        (PC_FRAMEBUFFER_PC *)PostResourcePortsPc[0].manager->entries[PostResourcePortsPc[0].index].data;
+    PC_POST_BUFFER_PROXY_PC *color =
+        (PC_POST_BUFFER_PROXY_PC *)PostResourcePortsPc[1].manager->entries[PostResourcePortsPc[1].index].data;
+    if (!color->resolved)
+        color->resolved = true;
+    GRAPHICS_RENDER_TEXTURE_PC *color_texture = color->texture;
+    f32 constants[8];
+    constants[0] = 0.0f;
+    constants[1] = parameters->scale * NuSpeedBlurVertexScalePc;
+    computeSpeedBlur((NUVEC4 *)(constants + 4));
+    PCDeviceBackend.CopySurfaceTargetPc(&texture_surface, 2, 0);
+    PCDeviceSetRenderState(22, 1);
+    PCDeviceSetRenderState(15, 0);
+    PCDeviceSetRenderState(27, 0);
+    PCDeviceSetRenderState(7, 0);
+    PCDeviceSetRenderState(168, 15);
+    PCGraphicsBindFramebuffer(output);
+    if (output == PcBootSecondaryFramebuffer && PCDeviceBackend.textures[0] != NULL) {
+        color_texture->flags = (color_texture->flags & 0xfc13ffff) | 0x120000;
+        PCDisplayHandlerBindProgramsPc((PC_DL_SHADER_PROGRAM_PAIR_PC *)PostCopyTexProgramPc);
+        PCGraphicsBindEffectTexturePc(0, color_texture);
+        PCDeviceBackend.DrawPostEffectQuadPc();
+    }
+    PCDisplayHandlerBindProgramsPc((PC_DL_SHADER_PROGRAM_PAIR_PC *)programs[0]);
+    PCDeviceSetVertexShaderConstantsF(platform_uniform, constants, 2);
+    PCGraphicsPostEffectBackBufferTexturePc->flags =
+        ((PCGraphicsPostEffectBackBufferTexturePc->flags & 0xfff5ffff) | 0x40000) & 0xfc2fffff | 0x200000;
+    PCGraphicsPostEffectBackBufferTexturePc->flags =
+        ((PCGraphicsPostEffectBackBufferTexturePc->flags & 0xfffffbff) | 0x300) & 0xffffdfff | 0x1800;
+    PCGraphicsBindEffectTexturePc(0, PCGraphicsPostEffectBackBufferTexturePc);
+    if (PCDeviceHardwareVertexProcessingPC <= 1) {
+        PCGraphicsBindEffectTexturePc(1, PCGraphicsPostEffectBackBufferTexturePc);
+        PCGraphicsBindEffectTexturePc(2, PCGraphicsPostEffectBackBufferTexturePc);
+        PCGraphicsBindEffectTexturePc(3, PCGraphicsPostEffectBackBufferTexturePc);
+    }
+    PCDeviceSetRenderState(27, 1);
+    PCDeviceSetRenderState(15, 0);
+    PCDeviceSetRenderState(19, 5);
+    PCDeviceSetRenderState(20, 6);
+    PCDeviceSetRenderState(171, 1);
+    PCDeviceBackend.DrawPostEffectIndexedPc();
+    PCDeviceSetRenderState(22, 1);
+    PCDeviceSetRenderState(15, 0);
+    PCDeviceSetRenderState(27, 0);
+    PCDeviceSetRenderState(7, 0);
+    PCDeviceSetRenderState(168, 15);
+}
