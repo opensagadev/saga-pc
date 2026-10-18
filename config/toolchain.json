@@ -19,5 +19,22 @@
         "lib": "d0c247600d9576218a40bd1bc369a2086a41509cf2a99d5adad6b44f89f0eb82",
         "PlatformSDK/Include": "80f53e7c9351babb4fa6243dae172e78f23ba8138f794088710b1d5aa25c51a7",
         "PlatformSDK/Lib": "6a096e262282ec22926358fbdc90aecdd89d289ffbccda0ddee933315d6d4e1d"
+    },
+    "pdb_helpers": {
+        "version": "8.0.50727.42",
+        "files": {
+            "mspdbsrv.exe": {
+                "url": "https://raw.githubusercontent.com/archaic-msvc/msvc800/00ddaf58d09788f0b12e475dae5fb5674dd32578/VC/bin/mspdbsrv.exe",
+                "sha256": "eafc82bcb2c7661e880b4c9cf6473809c65d3d36dbd076dc656f4b38b3a9187e"
+            },
+            "mspdbcore.dll": {
+                "url": "https://raw.githubusercontent.com/archaic-msvc/msvc800/00ddaf58d09788f0b12e475dae5fb5674dd32578/VC/bin/mspdbcore.dll",
+                "sha256": "9678b3a3a2ffd3e2e53a84ce16a20271737e0e53ff9d8cd5e99665bc13557ff6"
+            },
+            "msobj80.dll": {
+                "url": "https://raw.githubusercontent.com/archaic-msvc/msvc800/00ddaf58d09788f0b12e475dae5fb5674dd32578/VC/bin/msobj80.dll",
+                "sha256": "803d06c37d7296bf9f2a9c34eb7bebae218b5f12c18d1dd110eaaa5d323c8268"
+            }
+        }
     }
 }

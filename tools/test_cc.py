@@ -1,6 +1,9 @@
 """Count complete linker names without relaxing unresolved-link policy."""
 from contextlib import redirect_stdout
 import io
+import os
+import subprocess
+import sys
 from pathlib import Path
 import tempfile
 from types import SimpleNamespace
@@ -41,7 +44,8 @@ class LinkerDiagnosticTests(unittest.TestCase):
         def invoke(command, **kwargs):
             self.assertEqual('/FORCE:UNRESOLVED' in command, allow)
             output.write_bytes(b'linked output')
-            return SimpleNamespace(stdout=log, stderr='', returncode=returncode)
+            kwargs['stdout'].write(log)
+            return SimpleNamespace(returncode=returncode)
 
         capture = io.StringIO()
         with patch.object(cc, 'environment', return_value=(Path(temp), 'mock-wine', {})), \
@@ -55,7 +59,7 @@ class LinkerDiagnosticTests(unittest.TestCase):
             result, output, log = self.link(temp, True)
             self.assertEqual(result, 0)
             self.assertTrue(output.is_file())
-            self.assertTrue(log.startswith(DIAGNOSTICS))
+            self.assertTrue(log.startswith(DIAGNOSTICS.replace("\r\n", "\n")))
             self.assertIn('Linked with 3 unresolved symbols', log)
 
     def test_strict_link_still_rejects_unresolved_symbols_and_removes_output(self):
@@ -72,6 +76,24 @@ class LinkerDiagnosticTests(unittest.TestCase):
                 with self.assertRaisesRegex(RuntimeError, 'Linking failed'):
                     self.link(temp, True, DIAGNOSTICS + suffix, returncode)
                 self.assertFalse((Path(temp) / 'probe.exe').exists())
+
+
+class ToolCaptureTests(unittest.TestCase):
+    def test_descendant_inherits_output_without_delaying_tool_completion(self):
+        # The child keeps both output handles open after its parent exits, just
+        # like a cold-started PDB server. Pipe capture would time out here.
+        source = ('import os,subprocess,sys; '
+                  'subprocess.Popen([sys.executable,"-c","import time; time.sleep(2)"]); '
+                  'os.write(1,b"stdout\\r\\ninvalid:\\xff\\n"); '
+                  'os.write(2,b"stderr\\r\\n"); sys.exit(7)')
+        result, log = cc.run_tool([sys.executable, "-c", source], dict(os.environ), timeout=1)
+        self.assertEqual(result.returncode, 7)
+        self.assertEqual(log, "stdout\ninvalid:\ufffd\nstderr\n")
+
+    def test_primary_tool_timeout_is_still_enforced(self):
+        with self.assertRaises(subprocess.TimeoutExpired):
+            cc.run_tool([sys.executable, "-c", "import time; time.sleep(2)"],
+                        dict(os.environ), timeout=0.05)
 
 
 if __name__ == '__main__':

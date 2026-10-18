@@ -26,8 +26,13 @@ def download(url, destination):
 
 def install_compiler(archive):
     pin = load_json(ROOT / "config/toolchain.json")
+    helpers = pin.get("pdb_helpers", {}).get("files", {})
+    if any(name in (".", "..") or Path(name).name != name or "\\" in name or ":" in name or name in pin["files"]
+           for name in helpers):
+        raise ValueError("PDB helper must be a separate allowlisted binary basename")
+    checksums = {**pin["files"], **{name: item["sha256"] for name, item in helpers.items()}}
     dest = ROOT / "build/tools/msvc8"
-    if not changed_files(dest / "bin", pin["files"]) and not changed_trees(dest, pin["trees"]):
+    if not changed_files(dest / "bin", checksums) and not changed_trees(dest, pin["trees"]):
         print(f'{pin["name"]} {pin["version"]}: verified, already installed')
         return
     with tempfile.TemporaryDirectory(prefix="saga-pc-compiler-") as temp:
@@ -68,6 +73,13 @@ def install_compiler(archive):
             path = staged / "bin" / name
             path.parent.mkdir(parents=True, exist_ok=True)
             path.write_bytes(data)
+        # The original compiler archive omits its matching PDB server/core closure.
+        # Download only separately pinned helper bytes; verify all before replacing cache.
+        for name, item in helpers.items():
+            path = staged / "bin" / name
+            download(item["url"], path)
+            if sha256(path) != item["sha256"]:
+                raise ValueError(f"PDB helper SHA-256 mismatch: {name}")
         # Replace this tool's whole directory so stale cache paths cannot redirect writes.
         if dest.is_symlink():
             dest.unlink()

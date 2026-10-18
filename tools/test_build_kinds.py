@@ -1,5 +1,7 @@
 """Keep diagnostics separate from native behavior and matching inputs."""
 import os
+import hashlib
+import json
 from pathlib import Path
 import shutil
 import subprocess
@@ -28,9 +30,9 @@ class BuildKindTests(unittest.TestCase):
         self.assertIn("/O2 /Gy /GS /MT /Z7", result.stdout)
         self.assertIn("/subsystem:console /entry:WinMainCRTStartup", result.stdout)
         self.assertNotIn("/subsystem:windows", result.stdout)
-        self.assertIn("/opt:noref /opt:noicf /MAP:build/Debug/LEGOStarWarsSaga_debug.map", result.stdout)
-        self.assertNotIn("/DEBUG", result.stdout)
-        self.assertNotIn("/PDB:", result.stdout)
+        self.assertIn("/opt:noref /opt:noicf /DEBUG /MAP:build/Debug/LEGOStarWarsSaga_debug.map", result.stdout)
+        self.assertIn("/DEBUG", result.stdout)
+        self.assertIn("/PDB:build/LEGOStarWarsSaga_debug.pdb", result.stdout)
         self.assertIn("/MAP:build/Debug/LEGOStarWarsSaga_debug.map", result.stdout)
         self.assertIn("--allow-unresolved", result.stdout)
         self.assertNotIn("build/obj/", result.stdout)
@@ -46,6 +48,8 @@ class BuildKindTests(unittest.TestCase):
         self.assertIn("/subsystem:windows", result.stdout)
         self.assertNotIn("/subsystem:console", result.stdout)
         self.assertNotIn("/entry:WinMainCRTStartup", result.stdout)
+        self.assertNotIn("/DEBUG", result.stdout)
+        self.assertNotIn("/PDB:", result.stdout)
         self.assertNotIn("SAGA_RUNTIME", result.stdout)
         self.assertNotEqual(self.make("runtime").returncode, 0)
 
@@ -63,6 +67,9 @@ class BuildKindTests(unittest.TestCase):
                 self.assertEqual(result.returncode, 0, result.stderr)
                 self.assertIn("--link " + strict, result.stdout)
                 self.assertNotIn("--allow-unresolved", result.stdout)
+                if kind == "Debug":
+                    self.assertIn("/PDB:" + strict.removesuffix(".exe") + ".pdb", result.stdout)
+                    self.assertNotIn("/PDB:build/LEGOStarWarsSaga_debug.pdb", result.stdout)
 
     def test_debug_cannot_enter_matching_tools_and_unknown_kinds_fail(self):
         for target in ("match", "diff", "check-objects"):
@@ -120,8 +127,28 @@ class BuildKindTests(unittest.TestCase):
                         check.check_diagnostic_boundaries()
                     foreign.unlink()
 
+    def test_compiler_environment_verifies_pdb_closure_before_invoking_wine(self):
+        with tempfile.TemporaryDirectory() as temp:
+            root = Path(temp)
+            (root / "config").mkdir()
+            compiler = root / "build/tools/msvc8/bin"
+            compiler.mkdir(parents=True)
+            (compiler / "cl.exe").write_bytes(b"compiler")
+            pin = {"files": {"cl.exe": hashlib.sha256(b"compiler").hexdigest()}, "trees": {},
+                   "pdb_helpers": {"files": {"mspdbcore.dll": {
+                       "sha256": hashlib.sha256(b"helper").hexdigest(), "url": "unused"}}}}
+            (root / "config/toolchain.json").write_text(json.dumps(pin))
+            with patch.object(cc, "ROOT", root), patch.object(cc.shutil, "which", return_value="wine"):
+                with self.assertRaisesRegex(ValueError, "mspdbcore.dll"):
+                    cc.environment()
+                (compiler / "mspdbcore.dll").write_bytes(b"helper")
+                self.assertEqual(cc.environment()[0], compiler)
+                (compiler / "mspdbcore.dll").write_bytes(b"corrupt")
+                with self.assertRaisesRegex(ValueError, "mspdbcore.dll"):
+                    cc.environment()
+
     def test_symbol_output_paths_are_explicit_and_windows_native_paths_survive(self):
-        for option in ("/MAP",):
+        for option in ("/MAP", "/PDB"):
             self.assertEqual(cc.linker_output_path(option + ":build/Debug/game.map"),
                              option + ":" + cc.windows(ROOT / "build/Debug/game.map"))
             self.assertEqual(cc.linker_output_path(option + r":Z:\debug\game.map"),

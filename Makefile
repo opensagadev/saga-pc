@@ -50,8 +50,10 @@ CXXFLAGS += /Z7
 # Wine can give GUI applications no stdout when launched from a terminal. Keep the
 # native WinMain CRT path, but let the loader provide diagnostic console handles.
 LDFLAGS := $(subst /subsystem:windows,/subsystem:console /entry:WinMainCRTStartup,$(LDFLAGS))
-# Keep native linker optimization defaults; the pinned PDB writer cannot emit a PDB.
-LDFLAGS += /MAP:build/Debug/LEGOStarWarsSaga_debug.map
+# Explicit /OPT defaults above prevent /DEBUG from changing native link optimization.
+LDFLAGS += /DEBUG /MAP:build/Debug/LEGOStarWarsSaga_debug.map
+# Each Debug executable gets its own adjacent PDB, including link-strict.
+pdb_flag = /PDB:$(patsubst %.exe,%.pdb,$(1))
 endif
 LDLIBS := user32.lib gdi32.lib winmm.lib ole32.lib oleaut32.lib shell32.lib advapi32.lib $(abspath $(D3D9_LIB)) $(abspath $(D3DX_LIB)) $(abspath $(DSOUND_LIB)) $(abspath $(DINPUT8_LIB)) $(abspath $(XINPUT_LIB)) $(abspath $(BINK_LIB))
 
@@ -73,11 +75,11 @@ run: $(EXE)
 
 # Directory dependencies also relink when a source is removed from the input list.
 $(EXE): $(OBJECTS) $(DIAGNOSTIC_OBJECTS) $(D3DX_LIB) $(DSOUND_LIB) $(D3D9_LIB) $(DINPUT8_LIB) $(XINPUT_LIB) $(BINK_LIB) $(SOURCE_DIRS) config/toolchain.json Makefile tools/cc.py tools/lib.py
-	$(PYTHON) tools/cc.py --link --allow-unresolved $@ $(OBJECTS) $(DIAGNOSTIC_OBJECTS) -- $(LDFLAGS) $(LDLIBS)
+	$(PYTHON) tools/cc.py --link --allow-unresolved $@ $(OBJECTS) $(DIAGNOSTIC_OBJECTS) -- $(LDFLAGS) $(call pdb_flag,$@) $(LDLIBS)
 
 # The complete link: every referenced function must be implemented.
 link-strict: $(OBJECTS) $(DIAGNOSTIC_OBJECTS) $(D3DX_LIB) $(DSOUND_LIB) $(D3D9_LIB) $(DINPUT8_LIB) $(XINPUT_LIB) $(BINK_LIB)
-	$(PYTHON) tools/cc.py --link $(STRICT_EXE) $(OBJECTS) $(DIAGNOSTIC_OBJECTS) -- $(LDFLAGS) $(LDLIBS)
+	$(PYTHON) tools/cc.py --link $(STRICT_EXE) $(OBJECTS) $(DIAGNOSTIC_OBJECTS) -- $(LDFLAGS) $(call pdb_flag,$(STRICT_EXE)) $(LDLIBS)
 
 # Debug support contains diagnostics only and never enters Matching objects.
 # Recompile this small Debug-only object so its identity tracks source edits and commits.
@@ -151,8 +153,8 @@ inspect:
 
 clean:
 	rm -rf build/obj build/objdiff build/Debug/obj
-	rm -f build/LEGOStarWarsSaga.exe build/LEGOStarWarsSaga_debug.exe
-	rm -f build/strict/LEGOStarWarsSaga.strict.exe build/Debug/LEGOStarWarsSaga.strict_debug.exe
+	rm -f build/LEGOStarWarsSaga.exe build/LEGOStarWarsSaga_debug.exe build/LEGOStarWarsSaga_debug.pdb
+	rm -f build/strict/LEGOStarWarsSaga.strict.exe build/Debug/LEGOStarWarsSaga.strict_debug.exe build/Debug/LEGOStarWarsSaga.strict_debug.pdb
 	rm -f build/Debug/log.obj build/Debug/crash_diagnostics.obj build/Debug/skin_trace.obj build/Debug/skin_trace_windows.obj build/Debug/LEGOStarWarsSaga_debug.pdb build/Debug/LEGOStarWarsSaga_debug.map
 
 build/Debug/skin_trace.obj: src/skin_trace.cpp src/skin_trace.h src/diagnostics.h config/toolchain.json Makefile tools/cc.py tools/lib.py | build/tools/wine/.ready

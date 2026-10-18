@@ -41,13 +41,29 @@ The executables are `build/LEGOStarWarsSaga.exe` (Matching) and
 `build/Debug/obj/`; Debug uses embedded CodeView
 symbols in its objects and an isolated linker map. The two kinds use the same source, `/O2 /Gy /GS /MT`, native linker
 optimization settings and unresolved-symbol policy. Debug adds `/Z7`, linker
-`/MAP`, and `SAGA_DEBUG` for diagnostic support. Its PE uses the console subsystem
+`/DEBUG`, `/PDB`, `/MAP`, and `SAGA_DEBUG` for diagnostic support. Its PE uses the console subsystem
 with an explicit `WinMainCRTStartup` entry so Wine terminal launches inherit working
 stdout; the native `WinMain` startup path stays the same. Matching retains the GUI
 subsystem. Debug preserves inherited terminal, pipe and file redirection, and does not define
 `DEBUG` or `_DEBUG`, select a debug CRT, or change assertion policy.
-The pinned PDB writer rejects `/DEBUG` with LNK1101, so Debug does not emit a
-PDB; its object symbols and map are the supported symbol outputs.
+Setup installs the matching PDB helper closure (`mspdbsrv.exe`, `mspdbcore.dll`,
+`msobj80.dll`, version 8.0.50727.42) from separate immutable URLs and SHA-256 pins;
+the original compiler archive and compiler/linker binaries remain unchanged. These
+legacy helpers come from the immutable `archaic-msvc/msvc800` mirror revision pinned
+in `config/toolchain.json`; hashes/version agreement and identical compiler/PDB
+companions establish reproducibility, not vendor authentication for unsigned DLLs. An
+older cache needs `python3 tools/setup.py --compiler-only` once; even `--archive`
+installs these separately downloaded helpers. Missing or changed helpers are rejected
+before compilation/linking. Debug emits `build/LEGOStarWarsSaga_debug.pdb` alongside
+the executable; strict Debug links use their own adjacent PDB. Explicit
+`/OPT:NOREF /OPT:NOICF` preserve the existing link optimization policy under `/DEBUG`.
+Retain the exact executable and matching PDB together. Wine's automatic crash
+debugger can read this PDB for function names and source lines (verified with a
+controlled fixture), but optimized x86 frame unwinding and local values can be
+incomplete or wrong. In the controlled test Wine omitted intermediate frames after
+an FPO unwind error; a symbolic fault location is not a guarantee of a full stack.
+The existing map-based [offline helper](docs/crash-symbols.md) remains available
+when the PDB is unavailable; its stack words are unverified candidates.
 `match`, `diff` and `check-objects` require Matching and never consume Debug
 objects. `make clean` removes the managed outputs of both kinds, leaving legacy
 investigation archives alone.

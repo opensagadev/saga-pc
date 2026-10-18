@@ -7,6 +7,7 @@ import re
 import shutil
 import subprocess
 import sys
+import tempfile
 
 if __package__:
     from .lib import ROOT, changed_files, changed_trees, load_json
@@ -20,9 +21,9 @@ def windows(path):
 
 
 def linker_output_path(flag):
-    """Keep explicit map output beside the selected build artifact."""
+    """Keep explicit symbol output beside the selected build artifact."""
     name, separator, value = flag.partition(":")
-    if separator and name.upper() == "/MAP":
+    if separator and name.upper() in ("/MAP", "/PDB"):
         if not re.match(r"^[A-Za-z]:[\\/]", value) and not value.startswith("\\\\"):
             return name + ":" + windows(Path(value))
     return flag
@@ -38,7 +39,9 @@ def environment():
     """Verify the toolchain and isolate both compiler and linker from host options."""
     pin = load_json(ROOT / "config/toolchain.json")
     compiler = ROOT / "build/tools/msvc8/bin"
-    changed = changed_files(compiler, pin["files"])
+    helpers = pin.get("pdb_helpers", {}).get("files", {})
+    checksums = {**pin["files"], **{name: item["sha256"] for name, item in helpers.items()}}
+    changed = changed_files(compiler, checksums)
     if changed:
         raise ValueError(f"Missing or changed compiler files: {', '.join(changed)}; run make setup")
     changed = changed_trees(compiler.parent, pin["trees"])
@@ -62,6 +65,21 @@ def import_library_command(dlltool, source, output, decorated_exports=False):
     """Preserve decorated DLL exports only when the definition explicitly requires them."""
     flags = [] if decorated_exports else ["-k"]
     return [dlltool, "-m", "i386", *flags, "-d", str(source), "-l", str(output)]
+
+
+def run_tool(command, env, timeout=180):
+    """A PDB server can outlive link.exe and inherit stdout/stderr handles.
+
+    Regular files let us wait for the tool itself without waiting for pipe EOF
+    from its long-lived descendants. Preserve stdout-then-stderr diagnostics.
+    """
+    with tempfile.TemporaryFile(mode="w+", errors="replace") as stdout, \
+            tempfile.TemporaryFile(mode="w+", errors="replace") as stderr:
+        result = subprocess.run(command, cwd=ROOT, env=env, stdout=stdout, stderr=stderr,
+                                timeout=timeout)
+        stdout.seek(0)
+        stderr.seek(0)
+        return result, stdout.read() + stderr.read()
 
 
 def main():
@@ -144,9 +162,7 @@ def main():
                        "/Fo" + windows(output), windows(source)]
         output.parent.mkdir(parents=True, exist_ok=True)
         output.unlink(missing_ok=True)
-        result = subprocess.run(command, cwd=ROOT, env=env, capture_output=True,
-                                text=True, errors="replace", timeout=180)
-        log = result.stdout + result.stderr
+        result, log = run_tool(command, env)
         print(log, end="", flush=True)
         # Ignored options and forced unresolved links can otherwise exit successfully.
         if args.link and args.allow_unresolved:

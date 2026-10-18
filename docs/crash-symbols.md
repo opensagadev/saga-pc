@@ -54,7 +54,13 @@ address candidates, never unwound frames or confirmed callers. At most 16 stack
 words are accepted. Return-address adjustment is not guessed. No source-line or
 full-stack claim is made, including when a stack word matches a symbol exactly.
 
-The current VC8 Debug build retains `/Z7` CodeView information in object files but
-has no linked PDB/debug directory. Wine's `winedbg` provides `bt`, but the existing
-object files do not automatically supply a symbolic backtrace. The map-based
-lookup works offline without attaching a debugger or rerunning the game.
+The VC8 Debug build retains `/Z7` CodeView information in object files and emits an
+adjacent PDB through `/DEBUG`. Keep the exact executable/PDB pair together: Wine's
+automatic crash debugger can use it to report a function and source line. Controlled
+Wine testing resolved the faulting function and line, but optimized x86 FPO unwinding
+failed for intermediate frames, and local/argument values can be unreliable. Do not
+interpret a short symbolic backtrace as proof that all callers were recovered.
+
+This map-based helper is a supplement when a PDB is absent or for existing raw fault
+records. It works offline without attaching a debugger or rerunning the game and does
+not read the PDB, recover source lines, or unwind frames.

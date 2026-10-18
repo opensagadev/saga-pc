@@ -147,6 +147,60 @@ class SetupTests(unittest.TestCase):
         setup.install_compiler(self.archive)
         self.assertFalse(header.is_symlink())
 
+    def add_pdb_helpers(self):
+        helpers = {name: ("synthetic " + name).encode()
+                   for name in ("mspdbsrv.exe", "mspdbcore.dll", "msobj80.dll")}
+        self.pin["pdb_helpers"] = {"version": "8.0.50727.42", "files": {
+            name: {"url": "https://invalid.example/" + name, "sha256": digest(data)}
+            for name, data in helpers.items()}}
+        self.write_pin()
+        return helpers
+
+    def test_missing_pdb_closure_is_repaired_and_warm_cache_needs_no_network(self):
+        setup.install_compiler(self.archive)
+        helpers = self.add_pdb_helpers()
+        def fetch(url, destination):
+            if url == self.pin["url"]:
+                shutil.copyfile(self.archive, destination)
+            else:
+                destination.write_bytes(helpers[url.rsplit("/", 1)[-1]])
+        with patch.object(setup, "download", side_effect=fetch) as download:
+            setup.install_compiler(None)
+        self.assertEqual(download.call_count, 4)
+        installed = self.compiler.parent
+        for name, data in {**self.compiler_files, **helpers}.items():
+            self.assertEqual((installed / name).read_bytes(), data)
+        with patch.object(setup, "download") as download:
+            setup.install_compiler(None)
+        download.assert_not_called()
+        (installed / "mspdbcore.dll").write_bytes(b"changed")
+        with patch.object(setup, "download", side_effect=fetch):
+            setup.install_compiler(self.archive)
+        self.assertEqual((installed / "mspdbcore.dll").read_bytes(), helpers["mspdbcore.dll"])
+
+    def test_bad_helper_after_verified_helper_preserves_existing_toolchain(self):
+        setup.install_compiler(self.archive)
+        before = {p.relative_to(self.compiler.parent.parent): p.read_bytes()
+                  for p in self.compiler.parent.parent.rglob("*") if p.is_file()}
+        helpers = self.add_pdb_helpers()
+        def fetch(url, destination):
+            name = url.rsplit("/", 1)[-1]
+            destination.write_bytes(helpers[name] if name == "mspdbsrv.exe" else b"corrupt")
+        with patch.object(setup, "download", side_effect=fetch):
+            with self.assertRaisesRegex(ValueError, "PDB helper SHA-256 mismatch"):
+                setup.install_compiler(self.archive)
+        after = {p.relative_to(self.compiler.parent.parent): p.read_bytes()
+                 for p in self.compiler.parent.parent.rglob("*") if p.is_file()}
+        self.assertEqual(after, before)
+
+    def test_helper_cannot_replace_matching_compiler_or_escape_binary_directory(self):
+        for name in ("cl.exe", "../escape.dll", "..", "sub/helper.dll", "C:helper.dll", "a\\b.dll"):
+            self.pin["pdb_helpers"] = {"files": {name: {"url": "unused", "sha256": "0" * 64}}}
+            self.write_pin()
+            with self.assertRaisesRegex(ValueError, "separate allowlisted"):
+                setup.install_compiler(self.archive)
+        self.assertFalse((self.root / "build/tools").exists())
+
     def test_bad_objdiff_download_preserves_existing_binary(self):
         self.objdiff.parent.mkdir(parents=True)
         self.objdiff.write_bytes(b"previous binary")
@@ -282,6 +336,25 @@ class CompilerHeadersTests(unittest.TestCase):
             self.assertNotEqual(result.returncode, 0)
             self.assertIn("LNK4044", result.stdout + result.stderr)
             self.assertFalse(output.exists(), "Ignored options must remove the produced executable")
+
+    def test_z7_debug_link_produces_adjacent_pdb_with_rsds_identity(self):
+        with tempfile.TemporaryDirectory(prefix="saga-pc-pdb-test-") as temp:
+            directory = Path(temp)
+            self.compile(temp, "c", 'int main(void) { return 0; }', ("/MT", "/GS-", "/Z7"))
+            output = directory / "probe.exe"
+            pdb = output.with_suffix(".pdb")
+            # A unique process-local endpoint exercises cold PDB server startup.
+            # Never stop or reconfigure an existing shared Wine/PDB server.
+            env = dict(os.environ, _MSPDBSRV_ENDPOINT_="saga-pc-pdb-test-" + directory.name)
+            result = self.link(output, [directory / "probe.obj"],
+                               ("/DEBUG", "/OPT:NOREF", "/OPT:NOICF", "/PDB:" + str(pdb)), env=env)
+            self.assertEqual(result.returncode, 0, result.stdout + result.stderr)
+            self.assertTrue(pdb.is_file())
+            self.assertTrue(pdb.read_bytes().startswith(b"Microsoft C/C++ MSF 7.00"))
+            references = PE(output)._pdb()
+            self.assertEqual(len(references), 1)
+            self.assertEqual(references[0]["format"], "RSDS")
+            self.assertTrue(references[0]["path"].lower().endswith("probe.pdb"))
 
     def test_unresolved_link_and_force_option_fail_without_leaving_an_executable(self):
         with tempfile.TemporaryDirectory(prefix="saga-pc-link-failure-") as temp:
