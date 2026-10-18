@@ -199,7 +199,7 @@ def check_headers():
     allowed = {"src/saga.h", "src/externals.h", "src/debug/diagnostics.h", "src/debug/skin_trace.h",
                "src/debug/support.h",
                "src/nu2api/pc_fmv_native.h"} | {
-        "src/audio/vorbis/" + name for name in vorbis_headers}
+        "src/vendored/vorbis/" + name for name in vorbis_headers}
     if "src/saga.h" not in headers or headers - allowed:
         raise ValueError("Project headers must be src/saga.h, src/debug/diagnostics.h and optional src/externals.h "
                          "or the reviewed original Vorbis header catalog, native PC FMV ABI header "

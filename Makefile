@@ -29,13 +29,13 @@ OBJECTS := $(OBJECTS:.c=.obj)
 $(filter $(OBJ_DIR)/nu2api/pc_fmv%.obj,$(OBJECTS)): src/nu2api/pc_fmv_native.h
 
 # Original Vorbis private headers/textual tables belong to these owners only.
-VORBIS_HEADERS := $(shell find src/audio/vorbis -type f \( -name '*.h' -o -name '*.inc' \) 2>/dev/null)
-ifneq ($(filter $(OBJ_DIR)/audio/vorbis/%,$(OBJECTS)),)
-$(filter $(OBJ_DIR)/audio/vorbis/%,$(OBJECTS)): $(VORBIS_HEADERS)
+VORBIS_HEADERS := $(shell find src/vendored/vorbis -type f \( -name '*.h' -o -name '*.inc' \) 2>/dev/null)
+ifneq ($(filter $(OBJ_DIR)/vendored/vorbis/%,$(OBJECTS)),)
+$(filter $(OBJ_DIR)/vendored/vorbis/%,$(OBJECTS)): $(VORBIS_HEADERS)
 endif
 # Retail libvorbis was built without /GS: none of its functions carry a security
 # cookie. vorbisfile keeps them, so it was built with the game's flags.
-$(filter-out $(OBJ_DIR)/audio/vorbis/vorbisfile.obj,$(filter $(OBJ_DIR)/audio/vorbis/% $(OBJ_DIR)/audio/vorbis_%,$(OBJECTS))): CXXFLAGS += /GS-
+$(filter-out $(OBJ_DIR)/vendored/vorbis/vorbisfile.obj,$(filter $(OBJ_DIR)/vendored/vorbis/% $(OBJ_DIR)/vendored/vorbis_%,$(OBJECTS))): CXXFLAGS += /GS-
 $(filter $(OBJ_DIR)/nu2api/oggreader.obj $(OBJ_DIR)/nu2api/nustream.obj,$(OBJECTS)): $(VORBIS_HEADERS)
 D3DX_LIB := build/lib/imports/d3dx9_35.lib
 DSOUND_LIB := build/lib/imports/dsound.lib

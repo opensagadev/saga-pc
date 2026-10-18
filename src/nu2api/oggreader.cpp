@@ -1,6 +1,6 @@
 #include "saga.h"
 #include <string.h>
-#include "../audio/vorbis/vorbis/vorbisfile.h"
+#include "../vendored/vorbis/vorbis/vorbisfile.h"
 struct PC_OGG_CACHE_RECORD_PC {
     char path[0x104];
     u8 *data;

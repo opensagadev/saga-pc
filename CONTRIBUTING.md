@@ -325,7 +325,7 @@ src/saga.h     Shared declarations and layout checks
 src/nu2api/    Engine, resources, rendering and Windows platform services
 src/legoapi/   Characters, movement, world loading, menus and gameplay
 src/gameapi/   Objects, AI, scripts and collision
-src/audio/     Ogg and original libvorbis 1.2.0
+src/vendored/  Modified Xiph Ogg/Vorbis sources; provenance and links in README.md
 tools/         setup.py, cc.py (VC8 via Wine), check.py, match.py, permute.py
 build/         Objects, linked EXE, objdiff reports, tools (ignored)
 ```

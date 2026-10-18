@@ -411,18 +411,23 @@ class HeaderLayoutTests(unittest.TestCase):
     def test_reviewed_vorbis_header_catalog_is_scoped(self):
         with tempfile.TemporaryDirectory() as temp, patch.object(check_module, "ROOT", Path(temp)):
             src = Path(temp) / "src"
-            vendor = src / "audio/vorbis"
+            vendor = src / "vendored/vorbis"
             vendor.mkdir(parents=True)
             (src / "saga.h").write_text("// shared contract\n")
             (vendor / "os.h").write_text("// original library-local header\n")
             check_module.check_headers()
-            (vendor / "unreviewed.h").write_text("// forbidden even within library\n")
-            with self.assertRaisesRegex(ValueError, "reviewed original Vorbis"):
-                check_module.check_headers()
-            (vendor / "unreviewed.h").unlink()
+            for path in (vendor / "unreviewed.h", src / "vendored/unrelated.h", src / "audio/vorbis/os.h"):
+                with self.subTest(path=path):
+                    path.parent.mkdir(parents=True, exist_ok=True)
+                    path.write_text("// outside the reviewed header catalog\n")
+                    with self.assertRaisesRegex(ValueError, "reviewed original Vorbis"):
+                        check_module.check_headers()
+                    path.unlink()
+            (vendor / "codebook.c").write_text("// vendored code remains a native source\n")
+            self.assertIn("src/vendored/vorbis/codebook.c", check_module.source_files())
             (vendor / "lookup.inc").write_text("// original textual table owner\n")
-            self.assertIn("src/audio/vorbis/lookup.inc", check_module.source_files(headers=True))
-            self.assertNotIn("src/audio/vorbis/lookup.inc", check_module.source_files())
+            self.assertIn("src/vendored/vorbis/lookup.inc", check_module.source_files(headers=True))
+            self.assertNotIn("src/vendored/vorbis/lookup.inc", check_module.source_files())
 
 
 class ClangChecksTests(unittest.TestCase):
