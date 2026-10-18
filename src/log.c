@@ -53,33 +53,10 @@ static void save_original_streams(void) {
     }
 }
 
+/* Private Debug support; setup owns readiness, restricted inheritance and rollback. */
 static void capture_standard_streams(void) {
-    int out = _fileno(stdout), err = _fileno(stderr);
-    int file;
-    HANDLE duplicate;
-    if (log_file == INVALID_HANDLE_VALUE || !log_capture_eligible || log_original_out < 0 || log_original_err < 0)
-        return;
-    if (!DuplicateHandle(GetCurrentProcess(), log_file, GetCurrentProcess(), &duplicate, 0, TRUE,
-                         DUPLICATE_SAME_ACCESS))
-        return;
-    file = _open_osfhandle((intptr_t)duplicate, _O_WRONLY | _O_BINARY);
-    if (file < 0) {
-        CloseHandle(duplicate);
-        return;
-    }
-    /* All handles duplicate one file object/position, including inherited WineDbg
-     * output. A second fopen of the path would allow streams to overwrite each other. */
-    if (SetStdHandle(STD_OUTPUT_HANDLE, log_file) && SetStdHandle(STD_ERROR_HANDLE, log_file) &&
-        _dup2(file, out) == 0 && _dup2(file, err) == 0) {
-        log_capture = 1;
-    } else {
-        /* Restore CRT ownership first: its old numeric handles may already be closed. */
-        int restored_out = _dup2(log_original_out, out);
-        int restored_err = _dup2(log_original_err, err);
-        SetStdHandle(STD_OUTPUT_HANDLE, (HANDLE)_get_osfhandle(restored_out == 0 ? out : log_original_out));
-        SetStdHandle(STD_ERROR_HANDLE, (HANDLE)_get_osfhandle(restored_err == 0 ? err : log_original_err));
-    }
-    _close(file);
+    if (log_file != INVALID_HANDLE_VALUE && log_capture_eligible && log_original_out >= 0 && log_original_err >= 0)
+        log_capture = SagaDebugCaptureStreamsPc(log_file, log_original_out, log_original_err);
 }
 
 /* CREATE_NEW prevents overwriting a previous run, even after PID reuse. */
@@ -129,13 +106,9 @@ static void write_record(enum log_level level, const char *record) {
         WriteFile(output, record, length, &written, NULL);
     if (colored)
         SetConsoleTextAttribute(output, console.wAttributes);
-    if (log_capture) {
-        /* CRT stdout/stderr and Win32 standard handles share the dated file.
-         * Write this record once, not again through the original raw file sink. */
-        fputs(record, stdout);
-        fflush(stdout);
-    } else if (log_file != INVALID_HANDLE_VALUE) {
-        /* Unbuffered WriteFile keeps completed records available after a crash. */
+    /* Normal records bypass the raw-stream pipes. They reach each destination
+     * once without waiting for the independent copier. */
+    if (log_file != INVALID_HANDLE_VALUE) {
         if (!WriteFile(log_file, record, length, &written, NULL) || written != length) {
             CloseHandle(log_file);
             log_file = INVALID_HANDLE_VALUE;

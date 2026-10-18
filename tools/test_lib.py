@@ -434,13 +434,15 @@ class ProjectInputTests(unittest.TestCase):
         with tempfile.TemporaryDirectory() as temp, patch.object(lib, "ROOT", Path(temp)):
             root = Path(temp)
             (root / "src").mkdir()
-            for name in ("log.c", "skin_trace.cpp", "skin_trace_windows.cpp", "crash_diagnostics.cpp"):
+            for name in ("log.c", "skin_trace.cpp", "skin_trace_windows.cpp", "crash_diagnostics.cpp",
+                         "stream_capture.c", "log_copier.c"):
                 (root / "src" / name).write_text("// Debug-only support\n")
                 stale = root / "build/obj" / Path(name).with_suffix(".obj")
                 stale.parent.mkdir(parents=True, exist_ok=True)
                 stale.write_bytes(b"must not read stale diagnostic objects")
             self.assertEqual(lib.compiled_objects(), {})
-            for name in ("skin_trace_extra.cpp", "crash_diagnostics_extra.cpp"):
+            for name in ("skin_trace_extra.cpp", "crash_diagnostics_extra.cpp",
+                         "stream_capture_extra.c", "log_copier_extra.c"):
                 native = root / "src" / name
                 native.write_text("// native source\n")
                 with self.assertRaisesRegex(ValueError, "Missing build/obj/" + native.stem + ".obj"):

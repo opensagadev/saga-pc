@@ -39,6 +39,27 @@ class BuildKindTests(unittest.TestCase):
         self.assertNotIn("traps", result.stdout)
         self.assertNotIn("/MTd", result.stdout)
 
+    def test_internal_copier_is_adjacent_debug_only_and_not_linked_into_game(self):
+        matching = self.make("BUILD_KIND=Matching", "build")
+        self.assertEqual(matching.returncode, 0, matching.stderr)
+        self.assertNotIn("stream_capture.obj", matching.stdout)
+        self.assertNotIn("log_copier.obj", matching.stdout)
+        self.assertNotIn("saga_debug_capture.exe", matching.stdout)
+        debug = self.make("BUILD_KIND=Debug", "build")
+        self.assertEqual(debug.returncode, 0, debug.stderr)
+        self.assertIn("--link build/saga_debug_capture.exe build/Debug/log_copier.obj", debug.stdout)
+        game = next(line for line in debug.stdout.splitlines()
+                    if "--link --allow-unresolved build/LEGOStarWarsSaga_debug.exe " in line)
+        self.assertIn("build/Debug/stream_capture.obj", game)
+        self.assertNotIn("log_copier.obj", game)
+        strict = self.make("BUILD_KIND=Debug", "link-strict")
+        self.assertEqual(strict.returncode, 0, strict.stderr)
+        self.assertIn("cp build/saga_debug_capture.exe build/Debug/saga_debug_capture.exe", strict.stdout)
+        clean = self.make("clean")
+        self.assertIn("build/saga_debug_capture.exe", clean.stdout)
+        self.assertIn("build/Debug/stream_capture.obj", clean.stdout)
+        self.assertIn("build/Debug/log_copier.obj", clean.stdout)
+
     def test_matching_is_default_and_legacy_runtime_is_retired(self):
         result = self.make("-p", "build")
         self.assertEqual(result.returncode, 0, result.stderr)
@@ -177,6 +198,15 @@ class DiagnosticCompilerTests(unittest.TestCase):
                       "/Ibuild/tools/msvc8/PlatformSDK/Include", *flags])
         return COFF(output)
 
+    def compile_capture_helper(self, directory):
+        obj = directory / "log_copier.obj"
+        executable = directory / "saga_debug_capture.exe"
+        self.compile(ROOT / "src/log_copier.c", obj, debug=True)
+        self.command([sys.executable, ROOT / "tools/cc.py", "--link", executable, obj,
+                      "--", "/nologo", "/machine:x86", "/subsystem:console",
+                      "/incremental:no", "/manifest:no"])
+        return executable
+
     def test_matching_diagnostics_emit_no_code_data_or_argument_references(self):
         with tempfile.TemporaryDirectory(prefix="saga-diagnostics-") as temp:
             directory = Path(temp)
@@ -266,6 +296,7 @@ static BOOL WINAPI test_set_std(DWORD which, HANDLE value) {
 #define _dup test_dup
 #define _dup2 test_dup2
 #define SetStdHandle test_set_std
+#include "stream_capture.c"
 #include "log.c"
 #undef SetStdHandle
 #undef _dup2
@@ -324,12 +355,14 @@ int main(int argc, char **argv) {
             crash = directory / "crash.obj"
             self.compile(source, obj, debug=True)
             self.compile(ROOT / "src/crash_diagnostics.cpp", crash, debug=True)
+            helper = self.compile_capture_helper(directory)
             _, wine, env = cc.environment()
             for mode in ("normal", "d1", "d2", "s1", "s2", "closed", "closederr", "backup2", "closederrblocked"):
                 with self.subTest(mode=mode):
                     run = directory / mode
                     run.mkdir()
                     executable = run / "probe.exe"
+                    shutil.copyfile(helper, run / helper.name)
                     self.command([sys.executable, ROOT / "tools/cc.py", "--link", executable,
                                   obj, crash, "--", "/nologo", "/machine:x86", "/subsystem:console",
                                   "/incremental:no", "/manifest:no"])
@@ -352,7 +385,7 @@ int main(int argc, char **argv) {
                         for stream in ("crt-out", "crt-err", "win-out", "win-err"):
                             marker = origin + "-" + stream
                             self.assertEqual(text.count(marker), int(mode == "normal"))
-                            self.assertEqual((result.stdout + result.stderr).count(marker), int(mode not in ("normal", "closed", "closederr")))
+                            self.assertEqual((result.stdout + result.stderr).count(marker), int(mode not in ("closed", "closederr")))
 
     def test_fault_log_stem_collision_and_latest_record_bounds(self):
         with tempfile.TemporaryDirectory(prefix="saga-fault-name-") as temp:
@@ -465,6 +498,9 @@ int main(void) {
 ''')
             logger = directory / "log.obj"
             self.compile(ROOT / "src/log.c", logger, debug=True)
+            capture = directory / "stream_capture.obj"
+            self.compile(ROOT / "src/stream_capture.c", capture, debug=True)
+            self.compile_capture_helper(directory)
             crash = directory / "crash_diagnostics.obj"
             self.compile(ROOT / "src/crash_diagnostics.cpp", crash, debug=True)
             _, wine, env = cc.environment()
@@ -473,7 +509,7 @@ int main(void) {
                     obj = directory / (kind + ".obj")
                     self.compile(source, obj, debug=kind == "Debug")
                     executable = directory / (kind + ".exe")
-                    objects = [obj, logger, crash] if kind == "Debug" else [obj]
+                    objects = [obj, logger, crash, capture] if kind == "Debug" else [obj]
                     self.command([sys.executable, ROOT / "tools/cc.py", "--link", executable,
                                   *objects, "--", "/nologo", "/machine:x86", "/subsystem:console",
                                   "/incremental:no", "/manifest:no"])

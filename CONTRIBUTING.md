@@ -96,13 +96,18 @@ file named with local timestamp, git revision, deterministic build-input hash,
 process ID and collision suffix. The startup banner identifies the build. File
 creation/write failure leaves application console output active. Application records
 are serialized across threads and flushed immediately. At first log initialization,
-the dated file is also shared by CRT stdout/stderr and the inheritable Windows
-standard handles. Application records write once to this file and separately to the
-saved original output handle with terminal colors. Raw CRT/Win32 output and inherited
-WineDbg output go to the dated file; they may be file-only and follow their own
+Debug starts the adjacent internal `saga_debug_capture.exe` copier and redirects
+CRT stdout/stderr and the Windows standard handles to its two pipes. The copier
+writes raw output to each original terminal destination and to the same dated
+file, including inherited WineDbg output. It runs independently until all pipe
+writers close, including descendants that outlive the game. Normal application
+records bypass these pipes: they write once directly to the file and once to the
+saved original output handle with terminal colors. Raw output follows its own
 buffering/interleaving. Wine's Unix-host stderr remains separate, so not every Wine
-message is captured. There is no tee process, wrapper, debugger override or added
-thread. If stream setup fails, the logger retains its original console/file sinks;
+message is captured. There is no external launch wrapper or debugger override.
+The helper is built automatically for normal and strict Debug; keep it beside the
+Debug executable when moving the build. If it is missing or stream setup fails,
+the logger retains its original console/file sinks;
 the startup banner reports whether standard-stream capture is active. Explicit host
 redirection remains useful for Wine's Unix messages, for example
 `make BUILD_KIND=Debug run >build/human-test.log 2>&1`.

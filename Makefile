@@ -9,7 +9,9 @@ else ifeq ($(BUILD_KIND),Debug)
 OBJ_DIR := build/Debug/obj
 EXE := build/LEGOStarWarsSaga_debug.exe
 STRICT_EXE := build/Debug/LEGOStarWarsSaga.strict_debug.exe
-DIAGNOSTIC_OBJECTS := build/Debug/log.obj build/Debug/crash_diagnostics.obj build/Debug/skin_trace.obj build/Debug/skin_trace_windows.obj
+DIAGNOSTIC_OBJECTS := build/Debug/stream_capture.obj build/Debug/log.obj build/Debug/crash_diagnostics.obj build/Debug/skin_trace.obj build/Debug/skin_trace_windows.obj
+DEBUG_CAPTURE_HELPER := build/saga_debug_capture.exe
+DEBUG_STRICT_CAPTURE_HELPER := build/Debug/saga_debug_capture.exe
 ifneq ($(filter match diff check-objects,$(MAKECMDGOALS)),)
 $(error Matching comparisons require BUILD_KIND=Matching; Debug artifacts are never comparison inputs)
 endif
@@ -20,7 +22,7 @@ endif
 # Parallelize object compilation by default; explicit -j still overrides.
 MAKEFLAGS += -j$(shell nproc)
 
-SOURCES := $(filter-out src/log.c src/crash_diagnostics.cpp src/skin_trace.cpp src/skin_trace_windows.cpp,$(shell find src -type f \( -name '*.cpp' -o -name '*.c' \) | LC_ALL=C sort))
+SOURCES := $(filter-out src/stream_capture.c src/log_copier.c src/log.c src/crash_diagnostics.cpp src/skin_trace.cpp src/skin_trace_windows.cpp,$(shell find src -type f \( -name '*.cpp' -o -name '*.c' \) | LC_ALL=C sort))
 SOURCE_DIRS := $(shell find src -type d)
 OBJECTS := $(patsubst src/%,$(OBJ_DIR)/%,$(SOURCES:.cpp=.obj))
 OBJECTS := $(OBJECTS:.c=.obj)
@@ -74,11 +76,11 @@ run: $(EXE)
 	cd res && WINEPREFIX="$(CURDIR)/build/tools/wine" WINEDEBUG=-all WINEDLLOVERRIDES="winemenubuilder.exe=d" wine ../$(EXE)
 
 # Directory dependencies also relink when a source is removed from the input list.
-$(EXE): $(OBJECTS) $(DIAGNOSTIC_OBJECTS) $(D3DX_LIB) $(DSOUND_LIB) $(D3D9_LIB) $(DINPUT8_LIB) $(XINPUT_LIB) $(BINK_LIB) $(SOURCE_DIRS) config/toolchain.json Makefile tools/cc.py tools/lib.py
+$(EXE): $(DEBUG_CAPTURE_HELPER) $(OBJECTS) $(DIAGNOSTIC_OBJECTS) $(D3DX_LIB) $(DSOUND_LIB) $(D3D9_LIB) $(DINPUT8_LIB) $(XINPUT_LIB) $(BINK_LIB) $(SOURCE_DIRS) config/toolchain.json Makefile tools/cc.py tools/lib.py
 	$(PYTHON) tools/cc.py --link --allow-unresolved $@ $(OBJECTS) $(DIAGNOSTIC_OBJECTS) -- $(LDFLAGS) $(call pdb_flag,$@) $(LDLIBS)
 
 # The complete link: every referenced function must be implemented.
-link-strict: $(OBJECTS) $(DIAGNOSTIC_OBJECTS) $(D3DX_LIB) $(DSOUND_LIB) $(D3D9_LIB) $(DINPUT8_LIB) $(XINPUT_LIB) $(BINK_LIB)
+link-strict: $(DEBUG_STRICT_CAPTURE_HELPER) $(OBJECTS) $(DIAGNOSTIC_OBJECTS) $(D3DX_LIB) $(DSOUND_LIB) $(D3D9_LIB) $(DINPUT8_LIB) $(XINPUT_LIB) $(BINK_LIB)
 	$(PYTHON) tools/cc.py --link $(STRICT_EXE) $(OBJECTS) $(DIAGNOSTIC_OBJECTS) -- $(LDFLAGS) $(call pdb_flag,$(STRICT_EXE)) $(LDLIBS)
 
 # Debug support contains diagnostics only and never enters Matching objects.
@@ -155,6 +157,7 @@ clean:
 	rm -rf build/obj build/objdiff build/Debug/obj
 	rm -f build/LEGOStarWarsSaga.exe build/LEGOStarWarsSaga_debug.exe build/LEGOStarWarsSaga_debug.pdb
 	rm -f build/strict/LEGOStarWarsSaga.strict.exe build/Debug/LEGOStarWarsSaga.strict_debug.exe build/Debug/LEGOStarWarsSaga.strict_debug.pdb
+	rm -f build/saga_debug_capture.exe build/saga_debug_capture.pdb build/Debug/saga_debug_capture.exe build/Debug/saga_debug_capture.pdb build/Debug/stream_capture.obj build/Debug/log_copier.obj
 	rm -f build/Debug/log.obj build/Debug/crash_diagnostics.obj build/Debug/skin_trace.obj build/Debug/skin_trace_windows.obj build/Debug/LEGOStarWarsSaga_debug.pdb build/Debug/LEGOStarWarsSaga_debug.map
 
 build/Debug/skin_trace.obj: src/skin_trace.cpp src/skin_trace.h src/diagnostics.h config/toolchain.json Makefile tools/cc.py tools/lib.py | build/tools/wine/.ready
@@ -165,3 +168,20 @@ build/Debug/skin_trace_windows.obj: src/skin_trace_windows.cpp src/skin_trace.h 
 
 build/Debug/crash_diagnostics.obj: src/crash_diagnostics.cpp src/diagnostics.h config/toolchain.json Makefile tools/cc.py tools/lib.py | build/tools/wine/.ready
 	$(PYTHON) tools/cc.py $< $@ $(CPPFLAGS) $(CXXFLAGS)
+
+ifeq ($(BUILD_KIND),Debug)
+# The copier is a separate process: its main never enters the game executable.
+build/Debug/stream_capture.obj: src/stream_capture.c src/diagnostics.h config/toolchain.json Makefile tools/cc.py tools/lib.py | build/tools/wine/.ready
+	$(PYTHON) tools/cc.py $< $@ $(CPPFLAGS) $(CXXFLAGS)
+
+build/Debug/log_copier.obj: src/log_copier.c config/toolchain.json Makefile tools/cc.py tools/lib.py | build/tools/wine/.ready
+	$(PYTHON) tools/cc.py $< $@ $(CPPFLAGS) $(CXXFLAGS)
+
+build/saga_debug_capture.exe: build/Debug/log_copier.obj config/toolchain.json Makefile tools/cc.py
+	$(PYTHON) tools/cc.py --link $@ $< -- /nologo /machine:x86 /subsystem:console /incremental:no /manifest:no /opt:noref /opt:noicf /DEBUG /PDB:build/saga_debug_capture.pdb
+
+# Strict Debug lives in a second directory and resolves the same adjacent leaf.
+build/Debug/saga_debug_capture.exe: build/saga_debug_capture.exe
+	cp $< $@
+	cp build/saga_debug_capture.pdb build/Debug/saga_debug_capture.pdb
+endif

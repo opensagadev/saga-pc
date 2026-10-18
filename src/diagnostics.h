@@ -13,6 +13,7 @@ extern "C" {
 #endif
     /* Exact VC8 intrinsic signature; avoid intrin.h C++ vector overloads. */
     LONG __cdecl _InterlockedExchange(LONG volatile *target, LONG value);
+    int __cdecl SagaDebugCaptureStreamsPc(HANDLE file, int saved_out, int saved_err);
     void __cdecl SagaDebugCrashInitPc(HANDLE existing_log_file, const char *build_id, const char *log_path);
     void __cdecl _saga_log(enum log_level level, const char *file, int line, const char *function, const char *format,
                            ...);

@@ -352,13 +352,16 @@ class CommonMatchTests(unittest.TestCase):
 
 class HeaderLayoutTests(unittest.TestCase):
     def test_debug_analysis_is_limited_to_diagnostic_support(self):
-        for source in ("src/log.c", "src/skin_trace.cpp", "src/skin_trace_windows.cpp", "src/crash_diagnostics.cpp"):
+        for source in ("src/log.c", "src/skin_trace.cpp", "src/skin_trace_windows.cpp", "src/crash_diagnostics.cpp",
+                       "src/stream_capture.c", "src/log_copier.c"):
             with self.subTest(source=source):
                 flags = check_module.analysis_language(source)
                 self.assertIn("-DSAGA_DEBUG", flags)
                 self.assertIn("c" if source.endswith(".c") else "c++", flags)
         self.assertNotIn("-DSAGA_DEBUG", check_module.analysis_language("src/nu2api/pc_device.cpp"))
         self.assertNotIn("-DSAGA_DEBUG", check_module.analysis_language("src/crash_diagnostics_extra.cpp"))
+        self.assertNotIn("-DSAGA_DEBUG", check_module.analysis_language("src/stream_capture_extra.c"))
+        self.assertNotIn("-DSAGA_DEBUG", check_module.analysis_language("src/log_copier_extra.c"))
 
     def test_reviewed_debug_trace_header_is_scoped(self):
         with tempfile.TemporaryDirectory() as temp, patch.object(check_module, "ROOT", Path(temp)):
