@@ -3287,8 +3287,8 @@ address    , symbol                                                         , si
 0x555580,_GizSpinner_GetPos,21,NUVEC * __cdecl(GIZMO_PC *)
 0x5555a0,_GizSpinner_SetVisibility,524,
 0x5557e0,_GizSpinner_UsingSpecial,336,
-0x555930,_GizSpinner_BoltHitPlat,138,
-0x5559c0,_GizSpinner_BoltHitPlatPc,,"i32 __cdecl(WORLDINFO *, void *, BOLT_PC *, u8 *)"
+0x555930,_GizSpinner_BoltHitPlat,138,void private ABI: EAX spinner; ESI bolt; stack flags pointer
+0x5559c0,_GizSpinner_BoltHitPlatPc,174,"i32 __cdecl(WORLDINFO *, void *, BOLT_PC *, u8 *)"
 0x555a70,_GizSpinner_GetBestBoltTarget,1332,
 0x555fb0,_GizSpinner_Find,215,"PUSH_SPINNER_PC * __cdecl(WORLDINFO *, NUVEC *, i32)"
 0x556170,_GizSpinner_GetOutput,30,"i32 __cdecl(GIZMO_PC *, i32, i32)"

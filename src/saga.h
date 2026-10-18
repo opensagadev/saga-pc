@@ -26545,7 +26545,6 @@ extern "C" {
     void __cdecl GizSpinner_Activate(void *gizmo, i32 active);
     void __cdecl GizSpinner_AddGizmos(struct gizmosys_pc_s *gizmo_sys, i32 type_id, void *world_ptr, void *arg3);
     void *__cdecl GizSpinner_AllocateProgressData(void *buffer, void *buffer_end);
-    i32 __cdecl GizSpinner_BoltHitPlat(void *arg0, void *spinner_ptr, struct bolt_s *bolt, u8 *hit_flags);
     void __cdecl GizSpinner_ClearProgress(void *arg0, void *progress_ptr);
     void __cdecl GizSpinner_Draw(void *world_ptr, void *arg1, f32 arg2);
     i32 *__cdecl GizSpinner_GetBestBoltTarget(struct gizmoset_pc_s *arg0, f32 *arg1, struct nuvec_s *result_position,

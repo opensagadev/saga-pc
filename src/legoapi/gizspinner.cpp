@@ -901,3 +901,45 @@ extern "C" i32 __cdecl GizSpinner_HasBoltHit(void *, void *, void *, NUVEC *, i3
                                              u32, u8 *) {
     return 0;
 }
+
+// Retail private helper receives spinner in EAX, bolt in ESI, and flags on the stack.
+// A four-byte aggregate preserves that stack slot under VC8's private argument optimization.
+struct SPINNER_HIT_FLAGS_STACK_PC {
+    u8 *value;
+};
+STATIC_ASSERT(sizeof(SPINNER_HIT_FLAGS_STACK_PC) == 4);
+extern "C" {
+    static __declspec(noinline) void GizSpinner_BoltHitPlat(GIZSPINNER_s *spinner, BOLT_PC *bolt,
+                                                            SPINNER_HIT_FLAGS_STACK_PC argument) {
+        u8 *hit_flags = argument.value;
+        GAMEOBJECT *owner = (GAMEOBJECT *)bolt->owner;
+        if (spinner == NULL || (spinner->state_flags & 8) != 0)
+            return;
+        i32 state = GizSpinner_Spin(spinner, bolt->field_104);
+        if ((state == 2 || state == 1) && hit_flags != NULL) {
+            GameAudio_PlaySfx(0x29, &bolt->position, 0, 0);
+            Bolt_AddDeflectedBolt(bolt, &bolt->velocity, &bolt->hit_normal, hit_flags);
+        }
+        NewRumble(owner->pad->bound_pad, 0.5f, 0);
+        Bolt_PlayHitSfx(bolt);
+    }
+    i32 __cdecl GizSpinner_BoltHitPlatPc(WORLDINFO *, void *spinner_ptr, BOLT_PC *bolt, u8 *hit_flags) {
+        GIZSPINNER_s *spinner = (GIZSPINNER_s *)spinner_ptr;
+        if (spinner == NULL || (spinner->flags & 1) == 0 || (spinner->flags & 4) != 0)
+            return 0;
+        if ((spinner->flags & 0x22) != 0 && spinner->platform_id == bolt->hit_platform)
+            return 1;
+        SPINNER_HIT_FLAGS_STACK_PC argument = {hit_flags};
+        if (spinner->platform_id == bolt->hit_platform) {
+            GizSpinner_BoltHitPlat(spinner, bolt, argument);
+            return 1;
+        }
+        for (i32 arm = 0; arm < spinner->type; ++arm) {
+            if (spinner->arms[arm].platform_id == bolt->hit_platform) {
+                GizSpinner_BoltHitPlat(spinner, bolt, argument);
+                return 1;
+            }
+        }
+        return 0;
+    }
+}
