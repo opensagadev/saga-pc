@@ -34417,3 +34417,10 @@ extern "C" {
     i32 boulder_blowup_type = -1;
 #pragma data_seg()
 }
+
+extern "C" {
+#pragma data_seg(".data$ForceDeflectTuningPc")
+    f32 ForceDeflectSpeedPc = 4.0f;
+    f32 ForceDeflectSeekRatePc = 3.0f;
+#pragma data_seg()
+}

@@ -8970,6 +8970,109 @@ combo_finished:
         object->flags_e20 |= 0x80000;
 }
 
+extern f32 ForceDeflectSpeedPc;
+extern f32 ForceDeflectSeekRatePc;
+
+static void ForceDeflectCode(GAMEOBJECT *object, i32 pressed, i32 held) {
+    i32 waiting = objInNetWaitContext(object, 0x1d);
+    PART_PC *assist = NULL;
+    PART_PC *part;
+    FORCE_GLOW_PC *glow = (FORCE_GLOW_PC *)object;
+    if (object->character_context == 0x1d) {
+        object->flags_e20 |= 0x20000;
+        object->context_timer += FRAMETIME;
+        if (object->flags_1fc_word & 0x80)
+            NewRumble(object->pad->bound_pad, (f32)((f64)qrand() * (f64)(1.0f / 65535.0f) * (f64)0.6f), 0);
+        if (object->force_part != NULL) {
+            NUVEC direction, velocity;
+            object->force_part->force_flags |= 1;
+            object->force_part->flags &= ~0x4000u;
+            if ((f64)object->context_timer < (f64)0.2f) {
+                f32 target_y = (f32)((f64)ForceDeflectSpeedPc * 0.5);
+                f32 seek_rate = ForceDeflectSeekRatePc + ForceDeflectSeekRatePc;
+                object->force_part->velocity.y = SeekValF(object->force_part->velocity.y, target_y, seek_rate);
+            }
+            part = object->force_part;
+            if (part->owner != NULL && part->owner->field_280 == 0xff) {
+                NuVecSub(&direction, &part->owner->collision_position, &part->position);
+                NuVecNorm(&direction, &direction);
+            } else {
+                NuVecRotateY(&direction, &v001, object->facing_angle);
+            }
+            NuVecScale(&velocity, &direction, ForceDeflectSpeedPc);
+            SeekVec(&object->force_part->velocity, &object->force_part->velocity, &velocity, ForceDeflectSeekRatePc);
+            glow->candidate = object->force_part;
+            glow->candidate_kind = 3;
+            SetHeadTarget(object, &object->force_part->position, 2, 1.0f, 0.0f, 0.0f);
+            part = object->force_part;
+            if (part->move_fn == BobaRocket_Move) {
+                object->force_part->move_fn = NULL;
+                object->force_part->deflect_fn = NULL;
+                object->force_part->flags &= ~0x4000u;
+                object->force_part->flags |= 0x80;
+                NewPartRotation(object->force_part);
+            } else if (part->move_fn == Boulder_Move && object->context_timer >= 0.5f) {
+                Boulder_Kill(part, 0);
+            }
+        }
+        if ((held != 0 || (object->flags_ef0 & 0x100) != 0) && object->force_part != NULL &&
+            (f64)object->context_duration >= (f64)0.2f && object->context_timer < 1.5f) {
+            f32 remaining = object->context_duration - FRAMETIME;
+            object->context_duration = remaining;
+            if ((f64)remaining <= (f64)0.2f)
+                object->context_duration = 0.2f;
+            return;
+        }
+        object->context_duration -= FRAMETIME;
+        if (object->context_duration <= 0.0f)
+            ReleaseForce(object, 0);
+        return;
+    }
+    if ((object->flags_1fc_word & 0x80) == 0 && (object->flags_ef0 & 0x100) != 0 && player != NULL)
+        assist = player->force_part;
+    if ((object->flags_1fc_word & 0x80) == 0 && assist == NULL)
+        return;
+    if (object->field_281 == 0)
+        return;
+    if (object->character_context != -1 && (CInfo[object->character_context].flags & 4) == 0 &&
+        object->character_context != 6 && object->character_context != 7 && !objInNetWaitContext(object, 0x1d))
+        return;
+    if (waiting)
+        part = object->force_part;
+    else if (assist != NULL)
+        part = assist;
+    else {
+        f32 radius =
+            object->bounds_half_height > object->bounds_radius ? object->bounds_half_height : object->bounds_radius;
+        part = FindIncomingPart(object, &object->collision_position, radius, 0x800a, 4.0f);
+    }
+    if (part == NULL)
+        return;
+    object->flags_e20 |= 0x20000;
+    glow->candidate = part;
+    glow->candidate_kind = 3;
+    SetHeadTarget(object, &part->position, 2, 1.0f, 0.0f, 0.0f);
+    if (pressed == 0 && assist == NULL && !waiting)
+        return;
+    object->force_part = part;
+    part->gravity = 0.0f;
+    object->force_part->flags |= 0x10000;
+    object->context_timer = 0.0f;
+    object->context_duration = 0.3f;
+    object->force_target = NULL;
+    object->blowup_target = NULL;
+    object->character_context = 0x1d;
+    {
+        u8 mask = (u8)(1u << (object->field_280 & 31));
+        if (object->force_part->field_206 == -1)
+            object->force_part->field_206 = (i8)mask;
+        else
+            object->force_part->field_206 |= mask;
+    }
+    GameCam_Blend(GameCam, 0.5f, 0.0f, 1);
+    PlaySfx("JForcePush", &object->collision_position);
+}
+
 void __cdecl Move_JEDI(GAMEOBJECT *object) {
     u32 action_pressed = object->pad->buttons_pressed & GAMEPAD_ACTION;
     u32 action_held = object->pad->buttons_held & GAMEPAD_ACTION;
@@ -9037,7 +9140,7 @@ void __cdecl Move_JEDI(GAMEOBJECT *object) {
     BuildIt_MoveCode(object);
     Lever_MoveCode(WORLD, object);
     if ((object->character_data->game_character->flags_094 & 0x8000) == 0) {
-        STUBBED_NAMED(0x004b15c0); /* Native4b36a6: ForceDeflectCode(object EAX,special_pressed,special_held). */
+        ForceDeflectCode(object, special_pressed, special_held);
         STUBBED_NAMED(0x004a28e0); /* Native4b36ae: ForcePushCode(object EDI,special_held). */
         FindForcePushTarget(object, special_pressed, 1);
         STUBBED_NAMED(0x004a4420); /* Native4b36bf: ForceThrowCode(object EAX,special_pressed). */
@@ -9144,7 +9247,7 @@ void __cdecl Move_WEIRDO(GAMEOBJECT *object) {
         Grapple_MoveCode(object);
     BuildIt_MoveCode(object);
     if (has_sabre || SuperWeirdo(object)) {
-        STUBBED_NAMED(0x004b15c0); /* Native4b5ad1: ForceDeflectCode(object EAX,special_pressed,special_held). */
+        ForceDeflectCode(object, special_pressed, special_held);
         STUBBED_NAMED(0x004a28e0); /* Native4b5ad9: ForcePushCode(object EDI,special_held). */
         FindForcePushTarget(object, special_pressed, 1);
         STUBBED_NAMED(0x004a4420); /* Native4b5aea: ForceThrowCode(object EAX,special_pressed). */

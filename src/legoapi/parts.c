@@ -4808,3 +4808,41 @@ void __cdecl DebrisSetup(VARIPTR *buffer, VARIPTR buffer_end, char *texture_name
                          i32 effect_count) {
     DebrisSetup2(buffer, buffer_end, buffer, buffer_end, texture_name, chunk_count, 0x20, key_count, effect_count);
 }
+
+PART_PC *__cdecl FindIncomingPart(void *owner, NUVEC *position, f32 radius, u32 flags, f32 range) {
+    f32 radius_squared = radius * radius;
+    f32 nearest_distance = range > 0.0f ? range : 100.0f;
+    PART_PC *nearest = NULL;
+    PART_PC *part = Part;
+    i32 i;
+    for (i = 0; i < MAXPARTS; ++i, ++part) {
+        if ((part->active & 1) == 0 || part->owner == owner || (part->flags & flags) != flags)
+            continue;
+        if (range > 0.0f) {
+            f32 distance = NuVecDistSqr(&part->position, position, NULL);
+            if (distance < nearest_distance) {
+                nearest_distance = distance;
+                nearest = part;
+            }
+        } else {
+            f32 speed = NuVecMag(&part->velocity);
+            if (speed != 0.0f) {
+                NUVEC direction;
+                f32 reciprocal = 1.0f / speed;
+                f32 half_speed;
+                f32 distance;
+                f32 limit;
+                NuVecScale(&direction, &part->velocity, reciprocal);
+                half_speed = (f32)((f64)speed * 0.5);
+                distance = NuVecDistSqr(&part->position, position, NULL);
+                limit = half_speed * half_speed;
+                if (distance < limit &&
+                    LineIntersectSphere(&part->position, &direction, position, radius_squared, NULL)) {
+                    nearest_distance = distance;
+                    nearest = part;
+                }
+            }
+        }
+    }
+    return nearest;
+}

@@ -12835,6 +12835,7 @@ void __cdecl AIScriptMissingConditionDiagnostic();
     extern i32 LEVOBJREF_LASTREFOBJ;
     void __cdecl KillPart(PART_PC *, i32);
     PART_PC *__cdecl AddPart(ADDPART_PC *);
+    PART_PC *__cdecl FindIncomingPart(void *owner, NUVEC *position, f32 radius, u32 flags, f32 range);
     void __cdecl NewPartRotation(PART_PC *);
     void __cdecl NewPartOrderedRotation(PART_PC *);
     extern AI_GAME_PARAM_TO_FLOAT_PC GameParamToFloatFn;
