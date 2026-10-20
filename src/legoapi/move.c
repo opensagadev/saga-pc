@@ -1810,6 +1810,51 @@ f32 __cdecl ForceAlongSock(GAMEOBJECT *object) {
     return speed;
 }
 
+void __cdecl KeepVehicleOnScreen(GAMEOBJECT *object, i32 sides, i32 top, i32 bottom) {
+    f32 margin, distance;
+    object->flags_ef4 |= 0x10000000;
+    if (GamePlayTimer.time_elapsed < 1.0f)
+        return;
+    margin = WORLD->area == DOGFIGHT_ADATA ? 0.5f : 1.0f;
+    if (sides != 0) {
+        OnOrInsidePlane(&object->collision_position, &PlayPlanePc[1].point, &PlayPlanePc[1].normal, NULL, 0.0f,
+                        &distance);
+        if (distance < margin) {
+            f32 speed = object->character_data->game_character->run_speed;
+            object->target_velocity.x =
+                (f32)((((f64)distance - margin) / margin) * -2.0 * ((f64)speed + speed) + object->target_velocity.x);
+        } else {
+            OnOrInsidePlane(&object->collision_position, &PlayPlanePc[2].point, &PlayPlanePc[2].normal, NULL, 0.0f,
+                            &distance);
+            if (distance < margin) {
+                f32 speed = object->character_data->game_character->run_speed;
+                object->target_velocity.x = (f32)((((f64)distance - margin) / margin) * -2.0 * (-(f64)speed - speed) +
+                                                  object->target_velocity.x);
+            }
+        }
+    }
+    if (top != 0)
+        OnOrInsidePlane(&object->collision_position, &PlayPlanePc[3].point, &PlayPlanePc[3].normal, NULL, 0.0f,
+                        &distance);
+    else
+        distance = 1000000000.0f;
+    if (distance != 1000000000.0f && distance < margin) {
+        f32 speed = object->character_data->game_character->run_speed;
+        object->target_velocity.y =
+            (f32)((((f64)distance - margin) / margin) * -2.0 * (-(f64)speed - speed) + object->target_velocity.y);
+        return;
+    }
+    if (bottom != 0) {
+        OnOrInsidePlane(&object->collision_position, &PlayPlanePc[4].point, &PlayPlanePc[4].normal, NULL, 0.0f,
+                        &distance);
+        if (distance < margin) {
+            f32 speed = object->character_data->game_character->run_speed;
+            object->target_velocity.y =
+                (f32)((((f64)distance - margin) / margin) * -2.0 * ((f64)speed + speed) + object->target_velocity.y);
+        }
+    }
+}
+
 i32 __cdecl MovePlayer_TWIST(GAMEOBJECT *object) {
     WORLDINFO *world = WorldInfo_CurrentlyActive();
     GAMEPAD_PC *pad = object->pad;
@@ -1850,7 +1895,7 @@ i32 __cdecl MovePlayer_TWIST(GAMEOBJECT *object) {
             object->target_velocity.x = pad->input_direction_z * speed;
             object->target_velocity.y = -pad->input_direction_x * speed;
         }
-        STUBBED_NAMED("KeepVehicleOnScreen(object, 1, 1, 1)");
+        KeepVehicleOnScreen(object, 1, 1, 1);
         object->target_velocity.z = 0.0f;
         NuVecMtxRotate(&object->target_velocity, &object->target_velocity, &object->vehicle_orientation);
         ForceAlongSock(object);
@@ -1931,7 +1976,7 @@ i32 __cdecl MovePlayer_CIRCLE(GAMEOBJECT *object) {
                         object->target_velocity.x = maximum;
                 }
             }
-            STUBBED_NAMED("KeepVehicleOnScreen(object, 1, 0, 0)");
+            KeepVehicleOnScreen(object, 1, 0, 0);
             NuVecRotateY(&object->target_velocity, &object->target_velocity, heading);
         }
         ForceTowardsMid(object);
@@ -2069,7 +2114,7 @@ i32 __cdecl MovePlayer_POD(GAMEOBJECT *object) {
         if (object->sock_index != 0xff)
             object->target_velocity.x = index < 2 ? pod_roll[index] * object->character_data->game_character->run_speed
                                                   : input * pad->input_magnitude;
-        STUBBED_NAMED("KeepVehicleOnScreen(object, 1, 1, 1)");
+        KeepVehicleOnScreen(object, 1, 1, 1);
         if (object->target_velocity.x != 0.0f || object->target_velocity.y != 0.0f || object->target_velocity.z != 0.0f)
             NuVecRotateY(&object->target_velocity, &object->target_velocity, heading);
         if (object->sock_index != 0xff)

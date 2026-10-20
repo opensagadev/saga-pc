@@ -1492,7 +1492,7 @@ address,symbol,size,ctype
 0x498a40,_PreResetCode,753,void __cdecl (GAMEOBJECT *)
 0x00498d40,_ForceTowardsMid,1057,f32 __cdecl (GAMEOBJECT *)
 0x00499170,_MoveInactiveVehicle,395,"void __cdecl (GAMEOBJECT *, i32, GAMEOBJECT **)"
-0x00499300,_KeepVehicleOnScreen,509,
+0x00499300,_KeepVehicleOnScreen,509,"void __cdecl(GAMEOBJECT *, i32, i32, i32)"
 0x00499500,_FaceOpponent,133,"i32 __cdecl (GAMEOBJECT *, NUVEC *)"
 0x499590,_MovementWalkingSpeedPC,126,"float __cdecl(GAMEOBJECT *,float)"
 0x499610,_VehicleCollisionCode,770,void __cdecl (GAMEOBJECT *)
