@@ -33,7 +33,7 @@
     "tools/data_members.py": "d6a33be911d095a6d07dccd4443ccbfd6b514fd89fd7e200d9caa1827944e218",
     "tools/debug_identity.py": "4c91005a5701e255c789d664f61e2267e1609973998d14ddea0208e0bef482fd",
     "tools/dependencies.py": "6522194c5fb47aa533091e6e70a224de39c344a206c00e2717c2f336fdfa8baf",
-    "tools/discover_missing.py": "71901b8103d738424d0cda0c39dd928fcf24a574e038f436ad31c04b98d4ce39",
+    "tools/discover_missing.py": "4ee4f94d1a838cac5224e90f9594394a8d72cf29bab6ad2021cd39bfacb51ee0",
     "tools/globals.py": "6065e90b69abd8f88e8d6f75f7009d293efeb781f2ae76475b0b47958b8c761a",
     "tools/lib.py": "b4a13480449c959a1df064cbd85056519387629e347fadc8ccb74ce6f8487f18",
     "tools/libmatch.py": "b218f6b2cfb70b9dc754fafc1d89490d92a005ea8c2cc414df88931fdedbf7f1",
@@ -58,7 +58,7 @@
     "tools/test_data_members.py": "67f0ff6b1522cd22cdd82c4bcde3648fde55d79a4127443de45ae3d5639a8e2b",
     "tools/test_debug_identity.py": "835ad86e989a518955b9b69cb5e9fbf809d58db0563eab257d22621807ef3beb",
     "tools/test_dependencies.py": "dd3e43484346aa43d6f484aa53e9df60d3b3dc8f91ddc071638ce82cf5bef0f1",
-    "tools/test_discover_missing.py": "6610d851a8a9920c8ebca99e9c88bbb5411c7d841d055cd6fd5f1056439a1fcf",
+    "tools/test_discover_missing.py": "264f058067b736e8249d822ad176573b152feeae15eaab2a9a623c45fd3097e4",
     "tools/test_lib.py": "d016747de7295ee9d2a592cd6e4358c6faec6a8a386af584d90438424762ab1f",
     "tools/test_match.py": "5604613f9dec760b59f050f7db2b03d7e2edb5c2fcb4cd78a92e0850f210ce4c",
     "tools/test_object_analysis.py": "bd0e99266de800c5f04054be1be1f56e51f78b3700c4bf544b8ec88325172f56",
@@ -275,7 +275,7 @@
     "src/legoapi/gameantinode.c": "eef88032a67839a41d0e602696505ec71dbe99e9812bf579ccb7783c8401d5af",
     "src/legoapi/gameaudio.c": "204c6691ccab7f4814fc6447b929dec85bf7dc8e9b72f1edddafe3e3404bfffb",
     "src/legoapi/gamemessages.c": "039754672b96a37e5b636382ccf4445ea4dca4d22ecd59dd34a8d8927cb4087b",
-    "src/legoapi/gameobjects.c": "3435a3fad9032fccf0628c41da922ddf281a9038166a7db4d9280e5169b1daf8",
+    "src/legoapi/gameobjects.c": "e9d584b2f10d6d6d0ca620d0646ea6d238bbf1b7e51dcccefdb383572b8da249",
     "src/legoapi/gamepads.c": "f9a83da5f33af4363e7c46af2c3df1e027b208254499d0ac809ac1c02fd0f199",
     "src/legoapi/gamestatus.c": "087db948768d577b3f466c00b3568ce40b14166b15719f6b3f53961d5d3316f1",
     "src/legoapi/gcutscn.c": "b0136d8d1d5bb03f0aff5e94f344c308bdf687b29c427cfb170e4adb6dc116c2",
@@ -625,7 +625,7 @@
     "build/obj/legoapi/gameantinode.obj": "5b5071e8ed91cd316f36e59813aa5ef76d70ebfeb977f6e97c7f1f033e4afbf7",
     "build/obj/legoapi/gameaudio.obj": "42555c7935fd7feacb966fb8d2864048d8d948b156fa7fc1f45122fa382c12d8",
     "build/obj/legoapi/gamemessages.obj": "d7e40018f75f716afb3a36bf113073d4f7a775a336c37b2a09d3682ac4007ca4",
-    "build/obj/legoapi/gameobjects.obj": "44ca036e8bcd0930aec9928ec9bc421d3302b76b5aabe9dfc19687949dd6ae69",
+    "build/obj/legoapi/gameobjects.obj": "ccecc17b3d94d6571d247d7a35cf3c54e50f1751b4325079ddcb8921022db523",
     "build/obj/legoapi/gamepads.obj": "535a153fb13984f432ceec7ccc2ff1fde9b1fdb13f387d8a57283a339619db82",
     "build/obj/legoapi/gamestatus.obj": "6e0b8dff0f22174dab3e1fb2c13584474288b7a2b8986ebf483f8edbe2729238",
     "build/obj/legoapi/gamestructure.obj": "06cb3dda06afaaef07b6bf25bbb5c6ec9f983993128876017bd2eea793e44a1f",
@@ -29860,17 +29860,17 @@
       "objects": [
         {
           "unit": "src/legoapi/gameobjects.c",
-          "base_size": 1533,
+          "base_size": 1819,
           "exact_match": false,
           "target_sha256": "282c93669fe99d649597b05fca1891b43557a82a363ea0a2575af34a68edf1ef",
-          "base_sha256": "0177aa8ee52f2ab73f5c0ee6eec4a85825377806f8a28ac580aad23d24c44d81",
-          "relocation_count": 38,
+          "base_sha256": "f6206088da814b56ebd2c3df426b1269c4612e6d99e179a7974f81151b8f802b",
+          "relocation_count": 55,
           "comparison_unit": "00488770-eb94cc1cf655",
-          "objdiff_percent": 69.47808
+          "objdiff_percent": 78.71607
         }
       ],
       "status": "different",
-      "objdiff_percent": 69.47808
+      "objdiff_percent": 78.71607
     },
     {
       "name": "?World_HasImperialPrivate@@YAHPAUapicharactermodellist_s@@@Z",
@@ -281567,11 +281567,20 @@
       "symbol": "??_C@_0N@JGNMHJOL@env_crane_in?$AA@",
       "address": "0x00759990",
       "units": [
+        "src/legoapi/gameobjects.c",
         "src/legoapi/sfx_level.c"
       ],
       "target_size": 13,
       "exact_match": true,
       "objects": [
+        {
+          "unit": "src/legoapi/gameobjects.c",
+          "exact_match": true,
+          "target_size": 13,
+          "base_size": 13,
+          "target_sha256": "9ba736277e62fb9ff1676d5dd5e49b6f2d45a89e62c0a7fdc7f17a99c697e4ce",
+          "base_sha256": "9ba736277e62fb9ff1676d5dd5e49b6f2d45a89e62c0a7fdc7f17a99c697e4ce"
+        },
         {
           "unit": "src/legoapi/sfx_level.c",
           "exact_match": true,
@@ -475150,10 +475159,10 @@
     "mapped_code_bytes": 2417225,
     "matched_code_bytes": 454806,
     "matching_percent": 13.102096480629722,
-    "fuzzy_coverage_percent": 46.94935395700028,
+    "fuzzy_coverage_percent": 46.954170890718025,
     "mapped_functions": 8859,
     "matched_functions": 4207,
-    "objdiff_fuzzy_percent": 74.67513,
+    "objdiff_fuzzy_percent": 74.68279,
     "objdiff_total_code": 2185787,
     "image_bytes": 40067072,
     "mapped_bytes": 4228868,
@@ -476365,7 +476374,7 @@
       "metadata_sha256": "fe09365da4c355f220d724ca99394fc120b758891b4188d2c49707b6df0894f2",
       "header_path": "src/saga.h",
       "header_sha256": "439d2f95899ff9163b6f554d9b5afcd31c1075b750540dd23b67830ea123185c",
-      "geometry_object_sha256": "eeb54e270c3cae398067e41c0819e7ec7d573709c65fab43a9dfaa90eb4a93fa",
+      "geometry_object_sha256": "5f552a4f39430cbd885e037cca5c7685336481650f3e205ca5cc5a3a68cc30c8",
       "toolchain_sha256": "b8808088bb2c7eb239785f69c9e464ae8545216d5705fb37216bc0cf926732f3",
       "implementation_sha256": "d6a33be911d095a6d07dccd4443ccbfd6b514fd89fd7e200d9caa1827944e218",
       "headers": {
@@ -476607,7 +476616,7 @@
         4
       ]
     },
-    "clang_source_sha256": "c3a857b52a60478063bc0d93c4fc9d318b3132ba25ff7689263ce2757553238c",
+    "clang_source_sha256": "9dbf0f9925756fee502351c84719058a010b62ade8f4b1b30d8fa3ce7efde154",
     "member_count": 42,
     "physical_definition_credit": 0
   },

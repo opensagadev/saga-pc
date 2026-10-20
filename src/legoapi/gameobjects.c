@@ -2582,12 +2582,23 @@ void __cdecl TakeOverCode(GAMEOBJECT *object, i32 tag_pressed) {
         if (object->context_timer >= object->context_duration) {
             object->character_context = -1;
             if ((object->flags_1fc_word & 0x80) != 0) {
-                STUBBED_NAMED("TakeOverCode: Hint_SetComplete selected target ID/movement callback and "
-                              "StartupGameFlag1 branch PC576960");
+                i32 hint_id;
+                if (target->id == (u16)id_GRABCONTROL || target->id == (u16)id_GRABR2CONTROL)
+                    hint_id = 0x28a;
+                else if (target->character_data->move_fn == Move_BEAST)
+                    hint_id = StartupGameFlag1 != 0 ? 0x263 : 8;
+                else if (StartupGameFlag1 == 0)
+                    hint_id = 8;
+                else
+                    hint_id = object->id == (u16)id_ATAT ? 0x28d : 0x25d;
+                Hint_SetComplete(hint_id);
             }
-            STUBBED_NAMED("TakeOverCode: WORLDgrabber+46ec and grab-control IDs select PlaySfx env_crane_in PC681f40 "
-                          "or PlayLandSfx object,0,0 PC548020");
-            STUBBED_NAMED("TakeOverCode: NewBuzz object pad,0.1f,0 PC54a8a0");
+            if (WORLD->grabber != NULL &&
+                (object->force_target->id == (u16)id_GRABCONTROL || object->force_target->id == (u16)id_GRABR2CONTROL))
+                PlaySfx("env_crane_in", &object->collision_position);
+            else
+                PlayLandSfx(object, 0, 0);
+            NewBuzz(object->pad->bound_pad, 0.1f, 0);
             TakeOverGameObject2(object, object->force_target, 1);
             return;
         }
@@ -2631,7 +2642,7 @@ void __cdecl TakeOverCode(GAMEOBJECT *object, i32 tag_pressed) {
                 if (target->character_context != 0x2a && (buttons & (GAMEPAD_JUMP | GAMEPAD_TAG)) != 0) {
                     ReleaseTakeOver(object, 1);
                     if ((object->flags_1fc_word & 0x80) != 0) {
-                        STUBBED_NAMED("TakeOverCode: Hint_SetComplete StartupGameFlag1?0x25e:5 PC576960");
+                        Hint_SetComplete(StartupGameFlag1 != 0 ? 0x25e : 5);
                     }
                     return;
                 }
