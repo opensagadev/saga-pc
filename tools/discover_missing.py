@@ -87,7 +87,8 @@ def guarded_table(pe, insn, decoded, owners, start, limit, trusted_extent):
     return {**table, "status": "guard_validated_pending_full_cfg"}
 
 
-def trace_cfg(pe, start, limit, instruction_budget=20000, trusted_extent=False):
+def trace_cfg(pe, start, limit, instruction_budget=20000, trusted_extent=False,
+              direct_target_resolver=None):
     """Follow only direct intra-bound branches; unknown indirect jumps stop paths.
 
     The bound is supplied evidence, not a claim that all intervening bytes are code.
@@ -146,7 +147,8 @@ def trace_cfg(pe, start, limit, instruction_budget=20000, trusted_extent=False):
             continue
         if mnemonic == "call":
             if insn.operands[0].type == X86_OP_IMM:
-                calls.append({"site": address, "target": insn.operands[0].imm & 0xffffffff})
+                calls.append({"site": address, "target": (direct_target_resolver(insn) if direct_target_resolver
+                              else insn.operands[0].imm & 0xffffffff)})
             else:
                 unknowns.append({"kind": "indirect_call", "address": address,
                                  "operand": insn.op_str})
@@ -162,7 +164,8 @@ def trace_cfg(pe, start, limit, instruction_budget=20000, trusted_extent=False):
                 unknowns.append({"kind": "indirect_branch", "address": address,
                                  "operand": insn.op_str})
                 continue
-            target = insn.operands[0].imm & 0xffffffff
+            target = (direct_target_resolver(insn) if direct_target_resolver
+                      else insn.operands[0].imm & 0xffffffff)
             if start <= target < limit:
                 enqueue(address, target)
             elif mnemonic == "jmp":
@@ -222,6 +225,7 @@ class ProviderIndex:
     def __init__(self):
         self.definitions = collections.defaultdict(list)
         self.hashes = {}
+        self.objects = {}
 
     def add_object(self, path):
         path = Path(path)
@@ -230,6 +234,7 @@ class ProviderIndex:
         if digest(path) != snapshot:
             raise ValueError("Producer object changed while parsing")
         self.hashes[str(path)] = snapshot
+        self.objects[str(path)] = obj
         for symbol in obj.defined_symbols():
             self.definitions[symbol["name"]].append({"object": str(path),
                 "object_sha256": self.hashes[str(path)], "function": bool(symbol["type"] & 0x20),
@@ -256,6 +261,117 @@ class ProviderIndex:
                 "providers": providers,
                 "qualification": "Named COFF census does not resolve arbitrary aliases, "
                                  "CRT archive selection, imports or runtime call compatibility."}
+
+
+
+class ExtractedCode:
+    """Bounded COFF bytes; unbound data relocations are never read as PE storage."""
+    def __init__(self, data, base):
+        self.data, self.base = data, base
+
+    def read_va(self, address, size):
+        offset = address - self.base
+        if offset < 0 or offset + size > len(self.data):
+            raise ValueError("Outside extracted COFF function")
+        return self.data[offset:offset + size]
+
+
+def provider_call_inventory(obj, symbol, records, native_cfg):
+    """Compare observed direct-call targets, never behavioral completeness.
+
+    Resolve only exact immediate REL32 fields or same-region branch offsets.
+    Decoding the original bytes avoids turning data references into E8 calls.
+    Absolute/indexed data relocations and switches remain unresolved.
+    """
+    try:
+        region = obj.extract_function(symbol)
+    except ValueError as error:
+        return {"status": "candidate_extent_unknown", "detail": str(error)}
+    base = 0xf0000000
+    data = region["bytes"]
+    if not data or len(data) > 65536:
+        return {"status": "candidate_extent_unknown", "detail": "empty or over 65536-byte budget"}
+    bindings = collections.defaultdict(set)
+    for row in records:
+        if row["address"] is not None:
+            bindings[row["symbol"]].add(row["address"])
+    relocations = region["relocations"]
+    resolved, unknowns = {}, []
+    used_relocations = set()
+
+    def target(insn):
+        site = insn.address - base
+        immediate = site + insn.imm_offset
+        refs = [(index, row) for index, row in enumerate(relocations)
+                if row["offset"] < site + insn.size and row["offset"] + 4 > site]
+        info = {"candidate_offset": site}
+        if refs:
+            if (len(refs) != 1 or refs[0][1]["offset"] != immediate or
+                    refs[0][1]["type"] != 20 or insn.imm_size != 4):
+                info.update(binding="relocation_not_exact_REL32_immediate", target=None)
+                unknowns.append({"kind": info["binding"], "candidate_offset": site})
+                resolved[insn.address] = info
+                return 0x10000000
+            index, ref = refs[0]
+            used_relocations.add(index)
+            addend = struct.unpack_from("<I", data, immediate)[0]
+            info.update(symbol=ref["symbol"], addend=addend)
+            named = bindings[ref["symbol"]]
+            definition = obj.symbol_by_index[ref["symbol_index"]]
+            local_offset = definition["value"] - region["offset"] + addend
+            local = definition["section"] == region["symbol"]["section"] and 0 <= local_offset < len(data)
+            if addend == 0 and len(named) == 1:
+                info.update(binding="exact_mapped_REL32", target=next(iter(named)))
+            elif local:
+                info.update(binding="same_region_target_native_binding_unknown", target=None,
+                            local_offset=local_offset)
+            else:
+                info.update(binding="nonzero_addend_or_absent_ambiguous_binding", target=None)
+            resolved[insn.address] = info
+            if info["target"] is None:
+                unknowns.append({"kind": info["binding"], "candidate_offset": site,
+                                 "symbol": ref["symbol"]})
+            return base + local_offset if local else (info["target"] or 0x10000000)
+        raw_target = insn.operands[0].imm & 0xffffffff
+        if base <= raw_target < base + len(data):
+            info.update(binding="same_region_no_relocation", target=None,
+                        local_offset=raw_target - base)
+        else:
+            info.update(binding="unrelocated_external_target_unknown", target=None)
+            unknowns.append({"kind": info["binding"], "candidate_offset": site})
+        resolved[insn.address] = info
+        if insn.mnemonic == "call" and info["target"] is None and "local_offset" in info:
+            unknowns.append({"kind": "same_region_call_native_binding_unknown", "candidate_offset": site})
+        return raw_target
+
+    cfg = trace_cfg(ExtractedCode(data, base), base, base + len(data),
+                    trusted_extent=False, direct_target_resolver=target)
+    def observations(edges):
+        return [resolved[row["site"]] for row in edges]
+    calls = observations(cfg["direct_calls"])
+    tails = observations(cfg["direct_tail_candidates"])
+    native_counts = collections.Counter(row["target"] for row in native_cfg["direct_calls"])
+    candidate_counts = collections.Counter(row["target"] for row in calls if row["target"] is not None)
+    tail_targets = {row["target"] for row in tails if row["target"] is not None}
+    differences = [{"target": address, "native_call_count": native_counts[address],
+                    "candidate_call_count": candidate_counts[address],
+                    "observed_as_candidate_tail": address in tail_targets}
+                   for address in sorted(native_counts.keys() | candidate_counts.keys())
+                   if native_counts[address] != candidate_counts[address]]
+    return {"status": "review_leads_only", "symbol": symbol,
+            "candidate_size": len(data), "candidate_extent_source": region["size_source"],
+            "candidate_bytes_sha256": hashlib.sha256(data).hexdigest(),
+            "native_direct_calls": native_cfg["direct_calls"],
+            "native_direct_tail_candidates": native_cfg["direct_tail_candidates"],
+            "native_unknowns": native_cfg["unknowns"],
+            "candidate_direct_calls": calls, "candidate_direct_tail_candidates": tails,
+            "candidate_unknowns": cfg["unknowns"] + unknowns,
+            "relocations_not_used_as_direct_control_immediates": len(relocations) - len(used_relocations),
+            "call_target_count_differences": differences,
+            "qualification": "Differences are review leads only: inlining, tailcalls, cloning, "
+                             "optimization and unknown paths/bindings may explain them. Equal direct-call "
+                             "inventories do not prove control, ABI, behavior or byte equivalence. "
+                             "COFF comparison extent is not an independent native function boundary."}
 
 
 def suppressed_calls(path, pe=None, snapshots=None):
@@ -291,7 +407,7 @@ def suppressed_calls(path, pe=None, snapshots=None):
 
 
 def discover(pe, records, providers, roots, text_start, text_end, suppressed=(), depth=1,
-             max_roots=32, max_bytes=65536):
+             max_roots=32, max_bytes=65536, compare_calls=False):
     if depth < 0 or max_roots <= 0 or max_bytes <= 0:
         raise ValueError("Invalid discovery limits")
     starts = sorted({row["address"] for row in records if row["address"] is not None and
@@ -324,6 +440,16 @@ def discover(pe, records, providers, roots, text_start, text_end, suppressed=(),
         item = {"provider": status, "category": category, "declared_sizes": sorted(sizes),
                 "bound_basis": "mapped_extent" if declared else "next_mapped_start_or_budget",
                 "depth": level, "cfg": cfg, "suppressed_source_leads": leads}
+        if compare_calls:
+            if len(status["providers"]) == 1:
+                provider = status["providers"][0]
+                inventory = provider_call_inventory(providers.objects[provider["object"]],
+                                                    provider["symbol"], records, cfg)
+                inventory["native_extent_trusted"] = bool(declared and len(sizes) == 1 and
+                                                          start + declared == bound)
+                item["provider_call_inventory"] = inventory
+            else:
+                item["provider_call_inventory"] = {"status": "candidate_provider_absent_or_ambiguous"}
         item["absolute_memory_reference_candidates"] = []
         for address in cfg["absolute_memory_references"]:
             aliases = [row["symbol"] for row in records if row["address"] == address]
@@ -358,6 +484,8 @@ def main():
     parser.add_argument("--depth", type=int, default=1)
     parser.add_argument("--max-roots", type=int, default=32)
     parser.add_argument("--max-bytes", type=int, default=65536)
+    parser.add_argument("--compare-provider-calls", action="store_true",
+                        help="Add bounded native/COFF direct-call review leads; never completeness proof")
     parser.add_argument("--output", type=Path, required=True)
     args = parser.parse_args()
     root = args.project_root.resolve()
@@ -396,7 +524,7 @@ def main():
             raise ValueError("Ambiguous root symbol")
     result = discover(pe, records, providers, roots, number(target["text_va"]),
                       number(target["text_va"]) + number(target["text_size"]), source_leads,
-                      args.depth, args.max_roots, args.max_bytes)
+                      args.depth, args.max_roots, args.max_bytes, args.compare_provider_calls)
     verify_snapshots(before, "Producer objects")
     verify_snapshots(source_hashes, "Source inputs")
     verify_snapshots(input_hashes, "Native/map/config inputs")

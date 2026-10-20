@@ -267,5 +267,91 @@ class GuardedTableTests(unittest.TestCase):
         self.assertIn("indirect_branch", [row["kind"] for row in result["unknowns"]])
 
 
+def call_object(code, refs=(), extra_function=False):
+    """Ordinary one-section COFF, exact relocs; no candidate tool used to build it."""
+    symbols = [("_Owner", 1, 0, 0x20), ("_Target", 0, 0, 0)]
+    if extra_function:
+        symbols.append(("_Other", 1, len(code) - 1, 0x20))
+    raw = 60
+    relptr = raw + len(code)
+    symptr = relptr + 10 * len(refs)
+    header = struct.pack("<HHIIIHH", 0x14c, 1, 0, symptr, len(symbols), 0, 0)
+    section = struct.pack("<8sIIIIIIHHI", b".text", 0, 0, len(code), raw,
+                          relptr if refs else 0, 0, len(refs), 0, 0x60000020)
+    relocations = b"".join(struct.pack("<IIH", offset, 1, kind) for offset, kind in refs)
+    table = b"".join(name.encode().ljust(8, b"\0") + struct.pack("<IhHBB", value, sec, typ, 2, 0)
+                     for name, sec, value, typ in symbols)
+    return header + section + code + relocations + table + struct.pack("<I", 4)
+
+
+class ProviderCallInventoryTests(unittest.TestCase):
+    def inventory(self, code, refs=(), records=None, native_code=None, extra_function=False):
+        records = records if records is not None else [{"symbol": "_Target", "address": 0x2000}]
+        native_code = native_code if native_code is not None else b"\xe8" + struct.pack("<i", 0x2000 - 0x1005) + b"\xc3"
+        native = discovery.trace_cfg(MemoryPE(native_code), 0x1000, 0x1000 + len(native_code))
+        with tempfile.TemporaryDirectory() as directory:
+            path = Path(directory) / "calls.obj"
+            path.write_bytes(call_object(code, refs, extra_function))
+            obj = discovery.COFF(path)
+            return discovery.provider_call_inventory(obj, "_Owner", records, native)
+
+    def test_exact_e8_rel32_binding_matches_native_target(self):
+        row = self.inventory(bytes.fromhex("e800000000c3"), [(1, 20)])
+        self.assertEqual(row["candidate_direct_calls"][0]["target"], 0x2000)
+        self.assertEqual(row["call_target_count_differences"], [])
+        self.assertEqual(row["candidate_unknowns"], [])
+        self.assertIn("do not prove", row["qualification"])
+
+    def test_data_reference_is_not_a_call_even_if_its_bytes_contain_e8(self):
+        row = self.inventory(bytes.fromhex("b8e8000000c3"), [(1, 6)])
+        self.assertEqual(row["candidate_direct_calls"], [])
+        self.assertEqual(row["relocations_not_used_as_direct_control_immediates"], 1)
+        self.assertEqual(row["call_target_count_differences"][0]["candidate_call_count"], 0)
+
+    def test_reachable_post_ret_call_is_not_lost(self):
+        # test eax,eax; je cold; ret; cold: call _Target; ret
+        row = self.inventory(bytes.fromhex("85c07401c3e800000000c3"), [(6, 20)])
+        self.assertEqual(len(row["candidate_direct_calls"]), 1)
+        self.assertEqual(row["candidate_direct_calls"][0]["candidate_offset"], 5)
+
+    def test_indirect_and_unknown_bindings_are_explicit(self):
+        row = self.inventory(bytes.fromhex("ffd0c3"))
+        self.assertIn("indirect_call", [item["kind"] for item in row["candidate_unknowns"]])
+        row = self.inventory(bytes.fromhex("e800000000c3"), [(1, 20)], records=[])
+        self.assertIsNone(row["candidate_direct_calls"][0]["target"])
+        self.assertIn("nonzero_addend_or_absent_ambiguous_binding", [item["kind"] for item in row["candidate_unknowns"]])
+
+    def test_ambiguous_binding_and_nonzero_addend_are_not_guessed(self):
+        for records, code in [([{ "symbol": "_Target", "address": 0x2000},
+                                {"symbol": "_Target", "address": 0x3000}], "e800000000c3"),
+                              ([{"symbol": "_Target", "address": 0x2000}], "e801000000c3")]:
+            row = self.inventory(bytes.fromhex(code), [(1, 20)], records=records)
+            self.assertIsNone(row["candidate_direct_calls"][0]["target"])
+            self.assertTrue(row["candidate_unknowns"])
+
+    def test_tailcall_is_distinct_from_missing_behavior_and_qualified(self):
+        row = self.inventory(bytes.fromhex("e900000000"), [(1, 20)])
+        self.assertEqual(row["candidate_direct_calls"], [])
+        self.assertEqual(row["candidate_direct_tail_candidates"][0]["target"], 0x2000)
+        self.assertTrue(row["call_target_count_differences"][0]["observed_as_candidate_tail"])
+        self.assertIn("inlining", row["qualification"])
+
+    def test_duplicate_call_counts_are_not_collapsed_to_a_set(self):
+        row = self.inventory(bytes.fromhex("e800000000e800000000c3"), [(1, 20), (6, 20)])
+        self.assertEqual(row["call_target_count_differences"][0]["candidate_call_count"], 2)
+        self.assertEqual(row["call_target_count_differences"][0]["native_call_count"], 1)
+
+    def test_non_exact_call_relocation_and_external_raw_target_remain_unknown(self):
+        row = self.inventory(bytes.fromhex("e800000000c3"), [(1, 6)])
+        self.assertIn("relocation_not_exact_REL32_immediate", [item["kind"] for item in row["candidate_unknowns"]])
+        row = self.inventory(bytes.fromhex("e800000001c3"))
+        self.assertIn("unrelocated_external_target_unknown", [item["kind"] for item in row["candidate_unknowns"]])
+
+    def test_ambiguous_function_extent_is_not_linear_disassembled(self):
+        row = self.inventory(bytes.fromhex("90c3"), extra_function=True)
+        self.assertEqual(row["status"], "candidate_extent_unknown")
+
+
+
 if __name__ == "__main__":
     unittest.main()

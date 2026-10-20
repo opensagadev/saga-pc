@@ -304,6 +304,15 @@ The report separates actual named COFF providers, missing comparison providers, 
 
 For a single unambiguous mapped extent, discovery can validate the narrow contiguous `CMP index,N; JA default; JMP [index*4+table]` pattern with a DWORD operand and no segment override. It checks the complete bounded direct CFG for alternate guard entries and keeps table bytes separate from instruction bytes. Untrusted extents, other switch forms, out-of-parent targets or incomplete/indirect paths remain unknown. It does not infer enum names, external interior-entry compatibility, source fixes or matching credit.
 
+Use `--compare-provider-calls` to add an opt-in native-versus-COFF direct-call
+inventory for each selected root. Candidate calls require an exact four-byte REL32
+instruction immediate, zero addend and an unambiguous mapped target. Data references
+are not calls. The report preserves call multiplicities, tails and unknown paths.
+Inlining, cloning and tailcall conversion can change these lists: differences are
+review leads, and equal inventories do not establish byte, CFG, ABI or semantic
+equality. Partial object censuses remain qualified; no missing-body or score credit
+is inferred from this inventory.
+
 ## Complete COFF comparison regions
 
 Audit existing comparison spans before accepting a new data definition or layout:
