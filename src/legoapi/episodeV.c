@@ -88,7 +88,6 @@ void __cdecl BobaRocket_Move(PART_PC *part, f32 elapsed) {
         delta.x = -part->velocity.x;
         delta.y = -part->velocity.y;
         delta.z = -part->velocity.z;
-        (void)count;
-        STUBBED_NAMED("BobaRocket_Move: AddGameDebrisMom trail emission");
+        AddGameDebrisMom(WORLD->game_debris_sys, 11, &next, count, &delta);
     }
 }
