@@ -397,6 +397,13 @@ def storage_observations(insn, records, region=None, base=0, bindings=None):
         row = {"site": insn.address if region is None else insn.address - base,
                "operation": insn.mnemonic, "operand_index": ordinal,
                "memory_width_bytes": operand.size, "access_flags": operand.access,
+               "raw_memory_operand": {
+                   "base_register": insn.reg_name(operand.mem.base) if operand.mem.base else None,
+                   "index_register": insn.reg_name(operand.mem.index) if operand.mem.index else None,
+                   "scale": operand.mem.scale,
+                   "segment_register": insn.reg_name(operand.mem.segment) if operand.mem.segment else None,
+                   "displacement": operand.mem.disp,
+                   "encoding_domain": "native_pe" if region is None else "unrelocated_coff"},
                "load_extension": "sign_extend" if insn.mnemonic in ("movsx", "movsxd") else
                                  "zero_extend" if insn.mnemonic == "movzx" else "none_in_instruction",
                "extension_destination_width_bytes": insn.operands[0].size if
@@ -478,6 +485,8 @@ def provider_storage_inventory(obj, symbol, records, native_cfg, native_observat
                              "layout, semantic equivalence, runtime activation or missing behavior. "
                              "Legal lowering/optimization can alter operation counts; equality is not "
                              "proof of completeness. Unknown paths/identities and aliases stay explicit. "
+                             "Raw addressing registers/displacements do not establish an object/field identity; "
+                             "equal displacements or different registers imply no semantic correspondence. "
                              "Implicit memory effects and register value flow are not modeled. "
                              "No native allocation, score or external-entry compatibility is inferred."}
 

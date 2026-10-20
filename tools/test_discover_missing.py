@@ -508,5 +508,76 @@ class ProviderStorageInventoryTests(unittest.TestCase):
 
 
 
+class RawMemoryOperandTests(unittest.TestCase):
+    # Reuse only the independent ordinary-COFF fixture helper, not its tests.
+    inventory = ProviderStorageInventoryTests.inventory
+    def test_wrong_and_corrected_relative_selector_are_distinct_but_identity_unknown(self):
+        old = self.inventory(bytes.fromhex("0fb686b8070000c3"))
+        new = self.inventory(bytes.fromhex("0fb686ae070000c3"))
+        a, b = old["candidate_observations"][0], new["candidate_observations"][0]
+        self.assertEqual(a["raw_memory_operand"]["displacement"], 0x7b8)
+        self.assertEqual(b["raw_memory_operand"]["displacement"], 0x7ae)
+        self.assertEqual(a["raw_memory_operand"]["base_register"], "esi")
+        self.assertEqual(a["binding"], b["binding"])
+        self.assertEqual(a["binding"], "segmented_or_register_relative_identity_unknown")
+        self.assertEqual(a["memory_width_bytes"], 1)
+        self.assertEqual(a["access_flags"], 1)
+        self.assertEqual(a["load_extension"], "zero_extend")
+        self.assertIn("no semantic correspondence", new["qualification"])
+
+    def test_stack_negative_displacement_and_scaled_index_keep_exact_decoder_facts(self):
+        for code, base, index, scale, displacement in [
+                ("8b4424fcc3", "esp", None, 1, -4),
+                ("8b448b24c3", "ebx", "ecx", 4, 0x24),
+                ("8b04cd34120000c3", None, "ecx", 8, 0x1234)]:
+            fact = self.inventory(bytes.fromhex(code))["candidate_observations"][0]
+            raw = fact["raw_memory_operand"]
+            self.assertEqual((raw["base_register"], raw["index_register"], raw["scale"], raw["displacement"]),
+                             (base, index, scale, displacement))
+            self.assertEqual(fact["binding"], "segmented_or_register_relative_identity_unknown")
+
+    def test_segment_register_is_visible_without_flat_address_binding(self):
+        fact = self.inventory(bytes.fromhex("648b4030c3"))["candidate_observations"][0]
+        self.assertEqual(fact["raw_memory_operand"]["segment_register"], "fs")
+        self.assertEqual(fact["raw_memory_operand"]["displacement"], 0x30)
+        self.assertEqual(fact["binding"], "segmented_or_register_relative_identity_unknown")
+        self.assertIsNone(fact["storage_va"])
+
+    def test_same_displacement_with_different_base_is_not_field_identity(self):
+        a = self.inventory(bytes.fromhex("0fb686ae070000c3"))
+        b = self.inventory(bytes.fromhex("0fb687ae070000c3"))
+        aa, bb = a["candidate_observations"][0], b["candidate_observations"][0]
+        self.assertNotEqual(aa["raw_memory_operand"]["base_register"], bb["raw_memory_operand"]["base_register"])
+        self.assertEqual(aa["raw_memory_operand"]["displacement"], bb["raw_memory_operand"]["displacement"])
+        self.assertEqual(aa["binding"], bb["binding"])
+        self.assertIsNone(aa["storage_va"])
+        self.assertIsNone(bb["storage_va"])
+        self.assertEqual(a["exact_storage_operation_count_differences"], b["exact_storage_operation_count_differences"])
+
+    def test_encoding_domain_distinguishes_raw_coff_zero_from_bound_native_address(self):
+        row = self.inventory(bytes.fromhex("a100000000c3"), [(1, 6)], native_code=bytes.fromhex("a100200000c3"))
+        native, candidate = row["native_observations"][0], row["candidate_observations"][0]
+        self.assertEqual(native["raw_memory_operand"]["encoding_domain"], "native_pe")
+        self.assertEqual(candidate["raw_memory_operand"]["encoding_domain"], "unrelocated_coff")
+        self.assertEqual(native["raw_memory_operand"]["displacement"], 0x2000)
+        self.assertEqual(candidate["raw_memory_operand"]["displacement"], 0)
+        self.assertEqual(native["storage_va"], candidate["storage_va"])
+        self.assertEqual(row["exact_storage_operation_count_differences"], [])
+
+    def test_immediate_and_unreachable_relative_bytes_do_not_become_observations(self):
+        row = self.inventory(bytes.fromhex("b8ae070000c3"))
+        self.assertEqual(row["candidate_observations"], [])
+        row = self.inventory(bytes.fromhex("c30fb686ae070000"))
+        self.assertEqual(row["candidate_observations"], [])
+
+    def test_address_only_relative_form_retains_non_access_binding(self):
+        row = self.inventory(bytes.fromhex("8d448b24c3"))
+        fact = row["candidate_observations"][0]
+        self.assertEqual(fact["binding"], "address_form_not_a_storage_access")
+        self.assertEqual(fact["raw_memory_operand"]["base_register"], "ebx")
+        self.assertEqual(fact["raw_memory_operand"]["index_register"], "ecx")
+
+
+
 if __name__ == "__main__":
     unittest.main()

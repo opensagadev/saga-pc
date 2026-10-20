@@ -329,6 +329,13 @@ Aliases, nonzero addends, uncertain bindings/paths and register-relative or segm
 operands remain explicit unknowns. Differences are review leads, not source signedness,
 value-flow, ABI, semantic completeness, native allocation or matching-credit proof.
 
+Storage observations also retain raw decoded base/index registers, scale, segment,
+and displacement. `encoding_domain` distinguishes native PE operands from unrelocated
+COFF fields; raw displacements are not necessarily bound addresses. Register names
+and equal displacements do not establish an object/field owner or semantic
+correspondence. Identity classifications and exact-storage count comparisons remain
+unchanged; register-relative operands stay unresolved even when their raw forms differ.
+
 ## Complete COFF comparison regions
 
 Audit existing comparison spans before accepting a new data definition or layout:
