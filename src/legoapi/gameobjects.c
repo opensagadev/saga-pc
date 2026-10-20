@@ -1219,6 +1219,10 @@ static void AfterAnimationSabreCode(GAMEOBJECT *object, i32 effect) {
     }
 }
 
+extern i32 FalconDebKey[2];
+STATIC_ASSERT(offsetof(GAMEOBJECT, locator_matrices) + 2 * sizeof(NUMTX) == 0x884);
+STATIC_ASSERT(offsetof(CHARACTER_MODEL_LAYERS_PC, points_of_interest) + 2 * sizeof(void *) == 0x1c);
+
 void __cdecl GameObjectStuffAfterAnimation(void) {
     GAMEOBJECT *object = Obj;
     i32 i;
@@ -1465,8 +1469,22 @@ void __cdecl GameObjectStuffAfterAnimation(void) {
         }
         if (drawn && object->id == (u16)id_LANDSPEEDER)
             STUBBED_NAMED("AfterAnimation: Landspeeder three real debris effects PC4b2636..4b283a");
-        if (VehicleArea != 0 && object->field_280 <= 1)
-            STUBBED_NAMED("AfterAnimation: Falcon debris-handle create/orient/free PC4b283a..4b290d");
+        if (VehicleArea != 0 && object->field_280 <= 1) {
+            i32 *handle = &FalconDebKey[object->field_280];
+            if (object->id == (u16)VehicleBoltId7f19a4Pc && (object->flags_1fc_word & 0x80) != 0 &&
+                (object->flags_e24 & 8) != 0 && object->character_model->points_of_interest[2] != NULL &&
+                object->origin_scale == 1.0f) {
+                if (*handle == -1) {
+                    AddDebrisEffect(handle, WORLD->game_debris_sys->entries[136].effect, 0.0f, 0.0f, 0.0f);
+                } else {
+                    NUMTX matrix = object->locator_matrices[2];
+                    NuMtxPreRotateX(&matrix, 0x4000);
+                    DebrisPosOrientationMtx(*handle, &matrix);
+                }
+            } else {
+                DebFreeInstantly(handle);
+            }
+        }
         if (object->powerup_time > 0.0f && object->dead == 0) {
             NUVEC position;
             f32 radius = (f32)((f64)object->bounds_radius * (0.5 + (f64)qrand() * (f64)(1.0f / 65535.0f) * 0.5));
