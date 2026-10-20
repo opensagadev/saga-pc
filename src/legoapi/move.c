@@ -6916,6 +6916,32 @@ STATIC_ASSERT(offsetof(GAMEOBJECT, torpedo) == 0xcc4);
 STATIC_ASSERT(offsetof(TORPEDOPACKET_PC, count) == 0);
 STATIC_ASSERT(offsetof(PLAYERCHARACTERCONFIG_PC, sfx_engine) == 0xe2);
 
+extern i16 TextIdPc881060;
+STATIC_ASSERT(offsetof(GAMEOBJECT, camera_screen_position) == 0xc5c);
+STATIC_ASSERT(offsetof(EXPLOSION_PC, owner) == 8);
+STATIC_ASSERT(offsetof(EXPLOSION_PC, flags) == 0x24);
+
+static __declspec(noinline) void SelfDestructCode(GAMEOBJECT *object, i32 pressed) {
+    EXPLOSION_PC *explosion;
+    if ((object->character_data->model_flags & 0x10) == 0 || (object->flags_e24 & 0x200) != 0)
+        return;
+    if (Cheat_IsOn(0x20) == 0)
+        return;
+    if ((object->flags_1fc_word & 0x80) == 0 || object->dead != 0 || object->character_context == 0x0b ||
+        object->character_context == 0x16 || object->character_context == 0x2b || pressed == 0)
+        return;
+    InstantKillParts(object, 1, 0.0f);
+    explosion = Detonate(&object->collision_position, 0);
+    if (explosion != NULL && Arcade != 0 && object->field_280 <= 1) {
+        explosion->flags |= 0x10000;
+        explosion->owner = object;
+    }
+    KillPlayer(object, 2, 1, NULL);
+    if (object->camera_screen_position.z > 0.0f)
+        AddFancyMessage(TTab[TextIdPc881060], object->camera_screen_position.x, object->camera_screen_position.y, 0.25f,
+                        1.0f, 1, 0);
+}
+
 void __cdecl Move_HOVERDROID(GAMEOBJECT *object) {
     f32 hover;
     DropInOutCode(object);
@@ -6930,7 +6956,7 @@ void __cdecl Move_HOVERDROID(GAMEOBJECT *object) {
              1);
     if (object->pad->input_magnitude > 0.0f && object->character_context != 23)
         GameAudio_PlaySfxById(object->character_data->game_character->sfx_engine, &object->collision_position, 0, 0);
-    STUBBED_NAMED(0x004a8640); /* Native 4b39ca: private self-destruct action; ECX/stack ABI held. */
+    SelfDestructCode(object, object->pad->buttons_pressed & GAMEPAD_SPECIAL);
     GizmoBlowupCheckProximity(WORLD, object);
 }
 
@@ -6995,7 +7021,7 @@ void __cdecl Move_DROIDEKA(GAMEOBJECT *object) {
     DroidekaRollingCodePc(object);
     ShieldCode(object);
     BeastStartFallCodePc(object);
-    STUBBED_NAMED(0x004a8640); /* Native 4b65d6: private self-destruct action with special-button stack argument. */
+    SelfDestructCode(object, special);
     GizmoBlowupCheckProximity(WORLD, object);
 }
 
@@ -7017,7 +7043,7 @@ void __cdecl Move_SUPERBATTLEDROID(GAMEOBJECT *object) {
     ShootCode(object, object->pad->buttons_pressed & GAMEPAD_ACTION, object->pad->buttons_pressed & GAMEPAD_SPECIAL, 1,
               0, 0);
     BeastStartFallCodePc(object);
-    STUBBED_NAMED(0x004a8640); /* Native 4b5ec9: private self-destruct action with special-button stack argument. */
+    SelfDestructCode(object, object->pad->buttons_pressed & GAMEPAD_SPECIAL);
     GizmoBlowupCheckProximity(WORLD, object);
 }
 
@@ -8810,8 +8836,7 @@ zap:
         if (WORLD->current_level == LevelFixupSlotPc0087b218)
             BigJumpCode(object);
     }
-    STUBBED_NAMED(
-        0x004a8640); /* Native4b62d3: private self-destruct action, unconditional; object ESI,SPECIAL&pressed. */
+    SelfDestructCode(object, object->pad->buttons_pressed & GAMEPAD_SPECIAL);
     GizmoBlowupCheckProximity(WORLD, object);
 }
 

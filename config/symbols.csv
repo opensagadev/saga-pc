@@ -1609,7 +1609,7 @@ address,symbol,size,ctype
 0x4a7da0,_PooCode,1278,void __cdecl(GAMEOBJECT*)
 0x4a82a0,_AwkwardShapeCode,818,"void __cdecl(GAMEOBJECT*,i32)"
 0x4a85e0,_MoveAnim_Check,96,
-0x4a8640,_SelfDestructCode,280,
+0x4a8640,_SelfDestructCode,280,"static void(GAMEOBJECT *, i32)"
 0x4a8760,_SmartBombCode,537,
 0x4a8980,_AnimationWeaponEffectPc,107,
 0x4a89f0,_DodgemCode,366,
