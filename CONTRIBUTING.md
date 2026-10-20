@@ -304,6 +304,24 @@ The report separates actual named COFF providers, missing comparison providers, 
 
 For a single unambiguous mapped extent, discovery can validate the narrow contiguous `CMP index,N; JA default; JMP [index*4+table]` pattern with a DWORD operand and no segment override. It checks the complete bounded direct CFG for alternate guard entries and keeps table bytes separate from instruction bytes. Untrusted extents, other switch forms, out-of-parent targets or incomplete/indirect paths remain unknown. It does not infer enum names, external interior-entry compatibility, source fixes or matching credit.
 
+## Complete COFF comparison regions
+
+Audit existing comparison spans before accepting a new data definition or layout:
+
+```sh
+python3 tools/check_coff_regions.py --baseline old/obj --candidate build/obj \
+  --symbols config/symbols.csv --summary-only --output build/coff-regions.json
+```
+
+Inputs may be individual objects or corresponding object directories. Repeat
+`--symbol NAME` to select baseline definitions. The audit compares complete bytes,
+extents, ordered relocation targets and metadata; unchanged old symbol metadata
+alone does not protect a span when a new definition reuses its padding.
+Exit 0 means equal comparison regions, 1 a regression, and 2 unresolved ownership
+or extraction. Aliases, section-order changes and mapped interiors remain unknown.
+Comparison spans may include padding: neither CSV types nor equal zero bytes prove
+a declared type size or native allocation. No matching credit or maps are changed.
+
 ## Runtime library
 
 The original links the VC8 runtime statically (`/MT`), and the pinned toolchain
