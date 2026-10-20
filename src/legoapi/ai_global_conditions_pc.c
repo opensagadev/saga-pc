@@ -876,3 +876,36 @@ f32 __cdecl Condition_NumBaddiesPc(AISYS_PC *system, AISCRIPTPROCESS_PC *process
     }
     return (f32)count;
 }
+
+STATIC_ASSERT(offsetof(GIZMO_PC, object) == 0);
+STATIC_ASSERT(offsetof(GIZOBSTACLE, triggering_object) == 0x38);
+
+void *__cdecl Condition_ObstacleLockedOpenInitPc(AISYS_PC *system, char *name, AISCRIPT_PC *script) {
+    GIZMO_PC *gizmo = (GIZMO_PC *)GizmoFindByName(WORLD->gizmo_sys, obstacle_gizmotype_id, name);
+    if (gizmo != NULL)
+        return gizmo->object;
+    return NULL;
+}
+
+f32 __cdecl Condition_ObstacleOpenedByPlayerPc(AISYS_PC *system, AISCRIPTPROCESS_PC *process, AIPACKET_PC *packet,
+                                               char *name, void *argument) {
+    GIZOBSTACLE *obstacle = (GIZOBSTACLE *)argument;
+    if (obstacle != NULL && player != NULL && obstacle->triggering_object == player)
+        return 1.0f;
+    return 0.0f;
+}
+
+STATIC_ASSERT(offsetof(AISCRIPTPROCESS_PC, unknown_a0) == 0xa0);
+STATIC_ASSERT(offsetof(AIAREA_PC, runtime_flags) == 0x2a);
+
+void *__cdecl Condition_BaddyInTriggerAreaInitPc(AISYS_PC *system, char *name, AISCRIPT_PC *script) {
+    return name != NULL ? AISysFindArea(system, name) : NULL;
+}
+
+f32 __cdecl Condition_BaddyInTriggerAreaPc(AISYS_PC *system, AISCRIPTPROCESS_PC *process, AIPACKET_PC *packet,
+                                           char *name, void *argument) {
+    AIAREA_PC *area = (AIAREA_PC *)argument;
+    if (area == NULL)
+        area = (AIAREA_PC *)process->unknown_a0;
+    return area != NULL && (area->runtime_flags & 4) != 0 ? 1.0f : 0.0f;
+}
