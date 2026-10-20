@@ -28293,3 +28293,14 @@ extern "C" {
 }
 #endif
 #endif
+
+#ifndef SAGA_INTERACTION_ARROW_TUNING_NATIVE_PC
+#define SAGA_INTERACTION_ARROW_TUNING_NATIVE_PC
+#ifdef __cplusplus
+extern "C" {
+#endif
+    extern f32 InteractionArrowScalePc;
+#ifdef __cplusplus
+}
+#endif
+#endif

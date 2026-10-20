@@ -3526,8 +3526,43 @@ void __cdecl UpdateGameObjects(WORLDINFO *world) {
             if (i >= lighting_start)
                 LightGameObject(object, world->rtl_set);
             if (object->arrow_blend > 0.0f) {
-                STUBBED_NAMED("UpdateGameObjects: entire interaction-arrow message geometry/text/AddGameMsg action "
-                              "PC435c27..435f10");
+                NUVEC position;
+                ADD_GAME_MESSAGE_PC message;
+                char text[128];
+                i32 joint = object->character_data->game_character->ride_locator;
+                f32 height;
+                f32 amplitude;
+                u16 base;
+                u16 phase;
+                if (joint != -1 && object->character_model->points_of_interest[joint] != NULL) {
+                    position.x = object->locator_matrices[joint].m30;
+                    position.y = object->locator_matrices[joint].m31;
+                    position.z = object->locator_matrices[joint].m32;
+                } else {
+                    position = object->upper_position;
+                }
+                height = (f32)((f64)object->bounds_half_height * 0.5);
+                if (height < (f64)0.21f)
+                    height = 0.21f;
+                position.y = position.y + height;
+                amplitude = (f32)((f64)object->bounds_radius * (f64)0.05f);
+                base = (u16)((object->hostility_group & 7) << 13);
+                phase = (u16)(base + (u16)(i32)(((f64)NuFmod(GameTimer.time_elapsed, 1.5f) / 1.5) * 65536.0));
+                position.x = (f32)((f64)NuTrigTable[phase >> 1] * amplitude + position.x);
+                phase = (u16)(base + (u16)(i32)(((f64)NuFmod(GameTimer.time_elapsed, 1.174f) / (f64)1.174f) * 65536.0));
+                position.y = (f32)((f64)NuTrigTable[phase >> 1] * ((f64)amplitude * 0.75) + position.y);
+                phase = (u16)(base + (u16)(i32)(((f64)NuFmod(GameTimer.time_elapsed, 1.259f) / (f64)1.259f) * 65536.0));
+                position.z = (f32)((f64)NuTrigTable[phase >> 1] * amplitude + position.z);
+                NuStrCpy(text, TagAsciiDownPc);
+                message = AddGameMsg_Default;
+                message.scale = InteractionArrowScalePc;
+                message.text = text;
+                message.position = &position;
+                phase = (u16)(i32)(((f64)NuFmod(GameTimer.time_elapsed_mod_seconds, 0.5f) * 2.0) * 65536.0);
+                message.alpha = (u8)(i32)(((f64)NuTrigTable[phase >> 1] * 24.0 + 104.0) * object->arrow_blend);
+                message.flags = 0x1083;
+                message.unknown_4f = 4;
+                AddGameMsg(&message);
             }
         }
     }

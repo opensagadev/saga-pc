@@ -10724,7 +10724,12 @@ address,symbol,size,ctype
 0x755bb0,__real@4054000000000000,8,f64
 0x755bb8,__real@4048000000000000,8,f64
 0x755bc0,__real@3f2a7efa,4,const f32
+0x00755bc8,__real@405a000000000000,8,f64
 0x00755bd0,__real@4038000000000000,8,const f64
+0x00755bd8,__real@3ff424dd20000000,8,f64
+0x00755be0,__real@3fa126e9,4,f32
+0x00755be8,__real@3ff2c8b440000000,8,f64
+0x00755bf0,__real@3f9645a2,4,f32
 0x755bf8,__real@3fcae147a0000000,8,const f64
 0x00755c00,__real@3fe19999a0000000,8,const f64
 0x00755c08,__real@c08f400000000000,8,const f64
@@ -18427,6 +18432,7 @@ address,symbol,size,ctype
 0x7f6578,_RippleSfxCooldownPc,,f32
 0x7f657c,_ForceFieldRippleRatePc,,f32
 0x007f6588,_timebase_updates,4,i32
+0x7f6590,_InteractionArrowScalePc,4,f32
 0x007f6594,_GAMEOBJECT_ROTATION_BUGGY_OFFSETS,48,const NUVEC[4]
 0x007f65c4,_GAMEOBJECT_ROTATION_RADIOCAR_OFFSETS,48,const NUVEC[4]
 0x007f65f4,_GAMEOBJECT_ROTATION_POLICECAR_OFFSETS,48,const NUVEC[4]

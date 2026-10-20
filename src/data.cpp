@@ -34497,3 +34497,8 @@ extern "C" {
 extern "C" {
     __declspec(allocate(".bss$TagTransfersPc")) TAG_TRANSFER_PC TagTransfersPc[2];
 }
+
+#pragma section(".data$InteractionArrowScalePc", read, write)
+extern "C" {
+    __declspec(allocate(".data$InteractionArrowScalePc")) f32 InteractionArrowScalePc = 0.7f;
+}
