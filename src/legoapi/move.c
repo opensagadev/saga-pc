@@ -6741,9 +6741,9 @@ after_gravity:
     GrabCode(object);
     if (object->id == (u16)id_RANCOR)
         AwkwardShapeCode(object, 0);
-    STUBBED_NAMED(0x0058cef0); /* Native4b50fa: object; HeadMovement. */
-    STUBBED_NAMED(0x0058cf50); /* Native4b5100: object; CloakMovement. */
-    STUBBED_NAMED(0x0058d150); /* Native4b5106: object; HairMovement. */
+    HeadMovement(object);
+    CloakMovement(object);
+    HairMovement(object);
     (void)jump_held;
 }
 
@@ -6968,7 +6968,7 @@ void __cdecl Move_WALKER(GAMEOBJECT *object) {
     if ((object->flags_e20 & 0x20) != 0)
         return;
     ApplyGravity(object, NULL, 0.0f, 0.0f, NULL);
-    STUBBED_NAMED(0x0058cef0); /* Native 4b633c: HeadMovement(object). */
+    HeadMovement(object);
     STUBBED_NAMED(0x0049c030); /* Native 4b6341: private native walker action with implicit ESI object. */
     TakeHitCode(object);
     SlideCode(object);
@@ -7000,7 +7000,7 @@ void __cdecl Move_ATAT(GAMEOBJECT *object) {
     if (ShootCode(object, pad->buttons_pressed & GAMEPAD_ACTION, 0, 0, 0, 0))
         state->bolt_fire_phase = state->bolt_fire_phase == 0;
     AwkwardShapeCode(object, 0);
-    STUBBED_NAMED(0x0058cef0); /* Native 4b64c0: HeadMovement(object). */
+    HeadMovement(object);
     if (CurrentAnim(&object->anim_packet) == 0 && object->character_context != 23 && object->character_context != 65)
         GameAudio_PlaySfxById(object->character_data->game_character->sfx_engine, &object->collision_position, 0, 0);
     GizmoBlowupCheckProximity(WORLD, object);
@@ -8565,9 +8565,9 @@ void __cdecl Move_GEONOSIAN(GAMEOBJECT *object) {
     if ((i8)object->character_data->game_character->flags_094_bytes[0] < 0)
         CommunicateCode(object, special_pressed, 0);
     BeastStartFallCodePc(object);
-    STUBBED_NAMED(0x0058cef0); /* Native4b67cc: HeadMovement(object), ignored action. */
-    STUBBED_NAMED(0x0058cf50); /* Native4b67d2: CloakMovement(object), ignored action. */
-    STUBBED_NAMED(0x0058d150); /* Native4b67d8: HairMovement(object), ignored action. */
+    HeadMovement(object);
+    CloakMovement(object);
+    HairMovement(object);
     if (object->jump_variant_state == 1)
         PlaySfx("GeonWingsLp", &object->collision_position);
 }
@@ -8610,8 +8610,8 @@ void __cdecl Move_JAWA(GAMEOBJECT *object) {
     ZapCode(object, action_pressed, special_pressed);
     (void)action_pressed;
     BeastStartFallCodePc(object);
-    STUBBED_NAMED(0x0058cef0); /* Native4b3d16: HeadMovement(object), ignored action. */
-    STUBBED_NAMED(0x0058cf50); /* Native4b3d1c: CloakMovement(object), ignored action. */
+    HeadMovement(object);
+    CloakMovement(object);
     ChatterSfx(object, 0, 0.0f);
 }
 
@@ -9829,9 +9829,9 @@ void __cdecl Move_JEDI(GAMEOBJECT *object) {
             AddVariableShotDebrisEffectTimed1(effect, &object->collision_position, 6, FRAMETIME, 0, 0, NULL);
     }
     BeastStartFallCodePc(object);
-    STUBBED_NAMED(0x0058cef0); /* Native4b37c6: HeadMovement(object). */
-    STUBBED_NAMED(0x0058cf50); /* Native4b37cc: CloakMovement(object). */
-    STUBBED_NAMED(0x0058d150); /* Native4b37d2: HairMovement(object). */
+    HeadMovement(object);
+    CloakMovement(object);
+    HairMovement(object);
     force_volume = (object->character_context == 0x1b && object->field_7b3 == 1) || object->character_context == 0x1d ||
                            object->character_context == 8
                        ? 1.0f
@@ -9961,9 +9961,9 @@ void __cdecl Move_WEIRDO(GAMEOBJECT *object) {
         CommunicateCode(object, object->pad->buttons_pressed & GAMEPAD_SPECIAL, 0);
     STUBBED_NAMED(0x004a69e0); /* Native4b5d02: private rocket context action with original object ESI. */
     BeastStartFallCodePc(object);
-    STUBBED_NAMED(0x0058cef0); /* Native4b5d0d: HeadMovement(object). */
-    STUBBED_NAMED(0x0058cf50); /* Native4b5d13: CloakMovement(object). */
-    STUBBED_NAMED(0x0058d150); /* Native4b5d19: HairMovement(object). */
+    HeadMovement(object);
+    CloakMovement(object);
+    HairMovement(object);
 }
 
 void __cdecl DrawForceGlowSpritePc(NUVEC *position, f32 radius, i32 model, f32 alpha, GAMEOBJECT *object) {

@@ -4377,7 +4377,12 @@ address,symbol,size,ctype
 0x58bc60,_AddFootSteps,628,void __cdecl(GAMEOBJECT *)
 0x58bee0,_SetHeadTarget,194,"void __cdecl(GAMEOBJECT*,NUVEC*,i8,f32,f32,f32)"
 0x58bfb0,_SetObjAsHeadTarget,96,"void __cdecl(GAMEOBJECT *, GAMEOBJECT *, i8, f32, f32, f32)"
-0x58d150,_CloakMovement,449,
+0x58c010,_HeadMovementLegacyPc,1204,static void(GAMEOBJECT *)
+0x58c4d0,_HeadMovementAlternatePc,1291,static void(GAMEOBJECT *)
+0x58c9e0,_HeadMovementOrdinaryPc,1291,static void(GAMEOBJECT *)
+0x58cef0,_HeadMovement,84,void __cdecl(GAMEOBJECT *)
+0x58cf50,_CloakMovement,501,void __cdecl(GAMEOBJECT *)
+0x58d150,_HairMovement,449,void __cdecl(GAMEOBJECT *)
 0x58d340,_ObjOpponentStillThere,229,"i32 __cdecl(GAMEOBJECT *,GAMEOBJECT *,f32)"
 0x58d430,_SetWeaponOut,66,void __cdecl(GAMEOBJECT *)
 0x58d480,_FastWeaponOut,220,"void __cdecl(GAMEOBJECT *, i32)"
@@ -19436,6 +19441,12 @@ address,symbol,size,ctype
 0x804d24,_ZipUpSwingSwingAnimationPc,,u16
 0x804d28,_ZipUpSwingJumpAnimationPc,,u16
 0x804d2c,_GameDrawCharacterModelFlagPc,,i32
+0x804d30,_HeadMovementThresholdPc,4,f32
+0x804da0,_CloakMovementRecoverRatePc,4,f32
+0x804da4,_CloakMovementFallRatePc,4,f32
+0x804da8,_HairMovementRecoverRatePc,4,f32
+0x804dac,_HairMovementFallRatePc,4,f32
+0x804db0,_HairMovementFallAnglePc,4,f32
 0x804dc4,_PUNCHGAP,,f32
 0x804dc8,_PUNCHCHARGAP,,f32
 0x804dcc,_CanPunchGirls,,i32
@@ -22490,6 +22501,7 @@ address,symbol,size,ctype
 0x95559c,_objhitobj_throwkillpartsup,,i32
 0x9555a0,_objhitobj_killparts_yrot,,i16*
 0x9555a4,_UsingExtraActionsFn,,i32 (__cdecl *)(GAMEOBJECT *)
+0x9555a8,_HairMovementRestAnglePc,4,f32
 0x9555ac,_Fighting_WeaponInActionFn,,i32 (__cdecl *)(GAMEOBJECT *)
 0x9555b0,_Fighting_WeaponOutActionFn,,i32 (__cdecl *)(GAMEOBJECT *)
 0x9555b4,_WeaponInOut_NoAIJediSfx,,i32

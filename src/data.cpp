@@ -34479,3 +34479,16 @@ extern "C" {
     f32 ForcePushMindTrickDurationPc = 0.4f;
 #pragma data_seg()
 }
+
+extern "C" {
+#pragma data_seg(".data$HeadCloakHairTuningPc")
+    f32 HeadMovementThresholdPc = 0.0017453293548896909f;
+    f32 CloakMovementRecoverRatePc = 2.0f;
+    f32 CloakMovementFallRatePc = 2.0f;
+    f32 HairMovementRecoverRatePc = 2.0f;
+    f32 HairMovementFallRatePc = 2.0f;
+    f32 HairMovementFallAnglePc = -1.8325958251953125f;
+#pragma data_seg()
+#pragma section(".bss$HeadCloakHairTuningPc", read, write)
+    __declspec(allocate(".bss$HeadCloakHairTuningPc")) f32 HairMovementRestAnglePc = 0.0f;
+}
