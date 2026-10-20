@@ -1545,6 +1545,7 @@ address,symbol,size,ctype
 0x0049e2b0,_ComboJumpStartPc,192,
 0x0049e370,_ComboBlockStartPc,213,
 0x49e450,_BlockCode,927,"static void(GAMEOBJECT *, i32, i32, i32, i32)"
+0x49e7f0,_StartDodgePc,415,static void(GAMEOBJECT *)
 0x49e990,_Dodge_UpdateHint,111,i32 __cdecl(HINT_PC*)
 0x49ea00,_PunchRangesPc,107,
 0x0049ea70,_PunchCode,3000,
@@ -1661,7 +1662,7 @@ address,symbol,size,ctype
 0x4b0c10,_DeactivatedZapFilterPc,109,"static i32(GAMEOBJECT*,GAMEOBJECT*)"
 0x4b0c80,_DeactivatedCode,1327,static void(GAMEOBJECT*)
 0x4b11b0,_StartQuickShoot,553,"void __cdecl(GAMEOBJECT*,i32)"
-0x4b13e0,_DodgeCode,465,
+0x4b13e0,_DodgeCode,465,"static void(GAMEOBJECT *, i32, i32)"
 0x4b15c0,_ForceDeflectCode,1259,
 0x004b1ab0,_GameObjectStuffAfterAnimation,3904,void __cdecl (void)
 0x4b29f0,_CommunicateCode,701,

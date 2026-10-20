@@ -17,7 +17,7 @@
     "config/library-objects.json": "e5ae24d3eac36fa0d0cb098f7690faaef3110f225db30c8cbf0f7d0d64f6ecfe",
     "config/ogg-vorbis.json": "7f98d40938e6bd6060c6bdfc2ce39d9cfb1c822243693eeb1d85d46b43dcad24",
     "config/project.json": "9a3650958be769951860d2c457f8573049ecae76e48ce8f3d7383e4ca2b761a6",
-    "config/symbols.csv": "2343c70584f49a95764e86a2a8c0df813597552c29e47bd1338327ac83d9ab1f",
+    "config/symbols.csv": "633d0210c520393c24c7aacd4d840261af6dc599f12ddb971f6d368c2c75e900",
     "config/symbols.md": "dffbdaac86011e3aee74b404063c15bda97f88af3db337ffef9f1bad1785d212",
     "config/toolchain.json": "b8808088bb2c7eb239785f69c9e464ae8545216d5705fb37216bc0cf926732f3",
     "config/tools.json": "50199f6b132a7abfabf251e98a75be0a957abfe50f1ff776188fba21e4c4436f",
@@ -25,7 +25,7 @@
     "tools/calleemap.py": "ff882528bd647fefffde0bb0ac7625795c96b95dad9a1723cf03e9fff9726f32",
     "tools/callmap.py": "6f2e710597fd8f744fcd006af898b9d3eeb2edcff86cf77abe9642125650b4f6",
     "tools/candidate_only.py": "08da5b52d8d187fd70351fc30b180e2c04fddbb596ddf5edd19f7b08837e20aa",
-    "tools/cc.py": "f6f77819d80e2dc6f098e01f49995da7a4e0a47a8412d3c91ede0141e0c0fcb7",
+    "tools/cc.py": "52c6f958d9e536eacdc367fe04a79b8a43e3571f278803628bc3185bfaf79cef",
     "tools/check.py": "5a9c9efef96a8d8635a2e7ebca4118fa6836a3a54146da900e99fbedda31a0ec",
     "tools/crash_symbols.py": "0be18dcb6f0e8e78b022c0c35def96f871bfd480dadab7a3b7eb5acf1a43cc4f",
     "tools/data_members.py": "d6a33be911d095a6d07dccd4443ccbfd6b514fd89fd7e200d9caa1827944e218",
@@ -44,7 +44,7 @@
     "tools/test_bink_imports.py": "51fdaeb952f0f4f4d38fe412dd9d659a04381ef34f796b03101a1e335d4b8506",
     "tools/test_build_kinds.py": "610d438a706fa90ae5cd8ba03510171b2cc884a3aad8221e525416a8e9fccea1",
     "tools/test_candidate_only.py": "49290bea1357029a2340a07613e24cf2c7af9610fe77f2fc18a50b0fc00dc379",
-    "tools/test_cc.py": "16970ee4548035a57e295b5991ff8c1735b729307b94484657c0528748f0368e",
+    "tools/test_cc.py": "c4d74fc96005a1627d18efd7f79f3083df63845b1a412314aaf34412126cba53",
     "tools/test_check.py": "4149d0c9d27d7f85ee255b7b8cf2679e2745ebaeb316f6125af414e462671cb5",
     "tools/test_cli_imports.py": "028c3abd2cd218eea3eaa515c4f675f8e1b00863319428b03af6e804a1649ddd",
     "tools/test_code_groups.py": "505d288651a7a6a7edfb81ef9e9fe833e4e0c955254cd06cf369d759f592ef78",
@@ -320,7 +320,7 @@
     "src/legoapi/mission.c": "b6ce5e9e844e32467ba2d1e759d61799e5388bd376cb5894524169781c2232c1",
     "src/legoapi/missions.c": "5723bc2a3c0173a42c0beb22d0b7f5e886162f70728f8f9304c8c8a12ec7c9ef",
     "src/legoapi/model_animation.c": "ef78e3baf9aca6e9f638f4b195ef6cca7d5061a9ab739ebe9533b7f6dd75f5ab",
-    "src/legoapi/move.c": "b3b8726f1161fd1db5346ee2508b61ea19302b1bb4e94f767750da94ffbc2f5a",
+    "src/legoapi/move.c": "5b7866cf61153d544249dfc12dc2fe6b5eeca0c0ffe4b5cd145f91ef253c343f",
     "src/legoapi/netplay.c": "08f5e9eb81ca542d5e76d6c3ee9e8ae43aad56a50ed14da7a72e800c6682d0e9",
     "src/legoapi/newlevels.c": "262db0b1cb6c59e99563249642e82f1282636ddf0aa7d2acc1e3c17476018986",
     "src/legoapi/objectsall.c": "1d0ff33901ba13c10ea3f607d9295a0cc611046b44792394da6ef3b696b62efb",
@@ -687,7 +687,7 @@
     "build/obj/legoapi/mission.obj": "fcc4d69f6319c19f4096a3e612213382c21f93306730c2e6494ac28f85590e90",
     "build/obj/legoapi/missions.obj": "1bfbba4767ef2dbc5e24e2ed14b766b0099a35920dc264e50e29ce4c35a4bc99",
     "build/obj/legoapi/model_animation.obj": "b6c39fcf5411d69411930a7404899aaf4648d50138d3e68d80de538a16cabe48",
-    "build/obj/legoapi/move.obj": "eec93a7b1cd9020e347941ca220b297abbf7ad8235251bbedbc0b15249438027",
+    "build/obj/legoapi/move.obj": "d2a957505c4f9c10ac554a45fc5ed48034d087000f508a16be0242b977a461e1",
     "build/obj/legoapi/movies.obj": "931c16ca3469a42307ea3750b3e8f68bda6f2ab9dae0614f740c9bc6045a9b0f",
     "build/obj/legoapi/netplay.obj": "c1fd8bdde614bdfc2c2a6e85143ba87d1ed27b3abc93a95229f6c6adf8324745",
     "build/obj/legoapi/newlevels.obj": "864062368915084245dff60548b18dcf6d1eca9f8edb96b5e5809fa35ea2ea5e",
@@ -35565,6 +35565,30 @@
       "objdiff_percent": 95.89838
     },
     {
+      "name": "StartDodgePc",
+      "symbol": "_StartDodgePc",
+      "address": "0x0049e7f0",
+      "units": [
+        "src/legoapi/move.c"
+      ],
+      "target_size": 415,
+      "exact_match": false,
+      "objects": [
+        {
+          "unit": "src/legoapi/move.c",
+          "base_size": 412,
+          "exact_match": false,
+          "target_sha256": "ba7b80268a781ee6bae87695741ef52d0eb3de96dc6002868744b970ff902659",
+          "base_sha256": "bba2cd5c2ce3255e875b82e3923cb1a28c5af6e9758361f4bb49bc839483830e",
+          "relocation_count": 4,
+          "comparison_unit": "0049e7f0-92b65d97d6d4",
+          "objdiff_percent": 95.83178
+        }
+      ],
+      "status": "different",
+      "objdiff_percent": 95.83178
+    },
+    {
       "name": "Dodge_UpdateHint",
       "symbol": "_Dodge_UpdateHint",
       "address": "0x0049e990",
@@ -38324,11 +38348,25 @@
       "name": "DodgeCode",
       "symbol": "_DodgeCode",
       "address": "0x004b13e0",
-      "units": [],
+      "units": [
+        "src/legoapi/move.c"
+      ],
       "target_size": 465,
-      "exact_match": false,
-      "objects": [],
-      "status": "not implemented"
+      "exact_match": true,
+      "objects": [
+        {
+          "unit": "src/legoapi/move.c",
+          "base_size": 465,
+          "exact_match": true,
+          "target_sha256": "7aa44784bcd2c28a2620c123b801c1c258f98624e8592b2551a58813bbe777f4",
+          "base_sha256": "7aa44784bcd2c28a2620c123b801c1c258f98624e8592b2551a58813bbe777f4",
+          "relocation_count": 14,
+          "comparison_unit": "004b13e0-f0208159b948",
+          "objdiff_percent": 100.0
+        }
+      ],
+      "status": "exact",
+      "objdiff_percent": 100.0
     },
     {
       "name": "ForceDeflectCode",
@@ -38520,17 +38558,17 @@
       "objects": [
         {
           "unit": "src/legoapi/move.c",
-          "base_size": 1246,
+          "base_size": 1256,
           "exact_match": false,
           "target_sha256": "f44f543804d9d9b307a937478706f5a3eea7540e2be9d34d6683570c0a1a84b8",
-          "base_sha256": "3351697f190ac08cb72afe288aac6f9c14714f4b955d9514364d982de08c7ad6",
-          "relocation_count": 79,
+          "base_sha256": "10553b44b8cb183e7b9ce893b3c9b3419adf180458a15964e2b2a53e16f6d52e",
+          "relocation_count": 80,
           "comparison_unit": "004b3390-bff543f1f7ba",
-          "objdiff_percent": 81.502464
+          "objdiff_percent": 82.12315
         }
       ],
       "status": "different",
-      "objdiff_percent": 81.502464
+      "objdiff_percent": 82.12315
     },
     {
       "name": "Move_HOVERDROID",
@@ -38664,17 +38702,17 @@
       "objects": [
         {
           "unit": "src/legoapi/move.c",
-          "base_size": 1272,
+          "base_size": 1286,
           "exact_match": false,
           "target_sha256": "c996a8a32c4bbb0d78d006c47ab9e0a40472e1dbf50b35a65e15bdde3d4057c3",
-          "base_sha256": "80651ab8e865ed9d115743050af3ca04a894bec2d77c8ddb671bf4ab65b818b9",
-          "relocation_count": 76,
+          "base_sha256": "048164d8a24b43dfa3863d037c892b6bac7ed8c9017e6e42d7fe78d8f96ebc4b",
+          "relocation_count": 77,
           "comparison_unit": "004b4ac0-8771feed6518",
-          "objdiff_percent": 69.10145
+          "objdiff_percent": 69.62526
         }
       ],
       "status": "different",
-      "objdiff_percent": 69.10145
+      "objdiff_percent": 69.62526
     },
     {
       "name": "Move_VEHICLE",
@@ -38712,17 +38750,17 @@
       "objects": [
         {
           "unit": "src/legoapi/move.c",
-          "base_size": 1009,
+          "base_size": 1054,
           "exact_match": false,
           "target_sha256": "b76f444e08c5b111a18d44509eb30b3cd29044558bae33aa08919c3e6fa7c3b9",
-          "base_sha256": "9a4c3b3e0bc63b9c943f217e40bc6c1e01bc0edc4d19e01519c9dd981b7eccf4",
-          "relocation_count": 74,
+          "base_sha256": "d6e62360e5c8b87eeed1f1b1c141bfa5d0acb01c8468a48305b7371f4908e1df",
+          "relocation_count": 77,
           "comparison_unit": "004b5820-af9587f1c4f7",
-          "objdiff_percent": 62.253555
+          "objdiff_percent": 65.09479
         }
       ],
       "status": "different",
-      "objdiff_percent": 62.253555
+      "objdiff_percent": 65.09479
     },
     {
       "name": "Move_REPUBLICGUNSHIP",
@@ -474559,17 +474597,17 @@
   ],
   "progress": {
     "text_bytes": 3471246,
-    "mapped_code_bytes": 2411774,
-    "matched_code_bytes": 454136,
-    "matching_percent": 13.08279505399502,
-    "fuzzy_coverage_percent": 46.72066041292129,
-    "mapped_functions": 8850,
-    "matched_functions": 4202,
-    "objdiff_fuzzy_percent": 74.56919,
-    "objdiff_total_code": 2178247,
+    "mapped_code_bytes": 2412189,
+    "matched_code_bytes": 454601,
+    "matching_percent": 13.096190820241493,
+    "fuzzy_coverage_percent": 46.74705531261005,
+    "mapped_functions": 8851,
+    "matched_functions": 4203,
+    "objdiff_fuzzy_percent": 74.58113,
+    "objdiff_total_code": 2179127,
     "image_bytes": 40067072,
-    "mapped_bytes": 4223268,
-    "mapping_percent": 10.54049569681558,
+    "mapped_bytes": 4223683,
+    "mapping_percent": 10.541531460047793,
     "mapping_denominator": "code_and_data_section_virtual_sizes",
     "mapping_sections": [
       {
@@ -474577,7 +474615,7 @@
         "kind": "code",
         "address": "0x401000",
         "size": 3471246,
-        "mapped_bytes": 2412968
+        "mapped_bytes": 2413383
       },
       {
         "name": ".rdata",
@@ -474602,17 +474640,17 @@
         "mapped_zero_fill_data_bytes": 1461329
       }
     ],
-    "mapping_known_size_symbols": 16683,
+    "mapping_known_size_symbols": 16684,
     "mapping_unknown_size_symbols": 7075,
-    "mapping_code_bytes": 2412968,
+    "mapping_code_bytes": 2413383,
     "mapping_code_total_bytes": 3471246,
-    "mapping_code_percent": 69.51302212519654,
+    "mapping_code_percent": 69.52497748647028,
     "mapping_data_bytes": 1810300,
     "mapping_data_total_bytes": 36018966,
     "mapping_data_percent": 5.025963266130405,
-    "mapping_code_data_bytes": 4223268,
+    "mapping_code_data_bytes": 4223683,
     "mapping_code_data_total_bytes": 39490212,
-    "mapping_code_data_percent": 10.694467783561151,
+    "mapping_code_data_percent": 10.695518676881248,
     "mapping_file_backed_data_bytes": 348971,
     "mapping_file_backed_data_total_bytes": 1064558,
     "mapping_file_backed_data_percent": 32.78083486291963,
@@ -475762,7 +475800,7 @@
       "metadata_sha256": "fe09365da4c355f220d724ca99394fc120b758891b4188d2c49707b6df0894f2",
       "header_path": "src/saga.h",
       "header_sha256": "3c427925a902900c816c815f0d518b5cc2d849d05beee18f442440051adc348f",
-      "geometry_object_sha256": "d43f32729d1ff1b83f37f38712c1e57d53f184e6722a0292575195535a5046a8",
+      "geometry_object_sha256": "54b255cf3e3c4b6e300137a0fa85933e8c0471e63795e4dfb598a8eb94291d9f",
       "toolchain_sha256": "b8808088bb2c7eb239785f69c9e464ae8545216d5705fb37216bc0cf926732f3",
       "implementation_sha256": "d6a33be911d095a6d07dccd4443ccbfd6b514fd89fd7e200d9caa1827944e218",
       "headers": {
@@ -476004,7 +476042,7 @@
         4
       ]
     },
-    "clang_source_sha256": "64e0d7cbe37dec2811748fd52e187eeb0546b20a023e96ef5ad1ee315cee527b",
+    "clang_source_sha256": "af602c53cd5bd271b543c780c288cc520214f1435618911ece2cb2fcb98e800c",
     "member_count": 42,
     "physical_definition_credit": 0
   },

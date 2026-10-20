@@ -1,4 +1,5 @@
 #include "saga.h"
+static void DodgeCode(GAMEOBJECT *, i32, i32);
 static void BlockCode(GAMEOBJECT *, i32, i32, i32, i32);
 BOLT *__cdecl FindIncomingBolt(GAMEOBJECT *, i32, i32);
 void __cdecl FindForcePushTarget(GAMEOBJECT *, i32, i32);
@@ -6655,9 +6656,9 @@ after_gravity:
     if ((object->character_data->game_character->flags_094 & 0x20000000) != 0 &&
         object->id == (u16)VehicleBoltId7f17d0Pc && StartupGameFlag0 != 0)
         STUBBED_NAMED(0x005b26b0); /* Native4b5040: object; actual void action. */
-    STUBBED_NAMED(0x004b13e0);     /* Native4b504e: object ECX/action_pressed EAX+jump_pressed stack; DodgeCode. */
-    STUBBED_NAMED(0x004036a0);     /* Native4b505a: WORLD,object; Attracto_MoveCode. */
-    STUBBED_NAMED(0x004bdaf0);     /* Native4b5067: WORLD,object; SecurityDoor_MoveCode. */
+    DodgeCode(object, action_pressed, jump_pressed);
+    STUBBED_NAMED(0x004036a0); /* Native4b505a: WORLD,object; Attracto_MoveCode. */
+    STUBBED_NAMED(0x004bdaf0); /* Native4b5067: WORLD,object; SecurityDoor_MoveCode. */
     if ((object->character_data->model_flags & 0x80) != 0)
         ShootCode(object, action_pressed, special_pressed, 1, 1, 0);
     else if (((DEFAULT_MOTION_BATARANG_POINTER_PC *)object)->batarang != NULL)
@@ -9165,6 +9166,99 @@ extern f32 ForcePushStrongDurationPc;
 extern f32 ForcePushMindTrickDurationPc;
 extern i16 CharacterFixupIdPc007f1a78;
 
+STATIC_ASSERT(offsetof(GAMEOBJECT, incoming_bolt) == 0xd04);
+STATIC_ASSERT(offsetof(GAMEOBJECT, field_e12) == 0xe12);
+STATIC_ASSERT(offsetof(GAMEOBJECT, field_7aa) == 0x7aa);
+STATIC_ASSERT(offsetof(GAMEOBJECT, landing_followup) == 0x7b1);
+STATIC_ASSERT(offsetof(GAMEOBJECT, blowup_target) == 0x794);
+STATIC_ASSERT(offsetof(GAMEOBJECT, field_0x276) == 0x27a);
+
+static __declspec(noinline) void StartDodgePc(GAMEOBJECT *object) {
+    i16 previous_animation = object->field_7aa;
+    BOLT_PC *bolt = object->incoming_bolt;
+    NUVEC perpendicular = bolt->direction;
+    f32 side;
+    f32 duration;
+    NuVecRotateY(&perpendicular, &perpendicular, 0x4000);
+    if ((object->flags_e20 & 0x2000) != 0) {
+        object->field_7aa = object->field_e12 == 0x26 ? 0x4f : 0x26;
+    } else {
+        side = (object->collision_position.z - bolt->position.z) * perpendicular.z +
+               (object->collision_position.x - bolt->position.x) * perpendicular.x;
+        object->field_7aa = side < 0.0f ? 0x4f : 0x26;
+    }
+    object->field_e12 = object->field_7aa;
+    if (object->character_model->model_data_b[object->field_7aa] != NULL) {
+        duration = AnimDuration((i16)object->id, object->field_7aa, 0.0f, 0.0f, 0);
+        object->context_timer = duration;
+        if (duration > 0.0f) {
+            object->character_context = 0x25;
+            object->blowup_target = NULL;
+            object->landing_followup = 0;
+            ResetAnimPacket(&object->anim_packet, -1);
+            if (object->field_7aa == 0x58 && object->pad->input_magnitude > 0.0f) {
+                object->force_target = NULL;
+            } else {
+                object->force_target = (GAMEOBJECT *)bolt->owner;
+                if (FaceOpponent(object, NULL)) {
+                    object->field_0x276 = object->movement_facing_angle;
+                    object->facing_angle = object->movement_facing_angle;
+                }
+            }
+        }
+    }
+    if (object->character_context != 0x25)
+        object->field_7aa = previous_animation;
+}
+
+static void DodgeCode(GAMEOBJECT *object, i32 action_pressed, i32 jump_pressed) {
+    f32 remaining;
+    BOLT *bolt;
+    PLAYERCHARACTERCONFIG_PC *data;
+    if (object->character_context == 0x25) {
+        if (action_pressed != 0)
+            object->landing_followup = 2;
+        else if (jump_pressed != 0 && object->field_7aa == 0x58)
+            object->landing_followup = 1;
+        if (AnimPlaying(&object->anim_packet, object->field_7aa, 1, 0) == NULL)
+            return;
+        remaining = object->context_timer - FRAMETIME;
+        object->context_timer = remaining;
+        if (!(remaining <= 0.0f))
+            return;
+        object->character_context = -1;
+        ResetAnimPacket(&object->anim_packet, -1);
+        object->velocity.z = 0.0f;
+        object->velocity.x = 0.0f;
+        if (FaceOpponent(object, NULL) != 0) {
+            object->field_0x276 = object->movement_facing_angle;
+            object->facing_angle = object->movement_facing_angle;
+        }
+        if (object->landing_followup == 2 && PlayerItem_GotAmmo(&((VEHICLE_SHOOT_STATE_PC *)object)->weapon) != 0) {
+            if (object->field_7aa == 0x58 && object->pad->input_magnitude > 0.0f) {
+                SetWeaponOut(object);
+                ShootThisFrame(object, BoltType_FindIDByCreature(object, 0), 3);
+            } else
+                StartQuickShoot(object, 0x16);
+            object->quick_shoot_timer = AnimDuration((i16)object->id, object->field_7aa, 0.0f, 0.0f, 1);
+            return;
+        }
+        if (object->landing_followup == 1)
+            StartJump(object, 0);
+        return;
+    }
+    if ((object->flags_1fc_word & 0x80) == 0 || object->field_281 == 0 ||
+        (object->character_context != -1 && (object->character_context != 0xa || object->field_7aa == 0x57)))
+        return;
+    data = object->character_data->game_character;
+    if (!((f64)object->pad->input_magnitude <= ((f64)data->run_speed + data->walk_speed) * 0.5))
+        return;
+    bolt = FindIncomingBolt(object, 1, 1);
+    object->incoming_bolt = bolt;
+    if (bolt != NULL && action_pressed != 0)
+        StartDodgePc(object);
+}
+
 static void ForcePushCode(GAMEOBJECT *object, i32 held) {
     GAMEOBJECT *initial_target;
     GAMEOBJECT *target;
@@ -9650,7 +9744,7 @@ void __cdecl Move_JEDI(GAMEOBJECT *object) {
     STUBBED_NAMED(0x004d0290); /* Native4b3703: ThermalDetonator_MoveCode(object), return genuinely ignored here. */
     if (object->suit != NULL && (((MOVEMENT_SUIT_PC *)object->suit)->store_flag & 4) != 0)
         STUBBED_NAMED(0x004271b0); /* Native4b371c: Detonator_MoveCode(object), ignored action. */
-    STUBBED_NAMED(0x0049dfd0);     /* Native4b3726: ComboRotateCode(object,action_held). */
+    ComboRotateCode(object, action_held);
     WeaponOutCode(object);
     WeaponInCode(object);
     WeaponScalingCode(object);
@@ -9767,7 +9861,7 @@ void __cdecl Move_WEIRDO(GAMEOBJECT *object) {
     }
     SuperCarry_MoveCode(WORLD, object);
     GizmoBlowupCheckProximity(WORLD, object);
-    STUBBED_NAMED(0x0049dfd0); /* Native4b5bda: ComboRotateCode(object,action_held). */
+    ComboRotateCode(object, action_held);
     WeaponOutCode(object);
     WeaponInCode(object);
     WeaponScalingCode(object);
@@ -9780,13 +9874,12 @@ void __cdecl Move_WEIRDO(GAMEOBJECT *object) {
         SwipeCode(object, action_pressed, action_held);
         if (detonator_used == 1)
             special_pressed = 0;
-        STUBBED_NAMED(0x004a10c0); /* Native4b5c58: LightSabreComboCode(object
-                                      EAX,action_pressed,action_held,jump_pressed,special_pressed). */
+        LightSabreComboCode(object, action_pressed, action_held, jump_pressed, special_pressed);
         JediLightCode(object);
     } else {
         BlockCode(object, action_pressed, action_held, 0, 0);
         PunchCode(object, action_pressed, action_held, 1, 0, 0.0f);
-        STUBBED_NAMED(0x004b13e0); /* Native4b5c98: DodgeCode(object ECX,action_pressed EAX,jump_pressed). */
+        DodgeCode(object, action_pressed, jump_pressed);
         if ((object->character_data->model_flags & 0x80) != 0) {
             if (detonator_used == 1)
                 special_pressed = 0;
