@@ -280,7 +280,7 @@ i32 __cdecl ObjHitObj(GAMEOBJECT *attacker, GAMEOBJECT *target, i32 damage, u16 
                     NewRumble(target->pad->bound_pad, 0.75f, 0);
                 if (LEGOCONTEXT_HOLD != -1 && target->character_context == LEGOCONTEXT_HOLD) {
                     NewBlockAction(target);
-                    if ((target->id == id_IMPERIALGUARD || target->id == id_GAMORREANGUARD) &&
+                    if ((target->id == (u16)id_IMPERIALGUARD || target->id == (u16)id_GAMORREANGUARD) &&
                         (target->character_context == 24 || target->character_context == 12))
                         GameAudio_PlaySfx(74, &target->collision_position, 0, 0);
                 }
@@ -313,7 +313,7 @@ i32 __cdecl ObjHitObj(GAMEOBJECT *attacker, GAMEOBJECT *target, i32 damage, u16 
                 hit = 0;
                 goto attributed_hit;
             }
-            if (id_SPEEDERBIKE == target->id && !(0x80 & target->flags_1fc_word)) {
+            if ((u16)id_SPEEDERBIKE == target->id && !(0x80 & target->flags_1fc_word)) {
                 if (attacker && !(attacker->character_data->model_flags & 0x2000))
                     hit = 0;
                 else if (target->ai_packet.creature_set != 2)
@@ -322,15 +322,15 @@ i32 __cdecl ObjHitObj(GAMEOBJECT *attacker, GAMEOBJECT *target, i32 damage, u16 
             }
         }
         if (WORLD->area == HOTHBATTLE_ADATA &&
-            ((target->id == id_ATAT && !(target->flags_1fc_word & 0x80) &&
+            ((target->id == (u16)id_ATAT && !(target->flags_1fc_word & 0x80) &&
               (!attacker || !(attacker->flags_1fc_word & 0x80))) ||
-             (attacker && id_ATAT == attacker->id && !(target->flags_1fc_word & 0x80) &&
+             (attacker && (u16)id_ATAT == attacker->id && !(target->flags_1fc_word & 0x80) &&
               !(attacker->flags_1fc_word & 0x80)))) {
-            if (hit == -1 && target->id == id_ATAT) {
+            if (hit == -1 && target->id == (u16)id_ATAT) {
                 if (target->character_context != 23)
                     hit = 0;
             } else
-                hit = attacker && attacker->id == id_ATAT && target->id == id_DRAGBOMB ? -1 : 0;
+                hit = attacker && attacker->id == (u16)id_ATAT && target->id == (u16)id_DRAGBOMB ? -1 : 0;
             goto attributed_hit;
         }
         if (flags & 1)
@@ -387,9 +387,9 @@ attributed_hit:
                         &*(AISCRIPTPROCESS_PC *)&target->ai_packet, FRAMETIME);
 impact:
     if (!no_impact) {
-        if (attacker && attacker->id == id_BODYGUARD)
+        if (attacker && attacker->id == (u16)id_BODYGUARD)
             PlaySfx("Grv_GuardImpact", &target->collision_position);
-        else if (attacker && attacker->id == id_IMPERIALGUARD)
+        else if (attacker && attacker->id == (u16)id_IMPERIALGUARD)
             PlaySfx("wpn_bib_stab", &target->collision_position);
         else if (bolt) {
             if (!(bolt->type_id >= 27 && bolt->type_id <= 29) && WORLD->area &&
@@ -442,7 +442,7 @@ impact:
         LoseHelmet(target, 0, 0);
     if (hit != -1) {
         if (!target->current_hp || (((target->flags_1fc_word & 0x80)) && Player_HasInvincibility(target))) {
-            if (target->id == id_ROYALGUARD || target->id == id_WOOKIEE)
+            if (target->id == (u16)id_ROYALGUARD || target->id == (u16)id_WOOKIEE)
                 SetFlicker(target, 0.4f);
             PlayerTakeHit(target, attacker);
             result = 0;
@@ -459,7 +459,7 @@ impact:
     } else
         health = 0;
     no_impact =
-        players_cannot_exit_speeder && target->id == id_SPEEDERBIKE && target->rider && target->field_280 != 0xff;
+        players_cannot_exit_speeder && target->id == (u16)id_SPEEDERBIKE && target->rider && target->field_280 != 0xff;
     if ((target->character_data->model_flags & 0x20000000) && !ObjIsTargetSpeeder(target) && !no_impact) {
         coins = 0;
         if (((target->flags_1fc_word & 0x80)) && target->coin_packet &&
@@ -585,7 +585,7 @@ ordinary_death:
                         NuSpecialSetVisibility(&special, 0);
                 }
                 NewCutScene(NULL, WORLD->cutscene_sys,
-                            attacker && attacker->id == id_OBIWANKENOBIEP3 && target->id == id_ANAKINJEDI
+                            attacker && attacker->id == (u16)id_OBIWANKENOBIEP3 && target->id == (u16)id_ANAKINJEDI
                                 ? (char *)("ep3_darthvader_outro2")
                                 : (char *)("ep3_darthvader_outro1"),
                             1);
@@ -594,10 +594,10 @@ ordinary_death:
         }
     }
     if (no_impact && target->rider) {
-        KillParts(target->rider, -1, target->rider->id == id_BODYGUARD ? 4 : -1, 1, 0.0f, 0, (u16 *)(parts_angle));
+        KillParts(target->rider, -1, target->rider->id == (u16)id_BODYGUARD ? 4 : -1, 1, 0.0f, 0, (u16 *)(parts_angle));
         KillGameObject(target->rider, 2, 0);
     }
-    KillParts(target, -1, id_BODYGUARD == target->id ? 4 : -1, 1, throw_up ? 1.0f : 0.0f, 0, (u16 *)(parts_angle));
+    KillParts(target, -1, (u16)id_BODYGUARD == target->id ? 4 : -1, 1, throw_up ? 1.0f : 0.0f, 0, (u16 *)(parts_angle));
     KillGameObject(target, 2, 0);
     if ((target->flags_1fc_word & 0x80))
         GameCam_Judder(GameCam, 0.2f, 0, NULL);
@@ -617,7 +617,7 @@ surviving_hit:
             AIScriptProcess(WORLD->ai_sys, (APIOBJECT_PC *)target, &target->ai_packet,
                             &*(AISCRIPTPROCESS_PC *)&target->ai_packet, FRAMETIME);
         SetFlicker(target, 0.4f);
-        if (target->id == id_SNAKE)
+        if (target->id == (u16)id_SNAKE)
             SnakeBeenHit(target);
         PlayerTakeHit(target, attacker);
         if (target->field_280 != 0xff && hit > 0) {
@@ -635,7 +635,7 @@ surviving_hit:
     } else
         PlayerTakeHit(target, attacker);
     result = 1;
-    if (target->id == id_BODYGUARD && target->current_hp == 1)
+    if (target->id == (u16)id_BODYGUARD && target->current_hp == 1)
         KillParts(target, 4, -1, 1, 0.0f, 0, NULL);
     goto hurt;
 hurt:

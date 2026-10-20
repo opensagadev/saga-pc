@@ -309,7 +309,7 @@
     "src/legoapi/grabber.c": "4413dcdd7bcce1b330bbb79984dd553d960358fde020d6bb7a1593ead67273a2",
     "src/legoapi/grabber_pc.c": "26a1b15ab475728f9600ce47f353a660e21f74e4db07e650e53bf59fdb405c5e",
     "src/legoapi/hint.c": "e67d79bf7d4f7331a96dfb0bb87ef7c434941039caffcc94ad7bb9c2e372cc76",
-    "src/legoapi/hits.c": "d2f99529a14b24005c75fddea67abdac65391d0d9fd20063793f43d398bee263",
+    "src/legoapi/hits.c": "95f62cd1d5be2ea6b9246fe6dcc86d4364f8dc2704160cc7ba35461065b4ddc2",
     "src/legoapi/hub_model.c": "3d93c790e3f750ccebfdd12a4cc2df395d8251f623ab89333701a4a407041136",
     "src/legoapi/indy_ai.c": "ef38ad870fd5836f1e0c25d48c97f88d6f124de813154baf80e22d71aa64db24",
     "src/legoapi/indy_special.c": "3ceb4017e4d8cd55b6c02d9a608e48f14daab31f1322cdf5f8369b144c57bec7",
@@ -670,7 +670,7 @@
     "build/obj/legoapi/grapples.obj": "84bee8898092f819bf03fadf8613e67fc65748c07cab114a7c45f00bfa1c5ea1",
     "build/obj/legoapi/hatmachine.obj": "b1e99962f6aaf85b2ab113148ac5bc1d78113e81a6a4fe696b810f06e18d4d17",
     "build/obj/legoapi/hint.obj": "05805e21e4f953bd26e380d6881b70854b89712506232ff336a06c059a0a51d8",
-    "build/obj/legoapi/hits.obj": "3339527217201e1edd869c0c388bc4a8dc4f43cb4de18b54c50cc60974c48e92",
+    "build/obj/legoapi/hits.obj": "8e5aab93264ded64d129de86d467e73d40727726b1901d9b282ba98fad87604b",
     "build/obj/legoapi/hub.obj": "73bb97978fe6cedee81703518eff7700dc8ff7faa9fdfdf3a27560dc2a8c26e9",
     "build/obj/legoapi/hub_model.obj": "e3594f66abc1e5f4d294b6db1cec13450d93e991a07be16e3f98d28426175e77",
     "build/obj/legoapi/indy_ai.obj": "827b11dbea3a14e04307e304437f0590973c4069d70154f66905052bbf9809fc",
@@ -9988,17 +9988,17 @@
       "objects": [
         {
           "unit": "src/legoapi/hits.c",
-          "base_size": 5702,
+          "base_size": 5680,
           "exact_match": false,
           "target_sha256": "1b9c29543cc5f96bda8e4b4bd5f46ee5574880ea3160ff8f52be8eac8a2e37f9",
-          "base_sha256": "0b9558ac177c5d5ad838a7033fb31fb89de7ec199a114d095d379bb5d3935081",
+          "base_sha256": "145204275ec55f329e507d9eb6a4034349c329a75cb2f220208a35cdd2083f0b",
           "relocation_count": 236,
           "comparison_unit": "00438230-90dccb2777c4",
-          "objdiff_percent": 62.65195
+          "objdiff_percent": 59.871403
         }
       ],
       "status": "different",
-      "objdiff_percent": 62.65195
+      "objdiff_percent": 59.871403
     },
     {
       "name": "OpponentCanAcquirePc",
@@ -477493,10 +477493,10 @@
     "mapped_code_bytes": 2423483,
     "matched_code_bytes": 456204,
     "matching_percent": 13.142370203667502,
-    "fuzzy_coverage_percent": 47.241153533647676,
+    "fuzzy_coverage_percent": 47.23653643854465,
     "mapped_functions": 8886,
     "matched_functions": 4224,
-    "objdiff_fuzzy_percent": 74.741196,
+    "objdiff_fuzzy_percent": 74.7339,
     "objdiff_total_code": 2197407,
     "image_bytes": 40067072,
     "mapped_bytes": 4235691,
@@ -478708,7 +478708,7 @@
       "metadata_sha256": "fe09365da4c355f220d724ca99394fc120b758891b4188d2c49707b6df0894f2",
       "header_path": "src/saga.h",
       "header_sha256": "f5c807c392cb7f77dff8088bf8aab18d114ee73ac3939aed153bd44225502c55",
-      "geometry_object_sha256": "d0f76baa1bedd0bae2a483caac3bfa73203600f7f6ca0c3eb5c7eb6c6358ae9d",
+      "geometry_object_sha256": "443e3cadfe0de59ecd9608e3c3af7d4835323ca3c25223f459227d1e60a6f3cc",
       "toolchain_sha256": "b8808088bb2c7eb239785f69c9e464ae8545216d5705fb37216bc0cf926732f3",
       "implementation_sha256": "d6a33be911d095a6d07dccd4443ccbfd6b514fd89fd7e200d9caa1827944e218",
       "headers": {
@@ -478950,7 +478950,7 @@
         4
       ]
     },
-    "clang_source_sha256": "406ea294ff2518cb8bd7ae9d1f4cde9a79a4c3f546d50b1fca7e8f6fbfbf82e0",
+    "clang_source_sha256": "b65ef9cee04b2242c81d04993264fb72fe36328eaa19a45f89422d9a56195485",
     "member_count": 42,
     "physical_definition_credit": 0
   },
