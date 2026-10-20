@@ -27,7 +27,7 @@
     "tools/candidate_only.py": "08da5b52d8d187fd70351fc30b180e2c04fddbb596ddf5edd19f7b08837e20aa",
     "tools/cc.py": "52c6f958d9e536eacdc367fe04a79b8a43e3571f278803628bc3185bfaf79cef",
     "tools/check.py": "5a9c9efef96a8d8635a2e7ebca4118fa6836a3a54146da900e99fbedda31a0ec",
-    "tools/check_coff_regions.py": "a02e8284f91e1e1165f28a0281a2890d503f5ae2c903ec4f233188de68a49d3c",
+    "tools/check_coff_regions.py": "6daff51411a2cc8b23b48831dfafd8b0d8edd259b66e92b33b582ca1be478a4e",
     "tools/check_compiler_witnesses.py": "8e827b91a284665a396702eb9385bfae6ed8a557c360957e7c6b9fd556638f2d",
     "tools/crash_symbols.py": "0be18dcb6f0e8e78b022c0c35def96f871bfd480dadab7a3b7eb5acf1a43cc4f",
     "tools/data_members.py": "d6a33be911d095a6d07dccd4443ccbfd6b514fd89fd7e200d9caa1827944e218",
@@ -51,7 +51,7 @@
     "tools/test_check.py": "4149d0c9d27d7f85ee255b7b8cf2679e2745ebaeb316f6125af414e462671cb5",
     "tools/test_cli_imports.py": "028c3abd2cd218eea3eaa515c4f675f8e1b00863319428b03af6e804a1649ddd",
     "tools/test_code_groups.py": "505d288651a7a6a7edfb81ef9e9fe833e4e0c955254cd06cf369d759f592ef78",
-    "tools/test_coff_regions.py": "b21e839622a35b7b872edf922f7d3e6942b29760d7798d096bba74671b20ca09",
+    "tools/test_coff_regions.py": "89955825acb05f426c7193de375a95db2578876f3c798b9d3d1cbf93f54aad62",
     "tools/test_compiler_witnesses.py": "124b2fb0e06667823d64ed373d729fbf531630d1bc7d792eec2c287e03da2c88",
     "tools/test_crash_symbols.py": "b23d9e7518f7d9e724bdc0868bcf84231d91765f5ecb21a49f7b2138c7635329",
     "tools/test_dat.py": "91129c809d1f19f07813ab54792120a26f60bbe25d524e0360233f2cb8ef7972",
@@ -311,7 +311,7 @@
     "src/legoapi/indy_ai.c": "ef38ad870fd5836f1e0c25d48c97f88d6f124de813154baf80e22d71aa64db24",
     "src/legoapi/indy_special.c": "3ceb4017e4d8cd55b6c02d9a608e48f14daab31f1322cdf5f8369b144c57bec7",
     "src/legoapi/indy_support.c": "f8c0784e9874fa27278f87c28ac3da49c61f87aa411420a4aebb416524059936",
-    "src/legoapi/jumping.c": "19fd53de094e3f2d6d2e415a8e1408e99fd6200afc0321f09d24c1e661b7f1d8",
+    "src/legoapi/jumping.c": "5ffbaeec1eab43c5c82a06c490fcacf9dd03001cd85b5868cb7d78feabce46b0",
     "src/legoapi/legoapi_misc.c": "c8637dc53a7cad450309bf5eb3a460b3dd981aa1c3c142265c61c6b5276e8d07",
     "src/legoapi/level_area_load.c": "9039da6e37f16e532979118388b99fd15ca9115cbdfede430385f164e6e58f51",
     "src/legoapi/level_lifecycle.c": "f8048754c109149edf8f541c4b86a2d0d8ada7700b4a5af249f76798e89c924e",
@@ -672,7 +672,7 @@
     "build/obj/legoapi/indy_support.obj": "9ec468284dd9f96a8b48d464ca6c69ab3231a88fa33e23a270e91d52e5c153b3",
     "build/obj/legoapi/init_once.obj": "7eec3e74169763cc5d8b1fb4772aa54ef3f2e3edc05177ad322d699fffa7659a",
     "build/obj/legoapi/input.obj": "e0b27c6283d89ee742d1c8703ce45aa5d7d86abe005e10482ed064f677bc92cc",
-    "build/obj/legoapi/jumping.obj": "e2b33497a36fdeca4426d127bc9663cb56fe6941171cff9e122a7be1a8b9af3d",
+    "build/obj/legoapi/jumping.obj": "92d572066ef1386cde8f23c9efeed6e890f20d18d2f4b819f72e7482ce8f032e",
     "build/obj/legoapi/ledges.obj": "5af7ebdbf4695bafc482e3e6ca8e227f76847211b695f24e96658f2c7f2e7ff0",
     "build/obj/legoapi/legoapi_misc.obj": "2a6cb4e8dba0b2f1602ed7f96d7fdc7f911f81a00fd1f38e04fc632f9f1d7768",
     "build/obj/legoapi/level_area_load.obj": "ece708dbf61aa45487d26b56cf3bfa6c9f0de8f73e82913d622c5fa26096d2e8",
@@ -81952,17 +81952,17 @@
       "objects": [
         {
           "unit": "src/legoapi/jumping.c",
-          "base_size": 465,
+          "base_size": 482,
           "exact_match": false,
           "target_sha256": "eed5fad97cb25d95eef1b58d8477331845091d63454e7f71df14c392bb762c3e",
-          "base_sha256": "49152f1a3b913bb2d187f79c9db1e990f43cfcb9fe7fb2a07a7b52cf8e70554b",
-          "relocation_count": 8,
+          "base_sha256": "19eae29639ca1f2c0b1305902ae9786580c4202403471d366aad60097a3918e1",
+          "relocation_count": 10,
           "comparison_unit": "00561e20-5b544930f28c",
-          "objdiff_percent": 59.9375
+          "objdiff_percent": 80.25781
         }
       ],
       "status": "different",
-      "objdiff_percent": 59.9375
+      "objdiff_percent": 80.25781
     },
     {
       "name": "FindSlamOrigin",
@@ -475007,10 +475007,10 @@
     "mapped_code_bytes": 2416560,
     "matched_code_bytes": 454750,
     "matching_percent": 13.100483227060254,
-    "fuzzy_coverage_percent": 46.88908738590794,
+    "fuzzy_coverage_percent": 46.89194994061884,
     "mapped_functions": 8856,
     "matched_functions": 4205,
-    "objdiff_fuzzy_percent": 74.61341,
+    "objdiff_fuzzy_percent": 74.61795,
     "objdiff_total_code": 2184792,
     "image_bytes": 40067072,
     "mapped_bytes": 4228091,
@@ -476222,7 +476222,7 @@
       "metadata_sha256": "fe09365da4c355f220d724ca99394fc120b758891b4188d2c49707b6df0894f2",
       "header_path": "src/saga.h",
       "header_sha256": "b13fe174cf05620a7d654d4bcb64b6e04a16351fd8f9e180863b5b3d4b03b983",
-      "geometry_object_sha256": "2c8ec09fd779e2c37fc0c5f57a496bb589d1a8758e3c7bb54d6447c967620b30",
+      "geometry_object_sha256": "7d0248c318291ac6c30a6b1bc78ead0ee88c28c1402a3ab2a4f647819cfc72b4",
       "toolchain_sha256": "b8808088bb2c7eb239785f69c9e464ae8545216d5705fb37216bc0cf926732f3",
       "implementation_sha256": "d6a33be911d095a6d07dccd4443ccbfd6b514fd89fd7e200d9caa1827944e218",
       "headers": {
@@ -476464,7 +476464,7 @@
         4
       ]
     },
-    "clang_source_sha256": "16fbd0700e37e81f398242478cd0caade72ad2c6f1c65f916ed56051368da147",
+    "clang_source_sha256": "73b3700e147c4d82324acc15b4cb6499624f69cf5feb7154feb39323e97c06a6",
     "member_count": 42,
     "physical_definition_credit": 0
   },

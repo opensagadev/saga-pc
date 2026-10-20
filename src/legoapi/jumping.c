@@ -57,8 +57,8 @@ i32 __cdecl StartBigJump(GAMEOBJECT *object, NUVEC *destination, i32 mode, f32 h
     u16 angle;
     if (LEGOCONTEXT_BIGJUMP == -1 || (object->character_data->model_flags & 0x200000) != 0)
         return 0;
-    STUBBED_NAMED("StartBigJump: Player_ClearContext PC55e4a0");
-    STUBBED_NAMED("StartBigJump: Player_ResetContexts embedded packet6c4 PC55e4e0");
+    Player_ClearContext(object, 0);
+    Player_ResetContexts(object->ai_player_packet_pc);
     object->big_jump_animation = (u8)animation;
     object->character_context = (i8)LEGOCONTEXT_BIGJUMP;
     object->field_7b3 = 1;
