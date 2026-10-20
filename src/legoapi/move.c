@@ -1,6 +1,7 @@
 #include "saga.h"
 
 void __cdecl PeriscodeCode(GAMEOBJECT *);
+void __cdecl KeepWeaponIn(GAMEOBJECT *);
 i32 __cdecl ThermalDetonator_MoveCode(GAMEOBJECT *);
 static void DodgeCode(GAMEOBJECT *, i32, i32);
 static void BlockCode(GAMEOBJECT *, i32, i32, i32, i32);
@@ -8699,7 +8700,7 @@ void __cdecl Move_DROIDGENERIC(GAMEOBJECT *object) {
     if ((object->character_data->model_flags & 0x40) != 0) {
         if (DroidCheat32EnabledPc != 0)
             zap_pressed = object->pad->buttons_pressed & GAMEPAD_ACTION;
-        STUBBED_NAMED(0x0058dd60); /* Native4b5f43: KeepWeaponIn(object), ignored action. */
+        KeepWeaponIn(object);
     } else if (object->character_data->game_character->weapon_action == 4 || object->id == (u16)VehicleBoltId7f18b4Pc) {
         KeepWeaponOut(object);
     }

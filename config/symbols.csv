@@ -4393,6 +4393,7 @@ address,symbol,size,ctype
 0x58d930,_FastWeaponIn,220,"void __cdecl(GAMEOBJECT*,i32)"
 0x58da10,_SlowWeaponIn,305,void __cdecl(GAMEOBJECT *)
 0x58db50,_WeaponInCode,528,void __cdecl(GAMEOBJECT *)
+0x58dd60,_KeepWeaponIn,37,void(GAMEOBJECT *)
 0x58dd90,_AutoWeaponOnOff,301,void __cdecl(GAMEOBJECT *)
 0x58dec0,_WeaponScalingCode,214,void __cdecl(GAMEOBJECT *)
 0x58dfa0,_NewBlockAction,154,i32 __cdecl(GAMEOBJECT *)

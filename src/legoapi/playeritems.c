@@ -84,6 +84,13 @@ void __cdecl KeepWeaponOut(GAMEOBJECT *object) {
     object->field_e33 = 0;
 }
 
+void __cdecl KeepWeaponIn(GAMEOBJECT *object) {
+    object->flags_e20 &= ~0x10000u;
+    object->weapon_scale = 0.0f;
+    object->portal_flags &= ~0x10u;
+    object->field_e33 = 0;
+}
+
 extern i32 LEGOCONTEXT_WEAPONIN, LEGOCONTEXT_WEAPONOUT;
 void __cdecl SetWeaponIn(GAMEOBJECT *object) {
     i8 context = object->character_context;
