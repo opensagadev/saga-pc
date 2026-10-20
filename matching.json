@@ -33,7 +33,7 @@
     "tools/data_members.py": "d6a33be911d095a6d07dccd4443ccbfd6b514fd89fd7e200d9caa1827944e218",
     "tools/debug_identity.py": "4c91005a5701e255c789d664f61e2267e1609973998d14ddea0208e0bef482fd",
     "tools/dependencies.py": "6522194c5fb47aa533091e6e70a224de39c344a206c00e2717c2f336fdfa8baf",
-    "tools/discover_missing.py": "2e74e5a4d7c7856cbf320b7ac93aa87cca48a4e210181fad3c8f246777894285",
+    "tools/discover_missing.py": "48bf397492148fbdcd68622dd8fe982d5e7506ab77dee3f03e5c10c3aec7918c",
     "tools/globals.py": "6065e90b69abd8f88e8d6f75f7009d293efeb781f2ae76475b0b47958b8c761a",
     "tools/lib.py": "b4a13480449c959a1df064cbd85056519387629e347fadc8ccb74ce6f8487f18",
     "tools/libmatch.py": "b218f6b2cfb70b9dc754fafc1d89490d92a005ea8c2cc414df88931fdedbf7f1",
@@ -58,7 +58,7 @@
     "tools/test_data_members.py": "67f0ff6b1522cd22cdd82c4bcde3648fde55d79a4127443de45ae3d5639a8e2b",
     "tools/test_debug_identity.py": "835ad86e989a518955b9b69cb5e9fbf809d58db0563eab257d22621807ef3beb",
     "tools/test_dependencies.py": "dd3e43484346aa43d6f484aa53e9df60d3b3dc8f91ddc071638ce82cf5bef0f1",
-    "tools/test_discover_missing.py": "cfa64c34468ed68e101c3dee181e5065c1bca8e98a1c33f7311a4c09ed2c308d",
+    "tools/test_discover_missing.py": "1191c1dc3886b42a65a134ed9452184ad5fc46a6ab46c02d3ffe4de3ba239b4d",
     "tools/test_lib.py": "d016747de7295ee9d2a592cd6e4358c6faec6a8a386af584d90438424762ab1f",
     "tools/test_match.py": "5604613f9dec760b59f050f7db2b03d7e2edb5c2fcb4cd78a92e0850f210ce4c",
     "tools/test_object_analysis.py": "bd0e99266de800c5f04054be1be1f56e51f78b3700c4bf544b8ec88325172f56",
@@ -238,7 +238,7 @@
     "src/legoapi/cables.c": "5d9ea917e6dbeec7b70601e6eb4439c94b6c98e8d1fc88a2724d9a067fe63fa0",
     "src/legoapi/camera.c": "6aa0b848cceeb9496678c239df6ae1f8f1556340c55104b2603cfe76a5b63a9a",
     "src/legoapi/carrying.c": "c9260c8f8539ae9c9e21408aed3bfe8872f1d3ff57cfb62376bd0736467249c7",
-    "src/legoapi/character_animation.c": "2101dd92f5e42df4b6d853929303edcb440b88bc6c5843b8ca3a2672cb9553dd",
+    "src/legoapi/character_animation.c": "fa49960440306c8808773a25092cdd1c4c3b7d3e1f0d2ae123ad8b5815ee9d11",
     "src/legoapi/character_joints_pc.c": "373e5323a3b5ce27299ab68a7c4c390872efe792dfc7649ed505ad66e92fcf0a",
     "src/legoapi/charconfig.c": "fcf1461cdd572d165d8c7804aebe194520625437fdfb9dd524cdd962c2fe6279",
     "src/legoapi/charpivot.c": "3ca45ee1a4adb33a8a06c6d148001f7de4b4992bffdeabc668edf6a275a9a9bc",
@@ -327,7 +327,7 @@
     "src/legoapi/mission.c": "b6ce5e9e844e32467ba2d1e759d61799e5388bd376cb5894524169781c2232c1",
     "src/legoapi/missions.c": "5723bc2a3c0173a42c0beb22d0b7f5e886162f70728f8f9304c8c8a12ec7c9ef",
     "src/legoapi/model_animation.c": "ef78e3baf9aca6e9f638f4b195ef6cca7d5061a9ab739ebe9533b7f6dd75f5ab",
-    "src/legoapi/move.c": "9c57ccb9fc4c1d6339b60ed4531d57a70e1451538377147a9586227c8982b5a7",
+    "src/legoapi/move.c": "5d794be6a02dbc2cb67bdb212e56ca4d8edf8463ac009eb3bc72b683b9bf0e4f",
     "src/legoapi/netplay.c": "08f5e9eb81ca542d5e76d6c3ee9e8ae43aad56a50ed14da7a72e800c6682d0e9",
     "src/legoapi/newlevels.c": "262db0b1cb6c59e99563249642e82f1282636ddf0aa7d2acc1e3c17476018986",
     "src/legoapi/objectsall.c": "1d0ff33901ba13c10ea3f607d9295a0cc611046b44792394da6ef3b696b62efb",
@@ -581,7 +581,7 @@
     "build/obj/legoapi/cables.obj": "20c1413fe22e5d48d0c5ab120aed036cdd560b62332ff8a2de514a35557535bb",
     "build/obj/legoapi/camera.obj": "93a566e98360b747808596c8b8bf845d39da0a9b5bcfc9855583557857d76c20",
     "build/obj/legoapi/carrying.obj": "17771b725de6df81c6795008cc098409d86b9c52f9ae1ee9a3a04907a4cf5192",
-    "build/obj/legoapi/character_animation.obj": "24b6a6bf5e9ca8fab64c1bf20e696ac23aee577f8026a1de8e9c11663228a0e9",
+    "build/obj/legoapi/character_animation.obj": "12e5fd06a163b811e8733de94c1f37cb624234b4a90ddf2b438d353cbadc212a",
     "build/obj/legoapi/character_joints_pc.obj": "d9977b45fea8b237a1d7182a5ab5a9b1791b7690f876ad585ba6c64f11005c22",
     "build/obj/legoapi/characters.obj": "42667a8b185d672628d0f8179bfc28edc6546d99e66e2aae5d41f600e305a2e2",
     "build/obj/legoapi/charconfig.obj": "76f33394a636f3286c38fc30ac8628c4d37811f86d434bae3d00a83b201b18d8",
@@ -695,7 +695,7 @@
     "build/obj/legoapi/mission.obj": "d05ee7856ff73c7141762871049a993c3702afa27eb1f6da7c953dcdc254c567",
     "build/obj/legoapi/missions.obj": "72c07c7e7a28f2e871ceb4297b325499a82903cb384937b74086d201b9cf74aa",
     "build/obj/legoapi/model_animation.obj": "c191fa474a16c31b37900016c550cad3bcf1d97aff1ad03679a127fbb2cc4ca5",
-    "build/obj/legoapi/move.obj": "3b53d6870bfaebde68c88f7ab7805807e98e3b23b27a84fceb1d2cd057e5da95",
+    "build/obj/legoapi/move.obj": "8a2578617ba08fdf49bb9bccc9b5c0cc6ea1bdca1282fc700723a20ecc3aad80",
     "build/obj/legoapi/movies.obj": "5922766d793b14cc9d91b5b59062f97f406cb82931f13557ce7570b03d0bce8f",
     "build/obj/legoapi/netplay.obj": "6d7112fa00c2786be72f4b400510e0c00008617aba3307b21c2b1b8da2e98e3b",
     "build/obj/legoapi/newlevels.obj": "f2b113d2f11d6981a4769451b5a3736ee2ff527f5614abf4d6aeac3a13460a33",
@@ -37786,17 +37786,17 @@
       "objects": [
         {
           "unit": "src/legoapi/character_animation.c",
-          "base_size": 554,
+          "base_size": 552,
           "exact_match": false,
           "target_sha256": "641e1296b12828b2d06e76061a00386b4095f8bd0f8f3e3e174e309baf1f160c",
-          "base_sha256": "f47ac5629c2c33ff07c62c0f848d46b97360a74999a49ade5082984da2c6a195",
+          "base_sha256": "dccace62c60d090294c0210dd141ad7cf1b0efe1d59f5735dffed03d3d186ffa",
           "relocation_count": 19,
           "comparison_unit": "004aa800-753a623ae5ba",
-          "objdiff_percent": 69.649216
+          "objdiff_percent": 70.57068
         }
       ],
       "status": "different",
-      "objdiff_percent": 69.649216
+      "objdiff_percent": 70.57068
     },
     {
       "name": "Animate_WALKER",
@@ -38900,17 +38900,17 @@
       "objects": [
         {
           "unit": "src/legoapi/move.c",
-          "base_size": 984,
+          "base_size": 994,
           "exact_match": false,
           "target_sha256": "a5dcaaf7dfed41a66d01f8448ed116b2be6175dc3f83fe3419e1be42c3b52b63",
-          "base_sha256": "e856a1f378dae29465c8933792ad26e6969306b29861b98791d652790c58bbe3",
-          "relocation_count": 69,
+          "base_sha256": "5d1aa8a81841c45abf48ad3c191e535fc9e032be63d63c5517de9667d524fa4e",
+          "relocation_count": 70,
           "comparison_unit": "004b5ef0-38ca4e5f6510",
-          "objdiff_percent": 94.21498
+          "objdiff_percent": 95.713356
         }
       ],
       "status": "different",
-      "objdiff_percent": 94.21498
+      "objdiff_percent": 95.713356
     },
     {
       "name": "Move_WALKER",
@@ -475007,10 +475007,10 @@
     "mapped_code_bytes": 2416560,
     "matched_code_bytes": 454750,
     "matching_percent": 13.100483227060254,
-    "fuzzy_coverage_percent": 46.89194994061884,
+    "fuzzy_coverage_percent": 46.89257531729568,
     "mapped_functions": 8856,
     "matched_functions": 4205,
-    "objdiff_fuzzy_percent": 74.61795,
+    "objdiff_fuzzy_percent": 74.61895,
     "objdiff_total_code": 2184792,
     "image_bytes": 40067072,
     "mapped_bytes": 4228091,
@@ -476222,7 +476222,7 @@
       "metadata_sha256": "fe09365da4c355f220d724ca99394fc120b758891b4188d2c49707b6df0894f2",
       "header_path": "src/saga.h",
       "header_sha256": "b13fe174cf05620a7d654d4bcb64b6e04a16351fd8f9e180863b5b3d4b03b983",
-      "geometry_object_sha256": "7d0248c318291ac6c30a6b1bc78ead0ee88c28c1402a3ab2a4f647819cfc72b4",
+      "geometry_object_sha256": "124027489e098aa0bc29803c0038b2bcad4fdf5823cb8eaec58f2d31c50b233e",
       "toolchain_sha256": "b8808088bb2c7eb239785f69c9e464ae8545216d5705fb37216bc0cf926732f3",
       "implementation_sha256": "d6a33be911d095a6d07dccd4443ccbfd6b514fd89fd7e200d9caa1827944e218",
       "headers": {
@@ -476464,7 +476464,7 @@
         4
       ]
     },
-    "clang_source_sha256": "73b3700e147c4d82324acc15b4cb6499624f69cf5feb7154feb39323e97c06a6",
+    "clang_source_sha256": "4fde12b412588c095411ef4337d476e459aac8365fbaa52ad1dfdea6b190c82a",
     "member_count": 42,
     "physical_definition_credit": 0
   },

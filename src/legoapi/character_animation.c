@@ -420,7 +420,7 @@ void PeriscodeCode(GAMEOBJECT *object) {
         if (!(object->field_db0 <= 0.0f))
             return;
         if (object->dead == 0)
-            PlaySfx(((char *)(object->id == id_R2Q5 ? "R2Q501" : "R2D201")), &object->collision_position);
+            PlaySfx(((char *)(object->id == (u16)id_R2Q5 ? "R2Q501" : "R2D201")), &object->collision_position);
     }
     object->field_db0 = qrand() * 1.5259022e-05f * 10.0f + 20.0f;
 }

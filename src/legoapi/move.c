@@ -1,4 +1,6 @@
 #include "saga.h"
+
+void __cdecl PeriscodeCode(GAMEOBJECT *);
 i32 __cdecl ThermalDetonator_MoveCode(GAMEOBJECT *);
 static void DodgeCode(GAMEOBJECT *, i32, i32);
 static void BlockCode(GAMEOBJECT *, i32, i32, i32, i32);
@@ -8744,7 +8746,7 @@ zap:
     BeastStartFallCodePc(object);
     if ((object->character_data->model_flags & 0x10) != 0) {
         if ((object->character_data->model_flags & 0x40) != 0) {
-            STUBBED_NAMED(0x004aa800); /* Native4b6177: PeriscodeCode(object), ignored action. */
+            PeriscodeCode(object);
         } else {
             if (VehicleArea == 0)
                 BeastStartFallCodePc(object);
