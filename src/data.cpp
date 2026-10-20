@@ -34471,3 +34471,11 @@ extern "C" {
     NUVEC ForceThrowMaulPositionPc = {19.05f, 4.0f, -105.23f};
 #pragma data_seg()
 }
+
+extern "C" {
+#pragma data_seg(".data$PlayerForcePushTuningPc")
+    f32 ForcePushDurationPc = 0.8f;
+    f32 ForcePushStrongDurationPc = 1.2f;
+    f32 ForcePushMindTrickDurationPc = 0.4f;
+#pragma data_seg()
+}

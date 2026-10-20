@@ -9125,6 +9125,234 @@ combo_finished:
 extern f32 ForceDeflectSpeedPc;
 extern f32 ForceDeflectSeekRatePc;
 
+static __declspec(noinline) void DrawLightningBolts(GAMEOBJECT *object, GAMEOBJECT *target, i32 lightning_index) {
+    NUVEC origins[2], target_position, reflected_origin, reflected_target, delta;
+    f32 height, distance, plane;
+    i32 random, index;
+    ForceLightning_Origin(object, &origins[0], &origins[1]);
+    target_position.x = target->collision_position.x;
+    target_position.z = target->collision_position.z;
+    height = target->upper_position.y - target->lower_position.y;
+    for (index = 0; index < 2; index++) {
+        if ((f64)origins[index].y != 1000000000.0) {
+            random = qrand();
+            target_position.y = (f32)((f64)target->lower_position.y + (f64)height * 0.25 +
+                                      ((f64)height * 0.5) * ((f64)random * PlayerRandomScalePc));
+            distance = NuVecDist(&target_position, &origins[index], &delta);
+            NuLgtLaser(lightning_type, lightning_sizew[lightning_index], lightning_sizel[lightning_index],
+                       lightning_sizewab[lightning_index], &origins[index], &delta, lightning_col[lightning_index],
+                       lightning_endw[lightning_index], distance);
+            PlaySfx("ForceLightningLp", &target->collision_position);
+            if ((u8)object->field_107c != 0 && object->reflection_enabled == 2) {
+                reflected_origin = origins[index];
+                reflected_target = target_position;
+                if ((f64)WORLD->current_level->reflection_y != 2000000.0)
+                    plane = WORLD->current_level->reflection_y;
+                else
+                    plane = object->reflection_height;
+                reflected_origin.y = plane - (reflected_origin.y - plane);
+                reflected_target.y = plane - (reflected_target.y - plane);
+                distance = NuVecDist(&reflected_target, &reflected_origin, &delta);
+                NuLgtLaser(lightning_type, lightning_sizew[1], lightning_sizel[1], lightning_sizewab[1],
+                           &reflected_origin, &delta, lightning_col[1], lightning_endw[1], distance);
+            }
+        }
+    }
+}
+
+extern f32 ForcePushDurationPc;
+extern f32 ForcePushStrongDurationPc;
+extern f32 ForcePushMindTrickDurationPc;
+extern i16 CharacterFixupIdPc007f1a78;
+
+static void ForcePushCode(GAMEOBJECT *object, i32 held) {
+    GAMEOBJECT *initial_target;
+    GAMEOBJECT *target;
+    f32 remaining;
+    if (object->character_context != 0x1b)
+        return;
+    AlertSurroundingCreatures(object, &object->collision_position);
+    if ((object->pad->runtime_flags & 0x10) != 0)
+        held = 1;
+    object->flags_e20 |= 0x20000;
+    initial_target = object->force_target;
+    if (initial_target != NULL) {
+        if (initial_target->character_context == 0xf) {
+            object->force_target = NULL;
+            EndForce(object, 0);
+        } else if ((initial_target->flags_1fc_word & 0x1001) != 0x1001 || initial_target->dead != 0) {
+            object->force_target = NULL;
+        } else if ((object->flags_e20 & 0x600) == 0 && initial_target->character_context != 0x1c) {
+            object->force_target = NULL;
+            EndForce(object, 0);
+        }
+    }
+    target = object->force_target;
+    if (target != NULL) {
+        SetObjAsHeadTarget(object, target, 2, 1.0f, 0.0f, 0.0f);
+        SetObjAsHeadTarget(target, object, 2, 1.0f, 0.0f, 0.0f);
+        if ((object->flags_e20 & 0x400) != 0) {
+            ((FORCE_GLOW_PC *)object)->candidate = target;
+            ((FORCE_GLOW_PC *)object)->candidate_kind = 2;
+            if ((object->flags_e20 & 0x100) != 0)
+                DrawLightningBolts(object, target, 0);
+        } else {
+            f32 duration;
+            i32 throw_target = 0;
+            i32 complete;
+            union {
+                f32 f;
+                u32 u;
+            } normal;
+            NewRumble(target->pad->bound_pad, (f32)((f64)qrand() * PlayerRandomScalePc * (f64)0.4f), 0);
+            if ((object->flags_e20 & 0x100) != 0)
+                DrawLightningBolts(object, target, 1);
+            ((FORCE_GLOW_PC *)object)->candidate = target;
+            ((FORCE_GLOW_PC *)object)->candidate_kind = 2;
+            if (target->character_context != 0x1c || (target->character_data->model_flags & 0x20) != 0 ||
+                target->character_model->model_data_b[target->field_7aa] == NULL ||
+                CurrentAnim(&target->anim_packet) == target->field_7aa)
+                object->context_timer += FRAMETIME;
+            NewRumble(object->pad->bound_pad, (f32)((f64)qrand() * PlayerRandomScalePc * (f64)0.4f), 0);
+            if ((object->flags_e20 & 0x200) != 0)
+                duration = ForcePushMindTrickDurationPc;
+            else if ((object->flags_e20 & 0x180) != 0)
+                duration = ForcePushStrongDurationPc;
+            else
+                duration = ForcePushDurationPc;
+            object->field_7b3 = 0;
+            if ((object->flags_1fc_word & 0x80) != 0 && (object->flags_1f8 & 0x40000) == 0 && ForcePush_Waft != 0 &&
+                (target->flags_1fc_word & 0x80) == 0 && (f64)object->context_timer >= (f64)0.2f &&
+                object->pad->input_magnitude > 0.0f &&
+                ((object->flags_e20 & 0x100) == 0 ||
+                 (target->character_data->game_character->flags_090 & 0x4000) == 0) &&
+                (object->flags_e20 & 0x180) != 0) {
+                u16 angle;
+                i32 difference;
+                object->field_7b3 = 1;
+                object->external_force.x = (f32)((f64)NU_SIN_LUT(object->facing_angle) * 0.5 + object->position.x);
+                object->external_force.y =
+                    (f32)(((f64)object->collision_max.y - object->collision_min.y) * 0.75 + object->collision_min.y);
+                object->external_force.z = (f32)((f64)NU_COS_LUT(object->facing_angle) * 0.5 + object->position.z);
+                angle = NuAtan2D(target->position.x - object->position.x, target->position.z - object->position.z);
+                difference = RotDiff(GamePad_InputAngle(object, object->pad), angle);
+                if ((difference < 0 ? -difference : difference) < 0xaaa)
+                    throw_target = 1;
+                else if ((f64)object->context_timer >= (f64)duration - (f64)0.3f)
+                    object->context_timer = (f32)((f64)duration - (f64)0.3f);
+            }
+            complete = object->context_timer >= duration;
+            if (complete == 0 && (object->flags_e20 & 0x380) == 0 && (f64)object->context_timer >= (f64)0.2f &&
+                initial_target->contact_count != 0) {
+                normal.f = initial_target->contact_normal.y;
+                normal.u &= 0x7fffffff;
+                complete = normal.f < NuTrigTable[0x3555];
+            }
+            if (complete != 0) {
+                if (throw_target != 0) {
+                    u16 angle;
+                    f32 speed;
+                    object->character_context = -1;
+                    object->force_target = NULL;
+                    object->pad->runtime_flags &= ~0x10;
+                    object->field_d20 = 0;
+                    target->force_target = NULL;
+                    EndForce(target, 0);
+                    PlaySfx("JForcePush", &object->collision_position);
+                    KillRumble(object);
+                    PlayHurtSfx(target);
+                    GameCam_NewShake(NULL, 0.75f, 0.75f, 1.0f);
+                    target->character_context = 0x5f;
+                    if (target->character_model->model_data_b[0xb8] != NULL) {
+                        target->field_7aa = 0xb8;
+                        ResetAnimPacket(&target->anim_packet, -1);
+                    } else if (target->character_model->model_data_b[5] != NULL)
+                        target->field_7aa = 5;
+                    target->current_hp = 1;
+                    target->context_timer = 0.0f;
+                    target->context_duration = 2.0f;
+                    angle = NuAtan2D(target->collision_position.x - object->collision_position.x,
+                                     target->collision_position.z - object->collision_position.z);
+                    speed = (f32)(((f64)qrand() * PlayerRandomScalePc * (f64)0.4f + (f64)0.8f) *
+                                  CombatReactionHorizontalScalePc);
+                    target->external_force.x = NU_SIN_LUT(angle) * speed;
+                    target->external_force.z = NU_COS_LUT(angle) * speed;
+                    target->context_variant_flags &= ~0x100u;
+                    target->velocity.y = (f32)(((f64)qrand() * PlayerRandomScalePc * (f64)0.4f + (f64)0.8f) *
+                                               CombatReactionVerticalScalePc);
+                    target->hit_variant = object->field_280 <= 1 ? object->field_280 : -1;
+                    SetFlicker(target, 0.4f);
+                    object->context_duration = 0.0f;
+                    GameCam_HitJudder();
+                } else {
+                    i32 mind_trick = (object->flags_e20 >> 9) & 1;
+                    if (mind_trick == 0 && target->id != id_GONKDROID &&
+                        ((target->character_data->model_flags & 0x10) == 0 || target->field_107e <= 1)) {
+                        i32 immune = FreePlay != 0 && (object->flags_e20 & 0x100) != 0 &&
+                                     (target->character_data->game_character->flags_090 & 0x4000) != 0;
+                        i32 damage = immune != 0 ? 0 : target->field_280 == 0xff ? target->current_hp : 1;
+                        i32 flags =
+                            WORLD->current_level == LevelFixupSlotPc0087b194 && (object->flags_1f8 & 0x400) != 0;
+                        if (ObjHitObj(object, target, damage, flags, 0, 1) != 2 && (object->flags_e20 & 0x80) != 0 &&
+                            immune == 0)
+                            target->fall_animation_timer = 0.2f;
+                        {
+                            GAMEOBJECT *cleanup_target = object->force_target;
+                            if (cleanup_target != NULL) {
+                                cleanup_target->force_target = NULL;
+                                EndForce(cleanup_target, 0);
+                            }
+                        }
+                        object->force_target = NULL;
+                        object->pad->runtime_flags &= ~0x10;
+                        object->context_duration = 0.0f;
+                        object->field_d20 = 0;
+                        GameCam_HitJudder();
+                    } else {
+                        if (mind_trick != 0) {
+                            if (DeactivatePlayer(target, 5.0f, NULL) != 0) {
+                                target->action_movement_state = 1;
+                                target->context_hover_target_y =
+                                    (f32)((f64)qrand() * PlayerRandomScalePc * (f64)0.3f + (f64)0.2f);
+                                if (target->id == (u16)id_JAWA)
+                                    PlaySfx("Jawa_Dizzy", &target->collision_position);
+                            }
+                        } else
+                            DeactivatePlayer(target, DEACTIVATEDTIME, NULL);
+                        NewBuzz(object->pad->bound_pad, 0.1f, 0);
+                        GameCam_Blend(GameCam, 0.5f, 0.0f, 1);
+                        object->context_duration = 0.0f;
+                        GameCam_HitJudder();
+                    }
+                }
+            }
+        }
+    }
+    if ((f64)object->context_duration >= (f64)0.2f && held != 0 && object->force_target != NULL) {
+        remaining = object->context_duration - FRAMETIME;
+        object->context_duration = remaining;
+        if ((f64)remaining <= (f64)0.2f)
+            object->context_duration = 0.2f;
+    } else if ((object->flags_1f8 & 0x40000) == 0) {
+        remaining = object->context_duration - FRAMETIME;
+        object->context_duration = remaining;
+        if (remaining <= 0.0f) {
+            target = object->force_target;
+            if ((f64)object->context_timer >= (f64)0.4f && target != NULL && (target->flags_1fc_word & 1) != 0 &&
+                target->dead == 0 &&
+                (target->character_data->game_character->weapon_action == 4 ||
+                 target->id == (u16)id_BATTLEDROIDSECURITY || target->id == id_GONKDROID ||
+                 target->id == (u16)id_PKDROID || target->id == (u16)CharacterFixupIdPc007f1a78)) {
+                DeactivatePlayer(target, (f32)((f64)DEACTIVATEDTIME * 0.5), NULL);
+                NewRumble(object->pad->bound_pad, 0.5f, 0);
+            }
+            ReleaseForce(object, 0);
+            if ((object->flags_e20 & 0x80) != 0 && target != NULL)
+                target->fall_animation_timer = 0.2f;
+        }
+    }
+}
+
 extern LEVELDATA_PC *MAULF_LDATA;
 extern f32 MaulF_ForceThrowGravity;
 extern f32 MaulF_ForceThrowSpeed;
@@ -9410,7 +9638,7 @@ void __cdecl Move_JEDI(GAMEOBJECT *object) {
     Lever_MoveCode(WORLD, object);
     if ((object->character_data->game_character->flags_094 & 0x8000) == 0) {
         ForceDeflectCode(object, special_pressed, special_held);
-        STUBBED_NAMED(0x004a28e0); /* Native4b36ae: ForcePushCode(object EDI,special_held). */
+        ForcePushCode(object, special_held);
         FindForcePushTarget(object, special_pressed, 1);
         ForceThrowCode(object, special_pressed);
         ForceCode(object, special_pressed, special_held, 0);
@@ -9517,7 +9745,7 @@ void __cdecl Move_WEIRDO(GAMEOBJECT *object) {
     BuildIt_MoveCode(object);
     if (has_sabre || SuperWeirdo(object)) {
         ForceDeflectCode(object, special_pressed, special_held);
-        STUBBED_NAMED(0x004a28e0); /* Native4b5ad9: ForcePushCode(object EDI,special_held). */
+        ForcePushCode(object, special_held);
         FindForcePushTarget(object, special_pressed, 1);
         ForceThrowCode(object, special_pressed);
         ForceCode(object, special_pressed, special_held, 0);

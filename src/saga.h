@@ -12906,6 +12906,9 @@ void __cdecl AIScriptMissingConditionDiagnostic();
     extern GAMEOBJECT *alert_obj;
     extern f32 alert_timer;
     extern f32 ForcePush_Speed;
+    extern f32 ForcePushDurationPc;
+    extern f32 ForcePushStrongDurationPc;
+    extern f32 ForcePushMindTrickDurationPc;
     extern i32 ForcePush_SuperPush;
 
     extern f32 TargetDist_Near2;

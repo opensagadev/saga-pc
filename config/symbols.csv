@@ -1562,7 +1562,8 @@ address,symbol,size,ctype
 0x4a2070,_ForceCode,1109,
 0x4a24d0,_ForceLightning_Origin,210,"void __cdecl (GAMEOBJECT *, NUVEC *, NUVEC *)"
 0x4a25b0,_ReleaseForce,246,"void __cdecl(GAMEOBJECT*,i32)"
-0x4a26b0,_DrawLightningBolts,551,
+0x4a26b0,_DrawLightningBolts,551,"static void(GAMEOBJECT *, GAMEOBJECT *, i32)"
+0x4a28e0,_ForcePushCode,2441,"static void(GAMEOBJECT *, i32)"
 0x4a3270,_FindForcePushTarget,2274,"void __cdecl (GAMEOBJECT *, i32, i32)"
 0x004a3b60,_ForcePushEligible,123,"i32 (GAMEOBJECT *, GAMEOBJECT *, GAMEOBJECT *) [private EAX first input; two stack pointers]"
 0x4a3be0,_ForcePushed_MoveCode,712,
@@ -18690,6 +18691,9 @@ address,symbol,size,ctype
 0x7fc054,_test_ai_combo,,i32
 0x7fc058,_ForceDeflectSpeedPc,4,f32
 0x7fc05c,_ForceDeflectSeekRatePc,4,f32
+0x7fc060,_ForcePushDurationPc,4,f32
+0x7fc064,_ForcePushStrongDurationPc,4,f32
+0x7fc068,_ForcePushMindTrickDurationPc,4,f32
 0x7fc06c,_PCForceGlowRadiusMultiplier,,f32
 0x7fc070,_PCForceGlowHoldDuration,,f32
 0x7fc074,_FORCEGLOWTIME,,f32
