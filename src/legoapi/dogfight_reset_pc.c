@@ -1462,3 +1462,313 @@ void __cdecl ChrisDogFightAUpdate(WORLDINFO *world) {
     if (GamePlayTimer.time_elapsed >= 3.0f)
         flags->first = 1;
 }
+
+/* PC drawing controls are distinct owners; AnakinC occupies the intervening slot. */
+#pragma data_seg(push, ".data$DogfightSelectedSockPc")
+SOCKPOSITION_PC *DogfightSelectedSockPc = NULL;
+#pragma data_seg(pop)
+#pragma data_seg(push, ".data$DogfightDrawSelectedSockPc")
+i32 DogfightDrawSelectedSockPc = 0;
+#pragma data_seg(pop)
+#pragma data_seg(push, ".data$DogfightHideGeometryPc")
+i32 DogfightHideGeometryPc = 0;
+#pragma data_seg(pop)
+#pragma data_seg(push, ".data$DogfightDrawSplinePc")
+i32 DogfightDrawSplinePc = 0;
+#pragma data_seg(pop)
+#pragma data_seg(push, ".data$DogfightDrawFighterSplinePc")
+i32 DogfightDrawFighterSplinePc = 0;
+#pragma data_seg(pop)
+#pragma data_seg(push, ".data$DogfightJetOffsetPc")
+NUVEC DogfightJetOffsetPc = {0.15f, 0.08f, 0.32f};
+#pragma data_seg(pop)
+#pragma data_seg(push, ".data$DogfightBoltModelsFirstPc")
+i32 DogfightBoltModelsFirstPc[4] = {303, 305, 301, 301};
+#pragma data_seg(pop)
+#pragma data_seg(push, ".data$DogfightBoltModelsSecondPc")
+i32 DogfightBoltModelsSecondPc[4] = {304, 306, 302, 302};
+#pragma data_seg(pop)
+extern i32 DogfightDebrisKeysPc[4];
+extern i32 __cdecl GameDrawCharacterModel(CHARACTER_MODEL_LAYERS_PC *, ANIMPACKET_PC *, NUMTX *, NUMTX *, NUMTX *,
+                                          NUMTX *, GAMEOBJECT *, u32);
+STATIC_ASSERT(sizeof(NUVEC) == 12);
+STATIC_ASSERT(offsetof(NUGSPLINE, pts) == 8);
+STATIC_ASSERT(offsetof(APICHARSYS, models) == 0x18);
+STATIC_ASSERT(offsetof(APICHARSYS, playermodelids) == 0x1c);
+STATIC_ASSERT(sizeof(CHARACTER_MODEL_LAYERS_PC) == 0x54);
+STATIC_ASSERT(offsetof(WORLDINFO, sock_sys) == 0x2988);
+
+void __cdecl NuMtxPreScaleUVU0(NUMTX *matrix, f32 scale) {
+    matrix->m00 *= scale;
+    matrix->m01 *= scale;
+    matrix->m02 *= scale;
+    matrix->m10 *= scale;
+    matrix->m11 *= scale;
+    matrix->m12 *= scale;
+    matrix->m20 *= scale;
+    matrix->m21 *= scale;
+    matrix->m22 *= scale;
+}
+
+static __declspec(noinline) void SampleFlightSplinePc(FLIGHT_SPLINE_RESOURCE_PC *spline, NUVEC4 *points, i32 count) {
+    f32 step, along;
+    i32 i;
+    step = 1.0 / (f64)(count - 1);
+    points[0] = spline->points[0];
+    along = step;
+    for (i = 1; i < count - 1; ++i) {
+        CalcSplinePoint(spline, &points[i], along);
+        along += step;
+    }
+    points[count - 1] = spline->points[spline->point_count - 1];
+}
+
+/* Native debug paths retain these vector evaluations without line submission calls. */
+static __declspec(noinline) void DrawFlightSplineDebugPc(FLIGHT_SPLINE_RESOURCE_PC *spline, i32 mode) {
+    NUVEC4 points[512], direction, axis;
+    i32 count, i, from;
+    i16 yaw, pitch;
+    if (mode == 1 || (mode != 2 && mode != 3))
+        return;
+    count = mode == 3 ? spline->point_count * 8 : 20;
+    SampleFlightSplinePc(spline, points, count);
+    for (i = 1; i < count; ++i) {
+        if (mode == 3) {
+            direction.x = points[i].x - (f64)points[i - 1].x;
+            direction.y = points[i].y - (f64)points[i - 1].y;
+            direction.z = points[i].z - (f64)points[i - 1].z;
+            yaw = (i16)NuAtan2D(direction.x, direction.z);
+            NuVecRotateY((NUVEC *)&axis, (NUVEC *)&direction, -(i32)yaw);
+            pitch = (i16)NuAtan2D(axis.y, axis.z);
+            axis.x = 1.0f;
+            axis.y = 0.0f;
+            axis.z = 0.0f;
+            axis.w = 0.0f;
+            NuVecRotateZ((NUVEC *)&axis, (NUVEC *)&axis, (i16)(i32)points[i].w);
+            NuVecRotateX((NUVEC *)&axis, (NUVEC *)&axis, -(i32)pitch);
+            NuVecRotateY((NUVEC *)&axis, (NUVEC *)&axis, yaw);
+        }
+    }
+    for (i = 0; i < spline->point_count; ++i) {
+        from = (i32)((f64)(i * count) / (spline->point_count - 1) - 0.5);
+        if (from < 0)
+            from = 0;
+        else if (from > count - 2)
+            from = count - 2;
+        direction.x = points[from + 1].x - (f64)points[from].x;
+        direction.y = points[from + 1].y - (f64)points[from].y;
+        direction.z = points[from + 1].z - (f64)points[from].z;
+        yaw = (i16)NuAtan2D(direction.x, direction.z);
+        NuVecRotateY((NUVEC *)&axis, (NUVEC *)&direction, -(i32)yaw);
+        pitch = (i16)NuAtan2D(axis.y, axis.z);
+        axis.x = 2.0f;
+        axis.y = 0.0f;
+        axis.z = 0.0f;
+        axis.w = 0.0f;
+        NuVecRotateZ((NUVEC *)&axis, (NUVEC *)&axis, (i16)(i32)spline->points[i].w);
+        NuVecRotateX((NUVEC *)&axis, (NUVEC *)&axis, -(i32)pitch);
+        NuVecRotateY((NUVEC *)&axis, (NUVEC *)&axis, yaw);
+    }
+}
+
+static __declspec(noinline) i32 DrawFlightCharacterPc(NUMTX *matrix, i32 model_id, i32 flags, f32 scale) {
+    NUMTX scaled;
+    i16 model_index = apicharsys->playermodelids[model_id];
+    if (model_index == -1)
+        return 0;
+    if (scale != 1.0f) {
+        scaled = *matrix;
+        NuMtxPreScaleUVU0(&scaled, scale);
+        matrix = &scaled;
+    }
+    return GameDrawCharacterModel(&apicharsys->models[model_index], NULL, matrix, NULL, NULL, NULL, NULL, flags);
+}
+
+static __declspec(noinline) void DrawStarFighterPc(DOGFIGHT_FIGHTER_PC *record) {
+    starfighter_s *fighter = &record->fields;
+    NUMTX scaled;
+    NUMTX *matrix;
+    if (fighter->model_id < 0) {
+        matrix = &fighter->matrix;
+        if (fighter->model_id == -297 || fighter->model_id == -299 || fighter->model_id == -298 ||
+            fighter->model_id == -307) {
+            scaled = fighter->matrix;
+            scaled.m00 *= (f64)1.15f;
+            scaled.m01 *= (f64)1.15f;
+            scaled.m02 *= (f64)1.15f;
+            scaled.m10 *= (f64)1.15f;
+            scaled.m11 *= (f64)1.15f;
+            scaled.m12 *= (f64)1.15f;
+            scaled.m20 *= (f64)1.15f;
+            scaled.m21 *= (f64)1.15f;
+            scaled.m22 *= (f64)1.15f;
+            matrix = &scaled;
+        }
+        NuSpecialDrawAt(&WORLD->level_objects[-fighter->model_id].special, matrix);
+        if (fighter->model_id == -307)
+            AddVariableShotDebrisEffect(WORLD->game_debris_sys->entries[49].effect, (NUVEC *)&fighter->matrix.m30, 1, 0,
+                                        0);
+    } else {
+        DrawFlightCharacterPc(&fighter->matrix, fighter->model_id, fighter->draw_flags, fighter->scale);
+    }
+    if (DogfightDrawFighterSplinePc != 0 && fighter->health > 0 && fighter->parent == NULL &&
+        DogfightDrawSplinePc != 0 && fighter->spline != NULL && fighter->spline->point_count != 0)
+        DrawFlightSplineDebugPc(fighter->spline, 3);
+}
+
+static __declspec(noinline) void DrawQuickBoltsPc(DOGFIGHT_QUICK_BUFFER_PC *buffer) {
+    DOGFIGHT_QUICK_BOLT_PC *bolt, *end;
+    if (buffer == NULL || buffer->capacity == 0)
+        return;
+    bolt = buffer->records;
+    end = bolt + buffer->capacity;
+    for (; bolt < end; ++bolt) {
+        if (bolt->duration != 0.0f) {
+            Draw3DObjectMtx(WORLD, DogfightBoltModelsFirstPc[bolt->type], &bolt->matrix);
+            Draw3DObjectMtx(WORLD, DogfightBoltModelsSecondPc[bolt->type], &bolt->matrix);
+        }
+    }
+}
+
+static __declspec(noinline) void DrawSpaceLevelPc(DOGFIGHT_SPACE_PC *space) {
+    GAMEOBJECT *player;
+    NUMTX matrix;
+    i32 i, j;
+    if (DogfightHideGeometryPc == 0) {
+        for (i = 0; i < 2; ++i) {
+            if (space->crosses[i].enabled != 0)
+                NuVecMtxTransform((NUVEC *)&space->crosses[i].matrix.m30, (NUVEC *)&space->crosses[i].matrix.m10,
+                                  &GameCam->render_mtx);
+        }
+        for (i = 0; i < 8; ++i) {
+            if (space->groups[i].active != 0) {
+                for (j = 0; j < 5; ++j) {
+                    if (space->groups[i].fighters[j].fields.active != 0)
+                        DrawStarFighterPc(&space->groups[i].fighters[j]);
+                }
+            }
+        }
+        for (i = 0; i < 96; ++i) {
+            if (space->queued_fighters[i].fields.active != 0)
+                DrawStarFighterPc(&space->queued_fighters[i]);
+        }
+        DrawQuickBoltsPc((DOGFIGHT_QUICK_BUFFER_PC *)&space->reset_buffer);
+    }
+    for (i = 0; i < 4; ++i) {
+        player = (GAMEOBJECT *)Player[i >> 1];
+        if (player == NULL)
+            continue;
+        if (player->id != (u16)id_JEDISTARFIGHTERYELLOWEP3 && player->id != (u16)VehicleBoltId7f19e8Pc) {
+            if (DogfightDebrisKeysPc[i] != -1)
+                DebFreeInstantly(&DogfightDebrisKeysPc[i]);
+        } else if (DogfightDebrisKeysPc[i] == -1) {
+            AddDebrisEffect(&DogfightDebrisKeysPc[i], WORLD->game_debris_sys->entries[47].effect, 0.0f, 0.0f, 0.0f);
+        } else {
+            matrix.m00 = player->transform.m00;
+            matrix.m01 = player->transform.m01;
+            matrix.m02 = player->transform.m02;
+            matrix.m03 = player->transform.m03;
+            matrix.m10 = player->transform.m20;
+            matrix.m11 = player->transform.m21;
+            matrix.m12 = player->transform.m22;
+            matrix.m13 = player->transform.m23;
+            matrix.m20 = -player->transform.m10;
+            matrix.m21 = -player->transform.m11;
+            matrix.m22 = -player->transform.m12;
+            matrix.m23 = -player->transform.m13;
+            matrix.m30 = player->transform.m30;
+            matrix.m31 = player->transform.m31;
+            matrix.m32 = player->transform.m32;
+            matrix.m33 = player->transform.m33;
+            if ((i & 1) != 0) {
+                matrix.m30 += ((f64)matrix.m20 * DogfightJetOffsetPc.y - (f64)matrix.m00 * DogfightJetOffsetPc.x) +
+                              (f64)matrix.m10 * DogfightJetOffsetPc.z;
+                matrix.m31 += ((f64)matrix.m21 * DogfightJetOffsetPc.y - (f64)matrix.m01 * DogfightJetOffsetPc.x) +
+                              (f64)matrix.m11 * DogfightJetOffsetPc.z;
+                matrix.m32 += ((f64)matrix.m22 * DogfightJetOffsetPc.y - (f64)matrix.m02 * DogfightJetOffsetPc.x) +
+                              (f64)matrix.m12 * DogfightJetOffsetPc.z;
+            } else {
+                matrix.m30 += ((f64)matrix.m20 * DogfightJetOffsetPc.y + (f64)matrix.m00 * DogfightJetOffsetPc.x) +
+                              (f64)matrix.m10 * DogfightJetOffsetPc.z;
+                matrix.m31 += ((f64)matrix.m21 * DogfightJetOffsetPc.y + (f64)matrix.m01 * DogfightJetOffsetPc.x) +
+                              (f64)matrix.m11 * DogfightJetOffsetPc.z;
+                matrix.m32 += ((f64)matrix.m22 * DogfightJetOffsetPc.y + (f64)matrix.m02 * DogfightJetOffsetPc.x) +
+                              (f64)matrix.m12 * DogfightJetOffsetPc.z;
+            }
+            DebrisPosOrientationMtx(DogfightDebrisKeysPc[i], &matrix);
+        }
+    }
+}
+
+static __declspec(noinline) void DrawSelectedSockPc(SOCKSYS_PC *system, i32 radius, SOCKPOSITION_PC *position, i32 mode,
+                                                    i32 count) {
+    SOCK_PC *sock;
+    NUVEC a, b, c, d, difference;
+    i32 i, end;
+    f32 square;
+    if (position->sock_index == -1 || mode != 5)
+        return;
+    sock = &system->socks[position->sock_index];
+    a = sock->a->pts[0];
+    b = sock->b->pts[0];
+    c = sock->c->pts[0];
+    d = sock->d->pts[0];
+    difference.x = (f64)c.x + b.x;
+    difference.y = (f64)c.y + b.y;
+    difference.z = (f64)c.z + b.z;
+    difference.x -= a.x;
+    difference.y -= a.y;
+    difference.z -= a.z;
+    difference.x -= d.x;
+    difference.y -= d.y;
+    difference.z -= d.z;
+    square = (f64)difference.y * difference.y + (f64)difference.x * difference.x + (f64)difference.z * difference.z;
+    (void)NuFsqrt(square);
+    difference.x = (f64)b.x + a.x;
+    difference.y = (f64)b.y + a.y;
+    difference.z = (f64)b.z + a.z;
+    difference.x -= c.x;
+    difference.y -= c.y;
+    difference.z -= c.z;
+    difference.x -= d.x;
+    difference.y -= d.y;
+    difference.z -= d.z;
+    square = (f64)difference.y * difference.y + (f64)difference.x * difference.x + (f64)difference.z * difference.z;
+    (void)NuFsqrt(square);
+    i = position->segment - (count >> 1) * radius;
+    end = i + radius * count;
+    for (; i < end; ++i) {
+        a = sock->a->pts[i];
+        b = sock->b->pts[i];
+        c = sock->c->pts[i];
+        d = sock->d->pts[i];
+        difference.x = (f64)c.x + b.x;
+        difference.y = (f64)c.y + b.y;
+        difference.z = (f64)c.z + b.z;
+        difference.x -= a.x;
+        difference.y -= a.y;
+        difference.z -= a.z;
+        difference.x -= d.x;
+        difference.y -= d.y;
+        difference.z -= d.z;
+        square = (f64)difference.y * difference.y + (f64)difference.x * difference.x + (f64)difference.z * difference.z;
+        (void)NuFsqrt(square);
+        difference.x = (f64)b.x + a.x;
+        difference.y = (f64)b.y + a.y;
+        difference.z = (f64)b.z + a.z;
+        difference.x -= c.x;
+        difference.y -= c.y;
+        difference.z -= c.z;
+        difference.x -= d.x;
+        difference.y -= d.y;
+        difference.z -= d.z;
+        square = (f64)difference.y * difference.y + (f64)difference.x * difference.x + (f64)difference.z * difference.z;
+        (void)NuFsqrt(square);
+    }
+}
+
+void __cdecl ChrisDogFightADraw(WORLDINFO *world) {
+    DrawSpaceLevelPc((DOGFIGHT_SPACE_PC *)world->level_specific_data);
+    if (DogfightDrawSelectedSockPc != 0 && DogfightSelectedSockPc != NULL)
+        DrawSelectedSockPc(world->sock_sys, 4, DogfightSelectedSockPc, 5, 8);
+}
