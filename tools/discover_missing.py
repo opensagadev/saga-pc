@@ -406,6 +406,69 @@ def suppressed_calls(path, pe=None, snapshots=None):
     return result
 
 
+
+def corroborate_suppressed_calls(pe, records, leads, text_start, text_end,
+                                max_bytes=65536, instruction_budget=20000, max_parents=32):
+    """Add exact reachable-call evidence, never infer missing behavior.
+
+    A source comment supplies a candidate address only. Require one containing
+    mapped interval and a complete bounded direct CFG from that mapped entry.
+    Nonobservations stay unknown: alternate entries and source preprocessing are
+    not established by this analysis. Cache only within this pinned invocation.
+    """
+    if max_bytes <= 0 or instruction_budget <= 0 or max_parents <= 0:
+        raise ValueError("Invalid suppressed-call CFG budget")
+    cache, result = {}, []
+    for lead in leads:
+        row = dict(lead)
+        evidence = {"status": "unknown", "reason": "no_native_comment_site",
+                    "external_or_interior_entry_compatibility": "unknown_not_analyzed",
+                    "qualification": "Exact mapped-root reachability only, not preprocessor "
+                                     "reachability, caller ABI, runtime activation or missing behavior."}
+        row["cfg_corroboration"] = evidence
+        result.append(row)
+        site = row.get("comment_site")
+        if site is None:
+            continue
+        if not text_start <= site < text_end:
+            evidence["reason"] = "comment_site_outside_native_text"
+            continue
+        parents = [record for record in records if record["address"] is not None and
+                   record["size"] and text_start <= record["address"] <= site <
+                   record["address"] + record["size"]]
+        if len(parents) != 1:
+            evidence.update(reason="mapped_parent_absent_or_ambiguous", mapped_parents=[
+                {key: record[key] for key in ("symbol", "address", "size")} for record in parents])
+            continue
+        parent = parents[0]
+        start, size = parent["address"], parent["size"]
+        evidence["parent"] = {key: parent[key] for key in ("symbol", "address", "size")}
+        if size > max_bytes or start + size > text_end:
+            evidence["reason"] = "mapped_parent_exceeds_budget_or_text"
+            continue
+        key = start, size
+        if key not in cache:
+            if len(cache) >= max_parents:
+                evidence["reason"] = "mapped_parent_count_budget_exhausted"
+                continue
+            cache[key] = trace_cfg(pe, start, start + size, instruction_budget=instruction_budget,
+                                   trusted_extent=True)
+        cfg = cache[key]
+        evidence["cfg_instruction_count"] = cfg["instruction_count"]
+        evidence["cfg_unknowns"] = cfg["unknowns"]
+        if cfg["unknowns"]:
+            evidence["reason"] = "mapped_parent_cfg_incomplete"
+            continue
+        matches = [call for call in cfg["direct_calls"] if call["site"] == site and
+                   call["target"] == row["target"]]
+        if len(matches) == 1:
+            evidence.update(status="corroborated_reachable_direct_call", reason="exact_site_and_target",
+                            call=matches[0])
+        else:
+            evidence["reason"] = "site_target_not_observed_as_reachable_direct_call"
+    return result
+
+
 def discover(pe, records, providers, roots, text_start, text_end, suppressed=(), depth=1,
              max_roots=32, max_bytes=65536, compare_calls=False):
     if depth < 0 or max_roots <= 0 or max_bytes <= 0:
@@ -484,6 +547,8 @@ def main():
     parser.add_argument("--depth", type=int, default=1)
     parser.add_argument("--max-roots", type=int, default=32)
     parser.add_argument("--max-bytes", type=int, default=65536)
+    parser.add_argument("--corroborate-suppressed-calls", action="store_true",
+                        help="Add complete mapped-parent CFG evidence to source suppression leads")
     parser.add_argument("--compare-provider-calls", action="store_true",
                         help="Add bounded native/COFF direct-call review leads; never completeness proof")
     parser.add_argument("--output", type=Path, required=True)
@@ -513,6 +578,10 @@ def main():
     source_hashes = {}
     source_leads = [lead for path in sorted(sources.rglob("*"))
                     if path.suffix in (".c", ".cpp") for lead in suppressed_calls(path, pe, source_hashes)]
+    if args.corroborate_suppressed_calls:
+        source_leads = corroborate_suppressed_calls(pe, records, source_leads,
+            number(target["text_va"]), number(target["text_va"]) + number(target["text_size"]),
+            args.max_bytes, max_parents=args.max_roots)
     roots = []
     for name in args.root:
         matches = {row["address"] for row in records if row["symbol"] == name and row["address"] is not None}

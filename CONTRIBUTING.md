@@ -313,6 +313,14 @@ review leads, and equal inventories do not establish byte, CFG, ABI or semantic
 equality. Partial object censuses remain qualified; no missing-body or score credit
 is inferred from this inventory.
 
+Use `--corroborate-suppressed-calls` to add separate native CFG evidence to source
+suppression leads. Corroboration requires one containing mapped parent and an exact
+reachable direct-call site/target in its complete bounded CFG. Ambiguous parents,
+unknown paths and exhausted budgets remain unknown. `--max-roots` also bounds the
+number of parent CFGs examined. Existing opcode-only evidence is preserved. This
+proves reachability from that mapped entry only; external/interior entries, source
+preprocessing, ABI, runtime activation and missing behavior remain unproved.
+
 ## Complete COFF comparison regions
 
 Audit existing comparison spans before accepting a new data definition or layout:

@@ -353,5 +353,80 @@ class ProviderCallInventoryTests(unittest.TestCase):
 
 
 
+class SuppressedCFGCorroborationTests(unittest.TestCase):
+    def lead(self, site, target):
+        return {"comment_site": site, "target": target, "native_opcode_target_verified": True,
+                "source": "fixture.c", "qualification": "source tokens only"}
+
+    def check(self, code, lead, rows=None, **limits):
+        rows = rows if rows is not None else [{"symbol": "_Parent", "address": 0x1000, "size": len(code)}]
+        return discovery.corroborate_suppressed_calls(MemoryPE(code), rows, [lead], 0x1000,
+                                                    0x2000, **limits)[0]
+
+    def test_exact_reachable_call_corroborates_without_changing_opcode_evidence(self):
+        code = b"\xe8" + struct.pack("<i", 0x1100 - 0x1005) + b"\xc3"
+        original = self.lead(0x1000, 0x1100)
+        result = self.check(code, original)
+        self.assertEqual(result["cfg_corroboration"]["status"], "corroborated_reachable_direct_call")
+        self.assertEqual({k: v for k, v in result.items() if k != "cfg_corroboration"}, original)
+        self.assertNotIn("cfg_corroboration", original)
+
+    def test_opcode_inside_mov_immediate_is_not_a_reachable_call(self):
+        row = self.check(bytes.fromhex("b8e8000000c3"), self.lead(0x1001, 0xc3001006))
+        self.assertTrue(row["native_opcode_target_verified"])
+        self.assertEqual(row["cfg_corroboration"]["status"], "unknown")
+        self.assertEqual(row["cfg_corroboration"]["reason"], "site_target_not_observed_as_reachable_direct_call")
+
+    def test_unreachable_call_after_return_and_wrong_target_remain_unknown(self):
+        code = bytes.fromhex("c3e800000000c3")
+        self.assertEqual(self.check(code, self.lead(0x1001, 0x1006))["cfg_corroboration"]["status"], "unknown")
+        code = bytes.fromhex("e800000000c3")
+        self.assertEqual(self.check(code, self.lead(0x1000, 0x1100))["cfg_corroboration"]["status"], "unknown")
+
+    def test_ambiguous_parent_extents_or_missing_parent_stay_unknown(self):
+        code = bytes.fromhex("e800000000c3")
+        parents = [{"symbol": "_Outer", "address": 0x1000, "size": 6},
+                   {"symbol": "_Inner", "address": 0x1000, "size": 5}]
+        for rows in (parents, [], [parents[0], dict(parents[0], symbol="_Alias")]):
+            evidence = self.check(code, self.lead(0x1000, 0x1005), rows)["cfg_corroboration"]
+            self.assertEqual(evidence["status"], "unknown")
+            self.assertEqual(evidence["reason"], "mapped_parent_absent_or_ambiguous")
+
+    def test_incomplete_indirect_parent_never_certifies_even_an_observed_call(self):
+        # One known direct call then an unresolved indirect jump.
+        row = self.check(bytes.fromhex("e800000000ffe0"), self.lead(0x1000, 0x1005))
+        self.assertEqual(row["cfg_corroboration"]["reason"], "mapped_parent_cfg_incomplete")
+        self.assertEqual(row["cfg_corroboration"]["status"], "unknown")
+
+    def test_instruction_byte_and_parent_budgets_stay_unknown(self):
+        code = bytes.fromhex("e800000000c3")
+        for limits, reason in [({"max_bytes": 5}, "mapped_parent_exceeds_budget_or_text"),
+                               ({"instruction_budget": 1}, "mapped_parent_cfg_incomplete")]:
+            row = self.check(code, self.lead(0x1000, 0x1005), **limits)
+            self.assertEqual(row["cfg_corroboration"]["status"], "unknown")
+            self.assertEqual(row["cfg_corroboration"]["reason"], reason)
+        parents = [{"symbol": "_One", "address": 0x1000, "size": 6},
+                   {"symbol": "_Two", "address": 0x1006, "size": 6}]
+        rows = discovery.corroborate_suppressed_calls(MemoryPE(code * 2), parents,
+            [self.lead(0x1000, 0x1005), self.lead(0x1006, 0x100b)], 0x1000, 0x2000, max_parents=1)
+        self.assertEqual(rows[1]["cfg_corroboration"]["reason"], "mapped_parent_count_budget_exhausted")
+
+    def test_parent_cfg_is_cached_for_repeated_source_leads(self):
+        code = bytes.fromhex("e800000000c3")
+        parents = [{"symbol": "_One", "address": 0x1000, "size": 6}]
+        with patch.object(discovery, "trace_cfg", wraps=discovery.trace_cfg) as trace:
+            result = discovery.corroborate_suppressed_calls(MemoryPE(code), parents,
+                [self.lead(0x1000, 0x1005)] * 3, 0x1000, 0x2000)
+        self.assertEqual(trace.call_count, 1)
+        self.assertTrue(all(r["cfg_corroboration"]["status"] == "corroborated_reachable_direct_call" for r in result))
+
+    def test_no_comment_or_outside_text_and_invalid_budgets_are_explicit(self):
+        for site in (None, 0x2000):
+            self.assertEqual(self.check(b"\xc3", self.lead(site, 0x1000))["cfg_corroboration"]["status"], "unknown")
+        with self.assertRaisesRegex(ValueError, "budget"):
+            self.check(b"\xc3", self.lead(0x1000, 0x1000), max_parents=0)
+
+
+
 if __name__ == "__main__":
     unittest.main()
