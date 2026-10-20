@@ -378,6 +378,90 @@ def provider_call_inventory(obj, symbol, records, native_cfg, instruction_observ
 
 
 
+def function_immediate_observations(insn, records, text_start, text_end, obj=None, region=None, base=0):
+    """Raw CMP immediate address candidates, never pointer semantics or invocation."""
+    if insn.mnemonic != "cmp":
+        return []
+    by_name, by_address = storage_binding_index(records)
+    result = []
+    for ordinal, operand in enumerate(insn.operands):
+        if operand.type != X86_OP_IMM:
+            continue
+        site = insn.address if region is None else insn.address - base
+        row = {"site": site, "operation": "cmp", "operand_index": ordinal,
+               "operand_width_bytes": operand.size, "encoded_immediate_width_bytes": insn.imm_size,
+               "encoded_immediate_offset": insn.imm_offset,
+               "encoding_domain": "native_pe" if region is None else "unrelocated_coff",
+               "raw_value": operand.imm & 0xffffffff, "binding": "unknown",
+               "target_va": None, "symbols": []}
+        result.append(row)
+        if operand.size != 4 or insn.imm_size != 4:
+            row["binding"] = "not_full_width_CMP_imm32"
+            continue
+        if region is None:
+            address = row["raw_value"]
+        else:
+            offset = site + insn.imm_offset
+            refs = [ref for ref in region["relocations"] if
+                    ref["offset"] < site + insn.size and ref["offset"] + 4 > site]
+            if len(refs) != 1 or refs[0]["offset"] != offset or refs[0]["type"] != 6:
+                row["binding"] = "no_exact_DIR32_CMP_immediate"
+                continue
+            ref = refs[0]
+            addend = struct.unpack_from("<I", region["bytes"], offset)[0]
+            row.update(relocation_symbol=ref["symbol"], addend=addend)
+            target = obj.symbol_by_index[ref["symbol_index"]]
+            if (not target["type"] & 0x20 or target["section"] < 0 or
+                    target["section"] > len(obj.sections) or (target["section"] > 0 and
+                    not obj.sections[target["section"] - 1]["characteristics"] & 0x20)):
+                row["binding"] = "relocation_target_not_typed_function"
+                continue
+            named = by_name.get(ref["symbol"], set())
+            if addend or len(named) != 1:
+                row["binding"] = "nonzero_addend_or_absent_ambiguous_function_binding"
+                continue
+            address = next(iter(named))
+        aliases = sorted(by_address.get(address, set()))
+        row.update(target_va=address, symbols=aliases)
+        if not text_start <= address < text_end or not aliases:
+            row["binding"] = "not_exact_mapped_text_start"
+        elif len(aliases) != 1 or len(by_name[aliases[0]]) != 1:
+            row["binding"] = "function_start_alias_or_name_ambiguity_unknown"
+        else:
+            row["binding"] = ("native_numeric_mapped_text_start_candidate" if region is None
+                              else "exact_DIR32_typed_function_start")
+    return result
+
+
+def provider_function_immediate_inventory(obj, symbol, records, native_cfg, native_observations,
+                                          text_start, text_end):
+    try:
+        region = obj.extract_function(symbol)
+    except ValueError as error:
+        return {"status": "candidate_extent_unknown", "detail": str(error)}
+    observations = []
+    def observe(insn):
+        observations.extend(function_immediate_observations(insn, records, text_start, text_end,
+                                                            obj, region, 0xf0000000))
+    calls = provider_call_inventory(obj, symbol, records, native_cfg, instruction_observer=observe)
+    if calls["status"] != "review_leads_only":
+        return calls
+    return {"status": "review_leads_only", "symbol": symbol,
+            "candidate_size": region["size"],
+            "candidate_bytes_sha256": hashlib.sha256(region["bytes"]).hexdigest(),
+            "native_observations": sorted(native_observations, key=lambda row: (row["site"], row["operand_index"])),
+            "candidate_observations": sorted(observations, key=lambda row: (row["site"], row["operand_index"])),
+            "native_cfg_unknowns": native_cfg["unknowns"],
+            "candidate_cfg_unknowns": calls["candidate_unknowns"],
+            "qualification": "Reached CMP immediate operands only. A native numeric mapped address is not "
+                             "relocation/type proof; candidate exact DIR32 plus function type and unique "
+                             "mapped text start only identifies an encoded address. No compared-value "
+                             "function-pointer semantics, invocation, runtime binding, source type, value "
+                             "flow, equivalence, behavioral completeness or matching credit is inferred. "
+                             "No native/candidate instruction alignment is assumed. Unknown CFG paths "
+                             "and arbitrary external/interior entries are not covered."}
+
+
 def storage_binding_index(records):
     by_name, by_address = collections.defaultdict(set), collections.defaultdict(set)
     for row in records:
@@ -587,7 +671,7 @@ def corroborate_suppressed_calls(pe, records, leads, text_start, text_end,
 
 
 def discover(pe, records, providers, roots, text_start, text_end, suppressed=(), depth=1,
-             max_roots=32, max_bytes=65536, compare_calls=False, compare_storage=False):
+             max_roots=32, max_bytes=65536, compare_calls=False, compare_storage=False, compare_function_immediates=False):
     if depth < 0 or max_roots <= 0 or max_bytes <= 0:
         raise ValueError("Invalid discovery limits")
     starts = sorted({row["address"] for row in records if row["address"] is not None and
@@ -609,9 +693,13 @@ def discover(pe, records, providers, roots, text_start, text_end, suppressed=(),
         declared = next(iter(sizes)) if len(sizes) == 1 else None
         bound = min(text_end, start + max_bytes, start + declared if declared else next_start)
         native_observations = []
+        native_function_immediates = []
         def observe_native(insn):
-            native_observations.extend(storage_observations(insn, records, bindings=storage_bindings))
-        cfg = trace_cfg(pe, start, bound, instruction_observer=observe_native if compare_storage else None,
+            if compare_storage:
+                native_observations.extend(storage_observations(insn, records, bindings=storage_bindings))
+            if compare_function_immediates:
+                native_function_immediates.extend(function_immediate_observations(insn, records, text_start, text_end))
+        cfg = trace_cfg(pe, start, bound, instruction_observer=observe_native if compare_storage or compare_function_immediates else None,
                         trusted_extent=bool(declared and
                         len(sizes) == 1 and start + declared == bound))
         if declared and start + declared > bound:
@@ -645,6 +733,15 @@ def discover(pe, records, providers, roots, text_start, text_end, suppressed=(),
                 item["provider_storage_inventory"] = inventory
             else:
                 item["provider_storage_inventory"] = {"status": "candidate_provider_absent_or_ambiguous"}
+        if compare_function_immediates:
+            if len(status["providers"]) == 1:
+                provider = status["providers"][0]
+                inventory = provider_function_immediate_inventory(providers.objects[provider["object"]],
+                    provider["symbol"], records, cfg, native_function_immediates, text_start, text_end)
+                inventory["native_extent_trusted"] = bool(declared and len(sizes) == 1 and start + declared == bound)
+                item["provider_function_immediate_inventory"] = inventory
+            else:
+                item["provider_function_immediate_inventory"] = {"status": "candidate_provider_absent_or_ambiguous"}
         item["absolute_memory_reference_candidates"] = []
         for address in cfg["absolute_memory_references"]:
             aliases = [row["symbol"] for row in records if row["address"] == address]
@@ -681,6 +778,8 @@ def main():
     parser.add_argument("--max-bytes", type=int, default=65536)
     parser.add_argument("--corroborate-suppressed-calls", action="store_true",
                         help="Add complete mapped-parent CFG evidence to source suppression leads")
+    parser.add_argument("--compare-provider-function-immediates", action="store_true",
+                        help="Add reached CMP immediate address facts; never pointer semantics")
     parser.add_argument("--compare-provider-storage", action="store_true",
                         help="Add exact absolute storage operand observations; review leads only")
     parser.add_argument("--compare-provider-calls", action="store_true",
@@ -728,7 +827,7 @@ def main():
     result = discover(pe, records, providers, roots, number(target["text_va"]),
                       number(target["text_va"]) + number(target["text_size"]), source_leads,
                       args.depth, args.max_roots, args.max_bytes, args.compare_provider_calls,
-                      args.compare_provider_storage)
+                      args.compare_provider_storage, args.compare_provider_function_immediates)
     verify_snapshots(before, "Producer objects")
     verify_snapshots(source_hashes, "Source inputs")
     verify_snapshots(input_hashes, "Native/map/config inputs")

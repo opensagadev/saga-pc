@@ -336,6 +336,15 @@ and equal displacements do not establish an object/field owner or semantic
 correspondence. Identity classifications and exact-storage count comparisons remain
 unchanged; register-relative operands stay unresolved even when their raw forms differ.
 
+Use `--compare-provider-function-immediates` for reached `CMP` immediate operand
+facts. A candidate identity requires the exact four-byte immediate, one `DIR32`
+relocation with zero addend, a function-typed COFF target, and a unique mapped
+text start. Native immediates are numeric address candidates only. Aliases,
+interior/addend bindings, short immediates, wrong relocation fields, unknown
+extents and unresolved CFG paths remain qualified. This does not infer the
+compared value's function-pointer semantics, invocation, equivalence or matching
+credit; identical or different observations are diagnostic evidence only.
+
 ## Complete COFF comparison regions
 
 Audit existing comparison spans before accepting a new data definition or layout:

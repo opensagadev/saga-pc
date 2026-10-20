@@ -579,5 +579,110 @@ class RawMemoryOperandTests(unittest.TestCase):
 
 
 
+class FunctionImmediateInventoryTests(unittest.TestCase):
+    def inventory(self, code=bytes.fromhex("81781800000000c3"), refs=((3, 6),),
+                  records=None, typed=True, native_code=None, extra_function=False):
+        records = records if records is not None else [{"symbol": "_Target", "address": 0x2000, "size": 1}]
+        code = bytes.fromhex(code) if isinstance(code, str) else code
+        native_code = native_code if native_code is not None else bytes.fromhex("81781800200000c3")
+        observations = []
+        def observe(insn):
+            observations.extend(discovery.function_immediate_observations(insn, records, 0x1000, 0x3000))
+        native = discovery.trace_cfg(MemoryPE(native_code), 0x1000, 0x1000 + len(native_code), instruction_observer=observe)
+        data = bytearray(call_object(code, refs, extra_function))
+        if typed:
+            symptr = struct.unpack_from("<I", data, 8)[0]
+            struct.pack_into("<H", data, symptr + 18 + 14, 0x20)
+        with tempfile.TemporaryDirectory() as directory:
+            path = Path(directory) / "function-immediate.obj"
+            path.write_bytes(data)
+            return discovery.provider_function_immediate_inventory(discovery.COFF(path), "_Owner", records,
+                native, observations, 0x1000, 0x3000)
+
+    def test_exact_relocation_proves_encoded_target_not_pointer_semantics(self):
+        row = self.inventory()
+        a = row["candidate_observations"][0]
+        self.assertEqual(a["binding"], "exact_DIR32_typed_function_start")
+        self.assertEqual(a["target_va"], 0x2000)
+        self.assertEqual(a["symbols"], ["_Target"])
+        self.assertEqual(a["encoded_immediate_offset"], 3)
+        self.assertEqual(row["native_observations"][0]["binding"], "native_numeric_mapped_text_start_candidate")
+        self.assertIn("No compared-value", row["qualification"])
+
+    def test_numeric_coincidence_without_relocation_never_proves_candidate_identity(self):
+        fact = self.inventory("81781800200000c3", refs=())["candidate_observations"][0]
+        self.assertEqual(fact["binding"], "no_exact_DIR32_CMP_immediate")
+        self.assertIsNone(fact["target_va"])
+
+    def test_nonfunction_or_interior_addend_stays_unknown(self):
+        self.assertEqual(self.inventory(typed=False)["candidate_observations"][0]["binding"],
+                         "relocation_target_not_typed_function")
+        fact = self.inventory("81781801000000c3")["candidate_observations"][0]
+        self.assertEqual(fact["binding"], "nonzero_addend_or_absent_ambiguous_function_binding")
+        self.assertEqual(fact["addend"], 1)
+
+    def test_partial_wrong_type_duplicate_and_wrong_field_relocations_stay_unknown(self):
+        for refs in [((3, 20),), ((4, 6),), ((3, 6), (3, 6))]:
+            self.assertEqual(self.inventory(refs=refs)["candidate_observations"][0]["binding"],
+                             "no_exact_DIR32_CMP_immediate")
+        # Relocation covers absolute memory displacement, not immediate.
+        self.assertEqual(self.inventory("813d0000000000000000c3", refs=((2, 6),))["candidate_observations"][0]["binding"],
+                         "no_exact_DIR32_CMP_immediate")
+
+    def test_short_immediates_never_extend_to_full_function_addresses(self):
+        for code in ["83f800c3", "663d0000c3"]:
+            fact = self.inventory(code, refs=())["candidate_observations"][0]
+            self.assertEqual(fact["binding"], "not_full_width_CMP_imm32")
+
+    def test_alias_and_name_address_ambiguity_stay_unknown(self):
+        cases = [[{"symbol": "_Target", "address": 0x2000}, {"symbol": "_Alias", "address": 0x2000}],
+                 [{"symbol": "_Target", "address": 0x2000}, {"symbol": "_Target", "address": 0x2100}]]
+        for records in cases:
+            fact = self.inventory(records=records)["candidate_observations"][0]
+            self.assertNotEqual(fact["binding"], "exact_DIR32_typed_function_start")
+
+    def test_unmapped_interior_and_outside_text_numeric_candidates_stay_unknown(self):
+        for code in ["81781801200000c3", "81781800900000c3"]:
+            native = bytes.fromhex(code)
+            fact = self.inventory(native_code=native)["native_observations"][0]
+            self.assertEqual(fact["binding"], "not_exact_mapped_text_start")
+        self.assertEqual(self.inventory(records=[])["candidate_observations"][0]["binding"],
+                         "nonzero_addend_or_absent_ambiguous_function_binding")
+
+    def test_reachable_only_and_incomplete_cfg_is_explicit(self):
+        self.assertEqual(self.inventory("c381781800000000c3", refs=((4, 6),))["candidate_observations"], [])
+        self.assertEqual(self.inventory("b881781800c3", refs=())["candidate_observations"], [])
+        row = self.inventory("81781800000000ffe0")
+        self.assertEqual(len(row["candidate_observations"]), 1)
+        self.assertTrue(row["candidate_cfg_unknowns"])
+
+    def test_unknown_function_extent_does_not_linear_sweep(self):
+        self.assertEqual(self.inventory(extra_function=True)["status"], "candidate_extent_unknown")
+
+    def test_discover_optin_does_not_change_default_root_facts(self):
+        code = bytes.fromhex("81781800000000c3")
+        raw = bytearray(call_object(code, ((3, 6),)))
+        struct.pack_into("<H", raw, struct.unpack_from("<I", raw, 8)[0] + 18 + 14, 0x20)
+        rows = [{"symbol": "_Owner", "address": 0x1000, "size": len(code)},
+                {"symbol": "_Target", "address": 0x2000, "size": 1}]
+        with tempfile.TemporaryDirectory() as directory:
+            path = Path(directory) / "owner.obj"
+            path.write_bytes(raw)
+            index = discovery.ProviderIndex()
+            index.add_object(path)
+            args = (MemoryPE(bytes.fromhex("81781800200000c3")), rows, index, [0x1000], 0x1000, 0x3000)
+            old = discovery.discover(*args, depth=0)
+            new = discovery.discover(*args, depth=0, compare_function_immediates=True)
+        fact = new["roots"][0].pop("provider_function_immediate_inventory")
+        self.assertEqual(new, old)
+        self.assertEqual(fact["candidate_observations"][0]["binding"], "exact_DIR32_typed_function_start")
+
+    def test_changed_relocation_target_visible_despite_identical_raw_code(self):
+        a = self.inventory()
+        b = self.inventory(records=[{"symbol": "_Target", "address": 0x2100}])
+        self.assertEqual(a["candidate_bytes_sha256"], b["candidate_bytes_sha256"])
+        self.assertNotEqual(a["candidate_observations"], b["candidate_observations"])
+
+
 if __name__ == "__main__":
     unittest.main()
