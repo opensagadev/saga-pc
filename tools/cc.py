@@ -82,6 +82,20 @@ def run_tool(command, env, timeout=180):
         return result, stdout.read() + stderr.read()
 
 
+def run_linker(command, env):
+    """Keep long Wine links below CreateProcessW's 32,767 UTF-16-unit limit."""
+    native = subprocess.list2cmdline([windows(Path(command[1])), *command[2:]])
+    if len(native.encode("utf-16-le")) // 2 + 1 <= 32767:
+        return run_tool(command, env)
+    if any(any(char in argument for char in "\r\n\0") for argument in command[2:]):
+        raise ValueError("Linker response-file arguments cannot contain CR, LF, or NUL")
+    # Only the linker supports this transport here. Keep every transformed flag
+    # and object in its original position; MSVC uses Windows argument quoting.
+    with tempfile.TemporaryDirectory(prefix="link-", dir=ROOT / "build") as temp:
+        response = Path(temp) / "arguments.rsp"
+        response.write_text(subprocess.list2cmdline(command[2:]) + "\n", encoding="utf-16")
+        return run_tool([*command[:2], "@" + windows(response)], env)
+
 def main():
     parser = argparse.ArgumentParser(description=__doc__, epilog=(
         "Compile: cc.py SOURCE OUTPUT [FLAGS...]. "
@@ -162,7 +176,7 @@ def main():
                        "/Fo" + windows(output), windows(source)]
         output.parent.mkdir(parents=True, exist_ok=True)
         output.unlink(missing_ok=True)
-        result, log = run_tool(command, env)
+        result, log = (run_linker if args.link else run_tool)(command, env)
         print(log, end="", flush=True)
         # Ignored options and forced unresolved links can otherwise exit successfully.
         if args.link and args.allow_unresolved:

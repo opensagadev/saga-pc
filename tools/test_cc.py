@@ -32,7 +32,7 @@ class LinkerDiagnosticTests(unittest.TestCase):
         self.assertEqual(cc.unresolved_symbols('No unresolved external symbol _not_a_diagnostic'), [])
         self.assertEqual(cc.unresolved_symbols('x : error LNK2001: unresolved external symbol _last'), ['_last'])
 
-    def link(self, temp, allow, log=DIAGNOSTICS, returncode=0):
+    def link(self, temp, allow, log=DIAGNOSTICS, returncode=0, long=False):
         obj = Path(temp) / 'probe.obj'
         obj.write_bytes(b'input')
         output = Path(temp) / 'probe.exe'
@@ -40,9 +40,17 @@ class LinkerDiagnosticTests(unittest.TestCase):
         if allow:
             arguments.append('--allow-unresolved')
         arguments += [str(output), str(obj), '--', '/nologo']
+        if long:
+            arguments.append('/COMMENT:' + 'x' * 32767)
 
         def invoke(command, **kwargs):
-            self.assertEqual('/FORCE:UNRESOLVED' in command, allow)
+            if long:
+                self.assertEqual(len(command), 3)
+                response = Path(command[2][3:].replace('\\', '/'))
+                content = response.read_text(encoding='utf-16')
+                self.assertEqual('/FORCE:UNRESOLVED' in content, allow)
+            else:
+                self.assertEqual('/FORCE:UNRESOLVED' in command, allow)
             output.write_bytes(b'linked output')
             kwargs['stdout'].write(log)
             return SimpleNamespace(returncode=returncode)
@@ -78,6 +86,22 @@ class LinkerDiagnosticTests(unittest.TestCase):
                 self.assertFalse((Path(temp) / 'probe.exe').exists())
 
 
+    def test_long_link_retains_unresolved_and_option_policy(self):
+        with tempfile.TemporaryDirectory() as temp:
+            result, output, log = self.link(temp, True, long=True)
+            self.assertEqual(result, 0)
+            self.assertTrue(output.is_file())
+            self.assertIn('Linked with 3 unresolved symbols', log)
+        for allow, log, returncode in [(False, DIAGNOSTICS, 0),
+                                       (True, DIAGNOSTICS + 'link : warning LNK4044: ignored\n', 0),
+                                       (True, DIAGNOSTICS, 1)]:
+            with self.subTest(allow=allow, log=log, returncode=returncode), \
+                    tempfile.TemporaryDirectory() as temp:
+                with self.assertRaisesRegex(RuntimeError, 'Linking failed'):
+                    self.link(temp, allow, log, returncode, long=True)
+                self.assertFalse((Path(temp) / 'probe.exe').exists())
+
+
 class ToolCaptureTests(unittest.TestCase):
     def test_descendant_inherits_output_without_delaying_tool_completion(self):
         # The child keeps both output handles open after its parent exits, just
@@ -95,6 +119,120 @@ class ToolCaptureTests(unittest.TestCase):
             cc.run_tool([sys.executable, "-c", "import time; time.sleep(2)"],
                         dict(os.environ), timeout=0.05)
 
+
+
+class LinkerResponseTests(unittest.TestCase):
+    def command(self, temp, size):
+        command = ['wine', str(Path(temp) / 'link.exe'), '']
+        prefix = subprocess.list2cmdline([cc.windows(Path(command[1])), 'x'])
+        command[2] = 'x' * (size - len(prefix) + 1)
+        return command
+
+    def test_windows_limit_includes_terminator(self):
+        with tempfile.TemporaryDirectory() as temp:
+            (Path(temp) / 'build').mkdir()
+            for size, response in [(32765, False), (32766, False), (32767, True)]:
+                command = self.command(temp, size)
+                with self.subTest(size=size), patch.object(cc, 'ROOT', Path(temp)), \
+                        patch.object(cc, 'run_tool', return_value=('result', 'log')) as run:
+                    self.assertEqual(cc.run_linker(command, {}), ('result', 'log'))
+                    actual = run.call_args.args[0]
+                    self.assertEqual(actual[:2], command[:2])
+                    self.assertEqual(actual != command, response)
+
+    def test_utf16_surrogate_pairs_count_as_two_units(self):
+        with tempfile.TemporaryDirectory() as temp:
+            (Path(temp) / 'build').mkdir()
+            command = self.command(temp, 32766)
+            command[2] = command[2][:-1] + '\U0001f600'
+            with patch.object(cc, 'ROOT', Path(temp)), patch.object(cc, 'run_tool') as run:
+                cc.run_linker(command, {})
+                self.assertTrue(run.call_args.args[0][2].startswith('@'))
+
+    def test_short_command_is_forwarded_unchanged(self):
+        command = ['wine', '/compiler/link.exe', '/nologo', '/OUT:Z:\\a b.exe', 'a.obj']
+        env = {'test': 'environment'}
+        with patch.object(cc, 'run_tool', return_value=('result', 'log')) as run, \
+                patch.object(cc.tempfile, 'TemporaryDirectory') as temporary:
+            self.assertEqual(cc.run_linker(command, env), ('result', 'log'))
+            self.assertIs(run.call_args.args[0], command)
+            self.assertIs(run.call_args.args[1], env)
+            temporary.assert_not_called()
+
+    def test_response_preserves_windows_quoting_and_lifetime(self):
+        arguments = ['/nologo', '/FORCE:UNRESOLVED', '/LIBPATH:Z:\\space dir\\',
+                     '/OUT:Z:\\out dir\\game.exe', 'Z:\\space dir\\a.obj',
+                     'embedded"quote', 'slashes\\"quote', '', '\u00e9.obj']
+        expected = ('/nologo /FORCE:UNRESOLVED "/LIBPATH:Z:\\space dir\\\\" '
+                    '"/OUT:Z:\\out dir\\game.exe" "Z:\\space dir\\a.obj" '
+                    'embedded\\"quote slashes\\\\\\"quote "" \u00e9.obj')
+        with tempfile.TemporaryDirectory() as temp:
+            (Path(temp) / 'build').mkdir()
+            command = ['wine', str(Path(temp) / 'link.exe'), *arguments, 'x' * 32767]
+            observed = []
+            env = {'test': 'environment'}
+
+            def invoke(actual, actual_env):
+                self.assertIs(actual_env, env)
+                self.assertEqual(actual[:2], command[:2])
+                self.assertEqual(len(actual), 3)
+                response = Path(actual[2][3:].replace('\\', '/'))
+                observed.append(response)
+                self.assertTrue(response.is_file())
+                self.assertEqual(response.read_text(encoding='utf-16'),
+                                 expected + ' ' + command[-1] + '\n')
+                self.assertIn(response.read_bytes()[:2], [b'\xff\xfe', b'\xfe\xff'])
+                return 'result', 'log'
+
+            with patch.object(cc, 'ROOT', Path(temp)), patch.object(cc, 'run_tool', side_effect=invoke):
+                self.assertEqual(cc.run_linker(command, env), ('result', 'log'))
+            self.assertFalse(observed[0].exists())
+            self.assertEqual(list((Path(temp) / 'build').iterdir()), [])
+
+    def test_long_arguments_reject_response_separators_and_nul(self):
+        for char in ['\r', '\n', '\0']:
+            with self.subTest(char=repr(char)), tempfile.TemporaryDirectory() as temp:
+                command = self.command(temp, 32767)
+                command.append('prefix' + char + 'suffix')
+                with patch.object(cc, 'run_tool') as run, \
+                        patch.object(cc.tempfile, 'TemporaryDirectory') as temporary:
+                    with self.assertRaisesRegex(ValueError, 'cannot contain CR, LF, or NUL'):
+                        cc.run_linker(command, {})
+                    run.assert_not_called()
+                    temporary.assert_not_called()
+
+    def test_short_arguments_keep_existing_control_character_behavior(self):
+        for char in ['\r', '\n', '\0']:
+            with self.subTest(char=repr(char)):
+                command = ['wine', '/compiler/link.exe', 'prefix' + char + 'suffix']
+                with patch.object(cc, 'run_tool') as run, \
+                        patch.object(cc.tempfile, 'TemporaryDirectory') as temporary:
+                    cc.run_linker(command, {})
+                    self.assertIs(run.call_args.args[0], command)
+                    temporary.assert_not_called()
+
+    def test_response_cleanup_when_writing_fails(self):
+        with tempfile.TemporaryDirectory() as temp:
+            (Path(temp) / 'build').mkdir()
+            command = self.command(temp, 32767)
+            with patch.object(cc, 'ROOT', Path(temp)), \
+                    patch.object(Path, 'write_text', side_effect=OSError('write failed')), \
+                    patch.object(cc, 'run_tool') as run:
+                with self.assertRaisesRegex(OSError, 'write failed'):
+                    cc.run_linker(command, {})
+                run.assert_not_called()
+            self.assertEqual(list((Path(temp) / 'build').iterdir()), [])
+
+    def test_response_cleanup_on_tool_errors(self):
+        for error in [OSError('launch failed'), subprocess.TimeoutExpired('link', 1)]:
+            with self.subTest(error=error), tempfile.TemporaryDirectory() as temp:
+                (Path(temp) / 'build').mkdir()
+                command = self.command(temp, 32767)
+                with patch.object(cc, 'ROOT', Path(temp)), \
+                        patch.object(cc, 'run_tool', side_effect=error):
+                    with self.assertRaises(type(error)):
+                        cc.run_linker(command, {})
+                self.assertEqual(list((Path(temp) / 'build').iterdir()), [])
 
 if __name__ == '__main__':
     unittest.main()
