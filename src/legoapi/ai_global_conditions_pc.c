@@ -909,3 +909,31 @@ f32 __cdecl Condition_BaddyInTriggerAreaPc(AISYS_PC *system, AISCRIPTPROCESS_PC 
         area = (AIAREA_PC *)process->unknown_a0;
     return area != NULL && (area->runtime_flags & 4) != 0 ? 1.0f : 0.0f;
 }
+
+STATIC_ASSERT(offsetof(GIZOBSTACLE, runtime_flags) == 0x9c);
+
+f32 __cdecl Condition_ObstacleLockedShutPc(AISYS_PC *system, AISCRIPTPROCESS_PC *process, AIPACKET_PC *packet,
+                                           char *name, void *argument) {
+    if ((((GIZOBSTACLE *)argument)->runtime_flags & 8) != 0)
+        return 1.0f;
+    return 0.0f;
+}
+
+f32 __cdecl Condition_ObstacleLockedOpenPc(AISYS_PC *system, AISCRIPTPROCESS_PC *process, AIPACKET_PC *packet,
+                                           char *name, void *argument) {
+    if ((((GIZOBSTACLE *)argument)->runtime_flags & 4) != 0)
+        return 1.0f;
+    return 0.0f;
+}
+
+f32 __cdecl Condition_ObstacleOpenedByEitherPlayerPc(AISYS_PC *system, AISCRIPTPROCESS_PC *process, AIPACKET_PC *packet,
+                                                     char *name, void *argument) {
+    GIZOBSTACLE *obstacle = (GIZOBSTACLE *)argument;
+    if (obstacle != NULL) {
+        if (player != NULL && obstacle->triggering_object == player)
+            return 1.0f;
+        if (player2 != NULL && obstacle->triggering_object == player2)
+            return 1.0f;
+    }
+    return 0.0f;
+}
