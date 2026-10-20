@@ -358,3 +358,51 @@ void __cdecl ChrisDogFightAInit(WORLDINFO *world) {
                           (FLIGHT_SPLINE_RESOURCE_PC *)((DOGFIGHT_SPACE_PC *)world->level_specific_data)->splines, 256);
     DogfightResetSplineHistoryPc(((DOGFIGHT_SPACE_PC *)WORLD->level_specific_data)->splines, 256);
 }
+
+typedef struct DOGFIGHT_SPEEDUP_PC {
+    f32 distance;
+    f32 speed;
+} DOGFIGHT_SPEEDUP_PC;
+STATIC_ASSERT(sizeof(DOGFIGHT_SPEEDUP_PC) == 8);
+STATIC_ASSERT(offsetof(DOGFIGHT_SPEEDUP_PC, distance) == 0);
+STATIC_ASSERT(offsetof(DOGFIGHT_SPEEDUP_PC, speed) == 4);
+extern const f64 GrappleMomentumNearScalePc;
+
+#pragma data_seg(".data$DogfightSpeedRatePc")
+f32 DogfightSpeedRatePc = 0.25f;
+#pragma data_seg()
+#pragma data_seg(".data$DogfightSpeedListPc")
+DOGFIGHT_SPEEDUP_PC DogfightSpeedListPc[9] = {
+    {58.0f, 0.5f},  {72.0f, 1.0f},  {174.0f, 0.5f}, {183.0f, 1.0f}, {207.0f, 0.5f},
+    {220.0f, 1.0f}, {313.0f, 0.5f}, {335.0f, 1.0f}, {0.0f, 0.0f},
+};
+#pragma data_seg()
+
+void ProcessCurrentSpeed(WORLDINFO *world, DOGFIGHT_SPEEDUP_PC *entry) {
+    f32 distance = entry->distance;
+    DOGFIGHT_SPACE_PC *space = (DOGFIGHT_SPACE_PC *)world->level_specific_data;
+    f32 target;
+    f32 vehicle_speed;
+    while (distance != 0.0f) {
+        if (distance > space->door_elapsed && distance <= space->door_countdown)
+            space->value_one_a = entry->speed;
+        ++entry;
+        distance = entry->distance;
+    }
+    target = space->value_one_a;
+    if (target > space->value_one_b) {
+        f32 updated = (f32)((f64)DogfightSpeedRatePc * FRAMETIME + space->value_one_b);
+        space->value_one_b = updated;
+        if (updated > target)
+            space->value_one_b = target;
+    } else if (space->value_one_b > target) {
+        f32 updated = (f32)((f64)space->value_one_b - (f64)DogfightSpeedRatePc * FRAMETIME);
+        space->value_one_b = updated;
+        if (updated < target)
+            space->value_one_b = target;
+    }
+    vehicle_speed = (f32)((f64)space->value_one_b * GrappleMomentumNearScalePc);
+    world->sock_sys->socks[0].current_speed = vehicle_speed;
+    if (world->current_level == DOGFIGHTA_LDATA && world->sock_sys->socks[0].current_speed != 0.0f)
+        space->normalized_speed = (f32)((f64)world->sock_sys->socks[0].current_speed / 11.0);
+}

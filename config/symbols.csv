@@ -83,6 +83,7 @@ address,symbol,size,ctype
 0x4118d0,_SpaceResetAudioPoint,171,void __cdecl (void)
 0x411980,_DogfightResetSpacePc,639,"static void (WORLDINFO *, DOGFIGHT_SPACE_PC *)"
 0x411c00,_SpaceRumbleProcess,756,
+0x412210,_ProcessCurrentSpeed,320,"void __cdecl (WORLDINFO *, DOGFIGHT_SPEEDUP_PC *)"
 0x412350,_ResetSpaceFromWorldPc,19,void __cdecl (WORLDINFO *)
 0x4123b0,_ChrisAnakinBInit,153,
 0x4124f0,_ChrisDogFightAReset,100,void __cdecl (WORLDINFO *)
@@ -18144,6 +18145,8 @@ address,symbol,size,ctype
 0x7f15dc,_FlightSplineDefaultIncrementPc,4,f32
 0x7f15e0,_PodRaceSplineIncrementPc,,f32
 0x7f1628,_DogfightDebrisKeysPc,16,i32[4]
+0x7f1644,_DogfightSpeedRatePc,4,f32
+0x7f1648,_DogfightSpeedListPc,72,DOGFIGHT_SPEEDUP_PC[9]
 0x7f1724,_ConfigChar_GameKeywords,,NUFPCOMJMP[2]
 0x7f17a4,_PlayerHitPointsTwoHeartsPc,,i32
 0x7f17b0,_TerrainPlayerOtherMovementScalePc,,f32
