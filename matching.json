@@ -320,7 +320,7 @@
     "src/legoapi/mission.c": "b6ce5e9e844e32467ba2d1e759d61799e5388bd376cb5894524169781c2232c1",
     "src/legoapi/missions.c": "5723bc2a3c0173a42c0beb22d0b7f5e886162f70728f8f9304c8c8a12ec7c9ef",
     "src/legoapi/model_animation.c": "ef78e3baf9aca6e9f638f4b195ef6cca7d5061a9ab739ebe9533b7f6dd75f5ab",
-    "src/legoapi/move.c": "e32ca080507bff4a7144cb261ed03f3a51eba0db3d4f83a62b160b1e839ba8f3",
+    "src/legoapi/move.c": "262055c80b2a99a51688d627127fc47d09f551e224309dfbdd0623f79777f439",
     "src/legoapi/netplay.c": "08f5e9eb81ca542d5e76d6c3ee9e8ae43aad56a50ed14da7a72e800c6682d0e9",
     "src/legoapi/newlevels.c": "262db0b1cb6c59e99563249642e82f1282636ddf0aa7d2acc1e3c17476018986",
     "src/legoapi/objectsall.c": "1d0ff33901ba13c10ea3f607d9295a0cc611046b44792394da6ef3b696b62efb",
@@ -687,7 +687,7 @@
     "build/obj/legoapi/mission.obj": "fcc4d69f6319c19f4096a3e612213382c21f93306730c2e6494ac28f85590e90",
     "build/obj/legoapi/missions.obj": "1bfbba4767ef2dbc5e24e2ed14b766b0099a35920dc264e50e29ce4c35a4bc99",
     "build/obj/legoapi/model_animation.obj": "b6c39fcf5411d69411930a7404899aaf4648d50138d3e68d80de538a16cabe48",
-    "build/obj/legoapi/move.obj": "2bbcdede39b58571e3602a9c62136dbe1acbd5a2f95c14debd98bc369e703d1b",
+    "build/obj/legoapi/move.obj": "ca52a9fa2d4f7fd7951cf706a3aa4577b4d3b2fb30d8a0500f124cba5ccd60d3",
     "build/obj/legoapi/movies.obj": "931c16ca3469a42307ea3750b3e8f68bda6f2ab9dae0614f740c9bc6045a9b0f",
     "build/obj/legoapi/netplay.obj": "c1fd8bdde614bdfc2c2a6e85143ba87d1ed27b3abc93a95229f6c6adf8324745",
     "build/obj/legoapi/newlevels.obj": "864062368915084245dff60548b18dcf6d1eca9f8edb96b5e5809fa35ea2ea5e",
@@ -38572,17 +38572,17 @@
       "objects": [
         {
           "unit": "src/legoapi/move.c",
-          "base_size": 1256,
+          "base_size": 1262,
           "exact_match": false,
           "target_sha256": "f44f543804d9d9b307a937478706f5a3eea7540e2be9d34d6683570c0a1a84b8",
-          "base_sha256": "10553b44b8cb183e7b9ce893b3c9b3419adf180458a15964e2b2a53e16f6d52e",
-          "relocation_count": 80,
+          "base_sha256": "08efb80d4c563bebff562c5d500d753cd5bab9ac25fe98f0d147759d8598e0d7",
+          "relocation_count": 81,
           "comparison_unit": "004b3390-bff543f1f7ba",
-          "objdiff_percent": 82.12315
+          "objdiff_percent": 82.608376
         }
       ],
       "status": "different",
-      "objdiff_percent": 82.12315
+      "objdiff_percent": 82.608376
     },
     {
       "name": "Move_HOVERDROID",
@@ -38668,17 +38668,17 @@
       "objects": [
         {
           "unit": "src/legoapi/move.c",
-          "base_size": 426,
+          "base_size": 432,
           "exact_match": false,
           "target_sha256": "887365e45e98ea0713ca242586bd5810c271f2f8d65f16778c9a657c93020ecd",
-          "base_sha256": "481fefb38cb9003a17f4518984da23ac0f802fd10c64d2d29c8d37117a182e45",
-          "relocation_count": 37,
+          "base_sha256": "5227c5e4e915e3c7db678807613ddf8d78642f5bda0bbe7da9b7d9f995f815b0",
+          "relocation_count": 38,
           "comparison_unit": "004b3b80-d0a134f9921c",
-          "objdiff_percent": 91.95918
+          "objdiff_percent": 93.32653
         }
       ],
       "status": "different",
-      "objdiff_percent": 91.95918
+      "objdiff_percent": 93.32653
     },
     {
       "name": "ShootCode",
@@ -38716,17 +38716,17 @@
       "objects": [
         {
           "unit": "src/legoapi/move.c",
-          "base_size": 1329,
+          "base_size": 1335,
           "exact_match": false,
           "target_sha256": "c996a8a32c4bbb0d78d006c47ab9e0a40472e1dbf50b35a65e15bdde3d4057c3",
-          "base_sha256": "935bf373b57293d5cedca9f1acfbdd50a07140c55cdd019d539b6b71e5e42ff0",
-          "relocation_count": 79,
+          "base_sha256": "b9df1d7f9d7a2873e0260041cb79791ed62604a11c7825b26f93a59071e9a905",
+          "relocation_count": 80,
           "comparison_unit": "004b4ac0-8771feed6518",
-          "objdiff_percent": 72.03934
+          "objdiff_percent": 72.68323
         }
       ],
       "status": "different",
-      "objdiff_percent": 72.03934
+      "objdiff_percent": 72.68323
     },
     {
       "name": "Move_VEHICLE",
@@ -474614,10 +474614,10 @@
     "mapped_code_bytes": 2412189,
     "matched_code_bytes": 454601,
     "matching_percent": 13.096190820241493,
-    "fuzzy_coverage_percent": 46.77078571128821,
+    "fuzzy_coverage_percent": 46.77145088287502,
     "mapped_functions": 8851,
     "matched_functions": 4203,
-    "objdiff_fuzzy_percent": 74.59493,
+    "objdiff_fuzzy_percent": 74.59599,
     "objdiff_total_code": 2179828,
     "image_bytes": 40067072,
     "mapped_bytes": 4223683,
@@ -475814,7 +475814,7 @@
       "metadata_sha256": "fe09365da4c355f220d724ca99394fc120b758891b4188d2c49707b6df0894f2",
       "header_path": "src/saga.h",
       "header_sha256": "3c427925a902900c816c815f0d518b5cc2d849d05beee18f442440051adc348f",
-      "geometry_object_sha256": "526d19f963a55f55d1c3df1908f2033e9c68730775301ac184b090aadefa15bb",
+      "geometry_object_sha256": "cac8f6956af950a5a1264a765a3e6c95d74fbb81dbe2c198a9f163425890d6ce",
       "toolchain_sha256": "b8808088bb2c7eb239785f69c9e464ae8545216d5705fb37216bc0cf926732f3",
       "implementation_sha256": "d6a33be911d095a6d07dccd4443ccbfd6b514fd89fd7e200d9caa1827944e218",
       "headers": {
@@ -476056,7 +476056,7 @@
         4
       ]
     },
-    "clang_source_sha256": "81e558cf40be9b5ff6a4f8ee2d217661b3dd148809b5841634969b337975fd2f",
+    "clang_source_sha256": "331dbea3d2f8462f233c1ffa5814117bebd6f24438f96b79e265374b3c4dfd45",
     "member_count": 42,
     "physical_definition_credit": 0
   },

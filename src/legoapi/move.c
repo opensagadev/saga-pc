@@ -1,4 +1,5 @@
 #include "saga.h"
+i32 __cdecl ThermalDetonator_MoveCode(GAMEOBJECT *);
 static void DodgeCode(GAMEOBJECT *, i32, i32);
 static void BlockCode(GAMEOBJECT *, i32, i32, i32, i32);
 BOLT *__cdecl FindIncomingBolt(GAMEOBJECT *, i32, i32);
@@ -6694,7 +6695,7 @@ after_gravity:
         Grapple_MoveCode(object); /* Native4b4ea7: object; Grapple_MoveCode. */
     BuildIt_MoveCode(object);
     Lever_MoveCode(WORLD, object);
-    STUBBED_NAMED(0x004d0290); /* Native4b4ec3: object; ThermalDetonator_MoveCode. */
+    ThermalDetonator_MoveCode(object);
     if ((object->character_data->model_flags & 0x40000) != 0)
         Teleport_MoveCode(object, special_pressed);
     if (!StartupGameFlag1 && !StartupGameFlag0) {
@@ -8600,7 +8601,7 @@ void __cdecl Move_JAWA(GAMEOBJECT *object) {
     if ((object->character_data->model_flags & 0x100000) != 0)
         Grapple_MoveCode(object);
     Lever_MoveCode(WORLD, object);
-    STUBBED_NAMED(0x004d0290); /* Native4b3cd3: ThermalDetonator_MoveCode(object), ignored action. */
+    ThermalDetonator_MoveCode(object);
     HatMachine_MoveCode(WORLD, object, special_pressed);
     GizPanel_MoveCode(WORLD, object, special_pressed);
     WeaponOutCode(object);
@@ -9810,7 +9811,7 @@ void __cdecl Move_JEDI(GAMEOBJECT *object) {
     }
     if ((object->character_data->model_flags & 0x40000) != 0)
         Teleport_MoveCode(object, special_pressed);
-    STUBBED_NAMED(0x004d0290); /* Native4b3703: ThermalDetonator_MoveCode(object), return genuinely ignored here. */
+    ThermalDetonator_MoveCode(object);
     if (object->suit != NULL && (((MOVEMENT_SUIT_PC *)object->suit)->store_flag & 4) != 0)
         STUBBED_NAMED(0x004271b0); /* Native4b371c: Detonator_MoveCode(object), ignored action. */
     ComboRotateCode(object, action_held);
@@ -9845,7 +9846,6 @@ void __cdecl Move_JEDI(GAMEOBJECT *object) {
     }
 }
 
-i32 __cdecl ThermalDetonator_MoveCode(GAMEOBJECT *);
 typedef struct weirdo_batarang_reader_pc_s {
     u8 unknown_000[0xcc0];
     void *batarang;
