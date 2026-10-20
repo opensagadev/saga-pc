@@ -4,6 +4,7 @@ import argparse
 import collections
 import hashlib
 import json
+import struct
 from pathlib import Path
 import sys
 
@@ -77,6 +78,119 @@ def region(obj, name, symbol=None, aliases=None):
             "declared_type_bytes": None, "native_allocation_status": "unknown"}
 
 
+
+def section_bijection(baseline, candidate):
+    """Unique whole-section identities, closed over every relocation target.
+
+    Exact byte/metadata tuples are compared, not hash equality alone. A signature
+    excludes only the section number itself; only nonreferencing section-definition
+    auxiliary records are supported. Other auxiliary ownership stays unknown.
+    Unanchored/duplicate identities and unsupported records are never normalized.
+    """
+    def catalog(obj):
+        anchors = {symbol["section"] for symbol in obj.defined_symbols() if symbol["section"] > 0}
+        symbols = collections.defaultdict(list)
+        for symbol in obj.symbols:
+            if symbol["section"] > 0:
+                symbols[symbol["section"]].append(symbol)
+        entries, excluded = {}, {}
+        def metadata(symbol):
+            return (symbol["name"], symbol["value"], symbol["type"],
+                    symbol["storage_class"], tuple(symbol["aux"]))
+        def supported_aux(symbol):
+            if not symbol["aux"]:
+                return True
+            # Only the ordinary section-definition form with no section reference.
+            # Function/weak/file/other aux layouts contain unmodeled symbol/section
+            # indices. Identical raw index bytes do NOT prove identical ownership.
+            if not (len(symbol["aux"]) == 1 and symbol["storage_class"] == 3 and
+                    symbol["type"] == 0 and symbol["value"] == 0 and
+                    0 < symbol["section"] <= len(obj.sections) and
+                    symbol["name"] == obj.sections[symbol["section"] - 1]["name"]):
+                return False
+            aux = symbol["aux"][0]
+            number = struct.unpack_from("<H", aux, 12)[0]
+            selection = aux[14]
+            return number == 0 and selection in (0, 1, 2, 3, 4, 6, 7) and aux[15:] == bytes(3)
+        for index, section in enumerate(obj.sections, 1):
+            if index not in anchors:
+                excluded[index] = "no_named_definition_anchor"
+                continue
+            if any(not supported_aux(symbol) for symbol in symbols[index]):
+                excluded[index] = "unsupported_local_auxiliary_ownership"
+                continue
+            if section["characteristics"] & 0x01000000:
+                excluded[index] = "extended_relocation_count_unsupported"
+                continue
+            if section["raw_offset"]:
+                raw = obj.data[section["raw_offset"]:section["raw_offset"] + section["raw_size"]]
+                if len(raw) != section["raw_size"]:
+                    raise ValueError("Section bytes outside object")
+            elif section["characteristics"] & 0x80:
+                raw = bytes(section["raw_size"])
+            else:
+                excluded[index] = "unbacked_non_BSS_section"
+                continue
+            rels, targets = [], []
+            for number in range(section["relocation_count"]):
+                offset = section["relocation_offset"] + number * 10
+                if offset + 10 > len(obj.data):
+                    raise ValueError("Section relocation outside object")
+                position, target_index, typ = struct.unpack_from("<IIH", obj.data, offset)
+                target = obj.symbol_by_index.get(target_index)
+                if typ not in (6, 20) or target is None or position + 4 > section["raw_size"]:
+                    excluded[index] = "unsupported_or_unbounded_section_relocation"
+                    break
+                if not supported_aux(target):
+                    excluded[index] = "unsupported_relocation_target_auxiliary_ownership"
+                    break
+                rels.append((position, typ, metadata(target)))
+                targets.append(target["section"])
+            else:
+                signature = (section["name"], section["characteristics"], section["raw_size"],
+                             raw, tuple(metadata(symbol) for symbol in symbols[index]), tuple(rels))
+                entries[index] = (signature, targets)
+        return entries, excluded
+    left, left_excluded = catalog(baseline)
+    right, right_excluded = catalog(candidate)
+    groups = []
+    for entries in (left, right):
+        grouped = collections.defaultdict(list)
+        for index, (signature, _) in entries.items():
+            grouped[signature].append(index)
+        groups.append(grouped)
+    proposed = {indices[0]: groups[1][signature][0] for signature, indices in groups[0].items()
+                if len(indices) == 1 and len(groups[1].get(signature, ())) == 1}
+    # Reject transitively unresolved owners, even when their local bytes match.
+    matched = dict(proposed)
+    while True:
+        removed = []
+        for old, new in matched.items():
+            for old_target, new_target in zip(left[old][1], right[new][1]):
+                if ((old_target <= 0 and old_target != new_target) or
+                        (old_target > 0 and matched.get(old_target) != new_target)):
+                    removed.append(old)
+                    break
+        if not removed:
+            break
+        for old in removed:
+            del matched[old]
+    unresolved = []
+    for index in range(1, len(baseline.sections) + 1):
+        if index not in matched:
+            reason = left_excluded.get(index, "not_unique_complete_section_identity")
+            if index in proposed:
+                reason = "relocation_target_ownership_not_proven"
+            unresolved.append({"baseline_section": index, "reason": reason})
+    return {"pairs": [{"baseline_section": old, "candidate_section": new}
+                      for old, new in sorted(matched.items())],
+            "unresolved_baseline_sections": unresolved,
+            "excluded_candidate_sections": right_excluded,
+            "qualification": "Partial bijection of uniquely anchored complete sections, closed over "
+                             "ordered relocation ownership. New sections are allowed; no native allocation, "
+                             "unanchored section, alias ownership, byte-image or score claim is made."}
+
+
 def native_annotation(name, rows):
     bindings = [row for row in rows if row["symbol"] == name]
     interiors = [{"symbol": outer["symbol"], "address": outer["address"], "size": outer["size"]}
@@ -87,7 +201,9 @@ def native_annotation(name, rows):
             "qualification": "CSV extent/type text is not an independent compiler-size or native-allocation witness."}
 
 
-def compare_objects(baseline, candidate, rows=(), symbols=()):
+def compare_objects(baseline, candidate, rows=(), symbols=(), prove_section_renumbering=False):
+    proof = section_bijection(baseline, candidate) if prove_section_renumbering else None
+    section_pairs = {row["baseline_section"]: row["candidate_section"] for row in proof["pairs"]} if proof else {}
     old, new = definition_map(baseline), definition_map(candidate)
     alias_groups = []
     for definitions in (old, new):
@@ -133,9 +249,17 @@ def compare_objects(baseline, candidate, rows=(), symbols=()):
                 if left_relocs != right_relocs:
                     item["regressions"].append("full_relocation_semantics_changed")
                 elif left["relocations"] != right["relocations"]:
-                    item["unknowns"].append("relocation_target_section_order_or_ownership_changed")
+                    if not proof or any(
+                            a["target_section_index"] != b["target_section_index"] and
+                            section_pairs.get(a["target_section_index"]) != b["target_section_index"]
+                            for a, b in zip(left["relocations"], right["relocations"])):
+                        item["unknowns"].append("relocation_target_section_order_or_ownership_changed")
                 if left["section_index"] != right["section_index"]:
-                    item["unknowns"].append("section_order_or_ownership_changed")
+                    if not proof or section_pairs.get(left["section_index"]) != right["section_index"]:
+                        item["unknowns"].append("section_order_or_ownership_changed")
+                    else:
+                        item["proven_section_renumbering"] = {"baseline_section": left["section_index"],
+                                                              "candidate_section": right["section_index"]}
                 if left["same_offset_aliases"] or right["same_offset_aliases"]:
                     item["unknowns"].append("same_offset_alias_ownership_unknown")
                 if len(item["native_map"]["bindings"]) > 1:
@@ -154,6 +278,7 @@ def compare_objects(baseline, candidate, rows=(), symbols=()):
                       "allocation_status": "unknown_new_definition_not_new_storage_proof"})
     counts = dict(collections.Counter(row["status"] for row in result))
     return {"regions": result, "new_definitions": added, "counts": counts,
+            "section_bijection": proof,
             "comparison_status": "regression" if counts.get("regression") else
                                  "unknown" if counts.get("unknown") else "equal",
             "native_allocation_status": "not established by this audit",
@@ -175,6 +300,8 @@ def main():
     parser.add_argument("--symbols", type=Path, help="Optional native CSV annotations; never used to truncate spans")
     parser.add_argument("--symbol", action="append", default=[], help="Restrict baseline names; repeatable")
     parser.add_argument("--summary-only", action="store_true", help="Omit equal rows, retaining their signature digest")
+    parser.add_argument("--prove-section-renumbering", action="store_true",
+                        help="Require unique whole-section identities and closed relocation ownership")
     parser.add_argument("--output", type=Path, required=True)
     args = parser.parse_args()
     map_hash = digest(args.symbols) if args.symbols else None
@@ -193,7 +320,7 @@ def main():
             continue
         right, new_hash = snapshot(right_path)
         hashes[str(right_path)] = new_hash
-        item = compare_objects(left, right, rows, args.symbol)
+        item = compare_objects(left, right, rows, args.symbol, args.prove_section_renumbering)
         signatures = [{"symbol": row["symbol"], "baseline": row.get("baseline"),
                        "candidate": row.get("candidate"), "status": row["status"]} for row in item["regions"]]
         item["complete_region_signature_digest"] = hashlib.sha256(

@@ -331,6 +331,14 @@ or extraction. Aliases, section-order changes and mapped interiors remain unknow
 Comparison spans may include padding: neither CSV types nor equal zero bytes prove
 a declared type size or native allocation. No matching credit or maps are changed.
 
+Add `--prove-section-renumbering` to resolve section-order unknowns only through a
+unique complete-section correspondence: bytes, flags, extent, all local symbol
+metadata and ordered relocation ownership must agree. Correspondence must remain
+closed over relocation targets. Only nonreferencing section-definition auxiliary
+records are supported; associative COMDAT, function, weak and other unmodeled
+auxiliary references remain unknown. Raw region evidence is retained. This does
+not establish native allocation, waive aliases/padding reuse or change scores.
+
 ## Runtime library
 
 The original links the VC8 runtime statically (`/MT`), and the pinned toolchain
