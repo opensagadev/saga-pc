@@ -286,6 +286,22 @@ compiler-generated witnesses:
 python3 -m unittest tools.test_compiler_witnesses
 ```
 
+## Bounded missing-code discovery
+
+After compiling Matching objects, inspect selected original functions without changing source, symbols or matching credit:
+
+```sh
+python3 tools/discover_missing.py --project-root . \
+  --retail res/orig/LEGOStarWarsSaga.exe --objects build/obj \
+  --symbols config/symbols.csv --sources src \
+  --root _AnimPlaying --depth 1 --max-roots 16 --max-bytes 65536 \
+  --output build/missing-code.json
+```
+
+Replace the root with an exact mapped symbol or native VA; repeat `--root` for multiple entries. The explicit paths above are also the project defaults. The original executable must match its project hash pin.
+
+The report separates actual named COFF providers, missing comparison providers, suppressed source-call leads, unmapped direct-entry candidates and mapped-parent interior entries. It follows reachable direct branches beyond early returns and bounds any callee discovery. Indirect edges, unvisited bytes, storage identity gaps and exhausted budgets remain explicit unknowns. Native map labels and source comments are evidence to review, not inferred names, ABIs, function extents or active preprocessor paths. A missing comparison provider can still be supplied by the CRT/import linker; it is not automatically a runtime missing body. Producer/report mismatches and incomplete object censuses are reported. No source/map changes or score credit are made.
+
 ## Runtime library
 
 The original links the VC8 runtime statically (`/MT`), and the pinned toolchain
