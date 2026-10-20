@@ -428,5 +428,85 @@ class SuppressedCFGCorroborationTests(unittest.TestCase):
 
 
 
+class ProviderStorageInventoryTests(unittest.TestCase):
+    def inventory(self, code, refs=(), records=None, native_code=None, extra_function=False):
+        records = records if records is not None else [{"symbol": "_Target", "address": 0x2000}]
+        native_code = native_code if native_code is not None else bytes.fromhex("663b0d00200000c3")
+        observations = []
+        def observe(insn):
+            observations.extend(discovery.storage_observations(insn, records))
+        native = discovery.trace_cfg(MemoryPE(native_code), 0x1000, 0x1000 + len(native_code),
+                                     instruction_observer=observe)
+        with tempfile.TemporaryDirectory() as directory:
+            path = Path(directory) / "storage.obj"
+            path.write_bytes(call_object(code, refs, extra_function))
+            return discovery.provider_storage_inventory(discovery.COFF(path), "_Owner", records, native, observations)
+
+    def test_reviewed_word_compare_vs_sign_extension_is_visible_without_semantic_claim(self):
+        old = self.inventory(bytes.fromhex("0fbf1500000000c3"), [(3, 6)])
+        new = self.inventory(bytes.fromhex("663b0d00000000c3"), [(3, 6)])
+        self.assertEqual(old["candidate_observations"][0]["load_extension"], "sign_extend")
+        self.assertEqual(old["candidate_observations"][0]["memory_width_bytes"], 2)
+        self.assertEqual(old["candidate_observations"][0]["extension_destination_width_bytes"], 4)
+        self.assertEqual(old["native_observations"][0]["integer_compare_width_bytes"], 2)
+        self.assertTrue(old["exact_storage_operation_count_differences"])
+        self.assertEqual(new["exact_storage_operation_count_differences"], [])
+        self.assertEqual(new["status"], "review_leads_only")
+        self.assertIn("not source signedness", new["qualification"])
+
+    def test_zero_extension_is_distinct_from_signed_and_compare_width(self):
+        row = self.inventory(bytes.fromhex("0fb71500000000c3"), [(3, 6)])
+        fact = row["candidate_observations"][0]
+        self.assertEqual(fact["load_extension"], "zero_extend")
+        self.assertEqual(fact["extension_destination_width_bytes"], 4)
+        self.assertIsNone(fact["integer_compare_width_bytes"])
+
+    def test_absolute_immediate_and_lea_do_not_become_storage_reads(self):
+        row = self.inventory(bytes.fromhex("b800000000c3"), [(1, 6)], native_code=bytes.fromhex("b800200000c3"))
+        self.assertEqual(row["candidate_observations"], [])
+        self.assertEqual(row["native_observations"], [])
+        row = self.inventory(bytes.fromhex("8d0d00000000c3"), [(2, 6)])
+        self.assertEqual(row["candidate_observations"][0]["binding"], "address_form_not_a_storage_access")
+        self.assertTrue(all(x["candidate_count"] == 0 for x in row["exact_storage_operation_count_differences"]))
+
+    def test_unknown_and_ambiguous_storage_names_are_never_guessed(self):
+        for records in ([], [{"symbol": "_Target", "address": 0x2000}, {"symbol": "_Target", "address": 0x2004}]):
+            row = self.inventory(bytes.fromhex("0fbf1500000000c3"), [(3, 6)], records=records)
+            self.assertEqual(row["candidate_observations"][0]["binding"], "nonzero_addend_or_absent_ambiguous_binding")
+        row = self.inventory(bytes.fromhex("0fbf1500000000c3"), [(3, 6)],
+            records=[{"symbol": "_Target", "address": 0x2000}, {"symbol": "_Alias", "address": 0x2000}])
+        self.assertEqual(row["candidate_observations"][0]["binding"], "storage_alias_identity_unknown")
+        self.assertEqual(row["native_observations"][0]["binding"], "storage_alias_identity_unknown")
+
+    def test_wrong_relocation_field_type_and_nonzero_addend_remain_unknown(self):
+        for code, refs, reason in [("0fbf1500000000c3", [(3, 20)], "no_exact_DIR32_memory_displacement"),
+                                   ("0fbf1500000000c3", [], "no_exact_DIR32_memory_displacement"),
+                                   ("0fbf1501000000c3", [(3, 6)], "nonzero_addend_or_absent_ambiguous_binding"),
+                                   ("0fbf1500000000c3", [(4, 6)], "no_exact_DIR32_memory_displacement")]:
+            row = self.inventory(bytes.fromhex(code), refs)
+            self.assertEqual(row["candidate_observations"][0]["binding"], reason)
+
+    def test_segmented_and_register_relative_operands_keep_identity_unknown(self):
+        for code, refs in [("64a100000000c3", [(2, 6)]), ("8b00c3", [])]:
+            row = self.inventory(bytes.fromhex(code), refs)
+            self.assertEqual(row["candidate_observations"][0]["binding"], "segmented_or_register_relative_identity_unknown")
+
+    def test_reachable_post_return_storage_is_observed_and_indirect_paths_remain_unknown(self):
+        code = bytes.fromhex("85c07401c30fbf1500000000c3")
+        row = self.inventory(code, [(8, 6)])
+        self.assertEqual(row["candidate_observations"][0]["site"], 5)
+        row = self.inventory(bytes.fromhex("0fbf1500000000ffe0"), [(3, 6)])
+        self.assertIn("indirect_branch", [x["kind"] for x in row["candidate_cfg_unknowns"]])
+        self.assertEqual(row["status"], "review_leads_only")
+
+    def test_reads_writes_and_unknown_extent_stay_distinct(self):
+        row = self.inventory(bytes.fromhex("890d00000000c3"), [(2, 6)])
+        self.assertEqual(row["candidate_observations"][0]["access_flags"], 2)
+        self.assertEqual(row["native_observations"][0]["access_flags"], 1)
+        row = self.inventory(bytes.fromhex("90c3"), extra_function=True)
+        self.assertEqual(row["status"], "candidate_extent_unknown")
+
+
+
 if __name__ == "__main__":
     unittest.main()

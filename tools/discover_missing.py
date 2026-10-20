@@ -88,7 +88,7 @@ def guarded_table(pe, insn, decoded, owners, start, limit, trusted_extent):
 
 
 def trace_cfg(pe, start, limit, instruction_budget=20000, trusted_extent=False,
-              direct_target_resolver=None):
+              direct_target_resolver=None, instruction_observer=None):
     """Follow only direct intra-bound branches; unknown indirect jumps stop paths.
 
     The bound is supplied evidence, not a claim that all intervening bytes are code.
@@ -134,6 +134,8 @@ def trace_cfg(pe, start, limit, instruction_budget=20000, trusted_extent=False,
             unknowns.append({"kind": "overlapping_instruction", "address": address})
             continue
         decoded[address] = insn
+        if instruction_observer is not None:
+            instruction_observer(insn)
         owners.update((byte, address) for byte in range(address, address + insn.size))
         for operand in insn.operands:
             if operand.type == X86_OP_MEM and not operand.mem.base and not operand.mem.index:
@@ -276,7 +278,7 @@ class ExtractedCode:
         return self.data[offset:offset + size]
 
 
-def provider_call_inventory(obj, symbol, records, native_cfg):
+def provider_call_inventory(obj, symbol, records, native_cfg, instruction_observer=None):
     """Compare observed direct-call targets, never behavioral completeness.
 
     Resolve only exact immediate REL32 fields or same-region branch offsets.
@@ -345,7 +347,8 @@ def provider_call_inventory(obj, symbol, records, native_cfg):
         return raw_target
 
     cfg = trace_cfg(ExtractedCode(data, base), base, base + len(data),
-                    trusted_extent=False, direct_target_resolver=target)
+                    trusted_extent=False, direct_target_resolver=target,
+                    instruction_observer=instruction_observer)
     def observations(edges):
         return [resolved[row["site"]] for row in edges]
     calls = observations(cfg["direct_calls"])
@@ -372,6 +375,111 @@ def provider_call_inventory(obj, symbol, records, native_cfg):
                              "optimization and unknown paths/bindings may explain them. Equal direct-call "
                              "inventories do not prove control, ABI, behavior or byte equivalence. "
                              "COFF comparison extent is not an independent native function boundary."}
+
+
+
+def storage_binding_index(records):
+    by_name, by_address = collections.defaultdict(set), collections.defaultdict(set)
+    for row in records:
+        if row["address"] is not None:
+            by_name[row["symbol"]].add(row["address"])
+            by_address[row["address"]].add(row["symbol"])
+    return by_name, by_address
+
+
+def storage_observations(insn, records, region=None, base=0, bindings=None):
+    """Exact instruction facts, not C types, value flow or ABI semantics."""
+    by_name, by_address = bindings if bindings is not None else storage_binding_index(records)
+    observations = []
+    for ordinal, operand in enumerate(insn.operands):
+        if operand.type != X86_OP_MEM:
+            continue
+        row = {"site": insn.address if region is None else insn.address - base,
+               "operation": insn.mnemonic, "operand_index": ordinal,
+               "memory_width_bytes": operand.size, "access_flags": operand.access,
+               "load_extension": "sign_extend" if insn.mnemonic in ("movsx", "movsxd") else
+                                 "zero_extend" if insn.mnemonic == "movzx" else "none_in_instruction",
+               "extension_destination_width_bytes": insn.operands[0].size if
+                    insn.mnemonic in ("movsx", "movsxd", "movzx") else None,
+               "integer_compare_width_bytes": insn.operands[0].size if
+                    insn.mnemonic in ("cmp", "test") else None,
+               "binding": "unknown", "storage_va": None, "symbols": []}
+        observations.append(row)
+        if insn.mnemonic in ("lea", "nop"):
+            row["binding"] = "address_form_not_a_storage_access"
+            continue
+        if operand.mem.segment or operand.mem.base or operand.mem.index:
+            row["binding"] = "segmented_or_register_relative_identity_unknown"
+            continue
+        if not operand.access:
+            row["binding"] = "instruction_memory_access_semantics_unknown"
+            continue
+        if region is None:
+            address = operand.mem.disp & 0xffffffff
+        else:
+            site = insn.address - base
+            displacement = site + insn.disp_offset
+            refs = [ref for ref in region["relocations"] if
+                    ref["offset"] < site + insn.size and ref["offset"] + 4 > site]
+            if (len(refs) != 1 or refs[0]["offset"] != displacement or
+                    refs[0]["type"] != 6 or insn.disp_size != 4):
+                row["binding"] = "no_exact_DIR32_memory_displacement"
+                continue
+            ref = refs[0]
+            addend = struct.unpack_from("<I", region["bytes"], displacement)[0]
+            row.update(relocation_symbol=ref["symbol"], addend=addend)
+            addresses = by_name.get(ref["symbol"], set())
+            if addend or len(addresses) != 1:
+                row["binding"] = "nonzero_addend_or_absent_ambiguous_binding"
+                continue
+            address = next(iter(addresses))
+        aliases = sorted(by_address.get(address, set()))
+        row.update(storage_va=address, symbols=aliases)
+        row["binding"] = "exact_named_storage_operand" if len(aliases) == 1 else (
+            "storage_alias_identity_unknown" if aliases else "unmapped_or_interior_storage_unknown")
+        if len(aliases) == 1 and len(by_name[aliases[0]]) != 1:
+            row["binding"] = "storage_name_address_ambiguity_unknown"
+    return observations
+
+
+def provider_storage_inventory(obj, symbol, records, native_cfg, native_observations):
+    """Bounded review-only instruction/access counts for exact storage bindings."""
+    try:
+        region = obj.extract_function(symbol)
+    except ValueError as error:
+        return {"status": "candidate_extent_unknown", "detail": str(error)}
+    observations = []
+    bindings = storage_binding_index(records)
+    def observe(insn):
+        observations.extend(storage_observations(insn, records, region, 0xf0000000, bindings))
+    calls = provider_call_inventory(obj, symbol, records, native_cfg, instruction_observer=observe)
+    if calls["status"] != "review_leads_only":
+        return calls
+    fields = ("storage_va", "operation", "memory_width_bytes", "access_flags", "load_extension",
+              "extension_destination_width_bytes", "integer_compare_width_bytes")
+    def counts(rows):
+        return collections.Counter(tuple(row[key] for key in fields) for row in rows
+                                   if row["binding"] == "exact_named_storage_operand")
+    native_counts, candidate_counts = counts(native_observations), counts(observations)
+    differences = []
+    for key in sorted(native_counts.keys() | candidate_counts.keys(), key=repr):
+        if native_counts[key] != candidate_counts[key]:
+            differences.append({**dict(zip(fields, key)), "native_count": native_counts[key],
+                                "candidate_count": candidate_counts[key]})
+    return {"status": "review_leads_only", "symbol": symbol,
+            "candidate_size": len(region["bytes"]),
+            "candidate_bytes_sha256": hashlib.sha256(region["bytes"]).hexdigest(),
+            "native_observations": sorted(native_observations, key=lambda row: (row["site"], row["operand_index"])),
+            "candidate_observations": sorted(observations, key=lambda row: (row["site"], row["operand_index"])),
+            "native_cfg_unknowns": native_cfg["unknowns"],
+            "candidate_cfg_unknowns": calls["candidate_unknowns"],
+            "exact_storage_operation_count_differences": differences,
+            "qualification": "Instruction observations only, not source signedness, value flow, field "
+                             "layout, semantic equivalence, runtime activation or missing behavior. "
+                             "Legal lowering/optimization can alter operation counts; equality is not "
+                             "proof of completeness. Unknown paths/identities and aliases stay explicit. "
+                             "Implicit memory effects and register value flow are not modeled. "
+                             "No native allocation, score or external-entry compatibility is inferred."}
 
 
 def suppressed_calls(path, pe=None, snapshots=None):
@@ -470,12 +578,13 @@ def corroborate_suppressed_calls(pe, records, leads, text_start, text_end,
 
 
 def discover(pe, records, providers, roots, text_start, text_end, suppressed=(), depth=1,
-             max_roots=32, max_bytes=65536, compare_calls=False):
+             max_roots=32, max_bytes=65536, compare_calls=False, compare_storage=False):
     if depth < 0 or max_roots <= 0 or max_bytes <= 0:
         raise ValueError("Invalid discovery limits")
     starts = sorted({row["address"] for row in records if row["address"] is not None and
                      text_start <= row["address"] < text_end})
     pending, seen, result = [(root, 0) for root in reversed(roots)], set(), []
+    storage_bindings = storage_binding_index(records) if compare_storage else None
     while pending and len(result) < max_roots:
         start, level = pending.pop()
         if start in seen:
@@ -490,7 +599,11 @@ def discover(pe, records, providers, roots, text_start, text_end, suppressed=(),
         next_start = starts[next_index] if next_index < len(starts) else text_end
         declared = next(iter(sizes)) if len(sizes) == 1 else None
         bound = min(text_end, start + max_bytes, start + declared if declared else next_start)
-        cfg = trace_cfg(pe, start, bound, trusted_extent=bool(declared and
+        native_observations = []
+        def observe_native(insn):
+            native_observations.extend(storage_observations(insn, records, bindings=storage_bindings))
+        cfg = trace_cfg(pe, start, bound, instruction_observer=observe_native if compare_storage else None,
+                        trusted_extent=bool(declared and
                         len(sizes) == 1 and start + declared == bound))
         if declared and start + declared > bound:
             cfg["unknowns"].append({"kind": "mapped_extent_truncated_by_budget_or_text", "address": bound})
@@ -513,6 +626,16 @@ def discover(pe, records, providers, roots, text_start, text_end, suppressed=(),
                 item["provider_call_inventory"] = inventory
             else:
                 item["provider_call_inventory"] = {"status": "candidate_provider_absent_or_ambiguous"}
+        if compare_storage:
+            if len(status["providers"]) == 1:
+                provider = status["providers"][0]
+                inventory = provider_storage_inventory(providers.objects[provider["object"]],
+                    provider["symbol"], records, cfg, native_observations)
+                inventory["native_extent_trusted"] = bool(declared and len(sizes) == 1 and
+                                                          start + declared == bound)
+                item["provider_storage_inventory"] = inventory
+            else:
+                item["provider_storage_inventory"] = {"status": "candidate_provider_absent_or_ambiguous"}
         item["absolute_memory_reference_candidates"] = []
         for address in cfg["absolute_memory_references"]:
             aliases = [row["symbol"] for row in records if row["address"] == address]
@@ -549,6 +672,8 @@ def main():
     parser.add_argument("--max-bytes", type=int, default=65536)
     parser.add_argument("--corroborate-suppressed-calls", action="store_true",
                         help="Add complete mapped-parent CFG evidence to source suppression leads")
+    parser.add_argument("--compare-provider-storage", action="store_true",
+                        help="Add exact absolute storage operand observations; review leads only")
     parser.add_argument("--compare-provider-calls", action="store_true",
                         help="Add bounded native/COFF direct-call review leads; never completeness proof")
     parser.add_argument("--output", type=Path, required=True)
@@ -593,7 +718,8 @@ def main():
             raise ValueError("Ambiguous root symbol")
     result = discover(pe, records, providers, roots, number(target["text_va"]),
                       number(target["text_va"]) + number(target["text_size"]), source_leads,
-                      args.depth, args.max_roots, args.max_bytes, args.compare_provider_calls)
+                      args.depth, args.max_roots, args.max_bytes, args.compare_provider_calls,
+                      args.compare_provider_storage)
     verify_snapshots(before, "Producer objects")
     verify_snapshots(source_hashes, "Source inputs")
     verify_snapshots(input_hashes, "Native/map/config inputs")

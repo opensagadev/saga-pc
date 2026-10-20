@@ -321,6 +321,14 @@ number of parent CFGs examined. Existing opcode-only evidence is preserved. This
 proves reachability from that mapped entry only; external/interior entries, source
 preprocessing, ABI, runtime activation and missing behavior remain unproved.
 
+Use `--compare-provider-storage` for a diagnostic inventory of reachable native and
+COFF absolute-storage operands: opcode, memory width, extension/destination width,
+integer comparison width and raw access flags. Candidate identities require exact
+DIR32 memory-displacement bindings; immediates and address-only forms are not loads.
+Aliases, nonzero addends, uncertain bindings/paths and register-relative or segmented
+operands remain explicit unknowns. Differences are review leads, not source signedness,
+value-flow, ABI, semantic completeness, native allocation or matching-credit proof.
+
 ## Complete COFF comparison regions
 
 Audit existing comparison spans before accepting a new data definition or layout:
