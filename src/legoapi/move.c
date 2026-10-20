@@ -6934,6 +6934,46 @@ void __cdecl Move_HOVERDROID(GAMEOBJECT *object) {
     GizmoBlowupCheckProximity(WORLD, object);
 }
 
+STATIC_ASSERT(offsetof(GAMEOBJECT, context_timer) == 0x77c);
+STATIC_ASSERT(offsetof(GAMEOBJECT, field_7aa) == 0x7aa);
+
+static __declspec(noinline) void StartDroidekaFoldPc(GAMEOBJECT *object) {
+    object->character_context = 0x32;
+    object->field_7aa = 0x23;
+    object->context_timer = AnimDuration((i16)object->id, 0x23, 0.0f, 0.0f, 1);
+    PlaySfx("DDekaFold", &object->collision_position);
+}
+
+static __declspec(noinline) void DroidekaRollingCodePc(GAMEOBJECT *object) {
+    if (object->character_context == 0x32) {
+        if (object->pad->input_magnitude >= (f64)object->character_data->game_character->run_speed - (f64)0.1f) {
+            object->character_context = 0x31;
+            object->field_7aa = 3;
+        } else {
+            object->context_timer -= FRAMETIME;
+            if (object->context_timer <= 0.0f)
+                object->character_context = -1;
+        }
+    } else if (object->character_context == 0x31) {
+        PlaySfx("DDekaRoll", &object->collision_position);
+        if (AnimPlaying(&object->anim_packet, object->field_7aa, 0, 0) != NULL &&
+            object->pad->input_magnitude == 0.0f && object->field_281 != 0) {
+            ResetAnimPacket(&object->anim_packet, -1);
+            if (object->character_model->model_data_b[0x23] != NULL)
+                StartDroidekaFoldPc(object);
+            else
+                object->character_context = -1;
+        }
+    } else if (object->character_context == -1 && object->field_281 != 0) {
+        if (object->pad->input_magnitude >= (f64)object->character_data->game_character->run_speed - (f64)0.1f) {
+            object->character_context = 0x31;
+            object->field_7aa = 3;
+        } else if (CurrentAnim(&object->anim_packet) == 5 && object->character_model->model_data_b[0x23] != NULL) {
+            StartDroidekaFoldPc(object);
+        }
+    }
+}
+
 void __cdecl Move_DROIDEKA(GAMEOBJECT *object) {
     u32 action = object->pad->buttons_pressed & GAMEPAD_ACTION;
     u32 special = object->pad->buttons_pressed & GAMEPAD_SPECIAL;
@@ -6949,10 +6989,10 @@ void __cdecl Move_DROIDEKA(GAMEOBJECT *object) {
     SlideCode(object);
     ForcePushed_MoveCode(object);
     ForcedBackCode(object);
-    STUBBED_NAMED(0x0056d8c0); /* Native 4b65a7: Tube_MoveCode(object, WORLD), ignored void action. */
+    Tube_MoveCode(object, WORLD);
     DeactivatedCode(object);
     ShootCode(object, action, special, 0, 0, 0);
-    STUBBED_NAMED(0x004aad70); /* Native 4b65c4: same-animation-TU rolling context action. */
+    DroidekaRollingCodePc(object);
     ShieldCode(object);
     BeastStartFallCodePc(object);
     STUBBED_NAMED(0x004a8640); /* Native 4b65d6: private self-destruct action with special-button stack argument. */

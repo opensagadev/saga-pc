@@ -17,7 +17,7 @@
     "config/library-objects.json": "e5ae24d3eac36fa0d0cb098f7690faaef3110f225db30c8cbf0f7d0d64f6ecfe",
     "config/ogg-vorbis.json": "7f98d40938e6bd6060c6bdfc2ce39d9cfb1c822243693eeb1d85d46b43dcad24",
     "config/project.json": "9a3650958be769951860d2c457f8573049ecae76e48ce8f3d7383e4ca2b761a6",
-    "config/symbols.csv": "55e2267d7f1074522634322f02d1b62a8d9846073f9dcdc7dec1bbc0471fcf7d",
+    "config/symbols.csv": "39cbcb7febf4c90b07c96745d0c9f05ec9bd7742f0ab7c7ee98dfd16f0bf7d14",
     "config/symbols.md": "dffbdaac86011e3aee74b404063c15bda97f88af3db337ffef9f1bad1785d212",
     "config/toolchain.json": "b8808088bb2c7eb239785f69c9e464ae8545216d5705fb37216bc0cf926732f3",
     "config/tools.json": "50199f6b132a7abfabf251e98a75be0a957abfe50f1ff776188fba21e4c4436f",
@@ -327,7 +327,7 @@
     "src/legoapi/mission.c": "b6ce5e9e844e32467ba2d1e759d61799e5388bd376cb5894524169781c2232c1",
     "src/legoapi/missions.c": "5723bc2a3c0173a42c0beb22d0b7f5e886162f70728f8f9304c8c8a12ec7c9ef",
     "src/legoapi/model_animation.c": "ef78e3baf9aca6e9f638f4b195ef6cca7d5061a9ab739ebe9533b7f6dd75f5ab",
-    "src/legoapi/move.c": "6895162f6df934f7e960e4b5f5369d08c2b9656d803677f46cb6d30fdcdbdbf8",
+    "src/legoapi/move.c": "2c39f275c408f44d9fa83829dc9a6a5b31cf2c9f42fd58eb6dd7193e670e6dae",
     "src/legoapi/netplay.c": "08f5e9eb81ca542d5e76d6c3ee9e8ae43aad56a50ed14da7a72e800c6682d0e9",
     "src/legoapi/newlevels.c": "262db0b1cb6c59e99563249642e82f1282636ddf0aa7d2acc1e3c17476018986",
     "src/legoapi/objectsall.c": "1d0ff33901ba13c10ea3f607d9295a0cc611046b44792394da6ef3b696b62efb",
@@ -695,7 +695,7 @@
     "build/obj/legoapi/mission.obj": "52bc50084c5d0a1a958221c424015f351fa7c4c9ddcb9268d3b4aab38d88b922",
     "build/obj/legoapi/missions.obj": "ea37d00cd806199a5d0a68c8bbaf7169dc2eb1dbc1f4baabbf663d6fb375ffca",
     "build/obj/legoapi/model_animation.obj": "2892154788f24523ca11ca86ce3481a9b41089a60077552810c65c757e8e1a1b",
-    "build/obj/legoapi/move.obj": "f4a5926ff4fdf7674f024429cbef373f64f051e9fdd57430256688ce8992b8bc",
+    "build/obj/legoapi/move.obj": "0b98d490b1b8b2e2b9abd8f373daff94c52f8461f4e9084d8935674587a83ded",
     "build/obj/legoapi/movies.obj": "7588a43791d792b408c406e3204e0fe56da4d702837203a9574a7764e4177bb2",
     "build/obj/legoapi/netplay.obj": "fe47a87bbdeae905a49997e158797009b2a23959eda828b0744f3c10cf982c64",
     "build/obj/legoapi/newlevels.obj": "eceac066502dcdb9220c73642f06212871659251cec29fde03ad892f89e612bb",
@@ -37989,6 +37989,54 @@
       "objdiff_percent": 82.789474
     },
     {
+      "name": "StartDroidekaFoldPc",
+      "symbol": "_StartDroidekaFoldPc",
+      "address": "0x004aad20",
+      "units": [
+        "src/legoapi/move.c"
+      ],
+      "target_size": 76,
+      "exact_match": true,
+      "objects": [
+        {
+          "unit": "src/legoapi/move.c",
+          "base_size": 76,
+          "exact_match": true,
+          "target_sha256": "0ecfeff115867bf0c23c39398c0d8bd9e8f1cbf016f2679558e9ce3831f5ec10",
+          "base_sha256": "0ecfeff115867bf0c23c39398c0d8bd9e8f1cbf016f2679558e9ce3831f5ec10",
+          "relocation_count": 3,
+          "comparison_unit": "004aad20-903f114c4da6",
+          "objdiff_percent": 100.0
+        }
+      ],
+      "status": "exact",
+      "objdiff_percent": 100.0
+    },
+    {
+      "name": "DroidekaRollingCodePc",
+      "symbol": "_DroidekaRollingCodePc",
+      "address": "0x004aad70",
+      "units": [
+        "src/legoapi/move.c"
+      ],
+      "target_size": 326,
+      "exact_match": true,
+      "objects": [
+        {
+          "unit": "src/legoapi/move.c",
+          "base_size": 326,
+          "exact_match": true,
+          "target_sha256": "c097dedff16a4e9ec9b250ab2e1cdbf4c3b8ba14d4a38962341f5d49a6127109",
+          "base_sha256": "c097dedff16a4e9ec9b250ab2e1cdbf4c3b8ba14d4a38962341f5d49a6127109",
+          "relocation_count": 10,
+          "comparison_unit": "004aad70-7c7f343106c5",
+          "objdiff_percent": 100.0
+        }
+      ],
+      "status": "exact",
+      "objdiff_percent": 100.0
+    },
+    {
       "name": "ShieldCode",
       "symbol": "_ShieldCode",
       "address": "0x004aaec0",
@@ -39042,17 +39090,17 @@
       "objects": [
         {
           "unit": "src/legoapi/move.c",
-          "base_size": 177,
+          "base_size": 198,
           "exact_match": false,
           "target_sha256": "ad101f204da5f778a5cf8504dd8fd05fe1f298a154dd3abee77bf78090666663",
-          "base_sha256": "195f40a53a8ccfd9973878cf22433ff467fff042ae5dcac9fee345c7fa6dabf4",
-          "relocation_count": 16,
+          "base_sha256": "1420f4507f279b8cfd29613d85f7d17a4448a877dc10de7ddc73a8ae114bf46f",
+          "relocation_count": 19,
           "comparison_unit": "004b6520-b4929134a963",
-          "objdiff_percent": 87.47143
+          "objdiff_percent": 96.27143
         }
       ],
       "status": "different",
-      "objdiff_percent": 87.47143
+      "objdiff_percent": 96.27143
     },
     {
       "name": "Move_GEONOSIAN",
@@ -296869,6 +296917,48 @@
       "status": "unknown size"
     },
     {
+      "name": "??_C@_09COOCNODM@DDekaFold?$AA@",
+      "symbol": "??_C@_09COOCNODM@DDekaFold?$AA@",
+      "address": "0x0075bf48",
+      "units": [
+        "src/legoapi/move.c"
+      ],
+      "target_size": 10,
+      "exact_match": true,
+      "objects": [
+        {
+          "unit": "src/legoapi/move.c",
+          "exact_match": true,
+          "target_size": 10,
+          "base_size": 10,
+          "target_sha256": "0037ceeeb0331fbf12d97387cda23515e6d5ff4e1acfc37dd599fe4476558294",
+          "base_sha256": "0037ceeeb0331fbf12d97387cda23515e6d5ff4e1acfc37dd599fe4476558294"
+        }
+      ],
+      "status": "exact"
+    },
+    {
+      "name": "??_C@_09HDFLGFHG@DDekaRoll?$AA@",
+      "symbol": "??_C@_09HDFLGFHG@DDekaRoll?$AA@",
+      "address": "0x0075bf54",
+      "units": [
+        "src/legoapi/move.c"
+      ],
+      "target_size": 10,
+      "exact_match": true,
+      "objects": [
+        {
+          "unit": "src/legoapi/move.c",
+          "exact_match": true,
+          "target_size": 10,
+          "base_size": 10,
+          "target_sha256": "202fd5913f77d0830afff5bf8bd77fc07da0c5dae16483be014953e66dde9f4e",
+          "base_sha256": "202fd5913f77d0830afff5bf8bd77fc07da0c5dae16483be014953e66dde9f4e"
+        }
+      ],
+      "status": "exact"
+    },
+    {
       "name": "VehicleShieldOnNamePc",
       "symbol": "_VehicleShieldOnNamePc",
       "address": "0x0075bf60",
@@ -475443,17 +475533,17 @@
   ],
   "progress": {
     "text_bytes": 3471246,
-    "mapped_code_bytes": 2417225,
-    "matched_code_bytes": 454983,
-    "matching_percent": 13.107195514233217,
-    "fuzzy_coverage_percent": 46.98376145692911,
-    "mapped_functions": 8859,
-    "matched_functions": 4213,
-    "objdiff_fuzzy_percent": 74.72256,
-    "objdiff_total_code": 2185998,
+    "mapped_code_bytes": 2417627,
+    "matched_code_bytes": 455385,
+    "matching_percent": 13.118776370214038,
+    "fuzzy_coverage_percent": 46.995869616362356,
+    "mapped_functions": 8861,
+    "matched_functions": 4215,
+    "objdiff_fuzzy_percent": 74.728035,
+    "objdiff_total_code": 2186400,
     "image_bytes": 40067072,
-    "mapped_bytes": 4228904,
-    "mapping_percent": 10.554562110253526,
+    "mapped_bytes": 4229326,
+    "mapping_percent": 10.55561534419086,
     "mapping_denominator": "code_and_data_section_virtual_sizes",
     "mapping_sections": [
       {
@@ -475461,16 +475551,16 @@
         "kind": "code",
         "address": "0x401000",
         "size": 3471246,
-        "mapped_bytes": 2418419
+        "mapped_bytes": 2418821
       },
       {
         "name": ".rdata",
         "kind": "data",
         "address": "0x751000",
         "size": 646766,
-        "mapped_bytes": 84417,
+        "mapped_bytes": 84437,
         "file_backed_data_bytes": 646766,
-        "mapped_file_backed_data_bytes": 84417,
+        "mapped_file_backed_data_bytes": 84437,
         "zero_fill_data_bytes": 0,
         "mapped_zero_fill_data_bytes": 0
       },
@@ -475486,38 +475576,38 @@
         "mapped_zero_fill_data_bytes": 1461445
       }
     ],
-    "mapping_known_size_symbols": 16707,
+    "mapping_known_size_symbols": 16711,
     "mapping_unknown_size_symbols": 7075,
-    "mapping_code_bytes": 2418419,
+    "mapping_code_bytes": 2418821,
     "mapping_code_total_bytes": 3471246,
-    "mapping_code_percent": 69.67005507532454,
-    "mapping_data_bytes": 1810485,
+    "mapping_code_percent": 69.68163593130537,
+    "mapping_data_bytes": 1810505,
     "mapping_data_total_bytes": 36018966,
-    "mapping_data_percent": 5.026476884428054,
-    "mapping_code_data_bytes": 4228904,
+    "mapping_data_percent": 5.0265324107305025,
+    "mapping_code_data_bytes": 4229326,
     "mapping_code_data_total_bytes": 39490212,
-    "mapping_code_data_percent": 10.708739674529982,
-    "mapping_file_backed_data_bytes": 349040,
+    "mapping_code_data_percent": 10.709808293761503,
+    "mapping_file_backed_data_bytes": 349060,
     "mapping_file_backed_data_total_bytes": 1064558,
-    "mapping_file_backed_data_percent": 32.78731642615997,
+    "mapping_file_backed_data_percent": 32.78919514014267,
     "mapping_zero_fill_data_bytes": 1461445,
     "mapping_zero_fill_data_total_bytes": 34954408,
     "mapping_zero_fill_data_percent": 4.18100343739193,
-    "matched_data_region_bytes": 1794534
+    "matched_data_region_bytes": 1794554
   },
   "text_coverage": {
     "original_text_bytes": 3471246,
-    "mapped_reconstruction_bytes": 2417225,
-    "exact_reconstruction_bytes": 454983,
+    "mapped_reconstruction_bytes": 2417627,
+    "exact_reconstruction_bytes": 455385,
     "mapped_not_exact_bytes": 1962242,
     "excluded_import_glue_bytes": 1194,
-    "unclassified_text_bytes": 1052827,
+    "unclassified_text_bytes": 1052425,
     "strict_original_text_denominator_bytes": 3471246,
-    "strict_original_text_exact_percent": 13.107195514233217,
+    "strict_original_text_exact_percent": 13.118776370214038,
     "reconstruction_scope_denominator_bytes": 3470052,
-    "reconstruction_scope_exact_percent": 13.11170553063758,
-    "mapped_scope_denominator_bytes": 2417225,
-    "mapped_scope_exact_percent": 18.82253410418972,
+    "reconstruction_scope_exact_percent": 13.12329037144112,
+    "mapped_scope_denominator_bytes": 2417627,
+    "mapped_scope_exact_percent": 18.83603219189726,
     "qualification": "Unclassified text includes undiscovered code and unproven padding; these percentages compare relocated objects, not the linked image."
   },
   "data_members": [
@@ -476661,7 +476751,7 @@
       "metadata_sha256": "fe09365da4c355f220d724ca99394fc120b758891b4188d2c49707b6df0894f2",
       "header_path": "src/saga.h",
       "header_sha256": "83c36aaaeb62e48b57f4c1d583b51a174e4f21648cbf5ca0bc0666e3f88c4487",
-      "geometry_object_sha256": "2c149abe9b4d8fd6a69c2f514709e71059413e072fa2a87514e51b14e678fe6c",
+      "geometry_object_sha256": "89f593eec90cf6236c62ec8b6a5a281e57ad38dbf16c52b2872df5e9974a298a",
       "toolchain_sha256": "b8808088bb2c7eb239785f69c9e464ae8545216d5705fb37216bc0cf926732f3",
       "implementation_sha256": "d6a33be911d095a6d07dccd4443ccbfd6b514fd89fd7e200d9caa1827944e218",
       "headers": {
@@ -476903,7 +476993,7 @@
         4
       ]
     },
-    "clang_source_sha256": "50c34afe2254ab8e25dde96216b4f0da209765a9dd513b9a58c174f6593539b1",
+    "clang_source_sha256": "7f78b871ea01f66fd9b970b10e32e71bd88728bd5b67ae418223eb25aa6add80",
     "member_count": 42,
     "physical_definition_credit": 0
   },

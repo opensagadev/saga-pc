@@ -1641,6 +1641,8 @@ address,symbol,size,ctype
 0x4aab80,_Animate_CRITTER,131,void __cdecl(GAMEOBJECT *)
 0x4aac10,_Animate_BARMAN,49,void __cdecl(GAMEOBJECT *)
 0x4aac50,_Animate_ATAT,197,void __cdecl(GAMEOBJECT *)
+0x4aad20,_StartDroidekaFoldPc,76,static void(GAMEOBJECT *)
+0x4aad70,_DroidekaRollingCodePc,326,static void(GAMEOBJECT *)
 0x4aaec0,_ShieldCode,328,
 0x4ab010,_Animate_DROIDEKA,225,void __cdecl(GAMEOBJECT *)
 0x4ab100,_Animate_GEONOSIAN,238,void __cdecl(GAMEOBJECT *)
@@ -12867,6 +12869,8 @@ address,symbol,size,ctype
 0x75bf20,??_C@_0BC@CCFOPOCO@drd_r2_scope_down?$AA@,18,const char[18]
 0x75bf34,??_C@_0BA@EFCCJBJD@drd_r2_scope_up?$AA@,16,const char[16]
 0x75bf44,__real@3e851eb8,,
+0x0075bf48,??_C@_09COOCNODM@DDekaFold?$AA@,10,const char[10]
+0x0075bf54,??_C@_09HDFLGFHG@DDekaRoll?$AA@,10,const char[10]
 0x75bf60,_VehicleShieldOnNamePc,10,const char[10]
 0x75bf6c,??_C@_0N@KCDMCLKM@PodX_Booster?$AA@,13,const char[13]
 0x75bf6c,_PodBoosterSoundNamePc,13,const char[13]
