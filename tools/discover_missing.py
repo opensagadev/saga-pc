@@ -7,10 +7,11 @@ import hashlib
 import json
 from pathlib import Path
 import re
+import struct
 import sys
 
 import capstone
-from capstone.x86 import X86_OP_IMM, X86_OP_MEM
+from capstone.x86 import X86_OP_IMM, X86_OP_MEM, X86_OP_REG
 
 if __package__:
     from .binary import COFF, PE
@@ -35,12 +36,64 @@ def verify_snapshots(snapshots, label):
         raise ValueError(f"{label} changed during discovery")
 
 
-def trace_cfg(pe, start, limit, instruction_budget=20000):
+def guarded_table(pe, insn, decoded, owners, start, limit, trusted_extent):
+    """Recognize only contiguous CMP index,N / JA default / JMP [index*4+VA]."""
+    operand = insn.operands[0]
+    if (insn.mnemonic != "jmp" or operand.type != X86_OP_MEM or operand.size != 4 or
+            operand.mem.segment or operand.mem.base or
+            not operand.mem.index or operand.mem.scale != 4):
+        return None
+    table = {"branch": insn.address, "table": operand.mem.disp & 0xffffffff,
+             "index_register": insn.reg_name(operand.mem.index), "status": "candidate_unresolved"}
+    if not trusted_extent:
+        return {**table, "reason": "untrusted_function_extent"}
+    previous = [row for row in decoded.values() if row.address + row.size == insn.address]
+    if len(previous) != 1 or previous[0].mnemonic != "ja":
+        return {**table, "reason": "unsupported_range_guard"}
+    branch = previous[0]
+    previous = [row for row in decoded.values() if row.address + row.size == branch.address]
+    if len(previous) != 1:
+        return {**table, "reason": "unsupported_range_compare"}
+    compare = previous[0]
+    if (compare.mnemonic != "cmp" or len(compare.operands) != 2 or
+            compare.operands[0].type != X86_OP_REG or compare.operands[0].reg != operand.mem.index or
+            compare.operands[1].type != X86_OP_IMM or branch.operands[0].type != X86_OP_IMM):
+        return {**table, "reason": "unsupported_range_compare"}
+    count = compare.operands[1].imm + 1
+    default = branch.operands[0].imm & 0xffffffff
+    table.update(guard_compare=compare.address, guard_branch=branch.address,
+                 default_target=default, entry_count=count)
+    if not 1 <= count <= 256:
+        return {**table, "reason": "table_entry_budget"}
+    if default == insn.address:
+        return {**table, "reason": "default_reenters_dispatch"}
+    if not start <= default < limit:
+        return {**table, "reason": "default_outside_parent"}
+    end = table["table"] + 4 * count
+    if not start <= table["table"] < end <= limit:
+        return {**table, "reason": "table_outside_parent"}
+    if any(byte in owners for byte in range(table["table"], end)):
+        return {**table, "reason": "table_overlaps_decoded_code"}
+    try:
+        raw = pe.read_va(table["table"], 4 * count)
+    except ValueError:
+        return {**table, "reason": "unreadable_table"}
+    targets = list(struct.unpack("<" + "I" * count, raw))
+    table["targets"] = targets
+    if any(not start <= target < limit or table["table"] <= target < end for target in targets):
+        return {**table, "reason": "case_target_outside_parent_or_inside_table"}
+    if any(target in owners and target not in decoded for target in targets):
+        return {**table, "reason": "case_target_inside_instruction"}
+    return {**table, "status": "guard_validated_pending_full_cfg"}
+
+
+def trace_cfg(pe, start, limit, instruction_budget=20000, trusted_extent=False):
     """Follow only direct intra-bound branches; unknown indirect jumps stop paths.
 
     The bound is supplied evidence, not a claim that all intervening bytes are code.
     Calls are recorded, never followed here. Indirect calls retain fallthrough but
-    leave the outgoing closure unknown. No switch table or padding is guessed.
+    leave the outgoing closure unknown. Only a guarded table within a trusted mapped
+    extent can add case edges; no enum names or padding are inferred.
     """
     if not start < limit or instruction_budget <= 0:
         raise ValueError("Invalid native CFG bound/budget")
@@ -48,6 +101,12 @@ def trace_cfg(pe, start, limit, instruction_budget=20000):
     md.detail = True
     pending, decoded, owners = [start], {}, {}
     calls, tails, unknowns, returns, storage = [], [], [], [], set()
+    tables, predecessors = [], collections.defaultdict(set)
+    predecessors[start].add(None)
+
+    def enqueue(source, target):
+        predecessors[target].add(source)
+        pending.append(target)
     while pending:
         address = pending.pop()
         if address in decoded:
@@ -93,12 +152,19 @@ def trace_cfg(pe, start, limit, instruction_budget=20000):
                                  "operand": insn.op_str})
         if mnemonic.startswith("j") or mnemonic.startswith("loop"):
             if insn.operands[0].type != X86_OP_IMM:
+                table = guarded_table(pe, insn, decoded, owners, start, limit, trusted_extent)
+                if table is not None:
+                    tables.append(table)
+                    if table["status"] == "guard_validated_pending_full_cfg":
+                        for target in set(table["targets"]):
+                            enqueue(address, target)
+                        continue
                 unknowns.append({"kind": "indirect_branch", "address": address,
                                  "operand": insn.op_str})
                 continue
             target = insn.operands[0].imm & 0xffffffff
             if start <= target < limit:
-                pending.append(target)
+                enqueue(address, target)
             elif mnemonic == "jmp":
                 tails.append({"site": address, "target": target})
             else:
@@ -106,7 +172,33 @@ def trace_cfg(pe, start, limit, instruction_budget=20000):
                                  "address": address, "target": target})
             if mnemonic == "jmp":
                 continue
-        pending.append(address + insn.size)
+        enqueue(address, address + insn.size)
+    table_bytes = set()
+    for table in tables:
+        if table["status"] != "guard_validated_pending_full_cfg":
+            continue
+        if (predecessors[table["branch"]] != {table["guard_branch"]} or
+                predecessors[table["guard_branch"]] != {table["guard_compare"]}):
+            table.update(status="candidate_unresolved", reason="alternate_guard_or_dispatch_entry")
+        elif any(byte in owners for byte in range(table["table"], table["table"] + 4 * table["entry_count"])):
+            table.update(status="candidate_unresolved", reason="table_overlaps_reachable_code")
+        else:
+            table["status"] = "guarded_table_validated"
+            table["qualification"] = "Exclusive predecessors in this direct CFG; external interior entries are not ruled out."
+            table_bytes.update(range(table["table"], table["table"] + 4 * table["entry_count"]))
+            continue
+        unknowns.append({"kind": "switch_table_unresolved", "address": table["branch"],
+                         "reason": table["reason"]})
+    if tables and any(start <= row["target"] < limit for row in calls):
+        unknowns.append({"kind": "intra_parent_call_entry_unknown", "address": start})
+    if unknowns:
+        # An unexplored/indirect path may hide another entry into the guard.
+        for table in tables:
+            if table["status"] == "guarded_table_validated":
+                table.update(status="candidate_unresolved", reason="incomplete_direct_cfg")
+                unknowns.append({"kind": "switch_table_unresolved", "address": table["branch"],
+                                 "reason": table["reason"]})
+        table_bytes.clear()
     end = max(owners, default=start - 1) + 1
     first_return = min(returns, default=None)
     return {"start": start, "bound": limit, "observed_end": end,
@@ -118,6 +210,8 @@ def trace_cfg(pe, start, limit, instruction_budget=20000):
             "direct_calls": sorted(calls, key=lambda row: row["site"]),
             "direct_tail_candidates": sorted(tails, key=lambda row: row["site"]),
             "absolute_memory_references": sorted(storage), "unknowns": unknowns,
+            "switch_tables": tables, "validated_table_bytes": len(table_bytes),
+            "unclassified_bytes_inside_bound": limit - start - len(owners) - len(table_bytes),
             "outgoing_indirect_resolution_complete": not unknowns,
             "qualification": "Observed CFG span is not an allocation/ownership proof; "
                              "unvisited bytes are not classified as padding or data."}
@@ -217,7 +311,8 @@ def discover(pe, records, providers, roots, text_start, text_end, suppressed=(),
         next_start = starts[next_index] if next_index < len(starts) else text_end
         declared = next(iter(sizes)) if len(sizes) == 1 else None
         bound = min(text_end, start + max_bytes, start + declared if declared else next_start)
-        cfg = trace_cfg(pe, start, bound)
+        cfg = trace_cfg(pe, start, bound, trusted_extent=bool(declared and
+                        len(sizes) == 1 and start + declared == bound))
         if declared and start + declared > bound:
             cfg["unknowns"].append({"kind": "mapped_extent_truncated_by_budget_or_text", "address": bound})
         if len(sizes) > 1:

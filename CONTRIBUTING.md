@@ -302,6 +302,8 @@ Replace the root with an exact mapped symbol or native VA; repeat `--root` for m
 
 The report separates actual named COFF providers, missing comparison providers, suppressed source-call leads, unmapped direct-entry candidates and mapped-parent interior entries. It follows reachable direct branches beyond early returns and bounds any callee discovery. Indirect edges, unvisited bytes, storage identity gaps and exhausted budgets remain explicit unknowns. Native map labels and source comments are evidence to review, not inferred names, ABIs, function extents or active preprocessor paths. A missing comparison provider can still be supplied by the CRT/import linker; it is not automatically a runtime missing body. Producer/report mismatches and incomplete object censuses are reported. No source/map changes or score credit are made.
 
+For a single unambiguous mapped extent, discovery can validate the narrow contiguous `CMP index,N; JA default; JMP [index*4+table]` pattern with a DWORD operand and no segment override. It checks the complete bounded direct CFG for alternate guard entries and keeps table bytes separate from instruction bytes. Untrusted extents, other switch forms, out-of-parent targets or incomplete/indirect paths remain unknown. It does not infer enum names, external interior-entry compatibility, source fixes or matching credit.
+
 ## Runtime library
 
 The original links the VC8 runtime statically (`/MT`), and the pinned toolchain

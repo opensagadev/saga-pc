@@ -149,5 +149,123 @@ class ProviderAndSourceTests(unittest.TestCase):
                          "mapped_extent_truncated_by_budget_or_text")
 
 
+
+
+class GuardedTableTests(unittest.TestCase):
+    def fixture(self):
+        # CMP EAX,1; JA default; JMP [EAX*4+table]; two cases/default; table.
+        code = bytes.fromhex("83f801770dff2485") + struct.pack("<I", 0x101e)
+        code += bytes.fromhex("b801000000c3b8ffffffffc3b802000000c3")
+        return bytearray(code + struct.pack("<II", 0x100c, 0x1018))
+
+    def trace(self, data=None, trusted=True):
+        data = self.fixture() if data is None else data
+        return discovery.trace_cfg(MemoryPE(bytes(data)), 0x1000, 0x1000 + len(data),
+                                   trusted_extent=trusted)
+
+    def test_guarded_cases_followed_and_table_bytes_are_never_instructions(self):
+        result = self.trace()
+        self.assertEqual(result["switch_tables"][0]["status"], "guarded_table_validated")
+        self.assertEqual(result["reachable_instruction_bytes"], 30)
+        self.assertEqual(result["validated_table_bytes"], 8)
+        self.assertEqual(result["unclassified_bytes_inside_bound"], 0)
+        self.assertEqual(result["reachable_bytes_after_first_return"], 12)
+        self.assertEqual(result["unknowns"], [])
+
+    def test_unknown_extent_cannot_authorize_table_resolution(self):
+        result = self.trace(trusted=False)
+        self.assertEqual(result["switch_tables"][0]["reason"], "untrusted_function_extent")
+        self.assertEqual(result["validated_table_bytes"], 0)
+        self.assertEqual(result["unknowns"][0]["kind"], "indirect_branch")
+
+    def test_signed_guard_and_partial_register_compare_remain_unknown(self):
+        for offset, byte, reason in [(3, 0x7f, "unsupported_range_guard"),
+                                     (0, 0x80, "unsupported_range_compare")]:
+            with self.subTest(reason=reason):
+                data = self.fixture()
+                data[offset] = byte
+                result = self.trace(data)
+                self.assertEqual(result["switch_tables"][0]["reason"], reason)
+                self.assertEqual(result["validated_table_bytes"], 0)
+
+    def test_table_and_case_targets_must_remain_inside_parent(self):
+        for offset, reason in [(8, "table_outside_parent"),
+                               (34, "case_target_outside_parent_or_inside_table")]:
+            with self.subTest(reason=reason):
+                data = self.fixture()
+                struct.pack_into("<I", data, offset, 0x2000)
+                self.assertEqual(self.trace(data)["switch_tables"][0]["reason"], reason)
+
+    def test_alternate_case_entry_to_dispatch_invalidates_guard(self):
+        data = self.fixture()
+        data[12:18] = bytes.fromhex("ebf7cccccccc")  # case0 jumps directly to JMP, bypassing CMP/JA.
+        result = self.trace(data)
+        self.assertEqual(result["switch_tables"][0]["reason"], "alternate_guard_or_dispatch_entry")
+        self.assertEqual(result["validated_table_bytes"], 0)
+        self.assertIn("switch_table_unresolved", [row["kind"] for row in result["unknowns"]])
+
+    def test_case_target_cannot_enter_compare_instruction_middle(self):
+        data = self.fixture()
+        struct.pack_into("<I", data, 30, 0x1001)
+        self.assertEqual(self.trace(data)["switch_tables"][0]["reason"], "case_target_inside_instruction")
+
+    def test_ambiguous_map_sizes_do_not_supply_a_trusted_extent(self):
+        rows = [{"address": 0x1000, "symbol": "_Root", "size": 38},
+                {"address": 0x1000, "symbol": "_Alias", "size": 37}]
+        result = discovery.discover(MemoryPE(bytes(self.fixture())), rows,
+                                    discovery.ProviderIndex(), [0x1000], 0x1000, 0x1026, depth=0)
+        cfg = result["roots"][0]["cfg"]
+        self.assertEqual(cfg["switch_tables"][0]["reason"], "untrusted_function_extent")
+        self.assertIn("ambiguous_mapped_extents", [row["kind"] for row in cfg["unknowns"]])
+
+    def test_instruction_budget_prevents_a_partial_guard_validation_claim(self):
+        data = bytes(self.fixture())
+        result = discovery.trace_cfg(MemoryPE(data), 0x1000, 0x1000 + len(data),
+                                     instruction_budget=3, trusted_extent=True)
+        self.assertEqual(result["switch_tables"][0]["reason"], "incomplete_direct_cfg")
+        self.assertEqual(result["validated_table_bytes"], 0)
+
+    def test_another_unknown_indirect_path_keeps_switch_unresolved(self):
+        data = self.fixture()
+        data[18:24] = bytes.fromhex("ffe0cccccccc")  # default exits via unknown EAX.
+        result = self.trace(data)
+        self.assertEqual(result["switch_tables"][0]["reason"], "incomplete_direct_cfg")
+        self.assertEqual(result["validated_table_bytes"], 0)
+
+    def test_default_branch_to_dispatch_cannot_fake_a_bounds_check(self):
+        data = self.fixture()
+        data[4] = 0  # JA dispatch; both outcomes enter the table with any EAX.
+        result = self.trace(data)
+        self.assertEqual(result["switch_tables"][0]["reason"], "default_reenters_dispatch")
+        self.assertEqual(result["validated_table_bytes"], 0)
+
+    def test_local_call_entry_prevents_exclusive_cfg_claim(self):
+        data = self.fixture()
+        data[18:24] = b"\xe8" + struct.pack("<i", 0x1005 - 0x1017) + b"\xc3"
+        result = self.trace(data)
+        self.assertEqual(result["switch_tables"][0]["reason"], "incomplete_direct_cfg")
+        self.assertIn("intra_parent_call_entry_unknown", [row["kind"] for row in result["unknowns"]])
+
+    def prefixed_fixture(self, prefix):
+        data = self.fixture()
+        data[5:5] = bytes([prefix])
+        data[4] += 1
+        struct.pack_into("<I", data, 9, 0x101f)
+        struct.pack_into("<II", data, 31, 0x100d, 0x1019)
+        return data
+
+    def test_word_operand_is_not_read_as_a_dword_jump_table(self):
+        result = self.trace(self.prefixed_fixture(0x66))
+        self.assertEqual(result["switch_tables"], [])
+        self.assertEqual(result["validated_table_bytes"], 0)
+        self.assertIn("indirect_branch", [row["kind"] for row in result["unknowns"]])
+
+    def test_segment_override_does_not_become_a_flat_pe_address(self):
+        result = self.trace(self.prefixed_fixture(0x64))
+        self.assertEqual(result["switch_tables"], [])
+        self.assertEqual(result["validated_table_bytes"], 0)
+        self.assertIn("indirect_branch", [row["kind"] for row in result["unknowns"]])
+
+
 if __name__ == "__main__":
     unittest.main()
