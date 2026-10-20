@@ -30,6 +30,7 @@ jobs:
           sudo dpkg --add-architecture i386
           sudo apt-get update
           sudo apt-get install -y --no-install-recommends ca-certificates make wine wine64 wine32:i386 winbind clang-format-18 clang-tidy-18 llvm-18
+          python3 -m pip install capstone==5.0.9
       - name: Cache pinned compiler, linker, SDK and objdiff
         uses: actions/cache@caa296126883cff596d87d8935842f9db880ef25 # v5
         with:

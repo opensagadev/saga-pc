@@ -15,6 +15,7 @@ sudo dpkg --add-architecture i386
 sudo apt-get update
 sudo apt-get install --no-install-recommends \
     ca-certificates git make python3 wine wine64 wine32:i386 winbind clang-format-18 clang-tidy-18 llvm-18
+python3 -m pip install capstone==5.0.9  # required by discovery tooling and tests
 python3 -m pip install libclang        # only for tools/permute.py
 make setup                             # pinned MSVC 2005 + objdiff-cli into build/tools/
 make check
