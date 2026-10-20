@@ -1365,12 +1365,101 @@ void __cdecl GameObjectStuffAfterAnimation(void) {
                        object->id == (u16)id_R2Q5 ? 0xff202080u : 0xff808040u, testlaser_endw, distance);
         }
         if (drawn && (object->character_data->model_flags & 8) != 0 && object->weapon_scale == 1.0f) {
+            union SABRE_EFFECT_SCRATCH_PC {
+                NUVEC points[4];
+                struct {
+                    u8 reserved[40];
+                    NUVEC position;
+                } shared;
+            } scratch;
+            STATIC_ASSERT(offsetof(union SABRE_EFFECT_SCRATCH_PC, shared.position) == 40);
+            STATIC_ASSERT(offsetof(union SABRE_EFFECT_SCRATCH_PC, points) + 3 * sizeof(NUVEC) + offsetof(NUVEC, y) ==
+                          40);
+            STATIC_ASSERT(offsetof(union SABRE_EFFECT_SCRATCH_PC, points) + 3 * sizeof(NUVEC) + offsetof(NUVEC, z) ==
+                          44);
+            NUVEC *points = scratch.points;
+
             i32 blade;
             for (blade = 0; blade < 4; ++blade) {
                 i32 joints[2];
                 if (GetBladeJoints(object, blade, joints, NULL) != 0) {
-                    STUBBED_NAMED("AfterAnimation: continuous sabre particles and real raycast-dependent rub action "
-                                  "PC4b223b..4b261d");
+                    i32 effect;
+                    i32 count;
+                    points[0].x = object->locator_matrices[joints[0]].m30;
+                    points[0].y = object->locator_matrices[joints[0]].m31;
+                    points[0].z = object->locator_matrices[joints[0]].m32;
+                    points[1].x = object->locator_matrices[joints[1]].m30;
+                    points[1].y = object->locator_matrices[joints[1]].m31;
+                    points[1].z = object->locator_matrices[joints[1]].m32;
+                    if (object->blade_states[blade] != -1 && object->character_context == 5 &&
+                        (object->context_variant_flags & 0x1c) == 0 &&
+                        (object->combo_branch == 2 || object->combo_branch == 6)) {
+                        i32 index = object->combo_branch == 6 ? BladeTab[object->blade_states[blade]].hit_effect
+                                                              : BladeTab[object->blade_states[blade]].effect_6;
+                        effect = WORLD->game_debris_sys->entries[index].effect;
+                        if (effect != -1) {
+                            count = ParticlesPerSecond(100.0f, FRAMETIME);
+                            if (count > 0) {
+                                f32 fraction = (f32)((f64)qrand() * PlayerRandomScalePc);
+                                NUVEC *position = &scratch.shared.position;
+                                position->x = (f32)((f64)points[0].x + ((f64)points[1].x - points[0].x) * fraction);
+                                position->y = (f32)((f64)points[0].y + ((f64)points[1].y - points[0].y) * fraction);
+                                position->z = (f32)((f64)points[0].z + ((f64)points[1].z - points[0].z) * fraction);
+                                AddVariableShotDebrisEffect(effect, position, count, 0, 0);
+                            }
+                        }
+                    }
+                    if ((object->flags_1fc_word & 0x80) != 0) {
+                        NUVEC *first = &points[0];
+                        NUVEC *second = &points[1];
+                        i32 hit = 0;
+                        i32 direction;
+                        for (direction = 0; direction < 2; ++direction) {
+                            NUVEC delta;
+                            NuVecSub(&delta, second, first);
+                            if (NewRayCastScaleYMask(first, &delta, 0.0f, 1.0f, 0,
+                                                     GetSurfaceInfoDefaultMaskPc.word | 0x1f) != 0) {
+                                f32 fraction = NewRayCastGetTOFI();
+                                NUVEC *position = &scratch.shared.position;
+                                position->x = (f32)((f64)first->x + ((f64)second->x - first->x) * fraction);
+                                position->y = (f32)((f64)first->y + ((f64)second->y - first->y) * fraction);
+                                position->z = (f32)((f64)first->z + ((f64)second->z - first->z) * fraction);
+                                if (object->id == (u16)id_GRIEVOUS && (blade == 1 || blade == 2) &&
+                                    (object->field_280 == 0xff ||
+                                     (!Cheat_IsOn(25) &&
+                                      (object->field_280 == 0xff || !Player_HasPurpleForce(object))))) {
+                                    effect = 65;
+                                } else {
+                                    effect = object->blade_index == -1 ? -1 : BladeTab[object->blade_index].effect_8;
+                                }
+                                if (effect != -1) {
+                                    effect = WORLD->game_debris_sys->entries[effect].effect;
+                                    if (effect != -1) {
+                                        count = ParticlesPerSecond(50.0f, FRAMETIME);
+                                        if (count > 0)
+                                            AddVariableShotDebrisEffect(effect, position, count, 0, 0);
+                                    }
+                                }
+                                hit = 1;
+                            }
+                            if (direction == 0) {
+                                first = &points[1];
+                                second = &points[0];
+                            }
+                        }
+                        if (hit && SaberSparksTimer <= 0.0f && object->anim_blending == 0 &&
+                            object->character_context != 5 && object->character_context != 16 &&
+                            object->character_context != 13 && object->character_context != 14 &&
+                            (CInfo[object->character_context].flags & 0x04000000) == 0 &&
+                            ((CInfo[object->character_context].flags & 0x08000000) == 0 ||
+                             (object->context_variant_flags & 0x20000) == 0)) {
+                            PlaySabreSfx((char *)SaberSparksName, object, &points[blade], 1);
+                            SaberSparksTimer = (f32)(((f64)qrand() * PlayerRandomScalePc) * (f64)0.3f + (f64)0.3f);
+                            if (GetMenuID() == -1)
+                                NewRumble(object->pad->bound_pad,
+                                          (f32)(((f64)qrand() * PlayerRandomScalePc) * (f64)0.2f + (f64)0.2f), 0);
+                        }
+                    }
                 }
             }
         }
