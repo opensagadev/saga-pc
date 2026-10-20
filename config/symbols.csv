@@ -66,9 +66,14 @@ address,symbol,size,ctype
 0x40ab20,_UpdatePlayerCameraOcclusionPc,693,void __cdecl (void)
 0x40ade0,_MoveGameCamera,14452,
 0x40e690,_GoingForwardsAlongNarrowSock,106,i32 __cdecl (GAMEOBJECT *)
+0x40e700,_FlightSplineCapacityDiagnosticPc,1,void __cdecl (char *)
 0x40ea30,_ChrisAnakinCUpdate,319,
 0x40eff0,_CalcSplinePoint,1119,"void __cdecl (FLIGHT_SPLINE_RESOURCE_PC *,NUVEC4 *,f32)"
 0x40f450,_CalcSplinePointFromDist,190,"void __cdecl (FLIGHT_SPLINE_RESOURCE_PC *,NUVEC4 *,f32)"
+0x40f5c0,_FlightSplineLegacyLengthPc,302,static f32 (FLIGHT_SPLINE_RESOURCE_PC *)
+0x40f6f0,_FlightSplineCumulativeLengthPc,344,static f32 (FLIGHT_SPLINE_RESOURCE_PC *)
+0x40f850,_FlightSplineLoadRecordPc,194,"static void (FLIGHT_SPLINE_FILE_PC *, i32, i32)"
+0x40f920,_FlightSpline_Init,414,"void __cdecl (WORLDINFO *, FLIGHT_SPLINE_RESOURCE_PC *, i32)"
 0x40ffa0,_DogfightResetCrossesPc,175,"static void (DOGFIGHT_CROSS_PC *, i32)"
 0x4100b0,_DogfightResetSplineHistoryPc,189,"static void (DOGFIGHT_SPLINE_HISTORY_PC *, i32)"
 0x410170,_DogfightResetWorldRecordsPc,196,"static void (WORLDINFO *, DOGFIGHT_SPACE_PC *)"
@@ -9491,6 +9496,7 @@ address,symbol,size,ctype
 0x00751ab8,__real@3fc00000,4,const f32
 0x751ac0,_PlayerStepInnerPc,8,const f64
 0x00751ac0,__real@3fe8000000000000,8,const f64
+0x751ba8,??_C@_04CNBCFDNL@?4FSP?$AA@,5,const char[5]
 0x751bb0,??_C@_0BD@GEDFNHGE@Dog_TriFighterGuns?$AA@,19,const char[19]
 0x751bc4,??_C@_0BG@PHHIKGAO@Dog_DroidFighterBlast?$AA@,22,const char[22]
 0x751bdc,??_C@_0BD@KCCJNHHN@Dog_CloneARC170Gun?$AA@,19,const char[19]
@@ -18126,9 +18132,11 @@ address,symbol,size,ctype
 0x7f1140,_CamWalkerLiftPc,4,f32
 0x7f1144,_CamDewbackRadiusPc,4,f32
 0x7f1148,_CamDewbackLiftPc,4,f32
+0x7f1204,_FlightSplineExtensionPc,4,char *
 0x7f1270,_DogfightDoorsPc,140,DOGFIGHT_DOOR_PC[7]
 0x7f1310,_DoorSetupList,,
 0x7f1558,_DogfightAnakinActionsPc,80,DOGFIGHT_ACTION_PC[10]
+0x7f15dc,_FlightSplineDefaultIncrementPc,4,f32
 0x7f15e0,_PodRaceSplineIncrementPc,,f32
 0x7f1724,_ConfigChar_GameKeywords,,NUFPCOMJMP[2]
 0x7f17a4,_PlayerHitPointsTwoHeartsPc,,i32

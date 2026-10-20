@@ -760,3 +760,161 @@ void ChrisAnakinCInit() {
     NuSpecialList(WORLD->current_gscn);
     ChrisAnakinCReset();
 }
+/* PC file records share the established 0x530-byte evaluator layout. */
+typedef struct FLIGHT_SPLINE_FILE_PC {
+    NUVEC4 points[64];
+    i32 point_count;
+    f32 current_value;
+    f32 reset_value;
+    f32 rate;
+    f32 length;
+    f32 cumulative_distances[64];
+    i32 reset_state;
+    i32 current_state;
+    i32 previous_id;
+    i32 order;
+    i32 id;
+    i32 enabled;
+    u32 unknown_52c;
+} FLIGHT_SPLINE_FILE_PC;
+STATIC_ASSERT(sizeof(FLIGHT_SPLINE_FILE_PC) == sizeof(FLIGHT_SPLINE_RESOURCE_PC));
+STATIC_ASSERT(offsetof(FLIGHT_SPLINE_FILE_PC, point_count) == 0x400);
+STATIC_ASSERT(offsetof(FLIGHT_SPLINE_FILE_PC, reset_value) == 0x408);
+STATIC_ASSERT(offsetof(FLIGHT_SPLINE_FILE_PC, rate) == 0x40c);
+STATIC_ASSERT(offsetof(FLIGHT_SPLINE_FILE_PC, length) == 0x410);
+STATIC_ASSERT(offsetof(FLIGHT_SPLINE_FILE_PC, cumulative_distances) == 0x414);
+STATIC_ASSERT(offsetof(FLIGHT_SPLINE_FILE_PC, reset_state) == 0x514);
+STATIC_ASSERT(offsetof(FLIGHT_SPLINE_FILE_PC, previous_id) == 0x51c);
+STATIC_ASSERT(offsetof(FLIGHT_SPLINE_FILE_PC, order) == 0x520);
+STATIC_ASSERT(offsetof(FLIGHT_SPLINE_FILE_PC, id) == 0x524);
+STATIC_ASSERT(offsetof(FLIGHT_SPLINE_FILE_PC, enabled) == 0x528);
+STATIC_ASSERT(offsetof(WORLDINFO, config_file) == 0x80);
+
+#pragma data_seg(".data$FlightSplineExtensionPc")
+char *FlightSplineExtensionPc = ".FSP";
+#pragma data_seg(".data$FlightSplineDefaultIncrementPc")
+f32 FlightSplineDefaultIncrementPc = 0.009999999776482582f;
+#pragma data_seg()
+
+/* Original source name unknown. The native diagnostic entry is exactly RET;
+ * exceeding capacity therefore does not stop or truncate the native loader. */
+__declspec(noinline) void __cdecl FlightSplineCapacityDiagnosticPc(char *filename) {
+    (void)filename;
+}
+
+static __declspec(noinline) void FlightSplineLoadRecordPc(FLIGHT_SPLINE_FILE_PC *spline, i32 version, i32 index) {
+    i32 point;
+    spline->point_count = EdFileReadInt();
+    spline->reset_value = EdFileReadFloat();
+    spline->id = EdFileReadInt();
+    spline->enabled = 1;
+    if (version >= 2) {
+        spline->rate = EdFileReadFloat();
+        spline->reset_state = EdFileReadInt();
+    } else {
+        spline->reset_state = 0;
+        spline->rate = 0.0f;
+    }
+    if (version >= 3) {
+        spline->previous_id = EdFileReadInt();
+        spline->order = EdFileReadInt();
+    } else {
+        spline->previous_id = -1;
+        spline->order = index;
+    }
+    for (point = 0; point < spline->point_count; ++point) {
+        spline->points[point].x = EdFileReadFloat();
+        spline->points[point].y = EdFileReadFloat();
+        spline->points[point].z = EdFileReadFloat();
+        spline->points[point].w = EdFileReadFloat();
+    }
+}
+
+static __declspec(noinline) f32 FlightSplineLegacyLengthPc(FLIGHT_SPLINE_RESOURCE_PC *spline) {
+    f32 distance = 0.0f;
+    f32 along = 1.0f;
+    NUVEC4 current, previous;
+    NUVEC difference;
+    f32 squared;
+    if (spline->point_count != 0) {
+        CalcSplinePoint(spline, &current, along);
+        do {
+            previous = current;
+            if (PODRACE_ADATA != NULL && WORLD->area == PODRACE_ADATA)
+                along -= PodRaceSplineIncrementPc;
+            else
+                along -= FlightSplineDefaultIncrementPc;
+            if (along < 0.0f)
+                along = 0.0f;
+            CalcSplinePoint(spline, &current, along);
+            difference.x = current.x - previous.x;
+            difference.y = current.y - previous.y;
+            difference.z = current.z - previous.z;
+            squared = (f32)((f64)difference.x * difference.x + (f64)difference.y * difference.y +
+                            (f64)difference.z * difference.z);
+            distance = (f32)((f64)NuFsqrt(squared) + distance);
+        } while (along > 0.0f);
+    }
+    return distance;
+}
+
+static __declspec(noinline) f32 FlightSplineCumulativeLengthPc(FLIGHT_SPLINE_RESOURCE_PC *spline) {
+    f32 distance = 0.0f;
+    i32 point, sample;
+    f32 point_value, along, squared;
+    NUVEC4 previous, current;
+    NUVEC difference;
+    for (point = 0; point < spline->point_count; ++point) {
+        point_value = (f32)point;
+        along = (f32)((f64)point_value / spline->point_count);
+        CalcSplinePoint(spline, &previous, along);
+        for (sample = 1; sample <= 10; ++sample) {
+            along = (f32)(((f64)sample / 10.0 + point_value) / spline->point_count);
+            CalcSplinePoint(spline, &current, along);
+            difference.x = current.x - previous.x;
+            difference.y = current.y - previous.y;
+            difference.z = current.z - previous.z;
+            squared = (f32)((f64)difference.x * difference.x + (f64)difference.y * difference.y +
+                            (f64)difference.z * difference.z);
+            distance = (f32)((f64)NuFsqrt(squared) + distance);
+            previous = current;
+        }
+        spline->cumulative_distances[point] = distance;
+    }
+    return distance;
+}
+
+void __cdecl FlightSpline_Init(WORLDINFO *world, FLIGHT_SPLINE_RESOURCE_PC *splines, i32 capacity) {
+    char filename[256];
+    i32 version, count, i;
+    FLIGHT_SPLINE_FILE_PC *spline;
+    sprintf(filename, "%s%s", world->config_file, FlightSplineExtensionPc);
+    EdFileSetMedia(1);
+    if (!EdFileOpen(filename, 0))
+        return;
+    version = EdFileReadInt();
+    count = EdFileReadInt();
+    if (count > capacity)
+        FlightSplineCapacityDiagnosticPc(filename);
+    for (i = 0; i < count; ++i)
+        FlightSplineLoadRecordPc((FLIGHT_SPLINE_FILE_PC *)&splines[i], version, i);
+    if (version > 3) {
+        for (i = 0; i < count; ++i) {
+            spline = (FLIGHT_SPLINE_FILE_PC *)&splines[i];
+            spline->length = EdFileReadFloat();
+            if (version > 4) {
+                i32 point;
+                for (point = 0; point < spline->point_count; ++point)
+                    spline->cumulative_distances[point] = EdFileReadFloat();
+            } else {
+                spline->length = FlightSplineCumulativeLengthPc(&splines[i]);
+            }
+        }
+    } else {
+        for (i = 0; i < count; ++i)
+            splines[i].length = FlightSplineLegacyLengthPc(&splines[i]);
+    }
+    for (; i < capacity; ++i)
+        splines[i].point_count = 0;
+    EdFileClose();
+}
