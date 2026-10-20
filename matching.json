@@ -33,7 +33,7 @@
     "tools/data_members.py": "d6a33be911d095a6d07dccd4443ccbfd6b514fd89fd7e200d9caa1827944e218",
     "tools/debug_identity.py": "4c91005a5701e255c789d664f61e2267e1609973998d14ddea0208e0bef482fd",
     "tools/dependencies.py": "6522194c5fb47aa533091e6e70a224de39c344a206c00e2717c2f336fdfa8baf",
-    "tools/discover_missing.py": "4ee4f94d1a838cac5224e90f9594394a8d72cf29bab6ad2021cd39bfacb51ee0",
+    "tools/discover_missing.py": "a2dd038404ef0113c3c8ffdc2fd870c26cdf26b788670822c55f137c689bd9ba",
     "tools/globals.py": "6065e90b69abd8f88e8d6f75f7009d293efeb781f2ae76475b0b47958b8c761a",
     "tools/lib.py": "b4a13480449c959a1df064cbd85056519387629e347fadc8ccb74ce6f8487f18",
     "tools/libmatch.py": "b218f6b2cfb70b9dc754fafc1d89490d92a005ea8c2cc414df88931fdedbf7f1",
@@ -58,7 +58,7 @@
     "tools/test_data_members.py": "67f0ff6b1522cd22cdd82c4bcde3648fde55d79a4127443de45ae3d5639a8e2b",
     "tools/test_debug_identity.py": "835ad86e989a518955b9b69cb5e9fbf809d58db0563eab257d22621807ef3beb",
     "tools/test_dependencies.py": "dd3e43484346aa43d6f484aa53e9df60d3b3dc8f91ddc071638ce82cf5bef0f1",
-    "tools/test_discover_missing.py": "264f058067b736e8249d822ad176573b152feeae15eaab2a9a623c45fd3097e4",
+    "tools/test_discover_missing.py": "cc17ba008ee97221690751adeb74a8eb1fd383dfaad62e958b77d7b6543a1813",
     "tools/test_lib.py": "d016747de7295ee9d2a592cd6e4358c6faec6a8a386af584d90438424762ab1f",
     "tools/test_match.py": "5604613f9dec760b59f050f7db2b03d7e2edb5c2fcb4cd78a92e0850f210ce4c",
     "tools/test_object_analysis.py": "bd0e99266de800c5f04054be1be1f56e51f78b3700c4bf544b8ec88325172f56",
@@ -327,7 +327,7 @@
     "src/legoapi/mission.c": "b6ce5e9e844e32467ba2d1e759d61799e5388bd376cb5894524169781c2232c1",
     "src/legoapi/missions.c": "5723bc2a3c0173a42c0beb22d0b7f5e886162f70728f8f9304c8c8a12ec7c9ef",
     "src/legoapi/model_animation.c": "ef78e3baf9aca6e9f638f4b195ef6cca7d5061a9ab739ebe9533b7f6dd75f5ab",
-    "src/legoapi/move.c": "d8d228047840ce0ea7841324b7069a9a4564dd4761c15467d8af59149f43fe6b",
+    "src/legoapi/move.c": "6895162f6df934f7e960e4b5f5369d08c2b9656d803677f46cb6d30fdcdbdbf8",
     "src/legoapi/netplay.c": "08f5e9eb81ca542d5e76d6c3ee9e8ae43aad56a50ed14da7a72e800c6682d0e9",
     "src/legoapi/newlevels.c": "262db0b1cb6c59e99563249642e82f1282636ddf0aa7d2acc1e3c17476018986",
     "src/legoapi/objectsall.c": "1d0ff33901ba13c10ea3f607d9295a0cc611046b44792394da6ef3b696b62efb",
@@ -695,7 +695,7 @@
     "build/obj/legoapi/mission.obj": "378be8f581b0778056c35b9f34144a99f47c15c6ada224acbd4eb51a29709ead",
     "build/obj/legoapi/missions.obj": "486f2968e26738ccbd6660c2fb9545f26344236d4a6c891ffd9142a9b60cb20a",
     "build/obj/legoapi/model_animation.obj": "92db38dfa43d05bbf70b9858acd019aabe628c167e0a520a4808821a1142bdcb",
-    "build/obj/legoapi/move.obj": "c6b64cf3662756060446fc8dd1cda8af82e66efe6cf4f62eab682ece6853eb59",
+    "build/obj/legoapi/move.obj": "10e4ef39101c882e13773e7adac8a645e3f1717195c6a61c99c300d97048acf8",
     "build/obj/legoapi/movies.obj": "994ed5e93755d8364bb0fb9048519e9caf7a2c74b3e71882ff506da3321e38ed",
     "build/obj/legoapi/netplay.obj": "ab040ec590f9c9dfde1707bc69d859fc6744329f056077484d49e531ae3b6508",
     "build/obj/legoapi/newlevels.obj": "dd38a892c8aee6739885fc3fb5744c136f1d8e5a98c1f9c1ea118e39ab7b42d1",
@@ -34092,17 +34092,17 @@
       "objects": [
         {
           "unit": "src/legoapi/move.c",
-          "base_size": 350,
+          "base_size": 290,
           "exact_match": false,
           "target_sha256": "975294401b4db2e5e55ac615889981beb761a293e37e26904a034ab96557134c",
-          "base_sha256": "406a630f23d1e5a3291260ec8adae4880ae9ce957288a51c3a4d87bf2b58f03a",
+          "base_sha256": "9606646797d36069a099689652760989e8d22e386d12880a3c64679d272937dc",
           "relocation_count": 11,
           "comparison_unit": "00497c40-ad8b1a38e460",
-          "objdiff_percent": 49.55357
+          "objdiff_percent": 69.11607
         }
       ],
       "status": "different",
-      "objdiff_percent": 49.55357
+      "objdiff_percent": 69.11607
     },
     {
       "name": "MovementMtxSetRotationXPc",
@@ -34510,17 +34510,17 @@
       "objects": [
         {
           "unit": "src/legoapi/move.c",
-          "base_size": 520,
+          "base_size": 772,
           "exact_match": false,
           "target_sha256": "a8a92c7e18042366e4a26cd3057a5d8c56422dfa14f0ada955de151912cab899",
-          "base_sha256": "2c3ee26150532ccd9d413cf3f8a5cbff484851862005d6bcad1f0ca5527bdd0c",
-          "relocation_count": 18,
+          "base_sha256": "f476158b042e486f51614298b1c175c3cad0499fd67e8edd359509a37d3b19b4",
+          "relocation_count": 28,
           "comparison_unit": "00499610-72e4fb66c4f8",
-          "objdiff_percent": 60.2
+          "objdiff_percent": 78.93488
         }
       ],
       "status": "different",
-      "objdiff_percent": 60.2
+      "objdiff_percent": 78.93488
     },
     {
       "name": "GetVehicleAreaRememberSpeed",
@@ -217454,6 +217454,7 @@
         "lib/ogg-vorbis/vorbis/lsp.c",
         "src/legoapi/batarang.cpp",
         "src/legoapi/credits.c",
+        "src/legoapi/move.c",
         "src/legoapi/torpedo.c",
         "src/nu2api/nudlist_material_pc.cpp",
         "src/nu2api/numtx.c",
@@ -217489,6 +217490,14 @@
         },
         {
           "unit": "src/legoapi/credits.c",
+          "exact_match": true,
+          "target_size": 8,
+          "base_size": 8,
+          "target_sha256": "e77817b649821c634355a917817c1224a360514b1244fe09e832bac4e8ea4440",
+          "base_sha256": "e77817b649821c634355a917817c1224a360514b1244fe09e832bac4e8ea4440"
+        },
+        {
+          "unit": "src/legoapi/move.c",
           "exact_match": true,
           "target_size": 8,
           "base_size": 8,
@@ -226377,6 +226386,7 @@
         "src/legoapi/control_setup.cpp",
         "src/legoapi/debris_engine.c",
         "src/legoapi/gizforce.c",
+        "src/legoapi/move.c",
         "src/legoapi/parts.c",
         "src/legoapi/simpletons_pc.cpp",
         "src/nu2api/nuterrain.c",
@@ -226413,6 +226423,14 @@
         },
         {
           "unit": "src/legoapi/gizforce.c",
+          "exact_match": true,
+          "target_size": 8,
+          "base_size": 8,
+          "target_sha256": "568946b73185be9212f78a92db515c48fc38a91b32e7afc953f7e8e4acdb4a0e",
+          "base_sha256": "568946b73185be9212f78a92db515c48fc38a91b32e7afc953f7e8e4acdb4a0e"
+        },
+        {
+          "unit": "src/legoapi/move.c",
           "exact_match": true,
           "target_size": 8,
           "base_size": 8,
@@ -475257,10 +475275,10 @@
     "mapped_code_bytes": 2417225,
     "matched_code_bytes": 454983,
     "matching_percent": 13.107195514233217,
-    "fuzzy_coverage_percent": 46.95994802267007,
+    "fuzzy_coverage_percent": 46.96590722510055,
     "mapped_functions": 8859,
     "matched_functions": 4213,
-    "objdiff_fuzzy_percent": 74.684746,
+    "objdiff_fuzzy_percent": 74.6942,
     "objdiff_total_code": 2185998,
     "image_bytes": 40067072,
     "mapped_bytes": 4228868,
@@ -476472,7 +476490,7 @@
       "metadata_sha256": "fe09365da4c355f220d724ca99394fc120b758891b4188d2c49707b6df0894f2",
       "header_path": "src/saga.h",
       "header_sha256": "439d2f95899ff9163b6f554d9b5afcd31c1075b750540dd23b67830ea123185c",
-      "geometry_object_sha256": "5f9f794a2b6c9a8427e5ec428804c452054f25aa73a5a4580295852be82a8818",
+      "geometry_object_sha256": "e3b3283c2edbd2ad8026ab8eca5581cae1f97563b28ea89cb3d45de1a4f045d8",
       "toolchain_sha256": "b8808088bb2c7eb239785f69c9e464ae8545216d5705fb37216bc0cf926732f3",
       "implementation_sha256": "d6a33be911d095a6d07dccd4443ccbfd6b514fd89fd7e200d9caa1827944e218",
       "headers": {
@@ -476714,7 +476732,7 @@
         4
       ]
     },
-    "clang_source_sha256": "2d21904b8317edeecfe95a88c9c79721417397ba64c42eaacc0b48a0f2869bba",
+    "clang_source_sha256": "cbdef91b6c58bb582133c866a9c0fa601d8a34657cf3bb4491be80653a531742",
     "member_count": 42,
     "physical_definition_credit": 0
   },

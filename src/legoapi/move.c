@@ -1030,25 +1030,26 @@ static i32 MovementArcSine(f32 value) {
         f32 value;
         u32 bits;
     } magnitude;
-    f32 root, low, b, c, d, t, square, cube, fourth;
-    f64 polynomial;
+    f32 root, low, b, c, d;
+    f64 scaled, t, square, cube, fourth, polynomial;
     magnitude.value = value;
     magnitude.bits &= 0x7fffffff;
     root = NuFsqrt(1.0f - value * value);
     low = root < magnitude.value ? root : magnitude.value;
-    b = (f32)((magnitude.value - (f64)0.70710677f) * (f64)3.40282e38f);
-    b = b < 1.0f ? b : 1.0f;
-    b = b > -1.0f ? b : -1.0f;
-    c = (f32)(value * (f64)3.40282e38f);
-    c = c < 1.0f ? c : 1.0f;
-    c = c > -1.0f ? c : -1.0f;
+    scaled = (magnitude.value - (f64)0.70710677f) * (f64)3.40282e38f;
+    scaled = scaled < 1.0 ? scaled : 1.0;
+    b = (f32)(scaled > -1.0 ? scaled : -1.0);
+    scaled = value * (f64)3.40282e38f;
+    scaled = scaled < 1.0 ? scaled : 1.0;
+    c = (f32)(scaled > -1.0 ? scaled : -1.0);
     d = b * c + c;
-    t = b * c * low;
+    t = (f64)b * c * low;
     square = t * t;
     cube = square * t;
     fourth = square * square;
-    polynomial = d * (f64)0.785398f - t + PCPathArcSineCoefficient3 * cube + PCPathArcSineCoefficient5 * square * cube +
-                 PCPathArcSineCoefficient7 * cube * fourth + PCPathArcSineCoefficient9 * fourth * fourth * t;
+    polynomial = d * (f64)0.785398f + t * -1.0 + (PCPathArcSineCoefficient3 * t) * square +
+                 (PCPathArcSineCoefficient5 * square) * cube + (cube * PCPathArcSineCoefficient7) * fourth +
+                 (square * cube) * (fourth * PCPathArcSineCoefficient9);
     return (i32)(polynomial * (f64)10430.4f);
 }
 
@@ -1085,8 +1086,8 @@ void __cdecl VehicleCollisionCode(GAMEOBJECT *object) {
             qrand();
             qrand();
         }
-        /* Timed debris uses the selected effect and debris_position. */
-        STUBBED_NAMED("AddVariableShotDebrisEffectTimed1");
+        AddVariableShotDebrisEffectTimed1(WORLD->game_debris_sys->entries[debris_type].effect, &debris_position, 52,
+                                          FRAMETIME, 0, 0, NULL);
         debris_type = 101;
     }
     if (object->contact_normal.y > 0.574f || !(object->contact_normal.y >= -0.574f))
@@ -1114,10 +1115,9 @@ void __cdecl VehicleCollisionCode(GAMEOBJECT *object) {
             return;
         damage = 1;
     }
-    /* ObjHitObj(NULL, object, damage, 0, 0, 1). */
-    STUBBED_NAMED("ObjHitObj");
+    ObjHitObj(NULL, object, damage, 0, 0, 1);
     if (debris_type != -1)
-        STUBBED_NAMED("AddGameDebris");
+        AddGameDebris(WORLD->game_debris_sys, debris_type, &object->contact_position);
 }
 
 void __cdecl MovePlayer_VEHICLEDIRECTIONAL(GAMEOBJECT *object) {
