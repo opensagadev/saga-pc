@@ -3776,6 +3776,75 @@ static __declspec(noinline) i32 DeactivatedZapFilterPc(GAMEOBJECT *owner, GAMEOB
         return 0;
     return (flags & 0x8000) == 0;
 }
+typedef struct communicate_move_view_pc_s {
+    u8 unknown_000[0xd38];
+    f32 communication_blend;
+} COMMUNICATE_MOVE_VIEW_PC;
+STATIC_ASSERT(offsetof(COMMUNICATE_MOVE_VIEW_PC, communication_blend) == 0xd38);
+
+static __declspec(noinline) void CommunicateCode(GAMEOBJECT *object, i32 pressed, i32 mode) {
+    COMMUNICATE_MOVE_VIEW_PC *view = (COMMUNICATE_MOVE_VIEW_PC *)object;
+    GAMEOBJECT *target;
+    f32 *frame, *events;
+    f32 elapsed;
+    i32 i, random;
+    if (object->character_context == 0x1a) {
+        frame = AnimPlaying(&object->anim_packet, (i16)object->field_7aa, 1, 0);
+        if (frame == NULL)
+            return;
+        if (mode == 0) {
+            events = AnimListFrameArray(object->character_model, (i16)object->field_7aa);
+            if (events != NULL && events[0] >= 1.0f && events[1] >= 1.0f && events[2] >= 1.0f && events[3] >= 1.0f) {
+                if (events[0] >= *frame)
+                    view->communication_blend = 0.0f;
+                else if (*frame < events[1])
+                    view->communication_blend = (*frame - events[0]) / (events[1] - events[0]);
+                else if (*frame < events[2])
+                    view->communication_blend = 1.0f;
+                else if (*frame < events[3])
+                    view->communication_blend = 1.0f - (*frame - events[2]) / (events[3] - events[2]);
+                else
+                    view->communication_blend = 0.0f;
+            }
+        }
+        elapsed = object->context_timer + FRAMETIME;
+        object->context_timer = elapsed;
+        if (elapsed >= object->context_duration) {
+            view->communication_blend = 0.0f;
+            object->character_context = -1;
+            if ((object->flags_1fc & 0x80) != 0 && Cheat_IsOn(10)) {
+                target = Obj;
+                for (i = 0; i < HIGHGAMEOBJECT; ++i, ++target) {
+                    if (DeactivatedZapFilterPc(object, target) &&
+                        NuVecDistSqr(&object->collision_position, &target->collision_position, NULL) < 9.0f &&
+                        DeactivatePlayer(target, DEACTIVATEDTIME, object)) {
+                        PlaySfx("R2Zap", &target->collision_position);
+                        AddGameDebris(WORLD->game_debris_sys, 1, &target->collision_position);
+                        GameCam_HitJudder();
+                        target->action_movement_state = 2;
+                        random = qrand();
+                        target->context_variant_flags |= 0x100;
+                        target->context_hover_target_y =
+                            (f32)((f64)random * PlayerRandomScalePc * (f64)0.3f + (f64)0.2f);
+                        return;
+                    }
+                }
+            }
+        }
+        return;
+    }
+    if (pressed == 0 || object->character_context != -1 ||
+        (object->character_data->game_character->flags_094 & 0x80) == 0 ||
+        object->character_model->model_data_b[0x6b] == NULL)
+        return;
+    object->context_timer = 0.0f;
+    object->character_context = 0x1a;
+    object->field_7aa = 0x6b;
+    object->context_duration = AnimDuration((i16)object->id, 0x6b, 0.0f, 0.0f, 1);
+    if (mode != 0)
+        FastWeaponOut(object, 0);
+}
+
 static __declspec(noinline) void DeactivatedCode(GAMEOBJECT *object) {
     i32 controlled = 0, i, kind, count, selected;
     f32 elapsed, duration, range;
@@ -6664,8 +6733,8 @@ after_gravity:
     else if (((DEFAULT_MOTION_BATARANG_POINTER_PC *)object)->batarang != NULL)
         Batarang_MoveCode(object);
     if ((i8)object->character_data->game_character->flags_094_bytes[0] < 0)
-        STUBBED_NAMED(0x004b29f0); /* Native4b50c0: object EAX+current SPECIAL pressed,0; CommunicateCode. */
-    STUBBED_NAMED(0x004a69e0);     /* Native4b50c8: object ESI; actual void source action. */
+        CommunicateCode(object, object->pad->buttons_pressed & GAMEPAD_SPECIAL, 0);
+    STUBBED_NAMED(0x004a69e0); /* Native4b50c8: object ESI; actual void source action. */
     BeastStartFallCodePc(object);
     BeastCrushCodePc(object);
     GrabCode(object);
@@ -8493,7 +8562,7 @@ void __cdecl Move_GEONOSIAN(GAMEOBJECT *object) {
     else if (object->id == (u16)id_WATTO)
         ZapCode(object, action_pressed, 0);
     if ((i8)object->character_data->game_character->flags_094_bytes[0] < 0)
-        STUBBED_NAMED(0x004b29f0); /* Native4b67be: CommunicateCode(object,special_pressed,0), ignored action. */
+        CommunicateCode(object, special_pressed, 0);
     BeastStartFallCodePc(object);
     STUBBED_NAMED(0x0058cef0); /* Native4b67cc: HeadMovement(object), ignored action. */
     STUBBED_NAMED(0x0058cf50); /* Native4b67d2: CloakMovement(object), ignored action. */
@@ -8671,7 +8740,7 @@ zap:
         }
     }
     if ((i8)object->character_data->game_character->flags_094_bytes[0] < 0)
-        STUBBED_NAMED(0x004b29f0); /* Native4b6270: CommunicateCode(object EAX,SPECIAL&pressed,0). */
+        CommunicateCode(object, object->pad->buttons_pressed & GAMEPAD_SPECIAL, 0);
     if ((object->character_data->model_flags & 0x20) != 0) {
         GizPanel_MoveCode(WORLD, object, (GAMEPAD_ACTION | GAMEPAD_SPECIAL) & object->pad->buttons_pressed);
         if (WORLD->current_level == LevelFixupSlotPc0087b218)
@@ -9889,8 +9958,8 @@ void __cdecl Move_WEIRDO(GAMEOBJECT *object) {
         }
     }
     if ((i8)object->character_data->game_character->flags_094_bytes[0] < 0)
-        STUBBED_NAMED(0x004b29f0); /* Native4b5cfa: CommunicateCode(object EAX,SPECIAL&pressed,0). */
-    STUBBED_NAMED(0x004a69e0);     /* Native4b5d02: private rocket context action with original object ESI. */
+        CommunicateCode(object, object->pad->buttons_pressed & GAMEPAD_SPECIAL, 0);
+    STUBBED_NAMED(0x004a69e0); /* Native4b5d02: private rocket context action with original object ESI. */
     BeastStartFallCodePc(object);
     STUBBED_NAMED(0x0058cef0); /* Native4b5d0d: HeadMovement(object). */
     STUBBED_NAMED(0x0058cf50); /* Native4b5d13: CloakMovement(object). */

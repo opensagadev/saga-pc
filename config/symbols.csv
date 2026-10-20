@@ -1665,7 +1665,7 @@ address,symbol,size,ctype
 0x4b13e0,_DodgeCode,465,"static void(GAMEOBJECT *, i32, i32)"
 0x4b15c0,_ForceDeflectCode,1259,
 0x004b1ab0,_GameObjectStuffAfterAnimation,3904,void __cdecl (void)
-0x4b29f0,_CommunicateCode,701,
+0x4b29f0,_CommunicateCode,701,"static void(GAMEOBJECT *, i32, i32)"
 0x4b2cb0,_Move_SPEEDERBIKE,843,void __cdecl(GAMEOBJECT *)
 0x4b3000,_Move_BEAST,224,void __cdecl(GAMEOBJECT*)
 0x4b30e0,_Move_CANNON,350,void __cdecl(GAMEOBJECT*)
