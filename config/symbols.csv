@@ -70,6 +70,7 @@ address,symbol,size,ctype
 0x40e870,_CopyFlightMatrixPc,95,"void __cdecl (NUMTX *, const NUMTX *)"
 0x40e8e0,_TransformFlightVectorPc,91,"static void(NUMTX *, NUVEC *, NUVEC *)"
 0x40ea30,_ChrisAnakinCUpdate,319,
+0x40ebf0,_ProcessQuickBoltsPc,513,static void (DOGFIGHT_QUICK_BUFFER_PC *)
 0x40ee70,_QuickBoltRecordAllocatePc,132,DOGFIGHT_QUICK_BOLT_PC *__cdecl (DOGFIGHT_QUICK_BUFFER_PC *)
 0x40ef00,_QuickBoltCreatePc,232,"static i32(DOGFIGHT_QUICK_BUFFER_PC *, NUMTX *, NUVEC4 *, f32, i32, i32)"
 0x40eff0,_CalcSplinePoint,1119,"void __cdecl (FLIGHT_SPLINE_RESOURCE_PC *,NUVEC4 *,f32)"
@@ -88,6 +89,7 @@ address,symbol,size,ctype
 0x410940,_StarFighterTargetPc,206,static void(starfighter_s *)
 0x410a10,_ProcessStarFighter,2656,"i32 __cdecl (DOGFIGHT_FIGHTER_PC *, DOGFIGHT_QUICK_BUFFER_PC *)"
 0x4115f0,_SelectFreeFlightGroupPc,68,DOGFIGHT_GROUP_PC * __cdecl (void)
+0x411640,_ProcessFlightGroupPc,501,"static void (DOGFIGHT_GROUP_PC *, DOGFIGHT_QUICK_BUFFER_PC *)"
 0x411880,_SpaceAudioPoint,68,
 0x4118d0,_SpaceResetAudioPoint,171,void __cdecl (void)
 0x411980,_DogfightResetSpacePc,639,"static void (WORLDINFO *, DOGFIGHT_SPACE_PC *)"
@@ -101,9 +103,13 @@ address,symbol,size,ctype
 0x412760,_CollideBoltStarFighter,826,
 0x412fc0,_ChrisAnakinCReset,581,
 0x413210,_ChrisAnakinCInit,25,
+0x413270,_SpawnFlightFighterPc,509,"static void (DOGFIGHT_PLAYBACK_SPLINE_PC *, DOGFIGHT_FIGHTER_PC *)"
+0x413470,_ProcessFlightSplinePc,153,"static void (DOGFIGHT_PLAYBACK_SPLINE_PC *, DOGFIGHT_SPACE_PC *)"
 0x413510,_MakeWingFormation,425,"void __cdecl (NUVEC4 *, NUVEC4 *, f32, i32)"
+0x4136c0,_ProcessFormationActionsPc,455,static void (DOGFIGHT_ACTION_STATE_PC *)
+0x413890,_ProcessSpaceLevelPc,381,static void (DOGFIGHT_SPACE_PC *)
 0x413a20,_ChrisDogFightAInit,126,void __cdecl (WORLDINFO *)
-0x413aa0,_ChrisDogFightAUpdate,107,
+0x413aa0,_ChrisDogFightAUpdate,107,void __cdecl (WORLDINFO *)
 0x413b70,_CC_variant,910,
 0x413f80,_GameDrawMtxCopyPc,95,
 0x413fe0,_GameDrawMtxSetYRotationPc,162,
@@ -9565,10 +9571,12 @@ address,symbol,size,ctype
 0x751d68,??_C@_0BE@LMEIANHN@Dog_DroidFighterHit?$AA@,20,const char[20]
 0x00751d84,_LevelConfigFarDistance,4,const f32
 0x00751d84,__real@49f42400,4,const f32
+0x751d88,__real@42040000,4,const f32
 0x00751d8c,__real@41b40000,,const f32
 0x00751d90,__real@42480000,4,const f32
 0x00751d94,__real@c0a00000,4,const f32
 0x751d98,__real@43960000,,const f32
+0x751d9c,__real@43c80000,4,const f32
 0x751da0,??_C@_07IFGLIMJI@variant?$AA@,8,const char[8]
 0x751da8,??_C@_08OBMKNIBC@henchman?$AA@,9,const char[9]
 0x751db4,??_C@_0BA@NPGNDFHH@republicgunship?$AA@,16,const char[16]

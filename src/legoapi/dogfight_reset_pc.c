@@ -1128,3 +1128,337 @@ i32 __cdecl ProcessStarFighter(DOGFIGHT_FIGHTER_PC *record, DOGFIGHT_QUICK_BUFFE
     fighter->fired = 1;
     return 1;
 }
+
+/* Recovered PC playback views; original private source names are unknown. */
+typedef struct DOGFIGHT_PLAYBACK_SPLINE_PC {
+    NUVEC4 points[64];
+    i32 point_count;
+    f32 next_spawn;
+    f32 reset_spawn;
+    f32 interval;
+    f32 length;
+    f32 cumulative[64];
+    i32 repeat_limit;
+    i32 remaining;
+    i32 target_id;
+    i32 object_id;
+    i32 model_id;
+    u8 unknown_528[8];
+} DOGFIGHT_PLAYBACK_SPLINE_PC;
+typedef struct DOGFIGHT_ACTION_STATE_PC {
+    NUVEC4 draw_scale;
+    DOGFIGHT_ACTION_PC *actions;
+    DOGFIGHT_ACTION_PC *current;
+    i32 next_index;
+    i32 command;
+    u32 unknown_20;
+    f32 timer;
+    u32 unknown_28;
+    DOGFIGHT_SPACE_PC *owner;
+} DOGFIGHT_ACTION_STATE_PC;
+typedef struct DOGFIGHT_LEVEL_FLAGS_PC {
+    u8 first;
+    u8 remainder[15];
+} DOGFIGHT_LEVEL_FLAGS_PC;
+STATIC_ASSERT(sizeof(DOGFIGHT_PLAYBACK_SPLINE_PC) == 0x530);
+STATIC_ASSERT(offsetof(DOGFIGHT_PLAYBACK_SPLINE_PC, next_spawn) == 0x404);
+STATIC_ASSERT(offsetof(DOGFIGHT_PLAYBACK_SPLINE_PC, interval) == 0x40c);
+STATIC_ASSERT(offsetof(DOGFIGHT_PLAYBACK_SPLINE_PC, repeat_limit) == 0x514);
+STATIC_ASSERT(offsetof(DOGFIGHT_PLAYBACK_SPLINE_PC, remaining) == 0x518);
+STATIC_ASSERT(offsetof(DOGFIGHT_PLAYBACK_SPLINE_PC, object_id) == 0x520);
+STATIC_ASSERT(offsetof(DOGFIGHT_PLAYBACK_SPLINE_PC, model_id) == 0x524);
+STATIC_ASSERT(sizeof(DOGFIGHT_ACTION_STATE_PC) == 0x30);
+STATIC_ASSERT(offsetof(DOGFIGHT_ACTION_STATE_PC, timer) == 0x24);
+STATIC_ASSERT(offsetof(DOGFIGHT_ACTION_STATE_PC, owner) == 0x2c);
+STATIC_ASSERT(sizeof(DOGFIGHT_LEVEL_FLAGS_PC) == sizeof(LevFlag));
+STATIC_ASSERT(offsetof(GAMESAVE, area_save) == 0x782c);
+STATIC_ASSERT(offsetof(AREA_SAVE_PICKUP_PC, area_complete) == 1);
+STATIC_ASSERT(offsetof(AREA_DATA_PC, index) == 0x7c);
+STATIC_ASSERT(offsetof(WORLDINFO, doors) == 0x4698);
+STATIC_ASSERT(offsetof(WORLDINFO, door_count) == 0x469c);
+STATIC_ASSERT(sizeof(DOOR_s) == 0x128);
+extern void __cdecl SpaceResetAudioPoint(void);
+
+static __declspec(noinline) void SpawnFlightFighterPc(DOGFIGHT_PLAYBACK_SPLINE_PC *spline,
+                                                      DOGFIGHT_FIGHTER_PC *record) {
+    starfighter_s *fighter = &record->fields;
+    NUVEC4 direction;
+    i32 model;
+    if (spline->point_count == 0)
+        return;
+    CopyFlightMatrixPc(&fighter->matrix, &ANI3_EVAL_IDENTITY_MATRIX);
+    *(NUVEC4 *)&fighter->matrix.m30 = spline->points[0];
+    direction.x = spline->points[1].x - (f64)spline->points[0].x;
+    direction.y = spline->points[1].y - (f64)spline->points[0].y;
+    direction.z = spline->points[1].z - (f64)spline->points[0].z;
+    StarFighterAlignPc(fighter, &direction, 1.0f, 0);
+    fighter->velocity.x = 0.0f;
+    fighter->velocity.y = 0.0f;
+    fighter->velocity.z = 0.0f;
+    fighter->velocity.w = 1.0f;
+    fighter->target_position = spline->points[0];
+    fighter->spline_progress = 0.0f;
+    fighter->initial_delay = 0.0f;
+    fighter->shoot_timer = 0.0f;
+    fighter->active = 1;
+    fighter->parent = NULL;
+    fighter->spline = (FLIGHT_SPLINE_RESOURCE_PC *)spline;
+    fighter->health = 1;
+    fighter->hit_count = 0;
+    fighter->fired = 0;
+    fighter->delete_when_done = 0;
+    model = spline->model_id;
+    switch (model) {
+        case 87:
+            fighter->model_id = -297;
+            break;
+        case 86:
+            fighter->model_id = -299;
+            break;
+        case 54:
+            fighter->model_id = -298;
+            break;
+        case 85:
+        case 84:
+            fighter->model_id = -300;
+            break;
+        default:
+            fighter->model_id = (i16)model;
+            break;
+    }
+    fighter->scale = 1.0f;
+    fighter->draw_flags = 1;
+    fighter->object_id = spline->object_id;
+    fighter->target_id = (i16)spline->target_id;
+    fighter->missile_count = 1;
+    fighter->speed = 50.0f;
+    if (model == 84 || model == 85 || model == 86 || model == 87)
+        fighter->speed = 22.5f;
+    else if (model == 54)
+        fighter->scale = 2.0f;
+    else if (model == -307)
+        fighter->speed = 33.0f;
+}
+
+static __declspec(noinline) void ProcessFlightSplinePc(DOGFIGHT_PLAYBACK_SPLINE_PC *spline, DOGFIGHT_SPACE_PC *space) {
+    DOGFIGHT_FIGHTER_PC *fighter;
+    if (spline->point_count == 0)
+        return;
+    if (!(spline->next_spawn > space->door_elapsed && spline->next_spawn <= space->door_countdown))
+        return;
+    fighter = QueuedFighterSelectorPc(space);
+    fighter->fields.spawn_time = spline->next_spawn;
+    SpawnFlightFighterPc(spline, fighter);
+    if (spline->interval != 0.0f) {
+        if (spline->repeat_limit != 0) {
+            --spline->remaining;
+            if (spline->remaining == 0) {
+                spline->next_spawn = -1.0f;
+                return;
+            }
+        }
+        spline->next_spawn += spline->interval;
+    } else {
+        spline->next_spawn = -1.0f;
+    }
+}
+
+static __declspec(noinline) void ProcessFlightGroupPc(DOGFIGHT_GROUP_PC *group, DOGFIGHT_QUICK_BUFFER_PC *buffer) {
+    NUVEC step;
+    f32 speed;
+    i32 i, active = 0;
+    if (group->active == 0)
+        return;
+    if ((u32)group->state <= 1) {
+        if (group->state == 0) {
+            NuVecSub((NUVEC *)&group->velocity, (NUVEC *)&GameCam->render_mtx.m30, (NUVEC *)&group->matrix.m30);
+            group->velocity.w = 1.0f;
+            NuVecNorm((NUVEC *)&group->velocity, (NUVEC *)&group->velocity);
+            group->velocity.w = 1.0f;
+            speed = group->speed;
+            group->velocity.x *= speed;
+            group->velocity.y *= speed;
+            group->velocity.z *= speed;
+        }
+        step.x = (f64)group->velocity.x * FRAMETIME;
+        step.y = (f64)group->velocity.y * FRAMETIME;
+        step.z = (f64)group->velocity.z * FRAMETIME;
+        group->matrix.m30 += step.x;
+        group->matrix.m31 += step.y;
+        group->matrix.m32 += step.z;
+        NuVecInvMtxTransform((NUVEC *)&group->camera_position, (NUVEC *)&group->matrix.m30, &GameCam->render_mtx);
+        group->duration -= FRAMETIME;
+        if (group->duration < 0.0f || (group->camera_position.z > 800.0 && group->state == 1) ||
+            (group->camera_position.z < 0.0f && group->state == 0))
+            group->active = 0;
+    }
+    for (i = 0; i < 5; ++i) {
+        if (group->fighters[i].fields.active != 0)
+            active |= ProcessStarFighter(&group->fighters[i], buffer);
+    }
+    if (active == 0)
+        group->draw_target = 1;
+    if (group->draw_target != 0) {
+        step.x = (f64)group->velocity.x * FRAMETIME;
+        step.y = (f64)group->velocity.y * FRAMETIME;
+        step.z = (f64)group->velocity.z * FRAMETIME;
+        group->target.x = group->matrix.m30 + (f64)step.x;
+        group->target.y = group->matrix.m31 + (f64)step.y;
+        group->target.z = group->matrix.m32 + (f64)step.z;
+    }
+}
+
+static __declspec(noinline) void ProcessQuickBoltsPc(DOGFIGHT_QUICK_BUFFER_PC *buffer) {
+    NUVEC player0, player1, step;
+    DOGFIGHT_QUICK_BOLT_PC *bolt, *end;
+    i32 valid0 = 0, valid1 = 0;
+    f64 dx, dy, dz;
+    if (buffer == NULL || buffer->capacity == 0)
+        return;
+    if (Player[0] != NULL && (((GAMEOBJECT *)Player[0])->flags_1fc & 0x80) != 0) {
+        valid0 = 1;
+        player0.x = ((GAMEOBJECT *)Player[0])->transform.m30;
+        player0.y = ((GAMEOBJECT *)Player[0])->transform.m31;
+        player0.z = ((GAMEOBJECT *)Player[0])->transform.m32;
+    }
+    if (Player[1] != NULL && (((GAMEOBJECT *)Player[1])->flags_1fc & 0x80) != 0) {
+        valid1 = 1;
+        player1.x = ((GAMEOBJECT *)Player[1])->transform.m30;
+        player1.y = ((GAMEOBJECT *)Player[1])->transform.m31;
+        player1.z = ((GAMEOBJECT *)Player[1])->transform.m32;
+    }
+    bolt = buffer->records;
+    end = bolt + buffer->capacity;
+    for (; bolt < end; ++bolt) {
+        if (bolt->duration == 0.0f)
+            continue;
+        step.x = (f64)bolt->velocity.x * FRAMETIME;
+        step.y = (f64)bolt->velocity.y * FRAMETIME;
+        step.z = (f64)bolt->velocity.z * FRAMETIME;
+        bolt->matrix.m30 += step.x;
+        bolt->matrix.m31 += step.y;
+        bolt->matrix.m32 += step.z;
+        if (Player[0] != NULL && valid0 != 0) {
+            dx = (f64)bolt->matrix.m30 - player0.x;
+            dy = (f64)bolt->matrix.m31 - player0.y;
+            dz = (f64)bolt->matrix.m32 - player0.z;
+            if (dy * dy + dx * dx + dz * dz < 1.0) {
+                bolt->duration = 0.0f;
+                ObjHitObj(NULL, Player[0], 1, 0, 0, 1);
+            }
+        }
+        if (valid1 != 0 && Player[1] != NULL) {
+            dx = (f64)bolt->matrix.m30 - player1.x;
+            dy = (f64)bolt->matrix.m31 - player1.y;
+            dz = (f64)bolt->matrix.m32 - player1.z;
+            if (dy * dy + dx * dx + dz * dz < 1.0) {
+                bolt->duration = 0.0f;
+                ObjHitObj(NULL, Player[1], 1, 0, 0, 1);
+            }
+        }
+        bolt->duration -= FRAMETIME;
+        if (bolt->duration < 0.0f)
+            bolt->duration = 0.0f;
+    }
+}
+
+static __declspec(noinline) void ProcessFormationActionsPc(DOGFIGHT_ACTION_STATE_PC *state) {
+    NUVEC4 start, target;
+    if (state->actions == NULL)
+        return;
+    if (state->command == 4) {
+        state->current = &state->actions[state->next_index];
+        ++state->next_index;
+        state->command = state->current->command;
+        if (state->command == 3) {
+            state->current = state->actions;
+            state->next_index = 1;
+            state->command = state->actions[0].command;
+        }
+        if (state->command == 0) {
+            state->timer = state->current->value;
+        } else if (state->command == 1) {
+            start.x = 0.0f;
+            start.y = 0.0f;
+            start.z = 300.0f;
+            start.w = 1.0f;
+            *(NUVEC *)&target = *(NUVEC *)&GameCam->render_mtx.m30;
+            NuVecMtxTransform((NUVEC *)&start, (NUVEC *)&start, &GameCam->render_mtx);
+            MakeWingFormation(&start, &target, state->current->value, 1);
+            state->command = 4;
+        } else if (state->command == 2) {
+            start.x = -10.0f;
+            start.y = -5.0f;
+            start.z = -10.0f;
+            start.w = 1.0f;
+            NuVecRotateZ((NUVEC *)&start, (NUVEC *)&start, qrand());
+            NuVecMtxTransform((NUVEC *)&start, (NUVEC *)&start, &GameCam->render_mtx);
+            target.x = 0.0f;
+            target.y = 0.0f;
+            target.z = 400.0f;
+            target.w = 1.0f;
+            NuVecMtxTransform((NUVEC *)&target, (NUVEC *)&target, &GameCam->render_mtx);
+            MakeWingFormation(&start, &target, state->current->value, 0);
+            state->command = 4;
+        }
+    }
+    if (state->command == 0) {
+        state->timer -= FRAMETIME;
+        if (state->timer <= 0.0f)
+            state->command = 4;
+    }
+}
+
+static __declspec(noinline) void ProcessSpaceLevelPc(DOGFIGHT_SPACE_PC *space) {
+    DOGFIGHT_QUICK_BUFFER_PC *buffer = (DOGFIGHT_QUICK_BUFFER_PC *)&space->reset_buffer;
+    GAMEOBJECT *player0, *player1;
+    DOOR_s *door;
+    i32 i, index, j;
+    space->door_elapsed = space->door_countdown;
+    space->door_time += FRAMETIME;
+    space->door_countdown += (f64)space->normalized_speed * FRAMETIME;
+    ProcessFormationActionsPc((DOGFIGHT_ACTION_STATE_PC *)&space->draw_scale);
+    for (i = 0; i < 8; ++i)
+        ProcessFlightGroupPc(&space->groups[i], buffer);
+    ProcessQuickBoltsPc(buffer);
+    for (i = 0; i < 256; ++i)
+        ProcessFlightSplinePc((DOGFIGHT_PLAYBACK_SPLINE_PC *)&space->splines[i], space);
+    for (i = 0; i < 96; ++i) {
+        if (space->queued_fighters[i].fields.active != 0)
+            ProcessStarFighter(&space->queued_fighters[i], buffer);
+    }
+    player1 = Player[1];
+    player0 = Player[0];
+    index = -1;
+    for (i = 6; i >= 0; --i) {
+        if ((player0 != NULL && player0->sock_position.distance > DogfightDoorsPc[i].distance) ||
+            (player1 != NULL && player1->sock_position.distance > DogfightDoorsPc[i].distance)) {
+            index = i;
+            break;
+        }
+    }
+    if (index >= 0) {
+        door = WORLD->doors;
+        for (j = 0; j < WORLD->door_count; ++j, ++door) {
+            if (NuStrICmp((char *)door, DogfightDoorsPc[index].name) == 0) {
+                Doors_SetLastDoor(door);
+                break;
+            }
+        }
+    }
+    if (WORLD->area == BATTLEOVERCORUSCANT_ADATA)
+        SpaceRumbleProcess();
+}
+
+void __cdecl ChrisDogFightAUpdate(WORLDINFO *world) {
+    DOGFIGHT_LEVEL_FLAGS_PC *flags = (DOGFIGHT_LEVEL_FLAGS_PC *)&LevFlag;
+    SpaceResetAudioPoint();
+    ProcessCurrentSpeed(world, DogfightSpeedListPc);
+    ProcessSpaceLevelPc((DOGFIGHT_SPACE_PC *)world->level_specific_data);
+    if (AreaGlobals_PC.field_00 != 0 || flags->first != 0 || BATTLEOVERCORUSCANT_ADATA == NULL)
+        return;
+    if (Game.area_save[BATTLEOVERCORUSCANT_ADATA->index].area_complete != 0)
+        return;
+    if (GamePlayTimer.time_elapsed >= 3.0f)
+        flags->first = 1;
+}
