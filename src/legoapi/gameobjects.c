@@ -2232,6 +2232,103 @@ void __cdecl ReleaseAllTakeOvers(void) {
     }
 }
 
+void __cdecl Tag_ResetTransfers(void) {
+    TagTransfersPc[0].elapsed = 0.5f;
+    TagTransfersPc[1].elapsed = 0.5f;
+}
+
+void __cdecl Tag_NewTransfer(GAMEOBJECT *source, GAMEOBJECT *target) {
+    i32 particle;
+    f32 height;
+    f32 lower;
+    TAG_TRANSFER_PC *transfer;
+    if (target->field_280 == 0 || target->field_280 == 1) {
+        TagTransfersPc[(i8)target->field_280].source = source;
+        TagTransfersPc[(i8)target->field_280].elapsed = 0.0f;
+        for (particle = 0; particle < 3; ++particle) {
+            height = (f32)((f64)qrand() * PlayerRandomScalePc * (f64)0.4f + (f64)0.4f);
+            TagTransfersPc[(i8)target->field_280].height_fraction[particle] = height;
+            transfer = &TagTransfersPc[(i8)target->field_280];
+            height = transfer->height_fraction[particle];
+            transfer->previous[particle].x = source->collision_position.x;
+            transfer->previous[particle].z = source->collision_position.z;
+            lower = source->collision_min.y;
+            transfer->previous[particle].y = (f32)((f64)lower + ((f64)source->collision_max.y - lower) * height);
+        }
+    }
+    if ((target->flags_1fc_word & 0x80) != 0) {
+        if (Tag_DoneFirst == 0)
+            Tag_DoneFirst = 1;
+        else if (Tag_DoneFirst == 1)
+            Tag_DoneFirst = 2;
+        Tag_DoneAny = 1;
+    }
+}
+
+void __cdecl Tag_UpdateTransfers(i32 effect0, i32 effect1, i32 count) {
+    i32 player;
+    i32 particle;
+    i32 angle;
+    f32 elapsed;
+    f32 phase;
+    f32 height;
+    f32 lower;
+    TAG_TRANSFER_PC *transfer;
+    GAMEOBJECT *source;
+    GAMEOBJECT *target;
+    NUVEC from;
+    NUVEC to;
+    NUVEC position;
+    for (player = 0; player < 2; ++player) {
+        transfer = &TagTransfersPc[player];
+        if (Player[player] == NULL) {
+            transfer->elapsed = 0.5f;
+            continue;
+        }
+        if (!(transfer->elapsed < 0.5f))
+            continue;
+        elapsed = transfer->elapsed + FRAMETIME;
+        transfer->elapsed = elapsed;
+        if (elapsed > 0.5f) {
+            transfer->elapsed = 0.5f;
+            continue;
+        }
+        phase = elapsed + elapsed;
+        for (particle = 0; particle < 3; ++particle) {
+            source = transfer->source;
+            from.x = source->collision_position.x;
+            from.z = source->collision_position.z;
+            lower = source->collision_min.y;
+            height = transfer->height_fraction[particle];
+            from.y = (f32)((f64)lower + ((f64)source->collision_max.y - lower) * height);
+            target = Player[player];
+            to.x = target->collision_position.x;
+            to.z = target->collision_position.z;
+            lower = target->collision_min.y;
+            to.y = (f32)((f64)lower + ((f64)target->collision_max.y - lower) * height);
+            if (particle == 1) {
+                angle = (i32)((f64)phase * 16384.0);
+                phase = NuTrigTable[(angle >> 1) & 0x7fff];
+            } else if (particle == 2) {
+                angle = (i32)((f64)phase * 16384.0 + 16384.0);
+                phase = 1.0f - NuTrigTable[(angle >> 1) & 0x7fff];
+            }
+            position.x = (f32)((f64)from.x + ((f64)to.x - from.x) * phase);
+            position.y = (f32)((f64)from.y + ((f64)to.y - from.y) * phase);
+            position.z = (f32)((f64)from.z + ((f64)to.z - from.z) * phase);
+            if (particle == 1) {
+                angle = (i32)((f64)phase * 65536.0);
+                position.y = (f32)((f64)position.y + NuTrigTable[(angle >> 1) & 0x7fff] * (f64)0.005f);
+            } else if (particle == 2) {
+                angle = (i32)((f64)phase * 32768.0 + 16384.0);
+                position.y = (f32)((f64)position.y + NuTrigTable[(angle >> 1) & 0x7fff] * (f64)0.01f);
+            }
+            AddVariableShotDebrisEffectTimed1(player == 0 ? effect0 : effect1, &position, count, FRAMETIME, 0, 0, NULL);
+            transfer->previous[particle] = position;
+        }
+    }
+}
+
 void __cdecl Tag_Check(GAMEOBJECT *object) {
     GAMEOBJECT *target = NULL;
     i32 result;
@@ -2306,8 +2403,8 @@ void __cdecl Tag_Check(GAMEOBJECT *object) {
             goto no_target;
         }
         if (InCollectList_Index((i16)target->id, NULL, 0) == -1) {
-            STUBBED_NAMED("Tag_Check: GameAudio_PlaySfx 0x32,&collision_position,0,0 PC547930");
-            STUBBED_NAMED("Tag_Check: NewRumble object pad,0.5f,0 PC54a850");
+            GameAudio_PlaySfx(0x32, &object->collision_position, 0, 0);
+            NewRumble(object->pad->bound_pad, 0.5f, 0.0f);
             if (AIScriptSetBaseScriptStateByName(&target->ai_packet.script_processor,
                                                  (char *)TakeOverState_MapRunAway) != 0) {
                 AIScriptProcess(WORLD->ai_sys, (APIOBJECT_PC *)target, &target->ai_packet,
@@ -2353,18 +2450,19 @@ tagged_result:
         goto draw_icon;
     }
     object->tag_flags &= ~4u;
-    STUBBED_NAMED("Tag_Check: GameAudio_PlaySfx 0x21,&collision_position,0,0 PC547930");
+    GameAudio_PlaySfx(0x21, &object->collision_position, 0, 0);
     if (target->model_draw_result != 0) {
-        STUBBED_NAMED("Tag_Check: GameCam_Blend GameCam,0.5f,0,1 PC54a3e0");
+        GameCam_Blend(GameCam, 0.5f, 0.0f, 1);
     } else {
-        STUBBED_NAMED("Tag_Check: GameCam_Reset GameCam PC54a2f0");
+        GameCam_Reset(GameCam);
     }
-    STUBBED_NAMED("Tag_Check: RememberPlayerIDs 0,Player0id-or-minus1,Player1id-or-minus1 PC55e1b0");
+    RememberPlayerIDs(0, Player[0] != NULL ? (i16)((GAMEOBJECT *)Player[0])->id : -1,
+                      Player[1] != NULL ? (i16)((GAMEOBJECT *)Player[1])->id : -1);
     if (Tag_Mode == 1 || Tag_Mode == 3) {
-        STUBBED_NAMED("Tag_Check: Tag_NewTransfer object,target PC59fe30");
+        Tag_NewTransfer(object, target);
     }
     if (object->field_280 < 2 && target->field_280 < 2) {
-        STUBBED_NAMED("Tag_Check: ResetTimer &JoinInTimer,0 PC548fb0");
+        ResetTimer(&JoinInTimer, 0.0f);
     }
     goto draw_icon;
 no_target:

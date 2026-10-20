@@ -28268,3 +28268,28 @@ extern "C" {
 }
 #endif
 #endif
+
+#ifndef SAGA_TAG_TRANSFERS_NATIVE_PC
+#define SAGA_TAG_TRANSFERS_NATIVE_PC
+typedef struct tag_transfer_pc_s {
+    GAMEOBJECT *source;
+    NUVEC previous[3];
+    f32 height_fraction[3];
+    f32 elapsed;
+} TAG_TRANSFER_PC;
+STATIC_ASSERT(sizeof(TAG_TRANSFER_PC) == 56);
+STATIC_ASSERT(offsetof(TAG_TRANSFER_PC, source) == 0);
+STATIC_ASSERT(offsetof(TAG_TRANSFER_PC, previous) == 4);
+STATIC_ASSERT(offsetof(TAG_TRANSFER_PC, height_fraction) == 40);
+STATIC_ASSERT(offsetof(TAG_TRANSFER_PC, elapsed) == 52);
+#ifdef __cplusplus
+extern "C" {
+#endif
+    extern TAG_TRANSFER_PC TagTransfersPc[2];
+    void __cdecl Tag_ResetTransfers(void);
+    void __cdecl Tag_NewTransfer(GAMEOBJECT *source, GAMEOBJECT *target);
+    void __cdecl Tag_UpdateTransfers(i32 effect0, i32 effect1, i32 count);
+#ifdef __cplusplus
+}
+#endif
+#endif

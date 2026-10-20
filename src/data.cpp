@@ -34492,3 +34492,8 @@ extern "C" {
 #pragma section(".bss$HeadCloakHairTuningPc", read, write)
     __declspec(allocate(".bss$HeadCloakHairTuningPc")) f32 HairMovementRestAnglePc = 0.0f;
 }
+
+#pragma section(".bss$TagTransfersPc", read, write)
+extern "C" {
+    __declspec(allocate(".bss$TagTransfersPc")) TAG_TRANSFER_PC TagTransfersPc[2];
+}

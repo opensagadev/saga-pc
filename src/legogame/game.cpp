@@ -597,7 +597,7 @@ extern "C" void __cdecl CheckResetBits(void) {
     Panel_Clear();
     GameCam_Reset(GameCam);
     ResetGameMessages();
-    STUBBED_NAMED("CheckResetBits: Tag_ResetTransfers at 0x0059fe10");
+    Tag_ResetTransfers();
     Hint_Reset();
     Hint_CancelCurrent();
     Teleports_Reset(WORLD);

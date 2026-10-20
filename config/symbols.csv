@@ -4619,7 +4619,9 @@ address,symbol,size,ctype
 0x59f990,_RegisterTakeOverObject,225,void __cdecl (GAMEOBJECT *)
 0x0059fa80,_StoreStatusTakeOverObjectSys,342,void __cdecl (void)
 0x59fbe0,_ReStoreStatusTakeOverObjectSys,483,
-0x59fe30,_Tag_NewTransfer,330,
+0x59fe10,_Tag_ResetTransfers,19,void(void)
+0x59fe30,_Tag_NewTransfer,330,"void(GAMEOBJECT *, GAMEOBJECT *)"
+0x59ff80,_Tag_UpdateTransfers,609,"void(i32, i32, i32)"
 0x005a01f0,_Buck_StartRiderJump,294,"void __cdecl (GAMEOBJECT *, GAMEOBJECT *)"
 0x005a0320,_Buck_Start,168,"void __cdecl (GAMEOBJECT *, GAMEOBJECT *)"
 0x005a03d0,_Buck_MoveCode,110,"void __cdecl (GAMEOBJECT *, i32)"
@@ -22599,6 +22601,7 @@ address,symbol,size,ctype
 0x00956450,_load_nchildren,,
 0x00956454,_gizflow_loop_checksum,1,u8
 0x956458,_takeoverobjects,352,TAKEOVEROBJECT_PC[8]
+0x9565b8,_TagTransfersPc,112,TAG_TRANSFER_PC[2]
 0x956628,_num_takeoverobjects,4,i32
 0x0095662c,_BuckStartExtraFn,4,TAG_DRAW_ICON_PC
 0x956630,_Tag_NoHiddenIconFn,,i32 (__cdecl *)(GAMEOBJECT *)

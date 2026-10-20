@@ -264,7 +264,8 @@ static void NuMainUpdateFrame(WORLDINFO *world, i32 *frame_flag) {
                 tieoffsfxwait -= FRAMETIME;
             }
             UpdateExplosions();
-            STUBBED_NAMED("NuMainUpdateFrame: Tag_UpdateTransfers at 0x0059ff80");
+            Tag_UpdateTransfers(world->game_debris_sys->entries[39].effect, world->game_debris_sys->entries[40].effect,
+                                180);
             UpdateRepeatSfx();
             GizmoSysLateUpdate(world->gizmo_sys, world, FRAMETIME);
             SAGA_SOUND_CHECK("after GizmoSysLateUpdate");
