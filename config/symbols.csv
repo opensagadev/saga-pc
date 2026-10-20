@@ -67,6 +67,7 @@ address,symbol,size,ctype
 0x40ade0,_MoveGameCamera,14452,
 0x40e690,_GoingForwardsAlongNarrowSock,106,i32 __cdecl (GAMEOBJECT *)
 0x40e700,_FlightSplineCapacityDiagnosticPc,1,void __cdecl (char *)
+0x40e870,_CopyFlightMatrixPc,95,"void __cdecl (NUMTX *, const NUMTX *)"
 0x40ea30,_ChrisAnakinCUpdate,319,
 0x40eff0,_CalcSplinePoint,1119,"void __cdecl (FLIGHT_SPLINE_RESOURCE_PC *,NUVEC4 *,f32)"
 0x40f450,_CalcSplinePointFromDist,190,"void __cdecl (FLIGHT_SPLINE_RESOURCE_PC *,NUVEC4 *,f32)"
@@ -79,6 +80,7 @@ address,symbol,size,ctype
 0x410170,_DogfightResetWorldRecordsPc,196,"static void (WORLDINFO *, DOGFIGHT_SPACE_PC *)"
 0x410240,_DogfightResetGroupPc,115,static void (DOGFIGHT_GROUP_PC *)
 0x410a10,_ProcessStarFighter,2656,
+0x4115f0,_SelectFreeFlightGroupPc,68,DOGFIGHT_GROUP_PC * __cdecl (void)
 0x411880,_SpaceAudioPoint,68,
 0x4118d0,_SpaceResetAudioPoint,171,void __cdecl (void)
 0x411980,_DogfightResetSpacePc,639,"static void (WORLDINFO *, DOGFIGHT_SPACE_PC *)"
@@ -92,7 +94,7 @@ address,symbol,size,ctype
 0x412760,_CollideBoltStarFighter,826,
 0x412fc0,_ChrisAnakinCReset,581,
 0x413210,_ChrisAnakinCInit,25,
-0x413510,_MakeWingFormation,425,
+0x413510,_MakeWingFormation,425,"void __cdecl (NUVEC4 *, NUVEC4 *, f32, i32)"
 0x413a20,_ChrisDogFightAInit,126,void __cdecl (WORLDINFO *)
 0x413aa0,_ChrisDogFightAUpdate,107,
 0x413b70,_CC_variant,910,
@@ -18139,7 +18141,9 @@ address,symbol,size,ctype
 0x7f1144,_CamDewbackRadiusPc,4,f32
 0x7f1148,_CamDewbackLiftPc,4,f32
 0x7f1204,_FlightSplineExtensionPc,4,char *
+0x7f120c,_DogfightPassingSpeedPc,4,f32
 0x7f1270,_DogfightDoorsPc,140,DOGFIGHT_DOOR_PC[7]
+0x7f12fc,_DogfightWingSpeedPc,4,f32
 0x7f1310,_DoorSetupList,,
 0x7f1558,_DogfightAnakinActionsPc,80,DOGFIGHT_ACTION_PC[10]
 0x7f15dc,_FlightSplineDefaultIncrementPc,4,f32

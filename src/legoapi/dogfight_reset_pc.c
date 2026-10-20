@@ -406,3 +406,108 @@ void ProcessCurrentSpeed(WORLDINFO *world, DOGFIGHT_SPEEDUP_PC *entry) {
     if (world->current_level == DOGFIGHTA_LDATA && world->sock_sys->socks[0].current_speed != 0.0f)
         space->normalized_speed = (f32)((f64)world->sock_sys->socks[0].current_speed / 11.0);
 }
+
+STATIC_ASSERT(offsetof(starfighter_s, parent_offset) == 0x70);
+STATIC_ASSERT(offsetof(starfighter_s, scale) == 0xf0);
+STATIC_ASSERT(offsetof(starfighter_s, draw_flags) == 0xfc);
+STATIC_ASSERT(offsetof(starfighter_s, model_id) == 0xfe);
+STATIC_ASSERT(offsetof(starfighter_s, health) == 0x10c);
+STATIC_ASSERT(offsetof(starfighter_s, hit_count) == 0x118);
+STATIC_ASSERT(offsetof(DOGFIGHT_GROUP_PC, velocity) == 0x630);
+STATIC_ASSERT(offsetof(DOGFIGHT_GROUP_PC, state) == 0x66c);
+STATIC_ASSERT(offsetof(DOGFIGHT_GROUP_PC, duration) == 0x678);
+STATIC_ASSERT(offsetof(DOGFIGHT_GROUP_PC, speed) == 0x67c);
+
+#pragma data_seg(".data$DogfightWingSpeedPc")
+f32 DogfightWingSpeedPc = 35.0f;
+#pragma data_seg(".data$DogfightPassingSpeedPc")
+f32 DogfightPassingSpeedPc = 200.0f;
+#pragma data_seg()
+
+static __declspec(noinline) DOGFIGHT_GROUP_PC *SelectFreeFlightGroupPc(void) {
+    DOGFIGHT_SPACE_PC *space = (DOGFIGHT_SPACE_PC *)WORLD->level_specific_data;
+    i32 i;
+    if (space == NULL) {
+        return NULL;
+    }
+    for (i = 0; i < 8; ++i) {
+        if (space->groups[i].active == 0) {
+            return &space->groups[i];
+        }
+    }
+    return NULL;
+}
+
+static __declspec(noinline) void CopyFlightMatrixPc(NUMTX *destination, const NUMTX *source) {
+#define COPY_ELEMENT(field) destination->field = source->field
+    COPY_ELEMENT(m00);
+    COPY_ELEMENT(m01);
+    COPY_ELEMENT(m02);
+    COPY_ELEMENT(m03);
+    COPY_ELEMENT(m10);
+    COPY_ELEMENT(m11);
+    COPY_ELEMENT(m12);
+    COPY_ELEMENT(m13);
+    COPY_ELEMENT(m20);
+    COPY_ELEMENT(m21);
+    COPY_ELEMENT(m22);
+    COPY_ELEMENT(m23);
+    COPY_ELEMENT(m30);
+    COPY_ELEMENT(m31);
+    COPY_ELEMENT(m32);
+    COPY_ELEMENT(m33);
+#undef COPY_ELEMENT
+}
+
+void MakeWingFormation(NUVEC4 *start, NUVEC4 *target, f32 duration, i32 mode) {
+    DOGFIGHT_GROUP_PC *group = SelectFreeFlightGroupPc();
+    NUVEC4 offset;
+    u16 angle, step;
+    i32 i;
+    f32 speed;
+    if (group == NULL) {
+        return;
+    }
+    group->active = 1;
+    group->draw_target = 0;
+    CopyFlightMatrixPc(&group->matrix, &ANI3_EVAL_IDENTITY_MATRIX);
+    group->matrix = GameCam->render_mtx;
+    *(NUVEC4 *)&group->matrix.m30 = *start;
+    if (mode != 0) {
+        group->state = 0;
+        NuMtxPreRotateY(&group->matrix, 0x8000);
+        group->speed = DogfightWingSpeedPc;
+    } else {
+        group->state = 1;
+        group->speed = DogfightPassingSpeedPc;
+    }
+    group->velocity.x = target->x - start->x;
+    group->velocity.y = target->y - start->y;
+    group->velocity.z = target->z - start->z;
+    (void)NuVecNorm((NUVEC *)&group->velocity, (NUVEC *)&group->velocity);
+    group->velocity.w = 1.0f;
+    speed = group->speed;
+    group->velocity.x *= speed;
+    group->velocity.y *= speed;
+    group->velocity.z *= speed;
+    group->duration = duration;
+    offset.x = -5.0f;
+    offset.y = 0.0f;
+    offset.z = 0.0f;
+    offset.w = 0.0f;
+    angle = (u16)qrand();
+    step = (u16)(qrand() / 21 + 0x2666);
+    for (i = 0; i < 5; ++i) {
+        starfighter_s *fighter = &group->fighters[i].fields;
+        NuVecRotateZ((NUVEC *)&fighter->parent_offset, (NUVEC *)&offset, (i32)(i16)angle);
+        angle = (u16)(angle + step);
+        fighter->scale = 2.0f;
+        fighter->active = 1;
+        fighter->parent = (struct spacelevel_flight_group_s *)group;
+        fighter->health = 1;
+        fighter->hit_count = 0;
+        fighter->spline = NULL;
+        fighter->model_id = 0x36;
+        fighter->draw_flags = 1;
+    }
+}
