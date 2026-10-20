@@ -245,6 +245,47 @@ Wine prefix. `permute_loop.sh` pulls `main` each round, searches the
 next functions, commits and pushes improved sources (the journal stays in `build/permute/`),
 and after a full pass re-measures with `make match` and starts a new pass.
 
+### Representative compiler witnesses
+
+`tools/check_compiler_witnesses.py` compares ten selected existing native function
+objects (integer, x87, switch, struct/private-call and pinned CRT examples) to
+retail with the shared complete-extent relocation checker. Its five negative
+controls change an immediate, private register input, relocation target and
+function extents. Exactness uses full byte equality; objdiff similarity grants
+no exact credit. These samples do not prove universal compiler matching.
+
+Capture the selected source/object/map/toolchain-pin/CRT/retail hashes for a
+separate provenance review. Capture grants no witness result:
+
+```sh
+python3 tools/check_compiler_witnesses.py --object-root build/obj --source-root . --capture-inputs build/compiler-witness-inputs.json
+```
+
+Review the captured inputs together with the compilation command/flags, compiler
+pins, dependency inputs and build log before treating them as freshly compiled
+evidence. A seal made from existing objects identifies only that frozen snapshot;
+source hashes alone do not establish which sources produced those objects.
+After review, use that seal for the comparison:
+
+```sh
+python3 tools/check_compiler_witnesses.py --object-root build/obj --source-root . --expected-inputs build/compiler-witness-inputs.json --output build/compiler-witnesses.json
+```
+
+`--retail PATH` and `--toolchain-root PATH` select alternate locations for the
+configured retail and pinned VC8 tree. Missing files, changed pins or seal
+mismatches fail closed; do not recapture inputs merely to conceal a regression.
+The original compiler files and configured header/library trees are checked.
+PDB helpers, linking and Debug behavior are outside this check.
+
+Artificial PE/COFF contract tests need no compiler, retail image or existing
+build. They test exact extents, DIR32/REL32 targets, missing bindings, immediate
+and stack-cleanup ABI mutations, object mutation and stale seals; they are not
+compiler-generated witnesses:
+
+```sh
+python3 -m unittest tools.test_compiler_witnesses
+```
+
 ## Runtime library
 
 The original links the VC8 runtime statically (`/MT`), and the pinned toolchain
