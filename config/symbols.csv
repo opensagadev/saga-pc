@@ -105,8 +105,9 @@ address,symbol,size,ctype
 0x4123b0,_ChrisAnakinBInit,153,
 0x4124f0,_ChrisDogFightAReset,100,void __cdecl (WORLDINFO *)
 0x412580,_ChrisAllocLevelStuff,254,void __cdecl (WORLDINFO *)
-0x4126b0,_ShipDropCoins,170,
-0x412760,_CollideBoltStarFighter,826,
+0x4126b0,_ShipDropCoins,170,i32 __cdecl (starfighter_s *)
+0x412760,_CollideBoltStarFighter,826,"static i32 (BOLT *, starfighter_s *, NUVEC *, NUVEC *)"
+0x412aa0,_ChrisExtraBoltCollision,294,"i32 __cdecl (BOLT *, NUVEC *)"
 0x412bd0,_DrawSelectedSockPc,960,"static void (SOCKSYS_PC *, i32, SOCKPOSITION_PC *, i32, i32)"
 0x412fc0,_ChrisAnakinCReset,581,
 0x413210,_ChrisAnakinCInit,25,
@@ -9579,6 +9580,7 @@ address,symbol,size,ctype
 0x751d40,??_C@_0BD@FAEJAHCF@Ep3_1_ExplosionXXL?$AA@,19,const char[19]
 0x751d54,??_C@_0BC@GKABDEAG@Dog_TriFighterHit?$AA@,18,const char[18]
 0x751d68,??_C@_0BE@LMEIANHN@Dog_DroidFighterHit?$AA@,20,const char[20]
+0x751d7c,_DogfightPartTypeNamePc,8,const char[8]
 0x00751d84,_LevelConfigFarDistance,4,const f32
 0x00751d84,__real@49f42400,4,const f32
 0x751d88,__real@42040000,4,const f32
@@ -18178,6 +18180,7 @@ address,symbol,size,ctype
 0x7f12fc,_DogfightWingSpeedPc,4,f32
 0x7f1310,_DoorSetupList,,
 0x7f1558,_DogfightAnakinActionsPc,80,DOGFIGHT_ACTION_PC[10]
+0x7f15d8,_DogfightCollisionRadiusSquaredPc,4,f32
 0x7f15dc,_FlightSplineDefaultIncrementPc,4,f32
 0x7f15e0,_PodRaceSplineIncrementPc,,f32
 0x7f15f8,_DogfightDeathImpulseScalePc,4,f32
