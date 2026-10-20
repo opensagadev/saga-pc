@@ -2202,7 +2202,7 @@ void __cdecl TakeOver2GetIn(GAMEOBJECT *rider, GAMEOBJECT *vehicle) {
         rider->field_7aa = 5;
         rider->context_duration = 0.5f;
     }
-    if (vehicle->id == id_ATAT && WORLD->current_level == SPEEDERCHASEA_LDATA) {
+    if (vehicle->id == (u16)id_ATAT && WORLD->current_level == SPEEDERCHASEA_LDATA) {
         NUVEC position;
         GetTakeOverPos(vehicle, &position);
         rider->context_duration *= 2.0f * SpeederChaseATATInOutMul(&rider->position, &position);
@@ -2213,7 +2213,7 @@ void __cdecl TakeOver2GetIn(GAMEOBJECT *rider, GAMEOBJECT *vehicle) {
     rider->force_target = vehicle;
     rider->takeover_target = NULL;
     vehicle->takeover_target = NULL;
-    STUBBED_NAMED("TakeOver2GetIn: PlayJumpSfx rider,0 PC547f30");
+    PlayJumpSfx(rider, 0);
 }
 
 void __cdecl TakeOverGameObject2(GAMEOBJECT *rider, GAMEOBJECT *vehicle, i32 blend_camera) {
@@ -2295,12 +2295,12 @@ void __cdecl ReleaseTakeOver(GAMEOBJECT *object, i32 unused) {
     GameObjectOrigin(rider);
     rider->rider = NULL;
     rider->character_context = -1;
-    if (object->id == id_ATAT && WORLD->current_level == SPEEDERCHASEA_LDATA) {
+    if (object->id == (u16)id_ATAT && WORLD->current_level == SPEEDERCHASEA_LDATA) {
         f32 multiplier = SpeederChaseATATInOutMul(&rider->position, &SpeederChaseATATExitLandPos);
         f32 duration = SpeederChaseATATExitHeight * multiplier;
         f32 speed = SpeederChaseATATExitSpeed * multiplier;
         StartBigJump(rider, &SpeederChaseATATExitLandPos, 0, speed, duration, 0);
-        STUBBED_NAMED("ReleaseTakeOver: GameCam_Blend GameCam,2.0f,0,1 PC54a3e0");
+        GameCam_Blend(GameCam, 2.0f, 0.0f, 1);
     } else {
         Buck_StartRiderJump(rider, object);
     }
@@ -2316,7 +2316,7 @@ void __cdecl ReleaseTakeOver(GAMEOBJECT *object, i32 unused) {
     rider->ai_packet.path_info.flags_word &= ~1u;
     object->ai_update_position = object->position;
     if (rider->field_280 != 0xff || object->field_280 != 0xff) {
-        STUBBED_NAMED("ReleaseTakeOver: GameCam_Blend GameCam,0.3f,0,1 PC54a3e0");
+        GameCam_Blend(GameCam, 0.3f, 0.0f, 1);
     }
     if (AIScriptSetBaseScriptStateByName(&rider->ai_packet.script_processor, (char *)TakeOverState_ReleasedTakeOver) !=
         0) {
