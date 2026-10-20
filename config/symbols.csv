@@ -1593,7 +1593,7 @@ address,symbol,size,ctype
 0x4a6050,_GetZapOrigin,83,NUVEC *__cdecl(GAMEOBJECT*)
 0x4a60b0,_ZapTarget,173,i32 __cdecl(GAMEOBJECT*)
 0x4a6160,_ZapCode,2162,
-0x4a69e0,_FireBountyHunterRocket,442,
+0x4a69e0,_FireBountyHunterRocket,442,static void(GAMEOBJECT *)
 0x4a6ba0,_GetShootOrigin_LSW,131,"void __cdecl(GAMEOBJECT *, NUVEC *)"
 0x4a6c30,_FireCode,1460,"static void(GAMEOBJECT*,i32,i32,f32,i32)"
 0x4a71f0,_CableCode,362,"void __cdecl(GAMEOBJECT*,i32,f32)"
@@ -12838,6 +12838,7 @@ address,symbol,size,ctype
 0x0075be50,__real@4003333340000000,8,const f64
 0x75be58,__real@3eb851ec,4,const f32
 0x75be5c,??_C@_05BGAACLGB@R2Zap?$AA@,6,const char[6]
+0x75be64,??_C@_08PCHGEGNN@JgRocket?$AA@,9,const char[9]
 0x75be70,??_C@_0O@MPBJCNBH@Char_Slide_Lp?$AA@,14,const char [14]
 0x75be80,__real@3f200000,4,const f32
 0x75be84,__real@3e000000,4,const f32

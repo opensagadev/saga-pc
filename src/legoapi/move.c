@@ -4171,29 +4171,49 @@ static void ZapCode(GAMEOBJECT *object, i32 pressed, i32 retract_weapon) {
     }
 }
 
-i32 FireBountyHunterRocket(GAMEOBJECT *object) {
-    if (object->character_context == -1) {
-        CHARACTERDATA_PC *data = object->character_data;
-        if ((data->model_flags & 0x01000000) != 0 || object->field_108e == 6) {
-            i32 locator = data->game_character->rocket_locator;
-            if (locator != -1 && object->character_model->points_of_interest[locator] != NULL &&
-                (object->field_280 == -1 || (object->flags_1fc && Cheat_IsOn(39)))) {
-                if (object->hud_icon_timer == 2.0f) {
-                    object->hud_icon_timer = 0.0f;
-                    FindGameMsgsWithID(2, 1, -1, NULL);
-                }
-                object->field_7aa = object->field_281 == 0 ? 77 : 2;
-                object->context_animation_timer =
-                    AnimDuration(object->id, object->field_281 == 0 ? 77 : 2, 0.0f, 0.0f, 1);
-                object->field_e22 &= ~4;
-                if (object->context_animation_timer > 0.0f) {
-                    object->character_context = 20;
-                }
-                return object->character_context == 20;
+static __declspec(noinline) void FireBountyHunterRocket(GAMEOBJECT *object) {
+    f32 *playing;
+    f32 release_frame;
+    f32 remaining;
+    i32 locator;
+    i16 animation;
+    if (object->character_context == 0x14) {
+        playing = AnimPlaying(&object->anim_packet, object->field_7aa, 1, 0);
+        if (playing == NULL)
+            return;
+        if ((object->flags_e20 & 0x40000) == 0) {
+            release_frame = AnimListFrame(object->character_model, object->field_7aa, 0);
+            if (release_frame >= 1.0f && *playing >= release_frame) {
+                object->flags_e20 |= 0x40010;
+                PlaySfx("JgRocket", &object->collision_position);
             }
         }
+        remaining = object->context_timer - FRAMETIME;
+        object->context_timer = remaining;
+        if (remaining <= 0.0f)
+            object->character_context = -1;
+        return;
     }
-    return 0;
+    if (object->character_context != -1 || (object->pad->buttons_pressed & GAMEPAD_TAG) == 0)
+        return;
+    if ((object->character_data->model_flags & 0x1000000) == 0 && object->helmet != 6)
+        return;
+    locator = object->character_data->game_character->rocket_locator;
+    if (locator == -1 || object->character_model->points_of_interest[locator] == NULL)
+        return;
+    if (object->field_280 != 0xff && ((object->flags_1fc_word & 0x80) == 0 || Cheat_IsOn(39) == 0))
+        return;
+    if (object->hud_icon_timer == 2.0f) {
+        object->hud_icon_timer = 0.0f;
+        FindGameMsgsWithID(2, 1, -1, NULL);
+    }
+    animation = object->field_281 != 0 ? 2 : 77;
+    object->field_7aa = animation;
+    remaining = AnimDuration((i16)object->id, animation, 0.0f, 0.0f, 1);
+    object->flags_e20 &= ~0x40000u;
+    object->context_timer = remaining;
+    if (remaining > 0.0f)
+        object->character_context = 0x14;
 }
 
 static __declspec(noinline) void ShootThisFrame(GAMEOBJECT *object, i32 bolt_id, i32 flags) {
@@ -6735,7 +6755,7 @@ after_gravity:
         Batarang_MoveCode(object);
     if ((i8)object->character_data->game_character->flags_094_bytes[0] < 0)
         CommunicateCode(object, object->pad->buttons_pressed & GAMEPAD_SPECIAL, 0);
-    STUBBED_NAMED(0x004a69e0); /* Native4b50c8: object ESI; actual void source action. */
+    FireBountyHunterRocket(object);
     BeastStartFallCodePc(object);
     BeastCrushCodePc(object);
     GrabCode(object);
@@ -9959,7 +9979,7 @@ void __cdecl Move_WEIRDO(GAMEOBJECT *object) {
     }
     if ((i8)object->character_data->game_character->flags_094_bytes[0] < 0)
         CommunicateCode(object, object->pad->buttons_pressed & GAMEPAD_SPECIAL, 0);
-    STUBBED_NAMED(0x004a69e0); /* Native4b5d02: private rocket context action with original object ESI. */
+    FireBountyHunterRocket(object);
     BeastStartFallCodePc(object);
     HeadMovement(object);
     CloakMovement(object);
