@@ -84,7 +84,7 @@ address,symbol,size,ctype
 0x411880,_SpaceAudioPoint,68,
 0x4118d0,_SpaceResetAudioPoint,171,void __cdecl (void)
 0x411980,_DogfightResetSpacePc,639,"static void (WORLDINFO *, DOGFIGHT_SPACE_PC *)"
-0x411c00,_SpaceRumbleProcess,756,
+0x411c00,_SpaceRumbleProcess,756,void __cdecl (void)
 0x412210,_ProcessCurrentSpeed,320,"void __cdecl (WORLDINFO *, DOGFIGHT_SPEEDUP_PC *)"
 0x412350,_ResetSpaceFromWorldPc,19,void __cdecl (WORLDINFO *)
 0x4123b0,_ChrisAnakinBInit,153,
@@ -9540,6 +9540,8 @@ address,symbol,size,ctype
 0x751d08,_DogfightOriginStartXPc,4,const f32
 0x00751d0c,__real@3eb33333,4,const f32
 0x751d10,__real@4041800000000000,8,const f64
+0x751d18,__real@c20c0000,4,const f32
+0x751d1c,__real@420c0000,4,const f32
 0x751d20,__real@4026000000000000,8,const f64
 0x751d28,_GrappleMomentumNearScalePc,8,const f64
 0x751d28,__real@4034000000000000,8,const f64
@@ -18148,6 +18150,9 @@ address,symbol,size,ctype
 0x7f1558,_DogfightAnakinActionsPc,80,DOGFIGHT_ACTION_PC[10]
 0x7f15dc,_FlightSplineDefaultIncrementPc,4,f32
 0x7f15e0,_PodRaceSplineIncrementPc,,f32
+0x7f161c,_SpeedDist,4,f32
+0x7f1620,_SpeedAdd,4,f32
+0x7f1624,_MulDist,4,f32
 0x7f1628,_DogfightDebrisKeysPc,16,i32[4]
 0x7f1644,_DogfightSpeedRatePc,4,f32
 0x7f1648,_DogfightSpeedListPc,72,DOGFIGHT_SPEEDUP_PC[9]
@@ -20159,6 +20164,7 @@ address,symbol,size,ctype
 0x855e60,_DogfightDrawScalePc,16,NUVEC4
 0x855e8c,_AnakinC,4,struct anakin_door_s *
 0x855e98,_DogfightResetTimerPc,4,f32
+0x855e9c,_MulAdd,4,f32
 0x855ea4,_PlayerSuit,,SUIT_LAYERS_PC *[8]
 00855ec4,_CharacterCollectionPc,,COLLECTION_BUILD_PC
 00855ed8,_BountyHunterCollectionPc,,COLLECTION_BUILD_PC
