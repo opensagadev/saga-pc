@@ -69,10 +69,16 @@ address,symbol,size,ctype
 0x40ea30,_ChrisAnakinCUpdate,319,
 0x40eff0,_CalcSplinePoint,1119,"void __cdecl (FLIGHT_SPLINE_RESOURCE_PC *,NUVEC4 *,f32)"
 0x40f450,_CalcSplinePointFromDist,190,"void __cdecl (FLIGHT_SPLINE_RESOURCE_PC *,NUVEC4 *,f32)"
+0x40ffa0,_DogfightResetCrossesPc,175,"static void (DOGFIGHT_CROSS_PC *, i32)"
+0x4100b0,_DogfightResetSplineHistoryPc,189,"static void (DOGFIGHT_SPLINE_HISTORY_PC *, i32)"
+0x410170,_DogfightResetWorldRecordsPc,196,"static void (WORLDINFO *, DOGFIGHT_SPACE_PC *)"
+0x410240,_DogfightResetGroupPc,115,static void (DOGFIGHT_GROUP_PC *)
 0x410a10,_ProcessStarFighter,2656,
 0x411880,_SpaceAudioPoint,68,
 0x4118d0,_SpaceResetAudioPoint,171,
+0x411980,_DogfightResetSpacePc,639,"static void (WORLDINFO *, DOGFIGHT_SPACE_PC *)"
 0x411c00,_SpaceRumbleProcess,756,
+0x412350,_ResetSpaceFromWorldPc,19,void __cdecl (WORLDINFO *)
 0x4123b0,_ChrisAnakinBInit,153,
 0x412580,_ChrisAllocLevelStuff,254,
 0x4126b0,_ShipDropCoins,170,
@@ -9494,6 +9500,9 @@ address,symbol,size,ctype
 0x00751c08,__real@43480000,,const f32
 0x00751c0c,__real@425c0000,,const f32
 0x751c10,__real@42a00000,4,const f32
+0x751c14,_DogfightOriginEndZPc,4,const f32
+0x751c18,_DogfightOriginEndYPc,4,const f32
+0x751c1c,_DogfightOriginEndXPc,4,const f32
 0x751c20,__real@c0d7700000000000,8,const f64
 0x751c28,__real@40d7700000000000,8,const f64
 0x00751c30,__real@4049000000000000,8,const f64
@@ -9510,7 +9519,12 @@ address,symbol,size,ctype
 0x00751cc8,_BoltTargetRandomDenominator,8,const f64
 0x751cc8,__real@40efffe000000000,8,const f64
 0x751ce0,__real@4089000000000000,8,const f64
+0x751ce8,__real@404db98f40000000,8,const f64
+0x751cf0,__real@4057be8e00000000,8,const f64
 0x751cf8,__real@3ff19999a0000000,8,const f64
+0x751d00,_DogfightOriginStartZPc,4,const f32
+0x751d04,_DogfightOriginStartYPc,4,const f32
+0x751d08,_DogfightOriginStartXPc,4,const f32
 0x00751d0c,__real@3eb33333,4,const f32
 0x751d10,__real@4041800000000000,8,const f64
 0x751d28,_GrappleMomentumNearScalePc,8,const f64
@@ -18112,7 +18126,9 @@ address,symbol,size,ctype
 0x7f1140,_CamWalkerLiftPc,4,f32
 0x7f1144,_CamDewbackRadiusPc,4,f32
 0x7f1148,_CamDewbackLiftPc,4,f32
+0x7f1270,_DogfightDoorsPc,140,DOGFIGHT_DOOR_PC[7]
 0x7f1310,_DoorSetupList,,
+0x7f1558,_DogfightAnakinActionsPc,80,DOGFIGHT_ACTION_PC[10]
 0x7f15e0,_PodRaceSplineIncrementPc,,f32
 0x7f1724,_ConfigChar_GameKeywords,,NUFPCOMJMP[2]
 0x7f17a4,_PlayerHitPointsTwoHeartsPc,,i32
@@ -20119,7 +20135,9 @@ address,symbol,size,ctype
 0x855e04,_KEEPONSCREEN_SIDESONLY,,i32
 0x855e18,_MaxRadialCamY,4,f32
 0x855e20,_RadialMoveCentre,16,NUVEC4
+0x855e60,_DogfightDrawScalePc,16,NUVEC4
 0x855e8c,_AnakinC,4,struct anakin_door_s *
+0x855e98,_DogfightResetTimerPc,4,f32
 0x855ea4,_PlayerSuit,,SUIT_LAYERS_PC *[8]
 00855ec4,_CharacterCollectionPc,,COLLECTION_BUILD_PC
 00855ed8,_BountyHunterCollectionPc,,COLLECTION_BUILD_PC
