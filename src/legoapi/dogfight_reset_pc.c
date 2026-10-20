@@ -315,3 +315,46 @@ static __declspec(noinline) void DogfightResetSpacePc(WORLDINFO *world, DOGFIGHT
 void __cdecl ResetSpaceFromWorldPc(WORLDINFO *world) {
     DogfightResetSpacePc(world, (DOGFIGHT_SPACE_PC *)world->level_specific_data);
 }
+STATIC_ASSERT(offsetof(WORLDINFO, giz_buffer) == 0x104);
+STATIC_ASSERT(offsetof(WORLDINFO, buffer_end) == 0x108);
+STATIC_ASSERT(offsetof(WORLDINFO, current_level) == 0x128);
+STATIC_ASSERT(offsetof(WORLDINFO, sock_sys) == 0x2988);
+STATIC_ASSERT(offsetof(SOCKSYS_PC, socks) == 0);
+STATIC_ASSERT(offsetof(SOCK_PC, current_speed) == 0x70);
+STATIC_ASSERT(offsetof(FLIGHT_SPLINE_RESOURCE_PC, point_count) == 0x400);
+STATIC_ASSERT(sizeof(FLIGHT_SPLINE_RESOURCE_PC) == sizeof(DOGFIGHT_SPLINE_HISTORY_PC));
+
+extern void __cdecl FlightSpline_Init(WORLDINFO *world, FLIGHT_SPLINE_RESOURCE_PC *splines, i32 capacity);
+
+void __cdecl ChrisAllocLevelStuff(WORLDINFO *world) {
+    world->has_level_specific_data = 1;
+    if (world->current_level == DOGFIGHTA_LDATA) {
+        world->level_specific_data = GameBufferAlloc(&world->giz_buffer, &world->buffer_end, sizeof(DOGFIGHT_SPACE_PC));
+        ((DOGFIGHT_SPACE_PC *)world->level_specific_data)->reset_buffer.records =
+            ((DOGFIGHT_SPACE_PC *)world->level_specific_data)->reset_records;
+        ((DOGFIGHT_SPACE_PC *)world->level_specific_data)->reset_buffer.capacity = 256;
+        ((DOGFIGHT_SPACE_PC *)world->level_specific_data)->normalized_speed = 1.0f;
+        if (world->current_level == DOGFIGHTA_LDATA && world->sock_sys->socks[0].current_speed != 0.0f)
+            ((DOGFIGHT_SPACE_PC *)world->level_specific_data)->normalized_speed =
+                (f32)((f64)world->sock_sys->socks[0].current_speed / 11.0);
+        ((DOGFIGHT_SPACE_PC *)world->level_specific_data)->coin_history_count = 0;
+    } else if (world->current_level == PODRACEA_LDATA || world->current_level == PODRACEB_LDATA ||
+               world->current_level == LevelFixupSlotPc0087b0b4) {
+        world->level_specific_data = GameBufferAlloc(&world->giz_buffer, &world->buffer_end, 0xb030);
+    } else {
+        world->has_level_specific_data = 0;
+    }
+}
+
+/* This entry is implemented without installing its original level callback. */
+void __cdecl ChrisDogFightAInit(WORLDINFO *world) {
+    i32 i;
+    ChrisAllocLevelStuff(world);
+    DogfightResetSpacePc(world, (DOGFIGHT_SPACE_PC *)world->level_specific_data);
+    for (i = 0; i < 256; ++i)
+        ((FLIGHT_SPLINE_RESOURCE_PC *)((DOGFIGHT_SPACE_PC *)world->level_specific_data)->splines)[i].point_count = 0;
+    if (world->current_level == DOGFIGHTA_LDATA)
+        FlightSpline_Init(world,
+                          (FLIGHT_SPLINE_RESOURCE_PC *)((DOGFIGHT_SPACE_PC *)world->level_specific_data)->splines, 256);
+    DogfightResetSplineHistoryPc(((DOGFIGHT_SPACE_PC *)WORLD->level_specific_data)->splines, 256);
+}

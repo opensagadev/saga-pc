@@ -85,12 +85,13 @@ address,symbol,size,ctype
 0x411c00,_SpaceRumbleProcess,756,
 0x412350,_ResetSpaceFromWorldPc,19,void __cdecl (WORLDINFO *)
 0x4123b0,_ChrisAnakinBInit,153,
-0x412580,_ChrisAllocLevelStuff,254,
+0x412580,_ChrisAllocLevelStuff,254,void __cdecl (WORLDINFO *)
 0x4126b0,_ShipDropCoins,170,
 0x412760,_CollideBoltStarFighter,826,
 0x412fc0,_ChrisAnakinCReset,581,
 0x413210,_ChrisAnakinCInit,25,
 0x413510,_MakeWingFormation,425,
+0x413a20,_ChrisDogFightAInit,126,void __cdecl (WORLDINFO *)
 0x413aa0,_ChrisDogFightAUpdate,107,
 0x413b70,_CC_variant,910,
 0x413f80,_GameDrawMtxCopyPc,95,
@@ -9533,6 +9534,7 @@ address,symbol,size,ctype
 0x751d08,_DogfightOriginStartXPc,4,const f32
 0x00751d0c,__real@3eb33333,4,const f32
 0x751d10,__real@4041800000000000,8,const f64
+0x751d20,__real@4026000000000000,8,const f64
 0x751d28,_GrappleMomentumNearScalePc,8,const f64
 0x751d28,__real@4034000000000000,8,const f64
 0x751d30,??_C@_06MCOJAMLH@Centre?$AA@,7,char []

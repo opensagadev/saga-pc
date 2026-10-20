@@ -17,7 +17,7 @@
     "config/library-objects.json": "e5ae24d3eac36fa0d0cb098f7690faaef3110f225db30c8cbf0f7d0d64f6ecfe",
     "config/ogg-vorbis.json": "7f98d40938e6bd6060c6bdfc2ce39d9cfb1c822243693eeb1d85d46b43dcad24",
     "config/project.json": "9a3650958be769951860d2c457f8573049ecae76e48ce8f3d7383e4ca2b761a6",
-    "config/symbols.csv": "6212672183b38910602de9f03c0be807510ba21e94fc76831588f6ca9384a819",
+    "config/symbols.csv": "3239a0ad0955316be0708002383ae125b199d0a977921bfc3b26b958b750fff7",
     "config/symbols.md": "dffbdaac86011e3aee74b404063c15bda97f88af3db337ffef9f1bad1785d212",
     "config/toolchain.json": "b8808088bb2c7eb239785f69c9e464ae8545216d5705fb37216bc0cf926732f3",
     "config/tools.json": "50199f6b132a7abfabf251e98a75be0a957abfe50f1ff776188fba21e4c4436f",
@@ -253,7 +253,7 @@
     "src/legoapi/debris_callbacks.c": "2e3209336de614c5934560ae421c0788822ce98c47a6ef5102f00defec1416cf",
     "src/legoapi/debris_engine.c": "025f20d98f0cafb6b7393a52e32eefde8950b447c012f118db7c880f9919e9bc",
     "src/legoapi/dogfight_reset_constants_pc.c": "3e27ff6835ba599cd7246adfa6da93666ec2fa578beb6ee336bf2fe07fc4e22a",
-    "src/legoapi/dogfight_reset_pc.c": "479894cf7f6689d0a1888d84fb283d57fdea757c81612805e95bcf5c2f4a6277",
+    "src/legoapi/dogfight_reset_pc.c": "5eaa3e1008b71e2298c81522c0ceecedba3d623a73f83a4445b0f00f73b43fc6",
     "src/legoapi/doors.c": "06ff04f89f21220894138ba08f3d45775ee6aac562c556cf241d477c459d6e46",
     "src/legoapi/dropinout.c": "7e4e78515ee85eb46e25e69ced0522a21498e462a3d3b0f479524cee7be6e182",
     "src/legoapi/edgizshadowmachine.c": "83888249da8db832869a1c0ba8e0f4fffdc131d7e58bef87d6009df0d6fa06a5",
@@ -603,7 +603,7 @@
     "build/obj/legoapi/debris_engine.obj": "16f18b9e36e5a1dda665040600ce8b4d2bb63af5283b8abab5d5272d30abb5e8",
     "build/obj/legoapi/debris_generators.obj": "9a8bb35bffc616a88099fb37579c55f7ac214ed534459a892a0dffc7277624a6",
     "build/obj/legoapi/dogfight_reset_constants_pc.obj": "4b90ec98867a56a658e942d73ba550f5e72cd44aed92b93314435753e3bf76de",
-    "build/obj/legoapi/dogfight_reset_pc.obj": "13c107de7b432b236b6aa78b0aaf725835035910a0bdea50255794561e0027ca",
+    "build/obj/legoapi/dogfight_reset_pc.obj": "5512eabbb572a5337d0bec8dfe67b40351e0f78c801a3788d046433415476e35",
     "build/obj/legoapi/doors.obj": "8c114b07924dcb54277312974310f649787849c8221bda40f5e854fd023cb88e",
     "build/obj/legoapi/dropinout.obj": "d762844dfeec94cfd1cce7f70d3cd4a38d7379795d9d2cf6111118f4fb3c0a6b",
     "build/obj/legoapi/edgizshadowmachine.obj": "735231148b77e1642b50207ea13cfb0b9fe9c1ada5d330b450e5d0097d0094fe",
@@ -2874,11 +2874,25 @@
       "name": "ChrisAllocLevelStuff",
       "symbol": "_ChrisAllocLevelStuff",
       "address": "0x00412580",
-      "units": [],
+      "units": [
+        "src/legoapi/dogfight_reset_pc.c"
+      ],
       "target_size": 254,
       "exact_match": false,
-      "objects": [],
-      "status": "not implemented"
+      "objects": [
+        {
+          "unit": "src/legoapi/dogfight_reset_pc.c",
+          "base_size": 260,
+          "exact_match": false,
+          "target_sha256": "ab91c56bafd85da754d265668d5167bcf75ecb7a4b04bb2fdbc4a34d809ece08",
+          "base_sha256": "5559411ba4d596cb9fbc98c77ce6a030b81337bd05b9e584ec604bc055df3a2d",
+          "relocation_count": 8,
+          "comparison_unit": "00412580-95d2e1c61d50",
+          "objdiff_percent": 95.169495
+        }
+      ],
+      "status": "different",
+      "objdiff_percent": 95.169495
     },
     {
       "name": "ShipDropCoins",
@@ -2957,6 +2971,30 @@
       "exact_match": false,
       "objects": [],
       "status": "not implemented"
+    },
+    {
+      "name": "ChrisDogFightAInit",
+      "symbol": "_ChrisDogFightAInit",
+      "address": "0x00413a20",
+      "units": [
+        "src/legoapi/dogfight_reset_pc.c"
+      ],
+      "target_size": 126,
+      "exact_match": false,
+      "objects": [
+        {
+          "unit": "src/legoapi/dogfight_reset_pc.c",
+          "base_size": 129,
+          "exact_match": false,
+          "target_sha256": "344352f85a238d80d838f942a196ce6c889044b14be592a01efb45359903d47e",
+          "base_sha256": "3ac9326e8942f2fc09471e8a2da8fd6ac186fadce5194093f54f9afba7618ac5",
+          "relocation_count": 6,
+          "comparison_unit": "00413a20-9f621920671f",
+          "objdiff_percent": 86.40625
+        }
+      ],
+      "status": "different",
+      "objdiff_percent": 86.40625
     },
     {
       "name": "ChrisDogFightAUpdate",
@@ -227310,6 +227348,27 @@
           "base_size": 8,
           "target_sha256": "bb4007f8126e5a402cce0c3978bbcfa6b0acdf4f1be565f266350c539071bcfc",
           "base_sha256": "bb4007f8126e5a402cce0c3978bbcfa6b0acdf4f1be565f266350c539071bcfc"
+        }
+      ],
+      "status": "exact"
+    },
+    {
+      "name": "__real@4026000000000000",
+      "symbol": "__real@4026000000000000",
+      "address": "0x00751d20",
+      "units": [
+        "src/legoapi/dogfight_reset_pc.c"
+      ],
+      "target_size": 8,
+      "exact_match": true,
+      "objects": [
+        {
+          "unit": "src/legoapi/dogfight_reset_pc.c",
+          "exact_match": true,
+          "target_size": 8,
+          "base_size": 8,
+          "target_sha256": "9ee2b49423e1506ec86b25b2febb317da93338f594cdcdcd1b38e3a726706de0",
+          "base_sha256": "9ee2b49423e1506ec86b25b2febb317da93338f594cdcdcd1b38e3a726706de0"
         }
       ],
       "status": "exact"
@@ -476245,17 +476304,17 @@
   ],
   "progress": {
     "text_bytes": 3471246,
-    "mapped_code_bytes": 2420215,
+    "mapped_code_bytes": 2420341,
     "matched_code_bytes": 455922,
     "matching_percent": 13.134246319621255,
-    "fuzzy_coverage_percent": 47.07212583596188,
-    "mapped_functions": 8872,
+    "fuzzy_coverage_percent": 47.08222602454834,
+    "mapped_functions": 8873,
     "matched_functions": 4220,
-    "objdiff_fuzzy_percent": 74.73367,
-    "objdiff_total_code": 2189777,
+    "objdiff_fuzzy_percent": 74.73672,
+    "objdiff_total_code": 2190157,
     "image_bytes": 40067072,
-    "mapped_bytes": 4232207,
-    "mapping_percent": 10.562805787255929,
+    "mapped_bytes": 4232341,
+    "mapping_percent": 10.563140226468258,
     "mapping_denominator": "code_and_data_section_virtual_sizes",
     "mapping_sections": [
       {
@@ -476263,16 +476322,16 @@
         "kind": "code",
         "address": "0x401000",
         "size": 3471246,
-        "mapped_bytes": 2421409
+        "mapped_bytes": 2421535
       },
       {
         "name": ".rdata",
         "kind": "data",
         "address": "0x751000",
         "size": 646766,
-        "mapped_bytes": 84482,
+        "mapped_bytes": 84490,
         "file_backed_data_bytes": 646766,
-        "mapped_file_backed_data_bytes": 84482,
+        "mapped_file_backed_data_bytes": 84490,
         "zero_fill_data_bytes": 0,
         "mapped_zero_fill_data_bytes": 0
       },
@@ -476288,38 +476347,38 @@
         "mapped_zero_fill_data_bytes": 1461465
       }
     ],
-    "mapping_known_size_symbols": 16737,
+    "mapping_known_size_symbols": 16739,
     "mapping_unknown_size_symbols": 7075,
-    "mapping_code_bytes": 2421409,
+    "mapping_code_bytes": 2421535,
     "mapping_code_total_bytes": 3471246,
-    "mapping_code_percent": 69.75619129269433,
-    "mapping_data_bytes": 1810798,
+    "mapping_code_percent": 69.75982111322563,
+    "mapping_data_bytes": 1810806,
     "mapping_data_total_bytes": 36018966,
-    "mapping_data_percent": 5.027345871061374,
-    "mapping_code_data_bytes": 4232207,
+    "mapping_data_percent": 5.027368081582353,
+    "mapping_code_data_bytes": 4232341,
     "mapping_code_data_total_bytes": 39490212,
-    "mapping_code_data_percent": 10.717103772448727,
-    "mapping_file_backed_data_bytes": 349333,
+    "mapping_code_data_percent": 10.717443097038831,
+    "mapping_file_backed_data_bytes": 349341,
     "mapping_file_backed_data_total_bytes": 1064558,
-    "mapping_file_backed_data_percent": 32.814839586006585,
+    "mapping_file_backed_data_percent": 32.81559107159967,
     "mapping_zero_fill_data_bytes": 1461465,
     "mapping_zero_fill_data_total_bytes": 34954408,
     "mapping_zero_fill_data_percent": 4.1810606547820806,
-    "matched_data_region_bytes": 1794847
+    "matched_data_region_bytes": 1794855
   },
   "text_coverage": {
     "original_text_bytes": 3471246,
-    "mapped_reconstruction_bytes": 2420215,
+    "mapped_reconstruction_bytes": 2420341,
     "exact_reconstruction_bytes": 455922,
-    "mapped_not_exact_bytes": 1964293,
+    "mapped_not_exact_bytes": 1964419,
     "excluded_import_glue_bytes": 1194,
-    "unclassified_text_bytes": 1049837,
+    "unclassified_text_bytes": 1049711,
     "strict_original_text_denominator_bytes": 3471246,
     "strict_original_text_exact_percent": 13.134246319621255,
     "reconstruction_scope_denominator_bytes": 3470052,
     "reconstruction_scope_exact_percent": 13.138765643857786,
-    "mapped_scope_denominator_bytes": 2420215,
-    "mapped_scope_exact_percent": 18.838078435180346,
+    "mapped_scope_denominator_bytes": 2420341,
+    "mapped_scope_exact_percent": 18.837097747796694,
     "qualification": "Unclassified text includes undiscovered code and unproven padding; these percentages compare relocated objects, not the linked image."
   },
   "data_members": [
@@ -477463,7 +477522,7 @@
       "metadata_sha256": "fe09365da4c355f220d724ca99394fc120b758891b4188d2c49707b6df0894f2",
       "header_path": "src/saga.h",
       "header_sha256": "83c36aaaeb62e48b57f4c1d583b51a174e4f21648cbf5ca0bc0666e3f88c4487",
-      "geometry_object_sha256": "54dfe5ddee987961e10fa802a1e092f2624ce785042723d62a7cf7e82bbafa24",
+      "geometry_object_sha256": "1845534278ab4865411cf7bea9d265613422030946a0aaa0fccef213138aa28d",
       "toolchain_sha256": "b8808088bb2c7eb239785f69c9e464ae8545216d5705fb37216bc0cf926732f3",
       "implementation_sha256": "d6a33be911d095a6d07dccd4443ccbfd6b514fd89fd7e200d9caa1827944e218",
       "headers": {
@@ -477705,7 +477764,7 @@
         4
       ]
     },
-    "clang_source_sha256": "16ed27c46ea6858279b8bbde9f8112c5da0d2db39341a163ee04e978cfc509c7",
+    "clang_source_sha256": "fb8fbb0868a58837ec3389cb51fbf6ba3b32bb59cfd9b22c4c3f22ec6d27cdd5",
     "member_count": 42,
     "physical_definition_credit": 0
   },
