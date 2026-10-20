@@ -614,3 +614,517 @@ void SpaceRumbleProcess(void) {
         DogfightResetTimerPc = (f32)((f64)NuRandFloat() * 10.0 + 3.0);
     }
 }
+
+extern f32 FlightSplineDefaultIncrementPc;
+
+/* These records retain the PC-only 0x130 fighter and 0x60 quick-bolt strides. */
+typedef struct DOGFIGHT_QUICK_BOLT_PC {
+    NUMTX matrix;
+    NUVEC4 velocity;
+    f32 duration;
+    u32 unknown_54;
+    i32 type;
+    u32 unknown_5c;
+} DOGFIGHT_QUICK_BOLT_PC;
+typedef struct DOGFIGHT_QUICK_BUFFER_PC {
+    DOGFIGHT_QUICK_BOLT_PC *records;
+    u32 capacity;
+    u32 used;
+} DOGFIGHT_QUICK_BUFFER_PC;
+typedef struct DOGFIGHT_TARGET_SPLINE_PC {
+    u8 unknown_000[0x51c];
+    i32 target_id;
+    u8 unknown_520[16];
+} DOGFIGHT_TARGET_SPLINE_PC;
+STATIC_ASSERT(sizeof(DOGFIGHT_QUICK_BOLT_PC) == 0x60);
+STATIC_ASSERT(offsetof(DOGFIGHT_QUICK_BOLT_PC, duration) == 0x50);
+STATIC_ASSERT(offsetof(DOGFIGHT_QUICK_BOLT_PC, type) == 0x58);
+STATIC_ASSERT(sizeof(DOGFIGHT_QUICK_BUFFER_PC) == 12);
+STATIC_ASSERT(sizeof(DOGFIGHT_TARGET_SPLINE_PC) == 0x530);
+STATIC_ASSERT(offsetof(DOGFIGHT_TARGET_SPLINE_PC, target_id) == 0x51c);
+
+#pragma data_seg(push, ".data$DogfightDeathImpulseScalePc")
+f32 DogfightDeathImpulseScalePc = 10.0f;
+#pragma data_seg(pop)
+#pragma data_seg(push, ".data$DogfightAimResetPc")
+f32 DogfightAimResetPc = 2.0f;
+#pragma data_seg(pop)
+#pragma data_seg(push, ".data$DogfightAimDecayPc")
+f32 DogfightAimDecayPc = 2.0f;
+#pragma data_seg(pop)
+#pragma data_seg(push, ".data$DogfightFireNearPc")
+f32 DogfightFireNearPc = 5.0f;
+#pragma data_seg(pop)
+#pragma data_seg(push, ".data$DogfightFireFarPc")
+f32 DogfightFireFarPc = 100.0f;
+#pragma data_seg(pop)
+#pragma data_seg(push, ".data$MissileDist")
+f32 MissileDist = -3.0f;
+#pragma data_seg(pop)
+#pragma data_seg(push, ".data$DogfightCachedPlayerPositionPc")
+NUVEC DogfightCachedPlayerPositionPc = {0.0f, 0.0f, 0.0f};
+#pragma data_seg(pop)
+#pragma data_seg(push, ".data$DogfightCachedPlayerVelocityPc")
+NUVEC DogfightCachedPlayerVelocityPc = {0.0f, 0.0f, 0.0f};
+#pragma data_seg(pop)
+
+static __declspec(noinline) void TransformFlightVectorPc(NUMTX *matrix, NUVEC *input, NUVEC *output) {
+    f32 x = (f64)matrix->m10 * input->y + (f64)input->x * matrix->m00 + (f64)matrix->m20 * input->z;
+    f32 y = (f64)matrix->m01 * input->x + (f64)matrix->m11 * input->y + (f64)matrix->m21 * input->z;
+    output->z = (f64)matrix->m02 * input->x + (f64)matrix->m12 * input->y + (f64)matrix->m22 * input->z;
+    output->x = x;
+    output->y = y;
+}
+
+/* This allocator has a genuine public stack entry in the PC executable. */
+DOGFIGHT_QUICK_BOLT_PC *__cdecl QuickBoltRecordAllocatePc(DOGFIGHT_QUICK_BUFFER_PC *buffer) {
+    DOGFIGHT_QUICK_BOLT_PC *start = buffer->records + buffer->used;
+    DOGFIGHT_QUICK_BOLT_PC *end = buffer->records + buffer->capacity;
+    DOGFIGHT_QUICK_BOLT_PC *record;
+    for (record = start; record < end; ++record)
+        if (record->duration == 0.0f)
+            goto found;
+    for (record = buffer->records; record < start; ++record)
+        if (record->duration == 0.0f)
+            goto found;
+    return NULL;
+found:
+    buffer->used = record - buffer->records;
+    memset(record, 0, sizeof(*record));
+    return record;
+}
+
+static __declspec(noinline) i32 QuickBoltCreatePc(DOGFIGHT_QUICK_BUFFER_PC *buffer, NUMTX *matrix, NUVEC4 *velocity,
+                                                  f32 duration, i32 type, i32 model_id) {
+    DOGFIGHT_QUICK_BOLT_PC *record = QuickBoltRecordAllocatePc(buffer);
+    f64 dx, dy, dz;
+    if (record == NULL)
+        return 0;
+    dx = (f64)matrix->m30 - global_camera.mtx.m30;
+    dy = (f64)matrix->m31 - global_camera.mtx.m31;
+    dz = (f64)matrix->m32 - global_camera.mtx.m32;
+    if (dx * dx + dy * dy + dz * dz < 40000.0) {
+        switch (model_id) {
+            case -300:
+                PlaySfx("Dog_CloneARC170Gun", (NUVEC *)&matrix->m30);
+                break;
+            case -299:
+                PlaySfx("Dog_TriFighterGuns", (NUVEC *)&matrix->m30);
+                break;
+            case -298:
+            case -297:
+                PlaySfx("Dog_DroidFighterBlast", (NUVEC *)&matrix->m30);
+                break;
+        }
+    }
+    record->duration = duration;
+    record->matrix = *matrix;
+    NuMtxPreRotateX(&record->matrix, 16384);
+    record->velocity = *velocity;
+    record->type = type;
+    return 1;
+}
+
+static __declspec(noinline) DOGFIGHT_FIGHTER_PC *QueuedFighterSelectorPc(DOGFIGHT_SPACE_PC *space) {
+    i32 i;
+    for (i = 0; i < 96; ++i)
+        if (space->queued_fighters[i].fields.active == 0)
+            return &space->queued_fighters[i];
+    return NULL;
+}
+
+static __declspec(noinline) void StarFighterTargetPc(starfighter_s *fighter) {
+    DOGFIGHT_SPACE_PC *space = (DOGFIGHT_SPACE_PC *)WORLD->level_specific_data;
+    DOGFIGHT_TARGET_SPLINE_PC *spline = (DOGFIGHT_TARGET_SPLINE_PC *)fighter->spline;
+    i32 target_id, i;
+    if (spline == NULL)
+        return;
+    target_id = spline->target_id;
+    if (target_id == -1) {
+        fighter->target_id = -1;
+        fighter->target_ready = 0;
+        fighter->target = NULL;
+        return;
+    }
+    if (target_id == -2 || target_id == -3) {
+        fighter->target_id = (i16)target_id;
+        fighter->target = NULL;
+        fighter->target_ready = 1;
+        return;
+    }
+    fighter->target_ready = 0;
+    fighter->target_id = -1;
+    for (i = 0; i < 96; ++i) {
+        starfighter_s *target = &space->queued_fighters[i].fields;
+        if (target->active != 0 && target->object_id == target_id) {
+            fighter->target_id = (i16)target_id;
+            fighter->target = target;
+            fighter->target_ready = 1;
+            return;
+        }
+    }
+}
+
+static __declspec(noinline) void StarFighterAlignPc(starfighter_s *fighter, NUVEC4 *direction, f32 distance, i32 mode) {
+    NUVEC4 local, up;
+    i16 yaw, pitch, world_yaw, world_pitch, roll;
+    f64 limit;
+    f32 adjustment;
+    NuVecInvMtxRotate((NUVEC *)&local, (NUVEC *)direction, &fighter->matrix);
+    yaw = (i16)NuAtan2D(local.x, local.z);
+    fighter->yaw = yaw;
+    NuVecRotateY((NUVEC *)&local, (NUVEC *)&local, -yaw);
+    pitch = (i16)NuAtan2D(local.y, local.z);
+    fighter->pitch = pitch;
+    NuMtxPreRotateY(&fighter->matrix, yaw);
+    NuMtxPreRotateX(&fighter->matrix, -pitch);
+    if (mode != 0) {
+        NuMtxPreRotateZ(&fighter->matrix, 512);
+        return;
+    }
+    world_yaw = (i16)NuAtan2D(direction->x, direction->z);
+    NuVecRotateY((NUVEC *)&up, (NUVEC *)direction, -world_yaw);
+    world_pitch = (i16)NuAtan2D(up.y, up.z);
+    up.x = 1.0f;
+    up.y = up.z = up.w = 0.0f;
+    NuVecRotateZ((NUVEC *)&up, (NUVEC *)&up, (i16)(i32)fighter->target_position.w + 16384);
+    NuVecRotateX((NUVEC *)&up, (NUVEC *)&up, -world_pitch);
+    NuVecRotateY((NUVEC *)&up, (NUVEC *)&up, world_yaw);
+    NuVecInvMtxRotate((NUVEC *)&up, (NUVEC *)&up, &fighter->matrix);
+    roll = (i16)NuAtan2D(up.x, up.y);
+    limit = (f64)FRAMETIME * 24000.0;
+    if (roll > limit)
+        roll = (i16)(i32)limit;
+    limit = (f64)FRAMETIME * -24000.0;
+    if (roll < limit)
+        roll = (i16)(i32)limit;
+    adjustment = roll;
+    if (distance > 2.0f)
+        adjustment = 0.0f;
+    else if (distance > 1.0f)
+        adjustment = (2.0 - (f64)distance) * adjustment;
+    NuMtxPreRotateZ(&fighter->matrix, -(i16)(i32)adjustment);
+}
+
+/* Return 0: prepared shot; 1: lost target; 2: target retained without a shot. */
+static __declspec(noinline) i32 StarFighterFirePc(starfighter_s *fighter, NUVEC4 *velocity, NUMTX *aim_matrix,
+                                                  f32 shot_speed) {
+    NUVEC offset, local;
+    NUVEC *target_position, *target_velocity, *axis;
+    GAMEOBJECT *player;
+    f32 forward, square, ratio, closing_speed, travel_time, least, up_dot, front_dot;
+    i16 yaw, pitch;
+    union {
+        f32 value;
+        u32 bits;
+    } absolute;
+    switch (fighter->target_id) {
+        case -1:
+            return 1;
+        case -2:
+            player = NULL;
+            if (NuRandFloat() < 0.5f && Player[0] != NULL && (((GAMEOBJECT *)Player[0])->flags_1fc & 0x80) != 0)
+                player = (GAMEOBJECT *)Player[0];
+            else if (Player[1] != NULL && (((GAMEOBJECT *)Player[1])->flags_1fc & 0x80) != 0)
+                player = (GAMEOBJECT *)Player[1];
+            if (player != NULL) {
+                DogfightCachedPlayerPositionPc = player->collision_position;
+                DogfightCachedPlayerVelocityPc = player->velocity;
+            }
+            target_position = &DogfightCachedPlayerPositionPc;
+            target_velocity = &DogfightCachedPlayerVelocityPc;
+            break;
+        case -3:
+            *aim_matrix = fighter->matrix;
+            velocity->x = velocity->y = 0.0f;
+            velocity->z = shot_speed;
+            velocity->w = 0.0f;
+            TransformFlightVectorPc(aim_matrix, (NUVEC *)velocity, (NUVEC *)velocity);
+            return 0;
+        default:
+            if (fighter->target == NULL || fighter->target->active == 0)
+                return 1;
+            target_position = (NUVEC *)&fighter->target->matrix.m30;
+            target_velocity = (NUVEC *)&fighter->velocity;
+            break;
+    }
+    offset.x = target_position->x - fighter->matrix.m30;
+    offset.y = target_position->y - fighter->matrix.m31;
+    offset.z = target_position->z - fighter->matrix.m32;
+    forward =
+        (f64)fighter->matrix.m21 * offset.y + (f64)fighter->matrix.m20 * offset.x + (f64)fighter->matrix.m22 * offset.z;
+    if (forward < DogfightFireNearPc || forward > DogfightFireFarPc)
+        return 1;
+    square = (f64)offset.y * offset.y + (f64)offset.x * offset.x + (f64)offset.z * offset.z;
+    ratio = (f64)forward * forward / square;
+    if (ratio < (f64)0.969f)
+        return 2;
+    closing_speed = (f64)fighter->matrix.m21 * target_velocity->y + (f64)target_velocity->x * fighter->matrix.m20 +
+                    (f64)fighter->matrix.m22 * target_velocity->z;
+    closing_speed = 50.0 - (f64)closing_speed;
+    if (closing_speed < 1.0f)
+        return 2;
+    travel_time = forward / closing_speed;
+    local.x = (f64)target_velocity->x * travel_time;
+    local.y = (f64)target_velocity->y * travel_time;
+    local.z = (f64)target_velocity->z * travel_time;
+    offset.x += local.x;
+    offset.y += local.y;
+    offset.z += local.z;
+    if (fighter->fired == 0) {
+        absolute.value = (f64)fighter->matrix.m01 * offset.y + (f64)fighter->matrix.m00 * offset.x +
+                         (f64)fighter->matrix.m02 * offset.z;
+        absolute.bits &= 0x7fffffff;
+        least = absolute.value;
+        absolute.value = (f64)fighter->matrix.m11 * offset.y + (f64)fighter->matrix.m10 * offset.x +
+                         (f64)fighter->matrix.m12 * offset.z;
+        absolute.bits &= 0x7fffffff;
+        up_dot = absolute.value;
+        absolute.value = (f64)fighter->matrix.m21 * offset.y + (f64)fighter->matrix.m20 * offset.x +
+                         (f64)fighter->matrix.m22 * offset.z;
+        absolute.bits &= 0x7fffffff;
+        front_dot = absolute.value;
+        axis = (NUVEC *)&fighter->matrix.m20;
+        if (up_dot > least) {
+            if (front_dot > least)
+                axis = (NUVEC *)&fighter->matrix.m00;
+        } else if (front_dot > up_dot) {
+            axis = (NUVEC *)&fighter->matrix.m10;
+        }
+        NuVecCross((NUVEC *)&fighter->aim_direction, &offset, axis);
+        NuVecNorm((NUVEC *)&fighter->aim_direction, (NUVEC *)&fighter->aim_direction);
+        fighter->aim_direction.w = 1.0f;
+    }
+    if (fighter->aim_bias != 0.0f) {
+        local.x = (f64)fighter->aim_direction.x * fighter->aim_bias;
+        local.y = (f64)fighter->aim_direction.y * fighter->aim_bias;
+        local.z = (f64)fighter->aim_direction.z * fighter->aim_bias;
+        offset.x += local.x;
+        offset.y += local.y;
+        offset.z += local.z;
+    }
+    *aim_matrix = fighter->matrix;
+    NuVecInvMtxRotate(&local, &offset, aim_matrix);
+    yaw = (i16)NuAtan2D(local.x, local.z);
+    NuVecRotateY(&local, &local, -yaw);
+    pitch = (i16)NuAtan2D(local.y, local.z);
+    NuMtxPreRotateY(aim_matrix, yaw);
+    NuMtxPreRotateX(aim_matrix, -pitch);
+    velocity->x = velocity->y = 0.0f;
+    velocity->z = shot_speed;
+    velocity->w = 0.0f;
+    TransformFlightVectorPc(aim_matrix, (NUVEC *)velocity, (NUVEC *)velocity);
+    return 0;
+}
+
+i32 __cdecl ProcessStarFighter(DOGFIGHT_FIGHTER_PC *record, DOGFIGHT_QUICK_BUFFER_PC *info) {
+    starfighter_s *fighter = &record->fields;
+    DOGFIGHT_GROUP_PC *parent;
+    DOGFIGHT_FIGHTER_PC *missile;
+    NUVEC4 parent_position, direction, shot_velocity;
+    NUVEC impulse, step;
+    NUMTX aim_matrix;
+    f32 magnitude, scale, distance_squared, camera_distance, pitch, distance, speed;
+    f64 dx, dy, dz;
+    i32 finished = 0;
+    i32 fire_result;
+    if (Player[0] != NULL && ((GAMEOBJECT *)Player[0])->sock_position.distance > 435.0)
+        MissileDist = 2.0f;
+    if (fighter->hit_count != 0) {
+        if (fighter->spline != NULL && (fighter->spline->id == 84 || fighter->spline->id == 85))
+            fighter->health = 0;
+        else
+            --fighter->health;
+        --fighter->hit_count;
+        if (fighter->health == 0) {
+            if (fighter->spline != NULL && (fighter->spline->id == 84 || fighter->spline->id == 85))
+                fighter->death_timer = 1.0f;
+            else
+                fighter->death_timer = 2.0f;
+            parent = (DOGFIGHT_GROUP_PC *)fighter->parent;
+            if (parent == NULL) {
+                impulse = v010;
+            } else {
+                impulse.x = fighter->matrix.m30 - parent->matrix.m30;
+                impulse.y = fighter->matrix.m31 - parent->matrix.m31;
+                impulse.z = fighter->matrix.m32 - parent->matrix.m32;
+                parent->target = *(NUVEC4 *)&fighter->matrix.m30;
+            }
+            magnitude = (f64)impulse.y * impulse.y + (f64)impulse.x * impulse.x + (f64)impulse.z * impulse.z;
+            magnitude = NuFsqrt(magnitude);
+            if (magnitude != 0.0f) {
+                scale = qrand() * (((f64)DogfightDeathImpulseScalePc + 1.0) / 65535.0) / magnitude;
+                impulse.x *= scale;
+                impulse.y *= scale;
+                impulse.z *= scale;
+            }
+            fighter->velocity.x += impulse.x;
+            fighter->velocity.y += impulse.y;
+            fighter->velocity.z += impulse.z;
+            fighter->death_rotate_x = qrand() * 1.0000152587890625 - 32768.0;
+            fighter->death_rotate_z = qrand() * 1.0000152587890625 - 32768.0;
+            if (fighter->spline == NULL || (fighter->spline->id != 84 && fighter->spline->id != 85))
+                AddGameDebris(WORLD->game_debris_sys, 23, (NUVEC *)&fighter->matrix.m30);
+        }
+        if (fighter->health == -2)
+            fighter->death_timer = 0.0f;
+    }
+    if (fighter->health <= 0 && (fighter->spline == NULL || (fighter->spline->id != 84 && fighter->spline->id != 85))) {
+        fighter->death_timer -= FRAMETIME;
+        if (fighter->death_timer <= 0.0f) {
+            AddGameDebris(WORLD->game_debris_sys, 23, (NUVEC *)&fighter->matrix.m30);
+            fighter->active = 0;
+        } else {
+            NuMtxPreRotateX(&fighter->matrix, (i16)(i32)((f64)fighter->death_rotate_x * FRAMETIME * 4.0));
+            NuMtxPreRotateZ(&fighter->matrix, (i16)(i32)((f64)fighter->death_rotate_z * FRAMETIME * 4.0));
+            step.x = (f64)fighter->velocity.x * FRAMETIME;
+            step.y = (f64)fighter->velocity.y * FRAMETIME;
+            step.z = (f64)fighter->velocity.z * FRAMETIME;
+            fighter->matrix.m30 += step.x;
+            fighter->matrix.m31 += step.y;
+            fighter->matrix.m32 += step.z;
+            AddVariableShotDebrisEffect(WORLD->game_debris_sys->entries[48].effect, (NUVEC *)&fighter->matrix.m30, 1, 0,
+                                        0);
+        }
+        return 0;
+    }
+    parent = (DOGFIGHT_GROUP_PC *)fighter->parent;
+    if (parent != NULL) {
+        fighter->matrix = parent->matrix;
+        fighter->velocity = parent->velocity;
+        NuVecMtxTransform((NUVEC *)&fighter->matrix.m30, (NUVEC *)&fighter->parent_offset, &parent->matrix);
+        fighter->shoot_timer -= FRAMETIME;
+        if (fighter->shoot_timer <= 0.0f) {
+            parent_position.x = parent_position.y = 0.0f;
+            parent_position.z = -10.0f;
+            parent_position.w = 1.0f;
+            NuVecMtxTransform((NUVEC *)&parent_position, (NUVEC *)&parent_position, &fighter->matrix);
+            fighter->shoot_timer = 1.0f;
+        }
+        return 1;
+    }
+    if (fighter->spline == NULL)
+        return 0;
+    direction.x = fighter->target_position.x - fighter->matrix.m30;
+    direction.y = fighter->target_position.y - fighter->matrix.m31;
+    direction.z = fighter->target_position.z - fighter->matrix.m32;
+    distance_squared = (f64)direction.y * direction.y + (f64)direction.x * direction.x + (f64)direction.z * direction.z;
+    if (fighter->death_timer >= 0.0f)
+        fighter->death_timer -= FRAMETIME;
+    while (distance_squared < 25.0) {
+        fighter->spline_progress += FlightSplineDefaultIncrementPc;
+        if (fighter->spline_progress > 1.0f) {
+            finished = 1;
+            fighter->spline_progress -= 1.0;
+            distance_squared = 1000000.0f;
+            break;
+        }
+        CalcSplinePoint(fighter->spline, &fighter->target_position, fighter->spline_progress);
+        if (fighter->model_id == -307) {
+            fighter->target_position.x += (f64)fighter->matrix.m10 * MissileDist;
+            fighter->target_position.y += (f64)fighter->matrix.m11 * MissileDist;
+            fighter->target_position.z += (f64)fighter->matrix.m12 * MissileDist;
+        }
+        direction.x = fighter->target_position.x - fighter->matrix.m30;
+        direction.y = fighter->target_position.y - fighter->matrix.m31;
+        direction.z = fighter->target_position.z - fighter->matrix.m32;
+        distance_squared =
+            (f64)direction.y * direction.y + (f64)direction.x * direction.x + (f64)direction.z * direction.z;
+    }
+    camera_distance = ((f64)fighter->matrix.m31 - global_camera.mtx.m31) * global_camera.mtx.m21 +
+                      ((f64)fighter->matrix.m30 - global_camera.mtx.m30) * global_camera.mtx.m20 +
+                      ((f64)fighter->matrix.m32 - global_camera.mtx.m32) * global_camera.mtx.m22;
+    if (camera_distance >= 0.0f)
+        camera_distance = 1.0f;
+    if (camera_distance < -2.0f)
+        pitch = 0.5f;
+    else
+        pitch = (f64)camera_distance * 0.25 + 1.0;
+    switch (fighter->model_id) {
+        case -300:
+            PlaySfxAndSetPitch("Dog_CloneARC170EngLp", (NUVEC *)&fighter->matrix.m30, pitch);
+            break;
+        case -299:
+            if (fighter->health > 0)
+                PlaySfxAndSetPitch("Dog_TriFighterEngLp", (NUVEC *)&fighter->matrix.m30, pitch);
+            break;
+        case -298:
+        case -297:
+            if (fighter->health > 0)
+                PlaySfxAndSetPitch("Dog_DroidFighterEngLp", (NUVEC *)&fighter->matrix.m30, pitch);
+            break;
+    }
+    if (finished != 0) {
+        fighter->active = 0;
+    } else {
+        distance = NuFsqrt(distance_squared);
+        if (distance != 0.0f) {
+            speed = fighter->speed / distance;
+            fighter->velocity.x = (f64)direction.x * speed;
+            fighter->velocity.y = (f64)direction.y * speed;
+            fighter->velocity.z = (f64)direction.z * speed;
+            direction.x = (f64)fighter->velocity.x * FRAMETIME;
+            direction.y = (f64)fighter->velocity.y * FRAMETIME;
+            direction.z = (f64)fighter->velocity.z * FRAMETIME;
+            fighter->matrix.m30 += direction.x;
+            fighter->matrix.m31 += direction.y;
+            fighter->matrix.m32 += direction.z;
+            StarFighterAlignPc(fighter, &direction, (f64)distance / 5.0, fighter->death_timer > 0.0f);
+            fighter->movement = direction;
+        }
+    }
+    fighter->matrix.m33 = 1.0f;
+    if (fighter->delete_when_done != 0)
+        return 1;
+    if (fighter->initial_delay != 0.0f) {
+        fighter->initial_delay -= FRAMETIME;
+        if (fighter->initial_delay <= 0.0f) {
+            fighter->initial_delay = 0.0f;
+            fighter->aim_bias = DogfightAimResetPc;
+        }
+        return 1;
+    }
+    if (fighter->target_ready == 0) {
+        StarFighterTargetPc(fighter);
+        if (fighter->target_ready == 0)
+            return 1;
+    }
+    if (fighter->model_id == -307)
+        return 1;
+    if (fighter->fired != 0 && fighter->aim_bias > 0.0f)
+        fighter->aim_bias -= (f64)DogfightAimDecayPc * FRAMETIME;
+    if (fighter->shoot_timer > 0.0f) {
+        fighter->shoot_timer -= FRAMETIME;
+        return 1;
+    }
+    fighter->shoot_timer = NuRandFloat() * (f64)0.2f + (f64)0.2f;
+    if (info == NULL)
+        return 1;
+    fire_result = StarFighterFirePc(fighter, &shot_velocity, &aim_matrix, 75.0f);
+    if (fire_result != 0) {
+        if (fire_result == 1 && fighter->fired != 0)
+            fighter->delete_when_done = 1;
+        return 1;
+    }
+    if (fighter->missile_count != 0 && fighter->spline->id != 84 && fighter->spline->id != 85 &&
+        NuRandFloat() < (f64)0.2f) {
+        missile = QueuedFighterSelectorPc((DOGFIGHT_SPACE_PC *)WORLD->level_specific_data);
+        if (missile != NULL) {
+            --fighter->missile_count;
+            *missile = *record;
+            missile->fields.speed += 10.0;
+            missile->fields.model_id = -307;
+            missile->fields.matrix.m30 += (f64)missile->fields.matrix.m10 * MissileDist;
+            missile->fields.matrix.m31 += (f64)missile->fields.matrix.m11 * MissileDist;
+            missile->fields.matrix.m32 += (f64)missile->fields.matrix.m12 * MissileDist;
+            dx = (f64)missile->fields.matrix.m30 - global_camera.mtx.m30;
+            dy = (f64)missile->fields.matrix.m31 - global_camera.mtx.m31;
+            dz = (f64)missile->fields.matrix.m32 - global_camera.mtx.m32;
+            if (dy * dy + dx * dx + dz * dz < 40000.0)
+                PlaySfx("Ep3_1_ProtoXWingMissile", (NUVEC *)&missile->fields.matrix.m30);
+        }
+    }
+    QuickBoltCreatePc(info, &aim_matrix, &shot_velocity, 2.5f, fighter->model_id == -300, fighter->model_id);
+    fighter->fired = 1;
+    return 1;
+}

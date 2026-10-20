@@ -68,7 +68,10 @@ address,symbol,size,ctype
 0x40e690,_GoingForwardsAlongNarrowSock,106,i32 __cdecl (GAMEOBJECT *)
 0x40e700,_FlightSplineCapacityDiagnosticPc,1,void __cdecl (char *)
 0x40e870,_CopyFlightMatrixPc,95,"void __cdecl (NUMTX *, const NUMTX *)"
+0x40e8e0,_TransformFlightVectorPc,91,"static void(NUMTX *, NUVEC *, NUVEC *)"
 0x40ea30,_ChrisAnakinCUpdate,319,
+0x40ee70,_QuickBoltRecordAllocatePc,132,DOGFIGHT_QUICK_BOLT_PC *__cdecl (DOGFIGHT_QUICK_BUFFER_PC *)
+0x40ef00,_QuickBoltCreatePc,232,"static i32(DOGFIGHT_QUICK_BUFFER_PC *, NUMTX *, NUVEC4 *, f32, i32, i32)"
 0x40eff0,_CalcSplinePoint,1119,"void __cdecl (FLIGHT_SPLINE_RESOURCE_PC *,NUVEC4 *,f32)"
 0x40f450,_CalcSplinePointFromDist,190,"void __cdecl (FLIGHT_SPLINE_RESOURCE_PC *,NUVEC4 *,f32)"
 0x40f5c0,_FlightSplineLegacyLengthPc,302,static f32 (FLIGHT_SPLINE_RESOURCE_PC *)
@@ -76,10 +79,14 @@ address,symbol,size,ctype
 0x40f850,_FlightSplineLoadRecordPc,194,"static void (FLIGHT_SPLINE_FILE_PC *, i32, i32)"
 0x40f920,_FlightSpline_Init,414,"void __cdecl (WORLDINFO *, FLIGHT_SPLINE_RESOURCE_PC *, i32)"
 0x40ffa0,_DogfightResetCrossesPc,175,"static void (DOGFIGHT_CROSS_PC *, i32)"
+0x410050,_QueuedFighterSelectorPc,44,static DOGFIGHT_FIGHTER_PC *(DOGFIGHT_SPACE_PC *)
 0x4100b0,_DogfightResetSplineHistoryPc,189,"static void (DOGFIGHT_SPLINE_HISTORY_PC *, i32)"
 0x410170,_DogfightResetWorldRecordsPc,196,"static void (WORLDINFO *, DOGFIGHT_SPACE_PC *)"
 0x410240,_DogfightResetGroupPc,115,static void (DOGFIGHT_GROUP_PC *)
-0x410a10,_ProcessStarFighter,2656,
+0x4102c0,_StarFighterAlignPc,548,"static void(starfighter_s *, NUVEC4 *, f32, i32)"
+0x4104f0,_StarFighterFirePc,1101,"static i32(starfighter_s *, NUVEC4 *, NUMTX *, f32)"
+0x410940,_StarFighterTargetPc,206,static void(starfighter_s *)
+0x410a10,_ProcessStarFighter,2656,"i32 __cdecl (DOGFIGHT_FIGHTER_PC *, DOGFIGHT_QUICK_BUFFER_PC *)"
 0x4115f0,_SelectFreeFlightGroupPc,68,DOGFIGHT_GROUP_PC * __cdecl (void)
 0x411880,_SpaceAudioPoint,68,
 0x4118d0,_SpaceResetAudioPoint,171,void __cdecl (void)
@@ -9507,6 +9514,7 @@ address,symbol,size,ctype
 0x751bb0,??_C@_0BD@GEDFNHGE@Dog_TriFighterGuns?$AA@,19,const char[19]
 0x751bc4,??_C@_0BG@PHHIKGAO@Dog_DroidFighterBlast?$AA@,22,const char[22]
 0x751bdc,??_C@_0BD@KCCJNHHN@Dog_CloneARC170Gun?$AA@,19,const char[19]
+0x751bf0,__real@40e3880000000000,8,const f64
 0x00751bf8,__real@4024000000000000,8,const f64
 0x751c00,??_C@_04HDOCAJNK@?$CFs?$CFs?$AA@,5,
 0x00751c00,_GizAIMessage_PrefixedNameFormat,5,const char[5]
@@ -9519,8 +9527,10 @@ address,symbol,size,ctype
 0x751c20,__real@c0d7700000000000,8,const f64
 0x751c28,__real@40d7700000000000,8,const f64
 0x00751c30,__real@4049000000000000,8,const f64
+0x751c38,__real@3fef020c40000000,8,const f64
 0x00751c40,__real@40200000,4,const f32
 0x751c44,??_C@_0BI@HPLEJGDL@Ep3_1_ProtoXWingMissile?$AA@,24,const char[24]
+0x751c5c,__real@42960000,4,const f32
 0x751c60,??_C@_0BE@GNEDADNP@Dog_TriFighterEngLp?$AA@,20,const char[20]
 0x751c74,??_C@_0BG@POINPNKD@Dog_DroidFighterEngLp?$AA@,22,const char[22]
 0x751c8c,??_C@_0BF@PDGJKHKF@Dog_CloneARC170EngLp?$AA@,21,const char[21]
@@ -9529,8 +9539,10 @@ address,symbol,size,ctype
 0x00751ca8,__real@49742400,4,const f32
 0x751cb0,__real@4039000000000000,8,const f64
 0x751cb8,__real@c1200000,4,const f32
+0x751cc0,__real@3ff0001000000000,8,const f64
 0x00751cc8,_BoltTargetRandomDenominator,8,const f64
 0x751cc8,__real@40efffe000000000,8,const f64
+0x751cd0,__real@407b300000000000,8,const f64
 0x751ce0,__real@4089000000000000,8,const f64
 0x751ce8,__real@404db98f40000000,8,const f64
 0x751cf0,__real@4057be8e00000000,8,const f64
@@ -18150,6 +18162,12 @@ address,symbol,size,ctype
 0x7f1558,_DogfightAnakinActionsPc,80,DOGFIGHT_ACTION_PC[10]
 0x7f15dc,_FlightSplineDefaultIncrementPc,4,f32
 0x7f15e0,_PodRaceSplineIncrementPc,,f32
+0x7f15f8,_DogfightDeathImpulseScalePc,4,f32
+0x7f15fc,_DogfightAimResetPc,4,f32
+0x7f1600,_DogfightAimDecayPc,4,f32
+0x7f1604,_DogfightFireNearPc,4,f32
+0x7f1608,_DogfightFireFarPc,4,f32
+0x7f160c,_MissileDist,4,f32
 0x7f161c,_SpeedDist,4,f32
 0x7f1620,_SpeedAdd,4,f32
 0x7f1624,_MulDist,4,f32
@@ -20161,7 +20179,9 @@ address,symbol,size,ctype
 0x855e04,_KEEPONSCREEN_SIDESONLY,,i32
 0x855e18,_MaxRadialCamY,4,f32
 0x855e20,_RadialMoveCentre,16,NUVEC4
+0x855e30,_DogfightCachedPlayerPositionPc,12,NUVEC
 0x855e60,_DogfightDrawScalePc,16,NUVEC4
+0x855e70,_DogfightCachedPlayerVelocityPc,12,NUVEC
 0x855e8c,_AnakinC,4,struct anakin_door_s *
 0x855e98,_DogfightResetTimerPc,4,f32
 0x855e9c,_MulAdd,4,f32
