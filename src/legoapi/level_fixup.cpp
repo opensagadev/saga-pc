@@ -253,6 +253,12 @@ extern "C" {
                                             {NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL}};
 }
 
+extern "C" void __cdecl ChrisDogFightAInit(WORLDINFO *);
+extern "C" void __cdecl ChrisDogFightAReset(WORLDINFO *);
+extern "C" void __cdecl ChrisDogFightAUpdate(WORLDINFO *);
+extern "C" void __cdecl ChrisDogFightADraw(WORLDINFO *);
+STATIC_ASSERT(offsetof(LEVELDATA_PC, callbacks) == 0x68);
+
 extern "C" void __cdecl FixUpLevels(struct level_fixup_pc_s *fixup) {
     LEVELDATA_PC *level;
     i32 index;
@@ -531,10 +537,13 @@ extern "C" void __cdecl FixUpLevels(struct level_fixup_pc_s *fixup) {
             level = Level_FindByName("dogfight_a", NULL); /* Native call 0x48e3f3. */
             DOGFIGHTA_LDATA = level;                      /* Native store 0x48e3fd. */
             if (level != NULL) {
-                STUBBED_NAMED(FixUpLevels_Callback_413a20); /* Native 0x48e404: callbacks[1] = entry 0x413a20. */
-                STUBBED_NAMED(FixUpLevels_Callback_4124f0); /* Native 0x48e411: callbacks[2] = entry 0x4124f0. */
-                STUBBED_NAMED(FixUpLevels_Callback_413aa0); /* Native 0x48e41e: callbacks[3] = entry 0x413aa0. */
-                STUBBED_NAMED(FixUpLevels_Callback_413b10); /* Native 0x48e42a: callbacks[5] = entry 0x413b10. */
+                level->callbacks[1] = (void *)ChrisDogFightAInit; /* Native 0x48e404: callbacks[1] = entry 0x413a20. */
+                DOGFIGHTA_LDATA->callbacks[2] =
+                    (void *)ChrisDogFightAReset; /* Native 0x48e411: callbacks[2] = entry 0x4124f0. */
+                DOGFIGHTA_LDATA->callbacks[3] =
+                    (void *)ChrisDogFightAUpdate; /* Native 0x48e41e: callbacks[3] = entry 0x413aa0. */
+                DOGFIGHTA_LDATA->callbacks[5] =
+                    (void *)ChrisDogFightADraw; /* Native 0x48e42a: callbacks[5] = entry 0x413b10. */
             }
             level = Level_FindByName("Factory_B", NULL); /* Native call 0x48e438. */
             FACTORYB_LDATA = level;                      /* Native store 0x48e442. */

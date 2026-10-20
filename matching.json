@@ -109,7 +109,7 @@
     "src/legoapi/init_once.cpp": "cb0741fb96402c37292cb31b83efee77d616485dfa64fee5a5adc0b879225f3d",
     "src/legoapi/input.cpp": "7509dec122d97631a0329146aa4f9f1087ba49c1e5062c706f21398032be0697",
     "src/legoapi/ledges.cpp": "3fec51f0f2aa94e5d9ae74b4201aab0e42b92af5f45291a33716099d40b877e3",
-    "src/legoapi/level_fixup.cpp": "c490813b3ae7ae60096a5cd33f7aeda2130a6dcfc7928fd78edd5a1e37386a98",
+    "src/legoapi/level_fixup.cpp": "b805bc97c5185f03c36b54b19c094cbf4009be2bea556df2f2d98b7c8da01c93",
     "src/legoapi/menu_extras.cpp": "8bc6d4adf37d553c170667a850b17f6dded11f581285d1f5be3c645d2e926f26",
     "src/legoapi/menu_pause.cpp": "4c402951106accab233e4f7a1c98d958d1ddb686c378d37588da1520c71f6876",
     "src/legoapi/menu_titles.cpp": "579d8a34884e028c89fbd5c7ec64085c99406ba0577531f667475a68f3f8da04",
@@ -249,7 +249,7 @@
     "src/legoapi/creature.c": "93c969d615056202ba1d99ec5ff6fd24715017b8a23e4c613ddd9bcaf9156927",
     "src/legoapi/credits.c": "16c48b7eda6a9cf1fdefecfb8ad5e38a813f500e649f03367eaa9ed4b5fccf07",
     "src/legoapi/customise.c": "84298b07a497ec23e187fbc789497ca674b72aa0d076cc0498bbb08d7d94f500",
-    "src/legoapi/cutscene_hooks.c": "01089961bdedbbd4b526599f3c9679f4588215b01bc833cf940700ebe5cdd9a9",
+    "src/legoapi/cutscene_hooks.c": "4ae38c74fdd0fb5a72b821e2eed3eb138a0c13acca6d54c2cd2a2827d89f6350",
     "src/legoapi/cutscene_lifecycle.c": "f205d43d05072c66c77b3a0c8606491615f2af0a8a607356298868410c9d9b31",
     "src/legoapi/debris_callbacks.c": "2e3209336de614c5934560ae421c0788822ce98c47a6ef5102f00defec1416cf",
     "src/legoapi/debris_engine.c": "025f20d98f0cafb6b7393a52e32eefde8950b447c012f118db7c880f9919e9bc",
@@ -598,7 +598,7 @@
     "build/obj/legoapi/creature.obj": "c327e6da2e1e2f67aac6cf1cd9c194e8f37e360dfe4d70cb3b2944bdbcbf3bb9",
     "build/obj/legoapi/credits.obj": "117c96d3dcd4faaf466285dfc05faeb6845c39a54682327ab68edfc4a1b1a2dd",
     "build/obj/legoapi/customise.obj": "8fe2794b131ec8487dda23aef41790e0beefb287d5091c73dc31454b66744fc8",
-    "build/obj/legoapi/cutscene_hooks.obj": "405c8921139ffee3f168260fd5f60472aaf6821e1e16ab234427a8bd0be44b17",
+    "build/obj/legoapi/cutscene_hooks.obj": "7bef199987b15091b4c9456a03843ec91e4796d3bff47d9df1d3a39285965da7",
     "build/obj/legoapi/cutscene_lifecycle.obj": "de697b073fca0f88210eb4da5d89b11c0f5d638537b2daba7fa027b84ff30fa4",
     "build/obj/legoapi/cutscene_runtime.obj": "ca093f00415d305881b3ba5b032a691fd3c51b9d800b58eb1450f422db9a16e7",
     "build/obj/legoapi/debris_callbacks.obj": "752252258ffe19002e3774340ae297a63cb92570198e2b77ee3f02cdcd87ca5b",
@@ -684,7 +684,7 @@
     "build/obj/legoapi/ledges.obj": "ef3cf91cce9f01f89d11f769cea9643731db83c025aecdc21b6a3cc17e93ce49",
     "build/obj/legoapi/legoapi_misc.obj": "3249cf7cfeda90cbf9ad4aabdb24bb15af2e5a2bbce6cef337f876baa349f1e2",
     "build/obj/legoapi/level_area_load.obj": "ffda3ded4bef677cd9c911c3e2b5239f1d79beddce49335be7c1282da527cdbc",
-    "build/obj/legoapi/level_fixup.obj": "8e640d2fb012996f92b8ee79da878d0a041ff0ff12f857ef02ea273160bbeb96",
+    "build/obj/legoapi/level_fixup.obj": "fcdc0728d1fbdef6c5d81a41c0e179f9efa3812cb5767f92c472bcf4682dc6c0",
     "build/obj/legoapi/level_lifecycle.obj": "822727d2207e18952a6b98130023549a0da195b773e321911c0119798e7b6bfa",
     "build/obj/legoapi/leveldata.obj": "563d00bc62bcdd291abda15a17a7cdc2b796b6f21134a2233a24729cfc5f3871",
     "build/obj/legoapi/levelobjects.obj": "30cd71e8bef544b4145f70746a93c7cd1382a29330632b72c2d9a5fe7ad1ddf5",
@@ -9096,17 +9096,17 @@
       "objects": [
         {
           "unit": "src/legoapi/cutscene_hooks.c",
-          "base_size": 3,
+          "base_size": 27,
           "exact_match": false,
           "target_sha256": "9c8d88e1da9b663183f3915f972df95cc4d1371dea08f119f21f2f12a2fc0a3c",
-          "base_sha256": "4bc724f3b1d0caf4fe369c18cba3102e6c4ea057f63fe1587e3973134a7f755e",
-          "relocation_count": 0,
+          "base_sha256": "858c55aed6a619fca6c9c00fde5103216080873fee60575ce9e4362d35e39c72",
+          "relocation_count": 3,
           "comparison_unit": "0042dd80-b04c21753be5",
-          "objdiff_percent": 28.571428
+          "objdiff_percent": 82.71429
         }
       ],
       "status": "different",
-      "objdiff_percent": 28.571428
+      "objdiff_percent": 82.71429
     },
     {
       "name": "GameBlowUpBlownUpFn_LSW",
@@ -32892,17 +32892,17 @@
       "objects": [
         {
           "unit": "src/legoapi/level_fixup.cpp",
-          "base_size": 3691,
+          "base_size": 3743,
           "exact_match": false,
           "target_sha256": "83c94fa4f5acdb0502bf48a93ff1cf68ff70b34d271e3992aea3309bdf59bb62",
-          "base_sha256": "541ded057963be4114e9e80082958d7cc064d350b1e13d925e84085a930aacd3",
-          "relocation_count": 584,
+          "base_sha256": "3c7b88236cde99d937af6adee3ee10014df3864bc2c8202781b544fb1bebb91e",
+          "relocation_count": 591,
           "comparison_unit": "0048da50-b8cac8f68bf3",
-          "objdiff_percent": 44.147354
+          "objdiff_percent": 44.713997
         }
       ],
       "status": "different",
-      "objdiff_percent": 44.147354
+      "objdiff_percent": 44.713997
     },
     {
       "name": "Level_SetDefaults",
@@ -478313,10 +478313,10 @@
     "mapped_code_bytes": 2429550,
     "matched_code_bytes": 456791,
     "matching_percent": 13.159280558047456,
-    "fuzzy_coverage_percent": 47.39305453111054,
+    "fuzzy_coverage_percent": 47.39459548448983,
     "mapped_functions": 8902,
     "matched_functions": 4228,
-    "objdiff_fuzzy_percent": 74.73731,
+    "objdiff_fuzzy_percent": 74.73974,
     "objdiff_total_code": 2204577,
     "image_bytes": 40067072,
     "mapped_bytes": 4241850,
@@ -479528,7 +479528,7 @@
       "metadata_sha256": "fe09365da4c355f220d724ca99394fc120b758891b4188d2c49707b6df0894f2",
       "header_path": "src/saga.h",
       "header_sha256": "f5c807c392cb7f77dff8088bf8aab18d114ee73ac3939aed153bd44225502c55",
-      "geometry_object_sha256": "af506e0ef681aeb1174ad5dab2f3f1cf2b6a913e01db53fc9e3c700a457d269f",
+      "geometry_object_sha256": "989c042eb85c9cc836890c4213906f424cf5c22859f24d1c8101388a50d781a3",
       "toolchain_sha256": "b8808088bb2c7eb239785f69c9e464ae8545216d5705fb37216bc0cf926732f3",
       "implementation_sha256": "d6a33be911d095a6d07dccd4443ccbfd6b514fd89fd7e200d9caa1827944e218",
       "headers": {
@@ -479770,7 +479770,7 @@
         4
       ]
     },
-    "clang_source_sha256": "6d865dfbba1bb37bbaaac1653d0ef04d63cbcd4cb67fe3b2e4b6a5a15ebd042a",
+    "clang_source_sha256": "a7b464bdd2a57f0e7ca1b7ba53a9eea2f87ab1d3c18fc17750f0ee3e0a22c537",
     "member_count": 42,
     "physical_definition_credit": 0
   },

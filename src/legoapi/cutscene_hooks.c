@@ -194,9 +194,11 @@ i32 __cdecl Bolt_HitPlatFn_LSW(BOLT *bolt) {
     return 0;
 }
 
+extern i32 __cdecl ChrisExtraBoltCollision(BOLT *bolt, NUVEC *points);
+
 i32 __cdecl Bolt_HitCustomFn_LSW(void *bolt, void *points) {
-    STUBBED_NAMED("Bolt_HitCustomFn_LSW: if WORLD->current_level == DOGFIGHTA_LDATA then"
-                  " return ChrisExtraBoltCollision(bolt, points)");
+    if (WORLD->current_level == DOGFIGHTA_LDATA)
+        return ChrisExtraBoltCollision((BOLT *)bolt, (NUVEC *)points);
     return 0;
 }
 
