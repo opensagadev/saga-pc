@@ -163,9 +163,10 @@ __declspec(noinline) void __cdecl PARTStartOffset(i32 index, f32 offset) {
     PART_EMIT_PC *emitter;
     PARTTYPE_LOOKUP_PC *type;
     f32 period;
-    f32 end;
+    f64 random_product;
     f32 interval;
     f32 last_emission;
+    f32 phase_product;
     if (index == -1)
         return;
     emitter = &part_emits[index];
@@ -174,7 +175,8 @@ __declspec(noinline) void __cdecl PARTStartOffset(i32 index, f32 offset) {
     type = &part_types[emitter->effect_id];
     if (type->emission_period_random == 0.0f && type->emission_pause_random == 0.0f) {
         period = type->emission_period + type->emission_pause;
-        emitter->time_24 = (i32)(partglobaltime / period) * period + offset;
+        phase_product = (i32)(partglobaltime / period) * period;
+        emitter->time_24 = phase_product + offset;
         emitter->time_28 = emitter->time_24 + type->emission_period;
         while (partglobaltime > emitter->time_24 && partglobaltime > emitter->time_28) {
             if (emitter->time_24 >= emitter->time_28)
@@ -184,8 +186,8 @@ __declspec(noinline) void __cdecl PARTStartOffset(i32 index, f32 offset) {
         }
     } else {
         emitter->time_24 = partglobaltime;
-        end = partglobaltime + type->emission_period;
-        emitter->time_28 = end + NuRandFloatSeeded(&partseed) * type->emission_period_random;
+        random_product = (f64)NuRandFloatSeeded(&partseed) * type->emission_period_random;
+        emitter->time_28 = ((f64)type->emission_period + emitter->time_24) + random_product;
     }
     interval = 1.0f / type->emission_rate;
     if (partglobaltime > emitter->time_28)
@@ -231,7 +233,7 @@ i32 __cdecl AddFiniteShotPART(i32 effect, NUVEC *position, i32 count) {
     i32 index = -1;
     PARTTYPE_LOOKUP_PC *type;
     PART_EMIT_PC *emitter;
-    f32 end;
+    f64 random_product;
     if (effect != -1) {
         type = &part_types[effect];
         if (type->effect_ids[0] != -1) {
@@ -240,8 +242,8 @@ i32 __cdecl AddFiniteShotPART(i32 effect, NUVEC *position, i32 count) {
                 emitter = &part_emits[index];
                 emitter->shots_remaining = count;
                 emitter->time_24 = partglobaltime;
-                end = partglobaltime + type->emission_period;
-                emitter->time_28 = end + NuRandFloatSeeded(&partseed) * type->emission_period_random;
+                random_product = (f64)NuRandFloatSeeded(&partseed) * type->emission_period_random;
+                emitter->time_28 = ((f64)type->emission_period + partglobaltime) + random_product;
                 emitter->time_20 = partglobaltime - 1.0f / type->emission_rate;
             }
         }
