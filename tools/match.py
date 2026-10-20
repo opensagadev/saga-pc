@@ -37,6 +37,49 @@ def objdiff():
     return path, pin
 
 
+def text_coverage(functions, target, externals=()):
+    """Describe original text categories without changing exact-match credit."""
+    start, total = number(target["text_va"]), number(target["text_size"])
+    end = start + total
+
+    def ranges(rows):
+        result = []
+        for row in rows:
+            size = row.get("target_size", row.get("size"))
+            if not size:
+                continue
+            address = number(row["address"])
+            if size < 0 or not start <= address < address + size <= end:
+                raise ValueError("Text coverage extent outside original .text")
+            result.append((address, size))
+        return result
+
+    mapped_ranges = ranges(functions)
+    exact_ranges = ranges(row for row in functions if row["exact_match"])
+    glue_ranges = ranges(row for row in externals if row["kind"] == "import thunk")
+    mapped, exact = covered_bytes(mapped_ranges), covered_bytes(exact_ranges)
+    glue = covered_bytes(glue_ranges)
+    if covered_bytes(mapped_ranges + glue_ranges) != mapped + glue:
+        raise ValueError("Reconstruction and excluded import glue overlap")
+    reconstruction_total = total - glue
+    return {
+        "original_text_bytes": total,
+        "mapped_reconstruction_bytes": mapped,
+        "exact_reconstruction_bytes": exact,
+        "mapped_not_exact_bytes": mapped - exact,
+        "excluded_import_glue_bytes": glue,
+        "unclassified_text_bytes": total - mapped - glue,
+        "strict_original_text_denominator_bytes": total,
+        "strict_original_text_exact_percent": 100 * exact / total if total else 0.0,
+        "reconstruction_scope_denominator_bytes": reconstruction_total,
+        "reconstruction_scope_exact_percent": 100 * exact / reconstruction_total if reconstruction_total else 0.0,
+        "mapped_scope_denominator_bytes": mapped,
+        "mapped_scope_exact_percent": 100 * exact / mapped if mapped else 0.0,
+        "qualification": "Unclassified text includes undiscovered code and unproven padding; "
+                         "these percentages compare relocated objects, not the linked image.",
+    }
+
+
 def progress(functions, target):
     total = number(target["text_size"])
     start = number(target["text_va"])
@@ -347,6 +390,7 @@ def main():
         result["code_components"] = code_components
     if not args.function:
         result["progress"] = progress(functions, target)
+        result["text_coverage"] = text_coverage(functions, target, externals.values())
         result["progress"].update(objdiff_progress(report, functions))
         member_ranges = [(number(r["address"]), r["target_size"]) for r in members
                          if r["target_size"] is not None]

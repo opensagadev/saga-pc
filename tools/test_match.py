@@ -116,6 +116,58 @@ class ProgressTests(unittest.TestCase):
                         self.assertIn(f"{label}-{value:.3f}%25-{color}", path.read_text())
 
 
+class TextCoverageTests(unittest.TestCase):
+    target = {"text_va": "0x401000", "text_size": "0x1000"}
+
+    def row(self, address=0x401000, size=16, exact=True):
+        return {"name": "f", "address": hex(address), "target_size": size,
+                "exact_match": exact, "objects": []}
+
+    def test_categories_partition_original_text_and_preserve_strict_denominator(self):
+        rows = [self.row(), self.row(0x401008, exact=False)]
+        glue = [{"kind": "import thunk", "address": "0x401040", "size": 6}]
+        stats = match.text_coverage(rows, self.target, glue)
+        self.assertEqual(stats["exact_reconstruction_bytes"], 16)
+        self.assertEqual(stats["mapped_not_exact_bytes"], 8)
+        self.assertEqual(stats["excluded_import_glue_bytes"], 6)
+        self.assertEqual(stats["unclassified_text_bytes"], 4096 - 24 - 6)
+        self.assertEqual(stats["strict_original_text_exact_percent"],
+                         match.progress(rows, self.target)["matching_percent"])
+        self.assertEqual(stats["strict_original_text_denominator_bytes"], 4096)
+        self.assertEqual(stats["reconstruction_scope_denominator_bytes"], 4090)
+        self.assertEqual(stats["mapped_scope_denominator_bytes"], 24)
+
+    def test_duplicate_aliases_and_import_slots_do_not_inflate_categories(self):
+        row = self.row()
+        thunk = {"kind": "import thunk", "address": "0x401040", "size": 6}
+        slot = {"kind": "import slot", "address": "0x405000", "size": 4}
+        stats = match.text_coverage([row, row], self.target, [thunk, thunk, slot])
+        self.assertEqual(stats["mapped_reconstruction_bytes"], 16)
+        self.assertEqual(stats["excluded_import_glue_bytes"], 6)
+
+    def test_unknown_boundaries_and_padding_stay_unclassified(self):
+        stats = match.text_coverage([self.row(size=None, exact=False)], self.target)
+        self.assertEqual(stats["unclassified_text_bytes"], 4096)
+        self.assertEqual(stats["mapped_scope_exact_percent"], 0)
+        self.assertIn("unproven padding", stats["qualification"])
+
+    def test_invalid_or_overlapping_categories_are_rejected(self):
+        for address in (0x400fff, 0x401fff, 0x402000):
+            with self.subTest(address=address), self.assertRaisesRegex(ValueError, "outside original"):
+                match.text_coverage([self.row(address)], self.target)
+        with self.assertRaisesRegex(ValueError, "overlap"):
+            match.text_coverage([self.row()], self.target,
+                                [{"kind": "import thunk", "address": "0x401008", "size": 6}])
+
+    def test_report_emits_additive_categories_without_changing_legacy_progress(self):
+        result, _ = InlinedInventoryTests().run_match([])
+        stats = result["text_coverage"]
+        self.assertEqual(stats["original_text_bytes"], 4096)
+        self.assertEqual(stats["unclassified_text_bytes"], 4096)
+        self.assertEqual(stats["strict_original_text_exact_percent"],
+                         result["progress"]["matching_percent"])
+
+
 class ObjdiffProgressTests(unittest.TestCase):
     def functions(self, copies=1):
         return [{"target_size": 16, "objects": [{} for _ in range(copies)]},
