@@ -80,11 +80,12 @@ address,symbol,size,ctype
 0x410240,_DogfightResetGroupPc,115,static void (DOGFIGHT_GROUP_PC *)
 0x410a10,_ProcessStarFighter,2656,
 0x411880,_SpaceAudioPoint,68,
-0x4118d0,_SpaceResetAudioPoint,171,
+0x4118d0,_SpaceResetAudioPoint,171,void __cdecl (void)
 0x411980,_DogfightResetSpacePc,639,"static void (WORLDINFO *, DOGFIGHT_SPACE_PC *)"
 0x411c00,_SpaceRumbleProcess,756,
 0x412350,_ResetSpaceFromWorldPc,19,void __cdecl (WORLDINFO *)
 0x4123b0,_ChrisAnakinBInit,153,
+0x4124f0,_ChrisDogFightAReset,100,void __cdecl (WORLDINFO *)
 0x412580,_ChrisAllocLevelStuff,254,void __cdecl (WORLDINFO *)
 0x4126b0,_ShipDropCoins,170,
 0x412760,_CollideBoltStarFighter,826,
@@ -6535,6 +6536,7 @@ address,symbol,size,ctype
 0x6521b0,_InitSfx,583,"void __cdecl(VARIPTR *,VARIPTR,const char *)"
 0x652400,_PauseGameAudio,28,void __cdecl(i32)
 0x00652450,_SfxSetFileTable,72,void __cdecl (SFX_FILE_INFO_PC *)
+0x652590,_SetPreSeekStartPoint,11,void __cdecl (f32)
 0x00652a40,_SoundStopMusic,131,void __cdecl (void)
 0x00652ad0,_SoundKillAll,20,void __cdecl (void)
 0x00652b40,_ClearLinkedCutSceneMusic,27,void __cdecl (void *)
@@ -7028,6 +7030,7 @@ address,symbol,size,ctype
 0x00693ec0,?GetTracks@Album@NuMusic@@QAEHIPAPAVTrack@2@@Z,138,"i32 __thiscall (NuMusic::Album *, u32, NuMusic::Track **)"
 0x00693f50,?Initialise@Album@NuMusic@@QAEXXZ,98,void __thiscall (NuMusic::Album *)
 0x00693fd0,?StopAll@NuMusic@@QAEHH@Z,90,"i32 __thiscall (NuMusic *, i32)"
+0x694030,?StopTrack@NuMusic@@QAEHIH@Z,194,"i32 __thiscall (NuMusic *, u32, i32)"
 0x00694100,?PauseTrack@NuMusic@@QAEHI@Z,157,"i32 __thiscall (NuMusic *, u32)"
 0x006941a0,?ResumeTrack@NuMusic@@QAEHI@Z,147,"i32 __thiscall (NuMusic *, u32)"
 0x00694240,?SelectTrackByHandle@NuMusic@@QAE_NIH@Z,212,"bool __thiscall (NuMusic *, u32, i32)"
@@ -18140,6 +18143,7 @@ address,symbol,size,ctype
 0x7f1558,_DogfightAnakinActionsPc,80,DOGFIGHT_ACTION_PC[10]
 0x7f15dc,_FlightSplineDefaultIncrementPc,4,f32
 0x7f15e0,_PodRaceSplineIncrementPc,,f32
+0x7f1628,_DogfightDebrisKeysPc,16,i32[4]
 0x7f1724,_ConfigChar_GameKeywords,,NUFPCOMJMP[2]
 0x7f17a4,_PlayerHitPointsTwoHeartsPc,,i32
 0x7f17b0,_TerrainPlayerOtherMovementScalePc,,f32

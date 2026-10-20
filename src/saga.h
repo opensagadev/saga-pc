@@ -17008,6 +17008,8 @@ class NuMusic {
     Voice *FindVoiceByClassAndStatus(u32 class_mask, u32 status);
     Voice *FindIdleVoice(void);
     i32 StopAll(i32 mode);
+    i32 StopTrack(u32 class_mask, i32 fade);
+    i32 SetTrackEntryTimeByClass(u32 class_mask, f32 time);
     i32 PlayTrack(u32 class_mask);
     i32 PlayTrack(u32 class_mask, u32 unused);
     i32 PlayTrackI(u32 class_mask, u32 prepare_only);

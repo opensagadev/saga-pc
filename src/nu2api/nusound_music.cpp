@@ -1361,3 +1361,51 @@ extern "C" i32 __cdecl NuSound3InitV(VARIPTR *cursor, VARIPTR end, i32 device_pa
     va_end(args);
     return PCSoundInitializePc(&config);
 }
+
+i32 NuMusic::StopTrack(u32 class_mask, i32 fade) {
+    if (this == NULL || the_music_player == NULL || album == NULL)
+        return 0;
+    Track *tracks[6];
+    if (album->GetTracks(class_mask, tracks) == 0)
+        return 0;
+    i32 result = 0;
+    for (i32 i = 0; i < 6; ++i) {
+        if (tracks[i] == NULL)
+            continue;
+        Voice *voice = FindVoiceByTrack(tracks[i]);
+        if (voice == NULL)
+            continue;
+        if (voice->status == 6 || voice->status == 7) {
+            if ((fade & 1) != 0) {
+                voice->flags_word |= 1;
+                voice->fade_rate = 2.0f;
+                result = 1;
+                continue;
+            }
+        } else if (voice->status != 2 && voice->status != 3) {
+            continue;
+        }
+        NuSound3StopStereoStream(voice->stream_index * 2);
+        if (voice->status != 0) {
+            voice->status = 0;
+            voice->play_time = 0.0f;
+        }
+        result = 1;
+    }
+    return result;
+}
+
+i32 NuMusic::SetTrackEntryTimeByClass(u32 class_mask, f32 time) {
+    if (this == NULL || the_music_player == NULL)
+        return 0;
+    Album *selected_album = album;
+    if (selected_album == NULL)
+        return 0;
+    i32 index = ClassToIX(class_mask);
+    if (index == -1)
+        return 0;
+    if (time < 0.0f)
+        time = 0.0f;
+    selected_album->tracks[index]->start_offset = time;
+    return 1;
+}
