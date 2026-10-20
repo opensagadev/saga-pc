@@ -839,3 +839,40 @@ f32 __cdecl Condition_PlayerOnGroundPc(AISYS_PC *system, AISCRIPTPROCESS_PC *pro
         return 1.0f;
     return 0.0f;
 }
+
+void *__cdecl Condition_UnderPlayerControlInitPc(AISYS_PC *system, char *name, AISCRIPT_PC *script) {
+    APIOBJECT_PC *object;
+    if (name != NULL && system != NULL && GetNamedGameObjectCallback != NULL) {
+        object = GetNamedGameObjectCallback(system, name);
+        if (object != NULL)
+            return object->owner;
+    }
+    return NULL;
+}
+
+f32 __cdecl Condition_UnderPlayerControlPc(AISYS_PC *system, AISCRIPTPROCESS_PC *process, AIPACKET_PC *packet,
+                                           char *name, void *argument) {
+    GAMEOBJECT *object = (GAMEOBJECT *)argument;
+    if (object != NULL && (object->flags_1fc_word & 0x80) != 0)
+        return 1.0f;
+    return 0.0f;
+}
+
+void *__cdecl Condition_NumBaddiesInitPc(AISYS_PC *system, char *name, AISCRIPT_PC *script) {
+    return NULL;
+}
+
+f32 __cdecl Condition_NumBaddiesPc(AISYS_PC *system, AISCRIPTPROCESS_PC *process, AIPACKET_PC *packet, char *name,
+                                   void *argument) {
+    i32 count = 0;
+    i32 remaining = HIGHGAMEOBJECT;
+    GAMEOBJECT *object = Obj;
+    while (remaining > 0) {
+        u32 flags = object->flags_1fc_word;
+        if ((flags & 1) != 0 && (flags & 0x1000) != 0 && (object->flags_1f8 & 1) != 0)
+            count++;
+        object++;
+        remaining--;
+    }
+    return (f32)count;
+}
