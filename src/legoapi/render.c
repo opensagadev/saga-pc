@@ -893,7 +893,8 @@ void __cdecl RedBrick_LSW_Update(STATUS_STAGE_s *stage, STATUSPACKET_s *packet, 
         stage->field_0x1c = 5.0f;
     } else if (stage->field_0x14 == 1) {
         f32 previous = stage->field_0x18;
-        volatile f32 accumulated = stage->field_0x18 + elapsed;
+        volatile f32 accumulated = stage->field_0x18;
+        accumulated += elapsed;
         stage->field_0x18 = accumulated;
         if (stage->field_0x18 >= stage->field_0x1c)
             NextStatusStage(packet);
@@ -917,7 +918,8 @@ void __cdecl AllMiniKits_LSW_Update(STATUS_STAGE_s *stage, STATUSPACKET_s *packe
         stage->field_0x1c = 6.5f;
     } else if (stage->field_0x14 == 1) {
         f32 previous = stage->field_0x18;
-        volatile f32 accumulated = stage->field_0x18 + elapsed;
+        volatile f32 accumulated = stage->field_0x18;
+        accumulated += elapsed;
         stage->field_0x18 = accumulated;
         if (stage->field_0x18 >= stage->field_0x1c)
             NextStatusStage(packet);
@@ -940,7 +942,8 @@ void __cdecl CollectCharactersOff_Update(STATUS_STAGE_s *stage, STATUSPACKET_s *
         stage->field_0x18 = 0.0f;
         stage->field_0x1c = 1.0f;
     } else if (stage->field_0x14 == 1) {
-        volatile f32 accumulated = stage->field_0x18 + elapsed;
+        volatile f32 accumulated = stage->field_0x18;
+        accumulated += elapsed;
         stage->field_0x18 = accumulated;
         if (stage->field_0x18 >= stage->field_0x1c)
             NextStatusStage(packet);
