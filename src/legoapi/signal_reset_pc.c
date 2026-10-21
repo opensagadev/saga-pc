@@ -402,3 +402,124 @@ ADDGIZMOTYPE_PC *__cdecl Signals_RegisterGizmo(i32 unused_type_id) {
     SignalAddTypePc.fns.add_level_sfx_fn = NULL;
     return &SignalAddTypePc;
 }
+
+STATIC_ASSERT(offsetof(GAMEOBJECT, grapple) == 0x798);
+STATIC_ASSERT(offsetof(GAMEOBJECT, suit) == 0xcbc);
+STATIC_ASSERT(offsetof(GAMEOBJECT, character_context) == 0x7b5);
+STATIC_ASSERT(offsetof(GAMEOBJECT, context_variant_flags) == 0x7bc);
+STATIC_ASSERT(offsetof(GAMEOBJECT, context_timer) == 0x77c);
+STATIC_ASSERT(offsetof(GAMEOBJECT, context_duration) == 0x784);
+STATIC_ASSERT(offsetof(GAMEOBJECT, field_7aa) == 0x7aa);
+STATIC_ASSERT(offsetof(GAMEOBJECT, field_281) == 0x281);
+STATIC_ASSERT(offsetof(GAMEOBJECT, anim_packet) == 8);
+STATIC_ASSERT(offsetof(GAMEOBJECT, character_model) == 0x50);
+STATIC_ASSERT(offsetof(GAMEOBJECT, pad) == 0xca4);
+STATIC_ASSERT(offsetof(GAMEPAD_PC, bound_pad) == 0);
+STATIC_ASSERT(offsetof(GAMEOBJECT, ai_packet) + offsetof(AIPACKET_PC, capabilities) == 0x4bc);
+STATIC_ASSERT(sizeof(SUIT_INITIALIZER_RECORD_PC) == 0x18);
+STATIC_ASSERT(offsetof(SUIT_INITIALIZER_RECORD_PC, character_flags) == 0x10);
+STATIC_ASSERT(sizeof(CHARACTER_CONTEXT_INFO_PC) == 0x10);
+STATIC_ASSERT(offsetof(CHARACTER_CONTEXT_INFO_PC, flags) == 8);
+STATIC_ASSERT(offsetof(CHARACTER_MODEL_LAYERS_PC, action_animations) == 0xc);
+
+SIGNAL_s *__cdecl Signal_FindNearest(WORLDINFO *world, NUVEC *position, GAMEOBJECT *object, f32 *distance) {
+    SIGNAL_s *nearest = NULL;
+    f32 nearest_distance = 1000000000.0f;
+    SIGNAL_s *signal = world->signals;
+    i32 index;
+    for (index = 0; index < world->signal_count; ++index, ++signal) {
+        f32 signal_distance;
+        if (object != NULL) {
+            if ((signal->flags & 3) != 3 || (signal->flags & 4) != 0 || (u16)signal->suit->character_id != object->id)
+                continue;
+            signal_distance = NuVecDistSqr(position, &signal->target_position, NULL);
+        } else {
+            signal_distance = NuVecDistSqr(position, &signal->position, NULL);
+        }
+        if (signal_distance < nearest_distance) {
+            nearest_distance = signal_distance;
+            nearest = signal;
+        }
+    }
+    if (distance != NULL)
+        *distance = nearest_distance;
+    return nearest;
+}
+
+void __cdecl Signal_MoveCode(WORLDINFO *world, GAMEOBJECT *object) {
+    if (object->character_context == 0x4c) {
+        f32 *animation_time = NULL;
+        i32 exchange = 0;
+        f32 elapsed;
+        if (object->character_model->action_animations[object->field_7aa] != NULL) {
+            animation_time = AnimPlaying(&object->anim_packet, object->field_7aa, 1, 0);
+            if (animation_time == NULL)
+                return;
+        }
+        elapsed = (f32)((f64)object->context_timer + (f64)FRAMETIME);
+        object->context_timer = elapsed;
+        if (elapsed >= object->context_duration) {
+            u32 exchanged = object->context_variant_flags & 0x40;
+            object->character_context = -1;
+            exchange = exchanged == 0;
+            StartEndOfJump(object);
+        } else {
+            if ((object->context_variant_flags & 0x40) != 0)
+                return;
+            if (animation_time != NULL) {
+                f32 frame = AnimListFrame(object->character_model, object->field_7aa, 0);
+                exchange = frame >= 1.0f && *animation_time >= frame;
+            }
+        }
+        if (exchange != 0) {
+            SIGNAL_s *signal;
+            SUIT_INITIALIZER_RECORD_PC *old_suit;
+            SUIT_INITIALIZER_RECORD_PC *new_suit;
+            i32 index;
+            /* Context 0x4c uses the attachment union and the full 24-byte suit record. */
+            ((SIGNAL_s *)object->grapple)->flags |= 4;
+            object->context_variant_flags |= 0x40;
+            old_suit = (SUIT_INITIALIZER_RECORD_PC *)object->suit;
+            object->ai_packet.capabilities &= ~old_suit->character_flags;
+            signal = (SIGNAL_s *)object->grapple;
+            new_suit = signal->suit;
+            object->suit = (SUIT_LAYERS_PC *)new_suit;
+            signal->suit = old_suit;
+            new_suit = (SUIT_INITIALIZER_RECORD_PC *)object->suit;
+            object->ai_packet.capabilities |= new_suit->character_flags;
+            for (index = 0; index < 10; ++index) {
+                if (new_suit == &SuitRecordInitPc[index]) {
+                    areaSuitBits |= 1u << index;
+                    break;
+                }
+            }
+            NewBuzz(object->pad->bound_pad, 0.1f, 0);
+            NewRumble(object->pad->bound_pad, 0.6f, 0);
+        }
+        if ((object->context_variant_flags & 0x40) == 0) {
+            i32 random = qrand();
+            void *pad = object->pad->bound_pad;
+            f32 strength = (f32)((f64)random * (f64)(1.0f / 65535.0f) * (f64)0.4f);
+            NewRumble(pad, strength, 0);
+        }
+        return;
+    }
+    if (object->field_281 != 0 || object->character_context == 0x1f || object->character_context == 0x2b ||
+        object->character_context == 0x4b || (object->flags_1fc_word & 0x80) == 0 ||
+        (CInfo[object->character_context].flags & 0x800) != 0)
+        return;
+    {
+        f32 distance;
+        SIGNAL_s *signal = Signal_FindNearest(world, &object->collision_position, object, &distance);
+        if (signal != NULL && distance < 0.0625f) {
+            object->context_timer = 0.0f;
+            object->character_context = 0x4c;
+            object->grapple = signal;
+            object->field_7aa = 0x96;
+            object->context_duration = AnimDuration((i16)object->id, 0x96, 0.0f, 0.0f, 1);
+            if (object->context_duration <= 0.0f)
+                object->context_duration = 1.0f;
+            object->context_variant_flags &= ~0x40u;
+        }
+    }
+}
