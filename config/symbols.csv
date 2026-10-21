@@ -1855,7 +1855,7 @@ address,symbol,size,ctype
 0x4cca00,_Suit_GetDefault,52,SUIT_LAYERS_PC *__cdecl (i32)
 0x004cca90,_Technos_FindControllingTechno,57,TECHNO_PC *__cdecl (GAMEOBJECT *)
 0x4ccad0,_Technos_FindTgt,388,
-0x4ccc60,_Technos_MoveTarget,424,
+0x4ccc60,_Technos_MoveTarget,424,"void __cdecl(TECHNO_PC *, GAMEOBJECT *)"
 0x4cce10,_Technos_Load,304,
 0x4ccf40,_Technos_ReserveBufferSpace,77,
 0x4ccf90,_Techno_ResetFields,174,
@@ -1863,6 +1863,7 @@ address,symbol,size,ctype
 0x4cd060,_Techno_Activate,28,
 0x4cd080,_Technos_Reset,132,
 0x4cd110,_GizTechno_CanUseTechno,6,
+0x004cd120,_Techno_FindNearest,180,"TECHNO_PC *__cdecl(WORLDINFO *,NUVEC *,GAMEOBJECT *,f32 *)"
 0x4cd1e0,_Technos_EarlyUpdate,50,
 0x4cd220,_Technos_LateUpdate,120,
 0x4cd2a0,_Technos_Draw,785,
@@ -1880,7 +1881,7 @@ address,symbol,size,ctype
 0x4cd920,_Techno_isReady,113,
 0x004cd9a0,_Techno_FindOperator,148,"i32 __cdecl (void *, GAMEPAD_PC **, GAMEOBJECT **)"
 0x4cda40,_Technos_TgtPos,97,NUVEC *__cdecl (TECHNO_s *)
-0x4cdab0,_Signal_MoveCode,604,
+0x4cdab0,_Techno_MoveCode,604,"void __cdecl(WORLDINFO *, GAMEOBJECT *)"
 0x4cdd60,_Tel_spline,200,
 0x4cde30,_Tel_duration,23,
 0x4cde50,_Tel_range,38,
@@ -20947,6 +20948,7 @@ address,symbol,size,ctype
 0x00880594,_loadlegal_done,4,i32
 0x00880598,_LoadPerm_LanguageSelect,4,volatile i32
 0x0088059c,_LoadPerm_StringsLoaded,4,i32
+0x008805a4,_TechnoMoveSpeedPc,8,f32[2]
 0x8805b0,?addtype@?1??Technos_RegisterGizmo@@9@9,,
 0x880628,_Tel_teleport,,
 0x88062c,_FindTeleport_Direction,,i32

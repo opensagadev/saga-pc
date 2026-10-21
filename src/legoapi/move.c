@@ -1,5 +1,7 @@
 #include "saga.h"
 
+void __cdecl Techno_MoveCode(WORLDINFO *, GAMEOBJECT *);
+
 void __cdecl PeriscodeCode(GAMEOBJECT *);
 void __cdecl KeepWeaponIn(GAMEOBJECT *);
 i32 __cdecl ThermalDetonator_MoveCode(GAMEOBJECT *);
@@ -6725,7 +6727,7 @@ after_gravity:
         if (object->velocity.y < speed)
             object->velocity.y = speed;
     }
-    STUBBED_NAMED(0x004cdab0); /* Native4b4d17: WORLD,object; actual void action. */
+    Techno_MoveCode(WORLD, object);
     if (object->suit != NULL)
         STUBBED_NAMED(0x004c85e0); /* Native4b4d30: WORLD,object; actual void action. */
     TakeHitCode(object);
@@ -9902,7 +9904,7 @@ void __cdecl Move_JEDI(GAMEOBJECT *object) {
                      : object->blade_index == -1                                           ? -1
                                                  : BladeTab[object->blade_index].glow_model;
     }
-    STUBBED_NAMED(0x004cdab0); /* Native4b3504: WORLD,object; ignored returned value/native action missing. */
+    Techno_MoveCode(WORLD, object);
     if (object->suit != NULL)
         STUBBED_NAMED(0x004c85e0); /* Native4b351d: Signal_MoveCode(WORLD,object), ignored action. */
     TakeHitCode(object);
@@ -10004,7 +10006,7 @@ void __cdecl Move_WEIRDO(GAMEOBJECT *object) {
     ApplyGravity(object, NULL, 0.0f, 8.0f, NULL);
     weapon = object->character_data->game_character->weapon_model;
     has_sabre = weapon == 0x65 || weapon == 0x67 || weapon == 0x69 || weapon == 0x6b;
-    STUBBED_NAMED(0x004cdab0); /* Native4b5944: WORLD,object; ignored native action/result. */
+    Techno_MoveCode(WORLD, object);
     if (object->suit != NULL)
         STUBBED_NAMED(0x004c85e0); /* Native4b595d: Signal_MoveCode(WORLD,object). */
     TakeHitCode(object);

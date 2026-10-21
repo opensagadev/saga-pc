@@ -480,3 +480,134 @@ NUVEC *__cdecl Technos_TgtPos(TECHNO_s *techno) {
     }
     return NULL;
 }
+
+STATIC_ASSERT(sizeof(TECHNO_s) == 0x70);
+STATIC_ASSERT(offsetof(TECHNO_s, flags) == 0x3c);
+STATIC_ASSERT(offsetof(TECHNO_s, target_mode) == 0x37);
+STATIC_ASSERT(offsetof(TECHNO_s, controlled_object) == 0x6c);
+STATIC_ASSERT(offsetof(TECHNO_s, target_name) == 0x3d);
+STATIC_ASSERT(offsetof(TECHNO_s, target_special_storage) == 0x60);
+STATIC_ASSERT(offsetof(GAMEOBJECT, bounds_radius) == 0x1dc);
+STATIC_ASSERT(offsetof(GAMEOBJECT, context_timer) == 0x77c);
+STATIC_ASSERT(offsetof(GAMEOBJECT, techno) == 0x798);
+STATIC_ASSERT(offsetof(GAMEOBJECT, field_f00) == 0xf00);
+STATIC_ASSERT(offsetof(GAMEPAD_PC, runtime_flags) == 0x5a);
+STATIC_ASSERT(offsetof(GAMEPAD_PC, input_direction_x) == 0x30);
+STATIC_ASSERT(offsetof(GAMEPAD_PC, input_direction_z) == 0x2c);
+STATIC_ASSERT(offsetof(GIZMOTYPES_PC, types) == 8);
+
+#pragma data_seg(".data$TechnoMoveSpeedPc")
+f32 TechnoMoveSpeedPc[2] = {0.0f, 0.0f};
+#pragma data_seg()
+
+TECHNO_PC *__cdecl Techno_FindNearest(WORLDINFO *world, NUVEC *position, GAMEOBJECT *object, f32 *distance) {
+    TECHNO_CALLBACK_PC *nearest = NULL;
+    TECHNO_CALLBACK_PC *techno = (TECHNO_CALLBACK_PC *)world->technos;
+    f32 nearest_distance = 1000000000.0f;
+    f32 candidate_distance;
+    i32 index;
+    for (index = 0; index < world->techno_count; ++index, ++techno) {
+        if (object != NULL) {
+            if ((techno->flags & 3) != 3 || techno->ground_position.y == 2000000.0f)
+                continue;
+            candidate_distance = NuVecDistSqr(position, &techno->ground_position, NULL);
+        } else {
+            candidate_distance = NuVecDistSqr(position, &techno->position, NULL);
+        }
+        if (candidate_distance < nearest_distance) {
+            nearest_distance = candidate_distance;
+            nearest = techno;
+        }
+    }
+    if (distance != NULL)
+        *distance = nearest_distance;
+    return (TECHNO_PC *)nearest;
+}
+
+void __cdecl Technos_MoveTarget(TECHNO_PC *techno_pointer, GAMEOBJECT *object) {
+    TECHNO_CALLBACK_PC *techno = (TECHNO_CALLBACK_PC *)techno_pointer;
+    f32 speed = 0.0f;
+    f32 rate;
+    GIZOBSTACLE *obstacle;
+    if (object != NULL) {
+        if ((object->flags_1fc & 0x80) == 0 && object->field_f00 == 2) {
+            speed = 1.0f;
+        } else if ((techno->enabled & 1) != 0) {
+            if ((object->pad->runtime_flags & 8) != 0)
+                speed = 1.0f;
+        } else if ((techno->enabled & 2) != 0) {
+            speed = object->pad->waggle_magnitude;
+        } else if ((techno->enabled & 4) != 0) {
+            speed = object->pad->input_direction_x;
+        } else if ((techno->enabled & 8) != 0) {
+            speed = object->pad->input_direction_z;
+        }
+    }
+    if ((techno->output & 1) != 0 && speed < 0.0f)
+        speed = 0.0f;
+    if (techno->controlled_object == NULL)
+        Technos_FindTgt((TECHNO_s *)techno);
+    if (techno->target_mode != 3)
+        return;
+    if (NuStrICmp(((GIZMOTYPES_PC *)gizmotypes)->types[techno->controlled_object->type_id].name, "GIZOBSTACLE") != 0)
+        return;
+    obstacle = (GIZOBSTACLE *)techno->controlled_object->object;
+    if ((techno->enabled & 2) != 0 && object != NULL && (u8)object->field_280 < 2) {
+        rate = object->pad->waggle_magnitude != 0.0f ? (f32)(3.0 * FRAMETIME) : (f32)(2.0 * FRAMETIME);
+        TechnoMoveSpeedPc[(i8)object->field_280] = SeekLinearF(TechnoMoveSpeedPc[(i8)object->field_280], speed, rate);
+        GizObstacle_SetTechnoControlled(obstacle, TechnoMoveSpeedPc[(i8)object->field_280]);
+    } else {
+        GizObstacle_SetTechnoControlled(obstacle, speed);
+    }
+}
+
+void __cdecl Techno_MoveCode(WORLDINFO *world, GAMEOBJECT *object) {
+    TECHNO_CALLBACK_PC *techno;
+    f32 distance;
+    f32 range;
+    f32 hint_range;
+    if (object->character_context == 0x51) {
+        ((TECHNO_CALLBACK_PC *)object->techno)->flags |= 4;
+        if (object->character_model->model_data_b[object->field_7aa] != NULL &&
+            AnimPlaying(&object->anim_packet, object->field_7aa, 1, 0) == NULL)
+            return;
+        object->context_timer += FRAMETIME;
+        if ((object->pad->buttons_pressed & GAMEPAD_TAG) != 0 ||
+            ((object->flags_1fc & 0x80) == 0 && object->field_f00 != 2)) {
+            GameCam_Blend(GameCam, 0.5f, 0.0f, 1);
+            object->tag_flags |= 1;
+            object->movement_facing_angle += 0x8000;
+            object->character_context = -1;
+            Technos_MoveTarget(object->techno, NULL);
+        } else {
+            Technos_MoveTarget(object->techno, object);
+        }
+    } else {
+        if (!((((object->flags_1fc & 0x80) != 0 || object->field_f00 == 2) && object->suit != NULL &&
+               (object->suit->flags & 0x20) != 0) ||
+              (StartupGameFlag1 != 0 && StartupGameFlag0 != 0)))
+            return;
+        techno = (TECHNO_CALLBACK_PC *)Techno_FindNearest(world, &object->lower_position, object, &distance);
+        if (techno == NULL)
+            return;
+        range = (f32)((f64)object->bounds_radius + 0.25);
+        hint_range = (f32)((f64)range * 2.5);
+        if ((f64)hint_range * hint_range > distance)
+            techno->flags |= 4;
+        if (object->field_281 == 0 || ObjLandReady(object) == 0 || !((f64)range * range > distance) ||
+            ((object->pad->buttons_pressed & GAMEPAD_SPECIAL) == 0 && object->field_f00 != 2))
+            return;
+        if (Techno_isReady((TECHNO_s *)techno) != 0) {
+            object->character_context = 0x51;
+            object->context_timer = 0.0f;
+            object->techno = (TECHNO_PC *)techno;
+            object->field_7aa = 0x99;
+            object->movement_facing_angle = techno->y_rotation + 0x8000;
+            GameCam_Blend(GameCam, 0.5f, 0.0f, 1);
+            if ((u8)object->field_280 < 2)
+                TechnoMoveSpeedPc[(i8)object->field_280] = 0.0f;
+        } else {
+            GameAudio_PlaySfx(0x32, &techno->position, 0, 0);
+        }
+    }
+}
