@@ -3631,6 +3631,7 @@ address,symbol,size,ctype
 0x55b830,_DrawCharIcon,641,"void __cdecl (i32,f32,f32,f32,f32,i32,f32,f32,i32,NUSPECIALHANDLE *)"
 0x0055bac0,_LayerFromName,98,i32 __cdecl (PLAYERCHARACTERCONFIG_PC *; const char *)
 0x0055bb30,_MakeLayerList_Name,187,i32 __cdecl (CHARACTER_MODEL_LAYERS_PC *; i16 *; u32)
+0x0055bbf0,_CharCategories_Init,48,void __cdecl(CHAR_CATEGORY_RECORD_PC *)
 0x55bc20,_CharCategory_FindByName,81,
 0x55bc80,_CharCategory_IsCategory,115,"i32 __cdecl(GAMEOBJECT *, i32)"
 0x55bd00,_SetMoveAndAnimateFunctions,187,"void __cdecl SetMoveAndAnimateFunctions(u32, u32, u32, u32, i32, CHARACTER_UPDATE_CALLBACK_PC, CHARACTER_UPDATE_CALLBACK_PC, CHARACTER_UPDATE_CALLBACK_PC)"
@@ -9747,9 +9748,19 @@ address,symbol,size,ctype
 0x751e84,??_C@_0N@MFECPDEM@stormtrooper?$AA@,13,const char[13]
 0x751e94,??_C@_05FJHNFFMA@ZipUp?$AA@,6,char []
 0x751e94,_PCContextName_ZipUp,6,const char [6]
+0x00751e9c,_StartupCharText_ProtocolPc,9,const char[9]
+0x00751ea8,_StartupCharText_AstromechPc,10,const char[10]
+0x00751eb4,_StartupCharText_HighJumpPc,9,const char[9]
 0x751ec0,_PCContextName_Teleport,9,const char [9]
+0x00751ecc,_StartupCharText_BountyHunterPc,13,const char[13]
+0x00751edc,_StartupCharText_JediBaddiePc,11,const char[11]
 0x751ee8,??_C@_04NMIHPMCJ@Jedi?$AA@,,const char[]
 0x00751ee8,_AreaFixUpName_Jedi,8,char[8]
+0x00751ef0,_StartupCharText_HazardProtectionPc,17,const char[17]
+0x00751f04,_StartupCharText_BypassSecurityPc,15,const char[15]
+0x00751f14,_StartupCharText_TransformatronPc,15,const char[15]
+0x00751f24,_StartupCharText_SuperStrengthPc,14,const char[14]
+0x00751f34,_StartupCharText_SuperJumpPc,10,const char[10]
 0x751f40,_SpecialLayerName_lowres_limbs_blue,18,const char [18]
 0x751f54,_SpecialLayerName_hires_limbs_blue,17,const char [17]
 0x751f68,_SpecialLayerName_nextgen_limbs_blue,19,const char [19]
@@ -10626,6 +10637,8 @@ address,symbol,size,ctype
 0x754f5c,_ExtrasLiteralPc00754f5c,12,char[12]
 0x00754f68,??_C@_06ILNPDLNE@rancor?$AA@,,const char[7]
 0x754f70,??_C@_04OBGPFBCN@blue?$AA@,5,const char[5]
+0x00754f78,_StartupCharText_walker_4legsPc,13,const char[13]
+0x00754f88,_StartupCharText_walker_2legsPc,13,const char[13]
 0x754f98,??_C@_02FIPOBNCO@?B?$KE?$AA@,,const char[3]
 0x754f9c,??_C@_02BHLPILOJ@?B?$KD?$AA@,,const char[3]
 0x754fa0,??_C@_02JACHJHCG@?B?$KM?$AA@,,const char[3]
@@ -18595,6 +18608,8 @@ address,symbol,size,ctype
 0x007f23a4,_waiting_for_character,4,i32
 0x7f23a8,_hub_character_ready,4,i32
 0x007f23b0,_SpecialLayer,504,SPECIAL_LAYER_PC [42]
+0x007f25a8,_StartupCharCategoriesDefaultPc,,CHAR_CATEGORY_RECORD_PC[6]
+0x007f25f0,_StartupCharCategoriesLswPc,,CHAR_CATEGORY_RECORD_PC[10]
 0x7f26d0,_CreatureMosLegsPc,,const u8[3]
 0x7f26d4,_CreatureMosWaistPc,,const u8[3]
 0x7f26d8,_CreatureMosHandsPc,,const u8[3]
@@ -18640,6 +18655,7 @@ address,symbol,size,ctype
 0x007f3a34,_InitCutSettingsAlternatePc,,CUTSCENE_SYS_SETTINGS_PC
 0x7f3a40,_BoltSys_LSW,32,BOLTSYS_PC
 0x7f3a60,_BoltSys_Batman,32,BOLTSYS_PC
+0x007f3a80,_StartupCharVariantNamesPc,92,char *[23]
 0x7f3adc,_BuckSnowmobRadiusPc,,f32
 0x7f3ae0,_BuckSnowmobMaxYPc,,f32
 0x7f3ae4,_BuckSnowmobMinYPc,,f32

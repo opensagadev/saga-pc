@@ -2,6 +2,12 @@
 
 extern "C" void __cdecl RegisterLswGizmoTypesPc(VARIPTR *, VARIPTR *);
 extern "C" void __cdecl RegisterAlternateGizmoTypesPc(VARIPTR *, VARIPTR *);
+extern "C" {
+    void __cdecl CharCategories_Init(CHAR_CATEGORY_RECORD_PC *);
+    extern CHAR_CATEGORY_RECORD_PC StartupCharCategoriesDefaultPc[6];
+    extern CHAR_CATEGORY_RECORD_PC StartupCharCategoriesLswPc[10];
+    extern char *StartupCharVariantNamesPc[23];
+}
 
 static i32 __cdecl PcInputCommandAllowedPc(i32 port, i32 command) {
     if (TextInputIsKeyboardDevicePc(port) && ((command >= 4 && command <= 7) || (u32)(command - 8) <= 3))
@@ -406,11 +412,11 @@ extern "C" {
         id_DEFAULTCHARACTER[0] = default_id_a;
         id_DEFAULTCHARACTER[1] = default_id_b;
 
-        STUBBED_NAMED("LoadPermData: CharCategories_Init(0x7f25f0 / 0x7f25a8)");
+        CharCategories_Init(StartupGameFlag1 != 0 ? StartupCharCategoriesLswPc : StartupCharCategoriesDefaultPc);
         Cheats_Init(ExtrasCheatsPc);
         PlayerID[0] = id_DEFAULTCHARACTER[0];
         PlayerID[1] = id_DEFAULTCHARACTER[1];
-        STUBBED_NAMED("LoadPermData: CharVariants_Init(0x7f3a80, 0x17)");
+        CharVariants_Init(StartupCharVariantNamesPc, 0x17);
 
         LDataList = Levels_ConfigureList((char *)LoadPermLevelsPath, &permbuffer_ptr, &permbuffer_end, 0x16d,
                                          &LEVELCOUNT, Level_SetDefaults);
