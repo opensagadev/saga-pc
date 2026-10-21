@@ -5439,7 +5439,8 @@ address,symbol,size,ctype
 0x5c9b60,_NuAnimDataCalcTime,222,"void __cdecl (NUANIM_LEGACY_HEADER_PC *, f32, NUANIM_TIME2_PC *)"
 0x005c9c40,_NuAnimData2CalcTime,303,
 0x005c9e70,_NuAnimCurveSetCreate,120,void *__cdecl (i32)
-0x005c9ff0,_NuRegisterEndFrameCallBackFn,10,void __cdecl (void (*)(void))
+0x005c9ff0,_SetProceduralAnimationFn,10,void __cdecl(NUJOINTPROCANIMFN_PC)
+0x005ca000,_NuAnimBuffProceduralAnimation,481,"void __cdecl(ANI3_BUFFER_PC *, NUHGOBJ_EVAL_PC *, i32, NUHGOBJ_JOINT_OVERRIDE_PC *)"
 0x5ca2a0,_NuAnimBuffCreateScratch,73,
 0x005ca320,_ANI_FixUpAddrs,107,"void __cdecl (ANI3_HEADER_PC *, i32, i32)"
 0x5ca390,_NuAnimBuffEvaluateCallback,30,"void __cdecl (ANI3_EVAL_CALLBACK_PC, void **, i32 *)"
@@ -23102,7 +23103,7 @@ address,symbol,size,ctype
 0x00973898,_AnimBuffEvalData,4,void **
 0x0097389c,_AnimBuffEvalJoint,4,i32 *
 0x009738a0,_globalbuffer,4,ANI3_GLOBALBUFFER_PC *
-0x009738a4,_nuapi_endframe_callbackfn,4,void (*)(void)
+0x009738a4,_JointProcAnimFn,4,NUJOINTPROCANIMFN_PC
 0x009738a8,_AnimQuatDepthPc,,
 0x009738ac,_special_debug,4,i32
 0x009738b0,_nuspecial_const_alpha_enabled,4,i32

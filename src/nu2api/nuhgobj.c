@@ -70,14 +70,14 @@ void __cdecl NuHGobjEval(NUHGOBJ_EVAL_PC *object, i32 override_count, NUHGOBJ_JO
     }
 }
 
-typedef void(__cdecl *ANI3_OVERRIDE_CALLBACK_WORKING_PC)(ANI3_BUFFER_PC *, NUHGOBJ_EVAL_PC *, i32, void *);
+STATIC_ASSERT(sizeof(NUJOINTPROCANIMFN_PC) == 4);
 
 void __cdecl NuHGobjEvalAnim2Root_3(NUHGOBJ_EVAL_PC *object, ANI3_HEADER_PC *animation, f32 time, i32 override_count,
                                     void *overrides, NUMTX *matrices, ANI3_ROOT_CALLBACK_PC root_fn, void *root_data) {
     ANI3_BUFFER_PC buffer;
     NUVEC root_translation = {0.0f, 0.0f, 0.0f};
     volatile f32 adjusted_time;
-    ANI3_OVERRIDE_CALLBACK_WORKING_PC callback;
+    NUJOINTPROCANIMFN_PC callback;
     buffer.joint_count = 0;
     buffer.max_joints = globalbuffer->scratch_joint_capacity;
     buffer.joints = (ANI3_JOINT_PC *)(((u32)NuScratchAlloc32((buffer.max_joints + 1) * 48) + 15u) & ~15u);
@@ -85,7 +85,7 @@ void __cdecl NuHGobjEvalAnim2Root_3(NUHGOBJ_EVAL_PC *object, ANI3_HEADER_PC *ani
     buffer.joint_count = object->joint_count;
     adjusted_time = time - 1.0;
     ANI_SimpleAni3PlayerV4Joint(animation, adjusted_time, &buffer, object->joint_count, 0);
-    callback = (ANI3_OVERRIDE_CALLBACK_WORKING_PC)nuapi_endframe_callbackfn;
+    callback = JointProcAnimFn;
     if (override_count != 0 && callback != NULL)
         callback(&buffer, object, override_count, overrides);
     NuAnimBuffEvaluate_3(&buffer, object, matrices, animation, root_fn, &root_translation, root_data);
@@ -101,7 +101,7 @@ void __cdecl NuHGobjEvalAnimBlend2Root_3(NUHGOBJ_EVAL_PC *object, ANI3_HEADER_PC
     NUVEC root_translation = {0.0f, 0.0f, 0.0f};
     NUVEC blend_translation;
     volatile f32 adjusted_time_a, adjusted_time_b;
-    ANI3_OVERRIDE_CALLBACK_WORKING_PC callback;
+    NUJOINTPROCANIMFN_PC callback;
     u8 quaternion_mode;
     buffer.joint_count = 0;
     buffer.max_joints = globalbuffer->scratch_joint_capacity;
@@ -121,7 +121,7 @@ void __cdecl NuHGobjEvalAnimBlend2Root_3(NUHGOBJ_EVAL_PC *object, ANI3_HEADER_PC
     adjusted_time_b = time_b - 1.0;
     ANI_SimpleAni3PlayerV4Joint_Blend(animation_b, adjusted_time_b, &buffer, blend, object->joint_count, 0,
                                       &blend_translation);
-    callback = (ANI3_OVERRIDE_CALLBACK_WORKING_PC)nuapi_endframe_callbackfn;
+    callback = JointProcAnimFn;
     if (override_count != 0 && callback != NULL)
         callback(&buffer, object, override_count, overrides);
     NuAnimBuffEvaluate_3(&buffer, object, matrices, animation_a, root_fn, &root_translation, root_data);

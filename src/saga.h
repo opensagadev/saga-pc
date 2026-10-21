@@ -6653,6 +6653,8 @@ STATIC_ASSERT(offsetof(NUHGOBJ_EVAL_PC, points) == 0x184);
 STATIC_ASSERT(offsetof(NUHGOBJ_EVAL_PC, point_index_count) == 0x188);
 STATIC_ASSERT(offsetof(NUHGOBJ_EVAL_PC, point_index_map) == 0x18c);
 
+typedef void(__cdecl *NUJOINTPROCANIMFN_PC)(ANI3_BUFFER_PC *, NUHGOBJ_EVAL_PC *, i32, NUHGOBJ_JOINT_OVERRIDE_PC *);
+
 typedef struct nuglobalrndrstate_pc_s {
     u8 unknown_0000[8];
     i32 state_0008;
@@ -14271,8 +14273,9 @@ void __cdecl AIScriptMissingConditionDiagnostic();
     void __cdecl NewTerrHitInfo(u8 *);
     void __cdecl NewRayCastGetImpactNormal(NUVEC *);
     void __cdecl Hint_CancelCurrent(void);
-    extern void (*nuapi_endframe_callbackfn)(void);
-    void __cdecl NuRegisterEndFrameCallBackFn(void (*callback)(void));
+    extern NUJOINTPROCANIMFN_PC JointProcAnimFn;
+    void __cdecl SetProceduralAnimationFn(NUJOINTPROCANIMFN_PC callback);
+    void __cdecl NuAnimBuffProceduralAnimation(ANI3_BUFFER_PC *, NUHGOBJ_EVAL_PC *, i32, NUHGOBJ_JOINT_OVERRIDE_PC *);
     void __cdecl NuMouseRead(void);
     void __cdecl NuPause(i32 paused);
     i32 __cdecl NuKeyToAscii(u32 key, i32 shifted);

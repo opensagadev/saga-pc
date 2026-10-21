@@ -395,7 +395,7 @@ extern "C" {
         }
 
         STUBBED_NAMED("LoadPermData: Movies_ConfigureList(movies\\movies.txt)");
-        STUBBED_NAMED("LoadPermData: NuRegisterEndFrameCallBackFn(0x5ca000)");
+        SetProceduralAnimationFn(NuAnimBuffProceduralAnimation);
         CDataList = ConfigureCharacterList("chars\\chars.txt", &permbuffer_ptr, &permbuffer_end, 0x154, &CHARCOUNT,
                                            0x120, &GCDataList);
         CharScenes_Init(&permbuffer_ptr, &permbuffer_end);

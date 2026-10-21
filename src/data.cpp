@@ -9782,7 +9782,7 @@ extern "C" {
 #pragma const_seg(".rdata$NuTimeRefreshRate")
     extern const f64 NuTime_RefreshRate = 60.0;
 #pragma const_seg()
-    void (*nuapi_endframe_callbackfn)(void) = 0;
+    NUJOINTPROCANIMFN_PC JointProcAnimFn = 0;
     u8 fstackmem[NU_PORTAL_STACK_SIZE] = {0};
     VARIPTR fstack = {0};
     VARIPTR fstack_top = {0};

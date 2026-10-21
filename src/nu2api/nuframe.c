@@ -92,8 +92,8 @@ __declspec(noinline) void __cdecl NuWaterReset(void) {
     nu_water_reset_status = 0;
 }
 
-void __cdecl NuRegisterEndFrameCallBackFn(void (*callback)(void)) {
-    nuapi_endframe_callbackfn = callback;
+void __cdecl SetProceduralAnimationFn(NUJOINTPROCANIMFN_PC callback) {
+    JointProcAnimFn = callback;
 }
 
 static f32 nu2api_paused = 0;
