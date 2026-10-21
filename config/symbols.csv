@@ -1808,12 +1808,26 @@ address,symbol,size,ctype
 0x4c74e0,_UpdateShop,484,i32 __cdecl(void *)
 0x4c7750,_DrawShopPrompts,201,void __cdecl(void)
 0x4c7820,_GetShopCamLookPos,89,void __cdecl (NUVEC *)
-0x4c78b0,_Signals_Load,198,
+0x4c78b0,_Signals_Load,198,"i32 __cdecl(WORLDINFO *, void *)"
+0x4c7980,_Signals_InitTerrain,75,void __cdecl(WORLDINFO *)
+0x4c79d0,_Signals_ReserveBufferSpace,80,void *__cdecl(WORLDINFO *)
+0x4c7a20,_Signal_Activate,30,"void __cdecl(GIZMO_PC *, i32)"
+0x4c7a40,_Signal_ActivateRev,70,"i32 __cdecl(GIZMO_PC *, i32, i32)"
 0x4c7a90,_SignalSetVisiblePc,79,"static void(SIGNAL_s *, i32)"
 0x004c7ae0,_Signal_SetGizmoVisibility,26,"void __cdecl(GIZMO_PC *, i32)"
+0x4c7b00,_Signal_GetPos,21,NUVEC *__cdecl(GIZMO_PC *)
 0x4c7b20,_SignalResetRecordPc,319,static void(SIGNAL_s *)
 0x004c7c60,_Signals_Reset,194,"void __cdecl(WORLDINFO *, void *, SIGNALPROGRESS_s *)"
 0x4c8030,_Signals_Draw,653,
+0x4c82c0,_Signals_GetMaxGizmos,25,i32 __cdecl(WORLDINFO *)
+0x4c82e0,_Signals_AddGizmos,100,"void __cdecl(void *, i32, WORLDINFO *, void *)"
+0x4c8350,_Signal_GetGizmoName,14,char *__cdecl(GIZMO_PC *)
+0x4c8360,_Signal_GetOutput,26,"i32 __cdecl(GIZMO_PC *, i32, i32)"
+0x4c8380,_Signal_GetOutputName,6,"char *__cdecl(GIZMO_PC *, i32)"
+0x4c8390,_Signal_GetNumOutputs,6,i32 __cdecl(GIZMO_PC *)
+0x4c83a0,_Signals_AllocateProgressData,21,"void *__cdecl(VARIPTR *, VARIPTR *)"
+0x4c83c0,_Signals_ClearProgress,43,"void __cdecl(void *, SIGNALPROGRESS_s *)"
+0x4c83f0,_Signals_StoreProgress,197,"void __cdecl(WORLDINFO *, void *, SIGNALPROGRESS_s *)"
 0x4c8bd0,_SpeederBlowupHack,98,"i32 __cdecl (GIZMOBLOWUP_PC *, i32)"
 0x4c8c40,_SpeederChaseA_Init,323,void __cdecl (WORLDINFO *)
 0x4c8d90,_SpeederChaseA_Reset,168,void __cdecl (WORLDINFO *)
