@@ -937,3 +937,23 @@ f32 __cdecl Condition_ObstacleOpenedByEitherPlayerPc(AISYS_PC *system, AISCRIPTP
     }
     return 0.0f;
 }
+
+/* Native instance reader: only the condition's flags field is consumed. */
+typedef struct condition_cut_instance_reader_pc_s {
+    u8 opaque_00_88[0x88];
+    u32 flags;
+} CONDITION_CUT_INSTANCE_READER_PC;
+STATIC_ASSERT(offsetof(CONDITION_CUT_INSTANCE_READER_PC, flags) == 0x88);
+
+void *__cdecl Condition_CutSceneStartedInitPc(AISYS_PC *system, char *name, AISCRIPT_PC *script) {
+    return CutScene_Find(WORLD->cutscene_sys, name);
+}
+
+f32 __cdecl Condition_CutSceneStartedPc(AISYS_PC *system, AISCRIPTPROCESS_PC *process, AIPACKET_PC *packet, char *name,
+                                        void *argument) {
+    CUTINFO *cutscene = (CUTINFO *)argument;
+    if (cutscene != NULL && cutscene->instance != NULL &&
+        (((CONDITION_CUT_INSTANCE_READER_PC *)cutscene->instance)->flags & 2) != 0)
+        return 1.0f;
+    return 0.0f;
+}
