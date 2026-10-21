@@ -2,6 +2,8 @@
 #include <string.h>
 
 extern "C" {
+    extern i32 NuMainRendererControlPc;
+    void __cdecl NuRndrShadowOnOff_candidate(i32);
 #pragma data_seg(".data$BURNOUTON")
     i32 BURNOUTON = 1;
 #pragma data_seg()
@@ -99,7 +101,7 @@ static void NuMainUpdateFrame(WORLDINFO *world, i32 *frame_flag) {
 
     UpdateFrameCounters();
     PortalDoors_Update(world);
-    STUBBED_NAMED("NuMainUpdateFrame: NuRndrShadowOnOff(COMPLEXSHADOWS) at 0x005f9e90");
+    NuRndrShadowOnOff_candidate(NuMainRendererControlPc);
     if (Paused == 0) {
         GameAISysStartFrame(world->ai_sys);
     }

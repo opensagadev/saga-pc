@@ -17,7 +17,7 @@
     "config/library-objects.json": "e5ae24d3eac36fa0d0cb098f7690faaef3110f225db30c8cbf0f7d0d64f6ecfe",
     "config/ogg-vorbis.json": "7f98d40938e6bd6060c6bdfc2ce39d9cfb1c822243693eeb1d85d46b43dcad24",
     "config/project.json": "9a3650958be769951860d2c457f8573049ecae76e48ce8f3d7383e4ca2b761a6",
-    "config/symbols.csv": "60507b7d20b56c5639fd8f87b73e8aa0196f11d6c7762ab3826bc2413bd79cd3",
+    "config/symbols.csv": "1ee896f1d9f6fc9b17eada1d230a88debfe6185deb4cf8a4478bfd0f94deaa0c",
     "config/symbols.md": "dffbdaac86011e3aee74b404063c15bda97f88af3db337ffef9f1bad1785d212",
     "config/toolchain.json": "b8808088bb2c7eb239785f69c9e464ae8545216d5705fb37216bc0cf926732f3",
     "config/tools.json": "50199f6b132a7abfabf251e98a75be0a957abfe50f1ff776188fba21e4c4436f",
@@ -73,7 +73,7 @@
     "tools/dinput8.def": "0650c8a82ce920cd1f07c5f585b6f64129b09c5969bb5074b871c8921dc32a3c",
     "tools/dsound.def": "10147b85f8f09f4a3fefe82c0756818c64d9a6f2d81bb3f120757ea5b08941da",
     "tools/xinput1_3.def": "f2b829c89adb5c7fc9fbd7dfdbc49f8eb5412d4700bf1123935f71a29fa84b50",
-    "src/batman.cpp": "10ced40caf4fc552bcc3acbdba6a0f3deb9eceed2d472ec3f8008c85b689e3e3",
+    "src/batman.cpp": "aa5baecc98447dfb6f63fc22b9d3fbf6b86788963d56d2feb0f6c0e4ce594a8c",
     "src/data.cpp": "4c6a1c83d613f221230b3237e3071b5893f5f0ae2bbc8119aec6b4d4446f5430",
     "src/debug/crash_diagnostics.cpp": "d6c4c416477a07ecad9d72a9834f6b5180ca36fcab1f60b0a6eba4719e00924a",
     "src/debug/skin_trace.cpp": "0253ca3bb71bc07f0678151f453c21f5cdc3c8a429796f9e8b1420cb247ee6b1",
@@ -395,6 +395,7 @@
     "src/legoapi/whip.c": "184316c2a34699bc02452f20b87d019a87b5851ad13226ffb92c0eac983fd5b6",
     "src/legoapi/zipup.c": "14d25740038843e8e2c244592637ac353361ca8e6371af80eaa36f95d85b0f71",
     "src/nu2api/bgproc.c": "8d53270cb26c59dcf8511c1c5e4e2bab545fcf053483e427033dd90475c0280c",
+    "src/nu2api/frame_render_control_pc.c": "50b671daefaadaa8c4cf8bc9828ad0d9ecb6a43cc756ed03b462609d90c04aa3",
     "src/nu2api/glutils.c": "562d5438332dfb4654aaab1e9dd0a7b017b65a9e9fc8c786e5b1f7e5331af251",
     "src/nu2api/implode.c": "dcd62b4b33d1d9a4add4e1c9ddccf1c6dd2365bfdb02a1dc099bd60873407a04",
     "src/nu2api/keyboard_init.c": "e844ec51ecb1a694928b6b530f13daf0459a1dfab29ca08b0c036781e17c6c3d",
@@ -551,7 +552,7 @@
     "build/obj/vendored/vorbis/vorbisfile.obj": "d308736b36ab2294220b1916b967dd22ee7741214e53051571dae29f1e0e8631",
     "build/obj/vendored/vorbis/window.obj": "2724a03e5df27db8477f62124057f9f6312794f8f404314abf7b786f0c4f62a7",
     "build/obj/vendored/vorbis_smallft.obj": "0aca40d5a3cbc319acd963d24bd8236c607061eaa2b7428732f73da7d99e145c",
-    "build/obj/batman.obj": "d06b2d5baae2319f4a87c16c5424240f67b287ae30f4c3d81609d427c167e03a",
+    "build/obj/batman.obj": "992267e7ca16b056a064188953d2fe008d2420629cd3e3c313286c57c317f471",
     "build/obj/data.obj": "feaa0c1a2aa67d90de0b73f5fc729546a4f6ebf8d40a728df76845b461e897a9",
     "build/obj/editor/edtoolsall.obj": "a3ba3e37a3ffec44872dfc648643f58038b0e4d329cafca14c3dad148a935414",
     "build/obj/gameapi/ai_registry_pc.obj": "da7877a212669b2c97c2232dc5b112e0324d1eb6be0b8e6ffd49b965c285da72",
@@ -812,6 +813,7 @@
     "build/obj/nu2api/decoder_diagnostic.obj": "4cb40caceab82b52fbca5216ccb443e38ac6b0de1e1660c8bac0cb0f59355379",
     "build/obj/nu2api/dynamic_geometry.obj": "fa17bbc5674fe6bc5886118b277eeec3a59090a7925ddbcef6369b32ef39f842",
     "build/obj/nu2api/effect_surface.obj": "c3e3f1732e9297b2f6014a3b0189b5da66053277adec46b78a903f3842b370ad",
+    "build/obj/nu2api/frame_render_control_pc.obj": "f6b476f3231ed4e0609501428a69b88a882e98ef836e7e1c5d80a30f82b01084",
     "build/obj/nu2api/geometry_basis.obj": "2c41e73280daf5c7d1dc149b5b90a29a882def13e3abadaae2a88a94dcc36994",
     "build/obj/nu2api/geometry_origin.obj": "3abb1ae17d258f8cb0c161a128d22d9f27e0e6e7f3e866b27492ec21418a4118",
     "build/obj/nu2api/geometry_publish.obj": "f86e02ea339d0b34ea02ad87f4b29351df68542a0ab4c495d3696af63347be31",
@@ -35152,17 +35154,17 @@
       "objects": [
         {
           "unit": "src/batman.cpp",
-          "base_size": 2144,
+          "base_size": 2158,
           "exact_match": false,
           "target_sha256": "26ebdc2d5c01ca2be720acd39df9a8059cfdc6a03816fc856db4230c25ea2478",
-          "base_sha256": "411b37a27e855d0c56ceb2b7e00d52968fcae0583abc161bdfa73c2b36c4a425",
-          "relocation_count": 176,
+          "base_sha256": "341017c040bd9de9b6dd5e2403a141e41508d1fe86204e6db3dac7659534f0e9",
+          "relocation_count": 178,
           "comparison_unit": "00491d50-0eb317885010",
-          "objdiff_percent": 75.49663
+          "objdiff_percent": 76.22537
         }
       ],
       "status": "different",
-      "objdiff_percent": 75.49663
+      "objdiff_percent": 76.22537
     },
     {
       "name": "?NuMainRenderWorld@@YAXPAUWORLDINFO_s@@@Z",
@@ -139629,11 +139631,25 @@
       "name": "NuRndrShadowOnOff_candidate",
       "symbol": "_NuRndrShadowOnOff_candidate",
       "address": "0x005f9e90",
-      "units": [],
+      "units": [
+        "src/nu2api/frame_render_control_pc.c"
+      ],
       "target_size": 10,
-      "exact_match": false,
-      "objects": [],
-      "status": "not implemented"
+      "exact_match": true,
+      "objects": [
+        {
+          "unit": "src/nu2api/frame_render_control_pc.c",
+          "base_size": 10,
+          "exact_match": true,
+          "target_sha256": "bf18f051c89ba891df65e6f6bd1f663cadb0b1975846c904b9231983de8a398f",
+          "base_sha256": "bf18f051c89ba891df65e6f6bd1f663cadb0b1975846c904b9231983de8a398f",
+          "relocation_count": 1,
+          "comparison_unit": "005f9e90-385b4b485006",
+          "objdiff_percent": 100.0
+        }
+      ],
+      "status": "exact",
+      "objdiff_percent": 100.0
     },
     {
       "name": "PCEnqueueHierarchyShadowGroup",
@@ -399781,6 +399797,27 @@
       "status": "exact"
     },
     {
+      "name": "NuMainRendererControlPc",
+      "symbol": "_NuMainRendererControlPc",
+      "address": "0x007fac24",
+      "units": [
+        "src/nu2api/frame_render_control_pc.c"
+      ],
+      "target_size": 4,
+      "exact_match": true,
+      "objects": [
+        {
+          "unit": "src/nu2api/frame_render_control_pc.c",
+          "exact_match": true,
+          "target_size": 4,
+          "base_size": 4,
+          "target_sha256": "67abdd721024f0ff4e0b3f4c2fc13bc5bad42d0b7851d456d88d203d15aaa450",
+          "base_sha256": "67abdd721024f0ff4e0b3f4c2fc13bc5bad42d0b7851d456d88d203d15aaa450"
+        }
+      ],
+      "status": "exact"
+    },
+    {
       "name": "MenuNewGameYPc",
       "symbol": "_MenuNewGameYPc",
       "address": "0x007facb8",
@@ -467589,6 +467626,27 @@
       "status": "unknown size"
     },
     {
+      "name": "NuRndrControlStatePc",
+      "symbol": "_NuRndrControlStatePc",
+      "address": "0x02854c34",
+      "units": [
+        "src/nu2api/frame_render_control_pc.c"
+      ],
+      "target_size": 4,
+      "exact_match": true,
+      "objects": [
+        {
+          "unit": "src/nu2api/frame_render_control_pc.c",
+          "exact_match": true,
+          "target_size": 4,
+          "base_size": 4,
+          "target_sha256": "df3f619804a92fdb4057192dc43dd748ea778adc52bc498ce80524c014b81119",
+          "base_sha256": "df3f619804a92fdb4057192dc43dd748ea778adc52bc498ce80524c014b81119"
+        }
+      ],
+      "status": "exact"
+    },
+    {
       "name": "NuDisplayHandlerVertexShaderCachePc",
       "symbol": "_NuDisplayHandlerVertexShaderCachePc",
       "address": "0x02854c38",
@@ -485152,16 +485210,16 @@
   "progress": {
     "text_bytes": 3471246,
     "mapped_code_bytes": 2445713,
-    "matched_code_bytes": 462779,
-    "matching_percent": 13.331783457582667,
-    "fuzzy_coverage_percent": 48.0249655519371,
+    "matched_code_bytes": 462789,
+    "matching_percent": 13.332071538577214,
+    "fuzzy_coverage_percent": 48.025823609562515,
     "mapped_functions": 9043,
-    "matched_functions": 4321,
-    "objdiff_fuzzy_percent": 74.89411,
-    "objdiff_total_code": 2229250,
+    "matched_functions": 4322,
+    "objdiff_fuzzy_percent": 74.89511,
+    "objdiff_total_code": 2229260,
     "image_bytes": 40067072,
-    "mapped_bytes": 4259590,
-    "mapping_percent": 10.631148689876815,
+    "mapped_bytes": 4259598,
+    "mapping_percent": 10.631168656396953,
     "mapping_denominator": "code_and_data_section_virtual_sizes",
     "mapping_sections": [
       {
@@ -485187,45 +485245,45 @@
         "kind": "data",
         "address": "0x7ef000",
         "size": 35372200,
-        "mapped_bytes": 1727643,
+        "mapped_bytes": 1727651,
         "file_backed_data_bytes": 417792,
-        "mapped_file_backed_data_bytes": 265394,
+        "mapped_file_backed_data_bytes": 265398,
         "zero_fill_data_bytes": 34954408,
-        "mapped_zero_fill_data_bytes": 1462249
+        "mapped_zero_fill_data_bytes": 1462253
       }
     ],
-    "mapping_known_size_symbols": 17042,
+    "mapping_known_size_symbols": 17044,
     "mapping_unknown_size_symbols": 7070,
     "mapping_code_bytes": 2446907,
     "mapping_code_total_bytes": 3471246,
     "mapping_code_percent": 70.49074021259226,
-    "mapping_data_bytes": 1812683,
+    "mapping_data_bytes": 1812691,
     "mapping_data_total_bytes": 36018966,
-    "mapping_data_percent": 5.032579225067149,
-    "mapping_code_data_bytes": 4259590,
+    "mapping_data_percent": 5.032601435588129,
+    "mapping_code_data_bytes": 4259598,
     "mapping_code_data_total_bytes": 39490212,
-    "mapping_code_data_percent": 10.786445005663682,
-    "mapping_file_backed_data_bytes": 350434,
+    "mapping_code_data_percent": 10.786465263848166,
+    "mapping_file_backed_data_bytes": 350438,
     "mapping_file_backed_data_total_bytes": 1064558,
-    "mapping_file_backed_data_percent": 32.918262790754476,
-    "mapping_zero_fill_data_bytes": 1462249,
+    "mapping_file_backed_data_percent": 32.91863853355101,
+    "mapping_zero_fill_data_bytes": 1462253,
     "mapping_zero_fill_data_total_bytes": 34954408,
-    "mapping_zero_fill_data_percent": 4.1833035764759625,
-    "matched_data_region_bytes": 1796737
+    "mapping_zero_fill_data_percent": 4.183315019953993,
+    "matched_data_region_bytes": 1796745
   },
   "text_coverage": {
     "original_text_bytes": 3471246,
     "mapped_reconstruction_bytes": 2445713,
-    "exact_reconstruction_bytes": 462779,
-    "mapped_not_exact_bytes": 1982934,
+    "exact_reconstruction_bytes": 462789,
+    "mapped_not_exact_bytes": 1982924,
     "excluded_import_glue_bytes": 1194,
     "unclassified_text_bytes": 1024339,
     "strict_original_text_denominator_bytes": 3471246,
-    "strict_original_text_exact_percent": 13.331783457582667,
+    "strict_original_text_exact_percent": 13.332071538577214,
     "reconstruction_scope_denominator_bytes": 3470052,
-    "reconstruction_scope_exact_percent": 13.336370751792769,
+    "reconstruction_scope_exact_percent": 13.33665893191226,
     "mapped_scope_denominator_bytes": 2445713,
-    "mapped_scope_exact_percent": 18.92204849874045,
+    "mapped_scope_exact_percent": 18.92245737746007,
     "qualification": "Unclassified text includes undiscovered code and unproven padding; these percentages compare relocated objects, not the linked image."
   },
   "data_members": [
@@ -486369,7 +486427,7 @@
       "metadata_sha256": "fe09365da4c355f220d724ca99394fc120b758891b4188d2c49707b6df0894f2",
       "header_path": "src/saga.h",
       "header_sha256": "fa9d80a2f2e41f651206eab862219ac77a83ff9466a31feb3c1ad6b4c783085c",
-      "geometry_object_sha256": "4a35e92ff075d75b0d8c60c85aaa13badc6f9aa774e2f147006b542b94655c07",
+      "geometry_object_sha256": "865ff4a3378e8411b5c401cc7f8bfd6e26c7d1e9b5c335663b494cfce43c9a19",
       "toolchain_sha256": "b8808088bb2c7eb239785f69c9e464ae8545216d5705fb37216bc0cf926732f3",
       "implementation_sha256": "d6a33be911d095a6d07dccd4443ccbfd6b514fd89fd7e200d9caa1827944e218",
       "headers": {
@@ -486611,7 +486669,7 @@
         4
       ]
     },
-    "clang_source_sha256": "e0f90a2332de4ca362424186346eb0c24b8526ffb1d61490b855c57acf7355cf",
+    "clang_source_sha256": "220daa01376f9a4f54ab865a82586e3cc02b1019af38afb312f20d39570d02c2",
     "member_count": 42,
     "physical_definition_credit": 0
   },

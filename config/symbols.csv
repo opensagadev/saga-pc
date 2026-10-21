@@ -18922,6 +18922,7 @@ address,symbol,size,ctype
 0x007fac0c,_HubLostTempleStoryTextPc,4,i16 *
 0x007fac18,_HubLostTempleFreePlayTextPc,4,i16 *
 0x007fac20,_PlayTrailer,4,i32
+0x007fac24,_NuMainRendererControlPc,4,i32
 0x7facb8,_MenuNewGameYPc,4,f32
 0x7facbc,_AlternateHudColourBytesPc,,u8[8]
 0x7facbd,_MENUEXITG,1,u8
@@ -23326,6 +23327,7 @@ address,symbol,size,ctype
 0x2854c24,_RendererVertexDeclarationPc,,PC_TEXTURE_RESOURCE_PC *
 0x2854c28,_RendererGeometryVertexBufferPc,,PC_BUFFER_RESOURCE_PC *
 0x2854c2c,_RendererGeometryIndexBufferPc,,PC_BUFFER_RESOURCE_PC *
+0x02854c34,_NuRndrControlStatePc,4,i32
 0x2854c38,_NuDisplayHandlerVertexShaderCachePc,,PC_TEXTURE_RESOURCE_PC *
 0x2854c3c,_NuDisplayHandlerPixelShaderCachePc,,PC_TEXTURE_RESOURCE_PC *
 0x2854c40,_NuDisplayHandlerMaterialPc,,void*
