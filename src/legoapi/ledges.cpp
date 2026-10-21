@@ -248,3 +248,240 @@ extern "C" void __cdecl Ledge_MoveCode(WORLDINFO *world, GAMEOBJECT *object) {
         previous.z == object->external_force.z)
         object->field_7aa = 0x9d;
 }
+
+typedef struct LEDGE_PROGRESS_PC {
+    u32 active[4];
+    u32 visible[4];
+} LEDGE_PROGRESS_PC;
+STATIC_ASSERT(sizeof(LEDGE_PROGRESS_PC) == 0x20);
+STATIC_ASSERT(offsetof(WORLDINFO, ledges) == 0x50a8);
+STATIC_ASSERT(offsetof(WORLDINFO, ledge_count) == 0x50ac);
+STATIC_ASSERT(offsetof(LEVELDATA_PC, max_ledges) == 0xf9);
+extern "C" {
+    extern const char PCContextName_Ledge[6];
+    extern char TextInputKeyNameTextPc7516c0[1];
+    extern char *LedgeOutputNamePc;
+
+    static void LedgeInitRecordPc(LEDGE_MOTION_PC *ledge) {
+        i32 type;
+        for (type = 0; type < 6; ++type) {
+            if (ledge->type_code == LedgePiece[type].type_code)
+                break;
+        }
+        if (type == 6) {
+            ledge->type_index = 2;
+            ledge->type_code = LedgePiece[2].type_code;
+        } else {
+            ledge->type_index = (u8)type;
+        }
+        ledge->bounds_min.x = ledge->bounds_min.y = ledge->bounds_min.z = 999.0f;
+        ledge->bounds_max.x = ledge->bounds_max.y = ledge->bounds_max.z = -999.0f;
+        for (i32 endpoint = 0; endpoint < 2; ++endpoint) {
+            NUVEC point;
+            NUVEC *source = endpoint == 0 ? &LedgePiece[ledge->type_index].start : &LedgePiece[ledge->type_index].end;
+            NuVecRotateY(&point, source, ledge->y_rotation);
+            if (point.x < ledge->bounds_min.x)
+                ledge->bounds_min.x = point.x;
+            if (point.x > ledge->bounds_max.x)
+                ledge->bounds_max.x = point.x;
+            if (point.y < ledge->bounds_min.y)
+                ledge->bounds_min.y = point.y;
+            if (point.y > ledge->bounds_max.y)
+                ledge->bounds_max.y = point.y;
+            if (point.z < ledge->bounds_min.z)
+                ledge->bounds_min.z = point.z;
+            if (point.z > ledge->bounds_max.z)
+                ledge->bounds_max.z = point.z;
+        }
+        ledge->bounds_min.x = (f64)ledge->bounds_min.x - (f64)0.05f;
+        ledge->bounds_min.y = (f64)ledge->bounds_min.y - (f64)0.05f;
+        ledge->bounds_min.z = (f64)ledge->bounds_min.z - (f64)0.05f;
+        ledge->bounds_max.x = (f64)ledge->bounds_max.x + (f64)0.05f;
+        ledge->bounds_max.y = (f64)ledge->bounds_max.y + (f64)0.05f;
+        ledge->bounds_max.z = (f64)ledge->bounds_max.z + (f64)0.05f;
+        NuVecAdd(&ledge->bounds_min, &ledge->bounds_min, &ledge->position);
+        NuVecAdd(&ledge->bounds_max, &ledge->bounds_max, &ledge->position);
+        ledge->state_flags |= 3;
+    }
+    i32 __cdecl Ledges_Load(WORLDINFO *world, void *unused) {
+        if (world->ledge_count != 0)
+            return 0;
+        i32 version = EdFileReadInt();
+        world->ledge_count = EdFileReadInt();
+        for (i32 i = 0; i < world->ledge_count; ++i) {
+            EdFileRead(((LEDGE_MOTION_PC *)world->ledges)[i].name, 8);
+            EdFileReadNuVec(&((LEDGE_MOTION_PC *)world->ledges)[i].position);
+            u16 angle = EdFileReadShort();
+            ((LEDGE_MOTION_PC *)world->ledges)[i].y_rotation = angle;
+            i8 type = EdFileReadChar();
+            ((LEDGE_MOTION_PC *)world->ledges)[i].type_code = type;
+            if (version >= 2) {
+                i16 value = EdFileReadShort();
+                ((LEDGE_MOTION_PC *)world->ledges)[i].field_1c = value;
+                value = EdFileReadShort();
+                ((LEDGE_MOTION_PC *)world->ledges)[i].field_1e = value;
+            } else {
+                ((LEDGE_MOTION_PC *)world->ledges)[i].field_1c = -1;
+                ((LEDGE_MOTION_PC *)world->ledges)[i].field_1e = -1;
+            }
+            if (version >= 3) {
+                u8 flags = EdFileReadUnsignedChar();
+                ((LEDGE_MOTION_PC *)world->ledges)[i].flags = flags;
+            } else {
+                ((LEDGE_MOTION_PC *)world->ledges)[i].flags = 0;
+            }
+        }
+        return 1;
+    }
+    void *__cdecl Ledges_ReserveBufferSpace(WORLDINFO *world) {
+        LEVELDATA_PC *level = world->current_level;
+        world->ledges = NULL;
+        world->ledge_count = 0;
+        if (level->max_ledges != 0) {
+            world->giz_buffer.addr = (world->giz_buffer.addr + 3) & ~3u;
+            world->ledges = world->giz_buffer.void_ptr;
+            world->giz_buffer.addr += level->max_ledges * sizeof(LEDGE_MOTION_PC);
+        }
+        return world->ledges;
+    }
+    void __cdecl Ledge_SetVisibility(GIZMO_PC *gizmo, i32 visible) {
+        if (gizmo != NULL) {
+            LEDGE_MOTION_PC *ledge = (LEDGE_MOTION_PC *)gizmo->object;
+            ledge->state_flags = (ledge->state_flags & ~2u) | ((visible != 0) << 1);
+        }
+    }
+    void __cdecl Ledge_Activate(GIZMO_PC *gizmo, i32 active) {
+        if (gizmo != NULL) {
+            LEDGE_MOTION_PC *ledge = (LEDGE_MOTION_PC *)gizmo->object;
+            ledge->state_flags = (ledge->state_flags & ~1u) | (active != 0);
+        }
+    }
+    void __cdecl Ledges_Reset(WORLDINFO *world, void *unused, LEDGE_PROGRESS_PC *progress) {
+        if (world == NULL || world->ledges == NULL)
+            return;
+        LEDGE_MOTION_PC *ledge = (LEDGE_MOTION_PC *)world->ledges;
+        for (i32 i = 0; i < world->ledge_count; ++i, ++ledge) {
+            LedgeInitRecordPc(ledge);
+            if (progress != NULL && i < 128) {
+                u32 mask = 1u << (i & 31);
+                ledge->state_flags = (ledge->state_flags & ~2u) | (((progress->visible[i >> 5] & mask) != 0) << 1);
+                ledge->state_flags = (ledge->state_flags & ~1u) | ((progress->active[i >> 5] & mask) != 0);
+            }
+        }
+    }
+    void __cdecl Ledges_Draw(WORLDINFO *world, void *unused, f32 unused_time) {
+        LEDGE_MOTION_PC *ledge = (LEDGE_MOTION_PC *)world->ledges;
+        NUMTX matrix;
+        if (ledge == NULL)
+            return;
+        for (i32 i = 0; i < world->ledge_count; ++i, ++ledge) {
+            if ((ledge->state_flags & 2) != 0 &&
+                world->level_objects[LedgePiece[ledge->type_index].object_id].active != 0) {
+                NuMtxSetRotationY(&matrix, ledge->y_rotation);
+                NuMtxTranslate(&matrix, &ledge->position);
+                NuSpecialDrawAt(&world->level_objects[LedgePiece[ledge->type_index].object_id].special, &matrix);
+            }
+        }
+    }
+    i32 __cdecl Ledges_GetMaxGizmos(WORLDINFO *world) {
+        return world != NULL ? world->current_level->max_ledges : 0;
+    }
+    void __cdecl Ledges_AddGizmos(GIZMOSYS_PC *system, i32 type_id, WORLDINFO *world, void *unused) {
+        for (i32 i = 0; i < world->ledge_count; ++i) {
+            if (NuStrLen(((LEDGE_MOTION_PC *)world->ledges)[i].name) != 0)
+                AddGizmo(system, type_id, NULL, &((LEDGE_MOTION_PC *)world->ledges)[i]);
+        }
+    }
+    char *__cdecl Ledge_GetGizmoName(GIZMO_PC *gizmo) {
+        return gizmo != NULL ? (char *)gizmo->object : NULL;
+    }
+    i32 __cdecl Ledge_GetOutput(GIZMO_PC *gizmo, i32 unused1, i32 unused2) {
+        LEDGE_MOTION_PC *ledge = (LEDGE_MOTION_PC *)gizmo->object;
+        return (ledge->state_flags & 2) != 0 && (ledge->state_flags & 1) != 0;
+    }
+    char *__cdecl Ledge_GetOutputName(GIZMO_PC *gizmo, i32 unused) {
+        return LedgeOutputNamePc;
+    }
+    i32 __cdecl Ledge_GetNumOutputs(GIZMO_PC *gizmo) {
+        return 1;
+    }
+    void *__cdecl Ledges_AllocateProgressData(VARIPTR *buffer, VARIPTR *end) {
+        return GizmoBufferAlloc(buffer, end, 0x20);
+    }
+    void __cdecl Ledges_ClearProgress(void *unused, LEDGE_PROGRESS_PC *progress) {
+        if (progress != NULL) {
+            for (i32 i = 0; i < 4; ++i)
+                progress->active[i] = -1;
+            for (i32 i = 0; i < 4; ++i)
+                progress->visible[i] = -1;
+        }
+    }
+    void __cdecl Ledges_StoreProgress(WORLDINFO *world, void *unused, LEDGE_PROGRESS_PC *progress) {
+        if (progress == NULL)
+            return;
+        for (i32 i = 0; i < 4; ++i)
+            progress->active[i] = -1;
+        for (i32 i = 0; i < 4; ++i)
+            progress->visible[i] = -1;
+        if (world == NULL || world->ledges == NULL)
+            return;
+        LEDGE_MOTION_PC *ledge = (LEDGE_MOTION_PC *)world->ledges;
+        for (i32 i = 0; i < world->ledge_count && i < 128; ++i, ++ledge) {
+            u32 mask = 1u << (i & 31);
+            if ((ledge->state_flags & 2) == 0)
+                progress->visible[i >> 5] &= ~mask;
+            if ((ledge->state_flags & 1) == 0)
+                progress->active[i >> 5] &= ~mask;
+        }
+    }
+}
+
+extern "C" {
+#pragma const_seg(".rdata$PCLedgeOutputTextPc")
+    extern const char PCLedgeOutputTextPc[7] = "CanUse";
+#pragma const_seg()
+#pragma data_seg(".data$LedgeOutputNamePc")
+    char *LedgeOutputNamePc = (char *)PCLedgeOutputTextPc;
+#pragma data_seg()
+#pragma data_seg(".data$LedgeRegistryNamePc")
+    char *LedgeRegistryNamePc = (char *)PCContextName_Ledge;
+#pragma data_seg()
+#pragma data_seg(".data$LedgeAddTypePc")
+    ADDGIZMOTYPE_PC LedgeAddTypePc = {0};
+#pragma data_seg()
+    ADDGIZMOTYPE_PC *__cdecl Ledges_RegisterGizmo(i32 unused_type_id) {
+        char *name = LedgeRegistryNamePc;
+        LedgeAddTypePc = Default_ADDGIZMOTYPE;
+        LedgeAddTypePc.name = name;
+        LedgeAddTypePc.prefix = TextInputKeyNameTextPc7516c0;
+        LedgeAddTypePc.fns.options = 0x20;
+        LedgeAddTypePc.fns.get_max_gizmos_fn = (i32(__cdecl *)(void *))Ledges_GetMaxGizmos;
+        LedgeAddTypePc.fns.add_gizmos_fn = (void *)Ledges_AddGizmos;
+        LedgeAddTypePc.fns.early_update_fn = NULL;
+        LedgeAddTypePc.fns.late_update_fn = NULL;
+        LedgeAddTypePc.fns.draw_fn = (void(__cdecl *)(void *, void *, f32))Ledges_Draw;
+        LedgeAddTypePc.fns.panel_draw_fn = NULL;
+        LedgeAddTypePc.fns.get_gizmo_name_fn = Ledge_GetGizmoName;
+        LedgeAddTypePc.fns.get_output_fn = Ledge_GetOutput;
+        LedgeAddTypePc.fns.get_output_name_fn = Ledge_GetOutputName;
+        LedgeAddTypePc.fns.get_num_outputs_fn = (void *)Ledge_GetNumOutputs;
+        LedgeAddTypePc.fns.activate_fn = Ledge_Activate;
+        LedgeAddTypePc.fns.activate_rev_fn = NULL;
+        LedgeAddTypePc.fns.set_visibility_fn = Ledge_SetVisibility;
+        LedgeAddTypePc.fns.get_visibility_fn = NULL;
+        LedgeAddTypePc.fns.get_pos_fn = NULL;
+        LedgeAddTypePc.fns.using_special_fn = NULL;
+        LedgeAddTypePc.fns.bolt_hit_plat_fn = NULL;
+        LedgeAddTypePc.fns.get_best_bolt_target_fn = NULL;
+        LedgeAddTypePc.fns.bolt_hit_fn = NULL;
+        LedgeAddTypePc.fns.allocate_progress_data_fn = Ledges_AllocateProgressData;
+        LedgeAddTypePc.fns.clear_progress_fn = (void(__cdecl *)(void *, void *))Ledges_ClearProgress;
+        LedgeAddTypePc.fns.store_progress_fn = (void(__cdecl *)(void *, void *, void *))Ledges_StoreProgress;
+        LedgeAddTypePc.fns.reset_fn = (void(__cdecl *)(void *, void *, void *))Ledges_Reset;
+        LedgeAddTypePc.fns.reserve_buffer_space_fn = (void *(__cdecl *)(void *))Ledges_ReserveBufferSpace;
+        LedgeAddTypePc.fns.load_fn = (i32(__cdecl *)(void *, void *))Ledges_Load;
+        LedgeAddTypePc.fns.post_load_fn = NULL;
+        LedgeAddTypePc.fns.add_level_sfx_fn = NULL;
+        return &LedgeAddTypePc;
+    }
+}
