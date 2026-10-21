@@ -453,7 +453,7 @@
     "src/nu2api/nushader.c": "3c13c5770f83a13ba399b87e431fffc8826524d5250e40589dc6c3ae5fcf070b",
     "src/nu2api/nushaderobject.c": "d404c86f43a080f655d08efc4adce8eae9ebc0e2b7ac346a119c9b0b4e512a54",
     "src/nu2api/nushaderobjectbase.c": "8615f22e7d809ab3fbbf8e663472024238231ad40f6448646335e386d258523a",
-    "src/nu2api/nusound.c": "e94ab1251e8f082341ab8865521bc9277634ad271630915d6872a3ec77fc6d85",
+    "src/nu2api/nusound.c": "36d9327dd49342a057e1e55177405ea6304e465325409f32aa62bae21228b6c1",
     "src/nu2api/nuspecial.c": "1a0016a3252f15399e2e07cc38ee1c5106e1af608dfaa77a77bb831e9c8138a3",
     "src/nu2api/nuspline.c": "4fca834d595d001f94487843973d0ec517f0009b800958c71cd4a03a82f76933",
     "src/nu2api/nustateanim.c": "075aa9b9759dc0563d76c7a6c1a3bdcddc10ea95b2e48b630a6cd1b91e08ac5f",
@@ -893,7 +893,7 @@
     "build/obj/nu2api/nushaderobject.obj": "6173eec33eb55acc501c6b78bcb110050f8691888df1363419f411a3bf4649b6",
     "build/obj/nu2api/nushaderobject_pc.obj": "5fa230cae914625243c559f0e4512b308e59c3accdc338ec304b10dc24e1b2ed",
     "build/obj/nu2api/nushaderobjectbase.obj": "a8102b7f5e981ad9228033db54f6288b0e3e6255323d3866ee26132db083c8b0",
-    "build/obj/nu2api/nusound.obj": "0a989d60987c068185b57077fcaff1f53d48dc5b6d6bfbdf2be7dbe4231cfeea",
+    "build/obj/nu2api/nusound.obj": "25a5ef75c30d732779783fa2a0ea5a1172bbc249164e5f3344caa793f57c8568",
     "build/obj/nu2api/nusound_music.obj": "f4d51271fd97e29ea2a08e313f6ae8b46e41cc53cf6d70ffff39a3d1316d7332",
     "build/obj/nu2api/nusound_pc.obj": "fb314b50870a1f779e617c18c2ee91f39987370ffb4ceb25095f7b641bfad9cf",
     "build/obj/nu2api/nuspecial.obj": "463935811dde9ab79647649455e396a94541b7b4d864bb2636939012542bd922",
@@ -154557,17 +154557,17 @@
       "objects": [
         {
           "unit": "src/nu2api/nusound.c",
-          "base_size": 1300,
+          "base_size": 1306,
           "exact_match": false,
           "target_sha256": "871f2770ba50b1cdffac8839ad57028ee2fbc127274d978b87c961a354756248",
-          "base_sha256": "595bc6f3a8871f53ef259b19484309f4f7305f08a50e713c6897664527300dcd",
+          "base_sha256": "8aee76f41776b1234088bc9c70b8f0615a6062978c2b6e1c233bc4a141171e3b",
           "relocation_count": 47,
           "comparison_unit": "00650f20-65811d0aa6fc",
-          "objdiff_percent": 51.955505
+          "objdiff_percent": 53.124123
         }
       ],
       "status": "different",
-      "objdiff_percent": 51.955505
+      "objdiff_percent": 53.124123
     },
     {
       "name": "PlaySfxAndSetVolume",
@@ -485097,10 +485097,10 @@
     "mapped_code_bytes": 2445713,
     "matched_code_bytes": 462313,
     "matching_percent": 13.31835888323674,
-    "fuzzy_coverage_percent": 48.01771368766819,
+    "fuzzy_coverage_percent": 48.01816918409627,
     "mapped_functions": 9043,
     "matched_functions": 4319,
-    "objdiff_fuzzy_percent": 74.88281,
+    "objdiff_fuzzy_percent": 74.88353,
     "objdiff_total_code": 2229250,
     "image_bytes": 40067072,
     "mapped_bytes": 4259552,
@@ -486312,7 +486312,7 @@
       "metadata_sha256": "fe09365da4c355f220d724ca99394fc120b758891b4188d2c49707b6df0894f2",
       "header_path": "src/saga.h",
       "header_sha256": "fa9d80a2f2e41f651206eab862219ac77a83ff9466a31feb3c1ad6b4c783085c",
-      "geometry_object_sha256": "cbc0d52d9ff1067bb21c73c9e251715eb9194230a3ba64a4233433163da64a01",
+      "geometry_object_sha256": "04a7ce0e17418d461d69cd3d6bc8ff70aaea0f420a0652f01580419a37563122",
       "toolchain_sha256": "b8808088bb2c7eb239785f69c9e464ae8545216d5705fb37216bc0cf926732f3",
       "implementation_sha256": "d6a33be911d095a6d07dccd4443ccbfd6b514fd89fd7e200d9caa1827944e218",
       "headers": {
@@ -486554,7 +486554,7 @@
         4
       ]
     },
-    "clang_source_sha256": "c63696660ea00c45ab262ccc4fa8aead607a6ac9f220f7aec848eeebf5a23daa",
+    "clang_source_sha256": "3e66b9073cc74cd26d633202aa4072c6f3c8baa038ab4246763c5acc2c23ca6c",
     "member_count": 42,
     "physical_definition_credit": 0
   },

@@ -271,7 +271,8 @@ void __cdecl PlaySfxByIdEx(i32 sfx_id, NUVEC *position, f32 volume, f32 pitch) {
             pitch_parameter = -pitch_parameter;
     }
     if (record->volume_rnd != 0.0f) {
-        voice_volume = (i32)((f32)voice_volume * (1.0f + NuRandFloatSeeded(&nusound_seed) * record->volume_rnd));
+        volatile f32 volume_factor = 1.0f + NuRandFloatSeeded(&nusound_seed) * record->volume_rnd;
+        voice_volume = (i32)((f64)volume_factor * (f64)voice_volume);
     }
 
     if ((u32)sample_id <= 1599u) {
