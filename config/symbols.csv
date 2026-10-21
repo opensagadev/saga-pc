@@ -1809,8 +1809,10 @@ address,symbol,size,ctype
 0x4c7750,_DrawShopPrompts,201,void __cdecl(void)
 0x4c7820,_GetShopCamLookPos,89,void __cdecl (NUVEC *)
 0x4c78b0,_Signals_Load,198,
-0x4c7a90,_Signal_SetGizmoVisibility,79,
-0x4c7b20,_Signals_Reset,319,
+0x4c7a90,_SignalSetVisiblePc,79,"static void(SIGNAL_s *, i32)"
+0x004c7ae0,_Signal_SetGizmoVisibility,26,"void __cdecl(GIZMO_PC *, i32)"
+0x4c7b20,_SignalResetRecordPc,319,static void(SIGNAL_s *)
+0x004c7c60,_Signals_Reset,194,"void __cdecl(WORLDINFO *, void *, SIGNALPROGRESS_s *)"
 0x4c8030,_Signals_Draw,653,
 0x4c8bd0,_SpeederBlowupHack,98,"i32 __cdecl (GIZMOBLOWUP_PC *, i32)"
 0x4c8c40,_SpeederChaseA_Init,323,void __cdecl (WORLDINFO *)
@@ -1851,6 +1853,7 @@ address,symbol,size,ctype
 0x4cc160,_StarWars_PrepareJump,1884,"i32 __cdecl(AIPACKET_PC *, APIOBJECT_PC *, i32)"
 0x4cc8e0,_Suits_Init,51,void __cdecl(void)
 0x4cc920,_Suit_GetIndex,42,i32 __cdecl(SUIT_LAYERS_PC *)
+0x004cc950,_Suit_FindFromLetter,47,SUIT_INITIALIZER_RECORD_PC *__cdecl(char)
 0x004cc9a0,_Suit_GetLast,87,"SUIT_LAYERS_PC * __cdecl(i32,i32)"
 0x4cca00,_Suit_GetDefault,52,SUIT_LAYERS_PC *__cdecl (i32)
 0x004cca90,_Technos_FindControllingTechno,57,TECHNO_PC *__cdecl (GAMEOBJECT *)
