@@ -6997,7 +6997,7 @@ void __cdecl Move_HOVERDROID(GAMEOBJECT *object) {
         return;
     hover = object->character_context == 23 ? 0.0f : object->character_data->game_character->field_028;
     ApplyGravity(object, NULL, hover, 8.0f, NULL);
-    STUBBED_NAMED(0x0056d8c0); /* Native 4b3941: Tube_MoveCode(object, WORLD), ignored void action. */
+    Tube_MoveCode(object, WORLD);
     DeactivatedCode(object);
     FireCode(object, object->pad->buttons_pressed & GAMEPAD_ACTION, object->pad->buttons_held & GAMEPAD_ACTION, 0.75f,
              1);
@@ -7082,7 +7082,7 @@ void __cdecl Move_SUPERBATTLEDROID(GAMEOBJECT *object) {
     SlideCode(object);
     ForcePushed_MoveCode(object);
     ForcedBackCode(object);
-    STUBBED_NAMED(0x0056d8c0); /* Native 4b5e6e: Tube_MoveCode(object, WORLD), ignored void action. */
+    Tube_MoveCode(object, WORLD);
     DeactivatedCode(object);
     WeaponOutCode(object);     /* Native 4b5e7b: WeaponOutCode(object). */
     WeaponInCode(object);      /* Native 4b5e81: WeaponInCode(object). */

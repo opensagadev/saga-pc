@@ -337,7 +337,7 @@
     "src/legoapi/mission.c": "b6ce5e9e844e32467ba2d1e759d61799e5388bd376cb5894524169781c2232c1",
     "src/legoapi/missions.c": "5723bc2a3c0173a42c0beb22d0b7f5e886162f70728f8f9304c8c8a12ec7c9ef",
     "src/legoapi/model_animation.c": "ef78e3baf9aca6e9f638f4b195ef6cca7d5061a9ab739ebe9533b7f6dd75f5ab",
-    "src/legoapi/move.c": "b57ffea52a8a59a96f8ecff5dfb543e10e6753cb5fd39de9ed5899f875a76766",
+    "src/legoapi/move.c": "c3943e729fddae1b880bd51dd1a351b7a46e42d6297990d6cc0f37b9ac62593a",
     "src/legoapi/movies_config_pc.c": "d3d0c7ee876c51ddc48ba70c0070ef3c3a47c5424af00fc36b2d01fc8e475def",
     "src/legoapi/netplay.c": "08f5e9eb81ca542d5e76d6c3ee9e8ae43aad56a50ed14da7a72e800c6682d0e9",
     "src/legoapi/newlevels.c": "262db0b1cb6c59e99563249642e82f1282636ddf0aa7d2acc1e3c17476018986",
@@ -724,7 +724,7 @@
     "build/obj/legoapi/mission.obj": "1771231e8da7cb7dc9393386fb87d9c2f296eff2c63ca4f5492943a4c53dfdbb",
     "build/obj/legoapi/missions.obj": "3fcb520fe8cc05885eb81fe3847ac328d75406d913701d0de8891c4d39bd8dc2",
     "build/obj/legoapi/model_animation.obj": "93043a836f5b1e22ab2a20eec5be38b1919531632128d8b4c3524bd46c8fb08d",
-    "build/obj/legoapi/move.obj": "9649eb2daebf46e3378e8a69b45270d983b8f0115e199d3821ac6af2983b4bb5",
+    "build/obj/legoapi/move.obj": "f1bc61ce20278804effd5d77cf74dd36fd7d86835f55c70022ca82bc83bc6922",
     "build/obj/legoapi/movies.obj": "1d1384860e2af44cc1f654b74c62561bc77abc947f27602bdca984354b0733c9",
     "build/obj/legoapi/movies_config_pc.obj": "cb0ad72f9ac627ab4e37bb65c91a24ade7128037d7d4c688bcc6eaf57ffee05f",
     "build/obj/legoapi/netplay.obj": "cb51bd867677f5dceeb4239271ecfb9814ee3954d2e2b116bd393c7dac0640be",
@@ -40988,21 +40988,21 @@
         "src/legoapi/move.c"
       ],
       "target_size": 257,
-      "exact_match": false,
+      "exact_match": true,
       "objects": [
         {
           "unit": "src/legoapi/move.c",
-          "base_size": 244,
-          "exact_match": false,
+          "base_size": 257,
+          "exact_match": true,
           "target_sha256": "8fc8a67a87193c7f2944f5980e9d99a4ab1e07728935a4043cd4c1fb81ade6ae",
-          "base_sha256": "3830bcf68d4ebc93d8f582e7bf72fdfea23583ef2130074545fde117f74af8b4",
-          "relocation_count": 13,
+          "base_sha256": "8fc8a67a87193c7f2944f5980e9d99a4ab1e07728935a4043cd4c1fb81ade6ae",
+          "relocation_count": 15,
           "comparison_unit": "004b38e0-9c541c0f3a2b",
-          "objdiff_percent": 94.85897
+          "objdiff_percent": 100.0
         }
       ],
-      "status": "different",
-      "objdiff_percent": 94.85897
+      "status": "exact",
+      "objdiff_percent": 100.0
     },
     {
       "name": "Move_CRITTER",
@@ -41204,21 +41204,21 @@
         "src/legoapi/move.c"
       ],
       "target_size": 209,
-      "exact_match": false,
+      "exact_match": true,
       "objects": [
         {
           "unit": "src/legoapi/move.c",
-          "base_size": 197,
-          "exact_match": false,
+          "base_size": 209,
+          "exact_match": true,
           "target_sha256": "bf810ed10aa9812cc08bebf95d1e71af12ce51fcdd06c2096755fedb829e618a",
-          "base_sha256": "309716ac193d59315b9aaf81222b906d622238b63d81e7de75e02b2c822370de",
-          "relocation_count": 20,
+          "base_sha256": "bf810ed10aa9812cc08bebf95d1e71af12ce51fcdd06c2096755fedb829e618a",
+          "relocation_count": 22,
           "comparison_unit": "004b5e10-f80635844a11",
-          "objdiff_percent": 93.0
+          "objdiff_percent": 100.0
         }
       ],
-      "status": "different",
-      "objdiff_percent": 93.0
+      "status": "exact",
+      "objdiff_percent": 100.0
     },
     {
       "name": "Move_DROIDGENERIC",
@@ -485095,12 +485095,12 @@
   "progress": {
     "text_bytes": 3471246,
     "mapped_code_bytes": 2445713,
-    "matched_code_bytes": 462313,
-    "matching_percent": 13.31835888323674,
-    "fuzzy_coverage_percent": 48.02362487823376,
+    "matched_code_bytes": 462779,
+    "matching_percent": 13.331783457582667,
+    "fuzzy_coverage_percent": 48.02442696621889,
     "mapped_functions": 9043,
-    "matched_functions": 4319,
-    "objdiff_fuzzy_percent": 74.89201,
+    "matched_functions": 4321,
+    "objdiff_fuzzy_percent": 74.89328,
     "objdiff_total_code": 2229250,
     "image_bytes": 40067072,
     "mapped_bytes": 4259552,
@@ -485159,16 +485159,16 @@
   "text_coverage": {
     "original_text_bytes": 3471246,
     "mapped_reconstruction_bytes": 2445713,
-    "exact_reconstruction_bytes": 462313,
-    "mapped_not_exact_bytes": 1983400,
+    "exact_reconstruction_bytes": 462779,
+    "mapped_not_exact_bytes": 1982934,
     "excluded_import_glue_bytes": 1194,
     "unclassified_text_bytes": 1024339,
     "strict_original_text_denominator_bytes": 3471246,
-    "strict_original_text_exact_percent": 13.31835888323674,
+    "strict_original_text_exact_percent": 13.331783457582667,
     "reconstruction_scope_denominator_bytes": 3470052,
-    "reconstruction_scope_exact_percent": 13.322941558224487,
+    "reconstruction_scope_exact_percent": 13.336370751792769,
     "mapped_scope_denominator_bytes": 2445713,
-    "mapped_scope_exact_percent": 18.90299475040612,
+    "mapped_scope_exact_percent": 18.92204849874045,
     "qualification": "Unclassified text includes undiscovered code and unproven padding; these percentages compare relocated objects, not the linked image."
   },
   "data_members": [
@@ -486312,7 +486312,7 @@
       "metadata_sha256": "fe09365da4c355f220d724ca99394fc120b758891b4188d2c49707b6df0894f2",
       "header_path": "src/saga.h",
       "header_sha256": "fa9d80a2f2e41f651206eab862219ac77a83ff9466a31feb3c1ad6b4c783085c",
-      "geometry_object_sha256": "d5c9dadcb55d7c4d1add858c5994bc7be7e87e1c960ee4b1ae345e024aa40138",
+      "geometry_object_sha256": "77d80aa83ac6ee546617063a083bc92c080c2b967e0b84f008e0b83d6f89c41e",
       "toolchain_sha256": "b8808088bb2c7eb239785f69c9e464ae8545216d5705fb37216bc0cf926732f3",
       "implementation_sha256": "d6a33be911d095a6d07dccd4443ccbfd6b514fd89fd7e200d9caa1827944e218",
       "headers": {
@@ -486554,7 +486554,7 @@
         4
       ]
     },
-    "clang_source_sha256": "21a9a505929a7e91b627c137437e22973fb47b44680aa9674a4e388d1018aeb2",
+    "clang_source_sha256": "895135f82f3e1e645c73843202ed430299bafff70661935632e1fe8ea34a013e",
     "member_count": 42,
     "physical_definition_credit": 0
   },
