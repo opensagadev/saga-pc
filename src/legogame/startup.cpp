@@ -15,12 +15,12 @@ static i32 __cdecl PcInputCommandAllowedPc(i32 port, i32 command) {
         return 0;
     return 1;
 }
-
+extern "C" void __cdecl Movies_ConfigureList(char *, VARIPTR *, VARIPTR *);
 class Fade;
 class FadeWipe;
 class FadeStillWipe;
 class FadeStill;
-
+extern "C" const char MoviesListPathPc[18];
 extern "C" {
     extern FADEINFO_s *pFadeInfo;
     extern Fade fade;
@@ -394,7 +394,7 @@ extern "C" {
             STUBBED_NAMED("LoadPermData: registration pair (0x45e2e0, 0x457f60)");
         }
 
-        STUBBED_NAMED("LoadPermData: Movies_ConfigureList(movies\\movies.txt)");
+        Movies_ConfigureList((char *)MoviesListPathPc, &permbuffer_ptr, &permbuffer_end);
         SetProceduralAnimationFn(NuAnimBuffProceduralAnimation);
         CDataList = ConfigureCharacterList("chars\\chars.txt", &permbuffer_ptr, &permbuffer_end, 0x154, &CHARCOUNT,
                                            0x120, &GCDataList);

@@ -5113,6 +5113,8 @@ address,symbol,size,ctype
 0x5b1e30,_LoadSpecialSfxFile,103,void __cdecl (void *)
 0x5b1ee0,_LoadEditorSplines,550,"i32 __cdecl(char *, VARIPTR *, VARIPTR *)"
 0x5b2110,_edSpline_SplineFind,102,"NUGSPLINE *__cdecl(NUGSCN *,char *)"
+0x005b2350,_MoviesListNoOpPc,1,void __cdecl(char *)
+0x005b2380,_Movies_ConfigureList,233,"void __cdecl(char *, VARIPTR *, VARIPTR *)"
 0x5b2470,_Movie_CallBack,153,i32 __cdecl(void)
 0x5b2510,_Movie_Play,384,
 0x5b26b0,_Whip_MoveCode,1597,
@@ -13395,6 +13397,7 @@ address,symbol,size,ctype
 0x0075d0e8,_LoadPermLevelsPath,18,const char[18]
 0x75d0fc,??_C@_0N@LOOJFHKC@stuff?2icons?2?$AA@,,const char[13]
 0x75d10c,??_C@_0BA@NIAGBOPP@chars?2chars?4txt?$AA@,,const char[16]
+0x0075d11c,_MoviesListPathPc,18,const char[18]
 0x75d130,??_C@_0BA@NLBJKIHO@Audio?2Audio?4cfg?$AA@,,const char[16]
 0x75d140,??_C@_0BA@CCGCGINK@audio?2music?4txt?$AA@,,const char[16]
 0x75d150,??_C@_0BI@NAECPHOM@stuff?2text?2badwords?4txt?$AA@,,const char[24]
@@ -15022,6 +15025,7 @@ address,symbol,size,ctype
 0x763ef8,__real@bfaaaaab,,f32
 0x763f64,??_C@_06NOGHJDKO@?$CFs?4sfx?$AA@,,const char[]
 0x763f6c,_EditorSplineFileCheckTextPc,13,const char[13]
+0x00763f7c,_MoviesListKeywordPc,6,const char[6]
 0x763f84,??_C@_04DLFHDFGL@?4sub?$AA@,5,char []
 0x763f8c,??_C@_05FFIEBOCK@ntsc?2?$AA@,6,char []
 0x763f94,??_C@_04BEFGFIFH@pal?2?$AA@,5,char []
@@ -22981,7 +22985,9 @@ address,symbol,size,ctype
 0x95e444,_MoviePlayTime,4,f32
 0x95e448,_movie_skipped,4,i32
 0x95e44c,_MovieInputFn,4,i32 (__cdecl *)(void)
+0x0095e450,_MovieCountPc,4,i32
 0x95e454,_MovieFrameTime,4,f32
+0x0095e458,_MovieListPc,4,char (*)[32]
 0x95e460,_NuPowExponentsPc,,f32[32]
 0x95e4e0,_NuPowResultsPc,,f32[32]
 0x95e560,_RenderPostLogTablePc,,f32*
