@@ -416,7 +416,7 @@
     "src/nu2api/nufile_pc.c": "ce72ce3d376d3785dab223e99fa568a8d053ec38add3685cf8564f70b05336ec",
     "src/nu2api/nufile_position.c": "127cf1193120be0c7a83bf81d858afba5a37b9a7d6fb045b322626c829e0c4a7",
     "src/nu2api/nufloat.c": "bd2c30f24957423aa4ba2392df75cf6badfc38db43c782c0c690222782cb5333",
-    "src/nu2api/nufont.c": "af53aaa2298355966c68ec0f963c1dbd72f1ba8cc5d955eeb76d49ca7392ca41",
+    "src/nu2api/nufont.c": "8de3810f66b4bdfad5d8d279b2352a28dd97be80da94b3c886d03e5c16b87b21",
     "src/nu2api/nufpar.c": "126be790fdcc8f0f33cccab553f94221d22c3dc3f320aa149e758255c2eb852a",
     "src/nu2api/nuframe.c": "6b038e10defa347e9b883bc37c7b53904fd08468d96bdc33a16fb126fc9d520b",
     "src/nu2api/nughg.c": "217d12dab25d94de5d952948b1628281c8fb95019a637b354e947537f0fd429b",
@@ -844,7 +844,7 @@
     "build/obj/nu2api/nufile_pc.obj": "11cd686ca41268115d72835d148c4bd42fe2f3e240f1710f5a6bf1bd2d8f2d5e",
     "build/obj/nu2api/nufile_position.obj": "428b73b05bc9325c016f7cf54d43e97e4cd23b765e38088487dd50a18bd167f8",
     "build/obj/nu2api/nufloat.obj": "e676e6726506e0eb5a0dfb1f4817e963b6fbd9ec2f28e3027a63565f8d9b9f3b",
-    "build/obj/nu2api/nufont.obj": "1906f126fddf0c1b000b9d5aef7ea3a449aa7f2f245f80f48013f8fdc3d14ce8",
+    "build/obj/nu2api/nufont.obj": "eea4ee39ed4acd9c9df2c85bb5d6fc3488f775812b3ebc87c081a2b3d381f962",
     "build/obj/nu2api/nufpar.obj": "791730a70d2fcb783f2a846d456ef0290a644a5ca1d87b58b918cf4f226ddb0b",
     "build/obj/nu2api/nuframe.obj": "8785726fafa261c6b95d9c81cc673f7748b326b1a7f61e3ce867b4a7bcb83a39",
     "build/obj/nu2api/nufrustum_pc.obj": "5a53d21de3913cf22b4ec8f0fd57615b37dc128758bc51b7aa5d134a0261e545",
@@ -128735,17 +128735,17 @@
       "objects": [
         {
           "unit": "src/nu2api/nufont.c",
-          "base_size": 250,
+          "base_size": 238,
           "exact_match": false,
           "target_sha256": "bd5703815b7c48d3878584010e85f8c71f56b00a6ff97b9d064f14a9b82552c4",
-          "base_sha256": "49380d38a082ac7c79c7ad87ce8293c2ac7772399f2c55fedd70a45f72d46431",
-          "relocation_count": 6,
+          "base_sha256": "65a794748f827a4f3c478efda47271b3aba0510e8088295c2f9859aa30e7e9c8",
+          "relocation_count": 5,
           "comparison_unit": "005d0c50-5b841fff58e5",
-          "objdiff_percent": 32.804596
+          "objdiff_percent": 32.896553
         }
       ],
       "status": "different",
-      "objdiff_percent": 32.804596
+      "objdiff_percent": 32.896553
     },
     {
       "name": "NuQFntPrintLenU",
@@ -484903,7 +484903,7 @@
     "mapped_code_bytes": 2445507,
     "matched_code_bytes": 462107,
     "matching_percent": 13.312424414749055,
-    "fuzzy_coverage_percent": 47.98789608375075,
+    "fuzzy_coverage_percent": 47.9879028919542,
     "mapped_functions": 9042,
     "matched_functions": 4318,
     "objdiff_fuzzy_percent": 74.881065,
@@ -486118,7 +486118,7 @@
       "metadata_sha256": "fe09365da4c355f220d724ca99394fc120b758891b4188d2c49707b6df0894f2",
       "header_path": "src/saga.h",
       "header_sha256": "fa9d80a2f2e41f651206eab862219ac77a83ff9466a31feb3c1ad6b4c783085c",
-      "geometry_object_sha256": "8ff3320be9e4ff81202a4df29ac012fd6b0cdb633e2f2392271d0a4cd5d07059",
+      "geometry_object_sha256": "6a154401ddbe4005aa98e0d0ead8fca758f72ee7ebc06fa2eb64db24af841f7b",
       "toolchain_sha256": "b8808088bb2c7eb239785f69c9e464ae8545216d5705fb37216bc0cf926732f3",
       "implementation_sha256": "d6a33be911d095a6d07dccd4443ccbfd6b514fd89fd7e200d9caa1827944e218",
       "headers": {
@@ -486360,7 +486360,7 @@
         4
       ]
     },
-    "clang_source_sha256": "16b090201cef5d37c5d3f38cdceb931a150e7ee5b541c3f160f997b16ba9adb8",
+    "clang_source_sha256": "beb7f2c94a806769c01fecde07476cc5a1f9139b75a20d386d70f6c09ecb205f",
     "member_count": 42,
     "physical_definition_credit": 0
   },

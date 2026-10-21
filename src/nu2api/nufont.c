@@ -108,6 +108,7 @@ f32 __cdecl NuQFntPrintLenW(VUFNT *font, u16 *text) {
     x_scale = *font->x_scale;
     while ((character = *text++) != 0) {
         f32 width;
+        volatile f32 gap;
         if (character >= '0' && character <= '9' && (NuQFntMode & 1) != 0) {
             u16 zero = NuQFntEncodeUnicodeChar(font, '0');
             width = font->glyphs[zero].width;
@@ -118,7 +119,8 @@ f32 __cdecl NuQFntPrintLenW(VUFNT *font, u16 *text) {
         } else {
             width = font->glyphs[character].width;
         }
-        length += width + font->ic_gap;
+        gap = font->ic_gap;
+        length = (gap + width) + length;
     }
     return length * qfnt_len_scale * x_scale;
 }
