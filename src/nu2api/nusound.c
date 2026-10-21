@@ -232,9 +232,9 @@ void __cdecl PlaySfxByIdEx(i32 sfx_id, NUVEC *position, f32 volume, f32 pitch) {
         goto restore_fade;
     }
     if (position != NULL) {
-        f32 dx = position->x - listener->m30;
-        f32 dy = position->y - listener->m31;
-        f32 dz = position->z - listener->m32;
+        f64 dx = (f64)position->x - (f64)listener->m30;
+        f64 dy = (f64)position->y - (f64)listener->m31;
+        f64 dz = (f64)position->z - (f64)listener->m32;
         f32 max_distance = nusound_fade_end;
         if (dx * dx + dy * dy + dz * dz > max_distance * max_distance) {
             goto restore_fade;
