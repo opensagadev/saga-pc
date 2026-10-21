@@ -174,8 +174,6 @@ ADDGIZMOTYPE_PC *__cdecl EdGizShadowMachine_RegisterGizmo(i32 type_id) {
     addtype.fns.reset_fn = NULL;
     addtype.fns.reserve_buffer_space_fn = Shadow_ReserveBufferSpace;
     addtype.fns.load_fn = Shadow_Load;
-    addtype.fns.post_load_fn = NULL;
-    addtype.fns.add_level_sfx_fn = NULL;
     edGizShadow_gizmotype_id = type_id;
     return &addtype;
 }
