@@ -930,7 +930,7 @@ void SmartTextEx(char *text, f32 x, f32 y, f32 z, f32 x_scale, f32 y_scale, f32 
     f32 box_height;
     i32 pos;
     f64 preferred_width;
-    f64 first_y;
+    f32 line_y;
     BOX_GEOMETRY_PC *box;
     f32 box_width;
     unsigned char decoded[512];
@@ -1128,17 +1128,17 @@ void SmartTextEx(char *text, f32 x, f32 y, f32 z, f32 x_scale, f32 y_scale, f32 
             Text3DEx((char *)(decoded), x, y, z, draw_x_scale, y_scale, z_scale, alignment, red, green, blue, alpha);
         } else {
 
-            if ((alignment & 1) != 0)
-                first_y = y;
-            else if ((alignment & 4) != 0)
-                first_y = (f64)y - (f64)last_line * line_height;
-            else
-                first_y = (f64)y - (f64)last_line * 0.5 * line_height;
             for (line = 0; line <= last_line; ++line) {
                 if (line != 0)
                     followon_line = 1;
-                Text3DEx((char *)(lines[line]), x, (f32)((f64)line * line_height + first_y), z, draw_x_scale, y_scale,
-                         z_scale, alignment, red, green, blue, alpha);
+                if ((alignment & 1) != 0)
+                    line_y = (f32)((f64)y + (f64)line * line_height);
+                else if ((alignment & 4) != 0)
+                    line_y = (f32)((f64)y - (f64)last_line * line_height + (f64)line * line_height);
+                else
+                    line_y = (f32)((f64)y - (f64)last_line * 0.5 * line_height + (f64)line * line_height);
+                Text3DEx((char *)(lines[line]), x, line_y, z, draw_x_scale, y_scale, z_scale, alignment, red, green,
+                         blue, alpha);
             }
         }
     }
