@@ -1,7 +1,7 @@
 #include "saga.h"
 #include <string.h>
 #include <stdio.h>
-
+extern "C" void __cdecl Attractos_InitTerrain(WORLDINFO *);
 void __cdecl NewGame(void) {
     OPTIONSSAVE saved_options = Game.options_save;
     i32 i;
@@ -1396,7 +1396,7 @@ extern "C" void __cdecl Signals_InitTerrain(WORLDINFO *);
 extern "C" void __cdecl Game_WorldInfo_InitLast(WORLDINFO *world) {
     GizSpinners_InitTerrain(world);
     Signals_InitTerrain(world);
-    STUBBED_NAMED("Game_WorldInfo_InitLast: Attractos_InitTerrain 48f702 -> 4029e0");
+    Attractos_InitTerrain(world);
     SecurityDoors_InitTerrain(world);
     Levers_InitTerrain(world);
     GizPanel_InitTerrain(world);

@@ -136,7 +136,7 @@
     "src/legoapi/text_tables.cpp": "e244ccb04c7647374bd04e5c7abcf1d8d0984dadf184138807342371334c2fa7",
     "src/legoapi/tightrope.cpp": "be579d1a2167462202e8987e813edd58941aa4c7031d693096019f9f4121fa9f",
     "src/legoapi/world.cpp": "775e2920d1ed2efc4d09a7ad66766551de22f1652947369b25cd2b8664b0d38a",
-    "src/legogame/game.cpp": "7b51319c42cde202ba8487fdebcd91bac2908ee27fe0b7c05914522a54cf3898",
+    "src/legogame/game.cpp": "1e8fa64b60fdf28e24978a1211c8902b5e4466420f163e5d71161826619999ef",
     "src/legogame/startup.cpp": "0d9303acc32b400be1e431ce48f27ccaf2d7f59a5f75297b2f999e4eb94b2b5a",
     "src/nu2api/cpu_features.cpp": "7b57efe0a5b8f722138d143b3037dd70c02478906b792d24ba7df2f123af4de9",
     "src/nu2api/crc16.cpp": "0951ed9b5b9f090cacb3ceab7a8766bd8c92698df7cd1df726b719db4a16b211",
@@ -333,7 +333,7 @@
     "src/legoapi/mission.c": "b6ce5e9e844e32467ba2d1e759d61799e5388bd376cb5894524169781c2232c1",
     "src/legoapi/missions.c": "5723bc2a3c0173a42c0beb22d0b7f5e886162f70728f8f9304c8c8a12ec7c9ef",
     "src/legoapi/model_animation.c": "ef78e3baf9aca6e9f638f4b195ef6cca7d5061a9ab739ebe9533b7f6dd75f5ab",
-    "src/legoapi/move.c": "80e5d3c7f2c1b9fdaa95c6bd103abac9843d57e9e555b938082066583475d102",
+    "src/legoapi/move.c": "b57ffea52a8a59a96f8ecff5dfb543e10e6753cb5fd39de9ed5899f875a76766",
     "src/legoapi/netplay.c": "08f5e9eb81ca542d5e76d6c3ee9e8ae43aad56a50ed14da7a72e800c6682d0e9",
     "src/legoapi/newlevels.c": "262db0b1cb6c59e99563249642e82f1282636ddf0aa7d2acc1e3c17476018986",
     "src/legoapi/objectsall.c": "1d0ff33901ba13c10ea3f607d9295a0cc611046b44792394da6ef3b696b62efb",
@@ -710,7 +710,7 @@
     "build/obj/legoapi/mission.obj": "debef8272604a8de7f49b076bf6c6605f8d4ee1aced28f722cfdeafd18ef404b",
     "build/obj/legoapi/missions.obj": "2dd1fb5bb64142a2d8fc2498a78ebbd3f36f9c67f3100629b79bbe783f5c0424",
     "build/obj/legoapi/model_animation.obj": "f34a3ac3ee2276197b766396ec40583404faf94a7a457cd611a32ce85efe44f7",
-    "build/obj/legoapi/move.obj": "b8c91631b4aedfd9cc3d1f9eeb7ebce18795078bc4b1186ff4046dd75df07604",
+    "build/obj/legoapi/move.obj": "f0d756aacb25aa12d5ec54d3ea3eb2288a8350b405060856cb0aadf11c8e76d4",
     "build/obj/legoapi/movies.obj": "b0a331e02173c2e90a1f4de0af40715dc2b26d5e803c6922aca55f893f8eb6ab",
     "build/obj/legoapi/netplay.obj": "05eab37f51c1a03aa80c28a75e5b26df7e38a9a048fc86cd72a0af1556c7cc26",
     "build/obj/legoapi/newlevels.obj": "ae9459cc2331d70fb7c454e343a8f26c95f615b4f2c7d8ccf74ba8227f0ad094",
@@ -783,7 +783,7 @@
     "build/obj/legoapi/whip.obj": "80fae408d6266807f342206fa6de243162a219350ff490b2c1621cdb83b3ad3d",
     "build/obj/legoapi/world.obj": "fbd2cd9904f088d658524f9b02c17d68e683674f3554fcff4efced17ab88013b",
     "build/obj/legoapi/zipup.obj": "08666714a5610f97bdbc50693df646ecf9b9d9c5374e343e44d107874541de24",
-    "build/obj/legogame/game.obj": "4e74b7f8922b41c574d05daf0ac98bd02e31d9099d7b4db8435b38d7182839d1",
+    "build/obj/legogame/game.obj": "8b6b271f6fdf48a51782b1a6f01e4b399d25bb2e71bc8c641462aae6ab5675c6",
     "build/obj/legogame/startup.obj": "5384433746271adbfc5dfdf4f0d20562108a18953ba1a3fd10b35a937d38ad51",
     "build/obj/nu2api/bgproc.obj": "f7307cf31653bffa89ad33a4763b5a8498c7fa331b2e29e7de0ca7e0a1dc0307",
     "build/obj/nu2api/cpu_features.obj": "ef0e5e71353695c88725134f43d0c0e135d3adaba9943c9345c127bebed4204d",
@@ -9775,14 +9775,14 @@
           "base_size": 4471,
           "exact_match": false,
           "target_sha256": "7508675a6fa9ab671ef2a3cc7bb139877037dc157beedc9e55b90d6522a7a414",
-          "base_sha256": "d73f83fa9a3e2f434083a6c9118efc8927e3713fb138e7cedaab4e013766b6ab",
+          "base_sha256": "e223a94dfbca8e9e9e995c36572b8b97fb0a1a8a113a6d597a851da3406f87cb",
           "relocation_count": 569,
           "comparison_unit": "0042e160-b52a4196ceac",
-          "objdiff_percent": 78.86667
+          "objdiff_percent": 78.86539
         }
       ],
       "status": "different",
-      "objdiff_percent": 78.86667
+      "objdiff_percent": 78.86539
     },
     {
       "name": "EndChallenge",
@@ -33956,21 +33956,21 @@
         "src/legogame/game.cpp"
       ],
       "target_size": 72,
-      "exact_match": false,
+      "exact_match": true,
       "objects": [
         {
           "unit": "src/legogame/game.cpp",
-          "base_size": 66,
-          "exact_match": false,
+          "base_size": 72,
+          "exact_match": true,
           "target_sha256": "79a024c1c2b1528f7c275ce4fff7fe7812354342d933f61c5c7ad521999796d0",
-          "base_sha256": "6f079ac899b37925d882f61d6e3051764a02442e605b93829b0b586ef516a2d3",
-          "relocation_count": 9,
+          "base_sha256": "79a024c1c2b1528f7c275ce4fff7fe7812354342d933f61c5c7ad521999796d0",
+          "relocation_count": 10,
           "comparison_unit": "0048f6f0-aaffa711a570",
-          "objdiff_percent": 92.07692
+          "objdiff_percent": 100.0
         }
       ],
-      "status": "different",
-      "objdiff_percent": 92.07692
+      "status": "exact",
+      "objdiff_percent": 100.0
     },
     {
       "name": "ClearAreaProgress",
@@ -40930,17 +40930,17 @@
       "objects": [
         {
           "unit": "src/legoapi/move.c",
-          "base_size": 1414,
+          "base_size": 1426,
           "exact_match": false,
           "target_sha256": "c996a8a32c4bbb0d78d006c47ab9e0a40472e1dbf50b35a65e15bdde3d4057c3",
-          "base_sha256": "d1cf45d83a2c03a155a98f17275ca9738e4d0270751665397fefe6d67deef945",
-          "relocation_count": 90,
+          "base_sha256": "c41675b5ce62328bf20df77dfc8fe407a0429271057c9f6b8a1cc14800d573b1",
+          "relocation_count": 92,
           "comparison_unit": "004b4ac0-8771feed6518",
-          "objdiff_percent": 77.68737
+          "objdiff_percent": 78.49483
         }
       ],
       "status": "different",
-      "objdiff_percent": 77.68737
+      "objdiff_percent": 78.49483
     },
     {
       "name": "Move_VEHICLE",
@@ -40978,17 +40978,17 @@
       "objects": [
         {
           "unit": "src/legoapi/move.c",
-          "base_size": 1144,
+          "base_size": 1157,
           "exact_match": false,
           "target_sha256": "b76f444e08c5b111a18d44509eb30b3cd29044558bae33aa08919c3e6fa7c3b9",
-          "base_sha256": "820c58a7bdb615d05f0674dbba23786019d5c733c52a41ae9a4f33e5996f6b91",
-          "relocation_count": 87,
+          "base_sha256": "69690dce4b4995d8824f1109e98e12d5d7453347bc7c6e37ca1c4c42a6292f21",
+          "relocation_count": 89,
           "comparison_unit": "004b5820-af9587f1c4f7",
-          "objdiff_percent": 73.93128
+          "objdiff_percent": 74.03081
         }
       ],
       "status": "different",
-      "objdiff_percent": 73.93128
+      "objdiff_percent": 74.03081
     },
     {
       "name": "Move_REPUBLICGUNSHIP",
@@ -482734,12 +482734,12 @@
   "progress": {
     "text_bytes": 3471246,
     "mapped_code_bytes": 2442508,
-    "matched_code_bytes": 460209,
-    "matching_percent": 13.257746641983887,
-    "fuzzy_coverage_percent": 47.85998726039511,
+    "matched_code_bytes": 460281,
+    "matching_percent": 13.259820825144631,
+    "fuzzy_coverage_percent": 47.86056414043472,
     "mapped_functions": 9017,
-    "matched_functions": 4287,
-    "objdiff_fuzzy_percent": 74.84846,
+    "matched_functions": 4288,
+    "objdiff_fuzzy_percent": 74.84935,
     "objdiff_total_code": 2222959,
     "image_bytes": 40067072,
     "mapped_bytes": 4255679,
@@ -482798,16 +482798,16 @@
   "text_coverage": {
     "original_text_bytes": 3471246,
     "mapped_reconstruction_bytes": 2442508,
-    "exact_reconstruction_bytes": 460209,
-    "mapped_not_exact_bytes": 1982299,
+    "exact_reconstruction_bytes": 460281,
+    "mapped_not_exact_bytes": 1982227,
     "excluded_import_glue_bytes": 1194,
     "unclassified_text_bytes": 1027544,
     "strict_original_text_denominator_bytes": 3471246,
-    "strict_original_text_exact_percent": 13.257746641983887,
+    "strict_original_text_exact_percent": 13.259820825144631,
     "reconstruction_scope_denominator_bytes": 3470052,
-    "reconstruction_scope_exact_percent": 13.262308461083581,
+    "reconstruction_scope_exact_percent": 13.264383357943915,
     "mapped_scope_denominator_bytes": 2442508,
-    "mapped_scope_exact_percent": 18.84165783694465,
+    "mapped_scope_exact_percent": 18.84460562667553,
     "qualification": "Unclassified text includes undiscovered code and unproven padding; these percentages compare relocated objects, not the linked image."
   },
   "data_members": [
@@ -483951,7 +483951,7 @@
       "metadata_sha256": "fe09365da4c355f220d724ca99394fc120b758891b4188d2c49707b6df0894f2",
       "header_path": "src/saga.h",
       "header_sha256": "f5c807c392cb7f77dff8088bf8aab18d114ee73ac3939aed153bd44225502c55",
-      "geometry_object_sha256": "2500226420316bea10d6edaa7c3bc53b9362067e4ea20f461679565112f3997a",
+      "geometry_object_sha256": "4e6862ae959f8cf89ea5a41ba2218a1cc83de29d407e2e62072c5940d1c8386e",
       "toolchain_sha256": "b8808088bb2c7eb239785f69c9e464ae8545216d5705fb37216bc0cf926732f3",
       "implementation_sha256": "d6a33be911d095a6d07dccd4443ccbfd6b514fd89fd7e200d9caa1827944e218",
       "headers": {
@@ -484193,7 +484193,7 @@
         4
       ]
     },
-    "clang_source_sha256": "6cb60aeb9087fc88b4c146ae2daf0b8eeac1416c732779345f151d82a0f6facf",
+    "clang_source_sha256": "187563c746e8aee8bbef506718a0d2fff4bdd965b0b8318e2ecd779ee3b2f04b",
     "member_count": 42,
     "physical_definition_credit": 0
   },

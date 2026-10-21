@@ -9,7 +9,7 @@ static void DodgeCode(GAMEOBJECT *, i32, i32);
 static void BlockCode(GAMEOBJECT *, i32, i32, i32, i32);
 BOLT *__cdecl FindIncomingBolt(GAMEOBJECT *, i32, i32);
 void __cdecl FindForcePushTarget(GAMEOBJECT *, i32, i32);
-
+void __cdecl Attracto_MoveCode(WORLDINFO *, GAMEOBJECT *);
 void __cdecl GunShip_DragBombSeekBlowUp(GAMEOBJECT *);
 
 void __cdecl SuperCarry_MoveCode(WORLDINFO *, GAMEOBJECT *);
@@ -6797,7 +6797,7 @@ after_gravity:
         object->id == (u16)VehicleBoltId7f17d0Pc && StartupGameFlag0 != 0)
         STUBBED_NAMED(0x005b26b0); /* Native4b5040: object; actual void action. */
     DodgeCode(object, action_pressed, jump_pressed);
-    STUBBED_NAMED(0x004036a0); /* Native4b505a: WORLD,object; Attracto_MoveCode. */
+    Attracto_MoveCode(WORLD, object);
     SecurityDoor_MoveCode(WORLD, object);
     if ((object->character_data->model_flags & 0x80) != 0)
         ShootCode(object, action_pressed, special_pressed, 1, 1, 0);
@@ -10071,7 +10071,7 @@ void __cdecl Move_WEIRDO(GAMEOBJECT *object) {
     WeaponScalingCode(object);
     SpecialMove_VictimCode(object);
     HoldCode(object);
-    STUBBED_NAMED(0x004036a0); /* Native4b5c05: Attracto_MoveCode(WORLD,object). */
+    Attracto_MoveCode(WORLD, object);
     SecurityDoor_MoveCode(WORLD, object);
     if (has_sabre) {
         BlockCode(object, action_pressed, action_held, jump_pressed, 0);
