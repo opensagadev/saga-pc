@@ -17,7 +17,7 @@
     "config/library-objects.json": "e5ae24d3eac36fa0d0cb098f7690faaef3110f225db30c8cbf0f7d0d64f6ecfe",
     "config/ogg-vorbis.json": "7f98d40938e6bd6060c6bdfc2ce39d9cfb1c822243693eeb1d85d46b43dcad24",
     "config/project.json": "9a3650958be769951860d2c457f8573049ecae76e48ce8f3d7383e4ca2b761a6",
-    "config/symbols.csv": "e5ab7057e3e3ea9a4b1884fc58b1ac8b6298643ba40ad8bbd60783b440c15ee7",
+    "config/symbols.csv": "2f2df1f4e67202c06d77021ddb37386f2de25618a3627cf9be59968a24e1c6fd",
     "config/symbols.md": "dffbdaac86011e3aee74b404063c15bda97f88af3db337ffef9f1bad1785d212",
     "config/toolchain.json": "b8808088bb2c7eb239785f69c9e464ae8545216d5705fb37216bc0cf926732f3",
     "config/tools.json": "50199f6b132a7abfabf251e98a75be0a957abfe50f1ff776188fba21e4c4436f",
@@ -349,6 +349,7 @@
     "src/legoapi/render.c": "596498e3e853cfdf3eb7df3fad87aac86d84e54d3cce123b1d55a283504fbfa0",
     "src/legoapi/ripples.c": "d1770560c60199d2b1b96c1ec5eb506d404430a1be8acb48740c3879df0bd5e8",
     "src/legoapi/rtl.c": "11639ba33de309e5caf397b7e9252e147f3472ac8c535b550be805308466e97a",
+    "src/legoapi/securitydoors_pc.c": "925da0ba7a365b28e47ef468590de2c9dda31ac37ab8a1428ff78fa25077a94b",
     "src/legoapi/sfx_level.c": "70d30f0263bc1f1bc0b6cff9bda27a935c8a395e267036e0da8541fe904e4f3b",
     "src/legoapi/shadow.c": "8f05a7a554eae3e1c0062260f95f08d1f38e6e8c7bae2a1b281ec126a4cdfc19",
     "src/legoapi/shard.c": "4ed8890e36948a82a90423b2bcf4b21e368f44c99572b82a2fa7cf53906a912d",
@@ -732,6 +733,7 @@
     "build/obj/legoapi/ripples.obj": "606bba227855470fc46ddde031290f3353aecce7c9549d3ab9bf65a81d78963a",
     "build/obj/legoapi/rtl.obj": "f438287f642021e66c8096b037e216b8a89dda0e2fbf61436d91c403c3c8c044",
     "build/obj/legoapi/screen.obj": "abb09d98fe6c6b9f5d48c423fc3d8db369e36b3d269264f58f1659166fdd8844",
+    "build/obj/legoapi/securitydoors_pc.obj": "559af42c0b04b8bb469f94f17eeb56aa84fbe169b98ed3d37bf457608516a123",
     "build/obj/legoapi/sfx.obj": "3b9339ca5245221b3f07b34e33a056989aaf4299a940ccf7cf4e4879eb9c4c13",
     "build/obj/legoapi/sfx_level.obj": "3310563918207903a20400599efcc8e21f8801dd90dea5deacee0bac0863840b",
     "build/obj/legoapi/shadow.obj": "9eeea9f1fc60fdaad1f81369a7239984775710939865c051b1966a304da52951",
@@ -40999,14 +41001,580 @@
       "status": "not implemented"
     },
     {
+      "name": "SecurityDoorUpdateMatricesPc",
+      "symbol": "_SecurityDoorUpdateMatricesPc",
+      "address": "0x004bce60",
+      "units": [
+        "src/legoapi/securitydoors_pc.c"
+      ],
+      "target_size": 146,
+      "exact_match": false,
+      "objects": [
+        {
+          "unit": "src/legoapi/securitydoors_pc.c",
+          "base_size": 142,
+          "exact_match": false,
+          "target_sha256": "b3c2f2389d524e66d9cb68f13910d18cb8a926c49ff7b24e3a07bc51863d6b14",
+          "base_sha256": "30cbf9e52d6b64b7cbb1f2f0277da61df8771f586d1d95ca80a1e19d4d3f5a60",
+          "relocation_count": 10,
+          "comparison_unit": "004bce60-e4a0cd3a44d8",
+          "objdiff_percent": 89.70588
+        }
+      ],
+      "status": "different",
+      "objdiff_percent": 89.70588
+    },
+    {
+      "name": "SecurityDoors_Load",
+      "symbol": "_SecurityDoors_Load",
+      "address": "0x004bcf00",
+      "units": [
+        "src/legoapi/securitydoors_pc.c"
+      ],
+      "target_size": 109,
+      "exact_match": false,
+      "objects": [
+        {
+          "unit": "src/legoapi/securitydoors_pc.c",
+          "base_size": 109,
+          "exact_match": false,
+          "target_sha256": "b1cd1f79a3af584b745b668fe8126d09f8ae24800cb6a0fe017efc79f5eb177b",
+          "base_sha256": "eb72e65228f5edf3e07e6c79cad96244754698227c00d4d87ed90bbc99b1c148",
+          "relocation_count": 5,
+          "comparison_unit": "004bcf00-c57215642dbb",
+          "objdiff_percent": 81.14286
+        }
+      ],
+      "status": "different",
+      "objdiff_percent": 81.14286
+    },
+    {
+      "name": "SecurityDoors_InitTerrain",
+      "symbol": "_SecurityDoors_InitTerrain",
+      "address": "0x004bcf70",
+      "units": [
+        "src/legoapi/securitydoors_pc.c"
+      ],
+      "target_size": 105,
+      "exact_match": false,
+      "objects": [
+        {
+          "unit": "src/legoapi/securitydoors_pc.c",
+          "base_size": 111,
+          "exact_match": false,
+          "target_sha256": "1068c8285331a38f9207b006f282af5f26b22c3640f78e3e5c39313af6a1b1bb",
+          "base_sha256": "341818b50bcd166f23d5932c3f12ce898f237e186a5b416193d0c70b1028c780",
+          "relocation_count": 2,
+          "comparison_unit": "004bcf70-d2a80093e1b6",
+          "objdiff_percent": 93.548386
+        }
+      ],
+      "status": "different",
+      "objdiff_percent": 93.548386
+    },
+    {
+      "name": "SecurityDoors_ReserveBufferSpace",
+      "symbol": "_SecurityDoors_ReserveBufferSpace",
+      "address": "0x004bcfe0",
+      "units": [
+        "src/legoapi/securitydoors_pc.c"
+      ],
+      "target_size": 80,
+      "exact_match": false,
+      "objects": [
+        {
+          "unit": "src/legoapi/securitydoors_pc.c",
+          "base_size": 80,
+          "exact_match": false,
+          "target_sha256": "6a097536478a61d8fa3037d8452201d3f4b03c0b569f2b3bc19eb0df053726d6",
+          "base_sha256": "8b470ad585a8ad9817dc495d80c35a428c61f809300d84d054f95ba7901539fd",
+          "relocation_count": 0,
+          "comparison_unit": "004bcfe0-b2013452e5e5",
+          "objdiff_percent": 96.8421
+        }
+      ],
+      "status": "different",
+      "objdiff_percent": 96.8421
+    },
+    {
+      "name": "SecurityDoor_Activate",
+      "symbol": "_SecurityDoor_Activate",
+      "address": "0x004bd030",
+      "units": [
+        "src/legoapi/securitydoors_pc.c"
+      ],
+      "target_size": 34,
+      "exact_match": false,
+      "objects": [
+        {
+          "unit": "src/legoapi/securitydoors_pc.c",
+          "base_size": 36,
+          "exact_match": false,
+          "target_sha256": "5b54ac5bb8b5bd3f712c36991fe7cddfa31a2b7ce1668eaaf25d0f1c98cad05d",
+          "base_sha256": "6293ddb961d915b0abed3b8734eb5ec79db97f2071adb68e565913bb2117d617",
+          "relocation_count": 0,
+          "comparison_unit": "004bd030-108e1d542e65",
+          "objdiff_percent": 57.4
+        }
+      ],
+      "status": "different",
+      "objdiff_percent": 57.4
+    },
+    {
+      "name": "SecurityDoor_SetVisibility",
+      "symbol": "_SecurityDoor_SetVisibility",
+      "address": "0x004bd060",
+      "units": [
+        "src/legoapi/securitydoors_pc.c"
+      ],
+      "target_size": 36,
+      "exact_match": false,
+      "objects": [
+        {
+          "unit": "src/legoapi/securitydoors_pc.c",
+          "base_size": 38,
+          "exact_match": false,
+          "target_sha256": "39370f451782432e87196ea62ef49fdcd8ac1690337220fdaa4a8c236d7536cf",
+          "base_sha256": "557e5b2d9a523beaaa895f7e756a76ffd2e5f864e4646d28d57a03c004031776",
+          "relocation_count": 0,
+          "comparison_unit": "004bd060-6b2d5b9a04cf",
+          "objdiff_percent": 66.72727
+        }
+      ],
+      "status": "different",
+      "objdiff_percent": 66.72727
+    },
+    {
+      "name": "SecurityDoorInitRecordPc",
+      "symbol": "_SecurityDoorInitRecordPc",
+      "address": "0x004bd090",
+      "units": [
+        "src/legoapi/securitydoors_pc.c"
+      ],
+      "target_size": 244,
+      "exact_match": false,
+      "objects": [
+        {
+          "unit": "src/legoapi/securitydoors_pc.c",
+          "base_size": 246,
+          "exact_match": false,
+          "target_sha256": "185c2b619a030161f5f902dd07dbb6e2c7ce5a9c5e8e0cbceb1f518369d3a880",
+          "base_sha256": "a37cac88995080d361acecb289b45b0cd611b048d363506dc1b4909d3786edf6",
+          "relocation_count": 13,
+          "comparison_unit": "004bd090-c81a7ae4318c",
+          "objdiff_percent": 87.52857
+        }
+      ],
+      "status": "different",
+      "objdiff_percent": 87.52857
+    },
+    {
+      "name": "SecurityDoors_Reset",
+      "symbol": "_SecurityDoors_Reset",
+      "address": "0x004bd190",
+      "units": [
+        "src/legoapi/securitydoors_pc.c"
+      ],
+      "target_size": 230,
+      "exact_match": false,
+      "objects": [
+        {
+          "unit": "src/legoapi/securitydoors_pc.c",
+          "base_size": 193,
+          "exact_match": false,
+          "target_sha256": "df540c05d59b1c708b38fc3459958d80e89bf98d0b57dbae441fcc58563ec4c7",
+          "base_sha256": "f667ae3066334383bd79c1ddca48db793b787a89bc22a899d9f3d10cea13c821",
+          "relocation_count": 2,
+          "comparison_unit": "004bd190-12ae2d9d96ad",
+          "objdiff_percent": 68.14706
+        }
+      ],
+      "status": "different",
+      "objdiff_percent": 68.14706
+    },
+    {
+      "name": "SecurityDoors_Update",
+      "symbol": "_SecurityDoors_Update",
+      "address": "0x004bd280",
+      "units": [
+        "src/legoapi/securitydoors_pc.c"
+      ],
+      "target_size": 321,
+      "exact_match": false,
+      "objects": [
+        {
+          "unit": "src/legoapi/securitydoors_pc.c",
+          "base_size": 318,
+          "exact_match": false,
+          "target_sha256": "0e8cdb09ff1dc0e64117c42168b9705d341092be67f649a4c1d388d4cd7fd6b2",
+          "base_sha256": "5857e39d67927588fb52d0522bf73c6543c01f4df6ab1bcf636fae6b275d42d0",
+          "relocation_count": 8,
+          "comparison_unit": "004bd280-70dca456c1bc",
+          "objdiff_percent": 93.776596
+        }
+      ],
+      "status": "different",
+      "objdiff_percent": 93.776596
+    },
+    {
+      "name": "SecurityDoor_FindNearest",
+      "symbol": "_SecurityDoor_FindNearest",
+      "address": "0x004bd3d0",
+      "units": [
+        "src/legoapi/securitydoors_pc.c"
+      ],
+      "target_size": 207,
+      "exact_match": false,
+      "objects": [
+        {
+          "unit": "src/legoapi/securitydoors_pc.c",
+          "base_size": 213,
+          "exact_match": false,
+          "target_sha256": "556978ed149548c162a38d29989cff1e4336d83ec7ac8e2bda74411b5cc0c093",
+          "base_sha256": "0e2e9e3b7b8e657497954902f078bf055bc3200ac63516c4ffde7d6201bd8a9e",
+          "relocation_count": 2,
+          "comparison_unit": "004bd3d0-f6f8727b3d28",
+          "objdiff_percent": 95.36232
+        }
+      ],
+      "status": "different",
+      "objdiff_percent": 95.36232
+    },
+    {
+      "name": "SecurityDoors_Draw",
+      "symbol": "_SecurityDoors_Draw",
+      "address": "0x004bd4a0",
+      "units": [
+        "src/legoapi/securitydoors_pc.c"
+      ],
+      "target_size": 660,
+      "exact_match": false,
+      "objects": [
+        {
+          "unit": "src/legoapi/securitydoors_pc.c",
+          "base_size": 660,
+          "exact_match": false,
+          "target_sha256": "5f6cecc998241feea1a4a1bd2ca20c80a6b1a28bb4500ace3b47217756ba794e",
+          "base_sha256": "bae52360276a6f967ff6f3a0fa1c9e786a5ae74dc06b5ad836698678e6abcd3d",
+          "relocation_count": 26,
+          "comparison_unit": "004bd4a0-da76575d8851",
+          "objdiff_percent": 95.8427
+        }
+      ],
+      "status": "different",
+      "objdiff_percent": 95.8427
+    },
+    {
+      "name": "SecurityDoors_GetMaxGizmos",
+      "symbol": "_SecurityDoors_GetMaxGizmos",
+      "address": "0x004bd740",
+      "units": [
+        "src/legoapi/securitydoors_pc.c"
+      ],
+      "target_size": 25,
+      "exact_match": true,
+      "objects": [
+        {
+          "unit": "src/legoapi/securitydoors_pc.c",
+          "base_size": 25,
+          "exact_match": true,
+          "target_sha256": "8cd854e800c1557c7275b146c0905a8e4aef85982778e566ef636814f7ab659b",
+          "base_sha256": "8cd854e800c1557c7275b146c0905a8e4aef85982778e566ef636814f7ab659b",
+          "relocation_count": 0,
+          "comparison_unit": "004bd740-cb6539748ca4",
+          "objdiff_percent": 100.0
+        }
+      ],
+      "status": "exact",
+      "objdiff_percent": 100.0
+    },
+    {
+      "name": "SecurityDoors_AddGizmos",
+      "symbol": "_SecurityDoors_AddGizmos",
+      "address": "0x004bd760",
+      "units": [
+        "src/legoapi/securitydoors_pc.c"
+      ],
+      "target_size": 105,
+      "exact_match": false,
+      "objects": [
+        {
+          "unit": "src/legoapi/securitydoors_pc.c",
+          "base_size": 105,
+          "exact_match": false,
+          "target_sha256": "ac7825fd8d8cbfb209420b31ebb5513b61a613f9874fe50857aeb2853bcacf9f",
+          "base_sha256": "4a82e7fa47199d37b595344ca8d0494a5b95c26ab7eb07e006967dcf4e973976",
+          "relocation_count": 2,
+          "comparison_unit": "004bd760-97dc9bfa4206",
+          "objdiff_percent": 94.86487
+        }
+      ],
+      "status": "different",
+      "objdiff_percent": 94.86487
+    },
+    {
+      "name": "SecurityDoor_GetGizmoName",
+      "symbol": "_SecurityDoor_GetGizmoName",
+      "address": "0x004bd7d0",
+      "units": [
+        "src/legoapi/securitydoors_pc.c"
+      ],
+      "target_size": 19,
+      "exact_match": true,
+      "objects": [
+        {
+          "unit": "src/legoapi/securitydoors_pc.c",
+          "base_size": 19,
+          "exact_match": true,
+          "target_sha256": "109d5f2d0af00d90e8df4731e47262fd700e4dd130c602df206441019513898b",
+          "base_sha256": "109d5f2d0af00d90e8df4731e47262fd700e4dd130c602df206441019513898b",
+          "relocation_count": 0,
+          "comparison_unit": "004bd7d0-938d9f7b2663",
+          "objdiff_percent": 100.0
+        }
+      ],
+      "status": "exact",
+      "objdiff_percent": 100.0
+    },
+    {
+      "name": "SecurityDoor_GetOutput",
+      "symbol": "_SecurityDoor_GetOutput",
+      "address": "0x004bd7f0",
+      "units": [
+        "src/legoapi/securitydoors_pc.c"
+      ],
+      "target_size": 20,
+      "exact_match": true,
+      "objects": [
+        {
+          "unit": "src/legoapi/securitydoors_pc.c",
+          "base_size": 20,
+          "exact_match": true,
+          "target_sha256": "15273fe267fbe8ecf20a9e493464c5e4479dd67368f69c1aa736f8580e8ea3bb",
+          "base_sha256": "15273fe267fbe8ecf20a9e493464c5e4479dd67368f69c1aa736f8580e8ea3bb",
+          "relocation_count": 0,
+          "comparison_unit": "004bd7f0-1cfea32b1afd",
+          "objdiff_percent": 100.0
+        }
+      ],
+      "status": "exact",
+      "objdiff_percent": 100.0
+    },
+    {
+      "name": "SecurityDoor_GetOutputName",
+      "symbol": "_SecurityDoor_GetOutputName",
+      "address": "0x004bd810",
+      "units": [
+        "src/legoapi/securitydoors_pc.c"
+      ],
+      "target_size": 6,
+      "exact_match": true,
+      "objects": [
+        {
+          "unit": "src/legoapi/securitydoors_pc.c",
+          "base_size": 6,
+          "exact_match": true,
+          "target_sha256": "b5437ed5de69eb4f1c4c7095fe2f03a3e019bd910c01e5c0fdfaab17cd3ed0e1",
+          "base_sha256": "b5437ed5de69eb4f1c4c7095fe2f03a3e019bd910c01e5c0fdfaab17cd3ed0e1",
+          "relocation_count": 1,
+          "comparison_unit": "004bd810-b85394abc576",
+          "objdiff_percent": 100.0
+        }
+      ],
+      "status": "exact",
+      "objdiff_percent": 100.0
+    },
+    {
+      "name": "SecurityDoor_GetNumOutputs",
+      "symbol": "_SecurityDoor_GetNumOutputs",
+      "address": "0x004bd820",
+      "units": [
+        "src/legoapi/securitydoors_pc.c"
+      ],
+      "target_size": 6,
+      "exact_match": true,
+      "objects": [
+        {
+          "unit": "src/legoapi/securitydoors_pc.c",
+          "base_size": 6,
+          "exact_match": true,
+          "target_sha256": "2db31f4e09597946e56e859813bfdad7046d457c32332c3a882654d1e3ffdf67",
+          "base_sha256": "2db31f4e09597946e56e859813bfdad7046d457c32332c3a882654d1e3ffdf67",
+          "relocation_count": 0,
+          "comparison_unit": "004bd820-88892c64091c",
+          "objdiff_percent": 100.0
+        }
+      ],
+      "status": "exact",
+      "objdiff_percent": 100.0
+    },
+    {
+      "name": "SecurityDoors_AllocateProgressData",
+      "symbol": "_SecurityDoors_AllocateProgressData",
+      "address": "0x004bd830",
+      "units": [
+        "src/legoapi/securitydoors_pc.c"
+      ],
+      "target_size": 21,
+      "exact_match": true,
+      "objects": [
+        {
+          "unit": "src/legoapi/securitydoors_pc.c",
+          "base_size": 21,
+          "exact_match": true,
+          "target_sha256": "c66ad895cc5526364044b9dec25cd38da64134f21a70b3c3139d0eefce4546ce",
+          "base_sha256": "c66ad895cc5526364044b9dec25cd38da64134f21a70b3c3139d0eefce4546ce",
+          "relocation_count": 1,
+          "comparison_unit": "004bd830-2db1458abd28",
+          "objdiff_percent": 100.0
+        }
+      ],
+      "status": "exact",
+      "objdiff_percent": 100.0
+    },
+    {
+      "name": "SecurityDoors_ClearProgress",
+      "symbol": "_SecurityDoors_ClearProgress",
+      "address": "0x004bd850",
+      "units": [
+        "src/legoapi/securitydoors_pc.c"
+      ],
+      "target_size": 29,
+      "exact_match": true,
+      "objects": [
+        {
+          "unit": "src/legoapi/securitydoors_pc.c",
+          "base_size": 29,
+          "exact_match": true,
+          "target_sha256": "d268e342f5e086d071cd377962976221a10d23ec643706a2ae5fe2cb2b86488e",
+          "base_sha256": "d268e342f5e086d071cd377962976221a10d23ec643706a2ae5fe2cb2b86488e",
+          "relocation_count": 0,
+          "comparison_unit": "004bd850-6ff94d13583b",
+          "objdiff_percent": 100.0
+        }
+      ],
+      "status": "exact",
+      "objdiff_percent": 100.0
+    },
+    {
+      "name": "SecurityDoors_StoreProgress",
+      "symbol": "_SecurityDoors_StoreProgress",
+      "address": "0x004bd870",
+      "units": [
+        "src/legoapi/securitydoors_pc.c"
+      ],
+      "target_size": 150,
+      "exact_match": false,
+      "objects": [
+        {
+          "unit": "src/legoapi/securitydoors_pc.c",
+          "base_size": 128,
+          "exact_match": false,
+          "target_sha256": "2bbdb60d314c5e04d95fbcdd21014b4259378e479303f40474c84e2c35da7d61",
+          "base_sha256": "e7714fbc86058675ffa3078ba411cf1456186fc8c22bf7d599bc32be8c29af4c",
+          "relocation_count": 0,
+          "comparison_unit": "004bd870-838e2c99271e",
+          "objdiff_percent": 72.13207
+        }
+      ],
+      "status": "different",
+      "objdiff_percent": 72.13207
+    },
+    {
+      "name": "SecurityDoor_GetPos",
+      "symbol": "_SecurityDoor_GetPos",
+      "address": "0x004bd910",
+      "units": [
+        "src/legoapi/securitydoors_pc.c"
+      ],
+      "target_size": 17,
+      "exact_match": false,
+      "objects": [
+        {
+          "unit": "src/legoapi/securitydoors_pc.c",
+          "base_size": 19,
+          "exact_match": false,
+          "target_sha256": "84648a6d4ace15c70a8c73814cef86d439b2dce64d3c71c6fed6edf632e33237",
+          "base_sha256": "aac5e0622ac11d7acf4c9535a072cc3bfd8a37d1ec768832487e98b9d2dc7c85",
+          "relocation_count": 0,
+          "comparison_unit": "004bd910-3ff02ae0540d",
+          "objdiff_percent": 48.57143
+        }
+      ],
+      "status": "different",
+      "objdiff_percent": 48.57143
+    },
+    {
+      "name": "SecurityDoors_RegisterGizmo",
+      "symbol": "_SecurityDoors_RegisterGizmo",
+      "address": "0x004bd930",
+      "units": [
+        "src/legoapi/securitydoors_pc.c"
+      ],
+      "target_size": 278,
+      "exact_match": true,
+      "objects": [
+        {
+          "unit": "src/legoapi/securitydoors_pc.c",
+          "base_size": 278,
+          "exact_match": true,
+          "target_sha256": "b1aa2b579603e54977fb74a0e316b8ae18404ab4f650aeede64dee56170473a6",
+          "base_sha256": "b1aa2b579603e54977fb74a0e316b8ae18404ab4f650aeede64dee56170473a6",
+          "relocation_count": 52,
+          "comparison_unit": "004bd930-3dea3257e652",
+          "objdiff_percent": 100.0
+        }
+      ],
+      "status": "exact",
+      "objdiff_percent": 100.0
+    },
+    {
+      "name": "SecurityDoorStartPc",
+      "symbol": "_SecurityDoorStartPc",
+      "address": "0x004bda50",
+      "units": [
+        "src/legoapi/securitydoors_pc.c"
+      ],
+      "target_size": 160,
+      "exact_match": false,
+      "objects": [
+        {
+          "unit": "src/legoapi/securitydoors_pc.c",
+          "base_size": 160,
+          "exact_match": false,
+          "target_sha256": "df0d3a99d0150f240090c87fd90bf6913ce8532ac414cf92661b9192dba5ae34",
+          "base_sha256": "9399724dc82e778e631928bd082f0351ecb2932d88b18588af6372cb8ae18638",
+          "relocation_count": 1,
+          "comparison_unit": "004bda50-1e722545ba49",
+          "objdiff_percent": 99.75
+        }
+      ],
+      "status": "different",
+      "objdiff_percent": 99.75
+    },
+    {
       "name": "SecurityDoor_MoveCode",
       "symbol": "_SecurityDoor_MoveCode",
       "address": "0x004bdaf0",
-      "units": [],
+      "units": [
+        "src/legoapi/securitydoors_pc.c"
+      ],
       "target_size": 436,
       "exact_match": false,
-      "objects": [],
-      "status": "not implemented"
+      "objects": [
+        {
+          "unit": "src/legoapi/securitydoors_pc.c",
+          "base_size": 431,
+          "exact_match": false,
+          "target_sha256": "0495e1431f101c51f82ba70da601592e8eefc821a727219e71c9181fbac6b43d",
+          "base_sha256": "77a2e71fc5f13a084989550ab2722b38db92ce70c617bb67dd1a36f03a3a5cf3",
+          "relocation_count": 10,
+          "comparison_unit": "004bdaf0-d13558312f23",
+          "objdiff_percent": 87.413536
+        }
+      ],
+      "status": "different",
+      "objdiff_percent": 87.413536
     },
     {
       "name": "GameAudio_OverrideFootStep_LSW",
@@ -204752,6 +205320,7 @@
         "src/legoapi/ripples.c",
         "src/legoapi/rtl.c",
         "src/legoapi/screen.cpp",
+        "src/legoapi/securitydoors_pc.c",
         "src/legoapi/sfx.cpp",
         "src/legoapi/shadow.c",
         "src/legoapi/shadow_light_setup.cpp",
@@ -205828,6 +206397,14 @@
           "base_sha256": "e00e5eb9444182f352323374ef4e08ebcb784725fdd4fd612d7730540b3e0c8c"
         },
         {
+          "unit": "src/legoapi/securitydoors_pc.c",
+          "exact_match": true,
+          "target_size": 4,
+          "base_size": 4,
+          "target_sha256": "e00e5eb9444182f352323374ef4e08ebcb784725fdd4fd612d7730540b3e0c8c",
+          "base_sha256": "e00e5eb9444182f352323374ef4e08ebcb784725fdd4fd612d7730540b3e0c8c"
+        },
+        {
           "unit": "src/legoapi/sfx.cpp",
           "exact_match": true,
           "target_size": 4,
@@ -206553,6 +207130,7 @@
         "src/legoapi/ripples.c",
         "src/legoapi/rtl.c",
         "src/legoapi/screen.cpp",
+        "src/legoapi/securitydoors_pc.c",
         "src/legoapi/sfx.cpp",
         "src/legoapi/shadow_light_setup.cpp",
         "src/legoapi/shard.c",
@@ -207107,6 +207685,14 @@
         },
         {
           "unit": "src/legoapi/screen.cpp",
+          "exact_match": true,
+          "target_size": 4,
+          "base_size": 4,
+          "target_sha256": "d99e58435243d9fef9c88273b8d553b4fba4d0baf8009d29eae74fa99e0d9f57",
+          "base_sha256": "d99e58435243d9fef9c88273b8d553b4fba4d0baf8009d29eae74fa99e0d9f57"
+        },
+        {
+          "unit": "src/legoapi/securitydoors_pc.c",
           "exact_match": true,
           "target_size": 4,
           "base_size": 4,
@@ -207908,6 +208494,7 @@
         "src/legoapi/parts.c",
         "src/legoapi/players.c",
         "src/legoapi/pushblocks.cpp",
+        "src/legoapi/securitydoors_pc.c",
         "src/legoapi/shadow.c",
         "src/legoapi/signal_reset_pc.c",
         "src/legoapi/simpletons_pc.cpp",
@@ -208128,6 +208715,14 @@
           "base_sha256": "3a90d026a393f9d932af641537d402879f87b4647350c0df27eaa649927a6227"
         },
         {
+          "unit": "src/legoapi/securitydoors_pc.c",
+          "exact_match": true,
+          "target_size": 8,
+          "base_size": 8,
+          "target_sha256": "3a90d026a393f9d932af641537d402879f87b4647350c0df27eaa649927a6227",
+          "base_sha256": "3a90d026a393f9d932af641537d402879f87b4647350c0df27eaa649927a6227"
+        },
+        {
           "unit": "src/legoapi/shadow.c",
           "exact_match": true,
           "target_size": 8,
@@ -208292,6 +208887,7 @@
         "src/legoapi/pushblocks.cpp",
         "src/legoapi/render.c",
         "src/legoapi/screen.cpp",
+        "src/legoapi/securitydoors_pc.c",
         "src/legoapi/shadow.c",
         "src/legoapi/signal_reset_pc.c",
         "src/legoapi/simpletons_pc.cpp",
@@ -208610,6 +209206,14 @@
           "base_sha256": "fca31f1667a6aa1bba12fca4e4ea1becd503379d80da3213af07f6cc5702828d"
         },
         {
+          "unit": "src/legoapi/securitydoors_pc.c",
+          "exact_match": true,
+          "target_size": 4,
+          "base_size": 4,
+          "target_sha256": "fca31f1667a6aa1bba12fca4e4ea1becd503379d80da3213af07f6cc5702828d",
+          "base_sha256": "fca31f1667a6aa1bba12fca4e4ea1becd503379d80da3213af07f6cc5702828d"
+        },
+        {
           "unit": "src/legoapi/shadow.c",
           "exact_match": true,
           "target_size": 4,
@@ -208809,6 +209413,7 @@
         "src/legoapi/players.c",
         "src/legoapi/plugs.c",
         "src/legoapi/pushblocks.cpp",
+        "src/legoapi/securitydoors_pc.c",
         "src/legoapi/signal_reset_pc.c",
         "src/legoapi/simpletons.c",
         "src/legoapi/simpletons_pc.cpp",
@@ -209101,6 +209706,14 @@
           "base_sha256": "87de9f551024f5990e80638703a56b1d54327e7097342f37f26a819e7825f272"
         },
         {
+          "unit": "src/legoapi/securitydoors_pc.c",
+          "exact_match": true,
+          "target_size": 4,
+          "base_size": 4,
+          "target_sha256": "87de9f551024f5990e80638703a56b1d54327e7097342f37f26a819e7825f272",
+          "base_sha256": "87de9f551024f5990e80638703a56b1d54327e7097342f37f26a819e7825f272"
+        },
+        {
           "unit": "src/legoapi/signal_reset_pc.c",
           "exact_match": true,
           "target_size": 4,
@@ -209173,6 +209786,7 @@
         "src/legoapi/lever.c",
         "src/legoapi/move.c",
         "src/legoapi/players.c",
+        "src/legoapi/securitydoors_pc.c",
         "src/legoapi/shadow.c",
         "src/legoapi/shard.c",
         "src/legoapi/techno.c",
@@ -209248,6 +209862,14 @@
         },
         {
           "unit": "src/legoapi/players.c",
+          "exact_match": true,
+          "target_size": 8,
+          "base_size": 8,
+          "target_sha256": "a89d5e4247292a248d471cd1b335c18eb1bf1993ff80fd28577fe05ae5ead627",
+          "base_sha256": "a89d5e4247292a248d471cd1b335c18eb1bf1993ff80fd28577fe05ae5ead627"
+        },
+        {
+          "unit": "src/legoapi/securitydoors_pc.c",
           "exact_match": true,
           "target_size": 8,
           "base_size": 8,
@@ -209456,6 +210078,7 @@
         "src/legoapi/ripples.c",
         "src/legoapi/rtl.c",
         "src/legoapi/screen.cpp",
+        "src/legoapi/securitydoors_pc.c",
         "src/legoapi/sfx.cpp",
         "src/legoapi/shadow.c",
         "src/legoapi/shadow_light_setup.cpp",
@@ -210783,6 +211406,14 @@
           "base_sha256": "df3f619804a92fdb4057192dc43dd748ea778adc52bc498ce80524c014b81119"
         },
         {
+          "unit": "src/legoapi/securitydoors_pc.c",
+          "exact_match": true,
+          "target_size": 4,
+          "base_size": 4,
+          "target_sha256": "df3f619804a92fdb4057192dc43dd748ea778adc52bc498ce80524c014b81119",
+          "base_sha256": "df3f619804a92fdb4057192dc43dd748ea778adc52bc498ce80524c014b81119"
+        },
+        {
           "unit": "src/legoapi/sfx.cpp",
           "exact_match": true,
           "target_size": 4,
@@ -212014,6 +212645,7 @@
         "src/legoapi/parts.c",
         "src/legoapi/players.c",
         "src/legoapi/render.c",
+        "src/legoapi/securitydoors_pc.c",
         "src/legoapi/shard.c",
         "src/legoapi/techno.c",
         "src/legoapi/terrain_player_pc.c",
@@ -212245,6 +212877,14 @@
           "base_sha256": "f27f321d41d1f66907d86235348f63886a5307036a6dba8a620dae20e3eb2c2c"
         },
         {
+          "unit": "src/legoapi/securitydoors_pc.c",
+          "exact_match": true,
+          "target_size": 8,
+          "base_size": 8,
+          "target_sha256": "f27f321d41d1f66907d86235348f63886a5307036a6dba8a620dae20e3eb2c2c",
+          "base_sha256": "f27f321d41d1f66907d86235348f63886a5307036a6dba8a620dae20e3eb2c2c"
+        },
+        {
           "unit": "src/legoapi/shard.c",
           "exact_match": true,
           "target_size": 8,
@@ -212340,6 +212980,7 @@
         "src/legoapi/minicamcut.c",
         "src/legoapi/move.c",
         "src/legoapi/screen.cpp",
+        "src/legoapi/securitydoors_pc.c",
         "src/legoapi/tubes.c",
         "src/legoapi/zipup.c"
       ],
@@ -212404,6 +213045,14 @@
         },
         {
           "unit": "src/legoapi/screen.cpp",
+          "exact_match": true,
+          "target_size": 8,
+          "base_size": 8,
+          "target_sha256": "d9b3764d8fa5bb13e9ede5e03e075f597c7854de2bb516868200db16c11f00a4",
+          "base_sha256": "d9b3764d8fa5bb13e9ede5e03e075f597c7854de2bb516868200db16c11f00a4"
+        },
+        {
+          "unit": "src/legoapi/securitydoors_pc.c",
           "exact_match": true,
           "target_size": 8,
           "base_size": 8,
@@ -212484,6 +213133,7 @@
         "src/legoapi/parts_breakup.cpp",
         "src/legoapi/render.c",
         "src/legoapi/screen.cpp",
+        "src/legoapi/securitydoors_pc.c",
         "src/legoapi/shard.c",
         "src/legoapi/simpletons_pc.cpp",
         "src/legoapi/speederchase.c",
@@ -212733,6 +213383,14 @@
           "base_sha256": "ec1efe6bc7914122bb829981cdea4ee350e838cb7097de066da2f67d622e757a"
         },
         {
+          "unit": "src/legoapi/securitydoors_pc.c",
+          "exact_match": true,
+          "target_size": 8,
+          "base_size": 8,
+          "target_sha256": "ec1efe6bc7914122bb829981cdea4ee350e838cb7097de066da2f67d622e757a",
+          "base_sha256": "ec1efe6bc7914122bb829981cdea4ee350e838cb7097de066da2f67d622e757a"
+        },
+        {
           "unit": "src/legoapi/shard.c",
           "exact_match": true,
           "target_size": 8,
@@ -212919,6 +213577,7 @@
         "src/legoapi/render.c",
         "src/legoapi/rtl.c",
         "src/legoapi/screen.cpp",
+        "src/legoapi/securitydoors_pc.c",
         "src/legoapi/shadow.c",
         "src/legoapi/shadow_light_setup.cpp",
         "src/legoapi/shard.c",
@@ -213652,6 +214311,14 @@
           "base_sha256": "6c3c396ed6b5c36dcae172271f462051b1266b851e92df3deea8ac65478fd712"
         },
         {
+          "unit": "src/legoapi/securitydoors_pc.c",
+          "exact_match": true,
+          "target_size": 8,
+          "base_size": 8,
+          "target_sha256": "6c3c396ed6b5c36dcae172271f462051b1266b851e92df3deea8ac65478fd712",
+          "base_sha256": "6c3c396ed6b5c36dcae172271f462051b1266b851e92df3deea8ac65478fd712"
+        },
+        {
           "unit": "src/legoapi/shadow.c",
           "exact_match": true,
           "target_size": 8,
@@ -214177,6 +214844,7 @@
         "src/legoapi/move.c",
         "src/legoapi/parts_breakup.cpp",
         "src/legoapi/screen.cpp",
+        "src/legoapi/securitydoors_pc.c",
         "src/legoapi/specialsfx.c",
         "src/legoapi/torpedo.c",
         "src/nu2api/nuquat.c"
@@ -214233,6 +214901,14 @@
           "base_sha256": "3e6357a56fbae74413051d518261f4b70e5b3758172a70e7f101e996e00a9ee0"
         },
         {
+          "unit": "src/legoapi/securitydoors_pc.c",
+          "exact_match": true,
+          "target_size": 8,
+          "base_size": 8,
+          "target_sha256": "3e6357a56fbae74413051d518261f4b70e5b3758172a70e7f101e996e00a9ee0",
+          "base_sha256": "3e6357a56fbae74413051d518261f4b70e5b3758172a70e7f101e996e00a9ee0"
+        },
+        {
           "unit": "src/legoapi/specialsfx.c",
           "exact_match": true,
           "target_size": 8,
@@ -214278,6 +214954,7 @@
         "src/legoapi/lever.c",
         "src/legoapi/menu.c",
         "src/legoapi/move.c",
+        "src/legoapi/securitydoors_pc.c",
         "src/legoapi/shard.c",
         "src/legoapi/signal_reset_pc.c",
         "src/legoapi/techno.c",
@@ -214398,6 +215075,14 @@
         },
         {
           "unit": "src/legoapi/move.c",
+          "exact_match": true,
+          "target_size": 8,
+          "base_size": 8,
+          "target_sha256": "ae6d9d43f048f225ddad45cdfe3a2f523b6df4b0077e408a0709905c88ec2f73",
+          "base_sha256": "ae6d9d43f048f225ddad45cdfe3a2f523b6df4b0077e408a0709905c88ec2f73"
+        },
+        {
+          "unit": "src/legoapi/securitydoors_pc.c",
           "exact_match": true,
           "target_size": 8,
           "base_size": 8,
@@ -214539,6 +215224,7 @@
         "src/legoapi/playercombat.cpp",
         "src/legoapi/render.c",
         "src/legoapi/screen.cpp",
+        "src/legoapi/securitydoors_pc.c",
         "src/legoapi/shard.c",
         "src/legoapi/techno.c",
         "src/legoapi/timing.c",
@@ -214764,6 +215450,14 @@
           "base_sha256": "962b9b484dbe0e4b254d53508edb68b1a3561d3d71ccaa9e9a84070897a6e1f4"
         },
         {
+          "unit": "src/legoapi/securitydoors_pc.c",
+          "exact_match": true,
+          "target_size": 8,
+          "base_size": 8,
+          "target_sha256": "962b9b484dbe0e4b254d53508edb68b1a3561d3d71ccaa9e9a84070897a6e1f4",
+          "base_sha256": "962b9b484dbe0e4b254d53508edb68b1a3561d3d71ccaa9e9a84070897a6e1f4"
+        },
+        {
           "unit": "src/legoapi/shard.c",
           "exact_match": true,
           "target_size": 8,
@@ -214884,6 +215578,7 @@
         "src/legoapi/move.c",
         "src/legoapi/parts.c",
         "src/legoapi/parts_breakup.cpp",
+        "src/legoapi/securitydoors_pc.c",
         "src/legoapi/techno.c",
         "src/legoapi/terrain_player_pc.c",
         "src/legoapi/text.c",
@@ -215024,6 +215719,14 @@
         },
         {
           "unit": "src/legoapi/parts_breakup.cpp",
+          "exact_match": true,
+          "target_size": 8,
+          "base_size": 8,
+          "target_sha256": "a7ca1349517e14c0690dccc98bf9a515019b2018116a3191f6c7d53831c0432a",
+          "base_sha256": "a7ca1349517e14c0690dccc98bf9a515019b2018116a3191f6c7d53831c0432a"
+        },
+        {
+          "unit": "src/legoapi/securitydoors_pc.c",
           "exact_match": true,
           "target_size": 8,
           "base_size": 8,
@@ -215493,6 +216196,7 @@
         "src/legoapi/ripples.c",
         "src/legoapi/rtl.c",
         "src/legoapi/screen.cpp",
+        "src/legoapi/securitydoors_pc.c",
         "src/legoapi/shard.c",
         "src/legoapi/simpletons_pc.cpp",
         "src/legoapi/socksys.c",
@@ -216143,6 +216847,14 @@
         },
         {
           "unit": "src/legoapi/screen.cpp",
+          "exact_match": true,
+          "target_size": 8,
+          "base_size": 8,
+          "target_sha256": "4cfa5b42ca669328764e67cd9a34bb8f90b16ed7ca8d85e8443783d7ccce15ed",
+          "base_sha256": "4cfa5b42ca669328764e67cd9a34bb8f90b16ed7ca8d85e8443783d7ccce15ed"
+        },
+        {
+          "unit": "src/legoapi/securitydoors_pc.c",
           "exact_match": true,
           "target_size": 8,
           "base_size": 8,
@@ -216878,6 +217590,7 @@
         "src/legoapi/playercombat.cpp",
         "src/legoapi/pushblocks.cpp",
         "src/legoapi/screen.cpp",
+        "src/legoapi/securitydoors_pc.c",
         "src/legoapi/shard.c",
         "src/legoapi/simpletons_pc.cpp",
         "src/legoapi/techno.c",
@@ -217111,6 +217824,14 @@
         },
         {
           "unit": "src/legoapi/screen.cpp",
+          "exact_match": true,
+          "target_size": 8,
+          "base_size": 8,
+          "target_sha256": "272f78036db6721f7cf7444315e5f6360426d14c3d446d6ae8a89ef70d134002",
+          "base_sha256": "272f78036db6721f7cf7444315e5f6360426d14c3d446d6ae8a89ef70d134002"
+        },
+        {
+          "unit": "src/legoapi/securitydoors_pc.c",
           "exact_match": true,
           "target_size": 8,
           "base_size": 8,
@@ -224275,6 +224996,7 @@
         "src/legoapi/players.c",
         "src/legoapi/render.c",
         "src/legoapi/screen.cpp",
+        "src/legoapi/securitydoors_pc.c",
         "src/legoapi/shard.c",
         "src/legoapi/simpletons_pc.cpp",
         "src/legoapi/techno.c",
@@ -224468,6 +225190,14 @@
         },
         {
           "unit": "src/legoapi/screen.cpp",
+          "exact_match": true,
+          "target_size": 8,
+          "base_size": 8,
+          "target_sha256": "9c91ec8ec5e85d5939f1c1cee92f4af07402943a6228ac92901762da777b55ff",
+          "base_sha256": "9c91ec8ec5e85d5939f1c1cee92f4af07402943a6228ac92901762da777b55ff"
+        },
+        {
+          "unit": "src/legoapi/securitydoors_pc.c",
           "exact_match": true,
           "target_size": 8,
           "base_size": 8,
@@ -226504,6 +227234,7 @@
         "src/legoapi/render.c",
         "src/legoapi/ripples.c",
         "src/legoapi/screen.cpp",
+        "src/legoapi/securitydoors_pc.c",
         "src/legoapi/sfx.cpp",
         "src/legoapi/shard.c",
         "src/legoapi/shop_exit.cpp",
@@ -226725,6 +227456,14 @@
         },
         {
           "unit": "src/legoapi/screen.cpp",
+          "exact_match": true,
+          "target_size": 4,
+          "base_size": 4,
+          "target_sha256": "8e215ece122cf70ebe3556a0318fa6c395d1766375c3edc080967e4a09592401",
+          "base_sha256": "8e215ece122cf70ebe3556a0318fa6c395d1766375c3edc080967e4a09592401"
+        },
+        {
+          "unit": "src/legoapi/securitydoors_pc.c",
           "exact_match": true,
           "target_size": 4,
           "base_size": 4,
@@ -240265,6 +241004,7 @@
         "src/legoapi/players.c",
         "src/legoapi/pushing.cpp",
         "src/legoapi/screen.cpp",
+        "src/legoapi/securitydoors_pc.c",
         "src/legoapi/shadow.c",
         "src/legoapi/shard.c",
         "src/legoapi/torpedo.c",
@@ -240435,6 +241175,14 @@
         },
         {
           "unit": "src/legoapi/screen.cpp",
+          "exact_match": true,
+          "target_size": 4,
+          "base_size": 4,
+          "target_sha256": "e0fb2d87992a9fc79e7729163ad2aea5efbf14806711292c8c46e873bac1a253",
+          "base_sha256": "e0fb2d87992a9fc79e7729163ad2aea5efbf14806711292c8c46e873bac1a253"
+        },
+        {
+          "unit": "src/legoapi/securitydoors_pc.c",
           "exact_match": true,
           "target_size": 4,
           "base_size": 4,
@@ -301249,6 +301997,90 @@
           "base_size": 8,
           "target_sha256": "60b17ffeca5216ca05b60f097d6f18f785750ce4eafde9cdd408b92328a51d27",
           "base_sha256": "60b17ffeca5216ca05b60f097d6f18f785750ce4eafde9cdd408b92328a51d27"
+        }
+      ],
+      "status": "exact"
+    },
+    {
+      "name": "PCSecurityDoorOutputTextPc",
+      "symbol": "_PCSecurityDoorOutputTextPc",
+      "address": "0x0075c1b4",
+      "units": [
+        "src/legoapi/securitydoors_pc.c"
+      ],
+      "target_size": 7,
+      "exact_match": true,
+      "objects": [
+        {
+          "unit": "src/legoapi/securitydoors_pc.c",
+          "exact_match": true,
+          "target_size": 7,
+          "base_size": 7,
+          "target_sha256": "ab4adaf56258922fd560aab08fa0123cadd4b1071a456929a64ad8998cc5b2f8",
+          "base_sha256": "ab4adaf56258922fd560aab08fa0123cadd4b1071a456929a64ad8998cc5b2f8"
+        }
+      ],
+      "status": "exact"
+    },
+    {
+      "name": "__real@be888ce7",
+      "symbol": "__real@be888ce7",
+      "address": "0x0075c1bc",
+      "units": [
+        "src/legoapi/securitydoors_pc.c"
+      ],
+      "target_size": 4,
+      "exact_match": true,
+      "objects": [
+        {
+          "unit": "src/legoapi/securitydoors_pc.c",
+          "exact_match": true,
+          "target_size": 4,
+          "base_size": 4,
+          "target_sha256": "bddfc6d8112419cf25b417b35700319fbe115fbcd089fbf671869a8dffe4f8e1",
+          "base_sha256": "bddfc6d8112419cf25b417b35700319fbe115fbcd089fbf671869a8dffe4f8e1"
+        }
+      ],
+      "status": "exact"
+    },
+    {
+      "name": "__real@3e888ce7",
+      "symbol": "__real@3e888ce7",
+      "address": "0x0075c1c0",
+      "units": [
+        "src/legoapi/securitydoors_pc.c"
+      ],
+      "target_size": 4,
+      "exact_match": true,
+      "objects": [
+        {
+          "unit": "src/legoapi/securitydoors_pc.c",
+          "exact_match": true,
+          "target_size": 4,
+          "base_size": 4,
+          "target_sha256": "b87de1cbdcd59255aa4491a110a1c569929ae6abaaa8e14c7a5be8965bffc45b",
+          "base_sha256": "b87de1cbdcd59255aa4491a110a1c569929ae6abaaa8e14c7a5be8965bffc45b"
+        }
+      ],
+      "status": "exact"
+    },
+    {
+      "name": "PCContextName_SecurityDoor",
+      "symbol": "_PCContextName_SecurityDoor",
+      "address": "0x0075c1c4",
+      "units": [
+        "src/legoapi/securitydoors_pc.c"
+      ],
+      "target_size": 13,
+      "exact_match": true,
+      "objects": [
+        {
+          "unit": "src/legoapi/securitydoors_pc.c",
+          "exact_match": true,
+          "target_size": 13,
+          "base_size": 13,
+          "target_sha256": "76a88dbaaeafea2019522f9a333d8283d559e55d23b22b6ec1d6eef8e1318488",
+          "base_sha256": "76a88dbaaeafea2019522f9a333d8283d559e55d23b22b6ec1d6eef8e1318488"
         }
       ],
       "status": "exact"
@@ -398267,6 +399099,48 @@
       "status": "exact"
     },
     {
+      "name": "SecurityDoorOutputNamePc",
+      "symbol": "_SecurityDoorOutputNamePc",
+      "address": "0x007fc534",
+      "units": [
+        "src/legoapi/securitydoors_pc.c"
+      ],
+      "target_size": 4,
+      "exact_match": true,
+      "objects": [
+        {
+          "unit": "src/legoapi/securitydoors_pc.c",
+          "exact_match": true,
+          "target_size": 4,
+          "base_size": 4,
+          "target_sha256": "219ae6d0c6dd22d904430f08accf8d9fb56a470f6609c108bb27bedea626c64b",
+          "base_sha256": "219ae6d0c6dd22d904430f08accf8d9fb56a470f6609c108bb27bedea626c64b"
+        }
+      ],
+      "status": "exact"
+    },
+    {
+      "name": "SecurityDoorRegistryNamePc",
+      "symbol": "_SecurityDoorRegistryNamePc",
+      "address": "0x007fc5a0",
+      "units": [
+        "src/legoapi/securitydoors_pc.c"
+      ],
+      "target_size": 4,
+      "exact_match": true,
+      "objects": [
+        {
+          "unit": "src/legoapi/securitydoors_pc.c",
+          "exact_match": true,
+          "target_size": 4,
+          "base_size": 4,
+          "target_sha256": "8a6dfa5388e0ec2e67dcf46f55645b983524a8b1715c035c8fa13a0d769909ca",
+          "base_sha256": "8a6dfa5388e0ec2e67dcf46f55645b983524a8b1715c035c8fa13a0d769909ca"
+        }
+      ],
+      "status": "exact"
+    },
+    {
       "name": "GameAudioLswPc",
       "symbol": "_GameAudioLswPc",
       "address": "0x007fc5b8",
@@ -428207,6 +429081,27 @@
           "base_size": 160,
           "target_sha256": "b393978842a0fa3d3e1470196f098f473f9678e72463cb65ec4ab5581856c2e4",
           "base_sha256": "b393978842a0fa3d3e1470196f098f473f9678e72463cb65ec4ab5581856c2e4"
+        }
+      ],
+      "status": "exact"
+    },
+    {
+      "name": "SecurityDoorAddTypePc",
+      "symbol": "_SecurityDoorAddTypePc",
+      "address": "0x0087ba98",
+      "units": [
+        "src/legoapi/securitydoors_pc.c"
+      ],
+      "target_size": 120,
+      "exact_match": true,
+      "objects": [
+        {
+          "unit": "src/legoapi/securitydoors_pc.c",
+          "exact_match": true,
+          "target_size": 120,
+          "base_size": 120,
+          "target_sha256": "6edd9f6f9cc92cded36e6c4a580933f9c9f1b90562b46903b806f21902a1a54f",
+          "base_sha256": "6edd9f6f9cc92cded36e6c4a580933f9c9f1b90562b46903b806f21902a1a54f"
         }
       ],
       "status": "exact"
@@ -479702,17 +480597,17 @@
   ],
   "progress": {
     "text_bytes": 3471246,
-    "mapped_code_bytes": 2433456,
-    "matched_code_bytes": 457900,
-    "matching_percent": 13.191228740342805,
-    "fuzzy_coverage_percent": 47.54674144737089,
-    "mapped_functions": 8940,
-    "matched_functions": 4250,
-    "objdiff_fuzzy_percent": 74.7677,
-    "objdiff_total_code": 2210817,
+    "mapped_code_bytes": 2436464,
+    "matched_code_bytes": 458304,
+    "matching_percent": 13.202867212522536,
+    "fuzzy_coverage_percent": 47.63606766129005,
+    "mapped_functions": 8963,
+    "matched_functions": 4258,
+    "objdiff_fuzzy_percent": 74.79144,
+    "objdiff_total_code": 2214261,
     "image_bytes": 40067072,
-    "mapped_bytes": 4246030,
-    "mapping_percent": 10.597305438241158,
+    "mapped_bytes": 4249194,
+    "mapping_percent": 10.605202196956144,
     "mapping_denominator": "code_and_data_section_virtual_sizes",
     "mapping_sections": [
       {
@@ -479720,16 +480615,16 @@
         "kind": "code",
         "address": "0x401000",
         "size": 3471246,
-        "mapped_bytes": 2434650
+        "mapped_bytes": 2437658
       },
       {
         "name": ".rdata",
         "kind": "data",
         "address": "0x751000",
         "size": 646766,
-        "mapped_bytes": 84576,
+        "mapped_bytes": 84604,
         "file_backed_data_bytes": 646766,
-        "mapped_file_backed_data_bytes": 84576,
+        "mapped_file_backed_data_bytes": 84604,
         "zero_fill_data_bytes": 0,
         "mapped_zero_fill_data_bytes": 0
       },
@@ -479738,45 +480633,45 @@
         "kind": "data",
         "address": "0x7ef000",
         "size": 35372200,
-        "mapped_bytes": 1726804,
+        "mapped_bytes": 1726932,
         "file_backed_data_bytes": 417792,
-        "mapped_file_backed_data_bytes": 265043,
+        "mapped_file_backed_data_bytes": 265051,
         "zero_fill_data_bytes": 34954408,
-        "mapped_zero_fill_data_bytes": 1461761
+        "mapped_zero_fill_data_bytes": 1461881
       }
     ],
-    "mapping_known_size_symbols": 16850,
+    "mapping_known_size_symbols": 16880,
     "mapping_unknown_size_symbols": 7075,
-    "mapping_code_bytes": 2434650,
+    "mapping_code_bytes": 2437658,
     "mapping_code_total_bytes": 3471246,
-    "mapping_code_percent": 70.13763933757504,
-    "mapping_data_bytes": 1811380,
+    "mapping_code_percent": 70.22429410073501,
+    "mapping_data_bytes": 1811536,
     "mapping_data_total_bytes": 36018966,
-    "mapping_data_percent": 5.028961686462626,
-    "mapping_code_data_bytes": 4246030,
+    "mapping_data_percent": 5.029394791621725,
+    "mapping_code_data_bytes": 4249194,
     "mapping_code_data_total_bytes": 39490212,
-    "mapping_code_data_percent": 10.752107382963658,
-    "mapping_file_backed_data_bytes": 349619,
+    "mapping_code_data_percent": 10.760119494926997,
+    "mapping_file_backed_data_bytes": 349655,
     "mapping_file_backed_data_total_bytes": 1064558,
-    "mapping_file_backed_data_percent": 32.841705195959264,
-    "mapping_zero_fill_data_bytes": 1461761,
+    "mapping_file_backed_data_percent": 32.84508688112813,
+    "mapping_zero_fill_data_bytes": 1461881,
     "mapping_zero_fill_data_total_bytes": 34954408,
-    "mapping_zero_fill_data_percent": 4.181907472156301,
-    "matched_data_region_bytes": 1795429
+    "mapping_zero_fill_data_percent": 4.1822507764972014,
+    "matched_data_region_bytes": 1795585
   },
   "text_coverage": {
     "original_text_bytes": 3471246,
-    "mapped_reconstruction_bytes": 2433456,
-    "exact_reconstruction_bytes": 457900,
-    "mapped_not_exact_bytes": 1975556,
+    "mapped_reconstruction_bytes": 2436464,
+    "exact_reconstruction_bytes": 458304,
+    "mapped_not_exact_bytes": 1978160,
     "excluded_import_glue_bytes": 1194,
-    "unclassified_text_bytes": 1036596,
+    "unclassified_text_bytes": 1033588,
     "strict_original_text_denominator_bytes": 3471246,
-    "strict_original_text_exact_percent": 13.191228740342805,
+    "strict_original_text_exact_percent": 13.202867212522536,
     "reconstruction_scope_denominator_bytes": 3470052,
-    "reconstruction_scope_exact_percent": 13.195767671493106,
-    "mapped_scope_denominator_bytes": 2433456,
-    "mapped_scope_exact_percent": 18.8168596432399,
+    "reconstruction_scope_exact_percent": 13.207410148320545,
+    "mapped_scope_denominator_bytes": 2436464,
+    "mapped_scope_exact_percent": 18.81021020626613,
     "qualification": "Unclassified text includes undiscovered code and unproven padding; these percentages compare relocated objects, not the linked image."
   },
   "data_members": [
@@ -480920,7 +481815,7 @@
       "metadata_sha256": "fe09365da4c355f220d724ca99394fc120b758891b4188d2c49707b6df0894f2",
       "header_path": "src/saga.h",
       "header_sha256": "f5c807c392cb7f77dff8088bf8aab18d114ee73ac3939aed153bd44225502c55",
-      "geometry_object_sha256": "7a8da8c90107d31bd19fcff7aac46c957b33ec5b90b79a4ab4ab0652c132ffaa",
+      "geometry_object_sha256": "983d15f6b30f9767be227914cdb8ed7d59218f98c8fce0941a18d57427676405",
       "toolchain_sha256": "b8808088bb2c7eb239785f69c9e464ae8545216d5705fb37216bc0cf926732f3",
       "implementation_sha256": "d6a33be911d095a6d07dccd4443ccbfd6b514fd89fd7e200d9caa1827944e218",
       "headers": {
@@ -481162,7 +482057,7 @@
         4
       ]
     },
-    "clang_source_sha256": "32b9fb9b3b9e60e6647a365804d9ecf44bf548058f8ab3d5e0aacd333dc310c1",
+    "clang_source_sha256": "d1d107bff88e948b8087d5cb0bf3b84fcdff3bbd4c7c45ffcb05f07afa879978",
     "member_count": 42,
     "physical_definition_credit": 0
   },
