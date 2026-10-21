@@ -950,7 +950,8 @@ void __cdecl LevelComplete_LSW_Update(STATUS_STAGE_s *stage, STATUSPACKET_s *pac
     } else if (stage->field_0x14 == 1) {
         SetDrawGoldBrick(packet, packet->current_gold_brick);
         volatile f32 previous = stage->field_0x18;
-        volatile f32 accumulated = (f64)stage->field_0x18 + (f64)elapsed;
+        volatile f32 accumulated = stage->field_0x18;
+        accumulated += elapsed;
         stage->field_0x18 = accumulated;
         if (stage->field_0x18 >= stage->field_0x1c) {
             if (stage->type == 26 && packet->mission_state == 2)
@@ -1745,7 +1746,20 @@ void __cdecl CollectCharcters_Skip(STATUS_STAGE_s *stage, STATUSPACKET_s *packet
 }
 
 void __cdecl CollectCharcters_Update(STATUS_STAGE_s *stage, STATUSPACKET_s *packet, f32 elapsed) {
-    if (stage->field_0x14 == 0) {
+    if (stage->field_0x14 != 0) {
+        i32 index = stage->field_0x14;
+        volatile f32 time = (f64)elapsed + stage->field_0x18;
+        stage->field_0x18 = time;
+        if (stage->field_0x18 >= stage->field_0x1c) {
+            AddToCollection(StatusNewCharacterIdsPc[(i32)((u32)index - 1u)]);
+            PlaySfx("LegoClicks", NULL);
+            stage->field_0x14 = (i32)((u32)stage->field_0x14 + 1u);
+            stage->field_0x18 = 0.0f;
+            stage->field_0x1c = 3.0f;
+            if (StatusNewCharacterIdsPc[(i32)((u32)stage->field_0x14 - 1u)] == -1)
+                NextStatusStage(packet);
+        }
+    } else {
         stage->field_0x1c = 1.0f;
         volatile f32 time = (f64)elapsed + stage->field_0x18;
         stage->field_0x18 = time;
@@ -1759,19 +1773,6 @@ void __cdecl CollectCharcters_Update(STATUS_STAGE_s *stage, STATUSPACKET_s *pack
                 stage->field_0x18 = 0.0f;
                 stage->field_0x1c = 3.0f;
             }
-        }
-    } else {
-        i32 index = stage->field_0x14;
-        volatile f32 time = (f64)elapsed + stage->field_0x18;
-        stage->field_0x18 = time;
-        if (stage->field_0x18 >= stage->field_0x1c) {
-            AddToCollection(StatusNewCharacterIdsPc[(i32)((u32)index - 1u)]);
-            PlaySfx("LegoClicks", NULL);
-            stage->field_0x14 = (i32)((u32)stage->field_0x14 + 1u);
-            stage->field_0x18 = 0.0f;
-            stage->field_0x1c = 3.0f;
-            if (StatusNewCharacterIdsPc[(i32)((u32)stage->field_0x14 - 1u)] == -1)
-                NextStatusStage(packet);
         }
     }
 }

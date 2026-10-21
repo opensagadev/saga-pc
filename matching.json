@@ -124,7 +124,7 @@
     "src/legoapi/pushblocks.cpp": "0038dee2aadc8184fdb734fd5e714fd2abf56e84b42627e7cddf1c828f3654a7",
     "src/legoapi/pushing.cpp": "9f2f8252920f77db8e0b562cead218a31a00a6c520ef7c6334d2be0a9ebd24d3",
     "src/legoapi/radio.cpp": "9713626946140e8320e9d832a92490f327a59d56e3e3cc87420c0fbeb5cca363",
-    "src/legoapi/screen.cpp": "b05180a1c27c220e360c6570f7075b28a79910c36e20ba95f2cc890233540757",
+    "src/legoapi/screen.cpp": "96e47afaf1d5b7fcedd855aa62b66095af87b0ccb72b51d6e28864ac79decfe2",
     "src/legoapi/sfx.cpp": "8b2d51172ca57aa23054e2a09bb9cd44591c2f5f25899e1064aa1e7ea9e1a3be",
     "src/legoapi/shadow_light_setup.cpp": "917c50e0e10254973bbdddb8c302d61af19c52e0bf8dc0e7f5d95d8bf04d685b",
     "src/legoapi/shadowmap.cpp": "0657e6c825bbf8b5d9096369371a4214117a46aec4022711e4249ee73f663c91",
@@ -750,7 +750,7 @@
     "build/obj/legoapi/render.obj": "c3afcb079e131304e95e79d62f92e1bb31b17e29367f973bdf5a2ace2dc45494",
     "build/obj/legoapi/ripples.obj": "92411c2a14d1bca35e7835f743a2d1ce305625f522940a5bb1f64536868825d5",
     "build/obj/legoapi/rtl.obj": "a219f679c1a3789504f16776cbddba358e7f79315dc8bd0390a8d6cc7be269e4",
-    "build/obj/legoapi/screen.obj": "dcf6376d853d3bff994cafcf1151ccabe59ab65edd63f75b03f8b3434489765c",
+    "build/obj/legoapi/screen.obj": "d669514ce9cb34465212cc5621f8cb4a2f521c69df7be74729e74eb7aec7077f",
     "build/obj/legoapi/securitydoors_pc.obj": "d216cbc8d1f44c3b21c9da3025e8cc6a4832877442a611b5313e10d161d828d9",
     "build/obj/legoapi/sfx.obj": "f1803e078d41d07ced44502ecfd1912453dc8c4b891f179df8934ae4d8068a91",
     "build/obj/legoapi/sfx_level.obj": "b1153e31b31ac64870fab415e886b5307eff70226c483de3bdb9dd9fe5339eb2",
@@ -22120,17 +22120,17 @@
       "objects": [
         {
           "unit": "src/legoapi/screen.cpp",
-          "base_size": 262,
+          "base_size": 265,
           "exact_match": false,
           "target_sha256": "3123dd53344b3b678fa97d864d5bc8e1d10848044e3f04777241172b7066b43c",
-          "base_sha256": "227d21f6ec08db29793ee5801999a47345b3b3563a7cdb8bf54847ff9f86d726",
+          "base_sha256": "b1ede8a7b9eb069ba784c8ff58c81a0899f7a3ba7a3e06d8deb755cac73fa88a",
           "relocation_count": 13,
           "comparison_unit": "00461620-b804aa13799b",
-          "objdiff_percent": 11.973684
+          "objdiff_percent": 94.73684
         }
       ],
       "status": "different",
-      "objdiff_percent": 11.973684
+      "objdiff_percent": 94.73684
     },
     {
       "name": "CollectCharcters_Draw",
@@ -22264,17 +22264,17 @@
       "objects": [
         {
           "unit": "src/legoapi/screen.cpp",
-          "base_size": 497,
+          "base_size": 505,
           "exact_match": false,
           "target_sha256": "a87ee7a587438a187d5b61784ddea031d9dc7e1f9880811decfab59a5f05c663",
-          "base_sha256": "dbd647155965de81b4d53f92b3fa1331dffd0842e4ab185f2a43fa7f15b306ab",
+          "base_sha256": "f5242aa2599a26e01d50399e43a97ae4c35e4a8d3efbabf3dc412095c594857e",
           "relocation_count": 19,
           "comparison_unit": "00461c80-fc24cdd1de02",
-          "objdiff_percent": 72.08046
+          "objdiff_percent": 70.9885
         }
       ],
       "status": "different",
-      "objdiff_percent": 72.08046
+      "objdiff_percent": 70.9885
     },
     {
       "name": "LevelComplete_LSW_Draw",
@@ -485097,10 +485097,10 @@
     "mapped_code_bytes": 2445713,
     "matched_code_bytes": 462313,
     "matching_percent": 13.31835888323674,
-    "fuzzy_coverage_percent": 48.01708591924757,
+    "fuzzy_coverage_percent": 48.02286541336697,
     "mapped_functions": 9043,
     "matched_functions": 4319,
-    "objdiff_fuzzy_percent": 74.881836,
+    "objdiff_fuzzy_percent": 74.89084,
     "objdiff_total_code": 2229250,
     "image_bytes": 40067072,
     "mapped_bytes": 4259552,
@@ -486312,7 +486312,7 @@
       "metadata_sha256": "fe09365da4c355f220d724ca99394fc120b758891b4188d2c49707b6df0894f2",
       "header_path": "src/saga.h",
       "header_sha256": "fa9d80a2f2e41f651206eab862219ac77a83ff9466a31feb3c1ad6b4c783085c",
-      "geometry_object_sha256": "b340a3c8c11dbb2b073d002331ab29800030db88a20a9bc5e17ba77beeccca3d",
+      "geometry_object_sha256": "3c39ecc21878967aa7314973c7eb6109727e53e0b332a057889d218ff84c911a",
       "toolchain_sha256": "b8808088bb2c7eb239785f69c9e464ae8545216d5705fb37216bc0cf926732f3",
       "implementation_sha256": "d6a33be911d095a6d07dccd4443ccbfd6b514fd89fd7e200d9caa1827944e218",
       "headers": {
@@ -486554,7 +486554,7 @@
         4
       ]
     },
-    "clang_source_sha256": "eaa60a6bfc2710d27b5f343d5550cdc3b3f070564488734475d9fd4ac3cbfc87",
+    "clang_source_sha256": "b3d4174888c509ffd344fcc8ac36ce979bc50e20c14c341ac29b8df347244152",
     "member_count": 42,
     "physical_definition_credit": 0
   },
