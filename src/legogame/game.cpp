@@ -2,6 +2,8 @@
 #include <string.h>
 #include <stdio.h>
 extern "C" void __cdecl Attractos_InitTerrain(WORLDINFO *);
+extern "C" void __cdecl NarrowSockExceptions_Init(NARROWSOCKEXCEPTION_PC *);
+extern "C" NARROWSOCKEXCEPTION_PC NarrowSockExceptionsLswPc[4];
 void __cdecl NewGame(void) {
     OPTIONSSAVE saved_options = Game.options_save;
     i32 i;
@@ -1907,7 +1909,7 @@ void __cdecl InitGameAfterConfig(void) {
         PlayerHitPointsTwoHeartsPc = 0;
         CutScenes_InitSystem(&InitCutSettingsLswPc);
         CutSceneLookupAllDebrisPagesPc = 1;
-        STUBBED_NAMED("InitGameAfterConfig: NarrowSockExceptions_Init 42e6ac -> 54a180, config7f1158");
+        NarrowSockExceptions_Init(NarrowSockExceptionsLswPc);
         APIObjectRegisterAnimRedirect(RedirectAnim, AnimRedirectList_LSW, "chars\\commonanims");
         STUBBED_NAMED("InitGameAfterConfig: SurfaceMaskOff 42e6ca -> 572370, mask8034c4");
         STUBBED_NAMED("InitGameAfterConfig: SurfaceMaskOn 42e6d4 -> 572360, mask95102c");

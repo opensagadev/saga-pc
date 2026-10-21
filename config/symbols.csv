@@ -9626,6 +9626,8 @@ address,symbol,size,ctype
 0x00751958,__real@40e0000000000000,8,const f64
 0x751960,__real@3fecccccc0000000,8,const f64
 0x751968,__real@4cbebc20,4,const f32
+0x0075196c,_NarrowSockLevelDeathStar2CPc,19,const char[19]
+0x00751980,_NarrowSockLevelDeathStar2BPc,19,const char[19]
 0x751994,??_C@_0BC@MENOPIIH@deathstarbattle_d?$AA@,,const char[18]
 0x7519a8,__real@3faaaaab,4,const f32
 0x7519ac,__real@3fcccccd,4,const f32
@@ -18371,6 +18373,7 @@ address,symbol,size,ctype
 0x7f1140,_CamWalkerLiftPc,4,f32
 0x7f1144,_CamDewbackRadiusPc,4,f32
 0x7f1148,_CamDewbackLiftPc,4,f32
+0x007f1158,_NarrowSockExceptionsLswPc,,NARROWSOCKEXCEPTION_PC[4]
 0x7f1204,_FlightSplineExtensionPc,4,char *
 0x7f120c,_DogfightPassingSpeedPc,4,f32
 0x7f1270,_DogfightDoorsPc,140,DOGFIGHT_DOOR_PC[7]
