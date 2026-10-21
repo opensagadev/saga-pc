@@ -17,7 +17,7 @@
     "config/library-objects.json": "e5ae24d3eac36fa0d0cb098f7690faaef3110f225db30c8cbf0f7d0d64f6ecfe",
     "config/ogg-vorbis.json": "7f98d40938e6bd6060c6bdfc2ce39d9cfb1c822243693eeb1d85d46b43dcad24",
     "config/project.json": "9a3650958be769951860d2c457f8573049ecae76e48ce8f3d7383e4ca2b761a6",
-    "config/symbols.csv": "5c705d1f37c3d35bf0c46bacccb51ade0424916f7d9c27b33665cc4116a14e42",
+    "config/symbols.csv": "b03652b8d707114b293460769cf44ad91be97388d9b4b44fd065526a661a28ab",
     "config/symbols.md": "dffbdaac86011e3aee74b404063c15bda97f88af3db337ffef9f1bad1785d212",
     "config/toolchain.json": "b8808088bb2c7eb239785f69c9e464ae8545216d5705fb37216bc0cf926732f3",
     "config/tools.json": "50199f6b132a7abfabf251e98a75be0a957abfe50f1ff776188fba21e4c4436f",
@@ -354,6 +354,7 @@
     "src/legoapi/sfx_level.c": "70d30f0263bc1f1bc0b6cff9bda27a935c8a395e267036e0da8541fe904e4f3b",
     "src/legoapi/shadow.c": "8f05a7a554eae3e1c0062260f95f08d1f38e6e8c7bae2a1b281ec126a4cdfc19",
     "src/legoapi/shard.c": "4ed8890e36948a82a90423b2bcf4b21e368f44c99572b82a2fa7cf53906a912d",
+    "src/legoapi/shards_pc.c": "2304f32b0f919c38fbdf7889c8bb8897f7dcf17418639f5e6984b263bd1da7a2",
     "src/legoapi/shovesys.c": "b300df4f90af0a91b83afa19ac63a612930bffb05f8b55f337ae871061ff7af9",
     "src/legoapi/signal_reset_pc.c": "931e2286ed8a114e08452fa7fed45fec1421b3a898cc31e5ecb0ab49a3531b48",
     "src/legoapi/simpletons.c": "ecd835a6980cdc5453e242b5f95fc91cb1aeafc1f20b160ab3097aa570334d3a",
@@ -742,6 +743,7 @@
     "build/obj/legoapi/shadow_light_setup.obj": "a9266e98f8565f0a7dbdc77d2751fd3b2df2b72f7036c33e53d340a2bbb58d13",
     "build/obj/legoapi/shadowmap.obj": "3f666b936087469c08cbb2951fe23bb705fb6a7fb1325b71cf44004ee1c07bd5",
     "build/obj/legoapi/shard.obj": "1272acad8d19844f252aef46fba8a05ce5440ed0aa6ad1cd43d23b1c52b79915",
+    "build/obj/legoapi/shards_pc.obj": "09a4bcc4fa457edd0aee378249861252fc1be90a95b542dafb479c327cef561e",
     "build/obj/legoapi/shop_code_data.obj": "f7089cf0686ea0ac6639170228dbc11150144b3323b834079feba65360cba20a",
     "build/obj/legoapi/shop_completion.obj": "ea3791d23363184df833913e9caec20a40696395b8544cc2dfe005c42961ea5f",
     "build/obj/legoapi/shop_exit.obj": "33a0f15c7f063263e044f946e7449311c1139c37c6bde83c2484993f6841f190",
@@ -1909,6 +1911,30 @@
       ],
       "status": "different",
       "objdiff_percent": 93.49118
+    },
+    {
+      "name": "Attracto_GetSuctionPos",
+      "symbol": "_Attracto_GetSuctionPos",
+      "address": "0x00403c60",
+      "units": [
+        "src/legoapi/shards_pc.c"
+      ],
+      "target_size": 35,
+      "exact_match": true,
+      "objects": [
+        {
+          "unit": "src/legoapi/shards_pc.c",
+          "base_size": 35,
+          "exact_match": true,
+          "target_sha256": "2e86886d35aed36bb7aeebd84cd3f450555a73ad91d8a41bc9eb07a258f5516b",
+          "base_sha256": "2e86886d35aed36bb7aeebd84cd3f450555a73ad91d8a41bc9eb07a258f5516b",
+          "relocation_count": 0,
+          "comparison_unit": "00403c60-ca969c6057ce",
+          "objdiff_percent": 100.0
+        }
+      ],
+      "status": "exact",
+      "objdiff_percent": 100.0
     },
     {
       "name": "NuFdiv",
@@ -42197,14 +42223,460 @@
       "objdiff_percent": 100.0
     },
     {
+      "name": "Shards_Load",
+      "symbol": "_Shards_Load",
+      "address": "0x004c0130",
+      "units": [
+        "src/legoapi/shards_pc.c"
+      ],
+      "target_size": 163,
+      "exact_match": false,
+      "objects": [
+        {
+          "unit": "src/legoapi/shards_pc.c",
+          "base_size": 165,
+          "exact_match": false,
+          "target_sha256": "b5469facc3991269268e271983e137512d3798c282a18bb39775562a1eeebf34",
+          "base_sha256": "47fa84d3f97f5f999a0ac9428db7f589ab9b991440622a99b6b16ed198b5638d",
+          "relocation_count": 6,
+          "comparison_unit": "004c0130-0f3309e3cdeb",
+          "objdiff_percent": 83.13725
+        }
+      ],
+      "status": "different",
+      "objdiff_percent": 83.13725
+    },
+    {
+      "name": "Shards_ReserveBufferSpace",
+      "symbol": "_Shards_ReserveBufferSpace",
+      "address": "0x004c01e0",
+      "units": [
+        "src/legoapi/shards_pc.c"
+      ],
+      "target_size": 77,
+      "exact_match": false,
+      "objects": [
+        {
+          "unit": "src/legoapi/shards_pc.c",
+          "base_size": 77,
+          "exact_match": false,
+          "target_sha256": "f18b576571d591826f7e2c1cb9dce4033ab99b76be12daf960cca5b62e91da9e",
+          "base_sha256": "b22851afe428c887fc501e537dc6193c009fe76e71b463867c2159e7c48050d4",
+          "relocation_count": 0,
+          "comparison_unit": "004c01e0-521c2d0d3ce0",
+          "objdiff_percent": 96.666664
+        }
+      ],
+      "status": "different",
+      "objdiff_percent": 96.666664
+    },
+    {
+      "name": "ShardInitRecordPc",
+      "symbol": "_ShardInitRecordPc",
+      "address": "0x004c0230",
+      "units": [
+        "src/legoapi/shards_pc.c"
+      ],
+      "target_size": 151,
+      "exact_match": true,
+      "objects": [
+        {
+          "unit": "src/legoapi/shards_pc.c",
+          "base_size": 151,
+          "exact_match": true,
+          "target_sha256": "eac17550b43ea2f6c9beb90ffb7c1591f55a49fb5e3a43b1a367e6dbe98ea02d",
+          "base_sha256": "eac17550b43ea2f6c9beb90ffb7c1591f55a49fb5e3a43b1a367e6dbe98ea02d",
+          "relocation_count": 2,
+          "comparison_unit": "004c0230-295c6017c1cc",
+          "objdiff_percent": 100.0
+        }
+      ],
+      "status": "exact",
+      "objdiff_percent": 100.0
+    },
+    {
+      "name": "Shards_Reset",
+      "symbol": "_Shards_Reset",
+      "address": "0x004c02d0",
+      "units": [
+        "src/legoapi/shards_pc.c"
+      ],
+      "target_size": 218,
+      "exact_match": false,
+      "objects": [
+        {
+          "unit": "src/legoapi/shards_pc.c",
+          "base_size": 197,
+          "exact_match": false,
+          "target_sha256": "738ea41bceea0a05c1e6ab96ad39af813e98f373181f0c9c7ee52c196cdd5429",
+          "base_sha256": "5a5236fbb87f1b7a5636d8e53519ea97af608cbcec6cc11e06e9a57f4444d774",
+          "relocation_count": 1,
+          "comparison_unit": "004c02d0-a78002a305de",
+          "objdiff_percent": 69.246574
+        }
+      ],
+      "status": "different",
+      "objdiff_percent": 69.246574
+    },
+    {
+      "name": "Shard_Activate",
+      "symbol": "_Shard_Activate",
+      "address": "0x004c03b0",
+      "units": [
+        "src/legoapi/shards_pc.c"
+      ],
+      "target_size": 28,
+      "exact_match": false,
+      "objects": [
+        {
+          "unit": "src/legoapi/shards_pc.c",
+          "base_size": 30,
+          "exact_match": false,
+          "target_sha256": "f7c2ba59555c4dc11a12699cffa20f656fade451b1f72f4c62d9e7b8e44124d2",
+          "base_sha256": "2cea6fa05787adbbd2b42a0f8c5abaf61ae33f4e7ec052a623c7d50d1e05aee3",
+          "relocation_count": 0,
+          "comparison_unit": "004c03b0-83ef408c5583",
+          "objdiff_percent": 57.4
+        }
+      ],
+      "status": "different",
+      "objdiff_percent": 57.4
+    },
+    {
+      "name": "Shard_SetVisibility",
+      "symbol": "_Shard_SetVisibility",
+      "address": "0x004c03d0",
+      "units": [
+        "src/legoapi/shards_pc.c"
+      ],
+      "target_size": 30,
+      "exact_match": false,
+      "objects": [
+        {
+          "unit": "src/legoapi/shards_pc.c",
+          "base_size": 32,
+          "exact_match": false,
+          "target_sha256": "6161fcefb17b36c848dd159632ed05f47c8ca40ca1735c96586c8fc47806a60b",
+          "base_sha256": "c3eeed3880feaf1b4ddae5ad3263d0cf3e14a1501df889cfd34ef597f84000b6",
+          "relocation_count": 0,
+          "comparison_unit": "004c03d0-bf20ba596f21",
+          "objdiff_percent": 66.72727
+        }
+      ],
+      "status": "different",
+      "objdiff_percent": 66.72727
+    },
+    {
+      "name": "Shards_UpdateBeforeCharacters",
+      "symbol": "_Shards_UpdateBeforeCharacters",
+      "address": "0x004c03f0",
+      "units": [
+        "src/legoapi/shards_pc.c"
+      ],
+      "target_size": 48,
+      "exact_match": false,
+      "objects": [
+        {
+          "unit": "src/legoapi/shards_pc.c",
+          "base_size": 48,
+          "exact_match": false,
+          "target_sha256": "9b364c57ab54366242276fbf40d1391efb9a5ac32fdb26f327f8f25bfe975a30",
+          "base_sha256": "0b180e09590d575839fee8045746a9de54ccb41863ecaacbc8e8782e7d11d57f",
+          "relocation_count": 0,
+          "comparison_unit": "004c03f0-0161d2da7cb4",
+          "objdiff_percent": 98.666664
+        }
+      ],
+      "status": "different",
+      "objdiff_percent": 98.666664
+    },
+    {
+      "name": "Shards_UpdateAfterCharacters",
+      "symbol": "_Shards_UpdateAfterCharacters",
+      "address": "0x004c0420",
+      "units": [
+        "src/legoapi/shards_pc.c"
+      ],
+      "target_size": 633,
+      "exact_match": false,
+      "objects": [
+        {
+          "unit": "src/legoapi/shards_pc.c",
+          "base_size": 654,
+          "exact_match": false,
+          "target_sha256": "6747e32a38fcd5cf610bd0a45f2551f8884a76e1453ef974076671522d532e0b",
+          "base_sha256": "3ba7719862911c3b497c5f1d8ccdd2b67b42dab859f47242a33252e8dcabd194",
+          "relocation_count": 27,
+          "comparison_unit": "004c0420-31281652f3f8",
+          "objdiff_percent": 92.48731
+        }
+      ],
+      "status": "different",
+      "objdiff_percent": 92.48731
+    },
+    {
       "name": "Shards_Draw",
       "symbol": "_Shards_Draw",
       "address": "0x004c0740",
-      "units": [],
+      "units": [
+        "src/legoapi/shards_pc.c"
+      ],
       "target_size": 404,
       "exact_match": false,
-      "objects": [],
-      "status": "not implemented"
+      "objects": [
+        {
+          "unit": "src/legoapi/shards_pc.c",
+          "base_size": 400,
+          "exact_match": false,
+          "target_sha256": "2084481e42c5bad09eb8d9674f372df7570e5c6bb5bf687c6fde809f7d009510",
+          "base_sha256": "283d6bea557f69378c37b635aae4c19a8c2f2617102663f220ca8b47889938ec",
+          "relocation_count": 9,
+          "comparison_unit": "004c0740-920760416251",
+          "objdiff_percent": 89.032
+        }
+      ],
+      "status": "different",
+      "objdiff_percent": 89.032
+    },
+    {
+      "name": "Shards_GetMaxGizmos",
+      "symbol": "_Shards_GetMaxGizmos",
+      "address": "0x004c08e0",
+      "units": [
+        "src/legoapi/shards_pc.c"
+      ],
+      "target_size": 25,
+      "exact_match": true,
+      "objects": [
+        {
+          "unit": "src/legoapi/shards_pc.c",
+          "base_size": 25,
+          "exact_match": true,
+          "target_sha256": "434725b210a74b9a4fa9d88126900ad0261736cd1c7b162c42bebf2f0fecca86",
+          "base_sha256": "434725b210a74b9a4fa9d88126900ad0261736cd1c7b162c42bebf2f0fecca86",
+          "relocation_count": 0,
+          "comparison_unit": "004c08e0-a5f6b09ac94e",
+          "objdiff_percent": 100.0
+        }
+      ],
+      "status": "exact",
+      "objdiff_percent": 100.0
+    },
+    {
+      "name": "Shards_AddGizmos",
+      "symbol": "_Shards_AddGizmos",
+      "address": "0x004c0900",
+      "units": [
+        "src/legoapi/shards_pc.c"
+      ],
+      "target_size": 97,
+      "exact_match": true,
+      "objects": [
+        {
+          "unit": "src/legoapi/shards_pc.c",
+          "base_size": 97,
+          "exact_match": true,
+          "target_sha256": "3bea65f4b92d97d497d435a325baab43cf06476a5eb80487c3749f4cdcb0b8a4",
+          "base_sha256": "3bea65f4b92d97d497d435a325baab43cf06476a5eb80487c3749f4cdcb0b8a4",
+          "relocation_count": 2,
+          "comparison_unit": "004c0900-35e89ce04bcf",
+          "objdiff_percent": 100.0
+        }
+      ],
+      "status": "exact",
+      "objdiff_percent": 100.0
+    },
+    {
+      "name": "Shard_GetGizmoName",
+      "symbol": "_Shard_GetGizmoName",
+      "address": "0x004c0970",
+      "units": [
+        "src/legoapi/shards_pc.c"
+      ],
+      "target_size": 14,
+      "exact_match": true,
+      "objects": [
+        {
+          "unit": "src/legoapi/shards_pc.c",
+          "base_size": 14,
+          "exact_match": true,
+          "target_sha256": "26690bbe535ad6119bdd37bf2f477a8f95d7f34860c3b971e777e17e835fc784",
+          "base_sha256": "26690bbe535ad6119bdd37bf2f477a8f95d7f34860c3b971e777e17e835fc784",
+          "relocation_count": 0,
+          "comparison_unit": "004c0970-2b14d151d6d4",
+          "objdiff_percent": 100.0
+        }
+      ],
+      "status": "exact",
+      "objdiff_percent": 100.0
+    },
+    {
+      "name": "Shard_GetOutput",
+      "symbol": "_Shard_GetOutput",
+      "address": "0x004c0980",
+      "units": [
+        "src/legoapi/shards_pc.c"
+      ],
+      "target_size": 17,
+      "exact_match": true,
+      "objects": [
+        {
+          "unit": "src/legoapi/shards_pc.c",
+          "base_size": 17,
+          "exact_match": true,
+          "target_sha256": "75ad1caee727e213d80444930457cd02433c450c3914968676105df8f6cab441",
+          "base_sha256": "75ad1caee727e213d80444930457cd02433c450c3914968676105df8f6cab441",
+          "relocation_count": 0,
+          "comparison_unit": "004c0980-613785c65fe1",
+          "objdiff_percent": 100.0
+        }
+      ],
+      "status": "exact",
+      "objdiff_percent": 100.0
+    },
+    {
+      "name": "Shard_GetOutputName",
+      "symbol": "_Shard_GetOutputName",
+      "address": "0x004c09a0",
+      "units": [
+        "src/legoapi/shards_pc.c"
+      ],
+      "target_size": 6,
+      "exact_match": true,
+      "objects": [
+        {
+          "unit": "src/legoapi/shards_pc.c",
+          "base_size": 6,
+          "exact_match": true,
+          "target_sha256": "365c28874688eca56b131518d9480aa2c6c806a17ba9f5db5813f7ee42c4a274",
+          "base_sha256": "365c28874688eca56b131518d9480aa2c6c806a17ba9f5db5813f7ee42c4a274",
+          "relocation_count": 1,
+          "comparison_unit": "004c09a0-756454c1f550",
+          "objdiff_percent": 100.0
+        }
+      ],
+      "status": "exact",
+      "objdiff_percent": 100.0
+    },
+    {
+      "name": "Shard_GetNumOutputs",
+      "symbol": "_Shard_GetNumOutputs",
+      "address": "0x004c09b0",
+      "units": [
+        "src/legoapi/shards_pc.c"
+      ],
+      "target_size": 6,
+      "exact_match": true,
+      "objects": [
+        {
+          "unit": "src/legoapi/shards_pc.c",
+          "base_size": 6,
+          "exact_match": true,
+          "target_sha256": "2db31f4e09597946e56e859813bfdad7046d457c32332c3a882654d1e3ffdf67",
+          "base_sha256": "2db31f4e09597946e56e859813bfdad7046d457c32332c3a882654d1e3ffdf67",
+          "relocation_count": 0,
+          "comparison_unit": "004c09b0-7ca3c4ae333c",
+          "objdiff_percent": 100.0
+        }
+      ],
+      "status": "exact",
+      "objdiff_percent": 100.0
+    },
+    {
+      "name": "Shards_AllocateProgressData",
+      "symbol": "_Shards_AllocateProgressData",
+      "address": "0x004c09c0",
+      "units": [
+        "src/legoapi/shards_pc.c"
+      ],
+      "target_size": 21,
+      "exact_match": true,
+      "objects": [
+        {
+          "unit": "src/legoapi/shards_pc.c",
+          "base_size": 21,
+          "exact_match": true,
+          "target_sha256": "32c91d9140c15924eb5e9b26769164c215b289d3c3b8398a0e9e67bf9b0eb078",
+          "base_sha256": "32c91d9140c15924eb5e9b26769164c215b289d3c3b8398a0e9e67bf9b0eb078",
+          "relocation_count": 1,
+          "comparison_unit": "004c09c0-b509f10cc91e",
+          "objdiff_percent": 100.0
+        }
+      ],
+      "status": "exact",
+      "objdiff_percent": 100.0
+    },
+    {
+      "name": "Shards_ClearProgress",
+      "symbol": "_Shards_ClearProgress",
+      "address": "0x004c09e0",
+      "units": [
+        "src/legoapi/shards_pc.c"
+      ],
+      "target_size": 51,
+      "exact_match": false,
+      "objects": [
+        {
+          "unit": "src/legoapi/shards_pc.c",
+          "base_size": 52,
+          "exact_match": false,
+          "target_sha256": "71ecc448b47865e2d69bfed2ec97aff709c5f4d8eab17d18fa406b49514eb234",
+          "base_sha256": "a234b1a081b83870cd0bc9ad7a81bc4c30e755a5d89bf71b6267e271d7e15762",
+          "relocation_count": 0,
+          "comparison_unit": "004c09e0-52b5900bdd9b",
+          "objdiff_percent": 99.73684
+        }
+      ],
+      "status": "different",
+      "objdiff_percent": 99.73684
+    },
+    {
+      "name": "Shards_StoreProgress",
+      "symbol": "_Shards_StoreProgress",
+      "address": "0x004c0a20",
+      "units": [
+        "src/legoapi/shards_pc.c"
+      ],
+      "target_size": 178,
+      "exact_match": false,
+      "objects": [
+        {
+          "unit": "src/legoapi/shards_pc.c",
+          "base_size": 172,
+          "exact_match": false,
+          "target_sha256": "ec1bc6cff1a0f5d0800173b156d261d87891a4368d04fba64ddf47f13a89c627",
+          "base_sha256": "b48bf1641dd42ddd5f6994491a639c8c32bd619188366c1d6a863bdbd878a90d",
+          "relocation_count": 0,
+          "comparison_unit": "004c0a20-eed40e5399f1",
+          "objdiff_percent": 87.50769
+        }
+      ],
+      "status": "different",
+      "objdiff_percent": 87.50769
+    },
+    {
+      "name": "Shards_RegisterGizmo",
+      "symbol": "_Shards_RegisterGizmo",
+      "address": "0x004c0ae0",
+      "units": [
+        "src/legoapi/shards_pc.c"
+      ],
+      "target_size": 278,
+      "exact_match": true,
+      "objects": [
+        {
+          "unit": "src/legoapi/shards_pc.c",
+          "base_size": 278,
+          "exact_match": true,
+          "target_sha256": "2e78b0f2069389cd1ce526dc0ad97032c3a00dc19c1bc475bd70314b4e688d86",
+          "base_sha256": "2e78b0f2069389cd1ce526dc0ad97032c3a00dc19c1bc475bd70314b4e688d86",
+          "relocation_count": 52,
+          "comparison_unit": "004c0ae0-063d8735e715",
+          "objdiff_percent": 100.0
+        }
+      ],
+      "status": "exact",
+      "objdiff_percent": 100.0
     },
     {
       "name": "Shard_Collect",
@@ -205850,6 +206322,7 @@
         "src/legoapi/shadow.c",
         "src/legoapi/shadow_light_setup.cpp",
         "src/legoapi/shard.c",
+        "src/legoapi/shards_pc.c",
         "src/legoapi/signal_reset_pc.c",
         "src/legoapi/simpletons_pc.cpp",
         "src/legoapi/snakes.c",
@@ -206963,6 +207436,14 @@
         },
         {
           "unit": "src/legoapi/shard.c",
+          "exact_match": true,
+          "target_size": 4,
+          "base_size": 4,
+          "target_sha256": "e00e5eb9444182f352323374ef4e08ebcb784725fdd4fd612d7730540b3e0c8c",
+          "base_sha256": "e00e5eb9444182f352323374ef4e08ebcb784725fdd4fd612d7730540b3e0c8c"
+        },
+        {
+          "unit": "src/legoapi/shards_pc.c",
           "exact_match": true,
           "target_size": 4,
           "base_size": 4,
@@ -209441,6 +209922,7 @@
         "src/legoapi/screen.cpp",
         "src/legoapi/securitydoors_pc.c",
         "src/legoapi/shadow.c",
+        "src/legoapi/shards_pc.c",
         "src/legoapi/signal_reset_pc.c",
         "src/legoapi/simpletons_pc.cpp",
         "src/legoapi/socksys.c",
@@ -209775,6 +210257,14 @@
         },
         {
           "unit": "src/legoapi/shadow.c",
+          "exact_match": true,
+          "target_size": 4,
+          "base_size": 4,
+          "target_sha256": "fca31f1667a6aa1bba12fca4e4ea1becd503379d80da3213af07f6cc5702828d",
+          "base_sha256": "fca31f1667a6aa1bba12fca4e4ea1becd503379d80da3213af07f6cc5702828d"
+        },
+        {
+          "unit": "src/legoapi/shards_pc.c",
           "exact_match": true,
           "target_size": 4,
           "base_size": 4,
@@ -210674,6 +211164,7 @@
         "src/legoapi/shadow.c",
         "src/legoapi/shadow_light_setup.cpp",
         "src/legoapi/shard.c",
+        "src/legoapi/shards_pc.c",
         "src/legoapi/shop_exit.cpp",
         "src/legoapi/shovesys.c",
         "src/legoapi/signal_reset_pc.c",
@@ -212038,6 +212529,14 @@
         },
         {
           "unit": "src/legoapi/shard.c",
+          "exact_match": true,
+          "target_size": 4,
+          "base_size": 4,
+          "target_sha256": "df3f619804a92fdb4057192dc43dd748ea778adc52bc498ce80524c014b81119",
+          "base_sha256": "df3f619804a92fdb4057192dc43dd748ea778adc52bc498ce80524c014b81119"
+        },
+        {
+          "unit": "src/legoapi/shards_pc.c",
           "exact_match": true,
           "target_size": 4,
           "base_size": 4,
@@ -214245,6 +214744,7 @@
         "src/legoapi/shadow.c",
         "src/legoapi/shadow_light_setup.cpp",
         "src/legoapi/shard.c",
+        "src/legoapi/shards_pc.c",
         "src/legoapi/signal_reset_pc.c",
         "src/legoapi/simpletons_pc.cpp",
         "src/legoapi/socksys.c",
@@ -215008,6 +215508,14 @@
         },
         {
           "unit": "src/legoapi/shard.c",
+          "exact_match": true,
+          "target_size": 8,
+          "base_size": 8,
+          "target_sha256": "6c3c396ed6b5c36dcae172271f462051b1266b851e92df3deea8ac65478fd712",
+          "base_sha256": "6c3c396ed6b5c36dcae172271f462051b1266b851e92df3deea8ac65478fd712"
+        },
+        {
+          "unit": "src/legoapi/shards_pc.c",
           "exact_match": true,
           "target_size": 8,
           "base_size": 8,
@@ -216279,6 +216787,7 @@
         "src/legoapi/parts.c",
         "src/legoapi/parts_breakup.cpp",
         "src/legoapi/securitydoors_pc.c",
+        "src/legoapi/shards_pc.c",
         "src/legoapi/techno.c",
         "src/legoapi/terrain_player_pc.c",
         "src/legoapi/text.c",
@@ -216435,6 +216944,14 @@
         },
         {
           "unit": "src/legoapi/securitydoors_pc.c",
+          "exact_match": true,
+          "target_size": 8,
+          "base_size": 8,
+          "target_sha256": "a7ca1349517e14c0690dccc98bf9a515019b2018116a3191f6c7d53831c0432a",
+          "base_sha256": "a7ca1349517e14c0690dccc98bf9a515019b2018116a3191f6c7d53831c0432a"
+        },
+        {
+          "unit": "src/legoapi/shards_pc.c",
           "exact_match": true,
           "target_size": 8,
           "base_size": 8,
@@ -218964,6 +219481,7 @@
         "src/legoapi/render.c",
         "src/legoapi/ripples.c",
         "src/legoapi/screen.cpp",
+        "src/legoapi/shards_pc.c",
         "src/legoapi/signal_reset_pc.c",
         "src/legoapi/simpletons_pc.cpp",
         "src/legoapi/specialsfx.c",
@@ -219152,6 +219670,14 @@
           "base_sha256": "0bc0b257a33525bbaed2089414d3db233901a8d11c7c7702feca7751e501ec7a"
         },
         {
+          "unit": "src/legoapi/shards_pc.c",
+          "exact_match": true,
+          "target_size": 8,
+          "base_size": 8,
+          "target_sha256": "0bc0b257a33525bbaed2089414d3db233901a8d11c7c7702feca7751e501ec7a",
+          "base_sha256": "0bc0b257a33525bbaed2089414d3db233901a8d11c7c7702feca7751e501ec7a"
+        },
+        {
           "unit": "src/legoapi/signal_reset_pc.c",
           "exact_match": true,
           "target_size": 8,
@@ -219244,6 +219770,7 @@
         "src/legoapi/render.c",
         "src/legoapi/screen.cpp",
         "src/legoapi/shadow.c",
+        "src/legoapi/shards_pc.c",
         "src/legoapi/specialsfx.c",
         "src/legoapi/supportall.c",
         "src/legoapi/tagging.c",
@@ -219492,6 +220019,14 @@
           "base_sha256": "ea2845900b5856c9bf354b1aa9761b5aa6888e5ed61738fe9579ca42bc0f6054"
         },
         {
+          "unit": "src/legoapi/shards_pc.c",
+          "exact_match": true,
+          "target_size": 4,
+          "base_size": 4,
+          "target_sha256": "ea2845900b5856c9bf354b1aa9761b5aa6888e5ed61738fe9579ca42bc0f6054",
+          "base_sha256": "ea2845900b5856c9bf354b1aa9761b5aa6888e5ed61738fe9579ca42bc0f6054"
+        },
+        {
           "unit": "src/legoapi/specialsfx.c",
           "exact_match": true,
           "target_size": 4,
@@ -219608,6 +220143,7 @@
         "src/legoapi/players.c",
         "src/legoapi/rtl.c",
         "src/legoapi/sfx.cpp",
+        "src/legoapi/shards_pc.c",
         "src/legoapi/simpletons_pc.cpp",
         "src/legoapi/supportall.c",
         "src/legoapi/teleport_motion.cpp",
@@ -219781,6 +220317,14 @@
         },
         {
           "unit": "src/legoapi/sfx.cpp",
+          "exact_match": true,
+          "target_size": 4,
+          "base_size": 4,
+          "target_sha256": "80c8a717ccd70c8809eb78e6a9591c003e11c721fe0ccaf62fd592abda1a5593",
+          "base_sha256": "80c8a717ccd70c8809eb78e6a9591c003e11c721fe0ccaf62fd592abda1a5593"
+        },
+        {
+          "unit": "src/legoapi/shards_pc.c",
           "exact_match": true,
           "target_size": 4,
           "base_size": 4,
@@ -223884,6 +224428,7 @@
         "src/legoapi/rtl.c",
         "src/legoapi/screen.cpp",
         "src/legoapi/sfx.cpp",
+        "src/legoapi/shards_pc.c",
         "src/legoapi/shop_exit.cpp",
         "src/legoapi/signal_reset_pc.c",
         "src/legoapi/speederchase.c",
@@ -224322,6 +224867,14 @@
         },
         {
           "unit": "src/legoapi/sfx.cpp",
+          "exact_match": true,
+          "target_size": 4,
+          "base_size": 4,
+          "target_sha256": "d88c86f15bbea365d658ad95a81d45367c465f7af6f7264fb077f01747ddc77d",
+          "base_sha256": "d88c86f15bbea365d658ad95a81d45367c465f7af6f7264fb077f01747ddc77d"
+        },
+        {
+          "unit": "src/legoapi/shards_pc.c",
           "exact_match": true,
           "target_size": 4,
           "base_size": 4,
@@ -307110,6 +307663,111 @@
           "base_size": 14,
           "target_sha256": "077a5b25bf2ce38537834c949608c13d81ec7d3275757e0fea0de376143c362e",
           "base_sha256": "077a5b25bf2ce38537834c949608c13d81ec7d3275757e0fea0de376143c362e"
+        }
+      ],
+      "status": "exact"
+    },
+    {
+      "name": "PCShardOutputTextPc",
+      "symbol": "_PCShardOutputTextPc",
+      "address": "0x0075cd64",
+      "units": [
+        "src/legoapi/shards_pc.c"
+      ],
+      "target_size": 4,
+      "exact_match": true,
+      "objects": [
+        {
+          "unit": "src/legoapi/shards_pc.c",
+          "exact_match": true,
+          "target_size": 4,
+          "base_size": 4,
+          "target_sha256": "99d1b3002ab020fa533d9ba58006fdb5a506d41bcad6936aea37770ae4e53e27",
+          "base_sha256": "99d1b3002ab020fa533d9ba58006fdb5a506d41bcad6936aea37770ae4e53e27"
+        }
+      ],
+      "status": "exact"
+    },
+    {
+      "name": "__real@3fa10cb2a0000000",
+      "symbol": "__real@3fa10cb2a0000000",
+      "address": "0x0075cd68",
+      "units": [
+        "src/legoapi/shards_pc.c"
+      ],
+      "target_size": 8,
+      "exact_match": true,
+      "objects": [
+        {
+          "unit": "src/legoapi/shards_pc.c",
+          "exact_match": true,
+          "target_size": 8,
+          "base_size": 8,
+          "target_sha256": "df4bd6fcdfe5702c3bbde00d5d8e186b242c84bb719aa58a33d3fa58a979d5ca",
+          "base_sha256": "df4bd6fcdfe5702c3bbde00d5d8e186b242c84bb719aa58a33d3fa58a979d5ca"
+        }
+      ],
+      "status": "exact"
+    },
+    {
+      "name": "__real@40ed998000000000",
+      "symbol": "__real@40ed998000000000",
+      "address": "0x0075cd70",
+      "units": [
+        "src/legoapi/shards_pc.c"
+      ],
+      "target_size": 8,
+      "exact_match": true,
+      "objects": [
+        {
+          "unit": "src/legoapi/shards_pc.c",
+          "exact_match": true,
+          "target_size": 8,
+          "base_size": 8,
+          "target_sha256": "99f6860f4afee7022b139125b84e31b5cd59364b6c9b71a5e8e0e6fb3bbe9d8b",
+          "base_sha256": "99f6860f4afee7022b139125b84e31b5cd59364b6c9b71a5e8e0e6fb3bbe9d8b"
+        }
+      ],
+      "status": "exact"
+    },
+    {
+      "name": "__real@40f8000000000000",
+      "symbol": "__real@40f8000000000000",
+      "address": "0x0075cd78",
+      "units": [
+        "src/legoapi/shards_pc.c"
+      ],
+      "target_size": 8,
+      "exact_match": true,
+      "objects": [
+        {
+          "unit": "src/legoapi/shards_pc.c",
+          "exact_match": true,
+          "target_size": 8,
+          "base_size": 8,
+          "target_sha256": "785926dacde77147a67814738794658878f952cc0b3c81798b8c03dcc6085d01",
+          "base_sha256": "785926dacde77147a67814738794658878f952cc0b3c81798b8c03dcc6085d01"
+        }
+      ],
+      "status": "exact"
+    },
+    {
+      "name": "PCContextName_Shard",
+      "symbol": "_PCContextName_Shard",
+      "address": "0x0075cd80",
+      "units": [
+        "src/legoapi/shards_pc.c"
+      ],
+      "target_size": 6,
+      "exact_match": true,
+      "objects": [
+        {
+          "unit": "src/legoapi/shards_pc.c",
+          "exact_match": true,
+          "target_size": 6,
+          "base_size": 6,
+          "target_sha256": "0131f8024fe49fa7f98aaf4b5c74e8d40d0916e16285182228caf689b8d65198",
+          "base_sha256": "0131f8024fe49fa7f98aaf4b5c74e8d40d0916e16285182228caf689b8d65198"
         }
       ],
       "status": "exact"
@@ -400094,6 +400752,48 @@
       "status": "exact"
     },
     {
+      "name": "ShardOutputNamePc",
+      "symbol": "_ShardOutputNamePc",
+      "address": "0x007fca94",
+      "units": [
+        "src/legoapi/shards_pc.c"
+      ],
+      "target_size": 4,
+      "exact_match": true,
+      "objects": [
+        {
+          "unit": "src/legoapi/shards_pc.c",
+          "exact_match": true,
+          "target_size": 4,
+          "base_size": 4,
+          "target_sha256": "c3007746e6694241f7509628b04a44cd20bfd3dbe28f44182f0d5ddf9087fc1f",
+          "base_sha256": "c3007746e6694241f7509628b04a44cd20bfd3dbe28f44182f0d5ddf9087fc1f"
+        }
+      ],
+      "status": "exact"
+    },
+    {
+      "name": "ShardRegistryNamePc",
+      "symbol": "_ShardRegistryNamePc",
+      "address": "0x007fcb00",
+      "units": [
+        "src/legoapi/shards_pc.c"
+      ],
+      "target_size": 4,
+      "exact_match": true,
+      "objects": [
+        {
+          "unit": "src/legoapi/shards_pc.c",
+          "exact_match": true,
+          "target_size": 4,
+          "base_size": 4,
+          "target_sha256": "b48f4abda244debd09ff3e348f8143ea13b01a5d076ab38b5c865c8264df6d31",
+          "base_sha256": "b48f4abda244debd09ff3e348f8143ea13b01a5d076ab38b5c865c8264df6d31"
+        }
+      ],
+      "status": "exact"
+    },
+    {
       "name": "ShopHintIdsPc",
       "symbol": "_ShopHintIdsPc",
       "address": "0x007fcb18",
@@ -430055,6 +430755,27 @@
           "base_size": 4,
           "target_sha256": "df3f619804a92fdb4057192dc43dd748ea778adc52bc498ce80524c014b81119",
           "base_sha256": "df3f619804a92fdb4057192dc43dd748ea778adc52bc498ce80524c014b81119"
+        }
+      ],
+      "status": "exact"
+    },
+    {
+      "name": "ShardAddTypePc",
+      "symbol": "_ShardAddTypePc",
+      "address": "0x0087bb18",
+      "units": [
+        "src/legoapi/shards_pc.c"
+      ],
+      "target_size": 120,
+      "exact_match": true,
+      "objects": [
+        {
+          "unit": "src/legoapi/shards_pc.c",
+          "exact_match": true,
+          "target_size": 120,
+          "base_size": 120,
+          "target_sha256": "6edd9f6f9cc92cded36e6c4a580933f9c9f1b90562b46903b806f21902a1a54f",
+          "base_sha256": "6edd9f6f9cc92cded36e6c4a580933f9c9f1b90562b46903b806f21902a1a54f"
         }
       ],
       "status": "exact"
@@ -481529,17 +482250,17 @@
   ],
   "progress": {
     "text_bytes": 3471246,
-    "mapped_code_bytes": 2439148,
-    "matched_code_bytes": 459096,
-    "matching_percent": 13.22568322729072,
-    "fuzzy_coverage_percent": 47.75164387085746,
-    "mapped_functions": 8983,
-    "matched_functions": 4269,
-    "objdiff_fuzzy_percent": 74.81932,
-    "objdiff_total_code": 2218798,
+    "mapped_code_bytes": 2441224,
+    "matched_code_bytes": 459746,
+    "matching_percent": 13.244408491936325,
+    "fuzzy_coverage_percent": 47.81635026702528,
+    "mapped_functions": 9002,
+    "matched_functions": 4279,
+    "objdiff_fuzzy_percent": 74.83691,
+    "objdiff_total_code": 2221278,
     "image_bytes": 40067072,
-    "mapped_bytes": 4252022,
-    "mapping_percent": 10.61226036182529,
+    "mapped_bytes": 4254260,
+    "mapping_percent": 10.617845995834186,
     "mapping_denominator": "code_and_data_section_virtual_sizes",
     "mapping_sections": [
       {
@@ -481547,16 +482268,16 @@
         "kind": "code",
         "address": "0x401000",
         "size": 3471246,
-        "mapped_bytes": 2440342
+        "mapped_bytes": 2442418
       },
       {
         "name": ".rdata",
         "kind": "data",
         "address": "0x751000",
         "size": 646766,
-        "mapped_bytes": 84620,
+        "mapped_bytes": 84654,
         "file_backed_data_bytes": 646766,
-        "mapped_file_backed_data_bytes": 84620,
+        "mapped_file_backed_data_bytes": 84654,
         "zero_fill_data_bytes": 0,
         "mapped_zero_fill_data_bytes": 0
       },
@@ -481565,45 +482286,45 @@
         "kind": "data",
         "address": "0x7ef000",
         "size": 35372200,
-        "mapped_bytes": 1727060,
+        "mapped_bytes": 1727188,
         "file_backed_data_bytes": 417792,
-        "mapped_file_backed_data_bytes": 265179,
+        "mapped_file_backed_data_bytes": 265187,
         "zero_fill_data_bytes": 34954408,
-        "mapped_zero_fill_data_bytes": 1461881
+        "mapped_zero_fill_data_bytes": 1462001
       }
     ],
-    "mapping_known_size_symbols": 16905,
+    "mapping_known_size_symbols": 16932,
     "mapping_unknown_size_symbols": 7075,
-    "mapping_code_bytes": 2440342,
+    "mapping_code_bytes": 2442418,
     "mapping_code_total_bytes": 3471246,
-    "mapping_code_percent": 70.30161503967163,
-    "mapping_data_bytes": 1811680,
+    "mapping_code_percent": 70.36142065413975,
+    "mapping_data_bytes": 1811842,
     "mapping_data_total_bytes": 36018966,
-    "mapping_data_percent": 5.029794580999354,
-    "mapping_code_data_bytes": 4252022,
+    "mapping_data_percent": 5.030244344049188,
+    "mapping_code_data_bytes": 4254260,
     "mapping_code_data_total_bytes": 39490212,
-    "mapping_code_data_percent": 10.767280763142017,
-    "mapping_file_backed_data_bytes": 349799,
+    "mapping_code_data_percent": 10.772947990251357,
+    "mapping_file_backed_data_bytes": 349841,
     "mapping_file_backed_data_total_bytes": 1064558,
-    "mapping_file_backed_data_percent": 32.858613621803606,
-    "mapping_zero_fill_data_bytes": 1461881,
+    "mapping_file_backed_data_percent": 32.862558921167285,
+    "mapping_zero_fill_data_bytes": 1462001,
     "mapping_zero_fill_data_total_bytes": 34954408,
-    "mapping_zero_fill_data_percent": 4.1822507764972014,
-    "matched_data_region_bytes": 1795734
+    "mapping_zero_fill_data_percent": 4.182594080838102,
+    "matched_data_region_bytes": 1795896
   },
   "text_coverage": {
     "original_text_bytes": 3471246,
-    "mapped_reconstruction_bytes": 2439148,
-    "exact_reconstruction_bytes": 459096,
-    "mapped_not_exact_bytes": 1980052,
+    "mapped_reconstruction_bytes": 2441224,
+    "exact_reconstruction_bytes": 459746,
+    "mapped_not_exact_bytes": 1981478,
     "excluded_import_glue_bytes": 1194,
-    "unclassified_text_bytes": 1030904,
+    "unclassified_text_bytes": 1028828,
     "strict_original_text_denominator_bytes": 3471246,
-    "strict_original_text_exact_percent": 13.22568322729072,
+    "strict_original_text_exact_percent": 13.244408491936325,
     "reconstruction_scope_denominator_bytes": 3470052,
-    "reconstruction_scope_exact_percent": 13.230234013784232,
-    "mapped_scope_denominator_bytes": 2439148,
-    "mapped_scope_exact_percent": 18.821982101947075,
+    "reconstruction_scope_exact_percent": 13.248965721551146,
+    "mapped_scope_denominator_bytes": 2441224,
+    "mapped_scope_exact_percent": 18.832602006206724,
     "qualification": "Unclassified text includes undiscovered code and unproven padding; these percentages compare relocated objects, not the linked image."
   },
   "data_members": [
@@ -482747,7 +483468,7 @@
       "metadata_sha256": "fe09365da4c355f220d724ca99394fc120b758891b4188d2c49707b6df0894f2",
       "header_path": "src/saga.h",
       "header_sha256": "f5c807c392cb7f77dff8088bf8aab18d114ee73ac3939aed153bd44225502c55",
-      "geometry_object_sha256": "37ce2282c49af591e387f7717820fbee5439e9bb92b3e5a37824f80dcf0a3255",
+      "geometry_object_sha256": "62a691a2ab2c2e8ff00e437bad14d98d9cf34ee7190b48a475f4737e7135f87e",
       "toolchain_sha256": "b8808088bb2c7eb239785f69c9e464ae8545216d5705fb37216bc0cf926732f3",
       "implementation_sha256": "d6a33be911d095a6d07dccd4443ccbfd6b514fd89fd7e200d9caa1827944e218",
       "headers": {
@@ -482989,7 +483710,7 @@
         4
       ]
     },
-    "clang_source_sha256": "715a29f54b86a5cf8adcf38387bc462ecb465309d4ba5262ef1373fcf1bd03d5",
+    "clang_source_sha256": "2eeb051517d64f064156cd237a3c5c157b322cfaf1641d26ab7e8cc127983034",
     "member_count": 42,
     "physical_definition_credit": 0
   },

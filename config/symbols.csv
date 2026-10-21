@@ -39,6 +39,7 @@ address,symbol,size,ctype
 0x403450,_AttractoSelectShardPc,471,
 0x403630,_AttractoStartSuctionPc,105,
 0x4036a0,_Attracto_MoveCode,1457,"void __cdecl(WORLDINFO *,GAMEOBJECT *)"
+0x403c60,_Attracto_GetSuctionPos,35,"void __cdecl(GAMEOBJECT *,NUVEC *)"
 0x00403cb0,_NuFdiv,54,"f32 __cdecl (f32, f32)"
 0x403cf0,?BatarangASinPc@@YAHM@Z,320,
 0x403e70,?BatarangContainsTargetPc@@YAHPAUplayer_batarang_slot_pc_s@@PAX@Z,40,
@@ -1811,7 +1812,25 @@ address,symbol,size,ctype
 0x4bddd0,_GameAudio_CheckReverb_LSW,55,i32 __cdecl(void)
 0x4bde10,_SetLevelSfxBits,8845,void __cdecl(WORLDINFO*)
 0x004c00c0,_Shadow_SetMode,60,void __cdecl (void)
-0x4c0740,_Shards_Draw,404,
+0x4c0130,_Shards_Load,163,"i32 __cdecl(WORLDINFO *,void *)"
+0x4c01e0,_Shards_ReserveBufferSpace,77,void * __cdecl(WORLDINFO *)
+0x4c0230,_ShardInitRecordPc,151,
+0x4c02d0,_Shards_Reset,218,"void __cdecl(WORLDINFO *,void *,void *)"
+0x4c03b0,_Shard_Activate,28,"void __cdecl(GIZMO_PC *,i32)"
+0x4c03d0,_Shard_SetVisibility,30,"void __cdecl(GIZMO_PC *,i32)"
+0x4c03f0,_Shards_UpdateBeforeCharacters,48,"void __cdecl(WORLDINFO *,void *,f32)"
+0x4c0420,_Shards_UpdateAfterCharacters,633,"void __cdecl(WORLDINFO *,void *,f32)"
+0x4c0740,_Shards_Draw,404,"void __cdecl(WORLDINFO *,void *,f32)"
+0x4c08e0,_Shards_GetMaxGizmos,25,i32 __cdecl(WORLDINFO *)
+0x4c0900,_Shards_AddGizmos,97,"void __cdecl(GIZMOSYS_PC *,i32,WORLDINFO *,void *)"
+0x4c0970,_Shard_GetGizmoName,14,char * __cdecl(GIZMO_PC *)
+0x4c0980,_Shard_GetOutput,17,"i32 __cdecl(GIZMO_PC *,i32,i32)"
+0x4c09a0,_Shard_GetOutputName,6,"char * __cdecl(GIZMO_PC *,i32)"
+0x4c09b0,_Shard_GetNumOutputs,6,i32 __cdecl(GIZMO_PC *)
+0x4c09c0,_Shards_AllocateProgressData,21,"void * __cdecl(VARIPTR *,VARIPTR *)"
+0x4c09e0,_Shards_ClearProgress,51,"void __cdecl(void *,void *)"
+0x4c0a20,_Shards_StoreProgress,178,"void __cdecl(WORLDINFO *,void *,void *)"
+0x4c0ae0,_Shards_RegisterGizmo,278,ADDGIZMOTYPE_PC * __cdecl(i32)
 0x4c0c00,_Shard_Collect,123,
 0x4c0c80,_Shards_HandleLostObj,82,"void __cdecl(WORLDINFO *,GAMEOBJECT *)"
 0x4c0db0,_NuMtxRotateXInline,217,
@@ -13255,6 +13274,11 @@ address,symbol,size,ctype
 0x75cd34,??_C@_0L@GKNAPDAF@exp_debris?$AA@,11,const char[11]
 0x75cd40,??_C@_0BC@MPDNLAOA@CarbonFreezeCrane?$AA@,18,const char[18]
 0x75cd54,??_C@_0O@CHIEINJL@env_door_flap?$AA@,14,const char[14]
+0x75cd64,_PCShardOutputTextPc,4,const char [4]
+0x75cd68,__real@3fa10cb2a0000000,8,const f64
+0x75cd70,__real@40ed998000000000,8,const f64
+0x75cd78,__real@40f8000000000000,8,const f64
+0x75cd80,_PCContextName_Shard,6,const char [6]
 0x75cd88,??_C@_07PEBBOAOF@shelf_6?$AA@,8,char []
 0x75cd90,??_C@_0N@OJAHMHB@shelf_bottom?$AA@,13,char []
 0x75cda0,??_C@_0L@EIDNECDP@shelf_top1?$AA@,11,char []
@@ -19012,6 +19036,8 @@ address,symbol,size,ctype
 0x7fc5a0,_SecurityDoorRegistryNamePc,4,char *
 0x7fc5b8,_GameAudioLswPc,512,GAMEAUDIO_PC
 0x7fc7b8,_GameAudioAlternatePc,512,GAMEAUDIO_PC
+0x7fca94,_ShardOutputNamePc,4,char *
+0x7fcb00,_ShardRegistryNamePc,4,char *
 0x7fcb18,_ShopHintIdsPc,,i16[24]
 0x7fcb48,_ShopHintTextIdsPc,,i16[15]
 0x7fcb68,_SHOPCUTCOUNT,4,i32
@@ -20915,6 +20941,7 @@ address,symbol,size,ctype
 0x0087b9f8,_RadioEntriesPc,160,u8[160]
 0x87ba98,_SecurityDoorAddTypePc,120,ADDGIZMOTYPE_PC
 0x0087bb10,_ShadowMode,4,i32
+0x87bb18,_ShardAddTypePc,120,ADDGIZMOTYPE_PC
 0x87bb90,_scale2,4,f32
 0x87bb94,_subpicked,4,i32
 0x87bb98,_arrow3,12,nuhspecial_s
