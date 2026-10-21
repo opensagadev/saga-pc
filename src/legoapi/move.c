@@ -1,7 +1,7 @@
 #include "saga.h"
 
 void __cdecl Techno_MoveCode(WORLDINFO *, GAMEOBJECT *);
-
+void __cdecl Signal_MoveCode(WORLDINFO *, GAMEOBJECT *);
 void __cdecl PeriscodeCode(GAMEOBJECT *);
 void __cdecl KeepWeaponIn(GAMEOBJECT *);
 i32 __cdecl ThermalDetonator_MoveCode(GAMEOBJECT *);
@@ -6729,7 +6729,7 @@ after_gravity:
     }
     Techno_MoveCode(WORLD, object);
     if (object->suit != NULL)
-        STUBBED_NAMED(0x004c85e0); /* Native4b4d30: WORLD,object; actual void action. */
+        Signal_MoveCode(WORLD, object);
     TakeHitCode(object);
     FloatCode(object);
     SlideCode(object);
@@ -9906,7 +9906,7 @@ void __cdecl Move_JEDI(GAMEOBJECT *object) {
     }
     Techno_MoveCode(WORLD, object);
     if (object->suit != NULL)
-        STUBBED_NAMED(0x004c85e0); /* Native4b351d: Signal_MoveCode(WORLD,object), ignored action. */
+        Signal_MoveCode(WORLD, object);
     TakeHitCode(object);
     FloatCode(object);
     SlideCode(object);
@@ -10008,7 +10008,7 @@ void __cdecl Move_WEIRDO(GAMEOBJECT *object) {
     has_sabre = weapon == 0x65 || weapon == 0x67 || weapon == 0x69 || weapon == 0x6b;
     Techno_MoveCode(WORLD, object);
     if (object->suit != NULL)
-        STUBBED_NAMED(0x004c85e0); /* Native4b595d: Signal_MoveCode(WORLD,object). */
+        Signal_MoveCode(WORLD, object);
     TakeHitCode(object);
     FloatCode(object);
     SlideCode(object);

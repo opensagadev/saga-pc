@@ -1392,10 +1392,10 @@ extern "C" void __cdecl Game_WorldInfo_InitMenu(WORLDINFO *world, i32 *menu_id, 
 extern "C" void __cdecl GizSpinners_InitTerrain(WORLDINFO *world);
 extern "C" void __cdecl InitClimbObjectSys(WORLDINFO *world);
 extern "C" void __cdecl GizmoPushBlockInitAndReset(WORLDINFO *, void *);
-
+extern "C" void __cdecl Signals_InitTerrain(WORLDINFO *);
 extern "C" void __cdecl Game_WorldInfo_InitLast(WORLDINFO *world) {
     GizSpinners_InitTerrain(world);
-    STUBBED_NAMED("Game_WorldInfo_InitLast: Signals_InitTerrain 48f6fc -> 4c7980");
+    Signals_InitTerrain(world);
     STUBBED_NAMED("Game_WorldInfo_InitLast: Attractos_InitTerrain 48f702 -> 4029e0");
     STUBBED_NAMED("Game_WorldInfo_InitLast: SecurityDoors_InitTerrain 48f708 -> 4bcf70");
     Levers_InitTerrain(world);
