@@ -1818,7 +1818,8 @@ address,symbol,size,ctype
 0x4c7b00,_Signal_GetPos,21,NUVEC *__cdecl(GIZMO_PC *)
 0x4c7b20,_SignalResetRecordPc,319,static void(SIGNAL_s *)
 0x004c7c60,_Signals_Reset,194,"void __cdecl(WORLDINFO *, void *, SIGNALPROGRESS_s *)"
-0x4c8030,_Signals_Draw,653,
+0x004c7d30,_Signals_Update,551,"void __cdecl(WORLDINFO *, void *, f32)"
+0x4c8030,_Signals_Draw,653,"void __cdecl(WORLDINFO *, void *, f32)"
 0x4c82c0,_Signals_GetMaxGizmos,25,i32 __cdecl(WORLDINFO *)
 0x4c82e0,_Signals_AddGizmos,100,"void __cdecl(void *, i32, WORLDINFO *, void *)"
 0x4c8350,_Signal_GetGizmoName,14,char *__cdecl(GIZMO_PC *)
@@ -13216,6 +13217,7 @@ address,symbol,size,ctype
 0x0075ce98,__real@3e333333,4,const f32
 0x75cea0,_ShopCheatBlinkCutoffPc,8,const f64
 0x75cea8,_ShopCharacterAmplitudePc,8,const f64
+0x0075ceb0,__real@3fdf5c2940000000,8,const f64
 0x75ceb8,??_C@_0L@HJHGCGFE@minikit101?$AA@,11,char []
 0x75cec4,??_C@_0BA@CAGBIHNH@thermocrate_031?$AA@,16,char []
 0x75ced4,??_C@_0BA@CBKDONOA@thermocrate_021?$AA@,16,char []

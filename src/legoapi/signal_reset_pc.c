@@ -235,3 +235,117 @@ char *__cdecl Signal_GetOutputName(GIZMO_PC *unused, i32 unused_index) {
 i32 __cdecl Signal_GetNumOutputs(GIZMO_PC *unused) {
     return 1;
 }
+
+STATIC_ASSERT(offsetof(WORLDINFO, level_objects) == 0x2ac0);
+STATIC_ASSERT(sizeof(LEVEL_OBJECT_RUNTIME_PC) == 0x10);
+STATIC_ASSERT(offsetof(LEVEL_OBJECT_RUNTIME_PC, active) == 0xe);
+STATIC_ASSERT(offsetof(GAMEOBJECT, flags_1fc_word) == 0x1fc);
+STATIC_ASSERT(offsetof(GAMEOBJECT, id) == 0x1064);
+STATIC_ASSERT(offsetof(GAMEOBJECT, collision_position) == 0x80);
+STATIC_ASSERT(offsetof(GAMEOBJECT, bounds_radius) == 0x1dc);
+STATIC_ASSERT(offsetof(SUIT_INITIALIZER_RECORD_PC, character_id) == 0x14);
+STATIC_ASSERT(offsetof(SUIT_INITIALIZER_RECORD_PC, text_id) == 8);
+STATIC_ASSERT(offsetof(GAMECAMERA, position) == 0x11c);
+
+void __cdecl Signals_Update(WORLDINFO *world, void *unused, f32 unused_time) {
+    SIGNAL_s *signal = world->signals;
+    i32 index;
+    for (index = 0; index < world->signal_count; ++index, ++signal) {
+        f32 target_scale = 0.0f;
+        signal->radius = (f32)((f64)qrand() * (f64)(1.0f / 65535.0f) * (f64)0.1f + (f64)0.8f);
+        if ((signal->flags & 3) != 3) {
+            signal->scale = 0.0f;
+            signal->flags &= ~4;
+            continue;
+        }
+        if ((signal->flags & 4) != 0) {
+            i32 player_index;
+            for (player_index = 0; player_index < 8; ++player_index) {
+                GAMEOBJECT *player = (GAMEOBJECT *)Player[player_index];
+                if (player != NULL && (player->flags_1fc_word & 0x1001) == 0x1001 &&
+                    player->id == (u16)signal->suit->character_id &&
+                    (f64)NuVecDistSqr(&player->collision_position, &signal->target_position, NULL) <
+                        0.49000006914138794) {
+                    NUVEC offset;
+                    f32 along_normal;
+                    f32 distance;
+                    f32 radius;
+                    f32 lateral_squared;
+                    NuVecSub(&offset, &player->collision_position, &signal->position);
+                    along_normal = NuVecDot(&offset, &signal->normal);
+                    distance = NuVecMag(&offset);
+                    radius = (f32)((f64)player->bounds_radius + (f64)0.3f);
+                    lateral_squared = (f32)((f64)distance * distance - (f64)along_normal * along_normal);
+                    if ((f64)lateral_squared < (f64)radius * radius)
+                        break;
+                }
+            }
+            if (player_index == 8)
+                signal->flags &= ~4;
+        } else {
+            ADD_GAME_MESSAGE_PC message = AddGameMsg_Default;
+            message.text = TTab[*signal->suit->text_id];
+            message.position = &signal->target_position;
+            message.scale = 1.0f;
+            message.red = 0xff;
+            message.green = 0xff;
+            message.blue = 0;
+            message.alpha = 0x30;
+            message.flags = 0x87;
+            AddGameMsg(&message);
+            target_scale = 1.0f;
+        }
+        signal->scale = SeekLinearF(signal->scale, target_scale, (f32)(3.0 * FRAMETIME));
+    }
+}
+
+void __cdecl Signals_Draw(WORLDINFO *world, void *unused, f32 unused_time) {
+    SIGNAL_s *signal = world->signals;
+    i32 index;
+    for (index = 0; index < world->signal_count; ++index, ++signal) {
+        NUMTX matrix;
+        if ((signal->flags & 1) == 0)
+            continue;
+        matrix = signal->matrix;
+        if (world->level_objects[0x36].active != 0)
+            NuSpecialDrawAt(&world->level_objects[0x36].special, &matrix);
+        if ((signal->flags & 2) != 0) {
+            if (world->level_objects[signal->animation_1].active != 0)
+                NuSpecialDrawAt(&world->level_objects[signal->animation_1].special, &matrix);
+            if (world->level_objects[signal->animation_2].active != 0) {
+                f32 alpha = signal->radius;
+                NUVEC offset;
+                f32 along_normal;
+                f32 distance;
+                f32 lateral_squared;
+                NuVecSub(&offset, &GameCam->position, &signal->position);
+                along_normal = NuVecDot(&offset, &signal->normal);
+                distance = NuVecMag(&offset);
+                lateral_squared = (f32)((f64)distance * distance - (f64)along_normal * along_normal);
+                if (lateral_squared < 2.25f) {
+                    f32 fade;
+                    if (lateral_squared <= 0.5625f)
+                        fade = 0.0f;
+                    else
+                        fade = (f32)(((f64)NuFsqrt(lateral_squared) - 0.75) / 0.75);
+                    if (along_normal < 0.0f || along_normal > 2.0f) {
+                        if (along_normal >= 0.0f)
+                            along_normal = (f32)((f64)along_normal - 2.0);
+                        else
+                            along_normal = -along_normal;
+                        if (along_normal < 0.75f)
+                            fade = (f32)((f64)fade + (1.0 - (f64)fade) * ((f64)along_normal / 0.75));
+                        else
+                            fade = 1.0f;
+                    }
+                    alpha *= fade;
+                }
+                alpha *= signal->scale;
+                if (alpha > 0.0f)
+                    NuSpecialDrawAtAlpha(&world->level_objects[signal->animation_2].special, &matrix, alpha);
+            }
+        } else if (world->level_objects[signal->animation_0].active != 0) {
+            NuSpecialDrawAt(&world->level_objects[signal->animation_0].special, &matrix);
+        }
+    }
+}
