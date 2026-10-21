@@ -3,6 +3,7 @@
 extern "C" void __cdecl RegisterLswGizmoTypesPc(VARIPTR *, VARIPTR *);
 extern "C" void __cdecl RegisterAlternateGizmoTypesPc(VARIPTR *, VARIPTR *);
 extern "C" {
+    void __cdecl MiniKits_Init(VARIPTR *, VARIPTR *);
     void __cdecl CharCategories_Init(CHAR_CATEGORY_RECORD_PC *);
     extern CHAR_CATEGORY_RECORD_PC StartupCharCategoriesDefaultPc[6];
     extern CHAR_CATEGORY_RECORD_PC StartupCharCategoriesLswPc[10];
@@ -400,7 +401,7 @@ extern "C" {
         CharScenes_Init(&permbuffer_ptr, &permbuffer_end);
         IconScenes_Init("stuff\\icons\\", &permbuffer_ptr, &permbuffer_end);
         FixUpCharacters(CharacterFixupTablePc);
-        STUBBED_NAMED("LoadPermData: MiniKits_Init");
+        MiniKits_Init(&permbuffer_ptr, &permbuffer_end);
 
         if (StartupGameFlag1 != 0) {
             default_id_a = ID_DEFAULTCHARACTER_LSW_A;

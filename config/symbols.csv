@@ -4693,6 +4693,7 @@ address,symbol,size,ctype
 0x599830,_SuperCarry_YRotation,290,"i32 __cdecl(GAMEOBJECT *,u16)"
 0x599960,_SuperCarry_Carrying,53,i32 __cdecl(GAMEOBJECT *)
 0x5999a0,_SuperCarry_Release,64,void __cdecl(GAMEOBJECT *)
+0x00599a10,_MiniKits_Init,34,"void __cdecl(VARIPTR *, VARIPTR *)"
 0x599a40,_MiniKit_Load,220,"void __cdecl(MINIKIT_PC *, i32, VARIPTR *, VARIPTR *, void *)"
 0x599b20,_MiniKit_InitPieces,442,"void __cdecl(MINIKIT_PC *, i32, VARIPTR *, VARIPTR *)"
 0x599ce0,_CharMiniKit_Draw,287,"void __cdecl CharMiniKit_Draw(i32, NUMTX *, i32, f32, f32)"
