@@ -1719,7 +1719,8 @@ void __cdecl BonusComplete_LSW_Update(STATUS_STAGE_s *stage, STATUSPACKET_s *pac
         SetDrawGoldBrick(packet, packet->current_gold_brick);
         {
             volatile f32 previous = stage->field_0x18;
-            volatile f32 accumulated = stage->field_0x18 + elapsed;
+            volatile f32 accumulated = stage->field_0x18;
+            accumulated += elapsed;
             stage->field_0x18 = accumulated;
             if (accumulated >= stage->field_0x1c)
                 NextStatusStage(packet);
@@ -1745,7 +1746,8 @@ void __cdecl BonusTime_LSW_Update(STATUS_STAGE_s *stage, STATUSPACKET_s *packet,
         SetDrawGoldBrick(packet, packet->current_gold_brick);
         {
             volatile f32 previous = stage->field_0x18;
-            volatile f32 accumulated = stage->field_0x18 + elapsed;
+            volatile f32 accumulated = stage->field_0x18;
+            accumulated += elapsed;
             stage->field_0x18 = accumulated;
             if (accumulated >= stage->field_0x1c)
                 NextStatusStage(packet);
@@ -1905,7 +1907,8 @@ void __cdecl SuperStoryTime_LSW_Update(STATUS_STAGE_s *stage, STATUSPACKET_s *pa
         packet->original_score = *packet->score;
     } else if (stage->field_0x14 == 1) {
         volatile f32 previous = stage->field_0x18;
-        volatile f32 accumulated = stage->field_0x18 + elapsed;
+        volatile f32 accumulated = stage->field_0x18;
+        accumulated += elapsed;
         stage->field_0x18 = accumulated;
         if (accumulated >= stage->field_0x1c) {
             *packet->score = packet->time_reward_score;
@@ -2018,7 +2021,8 @@ void __cdecl SuperStoryScore_LSW_Update(STATUS_STAGE_s *stage, STATUSPACKET_s *p
         packet->original_score = *packet->score;
     } else if (stage->field_0x14 == 1) {
         volatile f32 previous = stage->field_0x18;
-        volatile f32 accumulated = stage->field_0x18 + elapsed;
+        volatile f32 accumulated = stage->field_0x18;
+        accumulated += elapsed;
         stage->field_0x18 = accumulated;
         if (accumulated >= stage->field_0x1c) {
             *packet->score = packet->final_reward_score;
@@ -2127,7 +2131,8 @@ void __cdecl BonusWin_LSW_Update(STATUS_STAGE_s *stage, STATUSPACKET_s *packet, 
         StatusDrawPlayerIconsPc = 1;
     } else if (stage->field_0x14 == 1) {
         volatile f32 previous = stage->field_0x18;
-        volatile f32 accumulated = stage->field_0x18 + elapsed;
+        volatile f32 accumulated = stage->field_0x18;
+        accumulated += elapsed;
         stage->field_0x18 = accumulated;
         if (accumulated >= stage->field_0x1c) {
             NextStatusStage(packet);
