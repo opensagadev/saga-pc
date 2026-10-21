@@ -17,7 +17,7 @@
     "config/library-objects.json": "e5ae24d3eac36fa0d0cb098f7690faaef3110f225db30c8cbf0f7d0d64f6ecfe",
     "config/ogg-vorbis.json": "7f98d40938e6bd6060c6bdfc2ce39d9cfb1c822243693eeb1d85d46b43dcad24",
     "config/project.json": "9a3650958be769951860d2c457f8573049ecae76e48ce8f3d7383e4ca2b761a6",
-    "config/symbols.csv": "f56dd0f876b902e0af2e3bcb15a55a044e5d5944e8c8980e55c5497218b93b6b",
+    "config/symbols.csv": "d38a20e0f794cdce135e775759571fd9a9b1af12621106cb3c37963a5aff6fec",
     "config/symbols.md": "dffbdaac86011e3aee74b404063c15bda97f88af3db337ffef9f1bad1785d212",
     "config/toolchain.json": "b8808088bb2c7eb239785f69c9e464ae8545216d5705fb37216bc0cf926732f3",
     "config/tools.json": "50199f6b132a7abfabf251e98a75be0a957abfe50f1ff776188fba21e4c4436f",
@@ -376,6 +376,7 @@
     "src/legoapi/text.c": "4935f9f90a80ac4e8aa7f9d8dc1aaa699bcce2e0e27b136bee096a4598210f2b",
     "src/legoapi/thermaldetonators.c": "b6c53fe97b629330191f12d8e1800d53d9b8e8c97dbaaee2b21501bda0aa990e",
     "src/legoapi/thermaldetonators_pc.c": "e098da8fa30de5eb00c7044415a133bdee99fdcde40dca8572f55030b3c3d5be",
+    "src/legoapi/tightropes_pc.c": "62a61d75ae15a9d77dd661ce09b80782781fdc48fd613e4151842b36f179f483",
     "src/legoapi/timing.c": "40f5494927cbdff9e65539fa6803da4af0b6a8f232d0c1f69c4118ed5697a7b3",
     "src/legoapi/torpedo.c": "ab6edde5798780f7846d81ca6a6bc4ff220b676caeb4209669e5a8a5cf010220",
     "src/legoapi/traffic.c": "5631b0d0671cb5ac767f964a2f93405b2992a8b791418fd8e9cab21adfe28124",
@@ -773,6 +774,7 @@
     "build/obj/legoapi/thermaldetonators.obj": "065547db780a8817abd9c6f338bd0b096c16e556a228b0efab0b6b0cb9398ae2",
     "build/obj/legoapi/thermaldetonators_pc.obj": "e89c97a1236e76711648ffaa4fce45c100386d8b353394e3ed1d15ea4e712f7f",
     "build/obj/legoapi/tightrope.obj": "4ea863287f08a1b77a2819162741a49cd4b3c89af33fb30436a97524919ce145",
+    "build/obj/legoapi/tightropes_pc.obj": "22071ea3a6ac4e9202e5b92bc3f82d005c4e70df1de886e1e43a220e0bce8c94",
     "build/obj/legoapi/timing.obj": "c844619abd58a5c00fddf1ed7bc551ae20b7785f7ae20845d12f96ade77ced0b",
     "build/obj/legoapi/torpedo.obj": "e6cec2b852b49dc82d7f2d2967fcd13a2e3086e9e59b3f9093a206c8fe2a0e84",
     "build/obj/legoapi/traffic.obj": "2f5ee02fe4b1864095c04f6902b79b28d159f4ac0efca5a6a80b3462212d002d",
@@ -47196,21 +47198,97 @@
       "name": "TightRopes_Load",
       "symbol": "_TightRopes_Load",
       "address": "0x004d06a0",
-      "units": [],
+      "units": [
+        "src/legoapi/tightropes_pc.c"
+      ],
       "target_size": 253,
       "exact_match": false,
-      "objects": [],
-      "status": "not implemented"
+      "objects": [
+        {
+          "unit": "src/legoapi/tightropes_pc.c",
+          "base_size": 261,
+          "exact_match": false,
+          "target_sha256": "65c02b06359d62acf15702af938cace4d8c343a374c696a63a00f55572c5a18b",
+          "base_sha256": "ec398d5ec77069955c26b3352f1fa4731dddd33afa0a99ac01f76f657265284e",
+          "relocation_count": 12,
+          "comparison_unit": "004d06a0-a1d8fa9d7942",
+          "objdiff_percent": 84.17911
+        }
+      ],
+      "status": "different",
+      "objdiff_percent": 84.17911
+    },
+    {
+      "name": "TightRopes_ReserveBufferSpace",
+      "symbol": "_TightRopes_ReserveBufferSpace",
+      "address": "0x004d07a0",
+      "units": [
+        "src/legoapi/tightropes_pc.c"
+      ],
+      "target_size": 85,
+      "exact_match": false,
+      "objects": [
+        {
+          "unit": "src/legoapi/tightropes_pc.c",
+          "base_size": 85,
+          "exact_match": false,
+          "target_sha256": "1097c8efe84ebb0d74570f15fe0ee305b781de6de9f9c04eef495b94d9e0064c",
+          "base_sha256": "fff39b8f003a75b81814daab51ce680a54b19838a8959d44e7812a9fa30a6731",
+          "relocation_count": 0,
+          "comparison_unit": "004d07a0-448d0512bb5a",
+          "objdiff_percent": 97.0
+        }
+      ],
+      "status": "different",
+      "objdiff_percent": 97.0
+    },
+    {
+      "name": "TightRopeInitRecordPc",
+      "symbol": "_TightRopeInitRecordPc",
+      "address": "0x004d0800",
+      "units": [
+        "src/legoapi/tightropes_pc.c"
+      ],
+      "target_size": 99,
+      "exact_match": true,
+      "objects": [
+        {
+          "unit": "src/legoapi/tightropes_pc.c",
+          "base_size": 99,
+          "exact_match": true,
+          "target_sha256": "c0569227e7c11a4d740f62cf57a7c5ca8bcf05c500f31069ca28b19ef41173d4",
+          "base_sha256": "c0569227e7c11a4d740f62cf57a7c5ca8bcf05c500f31069ca28b19ef41173d4",
+          "relocation_count": 4,
+          "comparison_unit": "004d0800-022ef7d97fd1",
+          "objdiff_percent": 100.0
+        }
+      ],
+      "status": "exact",
+      "objdiff_percent": 100.0
     },
     {
       "name": "TightRopes_Reset",
       "symbol": "_TightRopes_Reset",
-      "address": "0x004d0800",
-      "units": [],
-      "target_size": 99,
+      "address": "0x004d0870",
+      "units": [
+        "src/legoapi/tightropes_pc.c"
+      ],
+      "target_size": 112,
       "exact_match": false,
-      "objects": [],
-      "status": "not implemented"
+      "objects": [
+        {
+          "unit": "src/legoapi/tightropes_pc.c",
+          "base_size": 95,
+          "exact_match": false,
+          "target_sha256": "901417092a8399b01eb461c9c44d4899bb53d0f01b863c7ae4b5b965fef39136",
+          "base_sha256": "4907d9e1350fbff07c3adb4111e8982b0bd5f9a2087ab0611cd5099862edbe57",
+          "relocation_count": 1,
+          "comparison_unit": "004d0870-db043fce3b5c",
+          "objdiff_percent": 81.39535
+        }
+      ],
+      "status": "different",
+      "objdiff_percent": 81.39535
     },
     {
       "name": "TightRope_InRange",
@@ -47240,11 +47318,313 @@
       "name": "TightRopes_Draw",
       "symbol": "_TightRopes_Draw",
       "address": "0x004d0b80",
-      "units": [],
+      "units": [
+        "src/legoapi/tightropes_pc.c"
+      ],
       "target_size": 1069,
       "exact_match": false,
-      "objects": [],
-      "status": "not implemented"
+      "objects": [
+        {
+          "unit": "src/legoapi/tightropes_pc.c",
+          "base_size": 1061,
+          "exact_match": false,
+          "target_sha256": "ee3002f4ef8f124266f5d0b2b7edd116850e4a845a1321f5d3705a0c934d1732",
+          "base_sha256": "0229afda022e6a791804fb58136530a31359605f3d0a19afdb5b2807b63053ab",
+          "relocation_count": 12,
+          "comparison_unit": "004d0b80-05ca80fb6cbc",
+          "objdiff_percent": 81.56272
+        }
+      ],
+      "status": "different",
+      "objdiff_percent": 81.56272
+    },
+    {
+      "name": "TightRope_Activate",
+      "symbol": "_TightRope_Activate",
+      "address": "0x004d0fb0",
+      "units": [
+        "src/legoapi/tightropes_pc.c"
+      ],
+      "target_size": 22,
+      "exact_match": true,
+      "objects": [
+        {
+          "unit": "src/legoapi/tightropes_pc.c",
+          "base_size": 22,
+          "exact_match": true,
+          "target_sha256": "ed30ae6135a51b241202f9be9cbb5347ec43ca19f4ef0e2dfffa31974e5da4d2",
+          "base_sha256": "ed30ae6135a51b241202f9be9cbb5347ec43ca19f4ef0e2dfffa31974e5da4d2",
+          "relocation_count": 0,
+          "comparison_unit": "004d0fb0-fa2ea6ae2867",
+          "objdiff_percent": 100.0
+        }
+      ],
+      "status": "exact",
+      "objdiff_percent": 100.0
+    },
+    {
+      "name": "TightRope_SetVisibility",
+      "symbol": "_TightRope_SetVisibility",
+      "address": "0x004d0fd0",
+      "units": [
+        "src/legoapi/tightropes_pc.c"
+      ],
+      "target_size": 22,
+      "exact_match": true,
+      "objects": [
+        {
+          "unit": "src/legoapi/tightropes_pc.c",
+          "base_size": 22,
+          "exact_match": true,
+          "target_sha256": "7316463250b66ac250e5f1b060960301dcfbd9b778621f97bfa2e7f805cbc1a7",
+          "base_sha256": "7316463250b66ac250e5f1b060960301dcfbd9b778621f97bfa2e7f805cbc1a7",
+          "relocation_count": 0,
+          "comparison_unit": "004d0fd0-72123365a073",
+          "objdiff_percent": 100.0
+        }
+      ],
+      "status": "exact",
+      "objdiff_percent": 100.0
+    },
+    {
+      "name": "TightRopes_GetMaxGizmos",
+      "symbol": "_TightRopes_GetMaxGizmos",
+      "address": "0x004d0ff0",
+      "units": [
+        "src/legoapi/tightropes_pc.c"
+      ],
+      "target_size": 25,
+      "exact_match": true,
+      "objects": [
+        {
+          "unit": "src/legoapi/tightropes_pc.c",
+          "base_size": 25,
+          "exact_match": true,
+          "target_sha256": "1bf7b367b82fb631af76b52812bc3a1fbf931534a2bacc31960a9ce98db89f17",
+          "base_sha256": "1bf7b367b82fb631af76b52812bc3a1fbf931534a2bacc31960a9ce98db89f17",
+          "relocation_count": 0,
+          "comparison_unit": "004d0ff0-b6e19acdd093",
+          "objdiff_percent": 100.0
+        }
+      ],
+      "status": "exact",
+      "objdiff_percent": 100.0
+    },
+    {
+      "name": "TightRopes_AddGizmos",
+      "symbol": "_TightRopes_AddGizmos",
+      "address": "0x004d1010",
+      "units": [
+        "src/legoapi/tightropes_pc.c"
+      ],
+      "target_size": 97,
+      "exact_match": true,
+      "objects": [
+        {
+          "unit": "src/legoapi/tightropes_pc.c",
+          "base_size": 97,
+          "exact_match": true,
+          "target_sha256": "f6d24ccc7e1d11508157af25b783af65e84ec621ad7aa5a43d270dffe8d50c12",
+          "base_sha256": "f6d24ccc7e1d11508157af25b783af65e84ec621ad7aa5a43d270dffe8d50c12",
+          "relocation_count": 2,
+          "comparison_unit": "004d1010-d6ac21022be8",
+          "objdiff_percent": 100.0
+        }
+      ],
+      "status": "exact",
+      "objdiff_percent": 100.0
+    },
+    {
+      "name": "TightRope_GetGizmoName",
+      "symbol": "_TightRope_GetGizmoName",
+      "address": "0x004d1080",
+      "units": [
+        "src/legoapi/tightropes_pc.c"
+      ],
+      "target_size": 14,
+      "exact_match": true,
+      "objects": [
+        {
+          "unit": "src/legoapi/tightropes_pc.c",
+          "base_size": 14,
+          "exact_match": true,
+          "target_sha256": "26690bbe535ad6119bdd37bf2f477a8f95d7f34860c3b971e777e17e835fc784",
+          "base_sha256": "26690bbe535ad6119bdd37bf2f477a8f95d7f34860c3b971e777e17e835fc784",
+          "relocation_count": 0,
+          "comparison_unit": "004d1080-772b5ab35a3c",
+          "objdiff_percent": 100.0
+        }
+      ],
+      "status": "exact",
+      "objdiff_percent": 100.0
+    },
+    {
+      "name": "TightRope_GetOutput",
+      "symbol": "_TightRope_GetOutput",
+      "address": "0x004d1090",
+      "units": [
+        "src/legoapi/tightropes_pc.c"
+      ],
+      "target_size": 27,
+      "exact_match": true,
+      "objects": [
+        {
+          "unit": "src/legoapi/tightropes_pc.c",
+          "base_size": 27,
+          "exact_match": true,
+          "target_sha256": "83d8cac787af0f8c6d54fb3a7261fe14cb3bb21522ffc55413b6d8300902282a",
+          "base_sha256": "83d8cac787af0f8c6d54fb3a7261fe14cb3bb21522ffc55413b6d8300902282a",
+          "relocation_count": 0,
+          "comparison_unit": "004d1090-2450cc0a0026",
+          "objdiff_percent": 100.0
+        }
+      ],
+      "status": "exact",
+      "objdiff_percent": 100.0
+    },
+    {
+      "name": "TightRope_GetOutputName",
+      "symbol": "_TightRope_GetOutputName",
+      "address": "0x004d10b0",
+      "units": [
+        "src/legoapi/tightropes_pc.c"
+      ],
+      "target_size": 6,
+      "exact_match": true,
+      "objects": [
+        {
+          "unit": "src/legoapi/tightropes_pc.c",
+          "base_size": 6,
+          "exact_match": true,
+          "target_sha256": "88a662bd7f9490fcf31c71c4d7826a2e100a1ef3e1d8a986ddc02a20e353820e",
+          "base_sha256": "88a662bd7f9490fcf31c71c4d7826a2e100a1ef3e1d8a986ddc02a20e353820e",
+          "relocation_count": 1,
+          "comparison_unit": "004d10b0-fdb0b24fa148",
+          "objdiff_percent": 100.0
+        }
+      ],
+      "status": "exact",
+      "objdiff_percent": 100.0
+    },
+    {
+      "name": "TightRope_GetNumOutputs",
+      "symbol": "_TightRope_GetNumOutputs",
+      "address": "0x004d10c0",
+      "units": [
+        "src/legoapi/tightropes_pc.c"
+      ],
+      "target_size": 6,
+      "exact_match": true,
+      "objects": [
+        {
+          "unit": "src/legoapi/tightropes_pc.c",
+          "base_size": 6,
+          "exact_match": true,
+          "target_sha256": "2db31f4e09597946e56e859813bfdad7046d457c32332c3a882654d1e3ffdf67",
+          "base_sha256": "2db31f4e09597946e56e859813bfdad7046d457c32332c3a882654d1e3ffdf67",
+          "relocation_count": 0,
+          "comparison_unit": "004d10c0-75e52f522354",
+          "objdiff_percent": 100.0
+        }
+      ],
+      "status": "exact",
+      "objdiff_percent": 100.0
+    },
+    {
+      "name": "TightRopes_AllocateProgressData",
+      "symbol": "_TightRopes_AllocateProgressData",
+      "address": "0x004d10d0",
+      "units": [
+        "src/legoapi/tightropes_pc.c"
+      ],
+      "target_size": 21,
+      "exact_match": true,
+      "objects": [
+        {
+          "unit": "src/legoapi/tightropes_pc.c",
+          "base_size": 21,
+          "exact_match": true,
+          "target_sha256": "0e79080233b53e490010e7a84cdb7d06d38d04a431c594ebe60b74e6adab6fb7",
+          "base_sha256": "0e79080233b53e490010e7a84cdb7d06d38d04a431c594ebe60b74e6adab6fb7",
+          "relocation_count": 1,
+          "comparison_unit": "004d10d0-ed3fce0aaec6",
+          "objdiff_percent": 100.0
+        }
+      ],
+      "status": "exact",
+      "objdiff_percent": 100.0
+    },
+    {
+      "name": "TightRopes_ClearProgress",
+      "symbol": "_TightRopes_ClearProgress",
+      "address": "0x004d10f0",
+      "units": [
+        "src/legoapi/tightropes_pc.c"
+      ],
+      "target_size": 22,
+      "exact_match": true,
+      "objects": [
+        {
+          "unit": "src/legoapi/tightropes_pc.c",
+          "base_size": 22,
+          "exact_match": true,
+          "target_sha256": "e6e0a9e68635501ebc18afd26c5643f94065927e3fb40e6a7eb8c2ef78b2aba7",
+          "base_sha256": "e6e0a9e68635501ebc18afd26c5643f94065927e3fb40e6a7eb8c2ef78b2aba7",
+          "relocation_count": 0,
+          "comparison_unit": "004d10f0-c59c0df3a93b",
+          "objdiff_percent": 100.0
+        }
+      ],
+      "status": "exact",
+      "objdiff_percent": 100.0
+    },
+    {
+      "name": "TightRopes_StoreProgress",
+      "symbol": "_TightRopes_StoreProgress",
+      "address": "0x004d1110",
+      "units": [
+        "src/legoapi/tightropes_pc.c"
+      ],
+      "target_size": 127,
+      "exact_match": false,
+      "objects": [
+        {
+          "unit": "src/legoapi/tightropes_pc.c",
+          "base_size": 107,
+          "exact_match": false,
+          "target_sha256": "787f8a9d68e3b404f4de9f5eb79b467d53a78c49a6be7bd9aeb9eb77ea638b70",
+          "base_sha256": "71181a30280b71afa9cc9d5250aaec430ba516062d203accd658224ec6ca5570",
+          "relocation_count": 0,
+          "comparison_unit": "004d1110-72cb16d13b69",
+          "objdiff_percent": 70.9375
+        }
+      ],
+      "status": "different",
+      "objdiff_percent": 70.9375
+    },
+    {
+      "name": "TightRopes_RegisterGizmo",
+      "symbol": "_TightRopes_RegisterGizmo",
+      "address": "0x004d1190",
+      "units": [
+        "src/legoapi/tightropes_pc.c"
+      ],
+      "target_size": 268,
+      "exact_match": true,
+      "objects": [
+        {
+          "unit": "src/legoapi/tightropes_pc.c",
+          "base_size": 268,
+          "exact_match": true,
+          "target_sha256": "7cde079b29a2df0e66efa66ddc4e81b70a77b20981fb6080718d0835df48dab8",
+          "base_sha256": "7cde079b29a2df0e66efa66ddc4e81b70a77b20981fb6080718d0835df48dab8",
+          "relocation_count": 50,
+          "comparison_unit": "004d1190-4a435fa80192",
+          "objdiff_percent": 100.0
+        }
+      ],
+      "status": "exact",
+      "objdiff_percent": 100.0
     },
     {
       "name": "?TightRopeSetPositionPc@@YAHPAUTIGHTROPE_MOTION_PC@@PAUnuvec_s@@PAUgameobject_s@@@Z",
@@ -215145,6 +215525,7 @@
         "src/legoapi/teleport_motion.cpp",
         "src/legoapi/terrain_player_pc.c",
         "src/legoapi/text.c",
+        "src/legoapi/tightropes_pc.c",
         "src/legoapi/timing.c",
         "src/legoapi/torpedo.c",
         "src/legoapi/traffic.c",
@@ -216000,6 +216381,14 @@
         },
         {
           "unit": "src/legoapi/text.c",
+          "exact_match": true,
+          "target_size": 8,
+          "base_size": 8,
+          "target_sha256": "6c3c396ed6b5c36dcae172271f462051b1266b851e92df3deea8ac65478fd712",
+          "base_sha256": "6c3c396ed6b5c36dcae172271f462051b1266b851e92df3deea8ac65478fd712"
+        },
+        {
+          "unit": "src/legoapi/tightropes_pc.c",
           "exact_match": true,
           "target_size": 8,
           "base_size": 8,
@@ -310834,6 +311223,27 @@
       "status": "exact"
     },
     {
+      "name": "PCContextName_TightRope",
+      "symbol": "_PCContextName_TightRope",
+      "address": "0x0075d3cc",
+      "units": [
+        "src/legoapi/tightropes_pc.c"
+      ],
+      "target_size": 10,
+      "exact_match": true,
+      "objects": [
+        {
+          "unit": "src/legoapi/tightropes_pc.c",
+          "exact_match": true,
+          "target_size": 10,
+          "base_size": 10,
+          "target_sha256": "68196b5f8329200e3d26a60420ab960889a5a233e20e81f2880754147f02e150",
+          "base_sha256": "68196b5f8329200e3d26a60420ab960889a5a233e20e81f2880754147f02e150"
+        }
+      ],
+      "status": "exact"
+    },
+    {
       "name": "__real@3f1a36e2e0000000",
       "symbol": "__real@3f1a36e2e0000000",
       "address": "0x0075d3d8",
@@ -401913,6 +402323,27 @@
       "status": "exact"
     },
     {
+      "name": "TightRopeRegistryNamePc",
+      "symbol": "_TightRopeRegistryNamePc",
+      "address": "0x007ffa70",
+      "units": [
+        "src/legoapi/tightropes_pc.c"
+      ],
+      "target_size": 4,
+      "exact_match": true,
+      "objects": [
+        {
+          "unit": "src/legoapi/tightropes_pc.c",
+          "exact_match": true,
+          "target_size": 4,
+          "base_size": 4,
+          "target_sha256": "d434761262a736bd5b31e968737f8ce4efbc28a1b306c6e1ac2c723f45b7b9a4",
+          "base_sha256": "d434761262a736bd5b31e968737f8ce4efbc28a1b306c6e1ac2c723f45b7b9a4"
+        }
+      ],
+      "status": "exact"
+    },
+    {
       "name": "TorpedoStealTimerPc",
       "symbol": "_TorpedoStealTimerPc",
       "address": "0x007ffa84",
@@ -442850,6 +443281,27 @@
       "status": "unknown size"
     },
     {
+      "name": "TightRopeAddTypePc",
+      "symbol": "_TightRopeAddTypePc",
+      "address": "0x00881200",
+      "units": [
+        "src/legoapi/tightropes_pc.c"
+      ],
+      "target_size": 120,
+      "exact_match": true,
+      "objects": [
+        {
+          "unit": "src/legoapi/tightropes_pc.c",
+          "exact_match": true,
+          "target_size": 120,
+          "base_size": 120,
+          "target_sha256": "6edd9f6f9cc92cded36e6c4a580933f9c9f1b90562b46903b806f21902a1a54f",
+          "base_sha256": "6edd9f6f9cc92cded36e6c4a580933f9c9f1b90562b46903b806f21902a1a54f"
+        }
+      ],
+      "status": "exact"
+    },
+    {
       "name": "PlayerTorpedoCount",
       "symbol": "_PlayerTorpedoCount",
       "address": "0x00881278",
@@ -482733,17 +483185,17 @@
   ],
   "progress": {
     "text_bytes": 3471246,
-    "mapped_code_bytes": 2442508,
-    "matched_code_bytes": 460281,
-    "matching_percent": 13.259820825144631,
-    "fuzzy_coverage_percent": 47.86323318548771,
-    "mapped_functions": 9017,
-    "matched_functions": 4288,
-    "objdiff_fuzzy_percent": 74.85352,
-    "objdiff_total_code": 2222959,
+    "mapped_code_bytes": 2443362,
+    "matched_code_bytes": 460910,
+    "matching_percent": 13.277941119701687,
+    "fuzzy_coverage_percent": 47.920203565636506,
+    "mapped_functions": 9031,
+    "matched_functions": 4300,
+    "objdiff_fuzzy_percent": 74.86587,
+    "objdiff_total_code": 2225234,
     "image_bytes": 40067072,
-    "mapped_bytes": 4255679,
-    "mapping_percent": 10.621387557343846,
+    "mapped_bytes": 4256667,
+    "mapping_percent": 10.623853422581016,
     "mapping_denominator": "code_and_data_section_virtual_sizes",
     "mapping_sections": [
       {
@@ -482751,16 +483203,16 @@
         "kind": "code",
         "address": "0x401000",
         "size": 3471246,
-        "mapped_bytes": 2443702
+        "mapped_bytes": 2444556
       },
       {
         "name": ".rdata",
         "kind": "data",
         "address": "0x751000",
         "size": 646766,
-        "mapped_bytes": 84661,
+        "mapped_bytes": 84671,
         "file_backed_data_bytes": 646766,
-        "mapped_file_backed_data_bytes": 84661,
+        "mapped_file_backed_data_bytes": 84671,
         "zero_fill_data_bytes": 0,
         "mapped_zero_fill_data_bytes": 0
       },
@@ -482769,45 +483221,45 @@
         "kind": "data",
         "address": "0x7ef000",
         "size": 35372200,
-        "mapped_bytes": 1727316,
+        "mapped_bytes": 1727440,
         "file_backed_data_bytes": 417792,
-        "mapped_file_backed_data_bytes": 265195,
+        "mapped_file_backed_data_bytes": 265199,
         "zero_fill_data_bytes": 34954408,
-        "mapped_zero_fill_data_bytes": 1462121
+        "mapped_zero_fill_data_bytes": 1462241
       }
     ],
-    "mapping_known_size_symbols": 16951,
+    "mapping_known_size_symbols": 16968,
     "mapping_unknown_size_symbols": 7075,
-    "mapping_code_bytes": 2443702,
+    "mapping_code_bytes": 2444556,
     "mapping_code_total_bytes": 3471246,
-    "mapping_code_percent": 70.39841025383969,
-    "mapping_data_bytes": 1811977,
+    "mapping_code_percent": 70.42301237077407,
+    "mapping_data_bytes": 1812111,
     "mapping_data_total_bytes": 36018966,
-    "mapping_data_percent": 5.030619146590715,
-    "mapping_code_data_bytes": 4255679,
+    "mapping_data_percent": 5.030991172817121,
+    "mapping_code_data_bytes": 4256667,
     "mapping_code_data_total_bytes": 39490212,
-    "mapping_code_data_percent": 10.77654128572417,
-    "mapping_file_backed_data_bytes": 349856,
+    "mapping_code_data_percent": 10.779043171507917,
+    "mapping_file_backed_data_bytes": 349870,
     "mapping_file_backed_data_total_bytes": 1064558,
-    "mapping_file_backed_data_percent": 32.863967956654314,
-    "mapping_zero_fill_data_bytes": 1462121,
+    "mapping_file_backed_data_percent": 32.8652830564422,
+    "mapping_zero_fill_data_bytes": 1462241,
     "mapping_zero_fill_data_total_bytes": 34954408,
-    "mapping_zero_fill_data_percent": 4.182937385179002,
-    "matched_data_region_bytes": 1796031
+    "mapping_zero_fill_data_percent": 4.183280689519902,
+    "matched_data_region_bytes": 1796165
   },
   "text_coverage": {
     "original_text_bytes": 3471246,
-    "mapped_reconstruction_bytes": 2442508,
-    "exact_reconstruction_bytes": 460281,
-    "mapped_not_exact_bytes": 1982227,
+    "mapped_reconstruction_bytes": 2443362,
+    "exact_reconstruction_bytes": 460910,
+    "mapped_not_exact_bytes": 1982452,
     "excluded_import_glue_bytes": 1194,
-    "unclassified_text_bytes": 1027544,
+    "unclassified_text_bytes": 1026690,
     "strict_original_text_denominator_bytes": 3471246,
-    "strict_original_text_exact_percent": 13.259820825144631,
+    "strict_original_text_exact_percent": 13.277941119701687,
     "reconstruction_scope_denominator_bytes": 3470052,
-    "reconstruction_scope_exact_percent": 13.264383357943915,
-    "mapped_scope_denominator_bytes": 2442508,
-    "mapped_scope_exact_percent": 18.84460562667553,
+    "reconstruction_scope_exact_percent": 13.2825098874599,
+    "mapped_scope_denominator_bytes": 2443362,
+    "mapped_scope_exact_percent": 18.8637623078365,
     "qualification": "Unclassified text includes undiscovered code and unproven padding; these percentages compare relocated objects, not the linked image."
   },
   "data_members": [
@@ -483951,7 +484403,7 @@
       "metadata_sha256": "fe09365da4c355f220d724ca99394fc120b758891b4188d2c49707b6df0894f2",
       "header_path": "src/saga.h",
       "header_sha256": "f5c807c392cb7f77dff8088bf8aab18d114ee73ac3939aed153bd44225502c55",
-      "geometry_object_sha256": "3479912ad7ede276d0ccb3dc91ab4e7d562a62abb2fc22534af8e5e426d5b869",
+      "geometry_object_sha256": "572711de6ad89c8c1086ee5d92a6fde53382052961e4225994d0bac2d30c2fb2",
       "toolchain_sha256": "b8808088bb2c7eb239785f69c9e464ae8545216d5705fb37216bc0cf926732f3",
       "implementation_sha256": "d6a33be911d095a6d07dccd4443ccbfd6b514fd89fd7e200d9caa1827944e218",
       "headers": {
@@ -484193,7 +484645,7 @@
         4
       ]
     },
-    "clang_source_sha256": "e7456fe046676301a98bfb001bfda6987e83b1702d1cd84986f26fb589c949d6",
+    "clang_source_sha256": "46805652347b3cf2fb4c0cb3b2acf1b413158fd118c447f9484c38681a6c432b",
     "member_count": 42,
     "physical_definition_credit": 0
   },
