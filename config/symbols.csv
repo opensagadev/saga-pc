@@ -955,6 +955,7 @@ address,symbol,size,ctype
 0x00460bf0,_GoldBrick_LSW_Skip,21,"void __cdecl(STATUS_STAGE_s *, STATUSPACKET_s *)"
 0x00460c10,_GoldBrick_LSW_Update,824,"void __cdecl(STATUS_STAGE_s *, STATUSPACKET_s *, f32)"
 0x460f50,_GoldBrick_LSW_Draw,883,"void __cdecl(STATUS_STAGE_s *, STATUSPACKET_s *, i32)"
+0x004612d0,_Prompt_LSW_Update,531,"void __cdecl(STATUS_STAGE_s *, STATUSPACKET_s *, f32)"
 0x004615c0,_CollectCharcters_Skip,91,"void __cdecl(STATUS_STAGE_s *, STATUSPACKET_s *)"
 0x00461620,_CollectCharcters_Update,249,"void __cdecl(STATUS_STAGE_s *, STATUSPACKET_s *, f32)"
 0x461720,_CollectCharcters_Draw,1022,"void __cdecl(STATUS_STAGE_s *, STATUSPACKET_s *, i32)"
@@ -982,7 +983,9 @@ address,symbol,size,ctype
 0x00463c90,_ChallangeCash_Skip,1,"void __cdecl(STATUS_STAGE_s *, STATUSPACKET_s *)"
 0x00463ca0,_ChallangeCash_Update,649,"void __cdecl(STATUS_STAGE_s *, STATUSPACKET_s *, f32)"
 0x463f30,_ChallangeCash_Draw,405,"void __cdecl(STATUS_STAGE_s *, STATUSPACKET_s *, i32)"
+0x004640d0,_Exit_LSW_Update,102,"void __cdecl(STATUS_STAGE_s *, STATUSPACKET_s *, f32)"
 0x00464140,_Save_LSW_Update,212,"void __cdecl(STATUS_STAGE_s *, STATUSPACKET_s *, f32)"
+0x00464220,_Fade_LSW_Update,192,"void __cdecl(STATUS_STAGE_s *, STATUSPACKET_s *, f32)"
 0x464360,_GizAction_ActivateEffect,154,
 0x464400,_GizAction_ActivatePartEffect,125,
 0x464480,_GizActions_SetVisibilityPc,172,"void __cdecl(GIZFLOW_PC *, FLOWBOX_PC *, char **, i32)"
