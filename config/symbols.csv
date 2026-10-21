@@ -956,6 +956,7 @@ address,symbol,size,ctype
 0x00460c10,_GoldBrick_LSW_Update,824,"void __cdecl(STATUS_STAGE_s *, STATUSPACKET_s *, f32)"
 0x460f50,_GoldBrick_LSW_Draw,883,"void __cdecl(STATUS_STAGE_s *, STATUSPACKET_s *, i32)"
 0x004612d0,_Prompt_LSW_Update,531,"void __cdecl(STATUS_STAGE_s *, STATUSPACKET_s *, f32)"
+0x004614f0,_Prompt_LSW_Draw,206,"void __cdecl(STATUS_STAGE_s *, STATUSPACKET_s *, i32)"
 0x004615c0,_CollectCharcters_Skip,91,"void __cdecl(STATUS_STAGE_s *, STATUSPACKET_s *)"
 0x00461620,_CollectCharcters_Update,249,"void __cdecl(STATUS_STAGE_s *, STATUSPACKET_s *, f32)"
 0x461720,_CollectCharcters_Draw,1022,"void __cdecl(STATUS_STAGE_s *, STATUSPACKET_s *, i32)"
@@ -1360,7 +1361,7 @@ address,symbol,size,ctype
 0x00485120,_UpdateNewMiniKits,135,"i32 __cdecl(STATUSPACKET_s *, STATUS_STAGE_s *)"
 0x4851b0,_DrawStatusMiniKit,1520,"void __cdecl(f32, f32, f32, f32, f32, i32, STATUSPACKET_s *, f32)"
 0x4857d0,_AddStatusMiniKitParts,913,void __cdecl(void)
-0x485b70,_Status_DrawPromptMenu,1124,
+0x485b70,_Status_DrawPromptMenu,1124,"void __cdecl(STATUSPACKET_s *, i32, f32)"
 0x485fe0,_DrawBonusTime,530,"void __cdecl(STATUSPACKET_s *, f32, i32)"
 0x00486940,_FinishStatusPacket,694,void __cdecl(i32)
 0x486c00,_NuMainStatusHelperPc,1,void __cdecl(STATUSPACKET_s *)
@@ -18878,6 +18879,9 @@ address,symbol,size,ctype
 0x7fa4dc,_DrawStatusScaleXPc,,f32
 0x7fa4e0,_DrawStatusScaleYPc,,f32
 0x7fa4e4,_StatusMiniKitDirectionOffsetPc,4,f32
+0x7fa4e8,_StatusPromptSingleYPc,4,f32
+0x7fa4ec,_StatusPromptHintYPc,4,f32
+0x7fa4f0,_StatusPromptStepYPc,4,f32
 0x7fa4f4,_StatusBonusTimeYPc,4,f32
 0x007fa564,_Tag_Mode,4,i32
 0x007fa568,_TakeOverATATJumpScale,4,f32
