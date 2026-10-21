@@ -349,3 +349,56 @@ void __cdecl Signals_Draw(WORLDINFO *world, void *unused, f32 unused_time) {
         }
     }
 }
+
+extern const char PCContextName_Signal[7];
+extern char TextInputKeyNameTextPc7516c0[1];
+
+#pragma data_seg(".data$SignalRegistryNamePc")
+char *SignalRegistryNamePc = (char *)PCContextName_Signal;
+#pragma data_seg()
+#pragma data_seg(".data$SignalAddTypePc")
+ADDGIZMOTYPE_PC SignalAddTypePc = {0};
+#pragma data_seg()
+
+STATIC_ASSERT(sizeof(ADDGIZMOTYPE_PC) == 0x78);
+STATIC_ASSERT(offsetof(ADDGIZMOTYPE_PC, fns) == 8);
+STATIC_ASSERT(offsetof(GIZMOFNS_PC, options) == 0);
+STATIC_ASSERT(offsetof(GIZMOFNS_PC, get_max_gizmos_fn) == 4);
+STATIC_ASSERT(offsetof(GIZMOFNS_PC, load_fn) == 0x64);
+STATIC_ASSERT(offsetof(GIZMOFNS_PC, add_level_sfx_fn) == 0x6c);
+
+ADDGIZMOTYPE_PC *__cdecl Signals_RegisterGizmo(i32 unused_type_id) {
+    char *name = SignalRegistryNamePc;
+    SignalAddTypePc = Default_ADDGIZMOTYPE;
+    SignalAddTypePc.name = name;
+    SignalAddTypePc.prefix = TextInputKeyNameTextPc7516c0;
+    SignalAddTypePc.fns.options = 0x28;
+    SignalAddTypePc.fns.get_max_gizmos_fn = (i32(__cdecl *)(void *))Signals_GetMaxGizmos;
+    SignalAddTypePc.fns.add_gizmos_fn = (void *)Signals_AddGizmos;
+    SignalAddTypePc.fns.early_update_fn = NULL;
+    SignalAddTypePc.fns.late_update_fn = (void(__cdecl *)(void *, void *, f32))Signals_Update;
+    SignalAddTypePc.fns.draw_fn = (void(__cdecl *)(void *, void *, f32))Signals_Draw;
+    SignalAddTypePc.fns.panel_draw_fn = NULL;
+    SignalAddTypePc.fns.get_gizmo_name_fn = Signal_GetGizmoName;
+    SignalAddTypePc.fns.get_output_fn = Signal_GetOutput;
+    SignalAddTypePc.fns.get_output_name_fn = Signal_GetOutputName;
+    SignalAddTypePc.fns.get_num_outputs_fn = (void *)Signal_GetNumOutputs;
+    SignalAddTypePc.fns.activate_fn = Signal_Activate;
+    SignalAddTypePc.fns.activate_rev_fn = Signal_ActivateRev;
+    SignalAddTypePc.fns.set_visibility_fn = Signal_SetGizmoVisibility;
+    SignalAddTypePc.fns.get_visibility_fn = NULL;
+    SignalAddTypePc.fns.get_pos_fn = (void *)Signal_GetPos;
+    SignalAddTypePc.fns.using_special_fn = NULL;
+    SignalAddTypePc.fns.bolt_hit_plat_fn = NULL;
+    SignalAddTypePc.fns.get_best_bolt_target_fn = NULL;
+    SignalAddTypePc.fns.bolt_hit_fn = NULL;
+    SignalAddTypePc.fns.allocate_progress_data_fn = Signals_AllocateProgressData;
+    SignalAddTypePc.fns.clear_progress_fn = (void(__cdecl *)(void *, void *))Signals_ClearProgress;
+    SignalAddTypePc.fns.store_progress_fn = (void(__cdecl *)(void *, void *, void *))Signals_StoreProgress;
+    SignalAddTypePc.fns.reset_fn = (void(__cdecl *)(void *, void *, void *))Signals_Reset;
+    SignalAddTypePc.fns.reserve_buffer_space_fn = (void *(__cdecl *)(void *))Signals_ReserveBufferSpace;
+    SignalAddTypePc.fns.load_fn = (i32(__cdecl *)(void *, void *))Signals_Load;
+    SignalAddTypePc.fns.post_load_fn = NULL;
+    SignalAddTypePc.fns.add_level_sfx_fn = NULL;
+    return &SignalAddTypePc;
+}
