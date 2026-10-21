@@ -201,7 +201,7 @@
     "src/nu2api/wavreader.cpp": "8ee26e3b66e11bfc076ea763a031876cc9443f1e60fcfd99487aaac1375a3881",
     "src/debug/log.c": "6b6b7d4724422bab819740eeeda1102cbd7a06fcb2b8a48f6afde3fe70058936",
     "src/debug/log_copier.c": "ad8551cd533cc9bcd6896249b9328fc8d924231f47cee7d858e6fe93e2992784",
-    "src/debug/sound_monitor.c": "0a1e8a1d016cc9fd6957add5ec40ef77237e5d34040496509c9d249856880449",
+    "src/debug/sound_monitor.c": "732f31994caab67a5893a4046d8c004420d8989499f81f6acf4e75169f8860b5",
     "src/debug/stream_capture.c": "f752b434670ba95eaa3adc4b539486a2a324d021b6ede6ee4b844d3b0cd0c523",
     "src/editor/edtoolsall.c": "73ac6d9dc6a3ac4694ed4c9a25e67622a745bfd3a7200113f16bdac680205d65",
     "src/gameapi/ai_registry_pc.c": "c6fdc3b0273731fedf19c5be8c800f6573c760213effaa55ec46e0d8f5cf55d0",
@@ -486312,7 +486312,7 @@
       "metadata_sha256": "fe09365da4c355f220d724ca99394fc120b758891b4188d2c49707b6df0894f2",
       "header_path": "src/saga.h",
       "header_sha256": "fa9d80a2f2e41f651206eab862219ac77a83ff9466a31feb3c1ad6b4c783085c",
-      "geometry_object_sha256": "3c39ecc21878967aa7314973c7eb6109727e53e0b332a057889d218ff84c911a",
+      "geometry_object_sha256": "da6b35d9de73599f02fdd1ae996d83a672a33586a857d868ca78cb2b97b05ee0",
       "toolchain_sha256": "b8808088bb2c7eb239785f69c9e464ae8545216d5705fb37216bc0cf926732f3",
       "implementation_sha256": "d6a33be911d095a6d07dccd4443ccbfd6b514fd89fd7e200d9caa1827944e218",
       "headers": {
@@ -486554,7 +486554,7 @@
         4
       ]
     },
-    "clang_source_sha256": "b3d4174888c509ffd344fcc8ac36ce979bc50e20c14c341ac29b8df347244152",
+    "clang_source_sha256": "0457f4bdc720ae5383472bf7ea4ab8c27ce8239f8973211c67e9942b6024dad3",
     "member_count": 42,
     "physical_definition_credit": 0
   },
