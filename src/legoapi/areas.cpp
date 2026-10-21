@@ -141,7 +141,7 @@ void *__cdecl GizmoFindByName(void *gizmo_sys, i32 type_id, char *name) {
 
         type = types->types;
         set = sets;
-        for (type_index = 0; type_index < types->count; ++type_index, ++type, ++set) {
+        for (type_index = 0; type_index < ((AREA_GIZMOTYPES_PC *)gizmotypes)->count; ++type_index, ++type, ++set) {
             AREA_GIZMO_PC *gizmo;
             i32 gizmo_index;
 
