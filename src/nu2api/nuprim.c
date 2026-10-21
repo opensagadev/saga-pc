@@ -295,7 +295,7 @@ void __cdecl DisplayListUpdateRenderState(NUDISPLAYLIST_PC *list, NUGLOBALRNDRST
         return;
     }
 
-    if (state->lights_id != global->lights_id) {
+    if ((u16)state->lights_id != global->lights_id) {
         packet = global->light_packet_cache;
         if (packet == NULL) {
             packet = DisplayListBuildLightPacket(global);
@@ -305,7 +305,7 @@ void __cdecl DisplayListUpdateRenderState(NUDISPLAYLIST_PC *list, NUGLOBALRNDRST
         state->lights_id = global->lights_id;
     }
 
-    if (state->camera_id != global->camera_id) {
+    if ((u16)state->camera_id != global->camera_id) {
         packet = global->camera_packet_cache;
         if (packet == NULL) {
             NUMTX projection;
@@ -333,7 +333,7 @@ void __cdecl DisplayListUpdateRenderState(NUDISPLAYLIST_PC *list, NUGLOBALRNDRST
         state->camera_id = global->camera_id;
     }
 
-    if (state->fog_id != global->fog_id) {
+    if ((u16)state->fog_id != global->fog_id) {
         packet = global->fog_packet_cache;
         if (packet == NULL) {
             packet = DisplayListBuildFogPacket(global);
@@ -343,7 +343,7 @@ void __cdecl DisplayListUpdateRenderState(NUDISPLAYLIST_PC *list, NUGLOBALRNDRST
         state->fog_id = global->fog_id;
     }
 
-    if (state->konst_id != global->counter_001e) {
+    if ((u16)state->konst_id != global->counter_001e) {
         packet = global->konst_packet_cache;
         if (packet == NULL) {
             packet = DisplayListBuildKonstPacket(global);
@@ -353,15 +353,7 @@ void __cdecl DisplayListUpdateRenderState(NUDISPLAYLIST_PC *list, NUGLOBALRNDRST
         state->konst_id = global->counter_001e;
     }
 
-    if (state->vertex_groups_id != global->vertex_groups_id) {
-        packet = DisplayListBuildVertexGroupPacket();
-        if (packet != NULL) {
-            NuDisplayListLinkItem(list, 0xa9, packet);
-        }
-        state->vertex_groups_id = global->vertex_groups_id;
-    }
-
-    if (state->reflection_id != global->reflection_id) {
+    if ((u16)state->reflection_id != global->reflection_id) {
         packet = global->reflection_packet_cache;
         if (packet == NULL) {
             packet = DisplayListBuildReflectionPacket(global);
@@ -369,6 +361,14 @@ void __cdecl DisplayListUpdateRenderState(NUDISPLAYLIST_PC *list, NUGLOBALRNDRST
         }
         NuDisplayListLinkItem(list, 0xab, packet);
         state->reflection_id = global->reflection_id;
+    }
+
+    if ((u16)state->vertex_groups_id != global->vertex_groups_id) {
+        packet = DisplayListBuildVertexGroupPacket();
+        if (packet != NULL) {
+            NuDisplayListLinkItem(list, 0xa9, packet);
+        }
+        state->vertex_groups_id = global->vertex_groups_id;
     }
 
     state->global_id = global->counter_0020;
@@ -526,8 +526,7 @@ void __cdecl NuPrim3DBegin(u32 primitive_type, u32 vertex_format, NUMTL *materia
         material_id = list->material_id;
         material_used[material_id / 8] |= (u8)(1 << (material_id % 8));
     } else {
-        STUBBED_NAMED(0x00973e90);
-        return;
+        list = (NUDISPLAYLIST_PC *)&PCDisplayList2dPc;
     }
     DisplayListUpdateRenderState(list, &render_state);
     NuDisplayListStreamCursor->addr = (NuDisplayListStreamCursor->addr + 15) & ~15u;

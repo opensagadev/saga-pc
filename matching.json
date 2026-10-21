@@ -430,7 +430,7 @@
     "src/nu2api/nuparticle_state.c": "a58e3c095d4df5810148e201ebd1d9985d7dd055073f20a603e0bb7ea2f78629",
     "src/nu2api/nuplane.c": "c948f508439d287233b55500c4bffb4450e85e8e8b4fac93dcbb5d18a71cfceb",
     "src/nu2api/nuportal.c": "1eeed7724dab25f9aefe74b5fe1ee66696756ff706373bfb511effe20d24027a",
-    "src/nu2api/nuprim.c": "40e6de16fae1acd5cac93c26ae1fa04e0e8cf28ed780e55f7649abfaf8cd69b8",
+    "src/nu2api/nuprim.c": "44bf353b7615f713f57c363896310f5d148fb7fc4fd4471512349a2a06c8ea85",
     "src/nu2api/nupsfile.c": "4fcb207887cfe5c70599f8b95f3d52d5c26e2af3198a039317fa35ee22d32427",
     "src/nu2api/nuptrblock.c": "9fca2aa2ac4be26a25a5471baea40d4ce25b3cec9c9d13679a530421b1465af4",
     "src/nu2api/nuqfnt.c": "338a9b23a97c871868d85647e9b422d9cb31b73e1ee0ee7bd5e25a70bb9ffa47",
@@ -855,7 +855,7 @@
     "build/obj/nu2api/nuportal.obj": "f949ad9d8c576031cad637e111e0f5be7665bd556c47ff2bd38ff45d5f5c747e",
     "build/obj/nu2api/nupostdeferred.obj": "193117f0686b91dc231feb72fbf9a2bea2833513eb0f79982071497e7dd565d2",
     "build/obj/nu2api/nupostfilter.obj": "ae229ee92779fcdbf134479e6d1a3195df27753aea4a338f6b21ab503bf148fd",
-    "build/obj/nu2api/nuprim.obj": "4256ea4a451fa311b3436e9fca1b786984178c67f541fda456589226f1e35918",
+    "build/obj/nu2api/nuprim.obj": "190ea17e988967392b7f0b9ca8a52b83d20d581aa9b73156d53884eb3105083a",
     "build/obj/nu2api/nupsfile.obj": "28ead5652db3041a069acae27b413e7b7b61b442a9d5a09de631dd721347ab27",
     "build/obj/nu2api/nuptl.obj": "2373ba96564b824efb9d7e9a3b8f19183d87495f652bad8f39cfefeb5fd4e6f7",
     "build/obj/nu2api/nuptrblock.obj": "4ebd3282248a9fff8fa60e4e3a5787ca0fd5a8f0c723d205a8deb85d696479e2",
@@ -143023,17 +143023,17 @@
       "objects": [
         {
           "unit": "src/nu2api/nuprim.c",
-          "base_size": 590,
+          "base_size": 578,
           "exact_match": false,
           "target_sha256": "83adef71a357ab1a8e9d0a01668e913b32a89528c3a55592fe04e9a05882c0f8",
-          "base_sha256": "e09f92fd423e6188093bb490f089337cf85ef4f848fbf39c550257d3c2c5d984",
+          "base_sha256": "5f1efadc01dc6c79e153e21e4e85b8e6fd12993f98b6c8d811291f8b3541ad38",
           "relocation_count": 15,
           "comparison_unit": "00607590-2b3d2b9fd888",
-          "objdiff_percent": 57.338623
+          "objdiff_percent": 69.5873
         }
       ],
       "status": "different",
-      "objdiff_percent": 57.338623
+      "objdiff_percent": 69.5873
     },
     {
       "name": "DisplayListUpdateRenderStateShadow",
@@ -143239,17 +143239,17 @@
       "objects": [
         {
           "unit": "src/nu2api/nuprim.c",
-          "base_size": 323,
+          "base_size": 326,
           "exact_match": false,
           "target_sha256": "db0bd36d6cb0f9d74cd807ec64df6d15db01bd46c247213b12e0cee7887029f6",
-          "base_sha256": "46594cf7d0939fa8699feb9db7c099728734ecf7c407c952adce409f10dc3f2c",
-          "relocation_count": 17,
+          "base_sha256": "26f0ed0c3260f8741f3da417e1c3396dff7d03295766997d99ed00381f3f1df2",
+          "relocation_count": 18,
           "comparison_unit": "00607ec0-b0a34a11e4fc",
-          "objdiff_percent": 62.327435
+          "objdiff_percent": 66.451324
         }
       ],
       "status": "different",
-      "objdiff_percent": 62.327435
+      "objdiff_percent": 66.451324
     },
     {
       "name": "NuDisplayListMaterialPc",
@@ -482736,10 +482736,10 @@
     "mapped_code_bytes": 2442508,
     "matched_code_bytes": 460281,
     "matching_percent": 13.259820825144631,
-    "fuzzy_coverage_percent": 47.86056414043472,
+    "fuzzy_coverage_percent": 47.86323318548771,
     "mapped_functions": 9017,
     "matched_functions": 4288,
-    "objdiff_fuzzy_percent": 74.84935,
+    "objdiff_fuzzy_percent": 74.85352,
     "objdiff_total_code": 2222959,
     "image_bytes": 40067072,
     "mapped_bytes": 4255679,
@@ -483951,7 +483951,7 @@
       "metadata_sha256": "fe09365da4c355f220d724ca99394fc120b758891b4188d2c49707b6df0894f2",
       "header_path": "src/saga.h",
       "header_sha256": "f5c807c392cb7f77dff8088bf8aab18d114ee73ac3939aed153bd44225502c55",
-      "geometry_object_sha256": "4e6862ae959f8cf89ea5a41ba2218a1cc83de29d407e2e62072c5940d1c8386e",
+      "geometry_object_sha256": "3479912ad7ede276d0ccb3dc91ab4e7d562a62abb2fc22534af8e5e426d5b869",
       "toolchain_sha256": "b8808088bb2c7eb239785f69c9e464ae8545216d5705fb37216bc0cf926732f3",
       "implementation_sha256": "d6a33be911d095a6d07dccd4443ccbfd6b514fd89fd7e200d9caa1827944e218",
       "headers": {
@@ -484193,7 +484193,7 @@
         4
       ]
     },
-    "clang_source_sha256": "187563c746e8aee8bbef506718a0d2fff4bdd965b0b8318e2ecd779ee3b2f04b",
+    "clang_source_sha256": "e7456fe046676301a98bfb001bfda6987e83b1702d1cd84986f26fb589c949d6",
     "member_count": 42,
     "physical_definition_credit": 0
   },
