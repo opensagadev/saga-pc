@@ -1,6 +1,7 @@
 #include "saga.h"
 
 extern "C" void __cdecl RegisterLswGizmoTypesPc(VARIPTR *, VARIPTR *);
+extern "C" void __cdecl RegisterAlternateGizmoTypesPc(VARIPTR *, VARIPTR *);
 
 static i32 __cdecl PcInputCommandAllowedPc(i32 port, i32 command) {
     if (TextInputIsKeyboardDevicePc(port) && ((command >= 4 && command <= 7) || (u32)(command - 8) <= 3))
@@ -378,7 +379,7 @@ extern "C" {
             GameBlowUpBlownUpFn = GameBlowUpBlownUpFn_LSW;
             GizObstacle_SetDefaultSFXFn = GizObstacle_SetDefaultSFXFn_LSW;
         } else {
-            STUBBED_NAMED("LoadPermData: startup registration variant (0x46a230)");
+            RegisterAlternateGizmoTypesPc(&permbuffer_ptr, &permbuffer_end);
         }
 
         if (!(StartupGameFlag0 == 0 && StartupGameFlag1 != 0)) {

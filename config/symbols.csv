@@ -1080,6 +1080,7 @@ address,symbol,size,ctype
 0x468b50,_GizForces_Update,3265,
 0x00469820,_GizForce_FindBestForceTarget,1988,"i32 __cdecl(void*,GAMEOBJECT*)"
 0x469ff0,_GizForce_RegisterGizmo,318,ADDGIZMOTYPE_PC * __cdecl(i32)
+0x0046a230,_RegisterAlternateGizmoTypesPc,267,"void __cdecl(VARIPTR *, VARIPTR *)"
 0x0046a340,_RegisterLswGizmoTypesPc,267,"void __cdecl(VARIPTR *, VARIPTR *)"
 0x46a450,_GizmoSys_SetBestBoltTarget,630,"i32 __cdecl(void*,WORLDINFO*,GAMEOBJECT*,NUVEC*,NUVEC*,f32,f32,i32,i32,i32)"
 0x46a6d0,_GizmoSys_BoltHit,287,"i32 __cdecl(void*,WORLDINFO*,BOLT_PC*,NUVEC*,NUVEC*,NUVEC*,f32,u8*)"
