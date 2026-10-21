@@ -1,5 +1,5 @@
 #include "saga.h"
-
+void __cdecl SecurityDoor_MoveCode(WORLDINFO *, GAMEOBJECT *);
 void __cdecl Techno_MoveCode(WORLDINFO *, GAMEOBJECT *);
 void __cdecl Signal_MoveCode(WORLDINFO *, GAMEOBJECT *);
 void __cdecl PeriscodeCode(GAMEOBJECT *);
@@ -6798,7 +6798,7 @@ after_gravity:
         STUBBED_NAMED(0x005b26b0); /* Native4b5040: object; actual void action. */
     DodgeCode(object, action_pressed, jump_pressed);
     STUBBED_NAMED(0x004036a0); /* Native4b505a: WORLD,object; Attracto_MoveCode. */
-    STUBBED_NAMED(0x004bdaf0); /* Native4b5067: WORLD,object; SecurityDoor_MoveCode. */
+    SecurityDoor_MoveCode(WORLD, object);
     if ((object->character_data->model_flags & 0x80) != 0)
         ShootCode(object, action_pressed, special_pressed, 1, 1, 0);
     else if (((DEFAULT_MOTION_BATARANG_POINTER_PC *)object)->batarang != NULL)
@@ -10072,7 +10072,7 @@ void __cdecl Move_WEIRDO(GAMEOBJECT *object) {
     SpecialMove_VictimCode(object);
     HoldCode(object);
     STUBBED_NAMED(0x004036a0); /* Native4b5c05: Attracto_MoveCode(WORLD,object). */
-    STUBBED_NAMED(0x004bdaf0); /* Native4b5c11: SecurityDoor_MoveCode(WORLD,object). */
+    SecurityDoor_MoveCode(WORLD, object);
     if (has_sabre) {
         BlockCode(object, action_pressed, action_held, jump_pressed, 0);
         SwipeCode(object, action_pressed, action_held);

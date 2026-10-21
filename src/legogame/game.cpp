@@ -1388,7 +1388,7 @@ extern "C" void __cdecl Game_WorldInfo_InitMenu(WORLDINFO *world, i32 *menu_id, 
     else if (world->current_level == CREDITS_LDATA)
         *menu_id = 18;
 }
-
+extern "C" void __cdecl SecurityDoors_InitTerrain(WORLDINFO *);
 extern "C" void __cdecl GizSpinners_InitTerrain(WORLDINFO *world);
 extern "C" void __cdecl InitClimbObjectSys(WORLDINFO *world);
 extern "C" void __cdecl GizmoPushBlockInitAndReset(WORLDINFO *, void *);
@@ -1397,7 +1397,7 @@ extern "C" void __cdecl Game_WorldInfo_InitLast(WORLDINFO *world) {
     GizSpinners_InitTerrain(world);
     Signals_InitTerrain(world);
     STUBBED_NAMED("Game_WorldInfo_InitLast: Attractos_InitTerrain 48f702 -> 4029e0");
-    STUBBED_NAMED("Game_WorldInfo_InitLast: SecurityDoors_InitTerrain 48f708 -> 4bcf70");
+    SecurityDoors_InitTerrain(world);
     Levers_InitTerrain(world);
     GizPanel_InitTerrain(world);
     HatMachines_InitTerrain(world);
