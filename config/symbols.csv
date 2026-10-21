@@ -2744,6 +2744,7 @@ address,symbol,size,ctype
 0x50c050,_Text3DStringEncodeFont,172,"void __cdecl(u8*,u16*,VUFNT*)"
 0x50c100,_Text3DStringEncode,34,"void __cdecl(char*,u16*)"
 0x0050c130,_TextRegisterButtonMapFn,14,"void __cdecl (void (*)(char *, char *))"
+0x0050c140,_TextInputGlyphNamePc,69,"void __cdecl(i32, char *)"
 0x50c190,_TextDecodeCodeword,587,"void __cdecl(char*,char*)"
 0x50c3e0,_TextDecode,611,"void __cdecl(char*,u8*)"
 0x50c650,_TextPrintSubstring,286,"f32 __cdecl(u8*,f32,f32,f32,f32,f32,i32,i32)"
@@ -7753,6 +7754,7 @@ address,symbol,size,ctype
 0x6d4ba0,?CopyBindingsPc@PC_INPUT_RUNTIME_PC@@QAEXHHH@Z,103,
 0x6d4c10,?AdvanceCaptureRecordsPc@PC_INPUT_RUNTIME_PC@@QAEXXZ,127,void __thiscall(void)
 0x006d4d90,@NuKeyboardResetInputRecords_candidate@4,49,void __fastcall (NuKeyboardState_PC *)
+0x006d4dd0,_TextInputSetNameCallbackPc,10,"void __cdecl(void (__cdecl *)(i32, char *))"
 0x006d4e20,@NuKeyboardSetStateValue6354_candidate@12,13,"void __fastcall (NuKeyboardState_PC *, i32, i32)"
 0x006d4e30,@NuKeyboardGetInputRecordCount_candidate@8,7,"i32 __fastcall (NuKeyboardState_PC *, i32)"
 0x006d4e40,@NuKeyboardGetStateValue67e8_candidate@8,7,"i32 __fastcall (NuKeyboardState_PC *, i32)"
@@ -13757,6 +13759,20 @@ address,symbol,size,ctype
 0x75ee68,__real@bfceb851e0000000,8,const f64
 0x75ee70,__real@3e75c28f,4,const f32
 0x75ee78,__real@3fceb851e0000000,8,const f64
+0x75ee90,_TextInputGlyphBBPc,3,const char[3]
+0x75ee94,_TextInputGlyphB9Pc,3,const char[3]
+0x75ee98,_TextInputGlyphBAPc,3,const char[3]
+0x75ee9c,_TextInputGlyphBCPc,3,const char[3]
+0x75eea0,_TextInputGlyphB7Pc,3,const char[3]
+0x75eea4,_TextInputGlyphB8Pc,3,const char[3]
+0x75eea8,_TextInputGlyphBEPc,3,const char[3]
+0x75eeac,_TextInputGlyphBDPc,3,const char[3]
+0x75eeb0,_TextInputGlyphB6Pc,3,const char[3]
+0x75eeb4,_TextInputGlyphB5Pc,3,const char[3]
+0x75eeb8,_TextInputGlyphB4Pc,3,const char[3]
+0x75eebc,_TextInputGlyphB3Pc,3,const char[3]
+0x75eec0,_TextInputGlyphB2Pc,3,const char[3]
+0x75eec4,_TextInputGlyphB1Pc,3,const char[3]
 0x75eec8,_MenuTechnicalDefaultTextPc75eec8,,const char[40]
 0x75eef0,_MenuTechnicalDefaultTextPc75eef0,,const char[16]
 0x75ef00,_MenuTechnicalDefaultTextPc75ef00,,const char[20]
@@ -19341,6 +19357,8 @@ address,symbol,size,ctype
 0x8015ec,_apitext_half_rgb,,i32
 0x008015f0,_STCOORDSCALE,4,f32
 0x8015f4,_MenuPromptPositionScalePc,,f32
+0x008015f8,_TextInputButtonGlyphsPc,48,const char *[12]
+0x00801628,_TextInputAxisGlyphsPc,16,const char *[4]
 0x8016a0,_MenuAutoSaveCancelFirstPc,1,u8
 0x008016a8,_HubButtonStringBufferPc,72,char[72]
 0x80171c,_aidata_version,4,i32

@@ -17,7 +17,7 @@
     "config/library-objects.json": "e5ae24d3eac36fa0d0cb098f7690faaef3110f225db30c8cbf0f7d0d64f6ecfe",
     "config/ogg-vorbis.json": "7f98d40938e6bd6060c6bdfc2ce39d9cfb1c822243693eeb1d85d46b43dcad24",
     "config/project.json": "9a3650958be769951860d2c457f8573049ecae76e48ce8f3d7383e4ca2b761a6",
-    "config/symbols.csv": "5806cefea219b087f79729f54670318fdd92db068817b5973d8445f33a5c568f",
+    "config/symbols.csv": "fe5863ef4dfb7d60bcf083ffbfc548dd9864e7c84d1c824ae22842b0828f6f84",
     "config/symbols.md": "dffbdaac86011e3aee74b404063c15bda97f88af3db337ffef9f1bad1785d212",
     "config/toolchain.json": "b8808088bb2c7eb239785f69c9e464ae8545216d5705fb37216bc0cf926732f3",
     "config/tools.json": "50199f6b132a7abfabf251e98a75be0a957abfe50f1ff776188fba21e4c4436f",
@@ -138,7 +138,7 @@
     "src/legoapi/tightrope.cpp": "be579d1a2167462202e8987e813edd58941aa4c7031d693096019f9f4121fa9f",
     "src/legoapi/world.cpp": "775e2920d1ed2efc4d09a7ad66766551de22f1652947369b25cd2b8664b0d38a",
     "src/legogame/game.cpp": "1e8fa64b60fdf28e24978a1211c8902b5e4466420f163e5d71161826619999ef",
-    "src/legogame/startup.cpp": "917655a87aa69277b922f7f38e8cc085effddaef035c9fac21c0995773c510d7",
+    "src/legogame/startup.cpp": "afeafea310fb8a9365458232ca9db719df6745d68032aa16e61db1e274cf3690",
     "src/nu2api/cpu_features.cpp": "7b57efe0a5b8f722138d143b3037dd70c02478906b792d24ba7df2f123af4de9",
     "src/nu2api/crc16.cpp": "0951ed9b5b9f090cacb3ceab7a8766bd8c92698df7cd1df726b719db4a16b211",
     "src/nu2api/d3d_api_lifetime.cpp": "6f9e71a040d618a5348e4cfb973963065a553d3cb9b1f917d889f71d1ddce671",
@@ -470,6 +470,7 @@
     "src/nu2api/nuwin.c": "d2728a49122e7f089fb31163f206726e1106f3ffecddf933c14a8a3088eb17ad",
     "src/nu2api/pc/nustream.c": "1d0bcb1a86a0d3f561f3a7daa80103a05d5b0e8ffbb24cfda22846f90e761011",
     "src/nu2api/terrain_diagnostic.c": "5c5410ba9013e560716956706dd4acebbc43ec2d903950fb5d77a8ffde7d3cd0",
+    "src/nu2api/textinput_labels_pc.c": "ea923933eaee45351d6eacbe2e34d3fbec5ee05c2970fa93c516862813a0789d",
     "src/nu2api/transparent.c": "719717e1098e3e7b2bd68b1ad1e9494c663f314cd4038fa369b81d90407a9b73",
     "src/nuang.c": "6c615b7dca92b04f0b13073e5fa5f61f92cc48f5a7f8ec969245fb0aa3994f22",
     "src/nurand.c": "ac1fa8126b84c2c167c24a502509ff6fd5a685dccca2886440d2c468e9e997ed",
@@ -795,7 +796,7 @@
     "build/obj/legoapi/world.obj": "86880fa6e39e7e3e2740cabeff1c5df67821635da2607ff12f07de875810b88b",
     "build/obj/legoapi/zipup.obj": "13e038eb46a540b58fb150e12ef12fc188a3c634dbecd1b6bf10a180c3032427",
     "build/obj/legogame/game.obj": "7c7ce0abacbce4ec6553da0189fa3623c00115bdaa52bc63c1b290a2fb373fc2",
-    "build/obj/legogame/startup.obj": "a877a9492e5f760db0e2c6e6e92c3c0a0d79d2535dfd9837227e0b623fde1bc6",
+    "build/obj/legogame/startup.obj": "85cabc080f3b4dd0dc77a5ff5000d45dc6cb2d36a762e1c0f72cc2b935c008de",
     "build/obj/nu2api/bgproc.obj": "fb1a75dc0a09fdb7d6f52dca70687041ea8fe08ad4c9312cbffbd0381131245a",
     "build/obj/nu2api/cpu_features.obj": "159b5c1e112d3e91a020734b9177ab0cf3f95a63677d34c177787f983380aa37",
     "build/obj/nu2api/crc16.obj": "70a7a5498de9a35846ea0c9c611d8cfcbd374b27f5ddb679f635c2fddabc9596",
@@ -935,6 +936,7 @@
     "build/obj/nu2api/terrain_diagnostic.obj": "11da884c0361d7ff0524a8a77b828a11696332cc1624d03f7b011d432621c632",
     "build/obj/nu2api/terrain_query.obj": "78b88cef718dca3de8856f615c64d3d0802f30b4570fb0ef2197eab2e426360f",
     "build/obj/nu2api/terrain_scan.obj": "1a30c0f1ca0e837780329298568680678f5351dc4e28e13e7fda2a64da745429",
+    "build/obj/nu2api/textinput_labels_pc.obj": "a4dbf863cc36bca099abc25634866b7d050346df42ab8fa782d3405aff942573",
     "build/obj/nu2api/transparent.obj": "83b5e22d85e6d88daa95b845d035c8167b7ccb6e6d8fb8172d730439d6b4cf85",
     "build/obj/nu2api/wavreader.obj": "fe9bc6760904957be311654c310ebcfa3597e32d16cfdb1f12d8488102213af9",
     "build/obj/nuang.obj": "a89323bc042a1835890d19bf94552b3b01b2e8ff213cc9232ed4b41c243209ab",
@@ -45054,17 +45056,17 @@
       "objects": [
         {
           "unit": "src/legogame/startup.cpp",
-          "base_size": 1483,
+          "base_size": 1493,
           "exact_match": false,
           "target_sha256": "bb1028bacb0c287a71332989d89becb625304ca784b2131644959a722fa05aa6",
-          "base_sha256": "05221fe2ae37b66049e5646f26bd872ee95974daa7e7c375cc8d47c805a819f7",
-          "relocation_count": 222,
+          "base_sha256": "5de48f8bbd2769e7a67844758cf20a50d4a461db0789d12d5e5f564e8ba69ca9",
+          "relocation_count": 224,
           "comparison_unit": "004c9fb0-4252f10b0634",
-          "objdiff_percent": 75.3882
+          "objdiff_percent": 75.58074
         }
       ],
       "status": "different",
-      "objdiff_percent": 75.3882
+      "objdiff_percent": 75.58074
     },
     {
       "name": "LoadPerm",
@@ -63662,6 +63664,30 @@
           "base_sha256": "77ab6cd9722ddf6351fcb0e905efce9e65dd838fc0845f72984acc09cd231f73",
           "relocation_count": 1,
           "comparison_unit": "0050c130-8afbfe066061",
+          "objdiff_percent": 100.0
+        }
+      ],
+      "status": "exact",
+      "objdiff_percent": 100.0
+    },
+    {
+      "name": "TextInputGlyphNamePc",
+      "symbol": "_TextInputGlyphNamePc",
+      "address": "0x0050c140",
+      "units": [
+        "src/nu2api/textinput_labels_pc.c"
+      ],
+      "target_size": 69,
+      "exact_match": true,
+      "objects": [
+        {
+          "unit": "src/nu2api/textinput_labels_pc.c",
+          "base_size": 69,
+          "exact_match": true,
+          "target_sha256": "481f175c55eb54cc70ab6db5ff417c6bb73945ffc53c3a04e36c44ead08ec2ae",
+          "base_sha256": "481f175c55eb54cc70ab6db5ff417c6bb73945ffc53c3a04e36c44ead08ec2ae",
+          "relocation_count": 4,
+          "comparison_unit": "0050c140-7485749db71e",
           "objdiff_percent": 100.0
         }
       ],
@@ -178530,6 +178556,30 @@
       ],
       "status": "different",
       "objdiff_percent": 85.111115
+    },
+    {
+      "name": "TextInputSetNameCallbackPc",
+      "symbol": "_TextInputSetNameCallbackPc",
+      "address": "0x006d4dd0",
+      "units": [
+        "src/nu2api/textinput_labels_pc.c"
+      ],
+      "target_size": 10,
+      "exact_match": true,
+      "objects": [
+        {
+          "unit": "src/nu2api/textinput_labels_pc.c",
+          "base_size": 10,
+          "exact_match": true,
+          "target_sha256": "ad6c24da4b8ffa902068a89c2ab8b4aae95c6de35ecd5e8608b23dbcbd06bd1a",
+          "base_sha256": "ad6c24da4b8ffa902068a89c2ab8b4aae95c6de35ecd5e8608b23dbcbd06bd1a",
+          "relocation_count": 1,
+          "comparison_unit": "006d4dd0-9e785ee17862",
+          "objdiff_percent": 100.0
+        }
+      ],
+      "status": "exact",
+      "objdiff_percent": 100.0
     },
     {
       "name": "@NuKeyboardSetStateValue6354_candidate@12",
@@ -318133,6 +318183,300 @@
       "status": "exact"
     },
     {
+      "name": "TextInputGlyphBBPc",
+      "symbol": "_TextInputGlyphBBPc",
+      "address": "0x0075ee90",
+      "units": [
+        "src/nu2api/textinput_labels_pc.c"
+      ],
+      "target_size": 3,
+      "exact_match": true,
+      "objects": [
+        {
+          "unit": "src/nu2api/textinput_labels_pc.c",
+          "exact_match": true,
+          "target_size": 3,
+          "base_size": 3,
+          "target_sha256": "c4aac43ba87174c42bed9a6006d64093e6f5530fdf800dd6f0fc4c9ca3f21ee5",
+          "base_sha256": "c4aac43ba87174c42bed9a6006d64093e6f5530fdf800dd6f0fc4c9ca3f21ee5"
+        }
+      ],
+      "status": "exact"
+    },
+    {
+      "name": "TextInputGlyphB9Pc",
+      "symbol": "_TextInputGlyphB9Pc",
+      "address": "0x0075ee94",
+      "units": [
+        "src/nu2api/textinput_labels_pc.c"
+      ],
+      "target_size": 3,
+      "exact_match": true,
+      "objects": [
+        {
+          "unit": "src/nu2api/textinput_labels_pc.c",
+          "exact_match": true,
+          "target_size": 3,
+          "base_size": 3,
+          "target_sha256": "1719ef1c516d8357f2fcc40bc5e29980b945cc6627d7a31111d2afecd03fab2c",
+          "base_sha256": "1719ef1c516d8357f2fcc40bc5e29980b945cc6627d7a31111d2afecd03fab2c"
+        }
+      ],
+      "status": "exact"
+    },
+    {
+      "name": "TextInputGlyphBAPc",
+      "symbol": "_TextInputGlyphBAPc",
+      "address": "0x0075ee98",
+      "units": [
+        "src/nu2api/textinput_labels_pc.c"
+      ],
+      "target_size": 3,
+      "exact_match": true,
+      "objects": [
+        {
+          "unit": "src/nu2api/textinput_labels_pc.c",
+          "exact_match": true,
+          "target_size": 3,
+          "base_size": 3,
+          "target_sha256": "621189ec2c4d9dc595d440d23b7ea1d5c14f07e3952e53c54ed9eea83d8941a3",
+          "base_sha256": "621189ec2c4d9dc595d440d23b7ea1d5c14f07e3952e53c54ed9eea83d8941a3"
+        }
+      ],
+      "status": "exact"
+    },
+    {
+      "name": "TextInputGlyphBCPc",
+      "symbol": "_TextInputGlyphBCPc",
+      "address": "0x0075ee9c",
+      "units": [
+        "src/nu2api/textinput_labels_pc.c"
+      ],
+      "target_size": 3,
+      "exact_match": true,
+      "objects": [
+        {
+          "unit": "src/nu2api/textinput_labels_pc.c",
+          "exact_match": true,
+          "target_size": 3,
+          "base_size": 3,
+          "target_sha256": "6a9a67bc6c99953c2c35b67d40af7e1660345824903ad0051b90b360ea7e35d9",
+          "base_sha256": "6a9a67bc6c99953c2c35b67d40af7e1660345824903ad0051b90b360ea7e35d9"
+        }
+      ],
+      "status": "exact"
+    },
+    {
+      "name": "TextInputGlyphB7Pc",
+      "symbol": "_TextInputGlyphB7Pc",
+      "address": "0x0075eea0",
+      "units": [
+        "src/nu2api/textinput_labels_pc.c"
+      ],
+      "target_size": 3,
+      "exact_match": true,
+      "objects": [
+        {
+          "unit": "src/nu2api/textinput_labels_pc.c",
+          "exact_match": true,
+          "target_size": 3,
+          "base_size": 3,
+          "target_sha256": "dc3a9f43446a66577499e4289b088faff806676fd8b85f679429a1a0dd711917",
+          "base_sha256": "dc3a9f43446a66577499e4289b088faff806676fd8b85f679429a1a0dd711917"
+        }
+      ],
+      "status": "exact"
+    },
+    {
+      "name": "TextInputGlyphB8Pc",
+      "symbol": "_TextInputGlyphB8Pc",
+      "address": "0x0075eea4",
+      "units": [
+        "src/nu2api/textinput_labels_pc.c"
+      ],
+      "target_size": 3,
+      "exact_match": true,
+      "objects": [
+        {
+          "unit": "src/nu2api/textinput_labels_pc.c",
+          "exact_match": true,
+          "target_size": 3,
+          "base_size": 3,
+          "target_sha256": "03e9843216a9cb094257f35f825c933aab4f5e26a1a63951be176e582ca29164",
+          "base_sha256": "03e9843216a9cb094257f35f825c933aab4f5e26a1a63951be176e582ca29164"
+        }
+      ],
+      "status": "exact"
+    },
+    {
+      "name": "TextInputGlyphBEPc",
+      "symbol": "_TextInputGlyphBEPc",
+      "address": "0x0075eea8",
+      "units": [
+        "src/nu2api/textinput_labels_pc.c"
+      ],
+      "target_size": 3,
+      "exact_match": true,
+      "objects": [
+        {
+          "unit": "src/nu2api/textinput_labels_pc.c",
+          "exact_match": true,
+          "target_size": 3,
+          "base_size": 3,
+          "target_sha256": "025fd9d5c20c2b967bc7cceb308c354e9616680eba3d161ddbf1a6050afbf39b",
+          "base_sha256": "025fd9d5c20c2b967bc7cceb308c354e9616680eba3d161ddbf1a6050afbf39b"
+        }
+      ],
+      "status": "exact"
+    },
+    {
+      "name": "TextInputGlyphBDPc",
+      "symbol": "_TextInputGlyphBDPc",
+      "address": "0x0075eeac",
+      "units": [
+        "src/nu2api/textinput_labels_pc.c"
+      ],
+      "target_size": 3,
+      "exact_match": true,
+      "objects": [
+        {
+          "unit": "src/nu2api/textinput_labels_pc.c",
+          "exact_match": true,
+          "target_size": 3,
+          "base_size": 3,
+          "target_sha256": "886465a07ac591254591d952e4dd9eb03f33ec3bfda2201fa87ee552227694cf",
+          "base_sha256": "886465a07ac591254591d952e4dd9eb03f33ec3bfda2201fa87ee552227694cf"
+        }
+      ],
+      "status": "exact"
+    },
+    {
+      "name": "TextInputGlyphB6Pc",
+      "symbol": "_TextInputGlyphB6Pc",
+      "address": "0x0075eeb0",
+      "units": [
+        "src/nu2api/textinput_labels_pc.c"
+      ],
+      "target_size": 3,
+      "exact_match": true,
+      "objects": [
+        {
+          "unit": "src/nu2api/textinput_labels_pc.c",
+          "exact_match": true,
+          "target_size": 3,
+          "base_size": 3,
+          "target_sha256": "a6d128630319f90d2e2f379aaf802a0201c8881f78fbc7d7414048dc4dca5f2f",
+          "base_sha256": "a6d128630319f90d2e2f379aaf802a0201c8881f78fbc7d7414048dc4dca5f2f"
+        }
+      ],
+      "status": "exact"
+    },
+    {
+      "name": "TextInputGlyphB5Pc",
+      "symbol": "_TextInputGlyphB5Pc",
+      "address": "0x0075eeb4",
+      "units": [
+        "src/nu2api/textinput_labels_pc.c"
+      ],
+      "target_size": 3,
+      "exact_match": true,
+      "objects": [
+        {
+          "unit": "src/nu2api/textinput_labels_pc.c",
+          "exact_match": true,
+          "target_size": 3,
+          "base_size": 3,
+          "target_sha256": "6095ba6277f4a4fd27682fe415dbce243e16f2f6cd5f095b0f593bac7ceb383d",
+          "base_sha256": "6095ba6277f4a4fd27682fe415dbce243e16f2f6cd5f095b0f593bac7ceb383d"
+        }
+      ],
+      "status": "exact"
+    },
+    {
+      "name": "TextInputGlyphB4Pc",
+      "symbol": "_TextInputGlyphB4Pc",
+      "address": "0x0075eeb8",
+      "units": [
+        "src/nu2api/textinput_labels_pc.c"
+      ],
+      "target_size": 3,
+      "exact_match": true,
+      "objects": [
+        {
+          "unit": "src/nu2api/textinput_labels_pc.c",
+          "exact_match": true,
+          "target_size": 3,
+          "base_size": 3,
+          "target_sha256": "c6f39b951dea648d63d9481fb3ddaec1c7ed904cc78140043dc335931beb77ed",
+          "base_sha256": "c6f39b951dea648d63d9481fb3ddaec1c7ed904cc78140043dc335931beb77ed"
+        }
+      ],
+      "status": "exact"
+    },
+    {
+      "name": "TextInputGlyphB3Pc",
+      "symbol": "_TextInputGlyphB3Pc",
+      "address": "0x0075eebc",
+      "units": [
+        "src/nu2api/textinput_labels_pc.c"
+      ],
+      "target_size": 3,
+      "exact_match": true,
+      "objects": [
+        {
+          "unit": "src/nu2api/textinput_labels_pc.c",
+          "exact_match": true,
+          "target_size": 3,
+          "base_size": 3,
+          "target_sha256": "3a0dd188922764d1ebb772740abe29773e9fcef1622290464acdb9a9136eda23",
+          "base_sha256": "3a0dd188922764d1ebb772740abe29773e9fcef1622290464acdb9a9136eda23"
+        }
+      ],
+      "status": "exact"
+    },
+    {
+      "name": "TextInputGlyphB2Pc",
+      "symbol": "_TextInputGlyphB2Pc",
+      "address": "0x0075eec0",
+      "units": [
+        "src/nu2api/textinput_labels_pc.c"
+      ],
+      "target_size": 3,
+      "exact_match": true,
+      "objects": [
+        {
+          "unit": "src/nu2api/textinput_labels_pc.c",
+          "exact_match": true,
+          "target_size": 3,
+          "base_size": 3,
+          "target_sha256": "c9854032d9822d90c1d9be054143f8eb62ee0422a03c0b361ab0e8c4fe54807e",
+          "base_sha256": "c9854032d9822d90c1d9be054143f8eb62ee0422a03c0b361ab0e8c4fe54807e"
+        }
+      ],
+      "status": "exact"
+    },
+    {
+      "name": "TextInputGlyphB1Pc",
+      "symbol": "_TextInputGlyphB1Pc",
+      "address": "0x0075eec4",
+      "units": [
+        "src/nu2api/textinput_labels_pc.c"
+      ],
+      "target_size": 3,
+      "exact_match": true,
+      "objects": [
+        {
+          "unit": "src/nu2api/textinput_labels_pc.c",
+          "exact_match": true,
+          "target_size": 3,
+          "base_size": 3,
+          "target_sha256": "a4d0de42ee488534d72b840bd628f2869937cd26f62ff3227b2cffc2f1bfda1c",
+          "base_sha256": "a4d0de42ee488534d72b840bd628f2869937cd26f62ff3227b2cffc2f1bfda1c"
+        }
+      ],
+      "status": "exact"
+    },
+    {
       "name": "MenuTechnicalDefaultTextPc75eec8",
       "symbol": "_MenuTechnicalDefaultTextPc75eec8",
       "address": "0x0075eec8",
@@ -406457,6 +406801,48 @@
       "status": "unknown size"
     },
     {
+      "name": "TextInputButtonGlyphsPc",
+      "symbol": "_TextInputButtonGlyphsPc",
+      "address": "0x008015f8",
+      "units": [
+        "src/nu2api/textinput_labels_pc.c"
+      ],
+      "target_size": 48,
+      "exact_match": true,
+      "objects": [
+        {
+          "unit": "src/nu2api/textinput_labels_pc.c",
+          "exact_match": true,
+          "target_size": 48,
+          "base_size": 48,
+          "target_sha256": "2f7a3790577a8668b5a331e93bae3f51b59a36264aabd408a4b7490bcefd18ca",
+          "base_sha256": "2f7a3790577a8668b5a331e93bae3f51b59a36264aabd408a4b7490bcefd18ca"
+        }
+      ],
+      "status": "exact"
+    },
+    {
+      "name": "TextInputAxisGlyphsPc",
+      "symbol": "_TextInputAxisGlyphsPc",
+      "address": "0x00801628",
+      "units": [
+        "src/nu2api/textinput_labels_pc.c"
+      ],
+      "target_size": 16,
+      "exact_match": true,
+      "objects": [
+        {
+          "unit": "src/nu2api/textinput_labels_pc.c",
+          "exact_match": true,
+          "target_size": 16,
+          "base_size": 16,
+          "target_sha256": "a54c3ad87bd9a99b1db68acb80a3f55ad593dead972ac0462d0dcf329a9247ea",
+          "base_sha256": "a54c3ad87bd9a99b1db68acb80a3f55ad593dead972ac0462d0dcf329a9247ea"
+        }
+      ],
+      "status": "exact"
+    },
+    {
       "name": "MenuAutoSaveCancelFirstPc",
       "symbol": "_MenuAutoSaveCancelFirstPc",
       "address": "0x008016a0",
@@ -484270,17 +484656,17 @@
   ],
   "progress": {
     "text_bytes": 3471246,
-    "mapped_code_bytes": 2444369,
-    "matched_code_bytes": 461925,
-    "matching_percent": 13.307181340648286,
-    "fuzzy_coverage_percent": 47.96196810101083,
-    "mapped_functions": 9035,
-    "matched_functions": 4314,
-    "objdiff_fuzzy_percent": 74.87892,
-    "objdiff_total_code": 2226782,
+    "mapped_code_bytes": 2444448,
+    "matched_code_bytes": 462004,
+    "matching_percent": 13.309457180505213,
+    "fuzzy_coverage_percent": 47.96432891648747,
+    "mapped_functions": 9037,
+    "matched_functions": 4316,
+    "objdiff_fuzzy_percent": 74.87993,
+    "objdiff_total_code": 2226861,
     "image_bytes": 40067072,
-    "mapped_bytes": 4258058,
-    "mapping_percent": 10.62732510127019,
+    "mapped_bytes": 4258243,
+    "mapping_percent": 10.627786827048405,
     "mapping_denominator": "code_and_data_section_virtual_sizes",
     "mapping_sections": [
       {
@@ -484288,16 +484674,16 @@
         "kind": "code",
         "address": "0x401000",
         "size": 3471246,
-        "mapped_bytes": 2445563
+        "mapped_bytes": 2445642
       },
       {
         "name": ".rdata",
         "kind": "data",
         "address": "0x751000",
         "size": 646766,
-        "mapped_bytes": 84936,
+        "mapped_bytes": 84978,
         "file_backed_data_bytes": 646766,
-        "mapped_file_backed_data_bytes": 84936,
+        "mapped_file_backed_data_bytes": 84978,
         "zero_fill_data_bytes": 0,
         "mapped_zero_fill_data_bytes": 0
       },
@@ -484306,45 +484692,45 @@
         "kind": "data",
         "address": "0x7ef000",
         "size": 35372200,
-        "mapped_bytes": 1727559,
+        "mapped_bytes": 1727623,
         "file_backed_data_bytes": 417792,
-        "mapped_file_backed_data_bytes": 265318,
+        "mapped_file_backed_data_bytes": 265382,
         "zero_fill_data_bytes": 34954408,
         "mapped_zero_fill_data_bytes": 1462241
       }
     ],
-    "mapping_known_size_symbols": 17009,
+    "mapping_known_size_symbols": 17027,
     "mapping_unknown_size_symbols": 7069,
-    "mapping_code_bytes": 2445563,
+    "mapping_code_bytes": 2445642,
     "mapping_code_total_bytes": 3471246,
-    "mapping_code_percent": 70.45202212692503,
-    "mapping_data_bytes": 1812495,
+    "mapping_code_percent": 70.45429796678195,
+    "mapping_data_bytes": 1812601,
     "mapping_data_total_bytes": 36018966,
-    "mapping_data_percent": 5.032057277824133,
-    "mapping_code_data_bytes": 4258058,
+    "mapping_data_percent": 5.03235156722711,
+    "mapping_code_data_bytes": 4258243,
     "mapping_code_data_total_bytes": 39490212,
-    "mapping_code_data_percent": 10.782565563335035,
-    "mapping_file_backed_data_bytes": 350254,
+    "mapping_code_data_percent": 10.783034033851223,
+    "mapping_file_backed_data_bytes": 350360,
     "mapping_file_backed_data_total_bytes": 1064558,
-    "mapping_file_backed_data_percent": 32.901354364910134,
+    "mapping_file_backed_data_percent": 32.911311549018464,
     "mapping_zero_fill_data_bytes": 1462241,
     "mapping_zero_fill_data_total_bytes": 34954408,
     "mapping_zero_fill_data_percent": 4.183280689519902,
-    "matched_data_region_bytes": 1796549
+    "matched_data_region_bytes": 1796655
   },
   "text_coverage": {
     "original_text_bytes": 3471246,
-    "mapped_reconstruction_bytes": 2444369,
-    "exact_reconstruction_bytes": 461925,
+    "mapped_reconstruction_bytes": 2444448,
+    "exact_reconstruction_bytes": 462004,
     "mapped_not_exact_bytes": 1982444,
     "excluded_import_glue_bytes": 1194,
-    "unclassified_text_bytes": 1025683,
+    "unclassified_text_bytes": 1025604,
     "strict_original_text_denominator_bytes": 3471246,
-    "strict_original_text_exact_percent": 13.307181340648286,
+    "strict_original_text_exact_percent": 13.309457180505213,
     "reconstruction_scope_denominator_bytes": 3470052,
-    "reconstruction_scope_exact_percent": 13.311760169588236,
-    "mapped_scope_denominator_bytes": 2444369,
-    "mapped_scope_exact_percent": 18.897515064214936,
+    "reconstruction_scope_exact_percent": 13.314036792532216,
+    "mapped_scope_denominator_bytes": 2444448,
+    "mapped_scope_exact_percent": 18.900136145256518,
     "qualification": "Unclassified text includes undiscovered code and unproven padding; these percentages compare relocated objects, not the linked image."
   },
   "data_members": [
@@ -485488,7 +485874,7 @@
       "metadata_sha256": "fe09365da4c355f220d724ca99394fc120b758891b4188d2c49707b6df0894f2",
       "header_path": "src/saga.h",
       "header_sha256": "fa9d80a2f2e41f651206eab862219ac77a83ff9466a31feb3c1ad6b4c783085c",
-      "geometry_object_sha256": "6851ed8bddc4f8f2865a37180ad07f3d8fe0ebe01d8c586e5df348ca6181cf36",
+      "geometry_object_sha256": "4601e6c1d102f293e05d8f78ccd91fa849ad1b1e6acc14f63f76b7dafdc1f2d4",
       "toolchain_sha256": "b8808088bb2c7eb239785f69c9e464ae8545216d5705fb37216bc0cf926732f3",
       "implementation_sha256": "d6a33be911d095a6d07dccd4443ccbfd6b514fd89fd7e200d9caa1827944e218",
       "headers": {
@@ -485730,7 +486116,7 @@
         4
       ]
     },
-    "clang_source_sha256": "dbfaf45d17fcdc1dc0f6ef4ac62d8440416b4a9434ff76e76907f8c6640185b4",
+    "clang_source_sha256": "6cd32c908c22267504d36c3374d681b29c4c268ebca4ef7008e6601e273d1ab0",
     "member_count": 42,
     "physical_definition_credit": 0
   },
