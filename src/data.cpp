@@ -18784,9 +18784,6 @@ extern "C" {
 #pragma bss_seg(".bss$BoltInitSfxFn")
     i32(__cdecl *BoltInitSfxFn)(GAMEOBJECT *) = 0;
 #pragma bss_seg()
-#pragma bss_seg(".bss$ExBlowupFlagsPc")
-    u32 ExBlowupFlagsPc = 0;
-#pragma bss_seg()
 #pragma bss_seg(".bss$BlowupExFunc")
     i32(__cdecl *BlowupExFunc)(GIZMOBLOWUP_PC *, i32) = 0;
 #pragma bss_seg()

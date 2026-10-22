@@ -1536,7 +1536,6 @@ void *__cdecl gizmoblowup_reservebuffers(WORLDINFO *world) {
     return world->gizmo_blowups;
 }
 
-extern u32 ExBlowupFlagsPc;
 extern i32(__cdecl *BlowupExFunc)(GIZMOBLOWUP_PC *, i32);
 i32 __cdecl SphereSphereOverlap(NUVEC *, f32, NUVEC *, f32);
 void __cdecl Bolt_AddDeflectedBolt(BOLT_PC *, NUVEC *, NUVEC *, u8 *);
@@ -1544,12 +1543,12 @@ STATIC_ASSERT(offsetof(PLAYERCHARACTERCONFIG_PC, field_028) == 0x28);
 STATIC_ASSERT(offsetof(GIZMOBLOWUP_PC, target_scale) == 0xa8);
 STATIC_ASSERT(offsetof(GIZMOBLOWUP_PC, platform_id) == 0x102);
 u32 __cdecl GetLevelExBlowupFlags(void) {
-    return ExBlowupFlagsPc;
+    return EXBLOWUPFLAGS;
 }
 GIZMOBLOWUP_PC *__cdecl GizmoBlowUp_Hit(GAMEOBJECT *object, NUVEC *points, i32 point_count, f32 radius, NUVEC *minimum,
                                         NUVEC *maximum, BOLT_PC *bolt, u32 hit_type, u8 *flags) {
-    u32 exclude_flag_1 = ExBlowupFlagsPc & 1;
-    u32 exclude_flag_2 = ExBlowupFlagsPc & 2;
+    u32 exclude_flag_1 = EXBLOWUPFLAGS & 1;
+    u32 exclude_flag_2 = EXBLOWUPFLAGS & 2;
     i32 airborne_damage = object != NULL && object->character_data->game_character->field_028 > 0.0f;
     GIZMOBLOWUP_PC *nearest = NULL;
     f32 nearest_distance = 1000000.0f;

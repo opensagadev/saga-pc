@@ -22611,7 +22611,6 @@ address,symbol,size,ctype
 0x9507c8,_GizmoBlowupNameCountPc,,i32
 0x009507c8,_gizmoblowupnametable_numids,,
 0x9507cc,_EXBLOWUPFLAGS,4,u32
-0x9507cc,_ExBlowupFlagsPc,,u32
 0x9507d0,_GizmoBlowupNameTablePc,,char[32][32]
 0x009507d0,_gizmoblowupnametable,1024,char[32][32]
 0x950bd0,_GizmoBlowUpOpponent_Behind,,i32

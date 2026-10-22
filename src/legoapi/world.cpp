@@ -939,8 +939,9 @@ i32 __cdecl WorldInfo_Reset(WORLDINFO *world, i32 level_index) {
     VARIPTR end;
     i32 buffer_size;
     i32 progress_index;
-    STUBBED_NAMED(SetLevelExBlowupFlags); /* Native 55ffc6: flags0. */
-    if (world->loaded != 0) {
+    i32 was_loaded = world->loaded != 0;
+    SetLevelExBlowupFlags(0);
+    if (was_loaded != 0) {
         if (world->level_idx == level_index && (u8)LDataList[level_index].area_index != 0xff &&
             new_level_from_menu == 0)
             return 0;
