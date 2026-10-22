@@ -6,6 +6,7 @@ address,symbol,size,ctype
 0x4011e0,_InitOnce,1019,"void __cdecl(i32,char**)"
 0x004015e0,_Text_ExpandButtonString,462,
 0x4017c0,_GamePad_InitButtons,66,void __cdecl(void)
+0x00401870,_NuMainTrailerLeafPc,1,void __cdecl(void)
 0x4018a0,_AITriggerSetSysReset,81,void __cdecl (TRIGGER_SYSTEM_PC *)
 0x401900,_AITriggerSetCreate,62,"AITRIGGERSET_s *__cdecl(AITRIGGERSETSYS_s *,FLOWBOX_PC *)"
 0x401940,_AITriggerSetAddTrigger,1052,
@@ -10759,6 +10760,7 @@ address,symbol,size,ctype
 0x007547a4,_PermLegalBase,6,const char[6]
 0x7547ac,_LevelObjectNamePc007547ac,9,const char[9]
 0x7547b8,_LevelObjectNamePc007547b8,10,const char[10]
+0x007547b8,??_C@_09BDOPKGH@save_icon?$AA@,10,const char[10]
 0x007547c4,_LevelSplineNameMissionCamPc,12,const char[12]
 0x007547d0,_LevelSplineNameBonusZone5Pc,13,const char[13]
 0x007547e0,_LevelSplineNameBonusZone4Pc,13,const char[13]
@@ -13696,6 +13698,8 @@ address,symbol,size,ctype
 0x75d168,__real@3ff5555560000000,8,const f64
 0x0075d170,__real@400e666660000000,8,const f64
 0x0075d178,__real@40b9999a,4,const f32
+0x0075d180,__real@400a666660000000,8,const f64
+0x0075d188,__real@40533333,4,const f32
 0x75d18c,_StarWarsStairsTop2Pc,12,const char[12]
 0x75d198,_StarWarsStairsTopPc,11,const char[11]
 0x75d1a4,??_C@_0M@BIGODEPC@FULLTERRAIN?$AA@,12,const char[]
@@ -19163,6 +19167,7 @@ address,symbol,size,ctype
 0x7f41a0,_DroidCheat32EnabledPc,,u8
 0x007f4358,_LevelSplinesTable,416,LEVELSPLINE_PC[26]
 0x7f44f8,_ObjTab,6000,LEVEL_OBJECT_CONFIG_PC[750]
+0x007f44fc,_LoadPermSaveIconSpecialPc,4,char *
 0x007f5c68,_TexAnimScriptNamesTitlePc,12,char *[3]
 0x007f5c74,__real@42de0000,4,const f32
 0x007f5c78,_TexAnimScriptNamesGamePc,128,char *[32]

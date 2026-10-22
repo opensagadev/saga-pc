@@ -7440,6 +7440,9 @@ extern "C" {
 #pragma data_seg(".data$FrameStartupDelayPc")
     f32 FrameStartupDelayPc = 6.0f;
 #pragma data_seg()
+#pragma data_seg(".data$LoadPermSaveIconSpecialPc")
+    char *LoadPermSaveIconSpecialPc = "save_icon";
+#pragma data_seg()
 #pragma data_seg(".data$NuHtmlUnknownTextPc")
     char NuHtmlUnknownTextPc[8] = "unknown";
 #pragma data_seg()

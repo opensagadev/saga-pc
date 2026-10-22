@@ -539,14 +539,17 @@ extern "C" int __cdecl NuMain(int argc, char **argv) {
     EndPerm();
 
     if (GAMEDEMO != 0) {
+        f32 volume = (f32)(Game.options_save.music_volume / 10.0);
         saved_world = WORLD;
         WORLD = NULL;
         PLAYERCOUNT = 0;
-        STUBBED_NAMED("NuMain: PC trailer Movie_Play and FinishLoop at 0x00492ce5");
+        Movie_Play(Trailer[0], &characterbuffer_ptr, &characterbuffer_end, DEFAULTFRAMETIME, NULL, volume);
+        FinishLoop(2);
+        NuMainTrailerLeafPc();
         WORLD = saved_world;
     }
     if (openlevels != 0) {
-        STUBBED_NAMED("NuMain: Areas_OpenAll at 0x00492d08");
+        Areas_OpenAll(0);
     }
     if (Level == -1) {
         Level = 0;

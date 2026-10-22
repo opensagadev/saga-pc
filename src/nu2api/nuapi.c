@@ -28,6 +28,9 @@ void MenuSetPlatformState(i32 state) {
 void __cdecl PCPresentationPlatformLeafPc(void) {
 }
 
+void __cdecl NuMainTrailerLeafPc(void) {
+}
+
 i32 __cdecl NuKeyboard(i32 key) {
     return (i8)nu_keyboard_pages[(i8)nu_keyboard_page_index * 0x100 + key];
 }

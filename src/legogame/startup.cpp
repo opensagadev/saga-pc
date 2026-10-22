@@ -125,6 +125,7 @@ extern "C" {
         f32 frame_time;
         NUMTX scale;
         NUVEC scale_vec = {0.125f, 0.125f, 0.125f};
+        NUSPECIALHANDLE special = {NULL, NULL, NULL};
 
         SetBackgroundMusic(1);
         saved_world = WORLD;
@@ -169,6 +170,22 @@ extern "C" {
             UpdateGameMenu((GAMEPAD_PC *)&GamePadStorage[0], 0);
             UpdateTimer(&GlobalTimer);
             menu_flash = NuFmod(GlobalTimer.time_elapsed_mod_seconds, 0.2f) < 0.1f;
+            if (NOSOUND == 0) {
+                NuSound3Update();
+            }
+
+            if (language_timer < 3.3f && save_icon_scene != NULL) {
+                if (language_timer == 0.0f && NuSpecialExistsFn(&special) == 0) {
+                    if (NuSpecialFind(save_icon_scene, &special, LoadPermSaveIconSpecialPc, 1) == 0) {
+                        language_timer = 3.3f;
+                    }
+                } else {
+                    language_timer += FRAMETIME;
+                    if (language_timer > 3.3f) {
+                        language_timer = 3.3f;
+                    }
+                }
+            }
 
             if (menu_timer < 0.5f && language_timer >= 3.3f && Text_IsFontLoaded() != NULL) {
                 if (LoadPerm_LanguageSelect == 0) {
@@ -235,7 +252,9 @@ extern "C" {
 
             if (tail_timer == 0.2f) {
                 menu_alpha = LoadPermFadeAlpha(language_timer, 2.5f);
-                STUBBED_NAMED("LoadPerm: NuSpecialDrawAtAlpha(&special, &scale, menu_alpha)");
+                if (menu_alpha > 0.0f) {
+                    NuSpecialDrawAtAlpha(&special, &scale, menu_alpha);
+                }
                 DrawMenu(0);
 
                 legal_alpha = LoadPermFadeAlpha(legal_timer, 5.0f);

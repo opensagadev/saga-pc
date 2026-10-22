@@ -11099,6 +11099,7 @@ extern OCCLUSIONMANAGER g_OcclusionManager;
     extern TIMER GlobalTimer;
     extern i32 saveload_status;
     extern NUGSCN *save_icon_scene;
+    extern char *LoadPermSaveIconSpecialPc;
     i32 __cdecl CutScene_StartFn_LSW(CUTINFO *cut);
     CUTINFO *__cdecl CutScene_Find(CUTSYS_PC *system, char *name);
     CUTINFO *__cdecl NewCutScene(CUTINFO *cutscene, CUTSYS_PC *system, char *name, i32 unused_4);
@@ -14128,6 +14129,7 @@ void __cdecl AIScriptMissingConditionDiagnostic();
     NUMTX *__cdecl NuSpecialGetMtx(NUSPECIALHANDLE *special);
     void __cdecl NuSpecialSetMtx(NUSPECIALHANDLE *special, const NUMTX *matrix);
     i32 __cdecl NuSpecialExistsFn(NUSPECIALHANDLE *special);
+    i32 __cdecl NuSpecialDrawAtAlpha(NUSPECIALHANDLE *special, NUMTX *matrix, f32 alpha);
     i32 __cdecl NuSpecialTestAnim(NUSPECIALHANDLE *special);
     NUVEC *__cdecl NuSpecialGetPos(NUSPECIALHANDLE *special);
     NUVEC *__cdecl NuSpecialGetDrawPos(NUSPECIALHANDLE *special);
@@ -21826,6 +21828,7 @@ extern "C" {
     extern i32 PCFramePresentationStatePc;
     i32 __cdecl PCFramePresentNativePc(i32, i32);
     void __cdecl PCPresentationPlatformLeafPc(void);
+    void __cdecl NuMainTrailerLeafPc(void);
 #ifdef __cplusplus
 }
 #endif
