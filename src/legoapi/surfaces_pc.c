@@ -35,3 +35,10 @@ void __cdecl Surfaces_Reset(void) {
     SURFACEBITS_DUST = dust;
     SURFACEBITS_NODUST = no_dust;
 }
+
+void __cdecl SurfaceMaskOn(u32 *surface_mask) {
+    *surface_mask = 0x20;
+}
+void __cdecl SurfaceMaskOff(u32 *surface_mask) {
+    *surface_mask = 0;
+}

@@ -3987,6 +3987,8 @@ address,symbol,size,ctype
 0x571ea0,_MakePartVector,380,"void __cdecl (NUVEC *, NUVEC *, f32)"
 0x572020,_TargetPart,692,"PART_PC* __cdecl(GAMEOBJECT*,NUVEC*,NUVEC*,f32,f32,i32,i32)"
 0x5722e0,_Part_FindFromHSpecial,90,PART_PC *__cdecl(NUSPECIALHANDLE *)
+0x00572360,_SurfaceMaskOn,11,void __cdecl (u32 *)
+0x00572370,_SurfaceMaskOff,11,void __cdecl (u32 *)
 0x00572380,_Surfaces_Reset,182,void __cdecl (void)
 0x00572440,_GetSurfaceInfo,536,
 0x00572660,_SetObjOnSurface,233,

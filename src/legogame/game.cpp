@@ -4,6 +4,8 @@
 extern "C" void __cdecl Attractos_InitTerrain(WORLDINFO *);
 extern "C" void __cdecl NarrowSockExceptions_Init(NARROWSOCKEXCEPTION_PC *);
 extern "C" NARROWSOCKEXCEPTION_PC NarrowSockExceptionsLswPc[4];
+extern "C" void __cdecl SurfaceMaskOn(u32 *surface_mask);
+extern "C" void __cdecl SurfaceMaskOff(u32 *surface_mask);
 void __cdecl NewGame(void) {
     OPTIONSSAVE saved_options = Game.options_save;
     i32 i;
@@ -1911,8 +1913,8 @@ void __cdecl InitGameAfterConfig(void) {
         CutSceneLookupAllDebrisPagesPc = 1;
         NarrowSockExceptions_Init(NarrowSockExceptionsLswPc);
         APIObjectRegisterAnimRedirect(RedirectAnim, AnimRedirectList_LSW, "chars\\commonanims");
-        STUBBED_NAMED("InitGameAfterConfig: SurfaceMaskOff 42e6ca -> 572370, mask8034c4");
-        STUBBED_NAMED("InitGameAfterConfig: SurfaceMaskOn 42e6d4 -> 572360, mask95102c");
+        SurfaceMaskOff(&GetSurfaceInfoDefaultMaskPc.word);
+        SurfaceMaskOn(&GetSurfaceInfoRuntimeMaskPc.word);
         Hub_UsePlayerList = 1;
         BoltSys_Init(&BoltSys_LSW);
         GameAudio_Init(&GameAudioLswPc);
@@ -1981,8 +1983,8 @@ void __cdecl InitGameAfterConfig(void) {
         CutScenes_InitSystem(&InitCutSettingsAlternatePc);
         AlternateGameCallbackPc = AlternateGame_callback_925180_PC;
         APIObjectRegisterAnimRedirect(RedirectAnim, AnimRedirectList_Batman, "chars\\commonanims");
-        STUBBED_NAMED("InitGameAfterConfig: SurfaceMaskOn 42e957 -> 572360, mask8034c4");
-        STUBBED_NAMED("InitGameAfterConfig: SurfaceMaskOff 42e961 -> 572370, mask95102c");
+        SurfaceMaskOn(&GetSurfaceInfoDefaultMaskPc.word);
+        SurfaceMaskOff(&GetSurfaceInfoRuntimeMaskPc.word);
         Hub_UsePlayerList = 0;
         BoltSys_Init(&BoltSys_Batman);
         GameAudio_Init(&GameAudioAlternatePc);
