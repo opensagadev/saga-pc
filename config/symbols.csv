@@ -12913,6 +12913,7 @@ address,symbol,size,ctype
 0x0075af60,_PlayerExtraActionNamePc_08,8,const char[8]
 0x0075af68,_PlayerExtraActionNamePc_07,6,const char[6]
 0x0075af70,_PlayerExtraActionNamePc_06,7,const char[7]
+0x75af70,??_C@_06FBJHABOK@force1?$AA@,7,const char[7]
 0x0075af78,_PlayerExtraActionNamePc_05,6,const char[6]
 0x0075af80,_PlayerExtraActionNamePc_04,6,const char[6]
 0x0075af88,_PlayerExtraActionNamePc_03,13,const char[13]
@@ -13113,6 +13114,7 @@ address,symbol,size,ctype
 0x75b850,_PlayerActionNamePc_042,11,const char[11]
 0x75b85c,_PlayerActionNamePc_041,6,const char[6]
 0x75b864,_PlayerActionNamePc_040,7,const char[7]
+0x75b864,??_C@_06HKLKFCCJ@force2?$AA@,7,const char[7]
 0x75b86c,??_C@_04GOOOJOPP@left?$AA@,5,const char[5]
 0x75b86c,_PlayerActionNamePc_039,5,const char[5]
 0x75b874,_PlayerActionNamePc_038,4,const char[4]
@@ -13805,6 +13807,13 @@ address,symbol,size,ctype
 0x75dd54,??_C@_09FIKGBOLF@obstacle9?$AA@,10,const char[10]
 0x75dd60,??_C@_0BA@NMGMNNLJ@green_light_on1?$AA@,16,char []
 0x75dd70,??_C@_0L@BKDJPJOF@FORCE_TUBE?$AA@,11,char []
+0x75dd7c,??_C@_0N@EDNLBKHC@starfighter2?$AA@,13,const char[13]
+0x75dd8c,??_C@_0N@GIPGEJLB@starfighter1?$AA@,13,const char[13]
+0x75dd9c,??_C@_09FGECLKEI@Palpatine?$AA@,10,const char[10]
+0x75dda8,??_C@_0O@JGNCPPBD@FreePalpatine?$AA@,14,const char[14]
+0x75ddb8,??_C@_06OADJNHLO@panel1?$AA@,7,const char[7]
+0x75ddc0,??_C@_04CEDICBEH@lift?$AA@,5,const char[5]
+0x75ddc8,??_C@_09ILLJIHJP@LiftChase?$AA@,10,const char[10]
 0x75ddd4,??_C@_0BK@CMHBPGDI@ep3_GeneralGrievous_Outro?$AA@,26,char []
 0x75ddf0,??_C@_0BA@JNHADNCO@WookiesToRescue?$AA@,16,char []
 0x75de00,??_C@_0N@JAIKINBL@TotalWookies?$AA@,13,char []
@@ -13813,9 +13822,33 @@ address,symbol,size,ctype
 0x75de2c,??_C@_07IBAHDDOK@ball?$CFib?$AA@,8,const char[8]
 0x75de34,??_C@_0N@KAKHOCIA@attack_time?$DN?$AA@,13,char []
 0x75de44,??_C@_0P@LJGKHAC@boulder_range?$DN?$AA@,15,char []
+0x75de54,??_C@_06JJGEMFKI@wobble?$AA@,7,const char[7]
+0x75de5c,??_C@_0BB@GALDHOED@ceiling_collapse?$AA@,17,const char[17]
+0x75de70,??_C@_0O@INPNHOEK@InControlRoom?$AA@,14,const char[14]
+0x75de80,??_C@_06CMOAPFKP@force4?$AA@,7,const char[7]
 0x75de88,_CloudCityTrapAForceNamePc,7,const char[7]
+0x75de88,??_C@_06GDKBGDGI@force3?$AA@,7,const char[7]
+0x75de90,??_C@_08CADLNOCP@Block1_a?$AA@,9,const char[9]
+0x75de9c,??_C@_08LBGINOM@Block1_b?$AA@,9,const char[9]
+0x75dea8,??_C@_05NAPFDJNG@timer?$AA@,6,const char[6]
+0x75deb0,??_C@_09GKMGBNIO@Bigjump_0?$AA@,10,const char[10]
 0x75decc,??_C@_0P@MDPIFKNK@VaderBComplete?$AA@,15,char []
+0x75dedc,??_C@_06DBIHKJIG@rock11?$AA@,7,const char[7]
+0x75dee4,??_C@_06CIJMJIMH@rock10?$AA@,7,const char[7]
+0x75deec,??_C@_05GJDLNCNN@rock8?$AA@,6,const char[6]
+0x75def4,??_C@_05OOKDMOBC@rock7?$AA@,6,const char[6]
+0x75defc,??_C@_05PHLIPPFD@rock6?$AA@,6,const char[6]
+0x75df04,??_C@_05NMJFKMJA@rock5?$AA@,6,const char[6]
+0x75df0c,??_C@_05MFIOJNNB@rock4?$AA@,6,const char[6]
+0x75df14,??_C@_05IKMPALBG@rock3?$AA@,6,const char[6]
+0x75df1c,??_C@_05JDNEDKFH@rock2?$AA@,6,const char[6]
+0x75df24,??_C@_05LIPJGJJE@rock1?$AA@,6,const char[6]
+0x75df2c,??_C@_0L@EDGNGLMM@obstacle23?$AA@,11,const char[11]
+0x75df38,??_C@_0L@FKHGFKIN@obstacle22?$AA@,11,const char[11]
 0x75df44,_EpisodeVI_obstacle21,11,const char[11]
+0x75df44,??_C@_0L@HBFLAJEO@obstacle21?$AA@,11,const char[11]
+0x75df50,??_C@_0L@GIEADIAP@obstacle20?$AA@,11,const char[11]
+0x75df5c,??_C@_0L@NECKFDJ@door_fight?$AA@,11,const char[11]
 0x0075e004,_DeathStarEscapeBSpongePc,7,const char[7]
 0x0075e00c,_DeathStarEscapeBLiftDownPc,10,const char[10]
 0x0075e018,_DeathStarEscapeBLiftUpPc,8,const char[8]
@@ -19479,9 +19512,17 @@ address,symbol,size,ctype
 0x7fffe4,_gunshipb_seekmom,4,f32
 0x7fffe8,_gunshipb_seekmomseek,4,f32
 0x007fffec,_GUNSHIPAHACK,4,i32
+0x800094,_CruiserD_LiftSpeedPc,4,f32
+0x800098,_CruiserD_frame,4,f32
+0x80009c,_CruiserD_direction,4,i32
+0x8000a0,_CruiserD_ResetTimePc,4,f32
 0x8000a4,_boulder_radius,4,f32
 0x8000a8,_boulder_blowup_type,4,i32
 0x8000ac,_TempleC_StreamStatusPos,,
+0x8000b8,_VaderA_TimeBonusPc,4,f32
+0x8000bc,_VaderA_TimeLimitsPc,12,f32[3]
+0x8000c8,_vadar_cam_pos,12,NUVEC
+0x8000d4,_vadar_cam_tgt,12,NUVEC
 0x800224,_melee_wavePhase,1,i8
 0x80029c,?pos@?1??CloudCityTrapA_Update@@9@9,,
 0x8002c4,_fire_clip_dist,4,i32
@@ -22242,9 +22283,22 @@ address,symbol,size,ctype
 0x8894d4,_FactoryBConveyorXSpeed,4,f32
 0x8894d8,_FactoryBConveyorZSpeed,4,f32
 0x8894dc,_bonus_gunship_store_progress_flag,,i32
+0x8894e8,_cruiserd_netpacket,4,CRUISERD_NETPACKET_PC *
+0x8894ec,_CruiserD_Lift_plat_id,4,i32
+0x8894f0,_vader_c,152,VADERC_PC
+0x889588,_vaderc_netpacket,4,void *
 0x88958c,_boulder_old_pos,24,NUVEC[2]
+0x8895a4,_CruiserD_LiftAnim,4,CRUISERD_LIFT_ANIM_PC *
+0x8895a8,_crusiserc_netpacket,4,CRUISERC_NETPACKET_PC *
+0x8895ac,_CruiserD_LiftChase_msg,4,GIZAIMESSAGE *
+0x8895b0,_cruiser_c,20,CRUISERC_PC
+0x8895c4,_CruiserE_ix,4,i32
+0x8895c8,_Vader_ObiWanKilledAnakin,4,i32
 0x8895cc,_boulder_wait,4,f32
+0x8895d0,_CruiserD_Lift,12,NUSPECIALHANDLE
+0x8895dc,_vadera_netpacket,4,void *
 0x8895e0,_boulder_part,8,PART_PC *[2]
+0x8895e8,_vader_a,48,VADERA_PC
 0x889618,_CruiserD_LiftChase,,i32
 0x88961c,_Grievous_obj,4,struct gameobject_s *
 0x889620,_KashyyykA_msg_TotalWookies,4,struct gizaimessage_s *
