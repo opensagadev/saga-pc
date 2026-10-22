@@ -124,7 +124,7 @@ void __cdecl ThermalDetonator_Throw(GAMEOBJECT *object) {
     NUVEC movement, velocity, origin, centre;
     ADDPART_PC params = Default_ADDPART;
     NUMTX matrix;
-    i32 blocked = 0;
+    i32 blocked;
     i32 locator;
     u16 angle;
     PART_PC *part;
@@ -133,8 +133,9 @@ void __cdecl ThermalDetonator_Throw(GAMEOBJECT *object) {
     if ((object->flags_1fc & 0x80) != 0)
         Hint_SetComplete(0x2b8);
     locator = object->character_data->game_character->throw_locator;
+    blocked = 0;
     if (locator != -1 && object->character_model->points_of_interest[locator] != NULL) {
-        if (object->id == id_JANGOFETT && object->field_7aa == 0x6e) {
+        if (object->id == (u16)id_JANGOFETT && object->field_7aa == 0x6e) {
             NuMtxSetRotationY(&matrix, qrand());
             NuMtxRotateZ(&matrix, qrand());
             NuMtxRotateX(&matrix, qrand());
@@ -149,14 +150,14 @@ void __cdecl ThermalDetonator_Throw(GAMEOBJECT *object) {
         origin.y = (object->collision_max.y - object->collision_min.y) * 0.75 + object->collision_min.y;
         origin.z = object->collision_position.z;
         NuVecSub(&movement, &matrix.translation, &origin);
-        blocked = NewRayCastScaleYMask(&origin, &movement, 0.0f, 1.0f, 0, GetSurfaceInfoDefaultMaskPc.word | 0x1f) != 0;
+        if (NewRayCastScaleYMask(&origin, &movement, 0.0f, 1.0f, 0, GetSurfaceInfoDefaultMaskPc.word | 0x1f) != 0)
+            blocked = 1;
     } else {
         NuMtxSetTranslation(&matrix, &object->collision_position);
     }
-    angle = object->movement_facing_angle;
-    velocity.x = 2.0 * NU_SIN_LUT(angle) + object->velocity.x;
+    velocity.x = 2.0 * NU_SIN_LUT(object->movement_facing_angle) + object->velocity.x;
     velocity.y = 2.0f;
-    velocity.z = 2.0 * NU_COS_LUT(angle) + object->velocity.z;
+    velocity.z = 2.0 * NU_COS_LUT(object->movement_facing_angle) + object->velocity.z;
     if (blocked) {
         angle = (u16)NuAtan2D(object->collision_position.x - matrix.m30, object->collision_position.z - matrix.m32);
         velocity.x = 2.0 * NU_SIN_LUT(angle);
@@ -166,21 +167,79 @@ void __cdecl ThermalDetonator_Throw(GAMEOBJECT *object) {
     }
     params.matrix = &matrix;
     params.velocity = &velocity;
-    params.owner = object;
     NuSpecialGetRadius(&WORLD->level_objects[0xe9].special, &centre, &params.field_14);
     params.field_18 = params.field_14;
     params.field_14 *= 0.75;
-    params.field_c4 = 1;
     params.gravity = -5.0f;
     params.special = &WORLD->level_objects[0xe9].special;
+    params.time_step = FRAMETIME;
     params.flags = 0x08000292;
-    params.collision_fn = PartCollide_3D;
-    params.kill_fn = PartKill_ThermalDetonator;
-    params.impact_fn = PartImpact_ThermalDetonator;
+    params.field_a4 = 10.0f;
+    params.owner = object;
+    params.field_c4 = 1;
     params.stop_fn = PartStop_Flickerer;
     params.draw_fn = PartDraw_ThermalDetonator;
+    params.impact_fn = PartImpact_ThermalDetonator;
+    params.kill_fn = PartKill_ThermalDetonator;
+    params.collision_fn = PartCollide_3D;
+    part = AddPart(&params);
+    if (part != NULL) {
+        part->force_flags = (u16)ObjHitObj_Flags(object);
+        part->field_206 = 0;
+        part->update_fn = PartUpdate_ThermalDetonator;
+        part->reflection_height = 2000000.0f;
+        part->active &= ~0x38000;
+    }
+    PlaySfx("ThrowDet", &object->collision_position);
+    NewBuzzFrames(object->pad->bound_pad, 2, 0);
+}
+
+void __cdecl ThermalDetonator_ThrowMom(GAMEOBJECT *object, NUVEC *velocity) {
+    NUVEC movement, origin, centre;
+    ADDPART_PC params = Default_ADDPART;
+    NUMTX matrix;
+    i32 locator;
+    PART_PC *part;
+    if (WORLD->level_objects[0xe9].active == 0)
+        return;
+    locator = object->character_data->game_character->throw_locator;
+    if (locator != -1 && object->character_model->points_of_interest[locator] != NULL) {
+        if (object->id == (u16)id_JANGOFETT && object->field_7aa == 0x6e) {
+            NuMtxSetRotationY(&matrix, qrand());
+            NuMtxRotateZ(&matrix, qrand());
+            NuMtxRotateX(&matrix, qrand());
+            NuMtxTranslate(&matrix, &object->locator_matrices[locator].translation);
+        } else {
+            matrix = object->locator_matrices[locator];
+            NuVecNorm((NUVEC *)&matrix.m00, (NUVEC *)&matrix.m00);
+            NuVecNorm((NUVEC *)&matrix.m10, (NUVEC *)&matrix.m10);
+            NuVecNorm((NUVEC *)&matrix.m20, (NUVEC *)&matrix.m20);
+        }
+        origin.x = object->collision_position.x;
+        origin.y = (object->collision_max.y - object->collision_min.y) * 0.75 + object->collision_min.y;
+        origin.z = object->collision_position.z;
+        NuVecSub(&movement, &matrix.translation, &origin);
+        NewRayCastScaleYMask(&origin, &movement, 0.0f, 1.0f, 0, GetSurfaceInfoDefaultMaskPc.word | 0x1f);
+    } else {
+        NuMtxSetTranslation(&matrix, &object->collision_position);
+    }
+    params.matrix = &matrix;
+    params.velocity = velocity;
+    NuSpecialGetRadius(&WORLD->level_objects[0xe9].special, &centre, &params.field_14);
+    params.field_18 = params.field_14;
+    params.field_14 *= 0.75;
+    params.gravity = -5.0f;
+    params.special = &WORLD->level_objects[0xe9].special;
     params.time_step = FRAMETIME;
+    params.flags = 0x08000292;
     params.field_a4 = 10.0f;
+    params.owner = object;
+    params.field_c4 = 1;
+    params.stop_fn = PartStop_Flickerer;
+    params.draw_fn = PartDraw_ThermalDetonator;
+    params.impact_fn = PartImpact_ThermalDetonator;
+    params.kill_fn = PartKill_ThermalDetonator;
+    params.collision_fn = PartCollide_3D;
     part = AddPart(&params);
     if (part != NULL) {
         part->force_flags = (u16)ObjHitObj_Flags(object);

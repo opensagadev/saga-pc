@@ -2036,7 +2036,7 @@ address,symbol,size,ctype
 0x4cf9f0,_PartDraw_ThermalDetonator,313,i32 __cdecl(PART_PC *)
 0x4cfb30,_PartKill_ThermalDetonator,124,"void __cdecl(PART_PC *, i32)"
 0x4cfbb0,_ThermalDetonator_Throw,993,void __cdecl(GAMEOBJECT *)
-0x4cffa0,_ThermalDetonator_ThrowMom,744,
+0x4cffa0,_ThermalDetonator_ThrowMom,744,"void __cdecl(GAMEOBJECT *, NUVEC *)"
 0x4d0290,_ThermalDetonator_MoveCode,727,i32 __cdecl(GAMEOBJECT *)
 0x4d0570,_ShinyMetal_UpdateHint,214,i32 __cdecl(HINT_PC*)
 0x4d06a0,_TightRopes_Load,253,"i32 __cdecl(WORLDINFO *, void *)"
