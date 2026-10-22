@@ -1363,6 +1363,7 @@ address,symbol,size,ctype
 0x4857d0,_AddStatusMiniKitParts,913,void __cdecl(void)
 0x485b70,_Status_DrawPromptMenu,1124,"void __cdecl(STATUSPACKET_s *, i32, f32)"
 0x485fe0,_DrawBonusTime,530,"void __cdecl(STATUSPACKET_s *, f32, i32)"
+0x00486200,_DrawStatusScreen,1855,void __cdecl(WORLDINFO *)
 0x00486940,_FinishStatusPacket,694,void __cdecl(i32)
 0x486c00,_NuMainStatusHelperPc,1,void __cdecl(STATUSPACKET_s *)
 0x00486c10,_RegisterStatusScreen,67,"void __cdecl(STATUS_STAGE_s *, i32 *, const REGISTER_STATUS_PACKET_PC *)"
@@ -1798,9 +1799,18 @@ address,symbol,size,ctype
 0x4bbbf0,_PanelRender,286,void __cdecl (WORLDINFO *)
 0x004bbd10,?Tag_DrawIcon_Batman@@YAXPAUgameobject_s@@@Z,927,
 0x004bc0b0,?Tag_DrawIcon_LSW@@YAXPAUgameobject_s@@@Z,491,
+0x004bc4b0,_BountyHunterPursuitA_Init,1,void __cdecl(WORLDINFO *)
+0x004bc4c0,_BountyHunterPursuitA_Reset,42,void __cdecl(WORLDINFO *)
+0x004bc4f0,_BountyHunterPursuitA_Update,5,void __cdecl(WORLDINFO *)
+0x004bc500,_BountyHunterPursuitB_Init,1,void __cdecl(WORLDINFO *)
 0x4bc510,_BountyHunterPursuitB_Reset,265,
+0x004bc620,_BountyHunterPursuitB_Update,27,void __cdecl(WORLDINFO *)
+0x004bc640,_BountyHunterPursuitC_Init,1,void __cdecl(WORLDINFO *)
 0x4bc650,_BountyHunterPursuitC_Reset,249,
+0x004bc750,_BountyHunterPursuitC_Update,173,void __cdecl(WORLDINFO *)
+0x004bc800,_BountyHunterPursuitD_Init,1,void __cdecl(WORLDINFO *)
 0x4bc810,_BountyHunterPursuitD_Reset,382,
+0x004bc990,_BountyHunterPursuitD_Update,310,void __cdecl(WORLDINFO *)
 0x4bcaf0,_ResetRadios,31,
 0x4bcb10,_UpdateRadios,421,
 0x4bccc0,_PlayRadio,353,
@@ -2124,6 +2134,7 @@ address,symbol,size,ctype
 0x4d7930,_DrawRopeSingle,1675,"void __cdecl(NUVEC *,NUVEC *,f32,NUMTL *,f32,f32,f32,f32)"
 0x4d7fc0,_ZipUps_DrawLines,453,void __cdecl(void)
 0x4d8280,_PodMatrixCopyPrivatePc,95,
+0x004d82f0,_GunganA_Init,230,void __cdecl(WORLDINFO *)
 0x4d83e0,_GunganA_Update,298,
 0x4d8510,_PodRaceSnipersReset,278,
 0x4d8630,_PodRaceSnipersUpdate,820,
@@ -2134,9 +2145,13 @@ address,symbol,size,ctype
 0x4d94f0,_RacePodAlignPrivatePc,539,
 0x4da6c0,_UpdatePodRaceLapDisplay,500,
 0x4daa70,_PodRace_InStartCountdown,55,i32 __cdecl(WORLDINFO *)
+0x004daab0,_PodRaceAUpdatePc,49,void __cdecl(WORLDINFO *)
+0x004daaf0,_PodRaceA_AlwaysUpdate,75,void __cdecl(WORLDINFO *)
+0x004dab40,_PodRaceADrawPc,5,void __cdecl(WORLDINFO *)
 0x4dab50,_Action_MushroomCollapse,378,
 0x4dacd0,_PodSeekMushCutSound,123,
 0x4dae30,_PodRaceBUpdate,592,
+0x004db080,_PodRaceCUpdate,163,void __cdecl(WORLDINFO *)
 0x004db130,_Action_SetLapTime,324,"i32 __cdecl(void*, void*, void*, char**, i32, i32, f32)"
 0x4db280,_Action_Sebulba,1165,
 0x4db740,_PodDust,1054,"void __cdecl(WORLDINFO *, GAMEOBJECT *)"
@@ -2145,12 +2160,35 @@ address,symbol,size,ctype
 0x4dbbe0,_PodSprint_InitAISpline,241,
 0x4dbce0,_PodSprintA_Init,305,
 0x4dbe20,_PodSprintA_Reset,351,
+0x004dc640,_PodSprintA_Update,460,void __cdecl(WORLDINFO *)
+0x004dc810,_PodSprintA_Panel,484,void __cdecl(WORLDINFO *)
 0x4dca00,_PodSprint_GetIAlongVals,122,
 0x4dca80,_Action_NewSebulba,1065,
+0x004dceb0,_RetakeG_Init,63,void __cdecl(WORLDINFO *)
+0x004dcef0,_RetakeG_Reset,1,void __cdecl(WORLDINFO *)
+0x004dcf00,_RetakeG_Update,109,void __cdecl(WORLDINFO *)
+0x004dcf70,_RetakeG_Panel,256,void __cdecl(WORLDINFO *)
+0x004dd070,_MaulA_Init,156,void __cdecl(WORLDINFO *)
 0x4dd110,_MaulA_Reset,78,
+0x004dd160,_MaulA_Update,1,void __cdecl(WORLDINFO *)
+0x004dd170,_MaulA_Panel,96,void __cdecl(WORLDINFO *)
+0x004dd1d0,_MaulD_Init,1,void __cdecl(WORLDINFO *)
+0x004dd1e0,_MaulD_Update,1,void __cdecl(WORLDINFO *)
+0x004dd1f0,_MaulE_Init,1,void __cdecl(WORLDINFO *)
+0x004dd200,_MaulE_Update,1,void __cdecl(WORLDINFO *)
 0x4dd210,_MaulF_Init,105,
+0x004dd280,_MaulF_Reset,30,void __cdecl(WORLDINFO *)
+0x004dd2a0,_MaulF_Update,1,void __cdecl(WORLDINFO *)
+0x004dd2b0,_MaulF_Panel,63,void __cdecl(WORLDINFO *)
+0x004dd2f0,_AnakinsFlightB_Init,139,void __cdecl(WORLDINFO *)
+0x004dd380,_AnakinsFlightB_Update,1,void __cdecl(WORLDINFO *)
+0x004dd390,_AnakinsFlightB_Draw,1,void __cdecl(WORLDINFO *)
 0x4dd480,_PodRaceReset,94,
+0x004dd4e0,_PodRaceAInit,5,void __cdecl(WORLDINFO *)
+0x004dd4f0,_PodRaceAReset,131,void __cdecl(WORLDINFO *)
 0x4dd580,_PodRaceBInit,64,
+0x004dd5c0,_PodRaceBReset,132,void __cdecl(WORLDINFO *)
+0x004dd650,_PodRaceCInit,282,void __cdecl(WORLDINFO *)
 0x4dd770,_PodRaceCReset,151,
 0x4dd810,_Action_CreatePod,1135,"i32 __cdecl (void *, void *, void *, char **, i32, i32, f32)"
 0x4dde30,_UpdatePaintPuzzle,708,
@@ -2165,17 +2203,27 @@ address,symbol,size,ctype
 0x4df120,_JediB_Update,2184,void __cdecl(WORLDINFO *)
 0x4df9b0,_JediB_DrawPanelPc,724,void __cdecl(WORLDINFO *)
 0x4dfc90,_FactoryB_Reset,105,
+0x004dfd00,_FactoryB_Update,229,void __cdecl(WORLDINFO *)
+0x004dfdf0,_FactoryB_Draw,5,void __cdecl(WORLDINFO *)
 0x4dfe00,_DookuC_Reset,122,
+0x004dfe80,_DookuC_Update,106,void __cdecl(WORLDINFO *)
+0x004dfef0,_DookuC_DrawPanel,70,void __cdecl(WORLDINFO *)
 0x4dff40,_FactoryG_Init,172,
+0x004dfff0,_FactoryG_Update,391,void __cdecl(WORLDINFO *)
+0x004e0180,_KaminoA_AlwaysUpdate,40,void __cdecl(WORLDINFO *)
 0x4e01b0,_KaminoC_Init,1326,
 0x4e06e0,_KaminoC_Reset,361,
+0x004e0b50,_KaminoC_Update,1732,void __cdecl(WORLDINFO *)
 0x4e1220,_KaminoE_Init,54,
 0x4e1260,_KaminoE_Reset,507,
 0x004e1460,_KaminoE_CheckPlatHit,228,i32 __cdecl (BOLT *)
 0x4e15c0,_KaminoE_Update,2424,
+0x004e1f40,_KaminoE_AlwaysUpdate,35,void __cdecl(WORLDINFO *)
+0x004e1f70,_KaminoE_UpdatePc,776,void __cdecl(WORLDINFO *)
 0x4e2280,_KaminoE_Draw,123,
 0x4e2300,_KaminoInside,101,i32 __cdecl(void)
 0x4e23a0,_KaminoDiscoOn,13,i32 __cdecl(void)
+0x004e23b0,_KaminoOutro_Init,40,void __cdecl(WORLDINFO *)
 0x4e23e0,_GunshipA_Init,231,
 0x4e24d0,_GunshipA_Update,5,void __cdecl (WORLDINFO *)
 0x4e24e0,_GunshipA_DrawPc,5,void __cdecl (WORLDINFO *)
@@ -2188,10 +2236,27 @@ address,symbol,size,ctype
 0x4e28b0,_BonusGunshipB_UpdatePc,559,void __cdecl (WORLDINFO *)
 0x4e2ae0,_BonusGunshipB_PanelPc,53,void __cdecl (WORLDINFO *)
 0x4e2b20,_InitPaintPuzzle,311,
+0x004e2c60,_FactoryB_Init,110,void __cdecl(WORLDINFO *)
+0x004e2cf0,_CruiserAInit,81,void __cdecl(WORLDINFO *)
+0x004e2d50,_CruiserAUpdate,81,void __cdecl(WORLDINFO *)
+0x004e2db0,_CruiserCReset,43,void __cdecl(WORLDINFO *)
 0x4e2de0,_CruiserCUpdate,352,
+0x004e2f40,_CruiserCPanel,63,void __cdecl(WORLDINFO *)
+0x004e2f80,_CruiserDInit,177,void __cdecl(WORLDINFO *)
 0x4e3040,_CruiserDReset,219,
+0x004e3120,_CruiserDUpdate,521,void __cdecl(WORLDINFO *)
+0x004e3330,_GrievousA_Init,1,void __cdecl(WORLDINFO *)
+0x004e3340,_GrievousA_Reset,52,void __cdecl(WORLDINFO *)
 0x4e3380,_GrievousA_Update,89,
+0x004e33e0,_KashyyykA_Init,1,void __cdecl(WORLDINFO *)
 0x4e33f0,_KashyyykA_Reset,51,
+0x004e3430,_KashyyykA_Update,1,void __cdecl(WORLDINFO *)
+0x004e3440,_KashyyykA_Panel,251,void __cdecl(WORLDINFO *)
+0x004e3540,_KashyyykB_Init,1,void __cdecl(WORLDINFO *)
+0x004e3550,_KashyyykB_Reset,1,void __cdecl(WORLDINFO *)
+0x004e3560,_KashyyykB_Update,1,void __cdecl(WORLDINFO *)
+0x004e3570,_KashyyykC_Init,1,void __cdecl(WORLDINFO *)
+0x004e3580,_KashyyykC_Update,1,void __cdecl(WORLDINFO *)
 0x4e3590,_KashyyykD_Init,49,void __cdecl(WORLDINFO *)
 0x4e35d0,_KashyyykD_Reset,241,void __cdecl(WORLDINFO *)
 0x4e36d0,_Boulder_Move,313,"void __cdecl(PART_PC *, f32)"
@@ -2203,47 +2268,103 @@ address,symbol,size,ctype
 0x4e3c90,_VaderA_StartCollapseStage,284,
 0x4e3db0,_VaderA_Init,154,
 0x4e3e50,_VaderA_Reset,74,
+0x004e3ea0,_VaderA_Update,828,void __cdecl(WORLDINFO *)
+0x004e41e0,_VaderA_DrawPanel,60,void __cdecl(WORLDINFO *)
 0x4e4220,_VaderA_GoneThroughDoor,64,
+0x004e4260,_VaderB_Init,1,void __cdecl(WORLDINFO *)
 0x4e4270,_VaderB_Reset,40,
+0x004e42a0,_VaderB_Update,145,void __cdecl(WORLDINFO *)
+0x004e4340,_VaderB_DrawPanel,1,void __cdecl(WORLDINFO *)
+0x004e4350,_VaderC_Init,276,void __cdecl(WORLDINFO *)
+0x004e4470,_VaderC_Reset,13,void __cdecl(WORLDINFO *)
+0x004e4480,_VaderC_Update,1344,void __cdecl(WORLDINFO *)
+0x004e49c0,_VaderC_DrawPanel,84,void __cdecl(WORLDINFO *)
+0x004e4a40,_MosEisleyB_Init,56,void __cdecl(WORLDINFO *)
 0x4e4a80,_MosEisleyC_PastBarrier,48,i32 __cdecl(GAMEOBJECT*)
+0x004e4ab0,_MosEisleyD_AlwaysUpdate,32,void __cdecl(WORLDINFO *)
+0x004e4ad0,_MosEisleyE_Init,36,void __cdecl(WORLDINFO *)
+0x004e4b00,_MosEisleyE_Reset,8,void __cdecl(WORLDINFO *)
 0x4e4b10,_MosEisleyE_Update,45,
+0x004e4b40,_BlockadeRunnerB_Init,24,void __cdecl(WORLDINFO *)
+0x004e4b60,_BlockadeRunnerB_Update,34,void __cdecl(WORLDINFO *)
+0x004e4b90,_BlockadeRunnerC_Init,30,void __cdecl(WORLDINFO *)
+0x004e4df0,_BlockadeRunnerD_Reset,79,void __cdecl(WORLDINFO *)
+0x004e4e40,_BlockadeRunnerD_Update,315,void __cdecl(WORLDINFO *)
 0x4e4f80,_DeathStarRescueB_Init,219,
+0x004e5060,_DeathStarRescueB_Update,203,void __cdecl(WORLDINFO *)
+0x004e5130,_DeathStarRescueB_AlwaysUpdate,32,void __cdecl(WORLDINFO *)
+0x004e5150,_DeathStarRescueC_AlwaysUpdate,32,void __cdecl(WORLDINFO *)
 0x004e5170,_DeathStarEscapeB_Init,204,void __cdecl (WORLDINFO *)
 0x4e5240,_DeathStarEscapeB_Update,307,void __cdecl (WORLDINFO *)
+0x004e5380,_DeathStarEscapeB_AlwaysUpdate,89,void __cdecl(WORLDINFO *)
+0x004e53e0,_DeathStarEscapeB_Draw,121,void __cdecl(WORLDINFO *)
+0x004e5460,_DeathStarEscapeA_Update,104,void __cdecl(WORLDINFO *)
+0x004e54d0,_DeathStarEscapeC_Init,73,void __cdecl(WORLDINFO *)
 0x4e5520,_DeathStarEscapeC_Reset,27,
+0x004e5540,_DeathStarEscapeC_Update,120,void __cdecl(WORLDINFO *)
+0x004e55c0,_DeathStarEscapeD_Update,98,void __cdecl(WORLDINFO *)
+0x004e5630,_DeathStarBattleC_AlwaysUpdate,43,void __cdecl(WORLDINFO *)
 0x4e5660,_DeathStarShieldDown,264,i32 __cdecl(void)
 0x4e5770,_TrenchMove,946,
+0x004e5b30,_DeathStarBattleDInit,1,void __cdecl(WORLDINFO *)
+0x004e5b40,_DeathStarBattleDReset,43,void __cdecl(WORLDINFO *)
 0x4e5ba0,_DeathStarBattleDUpdate,762,
+0x004e5ea0,_DeathStarBattleDDraw,1,void __cdecl(WORLDINFO *)
 0x4e5f10,_KilledTrooperCannon,198,
 0x4e5fe0,_InitTrooperCannons,21,void __cdecl(WORLDINFO *)
 0x4e6000,_ResetTrooperCannons,600,
 0x4e6260,_UpdateTrooperCannons,250,
+0x004e6360,_HothEscapeA_Init,28,void __cdecl(WORLDINFO *)
+0x004e6380,_HothEscapeA_Reset,1,void __cdecl(WORLDINFO *)
+0x004e6390,_HothEscapeA_Update,30,void __cdecl(WORLDINFO *)
 0x4e63b0,_HothEscapeB_Init,90,
 0x4e6410,_HothEscapeB_Reset,81,
+0x004e6470,_HothEscapeB_Update,86,void __cdecl(WORLDINFO *)
+0x004e64d0,_HothEscapeC_Init,28,void __cdecl(WORLDINFO *)
+0x004e64f0,_HothEscapeC_Reset,1,void __cdecl(WORLDINFO *)
+0x004e6500,_HothEscapeC_Update,30,void __cdecl(WORLDINFO *)
+0x004e6520,_HothEscapeC_AlwaysUpdate,32,void __cdecl(WORLDINFO *)
+0x004e6540,_HothEscapeD_Init,28,void __cdecl(WORLDINFO *)
+0x004e6560,_HothEscapeD_Reset,1,void __cdecl(WORLDINFO *)
+0x004e6570,_HothEscapeD_Update,30,void __cdecl(WORLDINFO *)
 0x4e6600,_Asteroid_PartKill,181,
 0x4e66c0,_Asteroid_AddParts,546,
 0x4e68f0,_Asteroids_Reset,630,
 0x4e6b70,_Asteroids_Update,450,
 0x4e6d40,_DrawFalconSpotLights,505,
+0x004e6f40,_AsteroidChaseA_Init,12,void __cdecl(WORLDINFO *)
+0x004e6f50,_AsteroidChaseA_Reset,5,void __cdecl(WORLDINFO *)
+0x004e6f60,_AsteroidChaseA_Update,5,void __cdecl(WORLDINFO *)
+0x004e6f70,_AsteroidChaseB_Init,270,void __cdecl(WORLDINFO *)
+0x004e7080,_AsteroidChaseB_Reset,5,void __cdecl(WORLDINFO *)
 0x4e7090,_AsteroidChaseB_Update,409,
 0x4e7230,_AsteroidChaseB_Draw,43,
+0x004e7260,_AsteroidChaseC_Init,346,void __cdecl(WORLDINFO *)
+0x004e73c0,_AsteroidChaseC_Reset,5,void __cdecl(WORLDINFO *)
 0x4e73d0,_AsteroidChaseC_Update,595,
+0x004e7630,_AsteroidChaseD_Init,425,void __cdecl(WORLDINFO *)
 0x4e77e0,_AsteroidChaseD_Update,1151,
+0x004e7c60,_AsteroidChaseD_Panel,37,void __cdecl(WORLDINFO *)
 0x4e7c90,_CloudCityTrapA_Init,89,void __cdecl(WORLDINFO *)
 0x4e7cf0,_CloudCityTrapA_Reset,17,void __cdecl(WORLDINFO *)
 0x4e7d10,_CloudCityTrapA_Update,170,
 0x4e7dc0,_CloudCityTrapB_Init,77,
 0x4e7e10,_CloudCityTrapB_Update,183,
 0x4e7ed0,_CloudCityTrapC_Reset,190,
+0x004e7f90,_CloudCityTrapC_Update,173,void __cdecl(WORLDINFO *)
+0x004e8040,_CloudCityTrapC_Panel,63,void __cdecl(WORLDINFO *)
 0x4e8080,_CloudCityEscapeA_Init,128,void __cdecl (WORLDINFO *)
 0x4e8100,_CloudCityEscapeA_Reset,84,void __cdecl (WORLDINFO *)
 0x4e8160,_CloudCityEscapeA_Update,218,void __cdecl (WORLDINFO *)
 0x4e8240,_CloudCityEscapeA_Panel,100,void __cdecl (WORLDINFO *)
 0x4e82b0,_CloudCityEscapeC_Init,82,
+0x004e8310,_CloudCityEscapeC_Update,97,void __cdecl(WORLDINFO *)
 0x004e8380,_TakeOverYodaSeekDistanceHack,129,"i32 __cdecl (GAMEOBJECT *, GAMEOBJECT *, NUVEC *)"
+0x004e8410,_DagobahB_Init,11,void __cdecl(WORLDINFO *)
 0x4e8420,_DagobahB_Reset,148,
 0x4e84c0,_DagobahE_Init,239,
 0x4e85b0,_DagobahC_Init,63,
+0x004e85f0,_DagobahC_Panel,71,void __cdecl(WORLDINFO *)
 0x4e8640,_ResetMinikitCounter,13,void __cdecl(void)
 0x4e8650,_IncrementMinikitCounter,624,
 0x4e88c0,_HothBattleA_Init,294,void __cdecl (WORLDINFO *)
@@ -2264,6 +2385,8 @@ address,symbol,size,ctype
 0x4e9980,_HothBattle_StartNewWave,400,
 0x4e9b10,_HothBattleE_UpdateWave,977,
 0x4e9ef0,_HothBattleE_Update,28,
+0x004e9f30,_DeathStar2BattleA_AlwaysUpdate,28,void __cdecl(WORLDINFO *)
+0x004e9f50,_DeathStar2BattleD_Init,242,void __cdecl(WORLDINFO *)
 0x4ea110,_DeathStar2BattleD_Update,910,
 0x4ea4a0,_DeathStar2BattleFire_Draw,893,
 0x4ea820,_DeathStar2BattleFire_SetSlowDownMul,102,
@@ -2271,17 +2394,38 @@ address,symbol,size,ctype
 0x004ea940,_EmperorFightA_Init,564,void __cdecl (WORLDINFO *)
 0x4eab80,_EmperorFightA_Reset,765,void __cdecl(WORLDINFO *)
 0x4eaf30,_EmperorFightA_Update,3112,void __cdecl(WORLDINFO *)
+0x004ebb60,_EmperorFightA_Panel,51,void __cdecl(WORLDINFO *)
+0x004ebba0,_JabbasPalaceA_Init,32,void __cdecl(WORLDINFO *)
+0x004ebbc0,_JabbasPalaceA_Reset,21,void __cdecl(WORLDINFO *)
 0x4ebbe0,_JabbasPalaceA_Update,112,
+0x004ebc50,_JabbasPalaceB_Init,48,void __cdecl(WORLDINFO *)
+0x004ebc80,_JabbasPalaceB_Reset,21,void __cdecl(WORLDINFO *)
+0x004ebca0,_JabbasPalaceD_Reset,21,void __cdecl(WORLDINFO *)
+0x004ebcc0,_JabbasPalaceE_Init,79,void __cdecl(WORLDINFO *)
 0x4ebd10,_JabbasPalaceE_Reset,142,
+0x004ebda0,_JabbasPalaceE_Update,1345,void __cdecl(WORLDINFO *)
+0x004ec2f0,_JabbasPalaceE_Panel,63,void __cdecl(WORLDINFO *)
+0x004ec330,_SarlaccPitA_Reset,81,void __cdecl(WORLDINFO *)
 0x4ec390,_SarlaccPitA_Draw,144,
 0x4ec420,_SarlaccPitB_SpecialUpdate,901,
 0x4ec7b0,_SarlaccPitDiscoActive,39,i32 __cdecl(WORLDINFO *)
 0x4ec7e0,_SarlaccPitB_Init,540,
 0x4ecb50,_SarlaccPitB_Reset,702,
 0x4ece70,_SarlaccPitB_Update,2128,
+0x004ed6c0,_SarlaccPitC_Init,23,void __cdecl(WORLDINFO *)
 0x4ed6e0,_SarlaccPitC_Reset,555,void __cdecl(WORLDINFO *)
 0x4ed910,_SarlaccPitC_Update,667,void __cdecl(WORLDINFO *)
+0x004edbb0,_LegoCity_Reset,90,void __cdecl(WORLDINFO *)
+0x004edc10,_LegoCity_Update,928,void __cdecl(WORLDINFO *)
+0x004edfb0,_NewTown_Init,36,void __cdecl(WORLDINFO *)
+0x004edfe0,_NewTown_Reset,185,void __cdecl(WORLDINFO *)
+0x004ee0a0,_NewTown_Update,731,void __cdecl(WORLDINFO *)
+0x004ee380,_EndorBattleA_Init,32,void __cdecl(WORLDINFO *)
+0x004ee3a0,_EndorBattleA_Update,140,void __cdecl(WORLDINFO *)
 0x4ee430,_DeathStar2BattleFire_Init,142,
+0x004ee970,_FairgroundbadA_Init,30,void __cdecl(WORLDINFO *)
+0x004ee990,_FairgroundbadA_Update,327,void __cdecl(WORLDINFO *)
+0x004eeae0,_FairgroundbadA_Draw,1,void __cdecl(WORLDINFO *)
 0x004eeb10,_DrawRopeCurved,641,"void __cdecl(NUVEC *, NUVEC *, i32, i32, NUMTL *)"
 0x004eed92,_SendMessageA@16,6,"LRESULT __stdcall (HWND, UINT, WPARAM, LPARAM)"
 0x4eeda0,_NuAllocBadPointer,1,void __cdecl(void)
