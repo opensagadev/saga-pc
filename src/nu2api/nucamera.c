@@ -140,8 +140,7 @@ void __cdecl PCClipScreenUnsupported(void) {
 i32 __cdecl NuCameraClipTestExtents(NUVEC *min, NUVEC *max, NUMTX *world, f32 far_clip, i32 clip_screen) {
     NUVEC corners[8];
     NUVEC transformed[8];
-    u32 common;
-    u32 combined;
+    u8 codes[8] = {0};
     i32 i;
 
     if (PCClipExtentsEnabled == 0)
@@ -162,6 +161,41 @@ i32 __cdecl NuCameraClipTestExtents(NUVEC *min, NUVEC *max, NUMTX *world, f32 fa
     ClipFarLimits[1] = far_clip;
     ClipFarLimits[2] = far_clip;
     ClipFarLimits[3] = far_clip;
+    if (PCClipUseSSE != 0) {
+        u32 *outcode = clip_outcode_workspace_prefix;
+        ClipCornerBlocks[0].x[0] = min->x;
+        ClipCornerBlocks[0].y[0] = min->y;
+        ClipCornerBlocks[0].z[0] = min->z;
+        ClipCornerBlocks[0].x[1] = max->x;
+        ClipCornerBlocks[0].y[1] = max->y;
+        ClipCornerBlocks[0].z[1] = max->z;
+        ClipCornerBlocks[0].x[2] = min->x;
+        ClipCornerBlocks[0].y[2] = min->y;
+        ClipCornerBlocks[0].z[2] = max->z;
+        ClipCornerBlocks[0].x[3] = max->x;
+        ClipCornerBlocks[0].y[3] = max->y;
+        ClipCornerBlocks[0].z[3] = min->z;
+        ClipCornerBlocks[1].x[0] = min->x;
+        ClipCornerBlocks[1].y[0] = max->y;
+        ClipCornerBlocks[1].z[0] = min->z;
+        ClipCornerBlocks[1].x[1] = min->x;
+        ClipCornerBlocks[1].y[1] = max->y;
+        ClipCornerBlocks[1].z[1] = max->z;
+        ClipCornerBlocks[1].x[2] = max->x;
+        ClipCornerBlocks[1].y[2] = min->y;
+        ClipCornerBlocks[1].z[2] = min->z;
+        ClipCornerBlocks[1].x[3] = max->x;
+        ClipCornerBlocks[1].y[3] = min->y;
+        ClipCornerBlocks[1].z[3] = max->z;
+        PCVecMtxTransformClipBlocks(ClipTransformedBlocks, ClipCornerBlocks, &clip_test_mtx, 8, outcode);
+        if ((outcode[0] & outcode[1] & outcode[2] & outcode[3] & outcode[4] & outcode[5] & outcode[6] & outcode[7]) !=
+            0)
+            return 0;
+        return (outcode[0] | outcode[1] | outcode[2] | outcode[3] | outcode[4] | outcode[5] | outcode[6] |
+                outcode[7]) != 0
+                   ? 2
+                   : 1;
+    }
     corners[0].x = min->x;
     corners[0].y = min->y;
     corners[0].z = min->z;
@@ -186,46 +220,26 @@ i32 __cdecl NuCameraClipTestExtents(NUVEC *min, NUVEC *max, NUMTX *world, f32 fa
     corners[7].x = max->x;
     corners[7].y = min->y;
     corners[7].z = max->z;
-    common = 0xffffffffu;
-    combined = 0;
-    if (PCClipUseSSE != 0) {
-        for (i = 0; i < 8; ++i) {
-            NUVEC4BLOCK_PC *block = &ClipCornerBlocks[i >> 2];
-            block->x[i & 3] = corners[i].x;
-            block->y[i & 3] = corners[i].y;
-            block->z[i & 3] = corners[i].z;
-        }
-        PCVecMtxTransformClipBlocks(ClipTransformedBlocks, ClipCornerBlocks, &clip_test_mtx, 8,
-                                    clip_outcode_workspace_prefix);
-        for (i = 0; i < 8; ++i) {
-            common &= clip_outcode_workspace_prefix[i];
-            combined |= clip_outcode_workspace_prefix[i];
-        }
-    } else {
-        NuVecMtxTransformBlock(transformed, corners, &clip_test_mtx, 8);
-        for (i = 0; i < 8; ++i) {
-            u32 bits = 0;
-            NUVEC *v = &transformed[i];
-            f32 negative_z = -v->z;
-            if (v->z < global_camera.near_clip)
-                bits |= 0x20;
-            if (v->z > far_clip)
-                bits |= 0x10;
-            if (v->x < negative_z * zx)
-                bits |= 1;
-            if (v->x > v->z * zx)
-                bits |= 2;
-            if (v->y < negative_z * zy)
-                bits |= 8;
-            if (v->y > v->z * zy)
-                bits |= 4;
-            common &= bits;
-            combined |= bits;
-        }
+    NuVecMtxTransformBlock(transformed, corners, &clip_test_mtx, 8);
+    for (i = 0; i < 8; ++i) {
+        NUVEC *v = &transformed[i];
+        f32 negative_z = -v->z;
+        if (v->z < global_camera.near_clip)
+            codes[i] |= 0x20;
+        if (v->z > far_clip)
+            codes[i] |= 0x10;
+        if (v->x < negative_z * zx)
+            codes[i] |= 1;
+        if (v->x > v->z * zx)
+            codes[i] |= 2;
+        if (v->y < negative_z * zy)
+            codes[i] |= 8;
+        if (v->y > v->z * zy)
+            codes[i] |= 4;
     }
-    if (common != 0)
+    if ((codes[0] & codes[1] & codes[2] & codes[3] & codes[4] & codes[5] & codes[6] & codes[7]) != 0)
         return 0;
-    return combined == 0 ? 1 : 2;
+    return (codes[0] | codes[1] | codes[2] | codes[3] | codes[4] | codes[5] | codes[6] | codes[7]) != 0 ? 2 : 1;
 }
 
 /* Reconstructed storage qualifiers express the original F32 checkpoints;
