@@ -38,6 +38,26 @@ DEBRIS_PART_HEADER_PC *__cdecl CreateDmaPartEffectList(void *memory, i32 *size) 
     return (DEBRIS_PART_HEADER_PC *)address;
 }
 
+void __cdecl DebrisGetControlStackLock(void) {
+    while (debris_control_stack_lock != 0) {
+    }
+    debris_control_stack_lock = 1;
+}
+
+void __cdecl DebrisReleaseControlStackLock(void) {
+    debris_control_stack_lock = 0;
+}
+
+void __cdecl AddChunkControlToStack(DEBRIS_CHUNK_CONTROL_PC *control, DEBRIS_CHUNK_CONTROL_PC **stack) {
+    DEBRIS_CHUNK_CONTROL_PC *current = *stack;
+    while (current != NULL && current->expiry_time < control->expiry_time) {
+        stack = &current->next;
+        current = current->next;
+    }
+    control->next = current;
+    *stack = control;
+}
+
 void __cdecl LinkDmaParticalSets(DEBRIS_PARTICLE_CHUNK_PC **chunks, i32 count) {
     DEBRIS_PARTICLE_CHUNK_PC *chunk = chunks[count - 1];
     i32 i;
@@ -563,14 +583,13 @@ void __cdecl DebFree(i32 *handle) {
 }
 
 void __cdecl DebrisProcessControlChunks(i32 panel_time) {
-    i32 i, slot;
     const f32 now = panel_time == 1 ? panelglobaltime : globaltime;
-    DEBRIS_CHUNK_CONTROL_PC **stack = &debris_chunk_control_stack[panel_time];
+    DEBRIS_CHUNK_CONTROL_PC *control = debris_chunk_control_stack[panel_time];
+    i32 i;
 
     DebrisGetControlStackLock();
-    while (*stack != NULL && (*stack)->expiry_time <= now) {
-        DEBRIS_CHUNK_CONTROL_PC *control = *stack;
-        *stack = control->next;
+    for (; control != NULL && control->expiry_time <= now; control = debris_chunk_control_stack[panel_time]) {
+        debris_chunk_control_stack[panel_time] = control->next;
         control->next = NULL;
 
         if (control->active == 5) {
@@ -578,22 +597,19 @@ void __cdecl DebrisProcessControlChunks(i32 panel_time) {
             DEBRISPARTICLE_PC *particle = &control->particle_chunk->particles[control->particle_index];
             const f32 time = control->collision_time;
             const f32 old_y = particle->momentum.y;
-            const f64 gravity_velocity = 2.0 * (time * effect->gravity);
-            const f32 gravity_sum = (f32)(old_y + gravity_velocity);
-            const f32 reflected_y = (f32)(-control->restitution * gravity_sum);
-            const f32 new_y = (f32)(reflected_y - gravity_velocity);
+            const f32 gravity_velocity = 2.0f * (time * effect->gravity);
+            const f32 new_y = -control->restitution * (gravity_velocity + old_y) - gravity_velocity;
             f32 first, second;
             particle->momentum.y = new_y;
             particle->position.y -= time * new_y - time * old_y;
-            if (SolveQuadratic(effect->gravity, new_y, particle->position.y - control->collision_plane, &first,
-                               &second) != 0) {
-                const f32 next_time = first > second ? first : second;
-                if (effect->particle_lifetime > next_time) {
-                    const f32 interval = next_time - control->collision_time;
-                    control->collision_time = next_time;
-                    if (interval > 0.02f) {
+            if (SolveQuadratic(effect->gravity, particle->momentum.y, particle->position.y - control->collision_plane,
+                               &first, &second) != 0) {
+                if (effect->particle_lifetime > MAX(first, second)) {
+                    const f32 interval = MAX(first, second) - control->collision_time;
+                    control->collision_time = MAX(first, second);
+                    if (!(interval <= 0.02f)) {
                         control->expiry_time += interval;
-                        AddChunkControlToStack(control, stack);
+                        AddChunkControlToStack(control, &debris_chunk_control_stack[panel_time]);
                         continue;
                     }
                 }
@@ -606,12 +622,11 @@ void __cdecl DebrisProcessControlChunks(i32 panel_time) {
         if (control->active == 6) {
             NUVEC normal = {1.0f, 0.0f, 0.0f};
             DEBRISPARTICLE_PC *particle = &control->particle_chunk->particles[control->particle_index];
-            f32 old_x, old_z, projection, impulse, new_x, new_z;
+            f32 old_x, old_z, impulse, new_x, new_z;
             NuVecRotateY(&normal, &normal, control->rotation_y);
             old_x = particle->momentum.x;
             old_z = particle->momentum.z;
-            projection = old_x * normal.x + old_z * normal.z;
-            impulse = (f32)(-(1.0 + control->restitution) * projection);
+            impulse = -(1.0f + control->restitution) * (old_x * normal.x + old_z * normal.z);
             new_x = impulse * normal.x + old_x;
             new_z = impulse * normal.z + old_z;
             particle->momentum.x = new_x;
@@ -620,104 +635,6 @@ void __cdecl DebrisProcessControlChunks(i32 panel_time) {
             particle->position.z -= new_z * control->collision_time - old_z * control->collision_time;
             freechunkcontrols[--freechunkcontrolsptr] = control;
             control->particle_chunk = NULL;
-            continue;
-        }
-
-        if (control->active == 0 || control->active == 7) {
-            DEBRIS_RENDER_CHUNK_PC *render;
-            render = NULL;
-            for (i = 0; i < debrischunks + debrischunksglass; ++i) {
-                if (ParticleChunkToRender[i].particle_chunk == control->particle_chunk) {
-                    render = &ParticleChunkToRender[i];
-                    break;
-                }
-            }
-            if (render != NULL) {
-                RemoveChunkFromRenderStack(render, &ParticleChunkRenderStack[render->effect->time_group]);
-                render->particle_chunk = NULL;
-                render->effect = NULL;
-                render->key = NULL;
-            }
-            control->expiry_time = (f32)(control->expiry_time + (f64)0.1f);
-            control->active = control->active == 7 ? 9 : 2;
-            AddChunkControlToStack(control, stack);
-            continue;
-        }
-
-        if (control->active == 1) {
-            DEBRISKEY_PC *key = control->owner;
-            DEBRIS_INFO_PC *effect = debtab[key->effect_index];
-            i32 chunk_index = 0;
-            const i32 old_chunk_count = key->allocated_chunk_count;
-            for (i = 0; i < key->allocated_chunk_count; ++i) {
-                if (key->particle_chunks[i] == control->particle_chunk) {
-                    chunk_index = i;
-                    break;
-                }
-            }
-
-            for (i = chunk_index; i + 1 < old_chunk_count; ++i) {
-                key->particle_chunks[i] = key->particle_chunks[i + 1];
-            }
-            key->particle_chunks[old_chunk_count - 1] = NULL;
-            --key->previous_allocated_chunk_count;
-            --key->controlled_chunk_count;
-            --key->allocated_chunk_count;
-
-            if (key->allocated_chunk_count <= 0) {
-                key->particle_count = 0;
-                key->previous_particle_count = 0;
-                for (slot = 0; slot < 8; ++slot) {
-                    const i16 key_index = effect->particle_keys[slot];
-                    if (key_index != -1 && &DEBRIS_ENGINE_KEYS_PC[key_index] == key) {
-                        key->effect_index = 0;
-                        key->allocation_index = -1;
-                        --freedebkeyptr;
-                        freedebkeys[freedebkeyptr] = key_index;
-                        effect->particle_keys[slot] = -1;
-                    }
-                }
-                key->particle_chunks[0] = NULL;
-            } else {
-                const i32 particles_per_chunk = effect->particle_type == 7 ? 12 : 32;
-                key->particle_count -= (i16)(particles_per_chunk);
-                key->previous_particle_count -= (i16)(particles_per_chunk);
-                if ((chunk_index + 1) * particles_per_chunk < key->particle_cursor) {
-                    key->particle_cursor -= (i16)(particles_per_chunk);
-                }
-                LinkDmaParticalSets(key->particle_chunks, key->allocated_chunk_count);
-            }
-
-            if (chunk_index == 0) {
-                DEBRIS_RENDER_CHUNK_PC *render_chunk;
-                render_chunk = NULL;
-                for (i = 0; i < debrischunks + debrischunksglass; ++i) {
-                    if (ParticleChunkToRender[i].particle_chunk == control->particle_chunk) {
-                        render_chunk = &ParticleChunkToRender[i];
-                        break;
-                    }
-                }
-                if (render_chunk != NULL) {
-                    render_chunk->particle_chunk = key->particle_chunks[0];
-                    if (key->allocated_chunk_count == 0) {
-                        RemoveChunkFromRenderStack(render_chunk, &ParticleChunkRenderStack[effect->time_group]);
-                        render_chunk->effect = NULL;
-                        render_chunk->key = NULL;
-                    }
-                }
-            }
-
-            control->expiry_time = (f32)(control->expiry_time + (f64)0.1f);
-            control->active = effect->particle_type == 7 ? 9 : 2;
-            AddChunkControlToStack(control, stack);
-            continue;
-        }
-
-        if (control->active == 2 || control->active == 9) {
-            LinkDmaParticalSets(&control->particle_chunk, 1);
-            control->active = control->active == 9 ? 8 : 3;
-            control->expiry_time = (f32)(control->expiry_time + (f64)0.1f);
-            AddChunkControlToStack(control, stack);
             continue;
         }
 
@@ -742,6 +659,114 @@ void __cdecl DebrisProcessControlChunks(i32 panel_time) {
             }
             freechunkcontrols[--freechunkcontrolsptr] = control;
             control->particle_chunk = NULL;
+            continue;
+        }
+
+        if (control->active == 2) {
+            LinkDmaParticalSets(&control->particle_chunk, 1);
+            control->active = 3;
+            control->expiry_time += 0.1f;
+            AddChunkControlToStack(control, &debris_chunk_control_stack[panel_time]);
+            continue;
+        }
+
+        if (control->active == 9) {
+            LinkDmaParticalSets(&control->particle_chunk, 1);
+            control->active = 8;
+            control->expiry_time += 0.1f;
+            AddChunkControlToStack(control, &debris_chunk_control_stack[panel_time]);
+            continue;
+        }
+
+        if (control->active == 0 || control->active == 7) {
+            for (i = 0; i < debrischunks + debrischunksglass; ++i) {
+                if (ParticleChunkToRender[i].particle_chunk == control->particle_chunk) {
+                    RemoveChunkFromRenderStack(&ParticleChunkToRender[i],
+                                               &ParticleChunkRenderStack[ParticleChunkToRender[i].effect->time_group]);
+                    ParticleChunkToRender[i].particle_chunk = NULL;
+                    ParticleChunkToRender[i].effect = NULL;
+                    ParticleChunkToRender[i].key = NULL;
+                    break;
+                }
+            }
+            control->expiry_time += 0.1f;
+            if (control->active == 0)
+                control->active = 2;
+            else if (control->active == 7)
+                control->active = 9;
+            AddChunkControlToStack(control, &debris_chunk_control_stack[panel_time]);
+            continue;
+        }
+
+        if (control->active == 1) {
+            DEBRIS_INFO_PC *effect = debtab[control->owner->effect_index];
+            i32 chunk_index = 0;
+            for (i = 0; i < control->owner->allocated_chunk_count; ++i) {
+                if (control->owner->particle_chunks[i] == control->particle_chunk) {
+                    chunk_index = i;
+                    break;
+                }
+            }
+            for (i = chunk_index; i + 1 < control->owner->allocated_chunk_count; ++i) {
+                control->owner->particle_chunks[i] = control->owner->particle_chunks[i + 1];
+            }
+            control->owner->particle_chunks[control->owner->allocated_chunk_count - 1] = NULL;
+            --control->owner->allocated_chunk_count;
+            --control->owner->previous_allocated_chunk_count;
+            --control->owner->controlled_chunk_count;
+
+            if (control->owner->allocated_chunk_count > 0) {
+                if (effect->particle_type == 7) {
+                    control->owner->particle_count -= 12;
+                    control->owner->previous_particle_count -= 12;
+                    if (control->owner->particle_cursor > (chunk_index + 1) * 12) {
+                        control->owner->particle_cursor -= 12;
+                    }
+                } else {
+                    control->owner->particle_count -= 32;
+                    control->owner->previous_particle_count -= 32;
+                    if (control->owner->particle_cursor > (chunk_index + 1) * 32) {
+                        control->owner->particle_cursor -= 32;
+                    }
+                }
+            } else {
+                control->owner->particle_count = 0;
+                control->owner->previous_particle_count = 0;
+            }
+            if (control->owner->allocated_chunk_count > 0) {
+                LinkDmaParticalSets(control->owner->particle_chunks, control->owner->allocated_chunk_count);
+            } else {
+                for (i = 0; i < 8; ++i) {
+                    if (effect->particle_keys[i] != -1 &&
+                        &DEBRIS_ENGINE_KEYS_PC[effect->particle_keys[i]] == control->owner) {
+                        control->owner->effect_index = 0;
+                        control->owner->allocation_index = -1;
+                        --freedebkeyptr;
+                        freedebkeys[freedebkeyptr] = effect->particle_keys[i];
+                        effect->particle_keys[i] = -1;
+                    }
+                }
+                control->owner->particle_chunks[0] = NULL;
+            }
+
+            if (chunk_index == 0) {
+                for (i = 0; i < debrischunks + debrischunksglass; ++i) {
+                    if (ParticleChunkToRender[i].particle_chunk == control->particle_chunk) {
+                        ParticleChunkToRender[i].particle_chunk = control->owner->particle_chunks[0];
+                        if (control->owner->allocated_chunk_count == 0) {
+                            RemoveChunkFromRenderStack(&ParticleChunkToRender[i],
+                                                       &ParticleChunkRenderStack[effect->time_group]);
+                            ParticleChunkToRender[i].effect = NULL;
+                            ParticleChunkToRender[i].key = NULL;
+                        }
+                        break;
+                    }
+                }
+            }
+
+            control->expiry_time += 0.1f;
+            control->active = effect->particle_type == 7 ? 9 : 2;
+            AddChunkControlToStack(control, &debris_chunk_control_stack[panel_time]);
             continue;
         }
     }

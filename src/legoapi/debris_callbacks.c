@@ -60,26 +60,6 @@ i32 __cdecl SolveQuadratic(f32 a, f32 b, f32 c, f32 *first, f32 *second) {
     return 1;
 }
 
-void __cdecl DebrisGetControlStackLock(void) {
-    while (debris_control_stack_lock != 0) {
-    }
-    debris_control_stack_lock = 1;
-}
-
-void __cdecl DebrisReleaseControlStackLock(void) {
-    debris_control_stack_lock = 0;
-}
-
-void __cdecl AddChunkControlToStack(DEBRIS_CHUNK_CONTROL_PC *control, DEBRIS_CHUNK_CONTROL_PC **stack) {
-    DEBRIS_CHUNK_CONTROL_PC *current = *stack;
-    while (current != NULL && current->expiry_time < control->expiry_time) {
-        stack = &current->next;
-        current = current->next;
-    }
-    control->next = current;
-    *stack = control;
-}
-
 void __cdecl GenDebMomAdjFromPos(DEBRISKEY_PC *key, DEBRIS_INFO_PC *effect, DEBRISPARTICLE_PC *particle) {
     particle->momentum.x = particle->position.x * 2.0;
     particle->momentum.z = particle->position.z * 2.0;
