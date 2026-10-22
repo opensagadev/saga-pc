@@ -328,3 +328,26 @@ void __cdecl NuGScnFixupTIDsPS(NUGSCN *scene) {
         }
     }
 }
+
+void __cdecl NuGScnRestoreTIDsPS(NUGSCN *scene) {
+    i32 i, j;
+    if (scene->display_list == NULL)
+        return;
+    for (i = 0; i < scene->display_list->item_count; ++i) {
+        NUDISPLAYLISTITEM *item = &((NUDISPLAYLISTITEM *)scene->display_list->items)[i];
+        if (item->type == 0xb0) {
+            SCENE_TEXTURE_PACKET_B0_PC *packet = (SCENE_TEXTURE_PACKET_B0_PC *)item->next;
+            if (packet->kind == 2) {
+                for (j = 0; j < 3; ++j)
+                    packet->extra_texture_ids[j] = NuGScnRestoreTID(scene, packet->extra_texture_ids[j]);
+            }
+            packet->texture_id = NuGScnRestoreTID(scene, packet->texture_id);
+        } else if (item->type == 0xae || item->type == 0xaf) {
+            SCENE_TEXTURE_PACKET_AE_PC *packet = (SCENE_TEXTURE_PACKET_AE_PC *)item->next;
+            if (packet != NULL) {
+                for (j = 0; j < 3; ++j)
+                    packet->texture_ids[j] = NuGScnRestoreTID(scene, packet->texture_ids[j]);
+            }
+        }
+    }
+}

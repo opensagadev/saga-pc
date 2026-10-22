@@ -273,14 +273,95 @@ void __cdecl NuGScnFixupTIDs(NUGSCN *scene) {
     }
     NuGScnFixupTIDsPS(scene);
 }
+#define NUGSCN_RELEASE_TEXTURE_REF(tid)                                                                                \
+    {                                                                                                                  \
+        if ((tid) > 0) {                                                                                               \
+            NUTEXDIM_PC *ref_texture = NuTextureDimensions[(tid) - 1];                                                 \
+            if (ref_texture != NULL)                                                                                   \
+                --ref_texture->ref_count;                                                                              \
+        }                                                                                                              \
+    }
+
+i32 __cdecl NuGScnRestoreTID(NUGSCN *scene, i32 tid) {
+    NUTEXDIM_PC *texture;
+    i32 result = -1;
+    u32 i;
+    i32 j, matched;
+    if (tid == 0)
+        return result;
+    if (tid == NuTexGetUnresolvedTextureTIDPS()) {
+        NUGSCN_RELEASE_TEXTURE_REF(tid);
+        return result;
+    }
+    texture = tid <= 0 ? NULL : NuTextureDimensions[tid - 1];
+    for (i = 0; i != (u32)scene->texture_count; ++i) {
+        matched = 1;
+        for (j = 0; j < 16; ++j) {
+            if (texture->checksum[j] != scene->textures[i]->checksum[j]) {
+                matched = 0;
+                break;
+            }
+        }
+        if (!matched)
+            continue;
+        if (scene->texture_ids[i] != tid)
+            continue;
+        if (scene->textures[i]->ref_count < 0) {
+            NUGSCN_RELEASE_TEXTURE_REF(tid);
+            i |= 0x4000;
+        }
+        return (i32)i;
+    }
+    return result;
+}
+
+void __cdecl NuGScnRestoreTIDs(NUGSCN *scene) {
+    i32 i;
+    for (i = 0; i < scene->material_count; ++i) {
+        PC_SCENE_MTL_VIEW *material;
+        if (scene->texture_count == 0)
+            continue;
+        material = (PC_SCENE_MTL_VIEW *)scene->materials[i];
+        ((PC_SCENE_MTL_VIEW *)scene->materials[i])->texture_id = (i16)NuGScnRestoreTID(scene, material->texture_id);
+        material->specular_map_tid = NuGScnRestoreTID(scene, material->specular_map_tid);
+        material->lightmap_tex_id[0] = NuGScnRestoreTID(scene, material->lightmap_tex_id[0]);
+        material->normal_map_tid = NuGScnRestoreTID(scene, material->normal_map_tid);
+        material->lightmap_tex_id[1] = NuGScnRestoreTID(scene, material->lightmap_tex_id[1]);
+        material->envmap_cubic_tid = NuGScnRestoreTID(scene, material->envmap_cubic_tid);
+        material->unknown_texture_24c = NuGScnRestoreTID(scene, material->unknown_texture_24c);
+        material->shine_map_tid = NuGScnRestoreTID(scene, material->shine_map_tid);
+        material->diffuse_map_tex_id[0] = NuGScnRestoreTID(scene, material->diffuse_map_tex_id[0]);
+        material->diffuse_map_tex_id[1] = NuGScnRestoreTID(scene, material->diffuse_map_tex_id[1]);
+        material->diffuse_map_tex_id[2] = NuGScnRestoreTID(scene, material->diffuse_map_tex_id[2]);
+        material->diffuse_map_tex_id[3] = NuGScnRestoreTID(scene, material->diffuse_map_tex_id[3]);
+        material->vtf_height_map_tid = NuGScnRestoreTID(scene, material->vtf_height_map_tid);
+        material->vtf_normal_map_tid = NuGScnRestoreTID(scene, material->vtf_normal_map_tid);
+        material->unknown_texture_298 = NuGScnRestoreTID(scene, material->unknown_texture_298);
+        material->unknown_texture_29c = NuGScnRestoreTID(scene, material->unknown_texture_29c);
+    }
+    NuGScnRestoreTIDsPS(scene);
+}
+
 void __cdecl NuGScnRemove(NUGSCN *scene) {
     i32 i;
     if (scene->texture_animations != NULL)
         NuTexAnimRemoveList(scene->texture_animations);
-    STUBBED_NAMED("Native TID restoration at 0x5ef898: unresolved texture value supplier held");
+    NuGScnRestoreTIDs(scene);
     for (i = 0; i < scene->texture_count; ++i) {
-        if (scene->textures[i]->ref_count >= 0)
-            NuTexDestroy(scene->texture_ids[i]);
+        i32 texture_id;
+        NUTEXDIM_PC *texture;
+        if (scene->textures[i]->ref_count < 0)
+            continue;
+        texture_id = scene->texture_ids[i];
+        if (texture_id <= 0)
+            continue;
+        texture = NuTextureDimensions[texture_id - 1];
+        if (texture != NULL && texture->ref_count > 0) {
+            NUGSCN_RELEASE_TEXTURE_REF(texture_id);
+        } else {
+            NuTexDestroyPS(texture);
+            NuTextureDimensions[texture_id - 1] = NULL;
+        }
     }
     if (scene->additional_scenes != NULL) {
         for (i = 0; scene->additional_scenes[i] != NULL; ++i)

@@ -215,6 +215,10 @@ extern "C" void __cdecl PcRelaunchMediaCenter(void) {
     }
 }
 
+extern "C" const char *__cdecl PcFrameDelayMessagePc(void) {
+    return NULL;
+}
+
 extern "C" void __cdecl PcShutdown(void) {
     PcWindowOptions.Save();
     DestroyWindow(PCInputInstance_candidate);

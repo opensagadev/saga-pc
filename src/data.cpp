@@ -7434,6 +7434,12 @@ extern "C" {
 #pragma data_seg(".data$DwaStreamCapacityPc")
     i32 DwaStreamCapacityPc = 0x2000;
 #pragma data_seg()
+#pragma data_seg(".data$FrameSleepMillisecondsPc")
+    i32 FrameSleepMillisecondsPc = 20;
+#pragma data_seg()
+#pragma data_seg(".data$FrameStartupDelayPc")
+    f32 FrameStartupDelayPc = 6.0f;
+#pragma data_seg()
 #pragma data_seg(".data$NuHtmlUnknownTextPc")
     char NuHtmlUnknownTextPc[8] = "unknown";
 #pragma data_seg()
@@ -8416,6 +8422,8 @@ extern "C" {
     void *NuHwParameter33Pc = 0;
     NUMTL *PcCursorMaterialPc = 0;
     i32 nuqfnt_initialised = 0;
+    i32 NuApiTextLinePc = 0;
+    f32 NuFrameAccumulatedTimePc = 0;
 
     // PC debris timing uses a single-precision 1/60-second step.
     f32 debris_time_increment = 1.0f / 60.0f;

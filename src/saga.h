@@ -1822,7 +1822,8 @@ typedef struct numtl_s {
     u8 unknown_0060[0x10];
     f32 opacity;
     i16 texture_id;
-    u8 unknown_076[0x23];
+    i16 unknown_076;
+    u8 unknown_078[0x21];
     i8 particle_type_tag;
 } NUMTL;
 STATIC_ASSERT(offsetof(NUMTL, flags) == 0);

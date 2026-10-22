@@ -1544,3 +1544,7 @@ extern "C" i32 __cdecl PCDeviceShowCursorPc(i32 show) {
     }
     return 0;
 }
+
+extern "C" u32 __cdecl PcGetRefreshRatePc(void) {
+    return PCDeviceBackend.parameters.refresh_rate;
+}

@@ -123,3 +123,11 @@ BGPROCINFO *__cdecl bgGetProcActive(void) {
         return bgproc_active;
     return (BGPROCINFO *)NuLstGetNext(bgproc_procinfo_pool, NULL);
 }
+
+void __cdecl bgprocFrameSleepPc(i32 milliseconds) {
+    if (bgproc_procinfo_pool != NULL) {
+        if (bgproc_active != NULL || NuLstGetNext(bgproc_procinfo_pool, NULL) != NULL) {
+            Sleep(milliseconds);
+        }
+    }
+}
