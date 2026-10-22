@@ -3864,9 +3864,11 @@ typedef struct debris_info_pc_s {
     f32 field_044, momentum_base, momentum_random_x;
     f32 rotor_speed_x, rotor_speed_y;
     NUVEC emitter_random_extent, emitter_velocity;
-    u8 unknown_070[0x30];
+    f32 unknown_070[12];
     f32 gravity, particle_lifetime;
-    u8 unknown_0a8[8];
+    i16 field_0a8;
+    i8 field_0aa, field_0ab;
+    f32 field_0ac;
     f32 jib_x_frequency, jib_x_amplitude, jib_y_frequency, jib_y_amplitude;
     DEBRIS_COLOUR_KEY_PC colour_keys[8];
     DEBRIS_FLOAT_KEY_PC alpha_keys[8];
@@ -27177,7 +27179,7 @@ extern "C" {
     void __cdecl cbCancelMessageMenu(struct eduimenu_s *arg0, struct eduimenu_s *arg1);
     extern char edbits_datapath[256];
     extern i32 edbits_override_backups;
-    i32 __cdecl edppSaveEffects(char *filename, char page);
+    i32 __cdecl edppSaveEffects(char *filename, u8 page);
     extern char *edpp_save_names[6];
     extern i32 edpp_usememcard;
     void __cdecl edptlcbCancelClipboardMenu(struct eduimenu_s *arg0, struct eduimenu_s *arg1);

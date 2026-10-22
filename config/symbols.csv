@@ -6442,6 +6442,7 @@ address,symbol,size,ctype
 0x618c30,_eduiInitMaterials,418,
 0x618e10,_eduiMenuAddItem,54,
 0x618e50,_edgraAttachMenu,51,
+0x618e50,_eduiMenuAddItemFirst,51,"void __cdecl (struct eduimenu_s *menu, struct eduiitem_s *item); alias of the mislabelled _edgraAttachMenu row"
 0x619060,_eduiMenuSortItemsByTxt,179,
 0x619250,_eduiMenuCreate,166,
 0x6193e0,_eduiMenuHighlight,79,
@@ -7011,6 +7012,8 @@ address,symbol,size,ctype
 0x65b830,_edbitsDrawBasicCube,791,
 0x65bb50,_edbitsDrawCube,875,
 0x65bf70,_edbitsDrawDiagonalCross,212,
+0x65c380,_edbitsDrawTorus,407,
+0x65c520,_edbitsDrawSphere,249,
 0x65c620,_edbitsLookupInstance,112,"i32 __cdecl(char *, NUGSCN *)"
 0x65c7b0,_edbitsDoSingleDump,183,
 0x65c8a0,_edbitsProcessCubemapDump,544,
@@ -7055,11 +7058,24 @@ address,symbol,size,ctype
 0x65f860,_edgracbCancelGlobalsMenu,25,
 0x65ff40,_edgraRender,536,
 0x6603c0,_edppMultipleCopyCopy,285,
+0x6604f0,_edppDrawSpheres,397,
+0x660680,_edppDrawTorus,612,
 0x6608f0,_edppDrawCursor,5742,
 0x661f60,_edppDetermineNearest,266,void __cdecl(f32)
 0x662070,_edppHighlightNearest,673,
 0x662320,_edppRender,32,
+0x6626b0,_cbChangeName,47,"void __cdecl (struct eduimenu_s *, struct eduiitem_s *, u32)"
+0x6626e0,_cbPtlCopyEffect,413,"void __cdecl (struct eduimenu_s *, struct eduiitem_s *, u32)"
+0x6629f0,_edptlcbApplyStarPoints,74,
+0x662a40,_edptlcbApplyStarRatio,66,
+0x662f50,_cbPtlChangeCutOff,89,
+0x662fb0,_cbPtlChangeCutOn,89,
+0x663010,_cbPtlChangeDrawCutOff,63,
+0x663050,_cbPtlChangeSoundCutOff,63,
+0x663090,_cbPtlChangeCameraCutOff,63,
 0x6638a0,_cbPtlSelType,47,
+0x663a80,_cbCancelMessageMenu,25,"void __cdecl (struct eduimenu_s *, struct eduimenu_s *)"
+0x663aa0,_edppShowMessagePc,179,"void (struct eduimenu_s *parent, char *text, i32 ok); original passes parent in ESI"
 0x663b60,_cbSelEffectList,131,
 0x663bf0,_cbCancelEffectListMenu,25,
 0x663c10,_cbEffectListMenu,290,
@@ -7077,6 +7093,7 @@ address,symbol,size,ctype
 0x664920,_cbPtlCancelQuickDeleteMenu,25,
 0x664c60,_cbPtlJibMenu,514,
 0x664e90,_edptlcbBounceMenu,356,
+0x665020,_edptlcbCancelStarMenu,25,
 0x665040,_edptlcbStarMenu,321,
 0x665ed0,_cbPtlCollMenu,485,
 0x666510,_cbPtlTorusMenu,844,
@@ -7084,14 +7101,25 @@ address,symbol,size,ctype
 0x6669f0,_cbPtlCancelDamageMenu,25,
 0x666a10,_cbPtlDamageMenu,251,
 0x666ef0,_cbPtlRotMenu,617,
+0x667160,_cbPtlChangeRepeatFlag,101,
+0x667330,_cbPtlRepeatBoxMenu,490,
+0x667520,_cbPtlCancelCutOffMenu,25,
 0x667540,_cbPtlCutOffMenu,646,
+0x6677f0,_cbPtlVarEmitMenu,1481,
+0x667de0,_cbPtlVarStartMenu,1304,
+0x668320,_cbPtlStartVelMenu,1320,
 0x668c90,_cbPtlTextureSelectMenu,555,
+0x668f70,_cbPtlEmitVelMenu,301,
+0x6690c0,_cbPtlGravMenu,302,
 0x6691f0,_edppSaveEffects,3025,
 0x669dd0,_cbFileSaveEffects,947,
 0x66a190,_FileLoadSingleEffectType,2460,"void __cdecl(DEBRIS_INFO_PC *,i32,i8)"
 0x66ab50,_cbPtlSelReadout,14,
 0x66ab60,_cbPtlCancelReadoutMenu,25,
 0x66ab80,_cbPtlReadoutMenu,237,
+0x66ac70,_cbPtlShowAll,17,"void __cdecl (struct eduimenu_s *, struct eduiitem_s *, u32)"
+0x66ac90,_cbPtlCancelDataMenu,25,"void __cdecl (struct eduimenu_s *, struct eduimenu_s *)"
+0x66acb0,_cbPtlCancelEmitMenu,25,"void __cdecl (struct eduimenu_s *, struct eduimenu_s *)"
 0x66acf0,_cbPtlGSortMenu,621,
 0x66b040,_ParticleReset,120,
 0x66b200,_edppClose,27,
@@ -7312,18 +7340,23 @@ address,symbol,size,ctype
 0x68c5f0,_edppDoInput,1383,
 0x68cb60,_edppProc,121,
 0x68cbe0,_cbCancelChangeNameMenu,78,
-0x68cc30,_cbChangeNameMenu,110,
+0x68cc30,_cbChangeNameMenu,243,
+0x68cd30,_edptlcbDeleteOrphans,114,"void __cdecl (struct eduimenu_s *, struct eduiitem_s *, u32)"
 0x68cdb0,_edppDeleteEffect,296,void __cdecl(i32)
 0x68cee0,_cbPtlDeleteEffect,67,
 0x68cf30,_cbPtlQuickDeleteType,59,
 0x68cf70,_edptlcbEmptyClipboard,96,
 0x68cfd0,_UpdateTotalPtls,325,
+0x68d170,_cbChangeGenRateMenu,253,
+0x68d2c0,_cbChangeETimeMenu,261,
 0x68d3d0,_cbPtlQuickDeleteMenu,255,
 0x68d4d0,_cbPtlSetFacing,111,
 0x68d540,_cbPtlInstanceSettingsMenu,345,
 0x68d6a0,_cbPtlSelTextureType,767,
 0x68d9a0,_cbPtlTextureMenu,553,
+0x68dd10,_cbPtlEmitTimeMenu,517,
 0x68df20,_edppLoadPage,1485,"i32 __cdecl(char *,i8,NUGSCN *)"
+0x68e4f0,_edppRestartAllEffectsInLevel,500,void __cdecl (void)
 0x68e6f0,_edppStartSingleEffect,403,void __cdecl (i32)
 0x0068e890,_edppStartPage,103,void __cdecl (i32)
 0x68e900,_edppStopPage,252,void __cdecl (i8)
@@ -7348,9 +7381,12 @@ address,symbol,size,ctype
 0x6915e0,_edgracbFileLoad,336,
 0x691a40,_edgraDoInput,1649,
 0x6920c0,_edgraProc,101,
+0x692150,_cbPtlAddEffect,358,
 0x692380,_edptlcbDrawflagMenu,367,
 0x6924f0,_edptlcbGroupMenu,396,
 0x692830,_cbPtlTypeMenu,544,
+0x692a50,_edptlcbGhostMenu,327,
+0x692ba0,_cbFileLoadEffects,777,"void __cdecl (struct eduimenu_s *, struct eduiitem_s *, u32)"
 0x692eb0,_cbPtlDataMenu,708,
 0x693180,_cbPtlEmitMenu,880,
 0x693b60,_PCStereoUnknownToken,1,void __cdecl(...) [C++ logical prototype; true retail RET no arguments consumed]
@@ -15546,6 +15582,7 @@ address,symbol,size,ctype
 0x76b780,__real@3f13b646,,
 0x76b784,__real@33d6bf95,4,const f32
 0x76b788,_RtlSearchTimebarNamePc,,const char[9]
+0x76b9d8,??_C@_0BA@LPGHPLPA@File?5Save?5Error?$AA@,16,char []
 0x76b9e8,??_C@_08DNCCGPLP@Saved?5OK?$AA@,9,char []
 0x76b9f4,??_C@_08IEFAEBKE@?$CFs?2?$CFs?4?$CFs?$AA@,9,char []
 0x76bc20,??_C@_07DNODLGKM@INVALID?$AA@,,
@@ -15580,6 +15617,7 @@ address,symbol,size,ctype
 0x76c6cc,__real@411e6666,4,const f32
 0x76c6d0,??_C@_0N@CODKGGAC@Scale?5Factor?$AA@,13,char []
 0x76c6e0,??_C@_0L@MKFFHNIN@Scale?5Type?$AA@,11,char []
+0x76c6ec,??_C@_05ODECHPPA@New?$CFd?$AA@,6,char []
 0x76c730,??_C@_0O@GNMLKMKF@Level?5List?4?4?4?$AA@,14,char []
 0x76c740,??_C@_0BA@GNCAJPFI@General?5List?4?4?4?$AA@,16,char []
 0x76c750,??_C@_0N@OMCPPCOB@Emitter?5Type?$AA@,13,char []
@@ -15600,6 +15638,8 @@ address,symbol,size,ctype
 0x76c9f8,??_C@_0BF@OJINMGJC@Instance?5Orientation?$AA@,21,char []
 0x76cacc,??_C@_06PAHFPMEK@Bounce?$AA@,7,char []
 0x76cad4,??_C@_07JMGDFJEK@Gravity?$AA@,8,char []
+0x76cb7c,??_C@_0N@MDPNMOFO@?$CFs?2?$CFs?4?$CFs?4bak?$AA@,13,char []
+0x76cba4,??_C@_0BJ@OJOHFLDI@Saved?5OK?5?9?5Backup?5Failed?$AA@,25,char []
 0x76cbc0,??_C@_0BB@PEMOALIG@Can?5Damage?5Owner?$AA@,17,char []
 0x76cbd4,??_C@_06BLDJAMBE@Thrown?$AA@,7,char []
 0x76cbdc,??_C@_0BA@PNBENGJL@Ignore?5Creature?$AA@,16,char []
@@ -15628,6 +15668,13 @@ address,symbol,size,ctype
 0x76cee0,??_C@_0BC@PPHLNCOM@Trail?52?5Debris?4?4?4?$AA@,18,char []
 0x76cef4,??_C@_0BC@IIOFAABM@Trail?51?5Debris?4?4?4?$AA@,18,char []
 0x76cf08,??_C@_0BA@OPNOBMFA@Debris?5Settings?$AA@,16,char []
+0x76cf24,??_C@_0BC@BEAKPODN@Emitter?5Timing?4?4?4?$AA@,18,char []
+0x76cf5c,??_C@_0BA@NNCKHDNH@Random?5Start?4?4?4?$AA@,16,char []
+0x76cf6c,??_C@_0L@LLPGGELO@Gravity?4?4?4?$AA@,11,char []
+0x76cf78,??_C@_0P@CHIMKJAC@Emitter?5Vel?4?4?4?$AA@,15,char []
+0x76cf88,??_C@_0BB@BGMCMJMB@Emitter?5Settings?$AA@,17,char []
+0x76d030,??_C@_0N@EGBBIJGH@Type?5Name?4?4?4?$AA@,13,char []
+0x76d040,??_C@_09HONBIIOJ@Data?5Menu?$AA@,10,char []
 0x76d128,__real@40f869fe60000000,8,const f64
 0x76d130,__real@408c200000000000,8,const f64
 0x76d138,__real@40b3880000000000,8,const f64
@@ -15693,6 +15740,21 @@ address,symbol,size,ctype
 0x76d7f8,??_C@_0L@ILDEGMNK@Clump?5Tilt?$AA@,11,char []
 0x76d804,??_C@_0L@HCGGEMBI@Clump?5Size?$AA@,11,char []
 0x76d814,??_C@_05JOBLOEL@grass?$AA@,6,char []
+0x76d900,??_C@_0BC@POINCPDD@Dpad?5Mode?3?5Facing?$AA@,18,char []
+0x76d914,??_C@_0BH@OGNBFLDA@Dpad?5Mode?3?5Reflections?$AA@,23,char []
+0x76d92c,??_C@_0BK@HNMICBLP@Dpad?5Mode?3?5Offset?5?$CI?$CF0?42f?$CJ?$AA@,26,char []
+0x76d948,??_C@_0BH@FNGLOEEE@Dpad?5Mode?3?5Grav?5Rotate?$AA@,23,char []
+0x76d960,??_C@_0BH@LBHPCCKE@Dpad?5Mode?3?5Emit?5Rotate?$AA@,23,char []
+0x76d978,??_C@_0BD@FDMCBNHB@Multiple?5Copy?5Mode?$AA@,19,char []
+0x76d98c,??_C@_07DONLOGLK@?$CFd?5?$CI?$CFd?$CJ?$AA@,8,char []
+0x76d994,??_C@_0L@JHMGGJIP@Particles?3?$AA@,11,char []
+0x76d9a0,??_C@_0O@BPCACEKJ@Clipboard?3?5?$CFs?$AA@,14,char []
+0x76d9b0,??_C@_0BE@GPJFOONF@Clipboard?3?5?$CFd?5items?$AA@,20,char []
+0x76d9c4,??_C@_0BC@JFOHCLKG@Clipboard?3?5?$DMnone?$DO?$AA@,18,char []
+0x76d9d8,??_C@_0BI@NHMOIGCO@Current?5List?3?5Character?$AA@,24,char []
+0x76d9f0,??_C@_0BG@CDAGNAAC@WARNING?3?5?$CFd?5Orphan?$CIs?$CJ?$AA@,22,char []
+0x76da08,??_C@_0BE@HLDDHPJG@No?5particle?5to?5copy?$AA@,20,char []
+0x76da1c,??_C@_0BG@GCAEGEAL@Out?5of?5particle?5slots?$AA@,22,char []
 0x76da34,??_C@_04IMAAEPPE@Char?$AA@,5,char []
 0x76da3c,??_C@_07ECEMPDJM@General?$AA@,8,char []
 0x76da44,??_C@_0M@NJKACELL@Effect?5List?$AA@,12,char []
@@ -15707,11 +15769,26 @@ address,symbol,size,ctype
 0x76db04,??_C@_0P@JCNKIOMJ@Gravity?5Rotate?$AA@,15,char []
 0x76db14,??_C@_0P@JDBJAHPH@Emitter?5Rotate?$AA@,15,char []
 0x76db24,??_C@_0M@HHMMKJJG@Orphan?5List?$AA@,12,char []
+0x76dc10,??_C@_0N@BECJLPFI@Radius?5Ratio?$AA@,13,char []
+0x76dc20,??_C@_0BB@DFFKJGLN@Number?5of?5Points?$AA@,17,char []
+0x76dc34,??_C@_0O@IJGLMPG@Star?5Settings?$AA@,14,char []
 0x76dd48,??_C@_0BD@FPLINHMD@Collision?5Torus?4?4?4?$AA@,19,char []
 0x76dd5c,??_C@_0BF@HIBEDCMH@Collision?5Spheres?4?4?4?$AA@,21,char []
 0x76dd74,??_C@_0BA@BNCPEHEG@Damage?5Flags?4?4?4?$AA@,16,char []
 0x76dd84,??_C@_0BA@MNMGILJE@Particle?5Damage?$AA@,16,char []
+0x76dea0,??_C@_0BB@KMEGBCIM@CameraCutOff?5Rad?$AA@,17,char []
+0x76deb4,??_C@_0BA@IJFMBDFI@SoundCutOff?5Rad?$AA@,16,char []
+0x76dec4,??_C@_0P@DMKPPPOF@DrawCutOff?5Rad?$AA@,15,char []
+0x76ded4,??_C@_09JDCKLOPJ@CutOn?5Rad?$AA@,10,char []
+0x76dee0,??_C@_0O@OIFAMBA@Repeat?5Box?4?4?4?$AA@,14,char []
+0x76def0,??_C@_06HJIMLMON@Repeat?$AA@,7,char []
+0x76def8,??_C@_0P@KNMDDPKI@Repeat?5?1?5Radii?$AA@,15,char []
 0x76e018,__real@4120000000000000,8,const f64
+0x76e030,??_C@_0P@BPPGINCH@?$CFs?2char?4?$CFs?4bak?$AA@,15,char []
+0x76e040,??_C@_0L@DGFFFNMG@?$CFs?2char?4?$CFs?$AA@,11,char []
+0x76e04c,??_C@_04BJBPLFHE@?4bak?$AA@,5,char []
+0x76e054,??_C@_03CPDEGEFI@ptl?$AA@,4,char []
+0x76e058,??_C@_08PKKGOGAD@particle?$AA@,9,char []
 0x76e064,??_C@_06EFAGIKOH@Normal?$AA@,7,char []
 0x76e06c,??_C@_0P@MBAKGHDJ@Info?5Box?5Style?$AA@,15,char []
 0x76e0e0,_TerrainUnusedSpatialBlockPc,4,const f32
@@ -15797,12 +15874,36 @@ address,symbol,size,ctype
 0x76e63c,??_C@_0BD@CJAFLDHE@Global?5End?5of?5Fade?$AA@,19,char []
 0x76e650,??_C@_0BF@FLJHPELJ@Global?5Start?5of?5Fade?$AA@,21,char []
 0x76e668,??_C@_0BM@GKIEGFNH@Global?5Options?5?$CITake?5Care?$CB?$CJ?$AA@,28,char []
+0x76e684,??_C@_0P@JFGGNFOG@Name?5Duplicate?$AA@,15,char []
 0x76e6bc,??_C@_0N@FNECMGBM@Quick?5Delete?$AA@,13,char []
 0x76e7d8,_TerrainOpposingContactThresholdPc,,const f64
 0x76e7e0,__real@bbe56042,4,const f32
 0x76e7e8,__real@3f689374c0000000,8,const f64
 0x76e7f0,__real@36a7c5ac,4,const f32
 0x76e880,__real@3fe1999a,4,const f32
+0x76ea0c,??_C@_0L@HAJNGEAG@Add?5Effect?$AA@,11,char []
+0x76ea18,??_C@_0BE@EFLMAGIA@Particle?5Types?5?$CI?$CFd?$CJ?$AA@,20,char []
+0x76ea64,??_C@_0BA@HLAOGOHK@Show?5All?5Placed?$AA@,16,char []
+0x76ea74,??_C@_0BC@JIOKHAGL@Info?5Box?5Style?4?4?4?$AA@,18,char []
+0x76ea88,??_C@_0BG@DFFPHHKL@Quick?5Delete?5Types?4?4?4?$AA@,22,char []
+0x76eaa0,??_C@_0P@FDECGLGO@Delete?5Orphans?$AA@,15,char []
+0x76eab0,??_C@_0BA@MGPDFBJI@List?5Orphans?4?4?4?$AA@,16,char []
+0x76eac0,??_C@_0N@FLKNDFM@Clipboard?4?4?4?$AA@,13,char []
+0x76ead0,??_C@_0BD@MJJKPEDC@Load?5all?5from?5file?$AA@,19,char []
+0x76eae4,??_C@_0P@HPECJIKK@Save?5Char?5list?$AA@,15,char []
+0x76eaf4,??_C@_0BA@KMMMCHHE@Save?5Level?5list?$AA@,16,char []
+0x76eb04,??_C@_0BC@OJOANKKG@Save?5General?5list?$AA@,18,char []
+0x76eb18,??_C@_0M@IABCFGOA@Copy?5Effect?$AA@,12,char []
+0x76eb24,??_C@_0O@KKKAPFPN@Delete?5Effect?$AA@,14,char []
+0x76eb34,??_C@_0BB@JJGMGCGE@Star?5Settings?4?4?4?$AA@,17,char []
+0x76eb48,??_C@_0BD@LGEBBJPK@Particle?5Ghosts?4?4?4?$AA@,19,char []
+0x76eb5c,??_C@_0BC@PEOBAPII@Repeat?5?1?5Radii?4?4?4?$AA@,18,char []
+0x76eb70,??_C@_0BB@BJDGOOLN@Particle?5Life?4?4?4?$AA@,17,char []
+0x76eb84,??_C@_0BF@JECHKILL@Particles?5per?5Sec?4?4?4?$AA@,21,char []
+0x76eb9c,??_C@_0BF@FEOICJOH@Emitter?5Variation?4?4?4?$AA@,21,char []
+0x76ebb4,??_C@_0BH@BAEOJKKK@Emit?5Point?5Velocity?4?4?4?$AA@,23,char []
+0x76ebcc,??_C@_0BC@GPHIJOEF@Start?5Velocity?4?4?4?$AA@,18,char []
+0x76ebe0,??_C@_0BE@NDBCLFI@Base?5Emit?5Vector?4?4?4?$AA@,20,char []
 0x76ed58,??_C@_06OPHFLJJP@STRICT?$AA@,7,const char[7]
 0x76ed60,??_C@_04HBHDLLBA@PATH?$AA@,5,const char[5]
 0x76ed68,??_C@_0BC@MCGHAOGH@GLOBALATTENUATION?$AA@,18,const char[18]
@@ -20438,8 +20539,13 @@ address,symbol,size,ctype
 0x810960,_debris_sort_delay,,i32
 0x810964,_debris_update_delay,,i32
 0x810968,_debris_render_scale,,f32
+0x8109c8,_edbits_particle_char_page,4,i32
+0x8109cc,_edbits_particle_level_page,4,i32
 0x8109d0,_PartLevelPagePc,,i32
 0x8109d4,_edbits_editor_enabled,,i32 *
+0x8109d8,_edblack,16,u32[4]
+0x8109e8,_edgrey,16,u32[4]
+0x8109f8,_eddarkred,16,u32[4]
 0x810a28,_edbri_length,4,f32
 0x810a2c,_edbri_width,4,f32
 0x810a30,_edbri_planks,4,i32
@@ -20453,6 +20559,7 @@ address,symbol,size,ctype
 0x810a9c,_edgra_global_fadeout,,f32
 0x810ad8,_edpp_create_type,4,i32
 0x810adc,_edpp_copy_size,4,f32
+0x810ae8,_edptl_superscale,4,i32
 0x810aec,_edptl_clipboard_entry,4,i32
 0x810b28,_TerrainSkinOriginalGroupCountPc,,i32
 0x810b2c,_TerrPlatDis,,i32
@@ -23923,6 +24030,7 @@ address,symbol,size,ctype
 0x2921680,_SphereData,,TERRAIN_SPHERE_PC[16]
 0x02921780,_SfxBits,200,u16[100]
 0x0292184c,_ShadowRoofPolygonPc,,
+0x2921850,_ptldatamenu,4,struct eduimenu_s *
 0x2921854,_PlatCrush,,i32
 0x2921858,_TerrShape,,TERRAIN_AXIS_FREEDOM_SHAPE_PC *
 0x2921864,_edgra_page_terrain,,void*[8]
@@ -23942,6 +24050,7 @@ address,symbol,size,ctype
 0x2924ad8,_WallSplCount,,i32
 0x2924adc,_edbri_cam_pos,,NUVEC
 0x2924ae8,_edanim_particle_type,4,i32
+0x2924aec,_edpp_copy_source,32,i32[8]
 0x2924b10,_effectlistmenu,4,struct eduimenu_s *
 0x2924b14,_PickupTerrainPc,,TERRAIN_PICKUP_SET_PC *
 0x2924b18,_edanim_sound_mode,4,i32
@@ -23951,6 +24060,7 @@ address,symbol,size,ctype
 0x02924b30,_edpp_page_used,32,i32[8]
 0x2924b50,_namemenu,4,struct eduimenu_s *
 0x02924b54,_TerrainScaledShapeCursorPc,,
+0x2924b58,_ptlcutoffmenu,4,struct eduimenu_s *
 0x2924b60,_TerrWallTab,,u8[4]
 0x2924b64,_freeDmaDebType,,i32
 0x02924b68,_TerrainSkinPoolSlotCountPc,,
@@ -23975,6 +24085,7 @@ address,symbol,size,ctype
 0x0292fc88,_CurTerr,4,TERRSET *
 0x0292fc88,_CurrentTerrain,4,void *
 0x292fc88,_PCGrassTerrainScene,,void *
+0x292fc8c,_messagemenu,4,struct eduimenu_s *
 0x292fc94,_edptl_quickdel_menu,4,struct eduimenu_s *
 0x292fc98,_PlatImpactTer,,TERRAIN_POLYGON_INFO_PC
 0x292fd08,_edgra_page_matrix_stack,,NUMTX*[8]
@@ -24009,6 +24120,7 @@ address,symbol,size,ctype
 0x2947bfc,_EdppPageScenesPc,,NUGSCN *[8]
 0x02947c1c,_TerrainSkinInfoCountPc,,
 0x02947c20,_TerrWallDeflectYScale,,f32
+0x2947c24,_edpp_boxmtl,4,struct PC_SCENE_MTL_VIEW *
 0x2947c2c,_wallover,,f32
 0x02947c30,_edanim_next_param,4,i32
 0x2947c34,_edbri_nearest,,i32
@@ -24046,6 +24158,7 @@ address,symbol,size,ctype
 0x2961f9c,_edanim_particle_mode,,i32
 0x02961fa0,_edanim_page_used,32,i32[8]
 0x2961fc0,_PlatImpactNorm,,NUVEC
+0x2961fcc,_ptlemitmenu,4,struct eduimenu_s *
 0x2961fd0,_ptloptmenu,4,struct eduimenu_s *
 0x02961fd4,_DebrisGlassU1,4,f32
 0x02961ffc,_TerrainShadowGroupIndexPc,,
@@ -24114,13 +24227,16 @@ address,symbol,size,ctype
 0x2962538,_edbits_level_save_directory,256,char[256]
 0x2962638,_edbits_level_save_name,256,char[256]
 0x2962738,_edbits_level_save_extension,256,char[256]
+0x2962838,_edbits_datapath,256,char[256]
 0x2962938,_edbits_things_scene,4,struct NUGSCN_s *
 0x0296293c,_edbits_base_terrain,4,void *
+0x2962940,_edbits_particle_general_page,4,i32
 0x2962944,_edbits_anim_page,,i32
 0x2962948,_edbits_editmode,,i32
 0x296294c,_PartGeneralPagePc,,i32
 0x2962950,_edbits_editor_state,,i32
 0x296295c,_EdppTypesErrorPc,,i32
+0x2962970,_edbits_override_backups,4,i32
 0x2962974,_edbri_active_menu,4,struct eduimenu_s *
 0x2962978,_edbri_pageid,4,i32
 0x296297c,_edbri_dpadmode_menu,4,struct eduimenu_s *
@@ -24163,18 +24279,25 @@ address,symbol,size,ctype
 0x2962a48,_EdppUseMemcardPc,,i32
 0x2962a4c,_edpp_instances_used,,i32
 0x2962a50,_edpp_copy_mode,4,i32
-0x2962a50,_edpp_copy_source_count,4,i32
 0x2962a54,_edpp_copy_enclosed,4,i32
-0x2962a5c,_EdppUnresolvedInstancesPc,,i32
+0x2962a58,_edpp_copy_source_count,4,i32
+0x2962a5c,_edpp_num_orphans,4,i32
 0x2962a60,_edpp_showAllPlaced,4,i32
 0x2962a64,_edpp_dpad_mode,4,i32
 0x2962a68,_edpp_readout,4,i32
+0x2962a90,_edptl_star_menu,4,struct eduimenu_s *
 0x2962aa0,_edptl_orphanlist_menu,4,struct eduimenu_s *
 0x2962aac,_edptl_testdetail_menu,4,struct eduimenu_s *
-0x2962ac8,_edpp_rotz,4,i32
-0x2962ad0,_edpp_refroty,4,i32
-0x2962ad8,_edpp_refrotz,4,i32
+0x2962ab0,_edpp_save_names,24,char *[6]
+0x2962ac8,_edpp_emitrotz,4,i32
+0x2962acc,_edpp_emitroty,4,i32
+0x2962ad0,_edpp_emitrotx,4,i32
+0x2962ad4,_edpp_rotz,4,i32
+0x2962ad8,_edpp_roty,4,i32
 0x2962adc,_edpp_offset,4,f32
+0x2962ae0,_edpp_refrotz,4,i32
+0x2962ae4,_edpp_refroty,4,i32
+0x2962ae8,_edpp_copyrotz,4,i32
 0x2962aec,_edpp_copyroty,4,i32
 0x2962af0,_edpp_facrotx,4,i32
 0x2962af4,_edpp_facroty,4,i32

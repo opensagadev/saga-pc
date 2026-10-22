@@ -377,7 +377,7 @@ i32 __cdecl edppLoadPage(char *path, i8 flag, NUGSCN *scene) {
         i32 instances = EdFileReadInt();
         if (instances + edpp_instances_used > 512)
             instances = 512 - edpp_instances_used;
-        EdppUnresolvedInstancesPc = 0;
+        edpp_num_orphans = 0;
         for (n = 0; n < instances; ++n) {
             i32 index = instance_index;
             EDPP_FILE_PARTICLE_PC *particle;
@@ -411,7 +411,7 @@ i32 __cdecl edppLoadPage(char *path, i8 flag, NUGSCN *scene) {
             particle->instance_id = 99999;
             particle->effect_index = LookupDebrisEffectPageOnly(particle->name, (char)(page_index));
             if (particle->effect_index == -1)
-                ++EdppUnresolvedInstancesPc;
+                ++edpp_num_orphans;
 
             if (version > 8) {
                 particle->switch_type = EdFileReadInt();
@@ -469,4 +469,45 @@ i32 __cdecl edppLoadPage(char *path, i8 flag, NUGSCN *scene) {
         DEBPAGE_AREA = page_index;
     }
     return page_index;
+}
+
+extern i32 edbits_particle_general_page;
+extern i32 edbits_particle_char_page;
+
+void __cdecl cbPtlAddEffect(eduimenu_s *menu, eduiitem_s *unused1, u32 unused2) {
+    eduimenu_s *parent = NULL;
+    i32 index;
+    if (edpp_types_used >= debinf_count) {
+        eduiCreateMessageMenu(menu, "Out of particle slots", 0);
+        return;
+    }
+    for (index = 1; index < debinf_count; ++index) {
+        if (debtab[index] == NULL) {
+            debtab[index] = &effecttypes[index];
+            memcpy(debtab[index], debtab[0], sizeof(DEBRIS_INFO_PC));
+            debtab[index]->status = 1;
+            sprintf(debtab[index]->name, "New%d", index);
+            debtab[index]->category = edpp_effect_list;
+            if (edpp_effect_list == 0) {
+                debtab[index]->page = (i8)edbits_particle_general_page;
+                edpp_page_used[edbits_particle_general_page] = 1;
+            } else if (edpp_effect_list == 5) {
+                debtab[index]->page = (i8)edbits_particle_char_page;
+                edpp_page_used[edbits_particle_char_page] = 1;
+            } else if (edpp_effect_list == 1) {
+                debtab[index]->page = (i8)edbits_particle_level_page;
+                edpp_page_used[edbits_particle_level_page] = 1;
+            }
+            ++edpp_types_used;
+            edpp_create_type = index;
+            UpdateTotalPtls(debtab[index]);
+            break;
+        }
+    }
+    if (menu->parent != NULL) {
+        parent = menu->parent;
+        eduiMenuDetach(menu);
+    }
+    if (menu->callback != NULL)
+        menu->callback(menu, parent);
 }

@@ -1220,6 +1220,46 @@
    "unit": "src/legoapi/render.c",
    "symbol": "__real@4058c00000000000",
    "kind": "data"
+  },
+  {
+   "unit": "src/gameapi/edpp.c",
+   "symbol": "_edppDebrisClearRoomID",
+   "kind": "function"
+  },
+  {
+   "unit": "src/gameapi/edpp.c",
+   "symbol": "_edppDebrisEmitterPos",
+   "kind": "function"
+  },
+  {
+   "unit": "src/gameapi/edpp.c",
+   "symbol": "_edppDebrisSetDetailLevels",
+   "kind": "function"
+  },
+  {
+   "unit": "src/gameapi/edpp.c",
+   "symbol": "_edppDebrisSetGroupID",
+   "kind": "function"
+  },
+  {
+   "unit": "src/gameapi/edpp.c",
+   "symbol": "_edppDebrisSetPriority",
+   "kind": "function"
+  },
+  {
+   "unit": "src/gameapi/edpp.c",
+   "symbol": "_edppFabs",
+   "kind": "function"
+  },
+  {
+   "unit": "src/gameapi/edpp.c",
+   "symbol": "_edppDebrisSetTrigger",
+   "kind": "function"
+  },
+  {
+   "unit": "src/gameapi/edpp.c",
+   "symbol": "_edppDebrisReflectionOrientation",
+   "kind": "function"
   }
  ]
 }

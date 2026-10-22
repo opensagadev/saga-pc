@@ -7767,7 +7767,10 @@ extern "C" {
                                          {0},
                                          0.0f,
                                          1.0f,
-                                         {0},
+                                         0,
+                                         0,
+                                         0,
+                                         0.0f,
                                          0.0f,
                                          0.0f,
                                          0.0f,
@@ -19015,9 +19018,9 @@ extern "C" {
 #pragma data_seg(".data$EdppTypesErrorPc")
     i32 EdppTypesErrorPc = 0;
 #pragma data_seg()
-#pragma data_seg(".data$EdppUnresolvedInstancesPc")
-    i32 EdppUnresolvedInstancesPc = 0;
-#pragma data_seg()
+#pragma bss_seg(".bss$edpp_num_orphans")
+    i32 edpp_num_orphans = 0;
+#pragma bss_seg()
 #pragma data_seg(".data$PartDebrisNameListPc")
     char **PartDebrisNameListPc = NULL;
 #pragma data_seg()
@@ -28854,6 +28857,24 @@ extern "C" {
 #pragma bss_seg(".bss$edpp_rotz")
     i32 edpp_rotz = 0;
 
+#pragma bss_seg(".bss$edpp_roty")
+    i32 edpp_roty = 0;
+
+#pragma bss_seg(".bss$edpp_emitrotx")
+    i32 edpp_emitrotx = 0;
+
+#pragma bss_seg(".bss$edpp_emitroty")
+    i32 edpp_emitroty = 0;
+
+#pragma bss_seg(".bss$edpp_emitrotz")
+    i32 edpp_emitrotz = 0;
+
+#pragma bss_seg(".bss$edpp_copyrotz")
+    i32 edpp_copyrotz = 0;
+
+#pragma bss_seg(".bss$edpp_boxmtl")
+    struct PC_SCENE_MTL_VIEW *edpp_boxmtl = 0;
+
 #pragma bss_seg(".bss$edpp_facroty")
     i32 edpp_facroty = 0;
 
@@ -28962,6 +28983,38 @@ extern "C" {
 
 #pragma bss_seg(".bss$edpp_snap_enabled")
     i32 edpp_snap_enabled = 0;
+
+#pragma bss_seg(".bss$edpp_copy_source")
+    i32 edpp_copy_source[8] = {0};
+
+#pragma bss_seg(".bss$ptlcutoffmenu")
+    struct eduimenu_s *ptlcutoffmenu = 0;
+#pragma bss_seg()
+#pragma bss_seg(".bss$edptl_star_menu")
+    struct eduimenu_s *edptl_star_menu = 0;
+#pragma bss_seg()
+#pragma data_seg(".data$edptl_superscale")
+    i32 edptl_superscale = 1;
+#pragma data_seg()
+#pragma bss_seg(".bss$ptlemitmenu")
+    struct eduimenu_s *ptlemitmenu = 0;
+#pragma bss_seg()
+#pragma bss_seg(".bss$edbits_particle_general_page")
+    i32 edbits_particle_general_page = 0;
+#pragma bss_seg()
+#pragma data_seg(".data$edbits_particle_char_page")
+    i32 edbits_particle_char_page = 1;
+#pragma data_seg()
+#pragma data_seg(".data$edbits_particle_level_page")
+    i32 edbits_particle_level_page = 2;
+#pragma data_seg()
+#pragma data_seg(".data$edblack")
+    u32 edblack[4] = {0x80000000, 0x80ff0000, 0x80808080, 0x80404040};
+#pragma data_seg(".data$edgrey")
+    u32 edgrey[4] = {0x80303030, 0x80303030, 0x80808080, 0x80808080};
+#pragma data_seg(".data$eddarkred")
+    u32 eddarkred[4] = {0x80000050, 0x80ff0000, 0x80808080, 0x80404040};
+#pragma data_seg()
 
 #pragma bss_seg(".bss$edpp_cam_ay")
     i32 edpp_cam_ay = 0;
@@ -29519,6 +29572,16 @@ extern "C" {
 
 #pragma bss_seg(".bss$edui_messagemenu")
     struct eduimenu_s *edui_messagemenu = 0;
+#pragma bss_seg(".bss$messagemenu")
+    struct eduimenu_s *messagemenu = 0;
+#pragma bss_seg(".bss$ptldatamenu")
+    struct eduimenu_s *ptldatamenu = 0;
+#pragma bss_seg(".bss$edbits_datapath")
+    char edbits_datapath[256] = {0};
+#pragma bss_seg(".bss$edbits_override_backups")
+    i32 edbits_override_backups = 0;
+#pragma bss_seg(".bss$edpp_save_names")
+    char *edpp_save_names[6] = {0};
 }
 
 extern "C" {}
