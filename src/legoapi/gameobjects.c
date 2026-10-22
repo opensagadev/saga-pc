@@ -2239,7 +2239,8 @@ void __cdecl TakeOverGameObject2(GAMEOBJECT *rider, GAMEOBJECT *vehicle, i32 ble
     }
 }
 
-void __cdecl TakeOverGameObject(GAMEOBJECT *rider, GAMEOBJECT *vehicle, i32 blend_camera, i32 immediate) {
+__declspec(noinline) void __cdecl TakeOverGameObject(GAMEOBJECT *rider, GAMEOBJECT *vehicle, i32 blend_camera,
+                                                     i32 immediate) {
     if (immediate != 0) {
         TakeOverGameObject2(rider, vehicle, blend_camera);
     } else {
@@ -2842,18 +2843,14 @@ GAMEOBJECT *__cdecl ActivateCharacter(char *name, NUVEC *position, i32 angle) {
 }
 
 void __cdecl ManageGameObjects(void) {
-    i32 i, j, area;
+    i32 i, j, area, alive;
     GAMEOBJECT *candidate, *other, *vehicle, *target;
     AICREATURE_PC *creature;
     AISYS_PC *system;
     AIGROUP_PC *group;
     AILOCATOR_PC *locator, *respawn_locator;
-    APIOBJECT_PC *member;
-    u16 saved_flags;
-    u32 contact_low, contact_high, low, high, limit;
-    u64 bit;
+    u32 saved_flags, limit;
     i64 mask;
-    f32 blend;
     GAMEOBJECT *object = Obj;
     memset(aicreature_sets_alive, 0, sizeof(aicreature_sets_alive));
     for (i = 0; i < HIGHGAMEOBJECT; ++i) {
@@ -2864,249 +2861,263 @@ void __cdecl ManageGameObjects(void) {
     for (i = 0; i < HIGHGAMEOBJECT; ++i, ++object) {
         if ((object->flags_1fc_word & 1) == 0)
             continue;
-        if ((object->flags_1f8 & 0x40000) != 0) {
-            if (nethost != 0 && (object->flags_1fc_word & 0x1000) == 0 && object->ai_packet.creature_index == 0xff &&
-                (object->ai_packet.reset_mode & ~2) != 1 && (object->flags_1f8 & 0x4000) != 0)
-                AIScriptProcess(WORLD->ai_sys, (APIOBJECT_PC *)object, &object->ai_packet,
-                                &object->ai_packet.script_processor, FRAMETIME);
-            continue;
-        }
-        if ((object->flags_1fc_word & 0x1000) != 0) {
-            if (object->dead == 0)
-                continue;
-            if (object->tag_object_callback != NULL) {
-                object->tag_object_callback(object);
-                object->tag_object_callback = NULL;
-            }
-            if (object->field_1010 > 0.0f) {
-                object->field_1010 -= FRAMETIME;
-                if (object->field_1010 <= 0.0f) {
-                    object->field_1010 = 0.0f;
-                    other = NULL;
-                    if (WORLD->current_level == PODSPRINTA_LDATA)
-                        other = GetOtherActivePlayer(object);
-                    if (other != NULL) {
-                        object->start_position = other->position;
-                        object->position = other->position;
-                        object->ai_update_position = other->position;
-                        GameObjectOrigin(object);
-                        object->velocity = other->velocity;
-                        object->movement_facing_angle = other->field_0x276;
-                        object->facing_angle = other->field_0x276;
-                        object->field_0x276 = other->field_0x276;
-                    } else {
-                        SetToLastSafePos(object);
-                        GameObjectOrigin(object);
-                        object->velocity.x = object->velocity.z = 0.0f;
-                        object->velocity.y = -0.1f;
-                        object->facing_angle = object->movement_facing_angle;
-                        object->field_0x276 = object->movement_facing_angle;
-                    }
-                    saved_flags = object->flags_1fc_word & 0x2000;
-                    ResetPlayerMoves(object);
-                    object->dead = 0;
-                    object->flags_1fc_word = (object->flags_1fc_word & ~0x2000) | saved_flags;
-                    object->current_hp = object->field_107e;
-                    object->shield_hitpoints = object->character_data->game_character->shield_hitpoints;
-                    object->saved_hitpoints = 4;
-                    object->flags_ef0 |= 0x80;
-                    object->character_context = 0xff;
-                    if (object->field_280 != 0xff)
-                        object->spawn_protection_timer = 2.5f;
-                    AISysGetCharacterPathPos(WORLD->ai_sys, (APIOBJECT_PC *)object, &object->ai_packet, 0xff, 1);
-                    vehicle = object->takeover_owner;
-                    if (vehicle != NULL && (vehicle->rider == NULL || vehicle->rider == object) &&
-                        (vehicle->flags_1fc_word & 0x1000) != 0 && vehicle->character_context != 0x2b &&
-                        vehicle->dead == 0) {
-                        GetTakeOverPos(vehicle, &object->position);
-                        TakeOverGameObject(object, object->takeover_owner, 0, 1);
-                    }
-                    if ((object->flags_1fc_word & 0x80) && WORLD->current_level == SPEEDERCHASEA_LDATA &&
-                        disable_narrow_socks == 0)
-                        GameCam_Blend(GameCam, 0.5f, 0.0f, 0);
-                } else if (WORLD->current_level == PODSPRINTA_LDATA) {
-                    other = GetOtherActivePlayer(object);
-                    if (other != NULL)
-                        object->position = other->position;
-                }
-                continue;
-            }
-            object->death_timer += FRAMETIME;
-            if (!(object->death_timer >= object->death_delay))
-                continue;
-            object->death_timer = object->death_delay;
-            contact_low = ~object->collision_identity_mask[0];
-            contact_high = ~object->collision_identity_mask[1];
-            bit = object->hostility_group < 64 ? ((u64)1 << object->hostility_group) : 0;
-            low = ~(u32)bit, high = ~(u32)(bit >> 32);
-            for (j = 0; j < HIGHGAMEOBJECT; ++j) {
-                Obj[j].collision_contact_mask[0] &= contact_low;
-                Obj[j].collision_contact_mask[1] &= contact_high;
-                Obj[j].hostility_mask[0] &= low;
-                Obj[j].hostility_mask[1] &= high;
-                Obj[j].field_eb0 &= low;
-                Obj[j].field_eb4 &= high;
-                Obj[j].ai_opponent_exclusion_mask[0] &= low;
-                Obj[j].ai_opponent_exclusion_mask[1] &= high;
-            }
-            if ((object->flags_1f8 & 0x4000) != 0) {
-                if ((object->flags_1f8 & 0x400) != 0) {
-                    creature = &WORLD->ai_sys->creatures[object->ai_packet.creature_index];
-                    if ((object->portal_flags & 0x100000) != 0) {
-                        if ((object->portal_flags & 0x200000) == 0) {
-                            object->field_1010 =
-                                object->id == (u16)id_STAP2 && WORLD->current_level == NEGOTIATIONSC_LDATA ? 5.0f
-                                                                                                           : 1.0f;
-                            continue;
+        if ((object->flags_1f8 & 0x40000) == 0) {
+            if ((object->flags_1fc_word & 0x1000) == 0) {
+                if (object->ai_packet.creature_index == 0xff) {
+                    if (object->ai_packet.reset_mode == 1) {
+                        object->ai_packet.spawn_delay -= FRAMETIME;
+                        if (object->ai_packet.spawn_delay <= 0.0f) {
+                            object->flags_1fc_word |= 0x1000;
+                            object->ai_packet.spawn_delay = 0.0f;
+                            object->ai_packet.reset_mode = 2;
                         }
-                    } else {
-                        limit = object->ai_packet.respawn_count + 1;
-                        if (creature->max_respawn_count != -1 && object->ai_packet.respawn_locator == NULL)
-                            limit = creature->min_respawn_count +
-                                    (Game.difficulty - 1) *
-                                        (creature->max_respawn_count - creature->min_respawn_count) / 9 +
-                                    1;
-                        if (limit <= object->ai_packet.respawn_count) {
-                            object->flags_1fc_word &= ~0x1000;
-                            object->ai_packet.reset_mode = 4;
-                            continue;
-                        }
-                    }
-                    object->flags_1fc_word &= ~0x1000;
-                    object->ai_packet.reset_mode = 1;
-                    blend = 1.0 - ((f64)(u32)Game.difficulty - 1.0) / 9.0;
-                    object->ai_packet.spawn_delay =
-                        creature->max_respawn_time * blend + creature->min_respawn_time * (1.0f - blend);
-                } else {
-                    object->field_1010 = 2.0f;
-                }
-                continue;
-            }
-            if ((object->portal_flags & 0x100000) != 0) {
-                object->field_1010 = 1.0f;
-                continue;
-            }
-            goto remove_object;
-        }
-        if (object->ai_packet.creature_index != 0xff) {
-            system = WORLD->ai_sys;
-            creature = &system->creatures[object->ai_packet.creature_index];
-            if (object->ai_packet.reset_mode == 0) {
-                switch (creature->activation_type) {
-                    case 0:
-                        if (Game.difficulty >= creature->activation_difficulty)
-                            ResetAICreature(object, system);
-                        else
-                            object->ai_packet.reset_mode = 4;
-                        break;
-                    case 1:
-                        if (creature->activate_area == NULL) {
-                            creature->activation_type = 0;
-                        } else {
-                            area = creature->activate_area - system->areas;
-                            mask = (i32)(1u << (area & 31));
-                            if (player != NULL &&
-                                (((u64)player->ai_area_mask[0] | ((u64)player->ai_area_mask[1] << 32)) & mask) != 0) {
-                                if (Game.difficulty < creature->activation_difficulty) {
-                                    object->ai_packet.reset_mode = 4;
-                                } else if (creature->count > 1 && creature->start_stagger > 0.0f &&
-                                           object->ai_packet.group_member_index != 0) {
-                                    object->ai_packet.reset_mode = 1;
-                                    object->ai_packet.spawn_delay =
-                                        (f32)(u32)object->ai_packet.group_member_index * creature->start_stagger;
+                    } else if (object->ai_packet.reset_mode != 3) {
+                        if ((object->flags_1f8 & 0x4000) == 0) {
+                            if (object->ai_packet.group != NULL) {
+                                alive = 0;
+                                for (j = 0; j < 4; ++j) {
+                                    if (object->ai_packet.group->rows[j].is_alive != 0) {
+                                        alive = 1;
+                                        break;
+                                    }
+                                }
+                                if (alive == 0) {
+                                    DestroyAIGroup(object->ai_packet.group);
                                 } else {
-                                    ResetAICreature(object, system);
+                                    for (j = 0; j < object->ai_packet.group->member_count; ++j) {
+                                        if (object->ai_packet.group->members[j] == (APIOBJECT_PC *)object)
+                                            object->ai_packet.group->members[j] = NULL;
+                                    }
                                 }
                             }
-                        }
-                        break;
-                    case 2:
-                        if (Game.difficulty >= creature->activation_difficulty)
-                            AIScriptProcess(system, (APIOBJECT_PC *)object, &object->ai_packet,
+                            FreeTorpedoPacket(&object->torpedo);
+                            RemoveGameObject(object, 1);
+                        } else {
+                            AIScriptProcess(WORLD->ai_sys, (APIOBJECT_PC *)object, &object->ai_packet,
                                             &object->ai_packet.script_processor, FRAMETIME);
-                        break;
-                }
-            } else if (object->ai_packet.reset_mode == 1) {
-                group = object->ai_packet.group;
-                if (group != NULL && !(group->flags & 2))
-                    continue;
-                if (creature->activation_type == 1) {
-                    area = creature->activate_area - system->areas;
-                    mask = (i32)(1u << (area & 31));
-                    if (player == NULL ||
-                        (((u64)player->ai_area_mask[0] | ((u64)player->ai_area_mask[1] << 32)) & mask) == 0 ||
-                        Game.difficulty < creature->activation_difficulty) {
-                        if (creature->count > 1 && creature->start_stagger > 0.0f)
-                            object->ai_packet.spawn_delay =
-                                (f32)(u32)object->ai_packet.group_member_index * creature->start_stagger;
-                        continue;
-                    }
-                }
-                object->ai_packet.spawn_delay -= FRAMETIME;
-                if (!(object->ai_packet.spawn_delay <= 0.0f))
-                    continue;
-                if (group != NULL) {
-                    locator = object->ai_packet.script_processor.locator;
-                    respawn_locator = object->ai_packet.respawn_locator;
-                    for (j = 0; j < group->member_count; ++j) {
-                        member = group->members[j];
-                        if (member != NULL) {
-                            target = member->owner;
-                            target->ai_packet.spawn_delay = 0.0f;
-                            target->ai_packet.script_processor.locator = locator;
-                            target->ai_packet.respawn_locator = respawn_locator;
-                            ResetAICreature(target, WORLD->ai_sys);
-                            group = object->ai_packet.group;
-                            if (group->leader == NULL)
-                                group->leader = group->members[j];
                         }
-                        group = object->ai_packet.group;
                     }
-                    group->flags &= ~8u;
-                    object->ai_packet.group->flags &= ~4u;
                 } else {
-                    object->ai_packet.spawn_delay = 0.0f;
-                    if (object->id == (u16)id_PKDROID) {
-                        ResetAICreature(object, system);
-                        SpawnCreatureFromCrate(object, 3.0f, 0.0f);
-                    } else {
-                        ResetAICreature(object, WORLD->ai_sys);
+                    system = WORLD->ai_sys;
+                    creature = &system->creatures[object->ai_packet.creature_index];
+                    switch (object->ai_packet.reset_mode) {
+                        case 0:
+                            switch (creature->activation_type) {
+                                case 0:
+                                    if (Game.difficulty >= creature->activation_difficulty)
+                                        ResetAICreature(object, system);
+                                    else
+                                        object->ai_packet.reset_mode = 4;
+                                    break;
+                                case 1:
+                                    if (creature->activate_area != NULL) {
+                                        if (player != NULL) {
+                                            area = creature->activate_area - system->areas;
+                                            mask = 1 << area;
+                                            if ((player->ai_area_mask64 & mask) != 0) {
+                                                if (Game.difficulty >= creature->activation_difficulty) {
+                                                    if (creature->count > 1 && creature->start_stagger > 0.0f &&
+                                                        object->ai_packet.group_member_index != 0) {
+                                                        object->ai_packet.spawn_delay =
+                                                            (f32)(u32)object->ai_packet.group_member_index *
+                                                            creature->start_stagger;
+                                                        object->ai_packet.reset_mode = 1;
+                                                    } else {
+                                                        ResetAICreature(object, system);
+                                                    }
+                                                } else {
+                                                    object->ai_packet.reset_mode = 4;
+                                                }
+                                            }
+                                        }
+                                    } else {
+                                        creature->activation_type = 0;
+                                    }
+                                    break;
+                                case 2:
+                                    if (Game.difficulty >= creature->activation_difficulty)
+                                        AIScriptProcess(system, (APIOBJECT_PC *)object, &object->ai_packet,
+                                                        &object->ai_packet.script_processor, FRAMETIME);
+                                    break;
+                            }
+                            break;
+                        case 1:
+                            group = object->ai_packet.group;
+                            if (group != NULL && (group->flags & 2) == 0)
+                                break;
+                            alive = 1;
+                            if (creature->activation_type == 1) {
+                                area = creature->activate_area - system->areas;
+                                mask = 1 << area;
+                                if (player == NULL || (player->ai_area_mask64 & mask) == 0 ||
+                                    Game.difficulty < creature->activation_difficulty)
+                                    alive = 0;
+                            }
+                            if (alive != 0) {
+                                object->ai_packet.spawn_delay -= FRAMETIME;
+                                if (object->ai_packet.spawn_delay <= 0.0f) {
+                                    if (group != NULL) {
+                                        locator = object->ai_packet.script_processor.locator;
+                                        respawn_locator = object->ai_packet.respawn_locator;
+                                        for (j = 0; j < object->ai_packet.group->member_count; ++j) {
+                                            if (object->ai_packet.group->members[j] != NULL) {
+                                                target = object->ai_packet.group->members[j]->owner;
+                                                target->ai_packet.spawn_delay = 0.0f;
+                                                target->ai_packet.script_processor.locator = locator;
+                                                target->ai_packet.respawn_locator = respawn_locator;
+                                                ResetAICreature(target, WORLD->ai_sys);
+                                                if (object->ai_packet.group->leader == NULL)
+                                                    object->ai_packet.group->leader =
+                                                        object->ai_packet.group->members[j];
+                                            }
+                                        }
+                                        object->ai_packet.group->flags &= ~8u;
+                                        object->ai_packet.group->flags &= ~4u;
+                                    } else {
+                                        object->ai_packet.spawn_delay = 0.0f;
+                                        if (object->id == (u16)id_PKDROID) {
+                                            ResetAICreature(object, WORLD->ai_sys);
+                                            SpawnCreatureFromCrate(object, 3.0f, 0.0f);
+                                        } else {
+                                            ResetAICreature(object, WORLD->ai_sys);
+                                        }
+                                    }
+                                }
+                            } else if (creature->count > 1 && creature->start_stagger > 0.0f) {
+                                object->ai_packet.spawn_delay =
+                                    (f32)object->ai_packet.group_member_index * creature->start_stagger;
+                            }
+                            break;
+                    }
+                }
+            } else if (object->dead != 0) {
+                if (object->tag_object_callback != NULL) {
+                    object->tag_object_callback(object);
+                    object->tag_object_callback = NULL;
+                }
+                if (object->field_1010 > 0.0f) {
+                    object->field_1010 -= FRAMETIME;
+                    if (object->field_1010 <= 0.0f) {
+                        object->field_1010 = 0.0f;
+                        other = NULL;
+                        if (WORLD->current_level == PODSPRINTA_LDATA)
+                            other = GetOtherActivePlayer(object);
+                        if (other != NULL) {
+                            object->ai_update_position = object->position = object->start_position = other->position;
+                            GameObjectOrigin(object);
+                            object->velocity = other->velocity;
+                            object->field_0x276 = object->facing_angle = object->movement_facing_angle =
+                                other->field_0x276;
+                        } else {
+                            SetToLastSafePos(object);
+                            GameObjectOrigin(object);
+                            object->velocity.x = object->velocity.z = 0.0f;
+                            object->velocity.y = -0.1f;
+                            object->field_0x276 = object->facing_angle = object->movement_facing_angle;
+                        }
+                        saved_flags = object->flags_1fc_bit_13;
+                        ResetPlayerMoves(object);
+                        object->dead = 0;
+                        object->flags_1fc_bit_13 = saved_flags;
+                        object->current_hp = object->field_107e;
+                        object->shield_hitpoints = object->character_data->game_character->shield_hitpoints;
+                        object->saved_hitpoints = 4;
+                        object->flags_ef0 |= 0x80;
+                        object->character_context = 0xff;
+                        if (object->field_280 != 0xff)
+                            object->spawn_protection_timer = 2.5f;
+                        AISysGetCharacterPathPos(WORLD->ai_sys, (APIOBJECT_PC *)object, &object->ai_packet, 0xff, 1);
+                        vehicle = object->takeover_owner;
+                        if (vehicle != NULL && (vehicle->rider == NULL || vehicle->rider == object) &&
+                            (vehicle->flags_1fc_word & 0x1000) != 0 && vehicle->character_context != 0x2b &&
+                            vehicle->dead == 0) {
+                            GetTakeOverPos(vehicle, &object->position);
+                            TakeOverGameObject(object, object->takeover_owner, 0, 1);
+                        }
+                        if ((object->flags_1fc_word & 0x80) != 0 && WORLD->current_level == SPEEDERCHASEA_LDATA &&
+                            disable_narrow_socks == 0)
+                            GameCam_Blend(GameCam, 0.5f, 0.0f, 0);
+                    } else if (WORLD->current_level == PODSPRINTA_LDATA) {
+                        other = GetOtherActivePlayer(object);
+                        if (other != NULL)
+                            object->position = other->position;
+                    }
+                } else {
+                    if ((object->death_timer += FRAMETIME) >= object->death_delay) {
+                        object->death_timer = object->death_delay;
+                        other = Obj;
+                        for (j = 0; j < HIGHGAMEOBJECT; ++j, ++other) {
+                            other->collision_contact_mask64 &= ~object->collision_identity_mask64;
+                            other->hostility_mask64 &= ~((u64)1 << object->hostility_group);
+                            other->seen_mask_eb0 &= ~((u64)1 << object->hostility_group);
+                            other->ai_opponent_exclusion_mask64 &= ~((u64)1 << object->hostility_group);
+                        }
+                        if ((object->flags_1f8 & 0x4000) != 0) {
+                            if ((object->flags_1f8 & 0x400) == 0) {
+                                object->field_1010 = 2.0f;
+                            } else {
+                                creature = &WORLD->ai_sys->creatures[object->ai_packet.creature_index];
+                                if (object->respawnable) {
+                                    if (!object->respawn_at_origin) {
+                                        if (object->id == (u16)id_STAP2 && WORLD->current_level == NEGOTIATIONSC_LDATA)
+                                            object->field_1010 = 5.0f;
+                                        else
+                                            object->field_1010 = 1.0f;
+                                        continue;
+                                    }
+                                } else {
+                                    if (creature->max_respawn_count != -1 && object->ai_packet.respawn_locator == NULL)
+                                        limit = creature->min_respawn_count +
+                                                (Game.difficulty - 1) *
+                                                    (creature->max_respawn_count - creature->min_respawn_count) / 9 +
+                                                1;
+                                    else
+                                        limit = object->ai_packet.respawn_count + 1;
+                                    if (object->ai_packet.respawn_count >= limit) {
+                                        object->flags_1fc_word &= ~0x1000;
+                                        object->ai_packet.reset_mode = 4;
+                                        continue;
+                                    }
+                                }
+                                object->flags_1fc_word &= ~0x1000;
+                                object->ai_packet.reset_mode = 1;
+                                object->ai_packet.spawn_delay = 1.0 - ((f64)(u32)Game.difficulty - 1.0) / 9.0;
+                                object->ai_packet.spawn_delay =
+                                    creature->max_respawn_time * object->ai_packet.spawn_delay +
+                                    creature->min_respawn_time * (1.0f - object->ai_packet.spawn_delay);
+                            }
+                        } else if (object->respawnable) {
+                            object->field_1010 = 1.0f;
+                        } else {
+                            if (object->ai_packet.group != NULL) {
+                                alive = 0;
+                                for (j = 0; j < 4; ++j) {
+                                    if (object->ai_packet.group->rows[j].is_alive != 0) {
+                                        alive = 1;
+                                        break;
+                                    }
+                                }
+                                if (alive == 0) {
+                                    DestroyAIGroup(object->ai_packet.group);
+                                } else {
+                                    for (j = 0; j < object->ai_packet.group->member_count; ++j) {
+                                        if (object->ai_packet.group->members[j] == (APIOBJECT_PC *)object)
+                                            object->ai_packet.group->members[j] = NULL;
+                                    }
+                                }
+                            }
+                            FreeTorpedoPacket(&object->torpedo);
+                            RemoveGameObject(object, 1);
+                        }
                     }
                 }
             }
-            continue;
-        }
-        if (object->ai_packet.reset_mode == 1) {
-            object->ai_packet.spawn_delay -= FRAMETIME;
-            if (object->ai_packet.spawn_delay <= 0.0f) {
-                object->ai_packet.reset_mode = 2;
-                object->ai_packet.spawn_delay = 0.0f;
-                object->flags_1fc_word |= 0x1000;
-            }
-            continue;
-        }
-        if (object->ai_packet.reset_mode == 3)
-            continue;
-        if ((object->flags_1f8 & 0x4000) != 0) {
+        } else if (nethost != 0 && (object->flags_1fc_word & 0x1000) == 0 && object->ai_packet.creature_index == 0xff &&
+                   object->ai_packet.reset_mode != 1 && object->ai_packet.reset_mode != 3 &&
+                   (object->flags_1f8 & 0x4000) != 0) {
             AIScriptProcess(WORLD->ai_sys, (APIOBJECT_PC *)object, &object->ai_packet,
                             &object->ai_packet.script_processor, FRAMETIME);
-            continue;
         }
-    remove_object:;
-        group = object->ai_packet.group;
-        if (group != NULL) {
-            if (group->rows[0].is_alive == 0 && group->rows[1].is_alive == 0 && group->rows[2].is_alive == 0 &&
-                group->rows[3].is_alive == 0) {
-                DestroyAIGroup(group);
-            } else {
-                for (j = 0; j < group->member_count; ++j) {
-                    if (group->members[j] == (APIOBJECT_PC *)object)
-                        group->members[j] = NULL;
-                }
-            }
-        }
-        FreeTorpedoPacket(&object->torpedo);
-        RemoveGameObject(object, 1);
     }
 }
 
