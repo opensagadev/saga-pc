@@ -2380,7 +2380,7 @@ address,symbol,size,ctype
 0x4e85b0,_DagobahC_Init,63,
 0x004e85f0,_DagobahC_Panel,71,void __cdecl(WORLDINFO *)
 0x4e8640,_ResetMinikitCounter,13,void __cdecl(void)
-0x4e8650,_IncrementMinikitCounter,624,
+0x4e8650,_IncrementMinikitCounter,624,void __cdecl(GAMEOBJECT *)
 0x4e88c0,_HothBattleA_Init,294,void __cdecl (WORLDINFO *)
 0x4e89f0,_HothBattleA_Reset,80,void __cdecl (WORLDINFO *)
 0x4e8a40,_HothBattleA_Update,5,void __cdecl (WORLDINFO *)

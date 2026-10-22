@@ -19,6 +19,43 @@ void __cdecl ResetMinikitCounter(void) {
     minikitCounter_A = 0;
 }
 
+/* Kept as a macro: the original compiler inlined this helper into both call sites. */
+#define INCREMENT_MINIKIT_COUNTER_FOR(world, average, gizmo_index, counter, camera_distance, camera_pitch, camera_yaw) \
+    do {                                                                                                               \
+        GIZMO_PC *gizmo = LevGizmo[gizmo_index];                                                                       \
+        if (gizmo != NULL && gizmo->object != NULL) {                                                                  \
+            GIZMOPICKUP_PC *pickup = (GIZMOPICKUP_PC *)gizmo->object;                                                  \
+            if ((pickup->flags & 0x48) == 0 && *(counter) < 10) {                                                      \
+                ++*(counter);                                                                                          \
+                if (*(counter) == 10) {                                                                                \
+                    NUVEC camera;                                                                                      \
+                    NUVEC message_pos;                                                                                 \
+                    camera.x = 0.0f;                                                                                   \
+                    camera.y = 0.0f;                                                                                   \
+                    camera.z = camera_distance;                                                                        \
+                    NuVecRotateX(&camera, &camera, camera_pitch);                                                      \
+                    NuVecRotateY(&camera, &camera, camera_yaw);                                                        \
+                    NuVecAdd(&camera, &camera, &pickup->position);                                                     \
+                    GameCameraMakeMiniCut2(&camera, &pickup->position, 0, 0.0f, 4.0f, 0.0f, 0.0f, 0, 0, 0);            \
+                    GizmoActivate((world)->gizmo_sys, LevGizmo[gizmo_index], 1, 1);                                    \
+                    AddGameMsgCount(&message_pos, *(counter), 10, 200, 100, 30, 0.75f);                                \
+                } else {                                                                                               \
+                    AddGameMsgCount(average, *(counter), 10, 200, 100, 30, 0.75f);                                     \
+                }                                                                                                      \
+            }                                                                                                          \
+        }                                                                                                              \
+    } while (0)
+
+void __cdecl IncrementMinikitCounter(GAMEOBJECT *unused) {
+    WORLDINFO *world = WorldInfo_CurrentlyActive();
+    NUVEC average;
+    Players_AveragePos(&average, NULL);
+    if (world->current_level == HOTHBATTLEA_LDATA)
+        INCREMENT_MINIKIT_COUNTER_FOR(world, &average, 0, &minikitCounter_A, 10.0f, -0xe38, -0x2000);
+    else if (world->current_level == LevelFixupSlotPc0087b204)
+        INCREMENT_MINIKIT_COUNTER_FOR(world, &average, 1, &minikitCounter_C, 25.0f, -0x1555, -0x871c);
+}
+
 void HothBattleB_Init(WORLDINFO *world) {
     NuSpecialFind(world->current_gscn, &LevHSpecial[0], "snow_ball_1", 1);
     NuSpecialFind(world->current_gscn, &LevHSpecial[1], "snow_ball_2", 1);
