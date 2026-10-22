@@ -7070,7 +7070,11 @@ address,symbol,size,ctype
 0x6629a0,_edptlcbApplyGhostTime,66,
 0x6629f0,_edptlcbApplyStarPoints,74,
 0x662a40,_edptlcbApplyStarRatio,66,
+0x662a90,_edptlcbChangeRampTime,66,
 0x662ae0,_cbPtlChangeEmitVel,63,
+0x662b20,_cbPtlChangeX,117,
+0x662ba0,_cbPtlChangeY,335,
+0x662cf0,_cbPtlChangeZ,601,
 0x662f50,_cbPtlChangeCutOff,89,
 0x662fb0,_cbPtlChangeCutOn,89,
 0x663010,_cbPtlChangeDrawCutOff,63,
@@ -7111,8 +7115,11 @@ address,symbol,size,ctype
 0x667330,_cbPtlRepeatBoxMenu,490,
 0x667520,_cbPtlCancelCutOffMenu,25,
 0x667540,_cbPtlCutOffMenu,646,
+0x6677d0,_cbPtlCancelVarEmitMenu,25,
 0x6677f0,_cbPtlVarEmitMenu,1481,
+0x667dc0,_cbPtlCancelVarStartMenu,25,
 0x667de0,_cbPtlVarStartMenu,1304,
+0x668300,_cbPtlCancelStartVelMenu,25,
 0x668320,_cbPtlStartVelMenu,1320,
 0x668c90,_cbPtlTextureSelectMenu,555,
 0x668f30,_cbPtlCancelEmitTimeMenu,25,
@@ -14399,6 +14406,7 @@ address,symbol,size,ctype
 0x0075fff0,_AIExpressionRandName,5,const char [5]
 0x0075fff8,_NuAnimDataFloatMax,8,const f64
 0x0075fff8,__real@47efffffe0000000,8,const f64
+0x760000,__real@c3340000,4,const f32
 0x760008,__real@3f76800000000000,8,const f64
 0x00760010,_AIActionFramesName,7,const char[7]
 0x00760018,??_C@_07FHPCIAHC@Reverse?$AA@,,
@@ -15554,6 +15562,7 @@ address,symbol,size,ctype
 0x76a8c8,??_C@_0BD@OLBABOEK@vector?$DMT?$DO?5too?5long?$AA@,,const char[19]
 0x76a8dc,_NuMaterialSourcePathPc,56,const char[56]
 0x76aa2c,??_C@_02PCIJFNDE@?$AN?6?$AA@,3,
+0x76ad48,__real@43b40000,4,const f32
 0x76ad60,_EduiSourcePathPc,52,const char[52]
 0x76ada0,??_C@_05DNIIFBMG@?$CFs?5?$CFs?$AA@,6,char[6]
 0x76adc0,__real@3e2aaaab,4,const f32
@@ -15643,6 +15652,10 @@ address,symbol,size,ctype
 0x76c90c,??_C@_0BA@PKAAPCH@Attached?5Sounds?$AA@,16,char []
 0x76c91c,??_C@_0L@EIMKEPLI@CutOff?5Rad?$AA@,11,char []
 0x76c928,??_C@_05OMFEOJEI@Radii?$AA@,6,char []
+0x76c930,??_C@_0M@FINIKFFF@Rand?5Emit?5Z?$AA@,12,char []
+0x76c93c,??_C@_0M@HDPFPGJG@Rand?5Emit?5Y?$AA@,12,char []
+0x76c948,??_C@_0M@GKOOMHNH@Rand?5Emit?5X?$AA@,12,char []
+0x76c954,??_C@_0BC@FPEIDIGO@Emitter?5Variation?$AA@,18,char []
 0x76c968,??_C@_0BF@ONOJAGNJ@Rotation?5Variation?5Z?$AA@,21,char []
 0x76c980,??_C@_0BF@MGMEFFBK@Rotation?5Variation?5Y?$AA@,21,char []
 0x76c998,??_C@_0BF@NPNPGEFL@Rotation?5Variation?5X?$AA@,21,char []
@@ -15652,6 +15665,10 @@ address,symbol,size,ctype
 0x76c9e0,__real@c066800000000000,8,const f64
 0x76c9e8,??_C@_0BA@NAOEIPEN@Base?5Rotation?5X?$AA@,16,char []
 0x76c9f8,??_C@_0BF@OJINMGJC@Instance?5Orientation?$AA@,21,char []
+0x76ca10,??_C@_0N@GNIFCLAP@Rand?5Start?5Z?$AA@,13,char []
+0x76ca20,??_C@_0N@EGKIHIMM@Rand?5Start?5Y?$AA@,13,char []
+0x76ca30,??_C@_0N@FPLDEJIN@Rand?5Start?5X?$AA@,13,char []
+0x76ca40,??_C@_0N@OOHJGMGL@Random?5Start?$AA@,13,char []
 0x76ca5c,??_C@_0BA@ILPCIJEB@Random?5Off?5Time?$AA@,16,char []
 0x76ca6c,??_C@_08DCKLOEEB@Off?5Time?$AA@,9,char []
 0x76ca78,??_C@_0P@FKMENNDM@Random?5On?5Time?$AA@,15,char []
@@ -15805,6 +15822,26 @@ address,symbol,size,ctype
 0x76dee0,??_C@_0O@OIFAMBA@Repeat?5Box?4?4?4?$AA@,14,char []
 0x76def0,??_C@_06HJIMLMON@Repeat?$AA@,7,char []
 0x76def8,??_C@_0P@KNMDDPKI@Repeat?5?1?5Radii?$AA@,15,char []
+0x76df08,??_C@_0L@EDFCAFMG@Rand?5Rot?5Z?$AA@,11,char []
+0x76df14,??_C@_0L@GIHPFGAF@Rand?5Rot?5Y?$AA@,11,char []
+0x76df20,??_C@_0L@HOHIJBBK@Rand?5Mag?5X?$AA@,11,char []
+0x76df2c,??_C@_0L@DJPPDBKG@Step?5Rot?5Z?$AA@,11,char []
+0x76df38,__real@c2b40000,4,const f32
+0x76df3c,??_C@_0L@BCNCGCGF@Step?5Rot?5Y?$AA@,11,char []
+0x76df48,??_C@_08NKOJKLOD@Rand?5Mag?$AA@,9,char []
+0x76df54,??_C@_09JJJOCCHP@Ramp?5Time?$AA@,10,char []
+0x76df60,??_C@_0L@HMIBGELF@Base?5Rot?5Z?$AA@,11,char []
+0x76df6c,??_C@_0L@FHKMDHHG@Base?5Rot?5Y?$AA@,11,char []
+0x76df78,??_C@_08LLHMMHDJ@Base?5Mag?$AA@,9,char []
+0x76df84,??_C@_0BB@LCFINGLC@Base?5Emit?5Vector?$AA@,17,char []
+0x76df98,??_C@_0M@EAPBKKE@Start?5Vel?5Z?$AA@,12,char []
+0x76dfa4,??_C@_0M@CPCCEJGH@Start?5Vel?5Y?$AA@,12,char []
+0x76dfb0,??_C@_0M@DGDJHICG@Start?5Vel?5X?$AA@,12,char []
+0x76dfbc,??_C@_09MAAPFAPE@Rot?5Z?5Vel?$AA@,10,char []
+0x76dfc8,??_C@_09EGJLCCFK@Rot?5Y?5Vel?$AA@,10,char []
+0x76dfd4,??_C@_0N@JGCBFCLO@Mag?5Velocity?$AA@,13,char []
+0x76dfe4,??_C@_0P@EHPHMKAG@Start?5Velocity?$AA@,15,char []
+0x76dff4,??_C@_0BE@KJIJHEPC@Emit?5Point?5Velocity?$AA@,20,char []
 0x76e018,__real@4120000000000000,8,const f64
 0x76e030,??_C@_0P@BPPGINCH@?$CFs?2char?4?$CFs?4bak?$AA@,15,char []
 0x76e040,??_C@_0L@DGFFFNMG@?$CFs?2char?4?$CFs?$AA@,11,char []
@@ -24041,6 +24078,7 @@ address,symbol,size,ctype
 0x29211b0,_edanim_mtl_zoff,4,struct PC_SCENE_MTL_VIEW *
 0x29211b4,_TerrainCrashDataPc,,u8 *
 0x29211bc,_platinrange,,i32
+0x29211c4,_ptlstartvelmenu,4,struct eduimenu_s *
 0x29211c8,_edgra_page_on,,i32[8]
 0x29211e8,_edbri_page_used,,i32[8]
 0x2921208,_freedebkeyptr,,i32
@@ -24092,6 +24130,7 @@ address,symbol,size,ctype
 0x2924b50,_namemenu,4,struct eduimenu_s *
 0x02924b54,_TerrainScaledShapeCursorPc,,
 0x2924b58,_ptlcutoffmenu,4,struct eduimenu_s *
+0x2924b5c,_ptlvaremitmenu,4,struct eduimenu_s *
 0x2924b60,_TerrWallTab,,u8[4]
 0x2924b64,_freeDmaDebType,,i32
 0x02924b68,_TerrainSkinPoolSlotCountPc,,
@@ -24138,6 +24177,7 @@ address,symbol,size,ctype
 0x0292fde8,_TerrainShadowStatusPc,,
 0x0292fdec,_TerrainWaterCastIndexPc,,
 0x292fdf0,_tertempmat,,NUMTX
+0x292fe30,_ptlvarstartmenu,4,struct eduimenu_s *
 0x0292fe38,_AnimParams,46336,EDANIM_PARAM_PC[64]
 0x293b338,_SfxNameSlotsPc,,char[1601][32]
 0x2947b58,_edSfxAllCount,4,i32

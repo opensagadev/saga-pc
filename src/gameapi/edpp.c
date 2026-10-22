@@ -2072,3 +2072,329 @@ void __cdecl edptlcbGhostMenu(eduimenu_s *parent, eduiitem_s *unused1, u32 unuse
         }
     }
 }
+
+extern struct eduimenu_s *ptlvaremitmenu;
+extern struct eduimenu_s *ptlvarstartmenu;
+extern struct eduimenu_s *ptlstartvelmenu;
+
+static void cbPtlCancelVarEmitMenu(eduimenu_s *unused0, eduimenu_s *unused1) {
+    eduiMenuDestroy(ptlvaremitmenu);
+    ptlvaremitmenu = NULL;
+}
+
+static void cbPtlCancelVarStartMenu(eduimenu_s *unused0, eduimenu_s *unused1) {
+    eduiMenuDestroy(ptlvarstartmenu);
+    ptlvarstartmenu = NULL;
+}
+
+static void cbPtlCancelStartVelMenu(eduimenu_s *unused0, eduimenu_s *unused1) {
+    eduiMenuDestroy(ptlstartvelmenu);
+    ptlstartvelmenu = NULL;
+}
+
+static void edptlcbChangeRampTime(eduimenu_s *unused0, eduiitem_s *item, u32 unused2) {
+    DEBRIS_INFO_PC *effect;
+    i32 instance_id;
+    if (edpp_nearest == -1)
+        return;
+    instance_id = edpp_ptls[edpp_nearest].instance_id;
+    if (instance_id == -1)
+        return;
+    effect = debtab[debkeydata[instance_id].effect_index];
+    effect->scale_in_time = ((edui_slider_s *)item)->value;
+}
+
+static void cbPtlChangeX(eduimenu_s *menu, eduiitem_s *item, u32 unused2) {
+    DEBRIS_INFO_PC *effect;
+    i32 instance_id;
+    if (edpp_nearest == -1)
+        return;
+    instance_id = edpp_ptls[edpp_nearest].instance_id;
+    if (instance_id == -1)
+        return;
+    effect = debtab[debkeydata[instance_id].effect_index];
+    if (menu != NULL) {
+        if (menu == ptlvaremitmenu)
+            effect->momentum_random_x = ((edui_slider_s *)item)->value;
+        else if (menu == ptlvarstartmenu)
+            effect->emitter_random_extent.x = ((edui_slider_s *)item)->value;
+        else if (menu == ptlstartvelmenu)
+            effect->emitter_velocity.x = ((edui_slider_s *)item)->value;
+    }
+}
+
+static void cbPtlChangeY(eduimenu_s *menu, eduiitem_s *item, u32 unused2) {
+    DEBRIS_INFO_PC *effect;
+    i32 instance_id;
+    if (edpp_nearest == -1)
+        return;
+    instance_id = edpp_ptls[edpp_nearest].instance_id;
+    if (instance_id == -1)
+        return;
+    effect = debtab[debkeydata[instance_id].effect_index];
+    if (menu != NULL) {
+        if (menu == ptlvaremitmenu) {
+            if (effect->generator_type == 0 || effect->generator_type == 8 || effect->generator_type == 9 ||
+                effect->generator_type == 10)
+                effect->rotor_speed_x = ((edui_slider_s *)item)->value;
+            else if (effect->generator_type == 6 || effect->generator_type == 7 || effect->generator_type == 11 ||
+                     effect->generator_type == 12)
+                effect->rotor_speed_x = (f32)(i32)((65536.0f / 360.0f) * ((edui_slider_s *)item)->value);
+        } else if (menu == ptlvarstartmenu) {
+            if (effect->generator_type == 0 || effect->generator_type == 8 || effect->generator_type == 9 ||
+                effect->generator_type == 10)
+                effect->emitter_random_extent.y = ((edui_slider_s *)item)->value;
+            else if (effect->generator_type == 6 || effect->generator_type == 7 || effect->generator_type == 11 ||
+                     effect->generator_type == 12)
+                effect->emitter_random_extent.y = (f32)(i32)((65536.0f / 360.0f) * ((edui_slider_s *)item)->value);
+        } else if (menu == ptlstartvelmenu) {
+            if (effect->generator_type == 0 || effect->generator_type == 8 || effect->generator_type == 9 ||
+                effect->generator_type == 10)
+                effect->emitter_velocity.y = ((edui_slider_s *)item)->value;
+            else if (effect->generator_type == 6 || effect->generator_type == 7 || effect->generator_type == 11 ||
+                     effect->generator_type == 12)
+                effect->emitter_velocity.y = (f32)(i32)((65536.0f / 360.0f) * ((edui_slider_s *)item)->value);
+        }
+    }
+}
+
+static void cbPtlChangeZ(eduimenu_s *menu, eduiitem_s *item, u32 unused2) {
+    DEBRIS_INFO_PC *effect;
+    i32 instance_id;
+    if (edpp_nearest == -1)
+        return;
+    instance_id = edpp_ptls[edpp_nearest].instance_id;
+    if (instance_id == -1)
+        return;
+    effect = debtab[debkeydata[instance_id].effect_index];
+    if (menu != NULL) {
+        if (menu == ptlvaremitmenu) {
+            if (effect->generator_type == 0 || effect->generator_type == 8 || effect->generator_type == 9 ||
+                effect->generator_type == 10) {
+                effect->rotor_speed_y = ((edui_slider_s *)item)->value;
+            } else if (effect->generator_type == 6 || effect->generator_type == 7 || effect->generator_type == 12) {
+                effect->rotor_speed_y = (f32)(i32)((65536.0f / 360.0f) * ((edui_slider_s *)item)->value);
+            } else if (effect->generator_type == 11) {
+                effect->rotor_speed_y = (f32)(i32)((65536.0f / 360.0f) * ((edui_slider_s *)item)->value);
+                effect->emitter_random_extent.z =
+                    MIN(effect->emitter_random_extent.z, 16384.0f - effect->rotor_speed_y);
+                effect->emitter_random_extent.z =
+                    MAX(effect->emitter_random_extent.z, -(16384.0f - effect->rotor_speed_y));
+            }
+        } else if (menu == ptlvarstartmenu) {
+            if (effect->generator_type == 0 || effect->generator_type == 8 || effect->generator_type == 9 ||
+                effect->generator_type == 10) {
+                effect->emitter_random_extent.z = ((edui_slider_s *)item)->value;
+            } else if (effect->generator_type == 6 || effect->generator_type == 7 || effect->generator_type == 12) {
+                effect->emitter_random_extent.z = (f32)(i32)((65536.0f / 360.0f) * ((edui_slider_s *)item)->value);
+            } else if (effect->generator_type == 11) {
+                effect->emitter_random_extent.z = (f32)(i32)((65536.0f / 360.0f) * ((edui_slider_s *)item)->value);
+                effect->rotor_speed_y = MIN(effect->rotor_speed_y, 16384.0f - effect->emitter_random_extent.z);
+                effect->rotor_speed_y = MAX(effect->rotor_speed_y, -(16384.0f - effect->emitter_random_extent.z));
+            }
+        } else if (menu == ptlstartvelmenu) {
+            if (effect->generator_type == 0 || effect->generator_type == 8 || effect->generator_type == 9 ||
+                effect->generator_type == 10)
+                effect->emitter_velocity.z = ((edui_slider_s *)item)->value;
+            else if (effect->generator_type == 6 || effect->generator_type == 7 || effect->generator_type == 11 ||
+                     effect->generator_type == 12)
+                effect->emitter_velocity.z = (f32)(i32)((65536.0f / 360.0f) * ((edui_slider_s *)item)->value);
+        }
+    }
+}
+
+void __cdecl cbPtlVarEmitMenu(eduimenu_s *parent, eduiitem_s *unused1, u32 unused2) {
+    u32 colours[4] = {0x80000000, 0x80ff0000, 0x80808080, 0x80404040};
+    DEBRIS_INFO_PC *effect;
+    if (edpp_nearest == -1 || edpp_ptls[edpp_nearest].instance_id == -1)
+        return;
+    effect = debtab[debkeydata[edpp_ptls[edpp_nearest].instance_id].effect_index];
+    ptlvaremitmenu = eduiMenuCreate(70, 70, 180, 300, ed_fnt, cbPtlCancelVarEmitMenu, "Emitter Variation");
+    if (ptlvaremitmenu != NULL) {
+        if (effect->generator_type == 0 || effect->generator_type == 8 || effect->generator_type == 9 ||
+            effect->generator_type == 10) {
+            eduiMenuAddItem(ptlvaremitmenu,
+                            eduiItemSliderCreate(0, colours, 0, cbPtlChangeX, 0.0f, 5.0f * edptl_superscale,
+                                                 effect->momentum_random_x, "Rand Emit X"));
+            eduiMenuAddItem(ptlvaremitmenu,
+                            eduiItemSliderCreate(0, colours, 0, cbPtlChangeY, 0.0f, 5.0f * edptl_superscale,
+                                                 effect->rotor_speed_x, "Rand Emit Y"));
+            eduiMenuAddItem(ptlvaremitmenu,
+                            eduiItemSliderCreate(0, colours, 0, cbPtlChangeZ, 0.0f, 5.0f * edptl_superscale,
+                                                 effect->rotor_speed_y, "Rand Emit Z"));
+        } else if (effect->generator_type == 6 || effect->generator_type == 12) {
+            eduiMenuAddItem(ptlvaremitmenu,
+                            eduiItemSliderCreate(0, colours, 0, cbPtlChangeX, 0.0f, 5.0f * edptl_superscale,
+                                                 effect->momentum_random_x, "Rand Mag X"));
+            eduiMenuAddItem(ptlvaremitmenu,
+                            eduiItemSliderCreate(0, colours, 0, cbPtlChangeY, 0.0f, 180.0f,
+                                                 effect->rotor_speed_x * (360.0f / 65536.0f), "Rand Rot Y"));
+            eduiItemSliderSetFmt((edui_slider_s *)edui_last_item, "(%1.01f)");
+            eduiItemSliderSetGranularity((edui_slider_s *)edui_last_item, 0.1f);
+            eduiMenuAddItem(ptlvaremitmenu,
+                            eduiItemSliderCreate(0, colours, 0, cbPtlChangeZ, 0.0f, 180.0f,
+                                                 effect->rotor_speed_y * (360.0f / 65536.0f), "Rand Rot Z"));
+            eduiItemSliderSetFmt((edui_slider_s *)edui_last_item, "(%1.01f)");
+            eduiItemSliderSetGranularity((edui_slider_s *)edui_last_item, 0.1f);
+        } else if (effect->generator_type == 7) {
+            eduiMenuAddItem(ptlvaremitmenu,
+                            eduiItemSliderCreate(0, colours, 0, cbPtlChangeX, 0.0f, 5.0f * edptl_superscale,
+                                                 effect->momentum_random_x, "Rand Mag"));
+            eduiMenuAddItem(ptlvaremitmenu,
+                            eduiItemSliderCreate(0, colours, 0, cbPtlChangeY, -90.0f, 180.0f,
+                                                 effect->rotor_speed_x * (360.0f / 65536.0f), "Step Rot Y"));
+            eduiItemSliderSetFmt((edui_slider_s *)edui_last_item, "(%1.01f)");
+            eduiItemSliderSetGranularity((edui_slider_s *)edui_last_item, 0.1f);
+            eduiMenuAddItem(ptlvaremitmenu,
+                            eduiItemSliderCreate(0, colours, 0, cbPtlChangeZ, -90.0f, 180.0f,
+                                                 effect->rotor_speed_y * (360.0f / 65536.0f), "Step Rot Z"));
+            eduiItemSliderSetFmt((edui_slider_s *)edui_last_item, "(%1.01f)");
+            eduiItemSliderSetGranularity((edui_slider_s *)edui_last_item, 0.1f);
+        } else if (effect->generator_type == 11) {
+            eduiMenuAddItem(ptlvaremitmenu,
+                            eduiItemSliderCreate(0, colours, 0, cbPtlChangeX, 0.0f, 5.0f * edptl_superscale,
+                                                 effect->momentum_random_x, "Rand Mag X"));
+            eduiMenuAddItem(ptlvaremitmenu,
+                            eduiItemSliderCreate(0, colours, 0, cbPtlChangeY, 0.0f, 180.0f,
+                                                 effect->rotor_speed_x * (360.0f / 65536.0f), "Rand Rot Y"));
+            eduiItemSliderSetFmt((edui_slider_s *)edui_last_item, "(%1.01f)");
+            eduiItemSliderSetGranularity((edui_slider_s *)edui_last_item, 0.1f);
+            eduiMenuAddItem(ptlvaremitmenu,
+                            eduiItemSliderCreate(0, colours, 0, cbPtlChangeZ, 0.0f, 90.0f,
+                                                 effect->rotor_speed_y * (360.0f / 65536.0f), "Rand Rot Z"));
+            eduiItemSliderSetFmt((edui_slider_s *)edui_last_item, "(%1.01f)");
+            eduiItemSliderSetGranularity((edui_slider_s *)edui_last_item, 0.1f);
+        }
+        eduiMenuAttach(parent, ptlvaremitmenu);
+        ptlvaremitmenu->x = parent->x + 10;
+        ptlvaremitmenu->y = parent->y + 40;
+    }
+}
+
+void __cdecl cbPtlVarStartMenu(eduimenu_s *parent, eduiitem_s *unused1, u32 unused2) {
+    u32 colours[4] = {0x80000000, 0x80ff0000, 0x80808080, 0x80404040};
+    if (!(edpp_nearest == -1 || edpp_ptls[edpp_nearest].instance_id == -1)) {
+        DEBRIS_INFO_PC *effect = debtab[debkeydata[edpp_ptls[edpp_nearest].instance_id].effect_index];
+        if (effect->generator_type == 0 || effect->generator_type == 8 || effect->generator_type == 9 ||
+            effect->generator_type == 10) {
+            ptlvarstartmenu = eduiMenuCreate(70, 70, 180, 300, ed_fnt, cbPtlCancelVarStartMenu, "Random Start");
+        } else if (effect->generator_type == 6 || effect->generator_type == 7 || effect->generator_type == 11 ||
+                   effect->generator_type == 12) {
+            ptlvarstartmenu = eduiMenuCreate(70, 70, 180, 300, ed_fnt, cbPtlCancelVarStartMenu, "Base Emit Vector");
+        }
+        if (ptlvarstartmenu == NULL)
+            return;
+        if (effect->generator_type == 0 || effect->generator_type == 8 || effect->generator_type == 9 ||
+            effect->generator_type == 10) {
+            eduiMenuAddItem(ptlvarstartmenu,
+                            eduiItemSliderCreate(0, colours, 0, cbPtlChangeX, 0.0f, 5.0f * edptl_superscale,
+                                                 effect->emitter_random_extent.x, "Rand Start X"));
+            eduiMenuAddItem(ptlvarstartmenu,
+                            eduiItemSliderCreate(0, colours, 0, cbPtlChangeY, 0.0f, 5.0f * edptl_superscale,
+                                                 effect->emitter_random_extent.y, "Rand Start Y"));
+            eduiMenuAddItem(ptlvarstartmenu,
+                            eduiItemSliderCreate(0, colours, 0, cbPtlChangeZ, 0.0f, 5.0f * edptl_superscale,
+                                                 effect->emitter_random_extent.z, "Rand Start Z"));
+        } else if (effect->generator_type == 6 || effect->generator_type == 7 || effect->generator_type == 12) {
+            eduiMenuAddItem(ptlvarstartmenu,
+                            eduiItemSliderCreate(0, colours, 0, cbPtlChangeX, 0.0f, 5.0f * edptl_superscale,
+                                                 effect->emitter_random_extent.x, "Base Mag"));
+            eduiMenuAddItem(ptlvarstartmenu,
+                            eduiItemSliderCreate(0, colours, 0, cbPtlChangeY, -180.0f, 360.0f,
+                                                 effect->emitter_random_extent.y * (360.0f / 65536.0f), "Base Rot Y"));
+            eduiItemSliderSetFmt((edui_slider_s *)edui_last_item, "(%1.01f)");
+            eduiItemSliderSetGranularity((edui_slider_s *)edui_last_item, 0.1f);
+            eduiMenuAddItem(ptlvarstartmenu,
+                            eduiItemSliderCreate(0, colours, 0, cbPtlChangeZ, -180.0f, 180.0f,
+                                                 effect->emitter_random_extent.z * (360.0f / 65536.0f), "Base Rot Z"));
+            eduiItemSliderSetFmt((edui_slider_s *)edui_last_item, "(%1.01f)");
+            eduiItemSliderSetGranularity((edui_slider_s *)edui_last_item, 0.1f);
+        } else if (effect->generator_type == 11) {
+            eduiMenuAddItem(ptlvarstartmenu,
+                            eduiItemSliderCreate(0, colours, 0, cbPtlChangeX, 0.0f, 5.0f * edptl_superscale,
+                                                 effect->emitter_random_extent.x, "Base Mag"));
+            eduiMenuAddItem(ptlvarstartmenu,
+                            eduiItemSliderCreate(0, colours, 0, cbPtlChangeY, -180.0f, 360.0f,
+                                                 effect->emitter_random_extent.y * (360.0f / 65536.0f), "Base Rot Y"));
+            eduiItemSliderSetFmt((edui_slider_s *)edui_last_item, "(%1.01f)");
+            eduiItemSliderSetGranularity((edui_slider_s *)edui_last_item, 0.1f);
+            eduiMenuAddItem(ptlvarstartmenu,
+                            eduiItemSliderCreate(0, colours, 0, cbPtlChangeZ, -90.0f, 180.0f,
+                                                 effect->emitter_random_extent.z * (360.0f / 65536.0f), "Base Rot Z"));
+            eduiItemSliderSetFmt((edui_slider_s *)edui_last_item, "(%1.01f)");
+            eduiItemSliderSetGranularity((edui_slider_s *)edui_last_item, 0.1f);
+        }
+        if (effect->generator_type == 6 || effect->generator_type == 12) {
+            eduiMenuAddItem(ptlvarstartmenu,
+                            eduiItemSliderCreate(0, colours, 0, edptlcbChangeRampTime, 0.0f, (f32)edptl_superscale,
+                                                 effect->scale_in_time, "Ramp Time"));
+        }
+        eduiMenuAttach(parent, ptlvarstartmenu);
+        ptlvarstartmenu->x = parent->x + 10;
+        ptlvarstartmenu->y = parent->y + 40;
+    }
+}
+
+void __cdecl cbPtlStartVelMenu(eduimenu_s *parent, eduiitem_s *unused1, u32 unused2) {
+    u32 colours[4] = {0x80000000, 0x80ff0000, 0x80808080, 0x80404040};
+    if (!(edpp_nearest == -1 || edpp_ptls[edpp_nearest].instance_id == -1)) {
+        DEBRIS_INFO_PC *effect = debtab[debkeydata[edpp_ptls[edpp_nearest].instance_id].effect_index];
+        if (effect->generator_type == 0 || effect->generator_type == 8 || effect->generator_type == 9 ||
+            effect->generator_type == 10) {
+            ptlstartvelmenu = eduiMenuCreate(70, 70, 250, 300, ed_fnt, cbPtlCancelStartVelMenu, "Start Velocity");
+        } else if (effect->generator_type == 6 || effect->generator_type == 7 || effect->generator_type == 11 ||
+                   effect->generator_type == 12) {
+            ptlstartvelmenu = eduiMenuCreate(70, 70, 250, 300, ed_fnt, cbPtlCancelStartVelMenu, "Emit Point Velocity");
+        }
+        if (ptlstartvelmenu == NULL)
+            return;
+        if (effect->generator_type == 0 || effect->generator_type == 8 || effect->generator_type == 9 ||
+            effect->generator_type == 10) {
+            eduiMenuAddItem(ptlstartvelmenu,
+                            eduiItemSliderCreate(0, colours, 0, cbPtlChangeX, -5.0f, 10.0f * edptl_superscale,
+                                                 effect->emitter_velocity.x, "Start Vel X"));
+            eduiMenuAddItem(ptlstartvelmenu,
+                            eduiItemSliderCreate(0, colours, 0, cbPtlChangeY, -5.0f, 10.0f * edptl_superscale,
+                                                 effect->emitter_velocity.y, "Start Vel Y"));
+            eduiMenuAddItem(ptlstartvelmenu,
+                            eduiItemSliderCreate(0, colours, 0, cbPtlChangeZ, -5.0f, 10.0f * edptl_superscale,
+                                                 effect->emitter_velocity.z, "Start Vel Z"));
+        } else if (effect->generator_type == 6 || effect->generator_type == 7 || effect->generator_type == 12) {
+            eduiMenuAddItem(ptlstartvelmenu,
+                            eduiItemSliderCreate(0, colours, 0, cbPtlChangeX, 0.0f, 5.0f * edptl_superscale,
+                                                 effect->emitter_velocity.x, "Mag Velocity"));
+            eduiMenuAddItem(ptlstartvelmenu,
+                            eduiItemSliderCreate(0, colours, 0, cbPtlChangeY, -180.0f, 360.0f,
+                                                 effect->emitter_velocity.y * (360.0f / 65536.0f), "Rot Y Vel"));
+            eduiItemSliderSetFmt((edui_slider_s *)edui_last_item, "(%1.01f)");
+            eduiItemSliderSetGranularity((edui_slider_s *)edui_last_item, 0.1f);
+            eduiMenuAddItem(ptlstartvelmenu,
+                            eduiItemSliderCreate(0, colours, 0, cbPtlChangeZ, -180.0f, 180.0f,
+                                                 effect->emitter_velocity.z * (360.0f / 65536.0f), "Rot Z Vel"));
+            eduiItemSliderSetFmt((edui_slider_s *)edui_last_item, "(%1.01f)");
+            eduiItemSliderSetGranularity((edui_slider_s *)edui_last_item, 0.1f);
+        } else if (effect->generator_type == 11) {
+            eduiMenuAddItem(ptlstartvelmenu,
+                            eduiItemSliderCreate(0, colours, 0, cbPtlChangeX, 0.0f, 5.0f * edptl_superscale,
+                                                 effect->emitter_velocity.x, "Mag Velocity"));
+            eduiMenuAddItem(ptlstartvelmenu,
+                            eduiItemSliderCreate(0, colours, 0, cbPtlChangeY, -180.0f, 360.0f,
+                                                 effect->emitter_velocity.y * (360.0f / 65536.0f), "Rot Y Vel"));
+            eduiItemSliderSetFmt((edui_slider_s *)edui_last_item, "(%1.01f)");
+            eduiItemSliderSetGranularity((edui_slider_s *)edui_last_item, 0.1f);
+            eduiMenuAddItem(ptlstartvelmenu,
+                            eduiItemSliderCreate(0, colours, 0, cbPtlChangeZ, -90.0f, 180.0f,
+                                                 effect->emitter_velocity.z * (360.0f / 65536.0f), "Rot Z Vel"));
+            eduiItemSliderSetFmt((edui_slider_s *)edui_last_item, "(%1.01f)");
+            eduiItemSliderSetGranularity((edui_slider_s *)edui_last_item, 0.1f);
+        }
+        if (effect->generator_type == 6 || effect->generator_type == 12) {
+            eduiMenuAddItem(ptlstartvelmenu,
+                            eduiItemSliderCreate(0, colours, 0, edptlcbChangeRampTime, 0.0f, (f32)edptl_superscale,
+                                                 effect->scale_in_time, "Ramp Time"));
+        }
+        eduiMenuAttach(parent, ptlstartvelmenu);
+        ptlstartvelmenu->x = parent->x + 10;
+        ptlstartvelmenu->y = parent->y + 40;
+    }
+}

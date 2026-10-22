@@ -29014,6 +29014,15 @@ extern "C" {
 #pragma bss_seg(".bss$edptl_ghost_menu")
     struct eduimenu_s *edptl_ghost_menu = 0;
 #pragma bss_seg()
+#pragma bss_seg(".bss$ptlvaremitmenu")
+    struct eduimenu_s *ptlvaremitmenu = 0;
+#pragma bss_seg()
+#pragma bss_seg(".bss$ptlvarstartmenu")
+    struct eduimenu_s *ptlvarstartmenu = 0;
+#pragma bss_seg()
+#pragma bss_seg(".bss$ptlstartvelmenu")
+    struct eduimenu_s *ptlstartvelmenu = 0;
+#pragma bss_seg()
 #pragma bss_seg(".bss$ptlemitmenu")
     struct eduimenu_s *ptlemitmenu = 0;
 #pragma bss_seg()
