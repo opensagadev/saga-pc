@@ -893,7 +893,9 @@ void __cdecl NuMtxSetRotationXYVU0(NUMTX *matrix, NUANGVEC *angles) {
     matrix->m21 = cx * sy * sz - sx * cz;
     matrix->m22 = cx * cy;
     matrix->m23 = 0.0f;
-    matrix->m30 = matrix->m31 = matrix->m32 = 0.0f;
+    matrix->m30 = 0.0f;
+    matrix->m31 = 0.0f;
+    matrix->m32 = 0.0f;
     matrix->m33 = 1.0f;
 }
 

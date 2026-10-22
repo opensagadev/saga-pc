@@ -433,7 +433,7 @@
     "src/nu2api/numemfile.c": "959430758bafc0b1831aba4204f210d993552b695388ab20bd8a54bcdd940454",
     "src/nu2api/numouse.c": "ec8d3685bd9d3d36c454e641a684c79635cd532380dca0df293a6088887e54ad",
     "src/nu2api/numtl.c": "7d8ac151e5a8f8bd8284f76c724f126efa90042eba3f908f9ff130e5d0755664",
-    "src/nu2api/numtx.c": "75c9b0f78bfadb836a084c033e11be9952774a5cc00f21834e4f7e2d2b3859f1",
+    "src/nu2api/numtx.c": "240be00d612a09d4690a2256662e374661b676d093c95cf6d63385f0b3534c7b",
     "src/nu2api/nuocclusion.c": "58c4bdbef20522bd3fb49328b9c98d8cd7802b38d8cda7bc95fd07be44126b3d",
     "src/nu2api/nupad.c": "084bfaf7505e1a91685b864ed9f8c651c36602bcb6636368b42e26238fc80779",
     "src/nu2api/nupad_pc.c": "6f6c5c6284af24bbeccc13e0f1cf220f47a00898cc2220813a6d6eaff166818f",
@@ -867,7 +867,7 @@
     "build/obj/nu2api/numtl.obj": "a031cf25262fd65e7b46ac4fa582ff7cbb96fc96a12482ee20871a9fb5a1c18f",
     "build/obj/nu2api/numtl_pc.obj": "d1007577d2be17d6b34066a3c0fdc7ed0e336d48d361111c091345837c971902",
     "build/obj/nu2api/numtl_resources_pc.obj": "161531da025f4690d617b390e69a01ee04f71c8e412829878660cb31cf0cfb14",
-    "build/obj/nu2api/numtx.obj": "0f694480be0b227d3f492cd3b68fab841395a33e7095f4cd7acb4312683d82e7",
+    "build/obj/nu2api/numtx.obj": "e3435f449140137fa3dace5c78b6c34f367b1bdd909e11e7917eb61f03bf1310",
     "build/obj/nu2api/nuocclusion.obj": "1809b7fb2542b225085ffdc507a36550dadcd6435e9443abb3cffb9cd089a323",
     "build/obj/nu2api/nupad.obj": "c3fd14b3a09c4490b06dcffb0d1d565b4d853096ecfaef64c31d2baa54ce2b88",
     "build/obj/nu2api/nupad_pc.obj": "05ea9667feb211c8f519f260e606a478cf1c4b4e8cb335c362ee3cd26293722b",
@@ -124648,21 +124648,21 @@
         "src/nu2api/numtx.c"
       ],
       "target_size": 278,
-      "exact_match": false,
+      "exact_match": true,
       "objects": [
         {
           "unit": "src/nu2api/numtx.c",
           "base_size": 278,
-          "exact_match": false,
+          "exact_match": true,
           "target_sha256": "a26abc79190127ec5000e3381a3d306a0cc4ef5de9efb212285f51403017d547",
-          "base_sha256": "babf2f93b7e1ef91992c1c54ac53a940e4fa1c5a246232edcc4cdff5b24b6458",
+          "base_sha256": "a26abc79190127ec5000e3381a3d306a0cc4ef5de9efb212285f51403017d547",
           "relocation_count": 6,
           "comparison_unit": "005c0820-10f58640da5a",
-          "objdiff_percent": 99.97701
+          "objdiff_percent": 100.0
         }
       ],
-      "status": "different",
-      "objdiff_percent": 99.97701
+      "status": "exact",
+      "objdiff_percent": 100.0
     },
     {
       "name": "NuMtxInvVU0",
@@ -485270,11 +485270,11 @@
   "progress": {
     "text_bytes": 3471246,
     "mapped_code_bytes": 2445745,
-    "matched_code_bytes": 463039,
-    "matching_percent": 13.339273563440909,
-    "fuzzy_coverage_percent": 48.0232834017187,
+    "matched_code_bytes": 463317,
+    "matching_percent": 13.347282215089336,
+    "fuzzy_coverage_percent": 48.02328524290771,
     "mapped_functions": 9046,
-    "matched_functions": 4326,
+    "matched_functions": 4327,
     "objdiff_fuzzy_percent": 74.89006,
     "objdiff_total_code": 2229292,
     "image_bytes": 40067072,
@@ -485334,16 +485334,16 @@
   "text_coverage": {
     "original_text_bytes": 3471246,
     "mapped_reconstruction_bytes": 2445745,
-    "exact_reconstruction_bytes": 463039,
-    "mapped_not_exact_bytes": 1982706,
+    "exact_reconstruction_bytes": 463317,
+    "mapped_not_exact_bytes": 1982428,
     "excluded_import_glue_bytes": 1194,
     "unclassified_text_bytes": 1024307,
     "strict_original_text_denominator_bytes": 3471246,
-    "strict_original_text_exact_percent": 13.339273563440909,
+    "strict_original_text_exact_percent": 13.347282215089336,
     "reconstruction_scope_denominator_bytes": 3470052,
-    "reconstruction_scope_exact_percent": 13.343863434899534,
+    "reconstruction_scope_exact_percent": 13.351874842221385,
     "mapped_scope_denominator_bytes": 2445745,
-    "mapped_scope_exact_percent": 18.93243163126164,
+    "mapped_scope_exact_percent": 18.94379831094411,
     "qualification": "Unclassified text includes undiscovered code and unproven padding; these percentages compare relocated objects, not the linked image."
   },
   "data_members": [
@@ -486487,7 +486487,7 @@
       "metadata_sha256": "fe09365da4c355f220d724ca99394fc120b758891b4188d2c49707b6df0894f2",
       "header_path": "src/saga.h",
       "header_sha256": "fa9d80a2f2e41f651206eab862219ac77a83ff9466a31feb3c1ad6b4c783085c",
-      "geometry_object_sha256": "58282051f70c5bdad86eb55f62ff0248bdc50bd36dfb6725ab0dc657da0d904a",
+      "geometry_object_sha256": "c3946eb6f4aa8ff5087a92994693989eab32253fc443a674c99bf3e41d41950f",
       "toolchain_sha256": "b8808088bb2c7eb239785f69c9e464ae8545216d5705fb37216bc0cf926732f3",
       "implementation_sha256": "d6a33be911d095a6d07dccd4443ccbfd6b514fd89fd7e200d9caa1827944e218",
       "headers": {
@@ -486729,7 +486729,7 @@
         4
       ]
     },
-    "clang_source_sha256": "e2a6fecc62c21bacf838a30bc0b067ec2908c283999397a64f70f1265fdb0a98",
+    "clang_source_sha256": "5f09043756de8d856dc89b6ea88d2554df85eff08a50b0dd8efb1802c1d942c9",
     "member_count": 42,
     "physical_definition_credit": 0
   },
