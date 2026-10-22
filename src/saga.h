@@ -5174,14 +5174,8 @@ typedef struct gameobject_s {
     f32 bounds_radius;
     f32 bounds_half_height;
     u8 unknown_01e4[4];
-    union {
-        u32 collision_identity_mask[2];
-        u64 collision_identity_mask64;
-    };
-    union {
-        u32 collision_contact_mask[2];
-        u64 collision_contact_mask64;
-    };
+    u32 collision_identity_mask[2];
+    u32 collision_contact_mask[2];
     u32 flags_1f8;
     union {
         u8 flags_1fc;
@@ -5198,11 +5192,6 @@ typedef struct gameobject_s {
     u8 unknown_020c[0xc];
     f32 previous_floor_height;
     f32 floor_height;
-        struct {
-            u32 flags_1fc_bits_0_12 : 13;
-            u32 flags_1fc_bit_13 : 1;
-            u32 flags_1fc_bits_14_31 : 18;
-        };
     f32 water_height;
     union {
         u8 unknown_0224[4];
@@ -5255,12 +5244,8 @@ typedef struct gameobject_s {
             u32 ai_seen_mask;
         };
     };
-    union {
-        u32 ai_area_mask[2];
-        u64 ai_area_mask64;
-    };
+    u32 ai_area_mask[2];
     f32 idle_total_time;
-        u64 hostility_mask64;
     f32 idle_animation_time;
     f32 idle_animation_limit;
     i16 idle_animation;
@@ -5584,17 +5569,9 @@ typedef struct gameobject_s {
         };
     };
     NUVEC *context_target_position;
-    union {
-        struct {
-            u32 field_eb0;
-            u32 field_eb4;
-        };
-        u64 seen_mask_eb0;
-    };
-    union {
-        u32 ai_opponent_exclusion_mask[2];
-        u64 ai_opponent_exclusion_mask64;
-    };
+    u32 field_eb0;
+    u32 field_eb4;
+    u32 ai_opponent_exclusion_mask[2];
     u32 field_ec0;
     f32 field_ec4;
     f32 movement_speed_scale_pc;
@@ -5609,15 +5586,7 @@ typedef struct gameobject_s {
     f32 field_ee0;
     f32 tag_reset_timer;
     f32 pause_context_state;
-    union {
-        u32 portal_flags;
-        struct {
-            u32 portal_bits_0_19 : 20;
-            u32 respawnable : 1;
-            u32 respawn_at_origin : 1;
-            u32 portal_bits_22_31 : 10;
-        };
-    };
+    u32 portal_flags;
     u32 flags_ef0;
     u32 flags_ef4;
     union {
