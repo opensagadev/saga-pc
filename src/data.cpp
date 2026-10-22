@@ -12457,7 +12457,7 @@ extern "C" {
 // Minimum access view for the reviewed 0x948 and nested 0xd0 requests,
 // including their two pointer trailers. The full original extent is unknown.
 #pragma bss_seg(".bss$NuScratchBackingAccessPc")
-    __declspec(align(4)) u8 NuScratchBackingAccessPc[0xa20] = {0};
+    __declspec(align(4)) u8 NuScratchBackingAccessPc[0x4000] = {0};
 #pragma bss_seg()
 #pragma data_seg(".data$NuScratchCurrentPc")
     u8 *NuScratchCurrentPc = NuScratchBackingAccessPc;

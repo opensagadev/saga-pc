@@ -8112,8 +8112,11 @@ address,symbol,size,ctype
 0x006de6d0,_NuPadSetMotorsPc,1,"void __cdecl(NUPAD_INIT_STATE *, i32, i32)"
 0x6de750,_PcEnableThreadSwap,1,void __cdecl(void)
 0x6de760,_PcDisableThreadSwap,1,void __cdecl(void)
-0x006de8d0,_NuScratchAlloc32,37,
-0x006de960,_NuScratchRelease,15,
+0x006de8c0,_NuScratchReset,11,void __cdecl(void)
+0x006de8d0,_NuScratchAlloc32,37,void *__cdecl(i32)
+0x006de900,_NuScratchAlloc64,37,void *__cdecl(i32)
+0x006de930,_NuScratchAlloc128,37,void *__cdecl(i32)
+0x006de960,_NuScratchRelease,15,void __cdecl(void)
 0x6de9a0,_NuPs2VideoScreenDump,1,
 0x6dea60,_PCAnimationEffectCheckpoint,1,void __cdecl (void)
 0x6dec10,_NuPs2ApplyDeadZone,64,
@@ -24166,7 +24169,7 @@ address,symbol,size,ctype
 0x2976098,_PCNativeWarningDebugState,,PC_NATIVE_DEBUG_STATE_PC
 0x29765a0,_nu_keyboard_owner,,NuKeyboardOwner_PC
 0x29765e8,_PCDeviceBackend,,PC_DEVICE_BACKEND_PC
-0x02976d00,_NuScratchBackingAccessPc,,
+0x02976d00,_NuScratchBackingAccessPc,16384,u8[0x4000]
 0x00297ad74,_nu_current_thread_id,4,volatile u32
 0x0297ad94,_nuvideo_global_vbcnt,4,volatile i32
 0x297ada0,_MenuPcStrings,156,const char *[39]
