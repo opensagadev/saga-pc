@@ -511,3 +511,170 @@ void __cdecl cbPtlAddEffect(eduimenu_s *menu, eduiitem_s *unused1, u32 unused2) 
     if (menu->callback != NULL)
         menu->callback(menu, parent);
 }
+
+extern struct eduimenu_s *changegenratemenu;
+extern struct eduimenu_s *etimemenu;
+extern struct eduimenu_s *emittimemenu;
+
+static void cbCancelChangeGenRateMenu(eduimenu_s *unused0, eduimenu_s *unused1) {
+    eduiMenuDestroy(changegenratemenu);
+    changegenratemenu = NULL;
+}
+
+static void cbCancelChangeETimeMenu(eduimenu_s *unused0, eduimenu_s *unused1) {
+    eduiMenuDestroy(etimemenu);
+    etimemenu = NULL;
+}
+
+static void cbPtlCancelEmitTimeMenu(eduimenu_s *unused0, eduimenu_s *unused1) {
+    eduiMenuDestroy(emittimemenu);
+    emittimemenu = NULL;
+}
+
+static void cbPtlChangeGenRate(eduimenu_s *unused0, eduiitem_s *item, u32 unused2) {
+    DEBRIS_INFO_PC *effect;
+    i32 instance_id;
+    if (edpp_nearest == -1)
+        return;
+    instance_id = edpp_ptls[edpp_nearest].instance_id;
+    if (instance_id == -1)
+        return;
+    effect = debtab[debkeydata[instance_id].effect_index];
+    effect->frequency = (i16)(i32)((edui_slider_s *)item)->value;
+    UpdateTotalPtls(effect);
+}
+
+static void cbPtlChangeETime(eduimenu_s *unused0, eduiitem_s *item, u32 unused2) {
+    DEBRIS_INFO_PC *effect;
+    i32 instance_id;
+    if (edpp_nearest == -1)
+        return;
+    instance_id = edpp_ptls[edpp_nearest].instance_id;
+    if (instance_id == -1)
+        return;
+    effect = debtab[debkeydata[instance_id].effect_index];
+    effect->particle_lifetime = ((edui_slider_s *)item)->value;
+    UpdateTotalPtls(effect);
+}
+
+static void cbPtlChangeIvalOn(eduimenu_s *unused0, eduiitem_s *item, u32 unused2) {
+    DEBRIS_INFO_PC *effect;
+    i32 instance_id;
+    if (edpp_nearest == -1)
+        return;
+    instance_id = edpp_ptls[edpp_nearest].instance_id;
+    if (instance_id == -1)
+        return;
+    effect = debtab[debkeydata[instance_id].effect_index];
+    effect->emission_period = ((edui_slider_s *)item)->value;
+    UpdateTotalPtls(effect);
+}
+
+static void cbPtlChangeIvalOnRan(eduimenu_s *unused0, eduiitem_s *item, u32 unused2) {
+    DEBRIS_INFO_PC *effect;
+    i32 instance_id;
+    if (edpp_nearest == -1)
+        return;
+    instance_id = edpp_ptls[edpp_nearest].instance_id;
+    if (instance_id == -1)
+        return;
+    effect = debtab[debkeydata[instance_id].effect_index];
+    effect->emission_period_random = ((edui_slider_s *)item)->value;
+    UpdateTotalPtls(effect);
+}
+
+static void cbPtlChangeIvalOff(eduimenu_s *unused0, eduiitem_s *item, u32 unused2) {
+    DEBRIS_INFO_PC *effect;
+    i32 instance_id;
+    if (edpp_nearest == -1)
+        return;
+    instance_id = edpp_ptls[edpp_nearest].instance_id;
+    if (instance_id == -1)
+        return;
+    effect = debtab[debkeydata[instance_id].effect_index];
+    effect->emission_pause = ((edui_slider_s *)item)->value;
+    UpdateTotalPtls(effect);
+}
+
+static void cbPtlChangeIvalOffRan(eduimenu_s *unused0, eduiitem_s *item, u32 unused2) {
+    DEBRIS_INFO_PC *effect;
+    i32 instance_id;
+    if (edpp_nearest == -1)
+        return;
+    instance_id = edpp_ptls[edpp_nearest].instance_id;
+    if (instance_id == -1)
+        return;
+    effect = debtab[debkeydata[instance_id].effect_index];
+    effect->emission_pause_random = ((edui_slider_s *)item)->value;
+    UpdateTotalPtls(effect);
+}
+
+void __cdecl edptlcbApplyNumGhosts(eduimenu_s *unused0, eduiitem_s *item, u32 unused2) {
+    DEBRIS_INFO_PC *effect;
+    i32 instance_id;
+    if (edpp_nearest == -1)
+        return;
+    instance_id = edpp_ptls[edpp_nearest].instance_id;
+    if (instance_id == -1)
+        return;
+    effect = debtab[debkeydata[instance_id].effect_index];
+    effect->trail_count = (i8)(i32)((edui_slider_s *)item)->value;
+    UpdateTotalPtls(effect);
+}
+
+void __cdecl cbChangeGenRateMenu(eduimenu_s *parent, eduiitem_s *unused1, u32 unused2) {
+    u32 colours[4] = {0x80000000, 0x80ff0000, 0x80808080, 0x80404040};
+    if (!(edpp_nearest == -1 || edpp_ptls[edpp_nearest].instance_id == -1)) {
+        DEBRIS_INFO_PC *effect = debtab[debkeydata[edpp_ptls[edpp_nearest].instance_id].effect_index];
+        changegenratemenu = eduiMenuCreate(70, 70, 250, 250, ed_fnt, cbCancelChangeGenRateMenu, "Particles per Second");
+        if (changegenratemenu == NULL)
+            return;
+        eduiMenuAddItem(changegenratemenu,
+                        eduiItemSliderCreateInt(0, colours, 0, cbPtlChangeGenRate, 0, 1200 * edptl_superscale,
+                                                effect->frequency, "Particles per Second"));
+        eduiMenuAttach(parent, changegenratemenu);
+        changegenratemenu->x = parent->x + 10;
+        changegenratemenu->y = parent->y + 40;
+    }
+}
+
+void __cdecl cbChangeETimeMenu(eduimenu_s *parent, eduiitem_s *unused1, u32 unused2) {
+    u32 colours[4] = {0x80000000, 0x80ff0000, 0x80808080, 0x80404040};
+    if (!(edpp_nearest == -1 || edpp_ptls[edpp_nearest].instance_id == -1)) {
+        DEBRIS_INFO_PC *effect = debtab[debkeydata[edpp_ptls[edpp_nearest].instance_id].effect_index];
+        etimemenu = eduiMenuCreate(70, 70, 180, 250, ed_fnt, cbCancelChangeETimeMenu, "Particle Life");
+        if (etimemenu == NULL)
+            return;
+        eduiMenuAddItem(etimemenu, eduiItemSliderCreate(0, colours, 0, cbPtlChangeETime, 0.0f, 10.0f,
+                                                        effect->particle_lifetime, "Particle Life"));
+        eduiMenuAttach(parent, etimemenu);
+        etimemenu->x = parent->x + 10;
+        etimemenu->y = parent->y + 40;
+    }
+}
+
+void __cdecl cbPtlEmitTimeMenu(eduimenu_s *parent, eduiitem_s *unused1, u32 unused2) {
+    u32 colours[4] = {0x80000000, 0x80ff0000, 0x80808080, 0x80404040};
+    DEBRIS_INFO_PC *effect;
+    if (edpp_nearest == -1 || edpp_ptls[edpp_nearest].instance_id == -1)
+        return;
+    effect = debtab[debkeydata[edpp_ptls[edpp_nearest].instance_id].effect_index];
+    emittimemenu = eduiMenuCreate(70, 70, 250, 300, ed_fnt, cbPtlCancelEmitTimeMenu, "Emitter Timing");
+    if (emittimemenu != NULL) {
+        eduiMenuAddItem(emittimemenu,
+                        eduiItemSliderCreate(0, colours, 0, cbPtlChangeIvalOn, 0.01f, 5.0f * edptl_superscale,
+                                             effect->emission_period, "On Time"));
+        eduiMenuAddItem(emittimemenu,
+                        eduiItemSliderCreate(0, colours, 0, cbPtlChangeIvalOnRan, 0.0f, 5.0f * edptl_superscale,
+                                             effect->emission_period_random, "Random On Time"));
+        eduiMenuAddItem(emittimemenu,
+                        eduiItemSliderCreate(0, colours, 0, cbPtlChangeIvalOff, 0.0f, 5.0f * edptl_superscale,
+                                             effect->emission_pause, "Off Time"));
+        eduiMenuAddItem(emittimemenu,
+                        eduiItemSliderCreate(0, colours, 0, cbPtlChangeIvalOffRan, 0.0f, 5.0f * edptl_superscale,
+                                             effect->emission_pause_random, "Random Off Time"));
+        eduiMenuAttach(parent, emittimemenu);
+        emittimemenu->x = parent->x + 10;
+        emittimemenu->y = parent->y + 40;
+    }
+}

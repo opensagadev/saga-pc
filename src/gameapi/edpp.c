@@ -1969,3 +1969,106 @@ void __cdecl cbPtlEmitMenu(eduimenu_s *parent, eduiitem_s *unused1, u32 unused2)
         ptlemitmenu->y = parent->y + 40;
     }
 }
+
+extern struct eduimenu_s *ptlemitvelmenu;
+extern struct eduimenu_s *ptlgravmenu;
+extern struct eduimenu_s *edptl_ghost_menu;
+void __cdecl edptlcbApplyNumGhosts(eduimenu_s *unused0, eduiitem_s *item, u32 unused2);
+
+static void cbPtlCancelEmitVelMenu(eduimenu_s *unused0, eduimenu_s *unused1) {
+    eduiMenuDestroy(ptlemitvelmenu);
+    ptlemitvelmenu = NULL;
+}
+
+static void cbPtlCancelGravMenu(eduimenu_s *unused0, eduimenu_s *unused1) {
+    eduiMenuDestroy(ptlgravmenu);
+    ptlgravmenu = NULL;
+}
+
+static void edptlcbCancelGhostMenu(eduimenu_s *unused0, eduimenu_s *unused1) {
+    eduiMenuDestroy(edptl_ghost_menu);
+    edptl_ghost_menu = NULL;
+}
+
+static void cbPtlChangeEmitVel(eduimenu_s *unused0, eduiitem_s *item, u32 unused2) {
+    DEBRIS_INFO_PC *effect;
+    if (edpp_nearest == -1)
+        return;
+    if (edpp_ptls[edpp_nearest].instance_id == -1)
+        return;
+    effect = debtab[debkeydata[edpp_ptls[edpp_nearest].instance_id].effect_index];
+    effect->momentum_base = ((edui_slider_s *)item)->value;
+}
+
+static void cbPtlChangeGrav(eduimenu_s *unused0, eduiitem_s *item, u32 unused2) {
+    DEBRIS_INFO_PC *effect;
+    if (edpp_nearest == -1)
+        return;
+    if (edpp_ptls[edpp_nearest].instance_id == -1)
+        return;
+    effect = debtab[debkeydata[edpp_ptls[edpp_nearest].instance_id].effect_index];
+    effect->gravity = ((edui_slider_s *)item)->value;
+    GenericDebinfoDmaTypeUpdate(debtab[debkeydata[edpp_ptls[edpp_nearest].instance_id].effect_index]);
+}
+
+static void edptlcbApplyGhostTime(eduimenu_s *unused0, eduiitem_s *item, u32 unused2) {
+    DEBRIS_INFO_PC *effect;
+    i32 instance_id;
+    if (edpp_nearest == -1)
+        return;
+    instance_id = edpp_ptls[edpp_nearest].instance_id;
+    if (instance_id == -1)
+        return;
+    effect = debtab[debkeydata[instance_id].effect_index];
+    effect->trail_time = ((edui_slider_s *)item)->value;
+}
+
+void __cdecl cbPtlEmitVelMenu(eduimenu_s *menu, eduiitem_s *unused1, u32 unused2) {
+    u32 colours[4] = {0x80000000, 0x80ff0000, 0x80808080, 0x80404040};
+    DEBRIS_INFO_PC *effect;
+    if (edpp_nearest == -1 || edpp_ptls[edpp_nearest].instance_id == -1)
+        return;
+    effect = debtab[debkeydata[edpp_ptls[edpp_nearest].instance_id].effect_index];
+    ptlemitvelmenu = eduiMenuCreate(70, 70, 180, 250, ed_fnt, cbPtlCancelEmitVelMenu, "Emitter Vel");
+    if (ptlemitvelmenu != NULL) {
+        eduiMenuAddItem(ptlemitvelmenu,
+                        eduiItemSliderCreate(0, colours, 0, cbPtlChangeEmitVel, -(10.0f * edptl_superscale),
+                                             20.0f * edptl_superscale, effect->momentum_base, "Emitter Vel"));
+        eduiMenuAttach(menu, ptlemitvelmenu);
+        ptlemitvelmenu->x = menu->x + 10;
+        ptlemitvelmenu->y = menu->y + 40;
+    }
+}
+
+void __cdecl cbPtlGravMenu(eduimenu_s *menu, eduiitem_s *unused1, u32 unused2) {
+    u32 colours[4] = {0x80000000, 0x80ff0000, 0x80808080, 0x80404040};
+    DEBRIS_INFO_PC *effect;
+    if (edpp_nearest == -1 || edpp_ptls[edpp_nearest].instance_id == -1)
+        return;
+    effect = debtab[debkeydata[edpp_ptls[edpp_nearest].instance_id].effect_index];
+    ptlgravmenu = eduiMenuCreate(70, 70, 180, 250, ed_fnt, cbPtlCancelGravMenu, "Gravity");
+    if (ptlgravmenu != NULL) {
+        eduiMenuAddItem(ptlgravmenu, eduiItemSliderCreate(0, colours, 0, cbPtlChangeGrav, -10.0f * edptl_superscale,
+                                                          20.0f * edptl_superscale, effect->gravity, "Gravity"));
+        eduiMenuAttach(menu, ptlgravmenu);
+        ptlgravmenu->x = menu->x + 10;
+        ptlgravmenu->y = menu->y + 40;
+    }
+}
+
+void __cdecl edptlcbGhostMenu(eduimenu_s *parent, eduiitem_s *unused1, u32 unused2) {
+    u32 colours[4] = {0x80000000, 0x80ff0000, 0x80808080, 0x80404040};
+    if (!(edpp_nearest == -1 || edpp_ptls[edpp_nearest].instance_id == -1)) {
+        DEBRIS_INFO_PC *effect = debtab[debkeydata[edpp_ptls[edpp_nearest].instance_id].effect_index];
+        edptl_ghost_menu = eduiMenuCreate(70, 70, 200, 300, ed_fnt, edptlcbCancelGhostMenu, "Particle Ghosts");
+        if (edptl_ghost_menu != NULL) {
+            eduiMenuAddItem(edptl_ghost_menu, eduiItemSliderCreateInt(0, colours, 0, edptlcbApplyNumGhosts, 0, 10,
+                                                                      effect->trail_count, "Number of Ghosts"));
+            eduiMenuAddItem(edptl_ghost_menu, eduiItemSliderCreate(0, colours, 0, edptlcbApplyGhostTime, 0.0f, 1.0f,
+                                                                   (f32)(i32)effect->trail_time, "Ghost Separation"));
+            eduiMenuAttach(parent, edptl_ghost_menu);
+            edptl_ghost_menu->x = parent->x + 10;
+            edptl_ghost_menu->y = parent->y + 40;
+        }
+    }
+}

@@ -28996,6 +28996,24 @@ extern "C" {
 #pragma data_seg(".data$edptl_superscale")
     i32 edptl_superscale = 1;
 #pragma data_seg()
+#pragma bss_seg(".bss$ptlemitvelmenu")
+    struct eduimenu_s *ptlemitvelmenu = 0;
+#pragma bss_seg()
+#pragma bss_seg(".bss$ptlgravmenu")
+    struct eduimenu_s *ptlgravmenu = 0;
+#pragma bss_seg()
+#pragma bss_seg(".bss$changegenratemenu")
+    struct eduimenu_s *changegenratemenu = 0;
+#pragma bss_seg()
+#pragma bss_seg(".bss$etimemenu")
+    struct eduimenu_s *etimemenu = 0;
+#pragma bss_seg()
+#pragma bss_seg(".bss$emittimemenu")
+    struct eduimenu_s *emittimemenu = 0;
+#pragma bss_seg()
+#pragma bss_seg(".bss$edptl_ghost_menu")
+    struct eduimenu_s *edptl_ghost_menu = 0;
+#pragma bss_seg()
 #pragma bss_seg(".bss$ptlemitmenu")
     struct eduimenu_s *ptlemitmenu = 0;
 #pragma bss_seg()

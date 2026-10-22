@@ -7064,15 +7064,20 @@ address,symbol,size,ctype
 0x661f60,_edppDetermineNearest,266,void __cdecl(f32)
 0x662070,_edppHighlightNearest,673,
 0x662320,_edppRender,32,
+0x662630,_cbPtlChangeGrav,116,
 0x6626b0,_cbChangeName,47,"void __cdecl (struct eduimenu_s *, struct eduiitem_s *, u32)"
 0x6626e0,_cbPtlCopyEffect,413,"void __cdecl (struct eduimenu_s *, struct eduiitem_s *, u32)"
+0x6629a0,_edptlcbApplyGhostTime,66,
 0x6629f0,_edptlcbApplyStarPoints,74,
 0x662a40,_edptlcbApplyStarRatio,66,
+0x662ae0,_cbPtlChangeEmitVel,63,
 0x662f50,_cbPtlChangeCutOff,89,
 0x662fb0,_cbPtlChangeCutOn,89,
 0x663010,_cbPtlChangeDrawCutOff,63,
 0x663050,_cbPtlChangeSoundCutOff,63,
 0x663090,_cbPtlChangeCameraCutOff,63,
+0x6630d0,_cbCancelChangeGenRateMenu,25,
+0x6630f0,_cbCancelChangeETimeMenu,25,
 0x6638a0,_cbPtlSelType,47,
 0x663a80,_cbCancelMessageMenu,25,"void __cdecl (struct eduimenu_s *, struct eduimenu_s *)"
 0x663aa0,_edppShowMessagePc,179,"void (struct eduimenu_s *parent, char *text, i32 ok); original passes parent in ESI"
@@ -7093,6 +7098,7 @@ address,symbol,size,ctype
 0x664920,_cbPtlCancelQuickDeleteMenu,25,
 0x664c60,_cbPtlJibMenu,514,
 0x664e90,_edptlcbBounceMenu,356,
+0x665000,_edptlcbCancelGhostMenu,25,
 0x665020,_edptlcbCancelStarMenu,25,
 0x665040,_edptlcbStarMenu,321,
 0x665ed0,_cbPtlCollMenu,485,
@@ -7109,7 +7115,10 @@ address,symbol,size,ctype
 0x667de0,_cbPtlVarStartMenu,1304,
 0x668320,_cbPtlStartVelMenu,1320,
 0x668c90,_cbPtlTextureSelectMenu,555,
+0x668f30,_cbPtlCancelEmitTimeMenu,25,
+0x668f50,_cbPtlCancelEmitVelMenu,25,
 0x668f70,_cbPtlEmitVelMenu,301,
+0x6690a0,_cbPtlCancelGravMenu,25,
 0x6690c0,_cbPtlGravMenu,302,
 0x6691f0,_edppSaveEffects,3025,
 0x669dd0,_cbFileSaveEffects,947,
@@ -7347,13 +7356,19 @@ address,symbol,size,ctype
 0x68cf30,_cbPtlQuickDeleteType,59,
 0x68cf70,_edptlcbEmptyClipboard,96,
 0x68cfd0,_UpdateTotalPtls,325,
+0x68d120,_cbPtlChangeGenRate,76,
 0x68d170,_cbChangeGenRateMenu,253,
+0x68d270,_cbPtlChangeETime,73,
 0x68d2c0,_cbChangeETimeMenu,261,
 0x68d3d0,_cbPtlQuickDeleteMenu,255,
 0x68d4d0,_cbPtlSetFacing,111,
 0x68d540,_cbPtlInstanceSettingsMenu,345,
 0x68d6a0,_cbPtlSelTextureType,767,
 0x68d9a0,_cbPtlTextureMenu,553,
+0x68dbd0,_cbPtlChangeIvalOn,70,
+0x68dc20,_cbPtlChangeIvalOnRan,70,
+0x68dc70,_cbPtlChangeIvalOff,70,
+0x68dcc0,_cbPtlChangeIvalOffRan,70,
 0x68dd10,_cbPtlEmitTimeMenu,517,
 0x68df20,_edppLoadPage,1485,"i32 __cdecl(char *,i8,NUGSCN *)"
 0x68e4f0,_edppRestartAllEffectsInLevel,500,void __cdecl (void)
@@ -7382,6 +7397,7 @@ address,symbol,size,ctype
 0x691a40,_edgraDoInput,1649,
 0x6920c0,_edgraProc,101,
 0x692150,_cbPtlAddEffect,358,
+0x6922c0,_edptlcbApplyNumGhosts,78,
 0x692380,_edptlcbDrawflagMenu,367,
 0x6924f0,_edptlcbGroupMenu,396,
 0x692830,_cbPtlTypeMenu,544,
@@ -15636,6 +15652,12 @@ address,symbol,size,ctype
 0x76c9e0,__real@c066800000000000,8,const f64
 0x76c9e8,??_C@_0BA@NAOEIPEN@Base?5Rotation?5X?$AA@,16,char []
 0x76c9f8,??_C@_0BF@OJINMGJC@Instance?5Orientation?$AA@,21,char []
+0x76ca5c,??_C@_0BA@ILPCIJEB@Random?5Off?5Time?$AA@,16,char []
+0x76ca6c,??_C@_08DCKLOEEB@Off?5Time?$AA@,9,char []
+0x76ca78,??_C@_0P@FKMENNDM@Random?5On?5Time?$AA@,15,char []
+0x76ca88,??_C@_07GFHNNEEK@On?5Time?$AA@,8,char []
+0x76cab0,??_C@_0P@KNFDEIOI@Emitter?5Timing?$AA@,15,char []
+0x76cac0,??_C@_0M@CIJKJNNE@Emitter?5Vel?$AA@,12,char []
 0x76cacc,??_C@_06PAHFPMEK@Bounce?$AA@,7,char []
 0x76cad4,??_C@_07JMGDFJEK@Gravity?$AA@,8,char []
 0x76cb7c,??_C@_0N@MDPNMOFO@?$CFs?2?$CFs?4?$CFs?4bak?$AA@,13,char []
@@ -15875,6 +15897,8 @@ address,symbol,size,ctype
 0x76e650,??_C@_0BF@FLJHPELJ@Global?5Start?5of?5Fade?$AA@,21,char []
 0x76e668,??_C@_0BM@GKIEGFNH@Global?5Options?5?$CITake?5Care?$CB?$CJ?$AA@,28,char []
 0x76e684,??_C@_0P@JFGGNFOG@Name?5Duplicate?$AA@,15,char []
+0x76e694,??_C@_0BF@MNIDLNKM@Particles?5per?5Second?$AA@,21,char []
+0x76e6ac,??_C@_0O@MCCHBEIO@Particle?5Life?$AA@,14,char []
 0x76e6bc,??_C@_0N@FNECMGBM@Quick?5Delete?$AA@,13,char []
 0x76e7d8,_TerrainOpposingContactThresholdPc,,const f64
 0x76e7e0,__real@bbe56042,4,const f32
@@ -15883,6 +15907,9 @@ address,symbol,size,ctype
 0x76e880,__real@3fe1999a,4,const f32
 0x76ea0c,??_C@_0L@HAJNGEAG@Add?5Effect?$AA@,11,char []
 0x76ea18,??_C@_0BE@EFLMAGIA@Particle?5Types?5?$CI?$CFd?$CJ?$AA@,20,char []
+0x76ea2c,??_C@_0BB@JDPEOGJB@Ghost?5Separation?$AA@,17,char []
+0x76ea40,??_C@_0BB@KHBFHOKH@Number?5of?5Ghosts?$AA@,17,char []
+0x76ea54,??_C@_0BA@FJAJKEEL@Particle?5Ghosts?$AA@,16,char []
 0x76ea64,??_C@_0BA@HLAOGOHK@Show?5All?5Placed?$AA@,16,char []
 0x76ea74,??_C@_0BC@JIOKHAGL@Info?5Box?5Style?4?4?4?$AA@,18,char []
 0x76ea88,??_C@_0BG@DFFPHHKL@Quick?5Delete?5Types?4?4?4?$AA@,22,char []
@@ -24000,6 +24027,7 @@ address,symbol,size,ctype
 0x2920acc,_numtoruscolldata,,i32
 0x02920ad0,_TerrainCastAuxPolygonPc,,
 0x2920ad4,_edgra_nearest_instance,4,i32
+0x2920ad8,_etimemenu,4,struct eduimenu_s *
 0x2920adc,_edpp_cam_pos,,NUVEC
 0x02920ae8,_DebrisGlassV1,4,f32
 0x2920aec,_edgra_page_used,,i32[8]
@@ -24017,11 +24045,13 @@ address,symbol,size,ctype
 0x29211e8,_edbri_page_used,,i32[8]
 0x2921208,_freedebkeyptr,,i32
 0x292120c,_edgra_instance_type,4,i32
+0x2921210,_ptlemitvelmenu,4,struct eduimenu_s *
 0x2921214,_edanim_mtl,4,struct PC_SCENE_MTL_VIEW *
 0x2921218,_ptlreadoutmenu,4,struct eduimenu_s *
 0x0292121c,_freedebchunksglass,,DEBRIS_PARTICLE_CHUNK_PC **
 0x02921220,_freedebchunks,,DEBRIS_PARTICLE_CHUNK_PC **
 0x02921228,_TerrainCastAuxNormalPc,,
+0x2921234,_emittimemenu,4,struct eduimenu_s *
 0x2921238,_PlatCallback,,TERRAIN_CALLBACK_LIFECYCLE_PC[8]
 0x2921278,_terrhitflags,,i32
 0x292127c,_TerrImpact,,i16
@@ -24043,6 +24073,7 @@ address,symbol,size,ctype
 0x29231b0,_edpp_snap_enabled,4,i32
 0x29231b4,_edanim_nearest,,i32
 0x29231b8,_freechunkcontrols,4,DEBRIS_CHUNK_CONTROL_PC **
+0x29231bc,_ptlgravmenu,4,struct eduimenu_s *
 0x029231c0,_TerrainRoofIndexPc,,
 0x29231c4,_edpp_cam_ax,4,i32
 0x29231c8,_edpp_nearest,,i32
@@ -24139,6 +24170,7 @@ address,symbol,size,ctype
 0x02947da0,_SfxCRCTable,4,u32 *
 0x02947da4,_freedebchkptrg,4,i32
 0x2947da8,_TerrPoly,,TERRAIN_POLYGON_INFO_PC *
+0x2947dac,_changegenratemenu,4,struct eduimenu_s *
 0x02947db0,_TerrainSurfaceClassPc,,
 0x02947db4,_debris_chunk_controls,,DEBRIS_CHUNK_CONTROL_PC *
 0x2947db8,_edBridges,,PC_EDBRIDGE[64]
@@ -24285,6 +24317,7 @@ address,symbol,size,ctype
 0x2962a60,_edpp_showAllPlaced,4,i32
 0x2962a64,_edpp_dpad_mode,4,i32
 0x2962a68,_edpp_readout,4,i32
+0x2962a8c,_edptl_ghost_menu,4,struct eduimenu_s *
 0x2962a90,_edptl_star_menu,4,struct eduimenu_s *
 0x2962aa0,_edptl_orphanlist_menu,4,struct eduimenu_s *
 0x2962aac,_edptl_testdetail_menu,4,struct eduimenu_s *
