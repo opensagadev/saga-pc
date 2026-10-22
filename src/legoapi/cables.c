@@ -1,4 +1,5 @@
 #include "saga.h"
+#include <math.h>
 
 #include <string.h>
 
@@ -451,6 +452,123 @@ void __cdecl UpdateCables(void) {
             ReleaseCable(cable, snapped);
         if (topple)
             CableAtstToppled(target);
+    }
+}
+
+void __cdecl DrawCables(void) {
+    CABLE_RECORD_PC *cable = (CABLE_RECORD_PC *)cables;
+    NURND_VERTEX3D_PC vertices[2];
+    NUVEC step;
+    i32 index;
+
+    nsegments_drawn = 0;
+    vertices[0].colour = 0xff000000;
+    vertices[1].colour = 0xff000000;
+    for (index = 0; index < 8; ++index, ++cable) {
+        i32 flags = cable->flags;
+        f32 y_span;
+        f32 distance_along;
+        i32 segment;
+        if (!(flags & 1))
+            continue;
+        y_span = cable->points[cable->point_count - 1].y - cable->points[0].y;
+        distance_along = 0.0f;
+        if (flags & 4) {
+            cable->slack += cable_slack * FRAMETIME * slack_factor;
+            if (cable->slack > cable_slack)
+                cable->slack = cable_slack;
+        } else if (cable->total_length >= tow_length) {
+            cable->slack = 0.0f;
+        } else {
+            f32 fraction = cable->total_length / tow_length;
+            if (fraction > 1.0f)
+                fraction = 1.0f;
+            cable->slack = (1.0f - fraction) * cable_slack;
+        }
+        if (cable->slack == 0.0f) {
+            for (segment = 0; segment < cable->point_count - 1; ++segment) {
+                f32 start_fraction = CableFdiv(distance_along, cable->total_length);
+                f32 end_fraction;
+                vertices[0].position = cable->points[segment];
+                vertices[0].position.y = start_fraction * y_span + cable->points[0].y;
+                distance_along += cable->segment_lengths[segment];
+                end_fraction = CableFdiv(distance_along, cable->total_length);
+                vertices[1].position = cable->points[segment + 1];
+                vertices[1].position.y = y_span * end_fraction + cable->points[0].y;
+                if (solid_cable != 0)
+                    DrawRopeSingle(&vertices[0].position, &vertices[1].position, 1.0f, ropemtl, end_fraction,
+                                   end_fraction, 10.0f, 5.0f);
+                else
+                    NuRndrLine3d(vertices, ZipUpLineMaterialPc, NULL);
+            }
+        } else {
+            f32 subdivision_scale = cable->total_length * nsegments_per_unit;
+            NUVEC endpoint = cable->points[0];
+            f32 ground_start;
+            f32 ground_end;
+            endpoint.y = CableFdiv(distance_along, cable->total_length) * y_span + cable->points[0].y;
+            ground_end = GameShadow(NULL, &endpoint, 5.0f, -1);
+            if (ground_end == GameObjectNearFloorNoFloorHeight)
+                ground_end = endpoint.y;
+            for (segment = 0; segment < cable->point_count - 1; ++segment) {
+                NUVEC previous;
+                NUVEC cursor;
+                f32 fraction;
+                f32 subdivisions;
+                f32 step_length;
+                f32 local_distance;
+                ground_start = ground_end;
+                previous = endpoint;
+                fraction = CableFdiv(distance_along + cable->segment_lengths[segment], cable->total_length);
+                endpoint = cable->points[segment + 1];
+                endpoint.y = fraction * y_span + cable->points[0].y;
+                ground_end = GameShadow(NULL, &endpoint, 5.0f, -1);
+                if (ground_end == GameObjectNearFloorNoFloorHeight)
+                    ground_end = endpoint.y;
+                NuVecSub(&step, &endpoint, &previous);
+                subdivisions = CableFdiv(cable->segment_lengths[segment], cable->total_length) * subdivision_scale;
+                step_length = CableFdiv(cable->segment_lengths[segment], (f32)ceil((f64)subdivisions));
+                NuVecScale(&step, &step, CableFdiv(step_length, cable->segment_lengths[segment]));
+                cursor = previous;
+                for (local_distance = 0.0f; local_distance + 0.5f * step_length < cable->segment_lengths[segment];
+                     local_distance += step_length) {
+                    f32 start_sag;
+                    f32 start_fraction;
+                    f32 start_floor;
+                    f32 phase;
+                    f32 end_sag;
+                    f32 end_fraction;
+                    f32 end_floor;
+                    vertices[0].position = cursor;
+                    start_sag =
+                        cable->slack *
+                        NU_SIN_LUT((i32)(CableFdiv(distance_along + local_distance, cable->total_length) * 32768.0f));
+                    vertices[0].position.y -= start_sag;
+                    start_fraction = CableFdiv(local_distance, cable->segment_lengths[segment]);
+                    start_floor = start_fraction * ground_end + (1.0f - start_fraction) * ground_start + 0.05f;
+                    if (vertices[0].position.y < start_floor)
+                        vertices[0].position.y = start_floor;
+                    NuVecAdd(&cursor, &cursor, &step);
+                    vertices[1].position = cursor;
+                    phase = CableFdiv(distance_along + local_distance + step_length, cable->total_length);
+                    if (phase > 1.0f)
+                        phase = 1.0f;
+                    end_sag = cable->slack * NU_SIN_LUT((i32)(phase * 32768.0f));
+                    vertices[1].position.y -= end_sag;
+                    end_fraction = CableFdiv(local_distance + step_length, cable->segment_lengths[segment]);
+                    end_floor = end_fraction * ground_end + (1.0f - end_fraction) * ground_start + 0.05f;
+                    if (vertices[1].position.y < end_floor)
+                        vertices[1].position.y = end_floor;
+                    if (solid_cable != 0)
+                        DrawRopeSingle(&vertices[0].position, &vertices[1].position, 1.0f, ropemtl, end_sag, end_sag,
+                                       10.0f, 5.0f);
+                    else
+                        NuRndrLine3d(vertices, ZipUpLineMaterialPc, NULL);
+                    ++nsegments_drawn;
+                }
+                distance_along += cable->segment_lengths[segment];
+            }
+        }
     }
 }
 

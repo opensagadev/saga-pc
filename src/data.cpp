@@ -10478,6 +10478,10 @@ extern "C" {
     AREA_DATA_PC *GUNSHIP_ADATA = 0;
 #pragma bss_seg(".bss$cables")
     u8 cables[0xf60] = {0};
+#pragma bss_seg(".bss$nsegments_drawn")
+    i32 nsegments_drawn = 0;
+#pragma bss_seg(".bss$solid_cable")
+    i32 solid_cable = 0;
 #pragma bss_seg()
     i32 menu_flash = 0;
 #pragma bss_seg(".bss$tAUDIOVOLUME")
@@ -29266,6 +29270,12 @@ extern "C" {
 
 #pragma data_seg(".data$cable_ground_damping")
     f32 cable_ground_damping = 20.0f;
+#pragma data_seg(".data$nsegments_per_unit")
+    f32 nsegments_per_unit = 6.0f;
+#pragma data_seg(".data$cable_slack")
+    f32 cable_slack = 1.0f;
+#pragma data_seg(".data$slack_factor")
+    f32 slack_factor = 1.0f;
 
 #pragma data_seg(".data$atat_locators")
     i32 atat_locators[4] = {0, 1, 2, 3};
