@@ -5624,7 +5624,15 @@ typedef struct gameobject_s {
             u32 portal_bits_22_31 : 10;
         };
     };
-    u32 flags_ef0;
+    union {
+        u32 flags_ef0;
+        struct {
+            u8 field_ef0;
+            u8 field_ef1;
+            u8 field_ef2;
+            u8 flags_ef3;
+        };
+    };
     u32 flags_ef4;
     union {
         u32 flags_ef8_word;
@@ -5986,6 +5994,7 @@ STATIC_ASSERT(offsetof(GAMEOBJECT, movement_spline_offset) == 0xe84);
 STATIC_ASSERT(offsetof(GAMEOBJECT, movement_spline_lateral_speed) == 0xe90);
 STATIC_ASSERT(offsetof(GAMEOBJECT, run_speed_override) == 0xed4);
 STATIC_ASSERT(offsetof(GAMEOBJECT, portal_flags) == 0xeec);
+STATIC_ASSERT(offsetof(GAMEOBJECT, flags_ef3) == 0xef3);
 STATIC_ASSERT(offsetof(GAMEOBJECT, flags_ef0) == 0xef0);
 STATIC_ASSERT(offsetof(GAMEOBJECT, flags_ef4) == 0xef4);
 STATIC_ASSERT(offsetof(GAMEOBJECT, field_f10) == 0xf10);

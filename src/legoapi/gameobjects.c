@@ -2985,7 +2985,7 @@ void __cdecl ManageGameObjects(void) {
                                 }
                             } else if (creature->count > 1 && creature->start_stagger > 0.0f) {
                                 object->ai_packet.spawn_delay =
-                                    (f32)object->ai_packet.group_member_index * creature->start_stagger;
+                                    (f32)(u32)object->ai_packet.group_member_index * creature->start_stagger;
                             }
                             break;
                     }

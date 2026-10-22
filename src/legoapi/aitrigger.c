@@ -95,175 +95,194 @@ static i32 TriggerGizmoAvailablePc(GIZMO_PC *gizmo) {
 i32 __cdecl GameObjectUsingLever(GAMEOBJECT *object, void *lever) {
     return object->character_context == 0x4a && object->grapple == lever;
 }
+#define AITRIGGER_RELEASE(system, set, index)                                                                          \
+    if ((set)->trigger_indices[index] != -1) {                                                                         \
+        (system)->assigned_set[(set)->trigger_indices[index]] = -1;                                                    \
+        (system)->assigned_trigger[(set)->trigger_indices[index]] = -1;                                                \
+        (set)->trigger_indices[index] = -1;                                                                            \
+    }
+
 void __cdecl AITriggerSetSysProcess(TRIGGER_SYSTEM_PC *system) {
     u64 character_mask = 0;
     TRIGGER_SET_PC *set;
     i32 set_index;
+    i32 complete, has_assignments, index, player_count, count;
+    i8 assigned;
+    GIZMO_PC *gizmo;
+    GAMEOBJECT *object;
     if (system == NULL || player == NULL)
         return;
     set = system->sets;
     for (set_index = 0; set_index < 32; ++set_index, ++set) {
-        i32 complete, has_assignments, index, player_count;
-        if (!(set->flags & 1))
+        if ((set->flags & 1) == 0)
             continue;
-        complete = set->flowbox != NULL ? (set->flowbox->state_flags_low >> 1) & 1 : 0;
+        complete = 0;
         has_assignments = 0;
+        if (set->flowbox != NULL && (set->flowbox->state_flags_low & 2) != 0)
+            complete = 1;
         for (index = 0; index < set->trigger_count; ++index) {
-            i32 assigned = set->trigger_indices[index];
-            u16 bit = (u16)(1u << (index & 31));
-            GIZMO_PC *gizmo = set->gizmos[index];
-            i32 release = 0;
+            assigned = set->trigger_indices[index];
             if (assigned != -1)
                 has_assignments = 1;
-            if (gizmo == NULL) {
-                set->occupied &= ~bit;
-                release = 1;
-            } else if (gizmo->type_id == lever_gizmotype_id) {
-                TRIGGER_LEVER_PC *lever = (TRIGGER_LEVER_PC *)gizmo->object;
-                if (GameObjectUsingLever(player, lever) || (player2 != NULL && GameObjectUsingLever(player2, lever)))
-                    set->occupied |= bit;
-                else if ((set->occupied & bit) && !Lever_BeingPulled(lever))
-                    set->occupied &= ~bit;
-                if (Lever_BeingPulled(lever) && set->trigger_indices[index] != -1) {
-                    GAMEOBJECT *object = &Obj[set->trigger_indices[index]];
-                    if ((object->flags_1fc_word & 0x1001) != 0x1001 || !GameObjectUsingLever(object, lever))
-                        release = 1;
+            gizmo = set->gizmos[index];
+            if (gizmo != NULL) {
+                if (gizmo->type_id == lever_gizmotype_id) {
+                    TRIGGER_LEVER_PC *lever = (TRIGGER_LEVER_PC *)gizmo->object;
+                    if (player->character_context == 0x4a && player->grapple == lever)
+                        set->occupied |= 1 << index;
+                    else if (player2 != NULL && player2->character_context == 0x4a && player2->grapple == lever)
+                        set->occupied |= 1 << index;
+                    else if ((set->occupied & (1 << index)) != 0 && !Lever_BeingPulled(lever))
+                        set->occupied &= ~(1 << index);
+                    if (Lever_BeingPulled(lever) && set->trigger_indices[index] != -1) {
+                        object = &Obj[set->trigger_indices[index]];
+                        if ((object->flags_1fc_word & 1) == 0 || (object->flags_1fc_word & 0x1000) == 0 ||
+                            !GameObjectUsingLever(object, lever)) {
+                            AITRIGGER_RELEASE(system, set, index);
+                        }
+                    }
+                } else if (gizmo->type_id == obstacle_gizmotype_id) {
+                    GIZOBSTACLE *obstacle = (GIZOBSTACLE *)gizmo->object;
+                    if (player == obstacle->triggering_object)
+                        set->occupied |= 1 << index;
+                    else if (player2 != NULL && player2 == obstacle->triggering_object)
+                        set->occupied |= 1 << index;
+                    else if ((set->occupied & (1 << index)) != 0) {
+                        if (obstacle->anim_set != NULL &&
+                            (obstacle->anim_set->state == 0 || obstacle->anim_set->state == 3 ||
+                             obstacle->anim_set->state == 4))
+                            set->occupied &= ~(1 << index);
+                    } else if ((obstacle->progress_flags & 2) == 0 || (obstacle->progress_flags & 1) == 0) {
+                        AITRIGGER_RELEASE(system, set, index);
+                    }
+                } else if (gizmo->type_id == spinner_gizmotype_id) {
+                    TRIGGER_SPINNER_PC *spinner = (TRIGGER_SPINNER_PC *)gizmo->object;
+                    if ((spinner->flags & 6) != 0 || ((spinner->flags & 8) != 0 && ShadowMode == 0) ||
+                        spinner->progress == 1.0f || (spinner->state_flags & 0x20) != 0)
+                        set->occupied &= ~(1 << index);
+                    else if (player->character_context == 0x28 && player->grapple == spinner)
+                        set->occupied |= 1 << index;
+                    else if (player2 != NULL && player2->character_context == 0x28 && player2->grapple == spinner)
+                        set->occupied |= 1 << index;
+                    else if ((set->occupied & (1 << index)) != 0 && spinner->room_index == -1)
+                        set->occupied &= ~(1 << index);
+                } else if (gizmo->type_id == force_gizmotype_id) {
+                    GIZFORCE_PC *force = (GIZFORCE_PC *)gizmo->object;
+                    if (GizForce_GameObjUsingForce(player, force))
+                        set->occupied |= 1 << index;
+                    else if (GizForce_GameObjUsingForce(player2, force))
+                        set->occupied |= 1 << index;
+                    else if ((set->occupied & (1 << index)) != 0)
+                        set->occupied &= ~(1 << index);
+                    else if (GizForce_Complete(force)) {
+                        AITRIGGER_RELEASE(system, set, index);
+                    }
+                } else if (gizmo->type_id == grapple_gizmotype_id) {
+                    void *grapple = gizmo->object;
+                    object = assigned != -1 ? &Obj[assigned] : NULL;
+                    if (player->character_context == LEGOCONTEXT_GRAPPLE && player->grapple == grapple)
+                        set->occupied |= 1 << index;
+                    else if (player2 != NULL && player2->character_context == LEGOCONTEXT_GRAPPLE &&
+                             player2->grapple == grapple)
+                        set->occupied |= 1 << index;
+                    else if ((set->occupied & (1 << index)) != 0)
+                        set->occupied &= ~(1 << index);
+                    else if (Grapple_Occupied(grapple, object, NULL) != NULL) {
+                        AITRIGGER_RELEASE(system, set, index);
+                    }
+                } else {
+                    set->occupied &= ~(1 << index);
                 }
-            } else if (gizmo->type_id == obstacle_gizmotype_id) {
-                GIZOBSTACLE *obstacle = (GIZOBSTACLE *)gizmo->object;
-                if (obstacle->triggering_object == player ||
-                    (player2 != NULL && obstacle->triggering_object == player2))
-                    set->occupied |= bit;
-                else if (set->occupied & bit) {
-                    if (obstacle->anim_set != NULL &&
-                        (obstacle->anim_set->state == 3 || obstacle->anim_set->state == 0 ||
-                         obstacle->anim_set->state == 4))
-                        set->occupied &= ~bit;
-                } else if ((obstacle->progress_flags & 3) != 3)
-                    release = 1;
-            } else if (gizmo->type_id == spinner_gizmotype_id) {
-                TRIGGER_SPINNER_PC *spinner = (TRIGGER_SPINNER_PC *)gizmo->object;
-                if ((spinner->flags & 6) || ((spinner->flags & 8) && !ShadowMode) || spinner->progress == 1.0f ||
-                    (spinner->state_flags & 0x20))
-                    set->occupied &= ~bit;
-                else if ((player->character_context == 0x28 && player->grapple == spinner) ||
-                         (player2 != NULL && player2->character_context == 0x28 && player2->grapple == spinner))
-                    set->occupied |= bit;
-                else if ((set->occupied & bit) && spinner->room_index == -1)
-                    set->occupied &= ~bit;
-            } else if (gizmo->type_id == force_gizmotype_id) {
-                GIZFORCE_PC *force = (GIZFORCE_PC *)gizmo->object;
-                if (GizForce_GameObjUsingForce(player, force) || GizForce_GameObjUsingForce(player2, force))
-                    set->occupied |= bit;
-                else if (set->occupied & bit)
-                    set->occupied &= ~bit;
-                else if (GizForce_Complete(force))
-                    release = 1;
-            } else if (gizmo->type_id == grapple_gizmotype_id) {
-                void *grapple = gizmo->object;
-                GAMEOBJECT *object = assigned != -1 ? &Obj[assigned] : NULL;
-                if ((player->character_context == LEGOCONTEXT_GRAPPLE && player->grapple == grapple) ||
-                    (player2 != NULL && player2->character_context == LEGOCONTEXT_GRAPPLE &&
-                     player2->grapple == grapple))
-                    set->occupied |= bit;
-                else if (set->occupied & bit)
-                    set->occupied &= ~bit;
-                else if (Grapple_Occupied(grapple, object, NULL))
-                    release = 1;
-            } else
-                set->occupied &= ~bit;
-            if (release && set->trigger_indices[index] != -1) {
-                system->assigned_set[set->trigger_indices[index]] = -1;
-                system->assigned_trigger[set->trigger_indices[index]] = -1;
-                set->trigger_indices[index] = -1;
+            } else {
+                set->occupied &= ~(1 << index);
+                AITRIGGER_RELEASE(system, set, index);
             }
         }
-        player_count = player2 != NULL ? 2 : 1;
-        if ((set->occupied != 0 || (set->flags & 2)) && !complete) {
-            i32 assigned_count;
-            if (has_assignments && set->occupied == 0) {
+        player_count = (player2 != NULL) + 1;
+        if ((set->occupied != 0 || (set->flags & 2) != 0) && complete == 0) {
+            if (has_assignments != 0 && set->occupied == 0) {
                 for (index = 0; index < set->trigger_count; ++index) {
-                    i32 assigned = set->trigger_indices[index];
-                    if (assigned != -1 && (void *)Obj[assigned].active_trigger_set != (void *)set) {
-                        system->assigned_set[assigned] = -1;
+                    if (set->trigger_indices[index] != -1 &&
+                        Obj[set->trigger_indices[index]].active_trigger_set != set) {
+                        system->assigned_set[set->trigger_indices[index]] = -1;
                         system->assigned_trigger[set->trigger_indices[index]] = -1;
                         set->trigger_indices[index] = -1;
                     }
                 }
             }
-            assigned_count = 0;
-            for (index = 0; index < set->trigger_count && assigned_count + player_count < set->trigger_count; ++index) {
-                if (!(set->occupied & (1u << (index & 31))) && set->trigger_indices[index] == -1) {
-                    GIZMO_PC *gizmo = set->gizmos[index];
-                    if (TriggerGizmoAvailablePc(gizmo)) {
-                        AILOCATOR_PC *locator = &set->locators[index];
-                        u16 routes = locator->path_info.connection->route_mask;
-                        i32 best = -1, object_index;
-                        f32 best_distance = 1000000000.0f;
-                        GAMEOBJECT *object;
-                        if (routes != 0) {
-                            AIPATH_PC *path = locator->path_info.path;
-                            i32 route;
-                            for (route = 0; route < path->route_count; ++route)
-                                if (route < 64 && ((u64)routes & ((u64)1 << route)))
-                                    character_mask |= (u64)path->routes[route].character_mask[0] |
-                                                      ((u64)path->routes[route].character_mask[1] << 32);
+            count = player_count;
+            for (index = 0; index < set->trigger_count && set->trigger_count > count; ++index) {
+                if ((set->occupied & (1 << index)) == 0 && set->trigger_indices[index] == -1 &&
+                    TriggerGizmoAvailablePc(set->gizmos[index])) {
+                    AILOCATOR_PC *locator = &set->locators[index];
+                    f32 best_distance = 1000000000.0f;
+                    u16 routes = locator->path_info.connection->route_mask;
+                    i32 best = -1;
+                    i32 object_index;
+                    if (routes != 0) {
+                        AIPATH_PC *path = locator->path_info.path;
+                        i32 route;
+                        for (route = 0; route < path->route_count; ++route) {
+                            if (((i64)routes & ((i64)1 << route)) != 0)
+                                character_mask |= U64_PAIR(path->routes[route].character_mask);
                         }
-                        object = Obj;
-                        for (object_index = 0; object_index < HIGHGAMEOBJECT; ++object_index, ++object) {
-                            NUVEC difference;
-                            f32 distance;
-                            u64 type_mask =
-                                (u64)object->ai_packet.route_mask_low | ((u64)object->ai_packet.route_mask_high << 32);
-                            if (system->assigned_trigger[object_index] != -1 ||
-                                (object->flags_1fc_word & 0x1001) != 0x1001 || object->dead != 0 ||
-                                (object->flags_1fc_word & 0x80) || (object->flags_ef0 & 0x1000000) ||
-                                (character_mask && !(character_mask & type_mask)) || !(object->flags_ef4 & 0x40000) ||
-                                (!set->occupied && (void *)object->active_trigger_set != (void *)set))
+                    }
+                    object = Obj;
+                    for (object_index = 0; object_index < HIGHGAMEOBJECT; ++object_index, ++object) {
+                        NUVEC difference;
+                        f32 distance;
+                        if (system->assigned_trigger[object_index] != -1)
+                            continue;
+                        if ((object->flags_1fc_word & 1) == 0 || (object->flags_1fc_word & 0x1000) == 0 ||
+                            object->dead != 0 || (object->flags_1fc_word & 0x80) != 0 || (object->flags_ef3 & 1) != 0)
+                            continue;
+                        if (character_mask != 0 && (U64_PAIR(&object->ai_packet.route_mask_low) & character_mask) == 0)
+                            continue;
+                        if ((object->flags_ef4 & 0x40000) == 0)
+                            continue;
+                        if (set->occupied == 0 && object->active_trigger_set != set)
+                            continue;
+                        if (FreePlay == 0) {
+                            gizmo = set->gizmos[index];
+                            if (gizmo->type_id == lever_gizmotype_id && (Obj[object_index].flags_ef0 & 0x800000) == 0)
                                 continue;
-                            if (!FreePlay) {
-                                GIZMO_PC *target = set->gizmos[index];
-                                if (target->type_id == lever_gizmotype_id && !(Obj[object_index].flags_ef0 & 0x800000))
+                            if (gizmo->type_id == force_gizmotype_id) {
+                                TRIGGER_FORCE_PC *force = (TRIGGER_FORCE_PC *)gizmo->object;
+                                if ((force->config_flags & 0x10) != 0) {
+                                    if (!CharCategory_IsCategory(object, 1))
+                                        continue;
+                                    if ((force->config_flags & 0x10) == 0 && !CharCategory_IsCategory(object, 0))
+                                        continue;
+                                } else if (!CharCategory_IsCategory(object, 0)) {
                                     continue;
-                                if (target->type_id == force_gizmotype_id) {
-                                    TRIGGER_FORCE_PC *force = (TRIGGER_FORCE_PC *)target->object;
-                                    if (force->config_flags & 0x10) {
-                                        if (!CharCategory_IsCategory(object, 1))
-                                            continue;
-                                        if (!(force->config_flags & 0x10) && !CharCategory_IsCategory(object, 0))
-                                            continue;
-                                    } else if (!CharCategory_IsCategory(object, 0))
-                                        continue;
-                                } else if (target->type_id == obstacle_gizmotype_id) {
-                                    if (((GIZOBSTACLE *)target->object)->mode == 7)
-                                        continue;
-                                } else if (target->type_id == grapple_gizmotype_id &&
-                                           !(object->ai_packet.capabilities & 8))
+                                }
+                            } else if (gizmo->type_id == obstacle_gizmotype_id) {
+                                if (((GIZOBSTACLE *)gizmo->object)->mode == 7)
+                                    continue;
+                            } else if (gizmo->type_id == grapple_gizmotype_id) {
+                                if ((object->ai_packet.capabilities & 8) == 0)
                                     continue;
                             }
-                            distance = NuVecDistSqr(&locator->position, &object->ai_packet.terrain_origin, &difference);
-                            if (distance < best_distance) {
-                                best_distance = distance;
-                                best = object_index;
-                            }
                         }
-                        if (best != -1) {
-                            set->trigger_indices[index] = (i8)best;
-                            system->assigned_set[best] = (i8)set_index;
-                            system->assigned_trigger[best] = (i8)index;
+                        distance = NuVecDistSqr(&locator->position, &object->ai_packet.terrain_origin, &difference);
+                        if (distance < best_distance) {
+                            best_distance = distance;
+                            best = object_index;
                         }
+                    }
+                    if (best != -1) {
+                        set->trigger_indices[index] = (i8)best;
+                        system->assigned_set[best] = (i8)set_index;
+                        system->assigned_trigger[best] = (i8)index;
                     }
                 }
                 if (set->trigger_indices[index] != -1)
-                    ++assigned_count;
+                    ++count;
             }
-        } else if (has_assignments) {
-            for (index = 0; index < set->trigger_count; ++index)
-                if (set->trigger_indices[index] != -1) {
-                    system->assigned_set[set->trigger_indices[index]] = -1;
-                    system->assigned_trigger[set->trigger_indices[index]] = -1;
-                    set->trigger_indices[index] = -1;
-                }
+        } else if (has_assignments != 0) {
+            for (index = 0; index < set->trigger_count; ++index) {
+                AITRIGGER_RELEASE(system, set, index);
+            }
         }
         set->flags &= ~2;
     }
