@@ -820,350 +820,393 @@ typedef struct TERRAIN_SCAN_WRITER_PC {
 #define SHADOW_BOUNDS_OVERLAP(ax, az, bx, bz, lo, hi)                                                                  \
     ((bx) >= (lo).x && (hi).x > (ax) && (bz) >= (lo).z && (hi).z > (az))
 
+#define TERRAIN_ROT_SET ((TERRAIN_SET_PC *)CurrentTerrain)
+#define TERRAIN_ROT_PLATFORM(group_ptr) (TERRAIN_ROT_SET->platforms[(group_ptr)->scene_index])
+#define TERRAIN_ROT_MATRIX(group_ptr) ((NUMTX *)TERRAIN_ROT_PLATFORM(group_ptr).scene_object)
+#define TERRAIN_ROT_GROUP_OVERLAP(lo_x, lo_z, hi_x, hi_z, group_ptr)                                                   \
+    ((hi_x) >= (group_ptr)->bounds_min.x && (hi_z) >= (group_ptr)->bounds_min.z &&                                     \
+     (group_ptr)->bounds_max.x >= (lo_x) && (group_ptr)->bounds_max.z > (lo_z))
+#define TERRAIN_ROT_SHAPE_OVERLAP(shape_ptr)                                                                           \
+    (local_max_x >= (shape_ptr)->min_x && (shape_ptr)->max_x > local_min_x && local_max_z >= (shape_ptr)->min_z &&     \
+     (shape_ptr)->max_z > local_min_z)
+#define TERRAIN_ROT_MATERIAL_OK(shape_ptr)                                                                             \
+    ((shape_ptr)->material[1] == 0 || ((shape_ptr)->material[1] & terrain_mask) != 0)
+#define TERRAIN_ROT_FINISH_GROUP(group_index_arg)                                                                      \
+    do {                                                                                                               \
+        if (shape_count != 0) {                                                                                        \
+            group_header->header.shape_count = (i16)shape_count;                                                       \
+            group_header->header.terrain_group = (i16)(group_index_arg);                                               \
+            group_header = cursor;                                                                                     \
+            cursor++;                                                                                                  \
+            shape_count = 0;                                                                                           \
+        }                                                                                                              \
+    } while (0)
+#define TERRAIN_ROT_LOCAL_BOUNDS(group_ptr)                                                                            \
+    do {                                                                                                               \
+        local_max_x = max_x - (group_ptr)->origin.x;                                                                   \
+        local_max_z = max_z - (group_ptr)->origin.z;                                                                   \
+        local_min_x = min_x - (group_ptr)->origin.x;                                                                   \
+        local_min_z = min_z - (group_ptr)->origin.z;                                                                   \
+    } while (0)
+
+#define TERRAIN_ROT_CROSS(dst, a, b)                                                                                   \
+    do {                                                                                                               \
+        NUVEC cross;                                                                                                   \
+        cross.x = (a)->y * (b)->z - (a)->z * (b)->y;                                                                   \
+        cross.y = (a)->z * (b)->x - (a)->x * (b)->z;                                                                   \
+        cross.z = (a)->x * (b)->y - (a)->y * (b)->x;                                                                   \
+        (dst) = cross;                                                                                                 \
+    } while (0)
+
 void NewScanRot(NUVEC *position, i32 terrain_mask) {
-    TERRAIN_SET_PC *terrain;
-    TERRAIN_SHADOW_QUERY_VIEW_PC *query;
-    i32 i, cell_index, cell_group, remaining, p, v;
-    void *scratch;
-    i32 cache_index;
-    i16 oldest_age;
-    i32 cache_hit;
+    i32 transformed_count = 0;
+    NUVEC4 *vertices;
+    NUVEC saved_position;
+    TERRAIN_GROUP_PC *groups;
+    i32 hit_index;
+    i32 oldest_index;
+    i32 oldest_age;
+    i32 i;
     TERRAIN_INDEX_LEVEL_PC *cache;
-    i32 fill_cache;
-    TERRAIN_SCAN_WRITER_PC writer;
-    f64 extent;
+    TERRAIN_SCAN_WORD_PC *group_header;
+    TERRAIN_SCAN_WORD_PC *cursor;
+    TERRAIN_SCAN_WORD_PC *limit;
+    i32 shape_count;
     f32 min_x;
     f32 max_x;
     f32 min_z;
     f32 max_z;
 
-    terrain = (TERRAIN_SET_PC *)CurrentTerrain;
-    query = (TERRAIN_SHADOW_QUERY_VIEW_PC *)TerI;
-
-    scratch = NuScratchAlloc32(0xd0);
-    cache_index = 0;
-    oldest_age = terrain->index_levels[0].cache_age;
-    cache_hit = 0;
+    vertices = (NUVEC4 *)(((u32)NuScratchAlloc32(0xd0) + 31) & ~(u32)15);
+    saved_position = *position;
+    hit_index = -1;
+    oldest_index = -1;
+    oldest_age = 0x7fffffff;
     for (i = 0; i < 16; ++i) {
-        TERRAIN_INDEX_LEVEL_PC *cache;
-        i16 age;
-
-        cache = &terrain->index_levels[i];
-        age = cache->cache_age;
+        TERRAIN_INDEX_LEVEL_PC *level = &TERRAIN_ROT_SET->index_levels[i];
+        i16 age = level->cache_age;
         if (age > 0) {
-            f32 dx;
-
-            dx = (position->x + 1.0f) - cache->center_x;
-            if (dx > 0.0f && dx < 2.0f) {
-                f32 dz;
-
-                dz = (position->z + 1.0f) - cache->center_z;
-                if (dz > 0.0f && dz < 2.0f) {
-                    cache_index = i;
-                    cache_hit = 1;
+            const f64 dx = (saved_position.x + 1.0) - level->center_x;
+            if (dx > 0.0 && dx < 2.0) {
+                const f64 dz = (saved_position.z + 1.0) - level->center_z;
+                if (dz > 0.0 && dz < 2.0) {
+                    hit_index = i;
                     break;
                 }
             }
         }
         if (age < oldest_age) {
             oldest_age = age;
-            cache_index = i;
+            oldest_index = i;
         }
     }
-    cache = &terrain->index_levels[cache_index];
-    fill_cache = !cache_hit && cache->cache_age <= 1;
-
-    writer.group_header = fill_cache ? cache->scan_words : query->scan_words;
-    writer.cursor = writer.group_header + 1;
-    // Target stops at TerI + 0x93c, leaving the final header slot available.
-    writer.limit = writer.group_header + 509;
-    writer.shape_count = 0;
-
-    extent = fill_cache ? 1.0 : 0.10000000149011612;
-    min_x = position->x - extent;
-    max_x = position->x + extent;
-    min_z = position->z - extent;
-    max_z = position->z + extent;
-
-    if (!cache_hit) {
-        for (cell_index = 0; cell_index < terrain->used_cell_count; ++cell_index) {
-            const TERRAIN_CELL_PC *cell;
-            const i16 *group_indices;
-
-            cell = &terrain->cells[cell_index];
-            if (!(max_x >= cell->min_x && cell->max_x >= min_x && max_z >= cell->min_z && cell->max_z >= min_z)) {
-                continue;
-            }
-            group_indices = terrain->group_indices + cell->first_group;
-            for (cell_group = 0; cell_group < cell->group_count; ++cell_group) {
-                i32 group_index;
-                TERRAIN_GROUP_PC *group;
-                f32 local_max_x;
-                f32 local_min_x;
-                f32 local_max_z;
-                f32 local_min_z;
-                TERRAIN_SKIN_STREAM_VIEW_PC *batch;
-
-                group_index = group_indices[cell_group];
-                group = &terrain->groups[group_index];
-                if (max_x < group->bounds_min.x || max_z < group->bounds_min.z || group->bounds_max.x < min_x ||
-                    group->bounds_max.z <= min_z || group->chunk_type == -1) {
-                    continue;
-                }
-                local_max_x = max_x - group->origin.x;
-                local_min_x = min_x - group->origin.x;
-                local_max_z = max_z - group->origin.z;
-                local_min_z = min_z - group->origin.z;
-                if (group->scene_index < 0) {
-                    TerrainSkinAllocate(group);
-                }
-                batch = group->data;
-                while (batch->header.kind >= 0) {
-                    TERRAIN_POLYGON_INFO_PC *shapes;
-                    i32 count;
-
-                    shapes = batch->polygons;
-                    count = batch->header.count;
-                    if (local_max_x >= batch->header.min_x && batch->header.max_x > local_min_x &&
-                        local_max_z >= batch->header.min_z && batch->header.max_z > local_min_z) {
-                        TERRAIN_POLYGON_INFO_PC *shape;
-
-                        shape = shapes;
-                        for (remaining = count; remaining > 0; --remaining, ++shape) {
-                            if (shape->min_x <= local_max_x && local_min_x < shape->max_x &&
-                                shape->min_z <= local_max_z && local_min_z < shape->max_z &&
-                                writer.cursor < writer.limit &&
-                                (shape->material[1] == 0 || (shape->material[1] & terrain_mask) != 0)) {
-                                (writer.cursor++)->shape = shape;
-                                ++writer.shape_count;
-                            }
-                        }
-                    }
-                    batch = (TERRAIN_SKIN_STREAM_VIEW_PC *)(shapes + count);
-                }
-                TERRAIN_FINISH_GROUP(writer, group_index);
-            }
-        }
-        // Skin allocation can invalidate the cache while scanning groups.
-        fill_cache = cache->cache_age <= 1;
-    }
-    if (fill_cache) {
-        writer.group_header->header.shape_count = 0;
-        writer.group_header->header.terrain_group = 0;
-        cache->center_x = position->x;
-        cache->center_z = position->z;
-    }
-    if (fill_cache || cache_hit) {
+    groups = TERRAIN_ROT_SET->groups;
+    if (hit_index >= 0) {
         TERRAIN_SCAN_WORD_PC *entry;
 
+        cache = &TERRAIN_ROT_SET->index_levels[hit_index];
+        group_header = ((TERRAIN_SHADOW_QUERY_VIEW_PC *)TerI)->scan_words;
+        max_x = saved_position.x + 0.10000000149011612;
+        max_z = saved_position.z + 0.10000000149011612;
+        min_x = saved_position.x - 0.10000000149011612;
+        min_z = saved_position.z - 0.10000000149011612;
         cache->cache_age = 8;
-        writer.group_header = query->scan_words;
-        writer.cursor = writer.group_header + 1;
-        writer.limit = writer.group_header + 509;
-        min_x = position->x - 0.10000000149011612;
-        max_x = position->x + 0.10000000149011612;
-        min_z = position->z - 0.10000000149011612;
-        max_z = position->z + 0.10000000149011612;
+        cursor = group_header + 1;
+        limit = cursor + 508;
+        shape_count = 0;
         entry = cache->scan_words;
-        for (;;) {
-            i16 count;
-            i16 group_index;
-            TERRAIN_SCAN_WORD_PC *shapes;
-            TERRAIN_GROUP_PC *group;
+        while (entry->header.shape_count > 0) {
+            const i16 count = entry->header.shape_count;
+            const i32 group_index = entry->header.terrain_group;
+            TERRAIN_SCAN_WORD_PC *shapes = entry + 1;
+            TERRAIN_GROUP_PC *group = &groups[group_index];
             f32 local_min_x, local_max_x;
             f32 local_min_z, local_max_z;
+            i16 remaining;
 
-            count = entry->header.shape_count;
-            if (count <= 0)
-                break;
-            group_index = entry->header.terrain_group;
-            shapes = entry + 1;
-            entry = shapes + count;
-            group = &terrain->groups[group_index];
-            if (!SHADOW_BOUNDS_OVERLAP(min_x, min_z, max_x, max_z, group->bounds_min, group->bounds_max) ||
-                group->chunk_type == -1)
-                continue;
-            local_min_x = min_x - group->origin.x;
-            local_max_x = max_x - group->origin.x;
-            local_min_z = min_z - group->origin.z;
-            local_max_z = max_z - group->origin.z;
-            for (i = 0; i < count; ++i) {
-                TERRAIN_POLYGON_INFO_PC *shape;
-
-                shape = shapes[i].shape;
-                if (local_max_x < shape->min_x || shape->max_x <= local_min_x || local_max_z < shape->min_z ||
-                    shape->max_z <= local_min_z)
-                    continue;
-                if (shape->material[1] != 0 && (shape->material[1] & terrain_mask) == 0)
-                    continue;
-                if (writer.cursor >= writer.limit)
-                    continue;
-                (writer.cursor++)->shape = shape;
-                ++writer.shape_count;
+            if (TERRAIN_ROT_GROUP_OVERLAP(min_x, min_z, max_x, max_z, group) && group->chunk_type != -1) {
+                TERRAIN_ROT_LOCAL_BOUNDS(group);
+                for (remaining = count; remaining > 0; --remaining, ++shapes) {
+                    TERRAIN_POLYGON_INFO_PC *shape = shapes->shape;
+                    if (TERRAIN_ROT_SHAPE_OVERLAP(shape) && cursor < limit && TERRAIN_ROT_MATERIAL_OK(shape)) {
+                        (cursor++)->shape = shape;
+                        ++shape_count;
+                    }
+                }
+                TERRAIN_ROT_FINISH_GROUP(group_index);
+            } else {
+                shapes += count;
             }
-            TERRAIN_FINISH_GROUP(writer, group_index);
+            entry = shapes;
+        }
+    } else {
+        i32 cell_index;
+
+        cache = &TERRAIN_ROT_SET->index_levels[oldest_index];
+        if (cache->cache_age < 2) {
+            max_x = saved_position.x + 1.0;
+            max_z = saved_position.z + 1.0;
+            min_x = saved_position.x - 1.0;
+            min_z = saved_position.z - 1.0;
+            group_header = cache->scan_words;
+        } else {
+            max_x = saved_position.x + 0.10000000149011612;
+            max_z = saved_position.z + 0.10000000149011612;
+            min_x = saved_position.x - 0.10000000149011612;
+            min_z = saved_position.z - 0.10000000149011612;
+            group_header = ((TERRAIN_SHADOW_QUERY_VIEW_PC *)TerI)->scan_words;
+        }
+        cursor = group_header + 1;
+        limit = cursor + 508;
+        shape_count = 0;
+        for (cell_index = 0; cell_index < TERRAIN_ROT_SET->used_cell_count; ++cell_index) {
+            const TERRAIN_CELL_PC *cell = &TERRAIN_ROT_SET->cells[cell_index];
+            const i16 *group_indices;
+            i32 cell_group;
+
+            if (!(max_x >= cell->min_x && cell->max_x >= min_x && max_z >= cell->min_z && cell->max_z >= min_z))
+                continue;
+            group_indices = TERRAIN_ROT_SET->group_indices + cell->first_group;
+            for (cell_group = 0; cell_group < cell->group_count; ++cell_group) {
+                TERRAIN_GROUP_PC *group = &groups[group_indices[cell_group]];
+                f32 local_min_x, local_max_x;
+                f32 local_min_z, local_max_z;
+                TERRAIN_SKIN_STREAM_VIEW_PC *batch;
+
+                if (!TERRAIN_ROT_GROUP_OVERLAP(min_x, min_z, max_x, max_z, group) || group->chunk_type == -1)
+                    continue;
+                TERRAIN_ROT_LOCAL_BOUNDS(group);
+                if (group->scene_index < 0)
+                    TerrainSkinAllocate(group);
+                batch = group->data;
+                while (batch->header.kind >= 0) {
+                    TERRAIN_POLYGON_INFO_PC *shape = batch->polygons;
+                    const i32 count = batch->header.count;
+
+                    if (local_max_x >= batch->header.min_x && batch->header.max_x > local_min_x &&
+                        local_max_z >= batch->header.min_z && batch->header.max_z > local_min_z) {
+                        i16 remaining;
+
+                        for (remaining = count; remaining > 0; --remaining, ++shape) {
+                            if (TERRAIN_ROT_SHAPE_OVERLAP(shape) && cursor < limit && TERRAIN_ROT_MATERIAL_OK(shape)) {
+                                (cursor++)->shape = shape;
+                                ++shape_count;
+                            }
+                        }
+                    } else {
+                        shape += count;
+                    }
+                    batch = (TERRAIN_SKIN_STREAM_VIEW_PC *)shape;
+                }
+                TERRAIN_ROT_FINISH_GROUP(group_indices[cell_group]);
+            }
+        }
+        if (cache->cache_age < 2) {
+            TERRAIN_SCAN_WORD_PC *entry;
+
+            cache->cache_age = 8;
+            cache->center_x = position->x;
+            cache->center_z = position->z;
+            group_header->header.shape_count = 0;
+            group_header->header.terrain_group = 0;
+            group_header = ((TERRAIN_SHADOW_QUERY_VIEW_PC *)TerI)->scan_words;
+            cursor = group_header + 1;
+            limit = cursor + 508;
+            shape_count = 0;
+            max_x = saved_position.x + 0.10000000149011612;
+            max_z = saved_position.z + 0.10000000149011612;
+            min_x = saved_position.x - 0.10000000149011612;
+            min_z = saved_position.z - 0.10000000149011612;
+            entry = cache->scan_words;
+            while (entry->header.shape_count > 0) {
+                const i16 count = entry->header.shape_count;
+                const i32 group_index = entry->header.terrain_group;
+                TERRAIN_SCAN_WORD_PC *shapes = entry + 1;
+                TERRAIN_GROUP_PC *group = &groups[group_index];
+                f32 local_min_x, local_max_x;
+                f32 local_min_z, local_max_z;
+                i16 remaining;
+
+                if (TERRAIN_ROT_GROUP_OVERLAP(min_x, min_z, max_x, max_z, group) && group->chunk_type != -1) {
+                    TERRAIN_ROT_LOCAL_BOUNDS(group);
+                    for (remaining = count; remaining > 0; --remaining, ++shapes) {
+                        TERRAIN_POLYGON_INFO_PC *shape = shapes->shape;
+                        if (TERRAIN_ROT_SHAPE_OVERLAP(shape) && TERRAIN_ROT_MATERIAL_OK(shape) && cursor < limit) {
+                            (cursor++)->shape = shape;
+                            ++shape_count;
+                        }
+                    }
+                    TERRAIN_ROT_FINISH_GROUP(group_index);
+                } else {
+                    shapes += count;
+                }
+                entry = shapes;
+            }
         }
     }
 
     if (TerrainPlatformsOffPc == 0) {
-        i16 *platform_groups;
+        const i16 *platform_groups;
         i32 platform_count;
-        NUVEC4 *vertices;
-        i32 transformed_count;
 
-        min_x -= 0.05000000074505806;
-        min_z -= 0.05000000074505806;
-        max_x += 0.05000000074505806;
-        max_z += 0.05000000074505806;
-        platform_groups = terrain->active_platform_groups;
-        platform_count = terrain->active_platform_count;
-        if (!(min_x > terrain->platform_query_min_x && max_x < terrain->platform_query_max_x &&
-              min_z > terrain->platform_query_min_z && max_z < terrain->platform_query_max_z)) {
-            TERRAIN_CELL_PC *cell;
-
-            cell = &terrain->platform_cell;
-            platform_groups = terrain->group_indices + cell->first_group;
-            platform_count = cell->group_count;
+        min_x -= NuTimeBarTop;
+        max_x += NuTimeBarTop;
+        min_z -= NuTimeBarTop;
+        max_z += NuTimeBarTop;
+        if (min_x > TERRAIN_ROT_SET->platform_query_min_x && max_x < TERRAIN_ROT_SET->platform_query_max_x &&
+            min_z > TERRAIN_ROT_SET->platform_query_min_z && max_z < TERRAIN_ROT_SET->platform_query_max_z) {
+            platform_groups = TERRAIN_ROT_SET->active_platform_groups;
+            platform_count = TERRAIN_ROT_SET->active_platform_count;
+        } else {
+            platform_groups = TERRAIN_ROT_SET->group_indices + TERRAIN_ROT_SET->platform_cell.first_group;
+            platform_count = TERRAIN_ROT_SET->platform_cell.group_count;
         }
-        vertices = (NUVEC4 *)(((u32)scratch + 31) & ~(u32)15);
-        transformed_count = 0;
-        for (p = 0; p < platform_count; ++p) {
-            i32 group_index;
-            TERRAIN_GROUP_PC *group;
+        for (; platform_count > 0; --platform_count, ++platform_groups) {
+            TERRAIN_GROUP_PC *group = &groups[*platform_groups];
             TERRAIN_PLATFORM_PC *platform;
             f32 local_min_x, local_max_x;
             f32 local_min_z, local_max_z;
-            NUMTX *matrix;
-            TERRAIN_SCENE_STATE_VIEW_PC *scene_state;
-            i32 rotating;
             TERRAIN_SKIN_STREAM_VIEW_PC *batch;
 
-            group_index = platform_groups[p];
-            group = &terrain->groups[group_index];
-            if (group->origin.x - group->radius > max_x || min_x > group->origin.x + group->radius ||
-                group->origin.z - group->radius > max_z || min_z > group->origin.z + group->radius)
+            if (group->origin.x - group->radius > max_x || group->radius + group->origin.x < min_x ||
+                group->origin.z - group->radius > max_z || group->origin.z + group->radius < min_z)
                 continue;
-            platform = &terrain->platforms[group->scene_index];
-            local_min_x = min_x - group->origin.x;
-            local_max_x = max_x - group->origin.x;
-            local_min_z = min_z - group->origin.z;
-            local_max_z = max_z - group->origin.z;
-            matrix = (NUMTX *)platform->scene_object;
-            scene_state = (TERRAIN_SCENE_STATE_VIEW_PC *)platform->scene_transform;
-            if (matrix != NULL) {
-                if (matrix->m30 > platform->previous_matrix.m30)
-                    local_max_x = (matrix->m30 - platform->previous_matrix.m30) * 1.5 + max_x - group->origin.x;
-                else
-                    local_min_x = (matrix->m30 - platform->previous_matrix.m30) * 1.5 + min_x - group->origin.x;
-                if (matrix->m32 > platform->previous_matrix.m32)
-                    local_max_z = (matrix->m32 - platform->previous_matrix.m32) * 1.5 + max_z - group->origin.z;
-                else
-                    local_min_z = (matrix->m32 - platform->previous_matrix.m32) * 1.5 + min_z - group->origin.z;
+            platform = &TERRAIN_ROT_PLATFORM(group);
+            if (platform->scene_object != NULL) {
+                if (TERRAIN_ROT_MATRIX(group)->m30 > TERRAIN_ROT_PLATFORM(group).previous_matrix.m30) {
+                    local_min_x = min_x - group->origin.x;
+                    local_max_x =
+                        (TERRAIN_ROT_MATRIX(group)->m30 - TERRAIN_ROT_PLATFORM(group).previous_matrix.m30) * 1.5 +
+                        max_x - group->origin.x;
+                } else {
+                    local_max_x = max_x - group->origin.x;
+                    local_min_x =
+                        (TERRAIN_ROT_MATRIX(group)->m30 - TERRAIN_ROT_PLATFORM(group).previous_matrix.m30) * 1.5 +
+                        min_x - group->origin.x;
+                }
+                if (TERRAIN_ROT_MATRIX(group)->m32 > TERRAIN_ROT_PLATFORM(group).previous_matrix.m32) {
+                    local_min_z = min_z - group->origin.z;
+                    local_max_z =
+                        (TERRAIN_ROT_MATRIX(group)->m32 - TERRAIN_ROT_PLATFORM(group).previous_matrix.m32) * 1.5 +
+                        max_z - group->origin.z;
+                } else {
+                    local_max_z = max_z - group->origin.z;
+                    local_min_z =
+                        (TERRAIN_ROT_MATRIX(group)->m32 - TERRAIN_ROT_PLATFORM(group).previous_matrix.m32) * 1.5 +
+                        min_z - group->origin.z;
+                }
+            } else {
+                local_max_x = max_x - group->origin.x;
+                local_min_x = min_x - group->origin.x;
+                local_max_z = max_z - group->origin.z;
+                local_min_z = min_z - group->origin.z;
             }
-            rotating = (platform->flags & 1) != 0;
-            if (rotating) {
-                volatile f32 distance_squared;
+            if ((platform->flags & 1) != 0) {
+                f64 dz;
+                f64 dx;
+                f32 distance_squared;
+                f64 reach;
 
                 if (group->chunk_type == -1)
                     continue;
-
-                distance_squared =
-                    (((f64)max_x + min_x) * 0.5 - group->origin.x) * (((f64)max_x + min_x) * 0.5 - group->origin.x) +
-                    (((f64)min_z + max_z) * 0.5 - group->origin.z) * (((f64)min_z + max_z) * 0.5 - group->origin.z);
-                if (!(((f64)group->radius + TerrainScanRadiusEpsilon) *
-                          ((f64)group->radius + TerrainScanRadiusEpsilon) >
-                      distance_squared))
+                dz = (min_z + max_z) * NuQFntHalfScale - group->origin.z;
+                dx = (max_x + min_x) * NuQFntHalfScale - group->origin.x;
+                reach = group->radius + TerrainScanRadiusEpsilon;
+                distance_squared = dx * dx + dz * dz;
+                if (!(reach * reach > distance_squared))
                     continue;
-            } else if (!SHADOW_BOUNDS_OVERLAP(local_min_x, local_min_z, local_max_x, local_max_z, group->bounds_min,
-                                              group->bounds_max) ||
-                       group->chunk_type == -1) {
-                continue;
-            }
-            if (platform->scene_transform != NULL &&
-                ((platform->flags & 4) != 0 ? (scene_state->flags & 2) == 0 : (scene_state->low_flags & 1) == 0))
-                continue;
-            batch = group->data;
-            while (batch->header.kind >= 0) {
-                TERRAIN_POLYGON_INFO_PC *shapes;
-                i32 batch_overlaps;
-
-                shapes = batch->polygons;
-                batch_overlaps = rotating || (local_max_x >= batch->header.min_x && batch->header.max_x > local_min_x &&
-                                              local_max_z >= batch->header.min_z && batch->header.max_z > local_min_z);
-                for (i = 0; batch_overlaps && i < batch->header.count; ++i) {
-                    TERRAIN_POLYGON_INFO_PC *shape;
-
-                    shape = &shapes[i];
-                    if (shape->material[1] != 0 && (shape->material[1] & terrain_mask) == 0)
-                        continue;
-                    if (writer.cursor >= writer.limit)
-                        continue;
-                    if (!rotating) {
-                        if (local_max_x < shape->min_x || shape->max_x <= local_min_x || local_max_z < shape->min_z ||
-                            shape->max_z <= local_min_z)
+                if (platform->scene_transform != NULL) {
+                    const TERRAIN_SCENE_STATE_VIEW_PC *scene_state = platform->scene_transform;
+                    if ((platform->flags & 4) != 0) {
+                        const u32 state_flags = scene_state->flags;
+                        if ((state_flags & 2) == 0)
                             continue;
-                    } else {
-                        i32 quad;
-                        i32 above_x, below_x, above_z, below_z;
+                    } else if ((scene_state->low_flags & 1) == 0) {
+                        continue;
+                    }
+                }
+                batch = group->data;
+                while (batch->header.kind >= 0) {
+                    TERRAIN_POLYGON_INFO_PC *shape = batch->polygons;
+                    i32 remaining;
+
+                    for (remaining = batch->header.count; remaining > 0; --remaining, ++shape) {
                         TERRAIN_POLYGON_INFO_PC *transformed;
+                        f32 length_squared;
                         f32 length;
                         f32 inverse;
 
-                        for (v = 0; v < 3; ++v) {
-                            vertices[v].x = shape->vertices[v].x;
-                            vertices[v].y = shape->vertices[v].y;
-                            vertices[v].z = shape->vertices[v].z;
-                            vertices[v].w = 0.0f;
-                        }
-                        NuVec4MtxTransformVU0x3(vertices, vertices, matrix);
-                        quad = shape->normals[1].y < BoltTargetRandomDenominator;
-                        if (quad) {
+                        if (shape->material[1] != 0 && (shape->material[1] & terrain_mask) == 0)
+                            continue;
+                        if (cursor >= limit)
+                            continue;
+                        vertices[0].x = shape->vertices[0].x;
+                        vertices[0].y = shape->vertices[0].y;
+                        vertices[0].z = shape->vertices[0].z;
+                        vertices[0].w = 0.0f;
+                        vertices[1].x = shape->vertices[1].x;
+                        vertices[1].y = shape->vertices[1].y;
+                        vertices[1].z = shape->vertices[1].z;
+                        vertices[1].w = 0.0f;
+                        vertices[2].x = shape->vertices[2].x;
+                        vertices[2].y = shape->vertices[2].y;
+                        vertices[2].z = shape->vertices[2].z;
+                        vertices[2].w = 0.0f;
+                        NuVec4MtxTransformVU0x3(vertices, vertices, TERRAIN_ROT_MATRIX(group));
+                        if (shape->normals[1].y < BoltTargetRandomDenominator) {
                             vertices[3].x = shape->vertices[3].x;
                             vertices[3].y = shape->vertices[3].y;
                             vertices[3].z = shape->vertices[3].z;
                             vertices[3].w = 0.0f;
-                            NuVec4MtxTransformVU0(&vertices[3], &vertices[3], matrix);
-                        } else
+                            NuVec4MtxTransformVU0(&vertices[3], &vertices[3], TERRAIN_ROT_MATRIX(group));
+                        } else {
                             vertices[3] = vertices[2];
-                        above_x = 0;
-                        below_x = 0;
-                        above_z = 0;
-                        below_z = 0;
-                        for (v = 0; v < 4; ++v) {
-                            above_x |= vertices[v].x > local_min_x;
-                            below_x |= local_max_x > vertices[v].x;
-                            above_z |= vertices[v].z > local_min_z;
-                            below_z |= local_max_z > vertices[v].z;
                         }
-                        if (!above_x || !below_x || !above_z || !below_z)
+                        if (!(vertices[0].x > local_min_x || vertices[1].x > local_min_x ||
+                              vertices[2].x > local_min_x || vertices[3].x > local_min_x))
+                            continue;
+                        if (!(local_max_x > vertices[0].x || local_max_x > vertices[1].x ||
+                              local_max_x > vertices[2].x || local_max_x > vertices[3].x))
+                            continue;
+                        if (!(vertices[0].z > local_min_z || vertices[1].z > local_min_z ||
+                              vertices[2].z > local_min_z || vertices[3].z > local_min_z))
+                            continue;
+                        if (!(local_max_z > vertices[0].z || local_max_z > vertices[1].z ||
+                              local_max_z > vertices[2].z || local_max_z > vertices[3].z))
                             continue;
                         transformed = &TerrainScaledShapeCursorPc[transformed_count];
                         transformed->packed_metadata = shape->packed_metadata;
-                        for (v = 0; v < (quad ? 4 : 3); ++v) {
-                            transformed->vertices[v].x = vertices[v].x;
-                            transformed->vertices[v].y = vertices[v].y;
-                            transformed->vertices[v].z = vertices[v].z;
-                        }
-                        if (!quad)
-                            transformed->normals[1].y = TerrainScanTriangleSentinel;
-                        if (quad) {
-                            f32 length;
-                            f32 inverse;
-
+                        transformed->vertices[0].x = vertices[0].x;
+                        transformed->vertices[0].y = vertices[0].y;
+                        transformed->vertices[0].z = vertices[0].z;
+                        transformed->vertices[1].x = vertices[1].x;
+                        transformed->vertices[1].y = vertices[1].y;
+                        transformed->vertices[1].z = vertices[1].z;
+                        transformed->vertices[2].x = vertices[2].x;
+                        transformed->vertices[2].y = vertices[2].y;
+                        transformed->vertices[2].z = vertices[2].z;
+                        if (shape->normals[1].y < BoltTargetRandomDenominator) {
+                            transformed->vertices[3].x = vertices[3].x;
+                            transformed->vertices[3].y = vertices[3].y;
+                            transformed->vertices[3].z = vertices[3].z;
                             vertices[0].x = transformed->vertices[1].x - transformed->vertices[3].x;
                             vertices[0].y = transformed->vertices[1].y - transformed->vertices[3].y;
                             vertices[0].z = transformed->vertices[1].z - transformed->vertices[3].z;
                             vertices[1].x = transformed->vertices[2].x - transformed->vertices[3].x;
                             vertices[1].y = transformed->vertices[2].y - transformed->vertices[3].y;
                             vertices[1].z = transformed->vertices[2].z - transformed->vertices[3].z;
-                            TERRAIN_CROSS(transformed->normals[1], vertices[0], vertices[1]);
-                            length = NuFsqrt((transformed->normals[1].x * transformed->normals[1].x +
+                            TERRAIN_ROT_CROSS(transformed->normals[1], (NUVEC *)&vertices[0], (NUVEC *)&vertices[1]);
+                            length_squared = (transformed->normals[1].x * transformed->normals[1].x +
                                               transformed->normals[1].y * transformed->normals[1].y) +
-                                             transformed->normals[1].z * transformed->normals[1].z);
+                                             transformed->normals[1].z * transformed->normals[1].z;
+                            length = NuFsqrt(length_squared);
                             inverse = length == 0.0f ? 0.0f : 1.0f / length;
+                            transformed = &TerrainScaledShapeCursorPc[transformed_count];
                             transformed->normals[1].x *= inverse;
                             transformed->normals[1].y *= inverse;
                             transformed->normals[1].z *= inverse;
+                        } else {
+                            transformed->normals[1].y = TerrainScanTriangleSentinel;
                         }
                         vertices[0].x = transformed->vertices[2].x - transformed->vertices[0].x;
                         vertices[0].y = transformed->vertices[2].y - transformed->vertices[0].y;
@@ -1171,28 +1214,64 @@ void NewScanRot(NUVEC *position, i32 terrain_mask) {
                         vertices[1].x = transformed->vertices[1].x - transformed->vertices[0].x;
                         vertices[1].y = transformed->vertices[1].y - transformed->vertices[0].y;
                         vertices[1].z = transformed->vertices[1].z - transformed->vertices[0].z;
-                        TERRAIN_CROSS(transformed->normals[0], vertices[0], vertices[1]);
-                        length = NuFsqrt((transformed->normals[0].x * transformed->normals[0].x +
+                        TERRAIN_ROT_CROSS(transformed->normals[0], (NUVEC *)&vertices[0], (NUVEC *)&vertices[1]);
+                        length_squared = (transformed->normals[0].x * transformed->normals[0].x +
                                           transformed->normals[0].y * transformed->normals[0].y) +
-                                         transformed->normals[0].z * transformed->normals[0].z);
+                                         transformed->normals[0].z * transformed->normals[0].z;
+                        length = NuFsqrt(length_squared);
                         inverse = length == 0.0f ? 0.0f : 1.0f / length;
+                        transformed = &TerrainScaledShapeCursorPc[transformed_count];
                         transformed->normals[0].x *= inverse;
                         transformed->normals[0].y *= inverse;
                         transformed->normals[0].z *= inverse;
-                        shape = transformed;
+                        (cursor++)->shape = transformed;
+                        ++shape_count;
                         ++transformed_count;
                     }
-                    (writer.cursor++)->shape = shape;
-                    ++writer.shape_count;
+                    batch = (TERRAIN_SKIN_STREAM_VIEW_PC *)shape;
                 }
-                batch = (TERRAIN_SKIN_STREAM_VIEW_PC *)(shapes + batch->header.count);
+                TERRAIN_ROT_FINISH_GROUP(*platform_groups);
+            } else {
+                if (!TERRAIN_ROT_GROUP_OVERLAP(local_min_x, local_min_z, local_max_x, local_max_z, group) ||
+                    group->chunk_type == -1)
+                    continue;
+                if (platform->scene_transform != NULL) {
+                    const TERRAIN_SCENE_STATE_VIEW_PC *scene_state = platform->scene_transform;
+                    if ((platform->flags & 4) != 0) {
+                        const u32 state_flags = scene_state->flags;
+                        if ((state_flags & 2) == 0)
+                            continue;
+                    } else if ((scene_state->low_flags & 1) == 0) {
+                        continue;
+                    }
+                }
+                batch = group->data;
+                while (batch->header.kind >= 0) {
+                    TERRAIN_POLYGON_INFO_PC *shape = batch->polygons;
+                    const i32 count = batch->header.count;
+
+                    if (local_max_x >= batch->header.min_x && batch->header.max_x > local_min_x &&
+                        local_max_z >= batch->header.min_z && batch->header.max_z > local_min_z) {
+                        i16 remaining;
+
+                        for (remaining = count; remaining > 0; --remaining, ++shape) {
+                            if (TERRAIN_ROT_SHAPE_OVERLAP(shape) && cursor < limit && TERRAIN_ROT_MATERIAL_OK(shape)) {
+                                (cursor++)->shape = shape;
+                                ++shape_count;
+                            }
+                        }
+                    } else {
+                        shape += count;
+                    }
+                    batch = (TERRAIN_SKIN_STREAM_VIEW_PC *)shape;
+                }
+                TERRAIN_ROT_FINISH_GROUP(*platform_groups);
             }
-            TERRAIN_FINISH_GROUP(writer, group_index);
         }
     }
     NuScratchRelease();
-    writer.group_header->header.shape_count = 0;
-    writer.group_header->header.terrain_group = 0;
+    group_header->header.shape_count = 0;
+    group_header->header.terrain_group = 0;
 }
 
 f32 NewCast(NUVEC *position, f32 height_above, f32 roof_range) {
