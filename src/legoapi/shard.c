@@ -440,7 +440,7 @@ void UpdateCharacterIDs(void) {
 }
 
 void InitShop(WORLDINFO *world) {
-    i32 i, code_count;
+    i32 i, code_count, price;
     SHOP_SAVE_VIEW_PC *save = (SHOP_SAVE_VIEW_PC *)&Game;
     CharItems = (shopitem_s *)GameBufferAlloc(&world->giz_buffer, &world->buffer_end, 100 * sizeof(shopitem_s));
     HintItems = (shopitem_s *)GameBufferAlloc(&world->giz_buffer, &world->buffer_end, 64 * sizeof(shopitem_s));
@@ -488,10 +488,10 @@ void InitShop(WORLDINFO *world) {
             if (((u64)save->character_purchased_bits[SHOPCHARCOUNT / 32] & ((u64)1 << (SHOPCHARCOUNT % 32))) != 0)
                 CharItems[SHOPCHARCOUNT].unlocked = 1;
             item = &CharItems[SHOPCHARCOUNT];
-            if (CDataList[character_id].name_id == -1)
-                NuStrCpy(item->name, CDataList[character_id].dir);
-            else
+            if (CDataList[character_id].name_id != -1)
                 NuStrCpy(item->name, TTab[CDataList[character_id].name_id]);
+            else
+                NuStrCpy(item->name, CDataList[character_id].name);
             memset(&CharItems[SHOPCHARCOUNT].special, 0, sizeof(CharItems[SHOPCHARCOUNT].special));
             if (code_count < 144)
                 codelist[code_count++] = SfxNameHash(collect->cheat_code);
@@ -543,42 +543,50 @@ void InitShop(WORLDINFO *world) {
         shopcamlookat = NULL;
     }
     LoadShelfSplines();
-    memcpy(CharCurPos, SubShelfPos, sizeof(CharCurPos));
+    for (i = 0; i < 7; ++i)
+        CharCurPos[i] = SubShelfPos[i];
     for (i = 0; i < 7; ++i)
         CharShelfIds[i] = (SHOPCHARCOUNT + i - 3) % SHOPCHARCOUNT;
     if (SHOPHINTCOUNT > 0) {
-        memcpy(HintCurPos, SubShelfPos, sizeof(HintCurPos));
+        for (i = 0; i < 7; ++i)
+            HintCurPos[i] = SubShelfPos[i];
         for (i = 0; i < 7; ++i)
             HintShelfIds[i] = (SHOPHINTCOUNT + i - 3) % SHOPHINTCOUNT;
     }
     if (SHOPEXTRACOUNT > 0) {
-        memcpy(ExtraCurPos, SubShelfPos, sizeof(ExtraCurPos));
+        for (i = 0; i < 7; ++i)
+            ExtraCurPos[i] = SubShelfPos[i];
         for (i = 0; i < 7; ++i)
             ExtraShelfIds[i] = (SHOPEXTRACOUNT + i - 3) % SHOPEXTRACOUNT;
     }
+    price = 10000;
     for (i = 0; i < SHOPGOLDBRICKS; ++i) {
         BrickItems[i].type = 4;
         BrickItems[i].item_id = (i16)i;
-        BrickItems[i].price = 10000 + i * 5000;
+        BrickItems[i].price = price;
         BrickItems[i].special = TopShelf[4].special;
         BrickItems[i].unlocked = 0;
         if (((u64)save->gold_brick_purchased_bits[i / 32] & ((u64)1 << (i % 32))) != 0)
             BrickItems[i].unlocked = 1;
+        price += 5000;
     }
-    memcpy(BrickCurPos, SubShelfPos, sizeof(BrickCurPos));
+    for (i = 0; i < 7; ++i)
+        BrickCurPos[i] = SubShelfPos[i];
     for (i = 0; i < 7; ++i)
         BrickShelfIds[i] = (i + 11) % 14;
     SHOPCUTCOUNT = CutScenePlayCountPc;
     for (i = 0; i < SHOPCUTCOUNT && i < 128; ++i) {
-        CutItems[i].special = TopShelf[5].special;
-        CutItems[i].item_id = (i16)i;
-        CutItems[i].type = 5;
-        CutItems[i].price = 0;
-        CutItems[i].unlocked = 0;
+        shopitem_s *item = &CutItems[i];
+        item->special = TopShelf[5].special;
+        item->item_id = (i16)i;
+        item->type = 5;
+        item->price = 0;
+        item->unlocked = 0;
     }
     if (shop_from_cutsceneplayer == 0) {
         if (SHOPCUTCOUNT > 0) {
-            memcpy(CutCurPos, SubShelfPos, sizeof(CutCurPos));
+            for (i = 0; i < 7; ++i)
+                CutCurPos[i] = SubShelfPos[i];
             for (i = 0; i < 7; ++i)
                 CutShelfIds[i] = (SHOPCUTCOUNT + i - 3) % SHOPCUTCOUNT;
         }
@@ -592,15 +600,32 @@ void InitShop(WORLDINFO *world) {
     scalepicked = 1.4f;
     scale2 = scale4 = scalenorm;
     scale3 = scalepicked;
-    for (i = 0; i < 6; ++i) {
-        TopShelfScale[i] = ShopNativeScalePc[i == 1 ? 2 : (i == 2 ? 1 : i)];
+    TopShelfScale[0] = ShopNativeScalePc[0];
+    TopShelfScale[1] = ShopNativeScalePc[2];
+    TopShelfScale[2] = ShopNativeScalePc[1];
+    TopShelfScale[3] = ShopNativeScalePc[3];
+    TopShelfScale[4] = ShopNativeScalePc[4];
+    TopShelfScale[5] = ShopNativeScalePc[5];
+    for (i = 0; i < 6; ++i)
         topscale[i] = TopShelfScale[i];
-        TopBigScale[i] = TopShelfScale[i] * ShopNativeBigFactorPc[i];
-        TopShelfPush[i] = ShopNativePushPc[i];
-    }
-    TopBigPush[0] = TopBigPush[1] = TopBigPush[3] = TopBigPush[5] = 0.0f;
+    TopBigScale[0] = TopShelfScale[0] * ShopNativeBigFactorPc[0];
+    TopBigScale[1] = TopShelfScale[1] * ShopNativeBigFactorPc[1];
+    TopBigScale[2] = TopShelfScale[2] * ShopNativeBigFactorPc[2];
+    TopBigScale[3] = TopShelfScale[3] * ShopNativeBigFactorPc[3];
+    TopBigScale[4] = TopShelfScale[4] * ShopNativeBigFactorPc[4];
+    TopBigScale[5] = TopShelfScale[5] * ShopNativeBigFactorPc[5];
+    TopShelfPush[0] = ShopNativePushPc[0];
+    TopShelfPush[1] = ShopNativePushPc[1];
+    TopShelfPush[2] = ShopNativePushPc[2];
+    TopShelfPush[3] = ShopNativePushPc[3];
+    TopShelfPush[4] = ShopNativePushPc[4];
+    TopShelfPush[5] = ShopNativePushPc[5];
+    TopBigPush[0] = 0.0f;
+    TopBigPush[1] = 0.0f;
     TopBigPush[2] = -0.005f;
+    TopBigPush[3] = 0.0f;
     TopBigPush[4] = -0.01f;
+    TopBigPush[5] = 0.0f;
     for (i = 0; i < 6; ++i)
         toppush[i] = TopBigPush[i];
     ShopSubInitAPc = ShopNativeSubInitAPc;
@@ -610,8 +635,8 @@ void InitShop(WORLDINFO *world) {
     subpush[0] = subpush[2] = SubNormCharPush;
     subpush[1] = SubBigCharPush;
     for (i = 0; i < 6; ++i) {
-        codeshelfscale[i] = codemenuscale[i] = (f32)(TopShelfScale[3] * (double)0.8f);
-        codebigscale[i] = (f32)((TopShelfScale[3] * (double)ShopNativeBigFactorPc[3]) * (double)0.8f);
+        codebigscale[i] = (f32)((TopShelfScale[3] * (f64)ShopNativeBigFactorPc[3]) * (f64)0.8f);
+        codeshelfscale[i] = codemenuscale[i] = (f32)(TopShelfScale[3] * (f64)0.8f);
     }
     shopcutsceneplayer = CutScenePlayer_Available();
 }
