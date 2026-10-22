@@ -1,5 +1,8 @@
 #include "saga.h"
 
+extern "C" void __cdecl NuRndrConfigureLeafPc(f32, f32, i32);
+extern "C" const f32 InitOnceHalf;
+
 extern "C" void __cdecl InitGameBeforeConfig(void);
 
 extern "C" {
@@ -15,25 +18,25 @@ extern "C" {
 }
 
 extern "C" void __cdecl InitOnce(i32 argc, char **argv) {
-    u16 first[] = {0x1e, 0x20, 0x11, 0x1f,   0xffff, 0xffff, 0xffff, 0xffff, 0xffff, 0xffff, 0x1d,   0x39,  0x25,
-                   0x24, 0x16, 0x23, 0xffff, 0xffff, 0xffff, 0x1c,   0xffff, 0xffff, 0xffff, 0xffff, 0xffff};
-    u16 third[] = {0xcb, 0xcd, 0xc8, 0xd0,   0xffff, 0xffff, 0xffff, 0xffff, 0xffff, 0xffff, 0x9d,   0x52,  0x51,
-                   0x50, 0x4c, 0x4f, 0xffff, 0xffff, 0xffff, 0x9c,   0xffff, 0xffff, 0xffff, 0xffff, 0xffff};
-    i8 order[] = {0, 1, 2, 3, 12, 13, 14, 15, 16, 18, 23, 4, 5, 6, 7, 8, 10, 11, 9, -1};
-    STATIC_ASSERT(sizeof(first) == 50);
-    STATIC_ASSERT(sizeof(third) == 50);
-    STATIC_ASSERT(sizeof(order) == 20);
     STUBBED_NAMED(0x006dc890); /* (configuration-key75152c), 4011fe */
     original_permbuffer_base.void_ptr = NuAlloc(SUPERBUFFERSIZE, InitOnceAllocSource, 0x112);
-    permbuffer_base = original_permbuffer_base;
     superbuffer_end.addr = original_permbuffer_base.addr + (u32)SUPERBUFFERSIZE;
+    permbuffer_base = original_permbuffer_base;
     /* Native uses the permanent arena without an allocation-failure branch here. */
     InitGameBeforeConfig();
     StartupParseArguments(argc - 1, argv + 1);
     NuFileSetCurrentDirectory(InitOnceCurrentDirectory);
-    STUBBED_NAMED(0x00602930); /* (1.0f, .5f, 0), 401268 */
+    NuRndrConfigureLeafPc(1.0f, InitOnceHalf, 0);
     Game_NuPad = &Game_NuPad_Store[0];
-    InitPadDescriptorsPc(first, NULL, third, NULL, order);
+    i16 first[] = {0x1e, 0x20, 0x11, 0x1f, -1, -1, -1,   -1, -1, -1, 0x1d, 0x39, 0x25,
+                   0x24, 0x16, 0x23, -1,   -1, -1, 0x1c, -1, -1, -1, -1,   -1};
+    i16 third[] = {0xcb, 0xcd, 0xc8, 0xd0, -1, -1, -1,   -1, -1, -1, 0x9d, 0x52, 0x51,
+                   0x50, 0x4c, 0x4f, -1,   -1, -1, 0x9c, -1, -1, -1, -1,   -1};
+    i8 order[] = {0, 1, 2, 3, 12, 13, 14, 15, 16, 18, 23, 4, 5, 6, 7, 8, 10, 11, 9, -1};
+    STATIC_ASSERT(sizeof(first) == 50);
+    STATIC_ASSERT(sizeof(third) == 50);
+    STATIC_ASSERT(sizeof(order) == 20);
+    InitPadDescriptorsPc((const u16 *)first, NULL, (const u16 *)third, NULL, order);
     NuInitHardwarePc(&permbuffer_base, &superbuffer_end, 0, 4, InitOnceHostFsPc, 24, StartupDatNames, 7, 6,
                      InitOnceFileModePc, 7, InitOnceEjectPc, 8, 0x500000, 18, PAL ? 8 : 0, 33, 512, PAL ? 256 : 224, 26,
                      0x1000, 21, 1, 5, &InitOnceDvdPc, NOSOUND ? 28 : 10, 0, 0x640, 0, 0, 11, 5, 0x1fff, 14, Game_NuPad,

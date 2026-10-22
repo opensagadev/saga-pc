@@ -305,13 +305,14 @@ void edcamMtx(NUMTX *matrix) {
  * dependencies; these candidates preserve the verified wrapper ABI/order. */
 extern HINSTANCE PCInputWindow_candidate;
 extern HWND PCInputInstance_candidate;
+i32 __cdecl PCDeviceShowCursorPc(i32 show);
 
 i32 __cdecl NuKeyboardPlatformStartup_candidate(void) {
-    STUBBED_NAMED(0x006d3150); /* PC input subsystem pre-configuration */
+    PcConfigureInputGraphicsCaps();
     NuKeyboardCreateWindowState_candidate(PCInputInstance_candidate, PCInputWindow_candidate);
     SetCursor(NULL);
-    STUBBED_NAMED(0x006e57d0);
-    STUBBED_NAMED(0x006e5340);
+    PCDeviceShowCursorPc(0);
+    PCDeviceSetRenderState(0x16, 1);
     return 1;
 }
 

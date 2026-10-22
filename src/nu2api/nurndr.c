@@ -1,5 +1,9 @@
 #include "saga.h"
 
+extern i32 DwaWeightCapacityPc, DwaPointerCapacityPc, DwaBlockCapacityPc, DwaEnabledPc, DwaStreamCapacityPc;
+extern i32 DwaBlockCountPc;
+extern u8 DwaBlockTablePc[0x400];
+
 #include <string.h>
 
 NURNDRLIBSCENE currentScene = {0};
@@ -261,6 +265,33 @@ void __cdecl NuDisplayListInit(VARIPTR *cursor, i32 arg2) {
     nudlist_field_fc4 = PCThreadCriticalSectionCreate_candidate();
     NuDisplayListSwapBuffersEndFrame();
     NuDisplayListBeginFrame();
+}
+
+void __cdecl NuRndrDwaInitPc(void) {
+    DwaWeightCapacityPc = 0x4000;
+    DwaPointerCapacityPc = 0x4000;
+    DwaBlockCapacityPc = 0x2000;
+    DwaEnabledPc = 1;
+    DwaBlockCountPc = 0;
+    DwaWeightCursorPc = 0xef00;
+    DwaPointerCursorPc = 0x800;
+    memset(DwaBlockTablePc, 0, sizeof(DwaBlockTablePc));
+    DwaStreamCapacityPc = 0x2000;
+}
+
+void __cdecl NuRndrConfigureLeafPc(f32 a, f32 b, i32 c) {
+    (void)a;
+    (void)b;
+    (void)c;
+}
+
+void __cdecl PermanentGraphicsResourceSetup(void) {
+    NuPtlDmaSlotsExhaustedPc();
+}
+
+void __cdecl NuRndrShadowInit(u8 *random) {
+    (void)random;
+    NuPtlDmaSlotsExhaustedPc();
 }
 
 DWA_WEIGHT_BLOCK_PC *__cdecl NuRndrCreateBlendShapeDeformerWeightsArray(i32 count) {

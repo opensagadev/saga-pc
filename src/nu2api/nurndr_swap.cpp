@@ -4,6 +4,7 @@ extern "C" {
     i32 __cdecl PCFrameBeginScenePc(void);
     void __cdecl PCFrameResetTargetsPc(void);
     void __cdecl PCFrameConfigureTargetsPc(void);
+    void __cdecl NuDisplayListHtmlEndPc(void);
 }
 
 /* Full native 60aff0 control reconstruction, with genuinely missing VOID
@@ -145,7 +146,7 @@ extern "C" i32 __cdecl NuRndrSwapScreen(i32 mode) {
     NuRndrEndFrameActionPc();
     NuPostEffectEnd();
     _NuTimeBarSlotEnd(-1, 4);
-    STUBBED_NAMED(0x005ded40); /* native60b529 */
+    NuDisplayListHtmlEndPc();
     NuDisplayListBeginFrame();
     NuDisplayListStreamCursor = &nudlist_stream_cursor;
     nudlist_field_1598 = nuprim_field_ba8;

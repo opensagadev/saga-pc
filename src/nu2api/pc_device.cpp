@@ -1535,3 +1535,12 @@ extern "C" void __cdecl PCDevicePostEffectBarrierPc(void) {
 }
 extern "C" void __cdecl NuRndrEndFrameActionPc(void) {
 }
+
+extern "C" i32 __cdecl PCDeviceShowCursorPc(i32 show) {
+    if (PCDeviceBackend.device != NULL) {
+        PCFrameCriticalSectionEnter_candidate();
+        PCDeviceLastResult = PCDeviceBackend.device->methods->show_cursor(PCDeviceBackend.device, show);
+        PCFrameCriticalSectionLeave_candidate();
+    }
+    return 0;
+}

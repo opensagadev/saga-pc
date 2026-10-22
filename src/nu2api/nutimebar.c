@@ -1,5 +1,7 @@
 #include "saga.h"
 
+extern NUMTL *NuTimeBar_FrameOutMtl;
+
 __declspec(noinline) void __cdecl NuTimeSub(NuTime *time, NuTime *a, NuTime *b) {
     if (a->low >= b->low) {
         time->low = a->low - b->low;
@@ -278,17 +280,17 @@ static i32 CreateTimeBar(VARIPTR *buffer, VARIPTR unused_buffer, i32 *colours, i
     memset((void *)timebar->colours, 0, array_bytes);
     memset((void *)timebar->toggle_flags, 0, array_bytes);
     memset((void *)timebar->slot_names, 0, array_bytes);
-    set = 0;
-    for (index = 0; index < 16; ++index) {
+    index = 0;
+    do {
         if (NuTimeBar_SetList[index] == NULL) {
             NuTimeBar_SetList[index] = timebar;
             set = index - 1;
-            break;
+            goto found;
         }
-    }
-    if (index == 16) {
-        STUBBED_NAMED(0x005c12e0);
-    }
+    } while (++index < 16);
+    AnimationDiagnosticNoOpPc();
+    set = 0;
+found:
     if (colours != NULL) {
         memcpy(timebar->colours, colours, array_bytes);
     } else if (set == -1) {
@@ -319,14 +321,15 @@ i32 __cdecl NuTimeBarCreateSet(i32 *colours) {
 }
 
 __declspec(noinline) void __cdecl NuTimeBarInitEx(VARIPTR *buffer, VARIPTR unused_buffer) {
+    NUMTL *material;
     memset(NuTimeBar_SetList, 0, sizeof(NuTimeBar_SetList));
     CreateTimeBar(buffer, unused_buffer, NULL, 7);
     CreateTimeBar(buffer, unused_buffer, NULL, 16);
-
-    STUBBED_NAMED(0x005e4b20); /* PC material creator uses EAX/ECX and one stack argument. */
-    STUBBED_NAMED("NuTimeBarInitEx: material attributes at +0x40");
-    STUBBED_NAMED(0x00601030);
-    STUBBED_NAMED("NuTimeBarInitEx: material reference count at +0x2c0");
+    material = NuMtlCreate(1);
+    material->attribs.alpha_mode = 2;
+    NuTimeBar_FrameOutMtl = material;
+    NuMtlUpdatePS(material);
+    ((PC_SCENE_MTL_VIEW *)material)->version += 1;
     NuTimeBar_Initialised = 1;
 }
 
@@ -418,8 +421,7 @@ void __cdecl NuTimeBarSetRenderHorizontal(i32 set) {
             i32 height = (i32)((bottom - top) * screen_height);
             i32 text_y;
 
-            (void)width;
-            STUBBED_NAMED(0x005db880); /* NuRndrRect2di(x,y,width,height,colours[slot],NULL). */
+            NuRndrRect2di(x, y, width, height, timebar->colours[slot], NULL);
             {
                 if (NuQFntModeStackIndex < 16) {
                     NuQFntModeStack[NuQFntModeStackIndex++] = NuQFntMode;
@@ -498,7 +500,7 @@ void __cdecl NuTimeBarSetRender(i32 set) {
         }
     }
 
-    STUBBED_NAMED(0x005d4290); /* NuRndrBeginScene(1), not Android's current -1. */
+    NuRndrBeginScene(1);
     if (set > -1 || (set == -1 && engine_enabled != 0)) {
         f32 vertical_scale = (f32)(NuTimeBarVerticalScale / PS2_VREZ_H);
         for (slot = 0; slot < timebar->slot_count; ++slot) {
@@ -528,11 +530,7 @@ void __cdecl NuTimeBarSetRender(i32 set) {
                 i32 text_x;
                 i32 text_y;
 
-                (void)x;
-                (void)y;
-                (void)width;
-                (void)height;
-                STUBBED_NAMED(0x005db880); /* NuRndrRect2di(x,y,width,height,colours[slot],NULL). */
+                NuRndrRect2di(x, y, width, height, timebar->colours[slot], NULL);
                 {
                     if (NuQFntModeStackIndex < 16) {
                         NuQFntModeStack[NuQFntModeStackIndex++] = NuQFntMode;
@@ -622,10 +620,10 @@ void __cdecl NuTimeBarSetRender(i32 set) {
         }
     }
     if (gpu_frames > 1.0f) {
-        STUBBED_NAMED(0x005db880); /* (0,0,0x3c0,0xe00,0x80000064,NuTimeBar_FrameOutMtl). */
-        STUBBED_NAMED(0x005db880); /* (0x2440,0,0x3c0,0xe00,0x80000064,NuTimeBar_FrameOutMtl). */
+        NuRndrRect2di(0, 0, 0x3c0, 0xe00, (i32)0x80000064, NuTimeBar_FrameOutMtl);
+        NuRndrRect2di(0x2440, 0, 0x3c0, 0xe00, (i32)0x80000064, NuTimeBar_FrameOutMtl);
     }
-    STUBBED_NAMED(0x005f3950); /* NuRndrEndScene. */
+    NuRndrEndScene();
 }
 
 f32 NuTimeGetFrameTime(void) {

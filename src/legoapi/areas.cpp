@@ -1,4 +1,6 @@
 #include "saga.h"
+
+extern "C" void __cdecl FmvPlatformUpdatePc(void);
 extern "C" void __cdecl Particles_LoadAreaPage(char *);
 extern "C" {
     void __cdecl MakeFreePlayModelList(i32, i32, i32, i32, i32);
@@ -1413,7 +1415,7 @@ void __cdecl LoadAreaCharacters(void) {
         i32 draw_touch_prompt = 0;
         TextInputSetKeyboardOverridePc(0);
         NuWindowsProcessMessages();
-        STUBBED_NAMED(StartupDrawPumpPc); /* Native48b91c direct6d3420. */
+        FmvPlatformUpdatePc();
         NuFrameBegin();
         NuCameraSet(&global_camera);
         readpads_always = 1;

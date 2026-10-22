@@ -1,6 +1,15 @@
 #include <stdio.h>
 #include <string.h>
 #include "saga.h"
+
+extern "C" {
+    void __cdecl NuLgtSetArcMat(NUMTL *material, f32 u0, f32 v0, f32 u1, f32 v1);
+    void __cdecl PermanentGraphicsResourceSetup(void);
+    void __cdecl NuRndrShadowInit(u8 *random);
+    void __cdecl InitTexAnimScripts(char **table);
+    extern char *TexAnimScriptNamesTitlePc[3];
+    extern char *TexAnimScriptNamesGamePc[32];
+}
 extern "C" void __cdecl CreateUsefulMaterials(void);
 extern "C" void __cdecl edbitsRegisterThingsScene(NUGSCN *scene);
 extern "C" i32 __cdecl NuMtlSetCurrentRenderPlane(i32 render_plane);
@@ -172,10 +181,8 @@ void __cdecl LoadPerm1(void) {
     material->texture_id = ((PERMANENT_MATERIAL_READER_PC *)DebMat[5])->texture_id;
     material->shader_flags = (material->shader_flags & ~2u) | 1u;
     NuMtlUpdate(PermanentEffectsMaterialPc);
-    STUBBED_NAMED(PermanentMaterialRenderingSetup); /* Native 48a83b: effects
-                                                       material,0,actual three f32
-                                                       literals. */
-    STUBBED_NAMED(PermanentGraphicsResourceSetup);  /* Native 48a840. */
+    NuLgtSetArcMat(PermanentEffectsMaterialPc, 0.0f, 0.50390625f, 0.25f, 0.5625f);
+    PermanentGraphicsResourceSetup();
     NuBridgeInit();
     native_end_address.void_ptr = &permbuffer_end;
     InitParts(0x40, &permbuffer_ptr, native_end_address);
@@ -209,16 +216,16 @@ void __cdecl LoadPerm1(void) {
     NuMtlUpdate(PermanentShadowMaterialPc);
     for (index = 0; index < 0x800; ++index)
         shadow_random[index] = (u8)(qrand() >> 8);
-    STUBBED_NAMED(NuRndrShadowInit); /* Native 48aa72: shadow_random. */
-    CreateFadeMaterials();           /* Native 48aa7a. */
-    CreateUsefulMaterials();         /* Native 48aa7f. */
+    NuRndrShadowInit(shadow_random);
+    CreateFadeMaterials();   /* Native 48aa7a. */
+    CreateUsefulMaterials(); /* Native 48aa7f. */
     edgraClumpsReset();
     edanimParamReset();
     NuTexAnimProgSysInit(); /* Native 48aa8e. */
     if (StartupGameFlag1 != 0) {
-        STUBBED_NAMED(InitTexAnimScripts); /* Native 48aaa9: table7f5c78. */
+        InitTexAnimScripts(TexAnimScriptNamesGamePc);
     } else {
-        STUBBED_NAMED(InitTexAnimScripts); /* Native 48aaa9: table7f5c68. */
+        InitTexAnimScripts(TexAnimScriptNamesTitlePc);
     }
     permbuffer_ptr.addr = (permbuffer_ptr.addr + 3) & ~3u;
     things_scene = NuGScnRead(&permbuffer_ptr, permbuffer_end, "stuff\\things.gsc");
@@ -232,7 +239,7 @@ void __cdecl LoadPerm1(void) {
                                          terrain_scene, 0, 0x14, 0x14, 0x14);
     terrainpickupinit("stuff\\things", &things_scene_terrain);
     if (StartupGameFlag1 != 0) {
-        STUBBED_NAMED(BackDrop_Init); /* Native 48ab5c: stuff\\starfield.gsc,&ptr,&end. */
+        BackDrop_Init("stuff\\starfield.gsc", &permbuffer_ptr, &permbuffer_end);
     }
     NuMtlSetCurrentRenderPlane(15);
     edpartSetParticlePage(DEBPAGE_GENERAL);

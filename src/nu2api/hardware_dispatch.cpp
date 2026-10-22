@@ -1,5 +1,17 @@
 #include "saga.h"
 
+extern "C" {
+    void __cdecl NuRndrConfigureLeafPc(f32 a, f32 b, i32 c);
+    void __cdecl NuRndrInitLeafPc(VARIPTR *buffer, VARIPTR end);
+    void __cdecl NuKeyboardWindowStateLeafPc(void);
+    extern const f32 InitOnceHalf;
+    i32 __cdecl PCDeviceShowCursorPc(i32 show);
+    void __cdecl NuRndrDwaInitPc(void);
+    void __cdecl NuQFntInit(VARIPTR *buffer, VARIPTR end);
+    void __cdecl PcCreateCursorMaterialPc(void);
+    void __cdecl NuHwSetParameter33Pc(void *value);
+}
+
 extern "C" void __cdecl PcRegisterSaveMetadataPc(const void *);
 extern "C" void __cdecl PcSetDefaultParameterPc(const char *);
 
@@ -28,7 +40,7 @@ extern "C" i32 __cdecl NuInitHardwarePc(VARIPTR *buffer, VARIPTR *end, i32 alloc
         end->addr = buffer->addr + 0x4000000;
     }
     PcInitializeStartupCriticalSection();
-    STUBBED_NAMED(0x00602930); /* (1.0f, .5f, 0), call 6dbc49 */
+    NuRndrConfigureLeafPc(1.0f, InitOnceHalf, 0);
     va_start(args, allocate);
     do {
         selector = va_arg(args, i32);
@@ -212,7 +224,7 @@ extern "C" i32 __cdecl NuInitHardwarePc(VARIPTR *buffer, VARIPTR *end, i32 alloc
         PcSetDefaultParameterPc((const char *)parameter_2d);
     }
     if (parameter_33) {
-        STUBBED_NAMED(0x006dddb0);
+        NuHwSetParameter33Pc(parameter_33);
     }
     PCDeviceBackend.requested_windowed = (u8)(show == 1);
     NuFileInitEx(hostfs, file_mode, eject);
@@ -303,9 +315,9 @@ extern "C" i32 __cdecl NuInitHardwarePc(VARIPTR *buffer, VARIPTR *end, i32 alloc
         PcWindowOptions.aspect_mode == 3 ? PCDeviceBackend.active_aspect_mode : PcWindowOptions.aspect_mode;
     SetCursor(NULL);
     if (!PCDeviceIsAbsent()) {
-        STUBBED_NAMED(0x006e57d0); /* (0), 6dc167 */
+        PCDeviceShowCursorPc(0);
     }
-    STUBBED_NAMED(0x005fe3f0);
+    NuRndrDwaInitPc();
     NuLgtInitializeStatePc();
     NuTrigInit();
     NuVpInit();
@@ -332,13 +344,13 @@ extern "C" i32 __cdecl NuInitHardwarePc(VARIPTR *buffer, VARIPTR *end, i32 alloc
     NuRndrInitEx(stream_size, buffer, *end);
     NuRndrInitStartupMaterialsPc();
     NuGobjRegistryInitPc();
-    STUBBED_NAMED(0x005d16a0); /* (buffer, *end) */
+    NuRndrInitLeafPc(buffer, *end);
     NuInitDebrisRenderer(buffer, *end);
     PCGraphicsInitializeFramebuffers((u8)PCDeviceBackend.render_target_flags, 0, buffer, *end);
     NuPostEffectInit(PCDeviceBackend.shader_flags, buffer, *end);
     NuRndrBufferDescriptorsInitPc(buffer, *end);
     PcResetGeometryOriginStatePc();
-    STUBBED_NAMED(0x005eaa80); /* (buffer, *end) */
+    NuQFntInit(buffer, *end);
     PcInitializePerformanceTiming();
     NuTimeBarInit();
     NuAnimInit(animation_count, buffer, *end);
@@ -365,7 +377,7 @@ extern "C" i32 __cdecl NuInitHardwarePc(VARIPTR *buffer, VARIPTR *end, i32 alloc
     NuMtlInitOverride(512, buffer, end);
     NuPadAutoConfigurePc(1);
     NuOcclusionManagerInit(occlusion_capacity, buffer, *end);
-    STUBBED_NAMED(0x006ddec0);
+    PcCreateCursorMaterialPc();
     NuRndrBeginScene(1);
     NuRndrClear(0xb00, 0, 1.0f);
     NuRndrEndScene();
@@ -378,7 +390,7 @@ extern "C" void __cdecl NuKeyboardCreateWindowState_candidate(HWND window, HINST
     PCFrameCriticalSectionIndex_candidate = PCThreadCriticalSectionCreate_candidate();
     PCDeviceBackend.InitializeAdapter();
     nu_keyboard_owner.Setup(window, instance);
-    STUBBED_NAMED(0x00600bc0); /* native call6df0a8, actual separate RET leaf */
+    NuKeyboardWindowStateLeafPc();
     PCNativeWarningDebugState.Initialize();
 }
 

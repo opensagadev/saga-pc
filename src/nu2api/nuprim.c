@@ -684,3 +684,6 @@ void __cdecl NuPrim2DSetUV(f32 u, f32 v) {
     vertex->u = u;
     vertex->v = v;
 }
+
+void __cdecl NuKeyboardWindowStateLeafPc(void) {
+}

@@ -7416,6 +7416,40 @@ extern "C" {
 #pragma data_seg(".data$hub_startoutsidebonusdoor_area")
     i32 hub_startoutsidebonusdoor_area = -1;
 #pragma data_seg()
+#pragma data_seg(".data$PcCursorTextureIdPc")
+    i32 PcCursorTextureIdPc = -1;
+#pragma data_seg()
+#pragma data_seg(".data$DwaWeightCapacityPc")
+    i32 DwaWeightCapacityPc = 0x4000;
+#pragma data_seg()
+#pragma data_seg(".data$DwaPointerCapacityPc")
+    i32 DwaPointerCapacityPc = 0x4000;
+#pragma data_seg()
+#pragma data_seg(".data$DwaBlockCapacityPc")
+    i32 DwaBlockCapacityPc = 0x2000;
+#pragma data_seg()
+#pragma data_seg(".data$DwaEnabledPc")
+    i32 DwaEnabledPc = 1;
+#pragma data_seg()
+#pragma data_seg(".data$DwaStreamCapacityPc")
+    i32 DwaStreamCapacityPc = 0x2000;
+#pragma data_seg()
+#pragma data_seg(".data$NuHtmlUnknownTextPc")
+    char NuHtmlUnknownTextPc[8] = "unknown";
+#pragma data_seg()
+#pragma data_seg(".data$TexAnimScriptNamesTitlePc")
+    char *TexAnimScriptNamesTitlePc[3] = {"coin", "coin_pause", 0};
+#pragma data_seg()
+#pragma data_seg(".data$TexAnimScriptNamesGamePc")
+    char *TexAnimScriptNamesGamePc[32] = {"arrow",          "blink_01",      "blink_02",    "blink_03",
+                                          "coin",           "coin_pause",    "control",     "ds_esc_intro_1",
+                                          "ds_esc_intro_2", "ds_1",          "helpmeobi",   "lightening1",
+                                          "plasma",         "screen",        "Dso_screen",  "anakinbows",
+                                          "anakinkilling",  "anakinspod",    "boost1",      "boost2",
+                                          "boost3",         "boost4",        "gasganospod", "helpobi",
+                                          "hologram1",      "hologramnoise", "play8",       "quidie",
+                                          "sebulbaspod",    "sidius",        "crowd",       0};
+#pragma data_seg()
 
 #pragma bss_seg(".bss$shop_from_cutsceneplayer")
     i32 shop_from_cutsceneplayer = 0;
@@ -8372,6 +8406,13 @@ extern "C" {
     void **Game_NuPad = 0;
     void *NuTimeBar_SetList[16] = {0};
     i32 NuTimeBar_Initialised = 0;
+    NUMTL *NuTimeBar_FrameOutMtl = 0;
+    char **TexAnimScriptTablePc = 0;
+    u8 DwaBlockTablePc[0x400] = {0};
+    i32 DwaBlockCountPc = 0;
+    void *NuHwParameter33Pc = 0;
+    NUMTL *PcCursorMaterialPc = 0;
+    i32 nuqfnt_initialised = 0;
 
     // PC debris timing uses a single-precision 1/60-second step.
     f32 debris_time_increment = 1.0f / 60.0f;
@@ -28257,8 +28298,8 @@ extern "C" {
     NUFILE nudlist_field_988 = 0;
     char *PCDisplayCaptureCursorPc = NULL;
     char *nudlist_field_18b0 = NULL;
-    char PCDisplayCaptureBufferPc[1] = {0};
-    char PCDisplayCaptureFlushPointPc[1] = {0};
+    char PCDisplayCaptureBufferPc[0xc00] = {0};
+    char PCDisplayCaptureFlushPointPc[0x404] = {0};
 }
 #pragma bss_seg()
 #pragma data_seg()

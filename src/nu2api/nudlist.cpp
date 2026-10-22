@@ -1666,7 +1666,19 @@ extern "C" void __cdecl NuDisplayListPurge_candidate(void) {
         nudlist_field_988 = file;
         PCDisplayCaptureCursorPc = PCDisplayCaptureBufferPc;
         nudlist_field_18b0 = PCDisplayCaptureFlushPointPc;
-        STUBBED_NAMED(0x005d7230); /* native5ded34: NuHtmlWrite("<body bgcolor=#C0C0C0>"); ignored VOID debug output */
+        NuHtmlWrite("<body bgcolor=#C0C0C0>");
+    }
+}
+
+extern "C" void __cdecl NuHtmlFlushPc(void);
+
+extern "C" void __cdecl NuDisplayListHtmlEndPc(void) {
+    if (nudlist_field_fe4 != 0) {
+        NuHtmlWrite("<table   width=100%c height=20 bgcolor=#FF0000><tr><td><font face=arial size=+2></font></table>",
+                    0x25);
+        NuHtmlFlushPc();
+        NuFileClose(nudlist_field_958);
+        nudlist_field_fe4 = 0;
     }
 }
 

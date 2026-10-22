@@ -620,6 +620,14 @@ void __cdecl NuLgtArcLaserEx(i32 type, NUVEC *start, NUVEC *end, NUVEC *bend, f3
     ++NuLgtArcLaserCnt;
 }
 
+void __cdecl NuLgtSetArcMat(NUMTL *material, f32 u0, f32 v0, f32 u1, f32 v1) {
+    NuLgtArcMtl[0].material = material;
+    NuLgtArcMtl[0].u0 = u0;
+    NuLgtArcMtl[0].v0 = v0;
+    NuLgtArcMtl[0].u1 = u1;
+    NuLgtArcMtl[0].v1 = v1;
+}
+
 void __cdecl NuLgtSetArcMatEx(i32 type, NUMTL *material, f32 u0, f32 v0, f32 u1, f32 v1) {
     if (type > 3)
         return;

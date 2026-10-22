@@ -1,5 +1,8 @@
 #include "saga.h"
 
+extern i32 nuqfnt_initialised;
+extern u8 NuQFntSystemFontBlockPc[0x4930];
+
 extern i32 nuqfnt_cs_mode;
 extern f32 qfnt_rezscale_w;
 extern f32 qfnt_rezscale_h;
@@ -671,6 +674,22 @@ VUFNT *__cdecl NuQFntReadBuffer(VARIPTR *font, VARIPTR *buffer, VARIPTR end) {
     texture_id = NuTexCreateNative(texture);
     NuQFntReadPS(result, texture_id, 4, 0, buffer, end);
     return result;
+}
+
+void __cdecl NuQFntInit(VARIPTR *buffer, VARIPTR end) {
+    VARIPTR font;
+    if (nuqfnt_initialised == 0) {
+        nuqfnt_initialised = 1;
+        font.void_ptr = NuQFntSystemFontBlockPc;
+        system_qfont = NuQFntReadBuffer(&font, buffer, end);
+        if (system_qfont != NULL)
+            system_qfont->ic_gap = 1.0f;
+    }
+}
+
+void __cdecl NuRndrInitLeafPc(VARIPTR *buffer, VARIPTR end) {
+    (void)buffer;
+    (void)end;
 }
 
 VUFNT *__cdecl NuQFntRead(char *path, VARIPTR *buffer, VARIPTR end) {
