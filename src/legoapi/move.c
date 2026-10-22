@@ -818,10 +818,19 @@ void __cdecl ApplyGravity(GAMEOBJECT *object, f32 *gravity, f32 hover_height, f3
 }
 
 static void IsTurnRequested(GAMEOBJECT *object, u16 input_angle, i32 *turn, i32 finish_turn) {
-    if ((object == (GAMEOBJECT *)Player[0] || object == (GAMEOBJECT *)Player[1]) &&
-        fabs(object->pad->waggle_magnitude) > 0.25f)
-        return;
-    if (abs(RotDiff(object->field_0x276, input_angle)) <= 0x71c6)
+    if (object == (GAMEOBJECT *)Player[0] || object == (GAMEOBJECT *)Player[1]) {
+        union {
+            f32 value;
+            u32 bits;
+        } waggle;
+        u32 bits;
+        waggle.value = object->pad->waggle_magnitude;
+        bits = waggle.bits & 0x7fffffff;
+        waggle.bits = bits;
+        if (waggle.value > 0.25f)
+            return;
+    }
+    if (abs(RotDiff(object->field_0x276, input_angle)) < 0x71c7)
         return;
     *turn = 1;
     if (object->character_context == 0x36) {
@@ -841,78 +850,100 @@ void __cdecl StartTurn(GAMEOBJECT *object) {
 }
 
 void __cdecl TurnCode(GAMEOBJECT *object, i32 mode, GAMEPAD_PC *pad) {
-    i32 turn;
-    u32 i;
-    u8 player_active;
-    GAMEOBJECT *other;
-    i32 finish_turn;
-    i32 forwards;
-    i32 other_forwards;
-    u16 input_angle;
-    f32 half_duration;
-    f32 quarter_duration;
-    f32 timer;
-    f32 lean;
-    i32 outside;
-    i32 inside;
-    u16 angle;
-    TORPEDOPACKET_PC *packet;
-    i32 index;
-
     if (WORLD->area != NULL && (WORLD->area == DOGFIGHT_ADATA || WORLD->area == PODSPRINT_ADATA)) {
         return;
     }
 
-    if (object->character_context != 0x2a) {
-        if (object->character_context != 0x36) {
-            if (object->character_context != -1) {
+    if (object->character_context == 0x2a) {
+        f32 half_duration = object->context_duration * 0.5f;
+        f32 quarter_duration = half_duration * 0.5f;
+        f32 three_quarter_duration = half_duration + quarter_duration;
+        f32 phase;
+        i32 outside;
+        i32 inside;
+        i32 i;
+        i32 index;
+
+        if ((object->flags_e24 & 4) != 0) {
+            f32 lean = (f32)(i16)object->secondary_lean_angle * (1.0f / 16384.0f);
+            object->flags_e24 &= ~4;
+            object->context_timer = object->context_duration - lean * quarter_duration;
+        }
+
+        object->context_timer -= FRAMETIME;
+        if (object->context_timer <= 0.0f) {
+            outside = OutSideSplineArea(&object->collision_position, WORLD->camera_splines[16], NULL, NULL, 0);
+            inside = OutSideSplineArea(&object->collision_position, WORLD->camera_splines[17], NULL, NULL, 1);
+            if (outside != 0 || inside != 0) {
+                object->context_timer = FRAMETIME;
                 return;
             }
-        }
 
-        player_active = 0;
-        other = NULL;
-        if ((i8)object->flags_1fc < 0) {
-            other = GetOtherActivePlayer(object);
-            player_active = object->flags_1fc & 0x80;
-        }
+            object->flags_e24 &= ~2;
+            object->character_context = -1;
+            object->facing_angle = object->movement_facing_angle = object->field_0x276 = object->facing_angle + 0x8000;
 
-        finish_turn = 0;
-        if (object->character_context == 0x36) {
-            finish_turn = (i16)object->secondary_lean_angle >= 0 && object->secondary_lean_angle <= 0x4000;
-        }
-
-        if (player_active != 0 && object->delayed_turn_timer <= 0.0f && object->in_narrow_socket) {
-            if ((object->character_context != 0x36 || finish_turn) && other != NULL) {
-                if (other->in_narrow_socket) {
-                    forwards = GoingForwardsAlongNarrowSock(object);
-                    other_forwards = GoingForwardsAlongNarrowSock(other);
-                    if (forwards != other_forwards) {
-                        if (other->character_context == 0x2a &&
-                            0.75f * other->context_duration <= other->context_timer) {
-                            return;
-                        }
-                        StartTurn(object);
-                        return;
-                    }
-                    if (!object->in_narrow_socket) {
-                        other = NULL;
-                    }
+            if (object->torpedo != NULL) {
+                for (i = 0; i < object->torpedo->count; ++i) {
+                    object->torpedo->pickup_data[i] += 0x8000;
+                    object->torpedo->pickup_flags[i] = 0x8000 - object->torpedo->pickup_flags[i];
                 }
-                if (other != NULL && (other->character_context == 0x36 || other->character_context == 0x2a ||
-                                      other->character_context == 0x3a)) {
-                    return;
-                }
-            } else if (other != NULL && (other->character_context == 0x36 || other->character_context == 0x2a ||
-                                         other->character_context == 0x3a)) {
-                return;
             }
-        } else if (object->in_narrow_socket && other != NULL &&
-                   (other->character_context == 0x36 || other->character_context == 0x2a ||
-                    other->character_context == 0x3a)) {
+
+            object->secondary_lean_angle = 0;
+            object->movement_lean_angle = 0;
+            object->field_dc8 = 1.0f;
+            object->tertiary_lean_angle = 0;
+            object->flags_e24 &= ~4;
             return;
         }
 
+        if (object->context_timer >= three_quarter_duration) {
+            phase = object->context_timer - three_quarter_duration;
+            object->secondary_lean_angle = (i16)(i32)((1.0f - (1.0f / quarter_duration) * phase) * 16384.0f);
+            return;
+        }
+        if (!(object->context_timer >= half_duration)) {
+            return;
+        }
+        phase = object->context_timer - half_duration;
+        index = ((i32)((1.0f - (1.0f / quarter_duration) * phase) * 16384.0f + 49152.0f + 16384.0f) >> 1) & 0x7fff;
+        object->secondary_lean_angle = (i16)(i32)(20024.0f * NuTrigTable[index] + 16384.0f);
+    } else {
+        GAMEOBJECT *other;
+        i32 finish_turn;
+        i32 turn;
+        u16 input_angle;
+        u16 heading;
+
+        if (object->character_context != -1 && object->character_context != 0x36) {
+            return;
+        }
+
+        other = (object->flags_1fc & 0x80) != 0 ? GetOtherActivePlayer(object) : NULL;
+        finish_turn = object->character_context == 0x36 && (i16)object->secondary_lean_angle >= 0 &&
+                      (i16)object->secondary_lean_angle <= 0x4000;
+
+        if ((object->flags_1fc & 0x80) != 0 && object->delayed_turn_timer <= 0.0f && object->in_narrow_socket) {
+            if ((object->character_context != 0x36 || finish_turn) && other != NULL && other->in_narrow_socket) {
+                i32 other_forwards = GoingForwardsAlongNarrowSock(other);
+                i32 forwards = GoingForwardsAlongNarrowSock(object);
+                if (forwards != other_forwards) {
+                    if (other->character_context == 0x2a && other->context_timer >= 0.75f * other->context_duration) {
+                        return;
+                    }
+                    StartTurn(object);
+                    return;
+                }
+            }
+        }
+        if (object->in_narrow_socket && other != NULL &&
+            (other->character_context == 0x2a || other->character_context == 0x36 ||
+             other->character_context == 0x3a)) {
+            return;
+        }
+
+        turn = 0;
         if ((object->flags_e24 & 2) == 0 && (mode == 0 || object->character_context != -1)) {
             if ((object->flags_ef0 & 0x20000000) == 0 && UnderPlayerControl(object) == 0) {
                 return;
@@ -922,85 +953,22 @@ void __cdecl TurnCode(GAMEOBJECT *object, i32 mode, GAMEPAD_PC *pad) {
             }
 
             input_angle = GamePad_InputAngle(object, pad);
-            if (!object->in_narrow_socket) {
-                turn = 0;
-                IsTurnRequested(object, input_angle, &turn, finish_turn);
-                if (!turn)
-                    return;
-            } else {
-                turn = 0;
-                if (object->delayed_turn_timer <= 0.0f) {
-                    if (abs(RotDiff(object->sock_heading, object->movement_facing_angle)) <= 0x4000)
-                        turn = abs(RotDiff(object->sock_heading, input_angle)) > 0x6000;
-                    else
-                        turn = abs(RotDiff(object->sock_heading, input_angle)) < 0x2000;
+            if (object->in_narrow_socket && object->delayed_turn_timer <= 0.0f) {
+                heading = object->sock_heading;
+                if (abs(RotDiff(heading, object->movement_facing_angle)) <= 0x4000) {
+                    if (abs(RotDiff(heading, input_angle)) > 0x6000)
+                        turn = 1;
+                } else if (abs(RotDiff(heading, input_angle)) < 0x2000) {
+                    turn = 1;
                 }
-                IsTurnRequested(object, input_angle, &turn, finish_turn);
-                if (!turn)
-                    return;
             }
+            IsTurnRequested(object, input_angle, &turn, finish_turn);
+            if (!turn)
+                return;
         }
 
         StartTurn(object);
-        return;
     }
-
-    half_duration = object->context_duration * 0.5f;
-    quarter_duration = half_duration * 0.5f;
-
-    if ((object->flags_e24 & 4) == 0) {
-        timer = object->context_timer;
-    } else {
-        lean = (f32)(i16)object->secondary_lean_angle * (1.0f / 16384.0f);
-        object->flags_e24 &= ~4;
-        timer = object->context_duration - lean * quarter_duration;
-    }
-
-    timer -= FRAMETIME;
-    object->context_timer = timer;
-    if (timer <= 0.0f) {
-        outside = OutSideSplineArea(&object->collision_position, WORLD->camera_splines[16], NULL, NULL, 0);
-        inside = OutSideSplineArea(&object->collision_position, WORLD->camera_splines[17], NULL, NULL, 1);
-        if (outside != 0 || inside != 0) {
-            object->context_timer = FRAMETIME;
-            return;
-        }
-
-        angle = object->facing_angle + 0x8000;
-        object->flags_e24 &= ~2;
-        object->character_context = -1;
-        object->field_0x276 = angle;
-        object->movement_facing_angle = angle;
-        object->facing_angle = angle;
-
-        packet = object->torpedo;
-        if (packet != NULL) {
-            for (i = 0; i < packet->count; ++i) {
-                packet->pickup_data[i] += 0x8000;
-                packet->pickup_flags[i] = 0x8000 - packet->pickup_flags[i];
-            }
-        }
-
-        object->secondary_lean_angle = 0;
-        object->movement_lean_angle = 0;
-        object->tertiary_lean_angle = 0;
-        object->field_dc8 = 1.0f;
-        object->flags_e24 &= ~4;
-        return;
-    }
-
-    if (timer >= half_duration + quarter_duration) {
-        object->secondary_lean_angle =
-            (i16)((1.0f - (1.0f / quarter_duration) * (timer - (half_duration + quarter_duration))) * 16384.0f);
-        return;
-    }
-    if (!(timer >= half_duration)) {
-        return;
-    }
-    index =
-        ((i32)((1.0f - (1.0f / quarter_duration) * (timer - half_duration)) * 16384.0f + 49152.0f + 16384.0f) >> 1) &
-        0x7fff;
-    object->secondary_lean_angle = (i16)(20024.0f * NuTrigTable[index] + 16384.0f);
 }
 
 void ApplyExtraRotation(GAMEOBJECT *object, NUMTX *matrix) {

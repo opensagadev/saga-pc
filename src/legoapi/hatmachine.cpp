@@ -114,9 +114,9 @@ extern "C" void __cdecl HatMachine_MoveCode(WORLDINFO *world, GAMEOBJECT *object
         if (distance < range && (special_pressed != 0 || (((HAT_USE_REQUEST_PC *)object)->request == 2 &&
                                                           ((HAT_USE_REQUEST_PC *)object)->net_wait_info != NULL))) {
             object->grapple = machine;
+            object->movement_facing_angle = machine->yaw;
             object->context_hover_target_y = 0.0f;
             object->delayed_turn_timer = 0.0f;
-            object->movement_facing_angle = machine->yaw;
             object->flags_e20 &= ~0x1000;
             object->character_context = 0x61;
             object->field_7b3 = 0;
@@ -124,19 +124,21 @@ extern "C" void __cdecl HatMachine_MoveCode(WORLDINFO *world, GAMEOBJECT *object
             object->flags_e24 |= 0x200;
             object->field_7aa = 0x5d;
             machine->animation_state = 1;
-            machine->state_duration =
-                StartupGameFlag1 != 0 ? 3.0f : AnimDuration(object->id, object->field_7aa, 0.0f, 0.0f, 1);
-            f32 end_frame = AnimListFrame(object->character_model, object->field_7aa, 0);
+            if (StartupGameFlag1 != 0)
+                machine->state_duration = 3.0f;
+            else
+                machine->state_duration = AnimDuration((i16)object->id, object->field_7aa, 0.0f, 0.0f, 1);
+            f32 end_frame = -AnimListFrame(object->character_model, object->field_7aa, 0);
             machine->flags |= 1;
-            machine->state_elapsed = -end_frame;
-            machine->state_duration += end_frame;
+            machine->state_elapsed = end_frame;
+            machine->state_duration -= end_frame;
             machine->idle_bounce_timer = 0.0f;
             LoseHelmet(object, 0, 0);
             NewRumble(object->pad->bound_pad, 0.5f, 0);
             if (object->anim_blending != 0)
                 ResetAnimPacket(&object->anim_packet, -1);
             AlertSurroundingCreatures(object, &object->collision_position);
-            object->context_timer = AnimDuration(object->id, object->field_7aa, 0.0f, 0.0f, 1);
+            object->context_timer = AnimDuration((i16)object->id, object->field_7aa, 0.0f, 0.0f, 1);
             ((HATMACHINE_PC *)object->grapple)->state_duration = object->context_timer;
             if (object->context_timer <= 0.0f)
                 object->context_timer = 2.0f;
@@ -156,56 +158,61 @@ extern "C" void __cdecl HatMachine_MoveCode(WORLDINFO *world, GAMEOBJECT *object
         if (object->context_hover_target_y > 1.0f)
             object->context_hover_target_y = 1.0f;
         object->context_timer -= FRAMETIME;
-        if (object->field_7b3 == 1) {
-            if (machine->animation_state != 4)
-                return;
-            if ((object->character_data->game_character->flags_090 & 0x10) == 0 &&
-                (object->id != (u16)id_PRINCESSLEIABOUSHH || FreePlay == 0)) {
-                PlaySfx("HatOn", &object->upper_position);
-                object->helmet = ((HATMACHINE_PC *)object->grapple)->displayed_hat;
-                if (object->helmet == 5)
-                    MakeBaddiesForgetAboutParty(1);
-            }
-            machine->displayed_hat = 0;
-            object->field_7b3 = 2;
-            if (StartupGameFlag1 != 0)
-                machine->animation_state = 6;
-        } else if (object->field_7b3 == 0) {
-            if (!(object->context_timer <= 0.0f))
-                return;
-            const bool disguise_blocked = (object->character_data->game_character->flags_090 & 0x10) == 0 &&
-                                          (object->id != (u16)id_PRINCESSLEIABOUSHH || FreePlay == 0);
-            if (object->character_model->model_data_b[0x6d] != NULL && !disguise_blocked) {
-                if (machine->animation_state == 2) {
-                    object->field_7aa = 0x6d;
-                    object->field_7b3 = 1;
-                    object->context_timer = AnimDuration(object->id, 0x6d, 0.0f, 0.0f, 1);
-                    machine->state_duration = (f64)object->context_timer * (f64)0.35f;
+        switch (object->field_7b3) {
+            case 0:
+                if (!(object->context_timer <= 0.0f))
                     return;
-                }
-                object->field_7aa = 1;
-                return;
-            }
-            if (object->character_model->model_data_b[0x5e] != NULL) {
-                if (machine->animation_state == 2) {
-                    object->field_7aa = 0x5e;
-                    object->field_7b3 = 1;
-                    object->context_timer = AnimDuration(object->id, 0x5e, 0.0f, 0.0f, 1);
-                    if (StartupGameFlag1 == 0)
+                if (object->character_model->model_data_b[0x6d] != NULL &&
+                    ((object->character_data->game_character->flags_090 & 0x10) != 0 ||
+                     (object->id == (u16)id_PRINCESSLEIABOUSHH && FreePlay != 0))) {
+                    if (machine->animation_state == 2) {
+                        object->field_7aa = 0x6d;
+                        object->field_7b3 = 1;
+                        object->context_timer = AnimDuration((i16)object->id, 0x6d, 0.0f, 0.0f, 1);
                         machine->state_duration = (f64)object->context_timer * (f64)0.35f;
+                        return;
+                    }
+                    object->field_7aa = 1;
                     return;
                 }
-                object->field_7aa = 1;
-                return;
-            }
-            if (machine->animation_state == 2) {
+                if (object->character_model->model_data_b[0x5e] != NULL) {
+                    if (machine->animation_state == 2) {
+                        object->field_7aa = 0x5e;
+                        object->field_7b3 = 1;
+                        object->context_timer = AnimDuration((i16)object->id, 0x5e, 0.0f, 0.0f, 1);
+                        if (StartupGameFlag1 == 0)
+                            machine->state_duration = (f64)object->context_timer * (f64)0.35f;
+                        return;
+                    }
+                    object->field_7aa = 1;
+                    return;
+                }
+                if (machine->animation_state != 2)
+                    return;
                 object->field_7aa = 1;
                 object->field_7b3 = 1;
                 machine->state_duration = 0.2f;
-            }
-            return;
-        } else if (object->field_7b3 != 2)
-            return;
+                return;
+            case 1:
+                if (machine->animation_state != 4)
+                    return;
+                if ((object->character_data->game_character->flags_090 & 0x10) == 0 &&
+                    (object->id != (u16)id_PRINCESSLEIABOUSHH || FreePlay == 0)) {
+                    PlaySfx("HatOn", &object->upper_position);
+                    object->helmet = ((HATMACHINE_PC *)object->grapple)->displayed_hat;
+                    if (object->helmet == 5)
+                        MakeBaddiesForgetAboutParty(1);
+                }
+                machine->displayed_hat = 0;
+                object->field_7b3 = 2;
+                if (StartupGameFlag1 != 0)
+                    machine->animation_state = 6;
+                break;
+            case 2:
+                break;
+            default:
+                return;
+        }
         if (!(object->context_timer <= 0.0f))
             return;
         object->character_context = -1;
@@ -217,23 +224,23 @@ extern "C" void __cdecl HatMachine_MoveCode(WORLDINFO *world, GAMEOBJECT *object
             PlaySfx("Hunter_Granted", &object->collision_position);
         if (((HATMACHINE_PC *)object->grapple)->configured_hat == 5)
             PlaySfx("Trooper_Granted", &object->collision_position);
+        object->grapple = NULL;
     } else {
         object->context_timer -= FRAMETIME;
         if (!(object->context_timer <= 0.0f))
             return;
-        if (object->grapple == NULL)
-            NewRumble(object->pad->bound_pad, 0.5f, 0);
-        else {
+        if (object->grapple != NULL) {
             NewBuzz(object->pad->bound_pad, 0.1f, 0);
             ((HATMACHINE_PC *)object->grapple)->hat_delay = 0.6f;
             if (((HATMACHINE_PC *)object->grapple)->configured_hat == 6)
                 PlaySfx("Hunter_Granted", &object->collision_position);
             if (((HATMACHINE_PC *)object->grapple)->configured_hat == 5)
                 PlaySfx("Trooper_Granted", &object->collision_position);
-        }
+        } else
+            NewRumble(object->pad->bound_pad, 0.5f, 0);
+        object->grapple = NULL;
         object->character_context = -1;
     }
-    object->grapple = NULL;
 }
 
 struct HATMACHINE_PROGRESS_PC {
