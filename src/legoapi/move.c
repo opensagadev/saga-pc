@@ -8082,97 +8082,110 @@ void __cdecl Climb_SetMagnetDrawOffsetTarget(GAMEOBJECT *object, NUVEC *offset) 
 }
 
 void __cdecl Climb_MoveCode(GAMEOBJECT *object) {
-    u16 input_angle;
     if (LEGOCONTEXT_CLIMB == -1)
         return;
-    if (object->character_context != LEGOCONTEXT_CLIMB) {
-        i32 can_enter = object->character_context == -1 ||
-                        (ZipUpWallShuffleContextPc != -1 && object->character_context == ZipUpWallShuffleContextPc);
-        if (!can_enter && LEGOCONTEXT_JUMP != -1 && object->character_context == LEGOCONTEXT_JUMP)
-            can_enter =
-                object->context_timer >= 1.0f || (object->context_timer >= (f64)0.1f && object->velocity.y <= 0.0f);
-        if (!can_enter && LEGOCONTEXT_GLIDE != -1 && object->character_context == LEGOCONTEXT_GLIDE)
-            can_enter = object->grapple == NULL;
-        if (!can_enter || !(object->pad->input_magnitude > 0.0f) || object->contact_count == 0 ||
-            !(fabs(object->contact_normal.y) < NuTrigTable[0x3000]) ||
+    if (object->character_context == LEGOCONTEXT_CLIMB) {
+        u16 input_angle;
+        if ((object->pad->buttons_pressed & GAMEPAD_JUMP) != 0 && object->context_variant != 5) {
+            StartJump(object, 0);
+            object->flags_e24 |= 0x1000;
+            object->velocity.x =
+                -NuTrigTable[object->movement_facing_angle >> 1] * object->character_data->game_character->run_speed;
+            object->velocity.z = -NuTrigTable[((object->movement_facing_angle + 0x4000) >> 1) & 0x7fff] *
+                                 object->character_data->game_character->run_speed;
+            return;
+        }
+        input_angle = GamePad_InputAngle(object, object->pad);
+        if ((object->field_281 & 2) != 0 && object->jump_animation_state == object->context_variant) {
+            object->character_context = -1;
+        } else if ((object->field_281 & 2) != 0 && object->jump_animation_state != object->context_variant &&
+                   object->pad->input_magnitude > 0.0f &&
+                   PushingTowardsAngle(input_angle, object->movement_facing_angle) < 0.0f) {
+            object->character_context = -1;
+        } else if (object->contact_count != 0 && object->contact_material[0] == object->context_variant) {
+            object->context_duration = 0.25f;
+            object->movement_facing_angle = NuAtan2D(object->contact_position.x - object->position.x,
+                                                     object->contact_position.z - object->position.z);
+            object->external_force = object->contact_normal;
+            object->launch_origin = object->contact_position;
+            FindAnglesXY(&object->external_force, &object->field_7a4, NULL);
+        } else {
+            object->context_duration -= FRAMETIME;
+            if (object->context_duration <= 0.0f)
+                object->character_context = -1;
+        }
+        if (object->character_context != LEGOCONTEXT_CLIMB)
+            return;
+        if (object->context_variant == 5) {
+            Climb_SetMagnetAction(object);
+            Climb_SetMagnetDrawOffsetTarget(object, &object->context_position_offset);
+            object->flags_e24 |= 0x2000;
+            if (object->pad->input_magnitude > 0.0f)
+                object->tertiary_lean_angle = SeekRot(
+                    object->tertiary_lean_angle, RotDiff(object->movement_facing_angle, input_angle) & 0xffff, 9.0f);
+        } else {
+            if (object->pad->input_magnitude > 0.0f) {
+                if (abs(RotDiff(object->movement_facing_angle, GamePad_InputAngle(object, object->pad))) <= 0x4000)
+                    object->field_7aa = LEGOACT_CLIMB_UP;
+                else
+                    object->field_7aa = LEGOACT_CLIMB_DOWN;
+                if (object->character_model->model_data_b[object->field_7aa] == NULL)
+                    object->field_7aa = LEGOACT_CLIMB_IDLE;
+            } else {
+                object->field_7aa = LEGOACT_CLIMB_IDLE;
+            }
+        }
+    } else {
+        union {
+            f32 value;
+            u32 bits;
+        } normal_y, normal_y_abs;
+        NUVEC normal;
+        i32 surface;
+        NUVEC forward;
+        f32 x, z;
+        if (object->character_context == -1)
+            goto enter_climb;
+        if (ZipUpWallShuffleContextPc != -1 && object->character_context == ZipUpWallShuffleContextPc)
+            goto enter_climb;
+        if (LEGOCONTEXT_JUMP != -1 && object->character_context == LEGOCONTEXT_JUMP) {
+            if (object->context_timer >= 1.0f || (object->context_timer >= 0.1f && object->velocity.y <= 0.0f))
+                goto enter_climb;
+        }
+        if (LEGOCONTEXT_GLIDE != -1 && object->character_context == LEGOCONTEXT_GLIDE && object->grapple == NULL)
+            goto enter_climb;
+        return;
+    enter_climb:
+        if (!(object->pad->input_magnitude > 0.0f) || object->contact_count == 0)
+            return;
+        normal_y.value = object->contact_normal.y;
+        normal_y_abs.bits = normal_y.bits & 0x7fffffff;
+        if (!(normal_y_abs.value < NuTrigTable[0x3000]) ||
             CanClimbSurface(object, (i8)object->contact_material[0]) == 0)
             return;
-        {
-            NUVEC normal = object->contact_normal;
-            i8 surface = (i8)object->contact_material[0];
-            NUVEC forward;
-            f32 x, z;
-            NuVecRotateY(&forward, &v001, object->movement_facing_angle);
-            x = object->contact_position.x - object->position.x;
-            z = object->contact_position.z - object->position.z;
-            if (!(forward.x * x + forward.z * z > 0.0))
-                return;
-            object->movement_facing_angle = NuAtan2D(x, z);
-            object->velocity.y = 0.0f;
-            object->character_context = (i8)LEGOCONTEXT_CLIMB;
-            object->context_variant = (u8)surface;
-            object->context_duration = 0.25f;
-            if (surface == 5) {
-                Climb_SetMagnetAction(object);
-                Climb_SetMagnetDrawOffsetTarget(object, &object->context_position_offset);
-            } else
-                object->field_7aa = LEGOACT_CLIMB_IDLE;
-            object->launch_origin = object->contact_position;
-            object->external_force = normal;
-            FindAnglesXY(&object->external_force, &object->field_7a4, NULL);
-            object->velocity.z = 0.0f;
-            object->velocity.x = 0.0f;
-        }
-        return;
-    }
-    if ((object->pad->buttons_pressed & GAMEPAD_JUMP) != 0 && object->context_variant != 5) {
-        u16 angle;
-        StartJump(object, 0);
-        object->flags_e24 |= 0x1000;
-        angle = object->movement_facing_angle;
-        object->velocity.x = -NuTrigTable[angle >> 1] * object->character_data->game_character->run_speed;
-        object->velocity.z =
-            -NuTrigTable[((angle + 0x4000) >> 1) & 0x7fff] * object->character_data->game_character->run_speed;
-        return;
-    }
-    input_angle = GamePad_InputAngle(object, object->pad);
-    if ((object->field_281 & 2) != 0 && (object->jump_animation_state == object->context_variant ||
-                                         (object->pad->input_magnitude > 0.0f &&
-                                          PushingTowardsAngle(input_angle, object->movement_facing_angle) < 0.0f)))
-        object->character_context = -1;
-    else if (object->contact_count != 0 && object->contact_material[0] == object->context_variant) {
-        f32 x, z;
-        object->context_duration = 0.25f;
+        normal = object->contact_normal;
+        surface = (i8)object->contact_material[0];
+        NuVecRotateY(&forward, &v001, object->movement_facing_angle);
         x = object->contact_position.x - object->position.x;
         z = object->contact_position.z - object->position.z;
+        if (!(forward.x * x + forward.z * z > 0.0f))
+            return;
         object->movement_facing_angle = NuAtan2D(x, z);
-        object->external_force = object->contact_normal;
+        object->velocity.y = 0.0f;
+        object->character_context = (u8)LEGOCONTEXT_CLIMB;
+        object->context_variant = (u8)surface;
+        object->context_duration = 0.25f;
+        if (object->context_variant == 5) {
+            Climb_SetMagnetAction(object);
+            Climb_SetMagnetDrawOffsetTarget(object, &object->context_position_offset);
+        } else {
+            object->field_7aa = LEGOACT_CLIMB_IDLE;
+        }
+        object->external_force = normal;
         object->launch_origin = object->contact_position;
         FindAnglesXY(&object->external_force, &object->field_7a4, NULL);
-    } else {
-        object->context_duration -= FRAMETIME;
-        if (object->context_duration <= 0.0f)
-            object->character_context = -1;
-    }
-    if (object->character_context != LEGOCONTEXT_CLIMB)
-        return;
-    if (object->context_variant == 5) {
-        Climb_SetMagnetAction(object);
-        Climb_SetMagnetDrawOffsetTarget(object, &object->context_position_offset);
-        object->flags_e24 |= 0x2000;
-        if (object->pad->input_magnitude > 0.0f)
-            object->tertiary_lean_angle =
-                SeekRot(object->tertiary_lean_angle, (u16)RotDiff(object->movement_facing_angle, input_angle), 9.0f);
-    } else {
-        if (object->pad->input_magnitude > 0.0f) {
-            i32 difference = RotDiff(object->movement_facing_angle, GamePad_InputAngle(object, object->pad));
-            if (difference < 0)
-                difference = -difference;
-            object->field_7aa = difference > 0x4000 ? LEGOACT_CLIMB_DOWN : LEGOACT_CLIMB_UP;
-            if (object->character_model->model_data_b[object->field_7aa] != NULL)
-                return;
-        }
-        object->field_7aa = LEGOACT_CLIMB_IDLE;
+        object->velocity.z = 0.0f;
+        object->velocity.x = 0.0f;
     }
 }
 
