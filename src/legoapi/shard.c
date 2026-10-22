@@ -1292,118 +1292,132 @@ i32 __cdecl BuyShopItem(shopitem_s *items, i32 index, i32 charge) {
     return 1;
 }
 
+/* The retail move code is written out per shelf slot: any compiler-unrolled
+ * loop in the function makes VC8 schedule the x87 operands differently. */
+#define SHOP_RESET_SHELF_POSITIONS()                                                                                   \
+    positions[0] = SubShelfPos[0];                                                                                     \
+    positions[1] = SubShelfPos[1];                                                                                     \
+    positions[2] = SubShelfPos[2];                                                                                     \
+    positions[3] = SubShelfPos[3];                                                                                     \
+    positions[4] = SubShelfPos[4];                                                                                     \
+    positions[5] = SubShelfPos[5];                                                                                     \
+    positions[6] = SubShelfPos[6];
+#define SHOP_SLIDE_SLOT(i, j)                                                                                          \
+    t = SHOP_CLAMP01(t);                                                                                               \
+    positions[i].x = SubShelfPos[i].x + (SubShelfPos[j].x - SubShelfPos[i].x) * t;                                     \
+    positions[i].y = SubShelfPos[i].y + (SubShelfPos[j].y - SubShelfPos[i].y) * t;                                     \
+    positions[i].z = SubShelfPos[i].z + (SubShelfPos[j].z - SubShelfPos[i].z) * t;
+
 /* 004c2b00..004c31fd. Right moves IDs toward index zero, interpolates slots
  * 1..6 toward their previous shelf slot, and uses the PC scale2 owner. */
 i32 __cdecl MoveSubItemsRight(i32 *ids, NUVEC *positions, i32 count) {
-    i32 i, angle;
-    f32 phase, reverse_phase, factor;
-    if (!(ShopSlideTimerPc <= 0.0f)) {
-        phase = (f32)(1.0 - (f64)ShopSlideTimerPc * 8.0);
-        reverse_phase = (f32)(1.0 - (f64)phase);
-        angle = (i32)((f64)phase * 32768.0 + 16384.0);
-        factor = (f32)(1.0 - ((f64)NuTrigTable[(angle >> 1) & 0x7fff] + 1.0) * 0.5);
-        for (i = 1; i < 7; ++i) {
-            factor = factor < 1.0f ? factor : 1.0f;
-            factor = 0.0f > factor ? 0.0f : factor;
-            positions[i].x = SubShelfPos[i].x + (SubShelfPos[i - 1].x - SubShelfPos[i].x) * factor;
-            positions[i].y = SubShelfPos[i].y + (SubShelfPos[i - 1].y - SubShelfPos[i].y) * factor;
-            positions[i].z = SubShelfPos[i].z + (SubShelfPos[i - 1].z - SubShelfPos[i].z) * factor;
-        }
-        factor = factor < 1.0f ? factor : 1.0f;
-        factor = 0.0f > factor ? 0.0f : factor;
-        scale3 = scalepicked + (scalenorm - scalepicked) * factor;
-        factor = factor < 1.0f ? factor : 1.0f;
-        factor = 0.0f > factor ? 0.0f : factor;
-        scale2 = scalenorm + (scalepicked - scalenorm) * factor;
-        factor = factor < 1.0f ? factor : 1.0f;
-        factor = 0.0f > factor ? 0.0f : factor;
-        subpush[1] = SubBigCharPush + (SubNormCharPush - SubBigCharPush) * factor;
-        factor = factor < 1.0f ? factor : 1.0f;
-        factor = 0.0f > factor ? 0.0f : factor;
-        subpush[2] = SubNormCharPush + (SubBigCharPush - SubNormCharPush) * factor;
-        ShopScaleOverridePc[0] = reverse_phase;
-        ShopScaleOverridePc[6] = phase;
-        return 0;
+    i32 angle;
+    f32 phase, reverse_phase, t;
+    if (ShopSlideTimerPc <= 0.0f) {
+        ids[0] = ids[1];
+        ids[1] = ids[2];
+        ids[2] = ids[3];
+        ids[3] = ids[4];
+        ids[4] = ids[5];
+        ids[5] = ids[6];
+        ++ids[6];
+        if (ids[6] >= count)
+            ids[6] = 0;
+        ShopSlideTimerPc = 0.0f;
+        SHOP_RESET_SHELF_POSITIONS()
+        scale4 = scalenorm;
+        scale3 = scalepicked;
+        scale2 = scalenorm;
+        subpush[0] = SubNormCharPush;
+        subpush[1] = SubBigCharPush;
+        subpush[2] = SubNormCharPush;
+        ShopMoveItemsPc = 0;
+        ShopScaleOverridePc[0] = 0.0f;
+        ShopScaleOverridePc[1] = 0.4f;
+        ShopScaleOverridePc[2] = 0.8f;
+        ShopScaleOverridePc[4] = 0.8f;
+        ShopScaleOverridePc[5] = 0.4f;
+        ShopScaleOverridePc[6] = 0.0f;
+        return 1;
     }
-    for (i = 0; i < 6; ++i)
-        ids[i] = ids[i + 1];
-    ids[6] = (i32)((u32)ids[6] + 1u);
-    if (ids[6] >= count)
-        ids[6] = 0;
-    ShopSlideTimerPc = 0.0f;
-    for (i = 0; i < 7; ++i)
-        positions[i] = SubShelfPos[i];
-    scale4 = scalenorm;
-    scale3 = scalepicked;
-    scale2 = scalenorm;
-    subpush[0] = SubNormCharPush;
-    ShopMoveItemsPc = 0;
-    subpush[1] = SubBigCharPush;
-    subpush[2] = SubNormCharPush;
-    ShopScaleOverridePc[0] = 0.0f;
-    ShopScaleOverridePc[1] = 0.4f;
-    ShopScaleOverridePc[2] = 0.8f;
-    ShopScaleOverridePc[4] = 0.8f;
-    ShopScaleOverridePc[5] = 0.4f;
-    ShopScaleOverridePc[6] = 0.0f;
-    return 1;
+    t = 1.0f - ShopSlideTimerPc * 8.0f;
+    phase = t;
+    reverse_phase = 1.0f - t;
+    angle = (i32)(t * 32768.0f + 16384.0f);
+    t = 1.0f - (NuTrigTable[(angle >> 1) & 0x7fff] + 1.0f) * 0.5f;
+    SHOP_SLIDE_SLOT(1, 0)
+    SHOP_SLIDE_SLOT(2, 1)
+    SHOP_SLIDE_SLOT(3, 2)
+    SHOP_SLIDE_SLOT(4, 3)
+    SHOP_SLIDE_SLOT(5, 4)
+    SHOP_SLIDE_SLOT(6, 5)
+    t = SHOP_CLAMP01(t);
+    scale3 = scalepicked + (scalenorm - scalepicked) * t;
+    t = SHOP_CLAMP01(t);
+    scale2 = scalenorm + (scalepicked - scalenorm) * t;
+    t = SHOP_CLAMP01(t);
+    subpush[1] = SubBigCharPush + (SubNormCharPush - SubBigCharPush) * t;
+    t = SHOP_CLAMP01(t);
+    subpush[2] = SubNormCharPush + (SubBigCharPush - SubNormCharPush) * t;
+    ShopScaleOverridePc[0] = reverse_phase;
+    ShopScaleOverridePc[6] = phase;
+    return 0;
 }
 
 /* 004c3200..004c38fc. Preserve the descending PC interpolation order and
  * the distinct scale4 owner, including when positions aliases SubShelfPos. */
 i32 __cdecl MoveSubItemsLeft(i32 *ids, NUVEC *positions, i32 count) {
-    i32 i, angle;
-    f32 phase, reverse_phase, factor;
-    if (!(ShopSlideTimerPc <= 0.0f)) {
-        phase = (f32)(1.0 - (f64)ShopSlideTimerPc * 8.0);
-        reverse_phase = (f32)(1.0 - (f64)phase);
-        angle = (i32)((f64)phase * 32768.0 + 16384.0);
-        factor = (f32)(1.0 - ((f64)NuTrigTable[(angle >> 1) & 0x7fff] + 1.0) * 0.5);
-        for (i = 5; i >= 0; --i) {
-            factor = factor < 1.0f ? factor : 1.0f;
-            factor = 0.0f > factor ? 0.0f : factor;
-            positions[i].x = SubShelfPos[i].x + (SubShelfPos[i + 1].x - SubShelfPos[i].x) * factor;
-            positions[i].y = SubShelfPos[i].y + (SubShelfPos[i + 1].y - SubShelfPos[i].y) * factor;
-            positions[i].z = SubShelfPos[i].z + (SubShelfPos[i + 1].z - SubShelfPos[i].z) * factor;
-        }
-        factor = factor < 1.0f ? factor : 1.0f;
-        factor = 0.0f > factor ? 0.0f : factor;
-        scale4 = scalenorm + (scalepicked - scalenorm) * factor;
-        factor = factor < 1.0f ? factor : 1.0f;
-        factor = 0.0f > factor ? 0.0f : factor;
-        scale3 = scalepicked + (scalenorm - scalepicked) * factor;
-        factor = factor < 1.0f ? factor : 1.0f;
-        factor = 0.0f > factor ? 0.0f : factor;
-        subpush[0] = SubNormCharPush + (SubBigCharPush - SubNormCharPush) * factor;
-        factor = factor < 1.0f ? factor : 1.0f;
-        factor = 0.0f > factor ? 0.0f : factor;
-        subpush[1] = SubBigCharPush + (SubNormCharPush - SubBigCharPush) * factor;
-        ShopScaleOverridePc[0] = phase;
-        ShopScaleOverridePc[6] = reverse_phase;
-        return 0;
+    i32 angle;
+    f32 phase, reverse_phase, t;
+    if (ShopSlideTimerPc <= 0.0f) {
+        ids[6] = ids[5];
+        ids[5] = ids[4];
+        ids[4] = ids[3];
+        ids[3] = ids[2];
+        ids[2] = ids[1];
+        ids[1] = ids[0];
+        --ids[0];
+        if (ids[0] < 0)
+            ids[0] = count - 1;
+        ShopSlideTimerPc = 0.0f;
+        SHOP_RESET_SHELF_POSITIONS()
+        scale4 = scalenorm;
+        scale3 = scalepicked;
+        scale2 = scalenorm;
+        subpush[0] = SubNormCharPush;
+        subpush[1] = SubBigCharPush;
+        subpush[2] = SubNormCharPush;
+        ShopMoveItemsPc = 0;
+        ShopScaleOverridePc[0] = 0.0f;
+        ShopScaleOverridePc[1] = 0.4f;
+        ShopScaleOverridePc[2] = 0.8f;
+        ShopScaleOverridePc[4] = 0.8f;
+        ShopScaleOverridePc[5] = 0.4f;
+        ShopScaleOverridePc[6] = 0.0f;
+        return 1;
     }
-    for (i = 6; i > 0; --i)
-        ids[i] = ids[i - 1];
-    ids[0] = (i32)((u32)ids[0] - 1u);
-    if (ids[0] < 0)
-        ids[0] = (i32)((u32)count - 1u);
-    ShopSlideTimerPc = 0.0f;
-    for (i = 0; i < 7; ++i)
-        positions[i] = SubShelfPos[i];
-    scale4 = scalenorm;
-    scale3 = scalepicked;
-    scale2 = scalenorm;
-    subpush[0] = SubNormCharPush;
-    ShopMoveItemsPc = 0;
-    subpush[1] = SubBigCharPush;
-    subpush[2] = SubNormCharPush;
-    ShopScaleOverridePc[0] = 0.0f;
-    ShopScaleOverridePc[1] = 0.4f;
-    ShopScaleOverridePc[2] = 0.8f;
-    ShopScaleOverridePc[4] = 0.8f;
-    ShopScaleOverridePc[5] = 0.4f;
-    ShopScaleOverridePc[6] = 0.0f;
-    return 1;
+    t = 1.0f - ShopSlideTimerPc * 8.0f;
+    phase = t;
+    reverse_phase = 1.0f - t;
+    angle = (i32)(t * 32768.0f + 16384.0f);
+    t = 1.0f - (NuTrigTable[(angle >> 1) & 0x7fff] + 1.0f) * 0.5f;
+    SHOP_SLIDE_SLOT(5, 6)
+    SHOP_SLIDE_SLOT(4, 5)
+    SHOP_SLIDE_SLOT(3, 4)
+    SHOP_SLIDE_SLOT(2, 3)
+    SHOP_SLIDE_SLOT(1, 2)
+    SHOP_SLIDE_SLOT(0, 1)
+    t = SHOP_CLAMP01(t);
+    scale4 = scalenorm + (scalepicked - scalenorm) * t;
+    t = SHOP_CLAMP01(t);
+    scale3 = scalepicked + (scalenorm - scalepicked) * t;
+    t = SHOP_CLAMP01(t);
+    subpush[0] = SubNormCharPush + (SubBigCharPush - SubNormCharPush) * t;
+    t = SHOP_CLAMP01(t);
+    subpush[1] = SubBigCharPush + (SubNormCharPush - SubBigCharPush) * t;
+    ShopScaleOverridePc[0] = phase;
+    ShopScaleOverridePc[6] = reverse_phase;
+    return 0;
 }
 
 extern f32 ShopCheatTimerPc;
