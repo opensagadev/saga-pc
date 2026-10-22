@@ -134,13 +134,26 @@ void __cdecl NuMtxCalcDebrisFaceOn(NUMTX *m) {
     m->m33 = 1.0f;
 }
 
-void __cdecl PCClipScreenUnsupported(void) {
-}
+#define NUCAMERA_CLIP_CODE(code, v)                                                                                    \
+    {                                                                                                                  \
+        if ((v).z < global_camera.near_clip)                                                                           \
+            (code) |= 0x20;                                                                                            \
+        if ((v).z > far_clip)                                                                                          \
+            (code) |= 0x10;                                                                                            \
+        if ((v).x < -(v).z * zx)                                                                                       \
+            (code) |= 1;                                                                                               \
+        if ((v).x > (v).z * zx)                                                                                        \
+            (code) |= 2;                                                                                               \
+        if ((v).y < -(v).z * zy)                                                                                       \
+            (code) |= 8;                                                                                               \
+        if ((v).y > (v).z * zy)                                                                                        \
+            (code) |= 4;                                                                                               \
+    }
 
 i32 __cdecl NuCameraClipTestExtents(NUVEC *min, NUVEC *max, NUMTX *world, f32 far_clip, i32 clip_screen) {
     NUVEC corners[8];
     NUVEC transformed[8];
-    u8 codes[8] = {0};
+    u8 codes[8];
     i32 i;
 
     if (PCClipExtentsEnabled == 0)
@@ -157,11 +170,47 @@ i32 __cdecl NuCameraClipTestExtents(NUVEC *min, NUVEC *max, NUMTX *world, f32 fa
     else
         NuMtxMul(&clip_test_mtx, world, &vmtx);
 
-    ClipFarLimits[0] = far_clip;
-    ClipFarLimits[1] = far_clip;
-    ClipFarLimits[2] = far_clip;
     ClipFarLimits[3] = far_clip;
-    if (PCClipUseSSE != 0) {
+    ClipFarLimits[2] = far_clip;
+    ClipFarLimits[1] = far_clip;
+    ClipFarLimits[0] = far_clip;
+    if (PCClipUseSSE == 0) {
+        corners[0].x = min->x;
+        corners[0].y = min->y;
+        corners[0].z = min->z;
+        corners[1].x = max->x;
+        corners[1].y = max->y;
+        corners[1].z = max->z;
+        corners[2].x = min->x;
+        corners[2].y = min->y;
+        corners[2].z = max->z;
+        corners[3].x = max->x;
+        corners[3].y = max->y;
+        corners[3].z = min->z;
+        corners[4].x = min->x;
+        corners[4].y = max->y;
+        corners[4].z = min->z;
+        corners[5].x = min->x;
+        corners[5].y = max->y;
+        corners[5].z = max->z;
+        corners[6].x = max->x;
+        corners[6].y = min->y;
+        corners[6].z = min->z;
+        corners[7].x = max->x;
+        corners[7].y = min->y;
+        corners[7].z = max->z;
+        NuVecMtxTransformBlock(transformed, corners, &clip_test_mtx, 8);
+        memset(codes, 0, sizeof(codes));
+        for (i = 0; i < 8; i += 4) {
+            NUCAMERA_CLIP_CODE(codes[i], transformed[i]);
+            NUCAMERA_CLIP_CODE(codes[i + 1], transformed[i + 1]);
+            NUCAMERA_CLIP_CODE(codes[i + 2], transformed[i + 2]);
+            NUCAMERA_CLIP_CODE(codes[i + 3], transformed[i + 3]);
+        }
+        if ((codes[0] & codes[1] & codes[2] & codes[3] & codes[4] & codes[5] & codes[6] & codes[7]) != 0)
+            return 0;
+        return (codes[0] | codes[1] | codes[2] | codes[3] | codes[4] | codes[5] | codes[6] | codes[7]) != 0 ? 2 : 1;
+    } else {
         u32 *outcode = clip_outcode_workspace_prefix;
         ClipCornerBlocks[0].x[0] = min->x;
         ClipCornerBlocks[0].y[0] = min->y;
@@ -188,58 +237,16 @@ i32 __cdecl NuCameraClipTestExtents(NUVEC *min, NUVEC *max, NUMTX *world, f32 fa
         ClipCornerBlocks[1].y[3] = min->y;
         ClipCornerBlocks[1].z[3] = max->z;
         PCVecMtxTransformClipBlocks(ClipTransformedBlocks, ClipCornerBlocks, &clip_test_mtx, 8, outcode);
-        if ((outcode[0] & outcode[1] & outcode[2] & outcode[3] & outcode[4] & outcode[5] & outcode[6] & outcode[7]) !=
-            0)
+        if ((clip_outcode_workspace_prefix[7] & clip_outcode_workspace_prefix[6] & clip_outcode_workspace_prefix[5] &
+             clip_outcode_workspace_prefix[4] & clip_outcode_workspace_prefix[3] & clip_outcode_workspace_prefix[2] &
+             clip_outcode_workspace_prefix[1] & clip_outcode_workspace_prefix[0]) != 0)
             return 0;
-        return (outcode[0] | outcode[1] | outcode[2] | outcode[3] | outcode[4] | outcode[5] | outcode[6] |
-                outcode[7]) != 0
+        return (clip_outcode_workspace_prefix[7] | clip_outcode_workspace_prefix[6] | clip_outcode_workspace_prefix[5] |
+                clip_outcode_workspace_prefix[4] | clip_outcode_workspace_prefix[3] | clip_outcode_workspace_prefix[2] |
+                clip_outcode_workspace_prefix[1] | clip_outcode_workspace_prefix[0]) != 0
                    ? 2
                    : 1;
     }
-    corners[0].x = min->x;
-    corners[0].y = min->y;
-    corners[0].z = min->z;
-    corners[1].x = max->x;
-    corners[1].y = max->y;
-    corners[1].z = max->z;
-    corners[2].x = min->x;
-    corners[2].y = min->y;
-    corners[2].z = max->z;
-    corners[3].x = max->x;
-    corners[3].y = max->y;
-    corners[3].z = min->z;
-    corners[4].x = min->x;
-    corners[4].y = max->y;
-    corners[4].z = min->z;
-    corners[5].x = min->x;
-    corners[5].y = max->y;
-    corners[5].z = max->z;
-    corners[6].x = max->x;
-    corners[6].y = min->y;
-    corners[6].z = min->z;
-    corners[7].x = max->x;
-    corners[7].y = min->y;
-    corners[7].z = max->z;
-    NuVecMtxTransformBlock(transformed, corners, &clip_test_mtx, 8);
-    for (i = 0; i < 8; ++i) {
-        NUVEC *v = &transformed[i];
-        f32 negative_z = -v->z;
-        if (v->z < global_camera.near_clip)
-            codes[i] |= 0x20;
-        if (v->z > far_clip)
-            codes[i] |= 0x10;
-        if (v->x < negative_z * zx)
-            codes[i] |= 1;
-        if (v->x > v->z * zx)
-            codes[i] |= 2;
-        if (v->y < negative_z * zy)
-            codes[i] |= 8;
-        if (v->y > v->z * zy)
-            codes[i] |= 4;
-    }
-    if ((codes[0] & codes[1] & codes[2] & codes[3] & codes[4] & codes[5] & codes[6] & codes[7]) != 0)
-        return 0;
-    return (codes[0] | codes[1] | codes[2] | codes[3] | codes[4] | codes[5] | codes[6] | codes[7]) != 0 ? 2 : 1;
 }
 
 /* Reconstructed storage qualifiers express the original F32 checkpoints;

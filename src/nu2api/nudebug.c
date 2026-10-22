@@ -10,6 +10,9 @@ void __cdecl PCCharacterSystemExistingNoOp(void) {
 void __cdecl NuPtlDmaSlotsExhaustedPc(void) {
 }
 
+void __cdecl PCClipScreenUnsupported(void) {
+}
+
 void __cdecl NuTexAnimScriptMissingPc(char *path) {
     (void)path;
 }
