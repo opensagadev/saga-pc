@@ -5766,7 +5766,7 @@ address,symbol,size,ctype
 0x5e4d40,_NuMtlCreate3D,20,NUMTL* __cdecl(i32)
 0x5e4d60,_NuMtlCreateEx3D,19,"NUMTL* __cdecl(i32,u32)"
 0x5e4e00,_NuMtlAnimateSetSpeedScale,11,void __cdecl(f32)
-0x5e4e80,_NuMtlSetCurrentRenderPlane,30,
+0x5e4e80,_NuMtlSetCurrentRenderPlane,30,i32 __cdecl (i32)
 0x5e4ea0,_NuMtlAnimateSetMask,10,void __cdecl(i32)
 0x5e4eb0,_NuMtlInitOverride,35,"void __cdecl(i32,VARIPTR*,VARIPTR*)"
 0x5e4ee0,_NuMtlLookupVariantPC,75,
@@ -6834,7 +6834,7 @@ address,symbol,size,ctype
 0x65b630,_edanimLookupSpecial,112,"i32 __cdecl(char *, NUGSCN *)"
 0x65b700,_edbitsRegisterSaveFormat,185,
 0x0065b7e0,_edbitsRegisterBaseScene,10,void __cdecl (NUGSCN *)
-0x65b7f0,_edbitsRegisterThingsScene,10,
+0x65b7f0,_edbitsRegisterThingsScene,10,void __cdecl (NUGSCN *)
 0x0065b800,_edbitsRegisterBaseTerrain,10,void __cdecl (void *)
 0x65b830,_edbitsDrawBasicCube,791,
 0x65bb50,_edbitsDrawCube,875,

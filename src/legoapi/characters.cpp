@@ -2,6 +2,8 @@
 #include <string.h>
 #include "saga.h"
 extern "C" void __cdecl CreateUsefulMaterials(void);
+extern "C" void __cdecl edbitsRegisterThingsScene(NUGSCN *scene);
+extern "C" i32 __cdecl NuMtlSetCurrentRenderPlane(i32 render_plane);
 extern "C" void __cdecl ParticleReset(void);
 extern "C" APIDEBRISSYS_PC *__cdecl InitGameDebris(VARIPTR *, VARIPTR, i32, i32, char **, i8);
 #include "saga.h"
@@ -222,7 +224,7 @@ void __cdecl LoadPerm1(void) {
     things_scene = NuGScnRead(&permbuffer_ptr, permbuffer_end, "stuff\\things.gsc");
     terrain_scene = things_scene;
     if (things_scene != NULL) {
-        STUBBED_NAMED(edbitsRegisterThingsScene); /* Native 48aae6: things_scene. */
+        edbitsRegisterThingsScene(things_scene);
         if (things_scene->display_list != NULL)
             things_scene->display_list->render_flags |= 0x10;
     }
@@ -232,12 +234,12 @@ void __cdecl LoadPerm1(void) {
     if (StartupGameFlag1 != 0) {
         STUBBED_NAMED(BackDrop_Init); /* Native 48ab5c: stuff\\starfield.gsc,&ptr,&end. */
     }
-    STUBBED_NAMED(NuMtlSetCurrentRenderPlane); /* Native 48ab66: f. */
+    NuMtlSetCurrentRenderPlane(15);
     edpartSetParticlePage(DEBPAGE_GENERAL);
     NuStrCpy(path, "stuff\\general.par");
     if (NuFileExists(path) != 0)
         PARTPAGE_GENERAL = edpartLoadPage(path, 0, things_scene);
-    STUBBED_NAMED(NuMtlSetCurrentRenderPlane); /* Native 48abb4: zero. */
+    NuMtlSetCurrentRenderPlane(0);
     AIScriptLoadAll("scripts", &permbuffer_ptr, &permbuffer_end, NULL);
 }
 
