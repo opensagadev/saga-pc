@@ -681,22 +681,6 @@ void __cdecl PartUpdate_Basketball(PART_PC *part) {
         STUBBED_NAMED("PartUpdate_Basketball: GizmoBlowupBlowup PC567800(blowup,1,-1,-1,NULL,1)");
     }
 }
-typedef struct PART_COLLIDE_TORPEDO_PC {
-    u8 count;
-    u8 unknown_01[2];
-    u8 pickup_state;
-    u8 unknown_04[4];
-    f32 steal_timer;
-    u8 unknown_0c[8];
-    u32 pickup_data[5];
-    u32 pickup_flags[5];
-    NUVEC pickup_positions[5];
-    u8 unknown_78[0x10];
-} PART_COLLIDE_TORPEDO_PC;
-STATIC_ASSERT(sizeof(PART_COLLIDE_TORPEDO_PC) == 0x88);
-STATIC_ASSERT(offsetof(PART_COLLIDE_TORPEDO_PC, pickup_state) == 3);
-STATIC_ASSERT(offsetof(PART_COLLIDE_TORPEDO_PC, steal_timer) == 8);
-STATIC_ASSERT(offsetof(PART_COLLIDE_TORPEDO_PC, pickup_positions) == 0x3c);
 void __cdecl DeflectPart(PART_PC *, GAMEOBJECT *, f32, f32, i32, i32);
 i32 __cdecl getMaxTorpedos(GAMEOBJECT *);
 void __cdecl ReleaseBuildIt(GAMEOBJECT *, i32);
@@ -705,65 +689,123 @@ void __cdecl ObjHitShield(GAMEOBJECT *, GAMEOBJECT *, i32, void *);
 i32 __cdecl ObjHitObj(GAMEOBJECT *, GAMEOBJECT *, i32, u16, i32, i32);
 __declspec(noinline) static void PartCollidePC(PART_PC *part, i32 three_dimensional) {
     i32 i;
+    i32 slot;
+    i32 count;
+    NUVEC minimum;
+    NUVEC maximum;
     NUVEC direction;
     GIZMOPICKUP_PC pickup;
+    GAMEOBJECT *object;
     GAMEOBJECT *api;
-    i8 context;
-    PART_COLLIDE_TORPEDO_PC *packet;
+    TORPEDOPACKET_PC *packet;
     PLAYERCHARACTERCONFIG_PC *character;
-    u32 flags;
+    i8 context;
+    u64 flags;
     i32 effect;
     f32 speed;
     u16 angle;
-    const f32 radius = part->field_e4;
-    const f32 minimum_x = part->position.x - radius;
-    const f32 maximum_x = part->position.x + radius;
-    const f32 minimum_y = part->position.y - radius;
-    const f32 maximum_y = part->position.y + radius;
-    const f32 minimum_z = part->position.z - radius;
-    const f32 maximum_z = part->position.z + radius;
-    GAMEOBJECT *object = Obj;
-    i32 slot = (i32)(part - Part);
-    for (i = 0; i < HIGHGAMEOBJECT; ++i, ++object) {
-        const i8 force_player_mask = part->field_206;
-        api = object;
-        if ((api->flags_1fc_word & 0x1001) != 0x1001 || api->dead != 0)
+    minimum.x = part->position.x - part->field_e4;
+    maximum.x = part->field_e4 + part->position.x;
+    minimum.y = part->position.y - part->field_e4;
+    maximum.y = part->field_e4 + part->position.y;
+    minimum.z = part->position.z - part->field_e4;
+    maximum.z = part->field_e4 + part->position.z;
+    object = Obj;
+    api = Obj;
+    slot = (i32)(((u8 *)part - (u8 *)Part) / sizeof(PART_PC));
+    for (i = 0; i < HIGHGAMEOBJECT; ++i, ++object, ++api) {
+        if ((api->flags_1fc_word & 1) == 0 || (api->flags_1fc_word & 0x1000) == 0 || api->dead != 0)
             continue;
         context = (i8)(object->character_context);
-        if ((CInfo[context].flags & 0x8000) != 0 || (object->flags_e20 & 0x20) != 0)
+        if ((U64_PAIR(&CInfo[context].flags) & 0x8000) != 0 || (object->flags_e20 & 0x20) != 0)
             continue;
-        if (force_player_mask != 0) {
-            if ((part->flags & 0x8000) == 0 && part->owner == object)
+        if (part->field_206 == 0) {
+            if (object == part->owner) {
+                if (part->scale_time < 0.5f)
+                    continue;
+            } else if (api->field_280 != 0xff && part->scale_time < 0.25f)
                 continue;
-        } else if (part->owner == object) {
-            if (part->scale_time < 0.5f)
-                continue;
-        } else if (api->field_280 != 0xff && part->scale_time < 0.25f)
+        } else if ((part->flags & 0x8000) == 0 && part->owner == object)
             continue;
-        if (context == 0x39 || context == 0x3b || context == 0x3c)
+        if (context == 0x3b || context == 0x39 || context == 0x3c)
             continue;
         if ((part->flags & 0x4000) != 0 && (i8)part->hostility_group == api->hostility_group)
             continue;
-        if ((part->flags & 4) != 0 && (api->flags_1fc & 0x80) == 0)
+        if ((part->flags & 4) != 0 && (api->flags_1fc_word & 0x80) == 0)
             continue;
-        if (minimum_x > api->collision_max.x || api->collision_min.x > maximum_x || minimum_z > api->collision_max.z ||
-            api->collision_min.z > maximum_z)
+        if (minimum.x > api->collision_max.x || maximum.x < api->collision_min.x || minimum.z > api->collision_max.z ||
+            maximum.z < api->collision_min.z)
             continue;
-        if (three_dimensional != 0 &&
-            !((api->character_data->model_flags & 0x2000) != 0 && (part->flags & 0x40) != 0)) {
-            if (minimum_y > api->collision_max.y || api->collision_min.y > maximum_y)
+        if (three_dimensional != 0) {
+            if ((api->character_data->model_flags & 0x2000) != 0 && (part->flags & 0x40) != 0)
+                goto collect_pickup;
+            if (minimum.y > api->collision_max.y || maximum.y < api->collision_min.y)
                 continue;
         }
-        if ((part->flags & 0x40) != 0) {
+        if ((part->flags & 0x40) == 0) {
+            character = (PLAYERCHARACTERCONFIG_PC *)(api->character_data->game_character);
+            if ((character->flags_090 & 0x8000) != 0)
+                continue;
+            if (!SphereSphereOverlapScaleY(&part->position, part->field_e4, part->field_e4, &api->collision_position,
+                                           api->collision_radius, api->bounds_half_height))
+                continue;
+            if (!((part->active & 2) != 0 && (part->flags & 0x1000008) == 0x1000008))
+                KillPart(part, 1);
+            if ((part->flags & 8) != 0 && !((part->flags & 0x1000000) != 0 && (part->active & 2) != 0) &&
+                ((api->flags_1fc_word & 0x80) != 0 || (part->flags & 0x800000) == 0)) {
+                flags = U64_PAIR(&CInfo[(i8)(object->character_context)].flags);
+                if ((flags & 0x4000000) != 0 ||
+                    ((flags & 0x8000000) != 0 && (object->context_variant_flags & 0x20000) != 0)) {
+                    if (object->id == (u16)id_BOB)
+                        effect = (object->flags_ef0 & 0x200) != 0 ? 2 : 3;
+                    else if (object->blade_index != -1)
+                        effect = BladeTab[object->blade_index].hit_effect;
+                    else
+                        effect = -1;
+                    DeflectPart(part, object, GameDeflectPartSpeed, GameDeflectPartGravity, 0, effect);
+                } else {
+                    GameCam_Judder(GameCam, 0.2f, 0, NULL);
+                    ReleaseBuildIt(object, 0);
+                    ReleasePush(object);
+                    if (object->origin_scale_override >= 1.0f)
+                        ObjHitShield(part->owner, object, object->shield_hitpoints, NULL);
+                    else if (CannotKill(object)) {
+                        NewRumble(part->owner->pad->bound_pad, 0.5f, 0);
+                        NewRumble(object->pad->bound_pad, 0.5f, 0);
+                    } else {
+                        ObjHitObj((part->flags & 0x10000) != 0 ? NULL : part->owner, object, part->field_204,
+                                  (u16)(part->force_flags), 0, 1);
+                    }
+                }
+            }
+            if (api->dead != 0 || (api->flags_1fc_word & 2) != 0)
+                continue;
+            if ((part->active & 1) == 0) {
+                speed = api->character_data->game_character->run_speed;
+                if (api->scaled_radius > 1.0f)
+                    speed /= api->scaled_radius;
+                NuVecNorm(&direction, &part->velocity);
+                api->velocity.x += direction.x * speed;
+                api->velocity.z += direction.z * speed;
+            }
+            if ((part->flags & 0x2000000) != 0 && ((part->flags & 0x4000000) == 0 || (part->active & 2) != 0)) {
+                angle = NuAtan2D(api->position.x - part->position.x, api->position.z - part->position.z);
+                api->movement_direction_x =
+                    NuTrigTable[(u16)angle >> 1] * api->character_data->game_character->run_speed;
+                api->movement_direction_z =
+                    NuTrigTable[(((u16)angle + 0x4000) >> 1) & 0x7fff] * api->character_data->game_character->run_speed;
+            }
+        } else {
+        collect_pickup:
             if ((part->active & 2) == 0) {
-                if (part->part_id == 0xcb) {
-                    if (!(part->scale_time >= 0.5f))
+                if (part->part_id != 0xcb || !(part->scale_time >= 0.5f) ||
+                    (VehicleArea == 0 &&
+                     ((i8)(object->current_hp) <= 0 || (i8)(object->current_hp) >= object->field_107e))) {
+                    if (part->part_id == 0xcb)
                         continue;
-                    if (VehicleArea == 0 &&
-                        ((i8)(object->current_hp) <= 0 || (i8)(object->current_hp) >= object->field_107e))
+                    if (!(part->scale_time >= (f64)(slot % 11) * (f64)0.05f + 0.75))
                         continue;
-                } else if (!(part->scale_time >= (f64)(slot % 11) * (f64)0.05f + 0.75))
-                    continue;
+                }
             }
             if ((api->flags_1f8 & 0x40000) != 0) {
                 KillPart(part, 2);
@@ -775,77 +817,27 @@ __declspec(noinline) static void PartCollidePC(PART_PC *part, i32 three_dimensio
             } else if (part->part_id == 0xd0) {
                 CollectPowerUp(object, &part->position, part->rotation_y, 1);
                 KillPart(part, 2);
-            } else if (force_player_mask == 3) {
-                if ((api->character_data->model_flags & 0x2000) == 0 || object->torpedo == NULL)
+            } else if (part->field_206 == 3) {
+                if ((api->character_data->model_flags & 0x2000) == 0)
                     continue;
-                if (object->torpedo->count < getMaxTorpedos(object)) {
-                    packet = (PART_COLLIDE_TORPEDO_PC *)object->torpedo;
-                    packet->pickup_positions[packet->count] = part->position;
-                    packet->pickup_data[packet->count] = part->field_10c[0];
-                    packet->pickup_flags[packet->count] = part->field_10c[1];
-                    ++packet->count;
-                    ((PART_COLLIDE_TORPEDO_PC *)object->torpedo)->steal_timer = 0.0f;
-                    ((PART_COLLIDE_TORPEDO_PC *)object->torpedo)->pickup_state = 0;
+                if (object->torpedo == NULL)
+                    continue;
+                count = object->torpedo->count;
+                packet = object->torpedo;
+                if (count < getMaxTorpedos(object)) {
+                    packet->pickup_positions[count] = part->position;
+                    object->torpedo->pickup_data[object->torpedo->count] = part->field_10c[0];
+                    object->torpedo->pickup_flags[object->torpedo->count] = part->field_10c[1];
+                    ++object->torpedo->count;
+                    object->torpedo->steal_timer = 0.0f;
+                    object->torpedo->pickup_state = 0;
                     KillPart(part, 2);
                 }
             } else {
-
                 SetCoinType(part->part_id, &pickup);
                 GizmoPickup_CollectCoin(WORLD, &part->position, pickup.type_index, pickup.model_variant, object, 1);
                 KillPart(part, 2);
             }
-            continue;
-        }
-        character = (PLAYERCHARACTERCONFIG_PC *)(api->character_data->game_character);
-        if ((character->flags_090 & 0x8000) != 0)
-            continue;
-        if (!SphereSphereOverlapScaleY(&part->position, part->field_e4, part->field_e4, &api->collision_position,
-                                       api->collision_radius, api->bounds_half_height))
-            continue;
-        if (!((part->active & 2) != 0 && (part->flags & 0x1000008) == 0x1000008))
-            KillPart(part, 1);
-        if ((part->flags & 8) != 0 && !((part->flags & 0x1000000) != 0 && (part->active & 2) != 0) &&
-            ((api->flags_1fc & 0x80) != 0 || (part->flags & 0x800000) == 0)) {
-            flags = CInfo[(i8)(object->character_context)].flags;
-            if ((flags & 0x4000000) != 0 ||
-                ((flags & 0x8000000) != 0 && (object->context_variant_flags & 0x20000) != 0)) {
-                effect = -1;
-                if (object->id == (u16)id_BOB)
-                    effect = (object->flags_ef0 & 0x200) != 0 ? 2 : 3;
-                else if (object->blade_index != -1)
-                    effect = BladeTab[object->blade_index].hit_effect;
-                DeflectPart(part, object, GameDeflectPartSpeed, GameDeflectPartGravity, 0, effect);
-            } else {
-                GameCam_Judder(GameCam, 0.2f, 0, NULL);
-                ReleaseBuildIt(object, 0);
-                ReleasePush(object);
-                if (object->origin_scale_override >= 1.0f)
-                    ObjHitShield(part->owner, object, object->shield_hitpoints, NULL);
-                else if (!CannotKill(object)) {
-                    ObjHitObj((part->flags & 0x10000) != 0 ? NULL : part->owner, object, part->field_204,
-                              (u16)(part->force_flags), 0, 1);
-                } else {
-                    NewRumble(part->owner->pad->bound_pad, 0.5f, 0);
-                    NewRumble(object->pad->bound_pad, 0.5f, 0);
-                }
-            }
-        }
-        if (api->dead != 0 || (api->flags_1fc & 2) != 0)
-            continue;
-        if ((part->active & 1) == 0) {
-            speed = api->character_data->game_character->run_speed;
-            if (api->scaled_radius > 1.0f)
-                speed /= api->scaled_radius;
-
-            NuVecNorm(&direction, &part->velocity);
-            api->velocity.x += direction.x * speed;
-            api->velocity.z += direction.z * speed;
-        }
-        if ((part->flags & 0x2000000) != 0 && ((part->flags & 0x4000000) == 0 || (part->active & 2) != 0)) {
-            angle = NuAtan2D(api->position.x - part->position.x, api->position.z - part->position.z);
-            speed = api->character_data->game_character->run_speed;
-            api->movement_direction_x = NuTrigTable[(u16)angle >> 1] * speed;
-            api->movement_direction_z = NuTrigTable[(((u16)angle + 0x4000) >> 1) & 0x7fff] * speed;
         }
     }
 }

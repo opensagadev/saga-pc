@@ -36,6 +36,9 @@ typedef double f64;
 #define STATIC_ASSERT(expression) typedef char SAGA_JOIN(saga_static_assert_, __LINE__)[(expression) ? 1 : -1]
 #define STUBBED() ((void)0)
 #define STUBBED_NAMED(name) ((void)0)
+// Retail reads several adjacent u32 pairs (bit masks, CInfo flags) as one 64-bit value.  The structs keep their u32
+// members so that their alignment stays at 4; this accesses such a pair in place as a u64.
+#define U64_PAIR(pair) (*(u64 *)(pair))
 #define AREA_GLOBALS_PROGRESS_FLAGS_PC (AreaGlobals_PC.progress_flags)
 
 // VC8-compatible C/C++ checks for the retail x86 data model.
@@ -1275,7 +1278,14 @@ typedef struct AIROW_PC {
     u8 next_direction;
     u8 is_alive;
     u8 unknown_2e[2];
-    u32 flags;
+    union {
+        u32 flags;
+        struct {
+            u32 is_clockwise : 1;
+            u32 is_turning : 1;
+            u32 flags_bits_2_31 : 30;
+        };
+    };
 } AIROW_PC;
 STATIC_ASSERT(sizeof(AIROW_PC) == 0x34);
 typedef struct AIGROUP_PC {
@@ -1287,7 +1297,16 @@ typedef struct AIGROUP_PC {
     u8 unknown_09[3];
     APIOBJECT_PC *members[16];
     i32 member_is_alive;
-    u32 flags;
+    union {
+        u32 flags;
+        struct {
+            u32 flags_bits_0_1 : 2;
+            u32 is_reversed : 1;
+            u32 flags_bit_3 : 1;
+            u32 is_row_turning : 1;
+            u32 flags_bits_5_31 : 27;
+        };
+    };
     AIROW_PC rows[4];
     f32 radius;
     f32 x_spacing;
@@ -5089,9 +5108,10 @@ typedef struct TORPEDOPACKET_PC {
     u8 count;
     u8 flags;
     u8 ricochet_count;
-    u8 unknown_03;
+    u8 pickup_state;
     u8 target_type;
-    u8 unknown_05[7];
+    u8 unknown_05[3];
+    f32 steal_timer;
     f32 ricochet_time;
     u8 unknown_10[4];
     u32 pickup_data[5];
@@ -5105,6 +5125,7 @@ STATIC_ASSERT(offsetof(TORPEDOPACKET_PC, count) == 0);
 STATIC_ASSERT(offsetof(TORPEDOPACKET_PC, flags) == 1);
 STATIC_ASSERT(offsetof(TORPEDOPACKET_PC, ricochet_count) == 2);
 STATIC_ASSERT(offsetof(TORPEDOPACKET_PC, target_type) == 4);
+STATIC_ASSERT(offsetof(TORPEDOPACKET_PC, steal_timer) == 8);
 STATIC_ASSERT(offsetof(TORPEDOPACKET_PC, ricochet_time) == 0xc);
 STATIC_ASSERT(offsetof(TORPEDOPACKET_PC, ricochet_position) == 0x78);
 STATIC_ASSERT(offsetof(TORPEDOPACKET_PC, target) == 0x84);
@@ -5184,6 +5205,11 @@ typedef struct gameobject_s {
         struct {
             u8 flags_1fc_low;
             u8 field_1fd;
+        };
+        struct {
+            u32 flags_1fc_bits_0_12 : 13;
+            u32 flags_1fc_bit_13 : 1;
+            u32 flags_1fc_bits_14_31 : 18;
         };
     };
     f32 movement_direction_x;
@@ -5586,7 +5612,15 @@ typedef struct gameobject_s {
     f32 field_ee0;
     f32 tag_reset_timer;
     f32 pause_context_state;
-    u32 portal_flags;
+    union {
+        u32 portal_flags;
+        struct {
+            u32 portal_bits_0_19 : 20;
+            u32 respawnable : 1;
+            u32 respawn_at_origin : 1;
+            u32 portal_bits_22_31 : 10;
+        };
+    };
     u32 flags_ef0;
     u32 flags_ef4;
     union {
