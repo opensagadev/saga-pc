@@ -29179,6 +29179,9 @@ extern "C" {
 #pragma data_seg(".data$cable_ground_damping")
     f32 cable_ground_damping = 20.0f;
 
+#pragma data_seg(".data$atat_locators")
+    i32 atat_locators[4] = {0, 1, 2, 3};
+
 #pragma data_seg(".data$cable_speed")
     f32 cable_speed = 20.0f;
 }

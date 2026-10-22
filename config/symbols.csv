@@ -71,10 +71,12 @@ address,symbol,size,ctype
 0x408640,_Bolt_AlternateFire_LSW,185,
 0x00408700,_EndBolt_EwokTorpedo,21,void __cdecl (BOLT_PC *)
 0x408720,_UpdateBolt_Geonosian,64,void __cdecl(BOLT_PC *)
+0x4087a0,_CableFdiv,54,"f32 __cdecl(f32, f32)"
 0x00408800,_InitCables,127,void __cdecl (WORLDINFO *)
 0x408880,_CreateCable,147,"CABLE_RECORD_PC *__cdecl(GAMEOBJECT*,GAMEOBJECT*,i32)"
-0x408960,_ReleaseCable,213,
-0x408af0,_UpdateCables,3725,
+0x408960,_ReleaseCable,213,"void __cdecl(CABLE_RECORD_PC *, i32)"
+0x408a40,_CableAtstToppled,175,void __cdecl(GAMEOBJECT *)
+0x408af0,_UpdateCables,3725,void __cdecl(void)
 0x409980,_DrawCables,2326,
 0x40a2a0,_CableTargetGameObject,517,"GAMEOBJECT *__cdecl(GAMEOBJECT*,NUVEC*,f32)"
 0x40a520,@PCDeviceBackend_GetActiveAspectPc@4,64,f32 __fastcall (PC_DEVICE_BACKEND_PC *)
@@ -18584,6 +18586,7 @@ address,symbol,size,ctype
 0x7ef210,_AttractoRegistryNamePc,4,char *
 0x7ef224,_BatarangCatwomanStunTimePc,4,f32
 0x007ef388,_GlobalBoltType,7216,BOLTTYPE_PC[44]
+0x7f1024,_atat_locators,16,i32[4]
 0x7f1034,_cable_speed,4,f32
 0x007f1038,_default_targetmomf,4,f32
 0x007f103c,_default_ownermomf,4,f32
