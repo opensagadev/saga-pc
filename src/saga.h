@@ -15353,7 +15353,7 @@ void __cdecl PCSoundAlreadyPlayingHook(void);
                                            void *, NUMTX *, ANI3_ROOT_CALLBACK_PC, void *);
     void __cdecl NuAnimData2CalcTime(NUANIMDATA2_PC *, f32, NUANIM_TIME2_PC *);
     i32 __cdecl NuAnimNumNodes(NUANIMDATA2_PC *);
-    f32 __cdecl NuAnimCurve2CalcValEx(DWA_CURVE_CELL_PC *, NUANIM_TIME2_PC *, i32);
+    f32 __cdecl NuAnimCurve2CalcValEx(DWA_CURVE_CELL_PC *, NUANIM_TIME2_PC *, u32);
     extern i32 DdMaxJointsPc;
     extern i32 DwaWeightCursorPc;
     extern i32 DwaPointerCursorPc;

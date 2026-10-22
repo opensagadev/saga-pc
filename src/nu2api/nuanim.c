@@ -2538,101 +2538,116 @@ STATIC_ASSERT(offsetof(PCCurveScaled4, time_scale) == 12);
 STATIC_ASSERT(sizeof(PCCurveStepKey) == 8);
 STATIC_ASSERT(offsetof(PCCurveStepKey, value) == 0);
 
-f32 __cdecl NuAnimCurve2CalcValEx(DWA_CURVE_CELL_PC *curve, NUANIM_TIME2_PC *time, i32 format) {
-    PCCurveBlock *block = (PCCurveBlock *)curve->encoded;
-    u32 bits = block->chunk_bits[time->chunk];
-    u8 *bytes = (u8 *)&bits;
-    i32 consumed = 0, index;
-    volatile f32 value0, value1;
-    volatile f32 t, tangent0, tangent1, duration;
+/* Cubic Hermite coefficient; the value difference is spelled twice so VC8 keeps it in a register. */
+#define PC_CURVE_HERMITE_COEFF(value0, value1, tangent0, tangent1, t)                                                  \
+    (((((value0) - (value1)) * 2.0 + (tangent0) + (tangent1)) * (t) - ((value0) - (value1)) * 3.0) -                   \
+     (tangent0) * 2.0 - (tangent1))
+
+f32 __cdecl NuAnimCurve2CalcValEx(DWA_CURVE_CELL_PC *curve, NUANIM_TIME2_PC *time, u32 format) {
+    PCCurveBlock *block;
+    u32 *key_mask;
+    i32 key = 0;
+    i32 key_offset;
+    block = (PCCurveBlock *)curve->encoded;
+    key_mask = block->chunk_bits + time->chunk;
     if (format == 4) {
         i32 shift = (i32)NuFloor(time->time_offset) - 1;
-        return (f32)((bits >> ((u32)shift & 31)) & 1);
+        return (f32)((*key_mask >> shift) & 1);
     }
     switch (time->time_byte) {
-        case 3:
-            consumed += NuAnimDataBitCount[bytes[2]];
-        case 2:
-            consumed += NuAnimDataBitCount[bytes[1]];
-        case 1:
-            consumed += NuAnimDataBitCount[bytes[0]];
         case 0:
-            consumed += NuAnimDataBitCount[bytes[time->time_byte] & time->time_mask];
+            key = NuAnimDataBitCount[((u8 *)key_mask)[0] & time->time_mask];
             break;
-        default:
+        case 1:
+            key = NuAnimDataBitCount[((u8 *)key_mask)[1] & time->time_mask] + NuAnimDataBitCount[((u8 *)key_mask)[0]];
+            break;
+        case 2:
+            key = NuAnimDataBitCount[((u8 *)key_mask)[2] & time->time_mask] + NuAnimDataBitCount[((u8 *)key_mask)[1]] +
+                  NuAnimDataBitCount[((u8 *)key_mask)[0]];
+            break;
+        case 3:
+            key = NuAnimDataBitCount[((u8 *)key_mask)[3] & time->time_mask] + NuAnimDataBitCount[((u8 *)key_mask)[2]] +
+                  NuAnimDataBitCount[((u8 *)key_mask)[1]] + NuAnimDataBitCount[((u8 *)key_mask)[0]];
             break;
     }
-    index = block->chunk_starts[time->chunk] + consumed;
+    key_offset = block->chunk_starts[time->chunk];
     switch (format) {
-        case 0:
-            return 0.0f;
         case 1: {
-            PCCurveFullKey *key = &block->values.full[index - 1];
-            volatile f32 key_duration = (f32)((f64)key[1].frame - (f64)key[0].frame);
-            t = (f32)(((f64)time->time - (f64)key[0].frame) * (f64)key[0].inverse_duration);
-            tangent0 = (f32)((f64)key[0].tangent * (f64)key_duration);
-            tangent1 = (f32)((f64)key[1].tangent * (f64)key_duration);
-
-            value0 = key[0].value;
-            value1 = key[1].value;
-            goto hermite;
+            PCCurveFullKey *first = &block->values.full[key + key_offset - 1];
+            f32 t = (time->time - first[0].frame) * first[0].inverse_duration;
+            f32 span = first[1].frame - first[0].frame;
+            f32 tangent0 = first[0].tangent * span;
+            f32 tangent1 = first[1].tangent * span;
+            f32 coefficient = PC_CURVE_HERMITE_COEFF(first[0].value, first[1].value, tangent0, tangent1, t);
+            return (coefficient * t + tangent0) * t + first[0].value;
         }
-        case 2: {
-            PCCurvePacked4 *data = block->values.packed4;
-            PCCurvePacked4Key *key = &data->keys[index - 1];
-            volatile f32 inverse_duration;
-            duration = (f32)key[1].frame - (f32)key[0].frame;
-            inverse_duration = duration == 0.0f ? 0.0f : (f32)(1.0 / (f64)duration);
-            t = (f32)((((f64)time->time - 1.0) - (f64)key[0].frame) * (f64)inverse_duration);
-            tangent0 = (f32)(((f64)key[0].tangent * (f64)data->tangent_scale) * (f64)duration);
-            tangent1 = (f32)(((f64)key[1].tangent * (f64)data->tangent_scale) * (f64)duration);
-            value0 = (f32)((f64)key[0].value * (f64)data->value_scale);
-            value1 = (f32)((f64)key[1].value * (f64)data->value_scale);
-            goto hermite;
-        }
-        case 3:
-            return block->values.step[index - 1].value;
         case 5: {
             PCCurvePacked6 *data = block->values.packed6;
-            PCCurvePacked6Key *key = &data->keys[index];
-            volatile f32 inverse_duration;
-            duration = (f32)key[1].frame - (f32)key[0].frame;
-            tangent0 = (f32)(((f64)key[0].tangent * (f64)data->tangent_scale) * (f64)duration);
-            tangent1 = (f32)(((f64)key[1].tangent * (f64)data->tangent_scale) * (f64)duration);
-            value0 = (f32)((f64)key[0].value * (f64)data->value_scale + (f64)data->value_offset);
-            value1 = (f32)((f64)key[1].value * (f64)data->value_scale + (f64)data->value_offset);
-            inverse_duration = (f32)(1.0 / (f64)duration);
-            t = (f32)((((f64)time->time - 1.0) - (f64)key[0].frame) * (f64)inverse_duration);
-            goto hermite;
+            f32 tangent_scale = data->tangent_scale;
+            f32 value_scale = data->value_scale;
+            f32 value_offset = data->value_offset;
+            PCCurvePacked6Key *first = &data->keys[key + key_offset];
+            f32 first_time = (f32)first[0].frame;
+            f32 span = (f32)first[1].frame - first_time;
+            f32 tangent0 = (f32)first[0].tangent * tangent_scale * span;
+            f32 tangent1 = (f32)first[1].tangent * tangent_scale * span;
+            f32 value0 = (f32)first[0].value * value_scale + value_offset;
+            f32 value1 = (f32)first[1].value * value_scale + value_offset;
+            f32 inverse_span = 1.0f / span;
+            f32 t = ((time->time - 1.0f) - first_time) * inverse_span;
+            f32 coefficient = PC_CURVE_HERMITE_COEFF(value0, value1, tangent0, tangent1, t);
+            return (coefficient * t + tangent0) * t + value0;
         }
         case 6: {
             PCCurveScaled4 *data = block->values.scaled4;
-            PCCurvePacked4Key *key = &data->keys[index - 1];
-            volatile f32 inverse_duration;
-            volatile f32 frame0 = (f32)((f64)key[0].frame * (f64)data->time_scale);
-            volatile f32 frame1 = (f32)((f64)key[1].frame * (f64)data->time_scale);
-            if (frame0 == frame1)
-                frame1 = (f32)((f64)frame0 + 1.0);
-            duration = frame1 - frame0;
-            tangent0 = (f32)(((f64)key[0].tangent * (f64)data->tangent_scale) * (f64)duration);
-            tangent1 = (f32)(((f64)key[1].tangent * (f64)data->tangent_scale) * (f64)duration);
-            value0 = (f32)((f64)key[0].value * (f64)data->value_scale + (f64)data->value_offset);
-            value1 = (f32)((f64)key[1].value * (f64)data->value_scale + (f64)data->value_offset);
-            inverse_duration = (f32)(1.0 / (f64)duration);
-            t = (f32)(((f64)time->time - (f64)frame0) * (f64)inverse_duration);
-            goto hermite;
+            f32 tangent_scale = data->tangent_scale;
+            f32 value_scale = data->value_scale;
+            f32 value_offset = data->value_offset;
+            f32 time_scale = data->time_scale;
+            PCCurvePacked4Key *first = &data->keys[key + key_offset - 1];
+            f32 first_time = (f32)first[0].frame * time_scale;
+            f32 next_time = (f32)first[1].frame * time_scale;
+            f32 span, tangent0, tangent1, value0, value1, inverse_span, t, coefficient;
+            if (next_time == first_time)
+                next_time = first_time + 1.0f;
+            span = next_time - first_time;
+            tangent0 = (f32)first[0].tangent * tangent_scale * span;
+            tangent1 = (f32)first[1].tangent * tangent_scale * span;
+            value0 = (f32)first[0].value * value_scale + value_offset;
+            value1 = (f32)first[1].value * value_scale + value_offset;
+            inverse_span = 1.0f / span;
+            t = ((time->time - 1.0f) - first_time) * inverse_span;
+            coefficient = PC_CURVE_HERMITE_COEFF(value0, value1, tangent0, tangent1, t);
+            return (coefficient * t + tangent0) * t + value0;
         }
+        case 2: {
+            PCCurvePacked4 *data = block->values.packed4;
+            PCCurvePacked4Key *first = &data->keys[key + key_offset - 1];
+            f32 first_time = (f32)first[0].frame;
+            f32 span = (f32)first[1].frame - first_time;
+            f32 inverse_span;
+            f32 tangent_scale, value_scale, tangent0, tangent1, value0, value1, t, coefficient;
+            if (span == 0.0f)
+                inverse_span = 0.0f;
+            else
+                inverse_span = 1.0f / span;
+            tangent_scale = data->tangent_scale;
+            value_scale = data->value_scale;
+            tangent0 = (f32)first[0].tangent * tangent_scale * span;
+            tangent1 = (f32)first[1].tangent * tangent_scale * span;
+            value0 = (f32)first[0].value * value_scale;
+            value1 = (f32)first[1].value * value_scale;
+            t = ((time->time - 1.0f) - first_time) * inverse_span;
+            coefficient = PC_CURVE_HERMITE_COEFF(value0, value1, tangent0, tangent1, t);
+            return (coefficient * t + tangent0) * t + value0;
+        }
+        case 3:
+            return block->values.step[key + key_offset - 1].value;
+        case 0:
+            return 0.0f;
         default:
             return 0.0f;
     }
-
-hermite: {
-
-    volatile f32 coefficient = (f32)(((2.0 * ((f64)value0 - (f64)value1) + (f64)tangent0 + (f64)tangent1) * (f64)t) -
-                                     3.0 * ((f64)value0 - (f64)value1) - 2.0 * (f64)tangent0 - (f64)tangent1);
-    volatile f32 result = (f32)((((f64)coefficient * (f64)t + (f64)tangent0) * (f64)t) + (f64)value0);
-    return result;
-}
 }
 
 /* Genuine in-place operations; no reconstruction-only helper symbols. */
@@ -2642,7 +2657,7 @@ hermite: {
         if (formats[(channel)] == 0)                                                                                   \
             pc_curve_value = curves[(channel)].constant;                                                               \
         else                                                                                                           \
-            pc_curve_value = NuAnimCurve2CalcValEx(&curves[(channel)], time, (i32)formats[(channel)]);                 \
+            pc_curve_value = NuAnimCurve2CalcValEx(&curves[(channel)], time, (u32)formats[(channel)]);                 \
         (destination) = pc_curve_value;                                                                                \
     } while (0)
 

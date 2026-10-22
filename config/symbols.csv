@@ -2097,8 +2097,9 @@ address,symbol,size,ctype
 0x4d4810,_TrafficAnimSys_Reset,363,
 0x4d4980,_TrafficAnimSys_Update,373,
 0x4d4b00,_TrafficAnimSys_Draw,434,
-0x4d4dc0,_Transform_MoveCode,1102,
-0x4d5210,_TransformDrawTargetPc,685,
+0x4d4ce0,_RotateTargetMatrix,224,"void __cdecl(NUMTX *, i32)"
+0x4d4dc0,_Transform_MoveCode,1102,"void __cdecl(WORLDINFO *, GAMEOBJECT *)"
+0x4d5210,_TransformDrawTargetPc,685,"void __cdecl(NUVEC *, f32, f32)"
 0x4d54c0,_Transform_TargettedByObj,131,GAMEOBJECT *__cdecl(void *)
 0x004d5550,?GizmoBlowup_TransformDraw_Game@@YAXPAUGIZMOBLOWUP_PC@@@Z,67,
 0x4d55d0,_ZipUpArcSinePc,320,
@@ -4826,6 +4827,7 @@ address,symbol,size,ctype
 0x00596970,_ResetShadowMapRenderingFn,5,void __cdecl(void)
 0x00596980,_EnableShadowMapRenderingFn,31,void __cdecl(void)
 0x596a30,_SetShadowLight,1656,full native scene shadow-light setup
+0x5970d0,_SnakeASinPc,320,i32 __cdecl(f32)
 0x00597250,_InitSnakes,99,void __cdecl (WORLDINFO *)
 0x597350,_DestroySnakeBody,47,void __cdecl(GAMEOBJECT *)
 0x597380,_UpdateSnakeBody,670,
@@ -4838,6 +4840,7 @@ address,symbol,size,ctype
 0x597dd0,_SuperCarry_DrawObject,444,void __cdecl(GAMEOBJECT *)
 0x597f90,_SuperCarry_GetObjectPos,295,"void __cdecl(GAMEOBJECT*,NUVEC*,NUVEC*)"
 0x5980c0,_SuperCarry_Throw,1171,"void __cdecl(GAMEOBJECT *, i32)"
+0x598560,_SuperCarry_Possible,73,"i32 __cdecl(GAMEOBJECT *, i32)"
 0x5985b0,_SuperCarry_Start,717,"void __cdecl(GAMEOBJECT *, GIZMOBLOWUP_PC *, i32)"
 0x598880,_SuperCarry_MoveCode,3768,"void __cdecl(WORLDINFO *, GAMEOBJECT *)"
 0x599740,_SuperCarry_SetTargetMom,228,"i32 __cdecl(GAMEOBJECT *,float)"
@@ -13626,6 +13629,10 @@ address,symbol,size,ctype
 0x75d420,??_C@_0O@LFCBNLLB@traffic_start?$AA@,14,const char[14]
 0x75d430,??_C@_0M@GHNNDFBF@traffic_end?$AA@,12,const char[12]
 0x75d43c,??_C@_07PCAHCCKO@Traffic?$AA@,8,const char[8]
+0x75d448,__real@4023c00000000000,8,const f64
+0x75d450,__real@411e0000,4,const f32
+0x75d458,__real@401d3d70a0000000,8,const f64
+0x75d460,__real@40e9eb85,4,const f32
 0x0075d464,_GrapSwing_text,10,char[10]
 0x75d470,__real@3f3504f4,4,compiler literal
 0x75d474,__real@bf3504f4,4,compiler literal
@@ -19946,6 +19953,9 @@ address,symbol,size,ctype
 0x80511c,_ShadowLightFallbackHeightPc,4,genuine native data owner
 0x805120,_ShadowLightEyeDistancePc,4,genuine native data owner
 0x805124,_ShadowLightFocusHeightPc,4,genuine native data owner
+0x805134,_SnakeSegmentSpacingPc,4,f32
+0x805138,_SnakeHeadHeightPc,4,f32
+0x80513c,_SnakeYawSeekRatePc,4,f32
 0x805140,_SnakeSegmentHeightPc,,f32
 0x805144,_SnakeDebrisUpwardSpeedPc,,f32
 0x008051b4,_SUPERCARRY_THROWSPEED_XZ,4,f32

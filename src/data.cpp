@@ -15934,6 +15934,15 @@ extern "C" {
 }
 
 extern "C" {
+#pragma data_seg(".data$SnakeSegmentSpacingPc")
+    f32 SnakeSegmentSpacingPc = 0.15000000596046448f;
+#pragma data_seg()
+#pragma data_seg(".data$SnakeHeadHeightPc")
+    f32 SnakeHeadHeightPc = 0.15000000596046448f;
+#pragma data_seg()
+#pragma data_seg(".data$SnakeYawSeekRatePc")
+    f32 SnakeYawSeekRatePc = 5.0f;
+#pragma data_seg()
 #pragma data_seg(".data$SnakeSegmentHeightPc")
     f32 SnakeSegmentHeightPc = 0.019999999552965164f;
 #pragma data_seg()
