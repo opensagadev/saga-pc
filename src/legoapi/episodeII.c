@@ -916,3 +916,288 @@ void __cdecl JediB_Update(WORLDINFO *world) {
         }
     }
 }
+
+/* Episode II FixUpLevels callbacks (Factory_B paint puzzle, Dooku_C, Kamino). */
+
+typedef struct cutinfo_reader_pc_s {
+    u8 opaque_00_04[0x4];
+    void *instance;
+    u8 opaque_08_54[0x4c];
+    f32 previous_frame;
+} CUTINFO_READER_PC;
+STATIC_ASSERT(offsetof(CUTINFO_READER_PC, instance) == 0x4);
+STATIC_ASSERT(offsetof(CUTINFO_READER_PC, previous_frame) == 0x54);
+
+typedef struct cut_instance_reader_pc_s {
+    u8 opaque_00_88[0x88];
+    u32 flags_88;
+    u32 unknown_8c;
+    f32 current_frame;
+} CUT_INSTANCE_READER_PC;
+STATIC_ASSERT(offsetof(CUT_INSTANCE_READER_PC, flags_88) == 0x88);
+STATIC_ASSERT(offsetof(CUT_INSTANCE_READER_PC, current_frame) == 0x90);
+
+typedef struct dooku_c_pc_s {
+    GIZAIMESSAGE *total_message;
+    GIZAIMESSAGE *hit_message;
+    NUSPECIALHANDLE node;
+} DOOKU_C_PC;
+STATIC_ASSERT(sizeof(DOOKU_C_PC) == 0x14);
+
+extern f32 FactoryBConveyorStopFrame;
+f32 FactoryBConveyorStopFrame = 28.0f;
+static f32 FactoryBConveyorXSpeed = 0.0f;
+static f32 FactoryBConveyorZSpeed = 0.0f;
+extern CUTINFO *factoryb_cut;
+extern GIZAIMESSAGE *factoryb_conveyor_stopped_msg;
+static DOOKU_C_PC dooku_c = {0};
+extern GIZAIMESSAGE *kaminoe_show_hearts_msg;
+extern NUSPECIALHANDLE kaminoe_slave1;
+extern i32 PAINTPUZZLESTAGE;
+extern i32 paintmixed;
+extern i32 painttarget;
+extern i32 painttry;
+extern i32 randpaints[3];
+extern i32 paintsused[2];
+extern i32 played_sound;
+
+void __cdecl KillBossNewLevel(i32 id, i32 unused_4, f32 delay, i32 level_index);
+void __cdecl DrawForceBackEffect(NUSPECIALHANDLE *special);
+void __cdecl InitPaintPuzzle(WORLDINFO *world);
+void __cdecl UpdatePaintPuzzle(WORLDINFO *world);
+void __cdecl DrawPaintLights(void);
+void __cdecl GizPanel_Reset(void *panel);
+
+static i32 PaintMixColourPc(i32 first, i32 second) {
+    if ((first == 0 && second == 1) || (first == 1 && second == 0))
+        return 3;
+    if ((first == 2 && second == 1) || (first == 1 && second == 2))
+        return 4;
+    if ((first == 0 && second == 2) || (first == 2 && second == 0))
+        return 5;
+    return -1;
+}
+
+static void RandomisePaintsPc(void) {
+    i32 i = 0;
+    do {
+        randpaints[i] = qrand() / 21846;
+        if (i == 0) {
+            i++;
+        } else if (i == 1) {
+            if (randpaints[1] != randpaints[0])
+                i++;
+        }
+    } while (i < 2);
+    randpaints[2] = 3 - randpaints[1] - randpaints[0];
+}
+
+void __cdecl DrawPaintLights(void) {
+    i32 i;
+    for (i = 0; i < ((i8 *)factoryb_netpacket)[1]; i++) {
+        if (NuSpecialExistsFn((NUSPECIALHANDLE *)&paintlights[i]) != 0)
+            NuSpecialDrawAt((NUSPECIALHANDLE *)&green_light, NuSpecialGetDrawMtx((NUSPECIALHANDLE *)&paintlights[i]));
+    }
+    for (i = 0; i < 3; i++) {
+        i8 colour = ((i8 *)factoryb_netpacket)[3];
+        if (i == colour - 3 || colour == 0)
+            NuSpecialSetVisibility((NUSPECIALHANDLE *)&painttargetcolour[i], 1);
+        else
+            NuSpecialSetVisibility((NUSPECIALHANDLE *)&painttargetcolour[i], 0);
+    }
+}
+
+void __cdecl ResetPaintPuzzle(WORLDINFO *world) {
+    i32 i;
+    for (i = 0; i < 6; i++)
+        GizObstacle_JumpToStart((GIZOBSTACLE *)paintobst[i]->object);
+    painttry = 0;
+    PAINTPUZZLESTAGE = 1;
+    RandomisePaintsPc();
+}
+
+void __cdecl UpdatePaintPuzzle(WORLDINFO *world) {
+    i32 i;
+    i32 used = 0;
+    switch (PAINTPUZZLESTAGE) {
+        case 0:
+            GizObstacle_PlayBackwards((GIZOBSTACLE *)paintobst[paintmixed]->object);
+            for (i = 0; i < 3; i++)
+                GizPanel_Reset(paintpanel[i]->object);
+            PAINTPUZZLESTAGE = 1;
+            break;
+        case 1:
+            if (paintmixed != 0 && (((GIZOBSTACLE *)paintobst[paintmixed]->object)->anim_set->flags & 1) != 0)
+                break;
+            paintmixed = 0;
+            painttarget = randpaints[painttry] + 3;
+            PAINTPUZZLESTAGE = 2;
+            break;
+        case 2:
+            for (i = 0; i < 3; i++) {
+                if (((GIZOBSTACLE *)paintobst[i]->object)->anim_set->state == GAMEANIMSET_STATE_AT_END)
+                    paintsused[used++] = i;
+            }
+            if (used == 2) {
+                paintmixed = PaintMixColourPc(paintsused[0], paintsused[1]);
+                PAINTPUZZLESTAGE = 3;
+            } else {
+                for (i = 0; i < 3; i++) {
+                    if (GizmoGetOutput(world->gizmo_sys, paintpanel[i], 0, 0) != 0 &&
+                        ((GIZOBSTACLE *)paintobst[i]->object)->anim_set->state == 0)
+                        GizObstacle_PlayForwards((GIZOBSTACLE *)paintobst[i]->object);
+                }
+            }
+            break;
+        case 3: {
+            GIZOBSTACLE *first = (GIZOBSTACLE *)paintobst[paintsused[0]]->object;
+            if (first->anim_set->state == GAMEANIMSET_STATE_AT_END &&
+                ((GIZOBSTACLE *)paintobst[paintsused[1]]->object)->anim_set->state == GAMEANIMSET_STATE_AT_END) {
+                GizObstacle_PlayBackwards(first);
+                GizObstacle_PlayBackwards((GIZOBSTACLE *)paintobst[paintsused[1]]->object);
+                GizObstacle_PlayForwards((GIZOBSTACLE *)paintobst[paintmixed]->object);
+            } else if (((GIZOBSTACLE *)paintobst[paintmixed]->object)->anim_set->state == GAMEANIMSET_STATE_AT_END) {
+                if (paintmixed == painttarget) {
+                    painttry++;
+                    if (painttry != 3)
+                        PAINTPUZZLESTAGE = 0;
+                    else
+                        PAINTPUZZLESTAGE = 4;
+                } else {
+                    RandomisePaintsPc();
+                    painttry = 0;
+                    PAINTPUZZLESTAGE = 0;
+                }
+            }
+            break;
+        }
+        case 4:
+            GizObstacle_PlayForwards((GIZOBSTACLE *)forcetube->object);
+            ((u8 *)factoryb_netpacket)[2] = 1;
+            break;
+        default:
+            break;
+    }
+    ((u8 *)factoryb_netpacket)[0] = 0;
+    ((u8 *)factoryb_netpacket)[1] = (u8)painttry;
+    ((u8 *)factoryb_netpacket)[3] = (u8)painttarget;
+    if (((u8 *)factoryb_netpacket)[2] == 1 && played_sound == 0) {
+        PlaySfx("Fac_BonusCylUp",
+                &NuSpecialGetMtx(&((GIZOBSTACLE *)forcetube->object)->anim_set->objects->special)->translation);
+        played_sound = 1;
+    }
+}
+
+void __cdecl InitPaintPuzzle(WORLDINFO *world) {
+    i32 i;
+    ((u8 *)factoryb_netpacket)[2] = 0;
+    for (i = 0; i < 6; i++)
+        paintobst[i] = GizmoFindByName(world->gizmo_sys, obstacle_gizmotype_id, paint_name[i]);
+    for (i = 0; i < 3; i++)
+        paintpanel[i] = GizmoFindByName(world->gizmo_sys, gizpanel_gizmotype_id, paint_panel_name[i]);
+    for (i = 0; i < 3; i++)
+        NuSpecialFind(world->current_gscn, (NUSPECIALHANDLE *)&painttargetcolour[i], paint_target_colour[i], 0);
+    for (i = 0; i < 3; i++)
+        NuSpecialFind(world->current_gscn, (NUSPECIALHANDLE *)&paintlights[i], paint_light_name[i], 0);
+    forcetube = GizmoFindByName(world->gizmo_sys, obstacle_gizmotype_id, "FORCE_TUBE");
+    NuSpecialFind(world->current_gscn, (NUSPECIALHANDLE *)&green_light, "green_light_on1", 1);
+    ResetPaintPuzzle(world);
+}
+
+void __cdecl FactoryB_Init(WORLDINFO *world) {
+    factoryb_netpacket = SetLevelHack(4);
+    InitPaintPuzzle(world);
+    if (FactoryBConveyorXSpeed == 0.0f && FactoryBConveyorZSpeed == 0.0f) {
+        FactoryBConveyorXSpeed = world->current_level->conveyor_x_speed;
+        FactoryBConveyorZSpeed = world->current_level->conveyor_z_speed;
+    }
+    world->current_level->conveyor_x_speed = 0.0f;
+    world->current_level->conveyor_z_speed = 0.0f;
+}
+
+void __cdecl FactoryB_Reset(WORLDINFO *world) {
+    ResetPaintPuzzle(world);
+    factoryb_cut = NewCutScene(NULL, world->cutscene_sys, "ep2_droidfactory_conveyor", 0);
+    if (factoryb_cut != NULL && factoryb_cut->instance != NULL) {
+        ((CUT_INSTANCE_READER_PC *)factoryb_cut->instance)->flags_88 |= 2;
+        ((CUT_INSTANCE_READER_PC *)factoryb_cut->instance)->flags_88 |= 8;
+    }
+    factoryb_conveyor_stopped_msg = CheckGizAIMessage(gizaimessagesys, "conveyor_stop", NULL);
+}
+
+void __cdecl FactoryB_Update(WORLDINFO *world) {
+    GIZAIMESSAGE *message;
+    UpdatePaintPuzzle(world);
+    message = factoryb_conveyor_stopped_msg;
+    if (message != NULL && message->value != 0.0f && ((CUTINFO_READER_PC *)factoryb_cut)->previous_frame > 50.0 &&
+        ((CUTINFO_READER_PC *)factoryb_cut)->previous_frame < 54.0) {
+        ((CUT_INSTANCE_READER_PC *)factoryb_cut->instance)->current_frame = 0.0f;
+        ((CUT_INSTANCE_READER_PC *)factoryb_cut->instance)->flags_88 &= ~2u;
+        world->current_level->conveyor_x_speed = 0.0f;
+        world->current_level->conveyor_z_speed = 0.0f;
+    } else if (((CUT_INSTANCE_READER_PC *)factoryb_cut->instance)->current_frame > FactoryBConveyorStopFrame) {
+        world->current_level->conveyor_x_speed = FactoryBConveyorXSpeed;
+        world->current_level->conveyor_z_speed = FactoryBConveyorZSpeed;
+        PlaySfx("FacB_BeltLp", NULL);
+    } else {
+        world->current_level->conveyor_x_speed = 0.0f;
+        world->current_level->conveyor_z_speed = 0.0f;
+    }
+}
+
+void __cdecl FactoryB_Draw(WORLDINFO *world) {
+    DrawPaintLights();
+}
+
+void __cdecl DookuC_Reset(WORLDINFO *world) {
+    memset(&dooku_c, 0, sizeof(dooku_c));
+    if (netclient == 0) {
+        dooku_c.total_message = SetGizAIMessage(gizaimessagesys, "DookuFight", 0.0f, NULL);
+        dooku_c.hit_message = CheckGizAIMessage(gizaimessagesys, "ShowHearts", NULL);
+    }
+    NuSpecialFind(world->current_gscn, &dooku_c.node, "dooku_force", 1);
+}
+
+void __cdecl DookuC_Update(WORLDINFO *world) {
+    if (netclient == 0) {
+        if (FreePlay != 0) {
+            KillBossCompleteLevel(id_DOOKU, 0, 0.0f);
+        } else if (LevelFixupSlotPc0087b140 != NULL) {
+            KillBossNewLevel(id_DOOKU, 0, 0.0f, LevelFixupSlotPc0087b140->index);
+        }
+    }
+    DrawForceBackEffect(&dooku_c.node);
+}
+
+void __cdecl DookuC_DrawPanel(WORLDINFO *world) {
+    GAMEOBJECT *dooku;
+    if (netclient != 0)
+        return;
+    dooku = FindGameObject(id_DOOKU, 1, 1, 1, 0);
+    if (dooku != NULL && dooku_c.hit_message != NULL && dooku_c.hit_message->value == 1.0f)
+        DrawBossHitPoints(dooku);
+}
+
+void __cdecl KaminoA_AlwaysUpdate(WORLDINFO *world) {
+    debris_object_switches[1] =
+        CUTSTOPGAME == 0 && GameCam->sock_position.sock_index != 5 && GameCam->sock_position.sock_index != 6;
+}
+
+void __cdecl KaminoE_AlwaysUpdate(WORLDINFO *world) {
+    debris_object_switches[1] = CUTSTOPGAME != 0 || GameCam->sock_position.sock_index == 0x1e;
+}
+
+void __cdecl KaminoE_Draw(WORLDINFO *world) {
+    if (netclient == 0 && kaminoe_show_hearts_msg->value > 0.0f) {
+        GAMEOBJECT *jango = FindGameObject(id_JANGOFETT, 1, 1, 1, 0);
+        if (jango != NULL && kaminoe_show_hearts_msg != NULL && kaminoe_show_hearts_msg->value == 1.0f)
+            DrawBossHitPoints(jango);
+    }
+    NuSpecialSetDrawMtx(&kaminoe_slave1, NuSpecialGetDrawMtx(&kaminoe_slave1));
+    NuSpecialSetVisibility(&kaminoe_slave1, 1);
+}
+
+void __cdecl KaminoOutro_Init(WORLDINFO *world) {
+    debris_object_switches[1] =
+        CUTSTOPGAME == 0 && GameCam->sock_position.sock_index != 5 && GameCam->sock_position.sock_index != 6;
+}
