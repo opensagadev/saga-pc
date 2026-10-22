@@ -298,6 +298,89 @@ extern "C" void __cdecl GizActions_PlayCutscenePc(GIZFLOW_PC *unused0, FLOWBOX_P
     NewCutScene(NULL, (CUTSYS_PC *)WorldInfo_CurrentlyActive()->cutscene_sys, name, 0);
 }
 
+extern "C" const char GizActionLiteral7589f0[];
+extern "C" const char GizActionLiteral7589fc[];
+extern "C" const char GizActionLiteral758a08[];
+extern "C" const char GizActionLiteral758a14[];
+extern "C" const char GizActionLiteral758a1c[];
+extern "C" const char GizActionLiteral758a2c[];
+extern "C" const char GizActionLiteral758a3c[];
+extern "C" const char GizActionLiteral758a48[];
+extern "C" const char GizActionLiteral758a54[];
+extern "C" void *__cdecl Technos_FindTgt(TECHNO_s *techno);
+
+extern "C" void __cdecl GizAction_ChangeTechnoTgt(GIZFLOW_PC *unused0, FLOWBOX_PC *unused1, char **params, i32 count) {
+    GAMEOBJECT *operator_object;
+    char *target_name = NULL;
+    char *techno_name = NULL;
+    i32 target_kind = 0;
+    u8 movement = 0xff;
+    for (i32 index = 0; index < count; ++index) {
+        char *value = NuStrIStr(params[index], (char *)GizActionLiteral758a54);
+        if (value != NULL) {
+            techno_name = value + NuStrLen(GizActionLiteral758a54);
+        } else if ((value = NuStrIStr(params[index], (char *)AITransferLiteral757f28)) != NULL) {
+            target_name = value + NuStrLen(AITransferLiteral757f28);
+        } else if (NuStrICmp(value, GizActionLiteral758a48) == 0) {
+            movement = 1;
+        } else if (NuStrICmp(value, GizActionLiteral758a3c) == 0) {
+            movement = 2;
+        } else if (NuStrICmp(value, GizActionLiteral758a2c) == 0) {
+            movement = 8;
+        } else if (NuStrICmp(value, GizActionLiteral758a1c) == 0) {
+            movement = 4;
+        } else if (NuStrICmp(params[index], GizActionLiteral758a14) == 0) {
+            target_kind = 3;
+        } else if (NuStrICmp(params[index], GizActionLiteral758a08) == 0) {
+            target_kind = 2;
+        } else if (NuStrICmp(params[index], GizActionLiteral7589fc) == 0) {
+            target_kind = 1;
+        } else if (NuStrICmp(params[index], GizActionLiteral7589f0) == 0) {
+            target_kind = -1;
+        }
+    }
+    if (techno_name == NULL || (target_name == NULL && target_kind != -1)) {
+        return;
+    }
+    GIZMO_PC *gizmo = (GIZMO_PC *)GizmoFindByName(
+        WORLD->gizmo_sys, GizmoGetTypeIDByName(WORLD->gizmo_sys, (char *)PCContextName_Techno), techno_name);
+    TECHNO_s *techno = gizmo != NULL ? (TECHNO_s *)gizmo->object : NULL;
+    if (techno == NULL) {
+        return;
+    }
+    if (movement != 0xff) {
+        techno->enabled = movement;
+    }
+    if (target_kind == -1) {
+        Techno_FindOperator(techno->controlled_object, NULL, &operator_object);
+        techno->controlled_object = NULL;
+        NuStrCpy(techno->target_name, "");
+        techno->complete = 0;
+        techno->target_mode = 0;
+        if (operator_object != NULL) {
+            operator_object->character_context = -1;
+        }
+    }
+    char old_name[16];
+    void *old_controlled = techno->controlled_object;
+    NuStrCpy(old_name, techno->target_name);
+    i32 old_complete = techno->complete;
+    techno->controlled_object = NULL;
+    NuStrNCpy(techno->target_name, target_name, 16);
+    techno->target_mode = (u8)target_kind;
+    techno->complete = 0;
+    GameCam_Blend(GameCam, 0.5f, 0.0f, 1);
+    if (Technos_FindTgt(techno) == NULL) {
+        techno->target_mode = 0;
+        if (Technos_FindTgt(techno) == NULL) {
+            NuStrCpy(techno->target_name, old_name);
+            techno->complete = old_complete;
+            techno->target_mode = (u8)target_kind;
+            techno->controlled_object = old_controlled;
+        }
+    }
+}
+
 extern "C" const char GizActionLiteral758274[];
 extern "C" const char GizActionLiteral75827c[];
 extern "C" const char GizActionLiteral758280[];

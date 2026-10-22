@@ -998,7 +998,7 @@ address,symbol,size,ctype
 0x464820,_GizActions_ActivateGizmoPc,192,"void __cdecl(GIZFLOW_PC *, FLOWBOX_PC *, char **, i32)"
 0x4648e0,_GizActions_ActivateCharPc,498,"void __cdecl(GIZFLOW_PC *, FLOWBOX_PC *, char **, i32)"
 0x464ae0,_GizActions_ChangeObstTriggerType,363,
-0x464c50,_GizAction_ChangeTechnoTgt,751,
+0x464c50,_GizAction_ChangeTechnoTgt,751,"void __cdecl(GIZFLOW_PC *, FLOWBOX_PC *, char **, i32)"
 0x464f40,_GizAction_SetAIMessage,307,
 0x465080,_GizAction_SetAIState,693,
 0x465340,_GizActions_CompleteLevel,235,
@@ -12183,6 +12183,15 @@ address,symbol,size,ctype
 0x7589c8,??_C@_0BA@GEDHLMK@PROXIMITYGROUND?$AA@,16,const char[16]
 0x7589d8,??_C@_09HHKGLPDK@PROXIMITY?$AA@,10,const char[10]
 0x7589e4,??_C@_09ODCJEJAG@AUTOSTART?$AA@,10,const char[10]
+0x7589f0,_GizActionLiteral7589f0,10,const char[]
+0x7589fc,_GizActionLiteral7589fc,9,const char[]
+0x758a08,_GizActionLiteral758a08,9,const char[]
+0x758a14,_GizActionLiteral758a14,6,const char[]
+0x758a1c,_GizActionLiteral758a1c,14,const char[]
+0x758a2c,_GizActionLiteral758a2c,16,const char[]
+0x758a3c,_GizActionLiteral758a3c,10,const char[]
+0x758a48,_GizActionLiteral758a48,12,const char[]
+0x758a54,_GizActionLiteral758a54,8,const char[]
 0x758a5c,??_C@_03LAIAPFCB@Val?$AA@,4,char []
 0x00758a60,??_C@_04FABLJDN@Name?$AA@,,
 0x758a60,_GizObstacleActionNamePC,5,const char[5]

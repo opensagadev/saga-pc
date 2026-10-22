@@ -28586,6 +28586,18 @@ extern "C" {
 }
 
 extern "C" {
+    extern const char GizActionLiteral7589f0[] = "NO_TARGET";
+    extern const char GizActionLiteral7589fc[] = "CREATURE";
+    extern const char GizActionLiteral758a08[] = "HSPECIAL";
+    extern const char GizActionLiteral758a14[] = "GIZMO";
+    extern const char GizActionLiteral758a1c[] = "Move_Vertical";
+    extern const char GizActionLiteral758a2c[] = "Move_Horizontal";
+    extern const char GizActionLiteral758a3c[] = "Move_Spin";
+    extern const char GizActionLiteral758a48[] = "Move_Waggle";
+    extern const char GizActionLiteral758a54[] = "techno=";
+}
+
+extern "C" {
     void(__cdecl *ResumeGame_ExtraCodeFn)(void) = NULL;
     f32 PlayerOpponent_Range2 = 0.0f;
 }
