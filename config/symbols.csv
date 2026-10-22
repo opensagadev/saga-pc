@@ -2007,7 +2007,7 @@ address,symbol,size,ctype
 0x4cdfe0,_Tel_name,62,
 0x4ce020,_Teleports_Configure,503,"void __cdecl(WORLDINFO *,char *)"
 0x4ce220,_Teleport_Find,553,"TELEPORT_MOTION_PC *__cdecl(GAMEOBJECT *, f32)"
-0x4ce450,?TeleportGetSegmentPc@@YAXPAUgameobject_s@@PAH1@Z,138,
+0x4ce450,?TeleportGetSegmentPc@@YAXPAH0PAUgameobject_s@@@Z,138,
 0x4ce4e0,?TeleportSetSegmentDurationPc@@YAXPAUgameobject_s@@HH@Z,162,
 0x4ce590,_Teleports_Reset,92,void __cdecl(WORLDINFO *)
 0x4ce5f0,_Teleports_UpdateBeforeGameObjects,62,void __cdecl(WORLDINFO *)

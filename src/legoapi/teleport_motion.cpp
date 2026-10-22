@@ -19,6 +19,11 @@ typedef struct TELEPORT_NET_WAIT_VIEW_PC {
     u8 unknown_000[0x7a0];
     void *net_wait_info;
 } TELEPORT_NET_WAIT_VIEW_PC;
+typedef struct TELEPORT_VARIANT_VIEW_PC {
+    u8 unknown_000[0x7bc];
+    u32 variant_low_bits : 10;
+    u32 forwards : 1;
+} TELEPORT_VARIANT_VIEW_PC;
 STATIC_ASSERT(sizeof(TELEPORT_MOTION_PC) == 0xfc);
 STATIC_ASSERT(offsetof(TELEPORT_MOTION_PC, path) == 0x40);
 STATIC_ASSERT(offsetof(TELEPORT_MOTION_PC, duration) == 0x44);
@@ -36,6 +41,7 @@ STATIC_ASSERT(offsetof(TELEPORT_MOTION_PC, flap2_matrix) == 0xbc);
 STATIC_ASSERT(offsetof(TELEPORT_WORLD_PC, teleports) == 0x4680);
 STATIC_ASSERT(offsetof(TELEPORT_WORLD_PC, teleport_count) == 0x4684);
 STATIC_ASSERT(offsetof(TELEPORT_NET_WAIT_VIEW_PC, net_wait_info) == 0x7a0);
+STATIC_ASSERT(sizeof(TELEPORT_VARIANT_VIEW_PC) == 0x7c0);
 STATIC_ASSERT(offsetof(GAMEOBJECT, dead) == 0x28b);
 STATIC_ASSERT(offsetof(GAMEOBJECT, origin_scale) == 0xa8);
 STATIC_ASSERT(offsetof(GAMEOBJECT, grapple) == 0x798);
@@ -45,36 +51,6 @@ STATIC_ASSERT(offsetof(GAMEOBJECT, context_variant_flags) == 0x7bc);
 STATIC_ASSERT(offsetof(GAMEOBJECT, field_7a4) == 0x7a4);
 STATIC_ASSERT(offsetof(GAMEOBJECT, context_duration) == 0x784);
 static i32 FindTeleport_Direction = 0;
-static void TeleportGetSegmentPc(GAMEOBJECT *object, i32 *start, i32 *end) {
-    TELEPORT_MOTION_PC *teleport = (TELEPORT_MOTION_PC *)object->grapple;
-    const bool forwards = (object->context_variant_flags & 0x400) != 0;
-    if ((teleport->flags & 4) != 0) {
-        *start = forwards ? 0 : 3;
-        *end = forwards ? 3 : 0;
-    } else if (forwards) {
-        *start = object->big_jump_animation == 0 ? 0 : 2;
-        *end = object->big_jump_animation == 0 ? 1 : 3;
-    } else {
-        *start = object->big_jump_animation == 0 ? 3 : 1;
-        *end = object->big_jump_animation == 0 ? 2 : 0;
-    }
-}
-
-static void TeleportSetSegmentDurationPc(GAMEOBJECT *object, i32 start, i32 end) {
-    if (object->character_model->model_data_b[object->field_7aa] != NULL) {
-        const f32 animation_speed = AnimSpeed(object->character_model, object->field_7aa);
-        TELEPORT_MOTION_PC *teleport = (TELEPORT_MOTION_PC *)object->grapple;
-        if (animation_speed != 0.0f) {
-            NUVEC *points = teleport->path->pts;
-            object->context_duration =
-                NuVecXZDist(&points[start], &points[end], NULL) / (f32)fabs((f64)animation_speed);
-            return;
-        }
-    }
-    TELEPORT_MOTION_PC *teleport = (TELEPORT_MOTION_PC *)object->grapple;
-    object->context_duration = (teleport->flags & 4) != 0 ? 3.0f : 1.0f;
-}
-
 extern "C" TELEPORT_MOTION_PC *__cdecl Teleport_Find(GAMEOBJECT *object, f32 range_squared) {
     if (((TELEPORT_WORLD_PC *)WORLD)->teleports == NULL)
         return NULL;
@@ -120,203 +96,226 @@ extern "C" TELEPORT_MOTION_PC *__cdecl Teleport_Find(GAMEOBJECT *object, f32 ran
     return nearest == -1 ? NULL : &((TELEPORT_WORLD_PC *)WORLD)->teleports[nearest];
 }
 
+static void TeleportGetSegmentPc(i32 *start, i32 *end, GAMEOBJECT *object) {
+    TELEPORT_MOTION_PC *teleport = (TELEPORT_MOTION_PC *)object->grapple;
+    if ((teleport->flags & 4) != 0) {
+        if ((object->context_variant_flags & 0x400) != 0) {
+            *start = 0;
+            *end = 3;
+        } else {
+            *start = 3;
+            *end = 0;
+        }
+    } else if ((object->context_variant_flags & 0x400) != 0) {
+        if (object->big_jump_animation > 0) {
+            *start = 2;
+            *end = 3;
+        } else {
+            *start = 0;
+            *end = 1;
+        }
+    } else {
+        if (object->big_jump_animation > 0) {
+            *start = 1;
+            *end = 0;
+        } else {
+            *start = 3;
+            *end = 2;
+        }
+    }
+}
+
+static void TeleportSetSegmentDurationPc(GAMEOBJECT *object, i32 start, i32 end) {
+    if (object->character_model->model_data_b[object->field_7aa] != NULL) {
+        f32 animation_speed = AnimSpeed(object->character_model, object->field_7aa);
+        if (animation_speed != 0.0f) {
+            TELEPORT_MOTION_PC *teleport = (TELEPORT_MOTION_PC *)object->grapple;
+            union {
+                f32 value;
+                u32 bits;
+            } speed, speed_abs;
+            speed.value = animation_speed;
+            speed_abs.bits = speed.bits & 0x7fffffff;
+            NUVEC *points = teleport->path->pts;
+            object->context_duration = NuVecXZDist(&points[start], &points[end], NULL) / speed_abs.value;
+            return;
+        }
+    }
+    if ((((TELEPORT_MOTION_PC *)object->grapple)->flags & 4) != 0)
+        object->context_duration = 3.0f;
+    else
+        object->context_duration = 1.0f;
+}
+
 extern "C" void __cdecl Teleport_MoveCode(GAMEOBJECT *object, i32 start_immediately) {
+    TELEPORT_MOTION_PC *teleport;
+    i32 start_index;
+    i32 end_index;
     if ((object->character_data->model_flags & 0x40000) == 0 && SuperWeirdo(object) == 0)
         return;
-
-    if (object->character_context != 15) {
+    if (object->character_context == 15) {
+        if (object->field_7b3 == 0) {
+            i32 first_rotation = (object->context_variant_flags & 0x400) != 0 ? 0x4000 : 0xc000;
+            for (i32 i = 0; i < 2; ++i) {
+                teleport = (TELEPORT_MOTION_PC *)object->grapple;
+                if (!NuSpecialExistsFn(&(&teleport->flap1_special)[i]))
+                    continue;
+                teleport = (TELEPORT_MOTION_PC *)object->grapple;
+                NUVEC *position = &object->collision_position;
+                if (NuVecDistSqr(position, NuSpecialGetDrawPos(&(&teleport->flap1_special)[i]), NULL) < 0.36f) {
+                    i32 rotation = (u16)first_rotation;
+                    if (i != 0)
+                        rotation = -rotation;
+                    teleport = (TELEPORT_MOTION_PC *)object->grapple;
+                    (&teleport->flap1_target)[i] = (u16)rotation;
+                    if ((object->field_7a4 & (1 << i)) == 0) {
+                        object->field_7a4 |= (1 << i);
+                        PlaySfx("env_door_flap", position);
+                    }
+                }
+            }
+        }
+        switch (object->field_7b3) {
+            case 0: {
+                i32 completed = 0;
+                if (object->character_model->model_data_b[object->field_7aa] == NULL ||
+                    CurrentAnim(&object->anim_packet) == object->field_7aa) {
+                    object->context_timer -= FRAMETIME;
+                    if (object->context_timer <= 0.0f) {
+                        object->character_context = -1;
+                        object->context_timer = 0.0f;
+                        ((TELEPORT_MOTION_PC *)object->grapple)->active = 0;
+                        completed = 1;
+                        if ((((TELEPORT_MOTION_PC *)object->grapple)->flags & 0x10) != 0)
+                            GameCam_Blend(GameCam, 1.0f, 0.0f, 1);
+                        AlertSurroundingCreatures(object, &object->collision_position);
+                    }
+                }
+                f32 progress = 1.0f - object->context_timer / object->context_duration;
+                TeleportGetSegmentPc(&start_index, &end_index, object);
+                teleport = (TELEPORT_MOTION_PC *)object->grapple;
+                NUVEC *segment_start = &teleport->path->pts[start_index];
+                NUVEC *segment_end = &teleport->path->pts[end_index];
+                NUVEC target;
+                target.x = (segment_end->x - segment_start->x) * progress + segment_start->x;
+                target.y = (segment_end->y - segment_start->y) * progress + segment_start->y;
+                target.z = (segment_end->z - segment_start->z) * progress + segment_start->z;
+                SeekVec(&object->position, &object->position, &target, 10.0f);
+                object->velocity = v000;
+                f32 shadow_height = GameShadow(NULL, &object->position, 5.0f, -1);
+                object->floor_height = shadow_height;
+                if (shadow_height != 2000000.0) {
+                    object->position.y = shadow_height - object->character_bottom * object->origin_scale;
+                    GetSurfaceInfo(object, 1, shadow_height);
+                } else {
+                    GetSurfaceInfo(object, 0, shadow_height);
+                }
+                object->position.y += (f64)progress * (f64)0.0025f;
+                if (completed == 0)
+                    return;
+                teleport = (TELEPORT_MOTION_PC *)object->grapple;
+                if ((teleport->flags & 4) != 0 || object->big_jump_animation != 0) {
+                    object->velocity.y = -0.1f;
+                    object->field_281 = 0;
+                    return;
+                }
+                object->big_jump_animation = 1;
+                object->character_context = 15;
+                object->field_7b3 = 1;
+                object->context_timer = 2.0f;
+                object->start_position = teleport->path->pts[(object->context_variant_flags & 0x400) != 0 ? 1 : 2];
+                object->position = object->start_position;
+                GameCam_Blend(GameCam, 0.5f, 0.0f, 1);
+                return;
+            }
+            case 1: {
+                i32 landed = 0;
+                object->context_timer -= FRAMETIME;
+                f32 shadow_height = 2000000.0f;
+                f32 progress;
+                if (object->context_timer <= 0.0f) {
+                    progress = 1.0f;
+                    object->field_7b3 = 0;
+                    TeleportGetSegmentPc(&start_index, &end_index, object);
+                    TeleportSetSegmentDurationPc(object, start_index, end_index);
+                    object->context_timer = object->context_duration;
+                    teleport = (TELEPORT_MOTION_PC *)object->grapple;
+                    NUVEC *segment_start = &teleport->path->pts[start_index];
+                    NUVEC *segment_end = &teleport->path->pts[end_index];
+                    object->movement_facing_angle = object->facing_angle = object->field_0x276 =
+                        NuAtan2D(segment_end->x - segment_start->x, segment_end->z - segment_start->z);
+                    shadow_height = GameShadow(NULL, &object->position, 5.0f, -1);
+                    object->floor_height = shadow_height;
+                    landed = 1;
+                    GetSurfaceInfo(object, shadow_height != 2000000.0, shadow_height);
+                } else {
+                    progress = 1.0f - object->context_timer * 0.5;
+                }
+                if ((object->context_variant_flags & 0x400) != 0) {
+                    start_index = 1;
+                    end_index = 2;
+                } else {
+                    start_index = 2;
+                    end_index = 1;
+                }
+                NUVEC *points = ((TELEPORT_MOTION_PC *)object->grapple)->path->pts;
+                NUVEC *start = &points[start_index];
+                NUVEC *end = &points[end_index];
+                object->position.x = (end->x - start->x) * progress + start->x;
+                object->position.y = (end->y - start->y) * progress + start->y;
+                object->position.z = (end->z - start->z) * progress + start->z;
+                object->velocity = v000;
+                if (landed != 0 && shadow_height != 2000000.0)
+                    object->position.y = shadow_height - object->character_bottom * object->origin_scale;
+                return;
+            }
+            default:
+                return;
+        }
+    } else {
         if (object->field_281 == 0 || object->dead != 0)
             return;
-
-        switch (object->character_context) {
-            case 1:
-            case 0xff:
-            case 2:
-            case 3:
-            case 4:
-                break;
-            default:
-                if (objInNetWaitContext(object, 15) == 0)
-                    return;
-                break;
-        }
-
+        if (object->character_context != -1 && object->character_context != 1 && object->character_context != 2 &&
+            object->character_context != 3 && object->character_context != 4 && objInNetWaitContext(object, 15) == 0)
+            return;
         if (!(object->flags_1fc & 0x80) && object->field_f00 != 3)
             return;
-        TELEPORT_MOTION_PC *teleport = Teleport_Find(object, 0.0f);
+        teleport = Teleport_Find(object, 0.0f);
         if (teleport == NULL)
             return;
-
         if (objInNetWaitContext(object, 15) != 0) {
             object->context_timer -= FRAMETIME;
             if (object->context_timer <= 0.0f) {
-                object->character_context = 0xff;
+                object->character_context = -1;
                 ((TELEPORT_NET_WAIT_VIEW_PC *)object)->net_wait_info = NULL;
             }
         }
-
         if (start_immediately == 0 &&
             (objInNetWaitContext(object, 15) == 0 || ((TELEPORT_NET_WAIT_VIEW_PC *)object)->net_wait_info == NULL)) {
             if ((object->flags_1fc & 0x80))
                 object->flags_e24 |= 0x20;
             return;
         }
-
-        object->grapple = teleport;
         object->character_context = 15;
+        object->grapple = teleport;
         teleport->active = 1;
-        object->context_variant_flags =
-            (object->context_variant_flags & ~0x400u) | (FindTeleport_Direction == 0 ? 0x400 : 0);
+        ((TELEPORT_VARIANT_VIEW_PC *)object)->forwards = FindTeleport_Direction == 0;
         PlayJumpSfx(object, 0);
-        if ((object->flags_1fc & 0x80)) {
+        if ((object->flags_1fc & 0x80))
             Hint_SetComplete(0x268);
-        }
-
         object->field_7aa = 30;
         object->field_7b3 = 0;
         object->big_jump_animation = 0;
-
-        i32 start_index;
-        i32 end_index;
-        teleport = static_cast<TELEPORT_MOTION_PC *>(object->grapple);
-        TeleportGetSegmentPc(object, &start_index, &end_index);
+        TeleportGetSegmentPc(&start_index, &end_index, object);
         TeleportSetSegmentDurationPc(object, start_index, end_index);
         object->context_timer = object->context_duration;
-        teleport = static_cast<TELEPORT_MOTION_PC *>(object->grapple);
+        teleport = (TELEPORT_MOTION_PC *)object->grapple;
         NUVEC *segment_start = &teleport->path->pts[start_index];
         NUVEC *segment_end = &teleport->path->pts[end_index];
         object->movement_facing_angle = NuAtan2D(segment_end->x - segment_start->x, segment_end->z - segment_start->z);
+        object->velocity = v000;
         object->field_7a4 = 0;
-        object->velocity = v000;
-        return;
     }
-
-    TELEPORT_MOTION_PC *teleport = static_cast<TELEPORT_MOTION_PC *>(object->grapple);
-
-    if (object->field_7b3 == 0) {
-        u16 first_rotation = (object->context_variant_flags & 0x400) != 0 ? 0x4000 : 0xc000;
-        for (i32 i = 0; i < 2; ++i) {
-            teleport = (TELEPORT_MOTION_PC *)object->grapple;
-            NUSPECIALHANDLE *special = i == 0 ? &teleport->flap1_special : &teleport->flap2_special;
-            if (!NuSpecialExistsFn(special))
-                continue;
-            teleport = (TELEPORT_MOTION_PC *)object->grapple;
-            special = i == 0 ? &teleport->flap1_special : &teleport->flap2_special;
-            if (!(NuVecDistSqr(&object->collision_position, NuSpecialGetDrawPos(special), NULL) < 0.36f))
-                continue;
-            teleport = (TELEPORT_MOTION_PC *)object->grapple;
-            if (i == 0)
-                teleport->flap1_target = first_rotation;
-            else
-                teleport->flap2_target = -first_rotation;
-            u32 bit = 1u << i;
-            if ((object->field_7a4 & bit) == 0) {
-                object->field_7a4 |= bit;
-                PlaySfx(const_cast<char *>("env_door_flap"), &object->collision_position);
-            }
-        }
-    }
-
-    if (object->field_7b3 != 0) {
-        if (object->field_7b3 != 1)
-            return;
-        object->context_timer -= FRAMETIME;
-        f32 progress = 1.0f - object->context_timer * 0.5f;
-        f32 shadow_height = 2000000.0f;
-        bool has_surface = false;
-        if (object->context_timer <= 0.0f) {
-            object->field_7b3 = 0;
-            i32 start_index;
-            i32 end_index;
-            teleport = static_cast<TELEPORT_MOTION_PC *>(object->grapple);
-            TeleportGetSegmentPc(object, &start_index, &end_index);
-            TeleportSetSegmentDurationPc(object, start_index, end_index);
-            object->context_timer = object->context_duration;
-            teleport = static_cast<TELEPORT_MOTION_PC *>(object->grapple);
-            NUVEC *segment_start = &teleport->path->pts[start_index];
-            NUVEC *segment_end = &teleport->path->pts[end_index];
-            u16 facing = NuAtan2D(segment_end->x - segment_start->x, segment_end->z - segment_start->z);
-            object->movement_facing_angle = facing;
-            object->facing_angle = facing;
-            object->roll_angle = facing;
-
-            shadow_height = GameShadow(NULL, &object->position, 5.0f, -1);
-            object->floor_height = shadow_height;
-            has_surface = shadow_height != 2000000.0f;
-            GetSurfaceInfo(object, has_surface, shadow_height);
-            progress = 1.0f;
-        }
-        teleport = static_cast<TELEPORT_MOTION_PC *>(object->grapple);
-        NUVEC *points = teleport->path->pts;
-        NUVEC *start = &points[(object->context_variant_flags & 0x400) != 0 ? 1 : 2];
-        NUVEC *end = &points[(object->context_variant_flags & 0x400) != 0 ? 2 : 1];
-        object->position.x = (end->x - start->x) * progress + start->x;
-        object->position.y = (end->y - start->y) * progress + start->y;
-        object->position.z = (end->z - start->z) * progress + start->z;
-        object->velocity = v000;
-        if (has_surface)
-            object->position.y = shadow_height - object->character_bottom * object->origin_scale;
-        return;
-    }
-
-    bool completed = false;
-    if (object->character_model->model_data_b[object->field_7aa] == NULL ||
-        CurrentAnim(&object->anim_packet) == object->field_7aa) {
-        object->context_timer -= FRAMETIME;
-        if (object->context_timer <= 0.0f) {
-            object->character_context = 0xff;
-            object->context_timer = 0.0f;
-            teleport = (TELEPORT_MOTION_PC *)object->grapple;
-            teleport->active = 0;
-            teleport = (TELEPORT_MOTION_PC *)object->grapple;
-            if ((teleport->flags & 0x10) != 0)
-                GameCam_Blend(GameCam, 1.0f, 0.0f, 1);
-            AlertSurroundingCreatures(object, &object->collision_position);
-            completed = true;
-        }
-    }
-
-    const f32 progress = 1.0f - object->context_timer / object->context_duration;
-    i32 start_index;
-    i32 end_index;
-    teleport = static_cast<TELEPORT_MOTION_PC *>(object->grapple);
-    TeleportGetSegmentPc(object, &start_index, &end_index);
-    NUVEC *segment_start = &teleport->path->pts[start_index];
-    NUVEC *segment_end = &teleport->path->pts[end_index];
-    NUVEC target;
-    target.x = (segment_end->x - segment_start->x) * progress + segment_start->x;
-    target.y = (segment_end->y - segment_start->y) * progress + segment_start->y;
-    target.z = (segment_end->z - segment_start->z) * progress + segment_start->z;
-    SeekVec(&object->position, &object->position, &target, 10.0f);
-    object->velocity = v000;
-
-    const f32 shadow_height = GameShadow(NULL, &object->position, 5.0f, -1);
-    object->floor_height = shadow_height;
-    if (shadow_height != 2000000.0f) {
-        object->position.y = shadow_height - object->character_bottom * object->origin_scale;
-        GetSurfaceInfo(object, 1, shadow_height);
-    } else {
-        GetSurfaceInfo(object, 0, shadow_height);
-    }
-    object->position.y += progress * 0.0025f;
-
-    if (!completed)
-        return;
-    teleport = static_cast<TELEPORT_MOTION_PC *>(object->grapple);
-    if ((teleport->flags & 4) != 0 || object->big_jump_animation != 0) {
-        object->velocity.y = -0.1f;
-        object->field_281 = 0;
-        return;
-    }
-
-    object->big_jump_animation = 1;
-    object->character_context = 15;
-    object->field_7b3 = 1;
-    object->context_timer = 2.0f;
-    NUVEC *points = teleport->path->pts;
-    object->start_position = points[(object->context_variant_flags & 0x400) != 0 ? 1 : 2];
-    object->position = object->start_position;
-    GameCam_Blend(GameCam, 0.5f, 0.0f, 1);
 }
 
 extern "C" void __cdecl Teleports_Reset(WORLDINFO *world) {
