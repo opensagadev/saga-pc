@@ -72,7 +72,7 @@ extern "C" void __cdecl MenuUpdateTitles(MENU *menu) {
         newgamefade = 2;
         return;
     }
-    if (!(GameTimer.time_elapsed > 3.0f))
+    if (!(GameTimer.time_elapsed >= 3.0f))
         return;
     TextInputSetLastDevicePc(0);
     i32 port = PcInputSelectPressedDevicePc(0, 26, &kind, &value, 1);

@@ -113,7 +113,7 @@
     "src/legoapi/level_fixup.cpp": "b805bc97c5185f03c36b54b19c094cbf4009be2bea556df2f2d98b7c8da01c93",
     "src/legoapi/menu_extras.cpp": "8bc6d4adf37d553c170667a850b17f6dded11f581285d1f5be3c645d2e926f26",
     "src/legoapi/menu_pause.cpp": "4c402951106accab233e4f7a1c98d958d1ddb686c378d37588da1520c71f6876",
-    "src/legoapi/menu_titles.cpp": "579d8a34884e028c89fbd5c7ec64085c99406ba0577531f667475a68f3f8da04",
+    "src/legoapi/menu_titles.cpp": "0cc706b3d8ff13ddf3fbd1f35588c48948e44f2e7eee5448748d96dc7ca839da",
     "src/legoapi/menu_video.cpp": "f58da962bc9b4f11e5aefa63555e61be4041ac73154f6a6fa4114d44ef6093e3",
     "src/legoapi/menus.cpp": "275cafdc094fc64e640ab89bb7b1ef1b99b12108092ac061a23aa18b44962ea5",
     "src/legoapi/movies.cpp": "1129cae56a77b6c00cd99357f9ed97f2d1eb8f647cd6ae44ee7649bd843d2ceb",
@@ -717,7 +717,7 @@
     "build/obj/legoapi/menu.obj": "c684917fb6546caf720aaa1098098c761f26307c938eaee38b2f5ea40eb35bcb",
     "build/obj/legoapi/menu_extras.obj": "250aa1a1b5483fa4183fc1cfac2fd3114df9761c46f58ea25fef9822f3c6d902",
     "build/obj/legoapi/menu_pause.obj": "79f1518c02c887d4d2df970b028b7e0cca1c428ed681ad6218a1a22aad83e7b7",
-    "build/obj/legoapi/menu_titles.obj": "ac26fb67d043970bbc162a7a73adf86cccb6c2ee463d20d038af71cac3943546",
+    "build/obj/legoapi/menu_titles.obj": "377cdec8572bb3ed9ec9fb8c2beb9d016b15d949acad37a0c2660e2e9f5a32ec",
     "build/obj/legoapi/menu_video.obj": "935ab71447e7860d5eb182c8efbaca29ecd0d186b1c78f0e26c6331de72ab74d",
     "build/obj/legoapi/menus.obj": "3ead9462c8b65a92c8589ec4b7f066f5f22a6683c7198166db51787ba7d2fa4f",
     "build/obj/legoapi/minicamcut.obj": "7196dd085d47c348d28693b45517c5ddd92765a4a8a4b9306af94352b13efb11",
@@ -35774,21 +35774,21 @@
         "src/legoapi/menu_titles.cpp"
       ],
       "target_size": 201,
-      "exact_match": false,
+      "exact_match": true,
       "objects": [
         {
           "unit": "src/legoapi/menu_titles.cpp",
           "base_size": 201,
-          "exact_match": false,
+          "exact_match": true,
           "target_sha256": "3191393ac12da93fd6234866fe98805eeca9415cc6b19bbf9fd9687e0db098a5",
-          "base_sha256": "36d9ae54651278c5933b071d7756659b66175afe39279bf6e5b755b2b2d45fe7",
+          "base_sha256": "3191393ac12da93fd6234866fe98805eeca9415cc6b19bbf9fd9687e0db098a5",
           "relocation_count": 15,
           "comparison_unit": "00495770-c5530f4b517a",
-          "objdiff_percent": 99.98572
+          "objdiff_percent": 100.0
         }
       ],
-      "status": "different",
-      "objdiff_percent": 99.98572
+      "status": "exact",
+      "objdiff_percent": 100.0
     },
     {
       "name": "MenuDrawTitles",
@@ -485270,11 +485270,11 @@
   "progress": {
     "text_bytes": 3471246,
     "mapped_code_bytes": 2445745,
-    "matched_code_bytes": 463317,
-    "matching_percent": 13.347282215089336,
-    "fuzzy_coverage_percent": 48.02328524290771,
+    "matched_code_bytes": 463518,
+    "matching_percent": 13.353072643079747,
+    "fuzzy_coverage_percent": 48.02328606978084,
     "mapped_functions": 9046,
-    "matched_functions": 4327,
+    "matched_functions": 4328,
     "objdiff_fuzzy_percent": 74.89006,
     "objdiff_total_code": 2229292,
     "image_bytes": 40067072,
@@ -485334,16 +485334,16 @@
   "text_coverage": {
     "original_text_bytes": 3471246,
     "mapped_reconstruction_bytes": 2445745,
-    "exact_reconstruction_bytes": 463317,
-    "mapped_not_exact_bytes": 1982428,
+    "exact_reconstruction_bytes": 463518,
+    "mapped_not_exact_bytes": 1982227,
     "excluded_import_glue_bytes": 1194,
     "unclassified_text_bytes": 1024307,
     "strict_original_text_denominator_bytes": 3471246,
-    "strict_original_text_exact_percent": 13.347282215089336,
+    "strict_original_text_exact_percent": 13.353072643079747,
     "reconstruction_scope_denominator_bytes": 3470052,
-    "reconstruction_scope_exact_percent": 13.351874842221385,
+    "reconstruction_scope_exact_percent": 13.357667262623155,
     "mapped_scope_denominator_bytes": 2445745,
-    "mapped_scope_exact_percent": 18.94379831094411,
+    "mapped_scope_exact_percent": 18.952016665678556,
     "qualification": "Unclassified text includes undiscovered code and unproven padding; these percentages compare relocated objects, not the linked image."
   },
   "data_members": [
@@ -486487,7 +486487,7 @@
       "metadata_sha256": "fe09365da4c355f220d724ca99394fc120b758891b4188d2c49707b6df0894f2",
       "header_path": "src/saga.h",
       "header_sha256": "fa9d80a2f2e41f651206eab862219ac77a83ff9466a31feb3c1ad6b4c783085c",
-      "geometry_object_sha256": "c3946eb6f4aa8ff5087a92994693989eab32253fc443a674c99bf3e41d41950f",
+      "geometry_object_sha256": "25c2b4bd11efe9c0b6c7d6076aaa98064a8ec3e48878be1d430a2dedc4fe1294",
       "toolchain_sha256": "b8808088bb2c7eb239785f69c9e464ae8545216d5705fb37216bc0cf926732f3",
       "implementation_sha256": "d6a33be911d095a6d07dccd4443ccbfd6b514fd89fd7e200d9caa1827944e218",
       "headers": {
@@ -486729,7 +486729,7 @@
         4
       ]
     },
-    "clang_source_sha256": "5f09043756de8d856dc89b6ea88d2554df85eff08a50b0dd8efb1802c1d942c9",
+    "clang_source_sha256": "3bb746c99eaf6b7f895b4493444a2aa2b76dddeeb10e58f68cef0044650c426c",
     "member_count": 42,
     "physical_definition_credit": 0
   },
