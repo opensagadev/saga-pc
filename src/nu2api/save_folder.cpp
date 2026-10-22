@@ -9,3 +9,7 @@ extern "C" void __cdecl PcRegisterSaveFolderPc(const char *company, const char *
     PcUsePersonalFolder = personal;
     PcSaveFolderRegisteredPc = 1;
 }
+
+extern "C" void __cdecl PcSetDefaultParameterPc(const char *parameter) {
+    NuHwDefaultParameterPc = parameter;
+}

@@ -7943,6 +7943,7 @@ address,symbol,size,ctype
 0x6dd420,_PcGetUserFolder,56,"char *__cdecl PcGetUserFolder(const char *, const char *)"
 0x6dd8c0,_PCOptionsBuildFolder,284,void __cdecl(char*)
 0x6dd9e0,_PcOpenPlatformFile,841,"FILE *__cdecl PcOpenPlatformFile(const char *, const char *, i32, const char *)"
+0x006ddd40,_PcSetDefaultParameterPc,10,void __cdecl (const char *)
 0x6ddd50,_PcRegisterSaveFolderPc,49,"void __cdecl (const char *, const char *, const char *, i32)"
 0x6ddd90,_PcRegisterSaveMetadataPc,25,void __cdecl(const void *)
 0x6de060,_PcShutdown,122,void __cdecl(void)

@@ -17,7 +17,7 @@
     "config/library-objects.json": "e5ae24d3eac36fa0d0cb098f7690faaef3110f225db30c8cbf0f7d0d64f6ecfe",
     "config/ogg-vorbis.json": "7f98d40938e6bd6060c6bdfc2ce39d9cfb1c822243693eeb1d85d46b43dcad24",
     "config/project.json": "9a3650958be769951860d2c457f8573049ecae76e48ce8f3d7383e4ca2b761a6",
-    "config/symbols.csv": "5bcc08cf28fe725e1d0540617d03e2368e93839911491dd3e494cc893aea0b04",
+    "config/symbols.csv": "4eeb4eddc217acbfd58ac907bc46f2d6e334e7e6c71d20ecdcfbd00069afd8b4",
     "config/symbols.md": "dffbdaac86011e3aee74b404063c15bda97f88af3db337ffef9f1bad1785d212",
     "config/toolchain.json": "b8808088bb2c7eb239785f69c9e464ae8545216d5705fb37216bc0cf926732f3",
     "config/tools.json": "50199f6b132a7abfabf251e98a75be0a957abfe50f1ff776188fba21e4c4436f",
@@ -148,7 +148,7 @@
     "src/nu2api/geometry_basis.cpp": "d2d6fe84933ad12e6c9294ee5b94d97fecbb1313fb7e8b090f95fbe9e1f35474",
     "src/nu2api/geometry_origin.cpp": "0bea67474351e94e5bd27e21d9fad2e43186e4ab41786d5fd6ada8357a0ab1f2",
     "src/nu2api/geometry_publish.cpp": "61492e879261c3465e668b555162e26a6f0697bc77db0dc0eead42bb9eddedf1",
-    "src/nu2api/hardware_dispatch.cpp": "9b6b634de4c3e9a6f8fa1b3aecad526904c7b2595299136bb16a3dec2aca28f0",
+    "src/nu2api/hardware_dispatch.cpp": "81eabf15819d7303670e7f9bd293c10a2295108b56fab3401cec65196e911fa4",
     "src/nu2api/input_descriptors.cpp": "873e98548b23193619bef0872324ce5425174d612bac3932a2c14aba5bc6d6b6",
     "src/nu2api/input_detection.cpp": "958d85117bc5a8f0ff95acabf1f9f2f255b8cba9530954bd79d9d1282ab6aaf7",
     "src/nu2api/input_runtime.cpp": "b60588de49ff9accb470732f7a2adea15127e3c5177053f08dcf37842ce9de1b",
@@ -189,7 +189,7 @@
     "src/nu2api/posteffect_ports_pc.cpp": "bc172cdefcba1f6a2f65d9a603e4aa553ece7444b630916b03f7dc2bbc8f26d5",
     "src/nu2api/posteffect_shader_pc.cpp": "806846fc65af70bc4eadd880bf5cc988570d184d4131690ebce657f2a34a2ac2",
     "src/nu2api/posteffect_shader_tokens_pc.cpp": "d80009eed64a39f9c370dbb22a15e1a930327c32b789dd2ada330d4980cbccbf",
-    "src/nu2api/save_folder.cpp": "3e8d5fecb96c7433389f4cbfb01c3907762fd1b7fd7436ebf50fdcb1dd2353da",
+    "src/nu2api/save_folder.cpp": "21eda550f3938ba007c96dcd47f6b58194567c1449ef4664c0e0862fbc14cd8b",
     "src/nu2api/shader_buffer_allocator.cpp": "2bd1c9abaddf48fb4491145b02ec6dea01b8e7e7a57576ea7228358d1b9d8f6c",
     "src/nu2api/shader_compiler.cpp": "ec9e3b83444689f8140fa617763794c7dac3a2d847e0f0bbe1cb5187f11f4d68",
     "src/nu2api/shader_dictionary.cpp": "1fb3af88f4ac3ae4794eb56821ed57bd2ed45ffdf5f670d21492b06f83042813",
@@ -818,7 +818,7 @@
     "build/obj/nu2api/geometry_origin.obj": "3abb1ae17d258f8cb0c161a128d22d9f27e0e6e7f3e866b27492ec21418a4118",
     "build/obj/nu2api/geometry_publish.obj": "f86e02ea339d0b34ea02ad87f4b29351df68542a0ab4c495d3696af63347be31",
     "build/obj/nu2api/glutils.obj": "814434ee39af3c9c0fd880a39db123fe1daef054f0d75691b8af29c4dabe22f0",
-    "build/obj/nu2api/hardware_dispatch.obj": "d42a576bbe90e1ccaebbb5bc0e46f4340afe09adebc3190dadd751712e4b7a2d",
+    "build/obj/nu2api/hardware_dispatch.obj": "5d01ae33ff7d94ed8f272289fefabbe8cacf5994174692475db3e695c96c4aa3",
     "build/obj/nu2api/implode.obj": "5f01aeb751108cfd7b803af65454ee297b9bf938cce4c70dbf778a7db4cabe1e",
     "build/obj/nu2api/input_descriptors.obj": "0df0dfc0c50011541908361449a1e1f6e1c2048cdff838c820bc1894c842f4f8",
     "build/obj/nu2api/input_detection.obj": "a1b1d44287713b3b4c890f1fb58e4fcb49213cd589f15165527d15a96a56b6b7",
@@ -936,7 +936,7 @@
     "build/obj/nu2api/posteffect_ports_pc.obj": "3deea4cd17c0b14ac46d7342c12bec85492c58e9919b26231e6890b53eb3e0c2",
     "build/obj/nu2api/posteffect_shader_pc.obj": "824542b3dae038de21a57ad2938a75b872b452ac8c290ec46292a0f48bffe96b",
     "build/obj/nu2api/posteffect_shader_tokens_pc.obj": "bbcc61eea1a4d6c10c13fa6fb2c20662419d24f4fd57a1cfeaf9628ef6cc706d",
-    "build/obj/nu2api/save_folder.obj": "563ec7b1ad00a6ab7aebf98d1205265a3600fcd8104c1741e2cd615913e483d4",
+    "build/obj/nu2api/save_folder.obj": "279abe7c6daa6d5bca0f9e5e6cf406240ed147a5f60a78edaebfae5ca9483e8d",
     "build/obj/nu2api/shader_buffer_allocator.obj": "facf4dd0bff4b1857e8fabef6cd58dc00c123bd954d33e0cd9cd4ae270529cba",
     "build/obj/nu2api/shader_compiler.obj": "4a30f77dae03d37f855a1f44ff0262e5b931e7a813d4ce7716b21e7ed5734e4d",
     "build/obj/nu2api/shader_dictionary.obj": "3b7bbd67d689ca5f546774d9ab822a98b9e1f1d407984dc1e2da2c92038b0449",
@@ -182789,17 +182789,17 @@
       "objects": [
         {
           "unit": "src/nu2api/hardware_dispatch.cpp",
-          "base_size": 2610,
+          "base_size": 2686,
           "exact_match": false,
           "target_sha256": "26dae260a169f9ac1d780e3a5454a40c82816f28f051ad3d778c616d49ed2401",
-          "base_sha256": "f23c116ff8253325cc2bebf740ec6e15ca17afed7219c494112688807dd1b330",
-          "relocation_count": 166,
+          "base_sha256": "6d730c064d6a459b0a8bc84ed960d5187612d558d23267ef89504dd5205f8bea",
+          "relocation_count": 168,
           "comparison_unit": "006dbb30-1d003139093e",
-          "objdiff_percent": 74.66889
+          "objdiff_percent": 76.32667
         }
       ],
       "status": "different",
-      "objdiff_percent": 74.66889
+      "objdiff_percent": 76.32667
     },
     {
       "name": "RegisterWindowCallbackPc",
@@ -183088,6 +183088,30 @@
       ],
       "status": "different",
       "objdiff_percent": 91.1993
+    },
+    {
+      "name": "PcSetDefaultParameterPc",
+      "symbol": "_PcSetDefaultParameterPc",
+      "address": "0x006ddd40",
+      "units": [
+        "src/nu2api/save_folder.cpp"
+      ],
+      "target_size": 10,
+      "exact_match": true,
+      "objects": [
+        {
+          "unit": "src/nu2api/save_folder.cpp",
+          "base_size": 10,
+          "exact_match": true,
+          "target_sha256": "f6806c4cfa26152d7f82b7dc6e616899bffedaf047a962492db22f0433a0638f",
+          "base_sha256": "f6806c4cfa26152d7f82b7dc6e616899bffedaf047a962492db22f0433a0638f",
+          "relocation_count": 1,
+          "comparison_unit": "006ddd40-97a5a052266f",
+          "objdiff_percent": 100.0
+        }
+      ],
+      "status": "exact",
+      "objdiff_percent": 100.0
     },
     {
       "name": "PcRegisterSaveFolderPc",
@@ -485245,17 +485269,17 @@
   ],
   "progress": {
     "text_bytes": 3471246,
-    "mapped_code_bytes": 2445735,
-    "matched_code_bytes": 462811,
-    "matching_percent": 13.33270531676522,
-    "fuzzy_coverage_percent": 48.02159504495862,
-    "mapped_functions": 9045,
-    "matched_functions": 4324,
-    "objdiff_fuzzy_percent": 74.88778,
-    "objdiff_total_code": 2229282,
+    "mapped_code_bytes": 2445745,
+    "matched_code_bytes": 462821,
+    "matching_percent": 13.332993397759767,
+    "fuzzy_coverage_percent": 48.02328242044281,
+    "mapped_functions": 9046,
+    "matched_functions": 4325,
+    "objdiff_fuzzy_percent": 74.89006,
+    "objdiff_total_code": 2229292,
     "image_bytes": 40067072,
-    "mapped_bytes": 4259620,
-    "mapping_percent": 10.631223564327335,
+    "mapped_bytes": 4259630,
+    "mapping_percent": 10.63124852247751,
     "mapping_denominator": "code_and_data_section_virtual_sizes",
     "mapping_sections": [
       {
@@ -485263,7 +485287,7 @@
         "kind": "code",
         "address": "0x401000",
         "size": 3471246,
-        "mapped_bytes": 2446929
+        "mapped_bytes": 2446939
       },
       {
         "name": ".rdata",
@@ -485288,17 +485312,17 @@
         "mapped_zero_fill_data_bytes": 1462253
       }
     ],
-    "mapping_known_size_symbols": 17046,
+    "mapping_known_size_symbols": 17047,
     "mapping_unknown_size_symbols": 7069,
-    "mapping_code_bytes": 2446929,
+    "mapping_code_bytes": 2446939,
     "mapping_code_total_bytes": 3471246,
-    "mapping_code_percent": 70.49137399078026,
+    "mapping_code_percent": 70.4916620717748,
     "mapping_data_bytes": 1812691,
     "mapping_data_total_bytes": 36018966,
     "mapping_data_percent": 5.032601435588129,
-    "mapping_code_data_bytes": 4259620,
+    "mapping_code_data_bytes": 4259630,
     "mapping_code_data_total_bytes": 39490212,
-    "mapping_code_data_percent": 10.786520973855497,
+    "mapping_code_data_percent": 10.786546296586101,
     "mapping_file_backed_data_bytes": 350438,
     "mapping_file_backed_data_total_bytes": 1064558,
     "mapping_file_backed_data_percent": 32.91863853355101,
@@ -485309,17 +485333,17 @@
   },
   "text_coverage": {
     "original_text_bytes": 3471246,
-    "mapped_reconstruction_bytes": 2445735,
-    "exact_reconstruction_bytes": 462811,
+    "mapped_reconstruction_bytes": 2445745,
+    "exact_reconstruction_bytes": 462821,
     "mapped_not_exact_bytes": 1982924,
     "excluded_import_glue_bytes": 1194,
-    "unclassified_text_bytes": 1024317,
+    "unclassified_text_bytes": 1024307,
     "strict_original_text_denominator_bytes": 3471246,
-    "strict_original_text_exact_percent": 13.33270531676522,
+    "strict_original_text_exact_percent": 13.332993397759767,
     "reconstruction_scope_denominator_bytes": 3470052,
-    "reconstruction_scope_exact_percent": 13.33729292817514,
-    "mapped_scope_denominator_bytes": 2445735,
-    "mapped_scope_exact_percent": 18.923186690299644,
+    "reconstruction_scope_exact_percent": 13.33758110829463,
+    "mapped_scope_denominator_bytes": 2445745,
+    "mapped_scope_exact_percent": 18.923518191798408,
     "qualification": "Unclassified text includes undiscovered code and unproven padding; these percentages compare relocated objects, not the linked image."
   },
   "data_members": [
@@ -486463,7 +486487,7 @@
       "metadata_sha256": "fe09365da4c355f220d724ca99394fc120b758891b4188d2c49707b6df0894f2",
       "header_path": "src/saga.h",
       "header_sha256": "fa9d80a2f2e41f651206eab862219ac77a83ff9466a31feb3c1ad6b4c783085c",
-      "geometry_object_sha256": "ffd22afe4b1a158e972c7cb1f7bf764e6e96e3dafcfab3405f4c601780f6bbf1",
+      "geometry_object_sha256": "a96e199ad3777da2c678e5631e652d85ff18dad4ce4b1b6f125b8d790e56b8a8",
       "toolchain_sha256": "b8808088bb2c7eb239785f69c9e464ae8545216d5705fb37216bc0cf926732f3",
       "implementation_sha256": "d6a33be911d095a6d07dccd4443ccbfd6b514fd89fd7e200d9caa1827944e218",
       "headers": {
@@ -486705,7 +486729,7 @@
         4
       ]
     },
-    "clang_source_sha256": "3fbb5aa0a3e8de647cfee5e2c82549583f75f00c20464ae1914ad92001838d90",
+    "clang_source_sha256": "3c37b4b47ffc961d3e711fda3321c3709fa3a05357eba8dc583608622a3372e4",
     "member_count": 42,
     "physical_definition_credit": 0
   },

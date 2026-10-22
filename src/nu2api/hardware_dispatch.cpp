@@ -1,6 +1,7 @@
 #include "saga.h"
 
 extern "C" void __cdecl PcRegisterSaveMetadataPc(const void *);
+extern "C" void __cdecl PcSetDefaultParameterPc(const char *);
 
 /* Incomplete entry-connected reconstruction. Every skipped native call remains
  * marked at its actual site; this is not a complete dispatcher implementation. */
@@ -208,7 +209,7 @@ extern "C" i32 __cdecl NuInitHardwarePc(VARIPTR *buffer, VARIPTR *end, i32 alloc
         PcRegisterSaveMetadataPc(parameter_32);
     }
     if (parameter_2d) {
-        STUBBED_NAMED(0x006ddd40);
+        PcSetDefaultParameterPc((const char *)parameter_2d);
     }
     if (parameter_33) {
         STUBBED_NAMED(0x006dddb0);
