@@ -110,13 +110,21 @@ STATIC_ASSERT(offsetof(RACEPOD_RESOURCE_PC, next) == 0x94);
 typedef struct podrace_resource_pc_s {
     FLIGHT_SPLINE_RESOURCE_PC splines[32];
     RACEPOD_RESOURCE_PC lap_entries[16];
-    u8 unknown_b000[12];
+    f32 lap_countdown;
+    f32 mushroom_timer;
+    f32 lap_display;
     f32 previous_lap_display;
     f32 max_lap_time, lap_time_increment;
     i32 attempts_per_increment;
+    i32 attempts;
+    u8 flags;
+    u8 unknown_b021[15];
 } PODRACE_RESOURCE_PC;
+STATIC_ASSERT(sizeof(PODRACE_RESOURCE_PC) == 0xb030);
 STATIC_ASSERT(offsetof(PODRACE_RESOURCE_PC, lap_entries) == 0xa600);
+STATIC_ASSERT(offsetof(PODRACE_RESOURCE_PC, mushroom_timer) == 0xb004);
 STATIC_ASSERT(offsetof(PODRACE_RESOURCE_PC, previous_lap_display) == 0xb00c);
+STATIC_ASSERT(offsetof(PODRACE_RESOURCE_PC, flags) == 0xb020);
 
 static void PodMatrixCopyPrivatePc(NUMTX *destination, const NUMTX *source) {
     destination->m00 = source->m00;
@@ -630,4 +638,482 @@ void __cdecl SetPodMergeAnims(ANIMPACKET_PC *packet, i32 index) {
     reader->blend_source_time = pod_animtime[index];
     reader->blend_target_time = pod_animtime[index];
     reader->overlay_weight = (f32)fabs((f64)roll);
+}
+
+/* Episode I level callbacks installed by FixUpLevels (retail 0x4d82f0 .. 0x4dd770). */
+typedef struct podrace_levflag_pc_s {
+    u8 podrace_state;
+    u8 mushroom_state;
+    u8 remaining[14];
+} PODRACE_LEVFLAG_PC;
+STATIC_ASSERT(sizeof(PODRACE_LEVFLAG_PC) == 16);
+
+typedef struct gungan_a_pc_s {
+    i16 unknown_000;
+    i16 count;
+    AILOCATOR_PC *origins[32];
+    AILOCATOR_PC *targets[32];
+    f32 spawn_timer;
+    i16 model_index;
+    i16 unknown_10a;
+    i16 models[4];
+} GUNGAN_A_PC;
+STATIC_ASSERT(sizeof(GUNGAN_A_PC) == 0x114);
+STATIC_ASSERT(offsetof(GUNGAN_A_PC, targets) == 0x84);
+STATIC_ASSERT(offsetof(GUNGAN_A_PC, spawn_timer) == 0x104);
+STATIC_ASSERT(offsetof(GUNGAN_A_PC, model_index) == 0x108);
+STATIC_ASSERT(offsetof(GUNGAN_A_PC, models) == 0x10c);
+
+typedef struct mine_entry_pc_s {
+    u32 active;
+    NUVEC pos;
+    f32 grow;
+    f32 grow_alpha;
+    u16 rotx;
+    u16 roty;
+} MINE_ENTRY_PC;
+STATIC_ASSERT(sizeof(MINE_ENTRY_PC) == 0x1c);
+
+typedef struct minesys_pc_s {
+    NUSPECIALHANDLE mine_special;
+    MINE_ENTRY_PC mines[64];
+    f32 mine_radius;
+    f32 spawn_timer;
+    AIAREA_PC *nomine_areas[10];
+    i16 nomine_count;
+    i16 mine_debris;
+    i32 mine_part;
+    f32 update_timer;
+} MINESYS_PC;
+STATIC_ASSERT(sizeof(MINESYS_PC) == 0x748);
+STATIC_ASSERT(offsetof(MINESYS_PC, mines) == 0xc);
+STATIC_ASSERT(offsetof(MINESYS_PC, mine_radius) == 0x70c);
+STATIC_ASSERT(offsetof(MINESYS_PC, spawn_timer) == 0x710);
+STATIC_ASSERT(offsetof(MINESYS_PC, nomine_count) == 0x73c);
+STATIC_ASSERT(offsetof(MINESYS_PC, mine_part) == 0x740);
+STATIC_ASSERT(offsetof(MINESYS_PC, update_timer) == 0x744);
+
+typedef struct client_mines_pc_s {
+    NUVEC positions[64];
+    u32 present_words[2];
+    u32 exploded_words[2];
+    u32 unknown_310[2];
+} CLIENT_MINES_PC;
+STATIC_ASSERT(sizeof(CLIENT_MINES_PC) == 0x318);
+STATIC_ASSERT(offsetof(CLIENT_MINES_PC, present_words) == 0x300);
+
+typedef struct retakeg_netpacket_pc_s {
+    i16 guard_a;
+    i16 guard_b;
+} RETAKEG_NETPACKET_PC;
+
+typedef struct cut_instance_reader_pc_s {
+    u8 opaque_00_88[0x88];
+    u32 flags_88;
+    u32 unknown_8c;
+    f32 current_frame;
+} CUT_INSTANCE_READER_PC;
+STATIC_ASSERT(offsetof(CUT_INSTANCE_READER_PC, flags_88) == 0x88);
+STATIC_ASSERT(offsetof(CUT_INSTANCE_READER_PC, current_frame) == 0x90);
+
+extern f32 gungan_a_time;
+extern i32 PodRaceKeyPc[8];
+extern MINESYS_PC minesys;
+extern CLIENT_MINES_PC client_mines;
+extern i32 pod_mines_bitfield[2];
+extern i32 clients_mines_bitfield[2];
+extern i32 mine_count;
+extern void *podrace_netpacket;
+static i32 podhurry_i = 0;
+extern GUNGAN_A_PC gungan_a;
+extern RETAKEG_NETPACKET_PC *retakeg_netpacket;
+static i32 mushroom_n_attempts = 0;
+static CUTINFO *mushroom0_cut = NULL;
+static GIZAIMESSAGE *RetakeG_TotalGuards_msg = NULL;
+static GIZAIMESSAGE *RetakeG_GuardsToRescue_msg = NULL;
+static GIZAIMESSAGE *MaulA_hits_message = NULL;
+extern i16 CharacterFixupIdPc007f19ac;
+extern i16 CharacterFixupIdPc007f19b0;
+extern i16 CharacterFixupIdPc007f19b4;
+
+void __cdecl UpdatePodRaceMines(void);
+void __cdecl PodRaceUpdate(WORLDINFO *world, f32 dt);
+void __cdecl UpdatePacemakerDisplay(WORLDINFO *world);
+void __cdecl UpdatePodRaceLapDisplay(f32 dt);
+void __cdecl PodRaceAUpdate(void);
+void __cdecl PodRaceADraw(WORLDINFO *world);
+void __cdecl PodRaceSnipersUpdate(void);
+void __cdecl ChrisAllocLevelStuff(WORLDINFO *world);
+void __cdecl FlightSpline_Init(WORLDINFO *world, FLIGHT_SPLINE_RESOURCE_PC *splines, i32 capacity);
+
+void __cdecl GunganA_Init(WORLDINFO *world) {
+    char name[32];
+    i32 i;
+    if (netclient == 0) {
+        memset(&gungan_a, 0, sizeof(gungan_a));
+        gungan_a.models[0] = CharacterFixupIdPc007f19ac;
+        gungan_a.models[1] = CharacterFixupIdPc007f19b0;
+        gungan_a.models[2] = CharacterFixupIdPc007f19b4;
+        gungan_a.models[3] = CharacterFixupIdPc007f19b0;
+        for (i = 0; i < 32; i++) {
+            sprintf(name, "origin_%d", i);
+            gungan_a.origins[i] = AIPathFindLocator(world->ai_sys, name);
+            sprintf(name, "target_%d", i);
+            gungan_a.targets[i] = AIPathFindLocator(world->ai_sys, name);
+            if (gungan_a.origins[i] == NULL || gungan_a.targets[i] == NULL)
+                break;
+            gungan_a.count++;
+        }
+    }
+}
+
+void __cdecl GunganA_Update(WORLDINFO *world) {
+    GAMEOBJECT *object;
+    i32 r;
+    if (netclient != 0)
+        return;
+    gungan_a.spawn_timer += FRAMETIME;
+    if (gungan_a.count != 0 && gungan_a.spawn_timer > gungan_a_time) {
+        r = NuRand(NULL) % gungan_a.count;
+        if (active_neutral_count < 4) {
+            AILOCATOR_PC *origin;
+            i32 model;
+            gungan_a.model_index = (i16)((gungan_a.model_index + 1) % 4);
+            model = gungan_a.models[gungan_a.model_index];
+            origin = gungan_a.origins[r];
+            object = AddDynamicCreature(model, &origin->position, origin->rotation, "Wildlife", &origin->path_info,
+                                        NULL, 0, NULL, NULL, 0, 0);
+        } else {
+            i32 pick = NuRand(NULL);
+            if ((pick & 1) != 0) {
+                AILOCATOR_PC *origin = gungan_a.origins[r];
+                object = AddDynamicCreature(id_STAP, &origin->position, origin->rotation, "STAP", &origin->path_info,
+                                            NULL, 0, NULL, NULL, 0, 0);
+            } else {
+                AILOCATOR_PC *origin = gungan_a.origins[r];
+                object = AddDynamicCreature(id_BATTLEDROID, &origin->position, origin->rotation, "Battledroid",
+                                            &origin->path_info, NULL, 0, NULL, NULL, 0, 0);
+            }
+        }
+        if (object != NULL)
+            object->ai_packet.locator = gungan_a.targets[r];
+        gungan_a.spawn_timer = 0.0f;
+    }
+}
+
+static void InitPodRaceMines(void) {
+    char name[32];
+    i32 i;
+    memset(&minesys, 0, sizeof(minesys));
+    memset(&client_mines, 0, sizeof(client_mines));
+    if (NuSpecialFind(vehicle_scene, &minesys.mine_special, "mine", 1) != 0) {
+        minesys.mine_radius = NuSpecialGetOriginRadius(&minesys.mine_special);
+        for (i = 0; i < 10; i++) {
+            sprintf(name, "nomine_%d", i);
+            minesys.nomine_areas[minesys.nomine_count] = AISysFindArea(WORLD->ai_sys, name);
+            minesys.nomine_count++;
+        }
+        minesys.mine_debris = (i16)FindGameDebris(WORLD->game_debris_sys, "MINE_POP");
+        minesys.mine_part = PARTLookupType("POD_MINE_PART");
+    }
+}
+
+static void PodRaceResetMinesPc(void) {
+    clients_mines_bitfield[0] = 0;
+    clients_mines_bitfield[1] = 0;
+    pod_mines_bitfield[0] = 0;
+    pod_mines_bitfield[1] = 0;
+    memset(minesys.mines, 0, sizeof(minesys.mines));
+    memset(&client_mines, 0, sizeof(client_mines));
+    minesys.spawn_timer = AIPositionUnsetPc;
+    mine_count = 0;
+    minesys.update_timer = 0.0f;
+}
+
+void __cdecl ResetPodStuff(void) {
+    f32 duration;
+    i32 i;
+    i32 id = apicharsys->playermodelids[id_ANAKINSPOD];
+    if (id != -1 && apicharsys->models[id].model_data_b[1] != NULL)
+        duration = *(f32 *)apicharsys->models[id].model_data_b[1];
+    else
+        duration = 0.0f;
+    for (i = 0; i < 2; i++) {
+        pod_roll_target[i] = 0.0f;
+        pod_roll[i] = 0.0f;
+        pod_animtime[i] = 1.0f;
+        if (duration > 0.0f)
+            pod_animtime[i] = (f32)(qrand() * PlayerRandomScalePc * (duration - 1.0) + pod_animtime[i]);
+    }
+}
+
+void __cdecl PodRaceInit(WORLDINFO *world) {
+    PODRACE_RESOURCE_PC *podrace;
+    i32 id;
+    i32 i;
+    podrace_netpacket = SetLevelHack(0x14);
+    if (world->level_specific_data == NULL)
+        ChrisAllocLevelStuff(world);
+    podrace = (PODRACE_RESOURCE_PC *)world->level_specific_data;
+    PodRacePc = podrace;
+    memset(podrace, 0, sizeof(*podrace));
+    if (netclient == 0)
+        FlightSpline_Init(world, podrace->splines, 32);
+    InitPodRaceMines();
+    for (i = 0; i < 8; i++)
+        PodRaceKeyPc[i] = -1;
+    ResetPodStuff();
+    id = apicharsys->playermodelids[id_ANAKINSPOD];
+    if (id != -1) {
+        CHARACTER_MODEL_LAYERS_PC *entry = &apicharsys->models[id];
+        if (entry->model_data_b[1] != NULL)
+            podanimendframe = AnimEndFrame(entry, 1);
+    }
+}
+
+void __cdecl PodRaceReset(void) {
+    PODRACE_RESOURCE_PC *podrace = (PODRACE_RESOURCE_PC *)PodRacePc;
+    i32 i;
+    podrace->mushroom_timer = 0.0f;
+    memset(podrace->lap_entries, 0, sizeof(podrace->lap_entries));
+    podrace->flags &= 0xfc;
+    podhurry_i = -1;
+    for (i = 0; i < 8; i++)
+        PodRaceKeyPc[i] = -1;
+}
+
+void __cdecl PodRaceAInit(WORLDINFO *world) {
+    PodRaceInit(world);
+}
+
+void __cdecl PodRaceAReset(WORLDINFO *world) {
+    PodRaceReset();
+    switch (Lap) {
+        case 1:
+            podrace_section = 3;
+            break;
+        case 2:
+            podrace_section = 6;
+            break;
+        case 3:
+            podrace_section = 9;
+            break;
+        default:
+            break;
+    }
+    PodPacemakerPc = NULL;
+    PodRaceResetMinesPc();
+    if (Lap == 3 && nethost == 0 && netclient == 0)
+        NewCutScene(NULL, world->cutscene_sys, "ep1_podrace_sebulba", 1);
+}
+
+void __cdecl PodRaceBInit(WORLDINFO *world) {
+    PodRaceInit(world);
+    mushroom_collapse = 0;
+    mushroom_nattempts_per_increment = 1;
+    mushroom_n_attempts = 0;
+    if (Lap <= 1)
+        ((PODRACE_RESOURCE_PC *)PodRacePc)->lap_countdown = 3.0f;
+}
+
+void __cdecl PodRaceBReset(WORLDINFO *world) {
+    PodRaceReset();
+    switch (Lap) {
+        case 1:
+            podrace_section = 1;
+            break;
+        case 2:
+            podrace_section = 4;
+            break;
+        case 3:
+            podrace_section = 7;
+            break;
+        default:
+            break;
+    }
+    PodPacemakerPc = NULL;
+    ((PODRACE_LEVFLAG_PC *)LevFlag)->podrace_state = 0;
+    ((PODRACE_LEVFLAG_PC *)LevFlag)->mushroom_state = 0;
+    mushroom0_cut = CutScene_Find(world->cutscene_sys, "EP1_PODRACE_MUSHROOM0");
+    NuSpecialFind(world->current_gscn, &LevHSpecial[0], "collapsing_mush", 1);
+}
+
+void __cdecl PodRaceCInit(WORLDINFO *world) {
+    char name[256];
+    i32 i;
+    PodRaceInit(world);
+    ((PODRACE_LEVFLAG_PC *)LevFlag)->podrace_state = 0;
+    for (i = 0; i < 10; i++) {
+        sprintf(name, "boost0%i", i + 1);
+        NuSpecialFind(world->current_gscn, &LevHSpecial[i], name, 1);
+    }
+    if (FreePlay != 0 || (LevelProgressData[world->current_level->index].unknown_2800[0] & 1) != 0) {
+        for (i = 0; i < 10; i++) {
+            if (NuSpecialExistsFn(&LevHSpecial[i]) != 0)
+                NuSpecialSetVisibility(&LevHSpecial[i], 1);
+        }
+        ((PODRACE_LEVFLAG_PC *)LevFlag)->podrace_state = 2;
+    } else {
+        for (i = 0; i < 17; i++) {
+            if (NuSpecialExistsFn(&LevHSpecial[i]) != 0)
+                NuSpecialSetVisibility(&LevHSpecial[i], 0);
+        }
+    }
+}
+
+void __cdecl PodRaceAUpdatePc(WORLDINFO *world) {
+    UpdatePacemakerDisplay(world);
+    PodRaceUpdate(world, FRAMETIME);
+    if (netclient == 0)
+        PodRaceAUpdate();
+    UpdatePodRaceMines();
+}
+
+void __cdecl PodRaceA_AlwaysUpdate(WORLDINFO *world) {
+    UpdatePodRaceLapDisplay(FRAMETIME);
+    if (Lap == 3) {
+        if (InStory() != 0) {
+            if (LevelFixupSlotPc0087b0b8 != NULL) {
+                other_level_override = LevelFixupSlotPc0087b0b8->index;
+                return;
+            }
+        }
+        if (LevelFixupSlotPc0087b0bc != NULL)
+            other_level_override = LevelFixupSlotPc0087b0bc->index;
+    }
+}
+
+void __cdecl PodRaceADrawPc(WORLDINFO *world) {
+    PodRaceADraw(world);
+}
+
+void __cdecl PodRaceCUpdate(WORLDINFO *world) {
+    i32 i;
+    UpdatePacemakerDisplay(world);
+    UpdatePodRaceLapDisplay(FRAMETIME);
+    PodRaceUpdate(world, FRAMETIME);
+    PodRaceSnipersUpdate();
+    if (((PODRACE_LEVFLAG_PC *)LevFlag)->podrace_state == 0) {
+        CUTINFO *cutscene = CutScene_Find(world->cutscene_sys, "Ep1_Podrace_TuskenRaiders");
+        if (cutscene != NULL && (((CUT_INSTANCE_READER_PC *)cutscene->instance)->flags_88 & 0x1000) != 0)
+            ((PODRACE_LEVFLAG_PC *)LevFlag)->podrace_state = 1;
+    }
+    if (((PODRACE_LEVFLAG_PC *)LevFlag)->podrace_state == 1) {
+        for (i = 0; i < 10; i++) {
+            if (NuSpecialExistsFn(&LevHSpecial[i]) != 0)
+                NuSpecialSetVisibility(&LevHSpecial[i], 1);
+        }
+        ((PODRACE_LEVFLAG_PC *)LevFlag)->podrace_state = 2;
+    }
+}
+
+void __cdecl RetakeG_Init(WORLDINFO *world) {
+    retakeg_netpacket = SetLevelHack(4);
+    RetakeG_TotalGuards_msg = CheckGizAIMessage(gizaimessagesys, "TotalGuards", NULL);
+    RetakeG_GuardsToRescue_msg = CheckGizAIMessage(gizaimessagesys, "GuardsToRescue", NULL);
+}
+
+void __cdecl RetakeG_Reset(WORLDINFO *world) {
+}
+
+void __cdecl RetakeG_Update(WORLDINFO *world) {
+    if (netclient == 0) {
+        retakeg_netpacket->guard_b = (i16)RetakeG_GuardsToRescue_msg->value;
+        retakeg_netpacket->guard_a = (i16)RetakeG_TotalGuards_msg->value;
+    } else {
+        RetakeG_GuardsToRescue_msg->value = (f32)retakeg_netpacket->guard_b;
+        RetakeG_TotalGuards_msg->value = (f32)retakeg_netpacket->guard_a;
+    }
+}
+
+void __cdecl RetakeG_Panel(WORLDINFO *world) {
+    i16 ids[6] = {id_ROYALGUARD, id_ROYALGUARD, id_ROYALGUARD, id_ROYALGUARD, id_ROYALGUARD, id_ROYALGUARD};
+    u8 alive[6] = {1, 1, 1, 1, 1, 1};
+    i32 i;
+    if (RetakeG_TotalGuards_msg != NULL && RetakeG_TotalGuards_msg->value > 0.0f) {
+        i32 total = (i32)RetakeG_TotalGuards_msg->value;
+        if (total > 6)
+            total = 6;
+        if (RetakeG_GuardsToRescue_msg != NULL && RetakeG_GuardsToRescue_msg->value > 0.0f) {
+            i32 rescue = (i32)RetakeG_GuardsToRescue_msg->value;
+            if (rescue > 6)
+                rescue = 6;
+            for (i = 0; i < rescue; i++)
+                alive[i] = 0;
+            DrawMeleeTargetsAlphaPc(ids, alive, NULL, total);
+        }
+    }
+}
+
+void __cdecl MaulA_Init(WORLDINFO *world) {
+    MaulA_ai_message = CheckGizAIMessage(gizaimessagesys, "MaulOnTheRun", NULL);
+    MaulA_hits_message = CheckGizAIMessage(gizaimessagesys, "Hits", NULL);
+    NuSpecialFind(world->current_gscn, &LevHSpecial[4], "engine_1c", 1);
+    NuSpecialFind(world->current_gscn, &LevHSpecial[5], "engine_2c", 1);
+    NuSpecialFind(world->current_gscn, &LevHSpecial[6], "engine_1d", 1);
+    NuSpecialFind(world->current_gscn, &LevHSpecial[7], "engine_2d", 1);
+}
+
+void __cdecl MaulA_Update(WORLDINFO *world) {
+}
+
+void __cdecl MaulA_Panel(WORLDINFO *world) {
+    if (netclient == 0) {
+        if (Maul_obj != NULL && MaulA_ai_message != NULL && MaulA_ai_message->value == 0.0f &&
+            MaulA_hits_message != NULL) {
+            GAMEOBJECT *maul = Maul_obj;
+            maul->current_hp = (u8)(i32)MaulA_hits_message->value;
+            maul->field_107e = 3;
+            DrawBossHitPoints(maul);
+        } else {
+            DrawBossHitPoints(NULL);
+        }
+    }
+}
+
+void __cdecl MaulD_Init(WORLDINFO *world) {
+}
+
+void __cdecl MaulD_Update(WORLDINFO *world) {
+}
+
+void __cdecl MaulE_Init(WORLDINFO *world) {
+}
+
+void __cdecl MaulE_Update(WORLDINFO *world) {
+}
+
+void __cdecl MaulF_Reset(WORLDINFO *world) {
+    Maul_obj = FindGameObject(id_DARTHMAUL, 1, 1, 0, 0);
+}
+
+void __cdecl MaulF_Update(WORLDINFO *world) {
+}
+
+void __cdecl MaulF_Panel(WORLDINFO *world) {
+    if (netclient == 0) {
+        if (Maul_obj != NULL && MaulA_ai_message != NULL && MaulA_ai_message->value == 1.0f)
+            DrawBossHitPoints(Maul_obj);
+        else
+            DrawBossHitPoints(NULL);
+    }
+}
+
+void __cdecl AnakinsFlightB_Init(WORLDINFO *world) {
+    i32 count;
+    gunship_bolts[0] = (i16)BoltType_FindIDByName("trooper_red", world);
+    gunship_flags[0] = 0;
+    gunship_flags[1] = 0;
+    gunship_flags[2] = 0;
+    count = NuSpecialFind(world->current_gscn, &LevHSpecial[0], "minifig_1_1", 1);
+    count += NuSpecialFind(world->current_gscn, &LevHSpecial[1], "minifig_1_2", 1);
+    count += NuSpecialFind(world->current_gscn, &LevHSpecial[2], "minifig_1_3", 1);
+    if (count == 3)
+        hothtroopers = LevHSpecial;
+}
+
+void __cdecl AnakinsFlightB_Update(WORLDINFO *world) {
+}
+
+void __cdecl AnakinsFlightB_Draw(WORLDINFO *world) {
 }

@@ -2139,12 +2139,18 @@ address,symbol,size,ctype
 0x4d83e0,_GunganA_Update,298,
 0x4d8510,_PodRaceSnipersReset,278,
 0x4d8630,_PodRaceSnipersUpdate,820,
+0x4d8990,_InitPodRaceMines,245,private same-TU void(void)
+0x4d8a90,_PodRaceResetMinesPc,90,private same-TU void(void)
 0x4d8af0,_CreatePodRaceMine,549,
+0x4d8ec0,_UpdatePodRaceMines,945,void __cdecl(void)
 0x4d9280,_PodRaceADraw,261,
 0x4d9390,_PodRaceAUpdate,282,
 0x4d94b0,_RacePodAllocatePrivatePc,52,
 0x4d94f0,_RacePodAlignPrivatePc,539,
+0x4d9ed0,_ResetPodStuff,181,void __cdecl(void)
+0x4d9fa0,_PodRaceUpdate,1038,"void __cdecl(WORLDINFO *, f32)"
 0x4da6c0,_UpdatePodRaceLapDisplay,500,
+0x4da8c0,_UpdatePacemakerDisplay,399,void __cdecl(WORLDINFO *)
 0x4daa70,_PodRace_InStartCountdown,55,i32 __cdecl(WORLDINFO *)
 0x004daab0,_PodRaceAUpdatePc,49,void __cdecl(WORLDINFO *)
 0x004daaf0,_PodRaceA_AlwaysUpdate,75,void __cdecl(WORLDINFO *)
@@ -2184,6 +2190,7 @@ address,symbol,size,ctype
 0x004dd2f0,_AnakinsFlightB_Init,139,void __cdecl(WORLDINFO *)
 0x004dd380,_AnakinsFlightB_Update,1,void __cdecl(WORLDINFO *)
 0x004dd390,_AnakinsFlightB_Draw,1,void __cdecl(WORLDINFO *)
+0x4dd3b0,_PodRaceInit,208,void __cdecl(WORLDINFO *)
 0x4dd480,_PodRaceReset,94,
 0x004dd4e0,_PodRaceAInit,5,void __cdecl(WORLDINFO *)
 0x004dd4f0,_PodRaceAReset,131,void __cdecl(WORLDINFO *)
@@ -2192,6 +2199,10 @@ address,symbol,size,ctype
 0x004dd650,_PodRaceCInit,282,void __cdecl(WORLDINFO *)
 0x4dd770,_PodRaceCReset,151,
 0x4dd810,_Action_CreatePod,1135,"i32 __cdecl (void *, void *, void *, char **, i32, i32, f32)"
+0x4ddcb0,_PaintMixColourPc,64,"private same-TU i32(i32, i32)"
+0x4ddcf0,_RandomisePaintsPc,105,private same-TU void(void)
+0x4ddd60,_DrawPaintLights,134,void __cdecl(void)
+0x4dddf0,_ResetPaintPuzzle,56,void __cdecl(WORLDINFO *)
 0x4dde30,_UpdatePaintPuzzle,708,
 0x4de100,_JediBInitLocator,406,"i32 __cdecl(WORLDINFO *, NUVEC *, i32, AILOCATOR_PC *, f32)"
 0x4de2a0,_JediBResetRecordPc,185,private same-TU void(JEDIB_CREATURE_PC *)
@@ -13636,7 +13647,15 @@ address,symbol,size,ctype
 0x0075d464,_GrapSwing_text,10,char[10]
 0x75d470,__real@3f3504f4,4,compiler literal
 0x75d474,__real@bf3504f4,4,compiler literal
+0x75d478,??_C@_09PALJCOLA@target_?$CFd?$AA@,10,const char[10]
+0x75d484,??_C@_09MGPJEIDO@origin_?$CFd?$AA@,10,const char[10]
+0x75d490,??_C@_0M@PAKKHPDA@Battledroid?$AA@,12,const char[12]
+0x75d49c,??_C@_04MJOCJPKP@STAP?$AA@,5,const char[5]
+0x75d4a4,??_C@_08FBCOBNBG@Wildlife?$AA@,9,const char[9]
 0x75d4b0,??_C@_08CNLHJKBO@Sniper?$CFd?$AA@,9,char []
+0x75d4bc,??_C@_0O@CPEMDHCE@POD_MINE_PART?$AA@,14,const char[14]
+0x75d4cc,??_C@_08PLGLIDCN@MINE_POP?$AA@,9,const char[9]
+0x75d4d8,??_C@_09MKBEPCCI@nomine_?$CFd?$AA@,10,const char[10]
 0x75d4e4,??_C@_04EEJCHKFP@mine?$AA@,5,char []
 0x0075d4f0,__real@3fefd70a40000000,8,const f64
 0x75d52c,??_C@_0BJ@CFBACOKC@nattempts_per_increment?$DN?$AA@,25,char []
@@ -13647,6 +13666,7 @@ address,symbol,size,ctype
 0x75d57c,??_C@_0BC@BLAOIOJB@trigger_collapse?$DN?$AA@,18,char []
 0x75d590,??_C@_0P@GLJDFOKD@trigger_crash?$DN?$AA@,15,char []
 0x75d5a8,__real@4006666660000000,8,const f64
+0x75d604,??_C@_0BK@NEKLICNL@Ep1_Podrace_TuskenRaiders?$AA@,26,const char[26]
 0x75d620,_PodRaceLapTimeKeywordPc,,char[9]
 0x75d62c,_PodRaceMaxLapTimeKeywordPc,,char[12]
 0x75d638,??_C@_0O@EKHGNGJF@bigrock_eight?$AA@,14,char []
@@ -13656,6 +13676,14 @@ address,symbol,size,ctype
 0x75d698,??_C@_0BC@NFHFEAOI@sebulba_max_speed?$AA@,18,char []
 0x75d6ac,??_C@_03GJFDBPIH@Lap?$AA@,4,char []
 0x75d6b0,??_C@_07JMFGGKII@halfway?$AA@,8,char []
+0x75d714,??_C@_0P@OGCKKBHH@GuardsToRescue?$AA@,15,const char[15]
+0x75d724,??_C@_0M@LPGOJHEK@TotalGuards?$AA@,12,const char[12]
+0x75d730,??_C@_09KNCGLEKB@engine_2d?$AA@,10,const char[10]
+0x75d73c,??_C@_09KPGAAKPI@engine_1d?$AA@,10,const char[10]
+0x75d748,??_C@_09OCGHCCGG@engine_2c?$AA@,10,const char[10]
+0x75d754,??_C@_09OACBJMDP@engine_1c?$AA@,10,const char[10]
+0x75d760,??_C@_04EAJKEJFK@Hits?$AA@,5,const char[5]
+0x75d768,??_C@_0N@JDJGJPMK@MaulOnTheRun?$AA@,13,const char[13]
 0x75d778,??_C@_0O@FIALBIAN@throw_object3?$AA@,14,char []
 0x75d788,??_C@_0O@EBBACJEM@throw_object2?$AA@,14,char []
 0x75d798,??_C@_0O@GKDNHKIP@throw_object1?$AA@,14,char []
@@ -13670,6 +13698,9 @@ address,symbol,size,ctype
 0x75d7d8,??_C@_0M@KBNCLANM@trooper_red?$AA@,12,char []
 0x75d7d8,_HothBattleCRedBoltPc,12,const char[12]
 0x75d7d8,_GunshipARedBoltPc,12,const char[12]
+0x75d7e4,??_C@_0BA@DHAJKDME@collapsing_mush?$AA@,16,const char[16]
+0x75d7f4,??_C@_0BG@KHALJCJL@EP1_PODRACE_MUSHROOM0?$AA@,22,const char[22]
+0x75d80c,??_C@_08OECAFJEM@boost0?$CFi?$AA@,9,const char[9]
 0x75d818,_PodCreateDamagedKeywordPc,,char[8]
 0x75d820,_PodCreatePacemakerKeywordPc,,char[10]
 0x75d82c,_PodCreateTimeKeywordPc,,char[13]
@@ -13689,6 +13720,10 @@ address,symbol,size,ctype
 0x75d9b8,??_C@_0L@IPIJEIOG@phase?$CFd_?$CFd?$AA@,11,const char[11]
 0x75d9c4,??_C@_0M@CGPLEOCP@gen_bdroids?$AA@,12,const char[12]
 0x75d9d0,??_C@_05IKNCGCHC@Party?$AA@,6,const char[6]
+0x75d9d8,??_C@_0O@PCDOCPLF@conveyor_stop?$AA@,14,const char[14]
+0x75d9e8,__real@404b000000000000,8,const f64
+0x75d9f0,??_C@_0M@PFEHMEGA@dooku_force?$AA@,12,const char[12]
+0x75d9fc,??_C@_0L@IEELGDAK@DookuFight?$AA@,11,const char[11]
 0x75da08,??_C@_06IAFFLKKD@force8?$AA@,7,char []
 0x75da10,??_C@_06HMNKGGM@force7?$AA@,7,char []
 0x75da18,??_C@_06BONGJHCN@force6?$AA@,7,char []
@@ -19345,6 +19380,7 @@ address,symbol,size,ctype
 0x7ffcb0,?ropedif@?1??DrawRopeSingle@@9@9,,u32
 0x7ffcb4,_ZipUpRopeCheatColourPc,,u32
 0x7ffcc4,_sockstep,4,f32
+0x7ffcc8,_gungan_a_time,4,f32
 0x7ffccc,_PodRace_sniper_fire_time,4,f32
 0x7ffcd0,_PodRace_sniper_fire_range_time,4,f32
 0x7ffcd4,_PodRace_sniper_fire_radius,4,f32
@@ -19363,6 +19399,8 @@ address,symbol,size,ctype
 0x7ffd68,_PodRaceKeyPc,,i32[8]
 0x7ffe44,_paint_name,,
 0x7ffe5c,_paint_panel_name,,
+0x7ffe68,_paint_target_colour,12,char *[3]
+0x7ffe74,_paint_light_name,12,char *[3]
 0x7ffe80,_jedi_b_phase1,64,JEDIB_PHASE_PC[8]
 0x7ffec0,_jedi_b_phase2,64,JEDIB_PHASE_PC[8]
 0x7fff00,_jedi_b_phase3,64,JEDIB_PHASE_PC[8]
@@ -19378,6 +19416,7 @@ address,symbol,size,ctype
 0x7fff6c,_jedib_offsets,36,NUVEC[3]
 0x7fff90,_jedib_yrot,12,i32[3]
 0x7fff9c,_JediB_playerids,12,i16 *[3]
+0x7fffa8,_FactoryBConveyorStopFrame,4,f32
 0x7fffe0,_gunshipb_seekrange,4,f32
 0x7fffe4,_gunshipb_seekmom,4,f32
 0x7fffe8,_gunshipb_seekmomseek,4,f32
@@ -22066,19 +22105,33 @@ address,symbol,size,ctype
 0x881cd8,_ZipUpRopeModulationPc,,i32
 0x881cdc,?ROPELEN@?1??DrawRopeSingle@@9@9,,f32
 0x881ce0,_PodCamDist,4,f32
+0x881ce4,_podhurry_i,4,i32
+0x881ce8,_minesys,1864,MINESYS_PC
 0x00882430,_podrace_section,4,i32
 0x882434,_PodRace_nsnipers,4,i32
 0x00882438,_podsprint,148,PODSPRINT_PC
+0x8824e8,_client_mines,792,CLIENT_MINES_PC
+0x882800,_podrace_netpacket,4,void *
+0x882804,_mine_count,4,i32
+0x882808,_gungan_a,276,GUNGAN_A_PC
+0x88291c,_retakeg_netpacket,4,RETAKEG_NETPACKET_PC *
+0x882920,_mushroom_n_attempts,4,i32
 0x882924,_mushroom_nattempts_per_increment,4,i32
 0x882928,_PodRace_snipers,320,SNIPER_s[10]
+0x882a68,_pod_mines_bitfield,8,i32[2]
 0x882a78,_podsprint_netpacket,4,struct PODSPRINTNETPACKET_s *
+0x882a80,_clients_mines_bitfield,8,i32[2]
 0x882a88,_PodPacemakerPc,,GAMEOBJECT *
 0x882a8c,_PodRacePc,,void *
 0x882a90,_Lap,4,i32
+0x882a94,_mushroom0_cut,4,CUTINFO *
 0x882a98,_mushroom_collapse,4,i32
 0x882a9c,_do_mine,4,i32
+0x882aa4,_RetakeG_TotalGuards_msg,4,GIZAIMESSAGE *
+0x882aa8,_RetakeG_GuardsToRescue_msg,4,GIZAIMESSAGE *
 0x882aac,_Maul_obj,4,struct gameobject_s *
 0x882ab0,_MaulA_ai_message,4,struct gizaimessage_s *
+0x882ab4,_MaulA_hits_message,4,GIZAIMESSAGE *
 0x882ab8,?player_ix@?1??PodRaceSnipersUpdate@@9@9,,
 0x882ac8,_paintobst,,
 0x882ae8,_LevForce,4,i32
@@ -22086,12 +22139,19 @@ address,symbol,size,ctype
 0x882af0,_paintlights,,
 0x882b30,_jedib_netpacket,4,JEDIB_NETPACKET_PC *
 0x882b4c,_factoryb_netpacket,4,void *
+0x882b50,_dooku_c,20,DOOKU_C_PC
+0x882b64,_factoryb_conveyor_stopped_msg,4,GIZAIMESSAGE *
 0x882b80,_green_light,12,nuhspecial_s
+0x882bc8,_painttry,4,i32
 0x882be4,_GunshipANorm,,NUVEC
 0x882bf0,_jedi_b,25584,JEDIB_STATE_PC
 0x888fe0,_kaminoe_netpacket,4,void *
 0x888fe4,_force_array,16,struct GIZFORCE_s *[4]
+0x888ff4,_factoryb_cut,4,CUTINFO *
+0x888ff8,_paintsused,8,i32[2]
 0x889000,_painttargetcolour,,
+0x88903c,_kaminoe_show_hearts_msg,4,GIZAIMESSAGE *
+0x88904c,_kaminoe_slave1,12,NUSPECIALHANDLE
 0x00889058,_kamino_plate_1,4,KAMINOEPLATE *
 0x0088905c,_kamino_plate_2,4,KAMINOEPLATE *
 0x00889060,_kamino_plate_3,4,KAMINOEPLATE *
@@ -22106,7 +22166,14 @@ address,symbol,size,ctype
 0x8890b8,_GunshipPlayerDeadPc,4,i32
 0x8890bc,_paintpanel,,
 0x8890c8,_KaminoDiscoMusicStatePc,,KAMINO_DISCO_MUSIC_VIEW_PC
+0x8894b0,_randpaints,12,i32[3]
+0x8894bc,_painttarget,4,i32
+0x8894c0,_paintmixed,4,i32
+0x8894c4,_played_sound,4,i32
+0x8894c8,_PAINTPUZZLESTAGE,4,i32
 0x8894d0,_JediBActiveCountPc,4,i32
+0x8894d4,_FactoryBConveyorXSpeed,4,f32
+0x8894d8,_FactoryBConveyorZSpeed,4,f32
 0x8894dc,_bonus_gunship_store_progress_flag,,i32
 0x88958c,_boulder_old_pos,24,NUVEC[2]
 0x8895cc,_boulder_wait,4,f32
