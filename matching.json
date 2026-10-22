@@ -337,7 +337,7 @@
     "src/legoapi/mission.c": "b6ce5e9e844e32467ba2d1e759d61799e5388bd376cb5894524169781c2232c1",
     "src/legoapi/missions.c": "5723bc2a3c0173a42c0beb22d0b7f5e886162f70728f8f9304c8c8a12ec7c9ef",
     "src/legoapi/model_animation.c": "ef78e3baf9aca6e9f638f4b195ef6cca7d5061a9ab739ebe9533b7f6dd75f5ab",
-    "src/legoapi/move.c": "c3943e729fddae1b880bd51dd1a351b7a46e42d6297990d6cc0f37b9ac62593a",
+    "src/legoapi/move.c": "25b07fd750a0d6fb9a6a14fee0aea8319c96a368dca517eabe92c558da69b6d5",
     "src/legoapi/movies_config_pc.c": "d3d0c7ee876c51ddc48ba70c0070ef3c3a47c5424af00fc36b2d01fc8e475def",
     "src/legoapi/narrow_sock_exceptions_pc.c": "66255d23ce153772608982a149b502563e94b3472078dc9237a35d845fad1cbb",
     "src/legoapi/netplay.c": "08f5e9eb81ca542d5e76d6c3ee9e8ae43aad56a50ed14da7a72e800c6682d0e9",
@@ -726,7 +726,7 @@
     "build/obj/legoapi/mission.obj": "1771231e8da7cb7dc9393386fb87d9c2f296eff2c63ca4f5492943a4c53dfdbb",
     "build/obj/legoapi/missions.obj": "3fcb520fe8cc05885eb81fe3847ac328d75406d913701d0de8891c4d39bd8dc2",
     "build/obj/legoapi/model_animation.obj": "93043a836f5b1e22ab2a20eec5be38b1919531632128d8b4c3524bd46c8fb08d",
-    "build/obj/legoapi/move.obj": "f1bc61ce20278804effd5d77cf74dd36fd7d86835f55c70022ca82bc83bc6922",
+    "build/obj/legoapi/move.obj": "cb65f7b7e47fe18061b6a691c9aa40de6cba1b9751958f9ecc68f3303e3fdf7b",
     "build/obj/legoapi/movies.obj": "1d1384860e2af44cc1f654b74c62561bc77abc947f27602bdca984354b0733c9",
     "build/obj/legoapi/movies_config_pc.obj": "cb0ad72f9ac627ab4e37bb65c91a24ade7128037d7d4c688bcc6eaf57ffee05f",
     "build/obj/legoapi/narrow_sock_exceptions_pc.obj": "b901ad7215f7402248a4d770d1a4ddb7f0e84c41c600fa0b8045e9d42547574b",
@@ -41184,21 +41184,21 @@
         "src/legoapi/move.c"
       ],
       "target_size": 218,
-      "exact_match": false,
+      "exact_match": true,
       "objects": [
         {
           "unit": "src/legoapi/move.c",
           "base_size": 218,
-          "exact_match": false,
+          "exact_match": true,
           "target_sha256": "6ff13a7285f73cb1a1b94bb1612f6876d94b96f4435f2b606d38f9017e58310d",
-          "base_sha256": "51d2ae793866e4eefc216441ae9f3ad68168adea83d249974b774f01e2f7c9f6",
+          "base_sha256": "6ff13a7285f73cb1a1b94bb1612f6876d94b96f4435f2b606d38f9017e58310d",
           "relocation_count": 16,
           "comparison_unit": "004b5d30-1ff3a02c1634",
-          "objdiff_percent": 99.984375
+          "objdiff_percent": 100.0
         }
       ],
-      "status": "different",
-      "objdiff_percent": 99.984375
+      "status": "exact",
+      "objdiff_percent": 100.0
     },
     {
       "name": "Move_SUPERBATTLEDROID",
@@ -485270,11 +485270,11 @@
   "progress": {
     "text_bytes": 3471246,
     "mapped_code_bytes": 2445745,
-    "matched_code_bytes": 462821,
-    "matching_percent": 13.332993397759767,
-    "fuzzy_coverage_percent": 48.02328242044281,
+    "matched_code_bytes": 463039,
+    "matching_percent": 13.339273563440909,
+    "fuzzy_coverage_percent": 48.0232834017187,
     "mapped_functions": 9046,
-    "matched_functions": 4325,
+    "matched_functions": 4326,
     "objdiff_fuzzy_percent": 74.89006,
     "objdiff_total_code": 2229292,
     "image_bytes": 40067072,
@@ -485334,16 +485334,16 @@
   "text_coverage": {
     "original_text_bytes": 3471246,
     "mapped_reconstruction_bytes": 2445745,
-    "exact_reconstruction_bytes": 462821,
-    "mapped_not_exact_bytes": 1982924,
+    "exact_reconstruction_bytes": 463039,
+    "mapped_not_exact_bytes": 1982706,
     "excluded_import_glue_bytes": 1194,
     "unclassified_text_bytes": 1024307,
     "strict_original_text_denominator_bytes": 3471246,
-    "strict_original_text_exact_percent": 13.332993397759767,
+    "strict_original_text_exact_percent": 13.339273563440909,
     "reconstruction_scope_denominator_bytes": 3470052,
-    "reconstruction_scope_exact_percent": 13.33758110829463,
+    "reconstruction_scope_exact_percent": 13.343863434899534,
     "mapped_scope_denominator_bytes": 2445745,
-    "mapped_scope_exact_percent": 18.923518191798408,
+    "mapped_scope_exact_percent": 18.93243163126164,
     "qualification": "Unclassified text includes undiscovered code and unproven padding; these percentages compare relocated objects, not the linked image."
   },
   "data_members": [
@@ -486487,7 +486487,7 @@
       "metadata_sha256": "fe09365da4c355f220d724ca99394fc120b758891b4188d2c49707b6df0894f2",
       "header_path": "src/saga.h",
       "header_sha256": "fa9d80a2f2e41f651206eab862219ac77a83ff9466a31feb3c1ad6b4c783085c",
-      "geometry_object_sha256": "a96e199ad3777da2c678e5631e652d85ff18dad4ce4b1b6f125b8d790e56b8a8",
+      "geometry_object_sha256": "58282051f70c5bdad86eb55f62ff0248bdc50bd36dfb6725ab0dc657da0d904a",
       "toolchain_sha256": "b8808088bb2c7eb239785f69c9e464ae8545216d5705fb37216bc0cf926732f3",
       "implementation_sha256": "d6a33be911d095a6d07dccd4443ccbfd6b514fd89fd7e200d9caa1827944e218",
       "headers": {
@@ -486729,7 +486729,7 @@
         4
       ]
     },
-    "clang_source_sha256": "3c37b4b47ffc961d3e711fda3321c3709fa3a05357eba8dc583608622a3372e4",
+    "clang_source_sha256": "e2a6fecc62c21bacf838a30bc0b067ec2908c283999397a64f70f1265fdb0a98",
     "member_count": 42,
     "physical_definition_credit": 0
   },

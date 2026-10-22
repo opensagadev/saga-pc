@@ -6881,7 +6881,7 @@ void __cdecl Move_REPUBLICGUNSHIP(GAMEOBJECT *object) {
         return;
     ApplyGravity(object, NULL, FindGunshipHoverHeight(object), 8.0f, NULL);
     TakeHitCode(object);
-    FireCode(object, object->pad->buttons_pressed & GAMEPAD_ACTION, object->pad->buttons_held & GAMEPAD_ACTION, 0.25f,
+    FireCode(object, object->pad->buttons_pressed & GAMEPAD_ACTION, object->pad->buttons_held & GAMEPAD_ACTION, 0.3f,
              0);
     if ((object->character_data->game_character->flags_090 & 0x400) != 0)
         CableCode(object, pad->buttons_pressed & GAMEPAD_SPECIAL, 0.5f);
