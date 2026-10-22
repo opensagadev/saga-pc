@@ -1594,7 +1594,7 @@ void __cdecl DrawCodeMenu3D(void) {
 extern i32 ShopBrickRotationDegreesPc;
 extern f32 ShopCharacterPeriodPc;
 extern const f64 ShopCharacterAmplitudePc;
-extern AREA_DATA_PC *ANEWHOPE_ADATA;
+extern AREA_DATA_PC *ANEWHOPE_ADATA, *ANAKINSFLIGHT_ADATA;
 STATIC_ASSERT(offsetof(AREA_DATA_PC, index) == 0x7c);
 STATIC_ASSERT(offsetof(LEVELDATA_PC, episode) == 0xa2);
 STATIC_ASSERT(offsetof(LEVELDATA_PC, area_index) == 0xa3);
@@ -1604,10 +1604,11 @@ void __cdecl DrawSubItems(void) {
     f32 bing = 0.0f;
     f32 bing_scale, item_scale, normal_push, scale, ypush;
     shopitem_s *items, *item;
-    NUVEC *positions, *position;
+    NUVEC *positions;
     i32 *shelf_ids;
-    i32 slot, phase_angle, id, area;
-    u16 rotation, angle, spin, phase;
+    i32 slot, phase_angle, id, area, episode;
+    u16 rotation;
+    i32 angle;
     nuhspecial_s *blank, *film;
     LEVELDATA_PC *level;
     SHOP_SAVE_VIEW_PC *save = (SHOP_SAVE_VIEW_PC *)&Game;
@@ -1658,18 +1659,24 @@ void __cdecl DrawSubItems(void) {
         if ((ShopMoveItemsPc == 1 && slot == 6) || (ShopMoveItemsPc == 2 && slot == 0))
             continue;
         rotation = 0;
-        if (slot == 0 || (ShopMoveItemsPc == 2 && slot == 1)) {
+        if (slot == 0) {
             scale = item_scale * ShopInOutScalePc * ShopScaleOverridePc[0];
             ypush = normal_push * ShopScaleOverridePc[0];
-        } else if (slot == 6 || (ShopMoveItemsPc == 1 && slot == 5)) {
+        } else if (slot == 6) {
             scale = item_scale * ShopInOutScalePc * ShopScaleOverridePc[6];
             ypush = normal_push * ShopScaleOverridePc[6];
+        } else if (ShopMoveItemsPc == 1 && slot == 5) {
+            scale = item_scale * ShopInOutScalePc * ShopScaleOverridePc[6];
+            ypush = normal_push * ShopScaleOverridePc[6];
+        } else if (ShopMoveItemsPc == 2 && slot == 1) {
+            scale = item_scale * ShopInOutScalePc * ShopScaleOverridePc[0];
+            ypush = normal_push * ShopScaleOverridePc[0];
         } else if (slot == 2) {
             scale = item_scale * scale4 * ShopInOutScalePc;
             ypush = subpush[0];
         } else if (slot == 3) {
             if (ShopPurchasePulsePc >= 0.0f)
-                rotation = (u16)(i32)(-(f64)bing * 65536.0);
+                rotation = (u16)(i32)((f64)(-bing) * 65536.0);
             scale = item_scale * scale3 * ShopInOutScalePc + ShopCodePulseScalePc * bing_scale;
             ypush = subpush[1];
         } else if (slot == 4) {
@@ -1680,91 +1687,108 @@ void __cdecl DrawSubItems(void) {
             ypush = normal_push;
         }
         item = &items[shelf_ids[slot]];
-        position = &positions[slot];
         switch (picked) {
             case 0:
                 if (item->unlocked == 1) {
-                    spin = (u16)(i32)((f64)NuFmod(GameTimer.time_elapsed, 4.0f) * 0.25 * 65536.0);
-                    if (ShopPurchasePulsePc > 0.0f && slot == 3)
-                        rotation = (u16)(rotation + spin);
-                    else
-                        rotation = spin;
+                    if (ShopPurchasePulsePc > 0.0f) {
+                        if (slot == 3)
+                            rotation += (u16)(i32)((f64)NuFmod(GameTimer.time_elapsed, 4.0f) * 0.25 * 65536.0);
+                        else
+                            rotation = (u16)(i32)((f64)NuFmod(GameTimer.time_elapsed, 4.0f) * 0.25 * 65536.0);
+                    } else {
+                        rotation = (u16)(i32)((f64)NuFmod(GameTimer.time_elapsed, 4.0f) * 0.25 * 65536.0);
+                    }
                 }
-                angle = (u16)(shelfang + (item->unlocked == 1 ? rotation : 0));
+                angle = shelfang + (item->unlocked == 1 ? rotation : 0);
                 if (items[shelf_ids[slot]].unlocked == 1) {
-                    DrawItem(&TopShelf[0].special, position, scale, 1.0f, ypush, 0, angle, 0);
+                    DrawItem(&TopShelf[0].special, &positions[slot], scale, 1.0f, ypush, 0, angle, 0);
                 } else {
-                    DrawItem(&infoblank, position, scale, 1.0f, ypush, 0, angle, 0);
-                    DrawItem(&TopShelf[3].special, position, scale, 1.0f, ypush, 0, angle, 0);
+                    DrawItem(&infoblank, &positions[slot], scale, 1.0f, ypush, 0, angle, 0);
+                    DrawItem(&TopShelf[3].special, &positions[slot], scale, 1.0f, ypush, 0, angle, 0);
                 }
                 break;
             case 1:
-                phase = (u16)(i32)((f64)NuFmod(GameTimer.time_elapsed, ShopCharacterPeriodPc) /
-                                   (f64)ShopCharacterPeriodPc * 65536.0);
-                rotation = (u16)(i32)((f64)NuTrigTable[((phase + 0x4000) >> 1) & 0x7fff] * ShopCharacterAmplitudePc);
-                angle = (u16)(shelfang + (item->unlocked == 1 ? rotation : 0));
-                Shop_DrawCharacter(&items[shelf_ids[slot]], position, scale, ypush, 0, angle, 0);
+                rotation =
+                    (u16)(i32)((f64)
+                                   NuTrigTable[(((u16)(i32)((f64)NuFmod(GameTimer.time_elapsed, ShopCharacterPeriodPc) /
+                                                            (f64)ShopCharacterPeriodPc * 65536.0) +
+                                                 0x4000) >>
+                                                1) &
+                                               0x7fff] *
+                               ShopCharacterAmplitudePc);
+                if (item->unlocked != 1)
+                    rotation = 0;
+                angle = shelfang + rotation;
+                Shop_DrawCharacter(&items[shelf_ids[slot]], &positions[slot], scale, ypush, 0, angle, 0);
                 break;
             case 2:
                 if (item->unlocked == 1) {
-                    spin = (u16)(i32)((f64)NuFmod(GameTimer.time_elapsed, 4.0f) * 0.25 * 65536.0);
-                    if (ShopPurchasePulsePc > 0.0f && slot == 3)
-                        rotation = (u16)(rotation + spin);
-                    else
-                        rotation = spin;
-                    angle = (u16)(shelfang + (item->unlocked == 1 ? rotation : 0));
-                    DrawItem(&toolblank, position, scale, 1.0f, ypush, 0, angle, 0);
-                    Shop_DrawItemPc(&items[shelf_ids[slot]], position, scale, 1.0f, 1, ypush, 0, angle, 0);
+                    if (ShopPurchasePulsePc > 0.0f) {
+                        if (slot == 3)
+                            rotation += (u16)(i32)((f64)NuFmod(GameTimer.time_elapsed, 4.0f) * 0.25 * 65536.0);
+                        else
+                            rotation = (u16)(i32)((f64)NuFmod(GameTimer.time_elapsed, 4.0f) * 0.25 * 65536.0);
+                    } else {
+                        rotation = (u16)(i32)((f64)NuFmod(GameTimer.time_elapsed, 4.0f) * 0.25 * 65536.0);
+                    }
+                    angle = shelfang + (item->unlocked == 1 ? rotation : 0);
+                    DrawItem(&toolblank, &positions[slot], scale, 1.0f, ypush, 0, angle, 0);
+                    Shop_DrawItemPc(&items[shelf_ids[slot]], &positions[slot], scale, 1.0f, 1, ypush, 0, angle, 0);
                 } else {
-                    angle = (u16)(shelfang + (item->unlocked == 1 ? rotation : 0));
-                    DrawItem(&toolblank, position, scale, 1.0f, ypush, 0, angle, 0);
+                    angle = shelfang + (item->unlocked == 1 ? rotation : 0);
+                    DrawItem(&toolblank, &positions[slot], scale, 1.0f, ypush, 0, angle, 0);
                     item = &items[shelf_ids[slot]];
                     id = (u16)item->item_id;
-                    if ((save->extra_purchased_bits[id / 32] & (1u << (id & 31))) == 0 && id >= 8 &&
-                        ExtrasCheatsPc[id].area_index != -1 &&
-                        Game.area_save[ExtrasCheatsPc[id].area_index].red_brick_collected == 0) {
-                        if (NuSpecialExistsFn(&extrasils[shelf_ids[slot]]) != 0)
-                            DrawItem(&extrasils[shelf_ids[slot]], position, scale, 1.0f, ypush, 0, angle, 0);
-                    } else {
-                        Shop_DrawItemPc(item, position, scale, 1.0f, 1, ypush, 0, angle, 0);
+                    if ((save->extra_purchased_bits[id / 32] & (1u << (id & 31))) != 0 || id < 8 ||
+                        ExtrasCheatsPc[id].area_index == -1 ||
+                        Game.area_save[ExtrasCheatsPc[id].area_index].red_brick_collected != 0) {
+                        Shop_DrawItemPc(item, &positions[slot], scale, 1.0f, 1, ypush, 0, angle, 0);
+                    } else if (NuSpecialExistsFn(&extrasils[shelf_ids[slot]]) != 0) {
+                        DrawItem(&extrasils[shelf_ids[slot]], &positions[slot], scale, 1.0f, ypush, 0, angle, 0);
                     }
                 }
                 break;
             case 4:
                 if (item->unlocked == 1) {
-                    spin = (u16)(i32)((f64)NuFmod(GameTimer.time_elapsed, 4.0f) * 0.25 * 65536.0);
-                    if (ShopPurchasePulsePc > 0.0f && slot == 3)
-                        rotation = (u16)(rotation + spin);
-                    else
-                        rotation = spin;
-                    item = &items[shelf_ids[slot]];
-                    rotation = (u16)(rotation + (u16)(item->item_id * 0x1249) +
+                    if (ShopPurchasePulsePc > 0.0f) {
+                        if (slot == 3)
+                            rotation += (u16)(i32)((f64)NuFmod(GameTimer.time_elapsed, 4.0f) * 0.25 * 65536.0);
+                        else
+                            rotation = (u16)(i32)((f64)NuFmod(GameTimer.time_elapsed, 4.0f) * 0.25 * 65536.0);
+                    } else {
+                        rotation = (u16)(i32)((f64)NuFmod(GameTimer.time_elapsed, 4.0f) * 0.25 * 65536.0);
+                    }
+                    rotation = (u16)(rotation + (u16)(items[shelf_ids[slot]].item_id * 0x1249) +
                                      (i32)((u32)ShopBrickRotationDegreesPc << 16) / 360);
                 }
-                angle = (u16)(shelfang + (item->unlocked == 1 ? rotation : 0));
-                Shop_DrawBrickPc(item, position, scale, ypush, 0, angle, 0);
+                angle = shelfang + (item->unlocked == 1 ? rotation : 0);
+                Shop_DrawBrickPc(&items[shelf_ids[slot]], &positions[slot], scale, ypush, 0, angle, 0);
                 break;
             case 5:
                 blank = &cutblank;
                 film = &cutfilm_locked;
                 id = (u16)item->item_id;
                 if (shopcutsceneplayer != NULL && CutScenePlayer_CanStart(id) != 0) {
+                    blank = &toolblank;
                     level = &LDataList[((CUT_PLAYER_CLIP_CONFIG_PC *)shopcutsceneplayer->clips)[id].level_id];
                     area = level->area_index;
-                    blank = &toolblank;
-                    if ((i8)level->episode != -1) {
-                        if (level->episode & 1)
+                    episode = (i8)level->episode;
+                    if (episode != -1) {
+                        if (episode & 1)
                             blank = &codeblank;
-                    } else if (area != -1 && ANEWHOPE_ADATA != NULL && area == ANEWHOPE_ADATA->index) {
-                        blank = &codeblank;
+                    } else if (area != -1) {
+                        if (ANEWHOPE_ADATA != NULL && area == ANEWHOPE_ADATA->index)
+                            blank = &codeblank;
+                        else if (ANAKINSFLIGHT_ADATA != NULL && area == ANAKINSFLIGHT_ADATA->index)
+                            blank = &toolblank;
                     }
-                    film = &cutfilm_unlocked;
                     rotation =
                         (u16)(id * 0x1555 - (u16)(i32)((f64)NuFmod(GameTimer.time_elapsed, 4.0f) * 0.25 * -65536.0));
+                    film = &cutfilm_unlocked;
                 }
-                angle = (u16)(shelfang + (item->unlocked == 1 ? rotation : 0));
-                DrawItem(blank, position, scale, 1.0f, ypush, 0, angle, 0);
-                DrawItem(film, position, scale, 1.0f, ypush, 0, angle, 0);
+                angle = shelfang + (item->unlocked == 1 ? rotation : 0);
+                DrawItem(blank, &positions[slot], scale, 1.0f, ypush, 0, angle, 0);
+                DrawItem(film, &positions[slot], scale, 1.0f, ypush, 0, angle, 0);
                 break;
         }
     }
