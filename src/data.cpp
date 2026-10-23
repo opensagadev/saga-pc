@@ -29894,6 +29894,30 @@ extern "C" {
 #pragma data_seg(".data$min_speed_mul")
     f32 min_speed_mul = 0.5f;
 
+#pragma data_seg(".data$sebulba_goal_ahead")
+    f32 sebulba_goal_ahead = 10.0f;
+#pragma data_seg()
+#pragma data_seg(".data$sebulba_catchup_dist")
+    f32 sebulba_catchup_dist = -3.0f;
+#pragma data_seg()
+#pragma data_seg(".data$sebulba_catchup_speed_mul")
+    f32 sebulba_catchup_speed_mul = 1.5f;
+#pragma data_seg()
+#pragma data_seg(".data$sebulba_catchup_lerpf")
+    f32 sebulba_catchup_lerpf = 5.0f;
+#pragma data_seg()
+#pragma data_seg(".data$sebulba_fallback_dist")
+    f32 sebulba_fallback_dist = 150.0f;
+#pragma data_seg()
+#pragma data_seg(".data$sebulba_fallback_lerpf")
+    f32 sebulba_fallback_lerpf = 5.0f;
+#pragma data_seg()
+#pragma data_seg(".data$sebulba_goal_ahead_vals")
+    f32 sebulba_goal_ahead_vals[4] = {100.0f, 75.0f, 50.0f, 25.0f};
+#pragma data_seg()
+#pragma bss_seg(".bss$sebulba_fallback_speed_mul")
+    f32 sebulba_fallback_speed_mul = 0;
+#pragma bss_seg()
 #pragma data_seg(".data$sebulba_lerpf")
     f32 sebulba_lerpf = 0.5f;
 

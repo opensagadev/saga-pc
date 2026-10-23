@@ -2190,7 +2190,7 @@ address,symbol,size,ctype
 0x004dc640,_PodSprintA_Update,460,void __cdecl(WORLDINFO *)
 0x004dc810,_PodSprintA_Panel,484,void __cdecl(WORLDINFO *)
 0x4dca00,_PodSprint_GetIAlongVals,122,
-0x4dca80,_Action_NewSebulba,1065,
+0x4dca80,_Action_NewSebulba,1065,"i32 __cdecl(AISYS_PC *,AISCRIPTPROCESS_PC *,AIPACKET_PC *,char **,i32,i32,f32)"
 0x004dceb0,_RetakeG_Init,63,void __cdecl(WORLDINFO *)
 0x004dcef0,_RetakeG_Reset,1,void __cdecl(WORLDINFO *)
 0x004dcf00,_RetakeG_Update,109,void __cdecl(WORLDINFO *)
@@ -13982,6 +13982,7 @@ address,symbol,size,ctype
 0x75d6c4,??_C@_0M@OOMKFKAF@SebulbasPod?$AA@,12,char []
 0x75d6d0,??_C@_0BF@DNBLPOJD@Ep1_Podsprint_Outro1?$AA@,21,char []
 0x75d6e8,??_C@_0BD@KFHHJDMB@Ep1_Podrace_Outro1?$AA@,19,char []
+0x75d6fc,??_C@_0BI@FOMNBBDE@Ep1_Podsprint_OutOfTime?$AA@,24,const char[24]
 0x75d714,??_C@_0P@OGCKKBHH@GuardsToRescue?$AA@,15,const char[15]
 0x75d724,??_C@_0M@LPGOJHEK@TotalGuards?$AA@,12,const char[12]
 0x75d730,??_C@_09KNCGLEKB@engine_2d?$AA@,10,const char[10]
@@ -20145,6 +20146,13 @@ address,symbol,size,ctype
 0x7ffd8c,_PodSprintArrowHeightPc,4,f32
 0x7ffd90,_boulder_offset_y,4,f32
 0x7ffd94,_boulder_offset_y_seek,4,f32
+0x7ffd98,_sebulba_goal_ahead,4,f32
+0x7ffd9c,_sebulba_catchup_dist,4,f32
+0x7ffda0,_sebulba_catchup_speed_mul,4,f32
+0x7ffda4,_sebulba_catchup_lerpf,4,f32
+0x7ffda8,_sebulba_fallback_dist,4,f32
+0x7ffdac,_sebulba_fallback_lerpf,4,f32
+0x7ffdb0,_sebulba_goal_ahead_vals,16,f32[4]
 0x7ffe20,_PodSebulbaFarThrowPc,4,f32
 0x7ffe24,_PodSebulbaThrowSpreadPc,4,f32
 0x7ffe28,_PodSebulbaThrowAheadPc,4,f32
@@ -22933,6 +22941,7 @@ address,symbol,size,ctype
 0x882a94,_mushroom0_cut,4,CUTINFO *
 0x882a98,_mushroom_collapse,4,i32
 0x882a9c,_do_mine,4,i32
+0x882aa0,_sebulba_fallback_speed_mul,4,f32
 0x882aa4,_RetakeG_TotalGuards_msg,4,GIZAIMESSAGE *
 0x882aa8,_RetakeG_GuardsToRescue_msg,4,GIZAIMESSAGE *
 0x882aac,_Maul_obj,4,struct gameobject_s *

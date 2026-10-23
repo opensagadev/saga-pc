@@ -35,6 +35,103 @@ void PodSprint_GetIAlongVals(NUGSPLINE *spline, i16 *out1, i16 *out2) {
     }
 }
 
+extern f32 sebulba_goal_ahead_vals[4];
+extern f32 sebulba_fallback_lerpf;
+extern f32 sebulba_fallback_dist;
+extern f32 sebulba_catchup_lerpf;
+extern f32 sebulba_catchup_speed_mul;
+extern f32 sebulba_catchup_dist;
+extern f32 sebulba_fallback_speed_mul;
+
+i32 __cdecl Action_NewSebulba(AISYS_PC *sys, AISCRIPTPROCESS_PC *process, AIPACKET_PC *packet, char **params,
+                              i32 param_count, i32 first_time, f32 delta_time) {
+    GAMEOBJECT *object;
+    f32 goal;
+    f32 base_speed;
+    f32 distance;
+    f32 ratio;
+    f32 lerp;
+    if (packet == NULL || packet->owner == NULL || ((APIOBJECT_PC *)packet->owner)->owner == NULL)
+        return 1;
+    object = (GAMEOBJECT *)((APIOBJECT_PC *)packet->owner)->owner;
+    if (first_time != 0) {
+        object->run_speed_override = object->character_data->game_character->run_speed;
+        object->movement_spline_offset.y = 0.0f;
+    }
+    if (podsprint.speed > 0.0f) {
+        object->run_speed_override = 0.0f;
+    } else if ((i8)podsprint.ai_state < 3) {
+        goal = podsprint.ai_index < 4 ? sebulba_goal_ahead_vals[podsprint.ai_index] : sebulba_goal_ahead_vals[3];
+        base_speed = object->character_data->game_character->run_speed;
+        ratio = 0.0f;
+        if (object->sock_position.sock_index != -1 &&
+            object->sock_position.sock_index == player->sock_position.sock_index) {
+            SOCKSYS_PC *sock_sys = WORLD->sock_sys;
+            SOCK_PC *sock = &sock_sys->socks[object->sock_position.sock_index];
+            if (player2 != NULL) {
+                GAMEOBJECT *lead;
+                distance = MidDistanceFromSockStart(sock_sys, &player2->sock_position) -
+                           MidDistanceFromSockStart(WORLD->sock_sys, &player->sock_position);
+                if (distance > sock->unknown_98 * 0.5)
+                    distance -= sock->unknown_98;
+                else if (distance < sock->unknown_98 * -0.5)
+                    distance += sock->unknown_98;
+                if (0.0f > goal)
+                    lead = distance > 0.0f ? player : player2;
+                else
+                    lead = distance > 0.0f ? player2 : player;
+                distance = MidDistanceFromSockStart(WORLD->sock_sys, &object->sock_position) -
+                           MidDistanceFromSockStart(WORLD->sock_sys, &lead->sock_position);
+            } else {
+                distance = MidDistanceFromSockStart(sock_sys, &object->sock_position) -
+                           MidDistanceFromSockStart(WORLD->sock_sys, &player->sock_position);
+            }
+            if (distance > sock->unknown_98 * 0.5)
+                distance -= sock->unknown_98;
+            else if (distance < sock->unknown_98 * -0.5)
+                distance += sock->unknown_98;
+            ratio = distance - goal;
+            if (ratio > 0.0f) {
+                distance = sebulba_fallback_dist - goal;
+                ratio = ratio / distance;
+                if (ratio > 1.0f)
+                    ratio = 1.0f;
+                ratio = sebulba_fallback_speed_mul * ratio + (1.0f - ratio);
+                lerp = sebulba_fallback_lerpf;
+                goto seek;
+            }
+        }
+        ratio = ratio / sebulba_catchup_dist;
+        if (ratio > 1.0f)
+            ratio = 1.0f;
+        ratio = sebulba_catchup_speed_mul * ratio + (1.0f - ratio);
+        lerp = sebulba_catchup_lerpf;
+    seek:
+        object->run_speed_override = SeekValF(object->run_speed_override, ratio * base_speed, lerp);
+    } else {
+        base_speed = object->character_data->game_character->run_speed;
+        if (podsprint.max_speed_msg != NULL && podsprint.min_speed_msg != NULL && podsprint.speed_step_msg != NULL) {
+            base_speed =
+                podsprint.max_speed_msg->value - (f32)(*(i16 *)podsprint.unknown_8c) * podsprint.speed_step_msg->value;
+            if (base_speed < podsprint.min_speed_msg->value)
+                base_speed = podsprint.min_speed_msg->value;
+        }
+        object->run_speed_override = SeekValF(object->run_speed_override, base_speed, 5.0f);
+    }
+    if (object->movement_spline_position.reached_end != 0 && (podsprint.flags & 4) == 0) {
+        GAMEOBJECT *first = (GAMEOBJECT *)Player[0];
+        GAMEOBJECT *second = (GAMEOBJECT *)Player[1];
+        if (first != NULL && (first->flags_1fc & 0x80) != 0)
+            LoseCoins(first, 1);
+        if (second != NULL && (second->flags_1fc & 0x80) != 0)
+            LoseCoins(second, 1);
+        *(u16 *)&podsprint.flags |= 4;
+        ResetLevel(WORLD, "Ep1_Podsprint_OutOfTime", 1);
+        ++*(i16 *)podsprint.unknown_8c;
+    }
+    return 0;
+}
+
 void MaulA_Reset(WORLDINFO *world) {
     nuhspecial_s *slots = LevHSpecial;
     NuSpecialSetVisibility(&slots[4], 0);
