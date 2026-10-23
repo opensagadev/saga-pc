@@ -26,6 +26,7 @@ void __cdecl EmperorFightA_Init(WORLDINFO *world) {
     i32 i;
     emperorfighta_netpacket = SetLevelHack(8);
     ((EMPEROR_FIGHT_PACKET_PC *)emperorfighta_netpacket)->enabled = 1;
+    ((EMPEROR_FIGHT_PACKET_PC *)emperorfighta_netpacket)->enabled = 1;
     NuSpecialFind(world->current_gscn, &LevHSpecial[3], (char *)EpisodeVI_liftrlightbon1, 1);
     NuSpecialFind(world->current_gscn, &LevHSpecial[4], (char *)EpisodeVI_liftrlightbon2, 1);
     NuSpecialFind(world->current_gscn, &LevHSpecial[5], (char *)EpisodeVI_liftrlightbon3, 1);
@@ -50,9 +51,7 @@ void __cdecl EmperorFightA_Init(WORLDINFO *world) {
     NuSpecialFind(world->current_gscn, &LevHSpecial[39], (char *)EpisodeVI_doton10, 1);
     NuSpecialFind(world->current_gscn, &LevHSpecial[40], (char *)EpisodeVI_doton11, 1);
     NuSpecialFind(world->current_gscn, &LevHSpecial[41], (char *)EpisodeVI_doton12, 1);
-    LevSfxFlag[0] = 0;
-    LevSfxFlag[1] = 0;
-    LevSfxFlag[2] = 0;
+    memset(LevSfxFlag, 0, 3 * sizeof(LevSfxFlag[0]));
 }
 
 void __cdecl EmperorFightA_Reset(WORLDINFO *world) {
@@ -146,7 +145,7 @@ void __cdecl SarlaccPitC_Update(WORLDINFO *world) {
             script_world->blowup_targets = SarlaccBlowUpTargetsPc;
             if (!SarlaccTakenOverPc)
                 SarlaccTakenOverPc = 1;
-            if (SarlaccPowerPc != 0) {
+            if ((u32)SarlaccPowerPc > 0) {
                 if (LevGameObject[0]->quick_shoot_bolt_id >= 0) {
                     SARLACC_PANEL_PC *panel;
                     --SarlaccPowerPc;
@@ -206,46 +205,43 @@ void __cdecl SarlaccPitC_Update(WORLDINFO *world) {
 void __cdecl SarlaccPitC_Reset(WORLDINFO *world) {
     char name[32];
     GIZMO_PC *gizmo;
-    GIZMOBLOWUP_PC *target;
     i32 i;
     SarlaccTakenOverPc = 0;
     SarlaccBlowUpTargetCountPc = 0;
     LevGameObject[0] = GetNamedGameObject(world->ai_sys, (char *)EpisodeVI_cannon_1);
-    for (i = 1; i <= 2; ++i) {
-        sprintf(name, EpisodeVI_cover_format, i);
-        NuSpecialFind(world->current_gscn, &LevHSpecial[i + 15], name, 1);
-        sprintf(name, EpisodeVI_cover_gizmo_format, i);
+    for (i = 0; i < 2; ++i) {
+        sprintf(name, EpisodeVI_cover_format, i + 1);
+        NuSpecialFind(world->current_gscn, &LevHSpecial[i + 16], name, 1);
+        sprintf(name, EpisodeVI_cover_gizmo_format, i + 1);
         gizmo = GizmoFindByName(world->gizmo_sys, blowup_gizmotype_id, name);
         if (gizmo != NULL) {
-            target = (GIZMOBLOWUP_PC *)gizmo->object;
-            SarlaccBlowUpTargetsPc[SarlaccBlowUpTargetCountPc] = target;
-            target->status_flags |= 0x8000000;
+            SarlaccBlowUpTargetsPc[SarlaccBlowUpTargetCountPc] = (GIZMOBLOWUP_PC *)gizmo->object;
+            SarlaccBlowUpTargetsPc[SarlaccBlowUpTargetCountPc]->status_flags |= 0x8000000;
             ++SarlaccBlowUpTargetCountPc;
-            UpdateMidPos(target);
+            UpdateMidPos((GIZMOBLOWUP_PC *)gizmo->object);
         }
     }
-    for (i = 1; i <= 2; ++i) {
-        sprintf(name, EpisodeVI_spinner_format, i);
+    for (i = 0; i < 2; ++i) {
+        sprintf(name, EpisodeVI_spinner_format, i + 1);
         gizmo = GizmoFindByName(world->gizmo_sys, blowup_gizmotype_id, name);
         if (gizmo != NULL) {
-            target = (GIZMOBLOWUP_PC *)gizmo->object;
-            SarlaccBlowUpTargetsPc[SarlaccBlowUpTargetCountPc] = target;
+            SarlaccBlowUpTargetsPc[SarlaccBlowUpTargetCountPc] = (GIZMOBLOWUP_PC *)gizmo->object;
             ++SarlaccBlowUpTargetCountPc;
-            UpdateMidPos(target);
+            UpdateMidPos((GIZMOBLOWUP_PC *)gizmo->object);
         }
     }
-    for (i = 1; i <= 8; ++i) {
-        sprintf(name, EpisodeVI_shot_format, i);
-        NuSpecialFind(world->current_gscn, &LevHSpecial[i - 1], name, 1);
+    for (i = 0; i < 8; ++i) {
+        sprintf(name, EpisodeVI_shot_format, i + 1);
+        NuSpecialFind(world->current_gscn, &LevHSpecial[i], name, 1);
     }
-    for (i = 1; i <= 8; ++i) {
-        sprintf(name, EpisodeVI_shot_a_format, i);
-        NuSpecialFind(world->current_gscn, &LevHSpecial[i + 7], name, 1);
+    for (i = 0; i < 8; ++i) {
+        sprintf(name, EpisodeVI_shot_a_format, i + 1);
+        NuSpecialFind(world->current_gscn, &LevHSpecial[i + 8], name, 1);
     }
     LevGizmo[0] = GizmoFindByName(world->gizmo_sys, gizpanel_gizmotype_id, (char *)EpisodeVI_panel2);
     for (i = 0; i < 8; ++i) {
-        NuSpecialSetVisibility(&LevHSpecial[i], SarlaccPowerPc <= i);
-        NuSpecialSetVisibility(&LevHSpecial[i + 8], SarlaccPowerPc > i);
+        NuSpecialSetVisibility(&LevHSpecial[i], i >= SarlaccPowerPc);
+        NuSpecialSetVisibility(&LevHSpecial[i + 8], i < SarlaccPowerPc);
     }
 }
 

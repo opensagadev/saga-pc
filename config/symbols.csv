@@ -1803,7 +1803,7 @@ address,symbol,size,ctype
 0x4ba2d0,_DrawBossHitPoints,10,
 0x4ba2e0,_DrawMeleeTargetsPc,496,"void __cdecl (i16 *, u8 *, i32)"
 0x4ba4d0,_DrawMeleeTargetsRowsPc,430,"void __cdecl (i16 *, char *, f32 *, i32)"
-0x4ba680,_DrawMeleeTargetsNumber,1095,"void __cdecl (i16 *, u8 *, i32, i32, NUSPECIALHANDLE *)"
+0x4ba680,_DrawMeleeTargetsNumber,1095,"void __cdecl (i16 *, u8 *, i32, u8, NUSPECIALHANDLE *)"
 0x4baad0,_DrawMeleeTargetsAlphaPc,386,"void __cdecl(i16 *, u8 *, f32 *, i32)"
 0x4bac60,_DrawTimerPc,367,"void __cdecl (i32, i32, i32)"
 0x004badd0,_InitPanel,106,void __cdecl (i32)
@@ -22059,6 +22059,7 @@ address,symbol,size,ctype
 0x0087b944,_DoubleScore,4,i32
 0x87b948,_statstime,4,f32
 0x87b94c,_BuildUpScale,,f32
+0x87b950,_meleeTarg_maxCount,4,i8[4]
 0x87b954,_DrawMiniKitTime,,f32
 0x0087b958,_PANEL3DMULX,4,f32
 0x87b95c,_CoinTotalScale,,f32
@@ -22066,10 +22067,14 @@ address,symbol,size,ctype
 0x87b964,_DrawRedBrickTime,,f32
 0x87b968,_RedBrickScale,,f32
 0x87b96c,_DrawBuildUpTime,,f32
+0x87b970,_meleeTarg_alpha,16,f32[4]
+0x87b980,_meleeTarg_flashTime,16,f32[4]
 0x87b990,_cointotaltime,4,f32
 0x87b994,_redbrickslidetime,4,f32
 0x87b998,_builduptime,,f32
+0x87b99c,_meleeTarg_localCount,4,i8[4]
 0x87b9a0,_BuildUpTotal,4,i32
+0x87b9a4,_meleeTarg_scaleSize,16,f32[4]
 0x87b9b4,_BuildUpDone,4,i32
 0x0087b9b8,_PANEL3DMULY,4,f32
 0x87b9bc,_minikittime,,f32

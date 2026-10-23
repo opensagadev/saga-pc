@@ -116,7 +116,7 @@ static __forceinline void AsteroidChaseD_SetTurretTarget(i32 index, NUVEC *posit
 i32 lastPlaying = 0;
 NUSPECIALHANDLE specialIcon = {0};
 extern i32 turret_gizmotype_id;
-void __cdecl DrawMeleeTargetsNumber(i16 *targets, u8 *counts, i32 count, i32 reset, NUSPECIALHANDLE *special);
+void __cdecl DrawMeleeTargetsNumber(i16 *targets, u8 *counts, i32 count, u8 reset, NUSPECIALHANDLE *special);
 
 void __cdecl AsteroidChaseD_Init(WORLDINFO *world) {
     i16 targets = -1;

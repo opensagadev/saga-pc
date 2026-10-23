@@ -388,3 +388,88 @@ void __cdecl DrawMeleeTargetsPc(i16 *targets, u8 *status, i32 count) {
 }
 
 #undef MELEE_TARGET_SPREAD_PC
+
+/* PC 0x0087b950 / 0x0087b970 / 0x0087b980 / 0x0087b99c / 0x0087b9a4: melee target counter state. */
+i8 meleeTarg_maxCount[4] = {0};
+f32 meleeTarg_alpha[4] = {0};
+f32 meleeTarg_flashTime[4] = {0};
+i8 meleeTarg_localCount[4] = {0};
+f32 meleeTarg_scaleSize[4] = {0};
+extern f32 MeleeRowsScalePc, MeleeRowsYOffsetPc;
+
+/* PC 0x004ba680. */
+void __cdecl DrawMeleeTargetsNumber(i16 *targets, u8 *counts, i32 count, u8 reset, NUSPECIALHANDLE *special) {
+    char text[4];
+    f32 icon_scale, step, text_offset, x, y, alpha_target;
+    /* Retail keeps a stack copy of the flash time and re-reads the spilled one. */
+    volatile f32 time_spill;
+    f32 time;
+    i32 red, green, i;
+    u8 target_count;
+    if (count < 1 || count > 4)
+        return;
+    if (reset != 0) {
+        memset(meleeTarg_localCount, 0, sizeof(meleeTarg_localCount));
+        memset(meleeTarg_flashTime, 0, sizeof(meleeTarg_flashTime));
+        memset(meleeTarg_scaleSize, 0, sizeof(meleeTarg_scaleSize));
+        memset(meleeTarg_alpha, 0, sizeof(meleeTarg_alpha));
+        memset(meleeTarg_maxCount, 0, sizeof(meleeTarg_maxCount));
+        for (i = 0; i < count; i++) {
+            target_count = counts[i];
+            meleeTarg_localCount[i] = target_count;
+            meleeTarg_maxCount[i] = target_count;
+            meleeTarg_scaleSize[i] = 0.5f;
+            meleeTarg_alpha[i] = 1.0f;
+        }
+        return;
+    }
+    if (FadeSys.fade != 0.0f)
+        return;
+    icon_scale = HudBossIconScalePc * MeleeRowsScalePc;
+    step = MeleeRowsSpacingPc * MeleeRowsScalePc * 2.0f;
+    text_offset = (f32)(MeleeRowsYOffsetPc * MeleeRowsScalePc * 1.0099999904632568);
+    x = (f32) - ((count - 1) * step * 0.5);
+    y = (f32)(0.550000011920929 - MeleeRowsYOffsetPc * 0.6000000238418579 * MeleeRowsScalePc);
+    for (i = 0; i < count; i++) {
+        sprintf(text, "%i", meleeTarg_localCount[i]);
+        if (counts[i] != meleeTarg_localCount[i] && meleeTarg_flashTime[i] == 0.0f)
+            meleeTarg_flashTime[i] = 0.01f;
+        if (meleeTarg_flashTime[i] != 0.0f) {
+            time_spill = meleeTarg_flashTime[i] + FRAMETIME;
+            time = time_spill;
+            time_spill = time;
+            meleeTarg_flashTime[i] = time;
+            if (time < 0.375) {
+                green = (i32)(time / 0.375 * 255.0);
+                red = (i32)(255.0 - time_spill / 0.375 * 255.0);
+                meleeTarg_scaleSize[i] = SeekLinearF(meleeTarg_scaleSize[i], 0.0f, 0.1f);
+            } else if (time < 0.625f) {
+                meleeTarg_localCount[i] = counts[i];
+                red = 0;
+                green = 255;
+            } else if (time < 1.0f) {
+                green = (i32)(255.0 - (time - 0.5) * 2.0 * 255.0);
+                red = (i32)((time_spill - 0.5) * 2.0 * 255.0);
+                meleeTarg_scaleSize[i] = SeekLinearF(meleeTarg_scaleSize[i], 0.5f, 0.1f);
+            } else {
+                green = 0;
+                meleeTarg_flashTime[i] = 0.0f;
+                red = 255;
+                meleeTarg_scaleSize[i] = SeekLinearF(meleeTarg_scaleSize[i], 0.5f, 0.1f);
+            }
+        } else {
+            green = 0;
+            red = 255;
+        }
+        if (meleeTarg_localCount[i] > 0)
+            Text3D(text, x, y + text_offset, 0.0f, meleeTarg_scaleSize[i], meleeTarg_scaleSize[i],
+                   meleeTarg_scaleSize[i], 0, red, green, 0);
+        alpha_target = (f32)meleeTarg_localCount[i] / (f32)meleeTarg_maxCount[i] * 2.0f;
+        meleeTarg_alpha[i] = SeekLinearF(meleeTarg_alpha[i], alpha_target, 0.005f);
+        if (special != NULL)
+            DrawCharIcon(targets[i], x, y, 0.0f, icon_scale, 0xa7, meleeTarg_alpha[i], meleeTarg_alpha[i], 1, special);
+        else
+            DrawCharIcon(targets[i], x, y, 0.0f, icon_scale, 0xa7, meleeTarg_alpha[i], meleeTarg_alpha[i], 1, NULL);
+        x += step;
+    }
+}
