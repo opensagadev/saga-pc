@@ -933,10 +933,11 @@ void __cdecl IconScenes_Init(char *path, VARIPTR *buffer, VARIPTR *end) {
         NuStrCpy(AreaIconPathPrivate, path);
 }
 void __cdecl IconScenes_Load(APICHARACTERMODELLIST *list, i32 mode, VARIPTR *buffer, VARIPTR *end) {
+    i32 id;
+    NUGSCN *scene;
     if (list == NULL || IconScenePc == NULL)
         return;
-    for (; list->model_id != -1; ++list) {
-        i32 id = list->model_id;
+    for (; (id = list->model_id) != -1; ++list) {
         i32 object_index;
         char path[0x100];
         if (IconScenePc[id] != NULL || list->count == 0)
@@ -947,9 +948,10 @@ void __cdecl IconScenes_Load(APICHARACTERMODELLIST *list, i32 mode, VARIPTR *buf
         NuStrCpy(path, AreaIconPathPrivate);
         NuStrCat(path, LevelObject_FindNameFromIndex(object_index));
         NuStrCat(path, ".gsc");
-        IconScenePc[id] = NuGScnRead(buffer, *end, path);
-        if (IconScenePc[id] != NULL && IconScenePc[id]->display_list != NULL)
-            IconScenePc[id]->display_list->render_flags |= 0x10;
+        scene = NuGScnRead(buffer, *end, path);
+        IconScenePc[id] = scene;
+        if (scene != NULL && scene->display_list != NULL)
+            scene->display_list->render_flags |= 0x10;
     }
 }
 
