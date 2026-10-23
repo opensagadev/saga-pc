@@ -13,27 +13,22 @@ void ResetSeeds(void) {
 }
 
 i32 __cdecl LineIntersectXY(NUVEC *a, NUVEC *b, NUVEC *c, NUVEC *d, NUVEC *first, NUVEC *second) {
-    f32 ax = a->x;
-    f32 ay = a->y;
-    f32 dx = b->x - ax;
-    f32 dy = b->y - ay;
-    f32 ex = d->x - c->x;
-    f32 ey = d->y - c->y;
-    f32 denominator = ey * dx - ex * dy;
-    f32 ox = ax - c->x;
-    f32 oy = ay - c->y;
-    f32 second_numerator = oy * dx - ox * dy;
+    f32 t_numerator = (d->x - c->x) * (a->y - c->y) - (d->y - c->y) * (a->x - c->x);
+    f32 t_denominator = (d->y - c->y) * (b->x - a->x) - (d->x - c->x) * (b->y - a->y);
+    f32 u_numerator = (b->x - a->x) * (a->y - c->y) - (b->y - a->y) * (a->x - c->x);
+    f32 u_denominator = (d->y - c->y) * (b->x - a->x) - (d->x - c->x) * (b->y - a->y);
     f32 t;
     f32 u;
 
-    if (denominator == 0.0f) {
+    if (t_numerator == 0.0f && t_denominator == 0.0f && u_numerator == 0.0f && u_denominator == 0.0f)
         return 0;
-    }
-    t = (ex * oy - ey * ox) / denominator;
-    u = second_numerator / denominator;
+    if (t_denominator == 0.0f || u_denominator == 0.0f)
+        return 0;
+    t = t_numerator / t_denominator;
+    u = u_numerator / u_denominator;
     if (first != NULL) {
-        first->x = dx * t + ax;
-        first->y = dy * t + ay;
+        first->x = (b->x - a->x) * t + a->x;
+        first->y = (b->y - a->y) * t + a->y;
     }
     if (second != NULL) {
         second->x = (d->x - c->x) * u + c->x;
