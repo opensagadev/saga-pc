@@ -789,20 +789,22 @@ i32 __cdecl DoShopMenu(void *menu) {
     i32 result;
     if (menuptr != NULL) {
         result = menuptr(menu);
-        if (result == 5)
-            return 1;
-        if (result == 6) {
-            menuptr = ShopMenuParentPc[ShopMenuLevelPc];
-            ShopMenuParentPc[ShopMenuLevelPc] = NULL;
-            --ShopMenuLevelPc;
-            if (ShopMenuLevelPc < 0)
-                ShopMenuLevelPc = 0;
-            ShopDrawPanelFnPc = ShopDrawParentPc[ShopDrawLevelPc];
-            ShopDrawParentPc[ShopDrawLevelPc] = NULL;
-            --ShopDrawLevelPc;
-            drawptr = NULL;
-            if (ShopDrawLevelPc < 0)
-                ShopDrawLevelPc = 0;
+        switch (result) {
+            case 5:
+                return 1;
+            case 6:
+                menuptr = ShopMenuParentPc[ShopMenuLevelPc];
+                ShopMenuParentPc[ShopMenuLevelPc] = NULL;
+                --ShopMenuLevelPc;
+                if (ShopMenuLevelPc < 0)
+                    ShopMenuLevelPc = 0;
+                ShopDrawPanelFnPc = ShopDrawParentPc[ShopDrawLevelPc];
+                ShopDrawParentPc[ShopDrawLevelPc] = NULL;
+                drawptr = NULL;
+                --ShopDrawLevelPc;
+                if (ShopDrawLevelPc < 0)
+                    ShopDrawLevelPc = 0;
+                break;
         }
     }
     return 0;
