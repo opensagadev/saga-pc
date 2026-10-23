@@ -756,6 +756,7 @@ extern "C" {
                     if (primary_distance > 0.0f) {
                         query->hit_time = overlap_time;
                         const f32 inverse_distance = TerrainDivideNonzeroPC(1.0f, distance);
+                        query = (TerrainQuery_s *)TerI;
                         query->hit_type = TERRAIN_HIT_TYPE_VERTEX | TERRAIN_HIT_TYPE_SECOND_NORMAL;
                         query->movement_normal.x = -query->transformed_vertices[vertex_index].x * inverse_distance;
                         query->movement_normal.y = -query->transformed_vertices[vertex_index].y * inverse_distance;
