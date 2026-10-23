@@ -1342,27 +1342,26 @@ extern f32 ShopPurchasePulseDurationPc;
 /* 004c2660..004c2725. Preserve the PC purchase pulse owner separately from the
  * existing shop initialization value at 0087bbd0. */
 i32 __cdecl BuyShopItem(shopitem_s *items, i32 index, i32 charge) {
-    shopitem_s *item = &items[index];
     SHOP_SAVE_VIEW_PC *save = (SHOP_SAVE_VIEW_PC *)&Game;
     u32 *bits = NULL;
-    if (item->type == 0)
+    if (items[index].type == 0)
         bits = save->hint_purchased_bits;
-    else if (item->type == 1)
+    else if (items[index].type == 1)
         bits = save->character_purchased_bits;
-    else if (item->type == 2)
+    else if (items[index].type == 2)
         bits = save->extra_unlocked_bits;
-    else if (item->type == 4)
+    else if (items[index].type == 4)
         bits = save->gold_brick_purchased_bits;
-    else if (item->type == 5) {
+    else if (items[index].type == 5) {
         PlaySfx((char *)GameAudioName0075c36cPc, NULL);
         return 1;
     }
     if (bits != NULL)
         bits[index / 32] |= (u32)((u64)1 << (index % 32));
     if (charge != 0)
-        Game.coins -= item->price;
+        Game.coins -= items[index].price;
     ShopPurchasePulsePc = ShopPurchasePulseDurationPc;
-    item->unlocked = 1;
+    items[index].unlocked = 1;
     if (charge != 0)
         PlaySfx("Shop_BuyCheat", &SubShelfPos[3]);
     return 1;
