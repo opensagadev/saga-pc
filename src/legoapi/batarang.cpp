@@ -550,7 +550,7 @@ extern "C" i32 __cdecl Batarang_FindTarget(WORLDINFO *world, GAMEOBJECT *object,
     union {
         f32 value;
         u32 bits;
-    } absolute;
+    } absolute, absolute_result;
     BATARANG_NATIVE_PC *batarang = BATARANG_PACKET_PC(object);
     NUVEC forward;
     NuVecRotateY(&forward, &v001, object->movement_facing_angle);
@@ -584,9 +584,9 @@ extern "C" i32 __cdecl Batarang_FindTarget(WORLDINFO *world, GAMEOBJECT *object,
             }
         } else {
             if (((absolute.value = (candidate->camera_screen_position.x - batarang->sight_position.x)),
-                 (absolute.bits &= 0x7fffffff), absolute.value) < (f64)0.1f &&
+                 (absolute_result.bits = absolute.bits & 0x7fffffff), absolute_result.value) < (f64)0.1f &&
                 ((absolute.value = (candidate->camera_screen_position.y - batarang->sight_position.y)),
-                 (absolute.bits &= 0x7fffffff), absolute.value) < (f64)0.2f &&
+                 (absolute_result.bits = absolute.bits & 0x7fffffff), absolute_result.value) < (f64)0.2f &&
                 NuVecDistSqr(&candidate->collision_position, &object->collision_position, &delta) < selected_distance) {
                 first_object = candidate;
                 break;
@@ -618,9 +618,9 @@ extern "C" i32 __cdecl Batarang_FindTarget(WORLDINFO *world, GAMEOBJECT *object,
             }
             if (target != batarang->active ||
                 !(((absolute.value = (candidate->field_0x18.x - batarang->sight_position.x)),
-                   (absolute.bits &= 0x7fffffff), absolute.value) < (f64)0.1f) ||
+                   (absolute_result.bits = absolute.bits & 0x7fffffff), absolute_result.value) < (f64)0.1f) ||
                 !(((absolute.value = (candidate->field_0x18.y - batarang->sight_position.y)),
-                   (absolute.bits &= 0x7fffffff), absolute.value) < (f64)0.1f)) {
+                   (absolute_result.bits = absolute.bits & 0x7fffffff), absolute_result.value) < (f64)0.1f)) {
                 continue;
             }
             f32 distance = NuVecDistSqr(&candidate->field_0x0c, &object->collision_position, NULL);
@@ -655,9 +655,9 @@ extern "C" i32 __cdecl Batarang_FindTarget(WORLDINFO *world, GAMEOBJECT *object,
         NUVEC delta;
         if (automatic == 0) {
             if (!(((absolute.value = (candidate->screen_position.x - batarang->sight_position.x)),
-                   (absolute.bits &= 0x7fffffff), absolute.value) < (f64)0.1f) ||
+                   (absolute_result.bits = absolute.bits & 0x7fffffff), absolute_result.value) < (f64)0.1f) ||
                 !(((absolute.value = (candidate->screen_position.y - batarang->sight_position.y)),
-                   (absolute.bits &= 0x7fffffff), absolute.value) < (f64)0.1f)) {
+                   (absolute_result.bits = absolute.bits & 0x7fffffff), absolute_result.value) < (f64)0.1f)) {
                 continue;
             }
             if (NuVecDistSqr(&candidate->mid_position, &object->collision_position, &delta) < selected_distance) {
