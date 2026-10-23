@@ -954,7 +954,7 @@ i32 __cdecl UpdateShop(void *menu) {
     ShopScaleOverridePc[5] = 0.4f;
     ShopScaleOverridePc[6] = 0.0f;
     if (ShopNameAlpha < 1.0f) {
-        ShopNameAlpha += FRAMETIME + FRAMETIME;
+        ShopNameAlpha += FRAMETIME * 2.0f;
         if (ShopNameAlpha > 1.0f)
             ShopNameAlpha = 1.0f;
     }
