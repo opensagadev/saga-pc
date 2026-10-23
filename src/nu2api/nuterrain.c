@@ -2939,18 +2939,45 @@ void TerrDrawPlatPc(TERRAIN_POLYGON_INFO_PC *terrain, i16 index) {
 }
 
 void TerrDrawPlatColPc(TERRAIN_POLYGON_INFO_PC *terrain, i16 index, i32 colour) {
-    TERRAIN_POLYGON_INFO_PC *record;
-    TERRAIN_GROUP_PC *group;
     TERRAIN_PLATFORM_PC *platform;
     NUVEC4 points[4], normals[2];
     const NUVEC *origin;
-    NUMTX *matrix;
-    i32 i, quad;
+    i32 i;
     f32 t;
 
-    record = terrain;
-    group = &((TERRAIN_SET_PC *)CurrentTerrain)->groups[index];
-    platform = &((TERRAIN_SET_PC *)CurrentTerrain)->platforms[group->scene_index];
+#define TERRAIN_TDP_GROUP (((TERRAIN_SET_PC *)CurrentTerrain)->groups[index])
+#define TERRAIN_TDP_MATRIX                                                                                             \
+    ((NUMTX *)((TERRAIN_SET_PC *)CurrentTerrain)->platforms[TERRAIN_TDP_GROUP.scene_index].scene_object)
+#define TERRAIN_TDP_LINE(a, b, c, d)                                                                                   \
+    for (i = 0; i < 2; ++i) {                                                                                          \
+        t = (f32)i;                                                                                                    \
+        origin = &TERRAIN_TDP_GROUP.origin;                                                                            \
+        NuRndrLine3dDbg((origin->x + (points[a].x + (points[b].x - points[a].x) * t)),            \
+                        (origin->y + (points[a].y + (points[b].y - points[a].y) * t)),            \
+                        (origin->z + (points[a].z + (points[b].z - points[a].z) * t)),            \
+                        (origin->x + (points[c].x + (points[d].x - points[c].x) * t)),            \
+                        (origin->y + (points[c].y + (points[d].y - points[c].y) * t)),            \
+                        (origin->z + (points[c].z + (points[d].z - points[c].z) * t)), colour);   \
+    }
+#define TERRAIN_TDP_FAN(a, c, d)                                                                                       \
+    for (i = 0; i < 2; ++i) {                                                                                          \
+        t = (f32)i;                                                                                                    \
+        origin = &TERRAIN_TDP_GROUP.origin;                                                                            \
+        NuRndrLine3dDbg((origin->x + points[a].x), (origin->y + points[a].y), \
+                        (origin->z + points[a].z),                                               \
+                        (origin->x + (points[c].x + (points[d].x - points[c].x) * t)),            \
+                        (origin->y + (points[c].y + (points[d].y - points[c].y) * t)),            \
+                        (origin->z + (points[c].z + (points[d].z - points[c].z) * t)), colour);   \
+    }
+#define TERRAIN_TDP_NORMAL(p, n)                                                                                       \
+    origin = &TERRAIN_TDP_GROUP.origin;                                                                                \
+    NuRndrLine3dDbg((origin->x + points[p].x), (origin->y + points[p].y), \
+                    (origin->z + points[p].z),                                                   \
+                    (origin->x + points[p].x + normals[n].x),                                    \
+                    (origin->y + points[p].y + normals[n].y),                                    \
+                    (origin->z + points[p].z + normals[n].z), 0xff)
+
+    platform = &((TERRAIN_SET_PC *)CurrentTerrain)->platforms[TERRAIN_TDP_GROUP.scene_index];
     if (platform->scene_transform != NULL) {
         if (platform->flags & 4) {
             if ((((TERRAIN_SCENE_STATE_VIEW_PC *)platform->scene_transform)->flags & 2) == 0)
@@ -2959,108 +2986,48 @@ void TerrDrawPlatColPc(TERRAIN_POLYGON_INFO_PC *terrain, i16 index, i32 colour) 
             return;
     }
 
-    for (i = 0; i < 4; ++i) {
-        points[i].x = record->vertices[i].x;
-        points[i].y = record->vertices[i].y;
-        points[i].z = record->vertices[i].z;
+    for (i = 0; i < 3; ++i) {
+        points[i].x = terrain->vertices[i].x;
+        points[i].y = terrain->vertices[i].y;
+        points[i].z = terrain->vertices[i].z;
         points[i].w = 0.0f;
     }
+    normals[0].x = terrain->normals[0].x * (f64)0.4f;
+    normals[0].y = terrain->normals[0].y * (f64)0.4f;
+    normals[0].z = terrain->normals[0].z * (f64)0.4f;
+    normals[0].w = 0.0f;
 
-    for (i = 0; i < 1; ++i) {
-        normals[i].x = record->normals[i].x * (f64)0.4f;
-        normals[i].y = record->normals[i].y * (f64)0.4f;
-        normals[i].z = record->normals[i].z * (f64)0.4f;
-        normals[i].w = 0.0f;
+    if (((TERRAIN_SET_PC *)CurrentTerrain)->platforms[TERRAIN_TDP_GROUP.scene_index].flags & 1) {
+        NuVec4MtxTransformVU0(&points[0], &points[0], TERRAIN_TDP_MATRIX);
+        NuVec4MtxTransformVU0(&points[1], &points[1], TERRAIN_TDP_MATRIX);
+        NuVec4MtxTransformVU0(&points[2], &points[2], TERRAIN_TDP_MATRIX);
+        NuVec4MtxTransformVU0(&normals[0], &normals[0], TERRAIN_TDP_MATRIX);
     }
 
-    quad = !(record->normals[1].y > 65535.0);
-    if ((platform->flags & 1) != 0) {
-        matrix = (NUMTX *)(platform->scene_object);
-        matrix = (NUMTX *)((TERRAIN_SET_PC *)CurrentTerrain)
-                     ->platforms[((TERRAIN_SET_PC *)CurrentTerrain)->groups[index].scene_index]
-                     .scene_object;
-        NuVec4MtxTransformVU0(&points[0], &points[0], matrix);
-        matrix = (NUMTX *)((TERRAIN_SET_PC *)CurrentTerrain)
-                     ->platforms[((TERRAIN_SET_PC *)CurrentTerrain)->groups[index].scene_index]
-                     .scene_object;
-        NuVec4MtxTransformVU0(&points[1], &points[1], matrix);
-        matrix = (NUMTX *)((TERRAIN_SET_PC *)CurrentTerrain)
-                     ->platforms[((TERRAIN_SET_PC *)CurrentTerrain)->groups[index].scene_index]
-                     .scene_object;
-        NuVec4MtxTransformVU0(&points[2], &points[2], matrix);
-        matrix = (NUMTX *)((TERRAIN_SET_PC *)CurrentTerrain)
-                     ->platforms[((TERRAIN_SET_PC *)CurrentTerrain)->groups[index].scene_index]
-                     .scene_object;
-        NuVec4MtxTransformVU0(&normals[0], &normals[0], matrix);
-    }
-    if (quad) {
-        normals[1].x = record->normals[1].x * (f64)0.4f;
-        normals[1].y = record->normals[1].y * (f64)0.4f;
-        normals[1].z = record->normals[1].z * (f64)0.4f;
-        normals[1].w = 0.0f;
-        matrix = (NUMTX *)(platform->scene_object);
-        matrix = (NUMTX *)((TERRAIN_SET_PC *)CurrentTerrain)
-                     ->platforms[((TERRAIN_SET_PC *)CurrentTerrain)->groups[index].scene_index]
-                     .scene_object;
-        NuVec4MtxTransformVU0(&points[3], &points[3], matrix);
-        matrix = (NUMTX *)((TERRAIN_SET_PC *)CurrentTerrain)
-                     ->platforms[((TERRAIN_SET_PC *)CurrentTerrain)->groups[index].scene_index]
-                     .scene_object;
-        NuVec4MtxTransformVU0(&normals[0], &normals[0], matrix);
-    }
-
-    origin = &group->origin;
-    if (!quad) {
-        for (i = 0; i < 2; ++i) {
-            t = (f32)(i);
-            origin = &((TERRAIN_SET_PC *)CurrentTerrain)->groups[index].origin;
-            origin = &((TERRAIN_SET_PC *)CurrentTerrain)->groups[index].origin;
-            NuRndrLine3dDbg(origin->x + points[0].x, origin->y + points[0].y, origin->z + points[0].z,
-                            origin->x + points[1].x + (points[2].x - points[1].x) * t,
-                            origin->y + points[1].y + (points[2].y - points[1].y) * t,
-                            origin->z + points[1].z + (points[2].z - points[1].z) * t, colour);
-        }
-        for (i = 0; i < 2; ++i) {
-            t = (f32)(i);
-            origin = &((TERRAIN_SET_PC *)CurrentTerrain)->groups[index].origin;
-            origin = &((TERRAIN_SET_PC *)CurrentTerrain)->groups[index].origin;
-            NuRndrLine3dDbg(origin->x + points[1].x, origin->y + points[1].y, origin->z + points[1].z,
-                            origin->x + points[0].x + (points[2].x - points[0].x) * t,
-                            origin->y + points[0].y + (points[2].y - points[0].y) * t,
-                            origin->z + points[0].z + (points[2].z - points[0].z) * t, colour);
-        }
+    if (terrain->normals[1].y > 65535.0) {
+        TERRAIN_TDP_FAN(0, 1, 2);
+        TERRAIN_TDP_FAN(1, 0, 2);
     } else {
-        for (i = 0; i < 2; ++i) {
-            t = (f32)(i);
-            origin = &((TERRAIN_SET_PC *)CurrentTerrain)->groups[index].origin;
-            origin = &((TERRAIN_SET_PC *)CurrentTerrain)->groups[index].origin;
-            NuRndrLine3dDbg(origin->x + points[0].x + (points[1].x - points[0].x) * t,
-                            origin->y + points[0].y + (points[1].y - points[0].y) * t,
-                            origin->z + points[0].z + (points[1].z - points[0].z) * t,
-                            origin->x + points[2].x + (points[3].x - points[2].x) * t,
-                            origin->y + points[2].y + (points[3].y - points[2].y) * t,
-                            origin->z + points[2].z + (points[3].z - points[2].z) * t, colour);
-        }
-        for (i = 0; i < 2; ++i) {
-            t = (f32)(i);
-            origin = &((TERRAIN_SET_PC *)CurrentTerrain)->groups[index].origin;
-            origin = &((TERRAIN_SET_PC *)CurrentTerrain)->groups[index].origin;
-            NuRndrLine3dDbg(origin->x + points[0].x + (points[2].x - points[0].x) * t,
-                            origin->y + points[0].y + (points[2].y - points[0].y) * t,
-                            origin->z + points[0].z + (points[2].z - points[0].z) * t,
-                            origin->x + points[1].x + (points[3].x - points[1].x) * t,
-                            origin->y + points[1].y + (points[3].y - points[1].y) * t,
-                            origin->z + points[1].z + (points[3].z - points[1].z) * t, colour);
-        }
-        origin = &((TERRAIN_SET_PC *)CurrentTerrain)->groups[index].origin;
-        NuRndrLine3dDbg(origin->x + points[3].x, origin->y + points[3].y, origin->z + points[3].z,
-                        origin->x + points[3].x + normals[1].x, origin->y + points[3].y + normals[1].y,
-                        origin->z + points[3].z + normals[1].z, 0xff);
+        points[3].x = terrain->vertices[3].x;
+        points[3].y = terrain->vertices[3].y;
+        points[3].z = terrain->vertices[3].z;
+        points[3].w = 0.0f;
+        NuVec4MtxTransformVU0(&points[3], &points[3], TERRAIN_TDP_MATRIX);
+        normals[1].x = terrain->normals[1].x * (f64)0.4f;
+        normals[1].y = terrain->normals[1].y * (f64)0.4f;
+        normals[1].z = terrain->normals[1].z * (f64)0.4f;
+        normals[1].w = 0.0f;
+        NuVec4MtxTransformVU0(&normals[0], &normals[0], TERRAIN_TDP_MATRIX);
+        TERRAIN_TDP_LINE(0, 1, 2, 3);
+        TERRAIN_TDP_LINE(0, 2, 1, 3);
+        TERRAIN_TDP_NORMAL(3, 1);
     }
-    origin = &((TERRAIN_SET_PC *)CurrentTerrain)->groups[index].origin;
-    NuRndrLine3dDbg(origin->x + points[0].x, origin->y + points[0].y, origin->z + points[0].z,
-                    origin->x + points[0].x + normals[0].x, origin->y + points[0].y + normals[0].y,
-                    origin->z + points[0].z + normals[0].z, 0xff);
+    TERRAIN_TDP_NORMAL(0, 0);
+#undef TERRAIN_TDP_NORMAL
+#undef TERRAIN_TDP_FAN
+#undef TERRAIN_TDP_LINE
+#undef TERRAIN_TDP_MATRIX
+#undef TERRAIN_TDP_GROUP
 }
 
 /* Original query packet field cohort used by the debug consumers. */
