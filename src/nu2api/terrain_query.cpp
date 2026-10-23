@@ -3099,70 +3099,44 @@ extern "C" void TerrainWallSideSlidePc(NUVEC *movement, void *id, f32 speed, f32
         movement->y *= upward_scale;
 }
 
+#define TERRAIN_TPE_EDGE(first_vertex, second_vertex)                                                                  \
+    first->x = groups[query->terrain_group_index].origin.x + query->surface->vertices[first_vertex].x;                 \
+    first->y = groups[query->terrain_group_index].origin.y + query->surface->vertices[first_vertex].y;                 \
+    first->z = groups[query->terrain_group_index].origin.z + query->surface->vertices[first_vertex].z;                 \
+    second->x = groups[query->terrain_group_index].origin.x + query->surface->vertices[second_vertex].x;               \
+    second->y = groups[query->terrain_group_index].origin.y + query->surface->vertices[second_vertex].y;               \
+    second->z = groups[query->terrain_group_index].origin.z + query->surface->vertices[second_vertex].z
 extern "C" void TerrainPolyEdgePc(NUVEC *first, NUVEC *second) {
     TerrainQuery_s *query = static_cast<TerrainQuery_s *>(TerI);
     if ((query->hit_type & 0xf) != TERRAIN_HIT_TYPE_CYLINDER)
         return;
+    TERRAIN_GROUP *groups;
     switch (query->hit_edge) {
-        case 1: {
-            NUVEC *origin = &static_cast<TERRAIN_SET_PC *>(CurrentTerrain)->groups[query->terrain_group_index].origin;
-            TERRAIN_SHAPE *surface = query->surface;
-            first->x = origin->x + surface->vertices[0].x;
-            first->y = origin->y + surface->vertices[0].y;
-            first->z = origin->z + surface->vertices[0].z;
-            second->x = origin->x + surface->vertices[1].x;
-            second->y = origin->y + surface->vertices[1].y;
-            second->z = origin->z + surface->vertices[1].z;
+        case 1:
+            groups = static_cast<TERRAIN_SET_PC *>(CurrentTerrain)->groups;
+            TERRAIN_TPE_EDGE(0, 1);
             break;
-        }
-        case 2: {
-            NUVEC *origin = &static_cast<TERRAIN_SET_PC *>(CurrentTerrain)->groups[query->terrain_group_index].origin;
-            TERRAIN_SHAPE *surface = query->surface;
-            first->x = origin->x + surface->vertices[1].x;
-            first->y = origin->y + surface->vertices[1].y;
-            first->z = origin->z + surface->vertices[1].z;
-            second->x = origin->x + surface->vertices[2].x;
-            second->y = origin->y + surface->vertices[2].y;
-            second->z = origin->z + surface->vertices[2].z;
+        case 2:
+            groups = static_cast<TERRAIN_SET_PC *>(CurrentTerrain)->groups;
+            TERRAIN_TPE_EDGE(1, 2);
             break;
-        }
-        case 3: {
-            NUVEC *origin = &static_cast<TERRAIN_SET_PC *>(CurrentTerrain)->groups[query->terrain_group_index].origin;
-            TERRAIN_SHAPE *surface = query->surface;
-            first->x = origin->x + surface->vertices[2].x;
-            first->y = origin->y + surface->vertices[2].y;
-            first->z = origin->z + surface->vertices[2].z;
-            second->x = origin->x + surface->vertices[0].x;
-            second->y = origin->y + surface->vertices[0].y;
-            second->z = origin->z + surface->vertices[0].z;
+        case 3:
+            groups = static_cast<TERRAIN_SET_PC *>(CurrentTerrain)->groups;
+            TERRAIN_TPE_EDGE(2, 0);
             break;
-        }
-        case 4: {
-            NUVEC *origin = &static_cast<TERRAIN_SET_PC *>(CurrentTerrain)->groups[query->terrain_group_index].origin;
-            TERRAIN_SHAPE *surface = query->surface;
-            first->x = origin->x + surface->vertices[1].x;
-            first->y = origin->y + surface->vertices[1].y;
-            first->z = origin->z + surface->vertices[1].z;
-            second->x = origin->x + surface->vertices[3].x;
-            second->y = origin->y + surface->vertices[3].y;
-            second->z = origin->z + surface->vertices[3].z;
+        case 4:
+            groups = static_cast<TERRAIN_SET_PC *>(CurrentTerrain)->groups;
+            TERRAIN_TPE_EDGE(1, 3);
             break;
-        }
-        case 5: {
-            NUVEC *origin = &static_cast<TERRAIN_SET_PC *>(CurrentTerrain)->groups[query->terrain_group_index].origin;
-            TERRAIN_SHAPE *surface = query->surface;
-            first->x = origin->x + surface->vertices[3].x;
-            first->y = origin->y + surface->vertices[3].y;
-            first->z = origin->z + surface->vertices[3].z;
-            second->x = origin->x + surface->vertices[2].x;
-            second->y = origin->y + surface->vertices[2].y;
-            second->z = origin->z + surface->vertices[2].z;
+        case 5:
+            groups = static_cast<TERRAIN_SET_PC *>(CurrentTerrain)->groups;
+            TERRAIN_TPE_EDGE(3, 2);
             break;
-        }
         default:
             break;
     }
 }
+#undef TERRAIN_TPE_EDGE
 
 extern "C" void NewTerrAxisFreedomPc(TERRAIN_AXIS_FREEDOM_SHAPE_PC *shape, NUVEC *position) {
     TerrShape = shape;
