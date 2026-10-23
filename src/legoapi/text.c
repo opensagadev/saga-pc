@@ -482,7 +482,7 @@ void FixUpButtonsInFont(VUFNT *game_font, VUFNT *button_font) {
 }
 
 void Text_MakeTime(f32 time, i32 show_hours, i32 show_minutes, i32 show_centiseconds, char *text) {
-    i32 hours = 0;
+    i32 hours;
     i32 minutes;
     i32 seconds;
     i32 centiseconds;
@@ -493,6 +493,7 @@ void Text_MakeTime(f32 time, i32 show_hours, i32 show_minutes, i32 show_centisec
         hours = (i32)(time / 3600.0);
         minutes = (i32)NuFmod((f32)(time / 60.0), 60.0f);
     } else {
+        hours = 0;
         minutes = (i32)(time / 60.0);
     }
     if (show_hours != 0 || show_minutes != 0) {
