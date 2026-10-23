@@ -9546,7 +9546,7 @@ address,symbol,size,ctype
 0x742040,?SetScalarValues@PC_SHADER_PARAMETER_LOCAL_PC@@QAEXHHPBM@Z,55,"void __thiscall PC_SHADER_PARAMETER_LOCAL_PC::SetScalarValues(i32,i32,const f32*)"
 0x742080,?SetVectorValues@PC_SHADER_PARAMETER_LOCAL_PC@@QAEXHHPBM@Z,55,"void __thiscall PC_SHADER_PARAMETER_LOCAL_PC::SetVectorValues(i32,i32,const f32*)"
 0x7420c0,?SetMatrixValues@PC_SHADER_PARAMETER_LOCAL_PC@@QAEXHHPBM@Z,177,"void __thiscall PC_SHADER_PARAMETER_LOCAL_PC::SetMatrixValues(i32,i32,const f32*)"
-0x007421d0,?PCShaderUnpackColourPc@@YAPAMPAMI@Z,91,
+0x007421d0,?PCShaderUnpackColourPc@@YAPAMPAMH@Z,91,
 0x00742240,_PCShaderSamplerBiasBitsPc,62,u32 __cdecl(f32)
 0x00742280,?PCShaderSamplerWrapPc@@YAXHIH@Z,115,
 0x742330,_NuShaderObjectCreate,24,void __cdecl NuShaderObjectCreate(PC_SHADER_OBJECT_FULL_VIEW *)

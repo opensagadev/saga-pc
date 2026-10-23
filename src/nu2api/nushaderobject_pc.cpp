@@ -136,10 +136,9 @@ void PC_SHADER_PARAMETER_LOCAL_PC::SetMatrixValues(i32 first_element, i32 count,
     NUMTX transposed[32];
     for (i32 i = 0; i < count; ++i)
         NuMtxTranspose(&transposed[i], (NUMTX *)(values + i * 16));
-    i32 vector_count = count * 4;
-    i32 remaining = (i8)register_count - first_element * 4;
-    if (vector_count > remaining)
-        vector_count = remaining;
+    i32 vector_count = (i8)register_count - first_element * 4;
+    if (count * 4 < vector_count)
+        vector_count = count * 4;
     if ((metadata & 0xf0000000U) == 0x10000000U)
         PCDeviceSetVertexShaderConstantsF(register_index + first_element * 4, (const f32 *)transposed, vector_count);
     else
@@ -166,10 +165,9 @@ extern "C" void __cdecl NuShaderObjectSetElementsfv(PC_SHADER_OBJECT_FULL_VIEW *
 }
 
 void PC_SHADER_PARAMETER_LOCAL_PC::SetTransposedMatrixValues(i32 first_element, i32 count, const f32 *values) {
-    i32 vector_count = count * 4;
-    i32 remaining = (i8)register_count - first_element * 4;
-    if (vector_count >= remaining)
-        vector_count = remaining;
+    i32 vector_count = (i8)register_count - first_element * 4;
+    if (count * 4 < vector_count)
+        vector_count = count * 4;
     if ((metadata & 0xf0000000u) == 0x10000000u)
         PCDeviceSetVertexShaderConstantsF(register_index + first_element * 4, values, vector_count);
     else
@@ -373,7 +371,7 @@ void PC_SHADER_PARAMETER_LOCAL_PC::SetFloat3(const f32 *values) {
         PCDeviceSetPixelShaderConstantsF(register_index, values, 1);
 }
 void PC_SHADER_PARAMETER_LOCAL_PC::SetValues(i32 first_element, i32 count, const f32 *values) {
-    switch (type_stage & 15) {
+    switch ((i32)(metadata << 4) >> 28) {
         case 1:
             SetScalarValues(first_element, count, values);
             break;
@@ -383,6 +381,8 @@ void PC_SHADER_PARAMETER_LOCAL_PC::SetValues(i32 first_element, i32 count, const
         case 3:
             SetMatrixValues(first_element, count, values);
             break;
+        case 4:
+            return;
     }
 }
 
@@ -390,16 +390,10 @@ extern "C" const f32 PCSamplerBiasMinimum;
 extern "C" const f32 PCSamplerBiasMaximum;
 extern "C" const f64 PCSamplerBiasMaximumComparison;
 extern "C" u32 __cdecl PCShaderSamplerBiasBitsPc(f32 bias) {
-    union {
-        f32 value;
-        u32 bits;
-    } result;
-    if (bias < PCSamplerBiasMinimum)
-        bias = PCSamplerBiasMinimum;
-    else if (bias > PCSamplerBiasMaximumComparison)
-        bias = PCSamplerBiasMaximum;
-    result.value = bias;
-    return result.bits;
+    f32 value = PCSamplerBiasMinimum > bias             ? PCSamplerBiasMinimum
+                : bias > PCSamplerBiasMaximumComparison ? PCSamplerBiasMaximum
+                                                        : bias;
+    return *reinterpret_cast<u32 *>(&value);
 }
 
 /* Minimum accessed cohort, not a whole NUMTL allocation/size claim. */
@@ -473,9 +467,11 @@ static void *PCShaderMaterialTextureNativePc(PC_SHADER_MATERIAL_DISPATCH_VIEW *m
     /* Requires the proposed named diffuse_texture_ids[4] member @b8, reviewed
      * callers slot0/1/2/3; original zero-ID case returnsNULL, else genuine lookup. */
     i32 id = material->diffuse_texture_ids[slot];
-    return id == 0 ? NULL : NuTextureGetDimensions(id)->resource;
+    if (id != 0)
+        return NuTextureGetDimensions(id)->resource;
+    return NULL;
 }
-static f32 *PCShaderUnpackColourPc(f32 *output, u32 colour) {
+static f32 *PCShaderUnpackColourPc(f32 *output, i32 colour) {
     output[0] = (colour & 255) / 255.0;
     output[1] = ((colour >> 8) & 255) / 255.0;
     output[2] = ((colour >> 16) & 255) / 255.0;
@@ -483,37 +479,34 @@ static f32 *PCShaderUnpackColourPc(f32 *output, u32 colour) {
     return output;
 }
 static void PCShaderSamplerWrapPc(i32 u_mode, u32 stage, i32 v_mode) {
-    u32 mode;
     switch (u_mode) {
         case 1:
-            mode = 3;
+            PCDeviceSetSamplerState(stage, 1, 3);
             break;
         case 2:
-            mode = 2;
+            PCDeviceSetSamplerState(stage, 1, 2);
             break;
         case 3:
-            mode = 4;
+            PCDeviceSetSamplerState(stage, 1, 4);
             break;
         default:
-            mode = 1;
+            PCDeviceSetSamplerState(stage, 1, 1);
             break;
     }
-    PCDeviceSetSamplerState(stage, 1, mode);
     switch (v_mode) {
         case 1:
-            mode = 3;
+            PCDeviceSetSamplerState(stage, 2, 3);
             break;
         case 2:
-            mode = 2;
+            PCDeviceSetSamplerState(stage, 2, 2);
             break;
         case 3:
-            mode = 4;
+            PCDeviceSetSamplerState(stage, 2, 4);
             break;
         default:
-            mode = 1;
+            PCDeviceSetSamplerState(stage, 2, 1);
             break;
     }
-    PCDeviceSetSamplerState(stage, 2, mode);
 }
 
 extern "C" void __cdecl PCShaderSetMaterialParametersPc(PC_SHADER_OBJECT_FULL_VIEW *shader, NUMTL *original_material) {
