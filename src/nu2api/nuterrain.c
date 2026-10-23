@@ -2208,156 +2208,160 @@ void __cdecl TerrainSetWallDeflectYScale(f32 scale) {
 
 void __cdecl TerrainPlatformOldUpdate(void) {
     i32 i;
-    TERRAIN_SET_PC *terrain = (TERRAIN_SET_PC *)CurrentTerrain;
-    if (terrain == NULL)
+    if (CurrentTerrain == NULL)
         return;
     curPickInst = 0;
     for (i = 0; i < ((TERRAIN_SET_PC *)CurrentTerrain)->removed_platform_count; ++i)
         DeletePlatinst(((TERRAIN_SET_PC *)CurrentTerrain)->removed_platforms[i]);
-    terrain = (TERRAIN_SET_PC *)CurrentTerrain;
-    terrain->removed_platform_count = 0;
+    ((TERRAIN_SET_PC *)CurrentTerrain)->removed_platform_count = 0;
     curSphereter = 0;
     for (i = 0; i < ((TERRAIN_SET_PC *)CurrentTerrain)->max_platforms; ++i) {
-        TERRAIN_PLATFORM_LIFECYCLE_PC *platform =
-            &((TERRAIN_PLATFORM_LIFECYCLE_PC *)((TERRAIN_SET_PC *)CurrentTerrain)->platforms)[i];
-        if (platform->scene_matrix != NULL)
-            platform->previous_matrix = *platform->scene_matrix;
+        if (((TERRAIN_PLATFORM_LIFECYCLE_PC *)((TERRAIN_SET_PC *)CurrentTerrain)->platforms)[i].scene_matrix != NULL)
+            ((TERRAIN_PLATFORM_LIFECYCLE_PC *)((TERRAIN_SET_PC *)CurrentTerrain)->platforms)[i].previous_matrix =
+                *((TERRAIN_PLATFORM_LIFECYCLE_PC *)((TERRAIN_SET_PC *)CurrentTerrain)->platforms)[i].scene_matrix;
     }
 }
 
+#define TERRAIN_TPNU_SET ((TERRAIN_SET_PC *)CurrentTerrain)
+#define TERRAIN_TPNU_PLATFORM(index) (((TERRAIN_PLATFORM_LIFECYCLE_PC *)TERRAIN_TPNU_SET->platforms)[index])
 void __cdecl TerrainPlatformNewUpdate(void) {
-    TERRAIN_SET_PC *terrain = (TERRAIN_SET_PC *)CurrentTerrain;
     i32 i;
-    f32 negative_distance, x, z;
+    f32 negative_distance, x, z, offset;
+    u32 offset_bits;
     f64 back_x, back_z, product_x, product_z;
     f32 min_x, min_z, max_x, max_z;
-    i16 *group_index, *end;
-    const NUMTX *camera = &global_camera.mtx;
-    if (terrain != NULL) {
+    i16 *group_index;
+    if (CurrentTerrain != NULL) {
         for (i = 0; i < 64; ++i) {
-            TERRAIN_TRACK_SLOT_PC *slot = &terrain->track_slots[i];
-            if (slot->id != NULL) {
-                if (slot->platform_contact_state > 0)
-                    --slot->platform_contact_state;
-                if (slot->wall_contact_state > 0)
-                    --slot->wall_contact_state;
+            if (TERRAIN_TPNU_SET->track_slots[i].id != NULL) {
+                if (TERRAIN_TPNU_SET->track_slots[i].platform_contact_state > 0)
+                    --TERRAIN_TPNU_SET->track_slots[i].platform_contact_state;
+                if (TERRAIN_TPNU_SET->track_slots[i].wall_contact_state > 0)
+                    --TERRAIN_TPNU_SET->track_slots[i].wall_contact_state;
             }
         }
         for (i = 0; i < 16; ++i) {
-            if (terrain->index_levels[i].cache_age > 0)
-                --terrain->index_levels[i].cache_age;
+            if (TERRAIN_TPNU_SET->index_levels[i].cache_age > 0)
+                --TERRAIN_TPNU_SET->index_levels[i].cache_age;
         }
     }
     for (i = 0; i < PlatCodeCallback; ++i)
         PlatCallback[i].function(PlatCallback[i].argument);
     PlatCodeCallback = 0;
     cntrots = 0;
-    terrain = (TERRAIN_SET_PC *)CurrentTerrain;
-    if (terrain == NULL)
+    if (CurrentTerrain == NULL)
         return;
     negative_distance = -TerrPlatScanDist;
-    back_x = (f64)TerrPlatScanDist * camera->m20 * 0.25;
-    back_z = (f64)TerrPlatScanDist * camera->m22 * 0.25;
-    product_x = (f64)TerrPlatScanDist * camera->m00;
-    product_z = (f64)TerrPlatScanDist * camera->m02;
-    min_x = max_x = camera->m00 * negative_distance * 0.25 - back_x;
-    min_z = max_z = camera->m02 * negative_distance * 0.25 - back_z;
-    x = camera->m20 * (f64)TerrPlatScanDist - product_x * (f64)0.35f;
-    z = camera->m22 * (f64)TerrPlatScanDist - product_z * (f64)0.35f;
+    back_x = global_camera.mtx.m20 * TerrPlatScanDist * 0.25;
+    x = global_camera.mtx.m00 * negative_distance * 0.25 - back_x;
+    min_x = x;
+    max_x = x;
+    back_z = global_camera.mtx.m22 * TerrPlatScanDist * 0.25;
+    z = global_camera.mtx.m02 * negative_distance * 0.25 - back_z;
+    min_z = z;
+    max_z = z;
+    product_x = global_camera.mtx.m00 * TerrPlatScanDist;
+    x = global_camera.mtx.m20 * TerrPlatScanDist - product_x * (f64)0.35f;
     if (min_x > x)
         min_x = x;
     if (max_x < x)
         max_x = x;
+    product_z = global_camera.mtx.m02 * TerrPlatScanDist;
+    z = global_camera.mtx.m22 * TerrPlatScanDist - product_z * (f64)0.35f;
     if (min_z > z)
         min_z = z;
     if (max_z < z)
         max_z = z;
-    x = camera->m20 * (f64)TerrPlatScanDist + product_x * (f64)0.35f;
-    z = camera->m22 * (f64)TerrPlatScanDist + product_z * (f64)0.35f;
+    x = global_camera.mtx.m20 * TerrPlatScanDist + product_x * (f64)0.35f;
     if (min_x > x)
         min_x = x;
     if (max_x < x)
         max_x = x;
+    z = global_camera.mtx.m22 * TerrPlatScanDist + product_z * (f64)0.35f;
     if (min_z > z)
         min_z = z;
     if (max_z < z)
         max_z = z;
     x = product_x * 0.25 - back_x;
-    z = product_z * 0.25 - back_z;
     if (min_x > x)
         min_x = x;
     if (max_x < x)
         max_x = x;
+    z = product_z * 0.25 - back_z;
     if (min_z > z)
         min_z = z;
     if (max_z < z)
         max_z = z;
-    min_x += camera->m30 - 1.0;
-    max_x += camera->m30 + 1.0;
-    min_z += camera->m32 - 1.0;
-    max_z += camera->m32 + 1.0;
-    terrain->platform_query_min_x = min_x;
-    terrain->platform_query_min_z = min_z;
-    terrain->platform_query_max_x = max_x;
-    terrain->platform_query_max_z = max_z;
-    terrain->active_platform_count = 0;
-    group_index = terrain->group_indices + terrain->platform_cell.first_group;
-    end = group_index + terrain->platform_cell.group_count;
-    for (; group_index < end; ++group_index) {
-        TERRAIN_GROUP_PC *group = &terrain->groups[*group_index];
-        TERRAIN_PLATFORM_LIFECYCLE_PC *platform =
-            &((TERRAIN_PLATFORM_LIFECYCLE_PC *)terrain->platforms)[group->scene_index];
-        NUMTX *matrix;
-        u32 flags;
+    min_x += global_camera.mtx.m30 - 1.0f;
+    max_x += global_camera.mtx.m30 + 1.0f;
+    min_z += global_camera.mtx.m32 - 1.0f;
+    max_z += global_camera.mtx.m32 + 1.0f;
+    TERRAIN_TPNU_SET->platform_query_min_x = min_x;
+    TERRAIN_TPNU_SET->platform_query_max_x = max_x;
+    TERRAIN_TPNU_SET->platform_query_min_z = min_z;
+    TERRAIN_TPNU_SET->platform_query_max_z = max_z;
+    TERRAIN_TPNU_SET->active_platform_count = 0;
+    group_index = &TERRAIN_TPNU_SET->group_indices[TERRAIN_TPNU_SET->platform_cell.first_group];
+    for (i = 0; i < TERRAIN_TPNU_SET->platform_cell.group_count; ++i, ++group_index) {
+        TERRAIN_GROUP_PC *group = &TERRAIN_TPNU_SET->groups[*group_index];
+        i32 index = group->scene_index;
+        TERRAIN_PLATFORM_LIFECYCLE_PC *platform = &TERRAIN_TPNU_PLATFORM(index);
         if (platform->scene_transform != NULL) {
-            u32 visibility = platform->scene_transform->flags;
             if ((platform->flags & 4) != 0) {
-                if ((visibility & 2) == 0)
+                if ((platform->scene_transform->flags & 2) == 0)
                     continue;
-            } else if ((visibility & 1) == 0)
+            } else if ((platform->scene_transform->flags & 1) == 0)
                 continue;
         }
         if (group->chunk_type == 0)
             continue;
-        matrix = platform->scene_matrix;
-        if (matrix != NULL) {
+        if (platform->scene_matrix != NULL) {
             if (platform->bounce_frames != 0) {
-                f32 offset;
                 if (platform->bounce_frames > 124)
-                    platform->bounce_velocity =
-                        (platform->bounce_impulse - platform->bounce_damping * platform->bounce_velocity) +
-                        platform->bounce_velocity;
+                    TERRAIN_TPNU_PLATFORM(index).bounce_velocity =
+                        (TERRAIN_TPNU_PLATFORM(index).bounce_impulse -
+                         TERRAIN_TPNU_PLATFORM(index).bounce_damping * TERRAIN_TPNU_PLATFORM(index).bounce_velocity) +
+                        TERRAIN_TPNU_PLATFORM(index).bounce_velocity;
                 else
-                    platform->bounce_velocity -= platform->bounce_damping * platform->bounce_velocity;
-                offset = platform->bounce_offset;
-                platform->bounce_velocity +=
-                    -offset * fabsf(offset) * platform->bounce_spring * 0.5 - platform->bounce_spring * offset;
-                platform->bounce_offset += platform->bounce_velocity;
-                --platform->bounce_frames;
-                matrix->m31 += platform->bounce_offset;
+                    TERRAIN_TPNU_PLATFORM(index).bounce_velocity =
+                        TERRAIN_TPNU_PLATFORM(index).bounce_velocity -
+                        TERRAIN_TPNU_PLATFORM(index).bounce_damping * TERRAIN_TPNU_PLATFORM(index).bounce_velocity;
+                offset = TERRAIN_TPNU_PLATFORM(index).bounce_offset;
+                offset_bits = *(u32 *)&offset & 0x7fffffff;
+                TERRAIN_TPNU_PLATFORM(index).bounce_velocity =
+                    (-TERRAIN_TPNU_PLATFORM(index).bounce_offset * *(f32 *)&offset_bits *
+                         TERRAIN_TPNU_PLATFORM(index).bounce_spring * 0.5 -
+                     TERRAIN_TPNU_PLATFORM(index).bounce_offset * TERRAIN_TPNU_PLATFORM(index).bounce_spring) +
+                    TERRAIN_TPNU_PLATFORM(index).bounce_velocity;
+                TERRAIN_TPNU_PLATFORM(index).bounce_offset += TERRAIN_TPNU_PLATFORM(index).bounce_velocity;
+                --TERRAIN_TPNU_PLATFORM(index).bounce_frames;
+                TERRAIN_TPNU_PLATFORM(index).scene_matrix->m31 += TERRAIN_TPNU_PLATFORM(index).bounce_offset;
             }
-            group->origin.x = matrix->m30;
-            group->origin.y = matrix->m31;
-            group->origin.z = matrix->m32;
+            group->origin.x = TERRAIN_TPNU_PLATFORM(index).scene_matrix->m30;
+            group->origin.y = TERRAIN_TPNU_PLATFORM(index).scene_matrix->m31;
+            group->origin.z = TERRAIN_TPNU_PLATFORM(index).scene_matrix->m32;
         }
-        flags = platform->flags;
-        if ((flags & 2) != 0)
-            platform->bounce_frames = 128;
-        platform->flags &= ~2U;
-        platform->motion_status = 0;
-        if ((flags & 1) == 0) {
-            if (group->bounds_min.x + group->origin.x > max_x || group->origin.x + group->bounds_max.x < min_x ||
-                group->bounds_min.z + group->origin.z > max_z || group->origin.z + group->bounds_max.z < min_z)
-                continue;
-        } else {
-            if (group->origin.x - group->radius > max_x || group->origin.x + group->radius < min_x ||
+        if ((TERRAIN_TPNU_PLATFORM(index).flags & 2) != 0)
+            TERRAIN_TPNU_PLATFORM(index).bounce_frames = 128;
+        TERRAIN_TPNU_PLATFORM(index).flags &= ~2U;
+        TERRAIN_TPNU_PLATFORM(index).motion_status = 0;
+        if ((TERRAIN_TPNU_PLATFORM(index).flags & 1) != 0) {
+            if (group->origin.x - group->radius > max_x || group->radius + group->origin.x < min_x ||
                 group->origin.z - group->radius > max_z || group->origin.z + group->radius < min_z)
                 continue;
+        } else {
+            if (group->bounds_min.x + group->origin.x > max_x || group->bounds_max.x + group->origin.x < min_x ||
+                group->bounds_min.z + group->origin.z > max_z || group->bounds_max.z + group->origin.z < min_z)
+                continue;
         }
-        if (terrain->active_platform_count < 96)
-            terrain->active_platform_groups[terrain->active_platform_count++] = *group_index;
+        if (TERRAIN_TPNU_SET->active_platform_count < 96) {
+            TERRAIN_TPNU_SET->active_platform_groups[TERRAIN_TPNU_SET->active_platform_count] = *group_index;
+            ++TERRAIN_TPNU_SET->active_platform_count;
+        }
     }
 }
+#undef TERRAIN_TPNU_PLATFORM
+#undef TERRAIN_TPNU_SET
 
 i32 __cdecl FindPlatInst(i32 instance) {
     TERRAIN_SET_PC *terrain;
