@@ -174,17 +174,8 @@ void MenuDrawBonusWin(MENU_s *unused0) {
 }
 
 i32 __cdecl Hub_InMenu(void) {
-    switch (GetMenuID()) {
-        case 8:
-        case 12:
-        case 13:
-        case 14:
-        case 15:
-        case 16:
-        case 17:
-            return 1;
-    }
-    return 0;
+    i32 id = GetMenuID();
+    return id == 13 || id == 12 || id == 14 || id == 15 || id == 16 || id == 17 || id == 8;
 }
 
 typedef struct PC_MENU_SERVICE_VIEW {
@@ -688,19 +679,18 @@ extern i32 MenuSuppressUpHeldPc, MenuSuppressDownHeldPc, MenuSuppressLeftHeldPc,
 extern i32 MENUSFX_MENUMOVE;
 
 void MenuRepeat(i32 *held, i32 *repeat, f32 *repeat_time, u8 *repeat_count, f32 interval, f32 elapsed) {
-    if (*held == 0) {
+    if (*held != 0) {
+        if (*repeat_time > 0.0f) {
+            *repeat_time -= elapsed;
+            if (*repeat_time <= 0.0f) {
+                *repeat = 1;
+                *repeat_time = interval;
+                ++*repeat_count;
+            }
+        }
+    } else {
         *repeat_time = 0.5f;
         *repeat_count = 0;
-        return;
-    }
-
-    if (*repeat_time > 0.0f) {
-        *repeat_time -= elapsed;
-        if (*repeat_time <= 0.0f) {
-            *repeat = 1;
-            *repeat_time = interval;
-            ++*repeat_count;
-        }
     }
 }
 
@@ -927,9 +917,10 @@ STATIC_ASSERT(offsetof(CHARACTERDATA_PC, icon_model) == 0x42);
 char *__cdecl LevelObject_FindNameFromIndex(i32);
 void __cdecl IconScenes_Init(char *path, VARIPTR *buffer, VARIPTR *end) {
     u32 table_size = (u32)CHARCOUNT * sizeof(*IconScenePc);
-    IconScenePc = (NUGSCN **)((buffer->addr + 3) & ~3u);
-    buffer->addr = (u32)IconScenePc + table_size;
-    memset(IconScenePc, 0, table_size);
+    u32 addr = (buffer->addr + 3) & ~3u;
+    IconScenePc = (NUGSCN **)addr;
+    buffer->addr = addr + table_size;
+    memset((void *)addr, 0, table_size);
     if (path != NULL && NuStrLen(path) < 0x40)
         NuStrCpy(AreaIconPathPrivate, path);
 }
@@ -1138,8 +1129,9 @@ void __cdecl IconScenes_Dump(void) {
         return;
     }
     for (i = 0; i < CHARCOUNT; ++i) {
-        if (IconScenePc[i] != NULL) {
-            NuGScnRemove(IconScenePc[i]);
+        NUGSCN *scene = IconScenePc[i];
+        if (scene != NULL) {
+            NuGScnRemove(scene);
             IconScenePc[i] = NULL;
         }
     }
