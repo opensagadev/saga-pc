@@ -569,38 +569,38 @@ extern "C" {
         NUVEC edge_direction;
         edge_direction.x = TERRAIN_CC_SECOND.x - TERRAIN_CC_FIRST.x;
         edge_direction.y = TERRAIN_CC_SECOND.y - TERRAIN_CC_FIRST.y;
-        const f32 horizontal_length_sq = edge_direction.x * edge_direction.x + edge_direction.y * edge_direction.y;
+        f64 horizontal_length_sq_wide;
+        const f32 horizontal_length_sq = horizontal_length_sq_wide =
+            edge_direction.x * edge_direction.x + edge_direction.y * edge_direction.y;
 
         // An almost vertical edge has no stable radial cylinder in the XY plane.
         // It can only overlap the sphere at the start of the sweep when it crosses
         // z = 0.
         if (horizontal_length_sq < 1.0e-12f) {
-            if ((TERRAIN_CC_FIRST.z < 0.0f && TERRAIN_CC_SECOND.z < 0.0f) ||
-                (TERRAIN_CC_FIRST.z > 0.0f && TERRAIN_CC_SECOND.z > 0.0f)) {
-                return 0;
-            }
-
-            f32 distance = TERRAIN_CC_SECOND.x * TERRAIN_CC_SECOND.x + TERRAIN_CC_SECOND.y * TERRAIN_CC_SECOND.y;
-            if (distance <= query->collision_radius_sq) {
-                distance = NuFsqrt(distance);
-                query = (TerrainQuery_s *)TerI;
-                if (distance - query->collision_radius < query->hit_time) {
-                    NUVEC local_normal;
-                    local_normal.x = -TERRAIN_CC_SECOND.x;
-                    local_normal.y = -TERRAIN_CC_SECOND.y;
-                    local_normal.z = 0.0f;
-                    RotateVec(&local_normal, &local_normal);
-                    const NUVEC &surface_normal = query->working_surface->normals[0];
-                    if (surface_normal.y * local_normal.y + surface_normal.x * local_normal.x +
-                            surface_normal.z * local_normal.z >
-                        0.0) {
-                        query->hit_time = distance - query->collision_radius;
-                        const f32 inverse_distance = TerrainDivideNonzeroPC(1.0f, distance);
-                        query->hit_type = TERRAIN_HIT_TYPE_CYLINDER | TERRAIN_HIT_TYPE_SECOND_NORMAL;
-                        query->movement_normal.x = -TERRAIN_CC_SECOND.x * inverse_distance;
-                        query->movement_normal.y = -TERRAIN_CC_SECOND.y * inverse_distance;
-                        query->movement_normal.z = 0.0f;
-                        return 1;
+            if ((TERRAIN_CC_FIRST.z <= 0.0f && TERRAIN_CC_SECOND.z >= 0.0f) ||
+                (TERRAIN_CC_FIRST.z >= 0.0f && TERRAIN_CC_SECOND.z <= 0.0f)) {
+                f32 distance = TERRAIN_CC_SECOND.x * TERRAIN_CC_SECOND.x + TERRAIN_CC_SECOND.y * TERRAIN_CC_SECOND.y;
+                if (distance <= query->collision_radius_sq) {
+                    distance = NuFsqrt(distance);
+                    query = (TerrainQuery_s *)TerI;
+                    if (distance - query->collision_radius < query->hit_time) {
+                        NUVEC local_normal;
+                        local_normal.x = -TERRAIN_CC_SECOND.x;
+                        local_normal.y = -TERRAIN_CC_SECOND.y;
+                        local_normal.z = 0.0f;
+                        RotateVec(&local_normal, &local_normal);
+                        if (query->working_surface->normals[0].y * local_normal.y +
+                                query->working_surface->normals[0].x * local_normal.x +
+                                query->working_surface->normals[0].z * local_normal.z >
+                            0.0) {
+                            query->hit_time = distance - ((TerrainQuery_s *)TerI)->collision_radius;
+                            const f32 inverse_distance = TerrainDivideNonzeroPC(1.0f, distance);
+                            query->hit_type = TERRAIN_HIT_TYPE_CYLINDER | TERRAIN_HIT_TYPE_SECOND_NORMAL;
+                            query->movement_normal.x = -TERRAIN_CC_SECOND.x * inverse_distance;
+                            query->movement_normal.y = -TERRAIN_CC_SECOND.y * inverse_distance;
+                            query->movement_normal.z = 0.0f;
+                            return 1;
+                        }
                     }
                 }
             }
@@ -616,9 +616,9 @@ extern "C" {
         }
 
         const f32 line_distance_sq = TerrainDivideNonzeroPC(line_cross, horizontal_length_sq) * line_cross;
+        query = (TerrainQuery_s *)TerI;
         edge_direction.z = TERRAIN_CC_SECOND.z - TERRAIN_CC_FIRST.z;
-        const f32 edge_length = NuFsqrt(edge_direction.x * edge_direction.x + edge_direction.y * edge_direction.y +
-                                        edge_direction.z * edge_direction.z);
+        const f32 edge_length = NuFsqrt(edge_direction.z * edge_direction.z + horizontal_length_sq_wide);
         const f32 inverse_edge_length = TerrainDivideNonzeroPC(1.0f, edge_length);
         query = (TerrainQuery_s *)TerI;
         edge_direction.x *= inverse_edge_length;
@@ -712,7 +712,7 @@ extern "C" {
                 const NUVEC &surface_normal = query->working_surface->normals[0];
                 if (surface_normal.y * rotated.y + surface_normal.x * rotated.x + surface_normal.z * rotated.z < 0.0) {
                     query->hit_type = TERRAIN_HIT_TYPE_CYLINDER | TERRAIN_HIT_TYPE_SECOND_NORMAL;
-                    query->hit_time = distance - query->collision_radius;
+                    query->hit_time = distance - ((TerrainQuery_s *)TerI)->collision_radius;
                     const f32 inverse_distance = 1.0f / distance;
                     query->movement_normal.x = -edge_direction.x * inverse_distance;
                     query->movement_normal.y = -edge_direction.y * inverse_distance;
