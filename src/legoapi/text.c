@@ -325,8 +325,9 @@ void PartKill_ThermalDetonator(PART_PC *part, i32 unused1) {
     }
 
     explosion = Detonate(&part->position, flags);
-    if (explosion != NULL && part->owner != NULL && ((u8)(part->owner->field_280)) <= 1) {
-        explosion->field_0x33 = ((u8)(part->owner->field_280));
+    if (explosion != NULL && part->owner != NULL &&
+        ((u8)part->owner->field_280 == 0 || (u8)part->owner->field_280 == 1)) {
+        explosion->field_0x33 = (u8)part->owner->field_280;
     }
 }
 
