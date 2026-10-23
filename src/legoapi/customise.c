@@ -2002,11 +2002,13 @@ void __cdecl MenuUpdateCustomiserPc(MENU *menu) {
     if (GAMEDEMO == 0 && customiser_changed != 0) {
         Hub_ClearStats();
         Text_FillInExtendedSaveInfo();
-        if (TriggerAutoSave() == 0) {
-            customiser_save_done = 1;
-            NewMenu(1000, -1, -1);
+        if (TriggerAutoSave() != 0) {
+            CustomiserMenu_End();
             return;
         }
+        customiser_save_done = 1;
+        NewMenu(1000, -1, -1);
+        return;
     }
     CustomiserMenu_End();
 }
