@@ -57,6 +57,10 @@ void __cdecl NuDisplaySceneAddPS(NUDISPLAY_LIST_PC *scene) {
     }
 }
 
+void __cdecl NuDisplaySceneDestroyPS(NUDISPLAY_LIST_PC *scene) {
+    (void)scene;
+}
+
 void __cdecl NuDisplayListAddClut(NUDISPLAYLISTITEM *item, i32 texture_id) {
     (void)texture_id;
     item->type = 0x87;

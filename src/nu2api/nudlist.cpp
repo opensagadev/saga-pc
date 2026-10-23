@@ -6,53 +6,48 @@ extern "C" {
     void __cdecl PCThreadCriticalSectionLeave_candidate(i32);
     extern void __cdecl PCSpecialEmptyHandler_candidate(void *ignored);
 
-    void __cdecl NuDisplaySceneDestroyPS(NUDISPLAY_LIST_PC *scene) {
-    }
-
     void __cdecl NuDisplaySceneDestroy(NUDISPLAY_LIST_PC *scene) {
-        i32 i, removed;
-        PC_MATERIAL_ANIM_SET *animation;
+        i32 i;
+        i32 removed = 0;
+        NUDISPLAY_LIST_PC **cursor;
         if (scene == NULL)
             return;
         PCThreadCriticalSectionEnter_candidate(nudlist_field_fc4);
         NuDisplaySceneDestroyPS(scene);
-        for (i = 0; i < (i32)nudlist_field_9d8; ++i) {
-            if (PCDisplayScenes[i] == scene)
-                break;
+        for (i = 0, cursor = PCDisplayScenes; i < (i32)nudlist_field_9d8; ++i, ++cursor) {
+            if (*cursor == scene)
+                goto found;
         }
-        if (i == (i32)nudlist_field_9d8) {
-            AnimationDiagnosticNoOpPc();
-            for (;;) {
-            }
+        AnimationDiagnosticNoOpPc();
+        for (;;) {
         }
+    found:
         PCSpecialEmptyHandler_candidate(scene->allocation);
         for (i = 0; i < scene->sort_count; ++i) {
-            NUSORTPRI *sort = &scene->sort_pris[i];
-            if (sort_list == sort)
+            NUSORTPRI *previous = NULL;
+            NUSORTPRI *sort;
+            for (sort = sort_list; sort != &scene->sort_pris[i]; sort = sort->sys_next)
+                previous = sort;
+            if (previous == NULL)
                 sort_list = sort->sys_next;
-            else {
-                NUSORTPRI *previous = sort_list;
-                while (previous->sys_next != sort)
-                    previous = previous->sys_next;
+            else
                 previous->sys_next = sort->sys_next;
-            }
             --nused_sort_pris;
         }
         if (scene->material_animations != NULL) {
             PC_MATERIAL_ANIM_SET *scene_animation = (PC_MATERIAL_ANIM_SET *)scene->material_animations;
-            animation = (PC_MATERIAL_ANIM_SET *)nudlist_field_fc8;
-            if (animation == scene_animation)
+            PC_MATERIAL_ANIM_SET *animation = (PC_MATERIAL_ANIM_SET *)nudlist_field_fc8;
+            if (animation == scene_animation) {
                 nudlist_field_fc8 = (u32)scene_animation->next;
-            else {
+            } else {
                 while (animation->next != scene_animation)
                     animation = animation->next;
-                animation->next = scene_animation->next;
+                animation->next = animation->next->next;
             }
         }
-        removed = 0;
-        for (i = 0; i < (i32)nudlist_field_9d8; ++i) {
-            PCDisplayScenes[i - removed] = PCDisplayScenes[i];
-            if (PCDisplayScenes[i] == scene)
+        for (i = 0, cursor = PCDisplayScenes; i < (i32)nudlist_field_9d8; ++i, ++cursor) {
+            PCDisplayScenes[i - removed] = *cursor;
+            if (*cursor == scene)
                 ++removed;
         }
         if (removed != 0)
@@ -1081,18 +1076,23 @@ extern "C" {
     }
 
     static __declspec(noinline) f32 DisplaySceneDistanceFadePC(f32 distance, f32 start, f32 end) {
-        if (start < end) {
+        f32 alpha;
+        if (end > start) {
+            alpha = 1.0f;
             if (distance > start * start) {
-                f32 alpha = (end - NuFsqrt(distance)) / (end - start);
-                return alpha < 0.0f ? 0.0f : alpha;
+                alpha = (end - NuFsqrt(distance)) / (end - start);
+                if (alpha < 0.0f)
+                    alpha = 0.0f;
             }
-            return 1.0f;
+        } else {
+            alpha = 0.0f;
+            if (distance > end * end) {
+                alpha = (NuFsqrt(distance) - end) / (start - end);
+                if (alpha > 1.0f)
+                    alpha = 1.0f;
+            }
         }
-        if (distance > end * end) {
-            f32 alpha = (NuFsqrt(distance) - end) / (start - end);
-            return alpha > 1.0f ? 1.0f : alpha;
-        }
-        return 0.0f;
+        return alpha;
     }
 
     i32 __cdecl NuDisplayListRndrSpecial(NUSPECIALHANDLE *handle, NUMTX *matrix, i32 skinned, NUMTX *skin_matrices,
