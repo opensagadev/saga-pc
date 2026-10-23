@@ -19538,7 +19538,7 @@ extern "C" {
     void __cdecl terrainpickupinit(char *, void **);
     void __cdecl AddPickupTerr(i32, NUVEC *);
     i32 __cdecl AddPickupTerrRot(i32, NUMTX *, NUMTX *, i32);
-    i16 __cdecl NewPlatPickupInst(void *, i32);
+    i32 __cdecl NewPlatPickupInst(void *, i32);
     void __cdecl ReassignPickupInst(i32, i32);
 
 #ifdef __cplusplus

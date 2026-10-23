@@ -2688,40 +2688,40 @@ i32 AddPickupTerrRot(i32 type, NUMTX *matrix, NUMTX *previous, i32 rotating) {
 #undef TERRAIN_APTR_SET
 
 #define TERRAIN_NPPI_SET ((TERRAIN_SET_PC *)CurrentTerrain)
-i16 NewPlatPickupInst(void *object, i32 type) {
-    TERRAIN_SET_PC *terrain = (TERRAIN_SET_PC *)CurrentTerrain;
+i32 NewPlatPickupInst(void *object, i32 type) {
     TERRAIN_GROUP_PC *group;
-    NUMTX *matrix = (NUMTX *)object;
     i16 source;
-    i32 group_count;
     i32 index;
     i32 i;
-    if (terrain == NULL || terrain->group_index_count >= terrain->max_group_indices)
+    if (CurrentTerrain == NULL)
         return -1;
-    group_count = terrain->group_count;
-    if (group_count >= terrain->max_groups || object == NULL)
+    if (TERRAIN_NPPI_SET->group_index_count >= TERRAIN_NPPI_SET->max_group_indices)
+        return -1;
+    if (TERRAIN_NPPI_SET->group_count >= TERRAIN_NPPI_SET->max_groups)
+        return -1;
+    if (object == NULL)
         return -1;
     source = PickupTerrainPc->group_for_type[type];
     if (source == -1)
         return -1;
     index = -1;
-    for (i = 0; i < terrain->max_platforms; ++i) {
-        if (terrain->platforms[i].scene_object == NULL) {
+    for (i = 0; i < TERRAIN_NPPI_SET->max_platforms; ++i) {
+        if (TERRAIN_NPPI_SET->platforms[i].scene_object == NULL) {
             index = i;
             break;
         }
     }
     if (index == -1)
         return -1;
-    group = &terrain->groups[group_count];
+    group = &TERRAIN_NPPI_SET->groups[TERRAIN_NPPI_SET->group_count];
     *group = PickupTerrainPc->groups[source];
     group->chunk_type = 1;
     group->scene_index = (i16)index;
     TERRAIN_NPPI_SET->platforms[index].scene_object = object;
     TERRAIN_NPPI_SET->platforms[index].flags &= ~1u;
-    group->origin.x = matrix->m30;
-    group->origin.y = matrix->m31;
-    group->origin.z = matrix->m32;
+    group->origin.x = ((NUMTX *)object)->m30;
+    group->origin.y = ((NUMTX *)object)->m31;
+    group->origin.z = ((NUMTX *)object)->m32;
     TERRAIN_NPPI_SET->platforms[index].terrain_group_index = TERRAIN_NPPI_SET->group_count;
     TERRAIN_NPPI_SET->platforms[index].scene_object_index = 0;
     TERRAIN_NPPI_SET->platforms[index].scene_transform = NULL;
@@ -2735,7 +2735,7 @@ i16 NewPlatPickupInst(void *object, i32 type) {
     TERRAIN_NPPI_SET->platforms[index].flags &= ~2u;
     TERRAIN_NPPI_SET->group_count++;
     TERRAIN_NPPI_SET->platform_cell.group_count++;
-    return (i16)index;
+    return index;
 }
 #undef TERRAIN_NPPI_SET
 
