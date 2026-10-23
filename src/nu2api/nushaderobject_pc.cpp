@@ -150,7 +150,7 @@ extern "C" void __cdecl NuShaderObjectSetElementsfv(PC_SHADER_OBJECT_FULL_VIEW *
     PC_SHADER_PARAMETER_LOCAL_PC *parameter = &shader->parameters[semantic];
     if (parameter->register_index < 0)
         return;
-    switch (parameter->type_stage & 15) {
+    switch ((i32)(parameter->metadata << 4) >> 28) {
         case 1:
             parameter->SetScalarValues(first_element, count, values);
             break;
@@ -160,6 +160,8 @@ extern "C" void __cdecl NuShaderObjectSetElementsfv(PC_SHADER_OBJECT_FULL_VIEW *
         case 3:
             parameter->SetMatrixValues(first_element, count, values);
             break;
+        case 4:
+            return;
     }
 }
 
@@ -178,7 +180,7 @@ extern "C" void __cdecl NuShaderObjectSetElementsfv_transpose(PC_SHADER_OBJECT_F
     PC_SHADER_PARAMETER_LOCAL_PC *parameter = &shader->parameters[semantic];
     if (parameter->register_index < 0)
         return;
-    switch (parameter->type_stage & 15) {
+    switch ((i32)(parameter->metadata << 4) >> 28) {
         case 1:
             parameter->SetScalarValues(first_element, count, values);
             break;
@@ -188,6 +190,8 @@ extern "C" void __cdecl NuShaderObjectSetElementsfv_transpose(PC_SHADER_OBJECT_F
         case 3:
             parameter->SetTransposedMatrixValues(first_element, count, values);
             break;
+        case 4:
+            return;
     }
 }
 
@@ -428,9 +432,9 @@ extern "C" void __cdecl NuShaderObjectBaseUpdateWaterTable(PC_SHADER_OBJECT_FULL
     NUVEC scale = {0.5f, 0.5f, 0.5f};
     if (!(PCShaderWaterInitializationBits & 1))
         PCShaderWaterInitializationBits |= 1;
-    if (nuapi.frame_count != PCShaderWaterLastFrame)
+    if (PCShaderWaterLastFrame != nuapi.frame_count)
         PCShaderWaterTheta = material->phase_speed * PCShaderWaterThetaStep + PCShaderWaterTheta;
-    if (material != PCShaderWaterPreviousMaterial || nuapi.frame_count != PCShaderWaterLastFrame) {
+    if (PCShaderWaterPreviousMaterial != material || PCShaderWaterLastFrame != nuapi.frame_count) {
         NUMTX inverse;
         NuMtxInvR(&inverse, &global_camera.mtx);
         NuMtxScale(&inverse, &scale);
@@ -441,16 +445,16 @@ extern "C" void __cdecl NuShaderObjectBaseUpdateWaterTable(PC_SHADER_OBJECT_FULL
         for (i32 i = 0; i < 32; ++i) {
             NUVEC displacement;
             f64 phase = (NuRandFloatSeeded(&seed) * (f64)0.4f + (f64)0.8f) * PCShaderWaterTheta;
-            f32 anglef = NuRandFloatSeeded(&seed) * 6.283f + phase;
-            i32 angle = (i32)(anglef * 10430.3779296875);
+            displacement.x = NuRandFloatSeeded(&seed) * 6.283f + phase;
+            i32 angle = (i32)(displacement.x * 10430.3779296875);
             displacement.x = amplitude * NuTrigTable[(angle >> 1) & 0x7fff] * PCShaderWaterAmplitudeScale;
             phase = (NuRandFloatSeeded(&seed) * (f64)0.8f + (f64)0.6f) * PCShaderWaterTheta;
-            anglef = NuRandFloatSeeded(&seed) * 5.717f + phase;
-            angle = (i32)(anglef * -10430.3779296875);
+            displacement.y = NuRandFloatSeeded(&seed) * 5.717f + phase;
+            angle = (i32)(displacement.y * -10430.3779296875);
             displacement.y = amplitude * NuTrigTable[((0x4000 - angle) >> 1) & 0x7fff] * PCShaderWaterAmplitudeScale;
             phase = (NuRandFloatSeeded(&seed) * (f64)0.4f + (f64)0.7f) * PCShaderWaterTheta;
-            anglef = NuRandFloatSeeded(&seed) * 6.283f + phase;
-            angle = (i32)(anglef * 10430.3779296875);
+            displacement.z = NuRandFloatSeeded(&seed) * 6.283f + phase;
+            angle = (i32)(displacement.z * 10430.3779296875);
             displacement.z = amplitude * NuTrigTable[(angle >> 1) & 0x7fff];
             PCShaderWaterTable[i].w = displacement.x / PCShaderWaterAmplitudeScale;
             NuVecMtxTransformH((NUVEC *)&PCShaderWaterTable[i], &displacement, &inverse);
