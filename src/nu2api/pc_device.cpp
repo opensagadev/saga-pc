@@ -23,7 +23,7 @@ void __thiscall PC_DEVICE_BACKEND_PC::ApplyViewport(const PC_VIEWPORT_PC *viewpo
     memcpy(&requested_viewport.max_z, &viewport->max_z, sizeof(f32));
 }
 
-extern "C" void __cdecl NuVpSubmitPc(const PC_VIEWPORT_PC *viewport) {
+extern "C" __declspec(noinline) void __cdecl NuVpSubmitPc(const PC_VIEWPORT_PC *viewport) {
     if (viewport != NULL)
         PCDeviceBackend.ApplyViewport(viewport);
 }
@@ -861,8 +861,8 @@ void __thiscall PC_DEVICE_BACKEND_PC::ResetViewport() {
     requested_viewport.min_z = 0.0f;
     requested_viewport.max_z = 1.0f;
     NuVpSetZRange(0.0f, 1.0f);
-    f32 y = (f32)((f64)requested_viewport.y * 16.0);
-    f32 x = (f32)((f64)requested_viewport.x * 16.0);
+    f32 y = (f32)((f32)requested_viewport.y * 16.0);
+    f32 x = (f32)((f32)requested_viewport.x * 16.0);
     NuVpSetPosition(x, y);
     NuVpSetSize2(640.0f, 224.0f);
     NuVpUpdate();
@@ -1462,7 +1462,9 @@ void __thiscall PC_DEVICE_BACKEND_PC::SetColorWriteMaskPc(u8 colour_enabled, u8 
     u32 disabled;
     if (target != 0 && target_count == 1)
         return;
-    disabled = colour_enabled != 0 ? 0u : 7u;
+    disabled = 0;
+    if (colour_enabled == 0)
+        disabled = 7;
     if (alpha_enabled == 0)
         disabled |= 8u;
     switch (target) {
@@ -1516,12 +1518,10 @@ void __thiscall PC_DEVICE_STATE_CACHE_PC::Invalidate() {
     stream_stride = (u32)-1;
     stream_number = (u32)-1;
     stream_offset = (u32)-1;
-    textures[0] = reinterpret_cast<void *>(-1);
-    textures[1] = reinterpret_cast<void *>(-1);
-    textures[2] = reinterpret_cast<void *>(-1);
-    textures[3] = reinterpret_cast<void *>(-1);
-    textures[4] = reinterpret_cast<void *>(-1);
-    memset(sampler_states, -1, sizeof(sampler_states));
+    for (i32 stage = 0; stage < 5; ++stage)
+        textures[stage] = reinterpret_cast<void *>(-1);
+    for (i32 index = 0; index < 8 * 14; ++index)
+        sampler_states[0][index] = -1;
     state_key = -1;
     render_states[0] = -1;
     render_states[1] = -1;
