@@ -648,6 +648,8 @@ void __cdecl Customiser_Set100PercentPieces(CUSTOMISER_LAYERS_PC *input) {
     if (customiser == NULL || customiser->save == NULL)
         return;
     for (category = 0; category < 9; ++category) {
+        if (customiser->piece_counts[category] <= 0)
+            continue;
         for (index = 0; index < customiser->piece_counts[category]; ++index) {
             if ((customiser->piece_sets[category][index].availability_flags & 0x80) != 0)
                 customiser->save->pieces[category] = (u16)index;
@@ -1088,9 +1090,10 @@ i32 __cdecl Customiser_NextPieceRight(CUSTOMISER_LAYERS_PC *input, i32 index, i3
                         (CUSTOM_ACCESSORY_RESOURCE_PC *)world->customiser_resources[category];
                     if (resources == NULL)
                         continue;
-                    if ((customiser->categories[category]->uses_special != 0
-                             ? NuSpecialExistsFn(&resources[index].special)
-                             : resources[index].texture_id) == 0)
+                    if (customiser->categories[category]->uses_special != 0) {
+                        if (NuSpecialExistsFn(&resources[index].special) == 0)
+                            continue;
+                    } else if (resources[index].texture_id == 0)
                         continue;
                 }
             }
@@ -1710,9 +1713,10 @@ i32 __cdecl Customiser_NextPieceLeft(CUSTOMISER_LAYERS_PC *input, i32 index, i32
                         (CUSTOM_ACCESSORY_RESOURCE_PC *)world->customiser_resources[category];
                     if (resources == NULL)
                         continue;
-                    if ((customiser->categories[category]->uses_special != 0
-                             ? NuSpecialExistsFn(&resources[index].special)
-                             : resources[index].texture_id) == 0)
+                    if (customiser->categories[category]->uses_special != 0) {
+                        if (NuSpecialExistsFn(&resources[index].special) == 0)
+                            continue;
+                    } else if (resources[index].texture_id == 0)
                         continue;
                 }
             }
@@ -1722,7 +1726,6 @@ i32 __cdecl Customiser_NextPieceLeft(CUSTOMISER_LAYERS_PC *input, i32 index, i32
                 break;
         }
     }
-
     return index;
 }
 
