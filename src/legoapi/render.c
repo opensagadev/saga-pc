@@ -43,17 +43,17 @@ void __cdecl DrawStatusText(char *text, u16 angle, f32 x, f32 y, f32 scale, u32 
 }
 
 STATUS_STAGE_s *FindStatusStage(i32 type) {
-    struct STATUS_STAGE_s *stage;
-    for (stage = StatusStages; stage->type != -1; ++stage) {
-        if (stage->type == type) {
-            return stage;
-        }
+    i32 index;
+    for (index = 0; StatusStages[index].type != -1; ++index) {
+        if (StatusStages[index].type == type)
+            return &StatusStages[index];
     }
     return NULL;
 }
 
-void NewStatusRumbleBuzz(i32 player, float amount, float buzz, i32 priority) {
-    if (StatusPacket.player0_active != 0 && (player == 0 || player == -1)) {
+/* Native status-stage handlers call this shared routine. */
+__declspec(noinline) void NewStatusRumbleBuzz(i32 player, float amount, float buzz, i32 priority) {
+    if (StatusPacket.player0_active != 0 && (player == -1 || player == 0)) {
         if (amount > 0.0f && (StatusPacket.player0_rumble_time <= 0.0f ||
                               amount > StatusPacket.player0_rumble_time / StatusPacket.player0_rumble_duration *
                                            StatusPacket.player0_rumble_amount)) {
@@ -73,7 +73,7 @@ void NewStatusRumbleBuzz(i32 player, float amount, float buzz, i32 priority) {
         }
     }
 
-    if (StatusPacket.player1_active != 0 && (player == 1 || player == -1)) {
+    if (StatusPacket.player1_active != 0 && (player == -1 || player == 1)) {
         if (amount > 0.0f && (StatusPacket.player1_rumble_time <= 0.0f ||
                               amount > StatusPacket.player1_rumble_time / StatusPacket.player1_rumble_duration *
                                            StatusPacket.player1_rumble_amount)) {
@@ -104,17 +104,16 @@ i32 AddGoldBrickMessage(STATUSPACKET_s *packet, i16 brick) {
 }
 
 void AddStatusStage(STATUSPACKET_s *packet, i32 type, i32 gold_brick_enabled) {
-    const u8 index = packet->stage_count;
-    packet->stage_types[index] = (i8)(type);
-    packet->gold_brick_enabled[index] = (u8)(gold_brick_enabled);
-    packet->stage_count = index + 1;
+    packet->stage_types[packet->stage_count] = (i8)(type);
+    packet->gold_brick_enabled[packet->stage_count] = (u8)(gold_brick_enabled);
+    ++packet->stage_count;
 }
 
 i32 __cdecl NuSpecialDrawAtAlpha(NUSPECIALHANDLE *, NUMTX *, f32);
 i32 __cdecl DrawPanel3DObject(f32 x, f32 y, f32 z, f32 scale_x, f32 scale_y, f32 scale_z, u16 rotate_x, u16 rotate_y,
                               u16 rotate_z, NUSPECIALHANDLE *special, i32 rotate_order, f32 alpha) {
     if (alpha > 0.0f && special != NULL && NuSpecialExistsFn(special) != 0 &&
-        (scale_y != 0.0f || scale_x != 0.0f || scale_z != 0.0f)) {
+        (scale_x != 0.0f || scale_y != 0.0f || scale_z != 0.0f)) {
         NUVEC scale = {scale_x, scale_y, scale_z};
         NUMTX matrix;
         NuMtxSetScale(&matrix, &scale);
@@ -357,7 +356,6 @@ void DrawObjectOnCharacter(WORLDINFO *world, GAMEOBJECT *object, i32 object_id, 
 }
 
 i32 __cdecl Draw3DObjectMtx(WORLDINFO *world, i32 object_id, NUMTX *matrix) {
-    LEVEL_OBJECT_RUNTIME_PC *object;
     if (object_id == -1)
         return 1;
     if (world == NULL) {
@@ -365,9 +363,8 @@ i32 __cdecl Draw3DObjectMtx(WORLDINFO *world, i32 object_id, NUMTX *matrix) {
         if (world == NULL)
             return 1;
     }
-    object = &world->level_objects[object_id];
-    if (object->active != 0)
-        return NuSpecialDrawAt(&object->special, matrix);
+    if (world->level_objects[object_id].active != 0)
+        return NuSpecialDrawAt(&world->level_objects[object_id].special, matrix);
     return 0;
 }
 
@@ -547,7 +544,7 @@ void __cdecl BackDrop_UpdateColours(i32 instant) {
     }
     if (RenderBackdropWaitPc > 0.0f) {
         RenderBackdropWaitPc -= FRAMETIME;
-        if (!(0.0f >= RenderBackdropWaitPc))
+        if (!(RenderBackdropWaitPc <= 0.0f))
             return;
         if (instant) {
             RenderBackdropTargetTopBPc = 0.0f;
@@ -870,9 +867,8 @@ i32 __cdecl FinishStatusPacket_LSW(WORLDINFO *world, STATUSPACKET_s *packet, i32
 }
 
 void __cdecl DrawStatusBG_LSW(STATUSPACKET_s *packet) {
-    STATUS_STAGE_s *stage = packet->stage;
-    if (stage->field_0x14 == -1) {
-        stage->field_0x18 = 0.0f;
+    if (packet->stage->field_0x14 == -1) {
+        packet->stage->field_0x18 = 0.0f;
         packet->stage->field_0x14 = 0;
     }
 }
@@ -952,7 +948,7 @@ void __cdecl CollectCharactersOff_Update(STATUS_STAGE_s *stage, STATUSPACKET_s *
 
 void __cdecl Save_LSW_Update(STATUS_STAGE_s *stage, STATUSPACKET_s *packet, f32 elapsed) {
     if (packet->save_state == 3) {
-        volatile f32 accumulated = elapsed + stage->field_0x18;
+        f32 accumulated = elapsed + stage->field_0x18;
         stage->field_0x18 = accumulated;
         if (stage->field_0x18 >= stage->field_0x1c) {
             u32 flags = packet->flags_word;
@@ -1132,13 +1128,21 @@ void __cdecl GoldBrick_LSW_Update(STATUS_STAGE_s *stage, STATUSPACKET_s *packet,
 
 i32 StatusDemoOptionPc = 0;
 
+/* Native walks the two adjacent 0x14-byte rumble records. */
+typedef struct STATUS_RUMBLE_PAIR_PC {
+    RUMBLE_PACKET_RESOURCE_PC players[2];
+} STATUS_RUMBLE_PAIR_PC;
+STATIC_ASSERT(sizeof(RUMBLE_PACKET_RESOURCE_PC) == 0x14);
+STATIC_ASSERT(offsetof(STATUSPACKET_s, player1_rumble_amount) - offsetof(STATUSPACKET_s, player0_rumble_amount) ==
+              sizeof(RUMBLE_PACKET_RESOURCE_PC));
+STATIC_ASSERT(offsetof(STATUSPACKET_s, area_time) ==
+              offsetof(STATUSPACKET_s, player0_rumble_amount) + sizeof(STATUS_RUMBLE_PAIR_PC));
+
 void __cdecl StatusRumbleUpdatePc(void) {
-    RUMBLE_PACKET_RESOURCE_PC *packets[2] = {(RUMBLE_PACKET_RESOURCE_PC *)&StatusPacket.player0_rumble_amount,
-                                             (RUMBLE_PACKET_RESOURCE_PC *)&StatusPacket.player1_rumble_amount};
+    RUMBLE_PACKET_RESOURCE_PC *packet = ((STATUS_RUMBLE_PAIR_PC *)&StatusPacket.player0_rumble_amount)->players;
     i32 player;
-    for (player = 0; player < 2; ++player) {
-        RUMBLE_PACKET_RESOURCE_PC *packet = packets[player];
-        i32 motor0, motor1;
+    for (player = 0; player < 2; ++player, ++packet) {
+        i32 motor1;
         UpdateRumble(packet);
         if (Game.options_save.unknown_0000[player] != 0 && StatusPacket.player_active[player] != 0 &&
             ((u8)GamePadStorage[player].allocated & 0x20) != 0) {
@@ -1146,12 +1150,13 @@ void __cdecl StatusRumbleUpdatePc(void) {
                 motor1 = (i32)((f64)packet->intensity * (f64)packet->amount * 255.0 / (f64)packet->decay_duration);
             else
                 motor1 = 0;
-            motor0 = packet->duration > 0.0f || packet->active > 0;
+            if (packet->duration > 0.0f || packet->active > 0)
+                NuPadSetMotorsPc(GamePadStorage[player].pad, 1, motor1);
+            else
+                NuPadSetMotorsPc(GamePadStorage[player].pad, 0, motor1);
         } else {
-            motor0 = 0;
-            motor1 = 0;
+            NuPadSetMotorsPc(GamePadStorage[player].pad, 0, 0);
         }
-        NuPadSetMotorsPc(GamePadStorage[player].pad, motor0, motor1);
     }
 }
 
@@ -1237,7 +1242,7 @@ void __cdecl StatusPacketReset(STATUSPACKET_s *packet) {
     i32(__cdecl * finish)(WORLDINFO *, STATUSPACKET_s *, i32) = packet->finish_callback;
     void(__cdecl * reset)(STATUSPACKET_s *) = packet->reset_callback;
     void(__cdecl * draw)(STATUSPACKET_s *) = packet->draw_background_callback;
-    volatile f32 delay = packet->field_0x68;
+    f32 delay = packet->field_0x68;
     reset(packet);
     memset(packet, 0, sizeof(*packet));
     packet->field_0x68 = delay;
@@ -1569,7 +1574,7 @@ void __cdecl InitStatusScreen(WORLDINFO *world) {
         volatile f32 target = p->true_hero_target;
         volatile f32 numerator = (f64)p->collected_score * 100.0;
         p->true_hero_percent = StatusScoreRatioPc(numerator, target);
-        if (99.0f < p->true_hero_percent)
+        if (p->true_hero_percent > 99.0f)
             p->true_hero_percent = 99.0f;
     }
     p->coins_collected[0] = p->coins_remaining[0];
