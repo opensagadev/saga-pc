@@ -1436,24 +1436,11 @@ extern "C" AILOCATOR_PC *__cdecl LocalGetNearestLocator(void *locator_array, i32
 
 extern "C" i32 __cdecl Action_CreateCreatures(AISYS_PC *sys, AISCRIPTPROCESS_PC *processor, AIPACKET_PC *packet,
                                               char **params, i32 param_count, i32 first_time, f32 unused_delta) {
-    AILOCATOR_PC *locators[64] = {};
+    AILOCATOR_PC *locators[64] = {NULL};
     ZIPUP_s *zipups[32];
     i16 models[10];
     char script[64] = "default";
     NUVEC offset = {0.0f, 0.0f, 0.0f};
-    if (first_time == 0)
-        return 1;
-    NUVEC position;
-    AIPATHINFO_PC *path;
-    i32 yaw;
-    if (packet != NULL && packet->owner != NULL) {
-        path = &packet->path_info;
-        position = packet->owner->position;
-        yaw = packet->owner->field_0x276;
-    } else {
-        yaw = 0;
-        path = NULL;
-    }
     i32 minimum = -1, maximum = -1, count = 1;
     i32 grouped = 1, across = 2;
     f32 xspacing = 0.8f, zspacing = 0.8f;
@@ -1470,6 +1457,19 @@ extern "C" i32 __cdecl Action_CreateCreatures(AISYS_PC *sys, AISCRIPTPROCESS_PC 
     i32 no_gun = 0, cheap = 0, ballooning = 0;
     i64 add_capabilities = 0, remove_capabilities = 0;
     char *state = NULL;
+    if (first_time == 0)
+        return 1;
+    NUVEC position;
+    AIPATHINFO_PC *path;
+    i32 yaw;
+    if (packet != NULL && packet->owner != NULL) {
+        path = &packet->path_info;
+        position = packet->owner->position;
+        yaw = packet->owner->field_0x276;
+    } else {
+        yaw = 0;
+        path = NULL;
+    }
     for (i32 index = 0; index < param_count; ++index) {
         char *value;
         if ((value = NuStrIStr(params[index], "mingroupsize")) != NULL)
