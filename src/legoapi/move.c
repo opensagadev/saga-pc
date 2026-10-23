@@ -4010,8 +4010,14 @@ extern AREA_DATA_PC *BATTLEOVERCORUSCANT_ADATA;
 extern i16 id_REPUBLICGUNSHIP;
 extern i32 VehicleGunshipAngleADefaultPc, VehicleGunshipAngleAPlayer1Pc, VehicleGunshipAngleAPlayer2Pc;
 extern i32 VehicleGunshipAngleBDefaultPc, VehicleGunshipAngleBPlayer1Pc, VehicleGunshipAngleBPlayer2Pc;
+typedef struct zap_variant_view_pc_s {
+    u8 unknown_000[0x7bc];
+    u32 unknown_bits : 8;
+    u32 r2q5_zapped : 1;
+} ZAP_VARIANT_VIEW_PC;
+
 static void ZapCode(GAMEOBJECT *object, i32 pressed, i32 retract_weapon) {
-    NUVEC forward, delta, hit_position, direction, colour, midpoint;
+    NUVEC forward, delta, position, direction, colour;
     f32 nearest_distance, distance, hit_frame, animation_end, lightning_start, lightning_end, timer;
     i32 index, deactivated;
     u16 angle;
@@ -4027,24 +4033,26 @@ static void ZapCode(GAMEOBJECT *object, i32 pressed, i32 retract_weapon) {
         origin = GetZapOrigin(object);
         if ((object->context_variant_flags & 0x40) == 0) {
             hit_frame = AnimListFrame(object->character_model, object->field_7aa, 0);
-            if (!(hit_frame >= 1.0f) || !(*frame < hit_frame))
+            if (!(hit_frame >= 1.0f) || *frame >= hit_frame)
                 object->context_variant_flags |= 0x40;
             if ((object->context_variant_flags & 0x40) != 0) {
-                AddGameDebris(WORLD->game_debris_sys, object->id == id_R2Q5 ? 1 : 3, origin);
+                AddGameDebris(WORLD->game_debris_sys, object->id == (u16)id_R2Q5 ? 1 : 3, origin);
                 NewBuzz(object->pad->bound_pad, 0.1f, 0);
-                GameAudio_PlaySfxById(object->character_data->game_character->shoot_sfx != -1
-                                          ? object->character_data->game_character->shoot_sfx
-                                          : GetSfxId("R2Zap"),
-                                      &object->collision_position, GameAudio_GetPlrSfxBits(object), 1);
+                if (object->character_data->game_character->shoot_sfx != -1)
+                    GameAudio_PlaySfxById(object->character_data->game_character->shoot_sfx,
+                                          &object->collision_position, GameAudio_GetPlrSfxBits(object), 1);
+                else
+                    GameAudio_PlaySfxById(GetSfxId("R2Zap"), &object->collision_position,
+                                          GameAudio_GetPlrSfxBits(object), 1);
 
                 if (target != NULL) {
                     angle = NuAtan2D(object->collision_position.x - target->collision_position.x,
                                      object->collision_position.z - target->collision_position.z);
-                    hit_position.x = NuTrigTable[angle >> 1] * target->collision_radius + target->collision_position.x;
-                    hit_position.y = target->collision_position.y;
-                    hit_position.z = NuTrigTable[((angle + 0x4000) >> 1) & 0x7fff] * target->collision_radius +
-                                     target->collision_position.z;
-                    AddGameDebris(WORLD->game_debris_sys, object->id == id_R2Q5 ? 1 : 3, &hit_position);
+                    position.x = NuTrigTable[angle >> 1] * target->collision_radius + target->collision_position.x;
+                    position.y = target->collision_position.y;
+                    position.z = NuTrigTable[((angle + 0x4000) >> 1) & 0x7fff] * target->collision_radius +
+                                 target->collision_position.z;
+                    AddGameDebris(WORLD->game_debris_sys, object->id == (u16)id_R2Q5 ? 1 : 3, &position);
 
                     if ((object->flags_1fc & 0x80) != 0 && Cheat_IsOn(0x26) != 0 &&
                         (target->character_data->model_flags & 0x10) != 0) {
@@ -4062,8 +4070,7 @@ static void ZapCode(GAMEOBJECT *object, i32 pressed, i32 retract_weapon) {
                             target->action_movement_state = 2;
                             target->context_hover_target_y =
                                 (f32)(qrand() * (f64)(1.0f / 65535.0f) * (f64)0.3f + (f64)0.2f);
-                            target->context_variant_flags ^=
-                                (((u32)(object->id == id_R2Q5) << 8) ^ target->context_variant_flags) & 0x100;
+                            ((ZAP_VARIANT_VIEW_PC *)target)->r2q5_zapped = object->id == (u16)id_R2Q5;
                         }
                     }
                 } else {
@@ -4077,7 +4084,7 @@ static void ZapCode(GAMEOBJECT *object, i32 pressed, i32 retract_weapon) {
             lightning_start = AnimListFrame(object->character_model, object->field_7aa, 1);
             if (lightning_start >= 1.0f && lightning_start < animation_end) {
                 lightning_end = AnimListFrame(object->character_model, object->field_7aa, 2);
-                if (lightning_start < lightning_end) {
+                if (lightning_end > lightning_start) {
                     if (animation_end < lightning_end)
                         lightning_end = animation_end;
                     if (*frame >= lightning_start && *frame <= lightning_end) {
@@ -4091,7 +4098,7 @@ static void ZapCode(GAMEOBJECT *object, i32 pressed, i32 retract_weapon) {
                             outer = inner + 0.5;
                             rtlDynamicSetRadii(object->dynamic_light_id, inner, outer);
                             qrand();
-                            if (object->id == id_R2Q5) {
+                            if (object->id == (u16)id_R2Q5) {
                                 colour.x = qrand() < 0x8000 ? 2.0f : 0.25f;
                                 colour.y = colour.z = 0.0f;
                             } else {
@@ -4100,10 +4107,10 @@ static void ZapCode(GAMEOBJECT *object, i32 pressed, i32 retract_weapon) {
                                 colour.z = colour.y;
                             }
                             rtlDynamicSetColours(object->dynamic_light_id, &colour, NULL);
-                            midpoint.x = direction.x * 0.5 + object->collision_position.x;
-                            midpoint.y = direction.y * 0.5 + object->collision_position.y;
-                            midpoint.z = 0.5 * direction.z + object->collision_position.z;
-                            rtlDynamicSetPos(object->dynamic_light_id, &midpoint);
+                            position.x = direction.x * 0.5 + object->collision_position.x;
+                            position.y = direction.y * 0.5 + object->collision_position.y;
+                            position.z = 0.5 * direction.z + object->collision_position.z;
+                            rtlDynamicSetPos(object->dynamic_light_id, &position);
                         }
                     }
                 }
