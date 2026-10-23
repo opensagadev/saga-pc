@@ -860,3 +860,95 @@ void __cdecl edanimDoInput(FRAME_PAD_PC *pad) {
             edanim_emitrotz = -0x8000;
     }
 }
+
+void __cdecl edanimDrawCursor(void) {
+    NURND_VERTEX3D_PC line[2];
+    NUVEC direction;
+    NUSPECIALHANDLE special;
+    line[0].colour = 0xffffffff;
+    line[1].colour = 0xffffffff;
+    line[0].position.x = edanim_cam_pos.x - 0.5f;
+    line[0].position.y = edanim_cam_pos.y;
+    line[0].position.z = edanim_cam_pos.z;
+    line[1].position.x = edanim_cam_pos.x + 0.5f;
+    line[1].position.y = edanim_cam_pos.y;
+    line[1].position.z = edanim_cam_pos.z;
+    NuRndrLine3d(line, (NUMTL *)edanim_mtl, NULL);
+    line[0].colour = 0xffffffff;
+    line[1].colour = 0xffffffff;
+    line[0].position.x = edanim_cam_pos.x;
+    line[0].position.y = edanim_cam_pos.y - 0.5f;
+    line[0].position.z = edanim_cam_pos.z;
+    line[1].position.x = edanim_cam_pos.x;
+    line[1].position.y = edanim_cam_pos.y + 0.5f;
+    line[1].position.z = edanim_cam_pos.z;
+    NuRndrLine3d(line, (NUMTL *)edanim_mtl, NULL);
+    line[0].colour = 0xffffffff;
+    line[1].colour = 0xffffffff;
+    line[0].position.x = edanim_cam_pos.x;
+    line[0].position.y = edanim_cam_pos.y;
+    line[0].position.z = edanim_cam_pos.z - 0.5f;
+    line[1].position.x = edanim_cam_pos.x;
+    line[1].position.y = edanim_cam_pos.y;
+    line[1].position.z = edanim_cam_pos.z + 0.5f;
+    NuRndrLine3d(line, (NUMTL *)edanim_mtl, NULL);
+    if (edanim_particle_mode) {
+        direction.x = 0.0f;
+        direction.y = 0.375f;
+        direction.z = 0.0f;
+        NuVecRotateZ(&direction, &direction, edanim_emitrotz);
+        NuVecRotateY(&direction, &direction, edanim_emitroty);
+        line[0].colour = 0xff0000ff;
+        line[1].colour = 0xff0000ff;
+        line[0].position.x = edanim_cam_pos.x;
+        line[0].position.y = edanim_cam_pos.y;
+        line[0].position.z = edanim_cam_pos.z;
+        line[1].position.x = edanim_cam_pos.x + direction.x;
+        line[1].position.y = edanim_cam_pos.y + direction.y;
+        line[1].position.z = edanim_cam_pos.z + direction.z;
+        NuRndrLine3d(line, (NUMTL *)edanim_mtl, NULL);
+    }
+    NuRndrRect2di(0x1720, 0xa50, 0xdc0, 0x370, 0x80808080, (NUMTL *)edanim_mtl_zoff);
+    NuRndrRect2di(0x1710, 0x990, 0xde0, 0xc0, 0x80000000, (NUMTL *)edanim_mtl_zoff);
+    NuRndrLine2di(0x1710, 0xa50, 0x1710, 0xdc8, 0x80000000, (NUMTL *)edanim_mtl_zoff);
+    NuRndrLine2di(0x24f0, 0xa50, 0x24f0, 0xdc8, 0x80000000, (NUMTL *)edanim_mtl_zoff);
+    NuRndrLine2di(0x1710, 0xdc8, 0x24f0, 0xdc8, 0x80000000, (NUMTL *)edanim_mtl_zoff);
+    NuQFntPushPrintMode(2);
+    NuQFntPushCoordinateSystem(NUQFNT_CSMODE_PS2);
+    NuQFntSet(system_qfont);
+    NuQFntSetColour(system_qfont, 0xe0e0e0e0);
+    NuQFntPrintEx(system_qfont, 0x17c0, 0xa28, 0x10, "Info Box");
+    NuQFntSetColour(system_qfont, 0x80000000);
+    if (edanim_nearest == -1) {
+        NuQFntPrintEx(system_qfont, 0x17c0, 0xaf0, 0x10, "Curr Spcl: <none>");
+    } else {
+        NuGScnGetSpecial(&special, edbits_base_scene, edanim_nearest);
+        NuQFntPrintEx(system_qfont, 0x17c0, 0xaf0, 0x10, "Curr Spcl: %s", NuSpecialGetName(&special));
+    }
+    if (edanim_nearest_param_id == -1) {
+        NuQFntPrintEx(system_qfont, 0x17c0, 0xb90, 0x10, "Params: No");
+    } else {
+        NuQFntPrintEx(system_qfont, 0x17c0, 0xb90, 0x10, "Params: Yes");
+        if (edanim_particle_mode) {
+            NuQFntPrintEx(system_qfont, 0x1810, 0xc30, 0x10, "Particles: %d (Max %d)",
+                          AnimParams[edanim_nearest_param_id].effect_count, 8);
+            if (edanim_particle_type == -1)
+                NuQFntPrintEx(system_qfont, 0x1810, 0xcd0, 0x10, "Select Type: <none>");
+            else
+                NuQFntPrintEx(system_qfont, 0x1810, 0xcd0, 0x10, "Select Type: %s", debtab[edanim_particle_type]->name);
+        } else if (edanim_sound_mode) {
+            NuQFntPrintEx(system_qfont, 0x1810, 0xc30, 0x10, "Sounds: %d (Max %d)",
+                          AnimParams[edanim_nearest_param_id].sound_count, 8);
+            if (edanim_sound_type == -1)
+                NuQFntPrintEx(system_qfont, 0x1810, 0xcd0, 0x10, "Select Type: <none>");
+            else
+                NuQFntPrintEx(system_qfont, 0x1810, 0xcd0, 0x10, "Select Type: %s",
+                              EDANIM_SOUND_NAME_PC(edanim_sound_type));
+        }
+    }
+    NuQFntPrintEx(system_qfont, 0x17c0, 0xd70, 0x10, "%5.2f", edanim_cam_pos.x);
+    NuQFntPrintEx(system_qfont, 0x1c20, 0xd70, 0x10, "%5.2f", edanim_cam_pos.y);
+    NuQFntPrintEx(system_qfont, 0x2080, 0xd70, 0x10, "%5.2f", edanim_cam_pos.z);
+    NuQFntPopPrintMode();
+    NuQFntPopCoordinateSystem();
+}
