@@ -75,6 +75,9 @@ extern "C" {
     i32 __cdecl saveloadUnFormatCard(void) {
         return 1;
     }
+    i32 __cdecl saveloadCheckKeyCode(char *id, u8 *code) {
+        return 0;
+    }
     i32 __cdecl saveloadWriteKeyCode(char *id, u8 *code) {
         return 0;
     }

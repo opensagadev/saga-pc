@@ -3443,6 +3443,7 @@ address,symbol,size,ctype
 0x543c10,_saveloadSaveSlot,26,
 0x543c30,_saveloadLoadSlot,186,"i32 __cdecl(i32,void *,i32)"
 0x543cf0,_saveloadDeleteSlot,45,
+0x543d20,_saveloadCheckKeyCode,3,
 0x543d30,_saveloadWriteKeyCode,3,
 0x543d40,_saveloadASSave,74,"void __cdecl(i32,void *,i32,u32)"
 0x543d90,_saveloadASLoad,69,"void __cdecl(i32,void *,i32)"
@@ -7026,6 +7027,11 @@ address,symbol,size,ctype
 0x659990,_edanimParticleCreate,148,
 0x659a30,_edanimParticleDestroy,185,
 0x00659d70,_edanimRegisterBaseScene,1,void __cdecl (NUGSCN *)
+0x659d80,_edanimcbSetSwitchType,56,
+0x659dc0,_edanimcbSetSwitchId,47,
+0x659df0,_edanimcbSetSwitchDelay,39,
+0x659e20,_edanimcbSetSwitchVar,39,
+0x659e50,_edanimcbCancelSwitchTypeMenu,25,
 0x659e70,_edanimcbSwitchTypeMenu,1222,
 0x0065a510,_edanimParamReset,127,void __cdecl (void)
 0x0065a590,_edanimStartPage,48,void __cdecl (i32)
@@ -7061,6 +7067,8 @@ address,symbol,size,ctype
 0x65b1d0,_edanimcbMCTBCardUnFormat,51,
 0x65b210,_edanimcbMCTBCardFormat,51,
 0x65b250,_edanimcbMCTBCardWriteKeyCard,64,
+0x65b290,_edanimcbMCTBCardCheckKeyCard,64,
+0x65b2d0,_edanimcbCancelMCTBMenu,25,
 0x65b2f0,_edanimcbMCTBMenu,742,
 0x65b600,_edanimEnter,39,
 0x65b630,_edanimLookupSpecial,112,"i32 __cdecl(char *, NUGSCN *)"
@@ -15958,6 +15966,7 @@ address,symbol,size,ctype
 0x76c5c4,??_C@_06GECNACHD@Name?3?5?$AA@,7,char []
 0x76c5cc,??_C@_09LOCEICAO@Type?5Name?$AA@,10,char []
 0x76c5d8,??_C@_06KMBGOEGK@?$CFs?$CF03d?$AA@,7,const char[7]
+0x76c684,??_C@_0M@OOCFJKDM@Switch?5Type?$AA@,12,char []
 0x76c6b8,??_C@_0BE@MPEJAHM@Apply?5Scale?5to?5Type?$AA@,20,char []
 0x76c6cc,__real@411e6666,4,const f32
 0x76c6d0,??_C@_0N@CODKGGAC@Scale?5Factor?$AA@,13,char []
@@ -16063,6 +16072,17 @@ address,symbol,size,ctype
 0x0076d288,__real@40159999a0000000,8,const f64
 0x0076d290,__real@41d6666660000000,8,const f64
 0x76d29c,__real@501502f9,4,const f32
+0x76d2a0,??_C@_0BC@LMEPBPCA@Override?5PlayCont?$AA@,18,char []
+0x76d2b4,??_C@_0O@EDDDNIPL@Override?5Play?$AA@,14,char []
+0x76d2c4,??_C@_0BA@FFGPBBPJ@Override?5NoAnim?$AA@,16,char []
+0x76d2d4,??_C@_0BD@LHLCOEGK@Terrain?5Continuous?$AA@,19,char []
+0x76d2e8,??_C@_0BC@IACJNEO@Terrain?5One?5Cycle?$AA@,18,char []
+0x76d2fc,??_C@_07GICFIHGN@Terrain?$AA@,8,char []
+0x76d304,??_C@_0BF@MJCNCLBH@Proximity?5Continuous?$AA@,21,char []
+0x76d31c,??_C@_0BE@CGLBFNED@Proximity?5One?5Cycle?$AA@,20,char []
+0x76d330,??_C@_0BC@INHPLNAI@Switch?5Continuous?$AA@,18,char []
+0x76d344,??_C@_0BB@HAAKDBCP@Switch?5One?5Cycle?$AA@,17,char []
+0x76d358,??_C@_06PBEDFIPD@Switch?$AA@,7,char []
 0x76d37c,??_C@_0O@NKAFEAJA@Particle?5Type?$AA@,14,char []
 0x76d38c,??_C@_0BK@KLMHEOPA@Highlighted?5Particle?5Type?$AA@,26,char []
 0x76d3a8,??_C@_0P@NMHOLCJB@Only?5On?5Moving?$AA@,15,char []
@@ -16090,6 +16110,24 @@ address,symbol,size,ctype
 0x76d530,??_C@_09PJMHMCO@Format?5OK?$AA@,10,char []
 0x76d53c,??_C@_0BD@JKJENIDO@KeyCard?5Write?5Fail?$AA@,19,char []
 0x76d550,??_C@_0BB@ILAGDNIN@KeyCard?5Write?5OK?$AA@,17,char []
+0x76d564,??_C@_0BD@HEECMOCN@KeyCard?5Check?5Fail?$AA@,19,char []
+0x76d578,??_C@_0BB@PBBCOFCF@KeyCard?5Check?5OK?$AA@,17,char []
+0x76d58c,??_C@_0O@NOCEIKLG@Check?5KeyCard?$AA@,14,char []
+0x76d59c,??_C@_0O@LDGMFFEH@Write?5KeyCard?$AA@,14,char []
+0x76d5ac,??_C@_0O@OLMNJMCP@Unformat?5Card?$AA@,14,char []
+0x76d5bc,??_C@_0M@OCPILGB@Format?5Card?$AA@,12,char []
+0x76d5c8,??_C@_0BD@CNBLKAIP@Card?5Delete?5Slot?51?$AA@,19,char []
+0x76d5dc,??_C@_0BB@HLINODOP@Card?5Load?5Slot?51?$AA@,17,char []
+0x76d5f0,??_C@_0BB@IFHODELG@Card?5Save?5Slot?51?$AA@,17,char []
+0x76d604,??_C@_0BD@DEAAJBMO@Card?5Delete?5Slot?50?$AA@,19,char []
+0x76d618,??_C@_0BB@GCJGNCKO@Card?5Load?5Slot?50?$AA@,17,char []
+0x76d62c,??_C@_0BB@JMGFAFPH@Card?5Save?5Slot?50?$AA@,17,char []
+0x76d640,??_C@_0BA@KPNCNNJE@Card?5Slots?5Used?$AA@,16,char []
+0x76d650,??_C@_0BA@BNAHEBLL@Card?5Free?5Space?$AA@,16,char []
+0x76d660,??_C@_0BB@LLJHBKIM@Card?5Format?5Test?$AA@,17,char []
+0x76d674,??_C@_0P@NHBKDCLF@Card?5Type?5Test?$AA@,15,char []
+0x76d684,??_C@_0BC@IMNLGAIJ@Card?5Present?5Test?$AA@,18,char []
+0x76d698,??_C@_0BG@HEGOHMIO@Memory?5Card?5Test?5Menu?$AA@,22,char []
 0x76d6b0,??_C@_0BC@OEFPIKCK@pictures?2cub?$CF03d_?$AA@,18,char []
 0x76d6c4,??_C@_0BI@OOOKDNPE@pictures?2cub?$CF03d_?$CFd?4bmp?$AA@,24,char []
 0x76d6dc,??_C@_03KMNOHDLL@bri?$AA@,4,char []
@@ -21069,6 +21107,8 @@ address,symbol,size,ctype
 0x810960,_debris_sort_delay,,i32
 0x810964,_debris_update_delay,,i32
 0x810968,_debris_render_scale,,f32
+0x81096c,_code_test,16,u8[16]
+0x81097c,_id_test,17,char[17]
 0x8109c8,_edbits_particle_char_page,4,i32
 0x8109cc,_edbits_particle_level_page,4,i32
 0x8109d0,_PartLevelPagePc,,i32
@@ -24820,10 +24860,12 @@ address,symbol,size,ctype
 0x29620fc,_edanim_particletype_menu,4,struct eduimenu_s *
 0x2962100,_edanim_localparticletype_menu,4,struct eduimenu_s *
 0x2962104,_edanim_localparticle_menu,4,struct eduimenu_s *
+0x296210c,_edanim_switchtype_menu,4,struct eduimenu_s *
 0x2962110,_edanim_sound_menu,4,struct eduimenu_s *
 0x2962114,_edanim_soundtype_menu,4,struct eduimenu_s *
 0x2962118,_edanim_localsoundtype_menu,4,struct eduimenu_s *
 0x2962120,_edanim_bouncy_menu,4,struct eduimenu_s *
+0x2962124,_edanim_mctb_menu,4,struct eduimenu_s *
 0x02962128,_edanim_params_used,4,i32
 0x296212c,_edanim_emitrotz,4,i32
 0x2962130,_edanim_emitroty,4,i32

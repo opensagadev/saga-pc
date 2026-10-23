@@ -15389,6 +15389,12 @@ extern "C" {
 #pragma data_seg(".data$debris_render_scale")
     f32 debris_render_scale = 1.0f;
 #pragma data_seg()
+#pragma data_seg(".data$code_test")
+    u8 code_test[16] = {1, 2, 3, 4, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1};
+#pragma data_seg()
+#pragma data_seg(".data$id_test")
+    char id_test[17] = "Travellers Tales";
+#pragma data_seg()
 #pragma data_seg(".data$edbits_editor_enabled")
     i32 *edbits_editor_enabled = &edbits_editor_state;
 #pragma data_seg()
@@ -29775,6 +29781,12 @@ extern "C" {
 extern "C" {
 #pragma bss_seg(".bss$edanim_bouncy_menu")
     struct eduimenu_s *edanim_bouncy_menu = 0;
+
+#pragma bss_seg(".bss$edanim_switchtype_menu")
+    struct eduimenu_s *edanim_switchtype_menu = 0;
+
+#pragma bss_seg(".bss$edanim_mctb_menu")
+    struct eduimenu_s *edanim_mctb_menu = 0;
 
 #pragma bss_seg(".bss$edanim_localsoundtype_menu")
     struct eduimenu_s *edanim_localsoundtype_menu = 0;

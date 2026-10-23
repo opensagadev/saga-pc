@@ -1029,6 +1029,114 @@ void __cdecl edanimStartAllPages(void) {
     }
 }
 
+extern struct eduimenu_s *edanim_switchtype_menu;
+
+void edanimcbSetSwitchType(eduimenu_s *menu, eduiitem_s *item, u32 unused2) {
+    edanim_switchtype_menu = NULL;
+    AnimParams[edanim_nearest_param_id].control_mode = item->data;
+    eduiMenuDetach(menu);
+    eduiMenuDestroy(menu);
+}
+
+void edanimcbSetSwitchId(eduimenu_s *unused0, eduiitem_s *item, u32 unused2) {
+    if (edanim_nearest == -1 || edanim_nearest_param_id == -1)
+        return;
+    AnimParams[edanim_nearest_param_id].control_switch = (i32)((edui_slider_s *)item)->value;
+}
+
+void edanimcbSetSwitchDelay(eduimenu_s *unused0, eduiitem_s *item, u32 unused2) {
+    if (edanim_nearest == -1 || edanim_nearest_param_id == -1)
+        return;
+    AnimParams[edanim_nearest_param_id].field_018 = ((edui_slider_s *)item)->value;
+}
+
+void edanimcbSetSwitchVar(eduimenu_s *unused0, eduiitem_s *item, u32 unused2) {
+    if (edanim_nearest == -1 || edanim_nearest_param_id == -1)
+        return;
+    AnimParams[edanim_nearest_param_id].control_distance = ((edui_slider_s *)item)->value;
+}
+
+static void edanimcbCancelSwitchTypeMenu(eduimenu_s *unused0, eduimenu_s *unused1) {
+    eduiMenuDestroy(edanim_switchtype_menu);
+    edanim_switchtype_menu = NULL;
+}
+
+void edanimcbSwitchTypeMenu(eduimenu_s *parent, eduiitem_s *unused1, u32 unused2) {
+    u32 colours[4] = {0x80000000, 0x80ff0000, 0x80808080, 0x80404040};
+    edanim_switchtype_menu =
+        eduiMenuCreate(70, 70, 250, 200, ed_fnt, edanimcbCancelSwitchTypeMenu, (char *)("Switch Type"));
+    if (!edanim_switchtype_menu)
+        return;
+    eduiMenuAddItem(edanim_switchtype_menu,
+                    eduiItemCheckCreate(0, colours, AnimParams[edanim_nearest_param_id].control_mode == 0, 1,
+                                        edanimcbSetSwitchType, (char *)("None")));
+    if (edui_last_item->highlighted)
+        edanim_switchtype_menu->selected = edui_last_item;
+    eduiMenuAddItem(edanim_switchtype_menu,
+                    eduiItemCheckCreate(1, colours, AnimParams[edanim_nearest_param_id].control_mode == 1, 1,
+                                        edanimcbSetSwitchType, (char *)("Switch")));
+    if (edui_last_item->highlighted)
+        edanim_switchtype_menu->selected = edui_last_item;
+    eduiMenuAddItem(edanim_switchtype_menu,
+                    eduiItemCheckCreate(2, colours, AnimParams[edanim_nearest_param_id].control_mode == 2, 1,
+                                        edanimcbSetSwitchType, (char *)("Switch One Cycle")));
+    if (edui_last_item->highlighted)
+        edanim_switchtype_menu->selected = edui_last_item;
+    eduiMenuAddItem(edanim_switchtype_menu,
+                    eduiItemCheckCreate(3, colours, AnimParams[edanim_nearest_param_id].control_mode == 3, 1,
+                                        edanimcbSetSwitchType, (char *)("Switch Continuous")));
+    if (edui_last_item->highlighted)
+        edanim_switchtype_menu->selected = edui_last_item;
+    eduiMenuAddItem(edanim_switchtype_menu,
+                    eduiItemCheckCreate(4, colours, AnimParams[edanim_nearest_param_id].control_mode == 4, 1,
+                                        edanimcbSetSwitchType, (char *)("Proximity")));
+    if (edui_last_item->highlighted)
+        edanim_switchtype_menu->selected = edui_last_item;
+    eduiMenuAddItem(edanim_switchtype_menu,
+                    eduiItemCheckCreate(5, colours, AnimParams[edanim_nearest_param_id].control_mode == 5, 1,
+                                        edanimcbSetSwitchType, (char *)("Proximity One Cycle")));
+    if (edui_last_item->highlighted)
+        edanim_switchtype_menu->selected = edui_last_item;
+    eduiMenuAddItem(edanim_switchtype_menu,
+                    eduiItemCheckCreate(6, colours, AnimParams[edanim_nearest_param_id].control_mode == 6, 1,
+                                        edanimcbSetSwitchType, (char *)("Proximity Continuous")));
+    if (edui_last_item->highlighted)
+        edanim_switchtype_menu->selected = edui_last_item;
+    eduiMenuAddItem(edanim_switchtype_menu,
+                    eduiItemCheckCreate(7, colours, AnimParams[edanim_nearest_param_id].control_mode == 7, 1,
+                                        edanimcbSetSwitchType, (char *)("Terrain")));
+    if (edui_last_item->highlighted)
+        edanim_switchtype_menu->selected = edui_last_item;
+    eduiMenuAddItem(edanim_switchtype_menu,
+                    eduiItemCheckCreate(8, colours, AnimParams[edanim_nearest_param_id].control_mode == 8, 1,
+                                        edanimcbSetSwitchType, (char *)("Terrain One Cycle")));
+    if (edui_last_item->highlighted)
+        edanim_switchtype_menu->selected = edui_last_item;
+    eduiMenuAddItem(edanim_switchtype_menu,
+                    eduiItemCheckCreate(9, colours, AnimParams[edanim_nearest_param_id].control_mode == 9, 1,
+                                        edanimcbSetSwitchType, (char *)("Terrain Continuous")));
+    if (edui_last_item->highlighted)
+        edanim_switchtype_menu->selected = edui_last_item;
+    eduiMenuAddItem(edanim_switchtype_menu,
+                    eduiItemCheckCreate(10, colours, AnimParams[edanim_nearest_param_id].control_mode == 10, 1,
+                                        edanimcbSetSwitchType, (char *)("Override NoAnim")));
+    if (edui_last_item->highlighted)
+        edanim_switchtype_menu->selected = edui_last_item;
+    eduiMenuAddItem(edanim_switchtype_menu,
+                    eduiItemCheckCreate(11, colours, AnimParams[edanim_nearest_param_id].control_mode == 11, 1,
+                                        edanimcbSetSwitchType, (char *)("Override Play")));
+    if (edui_last_item->highlighted)
+        edanim_switchtype_menu->selected = edui_last_item;
+    eduiMenuAddItem(edanim_switchtype_menu,
+                    eduiItemCheckCreate(12, colours, AnimParams[edanim_nearest_param_id].control_mode == 12, 1,
+                                        edanimcbSetSwitchType, (char *)("Override PlayCont")));
+    if (edui_last_item->highlighted)
+        edanim_switchtype_menu->selected = edui_last_item;
+    eduiMenuAttach(parent, edanim_switchtype_menu);
+    edanim_switchtype_menu->x = parent->x + 10;
+    edanim_switchtype_menu->y = parent->y + 40;
+}
+
 static void edanimcbToggleSoundType(eduimenu_s *menu, eduiitem_s *item, u32 unused2) {
     edanim_soundtype_menu = NULL;
     if (!(item->highlighted & 1)) {
@@ -1223,9 +1331,11 @@ void edanimcbParticleMenu(eduimenu_s *parent, eduiitem_s *unused1, u32 unused2) 
     menu->x = parent->x + 10;
     menu->y = parent->y + 40;
 }
+extern const char MenuTechnicalDefaultTextPc75f29c[8];
+
 static void edanimcbMCTBCardPresent(eduimenu_s *menu, eduiitem_s *unused1, u32 unused2) {
     if (saveloadCheckCardPresent()) {
-        eduiCreateMessageMenu(menu, (char *)("Present"), 1);
+        eduiCreateMessageMenu(menu, (char *)MenuTechnicalDefaultTextPc75f29c, 1);
     } else {
         eduiCreateMessageMenu(menu, (char *)("Not Present"), 0);
     }
@@ -1305,6 +1415,63 @@ static void edanimcbMCTBCardWriteKeyCard(eduimenu_s *menu, eduiitem_s *unused1, 
     } else {
         eduiCreateMessageMenu(menu, (char *)("KeyCard Write Fail"), 0);
     }
+}
+
+i32 __cdecl saveloadCheckKeyCode(char *id, u8 *code);
+extern struct eduimenu_s *edanim_mctb_menu;
+
+static void edanimcbMCTBCardCheckKeyCard(eduimenu_s *menu, eduiitem_s *unused1, u32 unused2) {
+    if (saveloadCheckKeyCode(id_test, code_test)) {
+        eduiCreateMessageMenu(menu, (char *)("KeyCard Check OK"), 1);
+    } else {
+        eduiCreateMessageMenu(menu, (char *)("KeyCard Check Fail"), 0);
+    }
+}
+
+static void edanimcbCancelMCTBMenu(eduimenu_s *unused0, eduimenu_s *unused1) {
+    eduiMenuDestroy(edanim_mctb_menu);
+    edanim_mctb_menu = NULL;
+}
+
+void edanimcbMCTBMenu(eduimenu_s *parent, eduiitem_s *unused1, u32 unused2) {
+    u32 colours[4] = {0x80000000, 0x80ff0000, 0x80808080, 0x80404040};
+    edanim_mctb_menu =
+        eduiMenuCreate(70, 70, 250, 250, ed_fnt, edanimcbCancelMCTBMenu, (char *)("Memory Card Test Menu"));
+    if (!edanim_mctb_menu)
+        return;
+    eduiMenuAddItem(edanim_mctb_menu,
+                    eduiItemSelCreate(1, colours, 0, 0, edanimcbMCTBCardPresent, (char *)("Card Present Test")));
+    eduiMenuAddItem(edanim_mctb_menu,
+                    eduiItemSelCreate(1, colours, 0, 0, edanimcbMCTBCardType, (char *)("Card Type Test")));
+    eduiMenuAddItem(edanim_mctb_menu,
+                    eduiItemSelCreate(1, colours, 0, 0, edanimcbMCTBCardCheckFormat, (char *)("Card Format Test")));
+    eduiMenuAddItem(edanim_mctb_menu,
+                    eduiItemSelCreate(1, colours, 0, 0, edanimcbMCTBCardFreeSpace, (char *)("Card Free Space")));
+    eduiMenuAddItem(edanim_mctb_menu,
+                    eduiItemSelCreate(1, colours, 0, 0, edanimcbMCTBCardSlotsUsed, (char *)("Card Slots Used")));
+    eduiMenuAddItem(edanim_mctb_menu,
+                    eduiItemSelCreate(0, colours, 0, 0, edanimcbMCTBCardSaveSlot, (char *)("Card Save Slot 0")));
+    eduiMenuAddItem(edanim_mctb_menu,
+                    eduiItemSelCreate(0, colours, 0, 0, edanimcbMCTBCardLoadSlot, (char *)("Card Load Slot 0")));
+    eduiMenuAddItem(edanim_mctb_menu,
+                    eduiItemSelCreate(0, colours, 0, 0, edanimcbMCTBCardDeleteSlot, (char *)("Card Delete Slot 0")));
+    eduiMenuAddItem(edanim_mctb_menu,
+                    eduiItemSelCreate(1, colours, 0, 0, edanimcbMCTBCardSaveSlot, (char *)("Card Save Slot 1")));
+    eduiMenuAddItem(edanim_mctb_menu,
+                    eduiItemSelCreate(1, colours, 0, 0, edanimcbMCTBCardLoadSlot, (char *)("Card Load Slot 1")));
+    eduiMenuAddItem(edanim_mctb_menu,
+                    eduiItemSelCreate(1, colours, 0, 0, edanimcbMCTBCardDeleteSlot, (char *)("Card Delete Slot 1")));
+    eduiMenuAddItem(edanim_mctb_menu,
+                    eduiItemSelCreate(1, colours, 0, 0, edanimcbMCTBCardFormat, (char *)("Format Card")));
+    eduiMenuAddItem(edanim_mctb_menu,
+                    eduiItemSelCreate(1, colours, 0, 0, edanimcbMCTBCardUnFormat, (char *)("Unformat Card")));
+    eduiMenuAddItem(edanim_mctb_menu,
+                    eduiItemSelCreate(1, colours, 0, 0, edanimcbMCTBCardWriteKeyCard, (char *)("Write KeyCard")));
+    eduiMenuAddItem(edanim_mctb_menu,
+                    eduiItemSelCreate(1, colours, 0, 0, edanimcbMCTBCardCheckKeyCard, (char *)("Check KeyCard")));
+    eduiMenuAttach(parent, edanim_mctb_menu);
+    edanim_mctb_menu->x = parent->x + 10;
+    edanim_mctb_menu->y = parent->y + 40;
 }
 
 typedef struct animate_character_reader_pc_s {
