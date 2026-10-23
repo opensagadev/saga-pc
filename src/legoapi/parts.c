@@ -3444,7 +3444,7 @@ void __cdecl edpartLoadSingleType(PARTTYPE_LOOKUP_PC *record, i32 version, i32 p
 extern i32 PartNearestEmitterPc;
 extern NUVEC PartEditorCameraPosPc;
 extern PART_EMIT_PC *PartNearestEmitterPtrPc;
-extern PARTTYPE_LOOKUP_PC *PartNearestTypePtrPc;
+extern PARTTYPE_LOOKUP_PC *edpart_nearest_type;
 extern i32 PartGeneralPagePc;
 extern i32 PartLevelPagePc;
 void __cdecl edpartDetermineNearest(f32 distance) {
@@ -3469,11 +3469,11 @@ void __cdecl edpartDetermineNearest(f32 distance) {
         }
     }
     PartNearestEmitterPtrPc = NULL;
-    PartNearestTypePtrPc = NULL;
+    edpart_nearest_type = NULL;
     if (PartNearestEmitterPc != -1) {
         PartNearestEmitterPtrPc = &part_emits[PartNearestEmitterPc];
         if (PartNearestEmitterPtrPc->effect_id != -1)
-            PartNearestTypePtrPc = &part_types[PartNearestEmitterPtrPc->effect_id];
+            edpart_nearest_type = &part_types[PartNearestEmitterPtrPc->effect_id];
     }
 }
 
@@ -4372,19 +4372,19 @@ void edpartDrawCursor(void) {
                 NuQFntPrintEx(system_qfont, 0x17c0, 0xc30, 0x10, "Highlight: <none>");
             } else {
                 edbitsDrawCube(PartEditorCameraPosPc.x, PartEditorCameraPosPc.y, PartEditorCameraPosPc.z,
-                               PartNearestTypePtrPc->position_random.x, PartNearestTypePtrPc->position_random.y,
-                               PartNearestTypePtrPc->position_random.z, edpart_emitrotz, edpart_emitroty,
+                               edpart_nearest_type->position_random.x, edpart_nearest_type->position_random.y,
+                               edpart_nearest_type->position_random.z, edpart_emitrotz, edpart_emitroty,
                                edpart_emitrotx, rotation_z, rotation_y, 0xff0000ff, edpart_mtl);
                 NuQFntSet(system_qfont);
                 NuQFntSetColour(system_qfont, 0x80000000);
-                NuQFntPrintEx(system_qfont, 0x17c0, 0xc30, 0x10, "Highlight: %s", PartNearestTypePtrPc->name);
+                NuQFntPrintEx(system_qfont, 0x17c0, 0xc30, 0x10, "Highlight: %s", edpart_nearest_type->name);
                 if (edpart_nearest_orphans == 0 && edpart_nearest_duplicates == 0) {
                     NuQFntPrintEx(system_qfont, 0x1860, 0xcd0, 0x10, "Instances: %d of %d",
-                                  PartNearestTypePtrPc->variant_count, 8);
+                                  edpart_nearest_type->variant_count, 8);
                 } else {
                     NuQFntSetColour(system_qfont, 0x80000080);
                     NuQFntPrintEx(system_qfont, 0x1860, 0xcd0, 0x10, "Instances: %d of %d (Or = %d, Du = %d)",
-                                  PartNearestTypePtrPc->variant_count, 8, edpart_nearest_orphans,
+                                  edpart_nearest_type->variant_count, 8, edpart_nearest_orphans,
                                   edpart_nearest_duplicates);
                     NuQFntSetColour(system_qfont, 0x80000000);
                 }
@@ -4401,7 +4401,7 @@ void edpartDrawCursor(void) {
         if (PartNearestEmitterPc == -1) {
             NuQFntPrintEx(system_qfont, 0x17c0, 0xa50, 0x10, "Highlight: <none>");
         } else {
-            NuQFntPrintEx(system_qfont, 0x17c0, 0xa50, 0x10, "Highlight: %s", PartNearestTypePtrPc->name);
+            NuQFntPrintEx(system_qfont, 0x17c0, 0xa50, 0x10, "Highlight: %s", edpart_nearest_type->name);
             NuQFntPrintEx(system_qfont, 0x17c0, 0xaf0, 0x10, "XYZ: %0.2f %0.2f %0.2f",
                           PartNearestEmitterPtrPc->position.x, PartNearestEmitterPtrPc->position.y,
                           PartNearestEmitterPtrPc->position.z);

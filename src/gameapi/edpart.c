@@ -421,6 +421,66 @@ void __cdecl edpartLevelTypeMenu(eduimenu_s *menu, eduiitem_s *unused1, u32 unus
     edpart_leveltype_menu->y = menu->y + 40;
 }
 
+extern struct eduimenu_s *edpart_changegenrate_menu;
+extern struct eduimenu_s *edpart_maxlife_menu;
+
+void __cdecl edpartChangeGenRate(eduimenu_s *unused0, eduiitem_s *item, u32 unused2) {
+    if (edpart_nearest_type)
+        edpart_nearest_type->emission_rate = (f32)(i32)((edui_slider_s *)item)->value;
+}
+
+void __cdecl edpartCancelChangeGenRateMenu(eduimenu_s *unused0, eduimenu_s *unused1) {
+    eduiMenuDestroy(edpart_changegenrate_menu);
+    edpart_changegenrate_menu = NULL;
+}
+
+void __cdecl edpartChangeGenRateMenu(eduimenu_s *menu, eduiitem_s *unused1, u32 unused2) {
+    if (edpart_nearest_type == NULL)
+        return;
+    edpart_changegenrate_menu =
+        eduiMenuCreate(70, 70, 250, 250, ed_fnt, edpartCancelChangeGenRateMenu, "Emits per Second");
+    if (edpart_changegenrate_menu == NULL)
+        return;
+    eduiMenuAddItem(edpart_changegenrate_menu,
+                    eduiItemSliderCreateInt(0, edblack, 0, edpartChangeGenRate, 0, (i32)(edpart_superscale * 1200.0),
+                                            (i32)edpart_nearest_type->emission_rate, "Emits per Second"));
+    eduiMenuAttach(menu, edpart_changegenrate_menu);
+    edpart_changegenrate_menu->x = menu->x + 10;
+    edpart_changegenrate_menu->y = menu->y + 40;
+}
+
+void __cdecl edpartChangeMaxLife(eduimenu_s *unused0, eduiitem_s *item, u32 unused2) {
+    if (edpart_nearest_type)
+        edpart_nearest_type->lifetime = ((edui_slider_s *)item)->value;
+}
+
+void __cdecl edpartChangeRanMaxLife(eduimenu_s *unused0, eduiitem_s *item, u32 unused2) {
+    if (edpart_nearest_type)
+        edpart_nearest_type->lifetime_random = ((edui_slider_s *)item)->value;
+}
+
+void __cdecl edpartCancelChangeMaxLifeMenu(eduimenu_s *unused0, eduimenu_s *unused1) {
+    eduiMenuDestroy(edpart_maxlife_menu);
+    edpart_maxlife_menu = NULL;
+}
+
+void __cdecl edpartChangeMaxLifeMenu(eduimenu_s *menu, eduiitem_s *unused1, u32 unused2) {
+    if (edpart_nearest_type == NULL)
+        return;
+    edpart_maxlife_menu = eduiMenuCreate(70, 70, 250, 250, ed_fnt, edpartCancelChangeMaxLifeMenu, "Max Instance Life");
+    if (edpart_maxlife_menu == NULL)
+        return;
+    eduiMenuAddItem(edpart_maxlife_menu,
+                    eduiItemSliderCreate(0, edblack, 0, edpartChangeMaxLife, 0.0f, edpart_superscale * 10.0,
+                                         edpart_nearest_type->lifetime, "Base Max Life"));
+    eduiMenuAddItem(edpart_maxlife_menu,
+                    eduiItemSliderCreate(0, edblack, 0, edpartChangeRanMaxLife, 0.0f, edpart_superscale * 10.0,
+                                         edpart_nearest_type->lifetime_random, "Random Max Life"));
+    eduiMenuAttach(menu, edpart_maxlife_menu);
+    edpart_maxlife_menu->x = menu->x + 10;
+    edpart_maxlife_menu->y = menu->y + 40;
+}
+
 static void edpartTypeMenu(eduimenu_s *menu, eduiitem_s *unused1, u32 unused2) {
     edpart_type_menu = eduiMenuCreate(70, 70, 250, 250, ed_fnt, edpartCancelTypeMenu, "Emitter Type");
     if (edpart_type_menu != NULL) {

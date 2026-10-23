@@ -18999,8 +18999,8 @@ extern "C" {
 #pragma bss_seg(".bss$PartNearestEmitterPtrPc")
     PART_EMIT_PC *PartNearestEmitterPtrPc = 0;
 #pragma bss_seg()
-#pragma bss_seg(".bss$PartNearestTypePtrPc")
-    PARTTYPE_LOOKUP_PC *PartNearestTypePtrPc = 0;
+#pragma bss_seg(".bss$edpart_nearest_type")
+    PARTTYPE_LOOKUP_PC *edpart_nearest_type = 0;
 #pragma bss_seg()
 #pragma bss_seg(".bss$PartGeneralPagePc")
     i32 PartGeneralPagePc = 0;
@@ -29288,6 +29288,12 @@ extern "C" {
 
 #pragma bss_seg(".bss$edpart_leveltype_menu")
     struct eduimenu_s *edpart_leveltype_menu = 0;
+
+#pragma bss_seg(".bss$edpart_changegenrate_menu")
+    struct eduimenu_s *edpart_changegenrate_menu = 0;
+
+#pragma bss_seg(".bss$edpart_maxlife_menu")
+    struct eduimenu_s *edpart_maxlife_menu = 0;
 }
 
 extern "C" {}
