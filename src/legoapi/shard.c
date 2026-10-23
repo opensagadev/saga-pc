@@ -1536,16 +1536,17 @@ static i32 Shop_CanSelectPc(void) {
     i32 id, index;
     switch (picked) {
         case 1:
-            item = &CharItems[CharShelfIds[3]];
-            return Game.coins >= (u32)item->price && Shop_CharacterUnlockedPc((u16)item->item_id) != 0 &&
-                   item->unlocked != 1;
-        case 0:
-            item = &HintItems[HintShelfIds[3]];
-            return Game.coins >= (u32)item->price && item->unlocked != 1;
-        case 2:
-            item = &ExtraItems[ExtraShelfIds[3]];
-            if (Game.coins < (u32)item->price)
+            if (Game.coins < (u32)CharItems[CharShelfIds[3]].price)
                 return 0;
+            item = &CharItems[CharShelfIds[3]];
+            return Shop_CharacterUnlockedPc((u16)item->item_id) != 0 && item->unlocked != 1;
+        case 0:
+            index = HintShelfIds[3];
+            return Game.coins >= (u32)HintItems[index].price && HintItems[index].unlocked != 1;
+        case 2:
+            if (Game.coins < (u32)ExtraItems[ExtraShelfIds[3]].price)
+                return 0;
+            item = &ExtraItems[ExtraShelfIds[3]];
             id = (u16)item->item_id;
             if (id >= 8 && ExtrasCheatsPc[id].area_index != -1 &&
                 Game.area_save[ExtrasCheatsPc[id].area_index].red_brick_collected == 0)
