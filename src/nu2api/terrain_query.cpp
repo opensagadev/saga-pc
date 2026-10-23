@@ -1421,7 +1421,7 @@ extern "C" {
         TerrainScaledShapeCursorPc = static_cast<TERRAIN_SHAPE *>(TerrainScaleWorkBasePc);
         query = TERRAIN_STH_QUERY;
         group_header = reinterpret_cast<TERRAIN_SHADOW_QUERY_VIEW_PC *>(query)->scan_words;
-        cursor = group_header + 1;
+        cursor = reinterpret_cast<TERRAIN_SCAN_WORD_PC *>(query->scan_list_storage) + 1;
         limit = cursor + 508;
         shape_count = 0;
         platinrange = 0;
@@ -1932,15 +1932,20 @@ extern "C" i32 NewRayCast(NUVEC *position, NUVEC *movement, f32 radius, i32 scan
     TerrainShadowGroupIndexPc = -1;
     if (CurrentTerrain == NULL)
         return 0;
-    TerI = NuScratchAlloc32(sizeof(TerrainQuery_s));
-    TerrainQuery_s *query = static_cast<TerrainQuery_s *>(TerI);
+    TerrainQuery_s *query = static_cast<TerrainQuery_s *>(NuScratchAlloc32(sizeof(TerrainQuery_s)));
     query->object_scale = 1.0f;
     query->object_scale_sq = 1.0f;
     TerrOverRideScan = NULL;
     query->inverse_object_scale = 1.0f;
+    TerI = query;
     query->inverse_object_scale_sq = 1.0f;
     query->collision_radius = radius;
-    query->inverse_collision_radius = radius == 0.0f ? 0.0f : 1.0f / radius;
+    f32 inverse_radius;
+    if (radius == 0.0f)
+        inverse_radius = 0.0f;
+    else
+        inverse_radius = 1.0f / radius;
+    query->inverse_collision_radius = inverse_radius;
     query->collision_radius_sq = radius * radius;
     query->start_position.x = query->position.x = position->x;
     query->start_position.y = query->position.y = position->y;
@@ -1975,15 +1980,20 @@ extern "C" i32 NewRayCastMask(NUVEC *position, NUVEC *movement, f32 radius, i32 
     TerrainShadowGroupIndexPc = -1;
     if (CurrentTerrain == NULL)
         return 0;
-    TerI = NuScratchAlloc32(sizeof(TerrainQuery_s));
-    TerrainQuery_s *query = static_cast<TerrainQuery_s *>(TerI);
+    TerrainQuery_s *query = static_cast<TerrainQuery_s *>(NuScratchAlloc32(sizeof(TerrainQuery_s)));
     query->object_scale = 1.0f;
     query->object_scale_sq = 1.0f;
     TerrOverRideScan = NULL;
     query->inverse_object_scale = 1.0f;
+    TerI = query;
     query->inverse_object_scale_sq = 1.0f;
     query->collision_radius = radius;
-    query->inverse_collision_radius = radius == 0.0f ? 0.0f : 1.0f / radius;
+    f32 inverse_radius;
+    if (radius == 0.0f)
+        inverse_radius = 0.0f;
+    else
+        inverse_radius = 1.0f / radius;
+    query->inverse_collision_radius = inverse_radius;
     query->collision_radius_sq = radius * radius;
     query->start_position.x = query->position.x = position->x;
     query->start_position.y = query->position.y = position->y;
@@ -2019,15 +2029,20 @@ extern "C" i32 NewRayCastSet(NUVEC *position, NUVEC *movement, f32 radius, f32 s
     TerrainShadowGroupIndexPc = -1;
     if (CurrentTerrain == NULL)
         return 0;
-    TerI = NuScratchAlloc32(sizeof(TerrainQuery_s));
-    TerrainQuery_s *query = static_cast<TerrainQuery_s *>(TerI);
+    TerrainQuery_s *query = static_cast<TerrainQuery_s *>(NuScratchAlloc32(sizeof(TerrainQuery_s)));
     query->object_scale = 1.0f;
     query->object_scale_sq = 1.0f;
     TerrOverRideScan = NULL;
     query->inverse_object_scale = 1.0f;
+    TerI = query;
     query->inverse_object_scale_sq = 1.0f;
     query->collision_radius = radius;
-    query->inverse_collision_radius = radius == 0.0f ? 0.0f : 1.0f / radius;
+    f32 inverse_radius;
+    if (radius == 0.0f)
+        inverse_radius = 0.0f;
+    else
+        inverse_radius = 1.0f / radius;
+    query->inverse_collision_radius = inverse_radius;
     query->collision_radius_sq = radius * radius;
     query->start_position.x = query->position.x = position->x;
     query->start_position.y = query->position.y = position->y;
@@ -2063,14 +2078,19 @@ extern "C" i32 NewRayCastSetMask(NUVEC *position, NUVEC *movement, f32 radius, f
     TerrainShadowGroupIndexPc = -1;
     if (CurrentTerrain == NULL)
         return 0;
-    TerI = NuScratchAlloc32(sizeof(TerrainQuery_s));
-    TerrainQuery_s *query = static_cast<TerrainQuery_s *>(TerI);
+    TerrainQuery_s *query = static_cast<TerrainQuery_s *>(NuScratchAlloc32(sizeof(TerrainQuery_s)));
     query->object_scale = 1.0f;
     query->object_scale_sq = 1.0f;
     query->inverse_object_scale = 1.0f;
+    TerI = query;
     query->inverse_object_scale_sq = 1.0f;
     query->collision_radius = radius;
-    query->inverse_collision_radius = radius == 0.0f ? 0.0f : 1.0f / radius;
+    f32 inverse_radius;
+    if (radius == 0.0f)
+        inverse_radius = 0.0f;
+    else
+        inverse_radius = 1.0f / radius;
+    query->inverse_collision_radius = inverse_radius;
     query->collision_radius_sq = radius * radius;
     query->start_position.x = query->position.x = position->x;
     query->start_position.y = query->position.y = position->y;
@@ -2754,14 +2774,16 @@ extern "C" i16 *NewScanHandel(NUVEC *position, NUVEC *movement, f32 radius, i32 
         return NULL;
     TerrPlatDis = -1;
     TerrainQuery_s *query = static_cast<TerrainQuery_s *>(NuScratchAlloc32(sizeof(TerrainQuery_s)));
-    TerI = query;
     query->object_scale = 1.0f;
     query->object_scale_sq = 1.0f;
     query->inverse_object_scale = 1.0f;
+    TerI = query;
     query->inverse_object_scale_sq = 1.0f;
     query->collision_radius = radius;
-    f32 inverse_radius = 0.0f;
-    if (radius != 0.0f)
+    f32 inverse_radius;
+    if (radius == 0.0f)
+        inverse_radius = 0.0f;
+    else
         inverse_radius = 1.0f / radius;
     query->inverse_collision_radius = inverse_radius;
     query->collision_radius_sq = radius * radius;
@@ -3028,8 +3050,12 @@ extern "C" void RotateTerrainPc(TERRAIN_SHAPE *surface) {
 }
 
 extern "C" void FullDeflectSizePc(NUVEC *normal, NUVEC *movement, NUVEC *result) {
-    f32 deflection = -movement->y * normal->y + -movement->x * normal->x + -movement->z * normal->z;
-    f32 original_length = NuFsqrt(movement->y * movement->y + movement->x * movement->x + movement->z * movement->z);
+    const f32 reverse_x = -movement->x;
+    const f32 reverse_y = -movement->y;
+    const f32 reverse_z = -movement->z;
+    f32 deflection = reverse_y * normal->y + reverse_x * normal->x + reverse_z * normal->z;
+    f32 original_length = (movement->z * movement->z) + (movement->y * movement->y + movement->x * movement->x);
+    original_length = NuFsqrt(original_length);
     result->x = (normal->x * deflection) + movement->x;
     result->y = (normal->y * deflection) + movement->y;
     result->z = (normal->z * deflection) + movement->z;
@@ -3043,8 +3069,12 @@ extern "C" void FullDeflectSizePc(NUVEC *normal, NUVEC *movement, NUVEC *result)
 }
 
 extern "C" void FullReflectTestPc(NUVEC *normal, NUVEC *movement, NUVEC *result) {
-    f32 deflection = -movement->y * normal->y + -movement->x * normal->x + -movement->z * normal->z;
-    f32 original_length = NuFsqrt(movement->y * movement->y + movement->x * movement->x + movement->z * movement->z);
+    const f32 reverse_x = -movement->x;
+    const f32 reverse_y = -movement->y;
+    const f32 reverse_z = -movement->z;
+    f32 deflection = reverse_y * normal->y + reverse_x * normal->x + reverse_z * normal->z;
+    f32 original_length = movement->y * movement->y + movement->x * movement->x + movement->z * movement->z;
+    original_length = NuFsqrt(original_length);
     result->x = (normal->x * deflection) * 2.0 + movement->x;
     result->y = (normal->y * deflection) * 2.0 + movement->y;
     result->z = (normal->z * deflection) * 2.0 + movement->z;
@@ -3155,11 +3185,12 @@ extern "C" void TerrainPolyEdgePc(NUVEC *first, NUVEC *second) {
 #undef TERRAIN_TPE_EDGE
 
 extern "C" void NewTerrAxisFreedomPc(TERRAIN_AXIS_FREEDOM_SHAPE_PC *shape, NUVEC *position) {
+    f64 angle = shape->angle;
     TerrShape = shape;
     TerrShapeAdjCnt = 2;
 
     NUVEC axis;
-    axis.x = NuTrigTable[static_cast<i32>(shape->angle + 16384.0) >> 1 & 0x7fff];
+    axis.x = NuTrigTable[static_cast<i32>(angle + 16384.0) >> 1 & 0x7fff];
     axis.y = 0.0f;
     axis.z = -NuTrigTable[static_cast<i32>(shape->angle) >> 1 & 0x7fff];
     TerrainSideClamp(&axis, position);
