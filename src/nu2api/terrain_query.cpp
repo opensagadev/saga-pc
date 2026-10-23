@@ -1748,14 +1748,16 @@ extern "C" {
         f32 secondary_end = 0.0f;
         TerrainQuery_s *query = (TerrainQuery_s *)TerI;
         f32 radius = query->collision_radius;
-        i32 test = 0;
-        query->hit_type = 0;
+        i32 result = 0;
+        query->hit_type = result;
         query->hit_time = 999.9f;
-        ((TerrainQuery_s *)TerI)->horizontal_movement_length =
+        const f64 horizontal_length =
             NuFsqrt(query->movement.x * query->movement.x + query->movement.z * query->movement.z);
         query = (TerrainQuery_s *)TerI;
+        query->horizontal_movement_length = horizontal_length;
         NUVEC *origin = &((TERRAIN_SET_PC *)CurrentTerrain)->groups[group_index].origin;
         query->local_start.x = query->position.x - origin->x;
+        i32 test = 0;
         query->local_start.y = query->position.y - origin->y;
         query->local_start.z = query->position.z - origin->z;
         query->local_end.x = (query->position.x + query->movement.x) - origin->x;
@@ -1788,9 +1790,9 @@ extern "C" {
         }
         if (test != 0 && HitPoly(primary_start, primary_end, secondary_start, secondary_end, surface)) {
             ((TerrainQuery_s *)TerI)->terrain_group_index = group_index;
-            return 1;
+            result = 1;
         }
-        return 0;
+        return result;
     }
 }
 
@@ -2959,15 +2961,17 @@ extern "C" i32 TerrainTrackBack(NUVEC *position, NUVEC *direction, f32 radius, f
     if (TerrainShadowStatusPc == -1)
         return 0;
     TerrainQuery_s *query = static_cast<TerrainQuery_s *>(NuScratchAlloc32(sizeof(TerrainQuery_s)));
-    TerI = query;
     query->object_scale = 1.0f;
     query->object_scale_sq = 1.0f;
     query->inverse_object_scale = 1.0f;
+    TerI = query;
     query->inverse_object_scale_sq = 1.0f;
     query->collision_radius = radius;
-    f32 inverse_radius = 0.0f;
+    f32 inverse_radius;
     if (radius != 0.0f)
         inverse_radius = 1.0f / radius;
+    else
+        inverse_radius = 0.0f;
     query->inverse_collision_radius = inverse_radius;
     query->collision_radius_sq = radius * radius;
     const f64 forward_radius = static_cast<f64>(radius) + 0.5;

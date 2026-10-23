@@ -20,11 +20,11 @@ void PodSprint_GetIAlongVals(NUGSPLINE *spline, i16 *out1, i16 *out2) {
     i32 i;
     for (i = 0; i < 6; i++) {
         if (spline != NULL && podsprint.ai[i].spline == spline) {
-            i32 n = podsprint.ai_index;
-            if (n == 0) {
+            if (podsprint.ai_index == 0) {
                 *out1 = 0;
                 *out2 = podsprint.ai[i].vals[0];
             } else {
+                i32 n = podsprint.ai_index;
                 if (n >= 5)
                     n = 5;
                 *out1 = podsprint.ai[i].vals[n - 1];
@@ -63,7 +63,6 @@ i32 __cdecl Action_NewSebulba(AISYS_PC *sys, AISCRIPTPROCESS_PC *process, AIPACK
     } else if ((i8)podsprint.ai_state < 3) {
         goal = podsprint.ai_index < 4 ? sebulba_goal_ahead_vals[podsprint.ai_index] : sebulba_goal_ahead_vals[3];
         base_speed = object->character_data->game_character->run_speed;
-        ratio = 0.0f;
         if (object->sock_position.sock_index != -1 &&
             object->sock_position.sock_index == player->sock_position.sock_index) {
             SOCKSYS_PC *sock_sys = WORLD->sock_sys;
@@ -76,7 +75,7 @@ i32 __cdecl Action_NewSebulba(AISYS_PC *sys, AISCRIPTPROCESS_PC *process, AIPACK
                     distance -= sock->unknown_98;
                 else if (distance < sock->unknown_98 * -0.5)
                     distance += sock->unknown_98;
-                if (0.0f > goal)
+                if (goal < 0.0f)
                     lead = distance > 0.0f ? player : player2;
                 else
                     lead = distance > 0.0f ? player2 : player;
@@ -100,6 +99,8 @@ i32 __cdecl Action_NewSebulba(AISYS_PC *sys, AISCRIPTPROCESS_PC *process, AIPACK
                 lerp = sebulba_fallback_lerpf;
                 goto seek;
             }
+        } else {
+            ratio = 0.0f;
         }
         ratio = ratio / sebulba_catchup_dist;
         if (ratio > 1.0f)
@@ -119,12 +120,10 @@ i32 __cdecl Action_NewSebulba(AISYS_PC *sys, AISCRIPTPROCESS_PC *process, AIPACK
         object->run_speed_override = SeekValF(object->run_speed_override, base_speed, 5.0f);
     }
     if (object->movement_spline_position.reached_end != 0 && (podsprint.flags & 4) == 0) {
-        GAMEOBJECT *first = (GAMEOBJECT *)Player[0];
-        GAMEOBJECT *second = (GAMEOBJECT *)Player[1];
-        if (first != NULL && (first->flags_1fc & 0x80) != 0)
-            LoseCoins(first, 1);
-        if (second != NULL && (second->flags_1fc & 0x80) != 0)
-            LoseCoins(second, 1);
+        if (Player[0] != NULL && (((GAMEOBJECT *)Player[0])->flags_1fc & 0x80) != 0)
+            LoseCoins((GAMEOBJECT *)Player[0], 1);
+        if (Player[1] != NULL && (((GAMEOBJECT *)Player[1])->flags_1fc & 0x80) != 0)
+            LoseCoins((GAMEOBJECT *)Player[1], 1);
         *(u16 *)&podsprint.flags |= 4;
         ResetLevel(WORLD, "Ep1_Podsprint_OutOfTime", 1);
         ++*(i16 *)podsprint.unknown_8c;
@@ -143,9 +142,13 @@ void MaulA_Reset(WORLDINFO *world) {
 
 void MaulF_Init(WORLDINFO *world) {
     struct nuhspecial_s *slots;
-    MaulA_ai_message = CheckGizAIMessage(gizaimessagesys, "ShowHearts", NULL);
+    GIZAIMESSAGE *message;
+    NUGSCN *scene;
+    message = CheckGizAIMessage(gizaimessagesys, "ShowHearts", NULL);
+    scene = world->current_gscn;
+    MaulA_ai_message = message;
     slots = LevHSpecial;
-    NuSpecialFind(world->current_gscn, &slots[0], "throw_object1", 1);
+    NuSpecialFind(scene, &slots[0], "throw_object1", 1);
     NuSpecialFind(world->current_gscn, &slots[1], "throw_object2", 1);
     NuSpecialFind(world->current_gscn, &slots[2], "throw_object3", 1);
 }
@@ -170,10 +173,14 @@ void PodRaceCReset(WORLDINFO *world) {
     PodRaceSnipersReset();
     cs = CutScene_Find(world->cutscene_sys, "ep1_podrace_avalanche");
     if (cs != NULL) {
-        if (Lap == 2)
-            NewCutScene(cs, world->cutscene_sys, 0, 1);
-        else if (Lap == 3)
-            CutScene_SnapToEnd(cs);
+        switch (Lap) {
+            case 2:
+                NewCutScene(cs, world->cutscene_sys, 0, 1);
+                break;
+            case 3:
+                CutScene_SnapToEnd(cs);
+                break;
+        }
     }
 }
 
