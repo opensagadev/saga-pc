@@ -1044,7 +1044,6 @@ void __cdecl SelectSubItem(void) {
 i32 __cdecl SubItemMenu(void *menu) {
     SHOP_INPUT_PC input;
     shopitem_s *items = NULL;
-    shopitem_s *selected;
     i32 *ids, *count;
     NUVEC *positions;
     NUVEC position;
@@ -1114,7 +1113,7 @@ i32 __cdecl SubItemMenu(void *menu) {
             ShopInOutScalePc = 0.0f + factor;
         } else if (ShopEaseSubInPc == -1) {
             factor = SHOP_CLAMP01(factor);
-            ShopInOutScalePc = (f32)((f64)factor * -1.0 + 1.0);
+            ShopInOutScalePc = (f32)(1.0f + (f64)(factor * -1.0));
         }
     }
     if (ShopMoveItemsPc != 0) {
@@ -1124,14 +1123,12 @@ i32 __cdecl SubItemMenu(void *menu) {
         }
         if (ShopMoveItemsPc == 1) {
             if (MoveSubItemsLeft(ids, positions, *count) != 0 && items != NULL) {
-                selected = &items[ids[3]];
-                if (selected->type == 0 && selected->unlocked == 1)
+                if (items[ids[3]].type == 0 && items[ids[3]].unlocked == 1)
                     SelectSubItem();
             }
         } else if (ShopMoveItemsPc == 2) {
             if (MoveSubItemsRight(ids, positions, *count) != 0 && items != NULL) {
-                selected = &items[ids[3]];
-                if (selected->type == 0 && selected->unlocked == 1)
+                if (items[ids[3]].type == 0 && items[ids[3]].unlocked == 1)
                     SelectSubItem();
             }
         }
@@ -1866,7 +1863,7 @@ i32 __cdecl CodeMenu(void *menu) {
             ShopInOutScalePc = SHOP_LERP(0.0f, 1.0f, factor);
         } else if (ShopEaseSubInPc == -1) {
             factor = SHOP_CLAMP01(factor);
-            ShopInOutScalePc = SHOP_LERP(1.0f, 0.0f, factor);
+            ShopInOutScalePc = (f32)(1.0f + (f64)(factor * -1.0));
         }
     }
     if (ShopSlideTimerPc <= 0.0f) {
