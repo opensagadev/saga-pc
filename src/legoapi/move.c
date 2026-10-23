@@ -9705,20 +9705,16 @@ static void ForceThrowCode(GAMEOBJECT *object, i32 pressed) {
         NewRumble(object->pad->bound_pad, (f32)((f64)qrand() * (f64)(1.0f / 65535.0f) * 0.5), 0);
         part = object->force_throw_part;
         if (part != NULL) {
-            if ((part->active & 1) == 0)
-                object->character_context = -1;
-            else {
+            if ((part->active & 1) != 0) {
                 object->force_heading =
                     NuAtan2D(part->position.x - object->position.x, part->position.z - object->position.z);
                 SetHeadTarget(object, &object->force_throw_part->position, 2, 1.0f, 0.0f, 0.0f);
-            }
+            } else
+                object->character_context = -1;
         } else {
             force = target->force;
             if (force != NULL) {
-                if ((object->context_flags_pc & 0x40) == 0) {
-                    ForceGlowTargetPc(object, force, target->animation);
-                    object->force_heading = GizForces_AngleToForce(&object->position, target->force);
-                } else {
+                if ((object->context_flags_pc & 0x40) != 0) {
                     object->flags_e20 |= 0x20000;
                     if (force->anim_set != NULL && force->anim_set->object_count == 1) {
                         part = Part_FindFromHSpecial(&force->anim_set->objects->special);
@@ -9732,6 +9728,9 @@ static void ForceThrowCode(GAMEOBJECT *object, i32 pressed) {
                             ((GLOW_OBJECT_PC *)object)->kind = glow->candidate_kind;
                         }
                     }
+                } else {
+                    ForceGlowTargetPc(object, force, target->animation);
+                    object->force_heading = GizForces_AngleToForce(&object->position, target->force);
                 }
             }
         }
@@ -9753,7 +9752,7 @@ static void ForceThrowCode(GAMEOBJECT *object, i32 pressed) {
     }
     if (pressed == 0 && (object->pad->runtime_flags & 4) == 0)
         return;
-    if ((object->flags_1fc_word & 0x180) == 0x80)
+    if ((object->flags_1fc_word & 0x80) != 0 && (object->flags_1fc_word & 0x100) == 0)
         GizForce_FindBestForceTarget(((WORLD_FORCE_PC *)WORLD)->force_system, object);
     if (target->force == NULL || (target->force->config_flags_byte & 0x80) == 0)
         return;
@@ -9770,13 +9769,17 @@ static void ForceThrowCode(GAMEOBJECT *object, i32 pressed) {
         for (i = 0; i < 8; ++i) {
             GAMEOBJECT *player = Player[i];
             f32 next;
-            if (player == NULL || (player->flags_1fc_word & 0x1001) != 0x1001 || player->dead != 0 ||
-                (player->character_data->model_flags & 0x80000) != 0)
+            if (player == NULL || (player->flags_1fc_word & 1) == 0 || (player->flags_1fc_word & 0x1000) == 0 ||
+                player->dead != 0 || (player->character_data->model_flags & 0x80000) != 0)
                 continue;
             next = NuVecDistSqr(&object->position, &player->position, NULL);
-            if (grab->force_throw_target == NULL ||
-                (((object->flags_1fc_word & 0x80) != 0 || (grab->force_throw_target->flags_1fc_word & 0x80) == 0) &&
-                 next < distance)) {
+            if (grab->force_throw_target != NULL) {
+                if (((object->flags_1fc_word & 0x80) != 0 || (grab->force_throw_target->flags_1fc_word & 0x80) == 0) &&
+                    next < distance) {
+                    grab->force_throw_target = Player[i];
+                    distance = next;
+                }
+            } else {
                 grab->force_throw_target = Player[i];
                 distance = next;
             }
