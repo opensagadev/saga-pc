@@ -1204,10 +1204,10 @@ void __cdecl Customiser_LoadAll(CUSTOMISER_LAYERS_PC *input, WORLDINFO *world) {
     world->giz_buffer.addr = (world->giz_buffer.addr + 3) & ~3u;
     for (category = 0; category < 9; ++category) {
         if (customiser->piece_counts[category] > 0 && customiser->categories[category]->name != NULL) {
-            i32 bytes = customiser->piece_counts[category] * sizeof(CUSTOM_ACCESSORY_RESOURCE_PC);
             world->customiser_resources[category] = world->giz_buffer.void_ptr;
-            memset(world->customiser_resources[category], 0, bytes);
-            world->giz_buffer.addr += bytes;
+            memset(world->giz_buffer.void_ptr, 0,
+                   customiser->piece_counts[category] * sizeof(CUSTOM_ACCESSORY_RESOURCE_PC));
+            world->giz_buffer.addr += customiser->piece_counts[category] * sizeof(CUSTOM_ACCESSORY_RESOURCE_PC);
         } else {
             world->customiser_resources[category] = NULL;
         }
