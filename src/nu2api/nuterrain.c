@@ -3440,30 +3440,32 @@ STATIC_ASSERT(offsetof(TERRAIN_SPATIAL_CHUNK, previous) == 0);
 STATIC_ASSERT(offsetof(TERRAIN_SPATIAL_CHUNK, node) == 4);
 
 void TerrainScanWallSplinePc(TERRAIN_SPATIAL_NODE *node) {
-    while (node->point_count >= 3) {
-        i32 count = node->point_count + 1;
+    u32 first = 0;
+    while ((i32)(node->point_count - 3) >= (i32)first) {
+        NUVEC minimum, maximum;
+        i32 count = 16;
         i32 i;
-        f32 min_x = node->points[0].x, max_x = min_x;
-        f32 min_z = node->points[0].z, max_z = min_z;
-        if (count > 16)
-            count = 16;
+        if (node->point_count + 1 < count)
+            count = node->point_count + 1;
+        maximum = node->points[first];
+        minimum = maximum;
         for (i = 1; i < count; ++i) {
-            f32 x = node->points[i].x, z = node->points[i].z;
-            if (x < min_x)
-                min_x = x;
-            if (z < min_z)
-                min_z = z;
-            if (x > max_x)
-                max_x = x;
-            if (z > max_z)
-                max_z = z;
+            if (node->points[first + i].x < minimum.x)
+                minimum.x = node->points[first + i].x;
+            if (node->points[first + i].z < minimum.z)
+                minimum.z = node->points[first + i].z;
+            if (node->points[first + i].x > maximum.x)
+                maximum.x = node->points[first + i].x;
+            if (node->points[first + i].z > maximum.z)
+                maximum.z = node->points[first + i].z;
         }
-        node->points[0].y = min_x;
-        node->points[1].y = max_x;
-        node->points[2].y = min_z;
-        node->points[3].y = max_z;
+        node->points[first].y = minimum.x;
+        node->points[first + 1].y = maximum.x;
+        node->points[first + 2].y = minimum.z;
+        node->points[first + 3].y = maximum.z;
     }
-    node->points[0].y = 2147483648.0f;
+    if (first < (u32)(node->point_count + 1))
+        node->points[first].y = 2147483648.0f;
 }
 
 void TerrainAddWallSplinePc(TERRAIN_SPATIAL_NODE *node, TERRAIN_SET_PC *terrain) {
