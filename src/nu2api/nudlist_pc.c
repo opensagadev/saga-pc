@@ -567,16 +567,16 @@ void __cdecl PCDeviceDrawIndexedPrimitivePc(i32, i32, u32, u32, u32, u32);
 void __cdecl NuDisplayListPacketAdPc(void *arg) {
     PC_DL_AD_PACKET *packet = (PC_DL_AD_PACKET *)arg;
     PC_DL_AD_RECORD *record;
-    PC_DL_AD_COLOURS colours;
     NUVEC4 values;
-    i32 segments, i;
+    NUVEC colours[5];
+    i32 segments;
     u32 instances = packet->instances;
     if (packet->vertex_buffer == NULL || packet->instance_buffer == NULL || packet->list == NULL)
         return;
     record = &packet->list->records[packet->list->count - 1];
     segments = record->segment_count;
     values.x = (f32)segments;
-    values.y = record->enabled != 0 ? 1.0f : 0.0f;
+    values.y = record->enabled > 0 ? 1.0f : 0.0f;
     values.z = record->vertex_parameter_x;
     values.w = record->vertex_parameter_y;
     PCDeviceSetVertexShaderConstantsF(0xc8, &values.x, 1);
@@ -585,14 +585,23 @@ void __cdecl NuDisplayListPacketAdPc(void *arg) {
     values.z = 0.0f;
     values.w = 0.0f;
     PCDeviceSetVertexShaderConstantsF(0xc9, &values.x, 1);
-    colours = record->colours;
-    for (i = 0; i < 5; ++i) {
-        values.x = colours.colour[i].x;
-        values.y = colours.colour[i].y;
-        values.z = colours.colour[i].z;
-        values.w = 1.0f;
-        PCDeviceSetPixelShaderConstantsF(0xca + i, &values.x, 1);
-    }
+    colours[0] = record->colours.colour[0];
+    colours[1] = record->colours.colour[1];
+    colours[2] = record->colours.colour[2];
+    colours[3] = record->colours.colour[3];
+    colours[4] = record->colours.colour[4];
+#define AD_COLOUR_CONSTANT(n)                                                                                          \
+    values.x = colours[n].x;                                                                                           \
+    values.y = colours[n].y;                                                                                           \
+    values.z = colours[n].z;                                                                                           \
+    values.w = 1.0f;                                                                                                   \
+    PCDeviceSetPixelShaderConstantsF(0xca + (n), &values.x, 1)
+    AD_COLOUR_CONSTANT(0);
+    AD_COLOUR_CONSTANT(1);
+    AD_COLOUR_CONSTANT(2);
+    AD_COLOUR_CONSTANT(3);
+    AD_COLOUR_CONSTANT(4);
+#undef AD_COLOUR_CONSTANT
     values.x = record->pixel_parameter;
     values.y = record->pixel_parameter_x;
     values.z = record->pixel_parameter_y;
