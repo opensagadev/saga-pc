@@ -955,11 +955,10 @@ void __cdecl Customiser_Update(CUSTOMISER_LAYERS_PC *input, WORLDINFO *world) {
     CUSTOMISER_CONFIG_PC *customiser = (CUSTOMISER_CONFIG_PC *)input;
     CUSTOMISER_UPDATE_PC *runtime = (CUSTOMISER_UPDATE_PC *)input;
     /* Native conversions must all happen before the NULL test. */
-    const f32 frame_time = FRAMETIME;
-    const i32 rotation_step = (i32)(10922.0 * frame_time);
-    const i32 tilt_x_step = (i32)(12379.0 * frame_time);
-    const i32 tilt_z_step = (i32)(10376.0 * frame_time);
-    const i32 bob_step = (i32)(20206.0 * frame_time);
+    const i32 rotation_step = (i32)(10922.0 * FRAMETIME);
+    const i32 tilt_x_step = (i32)(12379.0 * FRAMETIME);
+    const i32 tilt_z_step = (i32)(10376.0 * FRAMETIME);
+    const i32 bob_step = (i32)(20206.0 * FRAMETIME);
     i32 active_side, active_count, preview_side, colour, side, category;
     ADD_GAME_MESSAGE_PC message;
     if (customiser == NULL)
@@ -976,7 +975,7 @@ void __cdecl Customiser_Update(CUSTOMISER_LAYERS_PC *input, WORLDINFO *world) {
                                  : MissionMenuPacketPc.active_player[1] != 0 ? 1
                                                                              : -1;
         const u16 *selection = Game.customiser_start[side].pieces;
-        CUSTOM_PIECE_CONFIG_PC *head, *torso, *weapon;
+        u16 torso_flags;
         CHARACTER_MODEL_LAYERS_PC *model;
         ANIMPACKET_PC *packet;
         i32 saber_colour, intro;
@@ -989,29 +988,35 @@ void __cdecl Customiser_Update(CUSTOMISER_LAYERS_PC *input, WORLDINFO *world) {
         UpdateCustomPieceAnim(&CustomiseHeadAnimPc[side], 0xd556, 0x2aaa);
         UpdateCustomPieceAnim(&CustomiseArmsAnimPc[side], 0x1555, 0x4000);
         UpdateCustomPieceAnim(&CustomiseLegsAnimPc[side], 0xe000, 0x4000);
-        head = &customiser->piece_sets[0][selection[0]];
-        torso = &customiser->piece_sets[1][selection[1]];
-        no_hat = 0.0f;
-        if ((torso->availability_flags & 1) != 0) {
-            if ((torso->availability_flags & 4) != 0)
-                no_hat = (head->availability_flags & 8) != 0 ? CustomiseHeadOffsetPc
-                                                             : (f64)CustomiseHeadOffsetPc * (f64)0.8f;
-            else
-                no_hat = (head->availability_flags & 8) != 0 ? (f64)CustomiseHeadOffsetPc * (f64)0.8f
-                                                             : (f64)CustomiseHeadOffsetPc * (f64)0.6f;
+        torso_flags = customiser->piece_sets[1][selection[1]].availability_flags;
+        if ((torso_flags & 1) != 0) {
+            if ((torso_flags & 4) != 0) {
+                if ((customiser->piece_sets[0][selection[0]].availability_flags & 8) != 0)
+                    no_hat = CustomiseHeadOffsetPc;
+                else
+                    no_hat = (f64)CustomiseHeadOffsetPc * (f64)0.8f;
+            } else {
+                if ((customiser->piece_sets[0][selection[0]].availability_flags & 8) != 0)
+                    no_hat = (f64)CustomiseHeadOffsetPc * (f64)0.8f;
+                else
+                    no_hat = (f64)CustomiseHeadOffsetPc * (f64)0.6f;
+            }
+        } else {
+            no_hat = 0.0f;
         }
+
         CustomiseNoHatPosPc[side].y = SeekValF(CustomiseNoHatPosPc[side].y, no_hat, 10.0f);
         CustomiseMenuTimePc[side] += FRAMETIME;
         model = APICharacterLoaded(customiser->character_ids[side]);
         if (model == NULL)
             continue;
-        weapon = &customiser->piece_sets[2][selection[2]];
-        saber_colour = LightSabre_ColourFromObj(weapon->weapon_model, NULL);
+        saber_colour = LightSabre_ColourFromObj(customiser->piece_sets[2][selection[2]].weapon_model, NULL);
         if (runtime->animation_state[side] > 0)
             --runtime->animation_state[side];
         packet = &runtime->animation_packets[side].packet;
-        intro = saber_colour == -1 ? 0x62 : 0x61;
-        if (runtime->animation_active[side] == 0 && model->model_data_b[intro] != NULL) {
+        if (runtime->animation_active[side] == 0 &&
+            model->model_data_b[intro = saber_colour == -1 ? 0x62 : 0x61] != NULL) {
+
             if (runtime->animation_values[side] == 0.0f) {
                 runtime->animation_values[side] = AnimDuration(model->model_id, intro, 0.0f, 0.0f, 1);
             } else {
@@ -1023,33 +1028,30 @@ void __cdecl Customiser_Update(CUSTOMISER_LAYERS_PC *input, WORLDINFO *world) {
             runtime->animation_active[side] = 1;
         }
         packet->previous_animation = packet->animation_index;
-        if (saber_colour == -1)
-            packet->requested_animation = runtime->animation_active[side] == 0 ? 0x62 : 0x63;
-        else
+        if (saber_colour != -1)
             packet->requested_animation = runtime->animation_active[side] == 0 ? 0x61 : 0xbe;
+        else
+            packet->requested_animation = runtime->animation_active[side] == 0 ? 0x62 : 0x63;
         UpdateAnimPacket(model, packet, (f64)FRAMETIME * 30.0, 0.0f, FRAMETIME, 0.0f);
         angle = CustomiseYRotPc[side] + 0xc000;
         for (category = 0; category < 9; ++category) {
             i32 locator;
-            CUSTOM_CATEGORY_CONFIG_PC *category_data;
             CUSTOM_RESOURCE_UPDATE_PC *resources;
-            i32 piece_index, material;
+            i32 material;
             if (CustomiseMenuYPc[side] == category && GetMenuID() == 12 && customiser_quit == 0 &&
                 (active_count == 2 || side == preview_side) && control_side != -1 &&
                 (locator = customiser->locator_indices[category]) != -1 && model->points_of_interest[locator] != NULL) {
-                const NUMTX *joint = &runtime->joint_matrices[side][locator];
                 NUVEC position;
-                const f32 offset = customiser->locator_x_offsets[category];
-                position.x = joint->m30;
-                position.y = joint->m31;
-                position.z = joint->m32;
+                position = *(NUVEC *)&runtime->joint_matrices[side][locator].m30;
                 message.text = InitAsciiLeftPc;
                 message.unknown_4f = 2;
-                if (offset != 0.0f) {
-                    position.x += offset * NuTrigTable[(angle >> 1) & 0x7fff];
-                    position.z += offset * NuTrigTable[((angle + 0x4000) >> 1) & 0x7fff];
+                if (customiser->locator_x_offsets[category] != 0.0f) {
+                    position.x += NuTrigTable[(angle >> 1) & 0x7fff] * customiser->locator_x_offsets[category];
+                    position.z +=
+                        NuTrigTable[((angle + 0x4000) >> 1) & 0x7fff] * customiser->locator_x_offsets[category];
                 }
-                position.y += customiser->locator_y_offsets[category];
+                position.y = customiser->locator_y_offsets[category] + position.y;
+
                 message.red = colour;
                 message.green = colour;
                 message.blue = colour;
@@ -1062,18 +1064,19 @@ void __cdecl Customiser_Update(CUSTOMISER_LAYERS_PC *input, WORLDINFO *world) {
             resources = (CUSTOM_RESOURCE_UPDATE_PC *)world->customiser_resources[category];
             if (resources == NULL || customiser->piece_counts[category] <= 0)
                 continue;
-            category_data = customiser->categories[category];
-            if (category_data->uses_special != 0 || category_data->material_tag == -1)
+            if (customiser->categories[category]->uses_special != 0 ||
+                customiser->categories[category]->material_tag == -1)
                 continue;
-            piece_index = selection[category];
-            if (resources[piece_index].texture_id == 0)
+            resources += Game.customiser_start[side].pieces[category];
+            if (resources->texture_id == 0)
                 continue;
             for (material = 0; material < ((CUSTOM_HIERARCHY_UPDATE_PC *)model->hierarchy)->material_count;
                  ++material) {
-                NUMTL *entry = ((CUSTOM_HIERARCHY_UPDATE_PC *)model->hierarchy)->materials[material];
-                if (((CUSTOM_MATERIAL_UPDATE_PC *)entry)->material_tag == category_data->material_tag) {
-                    entry->texture_id = (u16)resources[piece_index].texture_id;
-                    NuMtlUpdate(entry);
+                if (((CUSTOM_MATERIAL_UPDATE_PC *)((CUSTOM_HIERARCHY_UPDATE_PC *)model->hierarchy)->materials[material])
+                        ->material_tag == customiser->categories[category]->material_tag) {
+                    ((CUSTOM_HIERARCHY_UPDATE_PC *)model->hierarchy)->materials[material]->texture_id =
+                        (u16)resources->texture_id;
+                    NuMtlUpdate(((CUSTOM_HIERARCHY_UPDATE_PC *)model->hierarchy)->materials[material]);
                 }
             }
         }
