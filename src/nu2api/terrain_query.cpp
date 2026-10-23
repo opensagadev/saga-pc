@@ -1911,8 +1911,9 @@ extern "C" void __cdecl NewTerrHitInfo(u8 *info) {
     info[3] = TerrPolyInfo.normal_flags;
 }
 extern "C" void __cdecl NewRayCastGetImpactNormal(NUVEC *normal) {
-    if (TerI != NULL)
-        *normal = static_cast<TerrainQuery_s *>(TerI)->movement_normal;
+    TerrainQuery_s *query = static_cast<TerrainQuery_s *>(TerI);
+    if (query != NULL)
+        *normal = query->movement_normal;
 }
 
 STATIC_ASSERT(offsetof(TerrainQuery_s, shape_adjusted) == 0x35);
@@ -3028,8 +3029,8 @@ extern "C" void RotateTerrainPc(TERRAIN_SHAPE *surface) {
 }
 
 extern "C" void FullDeflectSizePc(NUVEC *normal, NUVEC *movement, NUVEC *result) {
-    f32 deflection = (-movement->y * normal->y - movement->x * normal->x) - movement->z * normal->z;
-    f32 original_length = NuFsqrt(movement->x * movement->x + movement->y * movement->y + movement->z * movement->z);
+    f32 deflection = -movement->y * normal->y + -movement->x * normal->x + -movement->z * normal->z;
+    f32 original_length = NuFsqrt(movement->y * movement->y + movement->x * movement->x + movement->z * movement->z);
     result->x = (normal->x * deflection) + movement->x;
     result->y = (normal->y * deflection) + movement->y;
     result->z = (normal->z * deflection) + movement->z;
@@ -3043,8 +3044,8 @@ extern "C" void FullDeflectSizePc(NUVEC *normal, NUVEC *movement, NUVEC *result)
 }
 
 extern "C" void FullReflectTestPc(NUVEC *normal, NUVEC *movement, NUVEC *result) {
-    f32 deflection = (-movement->y * normal->y - movement->x * normal->x) - movement->z * normal->z;
-    f32 original_length = NuFsqrt(movement->x * movement->x + movement->y * movement->y + movement->z * movement->z);
+    f32 deflection = -movement->y * normal->y + -movement->x * normal->x + -movement->z * normal->z;
+    f32 original_length = NuFsqrt(movement->y * movement->y + movement->x * movement->x + movement->z * movement->z);
     result->x = (normal->x * deflection) * 2.0 + movement->x;
     result->y = (normal->y * deflection) * 2.0 + movement->y;
     result->z = (normal->z * deflection) * 2.0 + movement->z;
