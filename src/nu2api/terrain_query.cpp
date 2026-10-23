@@ -2747,30 +2747,31 @@ extern "C" i16 *NewScanHandel(NUVEC *position, NUVEC *movement, f32 radius, i32 
     if (CurrentTerrain == NULL)
         return NULL;
     TerrPlatDis = -1;
-    TerI = static_cast<TerrainQuery_s *>(NuScratchAlloc32(sizeof(TerrainQuery_s)));
-    static_cast<TerrainQuery_s *>(TerI)->object_scale = 1.0f;
-    static_cast<TerrainQuery_s *>(TerI)->object_scale_sq = 1.0f;
-    static_cast<TerrainQuery_s *>(TerI)->inverse_object_scale = 1.0f;
-    static_cast<TerrainQuery_s *>(TerI)->inverse_object_scale_sq = 1.0f;
-    static_cast<TerrainQuery_s *>(TerI)->collision_radius = radius;
-    static_cast<TerrainQuery_s *>(TerI)->inverse_collision_radius = radius == 0.0f ? 0.0f : 1.0f / radius;
-    static_cast<TerrainQuery_s *>(TerI)->collision_radius_sq = radius * radius;
-    static_cast<TerrainQuery_s *>(TerI)->start_position.x = static_cast<TerrainQuery_s *>(TerI)->position.x =
-        position->x;
-    static_cast<TerrainQuery_s *>(TerI)->start_position.y = static_cast<TerrainQuery_s *>(TerI)->position.y =
-        position->y;
-    static_cast<TerrainQuery_s *>(TerI)->start_position.z = static_cast<TerrainQuery_s *>(TerI)->position.z =
-        position->z;
-    static_cast<TerrainQuery_s *>(TerI)->movement = *movement;
-    static_cast<TerrainQuery_s *>(TerI)->start_movement = static_cast<TerrainQuery_s *>(TerI)->movement;
-    static_cast<TerrainQuery_s *>(TerI)->object_index = -1;
-    static_cast<TerrainQuery_s *>(TerI)->hit_flags = NULL;
-    static_cast<TerrainQuery_s *>(TerI)->scan_result = 1;
+    TerrainQuery_s *query = static_cast<TerrainQuery_s *>(NuScratchAlloc32(sizeof(TerrainQuery_s)));
+    TerI = query;
+    query->object_scale = 1.0f;
+    query->object_scale_sq = 1.0f;
+    query->inverse_object_scale = 1.0f;
+    query->inverse_object_scale_sq = 1.0f;
+    query->collision_radius = radius;
+    f32 inverse_radius = 0.0f;
+    if (radius != 0.0f)
+        inverse_radius = 1.0f / radius;
+    query->inverse_collision_radius = inverse_radius;
+    query->collision_radius_sq = radius * radius;
+    query->start_position.x = query->position.x = position->x;
+    query->start_position.y = query->position.y = position->y;
+    query->start_position.z = query->position.z = position->z;
+    query->movement = *movement;
+    query->start_movement = *movement;
+    query->object_index = -1;
+    query->hit_flags = NULL;
+    query->scan_result = 1;
     i16 *handle;
-    if (subset != NULL)
-        handle = NewScanHandelSubsetPc(subset, position, movement, radius, 0xff);
-    else
+    if (subset == NULL)
         handle = NewScanHandelFullPc(position, movement, radius, scan_type, 0xff);
+    else
+        handle = NewScanHandelSubsetPc(subset, position, movement, radius, 0xff);
     NuScratchRelease();
     return handle;
 }
@@ -2782,17 +2783,21 @@ extern "C" i32 NewRayCastSetHandel(NUVEC *position, NUVEC *movement, f32 radius,
     TerrPoly = NULL;
     TerrWallInfo = 0;
     TerrainShadowGroupIndexPc = -1;
-    if (CurrentTerrain == NULL || handle == NULL)
+    if (CurrentTerrain == NULL)
         return 0;
-    TerI = NuScratchAlloc32(sizeof(TerrainQuery_s));
-    TerrainQuery_s *query = static_cast<TerrainQuery_s *>(TerI);
+    if (handle == NULL)
+        return 0;
+    TerrainQuery_s *query = static_cast<TerrainQuery_s *>(NuScratchAlloc32(sizeof(TerrainQuery_s)));
+    TerI = query;
     query->object_scale = 1.0f;
     query->object_scale_sq = 1.0f;
     TerrOverRideScan = NULL;
     query->inverse_object_scale = 1.0f;
     query->inverse_object_scale_sq = 1.0f;
     query->collision_radius = radius;
-    query->inverse_collision_radius = radius == 0.0f ? 0.0f : TerrainDivideNonzeroPC(1.0f, radius);
+    const f32 inverse_radius = radius == 0.0f ? 0.0f : TerrainDivideNonzeroPC(1.0f, radius);
+    query = static_cast<TerrainQuery_s *>(TerI);
+    query->inverse_collision_radius = inverse_radius;
     query->collision_radius_sq = radius * radius;
     query->start_position.x = query->position.x = position->x;
     query->start_position.y = query->position.y = position->y;
