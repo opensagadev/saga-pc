@@ -2267,19 +2267,22 @@ void __cdecl NuAnimBuffEvaluate_3_QuatB(NUMTX *base, ANI3_BUFFER_PC *buffer, NUH
     void *callback_data[256];
     NUQUAT *quaternions;
     NUQUAT *rotation;
-    NUQUAT identity;
+    __declspec(align(16)) NUQUAT identity;
     NUVEC *scales;
     NUVEC *scale;
     NUVEC *parent_scale;
     NUVEC root_scale;
+    NUVEC base_scale;
     NUVEC root_values;
     ANI3_JOINT_PC *joint;
     NUMTX *matrix;
     i32 count;
     i32 index;
-    i32 mapped;
-    u8 parent;
+    i32 parent;
     u8 flags;
+    ANI3_BUFFER_PC *evaluated;
+    u8 *joint_flags;
+    NUHGOBJ_EVAL_JOINT_PC *nodes;
 
     count = object->joint_count;
     if ((i32)(u16)animation->node_count < count)
@@ -2290,43 +2293,41 @@ void __cdecl NuAnimBuffEvaluate_3_QuatB(NUMTX *base, ANI3_BUFFER_PC *buffer, NUH
         AnimationDiagnosticNoOpPc();
     identity.x = identity.y = identity.z = 0.0f;
     quaternions = (NUQUAT *)(((u32)quaternions + 15u) & ~15u);
+    rotation = quaternions;
     identity.w = 1.0f;
-    if (buffer == NULL)
-        buffer = (ANI3_BUFFER_PC *)globalbuffer;
+    evaluated = buffer;
+    if (evaluated == NULL)
+        evaluated = (ANI3_BUFFER_PC *)globalbuffer;
     if (AnimBuffEvalData != NULL && AnimBuffEvalJoint != NULL) {
         memset(callback_data, 0, object->joint_count * sizeof(void *));
         for (index = 0; AnimBuffEvalData[index] != NULL; ++index) {
-            mapped = AnimBuffEvalJoint[index];
-            if (mapped >= 0 && mapped < object->joint_override_map_count) {
-                parent = object->joint_override_map[mapped];
+            if (AnimBuffEvalJoint[index] >= 0 && AnimBuffEvalJoint[index] < object->joint_override_map_count) {
+                parent = object->joint_override_map[AnimBuffEvalJoint[index]];
                 if (parent != 255)
                     callback_data[parent] = AnimBuffEvalData[index];
             }
         }
     }
     if (base != NULL) {
-        root_scale = *NuMtxGetScale(&root_scale, base);
+        root_scale = *NuMtxGetScale(&base_scale, base);
         NuMtxToQuat(base, &quaternions[255]);
     } else {
         root_scale.x = root_scale.y = root_scale.z = 1.0f;
         quaternions[255] = identity;
     }
     root_values.x = root_values.y = root_values.z = 0.0f;
-    for (index = 0; index < count; ++index) {
-        joint = &buffer->joints[index];
+    joint = evaluated->joints;
+    joint_flags = evaluated->joint_flags;
+    nodes = object->joints;
+    for (index = 0; index < count; ++index, ++joint, ++rotation) {
         matrix = &matrices[index];
-        rotation = &quaternions[index];
         scale = &scales[index];
-        parent = object->joints[index].parent_index;
-        flags = buffer->joint_flags[index];
+        parent = nodes[index].parent_index;
+        flags = *joint_flags++;
         if ((flags & 1) != 0) {
-            rotation->x = joint->rotation.x;
-            rotation->y = joint->rotation.y;
-            rotation->z = joint->rotation.z;
-            rotation->w = joint->rotation.w;
+            *rotation = *(NUQUAT *)&joint->rotation;
         } else {
-            rotation->x = rotation->y = rotation->z = 0.0f;
-            rotation->w = 1.0f;
+            *rotation = identity;
         }
         if (parent != 255) {
             NuQuatMulAlignedPc(&quaternions[parent], rotation, rotation);
@@ -2337,8 +2338,8 @@ void __cdecl NuAnimBuffEvaluate_3_QuatB(NUMTX *base, ANI3_BUFFER_PC *buffer, NUH
         NuQuatToMtx(rotation, matrix);
         if ((flags & 8) != 0) {
             scale->x = joint->scale.x * parent_scale->x;
-            scale->y = joint->scale.y * parent_scale->y;
-            scale->z = joint->scale.z * parent_scale->z;
+            scale->y = parent_scale->y * joint->scale.y;
+            scale->z = parent_scale->z * joint->scale.z;
             NuMtxPreScaleVU0(matrix, scale);
         } else {
             *scale = *parent_scale;
@@ -2355,9 +2356,7 @@ void __cdecl NuAnimBuffEvaluate_3_QuatB(NUMTX *base, ANI3_BUFFER_PC *buffer, NUH
             } else if (base != NULL) {
                 NuVecMtxTransform((NUVEC *)&matrix->m30, (NUVEC *)&joint->translation, base);
             } else {
-                matrix->m30 = joint->translation.x;
-                matrix->m31 = joint->translation.y;
-                matrix->m32 = joint->translation.z;
+                *(NUVEC *)&matrix->m30 = *(NUVEC *)&joint->translation;
             }
         } else if (parent != 255) {
             matrix->m30 = matrices[parent].m30;
