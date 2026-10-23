@@ -1621,26 +1621,26 @@ extern "C" {
         if (old_query->scan_list == NULL || *static_cast<i16 *>(old_query->scan_list) == 0 || CurTrackInfo == NULL ||
             CurTrackInfo->platform_contact_state == 0 || TerConTol == 0.0f)
             return count;
+#define TERRAIN_PC_QUERY ((TerrainQuery_s *)TerI)
+#define TERRAIN_PC_TRACK_PLATFORM (((TERRAIN_SET_PC *)CurrentTerrain)->platforms[track->platform_index])
+#define TERRAIN_PC_TRACK_MATRIX (static_cast<NUMTX *>(TERRAIN_PC_TRACK_PLATFORM.scene_object))
         TerrainQuery_s *query = static_cast<TerrainQuery_s *>(NuScratchAlloc32(sizeof(TerrainQuery_s)));
+        i16 *input = static_cast<i16 *>(old_query->scan_list);
         TerI = query;
-        u8 *input = static_cast<u8 *>(old_query->scan_list);
-        u8 *output = query->scan_list_storage;
-        while (*reinterpret_cast<i16 *>(input) > 0) {
-            i16 *input_header = reinterpret_cast<i16 *>(input);
-            i16 *output_header = reinterpret_cast<i16 *>(output);
-            i32 shape_count = input_header[0];
-            output_header[0] = input_header[0];
-            output_header[1] = input_header[1];
-            TERRAIN_SHAPE **input_shapes = reinterpret_cast<TERRAIN_SHAPE **>(input) + 1;
-            TERRAIN_SHAPE **output_shapes = reinterpret_cast<TERRAIN_SHAPE **>(output) + 1;
-            for (i32 i = 0; i < shape_count; ++i) {
-                *output_shapes++ = *input_shapes++;
+        i16 *output = reinterpret_cast<i16 *>(query->scan_list_storage);
+        while (*input > 0) {
+            output[0] = input[0];
+            i32 remaining = input[0];
+            output[1] = input[1];
+            output += 2;
+            input += 2;
+            for (; remaining > 0; --remaining) {
+                *output++ = *input++;
+                *output++ = *input++;
             }
-            input = reinterpret_cast<u8 *>(input_shapes);
-            output = reinterpret_cast<u8 *>(output_shapes);
         }
-        reinterpret_cast<i16 *>(output)[0] = 0;
-        reinterpret_cast<i16 *>(output)[1] = 0;
+        output[0] = 0;
+        output[1] = 0;
         query->collision_radius = old_query->collision_radius;
         query->object_scale = old_query->object_scale;
         query->inverse_object_scale_sq = old_query->inverse_object_scale_sq;
@@ -1650,135 +1650,157 @@ extern "C" {
         query->compare_epsilon = old_query->compare_epsilon;
         query->collision_radius_sq = old_query->collision_radius_sq;
         query->object_scale_sq = old_query->object_scale_sq;
-        query->platform_position = old_query->position;
-        if (CurTrackInfo != NULL && (CurTrackInfo->flags & TERRAIN_TRACK_FLAG_CONNECTED)) {
-            TERRAIN_PLATFORM *platform = &((TERRAIN_SET_PC *)CurrentTerrain)->platforms[CurTrackInfo->platform_index];
-            NUMTX *matrix = static_cast<NUMTX *>(platform->scene_object);
-            NUMTX *previous = reinterpret_cast<NUMTX *>(&platform->previous_matrix);
+        TerrainQuery_s *current = query;
+        current->platform_position = old_query->position;
+        TERRAIN_TRACK_SLOT_PC *track = CurTrackInfo;
+        if (track != NULL && (track->flags & TERRAIN_TRACK_FLAG_CONNECTED)) {
+            TERRAIN_PLATFORM *platform = &TERRAIN_PC_TRACK_PLATFORM;
             if (platform->flags & 1) {
-                NuMtxInvRSS(&tertempmat, previous);
-                tertempvec4.x = old_query->position.x - previous->m30;
-                tertempvec4.y = (old_query->position.y - query->collision_radius) * query->object_scale - previous->m31;
-                tertempvec4.z = old_query->position.z - previous->m32;
+                NuMtxInvRSS(&tertempmat, reinterpret_cast<NUMTX *>(platform));
+                track = CurTrackInfo;
+                tertempvec4.x = old_query->position.x - TERRAIN_PC_TRACK_PLATFORM.previous_matrix.m30;
+                tertempvec4.y =
+                    (old_query->position.y - TERRAIN_PC_QUERY->collision_radius) * TERRAIN_PC_QUERY->object_scale -
+                    TERRAIN_PC_TRACK_PLATFORM.previous_matrix.m31;
+                tertempvec4.z = old_query->position.z - TERRAIN_PC_TRACK_PLATFORM.previous_matrix.m32;
                 tertempvec4.w = 1.0f;
                 NuVec4MtxTransformVU0(&tertempvec4, &tertempvec4, &tertempmat);
-                NuVec4MtxTransformVU0(&tertempvec4, &tertempvec4, matrix);
-                query->platform_position.x = tertempvec4.x;
-                query->platform_position.y = tertempvec4.y * query->inverse_object_scale + query->collision_radius;
-                query->platform_position.z = tertempvec4.z;
+                track = CurTrackInfo;
+                NuVec4MtxTransformVU0(&tertempvec4, &tertempvec4, TERRAIN_PC_TRACK_MATRIX);
+                current = TERRAIN_PC_QUERY;
+                current->platform_position.x = tertempvec4.x;
+                current->platform_position.y =
+                    current->inverse_object_scale * tertempvec4.y + current->collision_radius;
+                current->platform_position.z = tertempvec4.z;
             } else {
-                query->platform_position.x += matrix->m30 - previous->m30;
-                query->platform_position.y += (matrix->m31 - previous->m31) * old_query->inverse_object_scale;
-                query->platform_position.z += matrix->m32 - previous->m32;
+                query->platform_position.x +=
+                    TERRAIN_PC_TRACK_MATRIX->m30 - TERRAIN_PC_TRACK_PLATFORM.previous_matrix.m30;
+                query->platform_position.y +=
+                    (TERRAIN_PC_TRACK_MATRIX->m31 - TERRAIN_PC_TRACK_PLATFORM.previous_matrix.m31) *
+                    old_query->inverse_object_scale;
+                query->platform_position.z +=
+                    TERRAIN_PC_TRACK_MATRIX->m32 - TERRAIN_PC_TRACK_PLATFORM.previous_matrix.m32;
             }
         }
-        query->position = query->platform_position;
-        query->platform_normal = query->platform_position;
-        query->movement.x = 0.0f;
-        query->movement.y = TerConTol * -2.0f;
-        query->movement.z = 0.0f;
-        query->position.y += TerConTol;
+        current->platform_normal = current->platform_position;
+        current->movement.x = 0.0f;
+        current->movement.z = 0.0f;
+        current->position = current->platform_position;
+        const f32 tolerance = TerConTol;
+        current->position.y += tolerance;
+        current->movement.y = tolerance * -2.0;
         DerotateMovementVector();
-        f32 saved_epsilon = ((TerrainQuery_s *)TerI)->separation_epsilon;
-        ((TerrainQuery_s *)TerI)->separation_epsilon = 0.0f;
+        f32 saved_epsilon = TERRAIN_PC_QUERY->separation_epsilon;
+        TERRAIN_PC_QUERY->separation_epsilon = 0.0f;
         HitTerrain();
         StorePlatImpact();
-        ((TerrainQuery_s *)TerI)->separation_epsilon = saved_epsilon;
+        TERRAIN_PC_QUERY->separation_epsilon = saved_epsilon;
         TerrainImpactNorm();
         u8 flags[2];
         TerrainImpactPlatform(flags);
-        if (((TerrainQuery_s *)TerI)->hit_type != 0)
-            ShadNorm = ((TerrainQuery_s *)TerI)->impact_normal;
-        ((TerrainQuery_s *)TerI)->platform_position.y =
-            ((TerrainQuery_s *)TerI)->position.y - ((TerrainQuery_s *)TerI)->collision_radius;
+        current = TERRAIN_PC_QUERY;
+        if (current->hit_type != 0)
+            ShadNorm = current->impact_normal;
+        current->platform_position.y = current->position.y - current->collision_radius;
         TerI = old_query;
         TERRAIN_FLOAT_BITS_PC absolute_4;
-        absolute_4.value = ((query->platform_normal.y - query->platform_position.y) - old_query->collision_radius);
+        absolute_4.value = query->platform_normal.y - query->platform_position.y - old_query->collision_radius;
         absolute_4.bits &= 0x7fffffff;
-
-        if (query->hit_type == 0 || absolute_4.value > TerConTol * 0.5f || query->movement_normal.y < 0.707f) {
+        if (query->hit_type == 0 || absolute_4.value > TerConTol * 0.5 || query->movement_normal.y < 0.707f) {
             NuScratchRelease();
             return count;
         }
-        TERRAIN_GROUP *group = &((TERRAIN_SET_PC *)CurrentTerrain)->groups[query->terrain_group_index];
-        i32 platform_index = group->scene_index;
-        if (movement->y > TerConTol * 0.5f) {
-            TERRAIN_PLATFORM *platform = &((TERRAIN_SET_PC *)CurrentTerrain)->platforms[platform_index];
-            NUMTX *matrix = static_cast<NUMTX *>(platform->scene_object);
-            if (movement->y > (TerConTol * 0.5f + matrix->m31) - platform->previous_matrix.m31) {
+        {
+            {
+                TERRAIN_GROUP *group = &((TERRAIN_SET_PC *)CurrentTerrain)->groups[query->terrain_group_index];
+                i32 platform_index = group->scene_index;
+                if (movement->y > TerConTol * 0.5) {
+                    TERRAIN_PLATFORM *platform = &((TERRAIN_SET_PC *)CurrentTerrain)->platforms[platform_index];
+                    if (movement->y > TerConTol * 0.5 + static_cast<NUMTX *>(platform->scene_object)->m31 -
+                                          platform->previous_matrix.m31) {
+                        NuScratchRelease();
+                        return count;
+                    }
+                }
+                if (query->movement_normal.y >= 0.707f && query->terrain_group_index >= 0 && group->chunk_type == 1)
+                    ((TERRAIN_SET_PC *)CurrentTerrain)->platforms[group->scene_index].flags |= 2;
+                old_query->platform_position.x = query->platform_position.x;
+                track = CurTrackInfo;
+                if (TERRAIN_PC_TRACK_PLATFORM.flags & 1)
+                    old_query->platform_position.y = old_query->collision_radius + query->platform_position.y;
+                else
+                    old_query->platform_position.y =
+                        old_query->collision_radius + query->platform_position.y + (f64)0.0025f;
+                const f32 platform_z = query->platform_position.z;
+                old_query->platform_position.z = platform_z;
+                NUVEC direction;
+                direction.x = old_query->platform_position.x - old_query->position.x;
+                direction.y = old_query->platform_position.y - old_query->position.y;
+                direction.z = platform_z - old_query->position.z;
+                f32 distance =
+                    NuFsqrt(direction.x * direction.x + direction.y * direction.y + direction.z * direction.z);
+                direction.x = TerrainDivideNonzeroPC(direction.x, distance);
+                direction.y = TerrainDivideNonzeroPC(direction.y, distance);
+                direction.z = TerrainDivideNonzeroPC(direction.z, distance);
+                NUVEC previous_position = TERRAIN_PC_QUERY->position;
+                i32 clear = TerrainPlatformMoveCheck(&TERRAIN_PC_QUERY->platform_position,
+                                                     &TERRAIN_PC_QUERY->platform_normal, platform_index, 1, 0);
+                current = TERRAIN_PC_QUERY;
+                if (current->hit_type != 0 && current->terrain_group_index >= 0) {
+                    TERRAIN_GROUP *hit_group =
+                        &((TERRAIN_SET_PC *)CurrentTerrain)->groups[current->terrain_group_index];
+                    if (hit_group->chunk_type == 1)
+                        CurTrackInfo->platform_index = hit_group->scene_index;
+                    if (current->platform_normal.y * direction.y + current->platform_normal.x * direction.x +
+                            current->platform_normal.z * direction.z <
+                        TerrainOpposingContactThresholdPc)
+                        clear = 1;
+                }
+                --count;
+                if (clear == 0) {
+                    if (count > 0) {
+                        const f32 travelled = (current->position.x - previous_position.x) * direction.x +
+                                              (current->position.y - previous_position.y) * direction.y +
+                                              (current->position.z - previous_position.z) * direction.z;
+                        if (distance > travelled &&
+                            FullDeflectTest(&current->platform_normal, &direction, &current->platform_position)) {
+                            const f32 dot = current->platform_position.y * direction.y +
+                                            current->platform_position.x * direction.x +
+                                            current->platform_position.z * direction.z;
+                            if (dot > 0.0f) {
+                                const f32 fraction = (distance - travelled) / dot;
+                                if (fraction < (f64)0.8f) {
+                                    current->platform_position.x =
+                                        current->platform_position.x * fraction + current->position.x;
+                                    current->platform_position.y =
+                                        current->platform_position.y * fraction + current->position.y;
+                                    current->platform_position.z =
+                                        current->platform_position.z * fraction + current->position.z;
+                                }
+                            }
+                        }
+                    }
+                } else {
+                    TerrPoly = query->surface;
+                    current->position = current->platform_position;
+                    if (0.0f > movement->y) {
+                        FullDeflect(&ShadNorm, &current->movement, &current->movement);
+                        FullDeflect(&ShadNorm, movement, movement);
+                    } else {
+                        current->movement.y *= (f64)0.75f;
+                    }
+                    current->hit_flags[1] = 1;
+                    PlatformConnect(reinterpret_cast<char *>(old_query->hit_flags), &old_query->movement, movement,
+                                    ((TERRAIN_SET_PC *)CurrentTerrain)->groups[query->terrain_group_index].scene_index);
+                }
                 NuScratchRelease();
+                TerI = old_query;
                 return count;
             }
         }
-        if (query->movement_normal.y >= 0.707f && query->terrain_group_index >= 0 && group->chunk_type == 1)
-            ((TERRAIN_SET_PC *)CurrentTerrain)->platforms[platform_index].flags |= 2;
-        old_query->platform_position.x = query->platform_position.x;
-        old_query->platform_position.y = query->platform_position.y + old_query->collision_radius;
-        if (!(((TERRAIN_SET_PC *)CurrentTerrain)->platforms[CurTrackInfo->platform_index].flags & 1))
-            old_query->platform_position.y += 0.0025f;
-        old_query->platform_position.z = query->platform_position.z;
-        NUVEC direction = {old_query->platform_position.x - old_query->position.x,
-                           old_query->platform_position.y - old_query->position.y,
-                           old_query->platform_position.z - old_query->position.z};
-        f32 distance = NuFsqrt(direction.x * direction.x + direction.y * direction.y + direction.z * direction.z);
-        direction.x = distance == 0.0f || direction.x == 0.0f ? 0.0f : direction.x / distance;
-        direction.y = distance == 0.0f || direction.y == 0.0f ? 0.0f : direction.y / distance;
-        direction.z = distance == 0.0f || direction.z == 0.0f ? 0.0f : direction.z / distance;
-        NUVEC previous_position = ((TerrainQuery_s *)TerI)->position;
-        i32 clear = TerrainPlatformMoveCheck(&((TerrainQuery_s *)TerI)->platform_position,
-                                             &((TerrainQuery_s *)TerI)->platform_normal, platform_index, 1, 0);
-        bool opposing_contact = false;
-        if (((TerrainQuery_s *)TerI)->hit_type != 0 && ((TerrainQuery_s *)TerI)->terrain_group_index >= 0) {
-            TERRAIN_GROUP *hit_group =
-                &((TERRAIN_SET_PC *)CurrentTerrain)->groups[((TerrainQuery_s *)TerI)->terrain_group_index];
-            if (hit_group->chunk_type == 1)
-                CurTrackInfo->platform_index = hit_group->scene_index;
-            f32 dot = direction.x * ((TerrainQuery_s *)TerI)->platform_normal.x +
-                      direction.y * ((TerrainQuery_s *)TerI)->platform_normal.y +
-                      direction.z * ((TerrainQuery_s *)TerI)->platform_normal.z;
-            opposing_contact = dot < TerrainOpposingContactThresholdPc; /* PC qword operand 76e7d8. */
-        }
-        --count;
-        if (opposing_contact || clear != 0) {
-            TerrPoly = query->surface;
-            ((TerrainQuery_s *)TerI)->position = ((TerrainQuery_s *)TerI)->platform_position;
-            if (movement->y < 0.0f) {
-                FullDeflect(&ShadNorm, &((TerrainQuery_s *)TerI)->movement, &((TerrainQuery_s *)TerI)->movement);
-                FullDeflect(&ShadNorm, movement, movement);
-            } else {
-                ((TerrainQuery_s *)TerI)->movement.y *= 0.75f;
-            }
-            ((TerrainQuery_s *)TerI)->hit_flags[1] = 1;
-            PlatformConnect(reinterpret_cast<char *>(old_query->hit_flags), &old_query->movement, movement,
-                            ((TERRAIN_SET_PC *)CurrentTerrain)->groups[query->terrain_group_index].scene_index);
-        } else if (count > 0) {
-            f32 travelled = (((TerrainQuery_s *)TerI)->position.x - previous_position.x) * direction.x +
-                            (((TerrainQuery_s *)TerI)->position.y - previous_position.y) * direction.y +
-                            (((TerrainQuery_s *)TerI)->position.z - previous_position.z) * direction.z;
-            if (distance > travelled && FullDeflectTest(&((TerrainQuery_s *)TerI)->platform_normal, &direction,
-                                                        &((TerrainQuery_s *)TerI)->platform_position)) {
-                f32 dot = direction.x * ((TerrainQuery_s *)TerI)->platform_position.x +
-                          direction.y * ((TerrainQuery_s *)TerI)->platform_position.y +
-                          direction.z * ((TerrainQuery_s *)TerI)->platform_position.z;
-                if (dot > 0.0f) {
-                    f32 fraction = (distance - travelled) / dot;
-                    if (fraction < 0.8f) {
-                        ((TerrainQuery_s *)TerI)->platform_position.x =
-                            ((TerrainQuery_s *)TerI)->platform_position.x * fraction +
-                            ((TerrainQuery_s *)TerI)->position.x;
-                        ((TerrainQuery_s *)TerI)->platform_position.y =
-                            ((TerrainQuery_s *)TerI)->platform_position.y * fraction +
-                            ((TerrainQuery_s *)TerI)->position.y;
-                        ((TerrainQuery_s *)TerI)->platform_position.z =
-                            ((TerrainQuery_s *)TerI)->platform_position.z * fraction +
-                            ((TerrainQuery_s *)TerI)->position.z;
-                    }
-                }
-            }
-        }
-        NuScratchRelease();
-        TerI = old_query;
-        return count;
+#undef TERRAIN_PC_TRACK_MATRIX
+#undef TERRAIN_PC_TRACK_PLATFORM
+#undef TERRAIN_PC_QUERY
     }
     i32 TerrainPlatformEmbedded(NUVEC *movement_delta) {
         i32 transformed_count = 0;
