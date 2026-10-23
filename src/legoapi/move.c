@@ -6035,17 +6035,20 @@ static __declspec(noinline) void ForceCode(GAMEOBJECT *object, i32 pressed, i32 
         if ((!held && !(object->pad->runtime_flags & 4)) || target->force == NULL)
             object->character_context = -1;
         else {
-            can_use = 0;
-            if (dagobah_training == 0 || object->rider != NULL || FreePlay != 0)
-                can_use = !GizForce_Complete(target->force) && !GizForce_StoodOnForce(target->force, object);
+            if (dagobah_training != 0 && object->rider == NULL && FreePlay == 0)
+                can_use = 0;
+            else if (GizForce_Complete(target->force))
+                can_use = 0;
+            else
+                can_use = !GizForce_StoodOnForce(target->force, object);
             AlertSurroundingCreatures(object, &object->collision_position);
             if (can_use) {
                 if (WORLD->current_level != VADERC_LDATA && (object->flags_1fc & 0x80) &&
                     object->model_draw_result != 0 && attention->attention_timer > 0.0f &&
                     ((f64)attention->head_facing < (f64)-0.85f || (f64)attention->head_facing > (f64)0.85f))
                     can_use = 0;
-                if (can_use && WORLD->current_level == DAGOBAHC_LDATA && object->id == id_LUKESKYWALKERDAGOBAH &&
-                    LevGizmo[0] != NULL && target->force == LevGizmo[0]->object &&
+                if (can_use && WORLD->current_level == DAGOBAHC_LDATA && object->id == (u16)id_LUKESKYWALKERDAGOBAH &&
+                    LevGizmo[0] != NULL && LevGizmo[0]->object == target->force &&
                     GameAnimSet_GetCompletionRatio(target->force->anim_set) > 0.5f)
                     can_use = 0;
                 if (can_use) {
@@ -6064,10 +6067,11 @@ static __declspec(noinline) void ForceCode(GAMEOBJECT *object, i32 pressed, i32 
             GameCam_Blend(GameCam, 0.5f, 0.0f, 1);
         return;
     }
-    if ((object->character_data->game_character->flags_094 & 0x8000) || (object->flags_e20 & 0x1000000) ||
+    if ((object->character_data->game_character->flags_094 & 0x8000) != 0 || (object->field_e23 & 1) != 0 ||
         object->character_context == 0x12)
         return;
-    if (object->field_281 && (object->character_context == -1 || (CInfo[object->character_context].flags & 4))) {
+    if (object->field_281 &&
+        (object->character_context == -1 || (U64_PAIR(&CInfo[object->character_context].flags) & 4) != 0)) {
         if (((object->flags_1fc & 0x80) && pressed) || (object->pad->runtime_flags & 4) || (held && previous))
             start = 1;
     }
@@ -6091,7 +6095,7 @@ static __declspec(noinline) void ForceCode(GAMEOBJECT *object, i32 pressed, i32 
     force = target->force;
     if (force != NULL && (object->flags_1fc & 0x80) && !(object->flags_e20 & 0x20000) && object->field_281)
         ForceGlowTargetPc(object, force, target->animation);
-    if (object->character_context == 8 && object->id == id_LUKESKYWALKERDAGOBAH && dagobah_training != 0 &&
+    if (object->character_context == 8 && object->id == (u16)id_LUKESKYWALKERDAGOBAH && dagobah_training != 0 &&
         object->rider == NULL && FreePlay == 0) {
         EndForce(object, 0);
         if (AnimPlaying(&object->anim_packet, 0xb, 1, 1) == NULL &&
