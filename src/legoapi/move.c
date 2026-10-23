@@ -2051,9 +2051,11 @@ i32 __cdecl MovePlayer_POD(GAMEOBJECT *object) {
     GAMEPAD_PC *pad = object->pad;
     f32 input = pad->input_direction_z;
     f32 height, blend, speed, seek_rate;
-    u16 heading = 0, pitch = 0, roll = 0;
+    u16 heading = 0, pitch = 0, roll;
     i32 index;
-    if (object->field_280 == 0xff || PODRACE_ADATA == NULL || world->area != PODRACE_ADATA)
+    if (object->field_280 == 0xff)
+        return 0;
+    if (PODRACE_ADATA == NULL || world->area != PODRACE_ADATA)
         return 0;
     if (object->current_speed_mul == 0.0f)
         return 1;
@@ -2063,7 +2065,7 @@ i32 __cdecl MovePlayer_POD(GAMEOBJECT *object) {
     index = (i8)object->field_280;
     if (index < 2) {
         pod_roll_target[index] =
-            SeekLinearF(pod_roll_target[index], input, (PodRollInputRate * FRAMETIME) * (f32)fabs((f64)input));
+            SeekLinearF(pod_roll_target[index], input, PodRollInputRate * FRAMETIME * MovePlayerFabs(input));
         pod_roll_target[index] = SeekLinearF(pod_roll_target[index], 0.0f, PodRollReleaseRate * FRAMETIME);
         pod_roll[index] = SeekValF(pod_roll[index], pod_roll_target[index], 8.0f);
     }
@@ -2079,18 +2081,24 @@ i32 __cdecl MovePlayer_POD(GAMEOBJECT *object) {
         else
             blend = 0.0f;
         FindAnglesZX(&object->surface_normal, NULL, NULL);
-        pitch = (u16)(i32)((f64)RotDiff(0, temp_xrot) * blend);
-        roll = (u16)(i32)((f64)RotDiff(0, temp_zrot) * blend);
+        pitch = (u16)(i32)((f64)RotDiff(0, temp_zrot) * blend);
+        roll = (u16)(i32)((f64)RotDiff(0, temp_xrot) * blend);
+    } else {
+        roll = 0;
     }
     object->pitch_angle = SeekRot(object->pitch_angle, pitch, 8.0f);
     object->roll_angle = SeekRot(object->roll_angle, roll, 8.0f);
     if ((object->flags_e20 & 0x20) != 0)
         MoveInactiveVehicle(object, 1, NULL);
     else {
-        object->target_velocity = v000;
-        if (object->sock_index != 0xff)
-            object->target_velocity.x = index < 2 ? pod_roll[index] * object->character_data->game_character->run_speed
-                                                  : input * pad->input_magnitude;
+        object->target_velocity.x = object->target_velocity.y = object->target_velocity.z = 0.0f;
+        if (object->sock_index != 0xff) {
+            if (index < 2)
+                object->target_velocity.x = object->character_data->game_character->run_speed * pod_roll[index];
+            else
+                object->target_velocity.x = pad->input_magnitude * input;
+            object->target_velocity.y = 0.0f;
+        }
         KeepVehicleOnScreen(object, 1, 1, 1);
         if (object->target_velocity.x != 0.0f || object->target_velocity.y != 0.0f || object->target_velocity.z != 0.0f)
             NuVecRotateY(&object->target_velocity, &object->target_velocity, heading);
@@ -2101,8 +2109,8 @@ i32 __cdecl MovePlayer_POD(GAMEOBJECT *object) {
         object->velocity.z = SeekValF(object->velocity.z, object->target_velocity.z, seek_rate);
     }
     object->movement_facing_angle = NuAtan2D(object->target_velocity.x, object->target_velocity.z);
-    object->facing_angle = SeekRot(object->facing_angle, object->movement_facing_angle, PodFacingSeekRate);
-    object->field_0x276 = object->facing_angle;
+    object->facing_angle = object->field_0x276 =
+        SeekRot(object->facing_angle, object->movement_facing_angle, PodFacingSeekRate);
     return 1;
 }
 
