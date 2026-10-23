@@ -2343,349 +2343,389 @@ STATIC_ASSERT(offsetof(TERRAIN_SPATIAL_NODE, points) == 4);
 STATIC_ASSERT(sizeof(TERRAIN_WALL_POINT) == 16);
 STATIC_ASSERT(offsetof(TERRAIN_WALL_POINT, material) == 12);
 
+#define TERRAIN_NSF_SET (static_cast<TERRAIN_SET_PC *>(CurrentTerrain))
+#define TERRAIN_NSF_PLATFORM(group_ptr) (TERRAIN_NSF_SET->platforms[(group_ptr)->scene_index])
+#define TERRAIN_NSF_MATRIX(group_ptr) (static_cast<NUMTX *>(TERRAIN_NSF_PLATFORM(group_ptr).scene_object))
+#define TERRAIN_NSF_SHAPE_OVERLAP(shape_ptr)                                                                           \
+    (local_max_x >= (shape_ptr)->min_x && (shape_ptr)->max_x > local_min_x && local_max_z >= (shape_ptr)->min_z &&     \
+     (shape_ptr)->max_z > local_min_z && local_max_y >= (shape_ptr)->min_y && (shape_ptr)->max_y > local_min_y)
+#define TERRAIN_NSF_MATERIAL_OK(shape_ptr)                                                                             \
+    ((shape_ptr)->material[1] == 0 || ((shape_ptr)->material[1] & terrain_mask) != 0)
+#define TERRAIN_NSF_FINISH_GROUP(group_index_arg)                                                                      \
+    do {                                                                                                               \
+        if (shape_count != 0) {                                                                                        \
+            group_header->header.shape_count = (i16)shape_count;                                                       \
+            group_header->header.terrain_group = (i16)(group_index_arg);                                               \
+            group_header = cursor;                                                                                     \
+            cursor++;                                                                                                  \
+            shape_count = 0;                                                                                           \
+        }                                                                                                              \
+    } while (0)
+#define TERRAIN_NSF_CROSS(result_arg, a_arg, b_arg)                                                                    \
+    do {                                                                                                               \
+        NUVEC *cross_a = (a_arg);                                                                                      \
+        NUVEC *cross_b = (b_arg);                                                                                      \
+        NUVEC cross;                                                                                                   \
+        cross.x = cross_b->z * cross_a->y - cross_b->y * cross_a->z;                                                   \
+        cross.y = cross_a->z * cross_b->x - cross_b->z * cross_a->x;                                                   \
+        cross.z = cross_b->y * cross_a->x - cross_b->x * cross_a->y;                                                   \
+        (result_arg) = cross;                                                                                          \
+    } while (0)
 i16 *NewScanHandelFullPc(NUVEC *position, NUVEC *movement, f32 radius, i32 scan_type, i32 terrain_mask) {
-    TerrainScanWriter writer;
-    writer.group_header = TempStackPtrPc;
-    writer.cursor = reinterpret_cast<TERRAIN_SHAPE **>(TempStackPtrPc + 4);
-    TerrainScaledShapeCursorPc = static_cast<TERRAIN_SHAPE *>(TerrainScaleWorkBasePc);
-    u8 *scale_base = reinterpret_cast<u8 *>(TerrainScaleWorkBasePc);
-    if (reinterpret_cast<usize>(writer.cursor) > reinterpret_cast<usize>(scale_base + 0x63c18))
-        return NULL;
-    writer.limit = reinterpret_cast<u8 *>(writer.cursor) + 0x7f0;
-    if (reinterpret_cast<usize>(writer.limit) > reinterpret_cast<usize>(scale_base + 0x63da8))
-        writer.limit = scale_base + 0x63da8;
-    writer.group_shape_count = 0;
-    writer.scaled_shape_count = 0;
-    i16 *result = reinterpret_cast<i16 *>(writer.group_header);
-    struct HandleWorkspace {
-        NUVEC4 vertices[4];
-    };
-    void *scratch = NuScratchAlloc32(0xd0);
-    const usize address = (reinterpret_cast<usize>(scratch) + 0x1f) & ~static_cast<usize>(0xf);
-    u8 *workspace_storage = reinterpret_cast<u8 *>(address);
-    platinrange = 0;
+    TERRAIN_SCAN_WORD_PC *group_header;
+    TERRAIN_SCAN_WORD_PC *cursor;
+    TERRAIN_SCAN_WORD_PC *limit;
+    TERRAIN_SCAN_WORD_PC *result;
+    i32 shape_count;
+    i32 scaled_count;
     TerrainScanBounds bounds;
+    TerrainScanBounds *const scan = &bounds;
+    f32 extent_sq;
+    f32 scan_radius;
+    NUVEC4 *vertices;
+    TERRAIN_HANDLE_END_PC *end_header;
+
+    group_header = reinterpret_cast<TERRAIN_SCAN_WORD_PC *>(TempStackPtrPc);
+    cursor = group_header + 1;
+    scaled_count = 0;
+    TerrainScaledShapeCursorPc = static_cast<TERRAIN_SHAPE *>(TerrainScaleWorkBasePc);
+    result = group_header;
+    limit = cursor + 508;
+    if (reinterpret_cast<u8 *>(cursor) > reinterpret_cast<u8 *>(TerrainScaleWorkBasePc) + 0x63c18) {
+        return NULL;
+    }
+    if (reinterpret_cast<u8 *>(limit) > reinterpret_cast<u8 *>(TerrainScaleWorkBasePc) + 0x63da8) {
+        limit = reinterpret_cast<TERRAIN_SCAN_WORD_PC *>(reinterpret_cast<u8 *>(TerrainScaleWorkBasePc) + 0x63da8);
+    }
+    vertices = reinterpret_cast<NUVEC4 *>((reinterpret_cast<u32>(NuScratchAlloc32(0xd0)) + 31) & ~u32(15));
+    shape_count = 0;
+    platinrange = 0;
     if (movement->x > 0.0f) {
-        bounds.min_x = static_cast<f64>(position->x) - TerrainScanMargin02Pc - radius;
-        bounds.max_x = static_cast<f64>(position->x) + movement->x + TerrainScanMargin02Pc + radius;
+        scan->min_x = (f32)(position->x - TerrainScanMargin02Pc - radius);
+        scan->max_x = (f32)(position->x + movement->x + TerrainScanMargin02Pc + radius);
     } else {
-        bounds.min_x = static_cast<f64>(position->x) + movement->x - TerrainScanMargin02Pc - radius;
-        bounds.max_x = static_cast<f64>(position->x) + TerrainScanMargin02Pc + radius;
+        scan->min_x = (f32)(position->x + movement->x - TerrainScanMargin02Pc - radius);
+        scan->max_x = (f32)(position->x + TerrainScanMargin02Pc + radius);
     }
     if (movement->y > 0.0f) {
-        bounds.min_y = static_cast<f64>(position->y) - TerrainScanMargin02Pc - radius;
-        bounds.max_y = static_cast<f64>(position->y) + movement->y + TerrainScanMargin02Pc + radius;
+        scan->min_y = (f32)(position->y - TerrainScanMargin02Pc - radius);
+        scan->max_y = (f32)(position->y + movement->y + TerrainScanMargin02Pc + radius);
     } else {
-        bounds.min_y = static_cast<f64>(position->y) + movement->y - TerrainScanMargin02Pc - radius;
-        bounds.max_y = static_cast<f64>(position->y) + TerrainScanMargin02Pc + radius;
+        scan->min_y = (f32)(position->y + movement->y - TerrainScanMargin02Pc - radius);
+        scan->max_y = (f32)(position->y + TerrainScanMargin02Pc + radius);
     }
     if (movement->z > 0.0f) {
-        bounds.min_z = static_cast<f64>(position->z) - TerrainScanMargin02Pc - radius;
-        bounds.max_z = static_cast<f64>(position->z) + movement->z + TerrainScanMargin02Pc + radius;
+        scan->min_z = (f32)(position->z - TerrainScanMargin02Pc - radius);
+        scan->max_z = (f32)(position->z + movement->z + TerrainScanMargin02Pc + radius);
     } else {
-        bounds.min_z = static_cast<f64>(position->z) + movement->z - TerrainScanMargin02Pc - radius;
-        bounds.max_z = static_cast<f64>(position->z) + TerrainScanMargin02Pc + radius;
+        scan->min_z = (f32)(position->z + movement->z - TerrainScanMargin02Pc - radius);
+        scan->max_z = (f32)(position->z + TerrainScanMargin02Pc + radius);
     }
-    const f64 dx = static_cast<f64>(bounds.min_x) - bounds.max_x;
-    const f64 dy = static_cast<f64>(bounds.min_y) - bounds.max_y;
-    const f64 dz = static_cast<f64>(bounds.min_z) - bounds.max_z;
-    const f32 diagonal_squared = dx * dx + dy * dy + dz * dz;
-    const f32 scan_radius_squared = diagonal_squared + NuTimeBarTop;
-    const f32 scan_radius = NuFsqrt(scan_radius_squared);
-    for (i32 cell_index = 0; cell_index < static_cast<TERRAIN_SET_PC *>(CurrentTerrain)->used_cell_count;
-         ++cell_index) {
-        const TERRAIN_CELL_PC &cell = static_cast<TERRAIN_SET_PC *>(CurrentTerrain)->cells[cell_index];
-        if (!(bounds.max_x >= cell.min_x && bounds.max_z >= cell.min_z && cell.max_x >= bounds.min_x &&
-              cell.max_z >= bounds.min_z))
+    {
+        const f32 dy = scan->min_y - scan->max_y;
+        const f32 dx = scan->min_x - scan->max_x;
+        const f32 dz = scan->min_z - scan->max_z;
+        extent_sq = dx * dx + dy * dy + dz * dz;
+    }
+    scan_radius = NuFsqrt((f32)(extent_sq + NuTimeBarTop));
+    for (i32 cell_index = 0; cell_index < TERRAIN_NSF_SET->used_cell_count; ++cell_index) {
+        TERRAIN_CELL_PC *cell = &TERRAIN_NSF_SET->cells[cell_index];
+        if (!(scan->max_x >= cell->min_x && scan->max_z >= cell->min_z && cell->max_x >= scan->min_x &&
+              cell->max_z >= scan->min_z)) {
             continue;
-        const i16 *indices =
-            static_cast<TERRAIN_SET_PC *>(CurrentTerrain)->group_indices + static_cast<i16>(cell.first_group);
-        for (i32 i = 0;
-             i < static_cast<i16>(static_cast<TERRAIN_SET_PC *>(CurrentTerrain)->cells[cell_index].group_count); ++i) {
-            const i32 index = indices[i];
-            TERRAIN_GROUP_PC &group = static_cast<TERRAIN_SET_PC *>(CurrentTerrain)->groups[index];
-            if (!TERRAIN_BOUNDS_OVERLAP(bounds, group.bounds_min, group.bounds_max) || group.chunk_type == -1)
-                continue;
-            TerrainScanBounds local = bounds;
-            local.min_x -= group.origin.x;
-            local.max_x -= group.origin.x;
-            local.min_y -= group.origin.y;
-            local.max_y -= group.origin.y;
-            local.min_z -= group.origin.z;
-            local.max_z -= group.origin.z;
-            if (static_cast<i16>(group.scene_index) < 0)
-                TerrainSkinAllocate(&group);
-            TERRAIN_SHAPE_BATCH *batch = reinterpret_cast<TERRAIN_SHAPE_BATCH *>(group.data);
-            while (batch->marker >= 0) {
-                const i32 shape_count = static_cast<i16>(batch->shape_count);
-                TERRAIN_SHAPE *shapes = reinterpret_cast<TERRAIN_SHAPE *>(batch + 1);
-                if (local.max_x >= batch->min_x && batch->max_x > local.min_x && local.max_z >= batch->min_z &&
-                    batch->max_z > local.min_z) {
-                    for (i32 j = 0; j < shape_count; ++j) {
-                        TERRAIN_SHAPE *shape = &shapes[j];
-                        if (local.max_x >= shape->min_x && shape->max_x > local.min_x && local.max_z >= shape->min_z &&
-                            shape->max_z > local.min_z && local.max_y >= shape->min_y && shape->max_y > local.min_y &&
-                            reinterpret_cast<u8 *>(writer.cursor) < writer.limit &&
-                            (shape->material[1] == 0 || (shape->material[1] & terrain_mask) != 0)) {
-                            *writer.cursor++ = shape;
-                            ++writer.group_shape_count;
-                        }
-                    }
+        }
+        i16 *indices = TERRAIN_NSF_SET->group_indices + cell->first_group;
+        for (i32 i = 0; i < TERRAIN_NSF_SET->cells[cell_index].group_count; ++i, ++indices) {
+            TERRAIN_GROUP_PC *group = &TERRAIN_NSF_SET->groups[*indices];
+            if (scan->max_x >= group->bounds_min.x && scan->max_y >= group->bounds_min.y &&
+                scan->max_z >= group->bounds_min.z && scan->min_x <= group->bounds_max.x &&
+                scan->min_y < group->bounds_max.y && scan->min_z < group->bounds_max.z && group->chunk_type != -1) {
+                const f32 local_max_x = scan->max_x - group->origin.x;
+                const f32 local_max_y = scan->max_y - group->origin.y;
+                const f32 local_max_z = scan->max_z - group->origin.z;
+                const f32 local_min_x = scan->min_x - group->origin.x;
+                const f32 local_min_y = scan->min_y - group->origin.y;
+                const f32 local_min_z = scan->min_z - group->origin.z;
+                if (group->scene_index < 0) {
+                    TerrainSkinAllocate(group);
                 }
-                batch = reinterpret_cast<TERRAIN_SHAPE_BATCH *>(shapes + shape_count);
+                TERRAIN_SHAPE_BATCH *batch = reinterpret_cast<TERRAIN_SHAPE_BATCH *>(group->data);
+                while (batch->marker >= 0) {
+                    const i32 count = batch->shape_count;
+                    TERRAIN_SHAPE *source = reinterpret_cast<TERRAIN_SHAPE *>(batch + 1);
+                    if (local_max_x >= batch->min_x && batch->max_x > local_min_x && local_max_z >= batch->min_z &&
+                        batch->max_z > local_min_z) {
+                        for (i32 remaining = count; remaining > 0; --remaining, ++source) {
+                            if (TERRAIN_NSF_SHAPE_OVERLAP(source) && cursor < limit &&
+                                TERRAIN_NSF_MATERIAL_OK(source)) {
+                                (cursor++)->shape = source;
+                                ++shape_count;
+                            }
+                        }
+                    } else {
+                        source += count;
+                    }
+                    batch = reinterpret_cast<TERRAIN_SHAPE_BATCH *>(source);
+                }
+                TERRAIN_NSF_FINISH_GROUP(*indices);
             }
-            TERRAIN_FINISH_SCAN_GROUP(&writer, index);
         }
     }
-    bounds.min_x -= NuTimeBarTop;
-    bounds.max_x += NuTimeBarTop;
-    bounds.min_y -= NuTimeBarTop;
-    bounds.max_y += NuTimeBarTop;
-    bounds.min_z -= NuTimeBarTop;
-    bounds.max_z += NuTimeBarTop;
-    static_cast<TerrainQuery_s *>(TerI)->scan_list = writer.group_header;
+    static_cast<TerrainQuery_s *>(TerI)->scan_list = group_header;
+    scan->min_x = (f32)(scan->min_x - NuTimeBarTop);
+    scan->max_x = (f32)(scan->max_x + NuTimeBarTop);
+    scan->min_y = (f32)(scan->min_y - NuTimeBarTop);
+    scan->max_y = (f32)(scan->max_y + NuTimeBarTop);
+    scan->min_z = (f32)(scan->min_z - NuTimeBarTop);
+    scan->max_z = (f32)(scan->max_z + NuTimeBarTop);
     if (scan_type != 0) {
-        const TERRAIN_CELL_PC &cell = static_cast<TERRAIN_SET_PC *>(CurrentTerrain)->platform_cell;
-        const i16 *indices =
-            static_cast<TERRAIN_SET_PC *>(CurrentTerrain)->group_indices + static_cast<i16>(cell.first_group);
-        for (i32 i = 0; i < static_cast<i16>(static_cast<TERRAIN_SET_PC *>(CurrentTerrain)->platform_cell.group_count);
-             ++i) {
-            const i32 index = indices[i];
-            TERRAIN_GROUP_PC &group = static_cast<TERRAIN_SET_PC *>(CurrentTerrain)->groups[index];
-            TERRAIN_PLATFORM_PC &platform =
-                static_cast<TERRAIN_SET_PC *>(CurrentTerrain)->platforms[static_cast<i16>(group.scene_index)];
-            const u8 flags = platform.flags;
+        i16 *indices = TERRAIN_NSF_SET->group_indices + TERRAIN_NSF_SET->platform_cell.first_group;
+        for (i32 i = 0; i < TERRAIN_NSF_SET->platform_cell.group_count; ++i, ++indices) {
+            TERRAIN_GROUP_PC *group = &TERRAIN_NSF_SET->groups[*indices];
+            TERRAIN_PLATFORM_PC *platform = &TERRAIN_NSF_PLATFORM(group);
             TERRAIN_SCENE_STATE_VIEW_PC *scene_state =
-                static_cast<TERRAIN_SCENE_STATE_VIEW_PC *>(platform.scene_transform);
-            if (scene_state != NULL &&
-                ((flags & 4) != 0 ? (scene_state->flags & 2) == 0 : (scene_state->low_flags & 1) == 0))
-                continue;
-            NUMTX *matrix = static_cast<NUMTX *>(platform.scene_object);
-            TerrainScanBounds local;
-            if (matrix != NULL) {
-                if (matrix->m30 > platform.previous_matrix.m30) {
-                    local.min_x = bounds.min_x - group.origin.x;
-                    local.max_x = (static_cast<f64>(matrix->m30) - platform.previous_matrix.m30) * 1.5 + bounds.max_x -
-                                  group.origin.x;
+                static_cast<TERRAIN_SCENE_STATE_VIEW_PC *>(platform->scene_transform);
+            if (scene_state == NULL ||
+                ((platform->flags & 4) != 0 ? (scene_state->flags & 2) != 0 : (scene_state->low_flags & 1) != 0)) {
+                f32 local_min_x, local_max_x, local_min_z, local_max_z, local_min_y, local_max_y;
+                if (platform->scene_object != NULL) {
+                    if (TERRAIN_NSF_MATRIX(group)->m30 > TERRAIN_NSF_PLATFORM(group).previous_matrix.m30) {
+                        local_min_x = scan->min_x - group->origin.x;
+                        local_max_x =
+                            (f32)((TERRAIN_NSF_MATRIX(group)->m30 - TERRAIN_NSF_PLATFORM(group).previous_matrix.m30) *
+                                      1.5 +
+                                  scan->max_x - group->origin.x);
+                    } else {
+                        local_max_x = scan->max_x - group->origin.x;
+                        local_min_x =
+                            (f32)((TERRAIN_NSF_MATRIX(group)->m30 - TERRAIN_NSF_PLATFORM(group).previous_matrix.m30) *
+                                      1.5 +
+                                  scan->min_x - group->origin.x);
+                    }
+                    if (TERRAIN_NSF_MATRIX(group)->m31 > TERRAIN_NSF_PLATFORM(group).previous_matrix.m31) {
+                        local_min_y = scan->min_y - group->origin.y;
+                        local_max_y =
+                            (f32)((TERRAIN_NSF_MATRIX(group)->m31 - TERRAIN_NSF_PLATFORM(group).previous_matrix.m31) *
+                                      1.5 +
+                                  scan->max_y - group->origin.y);
+                    } else {
+                        local_max_y = scan->max_y - group->origin.y;
+                        local_min_y =
+                            (f32)((TERRAIN_NSF_MATRIX(group)->m31 - TERRAIN_NSF_PLATFORM(group).previous_matrix.m31) *
+                                      1.5 +
+                                  scan->min_y - group->origin.y);
+                    }
+                    if (TERRAIN_NSF_MATRIX(group)->m32 > TERRAIN_NSF_PLATFORM(group).previous_matrix.m32) {
+                        local_min_z = scan->min_z - group->origin.z;
+                        local_max_z =
+                            (f32)((TERRAIN_NSF_MATRIX(group)->m32 - TERRAIN_NSF_PLATFORM(group).previous_matrix.m32) *
+                                      1.5 +
+                                  scan->max_z - group->origin.z);
+                    } else {
+                        local_max_z = scan->max_z - group->origin.z;
+                        local_min_z =
+                            (f32)((TERRAIN_NSF_MATRIX(group)->m32 - TERRAIN_NSF_PLATFORM(group).previous_matrix.m32) *
+                                      1.5 +
+                                  scan->min_z - group->origin.z);
+                    }
                 } else {
-                    local.max_x = bounds.max_x - group.origin.x;
-                    local.min_x = (static_cast<f64>(matrix->m30) - platform.previous_matrix.m30) * 1.5 + bounds.min_x -
-                                  group.origin.x;
+                    local_max_x = scan->max_x - group->origin.x;
+                    local_min_x = scan->min_x - group->origin.x;
+                    local_max_y = scan->max_y - group->origin.y;
+                    local_min_y = scan->min_y - group->origin.y;
+                    local_max_z = scan->max_z - group->origin.z;
+                    local_min_z = scan->min_z - group->origin.z;
                 }
-                if (matrix->m31 > platform.previous_matrix.m31) {
-                    local.min_y = bounds.min_y - group.origin.y;
-                    local.max_y = (static_cast<f64>(matrix->m31) - platform.previous_matrix.m31) * 1.5 + bounds.max_y -
-                                  group.origin.y;
-                } else {
-                    local.max_y = bounds.max_y - group.origin.y;
-                    local.min_y = (static_cast<f64>(matrix->m31) - platform.previous_matrix.m31) * 1.5 + bounds.min_y -
-                                  group.origin.y;
-                }
-                if (matrix->m32 > platform.previous_matrix.m32) {
-                    local.min_z = bounds.min_z - group.origin.z;
-                    local.max_z = (static_cast<f64>(matrix->m32) - platform.previous_matrix.m32) * 1.5 + bounds.max_z -
-                                  group.origin.z;
-                } else {
-                    local.max_z = bounds.max_z - group.origin.z;
-                    local.min_z = (static_cast<f64>(matrix->m32) - platform.previous_matrix.m32) * 1.5 + bounds.min_z -
-                                  group.origin.z;
-                }
-            } else {
-                local.min_x = bounds.min_x - group.origin.x;
-                local.max_x = bounds.max_x - group.origin.x;
-                local.min_y = bounds.min_y - group.origin.y;
-                local.max_y = bounds.max_y - group.origin.y;
-                local.min_z = bounds.min_z - group.origin.z;
-                local.max_z = bounds.max_z - group.origin.z;
-            }
-            if ((flags & TERRAIN_PLATFORM_FLAG_ROTATING) == 0) {
-                if (!TERRAIN_BOUNDS_OVERLAP(local, group.bounds_min, group.bounds_max) || group.chunk_type == -1)
-                    continue;
-                i32 in_range = platinrange;
-                TERRAIN_SHAPE_BATCH *batch = reinterpret_cast<TERRAIN_SHAPE_BATCH *>(group.data);
-                while (batch->marker >= 0) {
-                    const i32 count = static_cast<i16>(batch->shape_count);
-                    TERRAIN_SHAPE *shapes = reinterpret_cast<TERRAIN_SHAPE *>(batch + 1);
-                    if (local.max_x >= batch->min_x && batch->max_x > local.min_x && local.max_z >= batch->min_z &&
-                        batch->max_z > local.min_z) {
-                        for (i32 j = 0; j < count; ++j) {
-                            TERRAIN_SHAPE *shape = &shapes[j];
-                            if (!(local.max_x >= shape->min_x && shape->max_x > local.min_x &&
-                                  local.max_z >= shape->min_z && shape->max_z > local.min_z &&
-                                  local.max_y >= shape->min_y && shape->max_y > local.min_y))
-                                continue;
-                            in_range = 1;
-                            if (reinterpret_cast<u8 *>(writer.cursor) >= writer.limit ||
-                                (shape->material[1] != 0 && (shape->material[1] & terrain_mask) == 0))
-                                continue;
-                            *writer.cursor++ = shape;
-                            ++writer.group_shape_count;
+                if ((platform->flags & TERRAIN_PLATFORM_FLAG_ROTATING) == 0) {
+                    if (local_max_x >= group->bounds_min.x && local_max_y >= group->bounds_min.y &&
+                        local_max_z >= group->bounds_min.z && local_min_x <= group->bounds_max.x &&
+                        local_min_y < group->bounds_max.y && local_min_z < group->bounds_max.z &&
+                        group->chunk_type != -1) {
+                        TERRAIN_SHAPE_BATCH *batch = reinterpret_cast<TERRAIN_SHAPE_BATCH *>(group->data);
+                        while (batch->marker >= 0) {
+                            const i32 count = batch->shape_count;
+                            TERRAIN_SHAPE *source = reinterpret_cast<TERRAIN_SHAPE *>(batch + 1);
+                            if (local_max_x >= batch->min_x && batch->max_x > local_min_x &&
+                                local_max_z >= batch->min_z && batch->max_z > local_min_z) {
+                                for (i32 remaining = count; remaining > 0; --remaining, ++source) {
+                                    if (!TERRAIN_NSF_SHAPE_OVERLAP(source)) {
+                                        continue;
+                                    }
+                                    platinrange = 1;
+                                    if (cursor < limit && TERRAIN_NSF_MATERIAL_OK(source)) {
+                                        (cursor++)->shape = source;
+                                        ++shape_count;
+                                    }
+                                }
+                            } else {
+                                source += count;
+                            }
+                            batch = reinterpret_cast<TERRAIN_SHAPE_BATCH *>(source);
                         }
                     }
-                    batch = reinterpret_cast<TERRAIN_SHAPE_BATCH *>(shapes + count);
-                }
-                platinrange = in_range;
-            } else {
-                const f64 x = (static_cast<f64>(bounds.min_x) + bounds.max_x) * 0.5 - group.origin.x;
-                const f64 y = ((static_cast<f64>(bounds.min_y) + bounds.max_y) * 0.5 - group.origin.y) *
-                              static_cast<TerrainQuery_s *>(TerI)->inverse_object_scale;
-                const f64 z = (static_cast<f64>(bounds.min_z) + bounds.max_z) * 0.5 - group.origin.z;
-                const f32 distance_squared = x * x + y * y + z * z;
-                const f64 reach = static_cast<f64>(scan_radius) + group.radius;
-                if (group.chunk_type == -1 || !(reach * reach > distance_squared))
-                    continue;
-                TERRAIN_SHAPE_BATCH *batch = reinterpret_cast<TERRAIN_SHAPE_BATCH *>(group.data);
-                while (batch->marker >= 0) {
-                    const i32 count = static_cast<i16>(batch->shape_count);
-                    TERRAIN_SHAPE *shapes = reinterpret_cast<TERRAIN_SHAPE *>(batch + 1);
-                    TERRAIN_SHAPE *source_cursor = shapes;
-                    for (i32 remaining = count; remaining > 0; --remaining, ++source_cursor) {
-                        TERRAIN_SHAPE *shape = source_cursor;
-                        platinrange = 1;
-                        if (reinterpret_cast<u8 *>(writer.cursor) >= writer.limit ||
-                            (shape->material[1] != 0 && (shape->material[1] & terrain_mask) == 0))
-                            continue;
-                        HandleWorkspace *workspace = reinterpret_cast<HandleWorkspace *>(workspace_storage);
-                        NUVEC4 *vertices = workspace->vertices;
-                        for (i32 v = 0; v < 3; ++v) {
-                            vertices[v].x = shape->vertices[v].x;
-                            vertices[v].y = shape->vertices[v].y;
-                            vertices[v].z = shape->vertices[v].z;
-                            vertices[v].w = 0.0f;
+                } else if (group->chunk_type != -1) {
+                    const f64 dy = ((scan->max_y + scan->min_y) * 0.5 - group->origin.y) *
+                                   static_cast<TerrainQuery_s *>(TerI)->inverse_object_scale;
+                    const f64 dx = (scan->max_x + scan->min_x) * 0.5 - group->origin.x;
+                    const f64 dz = (scan->max_z + scan->min_z) * 0.5 - group->origin.z;
+                    // Retail reuses the local minimum Y slot for the distance; Y is not read again here.
+                    local_min_y = dx * dx + dy * dy + dz * dz;
+                    if (local_min_y < (group->radius + scan_radius) * (group->radius + scan_radius)) {
+                        TERRAIN_SHAPE_BATCH *batch = reinterpret_cast<TERRAIN_SHAPE_BATCH *>(group->data);
+                        while (batch->marker >= 0) {
+                            const i32 count = batch->shape_count;
+                            TERRAIN_SHAPE *source = reinterpret_cast<TERRAIN_SHAPE *>(batch + 1);
+                            for (i32 remaining = count; remaining > 0; --remaining, ++source) {
+                                platinrange = 1;
+                                if (cursor >= limit || !TERRAIN_NSF_MATERIAL_OK(source)) {
+                                    continue;
+                                }
+                                vertices[0].x = source->vertices[0].x;
+                                vertices[0].y = source->vertices[0].y;
+                                vertices[0].z = source->vertices[0].z;
+                                vertices[0].w = 0.0f;
+                                vertices[1].x = source->vertices[1].x;
+                                vertices[1].y = source->vertices[1].y;
+                                vertices[1].z = source->vertices[1].z;
+                                vertices[1].w = 0.0f;
+                                vertices[2].x = source->vertices[2].x;
+                                vertices[2].y = source->vertices[2].y;
+                                vertices[2].z = source->vertices[2].z;
+                                vertices[2].w = 0.0f;
+                                NuVec4MtxTransformVU0x3(vertices, vertices, TERRAIN_NSF_MATRIX(group));
+                                if (source->normals[1].y < 65535.0) {
+                                    vertices[3].x = source->vertices[3].x;
+                                    vertices[3].y = source->vertices[3].y;
+                                    vertices[3].z = source->vertices[3].z;
+                                    vertices[3].w = 0.0f;
+                                    NuVec4MtxTransformVU0(&vertices[3], &vertices[3], TERRAIN_NSF_MATRIX(group));
+                                } else {
+                                    vertices[3] = vertices[2];
+                                }
+                                if (!((vertices[0].x > local_min_x || vertices[1].x > local_min_x ||
+                                       vertices[2].x > local_min_x || vertices[3].x > local_min_x) &&
+                                      (vertices[0].x < local_max_x || vertices[1].x < local_max_x ||
+                                       vertices[2].x < local_max_x || vertices[3].x < local_max_x) &&
+                                      (vertices[0].z > local_min_z || vertices[1].z > local_min_z ||
+                                       vertices[2].z > local_min_z || vertices[3].z > local_min_z) &&
+                                      (vertices[0].z < local_max_z || vertices[1].z < local_max_z ||
+                                       vertices[2].z < local_max_z || vertices[3].z < local_max_z))) {
+                                    continue;
+                                }
+                                TERRAIN_SHAPE *surface = &TerrainScaledShapeCursorPc[scaled_count];
+                                memcpy(surface->material, source->material, 4);
+                                surface->vertices[0].x = vertices[0].x;
+                                surface->vertices[0].z = vertices[0].z;
+                                surface->vertices[0].y = vertices[0].y;
+                                surface->vertices[1].x = vertices[1].x;
+                                surface->vertices[1].z = vertices[1].z;
+                                surface->vertices[1].y = vertices[1].y;
+                                surface->vertices[2].x = vertices[2].x;
+                                surface->vertices[2].z = vertices[2].z;
+                                surface->vertices[2].y = vertices[2].y;
+                                if (source->normals[1].y < 65535.0) {
+                                    surface->vertices[3].x = vertices[3].x;
+                                    surface->vertices[3].z = vertices[3].z;
+                                    surface->vertices[3].y = vertices[3].y;
+                                    vertices[0].x = surface->vertices[1].x - surface->vertices[3].x;
+                                    vertices[0].y = surface->vertices[1].y - surface->vertices[3].y;
+                                    vertices[0].z = surface->vertices[1].z - surface->vertices[3].z;
+                                    vertices[1].x = surface->vertices[2].x - surface->vertices[3].x;
+                                    vertices[1].y = surface->vertices[2].y - surface->vertices[3].y;
+                                    vertices[1].z = surface->vertices[2].z - surface->vertices[3].z;
+                                    TERRAIN_NSF_CROSS(surface->normals[1], reinterpret_cast<NUVEC *>(&vertices[0]),
+                                                      reinterpret_cast<NUVEC *>(&vertices[1]));
+                                    const f32 length = NuFsqrt(surface->normals[1].x * surface->normals[1].x +
+                                                               surface->normals[1].y * surface->normals[1].y +
+                                                               surface->normals[1].z * surface->normals[1].z);
+                                    const f32 inverse = length != 0.0f ? 1.0f / length : 0.0f;
+                                    surface = &TerrainScaledShapeCursorPc[scaled_count];
+                                    surface->normals[1].x *= inverse;
+                                    surface->normals[1].y *= inverse;
+                                    surface->normals[1].z *= inverse;
+                                } else {
+                                    surface->normals[1].y = 65536.0f;
+                                }
+                                vertices[0].x = surface->vertices[2].x - surface->vertices[0].x;
+                                vertices[0].y = surface->vertices[2].y - surface->vertices[0].y;
+                                vertices[0].z = surface->vertices[2].z - surface->vertices[0].z;
+                                vertices[1].x = surface->vertices[1].x - surface->vertices[0].x;
+                                vertices[1].y = surface->vertices[1].y - surface->vertices[0].y;
+                                vertices[1].z = surface->vertices[1].z - surface->vertices[0].z;
+                                TERRAIN_NSF_CROSS(surface->normals[0], reinterpret_cast<NUVEC *>(&vertices[0]),
+                                                  reinterpret_cast<NUVEC *>(&vertices[1]));
+                                const f32 length = NuFsqrt(surface->normals[0].x * surface->normals[0].x +
+                                                           surface->normals[0].y * surface->normals[0].y +
+                                                           surface->normals[0].z * surface->normals[0].z);
+                                const f32 inverse = length != 0.0f ? 1.0f / length : 0.0f;
+                                surface = &TerrainScaledShapeCursorPc[scaled_count];
+                                surface->normals[0].x *= inverse;
+                                surface->normals[0].y *= inverse;
+                                surface->normals[0].z *= inverse;
+                                (cursor++)->shape = surface;
+                                ++shape_count;
+                                ++scaled_count;
+                            }
+                            batch = reinterpret_cast<TERRAIN_SHAPE_BATCH *>(source);
                         }
-                        NuVec4MtxTransformVU0x3(vertices, vertices, matrix);
-                        const bool quad = shape->normals[1].y < 65535.0;
-                        if (quad) {
-                            vertices[3].x = shape->vertices[3].x;
-                            vertices[3].y = shape->vertices[3].y;
-                            vertices[3].z = shape->vertices[3].z;
-                            vertices[3].w = 0.0f;
-                            NuVec4MtxTransformVU0(&vertices[3], &vertices[3], matrix);
-                        } else
-                            vertices[3] = vertices[2];
-                        if (!(vertices[0].x > local.min_x || vertices[1].x > local.min_x ||
-                              vertices[2].x > local.min_x || vertices[3].x > local.min_x) ||
-                            !(local.max_x > vertices[0].x || local.max_x > vertices[1].x ||
-                              local.max_x > vertices[2].x || local.max_x > vertices[3].x) ||
-                            !(vertices[0].z > local.min_z || vertices[1].z > local.min_z ||
-                              vertices[2].z > local.min_z || vertices[3].z > local.min_z) ||
-                            !(local.max_z > vertices[0].z || local.max_z > vertices[1].z ||
-                              local.max_z > vertices[2].z || local.max_z > vertices[3].z))
-                            continue;
-                        TERRAIN_SHAPE *transformed = &TerrainScaledShapeCursorPc[writer.scaled_shape_count++];
-                        memcpy(transformed->material, shape->material, 4);
-                        transformed->vertices[0].x = vertices[0].x;
-                        transformed->vertices[0].y = vertices[0].y;
-                        transformed->vertices[0].z = vertices[0].z;
-                        transformed->vertices[1].x = vertices[1].x;
-                        transformed->vertices[1].y = vertices[1].y;
-                        transformed->vertices[1].z = vertices[1].z;
-                        transformed->vertices[2].x = vertices[2].x;
-                        transformed->vertices[2].y = vertices[2].y;
-                        transformed->vertices[2].z = vertices[2].z;
-                        if (shape->normals[1].y < 65535.0) {
-                            memcpy(&transformed->vertices[3], &vertices[3], sizeof(NUVEC));
-                        }
-                        if (!quad)
-                            transformed->normals[1].y = 65536.0f;
-                        if (quad) {
-                            NUVEC a, b;
-                            a.x = vertices[1].x - vertices[3].x;
-                            b.x = vertices[2].x - vertices[3].x;
-                            a.y = vertices[1].y - vertices[3].y;
-                            b.y = vertices[2].y - vertices[3].y;
-                            a.z = vertices[1].z - vertices[3].z;
-                            b.z = vertices[2].z - vertices[3].z;
-                            NUVEC *normal_a = reinterpret_cast<NUVEC *>(workspace_storage);
-                            NUVEC *normal_b = reinterpret_cast<NUVEC *>(workspace_storage + sizeof(NUVEC4));
-                            *normal_a = a;
-                            *normal_b = b;
-                            transformed->normals[1].x = normal_a->y * normal_b->z - normal_a->z * normal_b->y;
-                            transformed->normals[1].y = normal_a->z * normal_b->x - normal_a->x * normal_b->z;
-                            transformed->normals[1].z = normal_a->x * normal_b->y - normal_a->y * normal_b->x;
-                            NUVEC &normal = transformed->normals[1];
-                            const f32 length = NuFsqrt(normal.x * normal.x + normal.y * normal.y + normal.z * normal.z);
-                            const f32 inverse = length == 0.0f ? 0.0f : 1.0f / length;
-                            normal.x *= inverse;
-                            normal.y *= inverse;
-                            normal.z *= inverse;
-                        }
-                        {
-                            NUVEC a, b;
-                            a.x = transformed->vertices[2].x - transformed->vertices[0].x;
-                            b.x = transformed->vertices[1].x - transformed->vertices[0].x;
-                            a.y = transformed->vertices[2].y - transformed->vertices[0].y;
-                            b.y = transformed->vertices[1].y - transformed->vertices[0].y;
-                            a.z = transformed->vertices[2].z - transformed->vertices[0].z;
-                            b.z = transformed->vertices[1].z - transformed->vertices[0].z;
-                            NUVEC *normal_a = reinterpret_cast<NUVEC *>(workspace_storage);
-                            NUVEC *normal_b = reinterpret_cast<NUVEC *>(workspace_storage + sizeof(NUVEC4));
-                            *normal_a = a;
-                            *normal_b = b;
-                            transformed->normals[0].x = normal_a->y * normal_b->z - normal_a->z * normal_b->y;
-                            transformed->normals[0].y = normal_a->z * normal_b->x - normal_a->x * normal_b->z;
-                            transformed->normals[0].z = normal_a->x * normal_b->y - normal_a->y * normal_b->x;
-                            NUVEC &normal = transformed->normals[0];
-                            const f32 length = NuFsqrt(normal.x * normal.x + normal.y * normal.y + normal.z * normal.z);
-                            const f32 inverse = length == 0.0f ? 0.0f : 1.0f / length;
-                            normal.x *= inverse;
-                            normal.y *= inverse;
-                            normal.z *= inverse;
-                        }
-                        shape = transformed;
-                        *writer.cursor++ = shape;
-                        ++writer.group_shape_count;
                     }
-                    batch = reinterpret_cast<TERRAIN_SHAPE_BATCH *>(shapes + count);
                 }
             }
-            TERRAIN_FINISH_SCAN_GROUP(&writer, index);
+            TERRAIN_NSF_FINISH_GROUP(*indices);
         }
     }
-    TERRAIN_HANDLE_END_PC *end_header = reinterpret_cast<TERRAIN_HANDLE_END_PC *>(writer.group_header);
+    end_header = reinterpret_cast<TERRAIN_HANDLE_END_PC *>(group_header);
     end_header->terminator.header.shape_count = 0;
     end_header->terminator.header.terrain_group = 0;
-    bounds.min_x -= TerrainScanMargin02Pc;
-    bounds.max_x += TerrainScanMargin02Pc;
-    bounds.min_z -= TerrainScanMargin02Pc;
-    bounds.max_z += TerrainScanMargin02Pc;
-    for (TERRAIN_SPATIAL_NODE *node = static_cast<TERRAIN_SET_PC *>(CurrentTerrain)->spatial_nodes; node != NULL;
+    scan->min_x = (f32)(scan->min_x - TerrainScanMargin02Pc);
+    scan->min_z = (f32)(scan->min_z - TerrainScanMargin02Pc);
+    scan->max_x = (f32)(scan->max_x + TerrainScanMargin02Pc);
+    scan->max_z = (f32)(scan->max_z + TerrainScanMargin02Pc);
+    for (TERRAIN_SPATIAL_NODE *node = TERRAIN_NSF_SET->spatial_nodes; node != NULL;
          node = reinterpret_cast<TERRAIN_SPATIAL_CHUNK *>(reinterpret_cast<u8 *>(node) -
                                                           offsetof(TERRAIN_SPATIAL_CHUNK, node))
                     ->previous) {
         const u8 mask = static_cast<u8>(node->field_02 >> 8);
-        if (mask != 0 && (mask & terrain_mask) == 0)
+        if (mask != 0 && (mask & terrain_mask) == 0) {
             continue;
+        }
+        const u8 material = static_cast<u8>(node->field_02);
         for (i32 first = 0; first < node->point_count; first += 16) {
-            NUVEC *points = node->points + first;
-            i32 end = node->point_count;
+            NUVEC *points = &node->points[first];
+            i32 end;
             if (points[0].y != 2147483648.0f) {
-                if (!(points[1].y >= bounds.min_x && bounds.max_x >= points[0].y && points[3].y >= bounds.min_z &&
-                      bounds.max_z >= points[2].y))
+                if (!(points[1].y >= scan->min_x && points[0].y <= scan->max_x && points[3].y >= scan->min_z &&
+                      points[2].y <= scan->max_z)) {
                     continue;
-                if (first + 16 < end)
-                    end = first + 16;
+                }
+                end = first + 16;
+                if (end > node->point_count) {
+                    end = node->point_count;
+                }
+            } else {
+                end = node->point_count;
             }
             for (i32 i = first; i < end; ++i) {
-                NUVEC &a = node->points[i];
-                NUVEC &b = node->points[i + 1];
-                if (!((a.x >= bounds.min_x && bounds.max_x >= b.x) || (b.x >= bounds.min_x && bounds.max_x >= a.x)) ||
-                    !((a.z >= bounds.min_z && bounds.max_z >= b.z) || (b.z >= bounds.min_z && bounds.max_z >= a.z)) ||
-                    WallSplCount >= 64)
-                    continue;
-                // Native header+4 is read and advanced unchecked; its valid storage is a caller/native-state domain.
-                end_header->wall_cursor->position = a;
-                end_header->wall_cursor->material[0] = static_cast<u8>(node->field_02);
-                end_header->wall_cursor->material[1] = mask;
-                end_header->wall_cursor->material[2] = 0;
-                end_header->wall_cursor->material[3] = 0;
-                ++end_header->wall_cursor;
-                end_header->wall_cursor->position = b;
-                end_header->wall_cursor->material[0] = static_cast<u8>(node->field_02);
-                end_header->wall_cursor->material[1] = mask;
-                end_header->wall_cursor->material[2] = 0;
-                end_header->wall_cursor->material[3] = 0;
-                ++end_header->wall_cursor;
+                NUVEC *a = &node->points[i];
+                NUVEC *b = &node->points[i + 1];
+                if (((a->x >= scan->min_x && b->x <= scan->max_x) || (b->x >= scan->min_x && a->x <= scan->max_x)) &&
+                    ((a->z >= scan->min_z && b->z <= scan->max_z) || (b->z >= scan->min_z && a->z <= scan->max_z)) &&
+                    WallSplCount < 64) {
+                    // Native header+4 is read and advanced unchecked; its valid storage is a caller/native-state
+                    // domain.
+                    end_header->wall_cursor->position = *a;
+                    end_header->wall_cursor->material[0] = material;
+                    end_header->wall_cursor->material[1] = mask;
+                    end_header->wall_cursor->material[2] = 0;
+                    end_header->wall_cursor->material[3] = 0;
+                    ++end_header->wall_cursor;
+                    end_header->wall_cursor->position = *b;
+                    end_header->wall_cursor->material[0] = material;
+                    end_header->wall_cursor->material[1] = mask;
+                    end_header->wall_cursor->material[2] = 0;
+                    end_header->wall_cursor->material[3] = 0;
+                    ++end_header->wall_cursor;
+                }
             }
         }
     }
@@ -2693,8 +2733,15 @@ i16 *NewScanHandelFullPc(NUVEC *position, NUVEC *movement, f32 radius, i32 scan_
     end_header->wall_end.terrain_group = 0;
     TempStackPtrPc = reinterpret_cast<u8 *>(end_header + 1);
     NuScratchRelease();
-    return result;
+    return reinterpret_cast<i16 *>(result);
 }
+#undef TERRAIN_NSF_SET
+#undef TERRAIN_NSF_PLATFORM
+#undef TERRAIN_NSF_MATRIX
+#undef TERRAIN_NSF_SHAPE_OVERLAP
+#undef TERRAIN_NSF_MATERIAL_OK
+#undef TERRAIN_NSF_FINISH_GROUP
+#undef TERRAIN_NSF_CROSS
 
 extern "C" i16 *NewScanHandel(NUVEC *position, NUVEC *movement, f32 radius, i32 scan_type, i16 *subset) {
     if (CurrentTerrain == NULL)
