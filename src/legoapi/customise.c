@@ -567,21 +567,21 @@ STATIC_ASSERT(sizeof(CHARACTER_MODEL_LAYERS_PC) == 0x54);
 extern i32 Customiser_AccessoriesLoaded;
 void __cdecl Customiser_LoadAccessories(CUSTOMISER_LAYERS_PC *input, APICHARACTERMODELLIST *models) {
     CUSTOMISER_CONFIG_PC *customiser = (CUSTOMISER_CONFIG_PC *)input;
-    i32 side, category, material_index;
+    i32 side, category, material_index, id;
     CHARACTER_MODEL_LAYERS_PC *model;
     CUSTOM_ACCESSORY_RESOURCE_PC *resource;
     char piece_name[0x80], path[0x80];
     if (customiser == NULL)
         return;
     Customiser_AccessoriesLoaded = 1;
-    for (; models->model_id != -1; ++models) {
-        if ((i32)models->model_id == (i32)customiser->character_ids[0])
+    for (; (id = models->model_id) != -1; ++models) {
+        if (id == customiser->character_ids[0])
             side = 0;
-        else if ((i32)models->model_id == (i32)customiser->character_ids[1])
+        else if (id == customiser->character_ids[1])
             side = 1;
         else
             continue;
-        model = &apicharsys->models[apicharsys->playermodelids[models->model_id]];
+        model = &apicharsys->models[apicharsys->playermodelids[id]];
         resource = (CUSTOM_ACCESSORY_RESOURCE_PC *)KillPartsAccessoriesPc[side];
         for (category = 0; category < 9; ++category, ++resource) {
             u16 piece_index;
