@@ -884,7 +884,7 @@ void __cdecl Text3DEx(char *text, f32 x, f32 y, f32 z, f32 x_scale, f32 y_scale,
     NuQFntPopPrintMode();
 }
 
-void __cdecl SetQFont2D(void) {
+__declspec(noinline) void __cdecl SetQFont2D(void) {
     NuQFntSetCoordinateSystem(3);
     NuQFntSet(QFont2D);
     NuQFntSetSpaceWidth(QFont2D, 12.0f);
@@ -898,7 +898,7 @@ void __cdecl IntroText_Draw(f32 alpha) {
     NuQFntSetSpaceWidth(QFont2D, 8.0f);
     Text3DStringEncode(TTab[INTROTEXT_ID], encoded);
     NuQFntSetJustifiedTolerances(1.0f, 1.0f);
-    colour = ((u32)(i64)((f64)alpha * 128.0) << 24) | 0x7f5f00;
+    colour = ((u32)((f64)alpha * 128.0) << 24) | 0x7f5f00;
     NuQFntPrintJustifiedW(QFont2D, encoded, -0.85f, INTROTEXT_Y, 1.0f, INTROTEXT_SCALE, INTROTEXT_SCALE, 1.7f, 1.0f,
                           colour, NULL);
 }

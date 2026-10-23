@@ -1612,48 +1612,56 @@ static void CustomiserDrawNameEditorPc(CUSTOMISER_LAYERS_PC *input) {
     }
 }
 void __cdecl MenuDrawCustomiserPc(MENU *menu) {
-    i32 active_index, active_count, player;
+    i32 active_index, active_count, player, side;
     i32 select[2], action[2], cancel[2], toggle[2];
     i32 colour;
-    f32 x;
+    f32 x, y, alpha;
     (void)menu;
     if (MenuStopDraw != 0 || customiser_quit != 0 || CharacterCustomiser == NULL)
         return;
     CustomiserDrawNameEditorPc(CharacterCustomiser);
     Customiser_GetActiveWeirdoIndex(&active_index, &active_count);
-    DrawCharIcon(MissionMenuPacketPc.player_model[0], -ICONX, STATSPOSY, 0.0f, MissionPlayerIconSizePc, 0xa6,
-                 MissionMenuPacketPc.active_player[0] != 0 ? 1.0f : MissionDropInAlphaPc,
-                 MissionMenuPacketPc.active_player[0] != 0 ? 1.0f : MissionDropInAlphaPc, 1, NULL);
-    DrawCharIcon(MissionMenuPacketPc.player_model[1], ICONX, STATSPOSY, 0.0f, MissionPlayerIconSizePc, 0xa5,
-                 MissionMenuPacketPc.active_player[1] != 0 ? 1.0f : MissionDropInAlphaPc,
-                 MissionMenuPacketPc.active_player[1] != 0 ? 1.0f : MissionDropInAlphaPc, 1, NULL);
+    alpha = MissionMenuPacketPc.active_player[0] != 0 ? 1.0f : MissionDropInAlphaPc;
+    DrawCharIcon(MissionMenuPacketPc.player_model[0], -ICONX, STATSPOSY, 0.0f, MissionPlayerIconSizePc, 0xa6, alpha,
+                 alpha, 1, NULL);
+    alpha = MissionMenuPacketPc.active_player[1] != 0 ? 1.0f : MissionDropInAlphaPc;
+    DrawCharIcon(MissionMenuPacketPc.player_model[1], ICONX, STATSPOSY, 0.0f, MissionPlayerIconSizePc, 0xa5, alpha,
+                 alpha, 1, NULL);
     select[0] = select[1] = active_count == 1 ? TextIdPc880750 : -1;
     action[0] = action[1] = TextIdPc880758;
-    cancel[0] = cancel[1] = toggle[0] = toggle[1] = -1;
+    toggle[0] = toggle[1] = -1;
     if (GAMEDEMO != 0) {
         if (MissionMenuPacketPc.active_player[0] != 0 && MissionMenuPacketPc.active_player[1] != 0) {
-            for (player = 0; player < 2; ++player) {
-                if (MissionMenuPacketPc.selected[player] != 0) {
-                    select[player] = action[player] = -1;
-                    cancel[player] = TextIdPc880890;
-                } else
-                    cancel[player] = TextIdPc880760;
-            }
+            if (MissionMenuPacketPc.selected[0] != 0) {
+                select[0] = action[0] = -1;
+                cancel[0] = TextIdPc880890;
+            } else
+                cancel[0] = TextIdPc880760;
+            if (MissionMenuPacketPc.selected[1] != 0) {
+                select[1] = action[1] = -1;
+                cancel[1] = TextIdPc880890;
+            } else
+                cancel[1] = TextIdPc880760;
         } else
             cancel[0] = cancel[1] = TextIdPc880858;
     } else {
         for (player = 0; player < 2; ++player) {
-            i32 side = player;
             if (active_count == 1 && MissionMenuPacketPc.customise_other_player[player] != 0)
                 side = player == 0;
+            else
+                side = player;
             if (CustomiseMode[side] == 1) {
                 select[player] = tACCEPT;
                 action[player] = cancel[player] = -1;
             }
             toggle[player] = Customise_GetToggleString(side);
             cancel[player] = -1;
-            if (CustomiseMode[0] != 1 && CustomiseMode[1] != 1)
-                cancel[player] = customiser_changed != 0 ? TextIdPc880754 : TextIdPc880844;
+            if (CustomiseMode[0] != 1 && CustomiseMode[1] != 1) {
+                if (customiser_changed != 0)
+                    cancel[player] = TextIdPc880754;
+                else
+                    cancel[player] = TextIdPc880844;
+            }
         }
     }
     DrawPlayerIconPrompts(MissionMenuPacketPc.active_player[0], select[0], 1.0f, action[0], cancel[0], toggle[0],
@@ -1662,21 +1670,22 @@ void __cdecl MenuDrawCustomiserPc(MENU *menu) {
     x = -ICONX;
     colour = menu_flash == 0 ? 255 : 191;
     for (player = 0; player < 2; ++player) {
-        i32 side = player;
         if (active_count == 1 && MissionMenuPacketPc.customise_other_player[player] != 0)
             side = player == 0;
+        else
+            side = player;
         if (MissionMenuPacketPc.active_player[player] != 0 && CustomiseMode[side] != 1) {
-            const f32 y = (f32)(STATSPOSY - 0.22499999403953552);
-            const f32 left = BlipL[player] > 0.0f ? 0.015000000596046448f : 0.0f;
-            const f32 right = BlipR[player] > 0.0f ? 0.015000000596046448f : 0.0f;
-            const f32 up = BlipU[player] > 0.0f ? -0.021000001579523087f : 0.0f;
-            const f32 down = BlipD[player] > 0.0f ? -0.021000001579523087f : 0.0f;
-            Text3D("<", (f32)(x - 0.05000000074505806 - left), y, 1.0f, 0.5f, 0.5f, 0.5f, 0, colour, colour, colour);
-            Text3D(">", (f32)(x + 0.05000000074505806 + right), y, 1.0f, 0.5f, 0.5f, 0.5f, 0, colour, colour, colour);
-            Text3DEx((char *)InitAsciiUpPc, x, (f32)(y - -0.07000000029802322 - up), 1.0f, 0.5f, 0.5f, 0.5f, 0, colour,
-                     colour, colour, CustomiseMenuYPc[side] > 0 ? 128 : 32);
-            Text3DEx((char *)TagAsciiDownPc, x, (f32)(y - 0.07000000029802322 + down), 1.0f, 0.5f, 0.5f, 0.5f, 0,
-                     colour, colour, colour, CustomiseMenuYPc[side] < 8 ? 128 : 32);
+            y = (f32)(STATSPOSY - 0.22499999403953552);
+            Text3D("<", (f32)(x - 0.05000000074505806 - (BlipL[player] > 0.0f ? 0.015000000596046448f : 0.0f)), y, 1.0f,
+                   0.5f, 0.5f, 0.5f, 0, colour, colour, colour);
+            Text3D(">", (f32)(x + 0.05000000074505806 + (BlipR[player] > 0.0f ? 0.015000000596046448f : 0.0f)), y, 1.0f,
+                   0.5f, 0.5f, 0.5f, 0, colour, colour, colour);
+            Text3DEx((char *)InitAsciiUpPc, x,
+                     (f32)(y - -0.07000000029802322 - (BlipU[player] > 0.0f ? -0.021000001579523087f : 0.0f)), 1.0f,
+                     0.5f, 0.5f, 0.5f, 0, colour, colour, colour, CustomiseMenuYPc[side] > 0 ? 128 : 32);
+            Text3DEx((char *)TagAsciiDownPc, x,
+                     (f32)(y - 0.07000000029802322 + (BlipD[player] > 0.0f ? -0.021000001579523087f : 0.0f)), 1.0f,
+                     0.5f, 0.5f, 0.5f, 0, colour, colour, colour, CustomiseMenuYPc[side] < 8 ? 128 : 32);
             SmartTextEx(TTab[TextIdPc880888], x, (f32)(STATSPOSY - 0.375), 1.0f, 0.30000001192092896f,
                         0.30000001192092896f, 0.30000001192092896f, 0, colour, colour, colour, 0.15000000596046448f, 1,
                         NULL, 0, 128);
