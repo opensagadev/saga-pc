@@ -623,7 +623,7 @@ __declspec(noinline) void __cdecl Text3DStringEncode(char *source, u16 *destinat
 }
 
 void __cdecl TextDecodeCodeword(char *source, char *destination) {
-    i32 button = -1;
+    i32 button;
     i32 device;
     if (buttonmapfn != NULL) {
         buttonmapfn(source, source);
@@ -641,6 +641,7 @@ void __cdecl TextDecodeCodeword(char *source, char *destination) {
         NuStrCpy(source, "logo");
     }
     NuStrCpy(destination, source);
+    button = -1;
     if (NuStrICmp(source, "padup") == 0) {
         button = 8;
     } else if (NuStrICmp(source, "padright") == 0) {
