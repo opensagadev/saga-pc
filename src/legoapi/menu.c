@@ -225,9 +225,9 @@ STATIC_ASSERT(offsetof(PC_MENU_SERVICE_VIEW, state_b8) == 0xb8);
 STATIC_ASSERT(offsetof(PC_MENU_SERVICE_VIEW, state_c0) == 0xc0);
 
 MENU *__cdecl NewMenu(i32 menu_id, i32 menu_y, i32 unused) {
+#define NEWMENU_VIEW ((PC_MENU_SERVICE_VIEW *)GameMenu)
+    PC_MENU_SERVICE_VIEW *menu = NULL;
     i32 index, selected = -1, previous_index;
-    PC_MENU_SERVICE_VIEW *previous, *menu = NULL;
-    MENUFNINFO *info;
     (void)unused;
     MenuSetPlatformState(1);
     CurrentMenuId = menu_id;
@@ -237,44 +237,49 @@ MENU *__cdecl NewMenu(i32 menu_id, i32 menu_y, i32 unused) {
             break;
         }
     }
-    previous = (PC_MENU_SERVICE_VIEW *)&GameMenu[GameMenuLevel];
-    previous->state_bc = 0;
-    previous_index = previous->menu;
-    if (previous_index != -1) {
-        info = &MenuInfo[previous_index];
-        if (info->memory_x != -1)
-            info->memory_x = previous->selected_column;
-        if (info->memory_y != -1)
-            info->memory_y = previous->selected_row;
+    previous_index = NEWMENU_VIEW[GameMenuLevel].menu;
+    NEWMENU_VIEW[GameMenuLevel].state_bc = 0;
+
+    if (NEWMENU_VIEW[GameMenuLevel].menu != -1) {
+        if (MenuInfo[NEWMENU_VIEW[GameMenuLevel].menu].memory_x != -1)
+            MenuInfo[NEWMENU_VIEW[GameMenuLevel].menu].memory_x = NEWMENU_VIEW[GameMenuLevel].selected_column;
+        if (MenuInfo[NEWMENU_VIEW[GameMenuLevel].menu].memory_y != -1)
+            MenuInfo[NEWMENU_VIEW[GameMenuLevel].menu].memory_y = NEWMENU_VIEW[GameMenuLevel].selected_row;
     }
-    if (selected == -1) {
-        previous->menu = -1;
-    } else {
+    if (selected != -1) {
         GameMenuLevel++;
         if (GameMenuLevel >= 10)
             GameMenuLevel--;
-        menu = (PC_MENU_SERVICE_VIEW *)&GameMenu[GameMenuLevel];
-        menu->menu_time = menu->time_04 = 0.0f;
-        menu->first_column = menu->first_row = menu->last_column = menu->last_row = 0;
-        menu->state_dc = menu->draw_item = 0;
-        menu->state_b4 = menu->state_b8 = 1;
-        menu->state_b0 = menu->state_c0 = menu->state_50 = 0;
+        menu = &NEWMENU_VIEW[GameMenuLevel];
+        menu->menu_time = 0.0f;
+        menu->time_04 = 0.0f;
+        menu->first_column = 0;
+        menu->first_row = 0;
+        menu->last_column = 0;
+        menu->last_row = 0;
+        menu->state_dc = 0;
+        menu->draw_item = 0;
+        menu->state_b8 = 1;
+        menu->state_b4 = 1;
+        menu->state_b0 = 0;
+        menu->state_c0 = 0;
+        menu->state_50 = 0;
         menu->previous_menu = (i8)previous_index;
         menu->menu = (i16)selected;
         MenuStopDraw = 1;
-        info = &MenuInfo[menu->menu];
-        if (info->id != -1 && info->draw_fn != NULL)
-            info->draw_fn((MENU *)menu);
+        if (MenuInfo[menu->menu].id != -1 && MenuInfo[menu->menu].draw_fn != NULL)
+            MenuInfo[menu->menu].draw_fn((MENU *)menu);
         menu->last_row = (i16)((i16)menu->draw_item - 1);
         MenuStopDraw = 0;
-        menu->selected_row = menu_y >= menu->first_row && menu_y <= menu->last_row ? (i16)menu_y : 0;
+        if (menu_y >= menu->first_row && menu_y <= menu->last_row)
+            menu->selected_row = (i16)menu_y;
+        else
+            menu->selected_row = 0;
         menu->selected_column = 0;
-        info = &MenuInfo[menu->menu];
-        if (info->enter_fn != NULL)
-            info->enter_fn((MENU *)menu);
-        info = &MenuInfo[menu->menu];
-        if (info->memory_x != -1)
-            menu->selected_column = info->memory_x;
+        if (MenuInfo[menu->menu].enter_fn != NULL)
+            MenuInfo[menu->menu].enter_fn((MENU *)menu);
+        if (MenuInfo[menu->menu].memory_x != -1)
+            menu->selected_column = MenuInfo[menu->menu].memory_x;
         if (menu->selected_column < menu->first_column)
             menu->selected_column = menu->first_column;
         else if (menu->selected_column > menu->last_column)
@@ -282,19 +287,26 @@ MENU *__cdecl NewMenu(i32 menu_id, i32 menu_y, i32 unused) {
         if (menu_y >= menu->first_row && menu_y <= menu->last_row)
             menu->selected_row = (i16)menu_y;
         else {
-            if (info->memory_y != -1)
-                menu->selected_row = info->memory_y;
+            if (MenuInfo[menu->menu].memory_y != -1)
+                menu->selected_row = MenuInfo[menu->menu].memory_y;
             if (menu->selected_row < menu->first_row)
                 menu->selected_row = menu->first_row;
             else if (menu->selected_row > menu->last_row)
                 menu->selected_row = menu->last_row;
         }
-        menu->menu_time = menu->time_04 = menu->transition_18 = menu->transition_1c = 0.0f;
+        menu->menu_time = 0.0f;
+        menu->time_04 = 0.0f;
         menu->flags = -1;
+        menu->transition_1c = 0.0f;
+        menu->transition_18 = 0.0f;
+    } else {
+        NEWMENU_VIEW[GameMenuLevel].menu = -1;
     }
     MenuAlpha = 0.0f;
-    MenuA = MenuValidated = 0;
+    MenuA = 0;
+    MenuValidated = 0;
     return (MENU *)menu;
+#undef NEWMENU_VIEW
 }
 
 NUGSCN *__cdecl IconScene_FindById(i32 id) {
