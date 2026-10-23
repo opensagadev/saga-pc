@@ -892,21 +892,17 @@ i32 __cdecl ItemMenu(void *menu) {
             forward_angle = (i32)((f64)reverse_phase * 32768.0 + 16384.0);
             forward_factor = (f32)(1.0 - ((f64)NuTrigTable[(forward_angle >> 1) & 0x7fff] + 1.0) * 0.5);
             if (ShopLastItemPc != -1) {
-                old_factor = old_factor > 1.0f ? 1.0f : old_factor;
-                old_factor = old_factor < 0.0f ? 0.0f : (old_factor < 1.0f ? old_factor : 1.0f);
+                old_factor = SHOP_CLAMP01(old_factor);
                 topscale[ShopLastItemPc] = TopBigScale[ShopLastItemPc] +
                                            (TopShelfScale[ShopLastItemPc] - TopBigScale[ShopLastItemPc]) * old_factor;
-                forward_factor = forward_factor > 1.0f ? 1.0f : forward_factor;
-                forward_factor = forward_factor < 0.0f ? 0.0f : (forward_factor < 1.0f ? forward_factor : 1.0f);
+                forward_factor = SHOP_CLAMP01(forward_factor);
                 toppush[ShopLastItemPc] = TopBigPush[ShopLastItemPc] +
                                           (TopShelfPush[ShopLastItemPc] - TopBigPush[ShopLastItemPc]) * forward_factor;
             }
             if (picked != -1 && ShopLastItemPc != -1) {
-                old_factor = old_factor > 1.0f ? 1.0f : old_factor;
-                old_factor = old_factor < 0.0f ? 0.0f : (old_factor < 1.0f ? old_factor : 1.0f);
+                old_factor = SHOP_CLAMP01(old_factor);
                 topscale[picked] = TopShelfScale[picked] + (TopBigScale[picked] - TopShelfScale[picked]) * old_factor;
-                forward_factor = forward_factor > 1.0f ? 1.0f : forward_factor;
-                forward_factor = forward_factor < 0.0f ? 0.0f : (forward_factor < 1.0f ? forward_factor : 1.0f);
+                forward_factor = SHOP_CLAMP01(forward_factor);
                 toppush[picked] = TopShelfPush[picked] + (TopBigPush[picked] - TopShelfPush[picked]) * forward_factor;
             }
         }
@@ -1114,12 +1110,10 @@ i32 __cdecl SubItemMenu(void *menu) {
         angle = (i32)((f64)phase * 32768.0 + 16384.0);
         factor = (f32)(1.0 - ((f64)NuTrigTable[(angle >> 1) & 0x7fff] + 1.0) * 0.5);
         if (ShopEaseSubInPc == 1) {
-            factor = factor > 1.0f ? 1.0f : factor;
-            factor = 0.0f > factor ? 0.0f : (factor < 1.0f ? factor : 1.0f);
+            factor = SHOP_CLAMP01(factor);
             ShopInOutScalePc = 0.0f + factor;
         } else if (ShopEaseSubInPc == -1) {
-            factor = factor < 1.0f ? factor : 1.0f;
-            factor = factor < 0.0 ? 0.0f : (factor < 1.0f ? factor : 1.0f);
+            factor = SHOP_CLAMP01(factor);
             ShopInOutScalePc = (f32)((f64)factor * -1.0 + 1.0);
         }
     }
