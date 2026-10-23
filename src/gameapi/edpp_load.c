@@ -123,16 +123,15 @@ static void UpdateTotalPtls(DEBRIS_INFO_PC *effect) {
 }
 
 void cbPtlSetFacing(eduimenu_s *unused0, eduiitem_s *item, u32 unused2) {
-    EDPP_PARTICLE_PC *particle = &edpp_ptls[edpp_nearest];
-    particle->facing_mode = item->highlighted;
+    edpp_ptls[edpp_nearest].facing_mode = item->highlighted;
     if (item->highlighted) {
-        particle->facing_rotation_x = edpp_facrotx;
-        particle->facing_rotation_y = edpp_facroty;
-        DebrisSetFacing(particle->instance_id, 1, particle->facing_rotation_x, particle->facing_rotation_y);
+        edpp_ptls[edpp_nearest].facing_rotation_x = edpp_facrotx;
+        edpp_ptls[edpp_nearest].facing_rotation_y = edpp_facroty;
+        DebrisSetFacing(edpp_ptls[edpp_nearest].instance_id, 1, edpp_facrotx, edpp_facroty);
     } else {
-        particle->facing_rotation_x = 0;
-        particle->facing_rotation_y = 0;
-        DebrisSetFacing(particle->instance_id, 0, 0, 0);
+        edpp_ptls[edpp_nearest].facing_rotation_x = 0;
+        edpp_ptls[edpp_nearest].facing_rotation_y = 0;
+        DebrisSetFacing(edpp_ptls[edpp_nearest].instance_id, 0, 0, 0);
     }
 }
 

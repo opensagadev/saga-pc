@@ -752,19 +752,19 @@ i32 __cdecl edgraLoadPage(char *path, void *scene, i32 terrain, VARIPTR *buffer,
 
 void edgracbFileLoad(eduimenu_s *menu, eduiitem_s *unused1, u32 unused2) {
     char path[256];
-    char directory[256];
-    char name[256];
     char extension[256];
+    char name[256];
+    char directory[256];
     if (edbits_level_save_directory[0] == 0)
-        strcpy(directory, ".");
+        sprintf(directory, ".");
     else
         strcpy(directory, edbits_level_save_directory);
     if (edbits_level_save_name[0] == 0)
-        strcpy(name, "grass");
+        sprintf(name, "grass");
     else
         strcpy(name, edbits_level_save_name);
     if (edbits_level_save_extension[0] == 0)
-        strcpy(extension, "gra");
+        sprintf(extension, "gra");
     else
         strcpy(extension, edbits_level_save_extension);
     sprintf(path, "%s\\%s.%s", directory, name, extension);
