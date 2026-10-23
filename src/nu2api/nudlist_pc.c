@@ -62,35 +62,35 @@ static __declspec(noinline) void PCSpecialTransposeMatrix(NUMTX *out, NUMTX *mat
     out->m33 = matrix->m33;
 }
 VARIPTR *__cdecl NuDisplayListLinkItems(NUDISPLAYLIST_PC *list, i32 count) {
-    NUDISPLAYLISTITEM *item;
+    VARIPTR *cursor;
     NuDisplayListStreamCursor->addr = (NuDisplayListStreamCursor->addr + 15) & ~15u;
-    ((NUDISPLAYLISTITEM *)list->material_last)->next = NuDisplayListStreamCursor->void_ptr;
-    list->items = NuDisplayListStreamCursor->void_ptr;
-    NuDisplayListStreamCursor->addr += count * sizeof(NUDISPLAYLISTITEM);
-    item = (NUDISPLAYLISTITEM *)NuDisplayListStreamCursor->void_ptr;
-    item->type = 0x8d;
-    item->id = 1;
-    item->next = (NUDISPLAYLISTITEM *)list->dynamic_geometry + 1;
-    list->material_last = item;
-    NuDisplayListStreamCursor->addr += sizeof(NUDISPLAYLISTITEM);
-    return NuDisplayListStreamCursor;
+    cursor = NuDisplayListStreamCursor;
+    ((NUDISPLAYLISTITEM *)list->material_last)->next = cursor->void_ptr;
+    list->items = cursor->void_ptr;
+    cursor->addr += count * sizeof(NUDISPLAYLISTITEM);
+    ((NUDISPLAYLISTITEM *)cursor->void_ptr)->type = 0x8d;
+    ((NUDISPLAYLISTITEM *)cursor->void_ptr)->id = 1;
+    ((NUDISPLAYLISTITEM *)cursor->void_ptr)->next = (NUDISPLAYLISTITEM *)list->dynamic_geometry + 1;
+    list->material_last = cursor->void_ptr;
+    cursor->addr += sizeof(NUDISPLAYLISTITEM);
+    return cursor;
 }
 void *__cdecl DisplayListCreateGeomTransformPS(VARIPTR *buffer, NUMTX *matrix, NUMTL *material, void *geometry,
                                                void *existing) {
-    NUVEC scale, translation;
+    NUVEC translation, scale;
     NUMTX *result;
     (void)material;
     (void)geometry;
     (void)existing;
     NuCameraGetProjectionMtx();
     NuCameraGetViewMtx();
+    scale.z = 1.0f;
+    translation.z = translation.y = translation.x = 0.0f;
     scale.x = PCSpecialProjectionAdjust.x_scale;
     scale.y = PCSpecialProjectionAdjust.y_scale;
-    scale.z = 1.0f;
+    NuMtxSetScale(&PCSpecialProjectionScale, &scale);
     translation.x = PCSpecialProjectionAdjust.x_offset;
     translation.y = PCSpecialProjectionAdjust.y_offset;
-    translation.z = 0.0f;
-    NuMtxSetScale(&PCSpecialProjectionScale, &scale);
     NuMtxSetTranslation(&PCSpecialProjectionTranslate, &translation);
     buffer->addr = (buffer->addr + 3) & ~3u;
     result = (NUMTX *)buffer->void_ptr;
@@ -106,21 +106,23 @@ void *__cdecl DisplayListCreateFaceonTransformPS(VARIPTR *buffer, NUMTX *matrix,
     buffer->addr = (buffer->addr + 3) & ~3u;
     result = (NUMTX *)buffer->void_ptr;
     *result = *matrix;
-    magnitude = NuFsqrt((f32)(((f64)NuVecMagSqr((NUVEC *)&result->m10) + NuVecMagSqr((NUVEC *)&result->m00) +
-                               NuVecMagSqr((NUVEC *)&result->m20)) *
+    magnitude = NuFsqrt((f32)(((f64)NuVecMagSqr((NUVEC *)&((NUMTX *)buffer->void_ptr)->m10) +
+                               NuVecMagSqr((NUVEC *)&((NUMTX *)buffer->void_ptr)->m00) +
+                               NuVecMagSqr((NUVEC *)&((NUMTX *)buffer->void_ptr)->m20)) *
                               (f64)0.3333333432674408f));
     buffer->addr += sizeof(NUMTX);
     *(f32 *)buffer->void_ptr = magnitude;
     buffer->addr += sizeof(f32);
     orientation = (NUMTX *)buffer->void_ptr;
-    buffer->addr += sizeof(NUMTX);
     if (((PC_SPECIAL_FACEON *)faceon)->kind == 0) {
         direction.x = direction.y = direction.z = 0.0f;
+        buffer->addr += sizeof(NUMTX);
         NuMtxCalcCheapFaceOn(orientation, &direction);
     } else {
         direction.x = matrix->m10;
         direction.y = matrix->m11;
         direction.z = matrix->m12;
+        buffer->addr += sizeof(NUMTX);
         NuMtxCalcCheapFaceY_v2(orientation, &direction);
     }
     return result;
