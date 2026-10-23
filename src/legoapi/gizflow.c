@@ -106,72 +106,90 @@ static void ResetForLoopEx(GIZFLOW_PC *flow, FLOWBOX_PC *root, FLOWBOX_PC *box, 
 i32 __cdecl ProcessConditionFlowBox(GIZFLOW_PC *flow, FLOWBOX_PC *box, u8 frame) {
     FLOWBOXCONDITION_PC *condition = (FLOWBOXCONDITION_PC *)box->data;
     i32 i;
+    FLOWBOX_PC **parents;
+    u8 *outputs;
 
-    if (condition == NULL) {
-        for (i = 0; i < box->parent_count; ++i) {
-            FLOWBOX_PC *parent = box->parents[i];
-            if (!flowbox_callbacks[parent->type].check_output(flow, parent, box->output_indices[i]))
-                return 0;
+    if (condition != NULL) {
+        i32 count = 0;
+        i32 required;
+        switch (condition->operation) {
+            case 0:
+                if (box->parent_count != 0) {
+                    parents = box->parents;
+                    outputs = box->output_indices;
+                    for (i = 0; i < box->parent_count; ++i, ++parents, ++outputs) {
+                        if (!flowbox_callbacks[(*parents)->type].check_output(flow, *parents, *outputs))
+                            return 0;
+                    }
+                }
+                break;
+            case 1:
+            case 3:
+            case 5:
+                required = condition->operation == 1 ? 1 : condition->threshold;
+                if (box->parent_count != 0) {
+                    parents = box->parents;
+                    outputs = box->output_indices;
+                    for (i = 0; i < box->parent_count; ++i, ++parents, ++outputs) {
+                        if (flowbox_callbacks[(*parents)->type].check_output(flow, *parents, *outputs))
+                            ++count;
+                    }
+                }
+                if (condition->operation == 5) {
+                    if (count != required)
+                        return 0;
+                } else if (count < required) {
+                    return 0;
+                }
+                break;
+            case 2:
+                if (box->parent_count != 0) {
+                    parents = box->parents;
+                    outputs = box->output_indices;
+                    for (i = 0; i < box->parent_count; ++i, ++parents, ++outputs) {
+                        if (flowbox_callbacks[(*parents)->type].check_output(flow, *parents, *outputs))
+                            return 0;
+                    }
+                }
+                break;
+            case 4: {
+                u16 looping = (*(u16 *)&box->state_flags_low >> 10) & 1;
+                if (looping)
+                    required = box->parent_count - box->loop_parent_count;
+                else
+                    required = box->parent_count;
+                if (required == 0 && !looping)
+                    required = box->parent_count;
+                if (box->parent_count != 0) {
+                    parents = box->parents;
+                    outputs = box->output_indices;
+                    for (i = 0; i < box->parent_count; ++i, ++parents, ++outputs) {
+                        if (flowbox_callbacks[(*parents)->type].check_output(flow, *parents, *outputs))
+                            ++count;
+                    }
+                }
+                if (count < required)
+                    return 0;
+                break;
+            }
         }
+        if (condition->operation == 4) {
+            for (i = 0; i < box->child_count; ++i) {
+                ++gizflow_loop_checksum;
+                ResetForLoopEx(flow, box, box->children[i], gizflow_loop_checksum);
+            }
+        }
+        (void)frame;
         return 1;
     }
-
-    switch (condition->operation) {
-        case 0:
-            for (i = 0; i < box->parent_count; ++i) {
-                FLOWBOX_PC *parent = box->parents[i];
-                if (!flowbox_callbacks[parent->type].check_output(flow, parent, box->output_indices[i]))
-                    return 0;
-            }
-            break;
-        case 2:
-            for (i = 0; i < box->parent_count; ++i) {
-                FLOWBOX_PC *parent = box->parents[i];
-                if (flowbox_callbacks[parent->type].check_output(flow, parent, box->output_indices[i]))
-                    return 0;
-            }
-            break;
-        case 1:
-        case 3:
-        case 5: {
-            i32 required = condition->operation == 1 ? 1 : condition->threshold;
-            i32 count = 0;
-            for (i = 0; i < box->parent_count; ++i) {
-                FLOWBOX_PC *parent = box->parents[i];
-                count += flowbox_callbacks[parent->type].check_output(flow, parent, box->output_indices[i]) != 0;
-            }
-            if (condition->operation == 5) {
-                if (count != required)
-                    return 0;
-            } else if (count < required) {
+    if (box->parent_count != 0) {
+        parents = box->parents;
+        outputs = box->output_indices;
+        for (i = 0; i < box->parent_count; ++i, ++parents, ++outputs) {
+            if (!flowbox_callbacks[(*parents)->type].check_output(flow, *parents, *outputs))
                 return 0;
-            }
-            break;
-        }
-        case 4: {
-            i32 required = box->parent_count;
-            i32 count = 0;
-            if ((box->state_flags_high & 4) != 0)
-                required -= box->loop_parent_count;
-            for (i = 0; i < box->parent_count; ++i) {
-                FLOWBOX_PC *parent = box->parents[i];
-                count += flowbox_callbacks[parent->type].check_output(flow, parent, box->output_indices[i]) != 0;
-            }
-            if (count < required)
-                return 0;
-            break;
-        }
-        default:
-            break;
-    }
-
-    if (condition->operation == 4) {
-        for (i = 0; i < box->child_count; ++i) {
-            ++gizflow_loop_checksum;
-            ResetForLoopEx(flow, box, box->children[i], gizflow_loop_checksum);
         }
     }
-    (void)frame;
     return 1;
 }
 
