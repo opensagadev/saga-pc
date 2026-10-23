@@ -3332,9 +3332,10 @@ u8 *TerrainSkinRebuildIndexPc(i32 pool_slots) {
     max_x = min_x - capacity;
     min_z = max_x - capacity;
     max_z = min_z - capacity;
-    for (i = 0; i < terrain->group_count; ++i) {
-        group = &terrain->groups[i];
-        if (group->chunk_type == 0) {
+    group = terrain->groups;
+    for (i = 0; i < terrain->group_count; ++i, ++group) {
+        const i32 chunk_type = group->chunk_type;
+        if (chunk_type == 0) {
             if (group->bounds_min.x < world_min_x)
                 world_min_x = group->bounds_min.x;
             /* Each native comparison uses the matching minimum or maximum. */
@@ -3349,28 +3350,28 @@ u8 *TerrainSkinRebuildIndexPc(i32 pool_slots) {
             if (group->bounds_max.z > world_max_z)
                 world_max_z = group->bounds_max.z;
         }
-        if (group->chunk_type == 1) {
+        if (chunk_type == 1) {
             if (group->bounds_min.x < world_min_x)
-                world_min_x = group->bounds_min.x + group->origin.x;
+                world_min_x = group->origin.x + group->bounds_min.x;
             if (group->bounds_min.y < world_min_y)
-                world_min_y = group->bounds_min.y + group->origin.y;
+                world_min_y = group->origin.y + group->bounds_min.y;
             if (group->bounds_min.z < world_min_z)
-                world_min_z = group->bounds_min.z + group->origin.z;
+                world_min_z = group->origin.z + group->bounds_min.z;
             if (group->bounds_max.x > world_max_x)
-                world_max_x = group->bounds_max.x + group->origin.x;
+                world_max_x = group->origin.x + group->bounds_max.x;
             if (group->bounds_max.y > world_max_y)
-                world_max_y = group->bounds_max.y + group->origin.y;
+                world_max_y = group->origin.y + group->bounds_max.y;
             if (group->bounds_max.z > world_max_z)
-                world_max_z = group->bounds_max.z + group->origin.z;
+                world_max_z = group->origin.z + group->bounds_max.z;
         }
     }
     terrain->group_index_count = 0;
-    for (i = 0; i < terrain->group_count; ++i) {
-        group = &terrain->groups[i];
+    group = terrain->groups;
+    for (i = 0; i < terrain->group_count; ++i, ++group) {
         if (group->chunk_type == 0) {
             i32 x, z;
-            min_x[i] = min_z[i] = 200000000.0f;
-            max_x[i] = max_z[i] = -200000000.0f;
+            min_z[i] = min_x[i] = 200000000.0f;
+            max_z[i] = max_x[i] = -200000000.0f;
             if (group->bounds_min.x < min_x[i])
                 min_x[i] = group->bounds_min.x;
             if (group->bounds_min.z < min_z[i])
@@ -3379,13 +3380,13 @@ u8 *TerrainSkinRebuildIndexPc(i32 pool_slots) {
                 max_x[i] = group->bounds_max.x;
             if (group->bounds_max.z > max_z[i])
                 max_z[i] = group->bounds_max.z;
-            x = (i32)((f64)(i32)((u32)(i32)(((f64)max_x[i] + min_x[i]) * 0.5 - world_min_x) * 7u) /
+            x = (i32)((f64)((i32)(((f64)min_x[i] + max_x[i]) * 0.5 - world_min_x) * 7) /
                       ((f64)world_max_x - world_min_x));
             if (x < 0)
                 x = 0;
             else if (x > 6)
                 x = 6;
-            z = (i32)((f64)(i32)((u32)(i32)(((f64)max_z[i] + min_z[i]) * 0.5 - world_min_z) * 7u) /
+            z = (i32)((f64)((i32)(((f64)min_z[i] + max_z[i]) * 0.5 - world_min_z) * 7) /
                       ((f64)world_max_z - world_min_z));
             if (z < 0)
                 z = 0;
@@ -3394,9 +3395,9 @@ u8 *TerrainSkinRebuildIndexPc(i32 pool_slots) {
             selectors[i] = (i16)(z * 7 + x);
         }
     }
-    for (i = 0; i < 256; ++i)
+    /* Native clear runs one past cells[] into the adjacent platform_cell. */
+    for (i = 0; i < 257; ++i)
         terrain->cells[i].group_count = 0;
-    terrain->platform_cell.group_count = 0;
     terrain->used_cell_count = 0;
     for (cell_index = 0; cell_index < 49; ++cell_index) {
         TERRAIN_CELL_PC *cell = &terrain->cells[terrain->used_cell_count];
