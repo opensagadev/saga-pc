@@ -108,82 +108,71 @@ extern const f64 VehicleHoverHeightSeparationScale;
 extern i32 getvehiclehoverheight_hothbattlehack;
 
 f32 __cdecl GetVehicleHoverHeight(GAMEOBJECT *object, f32 *separation_offset) {
-    GAMEOBJECT *player0 = (GAMEOBJECT *)Player[0];
-    GAMEOBJECT *player1 = (GAMEOBJECT *)Player[1];
-    WORLDINFO *world = WORLD;
-    LEVELDATA_PC *level = world->current_level;
-    f32 height = object->hover_height_override;
-    i32 separate;
+    f32 height;
+    f32 combined_height, combined_radius, outer_distance, distance, blend, offset, correction, adjusted_height;
 
-    if ((f64)height == MoveSplineRunSpeedSentinel) {
-        height = level->hover_height;
-        if (height == 0.0f) {
-            height = object->character_data->game_character->field_028;
-            if (object->id == id_SPEEDERBIKE && level == SPEEDERCHASEA_LDATA && disable_narrow_socks != 0) {
-                height = (f32)((f64)height * NuQFntHalfScale);
-            }
-        }
-    }
-
-    if (level == SPEEDERCHASEA_LDATA) {
-        separate = disable_narrow_socks == 0 && object->field_280 != 0xff &&
-                   object->movement_spline_position.spline == NULL && player0 != NULL &&
-                   player0->takeover_source != NULL && player0->id == id_SPEEDERBIKE && player1 != NULL &&
-                   player1->takeover_source != NULL && player0->id == player1->id;
+    if (object->hover_height_override != MoveSplineRunSpeedSentinel) {
+        height = object->hover_height_override;
+    } else if (WORLD->current_level->hover_height != 0.0f) {
+        height = WORLD->current_level->hover_height;
     } else {
-        separate = (object->flags_1fc & 0x80) != 0 && player0 != NULL &&
-                   (player0->character_data->model_flags & 0x2000) != 0 &&
-                   (((player0->flags_1fc & 0x80) != 0) || player0->character_context == 0x24) && player1 != NULL &&
-                   (player1->character_data->model_flags & 0x2000) != 0 &&
-                   (((player1->flags_1fc & 0x80) != 0) || player1->character_context == 0x24);
+        height = object->character_data->game_character->field_028;
+        if (object->id == (u16)id_SPEEDERBIKE && WORLD->current_level == SPEEDERCHASEA_LDATA &&
+            disable_narrow_socks != 0)
+            height = (f32)(height * NuQFntHalfScale);
     }
 
-    if (separate) {
-        f32 combined_height =
-            (f32)((f64)(player0->bounds_half_height + player1->bounds_half_height) * VehicleHoverHeightSeparationScale);
-        f32 combined_radius = player0->bounds_radius + player1->bounds_radius;
-        f32 inner_distance = combined_radius * combined_radius;
-        f32 outer_radius = (f32)((f64)combined_radius * NuTimeBarColumnStep);
-        f32 outer_distance = outer_radius * outer_radius;
-        f32 distance = NuVecXZDistSqr(&player0->position, &player1->position, NULL);
-        f32 blend;
-        f32 offset;
-        f32 adjusted_height;
-        f32 correction = 0.0f;
-
-        if (distance < inner_distance) {
+    if (WORLD->current_level == SPEEDERCHASEA_LDATA
+            ? disable_narrow_socks == 0 && object->field_280 != 0xff &&
+                  object->movement_spline_position.spline == NULL && Player[0] != NULL &&
+                  ((GAMEOBJECT *)Player[0])->takeover_source != NULL &&
+                  ((GAMEOBJECT *)Player[0])->id == (u16)id_SPEEDERBIKE && Player[1] != NULL &&
+                  ((GAMEOBJECT *)Player[1])->takeover_source != NULL &&
+                  ((GAMEOBJECT *)Player[1])->id == (u16)id_SPEEDERBIKE
+            : (object->flags_1fc & 0x80) != 0 && Player[0] != NULL &&
+                  (((GAMEOBJECT *)Player[0])->character_data->model_flags & 0x2000) != 0 &&
+                  ((((GAMEOBJECT *)Player[0])->flags_1fc & 0x80) != 0 ||
+                   ((GAMEOBJECT *)Player[0])->character_context == 0x24) &&
+                  Player[1] != NULL && (((GAMEOBJECT *)Player[1])->character_data->model_flags & 0x2000) != 0 &&
+                  ((((GAMEOBJECT *)Player[1])->flags_1fc & 0x80) != 0 ||
+                   ((GAMEOBJECT *)Player[1])->character_context == 0x24)) {
+        combined_height =
+            (f32)((((GAMEOBJECT *)Player[1])->bounds_half_height + ((GAMEOBJECT *)Player[0])->bounds_half_height) *
+                  VehicleHoverHeightSeparationScale);
+        combined_radius = ((GAMEOBJECT *)Player[1])->bounds_radius + ((GAMEOBJECT *)Player[0])->bounds_radius;
+        outer_distance = (f32)(NuTimeBarColumnStep * combined_radius);
+        combined_radius = combined_radius * combined_radius;
+        outer_distance = outer_distance * outer_distance;
+        distance = NuVecXZDistSqr(&((GAMEOBJECT *)Player[0])->position, &((GAMEOBJECT *)Player[1])->position, NULL);
+        if (distance < combined_radius) {
             blend = 1.0f;
         } else if (distance < outer_distance) {
-            blend = 1.0f - (distance - inner_distance) / (outer_distance - inner_distance);
+            blend = 1.0f - (distance - combined_radius) / (outer_distance - combined_radius);
         } else {
             blend = 0.0f;
         }
-
         offset = blend * combined_height;
         adjusted_height = height - offset;
-        if (adjusted_height < offset) {
+        if (adjusted_height < offset)
             correction = offset - adjusted_height;
-        }
-        if (player0 == object) {
+        else
+            correction = 0.0f;
+        if (object == (GAMEOBJECT *)Player[0]) {
             adjusted_height = height + offset;
-            if (separation_offset != NULL) {
+            if (separation_offset != NULL)
                 *separation_offset = offset;
-            }
         } else if (separation_offset != NULL) {
             *separation_offset = -offset;
         }
-        height = adjusted_height + correction;
-        level = world->current_level;
+        height = correction + adjusted_height;
     } else if (separation_offset != NULL) {
         *separation_offset = 0.0f;
     }
-
-    if (level == HOTHBATTLEA_LDATA && (TerLayer[object->field_283].flags & 1) != 0) {
-        height = 0.0f;
+    if (WORLD->current_level == HOTHBATTLEA_LDATA && (TerLayer[object->field_283].flags & 1) != 0) {
         getvehiclehoverheight_hothbattlehack = 1;
-    } else {
-        getvehiclehoverheight_hothbattlehack = 0;
+        return 0.0f;
     }
+    getvehiclehoverheight_hothbattlehack = 0;
     return height;
 }
 
@@ -561,49 +550,43 @@ GAMEOBJECT *__cdecl GetNamedGameObject(void *sys, char *name) {
 void __cdecl MakeBaddiesForgetAboutParty(i32 check_hostility) {
     GAMEOBJECT *baddies[64];
     GAMEOBJECT *party[64];
-    i32 party_count = 0;
     i32 baddie_count = 0;
+    i32 party_count = 0;
+    GAMEOBJECT **baddie_cursor = baddies;
+    GAMEOBJECT **party_cursor = party;
     GAMEOBJECT *object = Obj;
     i32 count = HIGHGAMEOBJECT;
     i32 i, j;
     for (i = 0; i < count; ++i, ++object) {
-        if ((object->flags_1fc_word & 0x1001) != 0x1001 || object->dead != 0)
+        if ((object->flags_1fc_word & 1) == 0 || (object->flags_1fc_word & 0x1000) == 0 || object->dead != 0)
             continue;
-        if ((object->flags_1f8 & 1) != 0)
-            party[party_count++] = object;
-        else if ((object->flags_1f8 & 4) == 0)
-            baddies[baddie_count++] = object;
+        if ((object->flags_1f8 & 1) != 0) {
+            ++party_count;
+            *party_cursor++ = object;
+        } else if ((object->flags_1f8 & 4) == 0) {
+            ++baddie_count;
+            *baddie_cursor++ = object;
+        }
     }
     if (check_hostility != 0) {
         for (i = 0; i < baddie_count; ++i) {
-            u64 mask = (u64)1 << baddies[i]->hostility_group;
             for (j = 0; j < party_count; ++j) {
-                GAMEOBJECT *member = party[j];
-                u64 hostile = (u64)member->hostility_mask[0] | ((u64)member->hostility_mask[1] << 32);
-                if ((hostile & mask) != 0) {
-                    u32 *defaults = WORLD->object_sys->hostility_masks[member->hostility_group];
-                    if ((((u64)defaults[0] | ((u64)defaults[1] << 32)) & mask) != 0)
-                        return;
-                }
+                if ((U64_PAIR(party[j]->hostility_mask) & ((u64)1 << baddies[i]->hostility_group)) != 0 &&
+                    (U64_PAIR(WORLD->object_sys->hostility_masks[party[j]->hostility_group]) &
+                     ((u64)1 << baddies[i]->hostility_group)) != 0)
+                    return;
             }
         }
     }
     for (i = 0; i < baddie_count; ++i) {
-        GAMEOBJECT *baddie = baddies[i];
         for (j = 0; j < party_count; ++j) {
-            GAMEOBJECT *member = party[j];
-            u64 mask = ~((u64)1 << baddie->hostility_group);
-            u64 other_mask;
-            member->hostility_mask[0] &= (u32)mask;
-            member->hostility_mask[1] &= (u32)(mask >> 32);
-            other_mask = ~((u64)1 << member->hostility_group);
-            baddie->hostility_mask[0] &= (u32)other_mask;
-            baddie->hostility_mask[1] &= (u32)(other_mask >> 32);
+            U64_PAIR(party[j]->hostility_mask) &= ~((u64)1 << baddies[i]->hostility_group);
+            U64_PAIR(baddies[i]->hostility_mask) &= ~((u64)1 << party[j]->hostility_group);
         }
     }
     object = Obj;
     for (i = 0; i < HIGHGAMEOBJECT; ++i, ++object) {
-        if ((object->flags_1fc_word & 0x1001) != 0x1001 || object->dead != 0)
+        if ((object->flags_1fc_word & 1) == 0 || (object->flags_1fc_word & 0x1000) == 0 || object->dead != 0)
             continue;
         object->ai_packet.flags &= ~0x5800;
         object->ai_packet.opponent = NULL;
@@ -614,7 +597,8 @@ void __cdecl MakeBaddiesForgetAboutParty(i32 check_hostility) {
         object->ai_packet.target_metric_e0 = 1000000000.0f;
         object->ai_packet.target_ec = NULL;
         object->ai_packet.target_metric_f0 = 1000000000.0f;
-        object->hostility_mask[0] = object->hostility_mask[1] = 0;
+        object->hostility_mask[0] = 0;
+        object->hostility_mask[1] = 0;
         object->field_eb0 = 0;
         object->field_eb4 = 0;
         object->field_ec0 = 0;
@@ -628,8 +612,8 @@ void __cdecl MakeBaddiesForgetAboutParty(i32 check_hostility) {
         i32 all_under_cover = 1;
         for (i = 0; i < 8; ++i) {
             GAMEOBJECT *player = (GAMEOBJECT *)Player[i];
-            if (player == NULL || (player->flags_1fc_word & 0x1001) != 0x1001 || player->dead != 0 ||
-                (player->flags_ef0 & 0x01000000) != 0)
+            if (player == NULL || (player->flags_1fc_word & 1) == 0 || (player->flags_1fc_word & 0x1000) == 0 ||
+                player->dead != 0 || (player->flags_ef3 & 1) != 0)
                 continue;
             if (player->helmet == 5 ||
                 ((FreePlay != 0 || WORLD->current_level == HUB_LDATA) &&
@@ -1971,20 +1955,20 @@ static void TakeOver_SetAction(GAMEOBJECT *rider, GAMEOBJECT *vehicle) {
 
 static GAMEOBJECT *Tag_FindGameObject_TRANSFER(GAMEOBJECT *object) {
     f32 nearest_distance = object->character_context == 0x17 ? 1.44f : 0.48999998f;
-    i32 count = Tag_Mode == 3 ? HIGHGAMEOBJECT : 8;
     GAMEOBJECT *nearest = NULL;
+    i32 count = Tag_Mode == 3 ? HIGHGAMEOBJECT : 8;
     i32 index;
     for (index = 0; index < count; ++index) {
         GAMEOBJECT *candidate = Tag_Mode == 3 ? &Obj[index] : Player[index];
         NUVEC direction;
         f32 distance;
-        if (candidate == NULL || (candidate->flags_1fc_word & 0x1001) != 0x1001 || candidate == object ||
-            candidate->dead != 0 || (candidate->tag_flags & 2) != 0) {
+        if (candidate == NULL || (candidate->flags_1fc_word & 1) == 0 || (candidate->flags_1fc_word & 0x1000) == 0 ||
+            candidate == object || candidate->dead != 0 || (candidate->tag_flags & 2) != 0) {
             continue;
         }
         if (candidate->character_context == 0x17 || candidate->character_context == 0x3d ||
-            (CInfo[candidate->character_context].flags & 0x8000) != 0 ||
-            ((candidate->flags_ef4 & 2) != 0 && object->id != id_LUKESKYWALKERDAGOBAH)) {
+            (U64_PAIR(&CInfo[candidate->character_context].flags) & 0x8000) != 0 ||
+            ((candidate->flags_ef4 & 2) != 0 && object->id != (u16)id_LUKESKYWALKERDAGOBAH)) {
             continue;
         }
         distance = NuVecDistSqr(&object->position, &candidate->position, &direction);
@@ -4111,31 +4095,32 @@ extern GAMEOBJECT *__cdecl APIObjectCreate(APIOBJECTSYS_PC *);
 GAMEOBJECT *__cdecl AddGameObject(void) {
     GAMEOBJECT *object = APIObjectCreate(WORLD->object_sys);
     u64 identity;
-    if (object == NULL)
-        return NULL;
-    object->sock_index = 0xff;
-    object->field_283 = -1;
-    object->jump_animation_state = 0xff;
-    object->roof_surface_id_pc = 0xff;
-    object->movement_mode = 2;
-    object->flags_1fc_word |= 0x1001;
-    object->layer_mask = 1;
-    identity = (u64)1 << object->hostility_group;
-    object->collision_identity_mask[0] = (u32)identity;
-    object->collision_identity_mask[1] = (u32)(identity >> 32);
-    object->origin_scale = 1.0f;
-    object->collision_scale = 1.0f;
-    object->reflection_height = 2000000.0f;
-    object->roof_height_pc = 2000000.0f;
-    object->water_height = 2000000.0f;
-    object->floor_height = 2000000.0f;
-    RecomputeHighGameObject();
-    object->ai_packet.owner = object;
-    ((APIOBJECT_PC *)object)->owner = object;
-    ((APIOBJECT_PC *)object)->ai = &object->ai_packet;
-    ((GAMEOBJECT_COLLISION_RESET_PC *)object)->collision_overlap_low = 0;
-    ((GAMEOBJECT_COLLISION_RESET_PC *)object)->collision_overlap_high = 0;
-    return object;
+    if (object != NULL) {
+        object->flags_1fc_word |= 0x1001;
+        object->origin_scale = 1.0f;
+        object->collision_scale = 1.0f;
+        object->reflection_height = 2000000.0f;
+        object->sock_index = 0xff;
+        object->movement_mode = 2;
+        identity = (u64)1 << object->hostility_group;
+        object->collision_identity_mask[0] = (u32)identity;
+        object->roof_height_pc = 2000000.0f;
+        object->collision_identity_mask[1] = (u32)(identity >> 32);
+        object->water_height = 2000000.0f;
+        object->layer_mask = 1;
+        object->floor_height = 2000000.0f;
+        object->roof_surface_id_pc = 0xff;
+        object->field_283 = -1;
+        object->jump_animation_state = 0xff;
+        RecomputeHighGameObject();
+        ((APIOBJECT_PC *)object)->owner = object;
+        object->ai_packet.owner = object;
+        ((APIOBJECT_PC *)object)->ai = &object->ai_packet;
+        ((GAMEOBJECT_COLLISION_RESET_PC *)object)->collision_overlap_low = 0;
+        ((GAMEOBJECT_COLLISION_RESET_PC *)object)->collision_overlap_high = 0;
+        return object;
+    }
+    return NULL;
 }
 
 /* Minimum original PC consumer views; no full allocation extent asserted. */

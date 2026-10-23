@@ -1019,8 +1019,8 @@ void __cdecl DebrisTimeSlip(i32 group) {
     for (i = 0; i < maxdebkeys; ++i) {
         DEBRIS_INFO_PC *effect = debtab[DEBRIS_ENGINE_KEYS_PC[i].effect_index];
         if ((effect->time_group == 4 && group == 1) || (effect->time_group != 4 && group == 0)) {
-            DEBRIS_ENGINE_KEYS_PC[i].last_update_time -= 800.0;
             glass = effect->particle_type == 7;
+            DEBRIS_ENGINE_KEYS_PC[i].last_update_time -= 800.0;
             DEBRIS_ENGINE_KEYS_PC[i].emission_epoch -= 800.0;
             DEBRIS_ENGINE_KEYS_PC[i].emission_time -= 800.0;
             DEBRIS_ENGINE_KEYS_PC[i].previous_emission_time -= 800.0;
