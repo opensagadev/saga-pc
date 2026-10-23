@@ -301,6 +301,17 @@ void edcamMtx(NUMTX *matrix) {
     }
 }
 
+extern NUCAMERA *EdMainCurrentCameraPc;
+
+void edcamSet(void) {
+    NUMTX matrix;
+    NUCAMERA *camera;
+    edcamMtx(&matrix);
+    camera = EdMainCurrentCameraPc;
+    camera->mtx = matrix;
+    NuCameraSet(camera);
+}
+
 /* PC input startup remains structurally incomplete at the marked platform
  * dependencies; these candidates preserve the verified wrapper ABI/order. */
 extern HINSTANCE PCInputWindow_candidate;

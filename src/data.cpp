@@ -29800,6 +29800,12 @@ extern "C" {
 #pragma bss_seg(".bss$NuRndrDoingScreenGrab")
     i32 NuRndrDoingScreenGrab = 0;
 
+#pragma bss_seg(".bss$edinternalcam")
+    NUCAMERA *edinternalcam = 0;
+
+#pragma bss_seg(".bss$cubemapcam")
+    NUCAMERA *cubemapcam = 0;
+
 #pragma bss_seg(".bss$edanim_localsound_menu")
     struct eduimenu_s *edanim_localsound_menu = 0;
 
@@ -29974,6 +29980,12 @@ extern "C" {
 }
 
 extern "C" {
+#pragma data_seg(".data$edbits_cubemap_fov")
+    f32 edbits_cubemap_fov = 1.5708f;
+
+#pragma data_seg(".data$edbits_cubemap_aspect")
+    f32 edbits_cubemap_aspect = 1.0f;
+
 #pragma data_seg(".data$edbri_length")
     f32 edbri_length = 1.0f;
 

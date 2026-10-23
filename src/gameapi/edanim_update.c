@@ -9,6 +9,13 @@ f32 __cdecl edanimPlayerAnimDistance(i32 parameter_index);
 void __cdecl edanimParticleDestroy(i32 parameter_index, i32 particle_index);
 extern NUVEC APIObjectZeroMomentumPC;
 
+extern NUCAMERA *EdMainCurrentCameraPc;
+extern NUCAMERA *edinternalcam;
+
+void __cdecl edmainExtCamera(NUCAMERA *camera) {
+    EdMainCurrentCameraPc = camera != NULL ? camera : edinternalcam;
+}
+
 /* Native 617f80/6. The pointer is zero-initialized engine/editor storage.
  * The neighboring native setter 617f70 has no verified direct caller. */
 NUVEC *__cdecl edmainQueryLocVec(void) {

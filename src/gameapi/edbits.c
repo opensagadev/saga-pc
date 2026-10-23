@@ -38,6 +38,73 @@ i32 __cdecl edbitsStartCubemapDump(void) {
     return 1;
 }
 
+extern NUCAMERA *cubemapcam;
+extern f32 edbits_cubemap_fov;
+extern f32 edbits_cubemap_aspect;
+void edcamSetAng(i32 pitch, i32 yaw);
+void edcamSetDist(f32 distance);
+
+i32 __cdecl edbitsProcessCubemapDump(void) {
+    if (edbits_cubecount != 0) {
+        if (cubemapcam == NULL)
+            cubemapcam = NuCameraCreate();
+        cubemapcam->fov = edbits_cubemap_fov;
+        cubemapcam->aspect = edbits_cubemap_aspect;
+        switch (edbits_cubecount) {
+            case 60:
+                edmainExtCamera(cubemapcam);
+                edcamSetDist(0.0f);
+                edcamSetAng(0, 0x4000);
+                edcamSet();
+                break;
+            case 55:
+                edbitsDoSingleDump(0);
+                break;
+            case 50:
+                edcamSetAng(0, 0xc000);
+                edcamSet();
+                break;
+            case 45:
+                edbitsDoSingleDump(1);
+                break;
+            case 40:
+                edcamSetAng(-0x4000, 0);
+                edcamSet();
+                break;
+            case 35:
+                edbitsDoSingleDump(2);
+                break;
+            case 30:
+                edcamSetAng(0x4000, 0);
+                edcamSet();
+                break;
+            case 25:
+                edbitsDoSingleDump(3);
+                break;
+            case 20:
+                edcamSetAng(0, 0);
+                edcamSet();
+                break;
+            case 15:
+                edbitsDoSingleDump(4);
+                break;
+            case 10:
+                edcamSetAng(0, 0x8000);
+                edcamSet();
+                break;
+            case 5:
+                edbitsDoSingleDump(5);
+                break;
+            case 1:
+                edmainExtCamera(NULL);
+                NuRndrDoingScreenGrab = 0;
+                break;
+        }
+        --edbits_cubecount;
+    }
+    return edbits_cubecount;
+}
+
 void __cdecl edbitsDrawCross(f32 x, f32 y, f32 z, f32 radius, i32 colour, struct PC_SCENE_MTL_VIEW *material) {
     f32 axes[9] = {1.0f, 0.0f, 0.0f, 0.0f, 1.0f, 0.0f, 0.0f, 0.0f, 1.0f};
     NURND_VERTEX3D_PC vertices[2];

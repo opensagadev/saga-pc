@@ -7097,7 +7097,7 @@ address,symbol,size,ctype
 0x65c620,_edbitsLookupInstance,112,"i32 __cdecl(char *, NUGSCN *)"
 0x65c7b0,_edbitsDoSingleDump,183,
 0x65c870,_edbitsStartCubemapDump,33,
-0x65c8a0,_edbitsProcessCubemapDump,544,
+0x65c8a0,_edbitsProcessCubemapDump,604,
 0x65cb00,_edbriFileSave,547,
 0x65cd30,_edbricbFileSave,302,
 0x65ce60,_edbriStopPage,65,void __cdecl(i8)
@@ -21155,6 +21155,8 @@ address,symbol,size,ctype
 0x8109d8,_edblack,16,u32[4]
 0x8109e8,_edgrey,16,u32[4]
 0x8109f8,_eddarkred,16,u32[4]
+0x810a20,_edbits_cubemap_fov,4,f32
+0x810a24,_edbits_cubemap_aspect,4,f32
 0x810a28,_edbri_length,4,f32
 0x810a2c,_edbri_width,4,f32
 0x810a30,_edbri_planks,4,i32
@@ -24531,6 +24533,7 @@ address,symbol,size,ctype
 0x2912e84,_ed_curr,4,struct ed_module_s *
 0x2912e8c,_ed_main_menu,4,struct eduimenu_s *
 0x2912e90,_edmain_auto_speed,4,i32
+0x2912e94,_edinternalcam,4,NUCAMERA *
 0x2912e98,_EdMainCurrentCameraPc,4,genuine native data owner
 0x2912e9c,_EdMainLocationVectorPc,4,NUVEC *
 0x2912ea0,_ed_fnt,4,void *
@@ -24928,6 +24931,7 @@ address,symbol,size,ctype
 0x296294c,_PartGeneralPagePc,,i32
 0x2962950,_edbits_editor_state,,i32
 0x2962954,_edbits_cubecount,4,i32
+0x2962958,_cubemapcam,4,NUCAMERA *
 0x296295c,_EdppTypesErrorPc,,i32
 0x2962970,_edbits_override_backups,4,i32
 0x2962974,_edbri_active_menu,4,struct eduimenu_s *
