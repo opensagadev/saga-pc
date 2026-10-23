@@ -8019,6 +8019,7 @@ STATIC_ASSERT(offsetof(GAMEOBJECT, jump_animation_state) == 0x285);
 
 void __cdecl Hang_MoveCode(GAMEOBJECT *object) {
     i16 animation;
+    u8 variant;
     if (LEGOCONTEXT_HANG == -1)
         return;
     if (object->character_context == LEGOCONTEXT_HANG) {
@@ -8031,16 +8032,16 @@ void __cdecl Hang_MoveCode(GAMEOBJECT *object) {
             object->character_context = -1;
             return;
         }
-        if (object->roof_surface_id_pc != object->context_variant) {
-            object->velocity.y = 0.0f;
+        variant = object->context_variant;
+        if (object->roof_surface_id_pc != variant) {
             object->character_context = -1;
+            object->velocity.y = 0.0f;
             return;
         }
-        animation = LEGOACT_HANG_IDLE;
-        if (object->pad->input_magnitude > 0.0f && LEGOACT_HANG_MOVE != -1)
-            animation = LEGOACT_HANG_MOVE;
+        if (!(object->pad->input_magnitude > 0.0f) || (animation = LEGOACT_HANG_MOVE) == -1)
+            animation = LEGOACT_HANG_IDLE;
         object->field_7aa = animation;
-        if (object->contact_count != 0 && object->roof_surface_id_pc == object->contact_material[0]) {
+        if (object->contact_count != 0 && object->contact_material[0] == variant) {
             object->context_duration = 0.25f;
             object->external_force = object->contact_normal;
         } else {
@@ -8059,8 +8060,8 @@ void __cdecl Hang_MoveCode(GAMEOBJECT *object) {
         !(LEGOCONTEXT_JUMP != -1 && object->character_context == LEGOCONTEXT_JUMP &&
           object->context_timer >= (f64)0.1f))
         return;
-    object->context_duration = 0.25f;
     object->character_context = (i8)LEGOCONTEXT_HANG;
+    object->context_duration = 0.25f;
     object->field_7aa = LEGOACT_HANG_IDLE;
     object->context_variant = object->contact_material[0];
     object->external_force = object->contact_normal;
