@@ -8211,13 +8211,11 @@ static i32 LedgeTerrain_AttachPc(GAMEOBJECT *object, u16 facing, NUVEC *position
     surface = (i8)object->contact_material[0];
     if (surface >= 0 && surface < 32 && (TerSurface[surface].flags & 0x581) != 0)
         return 0;
-    if (object->collision_position.y - (f64)0.05f >= object->contact_position.y ||
-        fabs(object->contact_normal.y) > NuTrigTable[0x3000])
+    if (object->contact_position.y <= object->collision_position.y - (f64)0.05f ||
+        MovePlayerFabs(object->contact_normal.y) > NuTrigTable[0x3000])
         return 0;
     *wall_angle = NuAtan2D(object->contact_normal.x, object->contact_normal.z);
-    difference = RotDiff(facing, *wall_angle);
-    if (difference < 0)
-        difference = -difference;
+    difference = abs(RotDiff(facing, *wall_angle));
     if (difference < 0x4000)
         return 0;
     inward_angle = *wall_angle + 0x8000;
@@ -8226,7 +8224,7 @@ static i32 LedgeTerrain_AttachPc(GAMEOBJECT *object, u16 facing, NUVEC *position
     position->y = object->upper_position.y;
     position->z = NuTrigTable[((inward_angle + 0x4000) >> 1) & 0x7fff] * distance + object->position.z;
     height = GameShadow(NULL, position, 5.0f, -1);
-    if (height == 2000000.0f || NuTrigTable[0x2555] > ShadNorm.y)
+    if (height == 2000000.0f || ShadNorm.y < NuTrigTable[0x2555])
         return 0;
     height_difference = position->y - height;
     if (height_difference > (f64)0.025f || height_difference < (f64)-0.1f)
