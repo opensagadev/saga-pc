@@ -1054,16 +1054,15 @@ STATIC_ASSERT(offsetof(GIZBUILDITSYS_s, count) == 4);
 void __cdecl GizBuildItPushAwayFromEnd(GAMEOBJECT *player) {
     GIZBUILDIT_PC *buildit;
     GIZBUILDITANIMDATA_s *data;
-    NUVEC centre, end_position, minimum, maximum, radius_centre;
-    f32 player_x, player_z, radius;
-    volatile f32 radius_squared = PlayerBuildItNegativeLimitPc;
-    volatile f32 nearest_distance, dx, dz, distance;
+    NUVEC centre, end_position, minimum, maximum, radius_centre, player_position;
+    f32 radius;
+    f32 radius_squared = PlayerBuildItNegativeLimitPc;
+    f32 nearest_distance, dx, dz, distance;
     i32 i, j, nearest = 0;
     if (WORLD->giz_buildit_sys == NULL)
         return;
+    player_position = player->collision_position;
     buildit = (GIZBUILDIT_PC *)WORLD->giz_buildit_sys->buildits;
-    player_x = player->collision_position.x;
-    player_z = player->collision_position.z;
     for (i = 0; i < WORLD->giz_buildit_sys->count; ++i, ++buildit) {
         centre = v000;
         if ((buildit->state_flags & 8) == 0 || (buildit->availability_flags & 2) == 0 ||
@@ -1076,9 +1075,9 @@ void __cdecl GizBuildItPushAwayFromEnd(GAMEOBJECT *player) {
             nearest_distance = AIPositionUnsetPc;
             for (j = 0; j < buildit->built_object_count; ++j) {
                 data = (GIZBUILDITANIMDATA_s *)buildit->anim_objects[j]->object_data;
-                dx = (f64)data->end_mtx.m30 - player_x;
-                dz = (f64)data->end_mtx.m32 - player_z;
-                distance = (f64)dx * dx + (f64)dz * dz;
+                dx = data->end_mtx.m30 - player_position.x;
+                dz = data->end_mtx.m32 - player_position.z;
+                distance = dx * dx + dz * dz;
                 if (nearest_distance > distance) {
                     nearest_distance = distance;
                     nearest = j;
@@ -1093,28 +1092,32 @@ void __cdecl GizBuildItPushAwayFromEnd(GAMEOBJECT *player) {
             centre.y = end_position.y;
             for (j = 0; j < buildit->built_object_count; ++j) {
                 data = (GIZBUILDITANIMDATA_s *)buildit->anim_objects[j]->object_data;
-                centre.x = (f64)centre.x + data->end_mtx.m30;
-                centre.z = (f64)centre.z + data->end_mtx.m32;
-                dx = (f64)data->end_mtx.m30 - end_position.x;
-                dz = (f64)data->end_mtx.m32 - end_position.z;
-                maximum.x = dx < maximum.x ? maximum.x : dx;
-                maximum.z = dz < maximum.z ? maximum.z : dz;
-                minimum.x = minimum.x < dx ? minimum.x : dx;
-                minimum.z = minimum.z < dz ? minimum.z : dz;
-                distance = (f64)dx * dx + (f64)dz * dz;
+                centre.x += data->end_mtx.m30;
+                centre.z += data->end_mtx.m32;
+                dx = data->end_mtx.m30 - end_position.x;
+                dz = data->end_mtx.m32 - end_position.z;
+                if (dx > maximum.x)
+                    maximum.x = dx;
+                if (dz > maximum.z)
+                    maximum.z = dz;
+                if (dx < minimum.x)
+                    minimum.x = dx;
+                if (dz < minimum.z)
+                    minimum.z = dz;
+                distance = dx * dx + dz * dz;
                 if (radius_squared < distance)
                     radius_squared = distance;
             }
-            centre.x = (f64)centre.x / buildit->built_object_count;
-            centre.z = (f64)centre.z / buildit->built_object_count;
+            centre.x /= buildit->built_object_count;
+            centre.z /= buildit->built_object_count;
             radius = NuFsqrt(radius_squared);
         }
-        maximum.x = (f64)maximum.x + centre.x;
-        maximum.y = (f64)centre.y + (f64)0.01f;
-        maximum.z = (f64)maximum.z + centre.z;
-        minimum.x = (f64)minimum.x + centre.x;
+        maximum.x += centre.x;
+        maximum.y = centre.y + 0.01f;
+        maximum.z += centre.z;
+        minimum.x += centre.x;
         minimum.y = centre.y;
-        minimum.z = (f64)minimum.z + centre.z;
+        minimum.z += centre.z;
         PushAway(&centre, radius, &minimum, &maximum, player, NULL, 1.0f, 0);
     }
 }
