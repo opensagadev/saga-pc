@@ -1280,16 +1280,16 @@ void __cdecl TextCrawl_Init(TEXT_CRAWL_VIEW_PC *crawl, i32 id, i32 reset) {
         TextCrawlTimePc = 0.0f;
 }
 void __cdecl TextCrawl_Draw(f32 dt, i32 paragraphs, f32 alpha, char *text) {
-    AREA_DATA_PC *area = NULL;
+    AREA_DATA_PC *area;
     TEXT_CRAWL_MISSION_VIEW_PC *mission;
-    i32 body_text_id = -1, episode_index = -1, area_index = -1, paragraph_count = 0;
+    i32 body_text_id, episode_index, area_index, paragraph_count;
     i8 crawl_area;
-    char *episode_name = NULL, *episode_text = NULL, *chapter_text = NULL, *area_name = NULL;
+    char *episode_name, *episode_text, *chapter_text, *area_name;
     char chapter_buffer[0x40];
-    i16 *bonus_text;
     NUMTX matrix;
     f32 colour_scale = 1.0f, alpha_scale = 128.0f, x_scale, y_scale, y;
-    u32 red, green, colour;
+    i32 red, green;
+    u32 colour;
     u16 encoded[1024];
     i32 i;
     if (TextCrawlCurrentPc == NULL || QFont3DZ == NULL)
@@ -1303,7 +1303,17 @@ void __cdecl TextCrawl_Draw(f32 dt, i32 paragraphs, f32 alpha, char *text) {
         body_text_id = area->text_id;
         episode_index = area->episode_index;
         area_index = area->area_index;
+    } else {
+        area = NULL;
+        episode_index = -1;
+        body_text_id = -1;
+        area_index = -1;
     }
+    paragraph_count = 0;
+    episode_name = NULL;
+    episode_text = NULL;
+    chapter_text = NULL;
+    area_name = NULL;
     if (text != NULL) {
         episode_name = text;
         body_text_id = -1;
@@ -1319,29 +1329,32 @@ void __cdecl TextCrawl_Draw(f32 dt, i32 paragraphs, f32 alpha, char *text) {
                 area_name = TTab[area->name_id];
             body_text_id = Arcade_TextCrawlID;
             paragraph_count = Arcade_TextCrawlParagraphs;
-        } else if (episode_index == -1) {
-            if (area != NULL && area->name_id != -1)
-                area_name = TTab[area->name_id];
-        } else {
+        } else if (episode_index != -1) {
             if (EDataList[episode_index].name_id != -1)
                 episode_name = TTab[EDataList[episode_index].name_id];
             if (EDataList[episode_index].text_id != -1)
                 episode_text = TTab[EDataList[episode_index].text_id];
             if (area_index != -1) {
-                if (!(area->flags & 4)) {
+                if (area->flags & 4) {
+                    if (area->flags & 1) {
+                        if (TextCrawlCurrentPc->vehicle_bonus_text != NULL)
+                            chapter_text = TTab[*TextCrawlCurrentPc->vehicle_bonus_text];
+                    } else {
+                        if (TextCrawlCurrentPc->character_bonus_text != NULL)
+                            chapter_text = TTab[*TextCrawlCurrentPc->character_bonus_text];
+                    }
+                } else {
                     if (TextCrawlCurrentPc->heading_text != NULL) {
                         sprintf(chapter_buffer, "%s %i", TTab[*TextCrawlCurrentPc->heading_text], area_index + 1);
                         chapter_text = chapter_buffer;
                     }
-                } else {
-                    bonus_text = area->flags & 1 ? TextCrawlCurrentPc->vehicle_bonus_text
-                                                 : TextCrawlCurrentPc->character_bonus_text;
-                    if (bonus_text != NULL)
-                        chapter_text = TTab[*bonus_text];
                 }
                 if (area->name_id != -1)
                     area_name = TTab[area->name_id];
             }
+        } else {
+            if (area != NULL && area->name_id != -1)
+                area_name = TTab[area->name_id];
         }
     }
     TextCrawlTimePc += dt;
@@ -1355,13 +1368,14 @@ void __cdecl TextCrawl_Draw(f32 dt, i32 paragraphs, f32 alpha, char *text) {
     NuQFntSetMtx(QFont3DZ, &matrix);
     NuQFntPushPrintMode(4);
     NuQFntSetCoordinateSystem(4);
+    alpha_scale = 128.0f;
     red = TextCrawlRedPc;
     green = TextCrawlGreenPc;
     if (paragraphs == 0 && TextCrawlTimePc >= 55.0) {
         colour_scale = (f32)(1.0 - ((f64)TextCrawlTimePc - 55.0) / 5.0);
-        alpha_scale = (f32)(colour_scale * 128.0);
-        green = (u32)((f64)TextCrawlGreenPc * colour_scale);
-        red = (u32)((f64)TextCrawlRedPc * colour_scale);
+        alpha_scale = (f32)(128.0 * colour_scale);
+        green = (i32)(TextCrawlGreenPc * colour_scale);
+        red = (i32)(TextCrawlRedPc * colour_scale);
     }
     colour = ((u32)(alpha_scale * alpha) << 24) | ((red & 0xff) << 16) | ((green & 0xff) << 8) | TextCrawlBluePc;
     NuQFntSetColour(QFont3DZ, colour);
