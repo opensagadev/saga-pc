@@ -1269,7 +1269,8 @@ void edanimcbSetParticleType(eduimenu_s *menu, eduiitem_s *item, u32 unused2) {
 void edanimcbSetLocalParticleType(eduimenu_s *menu, eduiitem_s *item, u32 unused2) {
     edanim_localparticletype_menu = NULL;
     AnimParams[edanim_nearest_param_id].effect_ids[edanim_nearest_particle] = item->data;
-    strcpy(AnimParams[edanim_nearest_param_id].effect_names[edanim_nearest_particle], debtab[item->data]->name);
+    strcpy(AnimParams[edanim_nearest_param_id].effect_names[edanim_nearest_particle],
+           debtab[edanim_nearest_particle]->name);
     edanim_particle_type = item->data;
     eduiMenuDetach(menu);
     eduiMenuDestroy(menu);
