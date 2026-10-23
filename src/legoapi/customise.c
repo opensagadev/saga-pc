@@ -252,11 +252,11 @@ CUSTOMISER_LAYERS_PC *__cdecl Customiser_Configure(char *filename, VARIPTR *buff
     CUSTOM_SAVE_CONFIG_PC *save = (CUSTOM_SAVE_CONFIG_PC *)save_input;
     i32 category, index;
     i32 locators[9], layers[9];
-    f32 x_offsets[9] = {0}, y_offsets[9] = {0};
+    f32 x_offsets[9], y_offsets[9];
     u8 categories[440];
     CUSTOM_PIECE_CONFIG_PC pieces[440];
     char *names;
-    i32 count = 0;
+    i32 count;
     (void)buffer_end;
     if (first_character == -1 && second_character == -1)
         return NULL;
@@ -269,31 +269,35 @@ CUSTOMISER_LAYERS_PC *__cdecl Customiser_Configure(char *filename, VARIPTR *buff
         return NULL;
 
     for (category = 0; category < 9; ++category) {
+        x_offsets[category] = y_offsets[category] = 0.0f;
         locators[category] = -1;
         layers[category] = -1;
     }
     memset(pieces, 0, sizeof(pieces));
     names = buffer->char_ptr;
-    while (NuFParGetLine(parser) != 0) {
+    count = 0;
+    while (count < 440) {
+        if (NuFParGetLine(parser) == 0)
+            break;
         if (NuFParGetWord(parser) == 0)
             break;
         category = CustomiserFindSetFromNamePrivatePc(parser->word_buffer_ptr);
         if (category != -1 && NuFParGetWord(parser) != 0) {
             CUSTOM_PIECE_CONFIG_PC *piece;
-            categories[count] = category;
             piece = &pieces[count];
-            piece->name = names;
-            piece->field_10 = -1;
-            piece->collection_type = -1;
-            piece->availability_flags = 0;
-            piece->model_flags = 0;
-            piece->gameplay_flags = 0;
             piece->weapon_model = -1;
             piece->character_id = -1;
             piece->icon_character_id = -1;
             piece->unknown_indices_0a[0] = -1;
             piece->unknown_indices_0a[1] = -1;
             piece->unknown_indices_0a[2] = -1;
+            piece->field_10 = -1;
+            piece->collection_type = -1;
+            piece->name = names;
+            piece->availability_flags = 0;
+            piece->model_flags = 0;
+            piece->gameplay_flags = 0;
+            categories[count] = category;
             NuStrCpy(names, parser->word_buffer_ptr);
             names += NuStrLen(parser->word_buffer_ptr) + 1;
             NuStrLen(parser->word_buffer_ptr);
@@ -348,9 +352,10 @@ CUSTOMISER_LAYERS_PC *__cdecl Customiser_Configure(char *filename, VARIPTR *buff
             if (NuFParGetWord(parser) != 0) {
                 category = CustomiserFindSetFromNamePrivatePc(parser->word_buffer_ptr);
                 if (category != -1) {
-                    i32 locator = NuFParGetInt(parser);
-                    locators[category] = (u32)locator < 16 ? locator : -1;
-                    if ((u32)locator < 16) {
+                    locators[category] = NuFParGetInt(parser);
+                    if (locators[category] < 0 || locators[category] >= 16) {
+                        locators[category] = -1;
+                    } else {
                         while (NuFParGetWord(parser) != 0) {
                             if (NuStrICmp(parser->word_buffer_ptr, "xoffset") == 0)
                                 x_offsets[category] = NuFParGetFloat(parser);
@@ -364,68 +369,69 @@ CUSTOMISER_LAYERS_PC *__cdecl Customiser_Configure(char *filename, VARIPTR *buff
             if (NuFParGetWord(parser) != 0) {
                 category = CustomiserFindSetFromNamePrivatePc(parser->word_buffer_ptr);
                 if (category != -1) {
-                    i32 layer = NuFParGetInt(parser);
-                    layers[category] = (u32)layer < 32 ? layer : -1;
+                    layers[category] = NuFParGetInt(parser);
+                    if (layers[category] < 0 || layers[category] >= 32)
+                        layers[category] = -1;
                 }
             }
         }
-        if (count >= 440)
-            break;
     }
     NuFParDestroy(parser);
-    if (count == 0)
-        return NULL;
+    if (count > 0) {
 
-    buffer->addr = ((u32)names + 3) & ~3u;
-    customiser = (CUSTOMISER_CONFIG_PC *)buffer->void_ptr;
-    memset(customiser, 0, sizeof(*customiser));
-    buffer->addr = (buffer->addr + sizeof(*customiser) + 3) & ~3u;
-    customiser->character_ids[0] = first_character;
-    customiser->character_ids[1] = second_character;
-    customiser->piece_available = available != NULL ? available : CustomiserPieceAvailableDefaultPrivatePc;
-    customiser->save = save;
-    customiser->animation_ids_to_load = (u16 *)animations;
-    for (category = 0; category < 9; ++category) {
-        CUSTOM_PIECE_CONFIG_PC *output = (CUSTOM_PIECE_CONFIG_PC *)buffer->void_ptr;
-        customiser->categories[category] = &CustomiserSetDataPrivatePc[category];
-        customiser->piece_sets[category] = output;
-        customiser->piece_counts[category] = 0;
-        customiser->locator_indices[category] = locators[category];
-        customiser->layer_indices[category] = layers[category];
-        customiser->locator_x_offsets[category] = x_offsets[category];
-        customiser->locator_y_offsets[category] = y_offsets[category];
-        for (index = 0; index < count; ++index) {
-            if (categories[index] == category) {
-                PCByteCopy_candidate(output, &pieces[index], sizeof(*output));
-                ++customiser->piece_counts[category];
-                ++output;
+        buffer->addr = ((u32)names + 3) & ~3u;
+        customiser = (CUSTOMISER_CONFIG_PC *)buffer->void_ptr;
+        memset(customiser, 0, sizeof(*customiser));
+        buffer->addr = (buffer->addr + sizeof(*customiser) + 3) & ~3u;
+        customiser->character_ids[0] = first_character;
+        customiser->character_ids[1] = second_character;
+        customiser->piece_available = available != NULL ? available : CustomiserPieceAvailableDefaultPrivatePc;
+        customiser->save = save;
+        customiser->animation_ids_to_load = (u16 *)animations;
+        for (category = 0; category < 9; ++category) {
+            CUSTOM_PIECE_CONFIG_PC *output;
+            customiser->categories[category] = &CustomiserSetDataPrivatePc[category];
+            customiser->piece_sets[category] = (CUSTOM_PIECE_CONFIG_PC *)buffer->void_ptr;
+            customiser->piece_counts[category] = 0;
+            customiser->locator_indices[category] = locators[category];
+            customiser->layer_indices[category] = layers[category];
+            output = customiser->piece_sets[category];
+            customiser->locator_x_offsets[category] = x_offsets[category];
+            customiser->locator_y_offsets[category] = y_offsets[category];
+            for (index = 0; index < count; ++index) {
+                if (categories[index] == category) {
+                    PCByteCopy_candidate(output, &pieces[index], sizeof(*output));
+                    ++customiser->piece_counts[category];
+                    ++output;
+                }
+            }
+            if (customiser->piece_counts[category] > 0)
+                buffer->addr = ((u32)output + 3) & ~3u;
+        }
+        if (customiser->save == NULL) {
+            customiser->save = (CUSTOM_SAVE_CONFIG_PC *)buffer->void_ptr;
+            buffer->addr = (buffer->addr + 0x73) & ~3u;
+        }
+        for (category = 0; category < 9; ++category) {
+            i32 first_found = 0, second_found = 0;
+            for (index = 0; index < customiser->piece_counts[category]; ++index) {
+                if (first_found && second_found)
+                    break;
+                if ((customiser->piece_sets[category][index].availability_flags & 0x200) != 0) {
+                    customiser->default_pieces[0][category] = index;
+                    first_found = 1;
+                }
+                if ((customiser->piece_sets[category][index].availability_flags & 0x400) != 0) {
+                    customiser->default_pieces[1][category] = index;
+                    second_found = 1;
+                }
             }
         }
-        if (customiser->piece_counts[category] > 0)
-            buffer->addr = ((u32)output + 3) & ~3u;
+        Customiser_CopyDefaultPiecesToSave((CUSTOMISER_LAYERS_PC *)customiser, NULL);
+        Game_Customiser = customiser;
+        return (CUSTOMISER_LAYERS_PC *)customiser;
     }
-    if (customiser->save == NULL) {
-        customiser->save = (CUSTOM_SAVE_CONFIG_PC *)buffer->void_ptr;
-        buffer->addr = (buffer->addr + 0x73) & ~3u;
-    }
-    for (category = 0; category < 9; ++category) {
-        i32 first_found = 0, second_found = 0;
-        const i32 piece_count = customiser->piece_counts[category];
-        for (index = 0; index < piece_count && !(first_found && second_found); ++index) {
-            const u16 flags = customiser->piece_sets[category][index].availability_flags;
-            if ((flags & 0x200) != 0) {
-                customiser->default_pieces[0][category] = index;
-                first_found = 1;
-            }
-            if ((flags & 0x400) != 0) {
-                customiser->default_pieces[1][category] = index;
-                second_found = 1;
-            }
-        }
-    }
-    Customiser_CopyDefaultPiecesToSave((CUSTOMISER_LAYERS_PC *)customiser, NULL);
-    Game_Customiser = customiser;
-    return (CUSTOMISER_LAYERS_PC *)customiser;
+    return NULL;
 }
 
 typedef struct customiser_game_setting_pc_s {
@@ -519,7 +525,7 @@ void __cdecl Detonators_Reset(void) {
 }
 
 static __inline i32 DetonatorPlacementSlot(GAMEOBJECT *object) {
-    i32 count = 0;
+    i32 count;
     i32 available = -1;
     DetonatorConsiderPlacementSlot(0, object, count, available);
     DetonatorConsiderPlacementSlot(1, object, count, available);
