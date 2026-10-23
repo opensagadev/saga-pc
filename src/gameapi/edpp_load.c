@@ -136,12 +136,43 @@ void cbPtlSetFacing(eduimenu_s *unused0, eduiitem_s *item, u32 unused2) {
     }
 }
 
-static void cbPtlInstanceSettingsMenu(eduimenu_s *parent, eduiitem_s *unused1, u32 unused2) {
-    EDPP_PARTICLE_PC *particle;
+static __inline void edppLoadDebrisSetGroupID(i32 handle, i16 group) {
+    if (handle != -1)
+        debkeydata[handle].render_group = group;
+}
+
+void cbPtlChangePriority(eduimenu_s *unused0, eduiitem_s *item, u32 unused2) {
+    edpp_ptls[edpp_nearest].render_priority = (i16)((edui_slider_s *)item)->value;
+    debkeydata[edpp_ptls[edpp_nearest].instance_id].render_priority = (i16)((edui_slider_s *)item)->value;
+}
+
+void cbPtlToggleDynamicPriority(eduimenu_s *unused0, eduiitem_s *item, u32 unused2) {
+    edpp_ptls[edpp_nearest].dynamic_priority = item->highlighted;
+    debkeydata[edpp_ptls[edpp_nearest].instance_id].timed_flags = item->highlighted;
+}
+
+void cbPtlCancelInstanceSettingsMenu(eduimenu_s *unused0, eduimenu_s *unused1) {
+    eduiMenuDestroy(edptl_instancesettings_menu);
+    edptl_instancesettings_menu = NULL;
+}
+
+void cbPtlSetXZFacing(eduimenu_s *unused0, eduiitem_s *item, u32 unused2) {
+    debtab[edpp_ptls[edpp_nearest].effect_index]->camera_facing = item->highlighted;
+}
+
+void cbPtlCancelTextureMenu(eduimenu_s *unused0, eduimenu_s *unused1) {
+    if (textureselectmenu) {
+        eduiMenuDestroy(textureselectmenu);
+        textureselectmenu = NULL;
+    }
+    eduiMenuDestroy(texturemenu);
+    texturemenu = NULL;
+}
+
+void cbPtlInstanceSettingsMenu(eduimenu_s *parent, eduiitem_s *unused1, u32 unused2) {
     if (edpp_nearest == -1 || edpp_ptls[edpp_nearest].instance_id == -1)
         return;
 
-    particle = &(edpp_ptls[edpp_nearest]);
     edptl_instancesettings_menu =
         eduiMenuCreate(70, 70, 250, 300, ed_fnt, cbPtlCancelInstanceSettingsMenu, "Instance Settings");
     if (edptl_instancesettings_menu == NULL)
@@ -149,19 +180,20 @@ static void cbPtlInstanceSettingsMenu(eduimenu_s *parent, eduiitem_s *unused1, u
 
     eduiMenuAddItem(edptl_instancesettings_menu,
                     eduiItemSliderCreateInt(0, edblack, 0, cbPtlChangePriority, 0, 0xffff,
-                                            ((u16)((*particle).render_priority)), "Base Priority"));
-    eduiMenuAddItem(edptl_instancesettings_menu, eduiItemToggleCreate(1, edblack, (*particle).dynamic_priority, 1,
-                                                                      cbPtlToggleDynamicPriority, "Dynamic Priority"));
+                                            ((u16)(edpp_ptls[edpp_nearest].render_priority)), "Base Priority"));
+    eduiMenuAddItem(edptl_instancesettings_menu,
+                    eduiItemToggleCreate(1, edblack, edpp_ptls[edpp_nearest].dynamic_priority, 1,
+                                         cbPtlToggleDynamicPriority, "Dynamic Priority"));
     eduiMenuAddItem(edptl_instancesettings_menu,
                     eduiItemSelCreate(1, edblack, 0, 0, edptlcbScaleEffectMenu, "Scale Effect..."));
-    eduiMenuAddItem(edptl_instancesettings_menu,
-                    eduiItemToggleCreate(0, edblack, (*particle).facing_mode, 2, cbPtlSetFacing, "Facing Enabled"));
+    eduiMenuAddItem(edptl_instancesettings_menu, eduiItemToggleCreate(0, edblack, edpp_ptls[edpp_nearest].facing_mode,
+                                                                      2, cbPtlSetFacing, "Facing Enabled"));
     eduiMenuAttach(parent, edptl_instancesettings_menu);
     edptl_instancesettings_menu->x = parent->x + 10;
     edptl_instancesettings_menu->y = parent->y + 40;
 }
 
-static void cbPtlSelTextureType(eduimenu_s *menu, eduiitem_s *item, u32 unused2) {
+void cbPtlSelTextureType(eduimenu_s *menu, eduiitem_s *item, u32 unused2) {
     struct eduimenu_s *parent;
     if (edpp_nearest != -1 && edpp_ptls[edpp_nearest].instance_id != -1) {
         i32 type = debkeydata[edpp_ptls[edpp_nearest].instance_id].effect_index;
@@ -222,8 +254,8 @@ static void cbPtlSelTextureType(eduimenu_s *menu, eduiitem_s *item, u32 unused2)
                                             particle->reflection_bounce);
                 DebrisSetFacing(particle->instance_id, particle->facing_mode, particle->facing_rotation_x,
                                 particle->facing_rotation_y);
-                DebrisSetGroupID(particle->instance_id, particle->render_group);
-                DebrisSetRoomID(particle->instance_id, ((NUGSCN *)(edpp_page_scene[particle->page])));
+                edppLoadDebrisSetGroupID(particle->instance_id, particle->render_group);
+                DebrisSetRoomID(particle->instance_id, EdppPageScenesPc[particle->page]);
             }
         } else {
             effect->particle_type = ((u8)(item->data));
@@ -238,7 +270,7 @@ static void cbPtlSelTextureType(eduimenu_s *menu, eduiitem_s *item, u32 unused2)
     }
 }
 
-static void cbPtlTextureMenu(eduimenu_s *menu, eduiitem_s *unused1, u32 unused2) {
+void cbPtlTextureMenu(eduimenu_s *menu, eduiitem_s *unused1, u32 unused2) {
     u32 colours[4] = {0x80000000, 0x80ff0000, 0x80808080, 0x80404040};
     if (!(edpp_nearest == -1 || edpp_ptls[edpp_nearest].instance_id == -1)) {
         DEBRIS_INFO_PC *effect = debtab[debkeydata[edpp_ptls[edpp_nearest].instance_id].effect_index];
@@ -256,11 +288,11 @@ static void cbPtlTextureMenu(eduimenu_s *menu, eduiitem_s *unused1, u32 unused2)
                 eduiMenuAddItem(texturemenu, eduiItemCheckCreate(7, colours, effect->particle_type == 7, 1,
                                                                  cbPtlSelTextureType, "Glass"));
             }
-            if (effect->particle_type != 7) {
+            if (effect->particle_type == 7) {
+                eduiMenuAddItem(texturemenu, eduiItemSelCreate(1, edgrey, 0, 0, NULL, "Texture Selector..."));
+            } else {
                 eduiMenuAddItem(texturemenu,
                                 eduiItemSelCreate(1, colours, 0, 0, cbPtlTextureSelectMenu, "Texture Selector..."));
-            } else {
-                eduiMenuAddItem(texturemenu, eduiItemSelCreate(1, edgrey, 0, 0, NULL, "Texture Selector..."));
             }
             eduiMenuAddItem(texturemenu, eduiItemToggleCreate(0, edblack, ((i8)(effect->camera_facing)), 2,
                                                               cbPtlSetXZFacing, "Default to XZ Plane"));
@@ -271,24 +303,27 @@ static void cbPtlTextureMenu(eduimenu_s *menu, eduiitem_s *unused1, u32 unused2)
     }
 }
 
-static void cbPtlQuickDeleteMenu(eduimenu_s *menu, eduiitem_s *unused1, u32 unused2) {
+void cbPtlQuickDeleteMenu(eduimenu_s *menu, eduiitem_s *unused1, u32 unused2) {
     edptl_quickdel_menu = eduiMenuCreate(70, 70, 180, 250, ed_fnt, cbPtlCancelQuickDeleteMenu, "Quick Delete");
     if (edptl_quickdel_menu) {
         i32 type;
-        for (type = 1; type < EDPP_MAX_TYPES; ++type) {
-            i32 index;
-            DEBRIS_INFO_PC *effect = debtab[type];
-            if (!effect || effect->category != edpp_effect_list) {
+        for (type = 1; type < debinf_count; ++type) {
+            EDPP_PARTICLE_PC *particle;
+            DEBRIS_INFO_PC *effect;
+            if (!debtab[type]) {
+                continue;
+            }
+            effect = debtab[type];
+            if (effect->category != edpp_effect_list) {
                 continue;
             }
 
-            for (index = 0; index < 512; ++index) {
-                if (edpp_ptls[index].instance_id != 99999 && edpp_ptls[index].instance_id != -1 &&
-                    edpp_ptls[index].effect_index == type) {
+            for (particle = edpp_ptls; particle < &edpp_ptls[512]; ++particle) {
+                if (particle->instance_id != -1 && particle->instance_id != 99999 && particle->effect_index == type) {
                     break;
                 }
             }
-            if (index < 512) {
+            if (particle < &edpp_ptls[512]) {
                 eduiMenuAddItem(edptl_quickdel_menu,
                                 eduiItemSelCreate(type, edblack, 0, 1, cbPtlQuickDeleteType, effect->name));
             } else {

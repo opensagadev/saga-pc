@@ -26165,7 +26165,6 @@ extern "C" {
     extern struct eduimenu_s *namemenu;
     extern struct eduimenu_s *ptlcutoffmenu;
     extern struct eduimenu_s *ptljibmenu;
-    extern i32 EDPP_MAX_TYPES;
     void __cdecl cbPtlCancelQuickDeleteMenu(struct eduimenu_s *arg0, struct eduimenu_s *arg1);
     void __cdecl cbPtlCancelTextureMenu(struct eduimenu_s *arg0, struct eduimenu_s *arg1);
     void __cdecl cbPtlQuickDeleteType(struct eduimenu_s *arg0, struct eduiitem_s *arg1, u32 arg2);
@@ -26175,6 +26174,7 @@ extern "C" {
     extern u32 eddarkred[4];
     extern struct eduimenu_s *edptl_quickdel_menu;
     extern struct eduimenu_s *texturemenu;
+    extern struct eduimenu_s *textureselectmenu;
     void __cdecl Door_GoThrough(struct WORLDINFO_s *world, struct DOOR_s *door, i32 player_triggered);
     extern f32 iconalphaoverride;
     extern i16 tCHALLENGECOMPLETE;

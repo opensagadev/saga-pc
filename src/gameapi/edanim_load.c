@@ -391,7 +391,7 @@ i32 __cdecl edanimLoadPage(char *path, NUGSCN *scene) {
     return page;
 }
 
-static void edanimcbSetBouncyPlayerGrav(eduimenu_s *unused0, eduiitem_s *item, u32 unused2) {
+void edanimcbSetBouncyPlayerGrav(eduimenu_s *unused0, eduiitem_s *item, u32 unused2) {
     f32 value;
     if (edanim_nearest == -1) {
         return;
@@ -405,7 +405,7 @@ static void edanimcbSetBouncyPlayerGrav(eduimenu_s *unused0, eduiitem_s *item, u
     }
 }
 
-static void edanimcbSetBouncyTension(eduimenu_s *unused0, eduiitem_s *item, u32 unused2) {
+void edanimcbSetBouncyTension(eduimenu_s *unused0, eduiitem_s *item, u32 unused2) {
     f32 value;
     if (edanim_nearest == -1) {
         return;
@@ -419,7 +419,7 @@ static void edanimcbSetBouncyTension(eduimenu_s *unused0, eduiitem_s *item, u32 
     }
 }
 
-static void edanimcbSetBouncyDamping(eduimenu_s *unused0, eduiitem_s *item, u32 unused2) {
+void edanimcbSetBouncyDamping(eduimenu_s *unused0, eduiitem_s *item, u32 unused2) {
     f32 value;
     if (edanim_nearest == -1) {
         return;
@@ -442,7 +442,7 @@ static void edanimcbSetLocalSoundType(eduimenu_s *menu, eduiitem_s *item, u32 un
     eduiMenuDestroy(menu);
 }
 
-static void edanimcbBouncyMenu(eduimenu_s *parent, eduiitem_s *unused1, u32 unused2) {
+void edanimcbBouncyMenu(eduimenu_s *parent, eduiitem_s *unused1, u32 unused2) {
     u32 colours[4] = {0x80000000, 0x80ff0000, 0x80808080, 0x80404040};
     if (edanim_nearest != -1) {
         edanim_bouncy_menu =
@@ -490,7 +490,7 @@ static void edanimcbLocalSoundTypeMenu(eduimenu_s *parent, eduiitem_s *unused1, 
     edanim_localsoundtype_menu->x = parent->x + 10;
     edanim_localsoundtype_menu->y = parent->y + 40;
 }
-static void edanimcbSoundTypeMenu(eduimenu_s *parent, eduiitem_s *unused1, u32 unused2) {
+void edanimcbSoundTypeMenu(eduimenu_s *parent, eduiitem_s *unused1, u32 unused2) {
     i32 index, selected;
     u32 colours[4] = {0x80000000, 0x80ff0000, 0x80808080, 0x80404040};
     edanim_soundtype_menu =
@@ -514,7 +514,7 @@ static void edanimcbSoundTypeMenu(eduimenu_s *parent, eduiitem_s *unused1, u32 u
     edanim_soundtype_menu->y = parent->y + 40;
 }
 
-static void edanimcbSoundMenu(eduimenu_s *parent, eduiitem_s *unused1, u32 unused2) {
+void edanimcbSoundMenu(eduimenu_s *parent, eduiitem_s *unused1, u32 unused2) {
     u32 colours[4] = {0x80000000, 0x80ff0000, 0x80808080, 0x80404040};
     if (edanim_nearest_param_id == -1)
         return;
@@ -531,7 +531,7 @@ static void edanimcbSoundMenu(eduimenu_s *parent, eduiitem_s *unused1, u32 unuse
     edanim_sound_menu->y = parent->y + 40;
 }
 
-static void edanimcbFileLoad(eduimenu_s *menu, eduiitem_s *unused1, u32 unused2) {
+void edanimcbFileLoad(eduimenu_s *menu, eduiitem_s *unused1, u32 unused2) {
     char name[256];
     char directory[256];
     char extension[256];

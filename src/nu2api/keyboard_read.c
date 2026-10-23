@@ -124,11 +124,11 @@ i32 NuKeyToAscii(u32 key, i32 shifted) {
     return 0;
 }
 
-static void cbSel(eduimenu_s *unused0, eduiitem_s *item) {
+void cbSel(eduimenu_s *unused0, eduiitem_s *item) {
     selection_value = item->data;
 }
 
-static void cbGradChange(void) {
+void cbGradChange(void) {
 }
 
 i32 cbInteractMenuTitle(edui_interact_s *interact) {

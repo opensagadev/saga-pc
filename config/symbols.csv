@@ -6586,6 +6586,7 @@ address,symbol,size,ctype
 0x6245f0,_eduicbItemTextPickDestroy,116,
 0x624840,_eduicbRenderTextPick,1374,
 0x624da0,_eduicbItemFilePickDestroy,110,
+0x624e10,_eduicbPickCFGCancel,12,
 0x624e20,_eduiItemColourPickCreate,179,
 0x6250e0,_eduicbItemSliderDestroy,110,
 0x625150,_eduiItemSliderCreate,233,
@@ -6610,6 +6611,10 @@ address,symbol,size,ctype
 0x6285e0,_eduicbProcessFilePick,50,
 0x628620,_eduiItemFilePickCreate,184,
 0x6286e0,_cbgpcfgAdd,184,
+0x6287a0,_cbgpcfgDel,67,
+0x6287f0,_cbgpcfgCopy,110,
+0x628860,_cbgpcfgPaste,146,
+0x628900,_cbgpcfgCPPress,104,
 0x628970,_eduicbProcessGradPick,671,
 0x628c10,_eduicbProcessGradPickItem,367,
 0x628d80,_eduiCreateMessageMenu,228,
@@ -7217,6 +7222,7 @@ address,symbol,size,ctype
 0x65d7d0,_edbriBridgePlace,167,
 0x65d880,_edbriBridgeCreate,208,
 0x65d950,_edbriBridgeDestroy,56,
+0x65d990,_edbriDrawCursor,1319,
 0x65dec0,_edbriRender,111,
 0x65e040,_edgraSetup,155,"void __cdecl(VARIPTR *, VARIPTR, i32, i32, i32)"
 0x65e0e0,_edgraCalculatePage,2340,"void __cdecl(i8, i32)"
@@ -7350,7 +7356,13 @@ address,symbol,size,ctype
 0x667de0,_cbPtlVarStartMenu,1304,
 0x668300,_cbPtlCancelStartVelMenu,25,
 0x668320,_cbPtlStartVelMenu,1320,
+0x6688f0,_edptlcbScaleEffectMenu,244,
+0x668af0,_cbPtlChangePriority,117,
+0x668b70,_cbPtlToggleDynamicPriority,55,
+0x668bb0,_cbPtlCancelInstanceSettingsMenu,25,
 0x668c90,_cbPtlTextureSelectMenu,555,
+0x668ec0,_cbPtlSetXZFacing,41,
+0x668ef0,_cbPtlCancelTextureMenu,53,
 0x668f30,_cbPtlCancelEmitTimeMenu,25,
 0x668f50,_cbPtlCancelEmitVelMenu,25,
 0x668f70,_cbPtlEmitVelMenu,301,
@@ -16014,6 +16026,13 @@ address,symbol,size,ctype
 0x76af90,??_C@_09GMFECJDN@?$DMno?5name?$DO?$AA@,10,char []
 0x76af9c,??_C@_0L@GFIMNMGP@Enter?5Text?$AA@,11,char []
 0x76afa8,_PcInputText76afa8,,char[2]
+0x76affc,??_C@_05NEBJFIEK@Paste?$AA@,6,char []
+0x76b004,??_C@_04OPMHGHMB@Copy?$AA@,5,char []
+0x76b00c,??_C@_03ENJJMCOJ@Del?$AA@,4,char []
+0x76b010,??_C@_03LDFMNCOE@Add?$AA@,4,char []
+0x76b014,??_C@_04BBNPPDNC@Edit?$AA@,5,char []
+0x76b01c,??_C@_0L@MDHMGCLC@Colourpick?$AA@,11,char []
+0x76b028,??_C@_0BA@FIGNFJFK@GradPick?5Adjust?$AA@,16,char []
 0x76b040,__real@4097700000000000,8,const f64
 0x76b090,??_C@_0O@HLDALIGL@Return?5To?5App?$AA@,14,char []
 0x76b0b0,??_C@_0BK@ENMLBOJE@Proportional?5Cursor?5Speed?$AA@,26,char []
@@ -16570,6 +16589,17 @@ address,symbol,size,ctype
 0x76e694,??_C@_0BF@MNIDLNKM@Particles?5per?5Second?$AA@,21,char []
 0x76e6ac,??_C@_0O@MCCHBEIO@Particle?5Life?$AA@,14,char []
 0x76e6bc,??_C@_0N@FNECMGBM@Quick?5Delete?$AA@,13,char []
+0x76e6cc,??_C@_0P@MAIGBBGF@Facing?5Enabled?$AA@,15,char []
+0x76e6dc,??_C@_0BA@HBILABBH@Scale?5Effect?4?4?4?$AA@,16,char []
+0x76e6ec,??_C@_0BB@MNABLHBA@Dynamic?5Priority?$AA@,17,char []
+0x76e700,??_C@_0O@HDGOLGCG@Base?5Priority?$AA@,14,char []
+0x76e710,??_C@_0BE@MBHNLAMM@Default?5to?5XZ?5Plane?$AA@,20,char []
+0x76e724,??_C@_0BE@LFBMJKPN@Texture?5Selector?4?4?4?$AA@,20,char []
+0x76e738,??_C@_05NBJNJCJO@Glass?$AA@,6,char []
+0x76e740,??_C@_0M@HHLJNAIH@Subtractive?$AA@,12,char []
+0x76e74c,??_C@_0L@MBEDIFLC@Modulative?$AA@,11,char []
+0x76e758,??_C@_08DKGFJDNL@Addative?$AA@,9,char []
+0x76e764,??_C@_07GKACAEDJ@Texture?$AA@,8,char []
 0x76e76c,??_C@_0P@PIILAFDO@Cut?5?$CFs?5from?5?$CFs?$AA@,15,char []
 0x76e77c,??_C@_0BA@DBDIFANC@Empty?5Clipboard?$AA@,16,char []
 0x76e78c,??_C@_0BB@GJDPGNCN@Paste?5?$CFs?5into?5?$CFs?$AA@,17,char []
@@ -24758,6 +24788,7 @@ address,symbol,size,ctype
 0x2912ed8,_edui_donotdraw,4,i32
 0x2912ee4,_edui_cursor_buttons,4,u32
 0x2912ee8,_edui_cursor_buttons_db,4,u32
+0x2912f54,_selection_value,4,i32
 0x2912f58,_PadFlyMode,4,i32
 0x2912f5c,_edfile_media,4,i32
 0x2912f60,_edfile_pakfile,4,void *
@@ -25031,6 +25062,7 @@ address,symbol,size,ctype
 0x0292fd64,_EShadowPolygonPc,,
 0x292fd68,_ptltypemenu,4,struct eduimenu_s *
 0x292fd6c,_DebMat,,NUMTL *[9]
+0x292fd94,_textureselectmenu,4,struct eduimenu_s *
 0x292fd9c,_dpadmodemenu,4,struct eduimenu_s *
 0x0292fda0,_edanim_page_on,32,i32[8]
 0x0292fdc0,_SfxHashHeads,4,i16 *
@@ -25057,6 +25089,7 @@ address,symbol,size,ctype
 0x02947c1c,_TerrainSkinInfoCountPc,,
 0x02947c20,_TerrWallDeflectYScale,,f32
 0x2947c24,_edpp_boxmtl,4,struct PC_SCENE_MTL_VIEW *
+0x2947c28,_texturemenu,4,struct eduimenu_s *
 0x2947c2c,_wallover,,f32
 0x02947c30,_edanim_next_param,4,i32
 0x2947c34,_edbri_nearest,,i32
@@ -25069,6 +25102,7 @@ address,symbol,size,ctype
 0x2947c8c,_edptl_damageflag_menu,4,struct eduimenu_s *
 0x2947c94,_CurTrackInfo,,TERRAIN_TRACK_SLOT_PC *
 0x02947c9c,_edanim_page_scene,32,NUGSCN *[8]
+0x2947cbc,_edbri_mtl_zoff,4,struct PC_SCENE_MTL_VIEW *
 0x2947cc0,_TempScanStack,,void *
 0x02947cc8,_GlobalSfxBits,200,u16[100]
 0x2947d90,_SfxFileInfoPc,,SFX_FILE_INFO_PC *
@@ -25257,6 +25291,7 @@ address,symbol,size,ctype
 0x2962a90,_edptl_star_menu,4,struct eduimenu_s *
 0x2962a98,_edptl_drawflag_menu,4,struct eduimenu_s *
 0x2962aa0,_edptl_orphanlist_menu,4,struct eduimenu_s *
+0x2962aa4,_edptl_instancesettings_menu,4,struct eduimenu_s *
 0x2962aa8,_edptl_detail_menu,4,struct eduimenu_s *
 0x2962aac,_edptl_testdetail_menu,4,struct eduimenu_s *
 0x2962ab0,_edpp_save_names,24,char *[6]

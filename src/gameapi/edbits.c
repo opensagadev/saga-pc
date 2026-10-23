@@ -422,7 +422,7 @@ void edgracbCancelClumpAreaMenu(eduimenu_s *unused0, eduimenu_s *unused1) {
     edgra_clumparea_menu = NULL;
 }
 
-static void edgracbCancelClumpDistMenu(eduimenu_s *unused0, eduimenu_s *unused1) {
+void edgracbCancelClumpDistMenu(eduimenu_s *unused0, eduimenu_s *unused1) {
     eduiMenuDestroy(edgra_clumpdist_menu);
     edgra_clumpdist_menu = NULL;
 }
@@ -434,7 +434,7 @@ void edgracbCancelClumpFadeMenu(eduimenu_s *unused0, eduimenu_s *unused1) {
     fadeinitem = NULL;
 }
 
-static void edgracbCancelClumpTerrainMenu(eduimenu_s *unused0, eduimenu_s *unused1) {
+void edgracbCancelClumpTerrainMenu(eduimenu_s *unused0, eduimenu_s *unused1) {
     eduiMenuDestroy(edgra_clumpterrain_menu);
     edgra_clumpterrain_menu = NULL;
 }

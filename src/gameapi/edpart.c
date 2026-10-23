@@ -123,7 +123,7 @@ void edpartCancelTypeMenu(eduimenu_s *unused0, eduimenu_s *unused1) {
     edpart_type_menu = NULL;
 }
 
-static void edpartWorldInstanceMenu(eduimenu_s *parent, eduiitem_s *unused1, u32 unused2) {
+void edpartWorldInstanceMenu(eduimenu_s *parent, eduiitem_s *unused1, u32 unused2) {
     i32 group;
     i32 selected_first;
     i32 count;
@@ -181,7 +181,7 @@ void edpartCancelCutOffMenu(eduimenu_s *unused0, eduimenu_s *unused1) {
     edpart_cutoff_menu = NULL;
 }
 
-static void edpartChangeInstanceRot(eduimenu_s *unused0, eduiitem_s *item, u32 unused2) {
+void edpartChangeInstanceRot(eduimenu_s *unused0, eduiitem_s *item, u32 unused2) {
     if (edpart_nearest_type != NULL) {
         if (item->data == 0)
             edpart_nearest_type->rotation[0] = ((i32)(((edui_slider_s *)(item))->value * (65536.0f / 360.0f)));
@@ -192,7 +192,7 @@ static void edpartChangeInstanceRot(eduimenu_s *unused0, eduiitem_s *item, u32 u
     }
 }
 
-static void edpartChangeInstanceVarRot(eduimenu_s *unused0, eduiitem_s *item, u32 unused2) {
+void edpartChangeInstanceVarRot(eduimenu_s *unused0, eduiitem_s *item, u32 unused2) {
     if (edpart_nearest_type != NULL) {
         if (item->data == 0)
             edpart_nearest_type->rotation_random[0] = ((i32)(((edui_slider_s *)(item))->value * (65536.0f / 360.0f)));
@@ -203,7 +203,7 @@ static void edpartChangeInstanceVarRot(eduimenu_s *unused0, eduiitem_s *item, u3
     }
 }
 
-static void edpartCancelInstanceOrientMenu(eduimenu_s *unused0, eduimenu_s *unused1) {
+void edpartCancelInstanceOrientMenu(eduimenu_s *unused0, eduimenu_s *unused1) {
     eduiMenuDestroy(edpart_instorient_menu);
     edpart_instorient_menu = NULL;
 }
@@ -495,7 +495,7 @@ void edpartTypeMenu(eduimenu_s *menu, eduiitem_s *unused1, u32 unused2) {
         edpart_type_menu->y = menu->y + 40;
     }
 }
-static void edpartThingsInstanceMenu(eduimenu_s *parent, eduiitem_s *unused1, u32 unused2) {
+void edpartThingsInstanceMenu(eduimenu_s *parent, eduiitem_s *unused1, u32 unused2) {
     i32 group;
     i32 selected_first;
     i32 count;

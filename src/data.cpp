@@ -13444,6 +13444,9 @@ extern "C" {
 }
 
 extern "C" {
+#pragma bss_seg(".bss$edbri_mtl_zoff")
+    struct PC_SCENE_MTL_VIEW *edbri_mtl_zoff = 0;
+#pragma bss_seg()
 #pragma bss_seg(".bss$edBridges")
     PC_EDBRIDGE edBridges[64] = {0};
 #pragma bss_seg()
@@ -29062,6 +29065,15 @@ extern "C" {
 #pragma bss_seg(".bss$edptl_damageflag_menu")
     struct eduimenu_s *edptl_damageflag_menu = 0;
 #pragma bss_seg()
+#pragma bss_seg(".bss$edptl_instancesettings_menu")
+    struct eduimenu_s *edptl_instancesettings_menu = 0;
+#pragma bss_seg()
+#pragma bss_seg(".bss$texturemenu")
+    struct eduimenu_s *texturemenu = 0;
+#pragma bss_seg()
+#pragma bss_seg(".bss$textureselectmenu")
+    struct eduimenu_s *textureselectmenu = 0;
+#pragma bss_seg()
 #pragma bss_seg(".bss$edptl_star_menu")
     struct eduimenu_s *edptl_star_menu = 0;
 #pragma bss_seg()
@@ -29619,6 +29631,9 @@ extern "C" {
 #pragma bss_seg(".bss$edgra_mtl")
     struct PC_SCENE_MTL_VIEW *edgra_mtl = 0;
 
+#pragma bss_seg(".bss$selection_value")
+    i32 selection_value = 0;
+#pragma bss_seg()
 #pragma bss_seg(".bss$edui_last_item")
     struct eduiitem_s *edui_last_item = 0;
 

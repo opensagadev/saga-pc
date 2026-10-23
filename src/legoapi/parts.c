@@ -670,7 +670,7 @@ void edpartCancelDebrisSettingsMenu(eduimenu_s *unused0, eduimenu_s *unused1) {
     edpart_debrissettings_menu = NULL;
 }
 
-static void edpartInstanceFlagsMenu(eduimenu_s *menu, eduiitem_s *unused1, u32 unused2) {
+void edpartInstanceFlagsMenu(eduimenu_s *menu, eduiitem_s *unused1, u32 unused2) {
     i32 group = 1;
     if (edpart_nearest_type == NULL)
         return;
@@ -3736,7 +3736,7 @@ void __cdecl edpartCancelInstanceScaleMenu(eduimenu_s *unused0, eduimenu_s *unus
     edpart_instancescale_menu = NULL;
 }
 
-static void edpartTintMenu(eduimenu_s *menu, eduiitem_s *unused1, u32 unused2) {
+void edpartTintMenu(eduimenu_s *menu, eduiitem_s *unused1, u32 unused2) {
     if (edpart_nearest_type != NULL) {
         edpart_tint_menu = eduiMenuCreate(70, 70, 250, 250, ed_fnt, edpartCancelTintMenu, "Instance Tint");
         if (edpart_tint_menu != NULL) {
@@ -3753,7 +3753,7 @@ static void edpartTintMenu(eduimenu_s *menu, eduiitem_s *unused1, u32 unused2) {
     }
 }
 
-static void edpartInstanceScaleMenu(eduimenu_s *menu, eduiitem_s *unused1, u32 unused2) {
+void edpartInstanceScaleMenu(eduimenu_s *menu, eduiitem_s *unused1, u32 unused2) {
     edpart_instancescale_menu =
         eduiMenuCreate(70, 70, 180, 300, ed_fnt, edpartCancelInstanceScaleMenu, "Instance Scale");
     if (edpart_instancescale_menu != NULL && edpart_nearest_type != NULL) {

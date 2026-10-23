@@ -620,7 +620,7 @@ edui_textpicker_s *eduiAddTextPickEntEx(eduimenu_s *menu, eduiitem_s *source, Ed
     return picker;
 }
 
-static void cbgpcfgAdd(eduimenu_s *menu, eduiitem_s *item, u32 value) {
+void cbgpcfgAdd(eduimenu_s *menu, eduiitem_s *item, u32 value) {
     edui_gradient_pick_s *picker = ((edui_gradient_pick_s *)(item->data_ptr));
     edui_gradient_node_s *stage = picker->selected_stage;
     f32 time = 0.0f;
@@ -897,11 +897,11 @@ i32 eduiMenuProcessInput(eduimenu_s *menu, f32 delta_time, FRAME_PAD_PC *pad, i3
     return 0;
 }
 
-static void cbSubMenu(eduimenu_s *menu, eduiitem_s *item) {
+void cbSubMenu(eduimenu_s *menu, eduiitem_s *item) {
     eduiMenuAttach(menu, ((eduimenu_s *)(item->data_ptr)));
 }
 
-static void cbmcfgCancel(eduimenu_s *menu, eduimenu_s *unused1) {
+void cbmcfgCancel(eduimenu_s *menu, eduimenu_s *unused1) {
     eduiMenuDetach(menu);
 }
 

@@ -253,7 +253,7 @@ void edbriBridgePlace(i32 index, NUVEC *position) {
     edbriBridgeUpdate(index, edbits_base_scene);
 }
 
-static void edbriRender() {
+void edbriRender() {
     edcamSet();
     edbriDrawCursor();
     if (edbri_nearest != -1) {
