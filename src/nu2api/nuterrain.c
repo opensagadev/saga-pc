@@ -2952,29 +2952,26 @@ void TerrDrawPlatColPc(TERRAIN_POLYGON_INFO_PC *terrain, i16 index, i32 colour) 
     for (i = 0; i < 2; ++i) {                                                                                          \
         t = (f32)i;                                                                                                    \
         origin = &TERRAIN_TDP_GROUP.origin;                                                                            \
-        NuRndrLine3dDbg((origin->x + (points[a].x + (points[b].x - points[a].x) * t)),            \
-                        (origin->y + (points[a].y + (points[b].y - points[a].y) * t)),            \
-                        (origin->z + (points[a].z + (points[b].z - points[a].z) * t)),            \
-                        (origin->x + (points[c].x + (points[d].x - points[c].x) * t)),            \
-                        (origin->y + (points[c].y + (points[d].y - points[c].y) * t)),            \
-                        (origin->z + (points[c].z + (points[d].z - points[c].z) * t)), colour);   \
+        NuRndrLine3dDbg((origin->x + (points[a].x + (points[b].x - points[a].x) * t)),                                 \
+                        (origin->y + (points[a].y + (points[b].y - points[a].y) * t)),                                 \
+                        (origin->z + (points[a].z + (points[b].z - points[a].z) * t)),                                 \
+                        (origin->x + (points[c].x + (points[d].x - points[c].x) * t)),                                 \
+                        (origin->y + (points[c].y + (points[d].y - points[c].y) * t)),                                 \
+                        (origin->z + (points[c].z + (points[d].z - points[c].z) * t)), colour);                        \
     }
 #define TERRAIN_TDP_FAN(a, c, d)                                                                                       \
     for (i = 0; i < 2; ++i) {                                                                                          \
         t = (f32)i;                                                                                                    \
         origin = &TERRAIN_TDP_GROUP.origin;                                                                            \
-        NuRndrLine3dDbg((origin->x + points[a].x), (origin->y + points[a].y), \
-                        (origin->z + points[a].z),                                               \
-                        (origin->x + (points[c].x + (points[d].x - points[c].x) * t)),            \
-                        (origin->y + (points[c].y + (points[d].y - points[c].y) * t)),            \
-                        (origin->z + (points[c].z + (points[d].z - points[c].z) * t)), colour);   \
+        NuRndrLine3dDbg((origin->x + points[a].x), (origin->y + points[a].y), (origin->z + points[a].z),               \
+                        (origin->x + (points[c].x + (points[d].x - points[c].x) * t)),                                 \
+                        (origin->y + (points[c].y + (points[d].y - points[c].y) * t)),                                 \
+                        (origin->z + (points[c].z + (points[d].z - points[c].z) * t)), colour);                        \
     }
 #define TERRAIN_TDP_NORMAL(p, n)                                                                                       \
     origin = &TERRAIN_TDP_GROUP.origin;                                                                                \
-    NuRndrLine3dDbg((origin->x + points[p].x), (origin->y + points[p].y), \
-                    (origin->z + points[p].z),                                                   \
-                    (origin->x + points[p].x + normals[n].x),                                    \
-                    (origin->y + points[p].y + normals[n].y),                                    \
+    NuRndrLine3dDbg((origin->x + points[p].x), (origin->y + points[p].y), (origin->z + points[p].z),                   \
+                    (origin->x + points[p].x + normals[n].x), (origin->y + points[p].y + normals[n].y),                \
                     (origin->z + points[p].z + normals[n].z), 0xff)
 
     platform = &((TERRAIN_SET_PC *)CurrentTerrain)->platforms[TERRAIN_TDP_GROUP.scene_index];
