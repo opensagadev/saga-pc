@@ -1294,10 +1294,10 @@ void __cdecl NuRndrInitConfigPc(VARIPTR *buffer, VARIPTR end) {
 ShaderUniformRecordPc *__cdecl NuShaderUniformGetByString(const char *name) {
     i32 i;
     for (i = 0; i < 100; ++i) {
-        ShaderUniformRecordPc *record = &ShaderUniformRecordsPc[i];
-        if ((record->fragment_name != NULL && strcmp(record->fragment_name, name) == 0) ||
-            (record->vertex_name != NULL && strcmp(record->vertex_name, name) == 0))
-            return record;
+        if ((ShaderUniformRecordsPc[i].fragment_name != NULL &&
+             strcmp(ShaderUniformRecordsPc[i].fragment_name, name) == 0) ||
+            (ShaderUniformRecordsPc[i].vertex_name != NULL && strcmp(ShaderUniformRecordsPc[i].vertex_name, name) == 0))
+            return &ShaderUniformRecordsPc[i];
     }
     return NULL;
 }
