@@ -713,26 +713,25 @@ extern u8 *TerrainSkinPoolBasePc;
  * Source-convention void: original EAX values are ignored, not a recovered type.
  */
 void TerrainSkinAllocate(TERRAIN_GROUP_PC *group) {
-    i32 skin_index = -1 - (i32)group->scene_index;
-    i32 selected = 0;
+    i32 selected;
     i32 candidate;
     i32 oldest;
     i16 previous_skin;
-    TERRAIN_SKIN_INFO_VIEW_PC *info;
 
-    if (skin_index >= TerrainSkinInfoCountPc)
+    if (-1 - group->scene_index >= TerrainSkinInfoCountPc)
         return;
 
-    TerrainSkinUseEpochPc += 1u;
-    info = &TerrainSkinInfosPc[skin_index];
+    ++TerrainSkinUseEpochPc;
     if (group->data != NULL) {
-        TerrainSkinUseRecordsPc[info->pool_slot].last_use = (i32)TerrainSkinUseEpochPc;
+        TerrainSkinUseRecordsPc[TerrainSkinInfosPc[-1 - group->scene_index].pool_slot].last_use =
+            (i32)TerrainSkinUseEpochPc;
         return;
     }
 
+    selected = 0;
     if (TerrainSkinUseRecordsPc[0].skin_index != -1) {
         oldest = TerrainSkinUseRecordsPc[0].last_use;
-        for (candidate = 1; candidate < TerrainSkinPoolSlotCountPc; ++candidate) {
+        for (candidate = selected + 1; candidate < TerrainSkinPoolSlotCountPc; ++candidate) {
             if (TerrainSkinUseRecordsPc[candidate].skin_index == -1) {
                 selected = candidate;
                 break;
@@ -746,22 +745,16 @@ void TerrainSkinAllocate(TERRAIN_GROUP_PC *group) {
 
     previous_skin = TerrainSkinUseRecordsPc[selected].skin_index;
     if (previous_skin >= 0) {
-        TERRAIN_SET_PC *terrain = (TERRAIN_SET_PC *)CurrentTerrain;
-        terrain->groups[TerrainSkinInfosPc[previous_skin].group_index].data = NULL;
+        ((TERRAIN_SET_PC *)CurrentTerrain)->groups[TerrainSkinInfosPc[previous_skin].group_index].data = NULL;
         for (candidate = 0; candidate < 16; ++candidate)
             ((TERRAIN_SET_PC *)CurrentTerrain)->index_levels[candidate].cache_age = 0;
     }
 
-    /* Field accesses are typed. The byte-pool calculation selects a record
-     * boundary in caller-supplied storage; it does not bypass aggregate fields.
-     * Keep negative scene_index / upper-only original guard unchanged.
-     */
-    info = &TerrainSkinInfosPc[skin_index];
-    group->data = info->original_shape;
-    info->pool_slot = (i16)selected;
-    TerrainSkinUseRecordsPc[selected].skin_index = (i16)skin_index;
+    group->data = TerrainSkinInfosPc[-1 - group->scene_index].original_shape;
+    TerrainSkinInfosPc[-1 - group->scene_index].pool_slot = (i16)selected;
+    TerrainSkinUseRecordsPc[selected].skin_index = -1 - group->scene_index;
     SkinPlatform(group, (TERRAIN_SKIN_STREAM_VIEW_PC *)(TerrainSkinPoolBasePc + TerrainSkinPoolSlotBytesPc * selected),
-                 &TerrainSkinInfosPc[skin_index]);
+                 &TerrainSkinInfosPc[-(group->scene_index + 1)]);
     TerrainSkinUseRecordsPc[selected].last_use = (i32)TerrainSkinUseEpochPc;
 }
 
@@ -1561,7 +1554,10 @@ void PlatOnOff(i32 platform_index, i32 enabled) {
     if (terrain == NULL || platform_index < 0 || platform_index >= terrain->max_platforms)
         return;
     group_index = terrain->platforms[platform_index].terrain_group_index;
-    terrain->groups[group_index].chunk_type = enabled != 0 ? 1 : -1;
+    if (enabled != 0)
+        terrain->groups[group_index].chunk_type = 1;
+    else
+        terrain->groups[group_index].chunk_type = -1;
 }
 
 void NewTerrPlatformsOff(void) {
@@ -2364,16 +2360,20 @@ void __cdecl TerrainPlatformNewUpdate(void) {
 }
 
 i32 __cdecl FindPlatInst(i32 instance) {
-    TERRAIN_SET_PC *terrain = (TERRAIN_SET_PC *)CurrentTerrain;
+    TERRAIN_SET_PC *terrain;
     i32 index;
+    i32 result = -1;
     if (instance != -1) {
+        terrain = (TERRAIN_SET_PC *)CurrentTerrain;
         for (index = 0; index < terrain->max_platforms; ++index) {
-            TERRAIN_PLATFORM_PC *platform = &terrain->platforms[index];
-            if (platform->scene_object != NULL && platform->scene_object_index == instance)
-                return index;
+            if (terrain->platforms[index].scene_object != NULL &&
+                terrain->platforms[index].scene_object_index == instance) {
+                result = index;
+                break;
+            }
         }
     }
-    return -1;
+    return result;
 }
 
 void __cdecl PlatInstRotate(i32 platform_index, i32 enabled) {
