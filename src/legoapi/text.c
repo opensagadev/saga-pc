@@ -719,9 +719,9 @@ void __cdecl Text3DEx(char *text, f32 x, f32 y, f32 z, f32 x_scale, f32 y_scale,
     u8 green = (u8)green_slot;
     u8 blue = (u8)blue_slot;
     u8 alpha_byte = (u8)alpha;
-    f32 width, height, button_scale, button_width, normal_width, ratio, scaled_width;
+    f32 width, height, baseline_y, button_scale, button_width, normal_width, ratio, scaled_width;
     f64 half_height;
-    u8 decoded[512], buttons[512], normal[512], fragment[512];
+    u8 decoded[512], normal[512], buttons[512], fragment[512];
     u16 encoded[512], button_encoded[512], normal_encoded[512];
     i32 button_count, normal_count, count, button_font, preset, i;
     u32 colour;
@@ -731,9 +731,12 @@ void __cdecl Text3DEx(char *text, f32 x, f32 y, f32 z, f32 x_scale, f32 y_scale,
         return;
     x_scale = TextScaleX_candidate * x_scale;
     y_scale = TextScaleY_candidate * y_scale;
-    if (x < -2.0f || 2.0f < x || y < -2.0f || 2.0f < y)
+    if (x < -2.0f || x > 2.0f || y < -2.0f || y > 2.0f)
         return;
-    NuQFntPushPrintMode(TextPrintModePc == 0 ? 2 : 3);
+    if (TextPrintModePc != 0)
+        NuQFntPushPrintMode(3);
+    else
+        NuQFntPushPrintMode(2);
 
     TextDecode(text, decoded);
     if (followon_line == 0)
@@ -746,16 +749,22 @@ void __cdecl Text3DEx(char *text, f32 x, f32 y, f32 z, f32 x_scale, f32 y_scale,
     text3d_height = NuQFntHeight(TEXT3D_FONT());
     height = text3d_height;
     half_height = (f64)height * 0.5;
-    y = (f32)((f64)(NuQFntBaseline(TEXT3D_FONT()) + y) - half_height);
+    baseline_y = NuQFntBaseline(TEXT3D_FONT()) + y;
+    y = (f32)((f64)baseline_y - half_height);
     if (y_scale != x_scale) {
         button_width = 0.0f;
         normal_width = 0.0f;
-        if (smarttext_fwn == 1)
-            button_scale = x_scale;
-        else if (smarttext_fwn == 2)
-            button_scale = y_scale;
-        else
-            button_scale = (f32)((f64)(y_scale + x_scale) * 0.5);
+        switch (smarttext_fwn) {
+            case 1:
+                button_scale = x_scale;
+                break;
+            case 2:
+                button_scale = y_scale;
+                break;
+            default:
+                button_scale = (f32)((f64)(y_scale + x_scale) * 0.5);
+                break;
+        }
 
         button_count = 0;
         normal_count = 0;
