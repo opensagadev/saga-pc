@@ -89,23 +89,26 @@ void edGraDisableTerrainSwap(void) {
 void edGraInitTerrainSwapProtection(void) {
 }
 
+static __inline void edgraSliderSetValue(edui_slider_s *slider, f32 value) {
+    slider->value = value;
+    slider->normalized_value = (value - slider->minimum) / slider->range;
+}
+
 void edgracbSetGlobalFadeIn(eduimenu_s *unused0, eduiitem_s *item, u32 unused2) {
-    edui_slider_s *slider = globalfadeoutitem;
     edgra_global_fadein = ((edui_slider_s *)(item))->value;
-    if (edgra_global_fadein > edgra_global_fadeout) {
-        edgra_global_fadeout = edgra_global_fadein;
-        slider->value = edgra_global_fadeout;
-        slider->normalized_value = (slider->value - slider->minimum) / slider->range;
+    if (((edui_slider_s *)(item))->value > edgra_global_fadeout) {
+        edui_slider_s *slider = globalfadeoutitem;
+        edgra_global_fadeout = ((edui_slider_s *)(item))->value;
+        edgraSliderSetValue(slider, ((edui_slider_s *)(item))->value);
     }
 }
 
 void edgracbSetGlobalFadeOut(eduimenu_s *unused0, eduiitem_s *item, u32 unused2) {
-    edui_slider_s *slider = globalfadeinitem;
     edgra_global_fadeout = ((edui_slider_s *)(item))->value;
-    if (edgra_global_fadein > edgra_global_fadeout) {
-        edgra_global_fadein = edgra_global_fadeout;
-        slider->value = edgra_global_fadein;
-        slider->normalized_value = (slider->value - slider->minimum) / slider->range;
+    if (((edui_slider_s *)(item))->value < edgra_global_fadein) {
+        edui_slider_s *slider = globalfadeinitem;
+        edgra_global_fadein = ((edui_slider_s *)(item))->value;
+        edgraSliderSetValue(slider, ((edui_slider_s *)(item))->value);
     }
 }
 

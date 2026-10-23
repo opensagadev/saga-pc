@@ -1282,6 +1282,16 @@
    "kind": "function"
   },
   {
+   "unit": "src/gameapi/edgra.c",
+   "symbol": "_edgraSliderSetValue",
+   "kind": "function"
+  },
+  {
+   "unit": "src/gameapi/edgrass.c",
+   "symbol": "_edgrassSliderSetValue",
+   "kind": "function"
+  },
+  {
    "unit": "src/gameapi/edpp_load.c",
    "symbol": "_edppLoadDebrisSetGroupID",
    "kind": "function"

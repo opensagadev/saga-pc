@@ -324,29 +324,30 @@ void edgracbClumpAreaMenu(eduimenu_s *parent, eduiitem_s *unused1, u32 unused2) 
     edgra_clumparea_menu->y = parent->y + 40;
 }
 
+static __inline void edgrassSliderSetValue(edui_slider_s *slider, f32 value) {
+    slider->value = value;
+    slider->normalized_value = (value - slider->minimum) / slider->range;
+}
+
 static void edgracbSetClumpFadeIn(eduimenu_s *unused0, eduiitem_s *item, u32 unused2) {
-    edui_slider_s *slider = fadeoutitem;
     if (edgra_nearest != -1) {
-        PC_EDGRACLUMP *clump = &(GrassClumps[edgra_nearest]);
-        (*clump).near_distance = ((edui_slider_s *)(item))->value;
-        if ((*clump).near_distance > (*clump).far_distance) {
-            (*clump).far_distance = (*clump).near_distance;
-            slider->value = (*clump).far_distance;
-            slider->normalized_value = (slider->value - slider->minimum) / slider->range;
+        GrassClumps[edgra_nearest].near_distance = ((edui_slider_s *)(item))->value;
+        if (((edui_slider_s *)(item))->value > GrassClumps[edgra_nearest].far_distance) {
+            edui_slider_s *slider = fadeoutitem;
+            GrassClumps[edgra_nearest].far_distance = ((edui_slider_s *)(item))->value;
+            edgrassSliderSetValue(slider, ((edui_slider_s *)(item))->value);
         }
     }
     edgraInitAllClumps();
 }
 
 static void edgracbSetClumpFadeOut(eduimenu_s *unused0, eduiitem_s *item, u32 unused2) {
-    edui_slider_s *slider = fadeinitem;
     if (edgra_nearest != -1) {
-        PC_EDGRACLUMP *clump = &(GrassClumps[edgra_nearest]);
-        (*clump).far_distance = ((edui_slider_s *)(item))->value;
-        if ((*clump).near_distance > (*clump).far_distance) {
-            (*clump).near_distance = (*clump).far_distance;
-            slider->value = (*clump).near_distance;
-            slider->normalized_value = (slider->value - slider->minimum) / slider->range;
+        GrassClumps[edgra_nearest].far_distance = ((edui_slider_s *)(item))->value;
+        if (((edui_slider_s *)(item))->value < GrassClumps[edgra_nearest].near_distance) {
+            edui_slider_s *slider = fadeinitem;
+            GrassClumps[edgra_nearest].near_distance = ((edui_slider_s *)(item))->value;
+            edgrassSliderSetValue(slider, ((edui_slider_s *)(item))->value);
         }
     }
     edgraInitAllClumps();
