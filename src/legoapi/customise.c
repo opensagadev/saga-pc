@@ -1710,7 +1710,8 @@ i32 __cdecl Customiser_NextPieceLeft(CUSTOMISER_LAYERS_PC *input, i32 index, i32
     i32 attempts;
     (void)unused;
     if (customiser != NULL) {
-        for (attempts = 0; attempts < count; ++attempts) {
+        attempts = 0;
+        while (attempts++ < count) {
             --index;
             if (index < 0)
                 index += count;
