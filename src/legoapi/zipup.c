@@ -18,6 +18,14 @@ struct zipup_pc_s {
         struct {
             u8 flags, runtime_flags;
         };
+        struct {
+            u16 bit_01 : 1;
+            u16 bit_02 : 1;
+            u16 bit_04 : 1;
+            u16 bit_08 : 1;
+            u16 bit_10 : 1;
+            u16 bit_20 : 1;
+        } config;
     };
     u8 unknown_6a[2];
     f32 lower_ground_height, upper_ground_height;
@@ -94,42 +102,36 @@ ZIPUP_PC *__cdecl ZipUp_FindNearest(WORLDINFO *world, NUVEC *position, f32 radiu
 
 extern i32 __cdecl ZipUps_Load(WORLDINFO *world) {
     i32 version, index;
-    u16 configuration;
 
-    if (world->zipup_count != 0)
-        return 0;
-    version = EdFileReadInt();
-    world->zipup_count = EdFileReadInt();
-    for (index = 0; index < world->zipup_count; ++index) {
-        EdFileRead(world->zipups[index].name, sizeof(world->zipups[index].name));
-        EdFileReadNuVec(&world->zipups[index].lower_position);
-        EdFileReadNuVec(&world->zipups[index].hook_origin);
-        EdFileReadNuVec(&world->zipups[index].upper_position);
-        world->zipups[index].hook_x_rotation = EdFileReadUnsignedShort();
-        world->zipups[index].hook_y_rotation = EdFileReadUnsignedShort();
-        configuration = EdFileReadUnsignedChar() != 0;
-        world->zipups[index].flags_word ^= (world->zipups[index].flags_word ^ configuration) & 1;
-        configuration = (EdFileReadUnsignedChar() != 0) << 1;
-        world->zipups[index].flags_word ^= (world->zipups[index].flags_word ^ configuration) & 2;
-        configuration = (EdFileReadUnsignedChar() != 0) << 3;
-        world->zipups[index].flags_word ^= (world->zipups[index].flags_word ^ configuration) & 8;
-        if (version >= 2) {
-            configuration = (EdFileReadUnsignedChar() != 0) << 4;
-            world->zipups[index].flags_word ^= (world->zipups[index].flags_word ^ configuration) & 0x10;
-        } else
-            world->zipups[index].flags_word |= 0x10;
-        if (version >= 3) {
-            configuration = (EdFileReadUnsignedChar() != 0) << 5;
-            world->zipups[index].flags_word ^= (world->zipups[index].flags_word ^ configuration) & 0x20;
-        } else
-            world->zipups[index].flags_word &= ~0x20;
-        if (version >= 4) {
-            configuration = (EdFileReadUnsignedChar() != 0) << 2;
-            world->zipups[index].flags_word ^= (world->zipups[index].flags_word ^ configuration) & 4;
-        } else
-            world->zipups[index].flags_word |= 4;
+    if (world->zipup_count == 0) {
+        version = EdFileReadInt();
+        world->zipup_count = EdFileReadInt();
+        for (index = 0; index < world->zipup_count; ++index) {
+            EdFileRead(world->zipups[index].name, sizeof(world->zipups[index].name));
+            EdFileReadNuVec(&world->zipups[index].lower_position);
+            EdFileReadNuVec(&world->zipups[index].hook_origin);
+            EdFileReadNuVec(&world->zipups[index].upper_position);
+            world->zipups[index].hook_x_rotation = EdFileReadUnsignedShort();
+            world->zipups[index].hook_y_rotation = EdFileReadUnsignedShort();
+            world->zipups[index].config.bit_01 = EdFileReadUnsignedChar() != 0;
+            world->zipups[index].config.bit_02 = EdFileReadUnsignedChar() != 0;
+            world->zipups[index].config.bit_08 = EdFileReadUnsignedChar() != 0;
+            if (version >= 2)
+                world->zipups[index].config.bit_10 = EdFileReadUnsignedChar() != 0;
+            else
+                world->zipups[index].config.bit_10 = 1;
+            if (version >= 3)
+                world->zipups[index].config.bit_20 = EdFileReadUnsignedChar() != 0;
+            else
+                world->zipups[index].config.bit_20 = 0;
+            if (version >= 4)
+                world->zipups[index].config.bit_04 = EdFileReadUnsignedChar() != 0;
+            else
+                world->zipups[index].config.bit_04 = 1;
+        }
+        return 1;
     }
-    return 1;
+    return 0;
 }
 extern void *__cdecl ZipUps_ReserveBufferSpace(WORLDINFO *world) {
     void *reserved;
@@ -916,12 +918,9 @@ void DrawRopeSingle(NUVEC *start, NUVEC *end, float amount, NUMTL *material, flo
     ropedif = Cheat_IsOn(3) ? ZipUpRopeCheatColourPc : 0xff505050;
     if (material == NULL)
         material = ropemtl;
-    if (end == NULL || start == NULL)
+    if (start == NULL || end == NULL)
         return;
-    if (amount > 1.0f)
-        amount = 1.0f;
-    if (amount < 0.0f)
-        amount = 0.0f;
+    amount = 0.0 > MIN(1.0f, amount) ? 0.0f : MIN(1.0f, amount);
     direction.x = end->x - start->x;
     direction.y = end->y - start->y;
     direction.z = end->z - start->z;
@@ -1027,26 +1026,27 @@ void DrawRopeSingle(NUVEC *start, NUVEC *end, float amount, NUMTL *material, flo
     NuRndrTriStrip3dClip((NURND_VERTEX3D_PC *)vertices, 10, &matrix, material);
     if (Cheat_IsOn(3) == 0 || VehicleArea != 0)
         return;
+    step = ROPELEN * spacing;
     position = v000;
     size = v000;
-    position.y = 0.0f;
-    step = spacing * ROPELEN;
     rotation = 0;
-    segment_index = 0;
     segment_count = (i32)(length / step);
+    position.y = 0.0f;
+    segment_index = 0;
     while (position.y < length) {
         f32 magnitude;
 
-        magnitude = scale;
         if (ZipUpRopeModulationPc == 1 && segment_count > 0) {
             f32 fraction;
             i32 angle;
 
             fraction = (f32)(1.0 - (f64)segment_index / segment_count);
             angle = (i32)(fraction * 16384.0 + 49152.0 + 16384.0);
-            magnitude *= NuTrigTable[(angle >> 1) & 0x7fff];
+            magnitude = scale * NuTrigTable[(angle >> 1) & 0x7fff];
+        } else {
+            magnitude = scale;
         }
-        if (grow_time >= time) {
+        if (time <= grow_time) {
             i32 angle;
 
             angle = (i32)((1.0f / grow_time * time) * 16384.0f + 32768.0f + 16384.0f);
