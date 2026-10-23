@@ -729,9 +729,7 @@ extern "C" void __cdecl LoadSingleCharacter(BGPROCINFO *) {
 
 extern "C" void __cdecl UpdateCharacterLoad(void) {
     i32 candidates[340];
-    i32 count = 0;
-    i32 candidate = 0;
-    i16 *fixed = NULL;
+    i32 candidate;
     i32 menu = GetMenuID();
     if (menu == 13 || menu == 15 || menu == 16 || menu == 17 || LOADEROFF != 0 || BGLOAD == 0)
         return;
@@ -741,59 +739,44 @@ extern "C" void __cdecl UpdateCharacterLoad(void) {
     i32 required = (0x3ff - (i32)(((f64)CHARACTERBUFFERSIZE / 7077888.0) * -1048576.0)) & ~0x3ff;
     if ((i32)(characterbuffer_end.addr - characterbuffer_ptr.addr) < required)
         return;
+    i32 count = 0;
     if (VehicleBoltId7f17d4Pc != -1 && APICharacterLoaded(VehicleBoltId7f17d4Pc) != NULL &&
         PunchRangeCompanionIdPc != -1 && APICharacterLoaded(PunchRangeCompanionIdPc) == NULL) {
-        fixed = &PunchRangeCompanionIdPc;
-        goto queue_fixed;
+        candidates[0] = PunchRangeCompanionIdPc;
+    } else if (id_BARMAN != -1 && APICharacterLoaded(id_BARMAN) == NULL) {
+        candidates[0] = id_BARMAN;
+    } else if (id_CANTINABAND != -1 && APICharacterLoaded(id_CANTINABAND) == NULL) {
+        candidates[0] = id_CANTINABAND;
+    } else if (PermanentWeirdo1IdPc != -1 && APICharacterLoaded(PermanentWeirdo1IdPc) == NULL) {
+        candidates[0] = PermanentWeirdo1IdPc;
+    } else if (PermanentWeirdo2IdPc != -1 && APICharacterLoaded(PermanentWeirdo2IdPc) == NULL) {
+        candidates[0] = PermanentWeirdo2IdPc;
+    } else if (DefaultAnimationJabbaIdPc != -1 && APICharacterLoaded(DefaultAnimationJabbaIdPc) == NULL) {
+        candidates[0] = DefaultAnimationJabbaIdPc;
+    } else if (id_MOSEISLEYCITIZEN != -1 && APICharacterLoaded(id_MOSEISLEYCITIZEN) == NULL) {
+        candidates[0] = id_MOSEISLEYCITIZEN;
+    } else if (id_CANTINAALIEN != -1 && APICharacterLoaded(id_CANTINAALIEN) == NULL) {
+        candidates[0] = id_CANTINAALIEN;
+    } else if (CharacterFixupIdPc007f18c4 != -1 && APICharacterLoaded(CharacterFixupIdPc007f18c4) == NULL) {
+        candidates[0] = CharacterFixupIdPc007f18c4;
+    } else {
+        for (i32 id = 0; id < CHARCOUNT; ++id) {
+            if (id == id_DROIDEKA || (CDataList[id].model_flags & 0x04002000) != 0 || APICharacterLoaded(id) != NULL)
+                continue;
+            if ((i32)CDataList[id].animation_count + apicharsys->loaded_animation_count >
+                apicharsys->animation_capacity)
+                continue;
+            if (InCollectList_Index(id, NULL, 0) == -1 || Collection_Got(id) == 0)
+                continue;
+            candidates[count++] = id;
+        }
+        if (count <= 0)
+            return;
+        if (count > 1) {
+            candidate = qrand() / ((0xffff / count) + 1);
+            goto queue;
+        }
     }
-    if (id_BARMAN != -1 && APICharacterLoaded(id_BARMAN) == NULL) {
-        fixed = &id_BARMAN;
-        goto queue_fixed;
-    }
-    if (id_CANTINABAND != -1 && APICharacterLoaded(id_CANTINABAND) == NULL) {
-        fixed = &id_CANTINABAND;
-        goto queue_fixed;
-    }
-    if (PermanentWeirdo1IdPc != -1 && APICharacterLoaded(PermanentWeirdo1IdPc) == NULL) {
-        fixed = &PermanentWeirdo1IdPc;
-        goto queue_fixed;
-    }
-    if (PermanentWeirdo2IdPc != -1 && APICharacterLoaded(PermanentWeirdo2IdPc) == NULL) {
-        fixed = &PermanentWeirdo2IdPc;
-        goto queue_fixed;
-    }
-    if (DefaultAnimationJabbaIdPc != -1 && APICharacterLoaded(DefaultAnimationJabbaIdPc) == NULL) {
-        fixed = &DefaultAnimationJabbaIdPc;
-        goto queue_fixed;
-    }
-    if (id_MOSEISLEYCITIZEN != -1 && APICharacterLoaded(id_MOSEISLEYCITIZEN) == NULL) {
-        fixed = &id_MOSEISLEYCITIZEN;
-        goto queue_fixed;
-    }
-    if (id_CANTINAALIEN != -1 && APICharacterLoaded(id_CANTINAALIEN) == NULL) {
-        fixed = &id_CANTINAALIEN;
-        goto queue_fixed;
-    }
-    if (CharacterFixupIdPc007f18c4 != -1 && APICharacterLoaded(CharacterFixupIdPc007f18c4) == NULL) {
-        fixed = &CharacterFixupIdPc007f18c4;
-        goto queue_fixed;
-    }
-    for (i32 id = 0; id < CHARCOUNT; ++id) {
-        if (id == id_DROIDEKA || (CDataList[id].model_flags & 0x04002000) != 0 || APICharacterLoaded(id) != NULL)
-            continue;
-        if ((i32)CDataList[id].animation_count + apicharsys->loaded_animation_count > apicharsys->animation_capacity)
-            continue;
-        if (InCollectList_Index(id, NULL, 0) == -1 || Collection_Got(id) == 0)
-            continue;
-        candidates[count++] = id;
-    }
-    if (count <= 0)
-        return;
-    if (count > 1)
-        candidate = qrand() / ((0xffff / count) + 1);
-    goto queue;
-queue_fixed:
-    candidates[0] = *fixed;
     candidate = 0;
 queue:
     waiting_for_character = candidates[candidate];
