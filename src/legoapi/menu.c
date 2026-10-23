@@ -328,7 +328,6 @@ void __cdecl DrawMenuButtonPromptsEx(i32 confirm, i32 cancel, i32 flags, i32 ena
     i32 device;
     f64 row_delta;
     f32 y, x, scale;
-    u32 alignment;
     device = TextInputLinkedDevicePc(TextInputLastDevicePc());
     if (TextInputIsKeyboardDevicePc(device)) {
         keys = TextInputGetKeyNamesPc();
@@ -344,12 +343,13 @@ void __cdecl DrawMenuButtonPromptsEx(i32 confirm, i32 cancel, i32 flags, i32 ena
         sprintf(accept_text, "~0$s~~ %s", accept, MenuAcceptPromptTextPc);
         sprintf(cancel_text, "~0%s~~ %s", back, MenuCancelPromptTextPc);
     }
-    if (TextInputIsPrimaryDevicePc(device))
-        sprintf(axes_text, "~0$s~~ %s ~0$s", left, MenuAcceptPromptTextPc, right);
-    else
+    if (!TextInputIsPrimaryDevicePc(device))
         sprintf(axes_text, "%s ~0%s~~ / ~0$s", MenuAcceptPromptTextPc, left, right);
+    else
+        sprintf(axes_text, "~0$s~~ %s ~0$s", left, MenuAcceptPromptTextPc, right);
+
     row_delta = (f64)MENUDY * (f64)0.8f * MenuPromptPositionScalePc;
-    y = (f32)((f64)MENUDY * (f64)0.8f - (f64)0.85f);
+    y = (f32)(row_delta - (f64)0.85f);
     y = (f32)((f64)y + row_delta);
     y = (f32)((f64)y - (f64)0.05f);
     if (confirm)
@@ -358,24 +358,24 @@ void __cdecl DrawMenuButtonPromptsEx(i32 confirm, i32 cancel, i32 flags, i32 ena
         y = (f32)((f64)y - row_delta);
     if (flags)
         y = (f32)((f64)y - row_delta);
-    x = enabled ? 0.85f : -0.85f;
-    scale = (f32)((f64)0.8f * MenuTextScalePc);
-    alignment = enabled ? 12 : 6;
     if (confirm) {
+        x = enabled ? 0.85f : -0.85f;
         scale = (f32)((f64)0.8f * MenuTextScalePc);
-        MenuText3DEx(accept_text, x, y, 1, scale, scale, scale, alignment, red, green, blue, alpha);
+        MenuText3DEx(accept_text, x, y, 1, scale, scale, scale, enabled ? 12 : 6, red, green, blue, alpha);
         row_delta = (f64)MENUDY * (f64)0.8f * MenuPromptPositionScalePc;
         y = (f32)((f64)y + row_delta);
     }
     if (cancel) {
+        x = enabled ? 0.85f : -0.85f;
         scale = (f32)((f64)0.8f * MenuTextScalePc);
-        MenuText3DEx(cancel_text, x, y, 1, scale, scale, scale, alignment, red, green, blue, alpha);
+        MenuText3DEx(cancel_text, x, y, 1, scale, scale, scale, enabled ? 12 : 6, red, green, blue, alpha);
         row_delta = (f64)MENUDY * (f64)0.8f * MenuPromptPositionScalePc;
         y = (f32)((f64)y + row_delta);
     }
     if (flags) {
+        x = enabled ? 0.85f : -0.85f;
         scale = (f32)((f64)0.8f * MenuTextScalePc);
-        MenuText3DEx(axes_text, x, y, 1, scale, scale, scale, alignment, red, green, blue, alpha);
+        MenuText3DEx(axes_text, x, y, 1, scale, scale, scale, enabled ? 12 : 6, red, green, blue, alpha);
     }
 }
 
@@ -421,7 +421,6 @@ void __cdecl DrawMenu(i32 paused) {
     MENU *menu;
     MENU_DRAW_STATE_PC *view;
     f32 saved_baseline = 0.0f, saved_button_baseline = 0.0f, centre;
-    VUFNT *font;
     if (memcard_autosavestarted != 0 || memcard_autosavepostdelay > 0.0f || memcard_autosavepredelay > 0.0f) {
         if (memcard_drawasiconfn != NULL)
             memcard_drawasiconfn();
@@ -432,10 +431,9 @@ void __cdecl DrawMenu(i32 paused) {
     if (view->menu == -1)
         return;
     MenuValidated = 1;
-    font = SmartTextFont != NULL ? SmartTextFont : QFont2D;
-    if (font != NULL) {
-        saved_baseline = font->baseline;
-        font->baseline = 0.0f;
+    if ((SmartTextFont != NULL ? SmartTextFont : QFont2D) != NULL) {
+        saved_baseline = (SmartTextFont != NULL ? SmartTextFont : QFont2D)->baseline;
+        (SmartTextFont != NULL ? SmartTextFont : QFont2D)->baseline = 0.0f;
     }
     if (QFont2DButtons != NULL) {
         saved_button_baseline = QFont2DButtons->baseline;
@@ -444,12 +442,13 @@ void __cdecl DrawMenu(i32 paused) {
     MenuHeader[0] = 0;
     view->draw_item = view->first_row;
     view->item_scale = 1.0f;
-    view->draw_x = 0.0f;
-    view->draw_z = 1.0f;
     view->draw_offset = 0.0f;
     centre = (f32)((f64)(view->last_row - view->first_row) * (f64)MENUDY * 0.5);
     view->centre_offset = centre;
+    view->draw_x = 0.0f;
     view->draw_y = -centre;
+    view->draw_z = 1.0f;
+
     view->paused = paused;
     if (predrawfn != NULL)
         predrawfn(menu);
@@ -458,13 +457,11 @@ void __cdecl DrawMenu(i32 paused) {
     if (headerdrawfn != NULL)
         headerdrawfn();
     if (MenuAlpha >= 0.5f && g_enableButtonPrompts != 0) {
-        MENUFNINFO *info = &MenuInfo[view->menu];
-        DrawMenuButtonPrompts(info->confirm_prompt, info->cancel_prompt, 1, MENUNORMALR, MENUNORMALG, MENUNORMALB,
-                              (u8)MenuA);
+        DrawMenuButtonPrompts(MenuInfo[view->menu].confirm_prompt, MenuInfo[view->menu].cancel_prompt, 1, MENUNORMALR,
+                              MENUNORMALG, MENUNORMALB, (u8)MenuA);
     }
-    font = SmartTextFont != NULL ? SmartTextFont : QFont2D;
-    if (font != NULL)
-        font->baseline = saved_baseline;
+    if ((SmartTextFont != NULL ? SmartTextFont : QFont2D) != NULL)
+        (SmartTextFont != NULL ? SmartTextFont : QFont2D)->baseline = saved_baseline;
     if (QFont2DButtons != NULL)
         QFont2DButtons->baseline = saved_button_baseline;
 }
