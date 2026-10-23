@@ -536,7 +536,7 @@ extern "C" void Batarang_StartThrowQuick(GAMEOBJECT *object) {
     object->context_timer = AnimDuration((i16)object->id, 0xb2, 0.0f, 0.0f, 1);
 }
 
-static i32 BatarangContainsTargetPc(BATARANG_NATIVE_PC *batarang, void *target) {
+static __declspec(noinline) i32 BatarangContainsTargetPc(BATARANG_NATIVE_PC *batarang, void *target) {
     i32 index = 0;
     for (; index < batarang->active; ++index)
         if (batarang->targets[index].object == target)
@@ -566,29 +566,39 @@ extern "C" i32 __cdecl Batarang_FindTarget(WORLDINFO *world, GAMEOBJECT *object,
         u32 bits;
     } absolute, absolute_result;
     BATARANG_NATIVE_PC *batarang = BATARANG_PACKET_PC(object);
-    NUVEC forward;
-    NuVecRotateY(&forward, &v001, object->movement_facing_angle);
-    void *selected = NULL;
+    i32 platform = -1;
     i32 selected_type = -1;
+    NUVEC forward;
     NUVEC selected_position;
-    f32 selected_distance = 64.0f;
-    GAMEOBJECT *nearest_object = NULL;
-    f32 nearest_distance = 16.0f;
-    GAMEOBJECT *first_object = NULL;
-    GAMEOBJECT *candidate = Obj;
-    for (i32 i = 0; i < HIGHGAMEOBJECT; ++i, ++candidate) {
-        const i8 context = candidate->character_context;
-        if ((candidate->flags_1fc_word & 0x1001) != 0x1001 || candidate->dead != 0 ||
-            (CInfo[context].flags & 0x8000) != 0 || candidate->model_draw_result == 0 || candidate == object ||
-            candidate->field_280 != 0xff || (static_cast<u8>(context) & 0xfd) == 0x39 || context == 0x3c ||
+    NUVEC origin;
+    NUVEC ray;
+    void *selected;
+    f32 selected_distance;
+    f32 nearest_distance;
+    f32 distance;
+    GAMEOBJECT *nearest_object;
+    GAMEOBJECT *first_object;
+    GAMEOBJECT *candidate;
+    i32 i;
+    NuVecRotateY(&forward, &v001, object->movement_facing_angle);
+    selected = NULL;
+    selected_distance = 64.0f;
+    nearest_object = NULL;
+    first_object = NULL;
+    nearest_distance = 16.0f;
+    candidate = Obj;
+    for (i = 0; i < HIGHGAMEOBJECT; ++i, ++candidate) {
+        if ((candidate->flags_1fc_word & 1) == 0 || (candidate->flags_1fc_word & 0x1000) == 0 || candidate->dead != 0 ||
+            (U64_PAIR(&CInfo[candidate->character_context].flags) & 0x8000) != 0 || candidate->model_draw_result == 0 ||
+            candidate == object || candidate->field_280 != 0xff || candidate->character_context == 0x3b ||
+            candidate->character_context == 0x39 || candidate->character_context == 0x3c ||
             (object->flags_1f8 & 0x10004) != 0 || ((object->flags_1f8 ^ candidate->flags_1f8) & 1) == 0) {
             continue;
         }
         if (BatarangContainsTargetPc(batarang, candidate))
             continue;
-
         if (automatic != 0) {
-            f32 distance = NuVecDistSqr(&candidate->collision_position, &object->collision_position, &delta);
+            distance = NuVecDistSqr(&candidate->collision_position, &object->collision_position, &delta);
             if (!(delta.x * forward.x + delta.z * forward.z > 0.0f)) {
                 continue;
             }
@@ -601,119 +611,117 @@ extern "C" i32 __cdecl Batarang_FindTarget(WORLDINFO *world, GAMEOBJECT *object,
                  (absolute_result.bits = absolute.bits & 0x7fffffff), absolute_result.value) < (f64)0.1f &&
                 ((absolute.value = (candidate->camera_screen_position.y - batarang->sight_position.y)),
                  (absolute_result.bits = absolute.bits & 0x7fffffff), absolute_result.value) < (f64)0.2f &&
-                NuVecDistSqr(&candidate->collision_position, &object->collision_position, &delta) < selected_distance) {
+                NuVecDistSqr(&candidate->collision_position, &object->collision_position, &delta) < 64.0f) {
                 first_object = candidate;
                 break;
             }
         }
     }
-    if (nearest_object != NULL && selected_distance > nearest_distance) {
-        selected = nearest_object;
+    if (nearest_object != NULL && nearest_distance < 64.0f) {
         selected_distance = nearest_distance;
-    } else if (first_object != NULL) {
-        selected = first_object;
+        first_object = nearest_object;
     }
-    if (selected != NULL) {
-        GAMEOBJECT *candidate = static_cast<GAMEOBJECT *>(selected);
-        selected_position = candidate->collision_position;
-        selected_position.y = (f32)((candidate->collision_position.y + candidate->upper_position.y) * 0.5);
+    if (first_object != NULL) {
+        selected = first_object;
         selected_type = 0;
+        platform = -1;
+        selected_position.x = first_object->collision_position.x;
+        selected_position.y = (f32)((first_object->upper_position.y + first_object->collision_position.y) * 0.5);
+        selected_position.z = first_object->collision_position.z;
     }
     if (automatic == 0) {
-        for (DETONATOR_s *candidate = Detonator; candidate != Detonator + 10; ++candidate) {
-            if (candidate->active == 0 || candidate->draw_result == 0 || candidate->timer == 0.0f) {
+        DETONATOR_s *detonator = Detonator;
+        for (i = 10; i != 0; --i, ++detonator) {
+            if (detonator->active == 0 || detonator->draw_result == 0 || detonator->timer == 0.0f) {
                 continue;
             }
             i32 target;
             for (target = 0; target < batarang->active; ++target) {
-                if (batarang->targets[target].object == candidate) {
+                if (batarang->targets[target].object == detonator) {
                     break;
                 }
             }
-            if (target != batarang->active ||
-                !(((absolute.value = (candidate->field_0x18.x - batarang->sight_position.x)),
-                   (absolute_result.bits = absolute.bits & 0x7fffffff), absolute_result.value) < (f64)0.1f) ||
-                !(((absolute.value = (candidate->field_0x18.y - batarang->sight_position.y)),
-                   (absolute_result.bits = absolute.bits & 0x7fffffff), absolute_result.value) < (f64)0.1f)) {
+            if (target < batarang->active) {
                 continue;
             }
-            f32 distance = NuVecDistSqr(&candidate->field_0x0c, &object->collision_position, NULL);
-            if (distance < selected_distance) {
-                selected_position = candidate->field_0x0c;
-                selected_type = 1;
-                selected_distance = distance;
-                selected = candidate;
+            if (((absolute.value = (detonator->field_0x18.x - batarang->sight_position.x)),
+                 (absolute_result.bits = absolute.bits & 0x7fffffff), absolute_result.value) < (f64)0.1f &&
+                ((absolute.value = (detonator->field_0x18.y - batarang->sight_position.y)),
+                 (absolute_result.bits = absolute.bits & 0x7fffffff), absolute_result.value) < (f64)0.1f) {
+                distance = NuVecDistSqr(&detonator->field_0x0c, &object->collision_position, NULL);
+                if (distance < selected_distance) {
+                    selected_distance = distance;
+                    selected = detonator;
+                    selected_type = 1;
+                    selected_position = detonator->field_0x0c;
+                    platform = -1;
+                }
             }
         }
     }
-    GIZMOBLOWUP_PC *nearest_blowup = NULL;
     GIZMOBLOWUP_PC *blowup = NULL;
-    nearest_distance = 16.0f;
+    GIZMOBLOWUP_PC *nearest_blowup = NULL;
     GIZMOBLOWUP_PC *candidate_blowup = world->gizmo_blowups;
-    i32 world_gizmo_blowup_count = world->gizmo_blowup_count;
-    for (i32 i = 0; i < world_gizmo_blowup_count; ++i, ++candidate_blowup) {
-        GIZMOBLOWUP_PC *candidate = candidate_blowup;
-        if ((candidate->status_flags & 0x80c001) != 0x80c000 || (candidate->draw_flags & 1) == 0 ||
-            ((candidate->draw_flags & 0x20) != 0 && ShadowMode == 0)) {
+    nearest_distance = 16.0f;
+    for (i = 0; i < world->gizmo_blowup_count; ++i, ++candidate_blowup) {
+        if ((candidate_blowup->status_flags & 1) != 0 || (candidate_blowup->status_flags & 0x800000) == 0 ||
+            (candidate_blowup->status_flags & 0x4000) == 0 || (candidate_blowup->status_flags & 0x8000) == 0 ||
+            (candidate_blowup->draw_flags & 1) == 0 ||
+            ((candidate_blowup->draw_flags & 0x20) != 0 && ShadowMode == 0)) {
             continue;
         }
         i32 target;
         for (target = 0; target < batarang->active; ++target) {
-            if (batarang->targets[target].object == candidate) {
+            if (batarang->targets[target].object == candidate_blowup) {
                 break;
             }
         }
-        if (target != batarang->active) {
+        if (target < batarang->active) {
             continue;
         }
-        NUVEC delta;
-        if (automatic == 0) {
-            if (!(((absolute.value = (candidate->screen_position.x - batarang->sight_position.x)),
-                   (absolute_result.bits = absolute.bits & 0x7fffffff), absolute_result.value) < (f64)0.1f) ||
-                !(((absolute.value = (candidate->screen_position.y - batarang->sight_position.y)),
-                   (absolute_result.bits = absolute.bits & 0x7fffffff), absolute_result.value) < (f64)0.1f)) {
-                continue;
-            }
-            if (NuVecDistSqr(&candidate->mid_position, &object->collision_position, &delta) < selected_distance) {
-                blowup = candidate;
-                break;
-            }
-        } else {
-            f32 distance = NuVecDistSqr(&candidate->mid_position, &object->collision_position, &delta);
+        if (automatic != 0) {
+            distance = NuVecDistSqr(&candidate_blowup->mid_position, &object->collision_position, &delta);
             if (!(delta.x * forward.x + delta.z * forward.z > 0.0f)) {
                 continue;
             }
             if (distance < nearest_distance) {
                 nearest_distance = distance;
-                nearest_blowup = candidate;
+                nearest_blowup = candidate_blowup;
+            }
+        } else {
+            if (((absolute.value = (candidate_blowup->screen_position.x - batarang->sight_position.x)),
+                 (absolute_result.bits = absolute.bits & 0x7fffffff), absolute_result.value) < (f64)0.1f &&
+                ((absolute.value = (candidate_blowup->screen_position.y - batarang->sight_position.y)),
+                 (absolute_result.bits = absolute.bits & 0x7fffffff), absolute_result.value) < (f64)0.1f &&
+                NuVecDistSqr(&candidate_blowup->mid_position, &object->collision_position, &delta) <
+                    selected_distance) {
+                blowup = candidate_blowup;
+                break;
             }
         }
     }
     if (nearest_blowup != NULL && nearest_distance < selected_distance) {
         blowup = nearest_blowup;
     }
-    i16 platform = -1;
     if (blowup != NULL) {
         selected_position = blowup->mid_position;
-        platform = blowup->platform_id;
         selected = blowup;
         selected_type = 2;
+        platform = blowup->platform_id;
     }
-    if (selected == NULL) {
-        return 0;
-    }
-    NUVEC origin = object->collision_position;
-    origin.y = (f32)((origin.y + object->upper_position.y) * 0.5);
-    NUVEC ray;
-    NuVecSub(&ray, &selected_position, &origin);
-    if (NewRayCastScaleYMask(&origin, &ray, 0.0f, 1.0f, 0, 0x1f) != 0) {
-        if (selected_type != 2 || platform == -1 || TerrainPlatId() != platform) {
-            return 0;
+    if (selected != NULL) {
+        origin.x = object->collision_position.x;
+        origin.y = (f32)((object->upper_position.y + object->collision_position.y) * 0.5);
+        origin.z = object->collision_position.z;
+        NuVecSub(&ray, &selected_position, &origin);
+        if (NewRayCastScaleYMask(&origin, &ray, 0.0f, 1.0f, 0, 0x1f) == 0 ||
+            (platform != -1 && TerrainPlatId() == platform)) {
+            if (selected_type != -1 && BatarangAppendTargetPc(batarang, selected, selected_type) == 2) {
+                return 1;
+            }
         }
     }
-    if (selected_type == -1)
-        return 0;
-    return BatarangAppendTargetPc(batarang, selected, selected_type) == 2;
+    return 0;
 }
 
 extern "C" void __cdecl Batarang_Release(GAMEOBJECT *object, i32 mode) {
