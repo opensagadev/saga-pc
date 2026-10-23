@@ -529,6 +529,21 @@ void __cdecl NuDisplayListVertexOffsetsPc(void *arg) {
         NuShaderManagerSetElementfv(0x4e, i, &packet->values[i].x);
 }
 
+extern PC_DISPLAY_ITEM_HANDLER_PC PCDisplayShadowItemHandlersPc[49];
+void __cdecl PostShadowSelectHandlersPc(i32 mode) {
+    switch (mode) {
+        case 0:
+            PCDisplayItemHandlersPc = PCDisplayItemHandlerPrefixPc;
+            break;
+        case 1:
+            PCDisplayItemHandlersPc = PCDisplayShadowItemHandlersPc;
+            break;
+        default:
+            PCGraphicsRenderTextureAllocationError();
+            break;
+    }
+}
+
 /* PC-only table slot 0xad; no Android function identity is asserted. */
 typedef struct PC_DL_AD_COLOURS {
     NUVEC colour[5];

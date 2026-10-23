@@ -15,6 +15,7 @@ extern "C" {
     extern PC_DISPLAY_ITEM_HANDLER_PC PCDisplayShadowItemHandlersPc[49];
     void __cdecl PCGraphicsResolveFramebufferPc(i32);
     void __cdecl PCGraphicsRenderTextureAllocationError(void);
+    void __cdecl PostShadowSelectHandlersPc(i32 mode);
     void __cdecl PcGetGeometryPerspectivePc(NUMTX *, f32 *, f32 *, f32 *, f32 *);
     void __cdecl PcUpdateGeometryCameraOriginPc(NUMTX *, NUMTX *);
 }
@@ -23,19 +24,6 @@ extern "C" void __cdecl PCGraphicsResolveFramebufferPc(i32) {
 }
 void NuPostFilterGen::reset() {
     enabled = false;
-}
-extern "C" void __cdecl PostShadowSelectHandlersPc(i32 mode) {
-    switch (mode) {
-        case 0:
-            PCDisplayItemHandlersPc = PCDisplayItemHandlerPrefixPc;
-            break;
-        case 1:
-            PCDisplayItemHandlersPc = PCDisplayShadowItemHandlersPc;
-            break;
-        default:
-            PCGraphicsRenderTextureAllocationError();
-            break;
-    }
 }
 extern "C" void __cdecl PostShadowCopyVectorsPc(NUVEC4 *out, const NUVEC4 *in, i32 count) {
     const NUVEC4 *end = in + count;
@@ -271,17 +259,32 @@ void PC_SPECIAL_SHADOW_LIGHT::RenderShadowPc(i32 index, PC_FRAMEBUFFER_PC *) {
         return;
     SetupShadowPc(&set);
     PostShadowSelectHandlersPc(1);
-    NUMTX axis = NuMtxSetIdentityTemplate, view_projection;
+    NUMTX axis, view_projection;
+    axis.m00 = 1.0f;
+    axis.m01 = 0.0f;
+    axis.m02 = 0.0f;
+    axis.m03 = 0.0f;
+    axis.m10 = 0.0f;
+    axis.m11 = 1.0f;
+    axis.m12 = 0.0f;
+    axis.m13 = 0.0f;
+    axis.m20 = 0.0f;
+    axis.m21 = 0.0f;
     axis.m22 = 0.5f;
+    axis.m23 = 0.0f;
+    axis.m30 = 0.0f;
+    axis.m31 = 0.0f;
     axis.m32 = 0.5f;
+    axis.m33 = 1.0f;
     NuMtxMulH(&view_projection, &set.shadow_matrix_pc, &axis);
     PcUpdateGeometryCameraOriginPc(&view_projection, &NuMtxSetIdentityTemplate);
     for (i32 i = 0; i < 2; ++i) {
         NU_LIGHT_SHADOW_LIST_VIEW_PC &list = set.shadow_lists_pc[i];
         if (list.material_last != list.first) {
-            list.material_last->type = 0x84;
-            list.material_last->next = NULL;
-            list.material_last->id = 4;
+            NUDISPLAYLISTITEM *item = list.material_last;
+            item->type = 0x84;
+            item->next = NULL;
+            item->id = 4;
             NuDisplayHandlerZModePc = 0;
             PCDeviceSetRenderState(7, 1);
             PCDeviceSetRenderState(14, 1);
