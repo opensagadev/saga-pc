@@ -833,9 +833,9 @@ i32 __cdecl ItemMenu(void *menu) {
         ShopSubMenuPc = 0;
         ShopLastItemPc = picked;
         picked = candidate;
-        if (picked < 0)
+        if (candidate < 0)
             picked = 0;
-        else if (picked > 5)
+        else if (candidate > 5)
             picked = 5;
         ShopSlideTimerPc = 0.125f;
         if (ShopMoveSfxLockPc == 0) {
@@ -870,32 +870,35 @@ i32 __cdecl ItemMenu(void *menu) {
         ShopSubMenuPc = 0;
         GameAudio_PlaySfx(0x31, NULL, 0, 0);
     }
-    if (ShopSlideTimerPc < 0.0f) {
+    if (ShopSlideTimerPc >= 0.0f) {
+        if ((ShopLastItemPc != picked || ShopEnteredPc != 0) && ShopSubMenuPc == 0) {
+            reverse_phase = (f32)((f64)ShopSlideTimerPc * 8.0);
+            old_factor = 1.0f - reverse_phase;
+            old_angle = (i32)((f64)old_factor * 32768.0 + 16384.0);
+            old_factor = (f32)(1.0 - ((f64)NuTrigTable[(old_angle >> 1) & 0x7fff] + 1.0) * 0.5);
+            forward_angle = (i32)((f64)reverse_phase * 32768.0 + 16384.0);
+            forward_factor = (f32)(1.0 - ((f64)NuTrigTable[(forward_angle >> 1) & 0x7fff] + 1.0) * 0.5);
+            if (ShopLastItemPc != -1) {
+                old_factor = old_factor > 1.0f ? 1.0f : old_factor;
+                old_factor = old_factor < 0.0f ? 0.0f : (old_factor < 1.0f ? old_factor : 1.0f);
+                topscale[ShopLastItemPc] = TopBigScale[ShopLastItemPc] +
+                                           (TopShelfScale[ShopLastItemPc] - TopBigScale[ShopLastItemPc]) * old_factor;
+                forward_factor = forward_factor > 1.0f ? 1.0f : forward_factor;
+                forward_factor = forward_factor < 0.0f ? 0.0f : (forward_factor < 1.0f ? forward_factor : 1.0f);
+                toppush[ShopLastItemPc] = TopBigPush[ShopLastItemPc] +
+                                          (TopShelfPush[ShopLastItemPc] - TopBigPush[ShopLastItemPc]) * forward_factor;
+            }
+            if (picked != -1 && ShopLastItemPc != -1) {
+                old_factor = old_factor > 1.0f ? 1.0f : old_factor;
+                old_factor = old_factor < 0.0f ? 0.0f : (old_factor < 1.0f ? old_factor : 1.0f);
+                topscale[picked] = TopShelfScale[picked] + (TopBigScale[picked] - TopShelfScale[picked]) * old_factor;
+                forward_factor = forward_factor > 1.0f ? 1.0f : forward_factor;
+                forward_factor = forward_factor < 0.0f ? 0.0f : (forward_factor < 1.0f ? forward_factor : 1.0f);
+                toppush[picked] = TopShelfPush[picked] + (TopBigPush[picked] - TopShelfPush[picked]) * forward_factor;
+            }
+        }
+    } else {
         ShopEnteredPc = 0;
-    } else if ((ShopLastItemPc != picked || ShopEnteredPc != 0) && ShopSubMenuPc == 0) {
-        reverse_phase = (f32)((f64)ShopSlideTimerPc * 8.0);
-        old_angle = (i32)((f64)(1.0f - reverse_phase) * 32768.0 + 16384.0);
-        forward_angle = (i32)((f64)reverse_phase * 32768.0 + 16384.0);
-        old_factor = (f32)(1.0 - ((f64)NuTrigTable[(old_angle >> 1) & 0x7fff] + 1.0) * 0.5);
-        forward_factor = (f32)(1.0 - ((f64)NuTrigTable[(forward_angle >> 1) & 0x7fff] + 1.0) * 0.5);
-        if (ShopLastItemPc != -1) {
-            old_factor = old_factor < 1.0f ? old_factor : 1.0f;
-            old_factor = old_factor > 0.0f ? old_factor : 0.0f;
-            topscale[ShopLastItemPc] = TopBigScale[ShopLastItemPc] +
-                                       (TopShelfScale[ShopLastItemPc] - TopBigScale[ShopLastItemPc]) * old_factor;
-            forward_factor = forward_factor < 1.0f ? forward_factor : 1.0f;
-            forward_factor = forward_factor > 0.0f ? forward_factor : 0.0f;
-            toppush[ShopLastItemPc] = TopBigPush[ShopLastItemPc] +
-                                      (TopShelfPush[ShopLastItemPc] - TopBigPush[ShopLastItemPc]) * forward_factor;
-        }
-        if (picked != -1 && ShopLastItemPc != -1) {
-            old_factor = old_factor < 1.0f ? old_factor : 1.0f;
-            old_factor = old_factor > 0.0f ? old_factor : 0.0f;
-            topscale[picked] = TopShelfScale[picked] + (TopBigScale[picked] - TopShelfScale[picked]) * old_factor;
-            forward_factor = forward_factor < 1.0f ? forward_factor : 1.0f;
-            forward_factor = forward_factor > 0.0f ? forward_factor : 0.0f;
-            toppush[picked] = TopShelfPush[picked] + (TopBigPush[picked] - TopShelfPush[picked]) * forward_factor;
-        }
     }
     if (ShopSubMenuPc != 0 && ShopSlideTimerPc <= 0.0f) {
         ShopInOutScalePc = 0.0f;
@@ -905,24 +908,21 @@ i32 __cdecl ItemMenu(void *menu) {
         ShopMenuParentPc[ShopMenuLevelPc] = menuptr;
         ShopSubMenuPc = 0;
         ShopEaseSubInPc = 1;
-        ++ShopDrawLevelPc;
-        ShopDrawParentPc[ShopDrawLevelPc] = ShopDrawPanelFnPc;
         if (TopShelf[ShopLastItemPc].type == 3) {
-            ShopUserCodePc[0] = 'A';
-            ShopUserCodePc[1] = 'A';
-            ShopUserCodePc[2] = 'A';
-            ShopUserCodePc[3] = 'A';
-            ShopUserCodePc[4] = 'A';
-            ShopUserCodePc[5] = 'A';
+            memset(ShopUserCodePc, 'A', 6);
             ShopMenuPc = 11;
             ShopColumnPc = 0;
             ShopLastItemPc = -1;
             menuptr = CodeMenu;
             ShopCheatNamePc = NULL;
+            ++ShopDrawLevelPc;
+            ShopDrawParentPc[ShopDrawLevelPc] = ShopDrawPanelFnPc;
             ShopDrawPanelFnPc = DrawCodeMenu;
             drawptr = DrawCodeMenu3D;
         } else {
             menuptr = SubItemMenu;
+            ++ShopDrawLevelPc;
+            ShopDrawParentPc[ShopDrawLevelPc] = ShopDrawPanelFnPc;
             ShopDrawPanelFnPc = DrawSubItemMenu2D;
             drawptr = DrawSubItemMenu3D;
         }
