@@ -4249,6 +4249,11 @@ void StartBallooning(GAMEOBJECT *object, i32 movement_state) {
     object->field_7aa = object->character_model->model_data_b[0xb1] != NULL ? 0xb1 : 1;
     object->context_hover_target_y = 1000000000.0f;
 }
+typedef struct fire_target_view_pc_s {
+    u8 unknown_0[0xc8c];
+    NUVEC target_velocity;
+} FIRE_TARGET_VIEW_PC;
+STATIC_ASSERT(offsetof(FIRE_TARGET_VIEW_PC, target_velocity) == 0xc8c);
 static __declspec(noinline) void FireCode(GAMEOBJECT *object, i32 pressed, i32 held, f32 fire_delay,
                                           i32 delay_pressed) {
     BOLTTYPE_PC *bolt;
@@ -4259,7 +4264,7 @@ static __declspec(noinline) void FireCode(GAMEOBJECT *object, i32 pressed, i32 h
     NUVEC origin, direction, offset, lateral, position;
     f32 range, range_squared, lead, progress;
     i32 bolt_id, target_mode, angle, player_index;
-    i16 animation;
+    i32 animation;
     i8 context;
     if (object->quick_shoot_timer > 0.0f)
         object->quick_shoot_timer -= FRAMETIME;
@@ -4276,7 +4281,8 @@ static __declspec(noinline) void FireCode(GAMEOBJECT *object, i32 pressed, i32 h
     if ((delay_pressed != 0 && object->quick_shoot_timer > 0.0f) ||
         (pressed == 0 && (held == 0 || !(object->quick_shoot_timer <= 0.0f))))
         return;
-    bolt_id = BoltType_FindIDByCreature(object, (object->character_data->model_flags & 0x4000000) != 0 ? 0x15 : 5);
+    bolt_id = (object->character_data->model_flags & 0x4000000) != 0 ? BoltType_FindIDByCreature(object, 0x15)
+                                                                     : BoltType_FindIDByCreature(object, 5);
     bolt = BoltType_FindByID(bolt_id, WORLD);
     target_mode = ((bolt->flags_60 >> 14) ^ 1) & 1;
     if ((object->flags_1fc & 0x80) != 0) {
@@ -4290,7 +4296,13 @@ static __declspec(noinline) void FireCode(GAMEOBJECT *object, i32 pressed, i32 h
         BoltSys->shoot_origin(object, &origin);
         if (WORLD->area != NULL && WORLD->area == BONUS_GUNSHIP_ADATA) {
             if (object->id == (u16)id_REPUBLICGUNSHIP || object->id == (u16)id_REPUBLICGUNSHIP_GREEN) {
-                player_index = player2 == NULL ? -1 : object == player ? 0 : object == player2 ? 1 : -1;
+                player_index = -1;
+                if (player2 != NULL) {
+                    if (object == player)
+                        player_index = 0;
+                    else if (object == player2)
+                        player_index = 1;
+                }
                 if (WORLD->current_level == BONUS_GUNSHIPB_LDATA)
                     angle = player_index == 0   ? VehicleGunshipAngleBPlayer1Pc
                             : player_index == 1 ? VehicleGunshipAngleBPlayer2Pc
@@ -4299,14 +4311,12 @@ static __declspec(noinline) void FireCode(GAMEOBJECT *object, i32 pressed, i32 h
                     angle = player_index == 0   ? VehicleGunshipAngleAPlayer1Pc
                             : player_index == 1 ? VehicleGunshipAngleAPlayer2Pc
                                                 : VehicleGunshipAngleADefaultPc;
-                offset.x = offset.y = 0.0f;
+                offset.y = offset.x = 0.0f;
                 offset.z = 100.0f;
                 NuVecRotateX(&offset, &offset, (angle << 16) / 360);
                 NuVecRotateY(&offset, &offset, object->movement_facing_angle);
                 NuVecAdd(&object->attack_target_position, &origin, &offset);
-                object->field_c8c = v000.x;
-                object->field_c90 = v000.y;
-                object->field_c94 = v000.z;
+                ((FIRE_TARGET_VIEW_PC *)object)->target_velocity = v000;
                 object->flags_e20 |= 0x800;
             }
         } else if ((bolt->flags_60 & 0x800) == 0 && (WORLD->area == NULL || WORLD->area != BATTLEOVERCORUSCANT_ADATA)) {
@@ -4315,7 +4325,8 @@ static __declspec(noinline) void FireCode(GAMEOBJECT *object, i32 pressed, i32 h
                 SetObjTarget(object, target);
                 if (VehicleArea != 0 && (target->character_data->model_flags & 0x2000) != 0) {
                     NuVecRotateY(&lateral, &v001, NuAtan2D(target->velocity.x, target->velocity.z) + 0x4000);
-                    lead = (f32)((f64)fabsf(lateral.x * direction.x + lateral.z * direction.z) * 0.5 * bolt->field_14);
+                    lead = (f32)((f64)MovePlayerFabs(lateral.x * direction.x + lateral.z * direction.z) * 0.5 *
+                                 bolt->field_14);
                     position.x = target->collision_position.x + target->velocity.x * lead;
                     position.y = target->collision_position.y + target->velocity.y * lead;
                     position.z = target->collision_position.z + target->velocity.z * lead;
@@ -4342,9 +4353,7 @@ static __declspec(noinline) void FireCode(GAMEOBJECT *object, i32 pressed, i32 h
                             object->movement_mode == 4
                                 ? direction.y * range + origin.y + object->velocity.y * bolt->field_14
                                 : origin.y;
-                        object->field_c8c = v000.x;
-                        object->field_c90 = v000.y;
-                        object->field_c94 = v000.z;
+                        ((FIRE_TARGET_VIEW_PC *)object)->target_velocity = v000;
                         object->flags_e20 |= 0x800;
                     }
                 }
