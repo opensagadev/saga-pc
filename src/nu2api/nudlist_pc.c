@@ -139,31 +139,29 @@ void *__cdecl DisplayListCreateSkinTransformPS(VARIPTR *buffer, NUMTX *skin, voi
     i32 i;
     (void)unused;
     if (weights != NULL && geometry->morph_count != 0) {
-        buffer->addr = (buffer->addr + 31) & ~31u;
-        copy = (PC_SPECIAL_GEOMETRY *)buffer->void_ptr;
-        *render_geometry = copy;
-        buffer->addr += sizeof(*copy);
+        *render_geometry = (void *)((buffer->addr + 31) & ~31u);
+        buffer->addr = ((buffer->addr + 31) & ~31u) + sizeof(*copy);
+        copy = (PC_SPECIAL_GEOMETRY *)*render_geometry;
         *copy = *geometry;
         locked = NULL;
         PCDeviceLockVertexBuffer(geometry->base_vertex * geometry->vertex_stride,
                                  geometry->vertex_count * geometry->vertex_stride, &locked, 0x10,
                                  geometry->vertex_buffer);
+        copy->dynamic_vertices = (u8 *)((buffer->addr + 31) & ~31u);
         buffer->addr = (buffer->addr + 31) & ~31u;
-        destination = (u8 *)buffer->void_ptr;
-        copy->dynamic_vertices = destination;
         buffer->addr += geometry->vertex_count * geometry->vertex_stride;
+        destination = (u8 *)copy->dynamic_vertices;
         PCByteCopy_candidate(destination, locked, geometry->vertex_count * geometry->vertex_stride);
-        for (vertex = 0; vertex < geometry->vertex_count; ++vertex) {
-            NUVEC *position = (NUVEC *)destination;
-            for (morph = 0; morph < geometry->morph_count; ++morph) {
-                NUVEC *delta = geometry->morph_deltas[morph];
+        for (vertex = 0; vertex != geometry->vertex_count; ++vertex) {
+            for (morph = 0; morph != geometry->morph_count; ++morph) {
                 f32 weight = weight_view->weights[morph];
-                if (delta != NULL && weight != 0.0f) {
-                    position->x += delta[vertex].x * weight;
-                    position->y += delta[vertex].y * weight;
-                    position->z += delta[vertex].z * weight;
+                if (geometry->morph_deltas[morph] != NULL && weight != 0.0f) {
+                    ((NUVEC *)destination)->x += geometry->morph_deltas[morph][vertex].x * weight;
+                    ((NUVEC *)destination)->y += geometry->morph_deltas[morph][vertex].y * weight;
+                    ((NUVEC *)destination)->z += geometry->morph_deltas[morph][vertex].z * weight;
                 }
             }
+            locked = (u8 *)locked + geometry->vertex_stride;
             destination += geometry->vertex_stride;
         }
         PCDeviceUnlockVertexBuffer(geometry->vertex_buffer);
@@ -174,7 +172,7 @@ void *__cdecl DisplayListCreateSkinTransformPS(VARIPTR *buffer, NUMTX *skin, voi
     matrix_count = (i32 *)buffer->void_ptr;
     buffer->addr += sizeof(*matrix_count);
     *matrix_count = 0;
-    for (i = 0; i < 8 && geometry->joint_indices[i] != 255; ++i) {
+    for (i = 0; geometry->joint_indices[i] != 255 && i < 8; ++i) {
         *(NUMTX *)buffer->void_ptr = skin[geometry->joint_indices[i]];
         buffer->addr += sizeof(NUMTX);
         ++*matrix_count;
