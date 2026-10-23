@@ -216,7 +216,7 @@ void __cdecl edppDetermineNearest(f32 max_distance_squared) {
 }
 
 static void cbSelEffectList(eduimenu_s *menu, eduiitem_s *item, u32 unused2) {
-    struct eduimenu_s *parent;
+    struct eduimenu_s *parent = NULL;
     if (item->data != ((i8)(edpp_effect_list))) {
         i32 index;
         edpp_effect_list = ((i8)(item->data));
