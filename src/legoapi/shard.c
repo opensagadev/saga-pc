@@ -2117,7 +2117,7 @@ void __cdecl DrawSubItemMenu2D(void) {
             buyable = show_name = 1;
         else {
             scale = (f32)((f64)ShopLockedScalePc * (f64)0.7f);
-            SmartTextEx(TTab[TextIdPc880708], 0.0f, (f32)(((f64)HubEpisodeTitleYPc + HubEpisodeSubtitleYPc) * 0.5),
+            SmartTextEx(TTab[TextIdPc880708], 0.0f, (f32)(((f64)HubEpisodeSubtitleYPc + HubEpisodeTitleYPc) * 0.5),
                         1.0f, scale, scale, scale, 0, 255, 0, 0, 1.7f, 1, NULL, 0, (i32)((f64)ShopNameAlpha * 128.0));
         }
     } else if (item->type == 0) {
@@ -2147,7 +2147,7 @@ void __cdecl DrawSubItemMenu2D(void) {
         name = title;
         if (items[ids[3]].unlocked == 1)
             show_name = 1;
-        else if (!((f64)(id * 3600) > (f64)Game.game_time))
+        else if (Game.game_time >= id * 3600)
             buyable = show_name = 1;
         else {
             SmartTextEx(title, 0.0f, HubEpisodeTitleYPc, 1.0f, 0.6f, 0.6f, 0.6f, 0, 255, 255, 255, 1.7f, 1, NULL, 0,
@@ -2172,33 +2172,35 @@ void __cdecl DrawSubItemMenu2D(void) {
         }
         buyable = show_name = 0;
     }
-    if (!(ShopNameAlpha > 0.0f))
-        return;
-    if (show_name != 0) {
-        y = buyable != 0 ? HubEpisodeTitleYPc : (f32)(((f64)HubEpisodeTitleYPc + HubEpisodeSubtitleYPc) * 0.5);
-        scale = buyable != 0 ? 0.6f : 0.8f;
-        SmartTextEx(name, 0.0f, y, 1.0f, scale, scale, scale, 0, 255, 255, 255, 1.7f, 1, NULL, 0,
-                    (i32)((f64)ShopNameAlpha * 128.0));
-    }
-    if (buyable != 0) {
-        switch (items[ids[3]].type) {
-            case 0:
-                price = items[HintShelfIds[3]].price;
-                break;
-            case 2:
-                price = items[ExtraShelfIds[3]].price;
-                break;
-            case 4:
-                price = items[BrickShelfIds[3]].price;
-                break;
-            case 5:
-                return;
-            case 1:
-            default:
-                price = items[CharShelfIds[3]].price;
-                break;
+    if (ShopNameAlpha > 0.0f) {
+        if (show_name != 0) {
+            y = buyable != 0 ? HubEpisodeTitleYPc : (f32)(((f64)HubEpisodeSubtitleYPc + HubEpisodeTitleYPc) * 0.5);
+            scale = buyable != 0 ? 0.6f : 0.8f;
+            SmartTextEx(name, 0.0f, y, 1.0f, scale, scale, scale, 0, 255, 255, 255, 1.7f, 1, NULL, 0,
+                        (i32)((f64)ShopNameAlpha * 128.0));
         }
-        CoinTotal_Draw(price, HubEpisodeSubtitleYPc, 1.2f, 0, ShopNameAlpha, 255, 191, 0);
+        if (buyable != 0) {
+            switch (items[ids[3]].type) {
+                case 1:
+                    price = items[CharShelfIds[3]].price;
+                    break;
+                case 0:
+                    price = items[HintShelfIds[3]].price;
+                    break;
+                case 2:
+                    price = items[ExtraShelfIds[3]].price;
+                    break;
+                case 4:
+                    price = items[BrickShelfIds[3]].price;
+                    break;
+                case 5:
+                    return;
+                default:
+                    price = items[CharShelfIds[3]].price;
+                    break;
+            }
+            CoinTotal_Draw(price, HubEpisodeSubtitleYPc, 1.2f, 0, ShopNameAlpha, 255, 191, 0);
+        }
     }
 }
 

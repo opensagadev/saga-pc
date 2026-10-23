@@ -10062,7 +10062,7 @@ extern "C" {
     extern i32 EdppUnresolvedInstancesPc;
     extern char **PartDebrisNameListPc;
 
-    void __cdecl SmartTextEx(char *, f32, f32, f32, f32, f32, f32, u32, u32, u32, u32, f32, i32, void *, i32, u32);
+    void __cdecl SmartTextEx(char *, f32, f32, f32, f32, f32, f32, u32, u32, u32, u32, f32, i32, void *, i32, i32);
     i32 __cdecl FindNextBreak(u8 *, i32);
     i32 __cdecl FindNearestBreak(u8 *, i32);
     i32 __cdecl NuStrFindPosU(u8 *, i32);
