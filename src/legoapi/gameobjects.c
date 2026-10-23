@@ -188,7 +188,7 @@ f32 __cdecl GetVehicleHoverHeight(GAMEOBJECT *object, f32 *separation_offset) {
 
 u16 __cdecl SeekRot(u16 current, u16 target, f32 speed);
 
-void __cdecl FindAnglesZX(NUVEC *normal, u16 *x_rotation, u16 *z_rotation) {
+__declspec(noinline) void __cdecl FindAnglesZX(NUVEC *normal, u16 *x_rotation, u16 *z_rotation) {
     NUANG x_angle = NuAtan2D(normal->z, normal->y);
     NUVEC rotated;
     NUANG z_angle;
@@ -740,52 +740,35 @@ GAMEOBJECT *__cdecl TargetGameObject(GAMEOBJECT *object, NUVEC *position, NUVEC 
 }
 
 void __cdecl GameObjectToCameraCode(GAMEOBJECT *object) {
-    f32 distance;
-    LEVELDATA_PC *level;
-    i32 far_distance;
-    u32 near_distance;
     PLAYERCHARACTERCONFIG_PC *data;
     u32 mask;
 
-    if (GameTimer.update_count == 0) {
-        object->shadow_opacity = 0.0f;
-        return;
-    }
-    distance = object->ai_update_distance;
-    level = WORLD->current_level;
-    far_distance = level->blob_shadow_fade_far;
-    if (distance < (f32)far_distance) {
-        near_distance = level->blob_shadow_fade_near;
-        if (distance > (f32)near_distance) {
-            object->shadow_opacity = 1.0f - (distance - (f32)near_distance) / (f32)(i32)(far_distance - near_distance);
-        } else {
-            object->shadow_opacity = 1.0f;
-        }
-    } else {
-        object->shadow_opacity = 0.0f;
-    }
-    data = object->character_data->game_character;
-    if ((data->flags_094 & 0x10) != 0) {
-        return;
-    }
-    if (object->dead != 0) {
-        i16 model_id = ((CHARACTER_MODEL_LAYERS_PC *)object->character_model)->model_id;
-        PLAYERCHARACTERCONFIG_PC *model_data = apicharsys->char_data[model_id].game_character;
-        mask = model_data->layer_mask_dead;
-        if (mask != 0) {
-            goto apply_layers;
+    object->shadow_opacity =
+        (GameTimer.update_count != 0 && object->ai_update_distance < WORLD->current_level->blob_shadow_fade_far)
+            ? (object->ai_update_distance > WORLD->current_level->blob_shadow_fade_near
+                   ? 1.0f -
+                         (object->ai_update_distance - WORLD->current_level->blob_shadow_fade_near) /
+                             (WORLD->current_level->blob_shadow_fade_far - WORLD->current_level->blob_shadow_fade_near)
+                   : 1.0f)
+            : 0.0f;
+    if ((u32)GameTimer.update_count > 0) {
+        data = object->character_data->game_character;
+        if ((data->flags_094 & 0x10) == 0) {
+            if (object->dead != 0 &&
+                (mask = apicharsys->char_data[((CHARACTER_MODEL_LAYERS_PC *)object->character_model)->model_id]
+                            .game_character->layer_mask_dead) != 0) {
+                object->layer_mask = mask;
+            } else if (object->ai_update_distance > data->layer_distance_low) {
+                object->layer_mask = data->layer_mask_low;
+            } else if (object->ai_update_distance > data->layer_distance_medium) {
+                object->layer_mask = data->layer_mask_medium;
+            } else {
+                object->layer_mask = data->layer_mask;
+            }
+            object->layer_mask |= object->extra_layer_mask;
+            object->layer_mask = AdjustLayerBits(object->layer_mask, object);
         }
     }
-    if (distance > data->layer_distance_low) {
-        mask = data->layer_mask_low;
-    } else if (distance > data->layer_distance_medium) {
-        mask = data->layer_mask_medium;
-    } else {
-        mask = data->layer_mask;
-    }
-apply_layers:
-    object->layer_mask = mask | object->extra_layer_mask;
-    object->layer_mask = AdjustLayerBits(object->layer_mask, object);
 }
 
 f32 __cdecl GetCharacterGoalSpeed(APIOBJECT_PC *object) {
@@ -2153,12 +2136,12 @@ static void SetRiderPos(GAMEOBJECT *object, NUVEC *position) {
 
 i32 __cdecl TakeOverYoda(GAMEOBJECT *rider, GAMEOBJECT *vehicle, i32 blend_camera, i32 unused) {
     (void)unused;
-    STUBBED_NAMED("TakeOverYoda: ReleaseForce PC4a25b0");
-    STUBBED_NAMED("TakeOverYoda: ReleaseBuildIt PC58ff10");
-    STUBBED_NAMED("TakeOverYoda: ReleasePush PC59cb00");
-    STUBBED_NAMED("TakeOverYoda: Player_ResetContexts PC55e4e0");
+    ReleaseForce(rider, 0);
+    ReleaseBuildIt(rider, 0);
+    ReleasePush(rider);
+    Player_ResetContexts(rider->ai_player_packet_pc);
     if ((rider->portal_flags & 0x10) == 0) {
-        STUBBED_NAMED("TakeOverYoda: SetWeaponIn PC58d8e0");
+        SetWeaponIn(rider);
     }
     rider->rider = vehicle;
     vehicle->rider = rider;
@@ -2170,11 +2153,11 @@ i32 __cdecl TakeOverYoda(GAMEOBJECT *rider, GAMEOBJECT *vehicle, i32 blend_camer
     rider->takeover_timer = 1.0f;
     rider->external_force = rider->position;
     if (blend_camera != 0) {
-        STUBBED_NAMED("TakeOverYoda: GameCam_Blend GameCam,0.5f,0,1 PC54a3e0");
+        GameCam_Blend(GameCam, 0.5f, 0.0f, 1);
     }
-    STUBBED_NAMED("TakeOverYoda: NewBuzz vehicle pad,0.1f,0 PC54a8a0");
-    STUBBED_NAMED("TakeOverYoda: GameCam_Judder GameCam,0.1f,0,NULL PC549de0");
-    STUBBED_NAMED("TakeOverYoda: Hint_SetComplete 0x28c PC576960");
+    NewBuzz(vehicle->pad->bound_pad, 0.1f, 0);
+    GameCam_Judder(GameCam, 0.1f, 0, NULL);
+    Hint_SetComplete(0x28c);
     return 1;
 }
 
@@ -3847,38 +3830,33 @@ f32 __cdecl FindReflectionNoPlatforms(NUVEC *position) {
 }
 
 void __cdecl InitSurfaceInfo(GAMEOBJECT *object) {
-    volatile f32 rounded_height;
-    volatile f32 rounded_reflection;
-    f32 height;
-    f32 reflection;
-    u8 water_surface;
     void(__cdecl * extra_reflect)(GAMEOBJECT *);
 
-    rounded_height = GameShadow(object, &object->position, 5.0f, -1);
-    height = rounded_height;
-    object->floor_height = height;
-    if ((f64)height != GameObjectNearFloorNoFloorHeight) {
-        GetSurfaceInfo(object, 1, height);
-        object->surface_flag8_scale_pc = (TerSurface[(i8)object->jump_animation_state].flags & 8) ? 1.0f : 0.0f;
+    object->floor_height = GameShadow(object, &object->position, 5.0f, -1);
+    if (object->floor_height != GameObjectNearFloorNoFloorHeight) {
+        GetSurfaceInfo(object, 1, object->floor_height);
+        if (TerSurface[(i8)object->jump_animation_state].flags & 8)
+            object->surface_flag8_scale_pc = 1.0f;
+        else
+            object->surface_flag8_scale_pc = 0.0f;
         FindAnglesZX(&object->surface_normal, NULL, NULL);
         object->field_1056 = temp_zrot;
         object->field_1052 = temp_zrot;
         object->field_1058 = temp_xrot;
         object->field_1054 = temp_xrot;
     } else {
-        GetSurfaceInfo(object, 0, height);
+        GetSurfaceInfo(object, 0, object->floor_height);
         object->surface_flag8_scale_pc = 0.0f;
         object->jump_animation_state = 0;
         object->raw_surface_id_pc = 0;
-        object->surface_normal.x = v010.x;
-        object->surface_normal.y = v010.y;
-        object->surface_normal.z = v010.z;
+        object->surface_normal = v010;
     }
 
-    water_surface = object->field_283 == 1 || object->field_283 == 9;
-    object->unknown_0286 = water_surface && object->water_height >= object->collision_position.y;
-    object->water_intersects = water_surface && !(object->water_height > object->collision_max.y) &&
-                               !(object->water_height < object->collision_min.y);
+    object->unknown_0286 =
+        (object->field_283 == 1 || object->field_283 == 9) && object->collision_position.y <= object->water_height;
+    object->water_intersects = (object->field_283 == 1 || object->field_283 == 9) &&
+                               object->water_height <= object->collision_max.y &&
+                               object->water_height >= object->collision_min.y;
 
     object->water_height = LevelConfigFarDistance;
     object->roof_height_pc = LevelConfigFarDistance;
@@ -3887,10 +3865,9 @@ void __cdecl InitSurfaceInfo(GAMEOBJECT *object) {
     GetSurfaceInfo(object, 1, object->floor_height);
 
     if (!(object->character_data->game_character->flags_090 & 0x8000) &&
-        (f64)object->reflection_height == GameObjectNearFloorNoFloorHeight && object->terrain_platform_id != -1) {
-        rounded_reflection = FindReflectionNoPlatforms(&object->position);
-        reflection = rounded_reflection;
-        if ((f64)reflection != GameObjectNearFloorNoFloorHeight) {
+        object->reflection_height == GameObjectNearFloorNoFloorHeight && object->terrain_platform_id != -1) {
+        f32 reflection = FindReflectionNoPlatforms(&object->position);
+        if (reflection != GameObjectNearFloorNoFloorHeight) {
             object->reflection_height = reflection;
             object->reflection_enabled = 2;
         }
