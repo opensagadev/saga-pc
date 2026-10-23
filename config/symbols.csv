@@ -271,12 +271,14 @@ address,symbol,size,ctype
 0x004263e0,_MenuUpdateCustomiserPc,446,void __cdecl(MENU *)
 0x004265a0,_MenuDrawCustomiserPc,1382,code
 0x426b30,_Detonators_Reset,21,void __cdecl (void)
-0x426b50,_DetonatorPlacementSlot,81,
-0x426bb0,_Detonator_FindNearest,146,
+0x426b50,_DetonatorPlacementSlot,81,static DETONATOR_s *(GAMEOBJECT *)
+0x426bb0,_Detonator_FindNearest,146,"DETONATOR_s *__cdecl(NUVEC *, f32, GAMEOBJECT *)"
+0x426c50,_Detonator_FindOldest,397,static DETONATOR_s *(void)
 0x00426de0,_Detonate,374,"EXPLOSION_PC *__cdecl (NUVEC *, u16)"
 0x426f60,_Detonator_Detonate,54,
-0x427070,_Detonators_Draw,318,
-0x4271b0,_Detonator_MoveCode,1522,
+0x426fa0,_Detonators_Update,202,void __cdecl(void)
+0x427070,_Detonators_Draw,318,void __cdecl(void)
+0x4271b0,_Detonator_MoveCode,1522,void __cdecl(GAMEOBJECT *)
 0x004277d0,_CheckForPlayersTurnedOff,164,void __cdecl (void)
 0x4278c0,_FreePlay_DropInToPlayerPos,521,
 0x427ad0,_DropInOutScale,103,
@@ -4131,7 +4133,7 @@ address,symbol,size,ctype
 0x570130,_GizmoPickup_InBox,323,
 0x570280,_GizmoPickups_CollideListPc,814,
 0x5705b0,_GizmoPickups_Collide,252,"GIZMOPICKUP_PC* __cdecl(WORLDINFO*,GAMEOBJECT*,i32)"
-0x5706b0,_GameMsg_Draw_MiniKitDetector,841,
+0x5706b0,_GameMsg_Draw_MiniKitDetector,841,"void __cdecl(GAME_MESSAGE_PC *, NUVEC *, f32)"
 0x570a00,_MiniKitDetector,93,
 0x570a60,_ResetCoinPacket,23,void __cdecl(void *)
 0x570a80,_UpdateCoinPacket,298,"void __cdecl(PLAYER_COIN_PACKET_PC*,i32,i32)"
@@ -10422,7 +10424,11 @@ address,symbol,size,ctype
 0x7533d0,__real@3fccccccc0000000,8,f64
 0x007533d8,__real@3f600000,4,const f32
 0x007533dc,__real@3fa80000,4,const f32
+0x7533e0,__real@412b3333,4,const f32
 0x7533e4,??_C@_0BG@HIHHGAPE@imp_thermalDet_attach?$AA@,22,const char[22]
+0x7533fc,__real@3d9eb852,4,const f32
+0x753400,__real@3e1eb852,4,const f32
+0x753408,__real@3fc3d70a40000000,8,const f64
 0x753410,__real@3fc58e21a0000000,8,const f64
 0x753418,__real@3fb3d70a40000000,8,const f64
 0x00753420,__real@358637bd,4,const f32
@@ -19220,6 +19226,8 @@ address,symbol,size,ctype
 0x7f3820,_CustomiserGameSettingsPrivatePc,,CUSTOMISER_GAME_SETTING_PC[7]
 0x007f3874,__real@3d570a3d,4,const f32
 0x007f3878,__real@3d75c28f,4,const f32
+0x7f38f4,_DetonatorHitScaleArmedPc,4,f32
+0x7f38f8,_DetonatorHitScaleIdlePc,4,f32
 0x7f38fc,_BatarangDetonatorHitDelayPc,4,f32
 0x7f3964,_drop_in_teleport,,i32
 0x7f3968,_teleport_all_freeplay_modes,,i32

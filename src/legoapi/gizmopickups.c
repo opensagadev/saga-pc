@@ -583,6 +583,76 @@ GIZMOPICKUP_PC *__cdecl GizmoPickups_Collide(WORLDINFO *world, GAMEOBJECT *objec
     return pickup;
 }
 
+void __cdecl GameMsg_Draw_MiniKitDetector(GAME_MESSAGE_PC *message, NUVEC *position, f32 scale) {
+    f32 excess = 1.0e9f;
+    NUVEC screen = *position;
+    i32 clipped = 0;
+    f32 y;
+    f32 distance;
+    i32 alpha;
+    if (message->parameter_fb != 0) {
+        NuVecNeg(&screen, &screen);
+        clipped = 1;
+        screen.x = screen.x < 0.0f ? -0.825f : 0.825f;
+        screen.y = screen.y < 0.0f ? -0.825f : 0.825f;
+    }
+    if (screen.x >= 0.825f) {
+        excess = screen.x - 0.825f;
+        screen.x = 0.825f;
+        clipped = 1;
+        NuStrCpy(message->text_buffer, ">");
+    } else if (screen.x <= -0.825f) {
+        excess = -0.825f - screen.x;
+        screen.x = -0.825f;
+        clipped = 1;
+        NuStrCpy(message->text_buffer, "<");
+    }
+    if (screen.y >= 0.825f) {
+        y = screen.y - 0.825f;
+        screen.y = 0.825f;
+        if (clipped == 0 || (excess != 1.0e9f && y > excess)) {
+            clipped = 1;
+            NuStrCpy(message->text_buffer, LEGOASCII_UP != NULL ? LEGOASCII_UP : "?");
+        }
+    } else if (screen.y <= -0.825f) {
+        y = -0.825f - screen.y;
+        screen.y = -0.825f;
+        if (clipped == 0 || (excess != 1.0e9f && y > excess)) {
+            clipped = 1;
+            NuStrCpy(message->text_buffer, LEGOASCII_DOWN != NULL ? LEGOASCII_DOWN : "?");
+        }
+    }
+    distance = NuVecDist(&message->position, &GameCam->position, NULL);
+    distance = distance / (f32)WorldInfo_CurrentlyActive()->current_level->reflection_range;
+    if (distance > 1.0f)
+        distance = 1.0f;
+    if (distance < 0.25f)
+        alpha = 0x80;
+    else if (distance < 0.75f)
+        alpha = (i32)((1.0f - (distance - 0.25f) * 2.0f) * 64.0f + 64.0f);
+    else
+        alpha = 0x40;
+    if (clipped != 0) {
+        message->red = 0xff;
+        if (message->parameter_fb != 0) {
+            message->blue = 0;
+            message->green = 0;
+        } else {
+            message->blue = 0xff;
+            message->green = 0xff;
+        }
+        message->parameter_fc = 0;
+    } else {
+        message->red = 0;
+        message->green = 0xff;
+        message->blue = 0;
+        message->parameter_fc = 4;
+    }
+    message->alpha = (u8)alpha;
+    Text3DEx(message->text != NULL ? (char *)message->text : message->text_buffer, screen.x, screen.y, screen.z, scale,
+             scale, scale, message->parameter_fc, message->red, message->green, message->blue, alpha);
+}
+
 void MiniKitDetector(NUVEC *position) {
     ADD_GAME_MESSAGE_PC message = AddGameMsg_Default;
     message.text = LEGOASCII_BIGARROW != NULL ? LEGOASCII_BIGARROW : txt_UNKNOWN;
