@@ -3616,23 +3616,23 @@ static __declspec(noinline) void FloatAdvancePc(GAMEOBJECT *object) {
         object->field_7aa = 0x8e;
 }
 void __cdecl FloatCode(GAMEOBJECT *object) {
-    f32 exit_fraction, entry_fraction, jump_fraction;
-    i32 vehicle, float_allowed;
+    f32 surface_fraction, jump_fraction, sink_fraction;
+    i32 float_allowed;
     if (StartupGameFlag1 && !StartupGameFlag0)
         return;
-    vehicle = (object->character_data->model_flags & 0x2000) != 0;
-    if (vehicle) {
-        exit_fraction = 0.15f;
-        entry_fraction = 0.1f;
-        jump_fraction = 0.5f;
+    if ((object->character_data->model_flags & 0x2000) != 0) {
+        surface_fraction = 0.15f;
+        jump_fraction = 0.1f;
+        sink_fraction = 0.5f;
     } else {
-        exit_fraction = 0.25f;
-        entry_fraction = 0.125f;
-        jump_fraction = 0.625f;
+        surface_fraction = 0.25f;
+        jump_fraction = 0.125f;
+        sink_fraction = 0.625f;
     }
-    float_allowed = vehicle || (object->character_data->game_character->flags_090 & 0x4000000) != 0;
-    if ((object->field_283 == 1 || object->field_283 == 6) && object->water_height > object->collision_min.y &&
-        object->water_height <= (f64)object->collision_min.y - ((f64)object->position.y - object->start_position.y)) {
+    float_allowed = (object->character_data->game_character->flags_090 & 0x4000000) != 0 ||
+                    (object->character_data->model_flags & 0x2000) != 0;
+    if ((object->field_283 == 1 || object->field_283 == 6) && object->collision_min.y < object->water_height &&
+        object->collision_min.y - (object->position.y - object->start_position.y) >= object->water_height) {
         if (object->velocity.y < -1.0f)
             AddGameDebrisXYZ(WORLD->game_debris_sys, 13, object->collision_position.x, object->water_height,
                              object->collision_position.z);
@@ -3640,21 +3640,24 @@ void __cdecl FloatCode(GAMEOBJECT *object) {
     }
     if (object->character_context == 0x4b) {
         object->context_timer += FRAMETIME;
-        if ((object->field_283 == 6 && !float_allowed) || (object->field_283 != 1 && object->field_283 != 6))
+        if (object->field_283 == 6 && !float_allowed)
             object->character_context = -1;
-        else if (!vehicle && object->context_timer >= 0.6f && (object->pad->buttons_pressed & GAMEPAD_JUMP) != 0 &&
-                 ((f64)object->upper_position.y - object->water_height) >
-                     ((f64)object->upper_position.y - object->lower_position.y) * jump_fraction) {
+        else if (object->field_283 != 1 && object->field_283 != 6)
+            object->character_context = -1;
+        else if ((object->character_data->model_flags & 0x2000) == 0 && object->context_timer >= 0.6f &&
+                 (object->pad->buttons_pressed & GAMEPAD_JUMP) != 0 &&
+                 object->upper_position.y - object->water_height >
+                     (object->upper_position.y - object->lower_position.y) * jump_fraction) {
             StartJump(object, 0);
             object->flags_e24 |= 0x1000;
             AddGameDebrisXYZ(WORLD->game_debris_sys, 13, object->collision_position.x, object->water_height,
                              object->collision_position.z);
         } else if (object->field_281 &&
-                   object->water_height < ((f64)object->collision_max.y - object->collision_min.y) * entry_fraction +
-                                              object->collision_min.y)
+                   (object->collision_max.y - object->collision_min.y) * sink_fraction + object->collision_min.y >
+                       object->water_height)
             object->character_context = -1;
-        else if (object->water_height <
-                 ((f64)object->collision_max.y - object->collision_min.y) * exit_fraction + object->collision_min.y) {
+        else if ((object->collision_max.y - object->collision_min.y) * surface_fraction + object->collision_min.y >
+                 object->water_height) {
             object->character_context = -1;
             AddGameDebrisXYZ(WORLD->game_debris_sys, 13, object->collision_position.x, object->water_height,
                              object->collision_position.z);
@@ -3664,9 +3667,9 @@ void __cdecl FloatCode(GAMEOBJECT *object) {
         else if (object->character_context == 0x4b)
             FloatAdvancePc(object);
     } else if ((object->field_283 == 1 || (object->field_283 == 6 && float_allowed)) &&
-               object->water_height > ((f64)object->collision_max.y - object->collision_min.y) * entry_fraction +
-                                          object->collision_min.y &&
-               (object->character_context != 0 || object->velocity.y < 0.0f) && object->character_context != 0x5b) {
+               (object->collision_max.y - object->collision_min.y) * surface_fraction + object->collision_min.y <
+                   object->water_height &&
+               (object->character_context != 0 || !(object->velocity.y > 0.0f)) && object->character_context != 0x5b) {
         object->character_context = 0x4b;
         if (object->suit != NULL && (((SUIT_LAYERS_PC *)object->suit)->flags & 0x10) != 0)
             object->velocity.y *= 0.25f;
