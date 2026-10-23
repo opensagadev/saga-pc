@@ -1237,7 +1237,7 @@ void edanimcbToggleSoundType(eduimenu_s *menu, eduiitem_s *item, u32 unused2) {
     eduiMenuDestroy(menu);
 }
 
-static void edanimcbCancelBouncyMenu(eduimenu_s *unused0, eduimenu_s *unused1) {
+void edanimcbCancelBouncyMenu(eduimenu_s *unused0, eduimenu_s *unused1) {
     eduiMenuDestroy(edanim_bouncy_menu);
     edanim_bouncy_menu = NULL;
 }
@@ -1363,7 +1363,7 @@ void edanimcbCancelLocalSoundMenu(eduimenu_s *unused0, eduimenu_s *unused1) {
     edanim_localsound_menu = NULL;
 }
 
-static void edanimcbCancelLocalSoundTypeMenu(eduimenu_s *unused0, eduimenu_s *unused1) {
+void edanimcbCancelLocalSoundTypeMenu(eduimenu_s *unused0, eduimenu_s *unused1) {
     eduiMenuDestroy(edanim_localsoundtype_menu);
     edanim_localsoundtype_menu = NULL;
 }
