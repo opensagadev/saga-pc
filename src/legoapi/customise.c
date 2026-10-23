@@ -1760,8 +1760,8 @@ i32 __cdecl CustomiserMenu_Update(void) {
     if (customiser == NULL)
         quit = 1;
     Customiser_GetActiveWeirdoIndex(&active_index, &active_count);
-    BlipL[0] = BlipL[1] = BlipR[0] = BlipR[1] = 0.0f;
-    BlipU[0] = BlipU[1] = BlipD[0] = BlipD[1] = 0.0f;
+    BlipD[0] = BlipD[1] = BlipU[0] = BlipU[1] = BlipR[0] = BlipR[1] = BlipL[0] = BlipL[1] = 0.0f;
+
     for (player = 0; player < 2; ++player) {
         GAMEPAD_RUNTIME_INPUT_PC *pad = (GAMEPAD_RUNTIME_INPUT_PC *)&GamePadStorage[player];
         select[player] = 0;
@@ -1798,13 +1798,15 @@ i32 __cdecl CustomiserMenu_Update(void) {
             i32 side, old_mode, new_mode = -1, randomise = 0;
             if (MissionMenuPacketPc.active_player[player] == 0)
                 continue;
-            pressed = ((GAMEPAD_RUNTIME_INPUT_PC *)&GamePadStorage[player])->pressed |
-                      ((GAMEPAD_RUNTIME_INPUT_PC *)&GamePadStorage[player])->left_pressed;
             held = ((GAMEPAD_RUNTIME_INPUT_PC *)&GamePadStorage[player])->held |
                    ((GAMEPAD_RUNTIME_INPUT_PC *)&GamePadStorage[player])->left_held;
-            side = player;
+            pressed = ((GAMEPAD_RUNTIME_INPUT_PC *)&GamePadStorage[player])->pressed |
+                      ((GAMEPAD_RUNTIME_INPUT_PC *)&GamePadStorage[player])->left_pressed;
+
             if (active_count == 1 && MissionMenuPacketPc.customise_other_player[player] != 0)
                 side = player == 0;
+            else
+                side = player;
             old_mode = CustomiseMode[side];
             if ((pressed & GAMEPAD_ACTION) != 0 && old_mode != 1) {
                 randomise = 1;
@@ -1828,10 +1830,15 @@ i32 __cdecl CustomiserMenu_Update(void) {
                 i32 category = CustomiseMenuYPc[side];
                 i32 piece_count = customiser->piece_counts[category];
                 i32 old_piece = Game.customiser_start[side].pieces[category];
-                i32 up = pressed & GAMEPAD_DUP, up_held = held & GAMEPAD_DUP;
-                i32 down = pressed & GAMEPAD_DDOWN, down_held = held & GAMEPAD_DDOWN;
-                i32 left = pressed & GAMEPAD_DLEFT, left_held = held & GAMEPAD_DLEFT;
-                i32 right = pressed & GAMEPAD_DRIGHT, right_held = held & GAMEPAD_DRIGHT;
+                i32 up, up_held, down, down_held, left, left_held, right, right_held;
+                up_held = held & GAMEPAD_DUP;
+                down_held = held & GAMEPAD_DDOWN;
+                down = pressed & GAMEPAD_DDOWN;
+                left_held = held & GAMEPAD_DLEFT;
+                left = pressed & GAMEPAD_DLEFT;
+                right = pressed & GAMEPAD_DRIGHT;
+                up = pressed & GAMEPAD_DUP;
+                right_held = held & GAMEPAD_DRIGHT;
                 if (up != 0 && down != 0)
                     up = down = 0;
                 if (left != 0 && right != 0)
@@ -1878,7 +1885,7 @@ i32 __cdecl CustomiserMenu_Update(void) {
                         CustomiseNameLetterBlipScalePc[side] = 1.5f;
                     }
                 } else {
-                    i32 next_category = category, next_piece = old_piece;
+                    i32 old_category = category, next_piece = old_piece;
                     if (up_held != 0 && category > 0)
                         BlipU[player] = 1.0f;
                     else if (down_held != 0 && category < 8)
@@ -1888,24 +1895,25 @@ i32 __cdecl CustomiserMenu_Update(void) {
                     else if (right_held != 0)
                         BlipR[player] = 1.0f;
                     if (up != 0) {
-                        if (next_category > 0)
-                            --next_category;
+                        if (category > 0)
+                            --category;
                     } else if (down != 0) {
-                        if (next_category < 8)
-                            ++next_category;
+                        if (category < 8)
+                            ++category;
                     } else if (left != 0)
                         next_piece = Customiser_NextPieceLeft((CUSTOMISER_LAYERS_PC *)customiser, old_piece,
                                                               piece_count, side, category);
                     else if (right != 0)
                         next_piece = Customiser_NextPieceRight((CUSTOMISER_LAYERS_PC *)customiser, old_piece,
                                                                piece_count, side, category);
-                    Game.customiser_start[side].pieces[category] = (u16)next_piece;
-                    CustomiseMenuYPc[side] = next_category;
-                    if (next_piece != old_piece || next_category != category) {
+                    Game.customiser_start[side].pieces[old_category] = (u16)next_piece;
+                    CustomiseMenuYPc[side] = category;
+                    if (next_piece != old_piece || category != old_category) {
                         GameAudio_PlaySfx(0x2f, NULL, 0, 0);
                         CustomiseMenuTimePc[side] = 0.0f;
                     }
                     if (next_piece != old_piece)
+
                         Customiser_SetNameAndIcon((CUSTOMISER_LAYERS_PC *)customiser, side);
                 }
             }
