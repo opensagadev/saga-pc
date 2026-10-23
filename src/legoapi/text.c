@@ -422,10 +422,12 @@ check_character:
         return position;
     }
 next_character:
-    do {
+    ++position;
+    character = text[position];
+    while (character >= 0x80 && character <= 0xbf) {
         ++position;
         character = text[position];
-    } while (character >= 0x80 && character <= 0xbf);
+    }
     goto check_character;
 }
 
