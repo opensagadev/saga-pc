@@ -449,66 +449,70 @@ STATIC_ASSERT(offsetof(DEBRIS_FILE_VIEW_PC, width_keys) == 0x150);
 STATIC_ASSERT(sizeof(((DEBRIS_FILE_VIEW_PC *)0)->width_keys) == sizeof(((DEBRIS_INFO_PC *)0)->width_keys));
 void FileLoadSingleEffectType(DEBRIS_INFO_PC *destination, i32 version, i8 category) {
     DEBRIS_FILE_VIEW_PC *effect = (DEBRIS_FILE_VIEW_PC *)destination;
-    i32 i, sound_id, first, second;
+    i32 i;
     char sound_name[16];
     EdFileRead(effect->name, sizeof(effect->name));
     effect->category = (u8)(category);
     if (version < 28) {
-        const i16 rate = EdFileReadShort();
-        effect->frequency = rate > 0 ? (i16)(rate * 60) : rate == 0 ? 0 : (i16)(-60 / rate);
-        effect->max_particles = EdFileReadShort();
+        i16 rate = EdFileReadShort();
+        if (rate > 0)
+            effect->frequency = (i16)(rate * 60);
+        else if (rate < 0)
+            effect->frequency = (i16)(-60 / rate);
+        else
+            effect->frequency = 0;
+    } else {
+        effect->frequency = EdFileReadShort();
+    }
+    effect->max_particles = EdFileReadShort();
+    if (version < 28) {
         effect->emission_start_offset = (f32)(EdFileReadShort()) / 60.0f;
         effect->emission_period = (f32)(EdFileReadShort()) / 60.0f;
         effect->emission_period_random = (f32)(EdFileReadShort()) / 60.0f;
         effect->emission_pause = (f32)(EdFileReadShort()) / 60.0f;
         effect->emission_pause_random = (f32)(EdFileReadShort()) / 60.0f;
     } else {
-        effect->frequency = EdFileReadShort();
-        effect->max_particles = EdFileReadShort();
         effect->emission_start_offset = EdFileReadFloat();
         effect->emission_period = EdFileReadFloat();
         effect->emission_period_random = EdFileReadFloat();
         effect->emission_pause = EdFileReadFloat();
         effect->emission_pause_random = EdFileReadFloat();
     }
-    if (effect->frequency != 0) {
-        const f32 minimum_period = 1.0f / (f32)(effect->frequency);
-        if (effect->emission_period <= minimum_period && effect->emission_period != minimum_period)
-            effect->emission_period = minimum_period;
-    }
+    if ((f32)effect->frequency != 0.0f && effect->emission_period < 1.0f / (f32)effect->frequency)
+        effect->emission_period = 1.0f / (f32)effect->frequency;
 
     effect->generator_type = (u8)(EdFileReadChar());
     effect->momentum_adjustment_type = (u8)(EdFileReadChar());
-    if (version >= 35)
-        effect->cutscene_only = (u8)(EdFileReadChar());
-    else
+    if (version < 35)
         effect->cutscene_only = 0;
+    else
+        effect->cutscene_only = (u8)(EdFileReadChar());
     effect->disabled = 0;
     effect->particle_type = (u8)(EdFileReadChar());
     if (version < 39)
         EdFileReadChar();
     effect->status = 1;
-    if (version >= 40)
-        effect->camera_facing = (u8)(EdFileReadChar());
-    else
+    if (version < 40)
         effect->camera_facing = 0;
+    else
+        effect->camera_facing = (u8)(EdFileReadChar());
 
     effect->field_030 = EdFileReadFloat();
-    if (version >= 6) {
-        effect->cut_on = EdFileReadFloat();
-        effect->clip_extent = EdFileReadFloat();
-    } else {
+    if (version < 6) {
         effect->cut_on = 0.0f;
         effect->clip_extent = 25.0f;
+    } else {
+        effect->cut_on = EdFileReadFloat();
+        effect->clip_extent = EdFileReadFloat();
     }
-    if (version >= 10)
-        effect->sound_range = EdFileReadFloat();
-    else
+    if (version < 10)
         effect->sound_range = 0.0f;
-    if (version >= 23)
-        effect->sound_range_override = EdFileReadFloat();
     else
+        effect->sound_range = EdFileReadFloat();
+    if (version < 23)
         effect->sound_range_override = 0.0f;
+    else
+        effect->sound_range_override = EdFileReadFloat();
     if (version >= 24)
         effect->field_044 = EdFileReadFloat();
     else
@@ -535,8 +539,8 @@ void FileLoadSingleEffectType(DEBRIS_INFO_PC *destination, i32 version, i8 categ
         EdFileReadFloat();
     }
     if ((version == 18 || version == 19) && effect->generator_type == 6) {
-        effect->rotor_speed_y += effect->rotor_speed_y;
-        effect->emitter_random_extent.z += effect->emitter_random_extent.z;
+        effect->rotor_speed_y = (f32)(effect->rotor_speed_y * 2.0);
+        effect->emitter_random_extent.z = (f32)(effect->emitter_random_extent.z * 2.0);
     }
     if (version >= 29) {
         effect->emitter_velocity.x = EdFileReadFloat();
@@ -546,8 +550,18 @@ void FileLoadSingleEffectType(DEBRIS_INFO_PC *destination, i32 version, i8 categ
         effect->emitter_velocity.x = effect->emitter_velocity.y = effect->emitter_velocity.z = 0.0f;
     }
 
-    for (i = 0; i < 12; ++i)
-        effect->file_parameters[i] = EdFileReadFloat();
+    effect->file_parameters[0] = EdFileReadFloat();
+    effect->file_parameters[1] = EdFileReadFloat();
+    effect->file_parameters[2] = EdFileReadFloat();
+    effect->file_parameters[3] = EdFileReadFloat();
+    effect->file_parameters[4] = EdFileReadFloat();
+    effect->file_parameters[5] = EdFileReadFloat();
+    effect->file_parameters[6] = EdFileReadFloat();
+    effect->file_parameters[7] = EdFileReadFloat();
+    effect->file_parameters[8] = EdFileReadFloat();
+    effect->file_parameters[9] = EdFileReadFloat();
+    effect->file_parameters[10] = EdFileReadFloat();
+    effect->file_parameters[11] = EdFileReadFloat();
     effect->gravity = EdFileReadFloat();
     effect->particle_lifetime = EdFileReadFloat();
     effect->field_0a8 = EdFileReadShort();
@@ -578,12 +592,12 @@ void FileLoadSingleEffectType(DEBRIS_INFO_PC *destination, i32 version, i8 categ
         effect->alpha_keys[i].time = EdFileReadFloat();
         effect->alpha_keys[i].value = EdFileReadFloat();
     }
-    if (version >= 21) {
-        effect->particle_parameter_a = EdFileReadFloat();
-        effect->particle_parameter_b = EdFileReadFloat();
-    } else {
+    if (version < 21) {
         effect->particle_parameter_a = 0.125f;
         effect->particle_parameter_b = 0.125f;
+    } else {
+        effect->particle_parameter_a = EdFileReadFloat();
+        effect->particle_parameter_b = EdFileReadFloat();
     }
     effect->min_size = EdFileReadFloat();
     effect->max_size = EdFileReadFloat();
@@ -644,22 +658,30 @@ void FileLoadSingleEffectType(DEBRIS_INFO_PC *destination, i32 version, i8 categ
         effect->particle_box.y = 1.0f;
         effect->particle_box.z = 1.0f;
     }
-    if (version >= 36)
-        effect->thinning = EdFileReadFloat();
-    else
+    if (version >= 36) {
+        f32 thinning = EdFileReadFloat();
+        effect->thinning = thinning;
+        if (version == 36 && thinning < 4.0f)
+            effect->thinning = 4.0f;
+    } else {
         effect->thinning = 4.0f;
-    if (version == 36 && effect->thinning < 4.0f)
-        effect->thinning = 4.0f;
-    if (!(version >= 30)) {
+    }
+    if (version < 30) {
         effect->torus_radius1 = 1.0f;
         effect->torus_radius2 = 0.1f;
         effect->torus_lifetime = 0.0f;
-        effect->torus_keys1[0].time = effect->torus_keys1[0].value = 0.0f;
-        effect->torus_keys1[1].time = effect->torus_keys1[1].value = 1.0f;
-        effect->torus_keys2[0].time = effect->torus_keys2[0].value = 0.0f;
-        effect->torus_keys2[1].time = effect->torus_keys2[1].value = 1.0f;
-        effect->torus_keys3[0].time = effect->torus_keys3[0].value = 0.0f;
-        effect->torus_keys3[1].time = effect->torus_keys3[1].value = 1.0f;
+        effect->torus_keys1[0].time = 0.0f;
+        effect->torus_keys1[0].value = 0.0f;
+        effect->torus_keys2[0].time = 0.0f;
+        effect->torus_keys2[0].value = 0.0f;
+        effect->torus_keys3[0].time = 0.0f;
+        effect->torus_keys3[0].value = 0.0f;
+        effect->torus_keys1[1].time = 1.0f;
+        effect->torus_keys1[1].value = 1.0f;
+        effect->torus_keys2[1].time = 1.0f;
+        effect->torus_keys2[1].value = 1.0f;
+        effect->torus_keys3[1].time = 1.0f;
+        effect->torus_keys3[1].value = 1.0f;
     } else {
         effect->torus_radius1 = EdFileReadFloat();
         effect->torus_radius2 = EdFileReadFloat();
@@ -680,43 +702,44 @@ void FileLoadSingleEffectType(DEBRIS_INFO_PC *destination, i32 version, i8 categ
 
     for (i = 0; i < 8; ++i)
         effect->particle_keys[i] = -1;
-    if (version < 23) {
-        if (version < 11) {
-            for (i = 0; i < 4; ++i) {
+    if (version >= 23) {
+        const i32 sound_count = EdFileReadInt();
+        for (i = 0; i < sound_count; ++i) {
+            EdFileRead(sound_name, sizeof(sound_name));
+            effect->sound_data[i * 3] = GetSfxIdN(sound_name, sizeof(sound_name));
+            effect->sound_data[i * 3 + 1] = EdFileReadInt();
+            effect->sound_data[i * 3 + 2] = EdFileReadInt();
+        }
+        for (i = sound_count; i < 4; ++i)
+            effect->sound_data[i * 3] = -1;
+    } else {
+        for (i = 0; i < 4; ++i) {
+            if (version >= 11) {
+                effect->sound_data[i * 3] = EdFileReadInt();
+                effect->sound_data[i * 3 + 1] = EdFileReadInt();
+                effect->sound_data[i * 3 + 2] = EdFileReadInt();
+            } else {
                 effect->sound_data[i * 3] = -1;
                 effect->sound_data[i * 3 + 1] = 0;
                 effect->sound_data[i * 3 + 2] = 0;
             }
-        } else {
-            for (i = 0; i < 12; ++i)
-                effect->sound_data[i] = EdFileReadInt();
         }
-    } else {
-        const i32 stored_sound_count = EdFileReadInt();
-        const i32 sound_count = stored_sound_count;
-        for (i = 0; i < sound_count; ++i) {
-            EdFileRead(sound_name, sizeof(sound_name));
-            sound_id = GetSfxIdN(sound_name, sizeof(sound_name));
-            first = EdFileReadInt();
-            second = EdFileReadInt();
-            {
-                effect->sound_data[i * 3] = sound_id;
-                effect->sound_data[i * 3 + 1] = first;
-                effect->sound_data[i * 3 + 2] = second;
-            }
-        }
-        for (i = sound_count; i < 4; ++i)
-            effect->sound_data[i * 3] = -1;
     }
     if (version >= 16) {
-        effect->trail_count = (i8)(version >= 41 ? EdFileReadChar() : EdFileReadInt());
+        if (version >= 41)
+            effect->trail_count = (i8)EdFileReadChar();
+        else
+            effect->trail_count = (i8)EdFileReadInt();
         effect->trail_time = EdFileReadFloat();
     } else {
         effect->trail_count = 0;
         effect->trail_time = 0.0f;
     }
     if (version >= 25) {
-        effect->radial_segments = (u8)(version >= 41 ? EdFileReadChar() : EdFileReadInt());
+        if (version >= 41)
+            effect->radial_segments = (u8)EdFileReadChar();
+        else
+            effect->radial_segments = (u8)EdFileReadInt();
         effect->radial_floor = EdFileReadFloat();
     } else {
         effect->radial_segments = 5;
