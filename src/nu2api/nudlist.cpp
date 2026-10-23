@@ -641,7 +641,29 @@ extern "C" {
     STATIC_ASSERT(offsetof(NUCAMERA, mtx) + offsetof(NUMTX, m31) == 0x34);
     STATIC_ASSERT(offsetof(NUCAMERA, mtx) + offsetof(NUMTX, m32) == 0x38);
 
-    void __cdecl DisplayClipMaterialsPC(NUDISPLAY_LIST_PC *scene) {
+#define CLIP_MARK_MATERIALS()                                                                                          \
+    {                                                                                                                  \
+        i32 material;                                                                                                  \
+        for (material = 0; material < scene->clip_objects[clip_index].material_count; ++material) {                    \
+            u32 index = (u32)scene->clip_objects[clip_index].material_ids[material];                                   \
+            scene->material_used[(scene->render_flags >> 15) & 1][index >> 3] |= (u8)(1u << (index & 7));              \
+        }                                                                                                              \
+        scene->clip_used[(scene->render_flags >> 15) & 1][clip_index >> 2] |= (u8)(1u << ((clip_index & 3) * 2));      \
+    }
+#define CLIP_TEST_BOUNDS()                                                                                             \
+    {                                                                                                                  \
+        NUVEC4 *center = &scene->clip_bounds[group_index * 2];                                                         \
+        NUVEC minimum, maximum;                                                                                        \
+        minimum.x = center->x - center[1].x;                                                                           \
+        minimum.y = center->y - center[1].y;                                                                           \
+        minimum.z = center->z - center[1].z;                                                                           \
+        maximum.x = center->x + center[1].x;                                                                           \
+        maximum.y = center->y + center[1].y;                                                                           \
+        maximum.z = center->z + center[1].z;                                                                           \
+        if (((PCFrustumClipSet *)PCDisplayClipSet)->TestBox(&minimum, &maximum, PCDisplayClipGroupIndex))              \
+            CLIP_MARK_MATERIALS();                                                                                     \
+    }
+    static void __cdecl DisplayClipMaterialsPC(NUDISPLAY_LIST_PC *scene) {
         i32 clip_index = 0;
         i32 group_index = 0;
         while (clip_index < scene->clip_count) {
@@ -649,61 +671,30 @@ extern "C" {
             if (*range != 0.0f) {
                 if ((scene->visibility_flags[group_index] & 0x20) != 0) {
                     NUVEC4 *center = &scene->clip_bounds[group_index * 2];
-                    f32 dx = global_camera.mtx.m30 - center->x;
-                    f32 dy = global_camera.mtx.m31 - center->y;
-                    f32 dz = global_camera.mtx.m32 - center->z;
-                    f32 distance = (dx * dx + dy * dy) + dz * dz;
+                    __declspec(align(16)) NUVEC delta;
+                    f32 distance;
+                    delta.x = global_camera.mtx.m30 - center->x;
+                    delta.y = global_camera.mtx.m31 - center->y;
+                    delta.z = global_camera.mtx.m32 - center->z;
+                    distance = (delta.x * delta.x + delta.y * delta.y) + delta.z * delta.z;
                     while (*range > distance) {
                         ++range;
                         ++clip_index;
                     }
-                    NUVEC minimum, maximum;
-                    NUVEC4 *extent = center + 1;
-                    minimum.x = center->x - extent->x;
-                    minimum.y = center->y - extent->y;
-                    minimum.z = center->z - extent->z;
-                    maximum.x = center->x + extent->x;
-                    maximum.y = center->y + extent->y;
-                    maximum.z = center->z + extent->z;
-                    if (((PCFrustumClipSet *)PCDisplayClipSet)->TestBox(&minimum, &maximum, PCDisplayClipGroupIndex)) {
-                        PC_DISPLAY_CLIP_OBJECT_PC *object = &scene->clip_objects[clip_index];
-                        i32 material;
-                        u32 buffer = (scene->render_flags >> 15) & 1;
-                        for (material = 0; material < object->material_count; ++material) {
-                            u32 index = (u32)object->material_ids[material];
-                            scene->material_used[buffer][index >> 3] |= (u8)(1u << (index & 7));
-                        }
-                        scene->clip_used[buffer][clip_index / 4] |= (u8)(1u << ((clip_index & 3) * 2));
-                    }
+                    CLIP_TEST_BOUNDS();
                 }
                 range = &scene->fade_levels[clip_index];
                 while (*range != 0.0f)
                     ++range, ++clip_index;
             } else if ((scene->visibility_flags[group_index] & 0x20) != 0) {
-                NUVEC4 *center = &scene->clip_bounds[group_index * 2];
-                NUVEC4 *extent = center + 1;
-                NUVEC minimum, maximum;
-                minimum.x = center->x - extent->x;
-                minimum.y = center->y - extent->y;
-                minimum.z = center->z - extent->z;
-                maximum.x = center->x + extent->x;
-                maximum.y = center->y + extent->y;
-                maximum.z = center->z + extent->z;
-                if (((PCFrustumClipSet *)PCDisplayClipSet)->TestBox(&minimum, &maximum, PCDisplayClipGroupIndex)) {
-                    PC_DISPLAY_CLIP_OBJECT_PC *object = &scene->clip_objects[clip_index];
-                    i32 material;
-                    u32 buffer = (scene->render_flags >> 15) & 1;
-                    for (material = 0; material < object->material_count; ++material) {
-                        u32 index = (u32)object->material_ids[material];
-                        scene->material_used[buffer][index >> 3] |= (u8)(1u << (index & 7));
-                    }
-                    scene->clip_used[buffer][clip_index / 4] |= (u8)(1u << ((clip_index & 3) * 2));
-                }
+                CLIP_TEST_BOUNDS();
             }
             ++clip_index;
             ++group_index;
         }
     }
+#undef CLIP_TEST_BOUNDS
+#undef CLIP_MARK_MATERIALS
 }
 
 typedef struct PC_CLONE_LIST_VIEW {
@@ -965,23 +956,26 @@ STATIC_ASSERT(offsetof(PC_SPECIAL_SHADOW_LIGHT_VIEW, render_set_count) == 0x710)
 
 extern "C" {
 
+#define PC_LIST_ITEM (static_cast<NUDISPLAYLISTITEM *>(list->items))
     static __declspec(noinline) void DisplayListProcessGeomPC(NUDISPLAYLIST_PC *list, NUDISPLAYLISTITEM *geometry,
                                                               NUDISPLAYLISTITEM **output, NUMTX *matrix, void **packet,
                                                               f32 alpha, i32 shadow) {
         VARIPTR *buffer = NuDisplayListLinkItems(list, 2);
         NUDISPLAY_LIST_PC *scene = reinterpret_cast<NUDISPLAY_LIST_PC *>(list->scene);
-        *packet = DisplayListCreateGeomTransformPS(buffer, matrix, scene->display_materials[list->material_id],
-                                                   geometry->next, *packet);
-        NUDISPLAYLISTITEM *item = static_cast<NUDISPLAYLISTITEM *>(list->items);
-        item->type = 0x8c;
-        item->id = 3;
-        item->next = *packet;
-        output[0] = item++;
-        item->type = 0x82;
-        item->id = 3;
-        item->next = geometry->next;
-        output[1] = item++;
-        list->items = item;
+        void *next = geometry->next;
+        void *transform = DisplayListCreateGeomTransformPS(buffer, matrix, scene->display_materials[list->material_id],
+                                                           next, *packet);
+        *packet = transform;
+        PC_LIST_ITEM->type = 0x8c;
+        PC_LIST_ITEM->id = 3;
+        PC_LIST_ITEM->next = transform;
+        list->items = PC_LIST_ITEM + 1;
+        output[0] = PC_LIST_ITEM - 1;
+        PC_LIST_ITEM->type = 0x82;
+        PC_LIST_ITEM->id = 3;
+        PC_LIST_ITEM->next = next;
+        list->items = PC_LIST_ITEM + 1;
+        output[1] = PC_LIST_ITEM - 1;
         DisplayListSetAlphaPS(output[0], output[1], alpha);
         DisplayListSetShadowCasterFlagPS(output[0], output[1], shadow);
     }
@@ -991,25 +985,26 @@ extern "C" {
                                                                      void **packet, f32 alpha) {
         NuDisplayListStreamCursor->addr = (NuDisplayListStreamCursor->addr + 15) & ~15u;
         VARIPTR *buffer = NuDisplayListLinkItems(list, 3);
-        NUDISPLAYLISTITEM *item = static_cast<NUDISPLAYLISTITEM *>(list->items);
-        item->type = geometry[-2].type;
-        item->id = 3;
-        item->next = geometry[-2].next;
-        output[0] = item++;
-        list->items = item;
+        void *next = geometry->next;
+        PC_LIST_ITEM->type = geometry[-2].type;
+        PC_LIST_ITEM->id = 3;
+        PC_LIST_ITEM->next = geometry[-2].next;
+        list->items = PC_LIST_ITEM + 1;
+        output[0] = PC_LIST_ITEM - 1;
         NUDISPLAY_LIST_PC *scene = reinterpret_cast<NUDISPLAY_LIST_PC *>(list->scene);
-        *packet = DisplayListCreateGeomTransformPS(buffer, matrix, scene->display_materials[list->material_id],
-                                                   geometry->next, *packet);
-        item = static_cast<NUDISPLAYLISTITEM *>(list->items);
-        item->type = 0x8c;
-        item->id = 3;
-        item->next = *packet;
-        output[1] = item++;
-        item->type = 0x82;
-        item->id = 3;
-        item->next = geometry->next;
-        output[2] = item++;
-        list->items = item;
+        void *transform = DisplayListCreateGeomTransformPS(buffer, matrix, scene->display_materials[list->material_id],
+                                                           next, *packet);
+        *packet = transform;
+        PC_LIST_ITEM->type = 0x8c;
+        PC_LIST_ITEM->id = 3;
+        PC_LIST_ITEM->next = transform;
+        list->items = PC_LIST_ITEM + 1;
+        output[1] = PC_LIST_ITEM - 1;
+        PC_LIST_ITEM->type = 0x82;
+        PC_LIST_ITEM->id = 3;
+        PC_LIST_ITEM->next = next;
+        list->items = PC_LIST_ITEM + 1;
+        output[2] = PC_LIST_ITEM - 1;
         DisplayListSetAlphaPS(output[1], output[2], alpha);
     }
     static __declspec(noinline) void DisplayListProcessSkinPC(NUDISPLAYLIST_PC *list, NUDISPLAYLISTITEM *geometry,
@@ -1050,21 +1045,20 @@ extern "C" {
         NUDISPLAY_LIST_PC *scene = reinterpret_cast<NUDISPLAY_LIST_PC *>(list->scene);
         void *packet = DisplayListCreateFaceonTransformPS(buffer, matrix, scene->display_materials[list->material_id],
                                                           geometry->next);
-        NUDISPLAYLISTITEM *item = static_cast<NUDISPLAYLISTITEM *>(list->items);
-        item->type = 0x90;
-        item->id = 3;
-        item->next = packet;
-        output[0] = item++;
-        list->items = item;
+        PC_LIST_ITEM->type = 0x90;
+        PC_LIST_ITEM->id = 3;
+        PC_LIST_ITEM->next = packet;
+        list->items = PC_LIST_ITEM + 1;
+        output[0] = PC_LIST_ITEM - 1;
         packet = NuDisplayListPrepareFaceonPS(buffer, geometry->next, matrix);
-        item = static_cast<NUDISPLAYLISTITEM *>(list->items);
-        item->type = 0x8f;
-        item->id = 3;
-        item->next = packet;
-        output[1] = item++;
-        list->items = item;
+        PC_LIST_ITEM->type = 0x8f;
+        PC_LIST_ITEM->id = 3;
+        PC_LIST_ITEM->next = packet;
+        list->items = PC_LIST_ITEM + 1;
+        output[1] = PC_LIST_ITEM - 1;
         DisplayListSetAlphaPS(output[0], output[1], alpha);
     }
+#undef PC_LIST_ITEM
     static __declspec(noinline) void
     DisplayListProcessSpecialItemPC(PC_SPECIAL_RENDER_MATERIAL *material, NUDISPLAYLIST_PC *list,
                                     NUDISPLAYLISTITEM *geometry, i32 index, NUDISPLAYLISTITEM **output, NUMTX *matrix,
