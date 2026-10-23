@@ -90,6 +90,7 @@ void MenuEnterOptions(MENU *menu) {
 
 void MenuDrawOptions(MENU *menu) {
     char text[256];
+    i32 changed;
     menu->item_scale = 1.0f;
 
     sprintf(text, Menu_OptionsVolumeFormat, TTab[tAUDIOVOLUME], TempOptions.master_volume, 10);
@@ -98,17 +99,17 @@ void MenuDrawOptions(MENU *menu) {
 
     NuStrCpy(text, TTab[tMUSIC]);
     NuStrCat(text, Menu_ColonSeparator);
-    NuStrCat(text, TTab[TempOptions.music_enabled != 0 ? tON : tOFF]);
+    NuStrCat(text, TempOptions.music_enabled != 0 ? TTab[tON] : TTab[tOFF]);
     dme_sy = menu->item_scale;
     GameDrawMenuEntry(menu, text);
 
-    if (memcmp(&TempOptions, &Game.options_save, sizeof(TempOptions)) == 0) {
-        NuStrCpy(text, TTab[tBACK]);
-    } else if (menu->selected_row != menu->draw_item && menu_flash != 0) {
+    changed = memcmp(&TempOptions, &Game.options_save, sizeof(TempOptions)) != 0;
+    if (menu->selected_row != menu->draw_item && changed && menu_flash != 0)
         text[0] = '\0';
-    } else {
+    else if (changed)
         NuStrCpy(text, TTab[tACCEPT]);
-    }
+    else
+        NuStrCpy(text, TTab[tBACK]);
     dme_sy = menu->item_scale;
     GameDrawMenuEntry(menu, text);
 }
