@@ -1181,9 +1181,11 @@ void __cdecl DebrisReScale(i32 effect_index, f32 scale) {
     DEBRIS_INFO_PC *effect;
     i32 i;
     u8 generator;
-    if (effect_index < 0 || effect_index >= debinf_count || debtab[effect_index] == NULL)
+    if (effect_index < 0 || effect_index >= debinf_count)
         return;
     effect = debtab[effect_index];
+    if (effect == NULL)
+        return;
     for (i = 0; i < 8; ++i) {
         effect->width_keys[i].value *= scale;
         effect->height_keys[i].value *= scale;

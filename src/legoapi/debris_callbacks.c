@@ -12,26 +12,27 @@ i32 __cdecl DebrisNuASin(f32 value) {
     union {
         f32 value;
         u32 bits;
-    } magnitude;
-    f32 root, low, b, c, d, t, square, cube, fourth;
-    f64 polynomial;
-    magnitude.value = value;
-    magnitude.bits &= 0x7fffffff;
+    } in, magnitude;
+    f32 root, low, b, c, d;
+    f64 t, square, cube, fourth;
+    f64 polynomial, x;
+    in.value = value;
+    magnitude.bits = in.bits & 0x7fffffff;
     root = NuFsqrt(1.0f - value * value);
     low = root < magnitude.value ? root : magnitude.value;
-    b = (f32)((magnitude.value - (f64)0.70710677f) * (f64)3.40282e38f);
-    b = b < 1.0f ? b : 1.0f;
-    b = b > -1.0f ? b : -1.0f;
-    c = (f32)(value * (f64)3.40282e38f);
-    c = c < 1.0f ? c : 1.0f;
+    x = (magnitude.value - (f64)0.70710677f) * (f64)3.40282e38f;
+    b = (f32)(x < 1.0 ? (x > -1.0 ? x : -1.0) : 1.0);
+    x = value * (f64)3.40282e38f;
+    c = (f32)(x < 1.0 ? x : 1.0);
     c = c > -1.0f ? c : -1.0f;
     d = b * c + c;
-    t = b * c * low;
+    t = low * (b * c);
     square = t * t;
     cube = square * t;
     fourth = square * square;
-    polynomial = d * (f64)0.785398f - t + PCPathArcSineCoefficient3 * cube + PCPathArcSineCoefficient5 * square * cube +
-                 PCPathArcSineCoefficient7 * cube * fourth + PCPathArcSineCoefficient9 * fourth * fourth * t;
+    polynomial = d * (f64)0.785398f - t + t * PCPathArcSineCoefficient3 * square +
+                 PCPathArcSineCoefficient5 * square * cube + cube * PCPathArcSineCoefficient7 * fourth +
+                 fourth * PCPathArcSineCoefficient9 * (square * cube);
     return (i32)(polynomial * (f64)10430.4f);
 }
 
