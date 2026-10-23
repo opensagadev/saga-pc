@@ -1404,25 +1404,35 @@ GIZMOBLOWUP_PC *__cdecl GizmoBlowUp_FindByName(WORLDINFO *world, char *name) {
     return NULL;
 }
 GIZMOBLOWUP_PC *__cdecl FindNearestGizmoBlowUp(WORLDINFO *world, NUVEC *position, f32 max_distance_squared) {
-    GIZMOBLOWUP_PC *blowup, *end, *nearest = NULL;
-    f32 nearest_distance = max_distance_squared;
-    f32 x, y, z, distance;
-    if (!world || world->gizmo_blowup_count <= 0 || !position)
+    GIZMOBLOWUP_PC *nearest;
+    f32 nearest_distance;
+    i32 index;
+    i32 count;
+    if (world == NULL)
         return NULL;
-    blowup = world->gizmo_blowups;
-    end = blowup + world->gizmo_blowup_count;
-    do {
-        if ((blowup->status_flags & 0x804001) != 0x804000)
-            continue;
-        x = blowup->position.x - position->x;
-        y = blowup->position.y - position->y;
-        z = blowup->position.z - position->z;
-        distance = x * x + y * y + z * z;
-        if (distance < max_distance_squared && distance < nearest_distance) {
-            nearest = blowup;
-            nearest_distance = distance;
+    count = world->gizmo_blowup_count;
+    if (count <= 0)
+        return NULL;
+    if (position == NULL)
+        return NULL;
+    nearest_distance = max_distance_squared;
+    nearest = NULL;
+    for (index = 0; index < count; ++index) {
+        GIZMOBLOWUP_PC *blowup = &world->gizmo_blowups[index];
+        if ((blowup->status_flags & 0x800000) != 0 && (blowup->status_flags & 1) == 0 &&
+            (blowup->status_flags & 0x4000) != 0) {
+            NUVEC delta;
+            f32 distance;
+            delta.x = blowup->position.x - position->x;
+            delta.y = blowup->position.y - position->y;
+            delta.z = blowup->position.z - position->z;
+            distance = delta.x * delta.x + delta.y * delta.y + delta.z * delta.z;
+            if (distance < max_distance_squared && distance < nearest_distance) {
+                nearest_distance = distance;
+                nearest = blowup;
+            }
         }
-    } while (++blowup != end);
+    }
     return nearest;
 }
 void __cdecl GizmoSwapBlowups(GIZMOBLOWUP_PC *first, GIZMOBLOWUP_PC *second) {
