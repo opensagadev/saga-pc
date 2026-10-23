@@ -4,6 +4,16 @@
 #include <float.h>
 #include <math.h>
 
+typedef union AI_ACTION_FLAGS_EF4_PC {
+    u32 word;
+    struct {
+        u32 unused0 : 25;
+        u32 no_idle_speed : 1;
+        u32 unused26 : 6;
+    } bits;
+} AI_ACTION_FLAGS_EF4_PC;
+STATIC_ASSERT(sizeof(AI_ACTION_FLAGS_EF4_PC) == 4);
+
 enum {
     AIPATHINFO_FLAG_ON_PATH_LOCAL = 0x01,
     AIPATHINFO_FLAG_ROUTE_CHECKED_LOCAL = 0x04,
@@ -1569,15 +1579,14 @@ i32 Action_DynamicCameraCut(AISYS_PC *system, AISCRIPTPROCESS_PC *processor, AIP
 i32 Action_EndCameraCut(AISYS_PC *system, AISCRIPTPROCESS_PC *processor, AIPACKET_PC *packet, char **params,
                         i32 param_count, i32 first_time, f32 elapsed) {
     char *value;
-    f32 duration;
     i32 i;
 
     if (first_time != 0 && MiniCutCam != 0) {
         for (i = 0; i < param_count; ++i) {
             value = NuStrIStr(params[i], (char *)AICameraLiteral758064);
             if (value != NULL) {
-                duration = AIParamToFloat(processor, value + 9);
-                ObstacleCamEnd = duration + ObstacleCamTime;
+                ObstacleCamEnd = AIParamToFloat(processor, value + 9);
+                ObstacleCamEnd += ObstacleCamTime;
             } else {
                 value = NuStrIStr(params[i], (char *)AICameraLiteral758044);
                 if (value != NULL) {
@@ -1866,7 +1875,7 @@ void __cdecl AISysGetPathPos(AISYS_PC *system, NUVEC *position, AIPATHINFO_PC *i
 }
 
 void __cdecl AICircle(AISYS_PC *system, AIPACKET_PC *packet, APIOBJECT_PC *object, i32 checks) {
-    f32 radius = packet->fallback_stopping_distance > packet->movement_parameter ? packet->fallback_stopping_distance
+    f32 radius = packet->movement_parameter < packet->fallback_stopping_distance ? packet->fallback_stopping_distance
                                                                                  : packet->movement_parameter;
     NUVEC difference;
     NUVEC circle_position;
@@ -7673,14 +7682,15 @@ i32 __cdecl Action_NoIdleSpeed(AISYS_PC *sys, AISCRIPTPROCESS_PC *processor, AIP
     i32 index;
     APIOBJECT_PC *lookup;
     GAMEOBJECT *object;
-    i32 enabled;
+    i32 enabled = 1;
     char *name;
 
     (void)processor;
     (void)param_6;
-    object = packet != NULL && packet->owner != NULL ? packet->owner->objptr : NULL;
-    if (object != NULL && param_5 != 0) {
-        enabled = 1;
+    if (packet == NULL || packet->owner == NULL || packet->owner->objptr == NULL)
+        return 1;
+    object = packet->owner->objptr;
+    if (param_5 != 0) {
         for (index = 0; index < param_4; ++index) {
             name = NuStrIStr(params[index], (char *)AIGameCharacterName);
             if (name != NULL) {
@@ -7693,7 +7703,7 @@ i32 __cdecl Action_NoIdleSpeed(AISYS_PC *sys, AISCRIPTPROCESS_PC *processor, AIP
             }
         }
         if (object != NULL) {
-            object->flags_ef4 = (u32)((object->flags_ef4 & ~0x2000000u) | (enabled ? 0x2000000u : 0u));
+            ((AI_ACTION_FLAGS_EF4_PC *)&object->flags_ef4)->bits.no_idle_speed = enabled;
         }
     }
     return 1;
@@ -7896,8 +7906,10 @@ i32 __cdecl Action_Respawnable(AISYS_PC *sys, AISCRIPTPROCESS_PC *processor, AIP
     (void)sys;
     (void)processor;
     (void)param_6;
-    object = packet != NULL && packet->owner != NULL ? packet->owner->objptr : NULL;
-    if (object != NULL && param_5 != 0) {
+    if (packet == NULL || packet->owner == NULL || packet->owner->objptr == NULL)
+        return 1;
+    object = packet->owner->objptr;
+    if (param_5 != 0) {
         object->portal_flags = (object->portal_flags & ~0x200000u) | 0x100000u;
         for (index = 0; index < param_4; ++index) {
             if (NuStrICmp(params[index], (char *)AIPathOriginName) == 0) {
@@ -7941,17 +7953,17 @@ i32 __cdecl Action_CanOpenDoors(AISYS_PC *sys, AISCRIPTPROCESS_PC *processor, AI
     (void)sys;
     (void)processor;
     (void)param_6;
-    if (packet == NULL || packet->owner == NULL || packet->owner->objptr == NULL || param_5 == 0) {
+    if (packet == NULL || packet->owner == NULL || packet->owner->objptr == NULL)
         return 1;
-    }
-
     object = packet->owner->objptr;
-    object->flags_1044 |= 1;
-    for (index = 0; index < param_4; ++index) {
-        if (NuStrICmp(params[index], (char *)AIActionFalseName) == 0) {
-            object->flags_1044 &= ~1u;
-        } else if (NuStrICmp(params[index], (char *)AITransferLiteral757ebc) == 0) {
-            object->flags_1044 |= 1;
+    if (param_5 != 0) {
+        object->flags_1044 |= 1;
+        for (index = 0; index < param_4; ++index) {
+            if (NuStrICmp(params[index], (char *)AITransferLiteral757ebc) == 0) {
+                object->flags_1044 |= 1u;
+            } else if (NuStrICmp(params[index], (char *)AIActionFalseName) == 0) {
+                object->flags_1044 &= ~1u;
+            }
         }
     }
     return 1;
@@ -7961,10 +7973,9 @@ i32 __cdecl Action_CanShootOffScreen(AISYS_PC *sys, AISCRIPTPROCESS_PC *processo
                                      i32 param_count, i32 first_time, f32 elapsed) {
     i32 index;
     GAMEOBJECT *object;
-    object = packet != NULL && packet->owner != NULL ? packet->owner->objptr : NULL;
-    if (object == NULL) {
+    if (packet == NULL || packet->owner == NULL || packet->owner->objptr == NULL)
         return 1;
-    }
+    object = packet->owner->objptr;
     if (first_time != 0) {
         object->flags_1044 |= 4u;
         for (index = 0; index < param_count; ++index) {
@@ -7999,11 +8010,9 @@ i32 __cdecl Action_ImmuneToKillTerrain(AISYS_PC *sys, AISCRIPTPROCESS_PC *proces
                                        i32 param_count, i32 first_time, f32 elapsed) {
     i32 index;
     GAMEOBJECT *object;
-    if (packet == NULL || packet->owner == NULL)
+    if (packet == NULL || packet->owner == NULL || packet->owner->objptr == NULL)
         return 1;
     object = packet->owner->objptr;
-    if (object == NULL)
-        return 1;
     if (first_time) {
         object->portal_flags |= 0x40000u;
         for (index = 0; index < param_count; ++index) {
@@ -8021,8 +8030,10 @@ i32 __cdecl Action_ImmuneToBolts(AISYS_PC *sys, AISCRIPTPROCESS_PC *processor, A
     (void)sys;
     (void)processor;
     (void)param_6;
-    object = packet != NULL && packet->owner != NULL ? packet->owner->objptr : NULL;
-    if (object != NULL && param_5 != 0) {
+    if (packet == NULL || packet->owner == NULL || packet->owner->objptr == NULL)
+        return 1;
+    object = packet->owner->objptr;
+    if (param_5 != 0) {
         object->portal_flags |= 0x80000u;
         for (index = 0; index < param_4; ++index) {
             if (NuStrICmp(params[index], (char *)AIScriptFalse) == 0) {
@@ -8040,8 +8051,10 @@ i32 __cdecl Action_SetBoss(AISYS_PC *sys, AISCRIPTPROCESS_PC *processor, AIPACKE
     (void)sys;
     (void)processor;
     (void)param_6;
-    object = packet != NULL && packet->owner != NULL ? packet->owner->objptr : NULL;
-    if (object != NULL && param_5 != 0) {
+    if (packet == NULL || packet->owner == NULL || packet->owner->objptr == NULL)
+        return 1;
+    object = packet->owner->objptr;
+    if (param_5 != 0) {
         object->portal_flags |= 0x8000000u;
         for (index = 0; index < param_4; ++index) {
             if (NuStrICmp(params[index], (char *)AIScriptFalse) == 0) {
@@ -8056,8 +8069,10 @@ i32 __cdecl Action_UpdateSockPos(AISYS_PC *sys, AISCRIPTPROCESS_PC *processor, A
                                  i32 param_4, i32 param_5, f32 param_6) {
     i32 index;
     GAMEOBJECT *object;
-    object = packet != NULL && packet->owner != NULL ? packet->owner->objptr : NULL;
-    if (object != NULL && param_5 != 0) {
+    if (packet == NULL || packet->owner == NULL || packet->owner->objptr == NULL)
+        return 1;
+    object = packet->owner->objptr;
+    if (param_5 != 0) {
         object->portal_flags |= 0x4000u;
         for (index = 0; index < param_4; ++index) {
             if (NuStrICmp(params[index], (char *)AIScriptFalse) == 0) {
@@ -8075,8 +8090,10 @@ i32 __cdecl Action_ApplyGravity(AISYS_PC *sys, AISCRIPTPROCESS_PC *processor, AI
     (void)sys;
     (void)processor;
     (void)param_6;
-    object = packet != NULL && packet->owner != NULL ? packet->owner->objptr : NULL;
-    if (object != NULL && param_5 != 0) {
+    if (packet == NULL || packet->owner == NULL || packet->owner->objptr == NULL)
+        return 1;
+    object = packet->owner->objptr;
+    if (param_5 != 0) {
         object->portal_flags &= (u32)(~0x80000000u);
         for (index = 0; index < param_4; ++index) {
             if (NuStrICmp(params[index], (char *)AIActionFalseName) == 0) {
@@ -8091,11 +8108,9 @@ i32 __cdecl Action_CannotBeForcedBack(AISYS_PC *sys, AISCRIPTPROCESS_PC *process
                                       i32 param_count, i32 first_time, f32 elapsed) {
     i32 index;
     GAMEOBJECT *object;
-    if (packet == NULL || packet->owner == NULL)
+    if (packet == NULL || packet->owner == NULL || packet->owner->objptr == NULL)
         return 1;
     object = packet->owner->objptr;
-    if (object == NULL)
-        return 1;
     if (first_time) {
         object->flags_ef0 |= 0x10000000u;
         for (index = 0; index < param_count; ++index) {
@@ -8113,8 +8128,10 @@ i32 __cdecl Action_CanTurn(AISYS_PC *sys, AISCRIPTPROCESS_PC *processor, AIPACKE
     (void)sys;
     (void)processor;
     (void)param_6;
-    if (packet != NULL && packet->owner != NULL && packet->owner->objptr != NULL && param_5 != 0) {
-        object = packet->owner->objptr;
+    if (packet == NULL || packet->owner == NULL || packet->owner->objptr == NULL)
+        return 1;
+    object = packet->owner->objptr;
+    if (param_5 != 0) {
         object->flags_ef0 |= 0x20000000u;
         for (index = 0; index < param_4; ++index) {
             if (NuStrICmp(params[index], (char *)AIActionFalseName) == 0) {
@@ -8133,9 +8150,11 @@ i32 __cdecl Action_PrefersPlayers(AISYS_PC *sys, AISCRIPTPROCESS_PC *processor, 
     (void)processor;
     (void)param_5;
     (void)param_6;
-    object = packet != NULL && packet->owner != NULL ? packet->owner->objptr : NULL;
-    if (object != NULL) {
-        object->portal_flags |= 0x40000000u;
+    if (packet == NULL || packet->owner == NULL || packet->owner->objptr == NULL)
+        return 1;
+    object = packet->owner->objptr;
+    object->portal_flags |= 0x40000000u;
+    if (param_4 != 0) {
         for (index = 0; index < param_4; ++index) {
             if (NuStrICmp(params[index], (char *)AIActionFalseName) == 0) {
                 object->portal_flags &= (u32)(~0x40000000u);
@@ -8149,11 +8168,9 @@ i32 __cdecl Action_CanShootObstructions(AISYS_PC *sys, AISCRIPTPROCESS_PC *proce
                                         char **params, i32 param_count, i32 first_time, f32 elapsed) {
     i32 index;
     GAMEOBJECT *object;
-    if (packet == NULL || packet->owner == NULL)
+    if (packet == NULL || packet->owner == NULL || packet->owner->objptr == NULL)
         return 1;
     object = packet->owner->objptr;
-    if (object == NULL)
-        return 1;
     object->portal_flags |= 0x10000000u;
     if (param_count != 0) {
         for (index = 0; index < param_count; ++index) {
@@ -8172,14 +8189,14 @@ i32 __cdecl Action_UseBigJumpToJump(AISYS_PC *sys, AISCRIPTPROCESS_PC *processor
     (void)processor;
     (void)param_5;
     (void)param_6;
-    if (packet != NULL && packet->owner != NULL && packet->owner->objptr != NULL) {
-        object = packet->owner->objptr;
-        object->flags_ef4 |= 0x40000000u;
-        if (param_4 != 0) {
-            for (index = 0; index < param_4; ++index) {
-                if (NuStrICmp(params[index], (char *)AIActionFalseName) == 0) {
-                    object->flags_ef4 &= ~0x40000000u;
-                }
+    if (packet == NULL || packet->owner == NULL || packet->owner->objptr == NULL)
+        return 1;
+    object = packet->owner->objptr;
+    object->flags_ef4 |= 0x40000000u;
+    if (param_4 != 0) {
+        for (index = 0; index < param_4; ++index) {
+            if (NuStrICmp(params[index], (char *)AIActionFalseName) == 0) {
+                object->flags_ef4 &= ~0x40000000u;
             }
         }
     }
@@ -8190,16 +8207,14 @@ i32 __cdecl Action_IgnoreTurnAroundSpline(AISYS_PC *sys, AISCRIPTPROCESS_PC *pro
                                           char **params, i32 param_count, i32 first_time, f32 elapsed) {
     i32 index;
     GAMEOBJECT *object;
-    if (packet == NULL || packet->owner == NULL)
+    if (packet == NULL || packet->owner == NULL || packet->owner->objptr == NULL)
         return 1;
     object = packet->owner->objptr;
-    if (object != NULL) {
-        object->flags_ef4 |= 0x80000000u;
-        if (param_count != 0) {
-            for (index = 0; index < param_count; ++index) {
-                if (NuStrICmp(params[index], (char *)AIActionFalseName) == 0)
-                    object->flags_ef4 &= ~0x80000000u;
-            }
+    object->flags_ef4 |= 0x80000000u;
+    if (param_count != 0) {
+        for (index = 0; index < param_count; ++index) {
+            if (NuStrICmp(params[index], (char *)AIActionFalseName) == 0)
+                object->flags_ef4 &= ~0x80000000u;
         }
     }
     return 1;
@@ -8209,14 +8224,14 @@ i32 __cdecl Action_CanPullLevers(AISYS_PC *sys, AISCRIPTPROCESS_PC *processor, A
                                  i32 param_4, i32 param_5, f32 param_6) {
     i32 index;
     GAMEOBJECT *object;
-    object = packet != NULL && packet->owner != NULL ? packet->owner->objptr : NULL;
-    if (object != NULL) {
-        object->flags_ef0 |= 0x800000u;
-        if (param_4 != 0) {
-            for (index = 0; index < param_4; ++index) {
-                if (NuStrICmp(params[index], (char *)AIActionFalseName) == 0) {
-                    object->flags_ef0 &= ~0x800000u;
-                }
+    if (packet == NULL || packet->owner == NULL || packet->owner->objptr == NULL)
+        return 1;
+    object = packet->owner->objptr;
+    object->flags_ef0 |= 0x800000u;
+    if (param_4 != 0) {
+        for (index = 0; index < param_4; ++index) {
+            if (NuStrICmp(params[index], (char *)AIActionFalseName) == 0) {
+                object->flags_ef0 &= ~0x800000u;
             }
         }
     }
@@ -8231,9 +8246,11 @@ i32 __cdecl Action_AlwaysBackFlip(AISYS_PC *sys, AISCRIPTPROCESS_PC *processor, 
     (void)processor;
     (void)param_5;
     (void)param_6;
-    if (packet != NULL && packet->owner != NULL && packet->owner->objptr != NULL) {
-        object = packet->owner->objptr;
-        object->portal_flags |= 0x100u;
+    if (packet == NULL || packet->owner == NULL || packet->owner->objptr == NULL)
+        return 1;
+    object = packet->owner->objptr;
+    object->portal_flags |= 0x100u;
+    if (param_4 != 0) {
         for (index = 0; index < param_4; ++index) {
             if (NuStrICmp(params[index], (char *)AIActionFalseName) == 0) {
                 object->portal_flags &= (u32)(~0x100u);
@@ -8247,18 +8264,14 @@ i32 __cdecl Action_DeflectPlayersPart(AISYS_PC *sys, AISCRIPTPROCESS_PC *process
                                       i32 param_count, i32 first_time, f32 elapsed) {
     i32 index;
     GAMEOBJECT *object;
-    if (packet == NULL || packet->owner == NULL)
+    if (packet == NULL || packet->owner == NULL || packet->owner->objptr == NULL || !first_time)
         return 1;
     object = packet->owner->objptr;
-    if (object == NULL)
-        return 1;
-    if (first_time) {
-        object->flags_ef0 |= 0x100u;
-        if (param_count != 0) {
-            for (index = 0; index < param_count; ++index) {
-                if (NuStrICmp(params[index], (char *)AIActionFalseName) == 0)
-                    object->flags_ef0 &= ~0x100u;
-            }
+    object->flags_ef0 |= 0x100u;
+    if (param_count != 0) {
+        for (index = 0; index < param_count; ++index) {
+            if (NuStrICmp(params[index], (char *)AIActionFalseName) == 0)
+                object->flags_ef0 &= ~0x100u;
         }
     }
     return 1;
@@ -8268,11 +8281,9 @@ i32 __cdecl Action_CanHelpWithTriggers(AISYS_PC *sys, AISCRIPTPROCESS_PC *proces
                                        i32 param_count, i32 first_time, f32 elapsed) {
     i32 index;
     GAMEOBJECT *object;
-    if (packet == NULL || packet->owner == NULL)
+    if (packet == NULL || packet->owner == NULL || packet->owner->objptr == NULL)
         return 1;
     object = packet->owner->objptr;
-    if (object == NULL)
-        return 1;
     if (first_time) {
         object->flags_ef4 |= 0x40000u;
         for (index = 0; index < param_count; ++index) {
@@ -8287,11 +8298,9 @@ i32 __cdecl Action_CanCollideWithObjects(AISYS_PC *sys, AISCRIPTPROCESS_PC *proc
                                          char **params, i32 param_count, i32 first_time, f32 elapsed) {
     i32 index;
     GAMEOBJECT *object;
-    if (packet == NULL || packet->owner == NULL)
+    if (packet == NULL || packet->owner == NULL || packet->owner->objptr == NULL)
         return 1;
     object = packet->owner->objptr;
-    if (object == NULL)
-        return 1;
     if (first_time) {
         object->flags_ef4 &= ~0x80000u;
         for (index = 0; index < param_count; ++index) {
@@ -8306,8 +8315,10 @@ i32 __cdecl Action_CanDefend(AISYS_PC *sys, AISCRIPTPROCESS_PC *processor, AIPAC
                              i32 param_4, i32 param_5, f32 param_6) {
     i32 index;
     GAMEOBJECT *object;
-    object = packet != NULL && packet->owner != NULL ? packet->owner->objptr : NULL;
-    if (object != NULL && param_5 != 0) {
+    if (packet == NULL || packet->owner == NULL || packet->owner->objptr == NULL)
+        return 1;
+    object = packet->owner->objptr;
+    if (param_5 != 0) {
         object->portal_flags |= 2u;
         for (index = 0; index < param_4; ++index) {
             if (NuStrICmp(params[index], (char *)AIScriptFalse) == 0)
@@ -8324,8 +8335,10 @@ i32 __cdecl Action_DontAimAt(AISYS_PC *sys, AISCRIPTPROCESS_PC *processor, AIPAC
     (void)sys;
     (void)processor;
     (void)param_6;
-    object = packet != NULL && packet->owner != NULL ? packet->owner->objptr : NULL;
-    if (object != NULL && param_5 != 0) {
+    if (packet == NULL || packet->owner == NULL || packet->owner->objptr == NULL)
+        return 1;
+    object = packet->owner->objptr;
+    if (param_5 != 0) {
         object->flags_ef4 |= 1;
         for (index = 0; index < param_4; ++index) {
             if (NuStrICmp(params[index], (char *)AIScriptFalse) == 0) {
@@ -8343,8 +8356,10 @@ i32 __cdecl Action_CanUseWeapon(AISYS_PC *sys, AISCRIPTPROCESS_PC *processor, AI
     (void)sys;
     (void)processor;
     (void)param_6;
-    object = packet != NULL && packet->owner != NULL ? packet->owner->objptr : NULL;
-    if (object != NULL && param_5 != 0) {
+    if (packet == NULL || packet->owner == NULL || packet->owner->objptr == NULL)
+        return 1;
+    object = packet->owner->objptr;
+    if (param_5 != 0) {
         object->portal_flags |= 8;
         for (index = 0; index < param_4; ++index) {
             if (NuStrICmp(params[index], (char *)AIScriptFalse) == 0) {
@@ -8359,11 +8374,9 @@ i32 __cdecl Action_IgnoreShoveSystem(AISYS_PC *sys, AISCRIPTPROCESS_PC *processo
                                      i32 param_count, i32 first_time, f32 elapsed) {
     i32 index;
     GAMEOBJECT *object;
-    if (packet == NULL || packet->owner == NULL)
+    if (packet == NULL || packet->owner == NULL || packet->owner->objptr == NULL)
         return 1;
     object = packet->owner->objptr;
-    if (object == NULL)
-        return 1;
     if (first_time) {
         object->flags_ef0 |= 1;
         for (index = 0; index < param_count; ++index) {
@@ -8381,8 +8394,10 @@ i32 __cdecl Action_CannotBeSeen(AISYS_PC *sys, AISCRIPTPROCESS_PC *processor, AI
     (void)sys;
     (void)processor;
     (void)param_6;
-    object = packet != NULL && packet->owner != NULL ? packet->owner->objptr : NULL;
-    if (object != NULL && param_5 != 0) {
+    if (packet == NULL || packet->owner == NULL || packet->owner->objptr == NULL)
+        return 1;
+    object = packet->owner->objptr;
+    if (param_5 != 0) {
         object->flags_ef0 |= 2;
         for (index = 0; index < param_4; ++index) {
             if (NuStrICmp(params[index], (char *)AIActionFalseName) == 0) {
@@ -8397,10 +8412,9 @@ i32 __cdecl Action_SetBoltsDontGetDeflectedBack(AISYS_PC *sys, AISCRIPTPROCESS_P
                                                 char **params, i32 param_count, i32 first_time, f32 elapsed) {
     i32 index;
     GAMEOBJECT *object;
-    object = packet != NULL && packet->owner != NULL ? packet->owner->objptr : NULL;
-    if (object == NULL) {
+    if (packet == NULL || packet->owner == NULL || packet->owner->objptr == NULL)
         return 1;
-    }
+    object = packet->owner->objptr;
     object->flags_ef0 |= 8u;
     if (param_count != 0) {
         for (index = 0; index < param_count; ++index) {
@@ -8416,16 +8430,14 @@ i32 __cdecl Action_CanMoveWhenDeactivated(AISYS_PC *sys, AISCRIPTPROCESS_PC *pro
                                           char **params, i32 param_count, i32 first_time, f32 elapsed) {
     i32 index;
     GAMEOBJECT *object;
-    if (packet == NULL || packet->owner == NULL)
+    if (packet == NULL || packet->owner == NULL || packet->owner->objptr == NULL)
         return 1;
     object = packet->owner->objptr;
-    if (object != NULL) {
-        object->flags_ef8_word |= 1;
-        if (param_count != 0) {
-            for (index = 0; index < param_count; ++index) {
-                if (NuStrICmp(params[index], (char *)AIActionFalseName) == 0)
-                    object->flags_ef8_word &= ~1;
-            }
+    object->flags_ef8_word |= 1;
+    if (param_count != 0) {
+        for (index = 0; index < param_count; ++index) {
+            if (NuStrICmp(params[index], (char *)AIActionFalseName) == 0)
+                object->flags_ef8_word &= ~1;
         }
     }
     return 1;
@@ -8435,9 +8447,11 @@ i32 __cdecl Action_DontAttack(AISYS_PC *sys, AISCRIPTPROCESS_PC *processor, AIPA
                               i32 param_4, i32 param_5, f32 param_6) {
     i32 index;
     GAMEOBJECT *object;
-    object = packet != NULL && packet->owner != NULL ? packet->owner->objptr : NULL;
-    if (object != NULL) {
-        object->flags_ef8_word |= 2u;
+    if (packet == NULL || packet->owner == NULL || packet->owner->objptr == NULL)
+        return 1;
+    object = packet->owner->objptr;
+    object->flags_ef8_word |= 2u;
+    if (param_4 != 0) {
         for (index = 0; index < param_4; ++index) {
             if (NuStrICmp(params[index], (char *)AIActionFalseName) == 0)
                 object->flags_ef8_word &= ~2u;
@@ -8450,11 +8464,9 @@ i32 __cdecl Action_CanHitForceObjects(AISYS_PC *sys, AISCRIPTPROCESS_PC *process
                                       i32 param_count, i32 first_time, f32 elapsed) {
     i32 index;
     GAMEOBJECT *object;
-    if (packet == NULL || packet->owner == NULL)
+    if (packet == NULL || packet->owner == NULL || packet->owner->objptr == NULL)
         return 1;
     object = packet->owner->objptr;
-    if (object == NULL)
-        return 1;
     object->portal_flags |= 0x40;
     if (param_count != 0) {
         for (index = 0; index < param_count; ++index) {
@@ -8469,10 +8481,9 @@ i32 __cdecl Action_PlayerSpeederHack(AISYS_PC *sys, AISCRIPTPROCESS_PC *processo
                                      i32 param_count, i32 first_time, f32 elapsed) {
     i32 index;
     GAMEOBJECT *object;
-    object = packet != NULL && packet->owner != NULL ? packet->owner->objptr : NULL;
-    if (object == NULL) {
+    if (packet == NULL || packet->owner == NULL || packet->owner->objptr == NULL)
         return 1;
-    }
+    object = packet->owner->objptr;
     object->flags_ef8_word |= 8u;
     if (param_count != 0) {
         for (index = 0; index < param_count; ++index) {
@@ -8489,7 +8500,7 @@ i32 __cdecl Action_UseWeapon(AISYS_PC *sys, AISCRIPTPROCESS_PC *processor, AIPAC
     GAMEOBJECT *object;
     (void)sys;
     (void)processor;
-    object = packet != NULL && packet->owner != NULL ? packet->owner->objptr : NULL;
+    object = packet != NULL && packet->owner != NULL && packet->owner->objptr != NULL ? packet->owner->objptr : NULL;
     (void)params;
     (void)param_4;
     (void)param_5;
@@ -9131,7 +9142,7 @@ i32 __cdecl Action_ClearTakeOverTarget(AISYS_PC *sys, AISCRIPTPROCESS_PC *proces
 i32 __cdecl Action_PressTagButton(AISYS_PC *sys, AISCRIPTPROCESS_PC *processor, AIPACKET_PC *packet, char **params,
                                   i32 param_4, i32 param_5, f32 param_6) {
     GAMEOBJECT *object;
-    object = packet != NULL && packet->owner != NULL ? packet->owner->objptr : NULL;
+    object = packet != NULL && packet->owner != NULL && packet->owner->objptr != NULL ? packet->owner->objptr : NULL;
     if (object != NULL) {
         object->pad->buttons_pressed |= GAMEPAD_TAG;
     }
@@ -9147,7 +9158,7 @@ i32 __cdecl Action_PressJumpButton(AISYS_PC *sys, AISCRIPTPROCESS_PC *processor,
     (void)param_4;
     (void)param_5;
     (void)param_6;
-    object = packet != NULL && packet->owner != NULL ? packet->owner->objptr : NULL;
+    object = packet != NULL && packet->owner != NULL && packet->owner->objptr != NULL ? packet->owner->objptr : NULL;
     if (object != NULL) {
         object->pad->buttons_pressed |= GAMEPAD_JUMP;
     }
@@ -10147,13 +10158,13 @@ i32 __cdecl Action_AddPartDebris(AISYS_PC *sys, AISCRIPTPROCESS_PC *processor, A
     i32 type;
     char *value;
     GAMEOBJECT *object;
+    type = -1;
     offset.x = 0.0f;
     offset.y = 0.0f;
     offset.z = 0.0f;
     if (first_time) {
         // The original requires coordinates or a character parameter to supply this position.
 
-        type = -1;
         for (i = 0; i < num_params; i++) {
             value = NuStrIStr(params[i], (char *)AITransferLiteral75782c);
             if (value != NULL)
@@ -10686,8 +10697,13 @@ void __cdecl AISysCreatureAntinodeInteraction(AISYS_PC *system, i32 object_count
         if (count != 0) {
             for (index = 0; index < object_count; ++index) {
                 object = objects[index];
-                if (object->flags_low & 0x20080)
-                    continue;
+                {
+                    u32 flags = object->flags_low;
+                    if (flags & 0x20000)
+                        continue;
+                    if (flags & 0x80)
+                        continue;
+                }
                 for (obstacle = 0; obstacle < count; ++obstacle) {
                     antinode = active[obstacle];
                     if (NuSpecialExistsFn(&object->collision_special) &&
@@ -12320,8 +12336,8 @@ STATIC_ASSERT(offsetof(TORPEDO_ACTION_PACKET_PC, pickup_positions) == 0x3c);
 
 i32 __cdecl Action_AddGameMsgCount(AISYS_PC *unused0, AISCRIPTPROCESS_PC *processor, AIPACKET_PC *packet, char **params,
                                    i32 param_count, i32 first_time, f32 unused6) {
-    GAMEOBJECT *object = NULL;
-    NUVEC *position = NULL;
+    GAMEOBJECT *object;
+    NUVEC *position;
     i32 count = 0;
     i32 total = 0;
     u8 red = 0;
@@ -12330,31 +12346,31 @@ i32 __cdecl Action_AddGameMsgCount(AISYS_PC *unused0, AISCRIPTPROCESS_PC *proces
     i32 index;
     char *value;
     GIZAIMESSAGE *message;
+    position = NULL;
+    object = NULL;
     if (first_time != 0) {
         if (packet != NULL && packet->owner != NULL && packet->owner->objptr != NULL)
             object = packet->owner->objptr;
-        if (param_count > 0) {
-            for (index = 0; index < param_count; ++index) {
-                if (NuStrICmp(AIActionMyPosNamePc, params[index]) == 0 && object != NULL)
-                    position = &object->collision_position;
-                else if ((value = NuStrIStr(params[index], (char *)AIActionTotalPrefixPc)) != NULL)
-                    total = (i32)AIParamToFloat(processor, value + 6);
-                else if ((value = NuStrIStr(params[index], (char *)AIActionCountPrefixPc)) != NULL)
-                    count = (i32)AIParamToFloat(processor, value + 6);
-                else if ((value = NuStrIStr(params[index], (char *)AITransferLiteral757c20)) != NULL) {
-                    message = CheckGizAIMessage(gizaimessagesys, value + 11, NULL);
-                    if (message != NULL)
-                        count = (i32)message->value;
-                } else if ((value = NuStrIStr(params[index], (char *)AIActionRedPrefixPc)) != NULL)
-                    red = (u8)AIParamToFloat(processor, value + 4);
-                else if ((value = NuStrIStr(params[index], (char *)AIActionGreenPrefixPc)) != NULL)
-                    green = (u8)AIParamToFloat(processor, value + 6);
-                else if ((value = NuStrIStr(params[index], (char *)AIActionBluePrefixPc)) != NULL)
-                    blue = (u8)AIParamToFloat(processor, value + 5);
-            }
-            if (count != 0 && count <= total)
-                AddGameMsgCount(position, count, total, red, green, blue, 0.75f);
+        for (index = 0; index < param_count; ++index) {
+            if (NuStrICmp(AIActionMyPosNamePc, params[index]) == 0 && object != NULL)
+                position = &object->collision_position;
+            else if ((value = NuStrIStr(params[index], (char *)AIActionTotalPrefixPc)) != NULL)
+                total = (i32)AIParamToFloat(processor, value + 6);
+            else if ((value = NuStrIStr(params[index], (char *)AIActionCountPrefixPc)) != NULL)
+                count = (i32)AIParamToFloat(processor, value + 6);
+            else if ((value = NuStrIStr(params[index], (char *)AITransferLiteral757c20)) != NULL) {
+                message = CheckGizAIMessage(gizaimessagesys, value + 11, NULL);
+                if (message != NULL)
+                    count = (i32)message->value;
+            } else if ((value = NuStrIStr(params[index], (char *)AIActionRedPrefixPc)) != NULL)
+                red = (u8)AIParamToFloat(processor, value + 4);
+            else if ((value = NuStrIStr(params[index], (char *)AIActionGreenPrefixPc)) != NULL)
+                green = (u8)AIParamToFloat(processor, value + 6);
+            else if ((value = NuStrIStr(params[index], (char *)AIActionBluePrefixPc)) != NULL)
+                blue = (u8)AIParamToFloat(processor, value + 5);
         }
+        if (count != 0 && count <= total)
+            AddGameMsgCount(position, count, total, red, green, blue, 0.75f);
     }
     return 1;
 }
