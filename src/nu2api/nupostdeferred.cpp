@@ -49,36 +49,40 @@ extern "C" void __cdecl PostShadowCopyVectorsPc(NUVEC4 *out, const NUVEC4 *in, i
     }
 }
 /* ECX=input, stack=output; EAX returns output. */
-extern "C" NUVEC *__cdecl PostShadowNormalizePc(const NUVEC *input, NUVEC *out) {
-    volatile f32 squared = input->y * input->y + input->x * input->x + input->z * input->z;
-    volatile f32 length = NuFsqrt(squared);
-    out->x = input->x / length;
-    out->y = input->y / length;
-    out->z = input->z / length;
+struct PC_POST_SHADOW_VECTOR : NUVEC {
+    NUVEC *Normalize(NUVEC *out) const;
+};
+
+NUVEC *PC_POST_SHADOW_VECTOR::Normalize(NUVEC *out) const {
+    f32 squared = y * y + x * x + z * z;
+    f32 length = NuFsqrt(squared);
+    out->x = x / length;
+    out->y = y / length;
+    out->z = z / length;
     return out;
 }
 extern "C" void __cdecl PostShadowBuildBasisPc(NUVEC *direction, NUVEC *up, NUMTX *basis, NUMTX *inverse) {
-    NUVEC cross, projected, normalized;
+    NUVEC a, b;
+    NUVEC *side, *forward, *upward;
     NuMtxSetIdentity(inverse);
-    inverse->m10 = -direction->x;
-    inverse->m11 = -direction->y;
-    inverse->m12 = -direction->z;
-    cross.x = inverse->m12 * up->y - inverse->m11 * up->z;
-    cross.y = up->z * inverse->m10 - inverse->m12 * up->x;
-    cross.z = inverse->m11 * up->x - inverse->m10 * up->y;
-    projected.x = inverse->m11 * cross.z - inverse->m12 * cross.y;
-    projected.y = inverse->m12 * cross.x - inverse->m10 * cross.z;
-    projected.z = inverse->m10 * cross.y - inverse->m11 * cross.x;
-    NUVEC *result = PostShadowNormalizePc(&projected, &normalized);
-    inverse->m20 = result->x;
-    inverse->m21 = result->y;
-    inverse->m22 = result->z;
-    cross.x = inverse->m11 * inverse->m22 - inverse->m21 * inverse->m12;
-    cross.y = inverse->m20 * inverse->m12 - inverse->m10 * inverse->m22;
-    cross.z = inverse->m10 * inverse->m21 - inverse->m20 * inverse->m11;
-    inverse->m00 = cross.x;
-    inverse->m01 = cross.y;
-    inverse->m02 = cross.z;
+    side = reinterpret_cast<NUVEC *>(&inverse->m00);
+    forward = reinterpret_cast<NUVEC *>(&inverse->m10);
+    upward = reinterpret_cast<NUVEC *>(&inverse->m20);
+    a.x = -direction->x;
+    a.y = -direction->y;
+    a.z = -direction->z;
+    *forward = a;
+    a.x = forward->z * up->y - forward->y * up->z;
+    a.y = up->z * forward->x - forward->z * up->x;
+    a.z = forward->y * up->x - forward->x * up->y;
+    b.x = forward->y * a.z - forward->z * a.y;
+    b.y = forward->z * a.x - forward->x * a.z;
+    b.z = forward->x * a.y - forward->y * a.x;
+    *upward = *static_cast<PC_POST_SHADOW_VECTOR *>(&b)->Normalize(&a);
+    a.x = forward->y * upward->z - upward->y * forward->z;
+    a.y = upward->x * forward->z - forward->x * upward->z;
+    a.z = forward->x * upward->y - upward->x * forward->y;
+    *side = a;
     NuMtxInv(basis, inverse);
 }
 /* Native EAX=count, ECX=vertices, stack offset/scale/four outputs. */

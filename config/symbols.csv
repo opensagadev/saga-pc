@@ -6018,7 +6018,7 @@ address,symbol,size,ctype
 0x005e7f40,?Init@OccluderSet@@QAEXIPATvariptr_u@@T2@@Z,585,"void __thiscall OccluderSet::Init(u32,VARIPTR*,VARIPTR)"
 0x5e8190,?PrepareForQueries@OccluderSet@@QAEXPBUnumtx_s@@0@Z,668,"void __thiscall (const NUMTX *, const NUMTX *)"
 0x005e8430,_NuOcclusionManagerBeginFrame,59,void __cdecl (void)
-0x5e8790,_PostShadowNormalizePc,89,normalized native ECX input stack output returns output
+0x5e8790,?Normalize@PC_POST_SHADOW_VECTOR@@QBEPAUnuvec_s@@PAU2@@Z,89,"NUVEC *__thiscall(NUVEC *)"
 0x5e8950,?SetupCustomCameraFrustumPc@PC_SPECIAL_SHADOW_LIGHT@@QAEXPAUnucamera_s@@PBMH@Z,649,thiscall camera splits count RET12
 0x5e8be0,?resetGeometry@NuDynamicLight@@QAEXXZ,122,void __thiscall NuDynamicLight::resetGeometry(void)
 0x5e8c60,_PostShadowBuildBasisPc,318,cdecl
