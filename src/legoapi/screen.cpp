@@ -374,7 +374,7 @@ extern "C" void __cdecl GrabStillScreen(void) {
     }
 }
 
-extern "C" void NeedScreenGrab(i32 needed) {
+extern "C" __declspec(noinline) void NeedScreenGrab(i32 needed) {
     ScreenGrabNeededPc = needed != 0;
 }
 
@@ -465,9 +465,6 @@ extern "C" void __cdecl HandleStillRender(void) {
 }
 
 extern "C" void __cdecl FinishStatusPacket(i32 choice) {
-    u32 flags;
-    i32 network;
-    LEVELDATA_PC *destination;
     if (LOSTTEMPLE_ADATA != NULL && StatusPacket.area_id == (i16)LOSTTEMPLE_ADATA->index) {
         if (StatusPacket.player0_model == (u16)VehicleBoltId7f17d0Pc)
             StatusPacket.player0_model = (u16)VehicleBoltId7f17d4Pc;
@@ -477,58 +474,43 @@ extern "C" void __cdecl FinishStatusPacket(i32 choice) {
     RememberPlayerIDs(1, (i16)StatusPacket.player0_model, (i16)StatusPacket.player1_model);
     if (StatusPacket.finish_callback(WORLD, &StatusPacket, choice) != 0)
         return;
-    destination = HUB_LDATA;
-    network = StartupGameFlag1;
-    flags = StatusPacket.flags_word;
-    NewLData = destination;
-    if (choice == 0) {
-        if ((flags & 0x100) != 0 ||
-            (network != 0 && (StatusPacket.challenge_state != 0 || StatusPacket.mission_state != 0))) {
-            FADETYPE fade = {FADE_TYPE_STILL_WIPE};
-            NewLData = Area_FindNextPlayLevel(ADataList[StatusPacket.area->index].levels[0]);
-            ResetBits = 0xffffffbfu;
-            reset_area = 1;
-            FadeSys.SetFade(fade, 0);
-            NeedScreenGrab(1);
-            GrabStillScreen();
-            if (StatusPacket.challenge_state != 0)
-                InitChallenge(StatusPacket.area->index);
-            if (StatusPacket.mission_state != 0) {
-                InitMission(MissionSys, (i8)MissionSys->active_mission->index);
-                NewLData = &LDataList[MissionSys->active_mission->level];
-            }
-            destination = NewLData;
-            flags = StatusPacket.flags_word;
-            goto destination_selected;
+    NewLData = HUB_LDATA;
+    if (choice == 0 &&
+        ((StatusPacket.flags_word & 0x100) != 0 ||
+         (StartupGameFlag1 != 0 && (StatusPacket.challenge_state != 0 || StatusPacket.mission_state != 0)))) {
+        NewLData = Area_FindNextPlayLevel(ADataList[StatusPacket.area->index].levels[0]);
+        ResetBits = 0xffffffbfu;
+        reset_area = 1;
+        FADETYPE fade = {FADE_TYPE_STILL_WIPE};
+        FadeSys.SetFade(fade, 0);
+        NeedScreenGrab(1);
+        GrabStillScreen();
+        if (StatusPacket.challenge_state != 0)
+            InitChallenge(StatusPacket.area->index);
+        if (StatusPacket.mission_state != 0) {
+            InitMission(MissionSys, (i8)MissionSys->active_mission->index);
+            NewLData = &LDataList[MissionSys->active_mission->level];
         }
-        if (StatusPacket.next_area != -1) {
-            AREA_DATA_PC *area = &ADataList[StatusPacket.next_area];
-            destination = &LDataList[area->levels[0]];
-            NewLData = destination;
-            if ((area->flags & 2) != 0)
-                LevelCompletionFallbackFlagPC = 1;
-            else {
-                loadareacharacters_no_backdrop_reset = 1;
-                if ((flags & 0x400) != 0)
-                    finishloop_backdroponly = 1;
-            }
-            goto destination_selected;
+    } else if (choice == 0 && StatusPacket.next_area != -1) {
+        AREA_DATA_PC *area = &ADataList[StatusPacket.next_area];
+        NewLData = &LDataList[area->levels[0]];
+        if ((area->flags & 2) != 0) {
+            LevelCompletionFallbackFlagPC = 1;
+        } else {
+            loadareacharacters_no_backdrop_reset = 1;
+            if ((StatusPacket.flags_word & 0x400) != 0)
+                finishloop_backdroponly = 1;
         }
+    } else if (StartupGameFlag1 != 0 && ((StatusPacket.flags_word & 0x400) != 0 ||
+                                         ((StatusPacket.area->flags & 4) != 0 && StatusPacket.free_play == 0))) {
+        NewLData = CREDITS_LDATA;
     }
-    if (network != 0 &&
-        ((flags & 0x400) != 0 || ((StatusPacket.area->flags & 4) != 0 && (StatusPacket.field_0xb0 & 0x40) == 0))) {
-        destination = CREDITS_LDATA;
-        NewLData = destination;
-    }
-destination_selected:
-    if ((flags & 0x800) != 0) {
-        destination = HUB_LDATA;
-        NewLData = destination;
-    }
-    if (destination->area_index != -1 && (ADataList[destination->area_index].flags & 0x40) != 0 &&
+    if ((StatusPacket.flags_word & 0x800) != 0)
+        NewLData = HUB_LDATA;
+    if (NewLData->area_index != -1 && (ADataList[NewLData->area_index].flags & 0x40) != 0 &&
         StatusPacket.mission_state != 0 && MissionSys->active_mission != NULL)
         hub_from_mission = (i8)MissionSys->active_mission->index;
-    if (destination == HUB_LDATA) {
+    if (NewLData == HUB_LDATA) {
         OldBonusScore[0] = 0;
         OldBonusScore[1] = 0;
     } else {
@@ -678,99 +660,79 @@ void __cdecl DrawStatusMiniKit(f32 x, f32 y, f32 z, f32 scale, f32 collected_sca
     STATUS_WORLD_MINIKIT_READER_PC *view = (STATUS_WORLD_MINIKIT_READER_PC *)WORLD;
     if (view->minikit.scene == NULL || view->minikit.pieces == NULL)
         return;
-    volatile f32 base_scale = scale;
-    volatile f32 previous_scale = collected_scale;
-    NUVEC base = {base_scale, base_scale, base_scale};
-    NUVEC collected = {previous_scale, previous_scale, previous_scale};
-    volatile NUVEC offset = v000;
-    i32 direction = (i8)view->minikit.pieces[StatusCurrentMinikitPc].direction;
-    if ((u32)direction <= 5u) {
-        volatile i32 angle = (i32)((f64)phase * 32768.0);
-        switch (direction) {
-            case 0:
-                offset.x =
-                    (f64)NuTrigTable[(angle >> 1) & 0x7fff] * (f64)StatusMiniKitDirectionOffsetPc + (f64)offset.x;
-                break;
-            case 1:
-                offset.x =
-                    (f64)offset.x - (f64)NuTrigTable[(angle >> 1) & 0x7fff] * (f64)StatusMiniKitDirectionOffsetPc;
-                break;
-            case 2:
-                offset.y =
-                    (f64)NuTrigTable[(angle >> 1) & 0x7fff] * (f64)StatusMiniKitDirectionOffsetPc + (f64)offset.y;
-                break;
-            case 3:
-                offset.y =
-                    (f64)offset.y - (f64)NuTrigTable[(angle >> 1) & 0x7fff] * (f64)StatusMiniKitDirectionOffsetPc;
-                break;
-            case 4:
-                offset.z =
-                    (f64)offset.z - (f64)NuTrigTable[(angle >> 1) & 0x7fff] * (f64)StatusMiniKitDirectionOffsetPc;
-                break;
-            case 5:
-                offset.z =
-                    (f64)NuTrigTable[(angle >> 1) & 0x7fff] * (f64)StatusMiniKitDirectionOffsetPc + (f64)offset.z;
-                break;
-        }
+    NUVEC offset = v000;
+    NUVEC done;
+    done.x = done.y = done.z = scale;
+    NUVEC growing;
+    growing.x = growing.y = growing.z = collected_scale;
+    switch ((i8)view->minikit.pieces[StatusCurrentMinikitPc].direction) {
+        case 0:
+            offset.x += NuTrigTable[((i32)(phase * 32768.0) >> 1) & 0x7fff] * StatusMiniKitDirectionOffsetPc;
+            break;
+        case 1:
+            offset.x -= NuTrigTable[((i32)(phase * 32768.0) >> 1) & 0x7fff] * StatusMiniKitDirectionOffsetPc;
+            break;
+        case 2:
+            offset.y += NuTrigTable[((i32)(phase * 32768.0) >> 1) & 0x7fff] * StatusMiniKitDirectionOffsetPc;
+            break;
+        case 3:
+            offset.y -= NuTrigTable[((i32)(phase * 32768.0) >> 1) & 0x7fff] * StatusMiniKitDirectionOffsetPc;
+            break;
+        case 4:
+            offset.z -= NuTrigTable[((i32)(phase * 32768.0) >> 1) & 0x7fff] * StatusMiniKitDirectionOffsetPc;
+            break;
+        case 5:
+            offset.z += NuTrigTable[((i32)(phase * 32768.0) >> 1) & 0x7fff] * StatusMiniKitDirectionOffsetPc;
+            break;
     }
-    for (i32 index = 0; index < (i32)packet->minikit_max; ++index) {
+    for (i32 index = 0; index < packet->minikit_max; index++) {
         view = (STATUS_WORLD_MINIKIT_READER_PC *)WORLD;
-        if (index >= (i32)view->minikit.piece_count || index >= max_pieces)
+        if (index >= view->minikit.piece_count || index >= max_pieces)
             break;
         NUMTX matrix = view->minikit.pieces[index].matrix;
         if (index >= StatusCurrentMinikitPc) {
-            NuMtxScale(&matrix, &base);
-            volatile f32 progress = index == StatusCurrentMinikitPc ? StatusMiniKitProgressPc : 1.0f;
-            volatile i32 angle = (i32)(((f64)progress * 16384.0 + 49152.0) + 16384.0);
-            volatile f32 reveal = NuTrigTable[(angle >> 1) & 0x7fff];
-            view = (STATUS_WORLD_MINIKIT_READER_PC *)WORLD;
-            MINIKIT_PIECE_PC *piece = &view->minikit.pieces[index];
+            NuMtxScale(&matrix, &growing);
+            f32 reveal = index == StatusCurrentMinikitPc ? StatusMiniKitProgressPc : 1.0f;
+            reveal = NuTrigTable[((i32)(reveal * 16384.0 + 49152.0 + 16384.0) >> 1) & 0x7fff];
+            MINIKIT_PIECE_PC *piece = &((STATUS_WORLD_MINIKIT_READER_PC *)WORLD)->minikit.pieces[index];
             switch ((i8)piece->direction) {
                 case 0:
-                    matrix.m30 =
-                        (f64)matrix.m30 - ((f64)(i32)piece->direction_index * (f64)0.025f + 0.25) * (f64)reveal;
+                    matrix.m30 -= (piece->direction_index * 0.025f + 0.25) * reveal;
                     break;
                 case 1:
-                    matrix.m30 =
-                        ((f64)(i32)piece->direction_index * (f64)0.025f + 0.25) * (f64)reveal + (f64)matrix.m30;
+                    matrix.m30 += (piece->direction_index * 0.025f + 0.25) * reveal;
                     break;
                 case 2:
-                    matrix.m31 =
-                        (f64)matrix.m31 - ((f64)(i32)piece->direction_index * (f64)0.025f + 0.25) * (f64)reveal;
+                    matrix.m31 -= (piece->direction_index * 0.025f + 0.25) * reveal;
                     break;
                 case 3:
-                    matrix.m31 =
-                        ((f64)(i32)piece->direction_index * (f64)0.025f + 0.25) * (f64)reveal + (f64)matrix.m31;
+                    matrix.m31 += (piece->direction_index * 0.025f + 0.25) * reveal;
                     break;
                 case 4:
-                    matrix.m32 =
-                        ((f64)(i32)piece->direction_index * (f64)0.025f + 0.25) * (f64)reveal + (f64)matrix.m32;
+                    matrix.m32 += (piece->direction_index * 0.025f + 0.25) * reveal;
                     break;
                 case 5:
-                    matrix.m32 =
-                        (f64)matrix.m32 - ((f64)(i32)piece->direction_index * (f64)0.025f + 0.25) * (f64)reveal;
+                    matrix.m32 -= (piece->direction_index * 0.025f + 0.25) * reveal;
                     break;
             }
         } else {
-            NuMtxScale(&matrix, &collected);
+            NuMtxScale(&matrix, &done);
         }
         if (index <= StatusCurrentMinikitPc) {
-            matrix.m30 = (f64)matrix.m30 + (f64)offset.x;
-            matrix.m31 = (f64)matrix.m31 + (f64)offset.y;
-            matrix.m32 = (f64)matrix.m32 + (f64)offset.z;
+            matrix.m30 += offset.x;
+            matrix.m31 += offset.y;
+            matrix.m32 += offset.z;
         }
-        volatile u16 rotation_y = (u16)((f64)NuFmod(GameTimer.time_elapsed, 2.0f) * 0.5 * 65536.0);
-        StatusMiniKitRotateYPc(&matrix, (i32)rotation_y);
-        volatile u16 phase_z = (u16)((f64)NuFmod(GameTimer.time_elapsed, 2.24f) / (f64)2.24f * 65536.0);
-        volatile u16 rotation_z = (u16)((f64)NuTrigTable[phase_z >> 1] * 2730.0);
-        StatusMiniKitRotateZPc(&matrix, (i32)rotation_z);
-        volatile u16 phase_x = (u16)((f64)NuFmod(GameTimer.time_elapsed, 1.87f) / (f64)1.87f * 65536.0);
-        volatile u16 rotation_x = (u16)((f64)NuTrigTable[phase_x >> 1] * 2730.0 - 5461.0);
-        StatusMiniKitRotateXPc(&matrix, (i32)rotation_x);
+        StatusMiniKitRotateYPc(&matrix, (u16)(NuFmod(GameTimer.time_elapsed, 2.0f) * 0.5 * 65536.0));
+        StatusMiniKitRotateZPc(
+            &matrix, (u16)(NuTrigTable[(u16)(NuFmod(GameTimer.time_elapsed, 2.24f) / 2.24f * 65536.0) >> 1] * 2730.0));
+        StatusMiniKitRotateXPc(
+            &matrix,
+            (u16)(NuTrigTable[(u16)(NuFmod(GameTimer.time_elapsed, 1.87f) / 1.87f * 65536.0) >> 1] * 2730.0 - 5461.0));
         WORLDINFO *world = WORLD;
-        matrix.m30 = (f64)PANEL3DMULX * (f64)x + (f64)matrix.m30;
-        matrix.m31 = (f64)PANEL3DMULY * (f64)y + (f64)matrix.m31;
-        matrix.m32 = (f64)matrix.m32 + (f64)z;
+        matrix.m30 += PANEL3DMULX * x;
+        matrix.m31 += PANEL3DMULY * y;
+        matrix.m32 += z;
         if (index < 10) {
             StatusMiniKitDrawCachePc[index].matrix = matrix;
             StatusMiniKitDrawCachePc[index].piece = &((STATUS_WORLD_MINIKIT_READER_PC *)world)->minikit.pieces[index];
@@ -1582,110 +1544,113 @@ void __cdecl MiniKit_LSW_Update(STATUS_STAGE_s *stage, STATUSPACKET_s *packet, f
     }
 }
 
+static __forceinline f32 StatusLerpPc(f32 to, f32 from, f32 blend) {
+    f32 result = (to - from) * blend + from;
+    return result;
+}
+
 void __cdecl MiniKit_LSW_Draw(STATUS_STAGE_s *stage, STATUSPACKET_s *packet, i32 current) {
+    f32 title_alpha = 1.0f;
+    f32 blend;
     if (current != 0) {
-        volatile f32 title_alpha = 1.0f;
         switch (stage->field_0x14) {
             case 0:
                 title_alpha = 0.0f;
                 break;
             case 1: {
                 title_alpha = stage->field_0x18;
-                volatile f32 angle_time;
-                if (stage->field_0x18 < 1.0f) {
-                    angle_time = stage->field_0x18;
-                } else {
-                    volatile i32 unused_duration_compare = stage->field_0x1c < stage->field_0x18;
-                    (void)unused_duration_compare;
-                    angle_time = 1.0f;
-                }
-                volatile i32 angle = (i32)((f64)angle_time * 32768.0 + 16384.0);
-                volatile f32 blend = 1.0 - ((f64)NuTrigTable[(angle >> 1) & 0x7fff] + 1.0) * 0.5;
+                if (stage->field_0x18 < 1.0f)
+                    blend = stage->field_0x18;
+                else
+                    blend = stage->field_0x18 < stage->field_0x1c ? 1.0f : 1.0f;
+                blend = 1.0 - (NuTrigTable[((i32)(blend * 32768.0 + 16384.0) >> 1) & 0x7fff] + 1.0f) * 0.5;
                 if (stage->field_0x18 <= stage->field_0x1c) {
-                    volatile f32 y = ((f64)StatusMiniKitYPc - StatusMiniKitEntranceHeightPc) * (f64)blend +
-                                     StatusMiniKitEntranceHeightPc;
-                    DrawStatusMiniKit(StatusMiniKitXPc, y, StatusAllMiniKitsZPc, StatusMiniKitScalePc, 0.0f,
-                                      StatusCurrentMinikitPc, packet, 0.0f);
+                    DrawStatusMiniKit(
+                        StatusMiniKitXPc, StatusLerpPc(StatusMiniKitYPc, StatusMiniKitEntranceHeightPc, blend),
+                        StatusAllMiniKitsZPc, StatusMiniKitScalePc, 0.0f, StatusCurrentMinikitPc, packet, 0.0f);
                 } else {
                     DrawStatusMiniKit(StatusMiniKitXPc, StatusMiniKitYPc, StatusAllMiniKitsZPc, StatusMiniKitScalePc,
                                       0.0f, StatusCurrentMinikitPc, packet, 0.0f);
                 }
-                i32 count = packet->new_minikits > 0 ? StatusCurrentMinikitPc
-                                                     : Game.area_save[packet->area->index].minikit_count;
+                i32 count = packet->new_minikits <= 0 ? Game.area_save[packet->area->index].minikit_count
+                                                      : StatusCurrentMinikitPc;
                 if (count < 0)
                     count = 0;
                 DrawMiniKitCount(blend, 1.0f, count, packet->minikit_max);
                 break;
             }
             case 2: {
-                volatile f32 collected_scale;
-                if (stage->field_0x18 < (f64)stage->field_0x1c - 0.25) {
-                    volatile f32 duration = (f64)stage->field_0x1c - 0.25;
-                    volatile i32 angle =
-                        (i32)(((f64)StatusCoinsRatioPc(stage->field_0x18, duration) * 16384.0 + 49152.0) + 16384.0);
-                    collected_scale = (f64)NuTrigTable[(angle >> 1) & 0x7fff] * StatusMiniKitScalePc;
+                if (stage->field_0x18 < stage->field_0x1c - 0.25) {
+                    f32 duration = stage->field_0x1c - 0.25;
+                    blend = NuTrigTable[((i32)(StatusCoinsRatioPc(stage->field_0x18, duration) * 16384.0 + 49152.0 +
+                                               16384.0) >>
+                                         1) &
+                                        0x7fff] *
+                            StatusMiniKitScalePc;
                 } else {
-                    collected_scale = StatusMiniKitScalePc;
+                    blend = StatusMiniKitScalePc;
                 }
-                DrawStatusMiniKit(StatusMiniKitXPc, StatusMiniKitYPc, StatusAllMiniKitsZPc, StatusMiniKitScalePc,
-                                  collected_scale, (i32)((u32)StatusCurrentMinikitPc + 1u), packet, 0.0f);
-                i32 count = packet->new_minikits > 0 ? StatusCurrentMinikitPc
-                                                     : Game.area_save[packet->area->index].minikit_count;
+                DrawStatusMiniKit(StatusMiniKitXPc, StatusMiniKitYPc, StatusAllMiniKitsZPc, StatusMiniKitScalePc, blend,
+                                  StatusCurrentMinikitPc + 1, packet, 0.0f);
+                i32 count = packet->new_minikits <= 0 ? Game.area_save[packet->area->index].minikit_count
+                                                      : StatusCurrentMinikitPc;
                 if (count < 0)
                     count = 0;
                 DrawMiniKitCount(1.0f, 1.0f, count, packet->minikit_max);
                 break;
             }
             case 3: {
-                volatile f32 blend = 0.0f;
-                if ((f64)stage->field_0x1c - StatusMiniKitJibberLengthPc < stage->field_0x18)
-                    blend = ((f64)stage->field_0x18 - ((f64)stage->field_0x1c - StatusMiniKitJibberLengthPc)) /
+                if (stage->field_0x18 > stage->field_0x1c - StatusMiniKitJibberLengthPc)
+                    blend = (stage->field_0x18 - (stage->field_0x1c - StatusMiniKitJibberLengthPc)) /
                             StatusMiniKitJibberLengthPc;
+                else
+                    blend = 0.0f;
                 DrawStatusMiniKit(StatusMiniKitXPc, StatusMiniKitYPc, StatusAllMiniKitsZPc, StatusMiniKitScalePc,
-                                  StatusMiniKitScalePc, (i32)((u32)StatusCurrentMinikitPc + 1u), packet, blend);
-                i32 count = packet->new_minikits > 0 ? StatusCurrentMinikitPc
-                                                     : Game.area_save[packet->area->index].minikit_count;
+                                  StatusMiniKitScalePc, StatusCurrentMinikitPc + 1, packet, blend);
+                i32 count = packet->new_minikits <= 0 ? Game.area_save[packet->area->index].minikit_count
+                                                      : StatusCurrentMinikitPc;
                 if (blend >= 0.5f)
-                    count = (i32)((u32)count + 1u);
+                    count++;
                 if (count < 0)
                     count = 0;
-                volatile i32 angle = (i32)((f64)blend * 32768.0 + 16384.0);
-                union {
-                    f32 value;
-                    u32 bits;
-                } pulse;
-                pulse.value = NuTrigTable[(angle >> 1) & 0x7fff];
-                pulse.bits &= 0x7fffffffu;
-                volatile f32 inverse = 1.0 - (f64)pulse.value;
-                volatile f32 size = (f64)inverse * 0.25 + 1.0;
+                f32 pulse = StatusFabsPc(NuTrigTable[((i32)(blend * 32768.0 + 16384.0) >> 1) & 0x7fff]);
+                f32 inverse = 1.0f - pulse;
+                f32 size = inverse * 0.25 + 1.0f;
                 DrawMiniKitCount(1.0f, size, count, packet->minikit_max);
                 break;
             }
             case 4: {
-                title_alpha = 1.0 - (f64)stage->field_0x18;
-                volatile i32 angle =
-                    (i32)((f64)StatusCoinsRatioPc(stage->field_0x18, stage->field_0x1c) * 32768.0 + 16384.0);
-                volatile f32 blend = 1.0 - ((f64)NuTrigTable[(angle >> 1) & 0x7fff] + 1.0) * 0.5;
-                volatile f32 scale =
-                    ((f64)StatusAllMiniKitsScalePc - StatusMiniKitScalePc) * (f64)blend + StatusMiniKitScalePc;
-                volatile f32 y = ((f64)StatusAllMiniKitsYPc - StatusMiniKitYPc) * (f64)blend + StatusMiniKitYPc;
-                volatile f32 x = ((f64)StatusAllMiniKitsXPc - StatusMiniKitXPc) * (f64)blend + StatusMiniKitXPc;
-                DrawStatusMiniKit(x, y, StatusAllMiniKitsZPc, scale, 1.0f,
+                title_alpha = 1.0f - stage->field_0x18;
+                blend =
+                    1.0 -
+                    (NuTrigTable[((i32)(StatusCoinsRatioPc(stage->field_0x18, stage->field_0x1c) * 32768.0 + 16384.0) >>
+                                  1) &
+                                 0x7fff] +
+                     1.0f) *
+                        0.5;
+                DrawStatusMiniKit(StatusLerpPc(StatusAllMiniKitsXPc, StatusMiniKitXPc, blend),
+                                  StatusLerpPc(StatusAllMiniKitsYPc, StatusMiniKitYPc, blend), StatusAllMiniKitsZPc,
+                                  StatusLerpPc(StatusAllMiniKitsScalePc, StatusMiniKitScalePc, blend), 1.0f,
                                   Game.area_save[packet->area->index].minikit_count, packet, 0.0f);
-                volatile f32 off = stage->field_0x18 < 1.0f ? 1.0 - (f64)stage->field_0x18 : 0.0;
-                volatile i32 count_angle = (i32)((f64)off * 32768.0 + 16384.0);
-                volatile f32 count_blend = 1.0 - ((f64)NuTrigTable[(count_angle >> 1) & 0x7fff] + 1.0) * 0.5;
+                if (stage->field_0x18 < 1.0f)
+                    blend = 1.0f - stage->field_0x18;
+                else
+                    blend = 0.0f;
+                f32 count_blend = 1.0 - (NuTrigTable[((i32)(blend * 32768.0 + 16384.0) >> 1) & 0x7fff] + 1.0f) * 0.5;
                 DrawMiniKitCount(count_blend, 1.0f, Game.area_save[packet->area->index].minikit_count,
                                  packet->minikit_max);
                 break;
             }
             case 6: {
-                title_alpha = 1.0 - (f64)stage->field_0x18;
-                volatile f32 off = stage->field_0x18 < 1.0f ? 1.0 - (f64)stage->field_0x18 : 0.0;
+                title_alpha = 1.0f - stage->field_0x18;
+                if (stage->field_0x18 < 1.0f)
+                    blend = 1.0f - stage->field_0x18;
+                else
+                    blend = 0.0f;
                 if (stage->field_0x18 < stage->field_0x1c) {
-                    volatile i32 angle = (i32)((f64)off * 32768.0 + 16384.0);
-                    volatile f32 blend = 1.0 - ((f64)NuTrigTable[(angle >> 1) & 0x7fff] + 1.0) * 0.5;
-                    DrawMiniKitCount(blend, 1.0f, Game.area_save[packet->area->index].minikit_count,
+                    f32 count_blend =
+                        1.0 - (NuTrigTable[((i32)(blend * 32768.0 + 16384.0) >> 1) & 0x7fff] + 1.0f) * 0.5;
+                    DrawMiniKitCount(count_blend, 1.0f, Game.area_save[packet->area->index].minikit_count,
                                      packet->minikit_max);
                     DrawStatusMiniKit(StatusMiniKitXPc, StatusMiniKitYPc, StatusAllMiniKitsZPc, StatusMiniKitScalePc,
                                       1.0f, Game.area_save[packet->area->index].minikit_count, packet, 0.0f);
@@ -1697,50 +1662,43 @@ void __cdecl MiniKit_LSW_Draw(STATUS_STAGE_s *stage, STATUSPACKET_s *packet, i32
             title_alpha = 0.0f;
         else if (title_alpha > 1.0f)
             title_alpha = 1.0f;
-        volatile u8 opacity = (u8)((f64)title_alpha * 128.0);
         Text3DEx(TTab[TextIdPc8808d0], 0.0f, StatusCoinsTitleYPc, 1.0f, StatusCoinsTitleScalePc,
-                 StatusCoinsTitleScalePc, StatusCoinsTitleScalePc, 0, 255, 255, 255, opacity);
+                 StatusCoinsTitleScalePc, StatusCoinsTitleScalePc, 0, 255, 255, 255, (u8)(title_alpha * 128.0));
         return;
     }
     if (stage->field_0x12 == 0)
         return;
-    volatile f32 alpha = getFinishedStatusAlpha(packet);
-    volatile i32 reveal_angle = (i32)((f64)alpha * 16384.0);
-    volatile f32 reveal = NuTrigTable[(reveal_angle >> 1) & 0x7fff];
-    volatile i32 opacity = (i32)((f64)alpha * 128.0);
-    volatile f32 timer = GameTimer.time_elapsed_mod_seconds;
-    if (timer > 0.25f)
-        timer = 0.0f;
-    volatile i32 pulse_angle = (i32)((f64)timer * 32768.0 + 16384.0);
-    union {
-        f32 value;
-        u32 bits;
-    } pulse;
-    pulse.value = NuTrigTable[(pulse_angle >> 1) & 0x7fff];
-    pulse.bits &= 0x7fffffffu;
-    volatile f32 inverse = 1.0 - (f64)pulse.value;
-    volatile f32 pulse_scale = 1.0 + (f64)inverse;
-    if (Game.area_save[packet->area->index].minikit_count != 0) {
-        if (alpha > 0.0f) {
-            volatile f32 scale = (f64)StatusAllMiniKitsScalePc * (f64)reveal;
-            DrawStatusMiniKit(StatusAllMiniKitsXPc, StatusAllMiniKitsYPc, StatusAllMiniKitsZPc, scale, 1.0f,
+    f32 alpha = getFinishedStatusAlpha(packet);
+    f32 reveal = NuTrigTable[((i32)(alpha * 16384.0) >> 1) & 0x7fff];
+    i32 opacity = (i32)(alpha * 128.0);
+    title_alpha = GameTimer.time_elapsed_mod_seconds;
+    if (title_alpha > 0.25f)
+        title_alpha = 0.0f;
+    f32 pulse = StatusFabsPc(NuTrigTable[((i32)(title_alpha * 32768.0 + 16384.0) >> 1) & 0x7fff]);
+    f32 inverse_pulse = 1.0f - pulse;
+    title_alpha = 1.0f + inverse_pulse;
+    if (Game.area_save[packet->area->index].minikit_count > 0) {
+        if (alpha > 0.0f)
+            DrawStatusMiniKit(StatusAllMiniKitsXPc, StatusAllMiniKitsYPc, StatusAllMiniKitsZPc,
+                              StatusAllMiniKitsScalePc * reveal, 1.0f,
                               Game.area_save[packet->area->index].minikit_count, packet, 0.0f);
-        }
     } else {
-        volatile f32 size = (f64)StatusAllMiniKitsQuestionScalePc * (f64)pulse_scale;
-        volatile f32 y = (f64)StatusAllMiniKitsQuestionYOffsetPc + StatusAllMiniKitsYPc;
-        Text3DEx("?", StatusAllMiniKitsXPc, y, StatusAllMiniKitsZPc, size, size, size, 0, 255, 255, 255, opacity);
+        f32 size = StatusAllMiniKitsQuestionScalePc * title_alpha;
+        Text3DEx("?", StatusAllMiniKitsXPc, StatusAllMiniKitsQuestionYOffsetPc + StatusAllMiniKitsYPc,
+                 StatusAllMiniKitsZPc, size, size, size, 0, 255, 255, 255, opacity);
     }
-    if (Game.area_save[packet->area->index].minikit_count == packet->minikit_max) {
-        volatile f32 y = (f64)StatusAllMiniKitsCompleteYOffsetPc + StatusAllMiniKitsYPc;
-        Text3DEx("$", StatusAllMiniKitsXPc, y, 1.0f, StatusAllMiniKitsCompleteScalePc, StatusAllMiniKitsCompleteScalePc,
-                 StatusAllMiniKitsCompleteScalePc, 0, 255, 0, 127, opacity);
+    u8 collected = Game.area_save[packet->area->index].minikit_count;
+    u8 total = packet->minikit_max;
+    if (collected == total) {
+        Text3DEx("$", StatusAllMiniKitsXPc, StatusAllMiniKitsCompleteYOffsetPc + StatusAllMiniKitsYPc, 1.0f,
+                 StatusAllMiniKitsCompleteScalePc, StatusAllMiniKitsCompleteScalePc, StatusAllMiniKitsCompleteScalePc,
+                 0, 255, 0, 127, opacity);
     } else {
-        char text[60];
-        sprintf(text, "%i/%i", Game.area_save[packet->area->index].minikit_count, packet->minikit_max);
-        volatile f32 y = (f64)StatusAllMiniKitsCountYOffsetPc + StatusAllMiniKitsYPc;
-        Text3DEx(text, StatusAllMiniKitsXPc, y, 1.0f, StatusAllMiniKitsCountScalePc, StatusAllMiniKitsCountScalePc,
-                 StatusAllMiniKitsCountScalePc, 0, 255, 0, 127, opacity);
+        char text[64];
+        sprintf(text, "%i/%i", collected, total);
+        Text3DEx(text, StatusAllMiniKitsXPc, StatusAllMiniKitsCountYOffsetPc + StatusAllMiniKitsYPc, 1.0f,
+                 StatusAllMiniKitsCountScalePc, StatusAllMiniKitsCountScalePc, StatusAllMiniKitsCountScalePc, 0, 255, 0,
+                 127, opacity);
     }
 }
 
