@@ -8253,18 +8253,22 @@ void __cdecl LedgeTerrain_MoveCode(GAMEOBJECT *object) {
     if (LEGOCONTEXT_LEDGETERRAIN == -1)
         return;
     if (object->character_context == LEGOCONTEXT_LEDGETERRAIN) {
-        f32 travelled = 0.0f;
+        f32 travelled;
         u16 input, sideways;
         f32 push, speed;
+        i16 action;
+        NUVEC offset;
+        union {
+            f32 value;
+            u32 bits;
+        } magnitude;
         if ((object->pad->buttons_pressed & GAMEPAD_JUMP) != 0) {
             f32 height;
             StartJump(object, 0);
             object->flags_e24 |= 0x1000;
-            height = (f64)0.1f + object->external_force.y - object->jump_start_height;
-            if (height > 0.0f) {
-                f32 square = -2.0 * object->character_data->game_character->gravity * height;
-                object->velocity.y = NuFsqrt(square);
-            }
+            height = object->external_force.y + (f64)0.1f - object->jump_start_height;
+            if (height > 0.0f)
+                object->velocity.y = NuFsqrt(object->character_data->game_character->gravity * -2.0 * height);
             return;
         }
         if ((object->field_281 & 2) != 0) {
@@ -8273,29 +8277,28 @@ void __cdecl LedgeTerrain_MoveCode(GAMEOBJECT *object) {
         }
         if (object->field_7b3 != 0 || object->field_7aa != LEGOACT_LEDGE_GRAB ||
             AnimPlaying(&object->anim_packet, object->field_7aa, 1, 0) != NULL)
-            object->context_timer += FRAMETIME;
-        if (object->field_7b3 == 0 && object->context_timer >= object->context_hover_target_y)
+            object->context_timer = FRAMETIME + object->context_timer;
+        if (object->field_7b3 == 0 && !(object->context_hover_target_y > object->context_timer))
             object->field_7b3 = 1;
         if (LedgeTerrain_AttachPc(object, object->movement_facing_angle, &position, &wall_angle) != 0) {
             f32 x = object->external_force.x;
             f32 z = object->external_force.z;
-            f32 square;
             object->movement_facing_angle = wall_angle + 0x8000;
             object->launch_origin = position;
             object->external_force.x = object->position.x;
             object->external_force.y = position.y;
             object->external_force.z = object->position.z;
             object->context_duration = 0.25f;
-            x = object->position.x - x;
-            z = object->position.z - z;
-            square = x * x + z * z;
-            travelled = NuFsqrt(square);
+            x = object->external_force.x - x;
+            z = object->external_force.z - z;
+            travelled = NuFsqrt(x * x + z * z);
         } else {
             object->context_duration -= FRAMETIME;
             if (object->context_duration <= 0.0f) {
                 object->character_context = -1;
                 return;
             }
+            travelled = 0.0f;
         }
         if (object->field_7b3 == 0)
             return;
@@ -8307,24 +8310,28 @@ void __cdecl LedgeTerrain_MoveCode(GAMEOBJECT *object) {
         sideways = object->movement_facing_angle + 0x4000;
         push = PushingTowardsAngle(input, sideways);
         if (push > NuTrigTable[0x3555]) {
-            if (LEGOACT_LEDGE_RIGHT != -1 && object->character_model->model_data_b[LEGOACT_LEDGE_RIGHT] != NULL) {
-                object->field_7aa = LEGOACT_LEDGE_RIGHT;
-                speed = (f32)fabs(AnimSpeed(object->character_model, LEGOACT_LEDGE_RIGHT));
+            action = LEGOACT_LEDGE_RIGHT;
+            if (action != -1 && object->character_model->model_data_b[action] != NULL) {
+                object->field_7aa = action;
+                magnitude.value = AnimSpeed(object->character_model, action);
+                magnitude.bits &= 0x7fffffff;
+                speed = magnitude.value;
             } else {
                 if (LedgeTerrain_CheckAnims != 0)
                     return;
                 speed = 0.5f;
-                goto move;
             }
         } else if (push < -NuTrigTable[0x3555]) {
-            if (LEGOACT_LEDGE_LEFT != -1 && object->character_model->model_data_b[LEGOACT_LEDGE_LEFT] != NULL) {
-                object->field_7aa = LEGOACT_LEDGE_LEFT;
-                speed = -(f32)fabs(AnimSpeed(object->character_model, LEGOACT_LEDGE_LEFT));
+            action = LEGOACT_LEDGE_LEFT;
+            if (action != -1 && object->character_model->model_data_b[action] != NULL) {
+                object->field_7aa = action;
+                magnitude.value = AnimSpeed(object->character_model, action);
+                magnitude.bits &= 0x7fffffff;
+                speed = -magnitude.value;
             } else {
                 if (LedgeTerrain_CheckAnims != 0)
                     return;
                 speed = -0.5f;
-                goto move;
             }
         } else {
             object->field_7aa = LEGOACT_LEDGE_IDLE;
@@ -8334,18 +8341,13 @@ void __cdecl LedgeTerrain_MoveCode(GAMEOBJECT *object) {
             return;
         if (LedgeTerrain_CheckAnims != 0 && AnimPlaying(&object->anim_packet, object->field_7aa, 1, 0) == NULL)
             return;
-    move: {
-        f64 distance;
-        NUVEC offset;
         if (speed < 0.0f)
             travelled = -travelled;
-        distance = speed * (f64)FRAMETIME + travelled;
-        offset.x = NuTrigTable[sideways >> 1] * distance;
+        offset.x = NuTrigTable[sideways >> 1] * (FRAMETIME * speed + travelled);
         offset.y = 0.0f;
-        offset.z = NuTrigTable[((sideways + 0x4000) >> 1) & 0x7fff] * distance;
+        offset.z = NuTrigTable[((sideways + 0x4000) >> 1) & 0x7fff] * (FRAMETIME * speed + travelled);
         NuVecAdd(&object->external_force, &object->external_force, &offset);
         NuVecAdd(&object->launch_origin, &object->launch_origin, &offset);
-    }
         return;
     }
     if (object->field_281 != 0 || !(object->velocity.y <= 0.0f))
