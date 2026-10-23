@@ -453,6 +453,54 @@ struct TerrainScanWriter {
         }                                                                                                              \
     } while (0)
 
+#define TERRAIN_SCAN_BOUNDS_PC(query_arg)                                                                              \
+    if ((query_arg)->scan_result != 1) {                                                                               \
+        f32 length_sq = (query_arg)->movement.x * (query_arg)->movement.x +                                            \
+                        (query_arg)->movement.y * (query_arg)->movement.y +                                            \
+                        (query_arg)->movement.z * (query_arg)->movement.z;                                             \
+        scan_radius = NuFsqrt(length_sq);                                                                              \
+        (query_arg) = TERRAIN_QUERY_PC;                                                                                \
+        scan_radius = (query_arg)->collision_radius + TerrainScanMargin10Pc + scan_radius;                             \
+        max_x = (query_arg)->position.x + NuTimeBarTop + scan_radius;                                                  \
+        max_y = (query_arg)->position.y + NuTimeBarTop + (query_arg)->object_scale * scan_radius;                      \
+        max_z = (query_arg)->position.z + NuTimeBarTop + scan_radius;                                                  \
+        min_x = (query_arg)->position.x - NuTimeBarTop - scan_radius;                                                  \
+        min_y = (query_arg)->position.y - NuTimeBarTop - (query_arg)->object_scale * scan_radius;                      \
+        min_z = (query_arg)->position.z - NuTimeBarTop - scan_radius;                                                  \
+    } else {                                                                                                           \
+        if ((query_arg)->movement.x > 0.0f) {                                                                          \
+            min_x = (query_arg)->position.x - TerrainScanMargin02Pc - (query_arg)->collision_radius;                   \
+            max_x = (query_arg)->position.x + (query_arg)->movement.x;                                                 \
+        } else {                                                                                                       \
+            min_x = (query_arg)->position.x + (query_arg)->movement.x - TerrainScanMargin02Pc -                        \
+                    (query_arg)->collision_radius;                                                                     \
+            max_x = (query_arg)->position.x;                                                                           \
+        }                                                                                                              \
+        max_x = max_x + TerrainScanMargin02Pc + (query_arg)->collision_radius;                                         \
+        if ((query_arg)->movement.y > 0.0f) {                                                                          \
+            min_y = (query_arg)->position.y - TerrainScanMargin02Pc - (query_arg)->collision_radius;                   \
+            max_y = (query_arg)->movement.y + (query_arg)->position.y;                                                 \
+        } else {                                                                                                       \
+            min_y = (query_arg)->movement.y + (query_arg)->position.y - TerrainScanMargin02Pc -                        \
+                    (query_arg)->collision_radius;                                                                     \
+            max_y = (query_arg)->position.y;                                                                           \
+        }                                                                                                              \
+        max_y = max_y + TerrainScanMargin02Pc + (query_arg)->collision_radius;                                         \
+        if ((query_arg)->movement.z > 0.0f) {                                                                          \
+            min_z = (query_arg)->position.z - TerrainScanMargin02Pc - (query_arg)->collision_radius;                   \
+            max_z = (query_arg)->movement.z + (query_arg)->position.z;                                                 \
+        } else {                                                                                                       \
+            min_z = (query_arg)->movement.z + (query_arg)->position.z - TerrainScanMargin02Pc -                        \
+                    (query_arg)->collision_radius;                                                                     \
+            max_z = (query_arg)->position.z;                                                                           \
+        }                                                                                                              \
+        max_z = max_z + TerrainScanMargin02Pc + (query_arg)->collision_radius;                                         \
+        f32 length_sq =                                                                                                \
+            (min_x - max_x) * (min_x - max_x) + (min_y - max_y) * (min_y - max_y) + (min_z - max_z) * (min_z - max_z); \
+        scan_radius = NuFsqrt(length_sq);                                                                              \
+        (query_arg) = TERRAIN_QUERY_PC;                                                                                \
+    }
+
 extern "C" void ScanTerrain(i32 scan_type, i32 terrain_mask, i32 scan_flags) {
     if (WallSplinesOnly != 0) {
         ScanWallSplineTerrain(scan_type, terrain_mask, scan_flags);
@@ -473,48 +521,10 @@ extern "C" void ScanTerrain(i32 scan_type, i32 terrain_mask, i32 scan_flags) {
     TERRAIN_GROUP *terrain_groups = TERRAIN_SET_CURRENT_PC->groups;
     f32 min_x, min_y, min_z, max_x, max_y, max_z, scan_radius;
 
-    if (TERRAIN_QUERY_PC->scan_result != 1) {
-        const f32 move_length = NuFsqrt(TERRAIN_QUERY_PC->movement.x * TERRAIN_QUERY_PC->movement.x +
-                                        TERRAIN_QUERY_PC->movement.y * TERRAIN_QUERY_PC->movement.y +
-                                        TERRAIN_QUERY_PC->movement.z * TERRAIN_QUERY_PC->movement.z);
-        const f32 reach = TERRAIN_QUERY_PC->collision_radius + TerrainScanMargin10Pc + move_length;
-        max_x = TERRAIN_QUERY_PC->position.x + NuTimeBarTop + reach;
-        max_y = TERRAIN_QUERY_PC->position.y + NuTimeBarTop + TERRAIN_QUERY_PC->object_scale * reach;
-        max_z = TERRAIN_QUERY_PC->position.z + NuTimeBarTop + reach;
-        min_x = TERRAIN_QUERY_PC->position.x - NuTimeBarTop - reach;
-        min_y = TERRAIN_QUERY_PC->position.y - NuTimeBarTop - TERRAIN_QUERY_PC->object_scale * reach;
-        min_z = TERRAIN_QUERY_PC->position.z - NuTimeBarTop - reach;
-        scan_radius = reach;
-    } else {
-        const f32 radius = TERRAIN_QUERY_PC->collision_radius;
-        if (TERRAIN_QUERY_PC->movement.x > 0.0f) {
-            min_x = TERRAIN_QUERY_PC->position.x - TerrainScanMargin02Pc - radius;
-            max_x = TERRAIN_QUERY_PC->position.x + TERRAIN_QUERY_PC->movement.x + TerrainScanMargin02Pc + radius;
-        } else {
-            min_x = TERRAIN_QUERY_PC->position.x + TERRAIN_QUERY_PC->movement.x - TerrainScanMargin02Pc - radius;
-            max_x = TERRAIN_QUERY_PC->position.x + TerrainScanMargin02Pc + radius;
-        }
-        if (TERRAIN_QUERY_PC->movement.y > 0.0f) {
-            min_y = TERRAIN_QUERY_PC->position.y - TerrainScanMargin02Pc - radius;
-            max_y = TERRAIN_QUERY_PC->position.y + TERRAIN_QUERY_PC->movement.y + TerrainScanMargin02Pc + radius;
-        } else {
-            min_y = TERRAIN_QUERY_PC->position.y + TERRAIN_QUERY_PC->movement.y - TerrainScanMargin02Pc - radius;
-            max_y = TERRAIN_QUERY_PC->position.y + TerrainScanMargin02Pc + radius;
-        }
-        if (TERRAIN_QUERY_PC->movement.z > 0.0f) {
-            min_z = TERRAIN_QUERY_PC->position.z - TerrainScanMargin02Pc - radius;
-            max_z = TERRAIN_QUERY_PC->position.z + TERRAIN_QUERY_PC->movement.z + TerrainScanMargin02Pc + radius;
-        } else {
-            min_z = TERRAIN_QUERY_PC->position.z + TERRAIN_QUERY_PC->movement.z - TerrainScanMargin02Pc - radius;
-            max_z = TERRAIN_QUERY_PC->position.z + TerrainScanMargin02Pc + radius;
-        }
-        const f32 dy = min_y - max_y;
-        const f32 dx = min_x - max_x;
-        const f32 dz = min_z - max_z;
-        scan_radius = NuFsqrt(dx * dx + dy * dy + dz * dz);
-    }
-    if (TERRAIN_QUERY_PC->object_scale > 1.0f) {
-        scan_radius += (TERRAIN_QUERY_PC->object_scale - 1.0) * TERRAIN_QUERY_PC->collision_radius;
+    TerrainQuery_s *query = TERRAIN_QUERY_PC;
+    TERRAIN_SCAN_BOUNDS_PC(query);
+    if (1.0f < query->object_scale) {
+        scan_radius += (query->object_scale - 1.0) * query->collision_radius;
     }
 
     for (i32 cell_index = 0; cell_index < TERRAIN_SET_CURRENT_PC->used_cell_count; ++cell_index) {
@@ -942,54 +952,6 @@ extern "C" void ScanTerrain(i32 scan_type, i32 terrain_mask, i32 scan_flags) {
     }
     TerrOverRideScan = NULL;
 }
-#define TERRAIN_SCAN_BOUNDS_PC(query_arg)                                                                              \
-    if ((query_arg)->scan_result != 1) {                                                                               \
-        f32 length_sq = (query_arg)->movement.x * (query_arg)->movement.x +                                            \
-                        (query_arg)->movement.y * (query_arg)->movement.y +                                            \
-                        (query_arg)->movement.z * (query_arg)->movement.z;                                             \
-        scan_radius = NuFsqrt(length_sq);                                                                              \
-        (query_arg) = TERRAIN_QUERY_PC;                                                                                \
-        scan_radius = (query_arg)->collision_radius + TerrainScanMargin10Pc + scan_radius;                             \
-        max_x = (query_arg)->position.x + NuTimeBarTop + scan_radius;                                                  \
-        max_y = (query_arg)->position.y + NuTimeBarTop + (query_arg)->object_scale * scan_radius;                      \
-        max_z = (query_arg)->position.z + NuTimeBarTop + scan_radius;                                                  \
-        min_x = (query_arg)->position.x - NuTimeBarTop - scan_radius;                                                  \
-        min_y = (query_arg)->position.y - NuTimeBarTop - (query_arg)->object_scale * scan_radius;                      \
-        min_z = (query_arg)->position.z - NuTimeBarTop - scan_radius;                                                  \
-    } else {                                                                                                           \
-        if ((query_arg)->movement.x > 0.0f) {                                                                          \
-            min_x = (query_arg)->position.x - TerrainScanMargin02Pc - (query_arg)->collision_radius;                   \
-            max_x = (query_arg)->position.x + (query_arg)->movement.x;                                                 \
-        } else {                                                                                                       \
-            min_x = (query_arg)->position.x + (query_arg)->movement.x - TerrainScanMargin02Pc -                        \
-                    (query_arg)->collision_radius;                                                                     \
-            max_x = (query_arg)->position.x;                                                                           \
-        }                                                                                                              \
-        max_x = max_x + TerrainScanMargin02Pc + (query_arg)->collision_radius;                                         \
-        if ((query_arg)->movement.y > 0.0f) {                                                                          \
-            min_y = (query_arg)->position.y - TerrainScanMargin02Pc - (query_arg)->collision_radius;                   \
-            max_y = (query_arg)->movement.y + (query_arg)->position.y;                                                 \
-        } else {                                                                                                       \
-            min_y = (query_arg)->movement.y + (query_arg)->position.y - TerrainScanMargin02Pc -                        \
-                    (query_arg)->collision_radius;                                                                     \
-            max_y = (query_arg)->position.y;                                                                           \
-        }                                                                                                              \
-        max_y = max_y + TerrainScanMargin02Pc + (query_arg)->collision_radius;                                         \
-        if ((query_arg)->movement.z > 0.0f) {                                                                          \
-            min_z = (query_arg)->position.z - TerrainScanMargin02Pc - (query_arg)->collision_radius;                   \
-            max_z = (query_arg)->movement.z + (query_arg)->position.z;                                                 \
-        } else {                                                                                                       \
-            min_z = (query_arg)->movement.z + (query_arg)->position.z - TerrainScanMargin02Pc -                        \
-                    (query_arg)->collision_radius;                                                                     \
-            max_z = (query_arg)->position.z;                                                                           \
-        }                                                                                                              \
-        max_z = max_z + TerrainScanMargin02Pc + (query_arg)->collision_radius;                                         \
-        f32 length_sq =                                                                                                \
-            (min_x - max_x) * (min_x - max_x) + (min_y - max_y) * (min_y - max_y) + (min_z - max_z) * (min_z - max_z); \
-        scan_radius = NuFsqrt(length_sq);                                                                              \
-        (query_arg) = TERRAIN_QUERY_PC;                                                                                \
-    }
-
 extern "C" void ScanWallSplineTerrain(i32 scan_type, i32 terrain_mask, i32 scan_flags) {
     WallSplinesOnly = 0;
     TerrainScaledShapeCursorPc = ((TERRAIN_SHAPE *)(ScaleTerrainT1));
