@@ -600,21 +600,23 @@ void __cdecl Customiser_LoadAccessories(CUSTOMISER_LAYERS_PC *input, APICHARACTE
         return;
     Customiser_AccessoriesLoaded = 1;
     for (; models->model_id != -1; ++models) {
-        side = 0;
-        if (models->model_id != customiser->character_ids[0]) {
-            if (models->model_id != customiser->character_ids[1])
-                continue;
+        if ((i32)models->model_id == (i32)customiser->character_ids[0])
+            side = 0;
+        else if ((i32)models->model_id == (i32)customiser->character_ids[1])
             side = 1;
-        }
+        else
+            continue;
         model = &apicharsys->models[apicharsys->playermodelids[models->model_id]];
-        for (category = 0; category < 9; ++category) {
+        resource = (CUSTOM_ACCESSORY_RESOURCE_PC *)KillPartsAccessoriesPc[side];
+        for (category = 0; category < 9; ++category, ++resource) {
             u16 piece_index;
-            resource = (CUSTOM_ACCESSORY_RESOURCE_PC *)&KillPartsAccessoriesPc[side][category];
             memset(resource, 0, sizeof(*resource));
             if (customiser->categories[category]->name == NULL || customiser->piece_counts[category] <= 0)
                 continue;
             resource->character_model = model;
-            piece_index = side == 0 ? customiser->save->pieces[category] : customiser->save->secondary_pieces[category];
+            piece_index =
+                customiser->save
+                    ->pieces[side * (offsetof(CUSTOM_SAVE_CONFIG_PC, secondary_pieces) / sizeof(u16)) + category];
             NuStrCpy(piece_name, customiser->piece_sets[category][piece_index].name);
             NuStrCpy(path, "chars\\weirdo\\");
             NuStrCat(path, customiser->categories[category]->name);
@@ -801,16 +803,17 @@ void __cdecl CustomiserDrawAccessoriesPc(CUSTOMISER_LAYERS_PC *input, GAMEOBJECT
     if (customiser == NULL || joint == -1 || object->character_model->points_of_interest[joint] == NULL)
         return;
     side = object->id != (u16)customiser->character_ids[0];
-    for (category = 0; category < 9; ++category) {
+    resource = KillPartsAccessoriesPc[side];
+    for (category = 0; category < 9; ++category, ++resource) {
         if (customiser->piece_counts[category] <= 0 || category == 2)
             continue;
         if (category == 0) {
-            pieces = side == 0 ? customiser->save->pieces : customiser->save->secondary_pieces;
+            pieces =
+                customiser->save->pieces + side * (offsetof(CUSTOM_SAVE_CONFIG_PC, secondary_pieces) / sizeof(u16));
             if ((customiser->piece_sets[0][pieces[0]].availability_flags & 0x20) != 0 ||
                 (customiser->piece_sets[1][pieces[1]].availability_flags & 1) != 0 || object->helmet != 0)
                 continue;
         }
-        resource = &KillPartsAccessoriesPc[side][category];
         if (NuSpecialExistsFn(&resource->special) == 0)
             continue;
         if (matrices != NULL)
