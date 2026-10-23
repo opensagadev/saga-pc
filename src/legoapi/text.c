@@ -1276,7 +1276,7 @@ void __cdecl TextCrawl_Init(TEXT_CRAWL_VIEW_PC *crawl, i32 id, i32 reset) {
     if (crawl == NULL || QFont3DZ == NULL)
         return;
     TextCrawlCurrentPc = crawl;
-    crawl->area = id >= 0 && id < AREACOUNT ? (i8)id : -1;
+    crawl->area = (i8)(id >= 0 && id < AREACOUNT ? id : -1);
     NuMtxSetRotationX(&TextCrawlMatrixPc, TextCrawlRotateXPc);
     NuMtxRotateY(&TextCrawlMatrixPc, TextCrawlRotateYPc);
     NuMtxRotateZ(&TextCrawlMatrixPc, TextCrawlRotateZPc);
