@@ -1,6 +1,9 @@
 #include <stdio.h>
 #include "saga.h"
 
+void __cdecl edbitsDrawCube(f32 x, f32 y, f32 z, f32 half_x, f32 half_y, f32 half_z, i32 rotation_z, i32 rotation_y,
+                            i32 rotation_x, i32 outer_z, i32 outer_y, i32 colour, NUMTL *material);
+
 typedef struct EDANIM_LOAD_PARAM_PC {
     i32 instance_id, effect_count, sound_count, field_00c, field_010;
     f32 field_014, field_018;
@@ -602,6 +605,53 @@ i32 __cdecl edanimParamCreate(i32 instance);
 extern i32 edanim_sound_mode;
 extern i32 edanim_nearest_particle;
 extern i32 edanim_nearest_sound;
+
+void __cdecl edanimRenderParticleEmitters(i32 parameter_index) {
+    NUSPECIALHANDLE special;
+    NUVEC *base_position;
+    i32 particle, colour;
+    NuGScnGetSpecial(&special, edbits_base_scene, AnimParams[parameter_index].instance_id);
+    base_position = NuSpecialGetPos(&special);
+    for (particle = 0; particle < AnimParams[parameter_index].effect_count; ++particle) {
+        if (AnimParams[parameter_index].effect_ids[particle] == -1)
+            continue;
+        if (edanim_particle_mode && edanim_nearest_particle == particle) {
+            DEBRIS_INFO_PC *definition = debtab[AnimParams[parameter_index].effect_ids[particle]];
+            if (definition->generator_type == 0) {
+                edbitsDrawCube(base_position->x + AnimParams[parameter_index].effect_positions[particle][0],
+                               base_position->y + AnimParams[parameter_index].effect_positions[particle][1],
+                               base_position->z + AnimParams[parameter_index].effect_positions[particle][2],
+                               definition->emitter_random_extent.x, definition->emitter_random_extent.y,
+                               definition->emitter_random_extent.z, edanim_emitrotz, edanim_emitroty, 0, 0, 0,
+                               0xff008000, (NUMTL *)edanim_mtl);
+            }
+            colour = 0xff00ff00;
+        } else {
+            colour = 0xffffffff;
+        }
+        edbitsDrawDiagonalCross(base_position->x + AnimParams[parameter_index].effect_positions[particle][0],
+                                base_position->y + AnimParams[parameter_index].effect_positions[particle][1],
+                                base_position->z + AnimParams[parameter_index].effect_positions[particle][2], 0.25f,
+                                colour, (struct PC_SCENE_MTL_VIEW *)edanim_mtl);
+    }
+}
+
+void __cdecl edanimRenderSoundEmitters(i32 parameter_index) {
+    NUSPECIALHANDLE special;
+    NUVEC *base_position;
+    i32 sound, colour;
+    NuGScnGetSpecial(&special, edbits_base_scene, AnimParams[parameter_index].instance_id);
+    base_position = NuSpecialGetPos(&special);
+    for (sound = 0; sound < AnimParams[parameter_index].sound_count; ++sound) {
+        if (AnimParams[parameter_index].sound_flags[sound] == -1)
+            continue;
+        colour = edanim_sound_mode && edanim_nearest_sound == sound ? 0xffff0000 : 0xffffffff;
+        edbitsDrawDiagonalCross(base_position->x + AnimParams[parameter_index].sound_positions[sound][0],
+                                base_position->y + AnimParams[parameter_index].sound_positions[sound][1],
+                                base_position->z + AnimParams[parameter_index].sound_positions[sound][2], 0.25f, colour,
+                                (struct PC_SCENE_MTL_VIEW *)edanim_mtl);
+    }
+}
 
 /* edbitsGetSoundName is an inline stub returning NULL in the PC build. */
 #define EDANIM_SOUND_NAME_PC(type) ((char *)0)
