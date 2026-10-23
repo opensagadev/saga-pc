@@ -1302,6 +1302,11 @@
    "kind": "function"
   },
   {
+   "unit": "src/gameapi/edpp_load.c",
+   "symbol": "_edppLoadDebrisSetTrigger",
+   "kind": "function"
+  },
+  {
    "unit": "src/gameapi/edpp.c",
    "symbol": "_edppDebrisSetTrigger",
    "kind": "function"
