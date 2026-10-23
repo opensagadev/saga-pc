@@ -946,10 +946,10 @@ static f32 magdif = 0;
 
 void __cdecl VehicleCollisionCode(GAMEOBJECT *object) {
     i32 speeder_level;
-    i32 random;
     i32 debris_type;
+    i32 effect;
     i32 damage;
-    i16 angle;
+    i32 angle;
     f32 random_height;
     NUVEC normal, reverse_velocity, debris_position;
 
@@ -962,22 +962,23 @@ void __cdecl VehicleCollisionCode(GAMEOBJECT *object) {
         return;
 
     debris_position = object->contact_position;
-    random = qrand();
-    random_height = (f32)((f64)random * ((f64)object->bounds_half_height / 65535.0));
-    debris_position.y = object->contact_position.y - 0.5f * object->bounds_half_height + random_height;
-    debris_type = -1;
+    random_height = (f32)(qrand() * (object->bounds_half_height / 65535.0));
+    debris_position.y = object->contact_position.y - object->bounds_half_height * 0.5f + random_height;
     if (object->id == (u16)id_SPEEDERBIKE)
         debris_type = 108;
     else if (object->id == (u16)id_TIEFIGHTER || object->id == (u16)id_XWING)
         debris_type = 100;
+    else
+        debris_type = -1;
     if (debris_type != -1) {
+        effect = debris_type;
+        debris_type = 101;
         if (object->id == (u16)id_SPEEDERBIKE) {
             qrand();
             qrand();
         }
-        AddVariableShotDebrisEffectTimed1(WORLD->game_debris_sys->entries[debris_type].effect, &debris_position, 52,
+        AddVariableShotDebrisEffectTimed1(WORLD->game_debris_sys->entries[effect].effect, &debris_position, 52,
                                           FRAMETIME, 0, 0, NULL);
-        debris_type = 101;
     }
     if (object->contact_normal.y > 0.574f || !(object->contact_normal.y >= -0.574f))
         return;
@@ -3636,21 +3637,23 @@ i32 __cdecl SetObjTarget(GAMEOBJECT *object, GAMEOBJECT *target) {
 }
 
 void __cdecl AwkwardShapeCode(GAMEOBJECT *object, i32 forced) {
-    i32 joints[8] = {0};
-    u32 flags[8] = {0};
-    f32 radii[8] = {0};
-    NUVEC *positions[8] = {0};
-    NUVEC forced_position, unused_position, displacement, extension, hit_position;
+    f32 radii[8] = {0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f};
+    NUVEC *positions[8] = {NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL};
+    i32 joints[8] = {0, 0, 0, 0, 0, 0, 0, 0};
+    u32 flags[8] = {0, 0, 0, 0, 0, 0, 0, 0};
+    NUVEC forced_positions[8];
+    NUVEC unused_position, displacement, extension, hit_position;
     AWKWARD_SHAPE_SPHERE_PC *sphere;
     NUVEC *position;
-    i32 count = 0, i;
+    i32 count, i;
     if (!object->origin_joint_ready || !object->model_draw_result)
         return;
+    count = 0;
     if (WORLD->area != NULL && (WORLD->area->flags & 1) != 0 && object->id == (u16)id_ATAT)
         return;
     if (forced) {
-        SuperCarry_GetObjectPos(object, &unused_position, &forced_position);
-        positions[0] = &forced_position;
+        SuperCarry_GetObjectPos(object, &unused_position, &forced_positions[0]);
+        positions[0] = &forced_positions[0];
         radii[0] = 0.1f;
         flags[0] = 1;
         count = 1;
@@ -3658,14 +3661,15 @@ void __cdecl AwkwardShapeCode(GAMEOBJECT *object, i32 forced) {
         if (WORLD->current_level == SPEEDERCHASEA_LDATA && disable_narrow_socks) {
             joints[0] = 2;
             radii[0] = 0.325f;
+            flags[0] = 0;
             count = 1;
         }
     } else {
         for (sphere = AwkwardShapeSpherePc; sphere->character_id != NULL && count < 8; ++sphere) {
-            if (*sphere->character_id == (i16)object->id) {
+            if ((i16)object->id == *sphere->character_id) {
                 joints[count] = sphere->joint;
-                flags[count] = sphere->flags;
                 radii[count] = sphere->radius;
+                flags[count] = sphere->flags;
                 ++count;
             }
         }
