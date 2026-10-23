@@ -448,6 +448,26 @@ extern "C" {
     void __cdecl PCGraphicsEffectTextureSetLowNibbles(GRAPHICS_RENDER_TEXTURE_PC *, i32, i32);
 }
 
+// PostShaderProgramBindPc and the per-stage sampler binds, as retail inlines them here.
+#define POST_BLUR_BIND_PROGRAM(bound_program)                                                                          \
+    do {                                                                                                               \
+        POST_SHADER_PROGRAM_PC *bound = (bound_program);                                                               \
+        if (bound != NULL) {                                                                                           \
+            if (NuDisplayHandlerVertexShaderCachePc != bound->vertex_shader) {                                         \
+                PCDeviceSetVertexShaderPc(bound->vertex_shader);                                                       \
+                NuDisplayHandlerVertexShaderCachePc = bound->vertex_shader;                                            \
+            }                                                                                                          \
+            if (NuDisplayHandlerPixelShaderCachePc != bound->pixel_shader) {                                           \
+                PCDeviceSetPixelShaderPc(bound->pixel_shader);                                                         \
+                NuDisplayHandlerPixelShaderCachePc = bound->pixel_shader;                                              \
+            }                                                                                                          \
+        } else {                                                                                                       \
+            PCDeviceSetVertexShaderPc(NULL);                                                                           \
+            PCDeviceSetPixelShaderPc(NULL);                                                                            \
+            NuDisplayHandlerVertexShaderCachePc = NULL;                                                                \
+            NuDisplayHandlerPixelShaderCachePc = NULL;                                                                 \
+        }                                                                                                              \
+    } while (0)
 extern "C" void __cdecl PostBlur7x7HighPc(GRAPHICS_RENDER_TEXTURE_PC *source, i32 source_lod,
                                           GRAPHICS_RENDER_TEXTURE_PC *textures, i32 first_lod, i32 iterations,
                                           i32 levels, bool mip_chain, f32 radius, POST_SHADER_PROGRAM_PC *program) {
@@ -482,7 +502,7 @@ extern "C" void __cdecl PostBlur7x7HighPc(GRAPHICS_RENDER_TEXTURE_PC *source, i3
             f64 dy2 = (f64)dy * 2.0;
             f64 dx3 = (f64)dx * 3.0;
             f64 dy3 = (f64)dy * 3.0;
-            f32 horizontal[7][4] = {
+            __declspec(align(16)) f32 horizontal[7][4] = {
                 {dx * 0.0f, 0, .34f, 0}, {dx, 0, .18f, 0},        {(f32)dx2, 0, .10f, 0},  {(f32)dx3, 0, .05f, 0},
                 {-dx, 0, .18f, 0},       {(f32)-dx2, 0, .10f, 0}, {(f32)-dx3, 0, .05f, 0},
             };
@@ -516,7 +536,7 @@ extern "C" void __cdecl PostBlur7x7HighPc(GRAPHICS_RENDER_TEXTURE_PC *source, i3
                 PCGraphicsBindEffectTexture(texture, 0);
             }
             PCGraphicsDrawPostEffectQuadPc();
-            PostShaderProgramBindPc(PostBlur7x7ProgramPc);
+            POST_BLUR_BIND_PROGRAM(PostBlur7x7ProgramPc);
             {
                 GRAPHICS_RENDER_TEXTURE_PC *texture = input;
                 if (texture != NULL) {
@@ -543,7 +563,7 @@ extern "C" void __cdecl PostBlur7x7HighPc(GRAPHICS_RENDER_TEXTURE_PC *source, i3
             PCGraphicsAttachFramebuffer(PostBlurFramebufferPc, 0, output, output_lod);
             PCGraphicsBindFramebuffer(PostBlurFramebufferPc);
             PCGraphicsSubmitViewportPc(0, 0, output_width, output_height);
-            PostShaderProgramBindPc(program);
+            POST_BLUR_BIND_PROGRAM(program);
             PCDeviceSetVertexShaderConstantsF(0xa0, vertical[0], 7);
             PCDeviceSetVertexShaderConstantsF(0xad, output_bias, 1);
             PCGraphicsEffectTextureSetWrapFields(output, 2, 2);
@@ -569,26 +589,6 @@ extern "C" void __cdecl PostBlur7x7HighPc(GRAPHICS_RENDER_TEXTURE_PC *source, i3
     }
 }
 
-// PostShaderProgramBindPc and the per-stage sampler binds, as retail inlines them here.
-#define POST_BLUR_LOW_BIND_PROGRAM(bound_program)                                                                      \
-    do {                                                                                                               \
-        POST_SHADER_PROGRAM_PC *bound = (bound_program);                                                               \
-        if (bound != NULL) {                                                                                           \
-            if (NuDisplayHandlerVertexShaderCachePc != bound->vertex_shader) {                                         \
-                PCDeviceSetVertexShaderPc(bound->vertex_shader);                                                       \
-                NuDisplayHandlerVertexShaderCachePc = bound->vertex_shader;                                            \
-            }                                                                                                          \
-            if (NuDisplayHandlerPixelShaderCachePc != bound->pixel_shader) {                                           \
-                PCDeviceSetPixelShaderPc(bound->pixel_shader);                                                         \
-                NuDisplayHandlerPixelShaderCachePc = bound->pixel_shader;                                              \
-            }                                                                                                          \
-        } else {                                                                                                       \
-            PCDeviceSetVertexShaderPc(NULL);                                                                           \
-            PCDeviceSetPixelShaderPc(NULL);                                                                            \
-            NuDisplayHandlerVertexShaderCachePc = NULL;                                                                \
-            NuDisplayHandlerPixelShaderCachePc = NULL;                                                                 \
-        }                                                                                                              \
-    } while (0)
 #define POST_BLUR_LOW_ATTACH(texture, lod)                                                                             \
     do {                                                                                                               \
         PC_FRAMEBUFFER_PC *framebuffer = PostBlurFramebufferPc;                                                        \
@@ -708,7 +708,7 @@ extern "C" void __cdecl PostBlur7x7LowPc(GRAPHICS_RENDER_TEXTURE_PC *source, i32
             POST_BLUR_LOW_BIND_INPUT(2);
             POST_BLUR_LOW_BIND_INPUT(3);
             PCDeviceBackend.DrawPostEffectQuadPc();
-            POST_BLUR_LOW_BIND_PROGRAM(PostBlurAuxProgramPc);
+            POST_BLUR_BIND_PROGRAM(PostBlurAuxProgramPc);
             POST_BLUR_LOW_BIND_INPUT(0);
             if (output_height < work_height) {
                 f32 edge[4] = {1, 0, 0, 1};
@@ -743,7 +743,7 @@ extern "C" void __cdecl PostBlur7x7LowPc(GRAPHICS_RENDER_TEXTURE_PC *source, i32
             viewport.min_z = 0;
             viewport.max_z = 1;
             NuVpSubmitPc(&viewport);
-            POST_BLUR_LOW_BIND_PROGRAM(program);
+            POST_BLUR_BIND_PROGRAM(program);
             PCDeviceSetVertexShaderConstantsF(0, &vertical[0].x, 4);
             PCDeviceSetVertexShaderConstantsF(4, output_bias, 1);
             PCDeviceSetPixelShaderConstantsF(0, weights, 1);
