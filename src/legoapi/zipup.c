@@ -77,23 +77,25 @@ ZIPUP_PC *__cdecl ZipUp_FindNearest(WORLDINFO *world, NUVEC *position, f32 radiu
     f32 square_distance, best_distance;
 
     ZIPUP_PC *zipup = world->zipups;
-    nearest = NULL;
 
     if (zipup == NULL)
         return NULL;
+    nearest = NULL;
     best_distance = radius + 0.25;
     best_distance *= best_distance;
     for (index = 0; index < world->zipup_count; ++index, ++zipup) {
         if (object != NULL) {
-            if ((zipup->flags & 0xc0) != 0xc0)
+            u32 flags = zipup->flags_word;
+
+            if ((flags & 0x40) == 0 || (flags & 0x80) == 0)
                 continue;
-            if ((zipup->flags & 0x20) != 0) {
+            if ((flags & 0x20) != 0) {
                 if ((object->character_data->game_character->flags_094 & 0x20000000) == 0)
                     continue;
             } else {
                 if ((object->character_data->game_character->flags_094 & 0x20000000) != 0)
                     continue;
-                if ((zipup->flags & 2) == 0 && object->field_280 != 0xff)
+                if ((flags & 2) == 0 && object->field_280 != 0xff)
                     continue;
             }
         }
@@ -101,7 +103,7 @@ ZIPUP_PC *__cdecl ZipUp_FindNearest(WORLDINFO *world, NUVEC *position, f32 radiu
             if (object != NULL && (end == 1 || (end == 2 && (zipup->flags & 8) == 0)))
                 continue;
             square_distance = NuVecDistSqr(position, &zipup->endpoints[end], NULL);
-            if (best_distance > square_distance) {
+            if (square_distance < best_distance) {
                 best_distance = square_distance;
                 nearest = zipup;
                 if (endpoint != NULL)
