@@ -285,11 +285,11 @@ extern "C" void __cdecl TightRope_MoveCode(GAMEOBJECT *object, i32 jump_pressed)
                 union {
                     f32 value;
                     u32 bits;
-                } push;
+                } push, absolute;
                 if (frame >= 1.0f && *playing >= frame && object->pad->input_magnitude > 0.0f &&
                     (push.value = PushingTowardsAngle(GamePad_InputAngle(object, object->pad),
                                                       ((TIGHTROPE_MOTION_PC *)(object->grapple))->rotation),
-                     push.bits &= 0x7fffffff, push.value) > NuTrigTable[0x3000]) {
+                     absolute.bits = push.bits & 0x7fffffff, absolute.value) > NuTrigTable[0x3000]) {
                     TightRope_MoveUpdate(object, 0);
                 } else {
                     object->context_timer -= FRAMETIME;
