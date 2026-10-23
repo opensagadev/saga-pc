@@ -3109,107 +3109,120 @@ STATIC_ASSERT(offsetof(TERRAIN_GROUP_PC, scene_index) == 0x30);
 STATIC_ASSERT(offsetof(TERRAIN_XZ_BOUNDS_VIEW_PC, y) == 4);
 /* Native 680e90: this preparation updates group bounds/radius, leaving
  * the copied polygon and batch bounds intact. */
+#define TERRAIN_SKIN_BOUND(value, lo, hi)                                                                              \
+    do {                                                                                                               \
+        if ((value) < (lo))                                                                                            \
+            (lo) = (value);                                                                                            \
+        if ((value) > (hi))                                                                                            \
+            (hi) = (value);                                                                                            \
+    } while (0)
+#define TERRAIN_SKIN_PREPARE_NORMAL(normal, a, b)                                                                      \
+    do {                                                                                                               \
+        NUVEC cross;                                                                                                   \
+        f32 inverse;                                                                                                   \
+        cross.x = (a).y * (b).z - (a).z * (b).y;                                                                       \
+        cross.y = (a).z * (b).x - (a).x * (b).z;                                                                       \
+        cross.z = (a).x * (b).y - (a).y * (b).x;                                                                       \
+        *(normal) = cross;                                                                                             \
+        length_squared = (normal)->x * (normal)->x + (normal)->y * (normal)->y + (normal)->z * (normal)->z;            \
+        inverse = length_squared != 0.0f ? 1.0f / NuFsqrt(length_squared) : 0.0f;                                      \
+        (normal)->x = (normal)->x * inverse;                                                                           \
+        (normal)->y = (normal)->y * inverse;                                                                           \
+        (normal)->z = (normal)->z * inverse;                                                                           \
+    } while (0)
 void TerrainSkinPrepareGroupPc(i32 group_index, TERRAIN_SKIN_STREAM_VIEW_PC *output,
                                const TERRAIN_SKIN_INFO_VIEW_PC *info) {
     TERRAIN_GROUP_PC *group;
     TERRAIN_SKIN_STREAM_VIEW_PC *input;
-    f32 min_x = TerrainSkinBoundsMaxPc, min_y = TerrainSkinBoundsMaxPc, min_z = TerrainSkinBoundsMaxPc;
-    f32 max_x = TerrainSkinBoundsMinPc, max_y = TerrainSkinBoundsMinPc, max_z = TerrainSkinBoundsMinPc;
-    f32 radius_squared = 0.0f;
-    i32 bytes = 0;
+    TERRAIN_SKIN_POLYGON_VIEW_PC *source;
+    TERRAIN_SKIN_POLYGON_VIEW_PC *polygon;
+    NUVEC *p;
+    NUVEC transformed;
+    NUVEC a, b;
+    i32 count;
+    i32 vertex;
+    i32 bytes;
+    f32 z, length_squared;
+    f32 min_x, min_y, min_z, max_x, max_y, max_z;
+    f32 radius_squared;
     if (CurrentTerrain == NULL || group_index < 0)
         return;
+    min_x = min_y = min_z = 123456789.0f;
     group = &((TERRAIN_SET_PC *)CurrentTerrain)->groups[group_index];
+    max_x = max_y = max_z = -123456789.0f;
+    radius_squared = 0.0f;
     if (group->chunk_type == 0 || group->chunk_type == 1) {
         input = group->data;
         while (input->header.kind >= 0) {
-            TERRAIN_SKIN_POLYGON_VIEW_PC *destination = output->polygons;
-            TERRAIN_SKIN_POLYGON_VIEW_PC *source = input->polygons;
-            i32 count = input->header.count;
             output->header.kind = input->header.kind;
             output->header.count = input->header.count;
-            while (count > 0) {
-                i32 vertex = source->normals[1].y > BoltTargetRandomDenominator ? 2 : 3;
-                NUVEC a, b;
-                f32 length_squared, inverse;
-                *destination = *source;
-                for (; vertex >= 0; --vertex) {
-                    NUVEC transformed;
-                    NUVEC *position = &destination->vertices[vertex];
-                    i32 selected = SkinFlipTab[vertex + info->vertex_order * 4];
-                    TerrainSkin(&transformed, info, &source->vertices[selected], -1.0f, info->mode);
-                    position->x = transformed.x;
-                    position->y = transformed.y;
-                    position->z = transformed.z;
-                    position->x = (f32)(position->x - info->matrix->m30);
-                    position->y = (f32)(position->y - info->matrix->m31);
-                    position->z = (f32)(position->z - info->matrix->m32);
-#define PREPARE_SKIN_BOUNDS(V, LO, HI)                                                                                 \
-    if ((V) < (LO))                                                                                                    \
-        (LO) = (V);                                                                                                    \
-    if ((V) > (HI))                                                                                                    \
-    (HI) = (V)
-                    PREPARE_SKIN_BOUNDS(position->x, min_x, max_x);
-                    PREPARE_SKIN_BOUNDS(position->y, min_y, max_y);
-                    PREPARE_SKIN_BOUNDS(position->z, min_z, max_z);
-#undef PREPARE_SKIN_BOUNDS
-                    length_squared = (f32)((f64)position->x * position->x + (f64)position->y * position->y +
-                                           (f64)position->z * position->z);
-                    if (length_squared > radius_squared)
+            count = input->header.count;
+            source = input->polygons;
+            polygon = output->polygons;
+            for (; count > 0; --count) {
+                if (source->normals[1].y > 65535.0)
+                    vertex = 2;
+                else
+                    vertex = 3;
+                *polygon = *source;
+                for (p = &polygon->vertices[vertex]; vertex >= 0; --vertex, --p) {
+                    *p = *TerrainSkin(&transformed, info,
+                                      &source->vertices[SkinFlipTab[vertex + info->vertex_order * 4]], -1.0f,
+                                      info->mode);
+                    p->x = p->x - info->matrix->m30;
+                    p->y = p->y - info->matrix->m31;
+                    p->z = p->z - info->matrix->m32;
+                    z = p->z;
+                    TERRAIN_SKIN_BOUND(p->x, min_x, max_x);
+                    TERRAIN_SKIN_BOUND(p->y, min_y, max_y);
+                    TERRAIN_SKIN_BOUND(z, min_z, max_z);
+                    length_squared = p->x * p->x + p->y * p->y + z * z;
+                    if (radius_squared < length_squared)
                         radius_squared = length_squared;
                 }
-#define PREPARE_SKIN_NORMAL(N, A, B)                                                                                   \
-    do {                                                                                                               \
-        (N)->x = (f32)((f64)(A)->y * (B)->z - (f64)(A)->z * (B)->y);                                                   \
-        (N)->y = (f32)((f64)(A)->z * (B)->x - (f64)(A)->x * (B)->z);                                                   \
-        (N)->z = (f32)((f64)(A)->x * (B)->y - (f64)(A)->y * (B)->x);                                                   \
-        length_squared = (f32)((f64)(N)->x * (N)->x + (f64)(N)->y * (N)->y + (f64)(N)->z * (N)->z);                    \
-        inverse = length_squared != 0.0f ? (f32)(1.0 / NuFsqrt(length_squared)) : 0.0f;                                \
-        (N)->x = (f32)((f64)(N)->x * inverse);                                                                         \
-        (N)->y = (f32)((f64)(N)->y * inverse);                                                                         \
-        (N)->z = (f32)((f64)(N)->z * inverse);                                                                         \
-    } while (0)
-                if (source->normals[1].y < BoltTargetRandomDenominator) {
-                    a.x = destination->vertices[1].x - destination->vertices[3].x;
-                    a.y = destination->vertices[1].y - destination->vertices[3].y;
-                    a.z = destination->vertices[1].z - destination->vertices[3].z;
-                    b.x = destination->vertices[2].x - destination->vertices[3].x;
-                    b.y = destination->vertices[2].y - destination->vertices[3].y;
-                    b.z = destination->vertices[2].z - destination->vertices[3].z;
-                    PREPARE_SKIN_NORMAL(&destination->normals[1], &a, &b);
+                if (source->normals[1].y < 65535.0) {
+                    a.x = polygon->vertices[1].x - polygon->vertices[3].x;
+                    a.y = polygon->vertices[1].y - polygon->vertices[3].y;
+                    a.z = polygon->vertices[1].z - polygon->vertices[3].z;
+                    b.x = polygon->vertices[2].x - polygon->vertices[3].x;
+                    b.y = polygon->vertices[2].y - polygon->vertices[3].y;
+                    b.z = polygon->vertices[2].z - polygon->vertices[3].z;
+                    TERRAIN_SKIN_PREPARE_NORMAL(&polygon->normals[1], a, b);
                 }
-                a.x = destination->vertices[2].x - destination->vertices[0].x;
-                a.y = destination->vertices[2].y - destination->vertices[0].y;
-                a.z = destination->vertices[2].z - destination->vertices[0].z;
-                b.x = destination->vertices[1].x - destination->vertices[0].x;
-                b.y = destination->vertices[1].y - destination->vertices[0].y;
-                b.z = destination->vertices[1].z - destination->vertices[0].z;
-                PREPARE_SKIN_NORMAL(&destination->normals[0], &a, &b);
-#undef PREPARE_SKIN_NORMAL
+                a.x = polygon->vertices[2].x - polygon->vertices[0].x;
+                a.y = polygon->vertices[2].y - polygon->vertices[0].y;
+                a.z = polygon->vertices[2].z - polygon->vertices[0].z;
+                b.x = polygon->vertices[1].x - polygon->vertices[0].x;
+                b.y = polygon->vertices[1].y - polygon->vertices[0].y;
+                b.z = polygon->vertices[1].z - polygon->vertices[0].z;
+                TERRAIN_SKIN_PREPARE_NORMAL(&polygon->normals[0], a, b);
                 ++source;
-                ++destination;
-                --count;
+                ++polygon;
             }
             input = (TERRAIN_SKIN_STREAM_VIEW_PC *)source;
-            output = (TERRAIN_SKIN_STREAM_VIEW_PC *)destination;
+            output = (TERRAIN_SKIN_STREAM_VIEW_PC *)polygon;
         }
         output->header.kind = -1;
         output->header.count = -1;
         bytes = (i32)((u8 *)input - (u8 *)group->data) + 4;
+    } else {
+        bytes = 0;
     }
     group->origin.x = info->matrix->m30;
     group->origin.y = info->matrix->m31;
     group->origin.z = info->matrix->m32;
-    group->bounds_min.x = (f32)((f64)min_x - TerrainScanMargin10Pc + group->origin.x);
-    group->bounds_min.y = (f32)((f64)min_y - TerrainScanMargin10Pc + group->origin.y);
-    group->bounds_min.z = (f32)((f64)min_z - TerrainScanMargin10Pc + group->origin.z);
-    group->bounds_max.x = (f32)((f64)max_x + TerrainScanMargin10Pc + group->origin.x);
-    group->bounds_max.y = (f32)((f64)max_y + TerrainScanMargin10Pc + group->origin.y);
-    group->bounds_max.z = (f32)((f64)max_z + TerrainScanMargin10Pc + group->origin.z);
+    group->bounds_min.x = min_x - (f64)0.1f + group->origin.x;
+    group->bounds_min.y = min_y - (f64)0.1f + group->origin.y;
+    group->bounds_min.z = min_z - (f64)0.1f + group->origin.z;
+    group->bounds_max.x = max_x + (f64)0.1f + group->origin.x;
+    group->bounds_max.y = max_y + (f64)0.1f + group->origin.y;
+    group->bounds_max.z = max_z + (f64)0.1f + group->origin.z;
     group->radius = NuFsqrt(radius_squared);
     if (bytes > TerrainSkinPoolSlotBytesPc)
         TerrainSkinPoolSlotBytesPc = bytes;
 }
+#undef TERRAIN_SKIN_PREPARE_NORMAL
+#undef TERRAIN_SKIN_BOUND
 
 /* Native 681470: preserve the native ordered error checks and live group
  * count reloads across the genuine skin preparation call. */
