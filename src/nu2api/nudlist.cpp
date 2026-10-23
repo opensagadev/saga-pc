@@ -1409,69 +1409,83 @@ STATIC_ASSERT(offsetof(PC_CLIP_SCENE_VIEW, far_clip_ranges) == 0x2c);
 
 static void DisplayClipFallbackPC(NUDISPLAY_LIST_PC *scene, VISIBILITY_RESULT_READER_PC *visibility) {
     PC_CLIP_SCENE_VIEW *view = reinterpret_cast<PC_CLIP_SCENE_VIEW *>(scene);
-    i32 clip_index = 0;
     i32 instance_index = 0;
+    i32 fade_mask = 0;
+    i32 clip_index;
     scene->alpha_values = NULL;
     if (view->fade_ranges != NULL) {
+        VARIPTR *cursor;
         NuDisplayListStreamCursor->addr = (NuDisplayListStreamCursor->addr + 15) & ~15u;
-        NuDisplayListStreamCursor->addr = (NuDisplayListStreamCursor->addr + 3) & ~3u;
-        scene->alpha_values = reinterpret_cast<f32 *>(NuDisplayListStreamCursor->addr);
-        NuDisplayListStreamCursor->addr += scene->clip_count * sizeof(f32);
+        cursor = NuDisplayListStreamCursor;
+        scene->alpha_values = reinterpret_cast<f32 *>((cursor->addr + 3) & ~3u);
+        cursor->addr = (cursor->addr + 3) & ~3u;
+        cursor->addr += scene->clip_count * sizeof(f32);
+        fade_mask = 0x40;
     }
-    while (clip_index < scene->clip_count) {
+    for (clip_index = 0; clip_index < scene->clip_count; ++clip_index, ++instance_index) {
         i32 visible = 1;
+        i32 flags;
         if (visibility != NULL && visibility->instance_tree_bits != NULL)
-            visible = (visibility->instance_tree_bits[instance_index >> 3] >> (instance_index & 7)) & 1;
-        i32 flags = static_cast<i8>(scene->visibility_flags[instance_index]);
-        if (visibility->portal_marker != NULL && PCPortalsEnabled != 0 && (flags & 8) == 0)
+            visible = (visibility->instance_tree_bits[instance_index >> 3] >> (instance_index % 8)) & 1;
+        flags = static_cast<i8>(scene->visibility_flags[instance_index]);
+        if (visibility->portal_marker != NULL && PCPortalsEnabled != 0) {
+            if ((flags & 8) != 0)
+                goto check_flags;
             visible = (visibility->portal_bits[instance_index >> 3] >> (instance_index & 7)) & 1;
-        if (((flags & 8) != 0 && visibility->portal_marker != NULL && PCPortalsEnabled != 0 || visible == 1) &&
-            (flags & 1) != 0) {
+        }
+        if (visible != 1)
+            goto next;
+    check_flags:
+        if ((flags & 1) != 0) {
             NUVEC4 *center = &scene->clip_bounds[instance_index * 2];
-            NUVEC4 *extent = center + 1;
-            f32 x = global_camera.mtx.m30 - center->x;
-            f32 y = global_camera.mtx.m31 - center->y;
-            f32 z = global_camera.mtx.m32 - center->z;
-            f32 distance = (x * x + y * y) + z * z;
-            f32 *lod = &scene->fade_levels[clip_index];
-            if (*lod != 0.0f) {
-                while (distance < *lod) {
-                    ++lod;
+            __declspec(align(16)) NUVEC delta;
+            f32 distance, far_clip;
+            i32 fades, result;
+            delta.x = global_camera.mtx.m30 - center->x;
+            delta.y = global_camera.mtx.m31 - center->y;
+            delta.z = global_camera.mtx.m32 - center->z;
+            distance = (delta.x * delta.x + delta.y * delta.y) + delta.z * delta.z;
+            if (scene->fade_levels[clip_index] != 0.0f) {
+                while (distance < scene->fade_levels[clip_index])
                     ++clip_index;
-                }
             }
-            f32 far_clip = view->far_clip_ranges[clip_index];
-            i32 fades = view->fade_ranges != NULL && (flags & 0x40) != 0;
-            if (fades != 0 && view->fade_ranges[instance_index * 2] < view->fade_ranges[instance_index * 2 + 1])
+            far_clip = view->far_clip_ranges[clip_index];
+            fades = flags & fade_mask;
+            if (fades != 0 && view->fade_ranges[instance_index * 2 + 1] > view->fade_ranges[instance_index * 2])
                 far_clip = view->fade_ranges[instance_index * 2 + 1];
-            i32 result = NuCameraClipTestExtentsAxisAligned(reinterpret_cast<NUVEC *>(center),
-                                                            reinterpret_cast<NUVEC *>(extent), far_clip);
+            result = NuCameraClipTestExtentsAxisAligned(reinterpret_cast<NUVEC *>(center),
+                                                        reinterpret_cast<NUVEC *>(center + 1), far_clip);
             if (result != 0 && NuOcclusionManagerIsEnabled() != 0) {
-                NUVEC minimum = {center->x - extent->x, center->y - extent->y, center->z - extent->z};
-                NUVEC maximum = {center->x + extent->x, center->y + extent->y, center->z + extent->z};
+                NUVEC minimum, maximum;
+                center = &scene->clip_bounds[instance_index * 2];
+                minimum.x = center->x - center[1].x;
+                minimum.y = center->y - center[1].y;
+                minimum.z = center->z - center[1].z;
+                maximum.x = center[1].x + center->x;
+                maximum.y = center[1].y + center->y;
+                maximum.z = center[1].z + center->z;
                 if (reinterpret_cast<OcclusionManager *>(&g_OcclusionManager)->IsOccludedOBB(&minimum, &maximum, NULL))
-                    result = 0;
+                    goto next;
             }
             if (result != 0) {
+                i32 material;
                 if (scene->alpha_values != NULL) {
                     scene->alpha_values[clip_index] = 1.0f;
                     if (fades != 0)
                         scene->alpha_values[clip_index] = DisplaySceneDistanceFadePC(
                             distance, view->fade_ranges[instance_index * 2], view->fade_ranges[instance_index * 2 + 1]);
                 }
-                PC_DISPLAY_CLIP_OBJECT_PC *clip = &scene->clip_objects[clip_index];
-                u32 buffer = (scene->render_flags >> 15) & 1;
-                for (i32 material = 0; material < clip->material_count; ++material) {
-                    u32 index = clip->material_ids[material];
-                    scene->material_used[buffer][index >> 3] |= static_cast<u8>(1u << (index & 7));
+                for (material = 0; material < scene->clip_objects[clip_index].material_count; ++material) {
+                    u32 index = (u32)scene->clip_objects[clip_index].material_ids[material];
+                    scene->material_used[(scene->render_flags >> 15) & 1][index >> 3] |= (u8)(1u << (index & 7));
                 }
-                scene->clip_used[buffer][clip_index >> 2] |= static_cast<u8>(result << ((clip_index & 3) * 2));
+                scene->clip_used[(scene->render_flags >> 15) & 1][clip_index >> 2] |=
+                    static_cast<u8>(result << ((clip_index & 3) * 2));
             }
         }
+    next:
         while (scene->fade_levels[clip_index] != 0.0f)
             ++clip_index;
-        ++clip_index;
-        ++instance_index;
     }
 }
 
