@@ -257,8 +257,8 @@ void edbriRender() {
     edcamSet();
     edbriDrawCursor();
     if (edbri_nearest != -1) {
-        const NUVEC *position = &(edBridges[edbri_nearest].position);
-        edbitsDrawDiagonalCross((*position).x, (*position).y, (*position).z, 0.125f, 0xff80ffff, edbri_mtl_zoff);
+        edbitsDrawDiagonalCross(edBridges[edbri_nearest].position.x, edBridges[edbri_nearest].position.y,
+                                edBridges[edbri_nearest].position.z, 0.125f, 0xff80ffff, edbri_mtl_zoff);
     }
     if (edbri_active_menu)
         eduiMenuRender(edbri_active_menu);
