@@ -486,12 +486,12 @@ void CustomiserMenu_End() {
     CustomiseMode[0] = 2;
     CustomiseMode[1] = 2;
     if (GAMEDEMO != 0) {
-        GAMEDEMO = 2;
         NewLData = HUB_LDATA;
         NextArea_FreePlay = 1;
         FreePlay = 1;
         makeplayerlist_freeplay = 1;
         makefreeplaymodellist = 1;
+        GAMEDEMO = 2;
     }
 }
 
@@ -817,7 +817,7 @@ void __cdecl Customiser_SaveModelTextureIDs(void *input, CHARACTER_MODEL_LAYERS_
     if (customiser == NULL || model == NULL)
         return;
     for (side = 0; side < 2; ++side) {
-        if (customiser->character_ids[side] != model->model_id)
+        if (model->model_id != customiser->character_ids[side])
             continue;
         for (category = 0; category < 9; ++category) {
             for (material = 0; material < ((CUSTOM_ACCESSORY_HIERARCHY_PC *)model->hierarchy)->material_count;
