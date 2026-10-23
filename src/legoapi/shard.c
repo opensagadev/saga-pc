@@ -339,8 +339,13 @@ static void Signal_SetGizmoVisibility(GIZMO_PC *gizmo, i32 visible) {
 i32 __cdecl SpeederBlowupHack(GIZMOBLOWUP_PC *blowup, i32 hit_type) {
     (void)hit_type;
     if (blowup != NULL) {
-        if (NuStrCmp(blowup->name, "thermocrate_011") == 0 || NuStrCmp(blowup->name, "thermocrate_021") == 0 ||
-            NuStrCmp(blowup->name, "thermocrate_031") == 0 || NuStrCmp(blowup->name, "minikit101") == 0)
+        if (NuStrCmp(blowup->name, "thermocrate_011") == 0)
+            return 0;
+        if (NuStrCmp(blowup->name, "thermocrate_021") == 0)
+            return 0;
+        if (NuStrCmp(blowup->name, "thermocrate_031") == 0)
+            return 0;
+        if (NuStrCmp(blowup->name, "minikit101") == 0)
             return 0;
     }
     return 1;
@@ -938,9 +943,12 @@ i32 __cdecl ItemMenu(void *menu) {
  * complete cutscene-player return state rather than Android's defaults. */
 i32 __cdecl UpdateShop(void *menu) {
     UpdateCharacterIDs();
-    ShopScaleOverridePc[0] = ShopScaleOverridePc[6] = 0.0f;
-    ShopScaleOverridePc[1] = ShopScaleOverridePc[5] = 0.4f;
-    ShopScaleOverridePc[2] = ShopScaleOverridePc[4] = 0.8f;
+    ShopScaleOverridePc[0] = 0.0f;
+    ShopScaleOverridePc[1] = 0.4f;
+    ShopScaleOverridePc[2] = 0.8f;
+    ShopScaleOverridePc[4] = 0.8f;
+    ShopScaleOverridePc[5] = 0.4f;
+    ShopScaleOverridePc[6] = 0.0f;
     if (ShopNameAlpha < 1.0f) {
         ShopNameAlpha += FRAMETIME + FRAMETIME;
         if (ShopNameAlpha > 1.0f)
@@ -950,25 +958,13 @@ i32 __cdecl UpdateShop(void *menu) {
     SubNormCharPush = 0.02f;
     SubBigCharPush = 0.05f;
     if (menuptr == NULL) {
-        if (shop_from_cutsceneplayer == 0) {
-            menuptr = ItemMenu;
-            ShopSlideTimerPc = 0.125f;
-            ShopExitPc = 0;
-            ShopEnteredPc = 1;
-            picked = 0;
-            ShopLastItemPc = 0;
-            ShopDrawPanelFnPc = DrawItemMenu2D;
-            ShopDrawLevelPc = 0;
-            ShopDrawParentPc[0] = NULL;
-            ShopMenuLevelPc = 0;
-            ShopMenuParentPc[0] = NULL;
-        } else {
-            ShopDrawParentPc[0] = ShopOldDrawParentPc[0];
+        if (shop_from_cutsceneplayer != 0) {
             topscale[5] = ShopOldPickedScalePc;
-            shop_from_cutsceneplayer = 0;
-            menuptr = ShopOldMenuFnPc;
             toppush[5] = ShopOldPickedPushPc;
+            shop_from_cutsceneplayer = 0;
+            ShopDrawParentPc[0] = ShopOldDrawParentPc[0];
             ShopMenuParentPc[0] = ShopOldMenuParentPc[0];
+            menuptr = ShopOldMenuFnPc;
             ShopMenuParentPc[1] = ShopOldMenuParentPc[1];
             ShopDrawParentPc[2] = ShopOldDrawParentPc[2];
             ShopDrawParentPc[1] = ShopOldDrawParentPc[1];
@@ -978,6 +974,18 @@ i32 __cdecl UpdateShop(void *menu) {
             ShopDrawLevelPc = ShopOldDrawLevelPc;
             picked = oldpicked;
             ShopMenuLevelPc = ShopOldMenuLevelPc;
+        } else {
+            ShopSlideTimerPc = 0.125f;
+            menuptr = ItemMenu;
+            ShopExitPc = 0;
+            ShopEnteredPc = 1;
+            picked = 0;
+            ShopLastItemPc = 0;
+            ShopDrawPanelFnPc = DrawItemMenu2D;
+            ShopDrawLevelPc = 0;
+            ShopMenuParentPc[0] = NULL;
+            ShopDrawParentPc[0] = NULL;
+            ShopMenuLevelPc = 0;
         }
     }
     return DoShopMenu(menu) != 0;
