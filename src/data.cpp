@@ -29910,6 +29910,36 @@ extern "C" {
     i32 edbri_pageid = 0;
 }
 
+extern "C" {
+#pragma bss_seg(".bss$edbri_options_menu")
+    struct eduimenu_s *edbri_options_menu = 0;
+}
+
+extern "C" {
+#pragma bss_seg(".bss$edbri_ropecolour_menu")
+    struct eduimenu_s *edbri_ropecolour_menu = 0;
+}
+
+extern "C" {
+#pragma bss_seg(".bss$edbri_plankinstance_menu")
+    struct eduimenu_s *edbri_plankinstance_menu = 0;
+}
+
+extern "C" {
+#pragma bss_seg(".bss$edbri_postinstance_menu")
+    struct eduimenu_s *edbri_postinstance_menu = 0;
+}
+
+extern "C" {
+#pragma bss_seg(".bss$edbri_cam_ax")
+    i32 edbri_cam_ax = 0;
+}
+
+extern "C" {
+#pragma bss_seg(".bss$edbri_cam_ay")
+    i32 edbri_cam_ay = 0;
+}
+
 extern "C" {}
 
 extern "C" {}

@@ -81,6 +81,51 @@ void __cdecl edbitsDrawCircleTilted(NUVEC *centre, f32 radius, i32 colour, struc
     edbitsDrawOvalTilted(centre, radius, radius, colour, material, rotation_z, rotation_y);
 }
 
+void __cdecl edbitsDrawOvalXY(NUVEC *centre, f32 radius_x, f32 radius_z, i32 colour,
+                              struct PC_SCENE_MTL_VIEW *material) {
+    edbitsDrawOvalTilted(centre, radius_x, radius_z, colour, material, 0, 0);
+}
+
+void __cdecl edbitsDrawCircleXY(NUVEC *centre, f32 radius, i32 colour, struct PC_SCENE_MTL_VIEW *material) {
+    edbitsDrawOvalXY(centre, radius, radius, colour, material);
+}
+
+void __cdecl edbitsDrawTorus(NUVEC *centre, f32 radius, f32 radial_extent, f32 vertical_extent, i32 colour,
+                             NUMTL *material) {
+    NUVEC offset;
+    NUVEC point;
+    i32 i, angle;
+    edbitsDrawCircleXY(centre, radius - radial_extent, colour, (struct PC_SCENE_MTL_VIEW *)material);
+    edbitsDrawCircleXY(centre, radius + radial_extent, colour, (struct PC_SCENE_MTL_VIEW *)material);
+    offset = *centre;
+    offset.y -= vertical_extent;
+    edbitsDrawCircleXY(&offset, radius, colour, (struct PC_SCENE_MTL_VIEW *)material);
+    offset = *centre;
+    offset.y += vertical_extent;
+    edbitsDrawCircleXY(&offset, radius, colour, (struct PC_SCENE_MTL_VIEW *)material);
+    for (i = 0; i <= 10; ++i) {
+        point.x = centre->x;
+        point.y = centre->y;
+        point.z = centre->z;
+        angle = (i << 16) / 10;
+        point.x += radius * NU_SIN_LUT(angle);
+        point.z += radius * NU_COS_LUT(angle);
+        edbitsDrawOvalTilted(&point, vertical_extent, radial_extent, colour, (struct PC_SCENE_MTL_VIEW *)material,
+                             0x4000, angle);
+    }
+}
+
+void __cdecl edbitsDrawSphere(NUVEC *centre, f32 radius, i32 colour, NUMTL *material) {
+    struct PC_SCENE_MTL_VIEW *view = (struct PC_SCENE_MTL_VIEW *)material;
+    edbitsDrawCircleXY(centre, radius, colour, view);
+    edbitsDrawCircleTilted(centre, radius, colour, view, 0x2000, 0);
+    edbitsDrawCircleTilted(centre, radius, colour, view, 0x4000, 0);
+    edbitsDrawCircleTilted(centre, radius, colour, view, 0x6000, 0);
+    edbitsDrawCircleTilted(centre, radius, colour, view, 0x4000, 0x2000);
+    edbitsDrawCircleTilted(centre, radius, colour, view, 0x4000, 0x4000);
+    edbitsDrawCircleTilted(centre, radius, colour, view, 0x4000, 0x6000);
+}
+
 void edgraCalculatePage(i8 page, i32 calculate_vectors) {
     typedef struct Sample {
         NUVEC position;

@@ -912,6 +912,35 @@ eduiitem_s *eduiItemGreyGradPickCreate(size_t data, const void *colours, EdUiIte
     return item;
 }
 
+i32 __cdecl eduicbProcessColourPick(eduimenu_s *menu, eduiitem_s *item, f32 delta_time, FRAME_PAD_PC *pad);
+i32 __cdecl eduicbRenderColourPick(eduimenu_s *menu, eduiitem_s *item, i32 x, i32 y, i32 width, i32 height);
+i32 __cdecl eduicbInteractColourPick(edui_interact_s *interact);
+
+eduiitem_s *__cdecl eduiItemColourPickCreate(u32 data, void *colours, void *callback, char *text) {
+    edui_colour_pick_s *item = (edui_colour_pick_s *)NuAlloc(sizeof(edui_colour_pick_s), EduiSourcePathPc, 0xb6c);
+    if (item) {
+        memset(item, 0, sizeof(edui_colour_pick_s));
+        item->base.data = data;
+        item->base.type = 10;
+        memcpy(item->base.colours, colours, sizeof(item->base.colours));
+        item->base.text_alignment = 0x40;
+        item->base.selection_group = 0;
+        item->base.process = eduicbProcessColourPick;
+        item->base.render = eduicbRenderColourPick;
+        item->base.destroy = eduicbItemDestroy;
+        item->interact = eduicbInteractColourPick;
+        eduiItemSetText(&item->base, text);
+        item->cursor_x = 0.5f;
+        item->cursor_y = 0.5f;
+        item->hue = 180.0f;
+        item->value = 0.5f;
+        item->saturation = 1.0f;
+        item->changed = (void(__cdecl *)(eduimenu_s *, eduiitem_s *, u32))callback;
+        return &item->base;
+    }
+    return NULL;
+}
+
 i32 eduiMenuProcess(eduimenu_s *menu, f32 delta_time, FRAME_PAD_PC *pad) {
     processing_menu = menu;
     if (menu->child) {
