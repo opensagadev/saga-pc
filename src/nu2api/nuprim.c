@@ -373,8 +373,8 @@ void __cdecl DisplayListUpdateRenderState(NUDISPLAYLIST_PC *list, NUGLOBALRNDRST
     state->global_id = global->counter_0020;
 }
 
-#define LINK_MTL_STATE ((NUPRIM_MATERIAL_STATE_PC *)list->render_state)
 void __cdecl NuDisplayListLinkMtl(NUDISPLAYLIST_PC *list, NUMTL *material) {
+#define LINK_MTL_STATE ((NUPRIM_MATERIAL_STATE_PC *)list->render_state)
     NUPRIM_COMMAND_PC *command;
     VARIPTR *cursor;
 
