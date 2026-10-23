@@ -831,13 +831,15 @@ void __cdecl AllMiniKits_LSW_Draw(STATUS_STAGE_s *stage, STATUSPACKET_s *packet,
         Text3DEx("?", StatusAllMiniKitsXPc, StatusAllMiniKitsQuestionYOffsetPc + StatusAllMiniKitsYPc,
                  StatusAllMiniKitsZPc, size, size, size, 0, 255, 255, 255, opacity);
     }
-    if (Game.area_save[packet->area->index].minikit_count == packet->minikit_max) {
+    u8 collected = Game.area_save[packet->area->index].minikit_count;
+    u8 total = packet->minikit_max;
+    if (collected == total) {
         Text3DEx("$", StatusAllMiniKitsXPc, StatusAllMiniKitsCompleteYOffsetPc + StatusAllMiniKitsYPc, 1.0f,
                  StatusAllMiniKitsCompleteScalePc, StatusAllMiniKitsCompleteScalePc, StatusAllMiniKitsCompleteScalePc,
                  0, 255, 0, 127, opacity);
     } else {
-        char text[60];
-        sprintf(text, "%i/%i", Game.area_save[packet->area->index].minikit_count, packet->minikit_max);
+        char text[64];
+        sprintf(text, "%i/%i", collected, total);
         Text3DEx(text, StatusAllMiniKitsXPc, StatusAllMiniKitsCountYOffsetPc + StatusAllMiniKitsYPc, 1.0f,
                  StatusAllMiniKitsCountScalePc, StatusAllMiniKitsCountScalePc, StatusAllMiniKitsCountScalePc, 0, 255, 0,
                  127, opacity);
@@ -949,42 +951,45 @@ void __cdecl LevelComplete_LSW_Skip(STATUS_STAGE_s *stage, STATUSPACKET_s *packe
 }
 
 void __cdecl LevelComplete_LSW_Update(STATUS_STAGE_s *stage, STATUSPACKET_s *packet, f32 elapsed) {
-    if (stage->field_0x14 == 0) {
-        stage->field_0x14 = 1;
-        stage->field_0x18 = 0.0f;
-        stage->field_0x1c = 4.0f;
-    } else if (stage->field_0x14 == 1) {
-        SetDrawGoldBrick(packet, packet->current_gold_brick);
-        volatile f32 previous = stage->field_0x18;
-        volatile f32 accumulated = stage->field_0x18;
-        accumulated += elapsed;
-        stage->field_0x18 = accumulated;
-        if (stage->field_0x18 >= stage->field_0x1c) {
-            if (stage->type == 26 && packet->mission_state == 2)
-                *packet->score = packet->reward_score;
-            if (stage->type == 23 && packet->challenge_state == 2)
-                *packet->score = packet->reward_score;
-            NextStatusStage(packet);
-            return;
-        }
-        if (previous < 0.5f && stage->field_0x18 >= 0.5f) {
-            if ((stage->type == 23 && packet->challenge_state == 3) ||
-                (stage->type == 26 && packet->mission_state == 3))
-                GameAudio_PlaySfx(0x32, NULL, 0, 0);
-            else
-                PlaySfx("StatusAward", NULL);
-            NewStatusRumbleBuzz(-1, 0.6f, 0.0f, 0);
-            return;
-        }
-        if ((stage->type != 26 || packet->mission_state != 2) && (stage->type != 23 || packet->challenge_state != 2))
-            return;
-        volatile f32 reward_end = (f64)stage->field_0x1c - 0.75;
-        if (previous < reward_end && stage->field_0x18 >= reward_end) {
-            CoinTotalScale = 1.5f;
-            NewStatusRumbleBuzz(-1, 0.0f, 0.1f, 0);
-            PlaySfx("Shop_BuyCheat", NULL);
-        } else if (stage->field_0x18 >= 0.75f && stage->field_0x18 < reward_end) {
-            PlaySfx("PickupCoin", NULL);
+    switch (stage->field_0x14) {
+        case 0:
+            stage->field_0x14 = 1;
+            stage->field_0x18 = 0.0f;
+            stage->field_0x1c = 4.0f;
+            break;
+        case 1: {
+            SetDrawGoldBrick(packet, packet->current_gold_brick);
+            f32 previous = stage->field_0x18;
+            stage->field_0x18 += elapsed;
+            if (stage->field_0x18 >= stage->field_0x1c) {
+                if (stage->type == 26 && packet->mission_state == 2)
+                    *packet->score = packet->reward_score;
+                if (stage->type == 23 && packet->challenge_state == 2)
+                    *packet->score = packet->reward_score;
+                NextStatusStage(packet);
+                return;
+            }
+            if (previous < 0.5f && stage->field_0x18 >= 0.5f) {
+                if ((stage->type == 23 && packet->challenge_state == 3) ||
+                    (stage->type == 26 && packet->mission_state == 3))
+                    GameAudio_PlaySfx(0x32, NULL, 0, 0);
+                else
+                    PlaySfx("StatusAward", NULL);
+                NewStatusRumbleBuzz(-1, 0.6f, 0.0f, 0);
+                return;
+            }
+            if ((stage->type == 26 && packet->mission_state == 2) ||
+                (stage->type == 23 && packet->challenge_state == 2)) {
+                f32 reward_end = stage->field_0x1c - 0.75;
+                if (previous < reward_end && stage->field_0x18 >= reward_end) {
+                    CoinTotalScale = 1.5f;
+                    NewStatusRumbleBuzz(-1, 0.0f, 0.1f, 0);
+                    PlaySfx("Shop_BuyCheat", NULL);
+                } else if (stage->field_0x18 >= 0.75f && stage->field_0x18 < reward_end) {
+                    PlaySfx("PickupCoin", NULL);
+                }
+            }
+            break;
         }
     }
 }
@@ -1175,8 +1180,7 @@ void __cdecl TrueHero_LSW_Update(STATUS_STAGE_s *stage, STATUSPACKET_s *packet, 
             stage->field_0x1c = 1.0f;
             break;
         case 1: {
-            volatile f32 time = (f64)elapsed + (f64)stage->field_0x18;
-            stage->field_0x18 = time;
+            stage->field_0x18 = elapsed + stage->field_0x18;
             if (stage->field_0x18 >= stage->field_0x1c) {
                 stage->field_0x14 = 2;
                 stage->field_0x18 = 0.0f;
@@ -1188,22 +1192,21 @@ void __cdecl TrueHero_LSW_Update(STATUS_STAGE_s *stage, STATUSPACKET_s *packet, 
         }
         case 2: {
             SetDrawGoldBrick(packet, packet->current_gold_brick);
-            volatile f32 percent;
+            f32 percent;
             if ((packet->field_0xb0 & 4) == 0) {
-                percent = (f64)packet->collected_score * 100.0 / (f64)packet->true_hero_target;
+                percent = packet->collected_score * 100.0 / packet->true_hero_target;
                 if (percent > 99.0f)
                     percent = 99.0f;
             } else {
                 percent = 100.0f;
             }
-            stage->field_0x18 = (f64)elapsed + (f64)stage->field_0x18;
-            volatile f32 animated = (100.0 / (f64)stage->field_0x1c) * (f64)elapsed + (f64)packet->true_hero_percent;
-            packet->true_hero_percent = animated;
+            stage->field_0x18 = elapsed + stage->field_0x18;
+            packet->true_hero_percent = 100.0 / stage->field_0x1c * elapsed + packet->true_hero_percent;
             if (packet->true_hero_percent > percent) {
                 packet->true_hero_percent = percent;
             } else if (packet->true_hero_percent >= StatusTrueHeroNextSoundPercentPc) {
                 PlaySfx("Status_GoldBarDec", NULL);
-                StatusTrueHeroNextSoundPercentPc = (f64)StatusTrueHeroNextSoundPercentPc + 10.0;
+                StatusTrueHeroNextSoundPercentPc += 10.0;
             }
             if (stage->field_0x18 > stage->field_0x1c) {
                 stage->field_0x18 = 0.0f;
@@ -1219,8 +1222,7 @@ void __cdecl TrueHero_LSW_Update(STATUS_STAGE_s *stage, STATUSPACKET_s *packet, 
             break;
         }
         case 3: {
-            volatile f32 time = (f64)elapsed + (f64)stage->field_0x18;
-            stage->field_0x18 = time;
+            stage->field_0x18 = elapsed + stage->field_0x18;
             if (stage->field_0x18 >= stage->field_0x1c) {
                 stage->field_0x14 = 6;
                 stage->field_0x18 = 0.0f;
@@ -1230,8 +1232,7 @@ void __cdecl TrueHero_LSW_Update(STATUS_STAGE_s *stage, STATUSPACKET_s *packet, 
             break;
         }
         case 6: {
-            volatile f32 time = (f64)elapsed + (f64)stage->field_0x18;
-            stage->field_0x18 = time;
+            stage->field_0x18 = elapsed + stage->field_0x18;
             if (stage->field_0x18 >= stage->field_0x1c)
                 NextStatusStage(packet);
             break;
@@ -1440,18 +1441,16 @@ void __cdecl MiniKit_LSW_Update(STATUS_STAGE_s *stage, STATUSPACKET_s *packet, f
     switch (stage->field_0x14) {
         case 0:
             StatusNewMinikitCountPc = packet->new_minikits;
-            if (StatusNewMinikitCountPc > 0)
-                StatusCurrentMinikitPc =
-                    (i32)((u32)Game.area_save[packet->area->index].minikit_count - (u32)StatusNewMinikitCountPc);
-            else
+            if (StatusNewMinikitCountPc <= 0)
                 StatusCurrentMinikitPc = Game.area_save[packet->area->index].minikit_count;
+            else
+                StatusCurrentMinikitPc = Game.area_save[packet->area->index].minikit_count - StatusNewMinikitCountPc;
             stage->field_0x18 = 0.0f;
             stage->field_0x14 = 1;
             stage->field_0x1c = 1.0f;
             break;
         case 1: {
-            volatile f32 time = (f64)stage->field_0x18 + elapsed;
-            stage->field_0x18 = time;
+            stage->field_0x18 += elapsed;
             if (stage->field_0x18 >= stage->field_0x1c) {
                 stage->field_0x18 = 0.0f;
                 if (StatusNewMinikitCountPc == 0) {
@@ -1467,8 +1466,7 @@ void __cdecl MiniKit_LSW_Update(STATUS_STAGE_s *stage, STATUSPACKET_s *packet, f
             break;
         }
         case 2: {
-            volatile f32 time = (f64)stage->field_0x18 + elapsed;
-            stage->field_0x18 = time;
+            stage->field_0x18 += elapsed;
             if (stage->field_0x18 >= stage->field_0x1c) {
                 stage->field_0x18 = 0.0f;
                 stage->field_0x14 = 3;
@@ -1479,23 +1477,22 @@ void __cdecl MiniKit_LSW_Update(STATUS_STAGE_s *stage, STATUSPACKET_s *packet, f
         }
         case 3: {
             if (StatusNewMinikitCountPc > 0) {
-                volatile f32 previous = stage->field_0x18;
-                volatile f32 time = (f64)stage->field_0x18 + elapsed;
-                stage->field_0x18 = time;
-                volatile f32 sound_start = (f64)stage->field_0x1c - StatusMiniKitJibberLengthPc;
+                f32 previous = stage->field_0x18;
+                stage->field_0x18 += elapsed;
+                f32 sound_start = stage->field_0x1c - StatusMiniKitJibberLengthPc;
                 if (previous < sound_start && stage->field_0x18 >= sound_start) {
                     NewStatusRumbleBuzz(-1, 0.0f, 0.1f, 0);
                     PlaySfx("MK-Panel", NULL);
                 }
                 if (UpdateNewMiniKits(packet, stage) == 1) {
-                    if (StatusCurrentMinikitPc < packet->minikit_count) {
-                        stage->field_0x14 = 2;
-                        stage->field_0x1c = 0.5f;
-                        stage->field_0x18 = 0.0f;
-                    } else {
+                    if (StatusCurrentMinikitPc >= packet->minikit_count) {
                         stage->field_0x1c = 1.0f;
                         stage->field_0x18 = 0.0f;
                         stage->field_0x14 = 4;
+                    } else {
+                        stage->field_0x14 = 2;
+                        stage->field_0x1c = 0.5f;
+                        stage->field_0x18 = 0.0f;
                     }
                 }
             } else {
@@ -1514,17 +1511,15 @@ void __cdecl MiniKit_LSW_Update(STATUS_STAGE_s *stage, STATUSPACKET_s *packet, f
             break;
         }
         case 4: {
-            volatile f32 time = (f64)stage->field_0x18 + elapsed;
-            stage->field_0x18 = time;
+            stage->field_0x18 += elapsed;
             if (stage->field_0x18 >= stage->field_0x1c)
                 NextStatusStage(packet);
             break;
         }
         case 6: {
             SetDrawGoldBrick(packet, packet->current_gold_brick);
-            volatile f32 previous = stage->field_0x18;
-            volatile f32 time = (f64)stage->field_0x18 + elapsed;
-            stage->field_0x18 = time;
+            f32 previous = stage->field_0x18;
+            stage->field_0x18 += elapsed;
             if (stage->field_0x18 >= stage->field_0x1c) {
                 if (previous < stage->field_0x1c) {
                     AddStatusMiniKitParts();
@@ -1724,8 +1719,7 @@ void __cdecl CollectCharcters_Skip(STATUS_STAGE_s *stage, STATUSPACKET_s *packet
 void __cdecl CollectCharcters_Update(STATUS_STAGE_s *stage, STATUSPACKET_s *packet, f32 elapsed) {
     if (stage->field_0x14 != 0) {
         i32 index = stage->field_0x14;
-        volatile f32 time = (f64)elapsed + stage->field_0x18;
-        stage->field_0x18 = time;
+        stage->field_0x18 = elapsed + stage->field_0x18;
         if (stage->field_0x18 >= stage->field_0x1c) {
             AddToCollection(StatusNewCharacterIdsPc[(i32)((u32)index - 1u)]);
             PlaySfx("LegoClicks", NULL);
@@ -1737,8 +1731,7 @@ void __cdecl CollectCharcters_Update(STATUS_STAGE_s *stage, STATUSPACKET_s *pack
         }
     } else {
         stage->field_0x1c = 1.0f;
-        volatile f32 time = (f64)elapsed + stage->field_0x18;
-        stage->field_0x18 = time;
+        stage->field_0x18 = elapsed + stage->field_0x18;
         if (stage->field_0x18 >= 1.0f) {
             stage->field_0x14 = 1;
             if (StatusNewCharacterIdsPc[0] == -1) {
@@ -1856,9 +1849,8 @@ void __cdecl ChallangeCash_Update(STATUS_STAGE_s *stage, STATUSPACKET_s *packet,
             stage->field_0x1c = 4.0f;
             break;
         case 1: {
-            volatile f32 previous = stage->field_0x18;
-            volatile f32 time = (f64)stage->field_0x18 + elapsed;
-            stage->field_0x18 = time;
+            f32 previous = stage->field_0x18;
+            stage->field_0x18 = stage->field_0x18 + elapsed;
             if (stage->field_0x18 >= 1.5f && FindGameMsgsWithID(1, 0, -1, NULL) == 0) {
                 stage->field_0x18 = 0.0f;
                 stage->field_0x14 = 2;
@@ -1897,8 +1889,7 @@ void __cdecl ChallangeCash_Update(STATUS_STAGE_s *stage, STATUSPACKET_s *packet,
             break;
         }
         case 2: {
-            volatile f32 time = (f64)stage->field_0x18 + elapsed;
-            stage->field_0x18 = time;
+            stage->field_0x18 = stage->field_0x18 + elapsed;
             if (stage->field_0x18 > stage->field_0x1c) {
                 PlaySfx("Shop_BuyCheat", NULL);
                 NextStatusStage(packet);
@@ -1916,13 +1907,15 @@ void __cdecl ChallangeCash_Draw(STATUS_STAGE_s *stage, STATUSPACKET_s *packet, i
         iconalphaoverride = 0.0f;
         return;
     }
-    iconalphaoverride = stage->field_0x18 >= 0.5f ? 1.0 : (f64)stage->field_0x18 + stage->field_0x18;
+    if (stage->field_0x18 >= 0.5f)
+        iconalphaoverride = 1.0f;
+    else
+        iconalphaoverride = stage->field_0x18 + stage->field_0x18;
     if (stage->field_0x18 < 2.0f && NuFmod(stage->field_0x18, 0.2f) >= (f64)0.1f) {
-        i32 second_player = (packet->field_0xb0 >> 5) & 1;
-        volatile f32 winner_x = second_player != 0 ? 0.675f : -0.675f;
-        volatile i32 opacity = (i32)((f64)iconalphaoverride * 128.0);
+        i32 second_player = (packet->flags_word >> 5) & 1;
+        f32 winner_x = second_player == 0 ? -0.675f : 0.675f;
         SmartTextEx(TTab[TextIdPc88075c], winner_x, STATSPOSY, 1.0f, 0.7f, 0.7f, 0.7f, second_player != 0 ? 8 : 2, 0,
-                    255, 0, 0.35f, 1, NULL, 0, (u32)opacity);
+                    255, 0, 0.35f, 1, NULL, 0, (i32)(iconalphaoverride * 128.0));
     }
     if (stage->field_0x14 == 1)
         AddGameMessage(TTab[TextIdPc8806e8], &position, 0.7f, &position, 0.7f, 255, 0, 127, 0x4020, 2.0f);

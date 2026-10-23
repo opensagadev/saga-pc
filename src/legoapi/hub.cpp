@@ -2223,16 +2223,22 @@ extern "C" f32 HubEpisodeTitleYPc, HubEpisodeTitleSizePc, HubEpisodeSubtitleYPc,
 extern "C" u8 HubEpisodeRedPc, HubEpisodeGreenPc, HubEpisodeBluePc;
 static void HubDrawSuperBonusStatsPc(AREA_DATA_PC *area, f32 alpha) {
     const i32 opacity = (i32)(alpha * 128.0);
-    SmartTextEx(area == NULL ? (char *)"?" : TTab[area->name_id], 0.0f, HubEpisodeSubtitleYPc, 1.0f,
-                HubEpisodeSubtitleSizePc, HubEpisodeSubtitleSizePc, HubEpisodeSubtitleSizePc, 0, HubEpisodeRedPc,
-                HubEpisodeGreenPc, HubEpisodeBluePc, 1.7f, 1, NULL, 0, opacity);
-    if (area != NULL && Game.area_save[area->index].area_complete != 0) {
+    if (area == NULL) {
+        SmartTextEx((char *)"?", 0.0f, HubEpisodeSubtitleYPc, 1.0f, HubEpisodeSubtitleSizePc, HubEpisodeSubtitleSizePc,
+                    HubEpisodeSubtitleSizePc, 0, HubEpisodeRedPc, HubEpisodeGreenPc, HubEpisodeBluePc, 1.7f, 1, NULL, 0,
+                    opacity);
+        return;
+    }
+    SmartTextEx(TTab[area->name_id], 0.0f, HubEpisodeSubtitleYPc, 1.0f, HubEpisodeSubtitleSizePc,
+                HubEpisodeSubtitleSizePc, HubEpisodeSubtitleSizePc, 0, HubEpisodeRedPc, HubEpisodeGreenPc,
+                HubEpisodeBluePc, 1.7f, 1, NULL, 0, opacity);
+    if (Game.area_save[area->index].area_complete != 0) {
         char text[64];
         SmartTextEx(TTab[TextIdPc880714], 0.0f, (f32)(HubEpisodeTitleYPc + 0.125), 1.0f, HubEpisodeTitleSizePc,
                     HubEpisodeTitleSizePc, HubEpisodeTitleSizePc, 0, 191, 0, 127, 0.7f, 1, NULL, 0, opacity);
         Text_MakeTime(Game.area_save[area->index].challenge_trial_time, 1, 1, 1, text);
         Text3DEx(text, 0.0f, HubEpisodeTitleYPc, 1.0f, HubEpisodeSubtitleSizePc, HubEpisodeSubtitleSizePc,
-                 HubEpisodeSubtitleSizePc, 0, 255, 255, 255, (u8)opacity);
+                 HubEpisodeSubtitleSizePc, 0, 255, 255, 255, opacity);
         if (EpisodeGoldBrickForSuperBonusPc != 0)
             Hub_DrawImportantBrick(211, 0.0f, (f32)(HubEpisodeTitleYPc + 0.125), alpha, -1, -1);
     }
@@ -4125,35 +4131,35 @@ static void HubDrawEpisodeStatsPc(i32 episode_index, f32 phase) {
 static void HubDrawMiniKitStatsPc(i32 index, f32 phase) {
     char title[128];
     AREA_DATA_PC *area = &ADataList[index];
-    AREA_SAVE_PICKUP_PC *save = &Game.area_save[index];
     const i32 alpha = static_cast<i32>(phase * 128.0);
-    if (save->minikit_complete) {
-        const f32 scale = HubEpisodeTitleSizePc;
-        if (area->minikit_id != -1 && CDataList[area->minikit_id].name_id != -1)
-            SmartTextEx(TTab[CDataList[area->minikit_id].name_id], 0.0f, HubEpisodeTitleYPc, 1.0f,
-                        HubEpisodeSubtitleSizePc, HubEpisodeSubtitleSizePc, HubEpisodeSubtitleSizePc, 0,
-                        HubEpisodeRedPc, HubEpisodeGreenPc, HubEpisodeBluePc, 1.7f, 1, NULL, 0, alpha);
+    f32 scale;
+    char *text;
+    i32 episode;
+    if (Game.area_save[index].minikit_complete) {
+        scale = HubEpisodeTitleSizePc;
+        i32 kit = area->minikit_id;
+        if (kit != -1 && CDataList[kit].name_id != -1)
+            SmartTextEx(TTab[CDataList[kit].name_id], 0.0f, HubEpisodeTitleYPc, 1.0f, HubEpisodeSubtitleSizePc,
+                        HubEpisodeSubtitleSizePc, HubEpisodeSubtitleSizePc, 0, HubEpisodeRedPc, HubEpisodeGreenPc,
+                        HubEpisodeBluePc, 1.7f, 1, NULL, 0, alpha);
         sprintf(title, "(%s)", TTab[area->name_id]);
-        if (scale > 0.0f)
-            SmartTextEx(title, 0.0f, HubEpisodeSubtitleYPc, 1.0f, scale, scale, scale, 0, HubEpisodeRedPc,
-                        HubEpisodeGreenPc, HubEpisodeBluePc, 1.7f, 1, NULL, 0, alpha);
-    } else if (save->minikit_count) {
-        const f32 scale = HubEpisodeSubtitleSizePc;
-        HubDrawMiniKitCountPc(0.0f, HubEpisodeTitleYPc, save->minikit_count, 10, phase);
-        char *name = TTab[area->name_id];
-        if (scale > 0.0f && name)
-            SmartTextEx(name, 0.0f, HubEpisodeSubtitleYPc, 1.0f, scale, scale, scale, 0, HubEpisodeRedPc,
-                        HubEpisodeGreenPc, HubEpisodeBluePc, 1.7f, 1, NULL, 0, alpha);
-    } else if (area->area_index != -1 && area->episode_index != -1) {
-        const f32 scale = HubEpisodeSubtitleSizePc;
-        const i8 episode = area->episode_index;
-        HubDrawMiniKitCountPc(0.0f, HubEpisodeTitleYPc, 0, 10, phase);
+        text = title;
+    } else if (Game.area_save[index].minikit_count > 0) {
+        scale = HubEpisodeSubtitleSizePc;
+        HubDrawMiniKitCountPc(0.0f, HubEpisodeTitleYPc, Game.area_save[index].minikit_count, 10, phase);
+        text = TTab[area->name_id];
+    } else if ((episode = area->episode_index) != -1 && area->area_index != -1) {
+        scale = HubEpisodeSubtitleSizePc;
+        HubDrawMiniKitCountPc(0.0f, HubEpisodeTitleYPc, Game.area_save[index].minikit_count, 10, phase);
         sprintf(title, "%s, %s %i", TTab[EDataList[episode].name_id], TTab[TextCrawlChapterIdPc],
-                static_cast<i8>(ADataList[index].area_index) + 1);
-        if (scale > 0.0f)
-            SmartTextEx(title, 0.0f, HubEpisodeSubtitleYPc, 1.0f, scale, scale, scale, 0, HubEpisodeRedPc,
-                        HubEpisodeGreenPc, HubEpisodeBluePc, 1.7f, 1, NULL, 0, alpha);
+                ADataList[index].area_index + 1);
+        text = title;
+    } else {
+        return;
     }
+    if (scale > 0.0f && text != NULL)
+        SmartTextEx(text, 0.0f, HubEpisodeSubtitleYPc, 1.0f, scale, scale, scale, 0, HubEpisodeRedPc, HubEpisodeGreenPc,
+                    HubEpisodeBluePc, 1.7f, 1, NULL, 0, alpha);
 }
 
 extern "C" void Hub_DrawPanel(WORLDINFO *) {
