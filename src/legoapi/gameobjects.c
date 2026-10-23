@@ -60,10 +60,10 @@ void GameObjectToCameraDistances() {
         f32 dx;
         f32 dy;
         f32 dz;
-        const u16 required_flags = APIOBJECT_FLAG_IN_USE | APIOBJECT_FLAG_CHARACTER;
-        if ((object->flags_1fc_half & required_flags) != required_flags) {
+        if ((object->flags_1fc_word & APIOBJECT_FLAG_IN_USE) == 0)
             continue;
-        }
+        if ((object->flags_1fc_word & APIOBJECT_FLAG_CHARACTER) == 0)
+            continue;
 
         dx = camera_position.x - object->position.x;
         dy = camera_position.y - object->position.y;
@@ -177,20 +177,20 @@ f32 __cdecl GetVehicleHoverHeight(GAMEOBJECT *object, f32 *separation_offset) {
 u16 __cdecl SeekRot(u16 current, u16 target, f32 speed);
 
 __declspec(noinline) void __cdecl FindAnglesZX(NUVEC *normal, u16 *x_rotation, u16 *z_rotation) {
-    NUANG x_angle = NuAtan2D(normal->z, normal->y);
+    u16 x_angle = (u16)NuAtan2D(normal->z, normal->y);
     NUVEC rotated;
-    NUANG z_angle;
+    u16 z_angle;
 
     if (x_rotation != NULL) {
         *x_rotation = x_angle;
     }
     temp_zrot = x_angle;
     NuVecRotateX(&rotated, normal, (NUANG)(0 - x_angle));
-    z_angle = (NUANG)(0 - NuAtan2D(rotated.x, rotated.y));
+    z_angle = (u16)NuAtan2D(rotated.x, rotated.y);
     if (z_rotation != NULL) {
-        *z_rotation = z_angle;
+        *z_rotation = (u16)-z_angle;
     }
-    temp_xrot = z_angle;
+    temp_xrot = (u16)-z_angle;
 }
 
 void __cdecl GameObjectRotation(GAMEOBJECT *object, i32 mode) {
@@ -526,15 +526,13 @@ __declspec(noinline) GAMEOBJECT *__cdecl FindGameObject(i32 character_id, u32 re
 
 __declspec(noinline) GAMEOBJECT *__cdecl GetNamedGameObject(void *sys, char *name) {
     APIOBJECT_PC *result;
-
-    if (GetNamedGameObjectCallback == NULL) {
-        return NULL;
+    if (GetNamedGameObjectCallback != NULL) {
+        result = GetNamedGameObjectCallback(sys, name);
+        if (result != NULL) {
+            return (GAMEOBJECT *)result->owner;
+        }
     }
-    result = GetNamedGameObjectCallback(sys, name);
-    if (result == NULL) {
-        return NULL;
-    }
-    return (GAMEOBJECT *)result->owner;
+    return NULL;
 }
 
 void __cdecl MakeBaddiesForgetAboutParty(i32 check_hostility) {
@@ -618,29 +616,32 @@ void __cdecl MakeBaddiesForgetAboutParty(i32 check_hostility) {
 }
 
 i32 CanFightLikeAJedi(GAMEOBJECT *object) {
-    return CharCategory_IsCategory(object, 0) != 0 || object->id == id_GRIEVOUS || object->id == id_BODYGUARD ||
-           object->id == id_IMPERIALGUARD;
+    if (CharCategory_IsCategory(object, 0) != 0)
+        return 1;
+    if (object->id == (u16)id_GRIEVOUS)
+        return 1;
+    if (object->id == (u16)id_BODYGUARD)
+        return 1;
+    return object->id == (u16)id_IMPERIALGUARD;
 }
 
 __declspec(noinline) void __cdecl ScaleGameObject(GAMEOBJECT *object) {
-    f32 scale = object->origin_scale;
     CHARACTERDATA_PC *character = object->character_data;
-    object->scaled_radius = character->scaled_radius * scale;
-    object->collision_radius = object->collision_radius_unscaled * scale;
+    object->scaled_radius = character->scaled_radius * object->origin_scale;
+    object->collision_radius = object->collision_radius_unscaled * object->origin_scale;
     object->field_b0 = object->collision_radius * object->collision_y_scale;
     object->scaled_height = (character->top - character->bottom) * object->collision_scale;
 }
 
 void __cdecl GetTopBot(GAMEOBJECT *object) {
     CHARACTERDATA_PC *character = object->character_data;
-    f32 bottom = character->bottom;
-    f32 top = character->top;
-    object->character_bottom = bottom;
-    object->character_top = top;
+    object->character_bottom = character->bottom;
+    object->character_top = character->top;
     if (object->collision_radius_unscaled == 0.0f) {
         object->collision_y_scale = 0.0f;
     } else {
-        object->collision_y_scale = (f32)((f64)(top - bottom) / ((f64)object->collision_radius_unscaled * 2.0));
+        object->collision_y_scale = (f32)((f64)(object->character_top - object->character_bottom) /
+                                          ((f64)object->collision_radius_unscaled * 2.0));
     }
 }
 
@@ -672,20 +673,22 @@ void __cdecl SnapCreaturePos(GAMEOBJECT *object, NUVEC *position, i32 angle, AIP
 
 APIOBJECT_PC *__cdecl GameAPIOBJECTFromObjID(u8 object_id) {
     GAMEOBJECT *object;
-    if ((i32)object_id >= HIGHGAMEOBJECT) {
-        return NULL;
+    u32 flags;
+    if ((i32)object_id < HIGHGAMEOBJECT) {
+        object = &Obj[object_id];
+        flags = object->flags_1fc_word;
+        if ((flags & 1) == 0) {
+            return NULL;
+        }
+        if ((flags & 0x1000) == 0 && object->ai_packet.reset_mode != 3) {
+            return NULL;
+        }
+        if (object->dead != 0 && !(object->field_1010 > 0.0f)) {
+            return NULL;
+        }
+        return (APIOBJECT_PC *)object;
     }
-    object = &Obj[object_id];
-    if ((object->flags_1fc & 1) == 0) {
-        return NULL;
-    }
-    if ((object->flags_1fc_word & 0x1000) == 0 && object->ai_packet.reset_mode != 3) {
-        return NULL;
-    }
-    if (object->dead != 0 && !(object->field_1010 > 0.0f)) {
-        return NULL;
-    }
-    return (APIOBJECT_PC *)object;
+    return NULL;
 }
 
 GAMEOBJECT *__cdecl TargetGameObject(GAMEOBJECT *object, NUVEC *position, NUVEC *direction, f32 radius,
@@ -794,14 +797,17 @@ void __cdecl GameObjectToCameraCode(GAMEOBJECT *object) {
     PLAYERCHARACTERCONFIG_PC *data;
     u32 mask;
 
-    object->shadow_opacity =
-        (GameTimer.update_count != 0 && object->ai_update_distance < WORLD->current_level->blob_shadow_fade_far)
-            ? (object->ai_update_distance > WORLD->current_level->blob_shadow_fade_near
-                   ? 1.0f -
-                         (object->ai_update_distance - WORLD->current_level->blob_shadow_fade_near) /
-                             (WORLD->current_level->blob_shadow_fade_far - WORLD->current_level->blob_shadow_fade_near)
-                   : 1.0f)
-            : 0.0f;
+    if (GameTimer.update_count != 0 && object->ai_update_distance < WORLD->current_level->blob_shadow_fade_far) {
+        if (object->ai_update_distance > WORLD->current_level->blob_shadow_fade_near) {
+            object->shadow_opacity =
+                1.0f - (object->ai_update_distance - WORLD->current_level->blob_shadow_fade_near) /
+                           (WORLD->current_level->blob_shadow_fade_far - WORLD->current_level->blob_shadow_fade_near);
+        } else {
+            object->shadow_opacity = 1.0f;
+        }
+    } else {
+        object->shadow_opacity = 0.0f;
+    }
     if ((u32)GameTimer.update_count > 0) {
         data = object->character_data->game_character;
         if ((data->flags_094 & 0x10) == 0) {
@@ -2146,7 +2152,7 @@ i32 __cdecl TagCode(GAMEOBJECT *source, GAMEOBJECT *destination, i32 takeover, i
         source_flags = source->flags_1f8;
         mask = takeover != 0 ? 0x146fd : 0x46f8;
         saved_flags = source_flags & mask;
-        source->flags_1f8 = source_flags & ~mask;
+        source->flags_1f8 &= ~mask;
         source->flags_1f8 |= destination->flags_1f8 & mask;
         destination->flags_1f8 = (destination->flags_1f8 & ~mask) | (saved_flags & mask);
         callback = source->tag_object_callback;
@@ -2307,11 +2313,12 @@ i32 __cdecl TakeOverYoda(GAMEOBJECT *rider, GAMEOBJECT *vehicle, i32 blend_camer
 
 void __cdecl TakeOver2GetIn(GAMEOBJECT *rider, GAMEOBJECT *vehicle) {
     i32 i;
+    GAMEOBJECT *object = Obj;
+    i32 count = HIGHGAMEOBJECT;
     CHARACTER_MODEL_LAYERS_PC *model;
-    for (i = 0; i < HIGHGAMEOBJECT; ++i) {
-        GAMEOBJECT *object = &Obj[i];
-        if ((object->flags_1fc_word & 0x1001) == 0x1001 && object->character_context == 0x3c &&
-            object->force_target == vehicle) {
+    for (i = 0; i < count; ++i, ++object) {
+        if ((object->flags_1fc_word & 1) != 0 && (object->flags_1fc_word & 0x1000) != 0 &&
+            object->character_context == 0x3c && object->force_target == vehicle) {
             return;
         }
     }
@@ -2930,37 +2937,34 @@ GAMEOBJECT *__cdecl ActivateCharacter(char *name, NUVEC *position, i32 angle) {
     GAMEOBJECT *object;
     if (Mission_Active(NULL) != NULL)
         return NULL;
-    if (name == NULL)
-        return NULL;
-    object = GetNamedGameObject(WORLD->ai_sys, name);
-    if (object == NULL || (object->flags_1fc_word & 0x1000) != 0)
-        return NULL;
-    if (FreePlay != 0 && (object->flags_1f8 & 0x400) == 0)
-        return NULL;
-    if (object->ai_packet.creature_index == 0xff) {
-        object->flags_1fc_word |= 0x1000;
-        AIScriptSetBaseScriptStateByName(&object->ai_packet.script_processor, "Base");
-        if (position != NULL) {
-            object->position = *position;
-            object->movement_facing_angle = object->facing_angle = object->field_0x276 = (u16)angle;
-            AISysGetCharacterPathPos(WORLD->ai_sys, (APIOBJECT_PC *)object, &object->ai_packet, 0xff, 1);
-            object->initial_position = object->position;
-            object->collision_position = object->position;
-            plr_lastpos = object->collision_position;
-            object->start_position = object->collision_position;
-            object->respawn_position = object->position;
-            object->last_safe_position = object->position;
-            object->ai_update_position = object->position;
-            object->reset_velocity = v000;
-            object->velocity = object->reset_velocity;
-            InitSurfaceInfo(object);
-            SetObjOnSurface(object, 0);
+    if (name != NULL && (object = GetNamedGameObject(WORLD->ai_sys, name)) != NULL &&
+        (object->flags_1fc_word & 0x1000) == 0 && (FreePlay == 0 || (object->flags_1f8 & 0x400) != 0)) {
+        if (object->ai_packet.creature_index == 0xff) {
+            object->flags_1fc_word |= 0x1000;
+            AIScriptSetBaseScriptStateByName(&object->ai_packet.script_processor, "Base");
+            if (position != NULL) {
+                object->position = *position;
+                object->movement_facing_angle = object->facing_angle = object->field_0x276 = (u16)angle;
+                AISysGetCharacterPathPos(WORLD->ai_sys, (APIOBJECT_PC *)object, &object->ai_packet, 0xff, 1);
+                object->initial_position = object->position;
+                object->collision_position = object->position;
+                plr_lastpos = object->collision_position;
+                object->start_position = object->collision_position;
+                object->respawn_position = object->position;
+                object->last_safe_position = object->position;
+                object->ai_update_position = object->position;
+                object->reset_velocity = v000;
+                object->velocity = object->reset_velocity;
+                InitSurfaceInfo(object);
+                SetObjOnSurface(object, 0);
+            }
+        } else {
+            ResetAICreature(object, WORLD->ai_sys);
         }
-    } else {
-        ResetAICreature(object, WORLD->ai_sys);
+        LightGameObject(object, WORLD->rtl_set);
+        return object;
     }
-    LightGameObject(object, WORLD->rtl_set);
-    return object;
+    return NULL;
 }
 
 void __cdecl ManageGameObjects(void) {
@@ -4447,7 +4451,7 @@ void __cdecl GameAntiNodeData_Init(void *opaque_data, NUSPECIALHANDLE *special) 
 
 void __cdecl GameAntiNodeData_Read(void *opaque_data) {
     GAME_ANTI_NODE_DATA_PC *data = (GAME_ANTI_NODE_DATA_PC *)opaque_data;
-    if ((u8)EdFileReadChar() == 0)
+    if ((u8)EdFileReadChar() <= 0)
         return;
     EdFileReadNuVec(&data->position);
     data->radius = EdFileReadFloat();
@@ -4694,9 +4698,9 @@ STATIC_ASSERT(offsetof(OPPONENT_LOS_PC, line_of_sight) == 8);
 #define OPPONENT_LOS(p) ((OPPONENT_LOS_PC *)(p))
 f32 __cdecl Condition_CollidingWithOpponentPc(AISYS_PC *system, AISCRIPTPROCESS_PC *process, AIPACKET_PC *packet,
                                               char *name, void *argument) {
-    if (packet != NULL && packet->opponent != NULL && packet->owner != NULL &&
-        ((packet->owner->collision_contact_mask[0] & packet->opponent->collision_identity_mask[0]) |
-         (packet->owner->collision_contact_mask[1] & packet->opponent->collision_identity_mask[1])) != 0)
+    GAMEOBJECT *opponent, *owner;
+    if (packet != NULL && (opponent = packet->opponent) != NULL && (owner = packet->owner) != NULL &&
+        (U64_PAIR(opponent->collision_identity_mask) & U64_PAIR(owner->collision_contact_mask)) != 0)
         return 1.0f;
     return 0.0f;
 }
@@ -5216,7 +5220,7 @@ static i32 GameAIWallShufflePc(GAMEOBJECT *object) {
 
 i32 CheckPosAIArea(AIAREA_PC *area, NUVEC *position, float tolerance) {
     NUVEC local_position;
-    if (position == NULL || area == NULL) {
+    if (area == NULL || position == NULL) {
         return 0;
     }
 
@@ -5819,15 +5823,13 @@ void __cdecl GameAIProcess(void) {
 
 void __cdecl ConstantRumble(GAMEOBJECT *, f32, f32);
 void __cdecl PowerUp_Update(GAMEOBJECT *object) {
-    f32 strength;
     if (object->powerup_time > 0.0f) {
         object->powerup_time -= FRAMETIME;
         if (object->powerup_time <= 0.0f)
             GameAudio_PlaySfx(0x52, NULL, 0, 0);
         else {
             GameAudio_PlaySfx(0x51, NULL, 0, 0);
-            strength = (f32)((f64)qrand() * (f64)(1.0f / 65535.0f) * .5);
-            ConstantRumble(object, strength, 0.0f);
+            ConstantRumble(object, (f32)((f64)qrand() * (f64)(1.0f / 65535.0f) * .5), 0.0f);
         }
     }
 }
@@ -5866,7 +5868,6 @@ extern const char GameAILevelScriptFormatPc[8];
 void __cdecl GameAISysReset(AISYS_PC *system) {
     i32 script_index;
     char script_name[32];
-    AI_RESET_WORLD_PC *world;
     if (system == NULL)
         return;
     AISysSetLevelPath(system, NULL);
@@ -5878,13 +5879,14 @@ void __cdecl GameAISysReset(AISYS_PC *system) {
             sprintf(script_name, AIScriptKeywordLevel);
         if (AIScriptFind(WORLD->ai_sys, script_name, 0, 1, 0) == NULL)
             continue;
-        world = (AI_RESET_WORLD_PC *)WORLD;
-        AIScriptProcessorInit(system, NULL, &world->processors[world->processor_count].processor, NULL, script_name,
-                              NULL, 0, NULL, NULL);
-        world = (AI_RESET_WORLD_PC *)WORLD;
-        NuStrCpy(world->processors[world->processor_count].name, script_name);
-        world = (AI_RESET_WORLD_PC *)WORLD;
-        LevelScriptReStoreProgress(WORLD, &world->processors[world->processor_count]);
+        AIScriptProcessorInit(
+            system, NULL,
+            &((AI_RESET_WORLD_PC *)WORLD)->processors[((AI_RESET_WORLD_PC *)WORLD)->processor_count].processor, NULL,
+            script_name, NULL, 0, NULL, NULL);
+        NuStrCpy(((AI_RESET_WORLD_PC *)WORLD)->processors[((AI_RESET_WORLD_PC *)WORLD)->processor_count].name,
+                 script_name);
+        LevelScriptReStoreProgress(
+            WORLD, &((AI_RESET_WORLD_PC *)WORLD)->processors[((AI_RESET_WORLD_PC *)WORLD)->processor_count]);
         ++((AI_RESET_WORLD_PC *)WORLD)->processor_count;
     }
     GameAIResetPathConnectionsPc(system);
@@ -5959,7 +5961,7 @@ void __cdecl GameAISysStartFrame(AISYS_PC *system) {
                  ++connection_index) {
                 path = system->path_sys->paths[path_index];
                 connection = &path->connections[connection_index];
-                node = &path->nodes[connection->node_indices[0]];
+                node = &system->path_sys->paths[path_index]->nodes[connection->node_indices[0]];
                 if (node->has_special != 0)
                     AIPathNodeUpdatePos(system, system->path_sys->paths[path_index], node);
                 path = system->path_sys->paths[path_index];
