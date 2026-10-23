@@ -5051,17 +5051,16 @@ void __cdecl PooCode(GAMEOBJECT *object) {
     if (locator != -1 && object->character_model->points_of_interest[locator] != NULL) {
         position = *(NUVEC *)&object->locator_matrices[locator].m30;
     } else {
-        u16 angle = object->field_0x276;
-        position.x = object->collision_position.x - NuTrigTable[angle >> 1] * object->bounds_radius;
+        position.x = object->collision_position.x - NuTrigTable[object->field_0x276 >> 1] * object->bounds_radius;
         position.y = object->collision_position.y;
-        position.z =
-            object->collision_position.z - NuTrigTable[((angle + 0x4000) >> 1) & 0x7fff] * object->bounds_radius;
+        position.z = object->collision_position.z -
+                     NuTrigTable[((object->field_0x276 + 0x4000) >> 1) & 0x7fff] * object->bounds_radius;
     }
     if (object->character_context == 0x37) {
         f32 previous = object->context_timer;
-        f32 time = previous + FRAMETIME;
+        f32 time;
         f32 halfway;
-        object->context_timer = time;
+        object->context_timer = time = object->context_timer + FRAMETIME;
         if (time >= object->context_duration) {
             object->character_context = -1;
         } else {
@@ -5097,8 +5096,8 @@ void __cdecl PooCode(GAMEOBJECT *object) {
                     NuSpecialGetRadius(&WORLD->level_objects[24].special, &radius_position, &params.field_14);
                     params.field_18 = params.field_14;
                     params.gravity = -6.0f;
-                    params.special = &WORLD->level_objects[24].special;
                     params.part_id = 24;
+                    params.special = &WORLD->level_objects[24].special;
                     params.flags = 0x390;
                     params.owner = object;
                     params.stop_fn = PartStop_Flickerer;
@@ -5122,16 +5121,15 @@ void __cdecl PooCode(GAMEOBJECT *object) {
         object->field_7aa = 1;
         object->context_duration = 0.6f;
     }
-    if ((object->flags_ef4 & 0x10) == 0 || object->field_280 > 1) {
+    if ((object->flags_ef4 & 0x10) == 0 || (object->field_280 != 0 && object->field_280 != 1)) {
         volume_view->force_use_volume = 0.0f;
     } else {
         PART_PC *part = FindPart(NULL, -1, object);
         volume_view->force_use_volume =
             SeekLinearF(volume_view->force_use_volume, part != NULL ? 1.0f : 0.0f, FRAMETIME);
         if (volume_view->force_use_volume > 0.0f) {
-            i32 player = (i8)object->field_280;
-            PooPositionPc[player] = position;
-            PlaySfxAndSetVolume("FliesLp", &PooPositionPc[player], volume_view->force_use_volume);
+            PooPositionPc[(i8)object->field_280] = position;
+            PlaySfxAndSetVolume("FliesLp", &PooPositionPc[(i8)object->field_280], volume_view->force_use_volume);
         }
     }
 }
@@ -6254,7 +6252,7 @@ static void ForceGlowCode(GAMEOBJECT *object, i32 model) {
         glow->object = glow->candidate;
         glow->kind = glow->candidate_kind;
     }
-    if (glow->object == NULL || glow->candidate != glow->object) {
+    if (glow->object == NULL || glow->object != glow->candidate) {
         if (glow->alpha == FORCEGLOWTIME && glow->hold > 0.0f) {
             glow->hold -= FRAMETIME;
             target = FORCEGLOWTIME;
@@ -6266,16 +6264,16 @@ static void ForceGlowCode(GAMEOBJECT *object, i32 model) {
         target = 0.0f;
     else
         target = FORCEGLOWTIME;
-    previous = glow->alpha;
-    if (glow->target == previous)
+    if (glow->alpha == glow->target)
         glow->target = target;
     else {
-        if (previous > glow->target) {
-            glow->alpha = (f32)((f64)previous - (f64)FRAMETIME * 0.5);
+        previous = glow->alpha;
+        if (glow->target < glow->alpha) {
+            glow->alpha = (f32)((f64)glow->alpha - (f64)FRAMETIME * 0.5);
             if (glow->alpha < 0.0f)
                 glow->alpha = 0.0f;
         } else {
-            glow->alpha = previous + FRAMETIME;
+            glow->alpha = glow->alpha + FRAMETIME;
             if (glow->alpha > glow->target)
                 glow->alpha = glow->target;
         }
@@ -6318,7 +6316,7 @@ static void ForceGlowCode(GAMEOBJECT *object, i32 model) {
         case 2: {
             GAMEOBJECT *target_object = (GAMEOBJECT *)glow->object;
             f32 radius;
-            if ((target_object->flags_1fc_word & 0x1001) == 0) {
+            if ((target_object->flags_1fc_word & 1) == 0 && (target_object->flags_1fc_word & 0x1000) == 0) {
                 ResetForceGlow(glow->player_packet);
                 return;
             }
@@ -6329,7 +6327,7 @@ static void ForceGlowCode(GAMEOBJECT *object, i32 model) {
             glow->radius = (f32)((f64)radius * 1.75);
             glow->position.x = target_object->collision_position.x;
             glow->position.y =
-                (f32)(target_object->character_bottom * target_object->origin_scale + target_object->position.y +
+                (f32)(target_object->origin_scale * target_object->character_bottom + target_object->position.y +
                       ((f64)target_object->character_top - target_object->character_bottom) * 0.5 *
                           target_object->origin_scale);
             glow->position.z = target_object->collision_position.z;
