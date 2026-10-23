@@ -315,11 +315,10 @@ void __cdecl ScanTerrIDRemovePlat(i32 platform_index) {
 }
 #pragma auto_inline(on)
 
+#define TERRAIN_NPI_SET ((TERRAIN_SET_PC *)CurrentTerrain)
 i32 __cdecl NewPlatInst(void *object, i32 instance) {
     TERRAIN_SET_PC *terrain = (TERRAIN_SET_PC *)CurrentTerrain;
-    TERRAIN_PLATFORM_PC *source_platform;
-    TERRAIN_PLATFORM_PC *new_platform;
-    TERRAIN_GROUP_PC *new_group;
+    i32 group_count;
     i32 new_index;
     i32 source_index;
     i32 i;
@@ -328,10 +327,8 @@ i32 __cdecl NewPlatInst(void *object, i32 instance) {
         return -1;
     if (terrain->group_index_count >= terrain->max_group_indices)
         return -1;
-    new_index = terrain->group_count;
-    if (new_index >= terrain->max_groups || object == NULL)
-        return -1;
-    if (terrain->max_platforms <= 0)
+    group_count = terrain->group_count;
+    if (group_count >= terrain->max_groups || object == NULL)
         return -1;
 
     new_index = -1;
@@ -341,7 +338,7 @@ i32 __cdecl NewPlatInst(void *object, i32 instance) {
             break;
         }
     }
-    if (new_index < 0)
+    if (new_index == -1)
         return -1;
 
     source_index = -1;
@@ -351,33 +348,31 @@ i32 __cdecl NewPlatInst(void *object, i32 instance) {
             break;
         }
     }
-    if (source_index < 0)
+    if (source_index == -1)
         return -1;
 
-    source_platform = &terrain->platforms[source_index];
-    new_group = &terrain->groups[terrain->group_count];
-    *new_group = terrain->groups[source_platform->terrain_group_index];
-    new_group->scene_index = (i16)new_index;
-    new_group->chunk_type = 1;
-
-    new_platform = &terrain->platforms[new_index];
-    new_platform->scene_object = object;
-    new_platform->terrain_group_index = terrain->group_count;
-    new_platform->scene_object_index = (i16)instance;
-    new_platform->scene_transform = NULL;
-    new_platform->flags = (new_platform->flags & ~1u) | (source_platform->flags & 1);
-    new_platform->bounce_54 = 0.0f;
-    new_platform->bounce_58 = 0.0f;
-    new_platform->bounce_5c = 0.0f;
-    new_platform->bounce_60 = 0.0f;
-    new_platform->bounce_64 = 0.0f;
-
-    terrain->group_indices[terrain->group_index_count] = terrain->group_count;
-    terrain->group_index_count++;
-    terrain->group_count++;
-    terrain->platform_cell.group_count++;
+    TERRAIN_NPI_SET->groups[group_count] =
+        TERRAIN_NPI_SET->groups[terrain->platforms[source_index].terrain_group_index];
+    TERRAIN_NPI_SET->groups[TERRAIN_NPI_SET->group_count].scene_index = (i16)new_index;
+    TERRAIN_NPI_SET->groups[TERRAIN_NPI_SET->group_count].chunk_type = 1;
+    TERRAIN_NPI_SET->platforms[new_index].scene_object = object;
+    TERRAIN_NPI_SET->platforms[new_index].terrain_group_index = TERRAIN_NPI_SET->group_count;
+    TERRAIN_NPI_SET->platforms[new_index].scene_object_index = (i16)instance;
+    TERRAIN_NPI_SET->platforms[new_index].scene_transform = NULL;
+    TERRAIN_NPI_SET->platforms[new_index].flags ^=
+        (TERRAIN_NPI_SET->platforms[source_index].flags ^ TERRAIN_NPI_SET->platforms[new_index].flags) & 1;
+    TERRAIN_NPI_SET->group_indices[TERRAIN_NPI_SET->group_index_count] = TERRAIN_NPI_SET->group_count;
+    TERRAIN_NPI_SET->group_index_count++;
+    TERRAIN_NPI_SET->platforms[new_index].bounce_54 = 0.0f;
+    TERRAIN_NPI_SET->platforms[new_index].bounce_58 = 0.0f;
+    TERRAIN_NPI_SET->platforms[new_index].bounce_5c = 0.0f;
+    TERRAIN_NPI_SET->platforms[new_index].bounce_64 = 0.0f;
+    TERRAIN_NPI_SET->platforms[new_index].bounce_60 = 0.0f;
+    TERRAIN_NPI_SET->group_count++;
+    TERRAIN_NPI_SET->platform_cell.group_count++;
     return new_index;
 }
+#undef TERRAIN_NPI_SET
 
 #define TERRAIN_DP_SET ((TERRAIN_SET_PC *)CurrentTerrain)
 i32 __cdecl DeletePlatinst(i32 platform_index) {
