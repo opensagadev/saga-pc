@@ -159,7 +159,7 @@ i32 __cdecl Glide_SetTargetMom(GAMEOBJECT *object) {
     return 1;
 }
 
-u16 __cdecl SeekRot(u16 current, u16 target, f32 rate) {
+__declspec(noinline) u16 __cdecl SeekRot(u16 current, u16 target, f32 rate) {
     f32 blend;
     i32 difference;
     i32 angle;
@@ -176,7 +176,7 @@ u16 __cdecl SeekRot(u16 current, u16 target, f32 rate) {
     return (u16)angle;
 }
 
-void __cdecl SeekVec(NUVEC *result, NUVEC *current, NUVEC *target, f32 rate) {
+__declspec(noinline) void __cdecl SeekVec(NUVEC *result, NUVEC *current, NUVEC *target, f32 rate) {
     f32 blend;
 
     blend = rate * FRAMETIME;
@@ -187,7 +187,7 @@ void __cdecl SeekVec(NUVEC *result, NUVEC *current, NUVEC *target, f32 rate) {
     result->z = current->z + (target->z - current->z) * blend;
 }
 
-f32 __cdecl SeekValF(f32 current, f32 target, f32 rate) {
+__declspec(noinline) f32 __cdecl SeekValF(f32 current, f32 target, f32 rate) {
     f32 blend;
 
     blend = rate * FRAMETIME;
@@ -196,7 +196,7 @@ f32 __cdecl SeekValF(f32 current, f32 target, f32 rate) {
     return current + (target - current) * blend;
 }
 
-f32 __cdecl SeekLinearF(f32 current, f32 target, f32 step) {
+__declspec(noinline) f32 __cdecl SeekLinearF(f32 current, f32 target, f32 step) {
     if (current > target) {
         current -= step;
         if (current < target)
@@ -1680,29 +1680,33 @@ static void MovementMtxRotateY(NUMTX *m, NUANG angle) {
 void __cdecl MovePlayer_ROLLING(GAMEOBJECT *object) {
     f32 seek_rate;
     f32 displacement;
-    f32 rumble;
     i32 effect, count, heading, pitch, yaw, roll;
     NUVEC position, local_velocity;
     NUMTX matrix;
     object->flags_e20 &= ~0x10000000;
-    object->target_velocity.y = ObjInTube(object) ? 1.25f : 0.0f;
-    seek_rate = object->id == (u16)id_DRAGBOMB && (object->flags_ef4 & 0x200) != 0
-                    ? 1.0f
-                    : object->character_data->game_character->velocity_seek_rate;
-    object->target_velocity.x = object->target_velocity.z = 0.0f;
+    if (ObjInTube(object))
+        object->target_velocity.y = 1.25f;
+    else
+        object->target_velocity.y = 0.0f;
+    if (object->id == (u16)id_DRAGBOMB && (object->flags_ef4 & 0x200) != 0)
+        seek_rate = 1.0f;
+    else
+        seek_rate = object->character_data->game_character->velocity_seek_rate;
+    object->target_velocity.z = object->target_velocity.x = 0.0f;
     if (object->character_context == 0x2b) {
         if (object->turn_braking < 1.0f) {
             displacement = 1.0f - object->turn_braking;
-            displacement = (f32)(displacement * 0.0);
-            object->target_velocity.x = object->target_velocity.z = displacement;
+            displacement = displacement * 0.0;
+            object->target_velocity.z = object->target_velocity.x = displacement;
             if (object->wall_run_state == 2) {
-                displacement = (f32)(displacement * 0.5);
-                object->target_velocity.x = object->target_velocity.z = displacement;
+                displacement = displacement * 0.5;
+                object->target_velocity.z = object->target_velocity.x = displacement;
             }
+        } else {
+            object->target_velocity.x = object->target_velocity.z = 0.0f;
         }
         if (object->wall_run_state == 2) {
-            rumble = (f32)((f64)qrand() * (f64)(1.0f / 65535.0f) * 0.5);
-            STUBBED_NAMED("NewRumble(object->pad->bound_pad, rumble, 0)");
+            NewRumble(object->pad->bound_pad, qrand() * (f64)(1.0f / 65535.0f) * 0.5, 0);
             effect = WORLD->game_debris_sys->entries[58].effect;
             if (effect != -1) {
                 count = ParticlesPerSecond(60.0f, FRAMETIME);
@@ -1710,7 +1714,7 @@ void __cdecl MovePlayer_ROLLING(GAMEOBJECT *object) {
                     position.x = object->collision_position.x;
                     position.y = object->water_height;
                     position.z = object->collision_position.z;
-                    STUBBED_NAMED("AddVariableShotDebrisEffect(effect, &position, count, 0, 0)");
+                    AddVariableShotDebrisEffect(effect, &position, count, 0, 0);
                 }
             }
         }
@@ -1725,8 +1729,8 @@ void __cdecl MovePlayer_ROLLING(GAMEOBJECT *object) {
     heading = NuAtan2D(object->velocity.x, object->velocity.z);
     NuVecRotateY(&local_velocity, &object->velocity, -heading);
     MovementMtxRotateY(&matrix, -heading);
-    displacement = (local_velocity.z * FRAMETIME) / object->collision_radius;
-    MovementMtxRotateX(&matrix, (i32)(displacement * (f64)10430.3779296875f));
+    displacement = FRAMETIME * local_velocity.z / object->collision_radius;
+    MovementMtxRotateX(&matrix, (i32)(displacement * 10430.3779296875));
     MovementMtxRotateY(&matrix, heading);
     NuMtxGetEulerXYZ(&matrix, &pitch, &yaw, &roll);
     object->pitch_angle = pitch;
@@ -2102,6 +2106,7 @@ i32 __cdecl MovePlayer_POD(GAMEOBJECT *object) {
     return 1;
 }
 
+extern f32 DirectionalGrappleSeekScalePc;
 void __cdecl MovePlayer_DIRECTIONAL(GAMEOBJECT *object);
 
 void __cdecl MovePlayer(GAMEOBJECT *object) {
@@ -3380,12 +3385,6 @@ void __cdecl MovePlayer_DIRECTIONAL(GAMEOBJECT *object) {
         Conveyor_AdjustSpeed(&object->target_velocity);
 
     seek_vertical = move_vertical != 0 || ObjInTube(object);
-    // types; the vertical path tests its byte at +0x68 without a type gate.
-    if (seek_vertical && object->grapple != NULL && (((DIRECTIONAL_ZIPUP_PC *)object->grapple)->flags & 1) != 0) {
-        seek_rates.x *= 0.5f;
-        seek_rates.y *= 0.5f;
-        seek_rates.z *= 0.5f;
-    }
     if (!seek_vertical) {
         if ((object->flags_e20 & 8) != 0 && object->field_281 != 0) {
             f32 current_speed;
@@ -3419,14 +3418,22 @@ void __cdecl MovePlayer_DIRECTIONAL(GAMEOBJECT *object) {
         } else {
             object->directional_seek_multiplier = 1.0f;
         }
-    }
-    if (!seek_vertical && object->character_context == 0x26) {
-        object->velocity.x = object->target_velocity.x;
-        object->velocity.z = object->target_velocity.z;
+        if (object->character_context == 0x26) {
+            object->velocity.x = object->target_velocity.x;
+            object->velocity.z = object->target_velocity.z;
+        } else {
+            object->velocity.x = SeekValF(object->velocity.x, object->target_velocity.x, seek_rates.x);
+            object->velocity.z = SeekValF(object->velocity.z, object->target_velocity.z, seek_rates.z);
+        }
     } else {
+        // The vertical path tests the grapple's byte at +0x68 without a type gate.
+        if (object->grapple != NULL && (((DIRECTIONAL_ZIPUP_PC *)object->grapple)->flags & 1) != 0) {
+            seek_rates.x *= DirectionalGrappleSeekScalePc;
+            seek_rates.y *= DirectionalGrappleSeekScalePc;
+            seek_rates.z *= DirectionalGrappleSeekScalePc;
+        }
         object->velocity.x = SeekValF(object->velocity.x, object->target_velocity.x, seek_rates.x);
-        if (seek_vertical)
-            object->velocity.y = SeekValF(object->velocity.y, object->target_velocity.y, seek_rates.y);
+        object->velocity.y = SeekValF(object->velocity.y, object->target_velocity.y, seek_rates.y);
         object->velocity.z = SeekValF(object->velocity.z, object->target_velocity.z, seek_rates.z);
     }
     game_character = object->character_data->game_character;

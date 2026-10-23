@@ -17798,6 +17798,9 @@ extern "C" {
                                          {-375.3800048828125f, -5.039999961853027f, -286.5f},
                                          {-354.9100036621094f, -4.849999904632568f, -299.32000732421875f}};
 #pragma data_seg()
+#pragma data_seg(".data$DirectionalGrappleSeekScalePc")
+    f32 DirectionalGrappleSeekScalePc = 0.5f;
+#pragma data_seg()
 
 #pragma bss_seg(".bss$LswForceUsedHintFlagsPc")
     u32 LswForceUsedHintFlagsPc = 0;
