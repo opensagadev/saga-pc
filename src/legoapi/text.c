@@ -752,10 +752,10 @@ f32 __cdecl TextPrintSubstring(u8 *text, f32 x, f32 y, f32 z, f32 x_scale, f32 y
     u16 encoded[512];
     f32 width;
     if (button_font != 0 && QFont2DButtons != NULL) {
+        relative_scale = base_font->height / QFont2DButtons->height;
         font = QFont2DButtons;
-        relative_scale = base_font->height / font->height;
     } else {
-        font = base_font;
+        font = SmartTextFont != NULL ? SmartTextFont : QFont2D;
         relative_scale = 1.0f;
     }
     NuQFntSet(font);
