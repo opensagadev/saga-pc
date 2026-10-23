@@ -65,51 +65,50 @@ void __cdecl edgraSetup(VARIPTR *buffer, VARIPTR end, i32 clumps, i32 individual
 }
 
 void __cdecl edgraStartPage(i8 page) {
-    i32 page_index = page;
     i32 i;
     void *saved_terrain;
-    if (!edgra_page_used[page_index] || !edgra_page_scene[page_index] || edgra_page_on[page_index])
+    if (!edgra_page_used[page] || !edgra_page_scene[page] || edgra_page_on[page])
         return;
     saved_terrain = PCGrassTerrainScene;
-    PCGrassTerrainScene = edgra_page_terrain[page_index];
-    if (!edgra_page_calculate_done[page_index]) {
-        if (edgra_page_vectors_valid[page_index] == 0) {
+    PCGrassTerrainScene = edgra_page_terrain[page];
+    if (!edgra_page_calculate_done[page]) {
+        if (edgra_page_vectors_valid[page] == 0) {
             edgraCalculatePage(page, 1);
-            edgra_page_vectors_valid[page_index] = 1;
+            edgra_page_vectors_valid[page] = 1;
         } else {
             edgraCalculatePage(page, 0);
         }
-        edgra_page_calculate_done[page_index] = 1;
+        edgra_page_calculate_done[page] = 1;
     }
     for (i = 0; i < EDGRA_MAX_CLUMPS; ++i) {
-        PC_EDGRACLUMP *clump = &GrassClumps[i];
-        if (clump->element_count && clump->page == (u8)page) {
-            i32 count = clump->element_count;
+        if (GrassClumps[i].element_count && GrassClumps[i].page == (u8)page) {
+            i32 count = GrassClumps[i].element_count;
             if (edgra_units_used + count > 0x3000)
                 count = 0x3000 - edgra_units_used;
             if (count > 0) {
-                NUGSCN *scene = edgra_page_scene[page_index];
+                NUGSCN *scene = edgra_page_scene[page];
                 NUSPECIALHANDLE special;
                 special.scene = scene;
-                if (scene->display_list != NULL) {
-                    special.special = NULL;
-                    special.display_special = (NUMTX *)&scene->display_list->specials[clump->special_index];
-                } else {
-                    special.special = (NUMTX *)&scene->specials[clump->special_index];
+                if (scene->display_list == NULL) {
+                    special.special = (NUMTX *)&scene->specials[GrassClumps[i].special_index];
                     special.display_special = NULL;
-                }
-                if (clump->kind == 2 || clump->kind == 3) {
-                    NuFadeObjCreateMtx(&special, clump->matrices, (i16)count, clump->near_distance, clump->far_distance,
-                                       clump->flags);
                 } else {
-                    NuWindCreateMtx(&special, clump->matrices, (i16)count, clump->field_18, clump->field_20,
-                                    clump->flags, clump->near_distance, clump->far_distance);
+                    special.special = NULL;
+                    special.display_special = (NUMTX *)&scene->display_list->specials[GrassClumps[i].special_index];
+                }
+                if (GrassClumps[i].kind == 2 || GrassClumps[i].kind == 3) {
+                    NuFadeObjCreateMtx(&special, GrassClumps[i].matrices, (i16)count, GrassClumps[i].near_distance,
+                                       GrassClumps[i].far_distance, GrassClumps[i].flags);
+                } else {
+                    NuWindCreateMtx(&special, GrassClumps[i].matrices, (i16)count, GrassClumps[i].field_18,
+                                    GrassClumps[i].field_20, GrassClumps[i].flags, GrassClumps[i].near_distance,
+                                    GrassClumps[i].far_distance);
                 }
                 edgra_units_used += count;
             }
         }
     }
-    edgra_page_on[page_index] = 1;
+    edgra_page_on[page] = 1;
     PCGrassTerrainScene = saved_terrain;
 }
 
@@ -501,13 +500,12 @@ void __cdecl edgraClearPage(i8 page) {
     i32 i;
     edgraStopPage(page);
     for (i = 0; i < EDGRA_MAX_CLUMPS; ++i) {
-        PC_EDGRACLUMP *clump = &GrassClumps[i];
-        if (clump->element_count && clump->page == (u8)page) {
-            if (clump->kind == 3) {
-                IndGrassClumpsUsed[clump->individual_index] = 0;
+        if (GrassClumps[i].element_count && GrassClumps[i].page == (u8)page) {
+            if (GrassClumps[i].kind == 3) {
+                IndGrassClumpsUsed[GrassClumps[i].individual_index] = 0;
                 --edgra_ind_clumps_used;
             }
-            clump->element_count = 0;
+            GrassClumps[i].element_count = 0;
             --edgra_clumps_used;
         }
     }
