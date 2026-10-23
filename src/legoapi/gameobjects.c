@@ -1606,16 +1606,22 @@ typedef struct kill_zipup_pc_s {
 } KILL_ZIPUP_PC;
 STATIC_ASSERT(offsetof(KILL_ZIPUP_PC, runtime_flags) == 0x68);
 
-i32 __cdecl KillGameObject(GAMEOBJECT *object, i32 requested_reason, i32 unused) {
+i32 __cdecl KillGameObject(GAMEOBJECT *object, i32 reason, i32 unused) {
     NUVEC momentum, position;
-    i32 debris[4] = {-1, -1, -1, -1};
-    i32 part_debris = -1;
-    i32 reason = requested_reason == 5 ? 4 : requested_reason;
-    i32 terminal_kill = 0;
+    i32 debris[4];
+    i32 part_debris;
+    i32 requested_reason;
+    i32 terminal_kill;
     GAMEOBJECT *rider;
     AIGROUP_PC *group;
     GAMEOBJECT *candidate;
+    PART_PC *part;
+    BOLT *bolt;
     i32 i;
+    terminal_kill = 0;
+    requested_reason = reason;
+    if (reason == 5)
+        reason = 4;
     if ((object->flags_1fc_word & 0x80) != 0) {
         ++AreaGlobals_PC.field_00;
         ++LevDeaths;
@@ -1625,6 +1631,11 @@ i32 __cdecl KillGameObject(GAMEOBJECT *object, i32 requested_reason, i32 unused)
     NuSound3ClearLoopHold(&object->lower_position, 0);
     Grapple_RemoveDynamic(object);
     Shards_HandleLostObj(WORLD, object);
+    part_debris = -1;
+    debris[0] = -1;
+    debris[1] = -1;
+    debris[2] = -1;
+    debris[3] = -1;
     if (reason != 4) {
         if ((object->character_data->model_flags & 0x4000000) != 0) {
             debris[0] = 73;
@@ -1721,15 +1732,17 @@ i32 __cdecl KillGameObject(GAMEOBJECT *object, i32 requested_reason, i32 unused)
             message->value = (f32)((f64)message->value + 1.0);
         ++speeder_hitpoints_lost;
     }
-    if ((object->character_data->model_flags & 0x2000) != 0) {
+    if ((object->character_data->model_flags & 0x2000) == 0) {
+        object->velocity.x = 0.0f;
+        object->velocity.z = 0.0f;
+    } else {
         object->velocity.x = (f32)((f64)object->velocity.x * 0.5);
         object->velocity.y = (f32)(0.5 * ((f64)object->velocity.y));
         object->velocity.z = (f32)((f64)object->velocity.z * 0.5);
-    } else {
-        object->velocity.x = 0.0f;
-        object->velocity.z = 0.0f;
     }
-    object->dead = (u8)(reason == 3 ? 2 : reason);
+    if (reason == 3)
+        reason = 2;
+    object->dead = (u8)reason;
     object->current_hp = 0;
     if (object->character_context == 7 || object->field_e33 == 1)
         object->flags_e20 |= 0x10000;
@@ -1772,9 +1785,18 @@ i32 __cdecl KillGameObject(GAMEOBJECT *object, i32 requested_reason, i32 unused)
     object->death_timer = 0.0f;
     if (object->dead != 2)
         object->dead = 1;
+    if (object->dead != 2)
+        object->dead = 1;
     if (1 == object->dead)
         object->start_position = object->position;
-    object->death_delay = object->dead == 2 ? 0.0f : 0.5f;
+    switch ((i8)object->dead) {
+        case 2:
+            object->death_delay = 0.0f;
+            break;
+        default:
+            object->death_delay = 0.5f;
+            break;
+    }
     if (object->death_delay <= 0.0f)
         object->movement_lean_angle = 0;
     if (terminal_kill == 0 &&
@@ -1793,8 +1815,8 @@ i32 __cdecl KillGameObject(GAMEOBJECT *object, i32 requested_reason, i32 unused)
                 for (i = group->member_count - 1; i >= 0; --i) {
                     if (group->members[i] != NULL) {
                         candidate = (GAMEOBJECT *)group->members[i]->owner;
-                        if (object != candidate && (candidate->flags_1fc_word & 0x1001) == 0x1001 &&
-                            candidate->dead == 0) {
+                        if (object != candidate && (candidate->flags_1fc_word & 1) != 0 &&
+                            (candidate->flags_1fc_word & 0x1000) != 0 && candidate->dead == 0) {
                             group->leader = (APIOBJECT_PC *)candidate;
                             break;
                         }
@@ -1808,8 +1830,8 @@ i32 __cdecl KillGameObject(GAMEOBJECT *object, i32 requested_reason, i32 unused)
                     candidate = (GAMEOBJECT *)group->members[i]->owner;
                     if (candidate == NULL) {
                         group->members[i] = NULL;
-                    } else if (candidate != object && (candidate->flags_1fc_word & 0x1001) == 0x1001 &&
-                               candidate->dead == 0) {
+                    } else if (object != candidate && (candidate->flags_1fc_word & 1) != 0 &&
+                               (candidate->flags_1fc_word & 0x1000) != 0 && candidate->dead == 0) {
                         group->leader = (APIOBJECT_PC *)candidate;
                         break;
                     }
@@ -1844,8 +1866,8 @@ i32 __cdecl KillGameObject(GAMEOBJECT *object, i32 requested_reason, i32 unused)
     ReleaseBuildIt(object, 0);
     ReleasePush(object);
     candidate = Obj;
-    for (i = 0; HIGHGAMEOBJECT > i; ++i, ++candidate) {
-        if ((candidate->flags_1fc_word & 0x1001) != 0x1001 || candidate == object)
+    for (i = 0; i < HIGHGAMEOBJECT; ++i, ++candidate) {
+        if ((candidate->flags_1fc_word & 1) == 0 || (candidate->flags_1fc_word & 0x1000) == 0 || candidate == object)
             continue;
         if (candidate->character_context == 27 && candidate->force_target == object)
             ReleaseForce(candidate, 0);
@@ -1856,72 +1878,83 @@ i32 __cdecl KillGameObject(GAMEOBJECT *object, i32 requested_reason, i32 unused)
     }
     ReleaseForce(object, 0);
     if (object->field_280 == 0xff) {
-        for (i = 0; i < 32; ++i)
-            if (Bolt[i].active != 0 && Bolt[i].owner == object)
-                Bolt[i].owner = NULL;
-        for (i = 0; i < MAXPARTS; ++i)
-            if ((Part[i].active & 1) != 0 && Part[i].owner == object)
-                Part[i].owner = NULL;
-        if (Explosions[0].duration > Explosions[0].time && Explosions[0].owner == object)
+        bolt = Bolt;
+        for (i = 0; i < 32; ++i, ++bolt)
+            if (bolt->active != 0 && bolt->owner == object)
+                bolt->owner = NULL;
+        part = Part;
+        for (i = 0; i < MAXPARTS; ++i, ++part)
+            if ((part->active & 1) != 0 && part->owner == object)
+                part->owner = NULL;
+        if (Explosions[0].time < Explosions[0].duration && Explosions[0].owner == object)
             Explosions[0].owner = NULL;
-        if (Explosions[1].duration > Explosions[1].time && Explosions[1].owner == object)
+        if (Explosions[1].time < Explosions[1].duration && Explosions[1].owner == object)
             Explosions[1].owner = NULL;
-        if (Explosions[2].duration > Explosions[2].time && Explosions[2].owner == object)
+        if (Explosions[2].time < Explosions[2].duration && Explosions[2].owner == object)
             Explosions[2].owner = NULL;
-        if (Explosions[3].duration > Explosions[3].time && Explosions[3].owner == object)
+        if (Explosions[3].time < Explosions[3].duration && Explosions[3].owner == object)
             Explosions[3].owner = NULL;
-        if (Explosions[4].duration > Explosions[4].time && Explosions[4].owner == object)
+        if (Explosions[4].time < Explosions[4].duration && Explosions[4].owner == object)
             Explosions[4].owner = NULL;
-        if (Explosions[5].duration > Explosions[5].time && Explosions[5].owner == object)
+        if (Explosions[5].time < Explosions[5].duration && Explosions[5].owner == object)
             Explosions[5].owner = NULL;
-        if (Explosions[6].duration > Explosions[6].time && Explosions[6].owner == object)
+        if (Explosions[6].time < Explosions[6].duration && Explosions[6].owner == object)
             Explosions[6].owner = NULL;
-        if (Explosions[7].duration > Explosions[7].time && Explosions[7].owner == object)
+        if (Explosions[7].time < Explosions[7].duration && Explosions[7].owner == object)
             Explosions[7].owner = NULL;
     }
-    if (DOGFIGHTA_LDATA != NULL && DOGFIGHTA_LDATA == WorldInfo_CurrentlyActive()->current_level && BonusWinner == -1 &&
+    if (DOGFIGHTA_LDATA != NULL && WorldInfo_CurrentlyActive()->current_level == DOGFIGHTA_LDATA && BonusWinner == -1 &&
         (0x40000 & object->flags_1f8) == 0)
         ResetLevel(WorldInfo_CurrentlyActive(), (char *)EP3DogfightDiePc, 1);
     if (0 != terminal_kill && object->field_280 == 0xff) {
-        AICREATURE_PC *creature = NULL;
-        i32 remove = requested_reason == 5;
-        i32 persistent = (object->portal_flags & 0x100000) != 0;
-        i32 respawn = 0;
-        if (!remove) {
-            if ((object->flags_1f8 & 0x4400) == 0x4400) {
+        AICREATURE_PC *creature;
+        i32 persistent;
+        i32 respawn;
+        u32 limit;
+        f32 delay;
+        if (requested_reason == 5) {
+            object->flags_1fc_word &= ~0x1000;
+            object->ai_packet.reset_mode = 4;
+        } else {
+            persistent = object->respawnable;
+            respawn = 0;
+            creature = NULL;
+            if ((object->flags_1f8 & 0x4000) != 0 && (object->flags_1f8 & 0x400) != 0) {
                 creature = &WORLD->ai_sys->creatures[object->ai_packet.creature_index];
-                if (persistent) {
-                    respawn = (object->portal_flags & 0x200000) != 0;
-                } else {
-                    u32 limit = object->ai_packet.respawn_count + 1;
+                respawn = object->respawn_at_origin;
+                if (!persistent) {
                     if (creature->max_respawn_count != -1 && object->ai_packet.respawn_locator == NULL)
                         limit =
                             creature->min_respawn_count +
                             ((creature->max_respawn_count - creature->min_respawn_count) * ((i32)Game.difficulty - 1)) /
                                 9 +
                             1;
-                    remove = object->ai_packet.respawn_count >= limit;
-                    respawn = !remove;
+                    else
+                        limit = object->ai_packet.respawn_count + 1;
+                    if (object->ai_packet.respawn_count < limit) {
+                        persistent = 1;
+                        respawn = 1;
+                    }
                 }
+            }
+            if (!persistent) {
+                object->flags_1fc_word &= ~0x1000;
+                object->ai_packet.reset_mode = 4;
+            } else if (respawn && creature != NULL) {
+                object->flags_1fc_word &= ~0x1000;
+                object->ai_packet.reset_mode = 1;
+                delay = (f32)(1.0 - ((f64)Game.difficulty - 1.0) / 9.0);
+                object->ai_packet.spawn_delay = delay;
+                if (creature->min_respawn_time > 0.0f && creature->max_respawn_time > 0.0f)
+                    object->ai_packet.spawn_delay =
+                        creature->max_respawn_time * delay + creature->min_respawn_time * (1.0f - delay);
+                else
+                    object->ai_packet.spawn_delay =
+                        (f32)((f64)qrand() * (f64)(1.0f / 65535.0f) * 2.0 * (f64)object->ai_packet.spawn_delay);
             } else {
-                remove = !persistent;
+                object->field_1010 = 1.0f;
             }
         }
-        if (remove) {
-            object->flags_1fc_word &= ~0x1000;
-            object->ai_packet.reset_mode = 4;
-        } else if (respawn && creature != NULL) {
-            object->flags_1fc_word &= ~0x1000;
-            object->ai_packet.reset_mode = 1;
-            object->ai_packet.spawn_delay = (f32)(1.0 - ((f64)Game.difficulty - 1.0) / 9.0);
-            if (creature->min_respawn_time > 0.0f && creature->max_respawn_time > 0.0f)
-                object->ai_packet.spawn_delay = creature->max_respawn_time * object->ai_packet.spawn_delay +
-                                                creature->min_respawn_time * (1.0f - object->ai_packet.spawn_delay);
-            else
-                object->ai_packet.spawn_delay =
-                    (f32)((f64)object->ai_packet.spawn_delay * ((f64)qrand() * (f64)(1.0f / 65535.0f) * 2.0));
-        } else
-            object->field_1010 = 1.0f;
     }
     if (object->torpedo != NULL && object->field_280 == 0xff) {
         FreeTorpedoPacket(&object->torpedo);
