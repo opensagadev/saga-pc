@@ -594,38 +594,32 @@ void __cdecl NuPrim3DEnd(void) {
 }
 
 void __cdecl NuPrim2DAddXYZ(f32 x, f32 y, f32 z) {
-    NUPRIMVERTEX_PC *vertices = (NUPRIMVERTEX_PC *)NuPrimStreamBufferPointer->void_ptr;
-
-    vertices->x = NuPrimXScale * x + NuPrimXBias;
-    vertices->y = NuPrimYScale * y + NuPrimYBias;
-    vertices->z = z;
+    ((NUPRIMVERTEX_PC *)NuPrimStreamBufferPointer->void_ptr)->x = NuPrimXScale * x + NuPrimXBias;
+    ((NUPRIMVERTEX_PC *)NuPrimStreamBufferPointer->void_ptr)->y = NuPrimYScale * y + NuPrimYBias;
+    ((NUPRIMVERTEX_PC *)NuPrimStreamBufferPointer->void_ptr)->z = z;
     NuPrimStreamBufferPointer->addr += sizeof(NUPRIMVERTEX_PC);
     NuPrimVertexCount++;
 
     if (NuPrimCurrentPrimitiveType == 0x10 && (NuPrimVertexCount & 1) == 0) {
-        NUPRIMVERTEX_PC first = vertices[-1];
-        NUPRIMVERTEX_PC second = vertices[0];
-
-        vertices[0].x = second.x;
-        vertices[0].y = first.y;
-        vertices[0].z = first.z;
-        vertices[0].colour = first.colour;
-        vertices[0].u = second.u;
-        vertices[0].v = first.v;
-
-        vertices[1] = second;
-        vertices[2] = second;
-
-        vertices[3].x = first.x;
-        vertices[3].y = second.y;
-        vertices[3].z = second.z;
-        vertices[3].colour = second.colour;
-        vertices[3].u = first.u;
-        vertices[3].v = second.v;
-        vertices[4] = first;
-
-        NuPrimStreamBufferPointer->addr += 4 * sizeof(NUPRIMVERTEX_PC);
+        /* Expand the two sprite corners just written into two triangles. */
+        NUPRIMVERTEX_PC *next = (NUPRIMVERTEX_PC *)NuPrimStreamBufferPointer->void_ptr;
+        NuPrimStreamBufferPointer->void_ptr = next + 4;
         NuPrimVertexCount += 4;
+        next[0] = next[-1];
+        next[1] = next[-1];
+        next[2].x = next[-2].x;
+        next[2].y = next[-1].y;
+        next[2].z = next[-1].z;
+        next[2].colour = next[-1].colour;
+        next[2].u = next[-2].u;
+        next[2].v = next[-1].v;
+        next[-1].x = next[0].x;
+        next[-1].y = next[-2].y;
+        next[-1].z = next[-2].z;
+        next[-1].colour = next[-2].colour;
+        next[-1].u = next[0].u;
+        next[-1].v = next[-2].v;
+        next[3] = next[-2];
     }
 }
 
