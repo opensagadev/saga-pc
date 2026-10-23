@@ -403,7 +403,7 @@ i32 __cdecl GizForce_FindBestForceTarget(void *system_ptr, GAMEOBJECT *object) {
     GIZFORCE_LOS_BEST_PC *los;
     GIZFORCE_TARGET_RECORD_PC *oldest = NULL, *best = NULL, *record;
     f32 oldest_time = 1000000000.0f, best_distance = 1000000000.0f, facing_x, facing_z, distance;
-    i32 super_force, count = 0, i, index, clear;
+    i32 super_force, count = 0, i;
     NUVEC delta, direction;
     if (system == NULL || object == NULL)
         return 0;
@@ -416,23 +416,25 @@ i32 __cdecl GizForce_FindBestForceTarget(void *system_ptr, GAMEOBJECT *object) {
         GIZFORCE_PC *force = system->visible_forces[i];
         GIZFORCE_BEST_PC *fields = (GIZFORCE_BEST_PC *)force;
         GAMEANIMOBJ *animation;
-        GIZFORCE_GROUP_BEST_PC *group = fields->group;
+        NUVEC *draw_position;
+        GIZFORCE_GROUP_BEST_PC *group;
         if (fields->using_object != NULL || fields->unavailable_flags != 0)
             continue;
         if ((fields->config_flags & 0x10) && !(object->character_data->model_flags & 4) && !super_force)
             continue;
+        group = fields->group;
         if (group == NULL) {
             if (GizForce_Complete(force))
                 continue;
-        } else if (group->count != 0) {
-            GIZFORCE_PC *last = group->forces[group->count - 1];
-            GIZFORCE_BEST_PC *last_fields = (GIZFORCE_BEST_PC *)last;
-            if (last != force) {
-                if ((group->flags & 1) || fields->anim_set->state == 2)
-                    continue;
-                if (last != NULL && ((last_fields->anim_set->flags & 7) || last_fields->using_object != NULL))
-                    continue;
-            }
+        } else if (group->count != 0 && force != group->forces[group->count - 1]) {
+            if (group->flags & 1)
+                continue;
+            if (fields->anim_set->state == 2)
+                continue;
+            if (group->forces[group->count - 1] != NULL &&
+                ((((GIZFORCE_BEST_PC *)group->forces[group->count - 1])->anim_set->flags & 7) ||
+                 ((GIZFORCE_BEST_PC *)group->forces[group->count - 1])->using_object != NULL))
+                continue;
         }
         if (GizForce_StoodOnForce(force, object))
             continue;
@@ -443,7 +445,8 @@ i32 __cdecl GizForce_FindBestForceTarget(void *system_ptr, GAMEOBJECT *object) {
             for (animation = fields->anim_set->objects; animation != NULL; animation = animation->next) {
                 if (animation->flags & 1)
                     continue;
-                distance = NuVecDistSqr(NuSpecialGetDrawPos(&animation->special), &object->collision_position, &delta);
+                draw_position = NuSpecialGetDrawPos(&animation->special);
+                distance = NuVecDistSqr(draw_position, &object->collision_position, &delta);
                 if (delta.x * facing_x + delta.z * facing_z < 0.0f)
                     continue;
                 record = &PossibleForceTargetsPc[count++];
@@ -473,42 +476,47 @@ i32 __cdecl GizForce_FindBestForceTarget(void *system_ptr, GAMEOBJECT *object) {
             }
         }
         if (oldest != NULL) {
-            GIZFORCE_BEST_PC *fields = (GIZFORCE_BEST_PC *)oldest->force;
-            index = oldest->index;
-            los->queried_at[index] = (u32)LevelTimer.update_count;
-            if (!(fields->config_flags & 0x800))
-                los->clear_bits[index >> 5] |= 1u << (index & 31);
-            else {
-                los->clear_bits[index >> 5] &= ~(1u << (index & 31));
-                clear = 0;
+            los->queried_at[oldest->index] = (u32)LevelTimer.update_count;
+            if (((GIZFORCE_BEST_PC *)oldest->force)->config_flags & 0x800) {
+                ((GIZFORCE_LOS_BEST_PC *)object->gizforce_los_info)->clear_bits[oldest->index >> 5] &=
+                    ~(1u << (oldest->index & 31));
                 if (oldest->animation != NULL) {
-                    NuVecSub(&direction, NuSpecialGetDrawPos(&oldest->animation->special), &object->collision_position);
-                    clear = NewRayCastScaleYMask(&object->collision_position, &direction, 0.0f, 1.0f, 0, 0) == 0;
-                    if (!clear && TerrainPlatId() != -1)
-                        clear = ((GIZFORCE_PLATFORM_BEST_PC *)oldest->animation->object_data)->platform_id ==
-                                TerrainPlatId();
+                    NUVEC *draw_position = NuSpecialGetDrawPos(&oldest->animation->special);
+                    NuVecSub(&direction, draw_position, &object->collision_position);
+                    if (NewRayCastScaleYMask(&object->collision_position, &direction, 0.0f, 1.0f, 0, 0) != 0) {
+                        if (TerrainPlatId() == -1)
+                            goto choose;
+                        if (((GIZFORCE_PLATFORM_BEST_PC *)oldest->animation->object_data)->platform_id !=
+                            TerrainPlatId())
+                            goto choose;
+                    }
                 } else {
                     GAMEANIMOBJ *animation;
-                    NuVecSub(&direction, &fields->position, &object->collision_position);
-                    clear = NewRayCastScaleYMask(&object->collision_position, &direction, 0.0f, 1.0f, 0, 0) == 0;
-                    if (!clear && (fields->runtime_flags & 0x100) && TerrainPlatId() != -1) {
-                        for (animation = fields->anim_set->objects; animation != NULL; animation = animation->next)
-                            if (((GIZFORCE_PLATFORM_BEST_PC *)animation->object_data)->platform_id == TerrainPlatId()) {
-                                clear = 1;
+                    NuVecSub(&direction, &((GIZFORCE_BEST_PC *)oldest->force)->position, &object->collision_position);
+                    if (NewRayCastScaleYMask(&object->collision_position, &direction, 0.0f, 1.0f, 0, 0) != 0) {
+                        if (!(((GIZFORCE_BEST_PC *)oldest->force)->runtime_flags & 0x100))
+                            goto choose;
+                        if (TerrainPlatId() == -1)
+                            goto choose;
+                        for (animation = ((GIZFORCE_BEST_PC *)oldest->force)->anim_set->objects;;
+                             animation = animation->next) {
+                            if (animation == NULL)
+                                goto choose;
+                            if (((GIZFORCE_PLATFORM_BEST_PC *)animation->object_data)->platform_id == TerrainPlatId())
                                 break;
-                            }
+                        }
                     }
                 }
-                if (clear)
-                    los->clear_bits[index >> 5] |= 1u << (index & 31);
             }
+            ((GIZFORCE_LOS_BEST_PC *)object->gizforce_los_info)->clear_bits[oldest->index >> 5] |=
+                1u << (oldest->index & 31);
         }
     }
+choose:
     los = (GIZFORCE_LOS_BEST_PC *)object->gizforce_los_info;
     for (i = 0; i < count; ++i) {
         record = &PossibleForceTargetsPc[i];
-        index = record->index;
-        if (los != NULL && index != -1 && !(los->clear_bits[index >> 5] & (1u << (index & 31))))
+        if (los != NULL && record->index != -1 && !(los->clear_bits[record->index >> 5] & (1u << (record->index & 31))))
             continue;
         if (record->distance < best_distance) {
             best_distance = record->distance;
