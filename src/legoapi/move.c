@@ -1696,15 +1696,16 @@ void __cdecl FindSlamOrigin(GAMEOBJECT *object, NUVEC *start, NUVEC *end) {
 
 f32 __cdecl ForceAlongSock(GAMEOBJECT *object) {
     NUVEC force;
-    f32 speed;
-    if (object->sock_index == 0xff || CurrentSpeed == 0.0f)
-        return 0.0f;
-    speed = (f32)((1.0 + object->current_speed_bias) * (f32)(CurrentSpeed * avg_currentspeed_mul));
-    force.x = force.y = 0.0f;
-    force.z = speed;
-    NuVecRotateX(&force, &force, object->sock_position.midpoint_pitch);
-    NuVecRotateY(&force, &force, object->sock_heading);
-    NuVecAdd(&object->target_velocity, &object->target_velocity, &force);
+    f32 speed = 0.0f;
+    if (object->sock_index != 0xff && CurrentSpeed != 0.0f) {
+        speed = CurrentSpeed * avg_currentspeed_mul;
+        speed = (f32)((1.0 + object->current_speed_bias) * speed);
+        force.x = force.y = 0.0f;
+        force.z = speed;
+        NuVecRotateX(&force, &force, object->sock_position.midpoint_pitch);
+        NuVecRotateY(&force, &force, object->sock_heading);
+        NuVecAdd(&object->target_velocity, &object->target_velocity, &force);
+    }
     return speed;
 }
 
@@ -3618,13 +3619,16 @@ void __cdecl FloatCode(GAMEOBJECT *object) {
     }
 }
 
+typedef struct fire_target_view_pc_s {
+    u8 unknown_0[0xc8c];
+    NUVEC target_velocity;
+} FIRE_TARGET_VIEW_PC;
+STATIC_ASSERT(offsetof(FIRE_TARGET_VIEW_PC, target_velocity) == 0xc8c);
 i32 __cdecl SetObjTarget(GAMEOBJECT *object, GAMEOBJECT *target) {
     object->attack_target_position = target->collision_position;
     if ((object->character_data->model_flags & 0x2000) == 0 && (object->flags_1f8 & 1) != 0)
         object->attack_target_position.y += Bolt_ObjTargetPosYAdjust(target);
-    object->field_c8c = v000.x;
-    object->field_c90 = v000.y;
-    object->field_c94 = v000.z;
+    ((FIRE_TARGET_VIEW_PC *)object)->target_velocity = v000;
     object->flags_e20 |= 0x800;
     object->collision_target = VehicleArea != 0 ? NULL : target;
     return 1;
@@ -3696,23 +3700,23 @@ void __cdecl SetHeadTarget(GAMEOBJECT *object, NUVEC *position, i8 priority, f32
                            f32 maximum_delay) {
     i32 random;
     f32 fraction, delay;
-    if (position == NULL) {
-        object->head_target = NULL;
-        object->head_target_priority = 0;
-        object->head_target_timer = 0.0f;
-        object->head_target_delay = 0.0f;
-    } else {
+    if (position != NULL) {
         if (object->head_target == NULL ||
-            (position != object->head_target && object->head_target_priority <= priority)) {
+            (position != object->head_target && priority >= object->head_target_priority)) {
             random = qrand();
             object->head_target = position;
             object->head_target_priority = priority;
             fraction = (f32)((f64)random * (f64)(1.0f / 65535.0f));
             delay = (1.0f - fraction) * minimum_delay + maximum_delay * fraction;
-            object->head_target_delay = delay;
             object->head_target_timer = time + delay;
+            object->head_target_delay = delay;
         }
         object->head_target_position = *object->head_target;
+    } else {
+        object->head_target_timer = 0.0f;
+        object->head_target = NULL;
+        object->head_target_delay = 0.0f;
+        object->head_target_priority = 0;
     }
 }
 
@@ -3981,22 +3985,14 @@ i32 __cdecl ZapTarget(GAMEOBJECT *object) {
     u32 flags;
     void **animations;
     i8 context;
-    if ((object->flags_1fc_word & 0x1001) != 0x1001 || object->dead != 0)
-        return 0;
-    flags = object->character_data->model_flags;
-    if ((flags & 0x10) == 0)
-        return 0;
-    animations = object->character_model->model_data_b;
-    if (animations[0x41] == NULL)
-        return 0;
-    context = object->character_context;
-    if ((CInfo[context].flags & 0x8000) != 0)
-        return 0;
-    if ((flags & 0x20) != 0 && (animations[0x42] == NULL || animations[0x43] == NULL || animations[0x44] == NULL))
-        return 0;
-    if (context == 0x15 || context == 0x17 || context == 0x41 || context == 0x33 || context == 0x3b || context == 0x39)
-        return 0;
-    return 1;
+    if ((object->flags_1fc_word & 1) != 0 && (object->flags_1fc_word & 0x1000) != 0 && object->dead == 0 &&
+        ((flags = object->character_data->model_flags) & 0x10) != 0 &&
+        (animations = object->character_model->model_data_b)[0x41] != NULL &&
+        (U64_PAIR(&CInfo[context = object->character_context].flags) & 0x8000) == 0 &&
+        ((flags & 0x20) == 0 || (animations[0x42] != NULL && animations[0x43] != NULL && animations[0x44] != NULL)) &&
+        context != 0x15 && context != 0x17 && context != 0x41 && context != 0x33 && context != 0x3b && context != 0x39)
+        return 1;
+    return 0;
 }
 
 void __cdecl SetWeaponIn(GAMEOBJECT *);
@@ -4234,13 +4230,16 @@ static __declspec(noinline) void ShootThisFrame(GAMEOBJECT *object, i32 bolt_id,
     VEHICLE_SHOOT_STATE_PC *state = (VEHICLE_SHOOT_STATE_PC *)object;
     if ((object->flags_1f8 & 0x40000) != 0 && object->field_280 != 0xff)
         return;
-    NewBuzzFrames(object->pad->bound_pad, (object->character_data->model_flags & 0x2000) != 0 ? 1 : 2, 0);
+    if ((object->character_data->model_flags & 0x2000) != 0)
+        NewBuzzFrames(object->pad->bound_pad, 1, 0);
+    else
+        NewBuzzFrames(object->pad->bound_pad, 2, 0);
     object->portal_flags |= 0x800;
     object->quick_shoot_bolt_id = (i8)bolt_id;
     object->quick_shoot_flags = (u8)flags;
     if ((object->character_data->game_character->flags_098[0] & 2) != 0)
         SetWeaponIn(object);
-    if (state->weapon.type != NULL && state->weapon.type->type == 2 && state->weapon.ammo != 0)
+    if (state->weapon.type != NULL && state->weapon.type->type == 2 && state->weapon.ammo > 0)
         --state->weapon.ammo;
 }
 
@@ -4250,11 +4249,6 @@ void StartBallooning(GAMEOBJECT *object, i32 movement_state) {
     object->field_7aa = object->character_model->model_data_b[0xb1] != NULL ? 0xb1 : 1;
     object->context_hover_target_y = 1000000000.0f;
 }
-typedef struct fire_target_view_pc_s {
-    u8 unknown_0[0xc8c];
-    NUVEC target_velocity;
-} FIRE_TARGET_VIEW_PC;
-STATIC_ASSERT(offsetof(FIRE_TARGET_VIEW_PC, target_velocity) == 0xc8c);
 static __declspec(noinline) void FireCode(GAMEOBJECT *object, i32 pressed, i32 held, f32 fire_delay,
                                           i32 delay_pressed) {
     BOLTTYPE_PC *bolt;
@@ -4758,9 +4752,7 @@ i32 __cdecl StartSlide(GAMEOBJECT *object, i32 check_contact) {
 }
 
 void __cdecl SlideCode(GAMEOBJECT *object) {
-    if (object->character_context != 0x33) {
-        StartSlide(object, 1);
-    } else {
+    if (object->character_context == 0x33) {
         if (object->field_281 != 0 && CanObjSlide(object, (i8)object->jump_animation_state) != 0)
             object->context_duration = 0.25f;
         else if (object->context_duration > 0.0f) {
@@ -4770,6 +4762,8 @@ void __cdecl SlideCode(GAMEOBJECT *object) {
         }
         if (object->field_281 != 0)
             PlaySfx("Char_Slide_Lp", &object->lower_position);
+    } else {
+        StartSlide(object, 1);
     }
 }
 
@@ -7138,15 +7132,16 @@ i32 __cdecl Slam_Start(GAMEOBJECT *object, f32 speed) {
 
 /* Native 49d6d0: genuine guard then fixed PC context/action and pointer member. */
 i32 __cdecl Glide_Start(GAMEOBJECT *object) {
-    if (LEGOCONTEXT_GLIDE == -1)
-        return 0;
-    object->context_timer = 0.0f;
-    object->character_context = 0x4f;
-    object->context_duration = 0.4f;
-    object->field_7aa = 0x93;
-    object->field_7b3 = 0;
-    object->grapple = NULL;
-    return 1;
+    if (LEGOCONTEXT_GLIDE != -1) {
+        object->context_timer = 0.0f;
+        object->character_context = 0x4f;
+        object->context_duration = 0.4f;
+        object->field_7aa = 0x93;
+        object->field_7b3 = 0;
+        object->grapple = NULL;
+        return 1;
+    }
+    return 0;
 }
 
 i32 __cdecl StartBackFlip(GAMEOBJECT *object) {

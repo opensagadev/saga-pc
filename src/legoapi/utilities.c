@@ -516,7 +516,7 @@ u16 __cdecl TurnRot(u16 current, u16 target, i32 speed, i32 *difference_out) {
     i32 difference;
     if (target == current)
         return target;
-    step = (i32)((f64)speed * FRAMETIME);
+    step = (i32)(speed * FRAMETIME);
     difference = (i32)target - (i32)current;
     if (difference > 0x8000)
         difference -= 0x10000;
@@ -525,9 +525,11 @@ u16 __cdecl TurnRot(u16 current, u16 target, i32 speed, i32 *difference_out) {
     if (difference_out != NULL)
         *difference_out = difference;
     if (difference > 0) {
-        if (step < difference)
-            return (u16)(current + step);
-    } else if (difference < -step)
-        return (u16)(current - step);
-    return target;
+        if (difference <= step)
+            return target;
+        return (u16)(current + step);
+    }
+    if (difference >= -step)
+        return target;
+    return (u16)(current - step);
 }
