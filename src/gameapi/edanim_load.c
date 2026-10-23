@@ -392,38 +392,44 @@ i32 __cdecl edanimLoadPage(char *path, NUGSCN *scene) {
 }
 
 static void edanimcbSetBouncyPlayerGrav(eduimenu_s *unused0, eduiitem_s *item, u32 unused2) {
-    EDANIM_PARAM_PC *param;
+    f32 value;
     if (edanim_nearest == -1) {
         return;
     }
-    param = &(AnimParams[edanim_nearest_param_id]);
-    (*param).bounce_impulse = ((edui_slider_s *)(item))->value;
-    if ((*param).platform_id != -1) {
-        PlatInstBounce((*param).platform_id, (*param).bounce_impulse, (*param).bounce_spring, (*param).bounce_damping);
+    value = ((edui_slider_s *)(item))->value;
+    AnimParams[edanim_nearest_param_id].bounce_impulse = value;
+    if (AnimParams[edanim_nearest_param_id].platform_id != -1) {
+        PlatInstBounce(
+            AnimParams[edanim_nearest_param_id].platform_id, AnimParams[edanim_nearest_param_id].bounce_impulse,
+            AnimParams[edanim_nearest_param_id].bounce_spring, AnimParams[edanim_nearest_param_id].bounce_damping);
     }
 }
 
 static void edanimcbSetBouncyTension(eduimenu_s *unused0, eduiitem_s *item, u32 unused2) {
-    EDANIM_PARAM_PC *param;
+    f32 value;
     if (edanim_nearest == -1) {
         return;
     }
-    param = &(AnimParams[edanim_nearest_param_id]);
-    (*param).bounce_spring = ((edui_slider_s *)(item))->value;
-    if ((*param).platform_id != -1) {
-        PlatInstBounce((*param).platform_id, (*param).bounce_impulse, (*param).bounce_spring, (*param).bounce_damping);
+    value = ((edui_slider_s *)(item))->value;
+    AnimParams[edanim_nearest_param_id].bounce_spring = value;
+    if (AnimParams[edanim_nearest_param_id].platform_id != -1) {
+        PlatInstBounce(
+            AnimParams[edanim_nearest_param_id].platform_id, AnimParams[edanim_nearest_param_id].bounce_impulse,
+            AnimParams[edanim_nearest_param_id].bounce_spring, AnimParams[edanim_nearest_param_id].bounce_damping);
     }
 }
 
 static void edanimcbSetBouncyDamping(eduimenu_s *unused0, eduiitem_s *item, u32 unused2) {
-    EDANIM_PARAM_PC *param;
+    f32 value;
     if (edanim_nearest == -1) {
         return;
     }
-    param = &(AnimParams[edanim_nearest_param_id]);
-    (*param).bounce_damping = ((edui_slider_s *)(item))->value;
-    if ((*param).platform_id != -1) {
-        PlatInstBounce((*param).platform_id, (*param).bounce_impulse, (*param).bounce_spring, (*param).bounce_damping);
+    value = ((edui_slider_s *)(item))->value;
+    AnimParams[edanim_nearest_param_id].bounce_damping = value;
+    if (AnimParams[edanim_nearest_param_id].platform_id != -1) {
+        PlatInstBounce(
+            AnimParams[edanim_nearest_param_id].platform_id, AnimParams[edanim_nearest_param_id].bounce_impulse,
+            AnimParams[edanim_nearest_param_id].bounce_spring, AnimParams[edanim_nearest_param_id].bounce_damping);
     }
 }
 
