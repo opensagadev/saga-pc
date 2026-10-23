@@ -2592,17 +2592,19 @@ void terrainpickupinit(char *path, void **buffer) {
 void AddPickupTerr(i32 type, NUVEC *position) {
     TERRAIN_SET_PC *terrain = (TERRAIN_SET_PC *)CurrentTerrain;
     i16 source;
-    TERRAIN_GROUP_PC *group;
+    i32 count;
     if (terrain == NULL)
         return;
     source = PickupTerrainPc->group_for_type[type];
-    if (source == -1 || curPickInst >= 128)
+    if (source == -1)
         return;
-    group = &terrain->groups[terrain->max_groups + curPickInst];
-    *group = PickupTerrainPc->groups[source];
+    count = curPickInst;
+    if (count >= 128)
+        return;
+    terrain->groups[terrain->max_groups + count] = PickupTerrainPc->groups[source];
     terrain = (TERRAIN_SET_PC *)CurrentTerrain;
-    terrain->groups[terrain->max_groups + curPickInst].origin = *position;
-    ++curPickInst;
+    terrain->groups[terrain->max_groups + count].origin = *position;
+    curPickInst = count + 1;
 }
 
 /* The real original caller expands the platform installer; no source-only helper is emitted. */
