@@ -218,25 +218,22 @@ void __cdecl NuRndrEndScene(void) {
 }
 
 void __cdecl NuDisplayListStreamAlloc(VARIPTR *cursor, i32 arg2, i32 count) {
-    u32 aligned;
     i32 index;
-    u32 offset;
 
     nudlist_alloc_count = count;
     nudlist_alloc_base = cursor->addr;
     cursor->addr += count;
-    aligned = (cursor->addr + 3U) & ~3U;
-    nudlist_alloc_end = aligned;
-    cursor->addr = aligned + count * 36;
+    nudlist_alloc_end = (cursor->addr + 3U) & ~3U;
+    cursor->addr = ((cursor->addr + 3U) & ~3U) + count * 36;
     nudlist_item_base = (cursor->addr + 0xfU) & ~0xfU;
-    cursor->addr = nudlist_item_base;
-    cursor->addr += count * 32;
+    cursor->addr = ((cursor->addr + 0xfU) & ~0xfU) + count * 32;
     for (index = 0; index < count; index++) {
+        NUDISPLAYLISTITEM *item;
         *(u8 *)(nudlist_alloc_base + index) = 0;
-        offset = index * 0x20;
-        *(u8 *)(nudlist_item_base + offset + 0x10) = 0x84;
-        *(u32 *)(nudlist_item_base + offset + 0x14) = 0;
-        *((u8 *)nudlist_item_base + offset + 0x11) = 4;
+        item = (NUDISPLAYLISTITEM *)(nudlist_item_base + index * 0x20 + 0x10);
+        item->type = 0x84;
+        item->next = NULL;
+        item->id = 4;
     }
 }
 
@@ -942,13 +939,9 @@ void DrawAlphaImage(i32 rows, i32 cols, NUMTL *material, i32 use_pixel_offsets,
 }
 
 __declspec(noinline) u8 __cdecl RenderPostClampBytePc(i32 minimum_unused, i32 maximum_unused, f32 value) {
-    f32 nonnegative;
-    f32 clamped;
     (void)minimum_unused;
     (void)maximum_unused;
-    nonnegative = 0.0f > value ? 0.0f : value;
-    clamped = 255.0f < nonnegative ? 255.0f : nonnegative;
-    return (u8)clamped;
+    return (u8)MIN(255.0f, MAX(0.0f, value));
 }
 
 #include <float.h>
