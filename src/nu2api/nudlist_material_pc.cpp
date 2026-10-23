@@ -424,7 +424,11 @@ extern "C" void __cdecl NuMtlSetRenderStatesPS(NUMTL *arg) {
 
 #include <math.h>
 
-struct POST_SHADER_PROGRAM_PC;
+struct POST_SHADER_PROGRAM_PC {
+    PC_TEXTURE_RESOURCE_PC *vertex_shader;
+    PC_TEXTURE_RESOURCE_PC *pixel_shader;
+    u32 unknown_08[2];
+};
 
 extern "C" {
     extern GRAPHICS_RENDER_TEXTURE_PC *PCGraphicsPostEffectWorkTexturePc;
@@ -565,12 +569,71 @@ extern "C" void __cdecl PostBlur7x7HighPc(GRAPHICS_RENDER_TEXTURE_PC *source, i3
     }
 }
 
+// PostShaderProgramBindPc and the per-stage sampler binds, as retail inlines them here.
+#define POST_BLUR_LOW_BIND_PROGRAM(bound_program)                                                                      \
+    do {                                                                                                               \
+        POST_SHADER_PROGRAM_PC *bound = (bound_program);                                                               \
+        if (bound != NULL) {                                                                                           \
+            if (NuDisplayHandlerVertexShaderCachePc != bound->vertex_shader) {                                         \
+                PCDeviceSetVertexShaderPc(bound->vertex_shader);                                                       \
+                NuDisplayHandlerVertexShaderCachePc = bound->vertex_shader;                                            \
+            }                                                                                                          \
+            if (NuDisplayHandlerPixelShaderCachePc != bound->pixel_shader) {                                           \
+                PCDeviceSetPixelShaderPc(bound->pixel_shader);                                                         \
+                NuDisplayHandlerPixelShaderCachePc = bound->pixel_shader;                                              \
+            }                                                                                                          \
+        } else {                                                                                                       \
+            PCDeviceSetVertexShaderPc(NULL);                                                                           \
+            PCDeviceSetPixelShaderPc(NULL);                                                                            \
+            NuDisplayHandlerVertexShaderCachePc = NULL;                                                                \
+            NuDisplayHandlerPixelShaderCachePc = NULL;                                                                 \
+        }                                                                                                              \
+    } while (0)
+#define POST_BLUR_LOW_ATTACH(texture, lod)                                                                             \
+    do {                                                                                                               \
+        PC_FRAMEBUFFER_PC *framebuffer = PostBlurFramebufferPc;                                                        \
+        framebuffer->targets[0].Attach((texture), (lod), false);                                                       \
+        framebuffer->changed = 1;                                                                                      \
+    } while (0)
+#define POST_BLUR_LOW_BIND_INPUT(stage)                                                                                \
+    do {                                                                                                               \
+        if ((u32)PCDeviceSamplerInvalidation[stage][0] != input->flags ||                                              \
+            (u32)PCDeviceSamplerInvalidation[stage][1] != input->field_24)                                             \
+            PCGraphicsSetSamplerTuplePc(stage, &input->flags);                                                         \
+        PCDeviceSetTexture(stage, input->resource);                                                                    \
+    } while (0)
+#define POST_BLUR_LOW_BIND_WORK(stage)                                                                                 \
+    do {                                                                                                               \
+        GRAPHICS_RENDER_TEXTURE_PC *work = PCGraphicsPostEffectWorkTexturePc;                                          \
+        if (work != NULL) {                                                                                            \
+            if ((u32)PCDeviceSamplerInvalidation[stage][0] != work->flags ||                                           \
+                (u32)PCDeviceSamplerInvalidation[stage][1] != work->field_24)                                          \
+                PCGraphicsSetSamplerTuplePc(stage, &work->flags);                                                      \
+            PCDeviceSetTexture(stage, work->resource);                                                                 \
+        } else {                                                                                                       \
+            PCDeviceSetTexture(stage, NULL);                                                                           \
+        }                                                                                                              \
+    } while (0)
+
+// One vertex-shader tap offset; retail rounds both coordinates through f32 temporaries.
+struct __declspec(align(8)) POST_BLUR_LOW_OFFSET_PC {
+    f32 x, y, z, w;
+};
+#define POST_BLUR_LOW_SET_OFFSET(offset, offset_x, offset_y)                                                           \
+    do {                                                                                                               \
+        f32 set_x = (f32)(offset_x);                                                                                   \
+        f32 set_y = (f32)(offset_y);                                                                                   \
+        (offset).x = set_x;                                                                                            \
+        (offset).y = set_y;                                                                                            \
+    } while (0)
+
 extern "C" void __cdecl PostBlur7x7LowPc(GRAPHICS_RENDER_TEXTURE_PC *source, i32 source_lod,
                                          GRAPHICS_RENDER_TEXTURE_PC *textures, i32 first_lod, i32 iterations,
                                          i32 levels, bool mip_chain, f32 radius, POST_SHADER_PROGRAM_PC *program) {
     f32 weights[4] = {.25f, .25f, .25f, .25f};
     volatile f32 rounded_radius = (f32)ceil((f64)radius);
     i32 guard = (i32)rounded_radius * 3;
+    PC_VIEWPORT_PC viewport;
     i32 work_width = PCGraphicsPostEffectWorkTexturePc->width;
     i32 work_height = PCGraphicsPostEffectWorkTexturePc->height;
     PCDisplayHandlerBindProgramsPc((PC_DL_SHADER_PROGRAM_PAIR_PC *)program);
@@ -595,123 +658,105 @@ extern "C" void __cdecl PostBlur7x7LowPc(GRAPHICS_RENDER_TEXTURE_PC *source, i32
             i32 height = (input->height >> ((u16)input_lod & 31)) & ~1;
             i32 output_width = (output->width >> ((u16)output_lod & 31)) & ~1;
             i32 output_height = (output->height >> ((u16)output_lod & 31)) & ~1;
-            volatile f32 dx = radius / (f32)width;
-            volatile f32 dy = radius / (f32)height;
-            volatile f32 dx_negative_half = (f32)((f64)dx * -.5);
-            volatile f32 dx_half = (f32)((f64)dx * .5);
-            volatile f32 dy_half = (f32)((f64)dy * .5);
-            volatile f32 dy_negative_half = (f32)((f64)dy * -.5);
-            volatile f32 minus_dx = (f32)((f64)dx * -1.0);
-            volatile f32 minus_dy = (f32)((f64)dy * -1.0);
-            f32 horizontal[4][4] = {{dx_negative_half, dy, 0, 0},
-                                    {dx, dy_half, 0, 0},
-                                    {dx_half, minus_dy, 0, 0},
-                                    {minus_dx, dy_half, 0, 0}};
-            f32 vertical[4][4] = {{dx_half, dy, 0, 0},
-                                  {dx, dy_negative_half, 0, 0},
-                                  {dx_negative_half, minus_dy, 0, 0},
-                                  {minus_dx, dy_negative_half, 0, 0}};
+            f32 dx = radius / (f32)width;
+            f32 dy = radius / (f32)height;
+            POST_BLUR_LOW_OFFSET_PC horizontal[4];
+            POST_BLUR_LOW_OFFSET_PC vertical[4];
+            horizontal[0].z = 0;
+            horizontal[0].w = 0;
+            horizontal[1].z = 0;
+            horizontal[1].w = 0;
+            horizontal[2].z = 0;
+            horizontal[2].w = 0;
+            horizontal[3].z = 0;
+            horizontal[3].w = 0;
+            vertical[0].z = 0;
+            vertical[0].w = 0;
+            vertical[1].z = 0;
+            vertical[1].w = 0;
+            vertical[2].z = 0;
+            vertical[2].w = 0;
+            vertical[3].z = 0;
+            vertical[3].w = 0;
+            POST_BLUR_LOW_SET_OFFSET(horizontal[0], dx * -.5, dy);
+            POST_BLUR_LOW_SET_OFFSET(vertical[0], dx * .5, dy);
+            POST_BLUR_LOW_SET_OFFSET(horizontal[1], dx, dy * .5);
+            POST_BLUR_LOW_SET_OFFSET(vertical[1], dx, dy * -.5);
+            POST_BLUR_LOW_SET_OFFSET(horizontal[2], dx * .5, dy * -1.0);
+            POST_BLUR_LOW_SET_OFFSET(vertical[2], dx * -.5, dy * -1.0);
+            POST_BLUR_LOW_SET_OFFSET(horizontal[3], dx * -1.0, dy * .5);
+            POST_BLUR_LOW_SET_OFFSET(vertical[3], dx * -1.0, dy * -.5);
             f32 bias[4] = {1, 1, PostBlurInputBiasPc / (f32)width, PostBlurInputBiasPc / (f32)height};
             f32 output_bias[4] = {(f32)output_width / (f32)work_width, (f32)output_height / (f32)work_height,
                                   1.0f / (f32)work_width, 1.0f / (f32)work_height};
-            PostBlurFramebufferPc->targets[0].Attach(PCGraphicsPostEffectWorkTexturePc, 0, false);
-            PostBlurFramebufferPc->changed = 1;
+            POST_BLUR_LOW_ATTACH(PCGraphicsPostEffectWorkTexturePc, 0);
             PCGraphicsBindFramebuffer(PostBlurFramebufferPc);
-            {
-                PC_VIEWPORT_PC viewport;
-                viewport.x = 0;
-                viewport.y = 0;
-                viewport.width = output_width;
-                viewport.height = output_height;
-                viewport.min_z = 0;
-                viewport.max_z = 1;
-                NuVpSubmitPc(&viewport);
-            }
-            PCDeviceSetVertexShaderConstantsF(0, horizontal[0], 4);
+            viewport.x = 0;
+            viewport.y = 0;
+            viewport.width = output_width;
+            viewport.height = output_height;
+            viewport.min_z = 0;
+            viewport.max_z = 1;
+            NuVpSubmitPc(&viewport);
+            PCDeviceSetVertexShaderConstantsF(0, &horizontal[0].x, 4);
             PCDeviceSetVertexShaderConstantsF(4, bias, 1);
             PCDeviceSetPixelShaderConstantsF(0, weights, 1);
             u32 level = input_lod & 15;
             input->flags = (((input->flags & 0xfca5dbf0) | level) & 0xffffff0f) | ((level | 0xa41b0) << 4);
-            for (u32 stage = 0; stage < 4; ++stage) {
-                if ((u32)PCDeviceSamplerInvalidation[stage][0] != input->flags ||
-                    (u32)PCDeviceSamplerInvalidation[stage][1] != input->field_24)
-                    PCGraphicsSetSamplerTuplePc(stage, &input->flags);
-                PCDeviceSetTexture(stage, input->resource);
-            }
+            POST_BLUR_LOW_BIND_INPUT(0);
+            POST_BLUR_LOW_BIND_INPUT(1);
+            POST_BLUR_LOW_BIND_INPUT(2);
+            POST_BLUR_LOW_BIND_INPUT(3);
             PCDeviceBackend.DrawPostEffectQuadPc();
-            PostShaderProgramBindPc(PostBlurAuxProgramPc);
-            if ((u32)PCDeviceSamplerInvalidation[0][0] != input->flags ||
-                (u32)PCDeviceSamplerInvalidation[0][1] != input->field_24)
-                PCGraphicsSetSamplerTuplePc(0, &input->flags);
-            PCDeviceSetTexture(0, input->resource);
+            POST_BLUR_LOW_BIND_PROGRAM(PostBlurAuxProgramPc);
+            POST_BLUR_LOW_BIND_INPUT(0);
             if (output_height < work_height) {
                 f32 edge[4] = {1, 0, 0, 1};
                 PCDeviceSetVertexShaderConstantsF(0, edge, 1);
-                {
-                    PC_VIEWPORT_PC viewport;
-                    viewport.x = 0;
-                    viewport.y = output_height;
-                    viewport.width = output_width;
-                    viewport.height = guard;
-                    viewport.min_z = 0;
-                    viewport.max_z = 1;
-                    NuVpSubmitPc(&viewport);
-                }
+                viewport.x = 0;
+                viewport.y = output_height;
+                viewport.width = output_width;
+                viewport.height = guard;
+                viewport.min_z = 0;
+                viewport.max_z = 1;
+                NuVpSubmitPc(&viewport);
                 PCDeviceBackend.DrawPostEffectQuadPc();
             }
             if (output_width < work_width) {
                 f32 edge[4] = {0, 1, 1, 0};
-                {
-                    PC_VIEWPORT_PC viewport;
-                    viewport.x = output_width;
-                    viewport.y = 0;
-                    viewport.width = guard;
-                    viewport.height = output_height;
-                    viewport.min_z = 0;
-                    viewport.max_z = 1;
-                    NuVpSubmitPc(&viewport);
-                }
-                PCDeviceSetVertexShaderConstantsF(0, edge, 1);
-                PCDeviceBackend.DrawPostEffectQuadPc();
-            }
-            PostBlurFramebufferPc->targets[0].Attach(output, output_lod, false);
-            PostBlurFramebufferPc->changed = 1;
-            PCGraphicsBindFramebuffer(PostBlurFramebufferPc);
-            {
-                PC_VIEWPORT_PC viewport;
-                viewport.x = 0;
+                viewport.x = output_width;
                 viewport.y = 0;
-                viewport.width = output_width;
+                viewport.width = guard;
                 viewport.height = output_height;
                 viewport.min_z = 0;
                 viewport.max_z = 1;
                 NuVpSubmitPc(&viewport);
+                PCDeviceSetVertexShaderConstantsF(0, edge, 1);
+                PCDeviceBackend.DrawPostEffectQuadPc();
             }
-            PostShaderProgramBindPc(program);
-            PCDeviceSetVertexShaderConstantsF(0, vertical[0], 4);
+            POST_BLUR_LOW_ATTACH(output, output_lod);
+            PCGraphicsBindFramebuffer(PostBlurFramebufferPc);
+            viewport.x = 0;
+            viewport.y = 0;
+            viewport.width = output_width;
+            viewport.height = output_height;
+            viewport.min_z = 0;
+            viewport.max_z = 1;
+            NuVpSubmitPc(&viewport);
+            POST_BLUR_LOW_BIND_PROGRAM(program);
+            PCDeviceSetVertexShaderConstantsF(0, &vertical[0].x, 4);
             PCDeviceSetVertexShaderConstantsF(4, output_bias, 1);
             PCDeviceSetPixelShaderConstantsF(0, weights, 1);
             output->flags =
                 (((output->flags & 0xfca5dbf0) | (output_lod & 15)) & 0xffffff0f) | ((output_lod & 15) << 4) | 0xa41b00;
             PCGraphicsPostEffectWorkTexturePc->flags =
-                ((PCGraphicsPostEffectWorkTexturePc->flags & 0xfffffbff) | 0x300);
+                (((PCGraphicsPostEffectWorkTexturePc->flags & 0xfffffbff) | 0x300) & 0xffffdfff) | 0x1800;
             PCGraphicsPostEffectWorkTexturePc->flags =
-                ((PCGraphicsPostEffectWorkTexturePc->flags & 0xffffdfff) | 0x1800);
-            PCGraphicsPostEffectWorkTexturePc->flags =
-                ((PCGraphicsPostEffectWorkTexturePc->flags & 0xfff5ffff) | 0x40000);
-            PCGraphicsPostEffectWorkTexturePc->flags =
-                ((PCGraphicsPostEffectWorkTexturePc->flags & 0xfc2fffff) | 0x200000);
-            for (u32 stage = 0; stage < 4; ++stage) {
-                GRAPHICS_RENDER_TEXTURE_PC *work = PCGraphicsPostEffectWorkTexturePc;
-                if (work != NULL) {
-                    if ((u32)PCDeviceSamplerInvalidation[stage][0] != work->flags ||
-                        (u32)PCDeviceSamplerInvalidation[stage][1] != work->field_24)
-                        PCGraphicsSetSamplerTuplePc(stage, &work->flags);
-                    PCDeviceSetTexture(stage, work->resource);
-                } else {
-                    PCDeviceSetTexture(stage, NULL);
-                }
-            }
+                (((PCGraphicsPostEffectWorkTexturePc->flags & 0xfff5ffff) | 0x40000) & 0xfc2fffff) | 0x200000;
+            POST_BLUR_LOW_BIND_WORK(0);
+            POST_BLUR_LOW_BIND_WORK(1);
+            POST_BLUR_LOW_BIND_WORK(2);
+            POST_BLUR_LOW_BIND_WORK(3);
             PCDeviceBackend.DrawPostEffectQuadPc();
             input = output;
             input_lod = output_lod;
