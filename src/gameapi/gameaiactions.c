@@ -1076,8 +1076,10 @@ i32 __cdecl Action_CompleteLevel(AISYS_PC *system, AISCRIPTPROCESS_PC *processor
             cutscene_name = value + NuStrLen(CompleteLevelCutscenePrefix);
 
         value = NuStrIStr(params[index], (char *)NewLevelPrefix);
-        if (value != NULL)
-            level = Level_FindByName(value + NuStrLen(NewLevelPrefix), NULL);
+        if (value != NULL) {
+            value += NuStrLen(NewLevelPrefix);
+            level = Level_FindByName(value, NULL);
+        }
     }
 
     if (FreePlay == 0) {
@@ -1283,9 +1285,6 @@ void GizAction_ActivateEffect(GIZFLOW_PC *unused0, FLOWBOX_PC *unused1, char **p
     char *name;
     i32 visible;
     i32 index;
-    if (count <= 0) {
-        return;
-    }
     name = NULL;
     visible = 1;
     for (index = 0; index < count; ++index) {
@@ -1624,6 +1623,7 @@ i32 __cdecl Action_SetShootOpponentsPc(AISYS_PC *system, AISCRIPTPROCESS_PC *pro
 
 STATIC_ASSERT(offsetof(GAMEOBJECT, jump_variant_state) == 0xe32);
 STATIC_ASSERT(offsetof(GAMEOBJECT, flags_e20) == 0xe20);
+STATIC_ASSERT(offsetof(GAMEOBJECT, field_e22) == 0xe22);
 STATIC_ASSERT(offsetof(GAMEOBJECT, character_context) == 0x7b5);
 STATIC_ASSERT(offsetof(GAMEOBJECT, field_7aa) == 0x7aa);
 STATIC_ASSERT(offsetof(GAMEOBJECT, context_variant_flags) == 0x7bc);
@@ -1647,7 +1647,7 @@ i32 __cdecl Action_ThrowDetonatorPc(AISYS_PC *system, AISCRIPTPROCESS_PC *proces
     object->character_context = 0x2e;
     if (object->jump_variant_state == 1)
         object->field_7aa = 0x6f;
-    else if ((object->flags_e20 & 0x10000u) != 0)
+    else if ((object->field_e22 & 1) != 0)
         object->field_7aa = 0x6e;
     else
         object->field_7aa = 0x65;
