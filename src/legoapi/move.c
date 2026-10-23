@@ -369,7 +369,7 @@ static i32 ForcePushEligible(GAMEOBJECT *candidate, GAMEOBJECT *object, GAMEOBJE
     return (character->flags_090 & 0x40) == 0 && (character->flags_094 & 0x200) == 0;
 }
 
-i32 __cdecl FaceOpponent(GAMEOBJECT *object, NUVEC *position) {
+__declspec(noinline) i32 __cdecl FaceOpponent(GAMEOBJECT *object, NUVEC *position) {
     GAMEOBJECT *target;
     if (position == NULL) {
         target = object->force_target;
@@ -474,8 +474,8 @@ i32 __cdecl ForcePushed_SetTargetMom(GAMEOBJECT *object, f32 *seek_rate) {
 
 i32 __cdecl ForcePushed_YRotation(GAMEOBJECT *object) {
     GAMEOBJECT *source = object->force_target;
-    if (source != NULL && source->character_context == 0x1b && (source->flags_e20 & 0x380) == 0 &&
-        (object->velocity.x != 0.0f || object->velocity.z != 0.0f)) {
+    if (source != NULL && source->character_context == 0x1b && (source->flags_e20 & 0x80) == 0 &&
+        (source->flags_e20 & 0x300) == 0 && (object->velocity.x != 0.0f || object->velocity.z != 0.0f)) {
         object->movement_facing_angle = (u16)(NuAtan2D(object->velocity.x, object->velocity.z) + 0x8000);
         if (object->action_movement_state == 4 && Cheat_IsOn(0x13) != 0)
             object->movement_facing_angle += 0x8000;
@@ -6560,32 +6560,33 @@ void __cdecl Move_DEFAULT(GAMEOBJECT *object) {
 void __cdecl SetObjAsHeadTarget(GAMEOBJECT *object, GAMEOBJECT *target, i8 unused_priority, f32 unused_time,
                                 f32 unused_minimum_delay, f32 unused_maximum_delay) {
     i32 joint;
-    NUVEC *position;
-    if (target != NULL && object != NULL && target->character_data != NULL) {
+    if (object != NULL && target != NULL && target->character_data != NULL) {
         joint = target->character_data->game_character->head_locator;
-        position = joint == -1 ? &target->collision_position : (NUVEC *)&target->locator_matrices[joint].m30;
-        SetHeadTarget(object, position, 2, 1.0f, 0.0f, 0.0f);
+        if (joint != -1)
+            SetHeadTarget(object, (NUVEC *)&target->locator_matrices[joint].m30, 2, 1.0f, 0.0f, 0.0f);
+        else
+            SetHeadTarget(object, &target->collision_position, 2, 1.0f, 0.0f, 0.0f);
     }
 }
 
 i32 __cdecl ForcePushed_SuperPush_Occurring(GAMEOBJECT *first, GAMEOBJECT *second) {
     GAMEOBJECT *source;
     if (first->character_context == 0x1c) {
-        if (first->action_movement_state != 0)
-            return 0;
-        source = first->force_target;
-        if (source == NULL || source->character_context != 0x1b || (source->flags_e20 & 0x380) != 0 ||
-            second->id == (u16)id_GONKDROID)
-            return 0;
-        return ForcePushEligible(second, first, source) != 0;
+        if (first->action_movement_state == 0) {
+            source = first->force_target;
+            if (source != NULL && source->character_context == 0x1b && (source->flags_e20 & 0x300) == 0 &&
+                (source->flags_e20 & 0x80) == 0 && second->id != (u16)id_GONKDROID &&
+                ForcePushEligible(second, first, source) != 0)
+                return 1;
+        }
+    } else if (second->character_context == 0x1c && second->action_movement_state == 0) {
+        source = second->force_target;
+        if (source != NULL && source->character_context == 0x1b && (source->flags_e20 & 0x300) == 0 &&
+            (source->flags_e20 & 0x80) == 0 && first->id != (u16)id_GONKDROID &&
+            ForcePushEligible(first, second, source) != 0)
+            return 1;
     }
-    if (second->character_context != 0x1c || second->action_movement_state != 0)
-        return 0;
-    source = second->force_target;
-    if (source == NULL || source->character_context != 0x1b || (source->flags_e20 & 0x380) != 0 ||
-        first->id == (u16)id_GONKDROID)
-        return 0;
-    return ForcePushEligible(first, second, source) != 0;
+    return 0;
 }
 
 typedef void(__cdecl *CHARACTER_UPDATE_CALLBACK_PC)(GAMEOBJECT *);
