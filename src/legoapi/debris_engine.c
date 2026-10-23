@@ -956,10 +956,12 @@ void __cdecl DebrisProcessTriggers(void) {
     i32 i;
     i32 switch_changes[32][2];
     last_switch_change = -1;
-    for (key = debris_keystack; key != NULL;) {
-        effect = debtab[key->effect_index];
+    for (key = debris_keystack; key != NULL; key = next) {
         next = key->previous;
-        if (key->trigger_first == 1 && key->finite != 2 && key->trigger_second != -1) {
+        effect = debtab[key->effect_index];
+        if (key->trigger_first != 1 || key->finite == 2)
+            continue;
+        if (key->trigger_second != -1) {
             switch (debris_object_switches[key->trigger_second]) {
                 case 0:
                     key->finite = 0;
@@ -967,72 +969,56 @@ void __cdecl DebrisProcessTriggers(void) {
                 case 1:
                     key->finite = 1;
                     break;
-                case 3:
-                    last_switch_change = (last_switch_change + 1) & 31;
-                    switch_changes[last_switch_change][0] = key->trigger_second;
-                    switch_changes[last_switch_change][1] = 0;
-                    break;
                 case 2:
                     last_switch_change = (last_switch_change + 1) & 31;
-                    key->finite = 2;
-                    switch_changes[last_switch_change][0] = key->trigger_second;
                     switch_changes[last_switch_change][1] = 3;
-                    goto restart_emission;
-                case 4: {
-                    last_switch_change = (last_switch_change + 1) & 31;
                     key->finite = 2;
                     switch_changes[last_switch_change][0] = key->trigger_second;
-                    switch_changes[last_switch_change][1] = 0;
-                restart_emission:
-                    DebrisStartOffsetEx(key, 0.0f);
-                    shift = key->emission_time - globaltime;
-                    key->emission_disabled = 0;
-                    key->emission_epoch = globaltime;
-                    key->emission_time -= shift;
-                    key->emission_end_time -= shift;
-                    if (key->process_collision_sound != 0) {
-                        key->cutoff_distance = CameraEmitterDistance(&key->position);
-                        range = effect->sound_range_override;
-                        if (range == 0.0f)
-                            range = effect->sound_range;
-                        if (range == 0.0f)
-                            range = effect->clip_extent;
-                        volume = 0.0f;
-                        if (range > key->cutoff_distance) {
-                            if (effect->sound_data[0] != -1)
-                                SetSfxBit_On(effect->sound_data[0]);
-                            if (effect->sound_data[3] != -1)
-                                SetSfxBit_On(effect->sound_data[3]);
-                            if (effect->sound_data[6] != -1)
-                                SetSfxBit_On(effect->sound_data[6]);
-                            if (effect->sound_data[9] != -1)
-                                SetSfxBit_On(effect->sound_data[9]);
-                            volume = (range - key->cutoff_distance) / range;
-                        }
-                        if (range > key->cutoff_distance) {
-                            if (effect->sound_data[0] != -1 && effect->sound_data[1] == 1)
-                                PlaySfxByIdEx(effect->sound_data[0], &key->position, volume, 1.0f);
-                            if (effect->sound_data[3] != -1 && effect->sound_data[4] == 1)
-                                PlaySfxByIdEx(effect->sound_data[3], &key->position, volume, 1.0f);
-                            if (effect->sound_data[6] != -1 && effect->sound_data[7] == 1)
-                                PlaySfxByIdEx(effect->sound_data[6], &key->position, volume, 1.0f);
-                            if (effect->sound_data[9] != -1 && effect->sound_data[10] == 1)
-                                PlaySfxByIdEx(effect->sound_data[9], &key->position, volume, 1.0f);
-                        }
-                    }
                     break;
-                }
+                case 3:
+                    last_switch_change = (last_switch_change + 1) & 31;
+                    switch_changes[last_switch_change][1] = 0;
+                    switch_changes[last_switch_change][0] = key->trigger_second;
+                    break;
+                case 4:
+                    last_switch_change = (last_switch_change + 1) & 31;
+                    switch_changes[last_switch_change][1] = 0;
+                    key->finite = 2;
+                    switch_changes[last_switch_change][0] = key->trigger_second;
+                    break;
             }
         }
-        key = next;
+        if (key->finite != 2)
+            continue;
+        DebrisStartOffsetEx(key, 0.0f);
+        key->emission_disabled = 0;
+        shift = key->emission_time - globaltime;
+        key->emission_time -= shift;
+        key->emission_end_time -= shift;
+        key->emission_epoch = globaltime;
+        if (key->process_collision_sound == 0)
+            continue;
+        volume = 0.0f;
+        key->cutoff_distance = CameraEmitterDistance(&key->position);
+        range = effect->sound_range_override == 0.0f
+                    ? (effect->sound_range == 0.0f ? effect->clip_extent : effect->sound_range)
+                    : effect->sound_range_override;
+        if (range > key->cutoff_distance) {
+            for (i = 0; i < 4; ++i)
+                if (effect->sound_data[i * 3] != -1)
+                    SetSfxBit_On(effect->sound_data[i * 3]);
+            volume = (range - key->cutoff_distance) / range;
+        }
+        if (range > key->cutoff_distance)
+            DEBRIS_EMISSION_SOUND(key, effect, 1, volume);
     }
     for (i = 0; i <= last_switch_change; ++i)
-        debris_object_switches[switch_changes[i][0]] = switch_changes[i][1];
+        debris_object_switches[switch_changes[i][0]] = (u8)switch_changes[i][1];
 }
 
 void __cdecl DebrisTimeSlip(i32 group) {
     DEBRIS_CHUNK_CONTROL_PC *control;
-    i32 i, chunk_index, particle_index;
+    i32 i, chunk_index, particle_index, glass;
     if (group == 0) {
         globaltime = debris_render_global_time;
         for (control = debris_chunk_control_stack[0]; control != NULL; control = control->next)
@@ -1043,34 +1029,40 @@ void __cdecl DebrisTimeSlip(i32 group) {
             control->expiry_time -= 800.0;
     }
     for (i = 0; i < maxdebkeys; ++i) {
-        DEBRISKEY_PC *key = &DEBRIS_ENGINE_KEYS_PC[i];
-        DEBRIS_INFO_PC *effect = debtab[key->effect_index];
-        if (effect->time_group == 4 ? group != 1 : group != 0)
-            continue;
-        key->last_update_time -= 800.0;
-        key->emission_epoch -= 800.0;
-        key->emission_time -= 800.0;
-        key->previous_emission_time -= 800.0;
-        key->emission_end_time -= 800.0;
-        for (chunk_index = 0; chunk_index < 32; ++chunk_index) {
-            DEBRIS_PARTICLE_CHUNK_PC *chunk = key->particle_chunks[chunk_index];
-            i32 count;
-            if (chunk == NULL)
-                continue;
-            count = effect->particle_type == 7 ? 12 : 32;
-            for (particle_index = 0; particle_index < count; ++particle_index)
-                chunk->particles[particle_index].start_time -= 800.0;
+        DEBRIS_INFO_PC *effect = debtab[DEBRIS_ENGINE_KEYS_PC[i].effect_index];
+        if ((effect->time_group == 4 && group == 1) || (effect->time_group != 4 && group == 0)) {
+            DEBRIS_ENGINE_KEYS_PC[i].last_update_time -= 800.0;
+            glass = effect->particle_type == 7;
+            DEBRIS_ENGINE_KEYS_PC[i].emission_epoch -= 800.0;
+            DEBRIS_ENGINE_KEYS_PC[i].emission_time -= 800.0;
+            DEBRIS_ENGINE_KEYS_PC[i].previous_emission_time -= 800.0;
+            DEBRIS_ENGINE_KEYS_PC[i].emission_end_time -= 800.0;
+            for (chunk_index = 0; chunk_index < 32; ++chunk_index) {
+                if (DEBRIS_ENGINE_KEYS_PC[i].particle_chunks[chunk_index] != NULL) {
+                    if (glass) {
+                        for (particle_index = 0; particle_index < 12; ++particle_index)
+                            DEBRIS_ENGINE_KEYS_PC[i]
+                                .particle_chunks[chunk_index]
+                                ->particles[particle_index]
+                                .start_time -= 800.0;
+                    } else {
+                        for (particle_index = 0; particle_index < 32; ++particle_index)
+                            DEBRIS_ENGINE_KEYS_PC[i]
+                                .particle_chunks[chunk_index]
+                                ->particles[particle_index]
+                                .start_time -= 800.0;
+                    }
+                }
+            }
         }
     }
     for (i = 1; i < debinf_count; ++i) {
-        DEBRIS_INFO_PC *effect = debtab[i];
-        if (effect == NULL)
-            continue;
-        if (effect->time_group == 4 ? group != 1 : group != 0)
-            continue;
-        effect->last_render_time -= 800.0;
-        if (effect->native_data != NULL)
-            effect->native_data->last_render_time -= 800.0;
+        if (debtab[i] != NULL &&
+            ((debtab[i]->time_group == 4 && group == 1) || (debtab[i]->time_group != 4 && group == 0))) {
+            debtab[i]->last_render_time -= 800.0;
+            if (debtab[i]->native_data != NULL)
+                debtab[i]->native_data->last_render_time -= 800.0;
+        }
     }
 }
 
