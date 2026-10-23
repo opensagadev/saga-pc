@@ -9511,7 +9511,8 @@ static void ForcePushCode(GAMEOBJECT *object, i32 held) {
         if (initial_target->character_context == 0xf) {
             object->force_target = NULL;
             EndForce(object, 0);
-        } else if ((initial_target->flags_1fc_word & 0x1001) != 0x1001 || initial_target->dead != 0) {
+        } else if ((initial_target->flags_1fc_word & 1) == 0 || (initial_target->flags_1fc_word & 0x1000) == 0 ||
+                   initial_target->dead != 0) {
             object->force_target = NULL;
         } else if ((object->flags_e20 & 0x600) == 0 && initial_target->character_context != 0x1c) {
             object->force_target = NULL;
@@ -9529,12 +9530,8 @@ static void ForcePushCode(GAMEOBJECT *object, i32 held) {
                 DrawLightningBolts(object, target, 0);
         } else {
             f32 duration;
-            i32 throw_target = 0;
+            i32 throw_target;
             i32 complete;
-            union {
-                f32 f;
-                u32 u;
-            } normal;
             NewRumble(target->pad->bound_pad, (f32)((f64)qrand() * PlayerRandomScalePc * (f64)0.4f), 0);
             if ((object->flags_e20 & 0x100) != 0)
                 DrawLightningBolts(object, target, 1);
@@ -9543,45 +9540,43 @@ static void ForcePushCode(GAMEOBJECT *object, i32 held) {
             if (target->character_context != 0x1c || (target->character_data->model_flags & 0x20) != 0 ||
                 target->character_model->model_data_b[target->field_7aa] == NULL ||
                 CurrentAnim(&target->anim_packet) == target->field_7aa)
-                object->context_timer += FRAMETIME;
+                object->context_timer = FRAMETIME + object->context_timer;
             NewRumble(object->pad->bound_pad, (f32)((f64)qrand() * PlayerRandomScalePc * (f64)0.4f), 0);
             if ((object->flags_e20 & 0x200) != 0)
                 duration = ForcePushMindTrickDurationPc;
-            else if ((object->flags_e20 & 0x180) != 0)
+            else if ((object->flags_e20 & 0x80) != 0 || (object->flags_e20 & 0x100) != 0)
                 duration = ForcePushStrongDurationPc;
             else
                 duration = ForcePushDurationPc;
+            throw_target = 0;
             object->field_7b3 = 0;
             if ((object->flags_1fc_word & 0x80) != 0 && (object->flags_1f8 & 0x40000) == 0 && ForcePush_Waft != 0 &&
                 (target->flags_1fc_word & 0x80) == 0 && (f64)object->context_timer >= (f64)0.2f &&
                 object->pad->input_magnitude > 0.0f &&
-                ((object->flags_e20 & 0x100) == 0 ||
+                (((object->flags_e20 >> 8) & 1) == 0 ||
                  (target->character_data->game_character->flags_090 & 0x4000) == 0) &&
-                (object->flags_e20 & 0x180) != 0) {
-                u16 angle;
+                ((object->flags_e20 & 0x80) != 0 || ((object->flags_e20 >> 8) & 1) != 0)) {
                 i32 difference;
                 object->field_7b3 = 1;
                 object->external_force.x = (f32)((f64)NU_SIN_LUT(object->facing_angle) * 0.5 + object->position.x);
                 object->external_force.y =
                     (f32)(((f64)object->collision_max.y - object->collision_min.y) * 0.75 + object->collision_min.y);
                 object->external_force.z = (f32)((f64)NU_COS_LUT(object->facing_angle) * 0.5 + object->position.z);
-                angle = NuAtan2D(target->position.x - object->position.x, target->position.z - object->position.z);
-                difference = RotDiff(GamePad_InputAngle(object, object->pad), angle);
-                if ((difference < 0 ? -difference : difference) < 0xaaa)
+                difference =
+                    RotDiff(GamePad_InputAngle(object, object->pad),
+                            NuAtan2D(target->position.x - object->position.x, target->position.z - object->position.z));
+                if (abs(difference) < 0xaaa)
                     throw_target = 1;
                 else if ((f64)object->context_timer >= (f64)duration - (f64)0.3f)
                     object->context_timer = (f32)((f64)duration - (f64)0.3f);
             }
             complete = object->context_timer >= duration;
-            if (complete == 0 && (object->flags_e20 & 0x380) == 0 && (f64)object->context_timer >= (f64)0.2f &&
-                initial_target->contact_count != 0) {
-                normal.f = initial_target->contact_normal.y;
-                normal.u &= 0x7fffffff;
-                complete = normal.f < NuTrigTable[0x3555];
-            }
+            if (complete == 0 && (object->flags_e20 & 0x80) == 0 && (object->flags_e20 & 0x300) == 0 &&
+                (f64)object->context_timer >= (f64)0.2f && initial_target->contact_count != 0)
+                complete = MovePlayerFabs(initial_target->contact_normal.y) < NuTrigTable[0x3555];
             if (complete != 0) {
                 if (throw_target != 0) {
-                    u16 angle;
+                    i32 angle;
                     f32 speed;
                     object->character_context = -1;
                     object->force_target = NULL;
@@ -9589,30 +9584,35 @@ static void ForcePushCode(GAMEOBJECT *object, i32 held) {
                     object->field_d20 = 0;
                     target->force_target = NULL;
                     EndForce(target, 0);
-                    PlaySfx("JForcePush", &object->collision_position);
-                    KillRumble(object);
-                    PlayHurtSfx(target);
-                    GameCam_NewShake(NULL, 0.75f, 0.75f, 1.0f);
-                    target->character_context = 0x5f;
-                    if (target->character_model->model_data_b[0xb8] != NULL) {
-                        target->field_7aa = 0xb8;
-                        ResetAnimPacket(&target->anim_packet, -1);
-                    } else if (target->character_model->model_data_b[5] != NULL)
-                        target->field_7aa = 5;
-                    target->current_hp = 1;
-                    target->context_timer = 0.0f;
-                    target->context_duration = 2.0f;
-                    angle = NuAtan2D(target->collision_position.x - object->collision_position.x,
-                                     target->collision_position.z - object->collision_position.z);
-                    speed = (f32)(((f64)qrand() * PlayerRandomScalePc * (f64)0.4f + (f64)0.8f) *
-                                  CombatReactionHorizontalScalePc);
-                    target->external_force.x = NU_SIN_LUT(angle) * speed;
-                    target->external_force.z = NU_COS_LUT(angle) * speed;
-                    target->context_variant_flags &= ~0x100u;
-                    target->velocity.y = (f32)(((f64)qrand() * PlayerRandomScalePc * (f64)0.4f + (f64)0.8f) *
-                                               CombatReactionVerticalScalePc);
-                    target->hit_variant = object->field_280 <= 1 ? object->field_280 : -1;
-                    SetFlicker(target, 0.4f);
+                    if (throw_target == 1) {
+                        PlaySfx("JForcePush", &object->collision_position);
+                        KillRumble(object);
+                        PlayHurtSfx(target);
+                        GameCam_NewShake(NULL, 0.75f, 0.75f, 1.0f);
+                        target->character_context = 0x5f;
+                        if (target->character_model->model_data_b[0xb8] != NULL) {
+                            target->field_7aa = 0xb8;
+                            ResetAnimPacket(&target->anim_packet, -1);
+                        } else if (target->character_model->model_data_b[5] != NULL)
+                            target->field_7aa = 5;
+                        target->current_hp = 1;
+                        target->context_timer = 0.0f;
+                        target->context_duration = 2.0f;
+                        angle = NuAtan2D(target->collision_position.x - object->collision_position.x,
+                                         target->collision_position.z - object->collision_position.z);
+                        speed = (f32)(((f64)qrand() * PlayerRandomScalePc * (f64)0.4f + (f64)0.8f) *
+                                      CombatReactionHorizontalScalePc);
+                        target->external_force.x = NU_SIN_LUT(angle) * speed;
+                        target->external_force.z = NU_COS_LUT(angle) * speed;
+                        target->context_variant_flags &= ~0x100u;
+                        target->velocity.y = (f32)(((f64)qrand() * PlayerRandomScalePc * (f64)0.4f + (f64)0.8f) *
+                                                   CombatReactionVerticalScalePc);
+                        if (object->field_280 != 0 && object->field_280 != 1)
+                            target->hit_variant = -1;
+                        else
+                            target->hit_variant = object->field_280;
+                        SetFlicker(target, 0.4f);
+                    }
                     object->context_duration = 0.0f;
                     GameCam_HitJudder();
                 } else {
