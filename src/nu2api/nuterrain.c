@@ -477,8 +477,6 @@ struct TERRAIN_SKIN_STREAM_VIEW_PC {
     TERRAIN_SKIN_POLYGON_VIEW_PC polygons[1];
 };
 
-extern const f64 TerrainSkinSampleCountPc;
-extern const f64 TerrainSkinSampleIndexScalePc;
 extern const f32 TerrainSkinBoundsMaxPc;
 extern const f32 TerrainSkinBoundsMinPc;
 
@@ -487,81 +485,81 @@ extern const f32 TerrainSkinBoundsMinPc;
 NUVEC *TerrainSkin(NUVEC *result, const TERRAIN_SKIN_INFO_VIEW_PC *info, const NUVEC *position, f32 weight, i32 mode) {
     NUVEC4 point;
     NUMTX matrix;
-    if (mode == 1) {
-        point.x = position->x;
-        point.y = position->y;
-        point.z = position->z;
-        point.w = 1.0f;
-        NuVec4MtxTransformVU0(&point, &point, info->matrix);
-    } else {
-        f64 t = weight;
-        if (t < 0.0)
-            t = (f32)(position->z / info->scale);
-        if (t > 1.0)
-            t = 1.0;
-        if (t < 0.0)
-            t = 0.0;
-        point.x = position->x;
-        point.y = position->y;
-        point.w = 1.0f;
-        if (info->sample_rows != NULL) {
-            i32 sample;
-            t = (f32)((i32)(t * TerrainSkinSampleCountPc + 0.5) * 0.125);
-            point.z = (f32)(position->z - info->scale * t);
-            sample = (i32)(t * TerrainSkinSampleIndexScalePc);
-            /* Original computes negative sample; -sample is0..8 for the
-             * qualified quantized finite0..1 weights. Four banks stride11. */
-            matrix.m00 = info->sample_rows[-sample].x;
-            matrix.m01 = info->sample_rows[-sample].y;
-            matrix.m02 = info->sample_rows[-sample].z;
-            matrix.m03 = info->sample_rows[-sample].w;
-            matrix.m10 = info->sample_rows[11 - sample].x;
-            matrix.m11 = info->sample_rows[11 - sample].y;
-            matrix.m12 = info->sample_rows[11 - sample].z;
-            matrix.m13 = info->sample_rows[11 - sample].w;
-            matrix.m20 = info->sample_rows[22 - sample].x;
-            matrix.m21 = info->sample_rows[22 - sample].y;
-            matrix.m22 = info->sample_rows[22 - sample].z;
-            matrix.m23 = info->sample_rows[22 - sample].w;
-            matrix.m30 = info->sample_rows[33 - sample].x;
-            matrix.m31 = info->sample_rows[33 - sample].y;
-            matrix.m32 = info->sample_rows[33 - sample].z;
-            matrix.m33 = info->sample_rows[33 - sample].w;
-        } else {
-            const NUMTX *start = info->matrix;
-            const TERRAIN_SKIN_BLEND_VIEW_PC *blend = info->blend;
-            f64 inverse, wave, sx, sy, sz;
-            t = (f32)((i32)(t * 10.0 + 0.5) / 10.0);
-            point.z = (f32)(position->z - info->scale * t);
-            inverse = 1.0 - t;
-            wave = NuTrigTable[((i32)(t * 32768.0) >> 1) & 0x7fff];
-            sx = 1.0 + blend->row_amplitude.x * wave;
-            sy = 1.0 + blend->row_amplitude.y * wave;
-            sz = 1.0 + blend->row_amplitude.z * wave;
-#define SKIN_ROW(MEMBER, AMPLITUDE)                                                                                    \
-    matrix.MEMBER = (f32)((start->MEMBER * inverse + blend->end_matrix.MEMBER * t) * (AMPLITUDE))
-            SKIN_ROW(m00, sx);
-            SKIN_ROW(m01, sx);
-            SKIN_ROW(m02, sx);
-            SKIN_ROW(m03, sx);
-            SKIN_ROW(m10, sy);
-            SKIN_ROW(m11, sy);
-            SKIN_ROW(m12, sy);
-            SKIN_ROW(m13, sy);
-            SKIN_ROW(m20, sz);
-            SKIN_ROW(m21, sz);
-            SKIN_ROW(m22, sz);
-            SKIN_ROW(m23, sz);
-#undef SKIN_ROW
-            matrix.m30 =
-                (f32)(start->m30 * inverse + blend->end_matrix.m30 * t + blend->translation_amplitude.x * wave);
-            matrix.m31 =
-                (f32)(start->m31 * inverse + blend->end_matrix.m31 * t + blend->translation_amplitude.y * wave);
-            matrix.m32 =
-                (f32)(start->m32 * inverse + blend->end_matrix.m32 * t + blend->translation_amplitude.z * wave);
-            matrix.m33 = (f32)(start->m33 * inverse + blend->end_matrix.m33 * t);
-        }
-        NuVec4MtxTransformVU0(&point, &point, &matrix);
+    const NUVEC4 *rows;
+    switch (mode) {
+        case 1:
+            point.x = position->x;
+            point.y = position->y;
+            point.z = position->z;
+            point.w = 1.0f;
+            NuVec4MtxTransformVU0(&point, &point, info->matrix);
+            break;
+        default:
+            if (weight < 0.0f) {
+                weight = position->z / info->scale;
+                if (weight < 0.0f)
+                    weight = 0.0f;
+            }
+            if (weight > 1.0f)
+                weight = 1.0f;
+            point.x = position->x;
+            point.y = position->y;
+            rows = info->sample_rows;
+            if (rows != NULL)
+                weight = (i32)(weight * 8.0 + 0.5) * 0.125;
+            else
+                weight = (i32)(weight * 10.0 + 0.5) / 10.0;
+            point.z = position->z - info->scale * weight;
+            point.w = 1.0f;
+            if (rows != NULL) {
+                i32 sample = (i32)(weight * -8.0);
+                matrix.m00 = rows[-sample].x;
+                matrix.m01 = rows[-sample].y;
+                matrix.m02 = rows[-sample].z;
+                matrix.m03 = rows[-sample].w;
+                matrix.m10 = rows[11 - sample].x;
+                matrix.m11 = rows[11 - sample].y;
+                matrix.m12 = rows[11 - sample].z;
+                matrix.m13 = rows[11 - sample].w;
+                matrix.m20 = rows[22 - sample].x;
+                matrix.m21 = rows[22 - sample].y;
+                matrix.m22 = rows[22 - sample].z;
+                matrix.m23 = rows[22 - sample].w;
+                matrix.m30 = rows[33 - sample].x;
+                matrix.m31 = rows[33 - sample].y;
+                matrix.m32 = rows[33 - sample].z;
+                matrix.m33 = rows[33 - sample].w;
+            } else {
+                const NUMTX *start = info->matrix;
+                const TERRAIN_SKIN_BLEND_VIEW_PC *blend = info->blend;
+                i32 angle = (i32)(weight * 32768.0);
+#define TERRAIN_SKIN_ROW(M, A)                                                                                         \
+    matrix.M = (weight * blend->end_matrix.M + start->M * (1.0f - weight)) *                                           \
+               (NU_SIN_LUT(angle) * blend->row_amplitude.A + 1.0f)
+#define TERRAIN_SKIN_MOVE(M, A)                                                                                        \
+    matrix.M =                                                                                                         \
+        weight * blend->end_matrix.M + start->M * (1.0f - weight) + NU_SIN_LUT(angle) * blend->translation_amplitude.A
+                TERRAIN_SKIN_ROW(m00, x);
+                TERRAIN_SKIN_ROW(m01, x);
+                TERRAIN_SKIN_ROW(m02, x);
+                TERRAIN_SKIN_ROW(m03, x);
+                TERRAIN_SKIN_ROW(m10, y);
+                TERRAIN_SKIN_ROW(m11, y);
+                TERRAIN_SKIN_ROW(m12, y);
+                TERRAIN_SKIN_ROW(m13, y);
+                TERRAIN_SKIN_ROW(m20, z);
+                TERRAIN_SKIN_ROW(m21, z);
+                TERRAIN_SKIN_ROW(m22, z);
+                TERRAIN_SKIN_ROW(m23, z);
+                TERRAIN_SKIN_MOVE(m30, x);
+                TERRAIN_SKIN_MOVE(m31, y);
+                TERRAIN_SKIN_MOVE(m32, z);
+#undef TERRAIN_SKIN_ROW
+#undef TERRAIN_SKIN_MOVE
+                matrix.m33 = weight * blend->end_matrix.m33 + start->m33 * (1.0f - weight);
+            }
+            NuVec4MtxTransformVU0(&point, &point, &matrix);
+            break;
     }
     result->x = point.x;
     result->y = point.y;
