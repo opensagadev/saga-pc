@@ -4819,17 +4819,17 @@ static __declspec(noinline) void ForcePushed_MoveCode(GAMEOBJECT *object) {
     GAMEOBJECT *source;
     GAMEOBJECT *target;
     i32 index;
+    i16 angle;
     if (object->character_context != 0x1c)
         return;
     source = object->force_target;
     if (source == NULL || source->character_context != 0x1b || (source->flags_e20 & 0x100) != 0 ||
-        (object->flags_e20 & 0x280) != 0)
+        (object->flags_e20 & 0x80) != 0 || (object->flags_e20 & 0x200) != 0)
         return;
     if (object->action_movement_state == 4 && Cheat_IsOn(0x13)) {
-        if ((source->collision_identity_mask[0] & object->collision_contact_mask[0]) != 0 ||
-            (source->collision_identity_mask[1] & object->collision_contact_mask[1]) != 0) {
-            i16 angle = (i16)NuAtan2D(source->collision_position.x - object->collision_position.x,
-                                      source->collision_position.z - object->collision_position.z);
+        if ((U64_PAIR(source->collision_identity_mask) & U64_PAIR(object->collision_contact_mask)) != 0) {
+            angle = (i16)NuAtan2D(source->collision_position.x - object->collision_position.x,
+                                  source->collision_position.z - object->collision_position.z);
             objhitobj_killparts_yrot = &angle;
             if (ObjHitObj(NULL, object, -1, 0, 0, 1) == 2) {
                 NewRumble(source->pad->bound_pad, 0.5f, 0);
@@ -4844,18 +4844,17 @@ static __declspec(noinline) void ForcePushed_MoveCode(GAMEOBJECT *object) {
                 continue;
             if (target->id == (u16)id_GONKDROID && target->character_context == 0x17)
                 continue;
-            if ((target->collision_identity_mask[0] & object->collision_contact_mask[0]) == 0 &&
-                (target->collision_identity_mask[1] & object->collision_contact_mask[1]) == 0)
+            if ((U64_PAIR(target->collision_identity_mask) & U64_PAIR(object->collision_contact_mask)) == 0)
                 continue;
             if (target->id == (u16)id_GONKDROID) {
                 DeactivatePlayer(target, DEACTIVATEDTIME, NULL);
             } else {
-                i16 angle = (i16)NuAtan2D(target->collision_position.x - object->collision_position.x,
-                                          target->collision_position.z - object->collision_position.z);
+                angle = (i16)NuAtan2D(target->collision_position.x - object->collision_position.x,
+                                      target->collision_position.z - object->collision_position.z);
                 objhitobj_killparts_yrot = &angle;
                 if (ObjHitObj(NULL, target, -1, 0, 0, 1) != 2)
                     continue;
-                if (source->field_280 < 2 && target->field_280 == 0xff && Arcade != 0)
+                if ((source->field_280 == 0 || source->field_280 == 1) && target->field_280 == 0xff && Arcade != 0)
                     Arcade_AIKilled((i8)source->field_280);
             }
             NewRumble(source->pad->bound_pad, 0.5f, 0);
