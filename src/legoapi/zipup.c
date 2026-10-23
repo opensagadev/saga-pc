@@ -202,322 +202,320 @@ static i32 __cdecl ZipUpArcSinePc(f32 value) {
 #define NU_COS_LUT(a) NuTrigTable[(((i32)(a) + 0x4000) >> 1) & 0x7fff]
 
 void ZipUp_MoveCode(GAMEOBJECT *object, i32 special_pressed) {
-    NUVEC delta;
     ZIPUP_TRANSPORT_VIEW_PC *transport;
-    i32 endpoint;
     ZIPUP_PC *zipup;
     NUVEC *hook;
-    NUVEC *start;
     NUVEC *destination;
-    NUVEC *heading;
-    f32 dx, dz;
-    i32 angle;
-    i32 pitch;
-    NUVEC end_offset;
-    f32 rider_height;
-    i32 yaw;
-    NUVEC start_offset;
+    i32 endpoint;
+    i32 player_active;
 
-    GAMEOBJECT *api = object;
     transport = (ZIPUP_TRANSPORT_VIEW_PC *)object;
     if (object->character_context == 0x47) {
-        ZIPUP_PC *zipup;
-        NUVEC *hook;
-        u16 start_angle;
-        NUVEC *destination;
-        NUVEC end_offset;
-        u16 end_angle;
-        i32 difference;
-        i32 half;
-        u16 axis;
-        NUVEC offset;
-        f32 normalized_time;
-        f64 phase;
-        i32 pitch;
-        f32 old_time;
-
         if (object->action_movement_state == 1) {
-            void *info;
+            NUVEC delta;
             f32 *playing;
+            f32 fraction;
+            f32 duration;
 
-            info = api->character_model->model_data_b[object->field_7aa];
             playing = NULL;
-            if (info != NULL)
-                playing = AnimPlaying(&api->anim_packet, object->field_7aa, 1, 0);
-            if (info == NULL || playing != NULL) {
+            if (object->character_model->model_data_b[object->field_7aa] == NULL ||
+                (playing = AnimPlaying(&object->anim_packet, object->field_7aa, 1, 0)) != NULL) {
                 object->context_timer += FRAMETIME;
-                if (object->context_duration <= object->context_timer)
+                if (object->context_timer >= object->context_duration)
                     object->context_timer = object->context_duration;
             }
-            api->velocity = v000;
+            object->velocity = v000;
+            switch (object->field_7b3) {
+                case 0:
+                    if (playing != NULL && 0.0f < *playing) {
+                        f32 frame;
 
-            if (object->field_7b3 == 0) {
-                f32 fraction;
-                i32 animation_fraction;
+                        frame = AnimListFrame(object->character_model, object->field_7aa, 0);
+                        if (frame > 1.0f && AnimEndFrame(object->character_model, object->field_7aa) > frame) {
+                            f32 progress;
 
-                animation_fraction = 0;
-                if (NULL != playing && 0.0f < *playing) {
-                    f32 frame;
-
-                    frame = AnimListFrame(api->character_model, object->field_7aa, 0);
-                    if (frame > 1.0f && AnimEndFrame(api->character_model, object->field_7aa) > frame) {
-                        f32 progress;
-
-                        progress = (*playing - 1.0f) / (frame - 1.0f);
-                        fraction = progress > 1.0f ? 1.0f : progress;
-                        animation_fraction = 1;
+                            progress = (*playing - 1.0f) / (frame - 1.0f);
+                            fraction = 1.0f < progress ? 1.0f : progress;
+                            goto have_fraction;
+                        }
                     }
-                }
-                if (!animation_fraction)
                     fraction = object->context_timer / object->context_duration;
-                NuVecSub(&delta, &transport->start, &transport->entry);
-                NuVecScale(&delta, &delta, fraction);
-                NuVecAdd(&api->position, &transport->entry, &delta);
-                if (object->context_timer >= object->context_duration) {
-                    f32 duration;
-
-                    object->field_7b3 = 1;
-                    object->context_timer = 0.0f;
-                    object->field_7aa = ZipUpSwingSwingAnimationPc;
-                    duration = AnimDuration((i16)object->id, object->field_7aa, 0.0f, 0.0f, 0);
-                    object->context_duration = duration;
-                    if (duration <= 0.0f)
-                        object->context_duration = 1.0f;
-                    GameAudio_PlaySfx(0x4d, &api->collision_position, GameAudio_GetPlrSfxBits(object), 0);
-                }
-            } else if (1 == object->field_7b3) {
-                f32 fraction;
-
-                fraction = object->context_timer / object->context_duration;
-                NuVecSub(&delta, &transport->swing, &transport->start);
-                NuVecScale(&delta, &delta, fraction);
-                NuVecAdd(&api->position, &transport->start, &delta);
-                if (object->context_timer >= object->context_duration) {
-                    f32 duration;
-
-                    object->field_7b3 = 2;
-                    object->context_timer = 0.0f;
-                    object->field_7aa = ZipUpSwingJumpAnimationPc;
-                    duration = AnimDuration((i16)object->id, object->field_7aa, 0.0f, 0.0f, 0);
-                    object->context_duration = duration;
-                    if (duration <= 0.0f)
-                        object->context_duration = 1.0f;
-                    PlayJumpSfx(object, 0);
-                }
-            } else if (object->field_7b3 == 2) {
-                f32 fraction;
-
-                fraction = object->context_timer / object->context_duration;
-                NuVecSub(&delta, &transport->landing, &transport->swing);
-                NuVecScale(&delta, &delta, fraction);
-                NuVecAdd(&api->position, &transport->swing, &delta);
-                if (object->context_timer >= object->context_duration) {
-                    api->velocity.x = api->velocity.z = 0.0f;
-                    api->velocity.y = -2.0f;
-                    object->character_context = -1;
-                    StartFallLand(object, BigJumpLandFallbackPc);
-                }
+                have_fraction:
+                    NuVecSub(&delta, &transport->start, &transport->entry);
+                    NuVecScale(&delta, &delta, fraction);
+                    NuVecAdd(&object->position, &transport->entry, &delta);
+                    if (object->context_timer >= object->context_duration) {
+                        object->field_7b3 = 1;
+                        object->field_7aa = ZipUpSwingSwingAnimationPc;
+                        object->context_timer = 0.0f;
+                        duration = AnimDuration((i16)object->id, object->field_7aa, 0.0f, 0.0f, 0);
+                        object->context_duration = duration;
+                        if (duration <= 0.0f)
+                            object->context_duration = 1.0f;
+                        GameAudio_PlaySfx(0x4d, &object->collision_position, GameAudio_GetPlrSfxBits(object), 0);
+                    }
+                    break;
+                case 1:
+                    fraction = object->context_timer / object->context_duration;
+                    NuVecSub(&delta, &transport->swing, &transport->start);
+                    NuVecScale(&delta, &delta, fraction);
+                    NuVecAdd(&object->position, &transport->start, &delta);
+                    if (object->context_timer >= object->context_duration) {
+                        object->field_7b3 = 2;
+                        object->field_7aa = ZipUpSwingJumpAnimationPc;
+                        object->context_timer = 0.0f;
+                        duration = AnimDuration((i16)object->id, object->field_7aa, 0.0f, 0.0f, 0);
+                        object->context_duration = duration;
+                        if (duration <= 0.0f)
+                            object->context_duration = 1.0f;
+                        PlayJumpSfx(object, 0);
+                    }
+                    break;
+                case 2:
+                    fraction = object->context_timer / object->context_duration;
+                    NuVecSub(&delta, &transport->landing, &transport->swing);
+                    NuVecScale(&delta, &delta, fraction);
+                    NuVecAdd(&object->position, &transport->swing, &delta);
+                    if (object->context_timer >= object->context_duration) {
+                        object->velocity.x = 0.0f;
+                        object->velocity.y = -2.0f;
+                        object->velocity.z = 0.0f;
+                        object->character_context = -1;
+                        StartFallLand(object, BigJumpLandFallbackPc);
+                    }
+                    break;
             }
             return;
         }
-        zipup = ((ZIPUP_PC *)(object->grapple));
+        zipup = (ZIPUP_PC *)object->grapple;
         hook = &zipup->hook_origin;
         destination = object->field_7b3 == 0 ? &zipup->upper_position : &zipup->lower_position;
-        if ((zipup->flags & 1) == 0) {
-            if (NuVecDistSqr(&api->position, hook, NULL) < 0.01f || object->context_timer >= 5.0f) {
-                u16 angle;
-                f32 speed;
-
+        if ((zipup->flags_word & 1) == 0) {
+            if (NuVecDistSqr(&object->position, hook, NULL) < 0.01f || object->context_timer >= 5.0f) {
                 StartJump(object, 6);
-                PlaySfx(GrapDetach_text, &api->collision_position);
-                if ((api->flags_1fc_word & 0x80) != 0)
+                PlaySfx(GrapDetach_text, &object->collision_position);
+                if ((object->flags_1fc & 0x80) != 0)
                     Hint_SetComplete(0x262);
-                angle = NuAtan2D(destination->x - api->position.x, destination->z - api->position.z);
-                api->field_0x276 = api->facing_angle = api->movement_facing_angle = angle;
-                speed =
-                    NuVecXZDist(&api->position, destination, NULL) / api->character_data->game_character->jump_duration;
-                object->airborne_action_timer = speed;
-                api->velocity.x = NU_SIN_LUT(angle) * speed;
-                api->velocity.z = NU_COS_LUT(angle) * speed;
-                object->context_variant_flags &= ~0x20;
-                ((ZIPUP_PC *)(object->grapple))->runtime_flags &= ~1;
+                object->field_0x276 = object->movement_facing_angle = object->facing_angle =
+                    NuAtan2D(destination->x - object->position.x, destination->z - object->position.z);
+                object->airborne_action_timer = NuVecXZDist(&object->position, destination, NULL) /
+                                                object->character_data->game_character->jump_duration;
+                object->velocity.x = NU_SIN_LUT(object->movement_facing_angle) * object->airborne_action_timer;
+                object->velocity.z = NU_COS_LUT(object->movement_facing_angle) * object->airborne_action_timer;
+                object->context_variant_flags &= ~0x20u;
+                ((ZIPUP_PC *)object->grapple)->flags_word &= ~0x100u;
                 object->grapple = NULL;
                 return;
             }
-            zipup = ((ZIPUP_PC *)(object->grapple));
         }
-        if ((zipup->flags & 0xc0) != 0xc0 || (zipup->runtime_flags & 1) == 0 ||
+        zipup = (ZIPUP_PC *)object->grapple;
+        if ((zipup->flags_word & 0x40) == 0 || (zipup->flags_word & 0x80) == 0 || (zipup->flags_word & 0x100) == 0 ||
             (object->context_variant_flags & 0x20) == 0) {
+            object->context_variant_flags &= ~0x20u;
             object->character_context = -1;
-            object->context_variant_flags = object->context_variant_flags & (~0x20);
-            zipup->runtime_flags &= ~1;
+            zipup->flags_word &= ~0x100u;
             object->grapple = NULL;
             return;
         }
-        if ((1 & zipup->flags) == 0) {
-            object->context_timer += FRAMETIME;
-            PlaySfx((char *)PlayerGrappleWindSoundPc, &api->collision_position);
-            return;
-        }
-        if (object->context_timer >= ZipUpSwingDurationPc) {
-            object->context_timer = 0.0f;
-            object->character_context = -1;
-            zipup->occupant = NULL;
-            object->context_variant_flags &= ~0x20;
-            ((ZIPUP_PC *)(object->grapple))->runtime_flags &= ~1;
-            transport->detach_fall_delay = 0.2f;
-            api->velocity.x = object->target_velocity.x = v000.x;
-            object->target_velocity.y = api->velocity.y = -1.0f;
-            api->velocity.z = object->target_velocity.z = v000.z;
-            object->grapple = NULL;
-            object->field_7a4 = 0;
-            PlaySfx(GrapDetach_text, &api->collision_position);
-            if ((api->flags_1fc_word & 0x80) != 0)
-                Hint_SetComplete(0x262);
-            return;
-        }
-        zipup->runtime_flags |= 2;
-        start_angle = NuAtan2D(zipup->rider_start_offset.x, zipup->rider_start_offset.z);
+        if ((zipup->flags_word & 1) != 0) {
+            if (object->context_timer >= ZipUpSwingDurationPc) {
+                object->context_timer = 0.0f;
+                object->character_context = -1;
+                ((ZIPUP_PC *)object->grapple)->occupant = NULL;
+                object->context_variant_flags &= ~0x20u;
+                ((ZIPUP_PC *)object->grapple)->flags_word &= ~0x100u;
+                transport->detach_fall_delay = 0.2f;
+                object->grapple = NULL;
+                object->field_7a4 = 0;
+                object->target_velocity = v000;
+                object->target_velocity.y = -1.0f;
+                object->velocity = v000;
+                object->velocity.y = -1.0f;
+                PlaySfx(GrapDetach_text, &object->collision_position);
+                if ((object->flags_1fc & 0x80) != 0)
+                    Hint_SetComplete(0x262);
+                return;
+            }
+            zipup->flags_word |= 0x200;
+            if ((zipup->flags_word & 0x200) != 0) {
+                NUVEC end_offset;
+                NUVEC offset;
+                u16 start_angle;
+                u16 end_angle;
+                i32 difference;
+                u16 half;
+                u16 axis;
+                f32 normalized_time;
+                f64 phase;
+                i32 swing_pitch;
 
-        NuVecSub(&end_offset, destination, hook);
-        end_offset.y += ZipUpRiderHeightPc;
-        end_angle = NuAtan2D(end_offset.x, end_offset.z);
-        difference = 0x8000 - ((u16)(RotDiff(start_angle, end_angle)));
-        if (difference <= -1)
-            difference = -difference;
-        half = ((i32)(difference * 0.5f));
-        axis = start_angle >= 32769 ? start_angle + half : start_angle - half;
-        offset = zipup->rider_start_offset;
-        NuVecRotateY(&offset, &offset, ((u16)(-axis)));
-        normalized_time = object->context_timer / ZipUpSwingDurationPc;
-        phase = normalized_time * 32768.0;
-        pitch = ((i32)((1.0f - (NU_SIN_LUT(((i32)(16384.0f + phase))) + 1.0f) * 0.5f) * zipup->pitch_adjustment));
-        NuVecRotateX(&zipup->rider_target_position, &offset, pitch);
-        NuVecRotateY(&zipup->rider_target_position, &zipup->rider_target_position, axis);
-        zipup->rider_target_position.y *= 1.0f - (1.0f - NuTrigTable[0x1000]) * NU_SIN_LUT(((i32)(phase)));
-        NuVecAdd(&zipup->rider_target_position, hook, &zipup->rider_target_position);
-        old_time = object->context_timer;
-        object->context_timer += FRAMETIME;
-        if ((f32)(ZipUpSwingDurationPc * 0.5 - (f64)0.2f) > old_time &&
-            object->context_timer >= (f32)(ZipUpSwingDurationPc * 0.5 - (f64)0.2f))
-            PlaySfx(GrapSwing_text, &api->collision_position);
+                start_angle = NuAtan2D(zipup->rider_start_offset.x, zipup->rider_start_offset.z);
+                NuVecSub(&end_offset, destination, hook);
+                end_offset.y += ZipUpRiderHeightPc;
+                end_angle = NuAtan2D(end_offset.x, end_offset.z);
+                difference = abs(0x8000 - (u16)RotDiff(start_angle, end_angle));
+                half = (u16)(difference * 0.5);
+                axis = start_angle > 0x8000 ? start_angle + half : start_angle - half;
+                offset = zipup->rider_start_offset;
+                NuVecRotateY(&offset, &offset, (u16)-axis);
+                normalized_time = object->context_timer / ZipUpSwingDurationPc;
+                phase = normalized_time * 32768.0;
+                swing_pitch =
+                    (i32)((1.0f - (NU_SIN_LUT((i32)(phase + 16384.0)) + 1.0f) * 0.5) * zipup->pitch_adjustment);
+                NuVecRotateX(&zipup->rider_target_position, &offset, swing_pitch);
+                NuVecRotateY(&zipup->rider_target_position, &zipup->rider_target_position, axis);
+                zipup->rider_target_position.y *= 1.0f - (1.0f - NuTrigTable[0x1000]) * NU_SIN_LUT((i32)phase);
+                NuVecAdd(&zipup->rider_target_position, hook, &zipup->rider_target_position);
+            }
+            {
+                f32 old_time;
+                f32 threshold;
+
+                old_time = object->context_timer;
+                object->context_timer += FRAMETIME;
+                threshold = (f32)(ZipUpSwingDurationPc * 0.5 - (f64)0.2f);
+                if (old_time < threshold && object->context_timer >= threshold)
+                    PlaySfx(GrapSwing_text, &object->collision_position);
+            }
+        } else {
+            object->context_timer += FRAMETIME;
+            PlaySfx((char *)PlayerGrappleWindSoundPc, &object->collision_position);
+        }
         return;
     }
     if (!ObjLandReady(object) && !objInNetWaitContext(object, 0x47))
         return;
-    if ((api->flags_1fc_word & 0x80) != 0) {
-        if ((api->character_data->model_flags & 0x100000) == 0 && !SuperWeirdo(object)) {
-            if ((8 & api->character_data->model_flags) == 0 ||
-                (api->character_data->game_character->flags_094_bytes[1] & 0x80) != 0 || !Cheat_IsOn(13))
+    player_active = (object->flags_1fc_word & 0x80) != 0;
+    if (!player_active && object->field_f00 != 4)
+        return;
+    if ((object->character_data->model_flags & 0x100000) == 0) {
+        if (!player_active)
+            return;
+        if (!SuperWeirdo(object)) {
+            if ((object->character_data->model_flags & 8) == 0 ||
+                (object->character_data->game_character->flags_094 & 0x8000) != 0 || !Cheat_IsOn(13))
                 return;
         }
-    } else if (object->field_f00 != 4 || (api->character_data->model_flags & 0x100000) == 0) {
-        return;
     }
-
-    zipup = ZipUp_FindNearest(WORLD, &api->lower_position, api->collision_radius, NULL, &endpoint, object);
+    zipup = ZipUp_FindNearest(WORLD, &object->lower_position, object->collision_radius, NULL, &endpoint, object);
     if (objInNetWaitContext(object, 0x47)) {
-        object->context_timer = object->context_timer - FRAMETIME;
+        object->context_timer -= FRAMETIME;
         if (object->context_timer <= 0.0f)
             object->character_context = -1;
     }
     if (zipup == NULL)
         return;
-    if ((0 == special_pressed && !objInNetWaitContext(object, 0x47)) ||
-        ((zipup->flags & 1) != 0 && (zipup->runtime_flags & 1) != 0)) {
+    if ((special_pressed != 0 || objInNetWaitContext(object, 0x47)) &&
+        ((zipup->flags_word & 1) == 0 || (zipup->flags_word & 0x100) == 0)) {
+        if ((object->character_data->model_flags & 0x100000) == 0) {
+            destination = endpoint == 0 ? &zipup->upper_position : &zipup->lower_position;
+            if (StartBigJump(object, destination, 0, 0.5f, 1.0f, 0))
+                object->context_variant_flags |= 0x100;
+            return;
+        }
+        Hint_SetComplete(0x262);
+        object->grapple = zipup;
+        object->character_context = 0x47;
+        zipup->occupant = object;
+        object->context_variant_flags |= 0x20;
+        ((ZIPUP_PC *)object->grapple)->flags_word |= 0x100;
+        if ((object->character_data->game_character->flags_094 & 0x20000000) != 0) {
+            NUVEC offset;
+            f32 duration;
+            ZIPUP_PC *current;
+
+            object->action_movement_state = 1;
+            SetWeaponIn(object);
+            GameAudio_PlaySfx(0x4c, &object->collision_position, GameAudio_GetPlrSfxBits(object), 0);
+            object->field_7b3 = 0;
+            object->field_7aa = ZipUpSwingStartAnimationPc;
+            object->context_timer = 0.0f;
+            duration = AnimDuration((i16)object->id, object->field_7aa, 0.0f, 0.0f, 0);
+            object->context_duration = duration;
+            if (duration <= 0.0f)
+                object->context_duration = 0.5f;
+            transport->entry = object->position;
+            current = (ZIPUP_PC *)object->grapple;
+            transport->start = current->endpoints[endpoint != 0 ? 2 : 0];
+            transport->landing = current->endpoints[endpoint != 0 ? 0 : 2];
+            transport->landing.y = endpoint == 0 ? zipup->upper_ground_height : zipup->lower_ground_height;
+            NuVecSub(&offset, &transport->landing, &transport->start);
+            offset.y = 0.0f;
+            NuVecNorm(&offset, &offset);
+            NuVecScale(&offset, &offset, ZipUpSwingOffsetLengthPc);
+            NuVecAdd(&transport->swing, &transport->start, &offset);
+            transport->swing.y = transport->swing.y + ZipUpSwingOffsetHeightPc;
+            object->movement_facing_angle =
+                NuAtan2D(transport->landing.x - transport->start.x, transport->landing.z - transport->start.z);
+            object->field_281 = 0;
+        } else {
+            NUVEC end_offset;
+            NUVEC start_offset;
+            NUVEC *start;
+            NUVEC *heading;
+            f32 dx, dz;
+            i32 angle;
+            i32 pitch;
+            i32 yaw;
+            f32 rider_height;
+            f32 scale;
+
+            zipup = (ZIPUP_PC *)object->grapple;
+            object->action_movement_state = 0;
+            object->field_7aa = 0x2a;
+            hook = &zipup->hook_origin;
+            if (endpoint == 0) {
+                object->field_7b3 = 0;
+                start = &zipup->lower_position;
+                destination = &zipup->upper_position;
+            } else {
+                object->field_7b3 = 1;
+                start = &zipup->upper_position;
+                destination = &zipup->lower_position;
+            }
+            heading = hook->x == start->x && hook->z == start->z ? destination : hook;
+            object->movement_facing_angle = NuAtan2D(heading->x - start->x, heading->z - start->z);
+            object->velocity.y = 0.0f;
+            if (object->character_data->game_character->hover_fall_mode == 2)
+                FastWeaponOut(object, 1);
+            object->context_timer = 0.0f;
+            PlaySfx(GrapAttach_text, &object->upper_position);
+            FastWeaponOut(object, 0);
+            object->jump_variant_state = 0;
+            dx = hook->x - start->x;
+            dz = hook->z - start->z;
+            angle = NuAtan2D(hook->y - start->y, NuFsqrt(dx * dx + dz * dz));
+            pitch = 0x4000 - abs(angle);
+            object->field_7a4 = angle < 0 ? -pitch : pitch;
+            zipup = (ZIPUP_PC *)object->grapple;
+            if ((zipup->flags_word & 1) == 0)
+                return;
+            NuVecSub(&zipup->rider_start_offset, start, hook);
+            NuVecSub(&end_offset, destination, hook);
+            rider_height = ZipUpRiderHeightPc;
+            scale = ZipUpRiderOffsetScalePc;
+            end_offset.y += rider_height;
+            ((ZIPUP_PC *)object->grapple)->rider_start_offset.x *= scale;
+            ((ZIPUP_PC *)object->grapple)->rider_start_offset.y *= scale;
+            ((ZIPUP_PC *)object->grapple)->rider_start_offset.y =
+                rider_height * object->scaled_height + ((ZIPUP_PC *)object->grapple)->rider_start_offset.y;
+            ((ZIPUP_PC *)object->grapple)->rider_start_offset.z *= scale;
+            yaw = -(u16)NuAtan2D(((ZIPUP_PC *)object->grapple)->rider_start_offset.x,
+                                 ((ZIPUP_PC *)object->grapple)->rider_start_offset.z);
+            start_offset = ((ZIPUP_PC *)object->grapple)->rider_start_offset;
+            NuVecRotateY(&start_offset, &start_offset, yaw);
+            NuVecRotateY(&end_offset, &end_offset, yaw);
+            NuVecNorm(&start_offset, &start_offset);
+            NuVecNorm(&end_offset, &end_offset);
+            ((ZIPUP_PC *)object->grapple)->pitch_adjustment =
+                (u16)(0x4000 - ZipUpArcSinePc(start_offset.z * end_offset.z + start_offset.y * end_offset.y));
+            ((ZIPUP_PC *)object->grapple)->rider_target_position = ((ZIPUP_PC *)object->grapple)->rider_start_offset;
+            NuVecAdd(&((ZIPUP_PC *)object->grapple)->rider_target_position, hook,
+                     &((ZIPUP_PC *)object->grapple)->rider_target_position);
+        }
+    } else {
         SetHeadTarget(object, &zipup->hook_origin, 4, 2.0f, 1.0f, 2.0f);
-        return;
     }
-    if ((api->character_data->model_flags & 0x100000) == 0) {
-        NUVEC *destination;
-
-        destination = endpoint == 0 ? &zipup->upper_position : &zipup->lower_position;
-        if (StartBigJump(object, destination, 0, 0.5f, 1.0f, 0))
-            object->context_variant_flags |= 0x100;
-        return;
-    }
-    Hint_SetComplete(0x262);
-    object->grapple = zipup;
-    object->character_context = 0x47;
-    zipup->occupant = object;
-    object->context_variant_flags |= 0x20;
-    ((ZIPUP_PC *)(object->grapple))->runtime_flags |= 1;
-    if ((api->character_data->game_character->flags_094_bytes[3] & 0x20) != 0) {
-        f32 duration;
-        ZIPUP_PC *current;
-        NUVEC offset;
-
-        object->action_movement_state = 1;
-        SetWeaponIn(object);
-        GameAudio_PlaySfx(0x4c, &api->collision_position, GameAudio_GetPlrSfxBits(object), 0);
-        object->field_7b3 = 0;
-        object->context_timer = 0.0f;
-        object->field_7aa = ZipUpSwingStartAnimationPc;
-        duration = AnimDuration((i16)object->id, object->field_7aa, 0.0f, 0.0f, 0);
-        object->context_duration = duration;
-        if (duration <= 0.0f)
-            object->context_duration = 0.5f;
-        transport->entry = api->position;
-        current = ((ZIPUP_PC *)(object->grapple));
-        transport->landing = endpoint == 0 ? current->upper_position : current->lower_position;
-        transport->start = endpoint == 0 ? current->lower_position : current->upper_position;
-        transport->landing.y = endpoint == 0 ? zipup->upper_ground_height : zipup->lower_ground_height;
-
-        NuVecSub(&offset, &transport->landing, &transport->start);
-        offset.y = 0.0f;
-        NuVecNorm(&offset, &offset);
-        NuVecScale(&offset, &offset, ZipUpSwingOffsetLengthPc);
-        NuVecAdd(&transport->swing, &transport->start, &offset);
-        transport->swing.y += ZipUpSwingOffsetHeightPc;
-        api->movement_facing_angle =
-            NuAtan2D(transport->landing.x - transport->start.x, transport->landing.z - transport->start.z);
-        api->field_281 = 0;
-        return;
-    }
-    zipup = ((ZIPUP_PC *)(object->grapple));
-    object->action_movement_state = 0;
-    object->field_7aa = 0x2a;
-    hook = &zipup->hook_origin;
-    start = endpoint == 0 ? &zipup->lower_position : &zipup->upper_position;
-    destination = endpoint == 0 ? &zipup->upper_position : &zipup->lower_position;
-    object->field_7b3 = endpoint == 0 ? 0 : 1;
-    heading = hook->x == start->x && hook->z == start->z ? destination : hook;
-    api->movement_facing_angle = NuAtan2D(heading->x - start->x, heading->z - start->z);
-    api->velocity.y = 0.0f;
-    if (api->character_data->game_character->hover_fall_mode == 2)
-        FastWeaponOut(object, 1);
-    object->context_timer = 0.0f;
-    PlaySfx(GrapAttach_text, &api->upper_position);
-    FastWeaponOut(object, 0);
-    object->jump_variant_state = 0;
-    dx = hook->x - start->x;
-    dz = hook->z - start->z;
-    angle = NuAtan2D(hook->y - start->y, NuFsqrt(dx * dx + dz * dz));
-    pitch = 0x4000 - (0 > angle ? -angle : angle);
-    object->field_7a4 = angle < 0 ? -pitch : pitch;
-    zipup = ((ZIPUP_PC *)(object->grapple));
-    if ((zipup->flags & 1) == 0)
-        return;
-    NuVecSub(&zipup->rider_start_offset, start, hook);
-
-    NuVecSub(&end_offset, destination, hook);
-    end_offset.y += ZipUpRiderHeightPc;
-    rider_height = ZipUpRiderHeightPc * api->scaled_height;
-    zipup->rider_start_offset.x *= ZipUpRiderOffsetScalePc;
-    zipup->rider_start_offset.y *= ZipUpRiderOffsetScalePc;
-    zipup->rider_start_offset.y = rider_height + zipup->rider_start_offset.y;
-    zipup->rider_start_offset.z *= ZipUpRiderOffsetScalePc;
-    yaw = -((u16)(NuAtan2D(zipup->rider_start_offset.x, zipup->rider_start_offset.z)));
-    start_offset = zipup->rider_start_offset;
-    NuVecRotateY(&start_offset, &start_offset, yaw);
-    NuVecRotateY(&end_offset, &end_offset, yaw);
-    NuVecNorm(&start_offset, &start_offset);
-    NuVecNorm(&end_offset, &end_offset);
-    ((ZIPUP_PC *)(object->grapple))->pitch_adjustment =
-        0x4000 - ZipUpArcSinePc(start_offset.y * end_offset.y + end_offset.z * start_offset.z);
-    zipup = ((ZIPUP_PC *)(object->grapple));
-    zipup->rider_target_position = zipup->rider_start_offset;
-    NuVecAdd(&zipup->rider_target_position, hook, &zipup->rider_target_position);
 }
 
 extern const NUVEC ZipUpHookOffsetPc;
