@@ -171,22 +171,6 @@ STATIC_ASSERT(offsetof(CRUISERD_LIFT_ANIM_PC, ltime) == 0x4c);
 STATIC_ASSERT(offsetof(CRUISERD_LIFT_ANIM_PC, fparam1) == 0x54);
 STATIC_ASSERT(offsetof(CRUISERD_LIFT_ANIM_PC, animation_index) == 0x5c);
 
-typedef struct vadera_pc_s {
-    GIZAIMESSAGE *in_control_room_message;
-    GIZAIMESSAGE *ceiling_collapse_message;
-    GIZAIMESSAGE *timer_message;
-    f32 timer;
-    i16 count;
-    i16 subtitle;
-    GIZFORCE_PC *forces[4];
-    AILOCATOR_PC *big_jump_locator;
-    i32 collapse_started;
-    u8 reset_flag;
-    u8 reserved_2d[3];
-} VADERA_PC;
-STATIC_ASSERT(sizeof(VADERA_PC) == 0x30);
-STATIC_ASSERT(offsetof(VADERA_PC, big_jump_locator) == 0x24);
-
 typedef struct vadera_netpacket_pc_s {
     u16 count;
     i16 subtitle;

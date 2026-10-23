@@ -2,6 +2,8 @@
 #include <string.h>
 #include "saga.h"
 
+STATIC_ASSERT(offsetof(VADERA_PC, in_control_room_message) == 0x00);
+
 i32 __cdecl KaminoInside(void) {
     if (WORLD->area != NULL && WORLD->area == KAMINO_ADATA) {
         if (WORLD->current_level == LevelFixupSlotPc0087b12c) {
@@ -52,66 +54,58 @@ void KashyyykA_Reset(WORLDINFO *unused0) {
 
 i32 Action_BoulderSection(AISYS_PC *system, AISCRIPTPROCESS_PC *processor, AIPACKET_PC *packet, char **params,
                           i32 param_count, i32 first_time, f32 unused6) {
-    struct gameobject_s *object;
-    u8 can_attack;
-    struct PART_PC *nearest;
+    GAMEOBJECT *object;
+    PART_PC *nearest = NULL;
+    i32 can_attack = 1;
+    i32 index;
     f32 nearest_distance;
     NUVEC difference;
     if (packet == NULL || packet->owner == NULL || packet->owner->objptr == NULL)
         return 1;
     object = packet->owner->objptr;
     if (first_time != 0) {
-        i32 index;
         processor->action_data_4 = 1.0f;
         processor->action_data_5 = 1.0f;
         for (index = 0; index < param_count; ++index) {
             char *value = NuStrIStr(params[index], "boulder_range=");
-            if (value != NULL) {
+            if (value != NULL)
                 processor->action_data_4 = AIParamToFloat(&packet->script_processor, value + 14);
-            } else if ((value = NuStrIStr(params[index], "attack_time=")) != NULL) {
+            else if ((value = NuStrIStr(params[index], "attack_time=")) != NULL)
                 processor->action_data_5 = AIParamToFloat(&packet->script_processor, value + 12);
-            } else {
+            else
                 packet->movement_instruction_parameter = AIParamToFloat(processor, params[index]);
-            }
         }
     }
-    can_attack = FreePlay == 0 || CharCategory_IsCategory(object, 0) != 0 || CharCategory_IsCategory(object, 1) != 0 ||
-                 CharCategory_IsCategory(object, 8) != 0;
-    if (!can_attack) {
+    if (FreePlay != 0 && CharCategory_IsCategory(object, 0) == 0 && CharCategory_IsCategory(object, 1) == 0 &&
+        CharCategory_IsCategory(object, 8) == 0) {
+        can_attack = 0;
         processor->action_timer -= FRAMETIME;
         if (processor->action_timer < 0.0f) {
             processor->action_timer = 0.5f;
             object->pad->buttons_pressed |= GAMEPAD_TOGGLELEFT;
         }
     }
-    object->field_ef8 |= GAMEOBJECT_EF8_FLAG_KEEP_WEAPON_OUT;
-    nearest = NULL;
+    object->portal_flags |= 0x10;
     nearest_distance = processor->action_data_4 * processor->action_data_4;
-    difference = difference;
-    if (boulder_part[0] != NULL) {
-        const f32 distance = NuVecDistSqr(&object->collision_position, &boulder_part[0]->position, &difference);
-        if (distance < nearest_distance) {
-            nearest = boulder_part[0];
-            nearest_distance = distance;
+    for (index = 0; index < 3; ++index) {
+        /* Native third slot aliases the first VaderA field, not array padding. */
+        PART_PC *part = index == 2 ? (PART_PC *)vader_a.in_control_room_message : boulder_part[index];
+        if (part != NULL) {
+            f32 distance = NuVecDistSqr(&object->collision_position, &part->position, &difference);
+            if (distance < nearest_distance) {
+                nearest_distance = distance;
+                nearest = index == 2 ? (PART_PC *)vader_a.in_control_room_message : boulder_part[index];
+            }
         }
     }
-    if (boulder_part[1] != NULL) {
-        const f32 distance = NuVecDistSqr(&object->collision_position, &boulder_part[1]->position, &difference);
-        if (distance < nearest_distance)
-            nearest = boulder_part[1];
-    }
-    // The retail third probe reads padding past this two-entry array. Do not
-    // reproduce that out-of-bounds access or enlarge the recovered global.
     if (nearest != NULL) {
         packet->movement_look_target = &nearest->position;
-        if (can_attack)
+        if (can_attack != 0)
             object->pad->buttons_pressed |= GAMEPAD_ACTION;
     } else {
-        if (system != NULL && system->player_1 != NULL && system->player_1->ai != NULL) {
-            AIPACKET_PC *player_packet = system->player_1->ai;
-            AIMoveInstruction(packet, &player_packet->last_path_position, player_packet->mover_height,
-                              &player_packet->path_info, 1, packet->movement_instruction_parameter);
-        }
+        AIPACKET_PC *player_packet = system->player_1->ai;
+        AIMoveInstruction(packet, &player_packet->last_path_position, player_packet->mover_height,
+                          &player_packet->path_info, 1, packet->movement_instruction_parameter);
     }
     return 0;
 }
@@ -654,80 +648,83 @@ static __declspec(noinline) void JediBEndPhasePc(WORLDINFO *world) {
 
 void __cdecl JediB_DrawPanelPc(WORLDINFO *world) {
     i16 ids[8];
-    u8 spawned[8] = {0};
     i32 count, index;
     if (Mission_Active(MissionSys) != NULL)
         return;
-    if (netclient == 0) {
-        if (nethost != 0) {
-            jedib_netpacket->state = jedi_b.state;
-            jedib_netpacket->phase = jedi_b.phase;
-        }
-        if (jedi_b.state != 1)
-            return;
-        switch (jedi_b.phase) {
-            case 1:
-            case 2:
-            case 3:
-                if (jedi_b.goody_count != 0) {
-                    count = jedi_b.goody_count;
-                    if (count > 8)
-                        count = 8;
-                    for (index = 0; index < count; index++) {
-                        ids[index] = (i16)jedi_b.goodies[index].id;
-                        if (jedi_b.goodies[index].object == NULL)
-                            spawned[index] = 1;
+    {
+        u8 spawned[8] = {0};
+        if (netclient == 0) {
+            if (nethost != 0) {
+                jedib_netpacket->state = jedi_b.state;
+                jedib_netpacket->phase = jedi_b.phase;
+            }
+            if (jedi_b.state != 1)
+                return;
+            switch (jedi_b.phase) {
+                case 1:
+                case 2:
+                case 3:
+                    if (jedi_b.goody_count != 0) {
+                        count = jedi_b.goody_count;
+                        if (count > 8)
+                            count = 8;
+                        for (index = 0; index < count; index++) {
+                            ids[index] = (i16)jedi_b.goodies[index].id;
+                            if (jedi_b.goodies[index].object == NULL)
+                                spawned[index] = 1;
+                        }
+                    } else {
+                        count = 1;
+                        if (jedi_b.phase == 1)
+                            ids[0] = CharacterFixupIdPc007f19c8;
+                        else if (jedi_b.phase == 2)
+                            ids[0] = id_ANAKINPADAWAN;
+                        else if (jedi_b.phase == 3)
+                            ids[0] = CharacterFixupIdPc007f19d0;
                     }
-                } else {
-                    count = 1;
-                    if (jedi_b.phase == 1)
-                        ids[0] = CharacterFixupIdPc007f19c8;
-                    else if (jedi_b.phase == 2)
-                        ids[0] = id_ANAKINPADAWAN;
-                    else if (jedi_b.phase == 3)
-                        ids[0] = CharacterFixupIdPc007f19d0;
-                }
-                DrawMeleeTargetsAlphaPc(ids, spawned, NULL, count);
-                if (nethost != 0) {
-                    PCByteCopy_candidate(jedib_netpacket->ids, ids, count * 2);
-                    PCByteCopy_candidate(jedib_netpacket->spawned, spawned, count);
-                    jedib_netpacket->count = (i16)count;
-                }
-                break;
-            case 4:
-            case 5:
-            case 6:
-                DrawMeleeTargetsAlphaPc(jedi_b.wave_ids, jedi_b.wave_spawned, NULL, 6);
-                if (nethost != 0) {
-                    PCByteCopy_candidate(jedib_netpacket->ids, jedi_b.wave_ids, 12);
-                    PCByteCopy_candidate(jedib_netpacket->spawned, jedi_b.wave_spawned, 6);
-                }
-                break;
-            case 7:
-                if (jedi_b.boss != NULL)
-                    DrawBossHitPoints(jedi_b.boss);
-                break;
-        }
-    } else {
-        if (jedib_netpacket->state != 1)
-            return;
-        switch (jedib_netpacket->phase) {
-            case 1:
-            case 2:
-            case 3:
-                DrawMeleeTargetsAlphaPc(jedib_netpacket->ids, jedib_netpacket->spawned, NULL, jedib_netpacket->count);
-                break;
-            case 4:
-            case 5:
-            case 6:
-                DrawMeleeTargetsAlphaPc(jedib_netpacket->ids, jedib_netpacket->spawned, NULL, 6);
-                break;
-            case 7:
-                if (jedi_b.boss == NULL)
-                    jedi_b.boss = FindGameObject(id_JANGOFETT, 1, 1, 0, 0);
-                if (jedi_b.boss != NULL)
-                    DrawBossHitPoints(jedi_b.boss);
-                break;
+                    DrawMeleeTargetsAlphaPc(ids, spawned, NULL, count);
+                    if (nethost != 0) {
+                        PCByteCopy_candidate(jedib_netpacket->ids, ids, count * 2);
+                        PCByteCopy_candidate(jedib_netpacket->spawned, spawned, count);
+                        jedib_netpacket->count = (i16)count;
+                    }
+                    break;
+                case 4:
+                case 5:
+                case 6:
+                    DrawMeleeTargetsAlphaPc(jedi_b.wave_ids, jedi_b.wave_spawned, NULL, 6);
+                    if (nethost != 0) {
+                        PCByteCopy_candidate(jedib_netpacket->ids, jedi_b.wave_ids, 12);
+                        PCByteCopy_candidate(jedib_netpacket->spawned, jedi_b.wave_spawned, 6);
+                    }
+                    break;
+                case 7:
+                    if (jedi_b.boss != NULL)
+                        DrawBossHitPoints(jedi_b.boss);
+                    break;
+            }
+        } else {
+            if (jedib_netpacket->state != 1)
+                return;
+            switch (jedib_netpacket->phase) {
+                case 1:
+                case 2:
+                case 3:
+                    DrawMeleeTargetsAlphaPc(jedib_netpacket->ids, jedib_netpacket->spawned, NULL,
+                                            jedib_netpacket->count);
+                    break;
+                case 4:
+                case 5:
+                case 6:
+                    DrawMeleeTargetsAlphaPc(jedib_netpacket->ids, jedib_netpacket->spawned, NULL, 6);
+                    break;
+                case 7:
+                    if (jedi_b.boss == NULL)
+                        jedi_b.boss = FindGameObject(id_JANGOFETT, 1, 1, 0, 0);
+                    if (jedi_b.boss != NULL)
+                        DrawBossHitPoints(jedi_b.boss);
+                    break;
+            }
         }
     }
 }

@@ -28355,3 +28355,29 @@ extern "C" {
 }
 #endif
 #endif
+
+#ifndef SAGA_VADERA_NATIVE_STATE_PC
+#define SAGA_VADERA_NATIVE_STATE_PC
+typedef struct vadera_pc_s {
+    GIZAIMESSAGE *in_control_room_message;
+    GIZAIMESSAGE *ceiling_collapse_message;
+    GIZAIMESSAGE *timer_message;
+    f32 timer;
+    i16 count;
+    i16 subtitle;
+    GIZFORCE_PC *forces[4];
+    AILOCATOR_PC *big_jump_locator;
+    i32 collapse_started;
+    u8 reset_flag;
+    u8 reserved_2d[3];
+} VADERA_PC;
+STATIC_ASSERT(sizeof(VADERA_PC) == 0x30);
+STATIC_ASSERT(offsetof(VADERA_PC, big_jump_locator) == 0x24);
+#ifdef __cplusplus
+extern "C" {
+#endif
+    extern VADERA_PC vader_a;
+#ifdef __cplusplus
+}
+#endif
+#endif
