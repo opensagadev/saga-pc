@@ -602,14 +602,15 @@ extern "C" void __cdecl PostBlur7x7HighPc(GRAPHICS_RENDER_TEXTURE_PC *source, i3
             PCGraphicsSetSamplerTuplePc(stage, &input->flags);                                                         \
         PCDeviceSetTexture(stage, input->resource);                                                                    \
     } while (0)
-#define POST_BLUR_LOW_BIND_WORK(stage)                                                                                 \
+#define POST_BIND_GLOBAL_TEXTURE(stage, global)                                                                        \
     do {                                                                                                               \
-        GRAPHICS_RENDER_TEXTURE_PC *work = PCGraphicsPostEffectWorkTexturePc;                                          \
-        if (work != NULL) {                                                                                            \
-            if ((u32)PCDeviceSamplerInvalidation[stage][0] != work->flags ||                                           \
-                (u32)PCDeviceSamplerInvalidation[stage][1] != work->field_24)                                          \
-                PCGraphicsSetSamplerTuplePc(stage, &work->flags);                                                      \
-            PCDeviceSetTexture(stage, work->resource);                                                                 \
+        GRAPHICS_RENDER_TEXTURE_PC *bound = (global);                                                                  \
+        if (bound != NULL) {                                                                                           \
+            u32 *tuple = &bound->flags;                                                                                \
+            if ((u32)PCDeviceSamplerInvalidation[stage][0] != tuple[0] ||                                              \
+                (u32)PCDeviceSamplerInvalidation[stage][1] != tuple[1])                                                \
+                PCGraphicsSetSamplerTuplePc(stage, tuple);                                                             \
+            PCDeviceSetTexture(stage, bound->resource);                                                                \
         } else {                                                                                                       \
             PCDeviceSetTexture(stage, NULL);                                                                           \
         }                                                                                                              \
@@ -753,10 +754,10 @@ extern "C" void __cdecl PostBlur7x7LowPc(GRAPHICS_RENDER_TEXTURE_PC *source, i32
                 (((PCGraphicsPostEffectWorkTexturePc->flags & 0xfffffbff) | 0x300) & 0xffffdfff) | 0x1800;
             PCGraphicsPostEffectWorkTexturePc->flags =
                 (((PCGraphicsPostEffectWorkTexturePc->flags & 0xfff5ffff) | 0x40000) & 0xfc2fffff) | 0x200000;
-            POST_BLUR_LOW_BIND_WORK(0);
-            POST_BLUR_LOW_BIND_WORK(1);
-            POST_BLUR_LOW_BIND_WORK(2);
-            POST_BLUR_LOW_BIND_WORK(3);
+            POST_BIND_GLOBAL_TEXTURE(0, PCGraphicsPostEffectWorkTexturePc);
+            POST_BIND_GLOBAL_TEXTURE(1, PCGraphicsPostEffectWorkTexturePc);
+            POST_BIND_GLOBAL_TEXTURE(2, PCGraphicsPostEffectWorkTexturePc);
+            POST_BIND_GLOBAL_TEXTURE(3, PCGraphicsPostEffectWorkTexturePc);
             PCDeviceBackend.DrawPostEffectQuadPc();
             input = output;
             input_lod = output_lod;
@@ -930,7 +931,7 @@ void NuSpeedBlurFilter::render() {
     if (!color->resolved)
         color->resolved = true;
     GRAPHICS_RENDER_TEXTURE_PC *color_texture = color->texture;
-    f32 constants[8];
+    __declspec(align(16)) f32 constants[8];
     constants[0] = 0.0f;
     constants[1] = parameters->scale * NuSpeedBlurVertexScalePc;
     computeSpeedBlur((NUVEC4 *)(constants + 4));
@@ -953,11 +954,11 @@ void NuSpeedBlurFilter::render() {
         ((PCGraphicsPostEffectBackBufferTexturePc->flags & 0xfff5ffff) | 0x40000) & 0xfc2fffff | 0x200000;
     PCGraphicsPostEffectBackBufferTexturePc->flags =
         ((PCGraphicsPostEffectBackBufferTexturePc->flags & 0xfffffbff) | 0x300) & 0xffffdfff | 0x1800;
-    PCGraphicsBindEffectTexturePc(0, PCGraphicsPostEffectBackBufferTexturePc);
+    POST_BIND_GLOBAL_TEXTURE(0, PCGraphicsPostEffectBackBufferTexturePc);
     if (PCDeviceHardwareVertexProcessingPC <= 1) {
-        PCGraphicsBindEffectTexturePc(1, PCGraphicsPostEffectBackBufferTexturePc);
-        PCGraphicsBindEffectTexturePc(2, PCGraphicsPostEffectBackBufferTexturePc);
-        PCGraphicsBindEffectTexturePc(3, PCGraphicsPostEffectBackBufferTexturePc);
+        POST_BIND_GLOBAL_TEXTURE(1, PCGraphicsPostEffectBackBufferTexturePc);
+        POST_BIND_GLOBAL_TEXTURE(2, PCGraphicsPostEffectBackBufferTexturePc);
+        POST_BIND_GLOBAL_TEXTURE(3, PCGraphicsPostEffectBackBufferTexturePc);
     }
     PCDeviceSetRenderState(27, 1);
     PCDeviceSetRenderState(15, 0);
