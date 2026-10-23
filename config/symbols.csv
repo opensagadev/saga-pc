@@ -6467,6 +6467,8 @@ address,symbol,size,ctype
 0x6196a0,_eduicbRenderSel,341,
 0x619a40,_eduicbRenderCheck,518,
 0x61a760,_eduiGradStageAdd,163,
+0x61a810,_eduiGradStageAddRGB,91,
+0x61a8c0,_eduiGradPickRead,329,
 0x61c1a0,_eduicbRenderTexturePick,827,
 0x61cd60,_eduicbRenderGraph,2730,
 0x61d880,_eduiItemSliderSetFmt,123,
@@ -6575,7 +6577,7 @@ address,symbol,size,ctype
 0x629a80,_cbmcfgCancel,12,
 0x629a90,_edmainInit,620,
 0x629d00,_eduiItemGradPickCreate,146,
-0x629d00,_eduiItemGreyGradPickCreate,146,
+0x629da0,_eduiItemGreyGradPickCreate,40,
 0x629e20,_eduiMenuProcessAux,163,
 0x629ed0,_CreateTestMenu,1018,
 0x62a400,_eduiMenuProcess,116,
@@ -7083,6 +7085,8 @@ address,symbol,size,ctype
 0x662630,_cbPtlChangeGrav,116,
 0x6626b0,_cbChangeName,47,"void __cdecl (struct eduimenu_s *, struct eduiitem_s *, u32)"
 0x6626e0,_cbPtlCopyEffect,413,"void __cdecl (struct eduimenu_s *, struct eduiitem_s *, u32)"
+0x662880,_edptlcbPasteClipboard,75,
+0x6628d0,_edptlcbCutClipboard,71,
 0x6629a0,_edptlcbApplyGhostTime,66,
 0x6629f0,_edptlcbApplyStarPoints,74,
 0x662a40,_edptlcbApplyStarRatio,66,
@@ -7098,16 +7102,26 @@ address,symbol,size,ctype
 0x663090,_cbPtlChangeCameraCutOff,63,
 0x6630d0,_cbCancelChangeGenRateMenu,25,
 0x6630f0,_cbCancelChangeETimeMenu,25,
+0x663750,_cbPtlApplyRot,325,
 0x6638a0,_cbPtlSelType,47,
+0x6638d0,_cbPtlSelGSort,282,
 0x663a80,_cbCancelMessageMenu,25,"void __cdecl (struct eduimenu_s *, struct eduimenu_s *)"
 0x663aa0,_edppShowMessagePc,179,"void (struct eduimenu_s *parent, char *text, i32 ok); original passes parent in ESI"
 0x663b60,_cbSelEffectList,131,
 0x663bf0,_cbCancelEffectListMenu,25,
 0x663c10,_cbEffectListMenu,290,
+0x6640e0,_edptlcbSetMasterGroup,18,
+0x664100,_edptlcbSetGroup,81,
+0x664160,_edptlcbCancelDrawflagMenu,25,
+0x664180,_edptlcbChangeCSDisable,67,
+0x6641d0,_edptlcbCancelGroupMenu,25,
 0x6641f0,_edptlcbSetDebrisThinning,14,
 0x664200,_edptlcbSetDebrisDetail,14,
 0x664210,_edptlcbCancelTestDetailMenu,25,
 0x664230,_edptlcbTestDetailMenu,323,
+0x664380,_edptlcbSetMaxThin,66,
+0x6643d0,_edptlcbSetDetail,89,
+0x664430,_edptlcbCancelDetailMenu,25,
 0x664450,_edptlcbDetailMenu,450,
 0x664640,_edptlcbSetDpadMode,14,
 0x664650,_edptlcbCancelDpadModeMenu,25,
@@ -7121,11 +7135,23 @@ address,symbol,size,ctype
 0x665000,_edptlcbCancelGhostMenu,25,
 0x665020,_edptlcbCancelStarMenu,25,
 0x665040,_edptlcbStarMenu,321,
+0x665190,_cbChangeNumCollSpheres,74,
+0x6651e0,_cbPtlDefaultCollEnv,317,
+0x665320,_cbPtlApplyCollEnv,333,
+0x665eb0,_cbPtlCancelCollMenu,27,
 0x665ed0,_cbPtlCollMenu,485,
+0x6660c0,_cbChangeTorusLife,66,
+0x666110,_cbChangeTorusRad1,66,
+0x666160,_cbChangeTorusRad2,66,
+0x6661b0,_cbPtlApplyTorusEnv1,263,
+0x6662c0,_cbPtlApplyTorusEnv2,263,
+0x6663d0,_cbPtlApplyTorusEnv3,263,
+0x6664e0,_cbPtlCancelTorusMenu,37,
 0x666510,_cbPtlTorusMenu,844,
 0x6668e0,_cbPtlDamageFlagMenu,259,
 0x6669f0,_cbPtlCancelDamageMenu,25,
 0x666a10,_cbPtlDamageMenu,251,
+0x666ec0,_cbPtlCancelRotMenu,37,
 0x666ef0,_cbPtlRotMenu,617,
 0x667160,_cbPtlChangeRepeatFlag,101,
 0x667330,_cbPtlRepeatBoxMenu,490,
@@ -7146,13 +7172,15 @@ address,symbol,size,ctype
 0x6691f0,_edppSaveEffects,3025,
 0x669dd0,_cbFileSaveEffects,947,
 0x66a190,_FileLoadSingleEffectType,2460,"void __cdecl(DEBRIS_INFO_PC *,i32,i8)"
+0x66ab30,_edptlcbCancelClipboardMenu,25,
 0x66ab50,_cbPtlSelReadout,14,
 0x66ab60,_cbPtlCancelReadoutMenu,25,
 0x66ab80,_cbPtlReadoutMenu,237,
 0x66ac70,_cbPtlShowAll,17,"void __cdecl (struct eduimenu_s *, struct eduiitem_s *, u32)"
 0x66ac90,_cbPtlCancelDataMenu,25,"void __cdecl (struct eduimenu_s *, struct eduimenu_s *)"
 0x66acb0,_cbPtlCancelEmitMenu,25,"void __cdecl (struct eduimenu_s *, struct eduimenu_s *)"
-0x66acf0,_cbPtlGSortMenu,621,
+0x66acd0,_cbPtlCancelGSortMenu,25,
+0x66acf0,_cbPtlGSortMenu,793,
 0x66b040,_ParticleReset,120,
 0x66b200,_edppClose,27,
 0x66b2e0,_TerrainSetImpactData,35,"void __cdecl (void *, i32 *, i32)"
@@ -7421,6 +7449,7 @@ address,symbol,size,ctype
 0x6920c0,_edgraProc,101,
 0x692150,_cbPtlAddEffect,358,
 0x6922c0,_edptlcbApplyNumGhosts,78,
+0x692310,_edptlcbSetDrawflag,106,
 0x692380,_edptlcbDrawflagMenu,367,
 0x6924f0,_edptlcbGroupMenu,396,
 0x692830,_cbPtlTypeMenu,544,
@@ -15732,6 +15761,7 @@ address,symbol,size,ctype
 0x76b9f4,??_C@_08IEFAEBKE@?$CFs?2?$CFs?4?$CFs?$AA@,9,char []
 0x76bc20,??_C@_07DNODLGKM@INVALID?$AA@,,
 0x76bc20,_NuMusicDebugClassInvalid,8,const char[8]
+0x76bd9c,??_C@_08NJNPMALD@Group?5ID?$AA@,9,char []
 0x76c374,??_C@_09IEGDEKGI@Loaded?5OK?$AA@,10,char []
 0x76c43c,??_C@_0N@CAJCCICN@EmitRotY?3?5?$CFd?$AA@,13,char []
 0x76c44c,??_C@_0N@KGAGFKID@EmitRotZ?3?5?$CFd?$AA@,13,char []
@@ -15922,6 +15952,9 @@ address,symbol,size,ctype
 0x76da6c,??_C@_0M@FNNBMDCO@High?5Detail?$AA@,12,char []
 0x76da78,??_C@_0P@JFGCDLHA@Thinning?5Level?$AA@,15,char []
 0x76da88,??_C@_0BC@JHPAPCAN@Detail?5Level?5Test?$AA@,18,char []
+0x76da9c,??_C@_0BF@OKNGFICM@Detail?5Level?5Test?4?4?4?$AA@,21,char []
+0x76dab4,??_C@_0BB@CMANIAFM@Maximum?5Thinning?$AA@,17,char []
+0x76dac8,??_C@_0BG@JJGKKJOC@Detail?5Level?5Settings?$AA@,22,char []
 0x76dae0,??_C@_0P@GFHNLGCE@Texture?5Facing?$AA@,15,char []
 0x76daf0,??_C@_0M@BAJNEIPI@Reflections?$AA@,12,char []
 0x76dafc,??_C@_06GEMKPBPA@Offset?$AA@,7,char []
@@ -15931,10 +15964,27 @@ address,symbol,size,ctype
 0x76dc10,??_C@_0N@BECJLPFI@Radius?5Ratio?$AA@,13,char []
 0x76dc20,??_C@_0BB@DFFKJGLN@Number?5of?5Points?$AA@,17,char []
 0x76dc34,??_C@_0O@IJGLMPG@Star?5Settings?$AA@,14,char []
+0x76dc54,??_C@_0BB@FEGMCKIL@Default?5Envelope?$AA@,17,char []
+0x76dc68,??_C@_0M@HNGJLEEB@Num?5Spheres?$AA@,12,char []
+0x76dc74,??_C@_0BD@GLIHANJI@Collision?5Envelope?$AA@,19,char []
+0x76dc88,??_C@_0BC@PDBBLDOK@Collision?5Spheres?$AA@,18,char []
+0x76dc9c,??_C@_0BI@HCJIGAOK@Minor?5Radius?5Envelope?52?$AA@,24,char []
+0x76dcb4,??_C@_0BI@FJLFDDCJ@Minor?5Radius?5Envelope?51?$AA@,24,char []
+0x76dccc,??_C@_0BG@OIPKKBJD@Major?5Radius?5Envelope?$AA@,22,char []
+0x76dce4,??_C@_0BC@NIOMDCCG@Base?5Minor?5Radius?$AA@,18,char []
+0x76dcf8,??_C@_0BC@GODJDHFK@Base?5Major?5Radius?$AA@,18,char []
+0x76dd0c,??_C@_0L@BDMHCBNO@Torus?5Life?$AA@,11,char []
+0x76dd18,??_C@_0BA@FNIJMHCI@Collision?5Torus?$AA@,16,char []
 0x76dd48,??_C@_0BD@FPLINHMD@Collision?5Torus?4?4?4?$AA@,19,char []
 0x76dd5c,??_C@_0BF@HIBEDCMH@Collision?5Spheres?4?4?4?$AA@,21,char []
 0x76dd74,??_C@_0BA@BNCPEHEG@Damage?5Flags?4?4?4?$AA@,16,char []
 0x76dd84,??_C@_0BA@MNMGILJE@Particle?5Damage?$AA@,16,char []
+0x76de0c,??_C@_0N@MOAIBPDL@Max?5Rotation?$AA@,13,char []
+0x76de1c,__real@c4340000,4,const f32
+0x76de20,__real@44b40000,4,const f32
+0x76de24,??_C@_0N@IOEHGHEN@Min?5Rotation?$AA@,13,char []
+0x76de34,??_C@_0BC@NEGONGOK@Rotation?5Envelope?$AA@,18,char []
+0x76de48,??_C@_0BC@ICDCLAHK@Particle?5Rotation?$AA@,18,char []
 0x76dea0,??_C@_0BB@KMEGBCIM@CameraCutOff?5Rad?$AA@,17,char []
 0x76deb4,??_C@_0BA@IJFMBDFI@SoundCutOff?5Rad?$AA@,16,char []
 0x76dec4,??_C@_0P@DMKPPPOF@DrawCutOff?5Rad?$AA@,15,char []
@@ -15970,6 +16020,14 @@ address,symbol,size,ctype
 0x76e058,??_C@_08PKKGOGAD@particle?$AA@,9,char []
 0x76e064,??_C@_06EFAGIKOH@Normal?$AA@,7,char []
 0x76e06c,??_C@_0P@MBAKGHDJ@Info?5Box?5Style?$AA@,15,char []
+0x76e07c,??_C@_0M@EFBBLOIP@Star?5Radial?$AA@,12,char []
+0x76e088,??_C@_0BA@DAPDNPDB@Improved?5Radial?$AA@,16,char []
+0x76e098,??_C@_08JMGGCDBL@BounceXZ?$AA@,9,char []
+0x76e0a4,??_C@_07PNIADLGP@BounceY?$AA@,8,char []
+0x76e0ac,??_C@_08LINJJBOP@Spheroid?$AA@,9,char []
+0x76e0b8,??_C@_0N@EEPCBGN@Radial?5Rotor?$AA@,13,char []
+0x76e0c8,??_C@_06LPLAOIFI@Radial?$AA@,7,char []
+0x76e0d0,??_C@_0N@DFPOONNK@GenSort?5Type?$AA@,13,char []
 0x76e0e0,_TerrainUnusedSpatialBlockPc,4,const f32
 0x76e0e0,__real@4f000000,4,const f32
 0x0076e0e4,??_C@_04PAGELMPD@?4ter?$AA@,5,const char[5]
@@ -16057,11 +16115,27 @@ address,symbol,size,ctype
 0x76e694,??_C@_0BF@MNIDLNKM@Particles?5per?5Second?$AA@,21,char []
 0x76e6ac,??_C@_0O@MCCHBEIO@Particle?5Life?$AA@,14,char []
 0x76e6bc,??_C@_0N@FNECMGBM@Quick?5Delete?$AA@,13,char []
+0x76e76c,??_C@_0P@PIILAFDO@Cut?5?$CFs?5from?5?$CFs?$AA@,15,char []
+0x76e77c,??_C@_0BA@DBDIFANC@Empty?5Clipboard?$AA@,16,char []
+0x76e78c,??_C@_0BB@GJDPGNCN@Paste?5?$CFs?5into?5?$CFs?$AA@,17,char []
+0x76e7a0,??_C@_09CIJAALLN@Char?5List?$AA@,10,char []
+0x76e7ac,??_C@_0L@OJCFFKBC@Level?5List?$AA@,11,char []
+0x76e7b8,??_C@_0N@PKIPEIHH@General?5List?$AA@,13,char []
+0x76e7c8,??_C@_0P@LBFIEMME@Clipboard?5Menu?$AA@,15,char []
 0x76e7d8,_TerrainOpposingContactThresholdPc,,const f64
 0x76e7e0,__real@bbe56042,4,const f32
 0x76e7e8,__real@3f689374c0000000,8,const f64
 0x76e7f0,__real@36a7c5ac,4,const f32
 0x76e880,__real@3fe1999a,4,const f32
+0x76e91c,??_C@_0L@BIBKMIE@Panel?5Mode?$AA@,11,char []
+0x76e928,??_C@_0M@EAOPMBB@Super?5Early?$AA@,12,char []
+0x76e934,??_C@_09ODIDAKED@After?5Fog?$AA@,10,char []
+0x76e940,??_C@_0L@DOGHGNED@Before?5Fog?$AA@,11,char []
+0x76e94c,??_C@_09KCLJCJJD@Draw?5Flag?$AA@,10,char []
+0x76e958,??_C@_0BD@GGJLHEEF@Master?5Test?5Switch?$AA@,19,char []
+0x76e96c,??_C@_0BG@JCDJODC@Disable?5in?5Cut?9Scenes?$AA@,22,char []
+0x76e984,??_C@_0N@HAJHCIAD@Draw?5Flag?4?4?4?$AA@,13,char []
+0x76e994,??_C@_0BA@KAPLDBEB@Render?5Settings?$AA@,16,char []
 0x76ea0c,??_C@_0L@HAJNGEAG@Add?5Effect?$AA@,11,char []
 0x76ea18,??_C@_0BE@EFLMAGIA@Particle?5Types?5?$CI?$CFd?$CJ?$AA@,20,char []
 0x76ea2c,??_C@_0BB@JDPEOGJB@Ghost?5Separation?$AA@,17,char []
@@ -24222,6 +24296,7 @@ address,symbol,size,ctype
 0x2920adc,_edpp_cam_pos,,NUVEC
 0x02920ae8,_DebrisGlassV1,4,f32
 0x2920aec,_edgra_page_used,,i32[8]
+0x2920b0c,_edptl_torus_menu,4,struct eduimenu_s *
 0x2920d90,_TerrImpactPos,,NUVEC
 0x2920da0,_edbri_plank_instance_type,4,i32
 0x02920da4,_EShadY,,
@@ -24232,6 +24307,7 @@ address,symbol,size,ctype
 0x29211b0,_edanim_mtl_zoff,4,struct PC_SCENE_MTL_VIEW *
 0x29211b4,_TerrainCrashDataPc,,u8 *
 0x29211bc,_platinrange,,i32
+0x29211c0,_ptlrotmenu,4,struct eduimenu_s *
 0x29211c4,_ptlstartvelmenu,4,struct eduimenu_s *
 0x29211c8,_edgra_page_on,,i32[8]
 0x29211e8,_edbri_page_used,,i32[8]
@@ -24360,6 +24436,7 @@ address,symbol,size,ctype
 0x2947cc0,_TempScanStack,,void *
 0x02947cc8,_GlobalSfxBits,200,u16[100]
 0x2947d90,_SfxFileInfoPc,,SFX_FILE_INFO_PC *
+0x2947d94,_collmenu,4,struct eduimenu_s *
 0x2947d9c,_PlatCodeCallback,,i32
 0x02947da0,_SfxCRCTable,4,u32 *
 0x02947da4,_freedebchkptrg,4,i32
@@ -24370,11 +24447,13 @@ address,symbol,size,ctype
 0x2947db8,_edBridges,,PC_EDBRIDGE[64]
 0x02948eb8,_freedebchkptr,4,i32
 0x2948ec0,_TerrImpactNormal,,NUVEC
+0x2948ecc,_ptlgsortmenu,4,struct eduimenu_s *
 0x2948ed0,_edpp_page_on,32,i32[8]
 0x2948ef0,_TerImpactDataMax,,i32
 0x2948ef4,_TerImpactDataCount,,i32 *
 0x2948ef8,_TempStackPtrPc,,u8 *
 0x2948efc,_TerrOverRideScan,,void *
+0x2948f00,_ptlclipmenu,4,struct eduimenu_s *
 0x2948f08,_edgra_size,4,f32
 0x2948f10,_edbri_page_on,,i32[8]
 0x2948f30,_SfxFilenameSlotsPc,,char[1601][64]
@@ -24387,6 +24466,7 @@ address,symbol,size,ctype
 0x2961fcc,_ptlemitmenu,4,struct eduimenu_s *
 0x2961fd0,_ptloptmenu,4,struct eduimenu_s *
 0x02961fd4,_DebrisGlassU1,4,f32
+0x2961ff8,_ptlgcodemenu,4,struct eduimenu_s *
 0x02961ffc,_TerrainShadowGroupIndexPc,,
 0x2962000,_terraincnt,,i32
 0x2962004,_toruscolldata,,DEBRIS_COLLISION_ENTRY_PC *
@@ -24511,9 +24591,12 @@ address,symbol,size,ctype
 0x2962a60,_edpp_showAllPlaced,4,i32
 0x2962a64,_edpp_dpad_mode,4,i32
 0x2962a68,_edpp_readout,4,i32
+0x2962a88,_edptl_group_menu,4,struct eduimenu_s *
 0x2962a8c,_edptl_ghost_menu,4,struct eduimenu_s *
 0x2962a90,_edptl_star_menu,4,struct eduimenu_s *
+0x2962a98,_edptl_drawflag_menu,4,struct eduimenu_s *
 0x2962aa0,_edptl_orphanlist_menu,4,struct eduimenu_s *
+0x2962aa8,_edptl_detail_menu,4,struct eduimenu_s *
 0x2962aac,_edptl_testdetail_menu,4,struct eduimenu_s *
 0x2962ab0,_edpp_save_names,24,char *[6]
 0x2962ac8,_edpp_emitrotz,4,i32
@@ -24529,6 +24612,13 @@ address,symbol,size,ctype
 0x2962af0,_edpp_facrotx,4,i32
 0x2962af4,_edpp_facroty,4,i32
 0x2962af8,_edptl_count,4,i32
+0x2962b14,_grad_rot_item,4,struct eduiitem_s *
+0x2962b18,_grad_rot_min_item,4,struct edui_slider_s *
+0x2962b1c,_grad_rot_max_item,4,struct edui_slider_s *
+0x2962b30,_coll_env_item,4,struct eduiitem_s *
+0x2962b34,_torus_env1_item,4,struct eduiitem_s *
+0x2962b38,_torus_env2_item,4,struct eduiitem_s *
+0x2962b3c,_torus_env3_item,4,struct eduiitem_s *
 0x2962b48,_IgnoreWallSplines,,i32
 0x2962b4c,_WallSplinesOnly,,i32
 0x02962b50,_TerrainScaleWorkBasePc,,

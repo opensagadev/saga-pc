@@ -228,9 +228,10 @@ static void cbSelEffectList(eduimenu_s *menu, eduiitem_s *item, u32 unused2) {
             }
         }
     }
-    parent = menu->parent;
-    if (parent != NULL)
+    if (menu->parent != NULL) {
+        parent = menu->parent;
         eduiMenuDetach(menu);
+    }
     if (menu->callback != NULL)
         menu->callback(menu, parent);
 }
@@ -546,7 +547,7 @@ void cbPtlQuickDeleteType(eduimenu_s *menu, eduiitem_s *item, u32 unused2) {
     }
 }
 void edptlcbEmptyClipboard(eduimenu_s *menu, eduiitem_s *unused1, u32 unused2) {
-    struct eduimenu_s *parent;
+    struct eduimenu_s *parent = NULL;
     i32 create_type = edpp_create_type;
     edpp_create_type = edptl_clipboard_entry;
     edppDeleteEffect(edpp_create_type);
@@ -2397,4 +2398,624 @@ void __cdecl cbPtlStartVelMenu(eduimenu_s *parent, eduiitem_s *unused1, u32 unus
         ptlstartvelmenu->x = parent->x + 10;
         ptlstartvelmenu->y = parent->y + 40;
     }
+}
+
+extern struct eduimenu_s *edptl_torus_menu, *ptlrotmenu, *collmenu;
+extern struct eduiitem_s *torus_env1_item, *torus_env2_item, *torus_env3_item, *grad_rot_item, *coll_env_item;
+extern struct edui_slider_s *grad_rot_min_item, *grad_rot_max_item;
+
+typedef struct edui_gradient_stage_pc_s {
+    f32 time, hue, saturation, value, red, green, blue;
+    u32 colour, metadata;
+} EDUI_GRADIENT_STAGE_PC;
+STATIC_ASSERT(sizeof(EDUI_GRADIENT_STAGE_PC) == 0x24);
+
+i32 __cdecl eduiGradPickRead(eduiitem_s *item, EDUI_GRADIENT_STAGE_PC *stages, i32 capacity);
+struct edui_gradient_node_s *__cdecl eduiGradStageAddRGB(edui_gradient_pick_s *item, f32 time, f32 red, f32 green,
+                                                         f32 blue);
+
+void __cdecl edppClose(void) {
+    eduiMenuDestroy(ptloptmenu);
+    eduiMenuDestroy(ptlgcodemenu);
+}
+
+void __cdecl edptlcbCancelDetailMenu(eduimenu_s *unused0, eduimenu_s *unused1) {
+    eduiMenuDestroy(edptl_detail_menu);
+    edptl_detail_menu = NULL;
+}
+
+void __cdecl edptlcbCancelDrawflagMenu(eduimenu_s *unused0, eduimenu_s *unused1) {
+    eduiMenuDestroy(edptl_drawflag_menu);
+    edptl_drawflag_menu = NULL;
+}
+
+void __cdecl edptlcbCancelGroupMenu(eduimenu_s *unused0, eduimenu_s *unused1) {
+    eduiMenuDestroy(edptl_group_menu);
+    edptl_group_menu = NULL;
+}
+
+static void cbPtlCancelTorusMenu(eduimenu_s *unused0, eduimenu_s *unused1) {
+    eduiMenuDestroy(edptl_torus_menu);
+    edptl_torus_menu = NULL;
+    torus_env1_item = NULL;
+    torus_env2_item = NULL;
+    torus_env3_item = NULL;
+}
+
+static void cbPtlCancelCollMenu(eduimenu_s *unused0, eduimenu_s *unused1) {
+    eduiMenuDestroy(collmenu);
+    collmenu = NULL;
+    coll_env_item = NULL;
+}
+
+static void cbPtlCancelRotMenu(eduimenu_s *unused0, eduimenu_s *unused1) {
+    eduiMenuDestroy(ptlrotmenu);
+    ptlrotmenu = NULL;
+    grad_rot_item = NULL;
+    grad_rot_min_item = NULL;
+    grad_rot_max_item = NULL;
+}
+
+void __cdecl cbPtlCancelGSortMenu(eduimenu_s *unused0, eduimenu_s *unused1) {
+    eduiMenuDestroy(ptlgsortmenu);
+    ptlgsortmenu = NULL;
+}
+
+void __cdecl edptlcbCancelClipboardMenu(eduimenu_s *unused0, eduimenu_s *unused1) {
+    eduiMenuDestroy(ptlclipmenu);
+    ptlclipmenu = NULL;
+}
+
+void __cdecl edptlcbSetMasterGroup(eduimenu_s *unused0, eduiitem_s *item, u32 unused2) {
+    debris_render_group = (i32)((edui_slider_s *)item)->value;
+}
+
+void __cdecl edptlcbSetGroup(eduimenu_s *unused0, eduiitem_s *item, u32 unused2) {
+    if (edpp_nearest == -1)
+        return;
+    if (edpp_ptls[edpp_nearest].instance_id == -1)
+        return;
+    edpp_ptls[edpp_nearest].render_group = (i16)(i32)((edui_slider_s *)item)->value;
+    debkeydata[edpp_ptls[edpp_nearest].instance_id].render_group = (i16)(i32)((edui_slider_s *)item)->value;
+}
+
+void __cdecl edptlcbChangeCSDisable(eduimenu_s *unused0, eduiitem_s *item, u32 unused2) {
+    DEBRIS_INFO_PC *effect;
+    if (edpp_nearest == -1)
+        return;
+    if (edpp_ptls[edpp_nearest].instance_id == -1)
+        return;
+    effect = debtab[debkeydata[edpp_ptls[edpp_nearest].instance_id].effect_index];
+    effect->cutscene_only = item->highlighted;
+}
+
+void __cdecl edptlcbSetMaxThin(eduimenu_s *unused0, eduiitem_s *item, u32 unused2) {
+    DEBRIS_INFO_PC *effect;
+    if (edpp_nearest == -1)
+        return;
+    if (edpp_ptls[edpp_nearest].instance_id == -1)
+        return;
+    effect = debtab[debkeydata[edpp_ptls[edpp_nearest].instance_id].effect_index];
+    effect->thinning = ((edui_slider_s *)item)->value;
+}
+
+void __cdecl edptlcbSetDetail(eduimenu_s *unused0, eduiitem_s *item, u32 unused2) {
+    i32 instance_id;
+    if (edpp_nearest == 0)
+        return;
+    if (item->highlighted)
+        edpp_ptls[edpp_nearest].detail_levels |= (i8)item->data;
+    else
+        edpp_ptls[edpp_nearest].detail_levels &= ~(i8)item->data;
+    instance_id = edpp_ptls[edpp_nearest].instance_id;
+    if (instance_id == -1)
+        return;
+    if (instance_id == 99999)
+        return;
+    edppDebrisSetDetailLevels(instance_id, edpp_ptls[edpp_nearest].detail_levels);
+}
+
+void __cdecl edptlcbSetDrawflag(eduimenu_s *unused0, eduiitem_s *item, u32 unused2) {
+    DEBRIS_INFO_PC *effect;
+    if (edpp_nearest == -1)
+        return;
+    if (edpp_ptls[edpp_nearest].instance_id == -1)
+        return;
+    effect = debtab[debkeydata[edpp_ptls[edpp_nearest].instance_id].effect_index];
+    if (effect->time_group == item->data)
+        return;
+    DebFreeInstantly(&edpp_ptls[edpp_nearest].instance_id);
+    effect->time_group = (i8)item->data;
+    edppStartSingleEffect(edpp_nearest);
+}
+
+static void cbChangeNumCollSpheres(eduimenu_s *unused0, eduiitem_s *item, u32 unused2) {
+    DEBRIS_INFO_PC *effect;
+    if (edpp_nearest == -1)
+        return;
+    if (edpp_ptls[edpp_nearest].instance_id == -1)
+        return;
+    effect = debtab[debkeydata[edpp_ptls[edpp_nearest].instance_id].effect_index];
+    effect->process_spheres = (i8)(i32)((edui_slider_s *)item)->value;
+}
+
+static void cbChangeTorusLife(eduimenu_s *unused0, eduiitem_s *item, u32 unused2) {
+    DEBRIS_INFO_PC *effect;
+    if (edpp_nearest == -1)
+        return;
+    if (edpp_ptls[edpp_nearest].instance_id == -1)
+        return;
+    effect = debtab[debkeydata[edpp_ptls[edpp_nearest].instance_id].effect_index];
+    effect->torus_lifetime = ((edui_slider_s *)item)->value;
+}
+
+static void cbChangeTorusRad1(eduimenu_s *unused0, eduiitem_s *item, u32 unused2) {
+    DEBRIS_INFO_PC *effect;
+    if (edpp_nearest == -1)
+        return;
+    if (edpp_ptls[edpp_nearest].instance_id == -1)
+        return;
+    effect = debtab[debkeydata[edpp_ptls[edpp_nearest].instance_id].effect_index];
+    effect->torus_radius1 = ((edui_slider_s *)item)->value;
+}
+
+static void cbChangeTorusRad2(eduimenu_s *unused0, eduiitem_s *item, u32 unused2) {
+    DEBRIS_INFO_PC *effect;
+    if (edpp_nearest == -1)
+        return;
+    if (edpp_ptls[edpp_nearest].instance_id == -1)
+        return;
+    effect = debtab[debkeydata[edpp_ptls[edpp_nearest].instance_id].effect_index];
+    effect->torus_radius2 = ((edui_slider_s *)item)->value;
+}
+
+static void cbPtlApplyTorusEnv1(eduimenu_s *unused0, eduiitem_s *unused1, u32 unused2) {
+    EDUI_GRADIENT_STAGE_PC stages[8];
+    DEBRIS_INFO_PC *effect;
+    i32 count, instance, i;
+    if (torus_env1_item == NULL)
+        return;
+    count = eduiGradPickRead(torus_env1_item, stages, 8);
+    if (count < 2 || count > 8 || edpp_nearest == -1)
+        return;
+    instance = edpp_ptls[edpp_nearest].instance_id;
+    if (instance == -1)
+        return;
+    effect = debtab[debkeydata[instance].effect_index];
+    for (i = 0; i < count; ++i) {
+        effect->torus_keys1[i].time = stages[i].time;
+        effect->torus_keys1[i].value = stages[i].red;
+    }
+}
+
+static void cbPtlApplyTorusEnv2(eduimenu_s *unused0, eduiitem_s *unused1, u32 unused2) {
+    EDUI_GRADIENT_STAGE_PC stages[8];
+    DEBRIS_INFO_PC *effect;
+    i32 count, instance, i;
+    if (torus_env2_item == NULL)
+        return;
+    count = eduiGradPickRead(torus_env2_item, stages, 8);
+    if (count < 2 || count > 8 || edpp_nearest == -1)
+        return;
+    instance = edpp_ptls[edpp_nearest].instance_id;
+    if (instance == -1)
+        return;
+    effect = debtab[debkeydata[instance].effect_index];
+    for (i = 0; i < count; ++i) {
+        effect->torus_keys2[i].time = stages[i].time;
+        effect->torus_keys2[i].value = stages[i].red;
+    }
+}
+
+static void cbPtlApplyTorusEnv3(eduimenu_s *unused0, eduiitem_s *unused1, u32 unused2) {
+    EDUI_GRADIENT_STAGE_PC stages[8];
+    DEBRIS_INFO_PC *effect;
+    i32 count, instance, i;
+    if (torus_env3_item == NULL)
+        return;
+    count = eduiGradPickRead(torus_env3_item, stages, 8);
+    if (count < 2 || count > 8 || edpp_nearest == -1)
+        return;
+    instance = edpp_ptls[edpp_nearest].instance_id;
+    if (instance == -1)
+        return;
+    effect = debtab[debkeydata[instance].effect_index];
+    for (i = 0; i < count; ++i) {
+        effect->torus_keys3[i].time = stages[i].time;
+        effect->torus_keys3[i].value = stages[i].red;
+    }
+}
+
+static void cbPtlApplyCollEnv(eduimenu_s *unused0, eduiitem_s *unused1, u32 unused2) {
+    EDUI_GRADIENT_STAGE_PC stages[8];
+    DEBRIS_INFO_PC *effect;
+    i32 count, instance, i;
+    f32 minimum, maximum;
+    if (coll_env_item) {
+        count = eduiGradPickRead(coll_env_item, stages, 8);
+        if (count < 2 || count > 8 || edpp_nearest == -1)
+            return;
+        instance = edpp_ptls[edpp_nearest].instance_id;
+        if (instance == -1)
+            return;
+        effect = debtab[debkeydata[instance].effect_index];
+        minimum = effect->min_size / 10000.0f;
+        maximum = effect->max_size / 10000.0f;
+        for (i = 0; i < count; ++i) {
+            effect->collision_keys[i].time = stages[i].time;
+            effect->collision_keys[i].value = stages[i].red * (maximum - minimum) + minimum;
+        }
+    }
+}
+
+static void cbPtlApplyRot(eduimenu_s *unused0, eduiitem_s *unused1, u32 unused2) {
+    EDUI_GRADIENT_STAGE_PC stages[8];
+    DEBRIS_INFO_PC *effect;
+    i32 count, instance, i;
+    f32 minimum, maximum, angle;
+    if (!(!grad_rot_min_item || !grad_rot_max_item || !grad_rot_item)) {
+        count = eduiGradPickRead(grad_rot_item, stages, 8);
+        minimum = grad_rot_min_item->value;
+        maximum = grad_rot_max_item->value;
+        if (minimum == maximum)
+            maximum += 0.1f;
+        if (count < 2 || count > 8 || edpp_nearest == -1)
+            return;
+        instance = edpp_ptls[edpp_nearest].instance_id;
+        if (instance == -1)
+            return;
+        effect = debtab[debkeydata[instance].effect_index];
+        for (i = 0; i < count; ++i) {
+            effect->rotation_keys[i].time = stages[i].time;
+            angle = stages[i].red * (maximum - minimum) + minimum;
+            effect->rotation_keys[i].value = (f32)(i32)(angle * (65536.0f / 360.0f));
+        }
+        effect->min_rotation = minimum;
+        effect->max_rotation = maximum;
+        GenericDebinfoDmaTypeUpdate(effect);
+    }
+}
+
+static void cbPtlDefaultCollEnv(eduimenu_s *menu, eduiitem_s *unused1, u32 unused2) {
+    struct eduimenu_s *parent = NULL;
+    DEBRIS_INFO_PC *effect;
+    i32 instance, i;
+    if (edpp_nearest != -1) {
+        instance = edpp_ptls[edpp_nearest].instance_id;
+        if (instance != -1) {
+            effect = debtab[debkeydata[instance].effect_index];
+            for (i = 0; i < 8; ++i) {
+                effect->collision_keys[i].time = effect->width_keys[i].time;
+                effect->collision_keys[i].value = effect->width_keys[i].value / 10000.0f;
+            }
+        }
+    }
+    if (menu->parent != NULL) {
+        parent = menu->parent;
+        eduiMenuDetach(menu);
+    }
+    if (menu->callback != NULL)
+        menu->callback(menu, parent);
+}
+
+void __cdecl edptlcbCutClipboard(eduimenu_s *menu, eduiitem_s *unused1, u32 unused2) {
+    struct eduimenu_s *parent = NULL;
+    debtab[edpp_create_type]->category = 4;
+    edptl_clipboard_entry = edpp_create_type;
+    if (menu->parent != NULL) {
+        parent = menu->parent;
+        eduiMenuDetach(menu);
+    }
+    if (menu->callback != NULL)
+        menu->callback(menu, parent);
+}
+
+void __cdecl edptlcbPasteClipboard(eduimenu_s *menu, eduiitem_s *unused1, u32 unused2) {
+    struct eduimenu_s *parent = NULL;
+    DEBRIS_INFO_PC *effect = debtab[edptl_clipboard_entry];
+    effect->category = edpp_effect_list;
+    edptl_clipboard_entry = -1;
+    if (menu->parent != NULL) {
+        parent = menu->parent;
+        eduiMenuDetach(menu);
+    }
+    if (menu->callback != NULL)
+        menu->callback(menu, parent);
+}
+
+void __cdecl cbPtlSelGSort(eduimenu_s *menu, eduiitem_s *item, u32 unused2) {
+    DEBRIS_INFO_PC *effect;
+    eduiMenuDetach(menu);
+    edpp_active_menu = NULL;
+    if (edpp_nearest == -1 || edpp_ptls[edpp_nearest].instance_id == -1)
+        return;
+    effect = debtab[debkeydata[edpp_ptls[edpp_nearest].instance_id].effect_index];
+    if (effect->generator_type == item->data)
+        return;
+    if (effect->generator_type == 6 && item->data == 11) {
+        effect->rotor_speed_y *= 0.5f;
+        effect->emitter_random_extent.z *= 0.5f;
+        effect->emitter_velocity.z *= 0.5f;
+    } else if (effect->generator_type == 11 && item->data == 6) {
+        effect->rotor_speed_y *= 2.0f;
+        effect->emitter_random_extent.z *= 2.0f;
+        effect->emitter_velocity.z *= 2.0f;
+    } else if (!((effect->generator_type == 6 && item->data == 12) ||
+                 (effect->generator_type == 12 && item->data == 6))) {
+        effect->momentum_random_x = 0.0f;
+        effect->rotor_speed_x = 0.0f;
+        effect->rotor_speed_y = 0.0f;
+        effect->emitter_random_extent.x = 0.0f;
+        effect->emitter_random_extent.y = 0.0f;
+        effect->emitter_random_extent.z = 0.0f;
+        effect->emitter_velocity.x = 0.0f;
+        effect->emitter_velocity.y = 0.0f;
+        effect->emitter_velocity.z = 0.0f;
+        effect->scale_in_time = 0.0f;
+        effect->trail_count = 0;
+    }
+    effect->generator_type = (u8)item->data;
+    debkeydata[edpp_ptls[edpp_nearest].instance_id].generator = gensorttab[item->data];
+}
+
+void __cdecl edptlcbClipboardMenu(eduimenu_s *parent, eduiitem_s *unused1, u32 unused2) {
+    u32 colours[4] = {0x80000000, 0x80ff0000, 0x80808080, 0x80404040};
+    char list_name[32];
+    char label[64];
+    DEBRIS_INFO_PC *effect;
+    if (edpp_create_type == -1)
+        return;
+    effect = debtab[edpp_create_type];
+    ptlclipmenu = eduiMenuCreate(70, 70, 300, 250, ed_fnt, edptlcbCancelClipboardMenu, "Clipboard Menu");
+    if (ptlclipmenu == NULL)
+        return;
+    if (edpp_effect_list == 0)
+        sprintf(list_name, "General List");
+    else if (edpp_effect_list == 1)
+        sprintf(list_name, "Level List");
+    else if (edpp_effect_list == 5)
+        sprintf(list_name, "Char List");
+    if (edptl_clipboard_entry != -1) {
+        sprintf(label, "Paste %s into %s", debtab[edptl_clipboard_entry]->name, list_name);
+        eduiMenuAddItem(ptlclipmenu, eduiItemSelCreate(1, colours, 0, 0, edptlcbPasteClipboard, label));
+        eduiMenuAddItem(ptlclipmenu, eduiItemSelCreate(1, colours, 0, 0, edptlcbEmptyClipboard, "Empty Clipboard"));
+    } else {
+        sprintf(label, "Cut %s from %s", effect->name, list_name);
+        eduiMenuAddItem(ptlclipmenu, eduiItemSelCreate(1, colours, 0, 0, edptlcbCutClipboard, label));
+    }
+    eduiMenuAttach(parent, ptlclipmenu);
+    ptlclipmenu->x = parent->x + 10;
+    ptlclipmenu->y = parent->y + 40;
+}
+
+void __cdecl edptlcbDrawflagMenu(eduimenu_s *parent, eduiitem_s *unused1, u32 unused2) {
+    DEBRIS_INFO_PC *effect;
+    if (edpp_nearest == -1 || edpp_ptls[edpp_nearest].instance_id == -1)
+        return;
+    effect = debtab[debkeydata[edpp_ptls[edpp_nearest].instance_id].effect_index];
+    edptl_drawflag_menu = eduiMenuCreate(70, 70, 180, 300, ed_fnt, edptlcbCancelDrawflagMenu, "Draw Flag");
+    if (edptl_drawflag_menu == NULL)
+        return;
+    eduiMenuAddItem(edptl_drawflag_menu,
+                    eduiItemCheckCreate(1, edblack, effect->time_group == 1, 1, edptlcbSetDrawflag, "Before Fog"));
+    eduiMenuAddItem(edptl_drawflag_menu,
+                    eduiItemCheckCreate(0, edblack, effect->time_group == 0, 1, edptlcbSetDrawflag, "After Fog"));
+    eduiMenuAddItem(edptl_drawflag_menu,
+                    eduiItemCheckCreate(3, edblack, effect->time_group == 3, 1, edptlcbSetDrawflag, "Super Early"));
+    eduiMenuAddItem(edptl_drawflag_menu,
+                    eduiItemCheckCreate(4, edblack, effect->time_group == 4, 1, edptlcbSetDrawflag, "Panel Mode"));
+    eduiMenuAttach(parent, edptl_drawflag_menu);
+    edptl_drawflag_menu->x = parent->x + 10;
+    edptl_drawflag_menu->y = parent->y + 40;
+}
+
+void __cdecl edptlcbGroupMenu(eduimenu_s *parent, eduiitem_s *unused1, u32 unused2) {
+    DEBRIS_INFO_PC *effect;
+    edptl_group_menu = eduiMenuCreate(70, 70, 250, 250, ed_fnt, edptlcbCancelGroupMenu, "Render Settings");
+    if (edptl_group_menu == NULL)
+        return;
+    if (edpp_nearest != -1 && edpp_ptls[edpp_nearest].instance_id != -1) {
+        effect = debtab[debkeydata[edpp_ptls[edpp_nearest].instance_id].effect_index];
+        if (effect->particle_type == 7)
+            eduiMenuAddItem(edptl_group_menu, eduiItemSelCreate(1, edgrey, 0, 0, NULL, "Draw Flag..."));
+        else
+            eduiMenuAddItem(edptl_group_menu, eduiItemSelCreate(1, edblack, 0, 0, edptlcbDrawflagMenu, "Draw Flag..."));
+        eduiMenuAddItem(edptl_group_menu, eduiItemToggleCreate(2, edblack, effect->cutscene_only != 0, 1,
+                                                               edptlcbChangeCSDisable, "Disable in Cut-Scenes"));
+        eduiMenuAddItem(edptl_group_menu, eduiItemSliderCreateInt(0, edblack, 0, edptlcbSetGroup, 0, 32,
+                                                                  edpp_ptls[edpp_nearest].render_group, "Group ID"));
+    }
+    eduiMenuAddItem(edptl_group_menu, eduiItemSliderCreateInt(0, edblack, 0, edptlcbSetMasterGroup, 0, 32,
+                                                              debris_render_group, "Master Test Switch"));
+    eduiMenuAttach(parent, edptl_group_menu);
+    edptl_group_menu->x = parent->x + 10;
+    edptl_group_menu->y = parent->y + 40;
+}
+
+void __cdecl edptlcbDetailMenu(eduimenu_s *parent, eduiitem_s *unused1, u32 unused2) {
+    DEBRIS_INFO_PC *effect;
+    edptl_detail_menu = eduiMenuCreate(70, 70, 250, 250, ed_fnt, edptlcbCancelDetailMenu, "Detail Level Settings");
+    if (edptl_detail_menu == NULL)
+        return;
+    if (edpp_nearest != -1 && edpp_ptls[edpp_nearest].instance_id != -1) {
+        effect = debtab[debkeydata[edpp_ptls[edpp_nearest].instance_id].effect_index];
+        eduiMenuAddItem(edptl_detail_menu, eduiItemSliderCreate(0, edblack, 0, edptlcbSetMaxThin, 1.0f, 9.0f,
+                                                                effect->thinning, "Maximum Thinning"));
+        eduiMenuAddItem(edptl_detail_menu,
+                        eduiItemToggleCreate(4, edblack, (edpp_ptls[edpp_nearest].detail_levels >> 2) & 1, 1,
+                                             edptlcbSetDetail, "High Detail"));
+        eduiMenuAddItem(edptl_detail_menu,
+                        eduiItemToggleCreate(2, edblack, (edpp_ptls[edpp_nearest].detail_levels >> 1) & 1, 2,
+                                             edptlcbSetDetail, "Medium Detail"));
+        eduiMenuAddItem(edptl_detail_menu, eduiItemToggleCreate(1, edblack, edpp_ptls[edpp_nearest].detail_levels & 1,
+                                                                3, edptlcbSetDetail, "Low Detail"));
+        eduiMenuAddItem(edptl_detail_menu,
+                        eduiItemSelCreate(1, edblack, 0, 0, edptlcbTestDetailMenu, "Detail Level Test..."));
+    }
+    eduiMenuAttach(parent, edptl_detail_menu);
+    edptl_detail_menu->x = parent->x + 10;
+    edptl_detail_menu->y = parent->y + 40;
+}
+
+void __cdecl cbPtlGSortMenu(eduimenu_s *menu, eduiitem_s *unused1, u32 unused2) {
+    u32 colours[4] = {0x80000000, 0x80ff0000, 0x80808080, 0x80404040};
+    DEBRIS_INFO_PC *effect;
+    if (edpp_nearest == -1 || edpp_ptls[edpp_nearest].instance_id == -1)
+        return;
+    effect = debtab[debkeydata[edpp_ptls[edpp_nearest].instance_id].effect_index];
+    ptlgsortmenu = eduiMenuCreate(70, 70, 180, 250, ed_fnt, cbPtlCancelGSortMenu, "GenSort Type");
+    if (ptlgsortmenu) {
+        eduiMenuAddItem(ptlgsortmenu,
+                        eduiItemCheckCreate(0, colours, effect->generator_type == 0, 1, cbPtlSelGSort, "Normal"));
+        if (effect->particle_type == 7) {
+            eduiMenuAddItem(ptlgsortmenu, eduiItemSelCreate(6, edgrey, 0, 0, NULL, "Radial"));
+            eduiMenuAddItem(ptlgsortmenu, eduiItemSelCreate(7, edgrey, 0, 0, NULL, "Radial Rotor"));
+        } else {
+            eduiMenuAddItem(ptlgsortmenu,
+                            eduiItemCheckCreate(6, colours, effect->generator_type == 6, 1, cbPtlSelGSort, "Radial"));
+            eduiMenuAddItem(ptlgsortmenu, eduiItemCheckCreate(7, colours, effect->generator_type == 7, 1, cbPtlSelGSort,
+                                                              "Radial Rotor"));
+        }
+        eduiMenuAddItem(ptlgsortmenu,
+                        eduiItemCheckCreate(8, colours, effect->generator_type == 8, 1, cbPtlSelGSort, "Spheroid"));
+        if (effect->particle_type == 7) {
+            eduiMenuAddItem(ptlgsortmenu, eduiItemSelCreate(9, edgrey, 0, 0, NULL, "BounceY"));
+            eduiMenuAddItem(ptlgsortmenu, eduiItemSelCreate(10, edgrey, 0, 0, NULL, "BounceXZ"));
+            eduiMenuAddItem(ptlgsortmenu, eduiItemSelCreate(11, edgrey, 0, 0, NULL, "Improved Radial"));
+            eduiMenuAddItem(ptlgsortmenu, eduiItemSelCreate(12, edgrey, 0, 0, NULL, "Star Radial"));
+        } else {
+            eduiMenuAddItem(ptlgsortmenu,
+                            eduiItemCheckCreate(9, colours, effect->generator_type == 9, 1, cbPtlSelGSort, "BounceY"));
+            eduiMenuAddItem(ptlgsortmenu, eduiItemCheckCreate(10, colours, effect->generator_type == 10, 1,
+                                                              cbPtlSelGSort, "BounceXZ"));
+            eduiMenuAddItem(ptlgsortmenu, eduiItemCheckCreate(11, colours, effect->generator_type == 11, 1,
+                                                              cbPtlSelGSort, "Improved Radial"));
+            eduiMenuAddItem(ptlgsortmenu, eduiItemCheckCreate(12, colours, effect->generator_type == 12, 1,
+                                                              cbPtlSelGSort, "Star Radial"));
+        }
+    }
+    eduiMenuAttach(menu, ptlgsortmenu);
+    ptlgsortmenu->x = menu->x + 10;
+    ptlgsortmenu->y = menu->y + 40;
+}
+
+void __cdecl cbPtlRotMenu(eduimenu_s *parent, eduiitem_s *unused1, u32 unused2) {
+    u32 colours[4] = {0x80000000, 0x80ff0000, 0x80808080, 0x80404040};
+    DEBRIS_INFO_PC *effect;
+    f32 value;
+    i32 i;
+    if (edpp_nearest == -1 || edpp_ptls[edpp_nearest].instance_id == -1)
+        return;
+    effect = debtab[debkeydata[edpp_ptls[edpp_nearest].instance_id].effect_index];
+    ptlrotmenu = eduiMenuCreate(70, 70, 180, 300, ed_fnt, cbPtlCancelRotMenu, "Particle Rotation");
+    if (ptlrotmenu == NULL)
+        return;
+    eduiMenuAddItem(ptlrotmenu, eduiItemGreyGradPickCreate(0, colours, cbPtlApplyRot, "Rotation Envelope"));
+    grad_rot_item = edui_last_item;
+    for (i = 0; i < 8; ++i) {
+        if (effect->min_rotation == effect->max_rotation)
+            value = 1.0f;
+        else
+            value = (effect->rotation_keys[i].value * (360.0f / 65536.0f) - effect->min_rotation) /
+                    (effect->max_rotation - effect->min_rotation);
+        eduiGradStageAddRGB((edui_gradient_pick_s *)grad_rot_item, effect->rotation_keys[i].time, value, value, value);
+        if (effect->rotation_keys[i].time == 1.0f)
+            break;
+    }
+    eduiMenuAddItem(ptlrotmenu, eduiItemSliderCreate(0, colours, 0, cbPtlApplyRot, -720.0f, 1440.0f,
+                                                     effect->min_rotation, "Min Rotation"));
+    grad_rot_min_item = (edui_slider_s *)edui_last_item;
+    eduiItemSliderSetFmt(grad_rot_min_item, "(%1.01f)");
+    eduiItemSliderSetGranularity((edui_slider_s *)edui_last_item, 0.1f);
+    eduiMenuAddItem(ptlrotmenu, eduiItemSliderCreate(0, colours, 0, cbPtlApplyRot, -720.0f, 1440.0f,
+                                                     effect->max_rotation, "Max Rotation"));
+    grad_rot_max_item = (edui_slider_s *)edui_last_item;
+    eduiItemSliderSetFmt(grad_rot_max_item, "(%1.01f)");
+    eduiItemSliderSetGranularity((edui_slider_s *)edui_last_item, 0.1f);
+    eduiMenuAttach(parent, ptlrotmenu);
+    ptlrotmenu->x = parent->x + 10;
+    ptlrotmenu->y = parent->y + 40;
+}
+
+void __cdecl cbPtlCollMenu(eduimenu_s *parent, eduiitem_s *unused1, u32 unused2) {
+    u32 colours[4] = {0x80000000, 0x80ff0000, 0x80808080, 0x80404040};
+    DEBRIS_INFO_PC *effect;
+    f32 value;
+    i32 i;
+    if (edpp_nearest == -1 || edpp_ptls[edpp_nearest].instance_id == -1)
+        return;
+    effect = debtab[debkeydata[edpp_ptls[edpp_nearest].instance_id].effect_index];
+    collmenu = eduiMenuCreate(70, 70, 180, 300, ed_fnt, cbPtlCancelCollMenu, "Collision Spheres");
+    if (collmenu == NULL)
+        return;
+    eduiMenuAddItem(collmenu, eduiItemGreyGradPickCreate(0, colours, cbPtlApplyCollEnv, "Collision Envelope"));
+    coll_env_item = edui_last_item;
+    for (i = 0; i < 8; ++i) {
+        if (effect->min_size == effect->max_size)
+            value = 1.0f;
+        else
+            value = (effect->collision_keys[i].value - effect->min_size / 10000.0f) /
+                    ((effect->max_size - effect->min_size) / 10000.0f);
+        eduiGradStageAddRGB((edui_gradient_pick_s *)coll_env_item, effect->collision_keys[i].time, value, value, value);
+        if (effect->collision_keys[i].time == 1.0f)
+            break;
+    }
+    eduiMenuAddItem(collmenu, eduiItemSliderCreateInt(0, colours, 0, cbChangeNumCollSpheres, 0, 8,
+                                                      effect->process_spheres, "Num Spheres"));
+    eduiMenuAddItem(collmenu, eduiItemSelCreate(1, colours, 0, 0, cbPtlDefaultCollEnv, "Default Envelope"));
+    eduiMenuAttach(parent, collmenu);
+    collmenu->x = parent->x + 10;
+    collmenu->y = parent->y + 40;
+}
+
+void __cdecl cbPtlTorusMenu(eduimenu_s *parent, eduiitem_s *unused1, u32 unused2) {
+    u32 colours[4] = {0x80000000, 0x80ff0000, 0x80808080, 0x80404040};
+    DEBRIS_INFO_PC *effect;
+    f32 value;
+    i32 i;
+    if (edpp_nearest == -1 || edpp_ptls[edpp_nearest].instance_id == -1)
+        return;
+    effect = debtab[debkeydata[edpp_ptls[edpp_nearest].instance_id].effect_index];
+    edptl_torus_menu = eduiMenuCreate(70, 70, 250, 250, ed_fnt, cbPtlCancelTorusMenu, "Collision Torus");
+    if (edptl_torus_menu == NULL)
+        return;
+    eduiMenuAddItem(edptl_torus_menu,
+                    eduiItemSliderCreate(0, colours, 0, cbChangeTorusLife, 0.0f, 5.0f * edptl_superscale,
+                                         effect->torus_lifetime, "Torus Life"));
+    eduiMenuAddItem(edptl_torus_menu,
+                    eduiItemSliderCreate(0, colours, 0, cbChangeTorusRad1, 0.01f, 5.0f * edptl_superscale,
+                                         effect->torus_radius1, "Base Major Radius"));
+    eduiMenuAddItem(edptl_torus_menu,
+                    eduiItemSliderCreate(0, colours, 0, cbChangeTorusRad2, 0.01f, 5.0f * edptl_superscale,
+                                         effect->torus_radius2, "Base Minor Radius"));
+    eduiMenuAddItem(edptl_torus_menu,
+                    eduiItemGreyGradPickCreate(0, colours, cbPtlApplyTorusEnv1, "Major Radius Envelope"));
+    torus_env1_item = edui_last_item;
+    for (i = 0; i < 8; ++i) {
+        value = effect->torus_keys1[i].value;
+        eduiGradStageAddRGB((edui_gradient_pick_s *)torus_env1_item, effect->torus_keys1[i].time, value, value, value);
+        if (effect->torus_keys1[i].time == 1.0f)
+            break;
+    }
+    eduiMenuAddItem(edptl_torus_menu,
+                    eduiItemGreyGradPickCreate(0, colours, cbPtlApplyTorusEnv2, "Minor Radius Envelope 1"));
+    torus_env2_item = edui_last_item;
+    for (i = 0; i < 8; ++i) {
+        value = effect->torus_keys2[i].value;
+        eduiGradStageAddRGB((edui_gradient_pick_s *)torus_env2_item, effect->torus_keys2[i].time, value, value, value);
+        if (effect->torus_keys2[i].time == 1.0f)
+            break;
+    }
+    eduiMenuAddItem(edptl_torus_menu,
+                    eduiItemGreyGradPickCreate(0, colours, cbPtlApplyTorusEnv3, "Minor Radius Envelope 2"));
+    torus_env3_item = edui_last_item;
+    for (i = 0; i < 8; ++i) {
+        value = effect->torus_keys3[i].value;
+        eduiGradStageAddRGB((edui_gradient_pick_s *)torus_env3_item, effect->torus_keys3[i].time, value, value, value);
+        if (effect->torus_keys3[i].time == 1.0f)
+            break;
+    }
+    eduiMenuAttach(parent, edptl_torus_menu);
+    edptl_torus_menu->x = parent->x + 10;
+    edptl_torus_menu->y = parent->y + 40;
 }

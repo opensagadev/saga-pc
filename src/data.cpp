@@ -29486,6 +29486,38 @@ extern "C" {
 
 #pragma bss_seg(".bss$edptl_testdetail_menu")
     struct eduimenu_s *edptl_testdetail_menu = 0;
+#pragma bss_seg(".bss$edptl_torus_menu")
+    struct eduimenu_s *edptl_torus_menu = 0;
+#pragma bss_seg(".bss$ptlrotmenu")
+    struct eduimenu_s *ptlrotmenu = 0;
+#pragma bss_seg(".bss$collmenu")
+    struct eduimenu_s *collmenu = 0;
+#pragma bss_seg(".bss$ptlgsortmenu")
+    struct eduimenu_s *ptlgsortmenu = 0;
+#pragma bss_seg(".bss$ptlclipmenu")
+    struct eduimenu_s *ptlclipmenu = 0;
+#pragma bss_seg(".bss$ptlgcodemenu")
+    struct eduimenu_s *ptlgcodemenu = 0;
+#pragma bss_seg(".bss$edptl_group_menu")
+    struct eduimenu_s *edptl_group_menu = 0;
+#pragma bss_seg(".bss$edptl_drawflag_menu")
+    struct eduimenu_s *edptl_drawflag_menu = 0;
+#pragma bss_seg(".bss$edptl_detail_menu")
+    struct eduimenu_s *edptl_detail_menu = 0;
+#pragma bss_seg(".bss$grad_rot_item")
+    struct eduiitem_s *grad_rot_item = 0;
+#pragma bss_seg(".bss$grad_rot_min_item")
+    struct edui_slider_s *grad_rot_min_item = 0;
+#pragma bss_seg(".bss$grad_rot_max_item")
+    struct edui_slider_s *grad_rot_max_item = 0;
+#pragma bss_seg(".bss$coll_env_item")
+    struct eduiitem_s *coll_env_item = 0;
+#pragma bss_seg(".bss$torus_env1_item")
+    struct eduiitem_s *torus_env1_item = 0;
+#pragma bss_seg(".bss$torus_env2_item")
+    struct eduiitem_s *torus_env2_item = 0;
+#pragma bss_seg(".bss$torus_env3_item")
+    struct eduiitem_s *torus_env3_item = 0;
 
 #pragma bss_seg(".bss$dpadmodemenu")
     struct eduimenu_s *dpadmodemenu = 0;
