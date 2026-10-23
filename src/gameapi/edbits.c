@@ -263,7 +263,7 @@ void edgracbCancelDpadModeMenu(eduimenu_s *unused0, eduimenu_s *unused1) {
     eduiMenuDestroy(edgra_dpadmode_menu);
     edgra_dpadmode_menu = NULL;
 }
-static void edgracbInstanceMenu(eduimenu_s *parent, eduiitem_s *unused1, u32 unused2) {
+void __cdecl edgracbInstanceMenu(eduimenu_s *parent, eduiitem_s *unused1, u32 unused2) {
     i32 selected_found;
     i32 added;
     i32 count;
@@ -280,32 +280,34 @@ static void edgracbInstanceMenu(eduimenu_s *parent, eduiitem_s *unused1, u32 unu
     name = NULL;
     for (i = 0; i < count; ++i) {
         i32 selected;
+        i32 keep = 0;
         nuhspecial_s special;
         NuGScnGetSpecial(&special, edbits_base_scene, i);
         if (NuSpecialExistsFn(&special))
             name = NuSpecialGetName(&special);
-        selected = i == edgra_instance_type;
-        if (edgra_filter && NuStrNCmp(edgra_filter_string, name, NuStrLen(edgra_filter_string))) {
-            if (!selected)
-                continue;
-            eduiMenuAddItem(edgra_instance_menu,
-                            eduiItemCheckCreate(i, edblack, selected, 1, edgracbSetInstanceType, name));
-            ++added;
+        if (edgra_instance_type == i) {
+            selected = 1;
+            keep = 1;
         } else {
-            eduiMenuAddItem(edgra_instance_menu,
-                            eduiItemCheckCreate(i, edblack, selected, 1, edgracbSetInstanceType, name));
-            ++added;
+            selected = 0;
         }
-        if (selected != 0) {
-            selected_found = 1;
+        if (edgra_filter && NuStrNCmp(edgra_filter_string, name, NuStrLen(edgra_filter_string)) && !keep)
+            continue;
+        eduiMenuAddItem(edgra_instance_menu,
+                        eduiItemCheckCreate(i, edblack, selected, 1, edgracbSetInstanceType, name));
+        ++added;
+        if (selected == 1) {
             edgra_instance_menu->selected = edui_last_item;
+            selected_found = 1;
         }
     }
     if (added == 1)
         eduiMenuAddItem(edgra_instance_menu, eduiItemSelCreate(1, edgrey, 0, 0, NULL, "All Instances Filtered"));
     eduiMenuAddItemFirst(edgra_instance_menu, eduiItemCheckCreate((size_t)(-1), edblack, edgra_instance_type == -1, 1,
                                                                   edgracbSetInstanceType, "None"));
-    edgraAttachMenu(parent, edgra_instance_menu);
+    eduiMenuAttach(parent, edgra_instance_menu);
+    edgra_instance_menu->x = parent->x + 10;
+    edgra_instance_menu->y = parent->y + 40;
     if (selected_found)
         edgra_instance_menu->field_0c = edgra_instance_menu->selected;
 }

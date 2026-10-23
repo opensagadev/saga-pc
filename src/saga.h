@@ -25952,7 +25952,6 @@ extern "C" {
     extern char edbits_level_save_extension[256];
     extern char edbits_level_save_name[256];
     extern u32 edblack[4];
-    void __cdecl edgraAttachMenu(struct eduimenu_s *parent, struct eduimenu_s *child);
     extern i32 edgra_dpadmode;
     extern struct eduimenu_s *edgra_dpadmode_menu;
     extern i32 edgra_filter;

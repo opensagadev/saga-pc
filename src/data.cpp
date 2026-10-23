@@ -29415,6 +29415,42 @@ extern "C" {
 #pragma data_seg(".data$edgra_superscale")
     i32 edgra_superscale = 1;
 
+#pragma data_seg(".data$edgra_filter_string")
+    char edgra_filter_string[16] = "GRASS";
+
+#pragma data_seg(".data$edgra_copy_source")
+    i32 edgra_copy_source = -1;
+
+#pragma bss_seg(".bss$edgra_clump_size")
+    i32 edgra_clump_size = 0;
+
+#pragma bss_seg(".bss$edgra_cam_ax")
+    i32 edgra_cam_ax = 0;
+
+#pragma bss_seg(".bss$edgra_cam_ay")
+    i32 edgra_cam_ay = 0;
+
+#pragma bss_seg(".bss$edgra_pageid")
+    i32 edgra_pageid = 0;
+
+#pragma bss_seg(".bss$edgra_rotz")
+    i32 edgra_rotz = 0;
+
+#pragma bss_seg(".bss$edgra_roty")
+    i32 edgra_roty = 0;
+
+#pragma bss_seg(".bss$edgra_options_menu")
+    struct eduimenu_s *edgra_options_menu = 0;
+
+#pragma bss_seg(".bss$edgra_sscale_menu")
+    struct eduimenu_s *edgra_sscale_menu = 0;
+
+#pragma bss_seg(".bss$edgra_changeinstance_menu")
+    struct eduimenu_s *edgra_changeinstance_menu = 0;
+
+#pragma bss_seg(".bss$edgra_clumpsizes_menu")
+    struct eduimenu_s *edgra_clumpsizes_menu = 0;
+
 #pragma bss_seg(".bss$edui_last_item")
     struct eduiitem_s *edui_last_item = 0;
 

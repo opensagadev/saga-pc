@@ -6474,8 +6474,7 @@ address,symbol,size,ctype
 0x618310,_eduiFntPrintEx,197,
 0x618c30,_eduiInitMaterials,418,
 0x618e10,_eduiMenuAddItem,54,
-0x618e50,_edgraAttachMenu,51,
-0x618e50,_eduiMenuAddItemFirst,51,"void __cdecl (struct eduimenu_s *menu, struct eduiitem_s *item); alias of the mislabelled _edgraAttachMenu row"
+0x618e50,_eduiMenuAddItemFirst,51,"void __cdecl (struct eduimenu_s *menu, struct eduiitem_s *item)"
 0x619060,_eduiMenuSortItemsByTxt,179,
 0x619250,_eduiMenuCreate,166,
 0x6193e0,_eduiMenuHighlight,79,
@@ -7074,6 +7073,8 @@ address,symbol,size,ctype
 0x65ea20,_edgracbToggleClumpReactive,38,
 0x65ea50,_edgracbCancelInstanceMenu,25,
 0x65ea70,_edgracbInstanceMenu,492,
+0x65ec60,_edgracbCancelChangeInstanceMenu,25,
+0x65ec80,_edgracbCancelClumpSizesMenu,25,
 0x65eca0,_edgracbCancelClumpAreaMenu,25,
 0x65ecc0,_edgracbCancelClumpDistMenu,25,
 0x65ece0,_edgracbCancelClumpFadeMenu,32,
@@ -7085,12 +7086,22 @@ address,symbol,size,ctype
 0x65ed90,_edgracbDpadModeMenu,241,
 0x65ee90,_edgraClumpsReset,202,void __cdecl(void)
 0x65efc0,_edgraDetermineNearestInstance,380,
+0x65f140,_edgraFileSave,912,
 0x0065f4d0,_edGraEnableTerrainSwap,1,void __cdecl (void)
 0x0065f4e0,_edGraDisableTerrainSwap,1,void __cdecl (void)
 0x0065f4f0,_edGraInitTerrainSwapProtection,1,void __cdecl (void)
+0x65f530,_edgracbFileSave,302,
+0x65f660,_edgracbCopyClump,53,
+0x65f6a0,_edgracbDiscardCopy,53,
+0x65f6e0,_edgracbChangeSScale,18,
+0x65f700,_edgracbCancelSScaleMenu,25,
+0x65f720,_edgracbSScaleMenu,147,
 0x65f7c0,_edgracbSetGlobalFadeIn,69,
 0x65f810,_edgracbSetGlobalFadeOut,69,
 0x65f860,_edgracbCancelGlobalsMenu,25,
+0x65f880,_edgraToggleFilter,18,
+0x65f8a0,_edgraChangeFilterName,32,
+0x65f8c0,_edgracbCancelOptMenu,39,
 0x65ff40,_edgraRender,536,
 0x6603c0,_edppMultipleCopyCopy,285,
 0x6604f0,_edppDrawSpheres,397,
@@ -7387,7 +7398,11 @@ address,symbol,size,ctype
 0x689e70,_edgraStopPage,84,void __cdecl(i8)
 0x689ed0,_edgraClearPage,158,void __cdecl(i8)
 0x689f70,_edgraInitAllClumps,107,void __cdecl(void)
+0x689fe0,_edgracbChangeInstanceType,38,
 0x68a010,_edgracbSetClumpWind,38,
+0x68a040,_edgracbSetClumpMinHeight,38,
+0x68a070,_edgracbSetClumpMaxHeight,38,
+0x68a0a0,_edgracbSetClumpHeight,38,
 0x68a0d0,_edgracbChangeInstanceMenu,504,
 0x68a2d0,_edgracbClumpSizesMenu,436,
 0x68a490,_edgracbSetClumpArea,38,
@@ -7405,7 +7420,12 @@ address,symbol,size,ctype
 0x68af70,_edgracbSetClumpMode,46,
 0x68afa0,_edgracbClumpModeMenu,451,
 0x68b170,_edgraClumpPlace,170,
+0x68b220,_edgraInstancePlace,348,
 0x68b380,_edgraClumpReseed,35,
+0x68b3b0,_edgraClumpCreate,1074,
+0x68b7f0,_edgraInstanceCreate,60,
+0x68b830,_edgraClumpDestroy,93,
+0x68b890,_edgraInstanceDestroy,314,
 0x68b9d0,_edgracbApplyGlobalFade,118,
 0x68ba50,_edgracbGlobalsMenu,396,
 0x68bbe0,_edppPtlDestroy,56,void __cdecl (i32)
@@ -7462,6 +7482,7 @@ address,symbol,size,ctype
 0x690e40,_edgraDetermineNearestClump,282,void __cdecl(f32)
 0x690f60,_edgraLoadPage,1657,"i32 __cdecl(char *, void *, i32, VARIPTR *, VARIPTR *)"
 0x6915e0,_edgracbFileLoad,336,
+0x691730,_edgraCreateOptionsMenu,779,
 0x691a40,_edgraDoInput,1649,
 0x6920c0,_edgraProc,101,
 0x692150,_cbPtlAddEffect,358,
@@ -14699,6 +14720,7 @@ address,symbol,size,ctype
 0x760c14,??_C@_09CIJOFFDC@on_ground?$AA@,10,const char[10]
 0x00760c20,_AICharacterInitialiseName,11,const char [11]
 0x760c2c,??_C@_06FCGCPEED@?$CFs?4bak?$AA@,7,const char[7]
+0x760dc8,??_C@_07KHIHFBFN@Options?$AA@,8,char []
 0x760dd0,__real@3fefae1480000000,8,const f64
 0x7610bc,??_C@_0BD@HPIJGHPH@TerrainCamInActive?$AA@,19,const char[]
 0x7610d0,??_C@_0N@MPOMBABH@ManCam_MAX_Y?$AA@,13,const char[]
@@ -15917,6 +15939,7 @@ address,symbol,size,ctype
 0x76ca20,??_C@_0N@EGKIHIMM@Rand?5Start?5Y?$AA@,13,char []
 0x76ca30,??_C@_0N@FPLDEJIN@Rand?5Start?5X?$AA@,13,char []
 0x76ca40,??_C@_0N@OOHJGMGL@Random?5Start?$AA@,13,char []
+0x76ca50,??_C@_0M@PJKOLNL@Super?5Scale?$AA@,12,char []
 0x76ca5c,??_C@_0BA@ILPCIJEB@Random?5Off?5Time?$AA@,16,char []
 0x76ca6c,??_C@_08DCKLOEEB@Off?5Time?$AA@,9,char []
 0x76ca78,??_C@_0P@FKMENNDM@Random?5On?5Time?$AA@,15,char []
@@ -15962,6 +15985,9 @@ address,symbol,size,ctype
 0x76cf88,??_C@_0BB@BGMCMJMB@Emitter?5Settings?$AA@,17,char []
 0x76d030,??_C@_0N@EGBBIJGH@Type?5Name?4?4?4?$AA@,13,char []
 0x76d040,??_C@_09HONBIIOJ@Data?5Menu?$AA@,10,char []
+0x76d04c,??_C@_0BA@NECCLNOP@Filter?5String?3?5?$AA@,16,char []
+0x76d05c,??_C@_0BA@CEOCLEOK@Instance?5Filter?$AA@,16,char []
+0x76d06c,??_C@_0P@FFLFDAGI@Super?5Scale?4?4?4?$AA@,15,char []
 0x76d128,__real@40f869fe60000000,8,const f64
 0x76d130,__real@408c200000000000,8,const f64
 0x76d138,__real@40b3880000000000,8,const f64
@@ -16026,6 +16052,7 @@ address,symbol,size,ctype
 0x76d7d8,??_C@_0CA@PCNGCCFO@Base?5Instance?5Select?5?$CIFiltered?$CJ?$AA@,32,char []
 0x76d7f8,??_C@_0L@ILDEGMNK@Clump?5Tilt?$AA@,11,char []
 0x76d804,??_C@_0L@HCGGEMBI@Clump?5Size?$AA@,11,char []
+0x76d810,??_C@_03FDNJAJIB@gra?$AA@,4,char []
 0x76d814,??_C@_05JOBLOEL@grass?$AA@,6,char []
 0x76d900,??_C@_0BC@POINCPDD@Dpad?5Mode?3?5Facing?$AA@,18,char []
 0x76d914,??_C@_0BH@OGNBFLDA@Dpad?5Mode?3?5Reflections?$AA@,23,char []
@@ -16179,6 +16206,12 @@ address,symbol,size,ctype
 0x76e40c,??_C@_09LPPBHJDM@Plrweight?$AA@,10,char []
 0x76e418,??_C@_04HIAEEHII@Damp?$AA@,5,char []
 0x76e420,??_C@_0BC@GDCOAEPE@Bridge?5Properties?$AA@,18,char []
+0x76e434,??_C@_0BA@JJEFMNLI@Change?5Instance?$AA@,16,char []
+0x76e444,??_C@_0BL@MIOBJBJL@Change?5Instance?5?$CIFiltered?$CJ?$AA@,27,char []
+0x76e460,??_C@_0M@FOLPPFKD@Bend?5Height?$AA@,12,char []
+0x76e46c,??_C@_0P@GALCMGBE@Max?5Model?5Size?$AA@,15,char []
+0x76e47c,??_C@_0P@EHAJKBCF@Min?5Model?5Size?$AA@,15,char []
+0x76e48c,??_C@_0M@BHAMNECP@Clump?5Sizes?$AA@,12,char []
 0x76e498,??_C@_04FEKPLKKA@Grid?$AA@,5,char []
 0x76e4a0,??_C@_06ENIHNBMK@Square?$AA@,7,char []
 0x76e4a8,??_C@_06KFOFCNJI@Legacy?$AA@,7,char []
@@ -16224,7 +16257,17 @@ address,symbol,size,ctype
 0x76e7e0,__real@bbe56042,4,const f32
 0x76e7e8,__real@3f689374c0000000,8,const f64
 0x76e7f0,__real@36a7c5ac,4,const f32
+0x76e82c,??_C@_0N@BGLKEIGP@Dpad?5Mode?4?4?4?$AA@,13,char []
 0x76e880,__real@3fe1999a,4,const f32
+0x76e884,??_C@_0BC@LMFKIOCO@Global?5Options?4?4?4?$AA@,18,char []
+0x76e898,??_C@_0L@PILCHNNN@Load?5Grass?$AA@,11,char []
+0x76e8a4,??_C@_0L@NPHOFCEF@Save?5Grass?$AA@,11,char []
+0x76e8b0,??_C@_0N@GOHGJOLB@Discard?5Copy?$AA@,13,char []
+0x76e8c0,??_C@_0L@JBOAINFH@Copy?5Clump?$AA@,11,char []
+0x76e8cc,??_C@_0BE@ODMOCABP@Clump?5Properties?4?4?4?$AA@,20,char []
+0x76e8e0,??_C@_0O@KACMPJNN@Clump?5Mode?4?4?4?$AA@,14,char []
+0x76e8f0,??_C@_0BD@MKJGAJOG@Change?5Instance?4?4?4?$AA@,19,char []
+0x76e904,??_C@_0BI@JADIBMIF@Base?5Instance?5Select?4?4?4?$AA@,24,char []
 0x76e91c,??_C@_0L@BIBKMIE@Panel?5Mode?$AA@,11,char []
 0x76e928,??_C@_0M@EAOPMBB@Super?5Early?$AA@,12,char []
 0x76e934,??_C@_09ODIDAKED@After?5Fog?$AA@,10,char []
@@ -20965,8 +21008,10 @@ address,symbol,size,ctype
 0x810a34,_edbri_post_interval,4,i32
 0x810a70,_edgra_clumpthin,,i32
 0x810a74,_edgra_elementthin,,i32
+0x810a78,_edgra_filter_string,16,char[16]
 0x810a88,_edgra_mode,4,i32
 0x810a8c,_edgra_last_clump_in_buffer,,i32
+0x810a90,_edgra_copy_source,4,i32
 0x810a94,_edgra_superscale,4,i32
 0x810a98,_edgra_global_fadein,,f32
 0x810a9c,_edgra_global_fadeout,,f32
@@ -24506,6 +24551,7 @@ address,symbol,size,ctype
 0x2921894,_tertempvec4,,NUVEC4
 0x29218a4,_edgra_nearest,,i32
 0x29218a8,_SfxRefCountsPc,,i32[1601]
+0x29231ac,_edgra_clump_size,4,i32
 0x29231b0,_edpp_snap_enabled,4,i32
 0x29231b4,_edanim_nearest,,i32
 0x29231b8,_freechunkcontrols,4,DEBRIS_CHUNK_CONTROL_PC **
@@ -24541,6 +24587,7 @@ address,symbol,size,ctype
 0x292fb90,_debris_object_switches,,u8[128]
 0x0292fc10,_ShadPoly,,
 0x0292fc14,_TerrainShadowFloorIndexPc,,
+0x292fc18,_edgra_cam_ax,4,i32
 0x292fc1c,_debris_chunk_control_stack,,DEBRIS_CHUNK_CONTROL_PC *[2]
 0x0292fc24,_TerrainSkinUseEpochPc,,
 0x0292fc28,_TerrainSkinPoolSlotBytesPc,,
@@ -24614,6 +24661,7 @@ address,symbol,size,ctype
 0x02947db4,_debris_chunk_controls,,DEBRIS_CHUNK_CONTROL_PC *
 0x2947db8,_edBridges,,PC_EDBRIDGE[64]
 0x02948eb8,_freedebchkptr,4,i32
+0x2948ebc,_edgra_cam_ay,4,i32
 0x2948ec0,_TerrImpactNormal,,NUVEC
 0x2948ecc,_ptlgsortmenu,4,struct eduimenu_s *
 0x2948ed0,_edpp_page_on,32,i32[8]
@@ -24721,14 +24769,18 @@ address,symbol,size,ctype
 0x29629a0,_edbri_roty,4,i32
 0x29629a4,_edbri_mode,4,i32
 0x29629a8,_edgra_active_menu,4,struct eduimenu_s *
+0x29629ac,_edgra_options_menu,4,struct eduimenu_s *
 0x29629b0,_edgra_instance_menu,4,struct eduimenu_s *
+0x29629b4,_edgra_changeinstance_menu,4,struct eduimenu_s *
 0x29629b8,_edgra_clumpproperties_menu,4,struct eduimenu_s *
+0x29629bc,_edgra_clumpsizes_menu,4,struct eduimenu_s *
 0x29629c0,_edgra_clumparea_menu,4,struct eduimenu_s *
 0x29629c4,_edgra_clumpdist_menu,4,struct eduimenu_s *
 0x29629c8,_edgra_clumpfade_menu,4,struct eduimenu_s *
 0x29629cc,_edgra_clumpterrain_menu,4,struct eduimenu_s *
 0x29629d0,_edgra_clumpmode_menu,4,struct eduimenu_s *
 0x29629d4,_edgra_dpadmode_menu,4,struct eduimenu_s *
+0x29629d8,_edgra_sscale_menu,4,struct eduimenu_s *
 0x29629dc,_edgra_globals_menu,4,struct eduimenu_s *
 0x29629e0,_fadeinitem,4,struct edui_colour_slider_s *
 0x29629e4,_fadeoutitem,4,struct edui_colour_slider_s *
@@ -24737,6 +24789,9 @@ address,symbol,size,ctype
 0x29629f4,_edgra_filter,4,i32
 0x29629f8,_edgra_units_used,,i32
 0x2962a00,_edgra_clumps_used,,i32
+0x2962a08,_edgra_pageid,4,i32
+0x2962a0c,_edgra_rotz,4,i32
+0x2962a10,_edgra_roty,4,i32
 0x2962a14,_edgra_dpadmode,4,i32
 0x2962a18,_edgra_editormode,4,i32
 0x2962a1c,_edgra_free_vecbuffer,,void*
