@@ -2108,148 +2108,217 @@ extern "C" void NewScanInit(void) {
     TerrPlatDis = -1;
 }
 
+#define TERRAIN_NSS_PLATFORM(group_ptr)                                                                                \
+    (static_cast<TERRAIN_SET_PC *>(CurrentTerrain)->platforms[(group_ptr)->scene_index])
+#define TERRAIN_NSS_MATRIX(group_ptr) (static_cast<NUMTX *>(TERRAIN_NSS_PLATFORM(group_ptr).scene_object))
+#define TERRAIN_NSS_GROUP_OVERLAP(lo_x, lo_y, lo_z, hi_x, hi_y, hi_z, group_ptr)                                       \
+    ((hi_x) >= (group_ptr)->bounds_min.x && (hi_y) >= (group_ptr)->bounds_min.y &&                                     \
+     (hi_z) >= (group_ptr)->bounds_min.z && (group_ptr)->bounds_max.x >= (lo_x) &&                                     \
+     (group_ptr)->bounds_max.y > (lo_y) && (group_ptr)->bounds_max.z > (lo_z))
+#define TERRAIN_NSS_SHAPE_OVERLAP(shape_ptr)                                                                           \
+    (local_max_x >= (shape_ptr)->min_x && (shape_ptr)->max_x > local_min_x && local_max_z >= (shape_ptr)->min_z &&     \
+     (shape_ptr)->max_z > local_min_z && local_max_y >= (shape_ptr)->min_y && (shape_ptr)->max_y > local_min_y)
+#define TERRAIN_NSS_MATERIAL_OK(shape_ptr)                                                                             \
+    ((shape_ptr)->material[1] == 0 || ((shape_ptr)->material[1] & terrain_mask) != 0)
+#define TERRAIN_NSS_VERTICES_OVERLAP(shape_ptr)                                                                        \
+    (((shape_ptr)->vertices[0].x > local_min_x || (shape_ptr)->vertices[1].x > local_min_x ||                          \
+      (shape_ptr)->vertices[2].x > local_min_x || (shape_ptr)->vertices[3].x > local_min_x) &&                         \
+     ((shape_ptr)->vertices[0].x < local_max_x || (shape_ptr)->vertices[1].x < local_max_x ||                          \
+      (shape_ptr)->vertices[2].x < local_max_x || (shape_ptr)->vertices[3].x < local_max_x) &&                         \
+     ((shape_ptr)->vertices[0].z > local_min_z || (shape_ptr)->vertices[1].z > local_min_z ||                          \
+      (shape_ptr)->vertices[2].z > local_min_z || (shape_ptr)->vertices[3].z > local_min_z) &&                         \
+     ((shape_ptr)->vertices[0].z < local_max_z || (shape_ptr)->vertices[1].z < local_max_z ||                          \
+      (shape_ptr)->vertices[2].z < local_max_z || (shape_ptr)->vertices[3].z < local_max_z))
+#define TERRAIN_NSS_FINISH_GROUP(group_index_arg)                                                                      \
+    do {                                                                                                               \
+        if (shape_count != 0) {                                                                                        \
+            group_header->header.shape_count = (i16)shape_count;                                                       \
+            group_header->header.terrain_group = (i16)(group_index_arg);                                               \
+            group_header = cursor;                                                                                     \
+            cursor++;                                                                                                  \
+            shape_count = 0;                                                                                           \
+        }                                                                                                              \
+    } while (0)
+#define TERRAIN_NSS_FILTER_SHAPES()                                                                                    \
+    do {                                                                                                               \
+        for (i32 remaining = count; remaining > 0; --remaining, ++shapes) {                                            \
+            TERRAIN_SHAPE *shape = shapes->shape;                                                                      \
+            if (TERRAIN_NSS_SHAPE_OVERLAP(shape) && cursor < limit && TERRAIN_NSS_MATERIAL_OK(shape)) {                \
+                (cursor++)->shape = shape;                                                                             \
+                ++shape_count;                                                                                         \
+            }                                                                                                          \
+        }                                                                                                              \
+    } while (0)
 i16 *NewScanHandelSubsetPc(i16 *subset, NUVEC *position, NUVEC *movement, f32 radius, i32 terrain_mask) {
-    if (subset == NULL)
-        return NULL;
-    TerrainScanWriter writer;
-    writer.group_header = TempStackPtrPc;
-    writer.cursor = reinterpret_cast<TERRAIN_SHAPE **>(TempStackPtrPc + 4);
+    TERRAIN_SCAN_WORD_PC *group_header;
+    TERRAIN_SCAN_WORD_PC *cursor;
+    TERRAIN_SCAN_WORD_PC *limit;
+    TERRAIN_SCAN_WORD_PC *result;
+    i32 shape_count;
+    f32 max_x, min_x, max_z, min_z, max_y, min_y;
+    f32 scan_radius;
+    TERRAIN_HANDLE_WALL_PAIR_PC *walls;
+    TERRAIN_HANDLE_WALL_PAIR_PC *source;
 
-    if (reinterpret_cast<usize>(writer.cursor) >
-        reinterpret_cast<usize>((reinterpret_cast<u8 *>(TerrainScaleWorkBasePc)) + 0x63c18))
+    if (subset == NULL) {
         return NULL;
-    writer.limit = reinterpret_cast<u8 *>(writer.cursor) + 0x7f0;
-    if (reinterpret_cast<usize>(writer.limit) >
-        reinterpret_cast<usize>((reinterpret_cast<u8 *>(TerrainScaleWorkBasePc)) + 0x63da8))
-        writer.limit = (reinterpret_cast<u8 *>(TerrainScaleWorkBasePc)) + 0x63da8;
-    writer.group_shape_count = 0;
-    writer.scaled_shape_count = 0;
-    i16 *result = reinterpret_cast<i16 *>(writer.group_header);
-    TerrainScanBounds bounds;
+    }
+    group_header = reinterpret_cast<TERRAIN_SCAN_WORD_PC *>(TempStackPtrPc);
+    result = group_header;
+    cursor = group_header + 1;
+    limit = cursor + 508;
+    if (reinterpret_cast<u8 *>(cursor) > reinterpret_cast<u8 *>(TerrainScaleWorkBasePc) + 0x63c18) {
+        return NULL;
+    }
+    if (reinterpret_cast<u8 *>(limit) > reinterpret_cast<u8 *>(TerrainScaleWorkBasePc) + 0x63da8) {
+        limit = reinterpret_cast<TERRAIN_SCAN_WORD_PC *>(reinterpret_cast<u8 *>(TerrainScaleWorkBasePc) + 0x63da8);
+    }
     if (movement->x > 0.0f) {
-        bounds.min_x = static_cast<f64>(position->x) - TerrainScanMargin02Pc - radius;
-        bounds.max_x = static_cast<f64>(position->x) + movement->x + TerrainScanMargin02Pc + radius;
+        min_x = (f32)(position->x - TerrainScanMargin02Pc - radius);
+        max_x = (f32)(position->x + movement->x + TerrainScanMargin02Pc + radius);
     } else {
-        bounds.min_x = static_cast<f64>(position->x) + movement->x - TerrainScanMargin02Pc - radius;
-        bounds.max_x = static_cast<f64>(position->x) + TerrainScanMargin02Pc + radius;
+        min_x = (f32)(position->x + movement->x - TerrainScanMargin02Pc - radius);
+        max_x = (f32)(position->x + TerrainScanMargin02Pc + radius);
     }
     if (movement->y > 0.0f) {
-        bounds.min_y = static_cast<f64>(position->y) - TerrainScanMargin02Pc - radius;
-        bounds.max_y = static_cast<f64>(position->y) + movement->y + TerrainScanMargin02Pc + radius;
+        min_y = (f32)(position->y - TerrainScanMargin02Pc - radius);
+        max_y = (f32)(position->y + movement->y + TerrainScanMargin02Pc + radius);
     } else {
-        bounds.min_y = static_cast<f64>(position->y) + movement->y - TerrainScanMargin02Pc - radius;
-        bounds.max_y = static_cast<f64>(position->y) + TerrainScanMargin02Pc + radius;
+        min_y = (f32)(position->y + movement->y - TerrainScanMargin02Pc - radius);
+        max_y = (f32)(position->y + TerrainScanMargin02Pc + radius);
     }
-    if (0.0f < movement->z) {
-        bounds.min_z = static_cast<f64>(position->z) - TerrainScanMargin02Pc - radius;
-        bounds.max_z = radius + (static_cast<f64>(position->z) + movement->z + TerrainScanMargin02Pc);
+    if (movement->z > 0.0f) {
+        min_z = (f32)(position->z - TerrainScanMargin02Pc - radius);
+        max_z = (f32)(position->z + movement->z + TerrainScanMargin02Pc + radius);
     } else {
-        bounds.min_z = static_cast<f64>(position->z) + movement->z - TerrainScanMargin02Pc - radius;
-        bounds.max_z = static_cast<f64>(position->z) + TerrainScanMargin02Pc + radius;
+        min_z = (f32)(position->z + movement->z - TerrainScanMargin02Pc - radius);
+        max_z = (f32)(position->z + TerrainScanMargin02Pc + radius);
     }
-    const f64 dx = static_cast<f64>(bounds.min_x) - bounds.max_x;
-    const f64 dy = static_cast<f64>(bounds.min_y) - bounds.max_y;
-    const f64 dz = static_cast<f64>(bounds.min_z) - bounds.max_z;
-    const f32 diagonal_squared = dx * dx + dy * dy + dz * dz;
-    const f32 scan_radius_squared = diagonal_squared + NuTimeBarTop;
+    shape_count = 0;
+    {
+        const f32 extent_sq =
+            (min_x - max_x) * (min_x - max_x) + (min_y - max_y) * (min_y - max_y) + (min_z - max_z) * (min_z - max_z);
+        // Retail uses the squared extent plus the margin directly as the sphere radius.
+        scan_radius = (f32)(extent_sq + NuTimeBarTop);
+    }
     while (subset[0] > 0) {
         const i32 count = subset[0];
         const i32 group_index = subset[1];
-        TERRAIN_SHAPE **shapes = reinterpret_cast<TERRAIN_SHAPE **>(subset + 2);
-        subset = reinterpret_cast<i16 *>(count + shapes);
-        TERRAIN_GROUP_PC &group = static_cast<TERRAIN_SET_PC *>(CurrentTerrain)->groups[group_index];
-        TERRAIN_PLATFORM_PC *platform =
-            group.chunk_type == 1
-                ? &static_cast<TERRAIN_SET_PC *>(CurrentTerrain)->platforms[static_cast<i16>(group.scene_index)]
-                : NULL;
-        NUMTX *matrix = platform != NULL ? static_cast<NUMTX *>(platform->scene_object) : NULL;
-        TerrainScanBounds local;
-        if (NULL != matrix) {
-            if (matrix->m30 > platform->previous_matrix.m30) {
-                local.min_x = bounds.min_x - group.origin.x;
-                local.max_x = (static_cast<f64>(matrix->m30) - platform->previous_matrix.m30) * 1.5 + bounds.max_x -
-                              group.origin.x;
+        TERRAIN_SCAN_WORD_PC *shapes = reinterpret_cast<TERRAIN_SCAN_WORD_PC *>(subset) + 1;
+        TERRAIN_GROUP_PC *group = &static_cast<TERRAIN_SET_PC *>(CurrentTerrain)->groups[group_index];
+        f32 local_min_x, local_max_x, local_min_z, local_max_z, local_min_y, local_max_y;
+        if (group->chunk_type == 1 && TERRAIN_NSS_PLATFORM(group).scene_object != NULL) {
+            TERRAIN_PLATFORM_PC *platform = &TERRAIN_NSS_PLATFORM(group);
+            if (TERRAIN_NSS_MATRIX(group)->m30 > TERRAIN_NSS_PLATFORM(group).previous_matrix.m30) {
+                local_min_x = min_x - group->origin.x;
+                local_max_x =
+                    (f32)((TERRAIN_NSS_MATRIX(group)->m30 - TERRAIN_NSS_PLATFORM(group).previous_matrix.m30) * 1.5 +
+                          max_x - group->origin.x);
             } else {
-                local.max_x = bounds.max_x - group.origin.x;
-                local.min_x = (static_cast<f64>(matrix->m30) - platform->previous_matrix.m30) * 1.5 + bounds.min_x -
-                              group.origin.x;
+                local_max_x = max_x - group->origin.x;
+                local_min_x =
+                    (f32)((TERRAIN_NSS_MATRIX(group)->m30 - TERRAIN_NSS_PLATFORM(group).previous_matrix.m30) * 1.5 +
+                          min_x - group->origin.x);
             }
-            if (matrix->m31 > platform->previous_matrix.m31) {
-                local.min_y = bounds.min_y - group.origin.y;
-                local.max_y = (static_cast<f64>(matrix->m31) - platform->previous_matrix.m31) * 1.5 + bounds.max_y -
-                              group.origin.y;
+            if (TERRAIN_NSS_MATRIX(group)->m31 > TERRAIN_NSS_PLATFORM(group).previous_matrix.m31) {
+                local_min_y = min_y - group->origin.y;
+                local_max_y =
+                    (f32)((TERRAIN_NSS_MATRIX(group)->m31 - TERRAIN_NSS_PLATFORM(group).previous_matrix.m31) * 1.5 +
+                          max_y - group->origin.y);
             } else {
-                local.max_y = bounds.max_y - group.origin.y;
-                local.min_y = (static_cast<f64>(matrix->m31) - platform->previous_matrix.m31) * 1.5 + bounds.min_y -
-                              group.origin.y;
+                local_max_y = max_y - group->origin.y;
+                local_min_y =
+                    (f32)((TERRAIN_NSS_MATRIX(group)->m31 - TERRAIN_NSS_PLATFORM(group).previous_matrix.m31) * 1.5 +
+                          min_y - group->origin.y);
             }
-            if (matrix->m32 > platform->previous_matrix.m32) {
-                local.min_z = bounds.min_z - group.origin.z;
-                local.max_z = (static_cast<f64>(matrix->m32) - platform->previous_matrix.m32) * 1.5 + bounds.max_z -
-                              group.origin.z;
+            if (TERRAIN_NSS_MATRIX(group)->m32 > TERRAIN_NSS_PLATFORM(group).previous_matrix.m32) {
+                local_min_z = min_z - group->origin.z;
+                local_max_z =
+                    (f32)((TERRAIN_NSS_MATRIX(group)->m32 - TERRAIN_NSS_PLATFORM(group).previous_matrix.m32) * 1.5 +
+                          max_z - group->origin.z);
             } else {
-                local.max_z = bounds.max_z - group.origin.z;
-                local.min_z = bounds.min_z + ((static_cast<f64>(matrix->m32) - platform->previous_matrix.m32) * 1.5) -
-                              group.origin.z;
+                local_max_z = max_z - group->origin.z;
+                local_min_z =
+                    (f32)((TERRAIN_NSS_MATRIX(group)->m32 - TERRAIN_NSS_PLATFORM(group).previous_matrix.m32) * 1.5 +
+                          min_z - group->origin.z);
             }
+            if ((platform->flags & TERRAIN_PLATFORM_FLAG_ROTATING) == 0) {
+                if (TERRAIN_NSS_GROUP_OVERLAP(local_min_x, local_min_y, local_min_z, local_max_x, local_max_y,
+                                              local_max_z, group)) {
+                    TERRAIN_NSS_FILTER_SHAPES();
+                    TERRAIN_NSS_FINISH_GROUP(group_index);
+                } else {
+                    shapes += count;
+                }
+            } else {
+                const f64 dy = ((min_y + max_y) * 0.5 - group->origin.y) *
+                               static_cast<TerrainQuery_s *>(TerI)->inverse_object_scale;
+                const f64 dx = (min_x + max_x) * 0.5 - group->origin.x;
+                const f64 dz = (min_z + max_z) * 0.5 - group->origin.z;
+                const f32 distance_sq = dx * dx + dy * dy + dz * dz;
+                if (distance_sq < (group->radius + scan_radius) * (group->radius + scan_radius)) {
+                    for (i32 remaining = count; remaining > 0; --remaining, ++shapes) {
+                        TERRAIN_SHAPE *shape = shapes->shape;
+                        if (cursor < limit && TERRAIN_NSS_MATERIAL_OK(shape) && TERRAIN_NSS_VERTICES_OVERLAP(shape)) {
+                            (cursor++)->shape = shape;
+                            ++shape_count;
+                        }
+                    }
+                    TERRAIN_NSS_FINISH_GROUP(group_index);
+                } else {
+                    shapes += count;
+                }
+            }
+        } else if (TERRAIN_NSS_GROUP_OVERLAP(min_x, min_y, min_z, max_x, max_y, max_z, group)) {
+            local_max_x = max_x - group->origin.x;
+            local_min_x = min_x - group->origin.x;
+            local_max_y = max_y - group->origin.y;
+            local_min_y = min_y - group->origin.y;
+            local_max_z = max_z - group->origin.z;
+            local_min_z = min_z - group->origin.z;
+            TERRAIN_NSS_FILTER_SHAPES();
+            TERRAIN_NSS_FINISH_GROUP(group_index);
         } else {
-            if (!TERRAIN_BOUNDS_OVERLAP(bounds, group.bounds_min, group.bounds_max)) {
-                subset += 2;
-                continue;
-            }
-            local.min_x = bounds.min_x - group.origin.x;
-            local.min_y = bounds.min_y - group.origin.y;
-            local.max_x = bounds.max_x - group.origin.x;
-            local.max_y = bounds.max_y - group.origin.y;
-            local.min_z = bounds.min_z - group.origin.z;
-            local.max_z = bounds.max_z - group.origin.z;
+            // Retail skips one extra word after a rejected static group.
+            shapes += count + 1;
         }
-        const bool rotating = matrix != NULL && (TERRAIN_PLATFORM_FLAG_ROTATING & platform->flags) != 0;
-        if (rotating) {
-
-            const f64 z = (static_cast<f64>(bounds.min_z) + bounds.max_z) * 0.5 - group.origin.z;
-            const f32 distance_squared =
-                ((const f64)((static_cast<f64>(bounds.min_x) + bounds.max_x) * 0.5 - group.origin.x)) *
-                    ((const f64)((static_cast<f64>(bounds.min_x) + bounds.max_x) * 0.5 - group.origin.x)) +
-                ((const f64)(((static_cast<f64>(bounds.min_y) + bounds.max_y) * 0.5 - group.origin.y) *
-                             static_cast<TerrainQuery_s *>(TerI)->inverse_object_scale)) *
-                    ((const f64)(((static_cast<f64>(bounds.min_y) + bounds.max_y) * 0.5 - group.origin.y) *
-                                 static_cast<TerrainQuery_s *>(TerI)->inverse_object_scale)) +
-                z * z;
-            const f64 reach = static_cast<f64>(scan_radius_squared) + group.radius;
-            if (!(reach * reach > distance_squared))
-                continue;
-        } else if (matrix != NULL && !TERRAIN_BOUNDS_OVERLAP(local, group.bounds_min, group.bounds_max)) {
-            continue;
-        }
-        TERRAIN_HANDLE_FILTER_SHAPES(&writer, shapes, count, local, terrain_mask, rotating);
-        TERRAIN_FINISH_SCAN_GROUP(&writer, group_index);
+        subset = reinterpret_cast<i16 *>(shapes);
     }
-    TERRAIN_SCAN_WORD_PC *terminator = reinterpret_cast<TERRAIN_SCAN_WORD_PC *>(writer.group_header);
-    terminator->header.shape_count = 0;
-    terminator->header.terrain_group = 0;
-    bounds.min_x = bounds.min_x - TerrainScanMargin02Pc;
-    bounds.max_x += TerrainScanMargin02Pc;
-    bounds.min_z -= TerrainScanMargin02Pc;
-    bounds.max_z += TerrainScanMargin02Pc;
-    TERRAIN_HANDLE_WALL_PAIR_PC *walls = reinterpret_cast<TERRAIN_HANDLE_WALL_PAIR_PC *>(terminator + 1);
-    TERRAIN_HANDLE_WALL_PAIR_PC *source = reinterpret_cast<TERRAIN_HANDLE_WALL_PAIR_PC *>(subset + 2);
+    group_header->header.shape_count = 0;
+    group_header->header.terrain_group = 0;
+    min_x = (f32)(min_x - TerrainScanMargin02Pc);
+    min_z = (f32)(min_z - TerrainScanMargin02Pc);
+    max_x = (f32)(max_x + TerrainScanMargin02Pc);
+    max_z = (f32)(max_z + TerrainScanMargin02Pc);
+    walls = reinterpret_cast<TERRAIN_HANDLE_WALL_PAIR_PC *>(group_header + 1);
+    source = reinterpret_cast<TERRAIN_HANDLE_WALL_PAIR_PC *>(subset + 2);
     while (static_cast<i32>(reinterpret_cast<usize>(source->first)) > 0) {
         TERRAIN_WALL_POINT *wall = source->first;
-        if (TERRAIN_HANDLE_WALL_OVERLAP(bounds, wall) &&
-            (0 == wall->material[1] || (wall->material[1] & terrain_mask) != 0)) {
-            walls->first = source->first;
+        if (((wall[0].position.x >= min_x && wall[1].position.x <= max_x) ||
+             (wall[1].position.x >= min_x && wall[0].position.x <= max_x)) &&
+            ((wall[0].position.z >= min_z && wall[1].position.z <= max_z) ||
+             (wall[1].position.z >= min_z && wall[0].position.z <= max_z)) &&
+            (wall->material[1] == 0 || (wall->material[1] & terrain_mask) != 0)) {
+            walls->first = wall;
             walls->second = source->first;
             ++walls;
         }
         ++source;
     }
-    TERRAIN_SCAN_WORD_PC *end = reinterpret_cast<TERRAIN_SCAN_WORD_PC *>(walls);
-    end->header.shape_count = 0;
-    end->header.terrain_group = 0;
-    TempStackPtrPc = reinterpret_cast<u8 *>(end + 1);
-    return result;
+    group_header = reinterpret_cast<TERRAIN_SCAN_WORD_PC *>(walls);
+    group_header->header.shape_count = 0;
+    group_header->header.terrain_group = 0;
+    TempStackPtrPc = reinterpret_cast<u8 *>(group_header + 1);
+    return reinterpret_cast<i16 *>(result);
 }
+#undef TERRAIN_NSS_PLATFORM
+#undef TERRAIN_NSS_MATRIX
+#undef TERRAIN_NSS_GROUP_OVERLAP
+#undef TERRAIN_NSS_SHAPE_OVERLAP
+#undef TERRAIN_NSS_MATERIAL_OK
+#undef TERRAIN_NSS_VERTICES_OVERLAP
+#undef TERRAIN_NSS_FINISH_GROUP
+#undef TERRAIN_NSS_FILTER_SHAPES
 
 STATIC_ASSERT(offsetof(TERRAIN_SCENE_STATE_VIEW_PC, flags) == 0);
 STATIC_ASSERT(offsetof(TERRAIN_SCENE_STATE_VIEW_PC, low_flags) == 0);
