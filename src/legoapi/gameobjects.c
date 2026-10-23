@@ -5159,21 +5159,18 @@ extern i16 id_JANGOFETT;
 void __cdecl oneAtOnce_MaintainArray(void);
 
 static i32 GameAIWallShufflePc(GAMEOBJECT *object) {
-    AIPATHNODE_PC *nodes;
-    AIPATHCNX_PC *connection;
-    i32 direction;
-    u8 node, other_node;
+    AIPATHNODE_PC *node;
+    AIPATHNODE_PC *other_node;
     u16 angle;
-    u32 mask;
-    NUVEC wall_direction, lateral, first_ray, second_ray, movement;
+    NUVEC wall_direction, lateral, ray, opposite, movement;
     f32 first_distance, second_distance, distance, scale;
 
     object->flags_ef4 |= 0x10000;
-    nodes = object->ai_packet.path_info.path->nodes;
-    connection = object->ai_packet.path_info.connection;
-    direction = object->ai_packet.path_info.direction;
-    node = connection->node_indices[direction];
-    other_node = connection->node_indices[direction == 0];
+    other_node =
+        &object->ai_packet.path_info.path
+             ->nodes[object->ai_packet.path_info.connection->node_indices[object->ai_packet.path_info.direction == 0]];
+    node = &object->ai_packet.path_info.path
+                ->nodes[object->ai_packet.path_info.connection->node_indices[object->ai_packet.path_info.direction]];
     if (object->character_context == 0x45) {
         angle = object->takeover_start_angle;
         wall_direction.x = 0.0f;
@@ -5181,32 +5178,30 @@ static i32 GameAIWallShufflePc(GAMEOBJECT *object) {
         wall_direction.z = 1.0f;
         NuVecRotateY(&wall_direction, &wall_direction, angle);
     } else {
-        NuVecSub(&lateral, &nodes[other_node].position, &nodes[node].position);
+        NuVecSub(&lateral, &other_node->position, &node->position);
         lateral.y = 0.0f;
         NuVecNorm(&lateral, &lateral);
         NuVecRotateY(&lateral, &lateral, 0x4000);
-        first_ray = lateral;
-        second_ray.x = -lateral.x;
-        second_ray.y = 0.0f;
-        second_ray.z = -lateral.z;
-        mask = GetSurfaceInfoDefaultMaskPc.word | GetSurfaceInfoRuntimeMaskPc.word | 0x5f;
-        if (NewRayCastScaleYMask(&nodes[node].position, &first_ray, 0.0f, 1.0f, 0, mask) != 0)
-            first_distance = NuVecMag(&first_ray);
+        opposite.x = -lateral.x;
+        opposite.y = 0.0f;
+        opposite.z = -lateral.z;
+        ray = lateral;
+        if (NewRayCastScaleYMask(&node->position, &ray, 0.0f, 1.0f, 0,
+                                 GetSurfaceInfoDefaultMaskPc.word | GetSurfaceInfoRuntimeMaskPc.word | 0x5f) != 0)
+            first_distance = NuVecMag(&ray);
         else
             first_distance = 1.0e9f;
-        mask = GetSurfaceInfoDefaultMaskPc.word | GetSurfaceInfoRuntimeMaskPc.word | 0x5f;
-        if (NewRayCastScaleYMask(&nodes[node].position, &second_ray, 0.0f, 1.0f, 0, mask) != 0)
-            second_distance = NuVecMag(&second_ray);
+        ray = opposite;
+        if (NewRayCastScaleYMask(&node->position, &ray, 0.0f, 1.0f, 0,
+                                 GetSurfaceInfoDefaultMaskPc.word | GetSurfaceInfoRuntimeMaskPc.word | 0x5f) != 0)
+            second_distance = NuVecMag(&ray);
         else
             second_distance = 1.0e9f;
         if (first_distance < 1.0e9 || second_distance < 1.0e9) {
-            if (second_distance > first_distance) {
+            if (second_distance > first_distance)
                 wall_direction = lateral;
-            } else {
-                wall_direction.x = -lateral.x;
-                wall_direction.y = 0.0f;
-                wall_direction.z = -lateral.z;
-            }
+            else
+                wall_direction = opposite;
         }
         angle = NuAtan2D(wall_direction.x, wall_direction.z);
     }
