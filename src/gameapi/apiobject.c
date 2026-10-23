@@ -1772,7 +1772,7 @@ static f32 APIObjectSafeDividePc(f32 a, f32 b) {
     return a / b;
 }
 
-static i32 QuickNewRayCast(NUVEC *position, NUVEC *movement, f32 radius, i32 scan_flags, f32 max_distance, f32 step) {
+i32 __cdecl QuickNewRayCast(NUVEC *position, NUVEC *movement, f32 radius, i32 scan_flags, f32 max_distance, f32 step) {
     f32 distance;
     i32 hit;
     NUVEC direction, travelled, current, segment;

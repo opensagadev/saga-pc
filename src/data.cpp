@@ -18409,8 +18409,8 @@ extern "C" {
     char PodCreateDamagedKeywordPc[8] = "damaged";
 #pragma data_seg()
 
-#pragma bss_seg(".bss$PodRacePc")
-    void *PodRacePc = 0;
+/* PodRacePc is defined as a private static in legoapi/episodeI.c. */
+/* (was: void *PodRacePc) */
 #pragma bss_seg()
 }
 

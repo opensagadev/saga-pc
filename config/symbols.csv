@@ -1734,7 +1734,7 @@ address,symbol,size,ctype
 0x004ab1f0,_CatchUpCode,350,"void __cdecl(GAMEOBJECT *,f32,f32,i32)"
 0x4ab350,_PodBoostCodePc,344,
 0x4ab4b0,_PodSpeedCodePc,226,
-0x4ab5a0,_PodLoseSpeed,114,
+0x4ab5a0,_PodLoseSpeed,114,"void __cdecl(GAMEOBJECT *, i32, i32)"
 0x4ab620,_PodCollisionCode,363,void __cdecl(GAMEOBJECT*)
 0x4ab790,_FindPodHoverHeight,258,f32 __cdecl(GAMEOBJECT*)
 0x4ab8a0,_SetPodMergeAnims,104,"void __cdecl(ANIMPACKET_PC *,i32)"
@@ -2146,15 +2146,19 @@ address,symbol,size,ctype
 0x4d8630,_PodRaceSnipersUpdate,820,
 0x4d8990,_InitPodRaceMines,245,private same-TU void(void)
 0x4d8a90,_PodRaceResetMinesPc,90,private same-TU void(void)
-0x4d8af0,_CreatePodRaceMine,549,
+0x4d8af0,_CreatePodRaceMinePc,549,private same-TU void *(NUVEC *)
+0x4d8d70,_PodRaceExplodeMinePc,208,"private same-TU void(MINE_ENTRY_PC *, GAMEOBJECT *)"
+0x4d8e40,_PodRaceExplodeClientMinePc,118,"private same-TU void(NUVEC *, GAMEOBJECT *)"
 0x4d8ec0,_UpdatePodRaceMines,945,void __cdecl(void)
-0x4d9280,_PodRaceADraw,261,
-0x4d9390,_PodRaceAUpdate,282,
+0x4d9280,_PodRaceADraw,261,void __cdecl(WORLDINFO *)
+0x4d9390,_PodRaceAUpdate,282,void __cdecl(void)
 0x4d94b0,_RacePodAllocatePrivatePc,52,
 0x4d94f0,_RacePodAlignPrivatePc,539,
+0x4d9710,_PodRaceMineKillPc,72,"private same-TU void __cdecl(PART_PC *, i32)"
+0x4d9760,_PodRaceUpdatePodPc,1897,"private same-TU i32(RACEPOD_RESOURCE_PC *, WORLDINFO *)"
 0x4d9ed0,_ResetPodStuff,181,void __cdecl(void)
 0x4d9fa0,_PodRaceUpdate,1038,"void __cdecl(WORLDINFO *, f32)"
-0x4da6c0,_UpdatePodRaceLapDisplay,500,
+0x4da6c0,_UpdatePodRaceLapDisplay,500,void __cdecl(f32)
 0x4da8c0,_UpdatePacemakerDisplay,399,void __cdecl(WORLDINFO *)
 0x4daa70,_PodRace_InStartCountdown,55,i32 __cdecl(WORLDINFO *)
 0x004daab0,_PodRaceAUpdatePc,49,void __cdecl(WORLDINFO *)
@@ -6593,7 +6597,7 @@ address,symbol,size,ctype
 0x62a8c0,_APIObjectRemoveFromLOSTable,80,"void __cdecl(APIOBJECTSYS_PC *, GAMEOBJECT *, GAMEOBJECT *)"
 0x62a910,_APIObjectDestroy,109,"void __cdecl(APIOBJECTSYS_PC *, GAMEOBJECT *)"
 0x0062a980,_APIObjectDestroyAll,29,void __cdecl(APIOBJECTSYS_PC *)
-0x0062a9a0,_QuickNewRayCast,492,
+0x0062a9a0,_QuickNewRayCast,492,"i32 __cdecl(NUVEC *, NUVEC *, f32, i32, f32, f32)"
 0x0062ab90,_APIObjectLOSChecks,1196,"void __cdecl(APIOBJECTSYS_PC *,i32,i32,APIOBJECT_PC **,i32,APIOBJECT_PC **,f32)"
 0x0062b040,_APIObjectVelocities,169,void __cdecl (GAMEOBJECT *)
 0x62b0f0,_APIObjectCollision,1448,"i32 __cdecl (APIOBJECT_PC *, APIOBJECT_PC *)"
@@ -13833,6 +13837,9 @@ address,symbol,size,ctype
 0x75d4d8,??_C@_09MKBEPCCI@nomine_?$CFd?$AA@,10,const char[10]
 0x75d4e4,??_C@_04EEJCHKFP@mine?$AA@,5,char []
 0x0075d4f0,__real@3fefd70a40000000,8,const f64
+0x75d4f8,??_C@_0BH@EJPMFEN@EP1_PODRACE_PODEXPLODE?$AA@,23,const char[23]
+0x75d510,??_C@_0BG@CNGHONHF@Ep1_PodRace_OutOfTime?$AA@,22,const char[22]
+0x75d528,__real@4039999a,4,const f32
 0x75d52c,??_C@_0BJ@CFBACOKC@nattempts_per_increment?$DN?$AA@,25,char []
 0x75d52c,_PodRaceAttemptsKeywordPc,,char[25]
 0x75d548,??_C@_0BA@PLLIHCPB@time_increment?$DN?$AA@,16,char []
@@ -14065,6 +14072,8 @@ address,symbol,size,ctype
 0x75e118,_TrooperCannonBaseFormatPc,8,const char[7]
 0x75e120,_TrooperCannonCharacterFormatPc,20,const char[17]
 0x75e134,_TrooperCannonBuilditFormatPc,20,const char[17]
+0x75e148,??_C@_09CKDEACDJ@snowmob_1?$AA@,10,char []
+0x75e154,??_C@_08BJCPFFEB@snow_mob?$AA@,9,char []
 0x75e21c,??_C@_0L@ECGCGBCO@transport4?$AA@,11,char []
 0x75e228,??_C@_0O@CBDKBILO@rebelcruiser1?$AA@,14,char []
 0x75e238,??_C@_0L@DPBFJFGL@transport1?$AA@,11,char []
@@ -14092,6 +14101,7 @@ address,symbol,size,ctype
 0x75e334,??_C@_0N@FEEGDMMP@gas_1_animin?$AA@,13,char []
 0x75e344,??_C@_0N@EJNKIMLE@pad_4_base_2?$AA@,13,char []
 0x75e354,??_C@_0N@DKMAPFDO@pad_2_base_2?$AA@,13,char []
+0x75e3a0,??_C@_07JNIOBEMN@force20?$AA@,8,char []
 0x75e3a8,??_C@_0M@EIBBAEJC@minifig_2_3?$AA@,12,char []
 0x75e3a8,_HothBattleCMinifig23Pc,12,const char[12]
 0x75e3b4,??_C@_0M@FBAKDFND@minifig_2_2?$AA@,12,char []
@@ -19842,6 +19852,19 @@ address,symbol,size,ctype
 0x7ffcd0,_PodRace_sniper_fire_range_time,4,f32
 0x7ffcd4,_PodRace_sniper_fire_radius,4,f32
 0x7ffcd8,_PodRace_sniper_start_fire_radius,4,f32
+0x7ffcdc,_PodMineSockAlongPc,16,f32[4]
+0x7ffcec,_PodMineSpreadPc,4,f32
+0x7ffcf0,_PodMineAheadPc,4,f32
+0x7ffcf4,_PodMineMaxSockPc,4,f32
+0x7ffcf8,_PodMineGrowTimePc,4,f32
+0x7ffcfc,_PodMineAreaScalePc,4,f32
+0x7ffd00,_PodMineHeightScalePc,4,f32
+0x7ffd04,_mine_max_tile,4,u32
+0x7ffd08,_PodSebulbaThrowTimePc,4,f32
+0x7ffd0c,_PodSebulbaThrowJitterPc,4,f32
+0x7ffd10,_PodSebulbaThrowSpeedPc,4,f32
+0x7ffd14,_PodSebulbaThrowGravityPc,4,f32
+0x7ffd28,_PodPacemakerTextScalePc,4,f32
 0x7ffd2c,_mushroom0_along,4,f32
 0x7ffd30,_mushroom2_along,4,f32
 0x7ffd40,_mushroom_time_increment,4,f32
@@ -19854,6 +19877,9 @@ address,symbol,size,ctype
 0x7ffd60,_PodDustEmissionRatePc,,f32
 0x7ffd64,_PodDustHeightScalePc,,f32
 0x7ffd68,_PodRaceKeyPc,,i32[8]
+0x7ffe20,_PodSebulbaFarThrowPc,4,f32
+0x7ffe24,_PodSebulbaThrowSpreadPc,4,f32
+0x7ffe28,_PodSebulbaThrowAheadPc,4,f32
 0x7ffe44,_paint_name,24,char *[6]
 0x7ffe5c,_paint_panel_name,12,char *[3]
 0x7ffe68,_paint_target_colour,12,char *[3]
@@ -21554,6 +21580,7 @@ address,symbol,size,ctype
 0x87b1ec,_DEATHSTARBATTLEB_LDATA,,LEVELDATA_PC *
 0x87b1f0,_DEATHSTARBATTLEC_LDATA,,LEVELDATA_PC *
 0x0087b1f4,_DEATHSTARBATTLED_LDATA,4,LEVELDATA_PC *
+0x87b1f8,_DEATHSTARBATTLEMIDTRO_LDATA,4,LEVELDATA_PC *
 0x0087b1fc,_HOTHBATTLEA_LDATA,4,LEVELDATA_PC *
 0x0087b200,_LevelFixupSlotPc0087b200,,LEVELDATA_PC *
 0x0087b204,_LevelFixupSlotPc0087b204,,LEVELDATA_PC *
@@ -22602,6 +22629,7 @@ address,symbol,size,ctype
 0x00882430,_podrace_section,4,i32
 0x882434,_PodRace_nsnipers,4,i32
 0x00882438,_podsprint,148,PODSPRINT_PC
+0x8824e4,_pod_pacemaker_alpha,4,f32
 0x8824e8,_client_mines,792,CLIENT_MINES_PC
 0x882800,_podrace_netpacket,4,void *
 0x882804,_mine_count,4,i32
@@ -22611,7 +22639,10 @@ address,symbol,size,ctype
 0x882924,_mushroom_nattempts_per_increment,4,i32
 0x882928,_PodRace_snipers,320,SNIPER_s[10]
 0x882a68,_pod_mines_bitfield,8,i32[2]
+0x882a70,_podhurryalpha,4,f32
+0x882a74,_podstartracealpha,4,f32
 0x882a78,_podsprint_netpacket,4,struct PODSPRINTNETPACKET_s *
+0x882a7c,_podlapalpha,4,f32
 0x882a80,_clients_mines_bitfield,8,i32[2]
 0x882a88,_PodPacemakerPc,,GAMEOBJECT *
 0x882a8c,_PodRacePc,,void *

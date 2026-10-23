@@ -15910,7 +15910,7 @@ void __cdecl PCSoundAlreadyPlayingHook(void);
     extern i16 id_CLOUDCITYCITIZEN;
     extern SUIT_INITIALIZER_RECORD_PC SuitRecordInitPc[10];
     extern PLAYER_START_INITIALIZER_RECORD_PC PlayerStartRecordInitPc[8];
-    extern void *PodRacePc;
+    /* PodRacePc is a private static of episodeI.c. */
     extern GAMEOBJECT *PodPacemakerPc;
     extern f32 PodRaceSplineIncrementPc;
     extern char PodCreateSplineKeywordPc[11];
@@ -15978,7 +15978,7 @@ void __cdecl PCSoundAlreadyPlayingHook(void);
     extern u32 PCDevicePrimitiveUPCallCountPc;
 
     extern GAMEOBJECT *PodPacemakerPc;
-    extern void *PodRacePc;
+    /* PodRacePc: see episodeI.c. */
 
     i32 __cdecl DebrisSingleCollisionCheckScaleYFlag(i32, NUVEC *, f32, f32, u8);
     i32 __cdecl DebrisSingleTorusCollisionCheckScaleYFlag(i32, NUVEC *, f32, f32, u8);
