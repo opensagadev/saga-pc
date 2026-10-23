@@ -493,62 +493,60 @@ extern "C" {
     }
 #undef TERRAIN_RV_SIN
 #undef TERRAIN_RV_COS
+#define TERRAIN_DRT_SIN(angle) NuTrigTable[(static_cast<i32>(angle) >> 1) & (NUTRIGTABLE_COUNT - 1)]
+#define TERRAIN_DRT_COS(angle) NuTrigTable[(static_cast<i32>((angle) + 16384.0f) >> 1) & (NUTRIGTABLE_COUNT - 1)]
+#define TERRAIN_DRT_VERTEX(index)                                                                                      \
+    {                                                                                                                  \
+        const f64 relative_z = surface->vertices[index].z - query->local_start.z;                                      \
+        const f64 relative_x = surface->vertices[index].x - query->local_start.x;                                      \
+        const f32 rotated_z = relative_z * cos_yaw - relative_x * sin_yaw;                                             \
+        query->transformed_vertices[index].x = relative_z * sin_yaw + relative_x * cos_yaw;                            \
+        query->transformed_vertices[index].y =                                                                         \
+            (surface->vertices[index].y - query->local_start.y) * cos_pitch - rotated_z * sin_pitch;                   \
+        query->transformed_vertices[index].z =                                                                         \
+            (surface->vertices[index].y - query->local_start.y) * sin_pitch + rotated_z * cos_pitch;                   \
+    }
     void DeRotateTerrain(TERRAIN_SHAPE *surface) {
         TerrainQuery_s *query = (TerrainQuery_s *)TerI;
 
-        const f32 sin_pitch = NuTrigTable[(static_cast<i32>(-query->movement_pitch) >> 1) & 0x7fff];
-        const f32 cos_pitch = NuTrigTable[(static_cast<i32>(16384.0f - query->movement_pitch) >> 1) & 0x7fff];
-        const f32 sin_yaw = NuTrigTable[(static_cast<i32>(-query->movement_yaw) >> 1) & 0x7fff];
-        const f32 cos_yaw = NuTrigTable[(static_cast<i32>(16384.0f - query->movement_yaw) >> 1) & 0x7fff];
-        const f32 start_z = query->local_start.z;
-        const f32 start_x = query->local_start.x;
-        const f32 start_y = query->local_start.y;
+        const f32 pitch = -query->movement_pitch;
+        const f32 sin_pitch = TERRAIN_DRT_SIN(pitch);
+        const f32 cos_pitch = TERRAIN_DRT_COS(pitch);
+        const f32 yaw = -query->movement_yaw;
+        const f32 sin_yaw = TERRAIN_DRT_SIN(yaw);
+        const f32 cos_yaw = TERRAIN_DRT_COS(yaw);
 
-        for (i32 vertex_index = 0; vertex_index < 3; ++vertex_index) {
-            const NUVEC &vertex = surface->vertices[vertex_index];
-            NUVEC &transformed = query->transformed_vertices[vertex_index];
-            const f32 relative_z = vertex.z - start_z;
-            const f32 relative_x = vertex.x - start_x;
-            const f32 rotated_x = relative_z * sin_yaw + relative_x * cos_yaw;
-            const f32 rotated_z = relative_z * cos_yaw - relative_x * sin_yaw;
-
-            transformed.x = rotated_x;
-            transformed.y = (vertex.y - start_y) * cos_pitch - rotated_z * sin_pitch;
-            transformed.z = (vertex.y - start_y) * sin_pitch + rotated_z * cos_pitch;
-        }
-
-        if (65536.0f > surface->normals[1].y) {
-            const NUVEC &vertex = surface->vertices[3];
-            NUVEC &transformed = query->transformed_vertices[3];
-            const f32 relative_z = vertex.z - start_z;
-            const f32 relative_x = vertex.x - start_x;
-            const f32 rotated_x = relative_z * sin_yaw + relative_x * cos_yaw;
-            const f32 rotated_z = relative_z * cos_yaw - relative_x * sin_yaw;
-
-            transformed.x = rotated_x;
-            transformed.y = (vertex.y - start_y) * cos_pitch - rotated_z * sin_pitch;
-            transformed.z = (vertex.y - start_y) * sin_pitch + rotated_z * cos_pitch;
+        TERRAIN_DRT_VERTEX(0)
+        TERRAIN_DRT_VERTEX(1)
+        TERRAIN_DRT_VERTEX(2)
+        if (surface->normals[1].y < 65536.0f) {
+            TERRAIN_DRT_VERTEX(3)
         }
     }
+#undef TERRAIN_DRT_VERTEX
+#undef TERRAIN_DRT_SIN
+#undef TERRAIN_DRT_COS
+#define TERRAIN_DRP_SIN(angle) NuTrigTable[(static_cast<i32>(angle) >> 1) & (NUTRIGTABLE_COUNT - 1)]
+#define TERRAIN_DRP_COS(angle) NuTrigTable[(static_cast<i32>((angle) + 16384.0f) >> 1) & (NUTRIGTABLE_COUNT - 1)]
     void DeRotatePoint(NUVEC *point) {
         TerrainQuery_s *query = (TerrainQuery_s *)TerI;
 
-        const f32 sin_pitch = NuTrigTable[(static_cast<i32>(-query->movement_pitch) >> 1) & 0x7fff];
-        const f32 cos_pitch = NuTrigTable[(static_cast<i32>(16384.0f - query->movement_pitch) >> 1) & 0x7fff];
-        const f32 sin_yaw = NuTrigTable[(static_cast<i32>(-query->movement_yaw) >> 1) & 0x7fff];
-        const f32 cos_yaw = NuTrigTable[(static_cast<i32>(16384.0f - query->movement_yaw) >> 1) & 0x7fff];
+        const f32 pitch = -query->movement_pitch;
+        const f32 sin_pitch = TERRAIN_DRP_SIN(pitch);
+        const f32 cos_pitch = TERRAIN_DRP_COS(pitch);
+        const f32 yaw = -query->movement_yaw;
+        const f32 sin_yaw = TERRAIN_DRP_SIN(yaw);
+        const f32 cos_yaw = TERRAIN_DRP_COS(yaw);
 
-        const f32 relative_z = point->z - query->position.z;
-        const f32 relative_x = point->x - query->position.x;
-
-        const f32 rotated_x = relative_z * sin_yaw + relative_x * cos_yaw;
+        const f64 relative_z = point->z - query->position.z;
+        const f64 relative_x = point->x - query->position.x;
         const f32 rotated_z = relative_z * cos_yaw - relative_x * sin_yaw;
-
-        point->x = rotated_x;
-        const f32 relative_y = point->y + query->collision_radius - query->position.y;
-        point->z = relative_y * sin_pitch + rotated_z * cos_pitch;
-        point->y = relative_y * cos_pitch - rotated_z * sin_pitch;
+        point->x = relative_z * sin_yaw + relative_x * cos_yaw;
+        point->z = (query->collision_radius + point->y - query->position.y) * sin_pitch + rotated_z * cos_pitch;
+        point->y = (query->collision_radius + point->y - query->position.y) * cos_pitch - rotated_z * sin_pitch;
     }
+#undef TERRAIN_DRP_SIN
+#undef TERRAIN_DRP_COS
     i32 CheckCylinder(i32 first_vertex, i32 second_vertex, i32 *vertex_mask, i32 remaining_vertex_mask) {
         TerrainQuery_s *query = (TerrainQuery_s *)TerI;
 
@@ -783,72 +781,62 @@ extern "C" {
         return 0;
     }
     i32 CheckSphere(i32 vertex_index) {
-        f32 radius = ((TerrainQuery_s *)TerI)->collision_radius;
-        if (((TerrainQuery_s *)TerI)->transformed_vertices[vertex_index].z < -radius ||
-            ((TerrainQuery_s *)TerI)->transformed_vertices[vertex_index].z >
-                ((TerrainQuery_s *)TerI)->movement_length + radius) {
+        TerrainQuery_s *query = (TerrainQuery_s *)TerI;
+        if (query->transformed_vertices[vertex_index].z < -query->collision_radius ||
+            query->transformed_vertices[vertex_index].z > query->movement_length + query->collision_radius) {
             return 0;
         }
 
-        f32 radial_distance_sq = ((TerrainQuery_s *)TerI)->transformed_vertices[vertex_index].x *
-                                     ((TerrainQuery_s *)TerI)->transformed_vertices[vertex_index].x +
-                                 ((TerrainQuery_s *)TerI)->transformed_vertices[vertex_index].y *
-                                     ((TerrainQuery_s *)TerI)->transformed_vertices[vertex_index].y;
-        if (radial_distance_sq > ((TerrainQuery_s *)TerI)->collision_radius_sq) {
+        f32 distance_sq = query->transformed_vertices[vertex_index].x * query->transformed_vertices[vertex_index].x +
+                          query->transformed_vertices[vertex_index].y * query->transformed_vertices[vertex_index].y;
+        if (distance_sq > query->collision_radius_sq) {
             return 0;
         }
 
-        f32 radial_extent = NuFsqrt(((TerrainQuery_s *)TerI)->collision_radius_sq - radial_distance_sq);
-        f32 hit_distance = ((TerrainQuery_s *)TerI)->transformed_vertices[vertex_index].z - radial_extent;
-        if (0.0f <= hit_distance && ((TerrainQuery_s *)TerI)->movement_length >= hit_distance) {
-            f32 hit_time = hit_distance / ((TerrainQuery_s *)TerI)->movement_length;
-            if (((TerrainQuery_s *)TerI)->hit_time <= hit_time) {
+        const f32 radial_extent = NuFsqrt(query->collision_radius_sq - distance_sq);
+        query = (TerrainQuery_s *)TerI;
+        if (query->transformed_vertices[vertex_index].z - radial_extent >= 0.0f &&
+            query->movement_length >= query->transformed_vertices[vertex_index].z - radial_extent) {
+            const f32 hit_time = (query->transformed_vertices[vertex_index].z - radial_extent) / query->movement_length;
+            if (query->hit_time <= hit_time) {
                 return 0;
             }
 
-            ((TerrainQuery_s *)TerI)->hit_time = hit_time;
-            ((TerrainQuery_s *)TerI)->hit_type = TERRAIN_HIT_TYPE_VERTEX;
-            ((TerrainQuery_s *)TerI)->movement_normal.x =
-                -((TerrainQuery_s *)TerI)->transformed_vertices[vertex_index].x;
-            ((TerrainQuery_s *)TerI)->movement_normal.y =
-                -((TerrainQuery_s *)TerI)->transformed_vertices[vertex_index].y;
-            ((TerrainQuery_s *)TerI)->movement_normal.z = -radial_extent;
+            query->hit_time = hit_time;
+            query->hit_type = TERRAIN_HIT_TYPE_VERTEX;
+            query->movement_normal.x = -query->transformed_vertices[vertex_index].x;
+            query->movement_normal.y = -query->transformed_vertices[vertex_index].y;
+            query->movement_normal.z = -radial_extent;
             return 1;
         }
 
-        f32 distance_sq = radial_distance_sq + ((TerrainQuery_s *)TerI)->transformed_vertices[vertex_index].z *
-                                                   ((TerrainQuery_s *)TerI)->transformed_vertices[vertex_index].z;
-        if (((TerrainQuery_s *)TerI)->collision_radius_sq <= distance_sq) {
+        distance_sq += query->transformed_vertices[vertex_index].z * query->transformed_vertices[vertex_index].z;
+        if (query->collision_radius_sq <= distance_sq) {
             return 0;
         }
 
-        f32 distance = NuFsqrt(distance_sq);
-        f32 overlap_time = distance - ((TerrainQuery_s *)TerI)->collision_radius;
-        if (((TerrainQuery_s *)TerI)->hit_time <= overlap_time) {
+        const f32 distance = NuFsqrt(distance_sq);
+        query = (TerrainQuery_s *)TerI;
+        const f64 overlap_time = distance - query->collision_radius;
+        if (query->hit_time <= overlap_time) {
             return 0;
         }
 
-        TERRAIN_SHAPE *surface = ((TerrainQuery_s *)TerI)->working_surface;
-        f32 primary_distance =
-            (((TerrainQuery_s *)TerI)->local_start.x - surface->vertices[vertex_index].x) * surface->normals[0].x +
-            (((TerrainQuery_s *)TerI)->local_start.y - surface->vertices[vertex_index].y) * surface->normals[0].y +
-            (((TerrainQuery_s *)TerI)->local_start.z - surface->vertices[vertex_index].z) * surface->normals[0].z;
-        if (0.0f >= primary_distance) {
+        TERRAIN_SHAPE *surface = query->working_surface;
+        const f32 primary_distance =
+            (query->local_start.x - surface->vertices[vertex_index].x) * surface->normals[0].x +
+            (query->local_start.y - surface->vertices[vertex_index].y) * surface->normals[0].y +
+            (query->local_start.z - surface->vertices[vertex_index].z) * surface->normals[0].z;
+        if (primary_distance <= 0.0f) {
             return 0;
         }
 
-        ((TerrainQuery_s *)TerI)->hit_time = overlap_time;
-        f32 inverse_distance = 0.0f;
-        if (distance != 0.0f) {
-            inverse_distance = 1.0f / distance;
-        }
-        ((TerrainQuery_s *)TerI)->hit_type = TERRAIN_HIT_TYPE_VERTEX | TERRAIN_HIT_TYPE_SECOND_NORMAL;
-        ((TerrainQuery_s *)TerI)->movement_normal.x =
-            -((TerrainQuery_s *)TerI)->transformed_vertices[vertex_index].x * inverse_distance;
-        ((TerrainQuery_s *)TerI)->movement_normal.y =
-            -((TerrainQuery_s *)TerI)->transformed_vertices[vertex_index].y * inverse_distance;
-        ((TerrainQuery_s *)TerI)->movement_normal.z =
-            -((TerrainQuery_s *)TerI)->transformed_vertices[vertex_index].z * inverse_distance;
+        query->hit_time = overlap_time;
+        const f32 inverse_distance = TerrainDivideNonzeroPC(1.0f, distance);
+        query->hit_type = TERRAIN_HIT_TYPE_VERTEX | TERRAIN_HIT_TYPE_SECOND_NORMAL;
+        query->movement_normal.x = -query->transformed_vertices[vertex_index].x * inverse_distance;
+        query->movement_normal.y = -query->transformed_vertices[vertex_index].y * inverse_distance;
+        query->movement_normal.z = -query->transformed_vertices[vertex_index].z * inverse_distance;
         return 1;
     }
     i32 CheckSphereTer(NUVEC *position, f32 radius) {
