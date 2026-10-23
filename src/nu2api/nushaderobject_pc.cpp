@@ -37,7 +37,7 @@ void __cdecl PCShaderObjectInitHLSLPc(PC_SHADER_OBJECT_FULL_VIEW *shader, const 
     ID3DXConstantTable *pixel_constants = NULL;
     const char *vertex_profile;
     const char *pixel_profile;
-    DWORD flags = 0x200;
+    DWORD flags;
     HRESULT result;
     NuShaderObjectInit(shader, key, index, vertex_source, vertex_length, pixel_source, pixel_length, version);
     switch (version) {
@@ -58,6 +58,7 @@ void __cdecl PCShaderObjectInitHLSLPc(PC_SHADER_OBJECT_FULL_VIEW *shader, const 
             pixel_profile = "ps_3_0";
             break;
     }
+    flags = 0x200;
     if (version < 2)
         flags = 0x10200;
     result = D3DXCompileShader(vertex_source, vertex_length, NULL, NULL, "vertexProgram", vertex_profile, flags,
@@ -108,16 +109,26 @@ void __cdecl PCShaderObjectInitHLSLPc(PC_SHADER_OBJECT_FULL_VIEW *shader, const 
                                   &shader->pixel_shader);
     }
     PCShaderProbeHLSLConstants(shader, vertex_constants, pixel_constants);
-    if (vertex_code != NULL)
+    if (vertex_code != NULL) {
         vertex_code->methods->release(vertex_code);
-    if (pixel_code != NULL)
+        vertex_code = NULL;
+    }
+    if (pixel_code != NULL) {
         pixel_code->methods->release(pixel_code);
-    if (errors != NULL)
+        pixel_code = NULL;
+    }
+    if (errors != NULL) {
         errors->methods->release(errors);
-    if (vertex_constants != NULL)
+        errors = NULL;
+    }
+    if (vertex_constants != NULL) {
         vertex_constants->methods->release(vertex_constants);
-    if (pixel_constants != NULL)
+        vertex_constants = NULL;
+    }
+    if (pixel_constants != NULL) {
         pixel_constants->methods->release(pixel_constants);
+        pixel_constants = NULL;
+    }
 }
 
 void PC_SHADER_PARAMETER_LOCAL_PC::SetScalarValues(i32 first_element, i32 count, const f32 *values) {
