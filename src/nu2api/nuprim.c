@@ -240,7 +240,7 @@ void *__cdecl DisplayListBuildLightPacket(NUGLOBALRNDRSTATE_PC *state) {
     return packet;
 }
 
-void *__cdecl DisplayListBuildVertexGroupPacket(void) {
+void *__cdecl DisplayListBuildVertexGroupPacket(NUGLOBALRNDRSTATE_PC *unused) {
     VARIPTR *cursor;
     u32 *packet;
     f32 *output;
@@ -373,7 +373,7 @@ void __cdecl DisplayListUpdateRenderState(NUDISPLAYLIST_PC *list, NUGLOBALRNDRST
     }
 
     if ((u16)state->vertex_groups_id != global->vertex_groups_id) {
-        packet = DisplayListBuildVertexGroupPacket();
+        packet = DisplayListBuildVertexGroupPacket(global);
         if (packet != NULL) {
             NuDisplayListLinkItem(list, 0xa9, packet);
         }
@@ -434,24 +434,23 @@ void __cdecl NuDisplayListLinkMtl(NUDISPLAYLIST_PC *list, NUMTL *material) {
 }
 #undef LINK_MTL_STATE
 
-void __cdecl NuDisplayListLinkItem(NUDISPLAYLIST_PC *list, u8 type, void *target) {
-    NUPRIM_COMMAND_PC *item;
-    NUPRIM_COMMAND_PC *geometry_command;
-
+VARIPTR *__cdecl NuDisplayListLinkItem(NUDISPLAYLIST_PC *list, u8 type, void *target) {
+    VARIPTR *cursor;
     NuDisplayListStreamCursor->addr = (NuDisplayListStreamCursor->addr + 0xf) & ~0xfU;
-    item = (NUPRIM_COMMAND_PC *)NuDisplayListStreamCursor->void_ptr;
-    ((NUPRIM_COMMAND_PC *)list->material_last)->target = item;
-
-    item->type = type;
-    item->id = 3;
-    item->target = target != NULL ? target : item + 2;
-
-    geometry_command = item + 1;
-    geometry_command->type = 0x8d;
-    geometry_command->id = 1;
-    geometry_command->target = (NUPRIM_COMMAND_PC *)list->dynamic_geometry + 1;
-    list->material_last = geometry_command;
-    NuDisplayListStreamCursor->addr += 2 * sizeof(NUPRIM_COMMAND_PC);
+    cursor = NuDisplayListStreamCursor;
+    ((NUPRIM_COMMAND_PC *)list->material_last)->target = cursor->void_ptr;
+    ((NUPRIM_COMMAND_PC *)cursor->void_ptr)->type = type;
+    ((NUPRIM_COMMAND_PC *)cursor->void_ptr)->id = 3;
+    if (target != NULL)
+        ((NUPRIM_COMMAND_PC *)cursor->void_ptr)->target = target;
+    else
+        ((NUPRIM_COMMAND_PC *)cursor->void_ptr)->target = (NUPRIM_COMMAND_PC *)cursor->void_ptr + 2;
+    ((NUPRIM_COMMAND_PC *)cursor->void_ptr)[1].type = 0x8d;
+    ((NUPRIM_COMMAND_PC *)cursor->void_ptr)[1].id = 1;
+    ((NUPRIM_COMMAND_PC *)cursor->void_ptr)[1].target = (NUPRIM_COMMAND_PC *)list->dynamic_geometry + 1;
+    list->material_last = (NUPRIM_COMMAND_PC *)cursor->void_ptr + 1;
+    cursor->addr += 2 * sizeof(NUPRIM_COMMAND_PC);
+    return target != NULL ? NULL : cursor;
 }
 
 /* Native selects one of the two adjacent material-use buffers by bit 15. */

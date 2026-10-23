@@ -22,7 +22,7 @@ def write_provider(directory):
     if len(re.findall(r"^typedef struct", types, re.MULTILINE)) != 2:
         raise ValueError("Primitive fixture requires the two complete production packet types")
     start = production.index("void __cdecl NuDisplayListLinkMtl(")
-    end = production.index("void __cdecl NuDisplayListLinkItem(", start)
+    end = production.index("VARIPTR *__cdecl NuDisplayListLinkItem(", start)
     body = production[start:end]
     if len(re.findall(r"^void __cdecl", body, re.MULTILINE)) != 1:
         raise ValueError("Primitive fixture requires exactly the complete material linker")

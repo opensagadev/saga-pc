@@ -89,7 +89,7 @@ extern "C" {
             return;
         if (scene->material_count != 0)
             NuMemSet128(scene->material_used[(scene->render_flags >> 15) & 1], 0,
-                        ((scene->material_count + 7) >> 7) + 1);
+                        (static_cast<i32>((scene->material_count + 7) >> 3) >> 4) + 1);
         if (scene->clip_count != 0) {
             blocks = (((scene->clip_count + 7) / 8) * 2) / 16 + 1;
             NuMemSet128(scene->clip_used[(scene->render_flags >> 15) & 1], 0, blocks);
@@ -110,8 +110,9 @@ extern "C" {
     }
 
     static void __cdecl DisplayInsertSortPC(NUSORTPRI *sort) {
+        NUSORTPRI *head = sort_list;
         NUSORTPRI *previous = NULL;
-        NUSORTPRI *current = sort_list;
+        NUSORTPRI *current = head;
         if (current == NULL) {
             sort_list = sort;
             sort->sys_next = NULL;
@@ -121,7 +122,7 @@ extern "C" {
                 current = current->sys_next;
             }
             if (previous == NULL) {
-                sort->sys_next = sort_list;
+                sort->sys_next = head;
                 sort_list = sort;
             } else {
                 sort->sys_next = current;
@@ -986,10 +987,10 @@ extern "C" {
                                                               NUDISPLAYLISTITEM **output, NUMTX *matrix, void **packet,
                                                               f32 alpha, i32 shadow) {
         VARIPTR *buffer = NuDisplayListLinkItems(list, 2);
-        NUDISPLAY_LIST_PC *scene = reinterpret_cast<NUDISPLAY_LIST_PC *>(list->scene);
         void *next = geometry->next;
-        void *transform = DisplayListCreateGeomTransformPS(buffer, matrix, scene->display_materials[list->material_id],
-                                                           next, *packet);
+        void *transform = DisplayListCreateGeomTransformPS(
+            buffer, matrix, reinterpret_cast<NUDISPLAY_LIST_PC *>(list->scene)->display_materials[list->material_id],
+            next, *packet);
         *packet = transform;
         PC_LIST_ITEM->type = 0x8c;
         PC_LIST_ITEM->id = 3;
@@ -1011,14 +1012,15 @@ extern "C" {
         NuDisplayListStreamCursor->addr = (NuDisplayListStreamCursor->addr + 15) & ~15u;
         VARIPTR *buffer = NuDisplayListLinkItems(list, 3);
         void *next = geometry->next;
+        void *lightmap = geometry[-2].next;
         PC_LIST_ITEM->type = geometry[-2].type;
         PC_LIST_ITEM->id = 3;
-        PC_LIST_ITEM->next = geometry[-2].next;
+        PC_LIST_ITEM->next = lightmap;
         list->items = PC_LIST_ITEM + 1;
         output[0] = PC_LIST_ITEM - 1;
-        NUDISPLAY_LIST_PC *scene = reinterpret_cast<NUDISPLAY_LIST_PC *>(list->scene);
-        void *transform = DisplayListCreateGeomTransformPS(buffer, matrix, scene->display_materials[list->material_id],
-                                                           next, *packet);
+        void *transform = DisplayListCreateGeomTransformPS(
+            buffer, matrix, reinterpret_cast<NUDISPLAY_LIST_PC *>(list->scene)->display_materials[list->material_id],
+            next, *packet);
         *packet = transform;
         PC_LIST_ITEM->type = 0x8c;
         PC_LIST_ITEM->id = 3;
@@ -1323,9 +1325,8 @@ extern "C" void __cdecl NuDisplayListCreate(NUDISPLAY_LIST_PC *scene, VARIPTR *b
         scene->material_lists[i] = &lists->base;
         lists->base.state = (NURNDRLIBSTATE *)((buffer->addr + 3) & ~3u);
         buffer->addr = ((buffer->addr + 3) & ~3u) + sizeof(NURNDRLIBSTATE);
-        lists->base.first = first;
+        lists->base.first = &first[i];
         NuDisplayListResetStateCache(lists->base.state);
-        ++first;
         ++lists;
     }
     scene->local_state = NULL;
@@ -1644,15 +1645,16 @@ void __cdecl NuDisplayListAnimateMtls(f32 frame_time) {
         NUDISPLAY_LIST_PC *scene = set->scene;
         for (index = 0; index < set->material_count; ++index) {
             FRAME_MTL_ANIM_PC *material = (FRAME_MTL_ANIM_PC *)scene->display_materials[set->material_indices[index]];
-            u32 layer;
+            i32 layer;
             if (material->disable_u_animation == 1 || material->disable_v_animation == 1)
                 continue;
             for (layer = 0; layer < 4; ++layer) {
                 FRAME_MTL_ANIM_DESC_PC *animation;
-                f32 u = 0.0f, v = 0.0f;
+                f32 u, v;
                 if (material->texture_animation_data[layer] == -1)
                     continue;
                 animation = &material->animation[layer];
+                u = 0.0f;
                 switch (animation->u_mode) {
                     case 2:
                         material->texture_animation_offsets[layer][0] += frame_time * animation->u_frequency;
@@ -1673,6 +1675,7 @@ void __cdecl NuDisplayListAnimateMtls(f32 frame_time) {
                             animation->u_amplitude;
                         break;
                 }
+                v = 0.0f;
                 switch (animation->v_mode) {
                     case 2:
                         material->texture_animation_offsets[layer][1] += frame_time * animation->v_frequency;

@@ -190,17 +190,21 @@ void __cdecl DisplayListSetShadowCasterFlagPS(NUDISPLAYLISTITEM *first, NUDISPLA
     packet->matrix.m32 = (f32)shadow;
 }
 void __cdecl DisplayListUpdateRenderStateShadow(NUDISPLAYLIST_PC *list, NUGLOBALRNDRSTATE_PC *state) {
-    NUGLOBALRNDRSTATE_PC *previous = (NUGLOBALRNDRSTATE_PC *)list->render_state;
-    if (state != NULL && previous->counter_0020 != state->counter_0020) {
-        if (previous->vertex_groups_id != state->vertex_groups_id) {
-            void *packet = DisplayListBuildVertexGroupPacket();
-            if (packet != NULL)
-                NuDisplayListLinkItem(list, 0xa9, packet);
-            previous = (NUGLOBALRNDRSTATE_PC *)list->render_state;
-            previous->vertex_groups_id = state->vertex_groups_id;
-        }
-        previous->counter_0020 = state->counter_0020;
+    NUGLOBALRNDRSTATE_PC *previous;
+    if (state == NULL)
+        return;
+    previous = (NUGLOBALRNDRSTATE_PC *)list->render_state;
+    if (previous->counter_0020 == state->counter_0020)
+        return;
+    if (previous->vertex_groups_id != state->vertex_groups_id) {
+        void *packet = DisplayListBuildVertexGroupPacket(state);
+        if (packet != NULL)
+            NuDisplayListLinkItem(list, 0xa9, packet);
+        previous = (NUGLOBALRNDRSTATE_PC *)list->render_state;
+        previous->vertex_groups_id = state->vertex_groups_id;
     }
+    previous = (NUGLOBALRNDRSTATE_PC *)list->render_state;
+    previous->counter_0020 = state->counter_0020;
 }
 
 void __cdecl DisplayListCreatePS(NUDISPLAY_LIST_PC *scene, VARIPTR *buffer, VARIPTR end) {
@@ -360,28 +364,28 @@ void __cdecl NuDisplayListLightsPc(void *arg) {
     }
     if (PCDeviceHardwareVertexProcessingPC != 4) {
         PC_DL_NORMALIZED_DIRECTION direction;
-        NUVEC4 colour;
+
         NuVec4Add(&direction.four, &packet->direction[0], &packet->direction[1]);
         NuVec4Add(&direction.four, &direction.four, &packet->direction[2]);
         NuVecNorm(&direction.normalized.three, &direction.normalized.three);
         NuShaderManagerSetfv(0x4c, &direction.four.x);
-        colour.x =
-            (packet->intensity[2].x < packet->intensity[1].x ? packet->intensity[1].x : packet->intensity[2].x) <
-                    packet->intensity[0].x
+        direction.four.x =
+            packet->intensity[0].x >
+                    (packet->intensity[1].x > packet->intensity[2].x ? packet->intensity[1].x : packet->intensity[2].x)
                 ? packet->intensity[0].x
-                : (packet->intensity[2].x < packet->intensity[1].x ? packet->intensity[1].x : packet->intensity[2].x);
-        colour.y =
-            (packet->intensity[2].y < packet->intensity[1].y ? packet->intensity[1].y : packet->intensity[2].y) <
-                    packet->intensity[0].y
+                : (packet->intensity[1].x > packet->intensity[2].x ? packet->intensity[1].x : packet->intensity[2].x);
+        direction.four.y =
+            packet->intensity[0].y >
+                    (packet->intensity[1].y > packet->intensity[2].y ? packet->intensity[1].y : packet->intensity[2].y)
                 ? packet->intensity[0].y
-                : (packet->intensity[2].y < packet->intensity[1].y ? packet->intensity[1].y : packet->intensity[2].y);
-        colour.z =
-            (packet->intensity[2].z < packet->intensity[1].z ? packet->intensity[1].z : packet->intensity[2].z) <
-                    packet->intensity[0].z
+                : (packet->intensity[1].y > packet->intensity[2].y ? packet->intensity[1].y : packet->intensity[2].y);
+        direction.four.z =
+            packet->intensity[0].z >
+                    (packet->intensity[1].z > packet->intensity[2].z ? packet->intensity[1].z : packet->intensity[2].z)
                 ? packet->intensity[0].z
-                : (packet->intensity[2].z < packet->intensity[1].z ? packet->intensity[1].z : packet->intensity[2].z);
-        colour.w = 1.0f;
-        NuShaderManagerSetfv(0x4b, &colour.x);
+                : (packet->intensity[1].z > packet->intensity[2].z ? packet->intensity[1].z : packet->intensity[2].z);
+        direction.four.w = 1.0f;
+        NuShaderManagerSetfv(0x4b, &direction.four.x);
     }
 }
 
@@ -394,13 +398,13 @@ void __cdecl NuDisplayListTintPc(void *arg) {
 void __cdecl NuDisplayListFogPc(void *arg) {
     PC_DL_FOG_READER *packet = (PC_DL_FOG_READER *)arg;
     if (packet->enabled != 0) {
-        u32 packed = packet->colour;
+        i32 packed = (i32)packet->colour;
         NUVEC4 colour;
         NUVEC4 params;
-        colour.x = (f32)((i32)(packed & 255) / 255.0);
-        colour.y = (f32)((i32)((packed >> 8) & 255) / 255.0);
-        colour.z = (f32)((i32)((packed >> 16) & 255) / 255.0);
-        colour.w = (f32)((i32)((packed >> 24) & 255) / 255.0);
+        colour.x = (f32)((f32)(packed & 255) / 255.0);
+        colour.y = (f32)((f32)((packed >> 8) & 255) / 255.0);
+        colour.z = (f32)((f32)((packed >> 16) & 255) / 255.0);
+        colour.w = (f32)((f32)((packed >> 24) & 255) / 255.0);
         params.x = packet->near_distance;
         params.y = packet->far_distance;
         params.z = packet->far_distance - packet->near_distance;
@@ -422,7 +426,11 @@ void __cdecl NuDisplayListLegacyLightmapPc(void *arg) {
     f32 offset[3] = {0.0f, 0.0f, 0.0f};
     i32 i;
     for (i = 0; i < 3; ++i) {
-        NUTEXDIM_PC *texture = NuTextureGetDimensions(texture_ids[i] == -1 ? 1 : texture_ids[i]);
+        NUTEXDIM_PC *texture;
+        if (texture_ids[i] != -1)
+            texture = NuTextureGetDimensions(texture_ids[i]);
+        else
+            texture = NuTextureGetDimensions(1);
         PCDeviceSetTexture(i, texture->resource);
         PCDeviceSetSamplerState(i, 1, 1);
         PCDeviceSetSamplerState(i, 2, 1);
@@ -435,7 +443,11 @@ void __cdecl NuDisplayListLegacyLightmapOffsetPc(void *arg) {
     f32 offset[3];
     i32 i;
     for (i = 0; i < 3; ++i) {
-        NUTEXDIM_PC *texture = NuTextureGetDimensions(packet->texture_id[i] == -1 ? 1 : packet->texture_id[i]);
+        NUTEXDIM_PC *texture;
+        if (packet->texture_id[i] != -1)
+            texture = NuTextureGetDimensions(packet->texture_id[i]);
+        else
+            texture = NuTextureGetDimensions(1);
         PCDeviceSetTexture(i, texture->resource);
         PCDeviceSetSamplerState(i, 1, 1);
         PCDeviceSetSamplerState(i, 2, 1);
@@ -515,18 +527,20 @@ STATIC_ASSERT(offsetof(PC_DL_VERTEX_OFFSETS_READER, values) == 4);
 
 void __cdecl NuDisplayListVertexGroupsPc(void *arg) {
     PC_DL_VERTEX_GROUPS_READER *packet = (PC_DL_VERTEX_GROUPS_READER *)arg;
+    NUVEC4 *values = packet->values;
     i32 groups = (i32)((u32)packet->count + 3u) / 4;
     i32 i;
-    for (i = 0; i < groups && i < 32; ++i)
-        NuShaderManagerSetElementfv(0x4f, i, &packet->values[i].x);
+    for (i = 0; i < groups && i < 32; ++i, ++values)
+        NuShaderManagerSetElementfv(0x4f, i, &values->x);
 }
 
 void __cdecl NuDisplayListVertexOffsetsPc(void *arg) {
     PC_DL_VERTEX_OFFSETS_READER *packet = (PC_DL_VERTEX_OFFSETS_READER *)arg;
     i32 count = packet->count;
     i32 i;
-    for (i = 0; i < count && i < 8; ++i)
-        NuShaderManagerSetElementfv(0x4e, i, &packet->values[i].x);
+    NUVEC4 *values = packet->values;
+    for (i = 0; i < count && i < 8; ++i, ++values)
+        NuShaderManagerSetElementfv(0x4e, i, &values->x);
 }
 
 extern PC_DISPLAY_ITEM_HANDLER_PC PCDisplayShadowItemHandlersPc[49];
@@ -603,8 +617,9 @@ void __cdecl NuDisplayListPacketAdPc(void *arg) {
     PC_DL_AD_PACKET *packet = (PC_DL_AD_PACKET *)arg;
     PC_DL_AD_RECORD *record;
     NUVEC4 values;
-    NUVEC colours[5];
+    NUVEC colour0, colour1, colour2, colour3, colour4;
     i32 segments;
+    u32 vertex_count;
     u32 instances = packet->instances;
     if (packet->vertex_buffer == NULL || packet->instance_buffer == NULL || packet->list == NULL)
         return;
@@ -620,15 +635,15 @@ void __cdecl NuDisplayListPacketAdPc(void *arg) {
     values.z = 0.0f;
     values.w = 0.0f;
     PCDeviceSetVertexShaderConstantsF(0xc9, &values.x, 1);
-    colours[0] = record->colours.colour[0];
-    colours[1] = record->colours.colour[1];
-    colours[2] = record->colours.colour[2];
-    colours[3] = record->colours.colour[3];
-    colours[4] = record->colours.colour[4];
+    colour0 = record->colours.colour[0];
+    colour1 = record->colours.colour[1];
+    colour2 = record->colours.colour[2];
+    colour3 = record->colours.colour[3];
+    colour4 = record->colours.colour[4];
 #define AD_COLOUR_CONSTANT(n)                                                                                          \
-    values.x = colours[n].x;                                                                                           \
-    values.y = colours[n].y;                                                                                           \
-    values.z = colours[n].z;                                                                                           \
+    values.x = colour##n.x;                                                                                            \
+    values.y = colour##n.y;                                                                                            \
+    values.z = colour##n.z;                                                                                            \
     values.w = 1.0f;                                                                                                   \
     PCDeviceSetPixelShaderConstantsF(0xca + (n), &values.x, 1)
     AD_COLOUR_CONSTANT(0);
@@ -652,7 +667,8 @@ void __cdecl NuDisplayListPacketAdPc(void *arg) {
     PCDeviceSetStreamSourcePc(1, packet->instance_buffer, 0, 0x50);
     PCDeviceSetStreamSourceFreqPc(1, 0x80000001u);
     PCDeviceSetIndicesPc(packet->index_buffer);
-    PCDeviceDrawIndexedPrimitivePc(5, 0, 0, (u32)segments * 2u + 2u, 0, (u32)segments * 2u);
+    vertex_count = (u32)segments * 2u + 2u;
+    PCDeviceDrawIndexedPrimitivePc(5, 0, 0, vertex_count, 0, vertex_count - 2u);
     PCDeviceSetStreamSourcePc(0, NULL, 0, 0);
     PCDeviceSetStreamSourceFreqPc(0, 1);
     PCDeviceSetStreamSourceFreqPc(1, 1);

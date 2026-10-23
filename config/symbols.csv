@@ -6234,7 +6234,7 @@ address,symbol,size,ctype
 0x005fcef0,_DisplayListBuildKonstPacket,60,void * __cdecl (NUGLOBALRNDRSTATE_PC *)
 0x005fcf30,_DisplayListBuildReflectionPacket,39,void * __cdecl (NUGLOBALRNDRSTATE_PC *)
 0x005fcf60,_DisplayListBuildFogPacket,106,void * __cdecl (NUGLOBALRNDRSTATE_PC *)
-0x005fcfd0,_DisplayListBuildVertexGroupPacket,160,void * __cdecl (void)
+0x005fcfd0,_DisplayListBuildVertexGroupPacket,160,void * __cdecl (NUGLOBALRNDRSTATE_PC *)
 0x005fd0d0,_RndrStateCopyGlobalState,46,void __cdecl (NUGLOBALRNDRSTATE_PC *)
 0x005fd100,_RndrStateResetGlobalState,89,void __cdecl (NUGLOBALRNDRSTATE_PC *)
 0x005fd160,_RndrStateResetSharedGlobalState,80,void __cdecl (void)
@@ -6330,7 +6330,7 @@ address,symbol,size,ctype
 0x603480,_NuDisplayListAddMicrocode,16,"void __cdecl(NUDISPLAYLISTITEM *,NUMTL *)"
 0x603490,_NuDisplayListAddLightState,16,"void __cdecl(NUDISPLAYLISTITEM *,NUMTL *)"
 0x6034a0,_DisplayListCreatePS,1,"void __cdecl(NUDISPLAY_LIST_PC *,VARIPTR *,VARIPTR)"
-0x006034b0,_NuDisplayListLinkItem,117,"void __cdecl (NUDISPLAYLIST *, u8, void *)"
+0x006034b0,_NuDisplayListLinkItem,117,"VARIPTR * __cdecl (NUDISPLAYLIST *, u8, void *)"
 0x603530,_NuDisplayListLinkItems,79,"VARIPTR *__cdecl(NUDISPLAYLIST_PC *,i32)"
 0x603580,_DisplayListCreateGeomTransformPS,142,"void *__cdecl(VARIPTR *,NUMTX *,NUMTL *,void *,void *)"
 0x603610,_DisplayListCreateFaceonTransformPS,231,"void *__cdecl(VARIPTR *,NUMTX *,NUMTL *,void *)"
