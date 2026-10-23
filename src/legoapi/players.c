@@ -3805,7 +3805,7 @@ static void ParaphernaliaRemovePc(GAMEOBJECT *, i32, i32, i32);
 i32 __cdecl BatarangGetObjectFromCharIdPc(i32);
 void __cdecl Grapple_DrawLine(GAMEOBJECT *);
 void __cdecl SuperCarry_DrawObject(GAMEOBJECT *);
-void __cdecl ParaphernaliaHandPc(GAMEOBJECT *, i32);
+static void ParaphernaliaHandPc(GAMEOBJECT *, i32);
 void __cdecl DrawTorpedos(GAMEOBJECT *);
 void __cdecl GizDrawBuildItPiece(GAMEOBJECT *, i32);
 void __cdecl TransformDrawTargetPc(NUVEC *, f32, f32);
@@ -4383,5 +4383,24 @@ static void ParaphernaliaRemovePc(GAMEOBJECT *object, i32 model, i32 reflection,
         /* Retail draws the attachment with the unreflected matrix here. */
         if (extra_model != -1 && WORLD->level_objects[extra_model].active != 0)
             NuSpecialDrawAt(&WORLD->level_objects[extra_model].special, &matrix);
+    }
+}
+
+static void ParaphernaliaHandPc(GAMEOBJECT *object, i32 reflection) {
+    NUMTX matrix;
+    NUMTX reflected;
+    i32 locator;
+    if (object->character_context != 0x5d || WORLD->level_objects[0xf7].active == 0)
+        return;
+    locator = object->character_data->game_character->hand_locators[0];
+    if (locator == -1 || object->character_model->points_of_interest[locator] == NULL)
+        return;
+    NuMtxSetTranslation(&matrix, (NUVEC *)&object->locator_matrices[locator].m30);
+    Draw3DObjectMtx(NULL, 0xf7, &matrix);
+    if (reflection != 0 && MatrixReflection(&matrix, object->reflection_enabled, object->reflection_height,
+                                            WORLD->current_level->reflection_y, &reflected)) {
+        NuRndrStartReflectionRender(0);
+        Draw3DObjectMtx(NULL, 0xf7, &reflected);
+        NuRndrEndReflectionRender();
     }
 }
