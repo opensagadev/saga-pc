@@ -2669,48 +2669,57 @@ i32 AddPickupTerrRot(i32 type, NUMTX *matrix, NUMTX *previous, i32 rotating) {
     return index;
 }
 
+#define TERRAIN_NPPI_SET ((TERRAIN_SET_PC *)CurrentTerrain)
 i16 NewPlatPickupInst(void *object, i32 type) {
     TERRAIN_SET_PC *terrain = (TERRAIN_SET_PC *)CurrentTerrain;
     TERRAIN_GROUP_PC *group;
     NUMTX *matrix = (NUMTX *)object;
     i16 source;
+    i32 group_count;
     i32 index;
-    if (terrain == NULL || terrain->group_index_count >= terrain->max_group_indices ||
-        terrain->group_count >= terrain->max_groups || object == NULL)
+    i32 i;
+    if (terrain == NULL || terrain->group_index_count >= terrain->max_group_indices)
+        return -1;
+    group_count = terrain->group_count;
+    if (group_count >= terrain->max_groups || object == NULL)
         return -1;
     source = PickupTerrainPc->group_for_type[type];
-    if (source == -1 || terrain->max_platforms <= 0)
+    if (source == -1)
         return -1;
-    for (index = 0; index < terrain->max_platforms; ++index)
-        if (terrain->platforms[index].scene_object == NULL)
+    index = -1;
+    for (i = 0; i < terrain->max_platforms; ++i) {
+        if (terrain->platforms[i].scene_object == NULL) {
+            index = i;
             break;
-    if (index >= terrain->max_platforms || index == -1)
+        }
+    }
+    if (index == -1)
         return -1;
-    group = &terrain->groups[terrain->group_count];
+    group = &terrain->groups[group_count];
     *group = PickupTerrainPc->groups[source];
-    group->scene_index = (i16)index;
     group->chunk_type = 1;
-    ((TERRAIN_SET_PC *)CurrentTerrain)->platforms[index].scene_object = object;
-    ((TERRAIN_SET_PC *)CurrentTerrain)->platforms[index].flags &= ~1u;
+    group->scene_index = (i16)index;
+    TERRAIN_NPPI_SET->platforms[index].scene_object = object;
+    TERRAIN_NPPI_SET->platforms[index].flags &= ~1u;
     group->origin.x = matrix->m30;
     group->origin.y = matrix->m31;
     group->origin.z = matrix->m32;
-    ((TERRAIN_SET_PC *)CurrentTerrain)->platforms[index].terrain_group_index =
-        ((TERRAIN_SET_PC *)CurrentTerrain)->group_count;
-    ((TERRAIN_SET_PC *)CurrentTerrain)->platforms[index].scene_object_index = 0;
-    ((TERRAIN_SET_PC *)CurrentTerrain)->platforms[index].scene_transform = NULL;
-    terrain = (TERRAIN_SET_PC *)CurrentTerrain;
-    terrain->group_indices[terrain->group_index_count++] = terrain->group_count;
-    ((TERRAIN_SET_PC *)CurrentTerrain)->platforms[index].bounce_54 = 0;
-    ((TERRAIN_SET_PC *)CurrentTerrain)->platforms[index].bounce_58 = 0;
-    ((TERRAIN_SET_PC *)CurrentTerrain)->platforms[index].bounce_5c = 0;
-    ((TERRAIN_SET_PC *)CurrentTerrain)->platforms[index].bounce_64 = 0;
-    ((TERRAIN_SET_PC *)CurrentTerrain)->platforms[index].bounce_60 = 0;
-    ((TERRAIN_SET_PC *)CurrentTerrain)->platforms[index].flags &= ~2u;
-    ++((TERRAIN_SET_PC *)CurrentTerrain)->group_count;
-    ++((TERRAIN_SET_PC *)CurrentTerrain)->platform_cell.group_count;
+    TERRAIN_NPPI_SET->platforms[index].terrain_group_index = TERRAIN_NPPI_SET->group_count;
+    TERRAIN_NPPI_SET->platforms[index].scene_object_index = 0;
+    TERRAIN_NPPI_SET->platforms[index].scene_transform = NULL;
+    TERRAIN_NPPI_SET->group_indices[TERRAIN_NPPI_SET->group_index_count] = TERRAIN_NPPI_SET->group_count;
+    TERRAIN_NPPI_SET->group_index_count++;
+    TERRAIN_NPPI_SET->platforms[index].bounce_54 = 0;
+    TERRAIN_NPPI_SET->platforms[index].bounce_58 = 0;
+    TERRAIN_NPPI_SET->platforms[index].bounce_5c = 0;
+    TERRAIN_NPPI_SET->platforms[index].bounce_64 = 0;
+    TERRAIN_NPPI_SET->platforms[index].bounce_60 = 0;
+    TERRAIN_NPPI_SET->platforms[index].flags &= ~2u;
+    TERRAIN_NPPI_SET->group_count++;
+    TERRAIN_NPPI_SET->platform_cell.group_count++;
     return (i16)index;
 }
+#undef TERRAIN_NPPI_SET
 
 void ReassignPickupInst(i32 index, i32 type) {
     TERRAIN_SET_PC *terrain = (TERRAIN_SET_PC *)CurrentTerrain;
@@ -2721,8 +2730,8 @@ void ReassignPickupInst(i32 index, i32 type) {
     source_index = PickupTerrainPc->group_for_type[type];
     if (source_index == -1)
         return;
-    source = &PickupTerrainPc->groups[source_index];
     group = &terrain->groups[terrain->platforms[index].terrain_group_index];
+    source = &PickupTerrainPc->groups[source_index];
     group->data = source->data;
     group->bounds_min = source->bounds_min;
     group->bounds_max = source->bounds_max;
