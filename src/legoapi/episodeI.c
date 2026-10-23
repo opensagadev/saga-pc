@@ -562,8 +562,7 @@ i32 Action_Sebulba(AISYS_PC *unused0, AISCRIPTPROCESS_PC *unused1, AIPACKET_PC *
         packet->script_processor.action_timer += FRAMETIME;
         if (packet->script_processor.action_timer > 1.0f) {
             if (do_mine != 0) {
-                if (CreatePodRaceMine(&object->lower_position) != NULL)
-                    packet->script_processor.action_timer = 0.0f;
+                STUBBED_NAMED("CreatePodRaceMine");
             } else if (NuSpecialExistsFn(&special) != 0) {
                 NUVEC target_delta;
                 NUVEC throw_velocity;
@@ -716,17 +715,17 @@ typedef struct cut_instance_reader_pc_s {
 STATIC_ASSERT(offsetof(CUT_INSTANCE_READER_PC, flags_88) == 0x88);
 STATIC_ASSERT(offsetof(CUT_INSTANCE_READER_PC, current_frame) == 0x90);
 
-extern f32 gungan_a_time;
+f32 gungan_a_time = 0.5f;
 extern i32 PodRaceKeyPc[8];
-extern MINESYS_PC minesys;
-extern CLIENT_MINES_PC client_mines;
-extern i32 pod_mines_bitfield[2];
-extern i32 clients_mines_bitfield[2];
-extern i32 mine_count;
-extern void *podrace_netpacket;
+MINESYS_PC minesys = {0};
+CLIENT_MINES_PC client_mines = {0};
+i32 pod_mines_bitfield[2] = {0};
+i32 clients_mines_bitfield[2] = {0};
+i32 mine_count = 0;
+void *podrace_netpacket = NULL;
 static i32 podhurry_i = 0;
-extern GUNGAN_A_PC gungan_a;
-extern RETAKEG_NETPACKET_PC *retakeg_netpacket;
+GUNGAN_A_PC gungan_a = {0};
+RETAKEG_NETPACKET_PC *retakeg_netpacket = NULL;
 static i32 mushroom_n_attempts = 0;
 static CUTINFO *mushroom0_cut = NULL;
 static GIZAIMESSAGE *RetakeG_TotalGuards_msg = NULL;
@@ -962,15 +961,15 @@ void __cdecl PodRaceCInit(WORLDINFO *world) {
 }
 
 void __cdecl PodRaceAUpdatePc(WORLDINFO *world) {
-    UpdatePacemakerDisplay(world);
-    PodRaceUpdate(world, FRAMETIME);
+    STUBBED_NAMED("UpdatePacemakerDisplay");
+    STUBBED_NAMED("PodRaceUpdate");
     if (netclient == 0)
-        PodRaceAUpdate();
-    UpdatePodRaceMines();
+        STUBBED_NAMED("PodRaceAUpdate");
+    STUBBED_NAMED("UpdatePodRaceMines");
 }
 
 void __cdecl PodRaceA_AlwaysUpdate(WORLDINFO *world) {
-    UpdatePodRaceLapDisplay(FRAMETIME);
+    STUBBED_NAMED("UpdatePodRaceLapDisplay");
     if (Lap == 3) {
         if (InStory() != 0) {
             if (LevelFixupSlotPc0087b0b8 != NULL) {
@@ -984,14 +983,14 @@ void __cdecl PodRaceA_AlwaysUpdate(WORLDINFO *world) {
 }
 
 void __cdecl PodRaceADrawPc(WORLDINFO *world) {
-    PodRaceADraw(world);
+    STUBBED_NAMED("PodRaceADraw");
 }
 
 void __cdecl PodRaceCUpdate(WORLDINFO *world) {
     i32 i;
-    UpdatePacemakerDisplay(world);
-    UpdatePodRaceLapDisplay(FRAMETIME);
-    PodRaceUpdate(world, FRAMETIME);
+    STUBBED_NAMED("UpdatePacemakerDisplay");
+    STUBBED_NAMED("UpdatePodRaceLapDisplay");
+    STUBBED_NAMED("PodRaceUpdate");
     PodRaceSnipersUpdate();
     if (((PODRACE_LEVFLAG_PC *)LevFlag)->podrace_state == 0) {
         CUTINFO *cutscene = CutScene_Find(world->cutscene_sys, "Ep1_Podrace_TuskenRaiders");
@@ -1116,4 +1115,8 @@ void __cdecl AnakinsFlightB_Update(WORLDINFO *world) {
 }
 
 void __cdecl AnakinsFlightB_Draw(WORLDINFO *world) {
+}
+
+/* Empty level debug hook shared with the Episode II callbacks. */
+void __cdecl KaminoEGizmoMissingPc(char *name) {
 }

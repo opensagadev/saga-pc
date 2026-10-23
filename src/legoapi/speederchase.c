@@ -209,7 +209,7 @@ f32 __cdecl FindPodHoverHeight(GAMEOBJECT *object) {
 
 extern i32 PodDustLocatorIndicesPc[2];
 extern f32 PodDustEmissionRatePc, PodDustHeightScalePc;
-static i32 PodRaceKeyPc[8] = {-1, -1, -1, -1, -1, -1, -1, -1};
+i32 PodRaceKeyPc[8] = {-1, -1, -1, -1, -1, -1, -1, -1};
 void __cdecl PodDust(WORLDINFO *world, GAMEOBJECT *object) {
     NUVEC positions[2], previous[2], delta, position;
     NUMTX matrix, *joint;

@@ -39,10 +39,10 @@ void GrievousA_Update(WORLDINFO *world) {
     if (Grievous_obj->current_hp > 0)
         return;
 
-    if (FreePlay == 0)
-        KillBossPlayCutScene((i32)(i16)id_GRIEVOUS, 0, 0.0f, "ep3_GeneralGrievous_Outro");
-    else
+    if (FreePlay != 0)
         KillBossCompleteLevel((i32)(i16)id_GRIEVOUS, 0, 0.0f);
+    else
+        KillBossPlayCutScene((i32)(i16)id_GRIEVOUS, 0, 0.0f, "ep3_GeneralGrievous_Outro");
 }
 
 void KashyyykA_Reset(WORLDINFO *unused0) {
@@ -948,18 +948,25 @@ extern f32 FactoryBConveyorStopFrame;
 f32 FactoryBConveyorStopFrame = 28.0f;
 static f32 FactoryBConveyorXSpeed = 0.0f;
 static f32 FactoryBConveyorZSpeed = 0.0f;
-extern CUTINFO *factoryb_cut;
-extern GIZAIMESSAGE *factoryb_conveyor_stopped_msg;
+CUTINFO *factoryb_cut = NULL;
+GIZAIMESSAGE *factoryb_conveyor_stopped_msg = NULL;
 static DOOKU_C_PC dooku_c = {0};
-extern GIZAIMESSAGE *kaminoe_show_hearts_msg;
-extern NUSPECIALHANDLE kaminoe_slave1;
-extern i32 PAINTPUZZLESTAGE;
-extern i32 paintmixed;
-extern i32 painttarget;
-extern i32 painttry;
-extern i32 randpaints[3];
-extern i32 paintsused[2];
-extern i32 played_sound;
+i32 PAINTPUZZLESTAGE = 0;
+i32 paintmixed = 0;
+i32 painttarget = 0;
+i32 painttry = 0;
+i32 randpaints[3] = {0};
+i32 paintsused[2] = {0};
+i32 played_sound = 0;
+char *paint_name[6] = {"red_juice", "yellow_juice", "blue_juice", "orange_juice", "green_juice", "purple_juice"};
+char *paint_panel_name[3] = {"redp", "yellp", "bluep"};
+char *paint_target_colour[3] = {"but_orange", "but_green", "but_purple"};
+char *paint_light_name[3] = {"off_purple", "off_green", "off_orange"};
+nuhspecial_s paintlights[3] = {0};
+struct gizmo_pc_s *paintobst[6] = {0};
+struct gizmo_pc_s *paintpanel[3] = {0};
+nuhspecial_s painttargetcolour[3] = {0};
+NUVEC TempleC_StreamStatusPos = {52.57f, 0.76f, -16.54f};
 
 void __cdecl KillBossNewLevel(i32 id, i32 unused_4, f32 delay, i32 level_index);
 void __cdecl DrawForceBackEffect(NUSPECIALHANDLE *special);
@@ -1187,17 +1194,589 @@ void __cdecl KaminoE_AlwaysUpdate(WORLDINFO *world) {
     debris_object_switches[1] = CUTSTOPGAME != 0 || GameCam->sock_position.sock_index == 0x1e;
 }
 
-void __cdecl KaminoE_Draw(WORLDINFO *world) {
-    if (netclient == 0 && kaminoe_show_hearts_msg->value > 0.0f) {
-        GAMEOBJECT *jango = FindGameObject(id_JANGOFETT, 1, 1, 1, 0);
-        if (jango != NULL && kaminoe_show_hearts_msg != NULL && kaminoe_show_hearts_msg->value == 1.0f)
-            DrawBossHitPoints(jango);
-    }
-    NuSpecialSetDrawMtx(&kaminoe_slave1, NuSpecialGetDrawMtx(&kaminoe_slave1));
-    NuSpecialSetVisibility(&kaminoe_slave1, 1);
-}
-
 void __cdecl KaminoOutro_Init(WORLDINFO *world) {
     debris_object_switches[1] =
         CUTSTOPGAME == 0 && GameCam->sock_position.sock_index != 5 && GameCam->sock_position.sock_index != 6;
+}
+
+/* Episode II FixUpLevels callbacks (Factory_G, Kamino_C disco floor, Kamino_E Slave 1). */
+
+typedef struct kaminodisco_pc_s {
+    AIAREA_PC *area;
+    NUSPECIALHANDLE off[16];
+    NUSPECIALHANDLE pending[16];
+    NUSPECIALHANDLE occupied[16];
+    NUSPECIALHANDLE complete[16];
+    NUSPECIALHANDLE final[16];
+    i8 tile_state[16];
+    i8 tile_count;
+    i8 phase;
+    i8 tile[2];
+    f32 timer;
+    u8 completion_sound;
+    u8 reserved_3dd[3];
+    GIZAIMESSAGE *next_tile_message;
+    GIZAIMESSAGE *complete_message;
+} KAMINODISCO_PC;
+STATIC_ASSERT(offsetof(KAMINODISCO_PC, tile_state) == 0x3c4);
+STATIC_ASSERT(offsetof(KAMINODISCO_PC, tile_count) == 0x3d4);
+STATIC_ASSERT(offsetof(KAMINODISCO_PC, timer) == 0x3d8);
+STATIC_ASSERT(offsetof(KAMINODISCO_PC, next_tile_message) == 0x3e0);
+STATIC_ASSERT(sizeof(KAMINODISCO_PC) == 0x3e8);
+
+typedef struct kaminoc_packet_pc_s {
+    i16 off_mask;
+    i16 pending_mask;
+    i16 occupied_mask;
+    i16 complete_mask;
+    i16 final_mask;
+    i16 sound_mask;
+    u8 complete;
+    u8 reserved_0d;
+} KAMINOC_PACKET_PC;
+STATIC_ASSERT(sizeof(KAMINOC_PACKET_PC) == 0xe);
+
+typedef struct kamino_progress_gizmo_reader_pc_s {
+    u8 opaque_00_94[0x94];
+    u8 flags;
+} KAMINO_PROGRESS_GIZMO_READER_PC;
+
+typedef struct gizforce_reader_pc_s {
+    u8 opaque_00_28[0x28];
+    GAMEANIMSET *anim_set;
+} GIZFORCE_READER_PC;
+
+typedef struct kaminoe_turret_reader_pc_s {
+    u8 opaque_00_e4[0xe4];
+    NUVEC *target_position;
+    u8 opaque_e8_12c[0x44];
+    u8 field_12c;
+    u8 opaque_12d;
+    u8 field_12e;
+    u8 opaque_12f_13a[0xb];
+    u16 flags_13a;
+    u8 opaque_13c_140[0x4];
+} KAMINOE_TURRET_READER_PC;
+STATIC_ASSERT(offsetof(KAMINOE_TURRET_READER_PC, field_12e) == 0x12e);
+STATIC_ASSERT(offsetof(KAMINOE_TURRET_READER_PC, flags_13a) == 0x13a);
+STATIC_ASSERT(sizeof(KAMINOE_TURRET_READER_PC) == 0x140);
+
+typedef struct kamino_e_pc_s {
+    GIZAIMESSAGE *jango_fight;
+    GIZAIMESSAGE *can_fire;
+    GIZAIMESSAGE *reset_turrets;
+    GIZAIMESSAGE *show_hearts;
+    GIZAIMESSAGE *minicut_started;
+    CUTINFO *intro_cutscene;
+    AIAREA_PC *landing_area;
+    NUSPECIALHANDLE slave1;
+    KAMINOE_TURRET_READER_PC *turrets[4];
+    KAMINOE_TURRET_READER_PC *active_turret;
+    void *panels[4];
+    NUVEC position;
+    i32 pitch;
+    i32 yaw;
+    i32 roll;
+    i32 orbit_pitch;
+    i32 orbit_yaw;
+    f32 departure_timer;
+    f32 elapsed_time;
+    i8 fire_index;
+    u8 departing;
+    i16 platform;
+} KAMINO_E_PC;
+STATIC_ASSERT(offsetof(KAMINO_E_PC, turrets) == 0x28);
+STATIC_ASSERT(offsetof(KAMINO_E_PC, position) == 0x4c);
+STATIC_ASSERT(offsetof(KAMINO_E_PC, platform) == 0x76);
+STATIC_ASSERT(sizeof(KAMINO_E_PC) == 0x78);
+
+GAMEOBJECT *ObiWan = NULL;
+extern i16 CharacterFixupIdPc007f19d0;
+KAMINODISCO_PC kaminodisco = {0};
+KAMINOC_PACKET_PC *kaminoc_netpacket = NULL;
+NUSPECIALHANDLE disco_on_spin[3] = {0};
+GIZMO_PC *disco_off_spina[3] = {0};
+NUSPECIALHANDLE walllights[2] = {0};
+NUSPECIALHANDLE walllights_disco[2] = {0};
+NUSPECIALHANDLE striplights[2] = {0};
+NUSPECIALHANDLE discolights[2] = {0};
+NUSPECIALHANDLE discorm_wall_on = {0};
+NUSPECIALHANDLE discorm_wall_off = {0};
+GIZMO_PC *gizTurrets[2] = {0};
+i32 last = 0;
+static f32 KaminoDiscoTileTimePc = 2.5f;
+static f32 KaminoDiscoTileRadiusPc = 0.2f;
+KAMINO_E_PC kamino_e = {0};
+extern i32 turret_gizmotype_id;
+
+void *__cdecl GizmoFindByData(void *gizmo_sys, i32 type_id, void *data);
+void __cdecl KaminoE_Update(WORLDINFO *world);
+
+void __cdecl KaminoEGizmoMissingPc(char *name);
+
+void __cdecl FactoryG_Update(WORLDINFO *world) {
+    i32 complete = 0;
+    i32 i;
+    if (netclient != 0)
+        return;
+    for (i = 0; i < 4; i++) {
+        if (GizForce_Complete((GIZFORCE_PC *)force_array[i]) != 0)
+            complete++;
+    }
+    if (ObiWan != NULL && complete != 4) {
+        f32 lamp;
+        ObiWan->position.x = 112.76f;
+        ObiWan->position.y = 0.75f;
+        ObiWan->position.z = -10.5f;
+        lamp = (f32)(NuTrigTable[(u16)(i32)((f64)NuFmod(GameTimer.time_elapsed, 2.0f) * NuQFntHalfScale *
+                                            VehicleTurnPhaseScale) >>
+                                 1] *
+                     30.0);
+        ObiWan->field_0x276 = (u16)(0xc000 - (i16)(i32)((f64)lamp * -182.0444488525390625));
+        return;
+    }
+    if (ObiWan == NULL) {
+        ObiWan = FindGameObject(CharacterFixupIdPc007f19d0, 0x400, 0, 1, 0);
+        return;
+    }
+    if (FreePlay != 0) {
+        CompleteLevel(WORLD);
+    } else {
+        CUTINFO *cut = NewCutScene(NULL, world->cutscene_sys, "ep2_factory_outro", 1);
+        ((CUT_INSTANCE_READER_PC *)((CUTINFO_READER_PC *)cut)->instance)->flags_88 |= 2;
+    }
+}
+
+#define KAMINO_DISCO_AREA_MASK_SET_PC(world, area)                                                                     \
+    ((*(u64 *)((GAMEOBJECT *)(world)->ai_sys->player_1)->ai_area_mask &                                                \
+      (u64)(i64)(1 << (i32)((area) - (world)->ai_sys->areas))) != 0)
+
+#define KAMINO_DISCO_PLAYER_IN_AREA_PC(world, who, area)                                                               \
+    ((who) != NULL && (area) != NULL && KAMINO_DISCO_AREA_MASK_SET_PC(world, area))
+
+void __cdecl KaminoC_Init(WORLDINFO *world) {
+    char name[32];
+    i32 i;
+    memset(&kaminodisco, 0, sizeof(kaminodisco));
+    kaminoc_netpacket = SetLevelHack(sizeof(KAMINOC_PACKET_PC));
+    kaminodisco.tile_count = 0;
+    do {
+        if (kaminodisco.tile_count < 9)
+            sprintf(name, "dot_off_0%d", kaminodisco.tile_count + 1);
+        else
+            sprintf(name, "dot_off_%d", kaminodisco.tile_count + 1);
+        NuSpecialFind(WORLD->current_gscn, &kaminodisco.off[kaminodisco.tile_count], name, 1);
+        if (kaminodisco.tile_count < 9)
+            sprintf(name, "dot_flash_0%d", kaminodisco.tile_count + 1);
+        else
+            sprintf(name, "dot_flash_%d", kaminodisco.tile_count + 1);
+        NuSpecialFind(WORLD->current_gscn, &kaminodisco.pending[kaminodisco.tile_count], name, 1);
+        if (kaminodisco.tile_count < 9)
+            sprintf(name, "dot_select_0%d", kaminodisco.tile_count + 1);
+        else
+            sprintf(name, "dot_select_%d", kaminodisco.tile_count + 1);
+        NuSpecialFind(WORLD->current_gscn, &kaminodisco.occupied[kaminodisco.tile_count], name, 1);
+        if (kaminodisco.tile_count < 9)
+            sprintf(name, "dot_finish_0%d", kaminodisco.tile_count + 1);
+        else
+            sprintf(name, "dot_finish_%d", kaminodisco.tile_count + 1);
+        NuSpecialFind(WORLD->current_gscn, &kaminodisco.complete[kaminodisco.tile_count], name, 1);
+        if (kaminodisco.tile_count < 9)
+            sprintf(name, "dot_on_0%d", kaminodisco.tile_count + 1);
+        else
+            sprintf(name, "dot_on_%d", kaminodisco.tile_count + 1);
+        NuSpecialFind(WORLD->current_gscn, &kaminodisco.final[kaminodisco.tile_count], name, 1);
+        if (NuSpecialExistsFn(&kaminodisco.off[kaminodisco.tile_count]) == 0 ||
+            NuSpecialExistsFn(&kaminodisco.pending[kaminodisco.tile_count]) == 0 ||
+            NuSpecialExistsFn(&kaminodisco.occupied[kaminodisco.tile_count]) == 0 ||
+            NuSpecialExistsFn(&kaminodisco.complete[kaminodisco.tile_count]) == 0)
+            break;
+        kaminodisco.tile_count++;
+    } while (kaminodisco.tile_count < 16);
+    kaminodisco.area = AISysFindArea(WORLD->ai_sys, "DISCO");
+    NuSpecialFind(WORLD->current_gscn, &walllights[0], "walllights1", 1);
+    NuSpecialFind(WORLD->current_gscn, &walllights[1], "walllights2", 1);
+    NuSpecialFind(WORLD->current_gscn, &walllights_disco[0], "walllights1_disco", 1);
+    NuSpecialFind(WORLD->current_gscn, &walllights_disco[1], "walllights2_disco", 1);
+    NuSpecialFind(WORLD->current_gscn, &striplights[0], "striplights1", 1);
+    NuSpecialFind(WORLD->current_gscn, &striplights[1], "striplights1b", 1);
+    NuSpecialFind(WORLD->current_gscn, &discolights[0], "discolight1", 1);
+    NuSpecialFind(WORLD->current_gscn, &discolights[1], "discolight2", 1);
+    NuSpecialFind(WORLD->current_gscn, &discorm_wall_on, "discorm_wall_on", 1);
+    NuSpecialFind(WORLD->current_gscn, &discorm_wall_off, "discorm_wall_off", 1);
+    for (i = 0; i < 3; i++) {
+        sprintf(name, "disco_on_spin%d", i + 3);
+        NuSpecialFind(WORLD->current_gscn, &disco_on_spin[i], name, 1);
+        if (netclient == 0) {
+            sprintf(name, "disco_off%d", i + 1);
+            disco_off_spina[i] = GizmoFindByName(world->gizmo_sys, force_gizmotype_id, name);
+        }
+    }
+    if (netclient == 0) {
+        gizTurrets[0] = GizmoFindByName(world->gizmo_sys, turret_gizmotype_id, "turret01");
+        gizTurrets[1] = GizmoFindByName(world->gizmo_sys, turret_gizmotype_id, "turret02");
+        LevGizmo[0] = GizmoFindByName(world->gizmo_sys, gizaimessage_gizmotype_id, "msg_KaminoCProgress");
+        LevGizmo[1] = GizmoFindByName(world->gizmo_sys, obstacle_gizmotype_id, "JANGOFIELD01");
+    }
+    last = 0;
+}
+
+void __cdecl KaminoC_Reset(WORLDINFO *world) {
+    i32 i;
+    memset(kaminodisco.tile_state, 0, sizeof(kaminodisco.tile_state));
+    kaminodisco.phase = 0;
+    kaminodisco.tile[0] = -1;
+    kaminodisco.tile[1] = -1;
+    kaminodisco.timer = 0.0f;
+    kaminodisco.completion_sound = 0;
+    kaminoc_netpacket->pending_mask = 0;
+    kaminoc_netpacket->complete_mask = 0;
+    kaminoc_netpacket->occupied_mask = 0;
+    kaminoc_netpacket->final_mask = 0;
+    kaminoc_netpacket->off_mask = -1;
+    kaminoc_netpacket->complete = 0;
+    for (i = 0; i < kaminodisco.tile_count; i++) {
+        NuSpecialSetVisibility(&kaminodisco.off[i], 1);
+        NuSpecialSetVisibility(&kaminodisco.pending[i], 0);
+        NuSpecialSetVisibility(&kaminodisco.complete[i], 0);
+    }
+    kaminodisco.next_tile_message = SetGizAIMessage(gizaimessagesys, "NextDiscoTile", 0.0f, NULL);
+    kaminodisco.complete_message = SetGizAIMessage(gizaimessagesys, "DiscoComplete", 0.0f, NULL);
+    for (i = 0; i < 3; i++) {
+        NuSpecialSetVisibility(&disco_on_spin[i], 0);
+        if (netclient == 0) {
+            GizmoSetVisibility(world->gizmo_sys, disco_off_spina[i], 1, 0);
+            if (((GIZFORCE_READER_PC *)disco_off_spina[i]->object)->anim_set->state == 0)
+                GizmoActivate(world->gizmo_sys, disco_off_spina[i], 1, 0);
+        }
+    }
+}
+
+static i32 KaminoDiscoChooseTilePc(i32 state, i32 excluded) {
+    i32 candidates[16];
+    i32 count = 0;
+    i32 i;
+    for (i = 0; i < kaminodisco.tile_count; i++) {
+        if (i != excluded && kaminodisco.tile_state[i] == state)
+            candidates[count++] = i;
+    }
+    return count != 0 ? candidates[NuRand(NULL) % count] : -1;
+}
+
+static void KaminoDiscoUpdateVisualsPc(WORLDINFO *world) {
+    i32 i;
+    for (i = 0; i < kaminodisco.tile_count; i++) {
+        i32 bit = 1 << i;
+        NuSpecialSetVisibility(&kaminodisco.off[i], kaminoc_netpacket->off_mask & bit);
+        NuSpecialSetVisibility(&kaminodisco.pending[i], kaminoc_netpacket->pending_mask & bit);
+        NuSpecialSetVisibility(&kaminodisco.occupied[i], kaminoc_netpacket->occupied_mask & bit);
+        NuSpecialSetVisibility(&kaminodisco.final[i], kaminoc_netpacket->final_mask & bit);
+        NuSpecialSetVisibility(&kaminodisco.complete[i], kaminoc_netpacket->complete_mask & bit);
+        if ((kaminoc_netpacket->sound_mask & bit) != 0)
+            PlaySfx("Kam_DiscoFloorPanelOn", (NUVEC *)&NuSpecialGetDrawMtx(&kaminodisco.complete[i])->translation);
+    }
+    if (kaminoc_netpacket->complete != 0) {
+        for (i = 0; i < 3; i++) {
+            NuSpecialSetVisibility(&disco_on_spin[i], 1);
+            GizmoSetVisibility(world->gizmo_sys, disco_off_spina[i], 0, 0);
+        }
+        NuSpecialSetVisibility(&walllights_disco[0], 1);
+        NuSpecialSetVisibility(&walllights_disco[1], 1);
+        NuSpecialSetVisibility(&walllights[0], 0);
+        NuSpecialSetVisibility(&walllights[1], 0);
+        NuSpecialSetVisibility(&striplights[0], 0);
+        NuSpecialSetVisibility(&striplights[1], 1);
+        NuSpecialSetVisibility(&discolights[0], 1);
+        NuSpecialSetVisibility(&discolights[1], 1);
+        NuSpecialSetVisibility(&discorm_wall_off, 0);
+        NuSpecialSetVisibility(&discorm_wall_on, 1);
+        if (kaminodisco.completion_sound == 0) {
+            PlaySfx("Kam_DiscoFloorPanelDone", NuSpecialGetDrawPos(&kaminodisco.off[i]));
+            kaminodisco.completion_sound = 1;
+        }
+    } else {
+        for (i = 0; i < 3; i++) {
+            NuSpecialSetVisibility(&disco_on_spin[i], 0);
+            GizmoSetVisibility(world->gizmo_sys, disco_off_spina[i], 1, 0);
+        }
+        NuSpecialSetVisibility(&walllights_disco[0], 0);
+        NuSpecialSetVisibility(&walllights_disco[1], 0);
+        NuSpecialSetVisibility(&walllights[0], 1);
+        NuSpecialSetVisibility(&walllights[1], 1);
+        NuSpecialSetVisibility(&striplights[0], 1);
+        NuSpecialSetVisibility(&striplights[1], 0);
+        NuSpecialSetVisibility(&discolights[0], 0);
+        NuSpecialSetVisibility(&discolights[1], 0);
+        NuSpecialSetVisibility(&discorm_wall_on, 0);
+        NuSpecialSetVisibility(&discorm_wall_off, 1);
+    }
+}
+
+void __cdecl KaminoC_Update(WORLDINFO *world) {
+    KAMINO_PROGRESS_GIZMO_READER_PC *progress = (KAMINO_PROGRESS_GIZMO_READER_PC *)LevGizmo[0]->object;
+    i32 i;
+    if (GizmoGetOutput(world->gizmo_sys, LevGizmo[0], 0, 0) == 0) {
+        if ((progress->flags & 1) == 0) {
+            GizmoActivate(world->gizmo_sys, LevGizmo[1], 1, 1);
+            if (GizmoGetOutput(world->gizmo_sys, gizTurrets[0], 0, 0) != 0 &&
+                GizmoGetOutput(world->gizmo_sys, gizTurrets[1], 0, 0) != 0)
+                GizmoSetVisibility(world->gizmo_sys, LevGizmo[1], 0, 1);
+        }
+    } else {
+        GizmoSetVisibility(world->gizmo_sys, LevGizmo[1], 0, 1);
+    }
+    kaminoc_netpacket->sound_mask = 0;
+    SetGizAIMessage(gizaimessagesys, "NextDiscoTile", 0.0f, kaminodisco.next_tile_message);
+    SetGizAIMessage(gizaimessagesys, "DiscoComplete", 0.0f, kaminodisco.complete_message);
+    switch (kaminodisco.phase) {
+        case 0:
+            if (KAMINO_DISCO_PLAYER_IN_AREA_PC(world, world->ai_sys->player_1, kaminodisco.area) ||
+                KAMINO_DISCO_PLAYER_IN_AREA_PC(world, world->ai_sys->player_2, kaminodisco.area)) {
+                kaminoc_netpacket->complete = 0;
+                kaminodisco.timer = 0.0f;
+                kaminodisco.phase = 1;
+                kaminodisco.tile[0] = (i8)KaminoDiscoChooseTilePc(0, -1);
+                kaminodisco.tile[1] = (i8)KaminoDiscoChooseTilePc(0, kaminodisco.tile[0]);
+                if (kaminodisco.tile[0] != -1 && kaminodisco.tile[1] != -1) {
+                    kaminodisco.tile_state[kaminodisco.tile[0]] = 1;
+                    kaminodisco.tile_state[kaminodisco.tile[1]] = 1;
+                }
+            }
+            break;
+        case 1: {
+            i32 occupied_by_player = -1;
+            i32 occupied[2];
+            i32 k;
+            for (k = 0; k < 2; k++) {
+                i32 old_state = kaminodisco.tile_state[kaminodisco.tile[k]];
+                NUVEC *position;
+                kaminodisco.tile_state[kaminodisco.tile[k]] = 1;
+                occupied[k] = 0;
+                position = NuSpecialGetPos(&kaminodisco.pending[kaminodisco.tile[k]]);
+                for (i = 0; i < 8; i++) {
+                    GAMEOBJECT *object = (GAMEOBJECT *)Player[i];
+                    if (object != NULL && (object->flags_1fc_word & 1) != 0 && (object->flags_1fc_word & 0x1000) != 0 &&
+                        object->field_281 != 0) {
+                        f32 dx = position->x - object->position.x;
+                        f32 dy = position->y - object->position.y;
+                        f32 dz = position->z - object->position.z;
+                        f32 dist = dx * dx + dy * dy + dz * dz;
+                        if (dist < KaminoDiscoTileRadiusPc * KaminoDiscoTileRadiusPc) {
+                            occupied[k] = 1;
+                            kaminodisco.tile_state[kaminodisco.tile[k]] = 2;
+                            if (object == player)
+                                occupied_by_player = kaminodisco.tile[k];
+                            break;
+                        }
+                    }
+                }
+                if (old_state != kaminodisco.tile_state[kaminodisco.tile[k]] &&
+                    kaminodisco.tile_state[kaminodisco.tile[k]] == 2)
+                    kaminoc_netpacket->sound_mask |= 1 << kaminodisco.tile[k];
+            }
+            if (occupied[0] != 0 && occupied[1] != 0) {
+                kaminodisco.timer = 0.0f;
+                kaminodisco.tile_state[kaminodisco.tile[0]] = 3;
+                kaminodisco.tile_state[kaminodisco.tile[1]] = 3;
+                kaminodisco.tile[0] = (i8)KaminoDiscoChooseTilePc(0, -1);
+                kaminodisco.tile[1] = (i8)KaminoDiscoChooseTilePc(0, kaminodisco.tile[0]);
+                if (kaminodisco.tile[0] != -1 && kaminodisco.tile[1] != -1) {
+                    kaminodisco.tile_state[kaminodisco.tile[0]] = 1;
+                    kaminodisco.tile_state[kaminodisco.tile[1]] = 1;
+                } else {
+                    kaminodisco.phase = 2;
+                    for (i = 0; i < kaminodisco.tile_count; i++)
+                        kaminodisco.tile_state[i] = 0;
+                }
+                break;
+            }
+            kaminodisco.timer += FRAMETIME;
+            if (kaminodisco.timer > KaminoDiscoTileTimePc) {
+                kaminodisco.timer = 0.0f;
+                for (i = 0; i < 2; i++) {
+                    i32 tile = KaminoDiscoChooseTilePc(3, -1);
+                    if (tile != -1)
+                        kaminodisco.tile_state[tile] = 0;
+                }
+            }
+            if (player2 == NULL) {
+                GAMEOBJECT *companion = (GAMEOBJECT *)Player[0];
+                if (player == companion)
+                    companion = (GAMEOBJECT *)Player[1];
+                if (companion != NULL) {
+                    if (occupied_by_player == kaminodisco.tile[0])
+                        SetGizAIMessage(gizaimessagesys, "NextDiscoTile", (f32)(kaminodisco.tile[1] + 1),
+                                        kaminodisco.next_tile_message);
+                    else if (occupied_by_player == kaminodisco.tile[1])
+                        SetGizAIMessage(gizaimessagesys, "NextDiscoTile", (f32)(kaminodisco.tile[0] + 1),
+                                        kaminodisco.next_tile_message);
+                }
+            }
+            break;
+        }
+        case 2:
+            SetGizAIMessage(gizaimessagesys, "DiscoComplete", 1.0f, kaminodisco.complete_message);
+            kaminoc_netpacket->complete = 1;
+            if (!(KAMINO_DISCO_PLAYER_IN_AREA_PC(world, world->ai_sys->player_1, kaminodisco.area) ||
+                  KAMINO_DISCO_PLAYER_IN_AREA_PC(world, world->ai_sys->player_2, kaminodisco.area))) {
+                KaminoC_Reset(world);
+                return;
+            }
+            for (i = 0; i < kaminodisco.tile_count; i++)
+                kaminodisco.tile_state[i] = 4;
+            kaminodisco.timer += FRAMETIME;
+            if (kaminodisco.timer > 20.0f) {
+                KaminoC_Reset(world);
+                return;
+            }
+            break;
+        default:
+            break;
+    }
+    kaminoc_netpacket->final_mask = 0;
+    kaminoc_netpacket->off_mask = 0;
+    kaminoc_netpacket->pending_mask = 0;
+    kaminoc_netpacket->occupied_mask = 0;
+    kaminoc_netpacket->complete_mask = 0;
+    for (i = 0; i < kaminodisco.tile_count; i++) {
+        switch (kaminodisco.tile_state[i]) {
+            case 0:
+                kaminoc_netpacket->off_mask |= 1 << i;
+                break;
+            case 1:
+                kaminoc_netpacket->pending_mask |= 1 << i;
+                break;
+            case 2:
+                kaminoc_netpacket->occupied_mask |= 1 << i;
+                break;
+            case 3:
+                kaminoc_netpacket->final_mask |= 1 << i;
+                break;
+            case 4:
+                kaminoc_netpacket->complete_mask |= 1 << i;
+                break;
+            default:
+                break;
+        }
+    }
+    KaminoDiscoUpdateVisualsPc(world);
+}
+
+void __cdecl KaminoE_Reset(WORLDINFO *world) {
+    char name[16];
+    i32 i;
+    memset(&kamino_e, 0, sizeof(kamino_e));
+    kamino_e.landing_area = AISysFindArea(WORLD->ai_sys, "landing_pad");
+    if (NuSpecialFind(world->current_gscn, &kamino_e.slave1, "slave1", 1) != 0)
+        kamino_e.platform = (i16)FindPlatInst(NuSpecialGetInstanceix(&kamino_e.slave1));
+    for (i = 0; i < 4; i++) {
+        GIZMO_PC *gizmo;
+        sprintf(name, "turret%d", i + 1);
+        gizmo = GizmoFindByName(world->gizmo_sys, turret_gizmotype_id, name);
+        if (gizmo != NULL) {
+            kamino_e.turrets[i] = (KAMINOE_TURRET_READER_PC *)gizmo->object;
+            kamino_e.turrets[i]->target_position = &kamino_e.position;
+            kamino_e.turrets[i]->field_12c = 2;
+            kamino_e.turrets[i]->flags_13a |= 1;
+        } else {
+            KaminoEGizmoMissingPc(name);
+        }
+        sprintf(name, "R4_t%d", i + 1);
+        gizmo = GizmoFindByName(world->gizmo_sys, gizpanel_gizmotype_id, name);
+        if (gizmo != NULL)
+            kamino_e.panels[i] = gizmo->object;
+        else
+            KaminoEGizmoMissingPc(name);
+    }
+    kamino_e.jango_fight = SetGizAIMessage(gizaimessagesys, "JangoFight", 0.0f, NULL);
+    kamino_e.can_fire = SetGizAIMessage(gizaimessagesys, "Slave1CanFire", 0.0f, NULL);
+    kamino_e.reset_turrets = SetGizAIMessage(gizaimessagesys, "ResetTurrets", 0.0f, NULL);
+    kamino_e.show_hearts = CheckGizAIMessage(gizaimessagesys, "ShowHearts", NULL);
+    kamino_e.minicut_started = CheckGizAIMessage(gizaimessagesys, "MiniCutStarted", NULL);
+    CutScene_Find(world->cutscene_sys, "Ep2_Kamino_Intro2");
+    kamino_e.intro_cutscene = CutScene_Find(world->cutscene_sys, "Ep2_Kamino_Intro2");
+}
+
+static void KaminoEResetTurretsPc(void) {
+    i32 i;
+    kamino_e.active_turret = NULL;
+    for (i = 0; i < 4; i++) {
+        GizmoActivate(WORLD->gizmo_sys, GizmoFindByData(WORLD->gizmo_sys, gizpanel_gizmotype_id, kamino_e.panels[i]), 1,
+                      1);
+        kamino_e.turrets[i]->field_12e = 1;
+        kamino_e.turrets[i]->flags_13a &= ~0x10;
+    }
+}
+
+void __cdecl KaminoE_UpdatePc(WORLDINFO *world) {
+    GAMEOBJECT *jango;
+    GAMEOBJECT *other;
+    GAMEOBJECT *target;
+    i32 direction;
+    u32 *connection;
+    AIAREA_PC *fight_area;
+    AILOCATOR_PC *wait;
+    AISYS_PC *ai;
+    if (kamino_e.reset_turrets != NULL && kamino_e.reset_turrets->value == 1.0f) {
+        KaminoEResetTurretsPc();
+        kamino_e.reset_turrets->value = 0.0f;
+    }
+    if (netclient != 0)
+        return;
+    jango = FindGameObject(id_JANGOFETT, 1, 1, 1, 0);
+    other = FindGameObject(id_JANGOFETT, 4, 1, 1, 0);
+    target = NULL;
+    if (jango != NULL)
+        target = jango;
+    else if (other != NULL)
+        target = other;
+    direction = 0;
+    if (jango != NULL && jango->current_hp < 1) {
+        if (FreePlay != 0)
+            KillBossCompleteLevel(id_JANGOFETT, 0, 0.0f);
+        else
+            KillBossNewLevel(id_JANGOFETT, 0, 0.0f, LevelFixupSlotPc0087b138->index);
+    }
+    if (kamino_e.jango_fight->value == 0.0f && FreePlay == 0 && kamino_e.intro_cutscene != NULL &&
+        instNuGCutSceneIsFinished((INSTNUGCUTSCENE *)((CUTINFO_READER_PC *)kamino_e.intro_cutscene)->instance) != 0)
+        kamino_e.jango_fight->value = 1.0f;
+    STUBBED_NAMED("KaminoE_Update");
+    connection =
+        AIPAthFindPathCnx(world->ai_sys, world->ai_sys->path_sys->active_path, "Bridge1_a", "Bridge1_b", &direction);
+    fight_area = AISysFindArea(WORLD->ai_sys, "Fight");
+    if (target == NULL || connection == NULL || fight_area == NULL)
+        return;
+    if ((connection[direction] & 0x80000000) == 0 && (connection[direction == 0] & 0x80000000) == 0)
+        return;
+    ai = world->ai_sys;
+    if ((*(u64 *)target->ai_area_mask & (u64)(i64)(1 << (i32)(fight_area - ai->areas))) != 0)
+        return;
+    wait = AIPathFindLocator(ai, "WAIT");
+    if (wait == NULL)
+        return;
+    target->position = wait->position;
+    target->field_0x276 = wait->rotation;
+    target->facing_angle = wait->rotation;
+    target->movement_facing_angle = wait->rotation;
+    target->ai_packet.path_info = wait->path_info;
+    target->collision_position = target->position;
+    target->initial_position = target->position;
+    plr_lastpos = target->collision_position;
+    target->start_position = target->collision_position;
+    target->respawn_position = target->position;
+    target->last_safe_position = target->position;
+    target->ai_update_position = target->position;
+    target->velocity = v000;
+    InitSurfaceInfo(target);
+}
+
+/* Reads the Kamino_E state block (show_hearts at 0x88903c, slave1 at 0x88904c). */
+void __cdecl KaminoE_Draw(WORLDINFO *world) {
+    if (netclient == 0 && kamino_e.show_hearts->value > 0.0f) {
+        GAMEOBJECT *jango = FindGameObject(id_JANGOFETT, 1, 1, 1, 0);
+        if (jango != NULL && kamino_e.show_hearts != NULL && kamino_e.show_hearts->value == 1.0f)
+            DrawBossHitPoints(jango);
+    }
+    NuSpecialSetDrawMtx(&kamino_e.slave1, NuSpecialGetDrawMtx(&kamino_e.slave1));
+    NuSpecialSetVisibility(&kamino_e.slave1, 1);
 }

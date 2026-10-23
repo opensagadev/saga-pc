@@ -378,3 +378,237 @@ void __cdecl CloudCityEscapeA_Panel(WORLDINFO *world) {
             DrawBossHitPoints(NULL);
     }
 }
+
+/* Episode IV FixUpLevels callbacks (Mos Eisley, Blockade Runner, Death Star rescue and escape). */
+i32 test_tb = 1;
+extern i16 CharacterFixupIdPc007f1a3c;
+extern i16 CharacterFixupIdPc007f1a40;
+void __cdecl LevChatterSfx(char *name, NUVEC *position) {
+    if (TerrainChatterWaitPc <= 0.0f && qrand() < 0x400) {
+        PlaySfx(name, position);
+        TerrainChatterWaitPc = (f32)((f64)qrand() * PlayerRandomScalePc * 2.0 + NuTimeBarColumnStep);
+    }
+}
+STATIC_ASSERT(offsetof(GAMEOBJECT, ai_packet.animation_override_from) == 0x3ee);
+
+void __cdecl MosEisleyB_Init(WORLDINFO *world) {
+    NuSpecialFind(world->current_gscn, &LevHSpecial[0], "land_speeder_terrain1", 1);
+    LevGizObst[0] = GizObstacle_FindByName(world->giz_obstacle_sys, "Wash");
+}
+
+void __cdecl MosEisleyE_Init(WORLDINFO *world) {
+    LevGizmo[0] = GizmoFindByName(world->gizmo_sys, force_gizmotype_id, "force1");
+}
+
+void __cdecl MosEisleyE_Reset(WORLDINFO *world) {
+    texanimbits &= ~2;
+}
+
+void __cdecl BlockadeRunnerB_Init(WORLDINFO *world) {
+    LevBlowUp[0] = GizmoBlowUp_FindByName(world, "thermo_041");
+}
+
+void __cdecl BlockadeRunnerB_Update(WORLDINFO *world) {
+    if (LevBlowUp[0] != NULL && InStory() != 0)
+        LevBlowUp[0]->status_flags &= ~0x800000;
+}
+
+void __cdecl BlockadeRunnerC_Init(WORLDINFO *world) {
+    LevGizObst[0] = GizObstacle_FindByName(world->giz_obstacle_sys, "obstacle8");
+}
+
+static void BlockadeRunnerDKillEjectedCreaturePc(PART_PC *part, i32 reason) {
+    i32 i;
+    for (i = 0; i < 8; i++) {
+        if (LevGamePart[i] == part) {
+            if (LevGameObject[i] != NULL) {
+                KillGameObject(LevGameObject[i], 4, 0);
+                LevGameObject[i] = NULL;
+            }
+            LevGamePart[i] = NULL;
+        }
+    }
+}
+
+static i32 BlockadeRunnerDDrawCreaturePc(PART_PC *part) {
+    return 0;
+}
+
+static NUVEC BlockadeRunnerDEjectMomPc = {-0.5f, 0.0f, 0.0f};
+static NUVEC BlockadeRunnerDEjectVecPc[2] = {{13.0f, 1.6f, 7.93f}, {13.0f, 1.6f, 6.55f}};
+
+static void BlockadeRunnerDEjectCreaturePc(i32 eject_index) {
+    i32 models[4];
+    NUMTX matrix;
+    ADDPART_PC params;
+    i32 i;
+    i32 model;
+    models[0] = CharacterFixupIdPc007f1a3c;
+    models[1] = CharacterFixupIdPc007f1a40;
+    models[2] = CharacterFixupIdPc007f1a3c;
+    models[3] = FreePlayId007f1a44Pc;
+    if ((u32)eject_index > 1)
+        return;
+    for (i = 0; i < 8; i++) {
+        if (LevGamePart[i] != NULL)
+            continue;
+        NuMtxSetTranslation(&matrix, &BlockadeRunnerDEjectVecPc[eject_index]);
+        model = models[qrand() / 0x4000];
+        LevGameObject[i] = AddDynamicCreature(model, &BlockadeRunnerDEjectVecPc[eject_index], 0, "default", NULL, NULL,
+                                              0, NULL, NULL, 0, 0);
+        if (LevGameObject[i] != NULL) {
+            LevGameObject[i]->flags_ef4 = (LevGameObject[i]->flags_ef4 & ~0x20) | ((test_tb & 1) << 5);
+            LevGameObject[i]->flags_ef0 |= 0x10;
+            LevGameObject[i]->ai_packet.animation_override_from = 0xe9;
+            LevGameObject[i]->ai_packet.animation_override_to = 5;
+            LevGameObject[i]->flags_ef0 |= 0x4000000;
+            params = Default_ADDPART;
+            params.matrix = &matrix;
+            params.velocity = &BlockadeRunnerDEjectMomPc;
+            params.field_14 = 0.15f;
+            params.field_18 = 0.15f;
+            params.gravity = 0.0f;
+            params.special = &WORLD->level_objects[254].special;
+            params.flags = 0x8698;
+            params.collision_fn = PartCollide_3D;
+            params.kill_fn = BlockadeRunnerDKillEjectedCreaturePc;
+            params.draw_fn = BlockadeRunnerDDrawCreaturePc;
+            params.time_step = FRAMETIME;
+            LevGamePart[i] = AddPart(&params);
+            LevGamePart[i]->time_remaining = 30.0f;
+            if (LevGamePart[i] == NULL) {
+                KillGameObject(LevGameObject[i], 4, 0);
+                LevGameObject[i] = NULL;
+            }
+            return;
+        }
+    }
+}
+
+void __cdecl BlockadeRunnerD_Reset(WORLDINFO *world) {
+    LevGizmo[0] = GizmoFindByName(world->gizmo_sys, obstacle_gizmotype_id, "obstacle15");
+    LevGizmo[1] = GizmoFindByName(world->gizmo_sys, obstacle_gizmotype_id, "obstacle14");
+    ((u8 *)LevFlag)[0] = 0;
+    ((u8 *)LevFlag)[1] = 0;
+}
+
+void __cdecl BlockadeRunnerD_Update(WORLDINFO *world) {
+    i32 i;
+    if (netclient != 0)
+        return;
+    for (i = 0; i < 8; i++) {
+        if (LevGameObject[i] == NULL || LevGamePart[i] == NULL)
+            continue;
+        if ((LevGamePart[i]->active & 1) != 0) {
+            LevGameObject[i]->flags_107a = 5;
+            LevGameObject[i]->vehicle_orientation = LevGamePart[i]->transform;
+            LevGameObject[i]->position = LevGameObject[i]->vehicle_orientation.translation;
+            LevGameObject[i]->ai_update_position = LevGameObject[i]->position;
+        }
+        if ((LevGamePart[i]->active & 1) == 0 || LevGamePart[i]->kill_fn != BlockadeRunnerDKillEjectedCreaturePc) {
+            KillGameObject(LevGameObject[i], 4, 0);
+            LevGameObject[i] = NULL;
+        }
+    }
+    for (i = 0; i < 2; i++) {
+        if (GizmoGetOutput(world->gizmo_sys, LevGizmo[i], 1, 1) != 0) {
+            if (((u8 *)LevFlag)[i] == 0) {
+                ((u8 *)LevFlag)[i] = 1;
+                BlockadeRunnerDEjectCreaturePc(i);
+            }
+        } else {
+            ((u8 *)LevFlag)[i] = 0;
+        }
+    }
+}
+
+void __cdecl DeathStarRescueB_Init(WORLDINFO *world) {
+    u8 *flags = (u8 *)LevFlag;
+    NuSpecialFind(world->current_gscn, &LevHSpecial[0], "reactor_1", 1);
+    NuSpecialFind(world->current_gscn, &LevHSpecial[1], "reactor_2", 1);
+    NuSpecialFind(world->current_gscn, &LevHSpecial[2], "reactor_3", 1);
+    NuSpecialFind(world->current_gscn, &LevHSpecial[3], "reactor_4", 1);
+    NuSpecialFind(world->current_gscn, &LevHSpecial[4], "reactor_5", 1);
+    NuSpecialFind(world->current_gscn, &LevHSpecial[5], "reactor_6", 1);
+    flags[5] = 0;
+    flags[4] = 0;
+    flags[3] = 0;
+    flags[2] = 0;
+    flags[1] = 0;
+    flags[0] = 0;
+    LevSfxId[0] = GetSfxId("env_tractorbeam_lp");
+    LevSfxId[1] = GetSfxId("env_tractorbeam_off");
+}
+
+void __cdecl DeathStarRescueB_Update(WORLDINFO *world) {
+    u8 *flags = (u8 *)LevFlag;
+    i32 i;
+    for (i = 0; i < 6; i++) {
+        if (flags[i] == 0) {
+            NUVEC *position = NuSpecialGetDrawPos(&LevHSpecial[i]);
+            NUINSTANIM_TIME_VIEW *animation = (NUINSTANIM_TIME_VIEW *)NuSpecialGetInstAnim(&LevHSpecial[i]);
+            if (animation != NULL) {
+                f64 frame = animation->ltime;
+                u16 index = animation->animation_index;
+                i32 finished = frame >= NuAnimEndFrameOld(world->current_gscn->instance_animation_data[index]);
+                PlaySfxByIdAndSetVolume(LevSfxId[0], position, 0.25f);
+                if (finished != 0) {
+                    PlaySfxByIdAndSetVolume(LevSfxId[1], NULL, 0.4f);
+                    flags[i] = 1;
+                }
+            }
+        }
+    }
+}
+
+void __cdecl DeathStarEscapeB_Draw(WORLDINFO *world) {
+    NUMTX matrix;
+    if (LevGameObject[0] != NULL && DeathStarEscapeBNetPacketPc[0] == 0) {
+        matrix = LevGameObject[0]->locator_matrices[1];
+        NuSpecialDrawAt(&LevHSpecial[2], &matrix);
+    }
+    if (LevGameObject[1] != NULL && DeathStarEscapeBNetPacketPc[0] == 0) {
+        matrix = LevGameObject[1]->locator_matrices[1];
+        NuSpecialDrawAt(&LevHSpecial[2], &matrix);
+    }
+}
+
+void __cdecl DeathStarEscapeA_Update(WORLDINFO *world) {
+    if (GameCam->sock == 2) {
+        NUVEC position;
+        position.x = (f32)((f64)qrand() * PlayerRandomScalePc * 2.0 + 36.5);
+        position.y = -5.5f;
+        position.z = (f32)((f64)qrand() * PlayerRandomScalePc * 2.0 + 8.5);
+        LevChatterSfx("Dianoga_Groan", &position);
+    }
+}
+
+void __cdecl DeathStarEscapeC_Init(WORLDINFO *world) {
+    NuSpecialFind(world->current_gscn, &LevHSpecial[2], "door_push", 1);
+    LevPathCnx[0] = AIPAthFindPathCnx(world->ai_sys, world->ai_sys->path_sys->active_path, "droid_rescue_a",
+                                      "droid_rescue_b", &LevPathCnxDir);
+}
+
+void __cdecl DeathStarEscapeC_Update(WORLDINFO *world) {
+    NUVEC *position;
+    if (LevPathCnx[0] == NULL)
+        return;
+    if (NuSpecialGetVisibilityFn(&LevHSpecial[2]) != 0 && (position = NuSpecialGetDrawPos(&LevHSpecial[2])) != NULL &&
+        position->x < 77.25f) {
+        ((AIPATHCNX_PC *)LevPathCnx[0])->traversal_flags[0] &= ~0x80000000;
+        ((AIPATHCNX_PC *)LevPathCnx[0])->traversal_flags[1] &= ~0x80000000;
+        if (LevAIMessage[0] != NULL)
+            LevAIMessage[0]->value = 1.0f;
+    } else {
+        ((AIPATHCNX_PC *)LevPathCnx[0])->traversal_flags[0] |= 0x80000000;
+        ((AIPATHCNX_PC *)LevPathCnx[0])->traversal_flags[1] |= 0x80000000;
+    }
+}
+
+void __cdecl DeathStarEscapeD_Update(WORLDINFO *world) {
+    NUVEC position;
+    position.x = (f32)((f64)qrand() * PlayerRandomScalePc * 4.0 + 32.5);
+    position.y = -5.5f;
+    position.z = (f32)((f64)qrand() * PlayerRandomScalePc * 4.0 + 12.5);
+    LevChatterSfx("Dianoga_Groan", &position);
+}
