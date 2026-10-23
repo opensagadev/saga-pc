@@ -4762,17 +4762,19 @@ void __cdecl SlideCode(GAMEOBJECT *object) {
 
 void __cdecl FlattenCode(GAMEOBJECT *object) {
     GAMEOBJECT *nearest = NULL;
-    GAMEOBJECT *candidate = Obj;
-    f32 nearest_distance = 1000000000.0f;
+    GAMEOBJECT *candidate;
+    f32 nearest_distance;
     i32 index;
     if (object->character_context != 0x3d)
         return;
+    nearest_distance = 1000000000.0f;
+    candidate = Obj;
     for (index = 0; index < HIGHGAMEOBJECT; ++index, ++candidate) {
         f32 radius;
         f32 distance;
-        if ((candidate->flags_1fc_word & 0x1001) != 0x1001 || candidate->dead != 0 ||
+        if ((candidate->flags_1fc_word & 1) == 0 || (candidate->flags_1fc_word & 0x1000) == 0 || candidate->dead != 0 ||
             (candidate->character_data->game_character->flags_090 & 0x1000) == 0 ||
-            (CInfo[candidate->character_context].flags & 0x8000) != 0)
+            (U64_PAIR(&CInfo[candidate->character_context].flags) & 0x8000) != 0)
             continue;
         radius = (f32)((f64)object->bounds_radius + (f64)candidate->bounds_radius + (f64)0.1f);
         distance = NuVecDistSqr(&object->collision_position, &candidate->collision_position, NULL);
@@ -8616,11 +8618,10 @@ void __cdecl MoveBlocks(WORLDINFO *opaque_world, PUSH_BLOCK_PC *opaque_block, i3
         block->packed_state_flags |= 0x400u;
     } else {
         MoveBlocksOverBlock(opaque_world, opaque_block, index, &delta);
-        if (block->pushing_object != NULL && (fabs(delta.x) > 0.001f || fabs(delta.z) > 0.001f) &&
+        if (block->pushing_object != NULL && (MovePlayerFabs(delta.x) > 0.001f || MovePlayerFabs(delta.z) > 0.001f) &&
             NuFmod(GameTimer.time_elapsed, PushRumblePeriodPc) < PushRumbleWindowPc) {
-            i32 random = qrand();
-            f32 strength = (f64)random * 0.000015259021893143654 * (f64)0.05f;
-            NewRumble(block->pushing_object->pad->bound_pad, strength, 0);
+            NewRumble(block->pushing_object->pad->bound_pad, (f32)((f64)qrand() * 0.000015259021893143654 * (f64)0.05f),
+                      0);
         }
     }
     if ((block->packed_state_flags & 8u) != 0) {
