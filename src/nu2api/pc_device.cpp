@@ -418,7 +418,7 @@ STATIC_ASSERT(offsetof(GRAPHICS_DEVICE_METHODS_PC, end_scene) == 0xa8);
 STATIC_ASSERT(offsetof(GRAPHICS_DEVICE_METHODS_PC, clear) == 0xac);
 STATIC_ASSERT(offsetof(GRAPHICS_DEVICE_METHODS_PC, set_software_vertex_processing) == 0x134);
 
-HRESULT __thiscall PC_DEVICE_BACKEND_PC::EndScene() {
+__declspec(noinline) HRESULT __thiscall PC_DEVICE_BACKEND_PC::EndScene() {
     GRAPHICS_DEVICE_PC *view = reinterpret_cast<GRAPHICS_DEVICE_PC *>(device);
     return view->methods->end_scene(view);
 }
@@ -1397,7 +1397,8 @@ extern "C" HRESULT __cdecl PCDeviceEndScenePc(void) {
     return PCDeviceBackend.EndScene();
 }
 
-extern "C" void __cdecl PCDeviceSetStreamSourcePc(u32 stream, PC_BUFFER_RESOURCE_PC *buffer, u32 offset, u32 stride) {
+extern "C" __declspec(noinline) void __cdecl PCDeviceSetStreamSourcePc(u32 stream, PC_BUFFER_RESOURCE_PC *buffer,
+                                                                       u32 offset, u32 stride) {
     if (PCDeviceStateCacheEnabled != 0) {
         if (PCDeviceStateCachePc.vertex_buffer == buffer && PCDeviceStateCachePc.stream_stride == stride &&
             PCDeviceStateCachePc.stream_number == stream && PCDeviceStateCachePc.stream_offset == offset)
@@ -1411,12 +1412,12 @@ extern "C" void __cdecl PCDeviceSetStreamSourcePc(u32 stream, PC_BUFFER_RESOURCE
         PCDeviceBackend.device->methods->set_stream_source(PCDeviceBackend.device, stream, buffer, offset, stride);
 }
 
-extern "C" void __cdecl PCDeviceDrawPrimitivePc(i32 type, u32 start, u32 count) {
+extern "C" __declspec(noinline) void __cdecl PCDeviceDrawPrimitivePc(i32 type, u32 start, u32 count) {
     ++PCDevicePrimitiveCallCountPc;
     PCDeviceLastResult = PCDeviceBackend.device->methods->draw_primitive(PCDeviceBackend.device, type, start, count);
 }
 
-extern "C" void __cdecl PCDeviceSetIndicesPc(PC_BUFFER_RESOURCE_PC *buffer) {
+extern "C" __declspec(noinline) void __cdecl PCDeviceSetIndicesPc(PC_BUFFER_RESOURCE_PC *buffer) {
     if (PCDeviceStateCacheEnabled != 0) {
         if (PCDeviceStateCachePc.index_buffer == buffer)
             return;
@@ -1425,8 +1426,9 @@ extern "C" void __cdecl PCDeviceSetIndicesPc(PC_BUFFER_RESOURCE_PC *buffer) {
     PCDeviceLastResult = PCDeviceBackend.device->methods->set_indices(PCDeviceBackend.device, buffer);
 }
 
-extern "C" void __cdecl PCDeviceDrawIndexedPrimitivePc(i32 type, i32 base_vertex, u32 minimum_vertex, u32 vertex_count,
-                                                       u32 start_index, u32 primitive_count) {
+extern "C" __declspec(noinline) void __cdecl PCDeviceDrawIndexedPrimitivePc(i32 type, i32 base_vertex,
+                                                                            u32 minimum_vertex, u32 vertex_count,
+                                                                            u32 start_index, u32 primitive_count) {
     ++PCDeviceIndexedPrimitiveCallCountPc;
     PCDeviceLastResult = PCDeviceBackend.device->methods->draw_indexed_primitive(
         PCDeviceBackend.device, type, base_vertex, minimum_vertex, vertex_count, start_index, primitive_count);
@@ -1437,7 +1439,7 @@ extern "C" void __cdecl PCDeviceSetStreamSourceFreqPc(u32 stream, u32 setting) {
         PCDeviceBackend.device->methods->set_stream_source_freq(PCDeviceBackend.device, stream, setting);
 }
 
-extern "C" void __cdecl PCDeviceSetVertexDeclarationPc(PC_TEXTURE_RESOURCE_PC *declaration) {
+extern "C" __declspec(noinline) void __cdecl PCDeviceSetVertexDeclarationPc(PC_TEXTURE_RESOURCE_PC *declaration) {
     if (PCDeviceStateCacheEnabled != 0) {
         if (PCDeviceStateCachePc.vertex_declaration == declaration)
             return;
@@ -1540,12 +1542,12 @@ extern "C" void __cdecl PCDeviceBeginScenePc(void) {
     PCDeviceBackend.BeginScene();
 }
 
-void __thiscall PC_DEVICE_BACKEND_PC::DrawPostEffectQuadPc() {
+__declspec(noinline) void __thiscall PC_DEVICE_BACKEND_PC::DrawPostEffectQuadPc() {
     PCDeviceSetVertexDeclarationPc(declaration68c);
     PCDeviceSetStreamSourcePc(0, buffer690, 0, 20);
     PCDeviceDrawPrimitivePc(5, 0, 2);
 }
-void __thiscall PC_DEVICE_BACKEND_PC::DrawPostEffectIndexedPc() {
+__declspec(noinline) void __thiscall PC_DEVICE_BACKEND_PC::DrawPostEffectIndexedPc() {
     PCDeviceSetVertexDeclarationPc(declaration68c);
     PCDeviceSetStreamSourcePc(0, buffer694, 0, 20);
     PCDeviceSetIndicesPc(buffer698);
