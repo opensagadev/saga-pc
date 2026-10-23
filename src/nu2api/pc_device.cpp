@@ -34,7 +34,7 @@ extern "C" HRESULT __cdecl PCDeviceSetTransform(i32 state, const NUMTX *matrix) 
     return result;
 }
 
-extern "C" void __cdecl PCDeviceSetRenderState(i32 state, u32 value) {
+extern "C" __declspec(noinline) void __cdecl PCDeviceSetRenderState(i32 state, u32 value) {
     i16 cache_index;
 
     if (PCDeviceStateCacheEnabled != 0) {
@@ -89,7 +89,7 @@ submit:
     PCDeviceLastResult = PCDeviceBackend.device->methods->set_render_state(PCDeviceBackend.device, state, value);
 }
 
-extern "C" void __cdecl PCDeviceSetSamplerState(u32 stage, i32 state, u32 value) {
+extern "C" __declspec(noinline) void __cdecl PCDeviceSetSamplerState(u32 stage, i32 state, u32 value) {
     PCDeviceSamplerInvalidation[stage][0] = -1;
     PCDeviceSamplerInvalidation[stage][1] = -1;
     if (PCDeviceStateCacheEnabled != 0 && stage < 8 && state < 14 && state != 4) {
@@ -422,12 +422,12 @@ HRESULT __thiscall PC_DEVICE_BACKEND_PC::EndScene() {
     GRAPHICS_DEVICE_PC *view = reinterpret_cast<GRAPHICS_DEVICE_PC *>(device);
     return view->methods->end_scene(view);
 }
-extern "C" void __cdecl PCDeviceClear(u32 count, const RECT *rectangles, u32 flags, u32 colour, f32 depth,
-                                      u32 stencil) {
+extern "C" __declspec(noinline) void __cdecl PCDeviceClear(u32 count, const RECT *rectangles, u32 flags, u32 colour,
+                                                           f32 depth, u32 stencil) {
     GRAPHICS_DEVICE_PC *device = reinterpret_cast<GRAPHICS_DEVICE_PC *>(PCDeviceBackend.device);
     PCDeviceLastResult = device->methods->clear(device, count, rectangles, flags, colour, depth, stencil);
 }
-extern "C" HRESULT __cdecl PCDeviceTestCooperativeLevel() {
+extern "C" __declspec(noinline) HRESULT __cdecl PCDeviceTestCooperativeLevel() {
     GRAPHICS_DEVICE_PC *device = reinterpret_cast<GRAPHICS_DEVICE_PC *>(PCDeviceBackend.device);
     return device->methods->test_cooperative_level(device);
 }
@@ -546,7 +546,7 @@ extern "C" {
     extern void(__cdecl *PCGraphicsDeviceLostCallback)(GRAPHICS_PRESENT_PARAMETERS_PC *);
 }
 void __thiscall PC_DEVICE_BACKEND_PC::CreateOrResetDevice(i32 reposition_window) {
-    i32 rebuild_resources = 1;
+    bool rebuild_resources = true;
     PCFrameCriticalSectionEnter_candidate();
     saved_windowed = parameters.windowed == 1;
     saved_mode = active_mode;
@@ -586,7 +586,9 @@ void __thiscall PC_DEVICE_BACKEND_PC::CreateOrResetDevice(i32 reposition_window)
     parameters.refresh_rate = modes[requested_mode].refresh_rate;
     if (parameters.windowed != 0)
         parameters.refresh_rate = 0;
-    creation_flags = force_software != 0 ? 0 : 0x10;
+    creation_flags = 0;
+    if (force_software == 0)
+        creation_flags = 0x10;
     if (multithreaded != 0)
         creation_flags |= 4;
     if (force_software == 0 && caps.vertex_shader_version >= 0xfffe0101)
@@ -641,18 +643,26 @@ void __thiscall PC_DEVICE_BACKEND_PC::CreateOrResetDevice(i32 reposition_window)
             PCDeviceLastResult = factory->methods->create_device(factory, adapter, device_type, parameters.window,
                                                                  creation_flags, &parameters, &device);
             if (device == NULL) {
-                if (PCDeviceLastResult == static_cast<HRESULT>(0x8876017c))
-                    PCGraphicsFatalDiagnostic(&PCNativeWarningDebugState,
-                                              "Out of Video Memory. Application will now exit");
-                else if (PCDeviceLastResult == static_cast<HRESULT>(0x88760868))
-                    PCGraphicsFatalDiagnostic(&PCNativeWarningDebugState, "Lost d3d device. Application will now exit");
-                else if (PCDeviceLastResult == static_cast<HRESULT>(0x8876086a))
-                    PCGraphicsFatalDiagnostic(&PCNativeWarningDebugState,
-                                              "d3d device unavailable. Application will now exit");
-                else
-                    PCGraphicsFatalDiagnostic(&PCNativeWarningDebugState,
-                                              "Failed to create d3d device. Application will now exit.\nError = 0x%x",
-                                              PCDeviceLastResult);
+                switch (PCDeviceLastResult) {
+                    case static_cast<HRESULT>(0x8876017c):
+                        PCGraphicsFatalDiagnostic(&PCNativeWarningDebugState,
+                                                  "Out of Video Memory. Application will now exit");
+                        break;
+                    case static_cast<HRESULT>(0x88760868):
+                        PCGraphicsFatalDiagnostic(&PCNativeWarningDebugState,
+                                                  "Lost d3d device. Application will now exit");
+                        break;
+                    case static_cast<HRESULT>(0x8876086a):
+                        PCGraphicsFatalDiagnostic(&PCNativeWarningDebugState,
+                                                  "d3d device unavailable. Application will now exit");
+                        break;
+                    default:
+                        PCGraphicsFatalDiagnostic(
+                            &PCNativeWarningDebugState,
+                            "Failed to create d3d device. Application will now exit.\nError = 0x%x",
+                            PCDeviceLastResult);
+                        break;
+                }
             }
         }
         PS2_REZ_W = parameters.width;
@@ -663,22 +673,28 @@ void __thiscall PC_DEVICE_BACKEND_PC::CreateOrResetDevice(i32 reposition_window)
         HRESULT cooperative = PCDeviceTestCooperativeLevel();
         GRAPHICS_DEVICE_PC *view = reinterpret_cast<GRAPHICS_DEVICE_PC *>(device);
         if (cooperative < 0) {
-            if (cooperative == static_cast<HRESULT>(0x88760869)) {
-                PCDeviceEvictManagedResources();
-                PcRendererShutdown(0);
-                SAGA_SKIN_CALL(skin_trace_reset_begin, (unsigned)device);
-                if (view->methods->reset(view, &parameters) >= 0) {
-                    SAGA_SKIN_CALL(skin_trace_reset_end, (unsigned)device);
-                    PCGraphicsRecreateResources(0);
-                    rebuild_resources = 0;
-                } else {
-                    SAGA_SKIN_CALL(skin_trace_reset_end, (unsigned)device);
-                }
-            } else if (cooperative == static_cast<HRESULT>(0x88760868)) {
-                if (PCGraphicsDeviceLostCallback != NULL)
-                    PCGraphicsDeviceLostCallback(&parameters);
-            } else
-                SendMessageA(reinterpret_cast<HWND>(PCInputInstance_candidate), WM_CLOSE, 0, 0);
+            switch (cooperative) {
+                case static_cast<HRESULT>(0x88760827):
+                default:
+                    SendMessageA(reinterpret_cast<HWND>(PCInputInstance_candidate), WM_CLOSE, 0, 0);
+                    break;
+                case static_cast<HRESULT>(0x88760869):
+                    PCDeviceEvictManagedResources();
+                    PcRendererShutdown(0);
+                    SAGA_SKIN_CALL(skin_trace_reset_begin, (unsigned)device);
+                    if (view->methods->reset(view, &parameters) >= 0) {
+                        SAGA_SKIN_CALL(skin_trace_reset_end, (unsigned)device);
+                        PCGraphicsRecreateResources(0);
+                        rebuild_resources = false;
+                    } else {
+                        SAGA_SKIN_CALL(skin_trace_reset_end, (unsigned)device);
+                    }
+                    break;
+                case static_cast<HRESULT>(0x88760868):
+                    if (PCGraphicsDeviceLostCallback != NULL)
+                        PCGraphicsDeviceLostCallback(&parameters);
+                    break;
+            }
         } else {
             PCDeviceEvictManagedResources();
             PcRendererShutdown(1);
@@ -690,7 +706,7 @@ void __thiscall PC_DEVICE_BACKEND_PC::CreateOrResetDevice(i32 reposition_window)
             PS2_VCNTR_X = PS2_REZ_W / 2;
             PS2_VCNTR_Y = PS2_REZ_H / 2;
             PCGraphicsRecreateResources(1);
-            rebuild_resources = 0;
+            rebuild_resources = false;
         }
     }
     multisample_index = 0;
@@ -701,13 +717,13 @@ void __thiscall PC_DEVICE_BACKEND_PC::CreateOrResetDevice(i32 reposition_window)
         }
     }
     active_aspect_mode = FindAspect(parameters.width, parameters.height);
-    active_aspect = (f32)((f64)parameters.width / (f64)parameters.height);
+    active_aspect = (f32)parameters.width / (f32)parameters.height;
     nuapi.video_aspect = PcWindowOptions.aspect_mode == 3 ? active_aspect_mode : PcWindowOptions.aspect_mode;
     u32 refresh = parameters.windowed != 0 ? modes[requested_mode].refresh_rate : parameters.refresh_rate;
     active_mode = FindMode(parameters.width, parameters.height, refresh);
     GRAPHICS_DEVICE_PC *view = reinterpret_cast<GRAPHICS_DEVICE_PC *>(device);
     view->methods->get_device_caps(view, &caps);
-    if (rebuild_resources != 0)
+    if (rebuild_resources)
         BuildDefaultPoolResources();
     ResetTargets();
     PCDeviceClear(0, NULL, 1, 0, 1.0f, 0);
@@ -747,11 +763,11 @@ void __thiscall PC_DEVICE_BACKEND_PC::CreateOrResetDevice(i32 reposition_window)
     PCFrameCriticalSectionLeave_candidate();
 }
 
-void __cdecl PCDeviceEvictManagedResources() {
+__declspec(noinline) void __cdecl PCDeviceEvictManagedResources() {
     GRAPHICS_DEVICE_PC *view = reinterpret_cast<GRAPHICS_DEVICE_PC *>(PCDeviceBackend.device);
     PCDeviceLastResult = view->methods->evict_managed_resources(view);
 }
-void __cdecl PCDeviceSetSoftwareVertexProcessing(BOOL enabled) {
+__declspec(noinline) void __cdecl PCDeviceSetSoftwareVertexProcessing(BOOL enabled) {
     GRAPHICS_DEVICE_PC *view = reinterpret_cast<GRAPHICS_DEVICE_PC *>(PCDeviceBackend.device);
     PCDeviceLastResult = view->methods->set_software_vertex_processing(view, enabled);
 }
