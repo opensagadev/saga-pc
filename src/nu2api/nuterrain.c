@@ -1564,141 +1564,96 @@ void NewTerrPlatformsOff(void) {
     TerrainPlatformsOffPc = 1;
 }
 
-#define MIN(a, b) ((a) < (b) ? (a) : (b))
-#define MAX(a, b) ((a) > (b) ? (a) : (b))
 void TerrainDiagnosticNoOpPC(const void *, ...);
 extern u8 *TerrainCrashDataPc;
-extern const f32 TerrainUnusedSpatialBlockPc;
 i32 ReadTerrain(unsigned char *base_path, i32 first_group, i16 **buffer, TERRSET *terrain) {
-    i32 diagnostic_index;
-    i32 point;
     char path[100];
-    i32 loaded_bytes;
-    u8 *file_start;
     TERRAIN_FILE_CHUNK *chunk;
-    i16 chunk_count;
-    i32 chunk_index;
+    i32 i;
     i32 group_count;
-    u8 *chunk_data;
-    f32 origin_x;
-    f32 kUnusedBlock;
-    i32 point_count;
-    TERRAIN_SPATIAL_NODE *block;
-    i32 first_point;
-    f32 min_x;
-    f32 max_x;
-    f32 min_z;
-    f32 max_z;
+    i32 first;
+    i32 j;
+    i32 count;
+    TERRAIN_SPATIAL_NODE *node;
+    NUVEC *block;
+    f32 min_x, max_x, min_z, max_z;
 
     TerrainCrashDataPc = NULL;
     TerrainDiagnosticNoOpPC(buffer);
-
-    strcpy(path, ((char *)(base_path)));
+    strcpy(path, (char *)base_path);
     strcat(path, ".ter");
-    loaded_bytes = NuFileLoadBuffer(path, *buffer, 0x7fffffff);
-    TerrainDiagnosticNoOpPC(path, loaded_bytes);
-    if (loaded_bytes == 0) {
+    i = NuFileLoadBuffer(path, *buffer, 0x7fffffff);
+    TerrainDiagnosticNoOpPC(path, i);
+    if (i == 0)
         return -1;
-    }
 
-    file_start = ((u8 *)(*buffer));
-    chunk = ((TERRAIN_FILE_CHUNK *)(file_start + 2 * *((u32 *)(file_start))));
-    chunk_count = chunk->chunk_count;
-    for (diagnostic_index = 0; diagnostic_index < chunk_count; ++diagnostic_index) {
-        if (chunk[diagnostic_index].field_16 == 0x1ca)
+    chunk = (TERRAIN_FILE_CHUNK *)((u8 *)*buffer + 2 * *(u32 *)*buffer);
+    *buffer += 2;
+    group_count = 0;
+    for (i = 0; i < chunk->chunk_count; ++i) {
+        if (chunk[i].field_16 == 0x1ca)
             TerrainDiagnosticNoOpPC(path);
     }
-    *buffer = ((i16 *)(file_start + sizeof(u32)));
-
-    if (chunk_count <= 0) {
-        terrain->file_version = chunk->version;
-        terrain->spatial_nodes = NULL;
-        return 0;
-    }
-
     terrain->file_version = chunk->version;
     terrain->spatial_nodes = NULL;
-
-    chunk_index = 0;
-    group_count = 0;
-    do {
-        chunk_data = ((u8 *)(*buffer));
-
-        if (chunk->chunk_type == TERRAIN_CHUNK_SPATIAL_INDEX) {
-            TERRAIN_SPATIAL_NODE **link = ((TERRAIN_SPATIAL_NODE **)(chunk_data));
-            if (*((u32 *)(link)) == 0x12345678) {
-                *link = terrain->spatial_nodes;
-                terrain->spatial_nodes = ((TERRAIN_SPATIAL_NODE *)(link + 1));
-                --terrain->spatial_nodes->point_count;
-            }
-        } else if (chunk->chunk_type <= TERRAIN_CHUNK_SPATIAL_INDEX) {
-            if (chunk->chunk_type >= TERRAIN_CHUNK_GROUP_PRIMARY) {
-                origin_x = chunk->origin.x;
-                terrain->groups[first_group].group_info = chunk->group_info;
-                terrain->groups[first_group].chunk_type = chunk->chunk_type;
-                terrain->groups[first_group].origin.x = origin_x;
-                terrain->groups[first_group].origin.y = chunk->origin.y;
-                terrain->groups[first_group].scene_index = chunk->field_16;
-                terrain->groups[first_group].origin.z = chunk->origin.z;
-                terrain->groups[first_group].data = ((TERRAIN_SKIN_STREAM_VIEW_PC *)(chunk_data));
-                terrain->groups[first_group].platform_flags = chunk->platform_flags;
+    for (i = 0; i < chunk->chunk_count; ++i) {
+        switch (chunk[i].chunk_type) {
+            case TERRAIN_CHUNK_GROUP_PRIMARY:
+            case TERRAIN_CHUNK_GROUP_SECONDARY:
+                terrain->groups[first_group].group_info = chunk[i].group_info;
+                terrain->groups[first_group].chunk_type = chunk[i].chunk_type;
+                terrain->groups[first_group].scene_index = chunk[i].field_16;
                 ++group_count;
+                terrain->groups[first_group].origin.x = chunk[i].origin.x;
+                terrain->groups[first_group].origin.y = chunk[i].origin.y;
+                terrain->groups[first_group].origin.z = chunk[i].origin.z;
+                terrain->groups[first_group].data = (TERRAIN_SKIN_STREAM_VIEW_PC *)*buffer;
+                terrain->groups[first_group].platform_flags = chunk[i].platform_flags;
                 ++first_group;
-            }
-        } else if (chunk->chunk_type == TERRAIN_CHUNK_CRASH_DATA) {
-            TerrainCrashDataPc = chunk_data;
+                break;
+            case TERRAIN_CHUNK_SPATIAL_INDEX:
+                if (*(u32 *)*buffer == 0x12345678) {
+                    *(TERRAIN_SPATIAL_NODE **)*buffer = terrain->spatial_nodes;
+                    terrain->spatial_nodes = (TERRAIN_SPATIAL_NODE *)(*buffer + 2);
+                    --terrain->spatial_nodes->point_count;
+                }
+                break;
+            case TERRAIN_CHUNK_CRASH_DATA:
+                TerrainCrashDataPc = (u8 *)*buffer;
+                break;
         }
+        *buffer += chunk[i].data_word_count;
+    }
 
-        *buffer = ((i16 *)(chunk_data + 2 * chunk->data_word_count));
-        ++chunk_index;
-        ++chunk;
-    } while (chunk_index != chunk_count);
-
-    {
-        TERRAIN_SPATIAL_NODE *node = terrain->spatial_nodes;
-
-        // Every block covers sixteen terrain cells and therefore seventeen
-        // boundary points.  The original stores the aggregate X/Z bounds in
-        // the otherwise-unused Y components of the first four points.
-        kUnusedBlock = TerrainUnusedSpatialBlockPc;
-
-        while (node != NULL) {
-            point_count = node->point_count;
-            if (point_count != 0) {
-                block = node;
-                first_point = 0;
-
-                do {
-                    if (block->points[0].y != kUnusedBlock) {
-                        if (first_point + 15 < point_count) {
-                            min_x = block->points[0].x;
-                            max_x = block->points[0].x;
-                            min_z = block->points[0].z;
-                            max_z = block->points[0].z;
-                            for (point = 1; point < 17; ++point) {
-                                min_x = MIN(block->points[point].x, min_x);
-                                max_x = MAX(block->points[point].x, max_x);
-                                min_z = MIN(block->points[point].z, min_z);
-                                max_z = MAX(block->points[point].z, max_z);
-                            }
-                            block->points[0].y = min_x;
-                            block->points[1].y = max_x;
-                            block->points[2].y = min_z;
-                            block->points[3].y = max_z;
-                        } else {
-                            block->points[0].y = kUnusedBlock;
-                        }
-                    }
-
-                    first_point += 16;
-                    block = ((TERRAIN_SPATIAL_NODE *)(((u8 *)(block)) + 16 * sizeof(NUVEC)));
-                } while (first_point < point_count);
+    // Every block covers sixteen terrain cells and therefore seventeen
+    // boundary points. The original stores the aggregate X/Z bounds in the
+    // otherwise-unused Y components of the first four points.
+    for (node = terrain->spatial_nodes; node != NULL;
+         node = ((TERRAIN_SPATIAL_CHUNK *)((char *)node - offsetof(TERRAIN_SPATIAL_CHUNK, node)))->previous) {
+        for (first = 0; first < node->point_count; first += 16) {
+            block = &node->points[first];
+            if (block[0].y == 2147483648.0f)
+                continue;
+            if (first + 15 < node->point_count) {
+                min_x = max_x = block[0].x;
+                min_z = max_z = block[0].z;
+                for (j = first + 1; j <= first + 16; ++j) {
+                    if (min_x > node->points[j].x)
+                        min_x = node->points[j].x;
+                    if (node->points[j].x > max_x)
+                        max_x = node->points[j].x;
+                    if (min_z > node->points[j].z)
+                        min_z = node->points[j].z;
+                    if (node->points[j].z > max_z)
+                        max_z = node->points[j].z;
+                }
+                block[0].y = min_x;
+                block[1].y = max_x;
+                block[2].y = min_z;
+                block[3].y = max_z;
+            } else {
+                block[0].y = 2147483648.0f;
             }
-
-            // The file starts each spatial chunk with a link word followed by
-            // the node itself. ReadTerrain replaces that word with the prior
-            // list head while linking the chunks.
-            node = ((TERRAIN_SPATIAL_CHUNK *)(((char *)(node)) - offsetof(TERRAIN_SPATIAL_CHUNK, node)))->previous;
         }
     }
     return group_count;
