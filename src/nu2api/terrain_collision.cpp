@@ -1177,6 +1177,7 @@ extern "C" {
         return collision_found;
     }
 #undef TERRAIN_HT_DISTANCE
+#pragma auto_inline(off)
     void NewTerrStoreAnyInfo() {
         TerrainQuery_s *query = (TerrainQuery_s *)TerI;
         if (query->surface == NULL || query->terrain_group_index == -1) {
@@ -1196,6 +1197,7 @@ extern "C" {
             TerrPolyInfo.normal_flags = query->surface->normal_flags;
         }
     }
+#pragma auto_inline(on)
     void TerrainMoveImpactData() {
         TerrainQuery_s *query = (TerrainQuery_s *)TerI;
         switch (query->hit_type) {
@@ -2478,223 +2480,216 @@ extern "C" void NewTerrainScaleYMask(NUVEC *position, NUVEC *movement, u8 *hit_f
     }
 
     TerrLastImpact.hit_type = 0.0f;
-    CurTrackInfo = NULL;
+    TERRAIN_TRACK_SLOT_PC *track;
     for (i32 slot_index = 0; slot_index < 64; ++slot_index) {
         if (((TERRAIN_SET_PC *)CurrentTerrain)->track_slots[slot_index].id == hit_flags) {
-            CurTrackInfo = &((TERRAIN_SET_PC *)CurrentTerrain)->track_slots[slot_index];
-            break;
+            track = &((TERRAIN_SET_PC *)CurrentTerrain)->track_slots[slot_index];
+            goto found_track;
         }
     }
+    track = NULL;
+found_track:
+    CurTrackInfo = track;
     TerrOverRideScan = 0;
 
-    TerI = static_cast<TerrainQuery_s *>(NuScratchAlloc32(sizeof(TerrainQuery_s)));
-    TerrainQuery_s *query = static_cast<TerrainQuery_s *>(TerI);
+    TerrainQuery_s *query = static_cast<TerrainQuery_s *>(NuScratchAlloc32(sizeof(TerrainQuery_s)));
     query->object_scale = object_scale;
+    TerI = query;
     query->object_scale_sq = object_scale * object_scale;
-    if (object_scale == 0.0f) {
-        query->inverse_object_scale = 0.0f;
-        query->inverse_object_scale_sq = 0.0f;
-    } else {
-        query->inverse_object_scale = 1.0f / object_scale;
-        query->inverse_object_scale_sq = query->inverse_object_scale * query->inverse_object_scale;
-    }
+    f32 inverse = object_scale != 0.0f ? 1.0f / object_scale : 0.0f;
+    query->inverse_object_scale = inverse;
+    query->inverse_object_scale_sq = inverse * inverse;
     query->collision_radius = collision_radius;
-    query->inverse_collision_radius = collision_radius == 0.0f ? 0.0f : 1.0f / collision_radius;
+    inverse = collision_radius != 0.0f ? 1.0f / collision_radius : 0.0f;
+    query->inverse_collision_radius = inverse;
     query->collision_radius_sq = collision_radius * collision_radius;
-
-    const f32 position_x = position->x;
-    const f32 position_y = position->y + collision_radius * object_scale;
-    const f32 position_z = position->z;
-    query->position.x = position_x;
-    query->start_position.x = position_x;
-    query->position.y = position_y;
-    query->start_position.y = position_y;
-    query->position.z = position_z;
-    query->start_position.z = position_z;
-
-    const f32 movement_x = movement->x;
-    const f32 movement_y = movement->y;
-    const f32 movement_z = movement->z;
-    query->movement.x = movement_x;
-    query->start_movement.x = movement_x;
-    query->movement.y = movement_y;
-    query->start_movement.y = movement_y;
-    query->movement.z = movement_z;
-    query->start_movement.z = movement_z;
-    query->object_index = static_cast<i16>(object_index);
-    query->flags &= ~1u;
-    query->hit_flags = hit_flags;
-    query->radius = radius;
-    query->scan_result = 0;
-    query->separation_epsilon = 0.005f;
-    query->compare_epsilon = 0.000005f;
-
     TerrainShadowGroupIndexPc = -1;
+
+    TERRAIN_FLOAT_BITS_PC value;
+    value.value = position->x;
+    query->position.x = value.value;
+    query->start_position.x = value.value;
+    value.value = collision_radius * object_scale + position->y;
+    query->position.y = value.value;
+    query->start_position.y = value.value;
+    value.value = position->z;
+    query->position.z = value.value;
+    query->start_position.z = value.value;
+    value.value = movement->x;
+    query->movement.x = value.value;
+    query->start_movement.x = value.value;
+    value.value = movement->y;
+    query->movement.y = value.value;
+    query->start_movement.y = value.value;
+    value.value = movement->z;
+    query->movement.z = value.value;
+    query->start_movement.z = value.value;
+    query->flags &= ~1u;
+    query->radius = radius;
+    query->separation_epsilon = 0.005f;
+    query->object_index = static_cast<i16>(object_index);
+    query->hit_flags = hit_flags;
+    query->compare_epsilon = 0.000005f;
+    query->scan_result = 0;
     ScanTerrain(1, terrain_mask, scan_flags != 0 ? 0x40 : 0);
 
-    union {
-        f32 value;
-        u32 bits;
-    } absolute_x, absolute_y, absolute_z;
-    absolute_x.value = movement->x;
-    absolute_y.value = movement->y;
-    absolute_z.value = movement->z;
-    absolute_x.bits &= 0x7fffffff;
-    absolute_y.bits &= 0x7fffffff;
-    absolute_z.bits &= 0x7fffffff;
-    if (hit_flags[1] != 0 && radius > absolute_x.value && radius > absolute_y.value && radius > absolute_z.value &&
-        platinrange == 0) {
-        NuScratchRelease();
-        TerrShapeAdjCnt = 0;
-        ShadNorm.x = 0.0f;
-        ShadNorm.y = 1.0f;
-        ShadNorm.z = 0.0f;
-        terrhitflags |= 2;
-        TerImpactData = 0;
-        return;
+    if (hit_flags[1] != 0) {
+        TERRAIN_FLOAT_BITS_PC absolute_x;
+        absolute_x.value = movement->x;
+        absolute_x.bits &= 0x7fffffff;
+        if (absolute_x.value < radius) {
+            TERRAIN_FLOAT_BITS_PC absolute_y;
+            absolute_y.value = movement->y;
+            absolute_y.bits &= 0x7fffffff;
+            if (absolute_y.value < radius) {
+                TERRAIN_FLOAT_BITS_PC absolute_z;
+                absolute_z.value = movement->z;
+                absolute_z.bits &= 0x7fffffff;
+                if (absolute_z.value < radius && platinrange == 0) {
+                    NuScratchRelease();
+                    terrhitflags |= 2;
+                    ShadNorm.x = 0.0f;
+                    ShadNorm.y = 1.0f;
+                    ShadNorm.z = 0.0f;
+                    TerrShapeAdjCnt = 0;
+                    TerImpactData = 0;
+                    return;
+                }
+            }
+        }
     }
 
-    query->position.y *= query->inverse_object_scale;
-    query->movement.y *= query->inverse_object_scale;
+    query = static_cast<TerrainQuery_s *>(TerI);
+    query->position.y = query->inverse_object_scale * query->position.y;
+    query->movement.y = query->inverse_object_scale * query->movement.y;
     hit_flags[0] = 0;
     hit_flags[1] = 0;
 
     i32 scan_count = PlatformChecks(6, movement);
-    for (;;) {
+    do {
         DerotateMovementVector();
         HitTerrain();
         TerrainImpactNorm();
         StorePlatImpact();
 
         query = static_cast<TerrainQuery_s *>(TerI);
-        u8 hit_type = query->hit_type;
-        bool impact_already_resolved = false;
-        if (hit_type > TERRAIN_HIT_TYPE_SECOND_NORMAL && query->terrain_group_index != -1) {
+        if (query->hit_type > TERRAIN_HIT_TYPE_SECOND_NORMAL && query->terrain_group_index != -1 &&
+            ((TERRAIN_SET_PC *)CurrentTerrain)->groups[query->terrain_group_index].chunk_type ==
+                TERRAIN_CHUNK_GROUP_SECONDARY) {
+            --scan_count;
+            NewTerrStoreAnyInfo();
+            NUVEC before = query->position;
+            i32 embedded = TerrainPlatformEmbedded(movement);
+            query = static_cast<TerrainQuery_s *>(TerI);
+            if (embedded == 0 &&
+                (before.x != query->position.x || before.y != query->position.y || before.z != query->position.z)) {
+                goto resolved;
+            }
+        }
+
+        --scan_count;
+        if (query->hit_type != TERRAIN_HIT_TYPE_NONE && query->terrain_group_index >= 0) {
+            ShadNorm = query->impact_normal;
+
+            TERRAIN_SHAPE *surface = query->surface;
+            f32 wall_limit;
+            if (surface != NULL) {
+                wall_limit = surface->normals[0].y * query->movement_normal.y +
+                             surface->normals[0].x * query->movement_normal.x +
+                             surface->normals[0].z * query->movement_normal.z;
+            } else {
+                wall_limit = 0.707f;
+            }
+
             TERRAIN_GROUP *group = &((TERRAIN_SET_PC *)CurrentTerrain)->groups[query->terrain_group_index];
             if (group->chunk_type == TERRAIN_CHUNK_GROUP_SECONDARY) {
-                --scan_count;
-                NewTerrStoreAnyInfo();
-                NUVEC before = query->position;
-                i32 embedded = TerrainPlatformEmbedded(movement);
-                query = static_cast<TerrainQuery_s *>(TerI);
-                impact_already_resolved =
-                    embedded == 0 &&
-                    (before.x != query->position.x || before.y != query->position.y || before.z != query->position.z);
-                hit_type = query->hit_type;
+                wall_limit =
+                    (query->hit_type & TERRAIN_HIT_TYPE_CLASS_MASK) > TERRAIN_HIT_TYPE_FACE && (f64)0.95f > wall_limit
+                        ? 0.98f
+                        : 0.707f;
+            } else {
+                wall_limit = query->shape_adjusted != 0 ? 1.1f : -1.1f;
+            }
+
+            if (wallover != 0.0f) {
+                wall_limit = wallover;
+            }
+            if ((query->hit_type & TERRAIN_HIT_TYPE_CLASS_MASK) != TERRAIN_HIT_TYPE_FACE) {
+                wall_limit = 0.707f;
+            }
+            if (surface != NULL && query->terrain_group_index >= 0 &&
+                (surface->normal_flags & TERRAIN_SURFACE_CLASS_MASK) == TERRAIN_SURFACE_CLASS_WALL_OVERRIDE) {
+                query->position.x += query->movement_normal.x * (f64)0.001f;
+                query->position.z += query->movement_normal.z * (f64)0.001f;
+                wall_limit = 1.1f;
+            }
+
+            if (query->impact_normal.y >= wall_limit && group->chunk_type == TERRAIN_CHUNK_GROUP_SECONDARY) {
+                ((TERRAIN_SET_PC *)CurrentTerrain)->platforms[group->scene_index].flags |=
+                    TERRAIN_PLATFORM_FLAG_COLLIDED;
             }
         }
 
-        if (!impact_already_resolved) {
-            if (query->hit_type != TERRAIN_HIT_TYPE_NONE && query->terrain_group_index >= 0) {
-                TERRAIN_GROUP *group = &((TERRAIN_SET_PC *)CurrentTerrain)->groups[query->terrain_group_index];
-                ShadNorm.x = query->impact_normal.x;
-                ShadNorm.y = query->impact_normal.y;
-                ShadNorm.z = query->impact_normal.z;
-
-                f32 slope = 0.707f;
-                if (query->surface != NULL) {
-                    slope = query->movement_normal.x * query->surface->normals[0].x +
-                            query->movement_normal.y * query->surface->normals[0].y +
-                            query->movement_normal.z * query->surface->normals[0].z;
-                }
-
-                const u8 hit_class = query->hit_type & TERRAIN_HIT_TYPE_CLASS_MASK;
-                f32 wall_limit;
-                if (group->chunk_type == TERRAIN_CHUNK_GROUP_SECONDARY) {
-                    wall_limit = hit_class > TERRAIN_HIT_TYPE_FACE && (f64)0.95f > slope ? 0.98f : 0.707f;
-                } else {
-                    wall_limit = query->shape_adjusted != 0 ? 1.1f : -1.1f;
-                }
-
-                if (wallover != 0.0f) {
-                    wall_limit = wallover;
-                }
-                if (hit_class != TERRAIN_HIT_TYPE_FACE) {
-                    wall_limit = 0.707f;
-                }
-                if (query->surface != NULL && (query->surface->normal_flags & TERRAIN_SURFACE_CLASS_MASK) ==
-                                                  TERRAIN_SURFACE_CLASS_WALL_OVERRIDE) {
-                    query->position.x += query->movement_normal.x * (f64)0.001f;
-                    query->position.z += query->movement_normal.z * (f64)0.001f;
-                    wall_limit = 1.1f;
-                }
-
-                if (query->impact_normal.y >= wall_limit && group->chunk_type == TERRAIN_CHUNK_GROUP_SECONDARY) {
-                    ((TERRAIN_SET_PC *)CurrentTerrain)->platforms[group->scene_index].flags |=
-                        TERRAIN_PLATFORM_FLAG_COLLIDED;
-                }
-            }
-
-            if (TerrShapeAdjCnt == 0 || TerrShapeSideStep(position, movement, hit_flags) != 0) {
+        if (TerrShapeAdjCnt != 0) {
+            if (TerrShapeSideStep(position, movement, hit_flags) != 0) {
                 TerrainImpact(position, movement, hit_flags);
             }
-
             query = static_cast<TerrainQuery_s *>(TerI);
-            --scan_count;
-            TerrLastImpact.position.x = query->position.x - query->movement_normal.x * query->collision_radius;
-            TerrLastImpact.position.y =
-                (query->position.y - query->movement_normal.y * query->collision_radius) * query->object_scale;
-            TerrLastImpact.position.z = query->position.z - query->movement_normal.z * query->collision_radius;
-            TerrLastImpact.hit_type = static_cast<f32>(static_cast<u32>(query->hit_type));
-            hit_type = query->hit_type;
+        } else {
+            TerrainImpact(position, movement, hit_flags);
         }
 
-        if (hit_type == TERRAIN_HIT_TYPE_NONE) {
-            if (scan_count > 3 && hit_flags[0] == 0 && hit_flags[1] == 0 && embedded_retry != 0) {
-                query->position.x = position->x;
-                query->position.y = position->y * query->inverse_object_scale + query->collision_radius + (f64)0.003f;
-                query->position.z = position->z;
-                query->movement.x = 0.0f;
-                query->movement.y = -0.007f;
-                query->movement.z = 0.0f;
-                DerotateMovementVector();
-                HitTerrain();
-                query = static_cast<TerrainQuery_s *>(TerI);
-                if (query->hit_type != TERRAIN_HIT_TYPE_NONE &&
-                    (query->terrain_group_index < 0 || query->surface == NULL ||
-                     (query->surface->normal_flags & TERRAIN_SURFACE_CLASS_MASK) !=
-                         TERRAIN_SURFACE_CLASS_WALL_OVERRIDE)) {
-                    TerrainImpactNorm();
-                    ShadNorm.x = query->impact_normal.x;
-                    ShadNorm.y = query->impact_normal.y;
-                    ShadNorm.z = query->impact_normal.z;
-                    query->start_movement.x = movement->x;
-                    query->start_movement.y = movement->y;
-                    query->start_movement.z = movement->z;
-                    TerrainImpact(position, movement, hit_flags);
-                    query = static_cast<TerrainQuery_s *>(TerI);
-                    position->x = query->position.x;
-                    position->y =
-                        query->position.y * query->object_scale - query->collision_radius * query->object_scale;
-                    position->z = query->position.z;
-                    movement->x = query->start_movement.x;
-                    movement->y = query->start_movement.y;
-                    movement->z = query->start_movement.z;
-                }
-            }
-            break;
-        }
-
-        TerrImpact = query->surface == NULL ? 2 : 1;
-        TerrImpactPos.x = query->position.x - query->movement_normal.x * query->collision_radius;
-        TerrImpactPos.y =
+        TerrLastImpact.position.x = query->position.x - query->movement_normal.x * query->collision_radius;
+        TerrLastImpact.position.y =
             (query->position.y - query->movement_normal.y * query->collision_radius) * query->object_scale;
-        TerrImpactPos.z = query->position.z - query->movement_normal.z * query->collision_radius;
-        TerrImpactNormal = query->impact_normal;
+        TerrLastImpact.position.z = query->position.z - query->movement_normal.z * query->collision_radius;
+        TerrLastImpact.hit_type = static_cast<f32>(static_cast<i32>(query->hit_type));
 
-        if (scan_count > 0) {
-            const f64 normal_mag_sq = static_cast<f64>(query->movement_normal.x) * query->movement_normal.x +
-                                      query->movement_normal.y * query->movement_normal.y +
-                                      query->movement_normal.z * query->movement_normal.z;
-            if (normal_mag_sq <= 1.5) {
-                continue;
-            }
+    resolved:
+        if (query->hit_type != TERRAIN_HIT_TYPE_NONE) {
+            TerrImpact = query->surface == NULL ? 2 : 1;
+            TerrImpactPos.x = query->position.x - query->movement_normal.x * query->collision_radius;
+            TerrImpactPos.y =
+                (query->position.y - query->movement_normal.y * query->collision_radius) * query->object_scale;
+            TerrImpactPos.z = query->position.z - query->movement_normal.z * query->collision_radius;
+            TerrImpactNormal = query->impact_normal;
         }
+    } while (query->hit_type != TERRAIN_HIT_TYPE_NONE && scan_count > 0 &&
+             query->movement_normal.y * query->movement_normal.y + query->movement_normal.x * query->movement_normal.x +
+                     query->movement_normal.z * query->movement_normal.z <=
+                 1.5);
 
+    if (query->hit_type != TERRAIN_HIT_TYPE_NONE) {
         position->x = query->position.x;
         position->y = query->position.y * query->object_scale - query->collision_radius * query->object_scale;
         position->z = query->position.z;
-        break;
+    } else if (scan_count > 3 && hit_flags[0] == 0 && hit_flags[1] == 0 && embedded_retry != 0) {
+        query->position.x = position->x;
+        query->position.y = query->inverse_object_scale * position->y + query->collision_radius + (f64)0.003f;
+        query->position.z = position->z;
+        query->movement.x = 0.0f;
+        query->movement.y = -0.007f;
+        query->movement.z = 0.0f;
+        DerotateMovementVector();
+        HitTerrain();
+        query = static_cast<TerrainQuery_s *>(TerI);
+        if (query->hit_type != TERRAIN_HIT_TYPE_NONE &&
+            (query->terrain_group_index < 0 ||
+             (query->surface->normal_flags & TERRAIN_SURFACE_CLASS_MASK) != TERRAIN_SURFACE_CLASS_WALL_OVERRIDE)) {
+            TerrainImpactNorm();
+            query = static_cast<TerrainQuery_s *>(TerI);
+            ShadNorm = query->impact_normal;
+            query->start_movement.x = movement->x;
+            query->start_movement.y = movement->y;
+            query->start_movement.z = movement->z;
+            TerrainImpact(position, movement, hit_flags);
+            position->x = query->position.x;
+            position->y = query->position.y * query->object_scale - query->collision_radius * query->object_scale;
+            position->z = query->position.z;
+            movement->x = query->start_movement.x;
+            movement->y = query->start_movement.y;
+            movement->z = query->start_movement.z;
+        }
     }
 
     NuScratchRelease();
