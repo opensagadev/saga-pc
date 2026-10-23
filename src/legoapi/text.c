@@ -712,146 +712,165 @@ f32 __cdecl TextPrintSubstring(u8 *text, f32 x, f32 y, f32 z, f32 x_scale, f32 y
     NuQFntPrintW(font, encoded);
     return width;
 }
+#define TEXT3D_FONT() (SmartTextFont != NULL ? SmartTextFont : QFont2D)
 void __cdecl Text3DEx(char *text, f32 x, f32 y, f32 z, f32 x_scale, f32 y_scale, f32 z_scale, u32 alignment,
                       u32 red_slot, u32 green_slot, u32 blue_slot, i32 alpha) {
     u8 red = (u8)red_slot;
     u8 green = (u8)green_slot;
     u8 blue = (u8)blue_slot;
-    VUFNT *font;
-    f32 draw_x_scale, draw_y_scale, width, height, baseline_y, draw_y;
-    f32 button_scale, button_width, normal_width, ratio, scaled_width;
-    u8 decoded[512], buttons[512], normal[512], fragment[1024];
+    u8 alpha_byte = (u8)alpha;
+    f32 width, height, button_scale, button_width, normal_width, ratio, scaled_width;
     f64 half_height;
+    u8 decoded[512], buttons[512], normal[512], fragment[512];
     u16 encoded[512], button_encoded[512], normal_encoded[512];
-    i32 button_count, normal_count, count, button_font, is_button, next_button, preset, i;
-    u32 opacity, base_colour, colour;
-    i32 *selected_count;
-    u8 *output;
+    i32 button_count, normal_count, count, button_font, preset, i;
+    u32 colour;
 
     text3d_width = text3d_height = 0.0f;
-    font = SmartTextFont != NULL ? SmartTextFont : QFont2D;
-    if (font == NULL || text == NULL || text[0] == '\0' || MenuStopDraw != 0 ||
-        (x < -2.0f || 2.0f < x || y < -2.0f || y > 2.0f))
+    if (TEXT3D_FONT() == NULL || text == NULL || text[0] == '\0' || MenuStopDraw != 0)
         return;
-    draw_x_scale = TextScaleX_candidate * x_scale;
-    draw_y_scale = y_scale * TextScaleY_candidate;
+    x_scale = TextScaleX_candidate * x_scale;
+    y_scale = TextScaleY_candidate * y_scale;
+    if (x < -2.0f || 2.0f < x || y < -2.0f || 2.0f < y)
+        return;
     NuQFntPushPrintMode(TextPrintModePc == 0 ? 2 : 3);
 
     TextDecode(text, decoded);
-    font = SmartTextFont != NULL ? SmartTextFont : QFont2D;
     if (followon_line == 0)
-        NuQFntSet(font);
+        NuQFntSet(TEXT3D_FONT());
 
     Text3DStringEncode((char *)decoded, encoded);
-    NuQFntSetScale(font, draw_x_scale * QFONTSCALEX, draw_y_scale * QFONTSCALEY);
-    width = NuQFntPrintLenW(font, encoded);
-    text3d_width = width;
-    height = NuQFntHeight(font);
-    text3d_height = height;
-    half_height = 0.5 * ((f64)height);
-    baseline_y = y + NuQFntBaseline(font);
-    button_scale = draw_x_scale;
-    draw_y = (f32)((f64)baseline_y - half_height);
-    if (draw_y_scale != draw_x_scale) {
-        if (smarttext_fwn == 1)
-            button_scale = draw_x_scale;
-        else if (2 == smarttext_fwn)
-            button_scale = draw_y_scale;
-        else
-            button_scale = 0.5f * (draw_x_scale + draw_y_scale);
-
-        normal_count = 0;
-        button_count = 0;
-        for (i = 0; decoded[i] != 0;) {
-            is_button = decoded[i] == 0xd4 && decoded[i + 1] >= 0xb1 && decoded[i + 1] <= 0xbf;
-            selected_count = is_button ? &button_count : &normal_count;
-            output = is_button ? buttons : normal;
-            output[(*selected_count)++] = decoded[i++];
-            while ((decoded[i] & 0xc0) == 0x80)
-                output[(*selected_count)++] = decoded[i++];
-        }
-        buttons[button_count] = normal[normal_count] = 0;
+    NuQFntSetScale(TEXT3D_FONT(), QFONTSCALEX * x_scale, QFONTSCALEY * y_scale);
+    text3d_width = NuQFntPrintLenW(TEXT3D_FONT(), encoded);
+    width = text3d_width;
+    text3d_height = NuQFntHeight(TEXT3D_FONT());
+    height = text3d_height;
+    half_height = (f64)height * 0.5;
+    y = (f32)((f64)(NuQFntBaseline(TEXT3D_FONT()) + y) - half_height);
+    if (y_scale != x_scale) {
         button_width = 0.0f;
         normal_width = 0.0f;
+        if (smarttext_fwn == 1)
+            button_scale = x_scale;
+        else if (smarttext_fwn == 2)
+            button_scale = y_scale;
+        else
+            button_scale = (f32)((f64)(y_scale + x_scale) * 0.5);
+
+        button_count = 0;
+        normal_count = 0;
+        for (i = 0; decoded[i] != 0;) {
+            if (decoded[i] == 0xd4 && decoded[i + 1] >= 0xb1 && decoded[i + 1] <= 0xbf) {
+                buttons[button_count++] = decoded[i++];
+                while (decoded[i] >= 0x80 && decoded[i] <= 0xbf)
+                    buttons[button_count++] = decoded[i++];
+            } else {
+                normal[normal_count++] = decoded[i++];
+                while (decoded[i] >= 0x80 && decoded[i] <= 0xbf)
+                    normal[normal_count++] = decoded[i++];
+            }
+        }
+        buttons[button_count] = 0;
+        normal[normal_count] = 0;
 
         if (button_count != 0) {
             Text3DStringEncode((char *)buttons, button_encoded);
-            NuQFntSetScale(font, button_scale * QFONTSCALEX, button_scale * QFONTSCALEY);
-            button_width = NuQFntPrintLenW(font, button_encoded);
+            NuQFntSetScale(TEXT3D_FONT(), QFONTSCALEX * button_scale, QFONTSCALEY * button_scale);
+            button_width = NuQFntPrintLenW(TEXT3D_FONT(), button_encoded);
         }
         if (normal_count != 0) {
             Text3DStringEncode((char *)normal, normal_encoded);
-            NuQFntSetScale(font, draw_x_scale * QFONTSCALEX, draw_y_scale * QFONTSCALEY);
-            normal_width = NuQFntPrintLenW(font, normal_encoded);
+            NuQFntSetScale(TEXT3D_FONT(), QFONTSCALEX * x_scale, QFONTSCALEY * y_scale);
+            normal_width = NuQFntPrintLenW(TEXT3D_FONT(), normal_encoded);
         }
         if (normal_width != 0.0f) {
             ratio = (width - button_width) / normal_width;
-            draw_x_scale = ratio * draw_x_scale;
+            x_scale = ratio * x_scale;
         } else {
-            button_scale = draw_x_scale;
+            button_scale = x_scale;
             if (smarttext_fwn == 2) {
-                button_scale = draw_y_scale;
-                scaled_width = draw_y_scale * width;
-                width = scaled_width / draw_x_scale;
+                button_scale = y_scale;
+                scaled_width = y_scale * width;
+                width = scaled_width / x_scale;
             }
         }
     }
     if ((alignment & 4) != 0)
-        draw_y -= height * 0.5f;
+        y = (f32)((f64)y - half_height);
     else if ((alignment & 1) != 0)
-        draw_y += height * 0.5f;
-    if ((alignment & 2) == 0)
-        x -= (alignment & 8) != 0 ? width : width * 0.5f;
-    opacity = (u32)(alpha) << 24;
-    base_colour = opacity | red | ((u32)(green) << 8) | ((u32)(blue) << 16);
-    if (apitext_half_rgb != 0)
-        base_colour = opacity | (red >> 1) | ((u32)(green >> 1) << 8) | ((u32)(blue >> 1) << 16);
-    if (followon_line == 0)
-        current_rgba = base_colour;
+        y = (f32)((f64)y + half_height);
+    if ((alignment & 2) == 0) {
+        if ((alignment & 8) != 0)
+            x -= width;
+        else
+            x -= width * 0.5;
+    }
+    if (followon_line == 0) {
+        if (apitext_half_rgb != 0)
+            current_rgba = ((u32)alpha_byte << 24) | ((u32)(blue >> 1) << 16) | ((u32)(green >> 1) << 8) | (red >> 1);
+        else
+            current_rgba = ((u32)alpha_byte << 24) | ((u32)blue << 16) | ((u32)green << 8) | red;
+    }
 
     count = 0;
     button_font = 0;
-    for (i = 0; decoded[i] != 0 && count < 509;) {
+    for (i = 0; count <= 508 && decoded[i] != 0;) {
         if (decoded[i] == '~') {
-            colour = base_colour;
-            if (decoded[i + 1] != '~') {
-                colour = opacity;
-                if (red != 0 || green != 0 || blue != 0) {
-                    preset = decoded[i + 1] - '0';
-                    if (apitext_half_rgb == 0)
-                        colour |= (((u32)((text_preset_g[preset] * 2) & 255) << 8)) |
-                                  ((u8)(text_preset_r[preset] * 2)) | ((u32)((2 * text_preset_b[preset]) & 255) << 16);
-                    else
-                        colour |= text_preset_r[preset] | ((u32)(text_preset_g[preset]) << 8) |
-                                  ((u32)(text_preset_b[preset]) << 16);
-                }
+            ++i;
+            if (decoded[i] == '~') {
+                if (apitext_half_rgb != 0)
+                    colour = ((u32)alpha_byte << 24) | ((u32)(blue >> 1) << 16) | ((u32)(green >> 1) << 8) | (red >> 1);
+                else
+                    colour = ((u32)alpha_byte << 24) | ((u32)blue << 16) | ((u32)green << 8) | red;
+            } else {
+                preset = decoded[i] - '0';
+                if (red == 0 && green == 0 && blue == 0)
+                    colour = (u32)alpha_byte << 24;
+                else if (apitext_half_rgb != 0)
+                    colour = ((u32)alpha_byte << 24) | ((u32)text_preset_b[preset] << 16) |
+                             ((u32)text_preset_g[preset] << 8) | text_preset_r[preset];
+                else
+                    colour = (u8)(2 * text_preset_r[preset]) | ((u32)((2 * text_preset_b[preset]) & 255) << 16) |
+                             ((u32)((2 * text_preset_g[preset]) & 255) << 8) | ((u32)alpha_byte << 24);
             }
-            i = i + 2;
-            if (count != 0 && colour != current_rgba) {
+            ++i;
+            if (count > 0 && colour != current_rgba) {
                 fragment[count] = 0;
-                x += TextPrintSubstring(fragment, x, draw_y, z, button_font ? button_scale : draw_x_scale,
-                                        button_font ? button_scale : draw_y_scale, current_rgba, button_font);
+                if (button_font != 0)
+                    x += TextPrintSubstring(fragment, x, y, z, button_scale, button_scale, current_rgba, button_font);
+                else
+                    x += TextPrintSubstring(fragment, x, y, z, x_scale, y_scale, current_rgba, button_font);
                 count = 0;
             }
             current_rgba = colour;
-            continue;
-        }
-        next_button = decoded[i] == 0xd4 && decoded[1 + i] >= 0xb1 && decoded[i + 1] <= 0xbf;
-        if (count != 0 && next_button != button_font) {
-            fragment[count] = 0;
-            x += TextPrintSubstring(fragment, x, draw_y, z, button_font ? button_scale : draw_x_scale,
-                                    button_font ? button_scale : draw_y_scale, current_rgba, button_font);
-            count = 0;
-        }
-        button_font = next_button;
-        fragment[count++] = decoded[i++];
-        while ((decoded[i] & 0xc0) == 0x80)
+        } else if (decoded[i] == 0xd4 && decoded[i + 1] >= 0xb1 && decoded[i + 1] <= 0xbf) {
+            if (count > 0 && button_font == 0) {
+                fragment[count] = 0;
+                x += TextPrintSubstring(fragment, x, y, z, x_scale, y_scale, current_rgba, button_font);
+                count = 0;
+            }
             fragment[count++] = decoded[i++];
+            button_font = 1;
+            while (decoded[i] >= 0x80 && decoded[i] <= 0xbf)
+                fragment[count++] = decoded[i++];
+        } else {
+            if (count > 0 && button_font != 0) {
+                fragment[count] = 0;
+                x += TextPrintSubstring(fragment, x, y, z, button_scale, button_scale, current_rgba, button_font);
+                count = 0;
+            }
+            fragment[count++] = decoded[i++];
+            button_font = 0;
+            while (decoded[i] >= 0x80 && decoded[i] <= 0xbf)
+                fragment[count++] = decoded[i++];
+        }
     }
-    if (count != 0) {
+    if (count > 0) {
         fragment[count] = 0;
-        TextPrintSubstring(fragment, x, draw_y, z, button_font ? button_scale : draw_x_scale,
-                           button_font ? button_scale : draw_y_scale, current_rgba, button_font);
+        if (button_font != 0)
+            TextPrintSubstring(fragment, x, y, z, button_scale, button_scale, current_rgba, button_font);
+        else
+            TextPrintSubstring(fragment, x, y, z, x_scale, y_scale, current_rgba, button_font);
     }
     NuQFntPopPrintMode();
 }
