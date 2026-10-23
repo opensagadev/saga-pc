@@ -6820,7 +6820,13 @@ address,symbol,size,ctype
 0x644850,_edpartChangeRanMaxLife,23,
 0x644870,_edpartCancelChangeMaxLifeMenu,25,
 0x644890,_edpartChangeMaxLifeMenu,290,
+0x6449c0,_edpartChangeTintR,23,
+0x6449e0,_edpartChangeTintG,23,
+0x644a00,_edpartChangeTintB,23,
+0x644a20,_edpartCancelTintMenu,25,
 0x644a40,_edpartTintMenu,333,
+0x644b90,_edpartChangeInstanceScale,23,
+0x644bb0,_edpartCancelInstanceScaleMenu,25,
 0x644bd0,_edpartInstanceScaleMenu,197,
 0x644ca0,_edpartSelType,64,
 0x645040,_edpartSetScaleFactor,14,
@@ -6859,6 +6865,7 @@ address,symbol,size,ctype
 0x00648a30,_edpartStopPage,17,void __cdecl (u8)
 0x648ae0,_edpartCancelInstanceFlagsMenu,25,
 0x648b00,_edpartInstanceFlagsMenu,1156,
+0x649430,_edpartCancelInstanceSettingsMenu,25,
 0x649450,_edpartInstanceSettingsMenu,318,
 0x6495b0,_edpartTrail1DebrisMenu,329,
 0x649720,_edpartTrail2DebrisMenu,329,
@@ -15997,6 +16004,11 @@ address,symbol,size,ctype
 0x76c5fc,??_C@_0BA@MEOFHMOP@Random?5Max?5Life?$AA@,16,char []
 0x76c60c,??_C@_0O@ELGCGKP@Base?5Max?5Life?$AA@,14,char []
 0x76c61c,??_C@_0BC@KCNLHMHD@Max?5Instance?5Life?$AA@,18,char []
+0x76c630,??_C@_09IEFIEAHO@Blue?5Tint?$AA@,10,char []
+0x76c63c,??_C@_0L@EJMKMEDK@Green?5Tint?$AA@,11,char []
+0x76c648,??_C@_08CHKLMKOE@Red?5Tint?$AA@,9,char []
+0x76c654,??_C@_0O@IAPEFFBM@Instance?5Tint?$AA@,14,char []
+0x76c664,??_C@_0P@BBOIPNHP@Instance?5Scale?$AA@,15,char []
 0x76c684,??_C@_0M@OOCFJKDM@Switch?5Type?$AA@,12,char []
 0x76c690,??_C@_09GBFJJJHO@Switch?5ID?$AA@,10,char []
 0x76c69c,??_C@_0P@JEOCBAAG@Switch?5Type?4?4?4?$AA@,15,char []
@@ -16064,6 +16076,12 @@ address,symbol,size,ctype
 0x76ccec,??_C@_0BI@KJEGPKHN@Collide?5with?5Characters?$AA@,24,char []
 0x76cd04,??_C@_0BB@NLAGJIFP@Die?5when?5stopped?$AA@,17,char []
 0x76cd18,??_C@_0P@NAGOKDLA@Instance?5Flags?$AA@,15,char []
+0x76cd40,??_C@_0BC@CJFHGAAN@Instance?5Scale?4?4?4?$AA@,18,char []
+0x76cd54,??_C@_0BB@BBBJHPEL@Instance?5Tint?4?4?4?$AA@,17,char []
+0x76cd68,??_C@_0BC@JDEHOHHO@Instance?5Flags?4?4?4?$AA@,18,char []
+0x76cd7c,??_C@_0BI@IJAHFJOJ@Instance?5Orientation?4?4?4?$AA@,24,char []
+0x76cd94,??_C@_0BF@LNAFFBMG@Max?5Instance?5Life?4?4?4?$AA@,21,char []
+0x76cdac,??_C@_0BC@BLOBHKHP@Instance?5Settings?$AA@,18,char []
 0x76ce58,??_C@_0N@FELNPBBA@Debris?5Scale?$AA@,13,char []
 0x76ce68,??_C@_0BA@NNGIAGCC@Debris?5Scale?4?4?4?$AA@,16,char []
 0x76ce78,??_C@_0BN@IJKBLAFE@Debris?5stops?5when?5Part?5stops?$AA@,29,char []
@@ -24690,9 +24708,12 @@ address,symbol,size,ctype
 0x29209cc,_edpart_generaltype_menu,4,struct eduimenu_s *
 0x29209d0,_edpart_leveltype_menu,4,struct eduimenu_s *
 0x29209dc,_edpart_thingsinstance_menu,4,struct eduimenu_s *
+0x29209e0,_edpart_instancesettings_menu,4,struct eduimenu_s *
 0x29209e4,_edpart_instanceflags_menu,4,struct eduimenu_s *
 0x29209e8,_edpart_instorient_menu,4,struct eduimenu_s *
 0x29209f0,_edpart_debrissettings_menu,4,struct eduimenu_s *
+0x2920a14,_edpart_tint_menu,4,struct eduimenu_s *
+0x2920a1c,_edpart_instancescale_menu,4,struct eduimenu_s *
 0x2920a20,_edpart_debrisscale_menu,4,struct eduimenu_s *
 0x2920a24,_edpart_scaletype_menu,4,struct eduimenu_s *
 0x2920a60,_edpart_emitrotz,4,i32

@@ -29294,6 +29294,15 @@ extern "C" {
 
 #pragma bss_seg(".bss$edpart_maxlife_menu")
     struct eduimenu_s *edpart_maxlife_menu = 0;
+
+#pragma bss_seg(".bss$edpart_instancesettings_menu")
+    struct eduimenu_s *edpart_instancesettings_menu = 0;
+
+#pragma bss_seg(".bss$edpart_tint_menu")
+    struct eduimenu_s *edpart_tint_menu = 0;
+
+#pragma bss_seg(".bss$edpart_instancescale_menu")
+    struct eduimenu_s *edpart_instancescale_menu = 0;
 }
 
 extern "C" {}

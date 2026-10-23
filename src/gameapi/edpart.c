@@ -204,7 +204,7 @@ static void edpartCancelInstanceOrientMenu(eduimenu_s *unused0, eduimenu_s *unus
     eduiMenuDestroy(edpart_instorient_menu);
     edpart_instorient_menu = NULL;
 }
-static void edpartInstanceOrientMenu(eduimenu_s *menu, eduiitem_s *unused1, u32 unused2) {
+void edpartInstanceOrientMenu(eduimenu_s *menu, eduiitem_s *unused1, u32 unused2) {
     if (edpart_nearest_type == NULL)
         return;
     edpart_instorient_menu =
@@ -464,7 +464,7 @@ void __cdecl edpartCancelChangeMaxLifeMenu(eduimenu_s *unused0, eduimenu_s *unus
     edpart_maxlife_menu = NULL;
 }
 
-void __cdecl edpartChangeMaxLifeMenu(eduimenu_s *menu, eduiitem_s *unused1, u32 unused2) {
+void edpartChangeMaxLifeMenu(eduimenu_s *menu, eduiitem_s *unused1, u32 unused2) {
     if (edpart_nearest_type == NULL)
         return;
     edpart_maxlife_menu = eduiMenuCreate(70, 70, 250, 250, ed_fnt, edpartCancelChangeMaxLifeMenu, "Max Instance Life");
