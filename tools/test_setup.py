@@ -293,8 +293,12 @@ class CompilerHeadersTests(unittest.TestCase):
                                        ("/O2", "/Gy", "/GS-", "/WX"))
                     undefined = {s["name"] for s in obj.symbols
                                  if s["section"] == 0 and s["storage_class"] == 2}
-                    expected = {"_D3DXMatrixMultiply@12" if r["symbol"] == "__imp__D3DXMatrixMultiply@12"
-                                else r["symbol"] for r in imports}
+                    # Native callers use linked thunks for these APIs rather than IAT loads.
+                    direct_imports = {
+                        "__imp__D3DXMatrixMultiply@12": "_D3DXMatrixMultiply@12",
+                        "__imp__D3DXCompileShader@40": "_D3DXCompileShader@40",
+                    }
+                    expected = {direct_imports.get(r["symbol"], r["symbol"]) for r in imports}
                     self.assertEqual(undefined, expected)
 
     def link(self, output, objects, flags=(), env=None):

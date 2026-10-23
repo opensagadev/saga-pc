@@ -137,9 +137,8 @@ extern "C" {
 
     __declspec(dllimport) int __stdcall D3DPERF_BeginEvent(D3DCOLOR, const WCHAR *);
     __declspec(dllimport) int __stdcall D3DPERF_EndEvent(void);
-    __declspec(dllimport) HRESULT __stdcall D3DXCompileShader(const char *, UINT, const D3DXMACRO *, ID3DXInclude *,
-                                                              const char *, const char *, DWORD, ID3DXBuffer **,
-                                                              ID3DXBuffer **, ID3DXConstantTable **);
+    HRESULT __stdcall D3DXCompileShader(const char *, UINT, const D3DXMACRO *, ID3DXInclude *, const char *,
+                                        const char *, DWORD, ID3DXBuffer **, ID3DXBuffer **, ID3DXConstantTable **);
     __declspec(dllimport) HRESULT __stdcall D3DXCreateBuffer(DWORD, ID3DXBuffer **);
     __declspec(dllimport) HRESULT __stdcall D3DXCreateCubeTextureFromFileInMemory(IDirect3DDevice9 *, const void *,
                                                                                   UINT, IDirect3DCubeTexture9 **);

@@ -30,6 +30,7 @@ PC_SHADER_PARAMETER_LOCAL_PC *__cdecl PCShaderAllocateParameter(PC_SHADER_OBJECT
 void __cdecl PCShaderObjectInitHLSLPc(PC_SHADER_OBJECT_FULL_VIEW *shader, const u32 *key, i32 index,
                                       const char *vertex_source, i32 vertex_length, const char *pixel_source,
                                       i32 pixel_length, i32 version) {
+    NuShaderObjectInit(shader, key, index, vertex_source, vertex_length, pixel_source, pixel_length, version);
     ID3DXBuffer *vertex_code = NULL;
     ID3DXBuffer *pixel_code = NULL;
     ID3DXBuffer *errors = NULL;
@@ -39,7 +40,6 @@ void __cdecl PCShaderObjectInitHLSLPc(PC_SHADER_OBJECT_FULL_VIEW *shader, const 
     const char *pixel_profile;
     DWORD flags;
     HRESULT result;
-    NuShaderObjectInit(shader, key, index, vertex_source, vertex_length, pixel_source, pixel_length, version);
     switch (version) {
         case 1:
             vertex_profile = "vs_1_1";
@@ -483,10 +483,10 @@ static void *PCShaderMaterialTextureNativePc(PC_SHADER_MATERIAL_DISPATCH_VIEW *m
     return NULL;
 }
 static f32 *PCShaderUnpackColourPc(f32 *output, i32 colour) {
-    output[0] = (colour & 255) / 255.0;
-    output[1] = ((colour >> 8) & 255) / 255.0;
-    output[2] = ((colour >> 16) & 255) / 255.0;
-    output[3] = ((colour >> 24) & 255) / 255.0;
+    output[0] = (colour & 255) / 255.0f;
+    output[1] = ((colour >> 8) & 255) / 255.0f;
+    output[2] = ((colour >> 16) & 255) / 255.0f;
+    output[3] = ((colour >> 24) & 255) / 255.0f;
     return output;
 }
 static void PCShaderSamplerWrapPc(i32 u_mode, u32 stage, i32 v_mode) {
@@ -670,7 +670,8 @@ extern "C" void __cdecl PCShaderSetMaterialParametersPc(PC_SHADER_OBJECT_FULL_VI
                 break;
             }
             case 36: {
-                PCDeviceSetTexture(parameter->register_index, PCShaderMaterialTextureNativePc(material, 0));
+                const i32 stage = parameter->register_index;
+                PCDeviceSetTexture(stage, PCShaderMaterialTextureNativePc(material, 0));
                 PCShaderSamplerWrapPc((material->sampler_address_modes >> 8) & 3, parameter->register_index,
                                       (material->sampler_address_modes >> 10) & 3);
                 PCDeviceSetSamplerState(parameter->register_index, 5, 2);
@@ -681,7 +682,8 @@ extern "C" void __cdecl PCShaderSetMaterialParametersPc(PC_SHADER_OBJECT_FULL_VI
                 break;
             }
             case 37: {
-                PCDeviceSetTexture(parameter->register_index, PCShaderMaterialTextureNativePc(material, 1));
+                const i32 stage = parameter->register_index;
+                PCDeviceSetTexture(stage, PCShaderMaterialTextureNativePc(material, 1));
                 PCShaderSamplerWrapPc((material->sampler_address_modes >> 8) & 3, parameter->register_index,
                                       (material->sampler_address_modes >> 10) & 3);
                 const f32 bias = material->texture_bias[1] + PCShaderMaterialSamplerBiasOffsetPc;
@@ -689,7 +691,8 @@ extern "C" void __cdecl PCShaderSetMaterialParametersPc(PC_SHADER_OBJECT_FULL_VI
                 break;
             }
             case 38: {
-                PCDeviceSetTexture(parameter->register_index, PCShaderMaterialTextureNativePc(material, 2));
+                const i32 stage = parameter->register_index;
+                PCDeviceSetTexture(stage, PCShaderMaterialTextureNativePc(material, 2));
                 PCShaderSamplerWrapPc((material->sampler_address_modes >> 8) & 3, parameter->register_index,
                                       (material->sampler_address_modes >> 10) & 3);
                 const f32 bias = material->texture_bias[2] + PCShaderMaterialSamplerBiasOffsetPc;
@@ -697,7 +700,8 @@ extern "C" void __cdecl PCShaderSetMaterialParametersPc(PC_SHADER_OBJECT_FULL_VI
                 break;
             }
             case 39: {
-                PCDeviceSetTexture(parameter->register_index, PCShaderMaterialTextureNativePc(material, 3));
+                const i32 stage = parameter->register_index;
+                PCDeviceSetTexture(stage, PCShaderMaterialTextureNativePc(material, 3));
                 PCShaderSamplerWrapPc((material->sampler_address_modes >> 8) & 3, parameter->register_index,
                                       (material->sampler_address_modes >> 10) & 3);
                 const f32 bias = material->texture_bias[3] + PCShaderMaterialSamplerBiasOffsetPc;
@@ -706,7 +710,12 @@ extern "C" void __cdecl PCShaderSetMaterialParametersPc(PC_SHADER_OBJECT_FULL_VI
             }
             case 40: {
                 const i32 id = material->specular_texture_id;
-                PCDeviceSetTexture(parameter->register_index, id == 0 ? NULL : NuTextureGetDimensions(id)->resource);
+                void *texture;
+                if (id != 0)
+                    texture = NuTextureGetDimensions(id)->resource;
+                else
+                    texture = NULL;
+                PCDeviceSetTexture(parameter->register_index, texture);
                 PCDeviceSetSamplerState(parameter->register_index, 1, 1);
                 PCDeviceSetSamplerState(parameter->register_index, 2, 1);
                 const f32 bias = material->texture_bias[4] + PCShaderMaterialSamplerBiasOffsetPc;
@@ -715,7 +724,12 @@ extern "C" void __cdecl PCShaderSetMaterialParametersPc(PC_SHADER_OBJECT_FULL_VI
             }
             case 41: {
                 const i32 id = material->height_texture_id;
-                PCDeviceSetTexture(parameter->register_index, id == 0 ? NULL : NuTextureGetDimensions(id)->resource);
+                void *texture;
+                if (id != 0)
+                    texture = NuTextureGetDimensions(id)->resource;
+                else
+                    texture = NULL;
+                PCDeviceSetTexture(parameter->register_index, texture);
                 PCDeviceSetSamplerState(parameter->register_index, 1, 1);
                 PCDeviceSetSamplerState(parameter->register_index, 2, 1);
                 const f32 bias = material->parameter_1b0 + PCShaderMaterialSamplerBiasOffsetPc;
@@ -724,7 +738,12 @@ extern "C" void __cdecl PCShaderSetMaterialParametersPc(PC_SHADER_OBJECT_FULL_VI
             }
             case 42: {
                 const i32 id = material->bump_texture_id;
-                PCDeviceSetTexture(parameter->register_index, id == 0 ? NULL : NuTextureGetDimensions(id)->resource);
+                void *texture;
+                if (id != 0)
+                    texture = NuTextureGetDimensions(id)->resource;
+                else
+                    texture = NULL;
+                PCDeviceSetTexture(parameter->register_index, texture);
                 PCDeviceSetSamplerState(parameter->register_index, 1, 1);
                 PCDeviceSetSamplerState(parameter->register_index, 2, 1);
                 PCDeviceSetSamplerState(parameter->register_index, 5, 2);
@@ -736,7 +755,12 @@ extern "C" void __cdecl PCShaderSetMaterialParametersPc(PC_SHADER_OBJECT_FULL_VI
             }
             case 43: {
                 const i32 id = material->normal_texture_id;
-                PCDeviceSetTexture(parameter->register_index, id == 0 ? NULL : NuTextureGetDimensions(id)->resource);
+                void *texture;
+                if (id != 0)
+                    texture = NuTextureGetDimensions(id)->resource;
+                else
+                    texture = NULL;
+                PCDeviceSetTexture(parameter->register_index, texture);
                 PCDeviceSetSamplerState(parameter->register_index, 1, 1);
                 PCDeviceSetSamplerState(parameter->register_index, 2, 1);
                 const f32 bias = material->parameter_1ac + PCShaderMaterialSamplerBiasOffsetPc;
@@ -745,7 +769,12 @@ extern "C" void __cdecl PCShaderSetMaterialParametersPc(PC_SHADER_OBJECT_FULL_VI
             }
             case 45: {
                 const i32 id = material->depth_texture_id;
-                PCDeviceSetTexture(parameter->register_index, id == 0 ? NULL : NuTextureGetDimensions(id)->resource);
+                void *texture;
+                if (id != 0)
+                    texture = NuTextureGetDimensions(id)->resource;
+                else
+                    texture = NULL;
+                PCDeviceSetTexture(parameter->register_index, texture);
                 PCDeviceSetSamplerState(parameter->register_index, 1, 1);
                 PCDeviceSetSamplerState(parameter->register_index, 2, 1);
                 PCDeviceSetSamplerState(parameter->register_index, 5, 1);
@@ -755,7 +784,12 @@ extern "C" void __cdecl PCShaderSetMaterialParametersPc(PC_SHADER_OBJECT_FULL_VI
             }
             case 49: {
                 const i32 id = material->lighting_texture_id;
-                PCDeviceSetTexture(parameter->register_index, id == 0 ? NULL : NuTextureGetDimensions(id)->resource);
+                void *texture;
+                if (id != 0)
+                    texture = NuTextureGetDimensions(id)->resource;
+                else
+                    texture = NULL;
+                PCDeviceSetTexture(parameter->register_index, texture);
                 PCDeviceSetSamplerState(parameter->register_index, 1, 1);
                 PCDeviceSetSamplerState(parameter->register_index, 2, 1);
                 const f32 bias = material->parameter_1a8 + PCShaderMaterialSamplerBiasOffsetPc;
@@ -764,7 +798,12 @@ extern "C" void __cdecl PCShaderSetMaterialParametersPc(PC_SHADER_OBJECT_FULL_VI
             }
             case 82: {
                 const i32 id = material->clamp_texture_id;
-                PCDeviceSetTexture(parameter->register_index, id == 0 ? NULL : NuTextureGetDimensions(id)->resource);
+                void *texture;
+                if (id != 0)
+                    texture = NuTextureGetDimensions(id)->resource;
+                else
+                    texture = NULL;
+                PCDeviceSetTexture(parameter->register_index, texture);
                 PCDeviceSetSamplerState(parameter->register_index, 1, 3);
                 PCDeviceSetSamplerState(parameter->register_index, 2, 3);
                 PCDeviceSetSamplerState(parameter->register_index, 3, 3);
@@ -789,7 +828,12 @@ extern "C" void __cdecl PCShaderSetMaterialParametersPc(PC_SHADER_OBJECT_FULL_VI
             }
             case 48: {
                 const i32 id = material->reflection_texture_id;
-                PCDeviceSetTexture(parameter->register_index, id == 0 ? NULL : NuTextureGetDimensions(id)->resource);
+                void *texture;
+                if (id != 0)
+                    texture = NuTextureGetDimensions(id)->resource;
+                else
+                    texture = NULL;
+                PCDeviceSetTexture(parameter->register_index, texture);
                 PCDeviceSetSamplerState(parameter->register_index, 1, 3);
                 PCDeviceSetSamplerState(parameter->register_index, 2, 3);
                 break;
@@ -899,7 +943,12 @@ extern "C" void __cdecl PCShaderSetMaterialParametersPc(PC_SHADER_OBJECT_FULL_VI
             }
             case 97: {
                 const i32 id = material->point_texture_id;
-                PCDeviceSetTexture(parameter->register_index, id == 0 ? NULL : NuTextureGetDimensions(id)->resource);
+                void *texture;
+                if (id != 0)
+                    texture = NuTextureGetDimensions(id)->resource;
+                else
+                    texture = NULL;
+                PCDeviceSetTexture(parameter->register_index, texture);
                 PCDeviceSetSamplerState(parameter->register_index, 1, 1);
                 PCDeviceSetSamplerState(parameter->register_index, 2, 1);
                 PCDeviceSetSamplerState(parameter->register_index, 5, 1);
@@ -909,7 +958,12 @@ extern "C" void __cdecl PCShaderSetMaterialParametersPc(PC_SHADER_OBJECT_FULL_VI
             }
             case 98: {
                 const i32 id = material->unfiltered_texture_id;
-                PCDeviceSetTexture(parameter->register_index, id == 0 ? NULL : NuTextureGetDimensions(id)->resource);
+                void *texture;
+                if (id != 0)
+                    texture = NuTextureGetDimensions(id)->resource;
+                else
+                    texture = NULL;
+                PCDeviceSetTexture(parameter->register_index, texture);
                 PCDeviceSetSamplerState(parameter->register_index, 1, 1);
                 PCDeviceSetSamplerState(parameter->register_index, 2, 1);
                 PCDeviceSetSamplerState(parameter->register_index, 5, 0);
