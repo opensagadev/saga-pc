@@ -190,131 +190,135 @@ void __cdecl CalcValue1648Get2Values(char *data, i32 quarter, i32 stride, ANI3_S
 }
 
 void __cdecl ANI_Ani3ExtractAllNodeCurves(ANI3_HEADER_PC *anim, f32 frame, f32 *values, i32 node, char *curve_mask) {
-    u32 curve_count;
-    u32 quarter;
-    u32 stride;
+    i32 curve_count;
+    i32 stride;
+    i32 whole_key;
+    i32 quarter;
     f32 fraction;
-    i32 key_offset;
     u16 *types;
     u8 *force_zero;
     ANI3_SCALEMIN_PC *scale_min;
     i16 *constants;
+    u16 *curve_constants;
     u8 *keys;
     i32 n;
-    u32 curve;
-    i32 quarter_shift;
-    i32 next_quarter_shift;
+    i32 curve;
+    u16 type;
 
     curve_count = anim->curve_count;
-    stride = anim->key_stride;
-    if (ForcePlayEndFrame == 0 || anim->end_frame == 0) {
-        if (anim->key_count == 1) {
-            quarter = 0;
-            fraction = 0.0f;
-            key_offset = 0;
-        } else {
-            f32 last_key = (f32)(anim->key_count - 1);
-            f32 key = (frame - (f32)anim->first_frame) * last_key / (f32)(anim->frame_count - 1);
-            i32 whole_key;
-            if (key < 0.0f) {
-                key = 0.0f;
-            }
-            if (last_key <= key) {
-                key = last_key;
-            }
-            whole_key = (i32)key;
-            fraction = key - (f32)whole_key;
-            quarter = (u32)whole_key & 3;
-            key_offset = (whole_key >> 2) * (i32)stride;
-        }
+    if (ForcePlayEndFrame != 0 && anim->end_frame != 0) {
+        frame = (f32)(i32)(anim->key_count + anim->end_frame - 4);
+    } else if (anim->key_count == 1) {
+        frame = 0.0f;
     } else {
-        f32 key = (f32)(anim->end_frame + anim->key_count - 4);
-        i32 whole_key = (i32)key;
-        fraction = key - (f32)whole_key;
-        quarter = (u32)whole_key & 3;
-        key_offset = (whole_key >> 2) * (i32)stride;
+        f32 last_key;
+        frame -= (f32)(i32)anim->first_frame;
+        last_key = (f32)(i32)(anim->key_count - 1);
+        frame *= last_key;
+        frame /= (i32)(anim->frame_count - 1);
+        if (frame < 0.0f) {
+            frame = 0.0f;
+        }
+        if (last_key <= frame) {
+            frame = last_key;
+        }
     }
-
+    whole_key = (i32)frame;
+    stride = anim->key_stride;
     types = anim->curve_types;
-    force_zero = (u8 *)(types + (u32)anim->node_count * curve_count);
-    scale_min = anim->scale_min;
+    force_zero = (u8 *)(types + anim->node_count * curve_count);
+    fraction = frame - whole_key;
     constants = anim->constants;
-    keys = anim->keys + key_offset;
+    curve_constants = (u16 *)constants + anim->constant_index - 16;
+    scale_min = anim->scale_min;
+    quarter = whole_key & 3;
+    keys = anim->keys + whole_key / 4 * stride;
     for (n = 0; n < node; ++n) {
         for (curve = 0; curve < curve_count; ++curve) {
             u16 type = *types++;
             if (type < 16) {
-                ++scale_min;
                 keys += KeyStructSizes[type];
+                ++scale_min;
             }
         }
         force_zero += curve_count;
     }
 
-    quarter_shift = (i32)quarter * 6;
-    next_quarter_shift = ((i32)quarter * 3 + 3) * 2;
-    for (curve = 0; curve < curve_count; ++curve, ++values) {
-        u16 type = types[curve];
-        i32 evaluate = curve_mask == NULL || *curve_mask == (char)curve;
+    for (curve = 0; curve < curve_count; ++curve, ++values, ++force_zero) {
         f32 key_fraction;
-        if (curve_mask != NULL && evaluate) {
+        type = *types++;
+        if (curve_mask != NULL) {
+            if (curve != *curve_mask) {
+                switch (type) {
+                    case 6:
+                        keys += 4;
+                        ++scale_min;
+                        break;
+                    case 7:
+                        keys += 8;
+                        ++scale_min;
+                        break;
+                    case 8:
+                    case 10:
+                        keys += 4;
+                        break;
+                }
+                continue;
+            }
             ++curve_mask;
         }
-        if (!evaluate) {
-            if (type == 7) {
+
+        if ((*force_zero & 1) != 0) {
+            key_fraction = 0.0f;
+        } else {
+            key_fraction = fraction;
+        }
+        switch (type) {
+            case 6: {
+                u32 first = *(u32 *)keys;
+                u32 next = *(u32 *)(keys + stride);
+                u32 first_byte = first & 0xff;
+                u32 next_byte = next & 0xff;
+                u32 tangents = first >> 8;
+                i32 shift = quarter * 6;
+                f32 tangent0 = (f32)((tangents >> shift) & 0x3f) * 0.01587302f;
+                if (quarter < 3) {
+                    f32 first_value = (f32)first_byte;
+                    f32 tangent1 = (f32)((tangents >> (shift + 6)) & 0x3f) * 0.01587302f;
+                    key_fraction = (tangent1 - tangent0) * key_fraction + tangent0;
+                    *values = (((f32)next_byte - first_value) * key_fraction + first_value) * scale_min->scale +
+                              scale_min->minimum;
+                } else {
+                    f32 next_value = (f32)next_byte;
+                    f32 first_value = (f32)first_byte;
+                    f32 after;
+                    tangent0 = (next_value - first_value) * tangent0 + first_value;
+                    after =
+                        ((f32)keys[stride * 2] - next_value) * ((f32)((next >> 8) & 0x3f) * 0.01587302f) + next_value;
+                    *values = ((after - tangent0) * key_fraction + tangent0) * scale_min->scale + scale_min->minimum;
+                }
+                keys += 4;
+                ++scale_min;
+                break;
+            }
+            case 7:
+                *values = CalcValue1648((char *)keys, quarter, stride, key_fraction, scale_min);
                 keys += 8;
                 ++scale_min;
-            } else if (type == 6) {
+                break;
+            case 8:
+                *values = (f32)constants[keys[quarter]];
                 keys += 4;
-                ++scale_min;
-            } else if (type == 8 || type == 10) {
+                break;
+            case 10: {
+                u32 index = keys[quarter];
+                *(i32 *)values = (i32)constants[index + 1] | ((i32)constants[index] << 16);
                 keys += 4;
+                break;
             }
-            continue;
-        }
-
-        key_fraction = (force_zero[curve] & 1) != 0 ? 0.0f : fraction;
-        if (type == 7) {
-            *values = CalcValue1648((char *)keys, (i32)quarter, (i32)stride, key_fraction, scale_min);
-            keys += 8;
-            ++scale_min;
-        } else if (type == 8) {
-            *values = (f32)constants[keys[quarter]];
-            keys += 4;
-        } else if (type == 10) {
-            union {
-                u32 bits;
-                f32 value;
-            } packed;
-            u32 index = keys[quarter];
-            packed.bits = (u32)(i32)constants[index + 1] | ((u32)(i32)constants[index] << 16);
-            *values = packed.value;
-            keys += 4;
-        } else if (type == 6) {
-            u32 first = *(u32 *)keys;
-            u32 next = *(u32 *)(keys + stride);
-            f32 first_value = (f32)(first & 0xff);
-            f32 next_value = (f32)(next & 0xff);
-            u32 tangents = first >> 8;
-            f32 tangent0 = (f32)((tangents >> quarter_shift) & 0x3f) * 0.01587302f;
-            f32 packed_value;
-            if (quarter == 3) {
-                f32 interpolated = (next_value - first_value) * tangent0 + first_value;
-                f32 tangent1 = (f32)((next >> 8) & 0x3f) * 0.01587302f;
-                f32 after = (f32)keys[stride * 2];
-                packed_value =
-                    (((after - next_value) * tangent1 + next_value) - interpolated) * key_fraction + interpolated;
-            } else {
-                f32 tangent1 = (f32)((tangents >> (next_quarter_shift & 0x1f)) & 0x3f) * 0.01587302f;
-                packed_value =
-                    (next_value - first_value) * ((tangent1 - tangent0) * key_fraction + tangent0) + first_value;
-            }
-            *values = packed_value * scale_min->scale + scale_min->minimum;
-            keys += 4;
-            ++scale_min;
-        } else {
-            u16 constant = ((u16 *)constants)[anim->constant_index + type - 16];
-            *values = (f32)constant * anim->scale + anim->minimum;
+            default:
+                *values = (f32)curve_constants[type] * anim->scale + anim->minimum;
+                break;
         }
     }
 }
@@ -555,7 +559,7 @@ i32 __cdecl ANI_SimpleAni3PlayerV4Joint_Quat3(ANI3_HEADER_PC *anim, f32 frame, A
                 curve_types += 3;
             } else {
                 for (i = 0; i < 3; ++i) {
-                    u32 type = *curve_types++;
+                    u16 type = *curve_types++;
                     if (type < 16) {
                         keys += KeyStructSizes[type];
                         ++scale_min;
@@ -588,7 +592,7 @@ i32 __cdecl ANI_SimpleAni3PlayerV4Joint_Quat3(ANI3_HEADER_PC *anim, f32 frame, A
                 __m128 result;
                 f32 dot;
                 for (i = 0; i < 3; ++i) {
-                    u32 type = *curve_types++;
+                    u16 type = *curve_types++;
                     switch (type) {
                         case 6: {
                             u32 first_word = *(u32 *)keys;
@@ -650,7 +654,7 @@ i32 __cdecl ANI_SimpleAni3PlayerV4Joint_Quat3(ANI3_HEADER_PC *anim, f32 frame, A
                 out += 4;
             } else {
                 for (i = 3; i != 0; --i) {
-                    u32 type = *curve_types++;
+                    u16 type = *curve_types++;
                     if (type != 6) {
                         *out = (f32)constants[type] * anim->scale + anim->minimum;
                     } else {
@@ -738,7 +742,7 @@ i32 __cdecl ANI_SimpleAni3PlayerV4Joint_Quat3W(ANI3_HEADER_PC *anim, f32 frame, 
                 curve_types += curve_count;
             } else {
                 for (i = 0; i < curve_count; ++i) {
-                    u32 type = *curve_types++;
+                    u16 type = *curve_types++;
                     if (type < 16) {
                         keys += KeyStructSizes[type];
                         ++scale_min;
@@ -771,7 +775,7 @@ i32 __cdecl ANI_SimpleAni3PlayerV4Joint_Quat3W(ANI3_HEADER_PC *anim, f32 frame, 
                 __m128 products;
                 __m128 result;
                 for (i = 0; i < 4; ++i) {
-                    u32 type = *curve_types++;
+                    u16 type = *curve_types++;
                     switch (type) {
                         case 6: {
                             u32 first_word = *(u32 *)keys;
@@ -826,7 +830,7 @@ i32 __cdecl ANI_SimpleAni3PlayerV4Joint_Quat3W(ANI3_HEADER_PC *anim, f32 frame, 
                 out += 4;
             } else {
                 for (i = 3; i != 0; --i) {
-                    u32 type = *curve_types++;
+                    u16 type = *curve_types++;
                     if (type != 6) {
                         *out = (f32)constants[type] * anim->scale + anim->minimum;
                     } else {
@@ -1818,7 +1822,7 @@ i32 __cdecl ANI_SimpleAni3PlayerV4Joint_Blend(ANI3_HEADER_PC *anim, f32 frame, A
                 curve_types += 3;
             } else {
                 for (i = 0; i < 3; ++i) {
-                    u32 type = *curve_types++;
+                    u16 type = *curve_types++;
                     if (type < 16) {
                         keys += 4;
                         ++scale_min;
@@ -1851,7 +1855,7 @@ i32 __cdecl ANI_SimpleAni3PlayerV4Joint_Blend(ANI3_HEADER_PC *anim, f32 frame, A
                 curve_types += 3;
             } else {
                 for (i = 0; i < 3; ++i) {
-                    u32 type = *curve_types++;
+                    u16 type = *curve_types++;
                     f32 value;
                     f32 delta;
                     if (type != 6) {
@@ -2097,31 +2101,6 @@ f32 __cdecl NuAnimEndFrame(void *animation_data) {
 /* Append to nuanim.c. Access conventions and valid-engine backing requirements
  * are specified in the handoff; these are not historical full aggregate types. */
 
-#define ANI3_COMPOSE_PARENT_QUAT(output, current, parent)                                                              \
-    do {                                                                                                               \
-        NUVEC4 _a, _b, _c, _d;                                                                                         \
-        __m128 _av, _bv, _cv, _dv;                                                                                     \
-        _av = _mm_mul_ps(_mm_setr_ps((current).w, (current).x, (current).y, (current).x),                              \
-                         _mm_setr_ps((parent).x, (parent).z, (parent).x, (parent).x));                                 \
-        _bv = _mm_mul_ps(_mm_setr_ps((current).z, (current).w, (current).z, (current).y),                              \
-                         _mm_setr_ps((parent).y, (parent).y, (parent).w, (parent).y));                                 \
-        _cv = _mm_mul_ps(_mm_setr_ps((current).x, (current).y, (current).w, (current).z),                              \
-                         _mm_setr_ps((parent).w, (parent).w, (parent).z, (parent).z));                                 \
-        _dv = _mm_mul_ps(_mm_setr_ps((current).y, (current).z, (current).x, (current).w),                              \
-                         _mm_setr_ps((parent).z, (parent).x, (parent).y, (parent).w));                                 \
-        _mm_storeu_ps(&_a.x, _av);                                                                                     \
-        _mm_storeu_ps(&_b.x, _bv);                                                                                     \
-        _mm_storeu_ps(&_c.x, _cv);                                                                                     \
-        _mm_storeu_ps(&_d.x, _dv);                                                                                     \
-        _mm_store_ss(&_a.w, _mm_sub_ss(_mm_setzero_ps(), _mm_set_ss(_a.w)));                                           \
-        _mm_store_ss(&_b.w, _mm_sub_ss(_mm_setzero_ps(), _mm_set_ss(_b.w)));                                           \
-        _mm_store_ss(&_c.w, _mm_sub_ss(_mm_setzero_ps(), _mm_set_ss(_c.w)));                                           \
-        _mm_store_ss(&_d.w, _mm_sub_ss(_mm_setzero_ps(), _mm_set_ss(_d.w)));                                           \
-        _mm_storeu_ps(&(output).x, _mm_sub_ps(_mm_add_ps(_mm_add_ps(_mm_loadu_ps(&_a.x), _mm_loadu_ps(&_b.x)),         \
-                                                         _mm_loadu_ps(&_c.x)),                                         \
-                                              _mm_loadu_ps(&_d.x)));                                                   \
-    } while (0)
-
 void __cdecl NuAnimBuffEvaluateCallback(ANI3_EVAL_CALLBACK_PC callback, void **data, i32 *joints) {
     AnimBuffEvalCB = callback;
     AnimBuffEvalData = data;
@@ -2283,8 +2262,7 @@ void __cdecl NuAnimBuffEvaluate_3_QuatB(NUMTX *base, ANI3_BUFFER_PC *buffer, NUH
     void *callback_data[256];
     NUQUAT *quaternions;
     NUQUAT *rotation;
-    NUQUAT local;
-    NUQUAT parent_rotation;
+    NUQUAT identity;
     NUVEC *scales;
     NUVEC *scale;
     NUVEC *parent_scale;
@@ -2298,14 +2276,16 @@ void __cdecl NuAnimBuffEvaluate_3_QuatB(NUMTX *base, ANI3_BUFFER_PC *buffer, NUH
     u8 parent;
     u8 flags;
 
-    count = (i32)(u16)animation->node_count;
-    if (count >= object->joint_count)
-        count = object->joint_count;
+    count = object->joint_count;
+    if ((i32)(u16)animation->node_count < count)
+        count = (u16)animation->node_count;
     quaternions = (NUQUAT *)NuScratchAlloc32((count + 1) * sizeof(NUQUAT));
     scales = (NUVEC *)NuScratchAlloc32(count * sizeof(NUVEC));
-    /* Original allocation-failure target5c12e0 is a RET-only no-op; execution
-     * continues. Successful allocations are part of the qualified engine domain. */
+    if (quaternions == NULL || scales == NULL)
+        AnimationDiagnosticNoOpPc();
+    identity.x = identity.y = identity.z = 0.0f;
     quaternions = (NUQUAT *)(((u32)quaternions + 15u) & ~15u);
+    identity.w = 1.0f;
     if (buffer == NULL)
         buffer = (ANI3_BUFFER_PC *)globalbuffer;
     if (AnimBuffEvalData != NULL && AnimBuffEvalJoint != NULL) {
@@ -2324,8 +2304,7 @@ void __cdecl NuAnimBuffEvaluate_3_QuatB(NUMTX *base, ANI3_BUFFER_PC *buffer, NUH
         NuMtxToQuat(base, &quaternions[255]);
     } else {
         root_scale.x = root_scale.y = root_scale.z = 1.0f;
-        quaternions[255].x = quaternions[255].y = quaternions[255].z = 0.0f;
-        quaternions[255].w = 1.0f;
+        quaternions[255] = identity;
     }
     root_values.x = root_values.y = root_values.z = 0.0f;
     for (index = 0; index < count; ++index) {
@@ -2345,9 +2324,7 @@ void __cdecl NuAnimBuffEvaluate_3_QuatB(NUMTX *base, ANI3_BUFFER_PC *buffer, NUH
             rotation->w = 1.0f;
         }
         if (parent != 255) {
-            local = *rotation;
-            parent_rotation = quaternions[parent];
-            ANI3_COMPOSE_PARENT_QUAT(*rotation, local, parent_rotation);
+            NuQuatMulAlignedPc(&quaternions[parent], rotation, rotation);
             parent_scale = &root_scale;
         } else {
             parent_scale = &scales[255];
@@ -2415,11 +2392,6 @@ void __cdecl NuAnimBuffEvaluate_3_QuatB(NUMTX *base, ANI3_BUFFER_PC *buffer, NUH
     AnimBuffEvalJoint = NULL;
     NuScratchRelease();
     NuScratchRelease();
-}
-
-#undef ANI3_COMPOSE_PARENT_QUAT
-
-void __cdecl AnimationDiagnosticNoOpPc(void) {
 }
 
 void __cdecl NuAnimData2CalcTime(NUANIMDATA2_PC *animation, f32 frame, NUANIM_TIME2_PC *time) {

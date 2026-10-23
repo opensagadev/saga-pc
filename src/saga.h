@@ -15414,6 +15414,7 @@ void __cdecl PCSoundAlreadyPlayingHook(void);
     extern i32 AnimQuatDepthPc;
     extern u8 AnimQuatSavedPc[4];
     void __cdecl AnimationDiagnosticNoOpPc(void);
+    void __fastcall NuQuatMulAlignedPc(const NUQUAT *parent, const NUQUAT *rotation, NUQUAT *out);
     void __cdecl NuHGobjEvalAnim2Root_3(NUHGOBJ_EVAL_PC *, ANI3_HEADER_PC *, f32, i32, void *, NUMTX *,
                                         ANI3_ROOT_CALLBACK_PC, void *);
     void __cdecl NuHGobjEvalAnimBlend2Root_3(NUHGOBJ_EVAL_PC *, ANI3_HEADER_PC *, f32, ANI3_HEADER_PC *, f32, f32, i32,
