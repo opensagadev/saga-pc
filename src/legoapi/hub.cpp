@@ -988,16 +988,16 @@ static void MiniKitSetRotationX(NUMTX *m, NUANG a) {
     const f32 cosine = NuTrigTable[((a + 0x4000) >> 1) & 0x7fff];
     const f32 sine = NuTrigTable[(a >> 1) & 0x7fff];
     m->m00 = ANI3_EVAL_IDENTITY_MATRIX.m00;
-    m->m11 = cosine;
-    m->m12 = sine;
-    m->m21 = -sine;
-    m->m22 = cosine;
     m->m01 = ANI3_EVAL_IDENTITY_MATRIX.m01;
     m->m02 = ANI3_EVAL_IDENTITY_MATRIX.m02;
     m->m03 = ANI3_EVAL_IDENTITY_MATRIX.m03;
     m->m10 = 0.0f;
+    m->m11 = cosine;
+    m->m12 = sine;
     m->m13 = 0.0f;
     m->m20 = 0.0f;
+    m->m21 = -sine;
+    m->m22 = cosine;
     m->m23 = 0.0f;
     m->m30 = ANI3_EVAL_IDENTITY_MATRIX.m30;
     m->m31 = ANI3_EVAL_IDENTITY_MATRIX.m31;
@@ -1013,14 +1013,14 @@ static void MiniKitRotateX(NUMTX *m, NUANG a) {
     f32 m21 = m->m21;
     f32 m31 = m->m31;
 
-    m->m01 = m01 * cosx - m->m02 * sinx;
-    m->m02 = m01 * sinx + m->m02 * cosx;
-    m->m11 = m11 * cosx - m->m12 * sinx;
-    m->m12 = m11 * sinx + m->m12 * cosx;
-    m->m21 = m21 * cosx - m->m22 * sinx;
-    m->m22 = m21 * sinx + m->m22 * cosx;
-    m->m31 = m31 * cosx - m->m32 * sinx;
-    m->m32 = m31 * sinx + m->m32 * cosx;
+    m->m01 = (m01 * cosx) - (m->m02 * sinx);
+    m->m02 = (m01 * sinx) + (m->m02 * cosx);
+    m->m11 = (m11 * cosx) - (m->m12 * sinx);
+    m->m12 = (m11 * sinx) + (m->m12 * cosx);
+    m->m21 = (m21 * cosx) - (m->m22 * sinx);
+    m->m22 = (m21 * sinx) + (m->m22 * cosx);
+    m->m31 = (m31 * cosx) - (m->m32 * sinx);
+    m->m32 = (m31 * sinx) + (m->m32 * cosx);
 }
 
 static void MiniKitRotateY(NUMTX *m, NUANG a) {
@@ -1049,14 +1049,14 @@ static void MiniKitRotateZ(NUMTX *m, NUANG a) {
     f32 m20 = m->m20;
     f32 m30 = m->m30;
 
-    m->m00 = m00 * cosx - m->m01 * sinx;
-    m->m01 = m00 * sinx + m->m01 * cosx;
-    m->m10 = m10 * cosx - m->m11 * sinx;
-    m->m11 = m10 * sinx + m->m11 * cosx;
-    m->m20 = m20 * cosx - m->m21 * sinx;
-    m->m21 = m20 * sinx + m->m21 * cosx;
-    m->m30 = m30 * cosx - m->m31 * sinx;
-    m->m31 = m30 * sinx + m->m31 * cosx;
+    m->m00 = (m00 * cosx) - (m->m01 * sinx);
+    m->m01 = (m00 * sinx) + (m->m01 * cosx);
+    m->m10 = (m10 * cosx) - (m->m11 * sinx);
+    m->m11 = (m10 * sinx) + (m->m11 * cosx);
+    m->m20 = (m20 * cosx) - (m->m21 * sinx);
+    m->m21 = (m20 * sinx) + (m->m21 * cosx);
+    m->m30 = (m30 * cosx) - (m->m31 * sinx);
+    m->m31 = (m30 * sinx) + (m->m31 * cosx);
 }
 
 #define HUB_SIN_LUT_PC(a) (NuTrigTable[(((i32)(a)) >> 1) & 0x7fff])
@@ -1515,7 +1515,7 @@ static void HubResolveEpisodeInfoPc(HUB_EPISODE_INFO_PC *info, WORLDINFO *world)
 
 extern "C" void __cdecl Hub_Init(WORLDINFO *world) {
     HUB_INIT_WORLD_READER_PC *w = (HUB_INIT_WORLD_READER_PC *)world;
-    HubAreaPanelXPc = HubBothTrueJediGoldBricksPc != 0 ? HubAreaPanelTwoPc : HubAreaPanelOnePc;
+    HubAreaPanelXPc = HubBothTrueJediGoldBricksPc != 0 ? HubAreaPanelOnePc : HubAreaPanelTwoPc;
     HubResolveAreaInfoPc(HubAreaInfoPc, world);
     HubResolveEpisodeInfoPc(HubEpisodeInfoPc, world);
     HubMiniKitViewerGizmoPc = GizmoFindByName(w->gizmo_system, obstacle_gizmotype_id, "conveyor_test");
@@ -1543,7 +1543,7 @@ extern "C" void __cdecl Hub_Init(WORLDINFO *world) {
     HubEpisodeTimePc = 0;
     HubStatsTimePc = 0;
     HubAreaPc = -1;
-    HubMiniKitViewerAlphaPc = 0;
+    HubMiniKitPanelTimePc = 0;
     HubLastAreaPc = -1;
     HubEpisodePc = -1;
     HubMiniKitAreaPc = -1;
@@ -1635,10 +1635,14 @@ STATIC_ASSERT(offsetof(HUB_AREA_INFO_PC, bonus_gizmo) == 0x34);
 STATIC_ASSERT(offsetof(GIZMO_PC, object) == 0);
 
 extern "C" i32 __cdecl Hub_BonusBuildIt(GIZBUILDIT_PC *buildit) {
-    for (HUB_AREA_INFO_PC *info = HubAreaInfoPc; info->area_name != NULL; ++info) {
-        GIZMO_PC *gizmo = (GIZMO_PC *)info->bonus_gizmo;
-        if (gizmo != NULL && gizmo->object == buildit)
-            return 1;
+    if (HubAreaInfoPc[0].area_name != NULL) {
+        HUB_AREA_INFO_PC *info = HubAreaInfoPc;
+        do {
+            GIZMO_PC *gizmo = (GIZMO_PC *)info->bonus_gizmo;
+            if (gizmo != NULL && gizmo->object == buildit)
+                return 1;
+            ++info;
+        } while (info->area_name != NULL);
     }
     return 0;
 }
@@ -1665,7 +1669,7 @@ static void HubRestoreBuildItsPc(void) {
     for (i32 i = 0; HubAreaInfoPc[i].area_name != NULL; ++i) {
         GIZMO_PC *gizmo = (GIZMO_PC *)HubAreaInfoPc[i].bonus_gizmo;
         if (gizmo != NULL) {
-            if (((u8)(1U << (bit & 31)) & Game.hub_buildit_completed) != 0)
+            if (((1U << bit) & Game.hub_buildit_completed) != 0)
                 GizBuildIt_SetToEnd((GIZBUILDIT_PC *)gizmo->object);
             ++bit;
         }
@@ -3229,10 +3233,10 @@ static void HubInitSelectModePc(void) {
 }
 /* 476360/110. */
 static void HubInitBonusModePc(void) {
-    bonusmodemode = 0;
+    hub_bonusmode = 0;
     hub_bonusarea = (i8)LDataList[HubDoorNewLevelPc].area_index;
     hub_bonusepisode = (i8)ADataList[hub_bonusarea].episode_index;
-    hub_bonusmode = 0;
+    bonusmodemode = 0;
     bonusmodearcade =
         SENATE_ADATA != NULL && (i8)LDataList[HubDoorNewLevelPc].area_index == SENATE_ADATA->index ? 1 : 0;
 }
@@ -4725,7 +4729,7 @@ extern "C" {
         if (boss != NULL && boss->dead == 0 && (boss->flags_1fc & 0x80) == 0) {
             if (FadeSys.fade == 0.0f) {
                 f32 alpha = statstime;
-                DrawCharIcon(boss->id, 0.0f, HudBossIconYPc, 0.0f, HudBossIconScalePc, 167, alpha, alpha, 1, NULL);
+                DrawCharIcon((i16)boss->id, 0.0f, HudBossIconYPc, 0.0f, HudBossIconScalePc, 167, alpha, alpha, 1, NULL);
                 DrawHitPointsPc(boss, 0.0f, HudBossHeartYPc, HudBossHeartScalePc, 1.0f, 0, alpha, 1);
                 return 1;
             }

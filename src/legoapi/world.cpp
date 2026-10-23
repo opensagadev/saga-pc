@@ -1071,22 +1071,25 @@ static void WorldGetTitlesNamePrivatePc(char *titles) {
         case 2:
             NuStrCpy(titles, "titles_french");
             break;
-        case 3:
-            NuStrCpy(titles, "titles_spanish");
-            break;
         case 4:
             NuStrCpy(titles, "titles_german");
             break;
         case 5:
             NuStrCpy(titles, "titles_italian");
             break;
+        case 3:
+            NuStrCpy(titles, "titles_spanish");
+            break;
         case 8:
             NuStrCpy(titles, "titles_danish");
             break;
         default:
-            if (StartupGameFlag1 != 0)
-                NuStrCpy(titles, Text_Language == 18 ? "titles_us" : "titles_uk");
-            else
+            if (StartupGameFlag1 != 0) {
+                if (Text_Language == 18)
+                    NuStrCpy(titles, "titles_us");
+                else
+                    NuStrCpy(titles, "titles_uk");
+            } else
                 NuStrCpy(titles, "titles");
             break;
     }
@@ -1645,7 +1648,7 @@ static void PicturesFixUpPc(WORLDINFO *world) {
 
 extern "C" void __cdecl Titles_Init(WORLDINFO *world) {
     char title_name[64];
-    STUBBED_NAMED("Titles_Init: genuine NewGame 0x42abf0");
+    NewGame();
     WorldGetTitlesNamePrivatePc(title_name);
     NuSpecialFind(world->current_gscn, &LevHSpecial[0], title_name, 1);
     LevAlpha = 1.0f;
@@ -1681,14 +1684,11 @@ extern "C" void __cdecl Titles_Update(WORLDINFO *world) {
     if (NuSpecialExistsFn(&LevHSpecial[0]) != 0) {
         i32 menu = GetMenuID();
         f32 target = (menu == -1 || menu == 0 || menu == 1) ? 1.0f : 0.0f;
-        f32 step = FRAMETIME + FRAMETIME;
-        LevAlpha = SeekLinearF(LevAlpha, target, step);
+        LevAlpha = SeekLinearF(LevAlpha, target, FRAMETIME + FRAMETIME);
     }
-    f32 step = FRAMETIME + FRAMETIME;
-    TitlesAlpha = SeekLinearF(TitlesAlpha, 1.0f, step);
+    TitlesAlpha = SeekLinearF(TitlesAlpha, 1.0f, FRAMETIME + FRAMETIME);
     LevTime[1] = (GetMenuID() == 0 && GameTimer.time_elapsed >= 4.0f) ? 1.0f : 0.0f;
-    step = FRAMETIME + FRAMETIME;
-    LevTime[0] = SeekLinearF(LevTime[0], LevTime[1], step);
+    LevTime[0] = SeekLinearF(LevTime[0], LevTime[1], FRAMETIME + FRAMETIME);
 }
 
 extern "C" void __cdecl Titles_Draw(WORLDINFO *world) {
@@ -1702,10 +1702,12 @@ extern "C" void __cdecl Titles_Draw(WORLDINFO *world) {
             matrix.m32 = TitlesStartPositionPc.z + (LevMtx.m32 - TitlesStartPositionPc.z) * t;
         }
         NUVEC scale;
-        scale.x = scale.y = scale.z = TitleScalePc;
+        scale.x = TitleScalePc;
+        scale.y = TitleScalePc;
+        scale.z = TitleScalePc;
         NuMtxPreScale(&matrix, &scale);
         NuSpecialDrawAtAlpha(&LevHSpecial[0], &matrix,
-                             (f32)((f64)TitlesAlpha * newgamealpha *
+                             (f32)(((f64)newgamealpha * TitlesAlpha) *
                                    (1.0 - NuTrigTable[((i32)((f64)LevAlpha * 16384.0 + 16384.0) >> 1) & 0x7fff])));
     }
     if (!(LevTime[0] > 0.0f) || !(newgamealpha > 0.0f)) {
@@ -1799,8 +1801,8 @@ extern "C" void __cdecl Credits_Draw_Game(WORLDINFO *world) {
         duration -= 1.0f;
         f32 interval = (f32)(((f64)duration - 1.0) / PicturesNumLevelsPc);
         f32 picture_duration = interval + 1.0f;
-        f64 hold_duration = (f64)picture_duration - 1.0;
         for (i32 index = 0; index < PicturesNumLevelsPc; ++index) {
+            f64 hold_duration = (f64)picture_duration - 1.0;
             f32 start = (f32)((f64)interval * index + 1.0);
             f32 hold_end = (f32)((f64)start + hold_duration);
             f32 end = start + picture_duration;
