@@ -125,40 +125,40 @@ static void edpartWorldInstanceMenu(eduimenu_s *parent, eduiitem_s *unused1, u32
     i32 selected_first;
     i32 count;
     i32 index;
+    selected_first = 0;
     edpart_which_scene = 0;
     edpart_worldinstance_menu = eduiMenuCreate(70, 70, 250, 250, ed_fnt, edpartCancelWorldInstanceMenu,
                                                ((char *)(edpart_filter ? "World Scene (Filtered)" : "World Scene")));
     if (edpart_worldinstance_menu == NULL || edbits_base_scene == NULL || edpart_nearest_type == NULL)
         return;
     group = 1;
-    selected_first = 0;
     count = NuGScnNumSpecials(edbits_base_scene);
     for (index = 0; index < count; ++index) {
         char *name;
         i32 selected;
         i32 included;
         i32 variant;
-        struct eduiitem_s *item;
         nuhspecial_s special;
-        NuGScnGetSpecial(&special, edbits_base_scene, index);
-        name = NuSpecialExistsFn(&special) ? NuSpecialGetName(&special) : NULL;
         selected = 0;
         included = 0;
+        name = NULL;
+        NuGScnGetSpecial(&special, edbits_base_scene, index);
+        if (NuSpecialExistsFn(&special))
+            name = NuSpecialGetName(&special);
         for (variant = 0; variant < edpart_nearest_type->variant_count; ++variant) {
-            if (edpart_nearest_type->effect_ids[variant] == index) {
-                if (edpart_nearest_type->effect_pages[variant] == 0) {
-                    selected = 1;
-                    included = 1;
-                }
+            if (edpart_nearest_type->effect_ids[variant] == index && edpart_nearest_type->effect_pages[variant] == 0) {
+                selected = 1;
+                included = 1;
             }
         }
-        if (edpart_filter && NuStrNCmp(edpart_filter_string, name, NuStrLen(edpart_filter_string)) != 0 && !included)
-            continue;
-        item = eduiItemToggleCreate(index, edblack, selected, group++, edpartSetInstanceType, name);
-        eduiMenuAddItem(edpart_worldinstance_menu, item);
-        if (selected & (selected_first ^ 1)) {
-            selected_first = 1;
-            edpart_worldinstance_menu->selected = edui_last_item;
+        if (!edpart_filter || NuStrNCmp(edpart_filter_string, name, NuStrLen(edpart_filter_string)) == 0 || included) {
+            eduiMenuAddItem(edpart_worldinstance_menu,
+                            eduiItemToggleCreate(index, edblack, selected, group, edpartSetInstanceType, name));
+            group++;
+            if (selected && !selected_first) {
+                selected_first = 1;
+                edpart_worldinstance_menu->selected = edui_last_item;
+            }
         }
     }
     if (group == 1)
@@ -497,40 +497,40 @@ static void edpartThingsInstanceMenu(eduimenu_s *parent, eduiitem_s *unused1, u3
     i32 selected_first;
     i32 count;
     i32 index;
+    selected_first = 0;
     edpart_which_scene = 1;
     edpart_thingsinstance_menu = eduiMenuCreate(70, 70, 250, 250, ed_fnt, edpartCancelThingsInstanceMenu,
                                                 (char *)(edpart_filter ? "Things Scene (Filtered)" : "Things Scene"));
     if (edpart_thingsinstance_menu == NULL || edbits_things_scene == NULL || edpart_nearest_type == NULL)
         return;
     group = 1;
-    selected_first = 0;
     count = NuGScnNumSpecials(edbits_things_scene);
     for (index = 0; index < count; ++index) {
         char *name;
         i32 selected;
         i32 included;
         i32 variant;
-        struct eduiitem_s *item;
         nuhspecial_s special;
-        NuGScnGetSpecial(&special, edbits_things_scene, index);
-        name = NuSpecialExistsFn(&special) ? NuSpecialGetName(&special) : NULL;
         selected = 0;
         included = 0;
+        name = NULL;
+        NuGScnGetSpecial(&special, edbits_things_scene, index);
+        if (NuSpecialExistsFn(&special))
+            name = NuSpecialGetName(&special);
         for (variant = 0; variant < edpart_nearest_type->variant_count; ++variant) {
-            if (edpart_nearest_type->effect_ids[variant] == index) {
-                if (edpart_nearest_type->effect_pages[variant] == 1) {
-                    selected = 1;
-                    included = 1;
-                }
+            if (edpart_nearest_type->effect_ids[variant] == index && edpart_nearest_type->effect_pages[variant] == 1) {
+                selected = 1;
+                included = 1;
             }
         }
-        if (edpart_filter && NuStrNCmp(edpart_filter_string, name, NuStrLen(edpart_filter_string)) != 0 && !included)
-            continue;
-        item = eduiItemToggleCreate(index, edblack, selected, group++, edpartSetInstanceType, name);
-        eduiMenuAddItem(edpart_thingsinstance_menu, item);
-        if (selected & (selected_first ^ 1)) {
-            selected_first = 1;
-            edpart_thingsinstance_menu->selected = edui_last_item;
+        if (!edpart_filter || NuStrNCmp(edpart_filter_string, name, NuStrLen(edpart_filter_string)) == 0 || included) {
+            eduiMenuAddItem(edpart_thingsinstance_menu,
+                            eduiItemToggleCreate(index, edblack, selected, group, edpartSetInstanceType, name));
+            group++;
+            if (selected && !selected_first) {
+                selected_first = 1;
+                edpart_thingsinstance_menu->selected = edui_last_item;
+            }
         }
     }
     if (group == 1)
@@ -567,5 +567,217 @@ static void edpartGravMenu(eduimenu_s *menu, eduiitem_s *unused1, u32 unused2) {
             edpart_grav_menu->x = menu->x + 10;
             edpart_grav_menu->y = menu->y + 40;
         }
+    }
+}
+
+extern struct eduimenu_s *edpart_instanceorphans_menu;
+extern i32 edpart_nearest_orphans;
+extern i32 edpart_nearest_duplicates;
+
+#define EDPART_RUNTIME_NEAREST ((PART_RUNTIME_TYPE_PC *)edpart_nearest_type)
+#define EDPART_REMOVE_INSTANCE(first)                                                                                  \
+    for (slot = (first); slot < 7; ++slot) {                                                                           \
+        edpart_nearest_type->effect_ids[slot] = edpart_nearest_type->effect_ids[slot + 1];                             \
+        edpart_nearest_type->effect_pages[slot] = edpart_nearest_type->effect_pages[slot + 1];                         \
+    }                                                                                                                  \
+    edpart_nearest_type->effect_ids[7] = -1;                                                                           \
+    edpart_nearest_type->effect_pages[7] = -1;                                                                         \
+    --edpart_nearest_type->variant_count
+
+void __cdecl edpartSetInstanceType(eduimenu_s *unused0, eduiitem_s *item, u32 unused2) {
+    i32 index;
+    i32 slot;
+    if (edpart_nearest_type == NULL)
+        return;
+    if (item->data == 9999) {
+        for (index = 0; index < 8; ++index) {
+            edpart_nearest_type->effect_ids[index] = -1;
+            edpart_nearest_type->effect_pages[index] = 1;
+        }
+        if (item->highlighted)
+            edpart_nearest_type->effect_ids[0] = 9999;
+        edpart_nearest_type->flags |= 0x10;
+        edpart_nearest_type->variant_count = 0;
+        return;
+    }
+    edpart_nullobject_highlight->highlighted = 0;
+    if (item->highlighted) {
+        if (edpart_nearest_type->variant_count < 8) {
+            edpart_nearest_type->effect_ids[edpart_nearest_type->variant_count] = item->data;
+            edpart_nearest_type->effect_pages[edpart_nearest_type->variant_count] = edpart_which_scene;
+            ++edpart_nearest_type->variant_count;
+        } else {
+            item->highlighted = 0;
+        }
+    } else {
+        for (index = 0; index < 8; ++index) {
+            if (edpart_nearest_type->effect_ids[index] == item->data) {
+                EDPART_REMOVE_INSTANCE(index);
+                return;
+            }
+        }
+    }
+}
+
+void __cdecl edpartCancelWorldInstanceMenu(eduimenu_s *unused0, eduimenu_s *unused1) {
+    eduiMenuDestroy(edpart_worldinstance_menu);
+    edpart_worldinstance_menu = NULL;
+}
+
+static void edpartDeleteInstanceOrphan(eduimenu_s *menu, eduiitem_s *item, u32 unused2) {
+    struct eduimenu_s *parent;
+    i32 slot;
+    parent = NULL;
+    EDPART_REMOVE_INSTANCE(item->data);
+    --edpart_nearest_orphans;
+    if (menu->parent) {
+        parent = menu->parent;
+        eduiMenuDetach(menu);
+    }
+    if (menu->callback)
+        menu->callback(menu, parent);
+}
+
+static void edpartDeleteAllInstanceOrphans(eduimenu_s *menu, eduiitem_s *unused1, u32 unused2) {
+    struct eduimenu_s *parent;
+    i32 index;
+    i32 slot;
+    parent = NULL;
+    for (index = 0; index < 8; ++index) {
+        if (edpart_nearest_type->effect_ids[index] == 9998) {
+            EDPART_REMOVE_INSTANCE(index);
+            --index;
+        }
+    }
+    edpart_nearest_orphans = 0;
+    if (menu->parent) {
+        parent = menu->parent;
+        eduiMenuDetach(menu);
+    }
+    if (menu->callback)
+        menu->callback(menu, parent);
+}
+
+void __cdecl edpartDeleteAllInstanceDuplicates(eduimenu_s *menu, eduiitem_s *unused1, u32 unused2) {
+    struct eduimenu_s *parent;
+    i32 index;
+    i32 previous;
+    i32 slot;
+    parent = NULL;
+    for (index = 0; index < 8; ++index) {
+        i16 effect = edpart_nearest_type->effect_ids[index];
+        if (effect == -1 || effect == 9999 || effect == 9998)
+            continue;
+        for (previous = 0; previous < index; ++previous) {
+            if (effect == edpart_nearest_type->effect_ids[previous]) {
+                EDPART_REMOVE_INSTANCE(index);
+                --index;
+                break;
+            }
+        }
+    }
+    edpart_nearest_duplicates = 0;
+    if (menu->parent) {
+        parent = menu->parent;
+        eduiMenuDetach(menu);
+    }
+    if (menu->callback)
+        menu->callback(menu, parent);
+}
+
+static void edpartCancelInstanceOrphansMenu(eduimenu_s *unused0, eduimenu_s *unused1) {
+    i32 index;
+    if (edpart_nearest_type->variant_count == 0) {
+        for (index = 0; index < 8; ++index) {
+            edpart_nearest_type->effect_ids[index] = -1;
+            edpart_nearest_type->effect_pages[index] = 1;
+        }
+        edpart_nearest_type->effect_ids[0] = 9999;
+        edpart_nearest_type->flags |= 0x10;
+    }
+    eduiMenuDestroy(edpart_instanceorphans_menu);
+    edpart_instanceorphans_menu = NULL;
+}
+
+void __cdecl edpartInstanceOrphansMenu(eduimenu_s *parent, eduiitem_s *unused1, u32 unused2) {
+    i32 group;
+    i32 index;
+    char effect_name[20];
+    char label[32];
+    edpart_which_scene = 1;
+    edpart_instanceorphans_menu =
+        eduiMenuCreate(70, 70, 250, 250, ed_fnt, edpartCancelInstanceOrphansMenu, "Instance Orphans/Dupes");
+    if (edpart_instanceorphans_menu != NULL && edpart_nearest_type != NULL) {
+        group = 1;
+        for (index = 0; index < 8; ++index) {
+            if (edpart_nearest_type->effect_ids[index] == 9998) {
+                NuStrNCpy(effect_name, EDPART_RUNTIME_NEAREST->object_names[index], 17);
+                sprintf(label, "Remove - %s", effect_name);
+                eduiMenuAddItem(edpart_instanceorphans_menu,
+                                eduiItemSelCreate(index, edblack, 0, group, edpartDeleteInstanceOrphan, label));
+                ++group;
+            }
+        }
+        if (edpart_nearest_orphans)
+            eduiMenuAddItem(
+                edpart_instanceorphans_menu,
+                eduiItemSelCreate(index, edblack, 0, 0, edpartDeleteAllInstanceOrphans, "Remove All Orphans"));
+        else
+            eduiMenuAddItem(edpart_instanceorphans_menu,
+                            eduiItemSelCreate(index, edgrey, 0, 0, NULL, "Remove All Orphans"));
+        if (edpart_nearest_duplicates)
+            eduiMenuAddItem(
+                edpart_instanceorphans_menu,
+                eduiItemSelCreate(index, edblack, 0, 0, edpartDeleteAllInstanceDuplicates, "Remove Duplicates"));
+        else
+            eduiMenuAddItem(edpart_instanceorphans_menu,
+                            eduiItemSelCreate(index, edgrey, 0, 0, NULL, "Remove Duplicates"));
+        eduiMenuAttach(parent, edpart_instanceorphans_menu);
+        edpart_instanceorphans_menu->x = parent->x + 10;
+        edpart_instanceorphans_menu->y = parent->y + 40;
+    }
+}
+
+void __cdecl edpartSetDistribution(eduimenu_s *unused0, eduiitem_s *item, u32 unused2) {
+    if (edpart_nearest_type != NULL)
+        EDPART_RUNTIME_NEAREST->variant_mode = item->data;
+}
+
+void __cdecl edpartCancelInstanceMenu(eduimenu_s *unused0, eduimenu_s *unused1) {
+    eduiMenuDestroy(edpart_instance_menu);
+    edpart_instance_menu = NULL;
+    edpart_nullobject_highlight = NULL;
+}
+
+void __cdecl edpartInstanceMenu(eduimenu_s *menu, eduiitem_s *unused1, u32 unused2) {
+    i32 selected;
+    selected = 0;
+    edpart_instance_menu = eduiMenuCreate(70, 70, 250, 250, ed_fnt, edpartCancelInstanceMenu, "Instance Select");
+    if (edpart_instance_menu != NULL && edpart_nearest_type != NULL) {
+        if (edpart_nearest_type->effect_ids[0] == 9999)
+            selected = 1;
+        eduiMenuAddItem(edpart_instance_menu, eduiItemToggleCreate(9999, edblack, selected, 2, edpartSetInstanceType,
+                                                                   PartNullInstanceNamePc));
+        edpart_nullobject_highlight = edui_last_item;
+        if (edpart_nearest_type->field_b3 == 1)
+            eduiMenuAddItem(edpart_instance_menu,
+                            eduiItemSelCreate(1, edblack, 0, 0, edpartWorldInstanceMenu, "World Scene..."));
+        else
+            eduiMenuAddItem(edpart_instance_menu, eduiItemSelCreate(1, edgrey, 0, 0, NULL, "World Scene..."));
+        eduiMenuAddItem(edpart_instance_menu,
+                        eduiItemSelCreate(1, edblack, 0, 0, edpartThingsInstanceMenu, "Things Scene..."));
+        if (edpart_nearest_orphans == 0 && edpart_nearest_duplicates == 0)
+            eduiMenuAddItem(edpart_instance_menu,
+                            eduiItemSelCreate(1, edgrey, 0, 0, NULL, "Instance Orphans/Dupes..."));
+        else
+            eduiMenuAddItem(edpart_instance_menu, eduiItemSelCreate(1, edblack, 0, 0, edpartInstanceOrphansMenu,
+                                                                    "Instance Orphans/Dupes..."));
+        eduiMenuAddItem(edpart_instance_menu, eduiItemCheckCreate(0, edblack, EDPART_RUNTIME_NEAREST->variant_mode == 0,
+                                                                  1, edpartSetDistribution, "Random Distribution"));
+        eduiMenuAddItem(edpart_instance_menu, eduiItemCheckCreate(1, edblack, EDPART_RUNTIME_NEAREST->variant_mode == 1,
+                                                                  1, edpartSetDistribution, "Sequential Distribution"));
+        eduiMenuAttach(menu, edpart_instance_menu);
+        edpart_instance_menu->x = menu->x + 10;
+        edpart_instance_menu->y = menu->y + 40;
     }
 }

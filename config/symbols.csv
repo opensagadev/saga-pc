@@ -6842,10 +6842,18 @@ address,symbol,size,ctype
 0x6455e0,_edpartLevelTypeMenu,296,
 0x645710,_edpartCancelTypeMenu,25,
 0x645730,_edpartTypeMenu,184,
+0x6457f0,_edpartSetInstanceType,357,
+0x645960,_edpartCancelWorldInstanceMenu,25,
 0x645980,_edpartWorldInstanceMenu,520,
 0x645b90,_edpartCancelThingsInstanceMenu,25,
 0x645bb0,_edpartThingsInstanceMenu,520,
+0x645dc0,_edpartDeleteInstanceOrphan,164,
+0x645e70,_edpartDeleteAllInstanceOrphans,207,
 0x645f40,_edpartDeleteAllInstanceDuplicates,274,
+0x646060,_edpartCancelInstanceOrphansMenu,123,
+0x6460e0,_edpartInstanceOrphansMenu,443,
+0x6462a0,_edpartSetDistribution,23,
+0x6462c0,_edpartCancelInstanceMenu,27,
 0x6462e0,_edpartInstanceMenu,522,
 0x646c30,_edpartCancelCutOffMenu,25,
 0x646c50,_edpartCutOffMenu,203,
@@ -16025,8 +16033,20 @@ address,symbol,size,ctype
 0x76c740,??_C@_0BA@GNCAJPFI@General?5List?4?4?4?$AA@,16,char []
 0x76c750,??_C@_0N@OMCPPCOB@Emitter?5Type?$AA@,13,char []
 0x76c760,??_C@_0BH@FNOJJJOA@All?5Instances?5Filtered?$AA@,23,char []
+0x76c778,??_C@_0M@NOKBFBBI@World?5Scene?$AA@,12,char []
+0x76c784,??_C@_0BH@KGIJFIKH@World?5Scene?5?$CIFiltered?$CJ?$AA@,23,char []
 0x76c79c,??_C@_0N@CEICCIKN@Things?5Scene?$AA@,13,char []
 0x76c7ac,??_C@_0BI@FHNOJCNA@Things?5Scene?5?$CIFiltered?$CJ?$AA@,24,char []
+0x76c7c4,??_C@_0BC@CKPBKDLH@Remove?5Duplicates?$AA@,18,char []
+0x76c7d8,??_C@_0BD@BBKHBBPA@Remove?5All?5Orphans?$AA@,19,char []
+0x76c7ec,??_C@_0M@MFMABCBK@Remove?5?9?5?$CFs?$AA@,12,char []
+0x76c7f8,??_C@_0BH@NHFGHOBK@Instance?5Orphans?1Dupes?$AA@,23,char []
+0x76c810,??_C@_0BI@BKAOIIHC@Sequential?5Distribution?$AA@,24,char []
+0x76c828,??_C@_0BE@JNFDBFEA@Random?5Distribution?$AA@,20,char []
+0x76c83c,??_C@_0BK@FLDMDMAD@Instance?5Orphans?1Dupes?4?4?4?$AA@,26,char []
+0x76c858,??_C@_0BA@PGHCDIHK@Things?5Scene?4?4?4?$AA@,16,char []
+0x76c868,??_C@_0P@GJHNLHLG@World?5Scene?4?4?4?$AA@,15,char []
+0x76c878,??_C@_0BA@NMLECMDG@Instance?5Select?$AA@,16,char []
 0x76c90c,??_C@_0BA@PKAAPCH@Attached?5Sounds?$AA@,16,char []
 0x76c91c,??_C@_0L@EIMKEPLI@CutOff?5Rad?$AA@,11,char []
 0x76c928,??_C@_05OMFEOJEI@Radii?$AA@,6,char []
@@ -21165,6 +21185,7 @@ address,symbol,size,ctype
 0x810198,_edpart_copy_size,4,f32
 0x81019c,_edpart_scale_factor,4,f32
 0x8101a4,_edpart_which_scene,4,i32
+0x8101a8,_edpart_filter_string,16,char[16]
 0x8101b8,_PartLoadParticlePagePc,,i32
 0x8101bc,_edpart_superscale,4,i32
 0x8101c4,_PartNullInstanceNamePc,,char[14]
@@ -24707,12 +24728,15 @@ address,symbol,size,ctype
 0x29209c8,_edpart_type_menu,4,struct eduimenu_s *
 0x29209cc,_edpart_generaltype_menu,4,struct eduimenu_s *
 0x29209d0,_edpart_leveltype_menu,4,struct eduimenu_s *
+0x29209d4,_edpart_instance_menu,4,struct eduimenu_s *
+0x29209d8,_edpart_worldinstance_menu,4,struct eduimenu_s *
 0x29209dc,_edpart_thingsinstance_menu,4,struct eduimenu_s *
 0x29209e0,_edpart_instancesettings_menu,4,struct eduimenu_s *
 0x29209e4,_edpart_instanceflags_menu,4,struct eduimenu_s *
 0x29209e8,_edpart_instorient_menu,4,struct eduimenu_s *
 0x29209f0,_edpart_debrissettings_menu,4,struct eduimenu_s *
 0x2920a14,_edpart_tint_menu,4,struct eduimenu_s *
+0x2920a18,_edpart_instanceorphans_menu,4,struct eduimenu_s *
 0x2920a1c,_edpart_instancescale_menu,4,struct eduimenu_s *
 0x2920a20,_edpart_debrisscale_menu,4,struct eduimenu_s *
 0x2920a24,_edpart_scaletype_menu,4,struct eduimenu_s *
@@ -24726,6 +24750,7 @@ address,symbol,size,ctype
 0x2920a80,_edpart_copyrotz,4,i32
 0x2920a84,_edpart_copyroty,4,i32
 0x2920a88,_edpart_count,4,i32
+0x2920aa8,_edpart_nullobject_highlight,4,struct eduiitem_s *
 0x02920aac,_PartRTL,4,RTLSET_PC *
 0x2920ab0,_partglobaltime,,f32
 0x2920ab4,_part_types_used,,i32

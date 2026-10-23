@@ -29298,6 +29298,18 @@ extern "C" {
 #pragma bss_seg(".bss$edpart_instancesettings_menu")
     struct eduimenu_s *edpart_instancesettings_menu = 0;
 
+#pragma bss_seg(".bss$edpart_instance_menu")
+    struct eduimenu_s *edpart_instance_menu = 0;
+
+#pragma bss_seg(".bss$edpart_worldinstance_menu")
+    struct eduimenu_s *edpart_worldinstance_menu = 0;
+
+#pragma bss_seg(".bss$edpart_instanceorphans_menu")
+    struct eduimenu_s *edpart_instanceorphans_menu = 0;
+
+#pragma bss_seg(".bss$edpart_nullobject_highlight")
+    struct eduiitem_s *edpart_nullobject_highlight = 0;
+
 #pragma bss_seg(".bss$edpart_tint_menu")
     struct eduimenu_s *edpart_tint_menu = 0;
 
@@ -29533,6 +29545,9 @@ extern "C" {
 
 #pragma data_seg(".data$edpart_which_scene")
     i32 edpart_which_scene = 1;
+
+#pragma data_seg(".data$edpart_filter_string")
+    char edpart_filter_string[16] = "PART";
 
 #pragma bss_seg(".bss$edpart_thingsinstance_menu")
     struct eduimenu_s *edpart_thingsinstance_menu = 0;
