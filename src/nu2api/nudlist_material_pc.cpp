@@ -794,6 +794,10 @@ extern "C" {
                                        bool, f32, POST_SHADER_PROGRAM_PC *);
 }
 
+NuMainFilter::NuMainFilter() {
+    platform_fbo = NULL;
+}
+
 void NuMainFilter::RenderBloomPc() {
     PC_FRAMEBUFFER_PC *output =
         (PC_FRAMEBUFFER_PC *)PostResourcePortsPc[0].manager->entries[PostResourcePortsPc[0].index].data;

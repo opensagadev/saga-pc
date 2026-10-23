@@ -532,8 +532,18 @@
    "kind": "function"
   },
   {
-   "unit": "src/nu2api/nupostfilter.cpp",
+   "unit": "src/nu2api/nudlist_material_pc.cpp",
    "symbol": "??1NuMainFilter@@UAE@XZ",
+   "kind": "function"
+  },
+  {
+   "unit": "src/nu2api/nudlist_material_pc.cpp",
+   "symbol": "??1NuMainFilterGen@@UAE@XZ",
+   "kind": "function"
+  },
+  {
+   "unit": "src/nu2api/nudlist_material_pc.cpp",
+   "symbol": "??1NuPostFilter@@UAE@XZ",
    "kind": "function"
   },
   {
