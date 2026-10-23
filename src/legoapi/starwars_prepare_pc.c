@@ -354,7 +354,7 @@ check:
     NuVecScale(&offset, &offset, radius / packet->path_info.connection->horizontal_distance);
     NuVecAdd(&packet->movement_destination, &source->position, &offset);
     distance = NuVecXZDistSqr(&object->position, &packet->movement_destination, &offset);
-    if (checks != 0 && (ai_moveradius * ai_moveradius > distance || owner->respawn_timer > jump_stuck_time ||
+    if (checks != 0 && (distance < ai_moveradius * ai_moveradius || owner->respawn_timer > jump_stuck_time ||
                         owner->character_context == 0x44)) {
         packet->movement_destination = object->position;
         ready = 1;
