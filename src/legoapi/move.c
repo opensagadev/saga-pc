@@ -1792,16 +1792,14 @@ void __cdecl KeepVehicleOnScreen(GAMEOBJECT *object, i32 sides, i32 top, i32 bot
         OnOrInsidePlane(&object->collision_position, &PlayPlanePc[1].point, &PlayPlanePc[1].normal, NULL, 0.0f,
                         &distance);
         if (distance < margin) {
-            f32 speed = object->character_data->game_character->run_speed;
-            object->target_velocity.x =
-                (f32)((((f64)distance - margin) / margin) * -2.0 * ((f64)speed + speed) + object->target_velocity.x);
+            object->target_velocity.x +=
+                ((distance - margin) / margin * -2.0) * (object->character_data->game_character->run_speed * 2.0f);
         } else {
             OnOrInsidePlane(&object->collision_position, &PlayPlanePc[2].point, &PlayPlanePc[2].normal, NULL, 0.0f,
                             &distance);
             if (distance < margin) {
-                f32 speed = object->character_data->game_character->run_speed;
-                object->target_velocity.x = (f32)((((f64)distance - margin) / margin) * -2.0 * (-(f64)speed - speed) +
-                                                  object->target_velocity.x);
+                object->target_velocity.x +=
+                    ((distance - margin) / margin * -2.0) * (-object->character_data->game_character->run_speed * 2.0f);
             }
         }
     }
@@ -1810,62 +1808,66 @@ void __cdecl KeepVehicleOnScreen(GAMEOBJECT *object, i32 sides, i32 top, i32 bot
                         &distance);
     else
         distance = 1000000000.0f;
-    if (distance != 1000000000.0f && distance < margin) {
-        f32 speed = object->character_data->game_character->run_speed;
-        object->target_velocity.y =
-            (f32)((((f64)distance - margin) / margin) * -2.0 * (-(f64)speed - speed) + object->target_velocity.y);
+    if (distance != 1000000000.0 && distance < margin) {
+        object->target_velocity.y +=
+            ((distance - margin) / margin * -2.0) * (-object->character_data->game_character->run_speed * 2.0f);
         return;
     }
     if (bottom != 0) {
         OnOrInsidePlane(&object->collision_position, &PlayPlanePc[4].point, &PlayPlanePc[4].normal, NULL, 0.0f,
                         &distance);
         if (distance < margin) {
-            f32 speed = object->character_data->game_character->run_speed;
-            object->target_velocity.y =
-                (f32)((((f64)distance - margin) / margin) * -2.0 * ((f64)speed + speed) + object->target_velocity.y);
+            object->target_velocity.y +=
+                ((distance - margin) / margin * -2.0) * (object->character_data->game_character->run_speed * 2.0f);
         }
     }
 }
+
+/* Retail subtracts the shared 0.0 double literal (0x751790) without folding it. */
+extern const f64 ActionSnapWeightedRandomZeroPc;
 
 i32 __cdecl MovePlayer_TWIST(GAMEOBJECT *object) {
     WORLDINFO *world = WorldInfo_CurrentlyActive();
     GAMEPAD_PC *pad = object->pad;
     GAMEOBJECT *vehicle;
     NUMTX orientation;
-    i32 yaw_lean, pitch_lean;
+    i32 yaw_lean, pitch_lean, roll_lean;
+    i32 sock;
     f32 speed, scale;
-    if (object->field_280 == 0xff || DOGFIGHTA_LDATA == NULL || world->current_level != DOGFIGHTA_LDATA ||
-        world->sock_sys == NULL)
+    if (object->field_280 == 0xff)
+        return 0;
+    if (DOGFIGHTA_LDATA == NULL || world->current_level != DOGFIGHTA_LDATA || world->sock_sys == NULL)
+        return 0;
+    sock = object->sock_position.sock_index;
+    object->movement_mode = 4;
+    if (sock == -1 || (world->sock_sys->socks[sock].flags & 1) != 0)
         return 0;
     object->movement_mode = 4;
-    if (object->sock_position.sock_index == -1 ||
-        (world->sock_sys->socks[object->sock_position.sock_index].flags & 1) != 0)
-        return 0;
-    object->movement_mode = 4;
-    yaw_lean = (i32)((f64)((TwistYawLeanDegrees << 16) / 360) * pad->input_direction_z);
-    pitch_lean = (i32)((f64)((TwistPitchLeanDegrees << 16) / 360) * -pad->input_direction_x);
-    SockRotationMatrix(world->sock_sys, &object->sock_position, &orientation, TwistSockRotationModeA,
-                       TwistSockRotationModeB);
-    object->vehicle_orientation = orientation;
+    roll_lean = yaw_lean = (i32)(((TwistYawLeanDegrees << 16) / 360) * pad->input_direction_z);
+    pitch_lean = (i32)(((TwistPitchLeanDegrees << 16) / 360) * -pad->input_direction_x);
+    if (object->sock_position.sock_index != -1) {
+        SockRotationMatrix(world->sock_sys, &object->sock_position, &orientation, TwistSockRotationModeA,
+                           TwistSockRotationModeB);
+        object->vehicle_orientation = orientation;
+    }
     if ((object->flags_e20 & 0x20) != 0) {
         MoveInactiveVehicle(object, 1, &vehicle);
         if (vehicle != NULL) {
             object->field_0x276 = vehicle->field_0x276;
-            object->movement_facing_angle = vehicle->field_0x276;
-            object->facing_angle = vehicle->field_0x276;
+            object->facing_angle = object->movement_facing_angle = object->field_0x276;
             object->velocity = vehicle->velocity;
             object->field_dc8 = vehicle->field_dc8;
-            object->movement_lean_angle = object->tertiary_lean_angle = object->secondary_lean_angle = 0;
-            object->roll_angle = object->pitch_angle = 0;
+            object->secondary_lean_angle = object->tertiary_lean_angle = object->movement_lean_angle = 0;
+            object->pitch_angle = object->roll_angle = 0;
             object->vehicle_orientation = vehicle->vehicle_orientation;
             object->sock_position = vehicle->sock_position;
         }
     } else {
-        object->target_velocity = v000;
+        object->target_velocity.x = object->target_velocity.y = object->target_velocity.z = 0.0f;
         speed = (pad->input_magnitude / object->character_data->game_character->run_speed) * TwistLateralSpeed;
         if (speed > 0.0f) {
-            object->target_velocity.x = pad->input_direction_z * speed;
-            object->target_velocity.y = -pad->input_direction_x * speed;
+            object->target_velocity.x = speed * pad->input_direction_z;
+            object->target_velocity.y = speed * -pad->input_direction_x;
         }
         KeepVehicleOnScreen(object, 1, 1, 1);
         object->target_velocity.z = 0.0f;
@@ -1874,15 +1876,16 @@ i32 __cdecl MovePlayer_TWIST(GAMEOBJECT *object) {
         SeekVec(&object->velocity, &object->velocity, &object->target_velocity,
                 object->character_data->game_character->velocity_seek_rate);
     }
-    scale = (f32)(1.0 - 0.0);
+    scale = 1.0f - ActionSnapWeightedRandomZeroPc;
     if (scale < 0.0f)
         scale = 0.0f;
     if (TwistScaleLean != 0) {
-        yaw_lean *= (i32)scale;
         pitch_lean *= (i32)scale;
+        roll_lean *= (i32)scale;
+        yaw_lean *= (i32)scale;
     }
     object->tertiary_lean_angle = SeekRot(object->tertiary_lean_angle, yaw_lean, 5.0f);
-    object->movement_lean_angle = SeekRot(object->movement_lean_angle, yaw_lean, 5.0f);
+    object->movement_lean_angle = SeekRot(object->movement_lean_angle, roll_lean, 5.0f);
     object->secondary_lean_angle = SeekRot(object->secondary_lean_angle, pitch_lean, 5.0f);
     return 1;
 }
@@ -1890,37 +1893,36 @@ i32 __cdecl MovePlayer_TWIST(GAMEOBJECT *object) {
 i32 __cdecl MovePlayer_CIRCLE(GAMEOBJECT *object) {
     WORLDINFO *world = WorldInfo_CurrentlyActive();
     GAMEPAD_PC *pad = object->pad;
-    PLAYERCHARACTERCONFIG_PC *data;
     GAMEOBJECT *vehicle;
     u16 heading;
     f32 seek_rate, maximum, fraction, half_speed;
     i32 flicker;
-    if (object->field_280 == 0xff || BONUS_GUNSHIPB_LDATA == NULL || world->current_level != BONUS_GUNSHIPB_LDATA ||
-        world->sock_sys == NULL || object->sock_position.sock_index == -1)
+    i32 lean;
+    if (object->field_280 == 0xff)
+        return 0;
+    if (BONUS_GUNSHIPB_LDATA == NULL || world->current_level != BONUS_GUNSHIPB_LDATA || world->sock_sys == NULL ||
+        object->sock_position.sock_index == -1)
         return 0;
     object->movement_mode = 3;
     heading = world->sock_sys->socks[object->sock_position.sock_index].input_yaw + object->sock_heading;
     object->current_input_angle = heading + pad->input_angle;
     object->flags_e20 |= 0x200000;
     object->movement_facing_angle = heading;
-    object->facing_angle = SeekRot(object->facing_angle, heading, 8.0f);
-    object->field_0x276 = object->facing_angle;
-    object->movement_lean_angle = SeekRot(object->movement_lean_angle,
-                                          (i32)((f64)((CircleLeanDegrees << 16) / 360) * pad->input_direction_z), 8.0f);
-    data = object->character_data->game_character;
-    seek_rate = data->velocity_seek_rate;
-    if (object->character_context == 0x23 || object->character_context == 0x24)
-        object->target_velocity = v000;
-    else if ((object->flags_e20 & 0x20) != 0) {
+    object->field_0x276 = object->facing_angle = SeekRot(object->facing_angle, heading, 8.0f);
+    lean = (i32)(((CircleLeanDegrees << 16) / 360) * pad->input_direction_z);
+    object->movement_lean_angle = SeekRot(object->movement_lean_angle, lean, 8.0f);
+    seek_rate = object->character_data->game_character->velocity_seek_rate;
+    if (object->character_context == 0x23 || object->character_context == 0x24) {
+        object->target_velocity.x = object->target_velocity.y = object->target_velocity.z = 0.0f;
+    } else if ((object->flags_e20 & 0x20) != 0) {
         MoveInactiveVehicle(object, 0, &vehicle);
         if (vehicle != NULL) {
             object->field_0x276 = vehicle->field_0x276;
-            object->movement_facing_angle = vehicle->field_0x276;
-            object->facing_angle = vehicle->field_0x276;
+            object->facing_angle = object->movement_facing_angle = object->field_0x276;
             object->velocity = vehicle->velocity;
             object->field_dc8 = vehicle->field_dc8;
-            object->movement_lean_angle = object->tertiary_lean_angle = object->secondary_lean_angle = 0;
-            object->roll_angle = object->pitch_angle = 0;
+            object->secondary_lean_angle = object->tertiary_lean_angle = object->movement_lean_angle = 0;
+            object->pitch_angle = object->roll_angle = 0;
         }
         return 1;
     } else {
@@ -1928,22 +1930,23 @@ i32 __cdecl MovePlayer_CIRCLE(GAMEOBJECT *object) {
         if (object->movement_direction_x != 0.0f || object->movement_direction_z != 0.0f) {
             object->target_velocity.x = object->movement_direction_x;
             object->target_velocity.z = object->movement_direction_z;
-            object->movement_direction_x = object->movement_direction_z;
+            object->movement_direction_x = object->movement_direction_z = 0.0f;
         } else {
-            object->target_velocity.x =
-                pad->input_magnitude > 0.0f ? pad->input_magnitude * pad->input_direction_z : 0.0f;
+            if (pad->input_magnitude > 0.0f)
+                object->target_velocity.x = pad->input_direction_z * pad->input_magnitude;
+            else
+                object->target_velocity.x = 0.0f;
             object->target_velocity.z = 0.0f;
-            flicker = (object->flags_e24 >> 16) & 7;
-            if (object->vehicle_hit_timer > 0.0f && flicker != 0) {
-                maximum = (f32)(1.5 * data->run_speed);
-                fraction = (f32)(object->vehicle_hit_timer / (f64)0.4f);
-                half_speed = (f32)(object->target_velocity.x * 0.5);
+            if (object->vehicle_hit_timer > 0.0f && (flicker = (object->flags_e24 >> 16) & 7) != 0) {
+                maximum = object->character_data->game_character->run_speed * 1.5;
+                fraction = object->vehicle_hit_timer / (f64)0.4f;
                 if (flicker == 3) {
+                    half_speed = object->target_velocity.x * 0.5;
                     object->target_velocity.x = half_speed - fraction * maximum;
-                    if (-maximum > object->target_velocity.x)
+                    if (object->target_velocity.x < -maximum)
                         object->target_velocity.x = -maximum;
                 } else {
-                    object->target_velocity.x = half_speed + fraction * maximum;
+                    object->target_velocity.x = fraction * maximum + (f32)(object->target_velocity.x * 0.5);
                     if (object->target_velocity.x > maximum)
                         object->target_velocity.x = maximum;
                 }
