@@ -18990,14 +18990,14 @@ extern "C" {
 #pragma data_seg(".data$PartNullInstanceNamePc")
     char PartNullInstanceNamePc[14] = "NULL instance";
 #pragma data_seg()
-#pragma bss_seg(".bss$PartNearestEmitterPc")
-    i32 PartNearestEmitterPc = 0;
+#pragma bss_seg(".bss$edpart_nearest")
+    i32 edpart_nearest = 0;
 #pragma bss_seg()
 #pragma bss_seg(".bss$PartEditorCameraPosPc")
     NUVEC PartEditorCameraPosPc = {0};
 #pragma bss_seg()
-#pragma bss_seg(".bss$PartNearestEmitterPtrPc")
-    PART_EMIT_PC *PartNearestEmitterPtrPc = 0;
+#pragma bss_seg(".bss$edpart_nearest_emit")
+    PART_EMIT_PC *edpart_nearest_emit = 0;
 #pragma bss_seg()
 #pragma bss_seg(".bss$edpart_nearest_type")
     PARTTYPE_LOOKUP_PC *edpart_nearest_type = 0;
@@ -29310,6 +29310,39 @@ extern "C" {
 #pragma bss_seg(".bss$edpart_nullobject_highlight")
     struct eduiitem_s *edpart_nullobject_highlight = 0;
 
+#pragma bss_seg(".bss$edpart_set_debris")
+    i32 edpart_set_debris = 0;
+
+#pragma bss_seg(".bss$edpart_particle_list")
+    i32 edpart_particle_list = 0;
+
+#pragma bss_seg(".bss$edpart_part_list")
+    i32 edpart_part_list = 0;
+
+#pragma bss_seg(".bss$edpart_trail1debris_menu")
+    struct eduimenu_s *edpart_trail1debris_menu = 0;
+
+#pragma bss_seg(".bss$edpart_trail2debris_menu")
+    struct eduimenu_s *edpart_trail2debris_menu = 0;
+
+#pragma bss_seg(".bss$edpart_emitterdebris_menu")
+    struct eduimenu_s *edpart_emitterdebris_menu = 0;
+
+#pragma bss_seg(".bss$edpart_impactdebris_menu")
+    struct eduimenu_s *edpart_impactdebris_menu = 0;
+
+#pragma bss_seg(".bss$edpart_impactpart_menu")
+    struct eduimenu_s *edpart_impactpart_menu = 0;
+
+#pragma bss_seg(".bss$edpart_diedebris_menu")
+    struct eduimenu_s *edpart_diedebris_menu = 0;
+
+#pragma bss_seg(".bss$edpart_debrisindex_menu")
+    struct eduimenu_s *edpart_debrisindex_menu = 0;
+
+#pragma bss_seg(".bss$edpart_partindex_menu")
+    struct eduimenu_s *edpart_partindex_menu = 0;
+
 #pragma bss_seg(".bss$edpart_tint_menu")
     struct eduimenu_s *edpart_tint_menu = 0;
 
@@ -29542,6 +29575,9 @@ extern "C" {
 
 #pragma bss_seg(".bss$edpart_type_menu")
     struct eduimenu_s *edpart_type_menu = 0;
+
+#pragma data_seg(".data$edpart_set_part")
+    i32 edpart_set_part = 5;
 
 #pragma data_seg(".data$edpart_which_scene")
     i32 edpart_which_scene = 1;

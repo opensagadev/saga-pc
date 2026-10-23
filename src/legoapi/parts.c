@@ -42,22 +42,31 @@ __declspec(noinline) void __cdecl KillPartsByScene(NUGSCN *scene) {
         }
     }
 }
-static void edpartDeleteType(eduimenu_s *menu, eduiitem_s *unused1, u32 unused2) {
+void edpartDeleteType(eduimenu_s *menu, eduiitem_s *unused1, u32 unused2) {
+    struct eduimenu_s *parent;
     i32 emitter;
+    parent = NULL;
     if (edpart_nearest_type == &part_types[edpart_create_type]) {
-        edpart_nearest_type = NULL;
         edpart_nearest = -1;
         edpart_nearest_emit = NULL;
+        edpart_nearest_type = NULL;
     }
     for (emitter = 0; emitter < 40; ++emitter) {
-        if (part_emits[emitter].effect_id == edpart_create_type)
-            edpartDestroy(emitter);
+        if (part_emits[emitter].effect_id == edpart_create_type && part_emits[emitter].effect_id != -1) {
+            part_emits[emitter].effect_id = -1;
+            --part_emits_used;
+        }
     }
     edpartDetermineNearest(1.0f);
     part_types[edpart_create_type].name[0] = '\0';
     part_types[edpart_create_type].effect_ids[0] = -1;
     --part_types_used;
-    edpartFinishMenu(menu);
+    if (menu->parent) {
+        parent = menu->parent;
+        eduiMenuDetach(menu);
+    }
+    if (menu->callback)
+        menu->callback(menu, parent);
     edpart_create_type = -1;
 }
 
@@ -358,7 +367,172 @@ void edpartCancelInstanceFlagsMenu(eduimenu_s *unused0, eduimenu_s *unused1) {
     edpart_instanceflags_menu = NULL;
 }
 
-static void edpartTrail1DebrisMenu(eduimenu_s *menu, eduiitem_s *unused1, u32 unused2) {
+extern i32 edpart_particle_list;
+extern i32 edpart_part_list;
+extern i32 edpart_set_part;
+extern struct eduimenu_s *edpart_debrisindex_menu;
+extern struct eduimenu_s *edpart_partindex_menu;
+
+void edpartChangeDebrisIndex(eduimenu_s *unused0, eduiitem_s *item, u32 unused2) {
+    if (edpart_nearest_type != NULL) {
+        if (edpart_set_debris == 0)
+            edpart_nearest_type->trail_effects[0] = item->data;
+        else if (edpart_set_debris == 1)
+            edpart_nearest_type->trail_effects[1] = item->data;
+        else if (edpart_set_debris == 2)
+            edpart_nearest_type->attached_effect = item->data;
+        else if (edpart_set_debris == 3)
+            edpart_nearest_type->impact_effect = item->data;
+        else if (edpart_set_debris == 4)
+            edpart_nearest_type->kill_effect = item->data;
+    }
+}
+
+void edpartCancelDebrisIndexMenu(eduimenu_s *unused0, eduimenu_s *unused1) {
+    eduiMenuDestroy(edpart_debrisindex_menu);
+    edpart_debrisindex_menu = NULL;
+}
+
+void edpartDebrisIndexMenu(eduimenu_s *menu) {
+    i32 chosen;
+    i32 found;
+    i32 index;
+    edpart_debrisindex_menu = eduiMenuCreate(70, 70, 250, 250, ed_fnt, edpartCancelDebrisIndexMenu, "Debris Type");
+    if (edpart_debrisindex_menu == NULL || edpart_nearest_type == NULL)
+        return;
+    chosen = -1;
+    if (edpart_set_debris == 0)
+        chosen = edpart_nearest_type->trail_effects[0];
+    else if (edpart_set_debris == 1)
+        chosen = edpart_nearest_type->trail_effects[1];
+    else if (edpart_set_debris == 2)
+        chosen = edpart_nearest_type->attached_effect;
+    else if (edpart_set_debris == 3)
+        chosen = edpart_nearest_type->impact_effect;
+    else if (edpart_set_debris == 4)
+        chosen = edpart_nearest_type->kill_effect;
+    found = 0;
+    for (index = 1; index < debinf_count; ++index) {
+        if (debtab[index] != NULL && (i8)debtab[index]->category == edpart_particle_list) {
+            i32 selected = chosen == index;
+            eduiMenuAddItem(edpart_debrisindex_menu, eduiItemCheckCreate(index, edblack, selected, 1,
+                                                                         edpartChangeDebrisIndex, debtab[index]->name));
+            if (selected == 1) {
+                edpart_debrisindex_menu->selected = edui_last_item;
+                found = selected;
+            }
+        }
+    }
+    eduiMenuSortItemsByTxt(edpart_debrisindex_menu);
+    eduiMenuAddItemFirst(edpart_debrisindex_menu,
+                         eduiItemCheckCreate(-1, edblack, chosen == -1, 1, edpartChangeDebrisIndex, "None"));
+    eduiMenuAttach(menu, edpart_debrisindex_menu);
+    edpart_debrisindex_menu->x = menu->x + 10;
+    edpart_debrisindex_menu->y = menu->y + 40;
+    if (found)
+        edpart_debrisindex_menu->field_0c = edpart_debrisindex_menu->selected;
+}
+
+void edpartChangePartIndex(eduimenu_s *unused0, eduiitem_s *item, u32 unused2) {
+    if (edpart_nearest_type != NULL && edpart_set_part == 5)
+        edpart_nearest_type->impact_part = item->data;
+}
+
+void edpartCancelPartIndexMenu(eduimenu_s *unused0, eduimenu_s *unused1) {
+    eduiMenuDestroy(edpart_partindex_menu);
+    edpart_partindex_menu = NULL;
+}
+
+void edpartPartIndexMenu(eduimenu_s *menu) {
+    i32 chosen;
+    i32 index;
+    edpart_partindex_menu = eduiMenuCreate(70, 70, 250, 250, ed_fnt, edpartCancelPartIndexMenu, "Part Type");
+    if (edpart_partindex_menu == NULL || edpart_nearest_type == NULL)
+        return;
+    chosen = -1;
+    if (edpart_set_part == 3)
+        chosen = edpart_nearest_type->impact_part;
+    eduiMenuAddItem(edpart_partindex_menu,
+                    eduiItemCheckCreate(-1, edblack, chosen == -1, 1, edpartChangePartIndex, "None"));
+    for (index = 0; index < 128; ++index) {
+        if (part_types[index].name[0] != '\0' && (i8)part_types[index].field_b3 == edpart_part_list) {
+            i32 selected = chosen == index;
+            if (index == edpart_nearest_emit->effect_id)
+                eduiMenuAddItem(edpart_partindex_menu,
+                                eduiItemCheckCreate(index, edgrey, 0, 0, NULL, part_types[index].name));
+            else
+                eduiMenuAddItem(
+                    edpart_partindex_menu,
+                    eduiItemCheckCreate(index, edblack, selected, 1, edpartChangePartIndex, part_types[index].name));
+            if (selected == 1)
+                edpart_partindex_menu->selected = edui_last_item;
+        }
+    }
+    eduiMenuAttach(menu, edpart_partindex_menu);
+    edpart_partindex_menu->x = menu->x + 10;
+    edpart_partindex_menu->y = menu->y + 40;
+}
+
+void edpartGeneralDebrisIndexMenu(eduimenu_s *menu, eduiitem_s *unused1, u32 unused2) {
+    edpart_particle_list = 0;
+    edpartDebrisIndexMenu(menu);
+}
+
+void edpartLevelDebrisIndexMenu(eduimenu_s *menu, eduiitem_s *unused1, u32 unused2) {
+    edpart_particle_list = 1;
+    edpartDebrisIndexMenu(menu);
+}
+
+void edpartGeneralPartIndexMenu(eduimenu_s *menu, eduiitem_s *unused1, u32 unused2) {
+    edpart_part_list = 0;
+    edpartPartIndexMenu(menu);
+}
+
+void edpartLevelPartIndexMenu(eduimenu_s *menu, eduiitem_s *unused1, u32 unused2) {
+    edpart_part_list = 1;
+    edpartPartIndexMenu(menu);
+}
+
+void edpartChangeDebrisPerSec(eduimenu_s *unused0, eduiitem_s *item, u32 unused2) {
+    if (edpart_nearest_type != NULL) {
+        if (edpart_set_debris == 0)
+            edpart_nearest_type->trail_rates[0] = (f32)(i32)((edui_slider_s *)item)->value;
+        else if (edpart_set_debris == 1)
+            edpart_nearest_type->trail_rates[1] = (f32)(i32)((edui_slider_s *)item)->value;
+    }
+}
+
+void edpartCancelTrail1DebrisMenu(eduimenu_s *unused0, eduimenu_s *unused1) {
+    eduiMenuDestroy(edpart_trail1debris_menu);
+    edpart_trail1debris_menu = NULL;
+}
+
+void edpartCancelTrail2DebrisMenu(eduimenu_s *unused0, eduimenu_s *unused1) {
+    eduiMenuDestroy(edpart_trail2debris_menu);
+    edpart_trail2debris_menu = NULL;
+}
+
+void edpartCancelEmitterDebrisMenu(eduimenu_s *unused0, eduimenu_s *unused1) {
+    eduiMenuDestroy(edpart_emitterdebris_menu);
+    edpart_emitterdebris_menu = NULL;
+}
+
+void edpartCancelImpactDebrisMenu(eduimenu_s *unused0, eduimenu_s *unused1) {
+    eduiMenuDestroy(edpart_impactdebris_menu);
+    edpart_impactdebris_menu = NULL;
+}
+
+void edpartCancelImpactPartMenu(eduimenu_s *unused0, eduimenu_s *unused1) {
+    eduiMenuDestroy(edpart_impactpart_menu);
+    edpart_impactpart_menu = NULL;
+}
+
+void edpartCancelDieDebrisMenu(eduimenu_s *unused0, eduimenu_s *unused1) {
+    eduiMenuDestroy(edpart_diedebris_menu);
+    edpart_diedebris_menu = NULL;
+}
+
+void edpartTrail1DebrisMenu(eduimenu_s *menu, eduiitem_s *unused1, u32 unused2) {
     if (edpart_nearest_type == NULL)
         return;
     edpart_set_debris = 0;
@@ -381,7 +555,7 @@ static void edpartTrail1DebrisMenu(eduimenu_s *menu, eduiitem_s *unused1, u32 un
     edpart_trail1debris_menu->y = menu->y + 40;
 }
 
-static void edpartTrail2DebrisMenu(eduimenu_s *menu, eduiitem_s *unused1, u32 unused2) {
+void edpartTrail2DebrisMenu(eduimenu_s *menu, eduiitem_s *unused1, u32 unused2) {
     if (edpart_nearest_type == NULL)
         return;
     edpart_set_debris = 1;
@@ -404,7 +578,7 @@ static void edpartTrail2DebrisMenu(eduimenu_s *menu, eduiitem_s *unused1, u32 un
     edpart_trail2debris_menu->y = menu->y + 40;
 }
 
-static void edpartEmitterDebrisMenu(eduimenu_s *menu, eduiitem_s *unused1, u32 unused2) {
+void edpartEmitterDebrisMenu(eduimenu_s *menu, eduiitem_s *unused1, u32 unused2) {
     if (edpart_nearest_type == NULL)
         return;
     edpart_set_debris = 2;
@@ -424,7 +598,7 @@ static void edpartEmitterDebrisMenu(eduimenu_s *menu, eduiitem_s *unused1, u32 u
     edpart_emitterdebris_menu->y = menu->y + 40;
 }
 
-static void edpartImpactDebrisMenu(eduimenu_s *menu, eduiitem_s *unused1, u32 unused2) {
+void edpartImpactDebrisMenu(eduimenu_s *menu, eduiitem_s *unused1, u32 unused2) {
     if (edpart_nearest_type == NULL)
         return;
     edpart_set_debris = 3;
@@ -443,10 +617,10 @@ static void edpartImpactDebrisMenu(eduimenu_s *menu, eduiitem_s *unused1, u32 un
     edpart_impactdebris_menu->y = menu->y + 40;
 }
 
-static void edpartImpactPartMenu(eduimenu_s *menu, eduiitem_s *unused1, u32 unused2) {
+void edpartImpactPartMenu(eduimenu_s *menu, eduiitem_s *unused1, u32 unused2) {
     if (edpart_nearest_type == NULL)
         return;
-    edpart_set_part = 5;
+    edpart_set_debris = 5;
     edpart_impactpart_menu = eduiMenuCreate(70, 70, 250, 300, ed_fnt, edpartCancelImpactPartMenu, "Impact Part");
     if (edpart_impactpart_menu != NULL) {
         eduiMenuAddItem(edpart_impactpart_menu,
@@ -462,7 +636,7 @@ static void edpartImpactPartMenu(eduimenu_s *menu, eduiitem_s *unused1, u32 unus
     edpart_impactpart_menu->y = menu->y + 40;
 }
 
-static void edpartDieDebrisMenu(eduimenu_s *menu, eduiitem_s *unused1, u32 unused2) {
+void edpartDieDebrisMenu(eduimenu_s *menu, eduiitem_s *unused1, u32 unused2) {
     if (edpart_nearest_type == NULL)
         return;
     edpart_set_debris = 4;
@@ -481,7 +655,7 @@ static void edpartDieDebrisMenu(eduimenu_s *menu, eduiitem_s *unused1, u32 unuse
     edpart_diedebris_menu->y = menu->y + 40;
 }
 
-static void edpartChangeDebrisScale(eduimenu_s *unused0, eduiitem_s *item, u32 unused2) {
+void edpartChangeDebrisScale(eduimenu_s *unused0, eduiitem_s *item, u32 unused2) {
     if (edpart_nearest_type)
         edpart_nearest_type->effect_scale = ((edui_slider_s *)(item))->value;
 }
@@ -560,7 +734,7 @@ static void edpartInstanceFlagsMenu(eduimenu_s *menu, eduiitem_s *unused1, u32 u
     edpart_instanceflags_menu->x = menu->x + 10;
     edpart_instanceflags_menu->y = menu->y + 40;
 }
-static void edpartDebrisScaleMenu(eduimenu_s *menu, eduiitem_s *unused1, u32 unused2) {
+void edpartDebrisScaleMenu(eduimenu_s *menu, eduiitem_s *unused1, u32 unused2) {
     edpart_debrisscale_menu = eduiMenuCreate(70, 70, 180, 300, ed_fnt, edpartCancelDebrisScaleMenu, "Debris Scale");
     if (edpart_debrisscale_menu != NULL && edpart_nearest_type != NULL) {
         eduiMenuAddItem(edpart_debrisscale_menu,
@@ -571,7 +745,7 @@ static void edpartDebrisScaleMenu(eduimenu_s *menu, eduiitem_s *unused1, u32 unu
         edpart_debrisscale_menu->y = menu->y + 40;
     }
 }
-static void edpartDebrisSettingsMenu(eduimenu_s *menu, eduiitem_s *unused1, u32 unused2) {
+void edpartDebrisSettingsMenu(eduimenu_s *menu, eduiitem_s *unused1, u32 unused2) {
     if (edpart_nearest_type != NULL) {
         edpart_debrissettings_menu =
             eduiMenuCreate(70, 70, 300, 300, ed_fnt, edpartCancelDebrisSettingsMenu, "Debris Settings");
@@ -3441,9 +3615,7 @@ void __cdecl edpartLoadSingleType(PARTTYPE_LOOKUP_PC *record, i32 version, i32 p
     type->field_174 = 0;
 }
 
-extern i32 PartNearestEmitterPc;
 extern NUVEC PartEditorCameraPosPc;
-extern PART_EMIT_PC *PartNearestEmitterPtrPc;
 extern PARTTYPE_LOOKUP_PC *edpart_nearest_type;
 extern i32 PartGeneralPagePc;
 extern i32 PartLevelPagePc;
@@ -3451,33 +3623,33 @@ void __cdecl edpartDetermineNearest(f32 distance) {
     NUVEC delta;
     f32 squared_distance;
     i32 i;
-    if (PartNearestEmitterPc != -1 && part_emits[PartNearestEmitterPc].effect_id != -1) {
-        NuVecSub(&delta, &PartEditorCameraPosPc, &part_emits[PartNearestEmitterPc].position);
+    if (edpart_nearest != -1 && part_emits[edpart_nearest].effect_id != -1) {
+        NuVecSub(&delta, &PartEditorCameraPosPc, &part_emits[edpart_nearest].position);
         squared_distance = delta.x * delta.x + delta.y * delta.y + delta.z * delta.z;
         if (squared_distance == 0.0f)
             return;
     }
-    PartNearestEmitterPc = -1;
+    edpart_nearest = -1;
     for (i = 0; i < 40; ++i) {
         if (part_emits[i].effect_id != -1) {
             NuVecSub(&delta, &PartEditorCameraPosPc, &part_emits[i].position);
             squared_distance = delta.x * delta.x + delta.y * delta.y + delta.z * delta.z;
             if (distance < 0.0f || squared_distance < distance) {
                 distance = squared_distance;
-                PartNearestEmitterPc = i;
+                edpart_nearest = i;
             }
         }
     }
-    PartNearestEmitterPtrPc = NULL;
+    edpart_nearest_emit = NULL;
     edpart_nearest_type = NULL;
-    if (PartNearestEmitterPc != -1) {
-        PartNearestEmitterPtrPc = &part_emits[PartNearestEmitterPc];
-        if (PartNearestEmitterPtrPc->effect_id != -1)
-            edpart_nearest_type = &part_types[PartNearestEmitterPtrPc->effect_id];
+    if (edpart_nearest != -1) {
+        edpart_nearest_emit = &part_emits[edpart_nearest];
+        if (edpart_nearest_emit->effect_id != -1)
+            edpart_nearest_type = &part_types[edpart_nearest_emit->effect_id];
     }
 }
 
-static void edpartChangeNameMenu(eduimenu_s *menu, eduiitem_s *unused1, u32 unused2) {
+void edpartChangeNameMenu(eduimenu_s *menu, eduiitem_s *unused1, u32 unused2) {
     if (edpart_create_type != -1) {
         PARTTYPE_LOOKUP_PC *type = &part_types[edpart_create_type];
         edpart_name_menu = eduiMenuCreate(70, 70, 180, 250, ed_fnt, edpartCancelChangeNameMenu, "Type Name");
@@ -3491,7 +3663,7 @@ static void edpartChangeNameMenu(eduimenu_s *menu, eduiitem_s *unused1, u32 unus
         }
     }
 }
-static void edpartChangeCutOff(eduimenu_s *unused0, eduiitem_s *item, u32 unused2) {
+void edpartChangeCutOff(eduimenu_s *unused0, eduiitem_s *item, u32 unused2) {
     if (edpart_nearest_type)
         edpart_nearest_type->maximum_distance = ((edui_slider_s *)(item))->value;
 }
@@ -3629,7 +3801,7 @@ void edpartRender() {
         eduiMenuRender(edpart_active_menu);
 }
 
-static void edpartChangeName(eduimenu_s *unused0, eduiitem_s *item, u32 unused2) {
+void edpartChangeName(eduimenu_s *unused0, eduiitem_s *item, u32 unused2) {
     if (edpart_create_type != -1) {
         i32 index;
         char *name = ((edui_textpicker_s *)(item))->value;
@@ -3641,7 +3813,7 @@ static void edpartChangeName(eduimenu_s *unused0, eduiitem_s *item, u32 unused2)
     }
 }
 
-static void edpartCancelChangeNameMenu(eduimenu_s *unused0, eduimenu_s *unused1) {
+void edpartCancelChangeNameMenu(eduimenu_s *unused0, eduimenu_s *unused1) {
     eduiMenuDestroy(edpart_name_menu);
     edpart_name_menu = NULL;
 }
@@ -4375,9 +4547,9 @@ void edpartDrawCursor(void) {
             line[0].colour = 0xffff0000;
             line[1].colour = 0xffff0000;
             NuRndrLine3d(line, edpart_mtl, NULL);
-            if (PartNearestEmitterPc != -1) {
+            if (edpart_nearest != -1) {
                 vector.x = 0.0f;
-                vector.y = *(f32 *)(&part_emits[PartNearestEmitterPc].trailing_state_words[4]);
+                vector.y = *(f32 *)(&part_emits[edpart_nearest].trailing_state_words[4]);
                 vector.z = 0.0f;
                 NuVecRotateZ(&vector, &vector, edpart_refrotz);
                 NuVecRotateY(&vector, &vector, edpart_refroty);
@@ -4428,7 +4600,7 @@ void edpartDrawCursor(void) {
                 NuQFntPrintEx(system_qfont, 0x17c0, 0xaf0, 0x10, "Current List: General");
         }
         if (edpart_copy_mode == 0) {
-            if (PartNearestEmitterPc == -1) {
+            if (edpart_nearest == -1) {
                 NuQFntPrintEx(system_qfont, 0x17c0, 0xc30, 0x10, "Highlight: <none>");
             } else {
                 edbitsDrawCube(PartEditorCameraPosPc.x, PartEditorCameraPosPc.y, PartEditorCameraPosPc.z,
@@ -4458,19 +4630,18 @@ void edpartDrawCursor(void) {
         NuQFntPrintEx(system_qfont, 0x17c0, 0xd70, 0x10, "Types: %d/%d; Emits: %d/%d", part_types_used, 128,
                       part_emits_used, 40);
     } else if (edpart_readout == 1) {
-        if (PartNearestEmitterPc == -1) {
+        if (edpart_nearest == -1) {
             NuQFntPrintEx(system_qfont, 0x17c0, 0xa50, 0x10, "Highlight: <none>");
         } else {
             NuQFntPrintEx(system_qfont, 0x17c0, 0xa50, 0x10, "Highlight: %s", edpart_nearest_type->name);
-            NuQFntPrintEx(system_qfont, 0x17c0, 0xaf0, 0x10, "XYZ: %0.2f %0.2f %0.2f",
-                          PartNearestEmitterPtrPc->position.x, PartNearestEmitterPtrPc->position.y,
-                          PartNearestEmitterPtrPc->position.z);
+            NuQFntPrintEx(system_qfont, 0x17c0, 0xaf0, 0x10, "XYZ: %0.2f %0.2f %0.2f", edpart_nearest_emit->position.x,
+                          edpart_nearest_emit->position.y, edpart_nearest_emit->position.z);
             NuQFntPrintEx(system_qfont, 0x17c0, 0xb90, 0x10, "RotZ: %d",
-                          (const i16 *)(&PartNearestEmitterPtrPc->trailing_state_words[0])[0]);
+                          (const i16 *)(&edpart_nearest_emit->trailing_state_words[0])[0]);
             NuQFntPrintEx(system_qfont, 0x17c0, 0xc30, 0x10, "RotY: %d",
-                          (const i16 *)(&PartNearestEmitterPtrPc->trailing_state_words[0])[1]);
-            NuQFntPrintEx(system_qfont, 0x17c0, 0xcd0, 0x10, "EmitRotZ: %d", PartNearestEmitterPtrPc->rotation_2c);
-            NuQFntPrintEx(system_qfont, 0x17c0, 0xd70, 0x10, "EmitRotY: %d", PartNearestEmitterPtrPc->rotation_2e);
+                          (const i16 *)(&edpart_nearest_emit->trailing_state_words[0])[1]);
+            NuQFntPrintEx(system_qfont, 0x17c0, 0xcd0, 0x10, "EmitRotZ: %d", edpart_nearest_emit->rotation_2c);
+            NuQFntPrintEx(system_qfont, 0x17c0, 0xd70, 0x10, "EmitRotY: %d", edpart_nearest_emit->rotation_2e);
         }
     }
     NuQFntPopPrintMode();

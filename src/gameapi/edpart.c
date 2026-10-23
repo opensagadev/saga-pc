@@ -99,13 +99,15 @@ void __cdecl edpartScaleType(i32 index, f32 scale) {
     type->velocity_random.z *= scale;
     type->maximum_distance *= scale;
 }
-static void edpartApplyScaleType(eduimenu_s *menu, eduiitem_s *unused1, u32 unused2) {
+void edpartApplyScaleType(eduimenu_s *menu, eduiitem_s *unused1, u32 unused2) {
     struct eduimenu_s *parent;
+    parent = NULL;
     if (edpart_nearest_type)
         edpartScaleType(edpart_nearest_emit->effect_id, edpart_scale_factor);
-    parent = menu->parent;
-    if (parent)
+    if (menu->parent) {
+        parent = menu->parent;
         eduiMenuDetach(menu);
+    }
     if (menu->callback)
         menu->callback(menu, parent);
 }
@@ -236,7 +238,7 @@ void edpartInstanceOrientMenu(eduimenu_s *menu, eduiitem_s *unused1, u32 unused2
     edpart_instorient_menu->x = menu->x + 10;
     edpart_instorient_menu->y = menu->y + 40;
 }
-static void edpartChangeInstanceFlag(eduimenu_s *unused0, eduiitem_s *item, u32 unused2) {
+void edpartChangeInstanceFlag(eduimenu_s *unused0, eduiitem_s *item, u32 unused2) {
     if (edpart_nearest_type != NULL) {
         if (item->highlighted)
             edpart_nearest_type->flags |= item->data;
@@ -244,11 +246,11 @@ static void edpartChangeInstanceFlag(eduimenu_s *unused0, eduiitem_s *item, u32 
             edpart_nearest_type->flags &= ~item->data;
     }
 }
-static void edpartChangeGrav(eduimenu_s *unused0, eduiitem_s *item, u32 unused2) {
+void edpartChangeGrav(eduimenu_s *unused0, eduiitem_s *item, u32 unused2) {
     if (edpart_nearest_type)
         edpart_nearest_type->gravity = ((edui_slider_s *)(item))->value * 2.0f;
 }
-static void edpartChangeBounce(eduimenu_s *unused0, eduiitem_s *item, u32 unused2) {
+void edpartChangeBounce(eduimenu_s *unused0, eduiitem_s *item, u32 unused2) {
     if (edpart_nearest_type)
         edpart_nearest_type->bounce = ((edui_slider_s *)(item))->value;
 }
@@ -257,7 +259,7 @@ void edpartCancelGravMenu(eduimenu_s *unused0, eduimenu_s *unused1) {
     eduiMenuDestroy(edpart_grav_menu);
     edpart_grav_menu = NULL;
 }
-static void edpartScaleTypeMenu(eduimenu_s *menu, eduiitem_s *unused1, u32 unused2) {
+void edpartScaleTypeMenu(eduimenu_s *menu, eduiitem_s *unused1, u32 unused2) {
     if (edpart_nearest != -1) {
         edpart_scaletype_menu = eduiMenuCreate(70, 70, 180, 250, ed_fnt, edpartCancelScaleTypeMenu, "Scale Type");
         if (edpart_scaletype_menu != NULL) {
@@ -481,7 +483,7 @@ void edpartChangeMaxLifeMenu(eduimenu_s *menu, eduiitem_s *unused1, u32 unused2)
     edpart_maxlife_menu->y = menu->y + 40;
 }
 
-static void edpartTypeMenu(eduimenu_s *menu, eduiitem_s *unused1, u32 unused2) {
+void edpartTypeMenu(eduimenu_s *menu, eduiitem_s *unused1, u32 unused2) {
     edpart_type_menu = eduiMenuCreate(70, 70, 250, 250, ed_fnt, edpartCancelTypeMenu, "Emitter Type");
     if (edpart_type_menu != NULL) {
         eduiMenuAddItem(edpart_type_menu,
@@ -539,7 +541,7 @@ static void edpartThingsInstanceMenu(eduimenu_s *parent, eduiitem_s *unused1, u3
     edpart_thingsinstance_menu->x = parent->x + 10;
     edpart_thingsinstance_menu->y = parent->y + 40;
 }
-static void edpartCutOffMenu(eduimenu_s *menu, eduiitem_s *unused1, u32 unused2) {
+void edpartCutOffMenu(eduimenu_s *menu, eduiitem_s *unused1, u32 unused2) {
     if (edpart_nearest_type != NULL) {
         edpart_cutoff_menu = eduiMenuCreate(70, 70, 250, 200, ed_fnt, edpartCancelCutOffMenu, "Radii");
         if (edpart_cutoff_menu != NULL) {
@@ -552,7 +554,7 @@ static void edpartCutOffMenu(eduimenu_s *menu, eduiitem_s *unused1, u32 unused2)
         }
     }
 }
-static void edpartGravMenu(eduimenu_s *menu, eduiitem_s *unused1, u32 unused2) {
+void edpartGravMenu(eduimenu_s *menu, eduiitem_s *unused1, u32 unused2) {
     if (edpart_nearest_type != NULL) {
         edpart_grav_menu = eduiMenuCreate(70, 70, 180, 250, ed_fnt, edpartCancelGravMenu, "Gravity");
         if (edpart_grav_menu != NULL) {

@@ -16685,9 +16685,7 @@ void __cdecl PCSoundAlreadyPlayingHook(void);
 
     extern i32 PartLoadParticlePagePc;
     extern char PartNullInstanceNamePc[14];
-    extern i32 PartNearestEmitterPc;
     extern NUVEC PartEditorCameraPosPc;
-    extern PART_EMIT_PC *PartNearestEmitterPtrPc;
     extern PARTTYPE_LOOKUP_PC *edpart_nearest_type;
     extern i32 PartGeneralPagePc;
     extern i32 PartLevelPagePc;
