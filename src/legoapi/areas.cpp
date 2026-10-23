@@ -1334,10 +1334,10 @@ void __cdecl LoadAreaCharacters(void) {
     i32 reload_same_area = 0;
     i32 saved_override;
     i32 icon_stage;
-    i32 skip_text_scroll = 0;
+    i32 skip_text_scroll;
     i32 fade_scene_active = 0;
-    f32 icon_time = 0.0f;
-    f32 touch_prompt_time = 0.0f;
+    f32 icon_time;
+    f32 touch_prompt_time;
     f32 music_volume;
     if (Area == -1 || Area != last_area)
         Area_Configure(Area, Level, ExtraModelList, id_DEFAULTCHARACTER);
@@ -1372,16 +1372,19 @@ void __cdecl LoadAreaCharacters(void) {
     pNuCam->mtx = NuMtxSetIdentityTemplate;
     NuCameraSet(pNuCam);
     LoadTime = 0.0f;
-    LOADWAITTIME = load_type == 2 ? 1.0f : 0.1f;
+    LOADWAITTIME = load_type != 2 ? 0.1f : 1.0f;
     LoadWait = LOADWAITTIME;
     FRAMETIME = DEFAULTFRAMETIME;
+    skip_text_scroll = 0;
     CutBorderScale = 1.0f;
+    touch_prompt_time = 0.0f;
     music_volume = GameSetMusicVolume(&Game.options_save);
     if (loadareacharacters_no_backdrop_reset == 0) {
         BackDrop_ResetColours();
     }
     TextCrawl_Init(&TextCrawlLswPc, Area, 1);
     icon_stage = HUB_ADATA != NULL && HUB_ADATA->index == Area ? 0 : 2;
+    icon_time = 0.0f;
     loadareadata_loadlevel = 1;
     WorldInfo_ReArrangeBuffers(Area, last_area);
     SetBackgroundMusic(1);
@@ -1465,6 +1468,8 @@ void __cdecl LoadAreaCharacters(void) {
             if (load_type == 1)
                 BackDrop_Draw(1.0f, 1);
             if (LoadWait == LOADWAITTIME) {
+                i32 bob_angle = (i32)((f64)NuFmod(LoadTime, 1.0f) * 65536.0);
+                f32 bob = (f32)((f64)NuTrigTable[(bob_angle >> 1) & 0x7fff] * 0.15000000596046448);
                 if (HUB_ADATA != NULL && Area == HUB_ADATA->index) {
                     if (CharacterDataLoad != 0 && icon_time > 0.0f && (f64)icon_time < (f64)3.9499998092651367f) {
                         f32 base_x = 0.1425f;
@@ -1473,11 +1478,17 @@ void __cdecl LoadAreaCharacters(void) {
                             base_x = 0.106875f;
                             icon_scale = 0.35f;
                         }
-                        i32 bob_angle = (i32)((f64)NuFmod(LoadTime, 1.0f) * 65536.0);
-                        f32 bob = (f32)((f64)NuTrigTable[(bob_angle >> 1) & 0x7fff] * 0.15000000596046448);
-                        for (i32 player = 0; 1 >= player; ++player) {
-                            f32 phase = player == 0 ? icon_time : (f32)((f64)icon_time - 0.25);
-                            if ((f64)phase > 0.0 && (f64)phase < 3.6999998092651367) {
+                        for (i32 player = 0; player < 2; ++player) {
+                            f32 phase = icon_time;
+                            if (player == 0) {
+                                if (!((f64)phase < 3.6999998092651367))
+                                    continue;
+                            } else {
+                                phase = (f32)((f64)icon_time - 0.25);
+                                if (!((f64)phase > 0.0))
+                                    continue;
+                            }
+                            {
                                 f32 x;
                                 f32 alpha;
                                 if (phase < 0.6f) {
@@ -1508,12 +1519,16 @@ void __cdecl LoadAreaCharacters(void) {
                 }
             }
         } else {
-            u32 top = 0x80000000u | ((u32)(i32)RenderBackdropTopBPc & 255) << 16 |
-                      ((u32)(i32)RenderBackdropTopGPc & 255) << 8 | ((u32)(i32)RenderBackdropTopRPc & 255);
-            u32 bottom = 0x80000000u | (255 & ((u32)(i32)RenderBackdropBottomBPc)) << 16 |
-                         ((u32)(i32)RenderBackdropBottomGPc & 255) << 8 | ((u32)(i32)RenderBackdropBottomRPc & 255);
+            i32 top_r = (i32)RenderBackdropTopRPc;
+            i32 top_g = (i32)RenderBackdropTopGPc;
+            i32 top_b = (i32)RenderBackdropTopBPc;
+            i32 bottom_r = (i32)RenderBackdropBottomRPc;
+            i32 bottom_g = (i32)RenderBackdropBottomGPc;
+            i32 bottom_b = (i32)RenderBackdropBottomBPc;
+            i32 top = ((-128 << 8 | (top_b & 0xff)) << 8 | (top_g & 0xff)) << 8 | (top_r & 0xff);
+            i32 bottom = ((-128 << 8 | (bottom_b & 0xff)) << 8 | (bottom_g & 0xff)) << 8 | (bottom_r & 0xff);
+            NuRndrGradClear(0xf00, top, bottom, 1.0f);
             f32 alpha = loadareacharacters_no_backdrop_reset == 0 && LoadTime < 0.5f ? LoadTime * 2.0f : 1.0f;
-            NuRndrGradClear(0xf00, (i32)top, (i32)bottom, 1.0f);
             BackDrop_Draw(alpha, 1);
             if (AreaDataLoaded == 0 || (f64)LoadWait >= (f64)0.1f) {
                 f32 crawl_alpha =
