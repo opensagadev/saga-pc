@@ -6857,11 +6857,26 @@ address,symbol,size,ctype
 0x6462e0,_edpartInstanceMenu,522,
 0x646c30,_edpartCancelCutOffMenu,25,
 0x646c50,_edpartCutOffMenu,203,
+0x646d20,_edpartChangeVarEmit,61,
+0x646d60,_edpartCancelVarEmitMenu,25,
+0x646d80,_edpartVarEmitMenu,377,
 0x646f00,_edpartChangeInstanceRot,98,
 0x646f70,_edpartChangeInstanceVarRot,98,
 0x646fe0,_edpartCancelInstanceOrientMenu,25,
 0x647000,_edpartInstanceOrientMenu,1041,
+0x647420,_edpartChangeVarStart,61,
+0x647460,_edpartCancelVarStartMenu,25,
+0x647480,_edpartVarStartMenu,377,
 0x6476e0,_edpartChangeInstanceFlag,41,
+0x647710,_edpartChangeIvalOn,23,
+0x647730,_edpartChangeIvalOnRan,23,
+0x647750,_edpartChangeIvalOff,23,
+0x647770,_edpartChangeIvalOffRan,23,
+0x647790,_edpartCancelEmitTimeMenu,25,
+0x6477b0,_edpartEmitTimeMenu,530,
+0x6479d0,_edpartChangeEmitVel,23,
+0x6479f0,_edpartCancelEmitVelMenu,25,
+0x647a10,_edpartEmitVelMenu,227,
 0x647b00,_edpartChangeGrav,25,
 0x647b20,_edpartChangeBounce,23,
 0x647b40,_edpartCancelGravMenu,25,
@@ -6903,6 +6918,7 @@ address,symbol,size,ctype
 0x649d30,_edpartDebrisScaleMenu,197,
 0x649e00,_edpartCancelDebrisSettingsMenu,25,
 0x649e20,_edpartDebrisSettingsMenu,456,
+0x649ff0,_edpartCancelEmitMenu,25,
 0x64a010,_edpartEmitMenu,398,
 0x64a270,_edpartInit,262,
 0x64a440,_NuPartEnableRayCasts,10,void __cdecl NuPartEnableRayCasts(i32 enabled)
@@ -16089,6 +16105,7 @@ address,symbol,size,ctype
 0x76ca6c,??_C@_08DCKLOEEB@Off?5Time?$AA@,9,char []
 0x76ca78,??_C@_0P@FKMENNDM@Random?5On?5Time?$AA@,15,char []
 0x76ca88,??_C@_07GFHNNEEK@On?5Time?$AA@,8,char []
+0x76ca90,??_C@_0BN@NMEJIEFI@Trigger?5effect?5inside?5cutoff?$AA@,29,char []
 0x76cab0,??_C@_0P@KNFDEIOI@Emitter?5Timing?$AA@,15,char []
 0x76cac0,??_C@_0M@CIJKJNNE@Emitter?5Vel?$AA@,12,char []
 0x76cacc,??_C@_06PAHFPMEK@Bounce?$AA@,7,char []
@@ -16139,7 +16156,10 @@ address,symbol,size,ctype
 0x76cee0,??_C@_0BC@PPHLNCOM@Trail?52?5Debris?4?4?4?$AA@,18,char []
 0x76cef4,??_C@_0BC@IIOFAABM@Trail?51?5Debris?4?4?4?$AA@,18,char []
 0x76cf08,??_C@_0BA@OPNOBMFA@Debris?5Settings?$AA@,16,char []
+0x76cf18,??_C@_08OEAKLLBH@Radii?4?4?4?$AA@,9,char []
 0x76cf24,??_C@_0BC@BEAKPODN@Emitter?5Timing?4?4?4?$AA@,18,char []
+0x76cf38,??_C@_0BB@HEBDCDND@Emits?5per?5Sec?4?4?4?$AA@,17,char []
+0x76cf4c,??_C@_0P@HEOIGKBK@Random?5Emit?4?4?4?$AA@,15,char []
 0x76cf5c,??_C@_0BA@NNCKHDNH@Random?5Start?4?4?4?$AA@,16,char []
 0x76cf6c,??_C@_0L@LLPGGELO@Gravity?4?4?4?$AA@,11,char []
 0x76cf78,??_C@_0P@CHIMKJAC@Emitter?5Vel?4?4?4?$AA@,15,char []
@@ -24720,11 +24740,13 @@ address,symbol,size,ctype
 0x29139b0,_rtltimer1,,i32
 0x29139b4,_dbg_rtlindex,,RTL_INDEX_PC *
 0x02913a4c,_part_page_on,32,i32[8]
+0x2913a6c,_edpart_varstart_menu,4,struct eduimenu_s *
 0x2913a70,_edpart_boxmtl,4,struct PC_SCENE_MTL_VIEW *
 0x2913a74,_edpart_mtl,4,struct PC_SCENE_MTL_VIEW *
 0x02913a78,_part_types,48128,PARTTYPE_LOOKUP_PC[128]
 0x0291f684,_Part,4,PART_PC *
 0x291f68c,_edpart_nearest_orphans,4,i32
+0x291f698,_edpart_emittime_menu,4,struct eduimenu_s *
 0x291f69c,_PartImpactNormalPrivate,,NUVEC
 0x0291f6a8,_part_scene_pageid,128,i32[32]
 0x291f72c,_edpart_cutoff_menu,4,struct eduimenu_s *
@@ -24739,8 +24761,10 @@ address,symbol,size,ctype
 0x29208a8,_edpart_nearest,,i32
 0x29208b8,_edpart_changegenrate_menu,4,struct eduimenu_s *
 0x029208bc,_part_page_used,32,i32[8]
+0x29208e0,_edpart_emitvel_menu,4,struct eduimenu_s *
 0x29208ec,_edpart_grav_menu,4,struct eduimenu_s *
 0x29208f0,_part_scene,128,NUGSCN *[32]
+0x2920974,_edpart_varemit_menu,4,struct eduimenu_s *
 0x292097c,_PartPlatformImpactListPc,,i16[4]
 0x2920988,_edpart_set_debris,4,i32
 0x292098c,_edpart_nearest_emit,,PART_EMIT_PC*
@@ -24765,6 +24789,7 @@ address,symbol,size,ctype
 0x29209e0,_edpart_instancesettings_menu,4,struct eduimenu_s *
 0x29209e4,_edpart_instanceflags_menu,4,struct eduimenu_s *
 0x29209e8,_edpart_instorient_menu,4,struct eduimenu_s *
+0x29209ec,_edpart_emit_menu,4,struct eduimenu_s *
 0x29209f0,_edpart_debrissettings_menu,4,struct eduimenu_s *
 0x29209f4,_edpart_trail1debris_menu,4,struct eduimenu_s *
 0x29209f8,_edpart_trail2debris_menu,4,struct eduimenu_s *

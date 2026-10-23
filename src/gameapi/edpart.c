@@ -783,3 +783,181 @@ void __cdecl edpartInstanceMenu(eduimenu_s *menu, eduiitem_s *unused1, u32 unuse
         edpart_instance_menu->y = menu->y + 40;
     }
 }
+
+extern struct eduimenu_s *edpart_varemit_menu;
+extern struct eduimenu_s *edpart_varstart_menu;
+extern struct eduimenu_s *edpart_emittime_menu;
+extern struct eduimenu_s *edpart_emitvel_menu;
+
+void edpartChangeVarEmit(eduimenu_s *unused0, eduiitem_s *item, u32 unused2) {
+    if (edpart_nearest_type != NULL) {
+        if (item->data == 0)
+            edpart_nearest_type->velocity_random.x = ((edui_slider_s *)item)->value;
+        else if (item->data == 1)
+            edpart_nearest_type->velocity_random.y = ((edui_slider_s *)item)->value;
+        else if (item->data == 2)
+            edpart_nearest_type->velocity_random.z = ((edui_slider_s *)item)->value;
+    }
+}
+
+void edpartCancelVarEmitMenu(eduimenu_s *unused0, eduimenu_s *unused1) {
+    eduiMenuDestroy(edpart_varemit_menu);
+    edpart_varemit_menu = NULL;
+}
+
+void edpartVarEmitMenu(eduimenu_s *menu, eduiitem_s *unused1, u32 unused2) {
+    if (edpart_nearest_type != NULL) {
+        edpart_varemit_menu = eduiMenuCreate(70, 70, 250, 300, ed_fnt, edpartCancelVarEmitMenu, "Emitter Variation");
+        if (edpart_varemit_menu != NULL) {
+            eduiMenuAddItem(edpart_varemit_menu,
+                            eduiItemSliderCreate(0, edblack, 0, edpartChangeVarEmit, 0.0f, edpart_superscale * 5.0f,
+                                                 edpart_nearest_type->velocity_random.x, "Rand Emit X"));
+            eduiMenuAddItem(edpart_varemit_menu,
+                            eduiItemSliderCreate(1, edblack, 0, edpartChangeVarEmit, 0.0f, edpart_superscale * 5.0f,
+                                                 edpart_nearest_type->velocity_random.y, "Rand Emit Y"));
+            eduiMenuAddItem(edpart_varemit_menu,
+                            eduiItemSliderCreate(2, edblack, 0, edpartChangeVarEmit, 0.0f, edpart_superscale * 5.0f,
+                                                 edpart_nearest_type->velocity_random.z, "Rand Emit Z"));
+            eduiMenuAttach(menu, edpart_varemit_menu);
+            edpart_varemit_menu->x = menu->x + 10;
+            edpart_varemit_menu->y = menu->y + 40;
+        }
+    }
+}
+
+void edpartChangeVarStart(eduimenu_s *unused0, eduiitem_s *item, u32 unused2) {
+    if (edpart_nearest_type != NULL) {
+        if (item->data == 0)
+            edpart_nearest_type->position_random.x = ((edui_slider_s *)item)->value;
+        else if (item->data == 1)
+            edpart_nearest_type->position_random.y = ((edui_slider_s *)item)->value;
+        else if (item->data == 2)
+            edpart_nearest_type->position_random.z = ((edui_slider_s *)item)->value;
+    }
+}
+
+void edpartCancelVarStartMenu(eduimenu_s *unused0, eduimenu_s *unused1) {
+    eduiMenuDestroy(edpart_varstart_menu);
+    edpart_varstart_menu = NULL;
+}
+
+void edpartVarStartMenu(eduimenu_s *menu, eduiitem_s *unused1, u32 unused2) {
+    if (edpart_nearest_type != NULL) {
+        edpart_varstart_menu = eduiMenuCreate(70, 70, 180, 300, ed_fnt, edpartCancelVarStartMenu, "Random Start");
+        if (edpart_varstart_menu != NULL) {
+            eduiMenuAddItem(edpart_varstart_menu,
+                            eduiItemSliderCreate(0, edblack, 0, edpartChangeVarStart, 0.0f, edpart_superscale * 5.0f,
+                                                 edpart_nearest_type->position_random.x, "Rand Start X"));
+            eduiMenuAddItem(edpart_varstart_menu,
+                            eduiItemSliderCreate(1, edblack, 0, edpartChangeVarStart, 0.0f, edpart_superscale * 5.0f,
+                                                 edpart_nearest_type->position_random.y, "Rand Start Y"));
+            eduiMenuAddItem(edpart_varstart_menu,
+                            eduiItemSliderCreate(2, edblack, 0, edpartChangeVarStart, 0.0f, edpart_superscale * 5.0f,
+                                                 edpart_nearest_type->position_random.z, "Rand Start Z"));
+            eduiMenuAttach(menu, edpart_varstart_menu);
+            edpart_varstart_menu->x = menu->x + 10;
+            edpart_varstart_menu->y = menu->y + 40;
+        }
+    }
+}
+
+void edpartChangeIvalOn(eduimenu_s *unused0, eduiitem_s *item, u32 unused2) {
+    if (edpart_nearest_type != NULL)
+        edpart_nearest_type->emission_period = ((edui_slider_s *)item)->value;
+}
+
+void edpartChangeIvalOnRan(eduimenu_s *unused0, eduiitem_s *item, u32 unused2) {
+    if (edpart_nearest_type != NULL)
+        edpart_nearest_type->emission_period_random = ((edui_slider_s *)item)->value;
+}
+
+void edpartChangeIvalOff(eduimenu_s *unused0, eduiitem_s *item, u32 unused2) {
+    if (edpart_nearest_type != NULL)
+        edpart_nearest_type->emission_pause = ((edui_slider_s *)item)->value;
+}
+
+void edpartChangeIvalOffRan(eduimenu_s *unused0, eduiitem_s *item, u32 unused2) {
+    if (edpart_nearest_type != NULL)
+        edpart_nearest_type->emission_pause_random = ((edui_slider_s *)item)->value;
+}
+
+void edpartCancelEmitTimeMenu(eduimenu_s *unused0, eduimenu_s *unused1) {
+    eduiMenuDestroy(edpart_emittime_menu);
+    edpart_emittime_menu = NULL;
+}
+
+void edpartEmitTimeMenu(eduimenu_s *menu, eduiitem_s *unused1, u32 unused2) {
+    if (edpart_nearest_type != NULL) {
+        edpart_emittime_menu = eduiMenuCreate(70, 70, 260, 300, ed_fnt, edpartCancelEmitTimeMenu, "Emitter Timing");
+        if (edpart_emittime_menu != NULL) {
+            eduiMenuAddItem(edpart_emittime_menu,
+                            eduiItemToggleCreate(0x400000, edblack, (edpart_nearest_type->flags >> 22) & 1, 1,
+                                                 edpartChangeInstanceFlag, "Trigger effect inside cutoff"));
+            eduiMenuAddItem(edpart_emittime_menu,
+                            eduiItemSliderCreate(0, edblack, 0, edpartChangeIvalOn, 0.01f, edpart_superscale * 5.0f,
+                                                 edpart_nearest_type->emission_period, "On Time"));
+            eduiMenuAddItem(edpart_emittime_menu,
+                            eduiItemSliderCreate(0, edblack, 0, edpartChangeIvalOnRan, 0.0f, edpart_superscale * 5.0f,
+                                                 edpart_nearest_type->emission_period_random, "Random On Time"));
+            eduiMenuAddItem(edpart_emittime_menu,
+                            eduiItemSliderCreate(0, edblack, 0, edpartChangeIvalOff, 0.0f, edpart_superscale * 5.0f,
+                                                 edpart_nearest_type->emission_pause, "Off Time"));
+            eduiMenuAddItem(edpart_emittime_menu,
+                            eduiItemSliderCreate(0, edblack, 0, edpartChangeIvalOffRan, 0.0f, edpart_superscale * 5.0f,
+                                                 edpart_nearest_type->emission_pause_random, "Random Off Time"));
+            eduiMenuAttach(menu, edpart_emittime_menu);
+            edpart_emittime_menu->x = menu->x + 10;
+            edpart_emittime_menu->y = menu->y + 40;
+        }
+    }
+}
+
+void edpartChangeEmitVel(eduimenu_s *unused0, eduiitem_s *item, u32 unused2) {
+    if (edpart_nearest_type != NULL)
+        edpart_nearest_type->speed = ((edui_slider_s *)item)->value;
+}
+
+void edpartCancelEmitVelMenu(eduimenu_s *unused0, eduimenu_s *unused1) {
+    eduiMenuDestroy(edpart_emitvel_menu);
+    edpart_emitvel_menu = NULL;
+}
+
+void edpartEmitVelMenu(eduimenu_s *menu, eduiitem_s *unused1, u32 unused2) {
+    if (edpart_nearest_type != NULL) {
+        edpart_emitvel_menu = eduiMenuCreate(70, 70, 180, 250, ed_fnt, edpartCancelEmitVelMenu, "Emitter Vel");
+        if (edpart_emitvel_menu != NULL) {
+            eduiMenuAddItem(edpart_emitvel_menu,
+                            eduiItemSliderCreate(0, edblack, 0, edpartChangeEmitVel, -(edpart_superscale * 10.0f),
+                                                 edpart_superscale * 20.0f, edpart_nearest_type->speed, "Emitter Vel"));
+            eduiMenuAttach(menu, edpart_emitvel_menu);
+            edpart_emitvel_menu->x = menu->x + 10;
+            edpart_emitvel_menu->y = menu->y + 40;
+        }
+    }
+}
+
+void edpartCancelEmitMenu(eduimenu_s *unused0, eduimenu_s *unused1) {
+    eduiMenuDestroy(edpart_emit_menu);
+    edpart_emit_menu = NULL;
+}
+
+void edpartEmitMenu(eduimenu_s *menu, eduiitem_s *unused1, u32 unused2) {
+    if (edpart_nearest_type != NULL) {
+        edpart_emit_menu = eduiMenuCreate(70, 70, 250, 300, ed_fnt, edpartCancelEmitMenu, "Emitter Settings");
+        if (edpart_emit_menu != NULL) {
+            eduiMenuAddItem(edpart_emit_menu, eduiItemSelCreate(1, edblack, 0, 0, edpartEmitVelMenu, "Emitter Vel..."));
+            eduiMenuAddItem(edpart_emit_menu, eduiItemSelCreate(1, edblack, 0, 0, edpartGravMenu, "Gravity..."));
+            eduiMenuAddItem(edpart_emit_menu,
+                            eduiItemSelCreate(1, edblack, 0, 0, edpartVarStartMenu, "Random Start..."));
+            eduiMenuAddItem(edpart_emit_menu, eduiItemSelCreate(1, edblack, 0, 0, edpartVarEmitMenu, "Random Emit..."));
+            eduiMenuAddItem(edpart_emit_menu,
+                            eduiItemSelCreate(1, edblack, 0, 0, edpartChangeGenRateMenu, "Emits per Sec..."));
+            eduiMenuAddItem(edpart_emit_menu,
+                            eduiItemSelCreate(1, edblack, 0, 0, edpartEmitTimeMenu, "Emitter Timing..."));
+            eduiMenuAddItem(edpart_emit_menu, eduiItemSelCreate(1, edblack, 0, 0, edpartCutOffMenu, "Radii..."));
+        }
+        eduiMenuAttach(menu, edpart_emit_menu);
+        edpart_emit_menu->x = menu->x + 10;
+        edpart_emit_menu->y = menu->y + 40;
+    }
+}

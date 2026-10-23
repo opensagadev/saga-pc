@@ -29343,6 +29343,21 @@ extern "C" {
 #pragma bss_seg(".bss$edpart_partindex_menu")
     struct eduimenu_s *edpart_partindex_menu = 0;
 
+#pragma bss_seg(".bss$edpart_varemit_menu")
+    struct eduimenu_s *edpart_varemit_menu = 0;
+
+#pragma bss_seg(".bss$edpart_varstart_menu")
+    struct eduimenu_s *edpart_varstart_menu = 0;
+
+#pragma bss_seg(".bss$edpart_emittime_menu")
+    struct eduimenu_s *edpart_emittime_menu = 0;
+
+#pragma bss_seg(".bss$edpart_emitvel_menu")
+    struct eduimenu_s *edpart_emitvel_menu = 0;
+
+#pragma bss_seg(".bss$edpart_emit_menu")
+    struct eduimenu_s *edpart_emit_menu = 0;
+
 #pragma bss_seg(".bss$edpart_tint_menu")
     struct eduimenu_s *edpart_tint_menu = 0;
 
