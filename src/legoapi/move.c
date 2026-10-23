@@ -9917,20 +9917,20 @@ void __cdecl Move_JEDI(GAMEOBJECT *object) {
     ApplyGravity(object, NULL, 0.0f, 8.0f, NULL);
     if (object->id == (u16)id_BOB) {
         if ((object->flags_ef0 & 0x200) != 0) {
-            glow_model = 0xdd;
             hit_effect = 2;
+            glow_model = 0xdd;
         } else {
-            glow_model = 0xe1;
             hit_effect = 3;
+            glow_model = 0xe1;
         }
     } else if (AnakinGreenSabre(object)) {
-        glow_model = 0xdd;
         hit_effect = 2;
+        glow_model = 0xdd;
     } else {
-        hit_effect = object->blade_index == -1 ? -1 : BladeTab[object->blade_index].hit_effect;
+        hit_effect = object->blade_index != -1 ? BladeTab[object->blade_index].hit_effect : -1;
         glow_model = SuperWeirdo(object) && (object->character_data->model_flags & 8) == 0 ? 0xdf
-                     : object->blade_index == -1                                           ? -1
-                                                 : BladeTab[object->blade_index].glow_model;
+                     : object->blade_index != -1 ? BladeTab[object->blade_index].glow_model
+                                                 : -1;
     }
     Techno_MoveCode(WORLD, object);
     if (object->suit != NULL)
