@@ -344,8 +344,7 @@ extern "C" i32 Batarang_SeekToTarget(BATARANG_NATIVE_PC *batarang) {
 }
 
 extern "C" void Batarang_MoveCode(GAMEOBJECT *object) {
-    i32 colour[3];
-    BATARANG_NATIVE_PC *batarang = BATARANG_PACKET_PC(object);
+    BATARANG_NATIVE_PC *batarang;
     if (object->character_context == 0x50) {
         object->flags_e20 |= 0x00400000;
         if (object->hold_timer >= 0.25f) {
@@ -355,23 +354,162 @@ extern "C" void Batarang_MoveCode(GAMEOBJECT *object) {
         if (AnimPlaying(&object->anim_packet, object->field_7aa, 0, 0) == NULL) {
             return;
         }
-        if (!(object->pad->input_magnitude > 0.0f)) {
-            object->context_timer -= FRAMETIME;
-            if (0.0f < object->context_timer) {
+        if (object->pad->input_magnitude > 0.0f) {
+            object->character_context = -1;
+            return;
+        }
+        f32 timer = object->context_timer - FRAMETIME;
+        object->context_timer = timer;
+        if (!(timer <= 0.0f)) {
+            return;
+        }
+        if ((object->pad->buttons_held & GAMEPAD_ACTION) != 0) {
+            if (Batarang_StartTargetting(object) != 0) {
                 return;
             }
-            if ((object->pad->buttons_held & GAMEPAD_ACTION) != 0) {
-                if (Batarang_StartTargetting(object) != 0) {
-                    return;
-                }
-                object->hold_timer = 0.0f;
-            }
+            object->hold_timer = 0.0f;
         }
         object->character_context = -1;
         return;
     }
-    if (object->character_context != 0x4d) {
+    if (object->character_context == 0x4d) {
+        if (object->field_7b3 == 0) {
+            object->flags_e20 |= 0x00400000;
+            object->context_variant_flags |= 0x20000;
+            if (((object->pad->buttons_pressed & GAMEPAD_JUMP) != 0)) {
+                StartJump(object, 0);
+                return;
+            }
+            if ((object->pad->buttons_held & GAMEPAD_ACTION) == 0 && !(object->context_timer < 0.3f)) {
+                if (BATARANG_PACKET_PC(object)->active > 0) {
+                    object->context_variant_flags &= ~0x20000U;
+                    object->field_7b3 = 1;
+                    object->field_7aa = 0x65;
+                    f32 duration = AnimDuration((i16)object->id, 0x65, 0.0f, 0.0f, 1);
+                    object->context_duration = duration;
+                    if (duration <= 0.0f) {
+                        object->context_duration = 0.5f;
+                    }
+                    object->context_timer = 0.0f;
+                    object->context_variant_flags &= ~0x40U;
+                    if (object->character_model->model_data_b[object->field_7aa] == NULL ||
+                        AnimListFrame(object->character_model, object->field_7aa, 0) != 0.0f) {
+                        object->context_variant_flags |= 0x40;
+                        object->batarang_release = 1;
+                    } else {
+                        object->context_variant_flags &= ~0x40U;
+                    }
+                } else {
+                    object->character_context = -1;
+                }
+            } else {
+                if ((object->character_model->model_data_b[object->field_7aa] == NULL ||
+                     AnimPlaying(&object->anim_packet, object->field_7aa, 1, 0) != NULL)) {
+                    GAMEPAD_PC *pad = object->pad;
+                    object->context_timer += FRAMETIME;
+                    f32 x = pad->input_direction_z * 1.25f;
+                    f32 y = 1.25f * pad->input_direction_x;
+                    if (object->context_timer < 0.25f) {
+                        const f32 ramp = object->context_timer * 4.0f;
+                        x *= ramp;
+                        y *= ramp;
+                    }
+                    BATARANG_PACKET_PC(object)->sight_velocity.x =
+                        SeekValF(BATARANG_PACKET_PC(object)->sight_velocity.x, x, 10.0f);
+                    BATARANG_PACKET_PC(object)->sight_velocity.y =
+                        SeekValF(BATARANG_PACKET_PC(object)->sight_velocity.y, y, 10.0f);
+                    BATARANG_PACKET_PC(object)->sight_position.x +=
+                        BATARANG_PACKET_PC(object)->sight_velocity.x * FRAMETIME;
+                    BATARANG_PACKET_PC(object)->sight_position.y +=
+                        BATARANG_PACKET_PC(object)->sight_velocity.y * FRAMETIME;
+                }
+                batarang = BATARANG_PACKET_PC(object);
+                KeepPointOnScreen(&batarang->sight_position, &batarang->sight_velocity);
+                if (Batarang_FindTarget(WORLD, object, 0) != 0) {
+                    NewBuzzFrames(object->pad->bound_pad, 1, 0);
+                }
+
+                {
+                    i32 colour[3];
+                    char text[32];
+                    NUVEC position;
+                    Batarang_GetSightInfo((i16)object->id, &colour[0], &colour[1], &colour[2], text);
+                    ADD_GAME_MESSAGE_PC message;
+                    memcpy(&message, &AddGameMsg_Default, sizeof(message));
+                    message.scale = 1.0f;
+                    message.green = static_cast<u8>(colour[1]);
+                    message.position = &BATARANG_PACKET_PC(object)->sight_position;
+                    message.red = static_cast<u8>(colour[0]);
+                    message.blue = static_cast<u8>(colour[2]);
+                    message.text = text;
+                    message.alpha = static_cast<i32>(((f64)0.2f * game_pulse + (f64)0.8f) * 128.0);
+                    message.flags = 0x1080;
+                    AddGameMsg(&message);
+                    message.text = TagAsciiDownPc;
+                    message.flags = 0x87;
+                    message.scale = 3.0f;
+                    message.unknown_4f = 4;
+                    message.alpha = static_cast<i32>(128.0 * ((f64)0.8f - (f64)0.2f * game_pulse));
+                    for (i32 i = 0; i < BATARANG_PACKET_PC(object)->active; ++i) {
+                        if (Batarang_GetTargetPos(BATARANG_PACKET_PC(object), i, &position) != 0) {
+                            message.position = &position;
+                            AddGameMsg(&message);
+                        }
+                    }
+                }
+            }
+        } else if (object->field_7b3 == 1) {
+            f32 *frame = NULL;
+            object->context_variant_flags &= ~0x20000U;
+            if ((object->pad->buttons_pressed & GAMEPAD_JUMP) != 0) {
+                object->landing_followup = 1;
+            }
+            u32 released = (object->context_variant_flags >> 6) & 1;
+            if (released && object->landing_followup == 1 && 0.2f <= object->context_timer) {
+                StartJump(object, 0);
+                object->flags_e24 |= 0x1000;
+                goto finish;
+            }
+            if (released && object->pad->input_magnitude > 0.0f && object->context_timer >= 0.3f) {
+                object->character_context = -1;
+                goto finish;
+            }
+            if (object->character_model->model_data_b[object->field_7aa] != NULL) {
+                frame = AnimPlaying(&object->anim_packet, object->field_7aa, 1, 0);
+                if (frame == NULL) {
+                    goto finish;
+                }
+            }
+            f32 timer = object->context_timer + FRAMETIME;
+            object->context_timer = timer;
+            if (object->context_duration <= timer) {
+                object->character_context = -1;
+                if ((object->context_variant_flags & 0x40) != 0) {
+                    return;
+                }
+            } else {
+                if ((object->context_variant_flags & 0x40) != 0) {
+                    return;
+                }
+                if (object->character_model->model_data_b[object->field_7aa] != NULL) {
+                    f32 marker = AnimListFrame(object->character_model, object->field_7aa, 2);
+                    if (frame == NULL) {
+                        goto finish;
+                    }
+                    if (!(*frame > 0.0f)) {
+                        goto finish;
+                    }
+                    if (!(*frame >= marker)) {
+                        goto finish;
+                    }
+                }
+            }
+            object->context_variant_flags |= 0x40;
+            object->batarang_release = 1;
+        }
+    } else {
         PLAYERCHARACTERCONFIG_PC *runtime = object->character_data->game_character;
+        batarang = BATARANG_PACKET_PC(object);
         if (((object->flags_1fc & 0x80) == 0 || (runtime->flags_090 & 0x20000000) == 0 || batarang == NULL ||
              batarang->flight_state.in_flight != 0 || object->use_model_origin == 0 || (object->flags_e24 & 8) == 0 ||
              object->model_draw_result == 0 || !(object->camera_screen_position.z > 0.0f) ||
@@ -383,130 +521,6 @@ extern "C" void Batarang_MoveCode(GAMEOBJECT *object) {
             return;
         }
         Batarang_StartTargetting(object);
-        return;
-    }
-    if (object->field_7b3 == 0) {
-        object->flags_e20 |= 0x00400000;
-        object->context_variant_flags |= 0x20000;
-        if (((object->pad->buttons_pressed & GAMEPAD_JUMP) != 0)) {
-            StartJump(object, 0);
-            return;
-        }
-        if ((object->pad->buttons_held & GAMEPAD_ACTION) == 0 && !(object->context_timer < 0.3f)) {
-            if (BATARANG_PACKET_PC(object)->active != 0) {
-                object->context_variant_flags &= ~0x20000U;
-                object->field_7b3 = 1;
-                object->field_7aa = 0x65;
-                f32 duration = AnimDuration((i16)object->id, 0x65, 0.0f, 0.0f, 1);
-                object->context_timer = 0.0f;
-                object->context_variant_flags &= ~0x40U;
-                object->context_duration = duration <= 0.0f ? 0.5f : duration;
-                if (object->character_model->model_data_b[object->field_7aa] == NULL ||
-                    AnimListFrame(object->character_model, object->field_7aa, 0) != 0.0f) {
-                    object->batarang_release = 1;
-                    object->context_variant_flags |= 0x40;
-                    return;
-                }
-                object->context_variant_flags &= ~0x40U;
-            } else {
-                object->character_context = -1;
-            }
-        } else {
-            if ((object->character_model->model_data_b[object->field_7aa] == NULL ||
-                 AnimPlaying(&object->anim_packet, object->field_7aa, 1, 0) != NULL)) {
-                GAMEPAD_PC *pad = object->pad;
-                object->context_timer += FRAMETIME;
-                f32 x = pad->input_direction_z * 1.25f;
-                f32 y = 1.25f * pad->input_direction_x;
-                if (object->context_timer < 0.25f) {
-                    const f32 ramp = object->context_timer * 4.0f;
-                    x *= ramp;
-                    y *= ramp;
-                }
-                BATARANG_NATIVE_PC *aim = BATARANG_PACKET_PC(object);
-                aim->sight_velocity.x = SeekValF(aim->sight_velocity.x, x, 10.0f);
-                aim = BATARANG_PACKET_PC(object);
-                aim->sight_velocity.y = SeekValF(aim->sight_velocity.y, y, 10.0f);
-                aim = BATARANG_PACKET_PC(object);
-                aim->sight_position.x = aim->sight_velocity.x * FRAMETIME + aim->sight_position.x;
-                aim->sight_position.y = FRAMETIME * aim->sight_velocity.y + aim->sight_position.y;
-            }
-            batarang = BATARANG_PACKET_PC(object);
-            KeepPointOnScreen(&batarang->sight_position, &batarang->sight_velocity);
-            if (Batarang_FindTarget(WORLD, object, 0) != 0) {
-                NewBuzzFrames(object->pad->bound_pad, 1, 0);
-            }
-
-            char text[32];
-            Batarang_GetSightInfo((i16)object->id, &colour[0], &colour[1], &colour[2], text);
-            ADD_GAME_MESSAGE_PC message;
-            memcpy(&message, &AddGameMsg_Default, sizeof(message));
-            message.position = &BATARANG_PACKET_PC(object)->sight_position;
-            message.flags = 0x1080;
-            message.scale = 1.0f;
-            message.green = static_cast<u8>(colour[1]);
-            message.red = static_cast<u8>(colour[0]);
-            message.alpha = static_cast<i32>(((f64)0.2f * game_pulse + (f64)0.8f) * 128.0);
-            message.blue = static_cast<u8>(colour[2]);
-            message.text = text;
-            AddGameMsg(&message);
-            message.flags = 0x87;
-            message.unknown_4f = 4;
-            message.scale = 3.0f;
-            message.text = LEGOASCII_DOWN;
-            message.alpha = static_cast<i32>(128.0 * ((f64)0.8f - (f64)0.2f * game_pulse));
-            batarang = BATARANG_PACKET_PC(object);
-            for (i32 i = 0; i < batarang->active; ++i) {
-                NUVEC position;
-                if (Batarang_GetTargetPos(batarang, i, &position) != 0) {
-                    message.position = &position;
-                    AddGameMsg(&message);
-                }
-                batarang = BATARANG_PACKET_PC(object);
-            }
-        }
-    } else if (object->field_7b3 == 1) {
-        object->context_variant_flags &= ~0x20000U;
-        if ((object->pad->buttons_pressed & GAMEPAD_JUMP) != 0) {
-            object->landing_followup = 1;
-        }
-        if ((object->context_variant_flags & 0x40) != 0) {
-            if ((object->landing_followup == 1 && 0.2f <= object->context_timer)) {
-                StartJump(object, 0);
-                object->flags_e24 |= 0x1000;
-                goto finish;
-            }
-            if (0.0f < object->pad->input_magnitude && 0.3f <= object->context_timer) {
-                object->character_context = -1;
-                return;
-            }
-        }
-        f32 *frame = NULL;
-        if (object->character_model->model_data_b[object->field_7aa] != NULL) {
-            frame = AnimPlaying(&object->anim_packet, object->field_7aa, 1, 0);
-            if (frame == NULL) {
-                goto finish;
-            }
-        }
-        object->context_timer += FRAMETIME;
-        if (object->context_duration <= object->context_timer) {
-            object->character_context = -1;
-            if ((object->context_variant_flags & 0x40) != 0) {
-                return;
-            }
-        } else {
-            if ((object->context_variant_flags & 0x40) != 0) {
-                return;
-            }
-            if (object->character_model->model_data_b[object->field_7aa] != NULL) {
-                f32 marker = AnimListFrame(object->character_model, object->field_7aa, 2);
-                if (frame == NULL || !(0.0f < *frame) || !(marker <= *frame)) {
-                    goto finish;
-                }
-            }
-        }
-        object->batarang_release = 1;
-        object->context_variant_flags |= 0x40;
         return;
     }
 finish:
