@@ -2180,7 +2180,7 @@ address,symbol,size,ctype
 0x4db740,_PodDust,1054,"void __cdecl(WORLDINFO *, GAMEOBJECT *)"
 0x004dbb60,_PodSprint_InStartCountdown,28,f32 __cdecl (WORLDINFO *)
 0x4dbb80,_PodSprint_RollMul,91,
-0x4dbbe0,_PodSprint_InitAISplinePc,241,"private same-TU void (WORLDINFO *ecx, char *edx, PODSPRINT_AI_PC *esi)"
+0x4dbbe0,_PodSprint_InitAISplinePc,241,"private same-TU void (WORLDINFO *ecx, PODSPRINT_AI_PC *esi, char *edx)"
 0x4dbce0,_PodSprintA_Init,305,
 0x4dbe20,_PodSprintA_Reset,351,
 0x4dbf80,_PodSprint_UpdatePacemakerPc,461,private same-TU void (WORLDINFO *)
