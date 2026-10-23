@@ -13337,13 +13337,13 @@ void __cdecl AIScriptMissingConditionDiagnostic();
 #define PCGrassTerrainScene CurrentTerrain     // NOLINT(readability-identifier-naming)
     struct PC_EFFECT_SURFACE_PC {
         GRAPHICS_RENDER_TEXTURE_PC *texture;
-        u8 owns_texture; /* 0x05..0x07: padding */
+        u8 owns_texture, unknown_05[3];
         PC_TEXTURE_RESOURCE_PC *surface;
         u16 level, unknown_0e;
         u32 field_10;
         u16 width, height;
         i16 registry_index;
-        /* 0x1a..0x1b: padding */
+        u8 unknown_1a[2];
 #ifdef __cplusplus
         PC_EFFECT_SURFACE_PC();
         ~PC_EFFECT_SURFACE_PC();
