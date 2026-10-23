@@ -3091,11 +3091,22 @@ void SphereDrawPc(NUVEC *centre, f32 radius, f32 vertical_scale) {
 
 void DrawWallSplinePc(f32 height) {
     i32 i;
-    TERRAIN_WALL_POINT *walls;
+    NUVEC start, end;
+    if (WallSplCount == 0)
+        return;
     for (i = 0; i < WallSplCount; i += 2) {
-        walls = (TERRAIN_WALL_POINT *)WallSplList;
-        NuRndrLine3dDbg(walls[i].position.x, height, walls[i].position.z, walls[i + 1].position.x, height,
-                        walls[i + 1].position.z, (i32)0x80808080);
+        start.x = ((TERRAIN_WALL_POINT *)WallSplList)[i].position.x;
+        start.y = height;
+        start.z = ((TERRAIN_WALL_POINT *)WallSplList)[i].position.z;
+        if (i == WallSplCount) {
+            end.x = ((TERRAIN_WALL_POINT *)WallSplList)[i].position.x;
+            end.z = ((TERRAIN_WALL_POINT *)WallSplList)[i].position.z;
+        } else {
+            end.x = ((TERRAIN_WALL_POINT *)WallSplList)[i + 1].position.x;
+            end.z = ((TERRAIN_WALL_POINT *)WallSplList)[i + 1].position.z;
+        }
+        end.y = height;
+        NuRndrLine3dDbg(start.x, start.y, start.z, end.x, end.y, end.z, (i32)0x80808080);
     }
 }
 
