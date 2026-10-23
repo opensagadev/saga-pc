@@ -896,28 +896,34 @@ void __thiscall PC_DEVICE_BACKEND_PC::ResetTargets() {
     ResetViewport();
 }
 void __thiscall PC_DEVICE_BACKEND_PC::ConfigureCurrentTargets() {
+    GRAPHICS_DEVICE_PC *view;
     if (multisample_index != 0) {
         SetRenderTarget(0, back_buffer);
         current_surface = back_buffer;
+        view = reinterpret_cast<GRAPHICS_DEVICE_PC *>(device);
+        view->methods->set_depth_stencil_surface(view, depth_surface);
     } else {
         for (i32 i = 0; i != 4; ++i) {
-            if (i == 0) {
-                if (target_surfaces[0] != NULL) {
-                    SetRenderTarget(0, target_surfaces[0]);
-                    current_surface = target_surfaces[0];
-                } else {
-                    SetRenderTarget(0, back_buffer);
-                    current_surface = back_buffer;
-                }
-            } else if (i <= 2 && ((PcWindowOptions.bloomenabled != 0 && PcWindowOptions.bloommethod == 2) ||
-                                  (PcWindowOptions.shadowsenabled != 0 && PcWindowOptions.shadowmethod == 2)))
-                SetRenderTarget(i, target_surfaces[i]);
-            else
-                SetRenderTarget(i, NULL);
+            if (i != 0) {
+                if (i > 0) {
+                    if (i <= 2 && ((PcWindowOptions.bloomenabled != 0 && PcWindowOptions.bloommethod == 2) ||
+                                   (PcWindowOptions.shadowsenabled != 0 && PcWindowOptions.shadowmethod == 2)))
+                        SetRenderTarget(i, target_surfaces[i]);
+                    else
+                        SetRenderTarget(i, NULL);
+                } else
+                    SetRenderTarget(i, NULL);
+            } else if (target_surfaces[0] != NULL) {
+                SetRenderTarget(0, target_surfaces[0]);
+                current_surface = target_surfaces[0];
+            } else {
+                SetRenderTarget(0, back_buffer);
+                current_surface = back_buffer;
+            }
         }
+        view = reinterpret_cast<GRAPHICS_DEVICE_PC *>(device);
+        view->methods->set_depth_stencil_surface(view, depth_surface);
     }
-    GRAPHICS_DEVICE_PC *view = reinterpret_cast<GRAPHICS_DEVICE_PC *>(device);
-    view->methods->set_depth_stencil_surface(view, depth_surface);
     PS2_REZ_W = parameters.width;
     PS2_REZ_H = parameters.height;
     PS2_VCNTR_X = PS2_REZ_W / 2;
@@ -1323,17 +1329,11 @@ void PC_DEVICE_BACKEND_PC::RestoreDefaultPoolResources() {
     BuildDefaultPoolResources();
 }
 void PC_DEVICE_BACKEND_PC::SetSurfaceRenderTarget(PC_EFFECT_SURFACE_PC *target, u32 index) {
-    GRAPHICS_DEVICE_PC *view = reinterpret_cast<GRAPHICS_DEVICE_PC *>(device);
-    if (target != NULL && target->surface != NULL) {
-        SetRenderTarget((i32)index, target->surface);
-        if (index == 0) {
-            PS2_REZ_W = target->width;
-            PS2_REZ_H = target->height;
-            PS2_VCNTR_X = PS2_REZ_W / 2;
-            PS2_VCNTR_Y = PS2_REZ_H / 2;
-            ResetViewport();
+    if (target == NULL || target->surface == NULL) {
+        if (index != 0) {
+            SetRenderTarget((i32)index, NULL);
+            return;
         }
-    } else if (index == 0) {
         if (multisample_index != 0) {
             SetRenderTarget(0, back_buffer);
             PCDeviceSetRenderState(168, 0);
@@ -1347,8 +1347,16 @@ void PC_DEVICE_BACKEND_PC::SetSurfaceRenderTarget(PC_EFFECT_SURFACE_PC *target, 
         PS2_VCNTR_X = PS2_REZ_W / 2;
         PS2_VCNTR_Y = PS2_REZ_H / 2;
         ResetViewport();
-    } else
-        SetRenderTarget((i32)index, NULL);
+    } else {
+        SetRenderTarget((i32)index, target->surface);
+        if (index == 0) {
+            PS2_REZ_W = target->width;
+            PS2_REZ_H = target->height;
+            PS2_VCNTR_X = PS2_REZ_W / 2;
+            PS2_VCNTR_Y = PS2_REZ_H / 2;
+            ResetViewport();
+        }
+    }
 }
 void PC_DEVICE_BACKEND_PC::CopyBackBuffer(GRAPHICS_RENDER_TEXTURE_PC *texture) {
     PC_EFFECT_SURFACE_PC target;
