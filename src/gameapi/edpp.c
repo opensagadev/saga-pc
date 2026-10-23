@@ -439,6 +439,75 @@ void cbPtlCancelDamageMenu(eduimenu_s *unused0, eduimenu_s *unused1) {
     edptl_damage_menu = NULL;
 }
 
+void cbPtlChangeCutOff(eduimenu_s *unused0, eduiitem_s *item, u32 unused2) {
+    DEBRIS_INFO_PC *effect;
+    f32 value;
+    if (edpp_nearest == -1)
+        return;
+    if (edpp_ptls[edpp_nearest].instance_id == -1)
+        return;
+    effect = debtab[debkeydata[edpp_ptls[edpp_nearest].instance_id].effect_index];
+    value = ((edui_slider_s *)item)->value;
+    effect->clip_extent = value;
+    if (value < effect->cut_on)
+        effect->cut_on = value;
+}
+
+void cbPtlChangeCutOn(eduimenu_s *unused0, eduiitem_s *item, u32 unused2) {
+    DEBRIS_INFO_PC *effect;
+    f32 value;
+    if (edpp_nearest == -1)
+        return;
+    if (edpp_ptls[edpp_nearest].instance_id == -1)
+        return;
+    effect = debtab[debkeydata[edpp_ptls[edpp_nearest].instance_id].effect_index];
+    value = ((edui_slider_s *)item)->value;
+    effect->cut_on = value;
+    if (value > effect->clip_extent)
+        effect->clip_extent = value;
+}
+
+void cbPtlChangeDrawCutOff(eduimenu_s *unused0, eduiitem_s *item, u32 unused2) {
+    DEBRIS_INFO_PC *effect;
+    if (edpp_nearest == -1)
+        return;
+    if (edpp_ptls[edpp_nearest].instance_id == -1)
+        return;
+    effect = debtab[debkeydata[edpp_ptls[edpp_nearest].instance_id].effect_index];
+    effect->sound_range = ((edui_slider_s *)item)->value;
+}
+
+void cbPtlChangeSoundCutOff(eduimenu_s *unused0, eduiitem_s *item, u32 unused2) {
+    DEBRIS_INFO_PC *effect;
+    if (edpp_nearest == -1)
+        return;
+    if (edpp_ptls[edpp_nearest].instance_id == -1)
+        return;
+    effect = debtab[debkeydata[edpp_ptls[edpp_nearest].instance_id].effect_index];
+    effect->sound_range_override = ((edui_slider_s *)item)->value;
+}
+
+void cbPtlChangeCameraCutOff(eduimenu_s *unused0, eduiitem_s *item, u32 unused2) {
+    DEBRIS_INFO_PC *effect;
+    if (edpp_nearest == -1)
+        return;
+    if (edpp_ptls[edpp_nearest].instance_id == -1)
+        return;
+    effect = debtab[debkeydata[edpp_ptls[edpp_nearest].instance_id].effect_index];
+    effect->field_044 = ((edui_slider_s *)item)->value;
+}
+
+void cbPtlChangeRepeatFlag(eduimenu_s *unused0, eduiitem_s *item, u32 unused2) {
+    if (edpp_nearest == -1)
+        return;
+    if (edpp_ptls[edpp_nearest].instance_id == -1)
+        return;
+    if (item->highlighted)
+        debtab[debkeydata[edpp_ptls[edpp_nearest].instance_id].effect_index]->use_explicit_clip_box = 1;
+    else
+        debtab[debkeydata[edpp_ptls[edpp_nearest].instance_id].effect_index]->use_explicit_clip_box = 0;
+}
+
 static void cbPtlCutOffMenu(eduimenu_s *parent, eduiitem_s *unused1, u32 unused2) {
     struct debris_info_pc_s *effect;
     if (edpp_nearest == -1 || edpp_ptls[edpp_nearest].instance_id == -1)

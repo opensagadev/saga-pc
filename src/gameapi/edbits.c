@@ -417,6 +417,16 @@ void edgracbCancelInstanceMenu(eduimenu_s *unused0, eduimenu_s *unused1) {
     edgra_instance_menu = NULL;
 }
 
+void edgracbCancelChangeInstanceMenu(eduimenu_s *unused0, eduimenu_s *unused1) {
+    eduiMenuDestroy(edgra_changeinstance_menu);
+    edgra_changeinstance_menu = NULL;
+}
+
+void edgracbCancelClumpSizesMenu(eduimenu_s *unused0, eduimenu_s *unused1) {
+    eduiMenuDestroy(edgra_clumpsizes_menu);
+    edgra_clumpsizes_menu = NULL;
+}
+
 void edgracbCancelClumpAreaMenu(eduimenu_s *unused0, eduimenu_s *unused1) {
     eduiMenuDestroy(edgra_clumparea_menu);
     edgra_clumparea_menu = NULL;

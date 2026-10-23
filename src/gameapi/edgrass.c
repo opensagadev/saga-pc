@@ -129,9 +129,34 @@ void __cdecl edgraInitAllClumps(void) {
     }
 }
 
+void edgracbChangeInstanceType(eduimenu_s *unused0, eduiitem_s *item, u32 unused2) {
+    if (edgra_nearest != -1) {
+        GrassClumps[edgra_nearest].special_index = item->data;
+        edgraInitAllClumps();
+    }
+}
+
 void edgracbSetClumpWind(eduimenu_s *unused0, eduiitem_s *item, u32 unused2) {
     if (edgra_nearest != -1)
         GrassClumps[edgra_nearest].field_18 = ((edui_slider_s *)(item))->value;
+    edgraInitAllClumps();
+}
+
+void edgracbSetClumpMinHeight(eduimenu_s *unused0, eduiitem_s *item, u32 unused2) {
+    if (edgra_nearest != -1)
+        GrassClumps[edgra_nearest].field_2c = ((edui_slider_s *)(item))->value;
+    edgraInitAllClumps();
+}
+
+void edgracbSetClumpMaxHeight(eduimenu_s *unused0, eduiitem_s *item, u32 unused2) {
+    if (edgra_nearest != -1)
+        GrassClumps[edgra_nearest].field_30 = ((edui_slider_s *)(item))->value;
+    edgraInitAllClumps();
+}
+
+void edgracbSetClumpHeight(eduimenu_s *unused0, eduiitem_s *item, u32 unused2) {
+    if (edgra_nearest != -1)
+        GrassClumps[edgra_nearest].field_20 = ((edui_slider_s *)(item))->value;
     edgraInitAllClumps();
 }
 
