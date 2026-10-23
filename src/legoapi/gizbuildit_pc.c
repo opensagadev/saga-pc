@@ -93,21 +93,21 @@ void __cdecl GizGetBuildItPlayerPos(GAMEOBJECT *player, NUVEC *position, NUVEC *
 void __cdecl GizBuildItPushAwayFromStart(GAMEOBJECT *player, void *context) {
     BUILDIT_MOVEMENT_PC *buildit = (BUILDIT_MOVEMENT_PC *)context;
     BUILDIT_MATRICES_PC *data;
+    BUILDIT_ANIMATION_PC *object;
     NUVEC minimum = v000, maximum = v000, start_position, centre, radius_centre, player_position, position;
     f32 radius, nearest_distance, dx, dz, distance;
-    i32 count, nearest = 0, i;
+    i32 nearest = 0, i;
     if (player == NULL || buildit == NULL || buildit->anim_set == NULL || buildit->anim_object_count == 0)
         return;
-    count = buildit->anim_object_count;
-    minimum.x = AIPositionUnsetPc;
-    minimum.z = AIPositionUnsetPc;
+    minimum.x = 1.0e9f;
+    minimum.z = 1.0e9f;
     player_position = player->collision_position;
-    maximum.x = PlayerBuildItNegativeLimitPc;
-    maximum.z = PlayerBuildItNegativeLimitPc;
+    maximum.x = -1.0e9f;
+    maximum.z = -1.0e9f;
     start_position = buildit->start_position;
     if (buildit->state_flags & 0x10) {
-        nearest_distance = AIPositionUnsetPc;
-        for (i = 0; i < count; ++i) {
+        nearest_distance = 1.0e9f;
+        for (i = 0; i < buildit->anim_object_count; ++i) {
             data = buildit->anim_objects[i]->object_data;
             position = *(NUVEC *)&data->start_mtx.m30;
             dx = position.x - player_position.x;
@@ -119,18 +119,23 @@ void __cdecl GizBuildItPushAwayFromStart(GAMEOBJECT *player, void *context) {
                 nearest = i;
             }
         }
-        NuSpecialGetBounds(&buildit->anim_objects[nearest]->special, &minimum, &maximum);
-        NuSpecialGetRadius(&buildit->anim_objects[nearest]->special, &radius_centre, &radius);
+        object = buildit->anim_objects[nearest];
+        NuSpecialGetBounds(&object->special, &minimum, &maximum);
+        NuSpecialGetRadius(&object->special, &radius_centre, &radius);
     } else {
-        for (i = 0; i < count; ++i) {
+        for (i = 0; i < buildit->anim_object_count; ++i) {
             data = buildit->anim_objects[i]->object_data;
             position = *(NUVEC *)&data->start_mtx.m30;
             dx = position.x - start_position.x;
             dz = position.z - start_position.z;
-            maximum.x = maximum.x > dx ? maximum.x : dx;
-            maximum.z = maximum.z > dz ? maximum.z : dz;
-            minimum.x = minimum.x < dx ? minimum.x : dx;
-            minimum.z = minimum.z < dz ? minimum.z : dz;
+            if (!(maximum.x > dx))
+                maximum.x = dx;
+            if (!(maximum.z > dz))
+                maximum.z = dz;
+            if (!(minimum.x < dx))
+                minimum.x = dx;
+            if (!(minimum.z < dz))
+                minimum.z = dz;
         }
         centre = start_position;
         radius = NuFsqrt(maximum.z * maximum.z + maximum.x * maximum.x);
@@ -1056,9 +1061,10 @@ STATIC_ASSERT(offsetof(GIZBUILDITSYS_s, count) == 4);
 void __cdecl GizBuildItPushAwayFromEnd(GAMEOBJECT *player) {
     GIZBUILDIT_PC *buildit;
     GIZBUILDITANIMDATA_s *data;
-    NUVEC centre, end_position, minimum, maximum, radius_centre, player_position;
+    NUVEC centre, end_position, minimum, maximum, radius_centre, player_position, position;
+    GAMEANIMOBJ *object;
     f32 radius;
-    f32 radius_squared = PlayerBuildItNegativeLimitPc;
+    f32 radius_squared = -1.0e9f;
     f32 nearest_distance, dx, dz, distance;
     i32 i, j, nearest = 0;
     if (WORLD->giz_buildit_sys == NULL)
@@ -1068,46 +1074,49 @@ void __cdecl GizBuildItPushAwayFromEnd(GAMEOBJECT *player) {
     for (i = 0; i < WORLD->giz_buildit_sys->count; ++i, ++buildit) {
         centre = v000;
         if ((buildit->state_flags & 8) == 0 || (buildit->availability_flags & 2) == 0 ||
-            buildit->built_object_count == 0)
+            buildit->built_object_count <= 0)
             continue;
         end_position = buildit->position;
-        minimum.x = minimum.z = AIPositionUnsetPc;
-        maximum.x = maximum.z = PlayerBuildItNegativeLimitPc;
+        minimum.x = 1.0e9f;
+        minimum.z = 1.0e9f;
+        maximum.x = -1.0e9f;
+        maximum.z = -1.0e9f;
         if ((buildit->state_flags & 0x10) != 0) {
-            nearest_distance = AIPositionUnsetPc;
+            nearest_distance = 1.0e9f;
             for (j = 0; j < buildit->built_object_count; ++j) {
                 data = (GIZBUILDITANIMDATA_s *)buildit->anim_objects[j]->object_data;
-                dx = data->end_mtx.m30 - player_position.x;
-                dz = data->end_mtx.m32 - player_position.z;
-                distance = dx * dx + dz * dz;
-                if (nearest_distance > distance) {
+                position = *(NUVEC *)&data->end_mtx.m30;
+                dx = position.x - player_position.x;
+                dz = position.z - player_position.z;
+                distance = dz * dz + dx * dx;
+                if (distance < nearest_distance) {
                     nearest_distance = distance;
+                    centre = position;
                     nearest = j;
-                    centre.x = data->end_mtx.m30;
-                    centre.y = data->end_mtx.m31;
-                    centre.z = data->end_mtx.m32;
                 }
             }
-            NuSpecialGetBounds(&buildit->anim_objects[nearest]->special, &minimum, &maximum);
-            NuSpecialGetRadius(&buildit->anim_objects[nearest]->special, &radius_centre, &radius);
+            object = buildit->anim_objects[nearest];
+            NuSpecialGetBounds(&object->special, &minimum, &maximum);
+            NuSpecialGetRadius(&object->special, &radius_centre, &radius);
         } else {
             centre.y = end_position.y;
             for (j = 0; j < buildit->built_object_count; ++j) {
                 data = (GIZBUILDITANIMDATA_s *)buildit->anim_objects[j]->object_data;
-                centre.x += data->end_mtx.m30;
-                centre.z += data->end_mtx.m32;
-                dx = data->end_mtx.m30 - end_position.x;
-                dz = data->end_mtx.m32 - end_position.z;
-                if (dx > maximum.x)
+                position = *(NUVEC *)&data->end_mtx.m30;
+                centre.x += position.x;
+                centre.z += position.z;
+                dx = position.x - end_position.x;
+                dz = position.z - end_position.z;
+                if (!(maximum.x > dx))
                     maximum.x = dx;
-                if (dz > maximum.z)
+                if (!(maximum.z > dz))
                     maximum.z = dz;
-                if (dx < minimum.x)
+                if (!(minimum.x < dx))
                     minimum.x = dx;
-                if (dz < minimum.z)
+                if (!(minimum.z < dz))
                     minimum.z = dz;
                 distance = dx * dx + dz * dz;
-                if (radius_squared < distance)
+                if (distance > radius_squared)
                     radius_squared = distance;
             }
             centre.x /= buildit->built_object_count;
