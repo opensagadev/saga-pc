@@ -2462,41 +2462,43 @@ static TERRAIN_PICKUP_SET_PC *PickupTerrainPc = 0;
 
 i32 ReadTerrainPickup(unsigned char *base_path, i16 **buffer, TERRAIN_PICKUP_SET_PC *terrain) {
     char path[100];
-    u8 *file_start;
     TERRAIN_FILE_CHUNK *chunk, *header;
     i32 i, group_count = 0;
     strcpy(path, (char *)base_path);
     strcat(path, ".ter");
     NuFileLoadBuffer(path, *buffer, INT_MAX);
-    file_start = (u8 *)*buffer;
-    chunk = (TERRAIN_FILE_CHUNK *)(file_start + 2 * *(u32 *)file_start);
+    chunk = (TERRAIN_FILE_CHUNK *)(*buffer + *(i32 *)*buffer);
+    *buffer += 2;
     header = chunk;
-    *buffer = (i16 *)(file_start + 4);
     TerrainCrashDataPc = NULL;
     for (i = 0; i < header->chunk_count; ++i, ++chunk) {
-        u8 *chunk_data = (u8 *)*buffer;
-        if (chunk->chunk_type == TERRAIN_CHUNK_SPATIAL_INDEX) {
-            TERRAIN_SPATIAL_NODE **link = (TERRAIN_SPATIAL_NODE **)chunk_data;
-            if (*(u32 *)link == 0x12345678) {
-                *link = terrain->spatial_nodes;
-                terrain->spatial_nodes = (TERRAIN_SPATIAL_NODE *)(link + 1);
-                --terrain->spatial_nodes->point_count;
-            }
-        } else if ((u32)chunk->chunk_type <= TERRAIN_CHUNK_GROUP_SECONDARY) {
-            TERRAIN_GROUP_PC *group = &terrain->groups[group_count];
-            group->group_info = chunk->group_info;
-            if (group->group_info >= 0 && group->group_info < 128)
-                terrain->group_for_type[group->group_info] = (i16)group_count;
-            group->chunk_type = chunk->chunk_type;
-            group->scene_index = (i16)chunk->field_16;
-            group->origin = chunk->origin;
-            group->data = (TERRAIN_SKIN_STREAM_VIEW_PC *)chunk_data;
-            group->platform_flags = chunk->platform_flags;
-            ++group_count;
-        } else if (chunk->chunk_type == TERRAIN_CHUNK_CRASH_DATA) {
-            TerrainCrashDataPc = chunk_data;
+        switch (chunk->chunk_type) {
+            case TERRAIN_CHUNK_GROUP_PRIMARY:
+            case TERRAIN_CHUNK_GROUP_SECONDARY:
+                terrain->groups[group_count].group_info = chunk->group_info;
+                if (terrain->groups[group_count].group_info >= 0 && terrain->groups[group_count].group_info < 128)
+                    terrain->group_for_type[terrain->groups[group_count].group_info] = (i16)group_count;
+                terrain->groups[group_count].chunk_type = chunk->chunk_type;
+                terrain->groups[group_count].scene_index = (i16)chunk->field_16;
+                terrain->groups[group_count].origin.x = chunk->origin.x;
+                terrain->groups[group_count].origin.y = chunk->origin.y;
+                terrain->groups[group_count].origin.z = chunk->origin.z;
+                terrain->groups[group_count].data = (TERRAIN_SKIN_STREAM_VIEW_PC *)*buffer;
+                terrain->groups[group_count].platform_flags = chunk->platform_flags;
+                ++group_count;
+                break;
+            case TERRAIN_CHUNK_SPATIAL_INDEX:
+                if (*(u32 *)*buffer == 0x12345678) {
+                    *(TERRAIN_SPATIAL_NODE **)*buffer = terrain->spatial_nodes;
+                    terrain->spatial_nodes = (TERRAIN_SPATIAL_NODE *)(*buffer + 2);
+                    --terrain->spatial_nodes->point_count;
+                }
+                break;
+            case TERRAIN_CHUNK_CRASH_DATA:
+                TerrainCrashDataPc = (u8 *)*buffer;
+                break;
         }
-        *buffer = (i16 *)(chunk_data + 2 * chunk->data_word_count);
+        *buffer += chunk->data_word_count;
     }
     return group_count;
 }
