@@ -57,19 +57,28 @@ extern "C" {
 
     void __cdecl NuDisplayListDestroyMtl(NUMTL *material) {
         u32 index;
+        i32 found = -1;
         PCThreadCriticalSectionEnter_candidate(nudlist_field_fc4);
-        if (material->display_list != NULL) {
-            for (index = 0; index < PCDisplayMaterialCount; ++index) {
-                if (PCDisplayMaterialRegistry[index] == material)
-                    break;
-            }
-            if (index < PCDisplayMaterialCount) {
-                if (PCDisplayMaterialDeleteCount == 600)
-                    AnimationDiagnosticNoOpPc();
-                else
-                    PCDisplayMaterialDeleteQueue[PCDisplayMaterialDeleteCount++] = material;
+        if (material->display_list == NULL) {
+            PCThreadCriticalSectionLeave_candidate(nudlist_field_fc4);
+            return;
+        }
+        for (index = 0; index < PCDisplayMaterialCount; ++index) {
+            if (PCDisplayMaterialRegistry[index] == material) {
+                found = (i32)index;
+                break;
             }
         }
+        if (found == -1) {
+            PCThreadCriticalSectionLeave_candidate(nudlist_field_fc4);
+            return;
+        }
+        if (PCDisplayMaterialDeleteCount == 600) {
+            AnimationDiagnosticNoOpPc();
+            PCThreadCriticalSectionLeave_candidate(nudlist_field_fc4);
+            return;
+        }
+        PCDisplayMaterialDeleteQueue[PCDisplayMaterialDeleteCount++] = material;
         PCThreadCriticalSectionLeave_candidate(nudlist_field_fc4);
     }
 
@@ -251,13 +260,13 @@ extern "C" {
 
     static void __cdecl DisplayUpdateAlphaPC(NUDISPLAY_LIST_PC *scene) {
         i32 object, item_index;
-        NUDISPLAYLISTITEM *items = (NUDISPLAYLISTITEM *)scene->items;
+        u16 *counts = scene->clip_counts;
         if (scene->alpha_values == NULL)
             return;
-        for (object = 0; object < scene->clip_count; ++object) {
-            PC_DISPLAY_CLIP_OBJECT_PC *clip = &scene->clip_objects[object];
-            for (item_index = 0; item_index < scene->clip_counts[object]; ++item_index) {
-                NUDISPLAYLISTITEM *item = &items[clip->item_indices[item_index]];
+        for (object = 0; object < scene->clip_count; ++object, ++counts) {
+            i32 *indices = scene->clip_objects[object].item_indices;
+            for (item_index = 0; item_index < *counts; ++item_index) {
+                NUDISPLAYLISTITEM *item = &((NUDISPLAYLISTITEM *)scene->items)[indices[item_index]];
                 if (item->id != 0 && item->type == 0x82)
                     DisplayListSetAlphaPS(item - 1, item, scene->alpha_values[object]);
             }
@@ -525,19 +534,19 @@ extern "C" {
         (void)end;
         cursor->addr += 0x80;
         items[0].type = 0x85;
-        items[0].id = 1;
         items[0].next = items + PCMaterialBlockItemCount - 1;
+        items[0].id = 1;
         NuDisplayListAddClut(items + 1, view->texture_id);
         NuDisplayListAddTexture(items + 2, view->texture_id);
         NuDisplayListAddMaterialState(items + 3, material);
         NuDisplayListAddMicrocode(items + 4, material);
         NuDisplayListAddLightState(items + 5, material);
+        items[6].next = items + PCMaterialBlockItemCount - 1;
         items[6].type = 0x8b;
         items[6].id = 1;
-        items[6].next = items + PCMaterialBlockItemCount - 1;
         items[7].type = 0x84;
-        items[7].id = 4;
         items[7].next = NULL;
+        items[7].id = 4;
         return items;
     }
 
