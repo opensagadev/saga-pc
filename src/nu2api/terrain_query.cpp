@@ -2932,16 +2932,21 @@ extern "C" f32 NewShadowHandelEx(NUVEC *position, f32 unused, f32 height_above, 
 }
 
 extern "C" i32 TerrainTrackBack(NUVEC *position, NUVEC *direction, f32 radius, f32 backoff, NUVEC *result) {
-    if (CurrentTerrain == NULL || TerrainShadowStatusPc == -1)
+    if (CurrentTerrain == NULL)
         return 0;
-    TerI = NuScratchAlloc32(sizeof(TerrainQuery_s));
-    TerrainQuery_s *query = static_cast<TerrainQuery_s *>(TerI);
+    if (TerrainShadowStatusPc == -1)
+        return 0;
+    TerrainQuery_s *query = static_cast<TerrainQuery_s *>(NuScratchAlloc32(sizeof(TerrainQuery_s)));
+    TerI = query;
     query->object_scale = 1.0f;
     query->object_scale_sq = 1.0f;
     query->inverse_object_scale = 1.0f;
     query->inverse_object_scale_sq = 1.0f;
     query->collision_radius = radius;
-    query->inverse_collision_radius = radius == 0.0f ? 0.0f : 1.0f / radius;
+    f32 inverse_radius = 0.0f;
+    if (radius != 0.0f)
+        inverse_radius = 1.0f / radius;
+    query->inverse_collision_radius = inverse_radius;
     query->collision_radius_sq = radius * radius;
     const f64 forward_radius = static_cast<f64>(radius) + 0.5;
     query->position.x = direction->x * forward_radius + position->x;
@@ -2957,13 +2962,6 @@ extern "C" i32 TerrainTrackBack(NUVEC *position, NUVEC *direction, f32 radius, f
     HitTerrPoly(TerrPoly, TerrainShadowStatusPc);
     query = static_cast<TerrainQuery_s *>(TerI);
     switch (query->hit_type) {
-        case 0:
-        case 17:
-        case 18:
-        case 19:
-        case 20:
-            *result = query->position;
-            break;
         case 1:
         case 2:
         case 3:
@@ -2974,6 +2972,15 @@ extern "C" i32 TerrainTrackBack(NUVEC *position, NUVEC *direction, f32 radius, f
             result->x = query->movement.x * query->hit_time + query->position.x;
             result->y = query->movement.y * query->hit_time + query->position.y;
             result->z = query->movement.z * query->hit_time + query->position.z;
+            break;
+        case 0:
+        case 17:
+        case 18:
+        case 19:
+        case 20:
+            result->x = query->position.x;
+            result->y = query->position.y;
+            result->z = query->position.z;
             break;
     }
     NuScratchRelease();
