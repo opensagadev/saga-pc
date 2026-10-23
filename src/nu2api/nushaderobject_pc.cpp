@@ -516,111 +516,145 @@ extern "C" void __cdecl PCShaderSetMaterialParametersPc(PC_SHADER_OBJECT_FULL_VI
     PC_SHADER_MATERIAL_DISPATCH_VIEW *material =
         reinterpret_cast<PC_SHADER_MATERIAL_DISPATCH_VIEW *>(original_material);
     PC_SHADER_PARAMETER_LOCAL_PC *parameter = shader->active_parameters;
+    NUVEC4 vector_2;
+    NUVEC4 vector_10;
+    NUVEC4 vector_11;
+    NUVEC4 vector_16;
+    NUVEC4 vector_83;
+    NUVEC4 vector_51;
+    NUVEC4 palette[4];
+    NUVEC4 vector_91;
+    NUVEC4 vector_92;
+    NUVEC4 vector_12;
+    NUVEC4 vector_13;
+    NUVEC4 vector_80_0;
+    NUVEC4 vector_80_1;
+    NUVEC4 vector_52;
+    NUVEC4 vector_53;
+    NUVEC4 vector_54;
+    NUVEC4 vector_57;
+    NUVEC4 vector_55;
+    NUVEC4 vector_58;
+    NUVEC4 diffuse_vector;
+    NUVEC4 vector_59;
+    NUVEC4 vector_72;
+    NUVEC4 vector_87;
     while (parameter != NULL) {
         const i32 semantic = (i8)parameter->semantic;
-        NUVEC4 vector;
         switch (semantic) {
             case 0: {
-                const f32 *values = PCShaderUnpackColourPc(&vector.x, material->diffuse_colour);
-                parameter->SetVector(values);
+                parameter->SetVector(PCShaderUnpackColourPc(&diffuse_vector.x, material->diffuse_colour));
                 break;
             }
             case 2: {
-                const f32 *values = PCShaderUnpackColourPc(&vector.x, material->specular_colour);
-                vector.w = material->parameter_1b4;
-                parameter->SetVector(values);
-                break;
-            }
-            case 51: {
-                const f32 *values = PCShaderUnpackColourPc(&vector.x, material->channel_colours[0]);
-                parameter->SetVector(values);
-                break;
-            }
-            case 52: {
-                const f32 *values = PCShaderUnpackColourPc(&vector.x, material->channel_colours[1]);
-                parameter->SetVector(values);
-                break;
-            }
-            case 53: {
-                const f32 *values = PCShaderUnpackColourPc(&vector.x, material->channel_colours[2]);
-                parameter->SetVector(values);
-                break;
-            }
-            case 54: {
-                const f32 *values = PCShaderUnpackColourPc(&vector.x, material->channel_colours[3]);
-                parameter->SetVector(values);
-                break;
-            }
-            case 57: {
-                const f32 *values = PCShaderUnpackColourPc(&vector.x, material->shadow_colour);
-                parameter->SetVector(values);
-                break;
-            }
-            case 58: {
-                const f32 *values = PCShaderUnpackColourPc(&vector.x, material->reflection_colour);
-                parameter->SetVector(values);
-                break;
-            }
-            case 59: {
-                const f32 *values = PCShaderUnpackColourPc(&vector.x, material->tint_colour);
-                vector.w = material->parameter_158;
+                const f32 *values = PCShaderUnpackColourPc(&vector_2.x, material->specular_colour);
+                vector_2.w = material->parameter_1b4;
                 parameter->SetVector(values);
                 break;
             }
             case 9: {
-                parameter->SetScalar(material->flip_sign == 0 ? 1.0f : -1.0f);
+                const f32 sign = material->flip_sign == 0 ? 1.0f : -1.0f;
+                parameter->SetScalar(sign);
                 break;
             }
             case 10: {
-                vector.x = material->parameter_134;
-                vector.y = 1.0f;
-                vector.z = (f64)0.035f * material->parameter_138;
-                vector.w = material->parameter_14c;
-                parameter->SetVector(&vector.x);
+                vector_10.x = material->parameter_134;
+                vector_10.y = 1.0f;
+                vector_10.z = (f64)0.035f * material->parameter_138;
+                vector_10.w = material->parameter_14c;
+                parameter->SetVector(&vector_10.x);
                 break;
             }
             case 11: {
-                vector.x = material->texture_lerp;
-                vector.y = material->parameter_284 / material->parameter_274;
-                vector.z = 0.0f;
-                vector.w = 0.0f;
-                parameter->SetVector(&vector.x);
-                break;
-            }
-            case 12: {
-                vector.x = NuShaderManagerGetShininessFactor() * material->parameter_130;
-                vector.y = material->parameter_12c;
-                vector.z = material->parameter_144;
-                vector.w = material->parameter_148;
-                parameter->SetVector(&vector.x);
-                break;
-            }
-            case 13: {
-                vector.x = material->parameter_140;
-                vector.y = material->parameter_13c;
-                vector.z = material->parameter_248;
-                vector.w = 0.0f;
-                parameter->SetVector(&vector.x);
-                break;
-            }
-            case 14: {
-                parameter->SetScalar(material->parameter_114);
+                vector_11.x = material->texture_lerp;
+                vector_11.y = material->parameter_284 / material->parameter_274;
+                vector_11.z = 0.0f;
+                vector_11.w = 0.0f;
+                parameter->SetVector(&vector_11.x);
                 break;
             }
             case 15: {
                 parameter->SetScalar(material->parameter_118);
                 break;
             }
-            case 81: {
-                parameter->SetScalar(material->parameter_154);
+            case 16: {
+                vector_16.x = material->parameter_1b8;
+                vector_16.y = material->parameter_1bc;
+                vector_16.z = 0.0f;
+                vector_16.w = 0.0f;
+                parameter->SetVector(&vector_16.x);
                 break;
             }
-            case 16: {
-                vector.x = material->parameter_1b8;
-                vector.y = material->parameter_1bc;
-                vector.z = 0.0f;
-                vector.w = 0.0f;
-                parameter->SetVector(&vector.x);
+            case 83: {
+                vector_83.x = material->parameter_260;
+                vector_83.y = material->parameter_264;
+                vector_83.z = 0.0f;
+                vector_83.w = 0.0f;
+                parameter->SetVector(&vector_83.x);
+                break;
+            }
+            case 84: {
+                for (i32 i = 0; i < 4; ++i) {
+                    NUVEC4 vector_84;
+                    const f32 *unpacked = PCShaderUnpackColourPc(&vector_84.x, material->palette_colours[i]);
+                    palette[i] = *reinterpret_cast<const NUVEC4 *>(unpacked);
+                }
+                if ((parameter->metadata & 0xf0000000u) == 0x10000000u)
+                    PCDeviceSetVertexShaderConstantsF(parameter->register_index, &palette[0].x, 4);
+                else
+                    PCDeviceSetPixelShaderConstantsF(parameter->register_index, &palette[0].x, 4);
+                break;
+            }
+            case 91: {
+                vector_91.x = 1.0 / material->parameter_290;
+                vector_91.y = material->parameter_288;
+                vector_91.z = material->parameter_28c;
+                vector_91.w = material->parameter_294;
+                parameter->SetVector(&vector_91.x);
+                break;
+            }
+            case 92: {
+                vector_92.x = (f64)0.1f * material->parameter_274;
+                vector_92.y = material->parameter_27c;
+                vector_92.z = material->parameter_280;
+                vector_92.w = material->parameter_278;
+                parameter->SetVector(&vector_92.x);
+                break;
+            }
+            case 14: {
+                parameter->SetScalar(material->parameter_114);
+                break;
+            }
+            case 12: {
+                vector_12.x = NuShaderManagerGetShininessFactor() * material->parameter_130;
+                vector_12.y = material->parameter_12c;
+                vector_12.z = material->parameter_144;
+                vector_12.w = material->parameter_148;
+                parameter->SetVector(&vector_12.x);
+                break;
+            }
+            case 13: {
+                vector_13.x = material->parameter_140;
+                vector_13.y = material->parameter_13c;
+                vector_13.z = material->parameter_248;
+                vector_13.w = 0.0f;
+                parameter->SetVector(&vector_13.x);
+                break;
+            }
+            case 80: {
+                if ((material->phase_flags & 0x8000u) && material->phase_speed == 0.0f) {
+                    vector_80_0.x = 1.0f;
+                    vector_80_0.y = material->phase_scale;
+                    vector_80_0.z = material->phase_factor;
+                    vector_80_0.w = (material->phase_scale * (f64)material->phase_factor) * (f64)0.2f;
+                    parameter->SetVector(&vector_80_0.x);
+                } else {
+                    vector_80_1.x = material->phase_speed;
+                    vector_80_1.y = material->phase_scale;
+                    vector_80_1.z = material->phase_factor;
+                    vector_80_1.w = (material->phase_scale * (f64)material->phase_factor) * (f64)0.2f;
+                    parameter->SetVector(&vector_80_1.x);
+                }
                 break;
             }
             case 23: {
@@ -711,13 +745,6 @@ extern "C" void __cdecl PCShaderSetMaterialParametersPc(PC_SHADER_OBJECT_FULL_VI
                 PCDeviceSetSamplerState(parameter->register_index, 7, 0);
                 break;
             }
-            case 48: {
-                const i32 id = material->reflection_texture_id;
-                PCDeviceSetTexture(parameter->register_index, id == 0 ? NULL : NuTextureGetDimensions(id)->resource);
-                PCDeviceSetSamplerState(parameter->register_index, 1, 3);
-                PCDeviceSetSamplerState(parameter->register_index, 2, 3);
-                break;
-            }
             case 49: {
                 const i32 id = material->lighting_texture_id;
                 PCDeviceSetTexture(parameter->register_index, id == 0 ? NULL : NuTextureGetDimensions(id)->resource);
@@ -735,31 +762,12 @@ extern "C" void __cdecl PCShaderSetMaterialParametersPc(PC_SHADER_OBJECT_FULL_VI
                 PCDeviceSetSamplerState(parameter->register_index, 3, 3);
                 break;
             }
-            case 97: {
-                const i32 id = material->point_texture_id;
-                PCDeviceSetTexture(parameter->register_index, id == 0 ? NULL : NuTextureGetDimensions(id)->resource);
-                PCDeviceSetSamplerState(parameter->register_index, 1, 1);
-                PCDeviceSetSamplerState(parameter->register_index, 2, 1);
-                PCDeviceSetSamplerState(parameter->register_index, 5, 1);
-                PCDeviceSetSamplerState(parameter->register_index, 6, 1);
-                PCDeviceSetSamplerState(parameter->register_index, 7, 0);
-                break;
-            }
-            case 98: {
-                const i32 id = material->unfiltered_texture_id;
-                PCDeviceSetTexture(parameter->register_index, id == 0 ? NULL : NuTextureGetDimensions(id)->resource);
-                PCDeviceSetSamplerState(parameter->register_index, 1, 1);
-                PCDeviceSetSamplerState(parameter->register_index, 2, 1);
-                PCDeviceSetSamplerState(parameter->register_index, 5, 0);
-                PCDeviceSetSamplerState(parameter->register_index, 6, 0);
-                PCDeviceSetSamplerState(parameter->register_index, 7, 0);
-                break;
-            }
             case 46: {
                 PC_TEXTURE_RESOURCE_PC *texture;
-                if (PCDeviceHardwareVertexProcessingPC == 1 && (material->texture_flags & (8u | 0x50000u)))
+                if (PCDeviceHardwareVertexProcessingPC == 1 &&
+                    ((material->texture_flags & 8u) != 0 || (material->texture_flags & 0x50000u) != 0))
                     texture = NuTexturePhongCubePc;
-                else if (PCDeviceHardwareVertexProcessingPC != 1 && (material->texture_flags & 0x50000u))
+                else if (PCDeviceHardwareVertexProcessingPC != 1 && (material->texture_flags & 0x50000u) != 0)
                     texture = NuTextureEnvironmentCubePc;
                 else
                     texture = material->cube_texture_id > 0
@@ -771,12 +779,49 @@ extern "C" void __cdecl PCShaderSetMaterialParametersPc(PC_SHADER_OBJECT_FULL_VI
                 PCDeviceSetSamplerState(parameter->register_index, 3, 3);
                 break;
             }
+            case 48: {
+                const i32 id = material->reflection_texture_id;
+                PCDeviceSetTexture(parameter->register_index, id == 0 ? NULL : NuTextureGetDimensions(id)->resource);
+                PCDeviceSetSamplerState(parameter->register_index, 1, 3);
+                PCDeviceSetSamplerState(parameter->register_index, 2, 3);
+                break;
+            }
+            case 51: {
+                parameter->SetVector(PCShaderUnpackColourPc(&vector_51.x, material->channel_colours[0]));
+                break;
+            }
+            case 52: {
+                parameter->SetVector(PCShaderUnpackColourPc(&vector_52.x, material->channel_colours[1]));
+                break;
+            }
+            case 53: {
+                parameter->SetVector(PCShaderUnpackColourPc(&vector_53.x, material->channel_colours[2]));
+                break;
+            }
+            case 54: {
+                parameter->SetVector(PCShaderUnpackColourPc(&vector_54.x, material->channel_colours[3]));
+                break;
+            }
             case 55: {
-                vector.x = material->parameter_d8;
-                vector.y = material->parameter_dc;
-                vector.z = material->parameter_e0;
-                vector.w = material->parameter_e4;
-                parameter->SetVector(&vector.x);
+                vector_55.x = material->parameter_d8;
+                vector_55.y = material->parameter_dc;
+                vector_55.z = material->parameter_e0;
+                vector_55.w = material->parameter_e4;
+                parameter->SetVector(&vector_55.x);
+                break;
+            }
+            case 57: {
+                parameter->SetVector(PCShaderUnpackColourPc(&vector_57.x, material->shadow_colour));
+                break;
+            }
+            case 58: {
+                parameter->SetVector(PCShaderUnpackColourPc(&vector_58.x, material->reflection_colour));
+                break;
+            }
+            case 59: {
+                const f32 *values = PCShaderUnpackColourPc(&vector_59.x, material->tint_colour);
+                vector_59.w = material->parameter_158;
+                parameter->SetVector(values);
                 break;
             }
             case 60: {
@@ -809,40 +854,11 @@ extern "C" void __cdecl PCShaderSetMaterialParametersPc(PC_SHADER_OBJECT_FULL_VI
                 break;
             }
             case 72: {
-                vector.x = 0.05f;
-                vector.y = material->phase_speed * (f64)0.32f;
-                vector.z = 0.2f;
-                vector.w = 0.8f;
-                parameter->SetFloat3(&vector.x);
-                break;
-            }
-            case 80: {
-                vector.x =
-                    (material->phase_flags & 0x8000u) && material->phase_speed == 0.0f ? 1.0f : material->phase_speed;
-                vector.y = material->phase_scale;
-                vector.z = material->phase_factor;
-                vector.w = (material->phase_scale * (f64)material->phase_factor) * (f64)0.2f;
-                parameter->SetVector(&vector.x);
-                break;
-            }
-            case 83: {
-                vector.x = material->parameter_260;
-                vector.y = material->parameter_264;
-                vector.z = 0.0f;
-                vector.w = 0.0f;
-                parameter->SetVector(&vector.x);
-                break;
-            }
-            case 84: {
-                NUVEC4 palette[4];
-                for (i32 i = 0; i < 4; ++i) {
-                    const f32 *unpacked = PCShaderUnpackColourPc(&vector.x, material->palette_colours[i]);
-                    palette[i] = *reinterpret_cast<const NUVEC4 *>(unpacked);
-                }
-                if ((parameter->metadata & 0xf0000000u) == 0x10000000u)
-                    PCDeviceSetVertexShaderConstantsF(parameter->register_index, &palette[0].x, 4);
-                else
-                    PCDeviceSetPixelShaderConstantsF(parameter->register_index, &palette[0].x, 4);
+                vector_72.x = 0.05f;
+                vector_72.y = material->phase_speed * (f64)0.32f;
+                vector_72.z = 0.2f;
+                vector_72.w = 0.8f;
+                parameter->SetFloat3(&vector_72.x);
                 break;
             }
             case 86: {
@@ -865,28 +881,36 @@ extern "C" void __cdecl PCShaderSetMaterialParametersPc(PC_SHADER_OBJECT_FULL_VI
                     const f32 component0 = NuTrigTable[(angle0 >> 1) & 0x7fff] / 10.0;
                     const i32 angle1 = (i32)(wind->scaled_accumulated_time * 10430.3779296875);
                     const f32 component1 = NuTrigTable[(angle1 >> 1) & 0x7fff] / 30.0;
-                    vector.x = wind->phase;
-                    vector.y = parameter24;
-                    vector.z = component0;
-                    vector.w = component1;
-                    parameter->SetFloat3(&vector.x);
+                    vector_87.x = wind->phase;
+                    vector_87.y = parameter24;
+                    vector_87.z = component0;
+                    vector_87.w = component1;
+                    parameter->SetFloat3(&vector_87.x);
                 }
                 break;
             }
-            case 91: {
-                vector.x = 1.0 / material->parameter_290;
-                vector.y = material->parameter_288;
-                vector.z = material->parameter_28c;
-                vector.w = material->parameter_294;
-                parameter->SetVector(&vector.x);
+            case 97: {
+                const i32 id = material->point_texture_id;
+                PCDeviceSetTexture(parameter->register_index, id == 0 ? NULL : NuTextureGetDimensions(id)->resource);
+                PCDeviceSetSamplerState(parameter->register_index, 1, 1);
+                PCDeviceSetSamplerState(parameter->register_index, 2, 1);
+                PCDeviceSetSamplerState(parameter->register_index, 5, 1);
+                PCDeviceSetSamplerState(parameter->register_index, 6, 1);
+                PCDeviceSetSamplerState(parameter->register_index, 7, 0);
                 break;
             }
-            case 92: {
-                vector.x = (f64)0.1f * material->parameter_274;
-                vector.y = material->parameter_27c;
-                vector.z = material->parameter_280;
-                vector.w = material->parameter_278;
-                parameter->SetVector(&vector.x);
+            case 98: {
+                const i32 id = material->unfiltered_texture_id;
+                PCDeviceSetTexture(parameter->register_index, id == 0 ? NULL : NuTextureGetDimensions(id)->resource);
+                PCDeviceSetSamplerState(parameter->register_index, 1, 1);
+                PCDeviceSetSamplerState(parameter->register_index, 2, 1);
+                PCDeviceSetSamplerState(parameter->register_index, 5, 0);
+                PCDeviceSetSamplerState(parameter->register_index, 6, 0);
+                PCDeviceSetSamplerState(parameter->register_index, 7, 0);
+                break;
+            }
+            case 81: {
+                parameter->SetScalar(material->parameter_154);
                 break;
             }
         }
@@ -902,6 +926,8 @@ extern "C" void __cdecl PCShaderSetMaterialParametersPc(PC_SHADER_OBJECT_FULL_VI
                         break;
                     case 3:
                         parameter->SetMatrixValues(0, 1, uniform->values);
+                        break;
+                    case 4:
                         break;
                 }
             }
