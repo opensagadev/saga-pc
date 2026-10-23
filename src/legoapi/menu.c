@@ -1074,26 +1074,22 @@ extern u8 MENUFLASH1R, MENUFLASH1G, MENUFLASH1B;
 
 void __cdecl DrawMenuEntryEx(MENU *menu, char *text, i32 alpha) {
     MENU_DRAW_VIEW_PC *view = (MENU_DRAW_VIEW_PC *)menu;
-    f32 scale = view->item_scale_x;
-    f32 spacing = view->item_spacing;
+    f32 scale, spacing;
     /* Retail writes low bytes, then forwards each partially written 32-bit color slot. */
     union {
         u8 byte;
         u32 slot;
     } red, green, blue;
-    u32 alpha_bits = (u32)alpha;
-    if ((u8)alpha_bits > 128)
-        alpha_bits = (alpha_bits & 0xffffff00u) | 128;
-    if (scale == 0.0f)
-        scale = MenuTextScalePc;
+    /* Retail clamps only the low byte of the alpha slot and forwards the whole slot. */
+    *(u8 *)&alpha = (u8)alpha > 128 ? 128 : (u8)alpha;
+    scale = view->item_scale_x == 0.0f ? MenuTextScalePc : view->item_scale_x;
     scale *= dme_sy;
-    if (spacing == 0.0f)
-        spacing = MENUDY;
+    spacing = view->item_spacing == 0.0f ? MENUDY : view->item_spacing;
     spacing *= dme_sy;
     if (view->item_offsets != NULL) {
         Text3DEx2(text, (f32)(view->draw_x + (f64)view->item_offsets[0] * view->item_offset_scale),
                   (f32)(view->draw_y + (f64)view->item_offsets[1] * view->item_offset_scale), view->draw_z,
-                  (f32)((f64)scale * dme_sx), scale, scale, dme_align, 0, 0, 0, (u8)alpha_bits >> 2);
+                  (f32)((f64)scale * dme_sx), scale, scale, dme_align, 0, 0, 0, (u8)alpha >> 2);
     }
     if (view->draw_item >= view->first_row && view->draw_item <= view->last_row) {
         if (view->draw_item == menu->selected_row) {
@@ -1122,10 +1118,10 @@ void __cdecl DrawMenuEntryEx(MENU *menu, char *text, i32 alpha) {
         }
         if (view->item_offsets != NULL) {
             Text3DEx(text, view->draw_x, view->draw_y, view->draw_z, (f32)((f64)scale * dme_sx), scale, scale,
-                     dme_align, red.slot, green.slot, blue.slot, (i32)alpha_bits);
+                     dme_align, red.slot, green.slot, blue.slot, alpha);
         } else {
             MenuSmartTextEx(text, view->draw_x, view->draw_y, view->draw_z, (f32)((f64)scale * dme_sx), scale, scale,
-                            dme_align, red.slot, green.slot, blue.slot, MENUENTRYEXWIDTH, 1, NULL, 0, (u8)alpha_bits);
+                            dme_align, red.slot, green.slot, blue.slot, MENUENTRYEXWIDTH, 1, NULL, 0, (u8)alpha);
         }
     }
     ++view->draw_item;
