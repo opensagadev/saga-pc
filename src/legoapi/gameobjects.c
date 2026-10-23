@@ -705,7 +705,6 @@ GAMEOBJECT *__cdecl TargetGameObject(GAMEOBJECT *object, NUVEC *position, NUVEC 
     GAMEOBJECT *target;
     GAMEOBJECT *best = NULL;
     GAMEOBJECT *previous = NULL;
-    f32 nearest_distance = range_squared;
     i32 i;
     if ((object->flags_1fc & 0x80) != 0 &&
         (WORLD->current_level == DEATHSTAR2BATTLEA_LDATA || WORLD->current_level == ASTEROIDCHASED_LDATA)) {
@@ -716,9 +715,9 @@ GAMEOBJECT *__cdecl TargetGameObject(GAMEOBJECT *object, NUVEC *position, NUVEC 
         mid_distance = 100.0f;
     }
     min_x = position->x - radius;
-    max_x = position->x + radius;
     min_z = position->z - radius;
-    max_z = position->z + radius;
+    max_x = radius + position->x;
+    max_z = radius + position->z;
     if (directional != 0) {
         aim = *direction;
         if (bolt != NULL && (bolt->flags_60 & 0x20000) != 0) {
@@ -737,7 +736,7 @@ GAMEOBJECT *__cdecl TargetGameObject(GAMEOBJECT *object, NUVEC *position, NUVEC 
             continue;
         }
         context = target->character_context;
-        if (context == 0x39 || context == 0x3b || context == 0x3c || (CInfo[context].flags & 0x8000) != 0) {
+        if (context == 0x3b || context == 0x39 || context == 0x3c || (U64_PAIR(&CInfo[context].flags) & 0x8000) != 0) {
             continue;
         }
         if (model_mask != 0) {
@@ -751,9 +750,8 @@ GAMEOBJECT *__cdecl TargetGameObject(GAMEOBJECT *object, NUVEC *position, NUVEC 
             continue;
         }
         if (arcade == 0 && (object->flags_1fc & 0x80) != 0 && (target->flags_ef4 & 0x800000) == 0) {
-            u32 *mask = WORLD->object_sys->hostility_masks[object->hostility_group];
-            u64 hostility = (u64)mask[0] | ((u64)mask[1] << 32);
-            if ((hostility & ((u64)1 << target->hostility_group)) == 0) {
+            if ((((u64)1 << target->hostility_group) &
+                 U64_PAIR(WORLD->object_sys->hostility_masks[object->hostility_group])) == 0) {
                 continue;
             }
         }
@@ -766,7 +764,7 @@ GAMEOBJECT *__cdecl TargetGameObject(GAMEOBJECT *object, NUVEC *position, NUVEC 
             continue;
         }
         distance = NuVecDistSqr(&target->collision_position, position, &delta);
-        if (nearest_distance > distance) {
+        if (distance < range_squared) {
             f32 dot;
             u16 angle;
             if (directional == 0) {
@@ -785,7 +783,7 @@ GAMEOBJECT *__cdecl TargetGameObject(GAMEOBJECT *object, NUVEC *position, NUVEC 
                 if (object->collision_target == target) {
                     previous = target;
                 } else {
-                    nearest_distance = distance;
+                    range_squared = distance;
                     best = target;
                 }
             }
