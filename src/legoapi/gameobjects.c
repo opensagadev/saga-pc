@@ -2716,8 +2716,6 @@ void __cdecl TakeOverCode(GAMEOBJECT *object, i32 tag_pressed) {
         NUVEC destination;
         f32 height;
         f64 phase;
-        i32 difference;
-        u16 angle;
         target = object->force_target;
         if (target == NULL) {
             object->character_context = -1;
@@ -2727,16 +2725,20 @@ void __cdecl TakeOverCode(GAMEOBJECT *object, i32 tag_pressed) {
         if (object->context_timer >= object->context_duration) {
             object->character_context = -1;
             if ((object->flags_1fc_word & 0x80) != 0) {
-                i32 hint_id;
-                if (target->id == (u16)id_GRABCONTROL || target->id == (u16)id_GRABR2CONTROL)
-                    hint_id = 0x28a;
-                else if (target->character_data->move_fn == Move_BEAST)
-                    hint_id = StartupGameFlag1 != 0 ? 0x263 : 8;
-                else if (StartupGameFlag1 == 0)
-                    hint_id = 8;
-                else
-                    hint_id = object->id == (u16)id_ATAT ? 0x28d : 0x25d;
-                Hint_SetComplete(hint_id);
+                if (target->id == (u16)id_GRABCONTROL || target->id == (u16)id_GRABR2CONTROL) {
+                    Hint_SetComplete(0x28a);
+                } else if (target->character_data->move_fn == Move_BEAST) {
+                    if (StartupGameFlag1 != 0)
+                        Hint_SetComplete(0x263);
+                    else
+                        Hint_SetComplete(8);
+                } else if (StartupGameFlag1 == 0) {
+                    Hint_SetComplete(8);
+                } else if (object->id == (u16)id_ATAT) {
+                    Hint_SetComplete(0x28d);
+                } else {
+                    Hint_SetComplete(0x25d);
+                }
             }
             if (WORLD->grabber != NULL &&
                 (object->force_target->id == (u16)id_GRABCONTROL || object->force_target->id == (u16)id_GRABR2CONTROL))
@@ -2752,34 +2754,28 @@ void __cdecl TakeOverCode(GAMEOBJECT *object, i32 tag_pressed) {
         object->position.x = (destination.x - object->external_force.x) * fraction + object->external_force.x;
         object->position.y = (destination.y - object->external_force.y) * fraction + object->external_force.y;
         object->position.z = (destination.z - object->external_force.z) * fraction + object->external_force.z;
-        target = object->force_target;
         height = target->bounds_half_height;
         if (object->field_7aa == 6 || object->field_7aa == 0xc9) {
-            f32 jump_height = object->character_data->game_character->jump_height;
-            if (jump_height > height) {
-                height = jump_height;
+            if (object->character_data->game_character->jump_height > height) {
+                height = object->character_data->game_character->jump_height;
             }
         }
-        if (target->id == id_ATAT && WORLD->current_level == SPEEDERCHASEA_LDATA) {
+        if (target->id == (u16)id_ATAT && WORLD->current_level == SPEEDERCHASEA_LDATA) {
             height *= TakeOverATATJumpScale * SpeederChaseATATInOutMul(&destination, &object->external_force);
         }
         phase = (f64)fraction * 32768.0;
         object->position.y += height * NuTrigTable[((i32)phase >> 1) & 0x7fff];
-        target = object->force_target;
-        difference = RotDiff(object->takeover_start_angle, target->field_0x276);
-        angle = (u16)(i32)((f64)object->takeover_start_angle +
-                           (f64)difference *
-                               (1.0 - ((f64)NuTrigTable[((i32)(phase + 16384.0) >> 1) & 0x7fff] + 1.0) * 0.5));
-        object->field_0x276 = angle;
-        object->movement_facing_angle = angle;
-        object->facing_angle = angle;
+        object->facing_angle = object->movement_facing_angle = object->field_0x276 =
+            (u16)((f64)object->takeover_start_angle +
+                  (f64)RotDiff(object->takeover_start_angle, object->force_target->field_0x276) *
+                      (1.0 - ((f64)NuTrigTable[((i32)(phase + 16384.0) >> 1) & 0x7fff] + 1.0) * 0.5));
         return;
     }
     object->tag_flags &= ~1u;
     target = object->rider;
     if (target != NULL) {
         if (object->character_context == 0x3b) {
-            if (!(players_cannot_exit_speeder != 0 && target->id == id_SPEEDERBIKE)) {
+            if (!(players_cannot_exit_speeder != 0 && target->id == (u16)id_SPEEDERBIKE)) {
                 u32 buttons = target->pad->buttons_pressed;
                 if ((object->flags_ef4 & 2) != 0) {
                     buttons &= ~GAMEPAD_JUMP;
@@ -2787,7 +2783,10 @@ void __cdecl TakeOverCode(GAMEOBJECT *object, i32 tag_pressed) {
                 if (target->character_context != 0x2a && (buttons & (GAMEPAD_JUMP | GAMEPAD_TAG)) != 0) {
                     ReleaseTakeOver(object, 1);
                     if ((object->flags_1fc_word & 0x80) != 0) {
-                        Hint_SetComplete(StartupGameFlag1 != 0 ? 0x25e : 5);
+                        if (StartupGameFlag1 != 0)
+                            Hint_SetComplete(0x25e);
+                        else
+                            Hint_SetComplete(5);
                     }
                     return;
                 }
@@ -2813,50 +2812,52 @@ void __cdecl TakeOverCode(GAMEOBJECT *object, i32 tag_pressed) {
     if (MiniCutCam != 0 || (object->flags_1fc_word & 0x80) == 0 || object->dead != 0 ||
         !(object->takeover_timer <= 0.0f) || object->character_context == 0x2b ||
         (object->character_context != -1 && (object->character_context != 0 || object->action_movement_state == 3 ||
-                                             object->action_movement_state == 4)) ||
-        object->field_281 == 0) {
+                                             object->action_movement_state == 4))) {
         return;
     }
     {
         f32 nearest_distance = 9.0f;
         GAMEOBJECT *nearest = NULL;
+        GAMEOBJECT *candidate;
         i32 index;
-        for (index = 0; index < HIGHGAMEOBJECT; ++index) {
-            GAMEOBJECT *candidate = &Obj[index];
-            f32 dx, dz, range, range_squared, distance;
-            if ((candidate->flags_1fc_word & 0x1001) != 0x1001 || candidate->dead != 0 ||
-                candidate->field_280 != 0xff || (CInfo[candidate->character_context].flags & 0x8000) != 0 ||
-                candidate->rider != NULL || (candidate->character_data->game_character->flags_090 & 0x40) == 0 ||
+        f32 dx, dz, range, range_squared, distance;
+        if (object->field_281 == 0)
+            return;
+        candidate = Obj;
+        for (index = 0; index < HIGHGAMEOBJECT; ++index, ++candidate) {
+            if ((candidate->flags_1fc_word & 1) == 0 || (candidate->flags_1fc_word & 0x1000) == 0 ||
+                candidate->dead != 0 || candidate->field_280 != 0xff ||
+                (U64_PAIR(&CInfo[candidate->character_context].flags) & 0x8000) != 0 || candidate->rider != NULL ||
+                (candidate->character_data->game_character->flags_090 & 0x40) == 0 ||
                 ((candidate->character_data->model_flags & 0x40000000) != 0 &&
                  (candidate->character_context == 0x17 || candidate->character_context == 0x3e)) ||
                 (candidate->tag_flags & 2) != 0) {
                 continue;
             }
-            if (candidate->id == id_ATAT && WORLD->current_level == SPEEDERCHASEA_LDATA) {
+            if ((u16)id_ATAT == candidate->id && WORLD->current_level == SPEEDERCHASEA_LDATA) {
                 if (object->jump_animation_state == 0x13) {
                     nearest = candidate;
                 }
                 continue;
             }
             if (object->collision_min.y > candidate->collision_max.y ||
-                candidate->collision_min.y > object->collision_max.y) {
+                object->collision_max.y < candidate->collision_min.y) {
                 continue;
             }
             range = (f64)candidate->bounds_radius * 2.0 + object->bounds_radius;
             dx = candidate->collision_position.x - object->collision_position.x;
             dz = candidate->collision_position.z - object->collision_position.z;
-            if (!(object->facing_direction.x * dx + object->facing_direction.z * dz > 0.0f)) {
-                continue;
-            }
-            distance = dx * dx + dz * dz;
-            range_squared = range * range;
-            if (range_squared > distance && nearest_distance > distance) {
-                nearest_distance = distance;
-                nearest = candidate;
+            if (object->facing_direction.x * dx + object->facing_direction.z * dz > 0.0f) {
+                distance = dx * dx + dz * dz;
+                range_squared = range * range;
+                if (distance < range_squared && nearest_distance > distance) {
+                    nearest_distance = distance;
+                    nearest = candidate;
+                }
             }
         }
         if (nearest != NULL) {
-            if (tag_pressed != 0 || (nearest->id == id_ATAT && WORLD->current_level == SPEEDERCHASEA_LDATA)) {
+            if (tag_pressed != 0 || (nearest->id == (u16)id_ATAT && WORLD->current_level == SPEEDERCHASEA_LDATA)) {
                 TakeOver2GetIn(object, nearest);
             } else {
                 object->tag_flags |= 1;
