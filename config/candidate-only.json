@@ -1275,6 +1275,11 @@
    "unit": "src/gameapi/edpp.c",
    "symbol": "_edppDebrisReflectionOrientation",
    "kind": "function"
+  },
+  {
+   "unit": "src/legoapi/screen.cpp",
+   "symbol": "?StatusFabsPc@@YAMM@Z",
+   "kind": "function"
   }
  ]
 }

@@ -118,11 +118,12 @@ typedef struct CUT_BORDER_RECORD_PC {
 STATIC_ASSERT(offsetof(CUT_BORDER_RECORD_PC, flags) == 0x50);
 extern "C" NUMTL *FadeMtl;
 extern "C" void __cdecl UpdateCutBorders(void) {
-    f32 target_scale = 1.0f;
-    if (CUTSTOPGAME == 0 && (LEGOCAMMODE_DOORCUT == -1 || GameCam->mode != LEGOCAMMODE_DOORCUT)) {
-        if (LEGOCAMMODE_OBSTACLE == -1 || GameCam->mode != LEGOCAMMODE_OBSTACLE || ObstacleCamBorders == 0)
-            target_scale = 0.0f;
-    }
+    f32 target_scale;
+    if (CUTSTOPGAME != 0 || (LEGOCAMMODE_DOORCUT != -1 && GameCam->mode == LEGOCAMMODE_DOORCUT) ||
+        (LEGOCAMMODE_OBSTACLE != -1 && GameCam->mode == LEGOCAMMODE_OBSTACLE && ObstacleCamBorders != 0))
+        target_scale = 1.0f;
+    else
+        target_scale = 0.0f;
     CutBorderScale = SeekLinearF(CutBorderScale, target_scale, FRAMETIME + FRAMETIME);
 }
 
@@ -176,8 +177,8 @@ extern "C" void __cdecl CreateUsefulMaterials(void) {
 extern "C" void __cdecl DrawFadeScreenWipe(void) {
     i32 x = 0;
     i32 y = 0;
-    i32 width = 0x2800;
-    i32 height = 0xe00;
+    i32 width;
+    i32 height;
     i32 gradient_position;
     i32 skip_solid;
     f32 edge;
@@ -185,46 +186,92 @@ extern "C" void __cdecl DrawFadeScreenWipe(void) {
 
     NuRndrBeginScene(1);
     skip_solid = FadeSys.fade < 0.0f;
+    width = 0x2800;
+    height = 0xe00;
     if ((FadeSys.direction & 3) != 0) {
-        if (((FadeSys.direction & 1) != 0 && FadeSys.rate > 0.0f) ||
-            ((FadeSys.direction & 1) == 0 && !(FadeSys.rate > 0.0f))) {
-            edge = FadeSys.fade;
-            colours[0] = 0x80000000u;
-            colours[1] = 0;
-            colours[2] = 0x80000000u;
-            colours[3] = 0;
-            width = (i32)(edge * 10240.0);
-            gradient_position = width;
+        if ((FadeSys.direction & 1) != 0) {
+            if (FadeSys.rate > 0.0f) {
+                edge = FadeSys.fade;
+                colours[0] = 0x80000000u;
+                colours[1] = 0;
+                colours[2] = 0x80000000u;
+                colours[3] = 0;
+                x = 0;
+                width = (i32)(edge * 10240.0f);
+                gradient_position = width;
+            } else {
+                edge = 1.0f - FadeSys.fade;
+                colours[0] = 0;
+                colours[1] = 0x80000000u;
+                colours[2] = 0;
+                colours[3] = 0x80000000u;
+                x = (i32)(edge * 10240.0f);
+                width -= x;
+                gradient_position = (i32)(edge * 10240.0f - 1024.0f);
+            }
         } else {
-            edge = 1.0f - FadeSys.fade;
-            colours[0] = 0;
-            colours[1] = 0x80000000u;
-            colours[2] = 0;
-            colours[3] = 0x80000000u;
-            x = (i32)(edge * 10240.0);
-            width -= x;
-            gradient_position = (i32)(edge * 10240.0 - 1024.0);
+            if (FadeSys.rate > 0.0f) {
+                edge = 1.0f - FadeSys.fade;
+                colours[0] = 0;
+                colours[1] = 0x80000000u;
+                colours[2] = 0;
+                colours[3] = 0x80000000u;
+                x = (i32)(edge * 10240.0f);
+                width -= x;
+                gradient_position = (i32)(edge * 10240.0f - 1024.0f);
+            } else {
+                edge = FadeSys.fade;
+                colours[0] = 0x80000000u;
+                colours[1] = 0;
+                colours[2] = 0x80000000u;
+                colours[3] = 0;
+                x = 0;
+                width = (i32)(edge * 10240.0f);
+                gradient_position = width;
+            }
         }
         NuRndrGradRect2di(gradient_position - 0x10, -0x10, 0x410, 0xe10, colours, FadeMtl2);
     } else if ((FadeSys.direction & 0xc) != 0) {
-        if (((FadeSys.direction & 4) != 0 && FadeSys.rate > 0.0f) ||
-            ((FadeSys.direction & 4) == 0 && !(FadeSys.rate > 0.0f))) {
-            edge = FadeSys.fade;
-            colours[0] = 0x80000000u;
-            colours[1] = 0x80000000u;
-            colours[2] = 0;
-            colours[3] = 0;
-            height = (i32)(edge * 3584.0);
-            gradient_position = height;
+        if ((FadeSys.direction & 4) != 0) {
+            if (FadeSys.rate > 0.0f) {
+                edge = FadeSys.fade;
+                colours[0] = 0x80000000u;
+                colours[1] = 0x80000000u;
+                colours[2] = 0;
+                colours[3] = 0;
+                y = 0;
+                height = (i32)(edge * 3584.0f);
+                gradient_position = height;
+            } else {
+                edge = 1.0f - FadeSys.fade;
+                colours[0] = 0;
+                colours[1] = 0;
+                colours[2] = 0x80000000u;
+                colours[3] = 0x80000000u;
+                y = (i32)(edge * 3584.0f);
+                height -= y;
+                gradient_position = (i32)(edge * 3584.0f - 358.0f);
+            }
         } else {
-            edge = 1.0f - FadeSys.fade;
-            colours[0] = 0;
-            colours[1] = 0;
-            colours[2] = 0x80000000u;
-            colours[3] = 0x80000000u;
-            y = (i32)(edge * 3584.0);
-            height -= y;
-            gradient_position = (i32)(edge * 3584.0 - 358.0);
+            if (FadeSys.rate > 0.0f) {
+                edge = 1.0f - FadeSys.fade;
+                colours[0] = 0;
+                colours[1] = 0;
+                colours[2] = 0x80000000u;
+                colours[3] = 0x80000000u;
+                y = (i32)(edge * 3584.0f);
+                height -= y;
+                gradient_position = (i32)(edge * 3584.0f - 358.0f);
+            } else {
+                edge = FadeSys.fade;
+                colours[0] = 0x80000000u;
+                colours[1] = 0x80000000u;
+                colours[2] = 0;
+                colours[3] = 0;
+                y = 0;
+                height = (i32)(edge * 3584.0f);
+                gradient_position = height;
+            }
         }
         NuRndrGradRect2di(-0x10, gradient_position - 0x10, 0x2810, 0x176, colours, FadeMtl2);
     }
@@ -234,63 +281,65 @@ extern "C" void __cdecl DrawFadeScreenWipe(void) {
 }
 
 extern "C" void __cdecl DrawPauseScreenWipe(void) {
-    i32 x = -0x20;
-    i32 y = -0xc;
-    i32 width = 0x2814;
-    i32 height = 0xe08;
-    f32 u0 = 0.0f;
-    f32 v0 = 0.0f;
-    f32 u1 = 1.0f;
-    f32 v1 = 1.0f;
-    f32 edge;
-    u32 colours[4];
+    i32 x, y, width, height;
+    f32 u0, v0, u1, v1;
 
     NuRndrBeginScene(1);
-    if ((FadeSys.direction & 3) != 0) {
-        if ((FadeSys.direction & 1) != 0) {
-            edge = 1.0f - FadeSys.fade;
-            colours[0] = 0x808080;
-            colours[1] = 0x80808080;
-            colours[2] = 0x808080;
-            colours[3] = 0x80808080;
-            x = (i32)(edge * 10260.0);
-            u0 = edge;
-            width -= x;
-            NuRndrGradRectUV2di(x - 0x402, y, 0x402, height, edge - (f64)0.1f, 0.0f, edge, 1.0f, colours,
-                                (NUMTL *)pause_rndr_mtl);
-        } else {
-            edge = FadeSys.fade;
-            colours[0] = 0x80808080;
-            colours[1] = 0x808080;
-            colours[2] = 0x80808080;
-            colours[3] = 0x808080;
-            width = (i32)(edge * 10260.0);
-            u1 = edge;
-            NuRndrGradRectUV2di(width - 0x20, y, 0x402, 0xe08, edge, 0.0f, edge + (f64)0.1f, 1.0f, colours,
-                                (NUMTL *)pause_rndr_mtl);
-        }
-    } else if ((FadeSys.direction & 0xc) != 0) {
-        if ((FadeSys.direction & 4) != 0) {
-            edge = 1.0f - FadeSys.fade;
-            colours[0] = 0x808080;
-            colours[1] = 0x808080;
-            colours[2] = 0x80808080;
-            colours[3] = 0x80808080;
-            y = (i32)(edge * 3592.0);
-            v0 = edge;
-            height -= y;
-            NuRndrGradRectUV2di(x, y - 0x167, 0x2814, 0x167, 0.0f, edge - (f64)0.1f, 1.0f, edge, colours,
-                                (NUMTL *)pause_rndr_mtl);
-        } else {
-            edge = FadeSys.fade;
-            colours[0] = 0x80808080;
-            colours[1] = 0x80808080;
-            colours[2] = 0x808080;
-            colours[3] = 0x808080;
-            height = (i32)(edge * 3592.0);
-            v1 = edge;
-            NuRndrGradRectUV2di(-0x20, height - 0xc, 0x2814, 0x167, 0.0f, edge, 1.0f, edge + (f64)0.1f, colours,
-                                (NUMTL *)pause_rndr_mtl);
+    x = -0x20;
+    u0 = 0.0f;
+    v0 = 0.0f;
+    u1 = 1.0f;
+    v1 = 1.0f;
+    y = -0xc;
+    width = 0x2814;
+    height = 0xe08;
+    {
+        u32 colours_left[4];
+        u32 colours_right[4];
+        u32 colours_top[4];
+        u32 colours_bottom[4];
+        if ((FadeSys.direction & 3) != 0) {
+            if ((FadeSys.direction & 1) != 0) {
+                colours_left[0] = 0x808080;
+                colours_left[1] = 0x80808080;
+                colours_left[2] = 0x808080;
+                colours_left[3] = 0x80808080;
+                x = (i32)((1.0f - FadeSys.fade) * 10260.0f);
+                u0 = 1.0f - FadeSys.fade;
+                width -= x;
+                NuRndrGradRectUV2di(x - 0x402, y, 0x402, height, u0 - 0.1f, 0.0f, u0, 1.0f, colours_left,
+                                    (NUMTL *)pause_rndr_mtl);
+            } else {
+                colours_right[0] = 0x80808080;
+                colours_right[1] = 0x808080;
+                colours_right[2] = 0x80808080;
+                colours_right[3] = 0x808080;
+                width = (i32)(FadeSys.fade * 10260.0f);
+                u1 = FadeSys.fade;
+                NuRndrGradRectUV2di(width - 0x20, -0xc, 0x402, 0xe08, u1, 0.0f, u1 + 0.1f, 1.0f, colours_right,
+                                    (NUMTL *)pause_rndr_mtl);
+            }
+        } else if ((FadeSys.direction & 0xc) != 0) {
+            if ((FadeSys.direction & 4) != 0) {
+                colours_top[0] = 0x808080;
+                colours_top[1] = 0x808080;
+                colours_top[2] = 0x80808080;
+                colours_top[3] = 0x80808080;
+                y = (i32)((1.0f - FadeSys.fade) * 3592.0f);
+                v0 = 1.0f - FadeSys.fade;
+                height -= y;
+                NuRndrGradRectUV2di(-0x20, y - 0x167, 0x2814, 0x167, 0.0f, v0 - 0.1f, 1.0f, v0, colours_top,
+                                    (NUMTL *)pause_rndr_mtl);
+            } else {
+                colours_bottom[0] = 0x80808080;
+                colours_bottom[1] = 0x80808080;
+                colours_bottom[2] = 0x808080;
+                colours_bottom[3] = 0x808080;
+                height = (i32)(FadeSys.fade * 3592.0f);
+                v1 = FadeSys.fade;
+                NuRndrGradRectUV2di(-0x20, height - 0xc, 0x2814, 0x167, 0.0f, v1, 1.0f, v1 + 0.1f, colours_bottom,
+                                    (NUMTL *)pause_rndr_mtl);
+            }
         }
     }
     NuRndrRectUV2di(x, y, width, height, u0, v0, u1, v1, (i32)0x80808080, (NUMTL *)pause_rndr_mtl);
@@ -748,86 +797,88 @@ extern "C" {
     f32 StatusAllMiniKitsCompleteYOffsetPc = -0.2f;
 }
 
+static __forceinline f32 StatusFabsPc(f32 value) {
+    union {
+        f32 value;
+        u32 bits;
+    } absolute;
+    absolute.value = value;
+    absolute.bits = absolute.bits & 0x7fffffffu;
+    return absolute.value;
+}
+
 void __cdecl AllMiniKits_LSW_Draw(STATUS_STAGE_s *stage, STATUSPACKET_s *packet, i32 current) {
     if (current != 0) {
         if (stage->field_0x14 <= 0)
             return;
-        volatile f32 title_alpha;
-        volatile f32 icon_alpha = 0.0f;
-        volatile f32 icon_y = 0.225f;
+        f32 icon_alpha = 0.0f;
+        f32 title_alpha;
+        i32 sliding = 1;
         if (stage->field_0x18 < 0.5f) {
-            title_alpha = (f64)stage->field_0x18 + (f64)stage->field_0x18;
-        } else if ((f64)stage->field_0x18 < 3.5) {
+            title_alpha = stage->field_0x18 + stage->field_0x18;
+        } else if (stage->field_0x18 < 3.5) {
             title_alpha = 1.0f;
         } else if (stage->field_0x18 < 4.0f) {
-            icon_alpha = ((f64)stage->field_0x18 - 3.5) * 2.0;
-            title_alpha = 1.0 - (f64)icon_alpha;
-            volatile i32 angle = (i32)((f64)icon_alpha * 16384.0);
-            icon_y = (1.0 - (f64)NuTrigTable[(angle >> 1) & 0x7fff]) * -0.5 + (f64)0.225f;
-        } else if (stage->field_0x18 < 6.0f) {
-            title_alpha = 0.0f;
-            icon_alpha = 1.0f;
-            volatile i32 angle = (i32)((f64)icon_alpha * 16384.0);
-            icon_y = (1.0 - (f64)NuTrigTable[(angle >> 1) & 0x7fff]) * -0.5 + (f64)0.225f;
-        } else if ((f64)stage->field_0x18 < 6.5) {
-            title_alpha = 0.0f;
-            icon_alpha = 1.0 - ((f64)stage->field_0x18 - 6.0) * 2.0;
+            icon_alpha = (stage->field_0x18 - 3.5) * 2.0;
+            title_alpha = 1.0f - icon_alpha;
         } else {
-            return;
+            title_alpha = 0.0f;
+            if (stage->field_0x18 < 6.0f) {
+                icon_alpha = 1.0f;
+            } else if (stage->field_0x18 < 6.5) {
+                icon_alpha = 1.0f - (stage->field_0x18 - 6.0) * 2.0;
+                sliding = 0;
+            } else {
+                return;
+            }
         }
         if (icon_alpha > 0.0f) {
-            DrawCharIcon(VehicleBoltId7f195cPc, 0.0f, icon_y, 0.0f, 0.4f, 0xa7, icon_alpha, icon_alpha, 1, NULL);
-            volatile i32 opacity = (i32)((f64)icon_alpha * 128.0);
+            DrawCharIcon(VehicleBoltId7f195cPc, 0.0f,
+                         (sliding ? (1.0f - NuTrigTable[((i32)(icon_alpha * 16384.0f) >> 1) & 0x7fff]) * -0.5f : 0.0f) +
+                             0.225f,
+                         0.0f, 0.4f, 0xa7, icon_alpha, icon_alpha, 1, NULL);
             SmartTextEx(TTab[CDataList[VehicleBoltId7f195cPc].name_id], 0.0f, -0.1f, 1.0f,
                         StatusAllMiniKitsCharacterTextScalePc, StatusAllMiniKitsCharacterTextScalePc,
                         StatusAllMiniKitsCharacterTextScalePc, 0, (u8)StatusRedPc, (u8)StatusGreenPc, (u8)StatusBluePc,
-                        1.7f, 1, NULL, 0, (u32)opacity);
+                        1.7f, 1, NULL, 0, (i32)(icon_alpha * 128.0f));
         }
         if (title_alpha > 0.0f) {
-            volatile u8 opacity = (u8)((f64)title_alpha * 128.0);
             Text3DEx(TTab[TextIdPc880740], 0.0f, 0.225f, 1.0f, StatusAllMiniKitsTitleScalePc,
                      StatusAllMiniKitsTitleScalePc, StatusAllMiniKitsTitleScalePc, 0, (u8)StatusRedPc,
-                     (u8)StatusGreenPc, (u8)StatusBluePc, opacity);
+                     (u8)StatusGreenPc, (u8)StatusBluePc, (u8)(title_alpha * 128.0f));
         }
         return;
     }
     if (stage->field_0x12 == 0)
         return;
-    volatile f32 alpha = getFinishedStatusAlpha(packet);
-    volatile i32 reveal_angle = (i32)((f64)alpha * 16384.0);
-    volatile f32 reveal = NuTrigTable[(reveal_angle >> 1) & 0x7fff];
-    volatile i32 opacity = (i32)((f64)alpha * 128.0);
-    volatile f32 timer = GameTimer.time_elapsed_mod_seconds;
+    f32 alpha = getFinishedStatusAlpha(packet);
+    f32 reveal = NuTrigTable[((i32)(alpha * 16384.0f) >> 1) & 0x7fff];
+    i32 opacity = (i32)(alpha * 128.0f);
+    f32 timer = GameTimer.time_elapsed_mod_seconds;
     if (timer > 0.25f)
         timer = 0.0f;
-    volatile i32 pulse_angle = (i32)((f64)timer * 32768.0 + 16384.0);
-    union {
-        f32 value;
-        u32 bits;
-    } pulse;
-    pulse.value = NuTrigTable[(pulse_angle >> 1) & 0x7fff];
-    pulse.bits &= 0x7fffffffu;
-    volatile f32 inverse_pulse = 1.0 - (f64)pulse.value;
-    volatile f32 pulse_scale = 1.0 + (f64)inverse_pulse;
-    if (Game.area_save[packet->area->index].minikit_count != 0) {
-        volatile f32 scale = (f64)StatusAllMiniKitsScalePc * (f64)reveal;
-        DrawStatusMiniKit(StatusAllMiniKitsXPc, StatusAllMiniKitsYPc, StatusAllMiniKitsZPc, scale, 1.0f,
-                          Game.area_save[packet->area->index].minikit_count, packet, 0.0f);
+    f32 pulse = StatusFabsPc(NuTrigTable[((i32)(timer * 32768.0f + 16384.0f) >> 1) & 0x7fff]);
+    volatile f32 inverse_pulse = 1.0f - pulse;
+    volatile f32 pulse_scale = 1.0f + inverse_pulse;
+    if (Game.area_save[packet->area->index].minikit_count > 0) {
+        DrawStatusMiniKit(StatusAllMiniKitsXPc, StatusAllMiniKitsYPc, StatusAllMiniKitsZPc,
+                          StatusAllMiniKitsScalePc * reveal, 1.0f, Game.area_save[packet->area->index].minikit_count,
+                          packet, 0.0f);
     } else {
-        volatile f32 size = (f64)StatusAllMiniKitsQuestionScalePc * (f64)pulse_scale;
-        volatile f32 y = (f64)StatusAllMiniKitsQuestionYOffsetPc + (f64)StatusAllMiniKitsYPc;
-        Text3DEx("?", StatusAllMiniKitsXPc, y, StatusAllMiniKitsZPc, size, size, size, 0, 255, 255, 255, opacity);
+        f32 size = StatusAllMiniKitsQuestionScalePc * pulse_scale;
+        Text3DEx("?", StatusAllMiniKitsXPc, StatusAllMiniKitsQuestionYOffsetPc + StatusAllMiniKitsYPc,
+                 StatusAllMiniKitsZPc, size, size, size, 0, 255, 255, 255, opacity);
     }
     if (Game.area_save[packet->area->index].minikit_count == packet->minikit_max) {
-        volatile f32 y = (f64)StatusAllMiniKitsCompleteYOffsetPc + (f64)StatusAllMiniKitsYPc;
-        Text3DEx("$", StatusAllMiniKitsXPc, y, 1.0f, StatusAllMiniKitsCompleteScalePc, StatusAllMiniKitsCompleteScalePc,
-                 StatusAllMiniKitsCompleteScalePc, 0, 255, 0, 127, opacity);
+        Text3DEx("$", StatusAllMiniKitsXPc, StatusAllMiniKitsCompleteYOffsetPc + StatusAllMiniKitsYPc, 1.0f,
+                 StatusAllMiniKitsCompleteScalePc, StatusAllMiniKitsCompleteScalePc, StatusAllMiniKitsCompleteScalePc,
+                 0, 255, 0, 127, opacity);
     } else {
         char text[60];
         sprintf(text, "%i/%i", Game.area_save[packet->area->index].minikit_count, packet->minikit_max);
-        volatile f32 y = (f64)StatusAllMiniKitsCountYOffsetPc + (f64)StatusAllMiniKitsYPc;
-        Text3DEx(text, StatusAllMiniKitsXPc, y, 1.0f, StatusAllMiniKitsCountScalePc, StatusAllMiniKitsCountScalePc,
-                 StatusAllMiniKitsCountScalePc, 0, 255, 0, 127, opacity);
+        Text3DEx(text, StatusAllMiniKitsXPc, StatusAllMiniKitsCountYOffsetPc + StatusAllMiniKitsYPc, 1.0f,
+                 StatusAllMiniKitsCountScalePc, StatusAllMiniKitsCountScalePc, StatusAllMiniKitsCountScalePc, 0, 255, 0,
+                 127, opacity);
     }
 }
 
@@ -978,174 +1029,163 @@ void __cdecl LevelComplete_LSW_Update(STATUS_STAGE_s *stage, STATUSPACKET_s *pac
 
 void __cdecl LevelComplete_LSW_Draw(STATUS_STAGE_s *stage, STATUSPACKET_s *packet, i32 current) {
     char text[256];
-    if (current == 0) {
-        if (stage->field_0x12 != 0) {
-            volatile f32 alpha = getFinishedStatusAlpha(packet);
-            if ((stage->type == 26 && packet->mission_state == 2) ||
-                (stage->type == 23 && packet->challenge_state == 2))
-                CoinTotal_Draw((i32)*packet->score, STATSPOSY, CoinTotalScale, 1, alpha, 255, 191, 0);
-        }
-        return;
-    }
-    if (stage->field_0x14 > 0) {
-        volatile f32 alpha;
-        if (stage->field_0x18 < 0.5f)
-            alpha = (f64)stage->field_0x18 * 2.0;
-        else if ((f64)stage->field_0x18 < 3.5)
-            alpha = 1.0f;
-        else
-            alpha = 1.0 - ((f64)stage->field_0x18 - 3.5) * 2.0;
-        if (alpha > 0.0f) {
-            volatile i32 opacity = (i32)((f64)alpha * 128.0);
-            if (stage->type == 14) {
-                sprintf(text, "%s", TTab[EDataList[packet->episode_id].text_id]);
-                volatile f32 scale = (f64)StatusTextScalePc * 0.75;
-                SmartTextEx(text, 0.0f, StatusTitleYPc, 1.0f, scale, scale, scale, 0, (u8)StatusRedPc,
-                            (u8)StatusGreenPc, (u8)StatusBluePc, 1.7f, 1, NULL, 0, (u32)opacity);
-                SmartTextEx(TTab[TextIdPc88073c], 0.0f, StatusSecondaryTitleYPc, 1.0f, StatusTextScalePc,
-                            StatusTextScalePc, StatusTextScalePc, 0, (u8)StatusRedPc, (u8)StatusGreenPc,
-                            (u8)StatusBluePc, 1.7f, 1, NULL, 0, (u32)opacity);
-            } else if (stage->type == 13) {
-                if ((PODRACE_ADATA != NULL && packet->area == PODRACE_ADATA) ||
-                    (BONUS_GUNSHIP_ADATA != NULL && packet->area == BONUS_GUNSHIP_ADATA)) {
-                    volatile f32 y = ((f64)StatusSecondaryTitleYPc + (f64)StatusTitleYPc) * 0.5;
-                    SmartTextEx(TTab[TextIdPc880728], 0.0f, y, 1.0f, StatusTextScalePc, StatusTextScalePc,
-                                StatusTextScalePc, 0, (u8)StatusRedPc, (u8)StatusGreenPc, (u8)StatusBluePc, 1.7f, 1,
-                                NULL, 0, (u32)opacity);
-                } else {
-                    SmartTextEx(TTab[TextIdPc880728], 0.0f, StatusTitleYPc, 1.0f, StatusTextScalePc, StatusTextScalePc,
-                                StatusTextScalePc, 0, (u8)StatusRedPc, (u8)StatusGreenPc, (u8)StatusBluePc, 1.7f, 1,
-                                NULL, 0, (u32)opacity);
-                    SmartTextEx(TTab[TextIdPc88072c], 0.0f, StatusSecondaryTitleYPc, 1.0f, StatusTextScalePc,
+    if (current != 0) {
+        if (stage->field_0x14 > 0) {
+            f32 alpha;
+            if (stage->field_0x18 < 0.5f)
+                alpha = stage->field_0x18 * 2.0f;
+            else if (stage->field_0x18 < 3.5)
+                alpha = 1.0f;
+            else
+                alpha = 1.0f - (stage->field_0x18 - 3.5) * 2.0f;
+            if (alpha > 0.0f) {
+                i32 opacity = (i32)(alpha * 128.0f);
+                if (stage->type == 14) {
+                    sprintf(text, "%s", TTab[EDataList[packet->episode_id].text_id]);
+                    f32 scale = StatusTextScalePc * 0.75f;
+                    SmartTextEx(text, 0.0f, StatusTitleYPc, 1.0f, scale, scale, scale, 0, (u8)StatusRedPc,
+                                (u8)StatusGreenPc, (u8)StatusBluePc, 1.7f, 1, NULL, 0, opacity);
+                    SmartTextEx(TTab[TextIdPc88073c], 0.0f, StatusSecondaryTitleYPc, 1.0f, StatusTextScalePc,
                                 StatusTextScalePc, StatusTextScalePc, 0, (u8)StatusRedPc, (u8)StatusGreenPc,
-                                (u8)StatusBluePc, 1.7f, 1, NULL, 0, (u32)opacity);
-                }
-            } else if (stage->type == 8) {
-                SmartTextEx(TTab[TextIdPc8810cc], 0.0f, StatusTitleYPc, 1.0f, StatusTextScalePc, StatusTextScalePc,
-                            StatusTextScalePc, 0, (u8)StatusRedPc, (u8)StatusGreenPc, (u8)StatusBluePc, 1.7f, 1, NULL,
-                            0, (u32)opacity);
-                SmartTextEx(TTab[TextIdPc8810d0], 0.0f, StatusSecondaryTitleYPc, 1.0f, StatusTextScalePc,
-                            StatusTextScalePc, StatusTextScalePc, 0, (u8)StatusRedPc, (u8)StatusGreenPc,
-                            (u8)StatusBluePc, 1.7f, 1, NULL, 0, (u32)opacity);
-            } else if (stage->type == 28) {
-                SmartTextEx(TTab[TextIdPc880710], 0.0f, 0.0f, 1.0f, StatusTextScalePc, StatusTextScalePc,
-                            StatusTextScalePc, 0, (u8)StatusRedPc, (u8)StatusGreenPc, (u8)StatusBluePc, 1.7f, 1, NULL,
-                            0, (u32)opacity);
-            } else if (stage->type == 23) {
-                i16 label;
-                i32 red, green, blue;
-                if (packet->challenge_state == 2) {
-                    label = TextIdPc8806e8;
-                    red = green = blue = 255;
+                                (u8)StatusBluePc, 1.7f, 1, NULL, 0, opacity);
+                } else if (stage->type == 13) {
+                    if ((PODRACE_ADATA != NULL && packet->area == PODRACE_ADATA) ||
+                        (BONUS_GUNSHIP_ADATA != NULL && packet->area == BONUS_GUNSHIP_ADATA)) {
+                        SmartTextEx(TTab[TextIdPc880728], 0.0f, (StatusSecondaryTitleYPc + StatusTitleYPc) * 0.5f, 1.0f,
+                                    StatusTextScalePc, StatusTextScalePc, StatusTextScalePc, 0, (u8)StatusRedPc,
+                                    (u8)StatusGreenPc, (u8)StatusBluePc, 1.7f, 1, NULL, 0, opacity);
+                    } else {
+                        SmartTextEx(TTab[TextIdPc880728], 0.0f, StatusTitleYPc, 1.0f, StatusTextScalePc,
+                                    StatusTextScalePc, StatusTextScalePc, 0, (u8)StatusRedPc, (u8)StatusGreenPc,
+                                    (u8)StatusBluePc, 1.7f, 1, NULL, 0, opacity);
+                        SmartTextEx(TTab[TextIdPc88072c], 0.0f, StatusSecondaryTitleYPc, 1.0f, StatusTextScalePc,
+                                    StatusTextScalePc, StatusTextScalePc, 0, (u8)StatusRedPc, (u8)StatusGreenPc,
+                                    (u8)StatusBluePc, 1.7f, 1, NULL, 0, opacity);
+                    }
+                } else if (stage->type == 8) {
+                    SmartTextEx(TTab[TextIdPc8810cc], 0.0f, StatusTitleYPc, 1.0f, StatusTextScalePc, StatusTextScalePc,
+                                StatusTextScalePc, 0, (u8)StatusRedPc, (u8)StatusGreenPc, (u8)StatusBluePc, 1.7f, 1,
+                                NULL, 0, opacity);
+                    SmartTextEx(TTab[TextIdPc8810d0], 0.0f, StatusSecondaryTitleYPc, 1.0f, StatusTextScalePc,
+                                StatusTextScalePc, StatusTextScalePc, 0, (u8)StatusRedPc, (u8)StatusGreenPc,
+                                (u8)StatusBluePc, 1.7f, 1, NULL, 0, opacity);
+                } else if (stage->type == 28) {
+                    SmartTextEx(TTab[TextIdPc880710], 0.0f, 0.0f, 1.0f, StatusTextScalePc, StatusTextScalePc,
+                                StatusTextScalePc, 0, (u8)StatusRedPc, (u8)StatusGreenPc, (u8)StatusBluePc, 1.7f, 1,
+                                NULL, 0, opacity);
+                } else if (stage->type == 23) {
+                    i16 label;
+                    u32 red, green, blue;
+                    if (packet->challenge_state == 2) {
+                        label = TextIdPc8806e8;
+                        red = green = blue = 255;
+                    } else {
+                        red = StatusRedPc;
+                        green = StatusGreenPc;
+                        blue = StatusBluePc;
+                        label = packet->challenge_state == 3 ? TextIdPc8806f4 : TextIdPc88100c;
+                    }
+                    SmartTextEx(TTab[label], 0.0f, 0.0f, 1.0f, StatusTextScalePc, StatusTextScalePc, StatusTextScalePc,
+                                0, red, green, blue, 1.7f, 1, NULL, 0, opacity);
+                } else if (stage->type == 26) {
+                    i16 label;
+                    u32 red, green, blue;
+                    if (packet->mission_state == 2) {
+                        label = TextIdPc8806e4;
+                        red = green = blue = 255;
+                    } else {
+                        red = StatusRedPc;
+                        green = StatusGreenPc;
+                        blue = StatusBluePc;
+                        label = TextIdPc8806f4;
+                    }
+                    SmartTextEx(TTab[label], 0.0f, 0.0f, 1.0f, StatusTextScalePc, StatusTextScalePc, StatusTextScalePc,
+                                0, red, green, blue, 1.7f, 1, NULL, 0, opacity);
                 } else {
-                    red = StatusRedPc;
-                    green = StatusGreenPc;
-                    blue = StatusBluePc;
-                    label = packet->challenge_state == 3 ? TextIdPc8806f4 : TextIdPc88100c;
+                    i16 label;
+                    if (stage->type == 29)
+                        label = TextIdPc881014;
+                    else if (stage->type == 30)
+                        label = TextIdPc88101c;
+                    else if (stage->type == 31)
+                        label = TextIdPc881024;
+                    else if (stage->type == 32)
+                        label = TextIdPc88102c;
+                    else if (stage->type == 33)
+                        label = TextIdPc881034;
+                    else
+                        label = TextIdPc88103c;
+                    SmartTextEx(TTab[label], 0.0f, StatusTitleYPc, 1.0f, StatusTextScalePc, StatusTextScalePc,
+                                StatusTextScalePc, 0, (u8)StatusRedPc, (u8)StatusGreenPc, (u8)StatusBluePc, 1.7f, 1,
+                                NULL, 0, opacity);
+                    SmartTextEx(TTab[TextIdPc880730], 0.0f, StatusSecondaryTitleYPc, 1.0f, StatusTextScalePc,
+                                StatusTextScalePc, StatusTextScalePc, 0, (u8)StatusRedPc, (u8)StatusGreenPc,
+                                (u8)StatusBluePc, 1.7f, 1, NULL, 0, opacity);
                 }
-                SmartTextEx(TTab[label], 0.0f, 0.0f, 1.0f, StatusTextScalePc, StatusTextScalePc, StatusTextScalePc, 0,
-                            (u8)red, (u8)green, (u8)blue, 1.7f, 1, NULL, 0, (u32)opacity);
-            } else if (stage->type == 26) {
-                i16 label;
-                i32 red, green, blue;
-                if (packet->mission_state == 2) {
-                    label = TextIdPc8806e4;
-                    red = green = blue = 255;
-                } else {
-                    red = StatusRedPc;
-                    green = StatusGreenPc;
-                    blue = StatusBluePc;
-                    label = TextIdPc8806f4;
-                }
-                SmartTextEx(TTab[label], 0.0f, 0.0f, 1.0f, StatusTextScalePc, StatusTextScalePc, StatusTextScalePc, 0,
-                            (u8)red, (u8)green, (u8)blue, 1.7f, 1, NULL, 0, (u32)opacity);
-            } else {
-                i16 label;
-                if (stage->type == 29)
-                    label = TextIdPc881014;
-                else if (stage->type == 30)
-                    label = TextIdPc88101c;
-                else if (stage->type == 31)
-                    label = TextIdPc881024;
-                else if (stage->type == 32)
-                    label = TextIdPc88102c;
-                else if (stage->type == 33)
-                    label = TextIdPc881034;
-                else
-                    label = TextIdPc88103c;
-                SmartTextEx(TTab[label], 0.0f, StatusTitleYPc, 1.0f, StatusTextScalePc, StatusTextScalePc,
-                            StatusTextScalePc, 0, (u8)StatusRedPc, (u8)StatusGreenPc, (u8)StatusBluePc, 1.7f, 1, NULL,
-                            0, (u32)opacity);
-                SmartTextEx(TTab[TextIdPc880730], 0.0f, StatusSecondaryTitleYPc, 1.0f, StatusTextScalePc,
-                            StatusTextScalePc, StatusTextScalePc, 0, (u8)StatusRedPc, (u8)StatusGreenPc,
-                            (u8)StatusBluePc, 1.7f, 1, NULL, 0, (u32)opacity);
             }
         }
-    }
-    if (stage->type != 23 && stage->type != 26)
-        return;
-    if (stage->field_0x14 == 0)
-        iconalphaoverride = 0.0f;
-    else {
-        volatile f32 fade_start = (f64)stage->field_0x1c - 0.5;
-        if (fade_start > stage->field_0x18)
-            iconalphaoverride = 0.0f;
-        else
-            iconalphaoverride = ((f64)stage->field_0x18 - (f64)fade_start) * 2.0;
-    }
-    if (stage->type == 26) {
-        if (packet->mission_state != 2)
+        if (stage->type != 23 && stage->type != 26)
             return;
-        if (packet->previous_gold_bricks < Game.gold_bricks)
+        if (stage->field_0x14 == 0) {
             iconalphaoverride = 0.0f;
-    } else if (packet->challenge_state != 2) {
-        return;
-    }
-    volatile f32 progress, slide;
-    if (stage->field_0x18 < 0.75f) {
-        progress = 0.0f;
-        slide = (f64)stage->field_0x18 / (f64)0.7f;
-    } else {
-        volatile f32 end = (f64)stage->field_0x1c - 0.75;
-        if (end > stage->field_0x18) {
-            progress = ((f64)stage->field_0x18 - 0.75) / ((f64)end - 0.75);
-            slide = 1.0f;
         } else {
-            progress = 1.0f;
-            slide = 1.0 - ((f64)stage->field_0x18 - (f64)end) / 0.75;
+            f32 fade_start = stage->field_0x1c - 0.5f;
+            if (stage->field_0x18 < fade_start)
+                iconalphaoverride = 0.0f;
+            else
+                iconalphaoverride = (stage->field_0x18 - fade_start) * 2.0f;
         }
-    }
-    volatile f32 coin_slide = slide;
-    if (stage->field_0x18 >= 0.75f)
-        coin_slide = 1.0f;
-    u32 score = packet->original_score;
-    volatile i32 amount = (i32)((f64)(u32)(packet->reward_score - score) * (f64)progress);
-    IncreaseScore(&score, (u64)(i64)amount, 0);
-    volatile i32 coin_angle = (i32)((f64)coin_slide * 16384.0);
-    volatile f32 coin_y =
-        ((f64)STATSPOSY - (f64)STATSPOS2YPc) * (f64)NuTrigTable[(coin_angle >> 1) & 0x7fff] + (f64)STATSPOS2YPc;
-    CoinTotal_Draw((i32)score, coin_y, CoinTotalScale, 1, 1.0f, 255, 191, 0);
-    if (stage->type == 26) {
-        volatile f32 remaining = (f64)(u16)packet->mission->time - (f64)packet->elapsed_time;
-        if (remaining < 0.0f)
-            remaining = 0.0f;
-        volatile f32 time = (1.0 - (f64)progress) * (f64)remaining;
-        Text_MakeTime(time, 0, 1, 1, text);
-        volatile i32 angle = (i32)((f64)slide * 16384.0);
-        volatile f32 y =
-            -(((f64)STATSPOSY - (f64)STATSPOS2YPc) * (f64)NuTrigTable[(angle >> 1) & 0x7fff] + (f64)STATSPOS2YPc);
-        Text3D(text, 0.0f, y, 1.0f, 0.6f, 0.6f, 0.6f, 0, 255, 191, 0);
-    }
-    if (stage->type == 23) {
-        volatile f32 remaining = (f64)(u16)packet->area->challenge_trial_time - (f64)packet->elapsed_time;
-        if (remaining < 0.0f)
-            remaining = 0.0f;
-        volatile f32 time = (1.0 - (f64)progress) * (f64)remaining;
-        Text_MakeTime(time, 0, 1, 1, text);
-        volatile i32 angle = (i32)((f64)slide * 16384.0);
-        volatile f32 y =
-            -(((f64)STATSPOSY - (f64)STATSPOS2YPc) * (f64)NuTrigTable[(angle >> 1) & 0x7fff] + (f64)STATSPOS2YPc);
-        Text3D(text, 0.0f, y, 1.0f, 0.6f, 0.6f, 0.6f, 0, 255, 191, 0);
+        if (stage->type == 26 && packet->mission_state == 2) {
+            if (Game.gold_bricks > packet->previous_gold_bricks)
+                iconalphaoverride = 0.0f;
+        } else if (stage->type != 23 || packet->challenge_state != 2) {
+            return;
+        }
+        f32 progress, slide;
+        if (stage->field_0x18 < 0.75f) {
+            slide = stage->field_0x18 / 0.7f;
+            progress = 0.0f;
+        } else {
+            f32 end = stage->field_0x1c - 0.75f;
+            if (stage->field_0x18 < end) {
+                slide = 1.0f;
+                progress = (stage->field_0x18 - 0.75f) / (end - 0.75f);
+            } else {
+                slide = 1.0f - (stage->field_0x18 - end) / 0.75f;
+                progress = 1.0f;
+            }
+        }
+        f32 coin_slide = slide;
+        if (stage->field_0x18 >= 0.75f)
+            coin_slide = 1.0f;
+        u32 score = packet->original_score;
+        IncreaseScore(&score, (i32)((u32)(packet->reward_score - packet->original_score) * progress), 0);
+        CoinTotal_Draw((i32)score,
+                       (STATSPOSY - STATSPOS2YPc) * NuTrigTable[((i32)(coin_slide * 16384.0f) >> 1) & 0x7fff] +
+                           STATSPOS2YPc,
+                       CoinTotalScale, 1, 1.0f, 255, 191, 0);
+        if (stage->type == 26) {
+            f32 remaining = (u16)packet->mission->time - packet->elapsed_time;
+            if (remaining < 0.0f)
+                remaining = 0.0f;
+            Text_MakeTime((1.0f - progress) * remaining, 0, 1, 1, text);
+            Text3D(text, 0.0f,
+                   -((STATSPOSY - STATSPOS2YPc) * NuTrigTable[((i32)(slide * 16384.0f) >> 1) & 0x7fff] + STATSPOS2YPc),
+                   1.0f, 0.6f, 0.6f, 0.6f, 0, 255, 191, 0);
+        }
+        if (stage->type == 23) {
+            f32 remaining = (u16)packet->area->challenge_trial_time - packet->elapsed_time;
+            if (remaining < 0.0f)
+                remaining = 0.0f;
+            Text_MakeTime((1.0f - progress) * remaining, 0, 1, 1, text);
+            Text3D(text, 0.0f,
+                   -((STATSPOSY - STATSPOS2YPc) * NuTrigTable[((i32)(slide * 16384.0f) >> 1) & 0x7fff] + STATSPOS2YPc),
+                   1.0f, 0.6f, 0.6f, 0.6f, 0, 255, 191, 0);
+        }
+    } else if (stage->field_0x12 != 0) {
+        f32 alpha = getFinishedStatusAlpha(packet);
+        if ((stage->type == 26 && packet->mission_state == 2) || (stage->type == 23 && packet->challenge_state == 2))
+            CoinTotal_Draw((i32)*packet->score, STATSPOSY, CoinTotalScale, 1, alpha, 255, 191, 0);
     }
 }
 
@@ -1759,75 +1799,69 @@ void __cdecl CollectCharcters_Draw(STATUS_STAGE_s *stage, STATUSPACKET_s *packet
     COLLECTION_BUILD_PC *collection = (packet->field_0xb0 & 0x80) != 0 ? &VehicleCollectionPc : &CharacterCollectionPc;
     if (current == 0)
         return;
-    if (stage->field_0x14 == 0) {
-        union {
-            f32 value;
-            u32 bits;
-        } absolute_y;
-        absolute_y.value = StatusCollectionYPc;
-        absolute_y.bits &= 0x7fffffffu;
-        volatile f32 start_y = -((1.0 - (f64)absolute_y.value) + 1.0);
-        volatile f32 time = stage->field_0x18;
-        volatile f32 duration = stage->field_0x1c;
-        volatile f32 ratio = 0.0f;
-        if (time != 0.0f && duration != 0.0f)
-            ratio = (f64)time / duration;
-        volatile i32 angle = (i32)((f64)ratio * 16384.0);
-        volatile f32 y = ((f64)StatusCollectionYPc - start_y) * (f64)NuTrigTable[(angle >> 1) & 0x7fff] + start_y;
-        Collection_DrawPc(collection, 0.0f, y, collection->scale, NULL, 1.0f, 0);
-        return;
-    }
-    i32 id = StatusNewCharacterIdsPc[(i32)((u32)stage->field_0x14 - 1u)];
-    if (id == -1)
-        return;
-    Collection_DrawPc(collection, 0.0f, StatusCollectionYPc, collection->scale, NULL, 1.0f, 0);
-    volatile f32 x = 0.0f;
-    volatile f32 y = StatusCollectionIconYPc;
-    volatile f32 size = 0.4f;
-    volatile f32 icon_alpha = 1.0f;
-    volatile f32 text_alpha;
-    if (stage->field_0x18 < 0.5f) {
-        if (stage->field_0x18 > 0.25f && StatusCollectionAppearSoundPlayedPc == 0) {
-            PlaySfx("Char_Icon_App", NULL);
-            StatusCollectionAppearSoundPlayedPc = 1;
+    if (stage->field_0x14 != 0) {
+        i32 id = StatusNewCharacterIdsPc[(i32)((u32)stage->field_0x14 - 1u)];
+        if (id == -1)
+            return;
+        Collection_DrawPc(collection, 0.0f, StatusCollectionYPc, collection->scale, NULL, 1.0f, 0);
+        f32 x = 0.0f;
+        f32 y = StatusCollectionIconYPc;
+        f32 size = 0.4f;
+        f32 icon_alpha;
+        f32 text_alpha;
+        f32 target_x, target_y;
+        if (stage->field_0x18 < 0.5f) {
+            if (stage->field_0x18 > 0.25f && StatusCollectionAppearSoundPlayedPc == 0) {
+                PlaySfx("Char_Icon_App", NULL);
+                StatusCollectionAppearSoundPlayedPc = 1;
+            }
+            target_x = 0.0f;
+            f32 time = stage->field_0x18 + stage->field_0x18;
+            icon_alpha = time;
+            text_alpha = NuTrigTable[((i32)(time * 16384.0f) >> 1) & 0x7fff];
+        } else if (stage->field_0x18 < 2.0f) {
+            text_alpha = 1.0f;
+            StatusCollectionAppearSoundPlayedPc = 0;
+            StatusCollectionMoveSoundPlayedPc = 0;
+            icon_alpha = 1.0f;
+        } else {
+            f32 time = stage->field_0x18 - 2.0f;
+            icon_alpha = 1.0f;
+            text_alpha = 1.0f - NuTrigTable[((i32)(time * 16384.0f) >> 1) & 0x7fff];
+            if (StatusCollectionMoveSoundPlayedPc == 0) {
+                PlaySfx("Char_Icon_Slide", NULL);
+                StatusCollectionMoveSoundPlayedPc = 1;
+            }
+            time = 1.0f - (NuTrigTable[((i32)(time * 32768.0f + 16384.0f) >> 1) & 0x7fff] + 1.0f) * 0.5f;
+            if (InCollectList_Index(id, collection->list, collection->count) != -1) {
+                Collection_GetPos((COLLECTION_s *)collection, id, &target_x, &target_y);
+                f32 target_size = collection->scale * MissionPlayerIconSizePc;
+                if (Game_OptionsSave != NULL && Game_OptionsSave->widescreen != 0)
+                    target_size *= 0.875f;
+                x = (target_x - 0.0f) * time + 0.0f;
+                y = (target_y - y) * time + y;
+                size = (target_size - 0.4f) * time + 0.4f;
+            }
         }
-        volatile f32 time = (f64)stage->field_0x18 + stage->field_0x18;
-        icon_alpha = time;
-        volatile i32 angle = (i32)((f64)time * 16384.0);
-        text_alpha = NuTrigTable[(angle >> 1) & 0x7fff];
-        x = 0.0f;
-    } else if (stage->field_0x18 < 2.0f) {
-        text_alpha = 1.0f;
-        StatusCollectionAppearSoundPlayedPc = 0;
-        StatusCollectionMoveSoundPlayedPc = 0;
-        icon_alpha = 1.0f;
+        DrawCharIcon(id, x, y, 0.0f, size, 0xa7, icon_alpha, icon_alpha, 1, NULL);
+        SmartTextEx(TTab[CDataList[id].name_id], 0.0f, StatusCollectionTextYPc, 1.0f,
+                    StatusAllMiniKitsCharacterTextScalePc, StatusAllMiniKitsCharacterTextScalePc,
+                    StatusAllMiniKitsCharacterTextScalePc, 0, (u8)StatusRedPc, (u8)StatusGreenPc, (u8)StatusBluePc,
+                    1.7f, 1, NULL, 0, (i32)(text_alpha * 128.0f));
     } else {
-        volatile f32 time = (f64)stage->field_0x18 - 2.0;
-        icon_alpha = 1.0f;
-        volatile i32 fade_angle = (i32)((f64)time * 16384.0);
-        text_alpha = 1.0 - (f64)NuTrigTable[(fade_angle >> 1) & 0x7fff];
-        if (StatusCollectionMoveSoundPlayedPc == 0) {
-            PlaySfx("Char_Icon_Slide", NULL);
-            StatusCollectionMoveSoundPlayedPc = 1;
-        }
-        volatile i32 angle = (i32)((f64)time * 32768.0 + 16384.0);
-        volatile f32 blend = 1.0 - ((f64)NuTrigTable[(angle >> 1) & 0x7fff] + 1.0) * 0.5;
-        if (InCollectList_Index(id, collection->list, collection->count) != -1) {
-            f32 target_x, target_y;
-            Collection_GetPos((COLLECTION_s *)collection, id, &target_x, &target_y);
-            volatile f32 target_size = (f64)collection->scale * MissionPlayerIconSizePc;
-            if (Game_OptionsSave != NULL && Game_OptionsSave->widescreen != 0)
-                target_size = (f64)target_size * 0.875;
-            x = ((f64)target_x - 0.0) * (f64)blend + 0.0;
-            y = ((f64)target_y - y) * (f64)blend + y;
-            size = ((f64)target_size - (f64)0.4f) * (f64)blend + (f64)0.4f;
-        }
+        f32 start_y = -((1.0f - StatusFabsPc(StatusCollectionYPc)) + 1.0f);
+        f32 time = stage->field_0x18;
+        f32 duration = stage->field_0x1c;
+        f32 ratio;
+        if (time != 0.0f && duration != 0.0f)
+            ratio = time / duration;
+        else
+            ratio = 0.0f;
+        Collection_DrawPc(collection, 0.0f,
+                          (StatusCollectionYPc - start_y) * NuTrigTable[((i32)(ratio * 16384.0f) >> 1) & 0x7fff] +
+                              start_y,
+                          collection->scale, NULL, 1.0f, 0);
     }
-    DrawCharIcon(id, x, y, 0.0f, size, 0xa7, icon_alpha, icon_alpha, 1, NULL);
-    volatile i32 opacity = (i32)((f64)text_alpha * 128.0);
-    SmartTextEx(TTab[CDataList[id].name_id], 0.0f, StatusCollectionTextYPc, 1.0f, StatusAllMiniKitsCharacterTextScalePc,
-                StatusAllMiniKitsCharacterTextScalePc, StatusAllMiniKitsCharacterTextScalePc, 0, (u8)StatusRedPc,
-                (u8)StatusGreenPc, (u8)StatusBluePc, 1.7f, 1, NULL, 0, (u32)opacity);
 }
 
 void __cdecl CollectCharactersOff_Draw(STATUS_STAGE_s *stage, STATUSPACKET_s *packet, i32 current) {
