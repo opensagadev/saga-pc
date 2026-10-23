@@ -820,179 +820,118 @@ extern "C" {
         }
         return 0;
     }
+#define TERRAIN_HP_FACE(start, end, origin, normal, edge_a, edge_b, compare, steep_shift, early_time)                  \
+    contact_point.x =                                                                                                  \
+        query->local_start.x - surface->normals[normal].x * query->collision_radius - surface->vertices[origin].x;     \
+    contact_point.y =                                                                                                  \
+        query->local_start.y - surface->normals[normal].y * query->collision_radius - surface->vertices[origin].y;     \
+    contact_point.z =                                                                                                  \
+        query->local_start.z - surface->normals[normal].z * query->collision_radius - surface->vertices[origin].z;     \
+    test_face = 1;                                                                                                     \
+    if ((start) > 0.0f && (end) < 0.0f) {                                                                              \
+        candidate_time = (start) / ((start) - (end));                                                                  \
+        contact_point.x += query->movement.x * candidate_time;                                                         \
+        contact_point.y += query->movement.y * candidate_time;                                                         \
+        contact_point.z += query->movement.z * candidate_time;                                                         \
+    } else if ((start) <= 0.0f && (end) <= 0.0f && (start) >= -query->collision_radius &&                              \
+               (end) >= -query->collision_radius) {                                                                    \
+        candidate_time = (start);                                                                                      \
+        contact_point.x -= (start) * surface->normals[normal].x;                                                       \
+        contact_point.y -= (start) * surface->normals[normal].y;                                                       \
+        contact_point.z -= (start) * surface->normals[normal].z;                                                       \
+    } else {                                                                                                           \
+        test_face = 0;                                                                                                 \
+    }                                                                                                                  \
+    if (test_face != 0 &&                                                                                              \
+        InsidePolLines(contact_point.x, contact_point.y, contact_point.z,                                              \
+                       surface->vertices[edge_a].x - surface->vertices[origin].x,                                      \
+                       surface->vertices[edge_a].y - surface->vertices[origin].y,                                      \
+                       surface->vertices[edge_a].z - surface->vertices[origin].z,                                      \
+                       surface->vertices[edge_b].x - surface->vertices[origin].x,                                      \
+                       surface->vertices[edge_b].y - surface->vertices[origin].y,                                      \
+                       surface->vertices[edge_b].z - surface->vertices[origin].z, &surface->normals[normal]) != 0 &&   \
+        candidate_time compare query->hit_time) {                                                                      \
+        if (early_time) {                                                                                              \
+            query->hit_time = candidate_time;                                                                          \
+        }                                                                                                              \
+        if ((start) > 0.0f) {                                                                                          \
+            query->hit_type = TERRAIN_HIT_TYPE_FACE;                                                                   \
+        } else {                                                                                                       \
+            query->hit_type = TERRAIN_HIT_TYPE_FACE | TERRAIN_HIT_TYPE_SECOND_NORMAL;                                  \
+        }                                                                                                              \
+        collision_found = 1;                                                                                           \
+        if (!(early_time)) {                                                                                           \
+            query->hit_time = candidate_time;                                                                          \
+        }                                                                                                              \
+        query->movement_normal.x = surface->normals[normal].x;                                                         \
+        query->movement_normal.y = surface->normals[normal].y;                                                         \
+        query->movement_normal.z = surface->normals[normal].z;                                                         \
+        query->shape_adjusted = (surface->normal_flags >> (steep_shift)) & 1;                                          \
+    }
+#define TERRAIN_HP_EDGE(first, second, keep, edge, flags_expr)                                                         \
+    if (CheckCylinder(first, second, &vertex_mask, keep) != 0) {                                                       \
+        TerrainQuery_s *edge_query = (TerrainQuery_s *)TerI;                                                           \
+        edge_query->hit_edge = edge;                                                                                   \
+        collision_found |= 1;                                                                                          \
+        edge_query->shape_adjusted = (flags_expr) & 1;                                                                 \
+    }
+#define TERRAIN_HP_VERTEX(index, flags_expr)                                                                           \
+    if ((vertex_mask & (1 << (index))) != 0) {                                                                         \
+        const i32 vertex_hit = CheckSphere(index);                                                                     \
+        query = (TerrainQuery_s *)TerI;                                                                                \
+        if (vertex_hit != 0) {                                                                                         \
+            collision_found = 1;                                                                                       \
+            query->shape_adjusted = (flags_expr) & 1;                                                                  \
+        }                                                                                                              \
+    }
     i32 HitPoly(f32 primary_start, f32 primary_end, f32 secondary_start, f32 secondary_end, TERRAIN_SHAPE *surface) {
         TerrainQuery_s *query = (TerrainQuery_s *)TerI;
-        const f32 radius = query->collision_radius;
-        const f32 no_secondary_normal = 65536.0f;
-
         i32 collision_found = 0;
-        f32 candidate_time = 0.0f;
+        i32 test_face;
+        f32 candidate_time;
         NUVEC contact_point;
 
-        const NUVEC &primary_origin = surface->vertices[0];
-        NUVEC &primary_normal = surface->normals[0];
-        contact_point.x = query->local_start.x - radius * primary_normal.x - primary_origin.x;
-        contact_point.y = query->local_start.y - radius * primary_normal.y - primary_origin.y;
-        contact_point.z = query->local_start.z - radius * primary_normal.z - primary_origin.z;
-
-        i32 test_primary_face = 0;
-        if (primary_start > 0.0f && primary_end < 0.0f) {
-            candidate_time = primary_start / (primary_start - primary_end);
-            contact_point.x += query->movement.x * candidate_time;
-            contact_point.y += query->movement.y * candidate_time;
-            contact_point.z += query->movement.z * candidate_time;
-            test_primary_face = 1;
-        } else if (primary_start <= 0.0f && primary_end <= 0.0f && primary_start >= -radius && primary_end >= -radius) {
-            candidate_time = primary_start;
-            const f32 projection_distance = -primary_start;
-            contact_point.x += primary_normal.x * projection_distance;
-            contact_point.y += primary_normal.y * projection_distance;
-            contact_point.z += primary_normal.z * projection_distance;
-            test_primary_face = 1;
+        TERRAIN_HP_FACE(primary_start, primary_end, 0, 0, 1, 2, <=, 0, 0)
+        if (surface->normals[1].y < 65536.0f) {
+            TERRAIN_HP_FACE(secondary_start, secondary_end, 3, 1, 2, 1, <, 1, 1)
         }
 
-        if (test_primary_face != 0) {
-            const NUVEC edge_0_1 = {
-                surface->vertices[1].x - primary_origin.x,
-                surface->vertices[1].y - primary_origin.y,
-                surface->vertices[1].z - primary_origin.z,
-            };
-            const NUVEC edge_0_2 = {
-                surface->vertices[2].x - primary_origin.x,
-                surface->vertices[2].y - primary_origin.y,
-                surface->vertices[2].z - primary_origin.z,
-            };
-            if (InsidePolLines(contact_point.x, contact_point.y, contact_point.z, edge_0_1.x, edge_0_1.y, edge_0_1.z,
-                               edge_0_2.x, edge_0_2.y, edge_0_2.z, &primary_normal) != 0 &&
-                candidate_time <= query->hit_time) {
-                query->hit_time = candidate_time;
-                query->hit_type = primary_start > 0.0f ? TERRAIN_HIT_TYPE_FACE
-                                                       : TERRAIN_HIT_TYPE_FACE | TERRAIN_HIT_TYPE_SECOND_NORMAL;
-                query->movement_normal = primary_normal;
-                query->shape_adjusted = (surface->normal_flags & TERRAIN_SHAPE_NORMAL_FLAG_FIRST_STEEP) != 0;
-                collision_found = 1;
-            }
-        }
-
-        NUVEC &secondary_normal = surface->normals[1];
-        if (secondary_normal.y < no_secondary_normal) {
-            const NUVEC &secondary_origin = surface->vertices[3];
-            contact_point.x = query->local_start.x - radius * secondary_normal.x - secondary_origin.x;
-            contact_point.y = query->local_start.y - radius * secondary_normal.y - secondary_origin.y;
-            contact_point.z = query->local_start.z - radius * secondary_normal.z - secondary_origin.z;
-
-            i32 test_secondary_face = 0;
-            if (secondary_start > 0.0f && secondary_end < 0.0f) {
-                candidate_time = secondary_start / (secondary_start - secondary_end);
-                contact_point.x += query->movement.x * candidate_time;
-                contact_point.y += query->movement.y * candidate_time;
-                contact_point.z += query->movement.z * candidate_time;
-                test_secondary_face = 1;
-            } else if (secondary_start <= 0.0f && secondary_end <= 0.0f && secondary_start >= -radius &&
-                       secondary_end >= -radius) {
-                candidate_time = secondary_start;
-                const f32 projection_distance = -secondary_start;
-                contact_point.x += secondary_normal.x * projection_distance;
-                contact_point.y += secondary_normal.y * projection_distance;
-                contact_point.z += secondary_normal.z * projection_distance;
-                test_secondary_face = 1;
-            }
-
-            if (test_secondary_face != 0) {
-                const NUVEC edge_3_2 = {
-                    surface->vertices[2].x - secondary_origin.x,
-                    surface->vertices[2].y - secondary_origin.y,
-                    surface->vertices[2].z - secondary_origin.z,
-                };
-                const NUVEC edge_3_1 = {
-                    surface->vertices[1].x - secondary_origin.x,
-                    surface->vertices[1].y - secondary_origin.y,
-                    surface->vertices[1].z - secondary_origin.z,
-                };
-                if (InsidePolLines(contact_point.x, contact_point.y, contact_point.z, edge_3_2.x, edge_3_2.y,
-                                   edge_3_2.z, edge_3_1.x, edge_3_1.y, edge_3_1.z, &secondary_normal) != 0 &&
-                    candidate_time < query->hit_time) {
-                    query->hit_time = candidate_time;
-                    query->hit_type = secondary_start > 0.0f ? TERRAIN_HIT_TYPE_FACE
-                                                             : TERRAIN_HIT_TYPE_FACE | TERRAIN_HIT_TYPE_SECOND_NORMAL;
-                    query->movement_normal = secondary_normal;
-                    query->shape_adjusted = (surface->normal_flags & TERRAIN_SHAPE_NORMAL_FLAG_SECOND_STEEP) != 0;
-                    collision_found = 1;
-                }
-            }
-        }
-
-        if (radius != 0.0f) {
+        if (query->collision_radius != 0.0f) {
             query->working_surface = surface;
             i32 vertex_mask = 0xf;
             DeRotateTerrain(surface);
 
-            if (primary_start >= -radius) {
-                if (CheckCylinder(0, 1, &vertex_mask, 0xc) != 0) {
-                    query = (TerrainQuery_s *)TerI;
-                    query->hit_edge = TERRAIN_HIT_EDGE_0_1;
-                    query->shape_adjusted = (surface->normal_flags & TERRAIN_SHAPE_NORMAL_FLAG_FIRST_STEEP) != 0;
-                    collision_found = 1;
-                }
-                if (CheckCylinder(2, 0, &vertex_mask, 0xa) != 0) {
-                    query = (TerrainQuery_s *)TerI;
-                    query->hit_edge = TERRAIN_HIT_EDGE_2_0;
-                    query->shape_adjusted = (surface->normal_flags & TERRAIN_SHAPE_NORMAL_FLAG_FIRST_STEEP) != 0;
-                    collision_found = 1;
-                }
+            if (primary_start >= -query->collision_radius) {
+                TERRAIN_HP_EDGE(0, 1, 0xc, TERRAIN_HIT_EDGE_0_1, surface->normal_flags)
+                TERRAIN_HP_EDGE(2, 0, 0xa, TERRAIN_HIT_EDGE_2_0, surface->normal_flags)
             }
-
-            if (CheckCylinder(1, 2, &vertex_mask, 0x9) != 0) {
-                query = (TerrainQuery_s *)TerI;
+            i32 hit = CheckCylinder(1, 2, &vertex_mask, 0x9);
+            query = (TerrainQuery_s *)TerI;
+            if (hit != 0) {
                 query->hit_edge = TERRAIN_HIT_EDGE_1_2;
-                query->shape_adjusted = (surface->normal_flags & (TERRAIN_SHAPE_NORMAL_FLAG_FIRST_STEEP |
-                                                                  TERRAIN_SHAPE_NORMAL_FLAG_SECOND_STEEP)) != 0;
-                collision_found = 1;
+                collision_found |= 1;
+                query->shape_adjusted = ((surface->normal_flags >> 1) | surface->normal_flags) & 1;
             }
 
-            if (secondary_normal.y < no_secondary_normal && secondary_start >= -radius) {
-                if (CheckCylinder(1, 3, &vertex_mask, 0x5) != 0) {
-                    query = (TerrainQuery_s *)TerI;
-                    query->hit_edge = TERRAIN_HIT_EDGE_1_3;
-                    query->shape_adjusted = (surface->normal_flags & TERRAIN_SHAPE_NORMAL_FLAG_SECOND_STEEP) != 0;
-                    collision_found = 1;
-                }
-                if (CheckCylinder(3, 2, &vertex_mask, 0x3) != 0) {
-                    query = (TerrainQuery_s *)TerI;
+            if (surface->normals[1].y < 65536.0f && secondary_start >= -query->collision_radius) {
+                TERRAIN_HP_EDGE(1, 3, 0x5, TERRAIN_HIT_EDGE_1_3, surface->normal_flags >> 1)
+                hit = CheckCylinder(3, 2, &vertex_mask, 0x3);
+                query = (TerrainQuery_s *)TerI;
+                if (hit != 0) {
                     query->hit_edge = TERRAIN_HIT_EDGE_3_2;
-                    query->shape_adjusted = (surface->normal_flags & TERRAIN_SHAPE_NORMAL_FLAG_SECOND_STEEP) != 0;
-                    collision_found = 1;
+                    collision_found |= 1;
+                    query->shape_adjusted = (surface->normal_flags >> 1) & 1;
                 }
-                if ((vertex_mask & (1 << 3)) != 0 && CheckSphere(3) != 0) {
-                    ((TerrainQuery_s *)TerI)->shape_adjusted =
-                        (surface->normal_flags & TERRAIN_SHAPE_NORMAL_FLAG_SECOND_STEEP) != 0;
-                    collision_found = 1;
-                }
+                TERRAIN_HP_VERTEX(3, surface->normal_flags >> 1)
             }
 
-            if (primary_start >= -radius) {
-                if ((vertex_mask & (1 << 0)) != 0 && CheckSphere(0) != 0) {
-                    ((TerrainQuery_s *)TerI)->shape_adjusted =
-                        (surface->normal_flags & TERRAIN_SHAPE_NORMAL_FLAG_FIRST_STEEP) != 0;
-                    collision_found = 1;
-                }
-                if ((vertex_mask & (1 << 1)) != 0 && CheckSphere(1) != 0) {
-                    ((TerrainQuery_s *)TerI)->shape_adjusted =
-                        (surface->normal_flags &
-                         (TERRAIN_SHAPE_NORMAL_FLAG_FIRST_STEEP | TERRAIN_SHAPE_NORMAL_FLAG_SECOND_STEEP)) != 0;
-                    collision_found = 1;
-                }
+            if (primary_start >= -query->collision_radius) {
+                TERRAIN_HP_VERTEX(0, surface->normal_flags)
+                TERRAIN_HP_VERTEX(1, (surface->normal_flags >> 1) | surface->normal_flags)
             }
-
-            if ((vertex_mask & (1 << 2)) != 0 && CheckSphere(2) != 0) {
-                ((TerrainQuery_s *)TerI)->shape_adjusted =
-                    (surface->normal_flags &
-                     (TERRAIN_SHAPE_NORMAL_FLAG_FIRST_STEEP | TERRAIN_SHAPE_NORMAL_FLAG_SECOND_STEEP)) != 0;
-                collision_found = 1;
-            }
+            TERRAIN_HP_VERTEX(2, (surface->normal_flags >> 1) | surface->normal_flags)
         }
 
-        query = (TerrainQuery_s *)TerI;
         if (collision_found != 0) {
             query->surface = surface;
         }
@@ -1002,6 +941,9 @@ extern "C" {
         }
         return collision_found;
     }
+#undef TERRAIN_HP_FACE
+#undef TERRAIN_HP_EDGE
+#undef TERRAIN_HP_VERTEX
     i32 HitWallSpline() {
         f32 hit = 0.0f;
         if (WallSplCount == 0)
