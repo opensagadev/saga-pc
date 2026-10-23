@@ -785,36 +785,43 @@ static void ZipUps_Draw(WORLDINFO *world, void *unused, f32 time) {
 
 void InitRopeMtl(char *name, VARIPTR *buffer, VARIPTR *buffer_end) {
     char path[64] = "stuff\\";
-    if (name == NULL) {
-        ropemtl = NULL;
-        return;
-    }
-    ropemtl = NuMtlCreate3D(1);
-    ((ZIPUP_ROPE_MATERIAL_PC *)ropemtl)->opacity = 1.0f;
-    ropemtl->attribs.unknown_2_1_2 = 0;
-    ropemtl->attribs.unknown_1_1_2 = 0;
-    ropemtl->attribs.unknown_1_4_8 = 0;
-    ropemtl->attribs.z_mode = 0;
-    ropemtl->attribs.alpha_mode = 0;
-    ropemtl->attribs.filter_mode = 1;
-    NuStrCat(path, name);
-    buffer->addr = ((buffer->addr + 15) & ~15u);
-    ropemtl->texture_id = NuTexReadPc(path, buffer, *buffer_end);
-    if (ropemtl->texture_id == 0) {
-        NuMtlDestroy(ropemtl);
-        ropemtl = NULL;
+    if (name != NULL) {
+        ropemtl = NuMtlCreate3D(1);
+        ropemtl->attribs.unknown_1_1_2 = 0;
+        ropemtl->attribs.unknown_1_4_8 = 0;
+        ((ZIPUP_ROPE_MATERIAL_PC *)ropemtl)->opacity = 1.0f;
+        ropemtl->attribs.z_mode = 0;
+        ropemtl->attribs.alpha_mode = 0;
+        ropemtl->attribs.filter_mode = 1;
+        ropemtl->attribs.unknown_2_1_2 = 0;
+        NuStrCat(path, name);
+        buffer->addr = ((buffer->addr + 15) & ~15u);
+        ropemtl->texture_id = NuTexReadPc(path, buffer, *buffer_end);
+        if (ropemtl->texture_id == 0) {
+            NuMtlDestroy(ropemtl);
+            ropemtl = NULL;
+        } else {
+            NuMtlUpdate(ropemtl);
+        }
     } else {
-        NuMtlUpdate(ropemtl);
+        ropemtl = NULL;
     }
 }
 
 // The retail rope draw inlines these numtx rotations (other units call the
 // exported versions), so this unit carries local copies of their bodies.
 static void RopeMtxSetRotationZ(NUMTX *m, NUANG a) {
-    m->m00 = m->m11 = NU_COS_LUT(a);
-    m->m01 = NU_SIN_LUT(a);
-    m->m10 = -m->m01;
-    m->m02 = m->m12 = m->m03 = m->m13 = 0.0f;
+    f32 cosz = NU_COS_LUT(a);
+    f32 sinz = NU_SIN_LUT(a);
+
+    m->m00 = cosz;
+    m->m01 = sinz;
+    m->m02 = 0.0f;
+    m->m03 = 0.0f;
+    m->m10 = -sinz;
+    m->m11 = cosz;
+    m->m12 = 0.0f;
+    m->m13 = 0.0f;
     m->m20 = ANI3_EVAL_IDENTITY_MATRIX.m20;
     m->m21 = ANI3_EVAL_IDENTITY_MATRIX.m21;
     m->m22 = ANI3_EVAL_IDENTITY_MATRIX.m22;
