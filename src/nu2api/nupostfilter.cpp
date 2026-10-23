@@ -1,6 +1,11 @@
 #include "saga.h"
 #include <string.h>
 
+/* The native reset clears these three adjacent flags together. */
+STATIC_ASSERT(offsetof(NuMainFilterGen, bloom_enabled) == offsetof(NuMainFilterGen, dof_enabled) + sizeof(bool));
+STATIC_ASSERT(offsetof(NuMainFilterGen, motion_blur_enabled) ==
+              offsetof(NuMainFilterGen, bloom_enabled) + sizeof(bool));
+
 extern "C" PC_FRAMEBUFFER_PC *__cdecl PCGraphicsCreateFramebuffer(void);
 extern "C" void __cdecl PCGraphicsAttachFramebuffer(PC_FRAMEBUFFER_PC *, i32, GRAPHICS_RENDER_TEXTURE_PC *, i32);
 
@@ -26,20 +31,18 @@ void __cdecl PCGraphicsEnableFramebufferGuardsPc(PC_FRAMEBUFFER_PC *, i32);
 void __cdecl PCGraphicsCopyFramebufferTex2DPc(i32, GRAPHICS_RENDER_TEXTURE_PC *, i32, i32, i32, i32, i32);
 
 GRAPHICS_RENDER_TEXTURE_PC *__cdecl NuPostEffectGetBackBuffer(i32 frame) {
-    PC_FRAMEBUFFER_PC *bound;
-    i32 width, height;
     NuPostEffectBackBufferCopyPc = NuPostEffectBackBufferTexturePc;
-    if (NuPostEffectBackBufferFramePc == frame && frame != -1)
-        return NuPostEffectBackBufferCopyPc;
-    if (frame != -1)
-        NuPostEffectBackBufferFramePc = frame;
-    bound = PCGraphicsGetBoundFramebufferPc();
-    NuPostEffectBackBufferCopyPc = NuPostEffectBackBufferTexturePc;
-    PCGraphicsEnableFramebufferGuardsPc(bound, 1);
-    height = PCGraphicsEffectTextureHeight(NuPostEffectBackBufferCopyPc);
-    width = PCGraphicsEffectTextureWidth(NuPostEffectBackBufferCopyPc);
-    PCGraphicsCopyFramebufferTex2DPc(0, NuPostEffectBackBufferCopyPc, 0, 0, 0, width, height);
-    PCGraphicsEnableFramebufferGuardsPc(bound, 0);
+    if (NuPostEffectBackBufferFramePc != frame || frame == -1) {
+        if (frame != -1)
+            NuPostEffectBackBufferFramePc = frame;
+        PC_FRAMEBUFFER_PC *bound = PCGraphicsGetBoundFramebufferPc();
+        NuPostEffectBackBufferCopyPc = NuPostEffectBackBufferTexturePc;
+        PCGraphicsEnableFramebufferGuardsPc(bound, 1);
+        PCGraphicsCopyFramebufferTex2DPc(0, NuPostEffectBackBufferCopyPc, 0, 0, 0,
+                                         PCGraphicsEffectTextureWidth(NuPostEffectBackBufferCopyPc),
+                                         PCGraphicsEffectTextureHeight(NuPostEffectBackBufferCopyPc));
+        PCGraphicsEnableFramebufferGuardsPc(bound, 0);
+    }
     return NuPostEffectBackBufferCopyPc;
 }
 
@@ -114,24 +117,23 @@ void __cdecl NuPostEffectDisable(u32 mask) {
     }
 }
 void __cdecl NuPostEffectAddDynamicLight(NuDynamicLight *light) {
-    i32 count;
-    if (NuPostDeferredFilterPc == NULL)
-        return;
-    count = NuPostDeferredFilterPc->dynamic_light_count;
-    NuPostDeferredFilterPc->dynamic_lights[count] = light;
-    NuPostDeferredFilterPc->dynamic_light_count = count + 1;
+    if (NuPostDeferredFilterPc != NULL) {
+        i32 &count = NuPostDeferredFilterPc->dynamic_light_count;
+        NuPostDeferredFilterPc->dynamic_lights[count++] = light;
+    }
 }
 i32 __cdecl NuPostEffectGetActiveDynamicLightCount(void) {
     return NuPostDeferredFilterPc != NULL ? NuPostDeferredFilterPc->dynamic_light_count : 0;
 }
 void __cdecl NuPostEffectDepthOfField(const NU_POST_DOF_PARAMETERS_PC *parameters) {
-    if (NuPostMainFilterPc == NULL)
+    NU_POST_MAIN_VIEW_PC *main = NuPostMainFilterPc;
+    if (main == NULL)
         return;
-    NuPostMainFilterPc->dof_strength = parameters->strength;
-    NuPostMainFilterPc->dof_near = parameters->near_distance;
-    NuPostMainFilterPc->dof_far = parameters->far_distance;
-    NuPostMainFilterPc->dof_bias = parameters->bias;
-    NuPostMainFilterPc->dof_mode = parameters->mode;
+    main->dof_strength = parameters->strength;
+    main->dof_near = parameters->near_distance;
+    main->dof_far = parameters->far_distance;
+    main->dof_bias = parameters->bias;
+    main->dof_mode = parameters->mode;
 }
 void __cdecl NuPostEffectDeferredShading(const f32 *parameters) {
     if (NuPostDeferredFilterPc == NULL)
@@ -159,15 +161,17 @@ void __cdecl NuPostEffectMotionBlur(const NUMTX *previous, const NUMTX *current,
     motion->falloff = falloff;
 }
 void __cdecl NuPostEffectAccumulationMotionBlur(i32 frames, f32 blend, f32 mode_pc) {
-    if (NuPostMainFilterPc == NULL)
+    NU_POST_MAIN_VIEW_PC *main = NuPostMainFilterPc;
+    if (main == NULL)
         return;
-    NuPostMainFilterPc->accumulation_frames = frames;
-    NuPostMainFilterPc->accumulation_blend = blend;
-    NuPostMainFilterPc->accumulation_mode_pc = mode_pc;
-    if (NuPostAccumFilterPc != NULL) {
-        NuPostAccumFilterPc->frames = frames;
-        NuPostAccumFilterPc->blend = blend;
-        NuPostAccumFilterPc->mode_pc = mode_pc;
+    main->accumulation_frames = frames;
+    main->accumulation_blend = blend;
+    main->accumulation_mode_pc = mode_pc;
+    NU_POST_ACCUM_VIEW_PC *accum = NuPostAccumFilterPc;
+    if (accum != NULL) {
+        accum->mode_pc = mode_pc;
+        accum->frames = frames;
+        accum->blend = blend;
     }
 }
 void __cdecl NuPostEffectSpeedBlur(const NU_POST_SPEED_PARAMETERS_PC *parameters) {
@@ -237,7 +241,8 @@ extern "C" u32 NuPostShaderEngineFlagsPc;
 inline NuPostFilterGen::~NuPostFilterGen() {
 }
 
-void NuPostFilterGen::initResources() {
+/* Native platform initializers call their generic implementations out of line. */
+__declspec(noinline) void NuPostFilterGen::initResources() {
     input_fbo = PCGraphicsCreateFramebuffer();
 }
 void NuPostFilterGen::initTextureResources(i32, i32) {
@@ -258,29 +263,23 @@ NuMainFilterGen::NuMainFilterGen() {
     motion_falloff = 1.0f;
 }
 NuDeferredFilterGen::NuDeferredFilterGen() {
-    shadow_fbos[0] = NULL;
-    shadow_fbos[1] = NULL;
-    shadow_fbos[2] = NULL;
-    shadow_fbos[3] = NULL;
-    shadow_fbos[4] = NULL;
-    shadow_fbos[5] = NULL;
+    memset(shadow_fbos, 0, sizeof(shadow_fbos));
     parameters[1] = 0.5f;
     light_fbo = NULL;
+    enabled = false;
     sample_count = 4;
-    parameters[0] = 0.0f;
+    memset(parameters, 0, sizeof(parameters[0]));
 }
-void NuMainFilterGen::initResources() {
+__declspec(noinline) void NuMainFilterGen::initResources() {
     input_fbo = PCGraphicsCreateFramebuffer();
     blur_fbo = PCGraphicsCreateFramebuffer();
-    dof_enabled = false;
-    bloom_enabled = false;
-    motion_blur_enabled = false;
+    memset(&dof_enabled, 0, sizeof(dof_enabled) + sizeof(bloom_enabled) + sizeof(motion_blur_enabled));
     active_filter_count = 0;
 }
 void NuMainFilter::initTextureResources(i32, i32) {
     texture_surface.Attach(PCGraphicsPostEffectBackBufferTexturePc, 0, false);
 }
-void NuMotionAccumFilterGen::initResources() {
+__declspec(noinline) void NuMotionAccumFilterGen::initResources() {
     input_fbo = PCGraphicsCreateFramebuffer();
     accumulation_fbo = PCGraphicsCreateFramebuffer();
     PCGraphicsAttachFramebuffer(accumulation_fbo, 0, accumulation_texture, 0);
@@ -312,9 +311,8 @@ void NuDeferredFilterGen::initTextureResources(i32, i32) {
     PCGraphicsEffectTextureSetField24(textures[2], -1);
     PCGraphicsEffectTextureSetFilterFields(textures[2], 2, 2, 0);
     for (i32 i = 0; i < 2; ++i) {
-        i32 height = PCGraphicsEffectTextureHeight(textures[2]);
-        i32 width = PCGraphicsEffectTextureWidth(textures[2]);
-        textures[4 + i] = PCGraphicsCreateEffectTexture(width, height, 1, 1, 10);
+        textures[4 + i] = PCGraphicsCreateEffectTexture(PCGraphicsEffectTextureWidth(textures[2]),
+                                                        PCGraphicsEffectTextureHeight(textures[2]), 1, 1, 10);
     }
     textures[0] = PCGraphicsPostEffectBackBufferTexturePc;
     textures[1] = NULL;
@@ -460,9 +458,7 @@ void NuDeferredFilter::initTextureResources(i32 width, i32 height) {
 
 void NuMainFilterGen::reset() {
     enabled = false;
-    dof_enabled = false;
-    bloom_enabled = false;
-    motion_blur_enabled = false;
+    memset(&dof_enabled, 0, sizeof(dof_enabled) + sizeof(bloom_enabled) + sizeof(motion_blur_enabled));
     active_filter_count = 0;
 }
 void NuMainFilter::render() {
@@ -520,7 +516,7 @@ void NuSpeedBlurFilterGen::computeSpeedBlur(NUVEC4 *result) {
                                                 : (motion.x > motionFactorPanClamp ? motionFactorPanClamp : motion.x);
     motion.y = motion.y < -motionFactorPanClamp ? -motionFactorPanClamp
                                                 : (motion.y > motionFactorPanClamp ? motionFactorPanClamp : motion.y);
-    memcpy(result, &motion, sizeof(NUVEC));
+    *result = motion;
     result->w = 0.0f;
 }
 void NuSpeedBlurFilter::destroyTextureResources() {

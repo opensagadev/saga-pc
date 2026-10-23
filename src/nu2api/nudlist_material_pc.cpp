@@ -49,7 +49,7 @@ extern "C" void __cdecl NuDisplayListTransformPc(void *arg) {
     NUVEC4 tint = NuDisplayHandlerTintPc;
     f32 opacity = matrix->m33;
     f32 shadow = matrix->m23;
-    if (opacity != NuDisplayHandlerOpacityPc) {
+    if (NuDisplayHandlerOpacityPc != opacity) {
         if (opacity < 1.0f) {
             tint.w *= opacity;
             NuDisplayHandlerZModePc = 1;
@@ -82,7 +82,7 @@ extern "C" void __cdecl NuDisplayListTransformTransposePc(void *arg) {
     NUVEC4 tint = NuDisplayHandlerTintPc;
     f32 opacity = matrix->m33;
     f32 shadow = matrix->m32;
-    if (opacity != NuDisplayHandlerOpacityPc) {
+    if (NuDisplayHandlerOpacityPc != opacity) {
         if (opacity < 1.0f) {
             tint.w *= opacity;
             NuDisplayHandlerZModePc = 1;
@@ -255,7 +255,10 @@ extern "C" void __cdecl NuDisplayListMaterialPc(void *arg) {
         PCDeviceSetPixelShaderConstantsF(0, ShaderUniformRecordsPc[68].values, 1);
         if ((u8)material->common.particle_type_tag == 0x97) {
             GRAPHICS_RENDER_TEXTURE_PC *target = NuPostEffectGetBackBuffer(-1);
-            PCDeviceSetTexture(0, target != NULL ? target->resource : NULL);
+            if (target != NULL)
+                PCDeviceSetTexture(0, target->resource);
+            else
+                PCDeviceSetTexture(0, NULL);
             PCDeviceSetSamplerState(0, 1, 3);
             PCDeviceSetSamplerState(0, 2, 3);
             PCDeviceSetSamplerState(0, 7, 0);
@@ -306,8 +309,13 @@ extern "C" void __cdecl NuDisplayListMaterialPc(void *arg) {
     }
     NuDisplayHandlerReflectionPc = 0;
     NuMtlSetRenderStatesPS(&material->common);
-    PCDeviceBackend.SetColorWriteMaskPc((shader->unknown_4d4 & 6) == 0, (shader->unknown_4d4 & 6) == 0, 1);
-    PCDeviceBackend.SetColorWriteMaskPc((shader->unknown_4d4 & 8) == 0, (shader->unknown_4d4 & 8) == 0, 3);
+    if ((shader->unknown_4d4 & 6) == 0)
+        PCDeviceBackend.SetColorWriteMaskPc(1, 1, 1);
+    else
+        PCDeviceBackend.SetColorWriteMaskPc(0, 0, 1);
+    u32 write_mask = ~shader->unknown_4d4 & 8;
+    write_mask >>= 3;
+    PCDeviceBackend.SetColorWriteMaskPc(write_mask, write_mask, 3);
     if (PCDeviceHardwareVertexProcessingPC != 4 && PCShaderCurrentObjectPc() != NULL) {
         if (PCShaderCurrentObjectPc() != NULL &&
             ((PC_SHADER_OBJECT_FULL_VIEW *)PCShaderCurrentObjectPc())->parameters[0x4f].register_index >= 0) {
@@ -324,9 +332,8 @@ extern "C" void __cdecl NuDisplayListMaterialPc(void *arg) {
         if (count != 0) {
             if (count >= 8)
                 count = 8;
-            f32(*values)[4] = RenderFrameShaderArrayPc;
-            PC_SHADER_OBJECT_FULL_VIEW *current = (PC_SHADER_OBJECT_FULL_VIEW *)PCShaderCurrentObjectPc();
-            NuShaderObjectSetElementsfv(current, 0x4e, 0, count, &values[0][0]);
+            NuShaderObjectSetElementsfv((PC_SHADER_OBJECT_FULL_VIEW *)PCShaderCurrentObjectPc(), 0x4e, 0, count,
+                                        &RenderFrameShaderArrayPc[0][0]);
         }
     }
 }
@@ -352,15 +359,21 @@ extern "C" void __cdecl NuMtlSetRenderStatesPS(NUMTL *arg) {
         PCDeviceSetRenderState(25, 5);
     } else {
         alpha = (material->attributes >> 20) & 7;
-        if (alpha <= 1) {
-            PCDeviceSetRenderState(15, 0);
-        } else {
-            PCDeviceSetRenderState(15, 1);
-            if (alpha == 5)
+        switch (alpha) {
+            case 0:
+            case 1:
+                PCDeviceSetRenderState(15, 0);
+                break;
+            case 5:
+                PCDeviceSetRenderState(15, 1);
                 PCDeviceSetRenderState(24, (material->attributes >> 23) & 0xff);
-            else
+                PCDeviceSetRenderState(25, 5);
+                break;
+            default:
+                PCDeviceSetRenderState(15, 1);
                 PCDeviceSetRenderState(24, 0);
-            PCDeviceSetRenderState(25, 5);
+                PCDeviceSetRenderState(25, 5);
+                break;
         }
     }
     switch (material->attributes & 15) {
@@ -397,10 +410,16 @@ extern "C" void __cdecl NuMtlSetRenderStatesPS(NUMTL *arg) {
     }
     switch ((material->attributes >> 12) & 3) {
         case 0:
-            PCDeviceSetRenderState(22, NuDisplayHandlerReflectionPc != 0 ? 2 : 3);
+            if (NuDisplayHandlerReflectionPc != 0)
+                PCDeviceSetRenderState(22, 2);
+            else
+                PCDeviceSetRenderState(22, 3);
             break;
         case 1:
-            PCDeviceSetRenderState(22, NuDisplayHandlerReflectionPc != 0 ? 3 : 2);
+            if (NuDisplayHandlerReflectionPc != 0)
+                PCDeviceSetRenderState(22, 3);
+            else
+                PCDeviceSetRenderState(22, 2);
             break;
         case 2:
             PCDeviceSetRenderState(22, 1);
