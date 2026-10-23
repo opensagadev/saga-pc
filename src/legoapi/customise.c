@@ -1814,7 +1814,9 @@ i32 __cdecl CustomiserMenu_Update(void) {
                 f32 repeat_delay = old_mode == 1 ? 0.1f : 0.25f;
                 i32 category = CustomiseMenuYPc[side];
                 i32 piece_count = customiser->piece_counts[category];
-                i32 old_piece = Game.customiser_start[side].pieces[category];
+                u16 *slot = &Game.customiser_start[side].pieces[category];
+                i32 old_piece = *slot;
+                i32 old_category = category, next_piece = old_piece;
                 i32 up, up_held, down, down_held, left, left_held, right, right_held;
                 up_held = held & GAMEPAD_DUP;
                 down_held = held & GAMEPAD_DDOWN;
@@ -1870,7 +1872,6 @@ i32 __cdecl CustomiserMenu_Update(void) {
                         CustomiseNameLetterBlipScalePc[side] = 1.5f;
                     }
                 } else {
-                    i32 old_category = category, next_piece = old_piece;
                     if (up_held != 0 && category > 0)
                         BlipU[player] = 1.0f;
                     else if (down_held != 0 && category < 8)
@@ -1891,14 +1892,13 @@ i32 __cdecl CustomiserMenu_Update(void) {
                     else if (right != 0)
                         next_piece = Customiser_NextPieceRight((CUSTOMISER_LAYERS_PC *)customiser, old_piece,
                                                                piece_count, side, category);
-                    Game.customiser_start[side].pieces[old_category] = (u16)next_piece;
+                    *slot = (u16)next_piece;
                     CustomiseMenuYPc[side] = category;
                     if (next_piece != old_piece || category != old_category) {
                         GameAudio_PlaySfx(0x2f, NULL, 0, 0);
                         CustomiseMenuTimePc[side] = 0.0f;
                     }
                     if (next_piece != old_piece)
-
                         Customiser_SetNameAndIcon((CUSTOMISER_LAYERS_PC *)customiser, side);
                 }
             }
