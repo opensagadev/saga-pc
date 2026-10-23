@@ -3800,8 +3800,8 @@ static void ParaphernaliaShieldPc(GAMEOBJECT *, i32);
 void __cdecl ParaphernaliaCommunicatePc(GAMEOBJECT *, i32);
 static void ParaphernaliaThrustPc(GAMEOBJECT *, i32);
 void __cdecl DrawForceGlowSpritePc(NUVEC *, f32, i32, f32, GAMEOBJECT *);
-static void ParaphernaliaPlacePc(GAMEOBJECT *, i32, i32, i32);
-static void ParaphernaliaRemovePc(GAMEOBJECT *, i32, i32, i32);
+void __cdecl ParaphernaliaPlacePc(GAMEOBJECT *, i32, i32, i32);
+void __cdecl ParaphernaliaRemovePc(GAMEOBJECT *, i32, i32, i32);
 i32 __cdecl BatarangGetObjectFromCharIdPc(i32);
 void __cdecl Grapple_DrawLine(GAMEOBJECT *);
 void __cdecl SuperCarry_DrawObject(GAMEOBJECT *);
@@ -4269,7 +4269,7 @@ void __cdecl ParaphernaliaCommunicatePc(GAMEOBJECT *object, i32 reflection) {
     }
 }
 
-static void ParaphernaliaPlacePc(GAMEOBJECT *object, i32 model, i32 reflection, i32 locator) {
+void __cdecl ParaphernaliaPlacePc(GAMEOBJECT *object, i32 model, i32 reflection, i32 locator) {
     NUVEC scaling;
     NUMTX matrix;
     NUMTX reflected;
@@ -4323,7 +4323,7 @@ static void ParaphernaliaPlacePc(GAMEOBJECT *object, i32 model, i32 reflection, 
     }
 }
 
-static void ParaphernaliaRemovePc(GAMEOBJECT *object, i32 model, i32 reflection, i32 locator) {
+void __cdecl ParaphernaliaRemovePc(GAMEOBJECT *object, i32 model, i32 reflection, i32 locator) {
     NUVEC scaling;
     NUMTX matrix;
     NUMTX reflected;

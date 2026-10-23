@@ -181,8 +181,8 @@ address,symbol,size,ctype
 0x4191d0,_ParaphernaliaShieldPc,365,
 0x419340,_ParaphernaliaThrustPc,524,
 0x419550,_ParaphernaliaCommunicatePc,516,
-0x419760,_ParaphernaliaPlacePc,669,"static void (GAMEOBJECT *, i32, i32, i32)"
-0x419a00,_ParaphernaliaRemovePc,779,"static void (GAMEOBJECT *, i32, i32, i32)"
+0x419760,_ParaphernaliaPlacePc,669,"void __cdecl (GAMEOBJECT *, i32, i32, i32)"
+0x419a00,_ParaphernaliaRemovePc,779,"void __cdecl (GAMEOBJECT *, i32, i32, i32)"
 0x419d10,_ParaphernaliaHandPc,232,"static void (GAMEOBJECT *, i32)"
 0x419e00,_ConfigureComplexShadow,131,void __cdecl(GAMEOBJECT *)
 0x419e90,_LoadSingleCharacter,284,
