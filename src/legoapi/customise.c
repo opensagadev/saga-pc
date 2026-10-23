@@ -215,32 +215,22 @@ static i32 __cdecl CustomiserPieceAvailableDefaultPrivatePc(CUSTOMPIECE_LAYERS_P
 }
 void __cdecl Customiser_CopyDefaultPiecesToSave(CUSTOMISER_LAYERS_PC *input, void *save_input) {
     CUSTOMISER_CONFIG_PC *customiser = (CUSTOMISER_CONFIG_PC *)input;
-    CUSTOM_SAVE_CONFIG_PC *save = (CUSTOM_SAVE_CONFIG_PC *)save_input;
+    CUSTOM_SAVE_CONFIG_PC *save;
     if (customiser == NULL)
         return;
+    save = (CUSTOM_SAVE_CONFIG_PC *)save_input;
     if (save == NULL) {
         save = customiser->save;
         if (save == NULL)
             return;
     }
-    save->pieces[0] = customiser->default_pieces[0][0];
-    save->pieces[1] = customiser->default_pieces[0][1];
-    save->pieces[2] = customiser->default_pieces[0][2];
-    save->pieces[3] = customiser->default_pieces[0][3];
-    save->pieces[4] = customiser->default_pieces[0][4];
-    save->pieces[5] = customiser->default_pieces[0][5];
-    save->pieces[6] = customiser->default_pieces[0][6];
-    save->pieces[7] = customiser->default_pieces[0][7];
-    save->pieces[8] = customiser->default_pieces[0][8];
-    save->secondary_pieces[0] = customiser->default_pieces[1][0];
-    save->secondary_pieces[1] = customiser->default_pieces[1][1];
-    save->secondary_pieces[2] = customiser->default_pieces[1][2];
-    save->secondary_pieces[3] = customiser->default_pieces[1][3];
-    save->secondary_pieces[4] = customiser->default_pieces[1][4];
-    save->secondary_pieces[5] = customiser->default_pieces[1][5];
-    save->secondary_pieces[6] = customiser->default_pieces[1][6];
-    save->secondary_pieces[7] = customiser->default_pieces[1][7];
-    save->secondary_pieces[8] = customiser->default_pieces[1][8];
+    {
+        i32 side, i;
+        for (side = 0; side < 2; ++side)
+            for (i = 0; i < 9; ++i)
+                save->pieces[side * (offsetof(CUSTOM_SAVE_CONFIG_PC, secondary_pieces) / sizeof(u16)) + i] =
+                    customiser->default_pieces[side][i];
+    }
 }
 CUSTOMISER_LAYERS_PC *__cdecl Customiser_Configure(char *filename, VARIPTR *buffer, VARIPTR *buffer_end,
                                                    i32 first_character, i32 second_character,
@@ -1397,19 +1387,21 @@ i32 __cdecl Customiser_GetIcon(CUSTOMISER_LAYERS_PC *input, const void *save_inp
         if ((head->availability_flags & 1) == 0) {
             character = hat->icon_character_id;
             if (character != -1)
-                return CDataList[character].icon_model;
+                goto found;
             character = hat->character_id;
             if (character != -1)
-                return CDataList[character].icon_model;
+                goto found;
         }
     }
     head = &customiser->piece_sets[1][save->pieces[1]];
     character = head->icon_character_id;
     if (character != -1)
-        return CDataList[character].icon_model;
+        goto found;
     character = head->character_id;
-    if (character != -1)
+    if (character != -1) {
+    found:
         return CDataList[character].icon_model;
+    }
     return PCArcadeUnpairedIconModel;
 }
 
