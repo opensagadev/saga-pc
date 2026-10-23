@@ -1715,14 +1715,16 @@ i32 __cdecl DebrisFindAllOfType(i32 effect_index, NUVEC *positions, i32 *handles
                                 i32 active_only) {
     i32 count = 0, i;
     for (i = 0; i < maxdebkeys; ++i) {
-        DEBRISKEY_PC *key = &DEBRIS_ENGINE_KEYS_PC[i];
-        if (key->effect_index == effect_index && (active_only == 0 || key->allocated_chunk_count != 0)) {
-            i32 output_index = count - skip;
-            if (output_index >= 0 && output_index < capacity) {
-                if (positions != NULL)
-                    positions[output_index] = key->position;
+        if (DEBRIS_ENGINE_KEYS_PC[i].effect_index == effect_index &&
+            (active_only == 0 || DEBRIS_ENGINE_KEYS_PC[i].allocated_chunk_count != 0)) {
+            if (count - skip >= 0 && count - skip < capacity) {
+                if (positions != NULL) {
+                    positions[count - skip].x = DEBRIS_ENGINE_KEYS_PC[i].position.x;
+                    positions[count - skip].y = DEBRIS_ENGINE_KEYS_PC[i].position.y;
+                    positions[count - skip].z = DEBRIS_ENGINE_KEYS_PC[i].position.z;
+                }
                 if (handles != NULL)
-                    handles[output_index] = i;
+                    handles[count - skip] = i;
             }
             ++count;
         }
@@ -1730,59 +1732,68 @@ i32 __cdecl DebrisFindAllOfType(i32 effect_index, NUVEC *positions, i32 *handles
     return count - skip;
 }
 i32 __cdecl DebrisGetRingProperties(i32 handle, NUVEC *origin, NUVEC *direction, f32 *radius) {
+    DEBRIS_INFO_PC *effect = debtab[DEBRIS_ENGINE_KEYS_PC[handle].effect_index];
     DEBRISKEY_PC *key = &DEBRIS_ENGINE_KEYS_PC[handle];
-    DEBRIS_INFO_PC *effect = debtab[key->effect_index];
     NUVEC axis;
     if (effect == NULL)
         return 0;
-    *origin = key->position;
-    axis.x = 0.0f;
+    origin->x = key->position.x;
+    origin->y = key->position.y;
+    origin->z = key->position.z;
     if (effect->generator_type == 11) {
+        axis.x = 0.0f;
         axis.y = 1.0f;
         axis.z = 0.0f;
     } else {
+        axis.x = 0.0f;
         axis.y = 0.0f;
         axis.z = 1.0f;
     }
     NuVecMtxTransform(&axis, &axis, &key->emitter_orientation);
-    *direction = axis;
-    if (effect->generator_type == 6 || effect->generator_type == 7 || effect->generator_type == 11) {
-        *radius = effect->emitter_random_extent.x;
-        return 1;
+    direction->x = axis.x;
+    direction->y = axis.y;
+    direction->z = axis.z;
+    if (effect->generator_type != 6 && effect->generator_type != 7 && effect->generator_type != 11) {
+        *radius = 0.0f;
+        return 0;
     }
-    *radius = 0.0f;
-    return 0;
+    *radius = effect->emitter_random_extent.x;
+    return 1;
 }
 i32 __cdecl DebrisGetConeProperties(i32 handle, NUVEC *origin, NUVEC *end, f32 *start_radius, f32 *end_radius,
                                     NUVEC *direction, f32 *length, f32 *speed) {
+    DEBRIS_INFO_PC *effect = debtab[DEBRIS_ENGINE_KEYS_PC[handle].effect_index];
     DEBRISKEY_PC *key = &DEBRIS_ENGINE_KEYS_PC[handle];
-    DEBRIS_INFO_PC *effect = debtab[key->effect_index];
     NUVEC axis;
+    f32 cone_length;
     if (effect == NULL)
         return 0;
-    *origin = key->position;
-    if (effect->generator_type == 8) {
-        f32 cone_length;
-        axis.x = 0.0f;
-        axis.y = 1.0f;
-        axis.z = 0.0f;
-        NuVecMtxTransform(&axis, &axis, &key->emitter_orientation);
-        *direction = axis;
-        *speed = effect->momentum_base;
-        cone_length = effect->momentum_base * effect->particle_lifetime;
-        *length = cone_length;
-        end->x = cone_length * direction->x + origin->x;
-        end->y = direction->y * *length + origin->y;
-        end->z = *length * direction->z + origin->z;
-        *start_radius = (effect->emitter_random_extent.x + effect->emitter_random_extent.z) * 0.5;
-        *end_radius =
-            (effect->momentum_random_x + effect->rotor_speed_y) / 2.8f * effect->particle_lifetime + *start_radius;
-        return 1;
+    origin->x = key->position.x;
+    origin->y = key->position.y;
+    origin->z = key->position.z;
+    if (effect->generator_type != 8) {
+        end->x = end->y = end->z = 0.0f;
+        *direction = *end;
+        *start_radius = *end_radius = *length = *speed = 0.0f;
+        return 0;
     }
-    end->x = end->y = end->z = 0.0f;
-    *direction = *end;
-    *start_radius = *end_radius = *length = *speed = 0.0f;
-    return 0;
+    axis.x = 0.0f;
+    axis.y = 1.0f;
+    axis.z = 0.0f;
+    NuVecMtxTransform(&axis, &axis, &key->emitter_orientation);
+    direction->x = axis.x;
+    direction->y = axis.y;
+    direction->z = axis.z;
+    *speed = effect->momentum_base;
+    cone_length = effect->momentum_base * effect->particle_lifetime;
+    *length = cone_length;
+    end->x = cone_length * direction->x + origin->x;
+    end->y = direction->y * *length + origin->y;
+    end->z = *length * direction->z + origin->z;
+    *start_radius = (effect->emitter_random_extent.z + effect->emitter_random_extent.x) * 0.5;
+    *end_radius =
+        (effect->rotor_speed_y + effect->momentum_random_x) / (f64)2.8f * effect->particle_lifetime + *start_radius;
+    return 1;
 }
 
 void __cdecl DebrisStatusAlwaysOff(i32 *handle) {
