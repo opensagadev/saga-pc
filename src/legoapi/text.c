@@ -528,46 +528,40 @@ void Text_ExpandAllButtonStrings(char *input, char *output) {
     *output = '\0';
     while (*input != '\0') {
         i32 token_length;
-        char literal;
-        if (*input != '[') {
+        if (*input == '[') {
+            token[0] = *input;
+            token_length = 1;
+            while (input[token_length] != '\0' && input[token_length] != ']') {
+                token[token_length] = input[token_length];
+                ++token_length;
+            }
+            if (input[token_length] != '\0') {
+                token[token_length++] = ']';
+                token[token_length] = '\0';
+                token_length = NuStrLen(token);
+                if (token_length > 0 && Text_ExpandButtonString(token, expanded) != 0) {
+                    char *character = expanded;
+                    while (*character != '\0') {
+                        *output = *character;
+                        output[1] = '\0';
+                        ++character;
+                        ++output;
+                    }
+                    NuStrCat(output, expanded);
+                    input += token_length;
+                    continue;
+                }
+            }
             *output = *input;
             output[1] = '\0';
-            ++input;
             ++output;
-            continue;
+            ++input;
+        } else {
+            *output = *input;
+            output[1] = '\0';
+            ++output;
+            ++input;
         }
-
-        token[0] = '[';
-        token_length = 1;
-        while (input[token_length] != ']' && input[token_length] != '\0') {
-            token[token_length] = input[token_length];
-            ++token_length;
-        }
-
-        literal = '[';
-        if (input[token_length] != '\0') {
-            token[token_length] = ']';
-            token[token_length + 1] = '\0';
-            token_length = NuStrLen(token);
-            if (token_length > 0 && Text_ExpandButtonString(token, expanded) != 0) {
-                char *character = expanded;
-                while (*character != '\0') {
-                    *output = *character;
-                    output[1] = '\0';
-                    ++character;
-                    ++output;
-                }
-                NuStrCat(output, expanded);
-                input += token_length;
-                continue;
-            }
-            literal = *input;
-        }
-
-        *output = literal;
-        output[1] = '\0';
-        ++input;
-        ++output;
     }
     *output = '\0';
 }
