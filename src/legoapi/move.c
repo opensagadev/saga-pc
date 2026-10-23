@@ -4716,29 +4716,30 @@ i32 __cdecl CanObjSlide(GAMEOBJECT *object, i32 unused_surface) {
 
 i32 __cdecl StartSlide(GAMEOBJECT *object, i32 check_contact) {
     i32 can_slide;
+    i32 result = 0;
     u16 id;
-    if (VehicleArea)
-        return 0;
-    if ((object->flags_ef4 & 0x400) != 0 || object->character_context == 0x2b || object->character_context == 0x1f)
-        return 0;
-    id = object->id;
-    if (id == (u16)GameObjectRotationAtstId || id == (u16)id_MINIATST || id == (u16)id_ATST_LOWRES ||
-        id == (u16)id_ATAT || id == (u16)id_MINIATAT || id == (u16)id_MINIATTE)
-        return 0;
-    can_slide = CanObjSlide(object, (i8)object->jump_animation_state);
-    if (check_contact && object->field_281 == 0) {
-        if (object->contact_count == 0 || can_slide == 0 ||
-            !(object->collision_position.y > object->contact_position.y))
-            return 0;
-        can_slide = CanObjSlide(object, (i8)object->contact_material[0]);
+    if (!VehicleArea && (object->flags_ef4 & 0x400) == 0 && object->character_context != 0x2b &&
+        object->character_context != 0x1f) {
+        id = object->id;
+        if (id != (u16)GameObjectRotationAtstId && id != (u16)id_MINIATST && id != (u16)id_ATST_LOWRES &&
+            id != (u16)id_ATAT && id != (u16)id_MINIATAT && id != (u16)id_MINIATTE) {
+            can_slide = CanObjSlide(object, (i8)object->jump_animation_state);
+            if (check_contact && object->field_281 == 0) {
+                if (object->contact_count == 0 || can_slide == 0 ||
+                    !(object->collision_position.y > object->contact_position.y))
+                    return 0;
+                can_slide = CanObjSlide(object, (i8)object->contact_material[0]);
+            }
+            if (can_slide != 0) {
+                object->character_context = 0x33;
+                object->context_duration = 0.25f;
+                object->field_7aa = object->character_model->model_data_b[106] != NULL ? 106 : 5;
+                result = 1;
+                object->jump_variant_state = 0;
+            }
+        }
     }
-    if (can_slide == 0)
-        return 0;
-    object->character_context = 0x33;
-    object->field_7aa = object->character_model->model_data_b[106] != NULL ? 106 : 5;
-    object->context_duration = 0.25f;
-    object->jump_variant_state = 0;
-    return 1;
+    return result;
 }
 
 void __cdecl SlideCode(GAMEOBJECT *object) {
@@ -6004,12 +6005,17 @@ void __cdecl SetHeadTarget(GAMEOBJECT *, NUVEC *, i8, f32, f32, f32);
 static __declspec(noinline) void ForceGlowTargetPc(GAMEOBJECT *object, GIZFORCE_PC *force,
                                                    FORCE_ANIMATION_OBJECT_PC *animation) {
     FORCE_GLOW_PC *glow = (FORCE_GLOW_PC *)object;
+    NUVEC *position;
     object->flags_e20 |= 0x20000;
     if (animation != NULL) {
         glow->candidate = animation;
         glow->candidate_kind = 1;
-        glow->horizontal_range = force != NULL ? force->horizontal_range : 1.0f;
-        SetHeadTarget(object, NuSpecialGetDrawPos(&animation->special), 1, 2.0f, 5.0f, 10.0f);
+        if (force != NULL)
+            glow->horizontal_range = force->horizontal_range;
+        else
+            glow->horizontal_range = 1.0f;
+        position = NuSpecialGetDrawPos(&animation->special);
+        SetHeadTarget(object, position, 1, 2.0f, 5.0f, 10.0f);
     } else {
         glow->candidate = force;
         glow->candidate_kind = 0;
