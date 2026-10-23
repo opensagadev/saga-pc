@@ -1743,53 +1743,50 @@ extern "C" {
 #undef TERRAIN_STH_FILTER_SHAPES
 #undef TERRAIN_STP_CROSS
     i32 HitTerrPoly(TERRAIN_SHAPE *surface, i32 group_index) {
-        f32 radius = ((TerrainQuery_s *)TerI)->collision_radius;
-        ((TerrainQuery_s *)TerI)->hit_type = 0;
-        ((TerrainQuery_s *)TerI)->hit_time = 999.9f;
-        ((TerrainQuery_s *)TerI)->horizontal_movement_length =
-            NuFsqrt(((TerrainQuery_s *)TerI)->movement.x * ((TerrainQuery_s *)TerI)->movement.x +
-                    ((TerrainQuery_s *)TerI)->movement.z * ((TerrainQuery_s *)TerI)->movement.z);
-        NUVEC *origin = &((TERRAIN_SET_PC *)CurrentTerrain)->groups[group_index].origin;
-        ((TerrainQuery_s *)TerI)->local_start.x = ((TerrainQuery_s *)TerI)->position.x - origin->x;
-        ((TerrainQuery_s *)TerI)->local_start.y = ((TerrainQuery_s *)TerI)->position.y - origin->y;
-        ((TerrainQuery_s *)TerI)->local_start.z = ((TerrainQuery_s *)TerI)->position.z - origin->z;
-        ((TerrainQuery_s *)TerI)->local_end.x =
-            (((TerrainQuery_s *)TerI)->position.x + ((TerrainQuery_s *)TerI)->movement.x) - origin->x;
-        ((TerrainQuery_s *)TerI)->local_end.y =
-            (((TerrainQuery_s *)TerI)->position.y + ((TerrainQuery_s *)TerI)->movement.y) - origin->y;
-        ((TerrainQuery_s *)TerI)->local_end.z =
-            (((TerrainQuery_s *)TerI)->position.z + ((TerrainQuery_s *)TerI)->movement.z) - origin->z;
-        f32 primary_end = (((((TerrainQuery_s *)TerI)->local_end.x - surface->vertices[0].x) * surface->normals[0].x +
-                            (((TerrainQuery_s *)TerI)->local_end.y - surface->vertices[0].y) * surface->normals[0].y) +
-                           (((TerrainQuery_s *)TerI)->local_end.z - surface->vertices[0].z) * surface->normals[0].z) -
-                          radius - ((TerrainQuery_s *)TerI)->compare_epsilon;
         f32 primary_start = 0.0f;
-        bool test = false;
-        if (primary_end < 0.0f) {
-            primary_start =
-                ((((TerrainQuery_s *)TerI)->local_start.x - surface->vertices[0].x) * surface->normals[0].x +
-                 (((TerrainQuery_s *)TerI)->local_start.y - surface->vertices[0].y) * surface->normals[0].y) +
-                (((TerrainQuery_s *)TerI)->local_start.z - surface->vertices[0].z) * surface->normals[0].z - radius;
-            test = primary_start > -radius;
-        }
         f32 secondary_start = 0.0f;
         f32 secondary_end = 0.0f;
+        TerrainQuery_s *query = (TerrainQuery_s *)TerI;
+        f32 radius = query->collision_radius;
+        i32 test = 0;
+        query->hit_type = 0;
+        query->hit_time = 999.9f;
+        ((TerrainQuery_s *)TerI)->horizontal_movement_length =
+            NuFsqrt(query->movement.x * query->movement.x + query->movement.z * query->movement.z);
+        query = (TerrainQuery_s *)TerI;
+        NUVEC *origin = &((TERRAIN_SET_PC *)CurrentTerrain)->groups[group_index].origin;
+        query->local_start.x = query->position.x - origin->x;
+        query->local_start.y = query->position.y - origin->y;
+        query->local_start.z = query->position.z - origin->z;
+        query->local_end.x = (query->position.x + query->movement.x) - origin->x;
+        query->local_end.y = (query->position.y + query->movement.y) - origin->y;
+        const f32 end_z = (query->position.z + query->movement.z) - origin->z;
+        query->local_end.z = end_z;
+        const f32 primary_end = (((query->local_end.x - surface->vertices[0].x) * surface->normals[0].x +
+                                  (query->local_end.y - surface->vertices[0].y) * surface->normals[0].y) +
+                                 (end_z - surface->vertices[0].z) * surface->normals[0].z) -
+                                radius - query->compare_epsilon;
+        if (primary_end < 0.0f) {
+            primary_start = ((query->local_start.x - surface->vertices[0].x) * surface->normals[0].x +
+                             (query->local_start.y - surface->vertices[0].y) * surface->normals[0].y) +
+                            (query->local_start.z - surface->vertices[0].z) * surface->normals[0].z - radius;
+            if (primary_start > -radius)
+                test = 1;
+        }
         if (surface->normals[1].y < 65536.0f) {
-            secondary_end =
-                (((((TerrainQuery_s *)TerI)->local_end.x - surface->vertices[3].x) * surface->normals[1].x +
-                  (((TerrainQuery_s *)TerI)->local_end.y - surface->vertices[3].y) * surface->normals[1].y) +
-                 (((TerrainQuery_s *)TerI)->local_end.z - surface->vertices[3].z) * surface->normals[1].z) -
-                radius - ((TerrainQuery_s *)TerI)->compare_epsilon;
+            secondary_end = (((query->local_end.x - surface->vertices[3].x) * surface->normals[1].x +
+                              (query->local_end.y - surface->vertices[3].y) * surface->normals[1].y) +
+                             (end_z - surface->vertices[3].z) * surface->normals[1].z) -
+                            radius - query->compare_epsilon;
             if (secondary_end < 0.0f) {
-                secondary_start =
-                    ((((TerrainQuery_s *)TerI)->local_start.x - surface->vertices[3].x) * surface->normals[1].x +
-                     (((TerrainQuery_s *)TerI)->local_start.y - surface->vertices[3].y) * surface->normals[1].y) +
-                    (((TerrainQuery_s *)TerI)->local_start.z - surface->vertices[3].z) * surface->normals[1].z - radius;
+                secondary_start = ((query->local_start.x - surface->vertices[3].x) * surface->normals[1].x +
+                                   (query->local_start.y - surface->vertices[3].y) * surface->normals[1].y) +
+                                  (query->local_start.z - surface->vertices[3].z) * surface->normals[1].z - radius;
                 if (secondary_start > -radius)
-                    test = true;
+                    test = 1;
             }
         }
-        if (test && HitPoly(primary_start, primary_end, secondary_start, secondary_end, surface)) {
+        if (test != 0 && HitPoly(primary_start, primary_end, secondary_start, secondary_end, surface)) {
             ((TerrainQuery_s *)TerI)->terrain_group_index = group_index;
             return 1;
         }
