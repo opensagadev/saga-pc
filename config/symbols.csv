@@ -6123,6 +6123,7 @@ address,symbol,size,ctype
 0x005f7490,_PCClipScreenUnsupported,1,void __cdecl (void)
 0x5f7490,_PCGraphicsRenderTextureAllocationError,1,void __cdecl(void)
 0x5f74a0,_NuPtlDmaSlotsExhaustedPc,1,void __cdecl(void)
+0x005f75a0,?PcGeometryCopyMatrixPc@@YAXPAUnumtx_s@@PBU1@@Z,95,"void __cdecl(NUMTX *, const NUMTX *)"
 0x5f7610,_PCSpecialTransposeMatrix,133,"void __cdecl(NUMTX *,NUMTX *)"
 0x005f77d0,_NuLgtSetVertexColor,108,
 0x5f7980,?PCGraphicsFormatToD3d@@YAHH@Z,92,
