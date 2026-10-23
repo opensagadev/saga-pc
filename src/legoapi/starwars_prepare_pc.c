@@ -291,18 +291,14 @@ i32 __cdecl StarWars_PrepareJump(AIPACKET_PC *packet, APIOBJECT_PC *object, i32 
     i32 index;
     GAMEOBJECT *owner;
     u32 flags;
-    u32 capabilities;
-    u8 source_index;
-    i32 destination_index;
-    AIPATHNODE_PC *nodes;
-    AIPATHNODE_PC *destination;
+    i32 destination_index = 0;
+    AIPATHNODE_PC *destination = NULL;
     NUVEC offset;
     AIPATHCNX_PC *connection;
-    AIPATHNODE_PC *source;
-    i32 skip_to_destination;
+    AIPATHNODE_PC *source = NULL;
     f32 distance;
     f32 radius;
-    i32 ready;
+    i32 ready = 0;
     f32 jump_distance;
     i32 skip_ahead;
     GAMEOBJECT *other;
@@ -314,45 +310,39 @@ i32 __cdecl StarWars_PrepareJump(AIPACKET_PC *packet, APIOBJECT_PC *object, i32 
     if ((owner->flags_ef4 & 0x40000000) != 0) {
         return StarWars_PrepareBigJump(packet, object, checks);
     }
-    flags = packet->path_info.connection->traversal_flags[packet->path_info.direction];
-    capabilities = packet->capabilities;
-    if ((packet->path_info.flags & 1) == 0) {
-        packet->path_connection_state = 0;
-        return 0;
-    }
-    source_index = packet->path_info.connection->node_indices[packet->path_info.direction];
-    destination_index = packet->path_info.connection->node_indices[packet->path_info.direction == 0];
-    nodes = packet->path_info.path->nodes;
-    destination = &nodes[destination_index];
-
-    if (NuVecXZDistSqr(&object->position, &destination->position, &offset) < destination->radius_squared) {
-        packet->path_connection_state = 0;
-        return 0;
-    }
-    connection = packet->path_info.connection;
-    source = &nodes[source_index];
-    skip_to_destination = (connection->traversal_flags[packet->path_info.direction] & 0x200) == 0 &&
-                          packet->inside_path_node != destination_index &&
-                          (packet->path_info.path->previous_inside_node_bits[destination_index / 8] &
-                           (1 << (destination_index % 8))) != 0;
-    if (skip_to_destination) {
-        if (TryToTeleportToNextNode(owner, destination, 0) != 0) {
-            return 1;
-        }
-        packet->path_connection_state = 1;
-        connection = packet->path_info.connection;
-    } else if (packet->path_connection_state == 0) {
-        distance = connection->horizontal_distance * packet->path_info.distance;
-        packet->path_connection_state = 1;
-        if (packet->path_info.direction != 0) {
-            if (source->radius > distance) {
-                packet->path_connection_state = 0;
-                return 0;
+    flags = packet->path_info.connection->traversal_flags[packet->path_info.direction] & packet->capabilities;
+    if ((packet->path_info.flags & 1) != 0) {
+        source =
+            &packet->path_info.path->nodes[packet->path_info.connection->node_indices[packet->path_info.direction]];
+        destination_index = packet->path_info.connection->node_indices[packet->path_info.direction == 0];
+        destination = &packet->path_info.path->nodes[destination_index];
+        distance = NuVecXZDistSqr(&object->position, &destination->position, &offset);
+        if (!(distance < destination->radius_squared)) {
+            if ((packet->path_info.connection->traversal_flags[packet->path_info.direction] & 0x200) == 0 &&
+                packet->inside_path_node != destination_index &&
+                (packet->path_info.path->previous_inside_node_bits[destination_index / 8] &
+                 (1 << (destination_index % 8))) != 0) {
+                if (TryToTeleportToNextNode(owner, destination, 0) != 0) {
+                    return 1;
+                }
+                packet->path_connection_state = 1;
+            } else if (packet->path_connection_state == 0) {
+                distance = packet->path_info.distance * packet->path_info.connection->horizontal_distance;
+                packet->path_connection_state = 1;
+                if (packet->path_info.direction != 0) {
+                    if (source->radius > distance)
+                        packet->path_connection_state = 0;
+                } else if (distance > packet->path_info.connection->horizontal_distance - destination->radius) {
+                    packet->path_connection_state = 0;
+                }
             }
-        } else if (distance > connection->horizontal_distance - destination->radius) {
-            packet->path_connection_state = 0;
-            return 0;
+            goto check;
         }
+    }
+    packet->path_connection_state = 0;
+check:
+    if (packet->path_connection_state == 0) {
+        return 0;
     }
     offset.x = destination->position.x - source->position.x;
     offset.y = 0.0f;
@@ -361,25 +351,22 @@ i32 __cdecl StarWars_PrepareJump(AIPACKET_PC *packet, APIOBJECT_PC *object, i32 
     if (radius < 0.0f) {
         radius = 0.0f;
     }
-    NuVecScale(&offset, &offset, radius / connection->horizontal_distance);
+    NuVecScale(&offset, &offset, radius / packet->path_info.connection->horizontal_distance);
     NuVecAdd(&packet->movement_destination, &source->position, &offset);
     distance = NuVecXZDistSqr(&object->position, &packet->movement_destination, &offset);
-    ready = 0;
     if (checks != 0 && (ai_moveradius * ai_moveradius > distance || owner->respawn_timer > jump_stuck_time ||
                         owner->character_context == 0x44)) {
-        ready = 1;
         packet->movement_destination = object->position;
+        ready = 1;
     }
     packet->movement_stopping_distance = 0.0f;
-    jump_distance = ((flags & capabilities) & 0x20) != 0
-                        ? StarWarsJumpDistancePc[2]
-                        : (((flags & capabilities) & 2) != 0 ? StarWarsJumpDistancePc[1] : StarWarsJumpDistancePc[0]);
-    connection = packet->path_info.connection;
-    flags = connection->traversal_flags[packet->path_info.direction];
-    if ((flags & 0x800) != 0) {
-        packet->path_connection_state = 1;
+    jump_distance = (flags & 0x20) != 0 ? StarWarsJumpDistancePc[2]
+                                        : ((flags & 2) != 0 ? StarWarsJumpDistancePc[1] : StarWarsJumpDistancePc[0]);
+    if ((packet->path_info.connection->traversal_flags[packet->path_info.direction] & 0x800) != 0) {
         packet->flags |= 0x800000;
+        packet->path_connection_state = 1;
     }
+    flags = packet->path_info.connection->traversal_flags[packet->path_info.direction];
     switch (packet->path_connection_state) {
         case 1:
             if (ready != 0) {
