@@ -38,6 +38,201 @@ i32 __cdecl ObjIsTargetSpeeder(GAMEOBJECT *object) {
     return object->field_280 == 0xff;
 }
 
+/* PC 0x007fcd88..0x007fce1c: speeder chase pursuit tuning. */
+f32 speeder_ahead_time = 15.0f;
+f32 speeder_midrange_time = 10.0f;
+f32 speeder_kill_dist = 75.0f;
+f32 speeder_shootrate = 1.0f;
+f32 speederfirerange = -1.0f;
+SPEEDERCHASEVALUES speedervals[4] = {
+    {9.0f, -3.0f, 1.5f, 5.0f, 10.0f, 0.5f, 5.0f},
+    {-3.0f, -3.0f, 1.5f, 5.0f, 5.0f, 0.3f, 5.0f},
+    {-3.0f, -3.0f, 1.5f, 5.0f, 2.0f, 0.3f, 5.0f},
+    {4.0f, -3.0f, 1.5f, 5.0f, 10.0f, 0.5f, 5.0f},
+};
+f32 speeder_level_height = 1.0f;
+f32 speeder_level_height_lerpf = 5.0f;
+f32 zoom_ahead_extra_time = 5.0f;
+f32 zoom_ahead_extra = 3.0f;
+/* PC 0x0088056c / 0x00880588. */
+i32 set_speedermode = 0;
+f32 speeder_mode_ahead_timer = 0.0f;
+
+static void SpeederChase_SetMode(AISCRIPTPROCESS_PC *processor, i32 mode) {
+    set_speedermode = mode;
+    processor->action_timer = 0.0f;
+    processor->action_data_1 = (u8)mode;
+    speeder_mode_ahead_timer = 0.0f;
+    speeder_hitpoints_lost = 0;
+}
+
+i32 __cdecl Action_SpeederBeingChased(AISYS_PC *system, AISCRIPTPROCESS_PC *processor, AIPACKET_PC *packet,
+                                      char **params, i32 param_count, i32 first_time, f32 elapsed) {
+    SOCK_PC *sock = &WORLD->sock_sys->socks[1];
+    GAMEOBJECT *object;
+    GAMEOBJECT *reference;
+    f32 base_speed;
+    f32 distance;
+    f32 error;
+    f32 seek;
+    i32 can_fire = 0;
+
+    if (packet == NULL || packet->owner == NULL || ((APIOBJECT_PC *)packet->owner)->owner == NULL)
+        return 0;
+    object = (GAMEOBJECT *)((APIOBJECT_PC *)packet->owner)->owner;
+    if (first_time != 0) {
+        object->run_speed_override = object->character_data->game_character->run_speed;
+        set_speedermode = 0;
+        processor->action_data_1 = 0;
+        processor->action_timer = 0.0f;
+        speeder_hitpoints_lost = 0;
+        speeder_mode_ahead_timer = 0.0f;
+        processor->action_data_2 = object->current_hp;
+    }
+    if (processor->action_data_1 > 4)
+        processor->action_data_1 = 0;
+    base_speed = object->character_data->game_character->run_speed;
+    if (player->sock_position.sock_index == 1) {
+        if (player2 != NULL) {
+            error = MidDistanceFromSockStart(WORLD->sock_sys, &player2->sock_position) -
+                    MidDistanceFromSockStart(WORLD->sock_sys, &player->sock_position);
+            if (error > sock->unknown_98 * 0.5)
+                error -= sock->unknown_98;
+            else if (error < sock->unknown_98 * -0.5)
+                error += sock->unknown_98;
+            if (0.0f > speedervals[processor->action_data_1].distance)
+                reference = error > 0.0f ? player : player2;
+            else
+                reference = error > 0.0f ? player2 : player;
+            distance = MidDistanceFromSockStart(WORLD->sock_sys, &object->sock_position) -
+                       MidDistanceFromSockStart(WORLD->sock_sys, &reference->sock_position);
+        } else {
+            distance = MidDistanceFromSockStart(WORLD->sock_sys, &object->sock_position) -
+                       MidDistanceFromSockStart(WORLD->sock_sys, &player->sock_position);
+        }
+        if (distance > sock->unknown_98 * 0.5)
+            distance -= sock->unknown_98;
+        else if (distance < sock->unknown_98 * -0.5)
+            distance += sock->unknown_98;
+        if (speederfirerange > distance)
+            can_fire = 1;
+        if (speeder_kill_dist < distance) {
+            KillGameObject(object, 4, 0);
+            return 1;
+        }
+        error = distance - speedervals[processor->action_data_1].distance;
+        if (processor->action_data_1 == 0) {
+            if (processor->action_timer < zoom_ahead_extra_time)
+                error -= (zoom_ahead_extra_time - processor->action_timer) / zoom_ahead_extra_time * zoom_ahead_extra;
+            if (speeder_mode_ahead_timer < 2.0f)
+                speeder_hitpoints_lost = 0;
+        }
+    } else {
+        error = 0.0f;
+        distance = 0.0f;
+    }
+    if (error > 0.0f) {
+        error = error / speedervals[processor->action_data_1].behind_range;
+        if (error > 1.0f)
+            error = 1.0f;
+        error = speedervals[processor->action_data_1].behind_speed * error + (1.0f - error);
+        seek = speedervals[processor->action_data_1].behind_seek;
+    } else {
+        error = error / speedervals[processor->action_data_1].ahead_range;
+        if (error > 1.0f)
+            error = 1.0f;
+        error = speedervals[processor->action_data_1].ahead_speed * error + (1.0f - error);
+        seek = speedervals[processor->action_data_1].ahead_seek;
+    }
+    object->run_speed_override = SeekValF(object->run_speed_override, error * base_speed, seek);
+    if (processor->action_data_3 == NULL) {
+        if (distance > 0.0f)
+            processor->action_data_3 = (void *)1;
+        else
+            processor->action_timer = 0.0f;
+    } else {
+        speeder_mode_ahead_timer += elapsed;
+    }
+    if (processor->action_data_1 == 1 || processor->action_data_3 == NULL)
+        object->movement_spline_offset.y =
+            SeekValF(object->movement_spline_offset.y, speeder_level_height, speeder_level_height_lerpf);
+    else
+        object->movement_spline_offset.y = SeekValF(object->movement_spline_offset.y, 0.0f, speeder_level_height_lerpf);
+    if (processor->action_data_2 > object->current_hp) {
+        speeder_hitpoints_lost++;
+        processor->action_data_2 = object->current_hp;
+    }
+    if (object->character_context != -1)
+        return 0;
+    if (processor->action_data_1 != (u8)set_speedermode) {
+        processor->action_data_1 = (u8)set_speedermode;
+        if (set_speedermode == 1)
+            processor->action_timer = 0.25f;
+        else
+            processor->action_timer = 0.0f;
+    }
+    switch (processor->action_data_1) {
+        case 0:
+            if (players_going_forward == 0) {
+                processor->action_timer = 0.0f;
+                return 0;
+            }
+            if (speedervals[0].distance * 0.8f < distance || 0.0f < processor->action_timer) {
+                if (speeder_hitpoints_lost < 2) {
+                    processor->action_timer += elapsed;
+                    if (!(speeder_ahead_time < processor->action_timer))
+                        return 0;
+                }
+                SpeederChase_SetMode(processor, 1);
+                object->pad->buttons_pressed |= GAMEPAD_JUMP;
+                return 0;
+            }
+            break;
+        case 1:
+            if (players_going_forward == 0)
+                goto reset;
+            if (0.0f > distance) {
+                SpeederChase_SetMode(processor, 2);
+                return 0;
+            }
+            processor->action_timer -= elapsed;
+            if (!(processor->action_timer > 0.0f) && processor->action_timer < -1.0f &&
+                player->character_context == 0x36) {
+                SpeederChase_SetMode(processor, 3);
+                return 0;
+            }
+            break;
+        case 2:
+            if (players_going_forward == 0)
+                goto reset;
+            if (player->character_context == 0x36)
+                SpeederChase_SetMode(processor, 3);
+            if (0.0f < speeder_shootrate) {
+                processor->action_timer -= elapsed;
+                if (processor->action_timer <= 0.0f) {
+                    processor->action_timer = NuRandFloat() * speeder_shootrate + speeder_shootrate * 0.5f;
+                    if (can_fire != 0) {
+                        object->pad->buttons_pressed |= GAMEPAD_ACTION;
+                        return 0;
+                    }
+                }
+            }
+            break;
+        case 3:
+            if (speeder_hitpoints_lost < 3) {
+                processor->action_timer += elapsed;
+                if (!(speeder_midrange_time < processor->action_timer))
+                    return 0;
+            }
+            SpeederChase_SetMode(processor, 0);
+            return 0;
+    }
+    return 0;
+reset:
+    SpeederChase_SetMode(processor, 0);
+    return 0;
+}
+
 /* Android speederchase.cpp:99 candidate adapted to the complete PC body. */
 extern i32 objopponent_ignoreaiopponent;
 extern i32 ComboOpponent_Behind;
