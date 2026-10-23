@@ -3210,14 +3210,14 @@ static void GameDrawMtxRotateXPc(NUMTX *matrix, NUANG angle) {
     f32 m21 = matrix->m21;
     f32 m31 = matrix->m31;
 
-    matrix->m01 = m01 * cosine - matrix->m02 * sine;
-    matrix->m02 = m01 * sine + matrix->m02 * cosine;
-    matrix->m11 = m11 * cosine - matrix->m12 * sine;
-    matrix->m12 = m11 * sine + matrix->m12 * cosine;
-    matrix->m21 = m21 * cosine - matrix->m22 * sine;
-    matrix->m22 = m21 * sine + matrix->m22 * cosine;
-    matrix->m31 = m31 * cosine - matrix->m32 * sine;
-    matrix->m32 = m31 * sine + matrix->m32 * cosine;
+    matrix->m01 = (m01 * cosine) - (matrix->m02 * sine);
+    matrix->m02 = (m01 * sine) + (matrix->m02 * cosine);
+    matrix->m11 = (m11 * cosine) - (matrix->m12 * sine);
+    matrix->m12 = (m11 * sine) + (matrix->m12 * cosine);
+    matrix->m21 = (m21 * cosine) - (matrix->m22 * sine);
+    matrix->m22 = (m21 * sine) + (matrix->m22 * cosine);
+    matrix->m31 = (m31 * cosine) - (matrix->m32 * sine);
+    matrix->m32 = (m31 * sine) + (matrix->m32 * cosine);
 }
 
 static void GameDrawMtxRotateYPc(NUMTX *matrix, NUANG angle) {
@@ -3246,14 +3246,14 @@ static void GameDrawMtxRotateZPc(NUMTX *matrix, NUANG angle) {
     f32 m20 = matrix->m20;
     f32 m30 = matrix->m30;
 
-    matrix->m00 = m00 * cosine - matrix->m01 * sine;
-    matrix->m01 = m00 * sine + matrix->m01 * cosine;
-    matrix->m10 = m10 * cosine - matrix->m11 * sine;
-    matrix->m11 = m10 * sine + matrix->m11 * cosine;
-    matrix->m20 = m20 * cosine - matrix->m21 * sine;
-    matrix->m21 = m20 * sine + matrix->m21 * cosine;
-    matrix->m30 = m30 * cosine - matrix->m31 * sine;
-    matrix->m31 = m30 * sine + matrix->m31 * cosine;
+    matrix->m00 = (m00 * cosine) - (matrix->m01 * sine);
+    matrix->m01 = (m00 * sine) + (matrix->m01 * cosine);
+    matrix->m10 = (m10 * cosine) - (matrix->m11 * sine);
+    matrix->m11 = (m10 * sine) + (matrix->m11 * cosine);
+    matrix->m20 = (m20 * cosine) - (matrix->m21 * sine);
+    matrix->m21 = (m20 * sine) + (matrix->m21 * cosine);
+    matrix->m30 = (m30 * cosine) - (matrix->m31 * sine);
+    matrix->m31 = (m30 * sine) + (matrix->m31 * cosine);
 }
 
 #include <string.h>

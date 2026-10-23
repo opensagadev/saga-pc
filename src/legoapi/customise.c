@@ -58,7 +58,7 @@ void __cdecl Customiser_SetAnimsToLoad(CUSTOMISER_LAYERS_PC *input, i32 enabled)
             animation->flags |= 0x8000u;
             if (customiser->animation_ids_to_load == NULL)
                 continue;
-            for (i = 0; customiser->animation_ids_to_load[i] != 0xffff; ++i) {
+            for (i = 0; (i16)customiser->animation_ids_to_load[i] != -1; ++i) {
                 if (customiser->animation_ids_to_load[i] == (u16)animation->action_id) {
                     animation->flags &= ~0x8000u;
                     break;
@@ -1479,10 +1479,12 @@ static void CustomiserMtxSetRotateZPc(NUMTX *matrix, i32 angle) {
     const f32 sine = NuTrigTable[(angle >> 1) & 0x7fff];
     matrix->m00 = cosine;
     matrix->m01 = sine;
-    matrix->m02 = matrix->m03 = 0.0f;
+    matrix->m02 = 0.0f;
+    matrix->m03 = 0.0f;
     matrix->m10 = -sine;
     matrix->m11 = cosine;
-    matrix->m12 = matrix->m13 = 0.0f;
+    matrix->m12 = 0.0f;
+    matrix->m13 = 0.0f;
     matrix->m20 = ANI3_EVAL_IDENTITY_MATRIX.m20;
     matrix->m21 = ANI3_EVAL_IDENTITY_MATRIX.m21;
     matrix->m22 = ANI3_EVAL_IDENTITY_MATRIX.m22;
@@ -1496,14 +1498,14 @@ static void CustomiserMtxRotateXPc(NUMTX *matrix, i32 angle) {
     const f32 cosine = NuTrigTable[((angle + 0x4000) >> 1) & 0x7fff];
     const f32 sine = NuTrigTable[(angle >> 1) & 0x7fff];
     const f32 a = matrix->m01, b = matrix->m11, c = matrix->m21, d = matrix->m31;
-    matrix->m01 = a * cosine - matrix->m02 * sine;
-    matrix->m02 = matrix->m02 * cosine + a * sine;
-    matrix->m11 = b * cosine - matrix->m12 * sine;
-    matrix->m12 = matrix->m12 * cosine + b * sine;
-    matrix->m21 = c * cosine - matrix->m22 * sine;
-    matrix->m22 = c * sine + matrix->m22 * cosine;
-    matrix->m31 = d * cosine - matrix->m32 * sine;
-    matrix->m32 = matrix->m32 * cosine + d * sine;
+    matrix->m01 = (a * cosine) - (matrix->m02 * sine);
+    matrix->m02 = (matrix->m02 * cosine) + (a * sine);
+    matrix->m11 = (b * cosine) - (matrix->m12 * sine);
+    matrix->m12 = (matrix->m12 * cosine) + (b * sine);
+    matrix->m21 = (c * cosine) - (matrix->m22 * sine);
+    matrix->m22 = (c * sine) + (matrix->m22 * cosine);
+    matrix->m31 = (d * cosine) - (matrix->m32 * sine);
+    matrix->m32 = (matrix->m32 * cosine) + (d * sine);
 }
 static void CustomiserMtxRotateYPc(NUMTX *matrix, i32 angle) {
     const f32 cosine = NuTrigTable[((angle + 0x4000) >> 1) & 0x7fff];

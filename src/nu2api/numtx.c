@@ -423,14 +423,14 @@ void __cdecl NuMtxRotateX(NUMTX *m, NUANG angle) {
     f32 m21 = m->m21;
     f32 m31 = m->m31;
 
-    m->m01 = m01 * cos_x - m->m02 * sin_x;
-    m->m02 = m01 * sin_x + m->m02 * cos_x;
-    m->m11 = m11 * cos_x - m->m12 * sin_x;
-    m->m12 = m11 * sin_x + m->m12 * cos_x;
-    m->m21 = m21 * cos_x - m->m22 * sin_x;
-    m->m22 = m21 * sin_x + m->m22 * cos_x;
-    m->m31 = m31 * cos_x - m->m32 * sin_x;
-    m->m32 = m31 * sin_x + m->m32 * cos_x;
+    m->m01 = (m01 * cos_x) - (m->m02 * sin_x);
+    m->m02 = (m01 * sin_x) + (m->m02 * cos_x);
+    m->m11 = (m11 * cos_x) - (m->m12 * sin_x);
+    m->m12 = (m11 * sin_x) + (m->m12 * cos_x);
+    m->m21 = (m21 * cos_x) - (m->m22 * sin_x);
+    m->m22 = (m21 * sin_x) + (m->m22 * cos_x);
+    m->m31 = (m31 * cos_x) - (m->m32 * sin_x);
+    m->m32 = (m31 * sin_x) + (m->m32 * cos_x);
 }
 
 void __cdecl NuMtxRotateY(NUMTX *m, NUANG angle) {
@@ -459,14 +459,14 @@ void __cdecl NuMtxRotateZ(NUMTX *m, NUANG angle) {
     f32 m20 = m->m20;
     f32 m30 = m->m30;
 
-    m->m00 = m00 * cos_z - m->m01 * sin_z;
-    m->m01 = m00 * sin_z + m->m01 * cos_z;
-    m->m10 = m10 * cos_z - m->m11 * sin_z;
-    m->m11 = m10 * sin_z + m->m11 * cos_z;
-    m->m20 = m20 * cos_z - m->m21 * sin_z;
-    m->m21 = m20 * sin_z + m->m21 * cos_z;
-    m->m30 = m30 * cos_z - m->m31 * sin_z;
-    m->m31 = m30 * sin_z + m->m31 * cos_z;
+    m->m00 = (m00 * cos_z) - (m->m01 * sin_z);
+    m->m01 = (m00 * sin_z) + (m->m01 * cos_z);
+    m->m10 = (m10 * cos_z) - (m->m11 * sin_z);
+    m->m11 = (m10 * sin_z) + (m->m11 * cos_z);
+    m->m20 = (m20 * cos_z) - (m->m21 * sin_z);
+    m->m21 = (m20 * sin_z) + (m->m21 * cos_z);
+    m->m30 = (m30 * cos_z) - (m->m31 * sin_z);
+    m->m31 = (m30 * sin_z) + (m->m31 * cos_z);
 }
 
 void __cdecl NuMtxPreRotateX(NUMTX *m, NUANG angle) {

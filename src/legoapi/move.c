@@ -1572,14 +1572,14 @@ static void MovementMtxRotateX(NUMTX *m, NUANG angle) {
     f32 m21 = m->m21;
     f32 m31 = m->m31;
 
-    m->m01 = m01 * cos_x - m->m02 * sin_x;
-    m->m02 = m01 * sin_x + m->m02 * cos_x;
-    m->m11 = m11 * cos_x - m->m12 * sin_x;
-    m->m12 = m11 * sin_x + m->m12 * cos_x;
-    m->m21 = m21 * cos_x - m->m22 * sin_x;
-    m->m22 = m21 * sin_x + m->m22 * cos_x;
-    m->m31 = m31 * cos_x - m->m32 * sin_x;
-    m->m32 = m31 * sin_x + m->m32 * cos_x;
+    m->m01 = (m01 * cos_x) - (m->m02 * sin_x);
+    m->m02 = (m01 * sin_x) + (m->m02 * cos_x);
+    m->m11 = (m11 * cos_x) - (m->m12 * sin_x);
+    m->m12 = (m11 * sin_x) + (m->m12 * cos_x);
+    m->m21 = (m21 * cos_x) - (m->m22 * sin_x);
+    m->m22 = (m21 * sin_x) + (m->m22 * cos_x);
+    m->m31 = (m31 * cos_x) - (m->m32 * sin_x);
+    m->m32 = (m31 * sin_x) + (m->m32 * cos_x);
 }
 
 static void MovementMtxRotateY(NUMTX *m, NUANG angle) {
@@ -5018,14 +5018,14 @@ static void MovementMtxRotateZPc(NUMTX *matrix, i32 angle) {
     f32 m10 = matrix->m10;
     f32 m20 = matrix->m20;
     f32 m30 = matrix->m30;
-    matrix->m00 = m00 * cos_z - matrix->m01 * sin_z;
-    matrix->m01 = m00 * sin_z + matrix->m01 * cos_z;
-    matrix->m10 = m10 * cos_z - matrix->m11 * sin_z;
-    matrix->m11 = m10 * sin_z + matrix->m11 * cos_z;
-    matrix->m20 = m20 * cos_z - matrix->m21 * sin_z;
-    matrix->m21 = m20 * sin_z + matrix->m21 * cos_z;
-    matrix->m30 = m30 * cos_z - matrix->m31 * sin_z;
-    matrix->m31 = m30 * sin_z + matrix->m31 * cos_z;
+    matrix->m00 = (m00 * cos_z) - (matrix->m01 * sin_z);
+    matrix->m01 = (m00 * sin_z) + (matrix->m01 * cos_z);
+    matrix->m10 = (m10 * cos_z) - (matrix->m11 * sin_z);
+    matrix->m11 = (m10 * sin_z) + (matrix->m11 * cos_z);
+    matrix->m20 = (m20 * cos_z) - (matrix->m21 * sin_z);
+    matrix->m21 = (m20 * sin_z) + (matrix->m21 * cos_z);
+    matrix->m30 = (m30 * cos_z) - (matrix->m31 * sin_z);
+    matrix->m31 = (m30 * sin_z) + (matrix->m31 * cos_z);
 }
 typedef struct beast_poo_volume_view_pc_s {
     u8 unknown_0[0xd94];

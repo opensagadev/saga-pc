@@ -289,14 +289,14 @@ static void GrabberMtxRotateX(NUMTX *m, NUANG a) {
     m21 = m->m21;
     m31 = m->m31;
 
-    m->m01 = m01 * cosx - m->m02 * sinx;
-    m->m02 = m01 * sinx + m->m02 * cosx;
-    m->m11 = m11 * cosx - m->m12 * sinx;
-    m->m12 = m11 * sinx + m->m12 * cosx;
-    m->m21 = m21 * cosx - m->m22 * sinx;
-    m->m22 = m21 * sinx + m->m22 * cosx;
-    m->m31 = m31 * cosx - m->m32 * sinx;
-    m->m32 = m31 * sinx + m->m32 * cosx;
+    m->m01 = (m01 * cosx) - (m->m02 * sinx);
+    m->m02 = (m01 * sinx) + (m->m02 * cosx);
+    m->m11 = (m11 * cosx) - (m->m12 * sinx);
+    m->m12 = (m11 * sinx) + (m->m12 * cosx);
+    m->m21 = (m21 * cosx) - (m->m22 * sinx);
+    m->m22 = (m21 * sinx) + (m->m22 * cosx);
+    m->m31 = (m31 * cosx) - (m->m32 * sinx);
+    m->m32 = (m31 * sinx) + (m->m32 * cosx);
 }
 
 static i32 GrabberFindShadow(NUVEC *position, GRABBER_PC *grabber) {
