@@ -7266,6 +7266,8 @@ address,symbol,size,ctype
 0x6626e0,_cbPtlCopyEffect,413,"void __cdecl (struct eduimenu_s *, struct eduiitem_s *, u32)"
 0x662880,_edptlcbPasteClipboard,75,
 0x6628d0,_edptlcbCutClipboard,71,
+0x662920,_edptlcbApplyBounceOffset,64,
+0x662960,_edptlcbApplyBounceFactor,64,
 0x6629a0,_edptlcbApplyGhostTime,66,
 0x6629f0,_edptlcbApplyStarPoints,74,
 0x662a40,_edptlcbApplyStarRatio,66,
@@ -7281,6 +7283,7 @@ address,symbol,size,ctype
 0x663090,_cbPtlChangeCameraCutOff,63,
 0x6630d0,_cbCancelChangeGenRateMenu,25,
 0x6630f0,_cbCancelChangeETimeMenu,25,
+0x663110,_cbPtlApplyJib,136,
 0x663750,_cbPtlApplyRot,325,
 0x6638a0,_cbPtlSelType,47,
 0x6638d0,_cbPtlSelGSort,282,
@@ -7309,7 +7312,9 @@ address,symbol,size,ctype
 0x664850,_edptlcbOrphanListMenu,166,
 0x664900,_cbPtlCancelTypeMenu,25,
 0x664920,_cbPtlCancelQuickDeleteMenu,25,
+0x664c30,_cbPtlCancelJibMenu,42,
 0x664c60,_cbPtlJibMenu,514,
+0x664e70,_edptlcbCancelBounceMenu,25,
 0x664e90,_edptlcbBounceMenu,356,
 0x665000,_edptlcbCancelGhostMenu,25,
 0x665020,_edptlcbCancelStarMenu,25,
@@ -7327,6 +7332,8 @@ address,symbol,size,ctype
 0x6663d0,_cbPtlApplyTorusEnv3,263,
 0x6664e0,_cbPtlCancelTorusMenu,37,
 0x666510,_cbPtlTorusMenu,844,
+0x666860,_cbPtlChangeDamageFlags,84,
+0x6668c0,_cbPtlCancelDamageFlagMenu,25,
 0x6668e0,_cbPtlDamageFlagMenu,259,
 0x6669f0,_cbPtlCancelDamageMenu,25,
 0x666a10,_cbPtlDamageMenu,251,
@@ -16374,6 +16381,14 @@ address,symbol,size,ctype
 0x76db04,??_C@_0P@JCNKIOMJ@Gravity?5Rotate?$AA@,15,char []
 0x76db14,??_C@_0P@JDBJAHPH@Emitter?5Rotate?$AA@,15,char []
 0x76db24,??_C@_0M@HHMMKJJG@Orphan?5List?$AA@,12,char []
+0x76db90,??_C@_0N@IOOMOAKB@Jibber?5Y?5Amp?$AA@,13,char []
+0x76dba0,??_C@_0O@DHMMMNGL@Jibber?5Y?5Freq?$AA@,14,char []
+0x76dbb0,??_C@_0N@EFLADDAE@Jibber?5X?5Amp?$AA@,13,char []
+0x76dbc0,??_C@_0O@JBLLMGNP@Jibber?5X?5Freq?$AA@,14,char []
+0x76dbd0,??_C@_0BA@OHEIBKGD@Particle?5Jibber?$AA@,16,char []
+0x76dbe0,??_C@_0O@EMDHNJJI@Bounce?5Factor?$AA@,14,char []
+0x76dbf0,??_C@_0N@GDPGKFHC@Plane?5Offset?$AA@,13,char []
+0x76dc00,??_C@_0BA@JLOGLLBH@Particle?5Bounce?$AA@,16,char []
 0x76dc10,??_C@_0N@BECJLPFI@Radius?5Ratio?$AA@,13,char []
 0x76dc20,??_C@_0BB@DFFKJGLN@Number?5of?5Points?$AA@,17,char []
 0x76dc34,??_C@_0O@IJGLMPG@Star?5Settings?$AA@,14,char []
@@ -16388,6 +16403,9 @@ address,symbol,size,ctype
 0x76dcf8,??_C@_0BC@GODJDHFK@Base?5Major?5Radius?$AA@,18,char []
 0x76dd0c,??_C@_0L@BDMHCBNO@Torus?5Life?$AA@,11,char []
 0x76dd18,??_C@_0BA@FNIJMHCI@Collision?5Torus?$AA@,16,char []
+0x76dd28,??_C@_04GJNEPEJP@Evil?$AA@,5,char []
+0x76dd30,??_C@_04PCFBEJFA@Good?$AA@,5,char []
+0x76dd38,??_C@_0N@LLEKLJLD@Damage?5Flags?$AA@,13,char []
 0x76dd48,??_C@_0BD@FPLINHMD@Collision?5Torus?4?4?4?$AA@,19,char []
 0x76dd5c,??_C@_0BF@HIBEDCMH@Collision?5Spheres?4?4?4?$AA@,21,char []
 0x76dd74,??_C@_0BA@BNCPEHEG@Damage?5Flags?4?4?4?$AA@,16,char []
@@ -25047,6 +25065,7 @@ address,symbol,size,ctype
 0x2947c80,_TerrShapeAdjCnt,,i32
 0x02947c84,_TerrainSkinInfosPc,,
 0x2947c88,_edpp_mtl,4,struct PC_SCENE_MTL_VIEW *
+0x2947c8c,_edptl_damageflag_menu,4,struct eduimenu_s *
 0x2947c94,_CurTrackInfo,,TERRAIN_TRACK_SLOT_PC *
 0x02947c9c,_edanim_page_scene,32,NUGSCN *[8]
 0x2947cc0,_TempScanStack,,void *
@@ -25077,6 +25096,7 @@ address,symbol,size,ctype
 0x2961f70,_curPickInst,,i32
 0x2961f74,_edgra_page_scene,,NUGSCN*[8]
 0x2961f94,_PlatImpactId,,i32
+0x2961f98,_ptljibmenu,4,struct eduimenu_s *
 0x2961f9c,_edanim_particle_mode,,i32
 0x02961fa0,_edanim_page_used,32,i32[8]
 0x2961fc0,_PlatImpactNorm,,NUVEC
@@ -25230,6 +25250,7 @@ address,symbol,size,ctype
 0x2962a60,_edpp_showAllPlaced,4,i32
 0x2962a64,_edpp_dpad_mode,4,i32
 0x2962a68,_edpp_readout,4,i32
+0x2962a84,_edptl_bounce_menu,4,struct eduimenu_s *
 0x2962a88,_edptl_group_menu,4,struct eduimenu_s *
 0x2962a8c,_edptl_ghost_menu,4,struct eduimenu_s *
 0x2962a90,_edptl_star_menu,4,struct eduimenu_s *
@@ -25254,6 +25275,10 @@ address,symbol,size,ctype
 0x2962b14,_grad_rot_item,4,struct eduiitem_s *
 0x2962b18,_grad_rot_min_item,4,struct edui_slider_s *
 0x2962b1c,_grad_rot_max_item,4,struct edui_slider_s *
+0x2962b20,_grad_jib_x_freq_item,4,struct edui_slider_s *
+0x2962b24,_grad_jib_x_amp_item,4,struct edui_slider_s *
+0x2962b28,_grad_jib_y_freq_item,4,struct edui_slider_s *
+0x2962b2c,_grad_jib_y_amp_item,4,struct edui_slider_s *
 0x2962b30,_coll_env_item,4,struct eduiitem_s *
 0x2962b34,_torus_env1_item,4,struct eduiitem_s *
 0x2962b38,_torus_env2_item,4,struct eduiitem_s *

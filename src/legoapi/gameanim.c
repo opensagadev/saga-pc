@@ -1526,7 +1526,7 @@ void edanimcbMCTBCardFormat(eduimenu_s *menu, eduiitem_s *unused1, u32 unused2) 
     }
 }
 
-static void edanimEnter() {
+void edanimEnter() {
     edanim_nearest = -1;
     edanim_nearest_param_id = -1;
     edanim_nearest_particle = -1;

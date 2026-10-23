@@ -29041,6 +29041,27 @@ extern "C" {
 #pragma bss_seg(".bss$ptlcutoffmenu")
     struct eduimenu_s *ptlcutoffmenu = 0;
 #pragma bss_seg()
+#pragma bss_seg(".bss$ptljibmenu")
+    struct eduimenu_s *ptljibmenu = 0;
+#pragma bss_seg()
+#pragma bss_seg(".bss$grad_jib_x_freq_item")
+    struct edui_slider_s *grad_jib_x_freq_item = 0;
+#pragma bss_seg()
+#pragma bss_seg(".bss$grad_jib_x_amp_item")
+    struct edui_slider_s *grad_jib_x_amp_item = 0;
+#pragma bss_seg()
+#pragma bss_seg(".bss$grad_jib_y_freq_item")
+    struct edui_slider_s *grad_jib_y_freq_item = 0;
+#pragma bss_seg()
+#pragma bss_seg(".bss$grad_jib_y_amp_item")
+    struct edui_slider_s *grad_jib_y_amp_item = 0;
+#pragma bss_seg()
+#pragma bss_seg(".bss$edptl_bounce_menu")
+    struct eduimenu_s *edptl_bounce_menu = 0;
+#pragma bss_seg()
+#pragma bss_seg(".bss$edptl_damageflag_menu")
+    struct eduimenu_s *edptl_damageflag_menu = 0;
+#pragma bss_seg()
 #pragma bss_seg(".bss$edptl_star_menu")
     struct eduimenu_s *edptl_star_menu = 0;
 #pragma bss_seg()

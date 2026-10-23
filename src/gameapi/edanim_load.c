@@ -560,7 +560,7 @@ static void edanimcbFileLoad(eduimenu_s *menu, eduiitem_s *unused1, u32 unused2)
     else
         eduiCreateMessageMenu(menu, (char *)("File Load Error"), 0);
 }
-static void edanimRender() {
+void edanimRender() {
     if (edbitsProcessCubemapDump()) {
         return;
     }
@@ -570,11 +570,13 @@ static void edanimRender() {
     if (edanim_nearest != -1) {
         nuhspecial_s special;
         struct nuvec_s *position;
-        i32 colour = 0xffff0000;
+        i32 colour;
         if (edanim_particle_mode) {
             colour = 0xff00ff00;
-        } else if (!edanim_sound_mode) {
-            colour = edanim_nearest_param_id == -1 ? 0xff808080 : 0xffffffff;
+        } else if (edanim_sound_mode) {
+            colour = 0xffff0000;
+        } else {
+            colour = edanim_nearest_param_id != -1 ? 0xffffffff : 0xff808080;
         }
 
         NuGScnGetSpecial(&special, edbits_base_scene, edanim_nearest);
@@ -583,7 +585,8 @@ static void edanimRender() {
 
         if (edanim_particle_mode) {
             edanimRenderParticleEmitters(edanim_nearest_param_id);
-        } else if (edanim_sound_mode) {
+        }
+        if (edanim_sound_mode) {
             edanimRenderSoundEmitters(edanim_nearest_param_id);
         }
     }

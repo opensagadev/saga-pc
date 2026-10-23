@@ -68,7 +68,12 @@ static void cbChangeNameMenu(eduimenu_s *menu, eduiitem_s *unused1, u32 unused2)
         namemenu->y = menu->y + 40;
     }
 }
-static i32 edppProc(f32 delta_time, FRAME_PAD_PC *pad) {
+static __inline void edppDebrisStatusNormal(i32 *handle) {
+    if (*handle != -1)
+        debkeydata[*handle].field_2f4 = 1;
+}
+
+i32 edppProc(f32 delta_time, FRAME_PAD_PC *pad) {
     edptl_count += 5;
     if (edpp_active_menu != NULL) {
         eduiMenuProcess(edpp_active_menu, delta_time, pad);
@@ -77,7 +82,7 @@ static i32 edppProc(f32 delta_time, FRAME_PAD_PC *pad) {
     edppDoInput(pad);
     edppDetermineNearest(1.0f);
     if (edpp_nearest != -1)
-        DebrisStatusNormal(&edpp_ptls[edpp_nearest].instance_id);
+        edppDebrisStatusNormal(&edpp_ptls[edpp_nearest].instance_id);
     return (pad->digital_buttons_pressed >> 11) & 1;
 }
 
@@ -278,10 +283,82 @@ void cbPtlCancelQuickDeleteMenu(eduimenu_s *unused0, eduimenu_s *unused1) {
     edptl_quickdel_menu = NULL;
 }
 
-static void cbPtlJibMenu(eduimenu_s *parent, eduiitem_s *unused1, u32 unused2) {
+void cbPtlApplyJib(eduimenu_s *unused0, eduiitem_s *unused1, u32 unused2) {
+    DEBRIS_INFO_PC *effect;
+    i32 instance_id;
+    if (edpp_nearest == -1)
+        return;
+    instance_id = edpp_ptls[edpp_nearest].instance_id;
+    if (instance_id == -1)
+        return;
+    effect = debtab[debkeydata[instance_id].effect_index];
+    if (grad_jib_x_freq_item)
+        effect->jib_x_frequency = grad_jib_x_freq_item->value;
+    if (grad_jib_x_amp_item)
+        effect->jib_x_amplitude = grad_jib_x_amp_item->value;
+    if (grad_jib_y_freq_item)
+        effect->jib_y_frequency = grad_jib_y_freq_item->value;
+    if (grad_jib_y_amp_item)
+        effect->jib_y_amplitude = grad_jib_y_amp_item->value;
+    GenericDebinfoDmaTypeUpdate(effect);
+}
+
+void cbPtlCancelJibMenu(eduimenu_s *unused0, eduimenu_s *unused1) {
+    eduiMenuDestroy(ptljibmenu);
+    ptljibmenu = NULL;
+    grad_jib_x_freq_item = NULL;
+    grad_jib_x_amp_item = NULL;
+    grad_jib_y_freq_item = NULL;
+    grad_jib_y_amp_item = NULL;
+}
+
+void edptlcbCancelBounceMenu(eduimenu_s *unused0, eduimenu_s *unused1) {
+    eduiMenuDestroy(edptl_bounce_menu);
+    edptl_bounce_menu = NULL;
+}
+
+void edptlcbApplyBounceOffset(eduimenu_s *unused0, eduiitem_s *item, u32 unused2) {
+    if (edpp_nearest == -1)
+        return;
+    if (edpp_ptls[edpp_nearest].instance_id == -1)
+        return;
+    edpp_ptls[edpp_nearest].reflection_offset = ((edui_slider_s *)item)->value;
+    debkeydata[edpp_ptls[edpp_nearest].instance_id].collision_plane = ((edui_slider_s *)item)->value;
+}
+
+void edptlcbApplyBounceFactor(eduimenu_s *unused0, eduiitem_s *item, u32 unused2) {
+    if (edpp_nearest == -1)
+        return;
+    if (edpp_ptls[edpp_nearest].instance_id == -1)
+        return;
+    edpp_ptls[edpp_nearest].reflection_bounce = ((edui_slider_s *)item)->value;
+    debkeydata[edpp_ptls[edpp_nearest].instance_id].reflection_scale = ((edui_slider_s *)item)->value;
+}
+
+void cbPtlChangeDamageFlags(eduimenu_s *unused0, eduiitem_s *item, u32 unused2) {
+    DEBRIS_INFO_PC *effect;
+    i32 instance_id;
+    if (edpp_nearest == -1)
+        return;
+    instance_id = edpp_ptls[edpp_nearest].instance_id;
+    if (instance_id == -1)
+        return;
+    effect = debtab[debkeydata[instance_id].effect_index];
+    if (item->highlighted)
+        effect->collision_flags |= item->data;
+    else
+        effect->collision_flags &= ~item->data;
+}
+
+void cbPtlCancelDamageFlagMenu(eduimenu_s *unused0, eduimenu_s *unused1) {
+    eduiMenuDestroy(edptl_damageflag_menu);
+    edptl_damageflag_menu = NULL;
+}
+
+void cbPtlJibMenu(eduimenu_s *parent, eduiitem_s *unused1, u32 unused2) {
+    u32 colours[4] = {0x80000000, 0x80ff0000, 0x80808080, 0x80404040};
     if (!(edpp_nearest == -1 || edpp_ptls[edpp_nearest].instance_id == -1)) {
-        const DEBRIS_INFO_PC *effect = debtab[debkeydata[edpp_ptls[edpp_nearest].instance_id].effect_index];
-        const u32 colours[4] = {0x80000000, 0x80ff0000, 0x80808080, 0x80404040};
+        DEBRIS_INFO_PC *effect = debtab[debkeydata[edpp_ptls[edpp_nearest].instance_id].effect_index];
         ptljibmenu = eduiMenuCreate(70, 70, 180, 300, ed_fnt, cbPtlCancelJibMenu, "Particle Jibber");
         if (ptljibmenu == NULL)
             return;
@@ -304,15 +381,15 @@ static void cbPtlJibMenu(eduimenu_s *parent, eduiitem_s *unused1, u32 unused2) {
     }
 }
 
-static void edptlcbBounceMenu(eduimenu_s *parent, eduiitem_s *unused1, u32 unused2) {
-    u32 colours[4] = {0xc479c000, 0xc479c000, 0xc479c000, 0xc479c000};
+void edptlcbBounceMenu(eduimenu_s *parent, eduiitem_s *unused1, u32 unused2) {
+    u32 colours[4] = {0x80000000, 0x80ff0000, 0x80808080, 0x80404040};
     if (!(edpp_nearest == -1 || edpp_ptls[edpp_nearest].instance_id == -1)) {
         DEBRISKEY_PC *key = &debkeydata[edpp_ptls[edpp_nearest].instance_id];
         edptl_bounce_menu = eduiMenuCreate(70, 70, 200, 300, ed_fnt, edptlcbCancelBounceMenu, "Particle Bounce");
         if (edptl_bounce_menu != NULL) {
             eduiMenuAddItem(edptl_bounce_menu,
-                            eduiItemSliderCreate(0, colours, 0, edptlcbApplyBounceOffset, -10.0f * edptl_superscale,
-                                                 10.0f * edptl_superscale, key->collision_plane, "Plane Offset"));
+                            eduiItemSliderCreate(0, colours, 0, edptlcbApplyBounceOffset, -2.0 * (f32)edptl_superscale,
+                                                 4.0 * (f32)edptl_superscale, key->collision_plane, "Plane Offset"));
             eduiMenuAddItem(edptl_bounce_menu, eduiItemSliderCreate(0, colours, 0, edptlcbApplyBounceFactor, 0.0f, 2.0f,
                                                                     key->reflection_scale, "Bounce Factor"));
             eduiMenuAttach(parent, edptl_bounce_menu);
@@ -339,7 +416,7 @@ static void edptlcbStarMenu(eduimenu_s *parent, eduiitem_s *unused1, u32 unused2
     }
 }
 
-static void cbPtlDamageFlagMenu(eduimenu_s *menu, eduiitem_s *unused1, u32 unused2) {
+void cbPtlDamageFlagMenu(eduimenu_s *menu, eduiitem_s *unused1, u32 unused2) {
     struct debris_info_pc_s *effect;
     if (edpp_nearest == -1 || edpp_ptls[edpp_nearest].instance_id == -1) {
         return;
@@ -471,7 +548,7 @@ static void edptlcbOrphanListMenu(eduimenu_s *parent, eduiitem_s *unused1, u32 u
     edptl_orphanlist_menu->x = parent->x + 10;
     edptl_orphanlist_menu->y = parent->y + 40;
 }
-static void cbPtlDamageMenu(eduimenu_s *menu, eduiitem_s *unused1, u32 unused2) {
+void cbPtlDamageMenu(eduimenu_s *menu, eduiitem_s *unused1, u32 unused2) {
     if (edpp_nearest == -1 || edpp_ptls[edpp_nearest].instance_id == -1) {
         return;
     }
