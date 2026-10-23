@@ -1685,11 +1685,8 @@ void __cdecl FindSlamOrigin(GAMEOBJECT *object, NUVEC *start, NUVEC *end) {
         if (joint == -1 || object->origin_joint_ready == 0 || object->character_model == NULL ||
             object->character_model->points_of_interest[joint] == NULL)
             *end = *start;
-        else {
-            end->x = object->locator_matrices[joint].m30;
-            end->y = object->locator_matrices[joint].m31;
-            end->z = object->locator_matrices[joint].m32;
-        }
+        else
+            *end = object->locator_matrices[joint].translation;
     }
 }
 
@@ -3521,16 +3518,15 @@ void __cdecl StartFlatten(GAMEOBJECT *source, GAMEOBJECT *target) {
 extern f32 VehicleGunshipHoverBasePc, VehicleGunshipHoverOtherPc, VehicleGunshipHoverSeparationPc;
 f32 __cdecl FindGunshipHoverHeight(GAMEOBJECT *object) {
     f32 height = VehicleGunshipHoverBasePc;
-    if ((i8)object->field_280 < 2) {
-        if (WORLD->current_level != BONUS_GUNSHIPA_LDATA)
-            height = VehicleGunshipHoverOtherPc;
-        if (Player[0] != NULL && (((GAMEOBJECT *)Player[0])->flags_1fc & 0x80) && Player[1] != NULL &&
-            (((GAMEOBJECT *)Player[1])->flags_1fc & 0x80)) {
-            if (object == Player[0])
-                height += VehicleGunshipHoverSeparationPc;
-            else
-                height -= VehicleGunshipHoverSeparationPc;
-        }
+    if ((i8)object->field_280 >= 2)
+        return height;
+    if (WORLD->current_level != BONUS_GUNSHIPA_LDATA)
+        height = VehicleGunshipHoverOtherPc;
+    if (Player[0] != NULL && (((GAMEOBJECT *)Player[0])->flags_1fc & 0x80) && Player[1] != NULL &&
+        (((GAMEOBJECT *)Player[1])->flags_1fc & 0x80)) {
+        if (object == Player[0])
+            return VehicleGunshipHoverSeparationPc + height;
+        return height - VehicleGunshipHoverSeparationPc;
     }
     return height;
 }
@@ -7108,20 +7104,21 @@ extern i16 JumpBackFlipActionPc, JumpSlamActionPc;
 
 /* Native 5624d0: ordinary cdecl(object,vertical_speed), returning genuine success. */
 i32 __cdecl Slam_Start(GAMEOBJECT *object, f32 speed) {
-    if (LEGOCONTEXT_JUMP == -1)
-        return 0;
-    object->character_context = (i8)LEGOCONTEXT_JUMP;
-    object->action_movement_state = 4;
-    object->context_timer = 0.0f;
-    object->field_7aa = JumpSlamActionPc;
-    if ((object->flags_1fc & 0x80) != 0)
-        object->portal_flags |= 0x800;
-    object->velocity.y = speed;
-    object->jump_sequence = 0;
-    PlayJumpSfx(object, 4);
-    NewRumble(object->pad->bound_pad, 0.5f, 0);
-    object->context_variant_flags |= 0x10000;
-    return 1;
+    if (LEGOCONTEXT_JUMP != -1) {
+        object->character_context = (i8)LEGOCONTEXT_JUMP;
+        object->action_movement_state = 4;
+        object->field_7aa = JumpSlamActionPc;
+        object->context_timer = 0.0f;
+        if ((object->flags_1fc & 0x80) != 0)
+            object->portal_flags |= 0x800;
+        object->velocity.y = speed;
+        object->jump_sequence = 0;
+        PlayJumpSfx(object, 4);
+        NewRumble(object->pad->bound_pad, 0.5f, 0);
+        object->context_variant_flags |= 0x10000;
+        return 1;
+    }
+    return 0;
 }
 
 /* Native 49d6d0: genuine guard then fixed PC context/action and pointer member. */
@@ -8913,39 +8910,39 @@ static __declspec(noinline) void ComboJumpStartPc(GAMEOBJECT *object, i32 varian
 /* PC0049e370: object in ESI; result in EAX. */
 static __declspec(noinline) i32 ComboBlockStartPc(GAMEOBJECT *object) {
     COMBO_STATE_VIEW_PC *state = (COMBO_STATE_VIEW_PC *)object;
-    if (!NewBlockAction(object)) {
-        object->character_context = -1;
-        return 0;
-    }
-    object->character_context = 0xc;
-    object->block_latch = 0;
-    if (object->incoming_bolt != NULL) {
-        object->blocked_bolt = object->incoming_bolt;
-        object->blocked_part = NULL;
-        object->block_attacker = NULL;
-        state->blocked_attack_stage = 0;
-        object->context_timer = 0.3f;
-    } else {
-        object->blocked_bolt = NULL;
-        if (object->incoming_part != NULL) {
-            object->blocked_part = object->incoming_part;
+    if (NewBlockAction(object) != 0) {
+        object->character_context = 0xc;
+        object->block_latch = 0;
+        if (object->incoming_bolt != NULL) {
+            object->blocked_bolt = object->incoming_bolt;
+            object->blocked_part = NULL;
             object->block_attacker = NULL;
             state->blocked_attack_stage = 0;
             object->context_timer = 0.3f;
         } else {
-            object->context_timer = 0.1f;
-            object->blocked_part = NULL;
-            if (object->incoming_special != NULL) {
-                object->block_attacker = object->incoming_special;
-                state->blocked_attack_stage = (u8)object->incoming_special->field_7aa;
-                object->flags_e20 |= 0x20000000;
+            object->blocked_bolt = NULL;
+            if (object->incoming_part != NULL) {
+                object->blocked_part = object->incoming_part;
+                object->block_attacker = NULL;
+                state->blocked_attack_stage = 0;
+                object->context_timer = 0.3f;
             } else {
-                object->block_attacker = object->incoming_melee;
-                state->blocked_attack_stage = object->incoming_melee->combo_stage + 1;
+                object->context_timer = 0.1f;
+                object->blocked_part = NULL;
+                if (object->incoming_special != NULL) {
+                    object->block_attacker = object->incoming_special;
+                    state->blocked_attack_stage = (u8)object->incoming_special->field_7aa;
+                    object->flags_e20 |= 0x20000000;
+                } else {
+                    object->block_attacker = object->incoming_melee;
+                    state->blocked_attack_stage = object->incoming_melee->combo_stage + 1;
+                }
             }
         }
+        return 1;
     }
-    return 1;
+    object->character_context = -1;
+    return 0;
 }
 
 static __declspec(noinline) GAMEOBJECT *BlockFindAttackPc(GAMEOBJECT *object) {
