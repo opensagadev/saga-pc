@@ -240,16 +240,15 @@ void __cdecl edbriBridgeUpdate(i32 index, NUGSCN *scene) {
 }
 
 void edbriBridgePlace(i32 index, NUVEC *position) {
-    PC_EDBRIDGE *bridge = &edBridges[index];
-    bridge->position = *position;
-    bridge->rotation_z = edbri_rotz;
-    bridge->rotation_y = edbri_roty;
-    bridge->length = edbri_length;
-    bridge->field_14 = edbri_width;
-    bridge->field_1d = edbri_planks;
-    bridge->field_1e = edbri_post_interval;
-    bridge->special_20 = edbri_plank_instance_type;
-    bridge->special_24 = edbri_post_instance_type;
+    edBridges[index].position = *position;
+    edBridges[index].rotation_z = edbri_rotz;
+    edBridges[index].rotation_y = edbri_roty;
+    edBridges[index].length = edbri_length;
+    edBridges[index].field_14 = edbri_width;
+    edBridges[index].field_1d = edbri_planks;
+    edBridges[index].field_1e = edbri_post_interval;
+    edBridges[index].special_20 = edbri_plank_instance_type;
+    edBridges[index].special_24 = edbri_post_instance_type;
     edbriBridgeUpdate(index, edbits_base_scene);
 }
 
@@ -276,14 +275,12 @@ void __cdecl edbriStartPage(i32 page_number) {
 }
 
 static void edbricbRopeColourMenu(eduimenu_s *parent, eduiitem_s *unused1, u32 unused2) {
-    PC_EDBRIDGE *bridge;
     edbri_ropecolour_menu = eduiMenuCreate(70, 70, 180, 250, ed_fnt, edbricbCancelRopeColourMenu, "Rope Colour");
     if (!edbri_ropecolour_menu)
         return;
     eduiMenuAddItem(edbri_ropecolour_menu, eduiItemColourPickCreate(0, edblack, edbricbSetRopeColour, "Rope Colour"));
-    bridge = &(edBridges[edbri_nearest]);
-    eduiItemColourPickSetRGB(((edui_colour_pick_s *)(edui_last_item)), (*bridge).red / 255.0f, (*bridge).green / 255.0f,
-                             (*bridge).blue / 255.0f);
+    eduiItemColourPickSetRGB(((edui_colour_pick_s *)(edui_last_item)), edBridges[edbri_nearest].red / 255.0f,
+                             edBridges[edbri_nearest].green / 255.0f, edBridges[edbri_nearest].blue / 255.0f);
     eduiMenuAttach(parent, edbri_ropecolour_menu);
     edbri_ropecolour_menu->x = parent->x + 10;
     edbri_ropecolour_menu->y = parent->y + 40;
