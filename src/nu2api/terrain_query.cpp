@@ -2990,30 +2990,26 @@ STATIC_ASSERT(offsetof(NUMTX, m32) == 0x38);
 
 extern "C" void RotateTerrainPc(TERRAIN_SHAPE *surface) {
     TerrainQuery_s *query = static_cast<TerrainQuery_s *>(TerI);
-    const f32 pitch = query->movement_pitch;
-    const f32 sin_pitch = NuTrigTable[(static_cast<i32>(pitch) >> 1) & (NUTRIGTABLE_COUNT - 1)];
+    const f32 sin_pitch = NuTrigTable[(static_cast<i32>(query->movement_pitch) >> 1) & (NUTRIGTABLE_COUNT - 1)];
     const f32 cos_pitch =
-        NuTrigTable[(static_cast<i32>(static_cast<f64>(pitch) + 16384.0) >> 1) & (NUTRIGTABLE_COUNT - 1)];
-    const f32 yaw = query->movement_yaw;
-    const f32 sin_yaw = NuTrigTable[(static_cast<i32>(yaw) >> 1) & (NUTRIGTABLE_COUNT - 1)];
-    const f32 cos_yaw = NuTrigTable[(static_cast<i32>(static_cast<f64>(yaw) + 16384.0) >> 1) & (NUTRIGTABLE_COUNT - 1)];
+        NuTrigTable[(static_cast<i32>(query->movement_pitch + 16384.0) >> 1) & (NUTRIGTABLE_COUNT - 1)];
+    const f32 sin_yaw = NuTrigTable[(static_cast<i32>(query->movement_yaw) >> 1) & (NUTRIGTABLE_COUNT - 1)];
+    const f32 cos_yaw = NuTrigTable[(static_cast<i32>(query->movement_yaw + 16384.0) >> 1) & (NUTRIGTABLE_COUNT - 1)];
+    f32 rotated_z;
+#define TERRAIN_RTP_VERTEX(index)                                                                                      \
+    query->transformed_vertices[index].y =                                                                             \
+        surface->vertices[index].y * cos_pitch - surface->vertices[index].z * sin_pitch;                               \
+    rotated_z = surface->vertices[index].z * cos_pitch + surface->vertices[index].y * sin_pitch;                       \
+    query->transformed_vertices[index].z = rotated_z * cos_yaw - surface->vertices[index].x * sin_yaw;                 \
+    query->transformed_vertices[index].x = surface->vertices[index].x * cos_yaw + rotated_z * sin_yaw
 
-    for (i32 vertex_index = 0; vertex_index < 3; ++vertex_index) {
-        const NUVEC &source = surface->vertices[vertex_index];
-        NUVEC &destination = query->transformed_vertices[vertex_index];
-        const f32 rotated_z = source.y * sin_pitch + source.z * cos_pitch;
-        destination.y = source.y * cos_pitch - source.z * sin_pitch;
-        destination.z = rotated_z * cos_yaw - source.x * sin_yaw;
-        destination.x = rotated_z * sin_yaw + source.x * cos_yaw;
+    TERRAIN_RTP_VERTEX(0);
+    TERRAIN_RTP_VERTEX(1);
+    TERRAIN_RTP_VERTEX(2);
+    if (surface->normals[1].y < 65536.0f) {
+        TERRAIN_RTP_VERTEX(3);
     }
-    if (65536.0f > surface->normals[1].y) {
-        const NUVEC &source = surface->vertices[3];
-        NUVEC &destination = query->transformed_vertices[3];
-        const f32 rotated_z = source.y * sin_pitch + source.z * cos_pitch;
-        destination.y = source.y * cos_pitch - source.z * sin_pitch;
-        destination.z = rotated_z * cos_yaw - source.x * sin_yaw;
-        destination.x = rotated_z * sin_yaw + source.x * cos_yaw;
-    }
+#undef TERRAIN_RTP_VERTEX
 }
 
 extern "C" void FullDeflectSizePc(NUVEC *normal, NUVEC *movement, NUVEC *result) {
