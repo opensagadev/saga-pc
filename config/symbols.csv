@@ -3574,6 +3574,7 @@ address,symbol,size,ctype
 0x0054b640,_Text_IsFontLoaded,6,void *__cdecl (void)
 0x0054b650,_Text_InitStringTable,111,"void __cdecl (i32, VARIPTR *, VARIPTR *)"
 0x0054b6c0,_Text_GetMaxOverallStrings,6,i32 __cdecl (void)
+0x54b6d0,_Text_IsOtherPlatformWord,221,static i32(NUFPAR_PC *)
 0x0054b7b0,_Text_LoadAndFixUpStrings,544,"void __cdecl (char *, u8 **, char **, i32)"
 0x0054b9d0,_Text_InitTable,173,"void __cdecl (TEXTENTRY *, i32, i32)"
 0x0054ba80,_Text_InsertCommasIntoNumber,165,"void __cdecl (char *, char *, i32)"

@@ -6,6 +6,7 @@
 
 extern i32 __cdecl NuFParGetLineW(NUFPAR_PC *parser);
 extern i32 __cdecl NuFParGetWordW(NUFPAR_PC *parser);
+extern i32 __cdecl NuStrLenW(const NUWCHAR *str);
 extern const char TextPlatformXbox[5];
 extern const char TextPlatformPC[3];
 extern const char TextPlatformPSP[4];
@@ -56,18 +57,17 @@ void *Text_IsFontLoaded(void) {
 void Text_InitStringTable(i32 count, VARIPTR *buf, VARIPTR *buf_end) {
     char **table = (char **)buf->void_ptr;
     u32 table_size = (count + 1) * sizeof(char *);
-    i32 flags_size = ((count + 31) / 32) * sizeof(u32);
     (void)buf_end;
 
     TTab_Original = table;
-    buf->addr = (buf->addr + table_size + 3) & ~3U;
+    buf->addr = ((u32)table + table_size + 3) & ~3U;
     memset(table, 0, table_size);
     table[0] = Text_ErrorString;
     TTab = table + 1;
-    Text_MaxStrings_Overall = count;
     Text_StringBits = (u32 *)buf->void_ptr;
-    memset(Text_StringBits, 0, flags_size);
-    buf->addr += flags_size;
+    Text_MaxStrings_Overall = count;
+    memset(Text_StringBits, 0, ((count + 31) / 32) * sizeof(u32));
+    buf->addr += ((count + 31) / 32) * sizeof(u32);
 }
 
 i32 Text_GetMaxOverallStrings(void) {
@@ -76,26 +76,34 @@ i32 Text_GetMaxOverallStrings(void) {
 
 void Text_InitTable(TEXTENTRY *entry, i32 first, i32 last) {
     i32 index = 0;
+    u32 *bits;
     if (entry == NULL) {
         return;
     }
-    while (entry->text_id != NULL) {
-        if (entry->value != -1) {
+    bits = Text_StringBits;
+    do {
+        if (entry->text_id != NULL && entry->value != -1) {
             index = entry->value;
             if (index >= first && index <= last) {
-                *entry->text_id = entry->value;
+                entry->value = (i16)index;
+                *entry->text_id = (i16)index;
             }
-        } else if (index >= first && index <= last) {
-            entry->value = (i16)index;
-            *entry->text_id = (i16)index;
-            Text_StringBits[index / 32] |= 1U << (index & 31);
-        } else {
-            entry->value = 0;
-            *entry->text_id = 0;
+            ++index;
+            ++entry;
         }
-        ++index;
-        ++entry;
-    }
+        while (entry->text_id != NULL && entry->value == -1) {
+            if (index >= first && index <= last) {
+                entry->value = (i16)index;
+                *entry->text_id = (i16)index;
+                bits[index / 32] |= 1U << (index & 31);
+            } else {
+                entry->value = 0;
+                *entry->text_id = 0;
+            }
+            ++entry;
+            ++index;
+        }
+    } while (entry->text_id != NULL);
 }
 
 void Text_InsertCommasIntoNumber(char *number, char *text, i32 length) {
@@ -170,69 +178,93 @@ void Text_InitDefaultStrings(void) {
     TTab[tDANISH] = apitxt_DANISH;
 }
 
+static i32 Text_IsOtherPlatformWord(NUFPAR_PC *parser) {
+    if (NuStrICmp(parser->word_buffer_ptr, TextPlatform360) == 0)
+        return 1;
+    if (NuStrICmp(parser->word_buffer_ptr, TextPlatformGameCube) == 0)
+        return 1;
+    if (NuStrICmp(parser->word_buffer_ptr, TextPlatformPS2) == 0)
+        return 1;
+    if (NuStrICmp(parser->word_buffer_ptr, TextPlatformPS3) == 0)
+        return 1;
+    if (NuStrICmp(parser->word_buffer_ptr, TextPlatformPSP) == 0)
+        return 1;
+    if (NuStrICmp(parser->word_buffer_ptr, TextPlatformPC) == 0) {
+        NuFParGetWord(parser);
+        return 0;
+    }
+    if (NuStrICmp(parser->word_buffer_ptr, TextPlatformWii) == 0)
+        return 1;
+    if (NuStrICmp(parser->word_buffer_ptr, TextPlatformXbox) == 0)
+        return 1;
+    return 0;
+}
+
 void __cdecl Text_LoadAndFixUpStrings(char *path, u8 **buffer, char **table, i32 count) {
-    NUFPAR_PC *parser = NuFParCreate(path);
     u8 *out = *buffer;
+    NUFPAR_PC *parser = NuFParCreate(path);
+    i32 index;
+    i32 length;
 
     if (parser != NULL) {
         if (parser->is_utf16 != 0) {
             while (NuFParGetLineW(parser) != 0) {
-                i32 index = NuFParGetInt(parser);
-                if (index > 0 && index < count && NuFParGetWordW(parser) > 0) {
-                    u16 *word = (u16 *)parser->word_buffer_ptr;
-                    table[index] = (char *)out;
-                    while (*word != 0) {
-                        out = NuUTF8CharFromUnicode(out, *word++);
+                index = NuFParGetInt(parser);
+                if (index > 0 && index < count) {
+                    u16 *word;
+                    NuFParGetWordW(parser);
+                    word = (u16 *)parser->word_buffer_ptr;
+                    length = NuStrLenW(word);
+                    if (length > 0) {
+                        table[index] = (char *)out;
+                        do {
+                            out = NuUTF8CharFromUnicode(out, *word++);
+                        } while (--length > 0);
+                        *out++ = '\0';
                     }
-                    *out++ = '\0';
+                }
+            }
+        } else if (parser->is_utf8 != 0) {
+            while (NuFParGetLine(parser) != 0) {
+                NuFParGetWord(parser);
+                if (parser->word_buffer_ptr[0] != '\0') {
+                    index = NuAToI(parser->word_buffer_ptr);
+                    if (index > 0 && index < count) {
+                        NuFParGetWord(parser);
+                        if (Text_IsOtherPlatformWord(parser) == 0) {
+                            length = NuStrLen(parser->word_buffer_ptr);
+                            table[index] = (char *)out;
+                            NuStrCpy((char *)out, parser->word_buffer_ptr);
+                            out += length + 1;
+                        }
+                    }
                 }
             }
         } else {
             while (NuFParGetLine(parser) != 0) {
-                i32 index = NuFParGetInt(parser);
-                char *word;
-                i32 length;
-                i32 i;
-
-                if (index <= 0 || index >= count || NuFParGetWord(parser) <= 0) {
-                    continue;
-                }
-
-                word = parser->word_buffer_ptr;
-                if (parser->is_utf8 != 0) {
-                    if (NuStrICmp(word, TextPlatform360) == 0 || NuStrICmp(word, TextPlatformGameCube) == 0 ||
-                        NuStrICmp(word, TextPlatformPS2) == 0 || NuStrICmp(word, TextPlatformPS3) == 0 ||
-                        NuStrICmp(word, TextPlatformPSP) == 0 || NuStrICmp(word, TextPlatformWii) == 0 ||
-                        NuStrICmp(word, TextPlatformXbox) == 0) {
-                        continue;
-                    }
-                    if (NuStrICmp(word, TextPlatformPC) == 0) {
-                        NuFParGetWord(parser);
-                    }
-                    word = parser->word_buffer_ptr;
-                    length = NuStrLen(word);
-                    table[index] = (char *)out;
-                    NuStrCpy((char *)out, word);
-                    out += length + 1;
-                } else {
-                    length = NuStrLen(word);
-                    table[index] = (char *)out;
-                    for (i = 0; i < length; ++i) {
-                        u8 character = (u8)word[i];
-                        if (character < 0x80) {
-                            *out++ = character;
-                        } else {
-                            out = NuUTF8CharFromUnicode(out, character);
+                index = NuFParGetInt(parser);
+                if (index > 0 && index < count) {
+                    NuFParGetWord(parser);
+                    if (Text_IsOtherPlatformWord(parser) == 0) {
+                        u8 *word = (u8 *)parser->word_buffer_ptr;
+                        length = NuStrLen((char *)word);
+                        if (length > 0) {
+                            table[index] = (char *)out;
+                            do {
+                                if (*word < 0x80)
+                                    *out++ = *word;
+                                else
+                                    out = NuUTF8CharFromUnicode(out, *word);
+                                ++word;
+                            } while (--length > 0);
+                            *out++ = '\0';
                         }
                     }
-                    *out++ = '\0';
                 }
             }
         }
-
         NuFParDestroy(parser);
     }
-
     *buffer = out;
 }
 
@@ -653,39 +685,58 @@ void __cdecl TextDecode(char *text, u8 *destination) {
     i32 output = 0;
     char codeword[512];
     char decoded[512];
-    while (source[input] != 0 && output < 480) {
-        if (source[input] == '[' && source[input + 1] == '[') {
-            i32 length = 0;
-            i32 index;
-            input += 2;
-            while (source[input] != 0 && source[input] != ']') {
-                codeword[length++] = source[input++];
-            }
-            while (source[input] == ']') {
-                ++input;
-            }
-            codeword[length] = 0;
-            TextDecodeCodeword(codeword, decoded);
-            for (index = 0; decoded[index] != 0; ++index) {
-                destination[output++] = decoded[index];
-            }
-        } else if (source[input] == 0xe3 && source[input + 1] == 0x80 && source[input + 2] == 0x80) {
-            destination[output++] = ' ';
-            input += 3;
-        } else if ((source[input] == 0xe3 && source[input + 1] == 0x80 &&
-                    (source[input + 2] == 0x81 || source[input + 2] == 0x82 || source[input + 2] == 0x85)) ||
-                   (source[input] == 0xef && source[input + 1] == 0xbc &&
-                    (source[input + 2] == 0x81 || source[input + 2] == 0x9f))) {
-            destination[output++] = source[input++];
-            destination[output++] = source[input++];
-            destination[output++] = source[input++];
-            destination[output++] = ' ';
-        } else {
-            destination[output++] = source[input++];
-            while (source[input] >= 0x80 && source[input] <= 0xbf) {
+    if (source[0] != 0) {
+        do {
+            if (source[input] == '[' && source[input + 1] == '[') {
+                i32 length = 0;
+                i32 index;
+                input += 2;
+                while (source[input] != 0 && source[input] != ']') {
+                    codeword[length++] = source[input++];
+                }
+                while (source[input] == ']') {
+                    ++input;
+                }
+                codeword[length] = 0;
+                TextDecodeCodeword(codeword, decoded);
+                for (index = 0; decoded[index] != 0; ++index) {
+                    destination[output++] = decoded[index];
+                }
+            } else if (source[input] == 0xe3 && source[input + 1] == 0x80 && source[input + 2] == 0x80) {
+                destination[output++] = ' ';
+                input += 3;
+            } else if (source[input] == 0xe3 && source[input + 1] == 0x80 && source[input + 2] == 0x81) {
                 destination[output++] = source[input++];
+                destination[output++] = source[input++];
+                destination[output++] = source[input++];
+                destination[output++] = ' ';
+            } else if (source[input] == 0xe3 && source[input + 1] == 0x80 && source[input + 2] == 0x82) {
+                destination[output++] = source[input++];
+                destination[output++] = source[input++];
+                destination[output++] = source[input++];
+                destination[output++] = ' ';
+            } else if (source[input] == 0xe3 && source[input + 1] == 0x80 && source[input + 2] == 0x85) {
+                destination[output++] = source[input++];
+                destination[output++] = source[input++];
+                destination[output++] = source[input++];
+                destination[output++] = ' ';
+            } else if (source[input] == 0xef && source[input + 1] == 0xbc && source[input + 2] == 0x81) {
+                destination[output++] = source[input++];
+                destination[output++] = source[input++];
+                destination[output++] = source[input++];
+                destination[output++] = ' ';
+            } else if (source[input] == 0xef && source[input + 1] == 0xbc && source[input + 2] == 0x9f) {
+                destination[output++] = source[input++];
+                destination[output++] = source[input++];
+                destination[output++] = source[input++];
+                destination[output++] = ' ';
+            } else {
+                destination[output++] = source[input++];
+                while (source[input] >= 0x80 && source[input] <= 0xbf) {
+                    destination[output++] = source[input++];
+                }
             }
-        }
+        } while (output < 480 && source[input] != 0);
     }
     destination[output] = 0;
 }
