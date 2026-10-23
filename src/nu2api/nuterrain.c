@@ -2416,13 +2416,15 @@ static TERRAIN_PICKUP_SET_PC *PickupTerrainPc = 0;
 i32 ReadTerrainPickup(unsigned char *base_path, i16 **buffer, TERRAIN_PICKUP_SET_PC *terrain) {
     char path[100];
     TERRAIN_FILE_CHUNK *chunk, *header;
-    i32 i, group_count = 0;
+    i32 group_count;
+    i32 i;
     strcpy(path, (char *)base_path);
     strcat(path, ".ter");
     NuFileLoadBuffer(path, *buffer, INT_MAX);
     chunk = (TERRAIN_FILE_CHUNK *)(*buffer + *(i32 *)*buffer);
     *buffer += 2;
     header = chunk;
+    group_count = 0;
     TerrainCrashDataPc = NULL;
     for (i = 0; i < header->chunk_count; ++i, ++chunk) {
         switch (chunk->chunk_type) {
