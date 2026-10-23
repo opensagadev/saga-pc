@@ -172,7 +172,14 @@ extern "C" {
     }
 
     typedef struct pc_display_material_pc_s {
-        u16 flags;
+        union {
+            u16 flags;
+            struct {
+                u16 flags_low : 4;
+                i16 sort_layer : 8;
+                u16 flags_high : 4;
+            };
+        };
         u8 unknown_0002[0x3a];
         NUDISPLAYLIST *display_list;
         u8 unknown_0040[4];
@@ -199,7 +206,7 @@ extern "C" {
             if (sort->nmtls != 0) {
                 for (j = 0; j < total; ++j) {
                     PC_DISPLAY_MATERIAL_PC *material = (PC_DISPLAY_MATERIAL_PC *)scene->display_materials[j];
-                    i32 key = (i32)(i8)(material->flags >> 4) * 131072 + material->sort_priority;
+                    i32 key = material->sort_layer * 131072 + material->sort_priority;
                     if (key == sort->sort_pri) {
                         sort->mtl_first = (u16)j;
                         break;
@@ -304,47 +311,49 @@ extern "C" {
             return;
         for (queued = 0; queued < PCDisplayMaterialDeleteCount; ++queued) {
             PC_DISPLAY_MATERIAL_PC *material = (PC_DISPLAY_MATERIAL_PC *)PCDisplayMaterialDeleteQueue[queued];
-            NUDISPLAYLIST *list = material->display_list;
             NUDISPLAYLISTITEM *items;
             NUSORTPRI *sort;
-            i32 index, key, sort_index = -1, i, unlinked = 0;
-            if (list == NULL || scene->material_count == 0)
+            i32 index = -1, key, sort_index = -1, i, link, count;
+            if (material->display_list == NULL)
                 continue;
-            for (index = 0; index < (i32)scene->material_count; ++index) {
-                if (scene->display_materials[index] == (NUMTL *)material)
+            for (i = 0; i < (i32)scene->material_count; ++i) {
+                if (scene->display_materials[i] == (NUMTL *)material) {
+                    index = i;
                     break;
+                }
             }
-            if (index == (i32)scene->material_count)
+            if (index == -1)
                 continue;
-            if (--PCDisplayMaterialReferenceCounts[index] != 0)
+            if (--PCDisplayMaterialReferenceCounts[index] > 0)
                 continue;
-            key = (i32)(i8)(material->flags >> 4) * 131072 + material->sort_priority;
+            key = material->sort_layer * 131072 + material->sort_priority;
             for (i = 0; i < scene->sort_count; ++i) {
                 if (scene->sort_pris[i].sort_pri == key)
                     sort_index = i;
             }
-            sort = &scene->sort_pris[sort_index];
-            items = list->mtl_item;
-            if (sort->items == items) {
-                sort->items = (NUDISPLAYLISTITEM *)items[PCMaterialLinkItemIndex].next;
-                unlinked = 1;
+            items = material->display_list->mtl_item;
+            if (scene->sort_pris[sort_index].items == items) {
+                link = PCMaterialLinkItemIndex;
+                scene->sort_pris[sort_index].items = (NUDISPLAYLISTITEM *)items[link].next;
             } else {
-                for (i = 0; i < sort->nmtls; ++i) {
-                    PC_DISPLAY_MATERIAL_PC *previous_material =
-                        (PC_DISPLAY_MATERIAL_PC *)scene->display_materials[sort->mtl_first + i];
-                    NUDISPLAYLISTITEM *previous = previous_material->display_list->mtl_item;
-                    if (previous[PCMaterialLinkItemIndex].next == items) {
-                        previous[PCMaterialLinkItemIndex].next = items[PCMaterialLinkItemIndex].next;
-                        unlinked = 1;
-                        break;
+                count = scene->sort_pris[sort_index].nmtls;
+                link = PCMaterialLinkItemIndex;
+                for (i = 0; i < count; ++i) {
+                    NUDISPLAYLISTITEM *previous =
+                        ((PC_DISPLAY_MATERIAL_PC *)scene->display_materials[scene->sort_pris[sort_index].mtl_first + i])
+                            ->display_list->mtl_item;
+                    if (previous[link].next == items) {
+                        previous[link].next = items[link].next;
+                        goto unlink;
                     }
                 }
+                goto unlinked;
             }
-            if (unlinked != 0) {
-                items[PCMaterialLinkItemIndex].next = NULL;
-                items[PCMaterialLinkItemIndex].type = 0x84;
-                items[PCMaterialLinkItemIndex].id = 4;
-            }
+        unlink:
+            items[link].id = 4;
+            items[link].next = NULL;
+            items[link].type = 0x84;
+        unlinked:
             for (i = 0; i < (i32)scene->material_count; ++i) {
                 if (PCDisplayMaterialStreamUsed[i] != 0 &&
                     items == (NUDISPLAYLISTITEM *)(PCDisplayMaterialStreamStart.addr + (u32)i * 0x80)) {
@@ -352,9 +361,10 @@ extern "C" {
                     break;
                 }
             }
-            if (--sort->nmtls == 0) {
+            if (--scene->sort_pris[sort_index].nmtls == 0) {
                 NUSORTPRI *previous = NULL;
                 NUSORTPRI *current = sort_list;
+                sort = &scene->sort_pris[sort_index];
                 while (current != sort) {
                     previous = current;
                     current = current->sys_next;
@@ -390,24 +400,27 @@ extern "C" {
         PCDisplayMaterialDeleteCount = 0;
         for (queued = 0; queued < PCDisplayMaterialAddCount; ++queued) {
             PC_DISPLAY_MATERIAL_PC *material = (PC_DISPLAY_MATERIAL_PC *)PCDisplayMaterialAddQueue[queued];
-            NUDISPLAYLIST *list, *unused;
+            NUDISPLAYLIST *unused;
             NUDISPLAYLISTITEM *items;
-            NUSORTPRI *sort;
             VARIPTR cursor;
-            i32 index, insert, stream_index = -1, key, sort_index = -1, i;
-            for (index = 0; index < (i32)scene->material_count; ++index) {
-                if (scene->display_materials[index] == (NUMTL *)material)
+            i32 index = -1, insert = -1, stream_index = -1, key, sort_index = -1, i, link;
+            for (i = 0; i < (i32)scene->material_count; ++i) {
+                if (scene->display_materials[i] == (NUMTL *)material) {
+                    index = i;
                     break;
+                }
             }
-            if (index < (i32)scene->material_count) {
+            if (index != -1) {
                 ++PCDisplayMaterialReferenceCounts[index];
                 continue;
             }
-            for (index = 0; index < (i32)scene->material_count; ++index) {
-                if (PCDisplayMaterialReferenceCounts[index] == 0)
+            for (i = 0; i < (i32)scene->material_count; ++i) {
+                if (PCDisplayMaterialReferenceCounts[i] == 0) {
+                    index = i;
                     break;
+                }
             }
-            if (index == (i32)scene->material_count) {
+            if (index == -1) {
                 AnimationDiagnosticNoOpPc();
                 continue;
             }
@@ -418,22 +431,22 @@ extern "C" {
                     break;
                 }
             }
-            key = (i32)(i8)(material->flags >> 4) * 131072 + material->sort_priority;
+            key = material->sort_layer * 131072 + material->sort_priority;
             for (i = 0; i < scene->sort_count; ++i) {
                 if (scene->sort_pris[i].sort_pri == key)
                     sort_index = i;
             }
-            insert = index;
             for (i = 0; i < (i32)scene->material_count; ++i) {
                 if (PCDisplayMaterialReferenceCounts[i] != 0) {
                     PC_DISPLAY_MATERIAL_PC *other = (PC_DISPLAY_MATERIAL_PC *)scene->display_materials[i];
-                    i32 other_key = (i32)(i8)(other->flags >> 4) * 131072 + other->sort_priority;
-                    if (key <= other_key) {
+                    if (key <= other->sort_layer * 131072 + other->sort_priority) {
                         insert = i;
                         break;
                     }
                 }
             }
+            if (insert == -1)
+                insert = index;
             unused = scene->material_lists[scene->material_count - 1];
             for (i = (i32)scene->material_count - 2; i >= insert; --i) {
                 scene->display_materials[i + 1] = scene->display_materials[i];
@@ -443,63 +456,54 @@ extern "C" {
             scene->material_lists[insert] = unused;
             PCDisplayMaterialReferenceCounts[insert] = 0;
             for (i = 0; i < (i32)scene->material_count; ++i) {
-                if (PCDisplayMaterialReferenceCounts[i] != 0) {
-                    PC_DISPLAY_MATERIAL_PC *used = (PC_DISPLAY_MATERIAL_PC *)scene->display_materials[i];
-                    used->display_list->material_id = i;
-                }
+                if (PCDisplayMaterialReferenceCounts[i] != 0)
+                    ((PC_DISPLAY_MATERIAL_PC *)scene->display_materials[i])->display_list->material_id = i;
             }
             PCDisplayMaterialReferenceCounts[insert] = 1;
-            list = scene->material_lists[insert];
-            material->display_list = list;
-            cursor.addr = PCDisplayMaterialStreamStart.addr + (u32)stream_index * 0x80;
-            items = NuDisplayListCreateMtlDlist(list->mtl_item, (NUMTL *)material, &cursor, PCDisplayMaterialStreamEnd);
+            material->display_list = scene->material_lists[insert];
+            cursor.addr = PCDisplayMaterialStreamStart.addr + (stream_index << 7);
+            items = NuDisplayListCreateMtlDlist(material->display_list->mtl_item, (NUMTL *)material, &cursor,
+                                                PCDisplayMaterialStreamEnd);
             scene->display_materials[insert] = (NUMTL *)material;
-            list->mtl_item = items;
-            list->dynamic_geometry = items + PCMaterialGeometryItemIndex;
-            list->scene = scene;
-            list->material_id = insert;
+            material->display_list->mtl_item = items;
+            material->display_list->dynamic_geometry = items + PCMaterialGeometryItemIndex;
+            material->display_list->scene = scene;
+            material->display_list->material_id = insert;
             if (sort_index != -1) {
-                sort = &scene->sort_pris[sort_index];
                 if (insert != 0) {
                     PC_DISPLAY_MATERIAL_PC *previous = (PC_DISPLAY_MATERIAL_PC *)scene->display_materials[insert - 1];
-                    i32 previous_key = (i32)(i8)(previous->flags >> 4) * 131072 + previous->sort_priority;
-                    if (previous_key == key) {
-                        NUDISPLAYLISTITEM *anchor = previous->display_list->mtl_item;
-                        items[PCMaterialLinkItemIndex].next = anchor[PCMaterialLinkItemIndex].next;
-                        anchor[PCMaterialLinkItemIndex].next = items;
-                    } else {
-                        items[PCMaterialLinkItemIndex].next = sort->items;
-                        sort->items = items;
+                    if (previous->sort_layer * 131072 + previous->sort_priority == key) {
+                        NUDISPLAYLISTITEM *anchor =
+                            ((PC_DISPLAY_MATERIAL_PC *)scene->display_materials[insert - 1])->display_list->mtl_item;
+                        link = PCMaterialLinkItemIndex;
+                        items[link].type = 0x8d;
+                        items[link].next = anchor[link].next;
+                        items[link].id = 1;
+                        anchor[link].next = items;
+                        goto linked;
                     }
-                } else {
-                    items[PCMaterialLinkItemIndex].next = sort->items;
-                    sort->items = items;
                 }
-                items[PCMaterialLinkItemIndex].type = 0x8d;
-                items[PCMaterialLinkItemIndex].id = 1;
+                {
+                    NUDISPLAYLISTITEM *head = scene->sort_pris[sort_index].items;
+                    link = PCMaterialLinkItemIndex;
+                    items[link].type = 0x8d;
+                    items[link].next = head;
+                    items[link].id = 1;
+                    scene->sort_pris[sort_index].items = items;
+                }
             } else {
-                NUSORTPRI *previous = NULL;
-                NUSORTPRI *current = sort_list;
-                if (scene->sort_count >= 600)
+                sort_index = scene->sort_count;
+                if (sort_index >= 600)
                     AnimationDiagnosticNoOpPc();
-                sort = &scene->sort_pris[scene->sort_count];
-                sort->sort_pri = key;
-                sort->items = items;
-                sort->sort_flags = nudlist_field_e80;
-                sort->nmtls = 0;
-                while (current != NULL && current->sort_pri < key) {
-                    previous = current;
-                    current = current->sys_next;
-                }
-                sort->sys_next = current;
-                if (previous == NULL)
-                    sort_list = sort;
-                else
-                    previous->sys_next = sort;
-                ++nused_sort_pris;
+                scene->sort_pris[sort_index].sort_pri = key;
+                scene->sort_pris[sort_index].items = items;
+                scene->sort_pris[sort_index].sort_flags = nudlist_field_e80;
+                scene->sort_pris[sort_index].nmtls = 0;
+                DisplayInsertSortPC(&scene->sort_pris[sort_index]);
                 ++scene->sort_count;
             }
-            ++sort->nmtls;
+        linked:
+            ++scene->sort_pris[sort_index].nmtls;
             NuDisplayListRecalculateMaterialStartsPC(scene);
         }
         PCDisplayMaterialAddCount = 0;
