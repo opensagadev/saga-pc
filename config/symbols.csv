@@ -7046,6 +7046,9 @@ address,symbol,size,ctype
 0x65b830,_edbitsDrawBasicCube,791,
 0x65bb50,_edbitsDrawCube,875,
 0x65bf70,_edbitsDrawDiagonalCross,212,
+0x65c050,_edbitsDrawCross,193,
+0x65c160,_edbitsDrawOvalTilted,389,
+0x65c2f0,_edbitsDrawCircleTilted,48,
 0x65c380,_edbitsDrawTorus,407,
 0x65c520,_edbitsDrawSphere,249,
 0x65c620,_edbitsLookupInstance,112,"i32 __cdecl(char *, NUGSCN *)"
@@ -7102,6 +7105,7 @@ address,symbol,size,ctype
 0x65f880,_edgraToggleFilter,18,
 0x65f8a0,_edgraChangeFilterName,32,
 0x65f8c0,_edgracbCancelOptMenu,39,
+0x65f8f0,_edgraDrawCursor,1606,
 0x65ff40,_edgraRender,536,
 0x6603c0,_edppMultipleCopyCopy,285,
 0x6604f0,_edppDrawSpheres,397,
@@ -16054,6 +16058,16 @@ address,symbol,size,ctype
 0x76d804,??_C@_0L@HCGGEMBI@Clump?5Size?$AA@,11,char []
 0x76d810,??_C@_03FDNJAJIB@gra?$AA@,4,char []
 0x76d814,??_C@_05JOBLOEL@grass?$AA@,6,char []
+0x76d81c,??_C@_0BA@GNGAEGI@Dpad?5Mode?3?5Tilt?$AA@,16,char []
+0x76d82c,??_C@_0BA@PPIECEKK@Dpad?5Mode?3?5Size?$AA@,16,char []
+0x76d83c,??_C@_0BC@CIFNLGJD@Used?3?5?$CFd?1?$CFd?0?$CFd?1?$CFd?$AA@,18,char []
+0x76d850,??_C@_0P@BFDFPCFE@Clump?5Size?3?5?$CFd?$AA@,15,char []
+0x76d860,??_C@_0BB@GKNEHDAA@Base?5Size?3?5?$CF0?42f?$AA@,17,char []
+0x76d874,??_C@_0O@GNNJDCBE@Clump?5Size?3?5?9?$AA@,14,char []
+0x76d884,??_C@_0BC@NMMKFEKF@Clump?5Size?3?5?$CFd?1?$CFd?$AA@,18,char []
+0x76d898,??_C@_0O@BOHBEPJP@Curr?5Inst?3?5?$CFs?$AA@,14,char []
+0x76d8a8,??_C@_0BC@NAICPEJJ@Curr?5Inst?3?5?$DMnone?$DO?$AA@,18,char []
+0x76d8bc,??_C@_0BA@MHGGJEED@Copy?5Clump?5Mode?$AA@,16,char []
 0x76d900,??_C@_0BC@POINCPDD@Dpad?5Mode?3?5Facing?$AA@,18,char []
 0x76d914,??_C@_0BH@OGNBFLDA@Dpad?5Mode?3?5Reflections?$AA@,23,char []
 0x76d92c,??_C@_0BK@HNMICBLP@Dpad?5Mode?3?5Offset?5?$CI?$CF0?42f?$CJ?$AA@,26,char []
@@ -24686,8 +24700,10 @@ address,symbol,size,ctype
 0x02961ffc,_TerrainShadowGroupIndexPc,,
 0x2962000,_terraincnt,,i32
 0x2962004,_toruscolldata,,DEBRIS_COLLISION_ENTRY_PC *
+0x2962008,_edgra_mtl_zoff,4,struct PC_SCENE_MTL_VIEW *
 0x0296200c,_ParticleChunkToRender,,DEBRIS_RENDER_CHUNK_PC *
 0x2962010,_edgra_cam_pos,,NUVEC
+0x296201c,_edgra_mtl,4,struct PC_SCENE_MTL_VIEW *
 0x02962020,_GetSurfaceInfoWaterNormalPc,,
 0x0296202c,_TerrainSkinUseRecordsPc,,
 0x2962030,_edanim_nearest_param_id,,i32

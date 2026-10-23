@@ -17,6 +17,36 @@ void __cdecl edgraClumpsReset(void) {
     edgra_ind_clumps_used = 0;
 }
 
+void __cdecl edgraDetermineNearestInstance(f32 distance) {
+    NUVEC delta;
+    i32 individual, i;
+    f32 candidate;
+    if (edgra_nearest == -1) {
+        edgra_nearest_instance = -1;
+        return;
+    }
+    individual = GrassClumps[edgra_nearest].individual_index;
+    if (edgra_nearest_instance != -1) {
+        NuVecAdd(&delta, &GrassClumps[edgra_nearest].position,
+                 &IndGrassClumps[EDGRA_MAX_UNITS_PER_INDIVIDUAL_CLUMP * individual + edgra_nearest_instance].position);
+        NuVecSub(&delta, &edgra_cam_pos, &delta);
+        candidate = delta.x * delta.x + delta.y * delta.y + delta.z * delta.z;
+        if (candidate == 0.0f)
+            return;
+    }
+    edgra_nearest_instance = -1;
+    for (i = 0; i < GrassClumps[edgra_nearest].element_count; ++i) {
+        NuVecAdd(&delta, &GrassClumps[edgra_nearest].position,
+                 &IndGrassClumps[EDGRA_MAX_UNITS_PER_INDIVIDUAL_CLUMP * individual + i].position);
+        NuVecSub(&delta, &edgra_cam_pos, &delta);
+        candidate = delta.x * delta.x + delta.y * delta.y + delta.z * delta.z;
+        if (distance < 0.0f || candidate < distance) {
+            distance = candidate;
+            edgra_nearest_instance = i;
+        }
+    }
+}
+
 void __cdecl edgraSetup(VARIPTR *buffer, VARIPTR end, i32 clumps, i32 individual_clumps, i32 units_per_clump) {
     EDGRA_MAX_CLUMPS = clumps;
     EDGRA_MAX_INDIVIDUAL_CLUMPS = individual_clumps;

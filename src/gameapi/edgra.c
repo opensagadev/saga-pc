@@ -8,6 +8,11 @@ void EdFileWriteInt(i32 value);
 void EdFileWriteShort(i16 value);
 void EdFileWriteChar(char value);
 void EdFileWriteNuVec(NUVEC *value);
+extern struct PC_SCENE_MTL_VIEW *edgra_mtl_zoff;
+void __cdecl edbitsDrawCube(f32 x, f32 y, f32 z, f32 half_x, f32 half_y, f32 half_z, i32 rotation_z, i32 rotation_y,
+                            i32 rotation_x, i32 outer_z, i32 outer_y, i32 colour, NUMTL *material);
+void __cdecl edbitsDrawOvalTilted(NUVEC *centre, f32 radius_x, f32 radius_z, i32 colour,
+                                  struct PC_SCENE_MTL_VIEW *material, i32 rotation_z, i32 rotation_y);
 
 #define EDGRA_INDIVIDUAL(clump, element) (&IndGrassClumps[EDGRA_MAX_UNITS_PER_INDIVIDUAL_CLUMP * (clump) + (element)])
 
@@ -109,6 +114,102 @@ void edgracbCancelGlobalsMenu(eduimenu_s *unused0, eduimenu_s *unused1) {
     edgra_globals_menu = NULL;
 }
 
+void __cdecl edgraDrawCursor(void) {
+    NURND_VERTEX3D_PC line[2];
+    NUVEC arrow;
+    NUSPECIALHANDLE special;
+    line[0].colour = 0xffffffff;
+    line[1].colour = 0xffffffff;
+    line[0].position.x = edgra_cam_pos.x - 0.5f;
+    line[0].position.y = edgra_cam_pos.y;
+    line[0].position.z = edgra_cam_pos.z;
+    line[1].position.x = edgra_cam_pos.x + 0.5f;
+    line[1].position.y = edgra_cam_pos.y;
+    line[1].position.z = edgra_cam_pos.z;
+    NuRndrLine3d(line, (NUMTL *)edgra_mtl, NULL);
+    line[0].colour = 0xffffffff;
+    line[1].colour = 0xffffffff;
+    line[0].position.x = edgra_cam_pos.x;
+    line[0].position.y = edgra_cam_pos.y - 0.5f;
+    line[0].position.z = edgra_cam_pos.z;
+    line[1].position.x = edgra_cam_pos.x;
+    line[1].position.y = edgra_cam_pos.y + 0.5f;
+    line[1].position.z = edgra_cam_pos.z;
+    NuRndrLine3d(line, (NUMTL *)edgra_mtl, NULL);
+    line[0].colour = 0xffffffff;
+    line[1].colour = 0xffffffff;
+    line[0].position.x = edgra_cam_pos.x;
+    line[0].position.y = edgra_cam_pos.y;
+    line[0].position.z = edgra_cam_pos.z - 0.5f;
+    line[1].position.x = edgra_cam_pos.x;
+    line[1].position.y = edgra_cam_pos.y;
+    line[1].position.z = edgra_cam_pos.z + 0.5f;
+    NuRndrLine3d(line, (NUMTL *)edgra_mtl, NULL);
+    arrow.x = 0.0f;
+    arrow.y = 0.5f;
+    arrow.z = 0.0f;
+    NuVecRotateZ(&arrow, &arrow, edgra_rotz);
+    NuVecRotateY(&arrow, &arrow, edgra_roty);
+    line[0].colour = 0xff0000ff;
+    line[1].colour = 0xff0000ff;
+    line[0].position.x = edgra_cam_pos.x;
+    line[0].position.y = edgra_cam_pos.y;
+    line[0].position.z = edgra_cam_pos.z;
+    line[1].position.x = edgra_cam_pos.x + arrow.x;
+    line[1].position.y = edgra_cam_pos.y + arrow.y;
+    line[1].position.z = edgra_cam_pos.z + arrow.z;
+    NuRndrLine3d(line, (NUMTL *)edgra_mtl, NULL);
+    if (edgra_nearest == -1)
+        edbitsDrawOvalTilted(&edgra_cam_pos, edgra_size, edgra_size, 0xff0000ff, edgra_mtl, edgra_rotz, edgra_roty);
+    else if (GrassClumps[edgra_nearest].kind == 3)
+        edbitsDrawOvalTilted(&edgra_cam_pos, 0.5f, 0.5f, 0xff0000ff, edgra_mtl, edgra_rotz, edgra_roty);
+    else if (GrassClumps[edgra_nearest].unknown_25 == 3 || GrassClumps[edgra_nearest].unknown_25 == 4)
+        edbitsDrawCube(edgra_cam_pos.x, edgra_cam_pos.y, edgra_cam_pos.z, edgra_size, 0.0f, edgra_size, 0, 0, 0,
+                       edgra_rotz, edgra_roty, 0xff0000ff, (NUMTL *)edgra_mtl);
+    else
+        edbitsDrawCircleTilted(&edgra_cam_pos, edgra_size, 0xff0000ff, edgra_mtl, edgra_rotz, edgra_roty);
+    NuRndrRect2di(0x1720, 0x9b0, 0xdc0, 0x410, 0x80808080, (NUMTL *)edgra_mtl_zoff);
+    NuRndrRect2di(0x1710, 0x8f0, 0xde0, 0xc0, 0x80000000, (NUMTL *)edgra_mtl_zoff);
+    NuRndrLine2di(0x1710, 0x9b0, 0x1710, 0xdc8, 0x80000000, (NUMTL *)edgra_mtl_zoff);
+    NuRndrLine2di(0x24f0, 0x9b0, 0x24f0, 0xdc8, 0x80000000, (NUMTL *)edgra_mtl_zoff);
+    NuRndrLine2di(0x1710, 0xdc8, 0x24f0, 0xdc8, 0x80000000, (NUMTL *)edgra_mtl_zoff);
+    NuQFntPushPrintMode(2);
+    NuQFntPushCoordinateSystem(NUQFNT_CSMODE_PS2);
+    NuQFntSet(system_qfont);
+    NuQFntSetColour(system_qfont, 0xe0e0e0e0);
+    NuQFntPrintEx(system_qfont, 0x17c0, 0x988, 0x10, "Info Box");
+    NuQFntSetColour(system_qfont, 0x80000000);
+    if (edgra_copy_source != -1) {
+        NuQFntPrintEx(system_qfont, 0x17c0, 0xa50, 0x10, "Copy Clump Mode");
+    } else if (edgra_instance_type == -1) {
+        NuQFntPrintEx(system_qfont, 0x17c0, 0xa50, 0x10, "Curr Inst: <none>");
+    } else {
+        NuGScnGetSpecial(&special, edbits_base_scene, edgra_instance_type);
+        NuQFntPrintEx(system_qfont, 0x17c0, 0xa50, 0x10, "Curr Inst: %s", NuSpecialGetName(&special));
+    }
+    if (edgra_mode == 3) {
+        if (edgra_nearest != -1)
+            NuQFntPrintEx(system_qfont, 0x17c0, 0xb90, 0x10, "Clump Size: %d/%d",
+                          GrassClumps[edgra_nearest].element_count, EDGRA_MAX_UNITS_PER_INDIVIDUAL_CLUMP);
+        else
+            NuQFntPrintEx(system_qfont, 0x17c0, 0xb90, 0x10, "Clump Size: -");
+    } else {
+        NuQFntPrintEx(system_qfont, 0x17c0, 0xaf0, 0x10, "Base Size: %0.2f", edgra_size);
+        NuQFntPrintEx(system_qfont, 0x17c0, 0xb90, 0x10, "Clump Size: %d", edgra_clump_size);
+    }
+    NuQFntPrintEx(system_qfont, 0x17c0, 0xc30, 0x10, "Used: %d/%d,%d/%d", edgra_units_used, 0x3000, edgra_clumps_used,
+                  EDGRA_MAX_CLUMPS);
+    if (edgra_dpadmode == 0)
+        NuQFntPrintEx(system_qfont, 0x17c0, 0xcd0, 0x10, "Dpad Mode: Size");
+    else if (edgra_dpadmode == 1)
+        NuQFntPrintEx(system_qfont, 0x17c0, 0xcd0, 0x10, "Dpad Mode: Tilt");
+    NuQFntPrintEx(system_qfont, 0x17c0, 0xd70, 0x10, "%5.2f", edgra_cam_pos.x);
+    NuQFntPrintEx(system_qfont, 0x1c20, 0xd70, 0x10, "%5.2f", edgra_cam_pos.y);
+    NuQFntPrintEx(system_qfont, 0x2080, 0xd70, 0x10, "%5.2f", edgra_cam_pos.z);
+    NuQFntPopPrintMode();
+    NuQFntPopCoordinateSystem();
+}
+
 void __cdecl edgracbFileSave(eduimenu_s *menu, eduiitem_s *unused1, u32 unused2) {
     char name[256];
     char directory[256];
@@ -191,35 +292,43 @@ void __cdecl edgracbCancelOptMenu(eduimenu_s *unused0, eduimenu_s *unused1) {
     }
 }
 
-static void edgraRender() {
+void __cdecl edgraRender(void) {
     edcamSet();
     edgraDrawCursor();
     if (edgra_nearest != -1) {
-        PC_EDGRACLUMP *clump = &(GrassClumps[edgra_nearest]);
-        if ((*clump).kind == 3) {
+        if (GrassClumps[edgra_nearest].kind == 3) {
             if (edgra_editormode == 1) {
-                edbitsDrawDiagonalCross((*clump).position.x, (*clump).position.y, (*clump).position.z, 0.125f,
-                                        0xffff0000, edgra_mtl);
+                edbitsDrawDiagonalCross(GrassClumps[edgra_nearest].position.x, GrassClumps[edgra_nearest].position.y,
+                                        GrassClumps[edgra_nearest].position.z, 0.125f, 0xffff0000, edgra_mtl);
                 if (edgra_nearest_instance != -1) {
-                    PC_EDGRAINDIVIDUAL *individual =
-                        GetIndGrassClump((*clump).individual_index, edgra_nearest_instance);
-                    edbitsDrawCross((*clump).position.x + individual->position.x,
-                                    (*clump).position.y + individual->position.y,
-                                    (*clump).position.z + individual->position.z, 0.125f, 0xff80ffff, edgra_mtl);
+                    edbitsDrawCross(
+                        GrassClumps[edgra_nearest].position.x +
+                            EDGRA_INDIVIDUAL(GrassClumps[edgra_nearest].individual_index, edgra_nearest_instance)
+                                ->position.x,
+                        GrassClumps[edgra_nearest].position.y +
+                            EDGRA_INDIVIDUAL(GrassClumps[edgra_nearest].individual_index, edgra_nearest_instance)
+                                ->position.y,
+                        GrassClumps[edgra_nearest].position.z +
+                            EDGRA_INDIVIDUAL(GrassClumps[edgra_nearest].individual_index, edgra_nearest_instance)
+                                ->position.z,
+                        0.125f, 0xff80ffff, edgra_mtl);
                 }
             } else {
-                edbitsDrawDiagonalCross((*clump).position.x, (*clump).position.y, (*clump).position.z, 0.125f,
-                                        0xff80ffff, edgra_mtl);
+                edbitsDrawDiagonalCross(GrassClumps[edgra_nearest].position.x, GrassClumps[edgra_nearest].position.y,
+                                        GrassClumps[edgra_nearest].position.z, 0.125f, 0xff80ffff, edgra_mtl);
             }
         } else {
-            edbitsDrawDiagonalCross((*clump).position.x, (*clump).position.y, (*clump).position.z, 0.125f, 0xff80ffff,
-                                    edgra_mtl);
-            if (((u8)((*clump).unknown_25 - 3)) < 2) {
-                edbitsDrawCube((*clump).position.x, (*clump).position.y, (*clump).position.z, (*clump).size, 0.0f,
-                               (*clump).size, 0, 0, 0, (*clump).rotation_z, (*clump).rotation_y, 0xff80ffff, edgra_mtl);
+            edbitsDrawDiagonalCross(GrassClumps[edgra_nearest].position.x, GrassClumps[edgra_nearest].position.y,
+                                    GrassClumps[edgra_nearest].position.z, 0.125f, 0xff80ffff, edgra_mtl);
+            if (GrassClumps[edgra_nearest].unknown_25 == 3 || GrassClumps[edgra_nearest].unknown_25 == 4) {
+                edbitsDrawCube(GrassClumps[edgra_nearest].position.x, GrassClumps[edgra_nearest].position.y,
+                               GrassClumps[edgra_nearest].position.z, GrassClumps[edgra_nearest].size, 0.0f,
+                               GrassClumps[edgra_nearest].size, 0, 0, 0, GrassClumps[edgra_nearest].rotation_z,
+                               GrassClumps[edgra_nearest].rotation_y, 0xff80ffff, (NUMTL *)edgra_mtl);
             } else {
-                edbitsDrawCircleTilted(&(*clump).position, (*clump).size, 0xff80ffff, edgra_mtl, (*clump).rotation_z,
-                                       (*clump).rotation_y);
+                edbitsDrawCircleTilted(&GrassClumps[edgra_nearest].position, GrassClumps[edgra_nearest].size,
+                                       0xff80ffff, edgra_mtl, GrassClumps[edgra_nearest].rotation_z,
+                                       GrassClumps[edgra_nearest].rotation_y);
             }
         }
     }

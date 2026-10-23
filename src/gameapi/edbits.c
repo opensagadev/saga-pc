@@ -27,6 +27,60 @@ void edbitsDoSingleDump(i32 face) {
     NuPs2VideoScreenDump(filename, 1, 1.0f, 1.0f, face, 0, 0);
 }
 
+void __cdecl edbitsDrawCross(f32 x, f32 y, f32 z, f32 radius, i32 colour, struct PC_SCENE_MTL_VIEW *material) {
+    f32 axes[9] = {1.0f, 0.0f, 0.0f, 0.0f, 1.0f, 0.0f, 0.0f, 0.0f, 1.0f};
+    NURND_VERTEX3D_PC vertices[2];
+    i32 i;
+    for (i = 0; i < 9; i += 3) {
+        vertices[0].colour = colour;
+        vertices[1].colour = colour;
+        vertices[0].position.x = x + radius * axes[i];
+        vertices[0].position.y = y + radius * axes[i + 1];
+        vertices[0].position.z = z + radius * axes[i + 2];
+        vertices[1].position.x = x - radius * axes[i];
+        vertices[1].position.y = y - radius * axes[i + 1];
+        vertices[1].position.z = z - radius * axes[i + 2];
+        NuRndrLine3d(vertices, (NUMTL *)material, NULL);
+    }
+}
+
+void __cdecl edbitsDrawOvalTilted(NUVEC *centre, f32 radius_x, f32 radius_z, i32 colour,
+                                  struct PC_SCENE_MTL_VIEW *material, i32 rotation_z, i32 rotation_y) {
+    NUVEC previous;
+    NUVEC point;
+    i32 i, angle;
+    point.x = 0.0f;
+    point.y = 0.0f;
+    point.z = radius_z;
+    if (rotation_z)
+        NuVecRotateZ(&point, &point, rotation_z);
+    if (rotation_y)
+        NuVecRotateY(&point, &point, rotation_y);
+    point.x += centre->x;
+    point.y += centre->y;
+    point.z += centre->z;
+    for (i = 1; i <= 10; ++i) {
+        previous = point;
+        angle = (i << 16) / 10;
+        point.x = radius_x * NU_SIN_LUT(angle);
+        point.y = 0.0f;
+        point.z = radius_z * NU_COS_LUT(angle);
+        if (rotation_z)
+            NuVecRotateZ(&point, &point, rotation_z);
+        if (rotation_y)
+            NuVecRotateY(&point, &point, rotation_y);
+        point.x += centre->x;
+        point.y += centre->y;
+        point.z += centre->z;
+        NuRndrLine3dDbg(previous.x, previous.y, previous.z, point.x, point.y, point.z, colour);
+    }
+}
+
+void __cdecl edbitsDrawCircleTilted(NUVEC *centre, f32 radius, i32 colour, struct PC_SCENE_MTL_VIEW *material,
+                                    i32 rotation_z, i32 rotation_y) {
+    edbitsDrawOvalTilted(centre, radius, radius, colour, material, rotation_z, rotation_y);
+}
+
 void edgraCalculatePage(i8 page, i32 calculate_vectors) {
     typedef struct Sample {
         NUVEC position;

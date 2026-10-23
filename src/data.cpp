@@ -29451,6 +29451,12 @@ extern "C" {
 #pragma bss_seg(".bss$edgra_clumpsizes_menu")
     struct eduimenu_s *edgra_clumpsizes_menu = 0;
 
+#pragma bss_seg(".bss$edgra_mtl_zoff")
+    struct PC_SCENE_MTL_VIEW *edgra_mtl_zoff = 0;
+
+#pragma bss_seg(".bss$edgra_mtl")
+    struct PC_SCENE_MTL_VIEW *edgra_mtl = 0;
+
 #pragma bss_seg(".bss$edui_last_item")
     struct eduiitem_s *edui_last_item = 0;
 
