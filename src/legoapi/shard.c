@@ -1599,12 +1599,13 @@ extern f32 ShopCodePulseScalePc, ShopCodeArrowBingPc, ShopCodeArrowAmplitudePc;
 void __cdecl DrawCodeMenu3D(void) {
     i32 letters[6];
     i32 i, angle;
-    u16 rotation = shelfang;
+    i32 rotation = shelfang;
+
     f32 bing = 0.0f, scale, push;
     for (i = 0; i < 6; ++i) {
-        if (ShopUserCodePc[i] >= 'A' && ShopUserCodePc[i] <= 'Z')
+        if (ShopUserCodePc[i] <= 'Z' && ShopUserCodePc[i] >= 'A')
             letters[i] = ShopUserCodePc[i] - 'A';
-        else if (ShopUserCodePc[i] >= '0' && ShopUserCodePc[i] <= '9')
+        else if (ShopUserCodePc[i] <= '9' && ShopUserCodePc[i] >= '0')
             letters[i] = ShopUserCodePc[i] - '0' + 26;
     }
     if (ShopPurchasePulsePc > 0.0f) {
