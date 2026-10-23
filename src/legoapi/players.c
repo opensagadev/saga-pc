@@ -3800,8 +3800,8 @@ static void ParaphernaliaShieldPc(GAMEOBJECT *, i32);
 void __cdecl ParaphernaliaCommunicatePc(GAMEOBJECT *, i32);
 static void ParaphernaliaThrustPc(GAMEOBJECT *, i32);
 void __cdecl DrawForceGlowSpritePc(NUVEC *, f32, i32, f32, GAMEOBJECT *);
-void __cdecl ParaphernaliaPlacePc(GAMEOBJECT *, i32, i32, i32);
-void __cdecl ParaphernaliaRemovePc(GAMEOBJECT *, i32, i32, i32);
+static void ParaphernaliaPlacePc(GAMEOBJECT *, i32, i32, i32);
+static void ParaphernaliaRemovePc(GAMEOBJECT *, i32, i32, i32);
 i32 __cdecl BatarangGetObjectFromCharIdPc(i32);
 void __cdecl Grapple_DrawLine(GAMEOBJECT *);
 void __cdecl SuperCarry_DrawObject(GAMEOBJECT *);
@@ -4266,5 +4266,122 @@ void __cdecl ParaphernaliaCommunicatePc(GAMEOBJECT *object, i32 reflection) {
         NuRndrStartReflectionRender(0);
         NuSpecialDrawAt(&WORLD->level_objects[reflection_model].special, &reflected);
         NuRndrEndReflectionRender();
+    }
+}
+
+static void ParaphernaliaPlacePc(GAMEOBJECT *object, i32 model, i32 reflection, i32 locator) {
+    NUVEC scaling;
+    NUMTX matrix;
+    NUMTX reflected;
+    f32 *frame;
+    f32 end;
+    f32 start;
+    f32 marker;
+    f32 scale;
+    i32 extra_model;
+    if (WORLD->level_objects[model].active == 0 || locator == -1 ||
+        object->character_model->points_of_interest[locator] == NULL)
+        return;
+    frame = AnimPlaying(&object->anim_packet, object->field_7aa, 1, 0);
+    if (frame == NULL)
+        return;
+    end = NuAnimEndFrame(object->character_model->model_data_b[object->field_7aa]);
+    start = AnimListFrame(object->character_model, object->field_7aa, 0);
+    if (start >= end)
+        return;
+    if (start < 1.0f)
+        start = 1.0f;
+    if (*frame < start)
+        return;
+    marker = AnimListFrame(object->character_model, object->field_7aa, 1);
+    if (marker <= start)
+        return;
+    if (end < marker)
+        marker = end;
+    if (*frame < marker)
+        scale = (*frame - start) / (marker - start);
+    else
+        scale = 1.0f;
+    scaling.x = scaling.y = scaling.z = scale;
+    matrix = object->locator_matrices[locator];
+    if (model == 0xec) {
+        NuMtxPreRotateY(&matrix, object->takeover_start_angle);
+        extra_model = 0xed;
+    } else {
+        extra_model = -1;
+    }
+    NuMtxPreScale(&matrix, &scaling);
+    NuSpecialDrawAt(&WORLD->level_objects[model].special, &matrix);
+    if (extra_model != -1 && WORLD->level_objects[extra_model].active != 0)
+        NuSpecialDrawAt(&WORLD->level_objects[extra_model].special, &matrix);
+    if (reflection != 0 && MatrixReflection(&matrix, object->reflection_enabled, object->reflection_height,
+                                            WORLD->current_level->reflection_y, &reflected)) {
+        NuSpecialDrawAt(&WORLD->level_objects[model].special, &reflected);
+        /* Retail draws the attachment with the unreflected matrix here. */
+        if (extra_model != -1 && WORLD->level_objects[extra_model].active != 0)
+            NuSpecialDrawAt(&WORLD->level_objects[extra_model].special, &matrix);
+    }
+}
+
+static void ParaphernaliaRemovePc(GAMEOBJECT *object, i32 model, i32 reflection, i32 locator) {
+    NUVEC scaling;
+    NUMTX matrix;
+    NUMTX reflected;
+    f32 *frame;
+    f32 end;
+    f32 start;
+    f32 fade_start;
+    f32 fade_end;
+    f32 scale;
+    i32 extra_model;
+    if (WORLD->level_objects[model].active == 0 || locator == -1 ||
+        object->character_model->points_of_interest[locator] == NULL)
+        return;
+    frame = AnimPlaying(&object->anim_packet, object->field_7aa, 1, 0);
+    if (frame == NULL)
+        return;
+    end = NuAnimEndFrame(object->character_model->model_data_b[object->field_7aa]);
+    start = AnimListFrame(object->character_model, object->field_7aa, 0);
+    if (start >= end)
+        return;
+    if (start < 1.0f)
+        start = 1.0f;
+    if (*frame < start)
+        return;
+    fade_start = AnimListFrame(object->character_model, object->field_7aa, 1);
+    if (fade_start <= start)
+        return;
+    fade_end = AnimListFrame(object->character_model, object->field_7aa, 2);
+    if (fade_end < fade_start)
+        fade_end = fade_start;
+    if (end < fade_end)
+        fade_end = end;
+    if (end < fade_start)
+        fade_start = end;
+    if (*frame <= fade_start) {
+        scale = 1.0f;
+    } else {
+        if (*frame >= fade_end || fade_start >= fade_end)
+            return;
+        scale = 1.0f - (*frame - fade_start) / (fade_end - fade_start);
+    }
+    scaling.x = scaling.y = scaling.z = scale;
+    matrix = object->locator_matrices[locator];
+    if (model == 0xec) {
+        NuMtxPreRotateY(&matrix, object->takeover_start_angle);
+        extra_model = 0xed;
+    } else {
+        extra_model = -1;
+    }
+    NuMtxPreScale(&matrix, &scaling);
+    NuSpecialDrawAt(&WORLD->level_objects[model].special, &matrix);
+    if (extra_model != -1 && WORLD->level_objects[extra_model].active != 0)
+        NuSpecialDrawAt(&WORLD->level_objects[extra_model].special, &matrix);
+    if (reflection != 0 && MatrixReflection(&matrix, object->reflection_enabled, object->reflection_height,
+                                            WORLD->current_level->reflection_y, &reflected)) {
+        NuSpecialDrawAt(&WORLD->level_objects[model].special, &reflected);
+        /* Retail draws the attachment with the unreflected matrix here. */
+        if (extra_model != -1 && WORLD->level_objects[extra_model].active != 0)
+            NuSpecialDrawAt(&WORLD->level_objects[extra_model].special, &matrix);
     }
 }
