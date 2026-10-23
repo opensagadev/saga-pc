@@ -462,82 +462,83 @@ i32 __cdecl FaceOpponent(GAMEOBJECT *object, NUVEC *position) {
 
 i32 __cdecl ForcePushed_SetTargetMom(GAMEOBJECT *object, f32 *seek_rate) {
     GAMEOBJECT *source = object->force_target;
-    GAMEOBJECT *candidate;
     GAMEOBJECT *nearest;
-    NUVEC target;
+    GAMEOBJECT *candidate;
     NUVEC direction;
+    NUVEC target;
     f32 distance_squared;
-    f32 approach_weight;
-    f32 push_x;
-    f32 push_z;
-    f32 dx;
-    f32 dz;
     f32 nearest_distance_squared;
+    f32 speed;
     i32 index;
     u16 angle;
-    if (source == NULL) {
-        object->target_velocity.x = object->target_velocity.z = 0.0f;
-        return 0;
-    }
-    if ((source->flags_e20 & 0x180) == 0) {
-        if (object->action_movement_state == 4 && Cheat_IsOn(0x13) != 0) {
-            angle = NuAtan2D(object->collision_position.x - source->collision_position.x,
-                             object->collision_position.z - source->collision_position.z);
-            object->target_velocity.x = -NuTrigTable[angle >> 1] * ForcePush_Speed;
-            object->target_velocity.z = -NuTrigTable[((angle + 0x4000) >> 1) & 0x7fff] * ForcePush_Speed;
-            return 0;
-        }
-        nearest = NULL;
-        if (ForcePush_SuperPush != 0 && (object->flags_1fc & 0x80) == 0 && (source->flags_e20 & 0x380) == 0) {
-            push_x = object->position.x - source->position.x;
-            push_z = object->position.z - source->position.z;
-            nearest_distance_squared = 2.25f;
-            candidate = Obj;
-            for (index = 0; index < HIGHGAMEOBJECT; ++index, ++candidate) {
-                if (!ForcePushEligible(candidate, object, source) || candidate->id == id_GONKDROID ||
-                    candidate->collision_min.y > object->collision_max.y ||
-                    object->collision_min.y > candidate->collision_max.y)
-                    continue;
-                dx = candidate->position.x - object->position.x;
-                dz = candidate->position.z - object->position.z;
-                if (!(0.0 > push_x * dx + push_z * dz)) {
-                    distance_squared = dx * dx + dz * dz;
-                    if (distance_squared < nearest_distance_squared) {
-                        nearest_distance_squared = distance_squared;
-                        nearest = candidate;
+    if (source != NULL) {
+        if ((source->flags_e20 & 0x80) != 0 || (source->flags_e20 & 0x100) != 0) {
+            object->target_velocity.x = object->target_velocity.z = 0.0f;
+            if (source->character_context == 0x1b && source->field_7b3 == 1) {
+                target.x = source->external_force.x;
+                target.y = source->external_force.y - object->character_bottom * object->origin_scale;
+                target.z = source->external_force.z;
+                distance_squared = NuVecDistSqr(&target, &object->position, &direction);
+                if (!(ForcePushApproachInnerSquare > distance_squared)) {
+                    if (ForcePushApproachOuterSquare > distance_squared)
+                        distance_squared = (f32)(((f64)NuFsqrt(distance_squared) - (f64)0.1f) / (f64)0.1f);
+                    else
+                        distance_squared = 1.0f;
+                    if (distance_squared > 0.0f) {
+                        NuVecNorm(&direction, &direction);
+                        NuVecScale(&object->target_velocity, &direction, 1.0f);
                     }
                 }
+                *seek_rate = ForcePushSeekRate;
+                return 1;
             }
-        }
-        if (nearest != NULL) {
-            dx = nearest->collision_position.x - object->collision_position.x;
-            dz = nearest->collision_position.z - object->collision_position.z;
         } else {
-            dx = object->collision_position.x - source->collision_position.x;
-            dz = object->collision_position.z - source->collision_position.z;
-        }
-        angle = NuAtan2D(dx, dz);
-        object->target_velocity.x = NuTrigTable[angle >> 1] * ForcePush_Speed;
-        object->target_velocity.z = NuTrigTable[((angle + 0x4000) >> 1) & 0x7fff] * ForcePush_Speed;
-        return 0;
-    }
-    object->target_velocity.x = object->target_velocity.z = 0.0f;
-    if (source->character_context == 0x1b && source->field_7b3 == 1) {
-        target.x = source->external_force.x;
-        target.y = source->external_force.y - object->character_bottom * object->origin_scale;
-        target.z = source->external_force.z;
-        distance_squared = NuVecDistSqr(&target, &object->position, &direction);
-        if (!(ForcePushApproachInnerSquare > distance_squared)) {
-            approach_weight = 1.0f;
-            if (ForcePushApproachOuterSquare > distance_squared)
-                approach_weight = (f32)(((f64)NuFsqrt(distance_squared) - (f64)0.1f) / (f64)0.1f);
-            if (approach_weight > 0.0f) {
-                NuVecNorm(&direction, &direction);
-                NuVecScale(&object->target_velocity, &direction, 1.0f);
+            if (object->action_movement_state == 4 && Cheat_IsOn(0x13) != 0) {
+                angle = NuAtan2D(object->collision_position.x - source->collision_position.x,
+                                 object->collision_position.z - source->collision_position.z);
+                speed = ForcePush_Speed;
+                object->target_velocity.x = -NuTrigTable[angle >> 1] * speed;
+                object->target_velocity.z = -NuTrigTable[((angle + 0x4000) >> 1) & 0x7fff] * speed;
+                return 0;
             }
+            if (ForcePush_SuperPush != 0 && (object->flags_1fc & 0x80) == 0 && (source->flags_e20 & 0x300) == 0 &&
+                (source->flags_e20 & 0x80) == 0) {
+                nearest_distance_squared = 2.25f;
+                nearest = NULL;
+                target.x = object->position.x - source->position.x;
+                target.z = object->position.z - source->position.z;
+                candidate = Obj;
+                for (index = 0; index < HIGHGAMEOBJECT; ++index, ++candidate) {
+                    if (!ForcePushEligible(candidate, object, source) || candidate->id == id_GONKDROID ||
+                        candidate->collision_min.y > object->collision_max.y ||
+                        candidate->collision_max.y < object->collision_min.y)
+                        continue;
+                    direction.x = candidate->position.x - object->position.x;
+                    direction.z = candidate->position.z - object->position.z;
+                    if (!(0.0 > target.x * direction.x + target.z * direction.z)) {
+                        distance_squared = direction.x * direction.x + direction.z * direction.z;
+                        if (distance_squared < nearest_distance_squared) {
+                            nearest_distance_squared = distance_squared;
+                            nearest = candidate;
+                        }
+                    }
+                }
+            } else {
+                nearest = NULL;
+            }
+            if (nearest != NULL)
+                angle = NuAtan2D(nearest->collision_position.x - object->collision_position.x,
+                                 nearest->collision_position.z - object->collision_position.z);
+            else
+                angle = NuAtan2D(object->collision_position.x - source->collision_position.x,
+                                 object->collision_position.z - source->collision_position.z);
+            speed = ForcePush_Speed;
+            object->target_velocity.x = NuTrigTable[angle >> 1] * speed;
+            object->target_velocity.z = NuTrigTable[((angle + 0x4000) >> 1) & 0x7fff] * speed;
+            return 0;
         }
-        *seek_rate = ForcePushSeekRate;
-        return 1;
+    } else {
+        object->target_velocity.x = object->target_velocity.z = 0.0f;
     }
     return 0;
 }
