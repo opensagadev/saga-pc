@@ -13793,6 +13793,9 @@ extern "C" {
 #pragma bss_seg(".bss$ParticleChunkRenderStack")
     DEBRIS_RENDER_CHUNK_PC *ParticleChunkRenderStack[5] = {0};
 #pragma bss_seg()
+#pragma data_seg(".data$nutexanim_usepakfile")
+    i32 nutexanim_usepakfile = 1;
+#pragma data_seg()
 #pragma data_seg(".data$g_texAnimCriticalSection")
     i32 g_texAnimCriticalSection = -1;
 #pragma data_seg()
@@ -15237,6 +15240,9 @@ extern "C" {
 }
 
 extern "C" {
+#pragma bss_seg(".bss$NuTexAnimMissingPakDiagnosticPc")
+    i32 NuTexAnimMissingPakDiagnosticPc = 0;
+#pragma bss_seg()
 #pragma bss_seg(".bss$GHGTextureProgramsPC")
     void *GHGTextureProgramsPC = 0;
 #pragma bss_seg()

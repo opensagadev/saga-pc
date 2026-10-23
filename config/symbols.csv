@@ -5757,7 +5757,7 @@ address,symbol,size,ctype
 0x5d2690,_TextureAnimationScriptNamePrivatePc,55,
 0x5d26d0,_NuTexAnimProgParseFile,360,"TEXTURE_ANIM_PROGRAM_PC *__cdecl NuTexAnimProgParseFile(NUFILE file, VARIPTR *buffer, VARIPTR end, i32 fps_unused)"
 0x5d2840,_NuTexAnimProgReadScript,61,"TEXTURE_ANIM_PROGRAM_PC *__cdecl NuTexAnimProgReadScript(char *path, VARIPTR *buffer, VARIPTR end, i32 fps_unused)"
-0x5d2880,_NuTexAnimProgReadCFG,1006,
+0x5d2880,_NuTexAnimProgReadCFG,1006,"void __cdecl(char *, VARIPTR *, VARIPTR)"
 0x5d2c70,_TextureAnimationCrossReferencePrivatePc,148,
 0x5d2d10,_NuTexAnimEnvProc,1448,void __cdecl NuTexAnimEnvProc(PC_TEXTURE_ANIM_ENV *environment)
 0x5d32c0,_NuTexAnimSetSignals,40,void __cdecl NuTexAnimSetSignals(u32 signals)
@@ -15569,6 +15569,8 @@ address,symbol,size,ctype
 0x76462c,??_C@_06GIPGOOPC@?$CFs?4qfn?$AA@,,const char[]
 0x764634,??_C@_06OHJEHJKF@?$CFs?4ufn?$AA@,,const char[]
 0x76463c,_NuTextureAnimationSourcePathPC,50,const char[50]
+0x764670,??_C@_04IFJILJI@?4cfg?$AA@,5,const char[5]
+0x764678,??_C@_04ODAPCKGA@?4pak?$AA@,5,const char[5]
 0x764680,_NuTextureAnimationSlotsWarning,31,const char[31]
 0x7646a0,__real@43340000,,
 0x007646a4,_NuCameraAllocSource,54,const char[54]
@@ -20509,6 +20511,7 @@ address,symbol,size,ctype
 0x0080b614,_qfnt_justify_stretch,4,f32
 0x80b618,_TextureAnimationScriptMaskPc,,u16
 0x80b620,_TextureAnimationCommandsPrivatePc,,NUFPCOMJMP[22]
+0x80b6d0,_nutexanim_usepakfile,4,i32
 0x80b6d4,_g_texAnimCriticalSection,,i32
 0x80b6d8,_global_windscale,,f32
 0x80b6dc,_global_windspeed,,f32
@@ -23826,6 +23829,7 @@ address,symbol,size,ctype
 0x9738f4,_GHGTextureProgramsPC,,void *
 0x9738f8,_ntal_first,,PC_TEXTURE_ANIM_LIST *
 0x9738fc,_ntal_free,,PC_TEXTURE_ANIM_LIST *
+0x973900,_NuTexAnimMissingPakDiagnosticPc,4,i32
 0x00973904,_DdMaxJointsPc,,
 0x97390c,_PCSpecialForcedLOD,,i32
 0x973910,_PCSpecialForcedMaterial,,NUMTL *

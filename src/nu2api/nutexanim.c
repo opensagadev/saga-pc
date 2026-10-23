@@ -866,6 +866,113 @@ TEXTURE_ANIM_PROGRAM_PC *__cdecl NuTexAnimProgReadScript(char *path, VARIPTR *bu
     return program;
 }
 
+extern i32 nutexanim_usepakfile;
+extern i32 NuTexAnimMissingPakDiagnosticPc;
+extern void __cdecl PCSpecialEmptyHandler_candidate(void);
+
+#define TEXANIM_DIAGNOSTIC(value) ((void(__cdecl *)(const void *))AnimationDiagnosticNoOpPc)(value)
+#define TEXANIM_EMPTY(value) ((void(__cdecl *)(const void *))PCSpecialEmptyHandler_candidate)(value)
+
+void __cdecl NuTexAnimProgReadCFG(char *path, VARIPTR *buffer, VARIPTR end) {
+    char filename[128];
+    VARIPTR cursor;
+    VARIPTR list;
+    void *pak;
+    void *data;
+    i32 size;
+    i32 item;
+    NUFILE file;
+    NUFPAR_PC *parser;
+    char *name;
+    if (nutexanim_usepakfile != 0) {
+        NuStrCpy(filename, path);
+        name = NuStrRChr(filename, '.');
+        if (name != NULL)
+            *name = '\0';
+        NuStrCat(filename, ".pak");
+        size = (i32)NuFileSize(filename);
+        if (size == 0)
+            return;
+        list.addr = (end.addr - size) & ~15u;
+        cursor = list;
+        pak = NuFilePakLoad(filename, &cursor, end, 16);
+        if (pak != NULL) {
+            name = NuStrRChr(path, '/');
+            if (name == NULL && (name = NuStrRChr(path, '\\')) == NULL)
+                name = path;
+            else
+                ++name;
+            NuStrCpy(filename, name);
+            name = NuStrRChr(filename, '.');
+            if (name != NULL)
+                *name = '\0';
+            NuStrCat(filename, ".cfg");
+            item = NuFilePakGetItem(pak, filename);
+            if (item == 0)
+                TEXANIM_DIAGNOSTIC(filename);
+            NuFilePakGetItemInfo(pak, item, &data, &size);
+            file = NuMemFileOpen(data, size, 0);
+            if (file != 0) {
+                parser = NuFParOpen(file);
+                if (parser != NULL) {
+                    *--list.char_ptr = '\0';
+                    while (NuFParGetLine(parser)) {
+                        NuFParGetWord(parser);
+                        if (parser->word_buffer_ptr[0] == '\0')
+                            TEXANIM_DIAGNOSTIC((void *)parser->line_number);
+                        name = NuStrRChr(parser->word_buffer_ptr, '/');
+                        if (name == NULL && (name = NuStrRChr(parser->word_buffer_ptr, '\\')) == NULL)
+                            name = parser->word_buffer_ptr;
+                        else
+                            ++name;
+                        list.char_ptr -= NuStrLen(name) + 1;
+                        NuStrCpy(list.char_ptr, name);
+                    }
+                    NuFreeFPar(parser);
+                }
+                NuFileClose(file);
+            }
+            for (cursor = list; *cursor.char_ptr != '\0'; cursor.char_ptr += NuStrLen(cursor.char_ptr) + 1) {
+                item = NuFilePakGetItem(pak, cursor.char_ptr);
+                if (item == 0)
+                    TEXANIM_DIAGNOSTIC(cursor.char_ptr);
+                NuFilePakGetItemInfo(pak, item, &data, &size);
+                file = NuMemFileOpen(data, size, 0);
+                if (file != 0) {
+                    if (NuTexAnimProgParseFile(file, buffer, list, 0) == NULL)
+                        TEXANIM_EMPTY(cursor.char_ptr);
+                    NuFileClose(file);
+                }
+            }
+            return;
+        }
+        if (NuTexAnimMissingPakDiagnosticPc != 0)
+            TEXANIM_DIAGNOSTIC(path);
+        else
+            TEXANIM_EMPTY(path);
+        buffer->addr = (buffer->addr + 15) & ~15u;
+    }
+    *end.char_ptr = '\0';
+    list.char_ptr = end.char_ptr - 1;
+    parser = NuFParCreate(path);
+    if (parser != NULL) {
+        *list.char_ptr = '\0';
+        while (NuFParGetLine(parser)) {
+            NuFParGetWord(parser);
+            if (parser->word_buffer_ptr[0] == '\0')
+                TEXANIM_DIAGNOSTIC((void *)parser->line_number);
+            list.char_ptr -= NuStrLen(parser->word_buffer_ptr) + 1;
+            NuStrCpy(list.char_ptr, parser->word_buffer_ptr);
+        }
+        NuFParDestroy(parser);
+    }
+    for (cursor = list; *cursor.char_ptr != '\0'; cursor.char_ptr += NuStrLen(cursor.char_ptr) + 1) {
+        if (NuTexAnimProgReadScript(cursor.char_ptr, buffer, list, 0) == NULL)
+            TEXANIM_EMPTY(cursor.char_ptr);
+    }
+    buffer->addr = (buffer->addr + 15) & ~15u;
+}
+
 TEXTURE_ANIMATION_PC *__cdecl NuTexAnimCreate(VARIPTR *buffer, TEXTURE_ANIM_PROGRAM_PC *program, NUMTL *material,
                                               u16 *texture_ids, i32 texture_count) {
     TEXTURE_ANIMATION_PC *animation;
