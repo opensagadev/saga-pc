@@ -1270,20 +1270,22 @@ void __cdecl NuRndrBufferDescriptorsInitPc(VARIPTR *buffer, VARIPTR end) {
 
 void __cdecl NuRndrInitConfigPc(VARIPTR *buffer, VARIPTR end) {
     RENDERER_SHADOW_DEFAULTS_PC *shadow = (RENDERER_SHADOW_DEFAULTS_PC *)&PCShadowState;
-    RENDERER_CLEAR_RECORD_PC *record;
+    NUVEC defaults;
+    i32 i;
     RendererConfigEnabledPc = 1;
     RendererConfigSecondEnabledPc = 1;
     NuMtxSetIdentity(&RendererConfigMatrixPc);
     NuRndrBufferDescriptorsInitPc(buffer, end);
-    shadow->state0 = 0.0f;
-    shadow->state1 = -0.75f;
-    shadow->state2 = -0.75f;
+    defaults.x = 0.0f;
+    defaults.y = -0.75f;
+    defaults.z = -0.75f;
+    *(NUVEC *)&shadow->state0 = defaults;
     PCShadowNearValue = 4.0f;
     PCShadowFarValue = 6.0f;
     shadow->packed_colour = 0x00101010;
     NuRndrShadowCnt = 0;
-    for (record = RendererClearRecordsPc; record < RendererClearRecordsPc + 32; ++record)
-        record->active = 0;
+    for (i = 0; i < 32; ++i)
+        RendererClearRecordsPc[i].active = 0;
     NuRndrInitGeneric();
 }
 
