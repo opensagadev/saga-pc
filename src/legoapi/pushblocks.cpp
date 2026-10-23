@@ -37,46 +37,43 @@ extern "C" {
     extern u16 PushBlockFacingTolerancePc;
     extern f32 PushBlockGapEpsilonPc;
 }
+typedef union PUSH_FABS_BITS_PC {
+    f32 value;
+    u32 bits;
+} PUSH_FABS_BITS_PC;
 extern "C" PUSH_BLOCK_PC *__cdecl NearestFacingPushBlock(WORLDINFO *world, GAMEOBJECT *object, float range) {
-    PUSH_BLOCK_PC *nearest = NULL;
-    if (world == NULL)
-        return nearest;
-    i32 count = ((PUSH_BLOCK_WORLD_PC *)world)->count;
-    PUSH_BLOCK_PC *blocks = ((PUSH_BLOCK_WORLD_PC *)world)->blocks;
-    if (blocks == NULL)
-        return nearest;
-    if (count == 0)
-        return nearest;
-    if (LEGOCONTEXT_PUSH == -1)
-        return nearest;
-    if (object->character_context != LEGOCONTEXT_PUSH)
-        return nearest;
-    f32 upper = object->upper_position.y;
+    PUSH_BLOCK_WORLD_PC *push_world = (PUSH_BLOCK_WORLD_PC *)world;
+    if (push_world == NULL || push_world->blocks == NULL || push_world->count == 0 || LEGOCONTEXT_PUSH == -1 ||
+        object->character_context != LEGOCONTEXT_PUSH)
+        return NULL;
+    f32 max_y = object->upper_position.y;
     u16 facing = object->movement_facing_angle;
-    f32 lower = object->lower_position.y;
-    f32 height = upper - lower;
-    f32 adjust = height * 0.25f;
-    f32 max_y = upper - adjust;
-    f32 min_y = lower + adjust;
+    f32 min_y = object->lower_position.y;
+    f32 adjust = max_y - min_y;
+    adjust *= 0.25;
+    max_y -= adjust;
+    min_y += adjust;
     i32 mode;
-    i32 angle = facing;
-    i32 tolerance = PushBlockFacingTolerancePc;
-    if (facing == 0 || angle > 0x10000 - tolerance || (facing > 0 && facing < PushBlockFacingTolerancePc))
+    PUSH_BLOCK_PC *nearest = NULL;
+    if (facing == 0 || facing > 0x10000 - PushBlockFacingTolerancePc ||
+        (facing > 0 && facing < PushBlockFacingTolerancePc))
         mode = 2;
-    else if (facing == 0x4000 || (angle > 0x4000 - tolerance && angle < 0x4000 + tolerance))
+    else if (facing == 0x4000 ||
+             (facing > 0x4000 - PushBlockFacingTolerancePc && facing < 0x4000 + PushBlockFacingTolerancePc))
         mode = 0;
-    else if (facing == 0x8000 || (angle > 0x8000 - tolerance && angle < 0x8000 + tolerance))
+    else if (facing == 0x8000 ||
+             (facing > 0x8000 - PushBlockFacingTolerancePc && facing < 0x8000 + PushBlockFacingTolerancePc))
         mode = 3;
-    else if (facing == 0xc000 || (angle > 0xc000 - tolerance && angle < 0xc000 + tolerance))
+    else if (facing == 0xc000 ||
+             (facing > 0xc000 - PushBlockFacingTolerancePc && facing < 0xc000 + PushBlockFacingTolerancePc))
         mode = 1;
     else
-        return nearest;
-    nearest = NULL;
-    if (((PUSH_BLOCK_WORLD_PC *)world)->count <= 0)
-        return nearest;
+        return NULL;
     f32 nearest_dist = 1000000000.0f;
-    for (i32 i = 0; i < ((PUSH_BLOCK_WORLD_PC *)world)->count; ++i) {
-        PUSH_BLOCK_PC *block = &((PUSH_BLOCK_WORLD_PC *)world)->blocks[i];
+    nearest = NULL;
+    f32 gap = 0.0f;
+    for (i32 i = 0; i < push_world->count; ++i) {
+        PUSH_BLOCK_PC *block = &push_world->blocks[i];
         if (NuSpecialExistsFn(&block->special) != 0) {
             if (NuSpecialGetOnScreenFn(&block->special) == 0)
                 continue;
@@ -85,116 +82,119 @@ extern "C" PUSH_BLOCK_PC *__cdecl NearestFacingPushBlock(WORLDINFO *world, GAMEO
         }
         if ((block->packed_state_flags & 0x6000100) != 0)
             continue;
-        f32 max_x = block->bounds_max.x;
-        NUVEC *pos = block->position;
-        f32 top = pos->y + (f32)fabs((f64)block->bounds_max.y);
-        f32 bottom = pos->y - (f32)fabs((f64)block->bounds_min.y);
-        f32 min_x = block->bounds_min.x;
-        f32 min_z = block->bounds_min.z;
-        f32 max_z = block->bounds_max.z;
+        NUVEC bmin = block->bounds_min;
+        NUVEC bmax = block->bounds_max;
+        PUSH_FABS_BITS_PC absolute, value;
+        value.value = bmax.y;
+        absolute.bits = value.bits & 0x7fffffff;
+        f32 top = block->position->y + absolute.value;
+        PUSH_FABS_BITS_PC absolute2, value2;
+        value2.value = bmin.y;
+        absolute2.bits = value2.bits & 0x7fffffff;
+        f32 bottom = block->position->y - absolute2.value;
         if (top > max_y && bottom > max_y)
             continue;
-        if (min_y > top) {
-            if (min_y > bottom)
-                continue;
-        }
-        f32 dx = pos->x - object->collision_position.x;
-        f32 dy = pos->y - object->collision_position.y;
-        f32 dz = pos->z - object->collision_position.z;
+        if (min_y > top && min_y > bottom)
+            continue;
+        NUVEC pos = *block->position;
+        f32 dx = pos.x - object->collision_position.x;
         NUVEC delta;
         delta.x = dx;
-        delta.y = dy;
+        delta.y = pos.y - object->collision_position.y;
+        f32 dz = pos.z - object->collision_position.z;
         delta.z = dz;
-        f32 gap;
-        if (mode == 2) {
-            goto mode2_geometry;
+        switch (mode) {
+            case 0: {
+                PUSH_FABS_BITS_PC a, v;
+                f32 bound;
+                v.value = bmin.x;
+                a.bits = v.bits & 0x7fffffff;
+                gap = dx - a.value;
+                bound = bmin.z + pos.z - PushBlockGapEpsilonPc;
+                if (object->collision_position.z <= bound)
+                    continue;
+                bound = pos.z + bmax.z - PushBlockGapEpsilonPc;
+                if (object->collision_position.z >= bound)
+                    continue;
+                if ((block->packed_state_flags & 0x200000) != 0)
+                    continue;
+                if ((block->packed_state_flags & 0x100000) != 0 && (block->packed_state_flags & 0x800000) != 0)
+                    continue;
+                break;
+            }
+            case 1: {
+                PUSH_FABS_BITS_PC a, v;
+                f32 bound;
+                v.value = dx;
+                a.bits = v.bits & 0x7fffffff;
+                gap = a.value - bmax.x;
+                bound = bmax.z + pos.z - PushBlockGapEpsilonPc;
+                if (object->collision_position.z >= bound)
+                    continue;
+                bound = pos.z + bmin.z - PushBlockGapEpsilonPc;
+                if (object->collision_position.z <= bound)
+                    continue;
+                if ((block->packed_state_flags & 0x200000) != 0)
+                    continue;
+                if ((block->packed_state_flags & 0x100000) != 0 && (block->packed_state_flags & 0x400000) != 0)
+                    continue;
+                break;
+            }
+            case 2: {
+                PUSH_FABS_BITS_PC a, v;
+                f32 bound;
+                v.value = bmin.z;
+                a.bits = v.bits & 0x7fffffff;
+                gap = dz - a.value;
+                bound = bmax.x + pos.x - PushBlockGapEpsilonPc;
+                if (object->collision_position.x >= bound)
+                    continue;
+                bound = pos.x + bmin.x - PushBlockGapEpsilonPc;
+                if (object->collision_position.x <= bound)
+                    continue;
+                if ((block->packed_state_flags & 0x100000) != 0)
+                    continue;
+                if ((block->packed_state_flags & 0x200000) != 0 && (block->packed_state_flags & 0x800000) != 0)
+                    continue;
+                break;
+            }
+            case 3: {
+                PUSH_FABS_BITS_PC a, v;
+                f32 bound;
+                v.value = dz;
+                a.bits = v.bits & 0x7fffffff;
+                gap = a.value - bmax.z;
+                bound = bmin.x + pos.x - PushBlockGapEpsilonPc;
+                if (object->collision_position.x <= bound)
+                    continue;
+                bound = pos.x + bmax.x - PushBlockGapEpsilonPc;
+                if (object->collision_position.x >= bound)
+                    continue;
+                if ((block->packed_state_flags & 0x100000) != 0)
+                    continue;
+                if ((block->packed_state_flags & 0x200000) != 0 && (block->packed_state_flags & 0x400000) != 0)
+                    continue;
+                break;
+            }
         }
-        if (mode == 3) {
-            goto mode3_geometry;
-        }
-        if (mode == 1) {
-            goto mode1_geometry;
-        }
-    mode0_geometry: {
-        f32 block_min_z = min_z + pos->z - PushBlockGapEpsilonPc;
-        f32 block_max_z = pos->z + max_z - PushBlockGapEpsilonPc;
-        if (block_min_z >= object->collision_position.z)
-            continue;
-        if (object->collision_position.z >= block_max_z)
-            continue;
-        if ((block->flags_0ca & 0x20) != 0)
-            continue;
-        if ((block->flags_0ca & 0x90) == 0x90)
-            continue;
-        gap = dx - (f32)fabs((f64)min_x);
-        goto have_gap;
-    }
-    mode1_geometry: {
-        f32 block_max_z = max_z + pos->z - PushBlockGapEpsilonPc;
-        f32 block_min_z = pos->z + min_z - PushBlockGapEpsilonPc;
-        if (object->collision_position.z >= block_max_z)
-            continue;
-        if (block_min_z >= object->collision_position.z)
-            continue;
-        if ((block->flags_0ca & 0x20) != 0)
-            continue;
-        if ((block->flags_0ca & 0x50) == 0x50)
-            continue;
-        gap = (f32)fabs((f64)dx) - max_x;
-        goto have_gap;
-    }
-    mode3_geometry: {
-        f32 block_min_x = min_x + pos->x - PushBlockGapEpsilonPc;
-        f32 block_max_x = pos->x + max_x - PushBlockGapEpsilonPc;
-        if (block_min_x >= object->collision_position.x)
-            continue;
-        if (object->collision_position.x >= block_max_x)
-            continue;
-        if ((block->flags_0ca & 0x10) != 0)
-            continue;
-        if ((block->flags_0ca & 0x60) == 0x60)
-            continue;
-        gap = (f32)fabs((f64)dz) - max_z;
-        goto have_gap;
-    }
-    mode2_geometry: {
-        f32 block_max_x = max_x + pos->x - PushBlockGapEpsilonPc;
-        f32 block_min_x = pos->x + min_x - PushBlockGapEpsilonPc;
-        if (object->collision_position.x >= block_max_x)
-            continue;
-        if (block_min_x >= object->collision_position.x)
-            continue;
-        if ((block->flags_0ca & 0x10) != 0)
-            continue;
-        if ((block->flags_0ca & 0xa0) == 0xa0)
-            continue;
-        gap = dz - (f32)fabs((f64)min_z);
-        goto have_gap;
-    }
-    have_gap: {
         if (gap > (object->bounds_radius + PushBlockGapEpsilonPc) * 2.0f)
             continue;
-        i32 yaw = NuAtan2D(delta.x, delta.z);
-        i32 rot = 0x4000 - (yaw & 0xffff);
-        NuVecRotateY(&delta, &delta, rot);
-        i32 pitch = NuAtan2D(delta.x, delta.y);
-        i16 yaw_diff = (i16)(yaw - object->movement_facing_angle);
-        i32 yaw_abs = yaw_diff;
-        yaw_abs = yaw_abs < 0 ? -yaw_abs : yaw_abs;
-        if ((u16)yaw_abs > 0x2000)
+        u16 yaw = NuAtan2D(dx, dz);
+        NuVecRotateY(&delta, &delta, 0x4000 - yaw);
+        u16 pitch = NuAtan2D(delta.x, delta.y);
+        i32 pitch_diff = 0x4000 - pitch;
+        u16 pitch_abs = (u16)abs(pitch_diff);
+        i32 yaw_diff = (i16)(yaw - object->movement_facing_angle);
+        u16 yaw_abs = (u16)abs(yaw_diff);
+        if (yaw_abs > 0x2000)
             continue;
-        i32 pitch_diff = 0x4000 - (u16)pitch;
-        pitch_diff = pitch_diff < 0 ? -pitch_diff : pitch_diff;
-        if ((u16)pitch_diff > 0x4000)
+        if (pitch_abs > 0x4000)
             continue;
-        f32 dist2 = dx * dx + dz * dz;
-        if (!(range > dist2))
-            continue;
-        if (!(nearest_dist > dist2))
-            continue;
-        nearest_dist = dist2;
-        nearest = block;
-    }
+        gap = dx * dx + dz * dz;
+        if (gap < range && gap < nearest_dist) {
+            nearest_dist = gap;
+            nearest = block;
+        }
     }
     return nearest;
 }
