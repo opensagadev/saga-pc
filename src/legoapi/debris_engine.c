@@ -33,7 +33,7 @@ void __cdecl DebrisReserveTrashableSpace(VARIPTR *buffer, VARIPTR end, i32 chunk
 
 void __cdecl DebrisTrashableSetup(VARIPTR *buffer, VARIPTR *end) {
     u32 cursor;
-    i32 chunk_count, i, size;
+    i32 i, size;
     if (debris_setup_called == 0) {
         return;
     }
@@ -45,12 +45,11 @@ void __cdecl DebrisTrashableSetup(VARIPTR *buffer, VARIPTR *end) {
         buffer->addr = (buffer->addr + 0xf) & ~0xf;
         cursor = buffer->addr;
     }
-    chunk_count = debrischunks + debrischunksglass;
-    memset(debris_chunk_controls, 0, chunk_count * 2 * sizeof(DEBRIS_CHUNK_CONTROL_PC));
-    memset(freechunkcontrols, 0, chunk_count * 2 * sizeof(DEBRIS_CHUNK_CONTROL_PC *));
+    memset(debris_chunk_controls, 0, (debrischunks + debrischunksglass) * 2 * sizeof(DEBRIS_CHUNK_CONTROL_PC));
+    memset(freechunkcontrols, 0, (debrischunks + debrischunksglass) * 2 * sizeof(DEBRIS_CHUNK_CONTROL_PC *));
     memset(freedebchunks, 0, debrischunks * sizeof(DEBRIS_PARTICLE_CHUNK_PC *));
     memset(freedebchunksglass, 0, debrischunksglass * sizeof(DEBRIS_PARTICLE_CHUNK_PC *));
-    memset(ParticleChunkToRender, 0, chunk_count * sizeof(DEBRIS_RENDER_CHUNK_PC));
+    memset(ParticleChunkToRender, 0, (debrischunks + debrischunksglass) * sizeof(DEBRIS_RENDER_CHUNK_PC));
     for (i = 0; i < debrischunks; ++i) {
         freedebchunks[i] = CreateDmaParticleSet((void *)cursor, &size);
         cursor += size;
@@ -72,11 +71,11 @@ void __cdecl DebrisTrashableSetup(VARIPTR *buffer, VARIPTR *end) {
     }
     debris_chunk_control_stack[0] = NULL;
     debris_chunk_control_stack[1] = NULL;
-    for (i = 0; i < chunk_count * 2; ++i) {
+    for (i = 0; i < (debrischunks + debrischunksglass) * 2; ++i) {
         freechunkcontrols[i] = &debris_chunk_controls[i];
     }
     freechunkcontrolsptr = 0;
-    for (i = 0; i < chunk_count; ++i) {
+    for (i = 0; i < (debrischunks + debrischunksglass); ++i) {
         ParticleChunkToRender[i].particle_chunk = NULL;
         ParticleChunkToRender[i].effect = NULL;
         ParticleChunkToRender[i].key = NULL;
@@ -89,36 +88,40 @@ void __cdecl DebrisTrashableSetup(VARIPTR *buffer, VARIPTR *end) {
 }
 
 void __cdecl AddChunkToRenderStack(DEBRIS_RENDER_CHUNK_PC *chunk, DEBRIS_RENDER_CHUNK_PC **stack) {
-    DEBRIS_RENDER_CHUNK_PC *current = *stack;
-    chunk->previous = NULL;
+    DEBRIS_RENDER_CHUNK_PC *current, *next;
     chunk->next = NULL;
-    if (current != NULL) {
-        u16 priority = chunk->render_priority;
-        u16 current_priority = current->render_priority;
-        if (priority <= current_priority &&
-            (priority != current_priority || current->effect->particle_type < chunk->effect->particle_type)) {
-            DEBRIS_RENDER_CHUNK_PC *next = current->next;
-            while (next != NULL) {
-                u16 next_priority = next->render_priority;
-                if (next_priority <= priority &&
-                    (priority != next_priority || chunk->effect->particle_type <= next->effect->particle_type)) {
-                    break;
-                }
-                current = next;
-                next = next->next;
-            }
-            current->next = chunk;
-            chunk->previous = current;
-            chunk->next = next;
-            if (next != NULL) {
-                next->previous = chunk;
-            }
-            return;
-        }
+    chunk->previous = NULL;
+    current = *stack;
+    if (current == NULL) {
+        *stack = chunk;
+        return;
+    }
+    next = current->next;
+    if (chunk->render_priority > current->render_priority) {
         chunk->next = current;
         current->previous = chunk;
+        *stack = chunk;
+        return;
     }
-    *stack = chunk;
+    if (chunk->render_priority == current->render_priority &&
+        chunk->effect->particle_type <= current->effect->particle_type) {
+        chunk->next = current;
+        current->previous = chunk;
+        *stack = chunk;
+        return;
+    }
+    while (next != NULL && (chunk->render_priority < next->render_priority ||
+                            (chunk->render_priority == next->render_priority &&
+                             chunk->effect->particle_type > next->effect->particle_type))) {
+        current = next;
+        next = next->next;
+    }
+    current->next = chunk;
+    chunk->previous = current;
+    if (next != NULL) {
+        chunk->next = next;
+        next->previous = chunk;
+    }
 }
 
 void __cdecl RemoveChunkFromRenderStack(DEBRIS_RENDER_CHUNK_PC *chunk, DEBRIS_RENDER_CHUNK_PC **stack) {
@@ -1451,42 +1454,38 @@ i32 __cdecl DebrisPreCheckCollisions(NUVEC *position, f32 radius) {
 i32 edanimParamCreate(i32 instance_id) {
     i32 start;
     i32 index;
-    EDANIM_PARAM_PC *param;
     nuhspecial_s special;
-    i32 page;
-    if (edanim_params_used == 64) {
+    if (edanim_params_used == 64)
         return -1;
+    index = edanim_next_param;
+    start = index;
+    if (AnimParams[index].instance_id != -1) {
+        do {
+            if (++index > 64)
+                index = 0;
+            if (index == start) {
+                edanim_next_param = index;
+                return -1;
+            }
+        } while (AnimParams[index].instance_id != -1);
+        edanim_next_param = index;
     }
-    start = edanim_next_param;
-    index = start;
-    while (AnimParams[index].instance_id != -1) {
-        index = index + 1 >= 65 ? 0 : index + 1;
-        if (index == start) {
-            edanim_next_param = start;
-            return -1;
-        }
-    }
-    param = &(AnimParams[index]);
-    edanim_next_param = index;
-    (*param).effect_count = 0;
-    (*param).instance_id = instance_id;
-
+    AnimParams[index].instance_id = instance_id;
+    AnimParams[index].effect_count = 0;
     NuGScnGetSpecial(&special, edbits_base_scene, instance_id);
-    (*param).platform_id = FindPlatInst(NuSpecialGetInstanceix(&special));
-    (*param).bounce_impulse = 0.0f;
-    (*param).bounce_spring = 0.0f;
-    (*param).bounce_damping = 0.0f;
-    if ((*param).platform_id != -1) {
-        PlatInstBounce((*param).platform_id, 0.0f, 0.0f, 0.0f);
-    }
-    page = edbits_anim_page;
-    (*param).page = ((i8)(page));
-    edanim_page_used[page] = 1;
-    edanim_page_on[page] = 1;
-    if (!edanim_page_scene[page]) {
-        edanim_page_scene[page] = edbits_base_scene;
-    }
-    edanim_next_param = index + 1;
+    AnimParams[edanim_next_param].platform_id = FindPlatInst(NuSpecialGetInstanceix(&special));
+    AnimParams[edanim_next_param].bounce_impulse = 0.0f;
+    AnimParams[edanim_next_param].bounce_spring = 0.0f;
+    AnimParams[edanim_next_param].bounce_damping = 0.0f;
+    if (AnimParams[edanim_next_param].platform_id != -1)
+        PlatInstBounce(AnimParams[edanim_next_param].platform_id, AnimParams[edanim_next_param].bounce_impulse,
+                       AnimParams[edanim_next_param].bounce_spring, AnimParams[edanim_next_param].bounce_damping);
+    AnimParams[edanim_next_param].page = (i8)edbits_anim_page;
+    edanim_page_used[edbits_anim_page] = 1;
+    edanim_page_on[edbits_anim_page] = 1;
+    if (!edanim_page_scene[edbits_anim_page])
+        edanim_page_scene[edbits_anim_page] = edbits_base_scene;
+    index = edanim_next_param++;
     ++edanim_params_used;
     return index;
 }
@@ -1563,21 +1562,25 @@ void __cdecl SortDebrisRenderStack(void) {
         return;
     debris_sort_delay = 6;
     stack_index = debris_sort_this_stack;
-    while (ParticleChunkRenderStack[stack_index] == NULL) {
-        if (++stack_index >= 5)
-            stack_index = 0;
-        if (stack_index == debris_sort_this_stack)
-            break;
+    if (ParticleChunkRenderStack[stack_index] == NULL) {
+        do {
+            if (++stack_index >= 5)
+                stack_index = 0;
+            if (stack_index == debris_sort_this_stack)
+                break;
+        } while (ParticleChunkRenderStack[stack_index] == NULL);
+        debris_sort_this_stack = stack_index;
     }
-    debris_sort_this_stack = stack_index;
     chunk = ParticleChunkRenderStack[stack_index];
-    while (chunk != NULL && chunk->next != NULL) {
+    while (chunk != NULL) {
         DEBRIS_RENDER_CHUNK_PC *next = chunk->next;
+        if (next == NULL)
+            break;
         if (chunk->render_priority < next->render_priority ||
             (chunk->render_priority == next->render_priority &&
              chunk->effect->particle_type > next->effect->particle_type)) {
             RemoveChunkFromRenderStack(next, &ParticleChunkRenderStack[stack_index]);
-            AddChunkToRenderStack(next, &ParticleChunkRenderStack[debris_sort_this_stack]);
+            AddChunkToRenderStack(next, &ParticleChunkRenderStack[stack_index]);
             return;
         }
         chunk = next;
