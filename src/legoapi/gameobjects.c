@@ -1996,39 +1996,46 @@ typedef struct TAGFLAGS1FC_PC {
 
 static void TakeOver_SetAction(GAMEOBJECT *rider, GAMEOBJECT *vehicle) {
     i32 action;
-    CHARACTER_MODEL_LAYERS_PC *model = (CHARACTER_MODEL_LAYERS_PC *)rider->character_model;
     if (vehicle->id == GameObjectRotationBuggyId) {
         action = 0x70;
-    } else if (vehicle->id == id_GYROCOPTER) {
+    } else if (vehicle->id == (u16)id_GYROCOPTER) {
         action = 0x83;
     } else if (StartupGameFlag1 == 0) {
-        rider->field_7aa = 0x6c;
-        return;
+        goto no_action;
     } else if (vehicle->character_data->game_character->weapon_action == 12) {
-        action = CurrentAnim(&vehicle->anim_packet) == 3 || CurrentAnim(&vehicle->anim_packet) == 0x17 ? 0xc4 : 0xc3;
-    } else if (vehicle->id == id_BANTHA || vehicle->id == id_BOMARRMONK) {
+        if (CurrentAnim(&vehicle->anim_packet) == 3 || CurrentAnim(&vehicle->anim_packet) == 0x17)
+            action = 0xc4;
+        else
+            action = 0xc3;
+    } else if (vehicle->id == (u16)id_BANTHA || vehicle->id == (u16)id_BOMARRMONK) {
         action = 0x70;
-    } else if (vehicle->id == id_DEWBACK) {
+    } else if (vehicle->id == (u16)id_DEWBACK) {
         action = 0x83;
-    } else if (vehicle->id == id_LANDSPEEDER || vehicle->id == id_FLASHSPEEDER) {
+    } else if (vehicle->id == (u16)id_LANDSPEEDER || vehicle->id == (u16)id_FLASHSPEEDER) {
         action = 0x84;
-    } else if (vehicle->id == id_TAUNTAUN) {
+    } else if (vehicle->id == (u16)id_TAUNTAUN) {
         action = 0x86;
-    } else if (vehicle->id == id_SPEEDERBIKE) {
+    } else if (vehicle->id == (u16)id_SPEEDERBIKE) {
         action = 0xc0;
-    } else if (vehicle->id == id_HEAVYREPEATINGCANNON || vehicle->id == id_BIGGUN) {
+    } else if (vehicle->id == (u16)id_HEAVYREPEATINGCANNON || vehicle->id == (u16)id_BIGGUN) {
         action = 0xc1;
-    } else if (vehicle->id == id_TROOPERCANNON) {
-        action = model->action_animations[0xc2] != NULL ? 0xc2 : 0xc1;
-    } else if (vehicle->id == id_STAP2) {
+    } else if (vehicle->id == (u16)id_TROOPERCANNON) {
+        action = 0xc2;
+        if (((CHARACTER_MODEL_LAYERS_PC *)rider->character_model)->action_animations[0xc2] == NULL)
+            action = 0xc1;
+    } else if (vehicle->id == (u16)id_STAP2) {
         action = 0xc1;
-    } else if (vehicle->id == id_CLONEWALKER) {
+    } else if (vehicle->id == (u16)id_CLONEWALKER) {
         action = 0xc0;
     } else {
-        rider->field_7aa = 0x6c;
+        goto no_action;
+    }
+    if (((CHARACTER_MODEL_LAYERS_PC *)rider->character_model)->action_animations[action] != NULL) {
+        rider->field_7aa = (i16)action;
         return;
     }
-    rider->field_7aa = model->action_animations[action] != NULL ? (i16)action : 0x6c;
+no_action:
+    rider->field_7aa = 0x6c;
 }
 
 /* Original-TU private globals are handed off to the single data owner. */
@@ -2869,21 +2876,18 @@ static void RecomputeHighGameObject(void) {
 }
 
 void __cdecl RemoveGameObject(GAMEOBJECT *object, i32 unused) {
+    GAMEOBJECT *other;
     i32 i;
     (void)unused;
     if (object == NULL)
         return;
-    for (i = 0; i < HIGHGAMEOBJECT; ++i) {
-        u64 bit = object->hostility_group < 64 ? ((u64)1 << object->hostility_group) : 0;
-        u32 low = ~(u32)bit, high = ~(u32)(bit >> 32);
-        Obj[i].collision_contact_mask[0] &= ~object->collision_identity_mask[0];
-        Obj[i].collision_contact_mask[1] &= ~object->collision_identity_mask[1];
-        Obj[i].hostility_mask[0] &= low;
-        Obj[i].hostility_mask[1] &= high;
-        Obj[i].field_eb0 &= low;
-        Obj[i].field_eb4 &= high;
-        Obj[i].ai_opponent_exclusion_mask[0] &= low;
-        Obj[i].ai_opponent_exclusion_mask[1] &= high;
+    other = Obj;
+    for (i = 0; i < HIGHGAMEOBJECT; ++i, ++other) {
+        // Retail shifts through __allshl, which yields 0 for groups >= 64.
+        U64_PAIR(other->collision_contact_mask) &= ~U64_PAIR(object->collision_identity_mask);
+        U64_PAIR(other->hostility_mask) &= ~((u64)1 << object->hostility_group);
+        U64_PAIR(&other->field_eb0) &= ~((u64)1 << object->hostility_group);
+        U64_PAIR(other->ai_opponent_exclusion_mask) &= ~((u64)1 << object->hostility_group);
     }
     if (object->pad != NULL)
         object->pad->runtime_flags &= ~1u;
@@ -3853,7 +3857,7 @@ void __cdecl CurrentStart(GAMEOBJECT *object, i32 allow_any_level, i32 use_socke
     object->target_velocity = object->velocity;
 }
 
-i32 __cdecl SetObjOnSurface(GAMEOBJECT *object, i32 mode) {
+__declspec(noinline) i32 __cdecl SetObjOnSurface(GAMEOBJECT *object, i32 mode) {
     WORLDINFO *world;
     volatile f32 rounded_y;
     f32 y;
