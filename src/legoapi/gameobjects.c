@@ -77,7 +77,8 @@ void GameObjectToCameraDistances() {
 
 i16 __cdecl NuPortalWhichRoom(NUGSCN *scene, NUVEC *position);
 
-void __cdecl PortalGameObject(GAMEOBJECT *object, i32 enabled, i32 update_room, i16 room, NUGSCN *scene) {
+__declspec(noinline) void __cdecl PortalGameObject(GAMEOBJECT *object, i32 enabled, i32 update_room, i16 room,
+                                                   NUGSCN *scene) {
     if (enabled != 0) {
         object->portal_flags = ((object->portal_flags ^ ((update_room & 1) << 23)) & 0x00800000) ^ object->portal_flags;
         object->portal_flags |= 0x00400000;
@@ -4235,10 +4236,8 @@ GAMEOBJECT *__cdecl AddDynamicCreature(i32 model, NUVEC *position, i32 angle, ch
                                        NUGSPLINE *spline, NUVEC *spline_offset, i32 spline_mode, i32 creature_set) {
     GAMEOBJECT *object;
     APIOBJECT_PC *api;
-    AIPACKET_PC *ai;
-    PLAYERCHARACTERCONFIG_PC *config;
     u32 flags;
-    NUVEC offset, point, rotated;
+    NUVEC point, offset;
     u16 yaw, pitch;
     AIROW_PC *row;
     u32 column;
@@ -4246,144 +4245,151 @@ GAMEOBJECT *__cdecl AddDynamicCreature(i32 model, NUVEC *position, i32 angle, ch
         return NULL;
     if (NOAICREATURES != 0 && model != (i16)id_DRAGBOMB)
         return NULL;
-    if (Arcade_GetMode(NULL) == 0 || (u32)model >= 0x154 || apicharsys->playermodelids[model] == -1)
+    if (Arcade_GetMode(NULL) == 0 || (u32)model > 0x153 || apicharsys->playermodelids[model] == -1)
         return NULL;
     object = AddCreature(model, 0);
-    if (object == NULL)
-        return NULL;
-    api = (APIOBJECT_PC *)object;
-    ai = &object->ai_packet;
-    object->flags_1f8 |= 0x400;
-    flags = apicharsys->char_data[model].model_flags;
-    if ((flags & 0x200) != 0)
-        object->flags_1f8 |= 4;
-    else if ((flags & 4) != 0)
-        object->flags_1f8 |= 1;
-    object->flags_1044 |= 1;
-    if ((apicharsys->char_data[model].model_flags & 0x1000) != 0)
-        object->flags_1044 |= 4;
-    api->view_distance = apicharsys->char_data[model].game_character->viewdistance;
-    api->hear_distance = apicharsys->char_data[model].game_character->heardistance;
-    api->max_view_height = apicharsys->char_data[model].game_character->maxviewheight;
-    api->min_view_height = apicharsys->char_data[model].game_character->minviewheight;
-    ai->flags &= ~0x5000;
-    object->portal_flags &= ~0x801;
-    ai->nearest_opponent = NULL;
-    ai->target_dc = NULL;
-    ai->target_ec = NULL;
-    ai->opponent = NULL;
-    ai->target_metric_e0 = 1000000000.0f;
-    ai->target_metric_f0 = 1000000000.0f;
-    ((DYNAMIC_AI_TIMER_VIEW_PC *)ai)->antinode_timer = 0.0f;
-    object->ai_awareness_mask = object->ai_seen_mask = 0;
-    object->field_eb0 = object->field_eb4 = object->field_ec0 = 0;
-    object->field_ec4 = object->timer_ecc = 0.0f;
-    InitPlayerAI(object);
-    if (spline != NULL) {
-        InitSplinePosition(&object->movement_spline_position, spline, 0.0f, spline_mode);
-        PointAlongSpline(object->movement_spline_position.spline, object->movement_spline_position.along, &point, &yaw,
-                         &pitch, (i8)object->movement_spline_position.looping);
-        object->facing_angle = object->movement_facing_angle = object->field_0x276 = yaw;
-        object->pitch_angle = (u16)-pitch;
-        if (spline_offset != NULL) {
-            object->movement_spline_offset = *spline_offset;
-            if (spline_offset->x != 0.0f || spline_offset->y != 0.0f || spline_offset->z != 0.0f) {
-                NuVecRotateX(&rotated, &object->movement_spline_offset, object->pitch_angle);
-                NuVecRotateY(&rotated, &rotated, object->field_0x276);
-                NuVecAdd(&point, &point, &rotated);
+    if (object != NULL) {
+        api = (APIOBJECT_PC *)object;
+        object->flags_1f8 |= 0x400;
+        flags = apicharsys->char_data[model].model_flags;
+        if ((flags & 0x200) != 0)
+            object->flags_1f8 |= 4;
+        else if ((flags & 4) != 0)
+            object->flags_1f8 |= 1;
+        object->flags_1044 |= 1;
+        if ((apicharsys->char_data[model].model_flags & 0x1000) != 0)
+            object->flags_1044 |= 4;
+        api->view_distance = apicharsys->char_data[model].game_character->viewdistance;
+        api->hear_distance = apicharsys->char_data[model].game_character->heardistance;
+        api->max_view_height = apicharsys->char_data[model].game_character->maxviewheight;
+        api->min_view_height = apicharsys->char_data[model].game_character->minviewheight;
+        object->ai_packet.flags &= ~0x5000;
+        object->portal_flags &= ~0x801;
+        object->ai_packet.nearest_opponent = NULL;
+        ((DYNAMIC_AI_TIMER_VIEW_PC *)&object->ai_packet)->antinode_timer = 0.0f;
+        object->ai_packet.target_dc = NULL;
+        object->ai_packet.target_metric_e0 = 1000000000.0f;
+        object->ai_packet.opponent = NULL;
+        object->ai_packet.target_ec = NULL;
+        object->ai_packet.target_metric_f0 = 1000000000.0f;
+        object->ai_awareness_mask = 0;
+        object->ai_seen_mask = 0;
+        object->field_eb0 = 0;
+        object->field_ec4 = 0.0f;
+        object->field_eb4 = 0;
+        object->timer_ecc = 0.0f;
+        object->field_ec0 = 0;
+        InitPlayerAI(object);
+        if (spline != NULL) {
+            InitSplinePosition(&object->movement_spline_position, spline, 0.0f, spline_mode);
+            PointAlongSpline(object->movement_spline_position.spline, object->movement_spline_position.along, &point,
+                             &yaw, &pitch, (i8)object->movement_spline_position.looping);
+            object->field_0x276 = object->facing_angle = object->movement_facing_angle = yaw;
+            object->pitch_angle = (u16)-pitch;
+            if (spline_offset != NULL) {
+                object->movement_spline_offset = *spline_offset;
+                if (object->movement_spline_offset.x != 0.0f || object->movement_spline_offset.y != 0.0f ||
+                    object->movement_spline_offset.z != 0.0f) {
+                    NuVecRotateX(&offset, &object->movement_spline_offset, object->pitch_angle);
+                    NuVecRotateY(&offset, &offset, object->field_0x276);
+                    NuVecAdd(&point, &point, &offset);
+                }
+            }
+            object->position = point;
+        } else {
+            object->position = *position;
+            object->movement_facing_angle = object->facing_angle = object->field_0x276 = (u16)angle;
+            if (group != NULL) {
+                AddToAIGroup(group, api);
+                offset.x = ((object->ai_packet.group_column + 1) / 2) * group->x_spacing;
+                if ((object->ai_packet.group_column & 1) != 0)
+                    offset.x = -offset.x;
+                offset.y = 0.0f;
+                offset.z = -group->z_spacing * object->ai_packet.group_row;
+                NuVecRotateY(&offset, &offset, angle);
+                NuVecAdd(&object->position, &object->position, &offset);
             }
         }
-        object->position = point;
-    } else {
-        object->position = *position;
-        object->facing_angle = object->movement_facing_angle = object->field_0x276 = (u16)angle;
-        if (group != NULL) {
-            AddToAIGroup(group, api);
-            offset.x = ((ai->group_column + 1) / 2) * group->x_spacing;
-            if ((ai->group_column & 1) != 0)
-                offset.x = -offset.x;
-            offset.y = 0.0f;
-            offset.z = -group->z_spacing * ai->group_row;
-            NuVecRotateY(&offset, &offset, angle);
-            NuVecAdd(&object->position, &object->position, &offset);
+        ResetPlayerMoves(object);
+        object->collision_position = object->position;
+        object->initial_position = object->collision_position;
+        plr_lastpos = object->collision_position;
+        object->start_position = object->collision_position;
+        object->velocity = v000;
+        GetTopBot(object);
+        GameObjectDimensions(object);
+        ResetRumble(&((DYNAMIC_RUMBLE_VIEW_PC *)object->pad)->rumble_packet);
+        ResetLights(&object->position, &((DYNAMIC_LIGHTING_VIEW_PC *)object)->lighting_packet, WORLD->rtl_set);
+        object->sock_position.sock_index = -1;
+        object->sock_position.segment = -1;
+        if (WORLD->sock_sys != NULL) {
+            if (Door_NextSock != -1 && WORLD->sock_sys->socks[Door_NextSock].valid != 0)
+                complexsockposition_forcesock = Door_NextSock;
+            ComplexSockPosition(WORLD->sock_sys, &object->position, (i8)object->sock_position.sock_index,
+                                (i16)object->sock_position.segment, &object->sock_position);
+            ComplexSockAngles(&object->sock_angles);
         }
-    }
-    ResetPlayerMoves(object);
-    object->collision_position = object->position;
-    object->start_position = object->collision_position;
-    object->initial_position = object->collision_position;
-    plr_lastpos = object->collision_position;
-    object->velocity = v000;
-    GetTopBot(object);
-    GameObjectDimensions(object);
-    ResetRumble(&((DYNAMIC_RUMBLE_VIEW_PC *)object->pad)->rumble_packet);
-    ResetLights(&object->position, &((DYNAMIC_LIGHTING_VIEW_PC *)object)->lighting_packet, WORLD->rtl_set);
-    object->sock_position.sock_index = -1;
-    object->sock_position.segment = -1;
-    if (WORLD->sock_sys != NULL) {
-        if (Door_NextSock != -1 && WORLD->sock_sys->socks[Door_NextSock].valid != 0)
-            complexsockposition_forcesock = Door_NextSock;
-        ComplexSockPosition(WORLD->sock_sys, &object->position, (i8)object->sock_position.sock_index,
-                            (i16)object->sock_position.segment, &object->sock_position);
-        ComplexSockAngles(&object->sock_angles);
-    }
-    NuVecRotateYValZ(&object->facing_direction, 1.0f, object->field_0x276);
-    object->model_draw_result = 1;
-    object->use_model_origin = 0;
-    object->origin_joint_ready = 0;
-    object->flags_ef0 &= ~0x40000;
-    if (spline == NULL) {
-        InitSurfaceInfo(object);
-        if (set_on_surface != 0)
-            SetObjOnSurface(object, 0);
-    }
-    PortalGameObject(object, 1, 1, -1, WORLD->current_gscn);
-    if (reset_restart != 0) {
-        config = object->character_data->game_character;
-        object->field_107e = object->current_hp = config->hitpoints;
-        object->shield_hitpoints = config->shield_hitpoints;
-        object->vehicle_secondary_hp = 4;
-    }
-    object->flags_1f8 &= ~0x100;
-    object->flags_1fc_word &= ~4;
-    object->spawn_protection_timer = 1.0f;
-    object->dead = 0;
-    object->character_context = -1;
-    object->effect_flags = 0;
-    memset(&ai->path_info, 0, sizeof(ai->path_info));
-    ai->inside_path_node = -1;
-    ai->creature_index = 0xff;
-    ai->path_update_flag = 0;
-    if (spline == NULL) {
-        if (path_info != NULL) {
-            AISysCharacterSetPath(ai, path_info->path);
-            AISysCharacterSetPathCnx(ai, &object->position, path_info->connection, path_info->direction);
+        NuVecRotateYValZ(&object->facing_direction, 1.0f, object->field_0x276);
+        object->model_draw_result = 1;
+        object->use_model_origin = 0;
+        object->origin_joint_ready = 0;
+        object->flags_ef0 &= ~0x40000;
+        if (spline == NULL) {
+            InitSurfaceInfo(object);
+            if (set_on_surface != 0)
+                SetObjOnSurface(object, 0);
         }
-        if (ai->path_info.connection == NULL)
-            AISysGetCharacterPathPos(WORLD->ai_sys, api, ai, 0xff, (i8)object->field_281);
-    }
-    AIScriptProcessorInit(WORLD->ai_sys, ai, &ai->script_processor, NULL, script_name, NULL, 1, NULL, NULL);
-    object->previous_floor_height = 2000000.0f;
-    if (ai->group != NULL) {
-        ai->group->member_is_alive |= (u32)((u64)1 << ai->group_member_index);
-        row = &ai->group->rows[ai->group_row];
-        column = ai->group_member_index - ai->group_row * ai->group->count_across;
-        row->is_alive |= (u8)((u64)1 << column);
-        if (ai->group_column == 0) {
-            row->position = object->position;
-            row->path_info = ai->path_info;
-            row->rotation = object->field_0x276;
-            row->next_connection = NULL;
-            row->flags &= ~2;
+        PortalGameObject(object, 1, 1, -1, WORLD->current_gscn);
+        if (reset_restart != 0) {
+            object->current_hp = object->field_107e = object->character_data->game_character->hitpoints;
+            object->shield_hitpoints = object->character_data->game_character->shield_hitpoints;
+            object->vehicle_secondary_hp = 4;
         }
-    }
-    PreResetCode(object);
-    PostResetCode(object);
-    GameObjectOrigin(object);
-    object->previous_position = object->ai_update_position = object->position;
-    if ((u32)(creature_set - 1) < 16) {
-        ai->creature_set = (u8)creature_set;
-        ++aicreature_sets_alive[creature_set - 1];
+        object->flags_1fc_word &= ~4;
+        object->collision_scale = 1.0f;
+        object->dead = 0;
+        object->character_context = -1;
+        object->effect_flags = 0;
+        object->flags_1f8 |= 0x100;
+        object->flags_1f8 ^= 0x100;
+        memset(&object->ai_packet.path_info, 0, sizeof(object->ai_packet.path_info));
+        object->ai_packet.inside_path_node = -1;
+        object->ai_packet.current_route = 0xff;
+        object->ai_packet.next_route = 0;
+        if (spline == NULL) {
+            if (path_info != NULL) {
+                AISysCharacterSetPath(&object->ai_packet, path_info->path);
+                AISysCharacterSetPathCnx(&object->ai_packet, &object->position, path_info->connection,
+                                         path_info->direction);
+            }
+            if (object->ai_packet.path_info.connection == NULL)
+                AISysGetCharacterPathPos(WORLD->ai_sys, api, &object->ai_packet, 0xff, (i8)object->field_281);
+        }
+        AIScriptProcessorInit(WORLD->ai_sys, &object->ai_packet, &object->ai_packet.script_processor, NULL, script_name,
+                              NULL, 1, NULL, NULL);
+        object->previous_floor_height = 2000000.0f;
+        if (object->ai_packet.group != NULL) {
+            object->ai_packet.group->member_is_alive |= (u32)((u64)1 << object->ai_packet.group_member_index);
+            row = &object->ai_packet.group->rows[object->ai_packet.group_row];
+            column = object->ai_packet.group_member_index -
+                     object->ai_packet.group_row * object->ai_packet.group->count_across;
+            row->is_alive |= (u8)((u64)1 << column);
+            if (object->ai_packet.group_column == 0) {
+                row->position = object->position;
+                row->path_info = object->ai_packet.path_info;
+                row->rotation = object->field_0x276;
+                row->next_connection = NULL;
+                row->flags &= ~2;
+            }
+        }
+        PreResetCode(object);
+        PostResetCode(object);
+        GameObjectOrigin(object);
+        object->ai_update_position = object->last_safe_position = object->position;
+        if ((u32)(creature_set - 1) <= 15) {
+            object->ai_packet.creature_set = (u8)creature_set;
+            ++aicreature_sets_alive[creature_set - 1];
+        }
     }
     return object;
 }
