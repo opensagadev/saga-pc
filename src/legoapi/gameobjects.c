@@ -1924,22 +1924,20 @@ void __cdecl Tag_SetMode(i32 mode) {
     Tag_Mode = mode;
 }
 
-static i32 Tag_FindGameObject_CYCLICAL(GAMEOBJECT *object) {
+i32 __cdecl Tag_FindGameObject_CYCLICAL(GAMEOBJECT *object) {
     i32 remaining = HIGHGAMEOBJECT - 1;
     i32 index = object->hostility_group;
+    GAMEOBJECT *candidate;
     while (remaining > 0) {
-        GAMEOBJECT *candidate;
         if (++index == HIGHGAMEOBJECT) {
             index = 0;
         }
         --remaining;
-        if (remaining == 0) {
-            break;
-        }
         candidate = &Obj[index];
-        if (candidate != object && (candidate->flags_1fc_word & 0x1001) == 0x1001 && candidate->dead == 0 &&
-            candidate->field_280 != 0xff && (candidate->tag_flags & 2) == 0 && (candidate->flags_ef4 & 2) == 0 &&
-            (CInfo[candidate->character_context].flags & 0x800) == 0) {
+        if (candidate != NULL && candidate != object && (candidate->flags_1fc_word & 1) != 0 &&
+            (candidate->flags_1fc_word & 0x1000) != 0 && candidate->dead == 0 && candidate->field_280 != 0xff &&
+            (candidate->tag_flags & 2) == 0 && (candidate->flags_ef4 & 2) == 0 &&
+            (U64_PAIR(&CInfo[candidate->character_context].flags) & 0x800) == 0) {
             return (i8)candidate->field_280;
         }
     }
@@ -2421,7 +2419,7 @@ void __cdecl Tag_UpdateTransfers(i32 effect0, i32 effect1, i32 count) {
 }
 
 void __cdecl Tag_Check(GAMEOBJECT *object) {
-    GAMEOBJECT *target = NULL;
+    GAMEOBJECT *target;
     i32 result;
     if (Arcade != 0 || (object->tag_flags & 1) != 0 || object->character_context == 0x51) {
         if ((object->tag_flags & 1) != 0 || object->character_context == 0x51) {
@@ -2437,128 +2435,124 @@ void __cdecl Tag_Check(GAMEOBJECT *object) {
     if (object->field_280 == 0xff) {
         return;
     }
-    if ((object->tag_flags & 4) != 0) {
+    if ((object->tag_flags & 4) == 0) {
+        u32 flags;
+        object->tag_player_index = -1;
+        flags = object->flags_1fc_word;
+        if ((flags & 0x80) != 0 && object->dead == 0) {
+            i8 context = object->character_context;
+            u64 context_flags = U64_PAIR(&CInfo[context].flags);
+            if ((context_flags & 0x800) == 0 && (flags & 0x100) == 0 && object->tag_cooldown <= 0.0f) {
+                if (VehicleArea != 0) {
+                    if ((object->pad->buttons_pressed & GAMEPAD_TAG) != 0) {
+                        object->hud_icon_timer = 2.0f;
+                    }
+                } else if ((object->pad->buttons_pressed & GAMEPAD_TAG) != 0) {
+                    if (CUTSKIPLOCK != 0) {
+                        object->hud_icon_timer = 2.0f;
+                        object->input_toggle_hold_time = TOGGLEHOLDTIME;
+                    } else if (Arcade == 0) {
+                        target = NULL;
+                        if (Tag_Mode == 3) {
+                            if (context == -1 || context == 0x17 || (context_flags & 4) != 0 ||
+                                (context_flags & 0x1000000000ull) != 0) {
+                                target = Tag_FindGameObject_TRANSFER(object);
+                                if (target != NULL && InCollectList_Index((i16)target->id, NULL, 0) == -1) {
+                                    GameAudio_PlaySfx(0x32, &object->collision_position, 0, 0);
+                                    NewRumble(object->pad->bound_pad, 0.5f, 0.0f);
+                                    if (AIScriptSetBaseScriptStateByName(&target->ai_packet.script_processor,
+                                                                         (char *)TakeOverState_MapRunAway) != 0) {
+                                        AIScriptProcess(WORLD->ai_sys, (APIOBJECT_PC *)target, &target->ai_packet,
+                                                        &target->ai_packet.script_processor, FRAMETIME);
+                                    }
+                                    target = NULL;
+                                }
+                            }
+                        } else {
+                            if (Tag_Mode == 1) {
+                                if (context == -1 || context == 0x17 || (context_flags & 4) != 0 ||
+                                    (context_flags & 0x1000000000ull) != 0) {
+                                    target = Tag_FindGameObject_TRANSFER(object);
+                                    if (target != NULL && target->field_280 != 0xff) {
+                                        object->tag_player_index = (i8)target->field_280;
+                                    }
+                                }
+                            } else {
+                                object->tag_player_index = (i8)Tag_FindGameObject_CYCLICAL(object);
+                            }
+                            if (object->tag_player_index >= 0) {
+                                target = Player[object->tag_player_index];
+                            } else {
+                                target = NULL;
+                            }
+                        }
+                        if (target != NULL) {
+                            if ((target->flags_ef4 & 2) != 0) {
+                                TakeOver2GetIn(target, object);
+                                goto draw_icon;
+                            }
+                            if ((object->flags_1fc_word & 0x80) != 0 && (target->flags_1fc_word & 0x80) != 0) {
+                                if (player_tag_timer > 0.0f && player_tag_to == object && player_tag_from == target) {
+                                    do_player_tag = 1;
+                                } else {
+                                    player_tag_to = target;
+                                    player_tag_timer = 0.5f;
+                                    player_tag_from = object;
+                                }
+                                goto draw_icon;
+                            }
+                            result = TagCode(object, target, 0, 0, 1);
+                            if (result == 2) {
+                                object->tag_cooldown = 1.0f;
+                                object->pending_tag_target = target;
+                                object->tag_flags = (object->tag_flags & ~8u) | 4;
+                                goto draw_icon;
+                            }
+                            goto tagged_result;
+                        }
+                    }
+                    if (object->rider == NULL) {
+                        object->hud_icon_timer = 2.0f;
+                    }
+                }
+            }
+        }
+        goto draw_icon;
+    } else {
         object->tag_cooldown -= FRAMETIME;
-        if (object->tag_cooldown > 0.0f && object->pending_tag_target != NULL) {
-            target = object->pending_tag_target;
-            if ((target->flags_1fc_word & 0x1001) != 0x1001) {
+        if (object->tag_cooldown > 0.0f && (target = object->pending_tag_target) != NULL) {
+            if ((target->flags_1fc_word & 0x1000) != 0 && (target->flags_1fc_word & 1) != 0) {
+                result = (object->flags_ef4 & 2) != 0 ? TakeOverYoda(object, target, 0, 1)
+                                                      : TagCode(object, target, (object->tag_flags >> 3) & 1, 0, 1);
+                if (result != 0) {
+                    goto tagged_result;
+                }
+            } else {
                 object->tag_flags &= ~4u;
                 object->pending_tag_target = NULL;
                 goto draw_icon;
-            }
-            result = (object->flags_ef4 & 2) != 0 ? TakeOverYoda(object, target, 0, 1)
-                                                  : TagCode(object, target, (object->tag_flags >> 3) & 1, 0, 1);
-            if (result != 0) {
-                goto tagged_result;
             }
         }
         object->tag_flags &= ~4u;
         goto draw_icon;
     }
-    object->tag_player_index = -1;
-    if ((object->flags_1fc_word & 0x80) == 0 || object->dead != 0 ||
-        (CInfo[object->character_context].flags & 0x800) != 0 || (object->flags_1fc_word & 0x100) != 0 ||
-        !(object->tag_cooldown <= 0.0f)) {
-        goto draw_icon;
-    }
-    if (VehicleArea != 0) {
-        if ((object->pad->buttons_pressed & GAMEPAD_TAG) != 0) {
-            object->hud_icon_timer = 2.0f;
-        }
-        goto draw_icon;
-    }
-    if ((object->pad->buttons_pressed & GAMEPAD_TAG) == 0) {
-        goto draw_icon;
-    }
-    if (CUTSKIPLOCK != 0) {
-        object->hud_icon_timer = 2.0f;
-        object->input_toggle_hold_time = TOGGLEHOLDTIME;
-        goto no_target;
-    }
-    if (Arcade != 0) {
-        goto no_target;
-    }
-    if (Tag_Mode == 1 || Tag_Mode == 3) {
-        if (object->character_context == -1 || object->character_context == 0x17 ||
-            (CInfo[object->character_context].flags & 4) != 0 ||
-            (CInfo[object->character_context].parameter & 0x10) != 0) {
-            target = Tag_FindGameObject_TRANSFER(object);
-        }
-        if (Tag_Mode == 1) {
-            if (target != NULL && target->field_280 != 0xff) {
-                object->tag_player_index = (i8)target->field_280;
-            }
-            goto select_player;
-        }
-        if (target == NULL) {
-            goto no_target;
-        }
-        if (InCollectList_Index((i16)target->id, NULL, 0) == -1) {
-            GameAudio_PlaySfx(0x32, &object->collision_position, 0, 0);
-            NewRumble(object->pad->bound_pad, 0.5f, 0.0f);
-            if (AIScriptSetBaseScriptStateByName(&target->ai_packet.script_processor,
-                                                 (char *)TakeOverState_MapRunAway) != 0) {
-                AIScriptProcess(WORLD->ai_sys, (APIOBJECT_PC *)target, &target->ai_packet,
-                                &target->ai_packet.script_processor, FRAMETIME);
-            }
-            goto no_target;
-        }
-        goto attempt_tag;
-    }
-    object->tag_player_index = (i8)Tag_FindGameObject_CYCLICAL(object);
-select_player:
-    if (object->tag_player_index < 0) {
-        goto no_target;
-    }
-    target = Player[object->tag_player_index];
-    if (target == NULL) {
-        goto no_target;
-    }
-attempt_tag:
-    if ((target->flags_ef4 & 2) != 0) {
-        TakeOver2GetIn(target, object);
-        goto draw_icon;
-    }
-    if ((object->flags_1fc_word & 0x80) != 0 && (target->flags_1fc_word & 0x80) != 0) {
-        if (player_tag_timer > 0.0f && object == player_tag_to && target == player_tag_from) {
-            do_player_tag = 1;
-        } else {
-            player_tag_to = target;
-            player_tag_from = object;
-            player_tag_timer = 0.5f;
-        }
-        goto draw_icon;
-    }
-    result = TagCode(object, target, 0, 0, 1);
-    if (result == 2) {
-        object->tag_flags = (object->tag_flags | 4) & ~8u;
-        object->tag_cooldown = 1.0f;
-        object->pending_tag_target = target;
-        goto draw_icon;
-    }
 tagged_result:
-    if (result != 1) {
-        goto draw_icon;
-    }
-    object->tag_flags &= ~4u;
-    GameAudio_PlaySfx(0x21, &object->collision_position, 0, 0);
-    if (target->model_draw_result != 0) {
-        GameCam_Blend(GameCam, 0.5f, 0.0f, 1);
-    } else {
-        GameCam_Reset(GameCam);
-    }
-    RememberPlayerIDs(0, Player[0] != NULL ? (i16)((GAMEOBJECT *)Player[0])->id : -1,
-                      Player[1] != NULL ? (i16)((GAMEOBJECT *)Player[1])->id : -1);
-    if (Tag_Mode == 1 || Tag_Mode == 3) {
-        Tag_NewTransfer(object, target);
-    }
-    if (object->field_280 < 2 && target->field_280 < 2) {
-        ResetTimer(&JoinInTimer, 0.0f);
-    }
-    goto draw_icon;
-no_target:
-    if (object->rider == NULL) {
-        object->hud_icon_timer = 2.0f;
+    if (result == 1) {
+        object->tag_flags &= ~4u;
+        GameAudio_PlaySfx(0x21, &object->collision_position, 0, 0);
+        if (target->model_draw_result != 0) {
+            GameCam_Blend(GameCam, 0.5f, 0.0f, 1);
+        } else {
+            GameCam_Reset(GameCam);
+        }
+        RememberPlayerIDs(0, Player[0] != NULL ? (i16)((GAMEOBJECT *)Player[0])->id : -1,
+                          Player[1] != NULL ? (i16)((GAMEOBJECT *)Player[1])->id : -1);
+        if (Tag_Mode == 1 || Tag_Mode == 3) {
+            Tag_NewTransfer(object, target);
+        }
+        if ((object->field_280 == 0 || object->field_280 == 1) && (target->field_280 == 0 || target->field_280 == 1)) {
+            ResetTimer(&JoinInTimer, 0.0f);
+        }
     }
 draw_icon:
     if (Tag_DrawIconFn != NULL) {
