@@ -61,13 +61,6 @@ static __declspec(noinline) void NuLgtSetVertexColor(i32 colour) {
     ((NULGTVERTEX_PC *)NuPrimStreamBufferPointer->void_ptr)->colour = converted;
 }
 #define NU_LGT_RAND() ((i32)(NuLgtSeed = (NuLgtSeed * 0x24cd + 1) & 0xffff))
-#define NU_LGT_VERTEX(position, colour, tex_u, tex_v)                                                                  \
-    do {                                                                                                               \
-        NuLgtSetVertexColor(colour);                                                                                   \
-        ((NULGTVERTEX_PC *)NuPrimStreamBufferPointer->void_ptr)->u = (tex_u);                                          \
-        ((NULGTVERTEX_PC *)NuPrimStreamBufferPointer->void_ptr)->v = (tex_v);                                          \
-        NuPrim2DAddXYZ((position)->x, -(position)->y, (position)->z);                                                  \
-    } while (0)
 #define NU_LGT_ARC_VERTEX(position, colour, tex_u, tex_v)                                                              \
     do {                                                                                                               \
         NuLgtSetVertexColor(colour);                                                                                   \
@@ -78,19 +71,22 @@ static __declspec(noinline) void NuLgtSetVertexColor(i32 colour) {
 
 void __cdecl NuLgtLaserDraw(i32 paused) {
     i32 i;
-    f32 v0;
-    f32 v1;
+    i32 k;
+    f32 tex_v[4];
+    f32 tex_u[4];
     u32 saved_seed;
     NUVEC4 *vertices;
     NUMTX clip_matrix;
     f32 aspect;
-    NULGTLASER_PC *laser;
+    u32 colour;
     i32 red;
     i32 green;
     i32 blue;
     i32 alpha;
-    f32 numerator;
-    f32 denominator;
+    i32 reds[2];
+    i32 greens[2];
+    i32 blues[2];
+    i32 alphas[2];
     f32 dx;
     f32 dy;
     f32 dz;
@@ -98,16 +94,16 @@ void __cdecl NuLgtLaserDraw(i32 paused) {
     NUVEC perpendicular;
     f32 length;
     f32 step;
-    f32 u0;
-    f32 u1;
     f32 width_scale;
     f32 fraction;
-    i32 start_alpha;
-    f32 next_fraction;
-    i32 end_alpha;
+    f64 next_fraction;
+    f64 wobble_limit;
+    f32 offset_x;
+    f32 offset_y;
     f32 wobble_x;
     f32 wobble_y;
-    f32 random;
+    f32 neg_y;
+    NULGTVERTEX_PC *vertex;
     if (paused)
         NuLgtLaserCnt = NuLgtLaserOldCnt;
     if (NuLgtArcMtl[0].material == NULL || NuLgtLaserCnt == 0) {
@@ -115,81 +111,86 @@ void __cdecl NuLgtLaserDraw(i32 paused) {
         return;
     }
 
-    v0 = NuLgtArcMtl[0].v0;
-
-    v1 = NuLgtArcMtl[0].v1;
-
+    tex_v[0] = NuLgtArcMtl[0].v0;
+    tex_v[1] = NuLgtArcMtl[0].v0;
+    tex_v[2] = NuLgtArcMtl[0].v1;
+    tex_v[3] = NuLgtArcMtl[0].v1;
     saved_seed = NuLgtSeed;
     // Four strip corners, two projected endpoints, and two clipped world endpoints.
-
     vertices = (NUVEC4 *)NuScratchAlloc32(0x80);
-
     NuCameraGetClipMtx(&clip_matrix, NULL);
+    aspect = (f32)PS2_REZ_W / PS2_REZ_H;
 
-    aspect = (f32)PS2_REZ_W / (f32)PS2_REZ_H;
-
-    laser = NuLgtLaserData;
-    for (i = 0; i < NuLgtLaserCnt; ++i, ++laser) {
-        vertices[4].x = laser->start.x;
-        vertices[4].y = laser->start.y;
-        vertices[4].z = laser->start.z;
+    for (i = 0; i < NuLgtLaserCnt; ++i) {
+        vertices[4].x = NuLgtLaserData[i].start.x;
+        vertices[4].y = NuLgtLaserData[i].start.y;
+        vertices[4].z = NuLgtLaserData[i].start.z;
         vertices[4].w = 1.0f;
         NuVec4MtxTransformVU0(&vertices[4], &vertices[4], &clip_matrix);
-        vertices[5].x = laser->end.x;
-        vertices[5].y = laser->end.y;
-        vertices[5].z = laser->end.z;
+        vertices[5].x = NuLgtLaserData[i].end.x;
+        vertices[5].y = NuLgtLaserData[i].end.y;
+        vertices[5].z = NuLgtLaserData[i].end.z;
         vertices[5].w = 1.0f;
         NuVec4MtxTransformVU0(&vertices[5], &vertices[5], &clip_matrix);
         if (!(vertices[4].w >= 0.5f) && !(vertices[5].w >= 0.5f))
             continue;
 
-        red = laser->colour & 0xff;
-
-        green = (laser->colour >> 8) & 0xff;
-
-        blue = (laser->colour >> 16) & 0xff;
-
-        alpha = laser->colour >> 24;
         if (vertices[4].w < 0.5f) {
-
-            numerator = vertices[5].w - 0.5f;
-
-            denominator = vertices[5].w - vertices[4].w;
-            if (laser->arc) {
-                red = (i32)((f32)red * numerator / denominator);
-                green = (i32)((f32)green * numerator / denominator);
-                blue = (i32)((f32)blue * numerator / denominator);
-                alpha = (i32)((f32)alpha * numerator / denominator);
+            if (NuLgtLaserData[i].arc == 0) {
+                colour = NuLgtLaserData[i].colour;
+                red = colour & 0xff;
+                green = (colour >> 8) & 0xff;
+                blue = (u8)(colour >> 16);
+                alpha = (u8)(colour >> 24);
+            } else {
+                red = (i32)((i32)(NuLgtLaserData[i].colour & 0xff) * (vertices[5].w - 0.5) /
+                            (vertices[5].w - vertices[4].w));
+                green = (i32)((((i32)NuLgtLaserData[i].colour >> 8) & 0xff) * (vertices[5].w - 0.5) /
+                              (vertices[5].w - vertices[4].w));
+                blue = (i32)((((i32)NuLgtLaserData[i].colour >> 16) & 0xff) * (vertices[5].w - 0.5) /
+                             (vertices[5].w - vertices[4].w));
+                alpha = (i32)((((i32)NuLgtLaserData[i].colour >> 24) & 0xff) * (vertices[5].w - 0.5) /
+                              (vertices[5].w - vertices[4].w));
             }
-            vertices[6].x = (laser->start.x - laser->end.x) * numerator / denominator + laser->end.x;
-            vertices[6].y = (laser->start.y - laser->end.y) * numerator / denominator + laser->end.y;
-            vertices[6].z = (laser->start.z - laser->end.z) * numerator / denominator + laser->end.z;
+            vertices[6].x = (NuLgtLaserData[i].start.x - NuLgtLaserData[i].end.x) * (vertices[5].w - 0.5) /
+                                (vertices[5].w - vertices[4].w) +
+                            NuLgtLaserData[i].end.x;
+            vertices[6].y = (NuLgtLaserData[i].start.y - NuLgtLaserData[i].end.y) * (vertices[5].w - 0.5) /
+                                (vertices[5].w - vertices[4].w) +
+                            NuLgtLaserData[i].end.y;
+            vertices[6].z = (NuLgtLaserData[i].start.z - NuLgtLaserData[i].end.z) * (vertices[5].w - 0.5) /
+                                (vertices[5].w - vertices[4].w) +
+                            NuLgtLaserData[i].end.z;
         } else {
-            vertices[6].x = laser->start.x;
-            vertices[6].y = laser->start.y;
-            vertices[6].z = laser->start.z;
+            vertices[6].x = NuLgtLaserData[i].start.x;
+            vertices[6].y = NuLgtLaserData[i].start.y;
+            vertices[6].z = NuLgtLaserData[i].start.z;
+            colour = NuLgtLaserData[i].colour;
+            red = colour & 0xff;
+            green = (colour >> 8) & 0xff;
+            blue = (u8)(colour >> 16);
+            alpha = (u8)(colour >> 24);
         }
         vertices[6].w = 1.0f;
 
-        dx = vertices[6].x - laser->end.x;
-
-        dy = vertices[6].y - laser->end.y;
-
-        dz = vertices[6].z - laser->end.z;
-
-        remaining = NuFsqrt(dx * dx + dy * dy + dz * dz);
+        remaining = (vertices[6].x - NuLgtLaserData[i].end.x) * (vertices[6].x - NuLgtLaserData[i].end.x) +
+                    (vertices[6].y - NuLgtLaserData[i].end.y) * (vertices[6].y - NuLgtLaserData[i].end.y) +
+                    (vertices[6].z - NuLgtLaserData[i].end.z) * (vertices[6].z - NuLgtLaserData[i].end.z);
+        remaining = NuFsqrt(remaining);
         if (vertices[5].w < 0.5f) {
-
-            numerator = vertices[4].w - 0.5f;
-
-            denominator = vertices[4].w - vertices[5].w;
-            vertices[7].x = (laser->end.x - laser->start.x) * numerator / denominator + laser->start.x;
-            vertices[7].y = (laser->end.y - laser->start.y) * numerator / denominator + laser->start.y;
-            vertices[7].z = (laser->end.z - laser->start.z) * numerator / denominator + laser->start.z;
+            vertices[7].x = (NuLgtLaserData[i].end.x - NuLgtLaserData[i].start.x) * (vertices[4].w - 0.5) /
+                                (vertices[4].w - vertices[5].w) +
+                            NuLgtLaserData[i].start.x;
+            vertices[7].y = (NuLgtLaserData[i].end.y - NuLgtLaserData[i].start.y) * (vertices[4].w - 0.5) /
+                                (vertices[4].w - vertices[5].w) +
+                            NuLgtLaserData[i].start.y;
+            vertices[7].z = (NuLgtLaserData[i].end.z - NuLgtLaserData[i].start.z) * (vertices[4].w - 0.5) /
+                                (vertices[4].w - vertices[5].w) +
+                            NuLgtLaserData[i].start.z;
         } else {
-            vertices[7].x = laser->end.x;
-            vertices[7].y = laser->end.y;
-            vertices[7].z = laser->end.z;
+            vertices[7].x = NuLgtLaserData[i].end.x;
+            vertices[7].y = NuLgtLaserData[i].end.y;
+            vertices[7].z = NuLgtLaserData[i].end.z;
         }
         vertices[7].w = 1.0f;
         NuVec4MtxTransformVU0(&vertices[4], &vertices[6], &clip_matrix);
@@ -209,111 +210,121 @@ void __cdecl NuLgtLaserDraw(i32 paused) {
         perpendicular.y = vertices[4].x - vertices[5].x;
         perpendicular.z = 0.0f;
         NuVecNorm(&perpendicular, &perpendicular);
-        perpendicular.x *= laser->width * aspect;
-        perpendicular.y *= laser->width;
-        vertices[7].x -= vertices[6].x;
-        vertices[7].y -= vertices[6].y;
-        vertices[7].z -= vertices[6].z;
+        perpendicular.x *= aspect * NuLgtLaserData[i].width;
+        perpendicular.y = NuLgtLaserData[i].width * perpendicular.y;
+        dx = vertices[7].x - vertices[6].x;
+        vertices[7].x = dx;
+        dy = vertices[7].y - vertices[6].y;
+        vertices[7].y = dy;
+        dz = vertices[7].z - vertices[6].z;
+        vertices[7].z = dz;
         vertices[7].w -= vertices[6].w;
-
-        length = NuFsqrt(vertices[7].x * vertices[7].x + vertices[7].y * vertices[7].y + vertices[7].z * vertices[7].z);
+        length = dx * dx + dy * dy + dz * dz;
+        length = NuFsqrt(length);
         if (!(length > 0.0f))
             continue;
 
-        step = laser->segment_length / length;
+        step = NuLgtLaserData[i].segment_length / length;
+        // Per-laser seeds make repeated and paused rendering deterministic.
+        NuLgtSeed = NuLgtLaserData[i].seed;
         if (step > 1.0f)
             step = 1.0f;
-        // Per-laser seeds make repeated and paused rendering deterministic.
-        NuLgtSeed = laser->seed;
 
-        u0 = NuLgtArcMtl[0].u0;
-
-        u1 = NuLgtArcMtl[0].u1;
+        tex_u[0] = tex_u[2] = NuLgtArcMtl[0].u0;
+        tex_u[1] = tex_u[3] = NuLgtArcMtl[0].u1;
         vertices[4].x = vertices[6].x;
         vertices[4].y = vertices[6].y;
         vertices[4].z = vertices[6].z;
         vertices[4].w = 1.0f;
         NuVec4MtxTransformVU0(&vertices[4], &vertices[4], &clip_matrix);
-
         width_scale = 1.0f / vertices[4].w;
         NuVec4ScaleForwardPc(&vertices[4], &vertices[4], width_scale);
-        if (laser->length > remaining) {
+        if (remaining < NuLgtLaserData[i].length) {
             if (remaining < 0.0f)
-                width_scale *= laser->end_width_ratio;
+                width_scale *= NuLgtLaserData[i].end_width_ratio;
             else
-                width_scale +=
-                    (laser->end_width_ratio * width_scale - width_scale) * (laser->length - remaining) / laser->length;
+                width_scale += (NuLgtLaserData[i].end_width_ratio * width_scale - width_scale) *
+                               (NuLgtLaserData[i].length - remaining) / NuLgtLaserData[i].length;
         }
-        vertices[1].x = vertices[4].x - perpendicular.x * width_scale;
-        vertices[1].y = vertices[4].y - perpendicular.y * width_scale;
+        reds[0] = reds[1] = red;
+        greens[0] = greens[1] = green;
+        blues[0] = blues[1] = blue;
+        alphas[0] = alphas[1] = alpha;
+        offset_x = width_scale * perpendicular.x;
+        offset_y = width_scale * perpendicular.y;
+        vertices[1].x = vertices[4].x - offset_x;
+        vertices[1].y = vertices[4].y - offset_y;
+        vertices[3].x = vertices[4].x + offset_x;
+        vertices[3].y = vertices[4].y + offset_y;
         vertices[1].z = vertices[4].z;
-        vertices[3].x = vertices[4].x + perpendicular.x * width_scale;
-        vertices[3].y = vertices[4].y + perpendicular.y * width_scale;
         vertices[3].z = vertices[4].z;
-        remaining -= laser->segment_length;
+        remaining -= NuLgtLaserData[i].segment_length;
 
         fraction = 0.0f;
-
-        start_alpha = alpha;
-        for (;;) {
-
+        wobble_limit = 1.0 - 1.5 * step;
+        while (fraction < 1.0f) {
             next_fraction = fraction + step;
-
-            end_alpha = start_alpha;
-            if (next_fraction < 1.0f) {
-                if (laser->arc)
-                    end_alpha = (i32)((1.0f - fraction - step) * (f32)alpha);
-                vertices[5].x = next_fraction * vertices[7].x + vertices[6].x;
-                vertices[5].y = next_fraction * vertices[7].y + vertices[6].y;
-                vertices[5].z = next_fraction * vertices[7].z + vertices[6].z;
-            } else {
-                if (laser->arc)
-                    end_alpha = 0;
-                vertices[5].x = vertices[6].x + vertices[7].x;
+            if (next_fraction >= 1.0f) {
+                if (NuLgtLaserData[i].arc)
+                    alphas[1] = 0;
+                vertices[5].x = vertices[7].x + vertices[6].x;
                 vertices[5].y = vertices[6].y + vertices[7].y;
-                vertices[5].z = vertices[6].z + vertices[7].z;
-                u0 = NuLgtArcMtl[0].u1 + (1.0f - fraction) * (NuLgtArcMtl[0].u0 - NuLgtArcMtl[0].u1) / step;
+                vertices[5].z = vertices[7].z + vertices[6].z;
+                tex_u[0] = tex_u[2] =
+                    NuLgtArcMtl[0].u1 + (1.0f - fraction) * (NuLgtArcMtl[0].u0 - NuLgtArcMtl[0].u1) / step;
+            } else {
+                if (NuLgtLaserData[i].arc)
+                    alphas[1] = (i32)((1.0f - fraction - step) * alpha);
+                vertices[5].x = vertices[7].x * next_fraction + vertices[6].x;
+                vertices[5].y = vertices[7].y * next_fraction + vertices[6].y;
+                vertices[5].z = vertices[7].z * next_fraction + vertices[6].z;
             }
             vertices[5].w = 1.0f;
             NuVec4MtxTransformVU0(&vertices[5], &vertices[5], &clip_matrix);
             width_scale = 1.0f / vertices[5].w;
             NuVec4ScaleForwardPc(&vertices[5], &vertices[5], width_scale);
-            if (laser->length > remaining) {
+            if (remaining < NuLgtLaserData[i].length) {
                 if (remaining < 0.0f)
-                    width_scale *= laser->end_width_ratio;
+                    width_scale *= NuLgtLaserData[i].end_width_ratio;
                 else
-                    width_scale += (width_scale * laser->end_width_ratio - width_scale) * (laser->length - remaining) /
-                                   laser->length;
+                    width_scale += (width_scale * NuLgtLaserData[i].end_width_ratio - width_scale) *
+                                   (NuLgtLaserData[i].length - remaining) / NuLgtLaserData[i].length;
             }
 
-            wobble_x = 0.0f;
-            wobble_y = 0.0f;
-            if (1.0f - 1.5f * step > fraction && laser->seed != 0) {
-
-                random = (f32)((NU_LGT_RAND() & 0xff) - 128);
-                wobble_x = perpendicular.x * random * laser->width_wobble * width_scale;
-                wobble_y = perpendicular.y * random * laser->width_wobble * width_scale;
+            if (fraction < wobble_limit && NuLgtLaserData[i].seed != 0) {
+                wobble_y = (f32)((NU_LGT_RAND() & 0xff) - 128);
+                wobble_x = wobble_y * perpendicular.x * NuLgtLaserData[i].width_wobble * width_scale;
+                wobble_y = wobble_y * perpendicular.y * NuLgtLaserData[i].width_wobble * width_scale;
+            } else {
+                wobble_x = wobble_y = 0.0f;
             }
-            vertices[0].x = vertices[5].x - perpendicular.x * width_scale + wobble_x;
-            vertices[0].y = vertices[5].y - perpendicular.y * width_scale + wobble_y;
+            offset_x = width_scale * perpendicular.x;
+            offset_y = width_scale * perpendicular.y;
+            vertices[0].x = vertices[5].x - offset_x + wobble_x;
+            vertices[0].y = vertices[5].y - offset_y + wobble_y;
+            vertices[2].x = vertices[5].x + offset_x + wobble_x;
+            vertices[2].y = vertices[5].y + offset_y + wobble_y;
             vertices[0].z = vertices[5].z;
-            vertices[2].x = vertices[5].x + perpendicular.x * width_scale + wobble_x;
-            vertices[2].y = vertices[5].y + perpendicular.y * width_scale + wobble_y;
             vertices[2].z = vertices[5].z;
-            NuPrimSetCoordinateSystem(1);
-            ++NuPrimCSPos;
+            // NuPrimSetCoordinateSystem(1), pushed.
+            NuPrimCoordSystemStack[NuPrimCSPos++] = 1;
+            NuPrimXScale = 1.0f;
+            NuPrimYScale = -1.0f;
+            NuPrimXBias = 0.0f;
+            NuPrimYBias = 0.0f;
             NuPrim2DBegin(13, 7, NuLgtArcMtl[0].material);
-            NU_LGT_VERTEX(&vertices[0],
-                          ((red & 255) | ((green & 255) << 8) | ((blue & 255) << 16)) | ((u32)end_alpha << 24), u0, v0);
-            NU_LGT_VERTEX(&vertices[1],
-                          ((red & 255) | ((green & 255) << 8) | ((blue & 255) << 16)) | ((u32)start_alpha << 24), u1,
-                          v0);
-            NU_LGT_VERTEX(&vertices[2],
-                          ((red & 255) | ((green & 255) << 8) | ((blue & 255) << 16)) | ((u32)end_alpha << 24), u0, v1);
-            NU_LGT_VERTEX(&vertices[3],
-                          ((red & 255) | ((green & 255) << 8) | ((blue & 255) << 16)) | ((u32)start_alpha << 24), u1,
-                          v1);
-            NuPrim2DEnd();
+            for (k = 0; k < 4; ++k) {
+                NuLgtSetVertexColor((alphas[1 - (k & 1)] << 24) | ((blues[1 - (k & 1)] & 0xff) << 16) |
+                                    ((greens[1 - (k & 1)] & 0xff) << 8) | (reds[1 - (k & 1)] & 0xff));
+                vertex = (NULGTVERTEX_PC *)NuPrimStreamBufferPointer->void_ptr;
+                vertex->u = tex_u[k];
+                vertex->v = tex_v[k];
+                neg_y = vertices[k].y * -1.0;
+                NuPrim2DAddXYZ(vertices[k].x, neg_y, vertices[k].z);
+            }
+            // NuPrim2DEnd.
+            *NuPrimVertexCountPointer = NuPrimVertexCount;
+            NuPrimVertexCount = 0;
             NuPrimSetCoordinateSystem(NuPrimCoordSystemStack[--NuPrimCSPos]);
             vertices[1].x = vertices[0].x;
             vertices[1].y = vertices[0].y;
@@ -321,11 +332,9 @@ void __cdecl NuLgtLaserDraw(i32 paused) {
             vertices[3].x = vertices[2].x;
             vertices[3].y = vertices[2].y;
             vertices[3].z = vertices[2].z;
-            remaining -= laser->segment_length;
-            if (!(1.0f > next_fraction))
-                break;
-            fraction = next_fraction;
-            start_alpha = end_alpha;
+            alphas[0] = alphas[1];
+            fraction = (f32)next_fraction;
+            remaining -= NuLgtLaserData[i].segment_length;
         }
     }
     NuLgtSeed = saved_seed;
@@ -596,13 +605,13 @@ void __cdecl NuLgtArcLaserEx(i32 type, NUVEC *start, NUVEC *end, NUVEC *bend, f3
     laser->wobble = wobble;
     laser->bend_amount = bend_amount;
 
-    red = ((u32)colour & 0xff) * 2;
+    red = colour & 0xff;
 
-    green = ((u32)colour & 0xff00) * 2;
+    green = (colour >> 8) & 0xff;
 
-    blue = ((u32)colour & 0xff0000) >> 15;
+    blue = (u8)(colour >> 16);
 
-    alpha = ((u32)colour >> 24) * 2;
+    alpha = (u8)(colour >> 24);
     if (red > 255)
         red = 255;
     if (green > 0xff00)
