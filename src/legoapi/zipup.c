@@ -693,38 +693,30 @@ static void ZipUps_Draw(WORLDINFO *world, void *unused, f32 time) {
         ZIPUP_SPECIAL_GROUND_MARKER = 86,
         ZIPUP_SPECIAL_ENDPOINT_SWIRL = 229,
     };
-    enum ZIPUP_DRAW_MATRICES {
-        ZIPUP_MATRIX_HOOK,
-        ZIPUP_MATRIX_LOWER_MARKER,
-        ZIPUP_MATRIX_UPPER_MARKER,
-        ZIPUP_MATRIX_LOWER_SWIRL,
-        ZIPUP_MATRIX_UPPER_SWIRL,
-        ZIPUP_MATRIX_COUNT,
-    };
 
-    if (world != NULL && world->zipups != NULL) {
+    ZIPUP_PC *zipup;
+
+    if (world != NULL && (zipup = world->zipups) != NULL) {
         u16 spin_angle;
-        f32 pulse_phase;
         f32 pulse_alpha;
         NUVEC endpoint_position;
         NUVEC offset;
-        NUVEC ground_position;
-        NUMTX matrices[ZIPUP_MATRIX_COUNT];
-        ZIPUP_PC *zipup;
+        NUMTX matrix;
         i32 index;
 
         spin_angle = ((u16)(NuFmod(GameTimer.time_elapsed, 5.0f) / 5.0f * 65536.0f));
-        pulse_phase = NuFmod(GameTimer.time_elapsed_mod_seconds, 0.5f) * 2.0f * 65536.0f;
-        pulse_alpha = NuTrigTable[(((i32)(pulse_phase)) >> 1) & 0x7fff] * 0.2f + 0.8f;
-
-        zipup = world->zipups;
+        pulse_alpha =
+            NuTrigTable[((i32)(NuFmod(GameTimer.time_elapsed_mod_seconds, 0.5f) * 2.0f * 65536.0f) >> 1) & 0x7fff] *
+                0.2f +
+            0.8f;
 
         for (index = 0; index < world->zipup_count; ++index, ++zipup) {
-            if ((zipup->flags & (ZIPUP_FLAG_ACTIVE | ZIPUP_FLAG_VISIBLE)) != (ZIPUP_FLAG_ACTIVE | ZIPUP_FLAG_VISIBLE)) {
-                continue;
-            }
+            u32 flags = zipup->flags_word;
 
-            if ((zipup->flags & ZIPUP_FLAG_CONFIG_5) != 0) {
+            if ((flags & ZIPUP_FLAG_ACTIVE) == 0 || (flags & ZIPUP_FLAG_VISIBLE) == 0)
+                continue;
+
+            if ((flags & ZIPUP_FLAG_CONFIG_5) != 0) {
                 if (world->level_objects[ZIPUP_SPECIAL_HOOK].active != 0) {
                     offset.x = 0.0f;
                     offset.y = ZipUpMarkerOffsetYPc;
@@ -732,15 +724,14 @@ static void ZipUps_Draw(WORLDINFO *world, void *unused, f32 time) {
 
                     NuVecRotateY(&offset, &offset, zipup->facing_angle);
                     NuVecAdd(&endpoint_position, &zipup->lower_position, &offset);
-                    NuMtxSetTranslation(&matrices[ZIPUP_MATRIX_HOOK], &endpoint_position);
-                    NuSpecialDrawAt(&world->level_objects[ZIPUP_SPECIAL_HOOK].special, &matrices[ZIPUP_MATRIX_HOOK]);
+                    NuMtxSetTranslation(&matrix, &endpoint_position);
+                    NuSpecialDrawAt(&world->level_objects[ZIPUP_SPECIAL_HOOK].special, &matrix);
 
                     if ((zipup->flags & ZIPUP_FLAG_CONFIG_3) != 0) {
                         NuVecRotateY(&offset, &offset, 0x8000);
                         NuVecAdd(&endpoint_position, &zipup->upper_position, &offset);
-                        NuMtxSetTranslation(&matrices[ZIPUP_MATRIX_HOOK], &endpoint_position);
-                        NuSpecialDrawAt(&world->level_objects[ZIPUP_SPECIAL_HOOK].special,
-                                        &matrices[ZIPUP_MATRIX_HOOK]);
+                        NuMtxSetTranslation(&matrix, &endpoint_position);
+                        NuSpecialDrawAt(&world->level_objects[ZIPUP_SPECIAL_HOOK].special, &matrix);
                     }
                 }
 
@@ -750,12 +741,12 @@ static void ZipUps_Draw(WORLDINFO *world, void *unused, f32 time) {
                 continue;
             }
 
-            if ((zipup->flags & ZIPUP_FLAG_CONFIG_4) != 0 && world->level_objects[ZIPUP_SPECIAL_HOOK].active != 0) {
+            if ((flags & ZIPUP_FLAG_CONFIG_4) != 0 && world->level_objects[ZIPUP_SPECIAL_HOOK].active != 0) {
                 EnableShadowMapRendering(0);
-                NuMtxSetRotationX(&matrices[ZIPUP_MATRIX_HOOK], zipup->hook_x_rotation);
-                NuMtxRotateY(&matrices[ZIPUP_MATRIX_HOOK], zipup->hook_y_rotation);
-                NuMtxTranslate(&matrices[ZIPUP_MATRIX_HOOK], &zipup->hook_origin);
-                NuSpecialDrawAt(&world->level_objects[ZIPUP_SPECIAL_HOOK].special, &matrices[ZIPUP_MATRIX_HOOK]);
+                NuMtxSetRotationX(&matrix, zipup->hook_x_rotation);
+                NuMtxRotateY(&matrix, zipup->hook_y_rotation);
+                NuMtxTranslate(&matrix, &zipup->hook_origin);
+                NuSpecialDrawAt(&world->level_objects[ZIPUP_SPECIAL_HOOK].special, &matrix);
                 ResetShadowMapRendering();
             }
 
@@ -764,14 +755,12 @@ static void ZipUps_Draw(WORLDINFO *world, void *unused, f32 time) {
                 continue;
             }
 
-            NuMtxSetTranslation(&matrices[ZIPUP_MATRIX_HOOK], &zipup->lower_position);
-            NuSpecialDrawAtAlpha(&world->level_objects[ZIPUP_SPECIAL_ENDPOINT_SWIRL].special,
-                                 &matrices[ZIPUP_MATRIX_HOOK], 1.0f);
+            NuMtxSetTranslation(&matrix, &zipup->lower_position);
+            NuSpecialDrawAtAlpha(&world->level_objects[ZIPUP_SPECIAL_ENDPOINT_SWIRL].special, &matrix, 1.0f);
 
             if ((zipup->flags & ZIPUP_FLAG_CONFIG_3) != 0) {
-                NuMtxSetTranslation(&matrices[ZIPUP_MATRIX_HOOK], &zipup->upper_position);
-                NuSpecialDrawAtAlpha(&world->level_objects[ZIPUP_SPECIAL_ENDPOINT_SWIRL].special,
-                                     &matrices[ZIPUP_MATRIX_HOOK], 1.0f);
+                NuMtxSetTranslation(&matrix, &zipup->upper_position);
+                NuSpecialDrawAtAlpha(&world->level_objects[ZIPUP_SPECIAL_ENDPOINT_SWIRL].special, &matrix, 1.0f);
             }
 
             if ((zipup->flags & ZIPUP_FLAG_CONFIG_2) == 0) {

@@ -3483,8 +3483,10 @@ void __cdecl StartFlatten(GAMEOBJECT *source, GAMEOBJECT *target) {
     PLAYERCHARACTERCONFIG_PC *data;
     NUVEC direction;
     u16 angle;
+    if (target->character_context == 0x3d || target->character_context == 0x33)
+        return;
     data = target->character_data->game_character;
-    if (target->character_context == 0x33 || target->character_context == 0x3d || (data->flags_090 & 0x40) != 0)
+    if ((data->flags_090 & 0x40) != 0)
         return;
     if (data->field_028 != 0.0f && target->jump_variant_state == 1)
         return;
@@ -3493,10 +3495,10 @@ void __cdecl StartFlatten(GAMEOBJECT *source, GAMEOBJECT *target) {
     Player_ClearContext(target, 0);
     Player_ResetContexts(&((TERRAIN_PARENT_CONTEXT_VIEW_PC *)target)->reset_context);
     target->character_context = 0x3d;
-    target->context_timer = 0.0f;
+    target->field_7aa = target->character_model->model_data_b[0x85] != NULL ? 0x85 : 5;
     target->velocity.x *= 0.5;
     target->velocity.z *= 0.5;
-    target->field_7aa = target->character_model->model_data_b[0x85] != NULL ? 0x85 : 5;
+    target->context_timer = 0.0f;
     target->context_duration = (f32)qrand() * (f64)(1.0f / 65535.0f) + 1.0;
     NuVecSub(&direction, &target->collision_position, &source->collision_position);
     angle = NuAtan2D(direction.x, direction.z);
@@ -3507,7 +3509,7 @@ void __cdecl StartFlatten(GAMEOBJECT *source, GAMEOBJECT *target) {
         target->field_7b3 = 0;
     }
     if (target->field_7aa != 0x85)
-        target->field_0x276 = target->facing_angle = target->movement_facing_angle = angle;
+        target->movement_facing_angle = target->facing_angle = target->field_0x276 = angle;
     target->delayed_turn_timer = 0.0f;
     NewBuzzFrames(source->pad->bound_pad, 1, 0);
     data = target->character_data->game_character;
