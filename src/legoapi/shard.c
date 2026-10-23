@@ -1217,59 +1217,74 @@ i32 __cdecl SelectShopItem(shopitem_s *items, i32 index) {
     shopitem_s *item = &items[index];
     SHOP_SAVE_VIEW_PC *save = (SHOP_SAVE_VIEW_PC *)&Game;
     HINT_PC *hint;
-    i32 id, area, i;
+    i32 id, i;
     switch (item->type) {
-        case 0:
-            id = (u16)item->item_id;
-            if (item->unlocked == 1 || item->price == 0)
-                return 1;
-            if (Game.coins < (u32)item->price)
-                goto no_cash;
-            AddToCompletionPoints(POINTS_PER_HINT);
-            hint = Hint_FindHint(ShopHintIdsPc[id]);
-            if (hint != NULL)
-                hint->flags |= 2;
-            BuyShopItem(items, index, 1);
-            return 1;
         case 1:
             if (item->unlocked == 1)
                 return 0;
             id = (u16)item->item_id;
             if (id < 0 || id >= CHARCOUNT)
                 return 0;
-            if (Shop_CharacterUnlockedPc(id) == 0)
-                goto locked;
-            if (Game.coins < (u32)item->price)
-                goto no_cash;
+            if (Shop_CharacterUnlockedPc(id) == 0) {
+                GameAudio_PlaySfx(0x32, NULL, 0, 0);
+                ShopLockedScalePc = 1.5f;
+                return 0;
+            }
+            if (Game.coins < (u32)item->price) {
+                CoinTotalScale = 1.5f;
+                return -1;
+            }
             if (AddToCollection(id) != 0) {
                 AddToCompletionPoints(POINTS_PER_CHARACTER);
+            buy:
                 BuyShopItem(items, index, 1);
             }
             return 1;
+        case 0:
+            id = (u16)item->item_id;
+            if (item->unlocked == 1 || item->price == 0)
+                return 1;
+            if (Game.coins < (u32)item->price) {
+                CoinTotalScale = 1.5f;
+                return -1;
+            }
+            AddToCompletionPoints(POINTS_PER_HINT);
+            hint = Hint_FindHint(ShopHintIdsPc[id]);
+            if (hint != NULL)
+                hint->flags |= 2;
+            goto buy;
         case 2:
             id = (u16)item->item_id;
             if (item->unlocked == 1 || (save->extra_purchased_bits[id / 32] & (1u << (id & 31))) != 0)
                 return 0;
-            area = ExtrasCheatsPc[id].area_index;
-            if (area != -1 && Game.area_save[area].red_brick_collected == 0)
-                goto locked;
-            if (Game.coins < (u32)item->price)
-                goto no_cash;
+            if (ExtrasCheatsPc[id].area_index != -1 &&
+                Game.area_save[ExtrasCheatsPc[id].area_index].red_brick_collected == 0) {
+                GameAudio_PlaySfx(0x32, NULL, 0, 0);
+                ShopLockedScalePc = 1.5f;
+                return 0;
+            }
+            if (Game.coins < (u32)item->price) {
+                CoinTotalScale = 1.5f;
+                return -1;
+            }
             save->extra_purchased_bits[id / 32] |= 1u << (id & 31);
             AddToCompletionPoints(POINTS_PER_CHEAT);
-            BuyShopItem(items, index, 1);
-            return 1;
+            goto buy;
         case 4:
             if (item->unlocked == 1 || item->price == 0)
                 return 0;
-            if ((f64)(i32)((u32)index * 3600u) > (f64)Game.game_time)
-                goto locked;
-            if (Game.coins < (u32)item->price)
-                goto no_cash;
+            if (Game.game_time < index * 3600) {
+                GameAudio_PlaySfx(0x32, NULL, 0, 0);
+                ShopLockedScalePc = 1.5f;
+                return 0;
+            }
+            if (Game.coins < (u32)item->price) {
+                CoinTotalScale = 1.5f;
+                return -1;
+            }
             AddToCompletionPoints(POINTS_PER_GOLDBRICK);
             AddToGoldBricks();
-            BuyShopItem(items, index, 1);
-            return 1;
+            goto buy;
         case 5:
             if (CutScenePlayer_CanStart(index) == 0) {
                 PlaySfx((char *)GameAudioName0075c354Pc, NULL);
@@ -1306,13 +1321,6 @@ i32 __cdecl SelectShopItem(shopitem_s *items, i32 index) {
         default:
             return -1;
     }
-no_cash:
-    CoinTotalScale = 1.5f;
-    return -1;
-locked:
-    GameAudio_PlaySfx(0x32, NULL, 0, 0);
-    ShopLockedScalePc = 1.5f;
-    return 0;
 }
 
 extern f32 ShopPurchasePulseDurationPc;
