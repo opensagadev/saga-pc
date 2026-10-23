@@ -792,9 +792,8 @@ extern "C" {
             return 0;
         }
 
-        const f32 radial_extent = NuFsqrt(combined_radius_sq - distance_sq);
-        if (position->z - radial_extent < 0.0f ||
-            position->z - radial_extent > ((TerrainQuery_s *)TerI)->movement_length) {
+        radius = NuFsqrt(combined_radius_sq - distance_sq);
+        if (position->z - radius < 0.0f || position->z - radius > ((TerrainQuery_s *)TerI)->movement_length) {
             distance_sq += position->z * position->z;
             if (distance_sq < combined_radius_sq) {
                 const f32 inverse_distance = TerrainDivideNonzeroPC(1.0f, NuFsqrt(distance_sq));
@@ -810,13 +809,13 @@ extern "C" {
         }
 
         query = (TerrainQuery_s *)TerI;
-        const f32 hit_time = (position->z - radial_extent) / query->movement_length;
-        if (hit_time < query->hit_time) {
-            query->hit_time = hit_time;
+        distance_sq = (position->z - radius) / query->movement_length;
+        if (distance_sq < query->hit_time) {
+            query->hit_time = distance_sq;
             query->hit_type = TERRAIN_HIT_TYPE_SPHERE;
             query->movement_normal.x = -position->x;
             query->movement_normal.y = -position->y;
-            query->movement_normal.z = -radial_extent;
+            query->movement_normal.z = -radius;
             return 1;
         }
         return 0;
@@ -2175,8 +2174,8 @@ extern "C" {
             query->position.y = position->y;
         }
         const f32 saved_time = query->hit_time;
-        const i16 saved_group = query->terrain_group_index;
         const NUVEC saved_movement = query->movement;
+        const i16 saved_group = query->terrain_group_index;
         const f32 saved_unclamped_time = query->unclamped_hit_time;
         const u16 saved_hit_type = query->hit_type;
         TERRAIN_SHAPE *saved_surface = query->surface;
@@ -2203,11 +2202,11 @@ extern "C" {
         query->movement = saved_movement;
         query->terrain_group_index = saved_group;
         query->surface = saved_surface;
-        query->movement_normal = saved_movement_normal;
         query->scan_group_index = saved_scan_group;
+        query->movement_normal = saved_movement_normal;
         query->impact_normal = saved_impact_normal;
+        entry = static_cast<i16 *>(query->scan_list);
         if (query->hit_type < TERRAIN_HIT_TYPE_SECOND_NORMAL || keep_embedded_disabled == 0) {
-            entry = static_cast<i16 *>(query->scan_list);
             while (entry[0] != 0) {
                 if (entry[1] == group_index) {
                     entry[0] = static_cast<i16>(abs(entry[0]));
