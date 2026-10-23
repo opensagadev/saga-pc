@@ -106,6 +106,32 @@ extern "C" void __cdecl PostShadowProjectBoundsPc(i32 count, const NUVEC4 *verti
     *ymax_out = ymax;
 }
 
+#define SHADOW_COPY_VEC4(dst, src)                                                                                     \
+    do {                                                                                                               \
+        (dst).x = (src).x;                                                                                             \
+        (dst).y = (src).y;                                                                                             \
+        (dst).z = (src).z;                                                                                             \
+        (dst).w = (src).w;                                                                                             \
+    } while (0)
+#define SHADOW_COPY_MTX(dst, src)                                                                                      \
+    do {                                                                                                               \
+        (dst).m00 = (src).m00;                                                                                         \
+        (dst).m01 = (src).m01;                                                                                         \
+        (dst).m02 = (src).m02;                                                                                         \
+        (dst).m03 = (src).m03;                                                                                         \
+        (dst).m10 = (src).m10;                                                                                         \
+        (dst).m11 = (src).m11;                                                                                         \
+        (dst).m12 = (src).m12;                                                                                         \
+        (dst).m13 = (src).m13;                                                                                         \
+        (dst).m20 = (src).m20;                                                                                         \
+        (dst).m21 = (src).m21;                                                                                         \
+        (dst).m22 = (src).m22;                                                                                         \
+        (dst).m23 = (src).m23;                                                                                         \
+        (dst).m30 = (src).m30;                                                                                         \
+        (dst).m31 = (src).m31;                                                                                         \
+        (dst).m32 = (src).m32;                                                                                         \
+        (dst).m33 = (src).m33;                                                                                         \
+    } while (0)
 void PC_SPECIAL_SHADOW_LIGHT::ComputeShadowMatrixPc(NURNDRLIGHTRECORD *set) {
     NUMTX original = set->view_pc;
     NUMTX captured = PostShadowViewPc;
@@ -114,62 +140,76 @@ void PC_SPECIAL_SHADOW_LIGHT::ComputeShadowMatrixPc(NURNDRLIGHTRECORD *set) {
     NUMTX translation, frustum, translated_basis, transformed, axis;
     NUVEC4 corners[10], projected[10];
     NUVEC light_direction, camera_direction;
-    NUVEC minimum, maximum, temporary, offset, camera_position;
+    NUVEC offset, camera_position;
     NuMtxMulH(&combined, &original, &set->projection_pc);
     NuMtxInvH(&combined_inverse, &combined);
     NuMtxInv(&original_inverse, &original);
     NuMtxInv(&captured_inverse, &captured);
-    light_direction.x = original_inverse.m20;
-    light_direction.y = original_inverse.m21;
-    light_direction.z = original_inverse.m22;
-    camera_direction.x = captured_inverse.m20;
-    camera_direction.y = captured_inverse.m21;
-    camera_direction.z = captured_inverse.m22;
+    light_direction = *(NUVEC *)&original_inverse.m20;
+    camera_direction = *(NUVEC *)&captured_inverse.m20;
     PostShadowBuildBasisPc(&light_direction, &camera_direction, &basis, &basis_inverse);
     PostShadowCopyVectorsPc(corners, set->corners_pc, 8);
-    /* Retail stores the three components; the fourth local component is untouched. */
-    temporary.x = shadow_direction_pc.x * 200.0;
-    temporary.y = shadow_direction_pc.y * 200.0;
-    temporary.z = shadow_direction_pc.z * 200.0;
-    corners[8].x = captured_inverse.m30 + temporary.x;
-    corners[8].y = captured_inverse.m31 + temporary.y;
-    corners[8].z = captured_inverse.m32 + temporary.z;
-    temporary.x = shadow_direction_pc.x * 200.0;
-    temporary.y = shadow_direction_pc.y * 200.0;
-    temporary.z = shadow_direction_pc.z * 200.0;
-    corners[9].x = captured_inverse.m30 - temporary.x;
-    corners[9].y = captured_inverse.m31 - temporary.y;
-    corners[9].z = captured_inverse.m32 - temporary.z;
-    minimum.x = minimum.y = minimum.z = 3.4028234663852886e+38f;
-    maximum.x = maximum.y = maximum.z = -3.4028234663852886e+38f;
+    {
+        NUVEC temporary;
+        NUVEC4 sum;
+        temporary.x = shadow_direction_pc.x * 200.0;
+        temporary.y = shadow_direction_pc.y * 200.0;
+        temporary.z = shadow_direction_pc.z * 200.0;
+        sum.x = captured_inverse.m30 + temporary.x;
+        sum.y = captured_inverse.m31 + temporary.y;
+        sum.z = captured_inverse.m32 + temporary.z;
+        SHADOW_COPY_VEC4(corners[8], sum);
+        temporary.x = shadow_direction_pc.x * 200.0;
+        temporary.y = shadow_direction_pc.y * 200.0;
+        temporary.z = shadow_direction_pc.z * 200.0;
+        sum.x = captured_inverse.m30 - temporary.x;
+        sum.y = captured_inverse.m31 - temporary.y;
+        sum.z = captured_inverse.m32 - temporary.z;
+        SHADOW_COPY_VEC4(corners[9], sum);
+    }
+    NUVEC minimum, maximum;
+    minimum.x = 3.4028234663852886e+38f;
+    minimum.y = 3.4028234663852886e+38f;
+    minimum.z = 3.4028234663852886e+38f;
+    maximum.x = -3.4028234663852886e+38f;
+    maximum.y = -3.4028234663852886e+38f;
+    maximum.z = -3.4028234663852886e+38f;
     for (i32 i = 0; i < 10; ++i) {
-        basis_copy = basis;
-        NUVEC4 result;
+        __declspec(align(16)) NUVEC4 result;
+        NUVEC bound;
+        f32 bound_x, bound_y, bound_z;
+        SHADOW_COPY_MTX(basis_copy, basis);
         NuVecMtxTransformH((NUVEC *)&result, (NUVEC *)&corners[i], &basis_copy);
-        projected[i] = result;
-        minimum.z = minimum.z > result.z ? result.z : minimum.z;
-        minimum.y = minimum.y > result.y ? result.y : minimum.y;
-        minimum.x = minimum.x > result.x ? result.x : minimum.x;
-        maximum.z = maximum.z < result.z ? result.z : maximum.z;
-        maximum.y = maximum.y < result.y ? result.y : maximum.y;
-        maximum.x = maximum.x < result.x ? result.x : maximum.x;
+        SHADOW_COPY_VEC4(projected[i], result);
+        bound_z = minimum.z > result.z ? result.z : minimum.z;
+        bound_y = minimum.y > result.y ? result.y : minimum.y;
+        bound_x = minimum.x > result.x ? result.x : minimum.x;
+        bound.x = bound_x;
+        bound.y = bound_y;
+        bound.z = bound_z;
+        minimum = bound;
+        bound_z = maximum.z < result.z ? result.z : maximum.z;
+        bound_y = maximum.y < result.y ? result.y : maximum.y;
+        bound_x = maximum.x < result.x ? result.x : maximum.x;
+        bound.x = bound_x;
+        bound.y = bound_y;
+        bound.z = bound_z;
+        maximum = bound;
     }
     f32 fovy, aspect, near_plane, far_plane;
     PcGetGeometryPerspectivePc(&PostShadowProjectionPc, &fovy, &aspect, &near_plane, &far_plane);
     f64 depth = (f64)maximum.z - (f64)minimum.z;
     volatile f32 depth32 = depth;
-    volatile f32 dot = camera_direction.y * light_direction.y + light_direction.x * camera_direction.x +
-                       camera_direction.z * light_direction.z;
+    f32 dot = camera_direction.y * light_direction.y + light_direction.x * camera_direction.x +
+              camera_direction.z * light_direction.z;
     union {
         f32 f;
         u32 u;
     } absolute;
-    absolute.f = dot;
-    absolute.u &= 0x7fffffff;
-    volatile f32 product = near_plane * depth32;
-    volatile f32 distance = NuFsqrt(product) + near_plane;
-    volatile f32 one_minus_dot = 1.0f - absolute.f;
-    distance = set->parameter_110 * distance / one_minus_dot;
+    absolute.u = *(u32 *)&dot & 0x7fffffff;
+    f32 product = near_plane * depth32;
+    f32 distance = NuFsqrt(product) + near_plane;
+    distance = set->parameter_110 * distance / (f32)(1.0f - absolute.f);
     camera_position.x = captured_inverse.m30;
     camera_position.y = captured_inverse.m31;
     camera_position.z = captured_inverse.m32;
@@ -183,13 +223,24 @@ void PC_SPECIAL_SHADOW_LIGHT::ComputeShadowMatrixPc(NURNDRLIGHTRECORD *set) {
     f32 xmin, xmax, ymin, ymax;
     PostShadowProjectBoundsPc(10, projected, &offset, distance, &xmin, &xmax, &ymin, &ymax);
     NuMtxSetTranslation(&translation, &offset);
-    volatile f32 far_distance = depth + distance;
+    f32 far_distance = depth + distance;
     NuMtxSetFrustumD3D(&frustum, xmin, xmax, ymin, ymax, distance, far_distance);
-    axis = NuMtxSetIdentityTemplate;
+    axis.m00 = 1.0f;
+    axis.m01 = 0.0f;
+    axis.m02 = 0.0f;
+    axis.m03 = 0.0f;
+    axis.m10 = 0.0f;
     axis.m11 = 0.0f;
     axis.m12 = -1.0f;
+    axis.m13 = 0.0f;
+    axis.m20 = 0.0f;
     axis.m21 = 1.0f;
     axis.m22 = 0.0f;
+    axis.m23 = 0.0f;
+    axis.m30 = 0.0f;
+    axis.m31 = 0.0f;
+    axis.m32 = 0.0f;
+    axis.m33 = 1.0f;
     NuMtxMulH(&transformed, &basis, &translation);
     NuMtxMulH(&translated_basis, &transformed, &frustum);
     NuMtxMulH(&combined_inverse, &translated_basis, &axis);
