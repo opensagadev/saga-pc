@@ -265,41 +265,49 @@ extern "C" {
     }
 
     static void __cdecl UpdateMaterialClipBitsPC(NUDISPLAY_LIST_PC *scene) {
-        u32 buffer;
+        i32 material_index = 0;
+        u32 flags;
         u8 *current, *other;
-        i32 bytes, byte_index, material_index = 0;
+        NUDISPLAYLIST **lists;
+        i32 bytes, byte_index;
         if (scene == NULL || scene->display_materials == NULL || scene->display_materials[0] == NULL)
             return;
-        buffer = (scene->render_flags >> 15) & 1;
-        current = scene->material_used[buffer];
-        other = scene->material_used[buffer ^ 1];
+        flags = scene->render_flags >> 15;
+        current = scene->material_used[flags & 1];
+        lists = scene->material_lists;
         bytes = (i32)((scene->material_count + 7) >> 3);
+        other = scene->material_used[~flags & 1];
         for (byte_index = 0; byte_index < bytes; ++byte_index) {
-            if (current[byte_index] != other[byte_index]) {
+            u8 value = current[byte_index];
+            if (value == other[byte_index]) {
+                material_index += 8;
+            } else {
                 i32 bit;
                 for (bit = 0; bit < 8; ++bit) {
-                    NUDISPLAYLIST *list = scene->material_lists[material_index];
+                    i32 enabled = (value >> bit) & 1;
+                    NUDISPLAYLIST *list = lists[material_index];
                     PC_DISPLAY_MATERIAL_PC *material =
                         (PC_DISPLAY_MATERIAL_PC *)scene->display_materials[list->material_id];
-                    i32 enabled = (current[byte_index] >> bit) & 1;
                     if (material != NULL && enabled != 0) {
-                        if (PCDeviceHardwareVertexProcessingPC == 1) {
-                            if (material->blend_operation[0] != 0xff && (i32)material->blend_operation[0] +
-                                                                                material->blend_operation[1] +
-                                                                                material->blend_operation[2] !=
-                                                                            0)
-                                enabled = 0;
-                        } else if (material->blend_operation[0] == 0xff) {
-                            enabled = 0;
+                        if (PCDeviceHardwareVertexProcessingPC != 1) {
+                            enabled = material->blend_operation[0] != 0xff;
+                        } else if (material->blend_operation[0] != 0xff && (i32)material->blend_operation[0] +
+                                                                                   material->blend_operation[1] +
+                                                                                   material->blend_operation[2] !=
+                                                                               0) {
+                            list->mtl_item->id = 1;
+                            goto next;
                         }
                     }
-                    list->mtl_item->id = enabled ? 0 : 1;
+                    if (enabled)
+                        list->mtl_item->id = 0;
+                    else
+                        list->mtl_item->id = 1;
+                next:
                     ++material_index;
                     if (material_index >= (i32)scene->material_count)
                         return;
                 }
-            } else {
-                material_index += 8;
             }
         }
     }
