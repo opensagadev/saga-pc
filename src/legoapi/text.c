@@ -470,7 +470,7 @@ void FixUpButtonsInFont(VUFNT *game_font, VUFNT *button_font) {
         for (i = 0; i < button_font->glyph_count; ++i) {
             i32 j;
             for (j = 0; j < game_font->glyph_count; ++j) {
-                if (button_font->unicode_map[i].unicode == game_font->unicode_map[j].unicode) {
+                if (game_font->unicode_map[j].unicode == button_font->unicode_map[i].unicode) {
                     if (button_font->unicode_map[i].unicode >= 0x531 && button_font->unicode_map[i].unicode <= 0x53f) {
                         game_font->glyphs[game_font->unicode_map[j].index].width =
                             button_font->glyphs[button_font->unicode_map[i].index].width * scale;
@@ -1480,8 +1480,10 @@ VUFNT *__cdecl LoadButtonFont(char *path, char *texture_path, VARIPTR *buffer, V
     if (QFont2DButtons == NULL) {
         QFont2DButtons = NuQFntLoadPtr(path, texture_path, 4, plane, buffer, end);
         if (QFont2DButtons != NULL) {
+            VUFNT *font;
             FixUpButtonsInFont(QFont2D, QFont2DButtons);
-            QFont2DButtons->baseline = QFont2DButtons->height / QFont2D->height * QFont2D->baseline;
+            font = QFont2D;
+            QFont2DButtons->baseline = QFont2DButtons->height / font->height * font->baseline;
         }
     }
     return QFont2DButtons;
