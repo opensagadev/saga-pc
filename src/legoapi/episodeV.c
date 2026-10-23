@@ -216,3 +216,46 @@ void __cdecl CloudCityTrapC_Update(WORLDINFO *world) {
         active = 0x80000000;
     ((AIPATHCNX_PC *)LevPathCnx[0])->traversal_flags[LevPathCnxDir] |= active;
 }
+
+void __cdecl CloudCityEscapeC_Update(WORLDINFO *world) {
+    i32 i;
+    TerSurface[14].flags = 0x2002;
+    for (i = 0; i < 3; i++) {
+        if (NuSpecialExistsFn(&LevHSpecial[i]) != 0) {
+            NUINSTANIM_TIME_VIEW *animation = (NUINSTANIM_TIME_VIEW *)NuSpecialGetInstAnim(&LevHSpecial[i]);
+            if (animation != NULL && animation->ltime == 1.0f) {
+                PlaySfx("env_steam_lp", NuSpecialGetDrawPos(&LevHSpecial[i]));
+                TerSurface[14].flags |= 0x4042;
+            }
+        }
+    }
+}
+
+typedef struct DAGOBAH_DOOR_VIEW_PC {
+    u8 unknown_00[0xf4];
+    u32 flags;
+} DAGOBAH_DOOR_VIEW_PC;
+
+void __cdecl DagobahE_Init(WORLDINFO *world) {
+    GIZAIMESSAGE *completed = CheckGizAIMessage(gizaimessagesys, "CompletedTraining", NULL);
+    DAGOBAH_DOOR_VIEW_PC *door;
+    if (FreePlay == 0 && completed != NULL && completed->value == 0.0f) {
+        dagobah_training = 1;
+        door = (DAGOBAH_DOOR_VIEW_PC *)Door_FindByName(world, "door_e_to_b");
+        if (door != NULL)
+            door->flags |= 0x400;
+        door = (DAGOBAH_DOOR_VIEW_PC *)Door_FindByName(world, "door_b_to_e");
+        if (door != NULL)
+            door->flags |= 0x400;
+    } else {
+        dagobah_training = 0;
+        door = (DAGOBAH_DOOR_VIEW_PC *)Door_FindByName(world, "door_e_to_b");
+        if (door != NULL)
+            door->flags &= ~0x400u;
+        door = (DAGOBAH_DOOR_VIEW_PC *)Door_FindByName(world, "door_b_to_e");
+        if (door != NULL)
+            door->flags &= ~0x400u;
+    }
+    SetGizAIMessage(gizaimessagesys, "DagobahTraining", (f32)dagobah_training, NULL);
+    SetGizAIMessage(gizaimessagesys, NULL, 1.0f, completed);
+}

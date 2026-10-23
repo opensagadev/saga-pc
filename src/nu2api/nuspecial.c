@@ -333,6 +333,28 @@ NUMTX *__cdecl NuSpecialGetInstanceMtx(NUSPECIALHANDLE *special) {
     return display != NULL ? &display->draw_matrix : NULL;
 }
 
+typedef struct NuSpecialClipDisplayView {
+    u8 unknown_00[0x80];
+    NUVEC bounds_min;
+    u8 unknown_8c[4];
+    NUVEC bounds_max;
+} NuSpecialClipDisplayView;
+
+i32 __cdecl NuSpecialClipTestExtents(NUSPECIALHANDLE *special, NUMTX *matrix) {
+    NuSpecialLegacyInstanceIndexView *instance;
+    NuSpecialLegacySceneObjectsView *scene;
+    NuSpecialLegacyObjectView *object;
+    NuSpecialClipDisplayView *display;
+    if (special->special != NULL) {
+        instance = (NuSpecialLegacyInstanceIndexView *)((NuSpecialLegacyView *)((void **)special)[1])->instance;
+        scene = (NuSpecialLegacySceneObjectsView *)special->scene;
+        object = scene->objects[instance->object_index];
+        return NuCameraClipTestExtents(&object->bounds_min, &object->bounds_max, matrix, 0.0f, 0);
+    }
+    display = (NuSpecialClipDisplayView *)special->display_special;
+    return NuCameraClipTestExtents(&display->bounds_min, &display->bounds_max, matrix, 0.0f, 0);
+}
+
 void *__cdecl NuSpecialGetInstAnim(NUSPECIALHANDLE *special) {
     NuSpecialLegacyView *legacy = (NuSpecialLegacyView *)special->special;
     NuSpecialLegacyInstanceView *instance;

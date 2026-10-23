@@ -1,4 +1,5 @@
 #include "saga.h"
+#include <stdio.h>
 
 /* Original episodeVI.cpp private owner, PC 0x0088a668, two player timers. */
 static f32 slowDownTimer[2] = {0};
@@ -97,4 +98,157 @@ void __cdecl FairgroundbadA_Init(WORLDINFO *world) {
 }
 
 void __cdecl FairgroundbadA_Draw(WORLDINFO *world) {
+}
+
+typedef struct JABBA_ANTINODE_VIEW_PC {
+    u8 unknown_00[0x40];
+    f32 base_radius;
+    f32 base_height;
+    u8 unknown_48[2];
+    u8 type;
+} JABBA_ANTINODE_VIEW_PC;
+STATIC_ASSERT(offsetof(JABBA_ANTINODE_VIEW_PC, type) == offsetof(AIANTINODE_PC, type));
+
+void __cdecl JabbasPalaceA_Update(WORLDINFO *world) {
+    NUVEC position = {-0.01503f, 0.7414f, 11.5824f};
+    JABBA_ANTINODE_VIEW_PC *antinode;
+    if (NuSpecialExistsFn(&LevHSpecial[0]) != 0 && NuSpecialGetVisibilityFn(&LevHSpecial[0]) == 0) {
+        antinode = (JABBA_ANTINODE_VIEW_PC *)AIAntinodeCreateSingleFrame(&position, 1.0f);
+        if (antinode != NULL) {
+            antinode->type = 2;
+            antinode->base_radius = 0.82443f;
+            antinode->base_height = 1.0f;
+        }
+    }
+}
+
+void __cdecl JabbasPalaceE_Init(WORLDINFO *world) {
+    LevGizmo[0] = GizmoFindByName(world->gizmo_sys, blowup_gizmotype_id, "prox_explo1");
+    LevGizmo[1] = GizmoFindByName(world->gizmo_sys, blowup_gizmotype_id, "prox_explo2");
+    ((u8 *)LevFlag)[6] = 0;
+    ((u8 *)LevFlag)[7] = 0;
+}
+
+void __cdecl SarlaccPitA_Reset(WORLDINFO *world) {
+    LevSafePlatID[0] = -1;
+    if (NuSpecialFind(world->current_gscn, &LevHSpecial[0], "float_skiff_2", 1) != 0 && world->terrain != NULL)
+        LevSafePlatID[0] = FindPlatInst(NuSpecialGetInstanceix(&LevHSpecial[0]));
+}
+
+typedef struct LEGOCITY_PICKUP_PC {
+    u8 unknown_00[8];
+    NUVEC position;
+    u8 unknown_14[3];
+    u8 flags;
+    u8 type_id;
+    u8 unknown_19[0x24 - 0x19];
+    u8 collected;
+    u8 unknown_25[0x2c - 0x25];
+} LEGOCITY_PICKUP_PC;
+STATIC_ASSERT(sizeof(LEGOCITY_PICKUP_PC) == 0x2c);
+
+typedef struct LEGOCITY_PICKUPSYS_PC {
+    LEGOCITY_PICKUP_PC *pickups;
+    u8 unknown_04[4];
+    i32 count;
+} LEGOCITY_PICKUPSYS_PC;
+
+/* PC 0x0088a58c..0x0088a58f and 0x0088a6ec/0x0088a6ed: bonus level vehicle ride flags. */
+static u8 prevOnFireTruck;
+static u8 prevOnLifeBoat;
+static u8 prevOnMoonCar;
+static u8 prevOnTractor;
+static u8 prevOnTaunTaun;
+static u8 prevOnTownCar;
+
+void __cdecl LegoCity_Reset(WORLDINFO *world) {
+    LEGOCITY_PICKUP_PC *pickup;
+    i32 i;
+    prevOnTaunTaun = 0;
+    prevOnTractor = 0;
+    prevOnMoonCar = 0;
+    prevOnTownCar = 0;
+    pickup = ((LEGOCITY_PICKUPSYS_PC *)world->pickup_runtime_sys)->pickups;
+    for (i = 0; pickup != NULL && i < ((LEGOCITY_PICKUPSYS_PC *)world->pickup_runtime_sys)->count; i++, pickup++) {
+        if ((pickup->flags & 8) == 0) {
+            switch (pickup->type_id) {
+                case 3:
+                case 4:
+                case 5:
+                case 6:
+                    pickup->collected = 0;
+                    break;
+            }
+        }
+    }
+}
+
+void __cdecl NewTown_Reset(WORLDINFO *world) {
+    u32 seed = 17;
+    LEGOCITY_PICKUP_PC *pickup;
+    i32 i;
+    f32 x;
+    f32 z;
+    prevOnTaunTaun = 0;
+    prevOnFireTruck = 0;
+    prevOnLifeBoat = 0;
+    pickup = ((LEGOCITY_PICKUPSYS_PC *)world->pickup_runtime_sys)->pickups;
+    for (i = 0; pickup != NULL && i < ((LEGOCITY_PICKUPSYS_PC *)world->pickup_runtime_sys)->count; i++, pickup++) {
+        if ((pickup->flags & 8) == 0) {
+            switch (pickup->type_id) {
+                case 2:
+                case 3:
+                case 4:
+                    pickup->collected = 0;
+                    break;
+            }
+        }
+        if (pickup->type_id == 4) {
+            x = (f32)(NuRandFloatSeeded(&seed) * 4.0 - 7.656 - 1.5);
+            z = (f32)(NuRandFloatSeeded(&seed) * 4.0 - 5.871 - 1.5);
+            pickup->position.x = x;
+            pickup->position.z = z;
+        }
+    }
+}
+
+void __cdecl DeathStar2BattleFire_SetSlowDownMul(GAMEOBJECT *object) {
+    i8 index;
+    if (WORLD->current_level == DEATHSTAR2BATTLEE_LDATA || WORLD->current_level == DEATHSTAR2BATTLEF_LDATA ||
+        WORLD->current_level == DEATHSTAR2BATTLEG_LDATA) {
+        if (object != NULL) {
+            index = (i8)object->field_280;
+            if (index == 0 || index == 1) {
+                object->velocity = v000;
+                slowDownTimer[index] = 3.0f;
+            }
+        }
+    }
+}
+
+void __cdecl DeathStar2BattleFire_Init(WORLDINFO *world) {
+    VehicleSlowdownCallbackPc = DeathStar2BattleFire_SetSlowDownMul;
+    LevelCodeSpline[0] = NuSplineFind(world->current_gscn, "fire");
+    NuSpecialFind(WORLD->current_gscn, &LevHSpecial[0], "fire_cube", 0);
+    InitSplinePosition(&fireSplinePos, LevelCodeSpline[0], 0.0f, 0);
+    InitSplinePosition(&fireBackPos, LevelCodeSpline[0], 0.0f, 0);
+    runningTotalPos = 0.0f;
+    fireSpeedScale = 1.0f;
+}
+
+void __cdecl DeathStar2BattleD_Init(WORLDINFO *world) {
+    char name[256];
+    i32 i;
+    GIZMO_PC *obstacle;
+    LevGizmo[0] = GizmoFindByName(world->gizmo_sys, blowup_gizmotype_id, "reactor1");
+    for (i = 1; i < 7; i++) {
+        sprintf(name, "lecnode_%i1", i);
+        LevGizmo[i] = GizmoFindByName(world->gizmo_sys, blowup_gizmotype_id, name);
+        sprintf(name, "obstacle%d", i);
+        obstacle = (GIZMO_PC *)GizmoFindByName(world->gizmo_sys, obstacle_gizmotype_id, name);
+        if (obstacle != NULL && obstacle->object != NULL)
+            LevGizObst[i] = (GIZOBSTACLE *)obstacle->object;
+    }
+    LevGizmo[7] = GizmoFindByName(world->gizmo_sys, blowup_gizmotype_id, "shield_inner1");
+    ((u8 *)LevFlag)[5] = 0;
 }

@@ -1649,3 +1649,413 @@ void __cdecl PodRaceUpdate(WORLDINFO *world, f32 dt) {
         ((PODRACE_NETPACKET_READER_PC *)podrace_netpacket)->available_time = PodRacePc->previous_lap_display;
     }
 }
+
+/* PC 0x007ffd34/0x007ffd38/0x007ffd3c: mushroom collapse retry window. */
+f32 mushroom_time_available = 15.0f;
+f32 mushroom_max_time_available = 15.0f;
+static f32 mushroom_countdown = 15.0f;
+
+i32 __cdecl NuSpecialClipTestExtents(NUSPECIALHANDLE *special, NUMTX *matrix);
+
+void __cdecl PodRaceBUpdate(WORLDINFO *world) {
+    if (Lap == 2 && PodRacePc->mushroom_timer > 1.0f && mushroom_collapse != 0) {
+        switch (((PODRACE_LEVFLAG_PC *)LevFlag)->mushroom_state) {
+            case 0:
+                if (GameCam->sock_position.distance > mushroom0_along) {
+                    NewCutScene(NULL, world->cutscene_sys, "ep1_podrace_mushroom0", 1);
+                    ((PODRACE_LEVFLAG_PC *)LevFlag)->mushroom_state = 1;
+                }
+                break;
+            case 1:
+                if (mushroom0_cut != NULL &&
+                    (((CUT_INSTANCE_READER_PC *)mushroom0_cut->instance)->flags_88 & 0x1000) != 0) {
+                    NewCutScene(NULL, world->cutscene_sys, "EP1_PODRACE_MUSHROOM1", 1);
+                    mushroom_countdown = mushroom_time_available;
+                    ((PODRACE_LEVFLAG_PC *)LevFlag)->mushroom_state = 2;
+                }
+                break;
+            case 2:
+                mushroom_countdown -= FRAMETIME;
+                if (mushroom_countdown < 0.0f) {
+                    NewCutScene(NULL, world->cutscene_sys, "EP1_PODRACE_MUSHROOM2", 1);
+                    mushroom_n_attempts++;
+                    if (mushroom_nattempts_per_increment > 0 &&
+                        mushroom_n_attempts % mushroom_nattempts_per_increment == 0) {
+                        mushroom_time_available += mushroom_time_increment;
+                        if (mushroom_time_available > mushroom_max_time_available)
+                            mushroom_time_available = mushroom_max_time_available;
+                    }
+                    ((PODRACE_LEVFLAG_PC *)LevFlag)->mushroom_state = 4;
+                } else if (GameCam->sock_position.distance > mushroom2_along) {
+                    ((PODRACE_LEVFLAG_PC *)LevFlag)->mushroom_state = 3;
+                }
+                break;
+            case 3:
+                if (NuSpecialExistsFn(&LevHSpecial[0]) != 0 &&
+                    NuSpecialClipTestExtents(&LevHSpecial[0], NuSpecialGetDrawMtx(&LevHSpecial[0])) == 0)
+                    ((PODRACE_LEVFLAG_PC *)LevFlag)->mushroom_state = 4;
+                break;
+        }
+    }
+    UpdatePacemakerDisplay(world);
+    UpdatePodRaceLapDisplay(FRAMETIME);
+    PodRaceUpdate(world, FRAMETIME);
+    if (Lap == 1 && ((PODRACE_LEVFLAG_PC *)LevFlag)->podrace_state == 0 && PODRACE_ADATA != NULL &&
+        Game.area_save[PODRACE_ADATA->index].area_complete == 0 && GameTimer.time_elapsed >= 3.0f) {
+        Hint_SetComplete(0x27e);
+        ((PODRACE_LEVFLAG_PC *)LevFlag)->podrace_state = 1;
+    }
+}
+
+/* Pod sprint (Episode I bonus) level callbacks. */
+typedef struct PODSPRINT_VIEW_PC {
+    NUGSPLINE *finish_line;
+    NUGSPLINE *halfway;
+    PODSPRINT_AI_PC ai[6];
+    GIZAIMESSAGE *lap_msg;
+    GIZAIMESSAGE *max_speed_msg;
+    GIZAIMESSAGE *min_speed_msg;
+    GIZAIMESSAGE *speed_step_msg;
+    GAMEOBJECT *pacemaker;
+    AIAREA_PC *boulders;
+    f32 arrow_timer;
+    f32 countdown;
+    f32 lap_time;
+    u8 unknown_8c[2];
+    i8 ai_state;
+    i8 ai_index;
+    u8 unknown_90[2];
+    u16 flags;
+} PODSPRINT_VIEW_PC;
+STATIC_ASSERT(sizeof(PODSPRINT_VIEW_PC) == sizeof(PODSPRINT_PC));
+STATIC_ASSERT(offsetof(PODSPRINT_VIEW_PC, pacemaker) == 0x78);
+STATIC_ASSERT(offsetof(PODSPRINT_VIEW_PC, ai_state) == 0x8e);
+STATIC_ASSERT(offsetof(PODSPRINT_VIEW_PC, flags) == 0x92);
+
+typedef struct PODSPRINT_NETPACKET_PC {
+    i16 ai_state;
+    u8 unknown_02[4];
+    i16 countdown;
+    i16 lap_time;
+} PODSPRINT_NETPACKET_PC;
+
+#define PODSPRINT ((PODSPRINT_VIEW_PC *)&podsprint)
+#define PODSPRINT_NET ((PODSPRINT_NETPACKET_PC *)podsprint_netpacket)
+
+/* PC 0x008824cc: last player positions used for the finish line tests. */
+static NUVEC pod_old_pos[2];
+/* PC 0x007ffd1c..0x007ffd24 and 0x007ffd88..0x007ffd94: pod sprint HUD and boulder tuning. */
+static f32 PodSprintLapIconScalePc = 0.16f;
+static f32 PodSprintCountdownYPc = 0.425f;
+static f32 PodSprintCountdownScalePc = 0.75f;
+static f32 PodSprintArrowSizePc = 0.05f;
+static f32 PodSprintArrowHeightPc = 0.75f;
+static f32 boulder_offset_y = 1.0f;
+static f32 boulder_offset_y_seek = 1.0f;
+
+extern f32 HudBossIconYPc;
+i32 __cdecl XZLinesIntersect(NUVEC *a, NUVEC *b, NUVEC *c, NUVEC *d, f32 *first, f32 *second);
+
+static void PodSprint_InitAISplinePc(WORLDINFO *world, char *name, PODSPRINT_AI_PC *ai) {
+    i32 i;
+    i32 count;
+    i16 *vals;
+    NUGSPLINE *line;
+    if (world == NULL || ai == NULL || name == NULL)
+        return;
+    memset(ai, 0, sizeof(*ai));
+    ai->spline = NuSplineFind(world->current_gscn, name);
+    if (ai->spline == NULL || PODSPRINT->finish_line == NULL || PODSPRINT->halfway == NULL)
+        return;
+    count = 0;
+    vals = ai->vals;
+    for (i = 0; i < ai->spline->length - 1; i++) {
+        if (count >= 6)
+            break;
+        line = PODSPRINT->finish_line;
+        if ((count & 1) == 0)
+            line = PODSPRINT->halfway;
+        if (XZLinesIntersect(&ai->spline->pts[i], &ai->spline->pts[i + 1], &line->pts[0], &line->pts[1], NULL, NULL) !=
+            0) {
+            count++;
+            *vals = (i16)i;
+            vals++;
+        }
+    }
+    if (ai->vals[5] == 0)
+        ai->vals[5] = ai->spline->length;
+}
+
+void __cdecl PodSprintA_Init(WORLDINFO *world) {
+    memset(&podsprint, 0, sizeof(podsprint));
+    podsprint_netpacket = SetLevelHack(10);
+    PODSPRINT->finish_line = NuSplineFind(world->current_gscn, "finish_line");
+    if (PODSPRINT->finish_line != NULL && PODSPRINT->finish_line->length < 2)
+        PODSPRINT->finish_line = NULL;
+    PODSPRINT->halfway = NuSplineFind(world->current_gscn, "halfway");
+    if (PODSPRINT->halfway != NULL && PODSPRINT->halfway->length < 2)
+        PODSPRINT->halfway = NULL;
+    PODSPRINT->lap_msg = CheckGizAIMessage(gizaimessagesys, "Lap", NULL);
+    PODSPRINT->lap_msg->value = 0.0f;
+    PODSPRINT->max_speed_msg = CheckGizAIMessage(gizaimessagesys, "sebulba_max_speed", NULL);
+    PODSPRINT->min_speed_msg = CheckGizAIMessage(gizaimessagesys, "sebulba_min_speed", NULL);
+    PODSPRINT->speed_step_msg = CheckGizAIMessage(gizaimessagesys, "sebulba_speed_step", NULL);
+    PodSprint_InitAISplinePc(world, "ai_sebulba", &PODSPRINT->ai[0]);
+    PodSprint_InitAISplinePc(world, "ai_general", &PODSPRINT->ai[1]);
+    NuSpecialFind(world->current_gscn, &LevHSpecial[50], "bigrock_five", 1);
+    NuSpecialFind(world->current_gscn, &LevHSpecial[51], "bigrock_eight", 1);
+}
+
+void __cdecl PodSprintA_Reset(WORLDINFO *world) {
+    i32 i;
+    GAMEOBJECT *object;
+    PODSPRINT->pacemaker = NULL;
+    pod_old_pos[0].x = pod_old_pos[0].y = pod_old_pos[0].z = -1.0f;
+    pod_old_pos[1].x = pod_old_pos[1].y = pod_old_pos[1].z = -1.0f;
+    PODSPRINT->flags &= ~0x10;
+    PODSPRINT->lap_time = 0.0f;
+    if ((PODSPRINT->flags & 0xc) == 0 && (netclient == 0 || PODSPRINT_NET->ai_state <= 2)) {
+        PODSPRINT->flags &= ~1;
+        PODSPRINT->countdown = 3.0f;
+        PODSPRINT->pacemaker = NULL;
+        PODSPRINT->ai_state = 1;
+        podstartracealpha = 0.0f;
+        PODSPRINT->ai_index = 0;
+    } else {
+        PODSPRINT->ai_state = 3;
+        PODSPRINT->flags &= ~0xc;
+        PODSPRINT->ai_index = 4;
+        VehicleAreaRememberSpeed = 1.0f;
+        PODSPRINT->flags &= ~1;
+        for (i = 0; i < 2; i++) {
+            object = i != 0 ? player2 : player;
+            if (object != NULL && (object->flags_1fc_word & 0x1000) != 0) {
+                object->field_dc8 = 1.0f;
+                object->velocity.x = 0.0f;
+                object->velocity.y = 0.0f;
+                object->velocity.z = object->character_data->game_character->run_speed;
+                NuVecRotateY(&object->velocity, &object->velocity, object->field_0x276);
+            }
+        }
+        if (game_cutscenes_cutscene != NULL) {
+            CutScene_SnapToEnd(game_cutscenes_cutscene);
+            CutScene_StoppedFn_LSW((CUTINFO *)game_cutscenes_cutscene);
+        }
+    }
+    PodRaceSnipersReset();
+    PODSPRINT->boulders = AISysFindArea(world->ai_sys, "Boulders");
+}
+
+static void PodSprint_UpdatePacemakerPc(WORLDINFO *world) {
+    NUVEC position;
+    GAME_MESSAGE_PC *message;
+    if (PODSPRINT->pacemaker == NULL) {
+        PODSPRINT->pacemaker = GetNamedGameObject(world->ai_sys, "SebulbasPod");
+        if (PODSPRINT->pacemaker == NULL)
+            return;
+    }
+    if ((PODSPRINT->pacemaker->flags_1fc_word & 0x1000) == 0 || PODSPRINT->pacemaker->dead != 0)
+        return;
+    if (FadeSys.fade != 0.0f || pause_rndr_on != 0) {
+        PODSPRINT->arrow_timer = 0.0f;
+        return;
+    }
+    PODSPRINT->arrow_timer = (FRAMETIME + FRAMETIME) + PODSPRINT->arrow_timer;
+    if (PODSPRINT->arrow_timer > 1.0f)
+        PODSPRINT->arrow_timer = 1.0f;
+    if ((f64)NuFmod(GameTimer.time_elapsed_mod_seconds, 0.2f) < (f64)0.1f) {
+        position = PODSPRINT->pacemaker->upper_position;
+        position.y += PodSprintArrowHeightPc;
+        message = AddGameMessage(" ", &position, PodSprintArrowSizePc, NULL, 0.0f, 0xff, 0x3f, 0x3f, 0x10083, 0.0f);
+        if (message != NULL) {
+            message->alpha = (u8)(NuTrigTable[(i32)(PODSPRINT->arrow_timer * 16384.0) >> 1 & 0x7fff] * 128.0);
+            message->icon = 0x134;
+            if (world->level_objects[0x134].active != 0)
+                message->special = world->level_objects[0x134].special;
+        }
+    }
+}
+
+static i32 PodSprint_UpdateCountdownPc(void) {
+    f32 remaining;
+    f32 previous;
+    if (PODSPRINT->countdown > 0.0f) {
+        previous = PODSPRINT->countdown;
+        if (FadeSys.fade == 0.0f)
+            PODSPRINT->countdown -= FRAMETIME;
+        remaining = PODSPRINT->countdown;
+        if (Player[0] != NULL) {
+            if (remaining > 0.0f) {
+                ((GAMEOBJECT *)Player[0])->field_dc8 = 0.0f;
+                ((GAMEOBJECT *)Player[0])->velocity.z = 0.0f;
+                ((GAMEOBJECT *)Player[0])->velocity.x = 0.0f;
+                ((GAMEOBJECT *)Player[0])->run_speed_override = 0.0f;
+            } else {
+                ((GAMEOBJECT *)Player[0])->run_speed_override = 1000000000.0f;
+            }
+        }
+        if (Player[1] != NULL) {
+            if (remaining > 0.0f) {
+                ((GAMEOBJECT *)Player[1])->field_dc8 = 0.0f;
+                ((GAMEOBJECT *)Player[1])->velocity.z = 0.0f;
+                ((GAMEOBJECT *)Player[1])->velocity.x = 0.0f;
+                ((GAMEOBJECT *)Player[1])->run_speed_override = 0.0f;
+            } else {
+                ((GAMEOBJECT *)Player[1])->run_speed_override = 1000000000.0f;
+            }
+        }
+        if (remaining < 2.9f && previous >= 2.9f) {
+            PlaySfx("PodX_EngStartup1", NULL);
+            remaining = PODSPRINT->countdown;
+        }
+        if (remaining < 1.5f && previous >= 1.5f) {
+            PlaySfx("PodX_EngStartup2", NULL);
+            remaining = PODSPRINT->countdown;
+        }
+        if (remaining <= 0.0f)
+            PlaySfx("Pod_Race_Go", NULL);
+        else if ((i32)remaining != (i32)previous)
+            PlaySfx("Pod_Race_Light", NULL);
+        return 1;
+    }
+    return 0;
+}
+
+static void PodSprint_UpdateLapsPc(WORLDINFO *world) {
+    void **slot;
+    NUVEC *old;
+    NUVEC *line;
+    if (PODSPRINT->finish_line != NULL && PODSPRINT->halfway != NULL) {
+        PODSPRINT->lap_time += FRAMETIME;
+        if ((PODSPRINT->flags & 1) != 0) {
+            line = PODSPRINT->finish_line->pts;
+            for (slot = Player, old = pod_old_pos; slot < &Player[2]; slot++, old++) {
+                if (*slot != NULL && old->x != -1.0f && old->y != -1.0f && old->z != -1.0f &&
+                    XZLinesIntersect(&line[0], &line[1], &((GAMEOBJECT *)*slot)->position, old, NULL, NULL) != 0) {
+                    PODSPRINT->flags &= ~1;
+                    PODSPRINT->lap_time = 0.0f;
+                    PODSPRINT->ai_index++;
+                    PODSPRINT->ai_state++;
+                    if (PODSPRINT->ai_state == 3) {
+                        PODSPRINT->flags |= 8;
+                        StoreLevelProgress(world);
+                        ResetLevel(world, "ep1_podsprint_sebulba", 1);
+                    } else if (PODSPRINT->ai_state > 3) {
+                        if (FreePlay != 0)
+                            CompleteLevel(world);
+                        else if (NewCutScene(NULL, WORLD->cutscene_sys, "Ep1_Podrace_Outro1", 1) == 0 &&
+                                 NewCutScene(NULL, WORLD->cutscene_sys, "Ep1_Podsprint_Outro1", 1) == 0)
+                            CompleteLevel(world);
+                    }
+                    break;
+                }
+            }
+        } else {
+            line = PODSPRINT->halfway->pts;
+            for (slot = Player, old = pod_old_pos; slot < &Player[2]; slot++, old++) {
+                if (*slot != NULL &&
+                    XZLinesIntersect(&line[0], &line[1], &((GAMEOBJECT *)*slot)->position, old, NULL, NULL) != 0) {
+                    PODSPRINT->flags |= 1;
+                    PODSPRINT->ai_index++;
+                    break;
+                }
+            }
+        }
+    }
+    if (Player[0] != NULL)
+        pod_old_pos[0] = ((GAMEOBJECT *)Player[0])->position;
+    if (Player[1] != NULL)
+        pod_old_pos[1] = ((GAMEOBJECT *)Player[1])->position;
+    PODSPRINT->lap_msg->value = (f32)PODSPRINT->ai_state;
+}
+
+void __cdecl PodSprintA_Update(WORLDINFO *world) {
+    i32 i;
+    GAMEOBJECT *object;
+    f32 seek;
+    VehicleAreaRememberSpeed = 1.0f;
+    if (nethost != 0) {
+        PODSPRINT_NET->ai_state = PODSPRINT->ai_state;
+        PODSPRINT_NET->countdown = (i16)PODSPRINT->countdown;
+        PODSPRINT_NET->lap_time = (i16)PODSPRINT->lap_time;
+    } else if (netclient != 0) {
+        PODSPRINT->countdown = (f32)PODSPRINT_NET->countdown;
+        PODSPRINT->ai_state = (i8)PODSPRINT_NET->ai_state;
+        PODSPRINT->lap_time = (f32)PODSPRINT_NET->lap_time;
+    }
+    if (netclient == 0) {
+        if (CutScene_PlayingOrRequested(NULL) != 0)
+            return;
+        if ((PODSPRINT->flags & 0xc) != 0) {
+            if ((PODSPRINT->flags & 0x10) == 0) {
+                PODSPRINT->flags |= 0x10;
+                ResetLevel(world, NULL, 1);
+            }
+            return;
+        }
+    }
+    if (PodSprint_UpdateCountdownPc() == 0) {
+        PodSprint_UpdatePacemakerPc(world);
+        if (netclient == 0)
+            PodSprint_UpdateLapsPc(world);
+        PodRaceSnipersUpdate();
+    }
+    object = Obj;
+    for (i = 0; i < HIGHGAMEOBJECT; i++, object++) {
+        if ((object->flags_1fc_word & 1) != 0 && (object->flags_1fc_word & 0x1000) != 0 && object->field_280 == 0xff) {
+            seek = 0.0f;
+            if (PODSPRINT->boulders != NULL && WORLD->ai_sys != NULL && PODSPRINT->ai_state > 1 &&
+                (*(u64 *)object->ai_area_mask & (u64)(i64)(1 << (PODSPRINT->boulders - WORLD->ai_sys->areas))) != 0)
+                seek = boulder_offset_y;
+            object->field_c8c = SeekValF(object->field_c8c, seek, boulder_offset_y_seek);
+        }
+    }
+}
+
+static void PodSprint_UpdateAlphaPc(void) {
+    if (FadeSys.fade == 0.0f && MiniCutCam == 0 && CUTSTOPGAME == 0) {
+        if (PODSPRINT->countdown > 0.0f) {
+            if (Paused == 0 && podstartracealpha < 1.0f) {
+                podstartracealpha += FRAMETIME + FRAMETIME;
+                if (podstartracealpha > 1.0f)
+                    podstartracealpha = 1.0f;
+            }
+            podlapalpha = 0.0f;
+        } else {
+            podlapalpha = SeekLinearF(podlapalpha, (Paused == 0 && PODSPRINT->lap_time < 6.0f) ? 1.0f : 0.0f,
+                                      FRAMETIME + FRAMETIME);
+        }
+    } else {
+        podlapalpha = 0.0f;
+        podhurryalpha = 0.0f;
+        podstartracealpha = 0.0f;
+    }
+}
+
+void __cdecl PodSprintA_Panel(WORLDINFO *world) {
+    char text[256];
+    i32 count;
+    f32 scale;
+    LEVEL_OBJECT_RUNTIME_PC *icon;
+    PodSprint_UpdateAlphaPc();
+    if (Paused == 0 && podstartracealpha != 0.0f && PODSPRINT->countdown > 0.0f) {
+        count = (i32)PODSPRINT->countdown + 1;
+        if (count > 3)
+            count = 3;
+        sprintf(text, "%i", count);
+        scale = NuFmod(PODSPRINT->countdown, 1.0f);
+        if (scale >= 0.7f)
+            scale = (f32)(((f64)scale - (f64)0.7f) / (f64)0.3f + 1.0);
+        else
+            scale = 1.0f;
+        scale = PodSprintCountdownScalePc * scale;
+        Text3DEx(text, 0.0f, PodSprintCountdownYPc, 1.0f, scale, scale, scale, 0, 0, 0xff, 0,
+                 (u8)(podstartracealpha * 128.0));
+    }
+    if (podlapalpha > 0.0f) {
+        icon = &world->level_objects[0x135 + PODSPRINT->ai_state];
+        if (icon->active != 0)
+            DrawPanel3DObject(0.0f, HudBossIconYPc, 1.0f, PodSprintLapIconScalePc, PodSprintLapIconScalePc,
+                              PodSprintLapIconScalePc, 0, 0, 0, &icon->special, 0, podlapalpha);
+    }
+}
