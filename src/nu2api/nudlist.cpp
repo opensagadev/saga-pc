@@ -1088,15 +1088,18 @@ extern "C" {
     DisplayListProcessSpecialItemPC(PC_SPECIAL_RENDER_MATERIAL *material, NUDISPLAYLIST_PC *list,
                                     NUDISPLAYLISTITEM *geometry, i32 index, NUDISPLAYLISTITEM **output, NUMTX *matrix,
                                     void **packet, NUMTX *skin, void *weights, f32 alpha, i32 shadow) {
-        if (geometry->type == 0x8f) {
-            DisplayListProcessFaceonPC(list, geometry, output, matrix, alpha);
-        } else if (skin != NULL) {
-            DisplayListProcessSkinPC(list, geometry, output, matrix, packet, skin, weights, shadow);
-        } else if ((material->shader_flags & 0x80000000u) != 0 && index > 1 &&
-                   (geometry[-2].type == 0xb0 || geometry[-2].type == 0xae || geometry[-2].type == 0xaf)) {
-            DisplayListProcessLightmappedPC(list, geometry, output, matrix, packet, alpha);
+        if (geometry->type != 0x8f) {
+            if (skin == NULL) {
+                if ((material->shader_flags & 0x80000000u) != 0 && index > 1 &&
+                    (geometry[-2].type == 0xb0 || geometry[-2].type == 0xae || geometry[-2].type == 0xaf))
+                    DisplayListProcessLightmappedPC(list, geometry, output, matrix, packet, alpha);
+                else
+                    DisplayListProcessGeomPC(list, geometry, output, matrix, packet, alpha, shadow);
+            } else {
+                DisplayListProcessSkinPC(list, geometry, output, matrix, packet, skin, weights, shadow);
+            }
         } else {
-            DisplayListProcessGeomPC(list, geometry, output, matrix, packet, alpha, shadow);
+            DisplayListProcessFaceonPC(list, geometry, output, matrix, alpha);
         }
     }
 
