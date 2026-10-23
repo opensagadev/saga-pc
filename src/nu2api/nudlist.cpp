@@ -1404,26 +1404,28 @@ extern "C" void __cdecl NuDisplayListCreateDynMtlList_candidate(VARIPTR *buffer,
 extern "C" void __cdecl NuDisplayListExecute(NUDISPLAYLISTITEM *item, void(__cdecl **handlers)(void *)) {
     for (;;) {
         switch (item->id) {
-            case 0:
-                ++item;
-                break;
-            case 1:
-                item = (NUDISPLAYLISTITEM *)item->next;
-                break;
-            case 3:
-                if (handlers[item->type - 0x80] != NULL) {
+            case 3: {
+                void(__cdecl * handler)(void *) = handlers[item->type - 0x80];
+                if (handler != NULL) {
                     SAGA_SKIN_CALL(skin_trace_enter_item, (unsigned)item);
-                    handlers[item->type - 0x80](item->next);
+                    handler(item->next);
                     SAGA_SKIN_CALL(skin_trace_leave_item);
                 }
+            }
+            /* fall through */
+            case 0:
                 ++item;
-                break;
+                continue;
+            case 1:
+                item = (NUDISPLAYLISTITEM *)item->next;
+                continue;
             case 4:
-                return;
+                break;
             default:
                 for (;;) {
                 }
         }
+        break;
     }
 }
 
