@@ -155,14 +155,21 @@ extern "C" {
         NUSORTPRI *sort;
         i32 i;
         PCThreadCriticalSectionEnter_candidate(nudlist_field_fc4);
-        PCDynamicDisplayScene.render_flags ^= 0x8000;
+        PCDynamicDisplayScene.render_flags =
+            (PCDynamicDisplayScene.render_flags & ~0x8000u) | (~PCDynamicDisplayScene.render_flags & 0x8000u);
         ResetSceneBeforeFramePC(&PCDynamicDisplayScene, 0);
-        for (i = 0; i < (i32)nudlist_field_9d8; ++i) {
-            NUDISPLAY_LIST_PC *scene = PCDisplayScenes[i];
-            scene->render_flags ^= 0x8000;
-            ResetSceneBeforeFramePC(scene, 0);
-            if (scene->gscene != NULL)
-                scene->gscene->frame_reset_marker = 0;
+        i = 0;
+        if ((i32)nudlist_field_9d8 > 0) {
+            NUDISPLAY_LIST_PC **scenes = PCDisplayScenes;
+            do {
+                NUDISPLAY_LIST_PC *scene = *scenes;
+                scene->render_flags = (scene->render_flags & ~0x8000u) | (~scene->render_flags & 0x8000u);
+                ResetSceneBeforeFramePC(scene, 0);
+                if (scene->gscene != NULL)
+                    scene->gscene->frame_reset_marker = 0;
+                ++i;
+                ++scenes;
+            } while (i < (i32)nudlist_field_9d8);
         }
         render_scene_index = 0;
         for (sort = sort_list; sort != NULL; sort = sort->sys_next)
