@@ -389,39 +389,41 @@ void __cdecl NuRndrAddShadow(NUVEC *position, f32 radius, i32 opacity, i32 unuse
 void __cdecl NuRndrShadPolys(NUMTL *material) {
     i32 index;
     PC_SHADOW_QUEUE_RECORD *record;
-    f32 left, right, front, back, y;
+    NUVEC position;
+    f32 radius, left, right, front, back;
     u32 colour;
     if (NuRndrShadowCnt == 0)
         return;
     record = NuRndrShadPolDat;
     for (index = 0; index < NuRndrShadowCnt; ++index, ++record) {
-        left = record->position.x - record->radius;
-        right = record->position.x + record->radius;
-        front = record->position.z - record->radius;
-        back = record->position.z + record->radius;
-        y = record->position.y;
+        position = record->position;
         colour = (u32)(i16)record->opacity << 24;
+        radius = record->radius;
         NuRndrShadowVerticesPc[0].colour = colour;
         NuRndrShadowVerticesPc[1].colour = colour;
         NuRndrShadowVerticesPc[2].colour = colour;
         NuRndrShadowVerticesPc[3].colour = colour;
+        left = position.x - radius;
         NuRndrShadowVerticesPc[0].position.x = left;
-        NuRndrShadowVerticesPc[0].position.y = y;
+        NuRndrShadowVerticesPc[0].position.y = position.y;
+        front = position.z - radius;
         NuRndrShadowVerticesPc[0].position.z = front;
         NuRndrShadowVerticesPc[0].u = 0.0f;
         NuRndrShadowVerticesPc[0].v = 0.0f;
+        right = position.x + radius;
         NuRndrShadowVerticesPc[1].position.x = right;
-        NuRndrShadowVerticesPc[1].position.y = y;
+        NuRndrShadowVerticesPc[1].position.y = position.y;
         NuRndrShadowVerticesPc[1].position.z = front;
         NuRndrShadowVerticesPc[1].u = 1.0f;
         NuRndrShadowVerticesPc[1].v = 0.0f;
         NuRndrShadowVerticesPc[2].position.x = left;
-        NuRndrShadowVerticesPc[2].position.y = y;
+        NuRndrShadowVerticesPc[2].position.y = position.y;
+        back = position.z + radius;
         NuRndrShadowVerticesPc[2].position.z = back;
         NuRndrShadowVerticesPc[2].u = 0.0f;
         NuRndrShadowVerticesPc[2].v = 1.0f;
         NuRndrShadowVerticesPc[3].position.x = right;
-        NuRndrShadowVerticesPc[3].position.y = y;
+        NuRndrShadowVerticesPc[3].position.y = position.y;
         NuRndrShadowVerticesPc[3].position.z = back;
         NuRndrShadowVerticesPc[3].u = 1.0f;
         NuRndrShadowVerticesPc[3].v = 1.0f;
@@ -1174,9 +1176,9 @@ void AnglesBetweenPoints(NUVEC *from, NUVEC *to, u16 *vertical, u16 *horizontal)
     *horizontal = NuAtan2D(x, z);
 }
 
+#define QUAD_VERTEX ((RENDERER_SCREEN_VERTEX_PC *)data)
 void __cdecl NuRndrQuadBufferInitPc(void) {
     void *data;
-    RENDERER_SCREEN_VERTEX_PC *vertices;
     if (RendererQuadVertexBufferPc != NULL) {
         RendererQuadVertexBufferPc->methods->release(RendererQuadVertexBufferPc);
         RendererQuadVertexBufferPc = NULL;
@@ -1184,29 +1186,29 @@ void __cdecl NuRndrQuadBufferInitPc(void) {
     PCDeviceCreateVertexBuffer(0x70, 0, 0, 1, &RendererQuadVertexBufferPc);
     if (RendererQuadVertexBufferPc->methods->lock(RendererQuadVertexBufferPc, 0, 0, &data, 0) < 0)
         return;
-    vertices = (RENDERER_SCREEN_VERTEX_PC *)data;
-    vertices[0].x = 0.0f;
-    vertices[0].y = 0.0f;
-    vertices[0].z = 1.0f;
-    vertices[1].x = (f32)(u32)PS2_REZ_W;
-    vertices[1].y = 0.0f;
-    vertices[1].z = 1.0f;
-    vertices[2].x = (f32)(u32)PS2_REZ_W;
-    vertices[2].y = (f32)(u32)PS2_REZ_H;
-    vertices[2].z = 1.0f;
-    vertices[3].x = 0.0f;
-    vertices[3].y = (f32)(u32)PS2_REZ_H;
-    vertices[3].z = 1.0f;
-    vertices[3].attribute_bits = 0x4b000000;
-    vertices[2].attribute_bits = 0x4b000000;
-    vertices[1].attribute_bits = 0x4b000000;
-    vertices[0].attribute_bits = 0x4b000000;
-    vertices[3].w = 1.0f;
-    vertices[2].w = 1.0f;
-    vertices[1].w = 1.0f;
-    vertices[0].w = 1.0f;
+    QUAD_VERTEX[0].x = 0.0f;
+    QUAD_VERTEX[0].y = 0.0f;
+    QUAD_VERTEX[0].z = 0.5f;
+    QUAD_VERTEX[1].x = (f32)PCDeviceBackend.parameters.width;
+    QUAD_VERTEX[1].y = 0.0f;
+    QUAD_VERTEX[1].z = 0.5f;
+    QUAD_VERTEX[2].x = (f32)PCDeviceBackend.parameters.width;
+    QUAD_VERTEX[2].y = (f32)PCDeviceBackend.parameters.height;
+    QUAD_VERTEX[2].z = 0.5f;
+    QUAD_VERTEX[3].x = 0.0f;
+    QUAD_VERTEX[3].y = (f32)PCDeviceBackend.parameters.height;
+    QUAD_VERTEX[3].z = 0.5f;
+    QUAD_VERTEX[3].attribute_bits = 0x4b000000;
+    QUAD_VERTEX[2].attribute_bits = 0x4b000000;
+    QUAD_VERTEX[1].attribute_bits = 0x4b000000;
+    QUAD_VERTEX[0].attribute_bits = 0x4b000000;
+    QUAD_VERTEX[3].w = 1.0f;
+    QUAD_VERTEX[2].w = 1.0f;
+    QUAD_VERTEX[1].w = 1.0f;
+    QUAD_VERTEX[0].w = 1.0f;
     RendererQuadVertexBufferPc->methods->unlock(RendererQuadVertexBufferPc);
 }
+#undef QUAD_VERTEX
 
 void __cdecl NuRndrGeometryBuffersInitPc(void) {
     void *data;
@@ -1320,38 +1322,55 @@ STATIC_ASSERT(offsetof(PC_STARTUP_MATERIAL_READER_PC, opacity) == 0x70);
 STATIC_ASSERT(offsetof(PC_STARTUP_MATERIAL_READER_PC, texture_id) == 0x74);
 STATIC_ASSERT(offsetof(PC_STARTUP_MATERIAL_READER_PC, sort_priority) == 0x76);
 
+#define STARTUP_MATERIAL(material) ((PC_STARTUP_MATERIAL_READER_PC *)(material))
+
 void __cdecl NuRndrInitStartupMaterialsPc(void) {
-    PC_STARTUP_MATERIAL_READER_PC *material;
     PCStartupMaterial1Pc = NuMtlCreate(1);
-    material = (PC_STARTUP_MATERIAL_READER_PC *)PCStartupMaterial1Pc;
-    material->diffuse.x = material->diffuse.y = material->diffuse.z = 1.0f;
-    material->render_flags = (material->render_flags & ~0x1000u) | 0x2000u;
-    material->render_flags = (material->render_flags & ~0x8000u) | 0x4000u;
-    material->opacity = 0.999f;
-    material->render_flags = (material->render_flags & 0xfffffff1u) | 1u;
-    material->secondary_flags = (material->secondary_flags & ~2u) | 1u;
-    material->render_flags = (material->render_flags & ~0x200u) | 0x100u;
-    material->render_flags = (material->render_flags & ~0x800u) | 0x400u;
-    material->render_flags = (material->render_flags & ~0x10000u) | 0x20000u;
-    material->texture_id = 0;
-    material->sort_priority = 0x100;
+    STARTUP_MATERIAL(PCStartupMaterial1Pc)->diffuse.z = STARTUP_MATERIAL(PCStartupMaterial1Pc)->diffuse.y =
+        STARTUP_MATERIAL(PCStartupMaterial1Pc)->diffuse.x = 1.0f;
+    STARTUP_MATERIAL(PCStartupMaterial1Pc)->render_flags =
+        (STARTUP_MATERIAL(PCStartupMaterial1Pc)->render_flags & ~0x1000u) | 0x2000u;
+    STARTUP_MATERIAL(PCStartupMaterial1Pc)->render_flags =
+        (STARTUP_MATERIAL(PCStartupMaterial1Pc)->render_flags & ~0x8000u) | 0x4000u;
+    STARTUP_MATERIAL(PCStartupMaterial1Pc)->opacity = 0.999f;
+    STARTUP_MATERIAL(PCStartupMaterial1Pc)->render_flags =
+        (STARTUP_MATERIAL(PCStartupMaterial1Pc)->render_flags & 0xfffffff1u) | 1u;
+    STARTUP_MATERIAL(PCStartupMaterial1Pc)->secondary_flags =
+        (STARTUP_MATERIAL(PCStartupMaterial1Pc)->secondary_flags & ~2u) | 1u;
+    STARTUP_MATERIAL(PCStartupMaterial1Pc)->render_flags =
+        (STARTUP_MATERIAL(PCStartupMaterial1Pc)->render_flags & ~0x200u) | 0x100u;
+    STARTUP_MATERIAL(PCStartupMaterial1Pc)->render_flags =
+        (STARTUP_MATERIAL(PCStartupMaterial1Pc)->render_flags & ~0x800u) | 0x400u;
+    STARTUP_MATERIAL(PCStartupMaterial1Pc)->render_flags =
+        (STARTUP_MATERIAL(PCStartupMaterial1Pc)->render_flags & ~0x10000u) | 0x20000u;
+    STARTUP_MATERIAL(PCStartupMaterial1Pc)->texture_id = 0;
+    STARTUP_MATERIAL(PCStartupMaterial1Pc)->sort_priority = 0x100;
     NuMtlUpdate(PCStartupMaterial1Pc);
 
     PCStartupMaterial2Pc = NuMtlCreate(1);
-    material = (PC_STARTUP_MATERIAL_READER_PC *)PCStartupMaterial2Pc;
-    material->diffuse.x = material->diffuse.y = material->diffuse.z = 1.0f;
-    material->render_flags = (material->render_flags & ~0x1000u) | 0x2000u;
-    material->render_flags = (material->render_flags & ~0x8000u) | 0x4000u;
-    material->opacity = 0.999f;
-    material->render_flags = (material->render_flags & 0xfffffff2u) | 2u;
-    material->secondary_flags = (material->secondary_flags & ~2u) | 1u;
-    material->render_flags = (material->render_flags & ~0x200u) | 0x100u;
-    material->render_flags = (material->render_flags & ~0x800u) | 0x400u;
-    material->render_flags = (material->render_flags & ~0x10000u) | 0x20000u;
-    material->texture_id = 0;
-    material->sort_priority = 0x100;
+    STARTUP_MATERIAL(PCStartupMaterial2Pc)->diffuse.z = STARTUP_MATERIAL(PCStartupMaterial2Pc)->diffuse.y =
+        STARTUP_MATERIAL(PCStartupMaterial2Pc)->diffuse.x = 1.0f;
+    STARTUP_MATERIAL(PCStartupMaterial2Pc)->render_flags =
+        (STARTUP_MATERIAL(PCStartupMaterial2Pc)->render_flags & ~0x1000u) | 0x2000u;
+    STARTUP_MATERIAL(PCStartupMaterial2Pc)->render_flags =
+        (STARTUP_MATERIAL(PCStartupMaterial2Pc)->render_flags & ~0x8000u) | 0x4000u;
+    STARTUP_MATERIAL(PCStartupMaterial2Pc)->opacity = 0.999f;
+    STARTUP_MATERIAL(PCStartupMaterial2Pc)->render_flags =
+        (STARTUP_MATERIAL(PCStartupMaterial2Pc)->render_flags & 0xfffffff2u) | 2u;
+    STARTUP_MATERIAL(PCStartupMaterial2Pc)->secondary_flags =
+        (STARTUP_MATERIAL(PCStartupMaterial2Pc)->secondary_flags & ~2u) | 1u;
+    STARTUP_MATERIAL(PCStartupMaterial2Pc)->render_flags =
+        (STARTUP_MATERIAL(PCStartupMaterial2Pc)->render_flags & ~0x200u) | 0x100u;
+    STARTUP_MATERIAL(PCStartupMaterial2Pc)->render_flags =
+        (STARTUP_MATERIAL(PCStartupMaterial2Pc)->render_flags & ~0x800u) | 0x400u;
+    STARTUP_MATERIAL(PCStartupMaterial2Pc)->render_flags =
+        (STARTUP_MATERIAL(PCStartupMaterial2Pc)->render_flags & ~0x10000u) | 0x20000u;
+    STARTUP_MATERIAL(PCStartupMaterial2Pc)->texture_id = 0;
+    STARTUP_MATERIAL(PCStartupMaterial2Pc)->sort_priority = 0x100;
     NuMtlUpdate(PCStartupMaterial2Pc);
 }
+
+#undef STARTUP_MATERIAL
 
 void __cdecl NuRndrLine2di(i32 x0, i32 y0, i32 x1, i32 y1, i32 colour, NUMTL *material) {
     LOCATOR_PRIM_VERTEX_PC *vertex;
