@@ -46,54 +46,58 @@ void PC_NATIVE_DEBUG_STATE_PC::InitializeHeader() {
     header.low_colour = 0xff2d3128;
     header.inner_colour = 0xff3e4637;
 }
+// Retail builds each position in one shared 16-byte temporary (UpdateGeometry's position) and copies it in.
+struct PC_NATIVE_DEBUG_POSITION_PC {
+    f32 x, y, z, w;
+};
+#define DEBUG_POINT_PC(index, px, py)                                                                                  \
+    do {                                                                                                               \
+        position.x = (px);                                                                                             \
+        position.y = (py);                                                                                             \
+        position.z = 0.5f;                                                                                             \
+        position.w = 1.0f;                                                                                             \
+        *(PC_NATIVE_DEBUG_POSITION_PC *)&vertices[index].x = position;                                                 \
+    } while (0)
+// Retail rereads each edge for every vertex.
+#define DEBUG_EDGE_PC(edge) (*(volatile f32 *)&(edge))
 #define DEBUG_RECT_PC(start, l, t, r, b)                                                                               \
-    vertices[start].x = (f32)(l);                                                                                      \
-    vertices[start].y = (f32)(t);                                                                                      \
-    vertices[start].z = 0.5f;                                                                                          \
-    vertices[start].w = 1.0f;                                                                                          \
-    vertices[start + 1].x = (f32)(r);                                                                                  \
-    vertices[start + 1].y = (f32)(t);                                                                                  \
-    vertices[start + 1].z = 0.5f;                                                                                      \
-    vertices[start + 1].w = 1.0f;                                                                                      \
-    vertices[start + 2].x = (f32)(r);                                                                                  \
-    vertices[start + 2].y = (f32)(b);                                                                                  \
-    vertices[start + 2].z = 0.5f;                                                                                      \
-    vertices[start + 2].w = 1.0f;                                                                                      \
-    vertices[start + 3].x = (f32)(l);                                                                                  \
-    vertices[start + 3].y = (f32)(t);                                                                                  \
-    vertices[start + 3].z = 0.5f;                                                                                      \
-    vertices[start + 3].w = 1.0f;                                                                                      \
-    vertices[start + 4].x = (f32)(r);                                                                                  \
-    vertices[start + 4].y = (f32)(b);                                                                                  \
-    vertices[start + 4].z = 0.5f;                                                                                      \
-    vertices[start + 4].w = 1.0f;                                                                                      \
-    vertices[start + 5].x = (f32)(l);                                                                                  \
-    vertices[start + 5].y = (f32)(b);                                                                                  \
-    vertices[start + 5].z = 0.5f;                                                                                      \
-    vertices[start + 5].w = 1.0f
+    DEBUG_POINT_PC(start, l, t);                                                                                       \
+    DEBUG_POINT_PC(start + 1, r, t);                                                                                   \
+    DEBUG_POINT_PC(start + 2, r, b);                                                                                   \
+    DEBUG_POINT_PC(start + 3, l, t);                                                                                   \
+    DEBUG_POINT_PC(start + 4, r, b);                                                                                   \
+    DEBUG_POINT_PC(start + 5, l, b)
 
 void PC_NATIVE_DEBUG_STATE_PC::UpdateGeometry() {
-    DEBUG_RECT_PC(0, (f64)left + 1, (f64)top + 1, right, bottom);
-    DEBUG_RECT_PC(6, left, top, (f64)right - 1, (f64)bottom - 1);
-    DEBUG_RECT_PC(12, (f64)left + 1, (f64)top + 1, (f64)right - 1, (f64)bottom - 1);
+    PC_NATIVE_DEBUG_POSITION_PC position;
+    DEBUG_RECT_PC(0, DEBUG_EDGE_PC(left) + 1, DEBUG_EDGE_PC(top) + 1, DEBUG_EDGE_PC(right), DEBUG_EDGE_PC(bottom));
+    DEBUG_RECT_PC(6, DEBUG_EDGE_PC(left), DEBUG_EDGE_PC(top), DEBUG_EDGE_PC(right) - 1, DEBUG_EDGE_PC(bottom) - 1);
+    DEBUG_RECT_PC(12, DEBUG_EDGE_PC(left) + 1, DEBUG_EDGE_PC(top) + 1, DEBUG_EDGE_PC(right) - 1,
+                  DEBUG_EDGE_PC(bottom) - 1);
     for (i32 i = 0; i < 6; i++)
         vertices[i].colour = current_header->low_colour;
     for (i32 i = 6; i < 12; i++)
         vertices[i].colour = current_header->high_colour;
     for (i32 i = 12; i < 18; i++)
         vertices[i].colour = current_header->face_colour;
-    DEBUG_RECT_PC(18, (f64)left + 5, (f64)top + 15, ((f64)right - 5) - 1, ((f64)bottom - 40) - 1);
-    DEBUG_RECT_PC(24, ((f64)left + 5) + 1, ((f64)top + 15) + 1, (f64)right - 5, (f64)bottom - 40);
-    DEBUG_RECT_PC(30, ((f64)left + 5) + 1, ((f64)top + 15) + 1, ((f64)right - 5) - 1, ((f64)bottom - 40) - 1);
+    DEBUG_RECT_PC(18, DEBUG_EDGE_PC(left) + 5, DEBUG_EDGE_PC(top) + 15, (DEBUG_EDGE_PC(right) - 5) - 1,
+                  (DEBUG_EDGE_PC(bottom) - 40) - 1);
+    DEBUG_RECT_PC(24, (DEBUG_EDGE_PC(left) + 5) + 1, (DEBUG_EDGE_PC(top) + 15) + 1, DEBUG_EDGE_PC(right) - 5,
+                  DEBUG_EDGE_PC(bottom) - 40);
+    DEBUG_RECT_PC(30, (DEBUG_EDGE_PC(left) + 5) + 1, (DEBUG_EDGE_PC(top) + 15) + 1, (DEBUG_EDGE_PC(right) - 5) - 1,
+                  (DEBUG_EDGE_PC(bottom) - 40) - 1);
     for (i32 i = 18; i < 24; i++)
         vertices[i].colour = current_header->low_colour;
     for (i32 i = 24; i < 30; i++)
         vertices[i].colour = current_header->high_colour;
     for (i32 i = 30; i < 36; i++)
         vertices[i].colour = current_header->inner_colour;
-    DEBUG_RECT_PC(36, ((f64)left + 5) + 1, ((f64)bottom - 35) + 1, (f64)right - 5, (f64)bottom - 5);
-    DEBUG_RECT_PC(42, (f64)left + 5, (f64)bottom - 35, ((f64)right - 5) - 1, ((f64)bottom - 5) - 1);
-    DEBUG_RECT_PC(48, ((f64)left + 5) + 1, ((f64)bottom - 35) + 1, ((f64)right - 5) - 1, ((f64)bottom - 5) - 1);
+    DEBUG_RECT_PC(36, (DEBUG_EDGE_PC(left) + 5) + 1, (DEBUG_EDGE_PC(bottom) - 35) + 1, DEBUG_EDGE_PC(right) - 5,
+                  DEBUG_EDGE_PC(bottom) - 5);
+    DEBUG_RECT_PC(42, DEBUG_EDGE_PC(left) + 5, DEBUG_EDGE_PC(bottom) - 35, (DEBUG_EDGE_PC(right) - 5) - 1,
+                  (DEBUG_EDGE_PC(bottom) - 5) - 1);
+    DEBUG_RECT_PC(48, (DEBUG_EDGE_PC(left) + 5) + 1, (DEBUG_EDGE_PC(bottom) - 35) + 1, (DEBUG_EDGE_PC(right) - 5) - 1,
+                  (DEBUG_EDGE_PC(bottom) - 5) - 1);
     for (i32 i = 36; i < 42; i++)
         vertices[i].colour = current_header->high_colour;
     for (i32 i = 42; i < 48; i++)
@@ -102,6 +106,8 @@ void PC_NATIVE_DEBUG_STATE_PC::UpdateGeometry() {
         vertices[i].colour = current_header->inner_colour;
 }
 #undef DEBUG_RECT_PC
+#undef DEBUG_POINT_PC
+#undef DEBUG_EDGE_PC
 void PC_NATIVE_DEBUG_STATE_PC::Initialize() {
     unknown_0 = 1;
     left = top = 100.0f;
