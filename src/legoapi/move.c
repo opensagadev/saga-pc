@@ -1079,6 +1079,11 @@ void __cdecl VehicleCollisionCode(GAMEOBJECT *object) {
         AddGameDebris(WORLD->game_debris_sys, debris_type, &object->contact_position);
 }
 
+static __inline f32 MovePlayerFabs(f32 value) {
+    u32 bits = *(u32 *)&value & 0x7fffffff;
+    return *(f32 *)&bits;
+}
+
 void __cdecl MovePlayer_VEHICLEDIRECTIONAL(GAMEOBJECT *object) {
     NUVEC carwash_delta, a, b, direction, separation;
     GAMEPAD_PC *pad;
@@ -1089,24 +1094,24 @@ void __cdecl MovePlayer_VEHICLEDIRECTIONAL(GAMEOBJECT *object) {
     f32 requested_speed;
     u16 input_yaw;
     f32 turn_multiplier;
-    f32 heading_seek_rate;
+    f32 heading_seek_rate = 10.0f;
     f32 ratio;
     f32 rate;
     i32 delta;
     i32 degrees;
-    i32 limit;
-    u16 desired_angle;
+    i32 desired_angle;
     u16 normal_yaw;
     u16 tangent;
     i32 outside;
     i32 inside;
+    f32 edge_x;
+    f32 edge_z;
     f32 seek_rate;
     i32 special_lean;
     f32 water_mul;
     f32 half;
     f32 decel;
     f32 desired;
-    f32 fraction;
     f32 step;
     f32 speed;
     i32 forwards;
@@ -1136,20 +1141,18 @@ void __cdecl MovePlayer_VEHICLEDIRECTIONAL(GAMEOBJECT *object) {
     object->flags_e20 &= ~0x10000000;
     object->in_narrow_socket = ObjInNarrowSock(object, WORLD->sock_sys, WORLD->level_idx);
     narrow_yaw = object->in_narrow_socket ? object->sock_heading : 0;
-    if (object->character_context != 0x2a) {
+    if (object->character_context != 0x2a)
         object->flags_e24 &= ~2;
-        object->previous_block_animation = -1;
-        if (object->delayed_turn_timer > 0.0f && object->character_context != 0x36 && object->character_context != 0x3a)
-            object->delayed_turn_timer -= FRAMETIME;
-    } else
-        object->previous_block_animation = -1;
-    in_tube = 0;
+    object->previous_block_animation = -1;
+    if (object->delayed_turn_timer > 0.0f && object->character_context != 0x2a && object->character_context != 0x36 &&
+        object->character_context != 0x3a)
+        object->delayed_turn_timer -= FRAMETIME;
     if (PODSPRINT_ADATA != NULL && (PODSPRINT_ADATA != NULL && WORLD->area == PODSPRINT_ADATA) &&
         (object->flags_1fc & 0x80) != 0 && Tube_InAnyCylinder(WORLD, object, 1)) {
-        qrand();
-        STUBBED_NAMED("NewRumble");
         in_tube = 1;
-    }
+        NewRumble(object->pad->bound_pad, qrand() * (f64)(1.0f / 65535.0f), 0);
+    } else
+        in_tube = 0;
     Techno_FindOperator(object, &pad, &operator_object);
 
     if (PODSPRINT_ADATA != NULL && WORLD->area == PODSPRINT_ADATA)
@@ -1161,10 +1164,11 @@ void __cdecl MovePlayer_VEHICLEDIRECTIONAL(GAMEOBJECT *object) {
     if ((object->flags_e20 & 0x20) != 0 && object->character_context != 0x23 && object->character_context != 0x24) {
         MoveInactiveVehicle(object, 0, &other);
         if (other != NULL) {
-            object->field_0x276 = object->facing_angle = object->movement_facing_angle = other->field_0x276;
+            object->facing_angle = object->movement_facing_angle = object->field_0x276 = other->field_0x276;
             object->velocity = other->velocity;
+            object->movement_lean_angle = 0;
             object->field_dc8 = other->field_dc8;
-            object->movement_lean_angle = object->secondary_lean_angle = object->tertiary_lean_angle = 0;
+            object->tertiary_lean_angle = 0;
         }
 
         goto vehicle_collision;
@@ -1178,10 +1182,9 @@ void __cdecl MovePlayer_VEHICLEDIRECTIONAL(GAMEOBJECT *object) {
             object->field_ddc -= FRAMETIME;
         turn_multiplier = 0.0f;
         if ((object->flags_ef0 & 0x400) != 0) {
-            object->movement_facing_angle = object->facing_angle = object->field_0x276 = input_yaw;
+            object->field_0x276 = object->facing_angle = object->movement_facing_angle = input_yaw;
         } else {
-            heading_seek_rate = 10.0f;
-            if (CarWashHack == object) {
+            if (object == CarWashHack) {
                 object->movement_facing_angle = 0x4000;
                 heading_seek_rate = 3.0f;
             } else if (requested_speed > 0.0f && object->character_context != 0x2a &&
@@ -1189,12 +1192,13 @@ void __cdecl MovePlayer_VEHICLEDIRECTIONAL(GAMEOBJECT *object) {
                        object->character_context != 0x23 && object->character_context != 0x24 &&
                        (object->character_context != 0x17 || (object->field_ef8 & 1) != 0) &&
                        !AnimPlaying(&object->anim_packet, 12, 1, 1) && !AnimPlaying(&object->anim_packet, 6, 1, 1)) {
-                if (object->in_narrow_socket &&
-                    (((object->flags_1fc & 0x80) != 0 && WORLD->current_level == DEATHSTARBATTLED_LDATA &&
-                      ObjInNarrowSock(object, WORLD->sock_sys, WORLD->level_idx)) ||
-                     WORLD->current_level == DEATHSTAR2BATTLEE_LDATA ||
-                     WORLD->current_level == DEATHSTAR2BATTLEF_LDATA ||
-                     WORLD->current_level == DEATHSTAR2BATTLEG_LDATA))
+                if (object->in_narrow_socket && (object->flags_1fc & 0x80) != 0 &&
+                    WORLD->current_level == DEATHSTARBATTLED_LDATA &&
+                    ObjInNarrowSock(object, WORLD->sock_sys, WORLD->level_idx))
+                    turn_multiplier = 0.5f;
+                else if (object->in_narrow_socket && (WORLD->current_level == DEATHSTAR2BATTLEE_LDATA ||
+                                                      WORLD->current_level == DEATHSTAR2BATTLEF_LDATA ||
+                                                      WORLD->current_level == DEATHSTAR2BATTLEG_LDATA))
                     turn_multiplier = 0.5f;
                 else if (WORLD->current_level == SPEEDERCHASEA_LDATA && !disable_narrow_socks)
                     turn_multiplier = 0.75f;
@@ -1215,7 +1219,7 @@ void __cdecl MovePlayer_VEHICLEDIRECTIONAL(GAMEOBJECT *object) {
                                   object->character_data->game_character->turn_rate) *
                                      ratio;
                 if (object->in_narrow_socket) {
-                    rate *= 1.0f - 0.25f * object->field_dc8;
+                    rate *= object->field_dc8 * -0.25 + 1.0;
                     if (turn_multiplier != 0.0f && !((object->flags_1fc & 0x80) != 0 &&
                                                      (PODSPRINT_ADATA != NULL && WORLD->area == PODSPRINT_ADATA)))
                         rate *= turn_multiplier;
@@ -1231,18 +1235,15 @@ void __cdecl MovePlayer_VEHICLEDIRECTIONAL(GAMEOBJECT *object) {
                         degrees = 0;
                     else if (turn_multiplier != 0.0f)
                         degrees = (i32)(degrees * turn_multiplier);
-                    limit = (degrees << 16) / 360;
-                    if (abs(delta) < 16385) {
-                        if (delta > limit)
-                            object->movement_facing_angle = narrow_yaw + limit;
-                        else if (delta < -limit)
-                            object->movement_facing_angle = narrow_yaw - limit;
-                    } else {
-                        limit = ((180 - degrees) << 16) / 360;
-                        if (delta > 0 && delta < limit)
-                            object->movement_facing_angle = narrow_yaw + limit;
-                        else if (delta < 0 && delta > -limit)
-                            object->movement_facing_angle = narrow_yaw - limit;
+                    if (abs(delta) <= 0x4000) {
+                        if (delta < degrees * -0x10000 / 360)
+                            object->movement_facing_angle = narrow_yaw - (degrees << 16) / 360;
+                        else if (delta > (degrees << 16) / 360)
+                            object->movement_facing_angle = narrow_yaw + (degrees << 16) / 360;
+                    } else if (delta > 0 && delta < ((180 - degrees) << 16) / 360) {
+                        object->movement_facing_angle = narrow_yaw + ((180 - degrees) << 16) / 360;
+                    } else if (delta < 0 && delta > ((degrees - 180) << 16) / 360) {
+                        object->movement_facing_angle = narrow_yaw + ((degrees - 180) << 16) / 360;
                     }
                 }
             } else if (object->in_narrow_socket &&
@@ -1261,7 +1262,7 @@ void __cdecl MovePlayer_VEHICLEDIRECTIONAL(GAMEOBJECT *object) {
                     TurnRot(object->movement_facing_angle, desired_angle, (i32)(rate * 65536.0f), NULL);
             }
             if (object->character_context == -1 && object->contact_count &&
-                fabs(object->contact_normal.y) < NuTrigTable[0x3aaa]) {
+                MovePlayerFabs(object->contact_normal.y) < NuTrigTable[0x3aaa]) {
                 if ((object->flags_1fc & 0x80) != 0 && (PODSPRINT_ADATA == NULL || WORLD->area != PODSPRINT_ADATA) &&
                     (object->character_data->game_character->flags_090 & 0x10000) == 0 &&
                     WORLD->current_level != SPEEDERCHASEA_LDATA) {
@@ -1269,10 +1270,13 @@ void __cdecl MovePlayer_VEHICLEDIRECTIONAL(GAMEOBJECT *object) {
                     if (requested_speed == 0.0f || abs(RotDiff(normal_yaw, object->current_input_angle)) > 0x4000) {
                         delta = RotDiff(normal_yaw, object->field_0x276);
                         if (abs(delta) > 0x4000) {
-                            tangent = normal_yaw + (delta < 0 ? -0x4000 : 0x4000);
-                            if (0.0f < object->field_ddc &&
+                            if (delta < 0)
+                                tangent = normal_yaw - 0x4000;
+                            else
+                                tangent = normal_yaw + 0x4000;
+                            if (object->field_ddc > 0.0f &&
                                 RotDiff(object->previous_boundary_angle, normal_yaw) > 0x2aaa &&
-                                abs(RotDiff(object->field_0x276, normal_yaw)) > 0x3fff) {
+                                abs(RotDiff(object->field_0x276, normal_yaw)) >= 0x4000) {
                                 object->movement_facing_angle =
                                     (u16)(object->previous_boundary_angle +
                                           0.5f * RotDiff(object->previous_boundary_angle, normal_yaw) + 32768.0f);
@@ -1288,13 +1292,14 @@ void __cdecl MovePlayer_VEHICLEDIRECTIONAL(GAMEOBJECT *object) {
                 }
             } else if ((object->flags_1fc & 0x80) != 0 &&
                        (object->character_data->game_character->flags_090 & 0x10000) == 0 &&
-                       (i32)object->flags_ef4 >= 0) {
+                       (object->flags_ef4 & 0x80000000) == 0) {
                 outside = OutSideSplineArea(&object->collision_position, WORLD->camera_splines[16], &a, &b, 0);
-                inside = 0;
                 if (!outside)
                     inside = OutSideSplineArea(&object->collision_position, WORLD->camera_splines[17], &a, &b, 1);
                 if ((object->flags_1f8 & 0x400) == 0 && (object->flags_e24 & 2) == 0 && (outside || inside)) {
-                    object->movement_facing_angle = NuAtan2D(-(b.z - a.z), b.x - a.x);
+                    edge_x = -(b.z - a.z);
+                    edge_z = b.x - a.x;
+                    object->movement_facing_angle = NuAtan2D(edge_x, edge_z);
                     object->flags_e24 |= 2;
                     object->field_ddc = 0.1f;
                 }
@@ -1322,96 +1327,103 @@ void __cdecl MovePlayer_VEHICLEDIRECTIONAL(GAMEOBJECT *object) {
             object->target_velocity.z = carwash_delta.z * 3.0f;
             seek_rate = 5.0f;
         } else {
-            water_mul = 1.0f;
-            if (object->character_context == 0x3a)
-                object->field_dc8 = 1.0f;
-            else if (object->character_context == 0x36)
+            if (object->character_context == 0x3a) {
+                object->field_dc8 = water_mul = 1.0f;
+            } else if (object->character_context == 0x36) {
                 object->field_dc8 = NuTrigTable
                     [((i32)((1.0f - object->context_timer / object->context_duration) * 65536.0f + 16384.0f) >> 1) &
                      0x7fff];
-            else if (object->character_context == 0x2a) {
+                water_mul = 1.0f;
+            } else if (object->character_context == 0x2a) {
                 half = 0.5f * object->context_duration;
                 object->field_dc8 = object->context_timer < half
                                         ? -(1.0f - object->context_timer / half)
                                         : 1.0f - (object->context_duration - object->context_timer) / half;
-            } else if (object->field_280 != 0xff && FadeSys.fade > 0.0f &&
-                       (MiniCutCam == 0 || 0 == ((object->flags_1fc_word & 0x100))))
-                object->field_dc8 = VehicleAreaRememberSpeed;
-            else {
-                decel = (PODSPRINT_ADATA != NULL && WORLD->area == PODSPRINT_ADATA)
-                            ? PODSPRINT_DECELTIME
-                            : object->character_data->game_character->vehicle_deceleration_time;
+                water_mul = 1.0f;
+            } else {
+                water_mul = 1.0f;
+                if (object->field_280 != 0xff && FadeSys.fade > 0.0f &&
+                    (MiniCutCam == 0 || 0 == ((object->flags_1fc_word & 0x100))))
+                    object->field_dc8 = VehicleAreaRememberSpeed;
+                else {
+                    decel = (PODSPRINT_ADATA != NULL && WORLD->area == PODSPRINT_ADATA)
+                                ? PODSPRINT_DECELTIME
+                                : object->character_data->game_character->vehicle_deceleration_time;
 
-                if (WORLD->area == PODRACE_ADATA && object->run_speed_override != 1.0e9f)
-                    desired = GetVehicleSpeedMul(object, object->run_speed_override);
-                else if ((object->flags_1fc & 0x80) != 0 &&
-                         (PODSPRINT_ADATA != NULL && WORLD->area == PODSPRINT_ADATA) && object->in_narrow_socket) {
-                    if (PodSprint_InStartCountdown(WORLD) > 0.0f) {
-                        object->previous_block_animation = 1;
-                        desired = 0.0f;
-                    } else if (pad->input_magnitude == 0.0f) {
-                        object->previous_block_animation = 0;
-                        desired = PODSPRINT_CRUISESPEED;
-                    } else if (pad->input_angle > 0x3554 && pad->input_angle <= 0xcaaa) {
-                        if (pad->input_angle > 0x4aaa && pad->input_angle < 0xb555) {
-                            object->previous_block_animation = 4;
-                            desired = PODSPRINT_SLOWSPEED;
-                        } else {
+                    if (WORLD->area == PODRACE_ADATA && object->run_speed_override != 1.0e9f)
+                        desired = GetVehicleSpeedMul(object, object->run_speed_override);
+                    else if (((object->flags_1fc_word >> 7) & 1) != 0 &&
+                             (PODSPRINT_ADATA != NULL && WORLD->area == PODSPRINT_ADATA) && object->in_narrow_socket) {
+                        if (PodSprint_InStartCountdown(WORLD) > 0.0f) {
+                            object->previous_block_animation = 1;
+                            desired = 0.0f;
+                        } else if (pad->input_magnitude == 0.0f) {
                             object->previous_block_animation = 0;
                             desired = PODSPRINT_CRUISESPEED;
+                        } else if (pad->input_angle >= 0x3555 && pad->input_angle <= 0xcaaa) {
+                            if (pad->input_angle > 0x4aaa && pad->input_angle < 0xb555) {
+                                object->previous_block_animation = 4;
+                                desired = PODSPRINT_SLOWSPEED;
+                            } else {
+                                object->previous_block_animation = 0;
+                                desired = PODSPRINT_CRUISESPEED;
+                            }
+                        } else {
+                            object->previous_block_animation = 3;
+                            desired = PODSPRINT_RUNSPEED;
                         }
-                    } else {
-                        object->previous_block_animation = 3;
-                        desired = PODSPRINT_RUNSPEED;
-                    }
-                    desired /= PODSPRINT_RUNSPEED;
-                } else if (requested_speed > 0.0f && object->character_context != 0x23 &&
-                           object->character_context != 0x24) {
-                    if (object->water_intersects) {
-                        fraction = (object->water_height - object->collision_min.y) / object->bounds_half_height;
-                        if (fraction < 0.0f)
-                            water_mul = 0.0f;
-                        else if (fraction > 0.5f)
-                            water_mul = VEHICLE_WATER_SPEED_MUL;
-                        else
-                            water_mul = 1.0f - (fraction + fraction) * (1.0f - VEHICLE_WATER_SPEED_MUL);
-                    }
-                    if (object->run_speed_override != 1.0e9f)
-                        desired = GetVehicleSpeedMul(object, object->run_speed_override);
-                    else {
-                        if (WORLD->current_level == SPEEDERCHASEA_LDATA && (object->flags_1fc & 0x80) != 0 &&
-                            !disable_narrow_socks)
-                            desired = GetVehicleSpeedMul(
-                                object,
-                                object->character_data->game_character->run_speed * 0.75f +
-                                    object->character_data->game_character->run_speed * 0.25f *
-                                        (pad->input_magnitude / object->character_data->game_character->run_speed));
-                        else
-                            desired = GetVehicleSpeedMul(object, requested_speed);
-                        if (desired > object->field_dc8)
-                            decel = (PODSPRINT_ADATA != NULL && WORLD->area == PODSPRINT_ADATA)
-                                        ? PODSPRINT_ACCELTIME
-                                        : object->character_data->game_character->vehicle_acceleration_time;
-                    }
-                } else if (WORLD->current_level == SPEEDERCHASEA_LDATA && (object->flags_1fc & 0x80) != 0 &&
-                           !disable_narrow_socks)
-                    desired = GetVehicleSpeedMul(object, object->character_data->game_character->run_speed * 0.75f);
-                else if ((object->flags_1fc & 0x80) != 0 && (PODSPRINT_ADATA != NULL && WORLD->area == PODSPRINT_ADATA))
-                    desired = PODSPRINT_CRUISESPEED;
-                else if ((!IDLESPEEDINNARROWSOCKSONLY || object->in_narrow_socket) && (object->flags_1fc & 0x80) != 0 &&
-                         (object->flags_ef4 & 0x02000000) == 0)
-                    desired = object->character_data->game_character->idle_speed /
-                              object->character_data->game_character->run_speed;
-                else
-                    desired = 0.0f;
-                step = (1.0f / decel) * FRAMETIME;
-                if ((PODSPRINT_ADATA != NULL && WORLD->area == PODSPRINT_ADATA))
-                    desired *= object->current_speed_mul;
-                object->field_dc8 = SeekLinearF(object->field_dc8, desired, step);
+                        desired /= PODSPRINT_RUNSPEED;
+                        water_mul = 1.0f;
+                    } else if (requested_speed > 0.0f && object->character_context != 0x23 &&
+                               object->character_context != 0x24) {
+                        if (object->water_intersects) {
+                            water_mul = (object->water_height - object->collision_min.y) / object->bounds_half_height;
+                            if (water_mul < 0.0f)
+                                water_mul = 0.0f;
+                            else if (water_mul > 0.5f)
+                                water_mul = VEHICLE_WATER_SPEED_MUL;
+                            else
+                                water_mul = 1.0f - (water_mul + water_mul) * (1.0f - VEHICLE_WATER_SPEED_MUL);
+                        }
+                        if (object->run_speed_override != 1.0e9f)
+                            desired = GetVehicleSpeedMul(object, object->run_speed_override);
+                        else {
+                            if (WORLD->current_level == SPEEDERCHASEA_LDATA &&
+                                ((object->flags_1fc_word >> 7) & 1) != 0 && !disable_narrow_socks)
+                                desired = GetVehicleSpeedMul(
+                                    object,
+                                    object->character_data->game_character->run_speed * 0.75f +
+                                        object->character_data->game_character->run_speed * 0.25f *
+                                            (pad->input_magnitude / object->character_data->game_character->run_speed));
+                            else
+                                desired = GetVehicleSpeedMul(object, requested_speed);
+                            if (desired > object->field_dc8)
+                                decel = (PODSPRINT_ADATA != NULL && WORLD->area == PODSPRINT_ADATA)
+                                            ? PODSPRINT_ACCELTIME
+                                            : object->character_data->game_character->vehicle_acceleration_time;
+                        }
+                    } else if (WORLD->current_level == SPEEDERCHASEA_LDATA &&
+                               ((object->flags_1fc_word >> 7) & 1) != 0 && !disable_narrow_socks)
+                        desired = GetVehicleSpeedMul(object, object->character_data->game_character->run_speed * 0.75f);
+                    else if (((object->flags_1fc_word >> 7) & 1) != 0 &&
+                             (PODSPRINT_ADATA != NULL && WORLD->area == PODSPRINT_ADATA))
+                        desired = PODSPRINT_CRUISESPEED;
+                    else if ((!IDLESPEEDINNARROWSOCKSONLY || object->in_narrow_socket) &&
+                             ((object->flags_1fc_word >> 7) & 1) != 0 && (object->flags_ef4 & 0x02000000) == 0)
+                        desired = object->character_data->game_character->idle_speed /
+                                  object->character_data->game_character->run_speed;
+                    else
+                        desired = 0.0f;
+                    step = (1.0f / decel) * FRAMETIME;
+                    if ((PODSPRINT_ADATA != NULL && WORLD->area == PODSPRINT_ADATA))
+                        desired *= object->current_speed_mul;
+                    object->field_dc8 = SeekLinearF(object->field_dc8, desired, step);
+                }
             }
-            speed = object->field_dc8 * ((PODSPRINT_ADATA != NULL && WORLD->area == PODSPRINT_ADATA)
-                                             ? PODSPRINT_RUNSPEED
-                                             : object->character_data->game_character->run_speed);
+            if (PODSPRINT_ADATA != NULL && WORLD->area == PODSPRINT_ADATA)
+                speed = object->field_dc8 * PODSPRINT_RUNSPEED;
+            else
+                speed = object->character_data->game_character->run_speed * object->field_dc8;
             if ((object->flags_1fc & 0x80) != 0 && WORLD->current_level == DEATHSTARBATTLED_LDATA &&
                 ObjInNarrowSock(object, WORLD->sock_sys, WORLD->level_idx))
                 speed *= 2.0f;
@@ -2101,11 +2113,6 @@ typedef struct moveplayer_pad_bits_pc_s {
     u16 waggle : 1;
     u16 high : 12;
 } MOVEPLAYER_PAD_BITS_PC;
-
-static __inline f32 MovePlayerFabs(f32 value) {
-    u32 bits = *(u32 *)&value & 0x7fffffff;
-    return *(f32 *)&bits;
-}
 
 void __cdecl MovePlayer(GAMEOBJECT *object) {
     GAMEPAD_PC *pad = object->pad;
