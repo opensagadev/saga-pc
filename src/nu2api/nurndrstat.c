@@ -89,9 +89,9 @@ void __cdecl NuRndrStateGetTransformPc(NUMTX *output, const NUMTL *material) {
         RndrStateTransformScalePc = scale;
         RndrStateScaledTransformPc = RndrStateTransformPc;
         if (scale != 1.0f) {
-            scaling.x = scale;
-            scaling.y = scale;
             scaling.z = scale;
+            scaling.y = scale;
+            scaling.x = scale;
             NuMtxPreScale(&RndrStateScaledTransformPc, &scaling);
         }
     }

@@ -13,9 +13,9 @@ NUCAMERA *__cdecl NuCameraCreate(void) {
     camera->aspect = 0.75f;
     camera->unknown_58 = 1.0f;
     camera->unknown_5c = 1.0f;
+    camera->scale.z = 1.0f;
     camera->scale.y = 1.0f;
     camera->scale.x = 1.0f;
-    camera->scale.z = 1.0f;
     camera->unknown_50 = 0.0f;
     camera->unknown_54 = 0.0f;
     camera->unknown_64 = 0.0f;

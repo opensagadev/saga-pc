@@ -191,7 +191,7 @@ void __cdecl NuTimeBarSlotSetEx(i32 set, i32 slot, i32 value, const char *name) 
         return;
     }
     if (set == -1 && slot == 6) {
-        value = (i32)(u32)((f64)(u32)value * NuTimeBarScanlineMicroseconds);
+        value = (i32)(u32)((f32)(u32)value * NuTimeBarScanlineMicroseconds);
     }
     timebar = (TimeBarSet *)NuTimeBar_SetList[set + 1];
     timebar->accumulators[1 - timebar->toggle_flags[slot]][slot] = value;
