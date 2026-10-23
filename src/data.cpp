@@ -29388,6 +29388,27 @@ extern "C" {
 #pragma bss_seg(".bss$edpart_cam_ay")
     i32 edpart_cam_ay = 0;
 
+#pragma bss_seg(".bss$edpart_sscale_menu")
+    struct eduimenu_s *edpart_sscale_menu = 0;
+
+#pragma bss_seg(".bss$edpart_switch_menu")
+    struct eduimenu_s *edpart_switch_menu = 0;
+
+#pragma bss_seg(".bss$edpart_switchtype_menu")
+    struct eduimenu_s *edpart_switchtype_menu = 0;
+
+#pragma bss_seg(".bss$edpart_sounds_menu")
+    struct eduimenu_s *edpart_sounds_menu = 0;
+
+#pragma bss_seg(".bss$edpart_soundx_menu")
+    struct eduimenu_s *edpart_soundx_menu = 0;
+
+#pragma bss_seg(".bss$edpart_soundid_menu")
+    struct eduimenu_s *edpart_soundid_menu = 0;
+
+#pragma bss_seg(".bss$edpart_soundcontrol_menu")
+    struct eduimenu_s *edpart_soundcontrol_menu = 0;
+
 #pragma bss_seg(".bss$edpart_tint_menu")
     struct eduimenu_s *edpart_tint_menu = 0;
 

@@ -1,4 +1,5 @@
 #include <stdio.h>
+#include <string.h>
 #include "saga.h"
 typedef struct part_runtime_type_pc_s {
     char name[16];
@@ -1061,4 +1062,292 @@ void edpartInit(void) {
     edpart_emitrotz = 0;
     edpart_emitroty = 0;
     edpart_emitrotx = 0;
+}
+
+extern struct eduimenu_s *edpart_opt_menu;
+extern struct eduimenu_s *edpart_sscale_menu;
+extern struct eduimenu_s *edpart_switch_menu;
+extern struct eduimenu_s *edpart_switchtype_menu;
+extern struct eduimenu_s *edpart_sounds_menu;
+extern struct eduimenu_s *edpart_soundx_menu;
+extern struct eduimenu_s *edpart_soundid_menu;
+extern struct eduimenu_s *edpart_soundcontrol_menu;
+extern const char MenuPcString76b274[4];
+void edpartDebrisSettingsMenu(eduimenu_s *menu, eduiitem_s *item, u32 value);
+
+#define EDPART_REFRESH_EMITTER_SOUNDS()                                                                                \
+    for (emitter = 0; emitter < 40; ++emitter) {                                                                       \
+        if (part_emits[emitter].effect_id == edpart_nearest_emit->effect_id) {                                         \
+            part_emits[emitter].field_3c = 0;                                                                          \
+            for (sound = 0; emitter < 4; ++sound) {                                                                    \
+                if (part_types[part_emits[emitter].effect_id].sounds[sound] != -1 &&                                   \
+                    part_types[part_emits[emitter].effect_id].sound_modes[sound] != 0) {                               \
+                    part_emits[emitter].field_3c = 1;                                                                  \
+                    break;                                                                                             \
+                }                                                                                                      \
+            }                                                                                                          \
+        }                                                                                                              \
+    }
+
+void edpartSetSoundID(eduimenu_s *menu, eduiitem_s *item, u32 unused2) {
+    u32 slot;
+    i32 value;
+    i32 emitter;
+    i32 sound;
+    edpart_soundid_menu = NULL;
+    slot = (u32)item->data >> 16;
+    value = item->data - (slot << 16);
+    if (value == 9999)
+        value = -1;
+    if (edpart_nearest_type != NULL)
+        edpart_nearest_type->sounds[slot] = value;
+    EDPART_REFRESH_EMITTER_SOUNDS();
+    eduiMenuDetach(menu);
+    eduiMenuDestroy(menu);
+}
+
+void edpartSetSoundControl(eduimenu_s *menu, eduiitem_s *item, u32 unused2) {
+    u32 slot;
+    i32 value;
+    i32 emitter;
+    i32 sound;
+    edpart_soundcontrol_menu = NULL;
+    slot = (u32)item->data >> 16;
+    value = item->data - (slot << 16);
+    if (edpart_nearest_type != NULL) {
+        if (value == 9999)
+            edpart_nearest_type->sound_modes[slot] = 0xff;
+        else
+            edpart_nearest_type->sound_modes[slot] = value;
+    }
+    EDPART_REFRESH_EMITTER_SOUNDS();
+    eduiMenuDetach(menu);
+    eduiMenuDestroy(menu);
+}
+
+void edpartCancelSoundIDMenu(eduimenu_s *unused0, eduimenu_s *unused1) {
+    eduiMenuDestroy(edpart_soundid_menu);
+    edpart_soundid_menu = NULL;
+}
+
+void edpartSoundIDMenu(eduimenu_s *menu, eduiitem_s *item, u32 unused2) {
+    i32 sound;
+    if (edpart_nearest_type != NULL) {
+        edpart_soundid_menu = eduiMenuCreate(70, 70, 250, 200, ed_fnt, edpartCancelSoundIDMenu, "Sound ID");
+        if (edpart_soundid_menu != NULL) {
+            eduiMenuAddItem(edpart_soundid_menu, eduiItemCheckCreate((item->data << 16) + 9999, edblack,
+                                                                     edpart_nearest_type->sounds[item->data] == -1, 0,
+                                                                     edpartSetSoundID, "NONE"));
+            for (sound = 0; sound < 1600; ++sound) {
+                if (SfxInfo[sound].name != NULL) {
+                    i32 selected = edpart_nearest_type->sounds[item->data] == sound;
+                    eduiMenuAddItem(edpart_soundid_menu,
+                                    eduiItemCheckCreate((item->data << 16) + sound, edblack, selected, 1,
+                                                        edpartSetSoundID, SfxInfo[sound].name));
+                    if (selected == 1)
+                        edpart_soundid_menu->selected = edui_last_item;
+                }
+            }
+            eduiMenuAttach(menu, edpart_soundid_menu);
+            edpart_soundid_menu->x = menu->x + 10;
+            edpart_soundid_menu->y = menu->y + 40;
+        }
+    }
+}
+
+void edpartCancelSoundControlMenu(eduimenu_s *unused0, eduimenu_s *unused1) {
+    eduiMenuDestroy(edpart_soundcontrol_menu);
+    edpart_soundcontrol_menu = NULL;
+}
+
+#define EDPART_SOUND_CONTROL_ITEM(mode, label)                                                                         \
+    eduiMenuAddItem(edpart_soundcontrol_menu,                                                                          \
+                    eduiItemCheckCreate((item->data << 16) + (mode), edblack,                                          \
+                                        edpart_nearest_type->sound_modes[item->data] == (mode), 1,                     \
+                                        edpartSetSoundControl, (label)));                                              \
+    if (edui_last_item->highlighted)                                                                                   \
+    edpart_soundcontrol_menu->selected = edui_last_item
+
+void edpartSoundControlMenu(eduimenu_s *menu, eduiitem_s *item, u32 unused2) {
+    if (edpart_nearest_type != NULL) {
+        edpart_soundcontrol_menu =
+            eduiMenuCreate(70, 70, 250, 250, ed_fnt, edpartCancelSoundControlMenu, "Sound Control");
+        if (edpart_soundcontrol_menu != NULL) {
+            EDPART_SOUND_CONTROL_ITEM(0, (char *)MenuPcString76b274);
+            EDPART_SOUND_CONTROL_ITEM(1, "On Edge");
+            EDPART_SOUND_CONTROL_ITEM(2, "Off Edge");
+            EDPART_SOUND_CONTROL_ITEM(3, "Per PART");
+            EDPART_SOUND_CONTROL_ITEM(4, "Continuous");
+            eduiMenuAttach(menu, edpart_soundcontrol_menu);
+            edpart_soundcontrol_menu->x = menu->x + 10;
+            edpart_soundcontrol_menu->y = menu->y + 40;
+        }
+    }
+}
+
+void edpartCancelSoundXMenu(eduimenu_s *unused0, eduimenu_s *unused1) {
+    eduiMenuDestroy(edpart_soundx_menu);
+    edpart_soundx_menu = NULL;
+}
+
+void edpartSoundXMenu(eduimenu_s *menu, eduiitem_s *item, u32 unused2) {
+    char title[16];
+    if (edpart_nearest_type != NULL) {
+        sprintf(title, "Sound %d Menu", item->data + 1);
+        edpart_soundx_menu = eduiMenuCreate(70, 70, 250, 300, ed_fnt, edpartCancelSoundXMenu, title);
+        if (edpart_soundx_menu != NULL) {
+            eduiMenuAddItem(edpart_soundx_menu,
+                            eduiItemSelCreate(item->data, edblack, 0, 0, edpartSoundIDMenu, "Sound ID..."));
+            eduiMenuAddItem(edpart_soundx_menu,
+                            eduiItemSelCreate(item->data, edblack, 0, 0, edpartSoundControlMenu, "Sound Control..."));
+            eduiMenuAttach(menu, edpart_soundx_menu);
+            edpart_soundx_menu->x = menu->x + 10;
+            edpart_soundx_menu->y = menu->y + 40;
+        }
+    }
+}
+
+void edpartCancelSoundsMenu(eduimenu_s *unused0, eduimenu_s *unused1) {
+    eduiMenuDestroy(edpart_sounds_menu);
+    edpart_sounds_menu = NULL;
+}
+
+void edpartSoundsMenu(eduimenu_s *menu, eduiitem_s *unused1, u32 unused2) {
+    char text[16];
+    i32 index;
+    if (edpart_nearest_type != NULL) {
+        edpart_sounds_menu = eduiMenuCreate(70, 70, 250, 300, ed_fnt, edpartCancelSoundsMenu, "Attached Sounds");
+        if (edpart_sounds_menu != NULL) {
+            for (index = 0; index < 4; ++index) {
+                sprintf(text, "Sound %d...", index + 1);
+                eduiMenuAddItem(edpart_sounds_menu, eduiItemSelCreate(index, edblack, 0, 0, edpartSoundXMenu, text));
+            }
+            eduiMenuAttach(menu, edpart_sounds_menu);
+            edpart_sounds_menu->x = menu->x + 10;
+            edpart_sounds_menu->y = menu->y + 40;
+        }
+    }
+}
+
+void edpartSetSwitchType(eduimenu_s *menu, eduiitem_s *item, u32 unused2) {
+    edpart_switchtype_menu = NULL;
+    if (edpart_nearest_emit != NULL) {
+        edpart_nearest_emit->field_44 = item->data;
+        if (edpart_nearest_emit->field_44 == 0)
+            edpart_nearest_emit->field_3d = 1;
+    }
+    eduiMenuDetach(menu);
+    eduiMenuDestroy(menu);
+}
+
+void edpartSetSwitchId(eduimenu_s *unused0, eduiitem_s *item, u32 unused2) {
+    if (edpart_nearest_emit != NULL)
+        edpart_nearest_emit->field_46 = (i16)((edui_slider_s *)item)->value;
+}
+
+void edpartCancelSwitchTypeMenu(eduimenu_s *unused0, eduimenu_s *unused1) {
+    eduiMenuDestroy(edpart_switchtype_menu);
+    edpart_switchtype_menu = NULL;
+}
+
+void edpartSwitchTypeMenu(eduimenu_s *menu, eduiitem_s *unused1, u32 unused2) {
+    edpart_switchtype_menu = eduiMenuCreate(70, 70, 180, 250, ed_fnt, edpartCancelSwitchTypeMenu, "Switch Type");
+    if (edpart_switchtype_menu != NULL) {
+        eduiMenuAddItem(
+            edpart_switchtype_menu,
+            eduiItemCheckCreate(0, edblack, part_emits[edpart_nearest].field_44 == 0, 1, edpartSetSwitchType, "None"));
+        eduiMenuAddItem(edpart_switchtype_menu,
+                        eduiItemCheckCreate(1, edblack, part_emits[edpart_nearest].field_44 == 1, 1,
+                                            edpartSetSwitchType, "Global Switch"));
+        eduiMenuAttach(menu, edpart_switchtype_menu);
+        edpart_switchtype_menu->x = menu->x + 10;
+        edpart_switchtype_menu->y = menu->y + 40;
+    }
+}
+
+void edpartCancelSwitchMenu(eduimenu_s *unused0, eduimenu_s *unused1) {
+    eduiMenuDestroy(edpart_switch_menu);
+    edpart_switch_menu = NULL;
+}
+
+void edpartSwitchMenu(eduimenu_s *menu, eduiitem_s *unused1, u32 unused2) {
+    if (edpart_nearest != -1 && part_emits[edpart_nearest].instance_id != -1) {
+        edpart_switch_menu = eduiMenuCreate(70, 70, 180, 250, ed_fnt, edpartCancelSwitchMenu, "Switch Menu");
+        if (edpart_switch_menu != NULL) {
+            eduiMenuAddItem(edpart_switch_menu,
+                            eduiItemSelCreate(1, edblack, 0, 0, edpartSwitchTypeMenu, "Switch Type..."));
+            eduiMenuAddItem(edpart_switch_menu,
+                            eduiItemSliderCreateInt(0, edblack, 0, edpartSetSwitchId, 0, 128,
+                                                    part_emits[edpart_nearest].field_46, "Switch ID"));
+            eduiMenuAttach(menu, edpart_switch_menu);
+            edpart_switch_menu->x = menu->x + 10;
+            edpart_switch_menu->y = menu->y + 40;
+        }
+    }
+}
+
+void edpartChangeSScale(eduimenu_s *unused0, eduiitem_s *item, u32 unused2) {
+    edpart_superscale = (i32)((edui_slider_s *)item)->value;
+}
+
+void edpartCancelSScaleMenu(eduimenu_s *unused0, eduimenu_s *unused1) {
+    eduiMenuDestroy(edpart_sscale_menu);
+    edpart_sscale_menu = NULL;
+}
+
+void edpartSScaleMenu(eduimenu_s *menu, eduiitem_s *unused1, u32 unused2) {
+    edpart_sscale_menu = eduiMenuCreate(70, 70, 180, 300, ed_fnt, edpartCancelSScaleMenu, "Super Scale");
+    if (edpart_sscale_menu != NULL) {
+        eduiMenuAddItem(edpart_sscale_menu, eduiItemSliderCreateInt(0, edblack, 0, edpartChangeSScale, 1, 99,
+                                                                    edpart_superscale, "Super Scale"));
+        eduiMenuAttach(menu, edpart_sscale_menu);
+        edpart_sscale_menu->x = menu->x + 10;
+        edpart_sscale_menu->y = menu->y + 40;
+    }
+}
+
+void edpartToggleFilter(eduimenu_s *unused0, eduiitem_s *item, u32 unused2) {
+    edpart_filter = item->highlighted;
+}
+
+void edpartChangeFilterName(eduimenu_s *unused0, eduiitem_s *item, u32 unused2) {
+    NuStrNCpy(edpart_filter_string, ((edui_textpicker_s *)item)->value, 16);
+}
+
+void edpartCancelOptMenu(eduimenu_s *unused0, eduimenu_s *unused1) {
+    edpart_active_menu = NULL;
+    edpart_opt_menu = NULL;
+}
+
+void edpartOptMenu(void) {
+    edpart_opt_menu = eduiMenuCreate(70, 70, 250, 300, ed_fnt, edpartCancelOptMenu, "PART Editor");
+    if (edpart_opt_menu == NULL)
+        return;
+    eduiMenuAddItem(edpart_opt_menu, eduiItemSelCreate(1, edblack, 0, 0, edpartTypeMenu, "Emitter Type..."));
+    if (edpart_nearest != -1) {
+        eduiMenuAddItem(edpart_opt_menu, eduiItemSelCreate(1, edblack, 0, 0, edpartInstanceMenu, "Instance Select..."));
+        eduiMenuAddItem(edpart_opt_menu,
+                        eduiItemSelCreate(1, edblack, 0, 0, edpartInstanceSettingsMenu, "Instance Settings..."));
+        eduiMenuAddItem(edpart_opt_menu, eduiItemSelCreate(1, edblack, 0, 0, edpartEmitMenu, "Emitter Settings..."));
+        eduiMenuAddItem(edpart_opt_menu,
+                        eduiItemSelCreate(1, edblack, 0, 0, edpartDebrisSettingsMenu, "Debris Settings..."));
+        eduiMenuAddItem(edpart_opt_menu, eduiItemSelCreate(1, edblack, 0, 0, edpartSoundsMenu, "Attached Sounds..."));
+        eduiMenuAddItem(edpart_opt_menu, eduiItemSelCreate(1, edblack, 0, 0, edpartSwitchMenu, "Switch Menu..."));
+        eduiMenuAddItem(edpart_opt_menu, eduiItemSelCreate(1, edblack, 0, 0, edpartScaleTypeMenu, "Scale Type..."));
+    } else {
+        eduiMenuAddItem(edpart_opt_menu, eduiItemSelCreate(1, edgrey, 0, 0, NULL, "Instance Select..."));
+        eduiMenuAddItem(edpart_opt_menu, eduiItemSelCreate(1, edgrey, 0, 0, NULL, "Instance Settings..."));
+        eduiMenuAddItem(edpart_opt_menu, eduiItemSelCreate(1, edgrey, 0, 0, NULL, "Emitter Settings..."));
+        eduiMenuAddItem(edpart_opt_menu, eduiItemSelCreate(1, edgrey, 0, 0, NULL, "Debris Settings..."));
+        eduiMenuAddItem(edpart_opt_menu, eduiItemSelCreate(1, edgrey, 0, 0, NULL, "Attached Sounds..."));
+        eduiMenuAddItem(edpart_opt_menu, eduiItemSelCreate(1, edgrey, 0, 0, NULL, "Switch Menu..."));
+        eduiMenuAddItem(edpart_opt_menu, eduiItemSelCreate(1, edgrey, 0, 0, NULL, "Scale Type..."));
+    }
+    eduiMenuAddItem(edpart_opt_menu, eduiItemSelCreate(1, edblack, 0, 0, edpartDataMenu, "Data Menu..."));
+    eduiMenuAddItem(edpart_opt_menu, eduiItemSelCreate(1, edblack, 0, 0, edpartSScaleMenu, "Super Scale..."));
+    eduiMenuAddItem(edpart_opt_menu,
+                    eduiItemToggleCreate(1, edblack, edpart_filter, 1, edpartToggleFilter, "Instance Filter"));
+    eduiMenuAddItem(edpart_opt_menu, eduiItemTextPickCreate(0, edblack, edpartChangeFilterName, "Filter String: "));
+    strcpy(((edui_textpicker_s *)edui_last_item)->value, edpart_filter_string);
+    ((edui_textpicker_s *)edui_last_item)->max_length = 15;
 }
