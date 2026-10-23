@@ -17807,6 +17807,9 @@ extern "C" {
 #pragma data_seg(".data$DirectionalGrappleSeekScalePc")
     f32 DirectionalGrappleSeekScalePc = 0.5f;
 #pragma data_seg()
+#pragma data_seg(".data$LandspeederExhaustJointsPc")
+    i32 LandspeederExhaustJointsPc[3] = {2, 3, 4};
+#pragma data_seg()
 
 #pragma bss_seg(".bss$LswForceUsedHintFlagsPc")
     u32 LswForceUsedHintFlagsPc = 0;

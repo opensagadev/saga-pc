@@ -20104,6 +20104,7 @@ address,symbol,size,ctype
 0x7fc228,_PodCollisionThresholdPc,,f32
 0x7fc22c,_PodSprintLiftPositionsPc,,NUVEC[3]
 0x7fc250,_DirectionalGrappleSeekScalePc,4,f32
+0x7fc258,_LandspeederExhaustJointsPc,12,i32[3]
 0x007fc274,_PanelProjectionX,4,f32
 0x007fc278,_PanelProjectionY,4,f32
 0x7fc27c,_HudNameScalePc,4,f32

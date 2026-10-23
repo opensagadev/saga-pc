@@ -1165,19 +1165,19 @@ static void AfterAnimationSabreCode(GAMEOBJECT *object, i32 effect) {
     if ((data->weapon_action == 3 || object->id == (u16)id_GRIEVOUS || object->id == (u16)id_DOOKU) &&
         object->character_context == 0 && object->action_movement_state == 3) {
         object->sabre_flags |= 2;
-    }
-    if (object->id == (u16)id_GRIEVOUS && (object->character_context == 12 || object->character_context == 24) &&
-        object->field_7aa == 26) {
+    } else if (object->id == (u16)id_GRIEVOUS && (object->character_context == 24 || object->character_context == 12) &&
+               object->field_7aa == 26) {
         reset_streak = 1;
         object->sabre_flags |= 2;
     } else if (object->id == (u16)id_BODYGUARD &&
-               (object->character_context == 12 || object->character_context == 24) &&
+               (object->character_context == 24 || object->character_context == 12) &&
                (object->field_7aa == 26 || object->field_7aa == 27)) {
         object->sabre_flags |= 2;
     }
+    blade_flags[0] = object->sabre_flags;
+    blade_flags[1] = object->sabre_flags;
     streak = object->sabre_flags & 2;
     damage = object->sabre_flags & 4;
-    blade_flags[0] = blade_flags[1] = object->sabre_flags;
     if (object->id == (u16)id_GRIEVOUS) {
         i32 first = -1;
         i32 second = -1;
@@ -1223,18 +1223,18 @@ static void AfterAnimationSabreCode(GAMEOBJECT *object, i32 effect) {
             }
         }
         for (blade = 0; blade < 4; ++blade) {
-            if (blade == 2 && reset_streak != 0) {
+            if (reset_streak != 0 && blade == 2) {
                 streak = 0;
             }
             object->sabre_flags = streak | 1;
-            if (damage != 0 && (blade == first || blade == second)) {
+            if (damage != 0 && (blade == second || blade == first)) {
                 object->sabre_flags |= damage;
             }
             if (object->character_context == 16) {
-                if (blade < 2) {
-                    object->sabre_flags &= ~2;
-                } else {
+                if (blade == 2 || blade == 3) {
                     object->sabre_flags |= 2;
+                } else {
+                    object->sabre_flags &= ~2;
                 }
             }
             LightSabreStreakCode(object, blade, effect);
@@ -1266,6 +1266,7 @@ static void AfterAnimationSabreCode(GAMEOBJECT *object, i32 effect) {
 }
 
 extern i32 FalconDebKey[2];
+extern i32 LandspeederExhaustJointsPc[3];
 STATIC_ASSERT(offsetof(GAMEOBJECT, locator_matrices) + 2 * sizeof(NUMTX) == 0x884);
 STATIC_ASSERT(offsetof(CHARACTER_MODEL_LAYERS_PC, points_of_interest) + 2 * sizeof(void *) == 0x1c);
 
@@ -1274,24 +1275,27 @@ void __cdecl GameObjectStuffAfterAnimation(void) {
     i32 i;
     for (i = 0; i < HIGHGAMEOBJECT; ++i, ++object) {
         i32 drawn;
-        CHARACTER_MODEL_LAYERS_PC *model;
-        PLAYERCHARACTERCONFIG_PC *data;
-        if ((object->flags_1fc_word & 0x1001) != 0x1001 || object->dead != 0 || object->origin_joint_ready == 0)
+        NUMTX matrix;
+        NUVEC velocity;
+        ADDPART_PC part;
+        if ((object->flags_1fc_word & 1) == 0 || (object->flags_1fc_word & 0x1000) == 0 || object->dead != 0 ||
+            object->origin_joint_ready == 0)
             continue;
-        drawn = object->model_draw_result != 0;
-        model = (CHARACTER_MODEL_LAYERS_PC *)object->character_model;
-        data = object->character_data->game_character;
-        if (drawn || (object->layer_mask & 4) != 0) {
+        if (object->model_draw_result != 0)
+            drawn = 1;
+        else
+            drawn = 0;
+        if (drawn || (object->flags_1044 & 4) != 0) {
             if (object->script_fire_target != NULL && (object->script_fire_target->flags_1fc_word & 1) == 0)
                 object->script_fire_target = NULL;
             if (object->quick_shoot_bolt_id != -1) {
                 if (object->id == (u16)id_BASKETCANNON) {
-                    NUMTX matrix;
-                    NUVEC velocity;
-                    i32 joint = drawn ? data->first_shoot_joint : -1;
-                    STUBBED_NAMED("AfterAnimation: GameAudio_PlaySfxById PC5478a0");
-                    if (joint != -1 && model->points_of_interest[joint] != NULL)
-                        matrix = object->locator_matrices[joint];
+                    GameAudio_PlaySfxById(object->character_data->game_character->shoot_sfx,
+                                          &object->collision_position, 0, 0);
+                    if (drawn && object->character_data->game_character->first_shoot_joint != -1 &&
+                        ((CHARACTER_MODEL_LAYERS_PC *)object->character_model)
+                                ->points_of_interest[object->character_data->game_character->first_shoot_joint] != NULL)
+                        matrix = object->locator_matrices[object->character_data->game_character->first_shoot_joint];
                     else {
                         matrix = object->transform;
                         matrix.m30 = object->collision_position.x;
@@ -1303,7 +1307,7 @@ void __cdecl GameObjectStuffAfterAnimation(void) {
                     velocity.z = (f32)(-((f64)qrand() * (f64)(1.0f / 65535.0f) * 2.0 + 3.0));
                     NuVecMtxRotate(&velocity, &velocity, &matrix);
                     {
-                        ADDPART_PC part = Default_ADDPART;
+                        part = Default_ADDPART;
                         part.velocity = &velocity;
                         part.matrix = &matrix;
                         part.part_id = 90;
@@ -1334,9 +1338,11 @@ void __cdecl GameObjectStuffAfterAnimation(void) {
             AfterAnimationSabreCode(object, effect);
         }
         if (object->debris_joint != -1)
-            STUBBED_NAMED("AfterAnimation: AddGameDebris effect138/139 at locator translation PC62c560");
+            AddGameDebris(WORLD->game_debris_sys, ((object->flags_e24 & 0x100) | 0x8a00) >> 8,
+                          (NUVEC *)&object->locator_matrices[object->debris_joint].m30);
         if (object->character_context == 38) {
-            CHARACTER_ANIMATION_LOCATOR_PC *animation = model->animations[object->field_7aa];
+            CHARACTER_ANIMATION_LOCATOR_PC *animation =
+                ((CHARACTER_MODEL_LAYERS_PC *)object->character_model)->animations[object->field_7aa];
             if (animation != NULL && animation->locator != -1 &&
                 ((object->context_variant_flags & 0x40) == 0 || object->debris_joint != -1)) {
                 NUVEC points[2];
@@ -1357,10 +1363,9 @@ void __cdecl GameObjectStuffAfterAnimation(void) {
         if ((object->flags_e20 & 0x00800000) != 0)
             SuperCarry_Throw(object, 0);
         if ((object->flags_e20 & 0x10) != 0) {
-            NUMTX matrix;
-            NUVEC velocity;
-            i32 joint = drawn ? data->rocket_joint : -1;
-            if (-1 != joint && model->points_of_interest[joint] != NULL)
+            i32 joint = drawn ? object->character_data->game_character->rocket_joint : -1;
+            if (-1 != joint &&
+                ((CHARACTER_MODEL_LAYERS_PC *)object->character_model)->points_of_interest[joint] != NULL)
                 matrix = object->locator_matrices[joint];
             else {
                 NuMtxSetRotationX(&matrix, 0x1555);
@@ -1374,11 +1379,11 @@ void __cdecl GameObjectStuffAfterAnimation(void) {
             velocity.z = -1.0f;
             NuVecMtxRotate(&velocity, &velocity, &matrix);
             {
-                ADDPART_PC part = Default_ADDPART;
                 i32 player = (object->flags_1fc_word & 0x80) != 0;
                 NUVEC direction;
                 f32 range;
                 PART_PC *created;
+                part = Default_ADDPART;
                 part.matrix = &matrix;
                 part.velocity = &velocity;
                 part.field_14 = 0.1f;
@@ -1418,7 +1423,7 @@ void __cdecl GameObjectStuffAfterAnimation(void) {
             union SABRE_EFFECT_SCRATCH_PC {
                 NUVEC points[4];
                 struct {
-                    u8 reserved[40];
+                    f32 reserved[10];
                     NUVEC position;
                 } shared;
             } scratch;
@@ -1513,8 +1518,46 @@ void __cdecl GameObjectStuffAfterAnimation(void) {
                 }
             }
         }
-        if (drawn && object->id == (u16)id_LANDSPEEDER)
-            STUBBED_NAMED("AfterAnimation: Landspeeder three real debris effects PC4b2636..4b283a");
+        if (object->id == (u16)id_LANDSPEEDER && drawn) {
+            f32 speed = object->pad->input_magnitude / object->character_data->game_character->run_speed;
+            i32 effect;
+            i32 joint;
+            if (WORLD->game_debris_sys->entries[105].effect != -1)
+                AddVariableShotDebrisEffectTimed1(WORLD->game_debris_sys->entries[105].effect, &object->lower_position,
+                                                  60, FRAMETIME, 0, 0, NULL);
+            effect = WORLD->game_debris_sys->entries[104].effect;
+            if (effect != -1) {
+                for (joint = 0; joint < 3; ++joint) {
+                    if (object->character_model->points_of_interest[LandspeederExhaustJointsPc[joint]] != NULL) {
+                        i32 count = (i32)(speed * 60.0);
+                        if (count > 0)
+                            AddVariableShotDebrisEffectTimed1(
+                                effect, (NUVEC *)&object->locator_matrices[LandspeederExhaustJointsPc[joint]].m30,
+                                count, FRAMETIME, 0, 0, NULL);
+                    }
+                }
+            }
+            effect = WORLD->game_debris_sys->entries[103].effect;
+            if (effect != -1 && object->floor_height != 2000000.0) {
+                for (joint = 0; joint < 3; ++joint) {
+                    if (object->character_model->points_of_interest[LandspeederExhaustJointsPc[joint]] != NULL) {
+                        f32 height =
+                            object->locator_matrices[LandspeederExhaustJointsPc[joint]].m31 - object->floor_height;
+                        if (height > 0.0f && height <= (f64)0.2f) {
+                            if (height < (f64)0.1f)
+                                height = 0.1f;
+                            if ((i32)((1.0 - (height - (f64)0.1f) / (f64)0.1f) * 25.0 * speed) > 0) {
+                                NUVEC position;
+                                position.x = object->locator_matrices[LandspeederExhaustJointsPc[joint]].m30;
+                                position.y = object->floor_height;
+                                position.z = object->locator_matrices[LandspeederExhaustJointsPc[joint]].m32;
+                                AddVariableShotDebrisEffectTimed1(effect, &position, 60, FRAMETIME, 0, 0, NULL);
+                            }
+                        }
+                    }
+                }
+            }
+        }
         if (VehicleArea != 0 && object->field_280 <= 1) {
             i32 *handle = &FalconDebKey[object->field_280];
             if (object->id == (u16)VehicleBoltId7f19a4Pc && (object->flags_1fc_word & 0x80) != 0 &&
@@ -1523,7 +1566,7 @@ void __cdecl GameObjectStuffAfterAnimation(void) {
                 if (*handle == -1) {
                     AddDebrisEffect(handle, WORLD->game_debris_sys->entries[136].effect, 0.0f, 0.0f, 0.0f);
                 } else {
-                    NUMTX matrix = object->locator_matrices[2];
+                    matrix = object->locator_matrices[2];
                     NuMtxPreRotateX(&matrix, 0x4000);
                     DebrisPosOrientationMtx(*handle, &matrix);
                 }
