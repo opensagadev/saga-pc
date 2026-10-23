@@ -373,52 +373,56 @@ void __cdecl DisplayListUpdateRenderState(NUDISPLAYLIST_PC *list, NUGLOBALRNDRST
     state->global_id = global->counter_0020;
 }
 
+#define LINK_MTL_STATE ((NUPRIM_MATERIAL_STATE_PC *)list->render_state)
 void __cdecl NuDisplayListLinkMtl(NUDISPLAYLIST_PC *list, NUMTL *material) {
-    NUPRIM_MATERIAL_STATE_PC *state = (NUPRIM_MATERIAL_STATE_PC *)list->render_state;
-    NUPRIM_COMMAND_PC *commands;
-    i32 texture_id = material->texture_id;
+    NUPRIM_COMMAND_PC *command;
+    VARIPTR *cursor;
 
-    if (state->material == material) {
+    if (material == LINK_MTL_STATE->material) {
         return;
     }
 
     NuDisplayListStreamCursor->addr = (NuDisplayListStreamCursor->addr + 0xf) & ~0xfU;
-    ((NUPRIM_COMMAND_PC *)list->material_last)->target = NuDisplayListStreamCursor->void_ptr;
+    cursor = NuDisplayListStreamCursor;
+    ((NUPRIM_COMMAND_PC *)list->material_last)->target = cursor->void_ptr;
 
-    if (texture_id > 0 && state->texture_id != texture_id) {
-        commands = (NUPRIM_COMMAND_PC *)NuDisplayListStreamCursor->void_ptr;
-        NuDisplayListStreamCursor->addr += 0x60;
-
-        commands[0].type = 0x87;
-        commands[0].id = 0;
-        commands[0].target = NULL;
-        commands[1].type = 0x87;
-        commands[1].id = 0;
-        commands[1].target = NULL;
-
-        state->texture_id = texture_id;
-        commands += 2;
+    if (material->texture_id > 0 && material->texture_id != LINK_MTL_STATE->texture_id) {
+        command = (NUPRIM_COMMAND_PC *)cursor->void_ptr;
+        cursor->void_ptr = command + 6;
+        command->type = 0x87;
+        command->target = NULL;
+        command->id = 0;
+        command++;
+        command->type = 0x87;
+        command->target = NULL;
+        command->id = 0;
+        command++;
+        LINK_MTL_STATE->texture_id = material->texture_id;
     } else {
-        commands = (NUPRIM_COMMAND_PC *)NuDisplayListStreamCursor->void_ptr;
-        NuDisplayListStreamCursor->addr += 0x40;
+        command = (NUPRIM_COMMAND_PC *)cursor->void_ptr;
+        cursor->void_ptr = command + 4;
     }
 
-    commands[0].type = 0x80;
-    commands[0].id = 3;
-    commands[0].target = material;
-    commands[1].type = 0x87;
-    commands[1].id = 0;
-    commands[1].target = NULL;
-    commands[2].type = 0x87;
-    commands[2].id = 0;
-    commands[2].target = NULL;
-    commands[3].type = 0x8d;
-    commands[3].id = 1;
-    commands[3].target = NULL;
+    command->type = 0x80;
+    command->target = material;
+    command->id = 3;
+    command++;
+    command->type = 0x87;
+    command->target = NULL;
+    command->id = 0;
+    command++;
+    command->type = 0x87;
+    command->target = NULL;
+    command->id = 0;
+    command++;
+    command->target = NULL;
+    command->type = 0x8d;
+    command->id = 1;
 
-    list->material_last = &commands[3];
-    state->material = material;
+    list->material_last = command;
+    LINK_MTL_STATE->material = material;
 }
+#undef LINK_MTL_STATE
 
 void __cdecl NuDisplayListLinkItem(NUDISPLAYLIST_PC *list, u8 type, void *target) {
     NUPRIM_COMMAND_PC *item;
