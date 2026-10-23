@@ -304,15 +304,16 @@ i32 __cdecl PlatInstGetHit(i32 index) {
     return (terrain->platforms[index].flags >> 1) & 1;
 }
 
+#pragma auto_inline(off)
 void __cdecl ScanTerrIDRemovePlat(i32 platform_index) {
-    TERRAIN_SET_PC *terrain = (TERRAIN_SET_PC *)CurrentTerrain;
     i32 i;
 
     for (i = 0; i < 64; i++) {
-        if (terrain->track_slots[i].platform_index == platform_index)
-            terrain->track_slots[i].id = NULL;
+        if (((TERRAIN_SET_PC *)CurrentTerrain)->track_slots[i].platform_index == platform_index)
+            ((TERRAIN_SET_PC *)CurrentTerrain)->track_slots[i].id = NULL;
     }
 }
+#pragma auto_inline(on)
 
 i32 __cdecl NewPlatInst(void *object, i32 instance) {
     TERRAIN_SET_PC *terrain = (TERRAIN_SET_PC *)CurrentTerrain;
@@ -378,44 +379,38 @@ i32 __cdecl NewPlatInst(void *object, i32 instance) {
     return new_index;
 }
 
+#define TERRAIN_DP_SET ((TERRAIN_SET_PC *)CurrentTerrain)
 i32 __cdecl DeletePlatinst(i32 platform_index) {
-    TERRAIN_SET_PC *terrain = (TERRAIN_SET_PC *)CurrentTerrain;
-    TERRAIN_PLATFORM_PC *platform;
-    TERRAIN_GROUP_PC *last_group;
-    i32 last_group_index;
-    i32 group_index;
-    i32 cell_count;
-    i32 cell_group_index;
     i32 i;
+    i32 cell_group_index;
 
-    if (platform_index < 0 || platform_index >= terrain->max_platforms)
+    if (platform_index < 0 || platform_index >= TERRAIN_DP_SET->max_platforms)
         return 0;
-    platform = &terrain->platforms[platform_index];
-    if (platform->scene_object == NULL)
+    if (TERRAIN_DP_SET->platforms[platform_index].scene_object == NULL)
         return 0;
 
-    terrain->group_count--;
-    terrain->group_index_count--;
-    last_group_index = terrain->group_count;
-    last_group = &terrain->groups[last_group_index];
-    group_index = platform->terrain_group_index;
-    terrain->platforms[last_group->scene_index].terrain_group_index = (i16)group_index;
-    terrain->groups[group_index] = *last_group;
-    last_group->chunk_type = -1;
-    platform->scene_object = NULL;
+    TERRAIN_DP_SET->group_count--;
+    TERRAIN_DP_SET->group_index_count--;
+    TERRAIN_DP_SET->platforms[TERRAIN_DP_SET->groups[TERRAIN_DP_SET->group_count].scene_index].terrain_group_index =
+        TERRAIN_DP_SET->platforms[platform_index].terrain_group_index;
+    TERRAIN_DP_SET->groups[TERRAIN_DP_SET->platforms[platform_index].terrain_group_index] =
+        TERRAIN_DP_SET->groups[TERRAIN_DP_SET->group_count];
+    TERRAIN_DP_SET->groups[TERRAIN_DP_SET->group_count].chunk_type = -1;
+    TERRAIN_DP_SET->platforms[platform_index].scene_object = NULL;
 
-    cell_count = terrain->platform_cell.group_count;
-    cell_group_index = terrain->platform_cell.first_group;
-    for (i = 0; i < cell_count; i++, cell_group_index++) {
-        if (terrain->group_indices[cell_group_index] == last_group_index) {
-            terrain->group_indices[cell_group_index] = terrain->group_indices[terrain->group_index_count];
+    cell_group_index = TERRAIN_DP_SET->platform_cell.first_group;
+    for (i = 0; i < TERRAIN_DP_SET->platform_cell.group_count; i++, cell_group_index++) {
+        if (TERRAIN_DP_SET->group_indices[cell_group_index] == TERRAIN_DP_SET->group_count) {
+            TERRAIN_DP_SET->group_indices[cell_group_index] =
+                TERRAIN_DP_SET->group_indices[TERRAIN_DP_SET->group_index_count];
             break;
         }
     }
-    terrain->platform_cell.group_count--;
+    TERRAIN_DP_SET->platform_cell.group_count--;
     ScanTerrIDRemovePlat(platform_index);
     return 1;
 }
+#undef TERRAIN_DP_SET
 
 i32 __cdecl ShadowInfo(void) {
     return ShadPoly != NULL ? ShadPoly->material[0] : -1;
