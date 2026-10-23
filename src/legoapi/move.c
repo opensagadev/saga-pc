@@ -5142,12 +5142,12 @@ static __declspec(noinline) void PunchRangesPc(GAMEOBJECT *object, f32 *gap, f32
     if (object->id == (u16)VehicleBoltId7f17d4Pc) {
         model = APICharacterLoaded(PunchRangeCompanionIdPc);
         if (model != NULL && model->model_data_b[0x2e] != NULL) {
-            *gap = *charge_gap = 0.6f;
+            *charge_gap = *gap = 0.6f;
             return;
         }
     }
     if (object->id == (u16)PunchRangeUnitIdPc) {
-        *gap = *charge_gap = 1.0f;
+        *charge_gap = *gap = 1.0f;
     } else {
         *gap = PUNCHGAP;
         *charge_gap = PUNCHCHARGAP;
@@ -5170,12 +5170,11 @@ static __declspec(noinline) void PunchCode(GAMEOBJECT *object, i32 pressed, i32 
                                            i32 suppress_combo, f32 cooldown) {
     f32 punch_gap, punch_charge_gap;
     f32 opponent_range = StartupGameFlag1 != 0 ? 1.25f : 2.0f;
-    i32 target_requirement = 0;
-    i16 animation, angle;
+    i32 angle;
     f32 duration;
     PunchRangesPc(object, &punch_gap, &punch_charge_gap);
     if (require_target != 0) {
-        target_requirement = StartupGameFlag1 != 0 && object->field_f00 != 5 ? 2 : 1;
+        require_target = StartupGameFlag1 != 0 && object->field_f00 != 5 ? 2 : 1;
     }
     if (object->attack_override == 7) {
         return;
@@ -5202,18 +5201,12 @@ static __declspec(noinline) void PunchCode(GAMEOBJECT *object, i32 pressed, i32 
             return;
         }
         if (object->combo_input_latched == 0 && pressed != 0) {
-            if ((i8)(object->flags_1fc) < 0) {
-                if ((object->context_flags_pc & 0x40) != 0 || object->context_timer <= object->context_duration) {
-                    object->combo_input_latched = 2;
-                } else {
-                    object->combo_input_latched = 1;
-                }
+            if ((object->flags_1fc & 0x80) == 0) {
+                object->combo_input_latched = qrand() / 0x8000 + 1;
+            } else if ((object->context_flags_pc & 0x40) == 0 && !(object->context_timer <= object->context_duration)) {
+                object->combo_input_latched = 1;
             } else {
-                i32 random = qrand();
-                if (random < 0) {
-                    random += 0x7fff;
-                }
-                object->combo_input_latched = (random >> 15) + 1;
+                object->combo_input_latched = 2;
             }
         }
 
@@ -5222,7 +5215,117 @@ static __declspec(noinline) void PunchCode(GAMEOBJECT *object, i32 pressed, i32 
         } else {
             object->context_timer -= FRAMETIME;
         }
-        if (!(object->context_timer <= 0.0f)) {
+        if (object->context_timer <= 0.0f) {
+            object->character_context = -1;
+            if (object->special_move_pc != -1) {
+                if (SpecialMove_GetFlags(object->special_move_pc, 8) != 0) {
+                    if (object->force_target != NULL) {
+                        SetFlicker(object->force_target, 0.4f);
+                        if ((object->force_target->flags_1fc & 0x80) != 0) {
+                            TakeHitRumble(object, 0.7f);
+                        }
+                    }
+                    HitRumble(object);
+                }
+            } else {
+                if ((object->context_flags_pc & 0x40) == 0) {
+                    Punch_Hit(object, object->force_target, punch_gap, punch_charge_gap);
+                }
+                if (suppress_combo == 0 && (object->context_flags_pc & 0x80) == 0 && object->combo_stage < 2 &&
+                    object->combo_input_latched != 0 && object->attack_override != 6) {
+                    object->force_target = NULL;
+                    object->blowup_target = NULL;
+                    object->force_target = ObjOpponent(object, opponent_range, punch_charge_gap, 1, 1, 1);
+                    if (object->force_target == NULL) {
+                        if ((object->flags_1fc & 0x80) != 0)
+                            object->blowup_target = (BLOWUP_TARGET_PC *)GizmoBlowUpOpponent(
+                                object, opponent_range, punch_charge_gap, 0.0f, 4, 0, 0, 0);
+                        if (object->blowup_target == NULL)
+                            object->force_target = ObjOpponent(object, opponent_range, punch_charge_gap, 1, 1, 2);
+                    }
+                    if (require_target == 0 || object->force_target != NULL || object->blowup_target != NULL) {
+                        i32 alternate_animations[4];
+                        i32 i;
+                        object->combo_stage++;
+                        if ((object->context_flags_pc & 1) != 0) {
+                            alternate_animations[1] = -1;
+                            alternate_animations[2] = -1;
+                            alternate_animations[3] = -1;
+                            if (object->combo_stage == 1) {
+                                if (object->combo_input_latched == 2) {
+                                    object->combo_branch = 2;
+                                    alternate_animations[0] = 1;
+                                } else {
+                                    object->combo_branch = 1;
+                                    alternate_animations[0] = 2;
+                                }
+                            } else {
+                                if (object->combo_branch == 2) {
+                                    object->combo_branch = (object->combo_input_latched == 2) + 5;
+                                } else {
+                                    object->combo_branch = (object->combo_input_latched == 2) + 3;
+                                }
+                                alternate_animations[0] = 6;
+                                alternate_animations[1] = 5;
+                                alternate_animations[2] = 4;
+                                alternate_animations[3] = 3;
+                            }
+                            object->field_7aa = object->queued_context_animation + object->combo_branch;
+                            if (object->character_model->model_data_b[object->field_7aa] == NULL &&
+                                alternate_animations[0] != -1) {
+                                for (i = 0; i < 4; ++i) {
+                                    i32 animation = object->queued_context_animation + alternate_animations[i];
+                                    if (object->character_model->model_data_b[animation] != NULL) {
+                                        object->field_7aa = animation;
+                                        break;
+                                    }
+                                }
+                            }
+                        } else {
+                            object->field_7aa = object->combo_stage == 1 ? 0x55 : 0x56;
+                        }
+
+                        if (object->character_model->model_data_b[object->field_7aa] != NULL) {
+                            duration = AnimDuration((i16)object->id, object->field_7aa, 0.0f, 0.0f, 0);
+                            if (duration > 0.0f) {
+                                object->context_timer = duration;
+                                object->character_context = 0x26;
+                                object->context_duration =
+                                    (object->context_variant_flags & 1) != 0 && object->combo_stage < 2 ? 0.2f : 0.0f;
+                                object->context_variant_flags &= ~0x40;
+                                object->context_timer += object->context_duration;
+                                object->combo_input_latched = 0;
+                                ResetAnimPacket(&object->anim_packet, -1);
+                                if ((object->character_data->game_character->flags_098[0] & 0x10) == 0) {
+                                    if ((AnimMiscFlags(object->character_model, object->field_7aa) & 4) != 0) {
+                                        PlaySfx("WhipSwish", &object->collision_position);
+                                    } else {
+                                        PlaySfx("Swipe", &object->collision_position);
+                                    }
+                                }
+                                if (object->force_target == NULL && object->blowup_target == NULL) {
+                                    object->movement_facing_angle = GamePad_InputAngle(object, object->pad);
+                                }
+                            }
+                        }
+                    }
+                } else if ((held != 0 || object->attack_override == 6) &&
+                           (object->id == (u16)id_GAMORREANGUARD || object->id == (u16)id_CAPTAINTARPALS)) {
+                    StartHold(object);
+                }
+            }
+
+            if (object->character_context != -1) {
+                return;
+            }
+            if ((object->flags_e20 & 0x40000000) != 0) {
+                FastWeaponOut(object, 1);
+            }
+            if (cooldown != 0.0f) {
+                object->quick_shoot_timer = cooldown;
+            }
+            return;
+        } else {
             f32 hit_frame;
             if ((object->context_flags_pc & 0x40) != 0) {
                 return;
@@ -5234,113 +5337,6 @@ static __declspec(noinline) void PunchCode(GAMEOBJECT *object, i32 pressed, i32 
             Punch_Hit(object, object->force_target, punch_gap, punch_charge_gap);
             return;
         }
-
-        object->character_context = -1;
-        if (object->special_move_pc == -1) {
-            if ((object->context_flags_pc & 0x40) == 0) {
-                Punch_Hit(object, object->force_target, punch_gap, punch_charge_gap);
-            }
-            if (suppress_combo == 0 && (i8)(object->context_flags_pc) >= 0 && object->combo_stage < 2 &&
-                object->combo_input_latched != 0 && object->attack_override != 6) {
-                object->force_target = NULL;
-                object->blowup_target = NULL;
-                object->force_target = ObjOpponent(object, opponent_range, punch_charge_gap, 1, 1, 1);
-                if (object->force_target == NULL) {
-                    if ((object->flags_1fc & 0x80) != 0)
-                        object->blowup_target = (BLOWUP_TARGET_PC *)GizmoBlowUpOpponent(
-                            object, opponent_range, punch_charge_gap, 0.0f, 4, 0, 0, 0);
-                    if (object->blowup_target == NULL)
-                        object->force_target = ObjOpponent(object, opponent_range, punch_charge_gap, 1, 1, 2);
-                }
-                if (target_requirement == 0 || object->force_target != NULL || object->blowup_target != NULL) {
-                    i32 alternate_animations[4];
-                    i32 i;
-                    u8 combo_stage = object->combo_stage++;
-                    if ((object->context_flags_pc & 1) == 0) {
-                        object->field_7aa = combo_stage == 0 ? 0x55 : 0x56;
-                    } else {
-                        alternate_animations[1] = -1;
-                        alternate_animations[2] = -1;
-                        alternate_animations[3] = -1;
-                        if (combo_stage == 0) {
-                            if (object->combo_input_latched == 2) {
-                                object->combo_branch = 2;
-                                alternate_animations[0] = 1;
-                            } else {
-                                object->combo_branch = 1;
-                                alternate_animations[0] = 2;
-                            }
-                        } else {
-                            if (object->combo_branch == 2) {
-                                object->combo_branch = (object->combo_input_latched == 2) + 5;
-                            } else {
-                                object->combo_branch = (object->combo_input_latched == 2) + 3;
-                            }
-                            alternate_animations[0] = 6;
-                            alternate_animations[1] = 5;
-                            alternate_animations[2] = 4;
-                            alternate_animations[3] = 3;
-                        }
-                        object->field_7aa = object->queued_context_animation + object->combo_branch;
-                        if (object->character_model->model_data_b[object->field_7aa] == NULL &&
-                            alternate_animations[0] != -1) {
-                            for (i = 0; i < 4; ++i) {
-                                i32 animation = object->queued_context_animation + alternate_animations[i];
-                                if (object->character_model->model_data_b[animation] != NULL) {
-                                    object->field_7aa = animation;
-                                    break;
-                                }
-                            }
-                        }
-                    }
-
-                    if (object->character_model->model_data_b[object->field_7aa] != NULL) {
-                        duration = AnimDuration((i16)object->id, object->field_7aa, 0.0f, 0.0f, 0);
-                        if (duration > 0.0f) {
-                            object->character_context = 0x26;
-                            object->context_duration =
-                                (object->context_flags_pc & 1) != 0 && object->combo_stage < 2 ? 0.2f : 0.0f;
-                            object->combo_input_latched = 0;
-                            object->context_flags_pc &= ~0x40;
-                            object->context_timer = duration + object->context_duration;
-                            ResetAnimPacket(&object->anim_packet, -1);
-                            if ((object->character_data->game_character->flags_098[0] & 0x10) == 0) {
-                                if ((AnimMiscFlags(object->character_model, object->field_7aa) & 4) == 0) {
-                                    PlaySfx("Swipe", &object->collision_position);
-                                } else {
-                                    PlaySfx("WhipSwish", &object->collision_position);
-                                }
-                            }
-                            if (object->force_target == NULL && object->blowup_target == NULL) {
-                                object->movement_facing_angle = GamePad_InputAngle(object, object->pad);
-                            }
-                        }
-                    }
-                }
-            } else if ((held != 0 || object->attack_override == 6) &&
-                       (object->id == (u16)id_GAMORREANGUARD || object->id == (u16)id_CAPTAINTARPALS)) {
-                StartHold(object);
-            }
-        } else if (SpecialMove_GetFlags(object->special_move_pc, 8) != 0) {
-            if (object->force_target != NULL) {
-                SetFlicker(object->force_target, 0.4f);
-                if ((i8)(object->force_target->flags_1fc) < 0) {
-                    TakeHitRumble(object, 0.7f);
-                }
-            }
-            HitRumble(object);
-        }
-
-        if (object->character_context != -1) {
-            return;
-        }
-        if ((object->flags_e20 & 0x40000000) != 0) {
-            FastWeaponOut(object, 1);
-        }
-        if (cooldown != 0.0f) {
-            object->quick_shoot_timer = cooldown;
-        }
-        return;
     }
 
     if (cooldown != 0.0f && object->quick_shoot_timer > 0.0f) {
@@ -5350,91 +5346,85 @@ static __declspec(noinline) void PunchCode(GAMEOBJECT *object, i32 pressed, i32 
     if ((object->field_281 == 0 || object->character_context != -1) && objInNetWaitContext(object, 0x26) == 0) {
         return;
     }
-    if (StartupGameFlag1 == 0 && target_requirement == 0) {
-        if ((object->flags_1fc & 0x80) != 0) {
+    if (StartupGameFlag1 == 0 && require_target == 0) {
+        u32 player = (object->flags_1fc_word >> 7) & 1;
+        if (player) {
             if ((object->flags_e24 & 0x40) == 0)
                 return;
-        } else if (pressed == 0)
+        } else if (pressed == 0) {
             return;
-    } else if (pressed == 0)
+        }
+    } else if (pressed == 0) {
         return;
+    }
 
     PunchSelectOpponentPc(object, opponent_range, punch_charge_gap, 1, object->field_f00 == 5);
-    if (object->force_target != NULL) {
-        if ((i8)(object->flags_1fc) < 0 && object->force_target->character_context != 0x30) {
-            i32 special_move = SpecialMove_Check(object, object->force_target);
-            if (special_move != -1) {
-                object->special_move_pc = special_move;
-                object->context_variant_flags |= 0x200;
-                animation = SpecialMove_GetAttackerAction(object->special_move_pc);
-                object->field_7aa = animation;
+    if (object->force_target == NULL && (object->flags_1fc & 0x80) == 0 && object->attack_override == 0 &&
+        object->field_f00 != 5) {
+        return;
+    }
+    if (object->force_target != NULL && (object->flags_1fc & 0x80) != 0 &&
+        object->force_target->character_context != 0x30) {
+        i32 special_move = SpecialMove_Check(object, object->force_target);
+        if (special_move != -1) {
+            object->context_variant_flags |= 0x200;
+            object->special_move_pc = special_move;
+            object->field_7aa = SpecialMove_GetAttackerAction(object->special_move_pc);
+            object->combo_stage = 2;
+            object->context_variant_flags &= ~0x80;
+            goto start_attack;
+        }
+    }
+    if ((object->force_target != NULL && ComboOpponent_Behind != 0) ||
+        (object->blowup_target != NULL && GizmoBlowUpOpponent_Behind != 0)) {
+        object->special_move_pc = -1;
+        object->context_variant_flags |= 0x80;
+        object->field_7aa = 0x94;
+        object->combo_stage = 0;
+        goto start_attack;
+    }
+
+    object->special_move_pc = -1;
+    if (object->attack_override == 0) {
+        object->combo_stage = 0;
+        object->field_7aa = 0x51;
+        object->context_variant_flags &= ~0x80;
+    } else
+        switch (object->attack_override) {
+            case 1:
                 object->combo_stage = 2;
-                object->context_flags_pc &= ~0x80;
+                object->field_7aa = 0x51;
+                object->context_variant_flags &= ~0x80;
+                break;
+            case 2:
+                object->field_7aa = 0x55;
+                object->combo_stage = 2;
+                object->context_variant_flags &= ~0x80;
+                break;
+            case 3:
+                object->field_7aa = 0x56;
+                object->combo_stage = 2;
+                object->context_variant_flags &= ~0x80;
+                break;
+            case 4:
+                object->context_variant_flags |= 0x80;
+                object->field_7aa = 0x94;
+                object->combo_stage = 0;
                 goto start_attack;
-            }
-            if (object->force_target == NULL) {
-                goto choose_attack;
-            }
+            case 5:
+                object->field_7aa = 0x64;
+                break;
+            case 6:
+                StartHold(object);
+                return;
+            case 7:
+                return;
+            default:
+                object->combo_stage = 0;
+                object->field_7aa = 0x51;
+                object->context_variant_flags &= ~0x80;
+                break;
         }
-        if (ComboOpponent_Behind != 0) {
-            goto behind_attack;
-        }
-    } else {
-        if ((i8)(object->flags_1fc) >= 0 && object->attack_override == 0 && object->field_f00 != 5) {
-            return;
-        }
-        if (object->blowup_target != NULL && GizmoBlowUpOpponent_Behind != 0) {
-            goto behind_attack;
-        }
-    }
-
-choose_attack:
-    object->special_move_pc = -1;
-    switch (object->attack_override) {
-        case 1:
-            animation = 0x51;
-            object->field_7aa = animation;
-            object->combo_stage = 2;
-            object->context_flags_pc &= ~0x80;
-            break;
-        case 2:
-            animation = 0x55;
-            object->field_7aa = animation;
-            object->combo_stage = 2;
-            object->context_flags_pc &= ~0x80;
-            break;
-        case 3:
-            animation = 0x56;
-            object->field_7aa = animation;
-            object->combo_stage = 2;
-            object->context_flags_pc &= ~0x80;
-            break;
-        case 4:
-            goto behind_attack;
-        case 5:
-            animation = 0x64;
-            object->field_7aa = animation;
-            break;
-        case 6:
-            StartHold(object);
-            return;
-        case 7:
-            return;
-        default:
-            animation = 0x51;
-            object->field_7aa = animation;
-            object->combo_stage = 0;
-            object->context_flags_pc &= ~0x80;
-            break;
-    }
-    goto start_attack;
-
-behind_attack:
-    object->special_move_pc = -1;
-    animation = 0x94;
-    object->field_7aa = animation;
-    object->combo_stage = 0;
-    object->context_flags_pc |= 0x80;
 
 start_attack:
     object->context_variant_flags &= ~1;
@@ -5442,16 +5432,20 @@ start_attack:
         (object->id == (u16)VehicleBoltId7f17d4Pc && APICharacterLoaded(PunchRangeCompanionIdPc) != NULL)) {
         if (object->field_7aa == 0x51 && object->combo_stage == 0) {
             PUNCH_STYLE_VIEW_PC *style = (PUNCH_STYLE_VIEW_PC *)object;
-            i32 has_first = object->character_model->model_data_b[0x2e] != NULL;
-            i32 has_second = object->character_model->model_data_b[0x35] != NULL;
-            if (has_first) {
-                style->combo_style = has_second ? style->combo_style == 0 : 0;
-            } else {
-                style->combo_style = has_second ? 1 : 0xff;
-            }
+            CHARACTER_MODEL_LAYERS_PC *model = object->character_model;
+            i32 has_first = model->model_data_b[0x2e] != NULL;
+            i32 has_second = model->model_data_b[0x35] != NULL;
+            if (has_first && has_second)
+                style->combo_style = style->combo_style == 0;
+            else if (has_first)
+                style->combo_style = 0;
+            else if (has_second)
+                style->combo_style = 1;
+            else
+                style->combo_style = 0xff;
             if (style->combo_style != 0xff) {
-                i16 selected = style->combo_style == 0 ? 0x2e : 0x35;
-                if (object->character_model->model_data_b[selected] != NULL) {
+                i32 selected = style->combo_style != 0 ? 0x35 : 0x2e;
+                if (model->model_data_b[selected] != NULL) {
                     object->context_variant_flags |= 1;
                     object->queued_context_animation = selected;
                     object->combo_branch = 0;
@@ -5460,46 +5454,44 @@ start_attack:
             }
         }
     }
-    animation = object->field_7aa;
-    if (target_requirement == 2 && object->force_target == NULL && object->blowup_target != NULL) {
+    if (require_target == 2 && object->force_target == NULL && object->blowup_target != NULL) {
         return;
     }
-    if (object->character_model->model_data_b[animation] == NULL) {
+    if (object->character_model->model_data_b[object->field_7aa] == NULL) {
         return;
     }
-    if (target_requirement != 0 && object->force_target == NULL && object->blowup_target == NULL) {
+    if (require_target != 0 && object->force_target == NULL && object->blowup_target == NULL) {
         return;
     }
 
-    duration = AnimDuration((i16)object->id, animation, 0.0f, 0.0f, 0);
+    duration = AnimDuration((i16)object->id, object->field_7aa, 0.0f, 0.0f, 0);
     if (duration > 0.0f) {
-        u8 context_flags_pc = object->context_flags_pc;
+        f32 extra;
+        object->context_variant_flags &= ~0x40;
+        object->context_timer = duration;
         object->character_context = 0x26;
         object->combo_input_latched = 0;
-        object->context_timer = duration;
-        object->context_flags_pc = context_flags_pc & ~0x40;
-        object->context_duration = (context_flags_pc & 1) != 0 ? 0.2f : 0.0f;
-        if ((i8)(object->context_flags_pc) >= 0) {
-            object->context_timer += object->context_duration;
+        extra = (object->context_variant_flags & 1) != 0 ? 0.2f : 0.0f;
+        object->context_duration = extra;
+        if ((object->context_variant_flags & 0x80) == 0) {
+            object->context_timer = duration + extra;
         }
         ResetAnimPacket(&object->anim_packet, -1);
         if ((object->character_data->game_character->flags_098[0] & 0x10) == 0) {
-            if ((AnimMiscFlags(object->character_model, object->field_7aa) & 4) == 0) {
-                PlaySfx("Swipe", &object->collision_position);
-            } else {
+            if ((AnimMiscFlags(object->character_model, object->field_7aa) & 4) != 0) {
                 PlaySfx("WhipSwish", &object->collision_position);
+            } else {
+                PlaySfx("Swipe", &object->collision_position);
             }
         }
-        if ((object->character_data->game_character->flags_090 & 0x20) == 0) {
-            i32 weapon_out = 1;
-            if ((object->flags_e20 & 0x10000) == 0) {
-                weapon_out = object->field_e33 == 1;
-            }
-            object->flags_e20 = (object->flags_e20 & ~0x40000000) | ((u32)weapon_out << 30);
-            SetWeaponIn(object);
-        } else {
+        if ((object->character_data->game_character->flags_090 & 0x20) != 0) {
             object->flags_e20 |= 0x40000000;
             SetWeaponOut(object);
+        } else {
+            u32 flags_e20 = object->flags_e20;
+            u32 weapon_out = (flags_e20 & 0x10000) != 0 || object->field_e33 == 1;
+            object->flags_e20 = ((weapon_out << 30) ^ flags_e20) & 0x40000000 ^ flags_e20;
+            SetWeaponIn(object);
         }
 
         if (object->force_target != NULL && object->special_move_pc != -1) {
