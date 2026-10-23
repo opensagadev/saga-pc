@@ -390,33 +390,56 @@ extern "C" {
         }
     }
 
+#define FOOTSTEP_CHECK(index)                                                                                          \
+    frame = config->event_frames[index];                                                                               \
+    if (frame >= 1.0f && valid_interval) {                                                                             \
+        if (frame <= current) {                                                                                        \
+            if (previous > current || frame > previous)                                                                \
+                crossed = 1;                                                                                           \
+        } else if (previous > current && frame > previous) {                                                           \
+            crossed = 1;                                                                                               \
+        }                                                                                                              \
+    }
+
     void __cdecl AddFootSteps(GAMEOBJECT *object) {
         ANIMPACKET_PC *packet = &object->anim_packet;
         CHARACTERANIM_CONFIG_PC *config;
-        i32 index;
         i32 valid_interval;
-        i32 crossed = 0;
+        i32 crossed;
         f32 frame;
-        if (packet->blending != 0 || packet->animation_index == -1 ||
-            object->character_model->action_animations[packet->animation_index] == NULL)
+        f32 previous;
+        f32 current;
+        i32 index;
+        if (packet->blending != 0)
             return;
-        config = object->character_model->animation_configs[packet->animation_index];
-        if ((config->flags & 0x100) == 0 || packet->current_time == packet->previous_time)
+        index = packet->animation_index;
+        if (index == -1 || object->character_model->action_animations[index] == NULL)
             return;
-        valid_interval = (packet->flags & 2) != 0 ? packet->previous_time > packet->current_time
-                                                  : packet->previous_time < packet->current_time;
-        for (index = (config->flags & 0x10000) != 0 ? 0 : 2; index < 4; ++index) {
-            frame = config->event_frames[index];
-            if (!(frame >= 1.0f) || !valid_interval)
-                continue;
-            if (packet->previous_time > packet->current_time)
-                crossed |= frame > packet->previous_time || frame <= packet->current_time;
-            else
-                crossed |= frame > packet->previous_time && frame <= packet->current_time;
+        config = object->character_model->animation_configs[index];
+        if ((config->flags & 0x100) == 0)
+            return;
+        previous = packet->previous_time;
+        current = packet->current_time;
+        if (current == previous)
+            return;
+        crossed = 0;
+        valid_interval = 0;
+        if ((packet->flags & 2) != 0) {
+            if (previous > current)
+                valid_interval = 1;
+        } else if (previous < current) {
+            valid_interval = 1;
         }
+        if ((config->flags & 0x10000) != 0) {
+            FOOTSTEP_CHECK(0)
+            FOOTSTEP_CHECK(1)
+        }
+        FOOTSTEP_CHECK(2)
+        FOOTSTEP_CHECK(3)
         if (crossed)
             PlayFootStepSfx(object);
     }
+#undef FOOTSTEP_CHECK
 }
 
 extern "C" i32 __cdecl IsSfxLooping(i32 id) {
