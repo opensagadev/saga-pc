@@ -905,6 +905,60 @@ static void cbmcfgCancel(eduimenu_s *menu, eduimenu_s *unused1) {
     eduiMenuDetach(menu);
 }
 
+void __cdecl eduiGradStageSetHSV(edui_gradient_node_s *stage, f32 hue, f32 saturation, f32 value);
+
+edui_gradient_node_s *__cdecl eduiGradStageAdd(edui_gradient_pick_s *item, f32 time, f32 hue, f32 saturation,
+                                               f32 value) {
+    edui_gradient_node_s *stage =
+        (edui_gradient_node_s *)NuAlloc(sizeof(edui_gradient_node_s), EduiSourcePathPc, 0xa37);
+    edui_gradient_node_s *previous;
+    edui_gradient_node_s *next;
+    if (stage) {
+        memset(stage, 0, sizeof(edui_gradient_node_s));
+        previous = NULL;
+        for (next = item->first_stage; next; next = next->next) {
+            if (next->time > time)
+                break;
+            previous = next;
+        }
+        if (previous)
+            previous->next = stage;
+        else
+            item->first_stage = stage;
+        if (next)
+            next->previous = stage;
+        stage->time = time;
+        stage->previous = previous;
+        stage->next = next;
+        eduiGradStageSetHSV(stage, hue, saturation, value);
+        item->selected_stage = stage;
+    }
+    return stage;
+}
+
+void __cdecl eduicbItemGradPickDestroy(eduimenu_s *menu, eduiitem_s *item);
+i32 __cdecl eduicbProcessGradPickItem(eduimenu_s *menu, eduiitem_s *item, f32 delta_time, FRAME_PAD_PC *pad);
+
+eduiitem_s *__cdecl eduiItemGradPickCreate(u32 data, void *colours, void *callback, char *text) {
+    edui_gradient_pick_s *item = (edui_gradient_pick_s *)NuAlloc(sizeof(edui_gradient_pick_s), EduiSourcePathPc, 0xaa2);
+    if (item) {
+        memset(item, 0, sizeof(edui_gradient_pick_s));
+        item->base.data = data;
+        item->base.type = 7;
+        memcpy(item->base.colours, colours, sizeof(item->base.colours));
+        item->base.text_alignment = 0x40;
+        item->base.selection_group = 0;
+        item->base.process = eduicbProcessGradPickItem;
+        item->base.render = eduicbRenderGradPick;
+        item->base.destroy = eduicbItemGradPickDestroy;
+        eduiItemSetText(&item->base, text);
+        item->changed = (void(__cdecl *)(eduimenu_s *, eduiitem_s *, u32))callback;
+        item->change_timer = 0;
+        return &item->base;
+    }
+    return NULL;
+}
+
 eduiitem_s *eduiItemGreyGradPickCreate(size_t data, const void *colours, EdUiItemCallback callback, char *text) {
     eduiitem_s *item = eduiItemGradPickCreate(data, colours, callback, text);
     if (item)
@@ -1176,6 +1230,44 @@ eduiitem_s *__cdecl eduiItemTextPickCreate(u32 data, void *colours, void *callba
         item->cursor = 0;
         eduiItemTextPickSetFmt(item, "\"%s\"");
         memcpy(textrow, edui_textrow_default, sizeof(textrow));
+        return &item->base;
+    }
+    return NULL;
+}
+
+void __cdecl eduiItemFilePickSetFmt(edui_file_pick_s *item, char *format) {
+    if (item->format) {
+        if (NuStrLen(item->format) >= NuStrLen(format))
+            goto copy;
+        NuFree(item->format, EduiSourcePathPc, 0x881);
+        item->format = (char *)NuAlloc(NuStrLen(format) + 1, EduiSourcePathPc, 0x882);
+    } else {
+        item->format = (char *)NuAlloc(NuStrLen(format) + 1, EduiSourcePathPc, 0x886);
+    }
+copy:
+    NuStrCpy(item->format, format);
+}
+
+eduiitem_s *__cdecl eduiItemFilePickCreate(u32 data, void *colours, void *callback, char *text) {
+    edui_file_pick_s *item = (edui_file_pick_s *)NuAlloc(sizeof(edui_file_pick_s), EduiSourcePathPc, 0x950);
+    if (item) {
+        memset(item, 0, sizeof(edui_file_pick_s));
+        item->base.data = data;
+        item->base.type = 1;
+        memcpy(item->base.colours, colours, sizeof(item->base.colours));
+        item->base.text_alignment = 0x40;
+        item->base.selection_group = 0;
+        item->base.process = eduicbProcessFilePick;
+        item->base.render = eduicbRenderFilePick;
+        item->base.destroy = eduicbItemFilePickDestroy;
+        eduiItemSetText(&item->base, text);
+        item->changed = (void(__cdecl *)(eduimenu_s *, eduiitem_s *, u32))callback;
+        item->format = NULL;
+        item->name[0] = 0;
+        item->directory[0] = 0;
+        item->filename[0] = 0;
+        item->compare_entries = NULL;
+        eduiItemFilePickSetFmt(item, "\"%s\"");
         return &item->base;
     }
     return NULL;
