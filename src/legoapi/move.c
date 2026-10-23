@@ -1892,6 +1892,13 @@ i32 __cdecl MovePlayer_CIRCLE(GAMEOBJECT *object) {
     return 1;
 }
 
+typedef struct move_gunship_level_flags_pc_s {
+    u8 progress;
+    u8 secondary;
+    u8 reserved[14];
+} MOVE_GUNSHIP_LEVEL_FLAGS_PC;
+STATIC_ASSERT(sizeof(MOVE_GUNSHIP_LEVEL_FLAGS_PC) == sizeof(LevFlag));
+
 i32 __cdecl MovePlayer_GUNSHIPIN(GAMEOBJECT *object) {
     WORLDINFO *world = WorldInfo_CurrentlyActive();
     GAMEPAD_PC *pad = object->pad;
@@ -1901,37 +1908,37 @@ i32 __cdecl MovePlayer_GUNSHIPIN(GAMEOBJECT *object) {
     f32 seek_rate, maximum, fraction, half_speed;
     u16 heading;
     i32 flicker, lean;
-    if (object->field_280 == 0xff || BONUS_GUNSHIPA_LDATA == NULL || world->current_level != BONUS_GUNSHIPA_LDATA ||
-        world->sock_sys == NULL || object->sock_index == 0xff)
+    if (object->field_280 == 0xff)
+        return 0;
+    if (BONUS_GUNSHIPA_LDATA == NULL || world->current_level != BONUS_GUNSHIPA_LDATA || world->sock_sys == NULL ||
+        object->sock_index == 0xff)
         return 0;
     object->movement_mode = 3;
     heading = object->sock_body_heading;
     if (object->character_context == 0x23 || object->character_context == 0x24) {
-        object->target_velocity = v000;
+        object->target_velocity.x = object->target_velocity.y = object->target_velocity.z = 0.0f;
         ForceAlongSock(object);
         object->velocity.x = SeekValF(object->velocity.x, object->target_velocity.x, 0.0f);
         object->velocity.z = SeekValF(object->velocity.z, object->target_velocity.z, 0.0f);
     } else if ((object->flags_e20 & 0x20) != 0) {
         MoveInactiveVehicle(object, 1, &vehicle);
         if (vehicle != NULL) {
-            object->field_0x276 = vehicle->field_0x276;
-            object->movement_facing_angle = vehicle->field_0x276;
-            object->facing_angle = vehicle->field_0x276;
+            object->facing_angle = object->movement_facing_angle = object->field_0x276 = vehicle->field_0x276;
             object->velocity = vehicle->velocity;
             object->field_dc8 = vehicle->field_dc8;
-            object->movement_lean_angle = object->tertiary_lean_angle = object->secondary_lean_angle = 0;
+            object->secondary_lean_angle = object->tertiary_lean_angle = object->movement_lean_angle = 0;
             object->roll_angle = object->pitch_angle = 0;
         }
     } else {
+        object->target_velocity.y = 0.0f;
         data = object->character_data->game_character;
         seek_rate = data->velocity_seek_rate;
-        object->target_velocity.y = 0.0f;
         if (object->movement_direction_x != 0.0f || object->movement_direction_z != 0.0f) {
             object->target_velocity.x = object->movement_direction_x;
             object->target_velocity.z = object->movement_direction_z;
             object->movement_direction_x = object->movement_direction_z = 0.0f;
         } else {
-            if ((LevFlag[0] & 0xff00) != 0) {
+            if (((MOVE_GUNSHIP_LEVEL_FLAGS_PC *)LevFlag)->secondary != 0) {
                 input_x = object->position.x < -1.0f ? 1.0f : object->position.x > 1.0f ? -1.0f : 0.0f;
                 input_z = 0.0f;
                 magnitude = data->run_speed;
@@ -1943,16 +1950,15 @@ i32 __cdecl MovePlayer_GUNSHIPIN(GAMEOBJECT *object) {
                     object->target_velocity.z = input_z * magnitude;
             } else
                 object->target_velocity.x = 0.0f;
-            flicker = (object->flags_e24 >> 16) & 7;
-            if (object->vehicle_hit_timer > 0.0f && flicker != 0) {
-                maximum = (f32)(1.5 * data->run_speed);
+            if (object->vehicle_hit_timer > 0.0f && (flicker = (object->flags_e24 >> 16) & 7) != 0) {
+                maximum = (f32)(object->character_data->game_character->run_speed * 1.5);
                 fraction = (f32)(object->vehicle_hit_timer / (f64)0.4f);
-                half_speed = (f32)(object->target_velocity.z * 0.5);
                 if (flicker == 3) {
-                    object->target_velocity.z = half_speed + fraction * maximum;
+                    object->target_velocity.z = fraction * maximum + (f32)(object->target_velocity.z * 0.5);
                     if (object->target_velocity.z > maximum)
                         object->target_velocity.z = maximum;
                 } else {
+                    half_speed = (f32)(object->target_velocity.z * 0.5);
                     object->target_velocity.z = half_speed - fraction * maximum;
                     if (-maximum > object->target_velocity.z)
                         object->target_velocity.z = -maximum;
@@ -1965,8 +1971,7 @@ i32 __cdecl MovePlayer_GUNSHIPIN(GAMEOBJECT *object) {
         object->velocity.z = SeekValF(object->velocity.z, object->target_velocity.z, seek_rate);
     }
     object->movement_facing_angle = heading;
-    object->facing_angle = SeekRot(object->facing_angle, heading, 8.0f);
-    object->field_0x276 = object->facing_angle;
+    object->facing_angle = object->field_0x276 = SeekRot(object->facing_angle, heading, 8.0f);
     object->pitch_angle = SeekRot(object->pitch_angle, 0, 8.0f);
     lean = object->character_context == 0x23 || object->character_context == 0x24
                ? 0
