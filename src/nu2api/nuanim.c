@@ -2112,6 +2112,25 @@ void __cdecl NuAnimBuffEvaluateCallback(ANI3_EVAL_CALLBACK_PC callback, void **d
     AnimBuffEvalJoint = joints;
 }
 
+static __declspec(noinline) void NuAnimMtxCopyPrivatePc(NUMTX *destination, const NUMTX *source) {
+    destination->m00 = source->m00;
+    destination->m01 = source->m01;
+    destination->m02 = source->m02;
+    destination->m03 = source->m03;
+    destination->m10 = source->m10;
+    destination->m11 = source->m11;
+    destination->m12 = source->m12;
+    destination->m13 = source->m13;
+    destination->m20 = source->m20;
+    destination->m21 = source->m21;
+    destination->m22 = source->m22;
+    destination->m23 = source->m23;
+    destination->m30 = source->m30;
+    destination->m31 = source->m31;
+    destination->m32 = source->m32;
+    destination->m33 = source->m33;
+}
+
 void __cdecl NuAnimBuffEvaluate_3(ANI3_BUFFER_PC *buffer, NUHGOBJ_EVAL_PC *object, NUMTX *matrices,
                                   ANI3_HEADER_PC *animation, ANI3_ROOT_CALLBACK_PC root_fn, NUVEC *root_translation,
                                   void *root_data) {
@@ -2119,17 +2138,17 @@ void __cdecl NuAnimBuffEvaluate_3(ANI3_BUFFER_PC *buffer, NUHGOBJ_EVAL_PC *objec
     ANI3_JOINT_PC *joint;
     NUHGOBJ_EVAL_JOINT_PC *hierarchy_joint;
     NUVEC *scale;
-    NUVEC *parent_scale;
     NUVEC inverse;
     NUVEC translation;
     NUVEC root_values;
+    NUVEC rotation;
     NUANGVEC angles;
     NUMTX *matrix;
     i32 index;
-    i32 mapped;
     i32 count;
-    u8 parent;
+    i32 parent;
     u8 flags;
+    u8 *joint_flags;
 
     if (buffer == NULL)
         buffer = (ANI3_BUFFER_PC *)globalbuffer;
@@ -2140,57 +2159,57 @@ void __cdecl NuAnimBuffEvaluate_3(ANI3_BUFFER_PC *buffer, NUHGOBJ_EVAL_PC *objec
     if (AnimBuffEvalData != NULL && AnimBuffEvalJoint != NULL) {
         memset(callback_data, 0, object->joint_count * sizeof(void *));
         for (index = 0; AnimBuffEvalData[index] != NULL; ++index) {
-            mapped = AnimBuffEvalJoint[index];
-            if (mapped >= 0 && mapped < object->joint_override_map_count) {
-                parent = object->joint_override_map[mapped];
+            if (AnimBuffEvalJoint[index] >= 0 && AnimBuffEvalJoint[index] < object->joint_override_map_count) {
+                parent = object->joint_override_map[AnimBuffEvalJoint[index]];
                 if (parent != 255)
                     callback_data[parent] = AnimBuffEvalData[index];
             }
         }
     }
-    ANI3_EVAL_SCALE_ARRAY[255].x = 1.0f;
-    ANI3_EVAL_SCALE_ARRAY[255].y = 1.0f;
-    ANI3_EVAL_SCALE_ARRAY[255].z = 1.0f;
-    count = (i32)(u16)animation->node_count;
-    if (count >= object->joint_count)
-        count = object->joint_count;
+    ANI3_EVAL_SCALE_ARRAY[255].x = ANI3_EVAL_SCALE_ARRAY[255].y = ANI3_EVAL_SCALE_ARRAY[255].z = 1.0f;
+    count = object->joint_count;
+    if ((i32)(u16)animation->node_count < count)
+        count = (u16)animation->node_count;
     root_values.x = root_values.y = root_values.z = 0.0f;
-    for (index = 0; index < count; ++index) {
-        joint = &buffer->joints[index];
-        hierarchy_joint = &object->joints[index];
+    joint_flags = buffer->joint_flags;
+    joint = buffer->joints;
+    hierarchy_joint = object->joints;
+    for (index = 0; index < count; ++index, ++joint, ++hierarchy_joint) {
         matrix = &matrices[index];
         parent = hierarchy_joint->parent_index;
-        parent_scale = &ANI3_EVAL_SCALE_ARRAY[parent];
         scale = &ANI3_EVAL_SCALE_ARRAY[index];
-        flags = buffer->joint_flags[index];
+        flags = *joint_flags++;
         if ((flags & 1) != 0) {
-            angles.x = (i32)((f64)joint->rotation.x * AIPathAngularScale);
-            angles.y = (i32)((f64)joint->rotation.y * AIPathAngularScale);
-            angles.z = (i32)((f64)joint->rotation.z * AIPathAngularScale);
+            rotation.x = joint->rotation.x;
+            rotation.y = joint->rotation.y;
+            rotation.z = joint->rotation.z;
+            angles.x = (i32)((f64)rotation.x * AIPathAngularScale);
+            angles.y = (i32)((f64)rotation.y * AIPathAngularScale);
+            angles.z = (i32)((f64)rotation.z * AIPathAngularScale);
             NuMtxSetRotateXYZVU0(matrix, &angles);
             if ((flags & 0x20) != 0)
                 NuMtxMulRVU0(matrix, matrix, &hierarchy_joint->bind_matrix);
-        } else if ((flags & 0x20) != 0) {
-            *matrix = hierarchy_joint->bind_matrix;
         } else {
-            *matrix = NuMtxSetIdentityTemplate;
+            NuAnimMtxCopyPrivatePc(matrix,
+                                   (flags & 0x20) != 0 ? &hierarchy_joint->bind_matrix : &ANI3_EVAL_IDENTITY_MATRIX);
         }
         if ((flags & 8) != 0) {
             scale->x = joint->scale.x;
             scale->y = joint->scale.y;
             scale->z = joint->scale.z;
             NuMtxPreScaleVU0(matrix, scale);
-            scale->x *= parent_scale->x;
-            scale->y *= parent_scale->y;
-            scale->z *= parent_scale->z;
+            scale->x *= ANI3_EVAL_SCALE_ARRAY[parent].x;
+            scale->y *= ANI3_EVAL_SCALE_ARRAY[parent].y;
+            scale->z *= ANI3_EVAL_SCALE_ARRAY[parent].z;
         } else {
-            *scale = *parent_scale;
+            *scale = ANI3_EVAL_SCALE_ARRAY[object->joints[index].parent_index];
         }
         if ((flags & 0x10) != 0) {
-            if (parent_scale->x != 0.0f && parent_scale->y != 0.0f && parent_scale->z != 0.0f) {
-                inverse.x = 1.0f / parent_scale->x;
-                inverse.y = 1.0f / parent_scale->y;
-                inverse.z = 1.0f / parent_scale->z;
+            if (ANI3_EVAL_SCALE_ARRAY[parent].x != 0.0f && ANI3_EVAL_SCALE_ARRAY[parent].y != 0.0f &&
+                ANI3_EVAL_SCALE_ARRAY[parent].z != 0.0f) {
+                inverse.x = 1.0f / ANI3_EVAL_SCALE_ARRAY[parent].x;
+                inverse.y = 1.0f / ANI3_EVAL_SCALE_ARRAY[parent].y;
+                inverse.z = 1.0f / ANI3_EVAL_SCALE_ARRAY[parent].z;
                 scale->x *= inverse.x;
                 scale->y *= inverse.y;
                 scale->z *= inverse.z;
