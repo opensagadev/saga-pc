@@ -1607,17 +1607,18 @@ void __cdecl DrawCodeMenu3D(void) {
             letters[i] = ShopUserCodePc[i] - '0' + 26;
     }
     if (ShopPurchasePulsePc > 0.0f) {
-        bing = ShopPurchasePulsePc / ShopPurchasePulseDurationPc;
+        bing = ShopPurchasePulsePc;
+        bing /= ShopPurchasePulseDurationPc;
         bing = (f32)((f64)bing * 0.5);
         ShopPurchasePulsePc -= FRAMETIME;
     } else {
         ShopPurchasePulsePc = 0.0f;
     }
     for (i = 0; i < 6; ++i) {
-        if (ShopColumnPc == i) {
+        if (i == ShopColumnPc) {
             scale = codeshelfscale[i] * ShopNativeScalePc[3] * ShopInOutScalePc + bing * ShopCodePulseScalePc;
             push = subpush[1];
-        } else if (ShopLastItemPc == i) {
+        } else if (i == ShopLastItemPc) {
             scale = codeshelfscale[i] * ShopNativeScalePc[3] * ShopInOutScalePc + bing * ShopCodePulseScalePc;
             push = subpush[2];
         } else {
