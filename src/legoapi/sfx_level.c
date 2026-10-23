@@ -563,3 +563,11 @@ void __cdecl SetLevelSfxBits(WORLDINFO *world) {
 #undef ADD_GAME_SFX
 #undef ADD_SFX
 }
+
+/* PC 0x00547d70. */
+void __cdecl LevChatterSfx(char *name, NUVEC *position) {
+    if (TerrainChatterWaitPc <= 0.0f && qrand() < 0x400) {
+        PlaySfx(name, position);
+        TerrainChatterWaitPc = (f32)((f64)qrand() * PlayerRandomScalePc * 2.0 + NuTimeBarColumnStep);
+    }
+}

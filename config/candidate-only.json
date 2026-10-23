@@ -462,6 +462,11 @@
    "kind": "function"
   },
   {
+   "unit": "src/legoapi/episodeIV.c",
+   "symbol": "_AsteroidSetAngVec",
+   "kind": "function"
+  },
+  {
    "unit": "src/legoapi/fade.cpp",
    "symbol": "??_GFade@@UAEPAXI@Z",
    "kind": "function"

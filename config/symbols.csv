@@ -1803,6 +1803,7 @@ address,symbol,size,ctype
 0x4ba2d0,_DrawBossHitPoints,10,
 0x4ba2e0,_DrawMeleeTargetsPc,496,"void __cdecl (i16 *, u8 *, i32)"
 0x4ba4d0,_DrawMeleeTargetsRowsPc,430,"void __cdecl (i16 *, char *, f32 *, i32)"
+0x4ba680,_DrawMeleeTargetsNumber,1095,"void __cdecl (i16 *, u8 *, i32, i32, NUSPECIALHANDLE *)"
 0x4baad0,_DrawMeleeTargetsAlphaPc,386,"void __cdecl(i16 *, u8 *, f32 *, i32)"
 0x4bac60,_DrawTimerPc,367,"void __cdecl (i32, i32, i32)"
 0x004badd0,_InitPanel,106,void __cdecl (i32)
@@ -14234,6 +14235,7 @@ address,symbol,size,ctype
 0x75e244,??_C@_0L@BEDIMGKI@transport2?$AA@,11,char []
 0x75e250,??_C@_0L@NCDPHOJ@transport3?$AA@,11,char []
 0x75e25c,??_C@_0O@KBHELHN@rebelcruiser2?$AA@,14,char []
+0x75e26c,??_C@_0BA@HIPFKAPL@Gun_Turret_icon?$AA@,16,char []
 0x75e27c,??_C@_0O@NFAJCHNC@TrapBEndFight?$AA@,14,char []
 0x75e28c,??_C@_03BBKEAIF@?$DP?$DP?$DP?$AA@,4,char []
 0x75e290,??_C@_09KCEJPGDP@obstacle3?$AA@,10,char []
@@ -23065,7 +23067,7 @@ address,symbol,size,ctype
 0x889630,_vader_b_playersDead,1,u8
 0x00889634,_CarWashHack,4,GAMEOBJECT *
 0x889638,_trenchrun,32,TRENCHRUN_PC
-0x00889658,_DeathStarEscapeBNetPacketPc,4,u8 *
+0x00889658,_DeathStarEscapeBNetPacketPc,4,i8 *
 0x889660,_asteroids,3072,ASTEROID_PC[128]
 0x88a260,_asteroidc_netpacket,4,ASTEROIDC_NETPACKET_PC *
 0x88a264,_HothBattleENetPacketPc,4,HOTHBATTLEE_NETPACKET_PC *
@@ -23074,6 +23076,8 @@ address,symbol,size,ctype
 0x88a2a8,_minikitCounter_A,1,u8
 0x88a2a9,_minikitCounter_C,1,u8
 0x88a2b0,_escape,96,nuhspecial_s[8]
+0x88a310,_lastPlaying,4,i32
+0x88a314,_specialIcon,12,NUSPECIALHANDLE
 0x88a320,_melee,200,HOTHBATTLE_MELEE_s
 0x88a3e8,_StarDestroyerTurrets,64,struct GIZTURRET_s *[16]
 0x88a428,_HothEscapeBLocatorPc,4,AILOCATOR_PC *

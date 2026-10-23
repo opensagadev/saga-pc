@@ -34724,7 +34724,7 @@ extern "C" {
     JEDIB_NETPACKET_PC *jedib_netpacket = NULL;
     JEDIB_STATE_PC jedi_b = {0};
 #pragma bss_seg(".bss$DeathStarEscapeBNetPacketPc")
-    u8 *DeathStarEscapeBNetPacketPc = 0;
+    i8 *DeathStarEscapeBNetPacketPc = 0;
 #pragma bss_seg()
 #pragma const_seg(".rdata$DeathStarEscapeBSpongePc")
     extern const char DeathStarEscapeBSpongePc[7] = "sponge";

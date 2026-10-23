@@ -18886,7 +18886,7 @@ extern "C" {
     void __cdecl DeathStarEscapeB_Init(WORLDINFO *);
     void __cdecl DeathStarEscapeB_Update(WORLDINFO *);
     extern f32 fakeanimendframe[1], fakeanimframe[1];
-    extern u8 *DeathStarEscapeBNetPacketPc;
+    extern i8 *DeathStarEscapeBNetPacketPc;
     extern const char DeathStarEscapeBSpongePc[7];
     extern const char DeathStarEscapeBLiftDownPc[10];
     extern const char DeathStarEscapeBLiftUpPc[8];
