@@ -1033,12 +1033,12 @@ i32 __cdecl SubItemMenu(void *menu) {
     SHOP_INPUT_PC input;
     shopitem_s *items = NULL;
     shopitem_s *selected;
-    i32 *ids = NULL, *count = NULL;
-    NUVEC *positions = NULL;
+    i32 *ids, *count;
+    NUVEC *positions;
     NUVEC position;
     i32 left = 0, right = 0, cancel = 0, scrolling = 0;
     f32 ypush = 0.0f, phase, factor;
-    i32 angle, moved;
+    i32 angle;
     (void)menu;
     Shop_GetInputPc(&input);
     if (ShopHintDrawWaitPc > 0.0f) {
@@ -1083,6 +1083,10 @@ i32 __cdecl SubItemMenu(void *menu) {
         positions = CutCurPos;
         count = &SHOPCUTCOUNT;
         ypush = SubNormCharPush;
+    } else {
+        ids = NULL;
+        positions = NULL;
+        count = NULL;
     }
     if (ShopSlideTimerPc >= 0.0f) {
         ShopSlideTimerPc -= FRAMETIME;
@@ -1093,27 +1097,33 @@ i32 __cdecl SubItemMenu(void *menu) {
         phase = (f32)(1.0 - (f64)ShopSlideTimerPc * 8.0);
         angle = (i32)((f64)phase * 32768.0 + 16384.0);
         factor = (f32)(1.0 - ((f64)NuTrigTable[(angle >> 1) & 0x7fff] + 1.0) * 0.5);
-        factor = factor < 1.0f ? factor : 1.0f;
-        factor = 0.0f > factor ? 0.0f : factor;
-        if (ShopEaseSubInPc == 1)
+        if (ShopEaseSubInPc == 1) {
+            factor = factor > 1.0f ? 1.0f : factor;
+            factor = 0.0f > factor ? 0.0f : (factor < 1.0f ? factor : 1.0f);
             ShopInOutScalePc = 0.0f + factor;
-        else if (ShopEaseSubInPc == -1)
-            ShopInOutScalePc = (f32)(1.0 - (f64)factor);
+        } else if (ShopEaseSubInPc == -1) {
+            factor = factor < 1.0f ? factor : 1.0f;
+            factor = factor < 0.0 ? 0.0f : (factor < 1.0f ? factor : 1.0f);
+            ShopInOutScalePc = (f32)((f64)factor * -1.0 + 1.0);
+        }
     }
     if (ShopMoveItemsPc != 0) {
         if (ShopSubMoveSfxLockPc == 0) {
             ShopSubMoveSfxLockPc = 1;
             GameAudio_PlaySfx(0x2f, positions, 0, 0);
         }
-        moved = 0;
-        if (ShopMoveItemsPc == 1)
-            moved = MoveSubItemsLeft(ids, positions, *count);
-        else if (ShopMoveItemsPc == 2)
-            moved = MoveSubItemsRight(ids, positions, *count);
-        if (moved != 0 && items != NULL) {
-            selected = &items[ids[3]];
-            if (selected->type == 0 && selected->unlocked == 1)
-                SelectSubItem();
+        if (ShopMoveItemsPc == 1) {
+            if (MoveSubItemsLeft(ids, positions, *count) != 0 && items != NULL) {
+                selected = &items[ids[3]];
+                if (selected->type == 0 && selected->unlocked == 1)
+                    SelectSubItem();
+            }
+        } else if (ShopMoveItemsPc == 2) {
+            if (MoveSubItemsRight(ids, positions, *count) != 0 && items != NULL) {
+                selected = &items[ids[3]];
+                if (selected->type == 0 && selected->unlocked == 1)
+                    SelectSubItem();
+            }
         }
     } else {
         ShopSubMoveSfxLockPc = 0;
@@ -1131,21 +1141,40 @@ i32 __cdecl SubItemMenu(void *menu) {
             cancel = 1;
     }
     if (ShopExitPc == 0) {
-        if (left != 0 || right != 0) {
-            ShopScaleOverridePc[0] = left != 0 ? 0.0f : 1.0f;
-            ShopScaleOverridePc[1] = ShopScaleOverridePc[5] = 0.4f;
-            ShopScaleOverridePc[2] = ShopScaleOverridePc[4] = 0.8f;
-            ShopScaleOverridePc[6] = left != 0 ? 1.0f : 0.0f;
-            position = SubShelfPos[left != 0 ? 0 : 6];
+        if (left != 0) {
+            ShopScaleOverridePc[0] = 0.0f;
+            ShopScaleOverridePc[6] = 1.0f;
+            ShopScaleOverridePc[1] = 0.4f;
+            ShopScaleOverridePc[2] = 0.8f;
+            ShopScaleOverridePc[4] = 0.8f;
+            ShopScaleOverridePc[5] = 0.4f;
+            position = SubShelfPos[0];
             position.y += ypush;
             AddGameDebris(WORLD->game_debris_sys, qrand() / 10923 + 76, &position);
-            position = SubShelfPos[left != 0 ? 6 : 0];
+            position = SubShelfPos[6];
             position.y += ypush;
             AddGameDebris(WORLD->game_debris_sys, qrand() / 10923 + 76, &position);
-            ShopMoveItemsPc = left != 0 ? 1 : 2;
             ShopSlideTimerPc = 0.125f;
-            ShopHintDrawWaitPc = 0.2f;
+            ShopMoveItemsPc = 1;
             scrolling = 1;
+            ShopHintDrawWaitPc = 0.2f;
+        } else if (right != 0) {
+            ShopScaleOverridePc[0] = 1.0f;
+            ShopScaleOverridePc[6] = 0.0f;
+            ShopScaleOverridePc[1] = 0.4f;
+            ShopScaleOverridePc[2] = 0.8f;
+            ShopScaleOverridePc[4] = 0.8f;
+            ShopScaleOverridePc[5] = 0.4f;
+            position = SubShelfPos[6];
+            position.y += ypush;
+            AddGameDebris(WORLD->game_debris_sys, qrand() / 10923 + 76, &position);
+            position = SubShelfPos[0];
+            position.y += ypush;
+            AddGameDebris(WORLD->game_debris_sys, qrand() / 10923 + 76, &position);
+            ShopMoveItemsPc = 2;
+            ShopSlideTimerPc = 0.125f;
+            scrolling = 1;
+            ShopHintDrawWaitPc = 0.2f;
         }
         if (cancel != 0) {
             ShopSlideTimerPc = 0.125f;
