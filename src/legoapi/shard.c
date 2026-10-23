@@ -426,7 +426,7 @@ void InitExtraList(void) {
 }
 
 void InitAlphaList(void) {
-    i32 i;
+    u8 i;
     char name[16];
     for (i = 'a'; i <= 'z'; ++i) {
         memset(name, 0, sizeof(name));
