@@ -135,15 +135,13 @@ extern "C" {
         PCDisplayScenes[nudlist_field_9d8++] = scene;
         ResetSceneBeforeFramePC(scene, 1);
         for (i = 0; i < scene->sort_count; ++i) {
-            NUSORTPRI *sort = &scene->sort_pris[i];
             if (numtl_renderplane != 0)
-                sort->sort_pri += numtl_renderplane << 17;
-            DisplayInsertSortPC(sort);
+                scene->sort_pris[i].sort_pri += numtl_renderplane << 17;
+            DisplayInsertSortPC(&scene->sort_pris[i]);
         }
         if (scene->material_animations != NULL) {
-            PC_MATERIAL_ANIM_SET *animation = scene->material_animations;
-            animation->next = (PC_MATERIAL_ANIM_SET *)nudlist_field_fc8;
-            nudlist_field_fc8 = (u32)animation;
+            scene->material_animations->next = (PC_MATERIAL_ANIM_SET *)nudlist_field_fc8;
+            nudlist_field_fc8 = (u32)scene->material_animations;
         }
         scene->render_flags &= 0xffffdfef;
         scene->alpha_values = NULL;
