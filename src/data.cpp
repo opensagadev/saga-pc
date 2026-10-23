@@ -19201,6 +19201,9 @@ extern "C" {
 #pragma data_seg(".data$ForceFieldRippleRatePc")
     f32 ForceFieldRippleRatePc = 100.0f;
 #pragma data_seg()
+#pragma data_seg(".data$StreakAlphaScalePc")
+    f32 StreakAlphaScalePc = 2.0f;
+#pragma data_seg()
 #pragma const_seg(".rdata$RippleForceFieldSoundNamePc")
     const char RippleForceFieldSoundNamePc[10] = "SabFField";
 #pragma const_seg()

@@ -20796,6 +20796,7 @@ address,symbol,size,ctype
 0x00805714,_BUCK_RIDERJUMPCLEARANCE,4,f32
 0x805864,_RippleEffectNamesPc,,
 0x805870,_RippleEffectConfigKeywordsPc,,
+0x805984,_StreakAlphaScalePc,,f32
 0x8059f4,_hub_from_superstory,,i32
 0x8059f8,_hub_from_mission,,i32
 0x8059fc,_hub_startoutsidebonusdoor_area,,i32

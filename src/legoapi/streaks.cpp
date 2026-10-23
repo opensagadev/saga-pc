@@ -184,56 +184,53 @@ extern "C" void __cdecl UpdateStreaks(f32 elapsed) {
     StreakHeadersFreePc = free_headers;
 }
 
+extern "C" f32 StreakAlphaScalePc;
+#define STREAK_FADE(node) ((node)->remaining_time < 0.0f ? 0.0f : (node)->remaining_time)
+#define STREAK_ALPHA(colour, node) ((f64)(i32)((colour) >> 24) * STREAK_FADE(node) * StreakAlphaScalePc)
+#define STREAK_SET_ALPHA(colour, header, node)                                                                         \
+    (colour) = (header)->colour;                                                                                       \
+    ((u8 *)&(colour))[3] = (u8)(STREAK_ALPHA(colour, node) > 255.0 ? 255.0 : STREAK_ALPHA(colour, node))
 extern "C" void __cdecl DrawStreaks(void) {
     for (STREAK_HEADER_PC *header = StreakHeadersUsedPc; header != NULL; header = header->next) {
         NURND_VERTEX3D_PC vertices[256];
         i32 vertex_count = 0;
-        STREAK_NODE_PC *node = header->nodes;
-        while (node != NULL) {
-            f32 fade = node->remaining_time < 0.0f ? 0.0f : node->remaining_time;
-            f64 alpha = static_cast<f64>(header->colour >> 24) * fade * 2.0;
-            u32 colour = (header->colour & 0x00ffffff) |
-                         (static_cast<u32>(static_cast<u8>(static_cast<i32>(alpha > 255.0 ? 255.0 : alpha))) << 24);
+        u32 colour;
+        for (STREAK_NODE_PC *node = header->nodes; node != NULL; node = node->next) {
+            STREAK_SET_ALPHA(colour, header, node);
             vertices[vertex_count].position = node->position;
-            vertices[vertex_count].colour = colour;
             vertices[vertex_count].u = 0.01f;
+            vertices[vertex_count].colour = colour;
             vertices[vertex_count + 1].position = node->previous_position;
-            vertices[vertex_count + 1].colour = colour;
             vertices[vertex_count + 1].u = 0.99f;
+            vertices[vertex_count + 1].colour = colour;
             vertex_count += 2;
-            STREAK_NODE_PC *older = node->next;
-            if (older == NULL)
-                break;
-            for (i32 index = 1; index < older->segment_count; ++index) {
-                fade = node->remaining_time < 0.0f ? 0.0f : node->remaining_time;
-                alpha = static_cast<f64>(header->colour >> 24) * fade * 2.0;
-                colour = (header->colour & 0x00ffffff) |
-                         (static_cast<u32>(static_cast<u8>(static_cast<i32>(alpha > 255.0 ? 255.0 : alpha))) << 24);
-                vertices[vertex_count].position = older->positions[index - 1];
-                vertices[vertex_count].colour = colour;
-                vertices[vertex_count].u = 0.01f;
-                ++vertex_count;
-                fade = node->remaining_time < 0.0f ? 0.0f : node->remaining_time;
-                alpha = static_cast<f64>(header->colour >> 24) * fade * 2.0;
-                colour = (header->colour & 0x00ffffff) |
-                         (static_cast<u32>(static_cast<u8>(static_cast<i32>(alpha > 255.0 ? 255.0 : alpha))) << 24);
-                vertices[vertex_count].position = older->tangents[index - 1];
-                vertices[vertex_count].colour = colour;
-                vertices[vertex_count].u = 1.01f;
-                ++vertex_count;
+            if (node->next != NULL) {
+                for (i32 index = 1; index < node->next->segment_count; ++index) {
+                    STREAK_SET_ALPHA(colour, header, node);
+                    vertices[vertex_count].position = node->next->positions[index - 1];
+                    vertices[vertex_count].colour = colour;
+                    vertices[vertex_count].u = 0.01f;
+                    ++vertex_count;
+                    STREAK_SET_ALPHA(colour, header, node);
+                    vertices[vertex_count].position = node->next->tangents[index - 1];
+                    vertices[vertex_count].u = 1.01f;
+                    vertices[vertex_count].colour = colour;
+                    ++vertex_count;
+                }
             }
-            node = node->next;
         }
         for (i32 index = 0; index < vertex_count; index += 2) {
-            f32 v =
-                static_cast<f32>((static_cast<f64>(index) / static_cast<f32>(vertex_count)) * static_cast<f64>(0.99f));
+            f32 v = (f32)((f64)index / (f32)vertex_count * (f64)0.99f);
             vertices[index].v = v;
             vertices[index + 1].v = v;
         }
         NuRndrTriStrip3dClip(vertices, vertex_count, NULL,
-                             header->flags == 0 ? StreakMaterialPc : StreakReflectionMaterialPc);
+                             header->flags != 0 ? StreakReflectionMaterialPc : StreakMaterialPc);
     }
 }
+#undef STREAK_SET_ALPHA
+#undef STREAK_ALPHA
+#undef STREAK_FADE
 
 extern "C" void __cdecl ResetStreaks(void) {
     STREAK_HEADER_PC *header = StreakHeadersUsedPc;
