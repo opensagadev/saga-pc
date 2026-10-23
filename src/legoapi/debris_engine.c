@@ -22,12 +22,13 @@ void __cdecl AddChunkControlToStack(DEBRIS_CHUNK_CONTROL_PC *control, DEBRIS_CHU
 
 void __cdecl DebrisReserveTrashableSpace(VARIPTR *buffer, VARIPTR end, i32 chunk_count, i32 glass_chunk_count) {
     if (debris_trash_space == 0) {
-        buffer->addr = (buffer->addr + 0x7f) & ~0x7f;
-        debris_trash_space = buffer->addr;
+        u32 start = (buffer->addr + 0x7f) & ~0x7f;
+        buffer->addr = start;
         debrischunks = chunk_count;
         debrischunksglass = glass_chunk_count;
-        buffer->addr += chunk_count * 0x430 + glass_chunk_count * 0x1b0 + EDPP_MAX_DMADEBTYPES * 0xa4c;
-        debris_trash_size = buffer->addr - debris_trash_space;
+        debris_trash_space = start;
+        buffer->addr += EDPP_MAX_DMADEBTYPES * 0xa4c + chunk_count * 0x430 + glass_chunk_count * 0x1b0;
+        debris_trash_size = buffer->addr - start;
     }
 }
 
@@ -171,27 +172,22 @@ void __cdecl RemoveAnyChunkControls(DEBRIS_PARTICLE_CHUNK_PC *chunk) {
 
 void __cdecl DebrisProcessSpheres(DEBRISPARTICLE_PC *particle, f32 time, DEBRIS_INFO_PC *effect, DEBRISKEY_PC *key,
                                   i32 finite) {
-    i32 index;
-    if (!(time >= key->sphere_next_time)) {
-        return;
+    if (time >= key->sphere_next_time) {
+        if (key->sphere_skip_count > 0) {
+            --key->sphere_skip_count;
+            return;
+        }
+        key->process_spheres[key->sphere_index].time = time;
+        key->process_spheres[key->sphere_index].position.x = key->position.x + particle->position.x;
+        key->process_spheres[key->sphere_index].position.y = key->position.y + particle->position.y;
+        key->process_spheres[key->sphere_index].position.z = key->position.z + particle->position.z;
+        key->process_spheres[key->sphere_index].momentum = particle->momentum;
+        if (++key->sphere_index >= effect->process_spheres)
+            key->sphere_index = 0;
+        if (finite != 0)
+            key->sphere_skip_count = key->sphere_index;
+        key->sphere_next_time = time + effect->particle_lifetime / (f32)effect->process_spheres;
     }
-    if (key->sphere_skip_count > 0) {
-        --key->sphere_skip_count;
-        return;
-    }
-    index = key->sphere_index;
-    key->process_spheres[index].time = time;
-    key->process_spheres[index].position.x = particle->position.x + key->position.x;
-    key->process_spheres[index].position.y = particle->position.y + key->position.y;
-    key->process_spheres[index].position.z = particle->position.z + key->position.z;
-    key->process_spheres[index].momentum = particle->momentum;
-    if (++key->sphere_index >= effect->process_spheres) {
-        key->sphere_index = 0;
-    }
-    if (finite != 0) {
-        key->sphere_skip_count = key->sphere_index;
-    }
-    key->sphere_next_time = time + effect->particle_lifetime / (f32)effect->process_spheres;
 }
 
 void __cdecl DebReAlloc2(DEBRISKEY_PC *key) {
@@ -1055,11 +1051,11 @@ void __cdecl DebrisTimeSlip(i32 group) {
 }
 
 void __cdecl DebrisProcessTimeSlip(void) {
-    if (globaltime - 1.0 > debris_render_global_time)
+    if (debris_render_global_time < globaltime - 1.0)
         DebrisTimeSlip(0);
     else if (globaltime > 900.0)
         debris_render_global_time -= 800.0;
-    if (panelglobaltime - 1.0 > debris_render_panel_time)
+    if (debris_render_panel_time < panelglobaltime - 1.0)
         DebrisTimeSlip(1);
     else if (panelglobaltime > 900.0)
         debris_render_panel_time -= 800.0;
@@ -1068,15 +1064,14 @@ void __cdecl DebrisProcessTimeSlip(void) {
 void __cdecl DebrisFreeOldestDmaDebTypeTable(void) {
     i32 i, oldest = 0;
     f32 oldest_age = 0.0f;
+    f32 age;
     for (i = 1; i < debinf_count; ++i) {
-        DEBRIS_INFO_PC *effect = debtab[i];
-        f32 age;
-        if (effect == NULL || effect->native_data == NULL)
-            continue;
-        age = (effect->time_group == 4 ? panelglobaltime : globaltime) - effect->last_render_time;
-        if (age > oldest_age) {
-            oldest_age = age;
-            oldest = i;
+        if (debtab[i] != NULL && debtab[i]->native_data != NULL) {
+            age = (debtab[i]->time_group == 4 ? panelglobaltime : globaltime) - debtab[i]->last_render_time;
+            if (age > oldest_age) {
+                oldest_age = age;
+                oldest = i;
+            }
         }
     }
     if (oldest != 0) {
@@ -1217,37 +1212,40 @@ void __cdecl DebrisReScale(i32 effect_index, f32 scale) {
 void __cdecl DebrisPopulateInstance(i32 handle, f32 duration) {
     DEBRISKEY_PC *key;
     DEBRIS_INFO_PC *effect;
-    f32 now, end_time, emission_time, thinning, interval;
-    i32 remaining;
+    f32 now, end_time, emission_time, interval;
+    i32 count;
     if (duration < 0.0f || handle == -1)
         return;
-    key = &((DEBRISKEY_PC *)debkeydata)[handle];
+    key = &DEBRIS_ENGINE_KEYS_PC[handle];
     effect = debtab[key->effect_index];
-    if (effect->frequency == 0)
+    if (effect->frequency == 0.0)
         return;
     if (duration == 0.0f)
         duration = effect->particle_lifetime;
     now = effect->time_group == 4 ? panelglobaltime : globaltime;
     end_time = now + debris_time_increment;
     emission_time = now - duration;
-    if (key->previous_allocated_chunk_count == 0) {
-        thinning = forced_debris_thinning != 0 || !(debris_thinning_level > effect->thinning) ? debris_thinning_level
-                                                                                              : effect->thinning;
-        DebReAlloc(key, (i32)((f32)effect->max_particles / thinning));
-    }
+    if (key->previous_allocated_chunk_count == 0)
+        DebReAlloc(key,
+                   (i32)(forced_debris_thinning != 0 ? effect->max_particles / debris_thinning_level
+                                                     : effect->max_particles / (effect->thinning < debris_thinning_level
+                                                                                    ? effect->thinning
+                                                                                    : debris_thinning_level)));
     key->finite = 1;
     if (key->allocated_chunk_count <= 0)
         return;
-    thinning = forced_debris_thinning != 0 || !(debris_thinning_level > effect->thinning) ? debris_thinning_level
-                                                                                          : effect->thinning;
-    interval = 1.0f / ((f32)effect->frequency / thinning);
+    interval = 1.0f / (forced_debris_thinning != 0
+                           ? effect->frequency / debris_thinning_level
+                           : effect->frequency /
+                                 (effect->thinning < debris_thinning_level ? effect->thinning : debris_thinning_level));
     key->emission_epoch = emission_time;
     emission_time += interval;
-    for (remaining = 999; emission_time < end_time && remaining != 0; --remaining) {
+    count = 0;
+    while (emission_time < end_time && ++count < 1000) {
         DEBRISPARTICLE_PC *particle = key->generator(key, effect, emission_time);
         if (effect->process_spheres != 0 && particle != NULL)
             DebrisProcessSpheres(particle, emission_time, effect, key, 0);
-        emission_time = key->emission_epoch + interval;
+        emission_time = interval + key->emission_epoch;
     }
 }
 
@@ -1676,15 +1674,19 @@ void __cdecl DebrisShift(NUMTX *transform) {
     for (i = 0; i < maxdebkeys; ++i) {
         DEBRISKEY_PC *key = &DEBRIS_ENGINE_KEYS_PC[i];
         DEBRIS_INFO_PC *effect;
-        i32 slot;
+        i32 slot, found, group;
         if (key->effect_index == 0)
             continue;
         effect = debtab[key->effect_index];
-        for (slot = 0; slot < 8; ++slot)
-            if (effect->particle_keys[slot] == i)
+        found = 0;
+        for (slot = 0; slot < 8; ++slot) {
+            if (i == effect->particle_keys[slot]) {
+                found = 1;
                 break;
-        if (slot != 8) {
-            i32 group = effect->time_group == 4;
+            }
+        }
+        group = effect->time_group == 4;
+        if (found) {
             if (key->controlled_chunk_count != 0) {
                 i32 chunk;
                 for (chunk = 0; chunk < key->controlled_chunk_count; ++chunk) {
@@ -1699,18 +1701,19 @@ void __cdecl DebrisShift(NUMTX *transform) {
                 }
                 key->controlled_chunk_count = 0;
             }
-            DebReAlloc(key, 0);
+            DebReAlloc(&DEBRIS_ENGINE_KEYS_PC[i], 0);
         } else {
-            NuMtxMulR(&key->effect_orientation, transform, &key->effect_orientation);
-            NuVecMtxTransform(&key->position, &key->position, transform);
-            key->orientation_dirty = 0.0f;
+            NuMtxMulR(&DEBRIS_ENGINE_KEYS_PC[i].effect_orientation, transform,
+                      &DEBRIS_ENGINE_KEYS_PC[i].effect_orientation);
+            NuVecMtxTransform(&DEBRIS_ENGINE_KEYS_PC[i].position, &DEBRIS_ENGINE_KEYS_PC[i].position, transform);
+            DEBRIS_ENGINE_KEYS_PC[i].orientation_dirty = 0.0f;
         }
     }
     for (i = 0; i < debrischunks + debrischunksglass; ++i) {
-        DEBRIS_RENDER_CHUNK_PC *chunk = &ParticleChunkToRender[i];
-        if (chunk->particle_chunk != NULL && chunk->key == NULL) {
-            NuMtxMulR(&chunk->effect_orientation, transform, &chunk->effect_orientation);
-            NuVecMtxTransform(&chunk->position, &chunk->position, transform);
+        if (ParticleChunkToRender[i].particle_chunk != NULL && ParticleChunkToRender[i].key == NULL) {
+            NuMtxMulR(&ParticleChunkToRender[i].effect_orientation, transform,
+                      &ParticleChunkToRender[i].effect_orientation);
+            NuVecMtxTransform(&ParticleChunkToRender[i].position, &ParticleChunkToRender[i].position, transform);
         }
     }
 }
