@@ -110,20 +110,20 @@ static void SockParCamPosSeek(NUFPAR_PC *parser, void *context) {
     union {
         f32 value;
         u32 bits;
-    } result;
+    } result, absolute;
     result.value = NuFParGetFloat(parser);
-    result.bits &= 0x7fffffffu;
-    sockpar_sock->camera_position_seek = result.value;
+    absolute.bits = result.bits & 0x7fffffffu;
+    sockpar_sock->camera_position_seek = absolute.value;
 }
 
 static void SockParCamAngSeek(NUFPAR_PC *parser, void *context) {
     union {
         f32 value;
         u32 bits;
-    } result;
+    } result, absolute;
     result.value = NuFParGetFloat(parser);
-    result.bits &= 0x7fffffffu;
-    sockpar_sock->camera_angle_seek = result.value;
+    absolute.bits = result.bits & 0x7fffffffu;
+    sockpar_sock->camera_angle_seek = absolute.value;
 }
 
 static void SockParCamSegAhead(NUFPAR_PC *parser, void *context) {
@@ -1007,12 +1007,12 @@ static f32 SockDistanceToLineXZ(NUVEC *point, NUVEC *line_a, NUVEC *line_b) {
     union {
         f32 value;
         u32 bits;
-    } result;
+    } result, absolute;
     angle = (u16)-NuAtan2D(line_b->x - line_a->x, line_b->z - line_a->z);
     result.value = NuTrigTable[((angle + 0x4000) >> 1) & 0x7fff] * (point->x - line_a->x) +
                    NuTrigTable[angle >> 1] * (point->z - line_a->z);
-    result.bits &= 0x7fffffffu;
-    return result.value;
+    absolute.bits = result.bits & 0x7fffffffu;
+    return absolute.value;
 }
 
 static f32 RatioBetweenEdgesXZ(NUVEC *point, NUVEC *edge_a0, NUVEC *edge_a1, NUVEC *edge_b0, NUVEC *edge_b1) {

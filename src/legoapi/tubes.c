@@ -349,7 +349,7 @@ static void __cdecl Tubes_Update(void *world_ptr, void *data, f32 frame_time) {
                 union {
                     f32 scalar;
                     u32 bits;
-                } absolute;
+                } absolute, magnitude;
                 if ((object->flags_1fc_word & 0x1001) != 0x1001 || object->dead != 0 ||
                     !(object->character_data->model_flags & 0x10) || (GCDataList[(i16)object->id].flags_094 & 0x100))
                     continue;
@@ -370,8 +370,8 @@ static void __cdecl Tubes_Update(void *world_ptr, void *data, f32 frame_time) {
                     !(distance < 0.1224999949336052))
                     continue;
                 absolute.scalar = object->contact_normal.y;
-                absolute.bits &= 0x7fffffff;
-                if (!(NuTrigTable[0x3c71] > absolute.scalar))
+                magnitude.bits = absolute.bits & 0x7fffffff;
+                if (!(NuTrigTable[0x3c71] > magnitude.scalar))
                     continue;
                 inverse = 1.0f / NuFsqrt(distance);
                 nx = tx * inverse;

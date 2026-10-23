@@ -81,7 +81,7 @@ void __cdecl GameCam_Judder(GAMECAMERA *camera, f32 amount, i32 axis, NUVEC *sou
     union {
         f32 value;
         u32 bits;
-    } absolute;
+    } absolute, magnitude;
     CAMERA_JUDDER_FIELDS_PC *judder;
     f32 distance;
     f32 maximum_distance;
@@ -89,22 +89,22 @@ void __cdecl GameCam_Judder(GAMECAMERA *camera, f32 amount, i32 axis, NUVEC *sou
         camera = GameCam;
     judder = (CAMERA_JUDDER_FIELDS_PC *)camera;
     absolute.value = amount;
-    absolute.bits &= 0x7fffffff;
-    if (absolute.value > judder->time) {
+    magnitude.bits = absolute.bits & 0x7fffffff;
+    if (magnitude.value > judder->time) {
         if (source != NULL) {
             distance = NuVecDist(&judder->position, source, NULL);
             maximum_distance = (f32)((LEVEL_JUDDER_FIELDS_PC *)WORLD->current_level)->maximum_distance;
             if (maximum_distance > distance) {
-                absolute.value *= (maximum_distance - distance) / maximum_distance;
-                if (absolute.value > judder->time) {
-                    judder->duration = absolute.value;
-                    judder->time = absolute.value;
+                magnitude.value *= (maximum_distance - distance) / maximum_distance;
+                if (magnitude.value > judder->time) {
+                    judder->duration = magnitude.value;
+                    judder->time = magnitude.value;
                     judder->reverse = amount < 0.0f;
                 }
             }
         } else {
-            judder->duration = absolute.value;
-            judder->time = absolute.value;
+            judder->duration = magnitude.value;
+            judder->time = magnitude.value;
             judder->reverse = amount < 0.0f;
         }
         judder->axis = (u8)axis;

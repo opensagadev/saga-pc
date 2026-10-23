@@ -21,14 +21,14 @@ i32 __cdecl PCPathArcSine(f32 value) {
     union {
         f32 value;
         u32 bits;
-    } magnitude;
+    } magnitude, absolute;
     f32 root, low, b, c, d, t, square, cube, fourth;
     f64 polynomial;
     magnitude.value = value;
-    magnitude.bits &= 0x7fffffff;
+    absolute.bits = magnitude.bits & 0x7fffffff;
     root = NuFsqrt(1.0f - value * value);
-    low = root < magnitude.value ? root : magnitude.value;
-    b = (f32)((magnitude.value - (f64)0.70710677f) * (f64)3.40282e38f);
+    low = root < absolute.value ? root : absolute.value;
+    b = (f32)((absolute.value - (f64)0.70710677f) * (f64)3.40282e38f);
     b = b < 1.0f ? b : 1.0f;
     b = b > -1.0f ? b : -1.0f;
     c = (f32)(value * (f64)3.40282e38f);
@@ -112,14 +112,14 @@ i32 __cdecl NuASin(f32 value) {
     union {
         f32 value;
         u32 bits;
-    } magnitude;
+    } magnitude, absolute;
     f32 root, low, b, c, d, t, square, cube, fourth;
     f64 polynomial;
     magnitude.value = value;
-    magnitude.bits &= 0x7fffffff;
+    absolute.bits = magnitude.bits & 0x7fffffff;
     root = NuFsqrt(1.0f - value * value);
-    low = root < magnitude.value ? root : magnitude.value;
-    b = (f32)((magnitude.value - (f64)0.70710677f) * (f64)3.40282e38f);
+    low = root < absolute.value ? root : absolute.value;
+    b = (f32)((absolute.value - (f64)0.70710677f) * (f64)3.40282e38f);
     b = b < 1.0f ? b : 1.0f;
     b = b > -1.0f ? b : -1.0f;
     c = (f32)(value * (f64)3.40282e38f);
@@ -202,10 +202,10 @@ i32 __cdecl RenderPostASinPc(f32 sin) {
     union {
         f32 value;
         u32 bits;
-    } magnitude;
+    } magnitude, absolute;
     magnitude.value = sin;
-    magnitude.bits &= 0x7fffffff;
-    abs = magnitude.value;
+    absolute.bits = magnitude.bits & 0x7fffffff;
+    abs = absolute.value;
     sqrt = NuFsqrt(1.0f - sin * sin);
 
     unknown_a = MIN(sqrt, abs);
