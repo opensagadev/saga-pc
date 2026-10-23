@@ -1094,81 +1094,89 @@ void __cdecl DebFreeAllCreatedEffects(void) {
 }
 
 i32 __cdecl CreateScaledEffect(i32 effect_index, f32 requested_scale) {
-    DEBRIS_INFO_PC *effect, *scaled;
-    i32 i, closest_index, scaled_index;
+    i32 i, result, closest_index;
     f32 ratio, distance, closest_distance;
     char shortened[16];
-    if (effect_index < 1 || effect_index > debinf_count || debtab[effect_index] == NULL)
+    result = 0;
+    if (effect_index < 1)
         return -1;
-    effect = debtab[effect_index];
-    if (effect->scale != 1.0f) {
-        effect_index = effect->base_effect_index;
-        effect = debtab[effect_index];
-        if (effect == NULL)
+    if (effect_index > debinf_count || debtab[effect_index] == NULL)
+        return -1;
+    if (debtab[effect_index]->scale != 1.0f) {
+        effect_index = debtab[effect_index]->base_effect_index;
+        if (debtab[effect_index] == NULL)
             return -1;
     }
-    if (requested_scale == 1.0f && effect_index != 0)
-        return effect_index;
+    if (requested_scale == 1.0f)
+        result = effect_index;
     if (requested_scale < 0.01f)
         requested_scale = 0.01f;
-    for (i = 0; i < EDPP_SCALE_TYPES; ++i) {
-        DEBRIS_SCALE_CACHE_PC *entry = &debscale[i];
-        if (entry->base_effect_index == effect_index && entry->scale == requested_scale &&
-            entry->scaled_effect_index != 0) {
-            scaled = debtab[entry->scaled_effect_index];
-            if (scaled != NULL && scaled->base_effect_index == effect_index)
-                return entry->scaled_effect_index;
-            entry->scale = 0.0f;
+    if (result == 0) {
+        for (i = 0; i < EDPP_SCALE_TYPES; ++i) {
+            if (debscale[i].base_effect_index == effect_index && debscale[i].scale == requested_scale)
+                result = debscale[i].scaled_effect_index;
+            if (result != 0) {
+                if (debtab[result] != NULL && debtab[result]->base_effect_index == debscale[i].base_effect_index)
+                    break;
+                debscale[i].scale = 0.0f;
+                result = 0;
+            }
         }
-    }
-    closest_index = effect_index;
-    ratio = requested_scale / effect->scale;
-    closest_distance = ratio > 1.0f ? ratio - 1.0f : 1.0f - ratio;
-    for (i = 1; i < debinf_count; ++i) {
-        scaled = debtab[i];
-        if (scaled != NULL && scaled->base_effect_index == effect_index) {
-            ratio = TerrainDivideNonzeroPC(requested_scale, scaled->scale);
-            distance = ratio > 1.0f ? ratio - 1.0f : 1.0f - ratio;
-            if (distance < closest_distance) {
-                closest_distance = distance;
-                closest_index = i;
+        if (result == 0) {
+            ratio = requested_scale / debtab[effect_index]->scale;
+            closest_distance = ratio <= 1.0f ? 1.0f - ratio : ratio - 1.0;
+            closest_index = effect_index;
+            for (i = 1; i < debinf_count; ++i) {
+                if (debtab[i] != NULL && debtab[i]->base_effect_index == effect_index) {
+                    ratio = TerrainDivideNonzeroPC(requested_scale, debtab[i]->scale);
+                    distance = ratio <= 1.0f ? 1.0f - ratio : ratio - 1.0;
+                    if (distance < closest_distance) {
+                        closest_distance = distance;
+                        closest_index = i;
+                    }
+                }
+            }
+            result = closest_index;
+            if (result == 0 || !(closest_distance < (f64)0.1f)) {
+                for (result = 1; result < debinf_count; ++result) {
+                    if (debtab[result] == NULL)
+                        break;
+                }
+                if (result < debinf_count) {
+                    debtab[result] = &effecttypes[result];
+                    *debtab[result] = *debtab[effect_index];
+                    debtab[result]->native_data = NULL;
+                    for (i = 0; i < 8; ++i)
+                        debtab[result]->particle_keys[i] = -1;
+                    DebrisReScale(result, requested_scale);
+                    debtab[result]->last_render_time = debtab[result]->time_group == 4 ? panelglobaltime : globaltime;
+                    debtab[result]->scale = requested_scale;
+                    debtab[result]->base_effect_index = effect_index;
+                    if (strlen(debtab[effect_index]->name) <= 12) {
+                        sprintf(debtab[result]->name, "%s%03d", debtab[effect_index]->name, result);
+                    } else {
+                        sprintf(shortened, GizAIMessage_NameFormat, debtab[effect_index]->name);
+                        shortened[12] = 0;
+                        sprintf(debtab[result]->name, "%s%03d", shortened, result);
+                    }
+                    ++edpp_types_used;
+                    for (i = 0; i < EDPP_SCALE_TYPES; ++i) {
+                        if (debscale[i].scale == 0.0f) {
+                            debscale[i].base_effect_index = effect_index;
+                            debscale[i].scale = requested_scale;
+                            debscale[i].scaled_effect_index = result;
+                            break;
+                        }
+                    }
+                } else {
+                    result = 0;
+                }
+                if (result == 0)
+                    result = closest_index;
             }
         }
     }
-    if (closest_index != 0 && closest_distance < 0.1f)
-        return closest_index;
-    for (scaled_index = 1; scaled_index < debinf_count && debtab[scaled_index] != NULL; ++scaled_index) {
-    }
-    if (scaled_index == debinf_count)
-        return closest_index;
-    scaled = &effecttypes[scaled_index];
-    debtab[scaled_index] = scaled;
-    *scaled = *effect;
-    scaled->native_data = NULL;
-    for (i = 0; i < 8; ++i)
-        scaled->particle_keys[i] = -1;
-    DebrisReScale(scaled_index, requested_scale);
-    scaled = debtab[scaled_index];
-    scaled->last_render_time = scaled->time_group == 4 ? panelglobaltime : globaltime;
-    scaled->scale = requested_scale;
-    scaled->base_effect_index = effect_index;
-    if (strlen(debtab[effect_index]->name) <= 12) {
-        sprintf(scaled->name, "%s%03d", debtab[effect_index]->name, scaled_index);
-    } else {
-        sprintf(shortened, GizAIMessage_NameFormat, debtab[effect_index]->name);
-        shortened[12] = 0;
-        sprintf(scaled->name, "%s%03d", shortened, scaled_index);
-    }
-    ++edpp_types_used;
-    for (i = 0; i < EDPP_SCALE_TYPES; ++i) {
-        if (debscale[i].scale == 0.0f) {
-            debscale[i].base_effect_index = effect_index;
-            debscale[i].scaled_effect_index = scaled_index;
-            debscale[i].scale = requested_scale;
-            break;
-        }
-    }
-    return scaled_index;
+    return result;
 }
 
 void __cdecl DebrisReScale(i32 effect_index, f32 scale) {
