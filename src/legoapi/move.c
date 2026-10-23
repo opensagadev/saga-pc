@@ -4931,44 +4931,42 @@ typedef struct beast_grab_target_view_pc_s {
 } BEAST_GRAB_TARGET_VIEW_PC;
 STATIC_ASSERT(offsetof(BEAST_GRAB_TARGET_VIEW_PC, force_throw_target) == 0xd10);
 static __declspec(noinline) void GrabCode(GAMEOBJECT *object) {
-    f32 previous, time, duration;
+    f32 previous, time;
     GAMEOBJECT *target;
     i16 animation;
-    i32 hit = 0;
     i32 joint;
     if (object->character_context != 0x38)
         return;
     previous = object->context_timer;
-    time = previous + FRAMETIME;
+    time = FRAMETIME + object->context_timer;
     object->context_timer = time;
-    duration = object->context_duration;
-    if (time >= duration) {
-        object->character_context = -1;
-        return;
-    }
+    if (object->context_duration <= time || ((animation = object->field_7aa) != 0x1f && object->force_target == NULL))
+        goto clear;
     target = object->force_target;
-    animation = object->field_7aa;
-    if (animation != 0x1f && target == NULL) {
-        object->character_context = -1;
-        return;
-    }
     if (target == NULL || (object->context_variant_flags & 0x40) != 0)
         return;
-    if (object->character_model->model_data_b[animation] == NULL) {
-        f32 halfway = (f32)((f64)duration * 0.5);
-        hit = halfway > previous && time >= halfway;
-    } else {
+    if (object->character_model->model_data_b[animation] != NULL) {
         f32 *frame = AnimPlaying(&object->anim_packet, animation, 1, 0);
-        if (frame != NULL) {
-            f32 start = AnimListFrame(object->character_model, object->field_7aa, 1);
-            if (start >= 1.0f && *frame >= start) {
-                f32 end = AnimListFrame(object->character_model, object->field_7aa, 2);
-                hit = end >= 1.0f && end >= *frame;
-            }
-        }
+        f32 start, end;
+        if (frame == NULL)
+            return;
+        start = AnimListFrame(object->character_model, object->field_7aa, 1);
+        if (!(start >= 1.0f))
+            return;
+        if (!(*frame >= start))
+            return;
+        end = AnimListFrame(object->character_model, object->field_7aa, 2);
+        if (!(end >= 1.0f))
+            return;
+        if (!(*frame <= end))
+            return;
+    } else {
+        f32 halfway = (f32)(object->context_duration * 0.5);
+        if (!(previous < halfway))
+            return;
+        if (!(halfway <= time))
+            return;
     }
-    if (!hit)
-        return;
     joint = object->character_data->game_character->weapon_joints[0];
     if (object->origin_joint_ready != 0 && joint != -1 && object->character_model->points_of_interest[joint] != NULL &&
         (f64)NuVecDistSqr((NUVEC *)&object->locator_matrices[joint].m30, &target->collision_position, NULL) >
@@ -4988,19 +4986,23 @@ static __declspec(noinline) void GrabCode(GAMEOBJECT *object) {
         object->flags_e24 |= 1;
     } else if ((target->character_data->game_character->flags_090 & 0x8000) == 0) {
         u16 angle;
-        f32 momentum, sine, cosine;
+        NUVEC direction;
         object->context_variant_flags |= 0x40;
         GameAudio_PlaySfx(0x4a, &target->collision_position, 0, 0);
         objhitobj_noimpactsfx = 1;
         ObjHitObj(object, target, 2, 0, 0, 1);
         angle = NuAtan2D(target->collision_position.x - object->collision_position.x,
                          target->collision_position.z - object->collision_position.z);
-        momentum = target->character_data->game_character->walk_speed;
-        sine = NuTrigTable[angle >> 1];
-        cosine = NuTrigTable[((angle + 0x4000) >> 1) & 0x7fff];
-        target->velocity.x += sine * momentum;
-        target->velocity.z += cosine * momentum;
+        /* The timer slot is reused for the push speed. */
+        time = target->character_data->game_character->walk_speed;
+        direction.x = NuTrigTable[angle >> 1];
+        direction.z = NuTrigTable[((angle + 0x4000) >> 1) & 0x7fff];
+        target->velocity.x = direction.x * time + target->velocity.x;
+        target->velocity.z = time * direction.z + target->velocity.z;
     }
+    return;
+clear:
+    object->character_context = -1;
 }
 static void MovementMtxSetRotationXPc(NUMTX *matrix, i32 angle) {
     f32 cos_x = NuTrigTable[((angle + 0x4000) >> 1) & 0x7fff];
