@@ -1324,8 +1324,9 @@ void __cdecl TextCrawl_Draw(f32 dt, i32 paragraphs, f32 alpha, char *text) {
     } else {
         mission = (TEXT_CRAWL_MISSION_VIEW_PC *)Mission_Active(NULL);
         if (mission != NULL) {
-            if (mission->name_id != -1 && TTab[mission->name_id] != NULL)
-                area_name = TTab[mission->name_id];
+            i32 name_id = mission->name_id;
+            if (name_id != -1 && TTab[name_id] != NULL)
+                area_name = TTab[name_id];
             body_text_id = mission->text_id;
             paragraph_count = 3;
         } else if (Arcade != 0) {
@@ -1384,8 +1385,8 @@ void __cdecl TextCrawl_Draw(f32 dt, i32 paragraphs, f32 alpha, char *text) {
     colour = ((u32)(alpha_scale * alpha) << 24) | ((red & 0xff) << 16) | ((green & 0xff) << 8) | TextCrawlBluePc;
     NuQFntSetColour(QFont3DZ, colour);
     y = (f32)(TextCrawlTimePc * (f64)0.4f - 4.5);
-    x_scale = TextScaleX_candidate * TextCrawlScaleXPc;
-    y_scale = TextScaleY_candidate * TextCrawlScaleYPc;
+    x_scale = TextCrawlScaleXPc * TextScaleX_candidate;
+    y_scale = TextCrawlScaleYPc * TextScaleY_candidate;
     if (episode_name != NULL) {
         if (text != NULL && NuStrCmp(text, "?") == 0)
             NuQFntSetScale(QFont3DZ, (f32)(x_scale * 2.0), (f32)(y_scale * 3.0));
