@@ -467,6 +467,7 @@ extern "C" {
                 continue;
 
             NUVEC total = v000;
+            i32 shot = 0;
             i32 shoot_due = 0;
             team->fire_timer -= FRAMETIME;
             if ((team->fire_timer <= 0.0f)) {
@@ -478,6 +479,8 @@ extern "C" {
                     team->fire_timer = 0.5f;
             }
 
+            u8 stopped_count = 0;
+            u8 aligned_count = 0;
             team->origin_x = team->route_point->x;
             team->origin_z = team->route_point->z;
 
@@ -508,7 +511,6 @@ extern "C" {
             switch (team->formation_mode) {
                 case 0: {
                     const i32 selected = (qrand() / (0xffff / team->trooper_count + 1));
-                    i32 shot = 0;
                     for (i32 i = 0; i < team->trooper_count; ++i, ++trooper) {
                         if (i == selected && shoot_due != 0)
                             shot = TrooperShoot(world, team, trooper, &shot_angle, team_index);
@@ -533,8 +535,6 @@ extern "C" {
                 }
                 case 2: {
                     const i32 selected = (qrand() / (0xffff / team->trooper_count + 1));
-                    i32 shot = 0;
-                    u8 stopped_count = 0;
                     for (i32 i = 0; i < team->trooper_count; ++i, ++trooper) {
                         if (i == selected && shoot_due != 0)
                             shot = TrooperShoot(world, team, trooper, &shot_angle, team_index);
@@ -575,7 +575,6 @@ extern "C" {
                 }
                 case 1: {
                     const i32 selected = (qrand() / (0xffff / team->trooper_count + 1));
-                    i32 shot = 0;
                     if (team->mode_changed) {
                         team->mode_changed = 0;
                         if (team->path != NULL) {
@@ -590,8 +589,6 @@ extern "C" {
                         }
                     }
 
-                    u8 stopped_count = 0;
-                    u8 aligned_count = 0;
                     for (i32 i = 0; i < team->trooper_count; ++i, ++trooper) {
                         if (i == selected && shoot_due != 0)
                             shot = TrooperShoot(world, team, trooper, &shot_angle, team_index);
@@ -646,7 +643,6 @@ extern "C" {
                 }
                 default: {
                     const i32 selected = (qrand() / (0xffff / team->trooper_count + 1));
-                    i32 shot = 0;
                     for (i32 i = 0; i < team->trooper_count; ++i, ++trooper) {
                         if (i == selected && shoot_due != 0)
                             shot = TrooperShoot(world, team, trooper, &shot_angle, team_index);
