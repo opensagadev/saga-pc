@@ -612,3 +612,62 @@ void __cdecl DeathStarEscapeD_Update(WORLDINFO *world) {
     position.z = (f32)((f64)qrand() * PlayerRandomScalePc * 4.0 + 12.5);
     LevChatterSfx("Dianoga_Groan", &position);
 }
+
+void __cdecl LevelStreaming_DoorOverride(WORLDINFO *world, LEVELDATA_PC *level, f32 radius, f32 *distance);
+
+void __cdecl MosEisleyD_AlwaysUpdate(WORLDINFO *world) {
+    LevelStreaming_DoorOverride(world, LevelFixupSlotPc0087b1c0, 7.5f, NULL);
+}
+
+void __cdecl DeathStarRescueB_AlwaysUpdate(WORLDINFO *world) {
+    LevelStreaming_DoorOverride(world, LevelFixupSlotPc0087b1d0, 8.5f, NULL);
+}
+
+void __cdecl DeathStarRescueC_AlwaysUpdate(WORLDINFO *world) {
+    LevelStreaming_DoorOverride(world, DEATHSTARRESCUEE_LDATA, 8.5f, NULL);
+}
+
+void __cdecl DeathStarEscapeB_AlwaysUpdate(WORLDINFO *world) {
+    NUVEC position;
+    SOCKPOSITION_PC socket_position;
+    if (Players_AveragePos(&position, &socket_position) && socket_position.sock_index != -1) {
+        if (DEATHSTARESCAPEA_LDATA != NULL && socket_position.sock_index < 6)
+            other_level_override = DEATHSTARESCAPEA_LDATA->index;
+        else if (DEATHSTARESCAPEC_LDATA != NULL && socket_position.sock_index > 6)
+            other_level_override = DEATHSTARESCAPEC_LDATA->index;
+    }
+}
+
+/* PC 0x0087b1f8: Death Star battle midtro level slot (never assigned by FixUpLevels). */
+LEVELDATA_PC *DEATHSTARBATTLEMIDTRO_LDATA = NULL;
+
+void __cdecl DeathStarBattleC_AlwaysUpdate(WORLDINFO *world) {
+    if (FreePlay == 0) {
+        if (DEATHSTARBATTLEMIDTRO_LDATA != NULL)
+            other_level_override = DEATHSTARBATTLEMIDTRO_LDATA->index;
+    } else {
+        if (DEATHSTARBATTLEMIDTRO_LDATA != NULL)
+            other_level_override = DEATHSTARBATTLEMIDTRO_LDATA->index;
+    }
+}
+
+typedef struct trenchrun_pc_s {
+    GAMEOBJECT *objects[3];
+    NUVEC position;
+    i32 midtro_played;
+    f32 spawn_timer;
+} TRENCHRUN_PC;
+STATIC_ASSERT(sizeof(TRENCHRUN_PC) == 0x20);
+
+/* PC 0x00889638: Death Star trench run state. */
+static TRENCHRUN_PC trenchrun;
+
+void __cdecl DeathStarBattleDInit(WORLDINFO *world) {
+}
+
+void __cdecl DeathStarBattleDReset(WORLDINFO *world) {
+    memset(&trenchrun, 0, sizeof(trenchrun));
+}
+
+void __cdecl DeathStarBattleDDraw(WORLDINFO *world) {
+}

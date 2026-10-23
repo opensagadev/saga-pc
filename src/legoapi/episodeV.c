@@ -1,4 +1,5 @@
 #include "saga.h"
+#include <string.h>
 
 void __cdecl BobaRocket_Deflect(PART_PC *part) {
     part->flags = (part->flags & ~0x4000u) | 0x80;
@@ -90,4 +91,128 @@ void __cdecl BobaRocket_Move(PART_PC *part, f32 elapsed) {
         delta.z = -part->velocity.z;
         AddGameDebrisMom(WORLD->game_debris_sys, 11, &next, count, &delta);
     }
+}
+
+/* Episode V FixUpLevels callbacks (Hoth escape, Dagobah, Cloud City trap). */
+GAMEOBJECT *Vader_obj = NULL;
+static GIZAIMESSAGE *Vader_ai_message = NULL;
+AILOCATOR_PC *HothEscapeBLocatorPc = NULL;
+GAMEOBJECT *HothEscapeBSnowmobPc = NULL;
+
+void __cdecl HothEscapeA_Init(WORLDINFO *world) {
+    memset(troopercannons, 0, sizeof(troopercannons));
+    troopercannons_beenReset = 0;
+}
+
+void __cdecl HothEscapeA_Reset(WORLDINFO *world) {
+}
+
+void __cdecl HothEscapeA_Update(WORLDINFO *world) {
+    ResetTrooperCannons(world, id_SNOWTROOPER);
+    UpdateTrooperCannons(world);
+}
+
+void __cdecl HothEscapeB_Init(WORLDINFO *world) {
+    if (netclient == 0) {
+        HothEscapeBLocatorPc = AIPathFindLocator(world->ai_sys, "snow_mob");
+        HothEscapeBSnowmobPc = GetNamedGameObject(world->ai_sys, "snowmob_1");
+    }
+    memset(troopercannons, 0, sizeof(troopercannons));
+    troopercannons_beenReset = 0;
+}
+
+void __cdecl HothEscapeB_Reset(WORLDINFO *world) {
+    HothEscapeBLocatorPc = AIPathFindLocator(world->ai_sys, "snow_mob");
+    HothEscapeBSnowmobPc = GetNamedGameObject(world->ai_sys, "snowmob_1");
+    TerSurface[9].movement_scale = TerSurface[17].movement_scale;
+    TerSurface[9].flags = TerSurface[17].flags & ~2u;
+}
+
+void __cdecl HothEscapeB_Update(WORLDINFO *world) {
+    ResetTrooperCannons(world, id_SNOWTROOPER);
+    UpdateTrooperCannons(world);
+    if (netclient == 0 && HothEscapeBLocatorPc != NULL && HothEscapeBSnowmobPc != NULL)
+        HothEscapeBLocatorPc->position = HothEscapeBSnowmobPc->locator_matrices[1].translation;
+}
+
+void __cdecl HothEscapeC_Init(WORLDINFO *world) {
+    memset(troopercannons, 0, sizeof(troopercannons));
+    troopercannons_beenReset = 0;
+}
+
+void __cdecl HothEscapeC_Reset(WORLDINFO *world) {
+}
+
+void __cdecl HothEscapeC_Update(WORLDINFO *world) {
+    ResetTrooperCannons(world, id_SNOWTROOPER);
+    UpdateTrooperCannons(world);
+}
+
+void __cdecl LevelStreaming_DoorOverride(WORLDINFO *world, LEVELDATA_PC *level, f32 radius, f32 *distance);
+
+void __cdecl HothEscapeC_AlwaysUpdate(WORLDINFO *world) {
+    LevelStreaming_DoorOverride(world, LevelFixupSlotPc0087b220, 7.5f, NULL);
+}
+
+void __cdecl HothEscapeD_Init(WORLDINFO *world) {
+    memset(troopercannons, 0, sizeof(troopercannons));
+    troopercannons_beenReset = 0;
+}
+
+void __cdecl HothEscapeD_Reset(WORLDINFO *world) {
+}
+
+void __cdecl HothEscapeD_Update(WORLDINFO *world) {
+    ResetTrooperCannons(world, id_SNOWTROOPER);
+    UpdateTrooperCannons(world);
+}
+
+void __cdecl DagobahB_Init(WORLDINFO *world) {
+    dagobah_training = 0;
+}
+
+void __cdecl DagobahC_Init(WORLDINFO *world) {
+    Vader_obj = FindGameObject(FreePlayId007f199cPc, 1, 1, 0, 0);
+    LevGizmo[0] = GizmoFindByName(world->gizmo_sys, force_gizmotype_id, "force20");
+}
+
+void __cdecl DagobahC_Panel(WORLDINFO *world) {
+    if (netclient == 0) {
+        Vader_ai_message = CheckGizAIMessage(gizaimessagesys, "ShowHearts", NULL);
+        if (Vader_obj != NULL && Vader_ai_message != NULL && Vader_ai_message->value == 1.0f)
+            DrawBossHitPoints(Vader_obj);
+    }
+}
+
+void __cdecl CloudCityTrapB_Init(WORLDINFO *world) {
+    LevAIMessage[0] = CheckGizAIMessage(gizaimessagesys, "ShowHearts", NULL);
+    LevAIMessage[1] = CheckGizAIMessage(gizaimessagesys, "TrapBEndFight", NULL);
+    LevGameObject[0] = FindGameObject(FreePlayId007f199cPc, 1, 1, 1, 0);
+}
+
+void __cdecl CloudCityTrapC_Panel(WORLDINFO *world) {
+    if (netclient == 0 && LevGameObject[0] != NULL && LevAIMessage[0] != NULL) {
+        if (LevAIMessage[0]->value == 1.0f)
+            DrawBossHitPoints(LevGameObject[0]);
+        else
+            DrawBossHitPoints(NULL);
+    }
+}
+
+extern u32 LEGO_AIPATHCNX_BIGJUMP;
+
+void __cdecl CloudCityTrapC_Update(WORLDINFO *world) {
+    u32 active = 0;
+    if (netclient != 0 || LevPathCnx[0] == NULL)
+        return;
+    ((AIPATHCNX_PC *)LevPathCnx[0])->traversal_flags[LevPathCnxDir] &=
+        ~(LEGO_AIPATHCNX_BIGJUMP | LEGO_AIPATHCNX_R2D2GLIDE | 0x80000000);
+    if ((LevGizObst[1] != NULL && LevGizObst[1]->anim_set->state != 0 && player->collision_position.z < -20.0f) ||
+        player->collision_position.z < -21.0f)
+        active = LEGO_AIPATHCNX_BIGJUMP;
+    if (LevGizObst[0] != NULL && LevGizObst[0]->anim_set->state != 0)
+        active |= LEGO_AIPATHCNX_R2D2GLIDE;
+    if (active == 0)
+        active = 0x80000000;
+    ((AIPATHCNX_PC *)LevPathCnx[0])->traversal_flags[LevPathCnxDir] |= active;
 }

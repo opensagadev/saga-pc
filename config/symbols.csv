@@ -14050,6 +14050,7 @@ address,symbol,size,ctype
 0x75dfdc,??_C@_09IHEODLHL@reactor_3?$AA@,10,const char[10]
 0x75dfe8,??_C@_09JOFFAKDK@reactor_2?$AA@,10,const char[10]
 0x75dff4,??_C@_09LFHIFJPJ@reactor_1?$AA@,10,const char[10]
+0x75e000,__real@41080000,4,const f32
 0x0075e004,_DeathStarEscapeBSpongePc,7,const char[7]
 0x0075e00c,_DeathStarEscapeBLiftDownPc,10,const char[10]
 0x0075e018,_DeathStarEscapeBLiftUpPc,8,const char[8]
@@ -14086,6 +14087,7 @@ address,symbol,size,ctype
 0x75e290,_HothBattleCObstaclePc,12,const char[12]
 0x75e29c,??_C@_06EFGJMCHF@gap1_a?$AA@,7,char []
 0x75e2a4,??_C@_06GOEEJBLG@gap1_b?$AA@,7,char []
+0x75e2ac,__real@c1a80000,4,const f32
 0x75e2b0,__real@c1a00000,,
 0x75e2b4,_CloudCityEscapePanelNamePc,8,const char[8]
 0x75e2bc,_CloudCityEscapeGas3Pc,8,const char[8]
@@ -14162,6 +14164,9 @@ address,symbol,size,ctype
 0x75e670,_EpisodeVI_force16,8,const char[8]
 0x75e678,_EpisodeVI_force15,8,const char[8]
 0x75e680,_EpisodeVI_ElectricFloor,14,const char[14]
+0x75e6a4,??_C@_08KICOGDJP@grill_02?$AA@,9,char []
+0x75e6c0,??_C@_0O@PBBKJBMM@prison_stone1?$AA@,14,char []
+0x75e6d0,??_C@_09PEBDFBLJ@obstacle5?$AA@,10,char []
 0x75e6f4,??_C@_09FFGBDCJP@Back_Room?$AA@,10,char []
 0x75e700,??_C@_08OEFNINLE@Alcove_2?$AA@,9,char []
 0x75e70c,??_C@_08MPHANOHH@Alcove_1?$AA@,9,char []
@@ -14174,8 +14179,11 @@ address,symbol,size,ctype
 0x75e894,_EpisodeVI_cover_gizmo_format,10,const char[10]
 0x75e8a0,_EpisodeVI_cover_format,9,const char[9]
 0x75e8ac,_EpisodeVI_cannon_1,9,const char[9]
+0x75e8b8,??_C@_0L@LKMILNND@dummy_exp8?$AA@,11,char []
+0x75e8d8,??_C@_0M@NEHBKLMP@bbq_popnull?$AA@,12,char []
 0x75e8e4,??_C@_09CLMFEGFD@fire_cube?$AA@,10,char []
 0x75e910,__real@3fee666660000000,8,const f64
+0x75e918,??_C@_0M@DDJOAKIE@Split_Party?$AA@,12,char []
 0x0075e948,??_C@_02LHFGBEJL@PC?$AA@,3,const char[3]
 0x75e94c,_NuFileIopImageNamePc,13,const char[13]
 0x0075e978,_NuFileSourcePathPC,50,const char[50]
@@ -19923,6 +19931,8 @@ address,symbol,size,ctype
 0x800224,_melee_wavePhase,1,i8
 0x80029c,?pos@?1??CloudCityTrapA_Update@@9@9,,
 0x8002c4,_fire_clip_dist,4,i32
+0x800358,_EndorBattleAPartTimePc,4,f32
+0x80035c,_EndorBattleAPartTimerPc,4,f32
 0x00800440,_RopeCurveSubdivisionsPc,4,i32
 0x00800444,_NuAllocHeaderMetadata,12,u32[3]
 0x00800454,_NuAllocTailMetadata,12,u32[3]
@@ -22736,6 +22746,7 @@ address,symbol,size,ctype
 0x88962c,_vader_b_complete_msg,4,struct gizaimessage_s *
 0x889630,_vader_b_playersDead,1,u8
 0x00889634,_CarWashHack,4,GAMEOBJECT *
+0x889638,_trenchrun,32,TRENCHRUN_PC
 0x00889658,_DeathStarEscapeBNetPacketPc,4,u8 *
 0x88a264,_HothBattleENetPacketPc,4,HOTHBATTLEE_NETPACKET_PC *
 0x88a2a8,_minikitCounter_A,1,u8
@@ -22743,12 +22754,16 @@ address,symbol,size,ctype
 0x88a2b0,_escape,96,nuhspecial_s[8]
 0x88a320,_melee,200,HOTHBATTLE_MELEE_s
 0x88a3e8,_StarDestroyerTurrets,64,struct GIZTURRET_s *[16]
+0x88a428,_HothEscapeBLocatorPc,4,AILOCATOR_PC *
+0x88a42c,_HothEscapeBSnowmobPc,4,GAMEOBJECT *
 0x88a430,_troopercannons,192,TROOPERCANNON_PC[4]
 0x88a510,_HothBattleEPanelAlphaPc,64,f32[16]
 0x88a550,_troopercannons_beenReset,1,u8
 0x88a552,_turretAliveCount,1,u8
 0x88a568,_melee_waveDelay,4,f32
 0x0088a56c,_dagobah_training,4,i32
+0x88a570,_Vader_obj,4,GAMEOBJECT *
+0x88a574,_Vader_ai_message,4,GIZAIMESSAGE *
 0x88a578,_HothBattleC_BombGenerator,4,struct GIZBOMBGEN_s *
 0x88a588,_runningTotalPos,4,f32
 0x88a590,_fireSplinePos,32,SPLINEPOS
@@ -22768,6 +22783,7 @@ address,symbol,size,ctype
 0x88ab10,_SarlaccPowerPc,,i32
 0x88ab14,_SarlaccRechargingPc,,i32
 0x88ab18,_SarlaccRechargeTimerPc,,f32
+0x88ab2c,_FairgroundSplitPartyLocatorPc,4,AILOCATOR_PC *
 0x0088ab38,_NuAllocRecordHead,4,NUALLOC_RECORD *
 0x0088ab3c,_NuAllocTrackedBytes,4,u32
 0x0088ab40,_NuAllocPool,4,NUALLOC_POOL *
