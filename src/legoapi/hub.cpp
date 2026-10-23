@@ -3160,7 +3160,7 @@ static void HubDrawFreePlaySelectPc(void) {
         dx = (f32)(dx * .75);
     const f32 dy = (f32)(ratio * COLLECTION_DY * .5 * .875);
     f32 x = (f32)(-(count - 1) * dx * .5 * .5);
-    for (i32 i = 0; i < count; ++i) {
+    for (i32 i = 0; i < count; ++i, x = (f32)(x + dx * .5)) {
         const f32 y = (i & 1) == 0 ? -dy : dy;
         f32 target_size = size;
         if (Game_OptionsSave != NULL && Game_OptionsSave->widescreen != 0)
@@ -3176,10 +3176,8 @@ static void HubDrawFreePlaySelectPc(void) {
                 frame = i == 0 ? 166 : 165;
             } else {
                 const i32 index = InCollectList_Index(list[i].model_id, collection->list, collection->count);
-                if (index == -1) {
-                    x = (f32)(x + dx * .5);
+                if (index == -1)
                     continue;
-                }
                 source_x = collection->list[index].grid_x;
                 source_y = collection->list[index].grid_y;
                 source_size = collection->scale * COLLECTION_ICONSIZE;
@@ -3201,7 +3199,6 @@ static void HubDrawFreePlaySelectPc(void) {
                                   : 167,
                          1.0f, 1.0f, 1, NULL);
         }
-        x = (f32)(x + dx * .5);
     }
 }
 
