@@ -144,18 +144,17 @@ i32 __cdecl Glide_SetTargetMom(GAMEOBJECT *object) {
         speed = AnimSpeed((CHARACTER_MODEL_LAYERS_PC *)object->character_model, object->field_7aa);
     else
         speed = object->character_data->game_character->run_speed;
-    if (object->grapple != NULL) {
-        speed *= 0.25f;
-        object->target_velocity.x = NuTrigTable[object->movement_facing_angle >> 1] * speed;
-        object->target_velocity.z = NuTrigTable[((object->movement_facing_angle + 0x4000) >> 1) & 0x7fff] * speed;
-    } else {
-        f32 descent;
-        object->target_velocity.x = NuTrigTable[object->movement_facing_angle >> 1] * speed;
-        object->target_velocity.z = NuTrigTable[((object->movement_facing_angle + 0x4000) >> 1) & 0x7fff] * speed;
-        descent = (object->flags_1fc & 0x80) != 0 ? -0.5f : -0.375f;
-        object->target_velocity.y = descent;
+    if (object->grapple != NULL)
+        speed *= 0.25;
+    object->target_velocity.x = NuTrigTable[object->movement_facing_angle >> 1] * speed;
+    object->target_velocity.z = NuTrigTable[((object->movement_facing_angle + 0x4000) >> 1) & 0x7fff] * speed;
+    if (object->grapple == NULL) {
+        if ((object->flags_1fc & 0x80) != 0)
+            object->target_velocity.y = -0.5f;
+        else
+            object->target_velocity.y = -0.375f;
         if (object->context_timer < 0.5f)
-            object->target_velocity.y = (object->context_timer + object->context_timer) * descent;
+            object->target_velocity.y = (object->context_timer + object->context_timer) * object->target_velocity.y;
     }
     return 1;
 }
@@ -234,19 +233,22 @@ u16 __cdecl TurnRot(u16 current, u16 target, i32 speed, i32 *difference_out) {
 f32 __cdecl VehicleTurnOrLoopOffset(GAMEOBJECT *object) {
     f32 phase;
     f32 sine;
-    PLAYERCHARACTERCONFIG_PC *character;
+    f32 half;
 
-    if (object->character_context == 0x2a || object->character_context == 0x36) {
-        phase =
-            (1.0f - object->context_timer / object->context_duration) * VehicleTurnPhaseScale + VehicleTurnPhaseOffset;
-        sine = NuTrigTable[((i32)phase >> 1) & 0x7fff];
-        character = object->character_data->game_character;
-        if (object->character_context == 0x2a)
-            return (1.0f - sine) * NuQFntHalfScale * character->field_088 * NuQFntHalfScale;
-        return (1.0f - sine) * NuQFntHalfScale * character->field_088;
+    if (object->character_context == 0x2a) {
+        phase = 1.0f - object->context_timer / object->context_duration;
+        sine = 1.0f - NuTrigTable[((i32)(phase * VehicleTurnPhaseScale + VehicleTurnPhaseOffset) >> 1) & 0x7fff];
+        half = sine * NuQFntHalfScale;
+        return half * object->character_data->game_character->field_088 * NuQFntHalfScale;
+    }
+    if (object->character_context == 0x36) {
+        phase = 1.0f - object->context_timer / object->context_duration;
+        sine = 1.0f - NuTrigTable[((i32)(phase * VehicleTurnPhaseScale + VehicleTurnPhaseOffset) >> 1) & 0x7fff];
+        half = sine * NuQFntHalfScale;
+        return half * object->character_data->game_character->field_088;
     }
     if (object->character_context == 0x3a && (object->flags_1fc & 0x80) != 0 && PODSPRINT_ADATA != NULL &&
-        PODSPRINT_ADATA == WORLD->area) {
+        WORLD->area == PODSPRINT_ADATA) {
         phase = 1.0f - object->context_timer / object->context_duration;
         sine = NuTrigTable[((i32)(phase * 32768.0) >> 1) & 0x7fff];
         return sine * object->character_data->game_character->field_088;
@@ -7867,44 +7869,48 @@ void __cdecl JumpCode(GAMEOBJECT *object, i32 jump_pressed, i32 jump_held, u32 a
 void __cdecl StartJetPackFall(GAMEOBJECT *, i32);
 
 void __cdecl Glide_MoveCode(GAMEOBJECT *object) {
-    if (object->character_context != 0x4f) {
-        i32 can_glide = (object->character_data->game_character->flags_094 >> 6) & 1;
-        if ((object->character_data->model_flags & 0x40) != 0)
+    i32 can_glide;
+
+    if (object->character_context == 0x4f) {
+        if (object->field_281 == 0 && object->floor_height != 2000000.0 &&
+            object->collision_min.y - object->floor_height > object->bounds_half_height &&
+            (object->pad->buttons_held & GAMEPAD_ACTION) != 0 && object->character_model->model_data_b[0x21] != NULL &&
+            Slam_Start(object, SLAMJUMPSPEED)) {
+            JUMP_AUXILIARY_FIELDS_PC *aux = (JUMP_AUXILIARY_FIELDS_PC *)object;
+            ResetAnimPacket(&object->anim_packet, -1);
+            ResetMiniAnimPacket(&aux->mini_animation, -1);
             return;
-        if (!can_glide && (object->suit == NULL || (object->suit->flags & 2) == 0))
-            return;
-        if ((object->pad->buttons_pressed & GAMEPAD_JUMP) == 0 || object->field_281 != 0)
-            return;
-        if (!can_glide && AnimPlaying(&object->anim_packet, 5, 1, 0) == NULL)
-            return;
-        if (object->character_context != -1 && object->character_context != 0x11 &&
-            (object->character_context != 0 || (!can_glide && (object->context_variant_flags & 0x8000) == 0)))
-            return;
-        Glide_Start(object);
+        }
+        object->flags_e24 |= 0x1000;
+        if (object->character_model->model_data_b[object->field_7aa] == NULL ||
+            AnimPlaying(&object->anim_packet, object->field_7aa, 1, 0) != NULL) {
+            object->context_timer += FRAMETIME;
+            if (object->field_281 != 0)
+                object->character_context = -1;
+            else if ((object->pad->buttons_held & GAMEPAD_JUMP) != 0) {
+                if (object->context_duration < (f64)0.1f)
+                    object->context_duration = 0.1f;
+            } else {
+                object->context_duration -= FRAMETIME;
+                if (object->context_duration <= 0.0f)
+                    StartEndOfJump(object);
+            }
+        }
         return;
     }
-    if (object->field_281 == 0 && object->floor_height != 2000000.0 &&
-        object->collision_min.y - object->floor_height > object->bounds_half_height &&
-        (object->pad->buttons_held & GAMEPAD_ACTION) != 0 && object->character_model->model_data_b[0x21] != NULL &&
-        Slam_Start(object, SLAMJUMPSPEED)) {
-        JUMP_AUXILIARY_FIELDS_PC *aux = (JUMP_AUXILIARY_FIELDS_PC *)object;
-        ResetAnimPacket(&object->anim_packet, -1);
-        ResetMiniAnimPacket(&aux->mini_animation, -1);
+    can_glide = (object->character_data->game_character->flags_094 >> 6) & 1;
+    if ((object->character_data->model_flags & 0x40) != 0)
         return;
-    }
-    object->flags_e24 |= 0x1000;
-    if (object->character_model->model_data_b[object->field_7aa] == NULL ||
-        AnimPlaying(&object->anim_packet, object->field_7aa, 1, 0) != NULL) {
-        object->context_timer += FRAMETIME;
-        if (object->field_281 != 0)
-            object->character_context = -1;
-        else if ((object->pad->buttons_held & GAMEPAD_JUMP) == 0) {
-            object->context_duration -= FRAMETIME;
-            if (object->context_duration <= 0.0f)
-                StartEndOfJump(object);
-        } else if (object->context_duration < (f64)0.1f)
-            object->context_duration = 0.1f;
-    }
+    if (!can_glide && (object->suit == NULL || (object->suit->flags & 2) == 0))
+        return;
+    if ((object->pad->buttons_pressed & GAMEPAD_JUMP) == 0 || object->field_281 != 0)
+        return;
+    if (!can_glide && AnimPlaying(&object->anim_packet, 5, 1, 0) == NULL)
+        return;
+    if (object->character_context != -1 && object->character_context != 0x11 &&
+        (object->character_context != 0 || (!can_glide && (object->context_variant_flags & 0x8000) == 0)))
+        return;
+    Glide_Start(object);
 }
 
 static void JetPackBeginFlightPc(GAMEOBJECT *object) {
@@ -7980,28 +7986,25 @@ void __cdecl JetPackCode(GAMEOBJECT *object, i32 jump_pressed, i32 fall, i32 unu
 }
 
 void ComboRotateCode(GAMEOBJECT *object, i32 action_held) {
-    i32 rotation;
-    u16 angle;
-    if (object->character_context != 9) {
-        return;
-    }
-    object->context_timer += FRAMETIME;
+    f32 fraction;
 
-    if (object->context_timer != object->context_timer) {
-        rotation = (i32)(object->context_timer / object->context_duration * 32768.0f);
-    } else {
-        if (action_held == 0) {
-            object->character_context = -1;
-        } else {
+    if (object->character_context != 9)
+        return;
+    object->context_timer += FRAMETIME;
+    if (object->context_timer >= object->context_timer) {
+        if (action_held != 0)
             StartHold(object);
-        }
-        rotation = -0x8000;
+        else
+            object->character_context = -1;
+        fraction = 1.0f;
+    } else {
+        fraction = object->context_timer / object->context_duration;
     }
-    angle =
-        object->unknown_07af == 1 ? object->takeover_start_angle + rotation : object->takeover_start_angle - rotation;
-    object->field_0x276 = angle;
-    object->movement_facing_angle = angle;
-    object->facing_angle = angle;
+    if (object->unknown_07af == 1)
+        object->field_0x276 = object->takeover_start_angle - (i16)(fraction * -32768.0);
+    else
+        object->field_0x276 = object->takeover_start_angle - (i16)(fraction * 32768.0);
+    object->facing_angle = object->movement_facing_angle = object->field_0x276;
 }
 
 extern i32 LEGOCONTEXT_CLIMB;
