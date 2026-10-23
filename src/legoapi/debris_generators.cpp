@@ -254,20 +254,19 @@ extern "C" {
         particle->start_time = time;
         key->emission_epoch = time;
         particle->inverse_lifetime = 64.0 / effect->particle_lifetime;
-        f32 radius;
+        NUVEC vector;
         i32 angle_y = static_cast<i32>(DEBRIS_RANDOM_SPREAD(effect->rotor_speed_x) + effect->emitter_random_extent.y);
         i32 angle_z = static_cast<i32>(DEBRIS_RANDOM_SPREAD(effect->rotor_speed_y) + effect->emitter_random_extent.z);
         if (effect->scale_in_time != 0.0f && effect->scale_in_time > globaltime - key->last_update_time)
-            radius = (globaltime - key->last_update_time) / effect->scale_in_time * effect->emitter_random_extent.x;
+            vector.y = (globaltime - key->last_update_time) / effect->scale_in_time * effect->emitter_random_extent.x;
         else
-            radius = effect->emitter_random_extent.x;
+            vector.y = effect->emitter_random_extent.x;
         i32 segment_angle = 0x10000 / static_cast<i8>(effect->radial_segments);
         f32 fraction = static_cast<f32>((angle_y + 0x10000) % segment_angle) / segment_angle;
         i32 phase = static_cast<i32>(fraction * 32768.0);
-        NUVEC vector;
-        vector.y =
-            ((1.0f - effect->radial_floor) * (1.0f - NuTrigTable[(phase >> 1) & 0x7fff]) + effect->radial_floor) *
-            radius;
+        fraction = 1.0f - NuTrigTable[(phase >> 1) & 0x7fff];
+        fraction = (1.0f - effect->radial_floor) * fraction + effect->radial_floor;
+        vector.y = fraction * vector.y;
         vector.z = 0.0f;
         vector.x = 0.0f;
         NuVecRotateZ(&vector, &vector, angle_z);
@@ -353,7 +352,8 @@ extern "C" {
                     AddChunkControlToStack(freechunkcontrols[freechunkcontrolsptr], &debris_chunk_control_stack[0]);
                     ++freechunkcontrolsptr;
                 }
-                DebrisReleaseControlStackLock();
+                /* Retail inlines DebrisReleaseControlStackLock here. */
+                debris_control_stack_lock = 0;
             }
         }
         if (key->momentum_adjuster != NULL)
@@ -431,7 +431,8 @@ extern "C" {
                 AddChunkControlToStack(freechunkcontrols[freechunkcontrolsptr], &debris_chunk_control_stack[0]);
                 ++freechunkcontrolsptr;
             }
-            DebrisReleaseControlStackLock();
+            /* Retail inlines DebrisReleaseControlStackLock here. */
+            debris_control_stack_lock = 0;
         }
         if (key->momentum_adjuster != NULL)
             key->momentum_adjuster(key, effect, particle);
