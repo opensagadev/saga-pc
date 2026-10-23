@@ -469,18 +469,28 @@ void __cdecl NuDisplayListReflectionPc(void *arg) {
     }
 }
 
+typedef struct PC_DL_CAMERA_PROJECTION_READER {
+    NUMTX projection;
+    f32 viewport[4];
+} PC_DL_CAMERA_PROJECTION_READER;
+STATIC_ASSERT(offsetof(PC_DL_CAMERA_PROJECTION_READER, viewport) == 0x40);
+
 void __cdecl NuDisplayListCameraPc(void *arg) {
     PC_DL_CAMERA_READER *packet = (PC_DL_CAMERA_READER *)arg;
     if (packet->id != NuDisplayHandlerCameraIdPc) {
         PC_VIEWPORT_PC viewport;
+        NUMTX *view;
+        PC_DL_CAMERA_PROJECTION_READER *projection;
         i32 viewport_x;
+        view = &packet->view;
+        projection = (PC_DL_CAMERA_PROJECTION_READER *)(view + 1);
         NuDisplayHandlerCameraIdPc = packet->id;
-        PcUpdateGeometryCameraOriginPc(&packet->view, &packet->projection);
-        viewport_x = (i32)packet->viewport[0];
+        PcUpdateGeometryCameraOriginPc(view, &projection->projection);
+        viewport_x = (i32)projection->viewport[0];
         viewport.x = (u32)viewport_x;
-        viewport.y = (u32)(i64)packet->viewport[1];
-        viewport.width = (u32)(i64)packet->viewport[2];
-        viewport.height = (u32)(i64)packet->viewport[3];
+        viewport.y = (u32)projection->viewport[1];
+        viewport.width = (u32)projection->viewport[2];
+        viewport.height = (u32)projection->viewport[3];
         viewport.min_z = 0.0f;
         viewport.max_z = 1.0f;
         NuVpSubmitPc(&viewport);
