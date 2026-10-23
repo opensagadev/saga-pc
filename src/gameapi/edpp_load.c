@@ -82,13 +82,14 @@ STATIC_ASSERT(sizeof(((EDPP_FILE_PARTICLE_PC *)0)->facing_rotation_y) ==
 STATIC_ASSERT(sizeof(((EDPP_FILE_PARTICLE_PC *)0)->render_priority) == 2);
 STATIC_ASSERT(sizeof(((EDPP_FILE_PARTICLE_PC *)0)->dynamic_priority) == 1);
 
+extern const f64 ActionSnapWeightedRandomZeroPc;
+
 static void UpdateTotalPtls(DEBRIS_INFO_PC *effect) {
-    f32 elapsed = 0.0f, active = 0.0f;
+    f32 active = 0.0f, elapsed = 0.0f;
     f64 emission;
     f32 ratio;
     i32 i;
-    i16 count;
-    if (effect->particle_lifetime > 0.0f) {
+    if (effect->particle_lifetime > ActionSnapWeightedRandomZeroPc) {
         emission = (f64)effect->emission_period_random + effect->emission_period;
         do {
             f32 remaining = effect->particle_lifetime - elapsed;
@@ -100,24 +101,23 @@ static void UpdateTotalPtls(DEBRIS_INFO_PC *effect) {
                 elapsed += emission;
             }
             remaining = effect->particle_lifetime - elapsed;
-            if (effect->emission_pause > remaining)
+            if (remaining < effect->emission_pause)
                 elapsed += remaining;
             else
                 elapsed += effect->emission_pause;
-        } while (effect->particle_lifetime > elapsed);
+        } while (elapsed < effect->particle_lifetime);
     }
     /* Native68d080 spills the ratio to DWORD before multiplying frequency. */
     ratio = active / elapsed;
-    count = (i16)(i32)(effect->frequency * ratio * effect->particle_lifetime);
-    if (count < 1)
-        count = 1;
-    effect->max_particles = (i16)(count * (effect->trail_count + 1));
+    effect->max_particles = (i16)(i32)(effect->frequency * ratio * effect->particle_lifetime);
+    if (effect->max_particles < 1)
+        effect->max_particles = 1;
+    effect->max_particles = (i16)(effect->max_particles * (effect->trail_count + 1));
     for (i = 0; i < 512; ++i) {
         i32 id = edpp_ptls[i].instance_id;
         if (id != -1 && id != 99999) {
-            DEBRISKEY_PC *key = &debkeydata[id];
-            if (debtab[key->effect_index] == effect)
-                DebReAlloc(key, effect->max_particles);
+            if (debtab[debkeydata[id].effect_index] == effect)
+                DebReAlloc(&debkeydata[id], effect->max_particles);
         }
     }
 }
