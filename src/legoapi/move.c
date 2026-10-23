@@ -5725,16 +5725,16 @@ static void __declspec(noinline) VehicleLaunchPc(GAMEOBJECT *object) {
             }
             break;
         case 2:
-            time = object->context_timer + FRAMETIME;
-            object->context_timer = time;
+            object->context_timer += FRAMETIME;
+            time = object->context_timer;
             if (time >= 1.0f) {
                 object->character_context = -1;
                 time = 1.0f;
             }
-            object->pitch_angle = object->roll_angle = 0;
-            object->velocity.x = object->velocity.y = 0.0f;
-            object->velocity.z = (f32)((f64)time * object->character_data->game_character->run_speed +
-                                       (f64)object->character_data->game_character->run_speed * 0.5 * (1.0 - time));
+            object->velocity.y = object->velocity.x = 0.0f;
+            object->roll_angle = object->pitch_angle = 0;
+            object->velocity.z = (f32)((1.0 - time) * ((f64)object->character_data->game_character->run_speed * 0.5) +
+                                       (f64)time * object->character_data->game_character->run_speed);
             phase = ((i32)((f64)time * 32768.0 + 16384.0) >> 1) & 0x7fff;
             blend = (f32)(1.0 - (1.0 + (f64)NuTrigTable[phase]) * 0.5);
             object->position.y = (1.0f - blend) * object->launch_origin.y + blend * hover;
