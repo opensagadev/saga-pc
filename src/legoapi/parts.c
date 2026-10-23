@@ -4849,12 +4849,12 @@ void edpartDrawCursor(void) {
     NuQFntSetColour(system_qfont, 0x80808080);
     NuQFntPrintEx(system_qfont, 0x17c0, 0x988, 0x10, "Info Box");
     if (edpart_readout == 0) {
-        if (edpart_num_orphans < 1) {
-            NuQFntSetColour(system_qfont, 0x80808080);
-            NuQFntPrintEx(system_qfont, 0x17c0, 0x988, 0x10, "Info Box");
-        } else {
+        if (edpart_num_orphans > 0) {
             NuQFntSetColour(system_qfont, 0x80202080);
             NuQFntPrintEx(system_qfont, 0x17c0, 0x988, 0x10, "WARNING: %d Orphans", edpart_num_orphans);
+        } else {
+            NuQFntSetColour(system_qfont, 0x80808080);
+            NuQFntPrintEx(system_qfont, 0x17c0, 0x988, 0x10, "Info Box");
         }
     } else if (edpart_readout == 1) {
         NuQFntSetColour(system_qfont, 0x80808080);
@@ -4875,7 +4875,12 @@ void edpartDrawCursor(void) {
             else if (edpart_effect_list == 0)
                 NuQFntPrintEx(system_qfont, 0x17c0, 0xaf0, 0x10, "Current List: General");
         }
-        if (edpart_copy_mode == 0) {
+        if (edpart_copy_mode != 0) {
+            if (edpart_copy_enclosed > 8)
+                NuQFntSetColour(system_qfont, 0x80000080);
+            NuQFntPrintEx(system_qfont, 0x17c0, 0xc30, 0x10, "Enclosed: %d", edpart_copy_enclosed);
+            NuQFntSetColour(system_qfont, 0x80000000);
+        } else {
             if (edpart_nearest == -1) {
                 NuQFntPrintEx(system_qfont, 0x17c0, 0xc30, 0x10, "Highlight: <none>");
             } else {
@@ -4897,11 +4902,6 @@ void edpartDrawCursor(void) {
                     NuQFntSetColour(system_qfont, 0x80000000);
                 }
             }
-        } else {
-            if (edpart_copy_enclosed > 8)
-                NuQFntSetColour(system_qfont, 0x80000080);
-            NuQFntPrintEx(system_qfont, 0x17c0, 0xc30, 0x10, "Enclosed: %d", edpart_copy_enclosed);
-            NuQFntSetColour(system_qfont, 0x80000000);
         }
         NuQFntPrintEx(system_qfont, 0x17c0, 0xd70, 0x10, "Types: %d/%d; Emits: %d/%d", part_types_used, 128,
                       part_emits_used, 40);
@@ -4913,9 +4913,9 @@ void edpartDrawCursor(void) {
             NuQFntPrintEx(system_qfont, 0x17c0, 0xaf0, 0x10, "XYZ: %0.2f %0.2f %0.2f", edpart_nearest_emit->position.x,
                           edpart_nearest_emit->position.y, edpart_nearest_emit->position.z);
             NuQFntPrintEx(system_qfont, 0x17c0, 0xb90, 0x10, "RotZ: %d",
-                          (const i16 *)(&edpart_nearest_emit->trailing_state_words[0])[0]);
+                          ((const i16 *)&edpart_nearest_emit->trailing_state_words[0])[0]);
             NuQFntPrintEx(system_qfont, 0x17c0, 0xc30, 0x10, "RotY: %d",
-                          (const i16 *)(&edpart_nearest_emit->trailing_state_words[0])[1]);
+                          ((const i16 *)&edpart_nearest_emit->trailing_state_words[0])[1]);
             NuQFntPrintEx(system_qfont, 0x17c0, 0xcd0, 0x10, "EmitRotZ: %d", edpart_nearest_emit->rotation_2c);
             NuQFntPrintEx(system_qfont, 0x17c0, 0xd70, 0x10, "EmitRotY: %d", edpart_nearest_emit->rotation_2e);
         }
