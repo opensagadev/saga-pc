@@ -474,22 +474,21 @@ extern "C" {
         query->movement_length = NuFsqrt(query->movement.x * query->movement.x + query->movement.y * query->movement.y +
                                          query->movement.z * query->movement.z);
     }
+#define TERRAIN_RV_SIN(angle) NuTrigTable[(static_cast<i32>(angle) >> 1) & (NUTRIGTABLE_COUNT - 1)]
+#define TERRAIN_RV_COS(angle) NuTrigTable[(static_cast<i32>((angle) + 16384.0f) >> 1) & (NUTRIGTABLE_COUNT - 1)]
     void RotateVec(NUVEC *source, NUVEC *destination) {
         TerrainQuery_s *query = (TerrainQuery_s *)TerI;
-        const f32 pitch = query->movement_pitch;
-        const f32 sin_pitch = NuTrigTable[(static_cast<i32>(pitch) >> 1) & (NUTRIGTABLE_COUNT - 1)];
-        const f32 cos_pitch = NuTrigTable[(static_cast<i32>(pitch + 16384.0f) >> 1) & (NUTRIGTABLE_COUNT - 1)];
-
-        const f32 rotated_z = source->y * sin_pitch + source->z * cos_pitch;
-        destination->y = source->y * cos_pitch - source->z * sin_pitch;
-
-        const f32 yaw = query->movement_yaw;
-        const f32 sin_yaw = NuTrigTable[(static_cast<i32>(yaw) >> 1) & (NUTRIGTABLE_COUNT - 1)];
-        const f32 cos_yaw = NuTrigTable[(static_cast<i32>(yaw + 16384.0f) >> 1) & (NUTRIGTABLE_COUNT - 1)];
-
-        destination->z = rotated_z * cos_yaw - source->x * sin_yaw;
-        destination->x = rotated_z * sin_yaw + source->x * cos_yaw;
+        const f32 rotated_z =
+            TERRAIN_RV_COS(query->movement_pitch) * source->z + TERRAIN_RV_SIN(query->movement_pitch) * source->y;
+        destination->y =
+            source->y * TERRAIN_RV_COS(query->movement_pitch) - TERRAIN_RV_SIN(query->movement_pitch) * source->z;
+        destination->z =
+            TERRAIN_RV_COS(query->movement_yaw) * rotated_z - TERRAIN_RV_SIN(query->movement_yaw) * source->x;
+        destination->x =
+            TERRAIN_RV_COS(query->movement_yaw) * source->x + TERRAIN_RV_SIN(query->movement_yaw) * rotated_z;
     }
+#undef TERRAIN_RV_SIN
+#undef TERRAIN_RV_COS
     void DeRotateTerrain(TERRAIN_SHAPE *surface) {
         TerrainQuery_s *query = (TerrainQuery_s *)TerI;
 
@@ -1778,35 +1777,33 @@ extern "C" {
         return 0;
     }
     void FullDeflect(NUVEC *normal, NUVEC *movement, NUVEC *result) {
-        const f32 normal_x = normal->x;
-        const f32 normal_y = normal->y;
-        const f32 normal_z = normal->z;
-        const f32 movement_x = movement->x;
-        const f32 movement_y = movement->y;
-        const f32 movement_z = movement->z;
-        const f32 deflection = -movement_y * normal_y - movement_x * normal_x - movement_z * normal_z + 0.0003f;
-        result->x = movement_x + normal_x * deflection;
-        result->y = movement_y + normal_y * deflection;
-        result->z = movement_z + normal_z * deflection;
+        // Move just far enough out of the surface to retain a small separation.
+        const f32 reverse_x = -movement->x;
+        const f32 reverse_y = -movement->y;
+        const f32 reverse_z = -movement->z;
+        const f32 deflection = reverse_y * normal->y + reverse_x * normal->x + reverse_z * normal->z + 0.0003f;
+        result->x = normal->x * deflection + movement->x;
+        result->y = normal->y * deflection + movement->y;
+        result->z = normal->z * deflection + movement->z;
     }
     void FullDeflectSmallY(NUVEC *normal, NUVEC *movement, NUVEC *result) {
         // Move just far enough out of the surface to retain a small separation.
-        const f32 normal_x = normal->x;
-        const f32 normal_y = normal->y;
-        const f32 normal_z = normal->z;
-        const f32 movement_x = movement->x;
-        const f32 movement_y = movement->y;
-        const f32 movement_z = movement->z;
-        const f32 deflection = -movement_y * normal_y - movement_x * normal_x - movement_z * normal_z + 0.0003f;
-        result->x = movement_x + normal_x * deflection;
-        result->y = movement_y + normal_y * deflection * TerrWallDeflectYScale;
-        result->z = movement_z + normal_z * deflection;
+        const f32 reverse_x = -movement->x;
+        const f32 reverse_y = -movement->y;
+        const f32 reverse_z = -movement->z;
+        const f32 deflection = reverse_y * normal->y + reverse_x * normal->x + reverse_z * normal->z + 0.0003f;
+        result->x = normal->x * deflection + movement->x;
+        result->y = normal->y * deflection * TerrWallDeflectYScale + movement->y;
+        result->z = normal->z * deflection + movement->z;
     }
     i32 FullDeflectTest(NUVEC *normal, NUVEC *movement, NUVEC *result) {
-        f32 deflection = ((-movement->y * normal->y - movement->x * normal->x) - movement->z * normal->z) + 0.0003f;
-        NUVEC output = {normal->x * deflection + movement->x, normal->y * deflection + movement->y,
-                        normal->z * deflection + movement->z};
-        *result = output;
+        const f32 reverse_x = -movement->x;
+        const f32 reverse_y = -movement->y;
+        const f32 reverse_z = -movement->z;
+        const f32 deflection = reverse_y * normal->y + reverse_x * normal->x + reverse_z * normal->z + 0.0003f;
+        result->x = normal->x * deflection + movement->x;
+        result->y = normal->y * deflection + movement->y;
+        result->z = normal->z * deflection + movement->z;
         return deflection > 0.0f;
     }
     void PlatformConnect(char *track_id, NUVEC *position_delta, NUVEC *movement_delta, i32 platform_index) {
@@ -2935,8 +2932,11 @@ extern "C" i32 NewRayCastScaleY(NUVEC *position, NUVEC *movement, f32 radius, f3
 }
 
 extern "C" void __cdecl FullReflect(NUVEC *normal, NUVEC *movement, NUVEC *result) {
-    f32 reflection = (-movement->y * normal->y + -movement->x * normal->x) + -movement->z * normal->z;
-    result->x = movement->x + 2.0 * (normal->x * reflection);
-    result->y = movement->y + 2.0 * (normal->y * reflection);
-    result->z = movement->z + 2.0 * (normal->z * reflection);
+    const f32 reverse_x = -movement->x;
+    const f32 reverse_y = -movement->y;
+    const f32 reverse_z = -movement->z;
+    const f32 reflection = reverse_y * normal->y + reverse_x * normal->x + reverse_z * normal->z;
+    result->x = normal->x * reflection * 2.0 + movement->x;
+    result->y = normal->y * reflection * 2.0 + movement->y;
+    result->z = normal->z * reflection * 2.0 + movement->z;
 }
