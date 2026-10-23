@@ -10024,12 +10024,12 @@ void __cdecl Move_WEIRDO(GAMEOBJECT *object) {
     u32 special_held = object->pad->buttons_held & GAMEPAD_SPECIAL;
     u32 special_pressed = object->pad->buttons_pressed & GAMEPAD_SPECIAL;
     u32 tag_pressed = object->pad->buttons_pressed & GAMEPAD_TAG;
-    i32 hit_effect = object->blade_index == -1 ? -1 : BladeTab[object->blade_index].hit_effect;
+    i32 hit_effect = object->blade_index != -1 ? BladeTab[object->blade_index].hit_effect : -1;
     i32 glow_model, weapon, has_sabre, detonator_used;
     u32 jump_animations;
     glow_model = SuperWeirdo(object) && (object->character_data->model_flags & 8) == 0 ? 0xdf
-                 : object->blade_index == -1                                           ? -1
-                                             : BladeTab[object->blade_index].glow_model;
+                 : object->blade_index != -1 ? BladeTab[object->blade_index].glow_model
+                                             : -1;
     DropInOutCode(object);
     ApplyGravity(object, NULL, 0.0f, 8.0f, NULL);
     weapon = object->character_data->game_character->weapon_model;
@@ -10055,9 +10055,12 @@ void __cdecl Move_WEIRDO(GAMEOBJECT *object) {
     BackFlipCode(object);
     TakeOverCode(object, tag_pressed);
     Glide_MoveCode(object);
-    jump_animations = has_sabre ? 0x1b : 8;
-    if (!has_sabre)
+    if (has_sabre)
+        jump_animations = 0x1b;
+    else {
+        jump_animations = 8;
         hit_effect = -1;
+    }
     if (SuperWeirdo(object))
         jump_animations |= 0x101;
     else if (!has_sabre)
@@ -10104,23 +10107,20 @@ void __cdecl Move_WEIRDO(GAMEOBJECT *object) {
     if (has_sabre) {
         BlockCode(object, action_pressed, action_held, jump_pressed, 0);
         SwipeCode(object, action_pressed, action_held);
-        if (detonator_used == 1)
-            special_pressed = 0;
-        LightSabreComboCode(object, action_pressed, action_held, jump_pressed, special_pressed);
+        LightSabreComboCode(object, action_pressed, action_held, jump_pressed,
+                            detonator_used == 1 ? 0 : special_pressed);
         JediLightCode(object);
     } else {
         BlockCode(object, action_pressed, action_held, 0, 0);
         PunchCode(object, action_pressed, action_held, 1, 0, 0.0f);
         DodgeCode(object, action_pressed, jump_pressed);
         if ((object->character_data->model_flags & 0x80) != 0) {
-            if (detonator_used == 1)
-                special_pressed = 0;
-            ShootCode(object, action_pressed, special_pressed, 1, 1, 0);
+            ShootCode(object, action_pressed, detonator_used == 1 ? 0 : special_pressed, 1, 1, 0);
         } else if (((WEIRDO_BATARANG_READER_PC *)object)->batarang != NULL) {
             Batarang_MoveCode(object);
         }
     }
-    if ((i8)object->character_data->game_character->flags_094_bytes[0] < 0)
+    if ((object->character_data->game_character->flags_094_bytes[0] & 0x80) != 0)
         CommunicateCode(object, object->pad->buttons_pressed & GAMEPAD_SPECIAL, 0);
     FireBountyHunterRocket(object);
     BeastStartFallCodePc(object);
