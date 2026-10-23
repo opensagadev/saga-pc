@@ -1403,14 +1403,22 @@ void __cdecl Customiser_SetNameAndIcon(CUSTOMISER_LAYERS_PC *input, i32 index) {
     if (customiser == NULL)
         return;
     for (side = 0; side < 2; ++side) {
-        i32 counts[11] = {0};
-        CUSTOM_PIECE_CONFIG_PC *first = NULL;
-        CUSTOM_PIECE_CONFIG_PC *second = NULL;
-        CUSTOM_PIECE_CONFIG_PC *third = NULL;
+        i32 counts[11];
+        struct {
+            char name[64];
+            CUSTOM_PIECE_CONFIG_PC *piece;
+        } parts[2];
+        CUSTOM_PIECE_CONFIG_PC *third;
         const u16 *selection = Game.customiser_start[side].pieces;
         if (index != -1 && side != index)
             continue;
         names->display_names[side][0] = 0;
+        third = NULL;
+        parts[1].piece = NULL;
+        parts[0].piece = NULL;
+        for (group = 0; group < 11; ++group)
+            counts[group] = 0;
+
         for (category = 0; category < 9; ++category) {
             CUSTOM_PIECE_CONFIG_PC *piece;
             if (customiser->piece_counts[category] <= 0)
@@ -1423,10 +1431,10 @@ void __cdecl Customiser_SetNameAndIcon(CUSTOMISER_LAYERS_PC *input, i32 index) {
             piece = &customiser->piece_sets[category][selection[category]];
             if (piece->field_10 != -1)
                 counts[piece->field_10] += (i8)customiser->categories[category]->material_indices[0];
-            if (first == NULL && piece->unknown_indices_0a[0] != 0)
-                first = piece;
-            else if (second == NULL && piece->unknown_indices_0a[1] != 0)
-                second = piece;
+            if (parts[0].piece == NULL && piece->unknown_indices_0a[0] != 0)
+                parts[0].piece = piece;
+            else if (parts[1].piece == NULL && piece->unknown_indices_0a[1] != 0)
+                parts[1].piece = piece;
             else if (third == NULL && piece->unknown_indices_0a[2] != 0)
                 third = piece;
         }
