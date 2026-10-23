@@ -769,7 +769,7 @@ f32 __cdecl TextPrintSubstring(u8 *text, f32 x, f32 y, f32 z, f32 x_scale, f32 y
 }
 #define TEXT3D_FONT() (SmartTextFont != NULL ? SmartTextFont : QFont2D)
 void __cdecl Text3DEx(char *text, f32 x, f32 y, f32 z, f32 x_scale, f32 y_scale, f32 z_scale, u32 alignment,
-                      u32 red_slot, u32 green_slot, u32 blue_slot, i32 alpha) {
+                      u32 red_slot, u32 green_slot, u32 blue_slot, u8 alpha) {
     u8 red = (u8)red_slot;
     u8 green = (u8)green_slot;
     u8 blue = (u8)blue_slot;
@@ -960,7 +960,7 @@ void __cdecl IntroText_Draw(f32 alpha) {
 
 extern VUFNT *QFont2DLower;
 void __cdecl Text3DEx2(char *text, f32 x, f32 y, f32 z, f32 sx, f32 sy, f32 sz, u32 alignment, u32 red, u32 green,
-                       u32 blue, i32 alpha) {
+                       u32 blue, u8 alpha) {
     if (QFont2DLower != NULL) {
         VUFNT *saved_font = SmartTextFont;
         SmartTextFont = QFont2DLower;

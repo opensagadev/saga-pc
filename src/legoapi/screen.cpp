@@ -490,78 +490,66 @@ destination_selected:
 }
 
 void __cdecl RedBrick_LSW_Draw(STATUS_STAGE_s *stage, STATUSPACKET_s *packet, i32 current) {
-    volatile f32 blend;
-    volatile i32 opacity;
-    volatile u16 rotation, pitch;
-    volatile f32 panel_y, text_y;
+    f32 blend;
     if (current == 0 || stage->field_0x14 <= 0)
         return;
     if (stage->field_0x18 < 1.0f) {
-        volatile i32 angle = (i32)((f64)stage->field_0x18 * 16384.0);
-        blend = NuTrigTable[(angle >> 1) & 0x7fff];
+        blend = NuTrigTable[((i32)(stage->field_0x18 * 16384.0f) >> 1) & 0x7fff];
     } else {
-        volatile f32 fade_start = (f64)stage->field_0x1c - 1.0;
-        if (fade_start > stage->field_0x18)
+        f32 fade_start = stage->field_0x1c - 1.0f;
+        if (stage->field_0x18 < fade_start)
             blend = 1.0f;
-        else {
-            volatile i32 angle = (i32)((1.0 - ((f64)stage->field_0x18 - (f64)fade_start)) * 16384.0);
-            blend = NuTrigTable[(angle >> 1) & 0x7fff];
-        }
+        else
+            blend = NuTrigTable[((i32)((1.0f - (stage->field_0x18 - fade_start)) * 16384.0f) >> 1) & 0x7fff];
     }
-    opacity = (i32)((f64)blend * 128.0);
     SmartTextEx(TTab[TextIdPc880748], 0.0f, 0.05f, 1.0f, StatusTextScalePc, StatusTextScalePc, StatusTextScalePc, 0,
-                (u8)StatusRedPc, (u8)StatusGreenPc, (u8)StatusBluePc, 1.7f, 1, NULL, 0, (u32)opacity);
-    rotation = (u16)((f64)NuFmod(GlobalTimer.time_elapsed, 4.0f) * 0.25 * 65536.0);
-    pitch = (u16)((f64)NuTrigTable[rotation & 0x7fff] * 1820.0);
-    panel_y = (f64)blend - 1.5;
-    DrawPanel3DObjectNoAlpha(0.0f, panel_y, 1.0f, 1.0f, 1.0f, 1.0f, pitch, rotation, 0,
+                (u8)StatusRedPc, (u8)StatusGreenPc, (u8)StatusBluePc, 1.7f, 1, NULL, 0, (i32)(blend * 128.0f));
+    u16 rotation = (u16)(NuFmod(GlobalTimer.time_elapsed, 4.0f) * 0.25f * 65536.0f);
+    f32 panel_y = blend - 1.5f;
+    DrawPanel3DObjectNoAlpha(0.0f, panel_y, 1.0f, 1.0f, 1.0f, 1.0f,
+                             (u16)(NuTrigTable[((rotation * 2) >> 1) & 0x7fff] * 1820.0f), rotation, 0,
                              &WORLD->level_objects[210].special, 2);
-    text_y = (f64)blend * -1.0 + 1.5;
+    f32 text_y = (0.5f - 1.5f) * blend + 1.5f;
     SmartTextEx(TTab[*ExtrasCheatsPc[packet->area->cheat].text_id], 0.0f, text_y, 1.0f, StatusTextScalePc,
                 StatusTextScalePc, StatusTextScalePc, 0, 255, 255, 255, 1.7f, 1, NULL, 0, 128);
 }
 
 void __cdecl GoldBrick_LSW_Draw(STATUS_STAGE_s *stage, STATUSPACKET_s *packet, i32 current) {
+    char text[256];
     if (current == 0)
         return;
-    if (stage->field_0x14 > 0 && stage->field_0x18 >= 1.0f && (f64)stage->field_0x18 < (f64)stage->field_0x1c - 1.0) {
-        char text[256];
-        i32 total = (i32)Game.gold_bricks;
-        i32 previous = (i32)packet->previous_gold_bricks;
+    if (stage->field_0x14 > 0 && stage->field_0x18 >= 1.0f && stage->field_0x18 < stage->field_0x1c - 1.0f) {
+        i32 total = Game.gold_bricks;
+        i32 previous = packet->previous_gold_bricks;
         i32 last = total - previous - 1;
         i32 displayed;
-        volatile f32 blend, text_y, panel_y;
-        volatile i32 opacity;
-        volatile u16 rotation, pitch;
+        f32 blend;
         if (stage->field_0x18 < 2.0f) {
-            volatile i32 angle = (i32)(((f64)stage->field_0x18 - 1.0) * 16384.0);
-            blend = NuTrigTable[(angle >> 1) & 0x7fff];
+            blend = NuTrigTable[((i32)((stage->field_0x18 - 1.0f) * 16384.0f) >> 1) & 0x7fff];
         } else {
-            volatile f32 fade_start = (f64)stage->field_0x1c - 2.0;
-            if (fade_start > stage->field_0x18)
+            f32 fade_start = stage->field_0x1c - 2.0f;
+            if (stage->field_0x18 < fade_start)
                 blend = 1.0f;
-            else {
-                volatile i32 angle = (i32)((1.0 - ((f64)stage->field_0x18 - (f64)fade_start)) * 16384.0);
-                blend = NuTrigTable[(angle >> 1) & 0x7fff];
-            }
+            else
+                blend = NuTrigTable[((i32)((1.0f - (stage->field_0x18 - fade_start)) * 16384.0f) >> 1) & 0x7fff];
         }
         if (stage->field_0x18 < 2.0f)
             displayed = previous;
-        else if ((f64)last * 2.5 + 2.0 > (f64)stage->field_0x18)
-            displayed = (i32)(((f64)stage->field_0x18 - 2.0) / 2.5 + (f64)(previous + 1));
+        else if (stage->field_0x18 < last * 2.5f + 2.0f)
+            displayed = (i32)((stage->field_0x18 - 2.0f) / 2.5f + (previous + 1));
         else
             displayed = total;
         sprintf(text, "%i/%i", displayed, GOLDBRICKPOINTS);
-        opacity = (i32)((f64)blend * 128.0);
-        text_y = (f64)blend * (f64)-0.99999994f + (f64)1.3f;
-        SmartTextEx(text, 0.0f, text_y, 1.0f, 1.5f, 1.5f, 1.5f, 0, 255, 255, 255, 1.7f, 1, NULL, 0, (u32)opacity);
-        rotation = (u16)((f64)NuFmod(GlobalTimer.time_elapsed, 4.0f) * 0.25 * 65536.0);
-        pitch = (u16)((f64)NuTrigTable[rotation & 0x7fff] * 1820.0);
-        panel_y = (f64)blend * (f64)0.99999994f - (f64)1.3f;
-        DrawPanel3DObjectNoAlpha(0.0f, panel_y, 1.0f, 1.0f, 1.0f, 1.0f, pitch, rotation, 0,
+        f32 text_y = (0.3f - 1.3f) * blend + 1.3f;
+        SmartTextEx(text, 0.0f, text_y, 1.0f, 1.5f, 1.5f, 1.5f, 0, 255, 255, 255, 1.7f, 1, NULL, 0,
+                    (i32)(blend * 128.0f));
+        u16 rotation = (u16)(NuFmod(GlobalTimer.time_elapsed, 4.0f) * 0.25f * 65536.0f);
+        f32 panel_y = (-0.3f - -1.3f) * blend + -1.3f;
+        DrawPanel3DObjectNoAlpha(0.0f, panel_y, 1.0f, 1.0f, 1.0f, 1.0f,
+                                 (u16)(NuTrigTable[((rotation * 2) >> 1) & 0x7fff] * 1820.0f), rotation, 0,
                                  &WORLD->level_objects[211].special, 2);
         if (Game.gold_bricks > 60) {
-            volatile f32 coin_y = ((f64)STATSPOSY - (f64)STATSPOS2YPc) * (f64)blend + (f64)STATSPOS2YPc;
+            f32 coin_y = (STATSPOSY - STATSPOS2YPc) * blend + STATSPOS2YPc;
             CoinTotal_Draw((i32)*packet->score, coin_y, CoinTotalScale, 1, 1.0f, 255, 191, 0);
         }
     }
@@ -851,83 +839,88 @@ extern "C" {
 }
 
 static f32 __cdecl StatusCoinsRatioPc(f32 numerator, f32 denominator) {
-    if (numerator != 0.0f && denominator != 0.0f) {
-        volatile f32 result = (f64)numerator / (f64)denominator;
-        return result;
-    }
-    return 0.0f;
+    if (numerator == 0.0f || denominator == 0.0f)
+        return 0.0f;
+    f32 result = numerator / denominator;
+    return result;
 }
 
 void __cdecl Coins_LSW_Draw(STATUS_STAGE_s *stage, STATUSPACKET_s *packet, i32 current) {
-    if (current == 0) {
-        if (stage->field_0x12 != 0) {
-            volatile i32 angle = (i32)((f64)getFinishedStatusAlpha(packet) * 16384.0);
-            volatile f32 y =
-                ((f64)STATSPOSY - (f64)STATSPOS2YPc) * (f64)NuTrigTable[(angle >> 1) & 0x7fff] + (f64)STATSPOS2YPc;
-            CoinTotal_Draw((i32)*packet->score, y, CoinTotalScale, 1, 1.0f, 255, 191, 0);
-        }
-        return;
-    }
-    volatile f32 alpha = 1.0f;
-    volatile f32 coin_y = STATSPOS2YPc;
-    volatile f32 total_y = STATSPOS2YPc;
-    volatile f32 scale = StatusCoinsScalePc;
-    switch (stage->field_0x14) {
-        case 0:
-            alpha = 0.0f;
-            break;
-        case 1: {
-            alpha = stage->field_0x18;
-            volatile f32 ratio = (f64)stage->field_0x18 / (f64)stage->field_0x1c;
-            volatile i32 angle = (i32)((f64)ratio * 32768.0 + 16384.0);
-            volatile f32 blend = 1.0 - ((f64)NuTrigTable[(angle >> 1) & 0x7fff] + 1.0) * 0.5;
-            StatusIconYPc = StatusIconsOnOff(StatusCoinsRatioPc(stage->field_0x18, stage->field_0x1c));
-            total_y = ((f64)StatusCoinsTotalYPc - (f64)STATSPOS2YPc) * (f64)blend + (f64)STATSPOS2YPc;
-            coin_y = ((f64)STATSPOSY - (f64)STATSPOS2YPc) * (f64)blend + (f64)STATSPOS2YPc;
-            scale = StatusCoinsScalePc;
-            break;
-        }
-        case 2:
-            total_y = StatusCoinsTotalYPc;
-            coin_y = STATSPOSY;
-            break;
-        case 3: {
-            alpha = 1.0 - (f64)stage->field_0x18;
-            volatile f32 ratio = 1.0 - (f64)stage->field_0x18 / (f64)stage->field_0x1c;
-            volatile i32 angle = (i32)((f64)ratio * 32768.0 + 16384.0);
-            volatile f32 blend = 1.0 - ((f64)NuTrigTable[(angle >> 1) & 0x7fff] + 1.0) * 0.5;
-            total_y = ((f64)StatusCoinsTotalYPc - (f64)STATSPOSY) * (f64)blend + (f64)STATSPOSY;
-            coin_y = ((f64)STATSPOSY - (f64)STATSPOS2YPc) * (f64)blend + (f64)STATSPOS2YPc;
-            scale = ((f64)StatusCoinsScalePc - (f64)CoinTotalScale) * (f64)blend + (f64)CoinTotalScale;
-            break;
-        }
-    }
-    if (stage->field_0x14 > 0) {
-        for (i32 player = 0; player < 2; ++player) {
-            volatile f32 player_alpha = packet->player_active[player] != 0 ? 1.0f : MissionDropInAlphaPc;
-            volatile f32 coin_x = player == 0 ? -PANEL_COINX : PANEL_COINX;
-            volatile f32 score_x = player == 0 ? -HudScoreXPc : HudScoreXPc;
-            u32 coins = packet->coins_remaining[player];
-            i32 object_index = coins >= 1000u ? 0xc3 : coins >= 100u ? 0xbb : 0xb3;
-            if (WORLD->level_objects[object_index].active != 0) {
-                DrawPanel3DObject(coin_x, coin_y, 1.0f, PANEL_COINSCALE_END, PANEL_COINSCALE_END, PANEL_COINSCALE_END,
-                                  0, 0, 0, &WORLD->level_objects[object_index].special, 0, player_alpha);
+    if (current != 0) {
+        f32 alpha = 1.0f;
+        f32 coin_y = STATSPOS2YPc;
+        f32 total_y = coin_y;
+        f32 scale = StatusCoinsScalePc;
+        switch (stage->field_0x14) {
+            case 0:
+                alpha = 0.0f;
+                break;
+            case 1: {
+                alpha = stage->field_0x18;
+                f32 ratio = stage->field_0x18 / stage->field_0x1c;
+                f32 blend = 1.0f - (NuTrigTable[((i32)(ratio * 32768.0f + 16384.0f) >> 1) & 0x7fff] + 1.0f) * 0.5f;
+                StatusIconYPc = StatusIconsOnOff(StatusCoinsRatioPc(stage->field_0x18, stage->field_0x1c));
+                total_y = (StatusCoinsTotalYPc - STATSPOS2YPc) * blend + STATSPOS2YPc;
+                coin_y = (STATSPOSY - STATSPOS2YPc) * blend + STATSPOS2YPc;
+                scale = StatusCoinsScalePc;
+                break;
             }
-            char text[256];
-            Text_MakeScore(packet->coins_remaining[player], text);
-            volatile u8 opacity = (u8)((f64)player_alpha * 128.0);
-            Text3DEx(text, score_x, coin_y, 1.0f, HudScoreScalePc, HudScoreScalePc, HudScoreScalePc,
-                     player == 0 ? 2 : 8, 255, 191, 0, opacity);
+            case 2:
+                total_y = StatusCoinsTotalYPc;
+                coin_y = STATSPOSY;
+                break;
+            case 3: {
+                alpha = 1.0f - stage->field_0x18;
+                f32 ratio = 1.0f - stage->field_0x18 / stage->field_0x1c;
+                f32 blend = 1.0f - (NuTrigTable[((i32)(ratio * 32768.0f + 16384.0f) >> 1) & 0x7fff] + 1.0f) * 0.5f;
+                total_y = (StatusCoinsTotalYPc - STATSPOSY) * blend + STATSPOSY;
+                coin_y = (STATSPOSY - STATSPOS2YPc) * blend + STATSPOS2YPc;
+                scale = (StatusCoinsScalePc - CoinTotalScale) * blend + CoinTotalScale;
+                break;
+            }
         }
-        CoinTotal_Draw((i32)*packet->score, total_y, scale, 1, 1.0f, 255, 191, 0);
+        if (stage->field_0x14 > 0) {
+            for (i32 player = 0; player < 2; ++player) {
+                char text[256];
+                f32 player_alpha = packet->player_active[player] != 0 ? 1.0f : MissionDropInAlphaPc;
+                f32 coin_x;
+                f32 score_x;
+                i32 align;
+                if (player == 0) {
+                    coin_x = -PANEL_COINX;
+                    align = 2;
+                    score_x = -HudScoreXPc;
+                } else {
+                    coin_x = PANEL_COINX;
+                    align = 8;
+                    score_x = HudScoreXPc;
+                }
+                u32 coins = packet->coins_remaining[player];
+                i32 object_index = coins >= 1000u ? 0xc3 : coins >= 100u ? 0xbb : 0xb3;
+                if (WORLD->level_objects[object_index].active != 0) {
+                    DrawPanel3DObject(coin_x, coin_y, 1.0f, PANEL_COINSCALE_END, PANEL_COINSCALE_END,
+                                      PANEL_COINSCALE_END, 0, 0, 0, &WORLD->level_objects[object_index].special, 0,
+                                      player_alpha);
+                }
+                Text_MakeScore(packet->coins_remaining[player], text);
+                Text3DEx(text, score_x, coin_y, 1.0f, HudScoreScalePc, HudScoreScalePc, HudScoreScalePc, align, 255,
+                         191, 0, (u8)(i32)(player_alpha * 128.0f));
+            }
+            CoinTotal_Draw((i32)*packet->score, total_y, scale, 1, 1.0f, 255, 191, 0);
+        }
+        if (alpha < 0.0f)
+            alpha = 0.0f;
+        else if (alpha > 1.0f)
+            alpha = 1.0f;
+        Text3DEx(TTab[TextIdPc8808d4], 0.0f, StatusCoinsTitleYPc, 1.0f, StatusCoinsTitleScalePc,
+                 StatusCoinsTitleScalePc, StatusCoinsTitleScalePc, 0, 255, 255, 255, (u8)(alpha * 128.0f));
+    } else if (stage->field_0x12 != 0) {
+        CoinTotal_Draw((i32)*packet->score,
+                       (STATSPOSY - STATSPOS2YPc) *
+                               NuTrigTable[((i32)(getFinishedStatusAlpha(packet) * 16384.0f) >> 1) & 0x7fff] +
+                           STATSPOS2YPc,
+                       CoinTotalScale, 1, 1.0f, 255, 191, 0);
     }
-    if (alpha < 0.0f)
-        alpha = 0.0f;
-    else if (alpha > 1.0f)
-        alpha = 1.0f;
-    volatile u8 opacity = (u8)((f64)alpha * 128.0);
-    Text3DEx(TTab[TextIdPc8808d4], 0.0f, StatusCoinsTitleYPc, 1.0f, StatusCoinsTitleScalePc, StatusCoinsTitleScalePc,
-             StatusCoinsTitleScalePc, 0, 255, 255, 255, opacity);
 }
 
 extern "C" {
@@ -1245,87 +1238,73 @@ void __cdecl TrueHero_LSW_Update(STATUS_STAGE_s *stage, STATUSPACKET_s *packet, 
 }
 
 void __cdecl TrueHero_LSW_Draw(STATUS_STAGE_s *stage, STATUSPACKET_s *packet, i32 current) {
+    char text[256];
     if (current == 0)
         return;
-    char text[256];
-    volatile f32 alpha = 1.0f;
+    f32 alpha = 1.0f;
     switch (stage->field_0x14) {
         case 0:
             alpha = 0.0f;
             break;
         case 1: {
             alpha = stage->field_0x18;
-            volatile i32 angle =
-                (i32)((f64)StatusCoinsRatioPc(stage->field_0x18, stage->field_0x1c) * 32768.0 + 16384.0);
-            volatile f32 blend = 1.0 - ((f64)NuTrigTable[(angle >> 1) & 0x7fff] + 1.0) * 0.5;
-            volatile f32 scale = ((f64)StatusTrueHeroBarScalePc - 1.0) * (f64)blend + 1.0;
-            volatile i32 position_angle = (i32)((f64)blend * 16384.0);
-            volatile f32 y =
-                ((f64)StatusTrueHeroBarYPc - (f64)STATSPOS2YPc) * (f64)NuTrigTable[(position_angle >> 1) & 0x7fff] +
-                (f64)STATSPOS2YPc;
-            DrawBuildUpBar(0.0f, y, 0, 100, 1.0f, scale, 1.0f, 0);
+            f32 ratio = StatusCoinsRatioPc(stage->field_0x18, stage->field_0x1c);
+            f32 blend = 1.0f - (NuTrigTable[((i32)(ratio * 32768.0f + 16384.0f) >> 1) & 0x7fff] + 1.0f) * 0.5f;
+            DrawBuildUpBar(0.0f,
+                           (StatusTrueHeroBarYPc - STATSPOS2YPc) *
+                                   NuTrigTable[((i32)(blend * 16384.0f) >> 1) & 0x7fff] +
+                               STATSPOS2YPc,
+                           0, 100, 1.0f, (StatusTrueHeroBarScalePc - 1.0f) * blend + 1.0f, 1.0f, 0);
             break;
         }
         case 2: {
-            volatile f32 time = stage->field_0x18;
+            f32 time = stage->field_0x18;
             if (time > 1.0f)
                 time = 1.0f;
-            volatile i32 angle = (i32)((f64)time * 32768.0 + 16384.0);
-            volatile f32 blend = 1.0 - ((f64)NuTrigTable[(angle >> 1) & 0x7fff] + 1.0) * 0.5;
-            volatile i32 count = (i32)packet->true_hero_percent;
-            DrawBuildUpBar(0.0f, StatusTrueHeroBarYPc, count, 100, 1.0f, StatusTrueHeroBarScalePc, 1.0f, 0);
-            volatile i32 number = (i32)packet->true_hero_percent;
-            sprintf(text, StatusTrueHeroPercentFormatPc, number);
-            volatile u8 opacity = (u8)((f64)blend * 128.0);
+            f32 blend = 1.0f - (NuTrigTable[((i32)(time * 32768.0f + 16384.0f) >> 1) & 0x7fff] + 1.0f) * 0.5f;
+            DrawBuildUpBar(0.0f, StatusTrueHeroBarYPc, packet->true_hero_percent, 100, 1.0f, StatusTrueHeroBarScalePc,
+                           1.0f, 0);
+            sprintf(text, StatusTrueHeroPercentFormatPc, (i32)packet->true_hero_percent);
             Text3DEx(text, 0.0f, StatusTrueHeroTextYPc, 1.0f, StatusTrueHeroTextScalePc, StatusTrueHeroTextScalePc,
-                     StatusTrueHeroTextScalePc, 0, 255, 191, 0, opacity);
+                     StatusTrueHeroTextScalePc, 0, 255, 191, 0, (u8)(blend * 128.0f));
             break;
         }
         case 3: {
-            volatile f32 time;
-            if (stage->field_0x18 < 1.0f) {
+            f32 time;
+            if (stage->field_0x18 < 1.0f)
                 time = stage->field_0x18;
-            } else {
-                volatile i32 compared = stage->field_0x18 < stage->field_0x1c;
-                (void)compared;
-                time = 1.0f;
-            }
-            volatile i32 angle = (i32)((f64)time * 32768.0 + 16384.0);
-            volatile f32 blend = 1.0 - ((f64)NuTrigTable[(angle >> 1) & 0x7fff] + 1.0) * 0.5;
+            else
+                time = stage->field_0x18 < stage->field_0x1c ? 1.0f : 1.0f;
+            f32 blend = 1.0f - (NuTrigTable[((i32)(time * 32768.0f + 16384.0f) >> 1) & 0x7fff] + 1.0f) * 0.5f;
             if (blend < 1.0f) {
-                volatile f32 grow = (f64)blend * 0.5 + 1.0;
-                volatile f32 shrink = 1.0 - (f64)blend * 0.5;
-                volatile u8 opacity = (u8)((1.0 - (f64)blend) * 64.0);
-                volatile f32 scale = (f64)StatusTrueHeroTextScalePc * (f64)grow;
+                f32 grow = blend * 0.5f + 1.0f;
+                f32 shrink = 1.0f - blend * 0.5f;
+                u8 opacity = (u8)((1.0f - blend) * 64.0f);
+                f32 scale = StatusTrueHeroTextScalePc * grow;
                 Text3DEx((char *)StatusTrueHeroFullPercentTextPc, 0.0f, StatusTrueHeroTextYPc, 1.0f, scale, scale,
                          scale, 0, 255, 191, 0, opacity);
-                scale = (f64)StatusTrueHeroTextScalePc * (f64)shrink;
+                scale = StatusTrueHeroTextScalePc * shrink;
                 Text3DEx((char *)StatusTrueHeroFullPercentTextPc, 0.0f, StatusTrueHeroTextYPc, 1.0f, scale, scale,
                          scale, 0, 255, 191, 0, opacity);
             }
-            volatile i32 count = (i32)packet->true_hero_percent;
-            DrawBuildUpBar(0.0f, StatusTrueHeroBarYPc, count, 100, 1.0f, StatusTrueHeroBarScalePc, 1.0f, 0);
+            DrawBuildUpBar(0.0f, StatusTrueHeroBarYPc, packet->true_hero_percent, 100, 1.0f, StatusTrueHeroBarScalePc,
+                           1.0f, 0);
             break;
         }
         case 6: {
-            alpha = 1.0 - (f64)stage->field_0x18;
+            alpha = 1.0f - stage->field_0x18;
             if (stage->type == 2 && alpha > 0.0f) {
-                volatile i32 number = (i32)packet->true_hero_percent;
-                sprintf(text, StatusTrueHeroPercentFormatPc, number);
-                volatile u8 opacity = (u8)((f64)alpha * 128.0);
+                sprintf(text, StatusTrueHeroPercentFormatPc, (i32)packet->true_hero_percent);
                 Text3DEx(text, 0.0f, StatusTrueHeroTextYPc, 1.0f, StatusTrueHeroTextScalePc, StatusTrueHeroTextScalePc,
-                         StatusTrueHeroTextScalePc, 0, 255, 191, 0, opacity);
+                         StatusTrueHeroTextScalePc, 0, 255, 191, 0, (u8)(alpha * 128.0f));
             }
-            volatile f32 ratio = stage->field_0x18 < 1.0f ? 1.0 - (f64)stage->field_0x18 : 0.0;
-            volatile i32 angle = (i32)((f64)ratio * 32768.0 + 16384.0);
-            volatile f32 blend = 1.0 - ((f64)NuTrigTable[(angle >> 1) & 0x7fff] + 1.0) * 0.5;
-            volatile f32 scale = ((f64)StatusTrueHeroBarScalePc - 1.0) * (f64)blend + 1.0;
-            volatile i32 count = (i32)packet->true_hero_percent;
-            volatile i32 position_angle = (i32)((f64)blend * 16384.0);
-            volatile f32 y =
-                ((f64)StatusTrueHeroBarYPc - (f64)STATSPOS2YPc) * (f64)NuTrigTable[(position_angle >> 1) & 0x7fff] +
-                (f64)STATSPOS2YPc;
-            DrawBuildUpBar(0.0f, y, count, 100, 1.0f, scale, 1.0f, 0);
+            f32 ratio = stage->field_0x18 < 1.0f ? 1.0f - stage->field_0x18 : 0.0f;
+            f32 blend = 1.0f - (NuTrigTable[((i32)(ratio * 32768.0f + 16384.0f) >> 1) & 0x7fff] + 1.0f) * 0.5f;
+            DrawBuildUpBar(
+                0.0f,
+                (StatusTrueHeroBarYPc - STATSPOS2YPc) * NuTrigTable[((i32)(blend * 16384.0f) >> 1) & 0x7fff] +
+                    STATSPOS2YPc,
+                packet->true_hero_percent, 100, 1.0f, (StatusTrueHeroBarScalePc - 1.0f) * blend + 1.0f, 1.0f, 0);
             break;
         }
     }
@@ -1338,9 +1317,8 @@ void __cdecl TrueHero_LSW_Draw(STATUS_STAGE_s *stage, STATUSPACKET_s *packet, i3
         NuStrCat(text, " ");
         NuStrCat(text, TTab[(packet->field_0xb0 & 0x40) != 0 ? TextIdPc8808a8 : TextIdPc8808a4]);
     }
-    volatile u8 opacity = (u8)((f64)alpha * 128.0);
     Text3DEx(text, 0.0f, StatusCoinsTitleYPc, 1.0f, StatusCoinsTitleScalePc, StatusCoinsTitleScalePc,
-             StatusCoinsTitleScalePc, 0, 255, 255, 255, opacity);
+             StatusCoinsTitleScalePc, 0, 255, 255, 255, (u8)(alpha * 128.0f));
 }
 
 extern "C" {
@@ -1856,14 +1834,18 @@ void __cdecl CollectCharactersOff_Draw(STATUS_STAGE_s *stage, STATUSPACKET_s *pa
     COLLECTION_BUILD_PC *collection = (packet->field_0xb0 & 0x80) != 0 ? &VehicleCollectionPc : &CharacterCollectionPc;
     if (current == 0)
         return;
-    volatile f32 alpha = 1.0f;
-    if (stage->field_0x14 > 0) {
-        volatile f32 time = stage->field_0x18;
-        volatile f32 duration = stage->field_0x1c;
-        volatile f32 ratio = 0.0f;
+    f32 alpha;
+    if (stage->field_0x14 <= 0) {
+        alpha = 1.0f;
+    } else {
+        f32 time = stage->field_0x18;
+        f32 duration = stage->field_0x1c;
+        f32 ratio;
         if (time != 0.0f && duration != 0.0f)
-            ratio = (f64)time / duration;
-        alpha = 1.0 - (f64)ratio;
+            ratio = time / duration;
+        else
+            ratio = 0.0f;
+        alpha = 1.0f - ratio;
     }
     Collection_DrawPc(collection, 0.0f, StatusCollectionYPc, collection->scale, NULL, alpha, 0);
 }

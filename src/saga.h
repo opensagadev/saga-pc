@@ -9484,7 +9484,7 @@ extern "C" {
     f32 __cdecl TextPrintSubstring(u8 *text, f32 x, f32 y, f32 z, f32 x_scale, f32 y_scale, i32 colour,
                                    i32 button_font);
     void __cdecl Text3DEx(char *text, f32 x, f32 y, f32 z, f32 x_scale, f32 y_scale, f32 z_scale, u32 alignment,
-                          u32 red, u32 green, u32 blue, i32 alpha);
+                          u32 red, u32 green, u32 blue, u8 alpha);
     void Text3D(char *text, f32 x, f32 y, f32 z, f32 x_scale, f32 y_scale, f32 z_scale, u32 alignment, u32 red,
                 u32 green, u32 blue);
     void FadeLoop_DrawObj(f32 alpha);
@@ -10035,7 +10035,7 @@ extern "C" {
     extern struct RTL_INDEX_PC *dbg_rtlindex;
     extern const char RtlSearchTimebarNamePc[];
 
-    void __cdecl Text3DEx2(char *, f32, f32, f32, f32, f32, f32, u32, u32, u32, u32, i32);
+    void __cdecl Text3DEx2(char *, f32, f32, f32, f32, f32, f32, u32, u32, u32, u32, u8);
     void __cdecl MenuText3DEx(char *, f32, f32, f32, f32, f32, f32, u32, u32, u32, u32, i32);
     void __cdecl DrawMenuButtonPromptsEx(i32, i32, i32, i32, u32, u32, u32, u32);
     char **__cdecl TextInputGetKeyNamesPc(void);

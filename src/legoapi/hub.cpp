@@ -2171,7 +2171,7 @@ static void HubDrawArcadeMenuPc(i32, f32);
 static void HubDrawArcadeStatsPc(f32);
 static void HubDrawBonusModeMenuPc(i32, f32);
 static void HubDrawMiniKitCountPc(f32, f32, i32, i32, f32);
-static void HubDrawAreaStatsPc(f32, i32, i32);
+void HubDrawAreaStatsPc(f32, i32, i32);
 static void HubDrawBonusStatsPc(f32, i32, i32, i32);
 static void HubDrawSuperBonusStatsPc(AREA_DATA_PC *, f32);
 static void HubDrawSelectModePc(void);
@@ -2661,7 +2661,7 @@ void __cdecl DrawBuildUpBar(f32 x, f32 y, i32 count, i32 total, f32 scale_x, f32
 extern "C" f32 HubTrueJediLabelOffsetPc, HubTrueJediLabelScalePc, HubTrueJediLabelWidthPc;
 extern "C" u8 HubTrueJediLabelRedPc, HubTrueJediLabelGreenPc, HubTrueJediLabelBluePc;
 extern "C" i32 HubTrueJediTypeAlphaPc;
-static void HubDrawAreaStatsPc(f32 phase, i32 area_index, i32 mode) {
+void HubDrawAreaStatsPc(f32 phase, i32 area_index, i32 mode) {
     AREA_DATA_PC *area = &ADataList[area_index];
     const i32 alpha = (i32)(phase * 128.0);
     if (LOSTTEMPLE_ADATA != NULL && LOSTTEMPLE_ADATA->index == area_index) {
@@ -2694,7 +2694,7 @@ static void HubDrawAreaStatsPc(f32 phase, i32 area_index, i32 mode) {
             DrawBuildUpBar(HubAreaPanelXPc[1], bar_y, 100, 100, sine, 1.0f, 1.0f, 0);
             NuStrCpy(text, save->true_hero_complete[0] != 0 ? "$" : "X");
             Text3DEx(text, HubAreaPanelXPc[1], HubEpisodeTitleYPc, 1.0f, PANEL_MINIKITCOUNTSCALE,
-                     PANEL_MINIKITCOUNTSCALE, PANEL_MINIKITCOUNTSCALE, 0, 255, 0, 127, (u8)alpha);
+                     PANEL_MINIKITCOUNTSCALE, PANEL_MINIKITCOUNTSCALE, 0, 255, 0, 127, alpha);
             SmartTextEx(TTab[TextIdPc8808a4], HubAreaPanelXPc[1], HubTrueJediLabelOffsetPc + HubEpisodeTitleYPc, 1.0f,
                         HubTrueJediLabelScalePc, HubTrueJediLabelScalePc, HubTrueJediLabelScalePc, 0,
                         HubTrueJediLabelRedPc, HubTrueJediLabelGreenPc, HubTrueJediLabelBluePc, HubTrueJediLabelWidthPc,
@@ -2702,7 +2702,7 @@ static void HubDrawAreaStatsPc(f32 phase, i32 area_index, i32 mode) {
             DrawBuildUpBar(HubAreaPanelXPc[4], bar_y, 100, 100, sine, 1.0f, 1.0f, 0);
             NuStrCpy(text, save->true_hero_complete[1] != 0 ? "$" : "X");
             Text3DEx(text, HubAreaPanelXPc[4], HubEpisodeTitleYPc, 1.0f, PANEL_MINIKITCOUNTSCALE,
-                     PANEL_MINIKITCOUNTSCALE, PANEL_MINIKITCOUNTSCALE, 0, 255, 0, 127, (u8)alpha);
+                     PANEL_MINIKITCOUNTSCALE, PANEL_MINIKITCOUNTSCALE, 0, 255, 0, 127, alpha);
             SmartTextEx(TTab[TextIdPc8808a8], HubAreaPanelXPc[4], HubTrueJediLabelOffsetPc + HubEpisodeTitleYPc, 1.0f,
                         HubTrueJediLabelScalePc, HubTrueJediLabelScalePc, HubTrueJediLabelScalePc, 0,
                         HubTrueJediLabelRedPc, HubTrueJediLabelGreenPc, HubTrueJediLabelBluePc, HubTrueJediLabelWidthPc,
@@ -2711,7 +2711,7 @@ static void HubDrawAreaStatsPc(f32 phase, i32 area_index, i32 mode) {
             DrawBuildUpBar(HubAreaPanelXPc[1], bar_y, 100, 100, sine, 1.0f, 1.0f, 0);
             NuStrCpy(text, save->true_hero_complete[0] != 0 || save->true_hero_complete[1] != 0 ? "$" : "X");
             Text3DEx(text, HubAreaPanelXPc[1], HubEpisodeTitleYPc, 1.0f, PANEL_MINIKITCOUNTSCALE,
-                     PANEL_MINIKITCOUNTSCALE, PANEL_MINIKITCOUNTSCALE, 0, 255, 0, 127, (u8)alpha);
+                     PANEL_MINIKITCOUNTSCALE, PANEL_MINIKITCOUNTSCALE, 0, 255, 0, 127, alpha);
         }
         if ((area->flags & 0x10) != 0)
             HubDrawMiniKitCountPc(HubAreaPanelXPc[0], HubEpisodeTitleYPc, save->minikit_count, 10, phase);
@@ -2807,7 +2807,7 @@ extern "C" i32 HubDoorAreaPc, selectmodemode, bonusmodemode, hub_selectmode, hub
     hub_bonusepisode, bonusmodearcade;
 extern "C" f32 selectmodetime, selectmodeduration, bonusmodetime, bonusmodeduration;
 extern "C" f32 BlipL[2], BlipR[2], BlipU[2], BlipD[2];
-static void HubDrawAreaStatsPc(f32 phase, i32 area, i32 mode);
+void HubDrawAreaStatsPc(f32 phase, i32 area, i32 mode);
 static void HubDrawBonusStatsPc(f32 alpha, i32 area, i32 episode, i32 mode);
 static void HubDrawSelectModePc(void) {
     const i32 state = selectmodemode;
