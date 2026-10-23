@@ -811,35 +811,53 @@ void NuMainFilter::RenderBloomPc() {
     PCDeviceBackend.CopySurfaceTargetPc(&texture_surface, 2, 0);
     if (normal_texture != NULL) {
         if (PostBloomAttachPendingPc) {
-            platform_fbo->targets[0].Attach(PCGraphicsPostEffectBackBufferTexturePc, 0, false);
-            platform_fbo->changed = 1;
+            PC_FRAMEBUFFER_PC *framebuffer = platform_fbo;
+            framebuffer->targets[0].Attach(PCGraphicsPostEffectBackBufferTexturePc, 0, false);
+            framebuffer->changed = 1;
             PostBloomAttachPendingPc = 0;
         }
         PCGraphicsBindFramebuffer(platform_fbo);
-        PC_VIEWPORT_PC viewport = {0, 0, PCGraphicsPostEffectWidthPc, PCGraphicsPostEffectHeightPc, 0.0f, 1.0f};
+        PC_VIEWPORT_PC viewport;
+        viewport.x = 0;
+        viewport.y = 0;
+        viewport.width = PCGraphicsPostEffectWidthPc;
+        viewport.height = PCGraphicsPostEffectHeightPc;
+        viewport.min_z = 0.0f;
+        viewport.max_z = 1.0f;
         NuVpSubmitPc(&viewport);
-        if ((u32)PCDeviceSamplerInvalidation[0][0] != normal_texture->flags ||
-            (u32)PCDeviceSamplerInvalidation[0][1] != normal_texture->field_24)
-            PCGraphicsSetSamplerTuplePc(0, &normal_texture->flags);
+        u32 *tuple = &normal_texture->flags;
+        if ((u32)PCDeviceSamplerInvalidation[0][0] != tuple[0] || (u32)PCDeviceSamplerInvalidation[0][1] != tuple[1])
+            PCGraphicsSetSamplerTuplePc(0, tuple);
         PCDeviceSetTexture(0, normal_texture->resource);
         PCDisplayHandlerBindProgramsPc((PC_DL_SHADER_PROGRAM_PAIR_PC *)PostCopyTexProgramPc);
         PCDeviceBackend.SetColorWriteMaskPc(1, 0, 0);
         PCDeviceBackend.DrawPostEffectQuadPc();
         PCDeviceSetTexture(0, NULL);
         PCDeviceBackend.SetColorWriteMaskPc(0, 0, 0);
-    }
-    PostBlur7x7DispatchPc(PCGraphicsPostEffectBackBufferTexturePc, 0, PCGraphicsPostEffectBackBufferTexturePc, 0,
-                          normal_texture != NULL ? 5 : 2, 1, false, 1.0f, PostBlur5x5ProgramPc);
-    PCGraphicsBindFramebuffer(output);
-    PC_VIEWPORT_PC viewport = {0, 0, 0, 0, 0.0f, 1.0f};
-    if (output != PcDefaultFramebuffer && output != PcBootSecondaryFramebuffer) {
-        viewport.width = output_texture->width;
-        viewport.height = output_texture->height;
+        PostBlur7x7DispatchPc(PCGraphicsPostEffectBackBufferTexturePc, 0, PCGraphicsPostEffectBackBufferTexturePc, 0, 5,
+                              1, false, 1.0f, PostBlur5x5ProgramPc);
     } else {
-        viewport.width = PS2_REZ_W;
-        viewport.height = PS2_REZ_H;
+        PostBlur7x7DispatchPc(PCGraphicsPostEffectBackBufferTexturePc, 0, PCGraphicsPostEffectBackBufferTexturePc, 0, 2,
+                              1, false, 1.0f, PostBlur5x5ProgramPc);
     }
-    NuVpSubmitPc(&viewport);
+    PCGraphicsBindFramebuffer(output);
+    {
+        PC_VIEWPORT_PC viewport;
+        if (output != PcDefaultFramebuffer && output != PcBootSecondaryFramebuffer) {
+            viewport.x = 0;
+            viewport.y = 0;
+            viewport.width = output_texture->width;
+            viewport.height = output_texture->height;
+        } else {
+            viewport.x = 0;
+            viewport.y = 0;
+            viewport.width = PS2_REZ_W;
+            viewport.height = PS2_REZ_H;
+        }
+        viewport.min_z = 0.0f;
+        viewport.max_z = 1.0f;
+        NuVpSubmitPc(&viewport);
+    }
     void *program;
     if (bloom->directional) {
         program = output == PcBootSecondaryFramebuffer && PCDeviceBackend.textures[0] != NULL ? programs[8]
@@ -857,34 +875,39 @@ void NuMainFilter::RenderBloomPc() {
         PcGetGeometryPerspectivePc(&PcGeometryProjectionMatrixPc, &fovy, &aspect, &z_near, &z_far);
         NUVEC4 depth = {z_near, z_far, z_far - z_near, 1.0f / PcGeometryProjectionMatrixPc.m22};
         PCDeviceSetVertexShaderConstantsF(49, &depth.x, 1);
-        f32 left, right, bottom, top;
-        NuMtxGetFrustumD3D(&PcGeometryProjectionMatrixPc, &left, &right, &bottom, &top, &z_near, &z_far);
-        NUVEC4 frustum = {left, right - left, bottom, top - bottom};
+        NUVEC4 frustum;
+        NuMtxGetFrustumD3D(&PcGeometryProjectionMatrixPc, &frustum.x, &frustum.y, &frustum.z, &frustum.w, &z_near,
+                           &z_far);
+        frustum.y = frustum.y - frustum.x;
+        frustum.w = frustum.w - frustum.z;
         PCDeviceSetVertexShaderConstantsF(50, &frustum.x, 1);
     }
     /* Preserve each native single-precision store before packing shader vectors. */
-    volatile f32 blend = bloom->blend;
-    volatile f32 intensity = bloom->intensity * blur_gain;
-    NUVEC4 primary = {intensity, blend, 0.0f, 0.0f};
+    f32 blend = bloom->blend;
+    f32 intensity = bloom->intensity * blur_gain;
+    __declspec(align(16)) NUVEC4 primary = {intensity, blend, 0.0f, 0.0f};
     PCDeviceSetVertexShaderConstantsF(platform_uniforms[0], &primary.x, 1);
-    volatile f32 scale_range = (bloom->far_scale - bloom->near_scale) * bloom->intensity;
-    volatile f32 near_angle = (f32)(bloom->near_angle / 180.0);
-    volatile f32 angle_range = (f32)(180.0 / (bloom->far_angle - bloom->near_angle));
+    f32 scale_range = (bloom->far_scale - bloom->near_scale) * bloom->intensity;
+    f32 near_angle = (f32)(bloom->near_angle / 180.0);
+    f32 angle_range = (f32)(180.0 / (bloom->far_angle - bloom->near_angle));
     NUVEC4 threshold = {bloom->near_scale * bloom->intensity, scale_range, near_angle, angle_range};
     PCDeviceSetVertexShaderConstantsF(platform_uniforms[1], &threshold.x, 1);
     if (bloom->directional) {
-        volatile f32 directional_range = (bloom->direction_far_scale - bloom->direction_near_scale) * bloom->intensity;
-        volatile f32 direction_angle = (f32)((bloom->direction_near_angle * 3.1415927410125732) / 180.0);
-        volatile f32 direction_angle_range =
+        f32 directional_range = (bloom->direction_far_scale - bloom->direction_near_scale) * bloom->intensity;
+        f32 direction_angle = (f32)((bloom->direction_near_angle * 3.1415927410125732) / 180.0);
+        f32 direction_angle_range =
             (f32)(180.0 / ((bloom->direction_far_angle - bloom->direction_near_angle) * 3.1415927410125732));
         NUVEC4 directional = {bloom->intensity * bloom->direction_near_scale, directional_range, direction_angle,
                               direction_angle_range};
         PCDeviceSetVertexShaderConstantsF(platform_uniforms[2], &directional.x, 1);
-        NUVEC4 direction = {bloom->direction.x, bloom->direction.y, bloom->direction.z, 1.0f};
+        const NUVEC *source = &bloom->direction;
+        f32 direction_y = source->y;
+        f32 direction_z = source->z;
+        NUVEC4 direction = {source->x, direction_y, direction_z, 1.0f};
         NuVecNorm((NUVEC *)&direction, (NUVEC *)&direction);
         direction.w = 1.0f;
-        NUVEC4 direction_bias = {direction.x, direction.y, direction.z, bloom->direction_bias};
-        PCDeviceSetVertexShaderConstantsF(platform_uniforms[3], &direction_bias.x, 1);
+        direction.w = bloom->direction_bias;
+        PCDeviceSetVertexShaderConstantsF(platform_uniforms[3], &direction.x, 1);
     }
     if (output == PcBootSecondaryFramebuffer && PCDeviceBackend.textures[0] != NULL) {
         color_texture->flags = (color_texture->flags & 0xfc25ffff) | 0x240000;
@@ -894,7 +917,7 @@ void NuMainFilter::RenderBloomPc() {
         ((PCGraphicsPostEffectBackBufferTexturePc->flags & 0xfff5ffff) | 0x40000) & 0xfc2fffff | 0x200000;
     PCGraphicsPostEffectBackBufferTexturePc->flags =
         ((PCGraphicsPostEffectBackBufferTexturePc->flags & 0xfffffbff) | 0x300) & 0xffffdfff | 0x1800;
-    PCGraphicsBindEffectTexturePc(3, PCGraphicsPostEffectBackBufferTexturePc);
+    POST_BIND_GLOBAL_TEXTURE(3, PCGraphicsPostEffectBackBufferTexturePc);
     PCDeviceSetRenderState(22, 1);
     PCDeviceSetRenderState(15, 0);
     PCDeviceSetRenderState(27, 0);
