@@ -1017,30 +1017,30 @@ extern "C" {
                                                               NUMTX *skin, void *weights, i32 shadow) {
         NuDisplayListStreamCursor->addr = (NuDisplayListStreamCursor->addr + 15) & ~15u;
         VARIPTR *buffer = NuDisplayListLinkItems(list, 3);
+        void *next = geometry->next;
         NUDISPLAY_LIST_PC *scene = reinterpret_cast<NUDISPLAY_LIST_PC *>(list->scene);
-        *packet = DisplayListCreateGeomTransformPS(buffer, matrix, scene->display_materials[list->material_id],
-                                                   geometry->next, *packet);
-        NUDISPLAYLISTITEM *item = static_cast<NUDISPLAYLISTITEM *>(list->items);
-        item->type = 0x8c;
-        item->id = 3;
-        item->next = *packet;
-        output[0] = item++;
-        list->items = item;
+        void *transform = DisplayListCreateGeomTransformPS(buffer, matrix, scene->display_materials[list->material_id],
+                                                           next, *packet);
+        *packet = transform;
+        PC_LIST_ITEM->type = 0x8c;
+        PC_LIST_ITEM->id = 3;
+        PC_LIST_ITEM->next = transform;
+        list->items = PC_LIST_ITEM + 1;
+        output[0] = PC_LIST_ITEM - 1;
         void *render_geometry;
-        void *skin_packet =
-            DisplayListCreateSkinTransformPS(buffer, skin, weights, geometry->next, &render_geometry, output + 2);
-        item = static_cast<NUDISPLAYLISTITEM *>(list->items);
-        item->type = 0x99;
-        item->id = 3;
-        item->next = skin_packet;
-        output[1] = item++;
-        item->type = 0x98;
-        item->id = 3;
-        item->next = render_geometry;
-        SAGA_SKIN_CALL(skin_trace_item, (unsigned)item, (unsigned)skin_packet, (unsigned)render_geometry,
+        void *skin_packet = DisplayListCreateSkinTransformPS(buffer, skin, weights, next, &render_geometry, output + 2);
+        PC_LIST_ITEM->type = 0x99;
+        PC_LIST_ITEM->id = 3;
+        PC_LIST_ITEM->next = skin_packet;
+        list->items = PC_LIST_ITEM + 1;
+        output[1] = PC_LIST_ITEM - 1;
+        PC_LIST_ITEM->type = 0x98;
+        PC_LIST_ITEM->id = 3;
+        PC_LIST_ITEM->next = render_geometry;
+        SAGA_SKIN_CALL(skin_trace_item, (unsigned)PC_LIST_ITEM, (unsigned)skin_packet, (unsigned)render_geometry,
                        (unsigned)skin);
-        output[1] = item++;
-        list->items = item;
+        list->items = PC_LIST_ITEM + 1;
+        output[1] = PC_LIST_ITEM - 1;
         DisplayListSetAlphaPS(output[0], output[1], 1.0f);
         DisplayListSetShadowCasterFlagPS(output[0], output[1], shadow);
     }
