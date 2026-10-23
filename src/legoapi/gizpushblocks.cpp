@@ -39,7 +39,18 @@ typedef struct PUSH_RUNTIME_BLOCK_VIEW_PC {
     NUSPECIALHANDLE end_position_specials[2];
     NUVEC end_position_origins[2];
     NUVEC velocity, target_velocity, snap_origin, bounds_min, bounds_max;
-    u32 packed_state_flags;
+    union {
+        u32 packed_state_flags;
+        struct {
+            u32 flag_000 : 1;
+            u32 unknown_flags_001_005 : 5;
+            u32 flag_006 : 1;
+            u32 flag_007 : 1;
+            u32 unknown_flags_008_017 : 10;
+            u32 push_visible : 1;
+            u32 unknown_flags_019_031 : 13;
+        };
+    };
     u8 unknown_0cc[4];
     u8 completed_snap_positions, end_position_count, output_count, unknown_0d3;
 } PUSH_RUNTIME_BLOCK_VIEW_PC;
@@ -116,15 +127,16 @@ extern "C" void __cdecl UpdatePushBlocks(void *world_ptr, void *, f32) {
     snap_time = 0.25f;
     for (i32 index = 0; index < world->count; ++index) {
         PUSH_RUNTIME_BLOCK_VIEW_PC *p = &world->blocks[index];
-        u32 visible = static_cast<u32>(NuSpecialGetVisibilityFn(&p->special)) & 1u;
-        p->packed_state_flags = (p->packed_state_flags & ~0x40000u) | (visible << 18);
-        if ((p->packed_state_flags & 0x40000u) == 0)
+        p->push_visible = NuSpecialGetVisibilityFn(&p->special);
+        if (p->push_visible == 0)
             continue;
         GizObstacles_AddTrigger(p->position);
-        if ((p->packed_state_flags & 0x81u) == 0x81u)
-            p->packed_state_flags &= ~0xc0u;
-        if ((p->packed_state_flags & 0x80u) != 0)
-            p->packed_state_flags |= 0x40u;
+        if (p->flag_000 != 0 && p->flag_007 != 0) {
+            p->flag_006 = 0;
+            p->flag_007 = 0;
+        }
+        if (p->flag_007 != 0)
+            p->flag_006 = 1;
         if ((p->packed_state_flags & 0x02000100u) != 0)
             continue;
         if (p->snap_positions != NULL) {
