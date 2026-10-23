@@ -2334,78 +2334,64 @@ extern "C" {
     }
     i16 InsidePolLines(f32 point_x, f32 point_y, f32 point_z, f32 edge_a_x, f32 edge_a_y, f32 edge_a_z, f32 edge_b_x,
                        f32 edge_b_y, f32 edge_b_z, NUVEC *normal) {
-        TERRAIN_FLOAT_BITS_PC absolute_5;
-        absolute_5.value = (normal->y);
-        absolute_5.bits &= 0x7fffffff;
-        TERRAIN_FLOAT_BITS_PC absolute_6;
-        absolute_6.value = (normal->x);
-        absolute_6.bits &= 0x7fffffff;
-        TERRAIN_FLOAT_BITS_PC absolute_7;
-        absolute_7.value = (normal->y);
-        absolute_7.bits &= 0x7fffffff;
-        TERRAIN_FLOAT_BITS_PC absolute_8;
-        absolute_8.value = (normal->z);
-        absolute_8.bits &= 0x7fffffff;
+        f32 abs_temp;
+        u32 abs_a;
+        u32 abs_b;
+#define INSIDE_POL_ABS_GE(a, b)                                                                                        \
+    (abs_temp = (a), abs_a = *(u32 *)&abs_temp & 0x7fffffff, abs_temp = (b), abs_b = *(u32 *)&abs_temp & 0x7fffffff,   \
+     *(f32 *)&abs_a >= *(f32 *)&abs_b)
 
         // Project onto the plane perpendicular to the dominant normal component.
         // The call order preserves the polygon winding in that projection.
-        if (absolute_5.value >= absolute_6.value && absolute_7.value >= absolute_8.value) {
-            if (0.0f > normal->y) {
-                if (InsideLineF(point_x, point_z, 0.0f, 0.0f, edge_a_x, edge_a_z) == 0 ||
-                    InsideLineF(point_x, point_z, edge_b_x, edge_b_z, 0.0f, 0.0f) == 0) {
-                    return 0;
+        if (INSIDE_POL_ABS_GE(normal->y, normal->x) && INSIDE_POL_ABS_GE(normal->y, normal->z)) {
+            if (normal->y < 0.0f) {
+                if (InsideLineF(point_x, point_z, 0.0f, 0.0f, edge_a_x, edge_a_z) != 0 &&
+                    InsideLineF(point_x, point_z, edge_b_x, edge_b_z, 0.0f, 0.0f) != 0 &&
+                    InsideLineF(point_x, point_z, edge_a_x, edge_a_z, edge_b_x, edge_b_z) != 0) {
+                    return 1;
                 }
-                return InsideLineF(point_x, point_z, edge_a_x, edge_a_z, edge_b_x, edge_b_z) != 0;
-            }
-
-            if (InsideLineF(point_x, point_z, edge_a_x, edge_a_z, 0.0f, 0.0f) == 0 ||
-                InsideLineF(point_x, point_z, 0.0f, 0.0f, edge_b_x, edge_b_z) == 0) {
                 return 0;
             }
-            return InsideLineF(point_x, point_z, edge_b_x, edge_b_z, edge_a_x, edge_a_z) != 0;
-        }
-        TERRAIN_FLOAT_BITS_PC absolute_9;
-        absolute_9.value = (normal->y);
-        absolute_9.bits &= 0x7fffffff;
-        TERRAIN_FLOAT_BITS_PC absolute_10;
-        absolute_10.value = (normal->x);
-        absolute_10.bits &= 0x7fffffff;
-        TERRAIN_FLOAT_BITS_PC absolute_11;
-        absolute_11.value = (normal->z);
-        absolute_11.bits &= 0x7fffffff;
-        TERRAIN_FLOAT_BITS_PC absolute_12;
-        absolute_12.value = (normal->x);
-        absolute_12.bits &= 0x7fffffff;
 
-        if (absolute_9.value > absolute_10.value || absolute_11.value > absolute_12.value) {
-            if (0.0f > normal->z) {
-                if (InsideLineF(point_y, point_x, 0.0f, 0.0f, edge_a_y, edge_a_x) == 0 ||
-                    InsideLineF(point_y, point_x, edge_b_y, edge_b_x, 0.0f, 0.0f) == 0) {
-                    return 0;
-                }
-                return InsideLineF(point_y, point_x, edge_a_y, edge_a_x, edge_b_y, edge_b_x) != 0;
+            if (InsideLineF(point_x, point_z, edge_a_x, edge_a_z, 0.0f, 0.0f) != 0 &&
+                InsideLineF(point_x, point_z, 0.0f, 0.0f, edge_b_x, edge_b_z) != 0 &&
+                InsideLineF(point_x, point_z, edge_b_x, edge_b_z, edge_a_x, edge_a_z) != 0) {
+                return 1;
             }
-
-            if (InsideLineF(point_y, point_x, edge_a_y, edge_a_x, 0.0f, 0.0f) == 0 ||
-                InsideLineF(point_y, point_x, 0.0f, 0.0f, edge_b_y, edge_b_x) == 0) {
-                return 0;
-            }
-            return InsideLineF(point_y, point_x, edge_b_y, edge_b_x, edge_a_y, edge_a_x) != 0;
-        }
-
-        if (0.0f > normal->x) {
-            if (InsideLineF(point_y, point_z, edge_a_y, edge_a_z, 0.0f, 0.0f) == 0 ||
-                InsideLineF(point_y, point_z, 0.0f, 0.0f, edge_b_y, edge_b_z) == 0) {
-                return 0;
-            }
-            return InsideLineF(point_y, point_z, edge_b_y, edge_b_z, edge_a_y, edge_a_z) != 0;
-        }
-
-        if (InsideLineF(point_y, point_z, 0.0f, 0.0f, edge_a_y, edge_a_z) == 0 ||
-            InsideLineF(point_y, point_z, edge_b_y, edge_b_z, 0.0f, 0.0f) == 0) {
             return 0;
         }
-        return InsideLineF(point_y, point_z, edge_a_y, edge_a_z, edge_b_y, edge_b_z) != 0;
+
+        if (INSIDE_POL_ABS_GE(normal->x, normal->y) && INSIDE_POL_ABS_GE(normal->x, normal->z)) {
+            if (normal->x < 0.0f) {
+                if (InsideLineF(point_y, point_z, edge_a_y, edge_a_z, 0.0f, 0.0f) != 0 &&
+                    InsideLineF(point_y, point_z, 0.0f, 0.0f, edge_b_y, edge_b_z) != 0 &&
+                    InsideLineF(point_y, point_z, edge_b_y, edge_b_z, edge_a_y, edge_a_z) != 0) {
+                    return 1;
+                }
+                return 0;
+            }
+
+            if (InsideLineF(point_y, point_z, 0.0f, 0.0f, edge_a_y, edge_a_z) != 0 &&
+                InsideLineF(point_y, point_z, edge_b_y, edge_b_z, 0.0f, 0.0f) != 0 &&
+                InsideLineF(point_y, point_z, edge_a_y, edge_a_z, edge_b_y, edge_b_z) != 0) {
+                return 1;
+            }
+            return 0;
+        }
+#undef INSIDE_POL_ABS_GE
+
+        if (normal->z < 0.0f) {
+            if (InsideLineF(point_y, point_x, 0.0f, 0.0f, edge_a_y, edge_a_x) != 0 &&
+                InsideLineF(point_y, point_x, edge_b_y, edge_b_x, 0.0f, 0.0f) != 0 &&
+                InsideLineF(point_y, point_x, edge_a_y, edge_a_x, edge_b_y, edge_b_x) != 0) {
+                return 1;
+            }
+        } else if (InsideLineF(point_y, point_x, edge_a_y, edge_a_x, 0.0f, 0.0f) != 0 &&
+                   InsideLineF(point_y, point_x, 0.0f, 0.0f, edge_b_y, edge_b_x) != 0 &&
+                   InsideLineF(point_y, point_x, edge_b_y, edge_b_x, edge_a_y, edge_a_x) != 0) {
+            return 1;
+        }
+        return 0;
     }
     i16 InsideLineF(f32 point_u, f32 point_v, f32 line_start_u, f32 line_start_v, f32 line_end_u, f32 line_end_v) {
         if ((point_u - line_start_u) * (line_end_v - line_start_v) +
