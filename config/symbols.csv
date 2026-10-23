@@ -15603,6 +15603,7 @@ address,symbol,size,ctype
 0x765648,??_C@_0BK@KBPMPHJ@postEffect?4outFramebuffer?$AA@,26,char[26]
 0x765668,__real@4069000000000000,8,const f64 200
 0x00765670,_NuTimeBarNegativeSlotWidth,8,const f64
+0x00765670,__real@bf999999a0000000,8,const f64
 0x00765678,_NuTimeBarRight,8,const f64
 0x00765680,_NuTimeBarNameMargin,8,const f64
 0x00765688,_NuTimeBarHalfFontScale,4,const f32

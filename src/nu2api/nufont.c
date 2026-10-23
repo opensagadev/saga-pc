@@ -159,26 +159,6 @@ f32 __cdecl NuQFntPrintLenU(VUFNT *font, char *text) {
     return length * qfnt_len_scale * x_scale;
 }
 
-f32 __cdecl NuQFntHeight(VUFNT *font) {
-    if (font == NULL) {
-        font = system_qfont;
-    }
-    if (font == NULL) {
-        return 0.0f;
-    }
-    return *font->y_scale * font->height * qfnt_height_scale;
-}
-
-f32 __cdecl NuQFntBaseline(VUFNT *font) {
-    if (font == NULL) {
-        font = system_qfont;
-    }
-    if (font == NULL) {
-        return 0.0f;
-    }
-    return *font->y_scale * font->baseline * qfnt_height_scale;
-}
-
 void __cdecl NuQFntSetJustifiedTolerances(f32 squash, f32 stretch) {
     qfnt_justify_squash = squash < 1.0f ? 1.0f : squash;
     qfnt_justify_stretch = stretch < 1.0f ? 1.0f : stretch;
