@@ -6807,6 +6807,7 @@ address,symbol,size,ctype
 0x644390,_edpartChangeName,85,
 0x6443f0,_edpartCancelChangeNameMenu,25,
 0x644410,_edpartChangeNameMenu,208,
+0x6444e0,_edpartInitType,231,
 0x6445d0,_edpartCopyType,296,
 0x644700,_edpartChangeCutOff,23,
 0x644770,_edpartChangeGenRateMenu,187,
@@ -6819,7 +6820,11 @@ address,symbol,size,ctype
 0x645100,_edpartApplyScaleType,78,
 0x645150,_edpartCancelScaleTypeMenu,25,
 0x645170,_edpartScaleTypeMenu,227,
+0x645260,_edpartAddGeneralType,264,
+0x645370,_edpartCancelGeneralTypeMenu,25,
 0x645390,_edpartGeneralTypeMenu,296,
+0x6454c0,_edpartAddLevelType,241,
+0x6455c0,_edpartCancelLevelTypeMenu,25,
 0x6455e0,_edpartLevelTypeMenu,296,
 0x645710,_edpartCancelTypeMenu,25,
 0x645730,_edpartTypeMenu,184,
@@ -15987,6 +15992,9 @@ address,symbol,size,ctype
 0x76c6d0,??_C@_0N@CODKGGAC@Scale?5Factor?$AA@,13,char []
 0x76c6e0,??_C@_0L@MKFFHNIN@Scale?5Type?$AA@,11,char []
 0x76c6ec,??_C@_05ODECHPPA@New?$CFd?$AA@,6,char []
+0x76c6f4,??_C@_08GLDEEODL@Add?5Type?$AA@,9,char []
+0x76c700,??_C@_0BH@PKCLBKBP@Emitter?5Type?5?$CIGeneral?$CJ?$AA@,23,char []
+0x76c718,??_C@_0BF@KLFEFGGH@Emitter?5Type?5?$CILevel?$CJ?$AA@,21,char []
 0x76c730,??_C@_0O@GNMLKMKF@Level?5List?4?4?4?$AA@,14,char []
 0x76c740,??_C@_0BA@GNCAJPFI@General?5List?4?4?4?$AA@,16,char []
 0x76c750,??_C@_0N@OMCPPCOB@Emitter?5Type?$AA@,13,char []
@@ -24642,6 +24650,8 @@ address,symbol,size,ctype
 0x29209bc,_edpart_readout,4,i32
 0x29209c0,_edpart_active_menu,4,struct eduimenu_s *
 0x29209c8,_edpart_type_menu,4,struct eduimenu_s *
+0x29209cc,_edpart_generaltype_menu,4,struct eduimenu_s *
+0x29209d0,_edpart_leveltype_menu,4,struct eduimenu_s *
 0x29209dc,_edpart_thingsinstance_menu,4,struct eduimenu_s *
 0x29209e4,_edpart_instanceflags_menu,4,struct eduimenu_s *
 0x29209e8,_edpart_instorient_menu,4,struct eduimenu_s *

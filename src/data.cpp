@@ -29282,6 +29282,12 @@ extern "C" {
 
 #pragma bss_seg(".bss$edpart_effect_list")
     i8 edpart_effect_list = 0;
+
+#pragma bss_seg(".bss$edpart_generaltype_menu")
+    struct eduimenu_s *edpart_generaltype_menu = 0;
+
+#pragma bss_seg(".bss$edpart_leveltype_menu")
+    struct eduimenu_s *edpart_leveltype_menu = 0;
 }
 
 extern "C" {}
