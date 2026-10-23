@@ -581,15 +581,17 @@ void __cdecl DebrisProcessControlChunks(i32 panel_time) {
         if (control->active == 5) {
             DEBRIS_INFO_PC *effect = debtab[control->effect_index];
             DEBRISPARTICLE_PC *particle = &control->particle_chunk->particles[control->particle_index];
-            const f32 time = control->collision_time;
-            const f32 old_y = particle->momentum.y;
-            const f32 gravity_velocity = 2.0f * (time * effect->gravity);
-            const f32 new_y = -control->restitution * (gravity_velocity + old_y) - gravity_velocity;
+            f32 old_term = particle->momentum.y * control->collision_time;
+            f32 bounce = particle->momentum.y + effect->gravity * control->collision_time * 2.0f;
+            f32 new_term, height;
             f32 first, second;
-            particle->momentum.y = new_y;
-            particle->position.y -= time * new_y - time * old_y;
-            if (SolveQuadratic(effect->gravity, particle->momentum.y, particle->position.y - control->collision_plane,
-                               &first, &second) != 0) {
+            bounce = -control->restitution * bounce;
+            particle->momentum.y = bounce - effect->gravity * control->collision_time * 2.0f;
+            new_term = particle->momentum.y * control->collision_time;
+            height = particle->position.y - (new_term - old_term);
+            particle->position.y = height;
+            height -= control->collision_plane;
+            if (SolveQuadratic(effect->gravity, particle->momentum.y, height, &first, &second) != 0) {
                 if (effect->particle_lifetime > MAX(first, second)) {
                     const f32 interval = MAX(first, second) - control->collision_time;
                     control->collision_time = MAX(first, second);
@@ -608,17 +610,19 @@ void __cdecl DebrisProcessControlChunks(i32 panel_time) {
         if (control->active == 6) {
             NUVEC normal = {1.0f, 0.0f, 0.0f};
             DEBRISPARTICLE_PC *particle = &control->particle_chunk->particles[control->particle_index];
-            f32 old_x, old_z, impulse, new_x, new_z;
+            f32 value, old_x, old_z, new_z;
             NuVecRotateY(&normal, &normal, control->rotation_y);
-            old_x = particle->momentum.x;
-            old_z = particle->momentum.z;
-            impulse = -(1.0f + control->restitution) * (old_x * normal.x + old_z * normal.z);
-            new_x = impulse * normal.x + old_x;
-            new_z = impulse * normal.z + old_z;
-            particle->momentum.x = new_x;
-            particle->momentum.z = new_z;
-            particle->position.x -= new_x * control->collision_time - old_x * control->collision_time;
-            particle->position.z -= new_z * control->collision_time - old_z * control->collision_time;
+            value = particle->momentum.x * normal.x + particle->momentum.z * normal.z;
+            value = -(value * (control->restitution + 1.0));
+            old_x = particle->momentum.x * control->collision_time;
+            old_z = particle->momentum.z * control->collision_time;
+            particle->momentum.x = value * normal.x + particle->momentum.x;
+            value = value * normal.z + particle->momentum.z;
+            particle->momentum.z = value;
+            new_z = value * control->collision_time;
+            value = particle->momentum.x * control->collision_time;
+            particle->position.x = particle->position.x - (value - old_x);
+            particle->position.z = particle->position.z - (new_z - old_z);
             freechunkcontrols[--freechunkcontrolsptr] = control;
             control->particle_chunk = NULL;
             continue;
@@ -693,7 +697,7 @@ void __cdecl DebrisProcessControlChunks(i32 panel_time) {
                     break;
                 }
             }
-            for (i = chunk_index; i + 1 < control->owner->allocated_chunk_count; ++i) {
+            for (i = chunk_index; i < control->owner->allocated_chunk_count - 1; ++i) {
                 control->owner->particle_chunks[i] = control->owner->particle_chunks[i + 1];
             }
             control->owner->particle_chunks[control->owner->allocated_chunk_count - 1] = NULL;
