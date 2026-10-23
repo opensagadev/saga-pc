@@ -26,6 +26,11 @@ struct zipup_pc_s {
             u16 bit_10 : 1;
             u16 bit_20 : 1;
         } config;
+        struct {
+            u16 unknown_bits : 6;
+            u16 active : 1;
+            u16 visible : 1;
+        } state;
     };
     u8 unknown_6a[2];
     f32 lower_ground_height, upper_ground_height;
@@ -516,7 +521,7 @@ extern const NUVEC ZipUpHookOffsetPc;
 extern i32 CanDrawZipUpSwirls;
 
 typedef struct zipup_progress_pc_s {
-    u32 active_mask, visible_mask;
+    u32 active_mask[1], visible_mask[1];
 } ZIPUP_PROGRESS_PC;
 STATIC_ASSERT(sizeof(ZIPUP_PROGRESS_PC) == 8);
 STATIC_ASSERT(offsetof(ZIPUP_PROGRESS_PC, active_mask) == 0);
@@ -556,14 +561,11 @@ extern void ZipUps_Reset(WORLDINFO *world, void *unused, ZIPUP_PROGRESS_PC *prog
         for (index = 0; index < WORLD->zipup_count; ++index, ++zipup) {
             ZipUpResetSinglePc(zipup);
             if (progress != NULL && index < 32) {
-                u32 bit;
-                u16 flag;
+                i32 word = index / 32;
+                u32 mask = 1 << (index & 31);
 
-                bit = 1u << index;
-                flag = (progress->visible_mask & bit) != 0;
-                zipup->flags_word ^= (zipup->flags_word ^ (flag << 7)) & 0x80;
-                flag = (progress->active_mask & bit) != 0;
-                zipup->flags_word ^= (zipup->flags_word ^ (flag << 6)) & 0x40;
+                zipup->state.visible = (progress->visible_mask[word] & mask) != 0;
+                zipup->state.active = (progress->active_mask[word] & mask) != 0;
             }
         }
     }
@@ -1106,17 +1108,19 @@ void ZipUps_DrawLines() {
 static i32 ZipUp_ActivateRev(GIZMO_PC *gizmo, i32 active, i32 query) {
     ZIPUP_PC *zipup;
 
-    if (gizmo == NULL || gizmo->object == NULL)
+    if (gizmo == NULL)
         return 0;
-    zipup = ((ZIPUP_PC *)(gizmo->object));
+    zipup = (ZIPUP_PC *)gizmo->object;
+    if (zipup == NULL)
+        return 0;
     if (query & 1)
-        return zipup->direction != active;
+        return active != zipup->direction;
     if (active != 0) {
         zipup->direction = 1;
         zipup->flags_word &= ~0x40;
     } else {
-        zipup->direction = 0;
         zipup->flags_word |= 0x40;
+        zipup->direction = 0;
     }
     return 1;
 }
@@ -1135,7 +1139,7 @@ static void ZipUp_SetVisibility(GIZMO_PC *gizmo, i32 visible) {
         ZIPUP_PC *zipup;
 
         zipup = ((ZIPUP_PC *)(gizmo->object));
-        zipup->flags_word = (zipup->flags_word & ~0x80) | ((visible != 0) << 7);
+        zipup->state.visible = visible != 0;
     }
 }
 static i32 ZipUps_GetMaxGizmos(void *world_ptr) {
@@ -1161,31 +1165,37 @@ static void *ZipUps_AllocateProgressData(VARIPTR *buffer, VARIPTR *end) {
 }
 static void ZipUps_ClearProgress(void *unused, ZIPUP_PROGRESS_PC *progress) {
     if (progress) {
-        progress->active_mask = ~0u;
-        progress->visible_mask = ~0u;
+        progress->active_mask[0] = ~0u;
+        progress->visible_mask[0] = ~0u;
     }
 }
 static void ZipUps_StoreProgress(WORLDINFO *world, void *unused, ZIPUP_PROGRESS_PC *progress) {
+    ZIPUP_PC *zipup;
+    i32 i;
+    i32 word;
+    u32 mask;
+
     if (!progress)
         return;
-    progress->active_mask = ~0u;
-    progress->visible_mask = ~0u;
-    if (world && world->zipups) {
-        i32 i;
-
-        for (i = 0; i < world->zipup_count && i < 32; ++i) {
-            u32 mask;
-
-            mask = 1u << i;
-            if (!(world->zipups[i].flags & 0x80))
-                progress->visible_mask &= ~mask;
-            if (!(world->zipups[i].flags & 0x40))
-                progress->active_mask &= ~mask;
+    progress->active_mask[0] = ~0u;
+    progress->visible_mask[0] = ~0u;
+    if (world && (zipup = world->zipups) != NULL) {
+        for (i = 0; i < world->zipup_count; ++i, ++zipup) {
+            if (i >= 32)
+                break;
+            word = i / 32;
+            mask = 1 << (i & 31);
+            if (!(zipup->flags & 0x80))
+                progress->visible_mask[word] &= ~mask;
+            if (!(zipup->flags & 0x40))
+                progress->active_mask[word] &= ~mask;
         }
     }
 }
 static i32 ZipUp_GetOutput(GIZMO_PC *gizmo, i32 output, i32 mode) {
-    return gizmo != NULL && (((ZIPUP_PC *)(gizmo->object))->flags & 0x40) != 0;
+    if (gizmo != NULL)
+        return ((ZIPUP_PC *)(gizmo->object))->state.active;
+    return 0;
 }
 static char ZipUpOutputNamePc[] = "Active";
 static char *ZipUp_GetOutputName(GIZMO_PC *gizmo, i32 output) {
