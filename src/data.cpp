@@ -29710,6 +29710,12 @@ extern "C" {
 #pragma data_seg(".data$edui_font_scale_x")
     f32 edui_font_scale_x = 0.8999999761581421f;
 
+#pragma data_seg(".data$edui_cursor_x")
+    f32 edui_cursor_x = 50.0f;
+
+#pragma bss_seg(".bss$edui_cursor_buttons_db")
+    u32 edui_cursor_buttons_db = 0;
+
 #pragma bss_seg(".bss$uimtls")
     struct PC_SCENE_MTL_VIEW *uimtls[5] = {0};
 
