@@ -143,18 +143,20 @@ void __cdecl NuPostEffectBloom(const NU_POST_BLOOM_PARAMETERS_PC *parameters) {
         NuPostMainFilterPc->bloom = parameters;
 }
 void __cdecl NuPostEffectMotionBlur(const NUMTX *previous, const NUMTX *current, f32 scale, f32 maximum, f32 falloff) {
-    if (NuPostMainFilterPc == NULL)
+    NU_POST_MAIN_VIEW_PC *main = NuPostMainFilterPc;
+    if (main == NULL)
         return;
-    NuPostMainFilterPc->motion_previous = *previous;
-    NuPostMainFilterPc->motion_current = *current;
-    NuPostMainFilterPc->motion_scale = scale;
-    NuPostMainFilterPc->motion_maximum = maximum;
-    NuPostMainFilterPc->motion_falloff = falloff;
-    NuPostMotionFilterPc->previous = *previous;
-    NuPostMotionFilterPc->current = *current;
-    NuPostMotionFilterPc->scale = scale;
-    NuPostMotionFilterPc->maximum = maximum;
-    NuPostMotionFilterPc->falloff = falloff;
+    main->motion_previous = *previous;
+    main->motion_current = *current;
+    main->motion_scale = scale;
+    main->motion_maximum = maximum;
+    main->motion_falloff = falloff;
+    NU_POST_MOTION_VIEW_PC *motion = NuPostMotionFilterPc;
+    motion->previous = *previous;
+    motion->current = *current;
+    motion->scale = scale;
+    motion->maximum = maximum;
+    motion->falloff = falloff;
 }
 void __cdecl NuPostEffectAccumulationMotionBlur(i32 frames, f32 blend, f32 mode_pc) {
     if (NuPostMainFilterPc == NULL)
