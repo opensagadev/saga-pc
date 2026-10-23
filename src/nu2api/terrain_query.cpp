@@ -1217,73 +1217,71 @@ extern "C" {
         TERRAIN_SCAN_WORD_PC *limit;
         i32 shape_count;
         f32 max_x, min_x, max_z, min_z, max_y, min_y;
-        f32 scan_radius_sq;
         f32 scan_radius;
         TERRAIN_WALL_POINT **walls;
         TERRAIN_WALL_POINT *wall_list;
         i32 wall_count;
+        TerrainQuery_s *query;
 
         if (handle == NULL) {
             return;
         }
-        group_header = static_cast<TERRAIN_SHADOW_QUERY_VIEW_PC *>(TerI)->scan_words;
+        query = TERRAIN_STH_QUERY;
+        group_header = reinterpret_cast<TERRAIN_SHADOW_QUERY_VIEW_PC *>(query)->scan_words;
         cursor = group_header + 1;
         limit = cursor + 508;
         platinrange = 0;
-        TERRAIN_STH_QUERY->scan_group_index = -1;
+        query->scan_group_index = -1;
         shape_count = 0;
-        if (TERRAIN_STH_QUERY->scan_result != 1) {
-            const f32 movement_sq = TERRAIN_STH_QUERY->movement.x * TERRAIN_STH_QUERY->movement.x +
-                                    TERRAIN_STH_QUERY->movement.y * TERRAIN_STH_QUERY->movement.y +
-                                    TERRAIN_STH_QUERY->movement.z * TERRAIN_STH_QUERY->movement.z;
-            const f32 reach = (f32)(TerrainScanMargin02Pc + TERRAIN_STH_QUERY->collision_radius_sq + movement_sq);
-            max_x = TERRAIN_STH_QUERY->position.x + reach;
-            max_y = TERRAIN_STH_QUERY->position.y + TERRAIN_STH_QUERY->object_scale * reach;
-            max_z = TERRAIN_STH_QUERY->position.z + reach;
-            min_x = TERRAIN_STH_QUERY->position.x - reach;
-            min_y = TERRAIN_STH_QUERY->position.y - TERRAIN_STH_QUERY->object_scale * reach;
-            min_z = TERRAIN_STH_QUERY->position.z - reach;
-            scan_radius_sq = reach + 1.0f;
-        } else {
-            f32 extent_sq;
-            if (TERRAIN_STH_QUERY->movement.x > 0.0f) {
-                min_x =
-                    (f32)(TERRAIN_STH_QUERY->position.x - TerrainScanMargin02Pc - TERRAIN_STH_QUERY->collision_radius);
-                max_x = (f32)(TERRAIN_STH_QUERY->movement.x + TERRAIN_STH_QUERY->position.x + TerrainScanMargin02Pc +
-                              TERRAIN_STH_QUERY->collision_radius);
-            } else {
-                min_x = (f32)(TERRAIN_STH_QUERY->movement.x + TERRAIN_STH_QUERY->position.x - TerrainScanMargin02Pc -
-                              TERRAIN_STH_QUERY->collision_radius);
-                max_x =
-                    (f32)(TERRAIN_STH_QUERY->position.x + TerrainScanMargin02Pc + TERRAIN_STH_QUERY->collision_radius);
+        switch (query->scan_result) {
+            default: {
+                const f32 movement_sq = query->movement.x * query->movement.x + query->movement.y * query->movement.y +
+                                        query->movement.z * query->movement.z;
+                const f32 reach = (f32)(TerrainScanMargin02Pc + query->collision_radius_sq + movement_sq);
+                max_x = query->position.x + reach;
+                max_y = query->position.y + query->object_scale * reach;
+                max_z = query->position.z + reach;
+                min_x = query->position.x - reach;
+                min_y = query->position.y - query->object_scale * reach;
+                min_z = query->position.z - reach;
+                scan_radius = NuFsqrt((f32)(reach + 1.0));
+                break;
             }
-            if (TERRAIN_STH_QUERY->movement.y > 0.0f) {
-                min_y =
-                    (f32)(TERRAIN_STH_QUERY->position.y - TerrainScanMargin02Pc - TERRAIN_STH_QUERY->collision_radius);
-                max_y = (f32)(TERRAIN_STH_QUERY->movement.y + TERRAIN_STH_QUERY->position.y + TerrainScanMargin02Pc +
-                              TERRAIN_STH_QUERY->collision_radius);
-            } else {
-                min_y = (f32)(TERRAIN_STH_QUERY->movement.y + TERRAIN_STH_QUERY->position.y - TerrainScanMargin02Pc -
-                              TERRAIN_STH_QUERY->collision_radius);
-                max_y =
-                    (f32)(TERRAIN_STH_QUERY->position.y + TerrainScanMargin02Pc + TERRAIN_STH_QUERY->collision_radius);
+            case 1: {
+                f32 extent_sq;
+                if (query->movement.x > 0.0f) {
+                    min_x = (f32)(query->position.x - TerrainScanMargin02Pc - query->collision_radius);
+                    max_x =
+                        (f32)(query->movement.x + query->position.x + TerrainScanMargin02Pc + query->collision_radius);
+                } else {
+                    min_x =
+                        (f32)(query->movement.x + query->position.x - TerrainScanMargin02Pc - query->collision_radius);
+                    max_x = (f32)(query->position.x + TerrainScanMargin02Pc + query->collision_radius);
+                }
+                if (query->movement.y > 0.0f) {
+                    min_y = (f32)(query->position.y - TerrainScanMargin02Pc - query->collision_radius);
+                    max_y =
+                        (f32)(query->movement.y + query->position.y + TerrainScanMargin02Pc + query->collision_radius);
+                } else {
+                    min_y =
+                        (f32)(query->movement.y + query->position.y - TerrainScanMargin02Pc - query->collision_radius);
+                    max_y = (f32)(query->position.y + TerrainScanMargin02Pc + query->collision_radius);
+                }
+                if (query->movement.z > 0.0f) {
+                    min_z = (f32)(query->position.z - TerrainScanMargin02Pc - query->collision_radius);
+                    max_z =
+                        (f32)(query->movement.z + query->position.z + TerrainScanMargin02Pc + query->collision_radius);
+                } else {
+                    min_z =
+                        (f32)(query->movement.z + query->position.z - TerrainScanMargin02Pc - query->collision_radius);
+                    max_z = (f32)(query->position.z + TerrainScanMargin02Pc + query->collision_radius);
+                }
+                extent_sq = (min_x - max_x) * (min_x - max_x) + (min_y - max_y) * (min_y - max_y) +
+                            (min_z - max_z) * (min_z - max_z);
+                scan_radius = NuFsqrt((f32)(extent_sq + (f64)1.02f));
+                break;
             }
-            if (TERRAIN_STH_QUERY->movement.z > 0.0f) {
-                min_z =
-                    (f32)(TERRAIN_STH_QUERY->position.z - TerrainScanMargin02Pc - TERRAIN_STH_QUERY->collision_radius);
-                max_z = (f32)(TERRAIN_STH_QUERY->movement.z + TERRAIN_STH_QUERY->position.z + TerrainScanMargin02Pc +
-                              TERRAIN_STH_QUERY->collision_radius);
-            } else {
-                min_z = (f32)(TERRAIN_STH_QUERY->movement.z + TERRAIN_STH_QUERY->position.z - TerrainScanMargin02Pc -
-                              TERRAIN_STH_QUERY->collision_radius);
-                max_z =
-                    (f32)(TERRAIN_STH_QUERY->position.z + TerrainScanMargin02Pc + TERRAIN_STH_QUERY->collision_radius);
-            }
-            extent_sq = (min_x - max_x) * (min_x - max_x) + (min_y - max_y) * (min_y - max_y) +
-                        (min_z - max_z) * (min_z - max_z);
-            scan_radius_sq = (f32)(extent_sq + (f64)1.02f);
         }
-        scan_radius = NuFsqrt(scan_radius_sq);
         while (handle[0] > 0) {
             const i32 count = handle[0];
             const i32 group_index = handle[1];
@@ -1336,10 +1334,10 @@ extern "C" {
                         shapes += count;
                     }
                 } else {
-                    const f32 dy =
+                    const f64 dy =
                         ((min_y + max_y) * NuQFntHalfScale - group->origin.y) * TERRAIN_STH_QUERY->inverse_object_scale;
-                    const f32 dx = (min_x + max_x) * NuQFntHalfScale - group->origin.x;
-                    const f32 dz = (min_z + max_z) * NuQFntHalfScale - group->origin.z;
+                    const f64 dx = (min_x + max_x) * NuQFntHalfScale - group->origin.x;
+                    const f64 dz = (min_z + max_z) * NuQFntHalfScale - group->origin.z;
                     const f32 distance_sq = dx * dx + dy * dy + dz * dz;
                     if (distance_sq < (group->radius + scan_radius) * (group->radius + scan_radius)) {
                         for (i32 remaining = count; remaining > 0; --remaining, ++shapes) {
