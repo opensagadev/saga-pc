@@ -1715,7 +1715,7 @@ i32 ReadTerrain(unsigned char *base_path, i32 first_group, i16 **buffer, TERRSET
 }
 
 extern const char TerrainSourcePathPc[];
-extern const f32 TerrainBoundsMinimumPc, TerrainBoundsMaximumPc, TerrainSteepNormalYPc;
+extern const f32 TerrainSteepNormalYPc;
 extern void *ScaleTerrainT2, *TempScanStack, *WallSplList;
 extern i32 terraincnt, curSphereter, platinrange, PlatImpactId, TerrShapeAdjCnt;
 extern TERRAIN_SHAPE *ShadPoly, *TerrPoly;
@@ -1886,8 +1886,8 @@ void *TerrainInitEx(i32 level_num, void *buf, void *buf_end, i32 options, char *
         return NULL;
     }
 
-    kBoundsMinimum = TerrainBoundsMinimumPc;
-    kBoundsMaximum = TerrainBoundsMaximumPc;
+    kBoundsMinimum = -200000000.0f;
+    kBoundsMaximum = 200000000.0f;
     kSteepNormalY = TerrainSteepNormalYPc;
 
     terrain->minimum_height = INT_MAX;
@@ -2503,6 +2503,7 @@ i32 ReadTerrainPickup(unsigned char *base_path, i16 **buffer, TERRAIN_PICKUP_SET
 
 void terrainpickupinit(char *path, void **buffer) {
     TERRAIN_PICKUP_SET_PC *terrain = (TERRAIN_PICKUP_SET_PC *)*buffer;
+    TERRAIN_GROUP_PC *group;
     i32 i;
     *buffer = (u8 *)*buffer + sizeof(TERRAIN_PICKUP_SET_PC);
     terrain->groups = (TERRAIN_GROUP_PC *)*buffer;
@@ -2510,18 +2511,19 @@ void terrainpickupinit(char *path, void **buffer) {
     terrain->shape_data = *buffer;
     *buffer = (u8 *)*buffer + 0x1c00;
     memset(terrain->groups, 0, 32 * sizeof(TERRAIN_GROUP_PC));
+    group = terrain->groups;
     for (i = 0; i < 32; ++i)
-        terrain->groups[i].chunk_type = -1;
+        group[i].chunk_type = -1;
     for (i = 0; i < 32; ++i) {
-        TERRAIN_PLATFORM_PC *platform = &terrain->platforms[i];
-        platform->scene_object = NULL;
-        platform->bounce_54 = 0;
-        platform->bounce_58 = 0;
-        platform->bounce_5c = 0;
-        platform->bounce_60 = 0;
-        platform->bounce_64 = 0;
+        terrain->platforms[i].scene_object = NULL;
+        terrain->platforms[i].bounce_54 = 0;
+        terrain->platforms[i].bounce_58 = 0;
+        terrain->platforms[i].bounce_5c = 0;
+        terrain->platforms[i].bounce_64 = 0;
+        terrain->platforms[i].bounce_60 = 0;
     }
-    memset(terrain->group_for_type, 0xff, sizeof(terrain->group_for_type));
+    for (i = 0; i < 128; ++i)
+        terrain->group_for_type[i] = -1;
     curPickInst = 0;
     terraincnt = 0;
     curSphereter = 0;
@@ -2531,20 +2533,24 @@ void terrainpickupinit(char *path, void **buffer) {
     TerrWallInfo = 0;
     PlatImpactId = -1;
     terrain->group_count = ReadTerrainPickup((unsigned char *)path, (i16 **)buffer, terrain);
-    for (i = 0; i < 32; ++i) {
-        TERRAIN_GROUP_PC *group = &terrain->groups[i];
+    group = terrain->groups;
+    for (i = 0; i < 32; ++i, ++group) {
         TERRAIN_SHAPE_BATCH *batch;
         f32 min_x, min_y, min_z, max_x, max_y, max_z, radius_squared;
-        if ((u32)group->chunk_type > TERRAIN_CHUNK_GROUP_SECONDARY)
+        if (group->chunk_type != TERRAIN_CHUNK_GROUP_PRIMARY && group->chunk_type != TERRAIN_CHUNK_GROUP_SECONDARY)
             continue;
-        min_x = min_y = min_z = TerrainBoundsMaximumPc;
-        max_x = max_y = max_z = TerrainBoundsMinimumPc;
-        radius_squared = 0;
+        radius_squared = 0.0f;
+        min_x = 200000000.0f;
+        min_y = 200000000.0f;
+        min_z = 200000000.0f;
+        max_x = -200000000.0f;
+        max_y = -200000000.0f;
+        max_z = -200000000.0f;
         batch = (TERRAIN_SHAPE_BATCH *)group->data;
         while (batch->marker >= 0) {
             TERRAIN_SHAPE *shape = (TERRAIN_SHAPE *)(batch + 1);
             i32 j;
-            for (j = 0; j < batch->shape_count; ++j, ++shape) {
+            for (j = batch->shape_count; j > 0; --j, ++shape) {
                 i32 k;
                 if (shape->material[0] == 0xff) {
                     shape->material[0] = shape->material[1];
@@ -2564,17 +2570,18 @@ void terrainpickupinit(char *path, void **buffer) {
                 if (shape->max_z > max_z)
                     max_z = shape->max_z;
                 for (k = 0; k < 4; ++k) {
-                    NUVEC *v = &shape->vertices[k];
-                    f32 length_squared = v->x * v->x + v->y * v->y + v->z * v->z;
-                    if (length_squared > radius_squared)
+                    f32 length_squared = shape->vertices[k].x * shape->vertices[k].x +
+                                         shape->vertices[k].y * shape->vertices[k].y +
+                                         shape->vertices[k].z * shape->vertices[k].z;
+                    if (radius_squared < length_squared)
                         radius_squared = length_squared;
                 }
             }
             batch = (TERRAIN_SHAPE_BATCH *)shape;
         }
         group->radius = NuFsqrt(radius_squared);
-        group->chunk_type = 0;
         ++terraincnt;
+        group->chunk_type = 0;
         group->bounds_min.x = min_x;
         group->bounds_min.y = min_y;
         group->bounds_min.z = min_z;
@@ -2582,8 +2589,9 @@ void terrainpickupinit(char *path, void **buffer) {
         group->bounds_max.y = max_y;
         group->bounds_max.z = max_z;
     }
+    group = terrain->groups;
     for (i = 0; i < 32; ++i) {
-        terrain->groups[i].scene_index = (i16)i;
+        group[i].scene_index = (i16)i;
         terrain->platforms[i].scene_object = NULL;
     }
     PickupTerrainPc = terrain;
@@ -3301,10 +3309,10 @@ u8 *TerrainSkinRebuildIndexPc(i32 pool_slots) {
     TERRAIN_SKIN_USE_RECORD_PC *use;
     i16 *selectors;
     f32 *min_x, *max_x, *min_z, *max_z;
-    f32 world_min_x = TerrainBoundsMaximumPc, world_min_y = TerrainBoundsMaximumPc;
-    f32 world_min_z = TerrainBoundsMaximumPc;
-    f32 world_max_x = TerrainBoundsMinimumPc, world_max_y = TerrainBoundsMinimumPc;
-    f32 world_max_z = TerrainBoundsMinimumPc;
+    f32 world_min_x = 200000000.0f, world_min_y = 200000000.0f;
+    f32 world_min_z = 200000000.0f;
+    f32 world_max_x = -200000000.0f, world_max_y = -200000000.0f;
+    f32 world_max_z = -200000000.0f;
     i32 capacity = terrain->max_groups, i, cell_index;
     selectors = (i16 *)(((u32)TerrainSkinArenaEndPc & ~1u) - (u32)capacity * 2u);
     min_x = (f32 *)(((u32)selectors & ~3u) - (u32)capacity * 4u);
@@ -3348,8 +3356,8 @@ u8 *TerrainSkinRebuildIndexPc(i32 pool_slots) {
         group = &terrain->groups[i];
         if (group->chunk_type == 0) {
             i32 x, z;
-            min_x[i] = min_z[i] = TerrainBoundsMaximumPc;
-            max_x[i] = max_z[i] = TerrainBoundsMinimumPc;
+            min_x[i] = min_z[i] = 200000000.0f;
+            max_x[i] = max_z[i] = -200000000.0f;
             if (group->bounds_min.x < min_x[i])
                 min_x[i] = group->bounds_min.x;
             if (group->bounds_min.z < min_z[i])
@@ -3379,8 +3387,8 @@ u8 *TerrainSkinRebuildIndexPc(i32 pool_slots) {
     terrain->used_cell_count = 0;
     for (cell_index = 0; cell_index < 49; ++cell_index) {
         TERRAIN_CELL_PC *cell = &terrain->cells[terrain->used_cell_count];
-        f32 cell_min_x = TerrainBoundsMaximumPc, cell_min_z = TerrainBoundsMaximumPc;
-        f32 cell_max_x = TerrainBoundsMinimumPc, cell_max_z = TerrainBoundsMinimumPc;
+        f32 cell_min_x = 200000000.0f, cell_min_z = 200000000.0f;
+        f32 cell_max_x = -200000000.0f, cell_max_z = -200000000.0f;
         cell->first_group = (i16)terrain->group_index_count;
         for (i = 0; i < terrain->group_count; ++i) {
             if (selectors[i] == cell_index && terrain->groups[i].chunk_type == 0) {

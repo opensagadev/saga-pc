@@ -16287,7 +16287,9 @@ address,symbol,size,ctype
 0x76e0e0,__real@4f000000,4,const f32
 0x0076e0e4,??_C@_04PAGELMPD@?4ter?$AA@,5,const char[5]
 0x76e0ec,_TerrainBoundsMinimumPc,4,const f32
+0x76e0ec,__real@cd3ebc20,4,const f32
 0x76e0f0,_TerrainBoundsMaximumPc,4,const f32
+0x76e0f0,__real@4d3ebc20,4,const f32
 0x76e0f4,_TerrainSourcePathPc,53,const char[53]
 0x0076e130,_TerrainSkinSampleIndexScalePc,,
 0x76e130,__real@c020000000000000,,
