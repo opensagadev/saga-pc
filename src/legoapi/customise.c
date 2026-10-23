@@ -906,8 +906,8 @@ static f32 CustomiseHeadOffsetPc = 0.21f;
 /* Canonical existing InitAsciiLeftPc, Game.customiser_start and AddGameMsg_Default are reused. */
 
 static void UpdateCustomPieceAnim(CUSTOM_PIECE_ANIM_PC *anim, u16 minimum, u16 maximum) {
-    i32 difference, index;
-    f64 blend;
+    i32 index;
+    f64 difference, blend;
     if (anim->elapsed < anim->duration) {
         anim->elapsed += FRAMETIME;
         if (anim->elapsed >= anim->duration) {
