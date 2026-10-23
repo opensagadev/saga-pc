@@ -1,25 +1,16 @@
 #include "saga.h"
-typedef struct special_move_flags_pc_s {
-    u8 unknown_00[0xa];
-    u8 flags;
-    u8 unknown_0b[5];
-} SPECIAL_MOVE_FLAGS_PC;
-STATIC_ASSERT(sizeof(SPECIAL_MOVE_FLAGS_PC) == 0x10);
-STATIC_ASSERT(offsetof(SPECIAL_MOVE_FLAGS_PC, flags) == 0xa);
 extern i32 objhitobj_throwkillpartsup;
 i32 __cdecl ObjHitObj(GAMEOBJECT *, GAMEOBJECT *, i32, u16, i32, i32);
 i32 __cdecl Player_HasInvincibility(GAMEOBJECT *);
+u32 __cdecl SpecialMove_GetFlags(i32 index, u32 mask);
 static __declspec(noinline) void SpecialMoveApplyDamagePc(GAMEOBJECT *victim) {
-    SPECIAL_MOVE_FLAGS_PC *moves = (SPECIAL_MOVE_FLAGS_PC *)PlayerSpecialMoveDataPc;
-    i32 move = victim->special_move_pc;
-    if (move != -1 && (moves[move].flags & 0x10) != 0)
+    if (SpecialMove_GetFlags(victim->special_move_pc, 0x10) != 0)
         objhitobj_throwkillpartsup = 1;
     ObjHitObj(victim->force_target, victim,
               (victim->force_target->flags_1fc_word & 0x80) && Player_HasInvincibility(victim->force_target) ? 1 : -1,
               0x1000, 0, 1);
 }
 i32 __cdecl SpecialMove_ReleaseVictim(GAMEOBJECT *object) {
-    SPECIAL_MOVE_FLAGS_PC *moves = (SPECIAL_MOVE_FLAGS_PC *)PlayerSpecialMoveDataPc;
     GAMEOBJECT *victim;
     if (LEGOCONTEXT_SPECIALMOVE_ATTACKER == -1 || object->character_context != LEGOCONTEXT_SPECIALMOVE_ATTACKER ||
         object->special_move_pc == -1 || object->force_target == NULL)
@@ -27,7 +18,7 @@ i32 __cdecl SpecialMove_ReleaseVictim(GAMEOBJECT *object) {
     victim = object->force_target;
     if (LEGOCONTEXT_SPECIALMOVE_VICTIM == -1 || victim->character_context != LEGOCONTEXT_SPECIALMOVE_VICTIM)
         return 0;
-    if (object->special_move_pc != -1 && (moves[object->special_move_pc].flags & 4))
+    if (SpecialMove_GetFlags(object->special_move_pc, 4) != 0)
         SpecialMoveApplyDamagePc(victim);
     victim = object->force_target;
     if (victim != NULL)
@@ -56,20 +47,22 @@ STATIC_ASSERT(offsetof(SPECIALMOVE_TABLE_VIEW_PC, victim_animation) == 8);
 STATIC_ASSERT(offsetof(SPECIALMOVE_TABLE_VIEW_PC, flags) == 0xa);
 extern i32 PlayerSpecialMoveCountPc;
 i32 __cdecl SpecialMove_GetAttackerAction(i32 index) {
-    SPECIALMOVE_TABLE_VIEW_PC *moves = (SPECIALMOVE_TABLE_VIEW_PC *)PlayerSpecialMoveDataPc;
-    return index == -1 ? -1 : moves[index].attacker_animation;
+    if (index != -1)
+        return ((SPECIALMOVE_TABLE_VIEW_PC *)PlayerSpecialMoveDataPc)[index].attacker_animation;
+    return -1;
 }
 i32 __cdecl SpecialMove_GetVictimAction(i32 index) {
-    SPECIALMOVE_TABLE_VIEW_PC *moves = (SPECIALMOVE_TABLE_VIEW_PC *)PlayerSpecialMoveDataPc;
-    return index == -1 ? -1 : moves[index].victim_animation;
+    if (index != -1)
+        return ((SPECIALMOVE_TABLE_VIEW_PC *)PlayerSpecialMoveDataPc)[index].victim_animation;
+    return -1;
 }
 u32 __cdecl SpecialMove_GetFlags(i32 index, u32 mask) {
-    SPECIALMOVE_TABLE_VIEW_PC *moves = (SPECIALMOVE_TABLE_VIEW_PC *)PlayerSpecialMoveDataPc;
-    if (index == -1)
-        return 0;
-    if (mask != 0)
-        return moves[index].flags & mask;
-    return moves[index].flags;
+    if (index != -1) {
+        if (mask != 0)
+            return ((SPECIALMOVE_TABLE_VIEW_PC *)PlayerSpecialMoveDataPc)[index].flags & mask;
+        return ((SPECIALMOVE_TABLE_VIEW_PC *)PlayerSpecialMoveDataPc)[index].flags;
+    }
+    return 0;
 }
 i32 __cdecl SpecialMove_Check(GAMEOBJECT *attacker, GAMEOBJECT *victim) {
     SPECIALMOVE_TABLE_VIEW_PC *moves = (SPECIALMOVE_TABLE_VIEW_PC *)PlayerSpecialMoveDataPc;
@@ -232,8 +225,7 @@ void __cdecl SpecialMove_VictimCode(GAMEOBJECT *object) {
         object->context_timer -= FRAMETIME;
         if (object->context_timer <= 0.0f) {
             object->character_context = -1;
-            if (object->special_move_pc != -1 &&
-                (((SPECIAL_MOVE_FLAGS_PC *)PlayerSpecialMoveDataPc)[object->special_move_pc].flags & 2) != 0)
+            if (SpecialMove_GetFlags(object->special_move_pc, 2) != 0)
                 SpecialMoveApplyDamagePc(object);
         }
     }
