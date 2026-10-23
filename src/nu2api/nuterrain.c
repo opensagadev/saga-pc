@@ -3226,56 +3226,61 @@ void TerrainSkinPrepareGroupPc(i32 group_index, TERRAIN_SKIN_STREAM_VIEW_PC *out
 
 /* Native 681470: preserve the native ordered error checks and live group
  * count reloads across the genuine skin preparation call. */
+#define TERRAIN_SCI_SET ((TERRAIN_SET_PC *)CurrentTerrain)
 i32 TerrainSkinCreateInfoPc(NUMTX *matrix, const TERRAIN_SKIN_BLEND_VIEW_PC *blend, const NUVEC4 *sample_rows,
                             f32 scale, i32 source_scene_index, i16 mode, TERRAIN_SET_PC *source_terrain) {
-    TERRAIN_SET_PC *terrain = (TERRAIN_SET_PC *)CurrentTerrain;
     TERRAIN_SKIN_INFO_VIEW_PC *info;
-    i32 selected, skin_index;
-    if (terrain == NULL || source_terrain == NULL)
+    i32 count, skin_index, index, found;
+    if (CurrentTerrain == NULL || source_terrain == NULL)
         return -1;
-    if (terrain->group_count >= terrain->max_groups)
+    count = TERRAIN_SCI_SET->group_count;
+    if (count >= TERRAIN_SCI_SET->max_groups)
         return -3;
     if (matrix == NULL || blend == NULL)
         return -4;
     skin_index = TerrainSkinInfoCountPc;
     if (skin_index >= TerrainSkinInfoCapacityPc)
         return -5;
-    for (selected = 0; selected < source_terrain->max_platforms; ++selected)
-        if (source_terrain->platforms[selected].scene_object != NULL &&
-            source_terrain->platforms[selected].scene_object_index == source_scene_index)
+    found = -1;
+    for (index = 0; index < source_terrain->max_platforms; ++index) {
+        if (source_terrain->platforms[index].scene_object != NULL &&
+            source_terrain->platforms[index].scene_object_index == source_scene_index) {
+            found = index;
             break;
-    if (selected >= source_terrain->max_platforms || selected == -1)
+        }
+    }
+    if (found == -1)
         return -6;
-    terrain->groups[terrain->group_count] =
-        source_terrain->groups[source_terrain->platforms[selected].terrain_group_index];
-    ((TERRAIN_SET_PC *)CurrentTerrain)->groups[((TERRAIN_SET_PC *)CurrentTerrain)->group_count].chunk_type = 0;
+    TERRAIN_SCI_SET->groups[count] = source_terrain->groups[source_terrain->platforms[found].terrain_group_index];
+    TERRAIN_SCI_SET->groups[TERRAIN_SCI_SET->group_count].chunk_type = 0;
     info = &TerrainSkinInfosPc[skin_index];
     info->matrix = matrix;
     info->blend = blend;
     info->sample_rows = sample_rows;
     info->scale = scale;
     info->mode = mode;
-    info->vertex_order = (f64)matrix->m00 * matrix->m22 - (f64)matrix->m02 * matrix->m20 < 0.0 ? 1 : 0;
-    TerrainSkinPrepareGroupPc(((TERRAIN_SET_PC *)CurrentTerrain)->group_count,
-                              (TERRAIN_SKIN_STREAM_VIEW_PC *)TerrainSkinPoolBasePc, info);
+    if (matrix->m20 * matrix->m02 - matrix->m22 * matrix->m00 > 0.0)
+        info->vertex_order = 1;
+    else
+        info->vertex_order = 0;
+    TerrainSkinPrepareGroupPc(TERRAIN_SCI_SET->group_count, (TERRAIN_SKIN_STREAM_VIEW_PC *)TerrainSkinPoolBasePc, info);
     skin_index = TerrainSkinInfoCountPc;
     info = &TerrainSkinInfosPc[skin_index];
-    info->group_index = ((TERRAIN_SET_PC *)CurrentTerrain)->group_count;
-    info->original_shape =
-        ((TERRAIN_SET_PC *)CurrentTerrain)->groups[((TERRAIN_SET_PC *)CurrentTerrain)->group_count].data;
-    ((TERRAIN_SET_PC *)CurrentTerrain)->groups[((TERRAIN_SET_PC *)CurrentTerrain)->group_count].scene_index =
-        (i16)(-1 - skin_index);
-    ((TERRAIN_SET_PC *)CurrentTerrain)->groups[((TERRAIN_SET_PC *)CurrentTerrain)->group_count].data = NULL;
-    ++((TERRAIN_SET_PC *)CurrentTerrain)->group_count;
+    info->group_index = TERRAIN_SCI_SET->group_count;
+    info->original_shape = TERRAIN_SCI_SET->groups[TERRAIN_SCI_SET->group_count].data;
+    TERRAIN_SCI_SET->groups[TERRAIN_SCI_SET->group_count].scene_index = (i16)(-1 - skin_index);
+    TERRAIN_SCI_SET->groups[TERRAIN_SCI_SET->group_count].data = NULL;
+    ++TERRAIN_SCI_SET->group_count;
     TerrainSkinInfoCountPc = skin_index + 1;
-    return ((TERRAIN_SET_PC *)CurrentTerrain)->group_count - 1;
+    return TERRAIN_SCI_SET->group_count - 1;
 }
+#undef TERRAIN_SCI_SET
 
 /* Native 6813e0: caller-owned arena start/end and explicit record capacity.
  * This partitions an existing arena; it does not establish its allocation. */
 void TerrainSkinInitArenaPc(TERRAIN_SKIN_INFO_VIEW_PC *base, u8 *end, i32 capacity) {
-    TerrainSkinInfosPc = base;
     TerrainSkinPoolBasePc = (u8 *)(base + capacity);
+    TerrainSkinInfosPc = base;
     TerrainSkinInfoCapacityPc = capacity;
     TerrainSkinPoolSlotBytesPc = 0;
     TerrainSkinInfoCountPc = 0;
@@ -3463,25 +3468,26 @@ void TerrainAddWallSplinePc(TERRAIN_SPATIAL_NODE *node, TERRAIN_SET_PC *terrain)
     terrain->spatial_nodes = node;
 }
 
+#define TERRAIN_SPATIAL_PREVIOUS(n)                                                                                    \
+    (((TERRAIN_SPATIAL_CHUNK *)((u8 *)(n) - offsetof(TERRAIN_SPATIAL_CHUNK, node)))->previous)
 void TerrainRemoveWallSplinePc(TERRAIN_SPATIAL_NODE *node, TERRAIN_SET_PC *terrain) {
-    TERRAIN_SPATIAL_NODE *previous, *next;
-    TERRAIN_SPATIAL_CHUNK *chunk;
-    if (terrain == NULL || terrain->spatial_nodes == NULL)
+    TERRAIN_SPATIAL_NODE *current, *last;
+    if (terrain == NULL)
         return;
-    previous = terrain->spatial_nodes;
-    chunk = (TERRAIN_SPATIAL_CHUNK *)((u8 *)previous - offsetof(TERRAIN_SPATIAL_CHUNK, node));
-    if (previous == node) {
-        terrain->spatial_nodes = chunk->previous;
+    current = terrain->spatial_nodes;
+    if (current == NULL)
+        return;
+    if (current == node) {
+        terrain->spatial_nodes = TERRAIN_SPATIAL_PREVIOUS(node);
         return;
     }
-    next = chunk->previous;
-    while (next != NULL && next != node) {
-        previous = next;
-        chunk = (TERRAIN_SPATIAL_CHUNK *)((u8 *)previous - offsetof(TERRAIN_SPATIAL_CHUNK, node));
-        next = chunk->previous;
-    }
-    if (next == node) {
-        TERRAIN_SPATIAL_CHUNK *removed = (TERRAIN_SPATIAL_CHUNK *)((u8 *)node - offsetof(TERRAIN_SPATIAL_CHUNK, node));
-        chunk->previous = removed->previous;
-    }
+    do {
+        last = current;
+        current = TERRAIN_SPATIAL_PREVIOUS(current);
+        if (current == node) {
+            TERRAIN_SPATIAL_PREVIOUS(last) = TERRAIN_SPATIAL_PREVIOUS(node);
+            return;
+        }
+    } while (current != NULL);
 }
+#undef TERRAIN_SPATIAL_PREVIOUS
