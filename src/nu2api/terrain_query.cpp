@@ -3073,30 +3073,33 @@ extern "C" void CubeImpactPc(NUMTX *current, NUMTX *previous, NUVEC *normal, f32
 }
 
 extern "C" void TerrainWallSideSlidePc(NUVEC *movement, void *id, f32 speed, f32 upward_scale, NUANG angle) {
-    if (static_cast<TERRAIN_SET_PC *>(CurrentTerrain) == NULL)
-        return;
     TERRAIN_SET_PC *terrain = static_cast<TERRAIN_SET_PC *>(CurrentTerrain);
-    TERRAIN_TRACK_SLOT_PC *track = NULL;
+    if (terrain == NULL)
+        return;
+    TERRAIN_TRACK_SLOT_PC *track;
     for (i32 index = 0; index < 64; ++index) {
         if (terrain->track_slots[index].id == id) {
             track = &terrain->track_slots[index];
-            break;
+            goto found;
         }
     }
+    track = NULL;
+found:
     CurTrackInfo = track;
     if (CurTrackInfo == NULL || CurTrackInfo->wall_contact_state == 0)
         return;
     if (speed != 0.0f) {
         NUVEC slide = {0.0f, 0.0f, speed};
         NuVecRotateY(&slide, &slide, angle);
-        FullDeflect(&CurTrackInfo->impact_normal, &slide, &slide);
-        slide.x += (speed * CurTrackInfo->impact_normal.x) * static_cast<f64>(0.4f);
-        slide.z += (speed * CurTrackInfo->impact_normal.z) * static_cast<f64>(0.4f);
-        movement->z += slide.z;
+        track = CurTrackInfo;
+        FullDeflect(&track->impact_normal, &slide, &slide);
+        slide.x += speed * track->impact_normal.x * static_cast<f64>(0.4f);
+        slide.z += speed * track->impact_normal.z * static_cast<f64>(0.4f);
         movement->x += slide.x;
+        movement->z = slide.z + movement->z;
     }
     if (movement->y > 0.0f)
-        movement->y *= upward_scale;
+        movement->y = movement->y * upward_scale;
 }
 
 #define TERRAIN_TPE_EDGE(first_vertex, second_vertex)                                                                  \
@@ -3140,12 +3143,11 @@ extern "C" void TerrainPolyEdgePc(NUVEC *first, NUVEC *second) {
 
 extern "C" void NewTerrAxisFreedomPc(TERRAIN_AXIS_FREEDOM_SHAPE_PC *shape, NUVEC *position) {
     TerrShape = shape;
-    const f32 shape_angle = shape->angle;
     TerrShapeAdjCnt = 2;
 
     NUVEC axis;
-    axis.x = NuTrigTable[static_cast<i32>(static_cast<f64>(shape_angle) + 16384.0) >> 1 & 0x7fff];
+    axis.x = NuTrigTable[static_cast<i32>(shape->angle + 16384.0) >> 1 & 0x7fff];
     axis.y = 0.0f;
-    axis.z = -NuTrigTable[static_cast<i32>(shape_angle) >> 1 & 0x7fff];
+    axis.z = -NuTrigTable[static_cast<i32>(shape->angle) >> 1 & 0x7fff];
     TerrainSideClamp(&axis, position);
 }
