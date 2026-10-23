@@ -102,6 +102,7 @@ extern i32 VehicleArea;
 extern u16 temp_xrot;
 extern u16 temp_zrot;
 extern i32 disable_narrow_socks;
+extern u8 SuperCarryPlayerRgbPc[2][3];
 
 extern const f64 VehicleHoverHeightSeparationScale;
 extern i32 getvehiclehoverheight_hothbattlehack;
@@ -516,8 +517,8 @@ origin_ready:
     }
 }
 
-GAMEOBJECT *__cdecl FindGameObject(i32 character_id, u32 required_flags, i32 alive_only, i32 vehicle_only,
-                                   i32 non_level_only) {
+__declspec(noinline) GAMEOBJECT *__cdecl FindGameObject(i32 character_id, u32 required_flags, i32 alive_only,
+                                                        i32 vehicle_only, i32 non_level_only) {
     GAMEOBJECT *object = Obj;
     i32 i;
     for (i = 0; i < HIGHGAMEOBJECT; ++i, ++object) {
@@ -647,7 +648,7 @@ i32 CanFightLikeAJedi(GAMEOBJECT *object) {
            object->id == id_IMPERIALGUARD;
 }
 
-void __cdecl ScaleGameObject(GAMEOBJECT *object) {
+__declspec(noinline) void __cdecl ScaleGameObject(GAMEOBJECT *object) {
     f32 scale = object->origin_scale;
     CHARACTERDATA_PC *character = object->character_data;
     object->scaled_radius = character->scaled_radius * scale;
@@ -3222,22 +3223,17 @@ void __cdecl UpdateGameObjects(WORLDINFO *world) {
     f32 distance;
     i32 tier;
     f32 frame_time;
-    PLAYERCHARACTERCONFIG_PC *data;
-    f32 *wait;
-    u16 player_flags;
     f32 flicker_decay;
-    u16 character_flags;
     f32 vertical_displacement;
-    f32 scale;
+    f32 elapsed;
     i32 lighting_start;
-    i32 lighting_phase;
     GAMEOBJECT *dagobah_luke;
     NUVEC offset;
     i32 yoda_proximity;
     f32 target;
     i32 result;
     {
-        Hub_PadSpeed[1] = Hub_PadSpeed[0] = 0.0f;
+        Hub_PadSpeed[0] = Hub_PadSpeed[1] = 0.0f;
         SetPlayer();
         AIFireIntervalMul = 1.0f;
         CarWashHack = NULL;
@@ -3252,46 +3248,59 @@ void __cdecl UpdateGameObjects(WORLDINFO *world) {
                                     (f32)((f64)FRAMETIME * 2.0));
         if (GhostLightMul == GhostLightTargetMul)
             GhostLightTargetMul = (f32)((f64)qrand() * (f64)(1.0f / 65535.0f) * 0.5 + 0.75);
-        for (i = 0; i < HIGHGAMEOBJECT; ++i) {
-            object = &Obj[i];
-            interval = 1;
-            if (0x1001 != (object->flags_1fc_word & 0x1001))
+        object = Obj;
+        for (i = 0; i < HIGHGAMEOBJECT; ++i, ++object) {
+            if ((object->flags_1fc_word & 1) == 0 || (object->flags_1fc_word & 0x1000) == 0)
                 continue;
             if (0 != (object->flags_ef4 & 8))
                 object->ai_elapsed_time = 0.0f;
             object->ai_elapsed_time += FRAMETIME;
-            if (timebase_updates == 0 || (object->flags_1f8 & 0x400) == 0 || (object->portal_flags & 0x8000000) != 0 ||
-                (0x20 & object->flags_ef4) != 0 || 0 != (CInfo[(i8)object->character_context].flags & 0x200) ||
-                object->supporting_platform_id != -1 || (object->rider != NULL && object->character_context == 0x3b) ||
-                Technos_FindControllingTechno(object) != NULL ||
-                (object->active_trigger_set != NULL && (object->active_trigger_set->flags_low & 2) != 0) ||
-                (object->ai_packet.group != NULL && 0 != (object->ai_packet.group->flags & 8))) {
-                object->flags_ef4 |= 0x10;
-            } else if (world->rooms_visible_ptr[object->portal_room] == 0 || object->model_draw_result == 0) {
-                interval = 10;
-                object->flags_ef4 &= ~0x10u;
-            } else if (object->field_281 == 0) {
-                object->flags_ef4 |= 0x10;
-            } else {
-                configuration = object->character_data->game_character;
-                distance = NuVecDistSqr(&object->collision_position, &GameCam->position, &delta);
-                for (tier = 0; tier < 4; ++tier) {
-                    if (configuration->ai_update_intervals[tier] == 0)
-                        break;
-                    if ((f64)configuration->ai_update_distances[tier] * (f64)configuration->ai_update_distances[tier] <
-                        (f64)distance) {
-                        interval = configuration->ai_update_intervals[tier];
-                        break;
-                    }
-                }
-                if (interval == 1)
+            interval = 1;
+            if (timebase_updates != 0 && (object->flags_1f8 & 0x400) != 0) {
+                if ((object->portal_flags & 0x8000000) != 0 || (0x20 & object->flags_ef4) != 0 ||
+                    0 != (U64_PAIR(&CInfo[(i8)object->character_context].flags) & 0x200) ||
+                    object->supporting_platform_id != -1 ||
+                    (object->rider != NULL && object->character_context == 0x3b)) {
                     object->flags_ef4 |= 0x10;
-                else
+                    interval = 1;
+                } else if (Technos_FindControllingTechno(object) != NULL) {
+                    object->flags_ef4 |= 0x10;
+                    interval = 1;
+                } else if (object->active_trigger_set != NULL && (object->active_trigger_set->flags_low & 2) != 0) {
+                    object->flags_ef4 |= 0x10;
+                    interval = 1;
+                } else if (object->ai_packet.group != NULL && 0 != (object->ai_packet.group->flags & 8)) {
+                    object->flags_ef4 |= 0x10;
+                    interval = 1;
+                } else if (world->rooms_visible_ptr[object->portal_room] == 0 || object->model_draw_result == 0) {
+                    interval = 10;
                     object->flags_ef4 &= ~0x10u;
+                } else if (object->field_281 == 0) {
+                    object->flags_ef4 |= 0x10;
+                    interval = 1;
+                } else {
+                    distance = NuVecDistSqr(&object->collision_position, &GameCam->position, &delta);
+                    configuration = object->character_data->game_character;
+                    for (tier = 0; tier < 4; ++tier) {
+                        if (configuration->ai_update_intervals[tier] == 0)
+                            break;
+                        if (configuration->ai_update_distances[tier] * configuration->ai_update_distances[tier] <
+                            distance) {
+                            interval = configuration->ai_update_intervals[tier];
+                            break;
+                        }
+                    }
+                    if (interval == 1)
+                        object->flags_ef4 |= 0x10;
+                    else
+                        object->flags_ef4 &= ~0x10u;
+                }
+            } else {
+                object->flags_ef4 |= 0x10;
             }
             if (((u32)object->hostility_group + (u32)GameTimer.update_count) % interval == 0) {
                 object->flags_ef4 |= 8;
-                if ((object->flags_1f8 & 0x40400) == 0x400)
+                if ((object->flags_1f8 & 0x400) != 0 && (object->flags_1f8 & 0x40000) == 0)
                     object->position = object->ai_update_position;
             } else {
                 object->flags_ef4 &= ~8u;
@@ -3302,13 +3311,15 @@ void __cdecl UpdateGameObjects(WORLDINFO *world) {
     GameAIProcess();
 
     // AI movement precedes the separate player movement pass.
-    for (i = 0; i < HIGHGAMEOBJECT; ++i) {
-        object = &Obj[i];
-        if ((object->flags_1fc_word & 0x1001) != 0x1001 || (object->flags_1f8 & 0x400) == 0)
+    object = Obj;
+    for (i = 0; i < HIGHGAMEOBJECT; ++i, ++object) {
+        if ((object->flags_1fc_word & 1) == 0 || (object->flags_1fc_word & 0x1000) == 0 ||
+            (object->flags_1f8 & 0x400) == 0)
             continue;
-        object->flags_1fc_word = (object->flags_1fc_word & ~0x4000u) | ((object->character_context == 0) << 14);
-        object->vehicle_hit_timer = object->vehicle_hit_timer - FRAMETIME;
-        if (object->vehicle_hit_timer < -1.0f)
+        object->flags_1fc_word ^= (((object->character_context == 0) << 14) ^ object->flags_1fc_word) & 0x4000;
+        flicker_decay = object->vehicle_hit_timer - FRAMETIME;
+        object->vehicle_hit_timer = flicker_decay;
+        if (flicker_decay < -1.0f)
             SetFlicker(object, 0.0f);
         if (object->timer_d34 > 0.0f)
             object->timer_d34 -= FRAMETIME;
@@ -3336,27 +3347,30 @@ void __cdecl UpdateGameObjects(WORLDINFO *world) {
             }
             FRAMETIME = frame_time;
         }
-        data = object->character_data->game_character;
-        if (data->weapon_action == 10 && ((object->model_draw_result != 0) != ((object->flags_ef4 & 0x100) != 0))) {
-            wait = object->model_draw_result != 0 ? &tieonsfxwait : &tieoffsfxwait;
-            if (*wait <= 0.0f) {
+        if (object->character_data->game_character->weapon_action == 10) {
+            if (object->model_draw_result != 0) {
+                if ((object->flags_ef4 & 0x100) == 0 && tieonsfxwait <= 0.0f) {
+                    PlaySfx("veh_tie_by", &object->collision_position);
+                    tieonsfxwait = ((f64)qrand() * ((f64)(1.0f / 65535.0f))) * 0.5f + 0.5f;
+                }
+            } else if ((object->flags_ef4 & 0x100) != 0 && tieoffsfxwait <= 0.0f) {
                 PlaySfx("veh_tie_by", &object->collision_position);
-                *wait = ((f64)qrand() * ((f64)(1.0f / 65535.0f))) * 0.5f + 0.5f;
+                tieoffsfxwait = ((f64)qrand() * ((f64)(1.0f / 65535.0f))) * 0.5f + 0.5f;
             }
         }
     }
 
     // Player movement has its own timers, power-up and controller processing.
-    for (i = 0; i <= 7; ++i) {
+    for (i = 0; i < 8; ++i) {
         object = Player[i];
-        player_flags = 1 | 0x1000;
-        if (object == NULL || (object->flags_1fc_word & player_flags) != player_flags) {
+        if (object == NULL || (object->flags_1fc_word & 1) == 0 || (object->flags_1fc_word & 0x1000) == 0) {
             continue;
         }
-        if (VehicleArea != 0 && (u8)object->field_280 <= 1 && (object->flags_1fc_word & 0x80) == 0)
-            object->flags_e20 |= 0x20;
-        else
-            object->flags_e20 &= ~0x20;
+        object->flags_e20 ^= (((VehicleArea != 0 && (object->field_280 == 0 || object->field_280 == 1) &&
+                                (object->flags_1fc_word & 0x80) == 0)
+                               << 5) ^
+                              object->flags_e20) &
+                             0x20;
         if (object->hud_icon_timer > 0.0f)
             object->hud_icon_timer -= FRAMETIME;
         if (object->tag_cooldown > 0.0f)
@@ -3369,9 +3383,10 @@ void __cdecl UpdateGameObjects(WORLDINFO *world) {
         object->flags_ef4 &= ~0x10000000u;
         flicker_decay = 1.0f;
         if (object->vehicle_hit_timer > 0.0f && (object->flags_1fc_word & 0x80) != 0 && Cheat_IsOn(0x2c) != 0) {
-            if (adtab[adaptivedifficulty.level][2] == 1)
+            setting = adtab[adaptivedifficulty.level][2];
+            if (setting == 1)
                 flicker_decay = 2.0f;
-            else if (adtab[adaptivedifficulty.level][2] == -1)
+            else if (setting == -1)
                 flicker_decay = 0.5f;
         }
         object->vehicle_hit_timer -= FRAMETIME * flicker_decay;
@@ -3381,7 +3396,7 @@ void __cdecl UpdateGameObjects(WORLDINFO *world) {
             object->timer_d34 -= FRAMETIME;
         if (object->field_d54 > 0.0f)
             object->field_d54 -= FRAMETIME;
-        object->flags_1fc_word = (object->flags_1fc_word & ~0x4000u) | ((object->character_context == 0) << 14);
+        object->flags_1fc_word ^= (((object->character_context == 0) << 14) ^ object->flags_1fc_word) & 0x4000;
         if ((object->flags_1f8 & 0x40000) != 0) {
             STUBBED_NAMED("UpdateGameObjects: MovePlayer_NETWORK PC4b6bf0");
         } else {
@@ -3413,10 +3428,10 @@ void __cdecl UpdateGameObjects(WORLDINFO *world) {
     // terrain update when their script was processed. Between those updates,
     // the original advances the last resolved velocity and still animates the
     // object every frame.
-    for (i = 0; i < HIGHGAMEOBJECT; ++i) {
-        object = &Obj[i];
-        character_flags = 1 | 0x1000;
-        if ((object->flags_1fc_word & character_flags) != character_flags || (object->flags_1f8 & 0x400) == 0) {
+    object = Obj;
+    for (i = 0; i < HIGHGAMEOBJECT; ++i, ++object) {
+        if ((object->flags_1fc_word & 1) == 0 || (object->flags_1fc_word & 0x1000) == 0 ||
+            (object->flags_1f8 & 0x400) == 0) {
             object->portal_flags &= ~1;
             if (object->timer_ecc > 0.0f)
                 object->timer_ecc -= FRAMETIME;
@@ -3430,11 +3445,9 @@ void __cdecl UpdateGameObjects(WORLDINFO *world) {
             object->ai_update_position = object->position;
 
             vertical_displacement = object->position.y - object->start_position.y;
-            if (vertical_displacement == 0.0f || object->ai_elapsed_time == 0.0f) {
-                object->ai_vertical_velocity = 0.0f;
-            } else {
-                object->ai_vertical_velocity = vertical_displacement / object->ai_elapsed_time;
-            }
+            elapsed = object->ai_elapsed_time;
+            object->ai_vertical_velocity =
+                vertical_displacement == 0.0f || elapsed == 0.0f ? 0.0f : vertical_displacement / elapsed;
             FRAMETIME = frame_time;
         } else {
             PreResetCode(object);
@@ -3458,16 +3471,13 @@ void __cdecl UpdateGameObjects(WORLDINFO *world) {
             object->sock_position.segment = -1;
             object->sock_position.sock_index = -1;
         }
-        if (WORLD->current_level != SPEEDERCHASEA_LDATA || disable_narrow_socks != 0 || object->id != id_SPEEDERBIKE ||
-            object->dead == 0)
+        if (WORLD->current_level != SPEEDERCHASEA_LDATA || disable_narrow_socks != 0 ||
+            object->id != (u16)id_SPEEDERBIKE || object->dead == 0)
             UpdateLastSafePosition(object);
-        scale = 1.0f;
-        if (object->dead == 1)
-            scale -= object->death_timer / object->death_delay;
-        object->collision_scale = scale;
-        if (object->collision_scale_override != 1000000000.0f)
+        object->collision_scale = object->dead == 1 ? 1.0f - object->death_timer / object->death_delay : 1.0f;
+        if (object->collision_scale_override != 1000000000.0)
             object->collision_scale = object->collision_scale_override;
-        object->origin_scale = object->collision_scale * object->character_data->model_scale;
+        object->origin_scale = object->character_data->model_scale * object->collision_scale;
         ScaleGameObject(object);
         GameObjectDimensions(object);
         AddSurfaceRipples(object);
@@ -3483,10 +3493,9 @@ void __cdecl UpdateGameObjects(WORLDINFO *world) {
     }
 
     CurrentSpeed = 0.0f;
-    for (i = 0; i <= 7; ++i) {
-        player_flags = 1 | 0x1000;
+    for (i = 0; i < 8; ++i) {
         object = Player[i];
-        if (object == NULL || (object->flags_1fc_word & player_flags) != player_flags) {
+        if (object == NULL || (object->flags_1fc_word & 1) == 0 || (object->flags_1fc_word & 0x1000) == 0) {
             continue;
         }
 
@@ -3499,9 +3508,9 @@ void __cdecl UpdateGameObjects(WORLDINFO *world) {
         TerrainPlayer(object);
         object->ai_update_position = object->position;
         vertical_displacement = object->position.y - object->start_position.y;
-        object->ai_vertical_velocity = vertical_displacement == 0.0f || object->ai_elapsed_time == 0.0f
-                                           ? 0.0f
-                                           : vertical_displacement / object->ai_elapsed_time;
+        elapsed = object->ai_elapsed_time;
+        object->ai_vertical_velocity =
+            vertical_displacement == 0.0f || elapsed == 0.0f ? 0.0f : vertical_displacement / elapsed;
         AnimatePlayer(object);
         object->context_target_position = NULL;
         if (VehicleArea != 0 || (object->character_data->model_flags & 0x2000) != 0) {
@@ -3532,24 +3541,25 @@ void __cdecl UpdateGameObjects(WORLDINFO *world) {
                 CurrentSpeed = CurrentSpeedOverride;
         }
         UpdateLastSafePosition(object);
-        plr_lastpos = object->sock_position.sock_index == -1 ? object->position : object->start_position;
-        if (object->sock_position.sock_index != -1 && object->previous_sock_position != NULL &&
-            object->previous_sock_position->sock_index == -1) {
-            *object->previous_sock_position = object->sock_position;
+        if (object->sock_position.sock_index != -1) {
+            plr_lastpos = object->start_position;
+            if (object->previous_sock_position != NULL && object->previous_sock_position->sock_index == -1) {
+                *object->previous_sock_position = object->sock_position;
+            }
+        } else {
+            plr_lastpos = object->position;
         }
         KeepOnScreen(object);
         Doors_Check(world, object);
-        scale = 1.0f;
-        if (object->dead == 1)
-            scale = scale - (object->death_timer / object->death_delay);
-        object->collision_scale = scale;
-        if (FreePlay != 0 && WORLD->area != NULL && WORLD->area == PODSPRINT_ADATA && object->id != id_ANAKINSNEWPOD &&
-            object->id != id_ANAKINSNEWPODGREEN && object->id != id_SEBULBASPOD) {
-            object->collision_scale = scale * 0.55f;
+        object->collision_scale = object->dead == 1 ? 1.0f - object->death_timer / object->death_delay : 1.0f;
+        if (FreePlay != 0 && WORLD->area != NULL && WORLD->area == PODSPRINT_ADATA &&
+            object->id != (u16)id_ANAKINSNEWPOD && object->id != (u16)id_ANAKINSNEWPODGREEN &&
+            object->id != (u16)id_SEBULBASPOD) {
+            object->collision_scale *= (f64)0.55f;
         }
-        if (1000000000.0f != object->collision_scale_override)
+        if (object->collision_scale_override != 1000000000.0)
             object->collision_scale = object->collision_scale_override;
-        object->origin_scale = object->collision_scale * object->character_data->model_scale;
+        object->origin_scale = object->character_data->model_scale * object->collision_scale;
         ScaleGameObject(object);
         GameObjectDimensions(object);
         if ((object->flags_1fc_word & 0x80) != 0 && FadeSys.fade == 0.0f && InDoubleScoreZone(object) != 0) {
@@ -3576,10 +3586,10 @@ void __cdecl UpdateGameObjects(WORLDINFO *world) {
         GameObjectToCameraCode(object);
     }
 
-    lighting_start = 0;
-    lighting_phase = (i8)MainFrameCounters.third_frame;
-    if (lighting_phase != -1)
-        lighting_start = (lighting_phase * HIGHGAMEOBJECT) / 3;
+    if ((i8)MainFrameCounters.third_frame == -1)
+        lighting_start = 0;
+    else
+        lighting_start = ((i8)MainFrameCounters.third_frame * HIGHGAMEOBJECT) / 3;
     dagobah_luke = FindGameObject(id_LUKESKYWALKERDAGOBAH, 0, 1, 1, 0);
     for (i = 0; i < HIGHGAMEOBJECT; ++i) {
         object = &Obj[i];
@@ -3601,9 +3611,7 @@ void __cdecl UpdateGameObjects(WORLDINFO *world) {
                 u16 base;
                 u16 phase;
                 if (joint != -1 && object->character_model->points_of_interest[joint] != NULL) {
-                    position.x = object->locator_matrices[joint].m30;
-                    position.y = object->locator_matrices[joint].m31;
-                    position.z = object->locator_matrices[joint].m32;
+                    position = *(NUVEC *)&object->locator_matrices[joint].m30;
                 } else {
                     position = object->upper_position;
                 }
@@ -3613,12 +3621,23 @@ void __cdecl UpdateGameObjects(WORLDINFO *world) {
                 position.y = position.y + height;
                 amplitude = (f32)((f64)object->bounds_radius * (f64)0.05f);
                 base = (u16)((object->hostility_group & 7) << 13);
-                phase = (u16)(base + (u16)(i32)(((f64)NuFmod(GameTimer.time_elapsed, 1.5f) / 1.5) * 65536.0));
-                position.x = (f32)((f64)NuTrigTable[phase >> 1] * amplitude + position.x);
-                phase = (u16)(base + (u16)(i32)(((f64)NuFmod(GameTimer.time_elapsed, 1.174f) / (f64)1.174f) * 65536.0));
-                position.y = (f32)((f64)NuTrigTable[phase >> 1] * ((f64)amplitude * 0.75) + position.y);
-                phase = (u16)(base + (u16)(i32)(((f64)NuFmod(GameTimer.time_elapsed, 1.259f) / (f64)1.259f) * 65536.0));
-                position.z = (f32)((f64)NuTrigTable[phase >> 1] * amplitude + position.z);
+                position.x =
+                    NuTrigTable[((base + (u16)(i32)(NuFmod(GameTimer.time_elapsed, 1.5f) / 1.5 * 65536.0)) >> 1) &
+                                0x7fff] *
+                        amplitude +
+                    position.x;
+                position.y =
+                    NuTrigTable[((base + (u16)(i32)(NuFmod(GameTimer.time_elapsed, 1.174f) / (f64)1.174f * 65536.0)) >>
+                                 1) &
+                                0x7fff] *
+                        (amplitude * 0.75) +
+                    position.y;
+                position.z =
+                    NuTrigTable[((base + (u16)(i32)(NuFmod(GameTimer.time_elapsed, 1.259f) / (f64)1.259f * 65536.0)) >>
+                                 1) &
+                                0x7fff] *
+                        amplitude +
+                    position.z;
                 NuStrCpy(text, TagAsciiDownPc);
                 message = AddGameMsg_Default;
                 message.scale = InteractionArrowScalePc;
@@ -3667,7 +3686,74 @@ void __cdecl UpdateGameObjects(WORLDINFO *world) {
             do_player_tag = 0;
         }
     }
-    STUBBED_NAMED("UpdateGameObjects: entire two-player indicator geometry/text/AddGameMsg action PC43614c..43647e");
+    {
+        GAMEOBJECT *player0 = Player[0];
+        GAMEOBJECT *player1 = Player[1];
+        i32 show[2];
+        show[1] = show[0] = 0;
+        if ((VehicleArea != 0 || (WORLD->area != NULL && (WORLD->area->flags & 0x104) == 4) ||
+             (WORLD->current_level == SPEEDERCHASEA_LDATA && disable_narrow_socks == 0)) &&
+            player0 != NULL && (player0->flags_1fc_word & 0x80) != 0 && player1 != NULL &&
+            (player1->flags_1fc_word & 0x80) != 0) {
+            show[1] = show[0] = 1;
+        } else {
+            if (player0 != NULL && (player0->flags_1fc_word & 0x80) != 0 && (player0->flags_e24 & 8) != 0 &&
+                player0->rider != NULL &&
+                (player0->id == GameObjectRotationAtstId || player0->id == (u16)id_ATST_LOWRES ||
+                 player0->id == (u16)id_ATAT)) {
+                show[0] = 2;
+            }
+            if (player1 != NULL && (player1->flags_1fc_word & 0x80) != 0 && (player1->flags_e24 & 8) != 0 &&
+                player1->rider != NULL &&
+                (player1->id == GameObjectRotationAtstId || player1->id == (u16)id_ATST_LOWRES ||
+                 player1->id == (u16)id_ATAT)) {
+                show[1] = 2;
+            }
+        }
+        for (i = 0; i < 2; ++i) {
+            NUVEC position;
+            ADD_GAME_MESSAGE_PC message;
+            u16 phase;
+            object = Player[i];
+            if (object == NULL || show[i] == 0 || object->dead != 0) {
+                continue;
+            }
+            if (object->hud_icon_timer > 0.0f && VehicleArea == 0) {
+                continue;
+            }
+            if (show[i] == 2) {
+                i32 joint = object->character_data->game_character->ride_locator;
+                if (joint != -1 && object->character_model->points_of_interest[joint] != NULL) {
+                    position = *(NUVEC *)&object->locator_matrices[joint].m30;
+                } else {
+                    position = object->upper_position;
+                }
+                position.y = object->bounds_half_height * 0.5 + position.y;
+            } else if (world->current_level == DOGFIGHTA_LDATA) {
+                position.x = 0.0f;
+                position.y = object->character_top * object->origin_scale;
+                position.z = 0.0f;
+                NuVecMtxRotate(&position, &position, &object->vehicle_orientation);
+                NuVecAdd(&position, &position, &object->position);
+            } else {
+                position.x = object->collision_position.x;
+                position.y = object->bounds_half_height * 1.5 + object->collision_position.y;
+                position.z = object->collision_position.z;
+            }
+            message = AddGameMsg_Default;
+            message.scale = 0.666f;
+            message.text = TagAsciiDownPc;
+            message.position = &position;
+            message.red = SuperCarryPlayerRgbPc[i][0];
+            message.green = SuperCarryPlayerRgbPc[i][1];
+            message.blue = SuperCarryPlayerRgbPc[i][2];
+            phase = (u16)(i32)((f64)NuFmod(GameTimer.time_elapsed_mod_seconds, 0.5f) * 2.0 * 65536.0);
+            message.flags = 0x83;
+            message.unknown_4f = 4;
+            message.alpha = (u8)(i32)((f64)NuTrigTable[phase >> 1] * 48.0 + 80.0);
+            AddGameMsg(&message);
+        }
+    }
     if (MissionSys != NULL && Mission_Active(MissionSys) != NULL && MissionSys->active_mission != NULL) {
         CheckMissionEnd(MissionSys);
     }
