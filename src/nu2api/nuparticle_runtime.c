@@ -97,57 +97,60 @@ void __cdecl NuRndrParticleSetRepeat(NUVEC *position) {
 
 void __cdecl AddParticleGroupToDisplayList(NATIVE_PARTICLE_PACKET_PC *group) {
     NUDISPLAYLIST_PC *list = group->material->display_list;
-    NUDISPLAYSCENE_PC *scene = list->scene;
-    NUDISPLAYLISTITEM *item;
     VARIPTR *buffer;
-    u8 *used;
-    scene->render_flags |= 2;
-    used = (scene->render_flags & 0x8000) ? scene->material_used_back : scene->material_used_front;
-    used[list->material_id / 8] |= (u8)(1 << (list->material_id % 8));
+    list->scene->render_flags |= 2;
+    (&list->scene->material_used_front)[(list->scene->render_flags >> 15) & 1][list->material_id / 8] |=
+        (u8)(1 << (list->material_id % 8));
     DisplayListUpdateRenderState(list, &render_state);
+    NuDisplayListStreamCursor->addr = (NuDisplayListStreamCursor->addr + 15) & ~15;
     buffer = NuDisplayListStreamCursor;
-    buffer->addr = (buffer->addr + 15) & ~15;
     ((NUDISPLAYLISTITEM *)list->material_last)->next = buffer->void_ptr;
     list->items = buffer->void_ptr;
     buffer->addr += sizeof(NUDISPLAYLISTITEM);
-    item = (NUDISPLAYLISTITEM *)buffer->void_ptr;
-    item->type = 0x8d;
-    item->id = 1;
-    item->next = (NUDISPLAYLISTITEM *)list->dynamic_geometry + 1;
-    list->material_last = item;
+    ((NUDISPLAYLISTITEM *)buffer->void_ptr)->type = 0x8d;
+    ((NUDISPLAYLISTITEM *)buffer->void_ptr)->id = 1;
+    ((NUDISPLAYLISTITEM *)buffer->void_ptr)->next = (NUDISPLAYLISTITEM *)list->dynamic_geometry + 1;
+    list->material_last = buffer->void_ptr;
     buffer->addr += sizeof(NUDISPLAYLISTITEM);
-    item = (NUDISPLAYLISTITEM *)list->items;
-    item->type = 0xa7;
-    item->id = 3;
-    item->next = group;
-    list->items = item + 1;
+    ((NUDISPLAYLISTITEM *)list->items)->type = 0xa7;
+    ((NUDISPLAYLISTITEM *)list->items)->id = 3;
+    ((NUDISPLAYLISTITEM *)list->items)->next = group;
+    list->items = (NUDISPLAYLISTITEM *)list->items + 1;
 }
 
 void __cdecl BuildDebrisVerts(DEBRIS_PART_HEADER_PC *header, DEBRIS_PARTICLE_CHUNK_PC *chunk, NUMTL *material, f32 time,
                               NUMTX *matrix, i32 particle_type, f32 unused_a, f32 unused_b, f32 unused_c,
                               f32 near_clip) {
-    f32 u0 = material->particle_type_tag == -105 ? 0.0f : header->texture_u0;
-    f32 v0 = material->particle_type_tag == -105 ? 0.0f : header->texture_v0;
-    f32 u1 = material->particle_type_tag == -105 ? 1.0f : header->texture_u1;
-    f32 v1 = material->particle_type_tag == -105 ? 1.0f : header->texture_v1;
     u32 emitted = 0;
+    f32 u0, v0, u1, v1;
     i32 i;
     (void)unused_a;
     (void)unused_b;
     (void)unused_c;
-    for (i = 0; i < 32; ++i) {
+    if (material->particle_type_tag == -105) {
+        u0 = 0.0f;
+        u1 = 1.0f;
+        v1 = 1.0f;
+        v0 = 0.0f;
+    } else {
+        u0 = header->texture_u0;
+        u1 = header->texture_u1;
+        v0 = header->texture_v0;
+        v1 = header->texture_v1;
+    }
+    for (i = 0; i != 32; ++i) {
         DEBRISPARTICLE_PC *particle = &chunk->particles[i];
         f32 age = time - particle->start_time;
-        f32 frame_position = particle->inverse_lifetime * age;
-        u32 frame_index = (u32)frame_position;
+        u32 frame_index = (u32)(age * particle->inverse_lifetime);
         if (frame_index < 63) {
-            f32 fraction = frame_position - (f32)frame_index;
-            f32 inverse_fraction;
+            f32 fraction = age * particle->inverse_lifetime - (f32)frame_index;
+            f32 distance;
             DEBRIS_PARTICLE_FRAME_PC *first = &header->frames[frame_index];
-            DEBRIS_PARTICLE_FRAME_PC *second = first + 1;
             NUVEC position, rotated, corners[4];
-            NULGTVERTEX_PC *vertices;
-            i32 corner;
+            NUVEC *corner;
+            i32 count;
+            u32 colour;
+            u32 index;
             position.x = particle->position.x + particle->momentum.x * age;
             position.y =
                 (f32)(particle->position.y + particle->momentum.y * age + header->gravity * age * age * (f64)0.945f);
@@ -160,10 +163,9 @@ void __cdecl BuildDebrisVerts(DEBRIS_PART_HEADER_PC *header, DEBRIS_PARTICLE_CHU
             NuRndr_DebrisMtx.m32 = rotated.z + matrix->m32;
             if (particle_type == 6 || particle_type == 7)
                 NuRndrParticleSetRepeat((NUVEC *)&NuRndr_DebrisMtx.m30);
-            if (NuRndr_DebrisPlane.w +
-                    (NuRndr_DebrisMtx.m32 * NuRndr_DebrisPlane.z +
-                     (NuRndr_DebrisMtx.m30 * NuRndr_DebrisPlane.x + NuRndr_DebrisMtx.m31 * NuRndr_DebrisPlane.y)) <
-                near_clip)
+            distance = NuRndr_DebrisPlane.y * NuRndr_DebrisMtx.m31 + NuRndr_DebrisPlane.x * NuRndr_DebrisMtx.m30 +
+                       NuRndr_DebrisPlane.z * NuRndr_DebrisMtx.m32 + NuRndr_DebrisPlane.w;
+            if (distance < near_clip)
                 continue;
             if (NuDebrisCurrentVertexCount + emitted + 6 > NuDebrisMaxVertexCount) {
                 VARIPTR *buffer;
@@ -173,8 +175,8 @@ void __cdecl BuildDebrisVerts(DEBRIS_PART_HEADER_PC *header, DEBRIS_PARTICLE_CHU
                 emitted = 0;
                 if (NuDebrisRendererNextBuffer() == 0)
                     return;
+                NuDisplayListStreamCursor->addr = (NuDisplayListStreamCursor->addr + 15) & ~15;
                 buffer = NuDisplayListStreamCursor;
-                buffer->addr = (buffer->addr + 15) & ~15;
                 packet = (NATIVE_PARTICLE_PACKET_PC *)buffer->void_ptr;
                 packet->material = NuDebrisCurrentPacket->material;
                 packet->vertex_buffer_index = (u8)NuDebrisCurrentBufferIndex;
@@ -185,48 +187,49 @@ void __cdecl BuildDebrisVerts(DEBRIS_PART_HEADER_PC *header, DEBRIS_PARTICLE_CHU
                 NuDebrisCurrentPacket = packet;
                 AddParticleGroupToDisplayList(packet);
             }
-            inverse_fraction = 1.0f - fraction;
-            corners[0].x = first->position.x * inverse_fraction + second->position.x * fraction;
-            corners[0].y = first->position.y * inverse_fraction + second->position.y * fraction;
-            corners[0].z = first->position.z * inverse_fraction + second->position.z * fraction;
-            corners[1].x = first->extent.x * inverse_fraction + second->extent.x * fraction;
-            corners[1].y = first->extent.y * inverse_fraction + second->extent.y * fraction;
-            corners[1].z = first->extent.z * inverse_fraction + second->extent.z * fraction;
-            corners[2].x = first->texture_offset.x * inverse_fraction + second->texture_offset.x * fraction;
-            corners[2].y = first->texture_offset.y * inverse_fraction + second->texture_offset.y * fraction;
-            corners[2].z = first->texture_offset.z * inverse_fraction + second->texture_offset.z * fraction;
+            corners[0].x = first[1].position.x * fraction + first->position.x * (1.0f - fraction);
+            corners[0].y = first[1].position.y * fraction + first->position.y * (1.0f - fraction);
+            corners[0].z = first[1].position.z * fraction + first->position.z * (1.0f - fraction);
+            corners[1].x = first[1].extent.x * fraction + first->extent.x * (1.0f - fraction);
+            corners[1].y = first[1].extent.y * fraction + first->extent.y * (1.0f - fraction);
+            corners[1].z = first[1].extent.z * fraction + first->extent.z * (1.0f - fraction);
+            corners[2].x = first[1].texture_offset.x * fraction + first->texture_offset.x * (1.0f - fraction);
+            corners[2].y = first[1].texture_offset.y * fraction + first->texture_offset.y * (1.0f - fraction);
+            corners[2].z = first[1].texture_offset.z * fraction + first->texture_offset.z * (1.0f - fraction);
             corners[3].x = (corners[1].x - corners[2].x) + corners[0].x;
             corners[3].y = (corners[1].y - corners[2].y) + corners[0].y;
             corners[3].z = (corners[1].z - corners[2].z) + corners[0].z;
-            for (corner = 0; corner < 4; ++corner)
-                NuVecMtxTransform(&corners[corner], &corners[corner], &NuRndr_DebrisMtx);
-            vertices = (NULGTVERTEX_PC *)NuDebrisVertexData + NuDebrisCurrentVertexCount + emitted;
-            vertices[0].x = corners[0].x;
-            vertices[0].y = corners[0].y;
-            vertices[0].z = corners[0].z;
-            vertices[0].colour = first->colour;
-            vertices[0].u = u0;
-            vertices[0].v = v1;
-            vertices[1].x = corners[2].x;
-            vertices[1].y = corners[2].y;
-            vertices[1].z = corners[2].z;
-            vertices[1].colour = first->colour;
-            vertices[1].u = u1;
-            vertices[1].v = v1;
-            vertices[2].x = corners[1].x;
-            vertices[2].y = corners[1].y;
-            vertices[2].z = corners[1].z;
-            vertices[2].colour = first->colour;
-            vertices[2].u = u1;
-            vertices[2].v = v0;
-            vertices[3] = vertices[0];
-            vertices[4] = vertices[2];
-            vertices[5].x = corners[3].x;
-            vertices[5].y = corners[3].y;
-            vertices[5].z = corners[3].z;
-            vertices[5].colour = first->colour;
-            vertices[5].u = u0;
-            vertices[5].v = v0;
+            corner = corners;
+            for (count = 4; count != 0; --count) {
+                NuVecMtxTransform(corner, corner, &NuRndr_DebrisMtx);
+                ++corner;
+            }
+            colour = first->colour;
+            index = NuDebrisCurrentVertexCount + emitted;
+            *(NUVEC *)&((NULGTVERTEX_PC *)NuDebrisVertexData)[index].x = corners[0];
+            ((NULGTVERTEX_PC *)NuDebrisVertexData)[index].colour = colour;
+            ((NULGTVERTEX_PC *)NuDebrisVertexData)[index].u = u0;
+            ((NULGTVERTEX_PC *)NuDebrisVertexData)[index].v = v1;
+            *(NUVEC *)&((NULGTVERTEX_PC *)NuDebrisVertexData)[index + 1].x = corners[2];
+            ((NULGTVERTEX_PC *)NuDebrisVertexData)[index + 1].colour = colour;
+            ((NULGTVERTEX_PC *)NuDebrisVertexData)[index + 1].u = u1;
+            ((NULGTVERTEX_PC *)NuDebrisVertexData)[index + 1].v = v1;
+            *(NUVEC *)&((NULGTVERTEX_PC *)NuDebrisVertexData)[index + 2].x = corners[1];
+            ((NULGTVERTEX_PC *)NuDebrisVertexData)[index + 2].colour = colour;
+            ((NULGTVERTEX_PC *)NuDebrisVertexData)[index + 2].u = u1;
+            ((NULGTVERTEX_PC *)NuDebrisVertexData)[index + 2].v = v0;
+            *(NUVEC *)&((NULGTVERTEX_PC *)NuDebrisVertexData)[index + 3].x = corners[0];
+            ((NULGTVERTEX_PC *)NuDebrisVertexData)[index + 3].colour = colour;
+            ((NULGTVERTEX_PC *)NuDebrisVertexData)[index + 3].u = u0;
+            ((NULGTVERTEX_PC *)NuDebrisVertexData)[index + 3].v = v1;
+            *(NUVEC *)&((NULGTVERTEX_PC *)NuDebrisVertexData)[index + 4].x = corners[1];
+            ((NULGTVERTEX_PC *)NuDebrisVertexData)[index + 4].colour = colour;
+            ((NULGTVERTEX_PC *)NuDebrisVertexData)[index + 4].u = u1;
+            ((NULGTVERTEX_PC *)NuDebrisVertexData)[index + 4].v = v0;
+            *(NUVEC *)&((NULGTVERTEX_PC *)NuDebrisVertexData)[index + 5].x = corners[3];
+            ((NULGTVERTEX_PC *)NuDebrisVertexData)[index + 5].colour = colour;
+            ((NULGTVERTEX_PC *)NuDebrisVertexData)[index + 5].u = u0;
+            ((NULGTVERTEX_PC *)NuDebrisVertexData)[index + 5].v = v0;
             emitted += 6;
         }
     }
@@ -248,6 +251,7 @@ void __cdecl NuRndrParticleGroup(DEBRIS_PARTICLE_CHUNK_PC *chunks, DEBRIS_PART_H
     if (header != NuDebrisLastHeader) {
         NUCAMERA camera;
         VARIPTR *buffer;
+        NATIVE_PARTICLE_PACKET_PC *packet;
         if (material->attribs.unknown_2_1_2 != 2 || material->attribs.unknown_2_4 == 0) {
             material->attribs.unknown_2_1_2 = 2;
             material->attribs.unknown_2_4 = 1;
@@ -264,15 +268,16 @@ void __cdecl NuRndrParticleGroup(DEBRIS_PARTICLE_CHUNK_PC *chunks, DEBRIS_PART_H
         NuRndr_DebrisPlane.w =
             -(camera.mtx.m30 * camera.mtx.m20 + camera.mtx.m31 * camera.mtx.m21 + camera.mtx.m32 * camera.mtx.m22);
         header->last_render_time = time;
+        NuDisplayListStreamCursor->addr = (NuDisplayListStreamCursor->addr + 15) & ~15;
         buffer = NuDisplayListStreamCursor;
-        buffer->addr = (buffer->addr + 15) & ~15;
-        NuDebrisCurrentPacket = (NATIVE_PARTICLE_PACKET_PC *)buffer->void_ptr;
-        buffer->addr += sizeof(*NuDebrisCurrentPacket);
-        NuDebrisCurrentPacket->vertex_buffer_index = (u8)NuDebrisCurrentBufferIndex;
-        NuDebrisCurrentPacket->use_system_memory_vb = NuDebrisUseSystemMemory;
-        NuDebrisCurrentPacket->first_vertex = (i32)NuDebrisCurrentVertexCount;
-        NuDebrisCurrentPacket->vertex_count = 0;
-        NuDebrisCurrentPacket->material = material;
+        packet = (NATIVE_PARTICLE_PACKET_PC *)buffer->void_ptr;
+        buffer->addr = (u32)(packet + 1);
+        packet->use_system_memory_vb = NuDebrisUseSystemMemory;
+        packet->vertex_buffer_index = (u8)NuDebrisCurrentBufferIndex;
+        packet->first_vertex = (i32)NuDebrisCurrentVertexCount;
+        packet->material = material;
+        packet->vertex_count = 0;
+        NuDebrisCurrentPacket = packet;
         if (NuDebrisVertexData == NULL)
             PCDeviceLockVertexBuffer(0, NuDebrisVertexBufferSize, &NuDebrisVertexData, 0x2000,
                                      NuDebrisVertexBuffers[NuDebrisCurrentBufferIndex]);
