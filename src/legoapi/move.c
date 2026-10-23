@@ -283,13 +283,14 @@ void __cdecl APIObjectVelocities(GAMEOBJECT *object) {
 void __cdecl MovePlayerSpline(GAMEOBJECT *object) {
     f32 speed;
     f32 distance;
+    f32 hover;
     NUVEC position;
     NUVEC offset;
-    u16 angle;
-    u16 pitch;
+    u32 pitch;
+    u32 angle;
+    i32 diff;
     i32 roll;
     i32 target_roll;
-    PLAYERCHARACTERCONFIG_PC *character;
 
     object->previous_floor_height = object->floor_height;
     object->start_position = object->position;
@@ -300,32 +301,30 @@ void __cdecl MovePlayerSpline(GAMEOBJECT *object) {
     object->previous_movement_angle = object->field_0x276;
     object->flags_ef0 &= ~0x4000;
 
-    if (object->model_draw_result == 0)
-        object->field_f10 += FRAMETIME;
-    else
+    if (object->model_draw_result != 0)
         object->field_f10 = 0.0f;
+    else
+        object->field_f10 += FRAMETIME;
     if (object->character_context == 0x2b)
         object->turn_braking += FRAMETIME;
 
-    character = object->character_data->game_character;
-    if ((f64)object->run_speed_override == MoveSplineRunSpeedSentinel)
-        speed = character->run_speed;
-    else
+    if ((f64)object->run_speed_override != MoveSplineRunSpeedSentinel)
         speed = object->run_speed_override;
-    distance = speed * FRAMETIME;
+    else
+        speed = object->character_data->game_character->run_speed;
+    distance = FRAMETIME * speed;
     MoveSplinePosition(&object->movement_spline_position, distance);
-    PointAlongSpline(object->movement_spline_position.spline, object->movement_spline_position.along, &position, &angle,
-                     &pitch, object->movement_spline_position.looping);
+    PointAlongSpline(object->movement_spline_position.spline, object->movement_spline_position.along, &position,
+                     (u16 *)&angle, (u16 *)&pitch, object->movement_spline_position.looping);
     if (distance < 0.0f) {
-        angle = (u16)(angle + 0x8000);
+        angle += 0x8000;
         pitch = (u16)-pitch;
     }
     object->movement_facing_angle = angle;
-    object->facing_angle = SeekRot(object->facing_angle, angle, spline_seek_ang);
-    object->field_0x276 = object->facing_angle;
-    object->pitch_angle = SeekRot(object->pitch_angle, (u16)-pitch, spline_seek_ang);
+    object->field_0x276 = object->facing_angle = SeekRot(object->facing_angle, angle, spline_seek_ang);
+    object->pitch_angle = SeekRot(object->pitch_angle, -pitch, spline_seek_ang);
 
-    if (WORLD->current_level != PODSPRINTA_LDATA || distance > 0.0f) {
+    if (WORLD->current_level != PODSPRINTA_LDATA || speed > 0.0f) {
         object->movement_spline_lateral_speed = SeekValF(object->movement_spline_lateral_speed,
                                                          -object->movement_spline_offset.x, spline_xoffset_speed_seek);
     }
@@ -338,10 +337,21 @@ void __cdecl MovePlayerSpline(GAMEOBJECT *object) {
     }
 
     if ((object->flags_ef4 & 0x1000) != 0) {
-        STUBBED_NAMED(GetVehicleHoverHeight_and_spline_terrain_shadow_follow);
+        hover = GetVehicleHoverHeight(object, NULL);
+        hover += object->collision_position.y - object->lower_position.y;
         if (WORLD->current_level == PODSPRINTA_LDATA)
-            STUBBED_NAMED(NewTerrPlatformsOff);
-        STUBBED_NAMED(GameShadow);
+            NewTerrPlatformsOff();
+        object->floor_height = GameShadow(object, &position, 5.0f, 0x1f);
+        if (object->floor_height == 2000000.0) {
+            position.y = SeekValF(object->position.y, hover, 5.0f);
+        } else {
+            hover += object->floor_height;
+            position.y = SeekValF(object->position.y, hover, 5.0f);
+            if (object->floor_height > position.y)
+                position.y = object->floor_height;
+        }
+        if (WORLD->current_level == PODSPRINTA_LDATA)
+            position.y += object->movement_spline_offset.y;
     }
     if (object->delayed_turn_timer > 0.0f && object->character_context != 0x2a && object->character_context != 0x36 &&
         object->character_context != 0x3a)
@@ -354,25 +364,25 @@ void __cdecl MovePlayerSpline(GAMEOBJECT *object) {
     NuVecScale(&object->velocity, &object->velocity, 1.0f / FRAMETIME);
     object->flags_107a = 0;
 
-    if ((character->flags_090 & 1) != 0) {
-        roll = 0;
-        if (object->character_context != 0x36 && object->character_context != 0x2a &&
+    if ((object->character_data->game_character->flags_090 & 1) != 0) {
+        if (object->character_context != 0x2a && object->character_context != 0x36 &&
             object->character_context != 0x3a) {
-            roll = (i32)((f32)RotDiff(object->previous_movement_angle, object->field_0x276) / FRAMETIME);
+            diff = RotDiff(object->previous_movement_angle, object->field_0x276);
+            roll = (i32)(diff / FRAMETIME);
             roll += (i32)(object->movement_spline_lateral_speed * spline_xoffset_speed_roll);
+            if (roll < -0x10000)
+                roll = -0x10000;
+            else if (roll > 0x10000)
+                roll = 0x10000;
+        } else {
+            roll = 0;
         }
-        if (roll < -0x10000)
+        target_roll = roll / 4;
+        if (target_roll < -0x2000)
             target_roll = -0x2000;
-        else if (roll > 0x10000)
+        else if (target_roll > 0x2000)
             target_roll = 0x2000;
-        else {
-            target_roll = roll / 4;
-            if (target_roll < -0x2000)
-                target_roll = -0x2000;
-            else if (target_roll > 0x2000)
-                target_roll = 0x2000;
-        }
-        object->movement_lean_angle = SeekRot(object->movement_lean_angle, (u16)target_roll, MoveSplineTurnRate);
+        object->movement_lean_angle = SeekRot(object->movement_lean_angle, target_roll, MoveSplineTurnRate);
     }
     APIObjectVelocities(object);
     GameObjectOrigin(object);
