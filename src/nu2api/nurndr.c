@@ -1109,9 +1109,9 @@ static PC_TEXTURE_RESOURCE_PC *RendererVertexDeclarationPc = 0;
 static PC_BUFFER_RESOURCE_PC *RendererQuadVertexBufferPc = 0;
 static PC_BUFFER_RESOURCE_PC *RendererGeometryVertexBufferPc = 0;
 static PC_BUFFER_RESOURCE_PC *RendererGeometryIndexBufferPc = 0;
-static u8 *RendererArenaDataPc = 0;
-static u32 *RendererArenaOffsetsPc = 0;
-static i32 *RendererArenaTypesPc = 0;
+u8 *RendererArenaDataPc = 0;
+u32 *RendererArenaOffsetsPc = 0;
+i32 *RendererArenaTypesPc = 0;
 
 void __cdecl NuRndrGeometryBufferReleasePc(void) {
     PCDeviceReleaseTexture((PC_TEXTURE_RESOURCE_PC **)&RendererGeometryVertexBufferPc);
