@@ -7020,7 +7020,10 @@ address,symbol,size,ctype
 0x659350,_edanimDetermineNearestAnim,368,void __cdecl(f32)
 0x6594c0,_edanimDetermineNearestParticle,393,
 0x659650,_edanimDetermineNearestSound,393,
+0x659810,_edanimSoundPlace,78,
 0x659860,_edanimSoundDestroy,172,"void __cdecl(i32, i32)"
+0x659910,_edanimParticlePlace,126,
+0x659990,_edanimParticleCreate,148,
 0x659a30,_edanimParticleDestroy,185,
 0x00659d70,_edanimRegisterBaseScene,1,void __cdecl (NUGSCN *)
 0x659e70,_edanimcbSwitchTypeMenu,1222,
@@ -7406,6 +7409,7 @@ address,symbol,size,ctype
 0x686750,_DebrisPreCheckCollisions,317,"i32 __cdecl(NUVEC *,f32)"
 0x686950,_edanimUpdateObjects,1644,void __cdecl(f32)
 0x686fc0,_edanimParamCreate,338,
+0x687120,_edanimSoundCreate,146,
 0x6871c0,_edanimDoInput,1665,
 0x687850,_edanimLoadPage,1489,"i32 __cdecl(char *, NUGSCN *)"
 0x687e30,_edanimDrawCursor,1321,
@@ -24591,6 +24595,7 @@ address,symbol,size,ctype
 0x29211ac,_cntrots,,i32
 0x29211b0,_edanim_mtl_zoff,4,struct PC_SCENE_MTL_VIEW *
 0x29211b4,_TerrainCrashDataPc,,u8 *
+0x29211b8,_edanim_cam_ax,4,i32
 0x29211bc,_platinrange,,i32
 0x29211c0,_ptlrotmenu,4,struct eduimenu_s *
 0x29211c4,_ptlstartvelmenu,4,struct eduimenu_s *
@@ -24658,6 +24663,7 @@ address,symbol,size,ctype
 0x292fb78,_edptl_damage_menu,4,struct eduimenu_s *
 0x292fb80,_edbri_cam_ay,4,i32
 0x292fb88,_plathitid,,i32
+0x292fb8c,_edanim_cam_ay,4,i32
 0x292fb90,_debris_object_switches,,u8[128]
 0x0292fc10,_ShadPoly,,
 0x0292fc14,_TerrainShadowFloorIndexPc,,
@@ -24809,6 +24815,7 @@ address,symbol,size,ctype
 0x029620e8,_DebrisGlassCopyMaterial,4,void *
 0x029620ec,_DebrisGlassInitialized,4,i32
 0x29620f0,_edanim_active_menu,4,struct eduimenu_s *
+0x29620f4,_edanim_options_menu,4,struct eduimenu_s *
 0x29620f8,_edanim_particle_menu,4,struct eduimenu_s *
 0x29620fc,_edanim_particletype_menu,4,struct eduimenu_s *
 0x2962100,_edanim_localparticletype_menu,4,struct eduimenu_s *
@@ -24818,6 +24825,8 @@ address,symbol,size,ctype
 0x2962118,_edanim_localsoundtype_menu,4,struct eduimenu_s *
 0x2962120,_edanim_bouncy_menu,4,struct eduimenu_s *
 0x02962128,_edanim_params_used,4,i32
+0x296212c,_edanim_emitrotz,4,i32
+0x2962130,_edanim_emitroty,4,i32
 0x02962134,_edbits_base_scene,4,NUGSCN *
 0x2962238,_edbits_general_save_directory,256,char[256]
 0x2962338,_edbits_general_save_name,256,char[256]

@@ -29784,6 +29784,31 @@ extern "C" {
 }
 
 extern "C" {
+#pragma bss_seg(".bss$edanim_cam_ax")
+    i32 edanim_cam_ax = 0;
+}
+
+extern "C" {
+#pragma bss_seg(".bss$edanim_cam_ay")
+    i32 edanim_cam_ay = 0;
+}
+
+extern "C" {
+#pragma bss_seg(".bss$edanim_options_menu")
+    struct eduimenu_s *edanim_options_menu = 0;
+}
+
+extern "C" {
+#pragma bss_seg(".bss$edanim_emitrotz")
+    i32 edanim_emitrotz = 0;
+}
+
+extern "C" {
+#pragma bss_seg(".bss$edanim_emitroty")
+    i32 edanim_emitroty = 0;
+}
+
+extern "C" {
 #pragma bss_seg(".bss$edgra_clumpdist_menu")
     struct eduimenu_s *edgra_clumpdist_menu = 0;
 
