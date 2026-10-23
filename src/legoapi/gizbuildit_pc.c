@@ -717,7 +717,7 @@ void __cdecl GizBuildIts_LateUpdate(void *world_pointer, void *system_pointer, f
             buildit->anim_set == NULL || buildit->anim_object_count == 0)
             continue;
         if (buildit->build_state == 1) {
-            volatile f32 timer = buildit->reset_step_timer + FRAMETIME;
+            f32 timer = buildit->reset_step_timer + FRAMETIME;
             f32 progress;
             i32 piece_index;
             buildit->reset_step_timer = timer;
@@ -727,7 +727,7 @@ void __cdecl GizBuildIts_LateUpdate(void *world_pointer, void *system_pointer, f
                 GizBuildIt_Finish((GIZBUILDIT_s *)buildit);
                 NuVecAdd(&finish_position, &buildit->position, &buildit->effect_position);
                 GameAudio_PlaySfx(0x3a, &finish_position, 0, 0);
-                NewRumbleAllPlayers(0.75f, 0.1f, 0, 0.0f);
+                ((void(__cdecl *)(f32, f32, i32, i32))NewRumbleAllPlayers)(0.75f, 0.1f, 0, 0);
                 GameCam_Judder(GameCam, -0.4f, 0, NULL);
                 if ((buildit->availability_flags & 0x200) == 0) {
                     buildit->availability_flags |= 0x200;
@@ -745,14 +745,14 @@ void __cdecl GizBuildIts_LateUpdate(void *world_pointer, void *system_pointer, f
                 }
                 progress = 1.0f;
             } else {
-                volatile f32 ratio = (f64)timer / (f64)0.6f;
+                f32 ratio = (f64)timer / (f64)0.6f;
                 progress = ratio;
             }
             for (piece_index = 0; piece_index < buildit->anim_object_count; ++piece_index) {
                 GAMEANIMOBJ *piece = buildit->anim_objects[piece_index];
                 GIZBUILDITANIMDATA_s *data = (GIZBUILDITANIMDATA_s *)piece->object_data;
                 f32 sine = NU_SIN_LUT((f64)progress * 32768.0);
-                volatile f32 offset = (f64)sine * (f64)0.2f;
+                f32 offset = (f64)sine * (f64)0.2f;
                 if (buildit->linked_buildit != NULL)
                     finish_position = *(NUVEC *)&data->end_mtx.m30;
                 else
@@ -779,7 +779,7 @@ void __cdecl GizBuildIts_LateUpdate(void *world_pointer, void *system_pointer, f
             GAMEOBJECT *builder = NULL;
             f32 buzz_time = 0.0f;
             i32 buzz_frames = 0;
-            volatile f32 previous_timer, timer;
+            f32 previous_timer, timer;
             if (!automatic && buildit->builders_active == 0) {
                 GizBuildIt_SetStepTime((GIZBUILDIT_s *)buildit, NULL);
                 if (buildit->linked_buildit == NULL && buildit->built_object_count < buildit->anim_object_count)
@@ -790,7 +790,7 @@ void __cdecl GizBuildIts_LateUpdate(void *world_pointer, void *system_pointer, f
                 if (GizBuildit_AutoBuildPosFn != NULL) {
                     u16 facing;
                     if (GizBuildit_AutoBuildPosFn(world, &buildit->start_position, &centre, &facing) != 0) {
-                        volatile f32 radius;
+                        f32 radius;
                         u16 angle, angle_step;
                         i32 piece_index;
                         if (buildit->reset_step_timer > 4.5f) {
@@ -798,10 +798,10 @@ void __cdecl GizBuildIts_LateUpdate(void *world_pointer, void *system_pointer, f
                             angle_step = (u16)(i32)BuildItSafeRatioPc(65536.0f, buildit->anim_object_count);
                             radius = 0.5f;
                         } else {
-                            volatile f32 phase = (4.5 - (f64)buildit->reset_step_timer) / 4.5;
+                            f32 phase = (4.5 - (f64)buildit->reset_step_timer) / 4.5;
                             f32 sine = NU_SIN_LUT((f64)phase * 16384.0 + 32768.0 + 16384.0);
                             f64 progress = (f64)sine + 1.0;
-                            volatile f32 turns = progress * 5.0;
+                            f32 turns = progress * 5.0;
                             angle = (u16)(i32)((f64)turns * 360.0 * 65536.0 / 360.0 + ((i32)facing - 0x4000));
                             angle_step = (u16)(i32)BuildItSafeRatioPc(65536.0f, buildit->anim_object_count);
                             radius = 0.5 - progress * (f64)0.3f;
@@ -905,8 +905,7 @@ void __cdecl GizBuildIts_LateUpdate(void *world_pointer, void *system_pointer, f
             ((buildit->state_flags & 0x80) != 0 && ShadowMode == 0))
             continue;
         {
-            volatile f32 probability =
-                (f64)0.1f - (buildit->anim_object_count - buildit->built_object_count) * (f64)0.002f;
+            f32 probability = (f64)0.1f - (buildit->anim_object_count - buildit->built_object_count) * (f64)0.002f;
             i32 piece_index;
             if (probability < 0.01f)
                 probability = 0.01f;
@@ -924,7 +923,7 @@ void __cdecl GizBuildIts_LateUpdate(void *world_pointer, void *system_pointer, f
                 else
                     matrix = *NuSpecialGetMtx(&piece->special);
                 if (data->wobble_time > 0.0f) {
-                    volatile f32 wobble_time = data->wobble_time - FRAMETIME;
+                    f32 wobble_time = data->wobble_time - FRAMETIME;
                     data->wobble_time = wobble_time;
                     if (wobble_time <= 0.0f && BuilditHopSfxWaitPc <= 0.0f &&
                         ((buildit->availability_flags & 4) != 0 || qrand() <= 0x7fff)) {
@@ -940,7 +939,7 @@ void __cdecl GizBuildIts_LateUpdate(void *world_pointer, void *system_pointer, f
                     }
                 }
                 if (data->wobble_time > 0.0f) {
-                    volatile f32 phase = (f64)data->wobble_time / (f64)0.2f;
+                    f32 phase = (f64)data->wobble_time / (f64)0.2f;
                     f32 sine = NU_SIN_LUT((1.0f - phase) * 65536.0);
                     i32 angle = (i32)((f64)sine * 3640.0);
                     f32 factor;
