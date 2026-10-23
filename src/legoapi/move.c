@@ -50,9 +50,9 @@ void __cdecl ResetForceBack(void) {
 }
 
 void __cdecl SetForceBack(GAMEOBJECT *object, NUVEC *position, f32 radius, i32 type) {
-    ForceBackRadiusPc = radius;
     ForceBackObjPc = object;
     ForceBackPosPc = object != NULL ? &object->collision_position : position;
+    ForceBackRadiusPc = radius;
     ForceBackRadius2Pc = radius * radius;
     ForceBackTypePc = type;
 }
@@ -84,13 +84,15 @@ void DrawForceBackEffect(nuhspecial_s *special) {
 
 i32 __cdecl MovingBackwards(GAMEOBJECT *object) {
     GAMEPAD_PC *pad = object->pad;
-    u16 camera_yaw;
     i32 difference;
     if (pad->operator_data == NULL || pad->input_magnitude == 0.0f)
         return 0;
-    camera_yaw = (u16)GameCam->input_yaw;
-    difference = RotDiff((u16)(pad->input_angle + camera_yaw), object->field_0x276);
-    return (u32)(difference + 0x4000) > 0x8000;
+    difference = RotDiff((u16)(pad->input_angle + (u16)GameCam->input_yaw), object->field_0x276);
+    if (difference < -0x4000)
+        return 1;
+    if (difference > 0x4000)
+        return 1;
+    return 0;
 }
 
 void __cdecl Climb_UpdateMagnetRotation(GAMEOBJECT *object) {
@@ -760,11 +762,11 @@ static void IsTurnRequested(GAMEOBJECT *object, u16 input_angle, i32 *turn, i32 
 }
 
 void __cdecl StartTurn(GAMEOBJECT *object) {
-    object->context_duration = TURNTIME;
-    object->context_timer = TURNTIME;
-    object->field_780 = TURNTIME;
     object->character_context = 0x2a;
     object->field_7aa = 1;
+    object->context_duration = TURNTIME;
+    object->context_timer = TURNTIME;
+    object->field_780 = object->context_timer;
     PlaySfx((char *)TurnLoopSfx, &object->collision_position);
 }
 
@@ -2343,16 +2345,16 @@ extern f32 PlayerFloatHeightFractionPc, PlayerBackwardMomentumScalePc, PlayerSec
 /* Retain with MovePlayer_DIRECTIONAL; retail physical ABI is ECX object plus caller-clean stack float. */
 static __declspec(noinline) f32 MovementWalkingSpeedPC(GAMEOBJECT *object, f32 scale) {
     f32 speed = (object->character_data->game_character->run_speed * scale) / NuTimeBarColumnStep;
-    if (!((object->character_data->game_character->tiptoe_speed + object->character_data->game_character->walk_speed) *
-              NuQFntHalfScale >=
-          object->pad->input_magnitude)) {
-        if (!((object->character_data->game_character->walk_speed + object->character_data->game_character->run_speed) *
-                  NuQFntHalfScale >=
-              object->pad->input_magnitude))
-            speed *= NuTimeBarColumnStep;
-        else
-            speed += speed;
-    }
+    if (object->pad->input_magnitude <=
+        (object->character_data->game_character->tiptoe_speed + object->character_data->game_character->walk_speed) *
+            NuQFntHalfScale)
+        return speed;
+    if (object->pad->input_magnitude <=
+        (object->character_data->game_character->walk_speed + object->character_data->game_character->run_speed) *
+            NuQFntHalfScale)
+        speed += speed;
+    else
+        speed *= NuTimeBarColumnStep;
     return speed;
 }
 
@@ -5542,26 +5544,27 @@ static __declspec(noinline) void BeastStartFallCodePc(GAMEOBJECT *object) {
 }
 
 static __declspec(noinline) void BeastCrushCodePc(GAMEOBJECT *object) {
-    i32 hit = 0;
+    f32 *frame;
+    f32 event;
     if (object->character_context != 0x3f)
         return;
     object->context_timer -= FRAMETIME;
     if (object->context_timer <= 0.0f) {
         object->character_context = -1;
-        hit = (object->context_variant_flags & 0x40) == 0;
+        if ((object->context_variant_flags & 0x40) != 0)
+            return;
     } else {
-        f32 *frame = AnimPlaying(&object->anim_packet, object->field_7aa, 1, 0);
-        if (frame != NULL) {
-            f32 event = AnimListFrame(object->character_model, object->field_7aa, 0);
-            hit = event >= 1.0f && event <= *frame;
-        }
+        frame = AnimPlaying(&object->anim_packet, object->field_7aa, 1, 0);
+        if (frame == NULL)
+            return;
+        event = AnimListFrame(object->character_model, object->field_7aa, 0);
+        if (!(event >= 1.0f && *frame >= event))
+            return;
     }
-    if (hit) {
-        if (object->force_target != NULL)
-            KillGameObject(object->force_target, 2, 0);
-        object->flags_e24 &= ~1;
-        object->context_variant_flags |= 0x40;
-    }
+    if (object->force_target != NULL)
+        KillGameObject(object->force_target, 2, 0);
+    object->flags_e24 &= ~1;
+    object->context_variant_flags |= 0x40;
 }
 
 void EatVictim(GAMEOBJECT *object) {

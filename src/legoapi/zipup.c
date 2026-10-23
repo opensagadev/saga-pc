@@ -33,9 +33,18 @@ struct zipup_pc_s {
         } state;
     };
     u8 unknown_6a[2];
-    f32 lower_ground_height, upper_ground_height;
-    u16 lower_ground_x_rotation, upper_ground_x_rotation;
-    u16 lower_ground_z_rotation, upper_ground_z_rotation;
+    union {
+        struct {
+            f32 lower_ground_height, upper_ground_height;
+            u16 lower_ground_x_rotation, upper_ground_x_rotation;
+            u16 lower_ground_z_rotation, upper_ground_z_rotation;
+        };
+        struct {
+            f32 ground_heights[2];
+            u16 ground_x_rotations[2];
+            u16 ground_z_rotations[2];
+        };
+    };
 };
 STATIC_ASSERT(sizeof(ZIPUP_PC) == 0x7c);
 STATIC_ASSERT(offsetof(ZIPUP_PC, name) == 0x0);
@@ -666,10 +675,10 @@ static void ZipUpDrawMarkerPc(ZIPUP_PC *zipup, i32 endpoint, WORLDINFO *world, i
 
     upper = endpoint != 0;
     NuMtxSetRotationY(&matrix, angle);
-    NuMtxRotateZ(&matrix, upper ? zipup->upper_ground_z_rotation : zipup->lower_ground_z_rotation);
-    NuMtxRotateX(&matrix, upper ? zipup->upper_ground_x_rotation : zipup->lower_ground_x_rotation);
+    NuMtxRotateZ(&matrix, zipup->ground_z_rotations[upper]);
+    NuMtxRotateX(&matrix, zipup->ground_x_rotations[upper]);
     position.x = zipup->endpoints[endpoint].x;
-    position.y = upper ? zipup->upper_ground_height : zipup->lower_ground_height;
+    position.y = zipup->ground_heights[upper];
     position.z = zipup->endpoints[endpoint].z;
     NuMtxTranslate(&matrix, &position);
     NuSpecialDrawAtAlpha(&world->level_objects[special].special, &matrix, alpha);
