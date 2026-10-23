@@ -1083,10 +1083,8 @@ void __cdecl DrawMenuEntryEx(MENU *menu, char *text, i32 alpha) {
     } red, green, blue;
     /* Retail clamps only the low byte of the alpha slot and forwards the whole slot. */
     *(u8 *)&alpha = (u8)alpha > 128 ? 128 : (u8)alpha;
-    scale = view->item_scale_x == 0.0f ? MenuTextScalePc : view->item_scale_x;
-    scale *= dme_sy;
-    spacing = view->item_spacing == 0.0f ? MENUDY : view->item_spacing;
-    spacing *= dme_sy;
+    scale = (view->item_scale_x == 0.0f ? MenuTextScalePc : view->item_scale_x) * dme_sy;
+    spacing = (view->item_spacing == 0.0f ? MENUDY : view->item_spacing) * dme_sy;
     if (view->item_offsets != NULL) {
         Text3DEx2(text, (f32)(view->draw_x + (f64)view->item_offsets[0] * view->item_offset_scale),
                   (f32)(view->draw_y + (f64)view->item_offsets[1] * view->item_offset_scale), view->draw_z,
