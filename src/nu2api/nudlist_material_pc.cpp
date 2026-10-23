@@ -807,16 +807,14 @@ extern "C" void __cdecl PCGraphicsCopyFramebufferTex2DPc(i32 attachment, GRAPHIC
                                                          i32 x, i32 y, i32 width, i32 height) {
     (void)x;
     (void)y;
-    if (attachment != 0) {
-        /* Native tail5f7490 is the existing genuine RET-only operation; no arg is read. */
-        PCGraphicsRenderTextureAllocationError();
-        return;
-    }
-    {
+    if (attachment == 0) {
         bool resize = width != PS2_REZ_W || height != PS2_REZ_H;
         PC_EFFECT_SURFACE_PC target;
         target.Attach(texture, level, false);
         PCDeviceBackend.CopySurfaceTargetPc(&target, resize ? 2 : 1, 0);
+    } else {
+        /* Native tail 5f7490 is the existing genuine RET-only operation; no arg is read. */
+        PCGraphicsRenderTextureAllocationError();
     }
 }
 

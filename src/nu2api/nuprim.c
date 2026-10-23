@@ -234,30 +234,29 @@ void *__cdecl DisplayListBuildLightPacket(NUGLOBALRNDRSTATE_PC *state) {
 }
 
 void *__cdecl DisplayListBuildVertexGroupPacket(void) {
-    NUPRIM_VERTEX_GROUP_SOURCE_PC *source = NuPrimVertexGroupSource;
-    VARIPTR *cursor = NuDisplayListStreamCursor;
-    void *packet;
+    VARIPTR *cursor;
+    u32 *packet;
     f32 *output;
+    i8 *values;
     i32 i;
-    u32 count;
 
-    if (source == NULL) {
-        return NULL;
+    if (NuPrimVertexGroupSource != NULL) {
+        NuDisplayListStreamCursor->addr = (NuDisplayListStreamCursor->addr + 0xf) & ~0xfU;
+        cursor = NuDisplayListStreamCursor;
+        packet = (u32 *)cursor->void_ptr;
+        *packet = NuPrimVertexGroupSource->count;
+        cursor->addr += sizeof(u32);
+        *(u32 *)cursor->void_ptr = NuPrimVertexGroupSource->flags;
+        cursor->addr += sizeof(u32);
+        output = (f32 *)cursor->void_ptr;
+        cursor->addr += ((NuPrimVertexGroupSource->count + 3) / 4) * 0x10;
+        values = NuPrimVertexGroupSource->values;
+        for (i = 0; i < NuPrimVertexGroupSource->count; ++i) {
+            *output++ = (f32)*values++;
+        }
+        return packet;
     }
-
-    cursor->addr = (cursor->addr + 0xf) & ~0xfU;
-    packet = cursor->void_ptr;
-    count = source->count;
-    *(u32 *)cursor->void_ptr = count;
-    cursor->addr += sizeof(u32);
-    *(u32 *)cursor->void_ptr = source->flags;
-    cursor->addr += sizeof(u32);
-    output = (f32 *)cursor->void_ptr;
-    cursor->addr += ((count + 3) / 4) * 0x10;
-    for (i = 0; i < (i32)count; ++i) {
-        output[i] = (f32)source->values[i];
-    }
-    return packet;
+    return NULL;
 }
 
 void *__cdecl DisplayListBuildFogPacket(NUGLOBALRNDRSTATE_PC *state) {

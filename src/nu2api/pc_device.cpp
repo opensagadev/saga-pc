@@ -1363,8 +1363,9 @@ void PC_DEVICE_BACKEND_PC::CopyBackBuffer(GRAPHICS_RENDER_TEXTURE_PC *texture) {
     target.Attach(texture, 0, false);
     bool resize =
         PCGraphicsEffectTextureWidth(texture) != PS2_REZ_W || PCGraphicsEffectTextureHeight(texture) != PS2_REZ_H;
-    PC_TEXTURE_RESOURCE_PC *source =
-        multisample_index != 0 || target_surfaces[0] == NULL ? back_buffer : target_surfaces[0];
+    PC_TEXTURE_RESOURCE_PC *source = target_surfaces[0];
+    if (multisample_index != 0 || source == NULL)
+        source = back_buffer;
     GRAPHICS_DEVICE_PC *view = reinterpret_cast<GRAPHICS_DEVICE_PC *>(device);
     view->methods->stretch_rect(view, source, NULL, target.surface, NULL, resize ? 2 : 1);
 }
