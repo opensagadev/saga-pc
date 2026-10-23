@@ -167,36 +167,28 @@ extern i16 BigJumpLandFallbackPc;
 extern char GrapDetach_text[11], GrapAttach_text[11], GrapSwing_text[10];
 extern i32 __cdecl ObjLandReady(GAMEOBJECT *);
 
+static __inline f32 ZipUpFabsPc(f32 value) {
+    u32 bits = *(u32 *)&value & 0x7fffffff;
+    return *(f32 *)&bits;
+}
+
 static i32 __cdecl ZipUpArcSinePc(f32 value) {
-    f32 root, low, b, c, d;
+    f32 magnitude, root, low, b, c, d;
     f64 t, square, cube, fourth, polynomial;
-
-    union {
-        f32 value;
-        u32 bits;
-
-    } magnitude;
-
-    magnitude.value = value;
-    magnitude.bits &= 0x7fffffff;
+    magnitude = ZipUpFabsPc(value);
     root = NuFsqrt(1.0f - value * value);
-    low = root < magnitude.value ? root : magnitude.value;
-    b = (f32)((magnitude.value - (f64)0.70710677f) * (f64)3.40282e38f);
-    b = b < 1.0f ? b : 1.0f;
-    b = b > -1.0f ? b : -1.0f;
-    c = (f32)(value * (f64)3.40282e38f);
-    c = c < 1.0f ? c : 1.0f;
-    c = c > -1.0f ? c : -1.0f;
+    low = root < magnitude ? root : magnitude;
+    b = (f32)MAX(MIN((magnitude - (f64)0.70710677f) * (f64)3.40282e38f, 1.0), -1.0);
+    c = (f32)(value * (f64)3.40282e38f > 1.0 ? 1.0 : value * (f64)3.40282e38f);
+    c = MAX(c, -1.0f);
     d = b * c + c;
-    t = ((f64)b * c) * low;
+    t = (f64)b * c * low;
     square = t * t;
     cube = square * t;
     fourth = square * square;
-    polynomial = (f64)d * (f64)0.785398f - t;
-    polynomial += (t * PCPathArcSineCoefficient3) * square;
-    polynomial += (PCPathArcSineCoefficient5 * square) * cube;
-    polynomial += (cube * PCPathArcSineCoefficient7) * fourth;
-    polynomial += (fourth * PCPathArcSineCoefficient9) * (square * cube);
+    polynomial = d * (f64)0.785398f + t * -1.0 + (PCPathArcSineCoefficient3 * t) * square +
+                 (PCPathArcSineCoefficient5 * square) * cube + (cube * PCPathArcSineCoefficient7) * fourth +
+                 (square * cube) * (fourth * PCPathArcSineCoefficient9);
     return (i32)(polynomial * (f64)10430.4f);
 }
 

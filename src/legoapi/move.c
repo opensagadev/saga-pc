@@ -914,23 +914,20 @@ void ApplyExtraRotation(GAMEOBJECT *object, NUMTX *matrix) {
     }
 }
 
+static __inline f32 MovePlayerFabs(f32 value) {
+    u32 bits = *(u32 *)&value & 0x7fffffff;
+    return *(f32 *)&bits;
+}
+
 static i32 MovementArcSine(f32 value) {
-    union {
-        f32 value;
-        u32 bits;
-    } magnitude;
-    f32 root, low, b, c, d;
-    f64 scaled, t, square, cube, fourth, polynomial;
-    magnitude.value = value;
-    magnitude.bits &= 0x7fffffff;
+    f32 magnitude, root, low, b, c, d;
+    f64 t, square, cube, fourth, polynomial;
+    magnitude = MovePlayerFabs(value);
     root = NuFsqrt(1.0f - value * value);
-    low = root < magnitude.value ? root : magnitude.value;
-    scaled = (magnitude.value - (f64)0.70710677f) * (f64)3.40282e38f;
-    scaled = scaled < 1.0 ? scaled : 1.0;
-    b = (f32)(scaled > -1.0 ? scaled : -1.0);
-    scaled = value * (f64)3.40282e38f;
-    scaled = scaled < 1.0 ? scaled : 1.0;
-    c = (f32)(scaled > -1.0 ? scaled : -1.0);
+    low = root < magnitude ? root : magnitude;
+    b = (f32)MAX(MIN((magnitude - (f64)0.70710677f) * (f64)3.40282e38f, 1.0), -1.0);
+    c = (f32)(value * (f64)3.40282e38f > 1.0 ? 1.0 : value * (f64)3.40282e38f);
+    c = MAX(c, -1.0f);
     d = b * c + c;
     t = (f64)b * c * low;
     square = t * t;
@@ -1008,11 +1005,6 @@ void __cdecl VehicleCollisionCode(GAMEOBJECT *object) {
     ObjHitObj(NULL, object, damage, 0, 0, 1);
     if (debris_type != -1)
         AddGameDebris(WORLD->game_debris_sys, debris_type, &object->contact_position);
-}
-
-static __inline f32 MovePlayerFabs(f32 value) {
-    u32 bits = *(u32 *)&value & 0x7fffffff;
-    return *(f32 *)&bits;
 }
 
 void __cdecl MovePlayer_VEHICLEDIRECTIONAL(GAMEOBJECT *object) {

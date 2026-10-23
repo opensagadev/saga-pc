@@ -497,6 +497,11 @@
    "kind": "function"
   },
   {
+   "unit": "src/legoapi/zipup.c",
+   "symbol": "_ZipUpFabsPc",
+   "kind": "function"
+  },
+  {
    "unit": "src/nu2api/nupostfilter.cpp",
    "symbol": "__bad_alloc_Message",
    "kind": "data"
