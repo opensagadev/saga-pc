@@ -327,7 +327,8 @@ void __cdecl DrawMenuButtonPromptsEx(i32 confirm, i32 cancel, i32 flags, i32 ena
     char **keys;
     i32 device;
     f64 row_delta;
-    f32 y, x, scale;
+    f32 y, scale;
+    f64 x;
     device = TextInputLinkedDevicePc(TextInputLastDevicePc());
     if (TextInputIsKeyboardDevicePc(device)) {
         keys = TextInputGetKeyNamesPc();
@@ -745,9 +746,9 @@ i32 UpdateMenu(u32 primary_held, u32 primary_pressed, u32 alternate_held, u32 al
         return 0;
 
     held = primary_held;
+    pressed = primary_pressed;
     if ((held & 0xf000) == 0)
         held |= alternate_held;
-    pressed = primary_pressed;
     if ((pressed & 0xf000) == 0)
         pressed |= alternate_pressed;
 
@@ -826,9 +827,9 @@ i32 UpdateMenu(u32 primary_held, u32 primary_pressed, u32 alternate_held, u32 al
 
     first_column = menu->first_column;
     last_column = menu->last_column;
+    column_count = last_column - first_column + 1;
     first_row = menu->first_row;
     last_row = menu->last_row;
-    column_count = last_column - first_column + 1;
     row_count = last_row - first_row + 1;
     if (menu->transition_time < menu->transition_duration) {
         confirm_pressed = cancel_pressed = 0;
@@ -839,8 +840,8 @@ i32 UpdateMenu(u32 primary_held, u32 primary_pressed, u32 alternate_held, u32 al
                 NewMenu(menu->flags_17, -1, -1);
         }
     } else {
-        previous_item = menu->selected_row;
         row_clamped = 0;
+        previous_item = menu->selected_row;
         if (menu->selected_row < first_row) {
             menu->selected_row = first_row;
             row_clamped = 1;
@@ -935,12 +936,16 @@ void __cdecl IconScenes_Init(char *path, VARIPTR *buffer, VARIPTR *end) {
 void __cdecl IconScenes_Load(APICHARACTERMODELLIST *list, i32 mode, VARIPTR *buffer, VARIPTR *end) {
     i32 id;
     NUGSCN *scene;
-    if (list == NULL || IconScenePc == NULL)
+    NUGSCN **scenes;
+    if (list == NULL)
+        return;
+    scenes = IconScenePc;
+    if (scenes == NULL)
         return;
     for (; (id = list->model_id) != -1; ++list) {
         i32 object_index;
         char path[0x100];
-        if (IconScenePc[id] != NULL || list->count == 0)
+        if (scenes[id] != NULL || list->count == 0)
             continue;
         object_index = CDataList[id].icon_model;
         if (object_index == -1)
@@ -949,7 +954,8 @@ void __cdecl IconScenes_Load(APICHARACTERMODELLIST *list, i32 mode, VARIPTR *buf
         NuStrCat(path, LevelObject_FindNameFromIndex(object_index));
         NuStrCat(path, ".gsc");
         scene = NuGScnRead(buffer, *end, path);
-        IconScenePc[id] = scene;
+        scenes = IconScenePc;
+        scenes[id] = scene;
         if (scene != NULL && scene->display_list != NULL)
             scene->display_list->render_flags |= 0x10;
     }
@@ -1086,7 +1092,8 @@ void __cdecl DrawMenuEntryEx(MENU *menu, char *text, i32 alpha) {
     scale = (view->item_scale_x == 0.0f ? MenuTextScalePc : view->item_scale_x) * dme_sy;
     spacing = (view->item_spacing == 0.0f ? MENUDY : view->item_spacing) * dme_sy;
     if (view->item_offsets != NULL) {
-        Text3DEx2(text, (f32)(view->draw_x + (f64)view->item_offsets[0] * view->item_offset_scale),
+        f32 offset_x = view->item_offsets[0];
+        Text3DEx2(text, (f32)(view->draw_x + (f64)offset_x * view->item_offset_scale),
                   (f32)(view->draw_y + (f64)view->item_offsets[1] * view->item_offset_scale), view->draw_z,
                   (f32)((f64)scale * dme_sx), scale, scale, dme_align, 0, 0, 0, (u8)alpha >> 2);
     }
@@ -1124,7 +1131,7 @@ void __cdecl DrawMenuEntryEx(MENU *menu, char *text, i32 alpha) {
         }
     }
     ++view->draw_item;
-    view->draw_y += spacing;
+    view->draw_y = (f32)((f64)spacing + view->draw_y);
     dme_rgb = 0;
     dme_align = 0;
     dme_sx = 1.0f;
@@ -1133,14 +1140,16 @@ void __cdecl DrawMenuEntryEx(MENU *menu, char *text, i32 alpha) {
 
 void __cdecl IconScenes_Dump(void) {
     i32 i;
-    if (IconScenePc == NULL) {
+    NUGSCN **scenes = IconScenePc;
+    if (scenes == NULL) {
         return;
     }
     for (i = 0; i < CHARCOUNT; ++i) {
-        NUGSCN *scene = IconScenePc[i];
+        NUGSCN *scene = scenes[i];
         if (scene != NULL) {
             NuGScnRemove(scene);
-            IconScenePc[i] = NULL;
+            scenes = IconScenePc;
+            scenes[i] = NULL;
         }
     }
 }
