@@ -29791,6 +29791,15 @@ extern "C" {
 #pragma bss_seg(".bss$edanim_mctb_menu")
     struct eduimenu_s *edanim_mctb_menu = 0;
 
+#pragma bss_seg(".bss$edanim_switch_menu")
+    struct eduimenu_s *edanim_switch_menu = 0;
+
+#pragma bss_seg(".bss$edbits_cubecount")
+    i32 edbits_cubecount = 0;
+
+#pragma bss_seg(".bss$NuRndrDoingScreenGrab")
+    i32 NuRndrDoingScreenGrab = 0;
+
 #pragma bss_seg(".bss$edanim_localsound_menu")
     struct eduimenu_s *edanim_localsound_menu = 0;
 

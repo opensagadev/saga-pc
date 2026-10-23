@@ -1,4 +1,5 @@
 #include <stdio.h>
+#include <string.h>
 #include "saga.h"
 
 extern void __cdecl NuSpecialSetVisibility(NUSPECIALHANDLE *special, i32 visible);
@@ -1029,6 +1030,64 @@ void __cdecl edanimStartAllPages(void) {
     }
 }
 
+void EdFileWrite(void *data, i32 len);
+void EdFileWriteInt(i32 value);
+void EdFileWriteShort(i16 value);
+void EdFileWriteNuVec(NUVEC *value);
+extern struct eduimenu_s *edanim_switch_menu;
+
+i32 edanimFileSave(char *path) {
+    NUSPECIALHANDLE special;
+    char name[20];
+    i32 count, i, index;
+    count = 0;
+    for (i = 0; i < 64; ++i) {
+        if (AnimParams[i].instance_id != -1)
+            ++count;
+    }
+    EdFileSetMedia(1);
+    if (EdFileOpen(path, 1)) {
+        EdFileSetReadWrongEndianess(1);
+        EdFileWriteInt(6);
+        EdFileWriteInt(count);
+        for (i = 0; i < 64; ++i) {
+            if (AnimParams[i].instance_id == -1)
+                continue;
+            NuGScnGetSpecial(&special, edbits_base_scene, AnimParams[i].instance_id);
+            strncpy(name, NuSpecialGetName(&special), sizeof(name));
+            name[sizeof(name) - 1] = 0;
+            EdFileWrite(name, sizeof(name));
+            EdFileWriteInt(AnimParams[i].effect_count);
+            EdFileWriteInt(AnimParams[i].sound_count);
+            EdFileWriteInt(AnimParams[i].control_mode);
+            EdFileWriteInt(AnimParams[i].control_switch);
+            EdFileWriteFloat(AnimParams[i].control_distance);
+            EdFileWriteFloat(AnimParams[i].field_018);
+            for (index = 0; index < AnimParams[i].effect_count; ++index) {
+                EdFileWrite(AnimParams[i].effect_names[index], sizeof(AnimParams[i].effect_names[index]));
+                EdFileWriteInt(AnimParams[i].effect_intervals[index]);
+                EdFileWriteInt(AnimParams[i].effect_flags[index]);
+                EdFileWriteNuVec((NUVEC *)AnimParams[i].effect_positions[index]);
+                EdFileWriteShort(AnimParams[i].effect_angles[index]);
+                EdFileWriteShort(AnimParams[i].effect_angle_ranges[index]);
+            }
+            for (index = 0; index < AnimParams[i].sound_count; ++index) {
+                EdFileWrite(AnimParams[i].sound_names[index], sizeof(AnimParams[i].sound_names[index]));
+                EdFileWriteInt(AnimParams[i].sound_flags[index]);
+                EdFileWriteFloat(AnimParams[i].sound_values[index]);
+                EdFileWriteNuVec((NUVEC *)AnimParams[i].sound_positions[index]);
+            }
+            EdFileWriteFloat(AnimParams[i].bounce_impulse);
+            EdFileWriteFloat(AnimParams[i].bounce_spring);
+            EdFileWriteFloat(AnimParams[i].bounce_damping);
+        }
+        EdFileClose();
+        EdFileSetReadWrongEndianess(0);
+        return 1;
+    }
+    return 0;
+}
+
 extern struct eduimenu_s *edanim_switchtype_menu;
 
 void edanimcbSetSwitchType(eduimenu_s *menu, eduiitem_s *item, u32 unused2) {
@@ -1059,6 +1118,11 @@ void edanimcbSetSwitchVar(eduimenu_s *unused0, eduiitem_s *item, u32 unused2) {
 static void edanimcbCancelSwitchTypeMenu(eduimenu_s *unused0, eduimenu_s *unused1) {
     eduiMenuDestroy(edanim_switchtype_menu);
     edanim_switchtype_menu = NULL;
+}
+
+void edanimcbCancelSwitchMenu(eduimenu_s *unused0, eduimenu_s *unused1) {
+    eduiMenuDestroy(edanim_switch_menu);
+    edanim_switch_menu = NULL;
 }
 
 void edanimcbSwitchTypeMenu(eduimenu_s *parent, eduiitem_s *unused1, u32 unused2) {
@@ -1135,6 +1199,29 @@ void edanimcbSwitchTypeMenu(eduimenu_s *parent, eduiitem_s *unused1, u32 unused2
     eduiMenuAttach(parent, edanim_switchtype_menu);
     edanim_switchtype_menu->x = parent->x + 10;
     edanim_switchtype_menu->y = parent->y + 40;
+}
+
+void edanimcbSwitchMenu(eduimenu_s *parent, eduiitem_s *unused1, u32 unused2) {
+    u32 colours[4] = {0x80000000, 0x80ff0000, 0x80808080, 0x80404040};
+    if (edanim_nearest == -1 || edanim_nearest_param_id == -1)
+        return;
+    edanim_switch_menu = eduiMenuCreate(70, 70, 180, 250, ed_fnt, edanimcbCancelSwitchMenu, (char *)("Switch Menu"));
+    if (!edanim_switch_menu)
+        return;
+    eduiMenuAddItem(edanim_switch_menu,
+                    eduiItemSelCreate(1, colours, 0, 0, edanimcbSwitchTypeMenu, (char *)("Switch Type...")));
+    eduiMenuAddItem(edanim_switch_menu,
+                    eduiItemSliderCreateInt(0, colours, 0, edanimcbSetSwitchId, -1, 129,
+                                            AnimParams[edanim_nearest_param_id].control_switch, (char *)("Switch ID")));
+    eduiMenuAddItem(edanim_switch_menu,
+                    eduiItemSliderCreate(0, colours, 0, edanimcbSetSwitchDelay, 0.0f, 20.0f,
+                                         AnimParams[edanim_nearest_param_id].field_018, (char *)("Switch Delay")));
+    eduiMenuAddItem(edanim_switch_menu,
+                    eduiItemSliderCreate(0, colours, 0, edanimcbSetSwitchVar, 0.0f, 20.0f,
+                                         AnimParams[edanim_nearest_param_id].control_distance, (char *)("Switch Var")));
+    eduiMenuAttach(parent, edanim_switch_menu);
+    edanim_switch_menu->x = parent->x + 10;
+    edanim_switch_menu->y = parent->y + 40;
 }
 
 void edanimcbToggleSoundType(eduimenu_s *menu, eduiitem_s *item, u32 unused2) {
@@ -1342,6 +1429,34 @@ void edanimcbParticleMenu(eduimenu_s *parent, eduiitem_s *unused1, u32 unused2) 
     menu->x = parent->x + 10;
     menu->y = parent->y + 40;
 }
+void edanimcbCancelOptMenu(eduimenu_s *unused0, eduimenu_s *unused1) {
+    edanim_active_menu = NULL;
+}
+
+void edanimcbFileSave(eduimenu_s *menu, eduiitem_s *unused1, u32 unused2) {
+    char name[256];
+    char directory[256];
+    char extension[256];
+    char path[256];
+    if (edbits_level_save_directory[0] == 0)
+        sprintf(directory, ".");
+    else
+        strcpy(directory, edbits_level_save_directory);
+    if (edbits_level_save_name[0] == 0)
+        sprintf(name, "anims");
+    else
+        strcpy(name, edbits_level_save_name);
+    if (edbits_level_save_extension[0] == 0)
+        sprintf(extension, "anm");
+    else
+        strcpy(extension, edbits_level_save_extension);
+    sprintf(path, "%s\\%s.%s", directory, name, extension);
+    if (edanimFileSave(path))
+        eduiCreateMessageMenu(menu, (char *)("Saved OK"), 1);
+    else
+        eduiCreateMessageMenu(menu, (char *)("File Save Error"), 0);
+}
+
 extern const char MenuTechnicalDefaultTextPc75f29c[8];
 
 static void edanimcbMCTBCardPresent(eduimenu_s *menu, eduiitem_s *unused1, u32 unused2) {

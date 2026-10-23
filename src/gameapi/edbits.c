@@ -27,6 +27,17 @@ void edbitsDoSingleDump(i32 face) {
     NuPs2VideoScreenDump(filename, 1, 1.0f, 1.0f, face, 0, 0);
 }
 
+extern i32 edbits_cubecount;
+extern i32 NuRndrDoingScreenGrab;
+
+i32 __cdecl edbitsStartCubemapDump(void) {
+    if (edbits_cubecount != 0)
+        return 0;
+    edbits_cubecount = 65;
+    NuRndrDoingScreenGrab = 1;
+    return 1;
+}
+
 void __cdecl edbitsDrawCross(f32 x, f32 y, f32 z, f32 radius, i32 colour, struct PC_SCENE_MTL_VIEW *material) {
     f32 axes[9] = {1.0f, 0.0f, 0.0f, 0.0f, 1.0f, 0.0f, 0.0f, 0.0f, 1.0f};
     NURND_VERTEX3D_PC vertices[2];

@@ -7027,6 +7027,7 @@ address,symbol,size,ctype
 0x659910,_edanimParticlePlace,126,
 0x659990,_edanimParticleCreate,148,
 0x659a30,_edanimParticleDestroy,185,
+0x659af0,_edanimFileSave,630,
 0x00659d70,_edanimRegisterBaseScene,1,void __cdecl (NUGSCN *)
 0x659d80,_edanimcbSetSwitchType,56,
 0x659dc0,_edanimcbSetSwitchId,47,
@@ -7034,6 +7035,8 @@ address,symbol,size,ctype
 0x659e20,_edanimcbSetSwitchVar,39,
 0x659e50,_edanimcbCancelSwitchTypeMenu,25,
 0x659e70,_edanimcbSwitchTypeMenu,1222,
+0x65a340,_edanimcbCancelSwitchMenu,25,
+0x65a360,_edanimcbSwitchMenu,428,
 0x0065a510,_edanimParamReset,127,void __cdecl (void)
 0x0065a590,_edanimStartPage,48,void __cdecl (i32)
 0x0065a5c0,_edanimStopPage,16,void __cdecl (i32)
@@ -7059,6 +7062,8 @@ address,symbol,size,ctype
 0x65adc0,_edanimcbCancelLocalSoundTypeMenu,25,
 0x65ade0,_edanimcbCancelLocalSoundMenu,25,
 0x65ae00,_edanimcbCancelSoundMenu,25,
+0x65ae20,_edanimcbCancelOptMenu,11,
+0x65ae30,_edanimcbFileSave,302,
 0x65af60,_edanimcbMCTBCardPresent,51,
 0x65afa0,_edanimcbMCTBCardType,51,
 0x65afe0,_edanimcbMCTBCardCheckFormat,51,
@@ -7091,6 +7096,7 @@ address,symbol,size,ctype
 0x65c520,_edbitsDrawSphere,249,
 0x65c620,_edbitsLookupInstance,112,"i32 __cdecl(char *, NUGSCN *)"
 0x65c7b0,_edbitsDoSingleDump,183,
+0x65c870,_edbitsStartCubemapDump,33,
 0x65c8a0,_edbitsProcessCubemapDump,544,
 0x65cb00,_edbriFileSave,547,
 0x65cd30,_edbricbFileSave,302,
@@ -7424,6 +7430,7 @@ address,symbol,size,ctype
 0x6871c0,_edanimDoInput,1665,
 0x687850,_edanimLoadPage,1489,"i32 __cdecl(char *, NUGSCN *)"
 0x687e30,_edanimDrawCursor,1321,
+0x688360,_edanimcbCubeMap,40,
 0x688390,_edanimcbSetBouncyPlayerGrav,91,
 0x6883f0,_edanimcbSetBouncyTension,91,
 0x688450,_edanimcbSetBouncyDamping,91,
@@ -15971,6 +15978,9 @@ address,symbol,size,ctype
 0x76c5cc,??_C@_09LOCEICAO@Type?5Name?$AA@,10,char []
 0x76c5d8,??_C@_06KMBGOEGK@?$CFs?$CF03d?$AA@,7,const char[7]
 0x76c684,??_C@_0M@OOCFJKDM@Switch?5Type?$AA@,12,char []
+0x76c690,??_C@_09GBFJJJHO@Switch?5ID?$AA@,10,char []
+0x76c69c,??_C@_0P@JEOCBAAG@Switch?5Type?4?4?4?$AA@,15,char []
+0x76c6ac,??_C@_0M@MFGABLMD@Switch?5Menu?$AA@,12,char []
 0x76c6b8,??_C@_0BE@MPEJAHM@Apply?5Scale?5to?5Type?$AA@,20,char []
 0x76c6cc,__real@411e6666,4,const f32
 0x76c6d0,??_C@_0N@CODKGGAC@Scale?5Factor?$AA@,13,char []
@@ -16051,6 +16061,7 @@ address,symbol,size,ctype
 0x76d04c,??_C@_0BA@NECCLNOP@Filter?5String?3?5?$AA@,16,char []
 0x76d05c,??_C@_0BA@CEOCLEOK@Instance?5Filter?$AA@,16,char []
 0x76d06c,??_C@_0P@FFLFDAGI@Super?5Scale?4?4?4?$AA@,15,char []
+0x76d0ac,??_C@_0BD@BFHFFFIG@Attached?5Sounds?4?4?4?$AA@,19,char []
 0x76d128,__real@40f869fe60000000,8,const f64
 0x76d130,__real@408c200000000000,8,const f64
 0x76d138,__real@40b3880000000000,8,const f64
@@ -16087,6 +16098,8 @@ address,symbol,size,ctype
 0x76d330,??_C@_0BC@INHPLNAI@Switch?5Continuous?$AA@,18,char []
 0x76d344,??_C@_0BB@HAAKDBCP@Switch?5One?5Cycle?$AA@,17,char []
 0x76d358,??_C@_06PBEDFIPD@Switch?$AA@,7,char []
+0x76d360,??_C@_0L@JMCJNNBE@Switch?5Var?$AA@,11,char []
+0x76d36c,??_C@_0N@GKHMKDEB@Switch?5Delay?$AA@,13,char []
 0x76d37c,??_C@_0O@NKAFEAJA@Particle?5Type?$AA@,14,char []
 0x76d38c,??_C@_0BK@KLMHEOPA@Highlighted?5Particle?5Type?$AA@,26,char []
 0x76d3a8,??_C@_0P@NMHOLCJB@Only?5On?5Moving?$AA@,15,char []
@@ -16096,6 +16109,8 @@ address,symbol,size,ctype
 0x76d40c,??_C@_0BM@DODCDHDB@Highlighted?5Ptl?5Settings?4?4?4?$AA@,28,char []
 0x76d428,??_C@_0BB@EDJLJGL@Particle?5Type?4?4?4?$AA@,17,char []
 0x76d43c,??_C@_0BD@GBFCKKFM@Attached?5Particles?$AA@,19,char []
+0x76d450,??_C@_03MPDLEDEF@anm?$AA@,4,char []
+0x76d454,??_C@_05KJKEIBEA@anims?$AA@,6,char []
 0x76d45c,??_C@_0M@COHPPDBK@Not?5Present?$AA@,12,char []
 0x76d468,??_C@_0P@DCBAIHHB@Not?5a?5PS2?5Card?$AA@,15,char []
 0x76d478,??_C@_08ECHAEPCN@PS2?5Card?$AA@,9,char []
@@ -16311,6 +16326,13 @@ address,symbol,size,ctype
 0x76e31c,??_C@_0BM@HMOHPKM@Highlighted?5Snd?5Settings?4?4?4?$AA@,28,char []
 0x76e338,??_C@_0O@DDEOCNJF@Sound?5Type?4?4?4?$AA@,14,char []
 0x76e348,??_C@_0BA@JIKLNEGI@File?5Load?5Error?$AA@,16,char []
+0x76e358,??_C@_0BI@GFJDHOJB@Memory?5Card?5Test?5Bed?4?4?4?$AA@,24,char []
+0x76e370,??_C@_0O@FPCCBJJG@Dump?5Cube?5Map?$AA@,14,char []
+0x76e380,??_C@_0M@BAFLBIGI@Load?5Params?$AA@,12,char []
+0x76e38c,??_C@_0M@OOKIMPDB@Save?5Params?$AA@,12,char []
+0x76e398,??_C@_0BF@NIBLNBIM@Switch?5Properties?4?4?4?$AA@,21,char []
+0x76e3b0,??_C@_0O@IFFJPHCJ@Bounciness?4?4?4?$AA@,14,char []
+0x76e3c0,??_C@_0BG@MNBCAJMF@Attached?5Particles?4?4?4?$AA@,22,char []
 0x76e3d8,??_C@_0M@HCHIKCGF@Rope?5Colour?$AA@,12,char []
 0x76e3e4,??_C@_0P@PFMKJEBH@Rope?5Colour?4?4?4?$AA@,15,char []
 0x76e3f4,??_C@_09HLGDLLJG@Stability?$AA@,10,char []
@@ -24261,6 +24283,7 @@ address,symbol,size,ctype
 0x973930,_RenderFramePausedPc,,i32
 0x973944,_RendererZClearMaterialPc,,NUMTL *
 0x973948,_RendererAlphaMaskMaterialPc,,NUMTL *
+0x97394c,_NuRndrDoingScreenGrab,4,i32
 0x97395c,_VisibilityLoadedOcclusionPc,,i32
 0x973960,_VisibilityCameraLockPc,,i32
 0x973964,_NuCameraMode,,
@@ -24878,6 +24901,7 @@ address,symbol,size,ctype
 0x29620fc,_edanim_particletype_menu,4,struct eduimenu_s *
 0x2962100,_edanim_localparticletype_menu,4,struct eduimenu_s *
 0x2962104,_edanim_localparticle_menu,4,struct eduimenu_s *
+0x2962108,_edanim_switch_menu,4,struct eduimenu_s *
 0x296210c,_edanim_switchtype_menu,4,struct eduimenu_s *
 0x2962110,_edanim_sound_menu,4,struct eduimenu_s *
 0x2962114,_edanim_soundtype_menu,4,struct eduimenu_s *
@@ -24903,6 +24927,7 @@ address,symbol,size,ctype
 0x2962948,_edbits_editmode,,i32
 0x296294c,_PartGeneralPagePc,,i32
 0x2962950,_edbits_editor_state,,i32
+0x2962954,_edbits_cubecount,4,i32
 0x296295c,_EdppTypesErrorPc,,i32
 0x2962970,_edbits_override_backups,4,i32
 0x2962974,_edbri_active_menu,4,struct eduimenu_s *
