@@ -487,6 +487,11 @@
    "kind": "function"
   },
   {
+   "unit": "src/legoapi/move.c",
+   "symbol": "_MovePlayerFabs",
+   "kind": "function"
+  },
+  {
    "unit": "src/nu2api/nupostfilter.cpp",
    "symbol": "__bad_alloc_Message",
    "kind": "data"

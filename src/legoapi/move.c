@@ -2083,19 +2083,34 @@ i32 __cdecl MovePlayer_POD(GAMEOBJECT *object) {
 extern f32 DirectionalGrappleSeekScalePc;
 void __cdecl MovePlayer_DIRECTIONAL(GAMEOBJECT *object);
 
+typedef struct moveplayer_pad_bits_pc_s {
+    u16 low : 3;
+    u16 waggle : 1;
+    u16 high : 12;
+} MOVEPLAYER_PAD_BITS_PC;
+
+static __inline f32 MovePlayerFabs(f32 value) {
+    u32 bits = *(u32 *)&value & 0x7fffffff;
+    return *(f32 *)&bits;
+}
+
 void __cdecl MovePlayer(GAMEOBJECT *object) {
     GAMEPAD_PC *pad = object->pad;
-    PLAYERCHARACTERCONFIG_PC *data;
-    GAMEOBJECT *lift;
-    i32 analog_x = pad->bound_pad != NULL ? pad->bound_pad->analog_left_x : 0;
-    i32 analog_y = pad->bound_pad != NULL ? pad->bound_pad->analog_left_y : 0;
+    i32 analog_x;
+    i32 analog_y;
     i32 menu_id, index, waggle;
     u32 buttons;
     f32 x, z, magnitude, inverse, run_speed, walk_speed;
     NUVEC input, axis;
-    u16 angle;
+    NUANG angle;
 
     object->flags_e20 &= ~0x200000;
+    if (pad->bound_pad != NULL) {
+        analog_x = pad->bound_pad->analog_left_x;
+        analog_y = pad->bound_pad->analog_left_y;
+    } else {
+        analog_x = analog_y = 0;
+    }
     if (pad->input_magnitude != pad->previous_input_magnitude)
         pad->runtime_flags |= 0x40;
     object->previous_floor_height = object->floor_height;
@@ -2106,173 +2121,201 @@ void __cdecl MovePlayer(GAMEOBJECT *object) {
     pad->previous_input_magnitude = pad->input_magnitude;
     object->flags_ef0 &= ~0x4000;
     object->previous_movement_angle = object->field_0x276;
-    object->field_f10 = object->model_draw_result == 0 ? object->field_f10 + FRAMETIME : 0.0f;
+    if (object->model_draw_result != 0)
+        object->field_f10 = 0.0f;
+    else
+        object->field_f10 += FRAMETIME;
     if (object->character_context == 0x2b)
         object->turn_braking += FRAMETIME;
-    if ((object->flags_ef4 & 0x4000000) != 0) {
-        APIObjectVelocities(object);
-        GameObjectOrigin(object);
-        return;
-    }
-    if (object->dead)
-        return;
-    pad->runtime_flags &= ~8;
-    pad->waggle_magnitude = 0.0f;
-    object->field_106e = -1;
-    object->flags_ef0 &= ~0x400;
-    menu_id = GetMenuID();
-    if ((object->flags_1fc_word & 0x180) == 0x80) {
-        if (FadeSys.fade > 0.0f || newgamecam != 0 || MiniCutCam == 2 || (menu_id != 0x0e && menu_id != -1)) {
-            pad->input_magnitude = 0.0f;
-            pad->input_direction_z = pad->input_direction_x = 0.0f;
-            pad->input_mode = 1;
-        } else if (object->pad == ViewCamGetGamePad())
-            pad->input_magnitude = 0.0f;
-        else {
-            buttons = pad->buttons_held;
-            if ((buttons & (GAMEPAD_DLEFT | GAMEPAD_DRIGHT | GAMEPAD_DUP | GAMEPAD_DDOWN)) != 0) {
-                x = (buttons & GAMEPAD_DLEFT) != 0 ? -127.5f : (buttons & GAMEPAD_DRIGHT) != 0 ? 127.5f : 0.0f;
-                z = (buttons & GAMEPAD_DDOWN) != 0 ? -127.5f : (buttons & GAMEPAD_DUP) != 0 ? 127.5f : 0.0f;
-                if (x != 0.0f || z != 0.0f)
+    if ((object->flags_ef4 & 0x4000000) == 0) {
+        if (!object->dead) {
+            pad->runtime_flags &= ~8;
+            pad->waggle_magnitude = 0.0f;
+            object->field_106e = -1;
+            object->flags_ef0 &= ~0x400;
+            menu_id = GetMenuID();
+            if ((object->flags_1fc_word & 0x80) != 0 && (object->flags_1fc_word & 0x100) == 0) {
+                if (FadeSys.fade > 0.0f || newgamecam != 0 || MiniCutCam == 2 || (menu_id != -1 && menu_id != 0x0e)) {
+                    input.x = input.z = 0.0f;
                     pad->input_mode = 1;
+                    pad->input_direction_x = pad->input_direction_z = pad->input_magnitude = 0.0f;
+                } else if (object->pad == ViewCamGetGamePad())
+                    pad->input_magnitude = 0.0f;
+                else {
+                    buttons = pad->buttons_held;
+                    if ((buttons & (GAMEPAD_DUP | GAMEPAD_DDOWN | GAMEPAD_DLEFT | GAMEPAD_DRIGHT)) != 0) {
+                        x = (buttons & GAMEPAD_DLEFT) != 0 ? -127.5f : (buttons & GAMEPAD_DRIGHT) != 0 ? 127.5f : 0.0f;
+                        z = (buttons & GAMEPAD_DDOWN) != 0 ? -127.5f : (buttons & GAMEPAD_DUP) != 0 ? 127.5f : 0.0f;
+                        if (x != 0.0f || z != 0.0f)
+                            pad->input_mode = 1;
+                    } else {
+                        x = (f32)((f64)analog_x - 127.5);
+                        z = (f32) - ((f64)analog_y - 127.5);
+                        if (x * x + z * z < 1806.25)
+                            x = z = 0.0f;
+                        else if (x != 0.0f || z != 0.0f)
+                            pad->input_mode = 2;
+                    }
+                    x = (f32)(x * (f64)0.007843137718737125f);
+                    z = (f32)(z * (f64)0.007843137718737125f);
+                    angle = NuAtan2D(x, z);
+                    axis.x = axis.y = 0.0f;
+                    axis.z = MovePlayerFabs(x) > MovePlayerFabs(z) ? MovePlayerFabs(x) : MovePlayerFabs(z);
+                    NuVecRotateY(&input, &axis, angle);
+                    magnitude = NuFsqrt(input.x * input.x + input.z * input.z);
+                    if (object == Player[0])
+                        index = 0;
+                    else if (object == Player[1])
+                        index = 1;
+                    else
+                        goto skip_pad_history;
+                    {
+                        PlayerPadPreviousSpeed[index] = PlayerPadCurrentSpeed[index];
+                        PlayerPadPreviousAngle[index] = PlayerPadCurrentAngle[index];
+                        PlayerPadCurrentSpeed[index] = pad->input_magnitude;
+                        PlayerPadCurrentAngle[index] = pad->input_angle;
+                    }
+                skip_pad_history:
+                    if ((f64)0.2f > magnitude)
+                        pad->input_magnitude = 0.0f;
+                    else {
+                        if ((object->character_data->model_flags & 0x20) != 0 &&
+                            ((object->field_280 != 0xff && object->vehicle_secondary_hp < 3) ||
+                             (object->field_280 == 0xff && object->current_hp < 3)))
+                            pad->input_magnitude = object->character_data->game_character->walk_speed;
+                        else if (magnitude < 0.5f && (object->character_data->game_character->flags_090 & 8) == 0)
+                            pad->input_magnitude = object->character_data->game_character->tiptoe_speed;
+                        else if (magnitude < (f64)0.8f)
+                            pad->input_magnitude = object->character_data->game_character->walk_speed;
+                        else
+                            pad->input_magnitude = object->character_data->game_character->run_speed;
+                    }
+                    pad->input_direction_z = input.x;
+                    pad->input_direction_x = input.z;
+                    if (pad->input_magnitude > 0.0f)
+                        pad->input_angle = NuAtan2D(pad->input_direction_z, input.z);
+                    waggle = GamePad_Waggle(object->pad);
+                    ((MOVEPLAYER_PAD_BITS_PC *)&pad->runtime_flags)->waggle = waggle;
+                    pad->waggle_magnitude = object == Player[0] || object == Player[1] ? GamePad_Rotate(object) : 0.0f;
+                }
             } else {
-                x = (f32)((f64)analog_x - 127.5);
-                z = (f32)(127.5 - (f64)analog_y);
-                if (x * x + z * z < 1806.25)
-                    x = z = 0.0f;
-                else if (x != 0.0f || z != 0.0f)
-                    pad->input_mode = 2;
+                if ((object->flags_ef0 & 0x10) != 0) {
+                    pad->input_magnitude = 0.0f;
+                    object->pad->buttons_pressed = object->pad->buttons_held = 0;
+                } else if (object->ai_packet.movement_stopped == 1) {
+                    pad->input_direction_x = pad->input_direction_z = pad->input_magnitude = 0.0f;
+                    pad->input_mode = 1;
+                } else if (object->character_context == 0x17 && (object->field_ef8 & 1) == 0)
+                    pad->input_magnitude = 0.0f;
+                else {
+                    axis.x = object->ai_packet.movement_position.x - object->position.x;
+                    axis.z = object->ai_packet.movement_position.z - object->position.z;
+                    if (axis.x == 0.0f && axis.z == 0.0f) {
+                        pad->input_angle = 0;
+                        pad->input_direction_x = pad->input_direction_z = pad->input_magnitude = 0.0f;
+                    } else {
+                        magnitude = NuFsqrt(axis.x * axis.x + axis.z * axis.z);
+                        pad->input_magnitude = magnitude / ai_moveradius;
+                        if (pad->input_magnitude > 1.0f)
+                            pad->input_magnitude = 1.0f;
+                        inverse = 1.0f / magnitude;
+                        pad->input_direction_x = inverse * axis.x;
+                        pad->input_direction_z = inverse * axis.z;
+                        pad->input_angle = NuAtan2D(pad->input_direction_x, pad->input_direction_z);
+                        pad->input_angle = NuAngSub(pad->input_angle, GameCam->input_yaw);
+                    }
+                    pad->input_mode = 1;
+                }
+                if (object->context_target_position != NULL)
+                    pad->input_magnitude = 0.0f;
+                else {
+                    run_speed = object->run_speed_override != 1000000000.0
+                                    ? object->run_speed_override
+                                    : object->character_data->game_character->run_speed;
+                    walk_speed = object->walk_speed_override != 1000000000.0
+                                     ? object->walk_speed_override
+                                     : object->character_data->game_character->walk_speed;
+                    if ((object->ai_packet.flags & 0x40000) != 0)
+                        pad->input_magnitude = 0.0f;
+                    else
+                        pad->input_magnitude *= run_speed;
+                    if ((object->ai_packet.flags & 0x80000) == 0 &&
+                        pad->input_magnitude < object->character_data->game_character->tiptoe_speed * 0.5)
+                        pad->input_magnitude = 0.0f;
+                    if ((object->ai_packet.flags & 8) == 0) {
+                        if (object->ai_packet.goal_speed_mode != 0) {
+                            if (object->ai_packet.goal_speed_mode == 1) {
+                                if (pad->input_magnitude > walk_speed)
+                                    pad->input_magnitude = walk_speed;
+                            } else if (object->ai_packet.goal_speed_mode == 2) {
+                                if (pad->input_magnitude > object->character_data->game_character->tiptoe_speed)
+                                    pad->input_magnitude = object->character_data->game_character->tiptoe_speed;
+                            }
+                        }
+                    }
+                    if ((object->flags_1f8 & 0x400) == 0 && (object->portal_flags & 0x2000000) == 0 &&
+                        (object->field_f10 >= OFFSCREEN_CATCHUP_TIME ||
+                         (object->model_draw_result == 0 && (object->tag_flags & 2) == 0 &&
+                          drop_back_in_timer > 0.0f)) &&
+                        (pad->input_magnitude + (f64)0.001f >= walk_speed || object->id == (u16)id_SPEEDERBIKE))
+                        object->flags_ef0 |= 0x400;
+                }
+                object->pad->operator_data = object->ai_packet.movement_look_target;
             }
-            x = (f32)(x * (f64)0.007843137718737125f);
-            z = (f32)(z * (f64)0.007843137718737125f);
-            angle = NuAtan2D(x, z);
-            axis.x = axis.y = 0.0f;
-            axis.z = fabs((f64)x) > fabs((f64)z) ? (f32)fabs((f64)x) : (f32)fabs((f64)z);
-            NuVecRotateY(&input, &axis, angle);
-            magnitude = NuFsqrt(input.x * input.x + input.z * input.z);
-            if (object == Player[0] || object == Player[1]) {
-                index = object == Player[0] ? 0 : 1;
-                PlayerPadPreviousSpeed[index] = PlayerPadCurrentSpeed[index];
-                PlayerPadPreviousAngle[index] = PlayerPadCurrentAngle[index];
-                PlayerPadCurrentSpeed[index] = pad->input_magnitude;
-                PlayerPadCurrentAngle[index] = pad->input_angle;
-            }
-            if ((f64)0.2f > magnitude)
+            if ((object->flags_1fc & 0x80) != 0 && menu_id == 0x0e && (object == Player[0] || object == Player[1])) {
+                index = object != Player[0];
+                Hub_PadSpeed[index] = pad->input_magnitude;
+                Hub_PadAngle[index] = pad->input_angle;
+                pad->input_mode = 1;
                 pad->input_magnitude = 0.0f;
-            else {
-                data = object->character_data->game_character;
-                if ((object->character_data->model_flags & 0x20) != 0 &&
-                    (object->field_280 == 0xff ? object->current_hp < 3 : object->vehicle_secondary_hp < 3))
-                    pad->input_magnitude = data->walk_speed;
-                else if (magnitude < 0.5f && (data->flags_090 & 8) == 0)
-                    pad->input_magnitude = data->tiptoe_speed;
-                else if (magnitude < (f64)0.8f)
-                    pad->input_magnitude = data->walk_speed;
-                else
-                    pad->input_magnitude = data->run_speed;
+                pad->input_direction_z = pad->input_direction_x = 0.0f;
             }
-            pad->input_direction_z = input.x;
-            pad->input_direction_x = input.z;
             if (pad->input_magnitude > 0.0f)
-                pad->input_angle = NuAtan2D(input.x, input.z);
-            waggle = GamePad_Waggle(object->pad);
-            pad->runtime_flags = (pad->runtime_flags & ~8) | ((waggle & 1) << 3);
-            pad->waggle_magnitude = object == Player[0] || object == Player[1] ? GamePad_Rotate(object) : 0.0f;
+                pad->animation_input_magnitude = pad->input_magnitude;
+            if (object->character_context == 0x3b || object->character_context == 0x39)
+                return;
+            object->movement_mode = 2;
+            ShoveSystemCheckGameObject(object);
+            if (object->id == (u16)id_DRAGBOMB)
+                MovePlayer_ROLLING(object);
+            else if (!MovePlayer_TWIST(object) && !MovePlayer_CIRCLE(object) && !MovePlayer_GUNSHIPIN(object) &&
+                     !MovePlayer_POD(object)) {
+                if ((object->character_data->model_flags & 0x2000) == 0)
+                    MovePlayer_DIRECTIONAL(object);
+                else
+                    MovePlayer_VEHICLEDIRECTIONAL(object);
+            }
+            if (LIFTPLAYER != 0 && menu_id == -1 && !object->dead && object->character_context != 0x2b &&
+                (object->character_data->game_character->flags_090 & 0x80) == 0 && (object->flags_1fc & 0x80) != 0 &&
+                (pad->buttons_held & GAMEPAD_LIFT) != 0 && pad != ViewCamGetGamePad()) {
+                if (object->character_context == 0x51 && object->techno != NULL && object->techno->target_mode == 1 &&
+                    object->techno->controlled_player != NULL) {
+                    object->techno->controlled_player->position.y += FRAMETIME * 1.5;
+                    object->techno->controlled_player->velocity.y = 0.0f;
+                    object->techno->controlled_player->field_281 = 0;
+                    object->techno->controlled_player->lift_clear_state = 0;
+                    if (object->techno->controlled_player->character_context == 0x33)
+                        object->techno->controlled_player->character_context = -1;
+                } else {
+                    object->position.y += FRAMETIME * 1.5;
+                    object->velocity.y = 0.0f;
+                    object->field_281 = 0;
+                    object->lift_clear_state = 0;
+                    if (object->character_context == 0x33)
+                        object->character_context = -1;
+                }
+            }
+            object->flags_1fc_word |= 0x10000;
+            object->previous_velocity.x = object->velocity.x;
+            object->previous_velocity.y = object->velocity.y;
+            object->previous_velocity.z = object->velocity.z;
+            APIObjectVelocities(object);
+            GameObjectOrigin(object);
         }
     } else {
-        if ((object->flags_ef0 & 0x10) != 0) {
-            pad->input_magnitude = 0.0f;
-            object->pad->buttons_held = object->pad->buttons_pressed = 0;
-        } else if (object->ai_packet.movement_stopped == 1) {
-            pad->input_magnitude = 0.0f;
-            pad->input_mode = 1;
-            pad->input_direction_z = pad->input_direction_x = 0.0f;
-        } else if (object->character_context == 0x17 && (object->field_ef8 & 1) == 0)
-            pad->input_magnitude = 0.0f;
-        else {
-            x = object->ai_packet.movement_position.x - object->position.x;
-            z = object->ai_packet.movement_position.z - object->position.z;
-            if (x == 0.0f && z == 0.0f) {
-                pad->input_magnitude = 0.0f;
-                pad->input_angle = 0;
-                pad->input_direction_z = pad->input_direction_x = 0.0f;
-            } else {
-                magnitude = NuFsqrt(x * x + z * z);
-                pad->input_magnitude = magnitude / ai_moveradius;
-                if (pad->input_magnitude > 1.0f)
-                    pad->input_magnitude = 1.0f;
-                inverse = 1.0f / magnitude;
-                pad->input_direction_x = x * inverse;
-                pad->input_direction_z = z * inverse;
-                pad->input_angle = NuAtan2D(pad->input_direction_x, pad->input_direction_z);
-                pad->input_angle = NuAngSub(pad->input_angle, GameCam->input_yaw);
-            }
-            pad->input_mode = 1;
-        }
-        if (object->context_target_position != NULL)
-            pad->input_magnitude = 0.0f;
-        else {
-            data = object->character_data->game_character;
-            run_speed = object->run_speed_override == 1000000000.0 ? data->run_speed : object->run_speed_override;
-            walk_speed = object->walk_speed_override == 1000000000.0 ? data->walk_speed : object->walk_speed_override;
-            pad->input_magnitude = (object->ai_packet.flags & 0x40000) != 0 ? 0.0f : pad->input_magnitude * run_speed;
-            if ((object->ai_packet.flags & 0x80000) == 0 && pad->input_magnitude < data->tiptoe_speed * 0.5)
-                pad->input_magnitude = 0.0f;
-            if ((object->ai_packet.flags & 8) == 0) {
-                if (object->ai_packet.goal_speed_mode == 1 && pad->input_magnitude > walk_speed)
-                    pad->input_magnitude = walk_speed;
-                else if (object->ai_packet.goal_speed_mode == 2 && pad->input_magnitude > data->tiptoe_speed)
-                    pad->input_magnitude = data->tiptoe_speed;
-            }
-            if ((object->flags_1f8 & 0x400) == 0 && (object->portal_flags & 0x2000000) == 0 &&
-                (object->field_f10 >= OFFSCREEN_CATCHUP_TIME ||
-                 (object->model_draw_result == 0 && (object->tag_flags & 2) == 0 && drop_back_in_timer > 0.0f)) &&
-                (pad->input_magnitude + (f64)0.001f >= walk_speed || object->id == (u16)id_SPEEDERBIKE))
-                object->flags_ef0 |= 0x400;
-        }
-        object->pad->operator_data = object->ai_packet.movement_look_target;
+        APIObjectVelocities(object);
+        GameObjectOrigin(object);
     }
-    if ((object->flags_1fc & 0x80) != 0 && menu_id == 0x0e && (object == Player[0] || object == Player[1])) {
-        index = object == Player[0] ? 0 : 1;
-        Hub_PadSpeed[index] = pad->input_magnitude;
-        Hub_PadAngle[index] = pad->input_angle;
-        pad->input_mode = 1;
-        pad->input_magnitude = 0.0f;
-        pad->input_direction_z = pad->input_direction_x = 0.0f;
-    }
-    if (pad->input_magnitude > 0.0f)
-        pad->animation_input_magnitude = pad->input_magnitude;
-    if (object->character_context == 0x3b || object->character_context == 0x39)
-        return;
-    object->movement_mode = 2;
-    ShoveSystemCheckGameObject(object);
-    if (object->id == (u16)id_DRAGBOMB)
-        MovePlayer_ROLLING(object);
-    else if (!MovePlayer_TWIST(object) && !MovePlayer_CIRCLE(object) && !MovePlayer_GUNSHIPIN(object) &&
-             !MovePlayer_POD(object)) {
-        if ((object->character_data->model_flags & 0x2000) == 0)
-            MovePlayer_DIRECTIONAL(object);
-        else
-            MovePlayer_VEHICLEDIRECTIONAL(object);
-    }
-    if (LIFTPLAYER != 0 && menu_id == -1 && !object->dead && object->character_context != 0x2b &&
-        (object->character_data->game_character->flags_090 & 0x80) == 0 && (object->flags_1fc & 0x80) != 0 &&
-        (pad->buttons_held & GAMEPAD_LIFT) != 0 && pad != ViewCamGetGamePad()) {
-        lift = object;
-        if (object->character_context == 0x51 && object->techno != NULL && object->techno->target_mode == 1 &&
-            object->techno->controlled_player != NULL)
-            lift = object->techno->controlled_player;
-        lift->position.y = (f32)(lift->position.y + 1.5 * FRAMETIME);
-        lift->velocity.y = 0.0f;
-        lift->field_281 = 0;
-        lift->lift_clear_state = 0;
-        if (lift->character_context == 0x33)
-            lift->character_context = -1;
-    }
-    object->flags_1fc_word |= 0x10000;
-    object->previous_velocity = object->velocity;
-    APIObjectVelocities(object);
-    GameObjectOrigin(object);
 }
 
 typedef struct directional_zipup_pc_s {
