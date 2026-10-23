@@ -786,15 +786,27 @@ void __cdecl DebrisProcessAllocation(void) {
     }
 }
 
+/* Retail inlines SetSfxBit_On/SetSfxBit_OnEx into the emitter sound loop. */
+#define DEBRIS_SET_SFX_BIT_ON(sound_id)                                                                                \
+    do {                                                                                                               \
+        i32 sample_id, word;                                                                                           \
+        if ((sound_id) >= 0) {                                                                                         \
+            sample_id = (i32)(SfxInfo[(sound_id)].sample_id_flags << 17) >> 17;                                        \
+            if ((u32)sample_id <= 0x63f) {                                                                             \
+                word = sample_id / 16;                                                                                 \
+                if (word < 100)                                                                                        \
+                    SfxBits[word] |= (u16)(1 << (sample_id & 0xf));                                                    \
+            }                                                                                                          \
+        }                                                                                                              \
+    } while (0)
+
 void __cdecl DebrisProcessGeneration(void) {
     DEBRISKEY_PC *next;
     DEBRIS_INFO_PC *effect;
     f32 now;
     f32 sound_range;
     f32 volume;
-    f32 thinning;
     f32 elapsed;
-    f32 frequency;
     f32 emission_interval;
     f32 emission_time;
     f32 pause;
@@ -804,36 +816,35 @@ void __cdecl DebrisProcessGeneration(void) {
     i32 i;
     i32 emission;
     i32 handle;
-    for (key = debris_keystack; key != NULL;) {
-        next = key->previous;
+    for (key = debris_keystack; key != NULL; key = next) {
+        emission_interval = 0.0f;
+        pause = 0.0f;
+        volume = 1.0f;
+        emission = 0;
         effect = debtab[key->effect_index];
+        next = key->previous;
         now = effect->time_group == 4 ? panelglobaltime : globaltime;
-        if (key->emission_disabled != 0) {
-            key = next;
+        if (key->emission_disabled != 0)
             continue;
-        }
         key->cutoff_distance = CameraEmitterDistance(&key->position);
         if (key->finite != 0) {
             if (key->cutoff_distance < effect->cut_on ||
-                (effect->clip_extent > 0.0f && key->cutoff_distance > effect->clip_extent)) {
+                (effect->clip_extent > 0.0f && effect->clip_extent < key->cutoff_distance)) {
                 if (effect->use_explicit_clip_box == 0 && effect->time_group != 4)
                     key->finite = 0;
             }
-            if (debris_render_group != 0 && key->render_group != 0 && debris_render_group != key->render_group)
+            if (debris_render_group != 0 && key->render_group != 0 && key->render_group != debris_render_group)
                 key->finite = 0;
             if (((i8)key->orientation_flags & debris_detail_level) == 0)
                 key->finite = 0;
         }
-        sound_range = effect->sound_range_override;
-        if (sound_range == 0.0f)
-            sound_range = effect->sound_range;
-        if (sound_range == 0.0f)
-            sound_range = effect->clip_extent;
-        volume = 1.0f;
+        sound_range = effect->sound_range_override == 0.0f
+                          ? (effect->sound_range == 0.0f ? effect->clip_extent : effect->sound_range)
+                          : effect->sound_range_override;
         if (sound_range > key->cutoff_distance) {
             for (i = 0; i < 4; ++i)
                 if (effect->sound_data[i * 3] != -1)
-                    SetSfxBit_On(effect->sound_data[i * 3]);
+                    DEBRIS_SET_SFX_BIT_ON(effect->sound_data[i * 3]);
             volume = (sound_range - key->cutoff_distance) / sound_range;
         }
         if (key->process_collision_sound != 0 && key->finite != 0 && sound_range > key->cutoff_distance)
@@ -844,41 +855,39 @@ void __cdecl DebrisProcessGeneration(void) {
             key->finite = 1;
         if (key->field_2f4 == 0)
             key->finite = 0;
-        else {
-            if (key->field_2f4 == 2)
-                key->finite = 1;
-            if (key->finite != 0 && key->previous_allocated_chunk_count == 0) {
-                DebReAlloc(key, effect->max_particles);
-                thinning = forced_debris_thinning != 0
-                               ? debris_thinning_level
-                               : (effect->thinning < debris_thinning_level ? effect->thinning : debris_thinning_level);
-                DebReAlloc(key, (i32)(effect->max_particles / thinning));
-            }
+        if (key->field_2f4 == 2)
+            key->finite = 1;
+        if (key->finite != 0 && key->previous_allocated_chunk_count == 0) {
+            DebReAlloc(key, effect->max_particles);
+            DebReAlloc(key, (i32)(effect->max_particles / (forced_debris_thinning != 0 ? debris_thinning_level
+                                                           : effect->thinning < debris_thinning_level
+                                                               ? effect->thinning
+                                                               : debris_thinning_level)));
         }
         elapsed = now - key->last_update_time;
         key->emission_position.x = key->emitter_momentum.x * elapsed;
         key->emission_position.y = key->emitter_momentum.y * elapsed;
         key->emission_position.z = key->emitter_momentum.z * elapsed;
-        frequency = (f32)effect->frequency;
-        thinning = forced_debris_thinning != 0
-                       ? debris_thinning_level
-                       : (effect->thinning < debris_thinning_level ? effect->thinning : debris_thinning_level);
-        emission_interval = frequency > 0.0f ? 1.0f / (frequency / thinning) : 0.0f;
+        if ((f32)effect->frequency > 0.0f)
+            emission_interval =
+                1.0f / ((f32)effect->frequency / (forced_debris_thinning != 0                ? debris_thinning_level
+                                                  : effect->thinning < debris_thinning_level ? effect->thinning
+                                                                                             : debris_thinning_level));
         emission_time = key->emission_epoch + emission_interval;
-        pause = 0.0f;
-        for (emission = 1; emission != 100 && emission_time < now + debris_time_increment; ++emission) {
-            transitions = 100;
-            while (emission_time >= key->emission_end_time && emission_time >= key->emission_time &&
-                   --transitions != 0) {
-                if (!(key->emission_time < key->emission_end_time)) {
-                    key->emission_end_time = key->emission_time + effect->emission_period +
+        while (emission_time < now + debris_time_increment && ++emission < 100) {
+            transitions = 0;
+            while (key->emission_end_time <= emission_time && key->emission_time <= emission_time &&
+                   ++transitions < 100) {
+                pause = 0.0f;
+                if (key->emission_end_time <= key->emission_time) {
+                    key->emission_end_time = effect->emission_period + key->emission_time +
                                              NuRandFloatSeeded(&debrisseed) * effect->emission_period_random;
                     if (key->finite_count > 0) {
                         if (--key->finite_count == 0) {
                             handle = key->allocation_index;
                             DebFree(&handle);
-                            emission_time = (f32)((f64)emission_time + 99999.0);
                             key->process_collision_sound = 0;
+                            emission_time = (f32)((f64)emission_time + 99999.0);
                         }
                     }
                     if (key->finite_count < 0 && ++key->finite_count == 0) {
@@ -887,11 +896,10 @@ void __cdecl DebrisProcessGeneration(void) {
                     }
                     if (key->process_collision_sound != 0 && key->finite != 0 && sound_range > key->cutoff_distance)
                         DEBRIS_EMISSION_SOUND(key, effect, 1, volume);
-                    pause = 0.0f;
                 } else {
                     key->previous_emission_time = key->emission_time;
                     pause = effect->emission_pause + NuRandFloatSeeded(&debrisseed) * effect->emission_pause_random;
-                    key->emission_time = key->emission_end_time + pause;
+                    key->emission_time = pause + key->emission_end_time;
                     if (key->finite == 2)
                         key->finite = 0;
                     if (key->process_collision_sound != 0 && key->finite != 0 && sound_range > key->cutoff_distance)
@@ -902,7 +910,7 @@ void __cdecl DebrisProcessGeneration(void) {
                 emission_time = key->emission_time - emission_interval;
             } else if (key->allocated_chunk_count > 0 && key->finite != 0) {
                 particle = key->generator(key, effect, emission_time);
-                if (effect->process_spheres != 0 && particle != NULL && emission == 1)
+                if (effect->process_spheres != 0 && emission == 1 && particle != NULL)
                     DebrisProcessSpheres(particle, emission_time, effect, key, 0);
                 if (key->process_collision_sound != 0 && sound_range > key->cutoff_distance)
                     DEBRIS_EMISSION_SOUND(key, effect, 3, volume);
@@ -913,13 +921,12 @@ void __cdecl DebrisProcessGeneration(void) {
         if (key->finite == 0) {
             if (key->field_2f4 != 0 && key->trigger_second == -1 && key->cutoff_distance >= effect->cut_on &&
                 (effect->clip_extent == 0.0f || key->cutoff_distance <= effect->clip_extent) &&
-                (debris_render_group == 0 || key->render_group == 0 || debris_render_group == key->render_group) &&
+                (debris_render_group == 0 || key->render_group == 0 || key->render_group == debris_render_group) &&
                 ((i8)key->orientation_flags & debris_detail_level) != 0)
                 key->finite = 1;
-            else if (key->previous_allocated_chunk_count != 0)
+            if (key->finite == 0 && key->previous_allocated_chunk_count != 0)
                 DebReAlloc(key, 0);
         }
-        key = next;
     }
 }
 
