@@ -242,13 +242,22 @@ void PC_SPECIAL_SHADOW_LIGHT::SetupShadowPc(NURNDRLIGHTRECORD *set) {
     NUMTX inverse, bias;
     NuMtxInvH(&inverse, &PostShadowViewPc);
     ComputeShadowMatrixPc(set);
-    bias = NuMtxSetIdentityTemplate;
     bias.m00 = 0.5f;
+    bias.m01 = 0.0f;
+    bias.m02 = 0.0f;
+    bias.m03 = 0.0f;
+    bias.m10 = 0.0f;
     bias.m11 = -0.5f;
+    bias.m12 = 0.0f;
+    bias.m13 = 0.0f;
+    bias.m20 = 0.0f;
+    bias.m21 = 0.0f;
     bias.m22 = 0.5f;
-    bias.m32 = 0.5f;
+    bias.m23 = 0.0f;
     bias.m30 = 0.5f;
     bias.m31 = 0.5f;
+    bias.m32 = 0.5f;
+    bias.m33 = 1.0f;
     NuMtxMulH(&set->texture_matrix_pc, &inverse, &set->shadow_matrix_pc);
     NuMtxMulH(&set->texture_matrix_pc, &set->texture_matrix_pc, &bias);
 }
