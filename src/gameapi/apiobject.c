@@ -121,7 +121,7 @@ f32 __cdecl AnimDuration(i32 character_id, i32 animation, f32 start_frame, f32 e
     return duration;
 }
 
-void __cdecl ResetAnimPacket(ANIMPACKET_PC *packet, i16 animation) {
+void __cdecl ResetAnimPacket(ANIMPACKET_PC *packet, i32 animation) {
     if (packet == NULL)
         return;
     packet->previous_time = 1.0f;

@@ -6676,7 +6676,7 @@ address,symbol,size,ctype
 0x0062e190,_PCBuildModelLayerList,71,
 0x0062e1e0,_PCStoreModelLocatorCoordinates,171,
 0x0062e290,_EvalModelAnim,852,
-0x0062e650,_ResetAnimPacket,59,"void __cdecl (ANIMPACKET_PC *, i16)"
+0x0062e650,_ResetAnimPacket,59,"void __cdecl (ANIMPACKET_PC *, i32)"
 0x62e690,_ResetMiniAnimPacket,43,"void __cdecl(MINIANIMPACKET_PC *,i32)"
 0x62e6c0,_SetAnimTimeRandom,79,"void __cdecl(CHARACTER_MODEL_LAYERS_PC *,ANIMPACKET_PC *)"
 0x62e760,_UpdateAnimTimer,591,

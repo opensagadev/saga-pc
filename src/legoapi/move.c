@@ -108,9 +108,10 @@ STATIC_ASSERT(offsetof(GAMEOBJECT, pad) == 0xca4);
 STATIC_ASSERT(offsetof(GAMEOBJECT, flags_1fc) == 0x1fc);
 
 i32 __cdecl LedgeTerrain_SetTargetMom(GAMEOBJECT *object) {
-    u16 angle = object->movement_facing_angle;
+    i32 angle = object->movement_facing_angle;
     object->target_velocity.x =
-        (NuTrigTable[angle >> 1] * LEDGETERRAINLOOKAHEAD + object->external_force.x - object->upper_position.x) * 10.0f;
+        (NuTrigTable[(u32)angle >> 1] * LEDGETERRAINLOOKAHEAD + object->external_force.x - object->upper_position.x) *
+        10.0f;
     object->target_velocity.z = (NuTrigTable[((angle + 0x4000) >> 1) & 0x7fff] * LEDGETERRAINLOOKAHEAD +
                                  object->external_force.z - object->upper_position.z) *
                                 10.0f;
@@ -192,16 +193,14 @@ f32 __cdecl VehicleTurnOrLoopOffset(GAMEOBJECT *object) {
 
 void __cdecl APIObjectVelocities(GAMEOBJECT *object) {
     f32 horizontal_squared;
-    union {
-        f32 value;
-        u32 bits;
-    } absolute_velocity;
+    f32 absolute_velocity;
+    u32 bits;
 
     if (object->velocity.x == 0.0f && object->velocity.z == 0.0f) {
         object->horizontal_velocity_magnitude = 0.0f;
-        absolute_velocity.value = object->velocity.y;
-        absolute_velocity.bits &= 0x7fffffff;
-        object->velocity_magnitude = absolute_velocity.value;
+        absolute_velocity = object->velocity.y;
+        bits = *(u32 *)&absolute_velocity & 0x7fffffff;
+        object->velocity_magnitude = *(f32 *)&bits;
         return;
     }
 
@@ -487,7 +486,15 @@ i32 __cdecl ForcePushed_YRotation(GAMEOBJECT *object) {
 }
 
 static i32 IsAFallAnim(i32 animation) {
-    return animation == 5 || animation == 0x28 || animation == 0x4b || animation == 0x4c || animation == 0x74;
+    if (animation == 5)
+        return 1;
+    if (animation == 0x28)
+        return 1;
+    if (animation == 0x4b)
+        return 1;
+    if (animation == 0x4c)
+        return 1;
+    return animation == 0x74;
 }
 
 void __cdecl ApplyGravity(GAMEOBJECT *object, f32 *gravity, f32 hover_height, f32 seek_rate, f32 *ground_height) {
@@ -4234,8 +4241,8 @@ static __declspec(noinline) void ShootThisFrame(GAMEOBJECT *object, i32 bolt_id,
 }
 
 void StartBallooning(GAMEOBJECT *object, i32 movement_state) {
-    object->field_7b3 = movement_state;
     object->character_context = 0x5d;
+    object->field_7b3 = movement_state;
     object->field_7aa = object->character_model->model_data_b[0xb1] != NULL ? 0xb1 : 1;
     object->context_hover_target_y = 1000000000.0f;
 }
@@ -4352,15 +4359,14 @@ static __declspec(noinline) void FireCode(GAMEOBJECT *object, i32 pressed, i32 h
 }
 
 void __cdecl StartQuickShoot(GAMEOBJECT *object, i32 action) {
-    i32 bolt_id, flags, fire_now;
+    i32 bolt_id;
     NUVEC direction;
-    f32 speed, range, range_squared;
+    f32 range, range_squared;
     GAMEOBJECT *target;
     object->flags_e20 &= ~0x800;
     bolt_id = BoltType_FindIDByCreature(object, 0);
     BoltSys->shoot_direction(object, &direction);
-    speed = BoltType_FindByID(bolt_id, WORLD)->field_10;
-    range = speed * BoltType_FindByID(bolt_id, WORLD)->field_14;
+    range = BoltType_FindByID(bolt_id, WORLD)->field_10 * (f64)BoltType_FindByID(bolt_id, WORLD)->field_14;
     range_squared = range * range;
     target = TargetGameObject(object, &object->collision_position, &direction, range, range_squared, 0, 1, 0, bolt_id);
     if (target != NULL)
@@ -4390,10 +4396,8 @@ void __cdecl StartQuickShoot(GAMEOBJECT *object, i32 action) {
     object->context_timer = AnimDuration((i16)object->id, object->field_7aa, 0.0f, 0.0f, action != 0x57);
     ResetAnimPacket(&object->anim_packet, -1);
     object->anim_packet.flags |= 0x10;
-    fire_now = !(AnimListFrame(object->character_model, object->field_7aa, 1) > 1.0f);
-    bolt_id = BoltType_FindIDByCreature(object, 0);
-    flags = 1 + 2 * fire_now;
-    ShootThisFrame(object, bolt_id, flags);
+    ShootThisFrame(object, BoltType_FindIDByCreature(object, 0),
+                   AnimListFrame(object->character_model, object->field_7aa, 1) > 1.0f ? 1 : 3);
     object->quick_shoot_timer = 0.0f;
     ++((VEHICLE_SHOOT_STATE_PC *)object)->action_suppressed;
     SetWeaponOut(object);
@@ -5566,8 +5570,8 @@ void EatVictim(GAMEOBJECT *object) {
         return;
     }
     object->character_context = 0x3f;
-    object->context_animation_timer = AnimDuration(object->id, 0x4e, 0.0f, 0.0f, 1);
-    object->context_flags_pc &= ~0x40;
+    object->context_timer = AnimDuration((i16)object->id, 0x4e, 0.0f, 0.0f, 1);
+    object->context_variant_flags &= ~0x40u;
 }
 
 void __cdecl Move_BEAST(GAMEOBJECT *object) {
@@ -5765,7 +5769,7 @@ extern const char ForceThrowExplodeNamePc[9];
 static __declspec(noinline) void ShieldCode(GAMEOBJECT *object) {
     f32 target = 0.0f, previous;
     i32 animation;
-    if (object->shield_hitpoints != 0) {
+    if (object->shield_hitpoints > 0) {
         if (object->id == (u16)id_ZAMSSPEEDER && WORLD->area != NULL && WORLD->area == BOUNTYHUNTERPURSUIT_ADATA) {
             target = VehicleShieldTargetPc;
         } else {
@@ -5777,7 +5781,7 @@ static __declspec(noinline) void ShieldCode(GAMEOBJECT *object) {
         }
     }
     previous = object->origin_scale_override;
-    object->origin_scale_override = SeekLinearF(previous, target, (f32)((f64)FRAMETIME * 5.0));
+    object->origin_scale_override = SeekLinearF(object->origin_scale_override, target, (f32)((f64)FRAMETIME * 5.0));
     if ((previous == 0.0f && object->origin_scale_override > 0.0f) ||
         (previous == 1.0f && object->origin_scale_override < 1.0f))
         PlaySfx((char *)VehicleShieldOnNamePc, &object->collision_position);
@@ -5827,8 +5831,7 @@ static __declspec(noinline) void DodgemCode(GAMEOBJECT *object) {
         for (i = 0; i < 2; ++i) {
             other = (GAMEOBJECT *)Player[i];
             if (other != NULL && (other->flags_1fc & 0x80) != 0 && other->rider != NULL &&
-                ((other->collision_contact_mask[0] & object->collision_identity_mask[0]) |
-                 (other->collision_contact_mask[1] & object->collision_identity_mask[1])) != 0 &&
+                (U64_PAIR(other->collision_contact_mask) & U64_PAIR(object->collision_identity_mask)) != 0 &&
                 object->vehicle_hit_timer <= 0.0f)
                 ObjHitObj(other, object, 1, 1, 0, 1);
         }
@@ -5926,7 +5929,7 @@ void PodLoseSpeed(GAMEOBJECT *object, i32 hit, i32 rumble) {
 
 void __cdecl PodCollisionCode(GAMEOBJECT *object) {
     if (GamePlayTimer.time_elapsed < 1.0f || object->field_280 == 0xff || (object->flags_1fc & 0x80) == 0 ||
-        object->contact_count == 0 || object->contact_normal.y > 0.574f || !(object->contact_normal.y >= -0.574f))
+        object->contact_count == 0 || !(object->contact_normal.y <= 0.574f) || !(object->contact_normal.y >= -0.574f))
         return;
     if (PODSPRINT_ADATA != NULL && WORLD->area == PODSPRINT_ADATA) {
         AddVariableShotDebrisEffectTimed1(WORLD->game_debris_sys->entries[PodSprintDebrisIndexPc].effect,
@@ -7152,7 +7155,7 @@ i32 __cdecl StartBackFlip(GAMEOBJECT *object) {
     object->character_context = (i8)JumpBackFlipContextPc;
     ResetAnimPacket(&object->anim_packet, -1);
     object->field_7aa = JumpBackFlipActionPc;
-    object->context_timer = AnimDuration((i16)object->id, JumpBackFlipActionPc, 0.0f, 0.0f, 1);
+    object->context_timer = AnimDuration((i16)object->id, object->field_7aa, 0.0f, 0.0f, 1);
     if (object->context_timer <= 0.0f)
         object->context_timer = 1.0f;
     object->flags_e20 |= 0x100000;
@@ -8363,9 +8366,10 @@ void __cdecl LedgeTerrain_MoveCode(GAMEOBJECT *object) {
         object->field_7aa = LEGOACT_LEDGE_GRAB;
         object->context_hover_target_y = AnimDuration((i16)object->id, LEGOACT_LEDGE_GRAB, 0.0f, 0.0f, 1);
     } else {
+        i16 animation = LEGOACT_LEDGE_IDLE;
         object->context_hover_target_y = 0.1f;
-        object->field_7aa = LEGOACT_LEDGE_IDLE;
-        ResetAnimPacket(&object->anim_packet, LEGOACT_LEDGE_IDLE);
+        object->field_7aa = animation;
+        ResetAnimPacket(&object->anim_packet, animation);
     }
     object->external_force.x = object->position.x;
     object->external_force.y = position.y;
@@ -9409,7 +9413,7 @@ STATIC_ASSERT(offsetof(GAMEOBJECT, blowup_target) == 0x794);
 STATIC_ASSERT(offsetof(GAMEOBJECT, field_0x276) == 0x27a);
 
 static __declspec(noinline) void StartDodgePc(GAMEOBJECT *object) {
-    i16 previous_animation = object->field_7aa;
+    i32 previous_animation = object->field_7aa;
     BOLT_PC *bolt = object->incoming_bolt;
     NUVEC perpendicular = bolt->direction;
     f32 side;
@@ -9418,9 +9422,12 @@ static __declspec(noinline) void StartDodgePc(GAMEOBJECT *object) {
     if ((object->flags_e20 & 0x2000) != 0) {
         object->field_7aa = object->field_e12 == 0x26 ? 0x4f : 0x26;
     } else {
-        side = (object->collision_position.z - bolt->position.z) * perpendicular.z +
-               (object->collision_position.x - bolt->position.x) * perpendicular.x;
-        object->field_7aa = side < 0.0f ? 0x4f : 0x26;
+        side = (object->collision_position.x - bolt->position.x) * perpendicular.x +
+               (object->collision_position.z - bolt->position.z) * perpendicular.z;
+        if (side < 0.0f)
+            object->field_7aa = 0x4f;
+        else
+            object->field_7aa = 0x26;
     }
     object->field_e12 = object->field_7aa;
     if (object->character_model->model_data_b[object->field_7aa] != NULL) {

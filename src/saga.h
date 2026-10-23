@@ -12577,7 +12577,7 @@ void __cdecl AIScriptMissingConditionDiagnostic();
 
     void __cdecl StartJump(GAMEOBJECT *, i32);
     i32 __cdecl StartBigJump(GAMEOBJECT *, NUVEC *, i32, f32, f32, i32);
-    void __cdecl ResetAnimPacket(ANIMPACKET_PC *, i16);
+    void __cdecl ResetAnimPacket(ANIMPACKET_PC *, i32);
     void __cdecl PlayJumpSfx(GAMEOBJECT *, i32);
     EXPLOSION_PC *__cdecl Detonate(NUVEC *, u16);
     void __cdecl BobaRocket_Kill(PART_PC *, i32);

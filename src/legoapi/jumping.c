@@ -7,7 +7,7 @@ extern i16 LEGOACT_JUMP2;
 extern i16 LEGOACT_FALL;
 f32 __cdecl AnimDuration(i32, i32, f32, f32, i32);
 void __cdecl PlayJumpSfx(GAMEOBJECT *, i32);
-void __cdecl ResetAnimPacket(ANIMPACKET_PC *, i16);
+void __cdecl ResetAnimPacket(ANIMPACKET_PC *, i32);
 void __cdecl StartJump(GAMEOBJECT *object, i32 movement_state) {
     if (LEGOCONTEXT_JUMP != -1) {
         object->character_context = (i8)LEGOCONTEXT_JUMP;
