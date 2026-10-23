@@ -1588,46 +1588,43 @@ extern "C" void __cdecl Hub_Reset(WORLDINFO *world) {
     Customiser_Reset(CharacterCustomiser);
     if (HubResetAIFnPc != NULL)
         HubResetAIFnPc(world);
-    for (i32 i = 20; i < 52; ++i) {
-        if ((LevHSpecialExists & ((u64)1 << i)) != 0)
-            NuSpecialSetVisibility(&LevHSpecial[i], 1);
-        i32 hidden = i + 32;
-        if (hidden < 64 && (LevHSpecialExists & ((u64)1 << hidden)) != 0)
-            NuSpecialSetVisibility(&LevHSpecial[hidden], 0);
+    for (i32 i = 0; i < 32; i++) {
+        if ((LevHSpecialExists & ((u64)1 << (i + 20))) != 0)
+            NuSpecialSetVisibility(&LevHSpecial[i + 20], 1);
+        if ((LevHSpecialExists & ((u64)1 << (i + 52))) != 0)
+            NuSpecialSetVisibility(&LevHSpecial[i + 52], 0);
     }
     if (NuSpecialExistsFn(&LevHSpecial[84]) != 0)
         NuSpecialSetVisibility(&LevHSpecial[84], 0);
-    for (HUB_AREA_INFO_PC *info = HubAreaInfoPc; info->area_name != NULL; ++info) {
-        if (info->door != NULL) {
-            i32 open = Episode_CountOpenAreas(info->area->episode_index, info->area->index, Game_AreaSave);
-            HUB_DOOR_OBJECT_READER_PC *door = ((HUB_DOOR_READER_PC *)info->door)->object;
-            if (open != 0) {
-                door->flags &= ~8U;
-                NuSpecialSetVisibility(&info->lock, 1);
+    for (i32 i = 0; HubAreaInfoPc[i].area_name != NULL; i++) {
+        if (HubAreaInfoPc[i].door != NULL) {
+            if (Episode_CountOpenAreas(HubAreaInfoPc[i].area->episode_index, HubAreaInfoPc[i].area->index,
+                                       Game_AreaSave) != 0) {
+                ((HUB_DOOR_READER_PC *)HubAreaInfoPc[i].door)->object->flags &= ~8U;
+                NuSpecialSetVisibility(&HubAreaInfoPc[i].lock, 1);
             } else {
-                door->flags |= 8U;
-                NuSpecialSetVisibility(&info->lock, 0);
+                ((HUB_DOOR_READER_PC *)HubAreaInfoPc[i].door)->object->flags |= 8U;
+                NuSpecialSetVisibility(&HubAreaInfoPc[i].lock, 0);
             }
         }
     }
-    for (HUB_EPISODE_INFO_PC *info = HubEpisodeInfoPc; info->episode >= 0 && info->episode < 9; ++info) {
-        if (info->door != NULL) {
-            i32 open = Episode_CountOpenAreas(info->episode, -1, Game_AreaSave);
-            HUB_DOOR_OBJECT_READER_PC *door = ((HUB_DOOR_READER_PC *)info->door)->object;
-            if (open != 0 || (u8)info->force_open != 0) {
-                door->flags &= ~8U;
-                NuSpecialSetVisibility(&info->lock_on, 1);
+    for (i32 i = 0; HubEpisodeInfoPc[i].episode >= 0 && HubEpisodeInfoPc[i].episode < 9; i++) {
+        if (HubEpisodeInfoPc[i].door != NULL) {
+            if (Episode_CountOpenAreas(HubEpisodeInfoPc[i].episode, -1, Game_AreaSave) == 0 &&
+                (u8)HubEpisodeInfoPc[i].force_open == 0) {
+                ((HUB_DOOR_READER_PC *)HubEpisodeInfoPc[i].door)->object->flags |= 8U;
+                NuSpecialSetVisibility(&HubEpisodeInfoPc[i].lock_on, 0);
             } else {
-                door->flags |= 8U;
-                NuSpecialSetVisibility(&info->lock_on, 0);
+                ((HUB_DOOR_READER_PC *)HubEpisodeInfoPc[i].door)->object->flags &= ~8U;
+                NuSpecialSetVisibility(&HubEpisodeInfoPc[i].lock_on, 1);
             }
         }
     }
-    HubJabbaAwakePc = 0;
-    HubHologramAlphaPc = 0;
-    HubHologramTargetAlphaPc = 0;
+    HubJabbaAwakePc = 0.0f;
+    HubHologramAlphaPc = 0.0f;
+    HubHologramTargetAlphaPc = 0.0f;
     HubBuildItsResetPc = 0;
-    HubPreventDropOutTimePc = 0;
+    HubPreventDropOutTimePc = 0.0f;
 }
 
 // Add only to the genuine Hub owner, after its existing private table definition.
@@ -1795,16 +1792,15 @@ typedef struct hub_buildit_sys_pc_s {
 } HUB_BUILDIT_SYS_PC;
 STATIC_ASSERT(offsetof(HUB_BUILDIT_SYS_PC, count) == 4);
 extern "C" GIZBUILDIT_PC *__cdecl GizBuildIt_FindNearest(WORLDINFO *world, GAMEOBJECT *player, i32 mode, i32 shadow) {
-    HUB_BUILDIT_SYS_PC *sys = (HUB_BUILDIT_SYS_PC *)world->giz_buildit_sys;
-    if (sys == NULL || player == NULL)
+    if (world->giz_buildit_sys == NULL || player == NULL)
         return NULL;
     NUVEC position = player->collision_position;
-    const f32 upper_y = player->upper_position.y;
-    const f32 lower_y = player->lower_position.y;
+    f32 lower_y = player->lower_position.y;
+    f32 upper_y = player->upper_position.y;
     f32 nearest_distance = 1000000.0f;
     GIZBUILDIT_PC *nearest = NULL;
-    for (i32 i = 0; i < sys->count; ++i) {
-        GIZBUILDIT_PC *buildit = &sys->buildits[i];
+    GIZBUILDIT_PC *buildit = ((HUB_BUILDIT_SYS_PC *)world->giz_buildit_sys)->buildits;
+    for (i32 i = 0; i < ((HUB_BUILDIT_SYS_PC *)world->giz_buildit_sys)->count; i++, buildit++) {
         if (mode != 2) {
             if ((buildit->availability_flags & 2) == 0 || (buildit->availability_flags & 1) == 0)
                 continue;
@@ -1814,9 +1810,9 @@ extern "C" GIZBUILDIT_PC *__cdecl GizBuildIt_FindNearest(WORLDINFO *world, GAMEO
                 if (buildit->build_state != 0 || LEGOCONTEXT_BUILDIT == -1)
                     continue;
                 i32 p;
-                for (p = 0; p < 8; ++p) {
+                for (p = 0; p < 8; p++) {
                     GAMEOBJECT *object = (GAMEOBJECT *)Player[p];
-                    if (object != NULL && (i8)object->character_context == LEGOCONTEXT_BUILDIT &&
+                    if (object != NULL && object->character_context == LEGOCONTEXT_BUILDIT &&
                         object->grapple == (void *)buildit)
                         break;
                 }
@@ -1824,14 +1820,13 @@ extern "C" GIZBUILDIT_PC *__cdecl GizBuildIt_FindNearest(WORLDINFO *world, GAMEO
                     continue;
             }
         }
-        const f32 vertical_radius = (f32)((f64)buildit->progress / 100.0 * buildit->bounds_radius);
-        if (upper_y < buildit->start_position.y - vertical_radius ||
-            lower_y > buildit->start_position.y + vertical_radius)
+        f32 height = buildit->progress / 100.0 * buildit->bounds_radius;
+        if (buildit->start_position.y - height > upper_y || lower_y > buildit->start_position.y + height)
             continue;
-        const f32 radius = (f32)((f64)buildit->bounds_radius + 0.30000001192092896);
-        const f32 distance = NuVecXZDistSqr(&buildit->start_position, &position, NULL);
-        const f32 radius_squared = radius * radius;
-        if (radius_squared > distance && nearest_distance > distance) {
+        f32 radius = buildit->bounds_radius + 0.30000001192092896;
+        f32 distance = NuVecXZDistSqr(&buildit->start_position, &position, NULL);
+        radius = radius * radius;
+        if (radius > distance && nearest_distance > distance) {
             nearest_distance = distance;
             nearest = buildit;
         }
@@ -2739,7 +2734,7 @@ static void HubDrawBonusStatsPc(f32 alpha, i32 area, i32 episode, i32 mode) {
     if (episode == -1) {
         if (area == -1)
             return;
-        episode = (i8)ADataList[area].episode_index;
+        episode = ADataList[area].episode_index;
         if (episode == -1)
             return;
     }
@@ -2762,49 +2757,56 @@ static void HubDrawBonusStatsPc(f32 alpha, i32 area, i32 episode, i32 mode) {
     SmartTextEx(TTab[title], 0.0f, HubEpisodeSubtitleYPc, 1.0f, HubEpisodeSubtitleSizePc, HubEpisodeSubtitleSizePc,
                 HubEpisodeSubtitleSizePc, 0, HubEpisodeRedPc, HubEpisodeGreenPc, HubEpisodeBluePc, 1.7f, 1, NULL, 0,
                 opacity);
-    f32 x = 0.0f, time = 0.0f;
-    char text[64];
-    if (mode == 0) {
-        x = -.4f;
-        time = Game.episode_start[episode].superstory_time_limit;
-        SmartTextEx(TTab[TextIdPc880718], .4f, (f32)(HubEpisodeTitleYPc + .125), 1.0f, HubEpisodeTitleSizePc,
-                    HubEpisodeTitleSizePc, HubEpisodeTitleSizePc, 0, 191, 0, 127, .7f, 1, NULL, 0, opacity);
-        Text_MakeScore(Game.episode_start[episode].superstory_score_target, text);
-        Text3DEx(text, .4f, HubEpisodeTitleYPc, 1.0f, HubEpisodeSubtitleSizePc, HubEpisodeSubtitleSizePc,
-                 HubEpisodeSubtitleSizePc, 0, 255, 255, 255, (u8)opacity);
-    } else if (mode == 1) {
-        if (character_area == -1)
-            return;
-        time = Game.area_save[character_area].challenge_trial_time;
-    } else if (mode == 2) {
-        if (vehicle_area == -1)
-            return;
-        time = Game.area_save[vehicle_area].challenge_trial_time;
-    } else if (mode == -1) {
-        i32 count = 0, total = 0;
+    f32 x = 0.0f;
+    f32 time = 0.0f;
+    char text[128];
+    switch (mode) {
+        case 0:
+            x = -0.4f;
+            time = Game.episode_start[episode].superstory_time_limit;
+            SmartTextEx(TTab[TextIdPc880718], 0.4f, (f32)(HubEpisodeTitleYPc + 0.125), 1.0f, HubEpisodeTitleSizePc,
+                        HubEpisodeTitleSizePc, HubEpisodeTitleSizePc, 0, 191, 0, 127, 0.7f, 1, NULL, 0, opacity);
+            Text_MakeScore(Game.episode_start[episode].superstory_score_target, text);
+            Text3DEx(text, 0.4f, HubEpisodeTitleYPc, 1.0f, HubEpisodeSubtitleSizePc, HubEpisodeSubtitleSizePc,
+                     HubEpisodeSubtitleSizePc, 0, 255, 255, 255, opacity);
+            break;
+        case 1:
+            if (character_area == -1)
+                return;
+            time = Game.area_save[character_area].challenge_trial_time;
+            break;
+        case 2:
+            if (vehicle_area == -1)
+                return;
+            time = Game.area_save[vehicle_area].challenge_trial_time;
+            break;
+    }
+    if (mode != -1) {
+        SmartTextEx(TTab[TextIdPc880714], x, (f32)(HubEpisodeTitleYPc + 0.125), 1.0f, HubEpisodeTitleSizePc,
+                    HubEpisodeTitleSizePc, HubEpisodeTitleSizePc, 0, 191, 0, 127, 0.7f, 1, NULL, 0, opacity);
+        Text_MakeTime(time, 1, 1, 1, text);
+        Text3DEx(text, x, HubEpisodeTitleYPc, 1.0f, HubEpisodeSubtitleSizePc, HubEpisodeSubtitleSizePc,
+                 HubEpisodeSubtitleSizePc, 0, 255, 255, 255, opacity);
+    } else {
+        i32 total = 0;
+        i32 count = 0;
         if (character_area != -1) {
-            ++total;
-            if (ADataList[character_area].challenge_trial_time > Game.area_save[character_area].challenge_trial_time)
-                ++count;
+            total++;
+            if (Game.area_save[character_area].challenge_trial_time < ADataList[character_area].challenge_trial_time)
+                count++;
         }
         if (vehicle_area != -1) {
-            ++total;
-            if (ADataList[vehicle_area].challenge_trial_time > Game.area_save[vehicle_area].challenge_trial_time)
-                ++count;
+            total++;
+            if (Game.area_save[vehicle_area].challenge_trial_time < ADataList[vehicle_area].challenge_trial_time)
+                count++;
         }
         if (EpisodeGoldBrickForSuperStoryPc != 0) {
-            ++total;
+            total++;
             if (Game.episode_start[episode].complete != 0)
-                ++count;
+                count++;
         }
         Hub_DrawImportantBrick(211, 0.0f, HubEpisodeTitleYPc, alpha, count, total);
-        return;
     }
-    SmartTextEx(TTab[TextIdPc880714], x, (f32)(HubEpisodeTitleYPc + .125), 1.0f, HubEpisodeTitleSizePc,
-                HubEpisodeTitleSizePc, HubEpisodeTitleSizePc, 0, 191, 0, 127, .7f, 1, NULL, 0, opacity);
-    Text_MakeTime(time, 1, 1, 1, text);
-    Text3DEx(text, x, HubEpisodeTitleYPc, 1.0f, HubEpisodeSubtitleSizePc, HubEpisodeSubtitleSizePc,
-             HubEpisodeSubtitleSizePc, 0, 255, 255, 255, (u8)opacity);
 }
 
 /* PC47b160738bytes,47b4501466bytes. Private noargument native draw bodies. */

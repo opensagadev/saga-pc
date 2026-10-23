@@ -733,21 +733,23 @@ void __cdecl JediB_DrawPanelPc(WORLDINFO *world) {
 }
 
 void __cdecl JediB_Update(WORLDINFO *world) {
-    i32 hero, spawn, slot, i, spawn_behind;
+    i32 hero, spawn, slot, i, in_range;
     u32 shift;
     u64 mask;
-    GAMEOBJECT *boss, *target, *object;
+    GAMEOBJECT *target, *object;
     JEDIB_CREATURE_PC *baddie;
     NUVEC spawn_position;
+    NUVEC *pos;
     if (Mission_Active(MissionSys) != NULL || netclient != 0)
         return;
     for (hero = 0; hero < 3; hero++) {
         if (FreePlay != 0 && jedi_b.heroes[hero] == NULL) {
             for (spawn = 0; spawn < 4; spawn++) {
-                if (NuSpecialGetVisibilityFn(&jedi_b.hero_spawns[hero][spawn]) != 0)
-                    jedi_b.heroes[hero] = AddDynamicCreature(*JediB_playerids[hero],
-                                                             NuSpecialGetDrawPos(&jedi_b.hero_spawns[hero][spawn]), 0,
-                                                             "Party", NULL, NULL, 1, NULL, NULL, 0, 0);
+                if (NuSpecialGetVisibilityFn(&jedi_b.hero_spawns[hero][spawn]) != 0) {
+                    pos = NuSpecialGetDrawPos(&jedi_b.hero_spawns[hero][spawn]);
+                    jedi_b.heroes[hero] =
+                        AddDynamicCreature(*JediB_playerids[hero], pos, 0, "Party", NULL, NULL, 1, NULL, NULL, 0, 0);
+                }
             }
         }
         if (jedi_b.heroes[hero] == NULL || jedi_b.msg_restrain[hero]->value != 1.0f)
@@ -767,45 +769,39 @@ void __cdecl JediB_Update(WORLDINFO *world) {
     }
     jedi_b.exclusion_mask = 0;
     if (jedi_b.timer < 4.0f) {
-        if (player != NULL) {
-            shift = player->hostility_group;
-            jedi_b.exclusion_mask = shift < 64 ? ((u64)1 << shift) : 0;
-        }
-        if (player2 != NULL) {
-            shift = player2->hostility_group;
-            jedi_b.exclusion_mask |= shift < 64 ? ((u64)1 << shift) : 0;
-        }
+        if (player != NULL)
+            jedi_b.exclusion_mask = (u64)1 << player->hostility_group;
+        if (player2 != NULL)
+            jedi_b.exclusion_mask |= (u64)1 << player2->hostility_group;
     } else if (jedi_b.phase == 7) {
         if (jedi_b.boss != NULL) {
-            target = player2 != NULL && jedi_b.boss->ai_packet.opponent == player2 ? player2 : player;
-            shift = target->hostility_group;
-            jedi_b.exclusion_mask = shift < 64 ? ((u64)1 << shift) : 0;
+            if (player2 != NULL && jedi_b.boss->ai_packet.opponent == player2)
+                shift = player2->hostility_group;
+            else
+                shift = player->hostility_group;
+            jedi_b.exclusion_mask = (u64)1 << shift;
         }
     } else {
         if (player->collision_position.x * player->collision_position.x +
                 player->collision_position.z * player->collision_position.z >
-            jedib_safe_r * jedib_safe_r) {
-            shift = player->hostility_group;
-            jedi_b.exclusion_mask = shift < 64 ? ((u64)1 << shift) : 0;
-        }
+            jedib_safe_r * jedib_safe_r)
+            jedi_b.exclusion_mask = (u64)1 << player->hostility_group;
         if (player2 != NULL && player2->collision_position.x * player2->collision_position.x +
                                        player2->collision_position.z * player2->collision_position.z >
-                                   jedib_safe_r * jedib_safe_r) {
-            shift = player2->hostility_group;
-            jedi_b.exclusion_mask |= shift < 64 ? ((u64)1 << shift) : 0;
-        }
+                                   jedib_safe_r * jedib_safe_r)
+            jedi_b.exclusion_mask |= (u64)1 << player2->hostility_group;
     }
-    boss = jedi_b.boss;
     for (slot = 0; slot < 8; slot++) {
-        if (Player[slot] == NULL)
+        object = (GAMEOBJECT *)Player[slot];
+        if (object == NULL)
             continue;
-        ((GAMEOBJECT *)Player[slot])->ai_opponent_exclusion_mask[0] = 0;
-        ((GAMEOBJECT *)Player[slot])->ai_opponent_exclusion_mask[1] = 0;
-        if (jedi_b.phase == 7 && boss != NULL && (i8)((GAMEOBJECT *)Player[slot])->flags_1fc >= 0) {
-            shift = boss->hostility_group;
-            mask = shift < 64 ? ((u64)1 << shift) : 0;
-            ((GAMEOBJECT *)Player[slot])->ai_opponent_exclusion_mask[0] |= (u32)mask;
-            ((GAMEOBJECT *)Player[slot])->ai_opponent_exclusion_mask[1] |= (u32)(mask >> 32);
+        object->ai_opponent_exclusion_mask[0] = 0;
+        object->ai_opponent_exclusion_mask[1] = 0;
+        object = (GAMEOBJECT *)Player[slot];
+        if ((object->flags_1fc & 0x80) == 0 && jedi_b.boss != NULL && jedi_b.phase == 7) {
+            mask = (u64)1 << jedi_b.boss->hostility_group;
+            object->ai_opponent_exclusion_mask[0] |= (u32)mask;
+            object->ai_opponent_exclusion_mask[1] |= (u32)(mask >> 32);
         }
     }
     switch (jedi_b.state) {
@@ -822,87 +818,89 @@ void __cdecl JediB_Update(WORLDINFO *world) {
     JediBActiveCountPc = 0;
     for (i = 0; i < jedi_b.baddie_count; i++) {
         baddie = &jedi_b.baddies[i];
-        object = baddie->object;
-        if (object != NULL) {
+        if (baddie->object != NULL) {
             if ((baddie->flags & 0x10) != 0) {
-                object->ai_packet.locator = NULL;
-                if ((player->character_data->model_flags & 0x80000) != 0 ||
-                    ((i16)player->objptr->id == CharacterFixupIdPc007f19c4 && (i8)player->flags_1fc >= 0) ||
-                    (player->character_data->game_character->weapon_action == 4 &&
-                     object->character_data->game_character->weapon_action == 4)) {
-                    if (object->ai_packet.opponent == player)
-                        object->ai_packet.opponent = NULL;
+                baddie->object->ai_packet.locator = NULL;
+                target = NULL;
+                if ((player->character_data->model_flags & 0x80000) == 0 &&
+                    ((i16)player->objptr->id != CharacterFixupIdPc007f19c4 || (player->flags_1fc & 0x80) != 0) &&
+                    (player->character_data->game_character->weapon_action != 4 ||
+                     baddie->object->character_data->game_character->weapon_action != 4)) {
+                    target = player;
+                } else {
+                    if (baddie->object->ai_packet.opponent == player)
+                        baddie->object->ai_packet.opponent = NULL;
                     if (player2 != NULL) {
                         if ((player2->character_data->model_flags & 0x80000) == 0 &&
-                            ((i16)player->objptr->id != CharacterFixupIdPc007f19c4 || (i8)player->flags_1fc < 0) &&
+                            ((i16)player->objptr->id != CharacterFixupIdPc007f19c4 ||
+                             (player->flags_1fc & 0x80) != 0) &&
                             (player->character_data->game_character->weapon_action != 4 ||
-                             object->character_data->game_character->weapon_action != 4))
-                            object->ai_packet.opponent = player2;
-                        else if (object->ai_packet.opponent == player2)
-                            object->ai_packet.opponent = NULL;
+                             baddie->object->character_data->game_character->weapon_action != 4))
+                            target = player2;
+                        else if (baddie->object->ai_packet.opponent == player2)
+                            baddie->object->ai_packet.opponent = NULL;
                     }
-                } else {
-                    object->ai_packet.opponent = player;
                 }
+                if (target != NULL)
+                    baddie->object->ai_packet.opponent = target;
             } else {
-                if ((OnOrInsidePlane(&object->position, &PlayPlanePc[1].point, &PlayPlanePc[1].normal, NULL, 2.0f,
-                                     NULL) == 0 &&
-                     OnOrInsidePlane(&baddie->object->position, &PlayPlanePc[2].point, &PlayPlanePc[2].normal, NULL,
-                                     2.0f, NULL) == 0) ||
-                    (OnOrInsidePlane(&baddie->locator.position, &PlayPlanePc[1].point, &PlayPlanePc[1].normal, NULL,
-                                     2.0f, NULL) == 0 &&
-                     OnOrInsidePlane(&baddie->locator.position, &PlayPlanePc[2].point, &PlayPlanePc[2].normal, NULL,
-                                     2.0f, NULL) == 0)) {
-                    object = baddie->object;
-                    if (object == NULL)
-                        continue;
-                    if (((APIOBJECT_PC *)object)->ai->opponent == NULL && baddie->partner != NULL &&
-                        baddie->partner->object != NULL)
-                        ((APIOBJECT_PC *)object)->ai->opponent = baddie->partner->object;
-                } else {
+                in_range = (OnOrInsidePlane(&baddie->object->position, &PlayPlanePc[1].point, &PlayPlanePc[1].normal,
+                                            NULL, 2.0f, NULL) == 0 &&
+                            OnOrInsidePlane(&baddie->object->position, &PlayPlanePc[2].point, &PlayPlanePc[2].normal,
+                                            NULL, 2.0f, NULL) == 0) ||
+                           (OnOrInsidePlane(&baddie->locator.position, &PlayPlanePc[1].point, &PlayPlanePc[1].normal,
+                                            NULL, 2.0f, NULL) == 0 &&
+                            OnOrInsidePlane(&baddie->locator.position, &PlayPlanePc[2].point, &PlayPlanePc[2].normal,
+                                            NULL, 2.0f, NULL) == 0);
+                if (in_range == 0) {
                     baddie->position = baddie->object->position;
                     baddie->angle = baddie->object->field_0x276;
                     RemoveGameObject(baddie->object, 1);
                     baddie->object = NULL;
                     continue;
                 }
+                if (baddie->object == NULL)
+                    continue;
+                if (((APIOBJECT_PC *)baddie->object)->ai->opponent == NULL && baddie->partner != NULL &&
+                    baddie->partner->object != NULL)
+                    ((APIOBJECT_PC *)baddie->object)->ai->opponent = baddie->partner->object;
             }
         } else if ((baddie->flags & 0x10) == 0 && (OnOrInsidePlane(&baddie->position, &PlayPlanePc[1].point,
                                                                    &PlayPlanePc[1].normal, NULL, 1.5f, NULL) != 0 ||
                                                    OnOrInsidePlane(&baddie->position, &PlayPlanePc[2].point,
                                                                    &PlayPlanePc[2].normal, NULL, 1.5f, NULL) != 0)) {
-            object = baddie->object;
         } else {
-            spawn_behind = (baddie->flags & 1) != 0 &&
-                           OnOrInsidePlane(&baddie->position, &PlayPlanePc[1].point, &PlayPlanePc[1].normal, NULL, 0.5f,
-                                           NULL) == 0 &&
-                           OnOrInsidePlane(&baddie->position, &PlayPlanePc[2].point, &PlayPlanePc[2].normal, NULL, 0.5f,
-                                           NULL) == 0;
-            spawn_position = baddie->position;
-            if (spawn_behind)
+            if ((baddie->flags & 1) != 0 &&
+                OnOrInsidePlane(&baddie->position, &PlayPlanePc[1].point, &PlayPlanePc[1].normal, NULL, 0.5f, NULL) ==
+                    0 &&
+                OnOrInsidePlane(&baddie->position, &PlayPlanePc[2].point, &PlayPlanePc[2].normal, NULL, 0.5f, NULL) ==
+                    0) {
+                spawn_position = baddie->position;
                 NuVecRotateY(&spawn_position, &spawn_position, 0x8000);
+            } else {
+                spawn_position = baddie->position;
+            }
             if (baddie->id == -1)
                 JediBResetRecordPc(baddie);
-            object = AddDynamicCreature(baddie->id, &spawn_position, baddie->angle, "gen_bdroids",
-                                        &baddie->locator.path_info, NULL, 1, NULL, NULL, 0, 0);
-            baddie->object = object;
-            if (object == NULL)
+            baddie->object = AddDynamicCreature(baddie->id, &spawn_position, baddie->angle, "gen_bdroids",
+                                                &baddie->locator.path_info, NULL, 1, NULL, NULL, 0, 0);
+            if (baddie->object == NULL)
                 continue;
-            object->ai_packet.locator = &baddie->locator;
-            object->tag_object_callback = JediBKilledCallbackPc;
+            baddie->object->ai_packet.locator = &baddie->locator;
+            baddie->object->tag_object_callback = JediBKilledCallbackPc;
             if (baddie->id == id_BOB) {
                 if (baddie->field_0x58 == 0) {
-                    baddie->field_0x58 = object->layer_mask;
-                    if (object->flags_ef0 & 0x200)
+                    baddie->field_0x58 = baddie->object->layer_mask;
+                    if (baddie->object->flags_ef0 & 0x200)
                         baddie->flags |= 4;
                     else
                         baddie->flags &= ~4u;
                 } else {
-                    object->layer_mask = baddie->field_0x58;
+                    baddie->object->layer_mask = baddie->field_0x58;
                     if (baddie->flags & 4)
-                        object->flags_ef0 |= 0x200;
+                        baddie->object->flags_ef0 |= 0x200;
                     else
-                        object->flags_ef0 &= ~0x200u;
+                        baddie->object->flags_ef0 &= ~0x200u;
                 }
             }
         }
