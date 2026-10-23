@@ -901,6 +901,16 @@ void cbSubMenu(eduimenu_s *menu, eduiitem_s *item) {
     eduiMenuAttach(menu, ((eduimenu_s *)(item->data_ptr)));
 }
 
+void cbmcfgCameraSpeed(eduimenu_s *unused0, eduiitem_s *item, u32 unused2) {
+    f32 divisor = 512.0f / ((edui_slider_s *)item)->value;
+    edcam_s *cam = gp_cam;
+    f32 speed = 0.2f / divisor;
+    cam->position_speed.x = speed;
+    cam->position_speed.y = speed;
+    cam->position_speed.z = speed;
+    cam->distance_speed = 1.0f / divisor;
+}
+
 void cbmcfgCancel(eduimenu_s *menu, eduimenu_s *unused1) {
     eduiMenuDetach(menu);
 }
