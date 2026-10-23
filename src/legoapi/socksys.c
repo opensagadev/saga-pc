@@ -4,6 +4,12 @@
 #define SOCK_BOUNDS_OVERLAP(a, b, c, d, ignore_y)                                                                      \
     ((c)->x <= (b)->x && (a)->x <= (d)->x && (c)->z <= (b)->z && (a)->z <= (d)->z &&                                   \
      ((ignore_y) || ((c)->y <= (b)->y && (a)->y <= (d)->y)))
+#define SOCK_BOUNDS_SEPARATE(a, b, c, d, ignore_y)                                                                     \
+    ((b)->x < (c)->x || (a)->x > (d)->x || (b)->z < (c)->z || (a)->z > (d)->z ||                                       \
+     (!(ignore_y) && ((b)->y < (c)->y || (a)->y > (d)->y)))
+#define SOCK_BOUNDS_TOUCH(a, b, c, d, ignore_y)                                                                        \
+    ((b)->x >= (c)->x && (a)->x <= (d)->x && (b)->z >= (c)->z && (a)->z <= (d)->z &&                                   \
+     ((ignore_y) || ((b)->y >= (c)->y && (a)->y <= (d)->y)))
 #define SOCK_ROTATION_DELTA(from, to)                                                                                  \
     (((i32)(to) - (i32)(from) > 0x8000)    ? (i32)(to) - (i32)(from) - 0x10000                                         \
      : ((i32)(to) - (i32)(from) < -0x8000) ? (i32)(to) - (i32)(from) + 0x10000                                         \
@@ -596,7 +602,7 @@ static void SockEdgeAnglesXY(NUVEC *from, NUVEC *to, u16 *x, u16 *y) {
     *y = (u16)NuAtan2D(dx, dz);
 }
 
-static SOCKROT_PC *SockRailAngles(SOCK_PC *sock, NUGSPLINE *spline, SOCKROT_PC *rotations) {
+SOCKROT_PC *SockRailAngles(SOCK_PC *sock, NUGSPLINE *spline, SOCKROT_PC *rotations) {
     i32 point_count;
 
     point_count = sock->cam->length;
@@ -708,7 +714,7 @@ static SOCKROT_PC *SockRailAngles(SOCK_PC *sock, NUGSPLINE *spline, SOCKROT_PC *
     return rotations;
 }
 
-static f32 SplineLength(NUGSPLINE *spline, i32 closed) {
+f32 SplineLength(NUGSPLINE *spline, i32 closed) {
     i32 segment_count;
     f32 length;
 
@@ -776,196 +782,160 @@ void SockSys_Configure(SOCKSYS_PC *sock_sys, char *config, i32 unused, VARIPTR *
 }
 
 void SockSys_GenerateData(SOCKSYS_PC *sock_sys, VARIPTR *buf, VARIPTR buf_end) {
+    SOCK_PC *sock;
+    i32 sock_index;
+
     if (sock_sys == NULL) {
         return;
     }
 
-    {
-        i32 sock_index;
+    sock = sock_sys->socks;
+    for (sock_index = 0; sock_index < 0x40; ++sock_index, ++sock) {
+        SOCKSEGMENT_PC *segment;
+        i32 segment_index;
+        f32 distance_from_start;
 
-        for (sock_index = 0; sock_index < 0x40; ++sock_index) {
-            SOCK_PC *sock;
-            i32 point_count;
-            u32 rotations_size;
-            u32 segments_size;
-            f32 distance_from_start;
-
-            sock = &sock_sys->socks[sock_index];
-            if (sock->valid == 0) {
-                continue;
-            }
-
-            point_count = sock->cam->length;
-            rotations_size = (u32)point_count * sizeof(SOCKROT_PC);
-            if (buf->addr + rotations_size >= buf_end.addr) {
-                return;
-            }
-            sock->cam_rotations = (SOCKROT_PC *)buf->void_ptr;
-            buf->void_ptr = SockRailAngles(sock, sock->cam, sock->cam_rotations);
-
-            if (buf->addr + rotations_size >= buf_end.addr) {
-                return;
-            }
-            sock->mid_rotations = (SOCKROT_PC *)buf->void_ptr;
-            buf->void_ptr = SockRailAngles(sock, sock->mid, sock->mid_rotations);
-
-            segments_size = (u32)point_count * sizeof(SOCKSEGMENT_PC);
-            if (buf->addr + segments_size >= buf_end.addr) {
-                return;
-            }
-            sock->segments = (SOCKSEGMENT_PC *)buf->void_ptr;
-            distance_from_start = 0.0f;
-            {
-                i32 segment_index;
-
-                for (segment_index = 0; segment_index < point_count; ++segment_index) {
-                    i32 next;
-                    SOCKSEGMENT_PC *segment;
-
-                    next = (segment_index + 1) % point_count;
-                    segment = &sock->segments[segment_index];
-
-                    {
-                        NUVEC *midpoint = &segment->midpoint;
-                        i32 midpoint_index = segment_index;
-                        if (sock->mid != NULL) {
-                            *midpoint = sock->mid->pts[midpoint_index];
-                        } else {
-                            NuVecAdd(midpoint, &sock->a->pts[midpoint_index], &sock->b->pts[midpoint_index]);
-                            if ((sock->flags & 1) == 0) {
-                                NuVecAdd(midpoint, midpoint, &sock->c->pts[midpoint_index]);
-                                NuVecAdd(midpoint, midpoint, &sock->d->pts[midpoint_index]);
-                                NuVecScale(midpoint, midpoint, 0.25f);
-                            } else {
-                                NuVecScale(midpoint, midpoint, 0.5f);
-                            }
-                        }
-                    }
-                    {
-                        NUVEC *midpoint = &segment->next_midpoint;
-                        i32 midpoint_index = next;
-                        if (sock->mid != NULL) {
-                            *midpoint = sock->mid->pts[midpoint_index];
-                        } else {
-                            NuVecAdd(midpoint, &sock->a->pts[midpoint_index], &sock->b->pts[midpoint_index]);
-                            if ((sock->flags & 1) == 0) {
-                                NuVecAdd(midpoint, midpoint, &sock->c->pts[midpoint_index]);
-                                NuVecAdd(midpoint, midpoint, &sock->d->pts[midpoint_index]);
-                                NuVecScale(midpoint, midpoint, 0.25f);
-                            } else {
-                                NuVecScale(midpoint, midpoint, 0.5f);
-                            }
-                        }
-                    }
-
-                    segment->min = sock->a->pts[segment_index];
-                    segment->max = segment->min;
-                    AdjustMinMaxBox(&sock->b->pts[segment_index], &segment->min, &segment->max);
-                    if ((sock->flags & 1) == 0) {
-                        AdjustMinMaxBox(&sock->c->pts[segment_index], &segment->min, &segment->max);
-                        AdjustMinMaxBox(&sock->d->pts[segment_index], &segment->min, &segment->max);
-                    }
-                    AdjustMinMaxBox(&sock->a->pts[next], &segment->min, &segment->max);
-                    AdjustMinMaxBox(&sock->b->pts[next], &segment->min, &segment->max);
-                    if ((sock->flags & 1) == 0) {
-                        AdjustMinMaxBox(&sock->c->pts[next], &segment->min, &segment->max);
-                        AdjustMinMaxBox(&sock->d->pts[next], &segment->min, &segment->max);
-
-                        NuVecSurfaceNormal(&segment->planes[0], &sock->a->pts[segment_index],
-                                           &sock->b->pts[segment_index], &sock->d->pts[segment_index]);
-                        NuVecSurfaceNormal(&segment->planes[1], &sock->a->pts[next], &sock->b->pts[next],
-                                           &sock->b->pts[segment_index]);
-                        NuVecSurfaceNormal(&segment->planes[2], &sock->b->pts[next], &sock->c->pts[next],
-                                           &sock->c->pts[segment_index]);
-                        NuVecSurfaceNormal(&segment->planes[3], &sock->c->pts[next], &sock->d->pts[next],
-                                           &sock->d->pts[segment_index]);
-                        NuVecSurfaceNormal(&segment->planes[4], &sock->d->pts[next], &sock->a->pts[next],
-                                           &sock->a->pts[segment_index]);
-                        NuVecSurfaceNormal(&segment->planes[5], &sock->b->pts[next], &sock->a->pts[next],
-                                           &sock->c->pts[next]);
-                    }
-
-                    segment->length = NuVecDist(&segment->midpoint, &segment->next_midpoint, NULL);
-                    segment->distance_from_start = distance_from_start;
-                    distance_from_start += segment->length;
-                }
-            }
-
-            sock->unknown_98 = sock->mid == NULL ? 0.0f : SplineLength(sock->mid, sock->unknown_33);
-            if (sock->mid == NULL) {
-                i32 segment_count;
-
-                segment_count = sock->length + (sock->unknown_33 != 0 ? 1 : 0);
-                {
-                    i32 segment;
-
-                    for (segment = 0; segment < segment_count; ++segment) {
-                        sock->unknown_98 += sock->segments[segment].length;
-                    }
-                }
-            }
-            buf->addr += segments_size;
+        if (sock->valid == 0) {
+            continue;
         }
+
+        if (buf->addr + sock->cam->length * sizeof(SOCKROT_PC) >= buf_end.addr) {
+            return;
+        }
+        sock->cam_rotations = (SOCKROT_PC *)buf->void_ptr;
+        buf->void_ptr = SockRailAngles(sock, sock->cam, sock->cam_rotations);
+
+        if (buf->addr + sock->cam->length * sizeof(SOCKROT_PC) >= buf_end.addr) {
+            return;
+        }
+        sock->mid_rotations = (SOCKROT_PC *)buf->void_ptr;
+        buf->void_ptr = SockRailAngles(sock, sock->mid, sock->mid_rotations);
+
+        if (buf->addr + sock->cam->length * sizeof(SOCKSEGMENT_PC) >= buf_end.addr) {
+            return;
+        }
+        sock->segments = (SOCKSEGMENT_PC *)buf->void_ptr;
+        segment = sock->segments;
+        distance_from_start = 0.0f;
+        for (segment_index = 0; segment_index < sock->cam->length; ++segment_index, ++segment) {
+            i32 next = (segment_index + 1) % sock->cam->length;
+
+            if ((sock->flags & 1) == 0) {
+                NuVecSurfaceNormal(&segment->planes[0], &sock->a->pts[segment_index], &sock->b->pts[segment_index],
+                                   &sock->d->pts[segment_index]);
+                NuVecSurfaceNormal(&segment->planes[1], &sock->a->pts[next], &sock->b->pts[next],
+                                   &sock->b->pts[segment_index]);
+                NuVecSurfaceNormal(&segment->planes[2], &sock->b->pts[next], &sock->c->pts[next],
+                                   &sock->c->pts[segment_index]);
+                NuVecSurfaceNormal(&segment->planes[3], &sock->c->pts[next], &sock->d->pts[next],
+                                   &sock->d->pts[segment_index]);
+                NuVecSurfaceNormal(&segment->planes[4], &sock->d->pts[next], &sock->a->pts[next],
+                                   &sock->a->pts[segment_index]);
+                NuVecSurfaceNormal(&segment->planes[5], &sock->b->pts[next], &sock->a->pts[next], &sock->c->pts[next]);
+                NuVecAdd(&segment->midpoint, &sock->a->pts[segment_index], &sock->b->pts[segment_index]);
+                NuVecAdd(&segment->midpoint, &segment->midpoint, &sock->c->pts[segment_index]);
+                NuVecAdd(&segment->midpoint, &segment->midpoint, &sock->d->pts[segment_index]);
+                NuVecScale(&segment->midpoint, &segment->midpoint, 0.25f);
+                NuVecAdd(&segment->next_midpoint, &sock->a->pts[next], &sock->b->pts[next]);
+                NuVecAdd(&segment->next_midpoint, &segment->next_midpoint, &sock->c->pts[next]);
+                NuVecAdd(&segment->next_midpoint, &segment->next_midpoint, &sock->d->pts[next]);
+                NuVecScale(&segment->next_midpoint, &segment->next_midpoint, 0.25f);
+                segment->max = sock->a->pts[segment_index];
+                segment->min = segment->max;
+                AdjustMinMaxBox(&sock->b->pts[segment_index], &segment->min, &segment->max);
+                AdjustMinMaxBox(&sock->c->pts[segment_index], &segment->min, &segment->max);
+                AdjustMinMaxBox(&sock->d->pts[segment_index], &segment->min, &segment->max);
+                AdjustMinMaxBox(&sock->a->pts[next], &segment->min, &segment->max);
+                AdjustMinMaxBox(&sock->b->pts[next], &segment->min, &segment->max);
+                AdjustMinMaxBox(&sock->c->pts[next], &segment->min, &segment->max);
+                AdjustMinMaxBox(&sock->d->pts[next], &segment->min, &segment->max);
+            } else {
+                NuVecAdd(&segment->midpoint, &sock->a->pts[segment_index], &sock->b->pts[segment_index]);
+                NuVecScale(&segment->midpoint, &segment->midpoint, 0.5f);
+                NuVecAdd(&segment->next_midpoint, &sock->a->pts[next], &sock->b->pts[next]);
+                NuVecScale(&segment->next_midpoint, &segment->next_midpoint, 0.5f);
+                segment->max = sock->a->pts[segment_index];
+                segment->min = segment->max;
+                AdjustMinMaxBox(&sock->b->pts[segment_index], &segment->min, &segment->max);
+                AdjustMinMaxBox(&sock->a->pts[next], &segment->min, &segment->max);
+                AdjustMinMaxBox(&sock->b->pts[next], &segment->min, &segment->max);
+            }
+
+            if (sock->mid != NULL) {
+                segment->length = NuVecDist(&sock->mid->pts[segment_index], &sock->mid->pts[next], NULL);
+            } else {
+                segment->length = NuVecDist(&sock->segments[segment_index].midpoint,
+                                            &sock->segments[segment_index].next_midpoint, NULL);
+            }
+            segment->distance_from_start = distance_from_start;
+            distance_from_start += segment->length;
+        }
+
+        if (sock->mid != NULL) {
+            sock->unknown_98 = SplineLength(sock->mid, sock->unknown_33);
+        } else {
+            i32 segment_count;
+
+            sock->unknown_98 = 0.0f;
+            segment_count = sock->length;
+            if (sock->unknown_33 != 0) {
+                ++segment_count;
+            }
+            for (segment_index = 0; segment_index < segment_count; ++segment_index) {
+                sock->unknown_98 += NuVecDist(&sock->segments[segment_index].midpoint,
+                                              &sock->segments[segment_index].next_midpoint, NULL);
+            }
+        }
+        buf->void_ptr = segment;
     }
 
     buf->addr = ((buf->addr + 15) & ~15u);
-    {
-        i32 sock_index;
+    sock = sock_sys->socks;
+    for (sock_index = 0; sock_index < 0x40; ++sock_index, ++sock) {
+        SOCK_PC *other;
+        i32 other_index;
 
-        for (sock_index = 0; sock_index < 0x40; ++sock_index) {
-            SOCK_PC *sock;
+        if (sock->valid == 0) {
+            continue;
+        }
+        other = sock_sys->socks;
+        for (other_index = 0; other_index < 0x40; ++other_index, ++other) {
+            i32 ignore_y;
+            i32 segment_count;
+            i32 other_segment_count;
+            i32 segment;
 
-            sock = &sock_sys->socks[sock_index];
-            if (sock->valid == 0) {
+            if (sock_index == other_index || other->valid == 0) {
                 continue;
             }
-            {
-                i32 other_index;
+            if ((sock->flags & 1) != 0 || (other->flags & 1) != 0) {
+                ignore_y = 1;
+            } else {
+                ignore_y = 0;
+            }
+            if (!SOCK_BOUNDS_SEPARATE(&sock->min, &sock->max, &other->min, &other->max, ignore_y)) {
+                segment_count = sock->length;
+                if (sock->unknown_33 != 0) {
+                    ++segment_count;
+                }
+                other_segment_count = other->length;
+                if (other->unknown_33 != 0) {
+                    ++other_segment_count;
+                }
+                for (segment = 0; segment < segment_count; ++segment) {
+                    i32 other_segment;
 
-                for (other_index = 0; other_index < 0x40; ++other_index) {
-                    SOCK_PC *other;
-                    i32 ignore_y;
-                    i32 segment_count;
-                    i32 other_segment_count;
-                    i32 overlap;
-
-                    other = &sock_sys->socks[other_index];
-                    if (sock_index == other_index || other->valid == 0) {
-                        continue;
-                    }
-                    ignore_y = (sock->flags & 1) != 0 || (other->flags & 1) != 0;
-                    if (!SOCK_BOUNDS_OVERLAP(&sock->min, &sock->max, &other->min, &other->max, ignore_y)) {
-                        sock->overlap_exclusion_mask[other_index / 32] |= 1u << (other_index & 31);
-                        continue;
-                    }
-
-                    segment_count = sock->length + (sock->unknown_33 != 0 ? 1 : 0);
-                    other_segment_count = other->length + (other->unknown_33 != 0 ? 1 : 0);
-                    overlap = 0;
-                    {
-                        i32 segment;
-
-                        for (segment = 0; segment < segment_count && !overlap; ++segment) {
-                            {
-                                i32 other_segment;
-
-                                for (other_segment = 0; other_segment < other_segment_count; ++other_segment) {
-                                    if (SOCK_BOUNDS_OVERLAP(&sock->segments[segment].min, &sock->segments[segment].max,
-                                                            &other->segments[other_segment].min,
-                                                            &other->segments[other_segment].max, ignore_y)) {
-                                        overlap = 1;
-                                        break;
-                                    }
-                                }
-                            }
+                    for (other_segment = 0; other_segment < other_segment_count; ++other_segment) {
+                        if (SOCK_BOUNDS_TOUCH(&sock->segments[segment].min, &sock->segments[segment].max,
+                                              &other->segments[other_segment].min, &other->segments[other_segment].max,
+                                              ignore_y)) {
+                            goto next_other;
                         }
-                    }
-
-                    if (!overlap) {
-                        sock->overlap_exclusion_mask[other_index / 32] |= 1u << (other_index & 31);
                     }
                 }
             }
+            sock->overlap_exclusion_mask[other_index / 32] |= 1u << (other_index & 31);
+        next_other:;
         }
     }
 }
