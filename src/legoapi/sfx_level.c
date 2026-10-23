@@ -90,8 +90,9 @@ void __cdecl SetLevelSfxBits(WORLDINFO *world) {
         for (i = 0; i < world->cutscene_sys->count; ++i) {
             for (j = 0; j < 6; ++j) {
                 LEVEL_SFX_CUT_PC *cut = (LEVEL_SFX_CUT_PC *)world->cutscene_sys->records[i];
-                if (cut->sfx[j].id != -1)
-                    sfx_ids[sfx_count++] = cut->sfx[j].id;
+                i32 id = cut->sfx[j].id;
+                if (id != -1)
+                    sfx_ids[sfx_count++] = id;
             }
         }
     }
@@ -113,7 +114,7 @@ void __cdecl SetLevelSfxBits(WORLDINFO *world) {
         }
         ADD_SFX("exp_thermalDet");
         ADD_SFX("imp_thermalDet_attach");
-        if (world->area != NULL && world->area == SPEEDERCHASE_ADATA) {
+        if (world->area == SPEEDERCHASE_ADATA) {
             ADD_SFX("XWing_LoopDeLoop");
         }
     } else {
@@ -325,27 +326,14 @@ void __cdecl SetLevelSfxBits(WORLDINFO *world) {
             ADD_SFX("Turret_PitchLp");
             ADD_SFX("Turret_YawLp");
             ADD_SFX("Turbo_Fire");
-        } else if (level == DEATHSTARESCAPEA_LDATA) {
-            ADD_SFX("Dianoga_Groan");
-            ADD_SFX("Dianoga_Roar");
-        } else if (level == DEATHSTARESCAPED_LDATA) {
+        } else if (level == DEATHSTARESCAPEA_LDATA || level == DEATHSTARESCAPED_LDATA) {
             ADD_SFX("Dianoga_Groan");
             ADD_SFX("Dianoga_Roar");
         } else if (level == DEATHSTARESCAPEB_LDATA) {
             ADD_SFX("SqueakWash");
-        } else if (level == DEATHSTARESCAPEC_LDATA) {
-            ADD_SFX("FField");
-            ADD_SFX("FFieldOff");
-        } else if (level == DEATHSTARBATTLEA_LDATA) {
-            ADD_SFX("FField");
-            ADD_SFX("FFieldOff");
-        } else if (level == DEATHSTARBATTLEB_LDATA) {
-            ADD_SFX("FField");
-            ADD_SFX("FFieldOff");
-        } else if (level == DEATHSTARBATTLEC_LDATA) {
-            ADD_SFX("FField");
-            ADD_SFX("FFieldOff");
-        } else if (level == DEATHSTARBATTLED_LDATA) {
+        } else if (level == DEATHSTARESCAPEC_LDATA || level == DEATHSTARBATTLEA_LDATA ||
+                   level == DEATHSTARBATTLEB_LDATA || level == DEATHSTARBATTLEC_LDATA ||
+                   level == DEATHSTARBATTLED_LDATA) {
             ADD_SFX("FField");
             ADD_SFX("FFieldOff");
         } else if (level == HOTHESCAPEA_LDATA) {
@@ -367,11 +355,7 @@ void __cdecl SetLevelSfxBits(WORLDINFO *world) {
             ADD_SFX("FFieldOff");
         } else if (level == DEATHSTAR2BATTLED_LDATA) {
             ADD_SFX("ForceLightningLp");
-        } else if (level == JABBASPALACEA_LDATA) {
-            ADD_SFX("SwDisco");
-        } else if (level == JABBASPALACEB_LDATA) {
-            ADD_SFX("SwDisco");
-        } else if (level == JABBASPALACED_LDATA) {
+        } else if (level == JABBASPALACEA_LDATA || level == JABBASPALACEB_LDATA || level == JABBASPALACED_LDATA) {
             ADD_SFX("SwDisco");
         } else if (level == JABBASPALACEE_LDATA) {
             ADD_SFX("exp_minecart");
