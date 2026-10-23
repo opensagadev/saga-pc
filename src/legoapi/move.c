@@ -3813,19 +3813,20 @@ extern i16 id_SENTRYDROID, id_ATST_LOWRES, VehicleSpecialShooterIdPc, id_CATAPUL
 
 STATIC_ASSERT(offsetof(VEHICLE_SHOOT_STATE_PC, bolt_fire_phase) == 0xe3a);
 
-static __declspec(noinline) i32 DeactivatedMindTrickFilterPc(GAMEOBJECT *owner, GAMEOBJECT *target) {
+static __declspec(noinline) i32 DeactivatedMindTrickFilterPc(GAMEOBJECT *target, GAMEOBJECT *owner) {
     i8 context;
     PLAYERCHARACTERCONFIG_PC *data;
-    if ((target->flags_1fc_word & 0x1001) != 0x1001 || target->dead != 0 || target->field_281 == 0 ||
-        (owner != NULL && target == owner) || target->field_280 != 0xff || (target->portal_flags & 0x08000000) != 0 ||
-        CannotKill(target) || target->character_model->model_data_b[0x41] == NULL)
+    if ((target->flags_1fc_word & 1) == 0 || (target->flags_1fc_word & 0x1000) == 0 || target->dead != 0 ||
+        target->field_281 == 0 || (owner != NULL && target == owner) || target->field_280 != 0xff ||
+        (target->portal_flags & 0x08000000) != 0 || CannotKill(target) ||
+        target->character_model->model_data_b[0x41] == NULL)
         return 0;
     context = target->character_context;
     if (context == 0x39 || context == 0x3c || context == 0x3b || context == 0x17 || context == 0x41 || context == 0xf ||
         context == 0x47 || context == 0x46 || (target->character_data->model_flags & 0x10) != 0)
         return 0;
     data = target->character_data->game_character;
-    if ((data->flags_090 & 0x8000) != 0 || (CInfo[context].flags & 0x8000) != 0)
+    if ((data->flags_090 & 0x8000) != 0 || (U64_PAIR(&CInfo[context].flags) & 0x8000) != 0)
         return 0;
     return (data->flags_094 & 0x200) == 0;
 }
@@ -3914,7 +3915,9 @@ static __declspec(noinline) void CommunicateCode(GAMEOBJECT *object, i32 pressed
 
 static __declspec(noinline) void DeactivatedCode(GAMEOBJECT *object) {
     i32 controlled = 0, i, kind, count, selected;
-    f32 elapsed, duration, range;
+    f32 duration, range;
+    f64 elapsed;
+    f32 *playing;
     GAMEOBJECT *targets[10], *candidate, *target, *player;
     DEACTIVATED_MOVE_VIEW_PC *view = (DEACTIVATED_MOVE_VIEW_PC *)object;
     if (object->character_context == 0x41) {
@@ -3936,22 +3939,24 @@ static __declspec(noinline) void DeactivatedCode(GAMEOBJECT *object) {
         if (controlled || object->takeover_source != NULL || (object->flags_1fc & 0x80) != 0) {
             if (object->character_context == 0x17)
                 ActivatePlayer(object);
-        } else if (object->character_context != 0x2b && object->character_context != 0x3e) {
-            if (object->character_context != 0x17)
-                DeactivatePlayer(object, 1000000000.0f, NULL);
-            else
+        } else if (object->character_context != 0x3e && object->character_context != 0x2b) {
+            if (object->character_context == 0x17)
                 object->context_timer = 1000000000.0f;
+            else
+                DeactivatePlayer(object, 1000000000.0f, NULL);
         }
     }
     if (object->character_context != 0x17)
         return;
-    if (object->character_model->model_data_b[object->field_7aa] == NULL) {
-        object->context_duration += FRAMETIME;
-    } else {
-        if (AnimPlaying(&object->anim_packet, object->field_7aa, 1, 0) == NULL)
+    playing = NULL;
+    if (object->character_model->model_data_b[object->field_7aa] != NULL) {
+        playing = AnimPlaying(&object->anim_packet, object->field_7aa, 1, 0);
+        if (playing == NULL)
             return;
-        elapsed = object->context_duration + FRAMETIME;
-        object->context_duration = elapsed;
+    }
+    object->context_duration = object->context_duration + FRAMETIME;
+    elapsed = object->context_duration;
+    if (playing != NULL) {
         if (object->field_7aa == 0x81) {
             if (AnimDuration((i16)object->id, 0x81, 0.0f, 0.0f, 1) <= elapsed) {
                 if (object->character_model->model_data_b[0x41] == NULL) {
@@ -3959,7 +3964,7 @@ static __declspec(noinline) void DeactivatedCode(GAMEOBJECT *object) {
                     return;
                 }
                 object->field_7aa = 0x41;
-                if (object->context_timer != 1000000000.0f)
+                if (1000000000.0 != object->context_timer)
                     object->context_timer -= object->context_duration;
                 object->context_duration = 0.0f;
             }
@@ -3969,7 +3974,7 @@ static __declspec(noinline) void DeactivatedCode(GAMEOBJECT *object) {
             return;
         }
     }
-    if (object->context_timer != 1000000000.0f && object->context_timer < object->context_duration)
+    if (1000000000.0 != object->context_timer && object->context_timer < object->context_duration)
         ActivatePlayer(object);
     else if ((object->character_data->model_flags & 0x20) != 0)
         SetProtocolDroidDeactivatedAction(object);
@@ -3979,15 +3984,15 @@ static __declspec(noinline) void DeactivatedCode(GAMEOBJECT *object) {
     if (!(view->action_delay <= 0.0f))
         return;
     if (object->action_movement_state == 2) {
+        range = 3.0f;
         kind = 2;
         duration = DEACTIVATEDTIME;
-        range = 3.0f;
     } else {
         if (!ForcePush_SuperMindTrick || object->action_movement_state != 1)
             return;
+        range = 1.0f;
         kind = 1;
         duration = 5.0f;
-        range = 1.0f;
     }
     range *= range;
     count = 0;
@@ -3995,14 +4000,21 @@ static __declspec(noinline) void DeactivatedCode(GAMEOBJECT *object) {
     for (i = 0; i < HIGHGAMEOBJECT && count < 10; ++i, ++candidate) {
         target = candidate;
         if (kind == 1) {
-            if (!DeactivatedMindTrickFilterPc(object, target))
+            if (!DeactivatedMindTrickFilterPc(target, object))
                 continue;
-        } else if (!DeactivatedZapFilterPc(object, target))
-            continue;
+        } else if (kind == 2) {
+            if (!DeactivatedZapFilterPc(object, target))
+                continue;
+        }
         if (NuVecDistSqr(&target->collision_position, &object->collision_position, NULL) < range)
             targets[count++] = target;
     }
-    selected = count == 1 ? 0 : count > 1 ? qrand() / (0xffff / count + 1) : -1;
+    if (count > 1)
+        selected = qrand() / (0xffff / count + 1);
+    else if (count == 1)
+        selected = 0;
+    else
+        selected = -1;
     if (selected == -1)
         return;
     target = targets[selected];
@@ -4010,9 +4022,9 @@ static __declspec(noinline) void DeactivatedCode(GAMEOBJECT *object) {
         target->action_movement_state = (u8)kind;
         target->context_variant_flags =
             (target->context_variant_flags & ~0x100) | (object->context_variant_flags & 0x100);
-        if (kind == 2) {
+        if (target->action_movement_state == 2) {
             PlaySfx("R2Zap", &object->collision_position);
-            AddGameDebris(WORLD->game_debris_sys, (target->context_variant_flags & 0x100) != 0 ? 1 : 3,
+            AddGameDebris(WORLD->game_debris_sys, ((target->context_variant_flags >> 8) & 1) != 0 ? 1 : 3,
                           &target->collision_position);
             GameCam_HitJudder();
         }
