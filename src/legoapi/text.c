@@ -141,24 +141,25 @@ void Text_MakeScore(u32 score, char *text) {
 }
 
 i32 Text_StripComments(char *text, char *dest, i32 separators) {
+    i32 count = 0;
     char *end = text + NuStrLen(text);
-    char *out = dest;
+
     while (text <= end) {
         char character = *text;
         if (character == ';' || character == '#' || (character == '/' && *++text == '/')) {
-            do {
+            ++text;
+            while ((character = *text) != '\r' && character != '\n' && character != '\0')
                 ++text;
-                character = *text;
-            } while (character != '\r' && character != '\n' && character != '\0');
         }
         character = *text++;
         if (separators != 0 && (character == '=' || character == ',')) {
             character = ' ';
         }
-        *out++ = character;
+        *dest++ = character;
+        ++count;
     }
-    *out = '\0';
-    return (i32)(out - dest);
+    *dest = '\0';
+    return count;
 }
 
 void IntroText_SetTextID(i32 id) {
