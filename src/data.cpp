@@ -29364,6 +29364,15 @@ extern "C" {
 #pragma bss_seg(".bss$edpart_data_menu")
     struct eduimenu_s *edpart_data_menu = 0;
 
+#pragma bss_seg(".bss$edpart_first_time_this_level")
+    i32 edpart_first_time_this_level = 0;
+
+#pragma bss_seg(".bss$edpart_curr")
+    i32 edpart_curr = 0;
+
+#pragma bss_seg(".bss$edpart_copy_source")
+    i32 edpart_copy_source[8] = {0};
+
 #pragma bss_seg(".bss$edpart_tint_menu")
     struct eduimenu_s *edpart_tint_menu = 0;
 

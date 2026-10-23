@@ -1028,3 +1028,37 @@ void edpartDataMenu(eduimenu_s *menu, eduiitem_s *unused1, u32 unused2) {
         edpart_data_menu->y = menu->y + 40;
     }
 }
+
+extern struct PC_SCENE_MTL_VIEW *edpart_mtl;
+extern struct PC_SCENE_MTL_VIEW *edpart_boxmtl;
+extern i32 edpart_first_time_this_level;
+extern i32 edpart_curr;
+
+void edpartInit(void) {
+    edpart_first_time_this_level = 1;
+    edpart_mtl = (struct PC_SCENE_MTL_VIEW *)NuMtlCreate3D(1);
+    ((NUMTL *)edpart_mtl)->diffuse_r = 0.5f;
+    ((NUMTL *)edpart_mtl)->diffuse_g = 0.5f;
+    ((NUMTL *)edpart_mtl)->diffuse_b = 0.5f;
+    ((NUMTL *)edpart_mtl)->attribs.cull_mode = 2;
+    ((NUMTL *)edpart_mtl)->attribs.z_mode = 0;
+    ((NUMTL *)edpart_mtl)->opacity = 1.0f;
+    ((NUMTL *)edpart_mtl)->attribs.alpha_mode = 0;
+    NuMtlUpdate((NUMTL *)edpart_mtl);
+    edpart_boxmtl = (struct PC_SCENE_MTL_VIEW *)NuMtlCreate(1);
+    ((NUMTL *)edpart_boxmtl)->diffuse_r = 0.5f;
+    ((NUMTL *)edpart_boxmtl)->diffuse_g = 0.5f;
+    ((NUMTL *)edpart_boxmtl)->diffuse_b = 0.5f;
+    ((NUMTL *)edpart_boxmtl)->attribs.cull_mode = 2;
+    ((NUMTL *)edpart_boxmtl)->attribs.z_mode = 3;
+    ((NUMTL *)edpart_boxmtl)->opacity = 1.0f;
+    ((NUMTL *)edpart_boxmtl)->attribs.alpha_mode = 0;
+    NuMtlUpdate((NUMTL *)edpart_boxmtl);
+    edpart_nearest = -1;
+    edpart_curr = -1;
+    edpart_create_type = -1;
+    edpart_effect_list = 0;
+    edpart_emitrotz = 0;
+    edpart_emitroty = 0;
+    edpart_emitrotx = 0;
+}

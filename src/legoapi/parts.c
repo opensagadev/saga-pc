@@ -3793,6 +3793,66 @@ void __cdecl edpartInstanceSettingsMenu(eduimenu_s *menu, eduiitem_s *unused1, u
     edpart_instancesettings_menu->y = menu->y + 40;
 }
 
+extern NUMTL *edpart_mtl;
+extern i32 edpart_copy_source[8];
+extern NUVEC edpart_copy_source_vec;
+extern i32 edpart_copy_source_count;
+void edbitsDrawCube(f32 x, f32 y, f32 z, f32 half_x, f32 half_y, f32 half_z, i32 rotation_z, i32 rotation_y,
+                    i32 rotation_x, i32 outer_z, i32 outer_y, i32 colour, struct PC_SCENE_MTL_VIEW *material);
+
+void edpartHighlightNearest(void) {
+    extern i32 edpart_copy_mode, edpart_copyroty, edpart_copy_enclosed;
+    extern f32 edpart_copy_size;
+    i32 index;
+    NUVEC delta;
+    NUVEC offset;
+    NUVEC destination;
+    union {
+        f32 value;
+        u32 bits;
+    } temp;
+    union {
+        f32 value[3];
+        u32 bits[3];
+    } abs_delta;
+    if (edpart_copy_mode != 0) {
+        edpart_copy_enclosed = 0;
+        for (index = 0; index < 512; ++index) {
+            if (part_emits[index].instance_id == -1 || part_emits[index].instance_id == 99999)
+                continue;
+            NuVecSub(&delta, &PartEditorCameraPosPc, &part_emits[index].position);
+            temp.value = delta.x;
+            abs_delta.bits[0] = temp.bits & 0x7fffffff;
+            if (!(abs_delta.value[0] <= edpart_copy_size))
+                continue;
+            temp.value = delta.y;
+            abs_delta.bits[1] = temp.bits & 0x7fffffff;
+            if (!(abs_delta.value[1] <= edpart_copy_size))
+                continue;
+            temp.value = delta.z;
+            abs_delta.bits[2] = temp.bits & 0x7fffffff;
+            if (!(abs_delta.value[2] <= edpart_copy_size))
+                continue;
+            ++edpart_copy_enclosed;
+            edbitsDrawDiagonalCross(part_emits[index].position.x, part_emits[index].position.y,
+                                    part_emits[index].position.z, 0.05f, -1, (struct PC_SCENE_MTL_VIEW *)edpart_mtl);
+        }
+        if (edpart_copy_source_count > 0) {
+            for (index = 0; index < edpart_copy_source_count; ++index) {
+                NuVecSub(&offset, &part_emits[edpart_copy_source[index]].position, &edpart_copy_source_vec);
+                NuVecRotateY(&offset, &offset, edpart_copyroty);
+                NuVecAdd(&destination, &PartEditorCameraPosPc, &offset);
+                edbitsDrawDiagonalCross(destination.x, destination.y, destination.z, 0.05f, 0xff808080,
+                                        (struct PC_SCENE_MTL_VIEW *)edpart_mtl);
+            }
+        }
+    } else if (edpart_nearest != -1) {
+        edbitsDrawCube(part_emits[edpart_nearest].position.x, part_emits[edpart_nearest].position.y,
+                       part_emits[edpart_nearest].position.z, 0.5f, 0.5f, 0.5f, 0, 0, 0, 0, 0, -1,
+                       (struct PC_SCENE_MTL_VIEW *)edpart_mtl);
+    }
+}
+
 void edpartRender() {
     edcamSet();
     edpartDrawCursor();

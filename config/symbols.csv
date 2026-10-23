@@ -24763,6 +24763,7 @@ address,symbol,size,ctype
 0x2913a74,_edpart_mtl,4,struct PC_SCENE_MTL_VIEW *
 0x02913a78,_part_types,48128,PARTTYPE_LOOKUP_PC[128]
 0x0291f684,_Part,4,PART_PC *
+0x291f688,_edpart_curr,4,i32
 0x291f68c,_edpart_nearest_orphans,4,i32
 0x291f698,_edpart_emittime_menu,4,struct eduimenu_s *
 0x291f69c,_PartImpactNormalPrivate,,NUVEC
@@ -24771,10 +24772,11 @@ address,symbol,size,ctype
 0x291f734,_PartEditorCameraPosPc,,NUVEC
 0x291f754,_edpart_maxlife_menu,4,struct eduimenu_s *
 0x291f764,_edpart_copy_source_vec,12,NUVEC
-0x291f774,_edpart_copy_source,,
+0x291f774,_edpart_copy_source,32,i32[8]
 0x291f7a0,_part_platimpactcnt,,i32
 0x291f7a8,_edpart_nearest_duplicates,4,i32
 0x291f7b8,_edpart_name_menu,4,struct eduimenu_s *
+0x291f7c4,_edpart_first_time_this_level,4,i32
 0x291f7c8,_part_emits,4320,PART_EMIT_PC[40]
 0x29208a8,_edpart_nearest,,i32
 0x29208b8,_edpart_changegenrate_menu,4,struct eduimenu_s *
