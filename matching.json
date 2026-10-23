@@ -10,14 +10,14 @@
     "src/debug/support.h": "80189574e359149a1295ee91b01406554255bae645f8124183dbd7741e2540af",
     "src/externals.h": "f45c1c613e898d9c801cacc9d610ba4ad98b747b5dcac8d8812b52ae216242db",
     "src/nu2api/pc_fmv_native.h": "5e8099e12936dadb8dd743c1edba21b8f95d965c630650ed676d5f90e9c1da5b",
-    "src/saga.h": "ee72f10efd3461ce4e9c31ad2a84164983a1189e53a388064caad0353b18f6e2",
+    "src/saga.h": "063a3b201bd9ef72e434d1c327749492fa6e036d6f846f777522a0124473748f",
     "config/candidate-only.json": "06daba8e36fc65ea2cac5c7ad3a080de234fdc21d332d6fc66066a04570b5131",
     "config/code-groups.json": "0c7700323db8a7240f98cd4ab349200bbf0a8f580d3ca93167477e00c7db77cc",
     "config/data-members.json": "fe09365da4c355f220d724ca99394fc120b758891b4188d2c49707b6df0894f2",
     "config/library-objects.json": "e5ae24d3eac36fa0d0cb098f7690faaef3110f225db30c8cbf0f7d0d64f6ecfe",
     "config/ogg-vorbis.json": "7f98d40938e6bd6060c6bdfc2ce39d9cfb1c822243693eeb1d85d46b43dcad24",
     "config/project.json": "9a3650958be769951860d2c457f8573049ecae76e48ce8f3d7383e4ca2b761a6",
-    "config/symbols.csv": "5a95e04391809b5c5c916ac603a594c3c6e9099b32405f5f904bd54680573a18",
+    "config/symbols.csv": "4f3c850b012109fdffa1387b37a60f89096c10e851a77a073acb27fcca31f123",
     "config/symbols.md": "dffbdaac86011e3aee74b404063c15bda97f88af3db337ffef9f1bad1785d212",
     "config/toolchain.json": "b8808088bb2c7eb239785f69c9e464ae8545216d5705fb37216bc0cf926732f3",
     "config/tools.json": "50199f6b132a7abfabf251e98a75be0a957abfe50f1ff776188fba21e4c4436f",
@@ -62,7 +62,7 @@
     "tools/test_lib.py": "d016747de7295ee9d2a592cd6e4358c6faec6a8a386af584d90438424762ab1f",
     "tools/test_match.py": "5604613f9dec760b59f050f7db2b03d7e2edb5c2fcb4cd78a92e0850f210ce4c",
     "tools/test_object_analysis.py": "bd0e99266de800c5f04054be1be1f56e51f78b3700c4bf544b8ec88325172f56",
-    "tools/test_primitive.py": "74659eaec91d22f21448253b01233b584e9f0b6876e6fc0f5c8c3a6a846ad621",
+    "tools/test_primitive.py": "eef6e36532d0c0fc7b1a9b0e888e827db4d7381ef9a1563d8a308fa2b72efa65",
     "tools/test_rewrite.py": "4d254d14c49225064b770fe17862eba99a5d123e9ef5612084be2a84baf21be5",
     "tools/test_setup.py": "3eb3123e87f6bb27d60f5fa772b5231d679c32eb314b4c5717f3c66750f3b47b",
     "tools/typeimport.py": "1e7e7d7dcb098d94a2d6665bb790704534cf4c4ed61e7c4ab5d7516f5875f502",
@@ -156,7 +156,7 @@
     "src/nu2api/key_events.cpp": "3c134ce21e2c349174f035ba4fde999f31651ba21baa1b39aafd87ec05ec95ac",
     "src/nu2api/nucore.cpp": "10bfdb550b18104134d179d426325627fc767e2417f35c58b7af8f583ab1e749",
     "src/nu2api/nudebug_pc.cpp": "88310cb6d37bd0d69571c6f9cf140b93fe26496405f80671ea8763863fe96cfb",
-    "src/nu2api/nudlist.cpp": "063b9d84ec76afa120906519fc1832ef734f4e5d68b5fb5d5f3b2e1f2a5f9e69",
+    "src/nu2api/nudlist.cpp": "97d6f9fb4604d3102b5f3bf142066ee715eeed8101daa9d71a86b140cfe0881c",
     "src/nu2api/nudlist_material_pc.cpp": "f69adfb471f8faafee72ab59dacd75e7088331c3080cbdf157da66b0275d7964",
     "src/nu2api/nudynamiclight.cpp": "fe419fc1fe6eafca8ea879a671c09c04d2653f8c976b24551105bdc825b49e24",
     "src/nu2api/nufrustum_pc.cpp": "b52dcc1223387a6c23b130660d36456beccaa7436b9e404d2bb2389f7a0bce9b",
@@ -210,7 +210,7 @@
     "src/gameapi/aiscript.c": "4028fc6fd1767a6b8724e71881841b82e12fd003a37300b08118a53497c5f1e5",
     "src/gameapi/aiscript_diagnostics.c": "16e689a9fa169e1baed3fc074f164232093b81c0af3c3b5dd4248ab787bc6a20",
     "src/gameapi/aisys.c": "b08f048ce413a6ce67f9e11450203346781490f1136bc1ceaf27fe575ba21b11",
-    "src/gameapi/apiobject.c": "1aefc9a42b86ecbfffc844ddd04c656befc9a71539e23dfeb5d3d358226357d3",
+    "src/gameapi/apiobject.c": "5d50e7b2686db17d55b14a507fabefc9230659071ef7c1cb06c554be1e858a30",
     "src/gameapi/apisave.c": "cc06447f47998f647703e79655c8c61c72854b6f2e502b3c3b6fff0d0ce6b5d2",
     "src/gameapi/edanim_load.c": "e9ec9bd1b555dc9de0563251e0f61dc24e3e0b229050328239325ff8949f4f4d",
     "src/gameapi/edanim_update.c": "e17e587a49a8eb0b34ffa03be1df596476c7d4ac34b6edf43843775464a2c845",
@@ -257,7 +257,7 @@
     "src/legoapi/cutscene_hooks.c": "4ae38c74fdd0fb5a72b821e2eed3eb138a0c13acca6d54c2cd2a2827d89f6350",
     "src/legoapi/cutscene_lifecycle.c": "f205d43d05072c66c77b3a0c8606491615f2af0a8a607356298868410c9d9b31",
     "src/legoapi/debris_callbacks.c": "c0a0d538e5bbe222ce7abc6ec9a798ee7067b96713e7a945df16fc8186c7ceca",
-    "src/legoapi/debris_engine.c": "ced11b29bdaa245ec104917a2b2f1bb793bc16c9462d0601209ead519c98c1e5",
+    "src/legoapi/debris_engine.c": "e17f3850781faed19528ff13eccb75e7be8dbdf18ac24dabe33efeb3007e87e0",
     "src/legoapi/dogfight_collision_pc.c": "0e8b74873c1d6b782d3e39817b107231e1f957d4a76cd567c2071dfff1d41735",
     "src/legoapi/dogfight_reset_constants_pc.c": "3e27ff6835ba599cd7246adfa6da93666ec2fa578beb6ee336bf2fe07fc4e22a",
     "src/legoapi/dogfight_reset_pc.c": "36f0b41b7c7bb0e4f56586bd6a8dd365cf6f5d4e50aaf08ac0be331b63193c7d",
@@ -266,8 +266,8 @@
     "src/legoapi/edgizshadowmachine.c": "a0767390528f063a3bdeba4a6e15f8d18efd4c3181e36aac3f9243de65885fc4",
     "src/legoapi/edsplines.c": "9fceba23f658c4040e56f426c698e3611702ddee5fa6e6dc829cb9bfc91e6873",
     "src/legoapi/episodeI.c": "6e24f3204533d63fd028dcd0bace7e44d2d7d6931d066ba677eb1783871e4837",
-    "src/legoapi/episodeII.c": "875191f17122d740687be0e766d4237f598c801d6ab9a13233f8bccfc1c9a911",
-    "src/legoapi/episodeIII.c": "317d0f8ea32e99e6dcc35cf433f10a5c18a4eea892fd8eb9e0eaf7d3dc839f51",
+    "src/legoapi/episodeII.c": "f1d3ea9b9163afd464834083a33d9c3b495266382a213a1723b4eb2c8aef3968",
+    "src/legoapi/episodeIII.c": "9f88cf016fce26ea9743ee1e329ee758a9fc363fb706536dbd328cd04405af99",
     "src/legoapi/episodeIV.c": "ce9c7a45cb864b3757a33d1fa4d726452770e72b5778732c9540d3cc5d530f52",
     "src/legoapi/episodeV.c": "2fb11289fc4be9f94e413c4221bb447aaeed7c63c2b27460669ba94e4f0987c7",
     "src/legoapi/episodeVI.c": "d439b505b43cbe5eeb37ced9d93c2a69bcf30b4e1458d8940958c8f79637a348",
@@ -283,7 +283,7 @@
     "src/legoapi/gameantinode.c": "eef88032a67839a41d0e602696505ec71dbe99e9812bf579ccb7783c8401d5af",
     "src/legoapi/gameaudio.c": "204c6691ccab7f4814fc6447b929dec85bf7dc8e9b72f1edddafe3e3404bfffb",
     "src/legoapi/gamemessages.c": "039754672b96a37e5b636382ccf4445ea4dca4d22ecd59dd34a8d8927cb4087b",
-    "src/legoapi/gameobjects.c": "e56c4d0948f5404f3b0c371193b9c9c562066858303a553068614842ec190f95",
+    "src/legoapi/gameobjects.c": "ae09bf85525ef1240734363194e2cecff9f1957b77366298cbeeb6678f182af6",
     "src/legoapi/gamepads.c": "f9a83da5f33af4363e7c46af2c3df1e027b208254499d0ac809ac1c02fd0f199",
     "src/legoapi/gamestatus.c": "087db948768d577b3f466c00b3568ce40b14166b15719f6b3f53961d5d3316f1",
     "src/legoapi/gcutscn.c": "b0136d8d1d5bb03f0aff5e94f344c308bdf687b29c427cfb170e4adb6dc116c2",
@@ -301,7 +301,7 @@
     "src/legoapi/gizmo_progress_pc.c": "96d0bd84fd64db52f0f51f6a8bbcc229417dbf04ad3a38c763d7b0bcdc481be2",
     "src/legoapi/gizmo_registry_pc.c": "35a187ac10ea5a7c3ab31b49ac43d05145586dafeb63ad0de0377ec7eff6e211",
     "src/legoapi/gizmoblowups.c": "1b046a7f64b32451de35fbec732ecb858944cddb58ed8c88ae324138a4f1c65b",
-    "src/legoapi/gizmopickups.c": "03e5e2fa5592257ed43f8561256d71f4da02eec3e1a45e9f633a1c261dbcd446",
+    "src/legoapi/gizmopickups.c": "3d5c99d9c7a6882468e407031e0b0c0600928f772ccb9cca1de8d0e372b8bca2",
     "src/legoapi/gizobstacle.c": "cf150e4821d8dbec0b5ae90b2e367c40e94d93cb59c14e02382fcf3c7422ef2a",
     "src/legoapi/gizpanel_pc.c": "4657aa2d3056b4ab7132648d90a71c6e474debbce2e5da5e08ca8f5923805c5b",
     "src/legoapi/gizportal.c": "c63ef50f4edd806c3f7cdccac78d67447d40a8ecc4b972d32ed0c797b119639e",
@@ -321,7 +321,7 @@
     "src/legoapi/indy_ai.c": "ef38ad870fd5836f1e0c25d48c97f88d6f124de813154baf80e22d71aa64db24",
     "src/legoapi/indy_special.c": "a7c277a7ad6e907d09424e382b513c82f88a2248494f5c05ebeeebc245de7420",
     "src/legoapi/indy_support.c": "c75f690d9dcaab4957e57d05372aec51281d205b21b24b983ae2fcb2d16cf184",
-    "src/legoapi/jumping.c": "5ffbaeec1eab43c5c82a06c490fcacf9dd03001cd85b5868cb7d78feabce46b0",
+    "src/legoapi/jumping.c": "171a7d0778d40401c5a2fb80aac928a853c2d9c2f80e4b7e93b383c857f2820a",
     "src/legoapi/legoapi_misc.c": "c8637dc53a7cad450309bf5eb3a460b3dd981aa1c3c142265c61c6b5276e8d07",
     "src/legoapi/level_area_load.c": "9039da6e37f16e532979118388b99fd15ca9115cbdfede430385f164e6e58f51",
     "src/legoapi/level_lifecycle.c": "f8048754c109149edf8f541c4b86a2d0d8ada7700b4a5af249f76798e89c924e",
@@ -331,14 +331,14 @@
     "src/legoapi/lever.c": "33e12c15eb237e27347ee072efc49dcdc71af0a6d350ae3ea37765583c21e2dc",
     "src/legoapi/lighting.c": "c5a80328573785729bc646c55d75dd94acd42ed678cdc60c2862ac84e9171592",
     "src/legoapi/lsw_hub_ai.c": "5751574b3546dc80bbb1cdf207a402f5b4f177f694de1dfb0c724f814e3be442",
-    "src/legoapi/menu.c": "118e43e31eb69cfe14706e1363543eb81b3d815158db2b94e5f3f08654ad9530",
+    "src/legoapi/menu.c": "4e7fdbdfad8e5d068019ff9a03359e470c9d018ee441caa92045f8f40ceb87fd",
     "src/legoapi/minicamcut.c": "c091a71540a4b882b7636180a6084c2bc7f5204c448d3989ec7a7e960e95b939",
     "src/legoapi/minikit_init_pc.c": "46c1a2e52545f6de809e4971dda962ad5943648744c2567c5c65ff6b9ab4e618",
     "src/legoapi/minikits.c": "78e6a91e277845c762c996661cfd034a413770af803867d70f3760907fbfc1a5",
     "src/legoapi/mission.c": "b6ce5e9e844e32467ba2d1e759d61799e5388bd376cb5894524169781c2232c1",
     "src/legoapi/missions.c": "5723bc2a3c0173a42c0beb22d0b7f5e886162f70728f8f9304c8c8a12ec7c9ef",
     "src/legoapi/model_animation.c": "ef78e3baf9aca6e9f638f4b195ef6cca7d5061a9ab739ebe9533b7f6dd75f5ab",
-    "src/legoapi/move.c": "a0a90bfeda47cbda943e33f6a912b1300f1daa5108ca82ef36202d5479de6e2d",
+    "src/legoapi/move.c": "c44b4b2a0d07d387509eed964c68ef32d3c3d23bf02508b586382b8e526a151c",
     "src/legoapi/movies_config_pc.c": "d3d0c7ee876c51ddc48ba70c0070ef3c3a47c5424af00fc36b2d01fc8e475def",
     "src/legoapi/narrow_sock_exceptions_pc.c": "66255d23ce153772608982a149b502563e94b3472078dc9237a35d845fad1cbb",
     "src/legoapi/netplay.c": "08f5e9eb81ca542d5e76d6c3ee9e8ae43aad56a50ed14da7a72e800c6682d0e9",
@@ -412,7 +412,7 @@
     "src/nu2api/nudatfile.c": "bc30a0e2382cf8f34579420134dfca2f7a1cd652f3654649a611ee45b3144967",
     "src/nu2api/nudatlookup.c": "226cde8ca116f8495ac15cb2d6badec3c3fd367a325fe9cfd3415a53a8c6c177",
     "src/nu2api/nudebug.c": "ac0573a4205553fd1dae7027be32be17e2a54c772b56cb3d258508a4399ba0a7",
-    "src/nu2api/nudlist_pc.c": "76275a2d971938617c883c70a0c357ce6aee43dab89dd2c24c52ec9c5bc20c2f",
+    "src/nu2api/nudlist_pc.c": "fd1b6802a434bb2ebe55ded4d5133ea75c1cc6148c3078f1f33cd7d37c39fa55",
     "src/nu2api/nuerror.c": "60fd4e34157246a3a21cc289f7bd80e8f4279b50a55c00adb4c5667aeb13f2da",
     "src/nu2api/nufadeobj.c": "75481453e8ebd530738c77509fbbb650d1004c1f9b66edc56cb6f609c4fcde9e",
     "src/nu2api/nufile.c": "a0f03700a5d548ec9c4dc1a15ffb0ccba5bad8506526575b9c48bf9fcde773c7",
@@ -445,7 +445,7 @@
     "src/nu2api/nuparticle_state.c": "a58e3c095d4df5810148e201ebd1d9985d7dd055073f20a603e0bb7ea2f78629",
     "src/nu2api/nuplane.c": "c948f508439d287233b55500c4bffb4450e85e8e8b4fac93dcbb5d18a71cfceb",
     "src/nu2api/nuportal.c": "1eeed7724dab25f9aefe74b5fe1ee66696756ff706373bfb511effe20d24027a",
-    "src/nu2api/nuprim.c": "1b694a58407e07219ef9e399d93632da03c4fa33bc782dcea22fd713d190bf7a",
+    "src/nu2api/nuprim.c": "1e2468c1dce9a6cc8e7c8228638f4eff6401c8b78cfc35e7129ed5d0104f1d99",
     "src/nu2api/nupsfile.c": "4fcb207887cfe5c70599f8b95f3d52d5c26e2af3198a039317fa35ee22d32427",
     "src/nu2api/nuptrblock.c": "9fca2aa2ac4be26a25a5471baea40d4ce25b3cec9c9d13679a530421b1465af4",
     "src/nu2api/nuqfnt.c": "8b63f4bdd41ccf99bd033c283250264081d010b558cf4b868c53db49b5d13311",
@@ -465,7 +465,7 @@
     "src/nu2api/nuspline.c": "4fca834d595d001f94487843973d0ec517f0009b800958c71cd4a03a82f76933",
     "src/nu2api/nustateanim.c": "075aa9b9759dc0563d76c7a6c1a3bdcddc10ea95b2e48b630a6cd1b91e08ac5f",
     "src/nu2api/nustring.c": "7cfa83219151404a62581407dddeedf4940c3b1a5225ae25af4e5184a40fe6d0",
-    "src/nu2api/nuterrain.c": "c3aa9e4c508b49d199709176346d22f041de971fb1dc6ac709c32fbe2b107b02",
+    "src/nu2api/nuterrain.c": "e20f2be74682be6a4522f98938de669e07cd395dbc873b667ccdd0839d854a97",
     "src/nu2api/nutex.c": "825414218218faac6a8707345c8b2717046735b7406dcaf4e4a48ce01a9afd66",
     "src/nu2api/nutexanim.c": "5bb9052ec1301477d2a6eb7f3e73d98011a8ca8f8e3932cbba9f6c66686fd42d",
     "src/nu2api/nuthread.c": "4ec13a0bcab0193b9e3f2665fa0b8607747ef02962faf14fdeab4c03fe17b0a5",
@@ -535,433 +535,433 @@
     "lib/ogg-vorbis/vorbis_smallft.c": "a0433590c4493b39a3b706c4c62134671b8266d681a12a7525587e4bec8e7d85"
   },
   "objects": {
-    "build/obj/vendored/ogg_bitwise.obj": "3e3223a94ece363000a36c3a22ac61da3a4fe48d7cc564d1f55db376385af891",
-    "build/obj/vendored/ogg_framing.obj": "01c4e843c865c762de261f89dcdf7e6e2900711aa1fda6a2ba62165892c6280a",
-    "build/obj/vendored/vorbis/analysis.obj": "57129ac9aae2da294d0f3d58279940c6d9f65bb4227e851c1ab8167207ad0f5e",
-    "build/obj/vendored/vorbis/bitrate.obj": "153aaf9fb837babc95474cf888819d4d18d46f2ed510252085c63f200f971438",
-    "build/obj/vendored/vorbis/block.obj": "d1a5d420e2b7ec72e1f764e8dec69091aa90c20e7705b616fc5a532bcb9d8519",
-    "build/obj/vendored/vorbis/codebook.obj": "86f49f36173efdb4363d2eab54a933617778dd654d78f22719060df79b31066a",
-    "build/obj/vendored/vorbis/envelope.obj": "d66594455d3af09050b006ff8dc44f164a8789e8fc8238d0f0a5d573fb0a5e81",
-    "build/obj/vendored/vorbis/floor0.obj": "b6f585114bb5f9fd8ea220150d12e0307b8368f8852c37f117aea3d7cf536856",
-    "build/obj/vendored/vorbis/floor1.obj": "b23774444b1d2337450675bb327c34cd0c939d1cbf883f14cdad056770bce081",
-    "build/obj/vendored/vorbis/info.obj": "8ecb6a7992d82996221d533ff54f219de0728c3d3b00667ff1d0b64da49834a0",
-    "build/obj/vendored/vorbis/lpc.obj": "7cf7e08aa25615d5e6ed80d3e883077e55f32bcc2f68dbfc4aca3772b46d6a14",
-    "build/obj/vendored/vorbis/lsp.obj": "e709f2b3e509d2ff0276a076a051afc8a871786ffc64452d177c6da134fc81bd",
-    "build/obj/vendored/vorbis/mapping0.obj": "e304d87b8e8d29da0fa93dda3b43100e1e2ac95d6cbaca8650a78d5874c49727",
-    "build/obj/vendored/vorbis/mdct.obj": "8c63c51dae941181a9935eeee4219f13dc5890fc8cffca4ba140e628c80dedc6",
-    "build/obj/vendored/vorbis/psy.obj": "835004f09d9deba66d72b5a487fef0c3f0a6adee6a2362650662e303a2f932db",
-    "build/obj/vendored/vorbis/registry.obj": "aad6401bd80151e68376d561d61d6ecbeb7835d913955598d14a4af4b171adf6",
-    "build/obj/vendored/vorbis/res0.obj": "92fd64891338b12e9918dcae6296ca302ac0d0ec8d01b839258bf49e623ff336",
-    "build/obj/vendored/vorbis/sharedbook.obj": "ce657774e19b6542edb556b008bd558820c81a6e90cb5c89969d5949db6f8409",
-    "build/obj/vendored/vorbis/synthesis.obj": "5f8e1bd79f71e5ced832701cfd8767139ce19a0f3260d8bfbd7b5b1db636eb6a",
-    "build/obj/vendored/vorbis/vorbisfile.obj": "df0101dd148fd39cf5b2b769ca73f945cc0e5a6b66654ed15e7141c235394fa7",
-    "build/obj/vendored/vorbis/window.obj": "190d882f4d72b99fdc19cb4a0517ce0487d5aa636cbfabc4e8468e2ea65fb180",
-    "build/obj/vendored/vorbis_smallft.obj": "84a48698db696df96de26d4e69f2c88ea950ed277075c688b110e0df27fd001d",
-    "build/obj/batman.obj": "434d472d395e2091c60148de8297de4a8de020c9617e77e8d7e6d2b7fb6ecf90",
-    "build/obj/data.obj": "5c7b59db57f6d5cdffe63979db6fc92a74f5e8f5a89c38991adcb3f1c8cb8cb8",
-    "build/obj/editor/edtoolsall.obj": "9258315071baaa198a4f083c1c25ec4fdb7365743faf59f9457e52479fe0e007",
-    "build/obj/gameapi/ai_registry_pc.obj": "4a9f974731b8bca48c005a15bef7809cd2aca1ee35d7ad4201d641b7a6394dd0",
-    "build/obj/gameapi/aiscript.obj": "b35d13b0f3abd9b02698db097f60e19836eee0a578d77dfc87e0f9a067f65e5d",
-    "build/obj/gameapi/aiscript_diagnostics.obj": "47988c6e93e1185833b78c1c9005533f4d0a6db322b7afac2dffb9bde9041250",
-    "build/obj/gameapi/aisys.obj": "662e9a57e644d246b65ccd77b8a842b28912aaa2eeff6f3c090e6db50a722a3b",
-    "build/obj/gameapi/apiobject.obj": "886625569790761da6f6a78630f7960d4a82ad76c90f2161c61a2789fbdae1d5",
-    "build/obj/gameapi/apisave.obj": "fbbddbfad93543a51d326b3c907bf1525e8cb209207847040e88f3d25e118fa6",
-    "build/obj/gameapi/edanim_load.obj": "2cc32b8dace9ce4ccd3b9fea77925653f81e496b4cfb8e6139e6639f41d6847d",
-    "build/obj/gameapi/edanim_update.obj": "99b11bc2a9ea94da616ff8a9064e2ca32cda8d5c12f0c5fdac0c94e6a282163c",
-    "build/obj/gameapi/edbits.obj": "24f5e7b5c9ea2047dd4125a75ec8707c62f90de76f3647fc4fb536acc75fe8aa",
-    "build/obj/gameapi/edbri.obj": "90635c736d30416c21c435f4e05be0823b29c02da2a2079c1493970c430f3d0c",
-    "build/obj/gameapi/edfile.obj": "bcea108f52677c67326e23d91f5c53ace2505018cccb7bc1a6aa9f8f9a5e8ff4",
-    "build/obj/gameapi/edgra.obj": "727f7dd91615d753e456f6f226dd05a7b8d232f411a667bf420e893edf7b1eaf",
-    "build/obj/gameapi/edgrass.obj": "b0d4bcb0cef6cf67427d31275668f54a28baa28271b1b450244c4dc0a9dd85b5",
-    "build/obj/gameapi/edpart.obj": "aa238ce4b9a843281ba1220f284fe9f73629a4b86d4de44c31fe20ac654b33c7",
-    "build/obj/gameapi/edpp.obj": "b2ece9299fcc4404657dab4d9cb2e7d6a2d5afd9fb3a43dd6654eed76c59f499",
-    "build/obj/gameapi/edpp_load.obj": "dade89488eb3bbd600235d886a26f951b6828d3d7fd7a2f6d707fc07fcc8657e",
-    "build/obj/gameapi/edspline_load.obj": "2475a97bf7e5bc07f6eeaa7f10b7ec78b4346cd20353536aa18d151c2e3c9295",
-    "build/obj/gameapi/gameaiactions.obj": "58b928ceb9de9221a1f2ec5ee0b5c1db895f651fcf492c1fdd9f1765267f94d2",
-    "build/obj/gameapi/message.obj": "35a5936b9caabc2cd60d9c5e58175bdcc3890be19eb551ce25ca76a89844aae6",
-    "build/obj/gameapi/saveload.obj": "6cd23e888306cb8863d612d38de6f477f069191e909b663a8728cb964c1ab457",
-    "build/obj/gameapi/shop_persistence.obj": "c3a2bf08c917a60350d34b8e9cdc1daee64910e3495de4d9f6480e1f8c2e17e9",
-    "build/obj/gamelib/nuwind.obj": "0837cc4c388ecd4e84ba1cefa54b9ccdbb106cf3bb8e4c464edf60d3cfcb980b",
-    "build/obj/gamelib/nuwind_groups.obj": "950fff4ca3fdce814c51a4fb66cbaaf4490a1c4dae4770ef268ae645fd586832",
-    "build/obj/gamelib/util/VirtualStackAllocator.obj": "dfc5d56116d1323d68022df969a94a65b7058b9b7a49a1b053b7cda7e876b2ba",
-    "build/obj/legoapi/action_sound.obj": "6577bc1a0459703f479730ffe5581d8c1d9d3cdb87e80627de43cb00c266ebe0",
-    "build/obj/legoapi/ai_global_conditions_pc.obj": "4b2e9b1cbc997a59784d0f5027b31adab976d0040ac30389d49464f5d3661863",
-    "build/obj/legoapi/ai_map_actions_pc.obj": "2fb651a1f5974b2fed55f29727dfd102d0cf23b53a306e94e7bcd615e90a7af0",
-    "build/obj/legoapi/ai_party_trigger_pc.obj": "65fdf1368d12176368919fc9e21cf169d449b4ababe0b135945d5256bb0e21af",
-    "build/obj/legoapi/ai_spinner_targets_pc.obj": "fa61d4c30e97ae9feeae50b578bf422df81e84bc89a18504e9243ba1c89f547b",
-    "build/obj/legoapi/ai_sys.obj": "c513eb40a4356318e0e017ff41fd79566f41a97a49bcb729c31799f13adefcc4",
-    "build/obj/legoapi/ai_trigger_setup_pc.obj": "b9ed7cb09ab8b748961f2d08a51242df3c3a84ec505b2c93b64c7ec11131da28",
-    "build/obj/legoapi/aiactions_transfer.obj": "87c464f8478c6d0375266fad7f2adb37582640c98191e49f20f9ffab8e03cf11",
-    "build/obj/legoapi/aicapabilities_pc.obj": "d9718f4708772bfb3913461c1d25e316d81ffec3183319fbcadf7e5260dae517",
-    "build/obj/legoapi/aiconditions_pc.obj": "793a72bf50888aab5ebd2f060cdef256e425171b43c3638f34ca085ae21e019b",
-    "build/obj/legoapi/aipathcnxhelper.obj": "110f392de7aebbfb95e17dbe00e9232dd5491d6e2b5f1907647cd4d5b9e1aaab",
-    "build/obj/legoapi/aitrigger.obj": "1716987223f6090fc5a9455e00b3da772d02e264942500f57098d813ef5e3788",
-    "build/obj/legoapi/arcade.obj": "78c7f72d6cb2040d7bea8c93a146b4de3fee75f0b1e8a6b96ff0b965d61e0899",
-    "build/obj/legoapi/areas.obj": "1fa8f5dbe05f708a7e41a28a4c57c538dc36436a49e0f4f0d6d03ad6bb61a0b7",
-    "build/obj/legoapi/attracto.obj": "08d718d9a321ed0fe44fc78a39de51e1f44b7f9a4e85c56ef5e802ee0fc153b2",
-    "build/obj/legoapi/attractos_pc.obj": "a79abc669b1c9edbb0b0016108a67cffc146c2dcaf2a2e5029303d1aa557eb19",
-    "build/obj/legoapi/batarang.obj": "f316b558134a31cd7410d0b81d4e2cc2b20f82e7d7f11c5dc463c606dbd448e7",
-    "build/obj/legoapi/bolt_foundation_callbacks.obj": "d5820b5d98da546dc9974422cbbd9988b5a927d1b65c35fc0da6379ee2e7b93e",
-    "build/obj/legoapi/bolt_runtime.obj": "919ab67fc0f9728723e6364d7257521bcea95bbe0908ea022866080b6d14049d",
-    "build/obj/legoapi/bolts.obj": "f15e9676b86b2c1faa0480b950e0ee399cdfda0301fed42a994299a89957186a",
-    "build/obj/legoapi/boss.obj": "8460fb82cdce6d36dbf72764920efe7e6292cbbde51bf161f15cb5b63bd12a51",
-    "build/obj/legoapi/cables.obj": "5a67fd3c6407e1ba0566d86e1a2de50afd104c8d06d1bb3bdb072b9fc01d275b",
-    "build/obj/legoapi/camera.obj": "bac9c1f4b07bc34615f9b88423e9ca120ba960c5105a0826f661957003dd96cc",
-    "build/obj/legoapi/carrying.obj": "c87dc2024045bebc6d6f19300686b42f19681a7e92376ca3d23fefa1b2d24012",
-    "build/obj/legoapi/character_animation.obj": "8319439fc19d56b5d6920c1c6196811287b39807bdec0a75b2317ace9732d41d",
-    "build/obj/legoapi/character_joints_pc.obj": "10fdfd1207a0e71c2d3f0600b25d01ab7c99a9ca04866959f2dc8510837d9e4c",
-    "build/obj/legoapi/characters.obj": "6b9b5dec61d0a361c2d00914c0476f18276871a275a077116a17ac9a1fcec958",
-    "build/obj/legoapi/charcategory_init_pc.obj": "399276d3a602f34b7ae8cef873cc3e4478c6cd4fa8925aa78fe17e5243ac606a",
-    "build/obj/legoapi/charconfig.obj": "7b3218b5f6146cb84d2fbf7e1bf5c05499b9b6352c429c24e7efe8b212a1e803",
-    "build/obj/legoapi/charpivot.obj": "7448e127104f8694793f77e1c50bb21c2ba6f79c9404aab53ab1d12a863ed0b7",
-    "build/obj/legoapi/charplatforms_pc.obj": "4d2532d746939048ed3872e872e4287b5db773fb9e32ac4b8f04101f6e86fb7f",
-    "build/obj/legoapi/cheats.obj": "91d08487ac15450ba28e9aaa5b6e45fb1fe89ea369245344ac9bb787262c6577",
-    "build/obj/legoapi/collection.obj": "68af018b9b988e6bc3e616688d54481003413bc518c1fbada476f987077bd413",
-    "build/obj/legoapi/collection_render.obj": "1c65ea3ff010661f0c21ae340af530689415bc978347f23d175191731a7ae7d3",
-    "build/obj/legoapi/control_setup.obj": "116d28314f6850df6e5875a22c1d37928bf8d38245cdd5047c5b5e569b133621",
-    "build/obj/legoapi/creature.obj": "d78a9aed8014998f8152dec48e6ecb839b8d1c8f07dcafb177d61a8f99c95a5c",
-    "build/obj/legoapi/credits.obj": "133ff731511585f56bc076a196a58a5124ce7f79df416ea655ffcffe494885ea",
-    "build/obj/legoapi/customise.obj": "dbc3f6cfa7a47c61b9e374e8020504bed6a16367e4cd250f82bf9025e67168ea",
-    "build/obj/legoapi/cutscene_hooks.obj": "dcb924929e5c0d8ef1b3c432e99b3b9778da2ec2dba7daf63499b931eb668ad9",
-    "build/obj/legoapi/cutscene_lifecycle.obj": "db69c49e96fc11c60a6d7269004b57ab14d7e86874f7951aea3a6037912c7aa3",
-    "build/obj/legoapi/cutscene_runtime.obj": "bd616aba63248f3fb408e895311c162139ee197d92be103cf32749abe7db9c1a",
-    "build/obj/legoapi/debris_callbacks.obj": "04482838eba039f4bfc89767b9695665594f8a73aaeaf5942007367067fad8a1",
-    "build/obj/legoapi/debris_engine.obj": "ac52424c24f60674f5ade411f3f2ff138cb2a3ec2d0e709db1a784b39504d9b8",
-    "build/obj/legoapi/debris_generators.obj": "0985b692e87f35029f2ed7ec90483141dcbb916815f363c7f2cdbfc9d5dce35e",
-    "build/obj/legoapi/dogfight_audio_pc.obj": "d8bb6f1c0c3feb51efd736d06f2667da063cb01df809c759b045c8e8deb56687",
-    "build/obj/legoapi/dogfight_collision_pc.obj": "6de5542a59e3acdf5c6f02f674797e1da7456c93ad533151f083a0fa0732b262",
-    "build/obj/legoapi/dogfight_reset_constants_pc.obj": "192fb91287dae687e5a391a815beeb4d3a3217f3659e0dc08a16f71a376bfea3",
-    "build/obj/legoapi/dogfight_reset_pc.obj": "56eedff2a89ec1c8ed24b0108edcb479febc45e6b192c4a6f188e59ac4c499ff",
-    "build/obj/legoapi/doors.obj": "fd38d193c603d6156c5b7da93e2dfb9dae8f8035a996e879f07cfdc2cbbda073",
-    "build/obj/legoapi/dropinout.obj": "ced768e5c9c14ae36eae0bfe2544591c3fe59beb068cfbd3c1683864bc147ca0",
-    "build/obj/legoapi/edgizshadowmachine.obj": "0b50ed0ea674bf1d1c75de9e19c5ee199ad3da6225d0a91c02a924689c02126e",
-    "build/obj/legoapi/edsplines.obj": "1d9e49e4195800b1e06a5d9788e41310d5a373385121ce0d382ccef0f3e79109",
-    "build/obj/legoapi/episode.obj": "712cd86ea7dcc1e9d21902dd909bfb24bc5341cd0d9a19b2d208e3726ee6398a",
-    "build/obj/legoapi/episodeI.obj": "6dbc3f21959fbb62764e4bc7d6c7e855b58fb662ea0acd2e90069f6eeb674aa2",
-    "build/obj/legoapi/episodeII.obj": "cb0cc8c6ee1f97d91213007d01437ce03177aab551e6ee41c4f0235d7e2abbd5",
-    "build/obj/legoapi/episodeIII.obj": "e3fe2a8ba005a4517f4f84435519b7b7fd3e7a039e2dae173d395070910f52eb",
-    "build/obj/legoapi/episodeIV.obj": "2b88c1b5dd57ab4a72c0bc90bfaf3326331f8ad03b08b0d7a9c8a48604a647ba",
-    "build/obj/legoapi/episodeV.obj": "64d457b246eb8e86088fe517f6a499ebbcc6960a0af13ed52a02399b59d25843",
-    "build/obj/legoapi/episodeVI.obj": "4ed74bcf93bf5fd026d28f823a5183fc5bf867f30188db7378cc1108e4630761",
-    "build/obj/legoapi/episode_helpers.obj": "b0842a21978d652b53120ab8960dc5b133e810b8cceb985ed296682a8bd311e6",
-    "build/obj/legoapi/episode_vi.obj": "89facedcf847d2cb4a6b55d985c6af63e38b5650be71f5602af0e56d24a36e6e",
-    "build/obj/legoapi/explosions.obj": "8b46881c8d5b173fe127d1abae3646703288c81531775ceb91ca9f30cb443a8e",
-    "build/obj/legoapi/fade.obj": "af5a6a39373f45c08de71ba11d58c70e9fb9e777f1c00b041b4c3549d59c5ac4",
-    "build/obj/legoapi/faders.obj": "9d27c6f3d8c0ffcf54c31ed879dc90d5f8ba10f18dc383978f0880896c6d1830",
-    "build/obj/legoapi/fighting.obj": "42a7fa4f7df0f9775a5c6751e310f9cdbb2753246dc42037d41b1a3eca73f4a1",
-    "build/obj/legoapi/finish_loop.obj": "b786b7aadaff137e1161673d3a424f41bb79ea77172d2cf38e79d8715a4cb8a3",
-    "build/obj/legoapi/game_deb.obj": "8de8101ee9901e4a8ddac9426e102c60fe71632ecf6489760fa7d36fb353bf2d",
-    "build/obj/legoapi/game_score.obj": "4db3a722e83c102b36a51e1fcccb867b0f56ac713442051daf337a46f77e7c09",
-    "build/obj/legoapi/gameai.obj": "985d6b38af8d231d254b02ff78ccbacd46c3a40eda4b56bc4aad8574dc90dde8",
-    "build/obj/legoapi/gameanim.obj": "d537594bb38518a7c48082840da3d2a890662545e0996eeb2046eb23a5f6caaf",
-    "build/obj/legoapi/gameantinode.obj": "bb9c65fa1f7ef2139f0f235428b1a6b40dd0943bc25cffcc4dcc2ba4d600461b",
-    "build/obj/legoapi/gameaudio.obj": "faf8f0bf4f6eff17f9975a452f2cf2b7120287310358aa69c2886f37b7e36198",
-    "build/obj/legoapi/gamemessages.obj": "ca4faab29728faacdf32e42bd932fc98e9e8de025634b767773aa919b4c063bd",
-    "build/obj/legoapi/gameobjects.obj": "2728528c1cd14de7f3f5c4de4f9c8ca4fa79cb16bcfdb61fba6eca8845f64ca9",
-    "build/obj/legoapi/gamepads.obj": "2b55da0c7839c3f28d3427d23f9c218fc54920c7487fc84d0adf043c6a3777e9",
-    "build/obj/legoapi/gamestatus.obj": "72b232e2f73cc13b582988fc11cc7f89827e81764f649efa5fd3a65d6b3f5f68",
-    "build/obj/legoapi/gamestructure.obj": "6bef963a2f17ce70304929b80ef7abcf24e35edbcf708747de93151d6dc545fe",
-    "build/obj/legoapi/gcutscn.obj": "5a4fa5801650b3ce8237993d21145a913877a60af078618ed122871e8d2d131d",
-    "build/obj/legoapi/gcutscn_locators.obj": "df4b8a784ce69e0ae9b15f821b129597f58e9b0a39e1d3c2bd0ce1fef36ba904",
-    "build/obj/legoapi/gizactions.obj": "d06caddd84888b6f7f2bc9d5b9185080cfb203105246c79dbbc34280936d778d",
-    "build/obj/legoapi/gizbuildit.obj": "a7a9fe71440130fddcc128814c1e3ca032d9c8cf7ced7b5d569156f988055f62",
-    "build/obj/legoapi/gizbuildit_pc.obj": "e40dbf95bb2eea5ff4b29d39ac70538460e58a626eba3e7950779636f0c77de9",
-    "build/obj/legoapi/gizflow.obj": "6a611db4597207a4b304ac1d4b5419f18913b08a89b360641a74f2d66fd2d281",
-    "build/obj/legoapi/gizflow_diagnostic.obj": "78c1b36b29d3d7c49a42a926701c74d31a12624b3fef64230b7964479e9d2cac",
-    "build/obj/legoapi/gizforce.obj": "0bf47dcd3f608ced93d64cb38fcdab2df4b8afb9dc659eaafb78ef8b7fe26a76",
-    "build/obj/legoapi/gizmessage.obj": "d60f995a034f1d27e4b3ccd290d1c8d7791e9c6ccf38d0e0a2c56cbce5988ad0",
-    "build/obj/legoapi/gizminicut.obj": "347ff0c388840d8079e79a912943951d5b9d3604f91d4e507f3e7e0d98530ccc",
-    "build/obj/legoapi/gizmo.obj": "b34407251fd6156677c96fc701824c19b05432719031d2317bf9e962b7d46711",
-    "build/obj/legoapi/gizmo_add_callbacks_pc.obj": "ee22f78c08dee491ac29f3d4efdb4ddc02ec3a844159db7d157183c5268b0714",
-    "build/obj/legoapi/gizmo_alternate_registration_pc.obj": "ea328fae7888044dca503507f87346abdfdfa9d872364feded70499386dd5b12",
-    "build/obj/legoapi/gizmo_lifecycle_pc.obj": "3cae6be7bc78506ec0dadc09c2851e30af339fab35181f1af882cacfdd9ab254",
-    "build/obj/legoapi/gizmo_lsw_registration_pc.obj": "b9ab30139266a547ed67185ae3806cb2ca08051538af7913a42f6f9d6359226b",
-    "build/obj/legoapi/gizmo_output_callbacks_pc.obj": "a525a7e9b9e93be2688dac4916fe80651259131476ca3e05584aa7c278cb20bc",
-    "build/obj/legoapi/gizmo_progress_pc.obj": "162dac3212e670dee17c1f8ba121cde73e06109237ab94d0f0b43b6160f570a6",
-    "build/obj/legoapi/gizmo_registry_pc.obj": "12fdf775edcf01b075fbb4cd278451506184e65bf38df26ba171b6ef6baa012c",
-    "build/obj/legoapi/gizmoblowups.obj": "d2fb47bb0b248f7701504421556bb7e6ae04fee80616e56e7193d540fee6d240",
-    "build/obj/legoapi/gizmopickups.obj": "f526dfb8c48e092d98df5dc4a78dbdfb2dc1495ca49315ed417a358292af4592",
-    "build/obj/legoapi/gizobstacle.obj": "63a9a80fec0e32ae0afe4d3e07ac1eb61689a12a27950c72bc6c708ac6eef8bb",
-    "build/obj/legoapi/gizpanel_pc.obj": "d8d5951ffda66b8640765b850e701230b0352593ede9de1777365ae3e69fc4d3",
-    "build/obj/legoapi/gizportal.obj": "12e75c31372b450351005df9dc87411a8178f804ad5eec9078edc173cacf6bc6",
-    "build/obj/legoapi/gizpushblocks.obj": "ec3f404226fe139ef96363a63f33b3ef4b50d6e483b89b4d6ed179f8e36a857e",
-    "build/obj/legoapi/gizrandom.obj": "308ce0892ddc43a096e6aa3b2a10e18ae02b9ef728165b2f48803ba512d9af8d",
-    "build/obj/legoapi/gizspecial.obj": "a717bf46eb3fe5dded568b8c3856200b9bf9de1ede00f4d704928a51d9b0271d",
-    "build/obj/legoapi/gizspinner.obj": "86cf49fe99c3b900c080e167193be22d2fcfb7389b738c70e5233523df106ff7",
-    "build/obj/legoapi/gizspinner_load_pc.obj": "ef28108a3d440bfa710105456fd01125ef087476d5f138a8bf1ab4b3a3f7be86",
-    "build/obj/legoapi/gizteleports.obj": "b911cf4b18cdaa45321e520ab2ca161bbba4c16b6f882f8d903b1ab1d691bfeb",
-    "build/obj/legoapi/giztimers.obj": "68a1753b42f7da7315b3a1ea216c46fcfd605e1d7971ae53c4a10098ab62e690",
-    "build/obj/legoapi/giztorpedo.obj": "2b1a6005f0208f0450a2a09cbe2e399a87f86f7e627da626fd6f838c0b33d204",
-    "build/obj/legoapi/gizturret.obj": "ffa8a664d03b85a4c06a0bbe63e624ececc1d6e4dc301c119ae266c3dbdbbcbd",
-    "build/obj/legoapi/grabber.obj": "6003e446d69ee69bb27c38987d3addb44a73c0f4d7476e192b5af5f12ae2dc02",
-    "build/obj/legoapi/grabber_pc.obj": "c29ce376921519d84097a59ad3fb22489d89b3bb40f809dc53e1fbd29511e930",
-    "build/obj/legoapi/grapples.obj": "400949a845c8948cca746be56699b3d1307632e014afca7bb5f1e297911e1ef3",
-    "build/obj/legoapi/guidelines_pc.obj": "b19167cdda73074edc65641a856b4eea5de7facf30f77ab3c33acef80e00fde1",
-    "build/obj/legoapi/hatmachine.obj": "17956b439cb3ed9e40a76f8e25f575bb541a8ad43011e70e7c7755a5d4889422",
-    "build/obj/legoapi/hint.obj": "f8c3af1f9019bf58a45953d224b971c09ad5d17811b30e2fdc702fa695df60bb",
-    "build/obj/legoapi/hits.obj": "b3770ab985604c9f0bdecb8252530b485ab0a13218cb6872e6918e70b9fd80cd",
-    "build/obj/legoapi/hub.obj": "119f8fe6dffb38ff446d4b7163d1c5051c31ff4c2fe507e156362df33073b654",
-    "build/obj/legoapi/hub_model.obj": "09d108b754e43332c1f55bc9e4388a7d7ebd19a1b38f8a7b91fefe4bdf8eaa57",
-    "build/obj/legoapi/indy_ai.obj": "eda045e7419e10c77ae62807c2c55b1360fb9987199012b9c996ba56c47a8082",
-    "build/obj/legoapi/indy_special.obj": "6aa882c42dbb5ffd0f6037eb5e653a2fd885bd89306de8123b5b247a8be2371e",
-    "build/obj/legoapi/indy_support.obj": "5c6c4269f481a2440ad4626c17b4431eacec3487b88cce771be4c79e78aadf8b",
-    "build/obj/legoapi/init_once.obj": "0f638b9b229c1b4c22711b072e3a5c17dd6ae2de36b714d89df3f5a08aaf649e",
-    "build/obj/legoapi/input.obj": "a31c486cf1470fc66fbbeeb4740d1468cd8a68b7650c57df991b5accdde1335c",
-    "build/obj/legoapi/jumping.obj": "d9f1a3b2dcb2d24cd1783b90fb5bccf9a232bf70bead94acbc8f35a5bb66bce0",
-    "build/obj/legoapi/ledges.obj": "39e820b0fa6783137b49f6a10de76ffa7284c302a39e5f24ea965a4a3c9427a4",
-    "build/obj/legoapi/legoapi_misc.obj": "362532b7ea0507091c45f54e0f296f4234431d6e5600fc72db84b63b7913873e",
-    "build/obj/legoapi/level_area_load.obj": "b68417e6f19e9ffdc49f3ca3ba49773f8dca512c95de1715a311951b4979759c",
-    "build/obj/legoapi/level_fixup.obj": "b6284201b7e89fb1677b2230fa3b1f27b895fddf75bf84bc047091735bd3f3d1",
-    "build/obj/legoapi/level_lifecycle.obj": "3eb79152b850252681a384f6b59a8a0ca41dce5377bf7f5b9fca28518780b3de",
-    "build/obj/legoapi/leveldata.obj": "e096e0e95945ee91e4d199a1aa3922873c0baa428702588c105331118165c4e4",
-    "build/obj/legoapi/levelobjects.obj": "ee709c69c3b4c7b5016b4db4ef557238c03099e3f45d9dd4220d4cc211bccfa1",
-    "build/obj/legoapi/levelstreaming.obj": "f839f1ff474e8b7888b1235edfb72eec5a8de3c6323544b535e92c0d3207c2da",
-    "build/obj/legoapi/lever.obj": "c0222bf79418d15df295da354ff4847423c51d1613e5916c4425ea120efcce0d",
-    "build/obj/legoapi/lighting.obj": "7e26eda1d611a8adc32a69eebd333bd5ccb0564cc4f47500f1e24f6234876eb5",
-    "build/obj/legoapi/lsw_hub_ai.obj": "6a3c86a51033fd77b8cf1bd6bbfe645ce372daced2db0969eb902ea9dcf539b9",
-    "build/obj/legoapi/menu.obj": "80581fcbbb25263346862237bda97c79ded44c1203af559927ced545758b11ad",
-    "build/obj/legoapi/menu_extras.obj": "393cd7da366c034fe0e7fb064c81c76879932c773dd97060a52ad910b650912f",
-    "build/obj/legoapi/menu_pause.obj": "c7d7f5d9be8a42fa80f68474065e212970bf766f1067d8990084564235abe1bf",
-    "build/obj/legoapi/menu_titles.obj": "a7c50ca013532122906b4e4d4f2600c3d3374078f786d8ad55256e00a233af25",
-    "build/obj/legoapi/menu_video.obj": "63332f5e4832cdc995827e0524b7756caf1d184908cca374f9bf6926bc07c1ec",
-    "build/obj/legoapi/menus.obj": "f0c4bd58ead058e00db1df237cfeae0e2d6da898cc7d42a9304e1f0bd4f86d3e",
-    "build/obj/legoapi/minicamcut.obj": "446cc0543bb986d0a3fd1caad0fffa8c1a48630a1bcc4e97d26ec25c63e82c2d",
-    "build/obj/legoapi/minikit_init_pc.obj": "a693cf9c695c1819e3fd004933c477f0597161db8948d9881d52c0d6a55b7ed7",
-    "build/obj/legoapi/minikits.obj": "4eba901b694ece740540100c43faa4da5a6e9875123535d9a3028b0e44018655",
-    "build/obj/legoapi/mission.obj": "01d415cd4d4fe078ebd32f81a806ea336797b0787c96f6b3b1d4c740c12c1732",
-    "build/obj/legoapi/missions.obj": "b79806da37a9c215d824cff81422070265cb7ebb4f1d5a284a90eace7f524feb",
-    "build/obj/legoapi/model_animation.obj": "498d03b53331359b08fac5a4a4be5fb58271d4d9a2843a63f05f383cb804e211",
-    "build/obj/legoapi/move.obj": "e6c0207b4bb735cff4b483f3adae028439bf6b09f6f902ce95d8d4f12f2034df",
-    "build/obj/legoapi/movies.obj": "6be531831d7789a69711ef6bf6ef3be841df256adcf0b8cbfedd90e26c84c956",
-    "build/obj/legoapi/movies_config_pc.obj": "e24e7f2af85cae191fd1645d182639bf5c66e01d38edce96f3483df2d385ed63",
-    "build/obj/legoapi/narrow_sock_exceptions_pc.obj": "ba5ac3533635131515f52d40552873a5cf77d215165c2a1c565c3b222b71d65f",
-    "build/obj/legoapi/netplay.obj": "0023e64dbab6ec91acdb511520b70298cc5296bb9a9b37d8d7ee49f8d4cea80d",
-    "build/obj/legoapi/newlevels.obj": "020a4243eaac5b4d6846dc77bcd97ab0f1ae1462e63ffd28a7da5e0796b5ef95",
-    "build/obj/legoapi/objectsall.obj": "4bcb54f16c76389623675a14d94f9db4bf2d9a2f33efe4184ba1c61b48703b7c",
-    "build/obj/legoapi/occlusion.obj": "37de6c38394f54ab3042a1452595dfd57c3541ee4d84125d2ae410934b725cdf",
-    "build/obj/legoapi/panel.obj": "1513958f515a1c7c4a9008377c5139a2a1d7e9893792ff20167fa04df448e4a6",
-    "build/obj/legoapi/particles.obj": "c5c9f5b06c2475291f6eb1f2b48fff8f1e03c22a22a5ede15223a9614b0ed538",
-    "build/obj/legoapi/parts.obj": "4bf7fc9c22e7ea468ce51c82efde11d264527c463853d1bf153b6adf00447916",
-    "build/obj/legoapi/parts_breakup.obj": "4bdba4e7097870391ecd0df90da8f268a1f43c843ba8ef04cb3201cc45558fc8",
-    "build/obj/legoapi/parts_load.obj": "9593668f4014afbbed3b519986f4a74b1e209124cf5e8fa216bcf091c37fe473",
-    "build/obj/legoapi/perm.obj": "8138bebec5cc8a100bb657281ba8079d04682c0dd1ede9dc9aed0d851a997a1c",
-    "build/obj/legoapi/playeractions.obj": "edced29abccdaf3d03def1f59355cb7db79c480aec1b050411b95488bc732fba",
-    "build/obj/legoapi/playercombat.obj": "d9f1ef80abcc5b762315f92edea63575e26e0be8d2a11a4400ea719218520d76",
-    "build/obj/legoapi/playeritems.obj": "cfadc83928f785fa3df286b619597a59526b76aeb5614e294f3611ef9ab2f401",
-    "build/obj/legoapi/players.obj": "74e7be56fefe18723474ebfa8a76f8f8d89c39e3b39a69f39783582c07b3b0d3",
-    "build/obj/legoapi/players_dropin.obj": "d620284843a52f6e8a5d3542ad37069aac2b1c03127702cb3c372c9fe1717b44",
-    "build/obj/legoapi/plugs.obj": "d2af5db5ae114107292f45b5f08824476e196d8d501b80ca4caa516a913be653",
-    "build/obj/legoapi/pulses.obj": "884b5067c9e1246ca5043e37dfdf65dd408c4500174109927b7e45fa8cf72073",
-    "build/obj/legoapi/pursuit.obj": "01e3414f24dde5431f0c2db2a3546074cdb764ac5829215e9a292544de98c41c",
-    "build/obj/legoapi/pushblocks.obj": "1c35da5c0b1c57c2ad94de8102f7c2a91d7bdcab65023e87e14b4d263bfa0d32",
-    "build/obj/legoapi/pushing.obj": "47d810a4b7631b3623cc8da815c2f9cb55c68a64186cdff45a816e42ccf6b0ae",
-    "build/obj/legoapi/radio.obj": "690c77e8b54a62d8d8a759b2cc72dd4874a59e6cf6f51e404a9e5d2be5aa746e",
-    "build/obj/legoapi/render.obj": "d27cb0f348c1867a778c6c1141c9163eee2bec925af3e67e5df90fa9bfc51e83",
-    "build/obj/legoapi/ripples.obj": "92e2cc94f02157e307e06a5d4c2780c39bb0582247470e1efcaef0ca1e987d1f",
-    "build/obj/legoapi/rtl.obj": "4459cff24164ada8147a461343f538e1cf0b1763bb366d07e4eac935d68a0f87",
-    "build/obj/legoapi/screen.obj": "a6eb9f4be6992bf91e0a642cb1dcc03f39362d934dedea7c0def79b557f99d0a",
-    "build/obj/legoapi/securitydoors_pc.obj": "44b9af42822b70cf5dc7ce6d9c71e573991bc89f60f7b6ac916b90f8db914f6a",
-    "build/obj/legoapi/sfx.obj": "3fa5d207e289395b8a679510c991d6aff11eb6b47132ddcf6142dbd76a1f68cb",
-    "build/obj/legoapi/sfx_level.obj": "79ba1eed21c6be67643be009c11e799a0320c28ce83f71724e8621ac36019d27",
-    "build/obj/legoapi/shadow.obj": "b05d62d0b0d6591600d74f5e76e4c7caf73110c6aad83bcc6a1296d858d32094",
-    "build/obj/legoapi/shadow_light_setup.obj": "e865f90f868bf2744f91c6c01f6035d2cf87a52ebcd8ec092bb98326acace910",
-    "build/obj/legoapi/shadowmap.obj": "4b6e570598e39afa2662c0fa677d1e22593c880ba5ce1a631f1713d758984759",
-    "build/obj/legoapi/shard.obj": "b08592743d60fb076d8285b4959a338bda7b5bfdac9246201ae3f456db221e5d",
-    "build/obj/legoapi/shards_pc.obj": "fc00c18313bfc4d37227b7136bf79aac04211f2af57f3559fa8c025604ff2b6c",
-    "build/obj/legoapi/shop_code_data.obj": "21214064d30cde6e5ffea664e43e59fbb983a5be50591b4f9ed4a4a339bf2736",
-    "build/obj/legoapi/shop_completion.obj": "938a1c56b0f05e80f67e0dda2a46563e50934bb0c0a9dd7de4f178a0255f7bf3",
-    "build/obj/legoapi/shop_exit.obj": "b187f7f11c308ce265c3b63bea48e2a624e503c3f3164a7898c29b6a198d99eb",
-    "build/obj/legoapi/shovesys.obj": "f9a76cefe31fd226ce13a123f695194b0ce89e66a9fd0b4453fb27fb27cb1768",
-    "build/obj/legoapi/signal_reset_pc.obj": "2f5cd8b87abac462184c91987d6580431d0ba19229d66ccef8a7348287859834",
-    "build/obj/legoapi/simpletons.obj": "d6b5b1a0edfa927a887002dc05c822e466f836a17614c3c9994b826ef0bee8e0",
-    "build/obj/legoapi/simpletons_pc.obj": "e543217464f9748fee9a5d9b1191f140caa4d76217ca03955d5ad3a2354a198b",
-    "build/obj/legoapi/snakes.obj": "4d622e7fd1114f1f0e2ae2e5959cee98d21bb2872a39e2ba37413e94bacdee89",
-    "build/obj/legoapi/socksys.obj": "d50a2f8ee528d4e3b23cbdb9ee8347c4f3908709060ea17afaaa4eb7b5571916",
-    "build/obj/legoapi/specialmoves.obj": "284b0324b4ee0f4c03e78d7468127b4051c8f4f0925a9a92adfae1c47420c30d",
-    "build/obj/legoapi/specialsfx.obj": "4435d3144d330e6688901659bc8759937b72b05dcbf7223774cad2a8eb8a6ba4",
-    "build/obj/legoapi/speederchase.obj": "2a6712fa1abb7df0badb07be795257fc101e04b2a29f2660dfc9debd9efaf255",
-    "build/obj/legoapi/speederchase_pc.obj": "9dd12346025f1ceee62755956c245cb8ca1fd9ac31a5055d50d571dde28de0e9",
-    "build/obj/legoapi/startup_dats.obj": "e4a1ab36c67a80236b2d16b5f5b7fbdfa7c0ca046adae85c007e2ddd84124be4",
-    "build/obj/legoapi/starwars_prepare_pc.obj": "0ad791cfb71fa119125a6d2615d99ad2b0df11d005e2d57ecb6af95f4677a1c7",
-    "build/obj/legoapi/status_lsw_updates_pc.obj": "cb3a7cab57dfdf972cabc6d66356d0cac6a0fd2ba254c043724d41fc555ce5bf",
-    "build/obj/legoapi/status_prompt_render_pc.obj": "4e761b0fea4abaa12897a8bc78ed74b76f9a6aff91e03628ab72cd90a88cde9e",
-    "build/obj/legoapi/streaks.obj": "a238feef665e54c79621813832d2ba409437663bd7105983613851ad9f11637e",
-    "build/obj/legoapi/suit.obj": "2bb7a0e68d39addfb2e4723722da2f47de3ff00096a230e0b3f401871a50011c",
-    "build/obj/legoapi/supportall.obj": "df65f77e18f180d768641c43ccd76c2367b2f434c1b1856c139d3f493e9117fa",
-    "build/obj/legoapi/surfaces_pc.obj": "e30510cc2f93e7fee9a227caed4290a6616cb6da0cbac7f7066df9716a7f30fb",
-    "build/obj/legoapi/tagging.obj": "04faaf890cc72f45c06f63ffa47bd456bdc745d04e45ec34fa0a17d46e5494c6",
-    "build/obj/legoapi/takeoverobjects.obj": "d92cdc8458219e5f34cbfb199f8b379041570236290de2753b4d38f4bd722774",
-    "build/obj/legoapi/techno.obj": "d533604c7405f5bfe71050d20d7e3821dbb683774b45ec745c3ae1415bbe3439",
-    "build/obj/legoapi/teleport_motion.obj": "7f634a0c5f488c2a29fab6a8198cd946936564e2827cd142f3d92524cd65be6e",
-    "build/obj/legoapi/terrain_player_pc.obj": "7292d1551860f8b587f2c836ac6f5dc9c00e5d6aa6cc1253fa67ac63711937f6",
-    "build/obj/legoapi/texanim_scripts.obj": "2fa87cbad35b66b5fbf699eaff50014f9224b81a68748c2f820c4b8e6fba7afb",
-    "build/obj/legoapi/text.obj": "ae6c3f7d4048b8aacb95d166a3e35de21573d0d3c1b589926d9e3044588d4784",
-    "build/obj/legoapi/text_tables.obj": "1095fbb227491bdf4621d20c7ba0f3b6148218f0f5e2bdb6678c5760901ff3ef",
-    "build/obj/legoapi/thermaldetonators.obj": "280eebe826a2ddb7e353e4e892aac8803f604a8f813658f1900f6d00d8e48943",
-    "build/obj/legoapi/thermaldetonators_pc.obj": "5ba82cd7098fe4533f8c1494cedee9d419f3b80fad4f1acee7eae7ca7ff1bcdf",
-    "build/obj/legoapi/tightrope.obj": "992c1a640c43f80a4a2cf6acb7ec8392684c095b6f78937b1dbabb6dcc98067f",
-    "build/obj/legoapi/tightropes_pc.obj": "ef3ac054743138ad4087e0c6e0feeede4eb766e8c238303c4da3398ddd3551fc",
-    "build/obj/legoapi/timing.obj": "76e39203c298512778161255d9f54f3361ec18d7d7c04b34b3015366c663943f",
-    "build/obj/legoapi/torpedo.obj": "f13bb3b1341457b9fe5e1640f6f7cc382d4f0243d33295b70cf0e994076595e8",
-    "build/obj/legoapi/traffic.obj": "f67536b96583190c987321360f8e8ae5309459b934931e6ec7381c22f5523dd6",
-    "build/obj/legoapi/transform.obj": "6bb13905d9f672d566692c7df895a638e82df1494f04b07d2e438a176b1256cb",
-    "build/obj/legoapi/trooper_cannons_pc.obj": "d4aecacf68802ec58ab55de87e7ae2785fa3a34354bb831007d28f0300f30a24",
-    "build/obj/legoapi/tubes.obj": "32de10b9824e40567f34aef7ca8a0a7b47c6c3206740adbd00929acaf3f5aee1",
-    "build/obj/legoapi/utilities.obj": "558c4e328f0489ad9b98466a09e7991775ab81edc4ac04e09b915236eb12d405",
-    "build/obj/legoapi/whip.obj": "4193828753c479a3cf43021b899e5ec6e9e748b88e1197bf90b6f51b81ab024d",
-    "build/obj/legoapi/world.obj": "85768509894e65b54fefc421aa2f9157b761b9ab80fde41123d097136a267e3d",
-    "build/obj/legoapi/zipup.obj": "80ef6096b9614ba3b0f6fbeeec4a4dfb99a0ec4aa14c86a7b1249ebca23763f8",
-    "build/obj/legogame/game.obj": "02f558ae86fe65208d0beb694e7738485bce4d4a75a5ad24ebca154a209a9769",
-    "build/obj/legogame/startup.obj": "60734f8d1e0eca7fb97765c91bc9791f4576e93781bec8a3939fe4a1d10fb0a4",
-    "build/obj/nu2api/bgproc.obj": "8f23f9fb1f02c1914396a7c984f9f8957733c7809071bf1009acc9d7369306f7",
-    "build/obj/nu2api/cpu_features.obj": "56c0eba040f75694575d54abf0d7a1ed918fe5b171dd56d0e997e263a3928b77",
-    "build/obj/nu2api/crc16.obj": "c6ae559b648a9e97288595111ce7cfb91464218c64d8b4e9d5a11e6b1be3051b",
-    "build/obj/nu2api/d3d_api_lifetime.obj": "2e27b57fdf3bd77d7fecd155004bd58c7e80e0736c132df9c7e73162461adb77",
-    "build/obj/nu2api/decoder_diagnostic.obj": "f35f735b91993cc69ee569074dfa63e31bf2abc4aa17234f1fbbd4113ebc8d00",
-    "build/obj/nu2api/dynamic_geometry.obj": "cf2c2df2bea182229b0094582fd738c9660e259ed13a9a003a88ba9b1267761e",
-    "build/obj/nu2api/effect_surface.obj": "90b8b88266ca9596d43e51a67f82fca7142d982c892d49c924804d3fa042a365",
-    "build/obj/nu2api/frame_render_control_pc.obj": "dbc15e51bc8dd3d48741bee28d03b2c60bfe1d307fe8b1a308abc80781d784e0",
-    "build/obj/nu2api/geometry_basis.obj": "9ee335a808c163b733e4ce4a1478aad1ae801c778e34c957efaecd6988654693",
-    "build/obj/nu2api/geometry_origin.obj": "37f9feb2ec92953423f71473e7df7f3b70c0364c487875eebd1163aba9719b5e",
-    "build/obj/nu2api/geometry_publish.obj": "839c6fa90da3509305a21ccaf7377ec13005edd48f09b54881592cc2b23c0838",
-    "build/obj/nu2api/glutils.obj": "847a71d7e76cbdb3b9808db149b9a1a4a832a3f0798e050c71ec8424c01edffa",
-    "build/obj/nu2api/hardware_dispatch.obj": "eb2bc84e99149a0ff553f4327b8dced085703e569724133ad9fe33cc784ebc89",
-    "build/obj/nu2api/implode.obj": "916f303ef97c247fb74b32e9c06982d8194d89ed65a6e0ed1ce91ae5c77344c0",
-    "build/obj/nu2api/input_descriptors.obj": "ec3a2245198acfcd72bbf0db891a6670307e0c4b6bdc386dca63f08191dcf39c",
-    "build/obj/nu2api/input_detection.obj": "797c295e4a1c29fc2a49eaecd1ae349e69a9b9d2554e2736b7781aea30e641fe",
-    "build/obj/nu2api/input_runtime.obj": "2a6f98befc702961679bc01c8878ed073bf9261ca4e7bd5cdfd6ea2e011e049b",
-    "build/obj/nu2api/key_events.obj": "68572e71d3dcc0a4aacc0c651383e0c7cc7d37a909790576c0e29bd2d788f3d5",
-    "build/obj/nu2api/keyboard_init.obj": "a973ea5bb7ad2e021b0e8299fa92531bfef18640f5db1ec66745411b67046369",
-    "build/obj/nu2api/keyboard_read.obj": "b854eb15b05e53c976103251b2d74867337cae13c7a05b6acf8db5db245a3e76",
-    "build/obj/nu2api/nualloc.obj": "dc91083e912fcb3e982934e0e88c06342140579c5098f67a31b89127c6b6637f",
-    "build/obj/nu2api/nuanim.obj": "1901f2371134ba4cbba127813127510d164d3c1fd9344190c1ebb01d301a38ff",
-    "build/obj/nu2api/nuanim_procedural_pc.obj": "73c0a19413f6965f5e14cf002d0d6db1e24c94d71891bd535e38a6c6e69cc3c7",
-    "build/obj/nu2api/nuapi.obj": "b56968f231ef58594259b7b9a865fb3939564762c38a4673c5854d3eb193ba1b",
-    "build/obj/nu2api/nubridge.obj": "851e2470f29e44d5f8483cc874d3efc928b917bebbbd62e44f1c3994dcf28a8b",
-    "build/obj/nu2api/nucamera.obj": "8a94c778359db27c42b031f7a7a226f7b657993056a55779358b7ca1e8e01fb0",
-    "build/obj/nu2api/nucore.obj": "72234eaa1122484ea07b7a9717d4dd8d34be91c0829dbb01b83d21e19dace53c",
-    "build/obj/nu2api/nudatfile.obj": "dacb16b4d34eeb714e632a7f55666b4bd10360dbf8dac7f3f0b3c19bb365a54f",
-    "build/obj/nu2api/nudatlookup.obj": "77638fb371848f0256608d9450442b10d500712cf77e65b35fdfdd264eb21781",
-    "build/obj/nu2api/nudebug.obj": "d424b17b506b15e4d5940ce4ced96f96643791d8de47ce6e6e8e4e120e03407c",
-    "build/obj/nu2api/nudebug_pc.obj": "dbacee7146e57eaa3123d9e6149e6a3dcd6456c0d567c7ffe8698b80c7598476",
-    "build/obj/nu2api/nudlist.obj": "cb5e81b2c18f0742502ee866e20d07c48ab089f4f54e8ae000f97674b48af592",
-    "build/obj/nu2api/nudlist_material_pc.obj": "34855ebad5a59c14862ef9814fe2987d6ff5b821a5688240214e98cbb4ec19ae",
-    "build/obj/nu2api/nudlist_pc.obj": "8f2825811a3f9a0a835b4ed73a6a5bda95f4927e9ce570c67549ea918988d383",
-    "build/obj/nu2api/nudynamiclight.obj": "6c4877eca58cbbd263acee837f32aa30b93c884ab6cc872198bb563bb05fc545",
-    "build/obj/nu2api/nuerror.obj": "1a2002582231a159370e2f6a8fa02447c08a737edd3aab7ae3ee77480f18104c",
-    "build/obj/nu2api/nufadeobj.obj": "a5de9df9d288b913f8e5e18e273b715dcca6819db4114bc1a9a0c560882ea539",
-    "build/obj/nu2api/nufile.obj": "05594985d295d487a6654cd1a48b9a37c656714030b1b6b1e709d7dbad237238",
-    "build/obj/nu2api/nufile_device.obj": "403dffc2b03cb0a5dc0f03651f5dfa83f5fbf2b57921bf71e574858925cd140a",
-    "build/obj/nu2api/nufile_host.obj": "7bd1c7da864302c7ead41464e9f6e2adfe1e0f110ffad0dc8ebe2307d88b35ec",
-    "build/obj/nu2api/nufile_mc.obj": "8d7aaf6e86cb101321993e35abbc7eb77488bcff98a6f2c6db21bc37356e0842",
-    "build/obj/nu2api/nufile_pc.obj": "25e46ac2771ea9bce06b67ccf6ce9d178dfaaf25029a9486b41289375e355b24",
-    "build/obj/nu2api/nufile_position.obj": "056df630c33d70630f6e57331b0f5ceda94a19f744b402b92d61aeadba9d1843",
-    "build/obj/nu2api/nufloat.obj": "d76aa0f2c07cfb8c2643512e8c2e7ec9b235b083af23ad34aa16e3981e05fce5",
-    "build/obj/nu2api/nufont.obj": "73313a9329b03f17c5d50b04dedd7cd6d98feaf93a1a2847356eea2f5775c785",
-    "build/obj/nu2api/nufpar.obj": "7d23b7aba4c302426843eefcb0177b7e965d246826e43820363c87734b0c8286",
-    "build/obj/nu2api/nuframe.obj": "95cf26bd921cd46eed1b1af0a23537356ab0391b0552423e7ba7a0bee38dc846",
-    "build/obj/nu2api/nufrustum_pc.obj": "54b9be31acddbcc79f78847d2f27c6d8d49f3439b4bb7f562295ada6bb00b32f",
-    "build/obj/nu2api/nughg.obj": "8b60747720ec857e04c14c647f18e9195f34c06bc964e5e002846e5eb948792d",
-    "build/obj/nu2api/nugobj.obj": "ba047a06466e20f0257fa9bbe93f33aeabdca69d313cf04d6aa0f1e73df0dfb7",
-    "build/obj/nu2api/nugscn_pc.obj": "db48e829bfc922bd2c9c28a8cdf80c457f03440930fbe30cfb50106c97b0ee8f",
-    "build/obj/nu2api/nuhgobj.obj": "51e89cdfbdc211a5e4e67fdd7072237e346aefdc1c56cfbe9ffa77f1426a9adc",
-    "build/obj/nu2api/nuhtml.obj": "ba2e23460d7aff6e8b4f237b6836d3169f5c2653b835a994b909bde7f5c7f74c",
-    "build/obj/nu2api/nulgtlaser.obj": "e19d7c64b1f1931e05d2677678432a4f044c4cabffa6592096e865d1ddbe50a3",
-    "build/obj/nu2api/nulist.obj": "8981e25ba3a60779664ef6ad2a710b10b43087a9ca4849dd822101ee60a06187",
-    "build/obj/nu2api/nulst.obj": "69105d75b7c5f6c958958b6eb559587f969f6e8ffd4de7fdbf291806dd4c8a45",
-    "build/obj/nu2api/numem.obj": "2c434337469632a6e79b03018a5088d18918ce3c17625850c5ee951ac881d8d4",
-    "build/obj/nu2api/numemfile.obj": "67850d23409408d60967a5a715dff3ab2ed21e6817c21051db2441427d8efdf8",
-    "build/obj/nu2api/numouse.obj": "3a5bb0d6678320c59a9227d2e36235a02a623ffd6369df1616bf04fb0fc11bb8",
-    "build/obj/nu2api/numtl.obj": "e8420ae1d6977d7288124b6caca7329d72357267bba50a85e6b8a710456ee39e",
-    "build/obj/nu2api/numtl_pc.obj": "a05e472bfbe285b46781ac95d22d962c0815af94107f7730df3e79a504bf7b1a",
-    "build/obj/nu2api/numtl_resources_pc.obj": "a5703449c9bca83dd5e7f4b4540e0c998730debc32ab83390e479b863348e948",
-    "build/obj/nu2api/numtx.obj": "950bdb688416f23e30e4f9c309f27fef406e04c4a5d2095729ca3fe9c4fcf0ab",
-    "build/obj/nu2api/nuocclusion.obj": "d58b04d00caad5587788e80c512e9d9c928d3e56e1f19a662274dbe21780b874",
-    "build/obj/nu2api/nupad.obj": "1d1660238b5523704239c058a61803420dff2ab1e65ba56361687e4933025406",
-    "build/obj/nu2api/nupad_pc.obj": "4286193523d6fcf0e26fdac7e16fa726ff7e879857d4647e85a5e4f7e5f3c066",
-    "build/obj/nu2api/nupad_text.obj": "c09961defa0971229eb4501d36f5c193df8056194faa261bcf0eeccdc67a8db7",
-    "build/obj/nu2api/nuparticle_runtime.obj": "41267332f13343261f24cca92dc2e711b241eed69859e4abdb3ba8b81ab399f4",
-    "build/obj/nu2api/nuparticle_state.obj": "2af204bd2de34ff049b01feb41d8640377cadaa596195c75a71e427966c508a6",
-    "build/obj/nu2api/nuplane.obj": "d1f3559d0cd88941f87a092bd968a4da1014c7706d97eafb75bc7f01ec070bcd",
-    "build/obj/nu2api/nuportal.obj": "6b36a157020e670ffcf0ce929c1c2ba14e77fce5a9fc57a509122472d64c6a8b",
-    "build/obj/nu2api/nupostdeferred.obj": "fbb26ca42c537d3a3aed602373b8ab0c87fb535e1b8fe468817131419430b9e4",
-    "build/obj/nu2api/nupostfilter.obj": "472fa72b8388ac44f10cbee941874873559574acf055ca1f5aeb87a91b3bd5e0",
-    "build/obj/nu2api/nuprim.obj": "3084201014d926b01d769b0da0e1bd30d198cd7f5876ad3f1ed672406d4bbae2",
-    "build/obj/nu2api/nupsfile.obj": "b822322dc57fb7b7643cf038a5b12c4fe97c1b84fe1493fab827dc298ea57c23",
-    "build/obj/nu2api/nuptl.obj": "52843015ca64926047f7b996cab7970d95b2d60e28dfc1d7337b879c2f492d29",
-    "build/obj/nu2api/nuptrblock.obj": "0964128ca5ca22a5ba83c4faa86604325dd21321e96e5cd241721344391aaa1f",
-    "build/obj/nu2api/nuqfnt.obj": "865e863a1c1dd3e843079d0568939d1d4a7ea0de7cfa088dd38cded9c5aa7b81",
-    "build/obj/nu2api/nuqfnt_print.obj": "b625d783d5c1a94ec0ea6047a43a88d20329eaeb8e955783896314aa8bda8653",
-    "build/obj/nu2api/nuqfnt_system_font_pc.obj": "5b8bc3f5bef069930fb253898c7e264b85b1d735a659f6947a39138e1022294c",
-    "build/obj/nu2api/nuquat.obj": "0c3819a0cfa182d0a62a7ad6c20178bb9e0882cb2cb79a6bfe0a4e669014f6e4",
-    "build/obj/nu2api/nurdpi.obj": "42cea6e113b14d6d04f1f322e8162d205ed0618d9e0ee2ce049aa7ba4a0e4e94",
-    "build/obj/nu2api/nurndr.obj": "0c7bc4a66db679bb2b57060b0b830f52280ebadfadcb0517c10a587202c4bee2",
-    "build/obj/nu2api/nurndr_swap.obj": "3b169e328b7bd8cd12156c3cafb6ab7e458047f1a821b312cfad1f8c0172d8a8",
-    "build/obj/nu2api/nurndrstat.obj": "c11fe5b636cd4213da40b7838d78e9df1747a57e00edc7018075138593e933eb",
-    "build/obj/nu2api/nuscene_pc.obj": "8be8882d8b1f1daf1df2c591de33ba2349371db0cd47b4c2de7c6ceac5bc724e",
-    "build/obj/nu2api/nuscratch.obj": "6299713c3dabca548feac2da2052006c98d628c6621e9e2fa536d98badb1ab1d",
-    "build/obj/nu2api/nushader.obj": "3bba5f45919805e08a4bc0ee0c6e989990e7ad325cac8856088d4d6c1eca79a4",
-    "build/obj/nu2api/nushaderkey.obj": "958b1982d06a84eee4261e9b95cbb24ca4847045d571b218e3efb172dda9e978",
-    "build/obj/nu2api/nushadermanager.obj": "5677dc3613fe656a6c76285b3fd06c3f1cf14e5fb0616885f82e0172ae1db0c9",
-    "build/obj/nu2api/nushaderobject.obj": "83964e37341c88baf0ef295581369168f87f94a7a61c00afd58ac5d45d8a4b03",
-    "build/obj/nu2api/nushaderobject_pc.obj": "24d6ee605eac81c848a8cfba644ab95a66e0fd7d18699ac15d557d2dc9e6af33",
-    "build/obj/nu2api/nushaderobjectbase.obj": "d7b92c498efc295ef9f8d6a0cb93543ef0a35a03e3deba0ded9bd65337c07222",
-    "build/obj/nu2api/nusound.obj": "27ec8d4717b2802afce61df2cb97334d285939dc37b90de726cf05a06729f787",
-    "build/obj/nu2api/nusound_music.obj": "a8dc8a4cb9da942a0f478d00a3801349b63ca1707c43b639d205818c7af76624",
-    "build/obj/nu2api/nusound_pc.obj": "50a8a0cabd146ff3e90d4bb2820631a67b992a94fe536de90db98d288e7d7591",
-    "build/obj/nu2api/nuspecial.obj": "c4a258182da3cc6c73373ff6e5cd2367aeffc84c092d85eadbfe4a4e25fbbdf9",
-    "build/obj/nu2api/nuspecial_shadow_pc.obj": "1c6bc9aebada08efbc10ffc618aedffbc4556f7f77638671f5945c5e3825a53a",
-    "build/obj/nu2api/nuspline.obj": "de7c19b3f5b88e81836f6ca70384449544c9661c615a414fcddec2a44f74618d",
-    "build/obj/nu2api/nustateanim.obj": "835275c3a9c04a3f06fe2bf8f95b8f9fde9c9644f616c295e87f14265dc72547",
-    "build/obj/nu2api/nustream.obj": "2535e0083a71caef5ca21fdb516fe4a51c453be51f62e52a079b9c606cb4de9b",
-    "build/obj/nu2api/nustring.obj": "56cfa2f23ed2a324f860b701b2861181afe9e9f947391bc6d5209c56c15a75ac",
-    "build/obj/nu2api/nuterrain.obj": "0b8bea3c4b5e8ee654d2049cfcd46ea9caabcbbb4e6d5e8ecd481b3fd391d936",
-    "build/obj/nu2api/nutex.obj": "2a6f73c23384990656388ad87617ac0ef0e8ad6942dd45765f351f86cf38716d",
-    "build/obj/nu2api/nutex_pc.obj": "de740392b4c88db58ab6f456149adb56abcb6b782caae3147525ff9359929816",
-    "build/obj/nu2api/nutexanim.obj": "9ed176c9222d4e7b51e7afa43444bd8eeaa446c5734086671d67c2cadcaa2ffc",
-    "build/obj/nu2api/nuthread.obj": "b012448dfbe3c8e463a05d75db23f1128deebf48bfdf344f87a43fe50a28943b",
-    "build/obj/nu2api/nutimebar.obj": "240eb1944d989840e7c06dbdf53187c453b607f912990409527cf4a8a3391dd6",
-    "build/obj/nu2api/nutrig.obj": "9d6196dfaa76a65fc3f5000abc2e88f8e06d5f2764b2abe8cafcf05c24647b68",
-    "build/obj/nu2api/nuvec.obj": "e7922d7c7e97ab5e041e8699deca57fb3e5a62fa5ab87e54e833ae01b8bfcc46",
-    "build/obj/nu2api/nuvec4.obj": "8882c683736d52770b9f5bdd87c5e2d0e2c2caf4f8994a2d531f76594f37b17e",
-    "build/obj/nu2api/nuvertexdecl.obj": "27c77328370658228f6ee3b74260af1ff9b8467d1b5c1f82506e533b56c504de",
-    "build/obj/nu2api/nuvideo.obj": "5342e4cba3642163be8c6e1d4ec11499a22e277908d30a9ae5174f5afa476684",
-    "build/obj/nu2api/nuvisibility.obj": "24d4738cf258db359ef234be13f600b6c7e0d4c72619c691320618a1b981320d",
-    "build/obj/nu2api/nuvport.obj": "10e4c1dadbf6c8ad4e47e8bf33e13437c9b9a556e5a4f85659d1f09005199fd6",
-    "build/obj/nu2api/nuwin.obj": "e6e0ebfa6cc7d830539bc455997796dc11725c18ca7420f8cab9ffc601455c90",
-    "build/obj/nu2api/oggreader.obj": "f1540628e3c22eab037bdb6822aa1afd300cbf5e170bc81b2bc3586c3d8b2a0d",
-    "build/obj/nu2api/pc/nustream.obj": "dad3d106e0c4ce4c77269a7572353e09e95d8f908c480159420b926eba48980b",
-    "build/obj/nu2api/pc_cursor_pc.obj": "f50afad4e209f3ec14840877931f95de886f3531d4653a144239a48670bacf12",
-    "build/obj/nu2api/pc_device.obj": "3395d19f71a7535da25a18544c17bd40e3e0e33c39d69996ad5515e57bf30b2f",
-    "build/obj/nu2api/pc_fmv.obj": "db85b7742328ee68442290738895e24e3ca0138bf8385d27cdbb0f963cc49219",
-    "build/obj/nu2api/pc_fmv_control.obj": "519ac472386e9f439e21bdc30c3d75aa48f1f61c3fc31e1e12a6f5f92749855e",
-    "build/obj/nu2api/pc_fmv_leaves.obj": "06fe52f7d25822dbc702fdcf1f6246d286742635fc439d0504a4445b8fccfeb5",
-    "build/obj/nu2api/pc_fmv_player.obj": "4ce14471d89819b23385d58c0ff3375f04ef8e00d07ed8a52e7e56ba13e76c62",
-    "build/obj/nu2api/pc_fmv_rad3d.obj": "cb539460add7464e437f121b70f3cf5173495fb167d8699b6773e2e9c3104e51",
-    "build/obj/nu2api/pc_input.obj": "a70825a3b93010c6568ac176fad0177b583c98720209dd6dadee8a8dbca1b0b1",
-    "build/obj/nu2api/pc_options.obj": "552e17945640366576a574bb0b84b35455398e5341fc0b04980aa3c8dfbc5f1a",
-    "build/obj/nu2api/pc_window.obj": "adf22451f6e56368f69636f87f5e984400fd550de3fc2d8a503dda1e68c830d0",
-    "build/obj/nu2api/platform_files.obj": "0f62f0570511fdf15465fa595f1e8361ddd4b3c19f19c9b36ca2f5cd57469ccd",
-    "build/obj/nu2api/platform_policy.obj": "300ebb59ac397d91767e3637b8f8ccf70eaa724825dfb1571a0a575eb30cd7f3",
-    "build/obj/nu2api/posteffect_ports_pc.obj": "9cf5361a2ebf61db04ff882484a5e945998b46a499487ed51737c0ffef6969c4",
-    "build/obj/nu2api/posteffect_shader_pc.obj": "e07b71e36a82d8db8b7f0130cc1364029c3cf80f096d01b5534fcae98915b354",
-    "build/obj/nu2api/posteffect_shader_tokens_pc.obj": "51794391f4b217b0cc4704141faa3e982de3414ad6f7219bbdd6ba5776da658c",
-    "build/obj/nu2api/save_folder.obj": "42d3475dcc745090c2da5da350a45f8633807721947254a46396cd9737e2256b",
-    "build/obj/nu2api/shader_buffer_allocator.obj": "fb0145b8f646603db73ec6b7a8dc6ce68b4ed003282c6f7fa61d587878aad818",
-    "build/obj/nu2api/shader_compiler.obj": "7efeac24d18cfc9b2c94fec196b323323ec6e5ce23d9c6225b0b9c5319b5a483",
-    "build/obj/nu2api/shader_dictionary.obj": "34e3a77bcceb39ee7a513f11280908c586e83024aa3f17a09d6d8b6767fba725",
-    "build/obj/nu2api/shader_lexical.obj": "3596146d657db78b11beff61372233ac6a465c9ba03c734d04ee22dfda31fb98",
-    "build/obj/nu2api/shader_parser.obj": "14905372bdbf496efd8ba0e5c02d112ec580f1b413b8f6c205d8e1dba22c47ab",
-    "build/obj/nu2api/terrain_collision.obj": "61909024d435a1cbce18c5fc1949c3dad59d043060abea266971419fb962102a",
-    "build/obj/nu2api/terrain_diagnostic.obj": "0a979fa0d1e2ab13c574b1c1c2a619c496dd4f879f880101519fa475a3d15401",
-    "build/obj/nu2api/terrain_query.obj": "b64b76261bd7d86da683162fcac471a2edaae188ce82281916c5af127a670123",
-    "build/obj/nu2api/terrain_scan.obj": "2b1d11310a9b2d9a08f77d613b7d49d2b1476c90f5f7e5e3c09965c434c301f8",
-    "build/obj/nu2api/textinput_labels_pc.obj": "af0f2361401a2544dc5b145d9497ae5148ef2a99e04933a44f68e6c367f515db",
-    "build/obj/nu2api/transparent.obj": "7d2fe5d7be4c8aefabccbc5474271af8afd3d2c47bbded2c3b77964221e602ca",
-    "build/obj/nu2api/wavreader.obj": "82cfa1fb673854be4190e8ec52fec36fa57a960148da54541170365ee274ddf0",
-    "build/obj/nuang.obj": "64d7ccc18d3f653a5480b76aabf530f6611bb853f23892916e2f3da514d35ffe",
-    "build/obj/nurand.obj": "b6073bd31c952c787376a43fae124ef9199c4888e75be70fe2c44a3707366724",
-    "build/obj/qrand.obj": "6965b70431df2cb78342651e56dec0b28228eae510864f839a2d970695f13a37"
+    "build/obj/vendored/ogg_bitwise.obj": "09c5c4f9af6dc3dc6ad730f4eed967e88fbe1d11179c8e38b4f8412e394ea916",
+    "build/obj/vendored/ogg_framing.obj": "793511a859995962fe9e6a8df36839b21cd2e934b35b38927b7f7c564e12c8c9",
+    "build/obj/vendored/vorbis/analysis.obj": "01fbaa784d9ba1ff76bc116d18d6048ef0142751f1209d39bbc3d933544e9a14",
+    "build/obj/vendored/vorbis/bitrate.obj": "72399176ad938f81c872c1a20ca3481b714de3455bc394aea203e110eb9b7571",
+    "build/obj/vendored/vorbis/block.obj": "64e50438f260efc8dbae4b6a8ccde6f1d2951b55fa7d0e7bd310de0440e3fef2",
+    "build/obj/vendored/vorbis/codebook.obj": "4f958c05e6ce0cdca8779fda313068c1cc89267f9abd70f47a8c7512df326626",
+    "build/obj/vendored/vorbis/envelope.obj": "db7c34d3213ea9355a568a9b17136ffc75351560219c207d8d0579cc2306deac",
+    "build/obj/vendored/vorbis/floor0.obj": "45b8044abdd8ac14bf01b08fa00f167479e887128b967ff52b54486c76238f68",
+    "build/obj/vendored/vorbis/floor1.obj": "f0f3173145c0c4afcd06ada06c2eb253c9f907c6b5127989564008f537833518",
+    "build/obj/vendored/vorbis/info.obj": "c58bb0955a3ba35ca000b74a2d3c898fa07e10ed42bfd2468dd7e5689b18e3cd",
+    "build/obj/vendored/vorbis/lpc.obj": "6fe8eea4f47cc4960265d81866c7410fa667688e1c3df1bae7bde0cc61b1cc4b",
+    "build/obj/vendored/vorbis/lsp.obj": "3d3c39fd476432921d4750072b0ae4c70ed846b378e67d75adb793fc985e18b8",
+    "build/obj/vendored/vorbis/mapping0.obj": "79bf72cbfab07d5cd06bd8329dccf630f81f93be30df811afc80341537246e84",
+    "build/obj/vendored/vorbis/mdct.obj": "275abb990081e9a5a6c785b70f831791768dea58272c8bad5ea4cdae29a18636",
+    "build/obj/vendored/vorbis/psy.obj": "45e4537d5b84693706acdef8eb9b9c7915f4bf74f90f772d010906fb753d989a",
+    "build/obj/vendored/vorbis/registry.obj": "2a3894fa29797151cb68aba12882120a15a308819c916866dd0f78db61734c20",
+    "build/obj/vendored/vorbis/res0.obj": "3a3b7b9b44a2d65affd6a5e8cbcf0330da000c969a786ddee18f8f97203fd1d4",
+    "build/obj/vendored/vorbis/sharedbook.obj": "164fe63093dab1fd41786106e05244e7a4a58440a1b50fe0e6cb62dc3e2952ce",
+    "build/obj/vendored/vorbis/synthesis.obj": "6043dca9479d3795d0be931ca388bcd40abad4b0b152ecc3127f809ca72b3387",
+    "build/obj/vendored/vorbis/vorbisfile.obj": "6e7d2a2ee2eea08ee726953e1c26489098d43d372085fbf6c979f6f6f77ddf67",
+    "build/obj/vendored/vorbis/window.obj": "d3ae6d99be13cf05877b414c8de523fb973919315beffa8bf23c9ec87ce60d0a",
+    "build/obj/vendored/vorbis_smallft.obj": "53d3e2c3ee175afde37f77978c436db925ad4a6ac7eb2afd74b2530feeaa4c39",
+    "build/obj/batman.obj": "e99d13e7656af427e6cb750f0dc1ccfcba7f1bd0395c42db0a22511078727b12",
+    "build/obj/data.obj": "e14947683a702b0f08bbeec0a4bd8838d512a373645a6597348020036eded40d",
+    "build/obj/editor/edtoolsall.obj": "fa8e2675e721a371d0b59c8df1733b96f43162c84b37efeb918582c10f124c7a",
+    "build/obj/gameapi/ai_registry_pc.obj": "b71f24dc6387b73dc9d1df2b5fe3bad585355ed6a9488d7586e2057550f1668f",
+    "build/obj/gameapi/aiscript.obj": "7efac5add541c48cbd91ad5b831698ca528c0707b02c035d8c913e44ad9a1090",
+    "build/obj/gameapi/aiscript_diagnostics.obj": "063fd72dd3469ed82f0df2fdea5733fcb6620032cd8d33dc46ae6ede0d1fea66",
+    "build/obj/gameapi/aisys.obj": "361e87cd940291d495c75e7ce4aa251a24b1e3964c403649c9cb6c47cfb50422",
+    "build/obj/gameapi/apiobject.obj": "76ed3d33fdd10400ce67c24156b2e79b781fe38826d845e3ccd1925e598223eb",
+    "build/obj/gameapi/apisave.obj": "293e6223a023b39bcc6f07586f4c5c3193ec667e7a8b6dbc82dfd879c77a1e00",
+    "build/obj/gameapi/edanim_load.obj": "8fef9ded17e8b3f8d813e5be49fc0913885c79bf712f4cadcd40e680a1e0faea",
+    "build/obj/gameapi/edanim_update.obj": "1ea0649281a2509ad4135d9a207697db71e08a1205fc719b6207613a4459e3fa",
+    "build/obj/gameapi/edbits.obj": "c89e83f4a2de70f5a5d7ada20b72c94bfd6f4a8acdb2141f0860464bb4a4fc60",
+    "build/obj/gameapi/edbri.obj": "e9aff9d29ab4ba754f66d114700c03da7c4b3c91de441b247e75bf801905ad5f",
+    "build/obj/gameapi/edfile.obj": "e297d5ef5ca92e8a7a114320d293e9e89c428a579b5eefebbd87b7e78f2e173d",
+    "build/obj/gameapi/edgra.obj": "a28ceba63c0b3c477409ccfbcb4335e7198672893ce8b6c5f2664648b485c194",
+    "build/obj/gameapi/edgrass.obj": "c4c78587e4bedaa8fa53e33d22c1d43530bcea53881f912bacbc9b05edd41890",
+    "build/obj/gameapi/edpart.obj": "046cc6c1ddade0091f185f26fb29994b98ad802301a4d015a906a1bef5464fde",
+    "build/obj/gameapi/edpp.obj": "b546a6d2164adee0ae99bcc1ef99fa314aff6590aa0751c8d0634d44117f90ac",
+    "build/obj/gameapi/edpp_load.obj": "b7a1d4842ae2e7f2c2dd3dad9c2ae4e36b9ec4c68add5d40edf2c7b954fe4c4e",
+    "build/obj/gameapi/edspline_load.obj": "99564d261255f6587cd088cede137ef80703c3d78319dca9532787c555412e26",
+    "build/obj/gameapi/gameaiactions.obj": "d850ea4d4cf4af307e61b621a22d9d2ae078e220f59d4c7b643cf9a59ff1baea",
+    "build/obj/gameapi/message.obj": "def1eadd3484182d9aa1332f5f6987a45c775d336ccca0c05aa4088dd6dee7ed",
+    "build/obj/gameapi/saveload.obj": "2a17138f6af84f2d12c139a9078548469ee3e31461f79b431873c44e82701551",
+    "build/obj/gameapi/shop_persistence.obj": "9af6b2b3e8d0cb91a407675298cad5ae84d1b576bc2b0ca27e1d65a1301174ed",
+    "build/obj/gamelib/nuwind.obj": "8144200606934ce3bac260517f22af6be68047226b8e63055f1b155c5626cd97",
+    "build/obj/gamelib/nuwind_groups.obj": "9a6dd7cf6f6103de129fef3ac3412aa72667277b413a03a8bebef3cb654054e6",
+    "build/obj/gamelib/util/VirtualStackAllocator.obj": "9ab2598add158e063bbb282811dd09620f5121dbb660804380c440c01e6f958f",
+    "build/obj/legoapi/action_sound.obj": "1dbdef29245ee27aa0490a4747d80d221dacd07861975daf7cff86c5e8bdcdaa",
+    "build/obj/legoapi/ai_global_conditions_pc.obj": "56efb9f69c8f717b9f449bc4496bb877d35e6b5dc0a439efd939eb535d0642bc",
+    "build/obj/legoapi/ai_map_actions_pc.obj": "0a58722086370699af8b7ba21f7c4a4ade3ca7307059e032b4ee7a78cb83eae3",
+    "build/obj/legoapi/ai_party_trigger_pc.obj": "ada783a89347b71233bede2ae35dcc1ca76bd52e71308efab08986d5069500fc",
+    "build/obj/legoapi/ai_spinner_targets_pc.obj": "99af5f8836d977d2b59a697c7ebe0dc002391d1c35a24731e2082ad6dabcfd5d",
+    "build/obj/legoapi/ai_sys.obj": "0ebf4c2e33edc752a9e08e6f2acf3b159973950c574cb067769c39b0bab9f7b2",
+    "build/obj/legoapi/ai_trigger_setup_pc.obj": "1f2c31fd1aed2352cd7c2b271652b3c3b109c5a92b2da11145995a7ad5098aa0",
+    "build/obj/legoapi/aiactions_transfer.obj": "5734240b6133b7cfcaa3cad212b58f7e4ccbba8df1ca17c819ba4c3d561d1912",
+    "build/obj/legoapi/aicapabilities_pc.obj": "73e2799cfaf0fb888b34dee29e3095ebe3eb557a4e175228d03e4e024a2b099f",
+    "build/obj/legoapi/aiconditions_pc.obj": "5e65efc50bbd5b64b0709eec303dca88520ae763d6775ab715118de7025f941d",
+    "build/obj/legoapi/aipathcnxhelper.obj": "ed56bfb403bd8d3b3ab858a9f4ba7c808fd69b65d438e189dd0f20eeb6ab49ac",
+    "build/obj/legoapi/aitrigger.obj": "a5ce3312c1229c5eba1b2f57129539e3fa749bd4b7b1f8adabfaecc116689e9a",
+    "build/obj/legoapi/arcade.obj": "52b2f54319f675098a8092dd37b7c84c2474e3ebd7bc872df19436636af21020",
+    "build/obj/legoapi/areas.obj": "8bcea1e047d869fe6f659cc225de5259d1e6fa07956b0a854f7b29e93f92656f",
+    "build/obj/legoapi/attracto.obj": "c0267da6ba5cb7bab09e560f713c9abafe024bd55aa8b550fe7e2090dce1779b",
+    "build/obj/legoapi/attractos_pc.obj": "09278e18375a1b564f80e8c3d7bc1e0eba6fe064594f21ae5f79016bb572fd46",
+    "build/obj/legoapi/batarang.obj": "b17b785ac927e3e16475504429336e5846d1de96f2200b4c31ed4cd1d0df5c4b",
+    "build/obj/legoapi/bolt_foundation_callbacks.obj": "723d3126904b7724256a1064dc20e701626cf66515376c2d8f02a4dc69461d47",
+    "build/obj/legoapi/bolt_runtime.obj": "1f205a9c6004544ed2e287b19a840f8e60e2cd25cc045128ea9ac4ba79963080",
+    "build/obj/legoapi/bolts.obj": "0a3fbd6ea5689141461034dca1112fba0f20268b361a2eaae98b811969edca6d",
+    "build/obj/legoapi/boss.obj": "a1f6faba61442ec568e0527814604c9d4e99e12d4024861f18f81f1ac6d5534a",
+    "build/obj/legoapi/cables.obj": "17e3e2dda67700396a137bcd472a8ec9f8fa0563b9b2adacd1cba4be30fbd882",
+    "build/obj/legoapi/camera.obj": "1e4e30fdce0068a8275d558b2ca2fa51af19a27fa4477b4f4ac58393ea330d1a",
+    "build/obj/legoapi/carrying.obj": "9afc941ea14215f1aafdf08427e579df9099a7feccd00d6308432450d138d38e",
+    "build/obj/legoapi/character_animation.obj": "6009874c79e579d89b7b2d60c815e34d8b66a9cc9f5fc9e996204693bc3919e3",
+    "build/obj/legoapi/character_joints_pc.obj": "bc20a2d6712dcedec3391be115e2e01da3f90b63f44468e84d4c6d072249c147",
+    "build/obj/legoapi/characters.obj": "b3e72fd3f3d4669f3bbe3eb27614cf2cd685c43eafd948e709ac2cbdef0bd239",
+    "build/obj/legoapi/charcategory_init_pc.obj": "f58111e5a2c78d4d4229761b171e67359ce47f0d64466592b09cd1822bd70a20",
+    "build/obj/legoapi/charconfig.obj": "d820c8bd12b9d312da8dd4fc11e353d09431fa7ff2298d57cd6c406ba3aa026c",
+    "build/obj/legoapi/charpivot.obj": "996511f1fc09d041be04cab553d2caaf76adfc5ff8d0b47837199500a18a5200",
+    "build/obj/legoapi/charplatforms_pc.obj": "319957ab271a14f693d01d7d969f9db814a53c2fafab1ffca2e648aa8c0d83a3",
+    "build/obj/legoapi/cheats.obj": "2d10bbf08594c4cb0bfbd982f6cc3fe0b5357f94a29485511812fe5770fc5095",
+    "build/obj/legoapi/collection.obj": "a59fd76bc014d2382e91eb2f0132d08579eba3e0babd4c55b849f0b0446a65d6",
+    "build/obj/legoapi/collection_render.obj": "240914759bd35d859c5e938a67df33bb466c97fe4cdde55063ab966992ce9458",
+    "build/obj/legoapi/control_setup.obj": "95c02c992175fd4f69ad400377d2ff4335ec6058daf1862272d89222b1aae1fe",
+    "build/obj/legoapi/creature.obj": "c600578dd4253b3b5a6cc13677450f0d59db9502241a69d6e14030cbe17710e8",
+    "build/obj/legoapi/credits.obj": "e8b63eb492a0c2ead0070b7a2fba7930fec135d6cc82ba7263adcb93f030b8c3",
+    "build/obj/legoapi/customise.obj": "9fd07c3bba6f233ec5561c68bcf32e81675940116a73e5e5e41497314248e00d",
+    "build/obj/legoapi/cutscene_hooks.obj": "74f2ea86ebffe5828f64893c5b2fc2ad3e10c0163b2b26a5af099ae11c81c865",
+    "build/obj/legoapi/cutscene_lifecycle.obj": "2f76f230ad418bcbb22188c27143512c1945ec37635ce31c8695a81e94f30246",
+    "build/obj/legoapi/cutscene_runtime.obj": "a6c2e565dee788f50958b99ff5b42473f9b69f213b4929564309519ea49ccd33",
+    "build/obj/legoapi/debris_callbacks.obj": "ca41cc9e168f1fd64d045c257f44a304ccdc90c430440a3a783026cb09f002cf",
+    "build/obj/legoapi/debris_engine.obj": "4650dda10a224de0937461f0d7327231146cf2e73ef4130552bb10ff42337963",
+    "build/obj/legoapi/debris_generators.obj": "41c0134ebd87e817a465402a1f0c5de5e791534b41fd55bef546a88c266c8e00",
+    "build/obj/legoapi/dogfight_audio_pc.obj": "53d026fcc0b4596b094a479a0f4a94422fb804d1fefca2926f7f7c441e71c9cc",
+    "build/obj/legoapi/dogfight_collision_pc.obj": "2eeadedd85904216f04f0d82a6cae463cdcac402918b899e87c66263bebd5fdf",
+    "build/obj/legoapi/dogfight_reset_constants_pc.obj": "e1fbe44bc2e7c28ea02808dd3a863245ba0736e6e0f5dd8dcf1f6b7c4f61bb02",
+    "build/obj/legoapi/dogfight_reset_pc.obj": "6ca7b3c9e36ab8ad9c274174de5c87c4518434fff13db5883edd1f61e437637c",
+    "build/obj/legoapi/doors.obj": "f2d37755930dae304e4260b796872800ed0693c2c955d57838cd96a6abbad383",
+    "build/obj/legoapi/dropinout.obj": "3ab88cd97e96be575f5c61cdd14500eb38aafc1085d3f63d74983eda96b5f195",
+    "build/obj/legoapi/edgizshadowmachine.obj": "8b1f0e99dc8565e44a8c92ff9d04e43b6d4864d0b5e077fd961fbdb7eec70413",
+    "build/obj/legoapi/edsplines.obj": "136ead0779572659caa35bdc40dbc7f13baf9623d2fffb0c933042d09b5b4cd2",
+    "build/obj/legoapi/episode.obj": "8b3f0ebb87c81ef470c99ee3c001a9095dff5e4225ec433fe54d7be6d0077d23",
+    "build/obj/legoapi/episodeI.obj": "268ecd3551476ca9a69584a4cd004a7a06e9ee3868a219413646d81e248dca58",
+    "build/obj/legoapi/episodeII.obj": "d7d39f3b08d732d590933ac68d5886df7784331e94a99f906281907dd8bcf155",
+    "build/obj/legoapi/episodeIII.obj": "2500bd13fbb77ea0d3eaabe51e056b9763a88e894df843d791b6a343f1866aff",
+    "build/obj/legoapi/episodeIV.obj": "c727f1c730fdd3176dc83c0abce1d284078313d2e86424ec4820d18543a347b6",
+    "build/obj/legoapi/episodeV.obj": "86718307e95c7e2c0c6be4dddc493335813c47143b8a0f6234c75ac57f905b51",
+    "build/obj/legoapi/episodeVI.obj": "40d67b7ce4d8662de2dad6f63d8027533fb790cf6ad3e408eb13432ae9d0a0c3",
+    "build/obj/legoapi/episode_helpers.obj": "ff94df16a9efd158155f882c627d2706698418d0a33997a6991a91d87317e3c8",
+    "build/obj/legoapi/episode_vi.obj": "03d67ab9ca146128066ca7e36c864e434f886b0401b62c0b0e53a34f0bd9945e",
+    "build/obj/legoapi/explosions.obj": "506d743dcd1da7a2cb6ab7a5e42299408791582bb140556a6454a10a6286a6d3",
+    "build/obj/legoapi/fade.obj": "92d1d8c43b55a1bf7d1608b620d696e65ec616e7acd2b94497a7a6ad556c3fb0",
+    "build/obj/legoapi/faders.obj": "e1ef9c30795ba1e7d271904f50a59206b18f889695b4346e2fb9ee4f2c1ea544",
+    "build/obj/legoapi/fighting.obj": "d4ecf8984bbd13ce9db26377f891353a3af6bdd067d2aeee853b2561d9f93fa4",
+    "build/obj/legoapi/finish_loop.obj": "143a437da30a3f3da0f65e9eaa4771675c8e4fa61438bbbe173c2591d072ac6b",
+    "build/obj/legoapi/game_deb.obj": "c34897bc90edc404a276c9a32afc95c7feb61c91985d4b75ce465fe079b13a65",
+    "build/obj/legoapi/game_score.obj": "81e25c4a98990cba0d11fcb20f26a18d740cc80d2bbda872706c7e8612ffe12a",
+    "build/obj/legoapi/gameai.obj": "84df6311591c45fd6bdc4194eb7e6cb29ab014687f22632cd3f44d45efea2ad7",
+    "build/obj/legoapi/gameanim.obj": "cbab923dbffe738c8d0ce5e5b8149ca090f06c14f628f745deecb686b4d767cf",
+    "build/obj/legoapi/gameantinode.obj": "268481db66ecaa65289ebe3d2dd38d63c520132a15e245ded58799c0ba5ed0a0",
+    "build/obj/legoapi/gameaudio.obj": "a15e3ae33344fc48598356dcd7527e57f0bacffb75332935978e0d3f18b03a2e",
+    "build/obj/legoapi/gamemessages.obj": "39b2f2c3f7714daa5420c59a1775dd0b32e0cb99a4180f6465e7ea71df641a4f",
+    "build/obj/legoapi/gameobjects.obj": "4002bccc694be1613dfef7aad378aaf0522f56b34fbd30233c5663f2cff1fa97",
+    "build/obj/legoapi/gamepads.obj": "3cfc073f0766b7ba108237aad2e86a5feb6b8454931965a26df1d8023593ece2",
+    "build/obj/legoapi/gamestatus.obj": "cb899460a65d3f0490d1dd1151c73273ea85b287c6ee923af8cb9d1461cca96b",
+    "build/obj/legoapi/gamestructure.obj": "9b5edeec565709d0fc87cc064c60aa99289caa21d7482af73911a11351d02f3a",
+    "build/obj/legoapi/gcutscn.obj": "abfb848a69a4aa9046af15f853e8774c9617bc5fb813f8b9802258dcc65006be",
+    "build/obj/legoapi/gcutscn_locators.obj": "dfe59bf959f1743813d9fdfe723f3b7ff8f98796b8c9d123db16560292afa7d1",
+    "build/obj/legoapi/gizactions.obj": "89db25cd8d68367100a1b47cbe33623139b1a5d6a3121980312aba579d9d132f",
+    "build/obj/legoapi/gizbuildit.obj": "45b8696280270c3c689a4dcadf65f8a117808e2451d801c2b8c63b12977a38cd",
+    "build/obj/legoapi/gizbuildit_pc.obj": "32dcabe66fb1deb465d717ff710b382db1b5e132f6d364a21cd2df9ebf13227f",
+    "build/obj/legoapi/gizflow.obj": "e946ab70d7a7f855998121a32926a60120217e834ec14f4d77e3d81f4dcf16cd",
+    "build/obj/legoapi/gizflow_diagnostic.obj": "b57fda9e369493ee8e051a4f9b67b159329bf62957dcdce38d6758fdb4364e86",
+    "build/obj/legoapi/gizforce.obj": "9a235b9fa3f8654d25f1f8562e6e2fc87a78f97fe5c20dd5931d8cebd6876eec",
+    "build/obj/legoapi/gizmessage.obj": "c1804393380914f7370a24a03f893fb20d2ef8cc269d819043d98cb7dba40fbb",
+    "build/obj/legoapi/gizminicut.obj": "82cc8916d6f18b6fb30af45dc8d281aa94c330b9cb81477a38ce199dc716e5dd",
+    "build/obj/legoapi/gizmo.obj": "34280d018e226320781b0ac44221905517a3bb31c4b7f3745eb7e79db25bbb4f",
+    "build/obj/legoapi/gizmo_add_callbacks_pc.obj": "bc8ee9845b501a1d2393ed7949ebf2c88baeb552cdd9c51671ef1d94979c4d98",
+    "build/obj/legoapi/gizmo_alternate_registration_pc.obj": "8d667e65780009ce9928ead9a0575702194b44ffb9037f8df0ef310de6bcdd15",
+    "build/obj/legoapi/gizmo_lifecycle_pc.obj": "f45028b7e9640e6ca53490c60457970303dadf88be5038509f423fbeacc63752",
+    "build/obj/legoapi/gizmo_lsw_registration_pc.obj": "4156316e4a0fa2aeb6f664b2ad2488fdbff3855768eac26577423fc38f71093b",
+    "build/obj/legoapi/gizmo_output_callbacks_pc.obj": "ff30e972e38d491d2106fe98d94cf0014a9f601119eccb1f723d17168c026bd3",
+    "build/obj/legoapi/gizmo_progress_pc.obj": "19b64a1817c3d322a9aff3f3d3eb192193be4e33733a8c48d25801c8f43d12e7",
+    "build/obj/legoapi/gizmo_registry_pc.obj": "8f50c8267a7f186111ea1bd853417ad761d62363c878d383ed90bf15760f2f98",
+    "build/obj/legoapi/gizmoblowups.obj": "463c5dd1817eadfab8a3c30ad576c4b79bbc7c50627acc550d3cf544f64798d1",
+    "build/obj/legoapi/gizmopickups.obj": "90c2f30e7c2f4cb1b1b2b02203607c3e410e835618f18222cc70d3ab2be2c86c",
+    "build/obj/legoapi/gizobstacle.obj": "7a541042095fff92f400895c8a983936b86a4bb8d12e8ec170f78d5583a5dc64",
+    "build/obj/legoapi/gizpanel_pc.obj": "350f820bb88d63d7b0a8737a95796651bc80731ba22c46cf7c6019142d50944c",
+    "build/obj/legoapi/gizportal.obj": "7f4e2234d614155e53fc923d40f7f773bbbf3f0fab65cac170025b3ae052035c",
+    "build/obj/legoapi/gizpushblocks.obj": "bc1351a40f71a4bc70f5feddc11265430c02968ba6992ec8e33728e731937cf7",
+    "build/obj/legoapi/gizrandom.obj": "2851fd48c9506c89ffa32b3e1f380ec2e435266dd0318ae368477f743fa61881",
+    "build/obj/legoapi/gizspecial.obj": "2f63c27d774ca985dd17f83fc2a02b3f6bf0250ebd84fd223bfb612df9a9c23f",
+    "build/obj/legoapi/gizspinner.obj": "c468887a07805f8655b7d752c18788578dd90f9f262d64c92d41ddce9f254d21",
+    "build/obj/legoapi/gizspinner_load_pc.obj": "2a63b07ce4d1ef013330dea4bcff8a54e38c2ef1cb8aea65f56ef2bcd2b633cb",
+    "build/obj/legoapi/gizteleports.obj": "37cc56fd5a3c0391856b6fe205f2c30ca05ef083cee5c50fa860bed51698be8c",
+    "build/obj/legoapi/giztimers.obj": "a7baee96614def39039eb3473c739811cd42de39d4c18180db24aec179be11f8",
+    "build/obj/legoapi/giztorpedo.obj": "f524833cccb689a86dad325f702b5e6b20236e1a6b9ac164e8e7a79091895ff1",
+    "build/obj/legoapi/gizturret.obj": "b5afb73c6525d0ce3da32fee7c4a6784756a86bd1229f7e130fb61c5dfd5cfd4",
+    "build/obj/legoapi/grabber.obj": "8d47736899036b813f46c0a30f02e4f049dff70ec422019a597baad3ef1af484",
+    "build/obj/legoapi/grabber_pc.obj": "f45f7739501cfafc974de353c9fc3e389493f6a806215760a0316e1c95ac7391",
+    "build/obj/legoapi/grapples.obj": "0b31233d95e3dcf21f92ba80f9267ba6d757878afb807749b2a90e4a5c89abd1",
+    "build/obj/legoapi/guidelines_pc.obj": "d3f32088dae34e90f04e76c369a24bbc95e05e40cc7f79cc504a1d0d38cf1ca4",
+    "build/obj/legoapi/hatmachine.obj": "951b6344fffb27921f1eb83b3e846985781536e90efa3fd81847a80e4747d309",
+    "build/obj/legoapi/hint.obj": "4a03afbfaa5da53d765c91fee2cfcfd5b03d8e49c7d85b5cb2d50120fc47892d",
+    "build/obj/legoapi/hits.obj": "32f7aa4bc9361ae2d0fec040a8218eed38ef9f62686c949ea9092ccf599806c5",
+    "build/obj/legoapi/hub.obj": "d7980a67328305f7db951406a1d675691e47c1b4654ba3dcaf958784169573c1",
+    "build/obj/legoapi/hub_model.obj": "db86d435b633bca0cb8e02855e395f0ea022e22c0af28a855e3c2c3c07655412",
+    "build/obj/legoapi/indy_ai.obj": "5335e4f932ddc9d96a57bdf6f51cbf6a39206ab9cdc01d6ad17d344dc5a4ec1a",
+    "build/obj/legoapi/indy_special.obj": "805363f7acf5f73a5e6c5819d6d9bf349fbec83e3584bd2845d6b17bb4c60887",
+    "build/obj/legoapi/indy_support.obj": "0e4976dc958f7b506288c303ca6f094e341ba709723f6f07c0a8f7017fb49642",
+    "build/obj/legoapi/init_once.obj": "32d7037bbbbf4828390ebc931e077ba6f276a0ae07c013127c1d2843c9dc560a",
+    "build/obj/legoapi/input.obj": "767c59787a0bf8716a28ca85b8970c55958234ee7e2936e0a25630e7f9481992",
+    "build/obj/legoapi/jumping.obj": "bce96bf0ed39c1e56b585e2778119bb2a964576af18b0065ca0e95a68f9c6ebe",
+    "build/obj/legoapi/ledges.obj": "7b49e7dd66defbff3c9830e95f5d998022cd726aba7f1038032d16abf633c53b",
+    "build/obj/legoapi/legoapi_misc.obj": "944aa23599b9ed3b676344737ebc08b13785426950d5ff237cc821ef0772f087",
+    "build/obj/legoapi/level_area_load.obj": "1e803ed1ad3faba8d02282f4ad46de1b961690f49aaba4fc4bb6cd9219bedd76",
+    "build/obj/legoapi/level_fixup.obj": "1ba603f0883647aa8dd0858e2942f64a3f0311c1589a1db7416f34a8a195e417",
+    "build/obj/legoapi/level_lifecycle.obj": "dfaac34a3df517887bf5a4a31d4a9fa041b8ac486e49d783475841fd5cf2dde3",
+    "build/obj/legoapi/leveldata.obj": "c04116128bcd8798ec430e153ea2b820a8da930a2a9e0fafbd7bb14926b4ea4a",
+    "build/obj/legoapi/levelobjects.obj": "251d9b0aea52660412a588941da84442455d277a30361e4acfdbc154a5498f4b",
+    "build/obj/legoapi/levelstreaming.obj": "a92c32e466bf45faac58befe96e047d8b89ace290b2624e9cc8ad5f14af8d598",
+    "build/obj/legoapi/lever.obj": "71fa3dc23231f0201ae633a08c1baf0797b04318cedd9fa566186b2542cf9200",
+    "build/obj/legoapi/lighting.obj": "5734a5f35f7d28a2eef85bfced7fb9f836ba6ed07f0989033dff411d314210bf",
+    "build/obj/legoapi/lsw_hub_ai.obj": "3780b1bdcb41f299a18eb38245797c4def12cd353a94a78b156f193405383f99",
+    "build/obj/legoapi/menu.obj": "4d62bae2b25fbb343460b45a9e391ca4dba04e789ed8dafdda700a779980da4e",
+    "build/obj/legoapi/menu_extras.obj": "ee2cc8b36dab12bd0c93d12265b1013b3a2e5095d93b0653d28614c234dfe4ee",
+    "build/obj/legoapi/menu_pause.obj": "9dc83e71daeffb1fc689b4b1737775b652f014743db6dc47be837987e36b8bc8",
+    "build/obj/legoapi/menu_titles.obj": "314168f6a703fffc31cce16572bbb3b8c7d448d063ecc4c0c97914983c3fe812",
+    "build/obj/legoapi/menu_video.obj": "dc5740bd5a9c7439ec3f84f3be0ff40a962308b0223828489bdd91756662949f",
+    "build/obj/legoapi/menus.obj": "7b1f1ff275b36febde49c6c6a2d2c328c4a2f382f5b319ef5c2664e7ca503998",
+    "build/obj/legoapi/minicamcut.obj": "10e4dafdc0e52b794b662716bd2845d5cf678f8815837b3111a738ad8eca79bd",
+    "build/obj/legoapi/minikit_init_pc.obj": "7b73eb2773c51324300d2b09db154fad572c88fdea3880e7b14b9b39e5b37a89",
+    "build/obj/legoapi/minikits.obj": "b7d8d4d8922000875b9541692c26e503dde4a82fd8a036706f4771d40c9ce504",
+    "build/obj/legoapi/mission.obj": "b5b763b5febd3968d698086104362ec40749a05fe1a27f233b8c9ce6c7f76c05",
+    "build/obj/legoapi/missions.obj": "941985e9ab8dd08054281eebbf1e3a17d80d8cc2686eee65b9bea985d5cd105e",
+    "build/obj/legoapi/model_animation.obj": "81a80c9784c60d249027e48535f7f4bb6e1c686b43e8eebe7918d2534ba19ae6",
+    "build/obj/legoapi/move.obj": "cc0ba688e3e4a202bfb7ad340958cbfd20bc0e9b3ce5c06aeb4a3937ef9ecd41",
+    "build/obj/legoapi/movies.obj": "6dae8257d9b4a8e76b72ae0b2f61fce4f410fe278897f4b48670fde71c517d10",
+    "build/obj/legoapi/movies_config_pc.obj": "0a0e8b01c959a5c84aa23e03ef3c0280fa4d0bce97f5612699f09b5f3a06e164",
+    "build/obj/legoapi/narrow_sock_exceptions_pc.obj": "9356adb98d4f8f8d2ad2f8a0ade79f4c170391e13bdf87156bd7cede16d62952",
+    "build/obj/legoapi/netplay.obj": "00457b080fb1606c15351e622e889e668b070ede7f2ab0e1f8afdf2013ca5e67",
+    "build/obj/legoapi/newlevels.obj": "dc7f3f97aff2bd40d3ce659c4552e8d5323c3aa908927f7827c7d7b86c122243",
+    "build/obj/legoapi/objectsall.obj": "411b3c01c8a11cd2538d3a7b8e78874bb2eca96c7e1b88e9b40af5c413824382",
+    "build/obj/legoapi/occlusion.obj": "842d4ecebd539518e9ee1ae4c8836a6c8999c353abfd9651648cf4a6933a131f",
+    "build/obj/legoapi/panel.obj": "4bba899977c47d052ed3716ea6ec40728e1dcb049573f548248ba42c082a6174",
+    "build/obj/legoapi/particles.obj": "17c1810f6b880b3d60d6688c5243036f047f2daf1032f818abdca178e46b0a1f",
+    "build/obj/legoapi/parts.obj": "5e589f3ef1b1f59b326b8c25d514d7c2c888ce18d911af0d12d9b7d950c55aa3",
+    "build/obj/legoapi/parts_breakup.obj": "c1964c1c4e205c6e3cfe054aa6e9c4ac92df3299f3dc7ca2ae8124767e456254",
+    "build/obj/legoapi/parts_load.obj": "9336eb48eec1a8cc6353fc02ecc345702f039a0c4a3538511566559ab5c81790",
+    "build/obj/legoapi/perm.obj": "1e77db9cca0c0a7cb276f0b433b33854bf130f882a6b68434be8fa43be880507",
+    "build/obj/legoapi/playeractions.obj": "e06c2ed1b59ea7f70eb9c71c8152ff3bbbe2ef834d0ab922eb01949dfe5e1945",
+    "build/obj/legoapi/playercombat.obj": "b7c1172dfa1961516e3c2c95d251ba6470f6e9b6eea728934b9721b965cde6a7",
+    "build/obj/legoapi/playeritems.obj": "17cfc756d285dd4487de63dcc53dfd4ddaeba1fe25b2b7f4cd76a284201472d6",
+    "build/obj/legoapi/players.obj": "22d1e423407e1798a8076222ee5c6f53efdd3c7f3040eb018d4de78cdcc2fb11",
+    "build/obj/legoapi/players_dropin.obj": "1265d874ad2026fe52229d76720f38a3ae3b9fd972eb533ccdfb36fabd7b5897",
+    "build/obj/legoapi/plugs.obj": "b65908b75968cd7b420aaf5c9eb472db1977c01c4409c8a34b1cbf422b7c28fc",
+    "build/obj/legoapi/pulses.obj": "a929fa4540cd788307acfb64771bfa21f05c97f0ec8b02a2137d31d7b194063c",
+    "build/obj/legoapi/pursuit.obj": "e1525e37a7ba3728bf443106e2f636eef9a8d0e633e30babc5dfe1985e28914f",
+    "build/obj/legoapi/pushblocks.obj": "bda7295ec981155f04eb8062907b0036536010445d5b9eec8955b04d555f98de",
+    "build/obj/legoapi/pushing.obj": "f4e6b57e82b4624254d10adb8747fe54f49857fbfaa9e40e448f0b94bea83986",
+    "build/obj/legoapi/radio.obj": "03e5b515f84c9340b2fb2ff4a3d17465e5725ac77645fd4a0747a11acf1af039",
+    "build/obj/legoapi/render.obj": "c0dc377e47a860cd33b3ce146106b2b15b8e1204d40ed6970e80f592d66888b2",
+    "build/obj/legoapi/ripples.obj": "68f6cfe70d17d4d8f1679ccab7f570f2474d0fb1a4209a61d64a1f2f3ef0aaab",
+    "build/obj/legoapi/rtl.obj": "456d56b286ba29a045cddd0027472d5d653c618d6431973decda4eb07e300c84",
+    "build/obj/legoapi/screen.obj": "883409a08da394ee81557d839267e06a8858d5926dc9c5357c134f8773f161c6",
+    "build/obj/legoapi/securitydoors_pc.obj": "c8afdb5590b92857481c1d5dbe60897b0d1030756fdb34a3fb5e752bdd81ae3f",
+    "build/obj/legoapi/sfx.obj": "f0e84e689295b2060a25a89a80b68d9c0a83a1c3d3263f48c7f0a517873039e7",
+    "build/obj/legoapi/sfx_level.obj": "55d3c49e35c2cff620df306f42a83145c1d5098826255a0785d9c926d23d7cb4",
+    "build/obj/legoapi/shadow.obj": "c5d78a7b41e30bc3f8e694099f8bddfdab2206babb6f055cf29f77782ec40f9a",
+    "build/obj/legoapi/shadow_light_setup.obj": "2ec1fcb8b70d6246e0a55dec8dce6d8a1be75e2e161bb3ae76cb1c336cb1b109",
+    "build/obj/legoapi/shadowmap.obj": "3340ccd470a45d2e8ca0b3172304088fb3c787e82ea4f185f1edb91cf1e22560",
+    "build/obj/legoapi/shard.obj": "9d236a581046f095dcbac0b216d9c7466646ff69345ab5eb7b905c3dea01111b",
+    "build/obj/legoapi/shards_pc.obj": "fa205b7f610cc5a5f692ec8fbeebc4c2314d8dd79c38070c0169907bfd462b55",
+    "build/obj/legoapi/shop_code_data.obj": "d927136aa3f1aabd36314d7e85c41765d44afaf954e259c5536e3da0258bb3c3",
+    "build/obj/legoapi/shop_completion.obj": "c6debf1d047ccd0edc7a7d168878d398c5180149bea80034e68c7a1983c226f2",
+    "build/obj/legoapi/shop_exit.obj": "1b6afc3fa4a26b30c1c0258f78162065e3e4e7e10f75389034b71458f2409640",
+    "build/obj/legoapi/shovesys.obj": "e1ed7b93d241e86c9471faa570e09933967c15049a4798147346d13189b2e2ca",
+    "build/obj/legoapi/signal_reset_pc.obj": "8011a55ea7a3540078205b72ba2b72fafaa53733f9fb12238810b77da88dc700",
+    "build/obj/legoapi/simpletons.obj": "ea98575e8063a1e1a08a93d0c4b1526e8087d7b89aa54576b04b2af8cffe7960",
+    "build/obj/legoapi/simpletons_pc.obj": "8d67c8ba3aa3088e7b0bbc5b74e56a5dd9e12d6920f23672c7f6283b5055e5ff",
+    "build/obj/legoapi/snakes.obj": "607fadcd69a9cb7fa22083a647b3549ba474c37259bea151f204bffebd70e206",
+    "build/obj/legoapi/socksys.obj": "e92ce59adf9036732b7eee349f85d15b299810a2cb4596d6c933b1d129b3eb2e",
+    "build/obj/legoapi/specialmoves.obj": "5d67e457f754e86e5379e96dd801a34feecae3a43d38c5ceadda652db9a0a28a",
+    "build/obj/legoapi/specialsfx.obj": "a2ef1caeb4b2ed62d048e5b36d2aa0f482a86d042a3ac8e5f9bcaae9ac8e4313",
+    "build/obj/legoapi/speederchase.obj": "7f1863c4d5a3f56a1bff068e4970636c7c5908eb758df48828896bdef5dba84d",
+    "build/obj/legoapi/speederchase_pc.obj": "8a4a8305312b4c4e26d9592713559c983f8a7fbbafda7d211ce67a42b2519e9f",
+    "build/obj/legoapi/startup_dats.obj": "191089cf93288c254541172d5b2efbcd9c1757becfe5c8d269916618f9f32af1",
+    "build/obj/legoapi/starwars_prepare_pc.obj": "e6d400c3481a4d298391c0f05872a91b4a4d926200b32f3768731efad8f70656",
+    "build/obj/legoapi/status_lsw_updates_pc.obj": "8d39670bed02fe9e1bb028639a56321c0743dac4d2fb19931f2931eb8691abc0",
+    "build/obj/legoapi/status_prompt_render_pc.obj": "b57d1fc6290807dc2748f174312994fc14305fb65d2a8ec3a6b1aba882758e1d",
+    "build/obj/legoapi/streaks.obj": "8de240747074dafea079bc95fe73f45425c658faeddc06b2b9f57d1da07c3786",
+    "build/obj/legoapi/suit.obj": "166ee9548eeb35d6e8c1fdd24bc35c6139800e7d0a92cf59f03145fefcf110fd",
+    "build/obj/legoapi/supportall.obj": "87e326733feed019b722de4705fa1218e14b08abb87c8aeaf4ff8fc6d9ca5bfd",
+    "build/obj/legoapi/surfaces_pc.obj": "af26acea40d2ce37c1c5e4db2876f90ba8dc515a22db9b35f80750ead5a4ef8e",
+    "build/obj/legoapi/tagging.obj": "3de44ad7b1dbe5f8ff6632917c0e8b571ee11c00abac87bc01a1e9da3e067054",
+    "build/obj/legoapi/takeoverobjects.obj": "7c53a5bb302befced9ee8d559f9e98c51b1f114cd8dc2896687dc1e677259675",
+    "build/obj/legoapi/techno.obj": "659deed89e0676a34af5468b04007e1737608ea05f27132f79360b133df7a906",
+    "build/obj/legoapi/teleport_motion.obj": "734b08dc92ba10437d11cc2134417bffb412cc4c1d32c92b1473b7a391b0181b",
+    "build/obj/legoapi/terrain_player_pc.obj": "455c970889bf4a4ee57d3acb2209550acf4af45af336f8d7af47e1f881a5e34e",
+    "build/obj/legoapi/texanim_scripts.obj": "4fbae57fab56a3f7b0b6a8d10379c226a92ea0df7f255fbd33e561e520df888e",
+    "build/obj/legoapi/text.obj": "0872d0dfda1d26157f0e1faccfb111227f2491533c525c25a90b1d709eef6a94",
+    "build/obj/legoapi/text_tables.obj": "1eb32422c16ce49d15af6043b1f9b777d5a2cb3cb549d529e54d522cfcc6e7d1",
+    "build/obj/legoapi/thermaldetonators.obj": "1268cbc8199a9c95101f763f361ef1b0cb9f42f5126137fc78179bfe82fdb1a8",
+    "build/obj/legoapi/thermaldetonators_pc.obj": "4e1991ae0fbe87ce23cb5dc94c856cb1c7eeae917889c0e281627d0d98c6bbd9",
+    "build/obj/legoapi/tightrope.obj": "7ec057547a31d486113a0db6728f881b7e004b562051de81c73011db8ff2c4d6",
+    "build/obj/legoapi/tightropes_pc.obj": "574d6d52b7e95ed5f1155f30dedabc5217fb00b1fa4fb9fff199338053e80160",
+    "build/obj/legoapi/timing.obj": "8735baba98cad47372f2d01d5f8d6786960b6576fc6c35b047021a1666eccd68",
+    "build/obj/legoapi/torpedo.obj": "5eda5310fd9aa9c91be3a83bb4bc6b89ce67f43418a49c0b0094212d23e32b62",
+    "build/obj/legoapi/traffic.obj": "91a0fc8dd130a3ac71ae5bcaabe85ef2a8249f9199fcedcb9dba4b96f806e878",
+    "build/obj/legoapi/transform.obj": "3bd0c399ff7bb352dcbf3a86404fc0bffd5f01a776aae6b1d9d44abe6004bd00",
+    "build/obj/legoapi/trooper_cannons_pc.obj": "0a9f62f5245d88460e91b3e8d581ced4c765efb6801a9ac5ac4197fe6b1b9363",
+    "build/obj/legoapi/tubes.obj": "ecebf324b9f8eac8200b857ebf9c73598943872eb7b022729d5bdb17a47686d6",
+    "build/obj/legoapi/utilities.obj": "b0de8f5dd6cfa9974dfff7cd3b3454b97119ca6826a766cd60c0a7e099f9aa57",
+    "build/obj/legoapi/whip.obj": "a40b0d1c39fc3381e3b2372d1243ea734ec8147360e1ac2fbe7862dcebedf1fd",
+    "build/obj/legoapi/world.obj": "2e75647dca91a94bd9dcc464e07cc4ad2ddf623ac4908f2b1c48bfd7e0cfc408",
+    "build/obj/legoapi/zipup.obj": "97c94205eadbf48da455e8647442a04d3392932352cb0c23eeed3ea8381d24ac",
+    "build/obj/legogame/game.obj": "1ae0017b98c94ac2034afcb430938356e185f61000273e7954e9aaa312e0fc6c",
+    "build/obj/legogame/startup.obj": "5452d800c75526a7d2e6eebe004e3b4ee347f6a625eda877aa87268d5b5e67de",
+    "build/obj/nu2api/bgproc.obj": "5ad2c945d013a29730a789a3b1402a3c59347285a064f938306cf87d54d7d676",
+    "build/obj/nu2api/cpu_features.obj": "99c727133b8b5dc73743dad28d12ffe86234eff6ea667483402a5d7908467270",
+    "build/obj/nu2api/crc16.obj": "dcdf43500de15338af5506bf6e20396e43a0b62579be1e8a8b7d525967a9bb64",
+    "build/obj/nu2api/d3d_api_lifetime.obj": "9cf0b2061e26278f04a76375f28a174b87a634fbe157939c7036ca41f96aa82c",
+    "build/obj/nu2api/decoder_diagnostic.obj": "f804359d1e91fa9c9906208e528b2364db96fb87d60b96802dead7b1471774fb",
+    "build/obj/nu2api/dynamic_geometry.obj": "10ddf12a6f03f423a50349e0819e351212dac3e4501ca31d1847741a3c93d880",
+    "build/obj/nu2api/effect_surface.obj": "492d68816a5cf0dbc0d78e75a0fff4c862d937d5d0a15776d143f20f390bf889",
+    "build/obj/nu2api/frame_render_control_pc.obj": "2ecb5375c29c1940614c46dd39b3380e3e0ed3fed95820db0dcd1b93677bf096",
+    "build/obj/nu2api/geometry_basis.obj": "dcf6a745b4a58f05bd353a103d56daf8a92ccc95d19550af6063975c36977aa3",
+    "build/obj/nu2api/geometry_origin.obj": "6c72212693ffa41c0d98bf8da424cac89b33ccaa26cf004db484f53a6c593f2f",
+    "build/obj/nu2api/geometry_publish.obj": "e326a19ddd8526e509b7b59126d1abac38ef1e1ef3a428a169b96271544aba92",
+    "build/obj/nu2api/glutils.obj": "8d70262122cb22f8cbe613d5af43e8d556c5ddafbfc71ef8288f5db0978f8bff",
+    "build/obj/nu2api/hardware_dispatch.obj": "a0da10a32b710cd8e09fdaf06e9cc57c6dc5ce747dcdd0ca048e0b8630ac75df",
+    "build/obj/nu2api/implode.obj": "0838915ad1c1ab71f197e6760a9d2d95dc1cc71086e19202b7448537155afc98",
+    "build/obj/nu2api/input_descriptors.obj": "b4d9718169d7daac532f3a01d7f52da7b43258fe260699edcf14c966dc1a6ecc",
+    "build/obj/nu2api/input_detection.obj": "9459bbab784ce2cac8e55110d6a12b8909c7067aa18c5fdab6147bef77d472e6",
+    "build/obj/nu2api/input_runtime.obj": "7df27f0f7b5a412dcbc2343a0562fb1b814b10910a54e48719a26af634ab64c6",
+    "build/obj/nu2api/key_events.obj": "4effd29a79501b7f86ee9f552d2794683f2def1ec80a1a5f9cca274c76170d1b",
+    "build/obj/nu2api/keyboard_init.obj": "88679779d72d66c75db4675168f10fd67a45aa6bf83e0883dd72d0548f2d5052",
+    "build/obj/nu2api/keyboard_read.obj": "26c671cc75954f5e670cb1c97e81ef5797de014f72c5a29f7e9ef38ab38dc590",
+    "build/obj/nu2api/nualloc.obj": "9d22b4973b267a7d6115802b7210d0659187d98c02f0ff4b7aa94a37de465fdb",
+    "build/obj/nu2api/nuanim.obj": "02adaecc2e5041a7f15af0ebd7d33c097d7746e0bd7a7dbbe43dd48bb2a37e1d",
+    "build/obj/nu2api/nuanim_procedural_pc.obj": "3280b6fc74a8ef12d9400010599cf93fe570a21f162f4e5e1c094674fac956f8",
+    "build/obj/nu2api/nuapi.obj": "4ec6aa6ae70befc8cd2b571a537ab43fb3e796f5f3bf5acdd4048bd39fc245ba",
+    "build/obj/nu2api/nubridge.obj": "4fa25f5d6b2da4dc9580a3687a7bba59230dbe552e029645c106be0aaa274e17",
+    "build/obj/nu2api/nucamera.obj": "2a59cad58bcb224d21fe2ad09e472fc2ff139ef2830f3c2c3cf85bb27aebc006",
+    "build/obj/nu2api/nucore.obj": "ef1cc28580f9b5f4d2755721071a10cb2eba967ffe02497e514e49b586a78f98",
+    "build/obj/nu2api/nudatfile.obj": "5088a1f2bf0eabf278709c6bfb434778b4a370205471b75e7c355397560bcc2f",
+    "build/obj/nu2api/nudatlookup.obj": "5e8f8b5177eea22ee232c2581b06f14e473711b138aebbe65cf1a7dd6b6195c5",
+    "build/obj/nu2api/nudebug.obj": "ecddbba964d30800382c53b4f199b974bf8e8ad4703e7d6ad629c1fa38d89c12",
+    "build/obj/nu2api/nudebug_pc.obj": "00159d90a80279b9a9556f459937113b684b7882df344e96530f647f2f771745",
+    "build/obj/nu2api/nudlist.obj": "dbbe1f28327ca63b5e84138832c9dfd9aec0a20030dc89ff54e1e5ce85b0df6a",
+    "build/obj/nu2api/nudlist_material_pc.obj": "44b0d77de686ddf1bf0ba0af6911ead1685c35ad7d77b42b797d4ec30e540216",
+    "build/obj/nu2api/nudlist_pc.obj": "865218d206454478941e22e7eeae60915064a8f53e1b19663dea0ee2f17beefc",
+    "build/obj/nu2api/nudynamiclight.obj": "5cdbedf034257f33430fd9939e4ff60d3ad87ca33e4915700f58e1d6deed38a8",
+    "build/obj/nu2api/nuerror.obj": "5271769cedb28fb77911783a7e496385079d5ac0af5b71303166cb3875de0171",
+    "build/obj/nu2api/nufadeobj.obj": "50dc65a51c74915920cbbe43b2d0fd86cd76aa09e6ea98acac16ea65f34610aa",
+    "build/obj/nu2api/nufile.obj": "c4a76eb8e100d04eb58caa60eb721ce471d97c39cca5968bd0e5813cbb4b42f7",
+    "build/obj/nu2api/nufile_device.obj": "f06a7433012cf9f285f6050525634ec48ad89b070719d353d718098d02beb310",
+    "build/obj/nu2api/nufile_host.obj": "9d1e06d70f6a397da35818fd2fbf9f26f7f03cc802692c8d1c0bc363bb8e4d6c",
+    "build/obj/nu2api/nufile_mc.obj": "257c89ceebb145fc42bc8db60cb44e5d5778622adc2146b3ec3cad14a7adc166",
+    "build/obj/nu2api/nufile_pc.obj": "e951079eb1c041e9b868a5904e1e874f1737c45b9ef751baddda575d5a873978",
+    "build/obj/nu2api/nufile_position.obj": "17cca10d00c94485bd9e208001d4ad34c91c25b931e212bb3731b2e9ce95b02d",
+    "build/obj/nu2api/nufloat.obj": "db5d9a58eaac0359b6e0cacb523a1fa4a8158a157de07901a40ba3a67256fc8e",
+    "build/obj/nu2api/nufont.obj": "33222dda3629bf282df10f81601f932e2a32f91ed0a41b95eda30de42a0e7e89",
+    "build/obj/nu2api/nufpar.obj": "d84a66f28be2b50b24037986afaa79b4f8a6448073c5c97196eb9bfc2a08c0b1",
+    "build/obj/nu2api/nuframe.obj": "c0ce18f16729253e5694e498ae578618ca3835c351fe9831e198fc51138c7e94",
+    "build/obj/nu2api/nufrustum_pc.obj": "9647058ef94369c4d742a8efcdd624ca651fb25b43b7882432d042eb6fecd882",
+    "build/obj/nu2api/nughg.obj": "ef3420feb1373339b158dddb91b531b53e1a926d86388e753920105b3aae8567",
+    "build/obj/nu2api/nugobj.obj": "0420ac21f5052d83c7c62a1bae08375a8a5aa90dc9c860a5cd10a599591320c0",
+    "build/obj/nu2api/nugscn_pc.obj": "23bd232d3098078814c0e12212c5d7325e0efbb3675e0d9268aa92733e09cc1f",
+    "build/obj/nu2api/nuhgobj.obj": "c644273d93fc6238d84165926f5a3dbbacb3930695a06b588a7ce2145684870d",
+    "build/obj/nu2api/nuhtml.obj": "4beaab73afb4565fd6cd95867e8e3a0e668f93dd3b2774b7b92fa1b1d0968af4",
+    "build/obj/nu2api/nulgtlaser.obj": "d5db3aac09ad71f364f5498679999a14b0105cea83fd16ea9e1a3e233e528589",
+    "build/obj/nu2api/nulist.obj": "70761ce52c9e75983402d381339ba439c7fe98b9816972d08b8343447577504c",
+    "build/obj/nu2api/nulst.obj": "7aef96a780a91c6095644e616f9de2d372228ba42fd984b00dead1eca3dd5e19",
+    "build/obj/nu2api/numem.obj": "5e9a98fb74435ce3d070e0f02c2ab973e4e665f2c1e2d00dec4fb37303998566",
+    "build/obj/nu2api/numemfile.obj": "e13bc672d54da2a24f8a30208dcf35f1d7b44a0362a12b45962fde13a714f756",
+    "build/obj/nu2api/numouse.obj": "345d52c3b525f2053a88fa055b5124dd7134bb94e6749ac3250dc1e8cbfc5687",
+    "build/obj/nu2api/numtl.obj": "c9d04648386802d0579db32ad441636884cffaa5f9cc1e12fe28508059506780",
+    "build/obj/nu2api/numtl_pc.obj": "5bfae040d46c4a8aa82ec0ffc56c1c8eb7a70af8300437a98b10e14dcaa81cfa",
+    "build/obj/nu2api/numtl_resources_pc.obj": "0bbdf1ffa4a4307a16f85deb57032b5334dccb38da581fd084068245257a75e2",
+    "build/obj/nu2api/numtx.obj": "d6a24e8fb1a9c025b8c6cc0a5742155962af283b1dcbd7f381b8b8d9fb6483cb",
+    "build/obj/nu2api/nuocclusion.obj": "b771e9f62d339c9249e42f90f403f327fd2c1222240f2748d69834e288638bba",
+    "build/obj/nu2api/nupad.obj": "72a2e20950f9287919e26fe928a8869b2fb2eeaccaec0d82cd2c68e62c1318bc",
+    "build/obj/nu2api/nupad_pc.obj": "287286d884766dc9c3bb2af77d01399e06e64f73d60dc676d2055f29745dd3d4",
+    "build/obj/nu2api/nupad_text.obj": "28d521eeba3cc0abd8c5c4c7c98ce7041eef44a17920dcc4195650bedf06f370",
+    "build/obj/nu2api/nuparticle_runtime.obj": "e90c2a0a5c7e85376ccf95e9e7c3faa6f5a9250361a9ba00857d1a0b38057421",
+    "build/obj/nu2api/nuparticle_state.obj": "f08c3f25c5d07f9261e31037714938011eefcfbbf1ca4661a0d95b8b1bebca16",
+    "build/obj/nu2api/nuplane.obj": "ee67d2df97728c626c1f65f327e252f5b934a4c325491234a824f780a6806b59",
+    "build/obj/nu2api/nuportal.obj": "7e801aeb4af694ccebf987d54d11b8b559cbf082164145a7feee10b15764edc8",
+    "build/obj/nu2api/nupostdeferred.obj": "a0f041178e7befd6e94c00b584909f7713457b16d8c5f8437a353febeb7078b6",
+    "build/obj/nu2api/nupostfilter.obj": "63a47200324badbd86f0c172bc9b074836bd6861f11b8ace5dd1b3c12bc5e350",
+    "build/obj/nu2api/nuprim.obj": "8a0c7847c6a07efca6aa43777c9c9024c0bf1027633e69faa6a4c47d0ce537f4",
+    "build/obj/nu2api/nupsfile.obj": "9597c40be4ec4db4761aa21010caaf0ef6b35c17dacf79ee2d911efa095e2c14",
+    "build/obj/nu2api/nuptl.obj": "5191e19103a161b8fd1b83902fb89a7a4ab2c4073062a29297c97f1006c137e9",
+    "build/obj/nu2api/nuptrblock.obj": "2c6cae6cb4450ebbce46d7150c4504f8bc250fa19dcfb79e2f12e2d6fce29382",
+    "build/obj/nu2api/nuqfnt.obj": "e29584345a874921b112e62b3855853140a23f753e7182d38f71008b9be89d3c",
+    "build/obj/nu2api/nuqfnt_print.obj": "6f1dd86a44cca6c741b7e2dc62be42fede72dc6e9e72825037542328aa6d80e6",
+    "build/obj/nu2api/nuqfnt_system_font_pc.obj": "c4104d6a48af3024ba0fe4758246537e1901533d64bd869bf72dde0da6eaec0e",
+    "build/obj/nu2api/nuquat.obj": "8f06a243efd5a542de6bc94e57504338a7cfdbdb1a2ac2ffda6571d9da79613d",
+    "build/obj/nu2api/nurdpi.obj": "78181bbfbabd3fb68cd1b2b48f1bb78eb134693dcac81f6046a3f1bfcbaab42c",
+    "build/obj/nu2api/nurndr.obj": "05f826828e021998ef2853cc94e0506cd7d66be7680b281d92252e5ec7eeb9c0",
+    "build/obj/nu2api/nurndr_swap.obj": "957bb1c13518238f8fb511e6e12c1024d7b45d86bade64f5eeb4c44a5106ef9b",
+    "build/obj/nu2api/nurndrstat.obj": "2eace2a7e23ce2f925e265943756ba3ca36d42790b4d056ea9f084380777ad92",
+    "build/obj/nu2api/nuscene_pc.obj": "cea14ffe833f25e19ce4ed1ffd730cd2acd70c22041c956ef58c5741ef7ceb21",
+    "build/obj/nu2api/nuscratch.obj": "4228ab3a855ea03adb8b8e6b52b4e6716089a2df9606f9cf147a9abf517e7252",
+    "build/obj/nu2api/nushader.obj": "b29606bbebc3b2b8a87b600576b0575f00e1cdaa1435639b45dcb79112181753",
+    "build/obj/nu2api/nushaderkey.obj": "ce55c372b39b209fa2bb471587edd3b81e9d2eaae8afe4bbbdb731deb1c671c6",
+    "build/obj/nu2api/nushadermanager.obj": "5fd0ef7eee44d4233ac628b8627a63d7a713cdee56ead2ea680e386aab80880b",
+    "build/obj/nu2api/nushaderobject.obj": "14c6e4aac381ee66dc49bb1b0fb7eb6c45fe7a0bf959af86f394ed24318fc59b",
+    "build/obj/nu2api/nushaderobject_pc.obj": "2772f1e74d51911db93224687b0b07f960b7680f0e92ea05c9c377b38f688fb7",
+    "build/obj/nu2api/nushaderobjectbase.obj": "a930bdcfa95df42b734812d9b1aa6c780238ecd6308f53349a3bfb2d79413f8d",
+    "build/obj/nu2api/nusound.obj": "4487bf1e9b18a7cd739dc90d60434212971694d7fa67998b7af64c2cc6fda453",
+    "build/obj/nu2api/nusound_music.obj": "8ec87bf088a75722c8164a744848b233d11fd03bb65fb7edda73a896393cae0c",
+    "build/obj/nu2api/nusound_pc.obj": "1283a25abd50893007744d8ce8215d95a7e95b29763190c07baa23f4b6b8555c",
+    "build/obj/nu2api/nuspecial.obj": "9ed46a4bb7e45e4e7912029bf03341cd2bae0fdbd41cd9f0c8b6f99a2d389e11",
+    "build/obj/nu2api/nuspecial_shadow_pc.obj": "0d9b18b1f96c1a8f34b758ade856069519009bf0cf782edb29c35e3c2d94c332",
+    "build/obj/nu2api/nuspline.obj": "e4416033d4e2a17742795f24f341890ea21b4b72bc3ce3ed08bf1bd65f0107a1",
+    "build/obj/nu2api/nustateanim.obj": "b16fc0ecdfe042c320a4d40c81a74e6b9dc45c1a447429fcca6befa0197dbbae",
+    "build/obj/nu2api/nustream.obj": "6d217ee88adb29e6e6688a4eb11c6bc0a417da7f4d9e5ae676ed6ab29b80f363",
+    "build/obj/nu2api/nustring.obj": "6311cf8fb5c3e57b24f92490c5a8622a2dc11100a07e4a2dc9ef1b431791bcfc",
+    "build/obj/nu2api/nuterrain.obj": "a5dbb6bd88fb847a4573243b777437cfbda9977bdc9e8614a4a4c33d38c61716",
+    "build/obj/nu2api/nutex.obj": "0f61b3a37a6e86afc08382f730a8ea20a388e69016b36418f2bd403f506ba01d",
+    "build/obj/nu2api/nutex_pc.obj": "992a99041635545b5dfebf482a7aa07a8d4642277f25cc7ccf67f04a91481bba",
+    "build/obj/nu2api/nutexanim.obj": "f7e5d5ff84fab3100162998fd32a68ef83aacc20f297120f11ff4e1274b97299",
+    "build/obj/nu2api/nuthread.obj": "d01c147536132b964c11115c8f30108c9c66d4472dc408aa4d4c25f7a68a8b82",
+    "build/obj/nu2api/nutimebar.obj": "5117481bdcb719fa0fa1e6751c4ddb309886d6b2277214d7f479920afcbdd202",
+    "build/obj/nu2api/nutrig.obj": "db9de4aba6791eb0ae78a47eb11f744625480e023e960cf6d7ffb84b21cf77b8",
+    "build/obj/nu2api/nuvec.obj": "af18a7901ad970dfd3e3cfc24946801489b61579068d33eb8aaca4b369e3b1cd",
+    "build/obj/nu2api/nuvec4.obj": "22730c4a8370f111a63bf08770ed12a62e7c8e1486a17b979bddcb9b59c1dc79",
+    "build/obj/nu2api/nuvertexdecl.obj": "4f9e77df576ba26466da882e0627bee585c9ddb7673f6841812bafc3b360a280",
+    "build/obj/nu2api/nuvideo.obj": "96a20de6ad8b13e50a6a0d52c9149bad0b38b56a9026b6c6e6acd57f09180c37",
+    "build/obj/nu2api/nuvisibility.obj": "5b54a70aa4c655088cf35f178f432e5e40ddcb0dd50d2a3bf9e070eeb0506514",
+    "build/obj/nu2api/nuvport.obj": "05b7e2d874204a0d55fd93a4d743ac2d60476c6968fd2ff60d7f62ecd8ea287d",
+    "build/obj/nu2api/nuwin.obj": "4d0b3f71c74dac4c6de735be84283242251617f347c3b9f08d852c1309b8002e",
+    "build/obj/nu2api/oggreader.obj": "53e0444d00500fc155a9223911451b4dc0b6faa1ad7827a8a6197e4d4237d931",
+    "build/obj/nu2api/pc/nustream.obj": "b39256973038661571d75c157384a2046f6923d0138cd95311acb17bee3d969a",
+    "build/obj/nu2api/pc_cursor_pc.obj": "93bcb58c93b185504b5c1179ddf094db1bb26239ff5b3f432fd0294b982727d3",
+    "build/obj/nu2api/pc_device.obj": "e28c422305f511dc039901e77e053ba51d6bf8c42a496915663b49d14c0833fb",
+    "build/obj/nu2api/pc_fmv.obj": "9888a5fc112b1d78c630a54c7ef1f80f7f3fda8514a143d97fbf6306ca1e37e3",
+    "build/obj/nu2api/pc_fmv_control.obj": "6e80b59c2e8ba43215874e55955b9a8a70701df207b2388d207f3bd44214aa8e",
+    "build/obj/nu2api/pc_fmv_leaves.obj": "15068d5e851eb77564e38bce9d706b3bff6e71c66af51e128e6d6fafd2ccd7d5",
+    "build/obj/nu2api/pc_fmv_player.obj": "9fe27e39f3106fc93dca573a78410cf4d480a5d32d6b7f2c26ebca6b733776aa",
+    "build/obj/nu2api/pc_fmv_rad3d.obj": "3e47bce8ae7572d62afba8916305b5a63420bc4ac43888fc7f0200ecb7c2ef99",
+    "build/obj/nu2api/pc_input.obj": "96149f1596ea35c108de37d09eba5b43345f59343c160256fd31f123e3ed63e2",
+    "build/obj/nu2api/pc_options.obj": "c2656f4f8234b46d0b6d3e236fa408b4a10082ae639ed79dffd9ee391aa74740",
+    "build/obj/nu2api/pc_window.obj": "c1849e9884e2080c69514864540a202920f9847551c6d2ff3b2a7d741973a556",
+    "build/obj/nu2api/platform_files.obj": "ebaba62d80e7ecb6579b272b96426bb9b89942101c3ffcbd548210080ba708a1",
+    "build/obj/nu2api/platform_policy.obj": "5cf9ab392b282dc42f0359e205a887820a98ff29028cfdc811f693b400de2fe4",
+    "build/obj/nu2api/posteffect_ports_pc.obj": "6f435594a666a5f579234241024acef803a0fa341ad25724a7fafb99e10e7b11",
+    "build/obj/nu2api/posteffect_shader_pc.obj": "4df57530af7e6173eee35982aaebe05c2cf82b84a9f7b9b07018f687beec30b1",
+    "build/obj/nu2api/posteffect_shader_tokens_pc.obj": "006c997faf04acb6e6671edf5ab5b46232cab436d1985f17efc78006e79faf70",
+    "build/obj/nu2api/save_folder.obj": "3f5afdd17154cdde3f759cccc92b7ffcd3dbdf01fe6d19c65d935a76226bccde",
+    "build/obj/nu2api/shader_buffer_allocator.obj": "a279c64b8836786e7981db30a7213c9ceabefba053c60d36316fd4a20dd1e034",
+    "build/obj/nu2api/shader_compiler.obj": "8cf45a31d92b03fee986a9ab80a0e4ad50335a43edf0eff88c7ae1b106665435",
+    "build/obj/nu2api/shader_dictionary.obj": "61391dcdd3001273a492384e3f6ae6828e7b9c1af4834d12a2832c1201ce26a4",
+    "build/obj/nu2api/shader_lexical.obj": "9e509a43c4b1232e0f42a491d1c590a16263c0305ea8161222031327c858e3d8",
+    "build/obj/nu2api/shader_parser.obj": "f86aa88736b4e99a13eb10d4d98e425e0d223cf4b5c57c551e696dc72a3ce4d8",
+    "build/obj/nu2api/terrain_collision.obj": "fd72c8d3c967bc60ddf024e4a2c12836d2175fc77ac4522b5bbf10ccd170af7e",
+    "build/obj/nu2api/terrain_diagnostic.obj": "3a45716cdd4ea395ad29a58eb1fa3e95ee1f6d30fc44d9b93b54f5813059684f",
+    "build/obj/nu2api/terrain_query.obj": "139e02eebe5fe81a6484fafbf3a35045db86b596b3af6aeb81ab9ccc121a2b77",
+    "build/obj/nu2api/terrain_scan.obj": "368ca0cb15ae370fc95297d509e7551e0a9fbeb8234351072f6e12e0fa8f29ae",
+    "build/obj/nu2api/textinput_labels_pc.obj": "e38a9a6886fc10840ac0ce9985b068f67fedc0edea4d232998bf48cb99324425",
+    "build/obj/nu2api/transparent.obj": "a8e10254c44db3f8c649aa4b65ec61447052305106fb5b2d7392c4fd5cf21722",
+    "build/obj/nu2api/wavreader.obj": "e3e015cccc75a3216999b213357488ce9e32623c6244fd40498c2698b6c7102a",
+    "build/obj/nuang.obj": "a6e9ef28a1e0577e032a0936d9d222b11f378c2192de3451281421ee472a5576",
+    "build/obj/nurand.obj": "0ea0691b4e998b487ecea64e751517a237176f06aa98086464e7024958c2f117",
+    "build/obj/qrand.obj": "0e87f11428bbe85188a8cc3b2f8e98894eb45828d9f47a72849d37168f21cff9"
   },
   "functions": [
     {
@@ -5949,14 +5949,14 @@
           "base_size": 882,
           "exact_match": false,
           "target_sha256": "effa1c1686bc9eddfe1f4e5e2a2ed6f6a275ab2255fe68502b3f1065621eb83a",
-          "base_sha256": "dccea0167b8f9ce43ac809491b729812aae398213a9d76baba158f3a67e0f03a",
+          "base_sha256": "bf899f35fbbb2587ffc920bc2a5176a9ee875b1c9a6ab963ccbbe561960a41d1",
           "relocation_count": 33,
           "comparison_unit": "0041c7c0-b7624d9a456c",
-          "objdiff_percent": 61.282257
+          "objdiff_percent": 61.504032
         }
       ],
       "status": "different",
-      "objdiff_percent": 61.282257
+      "objdiff_percent": 61.504032
     },
     {
       "name": "GameDrawCharacterModel",
@@ -6158,21 +6158,21 @@
         "src/legoapi/gameobjects.c"
       ],
       "target_size": 529,
-      "exact_match": false,
+      "exact_match": true,
       "objects": [
         {
           "unit": "src/legoapi/gameobjects.c",
-          "base_size": 525,
-          "exact_match": false,
+          "base_size": 529,
+          "exact_match": true,
           "target_sha256": "7e4b9e2ed3859452c9f1930e05ecf28b76b5629e42a77b52d7450712fc426055",
-          "base_sha256": "662220c124aa3152e205e49d4671cf69c7db067bf09a1056cae360b8eecd18f3",
+          "base_sha256": "7e4b9e2ed3859452c9f1930e05ecf28b76b5629e42a77b52d7450712fc426055",
           "relocation_count": 20,
           "comparison_unit": "0041f6d0-65b13bb31a14",
-          "objdiff_percent": 98.4375
+          "objdiff_percent": 100.0
         }
       ],
-      "status": "different",
-      "objdiff_percent": 98.4375
+      "status": "exact",
+      "objdiff_percent": 100.0
     },
     {
       "name": "AddCreature",
@@ -10055,14 +10055,14 @@
           "base_size": 4527,
           "exact_match": false,
           "target_sha256": "7508675a6fa9ab671ef2a3cc7bb139877037dc157beedc9e55b90d6522a7a414",
-          "base_sha256": "57577417e28dd14b2152790017fb957d685da9048baf63e70fd478b2cfe91553",
+          "base_sha256": "11c84c51ab33e11410cda53eb9b08e435189f701581a4c06a7b6622180845874",
           "relocation_count": 579,
           "comparison_unit": "0042e160-b52a4196ceac",
-          "objdiff_percent": 80.04744
+          "objdiff_percent": 80.04615
         }
       ],
       "status": "different",
-      "objdiff_percent": 80.04744
+      "objdiff_percent": 80.04615
     },
     {
       "name": "EndChallenge",
@@ -10552,21 +10552,21 @@
         "src/legoapi/gameobjects.c"
       ],
       "target_size": 341,
-      "exact_match": false,
+      "exact_match": true,
       "objects": [
         {
           "unit": "src/legoapi/gameobjects.c",
-          "base_size": 339,
-          "exact_match": false,
+          "base_size": 341,
+          "exact_match": true,
           "target_sha256": "043c7283d10c391e52566a9f5cc2e7ca704fbb42edfd38f1d3a7d31304cb2002",
-          "base_sha256": "23bade4091827114ed09d3462ff3e88fbe37c2183c03b9d5e35f984674b801f1",
+          "base_sha256": "043c7283d10c391e52566a9f5cc2e7ca704fbb42edfd38f1d3a7d31304cb2002",
           "relocation_count": 5,
           "comparison_unit": "00432860-be830019c624",
-          "objdiff_percent": 97.5977
+          "objdiff_percent": 100.0
         }
       ],
-      "status": "different",
-      "objdiff_percent": 97.5977
+      "status": "exact",
+      "objdiff_percent": 100.0
     },
     {
       "name": "SetKillPartMom",
@@ -11344,21 +11344,21 @@
         "src/legoapi/gameobjects.c"
       ],
       "target_size": 68,
-      "exact_match": false,
+      "exact_match": true,
       "objects": [
         {
           "unit": "src/legoapi/gameobjects.c",
-          "base_size": 71,
-          "exact_match": false,
+          "base_size": 68,
+          "exact_match": true,
           "target_sha256": "93080fab84eff3224b50d34e5ece6e28c46ef032ce0d591133d22ba67f09484e",
-          "base_sha256": "c641009f04e62fbdd62876502eed0f2a2e0f80cba355b616363983e6188e56a8",
+          "base_sha256": "93080fab84eff3224b50d34e5ece6e28c46ef032ce0d591133d22ba67f09484e",
           "relocation_count": 4,
           "comparison_unit": "0043adb0-c962ac11b920",
-          "objdiff_percent": 47.409092
+          "objdiff_percent": 100.0
         }
       ],
-      "status": "different",
-      "objdiff_percent": 47.409092
+      "status": "exact",
+      "objdiff_percent": 100.0
     },
     {
       "name": "CreatureInteractionOrbitPc",
@@ -11488,21 +11488,21 @@
         "src/legoapi/gameobjects.c"
       ],
       "target_size": 467,
-      "exact_match": false,
+      "exact_match": true,
       "objects": [
         {
           "unit": "src/legoapi/gameobjects.c",
           "base_size": 467,
-          "exact_match": false,
+          "exact_match": true,
           "target_sha256": "e4e2cc418d187cd0dd26e9848af2cbb284f07743eeaf02a4e40157c46d6e344c",
-          "base_sha256": "cb0a84ef7f73e42528cea34c7de8f3c1b35ef3726b82011bb352a5dfab434dc5",
+          "base_sha256": "e4e2cc418d187cd0dd26e9848af2cbb284f07743eeaf02a4e40157c46d6e344c",
           "relocation_count": 9,
           "comparison_unit": "0043b940-6ce9e279f59a",
-          "objdiff_percent": 95.947716
+          "objdiff_percent": 100.0
         }
       ],
-      "status": "different",
-      "objdiff_percent": 95.947716
+      "status": "exact",
+      "objdiff_percent": 100.0
     },
     {
       "name": "CheckPosAIArea",
@@ -11512,21 +11512,21 @@
         "src/legoapi/gameobjects.c"
       ],
       "target_size": 223,
-      "exact_match": false,
+      "exact_match": true,
       "objects": [
         {
           "unit": "src/legoapi/gameobjects.c",
           "base_size": 223,
-          "exact_match": false,
+          "exact_match": true,
           "target_sha256": "6f028399911961e88489e5f58589824ca96583ef947ba1d60f7d36e3615b8860",
-          "base_sha256": "b63812141d954d6e63a78f0c0105ee1614d79d55e52a097acc5a92e61aae2d54",
+          "base_sha256": "6f028399911961e88489e5f58589824ca96583ef947ba1d60f7d36e3615b8860",
           "relocation_count": 3,
           "comparison_unit": "0043bb20-9e84882bf668",
-          "objdiff_percent": 95.26667
+          "objdiff_percent": 100.0
         }
       ],
-      "status": "different",
-      "objdiff_percent": 95.26667
+      "status": "exact",
+      "objdiff_percent": 100.0
     },
     {
       "name": "LevelCharacterTypeID",
@@ -12064,21 +12064,21 @@
         "src/legoapi/gameobjects.c"
       ],
       "target_size": 83,
-      "exact_match": false,
+      "exact_match": true,
       "objects": [
         {
           "unit": "src/legoapi/gameobjects.c",
-          "base_size": 87,
-          "exact_match": false,
+          "base_size": 83,
+          "exact_match": true,
           "target_sha256": "c22db3123c1895c19e62be75248595429cb908600e246c4990ed9198a0a74454",
-          "base_sha256": "20a81f8d2caa65c53b9db22b06a3093d25a3ed64539de4c1faceceb71b4331d8",
+          "base_sha256": "c22db3123c1895c19e62be75248595429cb908600e246c4990ed9198a0a74454",
           "relocation_count": 2,
           "comparison_unit": "0043c7a0-eea08cd24c9b",
-          "objdiff_percent": 71.041664
+          "objdiff_percent": 100.0
         }
       ],
-      "status": "different",
-      "objdiff_percent": 71.041664
+      "status": "exact",
+      "objdiff_percent": 100.0
     },
     {
       "name": "GameAISysSetGame",
@@ -12736,21 +12736,21 @@
         "src/legoapi/gameobjects.c"
       ],
       "target_size": 390,
-      "exact_match": false,
+      "exact_match": true,
       "objects": [
         {
           "unit": "src/legoapi/gameobjects.c",
           "base_size": 390,
-          "exact_match": false,
+          "exact_match": true,
           "target_sha256": "faa5c503c9e15e48940c974e68df8a1a6783f2f560e1cfefc2689b078131f29e",
-          "base_sha256": "5d2cca2dfc0e74244de4a44e93a2058fc9d84b3685c759f7105e140799c9eaa2",
+          "base_sha256": "faa5c503c9e15e48940c974e68df8a1a6783f2f560e1cfefc2689b078131f29e",
           "relocation_count": 26,
           "comparison_unit": "0043fda0-7c624033a841",
-          "objdiff_percent": 90.09009
+          "objdiff_percent": 100.0
         }
       ],
-      "status": "different",
-      "objdiff_percent": 90.09009
+      "status": "exact",
+      "objdiff_percent": 100.0
     },
     {
       "name": "AIPathCnxControlSysCreate",
@@ -12808,21 +12808,21 @@
         "src/legoapi/gameobjects.c"
       ],
       "target_size": 34,
-      "exact_match": false,
+      "exact_match": true,
       "objects": [
         {
           "unit": "src/legoapi/gameobjects.c",
           "base_size": 34,
-          "exact_match": false,
+          "exact_match": true,
           "target_sha256": "4ce7cf8d47e0727a0a241779418f99d35e4a7b6f88ec9fd9d9eb9231d14e30ba",
-          "base_sha256": "598892747a74ba8b88d592cbd028d3080cd06d50ad09ef9eab117f5efa385820",
+          "base_sha256": "4ce7cf8d47e0727a0a241779418f99d35e4a7b6f88ec9fd9d9eb9231d14e30ba",
           "relocation_count": 1,
           "comparison_unit": "00440120-76ee049cc29e",
-          "objdiff_percent": 69.0
+          "objdiff_percent": 100.0
         }
       ],
-      "status": "different",
-      "objdiff_percent": 69.0
+      "status": "exact",
+      "objdiff_percent": 100.0
     },
     {
       "name": "PartyMemberInWay",
@@ -14586,21 +14586,21 @@
         "src/legoapi/gameobjects.c"
       ],
       "target_size": 62,
-      "exact_match": false,
+      "exact_match": true,
       "objects": [
         {
           "unit": "src/legoapi/gameobjects.c",
-          "base_size": 72,
-          "exact_match": false,
+          "base_size": 62,
+          "exact_match": true,
           "target_sha256": "262977019439ca0d1d936e27e0ae0d789dbf5ab4a89054d16e4abe87546a8c83",
-          "base_sha256": "a9c29082aeaf3779df3aa5c42e2b42151c77d909e3a5bdaa584838df8fe713e5",
+          "base_sha256": "262977019439ca0d1d936e27e0ae0d789dbf5ab4a89054d16e4abe87546a8c83",
           "relocation_count": 0,
           "comparison_unit": "00441e60-fc18697b0ea1",
-          "objdiff_percent": 54.526318
+          "objdiff_percent": 100.0
         }
       ],
-      "status": "different",
-      "objdiff_percent": 54.526318
+      "status": "exact",
+      "objdiff_percent": 100.0
     },
     {
       "name": "Condition_CollidingPc",
@@ -19344,21 +19344,21 @@
         "src/gameapi/gameaiactions.c"
       ],
       "target_size": 91,
-      "exact_match": false,
+      "exact_match": true,
       "objects": [
         {
           "unit": "src/gameapi/gameaiactions.c",
-          "base_size": 88,
-          "exact_match": false,
+          "base_size": 91,
+          "exact_match": true,
           "target_sha256": "7f79979e6abd27cd88a9e984125cce2d2be8df6b17dbdbe0a24742637d030220",
-          "base_sha256": "4cf8e9ee1a4d7182d7f24013b14229abed55d41da5c5701bb46a892347986d34",
+          "base_sha256": "7f79979e6abd27cd88a9e984125cce2d2be8df6b17dbdbe0a24742637d030220",
           "relocation_count": 2,
           "comparison_unit": "0044e860-5e67c8c348a8",
-          "objdiff_percent": 96.969696
+          "objdiff_percent": 100.0
         }
       ],
-      "status": "different",
-      "objdiff_percent": 96.969696
+      "status": "exact",
+      "objdiff_percent": 100.0
     },
     {
       "name": "Action_AnimTimeRandom",
@@ -25670,21 +25670,21 @@
         "src/legoapi/gameobjects.c"
       ],
       "target_size": 140,
-      "exact_match": false,
+      "exact_match": true,
       "objects": [
         {
           "unit": "src/legoapi/gameobjects.c",
           "base_size": 140,
-          "exact_match": false,
+          "exact_match": true,
           "target_sha256": "095d773f6070f6e87dfb38479c090e2da8c72ca6197494fb718802b21fba5186",
-          "base_sha256": "370fcfe643e87ab41cc340e749d03b83a008e372afb5b9a62ba82543d1ebd4d6",
+          "base_sha256": "095d773f6070f6e87dfb38479c090e2da8c72ca6197494fb718802b21fba5186",
           "relocation_count": 7,
           "comparison_unit": "0046ac80-c74f664c844f",
-          "objdiff_percent": 87.78261
+          "objdiff_percent": 100.0
         }
       ],
-      "status": "different",
-      "objdiff_percent": 87.78261
+      "status": "exact",
+      "objdiff_percent": 100.0
     },
     {
       "name": "Pup_CollectCharKit",
@@ -32428,21 +32428,21 @@
         "src/legoapi/gameobjects.c"
       ],
       "target_size": 419,
-      "exact_match": false,
+      "exact_match": true,
       "objects": [
         {
           "unit": "src/legoapi/gameobjects.c",
-          "base_size": 417,
-          "exact_match": false,
+          "base_size": 419,
+          "exact_match": true,
           "target_sha256": "52675d096b27b9c9955b3b4b6d27cdd862fb10774bacf2e631a8a5e66bf25ceb",
-          "base_sha256": "40fa033d96a7f6bd7c0bf0ab21ae4a5fbc8ba43ac0db98e4c82d9e7695d1cdd2",
+          "base_sha256": "52675d096b27b9c9955b3b4b6d27cdd862fb10774bacf2e631a8a5e66bf25ceb",
           "relocation_count": 11,
           "comparison_unit": "004874f0-dd852b7ab62b",
-          "objdiff_percent": 93.902916
+          "objdiff_percent": 100.0
         }
       ],
-      "status": "different",
-      "objdiff_percent": 93.902916
+      "status": "exact",
+      "objdiff_percent": 100.0
     },
     {
       "name": "TagCode",
@@ -32452,21 +32452,21 @@
         "src/legoapi/gameobjects.c"
       ],
       "target_size": 1530,
-      "exact_match": false,
+      "exact_match": true,
       "objects": [
         {
           "unit": "src/legoapi/gameobjects.c",
-          "base_size": 1524,
-          "exact_match": false,
+          "base_size": 1530,
+          "exact_match": true,
           "target_sha256": "da2769e2ce3a8e3d8fd5d4e742c67e45736e7a30fcd90ca5fbc4c092de63d9ba",
-          "base_sha256": "d160203a8bfb8df52a43d56a5c8a5144b0ce4f396d7c64b79ba4ae3ca91429ab",
+          "base_sha256": "da2769e2ce3a8e3d8fd5d4e742c67e45736e7a30fcd90ca5fbc4c092de63d9ba",
           "relocation_count": 44,
           "comparison_unit": "004876a0-51130b3d467a",
-          "objdiff_percent": 96.56417
+          "objdiff_percent": 100.0
         }
       ],
-      "status": "different",
-      "objdiff_percent": 96.56417
+      "status": "exact",
+      "objdiff_percent": 100.0
     },
     {
       "name": "TagCharacter",
@@ -36950,21 +36950,21 @@
         "src/legoapi/move.c"
       ],
       "target_size": 37,
-      "exact_match": false,
+      "exact_match": true,
       "objects": [
         {
           "unit": "src/legoapi/move.c",
-          "base_size": 34,
-          "exact_match": false,
+          "base_size": 37,
+          "exact_match": true,
           "target_sha256": "c65e13f1dd298fc03c0e9ce2fdfd1841e88f9534eb0274b79735caeb68470ed8",
-          "base_sha256": "9e7b7cd893f4569ffce9136f9e5ce5edfc0faf6e4d3dfa21e6409e748a6ce389",
+          "base_sha256": "c65e13f1dd298fc03c0e9ce2fdfd1841e88f9534eb0274b79735caeb68470ed8",
           "relocation_count": 0,
           "comparison_unit": "004982f0-5083fb93c18c",
-          "objdiff_percent": 75.13333
+          "objdiff_percent": 100.0
         }
       ],
-      "status": "different",
-      "objdiff_percent": 75.13333
+      "status": "exact",
+      "objdiff_percent": 100.0
     },
     {
       "name": "VehicleTurnOrLoopOffset",
@@ -37838,21 +37838,21 @@
         "src/legoapi/move.c"
       ],
       "target_size": 108,
-      "exact_match": false,
+      "exact_match": true,
       "objects": [
         {
           "unit": "src/legoapi/move.c",
           "base_size": 108,
-          "exact_match": false,
+          "exact_match": true,
           "target_sha256": "4e8aa0d11ef8438cff02b5055e215b080cbac1ca68acbae7a5beb97ff79e2fdf",
-          "base_sha256": "e5e4959d465c7e077110f5cbd725aa936ef6b86ecee3137fe15bf2f34c359b18",
+          "base_sha256": "4e8aa0d11ef8438cff02b5055e215b080cbac1ca68acbae7a5beb97ff79e2fdf",
           "relocation_count": 1,
           "comparison_unit": "0049ca10-a5aa8135806a",
-          "objdiff_percent": 97.51852
+          "objdiff_percent": 100.0
         }
       ],
-      "status": "different",
-      "objdiff_percent": 97.51852
+      "status": "exact",
+      "objdiff_percent": 100.0
     },
     {
       "name": "ObjOpponent",
@@ -37982,21 +37982,21 @@
         "src/legoapi/move.c"
       ],
       "target_size": 66,
-      "exact_match": false,
+      "exact_match": true,
       "objects": [
         {
           "unit": "src/legoapi/move.c",
           "base_size": 66,
-          "exact_match": false,
+          "exact_match": true,
           "target_sha256": "2fd33f6ee49c85b2940b13d9e429d7434f9bf10071a9ae2776df1fcdfb6ab51a",
-          "base_sha256": "710262db926f524663a1e8d231952f4aa5cbdafd0b892847fd96a8d7f2f44527",
+          "base_sha256": "2fd33f6ee49c85b2940b13d9e429d7434f9bf10071a9ae2776df1fcdfb6ab51a",
           "relocation_count": 1,
           "comparison_unit": "0049d4d0-5b850212681b",
-          "objdiff_percent": 92.0
+          "objdiff_percent": 100.0
         }
       ],
-      "status": "different",
-      "objdiff_percent": 92.0
+      "status": "exact",
+      "objdiff_percent": 100.0
     },
     {
       "name": "SetBallooningHeight",
@@ -38342,21 +38342,21 @@
         "src/legoapi/move.c"
       ],
       "target_size": 192,
-      "exact_match": false,
+      "exact_match": true,
       "objects": [
         {
           "unit": "src/legoapi/move.c",
           "base_size": 192,
-          "exact_match": false,
+          "exact_match": true,
           "target_sha256": "f19a28125098fd08d8108842fbeb9d76616dc78ad8e472090ed56388a3ea7f62",
-          "base_sha256": "feac72dfc9ed8e5cf350838a29dbda87c6694de6ec39a008bc101fcce7b2a305",
+          "base_sha256": "f19a28125098fd08d8108842fbeb9d76616dc78ad8e472090ed56388a3ea7f62",
           "relocation_count": 2,
           "comparison_unit": "0049e2b0-3e8becd125f1",
-          "objdiff_percent": 98.46154
+          "objdiff_percent": 100.0
         }
       ],
-      "status": "different",
-      "objdiff_percent": 98.46154
+      "status": "exact",
+      "objdiff_percent": 100.0
     },
     {
       "name": "ComboBlockStartPc",
@@ -38414,21 +38414,21 @@
         "src/legoapi/move.c"
       ],
       "target_size": 415,
-      "exact_match": false,
+      "exact_match": true,
       "objects": [
         {
           "unit": "src/legoapi/move.c",
-          "base_size": 412,
-          "exact_match": false,
+          "base_size": 415,
+          "exact_match": true,
           "target_sha256": "ba7b80268a781ee6bae87695741ef52d0eb3de96dc6002868744b970ff902659",
-          "base_sha256": "bba2cd5c2ce3255e875b82e3923cb1a28c5af6e9758361f4bb49bc839483830e",
+          "base_sha256": "ba7b80268a781ee6bae87695741ef52d0eb3de96dc6002868744b970ff902659",
           "relocation_count": 4,
           "comparison_unit": "0049e7f0-92b65d97d6d4",
-          "objdiff_percent": 95.83178
+          "objdiff_percent": 100.0
         }
       ],
-      "status": "different",
-      "objdiff_percent": 95.83178
+      "status": "exact",
+      "objdiff_percent": 100.0
     },
     {
       "name": "Dodge_UpdateHint",
@@ -40022,21 +40022,21 @@
         "src/legoapi/move.c"
       ],
       "target_size": 366,
-      "exact_match": false,
+      "exact_match": true,
       "objects": [
         {
           "unit": "src/legoapi/move.c",
           "base_size": 366,
-          "exact_match": false,
+          "exact_match": true,
           "target_sha256": "1065857ec3c3d6ee6e2ad29e6c24449e7a8b1368c78f34b5c0a93d4b11d088dd",
-          "base_sha256": "50c39c5db777560b799e8c2e965cee8d957be5a552049e1179c9ae9144058edf",
+          "base_sha256": "1065857ec3c3d6ee6e2ad29e6c24449e7a8b1368c78f34b5c0a93d4b11d088dd",
           "relocation_count": 10,
           "comparison_unit": "004a89f0-25f61b227947",
-          "objdiff_percent": 99.96
+          "objdiff_percent": 100.0
         }
       ],
-      "status": "different",
-      "objdiff_percent": 99.96
+      "status": "exact",
+      "objdiff_percent": 100.0
     },
     {
       "name": "Disorientate",
@@ -40766,21 +40766,21 @@
         "src/legoapi/move.c"
       ],
       "target_size": 328,
-      "exact_match": false,
+      "exact_match": true,
       "objects": [
         {
           "unit": "src/legoapi/move.c",
-          "base_size": 326,
-          "exact_match": false,
+          "base_size": 328,
+          "exact_match": true,
           "target_sha256": "ad1e96656664afc11f010954f0c8384a43ec6bdb0103812dad2d61735db5fa2a",
-          "base_sha256": "e8c334d7cd48acc801df6e8039e3cd24db67eca41948434bde14d13245359689",
+          "base_sha256": "ad1e96656664afc11f010954f0c8384a43ec6bdb0103812dad2d61735db5fa2a",
           "relocation_count": 10,
           "comparison_unit": "004aaec0-896df1e4260d",
-          "objdiff_percent": 99.314285
+          "objdiff_percent": 100.0
         }
       ],
-      "status": "different",
-      "objdiff_percent": 99.314285
+      "status": "exact",
+      "objdiff_percent": 100.0
     },
     {
       "name": "Animate_DROIDEKA",
@@ -40934,21 +40934,21 @@
         "src/legoapi/move.c"
       ],
       "target_size": 363,
-      "exact_match": false,
+      "exact_match": true,
       "objects": [
         {
           "unit": "src/legoapi/move.c",
           "base_size": 363,
-          "exact_match": false,
+          "exact_match": true,
           "target_sha256": "88dd41dc0ef1c20b4949c081bc790ab3b58d1dfd86e7f5a0e30c1e2b3ae2312e",
-          "base_sha256": "8a8bb18e1f8f825c6f63417c9687c20e5b7295a10569673780ae5a0628c17980",
+          "base_sha256": "88dd41dc0ef1c20b4949c081bc790ab3b58d1dfd86e7f5a0e30c1e2b3ae2312e",
           "relocation_count": 16,
           "comparison_unit": "004ab620-aa0a9bf47b6c",
-          "objdiff_percent": 99.42991
+          "objdiff_percent": 100.0
         }
       ],
-      "status": "different",
-      "objdiff_percent": 99.42991
+      "status": "exact",
+      "objdiff_percent": 100.0
     },
     {
       "name": "FindPodHoverHeight",
@@ -41232,21 +41232,21 @@
         "src/legoapi/move.c"
       ],
       "target_size": 553,
-      "exact_match": false,
+      "exact_match": true,
       "objects": [
         {
           "unit": "src/legoapi/move.c",
           "base_size": 553,
-          "exact_match": false,
+          "exact_match": true,
           "target_sha256": "6f6bfd6075ddf8fe8ad5419b897dc76e3d075c23b4872357e426f69030a8ab22",
-          "base_sha256": "b6c008829446b72168635065c1ec09ff51283df6156bb84f3dfa6c86a6b2c05f",
+          "base_sha256": "6f6bfd6075ddf8fe8ad5419b897dc76e3d075c23b4872357e426f69030a8ab22",
           "relocation_count": 22,
           "comparison_unit": "004b11b0-9d441517ea89",
-          "objdiff_percent": 97.51613
+          "objdiff_percent": 100.0
         }
       ],
-      "status": "different",
-      "objdiff_percent": 97.51613
+      "status": "exact",
+      "objdiff_percent": 100.0
     },
     {
       "name": "DodgeCode",
@@ -44749,14 +44749,14 @@
           "base_size": 2892,
           "exact_match": false,
           "target_sha256": "a51cfb64298ae0952c6febc99ea2db2e6c1b135a5b5bfe2ae05a20cc86205741",
-          "base_sha256": "7f16a8002ff93e5550c450e40c16f7250152a48d83447154d8baddf24cab0810",
+          "base_sha256": "df11937c2f2376137fb1044b5ee68d176857e6a7b765a43baa27fdebfb54481b",
           "relocation_count": 146,
           "comparison_unit": "004c58e0-cf7233e8de12",
-          "objdiff_percent": 86.005035
+          "objdiff_percent": 86.107056
         }
       ],
       "status": "different",
-      "objdiff_percent": 86.005035
+      "objdiff_percent": 86.107056
     },
     {
       "name": "DrawItemMenu2D",
@@ -52660,21 +52660,21 @@
         "src/legoapi/episodeII.c"
       ],
       "target_size": 724,
-      "exact_match": false,
+      "exact_match": true,
       "objects": [
         {
           "unit": "src/legoapi/episodeII.c",
           "base_size": 724,
-          "exact_match": false,
+          "exact_match": true,
           "target_sha256": "6c4990f55920e82c3be9dae925fb6cee1ee4950948a6ecde35e018ccc69af4bc",
-          "base_sha256": "058510d085c2748fb4c3fd68694c491fb331c42eb096de1aae06ba8391b2a2a9",
+          "base_sha256": "6c4990f55920e82c3be9dae925fb6cee1ee4950948a6ecde35e018ccc69af4bc",
           "relocation_count": 63,
           "comparison_unit": "004df9b0-3a2dc6231a6e",
-          "objdiff_percent": 95.344826
+          "objdiff_percent": 100.0
         }
       ],
-      "status": "different",
-      "objdiff_percent": 95.344826
+      "status": "exact",
+      "objdiff_percent": 100.0
     },
     {
       "name": "FactoryB_Reset",
@@ -54210,17 +54210,17 @@
       "objects": [
         {
           "unit": "src/legoapi/episodeII.c",
-          "base_size": 615,
+          "base_size": 594,
           "exact_match": false,
           "target_sha256": "c258d3b433b20b8d6958a7fccc5691d4e70f60c5f5c9034c394b1e846853e8bb",
-          "base_sha256": "799d726a68ac92a02ae07e3f296a402038cf964b9c2551479dc5472fef653706",
-          "relocation_count": 22,
+          "base_sha256": "a7c0bd1493ef8126416ce50a3d171b70d5e3b1a7c48ccfa0c2acd1e34a9b93d2",
+          "relocation_count": 21,
           "comparison_unit": "004e3a00-31f9509a2abd",
-          "objdiff_percent": 65.32768
+          "objdiff_percent": 81.20904
         }
       ],
       "status": "different",
-      "objdiff_percent": 65.32768
+      "objdiff_percent": 81.20904
     },
     {
       "name": "TempleC_AlwaysUpdate",
@@ -68052,21 +68052,21 @@
         "src/legoapi/menu.c"
       ],
       "target_size": 1756,
-      "exact_match": false,
+      "exact_match": true,
       "objects": [
         {
           "unit": "src/legoapi/menu.c",
           "base_size": 1756,
-          "exact_match": false,
+          "exact_match": true,
           "target_sha256": "3a9ec76264b1fbbdd64a8346497184c882e0ca43913007e7e21e00f57752d1c2",
-          "base_sha256": "6df802c1def83b97964f18803e6b64320de4e5208b2b14eb23926e7e26deb51b",
+          "base_sha256": "3a9ec76264b1fbbdd64a8346497184c882e0ca43913007e7e21e00f57752d1c2",
           "relocation_count": 56,
           "comparison_unit": "00509d00-3a146b7e40f6",
-          "objdiff_percent": 98.10099
+          "objdiff_percent": 100.0
         }
       ],
-      "status": "different",
-      "objdiff_percent": 98.10099
+      "status": "exact",
+      "objdiff_percent": 100.0
     },
     {
       "name": "MenuEnterSave",
@@ -70037,14 +70037,14 @@
           "base_size": 998,
           "exact_match": false,
           "target_sha256": "6ed93dc7c7167ffa15bf35ece16abe302d97ab05469c70f4efc49884f7119ea0",
-          "base_sha256": "69fd8d64c78324880ba45694fe68caf46b397bc9b29607d4aaeac170c527c5ec",
+          "base_sha256": "190e8a2203da7ca5ab96625bca271a2d83c5caeab84944b436d8754e0e81854f",
           "relocation_count": 35,
           "comparison_unit": "0050f740-9af20e2829a6",
-          "objdiff_percent": 99.5
+          "objdiff_percent": 99.954544
         }
       ],
       "status": "different",
-      "objdiff_percent": 99.5
+      "objdiff_percent": 99.954544
     },
     {
       "name": "DrawMenuButtonPromptsEx",
@@ -70061,14 +70061,14 @@
           "base_size": 876,
           "exact_match": false,
           "target_sha256": "156fc20be53e6b008505d101b5239d1d583c1ac929520e7195e13cd509dbd33e",
-          "base_sha256": "397f2c988cc6ac5c59c74549df8b3abc02731c04073151248273532afbf1def6",
+          "base_sha256": "2bbc52556f2e1056e83450c2e72e2f025d2d710c9803e3e0735e7b23256aebba",
           "relocation_count": 49,
           "comparison_unit": "0050fb30-c6df5d0e4031",
-          "objdiff_percent": 98.11554
+          "objdiff_percent": 98.183266
         }
       ],
       "status": "different",
-      "objdiff_percent": 98.11554
+      "objdiff_percent": 98.183266
     },
     {
       "name": "DrawMenuButtonPrompts",
@@ -85016,21 +85016,21 @@
         "src/legoapi/gameobjects.c"
       ],
       "target_size": 126,
-      "exact_match": false,
+      "exact_match": true,
       "objects": [
         {
           "unit": "src/legoapi/gameobjects.c",
-          "base_size": 113,
-          "exact_match": false,
+          "base_size": 126,
+          "exact_match": true,
           "target_sha256": "b910910ca57d2bff8407f29acf173671a544e186fd204e012ec37e747fa75a3a",
-          "base_sha256": "1984fcb04d44cde127b117d59ebb51713085c41c8b2fa2d78064eb35222869eb",
+          "base_sha256": "b910910ca57d2bff8407f29acf173671a544e186fd204e012ec37e747fa75a3a",
           "relocation_count": 5,
           "comparison_unit": "0054fec0-0252484b9051",
-          "objdiff_percent": 77.97619
+          "objdiff_percent": 100.0
         }
       ],
-      "status": "different",
-      "objdiff_percent": 77.97619
+      "status": "exact",
+      "objdiff_percent": 100.0
     },
     {
       "name": "FindAnglesXY",
@@ -89394,21 +89394,21 @@
         "src/legoapi/menu.c"
       ],
       "target_size": 257,
-      "exact_match": false,
+      "exact_match": true,
       "objects": [
         {
           "unit": "src/legoapi/menu.c",
-          "base_size": 284,
-          "exact_match": false,
+          "base_size": 257,
+          "exact_match": true,
           "target_sha256": "083f894fab8b97da265922fef75f7600fa2429b18534b7b7d628c4114ebe4f46",
-          "base_sha256": "b0170a2f7a516da159e32538208e5b606959074c02e215b7d659b4d3ac386cc1",
-          "relocation_count": 13,
+          "base_sha256": "083f894fab8b97da265922fef75f7600fa2429b18534b7b7d628c4114ebe4f46",
+          "relocation_count": 12,
           "comparison_unit": "0055b6e0-d6bc53157063",
-          "objdiff_percent": 89.246574
+          "objdiff_percent": 100.0
         }
       ],
-      "status": "different",
-      "objdiff_percent": 89.246574
+      "status": "exact",
+      "objdiff_percent": 100.0
     },
     {
       "name": "IconScenes_Dump",
@@ -89422,17 +89422,17 @@
       "objects": [
         {
           "unit": "src/legoapi/menu.c",
-          "base_size": 67,
+          "base_size": 61,
           "exact_match": false,
           "target_sha256": "a9c349fc35555c1e02aa6ded0c8d1000a628df95daabfce3ea821b4ca13b51af",
-          "base_sha256": "1931f147e041ee3511cb705ef6e0b9835bafd741dc60bf5fd5146bd0e430969c",
-          "relocation_count": 6,
+          "base_sha256": "ea5ff53bf09b31d10e646bd84de1ccd576f4d9d58cedc453b10368fcc67c5a44",
+          "relocation_count": 5,
           "comparison_unit": "0055b7f0-901c4b0a498d",
-          "objdiff_percent": 84.0
+          "objdiff_percent": 97.5
         }
       ],
       "status": "different",
-      "objdiff_percent": 84.0
+      "objdiff_percent": 97.5
     },
     {
       "name": "DrawCharIcon",
@@ -90148,21 +90148,21 @@
         "src/legoapi/gameobjects.c"
       ],
       "target_size": 79,
-      "exact_match": false,
+      "exact_match": true,
       "objects": [
         {
           "unit": "src/legoapi/gameobjects.c",
-          "base_size": 87,
-          "exact_match": false,
+          "base_size": 79,
+          "exact_match": true,
           "target_sha256": "c606ff5e26fbdf5eea3f9a84dc74fc641327a31312354444d752de0d4ffc62bf",
-          "base_sha256": "84743d86f9e4c4646c6007e322d8c80519d91a76143321415e69b51b5bc28ad5",
+          "base_sha256": "c606ff5e26fbdf5eea3f9a84dc74fc641327a31312354444d752de0d4ffc62bf",
           "relocation_count": 0,
           "comparison_unit": "0055ccd0-6fb37f4e5e4b",
-          "objdiff_percent": 63.588234
+          "objdiff_percent": 100.0
         }
       ],
-      "status": "different",
-      "objdiff_percent": 63.588234
+      "status": "exact",
+      "objdiff_percent": 100.0
     },
     {
       "name": "GetTopBot",
@@ -90172,21 +90172,21 @@
         "src/legoapi/gameobjects.c"
       ],
       "target_size": 82,
-      "exact_match": false,
+      "exact_match": true,
       "objects": [
         {
           "unit": "src/legoapi/gameobjects.c",
-          "base_size": 89,
-          "exact_match": false,
+          "base_size": 82,
+          "exact_match": true,
           "target_sha256": "07cd84c60537d8420ac2aeea6259dc43ba879d272215b79fc6fe9295d6525369",
-          "base_sha256": "48f72885f02fc76ed6acc9ab4f1b42b602620cfc1c9438e93f66d1cbdde0548e",
+          "base_sha256": "07cd84c60537d8420ac2aeea6259dc43ba879d272215b79fc6fe9295d6525369",
           "relocation_count": 0,
           "comparison_unit": "0055cd20-854491a9532f",
-          "objdiff_percent": 65.478264
+          "objdiff_percent": 100.0
         }
       ],
-      "status": "different",
-      "objdiff_percent": 65.478264
+      "status": "exact",
+      "objdiff_percent": 100.0
     },
     {
       "name": "SetToLastSafePos",
@@ -90316,21 +90316,21 @@
         "src/legoapi/gameobjects.c"
       ],
       "target_size": 197,
-      "exact_match": false,
+      "exact_match": true,
       "objects": [
         {
           "unit": "src/legoapi/gameobjects.c",
-          "base_size": 192,
-          "exact_match": false,
+          "base_size": 197,
+          "exact_match": true,
           "target_sha256": "c8fa963302f9674a85bf79c92c492b5cf1a2edc85179a0e06c49941e2fbaa309",
-          "base_sha256": "a1ca3126e3568184eec40aaf1a098b7d5bee61f0493fb1c1b6c771e07121a574",
+          "base_sha256": "c8fa963302f9674a85bf79c92c492b5cf1a2edc85179a0e06c49941e2fbaa309",
           "relocation_count": 5,
           "comparison_unit": "0055d1e0-069f61fd61d1",
-          "objdiff_percent": 94.01818
+          "objdiff_percent": 100.0
         }
       ],
-      "status": "different",
-      "objdiff_percent": 94.01818
+      "status": "exact",
+      "objdiff_percent": 100.0
     },
     {
       "name": "GameObjectOrigin",
@@ -92020,21 +92020,21 @@
         "src/legoapi/move.c"
       ],
       "target_size": 215,
-      "exact_match": false,
+      "exact_match": true,
       "objects": [
         {
           "unit": "src/legoapi/move.c",
-          "base_size": 219,
-          "exact_match": false,
+          "base_size": 215,
+          "exact_match": true,
           "target_sha256": "d5cd99ccaeebbb3695b3d8c3670c563701ffd304c8a1f4ea6e1536d7e1b6bfbc",
-          "base_sha256": "e5df6f2374e235acf649b8b7d4c3e70a78be9fc0821a82fb3542c0375a486e67",
-          "relocation_count": 7,
+          "base_sha256": "d5cd99ccaeebbb3695b3d8c3670c563701ffd304c8a1f4ea6e1536d7e1b6bfbc",
+          "relocation_count": 6,
           "comparison_unit": "00562310-49fbddbca531",
-          "objdiff_percent": 95.666664
+          "objdiff_percent": 100.0
         }
       ],
-      "status": "different",
-      "objdiff_percent": 95.666664
+      "status": "exact",
+      "objdiff_percent": 100.0
     },
     {
       "name": "BackFlipCode",
@@ -92099,14 +92099,14 @@
           "base_size": 6499,
           "exact_match": false,
           "target_sha256": "2e4db5e966a43d695311a9e555730f82fe2d07740d6647a86955fa5f771c54ed",
-          "base_sha256": "a325a6508b23f7bb5145f7df6d182bf3b57767d1d275b01183f8f7efbaec16a7",
+          "base_sha256": "bf720815a1d1d6c3ebaa3299f8fcce9ffb9456d9a9368d5b5a3ba2818d426f62",
           "relocation_count": 200,
           "comparison_unit": "00562570-c16bd1e83be4",
-          "objdiff_percent": 46.330894
+          "objdiff_percent": 46.398426
         }
       ],
       "status": "different",
-      "objdiff_percent": 46.330894
+      "objdiff_percent": 46.398426
     },
     {
       "name": "BigJumpCode",
@@ -94652,17 +94652,17 @@
       "objects": [
         {
           "unit": "src/legoapi/move.c",
-          "base_size": 1581,
+          "base_size": 1575,
           "exact_match": false,
           "target_sha256": "bc9d22b5f88a8e6a148f9ac0547344a43f6c58419b10e178da5a28e0bdcdea4a",
-          "base_sha256": "06c08bff6a876dccc0099374c2851f17a42e3e581f32730e76bf459de1f78a34",
-          "relocation_count": 52,
+          "base_sha256": "a2951250badb41520df81780a1664dbbf1f3559bd7e9b263913e849cb33d408e",
+          "relocation_count": 51,
           "comparison_unit": "0056b8f0-16da7506691a",
-          "objdiff_percent": 86.610596
+          "objdiff_percent": 88.5576
         }
       ],
       "status": "different",
-      "objdiff_percent": 86.610596
+      "objdiff_percent": 88.5576
     },
     {
       "name": "LedgeTerrain_SetTargetMom",
@@ -94672,21 +94672,21 @@
         "src/legoapi/move.c"
       ],
       "target_size": 126,
-      "exact_match": false,
+      "exact_match": true,
       "objects": [
         {
           "unit": "src/legoapi/move.c",
-          "base_size": 129,
-          "exact_match": false,
+          "base_size": 126,
+          "exact_match": true,
           "target_sha256": "f65c41ee94ddfcfac7eac8f2bbf87a132fc65abe5a53c9a600a3fc6818b0244e",
-          "base_sha256": "f52a1a93feef781a8d3ccc8691ac94769c744d748d9c408bdf24e2d567b4b85d",
+          "base_sha256": "f65c41ee94ddfcfac7eac8f2bbf87a132fc65abe5a53c9a600a3fc6818b0244e",
           "relocation_count": 5,
           "comparison_unit": "0056bf30-876b28d44da2",
-          "objdiff_percent": 96.296295
+          "objdiff_percent": 100.0
         }
       ],
-      "status": "different",
-      "objdiff_percent": 96.296295
+      "status": "exact",
+      "objdiff_percent": 100.0
     },
     {
       "name": "CanClimbSurface",
@@ -96976,21 +96976,21 @@
         "src/legoapi/gizmopickups.c"
       ],
       "target_size": 32,
-      "exact_match": false,
+      "exact_match": true,
       "objects": [
         {
           "unit": "src/legoapi/gizmopickups.c",
-          "base_size": 34,
-          "exact_match": false,
+          "base_size": 32,
+          "exact_match": true,
           "target_sha256": "0c56e71b1bbea0f0aac323afd815ca0d2f64e6c68e8662f24d7ecc2610e542d0",
-          "base_sha256": "0386660f5002abf580091b6aaab3ceae8dafe91772d9780c2c657adf63692405",
+          "base_sha256": "0c56e71b1bbea0f0aac323afd815ca0d2f64e6c68e8662f24d7ecc2610e542d0",
           "relocation_count": 0,
           "comparison_unit": "0056fb50-625b9713ddd7",
-          "objdiff_percent": 69.5
+          "objdiff_percent": 100.0
         }
       ],
-      "status": "different",
-      "objdiff_percent": 69.5
+      "status": "exact",
+      "objdiff_percent": 100.0
     },
     {
       "name": "GizmoPickups_Reset",
@@ -97004,17 +97004,17 @@
       "objects": [
         {
           "unit": "src/legoapi/gizmopickups.c",
-          "base_size": 331,
+          "base_size": 319,
           "exact_match": false,
           "target_sha256": "923f4f3eb4ecf14eb5e3329edb5af2dbe80e22707054ccfafad056678a7ee0ea",
-          "base_sha256": "f8dfa7406fa772b12c59dda3c4b112b7af792393a23bb9bf1df8e4b0fd9a1932",
+          "base_sha256": "88099a7dd0e2d3d2e5099fdf3fbbf5a3595e40468502ba6d7902f42c345fd07f",
           "relocation_count": 13,
           "comparison_unit": "0056fb70-73ff8a5b603f",
-          "objdiff_percent": 95.416664
+          "objdiff_percent": 99.25926
         }
       ],
       "status": "different",
-      "objdiff_percent": 95.416664
+      "objdiff_percent": 99.25926
     },
     {
       "name": "GizmoPickups_ResetPc",
@@ -97412,17 +97412,17 @@
       "objects": [
         {
           "unit": "src/legoapi/gizmopickups.c",
-          "base_size": 769,
+          "base_size": 760,
           "exact_match": false,
           "target_sha256": "025f95b10d53fee3ac863d6570928442f6ce8ce623ccdf41fc9af03411945674",
-          "base_sha256": "65690dc484221cc30939ad5ef4b4af605df4cd9d85adbe980f02356d8d3c4e21",
+          "base_sha256": "87bd1cf1116d6584bafee60940605fd4d11fbafde3de919efbfd933cbd8fcc9e",
           "relocation_count": 26,
           "comparison_unit": "00571030-0124abaf702c",
-          "objdiff_percent": 96.87611
+          "objdiff_percent": 98.47345
         }
       ],
       "status": "different",
-      "objdiff_percent": 96.87611
+      "objdiff_percent": 98.47345
     },
     {
       "name": "GizmoPickups_UpdateListPc",
@@ -115314,21 +115314,21 @@
         "src/legoapi/gameobjects.c"
       ],
       "target_size": 90,
-      "exact_match": false,
+      "exact_match": true,
       "objects": [
         {
           "unit": "src/legoapi/gameobjects.c",
           "base_size": 90,
-          "exact_match": false,
+          "exact_match": true,
           "target_sha256": "7852176d8ff26c4cbcf48981f61853af468226014d3b9295b60358e0fced4d6e",
-          "base_sha256": "a84a3c499a6f8bec820d5e7a27c119d0ce73353bd9de544e638f7f6d4347bb96",
+          "base_sha256": "7852176d8ff26c4cbcf48981f61853af468226014d3b9295b60358e0fced4d6e",
           "relocation_count": 10,
           "comparison_unit": "0059af60-e8c435cd3665",
-          "objdiff_percent": 97.69231
+          "objdiff_percent": 100.0
         }
       ],
-      "status": "different",
-      "objdiff_percent": 97.69231
+      "status": "exact",
+      "objdiff_percent": 100.0
     },
     {
       "name": "GameAntinode_RegisterAntiNode",
@@ -139329,21 +139329,21 @@
         "src/nu2api/nudlist.cpp"
       ],
       "target_size": 238,
-      "exact_match": false,
+      "exact_match": true,
       "objects": [
         {
           "unit": "src/nu2api/nudlist.cpp",
-          "base_size": 235,
-          "exact_match": false,
+          "base_size": 238,
+          "exact_match": true,
           "target_sha256": "ccedfb4c8e2194a1606e1b5d44f932472857881e0192f631143dea0646f47168",
-          "base_sha256": "c405549227899cc8eac8f68fc914fc29b869d121191e7864449c9cd9270d2b49",
+          "base_sha256": "ccedfb4c8e2194a1606e1b5d44f932472857881e0192f631143dea0646f47168",
           "relocation_count": 4,
           "comparison_unit": "005ddd10-4cb3f3fd2ad1",
-          "objdiff_percent": 98.85227
+          "objdiff_percent": 100.0
         }
       ],
-      "status": "different",
-      "objdiff_percent": 98.85227
+      "status": "exact",
+      "objdiff_percent": 100.0
     },
     {
       "name": "NuDisplayListCreate",
@@ -139353,21 +139353,21 @@
         "src/nu2api/nudlist.cpp"
       ],
       "target_size": 602,
-      "exact_match": false,
+      "exact_match": true,
       "objects": [
         {
           "unit": "src/nu2api/nudlist.cpp",
           "base_size": 602,
-          "exact_match": false,
+          "exact_match": true,
           "target_sha256": "606aeb9d9444e387989a5a2bbcc2d54b252ec2c29336f6f00913796e4e194dd5",
-          "base_sha256": "672d993ee5238e5d7139fce88ddd0acab28a37cee0a1c0b7056bbae912718ac9",
+          "base_sha256": "606aeb9d9444e387989a5a2bbcc2d54b252ec2c29336f6f00913796e4e194dd5",
           "relocation_count": 8,
           "comparison_unit": "005dde00-870a91ef7feb",
-          "objdiff_percent": 99.05357
+          "objdiff_percent": 100.0
         }
       ],
-      "status": "different",
-      "objdiff_percent": 99.05357
+      "status": "exact",
+      "objdiff_percent": 100.0
     },
     {
       "name": "DisplayInsertSortPC",
@@ -139377,21 +139377,21 @@
         "src/nu2api/nudlist.cpp"
       ],
       "target_size": 87,
-      "exact_match": false,
+      "exact_match": true,
       "objects": [
         {
           "unit": "src/nu2api/nudlist.cpp",
           "base_size": 87,
-          "exact_match": false,
+          "exact_match": true,
           "target_sha256": "b5f2785590aafb1c919c2f6d67c76b8ba06b185fd3e6f07871a90dd0934ed8d2",
-          "base_sha256": "d9a78da412a32f931b5d5ffcfddff3de7de86a216d8dbe43344c699af11f25ae",
+          "base_sha256": "b5f2785590aafb1c919c2f6d67c76b8ba06b185fd3e6f07871a90dd0934ed8d2",
           "relocation_count": 6,
           "comparison_unit": "005de060-2e966ec27056",
-          "objdiff_percent": 91.875
+          "objdiff_percent": 100.0
         }
       ],
-      "status": "different",
-      "objdiff_percent": 91.875
+      "status": "exact",
+      "objdiff_percent": 100.0
     },
     {
       "name": "NuDisplayListCreateMtlDlist",
@@ -139552,14 +139552,14 @@
           "base_size": 1763,
           "exact_match": false,
           "target_sha256": "38ae4c8106374afcb9ce4fe3b7e9e6326eb3276f46f82c1be9fcf04a1ed82733",
-          "base_sha256": "3a7b50d55e72c77fcdbee4f60f2db49c34413dcf7e75ac0acf5fe2d57ba39a8e",
+          "base_sha256": "06d2c6553b67a3cd7518e8ac535444671f86426d2a21dd88655fd0b5e349d6ca",
           "relocation_count": 98,
           "comparison_unit": "005de440-427fe4ed8b4a",
-          "objdiff_percent": 82.14838
+          "objdiff_percent": 82.18293
         }
       ],
       "status": "different",
-      "objdiff_percent": 82.14838
+      "objdiff_percent": 82.18293
     },
     {
       "name": "NuDisplayListStreamAlloc",
@@ -139843,21 +139843,21 @@
         "src/nu2api/nudlist.cpp"
       ],
       "target_size": 616,
-      "exact_match": false,
+      "exact_match": true,
       "objects": [
         {
           "unit": "src/nu2api/nudlist.cpp",
           "base_size": 616,
-          "exact_match": false,
+          "exact_match": true,
           "target_sha256": "747c0ada7fcb5ec97061fe381bad7ccca2a9ad23f27d95e6ae75fc32f1962c24",
-          "base_sha256": "8eabcc7c5758dae46f10b055e5c3bcb47073957519a341f3503f93fb43fdf0f0",
+          "base_sha256": "747c0ada7fcb5ec97061fe381bad7ccca2a9ad23f27d95e6ae75fc32f1962c24",
           "relocation_count": 26,
           "comparison_unit": "005dfbd0-c5591d1b3317",
-          "objdiff_percent": 94.03509
+          "objdiff_percent": 100.0
         }
       ],
-      "status": "different",
-      "objdiff_percent": 94.03509
+      "status": "exact",
+      "objdiff_percent": 100.0
     },
     {
       "name": "NuDisplayListBurstRndrSpecial",
@@ -139891,21 +139891,21 @@
         "src/nu2api/nudlist.cpp"
       ],
       "target_size": 165,
-      "exact_match": false,
+      "exact_match": true,
       "objects": [
         {
           "unit": "src/nu2api/nudlist.cpp",
           "base_size": 165,
-          "exact_match": false,
+          "exact_match": true,
           "target_sha256": "fcb3f13d6f2a9a434ef608cbfaf4ec13a391b6ceae7a62190de91a05b9933b20",
-          "base_sha256": "891d92b2dbb846a392979a3ccc321e6c8ecc04bc9b6f6e5620b9cb24dc3ee47e",
+          "base_sha256": "fcb3f13d6f2a9a434ef608cbfaf4ec13a391b6ceae7a62190de91a05b9933b20",
           "relocation_count": 4,
           "comparison_unit": "005e0200-220649e1fbaf",
-          "objdiff_percent": 93.171875
+          "objdiff_percent": 100.0
         }
       ],
-      "status": "different",
-      "objdiff_percent": 93.171875
+      "status": "exact",
+      "objdiff_percent": 100.0
     },
     {
       "name": "DisplayListProcessLightmappedPC",
@@ -139915,21 +139915,21 @@
         "src/nu2api/nudlist.cpp"
       ],
       "target_size": 209,
-      "exact_match": false,
+      "exact_match": true,
       "objects": [
         {
           "unit": "src/nu2api/nudlist.cpp",
-          "base_size": 201,
-          "exact_match": false,
+          "base_size": 209,
+          "exact_match": true,
           "target_sha256": "a52a2b9be84b1fdf88ea7d2f670315c5638d351300c6a681bd9ba4f5cfb63ecb",
-          "base_sha256": "0c719cdcedbea9c1cb6890904e7ce4e97bc25433392d7cf2c1a49a7495d75d4d",
+          "base_sha256": "a52a2b9be84b1fdf88ea7d2f670315c5638d351300c6a681bd9ba4f5cfb63ecb",
           "relocation_count": 4,
           "comparison_unit": "005e02b0-83cb6cd31fcd",
-          "objdiff_percent": 88.58667
+          "objdiff_percent": 100.0
         }
       ],
-      "status": "different",
-      "objdiff_percent": 88.58667
+      "status": "exact",
+      "objdiff_percent": 100.0
     },
     {
       "name": "DisplayListProcessSkinPC",
@@ -143123,17 +143123,17 @@
       "objects": [
         {
           "unit": "src/nu2api/nudlist.cpp",
-          "base_size": 1627,
+          "base_size": 1611,
           "exact_match": false,
           "target_sha256": "00382902add523856f544dc6121dd81ce8204e98fb963d9725c3c97eb8697ed9",
-          "base_sha256": "52d121179a57f39e4fb522ae4dff3d2dd434ccb2f864dd3dd19e8a0238dc89b2",
+          "base_sha256": "9d4f8f3ffdfceb5558453381419117a6272f3038745c431399a3ff3de6505bd5",
           "relocation_count": 27,
           "comparison_unit": "005f0470-af42e6340772",
-          "objdiff_percent": 98.01282
+          "objdiff_percent": 98.64469
         }
       ],
       "status": "different",
-      "objdiff_percent": 98.01282
+      "objdiff_percent": 98.64469
     },
     {
       "name": "DisplayClipMaterialsPC",
@@ -144236,14 +144236,14 @@
           "base_size": 1856,
           "exact_match": false,
           "target_sha256": "cdeed5fcf79246cd45998e6356a29dcab2517252f5787744cbd08c9a551f17e0",
-          "base_sha256": "cec3270b6191bf982f67ce49688f3ad81fb849862eba3e99c3717aeebea0574d",
+          "base_sha256": "bef3639225f514c0bfe4061d973a4649c2884cd7dc926676baf14d7dc8710a28",
           "relocation_count": 135,
           "comparison_unit": "005f6c60-aa134e75b636",
-          "objdiff_percent": 85.44551
+          "objdiff_percent": 85.45353
         }
       ],
       "status": "different",
-      "objdiff_percent": 85.44551
+      "objdiff_percent": 85.45353
     },
     {
       "name": "NuDynamicLightCreate",
@@ -146901,21 +146901,21 @@
         "src/nu2api/nudlist_pc.c"
       ],
       "target_size": 446,
-      "exact_match": false,
+      "exact_match": true,
       "objects": [
         {
           "unit": "src/nu2api/nudlist_pc.c",
           "base_size": 446,
-          "exact_match": false,
+          "exact_match": true,
           "target_sha256": "7bf3eebf300a5e0ebc5ba576425925b0152d1ecc13cf4cb293afa06d77bc7f46",
-          "base_sha256": "da395065f93747db6ff6dcd727f32c7d14efdda64895f695227b16aa50fd552c",
+          "base_sha256": "7bf3eebf300a5e0ebc5ba576425925b0152d1ecc13cf4cb293afa06d77bc7f46",
           "relocation_count": 16,
           "comparison_unit": "005fdb60-ee83b70acfbb",
-          "objdiff_percent": 96.25926
+          "objdiff_percent": 100.0
         }
       ],
-      "status": "different",
-      "objdiff_percent": 96.25926
+      "status": "exact",
+      "objdiff_percent": 100.0
     },
     {
       "name": "NuDisplayListTintPc",
@@ -146949,21 +146949,21 @@
         "src/nu2api/nudlist_pc.c"
       ],
       "target_size": 216,
-      "exact_match": false,
+      "exact_match": true,
       "objects": [
         {
           "unit": "src/nu2api/nudlist_pc.c",
-          "base_size": 213,
-          "exact_match": false,
+          "base_size": 216,
+          "exact_match": true,
           "target_sha256": "2feb9db1c908f819b9614c5ec72883b7ad075573bd6c25cb08efe2e107b379f1",
-          "base_sha256": "e494678f3377affd7efef694961e1c80a067805282cfc181ef22e21dc85367ac",
+          "base_sha256": "2feb9db1c908f819b9614c5ec72883b7ad075573bd6c25cb08efe2e107b379f1",
           "relocation_count": 4,
           "comparison_unit": "005fdd70-5ba56bf32c65",
-          "objdiff_percent": 90.859375
+          "objdiff_percent": 100.0
         }
       ],
-      "status": "different",
-      "objdiff_percent": 90.859375
+      "status": "exact",
+      "objdiff_percent": 100.0
     },
     {
       "name": "NuDisplayListLightmapPacketPc",
@@ -147021,21 +147021,21 @@
         "src/nu2api/nudlist_pc.c"
       ],
       "target_size": 115,
-      "exact_match": false,
+      "exact_match": true,
       "objects": [
         {
           "unit": "src/nu2api/nudlist_pc.c",
-          "base_size": 113,
-          "exact_match": false,
+          "base_size": 115,
+          "exact_match": true,
           "target_sha256": "008a837a6df280b35ceb0c868159ea18fbd1480ce993e42525a12c7434aca8be",
-          "base_sha256": "dcbc57dc4c0d833ed858246caa067cfa8026c0203c5154dd1de70c422b41092f",
+          "base_sha256": "008a837a6df280b35ceb0c868159ea18fbd1480ce993e42525a12c7434aca8be",
           "relocation_count": 5,
           "comparison_unit": "005fdfd0-f48bfd404fd8",
-          "objdiff_percent": 92.51163
+          "objdiff_percent": 100.0
         }
       ],
-      "status": "different",
-      "objdiff_percent": 92.51163
+      "status": "exact",
+      "objdiff_percent": 100.0
     },
     {
       "name": "NuDisplayListLegacyLightmapOffsetPc",
@@ -147045,21 +147045,21 @@
         "src/nu2api/nudlist_pc.c"
       ],
       "target_size": 121,
-      "exact_match": false,
+      "exact_match": true,
       "objects": [
         {
           "unit": "src/nu2api/nudlist_pc.c",
-          "base_size": 119,
-          "exact_match": false,
+          "base_size": 121,
+          "exact_match": true,
           "target_sha256": "351ed9b41d35b08dd2d8662be0b59d59e1b7b71f1f0dd1b90f53a3749c4bcb24",
-          "base_sha256": "1201055bf08ab7a0c6078df4f5b544209f7933b5e7170e457efc601303f83a11",
+          "base_sha256": "351ed9b41d35b08dd2d8662be0b59d59e1b7b71f1f0dd1b90f53a3749c4bcb24",
           "relocation_count": 5,
           "comparison_unit": "005fe050-57e013da7d4a",
-          "objdiff_percent": 93.14893
+          "objdiff_percent": 100.0
         }
       ],
-      "status": "different",
-      "objdiff_percent": 93.14893
+      "status": "exact",
+      "objdiff_percent": 100.0
     },
     {
       "name": "NuDisplayListPacketAdPc",
@@ -147069,21 +147069,21 @@
         "src/nu2api/nudlist_pc.c"
       ],
       "target_size": 762,
-      "exact_match": false,
+      "exact_match": true,
       "objects": [
         {
           "unit": "src/nu2api/nudlist_pc.c",
-          "base_size": 732,
-          "exact_match": false,
+          "base_size": 762,
+          "exact_match": true,
           "target_sha256": "7b28694017f506acd8be2ed0e2e3bf3899a693309cadb1771f3406cbf744c0de",
-          "base_sha256": "babe2a174ebe1f05d5acf44797b63e0e1da7d0a322ac97db4f18e865f7df2411",
+          "base_sha256": "7b28694017f506acd8be2ed0e2e3bf3899a693309cadb1771f3406cbf744c0de",
           "relocation_count": 18,
           "comparison_unit": "005fe0d0-83fcda18cbe1",
-          "objdiff_percent": 98.454544
+          "objdiff_percent": 100.0
         }
       ],
-      "status": "different",
-      "objdiff_percent": 98.454544
+      "status": "exact",
+      "objdiff_percent": 100.0
     },
     {
       "name": "NuRndrSetFxMtx",
@@ -148725,21 +148725,21 @@
         "src/nu2api/nuprim.c"
       ],
       "target_size": 117,
-      "exact_match": false,
+      "exact_match": true,
       "objects": [
         {
           "unit": "src/nu2api/nuprim.c",
-          "base_size": 88,
-          "exact_match": false,
+          "base_size": 117,
+          "exact_match": true,
           "target_sha256": "46318813f900c4cdfabd0f1f19e07787a88fd4c20c87d57f7af565796e26aacf",
-          "base_sha256": "d72cd72bc7f261f2936e1c153fb6f959ac97aa5eef3262064f1861361c61fd9b",
-          "relocation_count": 3,
+          "base_sha256": "46318813f900c4cdfabd0f1f19e07787a88fd4c20c87d57f7af565796e26aacf",
+          "relocation_count": 2,
           "comparison_unit": "006034b0-2ca76e654321",
-          "objdiff_percent": 41.434784
+          "objdiff_percent": 100.0
         }
       ],
-      "status": "different",
-      "objdiff_percent": 41.434784
+      "status": "exact",
+      "objdiff_percent": 100.0
     },
     {
       "name": "NuDisplayListLinkItems",
@@ -148989,21 +148989,21 @@
         "src/nu2api/nudlist_pc.c"
       ],
       "target_size": 63,
-      "exact_match": false,
+      "exact_match": true,
       "objects": [
         {
           "unit": "src/nu2api/nudlist_pc.c",
           "base_size": 63,
-          "exact_match": false,
+          "exact_match": true,
           "target_sha256": "0fbb99b01e551f0affa13e5cfe0c9b2dacb5c2a4c7ad1217b5437d0dbe960603",
-          "base_sha256": "1ee80dbd0ae89a5b6c425126cf998d87ac3b4c5eeeee9085af3407786009af60",
+          "base_sha256": "0fbb99b01e551f0affa13e5cfe0c9b2dacb5c2a4c7ad1217b5437d0dbe960603",
           "relocation_count": 1,
           "comparison_unit": "00603a20-2d9d458fc596",
-          "objdiff_percent": 85.666664
+          "objdiff_percent": 100.0
         }
       ],
-      "status": "different",
-      "objdiff_percent": 85.666664
+      "status": "exact",
+      "objdiff_percent": 100.0
     },
     {
       "name": "NuDisplayListVertexOffsetsPc",
@@ -149013,21 +149013,21 @@
         "src/nu2api/nudlist_pc.c"
       ],
       "target_size": 49,
-      "exact_match": false,
+      "exact_match": true,
       "objects": [
         {
           "unit": "src/nu2api/nudlist_pc.c",
           "base_size": 49,
-          "exact_match": false,
+          "exact_match": true,
           "target_sha256": "d133e53986c712cd584838bc1423b7a4e68ad12b456d0dd2d8f2001e16d3c925",
-          "base_sha256": "20e0a45c6292d980d8eddf4216e3267788b21c1a7a3621da71806d8e52c542cd",
+          "base_sha256": "d133e53986c712cd584838bc1423b7a4e68ad12b456d0dd2d8f2001e16d3c925",
           "relocation_count": 1,
           "comparison_unit": "00603a60-d1360e85a6f5",
-          "objdiff_percent": 91.666664
+          "objdiff_percent": 100.0
         }
       ],
-      "status": "different",
-      "objdiff_percent": 91.666664
+      "status": "exact",
+      "objdiff_percent": 100.0
     },
     {
       "name": "PostShadowSelectHandlersPc",
@@ -149958,17 +149958,17 @@
       "objects": [
         {
           "unit": "src/nu2api/nuprim.c",
-          "base_size": 578,
+          "base_size": 582,
           "exact_match": false,
           "target_sha256": "83adef71a357ab1a8e9d0a01668e913b32a89528c3a55592fe04e9a05882c0f8",
-          "base_sha256": "5f1efadc01dc6c79e153e21e4e85b8e6fd12993f98b6c8d811291f8b3541ad38",
+          "base_sha256": "9f5b2b749c4fe2d7c3c5937e5235a4060832401b1f57b5d522e81bb7cd7b3966",
           "relocation_count": 15,
           "comparison_unit": "00607590-2b3d2b9fd888",
-          "objdiff_percent": 69.5873
+          "objdiff_percent": 70.67196
         }
       ],
       "status": "different",
-      "objdiff_percent": 69.5873
+      "objdiff_percent": 70.67196
     },
     {
       "name": "DisplayListUpdateRenderStateShadow",
@@ -149978,21 +149978,21 @@
         "src/nu2api/nudlist_pc.c"
       ],
       "target_size": 86,
-      "exact_match": false,
+      "exact_match": true,
       "objects": [
         {
           "unit": "src/nu2api/nudlist_pc.c",
-          "base_size": 79,
-          "exact_match": false,
+          "base_size": 86,
+          "exact_match": true,
           "target_sha256": "637eb56b11250b0ee23266793e5a5117fda46254c4b529f1807e038926756635",
-          "base_sha256": "210472662becf83624759da62ae00cf97332f81a623d2c23d84bac40a7f8104e",
+          "base_sha256": "637eb56b11250b0ee23266793e5a5117fda46254c4b529f1807e038926756635",
           "relocation_count": 2,
           "comparison_unit": "00607820-0e5ec02ec377",
-          "objdiff_percent": 82.40625
+          "objdiff_percent": 100.0
         }
       ],
-      "status": "different",
-      "objdiff_percent": 82.40625
+      "status": "exact",
+      "objdiff_percent": 100.0
     },
     {
       "name": "NuDisplayListDrawGeometryPc",
@@ -155378,21 +155378,21 @@
         "src/legoapi/move.c"
       ],
       "target_size": 169,
-      "exact_match": false,
+      "exact_match": true,
       "objects": [
         {
           "unit": "src/legoapi/move.c",
-          "base_size": 164,
-          "exact_match": false,
+          "base_size": 169,
+          "exact_match": true,
           "target_sha256": "b8ba366a6013448e0d865981d9300330c93ad0bb073edc66d0dce2409cb6c629",
-          "base_sha256": "ca849409efb92e0516908e148c4d96aa3d17de366dda55ce1c5ac15a10784ac0",
+          "base_sha256": "b8ba366a6013448e0d865981d9300330c93ad0bb073edc66d0dce2409cb6c629",
           "relocation_count": 2,
           "comparison_unit": "0062b040-c94ae69a83fc",
-          "objdiff_percent": 95.51724
+          "objdiff_percent": 100.0
         }
       ],
-      "status": "different",
-      "objdiff_percent": 95.51724
+      "status": "exact",
+      "objdiff_percent": 100.0
     },
     {
       "name": "APIObjectCollision",
@@ -156098,21 +156098,21 @@
         "src/gameapi/apiobject.c"
       ],
       "target_size": 59,
-      "exact_match": false,
+      "exact_match": true,
       "objects": [
         {
           "unit": "src/gameapi/apiobject.c",
-          "base_size": 60,
-          "exact_match": false,
+          "base_size": 59,
+          "exact_match": true,
           "target_sha256": "33dad5a5574663d2fc4cd6ab160af33a6567a84c34998672e179e30e30c8fbdb",
-          "base_sha256": "69dba73ec6b6eb1d265a793adda792557fa0b0d9188a5d8b9faabb072429ef35",
+          "base_sha256": "33dad5a5574663d2fc4cd6ab160af33a6567a84c34998672e179e30e30c8fbdb",
           "relocation_count": 0,
           "comparison_unit": "0062e650-0d88d5b71bb6",
-          "objdiff_percent": 99.73684
+          "objdiff_percent": 100.0
         }
       ],
-      "status": "different",
-      "objdiff_percent": 99.73684
+      "status": "exact",
+      "objdiff_percent": 100.0
     },
     {
       "name": "ResetMiniAnimPacket",
@@ -166104,21 +166104,21 @@
         "src/legoapi/debris_engine.c"
       ],
       "target_size": 896,
-      "exact_match": false,
+      "exact_match": true,
       "objects": [
         {
           "unit": "src/legoapi/debris_engine.c",
           "base_size": 896,
-          "exact_match": false,
+          "exact_match": true,
           "target_sha256": "4b863b56212d35101f8b7fde5e531dae6dd10b858660521a5cd744bc50091596",
-          "base_sha256": "f7f19dddf2c43727e6f9af3490675edf5a9d00359ac1895fcc9ed492f3a9ae7f",
+          "base_sha256": "4b863b56212d35101f8b7fde5e531dae6dd10b858660521a5cd744bc50091596",
           "relocation_count": 22,
           "comparison_unit": "006588e0-b1f7440b3fc3",
-          "objdiff_percent": 99.90438
+          "objdiff_percent": 100.0
         }
       ],
-      "status": "different",
-      "objdiff_percent": 99.90438
+      "status": "exact",
+      "objdiff_percent": 100.0
     },
     {
       "name": "DebrisTorusCollisionCheckScaleYFlag",
@@ -173049,14 +173049,14 @@
           "base_size": 873,
           "exact_match": false,
           "target_sha256": "4a0e959a7b3bbfb03159c2e5e1c6698bba60f3edbe3c17ae701bb97504ec81ba",
-          "base_sha256": "ab7f95e8095f9dbbcf204a57fea1c758f1250e98bdd06d1f6743dedc89d5467c",
+          "base_sha256": "8560a75ebf6d276ee7d7db565683ac434ae205110724421d7226deb870efa807",
           "relocation_count": 5,
           "comparison_unit": "0066d720-8ed3afe41fb1",
-          "objdiff_percent": 96.434784
+          "objdiff_percent": 98.478264
         }
       ],
       "status": "different",
-      "objdiff_percent": 96.434784
+      "objdiff_percent": 98.478264
     },
     {
       "name": "TerrDrawPlatPc",
@@ -175839,14 +175839,14 @@
           "base_size": 2337,
           "exact_match": false,
           "target_sha256": "5a60dda834034d82467e355095bc3e51555edfd87d5cffc8419da80bf49f2333",
-          "base_sha256": "d5d69826b89da84c80cbe4bc3cd607c0bac6854f9678ee7aa87eec5e0bc7f211",
+          "base_sha256": "5605b7f409f84ce588d3f0bb391a8566f0c51dc8f7d7265a5dd45cb7d46577b6",
           "relocation_count": 83,
           "comparison_unit": "00683560-f3478d7de94c",
-          "objdiff_percent": 96.56425
+          "objdiff_percent": 99.48789
         }
       ],
       "status": "different",
-      "objdiff_percent": 96.56425
+      "objdiff_percent": 99.48789
     },
     {
       "name": "DebReAlloc",
@@ -526105,12 +526105,12 @@
   "progress": {
     "text_bytes": 3471246,
     "mapped_code_bytes": 2535020,
-    "matched_code_bytes": 676805,
-    "matching_percent": 19.497465751490964,
-    "fuzzy_coverage_percent": 57.82251331447171,
+    "matched_code_bytes": 692310,
+    "matching_percent": 19.944135333537293,
+    "fuzzy_coverage_percent": 57.85364489962299,
     "mapped_functions": 9541,
-    "matched_functions": 5307,
-    "objdiff_fuzzy_percent": 83.609955,
+    "matched_functions": 5358,
+    "objdiff_fuzzy_percent": 83.654884,
     "objdiff_total_code": 2403814,
     "image_bytes": 40067072,
     "mapped_bytes": 4407136,
@@ -526169,16 +526169,16 @@
   "text_coverage": {
     "original_text_bytes": 3471246,
     "mapped_reconstruction_bytes": 2535020,
-    "exact_reconstruction_bytes": 676805,
-    "mapped_not_exact_bytes": 1858215,
+    "exact_reconstruction_bytes": 692310,
+    "mapped_not_exact_bytes": 1842710,
     "excluded_import_glue_bytes": 1194,
     "unclassified_text_bytes": 935032,
     "strict_original_text_denominator_bytes": 3471246,
-    "strict_original_text_exact_percent": 19.497465751490964,
+    "strict_original_text_exact_percent": 19.944135333537293,
     "reconstruction_scope_denominator_bytes": 3470052,
-    "reconstruction_scope_exact_percent": 19.504174577210946,
+    "reconstruction_scope_exact_percent": 19.95099785248175,
     "mapped_scope_denominator_bytes": 2535020,
-    "mapped_scope_exact_percent": 26.698211453953025,
+    "mapped_scope_exact_percent": 27.309843709319846,
     "qualification": "Unclassified text includes undiscovered code and unproven padding; these percentages compare relocated objects, not the linked image."
   },
   "data_members": [
@@ -527321,8 +527321,8 @@
     "inputs": {
       "metadata_sha256": "fe09365da4c355f220d724ca99394fc120b758891b4188d2c49707b6df0894f2",
       "header_path": "src/saga.h",
-      "header_sha256": "ee72f10efd3461ce4e9c31ad2a84164983a1189e53a388064caad0353b18f6e2",
-      "geometry_object_sha256": "ca68494d31eaf3b070242e8e161ebc628b19cdeafee1c2736b568dfaf5d1bed5",
+      "header_sha256": "063a3b201bd9ef72e434d1c327749492fa6e036d6f846f777522a0124473748f",
+      "geometry_object_sha256": "a53177d2ca1065216a6710ce2a2bef1ab97a5992b13be08d01be689e723fc1cf",
       "toolchain_sha256": "b8808088bb2c7eb239785f69c9e464ae8545216d5705fb37216bc0cf926732f3",
       "implementation_sha256": "d6a33be911d095a6d07dccd4443ccbfd6b514fd89fd7e200d9caa1827944e218",
       "headers": {
@@ -527331,24 +527331,24 @@
         "src/debug/support.h": "80189574e359149a1295ee91b01406554255bae645f8124183dbd7741e2540af",
         "src/externals.h": "f45c1c613e898d9c801cacc9d610ba4ad98b747b5dcac8d8812b52ae216242db",
         "src/nu2api/pc_fmv_native.h": "5e8099e12936dadb8dd743c1edba21b8f95d965c630650ed676d5f90e9c1da5b",
-        "src/saga.h": "ee72f10efd3461ce4e9c31ad2a84164983a1189e53a388064caad0353b18f6e2"
+        "src/saga.h": "063a3b201bd9ef72e434d1c327749492fa6e036d6f846f777522a0124473748f"
       },
       "owners": {
         "src/data.cpp": {
           "source_sha256": "568cd8b9f119451377938a48a4a6d7fe6e311e14b664ac375e79e295f0e811d7",
-          "object_sha256": "5c7b59db57f6d5cdffe63979db6fc92a74f5e8f5a89c38991adcb3f1c8cb8cb8"
+          "object_sha256": "e14947683a702b0f08bbeec0a4bd8838d512a373645a6597348020036eded40d"
         },
         "src/nu2api/pc_device.cpp": {
           "source_sha256": "874d33f7cdb00c86bb6414421c624ea46186c5cc161d7964a30d8ecede0e64c6",
-          "object_sha256": "3395d19f71a7535da25a18544c17bd40e3e0e33c39d69996ad5515e57bf30b2f"
+          "object_sha256": "e28c422305f511dc039901e77e053ba51d6bf8c42a496915663b49d14c0833fb"
         },
         "src/nu2api/nurndr.c": {
           "source_sha256": "5bcde35b074fc562b746ee6394cd7c76555f7c47d3769583be59f42d845b6fc1",
-          "object_sha256": "0c7bc4a66db679bb2b57060b0b830f52280ebadfadcb0517c10a587202c4bee2"
+          "object_sha256": "05f826828e021998ef2853cc94e0506cd7d66be7680b281d92252e5ec7eeb9c0"
         },
         "src/nu2api/effect_surface.cpp": {
           "source_sha256": "7630d5aa9dc07c838fd802f07626e3d6d998cdf79c4e9948cbb5505499994c7e",
-          "object_sha256": "90b8b88266ca9596d43e51a67f82fca7142d982c892d49c924804d3fa042a365"
+          "object_sha256": "492d68816a5cf0dbc0d78e75a0fff4c862d937d5d0a15776d143f20f390bf889"
         }
       }
     },
