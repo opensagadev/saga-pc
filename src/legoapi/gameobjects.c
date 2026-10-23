@@ -206,23 +206,99 @@ __declspec(noinline) void __cdecl FindAnglesZX(NUVEC *normal, u16 *x_rotation, u
 }
 
 void __cdecl GameObjectRotation(GAMEOBJECT *object, i32 mode) {
-    PLAYERCHARACTERCONFIG_PC *game = object->character_data->game_character;
+    PLAYERCHARACTERCONFIG_PC *game;
     u16 x;
-    u32 flags = game->flags_090;
     u16 z;
+    u32 flags;
     i32 magnet;
     i32 sliding;
     i32 grapple;
     i32 alignment = 0;
     i32 reflection;
+    NUVEC direction;
 
-    if ((flags & 0x200000) != 0) {
-        STUBBED_NAMED("GameObjectRotation: choose vehicle suspension offsets, query four terrain points, update "
-                      "suspension springs, and reconstruct suspension normal (PC terrain helper at 0x5506f0)");
+    if ((object->character_data->game_character->flags_090 & 0x200000) != 0) {
+        NUVEC normal;
+        NUVEC corner;
+        NUVEC next;
+        NUVEC after;
+        NUVEC first_edge;
+        NUVEC second_edge;
+        NUVEC points[4];
+        const NUVEC *offsets;
+        f32 drop = object->position.y - object->start_position.y;
+        f32 rate = drop / FRAMETIME;
+        f32 height;
+        i32 index;
+        if (object->id == GameObjectRotationBuggyId) {
+            offsets = GAMEOBJECT_ROTATION_BUGGY_OFFSETS;
+        } else if (object->id == GameObjectRotationRadioCarId) {
+            offsets = GAMEOBJECT_ROTATION_RADIOCAR_OFFSETS;
+        } else if (object->id == GameObjectRotationPoliceCarId) {
+            offsets = GAMEOBJECT_ROTATION_POLICECAR_OFFSETS;
+        } else if (object->id == GameObjectRotationMowerId) {
+            offsets = GAMEOBJECT_ROTATION_MOWER_OFFSETS;
+        } else {
+            offsets = GAMEOBJECT_ROTATION_DEFAULT_OFFSETS;
+        }
+        for (index = 0; index < 4; ++index) {
+            NuVecRotateY(&points[index], (NUVEC *)&offsets[index], object->field_0x276);
+            NuVecAdd(&points[index], &points[index], &object->lower_position);
+            height = GameShadow(NULL, &points[index], 5.0f, -1);
+            if (height == GameObjectNearFloorNoFloorHeight) {
+                object->suspension[index].height = object->lower_position.y;
+                object->suspension[index].velocity = drop / FRAMETIME;
+            } else {
+                object->suspension[index].height = drop + object->suspension[index].height;
+                object->suspension[index].velocity = (f32)(FRAMETIME * -5.0 + object->suspension[index].velocity);
+                object->suspension[index].height += object->suspension[index].velocity * FRAMETIME;
+                if (object->suspension[index].height < height) {
+                    object->suspension[index].height = height;
+                    object->suspension[index].velocity = rate;
+                }
+                height = object->lower_position.y - object->bounds_radius * 2.0f;
+                if (object->suspension[index].height < height) {
+                    object->suspension[index].height = height;
+                    object->suspension[index].velocity = rate;
+                } else {
+                    height = object->bounds_radius * 3.0 + object->lower_position.y;
+                    if (object->suspension[index].height > height) {
+                        object->suspension[index].height = height;
+                        object->suspension[index].velocity = rate;
+                    }
+                }
+            }
+            corner.x = points[index].x;
+            corner.y = object->suspension[index].height;
+            corner.z = points[index].z;
+        }
+        normal = v000;
+        for (index = 0; index < 4;) {
+            i32 next_index = (index + 1) % 4;
+            i32 after_index = (next_index + 1) % 4;
+            corner.x = points[index].x;
+            corner.y = object->suspension[index].height;
+            corner.z = points[index].z;
+            next.x = points[next_index].x;
+            next.y = object->suspension[next_index].height;
+            next.z = points[next_index].z;
+            after.x = points[after_index].x;
+            after.y = object->suspension[after_index].height;
+            after.z = points[after_index].z;
+            NuVecSub(&first_edge, &next, &corner);
+            NuVecSub(&second_edge, &after, &corner);
+            NuVecCross(&first_edge, &first_edge, &second_edge);
+            NuVecAdd(&normal, &normal, &first_edge);
+            index++;
+        }
+        NuVecScale(&normal, &normal, 0.25f);
+        if (normal.y > 0.0f) {
+            NuVecNorm(&object->suspension_normal, &normal);
+        }
     }
 
     if (0 == ((object->flags_1fc & 4))) {
-        if (0 != ((flags & 0x200000))) {
+        if (0 != ((object->character_data->game_character->flags_090 & 0x200000))) {
             FindAnglesZX(&object->suspension_normal, &object->field_1056, &object->field_1058);
         } else if (object->surface_normal.x != 0.0f || object->surface_normal.y != 1.0f ||
                    object->surface_normal.z != 0.0f) {
@@ -233,29 +309,29 @@ void __cdecl GameObjectRotation(GAMEOBJECT *object, i32 mode) {
         }
     }
 
-    temp_xrot = object->field_1058;
-    temp_zrot = object->field_1056;
     x = object->field_1056;
+    temp_zrot = x;
     z = object->field_1058;
+    temp_xrot = z;
     game = object->character_data->game_character;
     flags = game->flags_090;
-    sliding = (0x200 & flags) != 0 && object->character_context == 0x33;
-    magnet = !sliding && (flags & 0x10000000) != 0 && object->character_context == 0x44;
-    grapple = !sliding && object->character_context == 0x46 && 0 == object->field_7a3;
+    sliding = (flags & 0x200) != 0 && object->character_context == 0x33;
+    magnet = (flags & 0x10000000) != 0 && object->character_context == 0x44;
+    grapple = object->character_context == 0x46 && object->field_7b3 == 0;
 
     if (object->flags_107a == 2 &&
         ((object->character_data->model_flags & 0x100) != 0 || (flags & 0x200000) != 0 || sliding)) {
         f32 hover =
             (object->character_data->model_flags & 0x2000) != 0 ? GetVehicleHoverHeight(object, NULL) : game->field_028;
         if (hover > 0.0f) {
-            alignment = 2;
-            if (!(GameObjectNearFloorNoFloorHeight == ((f64)object->floor_height))) {
+            if (GameObjectNearFloorNoFloorHeight != object->floor_height) {
+                f32 limit = 2.5 * hover;
                 f32 height = object->collision_min.y - object->floor_height;
                 f32 fraction;
-                if (hover > height) {
+                if (height < hover) {
                     fraction = 1.0f;
-                } else if (2.5f * hover > height) {
-                    fraction = 1.0f - (height - hover) / (2.5f * hover - hover);
+                } else if (limit > height) {
+                    fraction = 1.0f - (height - hover) / (limit - hover);
                 } else {
                     fraction = 0.0f;
                 }
@@ -265,25 +341,27 @@ void __cdecl GameObjectRotation(GAMEOBJECT *object, i32 mode) {
                 x = 0;
                 z = 0;
             }
-        } else {
+            alignment = 2;
+        } else if (object->field_281 != 0 || (object->character_data->game_character->flags_090 & 0x200000) != 0 ||
+                   sliding) {
             alignment = 1;
-            if (object->field_281 == 0 && (flags & 0x200000) == 0 && !sliding) {
-                alignment = 0;
-                if ((object->character_data->model_flags & 0x100) != 0 && 0.0f == game->field_028 &&
-                    (flags & 0x100) != 0 && (f64)object->floor_height != GameObjectNearFloorNoFloorHeight) {
-                    alignment = object->bounds_half_height > object->collision_min.y - object->floor_height;
-                }
-            }
+        } else if ((object->character_data->model_flags & 0x100) != 0 &&
+                   0.0f == object->character_data->game_character->field_028 &&
+                   (object->character_data->game_character->flags_090 & 0x100) != 0 &&
+                   GameObjectNearFloorNoFloorHeight != object->floor_height &&
+                   object->bounds_half_height > object->collision_min.y - object->floor_height) {
+            alignment = 1;
         }
 
         if (object->id == GameObjectRotationAtstId && VehicleArea == 0) {
-            x = (u16)((f32)RotDiff(0, temp_zrot) * 0.5f);
-            z = (u16)((f32)RotDiff(0, temp_xrot) * 0.5f);
+            x = (u16)((f32)RotDiff(0, temp_zrot) * 0.5);
+            z = (u16)((f32)RotDiff(0, temp_xrot) * 0.5);
         }
     }
 
-    reflection = 0 != (0x2000 & object->character_data->model_flags) && game->field_028 > 0.0f &&
-                 (object->field_283 == 0x10 || object->field_283 == 7) && object->field_280 == 0xff;
+    reflection = 0 != (0x2000 & object->character_data->model_flags) &&
+                 object->character_data->game_character->field_028 > 0.0f &&
+                 (object->field_283 == 7 || object->field_283 == 0x10) && object->field_280 == 0xff;
 
     if (mode == 1) {
         object->field_1052 = x;
@@ -291,25 +369,25 @@ void __cdecl GameObjectRotation(GAMEOBJECT *object, i32 mode) {
         if (alignment == 0) {
             object->pitch_angle = object->roll_angle = 0;
         } else if (magnet) {
-            if ((u16)(object->field_7aa - 5) <= 1) {
-                object->pitch_angle = object->roll_angle = 0;
+            if (object->field_7aa == 6 || object->field_7aa == 5) {
+                object->pitch_angle = 0;
+                object->roll_angle = 0;
             } else {
                 object->pitch_angle = object->field_7a4;
                 object->roll_angle = object->field_7a8;
             }
         } else if (grapple) {
             GRAPPLE_ROTATION_PC *hook = (GRAPPLE_ROTATION_PC *)object->grapple;
-            NUVEC direction;
             NuVecSub(&direction, &hook->hook_position, &object->collision_position);
             FindAnglesZX(&direction, &object->pitch_angle, &object->roll_angle);
         } else if (reflection) {
-            object->pitch_angle = object->reflection_x;
-            object->roll_angle = object->reflection_z;
+            object->pitch_angle = object->field_105c;
+            object->roll_angle = object->field_105e;
         } else if (!(alignment == 2 || object->surface_normal.y > NuTrigTable[0x3000])) {
             object->pitch_angle = object->roll_angle = 0;
         } else {
-            object->roll_angle = z;
             object->pitch_angle = x;
+            object->roll_angle = z;
         }
     } else if (mode == 2) {
         if (object->field_1052 != object->field_1056) {
@@ -318,40 +396,40 @@ void __cdecl GameObjectRotation(GAMEOBJECT *object, i32 mode) {
         if (object->field_1054 != object->field_1058) {
             object->field_1054 = SeekRot(object->field_1054, z, 8.0f);
         }
-        if (object->flags_107a != 2) {
-            return;
-        }
-
-        if (magnet) {
-            if ((u16)(object->field_7aa - 5) > 1) {
-                x = object->field_7a4;
-                z = object->field_7a8;
+        if (object->flags_107a == 2) {
+            f32 speed;
+            u16 target_x, target_z;
+            if (magnet) {
+                if (object->field_7aa == 6 || object->field_7aa == 5) {
+                    object->pitch_angle = 0;
+                    target_z = 0;
+                    object->roll_angle = 0;
+                    target_x = 0;
+                } else {
+                    target_x = object->field_7a4;
+                    target_z = object->field_7a8;
+                }
+            } else if (grapple) {
+                GRAPPLE_ROTATION_PC *hook = (GRAPPLE_ROTATION_PC *)object->grapple;
+                NuVecSub(&direction, &hook->hook_position, &object->collision_position);
+                FindAnglesZX(&direction, &target_x, &target_z);
+            } else if (reflection) {
+                target_x = object->field_105c;
+                target_z = object->field_105e;
+            } else if (alignment == 2 || (alignment != 0 && object->surface_normal.y > NuTrigTable[0x3000])) {
+                target_x = x;
+                target_z = z;
             } else {
-                object->pitch_angle = 0;
-                object->roll_angle = 0;
-                x = 0;
-                z = 0;
+                target_z = 0;
+                target_x = 0;
             }
-        } else if (grapple) {
-            NUVEC direction;
-            GRAPPLE_ROTATION_PC *hook = (GRAPPLE_ROTATION_PC *)object->grapple;
-            NuVecSub(&direction, &hook->hook_position, &object->collision_position);
-            FindAnglesZX(&direction, &x, &z);
-        } else if (reflection) {
-            x = object->reflection_x;
-            z = object->reflection_z;
-        } else if (alignment != 2 && (alignment == 0 || object->surface_normal.y <= NuTrigTable[0x3000])) {
-            x = 0;
-            z = 0;
-        }
 
-        {
-            f32 speed = object->id == GameObjectRotationAtstId && VehicleArea == 0 ? 3.0f : 8.0f;
-            if (x != object->pitch_angle) {
-                object->pitch_angle = SeekRot(object->pitch_angle, x, speed);
+            speed = object->id == GameObjectRotationAtstId && VehicleArea == 0 ? 3.0f : 8.0f;
+            if (object->pitch_angle != target_x) {
+                object->pitch_angle = SeekRot(object->pitch_angle, target_x, speed);
             }
-            if (object->roll_angle != z) {
-                object->roll_angle = SeekRot(object->roll_angle, z, speed);
+            if (object->roll_angle != target_z) {
+                object->roll_angle = SeekRot(object->roll_angle, target_z, speed);
             }
         }
     }
@@ -3778,7 +3856,7 @@ STATIC_ASSERT(offsetof(struct shadow_platform_list_pc_s, entries) == 0x18);
  * No new aggregate/type claim in this private source access view.
  */
 
-f32 __cdecl GameShadow(GAMEOBJECT *object, NUVEC *position, f32 probe, i32 mask) {
+__declspec(noinline) f32 __cdecl GameShadow(GAMEOBJECT *object, NUVEC *position, f32 probe, i32 mask) {
     i32 handles[16];
     i32 handle_count = 0;
     i32 i;
@@ -4276,6 +4354,10 @@ STATIC_ASSERT(offsetof(INTERACTION_ANTINODE_VIEW_PC, excluded_character_types) =
 #define INTERACTION_PACKET(p) ((INTERACTION_PACKET_VIEW_PC *)(p))
 #define INTERACTION_OBJECT(p) ((INTERACTION_OBJECT_VIEW_PC *)(p))
 #define INTERACTION_GEOMETRY(p) ((GAMEOBJECT *)(p))
+// Copies the antinode timer and its 0x8000 flag from one creature's packet to the other's.
+#define INTERACTION_COPY_ANTINODE(source, target)                                                                      \
+    INTERACTION_PACKET((target)->ai)->antinode_timer = INTERACTION_PACKET((source)->ai)->antinode_timer;               \
+    (target)->ai->flags ^= ((source)->ai->flags ^ (target)->ai->flags) & 0x8000
 extern f32 antinode_time;
 typedef void(__cdecl *CHECK_ANTINODE_FN_PC)(APIOBJECT_PC *, AIANTINODE_PC *, NUVEC *, f32);
 /* The genuine callback definitions and initializer remain in the original aisys owner. */
@@ -4314,28 +4396,24 @@ void __cdecl GameCreatureInteraction2D(AISYS_PC *system, i32 object_count, APIOB
                                        f32 delta_time) {
     i32 index, first_index, second_index, first_fixed, second_fixed;
     APIOBJECT_PC *first, *second;
-    AIPACKET_PC *first_packet, *second_packet, *source_packet, *target_packet;
     NUVEC difference;
-    f32 timer, radius, squared_distance, first_timer, second_timer;
-    u16 first_priority, second_priority;
+    f32 radius, minimum;
     for (index = 0; index < object_count; ++index) {
-        timer = INTERACTION_PACKET(objects[index]->ai)->antinode_timer - delta_time;
-        INTERACTION_PACKET(objects[index]->ai)->antinode_timer = timer;
-        if (timer < 0.0f)
-            INTERACTION_PACKET(objects[index]->ai)->antinode_timer = 0.0f;
+        first = objects[index];
+        INTERACTION_PACKET(first->ai)->antinode_timer -= delta_time;
+        if (INTERACTION_PACKET(first->ai)->antinode_timer < 0.0f)
+            INTERACTION_PACKET(first->ai)->antinode_timer = 0.0f;
     }
     for (first_index = 0; first_index < object_count - 1; ++first_index) {
         first = objects[first_index];
         for (second_index = first_index + 1; second_index < object_count; ++second_index) {
             second = objects[second_index];
-            first_packet = first->ai;
-            second_packet = second->ai;
-            radius = first_packet->mover_height + second_packet->mover_height;
-            difference.x = first_packet->movement_position.x - second_packet->movement_position.x;
-            if (difference.x > radius || difference.x < -radius)
+            radius = first->ai->mover_height + second->ai->mover_height;
+            difference.x = first->ai->movement_position.x - second->ai->movement_position.x;
+            if (radius < difference.x || (minimum = -radius) > difference.x)
                 continue;
-            difference.z = first_packet->movement_position.z - second_packet->movement_position.z;
-            if (difference.z > radius || difference.z < -radius)
+            difference.z = first->ai->movement_position.z - second->ai->movement_position.z;
+            if (difference.z > radius || difference.z < minimum)
                 continue;
             if (INTERACTION_GEOMETRY(first)->collision_min.y > INTERACTION_GEOMETRY(second)->collision_max.y ||
                 INTERACTION_GEOMETRY(second)->collision_min.y > INTERACTION_GEOMETRY(first)->collision_max.y)
@@ -4343,70 +4421,60 @@ void __cdecl GameCreatureInteraction2D(AISYS_PC *system, i32 object_count, APIOB
             if (INTERACTION_OBJECT(first)->collision_link == second ||
                 INTERACTION_OBJECT(second)->collision_link == first)
                 continue;
-            first_fixed = immovable != NULL ? immovable[first_index] : 0;
-            second_fixed = immovable != NULL ? immovable[second_index] : 0;
+            if (immovable != NULL) {
+                first_fixed = immovable[first_index];
+                second_fixed = immovable[second_index];
+            } else {
+                first_fixed = 0;
+                second_fixed = 0;
+            }
             if (first->flags_low & 0x80)
                 first_fixed = 1;
             if (second->flags_low & 0x80)
                 second_fixed = 1;
-            first_priority = INTERACTION_OBJECT(first)->priority;
-            second_priority = INTERACTION_OBJECT(second)->priority;
-            if (first_priority > second_priority) {
+            if (INTERACTION_OBJECT(second)->priority < INTERACTION_OBJECT(first)->priority) {
                 first_fixed = 1;
                 if (second_fixed)
                     continue;
-            } else if (first_priority < second_priority) {
+            } else if (INTERACTION_OBJECT(second)->priority > INTERACTION_OBJECT(first)->priority) {
                 second_fixed = 1;
                 if (first_fixed)
                     continue;
             } else {
                 continue;
             }
-            squared_distance = difference.x * difference.x + difference.z * difference.z;
-            if (!(NuFsqrt(squared_distance) < radius))
+            if (!(NuFsqrt(difference.x * difference.x + difference.z * difference.z) < radius))
                 continue;
             difference.y = 0.0f;
             if (first_fixed) {
-                if (first_priority > INTERACTION_OBJECT(second)->resolved_priority) {
-                    INTERACTION_OBJECT(second)->resolved_priority = first_priority;
+                if (INTERACTION_OBJECT(first)->priority > INTERACTION_OBJECT(second)->resolved_priority) {
+                    INTERACTION_OBJECT(second)->resolved_priority = INTERACTION_OBJECT(first)->priority;
                     difference.x = -difference.x;
                     difference.z = -difference.z;
                     CreatureInteractionOrbitPc(second, &difference, first, radius);
                 }
             } else if (second_fixed) {
-                if (second_priority > INTERACTION_OBJECT(first)->resolved_priority) {
-                    INTERACTION_OBJECT(first)->resolved_priority = second_priority;
+                if (INTERACTION_OBJECT(second)->priority > INTERACTION_OBJECT(first)->resolved_priority) {
+                    INTERACTION_OBJECT(first)->resolved_priority = INTERACTION_OBJECT(second)->priority;
                     CreatureInteractionOrbitPc(first, &difference, second, radius);
                 }
             } else {
-                INTERACTION_OBJECT(first)->resolved_priority = second_priority;
+                INTERACTION_OBJECT(first)->resolved_priority = INTERACTION_OBJECT(second)->priority;
                 difference.x = -difference.x;
                 difference.z = -difference.z;
                 CreatureInteractionOrbitPc(second, &difference, first, radius);
             }
-            first_packet = first->ai;
-            second_packet = second->ai;
-            first_timer = INTERACTION_PACKET(first_packet)->antinode_timer;
-            second_timer = INTERACTION_PACKET(second_packet)->antinode_timer;
-            source_packet = target_packet = NULL;
-            if (first_timer > antinode_time && second_timer > antinode_time) {
-                if (first_timer > second_timer) {
-                    source_packet = first_packet;
-                    target_packet = second_packet;
+            if (INTERACTION_PACKET(first->ai)->antinode_timer > antinode_time &&
+                INTERACTION_PACKET(second->ai)->antinode_timer > antinode_time) {
+                if (INTERACTION_PACKET(first->ai)->antinode_timer > INTERACTION_PACKET(second->ai)->antinode_timer) {
+                    INTERACTION_COPY_ANTINODE(first, second);
                 } else {
-                    source_packet = second_packet;
-                    target_packet = first_packet;
+                    INTERACTION_COPY_ANTINODE(second, first);
                 }
-            } else if (second_timer > antinode_time) {
-                source_packet = second_packet;
-                target_packet = first_packet;
-            } else if (first_timer > 0.0f) {
-                source_packet = first_packet;
-                target_packet = second_packet;
-            }
-            if (source_packet != NULL) {
-                INTERACTION_PACKET(target_packet)->antinode_timer = INTERACTION_PACKET(source_packet)->antinode_timer;
-                target_packet->flags ^= (source_packet->flags ^ target_packet->flags) & 0x8000;
+            } else if (INTERACTION_PACKET(second->ai)->antinode_timer > antinode_time) {
+                INTERACTION_COPY_ANTINODE(second, first);
+            } else if (INTERACTION_PACKET(first->ai)->antinode_timer > 0.0f) {
+                INTERACTION_COPY_ANTINODE(first, second);
             }
             if ((first->motion_flags ^ second->motion_flags) & 1) {
                 first->ai->flags |= 0x4000;
