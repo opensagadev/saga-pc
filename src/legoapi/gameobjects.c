@@ -527,7 +527,7 @@ __declspec(noinline) GAMEOBJECT *__cdecl FindGameObject(i32 character_id, u32 re
     return NULL;
 }
 
-GAMEOBJECT *__cdecl GetNamedGameObject(void *sys, char *name) {
+__declspec(noinline) GAMEOBJECT *__cdecl GetNamedGameObject(void *sys, char *name) {
     APIOBJECT_PC *result;
 
     if (GetNamedGameObjectCallback == NULL) {
@@ -2931,21 +2931,21 @@ void DeactivateCharacter(char *name) {
 
 GAMEOBJECT *__cdecl ActivateCharacter(char *name, NUVEC *position, i32 angle) {
     GAMEOBJECT *object;
-    if (Mission_Active(NULL) != NULL || name == NULL)
+    if (Mission_Active(NULL) != NULL)
+        return NULL;
+    if (name == NULL)
         return NULL;
     object = GetNamedGameObject(WORLD->ai_sys, name);
     if (object == NULL || (object->flags_1fc_word & 0x1000) != 0)
         return NULL;
     if (FreePlay != 0 && (object->flags_1f8 & 0x400) == 0)
         return NULL;
-    if (object->ai_packet.creature_index != 0xff) {
-        ResetAICreature(object, WORLD->ai_sys);
-    } else {
+    if (object->ai_packet.creature_index == 0xff) {
         object->flags_1fc_word |= 0x1000;
         AIScriptSetBaseScriptStateByName(&object->ai_packet.script_processor, "Base");
         if (position != NULL) {
             object->position = *position;
-            object->field_0x276 = object->facing_angle = object->movement_facing_angle = (u16)angle;
+            object->movement_facing_angle = object->facing_angle = object->field_0x276 = (u16)angle;
             AISysGetCharacterPathPos(WORLD->ai_sys, (APIOBJECT_PC *)object, &object->ai_packet, 0xff, 1);
             object->initial_position = object->position;
             object->collision_position = object->position;
@@ -2959,6 +2959,8 @@ GAMEOBJECT *__cdecl ActivateCharacter(char *name, NUVEC *position, i32 angle) {
             InitSurfaceInfo(object);
             SetObjOnSurface(object, 0);
         }
+    } else {
+        ResetAICreature(object, WORLD->ai_sys);
     }
     LightGameObject(object, WORLD->rtl_set);
     return object;
@@ -4415,14 +4417,16 @@ STATIC_ASSERT(offsetof(GAME_ANTI_NODE_DATA_PC, angle) == 0x20);
 STATIC_ASSERT(offsetof(GAME_ANTI_NODE_DATA_PC, shape) == 0x22);
 STATIC_ASSERT(offsetof(GAME_ANTI_NODE_DATA_PC, mode) == 0x23);
 
+/* Bitwise absolute value through a float temporary, as retail does. */
+#define GAME_ANTI_NODE_ABS(destination, expression)                                                                    \
+    (temporary = (expression), *(u32 *)&(destination) = *(u32 *)&temporary & 0x7fffffff)
+
 void __cdecl GameAntiNodeData_Init(void *opaque_data, NUSPECIALHANDLE *special) {
     GAME_ANTI_NODE_DATA_PC *data = (GAME_ANTI_NODE_DATA_PC *)opaque_data;
     NUVEC minimum, maximum;
     NUMTX *matrix;
-    union {
-        f32 value;
-        u32 bits;
-    } x, z, difference, y;
+    f32 x, z, difference, y;
+    f32 temporary;
     if (data != NULL) {
         memset(data, 0, sizeof(*data));
         if (special != NULL && NuSpecialExistsFn(special)) {
@@ -4430,25 +4434,24 @@ void __cdecl GameAntiNodeData_Init(void *opaque_data, NUSPECIALHANDLE *special) 
             matrix = NuSpecialGetMtx(special);
             NuVecMtxTransform(&minimum, &minimum, matrix);
             NuVecMtxTransform(&maximum, &maximum, matrix);
-            x.value = (maximum.x - minimum.x) * 0.5;
-            x.bits &= 0x7fffffff;
-            z.value = (maximum.z - minimum.z) * 0.5;
-            z.bits &= 0x7fffffff;
-            difference.value = x.value - z.value;
-            difference.bits &= 0x7fffffff;
-            if (difference.value < 0.01f) {
-                data->radius = x.value;
+            GAME_ANTI_NODE_ABS(x, (maximum.x - minimum.x) * 0.5);
+            GAME_ANTI_NODE_ABS(z, (maximum.z - minimum.z) * 0.5);
+            GAME_ANTI_NODE_ABS(difference, x - z);
+            if (difference < 0.01f) {
                 data->shape = 0;
+                data->radius = x;
             } else {
-                data->radius = x.value > z.value ? x.value : z.value;
                 data->shape = 1;
+                if (x > z)
+                    data->radius = x;
+                else
+                    data->radius = z;
             }
-            data->extent_x = x.value;
-            data->extent_z = z.value;
-            y.value = (maximum.y - minimum.y) * 0.5;
-            y.bits &= 0x7fffffff;
-            data->max_y = y.value;
-            data->min_y = -data->max_y;
+            data->extent_x = x;
+            data->extent_z = z;
+            GAME_ANTI_NODE_ABS(y, (maximum.y - minimum.y) * 0.5);
+            data->min_y = -y;
+            data->max_y = y;
         }
     }
 }
