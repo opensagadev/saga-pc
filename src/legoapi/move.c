@@ -368,7 +368,9 @@ static i32 ForcePushEligible(GAMEOBJECT *candidate, GAMEOBJECT *object, GAMEOBJE
         (candidate->character_data->model_flags & 0x4002010) != 0x10)
         return 0;
     character = candidate->character_data->game_character;
-    return (character->flags_090 & 0x40) == 0 && (character->flags_094 & 0x200) == 0;
+    if ((character->flags_090 & 0x40) != 0)
+        return 0;
+    return ((character->flags_094 >> 9) & 1) == 0;
 }
 
 __declspec(noinline) i32 __cdecl FaceOpponent(GAMEOBJECT *object, NUVEC *position) {
@@ -376,19 +378,16 @@ __declspec(noinline) i32 __cdecl FaceOpponent(GAMEOBJECT *object, NUVEC *positio
     if (position == NULL) {
         target = object->force_target;
         if (target != NULL) {
-            if ((target->flags_1fc_word & 1) == 0 || (target->flags_1fc_word & 0x1000) == 0 || target->dead != 0)
-                return 0;
-            position = &target->position;
-        } else {
-            if (object->blowup_target == NULL)
-                return 0;
+            if ((target->flags_1fc_word & 1) != 0 && (target->flags_1fc_word & 0x1000) != 0 && target->dead == 0)
+                position = &target->position;
+        } else if (object->blowup_target != NULL)
             position = &object->blowup_target->mid_position;
-        }
-        if (position == NULL)
-            return 0;
     }
-    object->movement_facing_angle = NuAtan2D(position->x - object->position.x, position->z - object->position.z);
-    return 1;
+    if (position != NULL) {
+        object->movement_facing_angle = NuAtan2D(position->x - object->position.x, position->z - object->position.z);
+        return 1;
+    }
+    return 0;
 }
 
 i32 __cdecl ForcePushed_SetTargetMom(GAMEOBJECT *object, f32 *seek_rate) {
@@ -4710,7 +4709,9 @@ void __cdecl Move_CANNON(GAMEOBJECT *object) {
 i32 __cdecl CanObjSlide(GAMEOBJECT *object, i32 unused_surface) {
     i8 surface = (i8)object->jump_animation_state;
     (void)unused_surface;
-    if ((u8)surface >= 32 || (TerSurface[surface].flags & 0x400) == 0)
+    if (surface < 0)
+        return 0;
+    if (surface >= 32 || (TerSurface[surface].flags & 0x400) == 0)
         return 0;
     if (surface == 5 && CanMagnetClimbFn != NULL && CanMagnetClimbFn(object) != 0)
         return 0;
