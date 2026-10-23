@@ -2222,43 +2222,32 @@ extern "C" {
         return 1;
     }
     i32 TerrShapeSideStep(NUVEC *, NUVEC *, u8 *) {
-        enum TERRAIN_SIDE_STEP_RESULT {
-            TERRAIN_SIDE_STEP_HANDLED = 0,
-            TERRAIN_SIDE_STEP_USE_STANDARD_IMPACT = 1,
-        };
-
-        const f32 kCylinderFloorThreshold = 0.5f;
-        const f32 kMaximumWallNormalY = 0.707f;
-        const f32 kMinimumWallNormalY = -0.8f;
-        const f32 kMovementPushScale = 0.15f;
-        const f32 kShapePushScale = 0.05f;
-
-        i32 result = TERRAIN_SIDE_STEP_USE_STANDARD_IMPACT;
         TerrainQuery_s *query = (TerrainQuery_s *)TerI;
-        const u8 hit_type = query->hit_type;
-        if (hit_type == TERRAIN_HIT_TYPE_NONE) {
-            return result;
-        }
-
-        i32 push_from_collision_normal;
-        switch (hit_type) {
+        i32 push;
+        switch (query->hit_type) {
+            case TERRAIN_HIT_TYPE_NONE:
+                return 1;
             case TERRAIN_HIT_TYPE_CYLINDER:
             case TERRAIN_HIT_TYPE_VERTEX:
-                push_from_collision_normal = kCylinderFloorThreshold <= query->impact_normal.y;
+                if (query->impact_normal.y < 0.5f) {
+                    push = 0;
+                } else {
+                    push = 1;
+                }
                 break;
             default:
-                if (query->impact_normal.y >= kMaximumWallNormalY || query->impact_normal.y < kMinimumWallNormalY) {
-                    return TERRAIN_SIDE_STEP_USE_STANDARD_IMPACT;
+                if (query->impact_normal.y >= 0.707f || query->impact_normal.y < -0.8f) {
+                    return 1;
                 }
-                push_from_collision_normal = false;
+                push = 0;
                 break;
         }
 
-        const f32 shape_angle = TerrShape->angle;
+        TERRAIN_AXIS_FREEDOM_SHAPE *shape = TerrShape;
         NUVEC axis;
-        axis.x = NuTrigTable[static_cast<i32>(shape_angle + 16384.0f) >> 1 & 0x7fff];
+        axis.x = NuTrigTable[static_cast<i32>(shape->angle + 16384.0) >> 1 & 0x7fff];
         axis.y = 0.0f;
-        axis.z = -NuTrigTable[static_cast<i32>(shape_angle) >> 1 & 0x7fff];
+        axis.z = -NuTrigTable[static_cast<i32>(shape->angle) >> 1 & 0x7fff];
 
         query->start_position.x = query->position.x;
         query->start_position.y = query->position.y;
@@ -2268,26 +2257,28 @@ extern "C" {
         query->start_movement.z = query->movement.z;
         query->movement.y = 0.0f;
 
-        if (push_from_collision_normal == 1) {
-            const f32 push_x = query->movement_normal.x * TerrShape->radius;
-            const f32 push_z = query->movement_normal.z * TerrShape->radius;
-            query->movement.x = push_x * kMovementPushScale;
-            query->movement.z = push_z * kMovementPushScale;
-            TerrShape->offset.x += push_x * kShapePushScale;
-            TerrShape->offset.z += push_z * kShapePushScale;
+        if (push == 1) {
+            query->movement.x = query->movement_normal.x * shape->radius * (f64)0.15f;
+            query->movement.z = query->movement_normal.z * shape->radius * (f64)0.15f;
+            shape->offset.x += query->movement_normal.x * shape->radius * (f64)0.05f;
+            shape->offset.z += query->movement_normal.z * shape->radius * (f64)0.05f;
         } else {
             f32 axis_impact = query->impact_normal.x * axis.x + query->impact_normal.z * axis.z;
             if (axis_impact == 0.0f) {
-                axis_impact = (TerrShape->offset.x * axis.x + TerrShape->offset.z * axis.z) / TerrShape->radius;
+                axis_impact = (shape->offset.x * axis.x + shape->offset.z * axis.z) / shape->radius;
                 if (axis_impact == 0.0f) {
-                    return TERRAIN_SIDE_STEP_USE_STANDARD_IMPACT;
+                    return 1;
                 }
             }
-
-            const f32 signed_distance = axis_impact < 0.0f ? -NuFsqrt(-axis_impact) : NuFsqrt(axis_impact);
+            if (axis_impact < 0.0f) {
+                axis_impact = -NuFsqrt(-axis_impact);
+            } else {
+                axis_impact = NuFsqrt(axis_impact);
+            }
+            shape = TerrShape;
             query = (TerrainQuery_s *)TerI;
-            query->movement.x = axis.x * signed_distance * TerrShape->radius + TerrShape->offset.x;
-            query->movement.z = axis.z * signed_distance * TerrShape->radius + TerrShape->offset.z;
+            query->movement.x = axis_impact * axis.x * shape->radius + shape->offset.x;
+            query->movement.z = axis_impact * axis.z * shape->radius + shape->offset.z;
         }
 
         u8 side_step_hit_flags[2];
@@ -2298,14 +2289,14 @@ extern "C" {
             TerrainImpactNorm();
             TerrainImpact(&impact_result, &impact_result, side_step_hit_flags);
 
-            --TerrShapeAdjCnt;
-            query = (TerrainQuery_s *)TerI;
-        } while (TerrShapeAdjCnt > 0 && query->hit_type != TERRAIN_HIT_TYPE_NONE);
+            TerrShapeAdjCnt--;
+        } while (TerrShapeAdjCnt > 0 && ((TerrainQuery_s *)TerI)->hit_type != TERRAIN_HIT_TYPE_NONE);
+        query = (TerrainQuery_s *)TerI;
 
         if (query->hit_type == TERRAIN_HIT_TYPE_NONE) {
-            query->position.x += query->movement.x;
-            query->position.y += query->movement.y;
-            query->position.z += query->movement.z;
+            query->position.x = query->movement.x + query->position.x;
+            query->position.y = query->movement.y + query->position.y;
+            query->position.z = query->movement.z + query->position.z;
         }
 
         TerrShape->offset.x += query->start_position.x - query->position.x;
@@ -2315,9 +2306,7 @@ extern "C" {
         query->movement.y = query->start_movement.y;
         query->movement.z = query->start_movement.z;
         TerrainSideClamp(&axis, &query->position);
-
-        result = TERRAIN_SIDE_STEP_HANDLED;
-        return result;
+        return 0;
     }
     void TerrainSideClamp(NUVEC *axis, NUVEC *position) {
         f32 forward = axis->x * TerrShape->offset.x + TerrShape->offset.z * axis->z;
