@@ -2920,8 +2920,7 @@ extern "C" f32 NewShadowHandelEx(NUVEC *position, f32 unused, f32 height_above, 
     query->position.z = position->z;
     query->object_index = -1;
     query->scan_result = 1;
-    query->movement.x = 0.0f;
-    query->movement.z = 0.0f;
+    query->movement.x = query->movement.z = 0.0f;
     query->movement.y = 40.0f;
     TerrainScaledShapeCursorPc = TerrainScaleWorkBasePc;
     NUVEC scan_position = *position;
