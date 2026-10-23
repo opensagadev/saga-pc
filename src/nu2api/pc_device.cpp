@@ -122,16 +122,17 @@ extern "C" void __cdecl PCDeviceCreateTextureFromMemory(const void *data, u32 si
                                                            data, size, reinterpret_cast<IDirect3DTexture9 **>(texture));
 }
 
-extern "C" void __cdecl PCDeviceCreateVertexBuffer(u32 size, u32 usage, u32 vertex_format, i32 pool,
-                                                   PC_BUFFER_RESOURCE_PC **resource) {
+extern "C" __declspec(noinline) void __cdecl PCDeviceCreateVertexBuffer(u32 size, u32 usage, u32 vertex_format,
+                                                                        i32 pool, PC_BUFFER_RESOURCE_PC **resource) {
     if (PCDeviceHardwareVertexProcessingPC == 0)
         usage |= 0x10;
     PCDeviceLastResult = PCDeviceBackend.device->methods->create_vertex_buffer(PCDeviceBackend.device, size, usage,
                                                                                vertex_format, pool, resource, NULL);
 }
 
-extern "C" void __cdecl PCDeviceCreateIndexBuffer(u32 size, u32 usage, i32 format, i32 pool,
-                                                  PC_BUFFER_RESOURCE_PC **resource, HANDLE *shared_handle) {
+extern "C" __declspec(noinline) void __cdecl PCDeviceCreateIndexBuffer(u32 size, u32 usage, i32 format, i32 pool,
+                                                                       PC_BUFFER_RESOURCE_PC **resource,
+                                                                       HANDLE *shared_handle) {
     if (PCDeviceHardwareVertexProcessingPC == 0)
         usage |= 0x10;
     PCDeviceLastResult = PCDeviceBackend.device->methods->create_index_buffer(PCDeviceBackend.device, size, usage,
@@ -174,11 +175,11 @@ extern "C" void __cdecl PCDeviceCreateVertexDeclaration(const PC_VERTEX_ELEMENT_
     PCDeviceLastResult = device->methods->create_vertex_declaration(device, elements, out);
 }
 
-extern "C" void __cdecl PCDeviceLockVertexBuffer(u32 offset, u32 size, void **data, u32 flags,
-                                                 PC_BUFFER_RESOURCE_PC *resource) {
+extern "C" __declspec(noinline) void __cdecl PCDeviceLockVertexBuffer(u32 offset, u32 size, void **data, u32 flags,
+                                                                      PC_BUFFER_RESOURCE_PC *resource) {
     PCDeviceLastResult = resource->methods->lock(resource, offset, size, data, flags);
 }
-extern "C" HRESULT __cdecl PCDeviceUnlockVertexBuffer(PC_BUFFER_RESOURCE_PC *resource) {
+extern "C" __declspec(noinline) HRESULT __cdecl PCDeviceUnlockVertexBuffer(PC_BUFFER_RESOURCE_PC *resource) {
     return resource->methods->unlock(resource);
 }
 
@@ -989,11 +990,11 @@ struct GRAPHICS_TEXTURE_SURFACE_VIEW_PC {
 };
 STATIC_ASSERT(offsetof(GRAPHICS_TEXTURE_SURFACE_VIEW_PC, methods) == 0);
 STATIC_ASSERT(offsetof(GRAPHICS_TEXTURE_SURFACE_METHODS_PC, get_surface_level) == 0x48);
-extern "C" void __cdecl PCDeviceLockIndexBuffer(u32 offset, u32 size, void **data, u32 flags,
-                                                PC_BUFFER_RESOURCE_PC *resource) {
+extern "C" __declspec(noinline) void __cdecl PCDeviceLockIndexBuffer(u32 offset, u32 size, void **data, u32 flags,
+                                                                     PC_BUFFER_RESOURCE_PC *resource) {
     PCDeviceLastResult = resource->methods->lock(resource, offset, size, data, flags);
 }
-extern "C" HRESULT __cdecl PCDeviceUnlockIndexBuffer(PC_BUFFER_RESOURCE_PC *resource) {
+extern "C" __declspec(noinline) HRESULT __cdecl PCDeviceUnlockIndexBuffer(PC_BUFFER_RESOURCE_PC *resource) {
     return resource->methods->unlock(resource);
 }
 void __thiscall PC_DEVICE_BACKEND_PC::BuildDefaultPoolResources() {
@@ -1040,6 +1041,9 @@ void __thiscall PC_DEVICE_BACKEND_PC::BuildDefaultPoolResources() {
         target_count = 4;
     for (u32 i = 0; i != target_count; ++i) {
         switch (target_kinds[i]) {
+            case -1:
+            case 2:
+                break;
             case 0:
             case 1:
                 textures[i] = PCGraphicsCreateColourTarget(1, 1);
@@ -1054,21 +1058,21 @@ void __thiscall PC_DEVICE_BACKEND_PC::BuildDefaultPoolResources() {
             texture->methods->get_surface_level(texture, 0, &target_surfaces[i]);
         }
     }
+    PC_GRAPHICS_SCREEN_VERTEX_PC triangle[3] = {{0.0f, 0.0f, 0.0f, 0.0f},
+                                                {0.0f, (f32)((f32)parameters.height * 3.0), 0.0f, 3.0f},
+                                                {(f32)((f32)parameters.width * 3.0), 0.0f, 3.0f, 0.0f}};
     PC_GRAPHICS_CLIP_VERTEX_PC quad[4] = {{-1.0f, 1.0f, 0.0f, 0.0f, 0.0f},
                                           {-1.0f, -1.0f, 0.0f, 0.0f, 1.0f},
                                           {1.0f, 1.0f, 0.0f, 1.0f, 0.0f},
                                           {1.0f, -1.0f, 0.0f, 1.0f, 1.0f}};
-    PC_GRAPHICS_SCREEN_VERTEX_PC triangle[3] = {{0.0f, 0.0f, 0.0f, 0.0f},
-                                                {0.0f, (f32)((f64)parameters.height * 3.0), 0.0f, 3.0f},
-                                                {(f32)((f64)parameters.width * 3.0), 0.0f, 3.0f, 0.0f}};
     PCDeviceCreateVertexBuffer(sizeof(quad), 8, 0, 0, &buffer690);
     PCDeviceCreateVertexBuffer(sizeof(triangle), 8, 0, 0, &buffer688);
     void *data = NULL;
     PCDeviceLockVertexBuffer(0, sizeof(quad), &data, 0, buffer690);
-    memcpy(data, quad, sizeof(quad));
+    PCByteCopy_candidate(data, quad, sizeof(quad));
     PCDeviceUnlockVertexBuffer(buffer690);
     PCDeviceLockVertexBuffer(0, sizeof(triangle), &data, 0, buffer688);
-    memcpy(data, triangle, sizeof(triangle));
+    PCByteCopy_candidate(data, triangle, sizeof(triangle));
     PCDeviceUnlockVertexBuffer(buffer688);
     state6a0 = 16;
     state69c = (i32)(u32)(((f64)PS2_REZ_H / PS2_REZ_W) * 16.0);
@@ -1082,11 +1086,11 @@ void __thiscall PC_DEVICE_BACKEND_PC::BuildDefaultPoolResources() {
         for (u32 column = 0; column != (u32)state6a0 + 1; ++column) {
             f32 rounded_row = (f32)row;
             f32 rounded_column = (f32)column;
-            vertex->x = (f32)((f64)rounded_column / (u32)state6a0 * 2.0 - 1.0);
-            vertex->y = (f32)(1.0 - (f64)rounded_row / (u32)state69c * 2.0);
+            vertex->x = rounded_column / (f32)(u32)state6a0 * 2.0 - 1.0;
+            vertex->y = 1.0 - rounded_row / (f32)(u32)state69c * 2.0;
             vertex->z = 0.0f;
-            vertex->u = (f32)((f64)rounded_column / (u32)state6a0);
-            vertex->v = (f32)((f64)rounded_row / (u32)state69c);
+            vertex->u = rounded_column / (f32)(u32)state6a0;
+            vertex->v = rounded_row / (f32)(u32)state69c;
             ++vertex;
         }
     }
@@ -1095,14 +1099,12 @@ void __thiscall PC_DEVICE_BACKEND_PC::BuildDefaultPoolResources() {
     u16 *index = static_cast<u16 *>(data);
     for (u32 row = 0; row != (u32)state69c; ++row) {
         for (u32 column = 0; column != (u32)state6a0; ++column) {
-            u16 lower = (u16)(((u16)state6a0 + 1) * (u16)row + (u16)column);
-            u16 upper = (u16)(((u16)state6a0 + 1) * (u16)(row + 1) + (u16)column);
-            *index++ = lower;
-            *index++ = (u16)(lower + 1);
-            *index++ = upper;
-            *index++ = upper;
-            *index++ = (u16)(lower + 1);
-            *index++ = (u16)(upper + 1);
+            *index++ = (u16)(((u16)state6a0 + 1) * (u16)row + (u16)column);
+            *index++ = (u16)(((u16)state6a0 + 1) * (u16)row + (u16)column + 1);
+            *index++ = (u16)(((u16)state6a0 + 1) * (u16)(row + 1) + (u16)column);
+            *index++ = (u16)(((u16)state6a0 + 1) * (u16)(row + 1) + (u16)column);
+            *index++ = (u16)(((u16)state6a0 + 1) * (u16)row + (u16)column + 1);
+            *index++ = (u16)(((u16)state6a0 + 1) * (u16)(row + 1) + (u16)column + 1);
         }
     }
     PCDeviceUnlockIndexBuffer(buffer698);
