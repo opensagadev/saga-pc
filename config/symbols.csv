@@ -1184,6 +1184,8 @@ address,symbol,size,ctype
 0x46fef0,_GizTorp_GetOutputName,16,
 0x46ff00,_GizTorp_GetNumOutputs,,i32 __cdecl(GIZMO_PC *)
 0x46ff10,_GizTorpMachine_RegisterGizmo,254,
+0x470050,_GrabberMtxSetRotationZ,160,"static void (NUMTX *, NUANG)"
+0x4700f0,_GrabberMtxRotateX,217,"static void (NUMTX *, NUANG)"
 0x4701d0,_Grab_radius,26,
 0x4701f0,_Grab_speed,26,
 0x470210,_Grab_rotate,40,
@@ -1193,13 +1195,17 @@ address,symbol,size,ctype
 0x470290,_Grab_type,131,
 0x470320,_Grab_shadow,68,
 0x470370,_Grabber_Configure,691,"void __cdecl(WORLDINFO *,char *)"
+0x470630,_GrabberFindShadow,224,"static i32 (NUVEC *, GRABBER_PC *)"
+0x470710,_GrabberGrabVictim,144,static void (GAMEOBJECT *)
 0x4707a0,_Grabber_GetGrabPos,84,"NUVEC *__cdecl(void *,NUMTX *)"
 0x470800,_PartKill_Grabber,275,
+0x470920,_IsGrabbable,25,static i32 __cdecl (GAMEOBJECT *)
 0x470940,_Grabber_Draw,1228,
 0x470e10,_Grabber_StoreProgress,76,"void __cdecl (WORLDINFO *, LEVEL_PROGRESS *)"
 0x470e60,_Grabber_SetVictimPos,615,
 0x4710d0,_Grabber_Reset,772,
-0x471c40,_Grabber_Update,2860,
+0x4713e0,_Grabber_Drop,624,"void __cdecl (GRABBER_PC *, NUVEC *)"
+0x471650,_Grabber_Update,4380,void __cdecl (WORLDINFO *)
 0x4727a0,?NuFdiv@@YAMMM@Z,54,
 0x472800,_Hat_GetAbsTargetPos,111,"void __cdecl(HATMACHINE_PC *, NUVEC *)"
 0x472890,_HatMachine_Load,308,
@@ -12359,15 +12365,26 @@ address,symbol,size,ctype
 0x758e54,??_C@_08BLBBMNMG@grabbers?$AA@,9,
 0x758e60,??_C@_08GNFCOFEE@Explode2?$AA@,9,const char[9]
 0x758e6c,??_C@_0BA@JDPKNNHK@imp_C3PO_magnet?$AA@,16,const char[16]
+0x758e7c,??_C@_05FCJHOLII@pad_w?$AA@,6,const char[6]
+0x758e84,??_C@_05CKGDJLFL@pad_e?$AA@,6,const char[6]
+0x758e8c,??_C@_05DGPLCOIM@pad_s?$AA@,6,const char[6]
+0x758e94,??_C@_05MJJHECJA@pad_n?$AA@,6,const char[6]
+0x758e9c,??_C@_08LGAFBGAE@pad_drop?$AA@,9,const char[9]
 0x758ea8,__real@c0c00000,4,compiler literal
 0x758eac,??_C@_0BF@LJILEAKG@imp_C3PO_magnet_drop?$AA@,21,const char[21]
 0x758ec4,??_C@_0BD@CPBACLCI@env_grabber_pickup?$AA@,19,const char[19]
 0x758ed8,??_C@_0P@DBMBODPB@env_grabber_up?$AA@,15,const char[15]
 0x758ee8,??_C@_0BB@MLJOJDPI@env_grabber_down?$AA@,17,const char[17]
+0x758efc,??_C@_06ECLFGIAF@m_pup1?$AA@,7,const char[7]
 0x758f04,??_C@_0BB@IELLJPCI@env_crane_mvt_lp?$AA@,17,const char[17]
 0x758f18,??_C@_0BE@MDKAICAP@CarbonFreezeCraneLp?$AA@,20,const char[20]
 0x00758f30,__real@3f899999a0000000,8,const f64
 0x758f38,??_C@_0BB@FBCIAHCF@env_hover_box_lp?$AA@,17,const char[17]
+0x758f4c,__real@c079999a,4,const f32
+0x758f50,__real@c00f333340000000,8,const f64
+0x758f58,__real@c09b3333,4,const f32
+0x758f5c,__real@41220000,4,const f32
+0x758f60,__real@413d70a4,4,const f32
 0x758f64,_HatMachineDrawSpecialIndicesPc,,const i32[4]
 0x758f74,__real@be138ef3,,const f32
 0x758f78,__real@c010000000000000,,const f64
