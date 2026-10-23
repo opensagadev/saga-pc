@@ -140,6 +140,8 @@ STATIC_ASSERT(offsetof(GAMEOBJECT, flags_e20) == 0xe20);
 STATIC_ASSERT(offsetof(GAMEOBJECT, flags_e24) == 0xe24);
 STATIC_ASSERT(sizeof(GAMEOBJECT) == 0x10d8);
 
+#define PANEL_PLAYER_ACTIVE(flags) (((flags) & 0x1000) != 0 && ((flags) & 0x80) != 0)
+
 i32 __cdecl Tag_UpdateHint(HINT_PC *hint) {
     WORLDINFO *world = WORLD;
     u32 hint_flags;
@@ -152,75 +154,100 @@ i32 __cdecl Tag_UpdateHint(HINT_PC *hint) {
     tc14_id = id_TC14;
     for (i = 0; i < 8; ++i) {
         GAMEOBJECT *object = (GAMEOBJECT *)Player[i];
-        if (object != NULL && (object->flags_1fc_word & 0x1080) == 0x1080 && (i16)object->id == tc14_id) {
-            hint_flags |= 2;
-            LswForceUsedHintFlagsPc = hint_flags;
+        if (object != NULL) {
+            u32 flags = object->flags_1fc_word;
+            if (PANEL_PLAYER_ACTIVE(flags) && (i16)object->id == tc14_id) {
+                hint_flags |= 2;
+                LswForceUsedHintFlagsPc = hint_flags;
+            }
         }
     }
     hint_id = hint->id;
     switch (hint_id) {
-        case 600:
-            if (FreePlay == 0)
-                return 0;
-            if (player != NULL && (player->flags_1fc & 0x80) != 0 && player->takeover_source != NULL)
-                return 0;
-            if (player2 != NULL && (player2->flags_1fc & 0x80) != 0 && player2->takeover_source != NULL)
-                return 0;
-            return 1;
         case 602: {
             GAMEOBJECT *first;
             GAMEOBJECT *second;
             i32 total;
             i32 controlled;
             if ((hint_flags & 1) == 0)
-                return 0;
+                break;
             if (Tag_DoneFirst != 0) {
                 Hint_SetCompletePc(hint);
                 return 0;
             }
             if (VehicleArea != 0 || world->current_level == HUB_LDATA)
-                return 0;
+                break;
             first = player;
             if (first != NULL && (first->flags_1fc & 0x80) != 0 && first->takeover_source != NULL)
-                return 0;
+                break;
             second = player2;
             if (second != NULL && (second->flags_1fc & 0x80) != 0 && second->takeover_source != NULL)
-                return 0;
-            total = 0;
+                break;
             controlled = 0;
+            total = 0;
             for (i = 0; i < 8; ++i) {
                 GAMEOBJECT *object = (GAMEOBJECT *)Player[i];
                 if (object != NULL) {
+                    u32 flags = object->flags_1fc_word;
                     ++total;
-                    if ((object->flags_1fc_word & 0x1080) == 0x1080)
+                    if (PANEL_PLAYER_ACTIVE(flags))
                         ++controlled;
                 }
             }
             if (total == 2 && controlled == total)
-                return 0;
-            return (first != NULL && first->takeover_source == NULL) ||
-                   (second != NULL && second->takeover_source == NULL);
+                break;
+            if ((first != NULL && first->takeover_source == NULL) ||
+                (second != NULL && second->takeover_source == NULL))
+                return 1;
+            break;
         }
         case 603: {
             HINT_PC *previous;
-            if ((hint_flags & 4) == 0) {
-                if (Tag_DoneFirst > 1)
-                    Tag_DoneFirst = 1;
+            if ((hint_flags & 4) != 0) {
+                previous = Hint_FindHint(602);
+                if (Tag_DoneFirst == 2) {
+                    Hint_SetCompletePc(hint);
+                    return 0;
+                }
+                if (Tag_DoneFirst != 1)
+                    break;
+                if (previous != NULL && Hint_isComplete(previous) == 0)
+                    break;
+                if (VehicleArea != 0 || WORLD->current_level == HUB_LDATA)
+                    break;
+                if ((player != NULL && player->takeover_source == NULL) ||
+                    (player2 != NULL && player2->takeover_source == NULL))
+                    return 1;
+                break;
+            }
+            if (Tag_DoneFirst > 1) {
+                Tag_DoneFirst = 1;
                 return 0;
             }
-            previous = Hint_FindHint(602);
-            if (Tag_DoneFirst == 2) {
-                Hint_SetCompletePc(hint);
-                return 0;
+            break;
+        }
+        case 600:
+            if (FreePlay == 0)
+                break;
+            if (player != NULL && (player->flags_1fc & 0x80) != 0 && player->takeover_source != NULL)
+                break;
+            if (player2 != NULL && (player2->flags_1fc & 0x80) != 0 && player2->takeover_source != NULL)
+                break;
+            return 1;
+        case 606: {
+            GAMEOBJECT *first = (GAMEOBJECT *)Player[0];
+            GAMEOBJECT *second;
+            i16 dagobah_id = id_LUKESKYWALKERDAGOBAH;
+            if (first == NULL || (first->flags_1fc & 0x80) == 0 || first->takeover_source == NULL ||
+                (i16)first->id == dagobah_id) {
+                second = (GAMEOBJECT *)Player[1];
+                if (second == NULL || (second->flags_1fc & 0x80) == 0 || second->takeover_source == NULL ||
+                    (i16)second->id == dagobah_id)
+                    break;
             }
-            if (Tag_DoneFirst != 1)
-                return 0;
-            if (previous != NULL && Hint_isComplete(previous) == 0)
-                return 0;
-            if (VehicleArea != 0 || WORLD->current_level == HUB_LDATA)
-                return 0;
-            return (player != NULL && player->takeover_source == NULL) ||
-                   (player2 != NULL && player2->takeover_source == NULL);
+            if (world->current_level == SPEEDERCHASEA_LDATA && disable_narrow_socks == 0)
+                break;
+            return 1;
         }
         case 605:
         case 611:
@@ -229,12 +256,13 @@ i32 __cdecl Tag_UpdateHint(HINT_PC *hint) {
             GAMEOBJECT *object = Obj;
             i16 grab_id;
             i16 grab_r2_id;
+            i = 0;
             if (count <= 0)
-                return 0;
+                break;
             grab_id = id_GRABCONTROL;
             grab_r2_id = id_GRABR2CONTROL;
-            for (i = 0; i < count; ++i, ++object) {
-                if ((object->flags_1fc_word & 0x1001) == 0x1001 && object->dead == 0 &&
+            do {
+                if ((object->flags_1fc_word & 1) != 0 && (object->flags_1fc_word & 0x1000) != 0 && object->dead == 0 &&
                     (object->flags_e20 & 0x80000000u) != 0) {
                     if ((i16)object->id == grab_id || (i16)object->id == grab_r2_id) {
                         if (hint_id == 650)
@@ -246,77 +274,76 @@ i32 __cdecl Tag_UpdateHint(HINT_PC *hint) {
                         return 1;
                     }
                 }
-            }
+                ++i;
+                ++object;
+            } while (i < count);
             return 0;
-        }
-        case 606: {
-            GAMEOBJECT *first = (GAMEOBJECT *)Player[0];
-            GAMEOBJECT *second;
-            i16 dagobah_id = id_LUKESKYWALKERDAGOBAH;
-            if (first != NULL && (first->flags_1fc & 0x80) != 0 && first->takeover_source != NULL &&
-                (i16)first->id != dagobah_id)
-                return world->current_level != SPEEDERCHASEA_LDATA || disable_narrow_socks != 0;
-            second = (GAMEOBJECT *)Player[1];
-            if (second != NULL && (second->flags_1fc & 0x80) != 0 && second->takeover_source != NULL &&
-                (i16)second->id != dagobah_id)
-                return world->current_level != SPEEDERCHASEA_LDATA || disable_narrow_socks != 0;
-            return 0;
-        }
-        case 647: {
-            GAMEOBJECT *first;
-            GAMEOBJECT *second;
-            i16 speeder_id;
-            if (world->current_level != SPEEDERCHASEA_LDATA)
-                return 0;
-            first = (GAMEOBJECT *)Player[0];
-            speeder_id = id_SPEEDERBIKE;
-            if (first != NULL && (i16)first->id == speeder_id)
-                return 1;
-            second = (GAMEOBJECT *)Player[1];
-            return second != NULL && (i16)second->id == speeder_id;
-        }
-        case 649: {
-            GAMEOBJECT *object;
-            TORPEDOPACKET_PC *packet;
-            if (VehicleArea == 0)
-                return 0;
-            object = (GAMEOBJECT *)Player[0];
-            if (object != NULL) {
-                packet = object->torpedo;
-                if (packet != NULL && packet->count != 0 && packet->target != NULL)
-                    return 1;
-            }
-            object = (GAMEOBJECT *)Player[1];
-            if (object == NULL)
-                return 0;
-            packet = object->torpedo;
-            return packet != NULL && packet->count != 0 && packet->target != NULL;
         }
         case 651: {
             GAMEOBJECT *first = (GAMEOBJECT *)Player[0];
             GAMEOBJECT *second;
             i16 grab_id = id_GRABCONTROL;
             i16 grab_r2_id = id_GRABR2CONTROL;
-            if (first != NULL && (first->flags_1fc & 0x80) != 0 &&
-                ((i16)first->id == grab_id || (i16)first->id == grab_r2_id))
+            if ((first != NULL && (first->flags_1fc & 0x80) != 0 &&
+                 ((i16)first->id == grab_id || (i16)first->id == grab_r2_id)) ||
+                ((second = (GAMEOBJECT *)Player[1]) != NULL && (second->flags_1fc & 0x80) != 0 &&
+                 ((i16)second->id == grab_id || (i16)second->id == grab_r2_id)))
                 return 1;
-            second = (GAMEOBJECT *)Player[1];
-            return second != NULL && (second->flags_1fc & 0x80) != 0 &&
-                   ((i16)second->id == grab_id || (i16)second->id == grab_r2_id);
+            break;
         }
         case 654:
             if (VehicleArea == 0)
-                return 0;
-            for (i = 0; i < 2; ++i) {
-                GAMEOBJECT *object = (GAMEOBJECT *)Player[i];
-                if (object != NULL && (object->flags_1fc & 0x80) != 0 && object->dead == 0 &&
-                    (object->flags_e24 & 0x10) != 0)
+                break;
+            {
+                i32 found = 0;
+                for (i = 0; found == 0 && i < 2; ++i) {
+                    GAMEOBJECT *object = (GAMEOBJECT *)Player[i];
+                    if (object != NULL && (object->flags_1fc & 0x80) != 0 && object->dead == 0 &&
+                        (object->flags_e24 & 0x10) != 0)
+                        found = 1;
+                }
+                if (found != 0)
                     return 1;
             }
-            return 0;
+            break;
+        case 649: {
+            GAMEOBJECT *object;
+            TORPEDOPACKET_PC *packet;
+            if (VehicleArea == 0)
+                break;
+            object = (GAMEOBJECT *)Player[0];
+            if (object != NULL) {
+                packet = object->torpedo;
+                if (packet != NULL && packet->count > 0 && packet->target != NULL)
+                    return 1;
+            }
+            object = (GAMEOBJECT *)Player[1];
+            if (object == NULL)
+                break;
+            packet = object->torpedo;
+            if (packet != NULL && packet->count > 0 && packet->target != NULL)
+                return 1;
+            break;
+        }
+        case 647: {
+            GAMEOBJECT *first;
+            GAMEOBJECT *second;
+            i16 speeder_id;
+            if (world->current_level != SPEEDERCHASEA_LDATA)
+                break;
+            first = (GAMEOBJECT *)Player[0];
+            speeder_id = id_SPEEDERBIKE;
+            if (first != NULL && (i16)first->id == speeder_id)
+                return 1;
+            second = (GAMEOBJECT *)Player[1];
+            if (second != NULL && (i16)second->id == speeder_id)
+                return 1;
+            break;
+        }
         default:
-            return 0;
+            break;
     }
+    return 0;
 }
 
 extern f32 HudBossIconYPc;
