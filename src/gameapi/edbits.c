@@ -16,12 +16,11 @@ i32 __cdecl edbitsLookupInstance(char *name, NUGSCN *scene) {
 void edbitsDoSingleDump(i32 face) {
     char filename[32];
     i32 index;
-    for (index = 0; index < 1000; ++index) {
+    index = 0;
+    sprintf(filename, "pictures\\cub%03d_%d.bmp", index, face);
+    while (NuFileSize(filename) > 0 && index != 999) {
+        ++index;
         sprintf(filename, "pictures\\cub%03d_%d.bmp", index, face);
-        if (NuFileSize(filename) <= 0)
-            break;
-        if (index == 999)
-            break;
     }
     sprintf(filename, "pictures\\cub%03d_", index);
     NuPs2VideoScreenDump(filename, 1, 1.0f, 1.0f, face, 0, 0);
@@ -141,33 +140,33 @@ void __cdecl edbitsDrawDiagonalCross(f32 x, f32 y, f32 z, f32 radius, i32 colour
 
 void __cdecl edbitsDrawOvalTilted(NUVEC *centre, f32 radius_x, f32 radius_z, i32 colour,
                                   struct PC_SCENE_MTL_VIEW *material, i32 rotation_z, i32 rotation_y) {
-    NUVEC previous;
-    NUVEC point;
+    NUVEC vertices[2];
     i32 i, angle;
-    point.x = 0.0f;
-    point.y = 0.0f;
-    point.z = radius_z;
+    vertices[1].x = 0.0f;
+    vertices[1].y = 0.0f;
+    vertices[1].z = radius_z;
     if (rotation_z)
-        NuVecRotateZ(&point, &point, rotation_z);
+        NuVecRotateZ(&vertices[1], &vertices[1], rotation_z);
     if (rotation_y)
-        NuVecRotateY(&point, &point, rotation_y);
-    point.x += centre->x;
-    point.y += centre->y;
-    point.z += centre->z;
+        NuVecRotateY(&vertices[1], &vertices[1], rotation_y);
+    vertices[1].x += centre->x;
+    vertices[1].y += centre->y;
+    vertices[1].z += centre->z;
     for (i = 1; i <= 10; ++i) {
-        previous = point;
+        vertices[0] = vertices[1];
         angle = (i << 16) / 10;
-        point.x = radius_x * NU_SIN_LUT(angle);
-        point.y = 0.0f;
-        point.z = radius_z * NU_COS_LUT(angle);
+        vertices[1].x = radius_x * NU_SIN_LUT(angle);
+        vertices[1].y = 0.0f;
+        vertices[1].z = radius_z * NU_COS_LUT(angle);
         if (rotation_z)
-            NuVecRotateZ(&point, &point, rotation_z);
+            NuVecRotateZ(&vertices[1], &vertices[1], rotation_z);
         if (rotation_y)
-            NuVecRotateY(&point, &point, rotation_y);
-        point.x += centre->x;
-        point.y += centre->y;
-        point.z += centre->z;
-        NuRndrLine3dDbg(previous.x, previous.y, previous.z, point.x, point.y, point.z, colour);
+            NuVecRotateY(&vertices[1], &vertices[1], rotation_y);
+        vertices[1].x += centre->x;
+        vertices[1].y += centre->y;
+        vertices[1].z += centre->z;
+        NuRndrLine3dDbg(vertices[0].x, vertices[0].y, vertices[0].z, vertices[1].x, vertices[1].y, vertices[1].z,
+                        colour);
     }
 }
 
@@ -228,13 +227,12 @@ void edgraCalculatePage(i8 page, i32 calculate_vectors) {
     } Sample;
     Sample samples[256];
     Sample *sample;
-    NUMTX *matrix, *matrix_start;
-    PC_EDGRACLUMP *clump;
-    i32 max_clumps, count, rows, columns, terrain_enabled, slope_enabled;
-    u32 seed, angle;
+    NUMTX *matrix, *matrix_start, *current_matrix;
+    i32 count, rows, columns, terrain_enabled, slope_enabled;
+    u32 seed;
+    i32 angle;
     f32 distance, radius, random, computed_scale, limited, height_offset;
     NUVEC offset, scale, position;
-    NUVEC *terrain_values;
     const i32 page_index = page;
     i32 clump_index;
     i32 element;
@@ -242,164 +240,195 @@ void edgraCalculatePage(i8 page, i32 calculate_vectors) {
         edgra_page_on[page_index])
         return;
     matrix = edgra_page_matrix_stack[page_index];
-    max_clumps = EDGRA_MAX_CLUMPS;
-    for (clump_index = 0; clump_index < max_clumps; ++clump_index) {
-        clump = &GrassClumps[clump_index];
-        if (clump->element_count <= 0 || (i8)clump->page != page)
+    for (clump_index = 0; clump_index < EDGRA_MAX_CLUMPS; ++clump_index) {
+        if (GrassClumps[clump_index].element_count == 0 || (i8)GrassClumps[clump_index].page != page)
             continue;
-        seed = clump->seed;
-        count = clump->element_count;
-        height_offset = clump->field_44;
-        terrain_enabled = (i8)clump->field_42;
-        slope_enabled = (i8)clump->field_43;
-        if (clump->kind == 1 || !terrain_enabled)
+        count = GrassClumps[clump_index].element_count;
+        if (count <= 0)
+            continue;
+        height_offset = GrassClumps[clump_index].field_44;
+        terrain_enabled = (i8)GrassClumps[clump_index].field_42;
+        slope_enabled = (i8)GrassClumps[clump_index].field_43;
+        if (GrassClumps[clump_index].kind == 1)
             slope_enabled = 0;
+        if (!terrain_enabled)
+            slope_enabled = 0;
+        seed = GrassClumps[clump_index].seed;
         for (element = 0; element < count; ++element) {
             sample = &samples[element];
-            if (clump->kind == 3) {
+            if (GrassClumps[clump_index].kind == 3) {
                 sample->position.x =
-                    IndGrassClumps[clump->individual_index * EDGRA_MAX_UNITS_PER_INDIVIDUAL_CLUMP + element].position.x;
+                    IndGrassClumps[GrassClumps[clump_index].individual_index * EDGRA_MAX_UNITS_PER_INDIVIDUAL_CLUMP +
+                                   element]
+                        .position.x;
                 sample->position.y =
-                    IndGrassClumps[clump->individual_index * EDGRA_MAX_UNITS_PER_INDIVIDUAL_CLUMP + element].position.y;
+                    IndGrassClumps[GrassClumps[clump_index].individual_index * EDGRA_MAX_UNITS_PER_INDIVIDUAL_CLUMP +
+                                   element]
+                        .position.y;
                 sample->position.z =
-                    IndGrassClumps[clump->individual_index * EDGRA_MAX_UNITS_PER_INDIVIDUAL_CLUMP + element].position.z;
+                    IndGrassClumps[GrassClumps[clump_index].individual_index * EDGRA_MAX_UNITS_PER_INDIVIDUAL_CLUMP +
+                                   element]
+                        .position.z;
             } else {
-                switch ((i8)clump->unknown_25) {
+                switch ((i8)GrassClumps[clump_index].unknown_25) {
                     case 1: {
-                        offset.y = 0.0f;
                         angle = NuRandIntSeeded(&seed) & 0xffff;
-                        radius = NuRandFloatSeeded(&seed) * clump->size;
+                        radius = NuRandFloatSeeded(&seed) * GrassClumps[clump_index].size;
                         offset.x = NuTrigTable[(angle >> 1) & 0x7fff] * radius;
+                        offset.y = 0.0f;
                         offset.z = NuTrigTable[((0x4000 + angle) >> 1) & 0x7fff] * radius;
                         distance = NuFsqrt(offset.x * offset.x + offset.z * offset.z);
                         sample->scale = distance;
                         offset.x *= distance + 1.5;
                         offset.z *= distance + 1.5;
+                        NuVecRotateZ(&offset, &offset, GrassClumps[clump_index].rotation_z);
+                        NuVecRotateY(&offset, &offset, GrassClumps[clump_index].rotation_y);
                         break;
                     }
                     case 2: {
-                        offset.y = 0.0f;
                         angle = NuRandIntSeeded(&seed) & 0xffff;
-                        radius = NuRandFloatSeeded(&seed) * clump->size;
+                        radius = NuRandFloatSeeded(&seed) * GrassClumps[clump_index].size;
                         offset.x = radius * NuTrigTable[(angle >> 1) & 0x7fff];
+                        offset.y = 0.0f;
                         offset.z = radius * NuTrigTable[((0x4000 + angle) >> 1) & 0x7fff];
                         distance = NuFsqrt(offset.x * offset.x + offset.z * offset.z);
                         sample->scale = distance;
+                        NuVecRotateZ(&offset, &offset, GrassClumps[clump_index].rotation_z);
+                        NuVecRotateY(&offset, &offset, GrassClumps[clump_index].rotation_y);
                         break;
                     }
                     case 3:
+                        offset.x = (NuRandFloatSeeded(&seed) * 2.0f - 1.0) * GrassClumps[clump_index].size;
                         offset.y = 0.0f;
-                        offset.x = (NuRandFloatSeeded(&seed) * 2.0f - 1.0) * clump->size;
-                        offset.z = (NuRandFloatSeeded(&seed) * 2.0f - 1.0) * clump->size;
+                        offset.z = (NuRandFloatSeeded(&seed) * 2.0f - 1.0) * GrassClumps[clump_index].size;
                         distance = NuFsqrt(offset.x * offset.x + offset.z * offset.z);
                         sample->scale = distance;
+                        NuVecRotateZ(&offset, &offset, GrassClumps[clump_index].rotation_z);
+                        NuVecRotateY(&offset, &offset, GrassClumps[clump_index].rotation_y);
                         break;
                     case 4: {
-                        offset.y = 0.0f;
+                        f32 spacing_x, spacing_z;
                         rows = (i32)NuFsqrt((f32)count);
                         columns = (count - 1 + rows) / rows;
-                        offset.x = (f32)(element / columns) * (2.0f * clump->size / (f32)(rows - 1)) - clump->size;
-                        offset.z = (f32)(element % columns) * (2.0f * clump->size / (f32)(columns - 1)) - clump->size;
+                        spacing_x = (GrassClumps[clump_index].size + GrassClumps[clump_index].size) / (f32)(rows - 1);
+                        spacing_z =
+                            (GrassClumps[clump_index].size + GrassClumps[clump_index].size) / (f32)(columns - 1);
+                        offset.x = (f32)(element / columns) * spacing_x - GrassClumps[clump_index].size;
+                        offset.y = 0.0f;
+                        offset.z = (f32)(element % columns) * spacing_z - GrassClumps[clump_index].size;
                         distance = NuFsqrt(offset.x * offset.x + offset.z * offset.z);
                         sample->scale = distance;
+                        NuVecRotateZ(&offset, &offset, GrassClumps[clump_index].rotation_z);
+                        NuVecRotateY(&offset, &offset, GrassClumps[clump_index].rotation_y);
                         break;
                     }
                     default:
                         goto translate_sample;
                 }
-                NuVecRotateZ(&offset, &offset, clump->rotation_z);
-                NuVecRotateY(&offset, &offset, clump->rotation_y);
-                sample->position = offset;
+                sample->position.x = offset.x;
+                sample->position.y = offset.y;
+                sample->position.z = offset.z;
             }
         translate_sample:
-            sample->position.x += clump->position.x;
-            sample->position.y += clump->position.y;
-            sample->position.z += clump->position.z;
-            if (clump->kind == 3) {
-                sample->scale =
-                    (clump->field_30 - clump->field_2c) *
-                        IndGrassClumps[clump->individual_index * EDGRA_MAX_UNITS_PER_INDIVIDUAL_CLUMP + element]
-                            .field_0c +
-                    clump->field_2c;
+            sample->position.x += GrassClumps[clump_index].position.x;
+            sample->position.y += GrassClumps[clump_index].position.y;
+            sample->position.z += GrassClumps[clump_index].position.z;
+            if (GrassClumps[clump_index].kind == 3) {
+                sample->scale = (GrassClumps[clump_index].field_30 - GrassClumps[clump_index].field_2c) *
+                                    IndGrassClumps[GrassClumps[clump_index].individual_index *
+                                                       EDGRA_MAX_UNITS_PER_INDIVIDUAL_CLUMP +
+                                                   element]
+                                        .field_0c +
+                                GrassClumps[clump_index].field_2c;
             } else {
-                switch ((i8)clump->unknown_26) {
+                switch ((i8)GrassClumps[clump_index].unknown_26) {
                     case 1: {
                         random = (f32)(NuRandFloatSeeded(&seed) - 0.25);
                         computed_scale = (f32)(1.25 * sample->scale);
                         computed_scale = (f32)(((f64)1.2f - computed_scale) + random * random);
-                        computed_scale = (f32)(computed_scale / (f64)1.7625f * clump->field_30);
-                        if (computed_scale < clump->field_2c)
-                            computed_scale = clump->field_2c;
+                        computed_scale = (f32)(computed_scale / (f64)1.7625f * GrassClumps[clump_index].field_30);
+                        if (computed_scale < GrassClumps[clump_index].field_2c)
+                            computed_scale = GrassClumps[clump_index].field_2c;
                         sample->scale = computed_scale;
                         break;
                     }
                     case 2:
-                        sample->scale =
-                            NuRandFloatSeeded(&seed) * (clump->field_30 - clump->field_2c) + clump->field_2c;
+                        sample->scale = NuRandFloatSeeded(&seed) *
+                                            (GrassClumps[clump_index].field_30 - GrassClumps[clump_index].field_2c) +
+                                        GrassClumps[clump_index].field_2c;
                         break;
                     case 3: {
-                        limited = sample->scale < clump->size ? sample->scale : clump->size;
-                        sample->scale = clump->field_30 - (limited / clump->size) * (clump->field_30 - clump->field_2c);
+                        limited = sample->scale < GrassClumps[clump_index].size ? sample->scale
+                                                                                : GrassClumps[clump_index].size;
+                        sample->scale = GrassClumps[clump_index].field_30 -
+                                        (limited / GrassClumps[clump_index].size) *
+                                            (GrassClumps[clump_index].field_30 - GrassClumps[clump_index].field_2c);
                         break;
                     }
                     case 4: {
-                        limited = sample->scale < clump->size ? sample->scale : clump->size;
-                        angle = (i32)((limited / clump->size) * 16384.0);
-                        sample->scale =
-                            (clump->field_30 - clump->field_2c) * NuTrigTable[((0x4000 - angle) >> 1) & 0x7fff] +
-                            clump->field_2c;
+                        limited = sample->scale < GrassClumps[clump_index].size ? sample->scale
+                                                                                : GrassClumps[clump_index].size;
+                        angle = (i32)((limited / GrassClumps[clump_index].size) * 16384.0);
+                        sample->scale = (GrassClumps[clump_index].field_30 - GrassClumps[clump_index].field_2c) *
+                                            NuTrigTable[((0x4000 - angle) >> 1) & 0x7fff] +
+                                        GrassClumps[clump_index].field_2c;
                         break;
                     }
                 }
             }
         }
-        seed = clump->seed;
+        seed = GrassClumps[clump_index].seed;
         matrix_start = matrix;
-        terrain_values = (NUVEC *)(clump->vector_buffer);
         for (element = 0; element < count; ++element) {
+            current_matrix = matrix + element;
             sample = &samples[element];
-            if (clump->kind == 3) {
+            scale.x = scale.y = scale.z = sample->scale;
+            position.x = sample->position.x;
+            position.y = sample->position.y;
+            position.z = sample->position.z;
+            if (GrassClumps[clump_index].kind == 3) {
                 if (terrain_enabled && calculate_vectors)
-                    terrain_values[element] = NuFadeObjGetAngleTerrainValues(&sample->position);
-                NuMtxSetIdentity(matrix);
+                    ((NUVEC *)GrassClumps[clump_index].vector_buffer)[element] =
+                        NuFadeObjGetAngleTerrainValues(&position);
+                NuMtxSetIdentity(current_matrix);
                 NuMtxRotateZ(
-                    matrix,
-                    IndGrassClumps[clump->individual_index * EDGRA_MAX_UNITS_PER_INDIVIDUAL_CLUMP + element].field_10);
+                    current_matrix,
+                    IndGrassClumps[GrassClumps[clump_index].individual_index * EDGRA_MAX_UNITS_PER_INDIVIDUAL_CLUMP +
+                                   element]
+                        .field_10);
                 NuMtxRotateY(
-                    matrix,
-                    IndGrassClumps[clump->individual_index * EDGRA_MAX_UNITS_PER_INDIVIDUAL_CLUMP + element].field_12);
+                    current_matrix,
+                    IndGrassClumps[GrassClumps[clump_index].individual_index * EDGRA_MAX_UNITS_PER_INDIVIDUAL_CLUMP +
+                                   element]
+                        .field_12);
                 if (slope_enabled) {
-                    NuMtxRotateZ(matrix, (i32)(terrain_values[element].z));
-                    NuMtxRotateX(matrix, (i32)(terrain_values[element].x));
+                    NuMtxRotateZ(current_matrix, (i32)(((NUVEC *)GrassClumps[clump_index].vector_buffer)[element].z));
+                    NuMtxRotateX(current_matrix, (i32)(((NUVEC *)GrassClumps[clump_index].vector_buffer)[element].x));
                 }
-                scale.x = scale.y = scale.z = sample->scale;
-                NuMtxScale(matrix, &scale);
-                position = sample->position;
+                NuMtxScale(current_matrix, &scale);
                 if (terrain_enabled)
-                    position.y = height_offset + terrain_values[element].y;
-                NuMtxTranslate(matrix, &position);
+                    position.y = height_offset + ((NUVEC *)GrassClumps[clump_index].vector_buffer)[element].y;
+                NuMtxTranslate(current_matrix, &position);
             } else {
                 if (terrain_enabled && calculate_vectors)
-                    terrain_values[element] = NuFadeObjGetAngleTerrainValues(&sample->position);
-                NuMtxSetIdentity(matrix);
-                NuMtxPreRotateY(matrix, (u16)(NuRandIntSeeded(&seed)));
+                    ((NUVEC *)GrassClumps[clump_index].vector_buffer)[element] =
+                        NuFadeObjGetAngleTerrainValues(&position);
+                NuMtxSetIdentity(current_matrix);
+                NuMtxPreRotateY(current_matrix, (u16)(NuRandIntSeeded(&seed)));
                 if (slope_enabled) {
-                    NuMtxRotateZ(matrix, (i32)(terrain_values[element].z));
-                    NuMtxRotateX(matrix, (i32)(terrain_values[element].x));
+                    NuMtxRotateZ(current_matrix, (i32)(((NUVEC *)GrassClumps[clump_index].vector_buffer)[element].z));
+                    NuMtxRotateX(current_matrix, (i32)(((NUVEC *)GrassClumps[clump_index].vector_buffer)[element].x));
                 }
-                scale.x = scale.y = scale.z = sample->scale;
-                NuMtxScale(matrix, &scale);
-                position = sample->position;
+                NuMtxScale(current_matrix, &scale);
                 if (terrain_enabled)
-                    position.y = height_offset + terrain_values[element].y;
-                NuMtxTranslate(matrix, &position);
-                if (clump->kind == 1)
-                    matrix->m33 = clump->field_18 * sample->scale;
+                    position.y = height_offset + ((NUVEC *)GrassClumps[clump_index].vector_buffer)[element].y;
+                NuMtxTranslate(current_matrix, &position);
+                if (GrassClumps[clump_index].kind == 1)
+                    current_matrix->m33 = GrassClumps[clump_index].field_18 * sample->scale;
             }
-            ++matrix;
         }
-        clump->matrices = matrix_start;
-        max_clumps = EDGRA_MAX_CLUMPS;
+        GrassClumps[clump_index].matrices = matrix_start;
+        matrix += count;
     }
 }
 
@@ -478,10 +507,10 @@ void __cdecl edgracbInstanceMenu(eduimenu_s *parent, eduiitem_s *unused1, u32 un
                        (char *)(edgra_filter ? "Base Instance Select (Filtered)" : "Base Instance Select"));
     if (!edgra_instance_menu || !edbits_base_scene)
         return;
+    name = NULL;
     selected_found = 0;
     added = 1;
     count = NuSpecialGetNumSpecials(edbits_base_scene);
-    name = NULL;
     for (i = 0; i < count; ++i) {
         i32 selected;
         i32 keep = 0;
