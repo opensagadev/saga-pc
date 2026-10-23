@@ -1,6 +1,9 @@
 #include <stdio.h>
 #include "saga.h"
 
+/* edbitsGetSoundName is an inline stub returning NULL in the PC build. */
+#define EDANIM_SOUND_NAME_PC(type) ((char *)0)
+
 void __cdecl edbitsDrawCube(f32 x, f32 y, f32 z, f32 half_x, f32 half_y, f32 half_z, i32 rotation_z, i32 rotation_y,
                             i32 rotation_x, i32 outer_z, i32 outer_y, i32 colour, NUMTL *material);
 
@@ -425,11 +428,9 @@ static void edanimcbSetBouncyDamping(eduimenu_s *unused0, eduiitem_s *item, u32 
 }
 
 static void edanimcbSetLocalSoundType(eduimenu_s *menu, eduiitem_s *item, u32 unused2) {
-    EDANIM_PARAM_PC *param;
     edanim_localsoundtype_menu = NULL;
-    param = &(AnimParams[edanim_nearest_param_id]);
-    (*param).sound_ids[edanim_nearest_sound] = item->data;
-    strcpy((*param).sound_names[edanim_nearest_sound], edbitsGetSoundName(item->data));
+    AnimParams[edanim_nearest_param_id].sound_ids[edanim_nearest_sound] = item->data;
+    strcpy(AnimParams[edanim_nearest_param_id].sound_names[edanim_nearest_sound], EDANIM_SOUND_NAME_PC(item->data));
     edanim_sound_type = item->data;
     eduiMenuDetach(menu);
     eduiMenuDestroy(menu);
@@ -462,7 +463,7 @@ static void edanimcbBouncyMenu(eduimenu_s *parent, eduiitem_s *unused1, u32 unus
 }
 
 static void edanimcbLocalSoundTypeMenu(eduimenu_s *parent, eduiitem_s *unused1, u32 unused2) {
-    i32 index;
+    i32 index, selected;
     u32 colours[4] = {0x80000000, 0x80ff0000, 0x80808080, 0x80404040};
     edanim_localsoundtype_menu = eduiMenuCreate(70, 70, 250, 200, ed_fnt, edanimcbCancelLocalSoundTypeMenu,
                                                 ((char *)("Highlighted Sound Type")));
@@ -471,16 +472,12 @@ static void edanimcbLocalSoundTypeMenu(eduimenu_s *parent, eduiitem_s *unused1, 
     }
 
     for (index = 0; index < edSfxAllCount; ++index) {
-        if (AnimParams[edanim_nearest_param_id].sound_ids[edanim_nearest_sound] != index) {
-            eduiMenuAddItem(
-                edanim_localsoundtype_menu,
-                eduiItemCheckCreate(index, colours, 0, 1, edanimcbSetLocalSoundType, edbitsGetSoundName(index)));
-        } else {
-            eduiMenuAddItem(
-                edanim_localsoundtype_menu,
-                eduiItemCheckCreate(index, colours, 1, 1, edanimcbSetLocalSoundType, edbitsGetSoundName(index)));
+        selected = AnimParams[edanim_nearest_param_id].sound_ids[edanim_nearest_sound] == index;
+        eduiMenuAddItem(
+            edanim_localsoundtype_menu,
+            eduiItemCheckCreate(index, colours, selected, 1, edanimcbSetLocalSoundType, EDANIM_SOUND_NAME_PC(index)));
+        if (selected == 1)
             edanim_localsoundtype_menu->selected = edui_last_item;
-        }
     }
 
     eduiMenuAttach(parent, edanim_localsoundtype_menu);
@@ -500,12 +497,12 @@ static void edanimcbSoundTypeMenu(eduimenu_s *parent, eduiitem_s *unused1, u32 u
                                                                edanimcbSetSoundType, (char *)("NONE")));
     for (index = 0; index < edSfxAllCount; ++index) {
         if (edanim_sound_type == index) {
-            eduiMenuAddItem(edanim_soundtype_menu,
-                            eduiItemCheckCreate(index, colours, 1, 1, edanimcbSetSoundType, edbitsGetSoundName(index)));
+            eduiMenuAddItem(edanim_soundtype_menu, eduiItemCheckCreate(index, colours, 1, 1, edanimcbSetSoundType,
+                                                                       EDANIM_SOUND_NAME_PC(index)));
             edanim_soundtype_menu->selected = edui_last_item;
         } else {
-            eduiMenuAddItem(edanim_soundtype_menu,
-                            eduiItemCheckCreate(index, colours, 0, 1, edanimcbSetSoundType, edbitsGetSoundName(index)));
+            eduiMenuAddItem(edanim_soundtype_menu, eduiItemCheckCreate(index, colours, 0, 1, edanimcbSetSoundType,
+                                                                       EDANIM_SOUND_NAME_PC(index)));
         }
     }
 
@@ -652,9 +649,6 @@ void __cdecl edanimRenderSoundEmitters(i32 parameter_index) {
                                 (struct PC_SCENE_MTL_VIEW *)edanim_mtl);
     }
 }
-
-/* edbitsGetSoundName is an inline stub returning NULL in the PC build. */
-#define EDANIM_SOUND_NAME_PC(type) ((char *)0)
 
 void __cdecl edanimSoundPlace(i32 sound_index, NUVEC *position) {
     NUSPECIALHANDLE special;
@@ -951,4 +945,64 @@ void __cdecl edanimDrawCursor(void) {
     NuQFntPrintEx(system_qfont, 0x2080, 0xd70, 0x10, "%5.2f", edanim_cam_pos.z);
     NuQFntPopPrintMode();
     NuQFntPopCoordinateSystem();
+}
+
+typedef struct edanim_special_view_pc_s {
+    u8 unknown_00[0x40];
+    void *instance;
+    char *name;
+    u32 flags;
+} EDANIM_SPECIAL_VIEW_PC;
+
+typedef struct edanim_instance_view_pc_s {
+    u8 unknown_00[0x48];
+    NUINSTANIM_TIME_VIEW *animation;
+} EDANIM_INSTANCE_VIEW_PC;
+
+extern struct eduimenu_s *edanim_localsound_menu;
+void edanimcbCancelLocalSoundMenu(eduimenu_s *unused0, eduimenu_s *unused1);
+void edanimcbToggleSoundType(eduimenu_s *menu, eduiitem_s *item, u32 unused2);
+void edanimcbSetSoundTiming(eduimenu_s *unused0, eduiitem_s *item, u32 unused2);
+
+void edanimcbLocalSoundMenu(eduimenu_s *parent, eduiitem_s *unused1, u32 unused2) {
+    u32 colours[4] = {0x80000000, 0x80ff0000, 0x80808080, 0x80404040};
+    NUSPECIALHANDLE special;
+    if (edanim_nearest_sound == -1)
+        return;
+    edanim_localsound_menu =
+        eduiMenuCreate(70, 70, 250, 300, ed_fnt, edanimcbCancelLocalSoundMenu, (char *)("Highlighted Sound Settings"));
+    if (!edanim_localsound_menu)
+        return;
+    eduiMenuAddItem(edanim_localsound_menu, eduiItemSelCreate(1, colours, 0, 0, edanimcbLocalSoundTypeMenu,
+                                                              (char *)("Highlighted Sound Type...")));
+    eduiMenuAddItem(edanim_localsound_menu,
+                    eduiItemToggleCreate(1, colours,
+                                         AnimParams[edanim_nearest_param_id].sound_flags[edanim_nearest_sound] == 1, 1,
+                                         edanimcbToggleSoundType, (char *)("Repeating Sound")));
+    if (AnimParams[edanim_nearest_param_id].sound_flags[edanim_nearest_sound] == 1) {
+        eduiMenuAddItem(
+            edanim_localsound_menu,
+            eduiItemSliderCreateInt(0, colours, 0, edanimcbSetSoundTiming, 1, 99,
+                                    (i32)AnimParams[edanim_nearest_param_id].sound_values[edanim_nearest_sound],
+                                    (char *)("Repeat Every")));
+    } else {
+        NuGScnGetSpecial(&special, edbits_base_scene, edanim_nearest);
+        if (NuSpecialTestAnim(&special)) {
+            eduiMenuAddItem(
+                edanim_localsound_menu,
+                eduiItemSliderCreate(0, colours, 0, edanimcbSetSoundTiming, 1.0f,
+                                     *(f32 *)edbits_base_scene->instance_animation_data
+                                          [((EDANIM_INSTANCE_VIEW_PC *)((EDANIM_SPECIAL_VIEW_PC *)
+                                                                            edbits_base_scene->specials)[edanim_nearest]
+                                                .instance)
+                                               ->animation->animation_index],
+                                     AnimParams[edanim_nearest_param_id].sound_values[edanim_nearest_sound],
+                                     (char *)("Sound Trigger Time")));
+            eduiItemSliderSetFmt((edui_slider_s *)edui_last_item, (char *)("(%1.01f)"));
+            eduiItemSliderSetGranularity((edui_slider_s *)edui_last_item, 0.1f);
+        }
+    }
+    eduiMenuAttach(parent, edanim_localsound_menu);
+    edanim_localsound_menu->x = parent->x + 10;
+    edanim_localsound_menu->y = parent->y + 40;
 }

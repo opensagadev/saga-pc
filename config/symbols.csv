@@ -7042,6 +7042,7 @@ address,symbol,size,ctype
 0x65a670,_edanimcbCancelBouncyMenu,25,
 0x65a690,_edanimcbToggleSoundType,109,
 0x65a700,_edanimcbSetSoundType,61,
+0x65a740,_edanimcbSetSoundTiming,32,
 0x65a760,_edanimcbToggleParticleSwitch,48,
 0x65a790,_edanimcbSetParticleType,58,
 0x65a7d0,_edanimcbSetLocalParticleType,117,
@@ -7056,6 +7057,7 @@ address,symbol,size,ctype
 0x65aca0,_edanimcbParticleMenu,248,
 0x65ada0,_edanimcbCancelSoundTypeMenu,25,
 0x65adc0,_edanimcbCancelLocalSoundTypeMenu,25,
+0x65ade0,_edanimcbCancelLocalSoundMenu,25,
 0x65ae00,_edanimcbCancelSoundMenu,25,
 0x65af60,_edanimcbMCTBCardPresent,51,
 0x65afa0,_edanimcbMCTBCardType,51,
@@ -16300,6 +16302,11 @@ address,symbol,size,ctype
 0x76e280,??_C@_0L@KIBPLPBI@Bounciness?$AA@,11,char []
 0x76e28c,??_C@_0L@MFBHICLH@Sound?5Type?$AA@,11,char []
 0x76e298,??_C@_0BH@FCGFCAMD@Highlighted?5Sound?5Type?$AA@,23,char []
+0x76e2b0,??_C@_0BD@FDCKGPAF@Sound?5Trigger?5Time?$AA@,19,char []
+0x76e2c4,??_C@_0N@MAIIHJIJ@Repeat?5Every?$AA@,13,char []
+0x76e2d4,??_C@_0BA@LDKBOIL@Repeating?5Sound?$AA@,16,char []
+0x76e2e4,??_C@_0BK@ECIMCDPF@Highlighted?5Sound?5Type?4?4?4?$AA@,26,char []
+0x76e300,??_C@_0BL@LELLHGCO@Highlighted?5Sound?5Settings?$AA@,27,char []
 0x76e31c,??_C@_0BM@HMOHPKM@Highlighted?5Snd?5Settings?4?4?4?$AA@,28,char []
 0x76e338,??_C@_0O@DDEOCNJF@Sound?5Type?4?4?4?$AA@,14,char []
 0x76e348,??_C@_0BA@JIKLNEGI@File?5Load?5Error?$AA@,16,char []
@@ -24866,6 +24873,7 @@ address,symbol,size,ctype
 0x2962110,_edanim_sound_menu,4,struct eduimenu_s *
 0x2962114,_edanim_soundtype_menu,4,struct eduimenu_s *
 0x2962118,_edanim_localsoundtype_menu,4,struct eduimenu_s *
+0x296211c,_edanim_localsound_menu,4,struct eduimenu_s *
 0x2962120,_edanim_bouncy_menu,4,struct eduimenu_s *
 0x2962124,_edanim_mctb_menu,4,struct eduimenu_s *
 0x02962128,_edanim_params_used,4,i32

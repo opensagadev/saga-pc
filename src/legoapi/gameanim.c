@@ -1137,14 +1137,14 @@ void edanimcbSwitchTypeMenu(eduimenu_s *parent, eduiitem_s *unused1, u32 unused2
     edanim_switchtype_menu->y = parent->y + 40;
 }
 
-static void edanimcbToggleSoundType(eduimenu_s *menu, eduiitem_s *item, u32 unused2) {
+void edanimcbToggleSoundType(eduimenu_s *menu, eduiitem_s *item, u32 unused2) {
     edanim_soundtype_menu = NULL;
     if (!(item->highlighted & 1)) {
-        AnimParams[edanim_nearest_param_id].sound_values[edanim_nearest_sound] = 1.0f;
         AnimParams[edanim_nearest_param_id].sound_flags[edanim_nearest_sound] = 0;
+        AnimParams[edanim_nearest_param_id].sound_values[edanim_nearest_sound] = 1.0f;
     } else {
-        AnimParams[edanim_nearest_param_id].sound_values[edanim_nearest_sound] = 50.0f;
         AnimParams[edanim_nearest_param_id].sound_flags[edanim_nearest_sound] = 1;
+        AnimParams[edanim_nearest_param_id].sound_values[edanim_nearest_sound] = 50.0f;
     }
     eduiMenuDetach(menu);
     eduiMenuDestroy(menu);
@@ -1160,6 +1160,10 @@ void edanimcbSetSoundType(eduimenu_s *menu, eduiitem_s *item, u32 unused2) {
     edanim_sound_type = item->data == 0x1869f ? -1 : item->data;
     eduiMenuDetach(menu);
     eduiMenuDestroy(menu);
+}
+
+void edanimcbSetSoundTiming(eduimenu_s *unused0, eduiitem_s *item, u32 unused2) {
+    AnimParams[edanim_nearest_param_id].sound_values[edanim_nearest_sound] = ((edui_slider_s *)item)->value;
 }
 
 static void edanimcbToggleParticleSwitch(eduimenu_s *unused0, eduiitem_s *item, u32 unused2) {
@@ -1263,6 +1267,13 @@ void edanimcbCancelParticleMenu(eduimenu_s *unused0, eduimenu_s *unused1) {
 void edanimcbCancelSoundTypeMenu(eduimenu_s *unused0, eduimenu_s *unused1) {
     eduiMenuDestroy(edanim_soundtype_menu);
     edanim_soundtype_menu = NULL;
+}
+
+extern struct eduimenu_s *edanim_localsound_menu;
+
+void edanimcbCancelLocalSoundMenu(eduimenu_s *unused0, eduimenu_s *unused1) {
+    eduiMenuDestroy(edanim_localsound_menu);
+    edanim_localsound_menu = NULL;
 }
 
 static void edanimcbCancelLocalSoundTypeMenu(eduimenu_s *unused0, eduimenu_s *unused1) {

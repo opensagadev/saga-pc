@@ -29791,6 +29791,9 @@ extern "C" {
 #pragma bss_seg(".bss$edanim_mctb_menu")
     struct eduimenu_s *edanim_mctb_menu = 0;
 
+#pragma bss_seg(".bss$edanim_localsound_menu")
+    struct eduimenu_s *edanim_localsound_menu = 0;
+
 #pragma bss_seg(".bss$edanim_localsoundtype_menu")
     struct eduimenu_s *edanim_localsoundtype_menu = 0;
 
