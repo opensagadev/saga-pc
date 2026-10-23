@@ -584,7 +584,7 @@ void __cdecl Text3DStringEncodeFont(u8 *source, u16 *destination, VUFNT *font) {
     *destination = 0;
 }
 
-void __cdecl Text3DStringEncode(char *source, u16 *destination) {
+__declspec(noinline) void __cdecl Text3DStringEncode(char *source, u16 *destination) {
     Text3DStringEncodeFont((u8 *)source, destination, SmartTextFont != NULL ? SmartTextFont : QFont2D);
 }
 
@@ -936,180 +936,132 @@ void SmartTextEx(char *text, f32 x, f32 y, f32 z, f32 x_scale, f32 y_scale, f32 
     STATIC_ASSERT(offsetof(BOX_GEOMETRY_PC, y) == 8);
     STATIC_ASSERT(offsetof(BOX_GEOMETRY_PC, width) == 0x10);
     STATIC_ASSERT(offsetof(BOX_GEOMETRY_PC, height) == 0x14);
+    BOX_GEOMETRY_PC *box = (BOX_GEOMETRY_PC *)message_box;
+    i32 widest_line = -1;
     f32 saved_x_scale;
-    f32 draw_x_scale;
     f32 saved_y_scale;
-    f32 available_width;
+    f32 draw_x_scale;
     f32 width;
+    f32 longest;
     f32 line_height;
+    f32 line_y;
     i32 explicit_breaks;
     i32 last_line;
     i32 constrained;
     i32 characters;
     i32 bytes;
-    i32 widest_line;
     i32 begin;
     i32 line;
     i32 end;
     i32 length;
-    f32 line_width;
-    i32 count;
     i32 next;
-    f32 box_height;
     i32 pos;
-    f64 preferred_width;
-    f32 line_y;
-    BOX_GEOMETRY_PC *box;
-    f32 box_width;
     unsigned char decoded[512];
-    unsigned char candidate[512];
     u16 encoded[512];
+    unsigned char candidate[512];
     unsigned char lines[8][512];
-    lines[0][0] = '\0';
     if ((SmartTextFont == NULL && QFont2D == NULL) || text == NULL || text[0] == '\0' || MenuStopDraw != 0)
         return;
 
+    x_scale = TextScaleX_candidate * x_scale;
+    y_scale = TextScaleY_candidate * y_scale;
     saved_x_scale = TextScaleX_candidate;
-    draw_x_scale = saved_x_scale * x_scale;
     saved_y_scale = TextScaleY_candidate;
-    y_scale = saved_y_scale * y_scale;
+
     TextScaleX_candidate = 1.0f;
     TextScaleY_candidate = 1.0f;
-    box = (BOX_GEOMETRY_PC *)message_box;
-    x *= STCOORDSCALE;
-    available_width = STCOORDSCALE * max_width;
+    x = STCOORDSCALE * x;
+    max_width = STCOORDSCALE * max_width;
     TextDecode(text, decoded);
-    Text3DStringEncode((char *)(decoded), encoded);
-    NuQFntSet(SmartTextFont != NULL ? SmartTextFont : QFont2D);
-    NuQFntSetScale(SmartTextFont != NULL ? SmartTextFont : QFont2D, draw_x_scale * QFONTSCALEX, y_scale * QFONTSCALEY);
-    width = NuQFntPrintLenW(SmartTextFont != NULL ? SmartTextFont : QFont2D, encoded);
-    line_height = NuQFntHeight(SmartTextFont != NULL ? SmartTextFont : QFont2D);
-    NuQFntBaseline(SmartTextFont != NULL ? SmartTextFont : QFont2D);
+    Text3DStringEncodeFont(decoded, encoded, TEXT3D_FONT());
+    NuQFntSet(TEXT3D_FONT());
+    NuQFntSetScale(TEXT3D_FONT(), QFONTSCALEX * x_scale, QFONTSCALEY * y_scale);
+    width = NuQFntPrintLenW(TEXT3D_FONT(), encoded);
+    line_height = NuQFntHeight(TEXT3D_FONT());
+    NuQFntBaseline(TEXT3D_FONT());
 
-    if (available_width <= 0.0f) {
-        available_width = SmartTextDefaultWidthPc;
-        preferred_width = (f64)available_width * (f64)0.9f;
-    } else {
-        preferred_width = (f64)available_width * (f64)0.9f;
-    }
+    if (max_width <= 0.0f)
+        max_width = SmartTextDefaultWidthPc;
 
     explicit_breaks = 0;
     for (pos = 0; decoded[pos] != '\0';) {
         if (decoded[pos] == '\\') {
             ++pos;
-            explicit_breaks += decoded[pos] == 'n';
+            if (decoded[pos] == 'n')
+                ++explicit_breaks;
         }
         ++pos;
-        while ((u8)(decoded[pos] - 0x80) <= 0x3f)
+        while (decoded[pos] >= 0x80 && decoded[pos] <= 0xbf)
             ++pos;
     }
-    last_line = (i32)((f64)width / available_width);
-    if (preferred_width < (f64)width / (last_line + 1))
+    last_line = (i32)(width / max_width);
+    if (width / (last_line + 1) > max_width * (f64)0.9f)
         ++last_line;
     constrained = 0;
     if (max_lines > 8)
         max_lines = 8;
-    if (max_lines > 0 && max_lines <= last_line) {
+    if (max_lines > 0 && last_line + 1 > max_lines) {
         last_line = max_lines - 1;
         constrained = 1;
     }
     characters = NuStrLenU(decoded);
     bytes = NuStrLen((char *)(decoded));
-    widest_line = -1;
-    if (explicit_breaks != 0) {
-        width = 0.0f;
-        begin = 0;
-        line = 0;
-        do {
+    longest = 0.0f;
+    if (explicit_breaks > 0) {
+        for (line = 0; line <= explicit_breaks; ++line) {
+            begin = line == 0 ? 0 : end + 3;
             while (decoded[begin] == ' ')
                 ++begin;
-            end = begin;
-            while (end < bytes) {
+            for (end = begin; end < bytes; ++end) {
                 if (decoded[end] == '\\' && decoded[end + 1] == 'n')
                     break;
-                ++end;
             }
-            length = end - begin;
+            --end;
+            length = end - begin + 1;
             if (length > 511)
                 length = 511;
             PCByteCopy_candidate(lines[line], decoded + begin, length);
             lines[line][length] = '\0';
-            Text3DStringEncode((char *)(lines[line]), encoded);
-            line_width = NuQFntPrintLenW(SmartTextFont != NULL ? SmartTextFont : QFont2D, encoded);
-            if (width < line_width) {
+            Text3DStringEncodeFont(lines[line], encoded, TEXT3D_FONT());
+            width = NuQFntPrintLenW(TEXT3D_FONT(), encoded);
+            if (width > longest) {
+                longest = width;
                 widest_line = line;
-                width = line_width;
             }
-            ++line;
-            begin = end + 2;
-        } while (line <= explicit_breaks);
+        }
         last_line = explicit_breaks;
-        last_line -= lines[last_line][0] == '\0';
-    } else if (last_line != 0) {
-        width = 0.0f;
-        if ((alignment & 10) == 0 || constrained) {
-            count = last_line + 1;
-            for (line = 0; line <= last_line; ++line) {
-                begin = 0;
-                if (line != 0)
-                    begin = FindNearestBreak(decoded, NuStrFindPosU(decoded, (characters / count) * line));
-                end = bytes;
-                if (line != last_line)
-                    end = FindNearestBreak(decoded, NuStrFindPosU(decoded, (characters / count) * (line + 1)));
-                if ((u8)(decoded[end] - ',') > 2) {
-                    --end;
-                    while (decoded[end] == ' ')
-                        --end;
-                }
-                while (decoded[begin] == '-' || decoded[begin] == ' ' || decoded[begin] == '.' || decoded[begin] == ',')
-                    ++begin;
-                length = end - begin + 1;
-                if (length > 511)
-                    length = 511;
-                PCByteCopy_candidate(lines[line], decoded + begin, length);
-                lines[line][length] = '\0';
-                Text3DStringEncode((char *)(lines[line]), encoded);
-                line_width = NuQFntPrintLenW(SmartTextFont != NULL ? SmartTextFont : QFont2D, encoded);
-                if (width < line_width) {
-                    widest_line = line;
-                    width = line_width;
-                }
-            }
-        } else {
-            begin = 0;
+    } else if (last_line > 0) {
+        if ((alignment & 10) != 0 && constrained == 0) {
             end = 0;
             for (line = 0; line <= last_line; ++line) {
+                begin = line == 0 ? 0 : end + 1;
                 while (decoded[begin] == ' ')
                     ++begin;
                 if (line == last_line) {
                     end = bytes - 1;
-                } else {
+                } else if (max_width > 0.0) {
                     next = begin;
-                    if (available_width > 0.0f) {
-                        do {
-                            end = next;
-                            next = end + 1;
-                            while (decoded[next] == ' ')
-                                ++next;
-                            if (next == bytes) {
-                                end = bytes - 1;
-                                break;
-                            }
-                            next = FindNextBreak(decoded, next);
-                            if ((u8)(decoded[next] - ',') > 2) {
-                                --next;
-                                while (decoded[next] == ' ')
-                                    --next;
-                            }
-                            length = next - begin + 1;
-                            if (length > 511)
-                                length = 511;
-                            PCByteCopy_candidate(candidate, decoded + begin, length);
-                            candidate[length] = '\0';
-                            Text3DStringEncode((char *)(candidate), encoded);
-                        } while (NuQFntPrintLenW(SmartTextFont != NULL ? SmartTextFont : QFont2D, encoded) <
-                                 available_width);
-                    }
+                    do {
+                        end = next;
+                        ++next;
+                        while (decoded[next] == ' ')
+                            ++next;
+                        if (next == bytes) {
+                            end = next - 1;
+                            break;
+                        }
+                        next = FindNextBreak(decoded, next);
+                        if (decoded[next] != '-' && decoded[next] != '.' && decoded[next] != ',')
+                            --next;
+                        while (decoded[next] == ' ')
+                            --next;
+                        length = next - begin + 1;
+                        if (length > 511)
+                            length = 511;
+                        PCByteCopy_candidate(candidate, decoded + begin, length);
+                        candidate[length] = '\0';
+                        Text3DStringEncodeFont(candidate, encoded, TEXT3D_FONT());
+                    } while (NuQFntPrintLenW(TEXT3D_FONT(), encoded) < max_width);
                 }
                 length = end - begin + 1;
                 if (length > 511)
@@ -1117,61 +1069,87 @@ void SmartTextEx(char *text, f32 x, f32 y, f32 z, f32 x_scale, f32 y_scale, f32 
                 PCByteCopy_candidate(lines[line], decoded + begin, length);
                 lines[line][length] = '\0';
                 Text3DStringEncode((char *)(lines[line]), encoded);
-                line_width = NuQFntPrintLenW(SmartTextFont != NULL ? SmartTextFont : QFont2D, encoded);
-                if (width < line_width) {
+                width = NuQFntPrintLenW(TEXT3D_FONT(), encoded);
+                if (width > longest) {
+                    longest = width;
                     widest_line = line;
-                    width = line_width;
                 }
-                begin = end + 1;
+            }
+        } else {
+            for (line = 0; line <= last_line; ++line) {
+                if (line == 0)
+                    begin = 0;
+                else
+                    begin = FindNearestBreak(decoded, NuStrFindPosU(decoded, characters / (last_line + 1) * line));
+                if (line == last_line)
+                    end = bytes;
+                else
+                    end = FindNearestBreak(decoded, NuStrFindPosU(decoded, characters / (last_line + 1) * (line + 1)));
+                if (decoded[end] != '-' && decoded[end] != '.' && decoded[end] != ',')
+                    --end;
+                while (decoded[end] == ' ')
+                    --end;
+                while (decoded[begin] == ' ' || decoded[begin] == '-' || decoded[begin] == '.' || decoded[begin] == ',')
+                    ++begin;
+                length = end - begin + 1;
+                if (length > 511)
+                    length = 511;
+                PCByteCopy_candidate(lines[line], decoded + begin, length);
+                lines[line][length] = '\0';
+                Text3DStringEncode((char *)(lines[line]), encoded);
+                width = NuQFntPrintLenW(TEXT3D_FONT(), encoded);
+                if (width > longest) {
+                    longest = width;
+                    widest_line = line;
+                }
             }
         }
-        last_line -= lines[last_line][0] == '\0';
-    }
-    if (available_width < width) {
-        SmartTextLongestWidthPc = available_width;
-        draw_x_scale = (f32)((f64)available_width / width * draw_x_scale);
     } else {
-        SmartTextLongestWidthPc = width;
+        longest = width;
+    }
+    if (lines[last_line][0] == '\0')
+        --last_line;
+    SmartTextLongestWidthPc = longest;
+    if (max_width < longest) {
+        draw_x_scale = max_width / longest * x_scale;
+        SmartTextLongestWidthPc = max_width;
+    } else {
+        draw_x_scale = x_scale;
     }
     if (box != NULL) {
-        NuQFntSetScale(SmartTextFont != NULL ? SmartTextFont : QFont2D, draw_x_scale, y_scale);
-
-        if (widest_line == -1) {
-            box_width = SmartTextLongestWidthPc;
-        } else {
+        NuQFntSetScale(TEXT3D_FONT(), draw_x_scale, y_scale);
+        if (widest_line > -1) {
             Text3DStringEncode((char *)(lines[widest_line]), encoded);
-            box_width = NuQFntPrintLenW(SmartTextFont != NULL ? SmartTextFont : QFont2D, encoded);
+            width = NuQFntPrintLenW(TEXT3D_FONT(), encoded);
+        } else {
+            width = longest;
         }
-
-        box->y = y;
         box->x = x;
-
-        box->width = box_width;
-        box_height = (f32)(-(f64)(last_line + 1) * line_height);
-        box->height = box_height;
+        box->y = y;
+        box->width = width;
+        box->height = (f32)((last_line + 1) * line_height * -1.0);
     }
     followon_line = 0;
     if (suppress_draw == 0) {
-        if (last_line == 0) {
-            Text3DEx((char *)(decoded), x, y, z, draw_x_scale, y_scale, z_scale, alignment, red, green, blue, alpha);
-        } else {
-
+        if (last_line > 0) {
             for (line = 0; line <= last_line; ++line) {
+                if ((alignment & 1) != 0)
+                    line_y = y + line_height * line;
+                else if ((alignment & 4) != 0)
+                    line_y = y - last_line * line_height + line_height * line;
+                else
+                    line_y = y - last_line * 0.5f * line_height + line_height * line;
                 if (line != 0)
                     followon_line = 1;
-                if ((alignment & 1) != 0)
-                    line_y = (f32)((f64)y + (f64)line * line_height);
-                else if ((alignment & 4) != 0)
-                    line_y = (f32)((f64)y - (f64)last_line * line_height + (f64)line * line_height);
-                else
-                    line_y = (f32)((f64)y - (f64)last_line * 0.5 * line_height + (f64)line * line_height);
                 Text3DEx((char *)(lines[line]), x, line_y, z, draw_x_scale, y_scale, z_scale, alignment, red, green,
                          blue, alpha);
             }
+        } else {
+            Text3DEx((char *)(decoded), x, y, z, draw_x_scale, y_scale, z_scale, alignment, red, green, blue, alpha);
         }
     }
-    followon_line = 0;
     TextScaleX_candidate = saved_x_scale;
+    followon_line = 0;
     TextScaleY_candidate = saved_y_scale;
 }
 void __cdecl SmartTextEx(char *, f32, f32, f32, f32, f32, f32, u32, u32, u32, u32, f32, i32, void *, i32, i32);
