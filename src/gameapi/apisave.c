@@ -88,10 +88,10 @@ void __cdecl SaveSystemInitialiseEx(i32 slots, SAVE_HASH_FN_PC hashfn, void *sav
     memcard_headerdatasize = header_size;
     memcard_headerdatabuffer =
         NuAlloc(header_size + 4, "d:\\projects\\game_saga\\gameapi.saga\\gui\\gamemenu\\apisave.c", 0x84);
-    if (header == NULL) {
-        SAVESLOTS = slots < 6 ? slots : 6;
-    } else {
+    if (header != NULL) {
         SAVESLOTS = slots < 5 ? slots : 5;
+    } else {
+        SAVESLOTS = slots < 6 ? slots : 6;
     }
 }
 
@@ -761,7 +761,7 @@ void __cdecl MenuEnterLoad(MENU *menu) {
     view->last_column = (i16)(last_column - 1);
     view->state = 2;
     view->last_row = 1;
-    SaveMenuLastSlotPc = SaveMenuSlideLeftPc = SaveMenuSlideRightPc = 0;
+    SaveMenuSlideRightPc = SaveMenuSlideLeftPc = SaveMenuLastSlotPc = 0;
     MenuKeyboardSecondaryPc = 1;
     Menu_LastFlow = 3;
     MenuLoadOccurred = 0;
@@ -1073,7 +1073,7 @@ void __cdecl MenuEnterNoMemoryCard(MENU *menu) {
 void __cdecl MenuDrawNoData(MENU *menu) {
     MenuDrawNoDataMessagePc();
     ((SAVE_MENU_VIEW_PC *)menu)->draw_y = MENUBOTY;
-    DrawMenuEntryEx(menu, apitxt_OK, (u8)MenuA);
+    DrawMenuEntryEx(menu, apitxt_CANCEL, (u8)MenuA);
 }
 
 static void MenuDrawLoadingMessagePc(void) {

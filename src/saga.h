@@ -10422,7 +10422,7 @@ void __cdecl PCStereoUnknownToken(void);
     extern i16 id_MINIDROIDEKA;
     extern LEVELDATA_PC *SARLACCPITA_LDATA;
     extern i32 KillPartsPreviousVariantPc;
-    extern PART_LIGHTING_DATA_PC KillPartsZeroLightingPc;
+    extern RTL_DATA_PC KillPartsZeroLightingPc;
     extern f32 KillPartsBrickImpactWaitPc;
     extern char KillPartsLegoSingleTextPc[11];
     extern KILLPARTS_CHARSCENE_PC *KillPartsCharSceneAreaPc;

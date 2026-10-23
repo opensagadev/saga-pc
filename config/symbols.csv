@@ -24216,7 +24216,7 @@ address,symbol,size,ctype
 0x9558a0,_COLLECTION_COMPLETIONCOUNT,,i32
 0x009558a4,_TempCollectID,4,COLLECTID_PC *
 0x9558a8,_Collection_GetSelectingPlayerIDsFn,,void (__cdecl *)(i16 *ids)
-0x9558b0,_KillPartsZeroLightingPc,,PART_LIGHTING_DATA_PC
+0x9558b0,_KillPartsZeroLightingPc,,RTL_DATA_PC
 0x9559f8,_LevelLightingDataPc,,RTL_DATA_PC
 0x955b3c,_Lighting_FlashRedOnLastHeart,,i32
 0x955b40,_Lighting_HighlightFlash,,i32

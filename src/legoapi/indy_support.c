@@ -15,7 +15,7 @@ void __cdecl ClimbObject_FindNormalPc(CLIMB_SLOT_PC *object) {
         origin.y = (f32)((node->max_height + node->min_height) * 0.5);
         origin.z = node->position.z;
         if (NewRayCastScaleYMask(&origin, &displacement, 0.0f, 1.0f, 0,
-                                 GetSurfaceInfoRuntimeMaskPc.word | GetSurfaceInfoDefaultMaskPc.word | 0x5f) != 0 &&
+                                 GetSurfaceInfoDefaultMaskPc.word | GetSurfaceInfoRuntimeMaskPc.word | 0x5f) != 0 &&
             (TerSurface[(i8)NewRayCastGetImpactTerrainType()].flags & 0x10000) != 0) {
             object->flags |= 1;
             object->normal = ShadNorm;

@@ -343,7 +343,7 @@ extern "C" {
             params.draw_fn = PartDraw_Flickerer;
             params.time_step = FRAMETIME;
             params.lighting_data = Cheats_CheckFlags(1)
-                                       ? &KillPartsZeroLightingPc
+                                       ? reinterpret_cast<PART_LIGHTING_DATA_PC *>(&KillPartsZeroLightingPc)
                                        : &reinterpret_cast<KILLPARTS_OBJECT_LIGHT_PC *>(object)->lighting;
             AddPart(&params);
         }

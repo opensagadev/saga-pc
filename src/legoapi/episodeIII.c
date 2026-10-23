@@ -93,12 +93,12 @@ static void __cdecl BoulderSpawnPc(i32 index) {
         params = Default_ADDPART;
         params.matrix = &NuMtxSetIdentityTemplate;
         params.velocity = &v000;
-        params.owner = NULL;
-        params.field_14 = boulder_radius;
         params.field_18 = boulder_radius;
+        params.field_14 = boulder_radius;
         params.gravity = 0.0f;
         params.special = &LevHSpecial[index];
         params.flags = 0x80861a;
+        params.owner = NULL;
         params.move_fn = Boulder_Move;
         params.collision_fn = PartCollide_3D;
         params.kill_fn = Boulder_Kill;

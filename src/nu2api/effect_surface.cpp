@@ -17,7 +17,7 @@ PC_EFFECT_SURFACE_PC::PC_EFFECT_SURFACE_PC() {
     surface = NULL;
     level = 0;
     field_10 = 0;
-    width = height = 0;
+    height = width = 0;
     registry_index = -1;
     Reset();
     if (!PcSurfaceRegistryInitialized) {

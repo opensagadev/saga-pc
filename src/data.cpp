@@ -15879,7 +15879,7 @@ extern "C" {
 }
 extern "C" {
 #pragma bss_seg(".bss$KillPartsZeroLightingPc")
-    PART_LIGHTING_DATA_PC KillPartsZeroLightingPc = {0};
+    RTL_DATA_PC KillPartsZeroLightingPc = {0};
 #pragma bss_seg()
 }
 extern "C" {

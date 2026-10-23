@@ -4,7 +4,7 @@ extern char **TexAnimScriptTablePc;
 void __cdecl NuTexAnimScriptMissingPc(char *path);
 
 void __cdecl InitTexAnimScripts(char **table) {
-    char path[0x3c];
+    char path[0x40];
     char **entry;
     TexAnimScriptTablePc = table;
     if (table == NULL) {

@@ -650,7 +650,7 @@ void __cdecl edppDeleteEffect(i32 index) {
             particle->instance_id = -1;
         } else {
             i32 handle = particle->instance_id;
-            if (handle != 99999 && handle != -1)
+            if (handle != -1 && handle != 99999)
                 debkeydata[handle].effect_index = (i16)replacement;
             particle->effect_index = replacement;
         }

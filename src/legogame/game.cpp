@@ -267,7 +267,7 @@ static i32 CanGlide_Game(GAMEOBJECT *object) {
 }
 
 static i32 UsingExtraActions_Game(GAMEOBJECT *object) {
-    return object->id == (u16)id_GRIEVOUS && ((object->flags_e20 & 0x00010000) == 0 || object->field_e33 == 2);
+    return object->id == (u16)id_GRIEVOUS && (((u8)(object->flags_e20 >> 16) & 1) == 0 || object->field_e33 == 2);
 }
 
 static i32 IsWearingBackPack_Game(GAMEOBJECT *object) {
@@ -976,8 +976,8 @@ extern "C" void __cdecl InitGameBeforeConfig(void) {
     GameAudio_Reset();
     if (StartupGameFlag0 != 0) {
         NuAnimSetForceEulerToQuat(1);
+        GameDrawCharacterModelFlagPc = 0;
     }
-    GameDrawCharacterModelFlagPc = 0;
 }
 
 typedef struct game_door_callback_pc_s {
@@ -2358,9 +2358,9 @@ extern "C" void __cdecl GamePlayMusic(LEVELDATA_PC *level, i32 check, OPTIONSSAV
 
 extern "C" void MusicClearAll() {
     MusicPlrsUnderAttack = 0;
+    MusicActiveReset = 0;
     MusicActive = -1;
     sticky_attack_time = 0.0f;
-    MusicActiveReset = 0;
     MusicSwapDelay = 0.0f;
     MusicSeekIndex = 0;
     PlayersUnderAttack = 0;

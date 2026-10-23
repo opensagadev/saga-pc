@@ -1784,7 +1784,7 @@ i32 __cdecl QuickNewRayCast(NUVEC *position, NUVEC *movement, f32 radius, i32 sc
             return NewRayCast(position, movement, radius, scan_flags);
         distance = NuFsqrt(distance);
         NuVecScale(&direction, movement, APIObjectSafeDividePc(1.0f, distance));
-        travelled.x = travelled.y = travelled.z = 0.0f;
+        travelled.z = travelled.y = travelled.x = 0.0f;
         current = *position;
         while (distance > 0.0f) {
             if (distance >= step) {
