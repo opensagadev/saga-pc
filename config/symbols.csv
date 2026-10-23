@@ -943,10 +943,10 @@ address,symbol,size,ctype
 0x0045e400,_DrawStatusBG_LSW,37,void __cdecl(STATUSPACKET_s *)
 0x45e430,_getFinishedStatusAlpha,171,f32 __cdecl(STATUSPACKET_s *)
 0x0045e4e0,_TrueHero_LSW_Skip,12,"void __cdecl(STATUS_STAGE_s *, STATUSPACKET_s *)"
-0x0045e4f0,_TrueHero_LSW_Update,497,"void __cdecl(STATUS_STAGE_s *, STATUSPACKET_s *, f32)"
+0x0045e4f0,_TrueHero_LSW_Update,528,"void __cdecl(STATUS_STAGE_s *, STATUSPACKET_s *, f32)"
 0x0045e700,_TrueHero_LSW_Draw,1710,"void __cdecl(STATUS_STAGE_s *, STATUSPACKET_s *, i32)"
 0x0045edd0,_MiniKit_LSW_Skip,91,"void __cdecl(STATUS_STAGE_s *, STATUSPACKET_s *)"
-0x0045ee30,_MiniKit_LSW_Update,865,"void __cdecl(STATUS_STAGE_s *, STATUSPACKET_s *, f32)"
+0x0045ee30,_MiniKit_LSW_Update,896,"void __cdecl(STATUS_STAGE_s *, STATUSPACKET_s *, f32)"
 0x0045f1b0,_MiniKit_LSW_Draw,2417,"void __cdecl(STATUS_STAGE_s *, STATUSPACKET_s *, i32)"
 0x0045fb40,_AllMiniKits_LSW_Skip,27,"void __cdecl(STATUS_STAGE_s *, STATUSPACKET_s *)"
 0x0045fb60,_AllMiniKits_LSW_Update,233,"void __cdecl(STATUS_STAGE_s *, STATUSPACKET_s *, f32)"
@@ -14693,6 +14693,7 @@ address,symbol,size,ctype
 0x0075f77c,_TextPlatformWii,4,const char[4]
 0x75f780,??_C@_04JFCNHLLM@back?$AA@,5,char[5]
 0x75f788,??_C@_06MPKMECK@accept?$AA@,7,char[7]
+0x75f7a0,__real@40ac000000000000,8,const f64
 0x75f7a8,__real@40c4000000000000,8,const f64
 0x75f7b0,__real@3f7cac0840000000,8,const f64
 0x75f7b8,??_C@_08CLBBHHBL@?$HO0?$CFs?$CFs?$HO?$HO?$AA@,9,const char[9]
@@ -15061,7 +15062,7 @@ address,symbol,size,ctype
 0x761994,??_C@_05GLAFLBDP@ball3?$AA@,,const char[6]
 0x76199c,??_C@_05HCBOIAHO@ball2?$AA@,,const char[6]
 0x7619a4,??_C@_05FJDDNDLN@ball1?$AA@,,const char[6]
-0x7619b0,__real@40ac000000000000,8,const f64
+0x7619b0,__real@40ac400000000000,8,const f64
 0x7619b8,__real@3e59df52,4,const f32
 0x7619c0,__real@40ac100000000000,8,const f64
 0x7619c8,__real@40c40a0000000000,8,const f64

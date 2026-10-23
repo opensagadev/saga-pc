@@ -19,15 +19,17 @@ STATIC_ASSERT(offsetof(STILL_RENDER_MATERIAL_PC, shader) == 0xb4);
 extern "C" void __cdecl InitStillRender(VARIPTR *buffer, VARIPTR end) {
     pause_rt = NuTexCreateFramebufferCopy(buffer, end);
     STILL_RENDER_MATERIAL_PC *material = (STILL_RENDER_MATERIAL_PC *)NuMtlCreate3D(1);
-    material->opacity = 1.0f;
     material->texture_id = (i16)pause_rt;
-    material->attributes = (material->attributes & 0xfffee5d1u) | 0x6e511u;
-    material->shader.vertex_format = (material->shader.vertex_format & 0xffffcfff) | 0x40800;
+    material->opacity = 1.0f;
+    u32 attributes = (material->attributes & 0xfffee5d1u) | 0x6e511u;
+    u32 vertex_format = (material->shader.vertex_format & 0xffffcfff) | 0x40800;
     pause_rndr_mtl = material;
     material->sort_priority = 0x7fff;
+    material->attributes = attributes;
     material->shader.flags = 0x1000;
     material->shader.packed_diffuse_colour = 0xffffffff;
     material->shader.texture_unit_count = 1;
+    material->shader.vertex_format = vertex_format;
     NuMtlUpdate((NUMTL *)material);
     pause_rndr_on = 0;
 }
@@ -43,7 +45,6 @@ STATIC_ASSERT(offsetof(CUT_DISPLAY_VIEW_PC, camera_far_clip) == 0xe8);
 
 extern "C" void __cdecl GameDisplaySettings(LEVEL_DISPLAY_PC *display, i32 *colours) {
     CUT_DISPLAY_VIEW_PC *cut = (CUT_DISPLAY_VIEW_PC *)CutStopInfo;
-    LEVELDATA_PC *level;
     i32 top_r, top_g, top_b, bottom_r, bottom_g, bottom_b;
     f32 alpha;
 
@@ -58,9 +59,8 @@ extern "C" void __cdecl GameDisplaySettings(LEVEL_DISPLAY_PC *display, i32 *colo
     } else {
         pNuCam->far_clip = (f32)(u16)display->far_clip;
     }
-    level = WORLD->current_level;
-    if (level != TITLES_LDATA && (level->flags & 0x400) == 0 && level != STATUS_LDATA && level != CREDITS_LDATA &&
-        !(MainRenderTime < 1.0f)) {
+    if (WORLD->current_level != TITLES_LDATA && (WORLD->current_level->flags & 0x400) == 0 &&
+        WORLD->current_level != STATUS_LDATA && WORLD->current_level != CREDITS_LDATA && !(MainRenderTime < 1.0f)) {
         colours[0] = (((0xffff8000 | display->bg_blue_top) << 8 | display->bg_green_top) << 8) | display->bg_red_top;
         colours[1] =
             (((0xffff8000 | display->bg_blue_bottom) << 8 | display->bg_green_bottom) << 8) | display->bg_red_bottom;
@@ -92,7 +92,9 @@ extern "C" void __cdecl GameDisplaySettings(LEVEL_DISPLAY_PC *display, i32 *colo
 extern "C" f32 CutSceneCameraFocalLengthPc;
 extern "C" f32 __cdecl NuCameraFocalLenToFOV(f32 focal_length);
 extern "C" void __cdecl WidescreenCode(i32 widescreen) {
-    f32 aspect = PcWindowOptions.aspect_mode == 2 ? 0.625f : 0.5625f;
+    f32 aspect = 0.5625f;
+    if (PcWindowOptions.aspect_mode == 2)
+        aspect = 0.625f;
     if (widescreen != 0) {
         pNuCam->aspect = aspect;
         if (!CutSceneCameraCTRL)
@@ -104,7 +106,9 @@ extern "C" void __cdecl WidescreenCode(i32 widescreen) {
         SmartTextSetWidescreen(0.75f, 1.0f);
     } else {
         pNuCam->aspect = 0.75f;
-        if (!CutSceneCameraCTRL || CutSceneCameraFocalLengthPc == 0.0f)
+        if (!CutSceneCameraCTRL)
+            pNuCam->fov = 0.75f;
+        else if (CutSceneCameraFocalLengthPc == 0.0f)
             pNuCam->fov = 0.75f;
         else
             pNuCam->fov = NuCameraFocalLenToFOV(CutSceneCameraFocalLengthPc);
@@ -143,7 +147,7 @@ extern "C" void __cdecl DrawCutBorders(i32 widescreen) {
         border_scale = (f32)((border_scale * 4.0 - 0.5) / 3.0);
     if (border_scale < 0.02f)
         border_scale = 0.02f;
-    height = (i32)(NuTrigTable[((i32)(CutBorderScale * 16384.0) >> 1) & 0x7fff] * (border_scale * 3584.0));
+    height = (i32)(NuTrigTable[((i32)(CutBorderScale * 16384.0) >> 1) & 0x7fff] * (border_scale * 3616.0));
     NuRndrRect2di(0, 0, 0x2800, height, 0x80ffffff, FadeMtl);
     NuRndrRect2di(0, 0xe20 - height, 0x2800, height, 0x80ffffff, FadeMtl);
     NuRndrEndScene();
