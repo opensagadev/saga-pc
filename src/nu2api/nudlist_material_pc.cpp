@@ -792,6 +792,15 @@ extern "C" {
     extern NUMTX PcGeometryViewMatrixPc, PcGeometryProjectionMatrixPc;
     void __cdecl PostBlur7x7DispatchPc(GRAPHICS_RENDER_TEXTURE_PC *, i32, GRAPHICS_RENDER_TEXTURE_PC *, i32, i32, i32,
                                        bool, f32, POST_SHADER_PROGRAM_PC *);
+    extern PC_EFFECT_SURFACE_PC *PcSurfaceRegistry[256];
+}
+
+/* Header-inline in retail: ??_GNuMainFilter (emitted here with the ctor) expands both. */
+inline PC_EFFECT_SURFACE_PC::~PC_EFFECT_SURFACE_PC() {
+    Reset();
+    PcSurfaceRegistry[registry_index] = NULL;
+}
+inline NuPostFilterGen::~NuPostFilterGen() {
 }
 
 NuMainFilter::NuMainFilter() {

@@ -232,7 +232,7 @@ extern "C" VirtualStackAllocator NuPostFilterAllocatorPc;
 extern "C" NuCopyFilter *NuPostCopyFilterPc;
 extern "C" u32 NuPostShaderEngineFlagsPc;
 
-NuPostFilterGen::~NuPostFilterGen() {
+inline NuPostFilterGen::~NuPostFilterGen() {
 }
 
 void NuPostFilterGen::initResources() {

@@ -31,7 +31,7 @@ PC_EFFECT_SURFACE_PC::PC_EFFECT_SURFACE_PC() {
             return;
         }
 }
-PC_EFFECT_SURFACE_PC::~PC_EFFECT_SURFACE_PC() {
+inline PC_EFFECT_SURFACE_PC::~PC_EFFECT_SURFACE_PC() {
     Reset();
     PcSurfaceRegistry[registry_index] = NULL;
 }
