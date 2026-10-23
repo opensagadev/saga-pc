@@ -29713,6 +29713,12 @@ extern "C" {
 #pragma data_seg(".data$edui_cursor_x")
     f32 edui_cursor_x = 50.0f;
 
+#pragma data_seg(".data$edui_textrow_default")
+    char *edui_textrow_default[4] = {"1234567890", "QWERTYUIOP", "ASDFGHJKL_", "ZXCVBNM<>?"};
+
+#pragma bss_seg(".bss$textrow")
+    char *textrow[4] = {0};
+
 #pragma bss_seg(".bss$edui_cursor_buttons_db")
     u32 edui_cursor_buttons_db = 0;
 

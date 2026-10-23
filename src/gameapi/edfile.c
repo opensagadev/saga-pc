@@ -997,6 +997,51 @@ i32 __cdecl eduicbInteractSlider(edui_interact_s *interact) {
     return (edui_cursor_buttons >> 6) & 1;
 }
 
+extern f32 edui_font_scale_x;
+extern f32 edui_font_scale_y;
+
+void __cdecl eduiSetFontScale(f32 x, f32 y) {
+    edui_font_scale_x = x;
+    edui_font_scale_y = y;
+}
+
+typedef struct EDUI_EXPANDER_PC {
+    eduiitem_s base;
+    i32(__cdecl *interact)(edui_interact_s *interact);
+    eduiitem_s *first_child;
+    eduiitem_s *last_child;
+    u32 open : 1;
+    u32 unknown_flags : 31;
+} EDUI_EXPANDER_PC;
+STATIC_ASSERT(offsetof(EDUI_EXPANDER_PC, first_child) == 0x4c);
+STATIC_ASSERT(offsetof(EDUI_EXPANDER_PC, last_child) == 0x50);
+
+void __cdecl eduicbItemExpanderClose(eduiitem_s *item) {
+    EDUI_EXPANDER_PC *expander = (EDUI_EXPANDER_PC *)item;
+    eduiitem_s *child;
+    for (child = expander->first_child; child; child = child->next) {
+        if (child->type == 19)
+            eduicbItemExpanderClose(child);
+        if (child == expander->last_child)
+            break;
+    }
+    if (expander->first_child && expander->open) {
+        expander->base.next = expander->last_child->next;
+        if (expander->last_child->next)
+            expander->last_child->next->previous = &expander->base;
+        expander->first_child->previous = NULL;
+        expander->open = 0;
+    }
+}
+
+void __cdecl eduicbMenuCloseAllexpanders(eduimenu_s *menu) {
+    eduiitem_s *item;
+    for (item = menu->last; item; item = item->previous) {
+        if (item->type == 19)
+            eduicbItemExpanderClose(item);
+    }
+}
+
 i32 __cdecl eduicbProcessColourPick(eduimenu_s *menu, eduiitem_s *item, f32 delta_time, FRAME_PAD_PC *pad);
 i32 __cdecl eduicbRenderColourPick(eduimenu_s *menu, eduiitem_s *item, i32 x, i32 y, i32 width, i32 height);
 i32 __cdecl eduicbInteractColourPick(edui_interact_s *interact);
@@ -1063,6 +1108,77 @@ eduiitem_s *__cdecl eduiItemSliderCreateInt(u32 data, void *colours, i32 group, 
         item->base.render = eduicbRenderSliderInt;
     }
     return &item->base;
+}
+
+eduiitem_s *__cdecl eduiItemColourSliderCreate(u32 data, void *colours, i32 group, void *callback, f32 minimum,
+                                               f32 range, f32 value, u8 red, u8 green, u8 blue, char *text) {
+    edui_colour_slider_s *item =
+        (edui_colour_slider_s *)NuAlloc(sizeof(edui_colour_slider_s), EduiSourcePathPc, 0x1a53);
+    if (item) {
+        memset(item, 0, sizeof(edui_colour_slider_s));
+        item->base.base.data = data;
+        item->base.base.type = 13;
+        memcpy(item->base.base.colours, colours, sizeof(item->base.base.colours));
+        item->base.base.text_alignment = 0x40;
+        item->base.base.selection_group = group;
+        item->base.base.process = eduicbProcessColourSlider;
+        item->base.base.render = eduicbRenderColourSlider;
+        item->base.base.destroy = eduicbItemSliderDestroy;
+        eduiItemSetText(&item->base.base, text);
+        item->base.minimum = minimum;
+        item->base.range = range;
+        item->base.granularity = 1.0f;
+        item->base.changed = (void(__cdecl *)(eduimenu_s *, eduiitem_s *, u32))callback;
+        item->base.format = NULL;
+        item->red = red;
+        item->green = green;
+        item->blue = blue;
+        eduiItemSliderSetFmt(&item->base, "(%d)");
+        eduiItemSliderSetVal(&item->base, value);
+        return &item->base.base;
+    }
+    return NULL;
+}
+
+i32 __cdecl eduicbProcessTextPick(eduimenu_s *menu, eduiitem_s *item, f32 delta_time, FRAME_PAD_PC *pad);
+void __cdecl eduicbItemTextPickDestroy(eduimenu_s *menu, eduiitem_s *item);
+extern char *edui_textrow_default[4];
+
+void __cdecl eduiItemTextPickSetFmt(edui_textpicker_s *item, char *format) {
+    if (item->format) {
+        if (NuStrLen(item->format) >= NuStrLen(format))
+            goto copy;
+        NuFree(item->format, EduiSourcePathPc, 0x630);
+        item->format = (char *)NuAlloc(NuStrLen(format) + 1, EduiSourcePathPc, 0x631);
+    } else {
+        item->format = (char *)NuAlloc(NuStrLen(format) + 1, EduiSourcePathPc, 0x635);
+    }
+copy:
+    NuStrCpy(item->format, format);
+}
+
+eduiitem_s *__cdecl eduiItemTextPickCreate(u32 data, void *colours, void *callback, char *text) {
+    edui_textpicker_s *item = (edui_textpicker_s *)NuAlloc(sizeof(edui_textpicker_s), EduiSourcePathPc, 0x63d);
+    if (item) {
+        memset(item, 0, sizeof(edui_textpicker_s));
+        item->base.data = data;
+        item->base.type = 1;
+        memcpy(item->base.colours, colours, sizeof(item->base.colours));
+        item->base.text_alignment = 0x40;
+        item->base.selection_group = 0;
+        item->base.process = eduicbProcessTextPick;
+        item->base.render = eduicbRenderTextPick;
+        item->base.destroy = eduicbItemTextPickDestroy;
+        eduiItemSetText(&item->base, text);
+        item->max_length = 255;
+        item->callback = (void(__cdecl *)(eduimenu_s *, eduiitem_s *, u32))callback;
+        item->format = NULL;
+        item->cursor = 0;
+        eduiItemTextPickSetFmt(item, "\"%s\"");
+        memcpy(textrow, edui_textrow_default, sizeof(textrow));
+        return &item->base;
+    }
+    return NULL;
 }
 
 i32 eduiMenuProcess(eduimenu_s *menu, f32 delta_time, FRAME_PAD_PC *pad) {
