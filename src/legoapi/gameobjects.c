@@ -28,31 +28,28 @@ extern const f64 GameObjectNearFloorRadiusDivisor;
 
 i32 __cdecl GameObjectNearFloor(GAMEOBJECT *object, f32 height, f32 *distance) {
     f32 tolerance;
-    f32 radius_tolerance;
     f32 floor_distance;
 
-    if (height < 0.0f) {
+    if (!(height > 0.0f)) {
         height = 0.0f;
     }
-    tolerance = (f32)((f64)height * NuTimeBarSlotWidth);
-
-    if ((f64)object->floor_height == GameObjectNearFloorNoFloorHeight) {
-        if (distance != NULL) {
-            *distance = LevelConfigFarDistance;
+    height = (f32)((f64)height * NuTimeBarSlotWidth);
+    if ((f64)object->floor_height != GameObjectNearFloorNoFloorHeight) {
+        tolerance = height;
+        height = (f32)(((f64)object->collision_radius / GameObjectNearFloorRadiusDivisor) * tolerance);
+        if (height < tolerance) {
+            height = tolerance;
         }
-        return 0;
+        floor_distance = object->collision_min.y - object->floor_height;
+        if (distance != NULL) {
+            *distance = floor_distance;
+        }
+        return height > floor_distance;
     }
-
-    radius_tolerance = (f32)(((f64)object->collision_radius / GameObjectNearFloorRadiusDivisor) * tolerance);
-    if (radius_tolerance > tolerance) {
-        tolerance = radius_tolerance;
-    }
-
-    floor_distance = object->collision_min.y - object->floor_height;
     if (distance != NULL) {
-        *distance = floor_distance;
+        *distance = LevelConfigFarDistance;
     }
-    return tolerance > floor_distance;
+    return 0;
 }
 
 void GameObjectToCameraDistances() {
@@ -3247,14 +3244,13 @@ void __cdecl ManageGameObjects(void) {
 
 void __cdecl GameObjectDimensions(GAMEOBJECT *object) {
     PLAYERCHARACTERCONFIG_PC *config;
-    CHARACTER_MODEL_LAYERS_PC *model;
-    i32 joint;
-    if (object->use_model_origin != 0 && object->origin_scale_override == 1.0f) {
+    if (object->use_model_origin > 0 && object->origin_scale_override == 1.0f) {
         config = object->character_data->game_character;
-        joint = config->collision_origin_joint;
-        model = (CHARACTER_MODEL_LAYERS_PC *)object->character_model;
-        if (joint != -1 && model->points_of_interest[joint] != NULL && object->origin_joint_ready != 0) {
-            f32 radius = config->collision_origin_radius * object->collision_scale;
+        if (config->collision_origin_joint != -1 &&
+            ((CHARACTER_MODEL_LAYERS_PC *)object->character_model)
+                    ->points_of_interest[config->collision_origin_joint] != NULL &&
+            object->origin_joint_ready != 0) {
+            f32 radius = object->character_data->game_character->collision_origin_radius * object->collision_scale;
             object->bounds_half_height = radius;
             object->bounds_radius = radius;
             goto extra;
@@ -3860,36 +3856,29 @@ void __cdecl CurrentStart(GAMEOBJECT *object, i32 allow_any_level, i32 use_socke
 }
 
 __declspec(noinline) i32 __cdecl SetObjOnSurface(GAMEOBJECT *object, i32 mode) {
-    WORLDINFO *world;
-    volatile f32 rounded_y;
     f32 y;
     i32 placed;
 
     placed = 0;
-    if (object->floor_height == GameObjectNearFloorNoFloorHeight)
-        return 0;
-    world = WorldInfo_CurrentlyActive();
-    if ((world->current_level->flags & 0x40000u) != 0)
-        return 0;
-    if (mode == 2) {
-        rounded_y =
-            (f64)object->collision_min.y - (f64)object->character_bottom * object->origin_scale + 0.10000000149011612;
-        y = rounded_y;
-        object->position.y = y;
-        object->initial_position.y = y;
-        object->collision_position.y = y;
+    if (object->floor_height != GameObjectNearFloorNoFloorHeight &&
+        (WorldInfo_CurrentlyActive()->current_level->flags & 0x40000u) == 0) {
+        if (mode == 2) {
+            y = (f64)object->collision_min.y - (f64)object->character_bottom * object->origin_scale +
+                0.10000000149011612;
+            object->position.y = y;
+            object->initial_position.y = y;
+            object->collision_position.y = y;
+        }
+        if (mode == 0 || !((f64)object->position.y + (f64)object->character_bottom * object->origin_scale >
+                           (f64)object->floor_height + 0.10000000149011612)) {
+            y = (f64)object->floor_height - (f64)object->character_bottom * object->origin_scale + 0.10000000149011612;
+            object->position.y = y;
+            object->initial_position.y = y;
+            object->collision_position.y = y;
+            placed = 1;
+        }
+        object->velocity.y = -1.0f;
     }
-    if (mode == 0 || !((f64)object->floor_height + 0.10000000149011612 <
-                       (f64)object->position.y + (f64)object->character_bottom * object->origin_scale)) {
-        rounded_y =
-            (f64)object->floor_height - (f64)object->character_bottom * object->origin_scale + 0.10000000149011612;
-        y = rounded_y;
-        object->position.y = y;
-        object->initial_position.y = y;
-        object->collision_position.y = y;
-        placed = 1;
-    }
-    object->velocity.y = -1.0f;
     return placed;
 }
 
