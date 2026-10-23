@@ -1,4 +1,5 @@
 #include "saga.h"
+extern "C" char *LoadPermSaveIconSpecialPc;
 extern "C" void __cdecl TextInputGlyphNamePc(i32, char *);
 extern "C" void __cdecl RegisterLswGizmoTypesPc(VARIPTR *, VARIPTR *);
 extern "C" void __cdecl RegisterAlternateGizmoTypesPc(VARIPTR *, VARIPTR *);

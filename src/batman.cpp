@@ -1,6 +1,8 @@
 #include "saga.h"
 #include <string.h>
 
+extern "C" void __cdecl NuMainTrailerLeafPc(void);
+
 extern "C" {
     extern i32 NuMainRendererControlPc;
     void __cdecl NuRndrShadowOnOff_candidate(i32);
