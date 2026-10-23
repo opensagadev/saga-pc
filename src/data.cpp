@@ -29373,6 +29373,21 @@ extern "C" {
 #pragma bss_seg(".bss$edpart_copy_source")
     i32 edpart_copy_source[8] = {0};
 
+#pragma bss_seg(".bss$edpart_offset")
+    f32 edpart_offset = 0;
+
+#pragma bss_seg(".bss$edpart_opt_menu")
+    struct eduimenu_s *edpart_opt_menu = 0;
+
+#pragma bss_seg(".bss$edpart_snap_enabled")
+    i32 edpart_snap_enabled = 0;
+
+#pragma bss_seg(".bss$edpart_cam_ax")
+    i32 edpart_cam_ax = 0;
+
+#pragma bss_seg(".bss$edpart_cam_ay")
+    i32 edpart_cam_ay = 0;
+
 #pragma bss_seg(".bss$edpart_tint_menu")
     struct eduimenu_s *edpart_tint_menu = 0;
 

@@ -6946,6 +6946,7 @@ address,symbol,size,ctype
 0x64b370,_AddFiniteShotPART,155,"i32 __cdecl (i32, NUVEC *, i32)"
 0x64b410,_CreateScaledPARTEffect,928,"i32 __cdecl(i32, f32)"
 0x64b7f0,_KillPartsByScene,83,void __cdecl (NUGSCN *)
+0x64b860,_edpartDestroy,36,
 0x64b950,_edpartDeleteType,187,
 0x64ba10,_edpartLoadSingleType,2277,"void __cdecl edpartLoadSingleType(PARTTYPE_LOOKUP_PC *record, i32 version, i32 page)"
 0x64c300,_edpartLoadPageEx,946,"i32 __cdecl edpartLoadPageEx(char *path, i8 mode, NUGSCN **scenes, i32 scene_count)"
@@ -6953,6 +6954,7 @@ address,symbol,size,ctype
 0x64c6e0,_edpartClearPage,198,void __cdecl (i8)
 0x64c7b0,_edpartFileLoadEffects,1275,
 0x64ccb0,_edpartDataMenu,622,
+0x64cf20,_edpartOptMenu,847,
 0x0064d270,_AddPart,1884,PART_PC *__cdecl (ADDPART_PC *)
 0x64d9d0,_PartCleanupTypes,201,void __cdecl(void)
 0x64daa0,_UpdatePartEmits,2728,void __cdecl UpdatePartEmits(f32 time)
@@ -24771,6 +24773,7 @@ address,symbol,size,ctype
 0x291f72c,_edpart_cutoff_menu,4,struct eduimenu_s *
 0x291f734,_PartEditorCameraPosPc,,NUVEC
 0x291f754,_edpart_maxlife_menu,4,struct eduimenu_s *
+0x291f75c,_edpart_snap_enabled,4,i32
 0x291f764,_edpart_copy_source_vec,12,NUVEC
 0x291f774,_edpart_copy_source,32,i32[8]
 0x291f7a0,_part_platimpactcnt,,i32
@@ -24779,9 +24782,11 @@ address,symbol,size,ctype
 0x291f7c4,_edpart_first_time_this_level,4,i32
 0x291f7c8,_part_emits,4320,PART_EMIT_PC[40]
 0x29208a8,_edpart_nearest,,i32
+0x29208b4,_edpart_cam_ax,4,i32
 0x29208b8,_edpart_changegenrate_menu,4,struct eduimenu_s *
 0x029208bc,_part_page_used,32,i32[8]
 0x29208e0,_edpart_emitvel_menu,4,struct eduimenu_s *
+0x29208e8,_edpart_cam_ay,4,i32
 0x29208ec,_edpart_grav_menu,4,struct eduimenu_s *
 0x29208f0,_part_scene,128,NUGSCN *[32]
 0x2920974,_edpart_varemit_menu,4,struct eduimenu_s *
@@ -24801,6 +24806,7 @@ address,symbol,size,ctype
 0x29209b8,_edpart_dpad_mode,4,i32
 0x29209bc,_edpart_readout,4,i32
 0x29209c0,_edpart_active_menu,4,struct eduimenu_s *
+0x29209c4,_edpart_opt_menu,4,struct eduimenu_s *
 0x29209c8,_edpart_type_menu,4,struct eduimenu_s *
 0x29209cc,_edpart_generaltype_menu,4,struct eduimenu_s *
 0x29209d0,_edpart_leveltype_menu,4,struct eduimenu_s *
@@ -24830,6 +24836,7 @@ address,symbol,size,ctype
 0x2920a68,_edpart_emitrotx,4,i32
 0x2920a6c,_edpart_rotz,4,i32
 0x2920a70,_edpart_roty,4,i32
+0x2920a74,_edpart_offset,4,f32
 0x2920a78,_edpart_refrotz,4,i32
 0x2920a7c,_edpart_refroty,4,i32
 0x2920a80,_edpart_copyrotz,4,i32

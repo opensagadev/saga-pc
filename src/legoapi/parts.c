@@ -3673,9 +3673,11 @@ void edpartSetScaleFactor(eduimenu_s *unused0, eduiitem_s *item, u32 unused2) {
 }
 void edpartCopyType(eduimenu_s *menu, eduiitem_s *unused1, u32 unused2) {
     struct eduimenu_s *parent;
+    i32 index;
+    parent = NULL;
+    index = 0;
     if (part_types_used < 128 && edpart_create_type != -1) {
-        i32 index;
-        for (index = 0; index < 128; ++index) {
+        for (; index < 128; ++index) {
             if (part_types[index].name[0] == '\0') {
                 u32 name_length;
                 PARTTYPE_LOOKUP_PC *source = &part_types[edpart_create_type];
@@ -3686,7 +3688,7 @@ void edpartCopyType(eduimenu_s *menu, eduiitem_s *unused1, u32 unused2) {
                     sprintf(copy->name, "%s%03d", source->name, index);
                 } else {
                     char name[16];
-                    memcpy(name, source->name, name_length + 1);
+                    sprintf(name, "%s", source->name);
                     name[12] = '\0';
                     sprintf(copy->name, "%s%03d", name, index);
                 }
@@ -3696,9 +3698,10 @@ void edpartCopyType(eduimenu_s *menu, eduiitem_s *unused1, u32 unused2) {
             }
         }
     }
-    parent = menu->parent;
-    if (parent)
+    if (menu->parent) {
+        parent = menu->parent;
         eduiMenuDetach(menu);
+    }
     if (menu->callback)
         menu->callback(menu, parent);
 }
@@ -3799,6 +3802,44 @@ extern NUVEC edpart_copy_source_vec;
 extern i32 edpart_copy_source_count;
 void edbitsDrawCube(f32 x, f32 y, f32 z, f32 half_x, f32 half_y, f32 half_z, i32 rotation_z, i32 rotation_y,
                     i32 rotation_x, i32 outer_z, i32 outer_y, i32 colour, struct PC_SCENE_MTL_VIEW *material);
+
+void edpartMultipleCopyCopy(void) {
+    extern i32 edpart_copyroty;
+    extern f32 edpart_copy_size;
+    i32 index;
+    NUVEC delta;
+    union {
+        f32 value;
+        u32 bits;
+    } temp;
+    union {
+        f32 value[3];
+        u32 bits[3];
+    } abs_delta;
+    edpart_copy_source_count = 0;
+    for (index = 0; index < 512; ++index) {
+        if (part_emits[index].instance_id == -1 || part_emits[index].instance_id == 99999)
+            continue;
+        NuVecSub(&delta, &PartEditorCameraPosPc, &part_emits[index].position);
+        temp.value = delta.x;
+        abs_delta.bits[0] = temp.bits & 0x7fffffff;
+        if (!(abs_delta.value[0] <= edpart_copy_size))
+            continue;
+        temp.value = delta.y;
+        abs_delta.bits[1] = temp.bits & 0x7fffffff;
+        if (!(abs_delta.value[1] <= edpart_copy_size))
+            continue;
+        temp.value = delta.z;
+        abs_delta.bits[2] = temp.bits & 0x7fffffff;
+        if (!(abs_delta.value[2] <= edpart_copy_size))
+            continue;
+        edpart_copy_source[edpart_copy_source_count++] = index;
+        if (edpart_copy_source_count == 8)
+            break;
+    }
+    edpart_copy_source_vec = PartEditorCameraPosPc;
+    edpart_copyroty = 0;
+}
 
 void edpartHighlightNearest(void) {
     extern i32 edpart_copy_mode, edpart_copyroty, edpart_copy_enclosed;
@@ -4312,6 +4353,181 @@ void edpartPlace(i32 index, NUVEC *position) {
     emitter->rotation_2c = ((i16)(edpart_emitrotz));
     emitter->rotation_30 = ((i16)(edpart_emitrotx));
     emitter->rotation_2e = ((i16)(edpart_emitroty));
+}
+
+void edpartDestroy(i32 index) {
+    if (part_emits[index].effect_id != -1) {
+        --part_emits_used;
+        part_emits[index].effect_id = -1;
+    }
+}
+
+void edcamMove(FRAME_PAD_PC *pad);
+void edcamSetPos(NUVEC *position);
+void edcamGetPosAng(NUVEC *position, i32 *pitch, i32 *yaw);
+void edcamGetPosAngSnap(NUVEC *position, i32 *pitch, i32 *yaw);
+void edpartOptMenu(void);
+extern struct eduimenu_s *edpart_opt_menu;
+
+void edpartDoInput(FRAME_PAD_PC *pad) {
+    extern i32 edpart_copy_mode, edpart_copyroty, edpart_rotz, edpart_roty;
+    extern i32 edpart_emitrotz, edpart_emitroty, edpart_emitrotx, edpart_refrotz, edpart_refroty;
+    extern i32 edpart_dpad_mode, edpart_create_type, edpart_nearest_orphans, edpart_nearest_duplicates;
+    extern i32 edpart_snap_enabled, edpart_cam_ax, edpart_cam_ay;
+    extern i8 edpart_effect_list;
+    extern f32 edpart_copy_size, edpart_offset;
+    i32 nearest;
+    i32 variant;
+    i32 previous;
+    if ((pad->digital_buttons & 0x100) == 0)
+        edcamMove(pad);
+    if (pad->digital_buttons & 0x100) {
+        nearest = edpart_nearest;
+        if (nearest != -1) {
+            if (pad->digital_buttons_pressed & 8) {
+                do {
+                    ++nearest;
+                    if (nearest == 40)
+                        nearest = 0;
+                } while (part_emits[nearest].effect_id == -1);
+                edpart_nearest = nearest;
+            }
+            if (pad->digital_buttons_pressed & 2) {
+                do {
+                    --nearest;
+                    if (nearest == -1)
+                        nearest = 39;
+                } while (part_emits[nearest].effect_id == -1);
+                edpart_nearest = nearest;
+            }
+        } else {
+            edpartDetermineNearest(-1.0f);
+            nearest = edpart_nearest;
+        }
+        if (nearest != -1) {
+            edcamSetPos(&part_emits[nearest].position);
+            edpart_offset = *(f32 *)&part_emits[edpart_nearest].trailing_state_words[1];
+            edpart_rotz = ((i16 *)&part_emits[edpart_nearest].trailing_state_words[0])[0];
+            edpart_roty = ((i16 *)&part_emits[edpart_nearest].trailing_state_words[0])[1];
+            edpart_emitrotz = part_emits[edpart_nearest].rotation_2c;
+            edpart_emitroty = part_emits[edpart_nearest].rotation_2e;
+            edpart_emitrotx = part_emits[edpart_nearest].rotation_30;
+            edpart_create_type = part_emits[edpart_nearest].effect_id;
+            edpart_effect_list = part_types[edpart_create_type].field_b3;
+        }
+    }
+    if (edpart_snap_enabled)
+        edcamGetPosAngSnap(&PartEditorCameraPosPc, &edpart_cam_ax, &edpart_cam_ay);
+    else
+        edcamGetPosAng(&PartEditorCameraPosPc, &edpart_cam_ax, &edpart_cam_ay);
+    if ((pad->digital_buttons & 0x100) == 0) {
+        if (pad->digital_buttons_pressed & 0x80) {
+            edpartOptMenu();
+            edpart_active_menu = edpart_opt_menu;
+        }
+        if ((pad->digital_buttons_pressed & 0x40) && edpart_copy_mode == 0 && edpart_create_type != -1)
+            AddPARTEffect(edpart_create_type, &PartEditorCameraPosPc);
+        if (pad->digital_buttons & 0x20) {
+            if (edpart_copy_mode != 0)
+                edpartMultipleCopyCopy();
+            else if (edpart_nearest != -1)
+                edpartPlace(edpart_nearest, &PartEditorCameraPosPc);
+        }
+        if ((pad->digital_buttons & 0x400) && edpart_copy_mode == 0 && edpart_nearest != -1)
+            edpartPlace(edpart_nearest, &PartEditorCameraPosPc);
+        if (pad->digital_buttons_pressed & 0x10) {
+            if (edpart_copy_mode != 0) {
+                edpart_copy_source_count = 0;
+                edpart_copyroty = 0;
+            } else {
+                if (edpart_nearest != -1)
+                    edpartDestroy(edpart_nearest);
+                edpart_nearest = -1;
+            }
+        }
+    }
+    if (edpart_copy_mode != 0) {
+        edpart_copy_size += pad->analog_left_pad_up / 5000.0f;
+        edpart_copy_size -= pad->analog_left_pad_down / 5000.0f;
+        if (edpart_copy_size < 0.05f)
+            edpart_copy_size = 0.05f;
+        else if (edpart_copy_size > 2.0f)
+            edpart_copy_size = 2.0f;
+        edpart_copyroty += pad->analog_left_pad_right;
+        edpart_copyroty -= pad->analog_left_pad_left;
+    } else {
+        if (edpart_dpad_mode == 1) {
+            if (pad->digital_buttons & 0x200) {
+                edpart_rotz = 0;
+                edpart_roty = 0;
+            }
+            edpart_roty += pad->analog_left_pad_right;
+            edpart_roty -= pad->analog_left_pad_left;
+            edpart_rotz += pad->analog_left_pad_up;
+            if (edpart_rotz > 0)
+                edpart_rotz = 0;
+            edpart_rotz -= pad->analog_left_pad_down;
+            if (edpart_rotz < -0x8000)
+                edpart_rotz = -0x8000;
+        } else if (edpart_dpad_mode == 0) {
+            if (pad->digital_buttons & 0x200) {
+                edpart_emitrotz = 0;
+                edpart_emitroty = 0;
+                edpart_emitrotx = 0;
+            }
+            if (pad->digital_buttons & 0x400) {
+                edpart_emitrotx += pad->analog_left_pad_right;
+                edpart_emitrotx -= pad->analog_left_pad_left;
+            } else {
+                edpart_emitroty += pad->analog_left_pad_right;
+                edpart_emitroty -= pad->analog_left_pad_left;
+                edpart_emitrotz += pad->analog_left_pad_up;
+                if (edpart_emitrotz > 0x8000)
+                    edpart_emitrotz = 0x8000;
+                edpart_emitrotz -= pad->analog_left_pad_down;
+                if (edpart_emitrotz < -0x8000)
+                    edpart_emitrotz = -0x8000;
+            }
+        } else if (edpart_dpad_mode == 3) {
+            edpart_refroty += pad->analog_left_pad_right;
+            edpart_refroty -= pad->analog_left_pad_left;
+            edpart_refrotz += pad->analog_left_pad_up;
+            if (edpart_refrotz > 0)
+                edpart_refrotz = 0;
+            edpart_refrotz -= pad->analog_left_pad_down;
+            if (edpart_refrotz < -0x8000)
+                edpart_refrotz = -0x8000;
+        } else if (edpart_dpad_mode == 2) {
+            if (pad->analog_left_pad_up == 255 || (pad->digital_buttons_pressed & 0x1000))
+                edpart_offset += 0.01f;
+            if (pad->analog_left_pad_down == 255 || (pad->digital_buttons_pressed & 0x4000))
+                edpart_offset -= 0.01f;
+            if (edpart_offset < 0.0f)
+                edpart_offset = 0.0f;
+        }
+    }
+    if (edpart_nearest == -1)
+        return;
+    edpart_nearest_emit = &part_emits[edpart_nearest];
+    if (edpart_nearest_emit->effect_id != -1)
+        edpart_nearest_type = &part_types[edpart_nearest_emit->effect_id];
+    edpart_nearest_duplicates = 0;
+    edpart_nearest_orphans = 0;
+    for (variant = 0; variant < 8; ++variant) {
+        i16 effect = edpart_nearest_type->effect_ids[variant];
+        if (effect == -1 || effect == 9999)
+            continue;
+        if (effect == 9998) {
+            ++edpart_nearest_orphans;
+            continue;
+        }
+        for (previous = 0; previous < variant; ++previous) {
+            if (edpart_nearest_type->effect_ids[previous] == effect) {
+                ++edpart_nearest_duplicates;
+                break;
+            }
+        }
+    }
 }
 
 void edpartDrawCursor(void) {
