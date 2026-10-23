@@ -8756,22 +8756,25 @@ STATIC_ASSERT(offsetof(APIDEBRISSYS_PC, entries) == 8);
 STATIC_ASSERT(sizeof(GAMEDEBRISENTRY_PC) == 0x14);
 STATIC_ASSERT(offsetof(GAMEDEBRISENTRY_PC, effect) == 0);
 
+void *__cdecl CreateSnakeBody(GAMEOBJECT *object, i32 segment_count);
+void __cdecl UpdateSnakeBody(GAMEOBJECT *object);
+
 void __cdecl Move_CRITTER(GAMEOBJECT *object) {
     CRITTER_OBJECT_READER_PC *reader = (CRITTER_OBJECT_READER_PC *)object;
-    f32 hover;
     if ((object->flags_e20 & 0x20) != 0)
         return;
     if (object->character_context == 23) {
-        hover = 0.0f;
+        ApplyGravity(object, NULL, 0.0f, 8.0f, NULL);
     } else if (object->id == (u16)id_SNAKE && object->field_283 == 9) {
         applygravity_extrahoveroffset = CritterSnakeExtraHoverPc;
-        hover = 0.01f;
+        ApplyGravity(object, NULL, 0.01f, 8.0f, NULL);
+    } else if (object->id == (u16)id_BAT && object->field_283 == 3) {
+        PLAYERCHARACTERCONFIG_PC *character = object->character_data->game_character;
+        applygravity_extrahoveroffset = CritterBatExtraHoverPc;
+        ApplyGravity(object, NULL, character->field_028, 8.0f, NULL);
     } else {
-        if (object->id == (u16)id_BAT && object->field_283 == 3)
-            applygravity_extrahoveroffset = CritterBatExtraHoverPc;
-        hover = object->character_data->game_character->field_028;
+        ApplyGravity(object, NULL, object->character_data->game_character->field_028, 8.0f, NULL);
     }
-    ApplyGravity(object, NULL, hover, 8.0f, NULL);
     FlattenCode(object);
     if (object->id != (u16)id_BAT)
         SlideCode(object);
@@ -8782,10 +8785,9 @@ void __cdecl Move_CRITTER(GAMEOBJECT *object) {
     BeastStartFallCodePc(object);
     if (object->id == (u16)id_SNAKE) {
         if (reader->snake_body == NULL)
-            STUBBED_NAMED(
-                0x005972c0); /* Native4b3b24: CreateSnakeBody(object,11); genuine allocation/field action absent. */
+            CreateSnakeBody(object, 11);
         if (reader->snake_body != NULL)
-            STUBBED_NAMED(0x00597380); /* Native4b3b36: UpdateSnakeBody(object); genuine body update absent. */
+            UpdateSnakeBody(object);
     }
     GizmoBlowupCheckProximity(WORLD, object);
 }

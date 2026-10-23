@@ -100,6 +100,31 @@ i32 __cdecl SnakeASinPc(f32 sin) {
 #undef POW4
 #undef POW5
 
+extern f32 SnakeBodyDefaultScalePc;
+
+SNAKE_BODY_PC *__cdecl CreateSnakeBody(GAMEOBJECT *object, i32 segment_count) {
+    SNAKE_BODY_PC *body;
+    i32 slot;
+    i32 index;
+
+    for (slot = 0; slot < 4; slot++) {
+        body = &((SNAKE_BODY_PC *)snakebodies)[slot];
+        if ((body->flags & 1) == 0) {
+            ((SNAKE_OBJECT_READER_PC *)object)->snake_body = body;
+            body->scale = SnakeBodyDefaultScalePc;
+            body->flags |= 1;
+            body->segment_count = (u16)segment_count;
+            for (index = 0; index < body->segment_count; index++) {
+                body->segments[index].yaw = object->field_0x276;
+                body->segments[index].pitch = 0;
+                body->segments[index].ground_height = 1000000000.0f;
+            }
+            return body;
+        }
+    }
+    return NULL;
+}
+
 void __cdecl UpdateSnakeBody(GAMEOBJECT *object) {
     SNAKE_OBJECT_READER_PC *reader = (SNAKE_OBJECT_READER_PC *)object;
     SNAKE_BODY_PC *body;

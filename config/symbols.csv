@@ -4846,6 +4846,7 @@ address,symbol,size,ctype
 0x596a30,_SetShadowLight,1656,full native scene shadow-light setup
 0x5970d0,_SnakeASinPc,320,i32 __cdecl(f32)
 0x00597250,_InitSnakes,99,void __cdecl (WORLDINFO *)
+0x5972c0,_CreateSnakeBody,129,"void *__cdecl (GAMEOBJECT *, u16)"
 0x597350,_DestroySnakeBody,47,void __cdecl(GAMEOBJECT *)
 0x597380,_UpdateSnakeBody,670,
 0x597620,_DrawSnakeBody,340,
@@ -20286,6 +20287,7 @@ address,symbol,size,ctype
 0x80513c,_SnakeYawSeekRatePc,4,f32
 0x805140,_SnakeSegmentHeightPc,,f32
 0x805144,_SnakeDebrisUpwardSpeedPc,,f32
+0x805148,_SnakeBodyDefaultScalePc,4,f32
 0x008051b4,_SUPERCARRY_THROWSPEED_XZ,4,f32
 0x008051b8,_SUPERCARRY_THROWSPEED_Y,4,f32
 0x008051bc,_SUPERCARRY_RELEASESPEED_XZ,4,f32
