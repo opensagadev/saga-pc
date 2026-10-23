@@ -68,7 +68,7 @@ void __cdecl MenuDrawTitles(MENU *menu) {
             y = MenuTitlesPromptYPc;
         }
         SmartTextEx(apitxt_PCPRESSSTARTFE, 0.0f, y, 1.0f, MenuTextScalePc, MenuTextScalePc, MenuTextScalePc, 0, 255,
-                    255, 255, 1.7f, 1, NULL, 0, (u32)(i32)((f64)MenuA * (f64)newgamealpha));
+                    255, 255, 1.7f, 1, NULL, 0, (u32)(i32)((f32)MenuA * newgamealpha));
     }
 }
 
