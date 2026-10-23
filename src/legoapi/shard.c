@@ -151,27 +151,30 @@ static void Shop_DrawCharacter(shopitem_s *item, NUVEC *position, f32 scale_valu
                                u16 zrot) {
     if (!(!NuSpecialExistsFn(&iconback))) {
         i32 character_id;
-        u8 unlocked;
         i32 unavailable;
         f32 alpha;
         NUVEC scale;
         NUMTX matrix;
         i32 icon_object_id;
-        i32 top_shelf_character = 0;
+        i32 top_shelf_character;
         if (item == &TopShelf[1]) {
-            top_shelf_character = 1;
             item =
                 CharItems - (i32)(NuFmod(GameTimer.time_elapsed, (f32)(SHOPCHARCOUNT * (double)0.2f)) / (double)-0.2f);
+            top_shelf_character = 1;
+        } else {
+            top_shelf_character = 0;
         }
 
         character_id = (u16)(item->item_id);
-        unlocked = character_id == VehicleBoltId7f17d4Pc ? ((SHOP_SAVE_VIEW_PC *)&Game)->bolt_unlocked != 0
-                                                         : CollectIDUnlocked(character_id) != NULL;
-        unavailable = !unlocked || item->unlocked != 1;
-        alpha = 1.0f;
-        if (!(character_id == VehicleBoltId7f17d4Pc ? ((SHOP_SAVE_VIEW_PC *)&Game)->bolt_unlocked != 0
-                                                    : CollectIDUnlocked(character_id) != NULL))
-            alpha = 0.5f;
+        unavailable = 1;
+        if ((character_id == VehicleBoltId7f17d4Pc ? ((SHOP_SAVE_VIEW_PC *)&Game)->bolt_unlocked != 0
+                                                   : CollectIDUnlocked(character_id) != NULL) &&
+            item->unlocked == 1)
+            unavailable = 0;
+        alpha = (character_id == VehicleBoltId7f17d4Pc ? ((SHOP_SAVE_VIEW_PC *)&Game)->bolt_unlocked != 0
+                                                       : CollectIDUnlocked(character_id) != NULL)
+                    ? 1.0f
+                    : 0.5f;
 
         scale.x = scale.y = scale.z = scale_value;
         NuMtxSetScale(&matrix, &scale);
