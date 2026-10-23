@@ -69,32 +69,39 @@ bool __thiscall PC_SHADER_MATERIAL_FILTER_VIEW::HasLayer(i32 which) const {
         return UnfilteredHasLayer(which);
     return UnfilteredHasLayer(which) && which == 0 && (descriptor->override_mode & 1) != 0;
 }
+#define SHADER_VERTEX_FORMAT_HAS_UV_SETS(format, count) ((i8)(((format) >> 9) & 3) >= (count))
+
 u32 __thiscall PC_SHADER_MATERIAL_FILTER_VIEW::GetVertexFlags() const {
     u32 v = descriptor->vertex_format;
-    bool packed = (v & 0x30000) != 0, extended = (variant == 0 || descriptor->override_mode != 0);
-    u32 result = (v & 0x40000) != 0;
-    if (packed && (v & 0x400000) == 0)
+    u32 result = 0;
+    u32 colour0;
+    if ((u8)(v >> 18) & 1)
+        result = 1;
+    colour0 = (v >> 16) & 1;
+    if ((colour0 || (v & 0x20000)) && !(v & 0x400000))
         result |= 2;
-    if (extended && ((v >> 9) & 3) >= 1)
+    if ((variant == 0 || descriptor->override_mode != 0) && SHADER_VERTEX_FORMAT_HAS_UV_SETS(v, 1))
         result |= 4;
-    if (extended && ((v >> 9) & 3) >= 2)
+    if ((variant == 0 || descriptor->override_mode != 0) && SHADER_VERTEX_FORMAT_HAS_UV_SETS(v, 2))
         result |= 8;
-    if (extended && ((v >> 9) & 3) >= 3)
+    if ((variant == 0 || descriptor->override_mode != 0) && SHADER_VERTEX_FORMAT_HAS_UV_SETS(v, 3))
         result |= 0x10;
-    if (packed && (v & 0x400000) != 0)
+    if ((colour0 || (v & 0x20000)) && (v & 0x400000))
         result |= 0x40;
-    if (v & 0x80000)
+    if ((u8)(v >> 19) & 1)
         result |= 0x80;
-    if (v & 0x1000000)
+    if ((u8)(v >> 24) & 1)
         result |= 0x100;
-    if (v & 0x2000000)
+    if ((u8)(v >> 25) & 1)
         result |= 0x400;
-    if (variant == 0 && (descriptor->layer_flags & 0x80000000))
+    if (variant == 0 && (u8)(descriptor->layer_flags >> 31))
         result |= 0x800;
-    if (extended && (v & 0x100))
+    if ((variant == 0 || descriptor->override_mode != 0) && ((u8)(v >> 8) & 1))
         result |= 0x1000;
     return result;
 }
+
+#undef SHADER_VERTEX_FORMAT_HAS_UV_SETS
 
 template <> PC_SHADER_OBJECT_FULL_VIEW *__thiscall PC_SHADER_MANAGER_VIEW::AllocateSlot(i32 *index) {
     i32 i;
