@@ -19544,6 +19544,8 @@ address,symbol,size,ctype
 0x7f1710,_DogfightBoltModelsFirstPc,16,i32[4]
 0x7f1724,_ConfigChar_GameKeywords,,NUFPCOMJMP[2]
 0x7f17a4,_PlayerHitPointsTwoHeartsPc,,i32
+0x7f17a8,_DrawGameObjectsFarClipPc,4,f32
+0x7f17ac,_DrawGameObjectsVehicleFarClipPc,4,f32
 0x7f17b0,_TerrainPlayerOtherMovementScalePc,,f32
 0x7f17b4,_TerrainPlayerBikeMovementScalePc,,f32
 0x007f17b8,_ID_DEFAULTCHARACTER_A,2,i16
@@ -20303,11 +20305,15 @@ address,symbol,size,ctype
 0x7fcba4,_ShopNativePushPc,24,f32[6]
 0x7fcbbc,_ShopNativeSubInitAPc,4,f32
 0x7fcbc0,_ShopNativeSubInitBPc,4,f32
+0x7fcbc4,_ShopNativeSubNormCharPushPc,4,f32
 0x7fcbc8,_ShopCodeExitPushPc,4,f32
 0x7fcbcc,_ShopCodeCharactersPc,37,char[37]
 0x7fcbf4,_ShopUserCodePc,6,char[6]
 0x7fcc60,_ShopCodeRepeatIntervalPc,4,f32
 0x7fcc64,_ShopTopBrickOffsetPc,4,f32
+0x7fcc68,_ShopTopCodeOffsetPc,4,f32
+0x7fcc6c,_ShopTopExtraOffsetPc,4,f32
+0x7fcc70,_ShopTopHintOffsetPc,4,f32
 0x7fcc74,_ShopCodeArrowBingPc,4,f32
 0x7fcc78,_ShopCodeArrowAmplitudePc,4,f32
 0x7fcc7c,_ShopBrickRotationDegreesPc,4,i32

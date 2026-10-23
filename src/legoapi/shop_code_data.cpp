@@ -7,6 +7,10 @@ extern "C" {
     i32 ShopCodeItemChangedPc = 0;
     f32 ShopCodeRepeatTimerPc = 0;
     f32 ShopCodeRepeatIntervalPc = 0.125f;
+    f32 ShopNativeSubNormCharPushPc = 0.02f;
+    f32 ShopTopCodeOffsetPc = -0.005f;
+    f32 ShopTopExtraOffsetPc = 0.005f;
+    f32 ShopTopHintOffsetPc = -0.006f;
     f32 ShopCodeExitPushPc = 0.05f;
     char ShopCodeCharactersPc[37] = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
     extern const f32 ShopCodeCheatDisplayTimePc = 3.1499998569488525f;

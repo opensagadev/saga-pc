@@ -479,7 +479,7 @@ void __cdecl Customiser_GetActiveWeirdoIndex(i32 *index, i32 *count) {
 
 void CustomiserMenu_End() {
     LevLock[1] = 1;
-    LevTime[1] = 2.0f;
+    LevTime[1] = 0.6f;
     MenuRememberCursor(&GameMenu[GameMenuLevel]);
     MenuReset();
     ResetTimer(&JoinInTimer, 0.0f);

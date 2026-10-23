@@ -35099,3 +35099,12 @@ extern "C" {
 extern "C" {
     __declspec(allocate(".data$InteractionArrowScalePc")) f32 InteractionArrowScalePc = 0.7f;
 }
+
+extern "C" {
+#pragma data_seg(".data$DrawGameObjectsFarClipPc")
+    f32 DrawGameObjectsFarClipPc = 20.0f;
+#pragma data_seg()
+#pragma data_seg(".data$DrawGameObjectsVehicleFarClipPc")
+    f32 DrawGameObjectsVehicleFarClipPc = 50.0f;
+#pragma data_seg()
+}

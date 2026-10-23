@@ -194,11 +194,12 @@ STATIC_ASSERT(offsetof(BLOWUP_MOVEMENT_PC, target_radius) == 0xa8);
 
 __declspec(noinline) i32 __cdecl CanStepBack(GAMEOBJECT *object) {
     i8 context = object->character_context;
-    if ((CInfo[context].flags & 0x10000) ||
-        (LEGOCONTEXT_JUMP != -1 && LEGOCONTEXT_JUMP == context && object->action_movement_state == 3))
+    if ((U64_PAIR(&CInfo[context].flags) & 0x10000) != 0)
+        return 1;
+    if (LEGOCONTEXT_JUMP != -1 && context == LEGOCONTEXT_JUMP && object->action_movement_state == 3)
         return 1;
     if ((object->character_data->game_character->flags_090 & 0x8000) && LEGOCONTEXT_COMBO != 0 &&
-        LEGOCONTEXT_COMBO == context)
+        context == LEGOCONTEXT_COMBO)
         return 1;
     return 0;
 }
@@ -376,13 +377,11 @@ STATIC_ASSERT(offsetof(WORLD_CONVEYOR_PC, current_level) == 0x128);
 STATIC_ASSERT(offsetof(WORLD_CONVEYOR_PC, conveyor) == 0x5170);
 
 __declspec(noinline) i32 __cdecl CanClimbSurface(GAMEOBJECT *object, i32 surface) {
-    i32 result = 0;
-    if ((u32)surface < 32 && (TerSurface[surface].flags & 0x10000)) {
-        result = 1;
-        if (surface == 5 && (CanMagnetClimbFn == NULL || CanMagnetClimbFn(object) == 0))
-            result = 0;
-    }
-    return result;
+    if ((u32)surface > 31 || (TerSurface[surface].flags & 0x10000) == 0)
+        return 0;
+    if (surface == 5 && (CanMagnetClimbFn == NULL || CanMagnetClimbFn(object) == 0))
+        return 0;
+    return 1;
 }
 
 __declspec(noinline) i32 __cdecl Pushing(GAMEOBJECT *object, u16 *normal_angle, i32 *surface, i32 *angle_difference) {
@@ -426,7 +425,7 @@ void __cdecl SetPushAngle(GAMEOBJECT *object) {
     if (Pushing(object, &angle, NULL, NULL)) {
         adjustment = 0;
         spinner = (SPINNER_MOVEMENT_PC *)object->grapple;
-        if (spinner != NULL && LEGOCONTEXT_PUSHSPINNER != -1 && LEGOCONTEXT_PUSHSPINNER == object->character_context &&
+        if (spinner != NULL && LEGOCONTEXT_PUSHSPINNER != -1 && object->character_context == LEGOCONTEXT_PUSHSPINNER &&
             (spinner->state_flags & 0x40)) {
             adjustment = PlayerPushSpinnerDegreesPc;
             if (spinner->state_flags & 1)
@@ -811,9 +810,9 @@ void __cdecl FixUpLayers(void) {
 
 GAMEOBJECT *__cdecl GetOtherActivePlayer(GAMEOBJECT *object) {
     GAMEOBJECT *other;
-    if (Player[0] == object) {
+    if (object == Player[0]) {
         other = (GAMEOBJECT *)Player[1];
-    } else if (Player[1] == object) {
+    } else if (object == Player[1]) {
         other = (GAMEOBJECT *)Player[0];
     } else {
         return NULL;
@@ -1085,10 +1084,14 @@ i32 __cdecl Arcade_BothPlayersActive(void) {
 }
 
 i32 __cdecl Player_HasInvincibility(GAMEOBJECT *object) {
-    return Cheats_CheckFlags(0x80) != 0 || (object != NULL && object->powerup_time > 0.0f);
+    if (Cheats_CheckFlags(0x80) != 0)
+        return 1;
+    return object != NULL && object->powerup_time > 0.0f;
 }
 i32 __cdecl Player_HasFastBuild(GAMEOBJECT *object) {
-    return Cheats_CheckFlags(0x4000) != 0 || (object != NULL && object->powerup_time > 0.0f);
+    if (Cheats_CheckFlags(0x4000) != 0)
+        return 1;
+    return object != NULL && object->powerup_time > 0.0f;
 }
 
 typedef struct player_reset_fields_pc_s {
@@ -1126,7 +1129,7 @@ f32 __cdecl GetHoverPosY(GAMEOBJECT *);
 i32 __cdecl Player_HasPurpleForce(GAMEOBJECT *);
 static __declspec(noinline) i32 PreResetCanAccelerateFallPc(GAMEOBJECT *object) {
     NUVEC direction;
-    f32 delta, threshold;
+    f32 delta, threshold, delta_x, delta_z;
     if (VehicleArea != 0 || (object->flags_1fc_word & 0x80) == 0)
         return 0;
     if (object->character_context == 0 &&
@@ -1150,9 +1153,9 @@ static __declspec(noinline) i32 PreResetCanAccelerateFallPc(GAMEOBJECT *object) 
         direction.z = object->velocity.z;
         NuVecNorm(&direction, &direction);
     }
-    return (object->contact_position.x - object->position.x) * direction.x +
-               (object->contact_position.z - object->position.z) * direction.z >
-           0.0;
+    delta_x = object->contact_position.x - object->position.x;
+    delta_z = object->contact_position.z - object->position.z;
+    return delta_x * direction.x + delta_z * direction.z > 0.0;
 }
 void __cdecl PreResetCode(GAMEOBJECT *object) {
     PLAYER_RESET_FIELDS_PC *reset = (PLAYER_RESET_FIELDS_PC *)object;
@@ -1170,8 +1173,8 @@ void __cdecl PreResetCode(GAMEOBJECT *object) {
     object->flags_e20 &= 0xfff7ffff;
     reset->weapon_trail_offset.x = (f32)qrand() * (f64)(1.0f / 65535.0f) * (f64)0.03f - (f64)0.015f;
     reset->weapon_trail_offset.y = (f32)qrand() * (f64)(1.0f / 65535.0f) * (f64)0.03f - (f64)0.015f;
-    object->flags_e20 &= ~4u;
     reset->weapon_trail_offset.z = (f32)qrand() * (f64)(1.0f / 65535.0f) * (f64)0.03f - (f64)0.015f;
+    object->flags_e20 &= ~4u;
     object->incoming_bolt = NULL;
     object->incoming_melee = NULL;
     reset->incoming_special = NULL;
@@ -1182,7 +1185,7 @@ void __cdecl PreResetCode(GAMEOBJECT *object) {
     object->terrain_origin_floor_offset = 0.0f;
     object->sabre_flags = 1;
     reset->force_glow_candidate = NULL;
-    object->blade_states[3] = object->blade_states[2] = object->blade_states[1] = object->blade_states[0] = -1;
+    object->blade_states[0] = object->blade_states[1] = object->blade_states[2] = object->blade_states[3] = -1;
     object->anim_packet.overlay_animation = -1;
     if ((object->character_data->model_flags & 0x8040) == 0)
         object->jump_variant_state = 0;
@@ -1254,16 +1257,17 @@ i32 __cdecl KillPlayer(GAMEOBJECT *object, i32 reason, i32 ignore_spawn_protecti
     else if (object->spawn_protection_timer > 0.0f)
         return 0;
     if (Arcade != 0) {
-        other = 1;
-        if (object->field_280 != 0) {
-            if (object->field_280 != 1)
-                return KillGameObject(object, reason, 0);
-            other = 0;
-        }
         active = 0;
-        if (Player[other] != NULL)
-            active = (((GAMEOBJECT *)Player[other])->flags_1f8 >> 18) & 1;
-        Arcade_PlayerKilled(other, active);
+        other = -1;
+        if (object->field_280 == 0)
+            other = 1;
+        else if (object->field_280 == 1)
+            other = 0;
+        if (other != -1) {
+            if (Player[other] != NULL && (((GAMEOBJECT *)Player[other])->flags_1f8 & 0x40000) != 0)
+                active = 1;
+            Arcade_PlayerKilled(other, active);
+        }
     }
     return KillGameObject(object, reason, 0);
 }
@@ -1275,8 +1279,8 @@ void __cdecl ChatterSfx(GAMEOBJECT *object, i32 sound, f32 interval) {
         object->character_context == -1) {
         if (sound != TerrainLastChatterSfxPc || !(interval > 0.0f)) {
             PlaySfxById(sound, &object->collision_position);
-            TerrainLastChatterSfxPc = sound;
             TerrainChatterWaitPc = (f32)((f64)qrand() * (f64)(1.0f / 65535.0f) * 2.0 + 3.0);
+            TerrainLastChatterSfxPc = sound;
         } else {
             TerrainChatterWaitPc = interval;
             TerrainLastChatterSfxPc = -1;
@@ -1394,18 +1398,23 @@ void __cdecl ActivatePlayer(GAMEOBJECT *object) {
 }
 
 i32 __cdecl PlayerItem_GotAmmo(WEAPON_AMMO_PC *item) {
-    if (item != NULL && item->type != NULL && item->type->type == 2)
-        return item->ammo != 0;
-    return 1;
+    if (item == NULL)
+        return 1;
+    if (item->type == NULL)
+        return 1;
+    if (item->type->type != 2)
+        return 1;
+    return item->ammo > 0;
 }
 
 void __cdecl Move_VEHICLE(GAMEOBJECT *);
 void __cdecl PostResetCode(GAMEOBJECT *object) {
     PLAYERCHARACTERCONFIG_PC *character;
     object->attack_override = 0;
-    character = object->character_data->game_character;
-    if (character->sfx_chatter != -1)
+    if (object->character_data->game_character->sfx_chatter != -1) {
+        character = object->character_data->game_character;
         ChatterSfx(object, character->sfx_chatter, (f32)(u32)character->flags_11e);
+    }
     if (object->character_data->move_fn != Move_VEHICLE && object->tertiary_lean_angle != 0 &&
         (object->flags_e24 & 0x2000) == 0)
         object->tertiary_lean_angle = 0;
@@ -1860,13 +1869,19 @@ static void SetLayersCloudPc(GAMEOBJECT *object) {
     object->layer_mask |= 1u << CreatureCloudLegsPc[qrand() / 0x5556];
     object->flags_ef4 = (object->flags_ef4 & ~0x800u) | ((object->layer_mask << 4) & 0x800);
 }
+typedef struct PLAYER_LAYER_FLAGS_PC {
+    u32 unknown_0 : 9;
+    u32 bob : 1;
+    u32 unknown_10 : 22;
+} PLAYER_LAYER_FLAGS_PC;
+STATIC_ASSERT(sizeof(PLAYER_LAYER_FLAGS_PC) == sizeof(((GAMEOBJECT *)0)->flags_ef0));
 static void SetLayersBobPc(GAMEOBJECT *object) {
     i32 head[6] = {1, 2, 3, 21, 22, 23};
     i32 body[8] = {5, 6, 7, 8, 9, 10, 16, 17};
     i32 legs[3] = {11, 12, 15};
     i32 arms[2] = {13, 14};
     i32 hands[2] = {19, 20};
-    object->flags_ef0 = (object->flags_ef0 & ~0x200u) | ((qrand() < 0x8000) ? 0x200 : 0);
+    ((PLAYER_LAYER_FLAGS_PC *)&object->flags_ef0)->bob = qrand() < 0x8000;
     if (qrand() < 0x8000)
         object->layer_mask |= 0x10;
     object->layer_mask = 1;
@@ -2248,16 +2263,14 @@ void DrawGameObjectsDraw(i32 pass) {
     ResetShadowMapRendering();
 }
 
+extern f32 DrawGameObjectsFarClipPc, DrawGameObjectsVehicleFarClipPc;
 void DrawGameObjects() {
     const f32 saved_far_clip = global_camera.unknown_64;
-    const f32 object_far_clip = VehicleArea != 0 ? 50.0f : 20.0f;
-    if (object_far_clip <= global_camera.unknown_64) {
-        global_camera.unknown_64 = object_far_clip;
-    }
-
+    global_camera.unknown_64 = VehicleArea != 0 ? DrawGameObjectsVehicleFarClipPc : DrawGameObjectsFarClipPc;
+    if (global_camera.unknown_64 > saved_far_clip)
+        global_camera.unknown_64 = saved_far_clip;
     NuCameraSet(&global_camera);
     DrawGameObjectsDraw(0);
-
     global_camera.unknown_64 = saved_far_clip;
     NuCameraSet(&global_camera);
 }
@@ -2908,7 +2921,9 @@ void __cdecl Player_ToggleCharacter(GAMEOBJECT *object, i32 direction, i32 sound
 
 STATIC_ASSERT(offsetof(GAMEOBJECT, powerup_time) == 0xdec);
 i32 __cdecl Player_HasDeflectBolts(GAMEOBJECT *object) {
-    return Cheats_CheckFlags(0x80000) != 0 || (object != NULL && object->powerup_time > 0.0f);
+    if (Cheats_CheckFlags(0x80000) != 0)
+        return 1;
+    return object != NULL && object->powerup_time > 0.0f;
 }
 i32 __cdecl Player_HasDoubleBoltDamage_FromBolt(BOLT_PC *bolt) {
     GAMEOBJECT *object;
@@ -2920,7 +2935,9 @@ i32 __cdecl Player_HasDoubleBoltDamage_FromBolt(BOLT_PC *bolt) {
     else
         return 0;
     object = Player[player];
-    return Cheats_CheckFlags(2) != 0 || (object != NULL && object->powerup_time > 0.0f);
+    if (Cheats_CheckFlags(2) != 0)
+        return 1;
+    return object != NULL && object->powerup_time > 0.0f;
 }
 
 void __cdecl AveragePlayerCurrentSpeedMul(void) {
@@ -2962,7 +2979,7 @@ u8 __cdecl FindNearestPlayerToVec(NUVEC *position, GAMEOBJECT **nearest_player, 
         GAMEOBJECT *candidate = (GAMEOBJECT *)Player[index];
         if (candidate != NULL && (candidate->flags_1fc & 0x80) != 0) {
             f32 candidate_distance = NuVecDistSqr(&candidate->position, position, NULL);
-            if (*distance_squared > candidate_distance || *nearest_player == NULL) {
+            if (candidate_distance < *distance_squared || *nearest_player == NULL) {
                 if (require_character_flags == 0 ||
                     (((GAMEOBJECT *)Player[index])->character_data->game_character->flags_090 & character_flags) != 0) {
                     *distance_squared = candidate_distance;

@@ -57,6 +57,8 @@ void UpdateCharacterIDs(void);
 void InitShop(WORLDINFO *);
 extern f32 ShopCharTopOffsetPc;
 extern f32 ShopTopBrickOffsetPc;
+extern f32 ShopNativeSubNormCharPushPc, ShopCodeExitPushPc;
+extern f32 ShopTopCodeOffsetPc, ShopTopExtraOffsetPc, ShopTopHintOffsetPc;
 
 typedef struct SHARD_LOST_OWNER_PC {
     u8 unknown_00[0x3c];
@@ -189,14 +191,10 @@ static void Shop_DrawCharacter(shopitem_s *item, NUVEC *position, f32 scale_valu
 
         icon_object_id = CDataList[character_id].icon_model;
         if (icon_object_id != -1) {
-            struct WORLDINFO_s *world;
-            LEVEL_OBJECT_RUNTIME_PC *icon;
             if (unavailable != 0)
                 ++icon_object_id;
-            world = WORLD;
-            icon = &world->level_objects[icon_object_id];
-            if (icon->active != 0) {
-                NuSpecialDrawAtAlpha(&icon->special, &matrix, alpha);
+            if (WORLD->level_objects[icon_object_id].active != 0) {
+                NuSpecialDrawAtAlpha(&WORLD->level_objects[icon_object_id].special, &matrix, alpha);
             }
         }
     }
@@ -693,11 +691,12 @@ static void Shop_DrawBrickPc(shopitem_s *item, NUVEC *position, f32 scale_value,
 }
 
 void DrawTopShelf(i32 unused) {
-    Shop_DrawItemPc(&TopShelf[0], &ShelfPos[0], topscale[0], 1.0f, 1, toppush[0] + -0.006f, 0, shelfang, 0);
+    Shop_DrawItemPc(&TopShelf[0], &ShelfPos[0], topscale[0], 1.0f, 1, ShopTopHintOffsetPc + toppush[0], 0, shelfang, 0);
     Shop_DrawCharacter(&TopShelf[1], &ShelfPos[1], topscale[1], toppush[1] + ShopCharTopOffsetPc, 0, shelfang, 0);
-    Shop_DrawItemPc(&TopShelf[2], &ShelfPos[2], topscale[2], 1.0f, 1, toppush[2] + 0.005f, 0, shelfang, 0);
-    DrawItem(&codeblank, &ShelfPos[3], topscale[3], 1.0f, toppush[3] + -0.005f, 0, shelfang, 0);
-    Shop_DrawItemPc(&TopShelf[3], &ShelfPos[3], topscale[3], 1.0f, 0, toppush[3] + -0.005f, 0, shelfang, 0);
+    Shop_DrawItemPc(&TopShelf[2], &ShelfPos[2], topscale[2], 1.0f, 1, ShopTopExtraOffsetPc + toppush[2], 0, shelfang,
+                    0);
+    DrawItem(&codeblank, &ShelfPos[3], topscale[3], 1.0f, ShopTopCodeOffsetPc + toppush[3], 0, shelfang, 0);
+    Shop_DrawItemPc(&TopShelf[3], &ShelfPos[3], topscale[3], 1.0f, 0, ShopTopCodeOffsetPc + toppush[3], 0, shelfang, 0);
     Shop_DrawBrickPc(&TopShelf[4], &ShelfPos[4], topscale[4], toppush[4] + ShopTopBrickOffsetPc, 0,
                      (u16)(shelfang + 0x2000), 0);
     Shop_DrawItemPc(&TopShelf[5], &ShelfPos[5], topscale[5], 1.0f, 1, toppush[5], 0, shelfang, 0);
@@ -959,8 +958,8 @@ i32 __cdecl UpdateShop(void *menu) {
             ShopNameAlpha = 1.0f;
     }
     ShopLockedScalePc = SeekLinearF(ShopLockedScalePc, 1.0f, (f32)((f64)FRAMETIME * 3.0));
-    SubNormCharPush = 0.02f;
-    SubBigCharPush = 0.05f;
+    SubNormCharPush = ShopNativeSubNormCharPushPc;
+    SubBigCharPush = ShopCodeExitPushPc;
     if (menuptr == NULL) {
         if (shop_from_cutsceneplayer != 0) {
             topscale[5] = ShopOldPickedScalePc;
