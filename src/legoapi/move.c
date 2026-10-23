@@ -162,77 +162,6 @@ i32 __cdecl Glide_SetTargetMom(GAMEOBJECT *object) {
     return 1;
 }
 
-__declspec(noinline) u16 __cdecl SeekRot(u16 current, u16 target, f32 rate) {
-    f32 blend;
-    i32 difference;
-    i32 angle;
-
-    blend = rate * FRAMETIME;
-    if (blend > 1.0f)
-        blend = 1.0f;
-    difference = (i32)target - (i32)current;
-    if (difference > 0x8000)
-        difference -= 0x10000;
-    else if (difference < -0x8000)
-        difference += 0x10000;
-    angle = (i32)((f32)current + (f32)difference * blend);
-    return (u16)angle;
-}
-
-__declspec(noinline) void __cdecl SeekVec(NUVEC *result, NUVEC *current, NUVEC *target, f32 rate) {
-    f32 blend;
-
-    blend = rate * FRAMETIME;
-    if (blend > 1.0f)
-        blend = 1.0f;
-    result->x = current->x + (target->x - current->x) * blend;
-    result->y = current->y + (target->y - current->y) * blend;
-    result->z = current->z + (target->z - current->z) * blend;
-}
-
-__declspec(noinline) f32 __cdecl SeekValF(f32 current, f32 target, f32 rate) {
-    f32 blend;
-
-    blend = rate * FRAMETIME;
-    if (blend > 1.0f)
-        blend = 1.0f;
-    return current + (target - current) * blend;
-}
-
-__declspec(noinline) f32 __cdecl SeekLinearF(f32 current, f32 target, f32 step) {
-    if (current > target) {
-        current -= step;
-        if (current < target)
-            current = target;
-    } else if (current < target) {
-        current += step;
-        if (current > target)
-            current = target;
-    }
-    return current;
-}
-
-u16 __cdecl TurnRot(u16 current, u16 target, i32 speed, i32 *difference_out) {
-    i32 step;
-    i32 difference;
-    if (target == current)
-        return target;
-    step = (i32)((f64)speed * FRAMETIME);
-    difference = (i32)target - (i32)current;
-    if (difference > 0x8000)
-        difference -= 0x10000;
-    else if (difference < -0x8000)
-        difference += 0x10000;
-    if (difference_out != NULL)
-        *difference_out = difference;
-    if (difference > 0) {
-        if (step < difference)
-            return (u16)(current + step);
-    } else if (difference < -step)
-        return (u16)(current - step);
-    return target;
-}
-
 f32 __cdecl VehicleTurnOrLoopOffset(GAMEOBJECT *object) {
     f32 phase;
     f32 sine;
@@ -6200,35 +6129,33 @@ void __cdecl Move_POD(GAMEOBJECT *object) {
         PodSpeedCodePc(object, object->pad->buttons_held & GAMEPAD_JUMP);
         PodBoostCodePc(object);
     }
-    if (WORLD->area != NULL && (WORLD->area == PODRACE_ADATA || WORLD->area == PODSPRINT_ADATA))
+    if ((WORLD->area != NULL && WORLD->area == PODRACE_ADATA) ||
+        (WORLD->area != NULL && WORLD->area == PODSPRINT_ADATA))
         CatchUpCode(object, 0.025f, 3.0f, 0);
     if ((object->flags_1fc & 0x80) != 0)
         ForceCode(object, 0, 0, 0);
     PodCollisionCode(object);
-    vehicle = object->character_data->game_character;
-    sound = vehicle->sfx_engine;
-    if (vehicle->hover_fall_mode == 0x14) {
+    sound = object->character_data->game_character->sfx_engine;
+    if (object->character_data->game_character->hover_fall_mode == 0x14) {
         if ((object->flags_1fc & 0x80) != 0) {
-            player_index = object != Player[0];
             if (WORLD->area != NULL && WORLD->area == PODRACE_ADATA) {
-                union {
-                    f32 value;
-                    u32 bits;
-                } sine;
                 f32 steering, speed, pitch;
-                sine.value = NuTrigTable[object->pad->input_angle >> 1];
-                sine.bits = (sine.bits & 0x7fffffff) | 0x80000000;
-                steering = (f32)((f64)sine.value * ((f64)object->pad->input_magnitude - 6.0) / 96.0);
+                steering = (f32)(((f64)object->pad->input_magnitude - 6.0) *
+                                 -MovePlayerFabs(NuTrigTable[object->pad->input_angle >> 1]) / 96.0);
                 speed =
                     (f32)(avg_currentspeed_mul < 1.1f ? (f64)avg_currentspeed_mul + 1.0 + steering : 2.0 + steering);
+                player_index = object != Player[0];
                 pitch = (f32)(((f64)speed * 0.5 - PodPitchHistoryPc[player_index]) * FRAMETIME * 1.5 +
                               PodPitchHistoryPc[player_index]);
                 PodPitchHistoryPc[player_index] = pitch;
                 PlaySfxByIdAndSetPitch(sound, &object->collision_position, pitch);
             } else {
-                f32 pitch = SeekLinearF(
-                    PodPitchHistoryPc[player_index],
-                    (f32)((f64)object->velocity_magnitude / vehicle->run_speed * (f64)0.35f + (f64)0.65f), FRAMETIME);
+                f32 pitch, target;
+                target = (f32)((f64)object->velocity_magnitude / object->character_data->game_character->run_speed *
+                                   (f64)0.35f +
+                               (f64)0.65f);
+                player_index = object != Player[0];
+                pitch = SeekLinearF(PodPitchHistoryPc[player_index], target, FRAMETIME);
                 PodPitchHistoryPc[player_index] = pitch;
                 PlaySfxByIdAndSetPitch(sound, &object->collision_position, pitch);
             }
@@ -6237,10 +6164,10 @@ void __cdecl Move_POD(GAMEOBJECT *object) {
         f64 facing = ((f64)object->collision_position.x - global_camera.mtx.m30) * global_camera.mtx.m20 +
                      ((f64)object->collision_position.y - global_camera.mtx.m31) * global_camera.mtx.m21 +
                      ((f64)object->collision_position.z - global_camera.mtx.m32) * global_camera.mtx.m22;
-        if (!(facing >= 0.0))
-            PlaySfxByIdAndSetPitch(sound, &object->collision_position, 0.7f);
-        else
+        if (facing >= 0.0)
             PlaySfxById(sound, &object->collision_position);
+        else
+            PlaySfxByIdAndSetPitch(sound, &object->collision_position, 0.7f);
     }
     GizmoBlowupCheckProximity(WORLD, object);
 }
@@ -9857,8 +9784,8 @@ static void ForceThrowCode(GAMEOBJECT *object, i32 pressed) {
 }
 
 static void ForceDeflectCode(GAMEOBJECT *object, i32 pressed, i32 held) {
-    i32 waiting = objInNetWaitContext(object, 0x1d);
     PART_PC *assist = NULL;
+    i32 waiting = objInNetWaitContext(object, 0x1d);
     PART_PC *part;
     FORCE_GLOW_PC *glow = (FORCE_GLOW_PC *)object;
     if (object->character_context == 0x1d) {
@@ -9871,9 +9798,9 @@ static void ForceDeflectCode(GAMEOBJECT *object, i32 pressed, i32 held) {
             object->force_part->force_flags |= 1;
             object->force_part->flags &= ~0x4000u;
             if ((f64)object->context_timer < (f64)0.2f) {
-                f32 target_y = (f32)((f64)ForceDeflectSpeedPc * 0.5);
-                f32 seek_rate = ForceDeflectSeekRatePc + ForceDeflectSeekRatePc;
-                object->force_part->velocity.y = SeekValF(object->force_part->velocity.y, target_y, seek_rate);
+                object->force_part->velocity.y =
+                    SeekValF(object->force_part->velocity.y, (f32)((f64)ForceDeflectSpeedPc * 0.5),
+                             ForceDeflectSeekRatePc + ForceDeflectSeekRatePc);
             }
             part = object->force_part;
             if (part->owner != NULL && part->owner->field_280 == 0xff) {

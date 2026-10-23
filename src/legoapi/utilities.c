@@ -460,3 +460,74 @@ i32 __cdecl LineIntersectSphereXZPc(NUVEC *origin, NUVEC *direction, NUVEC *cent
         return 0;
     return 1;
 }
+
+u16 __cdecl SeekRot(u16 current, u16 target, f32 rate) {
+    f32 blend;
+    i32 difference;
+    i32 angle;
+
+    blend = rate * FRAMETIME;
+    if (blend > 1.0f)
+        blend = 1.0f;
+    difference = (i32)target - (i32)current;
+    if (difference > 0x8000)
+        difference -= 0x10000;
+    else if (difference < -0x8000)
+        difference += 0x10000;
+    angle = (i32)((f32)current + (f32)difference * blend);
+    return (u16)angle;
+}
+
+void __cdecl SeekVec(NUVEC *result, NUVEC *current, NUVEC *target, f32 rate) {
+    f32 blend;
+
+    blend = rate * FRAMETIME;
+    if (blend > 1.0f)
+        blend = 1.0f;
+    result->x = current->x + (target->x - current->x) * blend;
+    result->y = current->y + (target->y - current->y) * blend;
+    result->z = current->z + (target->z - current->z) * blend;
+}
+
+f32 __cdecl SeekValF(f32 current, f32 target, f32 rate) {
+    f32 blend;
+
+    blend = rate * FRAMETIME;
+    if (blend > 1.0f)
+        blend = 1.0f;
+    return current + (target - current) * blend;
+}
+
+f32 __cdecl SeekLinearF(f32 current, f32 target, f32 step) {
+    if (current > target) {
+        current -= step;
+        if (current < target)
+            current = target;
+    } else if (current < target) {
+        current += step;
+        if (current > target)
+            current = target;
+    }
+    return current;
+}
+
+u16 __cdecl TurnRot(u16 current, u16 target, i32 speed, i32 *difference_out) {
+    i32 step;
+    i32 difference;
+    if (target == current)
+        return target;
+    step = (i32)((f64)speed * FRAMETIME);
+    difference = (i32)target - (i32)current;
+    if (difference > 0x8000)
+        difference -= 0x10000;
+    else if (difference < -0x8000)
+        difference += 0x10000;
+    if (difference_out != NULL)
+        *difference_out = difference;
+    if (difference > 0) {
+        if (step < difference)
+            return (u16)(current + step);
+    } else if (difference < -step)
+        return (u16)(current - step);
+    return target;
+}
