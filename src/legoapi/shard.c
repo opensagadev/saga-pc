@@ -1875,14 +1875,10 @@ i32 __cdecl CodeMenu(void *menu) {
         else if (input.right_held)
             right = 1;
         else if (input.down_held) {
-            if (ShopCodeRepeatTimerPc <= 0.0f)
-                down = 1;
-            else if (input.down_pressed)
+            if (ShopCodeRepeatTimerPc <= 0.0f || input.down_pressed)
                 down = 1;
         } else if (input.up_held) {
-            if (ShopCodeRepeatTimerPc <= 0.0f)
-                up = 1;
-            else if (input.up_pressed)
+            if (ShopCodeRepeatTimerPc <= 0.0f || input.up_pressed)
                 up = 1;
         }
         if (input.confirm)
