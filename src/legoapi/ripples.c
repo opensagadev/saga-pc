@@ -194,77 +194,85 @@ extern f32 RipplePerturbationPc, RippleSfxCooldownPc, ForceFieldRippleRatePc;
 extern const char RippleForceFieldSoundNamePc[10];
 static f32 RippleRandomRadiusPc = 0.15f;
 void __cdecl VecRotateAxis(NUVEC *, u16, NUVEC *);
+#define RIPPLE_WORLD ((WORLD_RIPPLE_VIEW_PC *)WORLD)
 void __cdecl AddSurfaceRipples(GAMEOBJECT *object) {
-    WORLD_RIPPLE_VIEW_PC *world = (WORLD_RIPPLE_VIEW_PC *)WORLD;
     RIPPLE_CONTACT_TIMER_VIEW_PC *contact_timer = (RIPPLE_CONTACT_TIMER_VIEW_PC *)object;
-    PLAYERCHARACTERCONFIG_PC *data;
-    RIPPLE_EFFECT_PC *effect;
     NUVEC position, normal, seed, velocity;
     NUMTX matrix;
-    f32 rate, size;
+    f32 rate, size, swap_y, swap_x;
     i32 count, i;
-    if (world->effects == NULL || object->dead != 0)
+    if (RIPPLE_WORLD->effects == NULL || object->dead != 0)
         return;
-    if (object->contact_count != 1) {
+    if (object->contact_count == 1) {
+        if (object->contact_material[0] == 13 || object->contact_material[0] == 12) {
+            rate = object->pad->input_magnitude / object->character_data->game_character->run_speed *
+                   ForceFieldRippleRatePc;
+            if (rate < .5f)
+                rate = .5f;
+            count = ParticlesPerSecond(rate, FRAMETIME);
+            if (count > 0) {
+                position = object->contact_position;
+                normal = object->contact_normal;
+                BuildRippleMtx(&matrix, &normal, &position, 0, 0);
+                seed = normal;
+                seed.x = FRAMETIME * seed.x;
+                seed.y = FRAMETIME * seed.y;
+                seed.z = FRAMETIME * seed.z;
+                swap_y = seed.y;
+                seed.y = -seed.z;
+                swap_x = seed.x;
+                seed.x = swap_y;
+                seed.z = -swap_x;
+                for (i = 0; i < count; ++i) {
+                    u16 angle = (u16)qrand();
+                    velocity = seed;
+                    VecRotateAxis(&velocity, angle, &normal);
+                    AddRipple(RippleSetPc, &matrix, RIPPLE_WORLD->effects[RIPPLE_WORLD->sabre_effect].initial_size,
+                              RIPPLE_WORLD->effects[RIPPLE_WORLD->sabre_effect].end_size,
+                              RIPPLE_WORLD->effects[RIPPLE_WORLD->sabre_effect].lifetime, 0.0f,
+                              RIPPLE_WORLD->effects[RIPPLE_WORLD->sabre_effect].start_color,
+                              RIPPLE_WORLD->effects[RIPPLE_WORLD->sabre_effect].end_color, 15,
+                              RIPPLE_WORLD->effects[RIPPLE_WORLD->sabre_effect].material, &velocity);
+                }
+            }
+            /* The native sound position remains unwritten when no particles are emitted. */
+            if (contact_timer->timer <= 0) {
+                PlaySfx((char *)RippleForceFieldSoundNamePc, &position);
+                contact_timer->timer = RippleSfxCooldownPc;
+            }
+        }
+        if (contact_timer->timer > 0)
+            contact_timer->timer -= FRAMETIME;
+    } else {
         if (object->water_intersects == 0 || object->model_draw_result == 0)
             return;
-        data = object->character_data->game_character;
-        rate = (f32)(((f64)object->pad->input_magnitude / (f64)data->run_speed) * 20.0);
+        rate = (f32)(object->pad->input_magnitude / object->character_data->game_character->run_speed * 20.0);
         if (rate < 1.0f)
             rate = 1.0f;
         count = ParticlesPerSecond(rate, FRAMETIME);
         if (count <= 0)
             return;
-        position.x = position.y = position.z = 0;
+        position.x = 0.0f;
+        position.y = 0.0f;
+        position.z = 0.0f;
         BuildRippleMtx(&matrix, &v010, &position, 0, 0);
-        size = (f32)((f64)object->bounds_radius * .5);
+        size = (f32)(object->bounds_radius * .5);
         for (i = 0; i < count; ++i) {
-            matrix.m30 = (f32)((((f64)qrand() * (f64)(1.0f / 65535.0f)) - .5) * (f64)RipplePerturbationPc +
-                               (f64)object->collision_position.x);
-            matrix.m31 = (f32)((f64)object->water_height + (f64).001f);
-            matrix.m32 = (f32)((((f64)qrand() * (f64)(1.0f / 65535.0f)) - .5) * (f64)RipplePerturbationPc +
-                               (f64)object->collision_position.z);
-            world = (WORLD_RIPPLE_VIEW_PC *)WORLD;
-            effect = &world->effects[world->water_effect];
-            RippleRandomRadiusPc =
-                (f32)(((f64)object->bounds_radius + (f64)object->bounds_radius) + (f64)object->bounds_radius);
-            AddRipple(RippleSetPc, &matrix, size, RippleRandomRadiusPc, effect->lifetime, 0, effect->start_color,
-                      effect->end_color, 7, effect->material, NULL);
-        }
-        return;
-    }
-    if (object->contact_material[0] == 12 || object->contact_material[0] == 13) {
-        data = object->character_data->game_character;
-        rate = (f32)(((f64)object->pad->input_magnitude / (f64)data->run_speed) * (f64)ForceFieldRippleRatePc);
-        if (rate < .5f)
-            rate = .5f;
-        count = ParticlesPerSecond(rate, FRAMETIME);
-        if (count > 0) {
-            position = object->contact_position;
-            normal = object->contact_normal;
-            BuildRippleMtx(&matrix, &normal, &position, 0, 0);
-            seed.x = (f32)((f64)normal.y * FRAMETIME);
-            seed.y = -(f32)((f64)normal.z * FRAMETIME);
-            seed.z = -(f32)((f64)normal.x * FRAMETIME);
-            for (i = 0; i < count; ++i) {
-                u16 angle = (u16)qrand();
-                velocity = seed;
-                VecRotateAxis(&velocity, angle, &normal);
-                world = (WORLD_RIPPLE_VIEW_PC *)WORLD;
-                effect = &world->effects[world->sabre_effect];
-                AddRipple(RippleSetPc, &matrix, effect->initial_size, effect->end_size, effect->lifetime, 0,
-                          effect->start_color, effect->end_color, 15, effect->material, &velocity);
-            }
-        }
-        /* The native sound position remains unwritten when no particles are emitted. */
-        if (contact_timer->timer <= 0) {
-            PlaySfx((char *)RippleForceFieldSoundNamePc, &position);
-            contact_timer->timer = RippleSfxCooldownPc;
+            matrix.m30 = (f32)(((f64)qrand() * (f64)(1.0f / 65535.0f) - .5) * RipplePerturbationPc +
+                               object->collision_position.x);
+            matrix.m31 = (f32)(object->water_height + (f64).001f);
+            matrix.m32 = (f32)(((f64)qrand() * (f64)(1.0f / 65535.0f) - .5) * RipplePerturbationPc +
+                               object->collision_position.z);
+            RippleRandomRadiusPc = object->bounds_radius + object->bounds_radius + object->bounds_radius;
+            AddRipple(RippleSetPc, &matrix, size, RippleRandomRadiusPc,
+                      RIPPLE_WORLD->effects[RIPPLE_WORLD->water_effect].lifetime, 0.0f,
+                      RIPPLE_WORLD->effects[RIPPLE_WORLD->water_effect].start_color,
+                      RIPPLE_WORLD->effects[RIPPLE_WORLD->water_effect].end_color, 7,
+                      RIPPLE_WORLD->effects[RIPPLE_WORLD->water_effect].material, NULL);
         }
     }
-    if (contact_timer->timer > 0)
-        contact_timer->timer -= FRAMETIME;
 }
+#undef RIPPLE_WORLD
 
 typedef struct ripple_material_reader_pc_s {
     u8 unknown_0000[0x70];
