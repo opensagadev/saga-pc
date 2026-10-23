@@ -1475,10 +1475,8 @@ extern "C" void __cdecl FixUpLevels(struct level_fixup_pc_s *fixup) {
     }
     for (index = 0, level = LDataList; index < LEVELCOUNT; ++index, ++level) {
         if ((level->flags & 0x400) != 0 || level == STATUS_LDATA) {
-            LevelFixupSlotPc0087af60->callbacks[3] =
-                (void *)UpdateStatusScreen; /* Native 0x48f4fd: callbacks[3] = entry 0x486c60. */
-            LevelFixupSlotPc0087af60->callbacks[6] =
-                (void *)DrawStatusScreen; /* Native 0x48f500: callbacks[6] = entry 0x486200. */
+            level->callbacks[3] = (void *)UpdateStatusScreen; /* Native 0x48f4fd: callbacks[3] = entry 0x486c60. */
+            level->callbacks[6] = (void *)DrawStatusScreen;   /* Native 0x48f500: callbacks[6] = entry 0x486200. */
         }
     }
 }
