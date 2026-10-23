@@ -1379,6 +1379,7 @@ address,symbol,size,ctype
 0x486c00,_NuMainStatusHelperPc,1,void __cdecl(STATUSPACKET_s *)
 0x00486c10,_RegisterStatusScreen,67,"void __cdecl(STATUS_STAGE_s *, i32 *, const REGISTER_STATUS_PACKET_PC *)"
 0x00486c60,_UpdateStatusScreen,698,void __cdecl(WORLDINFO *)
+0x00486f20,_TakeOverReleaseDiagnosticPc,1,"void __cdecl (char *, char *)"
 0x486f50,_Tag_SetMode,10,void __cdecl (i32)
 0x00486f60,_Tag_FindGameObject_CYCLICAL,187,i32 __cdecl (GAMEOBJECT *)
 0x00487020,_Tag_FindGameObject_TRANSFER,378,GAMEOBJECT * __cdecl (GAMEOBJECT *)

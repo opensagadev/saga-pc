@@ -2193,3 +2193,10 @@ void __cdecl BonusWin_LSW_Draw(STATUS_STAGE_s *stage, STATUSPACKET_s *packet, i3
         DrawBonusScore(STATSPOSY, StatusPacket.player0_active, StatusPacket.player1_active, alpha, BonusScore);
     }
 }
+
+/* Original source name unknown. The native entry is exactly RET; ReleaseTakeOver passes it the rider and
+ * vehicle character names. */
+void __cdecl TakeOverReleaseDiagnosticPc(char *rider_name, char *object_name) {
+    (void)rider_name;
+    (void)object_name;
+}
