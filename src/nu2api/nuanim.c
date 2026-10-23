@@ -556,6 +556,7 @@ i32 __cdecl ANI_SimpleAni3PlayerV4Joint_Quat3(ANI3_HEADER_PC *anim, f32 frame, A
         u8 flags = *node_flags;
         for (group = 0; group < 3; ++group) {
             if (!(flags & CurveGroupMasks[group])) {
+                out += 4;
                 curve_types += 3;
             } else {
                 for (i = 0; i < 3; ++i) {
@@ -565,8 +566,8 @@ i32 __cdecl ANI_SimpleAni3PlayerV4Joint_Quat3(ANI3_HEADER_PC *anim, f32 frame, A
                         ++scale_min;
                     }
                 }
+                out += 4;
             }
-            out += 4;
         }
     }
     end_flags += count;
@@ -912,6 +913,7 @@ i32 __cdecl ANI_SimpleAni3PlayerV4Joint_EulerQuat(ANI3_HEADER_PC *anim, f32 fram
         u8 flags = *node_flags;
         for (group = 0; group < 3; ++group) {
             if (!(flags & CurveGroupMasks[group])) {
+                out += 4;
                 curve_types += 3;
             } else {
                 for (i = 0; i < 3; ++i) {
@@ -921,8 +923,8 @@ i32 __cdecl ANI_SimpleAni3PlayerV4Joint_EulerQuat(ANI3_HEADER_PC *anim, f32 fram
                         ++scale_min;
                     }
                 }
+                out += 4;
             }
-            out += 4;
         }
     }
     end_flags += count;
@@ -1088,6 +1090,7 @@ i32 __cdecl ANI_SimpleAni3PlayerV4Joint(ANI3_HEADER_PC *anim, f32 frame, ANI3_BU
         u8 flags = *node_flags;
         for (group = 0; group < 3; ++group) {
             if (!(flags & CurveGroupMasks[group])) {
+                out += 4;
                 curve_types += 3;
             } else {
                 for (i = 0; i < 3; ++i) {
@@ -1097,8 +1100,8 @@ i32 __cdecl ANI_SimpleAni3PlayerV4Joint(ANI3_HEADER_PC *anim, f32 frame, ANI3_BU
                         ++scale_min;
                     }
                 }
+                out += 4;
             }
-            out += 4;
         }
     }
     end_flags += count;
@@ -1406,6 +1409,7 @@ i32 __cdecl ANI_SimpleAni3PlayerV4Joint_Blend_Quat3W(ANI3_HEADER_PC *anim, f32 f
             if (group == 1)
                 curve_count = group + 3;
             if (!(flags & CurveGroupMasks[group])) {
+                out += 4;
                 curve_types += curve_count;
             } else {
                 for (i = 0; i < curve_count; ++i) {
@@ -1415,8 +1419,8 @@ i32 __cdecl ANI_SimpleAni3PlayerV4Joint_Blend_Quat3W(ANI3_HEADER_PC *anim, f32 f
                         ++scale_min;
                     }
                 }
+                out += 4;
             }
-            out += 4;
         }
     }
     end_flags += count;
@@ -1819,6 +1823,7 @@ i32 __cdecl ANI_SimpleAni3PlayerV4Joint_Blend(ANI3_HEADER_PC *anim, f32 frame, A
         u8 flags = *node_flags;
         for (group = 0; group < 3; ++group) {
             if (!(flags & CurveGroupMasks[group])) {
+                out += 4;
                 curve_types += 3;
             } else {
                 for (i = 0; i < 3; ++i) {
@@ -1828,8 +1833,8 @@ i32 __cdecl ANI_SimpleAni3PlayerV4Joint_Blend(ANI3_HEADER_PC *anim, f32 frame, A
                         ++scale_min;
                     }
                 }
+                out += 4;
             }
-            out += 4;
         }
     }
     end_flags += count;
