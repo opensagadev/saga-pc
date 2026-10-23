@@ -334,11 +334,12 @@ void __cdecl NuVec4Add(NUVEC4 *, NUVEC4 *, NUVEC4 *);
 void __cdecl NuDisplayListSkinPalettePc(void *arg) {
     PC_DL_SKIN_PALETTE_READER *packet = (PC_DL_SKIN_PALETTE_READER *)arg;
     i32 count = packet->count;
+    void *elements = packet->elements;
     PC_SHADER_OBJECT_FULL_VIEW *shader = (PC_SHADER_OBJECT_FULL_VIEW *)PCShaderCurrentObjectPc();
     if (shader != NULL) {
         if (count > 8)
             NuPtlDmaSlotsExhaustedPc();
-        NuShaderObjectSetElementsfv(shader, 0x18, 0, count, packet->elements);
+        NuShaderObjectSetElementsfv(shader, 0x18, 0, count, elements);
         SAGA_SKIN_CALL(skin_trace_palette, (unsigned)arg, count);
     }
 }
@@ -451,11 +452,20 @@ void __cdecl NuDisplayListReflectionPc(void *arg) {
     NuDisplayHandlerReflectionPc = reflection;
     material = (PC_DL_MATERIAL_READER *)NuDisplayHandlerMaterialPc;
     if (material != NULL) {
-        u32 mode = (material->reflection_flags >> 12) & 3;
-        if (mode == 0)
-            PCDeviceSetRenderState(0x16, reflection != 0 ? 2 : 3);
-        else if (mode == 1)
-            PCDeviceSetRenderState(0x16, reflection != 0 ? 3 : 2);
+        switch ((material->reflection_flags >> 12) & 3) {
+            case 0:
+                if (reflection != 0)
+                    PCDeviceSetRenderState(0x16, 2);
+                else
+                    PCDeviceSetRenderState(0x16, 3);
+                break;
+            case 1:
+                if (reflection != 0)
+                    PCDeviceSetRenderState(0x16, 3);
+                else
+                    PCDeviceSetRenderState(0x16, 2);
+                break;
+        }
     }
 }
 
