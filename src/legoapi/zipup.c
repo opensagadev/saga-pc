@@ -1066,34 +1066,32 @@ void ZipUps_DrawLines() {
     GAMEOBJECT *object = Obj;
 
     for (i = 0; i < HIGHGAMEOBJECT; ++i, ++object) {
-        ZIPUP_ROPE_VERTEX_PC vertices[2];
+        ZIPUP_ROPE_VERTEX_PC vertices[3];
         ZIPUP_ROPE_VERTEX_PC *start, *end;
 
         start = &vertices[0];
         end = &vertices[1];
         if (object->character_context == 0x47) {
             if (object->action_movement_state == 0) {
-                f32 time;
-
                 ZipUp_GetStartPoint(object, &start->position);
-                time = object->context_timer;
                 start->colour = 0xffffffff;
                 end->position = ((ZIPUP_PC *)(object->grapple))->hook_position;
-                if (time < 0.2f) {
+                if (object->context_timer < (f64)0.2f) {
                     f32 fraction;
 
-                    fraction = time / 0.2f;
+                    fraction = (f32)(object->context_timer / (f64)0.2f);
                     end->position.x = (end->position.x - start->position.x) * fraction + start->position.x;
                     end->position.y = (end->position.y - start->position.y) * fraction + start->position.y;
                     end->position.z = (end->position.z - start->position.z) * fraction + start->position.z;
                 }
                 end->colour = 0xff808080;
-                DrawRopeSingle(&start->position, &end->position, 1.0f, ropemtl, time, 0.2f, 3.5f, 1.0f);
+                DrawRopeSingle(&start->position, &end->position, 1.0f, ropemtl, object->context_timer, 0.2f, 3.5f,
+                               1.0f);
             }
         } else if (object->character_context == 0x35) {
-            end->position = ((ZIPUP_TRANSPORT_VIEW_PC *)object)->entry;
             start->colour = 0xffffffff;
             end->colour = 0xff808080;
+            end->position = ((ZIPUP_TRANSPORT_VIEW_PC *)object)->entry;
             if ((u16)object->id == (u16)ZipUpLineCharacterIdPc) {
                 start->position = object->position;
                 NuRndrLine3d((NURND_VERTEX3D_PC *)start, ZipUpLineMaterialPc, NULL);
