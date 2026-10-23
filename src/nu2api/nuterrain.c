@@ -2606,68 +2606,84 @@ void AddPickupTerr(i32 type, NUVEC *position) {
 }
 
 /* The real original caller expands the platform installer; no source-only helper is emitted. */
+#define TERRAIN_APTR_SET ((TERRAIN_SET_PC *)CurrentTerrain)
 i32 AddPickupTerrRot(i32 type, NUMTX *matrix, NUMTX *previous, i32 rotating) {
-    TERRAIN_SET_PC *terrain = (TERRAIN_SET_PC *)CurrentTerrain;
     TERRAIN_GROUP_PC *group;
     i16 source;
     i32 index;
-    if (terrain == NULL)
+    i32 found;
+    if (CurrentTerrain == NULL)
         return -1;
     if (previous == NULL && rotating == 0) {
         AddPickupTerr(type, &matrix->translation);
         return -1;
     }
-    if (terrain->group_index_count >= terrain->max_group_indices || terrain->group_count >= terrain->max_groups ||
-        matrix == NULL || (previous == NULL && rotating != 0))
+    if (TERRAIN_APTR_SET->group_index_count >= TERRAIN_APTR_SET->max_group_indices)
+        return -1;
+    if (TERRAIN_APTR_SET->group_count >= TERRAIN_APTR_SET->max_groups)
+        return -1;
+    if (matrix == NULL)
+        return -1;
+    if (previous == NULL && rotating != 0)
         return -1;
     source = PickupTerrainPc->group_for_type[type];
-    if (source == -1 || terrain->removed_platform_count >= 32 || terrain->max_platforms <= 0)
+    found = -1;
+    if (source != -1 && TERRAIN_APTR_SET->removed_platform_count < 32) {
+        for (index = 0; index < TERRAIN_APTR_SET->max_platforms; ++index) {
+            if (TERRAIN_APTR_SET->platforms[index].scene_object == NULL) {
+                found = index;
+                break;
+            }
+        }
+    }
+    if (found == -1)
         return -1;
-    for (index = 0; index < terrain->max_platforms; ++index)
-        if (terrain->platforms[index].scene_object == NULL)
-            break;
-    if (index >= terrain->max_platforms || index == -1)
-        return -1;
-    group = &terrain->groups[terrain->group_count];
+    group = &TERRAIN_APTR_SET->groups[TERRAIN_APTR_SET->group_count];
     *group = PickupTerrainPc->groups[source];
-    group->scene_index = (i16)index;
+    group->scene_index = (i16)found;
     group->chunk_type = 1;
-    ((TERRAIN_SET_PC *)CurrentTerrain)->platforms[index].scene_object = matrix;
+    TERRAIN_APTR_SET->platforms[found].scene_object = matrix;
     if (rotating != 0) {
-        memcpy(&((TERRAIN_SET_PC *)CurrentTerrain)->platforms[index].previous_matrix, previous, sizeof(NUMTX));
-        ((TERRAIN_SET_PC *)CurrentTerrain)->platforms[index].flags |= 1;
+        memcpy(&TERRAIN_APTR_SET->platforms[found].previous_matrix, previous, sizeof(NUMTX));
+        TERRAIN_APTR_SET->platforms[found].flags |= 1;
     } else {
-        NUMTX *old = previous != NULL ? previous : matrix;
-        ((TERRAIN_SET_PC *)CurrentTerrain)->platforms[index].previous_matrix.m30 = old->m30;
-        ((TERRAIN_SET_PC *)CurrentTerrain)->platforms[index].previous_matrix.m31 = old->m31;
-        ((TERRAIN_SET_PC *)CurrentTerrain)->platforms[index].previous_matrix.m32 = old->m32;
-        ((TERRAIN_SET_PC *)CurrentTerrain)->platforms[index].flags &= ~1u;
+        if (previous != NULL) {
+            TERRAIN_APTR_SET->platforms[found].previous_matrix.m30 = previous->m30;
+            TERRAIN_APTR_SET->platforms[found].previous_matrix.m31 = previous->m31;
+            TERRAIN_APTR_SET->platforms[found].previous_matrix.m32 = previous->m32;
+        } else {
+            TERRAIN_APTR_SET->platforms[found].previous_matrix.m30 = matrix->m30;
+            TERRAIN_APTR_SET->platforms[found].previous_matrix.m31 = matrix->m31;
+            TERRAIN_APTR_SET->platforms[found].previous_matrix.m32 = matrix->m32;
+        }
+        TERRAIN_APTR_SET->platforms[found].flags &= ~1u;
     }
     group->origin.x = matrix->m30;
     group->origin.y = matrix->m31;
     group->origin.z = matrix->m32;
-    ((TERRAIN_SET_PC *)CurrentTerrain)->platforms[index].terrain_group_index =
-        ((TERRAIN_SET_PC *)CurrentTerrain)->group_count;
-    ((TERRAIN_SET_PC *)CurrentTerrain)->platforms[index].scene_object_index = 0;
-    ((TERRAIN_SET_PC *)CurrentTerrain)->platforms[index].scene_transform = NULL;
-    terrain = (TERRAIN_SET_PC *)CurrentTerrain;
-    terrain->group_indices[terrain->group_index_count++] = terrain->group_count;
-    ((TERRAIN_SET_PC *)CurrentTerrain)->platforms[index].bounce_54 = 0;
-    ((TERRAIN_SET_PC *)CurrentTerrain)->platforms[index].bounce_58 = 0;
-    ((TERRAIN_SET_PC *)CurrentTerrain)->platforms[index].bounce_5c = 0;
-    ((TERRAIN_SET_PC *)CurrentTerrain)->platforms[index].bounce_64 = 0;
-    ((TERRAIN_SET_PC *)CurrentTerrain)->platforms[index].bounce_60 = 0;
-    ((TERRAIN_SET_PC *)CurrentTerrain)->platforms[index].flags &= ~2u;
-    terrain = (TERRAIN_SET_PC *)CurrentTerrain;
-    if (terrain->active_platform_count < 96) {
-        terrain->active_platform_groups[terrain->active_platform_count++] = terrain->group_count;
+    TERRAIN_APTR_SET->platforms[found].terrain_group_index = TERRAIN_APTR_SET->group_count;
+    TERRAIN_APTR_SET->platforms[found].scene_object_index = 0;
+    TERRAIN_APTR_SET->platforms[found].scene_transform = NULL;
+    TERRAIN_APTR_SET->group_indices[TERRAIN_APTR_SET->group_index_count] = TERRAIN_APTR_SET->group_count;
+    ++TERRAIN_APTR_SET->group_index_count;
+    TERRAIN_APTR_SET->platforms[found].bounce_54 = 0;
+    TERRAIN_APTR_SET->platforms[found].bounce_58 = 0;
+    TERRAIN_APTR_SET->platforms[found].bounce_5c = 0;
+    TERRAIN_APTR_SET->platforms[found].bounce_64 = 0;
+    TERRAIN_APTR_SET->platforms[found].bounce_60 = 0;
+    TERRAIN_APTR_SET->platforms[found].flags &= ~2u;
+    if (TERRAIN_APTR_SET->active_platform_count < 96) {
+        TERRAIN_APTR_SET->active_platform_groups[TERRAIN_APTR_SET->active_platform_count] =
+            TERRAIN_APTR_SET->group_count;
+        ++TERRAIN_APTR_SET->active_platform_count;
     }
-    ++((TERRAIN_SET_PC *)CurrentTerrain)->group_count;
-    ++((TERRAIN_SET_PC *)CurrentTerrain)->platform_cell.group_count;
-    terrain = (TERRAIN_SET_PC *)CurrentTerrain;
-    terrain->removed_platforms[terrain->removed_platform_count++] = (i16)index;
-    return index;
+    ++TERRAIN_APTR_SET->group_count;
+    ++TERRAIN_APTR_SET->platform_cell.group_count;
+    TERRAIN_APTR_SET->removed_platforms[TERRAIN_APTR_SET->removed_platform_count] = (i16)found;
+    ++TERRAIN_APTR_SET->removed_platform_count;
+    return found;
 }
+#undef TERRAIN_APTR_SET
 
 #define TERRAIN_NPPI_SET ((TERRAIN_SET_PC *)CurrentTerrain)
 i16 NewPlatPickupInst(void *object, i32 type) {
