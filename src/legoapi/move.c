@@ -13,6 +13,9 @@ void __cdecl Attracto_MoveCode(WORLDINFO *, GAMEOBJECT *);
 void __cdecl GunShip_DragBombSeekBlowUp(GAMEOBJECT *);
 
 void __cdecl SuperCarry_MoveCode(WORLDINFO *, GAMEOBJECT *);
+void __cdecl Detonator_MoveCode(GAMEOBJECT *);
+void __cdecl Transform_MoveCode(WORLDINFO *, GAMEOBJECT *);
+void __cdecl Whip_MoveCode(GAMEOBJECT *);
 
 void __cdecl Buck_MoveCode(GAMEOBJECT *, i32);
 void __cdecl TakeOverCode(GAMEOBJECT *, i32);
@@ -6665,10 +6668,10 @@ extern f32 DefaultMotionSpiderFarSpeedPc, DefaultMotionSpiderNearSpeedPc, Defaul
 extern i32 DefaultMotionLedgeTerrainEnabledPc;
 
 void __cdecl Move_CHARACTER(GAMEOBJECT *object) {
-    u32 action_held = object->pad->buttons_held & GAMEPAD_ACTION;
     u32 action_pressed = object->pad->buttons_pressed & GAMEPAD_ACTION;
-    u32 jump_held = object->pad->buttons_held & GAMEPAD_JUMP;
+    u32 action_held = object->pad->buttons_held & GAMEPAD_ACTION;
     u32 jump_pressed = object->pad->buttons_pressed & GAMEPAD_JUMP;
+    u32 jump_held = object->pad->buttons_held & GAMEPAD_JUMP;
     u32 special_pressed = object->pad->buttons_pressed & GAMEPAD_SPECIAL;
     u32 tag_pressed = object->pad->buttons_pressed & GAMEPAD_TAG;
     PLAYERCHARACTERCONFIG_PC *runtime;
@@ -6691,7 +6694,7 @@ void __cdecl Move_CHARACTER(GAMEOBJECT *object) {
             object->character_context = -1;
         } else if (timer >= object->character_data->game_character->jump_hold_duration ||
                    object->jump_animation_state == 0x1a) {
-            STUBBED_NAMED(0x0049dc60); /* Native4b4c16 StartJetPackFall(object,0); state-changing void action. */
+            StartJetPackFall(object, 0);
         } else {
             object->velocity.y = 0.0f;
             goto after_gravity;
@@ -6759,13 +6762,13 @@ after_gravity:
         Teleport_MoveCode(object, special_pressed);
     if (!StartupGameFlag1 && !StartupGameFlag0) {
         if (object->suit != NULL && (object->suit->flags & 4) != 0)
-            STUBBED_NAMED(0x004271b0); /* Native4b4f04: object; actual void action. */
+            Detonator_MoveCode(object);
         if (object->suit != NULL && (object->suit->flags & 8) != 0)
             STUBBED_NAMED(0x004c88c0); /* Native4b4f25: WORLD,object; actual void action. */
         if ((object->character_data->model_flags & 8) == 0)
-            STUBBED_NAMED(0x004d4dc0); /* Native4b4f3c: WORLD,object; actual void action. */
+            Transform_MoveCode(WORLD, object);
     }
-    STUBBED_NAMED(0x00598880); /* Native4b4f50: WORLD,object; actual void action. */
+    SuperCarry_MoveCode(WORLD, object);
     GizmoBlowupCheckProximity(WORLD, object);
     if (object->id == (u16)DefaultMotionIndySnakeIdPc) {
         if ((object->portal_flags & 0x10) != 0) {
@@ -6784,7 +6787,7 @@ after_gravity:
     PunchCode(object, action_pressed, action_held, object->character_data->model_flags & 0x80, 0, 0.0f);
     if ((object->character_data->game_character->flags_094 & 0x20000000) != 0 &&
         object->id == (u16)VehicleBoltId7f17d0Pc && StartupGameFlag0 != 0)
-        STUBBED_NAMED(0x005b26b0); /* Native4b5040: object; actual void action. */
+        Whip_MoveCode(object);
     DodgeCode(object, action_pressed, jump_pressed);
     Attracto_MoveCode(WORLD, object);
     SecurityDoor_MoveCode(WORLD, object);
@@ -10001,7 +10004,7 @@ void __cdecl Move_JEDI(GAMEOBJECT *object) {
         Teleport_MoveCode(object, special_pressed);
     ThermalDetonator_MoveCode(object);
     if (object->suit != NULL && (((MOVEMENT_SUIT_PC *)object->suit)->store_flag & 4) != 0)
-        STUBBED_NAMED(0x004271b0); /* Native4b371c: Detonator_MoveCode(object), ignored action. */
+        Detonator_MoveCode(object);
     ComboRotateCode(object, action_held);
     WeaponOutCode(object);
     WeaponInCode(object);
@@ -10042,10 +10045,10 @@ STATIC_ASSERT(offsetof(WEIRDO_BATARANG_READER_PC, batarang) == 0xcc0);
 STATIC_ASSERT(offsetof(PLAYERCHARACTERCONFIG_PC, weapon_model) == 0xec);
 
 void __cdecl Move_WEIRDO(GAMEOBJECT *object) {
-    u32 action_held = object->pad->buttons_held & GAMEPAD_ACTION;
     u32 action_pressed = object->pad->buttons_pressed & GAMEPAD_ACTION;
-    u32 jump_held = object->pad->buttons_held & GAMEPAD_JUMP;
+    u32 action_held = object->pad->buttons_held & GAMEPAD_ACTION;
     u32 jump_pressed = object->pad->buttons_pressed & GAMEPAD_JUMP;
+    u32 jump_held = object->pad->buttons_held & GAMEPAD_JUMP;
     u32 special_held = object->pad->buttons_held & GAMEPAD_SPECIAL;
     u32 special_pressed = object->pad->buttons_pressed & GAMEPAD_SPECIAL;
     u32 tag_pressed = object->pad->buttons_pressed & GAMEPAD_TAG;
@@ -10110,11 +10113,11 @@ void __cdecl Move_WEIRDO(GAMEOBJECT *object) {
     detonator_used = ThermalDetonator_MoveCode(object);
     if (StartupGameFlag1 == 0 && StartupGameFlag0 == 0) {
         if (object->suit != NULL && (((MOVEMENT_SUIT_PC *)object->suit)->store_flag & 4) != 0)
-            STUBBED_NAMED(0x004271b0); /* Native4b5b7a: Detonator_MoveCode(object). */
+            Detonator_MoveCode(object);
         if (object->suit != NULL && (((MOVEMENT_SUIT_PC *)object->suit)->store_flag & 8) != 0)
             STUBBED_NAMED(0x004c88c0); /* Native4b5b9a: WORLD,object; suit action. */
         if ((object->character_data->model_flags & 8) == 0)
-            STUBBED_NAMED(0x004d4dc0); /* Native4b5bb3: WORLD,object; native action. */
+            Transform_MoveCode(WORLD, object);
     }
     SuperCarry_MoveCode(WORLD, object);
     GizmoBlowupCheckProximity(WORLD, object);
