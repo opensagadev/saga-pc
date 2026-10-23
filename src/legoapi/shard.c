@@ -1228,15 +1228,14 @@ static i32 Shop_CharacterUnlockedPc(i32 character_id) {
 
 /* 004c2730..004c2ae8 instructions; 004c2ae8..004c2b00 six-entry switch table. */
 i32 __cdecl SelectShopItem(shopitem_s *items, i32 index) {
-    shopitem_s *item = &items[index];
     SHOP_SAVE_VIEW_PC *save = (SHOP_SAVE_VIEW_PC *)&Game;
     HINT_PC *hint;
     i32 id, i;
-    switch (item->type) {
+    switch (items[index].type) {
         case 1:
-            if (item->unlocked == 1)
+            if (items[index].unlocked == 1)
                 return 0;
-            id = (u16)item->item_id;
+            id = (u16)items[index].item_id;
             if (id < 0 || id >= CHARCOUNT)
                 return 0;
             if (Shop_CharacterUnlockedPc(id) == 0) {
@@ -1244,7 +1243,7 @@ i32 __cdecl SelectShopItem(shopitem_s *items, i32 index) {
                 ShopLockedScalePc = 1.5f;
                 return 0;
             }
-            if (Game.coins < (u32)item->price) {
+            if (Game.coins < (u32)items[index].price) {
                 CoinTotalScale = 1.5f;
                 return -1;
             }
@@ -1255,10 +1254,10 @@ i32 __cdecl SelectShopItem(shopitem_s *items, i32 index) {
             }
             return 1;
         case 0:
-            id = (u16)item->item_id;
-            if (item->unlocked == 1 || item->price == 0)
+            id = (u16)items[index].item_id;
+            if (items[index].unlocked == 1 || items[index].price == 0)
                 return 1;
-            if (Game.coins < (u32)item->price) {
+            if (Game.coins < (u32)items[index].price) {
                 CoinTotalScale = 1.5f;
                 return -1;
             }
@@ -1268,8 +1267,8 @@ i32 __cdecl SelectShopItem(shopitem_s *items, i32 index) {
                 hint->flags |= 2;
             goto buy;
         case 2:
-            id = (u16)item->item_id;
-            if (item->unlocked == 1 || (save->extra_purchased_bits[id / 32] & (1u << (id & 31))) != 0)
+            id = (u16)items[index].item_id;
+            if (items[index].unlocked == 1 || (save->extra_purchased_bits[id / 32] & (1u << (id & 31))) != 0)
                 return 0;
             if (ExtrasCheatsPc[id].area_index != -1 &&
                 Game.area_save[ExtrasCheatsPc[id].area_index].red_brick_collected == 0) {
@@ -1277,7 +1276,7 @@ i32 __cdecl SelectShopItem(shopitem_s *items, i32 index) {
                 ShopLockedScalePc = 1.5f;
                 return 0;
             }
-            if (Game.coins < (u32)item->price) {
+            if (Game.coins < (u32)items[index].price) {
                 CoinTotalScale = 1.5f;
                 return -1;
             }
@@ -1285,14 +1284,14 @@ i32 __cdecl SelectShopItem(shopitem_s *items, i32 index) {
             AddToCompletionPoints(POINTS_PER_CHEAT);
             goto buy;
         case 4:
-            if (item->unlocked == 1 || item->price == 0)
+            if (items[index].unlocked == 1 || items[index].price == 0)
                 return 0;
             if (Game.game_time < index * 3600) {
                 GameAudio_PlaySfx(0x32, NULL, 0, 0);
                 ShopLockedScalePc = 1.5f;
                 return 0;
             }
-            if (Game.coins < (u32)item->price) {
+            if (Game.coins < (u32)items[index].price) {
                 CoinTotalScale = 1.5f;
                 return -1;
             }
