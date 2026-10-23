@@ -166,7 +166,7 @@ i32 Text_StripComments(char *text, char *dest, i32 separators) {
     return count;
 }
 
-void IntroText_SetTextID(i32 id) {
+__declspec(noinline) void IntroText_SetTextID(i32 id) {
     if (id > 0 && TTab[id] != NULL) {
         INTROTEXT_ID = id;
     }
@@ -337,7 +337,7 @@ void Text_DecodeButtons(char *source, char *destination) {
     }
 }
 
-void TextRegisterButtonMapFn(void (*fn)(char *, char *)) {
+__declspec(noinline) void TextRegisterButtonMapFn(void (*fn)(char *, char *)) {
     if (fn != NULL) {
         buttonmapfn = fn;
     }
