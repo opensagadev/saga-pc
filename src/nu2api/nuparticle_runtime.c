@@ -35,6 +35,53 @@ i32 __cdecl NuDebrisRendererNextBuffer(void) {
     return 1;
 }
 
+DEBRIS_PARTICLE_CHUNK_PC *__cdecl CreateDmaParticleSet(void *memory, i32 *size) {
+    DEBRIS_PARTICLE_CHUNK_PC *chunk = (DEBRIS_PARTICLE_CHUNK_PC *)memory;
+    i32 i;
+    chunk->command = 0x52;
+    chunk->next = NULL;
+    chunk->field_014 = 0;
+    chunk->field_018 = 0;
+    chunk->field_01c = 0;
+    chunk->particles[0].position.x = 0.0f;
+    for (i = 0; i < 32; ++i) {
+        DEBRISPARTICLE_PC *particle = &chunk->particles[i];
+        particle->position.x = 1.0f;
+        particle->position.y = 2.0f;
+        particle->position.z = 3.0f;
+        particle->momentum.x = 4.0f;
+        particle->momentum.y = 5.0f;
+        particle->momentum.z = 6.0f;
+        particle->start_time = -1.0f;
+        particle->inverse_lifetime = 128.0f;
+    }
+    chunk->end_command = 0;
+    *size = sizeof(*chunk);
+    return chunk;
+}
+
+DEBRIS_PARTICLE_CHUNK_PC *__cdecl CreateDmaParticleSetGlass(void *memory, i32 *size) {
+    return CreateDmaParticleSet(memory, size);
+}
+
+DEBRIS_PART_HEADER_PC *__cdecl CreateDmaPartEffectList(void *memory, i32 *size) {
+    u32 address = ((u32)memory + 0xf) & ~0xf;
+    *size = sizeof(DEBRIS_PART_HEADER_PC);
+    return (DEBRIS_PART_HEADER_PC *)address;
+}
+
+void __cdecl LinkDmaParticalSets(DEBRIS_PARTICLE_CHUNK_PC **chunks, i32 count) {
+    DEBRIS_PARTICLE_CHUNK_PC *chunk = chunks[count - 1];
+    i32 i;
+    chunk->command = 0x52;
+    chunk->next = NULL;
+    for (i = count - 2; i >= 0; --i) {
+        chunk = chunks[i];
+        chunk->command = 0x4e;
+        chunk->next = chunks[i + 1];
+    }
+}
+
 void __cdecl NuRndrParticleSetRepeat(NUVEC *position) {
     NUVEC repeat;
     repeat.x = (position->x - NuRndrDebBase.x) / NuRndrDebRange.x;
