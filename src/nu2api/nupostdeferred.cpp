@@ -314,18 +314,19 @@ void PC_SPECIAL_SHADOW_LIGHT::RenderConstantsPc(void *) {
     NuMtxInv(&inverse, &view);
     f32 vector[4];
     if (parameter_4 == 0) {
-        vector[0] = vector[1] = 0.0f;
+        vector[1] = vector[0] = 0.0f;
         vector[2] = -1.0f;
         NuVecMtxRotate((NUVEC *)vector, (NUVEC *)vector, &inverse);
         NuVecMtxRotate((NUVEC *)vector, (NUVEC *)vector, &PcGeometryViewMatrixPc);
         NuVecNorm((NUVEC *)vector, (NUVEC *)vector);
+        PCDeviceSetPixelShaderConstantsF(0x85, vector, 1);
     } else {
         vector[0] = inverse.m30;
         vector[1] = inverse.m31;
         vector[2] = inverse.m32;
         NuVecMtxTransformH((NUVEC *)vector, (NUVEC *)vector, &PcGeometryViewMatrixPc);
+        PCDeviceSetPixelShaderConstantsF(0x85, vector, 1);
     }
-    PCDeviceSetPixelShaderConstantsF(0x85, vector, 1);
     f32 parameters[4];
     parameters[0] = parameter_0;
     parameters[1] = parameter_1 > 0.0f ? 1.0f / parameter_1 : 0.0f;
@@ -334,11 +335,23 @@ void PC_SPECIAL_SHADOW_LIGHT::RenderConstantsPc(void *) {
     PCDeviceSetPixelShaderConstantsF(0x86, parameters, 1);
     f32 distance[4] = {active_render_set_count == 1 ? 1000.0f : shadow_distance_pc, 0.0f, 0.0f, 0.0f};
     PCDeviceSetPixelShaderConstantsF(0x88, distance, 1);
-    NUMTX bias = NuMtxSetIdentityTemplate;
+    NUMTX bias;
     bias.m00 = 0.5f;
+    bias.m01 = 0.0f;
+    bias.m02 = 0.0f;
+    bias.m03 = 0.0f;
+    bias.m10 = 0.0f;
     bias.m11 = -0.5f;
+    bias.m12 = 0.0f;
+    bias.m13 = 0.0f;
+    bias.m20 = 0.0f;
+    bias.m21 = 0.0f;
     bias.m22 = 0.5f;
-    bias.m30 = bias.m31 = bias.m32 = 0.5f;
+    bias.m23 = 0.0f;
+    bias.m30 = 0.5f;
+    bias.m31 = 0.5f;
+    bias.m32 = 0.5f;
+    bias.m33 = 1.0f;
     for (i32 i = 0, reg = 0x8d; i < active_render_set_count; ++i, reg += 7) {
         NURNDRLIGHTRECORD &set = render_sets[i];
         NUMTX transposed, matrix;
