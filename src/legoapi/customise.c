@@ -1112,17 +1112,17 @@ void __cdecl Customiser_Init(CUSTOMISER_LAYERS_PC *input) {
         return;
     for (side = 0; side < 2; ++side) {
         ResetAnimPacket(&runtime->animation_packets[side].packet, -1);
-        runtime->animation_values[side] = 0.0f;
         runtime->animation_active[side] = 0;
+        runtime->animation_values[side] = 0.0f;
         runtime->animation_state[side] = 2;
         CustomiseMode[side] = 2;
     }
     if (WORLD->camera_splines[18] != NULL) {
         for (side = 0; side < 2; ++side) {
-            NUVEC *points = WORLD->camera_splines[18]->pts;
-            CustomisePos[side] = points[side * 2];
-            CustomiseYRotPc[side] =
-                NuAtan2D(points[side * 2 + 1].x - CustomisePos[side].x, points[side * 2 + 1].z - CustomisePos[side].z);
+            NUVEC *next;
+            CustomisePos[side] = WORLD->camera_splines[18]->pts[side * 2];
+            next = &WORLD->camera_splines[18]->pts[side * 2 + 1];
+            CustomiseYRotPc[side] = NuAtan2D(next->x - CustomisePos[side].x, next->z - CustomisePos[side].z);
             CustomiseHeadAnimPc[side].current_angle = 0;
             CustomiseHeadAnimPc[side].hold_time = (f64)qrand() * (f64)(1.0f / 65535.0f) * 0.5 * 0.5;
             CustomiseHeadAnimPc[side].start_angle = 0;
