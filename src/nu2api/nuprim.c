@@ -136,10 +136,10 @@ void __cdecl RndrStateResetGlobalState(NUGLOBALRNDRSTATE_PC *state) {
     render_state.state_0008 = 0;
     render_state.state_0014 = -1;
     render_state.counter_0020 = -1;
-    render_state.lights_id = (u16)-1;
-    render_state.camera_id = (u16)-1;
-    render_state.fog_id = (u16)-1;
-    render_state.counter_001e = (u16)-1;
+    memset(&render_state.lights_id, 0xff, sizeof(render_state.lights_id));
+    memset(&render_state.camera_id, 0xff, sizeof(render_state.camera_id));
+    memset(&render_state.fog_id, 0xff, sizeof(render_state.fog_id));
+    memset(&render_state.counter_001e, 0xff, sizeof(render_state.counter_001e));
 }
 
 void __cdecl RndrStateResetSharedGlobalState(void) {
@@ -153,10 +153,10 @@ void __cdecl RndrStateResetSharedGlobalState(void) {
     render_state.state_0008 = 0;
     render_state.state_0014 = -1;
     render_state.counter_0020 = -1;
-    render_state.lights_id = (u16)-1;
-    render_state.camera_id = (u16)-1;
-    render_state.fog_id = (u16)-1;
-    render_state.counter_001e = (u16)-1;
+    memset(&render_state.lights_id, 0xff, sizeof(render_state.lights_id));
+    memset(&render_state.camera_id, 0xff, sizeof(render_state.camera_id));
+    memset(&render_state.fog_id, 0xff, sizeof(render_state.fog_id));
+    memset(&render_state.counter_001e, 0xff, sizeof(render_state.counter_001e));
 }
 
 void __cdecl RndrStateSetReflection(i32 reflection) {
@@ -179,7 +179,9 @@ void __cdecl RndrStateSetConstAlphaTint(i32 alpha_enabled, i32 tint_enabled, f32
 }
 
 i32 __cdecl NuRndrSetAmbientLightPS(const NUVEC *colour) {
-    render_state.ambient_intensity = *colour;
+    render_state.ambient_intensity.x = colour->x;
+    render_state.ambient_intensity.y = colour->y;
+    render_state.ambient_intensity.z = colour->z;
     ++render_state.counter_0020;
     ++render_state.lights_id;
     render_state.light_packet_cache = NULL;
@@ -187,33 +189,38 @@ i32 __cdecl NuRndrSetAmbientLightPS(const NUVEC *colour) {
 }
 
 void *__cdecl DisplayListBuildKonstPacket(NUGLOBALRNDRSTATE_PC *state) {
+    VARIPTR *cursor;
     f32 *packet;
-
     NuDisplayListStreamCursor->addr = (NuDisplayListStreamCursor->addr + 0xf) & ~0xfU;
-    packet = (f32 *)NuDisplayListStreamCursor->void_ptr;
-    *packet = state->state_00f4 != 0 ? state->state_00f8 : 1.0f;
-    NuDisplayListStreamCursor->addr += sizeof(*packet);
+    cursor = NuDisplayListStreamCursor;
+    packet = (f32 *)cursor->void_ptr;
+    if (state->state_00f4 != 0)
+        *packet = state->state_00f8;
+    else
+        *packet = 1.0f;
+    cursor->void_ptr = packet + 1;
     return packet;
 }
 
 void *__cdecl DisplayListBuildReflectionPacket(NUGLOBALRNDRSTATE_PC *state) {
+    VARIPTR *cursor;
     u32 *packet;
-
     NuDisplayListStreamCursor->addr = (NuDisplayListStreamCursor->addr + 0xf) & ~0xfU;
-    packet = (u32 *)NuDisplayListStreamCursor->void_ptr;
+    cursor = NuDisplayListStreamCursor;
+    packet = (u32 *)cursor->void_ptr;
     *packet = state->reflection_state;
-    NuDisplayListStreamCursor->addr += sizeof(*packet);
+    cursor->addr += sizeof(*packet);
     return packet;
 }
 
 void *__cdecl DisplayListBuildLightPacket(NUGLOBALRNDRSTATE_PC *state) {
+    VARIPTR *cursor;
     NUPRIM_LIGHT_PACKET_PC *packet;
     i32 i;
-
     NuDisplayListStreamCursor->addr = (NuDisplayListStreamCursor->addr + 0xf) & ~0xfU;
-    packet = (NUPRIM_LIGHT_PACKET_PC *)NuDisplayListStreamCursor->void_ptr;
-    NuDisplayListStreamCursor->addr += sizeof(*packet);
-
+    cursor = NuDisplayListStreamCursor;
+    packet = (NUPRIM_LIGHT_PACKET_PC *)cursor->void_ptr;
+    cursor->void_ptr = packet + 1;
     packet->ambient_intensity.x = state->ambient_intensity.x;
     packet->ambient_intensity.y = state->ambient_intensity.y;
     packet->ambient_intensity.z = state->ambient_intensity.z;
@@ -260,25 +267,28 @@ void *__cdecl DisplayListBuildVertexGroupPacket(void) {
 }
 
 void *__cdecl DisplayListBuildFogPacket(NUGLOBALRNDRSTATE_PC *state) {
-    u32 *packet;
-    u32 *packet_start;
-
+    VARIPTR *cursor;
+    void *packet;
+    f32 *field;
     NuDisplayListStreamCursor->addr = (NuDisplayListStreamCursor->addr + 0xf) & ~0xfU;
-    packet = (u32 *)NuDisplayListStreamCursor->void_ptr;
-    packet_start = packet;
-    *packet++ = state->fog_state_word;
-    NuDisplayListStreamCursor->addr += sizeof(u32);
+    cursor = NuDisplayListStreamCursor;
+    packet = cursor->void_ptr;
+    *(u32 *)cursor->void_ptr = state->fog_state_word;
+    cursor->addr += sizeof(u32);
     if (state->fog_state_word != 0) {
-        *packet++ = (u32)state->fog_pointer_0178;
-        *(f32 *)packet = state->fog_value_0170;
-        ++packet;
-        *(f32 *)packet = state->fog_value_0174;
-        ++packet;
-        *(f32 *)packet = state->fog_value_017c;
-        ++packet;
-        NuDisplayListStreamCursor->addr += 4 * sizeof(u32);
+        *(u32 *)cursor->void_ptr = (u32)state->fog_pointer_0178;
+        cursor->addr += sizeof(u32);
+        field = (f32 *)cursor->void_ptr;
+        *field = state->fog_value_0170;
+        cursor->void_ptr = field + 1;
+        field = (f32 *)cursor->void_ptr;
+        *field = state->fog_value_0174;
+        cursor->void_ptr = field + 1;
+        field = (f32 *)cursor->void_ptr;
+        *field = state->fog_value_017c;
+        cursor->void_ptr = field + 1;
     }
-    return packet_start;
+    return packet;
 }
 
 void __cdecl DisplayListUpdateRenderState(NUDISPLAYLIST_PC *list, NUGLOBALRNDRSTATE_PC *global) {
@@ -444,13 +454,19 @@ void __cdecl NuDisplayListLinkItem(NUDISPLAYLIST_PC *list, u8 type, void *target
     NuDisplayListStreamCursor->addr += 2 * sizeof(NUPRIM_COMMAND_PC);
 }
 
+/* Native selects one of the two adjacent material-use buffers by bit 15. */
+typedef struct NUPRIM_SCENE_USAGE_PC {
+    u8 unknown_0000[0x58];
+    u8 *material_used[2];
+} NUPRIM_SCENE_USAGE_PC;
+STATIC_ASSERT(offsetof(NUPRIM_SCENE_USAGE_PC, material_used) == 0x58);
+STATIC_ASSERT(offsetof(NUDISPLAYSCENE_PC, material_used_back) ==
+              offsetof(NUPRIM_SCENE_USAGE_PC, material_used) + sizeof(u8 *));
+
 void __cdecl NuPrim2DBegin(u32 primitive_type, u32 vertex_format, NUMTL *material) {
     NUDISPLAYLIST_PC *list;
-    NUPRIM_COMMAND_PC *first_command;
-    NUPRIM_COMMAND_PC *geometry_command;
+    VARIPTR *primitive_buffer, *cursor;
     NUPRIM_PACKET_PC *packet;
-    u8 *material_used;
-    i32 material_id;
 
     (void)vertex_format;
     if (material == NULL) {
@@ -461,57 +477,51 @@ void __cdecl NuPrim2DBegin(u32 primitive_type, u32 vertex_format, NUMTL *materia
 
     NuDisplayListStreamCursor->addr = (NuDisplayListStreamCursor->addr + 0xf) & ~0xfU;
     list = material->display_list;
+    primitive_buffer = NuDisplayListStreamCursor;
     if (list != NULL) {
         list->scene->render_flags |= 2;
-        material_used = (list->scene->render_flags & 0x8000) != 0 ? list->scene->material_used_back
-                                                                  : list->scene->material_used_front;
-        material_id = list->material_id;
-        material_used[material_id / 8] |= (u8)(1 << (material_id % 8));
+        ((NUPRIM_SCENE_USAGE_PC *)list->scene)
+            ->material_used[(list->scene->render_flags >> 15) & 1][list->material_id / 8] |=
+            (u8)(1 << (list->material_id % 8));
     } else {
         list = (NUDISPLAYLIST_PC *)&PCDisplayList2dPc;
         NuDisplayListLinkMtl(list, material);
     }
 
-    render_state.counter_001e++;
     render_state.counter_0020++;
+    render_state.counter_001e++;
     render_state.state_00f8 = 0;
-    render_state.state_00f4 = 0;
     render_state.const_alpha_material = NULL;
+    render_state.state_00f4 = 0;
     render_state.konst_packet_cache = NULL;
     DisplayListUpdateRenderState(list, &render_state);
 
     NuDisplayListStreamCursor->addr = (NuDisplayListStreamCursor->addr + 15) & ~15u;
-    first_command = (NUPRIM_COMMAND_PC *)NuDisplayListStreamCursor->void_ptr;
-    ((NUPRIM_COMMAND_PC *)list->material_last)->target = first_command;
-    list->items = first_command;
-
-    NuDisplayListStreamCursor->addr += sizeof(NUPRIM_COMMAND_PC);
-    geometry_command = (NUPRIM_COMMAND_PC *)NuDisplayListStreamCursor->void_ptr;
-    geometry_command->type = 0x8d;
-    geometry_command->id = 1;
-    geometry_command->target = (NUPRIM_COMMAND_PC *)list->dynamic_geometry + 1;
-    list->material_last = geometry_command;
-
-    NuDisplayListStreamCursor->addr += sizeof(NUPRIM_COMMAND_PC);
-    packet = (NUPRIM_PACKET_PC *)NuDisplayListStreamCursor->void_ptr;
+    cursor = NuDisplayListStreamCursor;
+    ((NUPRIM_COMMAND_PC *)list->material_last)->target = cursor->void_ptr;
+    list->items = cursor->void_ptr;
+    cursor->addr += sizeof(NUPRIM_COMMAND_PC);
+    ((NUPRIM_COMMAND_PC *)cursor->void_ptr)->type = 0x8d;
+    ((NUPRIM_COMMAND_PC *)cursor->void_ptr)->id = 1;
+    ((NUPRIM_COMMAND_PC *)cursor->void_ptr)->target = (NUPRIM_COMMAND_PC *)list->dynamic_geometry + 1;
+    list->material_last = cursor->void_ptr;
+    cursor->addr += sizeof(NUPRIM_COMMAND_PC);
+    NuPrimStreamBufferPointer = primitive_buffer;
+    packet = (NUPRIM_PACKET_PC *)primitive_buffer->void_ptr;
+    primitive_buffer->void_ptr = packet + 1;
     packet->primitive_type = primitive_type;
-    packet->vertex_count = 0;
-
-    first_command->type = 0x93;
-    first_command->id = 3;
-    first_command->target = packet;
-    list->items = geometry_command;
-
-    NuPrimStreamBufferPointer = NuDisplayListStreamCursor;
     NuPrimVertexCount = 0;
     NuPrimVertexCountPointer = &packet->vertex_count;
+    ((NUPRIM_COMMAND_PC *)list->items)->type = 0x93;
     NuPrimCurrentPrimitiveType = (i32)primitive_type;
-    NuDisplayListStreamCursor->addr += sizeof(NUPRIM_PACKET_PC);
+    ((NUPRIM_COMMAND_PC *)list->items)->id = 3;
+    ((NUPRIM_COMMAND_PC *)list->items)->target = packet;
+    list->items = (NUPRIM_COMMAND_PC *)list->items + 1;
 }
 
 void __cdecl NuPrim3DBegin(u32 primitive_type, u32 vertex_format, NUMTL *material, NUMTX *world_matrix) {
     NUDISPLAYLIST_PC *list;
-    NUPRIM_COMMAND_PC *command;
+    VARIPTR *cursor, *primitive_buffer;
     void *transform;
     NUPRIM_PACKET_PC *geometry;
     (void)vertex_format;
@@ -521,45 +531,41 @@ void __cdecl NuPrim3DBegin(u32 primitive_type, u32 vertex_format, NUMTL *materia
     NuDisplayListStreamCursor->addr = (NuDisplayListStreamCursor->addr + 15) & ~15u;
     list = material->display_list;
     if (list != NULL) {
-        u8 *material_used;
-        i32 material_id;
         list->scene->render_flags |= 2;
-        material_used = (list->scene->render_flags & 0x8000) != 0 ? list->scene->material_used_back
-                                                                  : list->scene->material_used_front;
-        material_id = list->material_id;
-        material_used[material_id / 8] |= (u8)(1 << (material_id % 8));
+        ((NUPRIM_SCENE_USAGE_PC *)list->scene)
+            ->material_used[(list->scene->render_flags >> 15) & 1][list->material_id / 8] |=
+            (u8)(1 << (list->material_id % 8));
     } else {
         list = (NUDISPLAYLIST_PC *)&PCDisplayList2dPc;
     }
     DisplayListUpdateRenderState(list, &render_state);
     NuDisplayListStreamCursor->addr = (NuDisplayListStreamCursor->addr + 15) & ~15u;
-    ((NUPRIM_COMMAND_PC *)list->material_last)->target = NuDisplayListStreamCursor->void_ptr;
-    list->items = NuDisplayListStreamCursor->void_ptr;
-    NuDisplayListStreamCursor->addr += 2 * sizeof(NUPRIM_COMMAND_PC);
-    command = (NUPRIM_COMMAND_PC *)NuDisplayListStreamCursor->void_ptr;
-    command->type = 0x8d;
-    command->id = 1;
-    command->target = (NUPRIM_COMMAND_PC *)list->dynamic_geometry + 1;
-    list->material_last = command;
-    NuDisplayListStreamCursor->addr += sizeof(NUPRIM_COMMAND_PC);
+    cursor = NuDisplayListStreamCursor;
+    ((NUPRIM_COMMAND_PC *)list->material_last)->target = cursor->void_ptr;
+    list->items = cursor->void_ptr;
+    cursor->addr += 2 * sizeof(NUPRIM_COMMAND_PC);
+    ((NUPRIM_COMMAND_PC *)cursor->void_ptr)->type = 0x8d;
+    ((NUPRIM_COMMAND_PC *)cursor->void_ptr)->id = 1;
+    ((NUPRIM_COMMAND_PC *)cursor->void_ptr)->target = (NUPRIM_COMMAND_PC *)list->dynamic_geometry + 1;
+    list->material_last = cursor->void_ptr;
+    cursor->addr += sizeof(NUPRIM_COMMAND_PC);
     NuDisplayListStreamCursor->addr = (NuDisplayListStreamCursor->addr + 15) & ~15u;
+    primitive_buffer = NuDisplayListStreamCursor;
     if (world_matrix == NULL)
         world_matrix = &numtx_identity;
-    transform = DisplayListCreateGeomTransformPS(NuDisplayListStreamCursor, world_matrix, NULL, NULL, NULL);
-    geometry = (NUPRIM_PACKET_PC *)NuDisplayListStreamCursor->void_ptr;
-    NuDisplayListStreamCursor->addr += sizeof(NUPRIM_PACKET_PC);
+    transform = DisplayListCreateGeomTransformPS(primitive_buffer, world_matrix, NULL, NULL, NULL);
+    geometry = (NUPRIM_PACKET_PC *)primitive_buffer->void_ptr;
+    primitive_buffer->void_ptr = geometry + 1;
     geometry->primitive_type = primitive_type;
     NuPrimVertexCountPointer = &geometry->vertex_count;
-    command = (NUPRIM_COMMAND_PC *)list->items;
-    command->type = 0x8c;
-    command->id = 3;
-    command->target = transform;
-    list->items = command + 1;
-    command = (NUPRIM_COMMAND_PC *)list->items;
-    command->type = 0x82;
-    command->id = 3;
-    command->target = geometry;
-    list->items = command + 1;
+    ((NUPRIM_COMMAND_PC *)list->items)->type = 0x8c;
+    ((NUPRIM_COMMAND_PC *)list->items)->id = 3;
+    ((NUPRIM_COMMAND_PC *)list->items)->target = transform;
+    list->items = (NUPRIM_COMMAND_PC *)list->items + 1;
+    ((NUPRIM_COMMAND_PC *)list->items)->type = 0x82;
+    ((NUPRIM_COMMAND_PC *)list->items)->id = 3;
+    ((NUPRIM_COMMAND_PC *)list->items)->target = geometry;
+    list->items = (NUPRIM_COMMAND_PC *)list->items + 1;
 }
 
 void __cdecl NuPrimSetCoordinateSystem(i32 scale_mode) {
@@ -658,9 +664,7 @@ STATIC_ASSERT(offsetof(AMBIENT_SPECULAR_RENDER_VIEW_PC, global_specular) == 0x8c
 i32 __cdecl NuRndrSetAmbientLightSpecular(const NUVEC4 *colour) {
     AMBIENT_SPECULAR_RENDER_VIEW_PC *state = (AMBIENT_SPECULAR_RENDER_VIEW_PC *)&render_state;
     state->global_specular = colour->w;
-    PCGlobalLightingState.ambient.x = colour->x;
-    PCGlobalLightingState.ambient.y = colour->y;
-    PCGlobalLightingState.ambient.z = colour->z;
+    PCGlobalLightingState.ambient = *(const NUVEC *)colour;
     NuRndrSetAmbientLightPS((const NUVEC *)colour);
     return 0;
 }
