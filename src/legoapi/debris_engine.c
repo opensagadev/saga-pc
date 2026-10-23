@@ -1275,80 +1275,83 @@ extern i32 numspherecolldata, numtoruscolldata;
 extern NUVEC debris_collide_pt;
 
 i32 __cdecl DebrisSingleCollisionCheckScaleYFlag(i32 key_index, NUVEC *position, f32 radius, f32 y_scale, u8 flags) {
-    DEBRISKEY_PC *key = &DEBRIS_ENGINE_KEYS_PC[key_index];
     DEBRIS_INFO_PC *effect;
     DEBRIS_COLLISION_EFFECT_PC *collision;
     i32 i;
-    if (key->effect_index == 0 || key->effect_index == -1)
-        return 0;
-    effect = debtab[key->effect_index];
-    if (effect == NULL || (effect->collision_flags & flags) == 0 || effect->process_spheres <= 0)
-        return 0;
-    collision = (DEBRIS_COLLISION_EFFECT_PC *)effect;
-    for (i = 0; i < effect->process_spheres; ++i) {
-        DEBRIS_PROCESS_SPHERE_PC *sphere = &key->process_spheres[i];
-        f32 age = globaltime - sphere->time;
-        f32 time, effect_radius, dx, dy, dz;
-        if (!(age >= 0.0f && age <= effect->particle_lifetime))
-            continue;
-        debris_collide_pt.x = sphere->momentum.x * age;
-        debris_collide_pt.y = sphere->momentum.y * age;
-        debris_collide_pt.z = sphere->momentum.z * age;
-        debris_collide_pt.y = age * age * effect->gravity + debris_collide_pt.y;
-        debris_collide_pt.x += sphere->position.x;
-        debris_collide_pt.y += sphere->position.y;
-        debris_collide_pt.z += sphere->position.z;
-        time = age / effect->particle_lifetime;
-        {
-            i32 segment;
-            f32 numerator, denominator;
-            effect_radius = 0.0f;
-            for (segment = 0; segment < 7; ++segment) {
-                if (time >= collision->collision_keys[segment].time &&
-                    time <= collision->collision_keys[segment + 1].time) {
-                    numerator = time - collision->collision_keys[segment].time;
-                    denominator = collision->collision_keys[segment + 1].time - collision->collision_keys[segment].time;
-                    effect_radius = collision->collision_keys[segment].value +
-                                    (numerator / denominator) * (collision->collision_keys[segment + 1].value -
-                                                                 collision->collision_keys[segment].value);
-                    break;
+    if (DEBRIS_ENGINE_KEYS_PC[key_index].effect_index != 0 && DEBRIS_ENGINE_KEYS_PC[key_index].effect_index != -1) {
+        effect = debtab[DEBRIS_ENGINE_KEYS_PC[key_index].effect_index];
+        if (effect != NULL && (effect->collision_flags & flags) != 0 && effect->process_spheres != 0) {
+            collision = (DEBRIS_COLLISION_EFFECT_PC *)effect;
+            for (i = 0; i < effect->process_spheres; ++i) {
+                DEBRIS_PROCESS_SPHERE_PC *sphere = &DEBRIS_ENGINE_KEYS_PC[key_index].process_spheres[i];
+                f32 age = globaltime - sphere->time;
+                f32 time, effect_radius, dx, dy, dz;
+                if (!(age >= 0.0f && age <= effect->particle_lifetime))
+                    continue;
+                debris_collide_pt.x = sphere->momentum.x * age;
+                debris_collide_pt.y = sphere->momentum.y * age;
+                debris_collide_pt.z = sphere->momentum.z * age;
+                debris_collide_pt.y = age * age * effect->gravity + debris_collide_pt.y;
+                debris_collide_pt.x += sphere->position.x;
+                debris_collide_pt.y += sphere->position.y;
+                debris_collide_pt.z += sphere->position.z;
+                time = age / effect->particle_lifetime;
+                {
+                    i32 segment;
+                    f32 numerator, denominator;
+                    effect_radius = 0.0f;
+                    for (segment = 0; segment < 7; ++segment) {
+                        if (time >= collision->collision_keys[segment].time &&
+                            time <= collision->collision_keys[segment + 1].time) {
+                            numerator = time - collision->collision_keys[segment].time;
+                            denominator =
+                                collision->collision_keys[segment + 1].time - collision->collision_keys[segment].time;
+                            effect_radius = collision->collision_keys[segment].value +
+                                            (numerator / denominator) * (collision->collision_keys[segment + 1].value -
+                                                                         collision->collision_keys[segment].value);
+                            break;
+                        }
+                    }
                 }
+                if (effect_radius <= 0.0f)
+                    continue;
+                dx = position->x - debris_collide_pt.x;
+                dy = position->y - debris_collide_pt.y;
+                dz = position->z - debris_collide_pt.z;
+                if (y_scale != 1.0f)
+                    dy *= (radius + effect_radius) / (radius * y_scale + effect_radius);
+                if (dx * dx + dy * dy + dz * dz < (radius + effect_radius) * (radius + effect_radius))
+                    return 1;
             }
         }
-        if (!(effect_radius > 0.0f))
-            continue;
-        dx = position->x - debris_collide_pt.x;
-        dy = position->y - debris_collide_pt.y;
-        dz = position->z - debris_collide_pt.z;
-        if (y_scale != 1.0f)
-            dy *= (radius + effect_radius) / (radius * y_scale + effect_radius);
-        if ((radius + effect_radius) * (radius + effect_radius) > dx * dx + dy * dy + dz * dz)
-            return 1;
     }
     return 0;
 }
 i32 __cdecl DebrisSingleTorusCollisionCheckScaleYFlag(i32 key_index, NUVEC *position, f32 radius, f32 y_scale,
                                                       u8 flags) {
-    DEBRISKEY_PC *key = &DEBRIS_ENGINE_KEYS_PC[key_index];
     DEBRIS_INFO_PC *effect;
     DEBRIS_COLLISION_EFFECT_PC *collision;
     f32 age, time, ring_radius, horizontal_radius, vertical_radius, dx, dy, dz;
-    if (key->effect_index == 0 || key->effect_index == -1)
+    if (DEBRIS_ENGINE_KEYS_PC[key_index].effect_index == 0 || DEBRIS_ENGINE_KEYS_PC[key_index].effect_index == -1)
         return 0;
-    effect = debtab[key->effect_index];
+    effect = debtab[DEBRIS_ENGINE_KEYS_PC[key_index].effect_index];
     if (effect == NULL || (effect->collision_flags & flags) == 0)
         return 0;
     collision = (DEBRIS_COLLISION_EFFECT_PC *)effect;
     if (collision->torus_lifetime == 0.0f)
         return 0;
-    age = globaltime > key->emission_time ? globaltime - key->emission_time : globaltime - key->previous_emission_time;
+    ring_radius = 0.0f;
+    horizontal_radius = 0.0f;
+    vertical_radius = 0.0f;
+    age = globaltime > DEBRIS_ENGINE_KEYS_PC[key_index].emission_time
+              ? globaltime - DEBRIS_ENGINE_KEYS_PC[key_index].emission_time
+              : globaltime - DEBRIS_ENGINE_KEYS_PC[key_index].previous_emission_time;
     if (!(age > 0.0f && age < collision->torus_lifetime))
         return 0;
     time = age / collision->torus_lifetime;
     {
         i32 segment;
         f32 numerator, denominator;
-        ring_radius = 0.0f;
         for (segment = 0; segment < 7; ++segment) {
             if (time >= collision->torus_keys1[segment].time && time <= collision->torus_keys1[segment + 1].time) {
                 numerator = time - collision->torus_keys1[segment].time;
@@ -1363,7 +1366,6 @@ i32 __cdecl DebrisSingleTorusCollisionCheckScaleYFlag(i32 key_index, NUVEC *posi
     {
         i32 segment;
         f32 numerator, denominator;
-        horizontal_radius = 0.0f;
         for (segment = 0; segment < 7; ++segment) {
             if (time >= collision->torus_keys2[segment].time && time <= collision->torus_keys2[segment + 1].time) {
                 numerator = time - collision->torus_keys2[segment].time;
@@ -1378,7 +1380,6 @@ i32 __cdecl DebrisSingleTorusCollisionCheckScaleYFlag(i32 key_index, NUVEC *posi
     {
         i32 segment;
         f32 numerator, denominator;
-        vertical_radius = 0.0f;
         for (segment = 0; segment < 7; ++segment) {
             if (time >= collision->torus_keys3[segment].time && time <= collision->torus_keys3[segment + 1].time) {
                 numerator = time - collision->torus_keys3[segment].time;
@@ -1393,20 +1394,20 @@ i32 __cdecl DebrisSingleTorusCollisionCheckScaleYFlag(i32 key_index, NUVEC *posi
     ring_radius *= collision->torus_radius1;
     horizontal_radius *= collision->torus_radius2;
     vertical_radius *= collision->torus_radius2;
-    debris_collide_pt.x = position->x - key->position.x;
+    debris_collide_pt.x = position->x - DEBRIS_ENGINE_KEYS_PC[key_index].position.x;
     debris_collide_pt.y = 0.0f;
-    debris_collide_pt.z = position->z - key->position.z;
+    debris_collide_pt.z = position->z - DEBRIS_ENGINE_KEYS_PC[key_index].position.z;
     NuVecNorm(&debris_collide_pt, &debris_collide_pt);
     NuVecScale(&debris_collide_pt, &debris_collide_pt, ring_radius);
-    debris_collide_pt.x += key->position.x;
-    debris_collide_pt.y += key->position.y;
-    debris_collide_pt.z += key->position.z;
+    debris_collide_pt.x += DEBRIS_ENGINE_KEYS_PC[key_index].position.x;
+    debris_collide_pt.y += DEBRIS_ENGINE_KEYS_PC[key_index].position.y;
+    debris_collide_pt.z += DEBRIS_ENGINE_KEYS_PC[key_index].position.z;
     dx = position->x - debris_collide_pt.x;
     dy = position->y - debris_collide_pt.y;
     dz = position->z - debris_collide_pt.z;
-    if (horizontal_radius != vertical_radius || y_scale != 1.0f)
+    if (y_scale != 1.0f || horizontal_radius != vertical_radius)
         dy *= (radius + horizontal_radius) / (radius * y_scale + vertical_radius);
-    return (radius + horizontal_radius) * (radius + horizontal_radius) > dx * dx + dy * dy + dz * dz;
+    return dx * dx + dy * dy + dz * dz < (radius + horizontal_radius) * (radius + horizontal_radius);
 }
 i32 __cdecl DebrisCollisionCheckScaleYFlag(NUVEC *position, f32 radius, f32 y_scale, u8 flags) {
     i32 i;
