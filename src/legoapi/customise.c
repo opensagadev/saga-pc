@@ -1087,11 +1087,10 @@ void __cdecl Customiser_SetNameAndIcon(CUSTOMISER_LAYERS_PC *, i32);
 /* 00592940 / 291 */
 i32 __cdecl Customiser_NextPieceRight(CUSTOMISER_LAYERS_PC *input, i32 index, i32 count, i32 unused, i32 category) {
     CUSTOMISER_CONFIG_PC *customiser = (CUSTOMISER_CONFIG_PC *)input;
-    i32 attempts = 0;
+    i32 attempts;
     (void)unused;
     if (customiser != NULL) {
-        while (attempts < count) {
-            i32 available = 1;
+        for (attempts = 0; attempts < count; ++attempts) {
             ++index;
             if (index >= count)
                 index -= count;
@@ -1101,19 +1100,17 @@ i32 __cdecl Customiser_NextPieceRight(CUSTOMISER_LAYERS_PC *input, i32 index, i3
                     CUSTOM_ACCESSORY_RESOURCE_PC *resources =
                         (CUSTOM_ACCESSORY_RESOURCE_PC *)world->customiser_resources[category];
                     if (resources == NULL)
-                        available = 0;
-                    else if (customiser->categories[category]->uses_special != 0)
-                        available = NuSpecialExistsFn(&resources[index].special) != 0;
-                    else
-                        available = resources[index].texture_id != 0;
+                        continue;
+                    if ((customiser->categories[category]->uses_special != 0
+                             ? NuSpecialExistsFn(&resources[index].special)
+                             : resources[index].texture_id) == 0)
+                        continue;
                 }
             }
-            if (available != 0 &&
-                ((customiser->piece_sets[category][index].availability_flags & 0x180) == 0 ||
+            if (((customiser->piece_sets[category][index].availability_flags & 0x180) == 0 ||
                  Game_100PercentComplete() != 0) &&
                 customiser->piece_available((CUSTOMPIECE_LAYERS_PC *)&customiser->piece_sets[category][index]) != 0)
                 break;
-            ++attempts;
         }
     }
     return index;
@@ -1712,11 +1709,10 @@ static i32 __cdecl Customise_FindLetter(char character) {
 /* 00592820..00592939, including the separate native NULL return. */
 i32 __cdecl Customiser_NextPieceLeft(CUSTOMISER_LAYERS_PC *input, i32 index, i32 count, i32 unused, i32 category) {
     CUSTOMISER_CONFIG_PC *customiser = (CUSTOMISER_CONFIG_PC *)input;
-    i32 attempts = 0;
+    i32 attempts;
     (void)unused;
     if (customiser != NULL) {
-        while (attempts < count) {
-            i32 available = 1;
+        for (attempts = 0; attempts < count; ++attempts) {
             --index;
             if (index < 0)
                 index += count;
@@ -1726,21 +1722,20 @@ i32 __cdecl Customiser_NextPieceLeft(CUSTOMISER_LAYERS_PC *input, i32 index, i32
                     CUSTOM_ACCESSORY_RESOURCE_PC *resources =
                         (CUSTOM_ACCESSORY_RESOURCE_PC *)world->customiser_resources[category];
                     if (resources == NULL)
-                        available = 0;
-                    else if (customiser->categories[category]->uses_special != 0)
-                        available = NuSpecialExistsFn(&resources[index].special) != 0;
-                    else
-                        available = resources[index].texture_id != 0;
+                        continue;
+                    if ((customiser->categories[category]->uses_special != 0
+                             ? NuSpecialExistsFn(&resources[index].special)
+                             : resources[index].texture_id) == 0)
+                        continue;
                 }
             }
-            if (available != 0 &&
-                ((customiser->piece_sets[category][index].availability_flags & 0x180) == 0 ||
+            if (((customiser->piece_sets[category][index].availability_flags & 0x180) == 0 ||
                  Game_100PercentComplete() != 0) &&
                 customiser->piece_available((CUSTOMPIECE_LAYERS_PC *)&customiser->piece_sets[category][index]) != 0)
                 break;
-            ++attempts;
         }
     }
+
     return index;
 }
 

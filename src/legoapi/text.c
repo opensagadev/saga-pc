@@ -131,12 +131,15 @@ void Text_InsertCommasIntoNumber(char *number, char *text, i32 length) {
 void Text_MakeScore(u32 score, char *text) {
     char digits[64];
     char *end = &digits[63];
-    char *first = end;
+    char *first = end - 1;
     *end = '\0';
-    do {
+    *first = (char)('0' + score % 10);
+    score /= 10;
+    while (score != 0) {
         *--first = (char)('0' + score % 10);
         score /= 10;
-    } while (score != 0);
+    }
+
     Text_InsertCommasIntoNumber(first, text, (i32)(end - first));
 }
 

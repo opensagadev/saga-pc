@@ -167,8 +167,12 @@ void MenuDrawBonusWin(MENU_s *unused0) {
         i32 red;
         char text[256];
         Text_MakeScore(1000000, text);
-        green = 143 + ((u32)(menu_flash) < 1u ? 48 : 0);
-        red = 191 + ((u32)(menu_flash) < 1u ? 64 : 0);
+        red = 255;
+        green = 191;
+        if (menu_flash != 0) {
+            red = 191;
+            green = 143;
+        }
         Text3D(text, 0.0f, STATSPOSY, 1.0f, 1.0f, 1.0f, 1.0f, 0, red, green, 0);
     }
 }

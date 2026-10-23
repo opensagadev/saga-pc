@@ -427,15 +427,16 @@ void InitExtraList(void) {
 
 void InitAlphaList(void) {
     i32 i;
-    for (i = 0; i < 26; ++i) {
-        char name[16] = {0};
-        sprintf(name, "shop_%c", 'a' + i);
-        NuSpecialFind(WORLD->current_gscn, &atoz0to9icon[i], name, 1);
+    char name[16];
+    for (i = 'a'; i <= 'z'; ++i) {
+        memset(name, 0, sizeof(name));
+        sprintf(name, "shop_%c", i);
+        NuSpecialFind(WORLD->current_gscn, &atoz0to9icon[i - 'a'], name, 1);
     }
-    for (i = 0; i < 10; ++i) {
-        char name[16] = {0};
-        sprintf(name, "shop_%c", '0' + i);
-        NuSpecialFind(WORLD->current_gscn, &atoz0to9icon[i + 26], name, 1);
+    for (i = '0'; i <= '9'; ++i) {
+        memset(name, 0, sizeof(name));
+        sprintf(name, "shop_%c", i);
+        NuSpecialFind(WORLD->current_gscn, &atoz0to9icon[i - '0' + 26], name, 1);
     }
 }
 
