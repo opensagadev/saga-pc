@@ -1236,7 +1236,7 @@ extern "C" {
                 // Curved hits are produced in collision-height-scaled space and
                 // need to be transformed back.
                 if ((query->hit_type & TERRAIN_HIT_TYPE_SECOND_NORMAL) == 0) {
-                    normal->x *= query->inverse_collision_radius;
+                    query->movement_normal.x *= query->inverse_collision_radius;
                     query->movement_normal.y *= query->inverse_collision_radius;
                     query->movement_normal.z *= query->inverse_collision_radius;
                 }
