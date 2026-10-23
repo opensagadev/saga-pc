@@ -234,19 +234,21 @@ void do_mouse_flymode_camera(edcam_s *camera, f32 delta_time) {
     }
 }
 
+extern i32 edmain_cursor_enabled;
+
 void edcamMoveEx(FRAME_PAD_PC *pad, f32 delta_time) {
-    if (edmainGetCursorEnabled() != 0) {
+    if (edmain_cursor_enabled != 0) {
         if (PadFlyMode == 0 || NuKeyboard(0x38) != 0) {
-            do_maya_mouse_camera(&gp_cam);
+            do_maya_mouse_camera(gp_cam);
         } else {
-            do_mouse_flymode_camera(&gp_cam, delta_time);
+            do_mouse_flymode_camera(gp_cam, delta_time);
         }
     }
     if (pad != NULL) {
         if (PadFlyMode == 0) {
-            do_Pad_Standard_camera(&gp_cam, delta_time, pad);
+            do_Pad_Standard_camera(gp_cam, delta_time, pad);
         } else {
-            do_Pad_flymode_camera(&gp_cam, delta_time, pad);
+            do_Pad_flymode_camera(gp_cam, delta_time, pad);
         }
     }
 }
@@ -255,46 +257,57 @@ void edcamMove(FRAME_PAD_PC *pad) {
     edcamMoveEx(pad, NuTimeGetFrameTime());
 }
 
+void edcamSetPos(NUVEC *position) {
+    edcam_s *camera = gp_cam;
+    camera->position = *position;
+    camera->offset.z = 0.0f;
+    camera->offset.y = 0.0f;
+    camera->offset.x = 0.0f;
+}
+
 void edcamSetAng(i32 pitch, i32 yaw) {
-    gp_cam.pitch = pitch;
-    gp_cam.yaw = yaw;
+    edcam_s *camera = gp_cam;
+    camera->pitch = pitch;
+    camera->yaw = yaw;
 }
 
 void edcamGetPosAng(NUVEC *position, i32 *pitch, i32 *yaw) {
+    edcam_s *camera = gp_cam;
     if (position != NULL) {
-        *position = gp_cam.position;
+        *position = camera->position;
     }
     if (pitch != NULL) {
-        *pitch = gp_cam.pitch;
+        *pitch = camera->pitch;
     }
     if (yaw != NULL) {
-        *yaw = gp_cam.yaw;
+        *yaw = camera->yaw;
     }
 }
 
 void edcamGetPosAngSnap(NUVEC *position, i32 *pitch, i32 *yaw) {
+    edcam_s *camera = gp_cam;
     if (position != NULL) {
-        *position = gp_cam.snapped_position;
+        *position = camera->snapped_position;
     }
     if (pitch != NULL) {
-        *pitch = gp_cam.snapped_pitch;
+        *pitch = camera->snapped_pitch;
     }
     if (yaw != NULL) {
-        *yaw = gp_cam.snapped_yaw;
+        *yaw = camera->snapped_yaw;
     }
 }
 
 void edcamSetDist(f32 distance) {
-    gp_cam.distance = distance;
+    gp_cam->distance = distance;
 }
 
 void edcamMtx(NUMTX *matrix) {
-    NUVEC distance = {0.0f, 0.0f, gp_cam.distance};
+    NUVEC distance = {0.0f, 0.0f, gp_cam->distance};
     NuMtxSetTranslation(matrix, &distance);
-    NuMtxRotateX(matrix, gp_cam.pitch);
-    NuMtxRotateY(matrix, gp_cam.yaw);
-    NuMtxTranslate(matrix, &gp_cam.position);
-    NuMtxTranslate(matrix, &gp_cam.offset);
+    NuMtxRotateX(matrix, gp_cam->pitch);
+    NuMtxRotateY(matrix, gp_cam->yaw);
+    NuMtxTranslate(matrix, &gp_cam->position);
+    NuMtxTranslate(matrix, &gp_cam->offset);
     if (ed_remap_mtx != NULL) {
         NuMtxMul(matrix, matrix, ed_remap_mtx);
         ed_remap_mtx = NULL;

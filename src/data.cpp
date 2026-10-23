@@ -29803,6 +29803,9 @@ extern "C" {
 #pragma bss_seg(".bss$edinternalcam")
     NUCAMERA *edinternalcam = 0;
 
+#pragma bss_seg(".bss$edmain_cursor_enabled")
+    i32 edmain_cursor_enabled = 0;
+
 #pragma bss_seg(".bss$cubemapcam")
     NUCAMERA *cubemapcam = 0;
 
@@ -29980,6 +29983,37 @@ extern "C" {
 }
 
 extern "C" {
+#pragma data_seg(".data$edcam_default")
+    edcam_s edcam_default = {{0.0f, 0.0f, 0.0f},
+                             0,
+                             0,
+                             -2.0f,
+                             {0.0f, 0.0f, 0.0f},
+                             {0.0f, 0.0f, 0.0f},
+                             {1.0f, 1.0f, 1.0f},
+                             1,
+                             1,
+                             {0.0f, 0.0f, 0.0f},
+                             0,
+                             0,
+                             {0.0015625f, 0.0015625f, 0.0015625f},
+                             2,
+                             2,
+                             0.0078125f,
+                             0.5f,
+                             0.2f,
+                             0.2f,
+                             4.0f,
+                             0.15f,
+                             0.2f,
+                             0.01f,
+                             0.1f,
+                             {0x3f},
+                             {0, 0, 0}};
+
+#pragma data_seg(".data$gp_cam")
+    edcam_s *gp_cam = &edcam_default;
+
 #pragma data_seg(".data$edbits_cubemap_fov")
     f32 edbits_cubemap_fov = 1.5708f;
 

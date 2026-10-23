@@ -26613,7 +26613,7 @@ extern "C" {
     void __cdecl do_mouse_flymode_camera(struct edcam_s *camera, f32 delta_time);
     extern struct numtx_s *ed_remap_mtx;
     void __cdecl edmainSetCamera(struct numtx_s *matrix);
-    extern edcam_s gp_cam;
+    extern edcam_s *gp_cam;
     void __cdecl NuDisplayListBurstRndrSpecial(struct nuhspecial_s *handle, u32 count, struct numtx_s *matrices,
                                                i32 clip);
     i32 __cdecl findrange(struct NUGSCN_s *arg0, i32 arg1);

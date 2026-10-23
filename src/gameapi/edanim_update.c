@@ -12,6 +12,12 @@ extern NUVEC APIObjectZeroMomentumPC;
 extern NUCAMERA *EdMainCurrentCameraPc;
 extern NUCAMERA *edinternalcam;
 
+extern i32 edmain_cursor_enabled;
+
+i32 __cdecl edmainGetCursorEnabled(void) {
+    return edmain_cursor_enabled;
+}
+
 void __cdecl edmainExtCamera(NUCAMERA *camera) {
     EdMainCurrentCameraPc = camera != NULL ? camera : edinternalcam;
 }
