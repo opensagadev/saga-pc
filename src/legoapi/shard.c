@@ -1533,38 +1533,31 @@ void __cdecl DrawCodeMenu(void) {
 static i32 Shop_CanSelectPc(void) {
     shopitem_s *item;
     SHOP_SAVE_VIEW_PC *save = (SHOP_SAVE_VIEW_PC *)&Game;
-    i32 id, area, index;
+    i32 id, index;
     switch (picked) {
-        case 0:
-            item = &HintItems[HintShelfIds[3]];
-            return Game.coins >= (u32)item->price && item->unlocked != 1;
         case 1:
             item = &CharItems[CharShelfIds[3]];
             return Game.coins >= (u32)item->price && Shop_CharacterUnlockedPc((u16)item->item_id) != 0 &&
                    item->unlocked != 1;
+        case 0:
+            item = &HintItems[HintShelfIds[3]];
+            return Game.coins >= (u32)item->price && item->unlocked != 1;
         case 2:
             item = &ExtraItems[ExtraShelfIds[3]];
             if (Game.coins < (u32)item->price)
                 return 0;
             id = (u16)item->item_id;
-            if (id >= 8) {
-                area = ExtrasCheatsPc[id].area_index;
-                if (area != -1 && Game.area_save[area].red_brick_collected == 0)
-                    return 0;
-            }
+            if (id >= 8 && ExtrasCheatsPc[id].area_index != -1 &&
+                Game.area_save[ExtrasCheatsPc[id].area_index].red_brick_collected == 0)
+                return 0;
             return (save->extra_purchased_bits[id / 32] & (1u << (id & 31))) == 0 && item->unlocked != 1;
         case 4:
             index = BrickShelfIds[3];
-            if (Game.coins < (u32)BrickItems[index].price)
-                return 0;
-            if ((f64)(i32)((u32)index * 3600u) > (f64)Game.game_time)
-                return 0;
-            return 1;
+            return Game.coins >= (u32)BrickItems[index].price && !(Game.game_time < index * 3600);
         case 5:
             return CutScenePlayer_CanStart(CutShelfIds[3]) != 0;
-        default:
-            return 0;
     }
+    return 0;
 }
 
 /* 004c7750..004c7819. Keep the affordability predicate separate from actual
