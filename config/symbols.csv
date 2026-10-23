@@ -16408,7 +16408,9 @@ address,symbol,size,ctype
 0x0076e130,_TerrainSkinSampleIndexScalePc,,
 0x76e130,__real@c020000000000000,,
 0x0076e138,_TerrainSkinBoundsMinPc,,
+0x76e138,__real@cceb79a3,4,const f32
 0x0076e13c,_TerrainSkinBoundsMaxPc,,
+0x76e13c,__real@4ceb79a3,4,const f32
 0x0076e148,_TerrainCastLowerSentinel,,
 0x76e14c,__real@2b8cbccc,4,const f32
 0x76e150,__real@ba03126f,4,const f32
