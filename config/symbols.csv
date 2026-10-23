@@ -6881,11 +6881,16 @@ address,symbol,size,ctype
 0x647b20,_edpartChangeBounce,23,
 0x647b40,_edpartCancelGravMenu,25,
 0x647b60,_edpartGravMenu,316,
+0x648270,_edpartFileSaveEffects,802,
+0x6485a0,_edpartFileSaveEffectsGeneral,410,
+0x648740,_edpartFileSaveEffectsLevel,410,
 0x6488e0,_edpartLookupObjectInScene,179,"i32 __cdecl edpartLookupObjectInScene(char *name, NUGSCN *scene)"
 0x6489c0,_edpartSetParticlePage,10,void __cdecl(i32)
 0x6489d0,_edpartLookupObject,28,
 0x006489f0,_edpartStartPage,57,void __cdecl (u8)
 0x00648a30,_edpartStopPage,17,void __cdecl (u8)
+0x648a50,_edpartMoveList,104,
+0x648ac0,_edpartCancelDataMenu,25,
 0x648ae0,_edpartCancelInstanceFlagsMenu,25,
 0x648b00,_edpartInstanceFlagsMenu,1156,
 0x648f90,_edpartChangeDebrisIndex,109,
@@ -6946,6 +6951,7 @@ address,symbol,size,ctype
 0x64c300,_edpartLoadPageEx,946,"i32 __cdecl edpartLoadPageEx(char *path, i8 mode, NUGSCN **scenes, i32 scene_count)"
 0x64c6c0,_edpartLoadPage,26,"i32 __cdecl(char *,i8,NUGSCN *)"
 0x64c6e0,_edpartClearPage,198,void __cdecl (i8)
+0x64c7b0,_edpartFileLoadEffects,1275,
 0x64ccb0,_edpartDataMenu,622,
 0x0064d270,_AddPart,1884,PART_PC *__cdecl (ADDPART_PC *)
 0x64d9d0,_PartCleanupTypes,201,void __cdecl(void)
@@ -16164,6 +16170,15 @@ address,symbol,size,ctype
 0x76cf6c,??_C@_0L@LLPGGELO@Gravity?4?4?4?$AA@,11,char []
 0x76cf78,??_C@_0P@CHIMKJAC@Emitter?5Vel?4?4?4?$AA@,15,char []
 0x76cf88,??_C@_0BB@BGMCMJMB@Emitter?5Settings?$AA@,17,char []
+0x76cf9c,??_C@_08PMNDKFPL@Load?5All?$AA@,9,char []
+0x76cfa8,??_C@_08PDAFELIM@Save?5All?$AA@,9,char []
+0x76cfb4,??_C@_0BA@GNANAIHA@Save?5Level?5List?$AA@,16,char []
+0x76cfc4,??_C@_0BC@CICBPFKC@Save?5General?5List?$AA@,18,char []
+0x76cfd8,??_C@_09NHCJNKCA@Move?5Type?$AA@,10,char []
+0x76cfe4,??_C@_0BK@PDKNEDIM@Move?5Type?5to?5General?5List?$AA@,26,char []
+0x76d000,??_C@_0BI@MKMONCJL@Move?5Type?5to?5Level?5List?$AA@,24,char []
+0x76d018,??_C@_0M@CKAECHMB@Delete?5Type?$AA@,12,char []
+0x76d024,??_C@_09KPPBBFKO@Copy?5Type?$AA@,10,char []
 0x76d030,??_C@_0N@EGBBIJGH@Type?5Name?4?4?4?$AA@,13,char []
 0x76d040,??_C@_09HONBIIOJ@Data?5Menu?$AA@,10,char []
 0x76d04c,??_C@_0BA@NECCLNOP@Filter?5String?3?5?$AA@,16,char []
@@ -24765,6 +24780,7 @@ address,symbol,size,ctype
 0x29208ec,_edpart_grav_menu,4,struct eduimenu_s *
 0x29208f0,_part_scene,128,NUGSCN *[32]
 0x2920974,_edpart_varemit_menu,4,struct eduimenu_s *
+0x2920978,_edpart_data_menu,4,struct eduimenu_s *
 0x292097c,_PartPlatformImpactListPc,,i16[4]
 0x2920988,_edpart_set_debris,4,i32
 0x292098c,_edpart_nearest_emit,,PART_EMIT_PC*

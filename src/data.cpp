@@ -29358,6 +29358,9 @@ extern "C" {
 #pragma bss_seg(".bss$edpart_emit_menu")
     struct eduimenu_s *edpart_emit_menu = 0;
 
+#pragma bss_seg(".bss$edpart_data_menu")
+    struct eduimenu_s *edpart_data_menu = 0;
+
 #pragma bss_seg(".bss$edpart_tint_menu")
     struct eduimenu_s *edpart_tint_menu = 0;
 

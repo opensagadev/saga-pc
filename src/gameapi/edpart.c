@@ -961,3 +961,70 @@ void edpartEmitMenu(eduimenu_s *menu, eduiitem_s *unused1, u32 unused2) {
         edpart_emit_menu->y = menu->y + 40;
     }
 }
+
+void edpartFileSaveEffects(eduimenu_s *menu, eduiitem_s *item, u32 value);
+void edpartFileSaveEffectsGeneral(eduimenu_s *menu, eduiitem_s *item, u32 value);
+void edpartFileSaveEffectsLevel(eduimenu_s *menu, eduiitem_s *item, u32 value);
+void edpartFileLoadEffects(eduimenu_s *menu, eduiitem_s *item, u32 value);
+void edpartCopyType(eduimenu_s *menu, eduiitem_s *item, u32 value);
+void edpartDeleteType(eduimenu_s *menu, eduiitem_s *item, u32 value);
+void edpartChangeNameMenu(eduimenu_s *menu, eduiitem_s *item, u32 value);
+extern struct eduimenu_s *edpart_data_menu;
+
+void edpartMoveList(eduimenu_s *menu, eduiitem_s *unused1, u32 unused2) {
+    struct eduimenu_s *parent;
+    parent = NULL;
+    if (part_types[edpart_create_type].field_b3 == 0) {
+        part_types[edpart_create_type].field_b3 = 1;
+        part_types[edpart_create_type].page = 1;
+    } else {
+        part_types[edpart_create_type].field_b3 = 0;
+        part_types[edpart_create_type].page = 0;
+    }
+    edpart_effect_list = part_types[edpart_create_type].field_b3;
+    if (menu->parent) {
+        parent = menu->parent;
+        eduiMenuDetach(menu);
+    }
+    if (menu->callback)
+        menu->callback(menu, parent);
+}
+
+void edpartCancelDataMenu(eduimenu_s *unused0, eduimenu_s *unused1) {
+    eduiMenuDestroy(edpart_data_menu);
+    edpart_data_menu = NULL;
+}
+
+void edpartDataMenu(eduimenu_s *menu, eduiitem_s *unused1, u32 unused2) {
+    edpart_data_menu = eduiMenuCreate(70, 70, 250, 250, ed_fnt, edpartCancelDataMenu, "Data Menu");
+    if (edpart_data_menu != NULL) {
+        if (edpart_create_type != -1)
+            eduiMenuAddItem(edpart_data_menu,
+                            eduiItemSelCreate(1, edblack, 0, 0, edpartChangeNameMenu, "Type Name..."));
+        else
+            eduiMenuAddItem(edpart_data_menu, eduiItemSelCreate(1, edgrey, 0, 0, NULL, "Type Name..."));
+        if (edpart_create_type != -1) {
+            eduiMenuAddItem(edpart_data_menu, eduiItemSelCreate(1, edblack, 0, 0, edpartCopyType, "Copy Type"));
+            eduiMenuAddItem(edpart_data_menu, eduiItemSelCreate(1, edblack, 0, 0, edpartDeleteType, "Delete Type"));
+            if (part_types[edpart_create_type].field_b3 == 0)
+                eduiMenuAddItem(edpart_data_menu,
+                                eduiItemSelCreate(1, edblack, 0, 0, edpartMoveList, "Move Type to Level List"));
+            else
+                eduiMenuAddItem(edpart_data_menu,
+                                eduiItemSelCreate(1, edblack, 0, 0, edpartMoveList, "Move Type to General List"));
+        } else {
+            eduiMenuAddItem(edpart_data_menu, eduiItemSelCreate(1, edgrey, 0, 0, NULL, "Copy Type"));
+            eduiMenuAddItem(edpart_data_menu, eduiItemSelCreate(1, edgrey, 0, 0, NULL, "Delete Type"));
+            eduiMenuAddItem(edpart_data_menu, eduiItemSelCreate(1, edgrey, 0, 0, NULL, "Move Type"));
+        }
+        eduiMenuAddItem(edpart_data_menu,
+                        eduiItemSelCreate(1, edblack, 0, 0, edpartFileSaveEffectsGeneral, "Save General List"));
+        eduiMenuAddItem(edpart_data_menu,
+                        eduiItemSelCreate(1, edblack, 0, 0, edpartFileSaveEffectsLevel, "Save Level List"));
+        eduiMenuAddItem(edpart_data_menu, eduiItemSelCreate(1, edblack, 0, 0, edpartFileSaveEffects, "Save All"));
+        eduiMenuAddItem(edpart_data_menu, eduiItemSelCreate(1, edblack, 0, 0, edpartFileLoadEffects, "Load All"));
+        eduiMenuAttach(menu, edpart_data_menu);
+        edpart_data_menu->x = menu->x + 10;
+        edpart_data_menu->y = menu->y + 40;
+    }
+}
