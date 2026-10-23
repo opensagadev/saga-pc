@@ -2364,9 +2364,6 @@ void __cdecl MovePlayer_DIRECTIONAL(GAMEOBJECT *object) {
     GAMEOBJECT *operator_object;
     i32 current_animation;
     PLAYERCHARACTERCONFIG_PC *game_character;
-    f32 run_speed;
-    f32 input_speed;
-    f32 operator_run_speed;
     u16 input_angle;
     f32 desired_speed;
     f32 turn_override;
@@ -2383,19 +2380,16 @@ void __cdecl MovePlayer_DIRECTIONAL(GAMEOBJECT *object) {
     current_animation = CurrentAnim(&object->anim_packet);
     Techno_FindOperator(object, &pad, &operator_object);
     game_character = object->character_data->game_character;
-    run_speed = game_character->run_speed;
-    input_speed = pad->input_magnitude;
-    operator_run_speed = operator_object->character_data->game_character->run_speed;
+    desired_speed = pad->input_magnitude / operator_object->character_data->game_character->run_speed *
+                    object->character_data->game_character->run_speed;
 
     if ((object->flags_e20 & 0x20) != 0 && object->character_context != 0x23 && object->character_context != 0x24) {
         GAMEOBJECT *vehicle;
         MoveInactiveVehicle(object, 0, &vehicle);
         if (vehicle != NULL) {
-            object->field_dc8 = vehicle->field_dc8;
-            object->field_0x276 = vehicle->field_0x276;
-            object->movement_facing_angle = vehicle->field_0x276;
-            object->facing_angle = vehicle->field_0x276;
+            object->field_0x276 = object->movement_facing_angle = object->facing_angle = vehicle->field_0x276;
             object->velocity = vehicle->velocity;
+            object->field_dc8 = vehicle->field_dc8;
             object->movement_lean_angle = 0;
             object->tertiary_lean_angle = 0;
             object->secondary_lean_angle = 0;
@@ -2444,7 +2438,6 @@ void __cdecl MovePlayer_DIRECTIONAL(GAMEOBJECT *object) {
         }
     }
 
-    desired_speed = run_speed * (input_speed / operator_run_speed);
     if (object->character_context == 0x33 && (object->character_data->game_character->flags_090 & 0x200) != 0) {
         object->movement_mode = 2;
     } else if (((((u32)(u8)object->character_context << 8) | ((u32)object->context_variant << 16)) & 0xffff00) ==
