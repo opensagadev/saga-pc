@@ -120,18 +120,17 @@ i32 __cdecl GizmoGetOutput(void *system, void *gizmo_ptr, i32 output, i32 mode) 
 }
 
 char *__cdecl GizmoGetOutputName(void *system, void *gizmo_ptr, i32 output) {
-    GIZMOTYPES_PC *registry;
-    GIZMOTYPE_PC *type;
+    GIZMOTYPES_PC *registry = (GIZMOTYPES_PC *)gizmotypes;
     GIZMO_PC *gizmo = (GIZMO_PC *)gizmo_ptr;
-    if (gizmotypes == NULL || system == NULL || gizmo == NULL)
+    char *(__cdecl * get_name)(GIZMO_PC *, i32);
+    if (registry == NULL || system == NULL || gizmo == NULL)
         return NULL;
-    registry = (GIZMOTYPES_PC *)gizmotypes;
-    if (gizmo->type_id >= registry->count)
-        return (char *)GizmoDefaultOutputName;
-    type = &registry->types[gizmo->type_id];
-    if (type->fns.get_output_name_fn == NULL)
-        return (char *)GizmoDefaultOutputName;
-    return type->fns.get_output_name_fn(gizmo, output);
+    if (gizmo->type_id < registry->count) {
+        get_name = registry->types[gizmo->type_id].fns.get_output_name_fn;
+        if (get_name != NULL)
+            return get_name(gizmo, output);
+    }
+    return (char *)GizmoDefaultOutputName;
 }
 
 void __cdecl GizmoActivateReverse(void *system, void *gizmo_ptr, i32 reverse, i32 visibility, i32 mode) {
@@ -779,6 +778,122 @@ NUVEC *__cdecl GizmoGetPos(GIZMOSYS_PC *system, void *pointer) {
 }
 
 #include <stdio.h>
+
+void EdFileWrite(void *data, i32 len);
+void EdFileWriteInt(i32 value);
+void EdFileWriteChar(char value);
+extern GIZACTIONDEF_PC *gizactiondefs;
+extern i32 gizspecial_gizmotype_id;
+i32 GizmoInfoVersionPc = 4;
+
+i32 __cdecl GizmoSysWriteInfo(GIZMOSYS_PC *gizmo_sys, char *path, NUGSCN *scene) {
+    NUSPECIALHANDLE special;
+    GIZMO_PC gizmo;
+    char backup[256];
+    GIZMOTYPES_PC *types;
+    GIZMOTYPE_PC *type;
+    GIZMOSET_PC *set;
+    GIZMO_PC *entry;
+    GIZACTIONDEF_PC *definition;
+    char *name;
+    i32 type_index, gizmo_index, output_index, length, outputs, count;
+    if (gizmotypes != NULL) {
+        if (NuFileExists(path)) {
+            sprintf(backup, "%s.bak", path);
+            NuFileCopy(backup, path);
+        }
+        EdFileSetMedia(1);
+        if (EdFileOpen(path, 1)) {
+            EdFileWriteInt(GizmoInfoVersionPc);
+            types = (GIZMOTYPES_PC *)gizmotypes;
+            EdFileWriteInt(types->count);
+            types = (GIZMOTYPES_PC *)gizmotypes;
+            if (types->count != 0) {
+                type = types->types;
+                set = gizmo_sys->sets;
+                for (type_index = 0; type_index < ((GIZMOTYPES_PC *)gizmotypes)->count; ++type_index, ++type, ++set) {
+                    length = strlen(type->name) + 1;
+                    EdFileWriteInt(length);
+                    if (length != 0)
+                        EdFileWrite(type->name, length);
+                    if (GizmoInfoVersionPc >= 4) {
+                        length = NuStrLen(type->prefix) + 1;
+                        EdFileWriteChar((char)length);
+                        if (length != 0)
+                            EdFileWrite(type->prefix, length);
+                    }
+                    EdFileWriteInt(set->count);
+                    entry = set->gizmos;
+                    for (gizmo_index = 0; gizmo_index < set->count; ++gizmo_index, ++entry) {
+                        name = GizmoGetName(entry);
+                        length = name != NULL ? strlen(name) + 1 : 0;
+                        EdFileWriteInt(length);
+                        if (length != 0)
+                            EdFileWrite(name, length);
+                        outputs = GizmoGetNumOutputs(gizmo_sys, entry);
+                        EdFileWriteInt(outputs);
+                        for (output_index = 0; output_index < outputs; ++output_index) {
+                            name = GizmoGetOutputName(gizmo_sys, entry, output_index);
+                            length = name != NULL ? strlen(name) + 1 : 0;
+                            EdFileWriteInt(length);
+                            if (length != 0)
+                                EdFileWrite(name, length);
+                        }
+                    }
+                }
+            }
+            if (GizmoInfoVersionPc == 1) {
+                definition = gizactiondefs;
+                if (definition != NULL) {
+                    while (definition->name != NULL) {
+                        GIZACTIONDEF_PC *cursor;
+                        count = 0;
+                        for (cursor = gizactiondefs; cursor->name != NULL; ++cursor)
+                            ++count;
+                        EdFileWriteInt(count);
+                        for (cursor = gizactiondefs; cursor->name != NULL; ++cursor) {
+                            length = strlen(cursor->name) + 1;
+                            EdFileWriteInt(length);
+                            if (length != 0)
+                                EdFileWrite((void *)cursor->name, length);
+                        }
+                    }
+                }
+            }
+            if (GizmoInfoVersionPc >= 3) {
+                if (GizmoInfoVersionPc >= 4 && gizspecial_gizmotype_id != -1) {
+                    type = &((GIZMOTYPES_PC *)gizmotypes)->types[gizspecial_gizmotype_id];
+                    length = NuStrLen(type->prefix) + 1;
+                    EdFileWriteChar((char)length);
+                    if (length != 0)
+                        EdFileWrite(type->prefix, length);
+                    gizmo.type_id = (u8)gizspecial_gizmotype_id;
+                    outputs = GizmoGetNumOutputs(gizmo_sys, &gizmo);
+                    EdFileWriteChar((char)outputs);
+                    for (output_index = 0; output_index < outputs; ++output_index) {
+                        name = GizmoGetOutputName(gizmo_sys, &gizmo, output_index);
+                        length = name != NULL ? NuStrLen(name) + 1 : 0;
+                        EdFileWriteInt(length);
+                        if (length != 0)
+                            EdFileWrite(name, length);
+                    }
+                }
+                count = NuGScnNumSpecials(scene);
+                EdFileWriteInt(count);
+                for (output_index = 0; output_index < count; ++output_index) {
+                    NuGScnGetSpecial(&special, scene, output_index);
+                    name = NuSpecialGetName(&special);
+                    length = strlen(name) + 1;
+                    EdFileWriteInt(length);
+                    EdFileWrite(name, length);
+                }
+            }
+            EdFileClose();
+            return 1;
+        }
+    }
+    return 0;
+}
 
 typedef struct GIZMO_NAME_TYPE_PC {
     u8 unknown_00[0x20];

@@ -3780,7 +3780,7 @@ address,symbol,size,ctype
 0x0055a2b0,_GizmoSetVisibility,107,"void __cdecl (void *, void *, i32, i32)"
 0x55a320,_GizmoGetVisibility,60,"i32 __cdecl(void *,void *)"
 0x55a360,_GizmoGetPos,48,"NUVEC *__cdecl (GIZMOSYS_PC *, void *)"
-0x55a430,_GizmoSysWriteInfo,1329,
+0x55a430,_GizmoSysWriteInfo,1329,"i32 __cdecl(GIZMOSYS_PC *, char *, NUGSCN *)"
 0x55a970,_GizmoIsNameUnique,144,"i32 __cdecl(GIZMOSYS_PREFIX_PC *,char *)"
 0x55aa00,_GizmoNameUsesPrefix,89,"i32 __cdecl(char *,char *)"
 0x55aa60,_GizmoGetUniqueName,354,"i32 __cdecl(GIZMOSYS_PREFIX_PC *,char *,char *,char *,i32)"
@@ -14571,6 +14571,7 @@ address,symbol,size,ctype
 0x00760c04,_AIPathFaceOpponentName,14,const char[14]
 0x760c14,??_C@_09CIJOFFDC@on_ground?$AA@,10,const char[10]
 0x00760c20,_AICharacterInitialiseName,11,const char [11]
+0x760c2c,??_C@_06FCGCPEED@?$CFs?4bak?$AA@,7,const char[7]
 0x760dd0,__real@3fefae1480000000,8,const f64
 0x7610bc,??_C@_0BD@HPIJGHPH@TerrainCamInActive?$AA@,19,const char[]
 0x7610d0,??_C@_0N@MPOMBABH@ManCam_MAX_Y?$AA@,13,const char[]
@@ -20091,6 +20092,7 @@ address,symbol,size,ctype
 0x802710,_GizObstacleRegistrationNamePtrPc,,const char *
 0x00802724,_gizmoerrorlogsize,4,i32
 0x802728,_Default_ADDGIZMOTYPE,,ADD_GIZMO_CONFIG_TYPE_PC
+0x802800,_GizmoInfoVersionPc,4,i32
 0x00802814,_LEGOCONTEXT_TUBE,4,i32
 0x00802818,_LEGOCONTEXT_GLIDE,4,i32
 0x80281c,_BoltBlockContextPc,,i32
