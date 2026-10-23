@@ -1814,8 +1814,8 @@ i32 __cdecl CustomiserMenu_Update(void) {
                 f32 repeat_delay = old_mode == 1 ? 0.1f : 0.25f;
                 i32 category = CustomiseMenuYPc[side];
                 i32 piece_count = customiser->piece_counts[category];
+                i32 old_piece = Game.customiser_start[side].pieces[category];
                 u16 *slot = &Game.customiser_start[side].pieces[category];
-                i32 old_piece = *slot;
                 i32 old_category = category, next_piece = old_piece;
                 i32 up, up_held, down, down_held, left, left_held, right, right_held;
                 up_held = held & GAMEPAD_DUP;
@@ -1914,30 +1914,28 @@ i32 __cdecl CustomiserMenu_Update(void) {
                         Customise_FindLetter(Game.customiser_start[side].name[CustomiseNameXPc[side]]);
                     CustomiseNameLetterBlipScalePc[side] = 1.0f;
                 } else if (old_mode == 1) {
-                    if (cancel_name != 0) {
-                        NuStrCpy(Game.customiser_start[side].name, Game.customiser_start[side].name + 16);
-                    } else {
+                    if (cancel_name == 0) {
                         i32 last = 14;
                         Game.customiser_start[side].name[CustomiseNameXPc[side]] =
                             CustomiseLetter[CustomiseNameYPc[side]];
-                        if (Game.customiser_start[side].name[14] == ' ') {
+                        if (Game.customiser_start[side].name[last] == ' ') {
                             do {
                                 --last;
                             } while (Game.customiser_start[side].name[last] == ' ');
-                            if (last < 0) {
-                                i16 text_id = side == 0 ? TextIdPc880894 : TextIdPc880898;
-                                NuStrCpy(Game.customiser_start[side].name, TTab[text_id]);
-                                FinishWeirdoNames(side);
-                            } else {
-                                Game.customiser_start[side].name[last + 1] = 0;
-                            }
+                        }
+                        if (last < 0) {
+                            i16 text_id = side == 0 ? TextIdPc880894 : TextIdPc880898;
+                            NuStrCpy(Game.customiser_start[side].name, TTab[text_id]);
+                            FinishWeirdoNames(side);
                         } else {
-                            Game.customiser_start[side].name[15] = 0;
+                            Game.customiser_start[side].name[last + 1] = 0;
                         }
                         if (NuStringFilterBadWords((u8 *)Game.customiser_start[side].name,
                                                    (u8 *)Game.customiser_start[side].name,
                                                    (u8 *)CustomiserBadWordReplacementPc) != 0)
                             NuStrCpy(Game.customiser_start[side].name, Game.customiser_start[side].name + 16);
+                    } else {
+                        NuStrCpy(Game.customiser_start[side].name, Game.customiser_start[side].name + 16);
                     }
                 }
                 Game.customiser_start[side].use_saved_name = 1;
