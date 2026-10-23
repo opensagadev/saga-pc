@@ -1991,6 +1991,33 @@ static void edptlcbCancelGhostMenu(eduimenu_s *unused0, eduimenu_s *unused1) {
     edptl_ghost_menu = NULL;
 }
 
+void __cdecl edptlcbCancelStarMenu(eduimenu_s *unused0, eduimenu_s *unused1) {
+    eduiMenuDestroy(edptl_star_menu);
+    edptl_star_menu = NULL;
+}
+
+void __cdecl edptlcbApplyStarPoints(eduimenu_s *unused0, eduiitem_s *item, u32 unused2) {
+    DEBRIS_INFO_PC *effect;
+    if (edpp_nearest == -1)
+        return;
+    if (edpp_ptls[edpp_nearest].instance_id == -1)
+        return;
+    effect = debtab[debkeydata[edpp_ptls[edpp_nearest].instance_id].effect_index];
+    effect->radial_segments = (i8)((edui_slider_s *)item)->value;
+}
+
+void __cdecl edptlcbApplyStarRatio(eduimenu_s *unused0, eduiitem_s *item, u32 unused2) {
+    DEBRIS_INFO_PC *effect;
+    i32 instance_id;
+    if (edpp_nearest == -1)
+        return;
+    instance_id = edpp_ptls[edpp_nearest].instance_id;
+    if (instance_id == -1)
+        return;
+    effect = debtab[debkeydata[instance_id].effect_index];
+    effect->radial_floor = ((edui_slider_s *)item)->value;
+}
+
 static void cbPtlChangeEmitVel(eduimenu_s *unused0, eduiitem_s *item, u32 unused2) {
     DEBRIS_INFO_PC *effect;
     if (edpp_nearest == -1)

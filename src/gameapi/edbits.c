@@ -44,6 +44,23 @@ void __cdecl edbitsDrawCross(f32 x, f32 y, f32 z, f32 radius, i32 colour, struct
     }
 }
 
+void __cdecl edbitsDrawDiagonalCross(f32 x, f32 y, f32 z, f32 radius, i32 colour, struct PC_SCENE_MTL_VIEW *material) {
+    f32 axes[12] = {1.0f, 1.0f, 1.0f, -1.0f, 1.0f, 1.0f, 1.0f, -1.0f, 1.0f, -1.0f, -1.0f, 1.0f};
+    NURND_VERTEX3D_PC vertices[2];
+    i32 i;
+    for (i = 0; i < 12; i += 3) {
+        vertices[0].colour = colour;
+        vertices[1].colour = colour;
+        vertices[0].position.x = x + radius * axes[i];
+        vertices[0].position.y = y + radius * axes[i + 1];
+        vertices[0].position.z = z + radius * axes[i + 2];
+        vertices[1].position.x = x - radius * axes[i];
+        vertices[1].position.y = y - radius * axes[i + 1];
+        vertices[1].position.z = z - radius * axes[i + 2];
+        NuRndrLine3d(vertices, (NUMTL *)material, NULL);
+    }
+}
+
 void __cdecl edbitsDrawOvalTilted(NUVEC *centre, f32 radius_x, f32 radius_z, i32 colour,
                                   struct PC_SCENE_MTL_VIEW *material, i32 rotation_z, i32 rotation_y) {
     NUVEC previous;
