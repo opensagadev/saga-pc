@@ -42,6 +42,11 @@ i32 __cdecl LineIntersectXY(NUVEC *a, NUVEC *b, NUVEC *c, NUVEC *d, NUVEC *first
     return t >= 0.0f && t <= 1.0f && u >= 0.0f && u <= 1.0f;
 }
 
+static __inline f32 UtilitiesFabsPc(f32 value) {
+    u32 bits = *(u32 *)&value & 0x7fffffff;
+    return *(f32 *)&bits;
+}
+
 i32 XZLinesIntersect(NUVEC *a, NUVEC *b, NUVEC *c, NUVEC *d, float *first, float *second) {
     i32 angle;
     NUVEC ac;
@@ -55,23 +60,22 @@ i32 XZLinesIntersect(NUVEC *a, NUVEC *b, NUVEC *c, NUVEC *d, float *first, float
     NuVecRotateY(&ca, &ca, -angle);
     NuVecSub(&da, d, a);
     NuVecRotateY(&da, &da, -angle);
-    if (NuFsign(ca.x) == NuFsign(da.x))
-        return 0;
-
-    NuVecSub(&direction, d, c);
-    angle = NuAtan2D(direction.x, direction.z);
-    NuVecSub(&ac, a, c);
-    NuVecRotateY(&ac, &ac, -angle);
-    NuVecSub(&bc, b, c);
-    NuVecRotateY(&bc, &bc, -angle);
-    if (NuFsign(ac.x) == NuFsign(bc.x))
-        return 0;
-
-    if (first != NULL)
-        *first = fabsf(ac.x) / (fabsf(ac.x) + fabsf(bc.x));
-    if (second != NULL)
-        *second = fabsf(ca.x) / (fabsf(ca.x) + fabsf(da.x));
-    return 1;
+    if (NuFsign(ca.x) != NuFsign(da.x)) {
+        NuVecSub(&direction, d, c);
+        angle = NuAtan2D(direction.x, direction.z);
+        NuVecSub(&ac, a, c);
+        NuVecRotateY(&ac, &ac, -angle);
+        NuVecSub(&bc, b, c);
+        NuVecRotateY(&bc, &bc, -angle);
+        if (NuFsign(ac.x) != NuFsign(bc.x)) {
+            if (first != NULL)
+                *first = UtilitiesFabsPc(ac.x) / (UtilitiesFabsPc(ac.x) + UtilitiesFabsPc(bc.x));
+            if (second != NULL)
+                *second = UtilitiesFabsPc(ca.x) / (UtilitiesFabsPc(ca.x) + UtilitiesFabsPc(da.x));
+            return 1;
+        }
+    }
+    return 0;
 }
 
 f32 XZLinesClosest(NUVEC *a, NUVEC *b, NUVEC *c, NUVEC *d, f32 *first, f32 *second) {
@@ -86,6 +90,7 @@ f32 XZLinesClosest(NUVEC *a, NUVEC *b, NUVEC *c, NUVEC *d, f32 *first, f32 *seco
     NUVEC ca;
     NUVEC da;
     NUVEC direction;
+    closest = 1000000000.0f;
     NuVecSub(&direction, b, a);
     angle = NuAtan2D(direction.x, direction.z);
     NuVecSub(&ca, c, a);
@@ -100,14 +105,13 @@ f32 XZLinesClosest(NUVEC *a, NUVEC *b, NUVEC *c, NUVEC *d, f32 *first, f32 *seco
     NuVecRotateY(&bc, &bc, -angle);
 
     if (NuFsign(ca.x) != NuFsign(da.x) && NuFsign(ac.x) != NuFsign(bc.x)) {
-        *first = fabsf(ac.x) / (fabsf(ac.x) + fabsf(bc.x));
-        *second = fabsf(ca.x) / (fabsf(ca.x) + fabsf(da.x));
+        *first = UtilitiesFabsPc(ac.x) / (UtilitiesFabsPc(ac.x) + UtilitiesFabsPc(bc.x));
+        *second = UtilitiesFabsPc(ca.x) / (UtilitiesFabsPc(ca.x) + UtilitiesFabsPc(da.x));
         return 0.0f;
     }
 
     ab_length = NuVecXZDist(b, a, NULL);
     cd_length = NuVecXZDist(d, c, NULL);
-    closest = 1000000000.0f;
 
     if (ca.z < 0.0f) {
         distance = NuVecXZDist(a, &ca, NULL);
@@ -117,7 +121,7 @@ f32 XZLinesClosest(NUVEC *a, NUVEC *b, NUVEC *c, NUVEC *d, f32 *first, f32 *seco
         fraction = 1.0f;
     } else {
         fraction = ca.z / ab_length;
-        distance = fabsf(ca.x);
+        distance = UtilitiesFabsPc(ca.x);
     }
     if (distance < closest) {
         *first = fraction;
@@ -132,7 +136,7 @@ f32 XZLinesClosest(NUVEC *a, NUVEC *b, NUVEC *c, NUVEC *d, f32 *first, f32 *seco
         fraction = 1.0f;
     } else {
         fraction = da.z / ab_length;
-        distance = fabsf(da.x);
+        distance = UtilitiesFabsPc(da.x);
     }
     if (distance < closest) {
         *first = fraction;
@@ -145,7 +149,7 @@ f32 XZLinesClosest(NUVEC *a, NUVEC *b, NUVEC *c, NUVEC *d, f32 *first, f32 *seco
             fraction = 1.0f;
         } else {
             fraction = ac.z / cd_length;
-            distance = fabsf(ac.x);
+            distance = UtilitiesFabsPc(ac.x);
         }
     } else {
         distance = NuVecXZDist(c, &ac, NULL);
@@ -162,7 +166,7 @@ f32 XZLinesClosest(NUVEC *a, NUVEC *b, NUVEC *c, NUVEC *d, f32 *first, f32 *seco
             fraction = 1.0f;
         } else {
             fraction = bc.z / cd_length;
-            distance = fabsf(bc.x);
+            distance = UtilitiesFabsPc(bc.x);
         }
     } else {
         distance = NuVecXZDist(c, &bc, NULL);

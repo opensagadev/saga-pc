@@ -502,6 +502,11 @@
    "kind": "function"
   },
   {
+   "unit": "src/legoapi/utilities.c",
+   "symbol": "_UtilitiesFabsPc",
+   "kind": "function"
+  },
+  {
    "unit": "src/nu2api/nupostfilter.cpp",
    "symbol": "__bad_alloc_Message",
    "kind": "data"
