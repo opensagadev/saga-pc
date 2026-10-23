@@ -96,6 +96,17 @@ __declspec(noinline) void __cdecl NuDisplayListResetStateCache(NURNDRLIBSTATE *s
     state->konst_id = -1;
 }
 
+void __cdecl RndrStateUpdate(NURNDRLIBSTATE *state, NUMTL *material, NUDISPLAYLISTITEM *item) {
+    (void)state;
+    (void)material;
+    (void)item;
+}
+
+void __cdecl RndrStateUpdateFx(NURNDRLIBSTATE *state, NUDISPLAYLISTITEM *item) {
+    (void)state;
+    (void)item;
+}
+
 i32 __cdecl NuDisplayListAddRenderScene(void) {
     VARIPTR *cursor;
     NUSORTPRI **pris;

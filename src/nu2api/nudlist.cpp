@@ -550,27 +550,38 @@ extern "C" {
         return items;
     }
 
-    void __cdecl RndrStateUpdate(NURNDRLIBSTATE *state, NUMTL *material, NUDISPLAYLISTITEM *item) {
-        (void)state;
-        (void)material;
-        (void)item;
-    }
-
-    void __cdecl RndrStateUpdateFx(NURNDRLIBSTATE *state, NUDISPLAYLISTITEM *item) {
-        (void)state;
-        (void)item;
-    }
+    /* Same layout as NURNDRLIBSTATE without 1- or 2-byte arrays: retail's stack copy carries no /GS cookie. */
+    typedef struct pc_rndr_state_local_s {
+        u32 opaque_00_08[2];
+        void *mtl;
+        u32 opaque_0c_14[2];
+        i32 tex_id;
+        u16 opaque_18;
+        u16 opaque_1a;
+        u16 opaque_1c;
+        i16 konst_id;
+        i32 global_id;
+        i16 lights_id;
+        u16 opaque_26;
+        u16 opaque_28;
+        u16 opaque_2a;
+        i16 camera_id;
+        i16 fog_id;
+        u32 opaque_30_34;
+    } PC_RNDR_STATE_LOCAL;
+    STATIC_ASSERT(sizeof(PC_RNDR_STATE_LOCAL) == sizeof(NURNDRLIBSTATE));
+    STATIC_ASSERT(offsetof(PC_RNDR_STATE_LOCAL, fog_id) == offsetof(NURNDRLIBSTATE, fog_id));
 
     void __cdecl DisplayProcessMaterialRenderStatesPC(void) {
-        NURNDRLIBSTATE state;
+        PC_RNDR_STATE_LOCAL state;
         NUGLOBALRNDRSTATE_PC *last_local = NULL;
         NUSORTPRI *sort;
         i32 i;
-        NuDisplayListResetStateCache(&state);
+        NuDisplayListResetStateCache((NURNDRLIBSTATE *)&state);
         for (sort = sort_list; sort != NULL; sort = sort->sys_next) {
             NUDISPLAY_LIST_PC *scene = sort->display_scene;
             if (scene == NULL) {
-                RndrStateUpdateFx(&state, sort->items);
+                RndrStateUpdateFx((NURNDRLIBSTATE *)&state, sort->items);
             } else if ((scene->render_flags & 6) != 0) {
                 for (i = 0; i < sort->nmtls; ++i) {
                     i32 index = sort->mtl_first + i;
@@ -580,7 +591,10 @@ extern "C" {
                         continue;
                     material = (PC_DISPLAY_MATERIAL_PC *)scene->display_materials[index];
                     if (scene->local_state != NULL && (scene->render_flags & 4) != 0) {
-                        if (list->mtl_last != list->first || last_local != scene->local_state) {
+                        if (list->mtl_last != list->first) {
+                            DisplayListUpdateRenderState((NUDISPLAYLIST_PC *)list, scene->local_state);
+                            last_local = scene->local_state;
+                        } else if (last_local != scene->local_state) {
                             DisplayListUpdateRenderState((NUDISPLAYLIST_PC *)list, scene->local_state);
                             last_local = scene->local_state;
                         }
@@ -596,8 +610,6 @@ extern "C" {
                             list->scene_next->type = 0x8d;
                             list->scene_next->id = 1;
                             list->scene_next->next = list->dynamic_geometry + 1;
-                        } else {
-                            list->mtl_last->next = list->dynamic_geometry + 1;
                         }
                         list->mtl_last = list->first;
                     } else if (list->scene_first[list->scene_buffer] != list->scene_next) {
@@ -608,8 +620,9 @@ extern "C" {
                     } else {
                         list->dynamic_geometry->next = list->dynamic_geometry + 1;
                     }
-                    RndrStateUpdate(&state, (NUMTL *)material, list->mtl_item);
-                    if (((u8)(scene->render_flags >> 5) & (u8)(material->visibility_flags >> 14)) != 0) {
+                    RndrStateUpdate((NURNDRLIBSTATE *)&state, (NUMTL *)material, list->mtl_item);
+                    if ((u8)(scene->render_flags >> 5) != 0 &&
+                        ((u8)(scene->render_flags >> 5) & (u8)(material->visibility_flags >> 14)) != 0) {
                         list->mtl_item->id = 1;
                         scene->material_used[(scene->render_flags >> 15) & 1][list->material_id / 8] &=
                             (u8) ~(1u << (list->material_id % 8));
@@ -617,9 +630,12 @@ extern "C" {
                 }
             }
         }
-        for (i = 0; i < (i32)nudlist_field_9d8; ++i) {
-            if (PCDisplayScenes[i]->local_state != NULL)
-                RndrStateResetGlobalState(PCDisplayScenes[i]->local_state);
+        {
+            NUDISPLAY_LIST_PC **scenes = PCDisplayScenes;
+            for (i = 0; i < (i32)nudlist_field_9d8; ++i, ++scenes) {
+                if ((*scenes)->local_state != NULL)
+                    RndrStateResetGlobalState((*scenes)->local_state);
+            }
         }
     }
 
