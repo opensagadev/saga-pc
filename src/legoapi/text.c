@@ -108,7 +108,7 @@ void Text_InitTable(TEXTENTRY *entry, i32 first, i32 last) {
 
 void Text_InsertCommasIntoNumber(char *number, char *text, i32 length) {
     char separator = ',';
-    i32 output = 0;
+    i32 output;
     i32 digit;
     if (Text_Language == 2) {
         separator = ' ';
@@ -118,6 +118,7 @@ void Text_InsertCommasIntoNumber(char *number, char *text, i32 length) {
     if (length < 0) {
         length = NuStrLen(number);
     }
+    output = 0;
     for (digit = 0; digit < length; ++digit) {
         i32 remaining = length - digit - 1;
         text[output++] = number[digit];

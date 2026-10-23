@@ -2214,7 +2214,8 @@ void __cdecl DrawSubItemMenu2D(void) {
 
 void __cdecl BuyAllShopExtras(void) {
     SHOP_SAVE_VIEW_PC *save = (SHOP_SAVE_VIEW_PC *)&Game;
-    i32 index, area;
+    i32 index;
+    i8 area;
     for (index = 0; index < 44; ++index) {
         save->extra_purchased_bits[(u32)index >> 5] |= 1u << (index & 31);
         if (WORLD->current_level == HUB_LDATA)

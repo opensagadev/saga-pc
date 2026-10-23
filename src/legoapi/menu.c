@@ -148,17 +148,21 @@ void MenuEnterTitles(MENU *menu) {
 }
 
 void MenuUpdatePauseRestart(MENU_s *menu) {
-    if (menu->confirm_pressed != 0 && menu->selected_item == 0) {
-        Door_Reset();
-        Players_InitPositions(WORLD);
-        NewGameMode();
-        ResetBits |= 0x21;
-        reset_restart = 1;
-        MenuSFX = GameAudio_GetSfxId(0x30);
-    } else if (menu->cancel_pressed != 0 || menu->confirm_pressed != 0) {
-        BackupMenu();
-        MenuSFX = GameAudio_GetSfxId(0x31);
+    if (menu->confirm_pressed != 0) {
+        if (menu->selected_item == 0) {
+            Door_Reset();
+            Players_InitPositions(WORLD);
+            NewGameMode();
+            ResetBits |= 0x21;
+            reset_restart = 1;
+            MenuSFX = GameAudio_GetSfxId(0x30);
+            return;
+        }
+    } else if (menu->cancel_pressed == 0) {
+        return;
     }
+    BackupMenu();
+    MenuSFX = GameAudio_GetSfxId(0x31);
 }
 
 void MenuDrawBonusWin(MENU_s *unused0) {

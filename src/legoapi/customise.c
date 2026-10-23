@@ -50,17 +50,16 @@ void __cdecl Customiser_SetAnimsToLoad(CUSTOMISER_LAYERS_PC *input, i32 enabled)
         if (animation == NULL)
             continue;
         for (; animation->name != NULL; ++animation) {
-            const u16 *animation_ids;
+            i32 i;
             if (enabled == 0) {
                 animation->flags &= ~0x8000u;
                 continue;
             }
             animation->flags |= 0x8000u;
-            animation_ids = customiser->animation_ids_to_load;
-            if (animation_ids == NULL)
+            if (customiser->animation_ids_to_load == NULL)
                 continue;
-            for (; *animation_ids != 0xffff; ++animation_ids) {
-                if (*animation_ids == (u16)animation->action_id) {
+            for (i = 0; customiser->animation_ids_to_load[i] != 0xffff; ++i) {
+                if (customiser->animation_ids_to_load[i] == (u16)animation->action_id) {
                     animation->flags &= ~0x8000u;
                     break;
                 }
@@ -70,26 +69,12 @@ void __cdecl Customiser_SetAnimsToLoad(CUSTOMISER_LAYERS_PC *input, i32 enabled)
 }
 void __cdecl Customiser_ResetModelTextureIDs(CUSTOMISER_LAYERS_PC *input) {
     CUSTOMISER_ANIMS_LOAD_PC *customiser = (CUSTOMISER_ANIMS_LOAD_PC *)input;
+    i32 side, category;
     if (customiser == NULL)
         return;
-    customiser->model_texture_ids[0] = 0;
-    customiser->model_texture_ids[1] = 0;
-    customiser->model_texture_ids[2] = 0;
-    customiser->model_texture_ids[3] = 0;
-    customiser->model_texture_ids[4] = 0;
-    customiser->model_texture_ids[5] = 0;
-    customiser->model_texture_ids[6] = 0;
-    customiser->model_texture_ids[7] = 0;
-    customiser->model_texture_ids[8] = 0;
-    customiser->model_texture_ids[9] = 0;
-    customiser->model_texture_ids[10] = 0;
-    customiser->model_texture_ids[11] = 0;
-    customiser->model_texture_ids[12] = 0;
-    customiser->model_texture_ids[13] = 0;
-    customiser->model_texture_ids[14] = 0;
-    customiser->model_texture_ids[15] = 0;
-    customiser->model_texture_ids[16] = 0;
-    customiser->model_texture_ids[17] = 0;
+    for (side = 0; side < 2; ++side)
+        for (category = 0; category < 9; ++category)
+            customiser->model_texture_ids[side * 9 + category] = 0;
 }
 
 #include <string.h>
@@ -676,16 +661,16 @@ CUSTOMPIECE_LAYERS_PC *__cdecl Customiser_FindPieceByName(CUSTOMISER_LAYERS_PC *
                                                           i32 *index) {
     CUSTOMISER_CONFIG_PC *customiser = (CUSTOMISER_CONFIG_PC *)input;
     i32 category_index, piece_index;
-    if (customiser != NULL) {
-        for (category_index = 0; category_index < 9; ++category_index) {
-            for (piece_index = 0; piece_index < customiser->piece_counts[category_index]; ++piece_index) {
-                if (NuStrICmp(name, customiser->piece_sets[category_index][piece_index].name) == 0) {
-                    if (category != NULL)
-                        *category = category_index;
-                    if (index != NULL)
-                        *index = piece_index;
-                    return (CUSTOMPIECE_LAYERS_PC *)&customiser->piece_sets[category_index][piece_index];
-                }
+    if (customiser == NULL)
+        return NULL;
+    for (category_index = 0; category_index < 9; ++category_index) {
+        for (piece_index = 0; piece_index < customiser->piece_counts[category_index]; ++piece_index) {
+            if (NuStrICmp(name, customiser->piece_sets[category_index][piece_index].name) == 0) {
+                if (category != NULL)
+                    *category = category_index;
+                if (index != NULL)
+                    *index = piece_index;
+                return (CUSTOMPIECE_LAYERS_PC *)&customiser->piece_sets[category_index][piece_index];
             }
         }
     }
@@ -695,25 +680,27 @@ CUSTOMPIECE_LAYERS_PC *__cdecl Customiser_FindPieceByName(CUSTOMISER_LAYERS_PC *
 void __cdecl Customiser_DumpAccessories(void *input) {
     CUSTOMISER_CONFIG_PC *customiser = (CUSTOMISER_CONFIG_PC *)input;
     i32 side, category;
+    CUSTOM_ACCESSORY_RESOURCE_PC *resource;
     if (customiser == NULL || Customiser_AccessoriesLoaded != 1)
         return;
     for (side = 0; side < 2; ++side) {
         if (apicharsys->playermodelids[customiser->character_ids[side]] == -1)
             continue;
-        for (category = 0; category < 9; ++category) {
-            CUSTOM_ACCESSORY_RESOURCE_PC *resource =
-                (CUSTOM_ACCESSORY_RESOURCE_PC *)&KillPartsAccessoriesPc[side][category];
+        resource = (CUSTOM_ACCESSORY_RESOURCE_PC *)KillPartsAccessoriesPc[side];
+        for (category = 0; category < 9; ++category, ++resource) {
             if (customiser->categories[category]->name == NULL)
                 continue;
             if (resource->scene != NULL) {
                 NuGScnRemove(resource->scene);
                 resource->scene = NULL;
             } else if (resource->texture_id != 0) {
+                i32 material_index = resource->material_index;
                 ((CUSTOM_ACCESSORY_MATERIAL_PC *)((CUSTOM_ACCESSORY_HIERARCHY_PC *)resource->character_model->hierarchy)
-                     ->materials[resource->material_index])
+                     ->materials[material_index])
                     ->texture_id = (i16)resource->original_texture_id;
-                NuMtlUpdate(((CUSTOM_ACCESSORY_HIERARCHY_PC *)resource->character_model->hierarchy)
-                                ->materials[resource->material_index]);
+                NuMtlUpdate(
+                    ((CUSTOM_ACCESSORY_HIERARCHY_PC *)resource->character_model->hierarchy)->materials[material_index]);
+
                 NuTexDestroy(resource->texture_id);
             }
         }
