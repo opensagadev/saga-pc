@@ -426,82 +426,74 @@ void __cdecl GameObjectRotation(GAMEOBJECT *object, i32 mode) {
 }
 
 void __cdecl GameObjectOrigin(GAMEOBJECT *object) {
-    f32 x;
-    f32 z;
-    CHARACTER_MODEL_LAYERS_PC *model = (CHARACTER_MODEL_LAYERS_PC *)object->character_model;
-    PLAYERCHARACTERCONFIG_PC *config;
+    f32 min_y;
+    f32 max_y;
+    f32 height;
     i32 joint;
     object->flags_1f8 |= 0x100;
-    if (object->use_model_origin != 0) {
-        config = object->character_data->game_character;
-        joint = config->model_origin_joint;
-        if (joint != -1 && model != NULL && model->points_of_interest[joint] != NULL) {
-            if ((object->flags_e24 & 8) != 0) {
-                object->collision_position.x =
-                    object->locator_matrices[joint].m30 + object->previous_velocity.x * FRAMETIME;
-                object->collision_position.y =
-                    (f32)((f64)(object->locator_matrices[joint].m31 + object->previous_velocity.y * FRAMETIME) +
-                          (f64)((object->character_bottom + object->character_top) * object->origin_scale) * 0.5);
-                object->collision_position.z =
-                    object->locator_matrices[joint].m32 + object->previous_velocity.z * FRAMETIME;
-            } else {
-                object->collision_position.x = 0.0f;
-                object->collision_position.y = -object->character_bottom;
-                object->collision_position.z = 0.0f;
-                NuVecMtxRotate(&object->collision_position, &object->collision_position, &object->transform);
-                NuVecAdd(&object->collision_position, &object->collision_position, &object->position);
-            }
-            object->collision_position.x += object->previous_velocity.x * FRAMETIME;
-            object->collision_position.y += object->previous_velocity.y * FRAMETIME;
-            object->collision_position.z += object->previous_velocity.z * FRAMETIME;
-            goto origin_ready;
+    if (object->use_model_origin > 0 && (joint = object->character_data->game_character->model_origin_joint) != -1 &&
+        object->character_model != NULL &&
+        ((CHARACTER_MODEL_LAYERS_PC *)object->character_model)->points_of_interest[joint] != NULL) {
+        if ((object->flags_e24 & 8) != 0) {
+            object->collision_position.x =
+                object->locator_matrices[joint].m30 + object->previous_velocity.x * FRAMETIME;
+            object->collision_position.y =
+                (f32)((f64)(object->locator_matrices[joint].m31 + object->previous_velocity.y * FRAMETIME) +
+                      (f64)((object->character_bottom + object->character_top) * object->origin_scale) * 0.5);
+            object->collision_position.z =
+                object->locator_matrices[joint].m32 + object->previous_velocity.z * FRAMETIME;
+        } else {
+            object->collision_position.x = 0.0f;
+            object->collision_position.y = -object->character_bottom;
+            object->collision_position.z = 0.0f;
+            NuVecMtxRotate(&object->collision_position, &object->collision_position, &object->transform);
+            NuVecAdd(&object->collision_position, &object->collision_position, &object->position);
         }
-        joint = config->collision_origin_joint;
-        if (object->origin_scale_override == 1.0f && joint != -1 && model->points_of_interest[joint] != NULL &&
-            object->origin_joint_ready != 0) {
-            object->collision_position.x = object->locator_matrices[joint].m30;
-            object->collision_position.y = object->locator_matrices[joint].m31;
-            object->collision_position.z = object->locator_matrices[joint].m32;
-            goto origin_ready;
-        }
+        object->collision_position.x += object->previous_velocity.x * FRAMETIME;
+        object->collision_position.y += object->previous_velocity.y * FRAMETIME;
+        object->collision_position.z += object->previous_velocity.z * FRAMETIME;
+    } else if (object->use_model_origin > 0 && object->origin_scale_override == 1.0f &&
+               object->character_data->game_character->collision_origin_joint != -1 &&
+               ((CHARACTER_MODEL_LAYERS_PC *)object->character_model)
+                       ->points_of_interest[object->character_data->game_character->collision_origin_joint] != NULL &&
+               object->origin_joint_ready != 0) {
+        object->collision_position =
+            *(NUVEC *)&object->locator_matrices[object->character_data->game_character->collision_origin_joint].m30;
+    } else {
+        object->flags_1f8 ^= 0x100;
+        object->collision_position.x = object->position.x + object->previous_velocity.x * FRAMETIME;
+        object->collision_position.y =
+            (f32)((f64)(object->position.y + object->previous_velocity.y * FRAMETIME) +
+                  (f64)((object->character_bottom + object->character_top) * object->origin_scale) * 0.5);
+        object->collision_position.z = object->position.z + object->previous_velocity.z * FRAMETIME;
     }
-    object->flags_1f8 ^= 0x100;
-    object->collision_position.x = object->position.x + object->previous_velocity.x * FRAMETIME;
-    object->collision_position.y =
-        (f32)((f64)(object->position.y + object->previous_velocity.y * FRAMETIME) +
-              (f64)((object->character_bottom + object->character_top) * object->origin_scale) * 0.5);
-    object->collision_position.z = object->position.z + object->previous_velocity.z * FRAMETIME;
-origin_ready:
-    x = object->position.x + object->previous_velocity.x * FRAMETIME;
-    z = object->position.z + object->previous_velocity.z * FRAMETIME;
     object->collision_min.x = object->collision_position.x - object->bounds_radius;
-    object->collision_max.x = object->collision_position.x + object->bounds_radius;
+    object->collision_max.x = object->bounds_radius + object->collision_position.x;
     object->collision_min.z = object->collision_position.z - object->bounds_radius;
     object->collision_max.z = object->collision_position.z + object->bounds_radius;
-    object->collision_min.y = object->collision_position.y - object->bounds_half_height;
-    object->collision_max.y = object->collision_position.y + object->bounds_half_height;
-    object->upper_position.x = x;
-    object->upper_position.y = object->collision_max.y;
-    object->upper_position.z = z;
-    object->lower_position.x = x;
-    object->lower_position.y = object->collision_min.y;
-    object->lower_position.z = z;
-    object->collision_origin.x = x;
-    object->collision_origin.y = object->collision_min.y + object->previous_velocity.y * FRAMETIME;
-    object->collision_origin.z = z;
+    object->collision_min.y = min_y = object->collision_position.y - object->bounds_half_height;
+    object->collision_max.y = max_y = object->bounds_half_height + object->collision_position.y;
+    object->upper_position.x = object->position.x + object->previous_velocity.x * FRAMETIME;
+    object->upper_position.y = max_y;
+    object->upper_position.z = object->position.z + object->previous_velocity.z * FRAMETIME;
+    object->lower_position.x = object->position.x + object->previous_velocity.x * FRAMETIME;
+    object->lower_position.y = min_y;
+    object->lower_position.z = object->position.z + object->previous_velocity.z * FRAMETIME;
+    object->collision_origin.x = object->position.x + object->previous_velocity.x * FRAMETIME;
+    object->collision_origin.y = object->previous_velocity.y * FRAMETIME + min_y;
+    object->collision_origin.z = object->position.z + object->previous_velocity.z * FRAMETIME;
     object->ai_terrain_origin = object->collision_origin;
-    {
-        u32 context_flags = CInfo[object->character_context].flags;
-        if ((context_flags & 0x80000) != 0 && (object->context_variant_flags & 0x800) != 0) {
-            object->ai_terrain_origin.y += object->collision_max.y - object->collision_min.y;
-        } else if ((context_flags & 0x100000) != 0) {
-            object->ai_terrain_origin = object->position;
-        } else {
-            object->ai_terrain_origin.y -= object->terrain_origin_floor_offset;
-            if (object->ai_terrain_origin.y < object->floor_height &&
-                object->floor_height < object->collision_origin.y + object->scaled_height) {
-                object->ai_terrain_origin.y = object->floor_height;
-            }
+    if ((U64_PAIR(&CInfo[object->character_context].flags) & 0x80000) != 0 &&
+        (object->context_variant_flags & 0x800) != 0) {
+        height = max_y - min_y;
+        object->ai_terrain_origin.y += height;
+    } else if ((U64_PAIR(&CInfo[object->character_context].flags) & 0x100000) != 0) {
+        object->ai_terrain_origin = object->position;
+    } else {
+        object->ai_terrain_origin.y -= object->terrain_origin_floor_offset;
+        if (object->ai_terrain_origin.y < object->floor_height &&
+            object->floor_height < object->collision_origin.y + object->scaled_height) {
+            object->ai_terrain_origin.y = object->floor_height;
         }
     }
 }
