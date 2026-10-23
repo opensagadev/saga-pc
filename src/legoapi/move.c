@@ -1547,8 +1547,8 @@ vehicle_collision:
 
 void __cdecl UpdateLastSafePosition(GAMEOBJECT *object) {
     GAMEOBJECT *terrain_object;
-    i32 surface, unsafe;
-    i8 layer, context;
+    i32 unsafe;
+    i8 surface, layer, context;
     i16 platform, shadow_platform;
     u32 model_flags;
 
@@ -1556,24 +1556,23 @@ void __cdecl UpdateLastSafePosition(GAMEOBJECT *object) {
     if (!object->dead && (LEGOCONTEXT_DOOMED == -1 || object->character_context != LEGOCONTEXT_DOOMED) &&
         (object->flags_1fc & 4) == 0) {
         object->previous_position = object->position;
-        terrain_object = object;
-        if (object->takeover_source != NULL && LEGOCONTEXT_BEENTAKENOVER != -1 &&
-            object->character_context == LEGOCONTEXT_BEENTAKENOVER)
-            terrain_object = object->takeover_source;
-        surface = (i8)terrain_object->jump_animation_state;
-        if (surface != -1 && (TerSurface[surface].flags & 0xc041) != 0)
+        terrain_object = object->takeover_source != NULL && LEGOCONTEXT_BEENTAKENOVER != -1 &&
+                                 object->character_context == LEGOCONTEXT_BEENTAKENOVER
+                             ? object->takeover_source
+                             : object;
+        surface = terrain_object->jump_animation_state;
+        if ((surface != -1 && (TerSurface[surface].flags & 0xc041) != 0) ||
+            ((layer = terrain_object->field_283) != -1 && ((TerLayer[layer].flags & 1) != 0 || layer == 9))) {
             unsafe = 1;
-        else {
-            layer = terrain_object->field_283;
-            unsafe = layer != -1 && ((TerLayer[layer].flags & 1) != 0 || layer == 9);
-        }
-        if (unsafe && VehicleArea && BonusArea)
-            unsafe = !(terrain_object->character_data->game_character->field_028 > 0.0f);
+            if (VehicleArea && BonusArea && terrain_object->character_data->game_character->field_028 > 0.0f)
+                unsafe = 0;
+        } else
+            unsafe = 0;
         do {
             if ((object->flags_ef4 & 4) != 0)
                 break;
             context = object->character_context;
-            if ((CInfo[context].parameter & 8) != 0)
+            if ((U64_PAIR(&CInfo[context].flags) & 0x800000000ULL) != 0)
                 break;
             if (object->field_281 == 0 &&
                 (context == -1 || (context != LEGOCONTEXT_BEENTAKENOVER && context != LEGOCONTEXT_EATEN &&
@@ -1587,9 +1586,8 @@ void __cdecl UpdateLastSafePosition(GAMEOBJECT *object) {
             if (object->floor_height == 2000000.0f)
                 break;
             platform = object->terrain_platform_id;
-            shadow_platform = object->supporting_platform_id;
             if (!((platform == -1 || platform == LevSafePlatID[0] || platform == LevSafePlatID[1]) &&
-                  (shadow_platform == -1 || shadow_platform == LevSafePlatID[0] ||
+                  ((shadow_platform = object->supporting_platform_id) == -1 || shadow_platform == LevSafePlatID[0] ||
                    shadow_platform == LevSafePlatID[1])) &&
                 (LastSafePosExtraFn == NULL || !LastSafePosExtraFn(object)))
                 break;
@@ -1608,8 +1606,8 @@ void __cdecl UpdateLastSafePosition(GAMEOBJECT *object) {
                 object->respawn_position = object->last_safe_position;
                 object->flags_1fc_word |= 0x2000;
             }
-            if (object->field_280 < 2 && object->field_da8 <= 0.0f && GameCam->blend_time >= GameCam->blend_duration &&
-                object->sock_index != 0xff) {
+            if ((object->field_280 == 0 || object->field_280 == 1) && object->field_da8 <= 0.0f &&
+                GameCam->blend_time >= GameCam->blend_duration && object->sock_index != 0xff) {
                 if (object->takeover_owner != NULL &&
                     (LEGOCONTEXT_GETIN == -1 || object->character_context != LEGOCONTEXT_GETIN) &&
                     (LEGOCONTEXT_BEENTAKENOVER == -1 || object->character_context != LEGOCONTEXT_BEENTAKENOVER))
@@ -1622,14 +1620,14 @@ void __cdecl UpdateLastSafePosition(GAMEOBJECT *object) {
             !NoLayerKill(object)) {
             if (object->fall_recovery_timer <= 0.0f)
                 object->fall_hover_height = object->position.y;
-            object->fall_recovery_timer += FRAMETIME;
+            object->fall_recovery_timer = FRAMETIME + object->fall_recovery_timer;
         } else
             object->fall_recovery_timer = 0.0f;
         if ((WORLD->current_level->flags & 0x40000) != 0)
             object->last_safe_position = object->position;
     }
 safe_position_done:
-    if ((object->flags_ef4 & 0x1000000) == 0 && (object->flags_1fc & 0x80) == 0 &&
+    if ((object->flags_ef4 & 0x1000000) == 0 && (object->flags_1fc_word & 0x80) == 0 &&
         (LEGOCONTEXT_EATEN == -1 || object->character_context != LEGOCONTEXT_EATEN) &&
         (object->flags_1fc_word & 0x2000) != 0) {
         if ((object->ai_packet.path_info.flags & 1) != 0) {
@@ -8459,6 +8457,9 @@ PUSH_BLOCK_PC *__cdecl NearestPushBlock(WORLDINFO *, NUVEC *, f32);
 char *__cdecl NuIToA(i32, char *, i32);
 extern char *PushBlocksNamePc;
 
+typedef struct PUSH_RUNTIME_BOUNDS_PC {
+    NUVEC min, max;
+} PUSH_RUNTIME_BOUNDS_PC;
 typedef struct PUSH_RUNTIME_BLOCK_VIEW_PC {
     f32 ground_offset, ground_height, snap_timer, settled_height;
     i8 terrain_info[4];
@@ -8477,7 +8478,13 @@ typedef struct PUSH_RUNTIME_BLOCK_VIEW_PC {
     NUVEC *snap_positions, *position;
     NUSPECIALHANDLE end_position_specials[2];
     NUVEC end_position_origins[2];
-    NUVEC velocity, target_velocity, snap_origin, bounds_min, bounds_max;
+    NUVEC velocity, target_velocity, snap_origin;
+    union {
+        struct {
+            NUVEC bounds_min, bounds_max;
+        };
+        PUSH_RUNTIME_BOUNDS_PC bounds;
+    };
     u32 packed_state_flags;
     u8 unknown_0cc[4];
     u8 completed_snap_positions, end_position_count, output_count, unknown_0d3;
@@ -8541,54 +8548,54 @@ void __cdecl MoveBlocksOverBlock(WORLDINFO *opaque_world, PUSH_BLOCK_PC *opaque_
     PUSH_RUNTIME_WORLD_VIEW_PC *world = (PUSH_RUNTIME_WORLD_VIEW_PC *)opaque_world;
     PUSH_RUNTIME_BLOCK_VIEW_PC *block = (PUSH_RUNTIME_BLOCK_VIEW_PC *)opaque_block;
     NUVEC *position;
-    NUVEC minimum, maximum;
-    f32 epsilon;
+    PUSH_RUNTIME_BOUNDS_PC box;
     i32 index;
     if ((block->packed_state_flags & 0x400u) != 0)
         return;
     position = block->position;
-    minimum.x = position->x + block->bounds_min.x;
-    minimum.y = position->y + block->bounds_min.y;
-    minimum.z = position->z + block->bounds_min.z;
-    maximum.x = position->x + block->bounds_max.x;
-    maximum.y = position->y + block->bounds_max.y;
-    maximum.z = position->z + block->bounds_max.z;
-    epsilon = PushBlockGapEpsilonPc;
+    box = block->bounds;
+    box.min.x = position->x + box.min.x;
+    box.min.y += position->y;
+    box.min.z = position->z + box.min.z;
+    box.max.x = position->x + box.max.x;
+    box.max.y += position->y;
+    box.max.z = position->z + box.max.z;
     for (index = 0; index < world->count; ++index) {
         PUSH_RUNTIME_BLOCK_VIEW_PC *other;
         NUVEC *other_position;
-        f32 minimum_x, minimum_z, maximum_x, maximum_z;
+        PUSH_RUNTIME_BOUNDS_PC other_box, test;
         if (index == excluded)
             continue;
         other = &world->blocks[index];
         if ((other->packed_state_flags & 0x04000000u) != 0 || (other->packed_state_flags & 0x00040000u) == 0)
             continue;
         other_position = other->position;
-        if (position->y >= other_position->y)
+        if (other_position->y <= position->y)
             continue;
-        minimum_x = minimum.x - other->bounds_max.x;
-        minimum_z = minimum.z - other->bounds_max.z;
-        maximum_x = maximum.x - other->bounds_min.x;
-        maximum_z = maximum.z - other->bounds_min.z;
-        if (epsilon > 0.0f) {
-            minimum_x += epsilon;
-            minimum_z += epsilon;
-            maximum_x -= epsilon;
-            maximum_z -= epsilon;
+        other_box = other->bounds;
+        test = box;
+        test.min.x -= other_box.max.x;
+        test.min.z -= other_box.max.z;
+        test.max.x -= other_box.min.x;
+        test.max.z -= other_box.min.z;
+        if (PushBlockGapEpsilonPc > 0.0f) {
+            test.min.x = PushBlockGapEpsilonPc + test.min.x;
+            test.min.z += PushBlockGapEpsilonPc;
+            test.max.x = test.max.x - PushBlockGapEpsilonPc;
+            test.max.z = test.max.z - PushBlockGapEpsilonPc;
         }
-        if (!(minimum_x <= other_position->x && maximum_x >= other_position->x && minimum_z <= other_position->z &&
-              maximum_z >= other_position->z))
+        if (!(other_position->x >= test.min.x) || !(other_position->x <= test.max.x) ||
+            !(other_position->z >= test.min.z) || !(other_position->z <= test.max.z))
             continue;
         other->snap_origin = *other_position;
         other_position->x += delta->x;
         other_position->y -= delta->y;
         other->ground_offset -= delta->y;
-        other_position->z += delta->z;
+        other_position->z = delta->z + other_position->z;
         other->packed_state_flags |= 4u;
         if (BlockInBlock(opaque_world, (PUSH_BLOCK_PC *)other, index, &other->supporting_block) != NULL)
             other->packed_state_flags |= 0x400u;
         NuSpecialUpdate(&other->special);
-        epsilon = PushBlockGapEpsilonPc;
     }
 }
 
