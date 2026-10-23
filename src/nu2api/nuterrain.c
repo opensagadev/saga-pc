@@ -2779,49 +2779,48 @@ void TerrDrawPc(TERRAIN_POLYGON_INFO_PC *terrain, i16 index) {
 }
 
 void TerrDrawSituPc(TERRAIN_POLYGON_INFO_PC *terrain, NUVEC *situation) {
-    TERRAIN_POLYGON_INFO_PC *record;
-    NUVEC *origin;
+    TERRAIN_POLYGON_INFO_PC *record = terrain;
     i32 i;
     f32 t;
 
-    record = terrain;
-    origin = situation;
     if (record->normals[1].y > 65535.0) {
-        for (i = 0; i < 2; ++i) {
+        for (i = 0; i <= 1; ++i) {
             t = (f32)(i);
-            NuRndrLine3dDbg(
-                origin->x + record->vertices[0].x, origin->y + record->vertices[0].y, origin->z + record->vertices[0].z,
-                origin->x + record->vertices[1].x + (record->vertices[2].x - record->vertices[1].x) * t,
-                origin->y + record->vertices[1].y + (record->vertices[2].y - record->vertices[1].y) * t,
-                origin->z + record->vertices[1].z + (record->vertices[2].z - record->vertices[1].z) * t, 0x003f7f80);
+            NuRndrLine3dDbg(situation->x + record->vertices[0].x, situation->y + record->vertices[0].y,
+                            situation->z + record->vertices[0].z,
+                            situation->x + record->vertices[1].x + (record->vertices[2].x - record->vertices[1].x) * t,
+                            situation->y + record->vertices[1].y + (record->vertices[2].y - record->vertices[1].y) * t,
+                            situation->z + record->vertices[1].z + (record->vertices[2].z - record->vertices[1].z) * t,
+                            0x003f7f80);
         }
-        for (i = 0; i < 2; ++i) {
+        for (i = 0; i <= 1; ++i) {
             t = (f32)(i);
-            NuRndrLine3dDbg(
-                origin->x + record->vertices[1].x, origin->y + record->vertices[1].y, origin->z + record->vertices[1].z,
-                origin->x + record->vertices[0].x + (record->vertices[2].x - record->vertices[0].x) * t,
-                origin->y + record->vertices[0].y + (record->vertices[2].y - record->vertices[0].y) * t,
-                origin->z + record->vertices[0].z + (record->vertices[2].z - record->vertices[0].z) * t, 0x003f7f80);
+            NuRndrLine3dDbg(situation->x + record->vertices[1].x, situation->y + record->vertices[1].y,
+                            situation->z + record->vertices[1].z,
+                            situation->x + record->vertices[0].x + (record->vertices[2].x - record->vertices[0].x) * t,
+                            situation->y + record->vertices[0].y + (record->vertices[2].y - record->vertices[0].y) * t,
+                            situation->z + record->vertices[0].z + (record->vertices[2].z - record->vertices[0].z) * t,
+                            0x003f7f80);
         }
     } else {
-        for (i = 0; i < 2; ++i) {
+        for (i = 0; i <= 1; ++i) {
             t = (f32)(i);
-            NuRndrLine3dDbg(origin->x + record->vertices[0].x + (record->vertices[1].x - record->vertices[0].x) * t,
-                            origin->y + record->vertices[0].y + (record->vertices[1].y - record->vertices[0].y) * t,
-                            origin->z + record->vertices[0].z + (record->vertices[1].z - record->vertices[0].z) * t,
-                            origin->x + record->vertices[2].x + (record->vertices[3].x - record->vertices[2].x) * t,
-                            origin->y + record->vertices[2].y + (record->vertices[3].y - record->vertices[2].y) * t,
-                            origin->z + record->vertices[2].z + (record->vertices[3].z - record->vertices[2].z) * t,
+            NuRndrLine3dDbg(situation->x + record->vertices[0].x + (record->vertices[1].x - record->vertices[0].x) * t,
+                            situation->y + record->vertices[0].y + (record->vertices[1].y - record->vertices[0].y) * t,
+                            situation->z + record->vertices[0].z + (record->vertices[1].z - record->vertices[0].z) * t,
+                            situation->x + record->vertices[2].x + (record->vertices[3].x - record->vertices[2].x) * t,
+                            situation->y + record->vertices[2].y + (record->vertices[3].y - record->vertices[2].y) * t,
+                            situation->z + record->vertices[2].z + (record->vertices[3].z - record->vertices[2].z) * t,
                             0xffff7f80);
         }
-        for (i = 0; i < 2; ++i) {
+        for (i = 0; i <= 1; ++i) {
             t = (f32)(i);
-            NuRndrLine3dDbg(origin->x + record->vertices[0].x + (record->vertices[2].x - record->vertices[0].x) * t,
-                            origin->y + record->vertices[0].y + (record->vertices[2].y - record->vertices[0].y) * t,
-                            origin->z + record->vertices[0].z + (record->vertices[2].z - record->vertices[0].z) * t,
-                            origin->x + record->vertices[1].x + (record->vertices[3].x - record->vertices[1].x) * t,
-                            origin->y + record->vertices[1].y + (record->vertices[3].y - record->vertices[1].y) * t,
-                            origin->z + record->vertices[1].z + (record->vertices[3].z - record->vertices[1].z) * t,
+            NuRndrLine3dDbg(situation->x + record->vertices[0].x + (record->vertices[2].x - record->vertices[0].x) * t,
+                            situation->y + record->vertices[0].y + (record->vertices[2].y - record->vertices[0].y) * t,
+                            situation->z + record->vertices[0].z + (record->vertices[2].z - record->vertices[0].z) * t,
+                            situation->x + record->vertices[1].x + (record->vertices[3].x - record->vertices[1].x) * t,
+                            situation->y + record->vertices[1].y + (record->vertices[3].y - record->vertices[1].y) * t,
+                            situation->z + record->vertices[1].z + (record->vertices[3].z - record->vertices[1].z) * t,
                             0xffff7f80);
         }
     }

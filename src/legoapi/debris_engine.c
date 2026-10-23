@@ -193,7 +193,7 @@ void __cdecl DebrisProcessSpheres(DEBRISPARTICLE_PC *particle, f32 time, DEBRIS_
 void __cdecl DebReAlloc2(DEBRISKEY_PC *key) {
     DEBRIS_INFO_PC *effect = debtab[key->effect_index];
     i32 extra = key->previous_allocated_chunk_count - key->allocated_chunk_count;
-    i32 i, j, render_count, panel_time;
+    i32 i, j, panel_time;
     if (extra == 0)
         return;
     if (extra > 0) {
@@ -208,8 +208,7 @@ void __cdecl DebReAlloc2(DEBRISKEY_PC *key) {
                 }
             }
             if (key->allocated_chunk_count == 0) {
-                render_count = debrischunks + debrischunksglass;
-                for (i = 0; i < render_count; ++i) {
+                for (i = 0; i < debrischunks + debrischunksglass; ++i) {
                     if (ParticleChunkToRender[i].particle_chunk == NULL) {
                         ParticleChunkToRender[i].particle_chunk = key->particle_chunks[0];
                         ParticleChunkToRender[i].effect = effect;
@@ -240,8 +239,7 @@ void __cdecl DebReAlloc2(DEBRISKEY_PC *key) {
                 }
             }
             if (key->allocated_chunk_count == 0) {
-                render_count = debrischunksglass + debrischunks;
-                for (i = 0; i < render_count; ++i) {
+                for (i = 0; i < debrischunksglass + debrischunks; ++i) {
                     if (ParticleChunkToRender[i].particle_chunk == NULL) {
                         ParticleChunkToRender[i].particle_chunk = key->particle_chunks[0];
                         ParticleChunkToRender[i].effect = effect;
@@ -289,8 +287,7 @@ void __cdecl DebReAlloc2(DEBRISKEY_PC *key) {
     }
     DebrisReleaseControlStackLock();
     if (extra == -key->allocated_chunk_count) {
-        render_count = debrischunksglass + debrischunks;
-        for (i = 0; i < render_count; ++i) {
+        for (i = 0; i < debrischunksglass + debrischunks; ++i) {
             if (ParticleChunkToRender[i].particle_chunk == key->particle_chunks[0]) {
                 ParticleChunkToRender[i].effect = debtab[key->effect_index];
                 ParticleChunkToRender[i].key = NULL;
@@ -304,8 +301,7 @@ void __cdecl DebReAlloc2(DEBRISKEY_PC *key) {
         }
     } else {
         LinkDmaParticalSets(&key->particle_chunks[key->allocated_chunk_count + extra], -extra);
-        render_count = debrischunksglass + debrischunks;
-        for (i = 0; i < render_count; ++i) {
+        for (i = 0; i < debrischunksglass + debrischunks; ++i) {
             if (ParticleChunkToRender[i].particle_chunk == NULL) {
                 ParticleChunkToRender[i].particle_chunk = key->particle_chunks[key->allocated_chunk_count + extra];
                 ParticleChunkToRender[i].effect = debtab[key->effect_index];
@@ -1411,7 +1407,7 @@ i32 __cdecl DebrisSingleTorusCollisionCheckScaleYFlag(i32 key_index, NUVEC *posi
     dz = position->z - debris_collide_pt.z;
     if (y_scale != 1.0f || horizontal_radius != vertical_radius)
         dy *= (radius + horizontal_radius) / (radius * y_scale + vertical_radius);
-    return dx * dx + dy * dy + dz * dz < (radius + horizontal_radius) * (radius + horizontal_radius);
+    return (dy * dy) + (dx * dx) + dz * dz < (radius + horizontal_radius) * (radius + horizontal_radius);
 }
 i32 __cdecl DebrisCollisionCheckScaleYFlag(NUVEC *position, f32 radius, f32 y_scale, u8 flags) {
     i32 i;
