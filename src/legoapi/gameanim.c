@@ -1284,8 +1284,9 @@ void edanimcbCancelParticleTypeMenu(eduimenu_s *unused0, eduimenu_s *unused1) {
     eduiMenuDestroy(edanim_particletype_menu);
     edanim_particletype_menu = NULL;
 }
-static void edanimcbLocalParticleTypeMenu(eduimenu_s *parent, eduiitem_s *unused1, u32 unused2) {
+void edanimcbLocalParticleTypeMenu(eduimenu_s *parent, eduiitem_s *unused1, u32 unused2) {
     i32 index;
+    i32 selected;
     u32 colours[4] = {0x80000000, 0x80ff0000, 0x80808080, 0x80404040};
     edanim_localparticletype_menu = eduiMenuCreate(70, 70, 250, 200, ed_fnt, edanimcbCancelLocalParticleTypeMenu,
                                                    ((char *)("Highlighted Particle Type")));
@@ -1297,15 +1298,12 @@ static void edanimcbLocalParticleTypeMenu(eduimenu_s *parent, eduiitem_s *unused
         if (!debtab[index]) {
             continue;
         }
-        if (AnimParams[edanim_nearest_param_id].effect_ids[edanim_nearest_particle] == index) {
-            eduiMenuAddItem(
-                edanim_localparticletype_menu,
-                eduiItemCheckCreate(index, colours, 1, 1, edanimcbSetLocalParticleType, debtab[index]->name));
+        selected = AnimParams[edanim_nearest_param_id].effect_ids[edanim_nearest_particle] == index;
+        eduiMenuAddItem(
+            edanim_localparticletype_menu,
+            eduiItemCheckCreate(index, colours, selected, 1, edanimcbSetLocalParticleType, debtab[index]->name));
+        if (selected == 1) {
             edanim_localparticletype_menu->selected = edui_last_item;
-        } else {
-            eduiMenuAddItem(
-                edanim_localparticletype_menu,
-                eduiItemCheckCreate(index, colours, 0, 1, edanimcbSetLocalParticleType, debtab[index]->name));
         }
     }
 
@@ -1372,8 +1370,9 @@ void edanimcbCancelSoundMenu(eduimenu_s *unused0, eduimenu_s *unused1) {
     eduiMenuDestroy(edanim_sound_menu);
     edanim_sound_menu = NULL;
 }
-static void edanimcbParticleTypeMenu(eduimenu_s *parent, eduiitem_s *unused1, u32 unused2) {
+void edanimcbParticleTypeMenu(eduimenu_s *parent, eduiitem_s *unused1, u32 unused2) {
     i32 index;
+    i32 selected;
     u32 colours[4] = {0x80000000, 0x80ff0000, 0x80808080, 0x80404040};
     edanim_particletype_menu =
         eduiMenuCreate(70, 70, 250, 250, ed_fnt, edanimcbCancelParticleTypeMenu, (char *)("Particle Type"));
@@ -1387,12 +1386,10 @@ static void edanimcbParticleTypeMenu(eduimenu_s *parent, eduiitem_s *unused1, u3
         if (!debtab[index]) {
             continue;
         }
-        if (edanim_particle_type != index) {
-            eduiMenuAddItem(edanim_particletype_menu,
-                            eduiItemCheckCreate(index, colours, 0, 1, edanimcbSetParticleType, debtab[index]->name));
-        } else {
-            eduiMenuAddItem(edanim_particletype_menu,
-                            eduiItemCheckCreate(index, colours, 1, 1, edanimcbSetParticleType, debtab[index]->name));
+        selected = edanim_particle_type == index;
+        eduiMenuAddItem(edanim_particletype_menu,
+                        eduiItemCheckCreate(index, colours, selected, 1, edanimcbSetParticleType, debtab[index]->name));
+        if (selected == 1) {
             edanim_particletype_menu->selected = edui_last_item;
         }
     }
