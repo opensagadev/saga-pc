@@ -805,6 +805,17 @@ u32 NuPartGetSeed(void) {
     return partseed;
 }
 
+void __cdecl KillAllParts(void) {
+    PART_PC *part = Part;
+    i32 i;
+    if (part != NULL) {
+        for (i = 0; i < MAXPARTS; ++i, ++part) {
+            if ((part->active & 1) != 0)
+                KillPart(part, 0);
+        }
+    }
+}
+
 void __cdecl ResetParts(void) {
     if (Part != NULL)
         memset(Part, 0, MAXPARTS * sizeof(PART_PC));
