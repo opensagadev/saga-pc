@@ -924,7 +924,7 @@ void __cdecl AIPathNodeUpdatePos(void *context, AIPATH_PC *path, AIPATHNODE_PC *
     i32 node_index;
     u8 node_bit;
     u8 *updated_byte;
-    u8 connection_index;
+    i32 connection_index;
 
     if (node->has_special == 0) {
         return;
@@ -981,7 +981,6 @@ void __cdecl AIPathNodeUpdatePos(void *context, AIPATH_PC *path, AIPATHNODE_PC *
             u8 other_index = connection->node_indices[0];
             AIPATHNODE_PC *other;
             NUVEC delta;
-            f32 radius_extent;
 
             if (other_index == (u8)node_index) {
                 other_index = connection->node_indices[1];
@@ -994,14 +993,14 @@ void __cdecl AIPathNodeUpdatePos(void *context, AIPATH_PC *path, AIPATHNODE_PC *
                 connection->horizontal_distance = NuVecXZDist(&node->position, &other->position, &delta);
             connection->rotation = (i16)(NuAtan2(delta.x, delta.z) * AIPathAngularScale);
 
-            radius_extent = node->radius + connection->max_horizontal_distance + other->radius;
             if (connection->max_horizontal_distance != 0.0f) {
-                if (radius_extent <= connection->horizontal_distance) {
-                    connection->traversal_flags[0] &= 0xf7ffffffu;
-                    connection->traversal_flags[1] &= 0xf7ffffffu;
-                } else {
+                if (connection->horizontal_distance >
+                    node->radius + connection->max_horizontal_distance + other->radius) {
                     connection->traversal_flags[0] |= 0x08000000u;
                     connection->traversal_flags[1] |= 0x08000000u;
+                } else {
+                    connection->traversal_flags[0] &= 0xf7ffffffu;
+                    connection->traversal_flags[1] &= 0xf7ffffffu;
                 }
             }
         }
