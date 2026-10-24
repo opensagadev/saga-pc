@@ -336,6 +336,124 @@ static void VisibilityTreePreparePc(void) {
     VisibilityAlternateAbsoluteMatrixPc.m33 = 0.0f;
 }
 
+void __cdecl NuCameraBuildClipPlanes(void) {
+    f32 near_dist;
+    f32 near_dist_sq;
+
+    f32 left_right;
+    f32 top_bottom;
+
+    f32 left_right_inv;
+    f32 top_bottom_inv;
+
+    __declspec(align(16)) NUMTX frustum_planes;
+    __declspec(align(16)) NUMTX scissor_planes;
+
+    f32 dot;
+
+    near_dist = global_camera.near_clip;
+    near_dist_sq = near_dist * near_dist;
+
+    // Build the frustum planes.
+    left_right = zx * near_dist;
+    top_bottom = zy * near_dist;
+
+    left_right_inv = 1.0f / NuFsqrt(left_right * left_right + near_dist_sq);
+    top_bottom_inv = 1.0f / NuFsqrt(top_bottom * top_bottom + near_dist_sq);
+
+    VisibilityZeroMatrixPc(&frustum_planes);
+
+    frustum_planes.m00 = -near_dist * left_right_inv;
+    frustum_planes.m20 = left_right * left_right_inv;
+
+    frustum_planes.m01 = -frustum_planes.m00;
+    frustum_planes.m21 = frustum_planes.m20;
+
+    frustum_planes.m12 = -near_dist * top_bottom_inv;
+    frustum_planes.m22 = top_bottom * top_bottom_inv;
+
+    frustum_planes.m13 = -frustum_planes.m12;
+    frustum_planes.m23 = frustum_planes.m22;
+
+    // Build the scissor planes.
+    left_right = VISIBILITY_ALTERNATE_WIDTH_PC * near_dist;
+    top_bottom = VisibilityAlternateHeightPc * near_dist;
+
+    left_right_inv = 1.0f / NuFsqrt(left_right * left_right + near_dist_sq);
+    top_bottom_inv = 1.0f / NuFsqrt(top_bottom * top_bottom + near_dist_sq);
+
+    VisibilityZeroMatrixPc(&scissor_planes);
+
+    scissor_planes.m00 = -near_dist * left_right_inv;
+    scissor_planes.m20 = left_right * left_right_inv;
+
+    scissor_planes.m01 = -scissor_planes.m00;
+    scissor_planes.m21 = scissor_planes.m20;
+
+    scissor_planes.m12 = -near_dist * top_bottom_inv;
+    scissor_planes.m22 = top_bottom * top_bottom_inv;
+
+    scissor_planes.m13 = -scissor_planes.m12;
+    scissor_planes.m23 = scissor_planes.m22;
+
+    NuMtxMulH(&AxisClipFrustumPlanesPc, &vmtx, &frustum_planes);
+    NuMtxMulH(&AxisClipScissorPlanesPc, &vmtx, &scissor_planes);
+
+    dot = global_camera.mtx.m20 * global_camera.mtx.m30 + global_camera.mtx.m21 * global_camera.mtx.m31 +
+          global_camera.mtx.m22 * global_camera.mtx.m32;
+
+    memcpy(&CameraNearClipPlanePc, &global_camera.mtx.m20, sizeof(NUVEC));
+    CameraNearClipPlanePc.w = -dot - global_camera.near_clip;
+
+    AxisClipNearFarPlanesPc.m00 = -global_camera.mtx.m20;
+    AxisClipNearFarPlanesPc.m10 = -global_camera.mtx.m21;
+    AxisClipNearFarPlanesPc.m20 = -global_camera.mtx.m22;
+    AxisClipNearFarPlanesPc.m30 = dot + global_camera.far_clip;
+
+    AxisClipNearFarPlanesPc.m01 = CameraNearClipPlanePc.x;
+    AxisClipNearFarPlanesPc.m11 = CameraNearClipPlanePc.y;
+    AxisClipNearFarPlanesPc.m21 = CameraNearClipPlanePc.z;
+    AxisClipNearFarPlanesPc.m31 = CameraNearClipPlanePc.w;
+
+    VISIBILITY_ABSOLUTE_COMPONENT_PC(AxisClipNearFarPlanesPc.m02, AxisClipNearFarPlanesPc.m00);
+    VISIBILITY_ABSOLUTE_COMPONENT_PC(AxisClipNearFarPlanesPc.m12, AxisClipNearFarPlanesPc.m10);
+    VISIBILITY_ABSOLUTE_COMPONENT_PC(AxisClipNearFarPlanesPc.m22, AxisClipNearFarPlanesPc.m20);
+    VISIBILITY_ABSOLUTE_COMPONENT_PC(AxisClipNearFarPlanesPc.m32, AxisClipNearFarPlanesPc.m30);
+
+    VISIBILITY_ABSOLUTE_COMPONENT_PC(AxisClipNearFarPlanesPc.m03, AxisClipNearFarPlanesPc.m01);
+    VISIBILITY_ABSOLUTE_COMPONENT_PC(AxisClipNearFarPlanesPc.m13, AxisClipNearFarPlanesPc.m11);
+    VISIBILITY_ABSOLUTE_COMPONENT_PC(AxisClipNearFarPlanesPc.m23, AxisClipNearFarPlanesPc.m21);
+    VISIBILITY_ABSOLUTE_COMPONENT_PC(AxisClipNearFarPlanesPc.m33, AxisClipNearFarPlanesPc.m31);
+
+    VISIBILITY_ABSOLUTE_COMPONENT_PC(AxisClipAbsFrustumPlanesPc.m00, AxisClipFrustumPlanesPc.m00);
+    VISIBILITY_ABSOLUTE_COMPONENT_PC(AxisClipAbsFrustumPlanesPc.m01, AxisClipFrustumPlanesPc.m01);
+    VISIBILITY_ABSOLUTE_COMPONENT_PC(AxisClipAbsFrustumPlanesPc.m02, AxisClipFrustumPlanesPc.m02);
+    VISIBILITY_ABSOLUTE_COMPONENT_PC(AxisClipAbsFrustumPlanesPc.m03, AxisClipFrustumPlanesPc.m03);
+
+    VisibilityAbsoluteFourPc((NUVEC4 *)&AxisClipAbsFrustumPlanesPc.m10, (NUVEC4 *)&AxisClipFrustumPlanesPc.m10);
+
+    VisibilityAbsoluteFourPc((NUVEC4 *)&AxisClipAbsFrustumPlanesPc.m20, (NUVEC4 *)&AxisClipFrustumPlanesPc.m20);
+
+    AxisClipAbsFrustumPlanesPc.m30 = 0.0f;
+    AxisClipAbsFrustumPlanesPc.m31 = 0.0f;
+    AxisClipAbsFrustumPlanesPc.m32 = 0.0f;
+    AxisClipAbsFrustumPlanesPc.m33 = 0.0f;
+
+    VISIBILITY_ABSOLUTE_COMPONENT_PC(AxisClipAbsScissorPlanesPc.m00, AxisClipScissorPlanesPc.m00);
+    VISIBILITY_ABSOLUTE_COMPONENT_PC(AxisClipAbsScissorPlanesPc.m01, AxisClipScissorPlanesPc.m01);
+    VISIBILITY_ABSOLUTE_COMPONENT_PC(AxisClipAbsScissorPlanesPc.m02, AxisClipScissorPlanesPc.m02);
+    VISIBILITY_ABSOLUTE_COMPONENT_PC(AxisClipAbsScissorPlanesPc.m03, AxisClipScissorPlanesPc.m03);
+
+    VisibilityAbsoluteFourPc((NUVEC4 *)&AxisClipAbsScissorPlanesPc.m10, (NUVEC4 *)&AxisClipScissorPlanesPc.m10);
+
+    VisibilityAbsoluteFourPc((NUVEC4 *)&AxisClipAbsScissorPlanesPc.m20, (NUVEC4 *)&AxisClipScissorPlanesPc.m20);
+
+    AxisClipAbsScissorPlanesPc.m30 = 0.0f;
+    AxisClipAbsScissorPlanesPc.m31 = 0.0f;
+    AxisClipAbsScissorPlanesPc.m32 = 0.0f;
+    AxisClipAbsScissorPlanesPc.m33 = 0.0f;
+}
+
 #undef VISIBILITY_ABSOLUTE_COMPONENT_PC
 
 /* Held original defect: native three-component extent writer leaves the fourth
@@ -375,9 +493,11 @@ i32 VisibilityTreeClipNodePc(NUVEC *center, NUVEC *extent, f32 far_distance, i32
     }
     if (instance != 0)
         return 1;
-    if (-radius < far_side)
+    if (far_side > -radius)
         return 2;
-    return radius > near_side ? 2 : 1;
+    if (near_side < radius)
+        return 2;
+    return 1;
 }
 
 static void VisibilityTreeWalkPc(i32 root_index, VISIBILITY_TREE_READER_PC *tree) {
