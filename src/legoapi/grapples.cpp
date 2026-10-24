@@ -336,6 +336,7 @@ extern "C" void __cdecl Grapple_MoveCode(GAMEOBJECT *object) {
             return;
         }
 
+        i32 down = 0, swing_positive = 0, swing_negative = 0, up = 0;
         const u16 input_angle = GamePad_InputAngle(object, object->pad);
         if (object->pad->input_magnitude == 0.0f && (GRAPPLE_CURRENT->flags & 4) == 0) {
             if ((object->pad->buttons_pressed & GAMEPAD_SPECIAL) != 0) {
@@ -347,21 +348,24 @@ extern "C" void __cdecl Grapple_MoveCode(GAMEOBJECT *object) {
             }
         } else
             object->context_variant_flags &= ~0x100;
-        bool down = false, swing = false, up = false;
         if (object->pad->input_magnitude != 0.0f || ((OBJECT_GRAPPLE_MOTION_VIEW_PC *)object)->input_flags != 0) {
             const i32 difference = RotDiff(GRAPPLE_CURRENT->y_rotation, input_angle);
             const i32 absolute_difference = abs(difference);
             if (0x2000 >= absolute_difference || (((OBJECT_GRAPPLE_MOTION_VIEW_PC *)object)->input_flags & 2) != 0) {
-                down = true;
+                down = 1;
                 if (Grapple_RopeSwingRotate == 0 || (GRAPPLE_CURRENT->flags & 4) == 0)
                     object->movement_facing_angle = GRAPPLE_CURRENT->y_rotation;
             } else if (absolute_difference <= 24575 &&
                        (((OBJECT_GRAPPLE_MOTION_VIEW_PC *)object)->input_flags & 1) == 0) {
-                swing = true;
-                object->movement_facing_angle =
-                    static_cast<u16>(GRAPPLE_CURRENT->y_rotation + (difference > 0 ? 0x4000 : 0xc000));
+                if (difference > 0) {
+                    swing_positive = 1;
+                    object->movement_facing_angle = static_cast<u16>(GRAPPLE_CURRENT->y_rotation + 0x4000);
+                } else {
+                    swing_negative = 1;
+                    object->movement_facing_angle = static_cast<u16>(GRAPPLE_CURRENT->y_rotation - 0x4000);
+                }
             } else {
-                up = true;
+                up = 1;
                 if (Grapple_RopeSwingRotate == 0 || (GRAPPLE_CURRENT->flags & 4) == 0)
                     object->movement_facing_angle = static_cast<u16>(GRAPPLE_CURRENT->y_rotation + 0x8000);
             }
@@ -457,7 +461,7 @@ extern "C" void __cdecl Grapple_MoveCode(GAMEOBJECT *object) {
         object->field_7a4 = 0;
         object->field_7a8 -= static_cast<i32>((65536.0 * FRAMETIME) * (1.0 / period));
         if (object->pad->input_magnitude > 0.0f && 0 == object->big_jump_animation &&
-            (PlayerGrappleSwingModePc == 0 || swing)) {
+            (PlayerGrappleSwingModePc == 0 || (swing_positive != 0 || swing_negative != 0))) {
             Grapple_InitializeSwingAnglePc(object);
             object->big_jump_animation = 10;
             object->field_7a8 = 0x2000;
@@ -478,7 +482,8 @@ extern "C" void __cdecl Grapple_MoveCode(GAMEOBJECT *object) {
             if (PlayerGrappleSwingModePc == 1)
                 angle = Grapple_QuantizeAnglePc(GRAPPLE_CURRENT, angle);
             const i32 swing_mode = PlayerGrappleSwingModePc;
-            if ((swing_mode == 0 && abs(RotDiff(angle, input_angle)) < 0x4000) || (swing_mode != 0 && swing)) {
+            if ((swing_mode == 0 && abs(RotDiff(angle, input_angle)) < 0x4000) ||
+                (swing_mode != 0 && (swing_positive != 0 || swing_negative != 0))) {
                 const u8 increased_degrees = static_cast<u8>(object->big_jump_animation + 10);
                 object->big_jump_animation = 60 >= increased_degrees ? increased_degrees : 60;
                 return;
