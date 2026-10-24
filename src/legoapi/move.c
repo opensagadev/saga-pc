@@ -7314,17 +7314,16 @@ void __cdecl JumpCode(GAMEOBJECT *object, i32 jump_pressed, i32 jump_held, u32 a
                       i32 action_held, i32 hit_effect) {
     JUMP_AUXILIARY_FIELDS_PC *aux = (JUMP_AUXILIARY_FIELDS_PC *)object;
     WORLDINFO *world;
-    u8 player_flag;
+    i32 player_flag;
     i32 flip_kind;
     i32 force_flip;
-    f32 chain_timer;
     if ((object->flags_e24 & 0x1000) != 0) {
         return;
     }
     world = WorldInfo_CurrentlyActive();
 
     flip_kind = 0;
-    player_flag = object->flags_1fc & 0x80;
+    player_flag = (object->flags_1fc_word >> 7) & 1;
     force_flip = 0;
     if (player_flag != 0 || (object->portal_flags & 0x100) != 0) {
         if (JumpBackFlipActionPc != -1 && object->character_model->model_data_b[JumpBackFlipActionPc] != NULL)
@@ -7335,11 +7334,8 @@ void __cdecl JumpCode(GAMEOBJECT *object, i32 jump_pressed, i32 jump_held, u32 a
     }
     if (aux->jump_reentry_timer > 0.0f)
         aux->jump_reentry_timer -= FRAMETIME;
-    chain_timer = aux->jump_chain_timer;
-    if (chain_timer > 0.0f) {
-        chain_timer -= FRAMETIME;
-        aux->jump_chain_timer = chain_timer;
-    }
+    if (aux->jump_chain_timer > 0.0f)
+        aux->jump_chain_timer -= FRAMETIME;
 
     if (object->character_context != -1 &&
         (object->character_context == LEGOCONTEXT_LAND_JUMP || object->character_context == LEGOCONTEXT_LAND_JUMP2 ||
