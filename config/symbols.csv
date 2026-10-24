@@ -6849,6 +6849,8 @@ address,symbol,size,ctype
 0x644bb0,_edpartCancelInstanceScaleMenu,25,
 0x644bd0,_edpartInstanceScaleMenu,197,
 0x644ca0,_edpartSelType,64,
+0x644ce0,_edpartCancelMessageMenu,25,"void __cdecl(eduimenu_s *, eduimenu_s *)"
+0x644d00,_edpartSaveMessage,179,"void (eduimenu_s *, char *, i32)"
 0x644dc0,_edpartSetSwitchType,69,
 0x644e10,_edpartSetSwitchId,29,
 0x644e30,_edpartCancelSwitchTypeMenu,25,
@@ -16211,7 +16213,16 @@ address,symbol,size,ctype
 0x76cac0,??_C@_0M@CIJKJNNE@Emitter?5Vel?$AA@,12,char []
 0x76cacc,??_C@_06PAHFPMEK@Bounce?$AA@,7,char []
 0x76cad4,??_C@_07JMGDFJEK@Gravity?$AA@,8,char []
+0x76cadc,??_C@_0BC@IBMEJGOB@Both?5Saves?5Failed?$AA@,18,const char[]
+0x76caf0,??_C@_0BE@DOCOLNJP@General?5Save?5Failed?$AA@,20,const char[]
+0x76cb04,??_C@_0BC@NBIFACAL@Level?5Save?5Failed?$AA@,18,const char[]
+0x76cb18,??_C@_0BP@KJLFFHDN@Saved?5OK?5?9?5Both?5Backups?5Failed?$AA@,31,const char[]
+0x76cb38,??_C@_0CB@POBDGDDH@Saved?5OK?5?9?5General?5Backup?5Failed@,33,const char[]
+0x76cb5c,??_C@_0BP@ENKHJIAF@Saved?5OK?5?9?5Level?5Backup?5Failed?$AA@,31,const char[]
 0x76cb7c,??_C@_0N@MDPNMOFO@?$CFs?2?$CFs?4?$CFs?4bak?$AA@,13,char []
+0x76cb8c,??_C@_03OBJIDKBM@par?$AA@,4,const char[]
+0x76cb90,??_C@_04FPLDHIIH@part?$AA@,5,const char[]
+0x76cb98,??_C@_0M@EGMMNKF@Save?5Failed?$AA@,12,const char[]
 0x76cba4,??_C@_0BJ@OJOHFLDI@Saved?5OK?5?9?5Backup?5Failed?$AA@,25,char []
 0x76cbc0,??_C@_0BB@PEMOALIG@Can?5Damage?5Owner?$AA@,17,char []
 0x76cbd4,??_C@_06BLDJAMBE@Thrown?$AA@,7,char []
@@ -24914,6 +24925,7 @@ address,symbol,size,ctype
 0x291f69c,_PartImpactNormalPrivate,,NUVEC
 0x0291f6a8,_part_scene_pageid,128,i32[32]
 0x291f72c,_edpart_cutoff_menu,4,struct eduimenu_s *
+0x291f730,_edpart_message_menu,,eduimenu_s *
 0x291f734,_PartEditorCameraPosPc,,NUVEC
 0x291f754,_edpart_maxlife_menu,4,struct eduimenu_s *
 0x291f75c,_edpart_snap_enabled,4,i32

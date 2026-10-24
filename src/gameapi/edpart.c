@@ -1487,3 +1487,282 @@ i32 edpartSaveEffects(char *filename, u8 page) {
     }
     return 0;
 }
+
+i32 EdFileBackup(char *source, char *destination);
+eduimenu_s *edpart_message_menu = NULL;
+
+static void edpartCancelMessageMenu(eduimenu_s *unused0, eduimenu_s *unused1) {
+    eduiMenuDestroy(edpart_message_menu);
+    edpart_message_menu = NULL;
+}
+
+static void edpartSaveMessage(eduimenu_s *parent, char *message, i32 status) {
+    u32 colors[4] = {0x800000c0u, 0x80ff0000u, 0x80808080u, 0x80404040u};
+    if (status == 1)
+        colors[0] = 0x8000c000u;
+    edpart_message_menu = eduiMenuCreate(70, 70, 300, 250, ed_fnt, edpartCancelMessageMenu, "Message");
+    if (edpart_message_menu != NULL) {
+        eduiMenuAddItem(edpart_message_menu, eduiItemSelCreate(1, colors, 0, 0, NULL, message));
+        eduiMenuAttach(parent, edpart_message_menu);
+        edpart_message_menu->x = parent->x + 10;
+        edpart_message_menu->y = parent->y + 40;
+    }
+}
+
+void edpartFileSaveEffectsGeneral(eduimenu_s *parent, eduiitem_s *unused1, u32 unused2) {
+    char directory[256], extension[256], name[256], path[256], backup[256];
+    i32 i, backed_up = 1;
+    if (edbits_general_save_directory[0] == 0)
+        sprintf(directory, ".");
+    else {
+        i = 0;
+        do {
+            directory[i] = edbits_general_save_directory[i];
+        } while (directory[i++] != 0);
+    }
+    if (edbits_general_save_name[0] == 0)
+        sprintf(name, "part");
+    else {
+        i = 0;
+        do {
+            name[i] = edbits_general_save_name[i];
+        } while (name[i++] != 0);
+    }
+    if (edbits_general_save_extension[0] == 0)
+        sprintf(extension, "par");
+    else {
+        i = 0;
+        do {
+            extension[i] = edbits_general_save_extension[i];
+        } while (extension[i++] != 0);
+    }
+    sprintf(path, "%s\\%s.%s", directory, name, extension);
+    sprintf(backup, "%s\\%s.%s.bak", directory, name, extension);
+    if (!edbits_override_backups)
+        backed_up = EdFileBackup(path, backup);
+    if (edpartSaveEffects(path, 0)) {
+        if (backed_up)
+            edpartSaveMessage(parent, "Saved OK", 1);
+        else
+            edpartSaveMessage(parent, "Saved OK - Backup Failed", 0);
+    } else
+        edpartSaveMessage(parent, "Save Failed", 0);
+}
+
+void edpartFileSaveEffectsLevel(eduimenu_s *parent, eduiitem_s *unused1, u32 unused2) {
+    char directory[256], extension[256], name[256], path[256], backup[256];
+    i32 i, backed_up = 1;
+    if (edbits_level_save_directory[0] == 0)
+        sprintf(directory, ".");
+    else {
+        i = 0;
+        do {
+            directory[i] = edbits_level_save_directory[i];
+        } while (directory[i++] != 0);
+    }
+    if (edbits_level_save_name[0] == 0)
+        sprintf(name, "part");
+    else {
+        i = 0;
+        do {
+            name[i] = edbits_level_save_name[i];
+        } while (name[i++] != 0);
+    }
+    if (edbits_level_save_extension[0] == 0)
+        sprintf(extension, "par");
+    else {
+        i = 0;
+        do {
+            extension[i] = edbits_level_save_extension[i];
+        } while (extension[i++] != 0);
+    }
+    sprintf(path, "%s\\%s.%s", directory, name, extension);
+    sprintf(backup, "%s\\%s.%s.bak", directory, name, extension);
+    if (!edbits_override_backups)
+        backed_up = EdFileBackup(path, backup);
+    if (edpartSaveEffects(path, 1)) {
+        if (backed_up)
+            edpartSaveMessage(parent, "Saved OK", 1);
+        else
+            edpartSaveMessage(parent, "Saved OK - Backup Failed", 0);
+    } else
+        edpartSaveMessage(parent, "Save Failed", 0);
+}
+
+void edpartFileSaveEffects(eduimenu_s *parent, eduiitem_s *unused1, u32 unused2) {
+    char general_directory[256], general_extension[256], general_name[256];
+    char level_directory[256], level_extension[256], level_name[256];
+    char path[256], backup[256];
+    i32 i, general_backup = 1, level_backup = 1, general_saved, level_saved;
+    if (edbits_general_save_directory[0] == 0)
+        sprintf(general_directory, ".");
+    else {
+        i = 0;
+        do {
+            general_directory[i] = edbits_general_save_directory[i];
+        } while (general_directory[i++] != 0);
+    }
+    if (edbits_general_save_name[0] == 0)
+        sprintf(general_name, "part");
+    else {
+        i = 0;
+        do {
+            general_name[i] = edbits_general_save_name[i];
+        } while (general_name[i++] != 0);
+    }
+    if (edbits_general_save_extension[0] == 0)
+        sprintf(general_extension, "par");
+    else {
+        i = 0;
+        do {
+            general_extension[i] = edbits_general_save_extension[i];
+        } while (general_extension[i++] != 0);
+    }
+    if (edbits_level_save_directory[0] == 0)
+        sprintf(level_directory, ".");
+    else {
+        i = 0;
+        do {
+            level_directory[i] = edbits_level_save_directory[i];
+        } while (level_directory[i++] != 0);
+    }
+    if (edbits_level_save_name[0] == 0)
+        sprintf(level_name, "part");
+    else {
+        i = 0;
+        do {
+            level_name[i] = edbits_level_save_name[i];
+        } while (level_name[i++] != 0);
+    }
+    if (edbits_level_save_extension[0] == 0)
+        sprintf(level_extension, "par");
+    else {
+        i = 0;
+        do {
+            level_extension[i] = edbits_level_save_extension[i];
+        } while (level_extension[i++] != 0);
+    }
+    sprintf(path, "%s\\%s.%s", general_directory, general_name, general_extension);
+    sprintf(backup, "%s\\%s.%s.bak", general_directory, general_name, general_extension);
+    if (!edbits_override_backups)
+        general_backup = EdFileBackup(path, backup);
+    general_saved = edpartSaveEffects(path, 0);
+    sprintf(path, "%s\\%s.%s", level_directory, level_name, level_extension);
+    sprintf(backup, "%s\\%s.%s.bak", level_directory, level_name, level_extension);
+    if (!edbits_override_backups)
+        level_backup = EdFileBackup(path, backup);
+    level_saved = edpartSaveEffects(path, 1);
+    if (general_saved) {
+        if (general_backup && level_saved && level_backup)
+            edpartSaveMessage(parent, "Saved OK", 1);
+        else if (level_saved) {
+            if (general_backup)
+                edpartSaveMessage(parent, "Saved OK - Level Backup Failed", 0);
+            else if (level_backup)
+                edpartSaveMessage(parent, "Saved OK - General Backup Failed", 0);
+            else
+                edpartSaveMessage(parent, "Saved OK - Both Backups Failed", 0);
+        } else
+            edpartSaveMessage(parent, "Level Save Failed", 0);
+    } else if (level_saved)
+        edpartSaveMessage(parent, "General Save Failed", 0);
+    else
+        edpartSaveMessage(parent, "Both Saves Failed", 0);
+}
+
+void edpartFileLoadEffects(eduimenu_s *parent, eduiitem_s *unused1, u32 unused2) {
+    char path[256];
+    char general_directory[256], general_name[256], general_extension[256];
+    char level_directory[256], level_name[256], level_extension[256];
+    i32 i, index, variant;
+    i8 page;
+    NUGSCN *scene;
+    if (Part != NULL)
+        memset(Part, 0, MAXPARTS * sizeof(PART_PC));
+    part_slot_cursor = 0;
+    memset(part_types, 0, sizeof(part_types));
+    for (index = 0; index < 128; ++index) {
+        for (variant = 0; variant < 8; ++variant) {
+            ((PART_RUNTIME_TYPE_PC *)part_types)[index].effect_ids[variant] = -1;
+            ((PART_RUNTIME_TYPE_PC *)part_types)[index].effect_pages[variant] = -1;
+        }
+    }
+    part_types_used = 0;
+    memset(part_emits, 0, sizeof(part_emits));
+    for (index = 0; index < 40; ++index)
+        part_emits[index].effect_id = -1;
+    for (index = 0; index < 32; ++index)
+        part_scene_pageid[index] = -1;
+    part_emits_used = 0;
+    for (index = 0; index < 8; ++index) {
+        part_page_used[index] = 0;
+        part_page_on[index] = 0;
+    }
+    for (index = 0; index < 32; ++index)
+        part_scene[index] = NULL;
+    part_platimpactcnt = 0;
+    if (edbits_general_save_directory[0] == 0)
+        sprintf(general_directory, ".");
+    else {
+        i = 0;
+        do {
+            general_directory[i] = edbits_general_save_directory[i];
+        } while (general_directory[i++] != 0);
+    }
+    if (edbits_general_save_name[0] == 0)
+        sprintf(general_name, "part");
+    else {
+        i = 0;
+        do {
+            general_name[i] = edbits_general_save_name[i];
+        } while (general_name[i++] != 0);
+    }
+    if (edbits_general_save_extension[0] == 0)
+        sprintf(general_extension, "par");
+    else {
+        i = 0;
+        do {
+            general_extension[i] = edbits_general_save_extension[i];
+        } while (general_extension[i++] != 0);
+    }
+    if (edbits_level_save_directory[0] == 0)
+        sprintf(level_directory, ".");
+    else {
+        i = 0;
+        do {
+            level_directory[i] = edbits_level_save_directory[i];
+        } while (level_directory[i++] != 0);
+    }
+    if (edbits_level_save_name[0] == 0)
+        sprintf(level_name, "part");
+    else {
+        i = 0;
+        do {
+            level_name[i] = edbits_level_save_name[i];
+        } while (level_name[i++] != 0);
+    }
+    if (edbits_level_save_extension[0] == 0)
+        sprintf(level_extension, "par");
+    else {
+        i = 0;
+        do {
+            level_extension[i] = edbits_level_save_extension[i];
+        } while (level_extension[i++] != 0);
+    }
+    sprintf(path, "%s\\%s.%s", general_directory, general_name, general_extension);
+    if (NuFileExists(path)) {
+        scene = edbits_things_scene;
+        edpartLoadPageEx(path, 0, &scene, 1);
+    }
+    sprintf(path, "%s\\%s.%s", level_directory, level_name, level_extension);
+    if (NuFileExists(path)) {
+        scene = edbits_base_scene;
+        page = (i8)edpartLoadPageEx(path, 1, &scene, 1);
+        for (index = 0; index < 40; ++index) {
+            if (part_emits[index].effect_id != -1 && part_emits[index].page == page)
+                part_emits[index].camera_distance = 9999.9f;
+        }
+        part_page_on[page] = 1;
+    }
+    edpartSaveMessage(parent, "Loaded OK", 1);
+}
