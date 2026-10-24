@@ -296,13 +296,13 @@ void PodRaceSnipersUpdate(void) {
             f32 dx;
             f32 dist2;
             GAMEOBJECT *target = Player[j];
-            if (!(target != NULL && (target->flags_1fc_half & 0x1001) == 0x1001)) {
+            if (!(target != NULL && (target->flags_1fc_word & 1) != 0 && (target->flags_1fc_word & 0x1000) != 0)) {
                 continue;
             }
-            dz = target->collision_position.z - s->pos.z;
             dx = target->collision_position.x - s->pos.x;
+            dz = target->collision_position.z - s->pos.z;
             dist2 = dx * dx + dz * dz;
-            if (dist2 < PodRace_sniper_start_fire_radius * PodRace_sniper_start_fire_radius) {
+            if (PodRace_sniper_start_fire_radius * PodRace_sniper_start_fire_radius > dist2) {
                 in_range = 1;
                 if (dist2 < PodRace_sniper_fire_radius * PodRace_sniper_fire_radius)
                     s->state = PodRace_sniper_fire_range_time;
@@ -324,8 +324,6 @@ void PodRaceSnipersUpdate(void) {
                     }
                     if (player_ix == 0)
                         target = player;
-                    if (target == NULL || type == NULL)
-                        continue;
                     CalculateInterceptVector(&s->prev, &target->collision_position, &target->velocity, type->field_10,
                                              &aim, NULL);
                     NuVecAdd(&aim, &aim, &s->prev);
@@ -342,9 +340,9 @@ void PodRaceSnipersUpdate(void) {
 
                 distance = NuVecDist(&aim, &s->prev, &direction);
                 temp_yrot = NuAtan2D(direction.x, direction.z);
-                temp_xrot = NuAtan2D(-direction.y, distance);
+                temp_zrot = NuAtan2D(-direction.y, distance);
                 // Retail uses an aligned matrix local in its realigned stack frame.
-                NuMtxSetRotationX(&mtx, (u16)temp_xrot);
+                NuMtxSetRotationX(&mtx, (u16)temp_zrot);
                 NuMtxRotateY(&mtx, (u16)temp_yrot);
                 Bolt_Add(NULL, &s->prev, &mtx, bolttype, 0);
             }
@@ -531,9 +529,11 @@ i32 JediBInitLocator(WORLDINFO *world, NUVEC *position, i32 angle, AILOCATOR_PC 
                 f32 dist_sqr = dx * dx + dz * dz;
                 f32 r = node->radius + 1.0f;
                 if (dist_sqr < r * r) {
-                    f32 scale = r / NuFsqrt(dist_sqr);
-                    position->x = node->position.x + dx * scale;
-                    position->z = node->position.z + dz * scale;
+                    f64 scale = (f64)r / NuFsqrt(dist_sqr);
+                    dx *= scale;
+                    position->x = node->position.x + dx;
+                    dz *= scale;
+                    position->z = node->position.z + dz;
                     break;
                 }
             }
@@ -604,12 +604,15 @@ i32 __cdecl Action_SetLapTime(AISYS_PC *system, AISCRIPTPROCESS_PC *process, AIP
 
 static void *CreatePodRaceMinePc(NUVEC *pos);
 
+extern NUSPECIALHANDLE SebulbaMineSpecialPc;
+extern f32 SebulbaDistanceBiasPc, SebulbaThrowIntervalPc;
+static f32 PodSebulbaThrowSpeedPc, PodSebulbaThrowGravityPc;
+
 i32 Action_Sebulba(AISYS_PC *unused0, AISCRIPTPROCESS_PC *unused1, AIPACKET_PC *packet, char **unused3, i32 unused4,
                    i32 first_time, float unused6) {
     struct gameobject_s *object;
-    nuhspecial_s special;
     struct gameobject_s *target;
-    struct SOCKSYS *sock;
+    SOCKSYS_PC *sock;
     SOCKPOSITION_PC ahead;
     NUVEC goal;
     if (packet == NULL || packet->owner == NULL || packet->owner->objptr == NULL)
@@ -618,20 +621,25 @@ i32 Action_Sebulba(AISYS_PC *unused0, AISCRIPTPROCESS_PC *unused1, AIPACKET_PC *
     object = packet->owner->objptr;
 
     if (first_time != 0) {
-        NuSpecialFind(vehicle_scene, &special, "mine", 1);
-        object->field_ef9 |= 0x40;
-        object->field_f02 |= 0x20;
+        NuSpecialFind(vehicle_scene, &SebulbaMineSpecialPc, "mine", 1);
+        object->portal_flags |= 0x4000;
+        object->flags_ef4 |= 0x200000;
         object->ai_packet.movement_stopped = 1;
-        object->run_speed_override = 1.0f;
+        object->movement_speed_scale_pc = 1.0f;
     }
 
     target = player;
     if (target != NULL && player2 != NULL) {
-        float x2 = object->position.x - player2->position.x;
-        float z2 = object->position.z - player2->position.z;
-        float x1 = object->position.x - target->position.x;
-        float z1 = object->position.z - target->position.z;
-        if (x2 * x2 + z2 * z2 <= x1 * x1 + z1 * z1)
+        f32 x = object->position.x - target->position.x;
+        f32 z = object->position.z - target->position.z;
+        f32 distance1 = x * x + z * z;
+        f32 distance2;
+        x = object->position.x - player2->position.x;
+        z = object->position.z - player2->position.z;
+        distance2 = x * x + z * z;
+        if (distance1 < distance2)
+            target = player;
+        else
             target = player2;
     }
 
@@ -644,18 +652,19 @@ i32 Action_Sebulba(AISYS_PC *unused0, AISCRIPTPROCESS_PC *unused1, AIPACKET_PC *
         f32 speed;
         NUVEC target_offset;
         NUVEC object_offset;
-        float target_distance = MidDistanceFromSockStart(sock, &target->sock_position);
-        float object_distance = MidDistanceFromSockStart(sock, &object->sock_position);
+        f64 target_distance = MidDistanceFromSockStart(WORLD->sock_sys, &target->sock_position);
+        f64 object_distance = MidDistanceFromSockStart(WORLD->sock_sys, &object->sock_position);
         float difference = target_distance - object_distance;
-        (void)MidDistanceFromSockStart(sock, &object->sock_position);
-        (void)MidDistanceFromSockStart(sock, &target->sock_position);
-        wanted = ((difference + 25.0f) / test_factor + 1.0f) * avg_currentspeed_mul;
-        speed = SeekLinearF(object->run_speed_override, wanted, test_seek_rate);
-        object->run_speed_override = speed;
+        difference += SebulbaDistanceBiasPc;
+        (void)MidDistanceFromSockStart(WORLD->sock_sys, &object->sock_position);
+        (void)MidDistanceFromSockStart(WORLD->sock_sys, &target->sock_position);
+        wanted = (difference / test_factor + 1.0f) * avg_currentspeed_mul;
+        speed = SeekLinearF(object->movement_speed_scale_pc, wanted, test_seek_rate);
+        object->movement_speed_scale_pc = speed;
         if (speed > max_speed_mul)
-            object->run_speed_override = max_speed_mul;
+            object->movement_speed_scale_pc = max_speed_mul;
         else if (speed < min_speed_mul)
-            object->run_speed_override = min_speed_mul;
+            object->movement_speed_scale_pc = min_speed_mul;
 
         target_offset = target_offset, object_offset = object_offset;
         NuVecSub(&target_offset, &target->position, &target->sock_position.midpoint);
@@ -668,11 +677,11 @@ i32 Action_Sebulba(AISYS_PC *unused0, AISCRIPTPROCESS_PC *unused1, AIPACKET_PC *
         NuVecAdd(&goal, &goal, &ahead.midpoint);
 
         packet->script_processor.action_timer += FRAMETIME;
-        if (packet->script_processor.action_timer > 1.0f) {
+        if (packet->script_processor.action_timer > SebulbaThrowIntervalPc) {
             if (do_mine != 0) {
                 if (CreatePodRaceMinePc(&object->lower_position) != NULL)
                     packet->script_processor.action_timer = 0.0f;
-            } else if (NuSpecialExistsFn(&special) != 0) {
+            } else if (NuSpecialExistsFn(&SebulbaMineSpecialPc) != 0) {
                 NUVEC target_delta;
                 NUVEC throw_velocity;
                 NUMTX matrix;
@@ -682,18 +691,19 @@ i32 Action_Sebulba(AISYS_PC *unused0, AISCRIPTPROCESS_PC *unused1, AIPACKET_PC *
                 target_delta = target_delta;
                 NuVecSub(&target_delta, &target->velocity, &target->collision_position);
                 throw_velocity = throw_velocity;
-                MakeThrowVector(&throw_velocity, &origin, &target->collision_position, &target_delta, 20.0f, -10.0f);
+                MakeThrowVector(&throw_velocity, &origin, &target->collision_position, &target_delta,
+                                PodSebulbaThrowSpeedPc, PodSebulbaThrowGravityPc);
                 NuVecAdd(&throw_velocity, &throw_velocity, &object->velocity);
                 matrix = matrix;
                 NuMtxSetTranslation(&matrix, &origin);
                 part = Default_ADDPART;
                 part.matrix = &matrix;
                 part.velocity = &throw_velocity;
-                part.special = &special;
+                part.special = &SebulbaMineSpecialPc;
                 part.field_14 = 0.1f;
                 part.field_18 = 0.1f;
-                part.gravity = -10.0f;
-                part.part_id = 0x29b;
+                part.gravity = PodSebulbaThrowGravityPc;
+                part.flags = 0x29b;
                 part.collision_fn = PartCollide_3D;
                 part.time_step = FRAMETIME;
                 AddPart(&part);
@@ -702,7 +712,7 @@ i32 Action_Sebulba(AISYS_PC *unused0, AISCRIPTPROCESS_PC *unused1, AIPACKET_PC *
         }
     } else {
         goal = ahead.midpoint;
-        object->run_speed_override = 1.0f;
+        object->movement_speed_scale_pc = 1.0f;
     }
 
     AIMoveInstruction(packet, &goal, 0.0f, NULL, 1, 0.0f);
@@ -741,11 +751,22 @@ i32 __cdecl PodRace_InStartCountdown(WORLDINFO *world) {
 void __cdecl SetPodMergeAnims(ANIMPACKET_PC *packet, i32 index) {
     POD_MERGE_PACKET_READER_PC *reader = (POD_MERGE_PACKET_READER_PC *)packet;
     f32 roll = pod_roll[index];
-    reader->requested_animation = 1;
-    reader->overlay_animation = roll < 0.0f ? 0x26 : 0x4f;
+    union {
+        f32 value;
+        u32 bits;
+    } value, absolute;
+    if (roll < 0.0f) {
+        reader->requested_animation = 1;
+        reader->overlay_animation = 0x26;
+    } else {
+        reader->requested_animation = 1;
+        reader->overlay_animation = 0x4f;
+    }
     reader->blend_source_time = pod_animtime[index];
     reader->blend_target_time = pod_animtime[index];
-    reader->overlay_weight = (f32)fabs((f64)roll);
+    value.value = roll;
+    absolute.bits = value.bits & 0x7fffffff;
+    reader->overlay_weight = absolute.value;
 }
 
 /* Episode I level callbacks installed by FixUpLevels (retail 0x4d82f0 .. 0x4dd770). */
@@ -1659,7 +1680,7 @@ static i32 PodRaceUpdatePodPc(RACEPOD_RESOURCE_PC *pod, WORLDINFO *world) {
                     part.field_14 = NuSpecialGetOriginRadius(&minesys.mine_special);
                     part.field_18 = part.field_14;
                     part.special = &minesys.mine_special;
-                    part.part_id = 0x29a;
+                    part.flags = 0x29a;
                     part.gravity = PodSebulbaThrowGravityPc;
                     part.collision_fn = PartCollide_3D;
                     part.kill_fn = PodRaceMineKillPc;

@@ -134,21 +134,23 @@ void __cdecl NuMtxCalcDebrisFaceOn(NUMTX *m) {
     m->m33 = 1.0f;
 }
 
-#define NUCAMERA_CLIP_CODE(code, v)                                                                                    \
+#define NUCAMERA_CLIP_CODE_EX(code, v, near_enabled, horizontal, vertical)                                             \
     {                                                                                                                  \
-        if ((v).z < global_camera.near_clip)                                                                           \
+        if ((v).z < global_camera.near_clip && (near_enabled))                                                         \
             (code) |= 0x20;                                                                                            \
         if ((v).z > far_clip)                                                                                          \
             (code) |= 0x10;                                                                                            \
-        if ((v).x < -(v).z * zx)                                                                                       \
+        if ((v).x < -(v).z * (horizontal))                                                                             \
             (code) |= 1;                                                                                               \
-        if ((v).x > (v).z * zx)                                                                                        \
+        if ((v).x > (v).z * (horizontal))                                                                              \
             (code) |= 2;                                                                                               \
-        if ((v).y < -(v).z * zy)                                                                                       \
+        if ((v).y < -(v).z * (vertical))                                                                               \
             (code) |= 8;                                                                                               \
-        if ((v).y > (v).z * zy)                                                                                        \
+        if ((v).y > (v).z * (vertical))                                                                                \
             (code) |= 4;                                                                                               \
     }
+
+#define NUCAMERA_CLIP_CODE(code, v) NUCAMERA_CLIP_CODE_EX(code, v, 1, zx, zy)
 
 i32 __cdecl NuCameraClipTestExtents(NUVEC *min, NUVEC *max, NUMTX *world, f32 far_clip, i32 clip_screen) {
     NUVEC corners[8];
@@ -253,13 +255,19 @@ i32 __cdecl NuCameraClipTestExtents(NUVEC *min, NUVEC *max, NUMTX *world, f32 fa
    they do not assert historical volatile declarations. */
 void __cdecl NuCameraSetVPortClipMtx(NUMTX *out, NUMTX *view, NUCAMERA *camera, i32 fast) {
     if (fast == 0) {
-        volatile f32 far_clip =
-            (camera->unknown_64 == 0.0f ? camera->far_clip : camera->unknown_64) - NuCameraProjectionFarClipBias;
-        volatile f32 near_clip = camera->unknown_60 == 0.0f ? camera->near_clip : camera->unknown_60;
+        f32 far_clip, near_clip;
         volatile f32 half_fov;
-        volatile f32 cotangent;
-        volatile f32 horizontal;
+        f32 cotangent;
+        f32 horizontal;
         i32 angle;
+        if (camera->unknown_64 == 0.0f)
+            far_clip = camera->far_clip - NuCameraProjectionFarClipBias;
+        else
+            far_clip = camera->unknown_64 - NuCameraProjectionFarClipBias;
+        if (camera->unknown_60 == 0.0f)
+            near_clip = camera->near_clip;
+        else
+            near_clip = camera->unknown_60;
         half_fov = (f32)((f64)camera->fov * 0.5);
         angle = (i32)((f64)half_fov * AIPathAngularScale);
         cotangent = NuTrigTable[((angle + 0x4000) >> 1) & 0x7fff] / NuTrigTable[(angle >> 1) & 0x7fff];
@@ -277,13 +285,19 @@ void __cdecl NuCameraSetVPortClipMtx(NUMTX *out, NUMTX *view, NUCAMERA *camera, 
 
 void __cdecl NuCameraSetScissorClipMtx(NUMTX *out, NUMTX *view, NUCAMERA *camera, i32 fast) {
     if (fast == 0) {
-        volatile f32 far_clip =
-            (camera->unknown_64 == 0.0f ? camera->far_clip : camera->unknown_64) - NuCameraProjectionFarClipBias;
-        volatile f32 near_clip = camera->unknown_60 == 0.0f ? camera->near_clip : camera->unknown_60;
+        f32 far_clip, near_clip;
         volatile f32 half_fov;
-        volatile f32 cotangent;
-        volatile f32 horizontal;
+        f32 cotangent;
+        f32 horizontal;
         i32 angle;
+        if (camera->unknown_64 == 0.0f)
+            far_clip = camera->far_clip - NuCameraProjectionFarClipBias;
+        else
+            far_clip = camera->unknown_64 - NuCameraProjectionFarClipBias;
+        if (camera->unknown_60 == 0.0f)
+            near_clip = camera->near_clip;
+        else
+            near_clip = camera->unknown_60;
         half_fov = (f32)((f64)camera->fov * 0.5);
         angle = (i32)((f64)half_fov * AIPathAngularScale);
         cotangent = NuTrigTable[((angle + 0x4000) >> 1) & 0x7fff] / NuTrigTable[(angle >> 1) & 0x7fff];
@@ -308,26 +322,28 @@ i32 __cdecl NuCameraClipTestSphere(NUVEC *point, f32 radius, NUMTX *world) {
         NuVecMtxTransform(&transformed, point, &vmtx);
     }
     if (0.0f > (transformed.z - global_camera.near_clip) + radius)
-        return 1;
+        goto rejected;
     if (0.0f > (global_camera.far_clip - transformed.z) + radius)
-        return 1;
+        goto rejected;
     NuVec4MtxTransform(&plane_distances, &transformed, &clip_planes);
-    if (-radius > plane_distances.x)
-        return 1;
+    if (plane_distances.x < -radius)
+        goto rejected;
     if (-radius > plane_distances.y)
-        return 1;
+        goto rejected;
     if (-radius > plane_distances.z)
-        return 1;
+        goto rejected;
     if (-radius > plane_distances.w)
-        return 1;
+        goto rejected;
     return 0;
+rejected:
+    return 1;
 }
 
 void __cdecl NuCameraSetProjectionMtx(NUMTX *out, f32 fov, f32 aspect, f32 near_clip, f32 far_clip) {
     volatile f32 half_fov = (f32)((f64)fov * 0.5);
     i32 angle = (i32)((f64)half_fov * AIPathAngularScale);
-    volatile f32 cotangent = NuTrigTable[((angle + 0x4000) >> 1) & 0x7fff] / NuTrigTable[(angle >> 1) & 0x7fff];
-    volatile f32 depth_factor = far_clip / (far_clip - near_clip);
+    f32 cotangent = NuTrigTable[((angle + 0x4000) >> 1) & 0x7fff] / NuTrigTable[(angle >> 1) & 0x7fff];
+    f32 depth_factor = far_clip / (far_clip - near_clip);
     memset(out, 0, sizeof(*out));
     out->m00 = aspect * cotangent;
     out->m11 = cotangent;
@@ -541,7 +557,6 @@ i32 __cdecl NuCameraClipTestPoints(NUVEC *points, i32 count, NUMTX *world_matrix
 }
 
 #include <math.h>
-extern NUVEC4 CameraNearClipPlanePc;
 extern NUMTX VisibilityZeroMatrixTemplatePc;
 void __cdecl NuCameraBuildClipPlanes(void);
 void __cdecl NuMtxCalcFaceOn(NUMTX *, NUVEC *);
@@ -574,10 +589,10 @@ void __cdecl NuMtxCalcFaceOn(NUMTX *m, NUVEC *v) {
     m->m02 = right.z;
     m->m12 = up.z;
     m->m22 = forward.z;
-    m->m33 = 1.0f;
     m->m23 = 0.0f;
     m->m13 = 0.0f;
     m->m03 = 0.0f;
+    m->m33 = 1.0f;
     m->m30 = v->x;
     m->m31 = v->y;
     m->m32 = v->z;
@@ -594,7 +609,7 @@ void __cdecl NuMtxCalcFaceY(NUMTX *m, NUVEC *v) {
     NuVecSub(&forward, &camera_position, v);
     NuVecCross(&right, &world_up, &forward);
     NuVecNorm(&right, &right);
-    NuVecCross(&up, &forward, &right);
+    NuVecCross(&up, &world_up, &right);
     NuVecNorm(&up, &up);
 
     m->m00 = right.x;
@@ -606,10 +621,10 @@ void __cdecl NuMtxCalcFaceY(NUMTX *m, NUVEC *v) {
     m->m02 = right.z;
     m->m12 = world_up.z;
     m->m22 = up.z;
-    m->m33 = 1.0f;
     m->m23 = 0.0f;
     m->m13 = 0.0f;
     m->m03 = 0.0f;
+    m->m33 = 1.0f;
     m->m30 = v->x;
     m->m31 = v->y;
     m->m32 = v->z;
@@ -625,13 +640,13 @@ void __cdecl NuCameraBuildClipPlanes(void) {
     f32 left_right_inv;
     f32 top_bottom_inv;
 
-    NUMTX frustum_planes;
-    NUMTX scissor_planes;
+    __declspec(align(16)) NUMTX frustum_planes;
+    __declspec(align(16)) NUMTX scissor_planes;
 
     f32 dot;
 
     near_dist = global_camera.near_clip;
-    near_dist_sq = global_camera.near_clip * global_camera.near_clip;
+    near_dist_sq = near_dist * near_dist;
 
     // Build the frustum planes.
     left_right = zx * near_dist;
@@ -640,7 +655,7 @@ void __cdecl NuCameraBuildClipPlanes(void) {
     left_right_inv = 1.0f / NuFsqrt(left_right * left_right + near_dist_sq);
     top_bottom_inv = 1.0f / NuFsqrt(top_bottom * top_bottom + near_dist_sq);
 
-    frustum_planes = VisibilityZeroMatrixTemplatePc;
+    VisibilityZeroMatrixPc(&frustum_planes);
 
     frustum_planes.m00 = -near_dist * left_right_inv;
     frustum_planes.m20 = left_right * left_right_inv;
@@ -661,7 +676,7 @@ void __cdecl NuCameraBuildClipPlanes(void) {
     left_right_inv = 1.0f / NuFsqrt(left_right * left_right + near_dist_sq);
     top_bottom_inv = 1.0f / NuFsqrt(top_bottom * top_bottom + near_dist_sq);
 
-    scissor_planes = VisibilityZeroMatrixTemplatePc;
+    VisibilityZeroMatrixPc(&scissor_planes);
 
     scissor_planes.m00 = -near_dist * left_right_inv;
     scissor_planes.m20 = left_right * left_right_inv;
@@ -783,24 +798,20 @@ i32 __cdecl NuCameraClipTestExtentsGeneric(NUVEC *min, NUVEC *max, NUMTX *world_
     corners[7].x = max->x;
     corners[7].y = min->y;
     corners[7].z = max->z;
-    for (i = 0; i < 8; ++i)
-        NuVecMtxTransform(&view[i], &corners[i], &transform);
+    NuVecMtxTransform(&view[0], &corners[0], &transform);
+    NuVecMtxTransform(&view[1], &corners[1], &transform);
+    NuVecMtxTransform(&view[2], &corners[2], &transform);
+    NuVecMtxTransform(&view[3], &corners[3], &transform);
+    NuVecMtxTransform(&view[4], &corners[4], &transform);
+    NuVecMtxTransform(&view[5], &corners[5], &transform);
+    NuVecMtxTransform(&view[6], &corners[6], &transform);
+    NuVecMtxTransform(&view[7], &corners[7], &transform);
     *min_depth = FLT_MAX;
+    memset(results, 0, sizeof(results));
     for (i = 0; i < 8; ++i) {
-        results[i] = 0;
-        *min_depth = view[i].z < *min_depth ? view[i].z : *min_depth;
-        if ((flags & 2) == 0 && view[i].z < global_camera.near_clip)
-            results[i] |= 0x20;
-        if (view[i].z > far_clip)
-            results[i] |= 0x10;
-        if (view[i].x < -view[i].z * zx)
-            results[i] |= 1;
-        if (view[i].x > view[i].z * zx)
-            results[i] |= 2;
-        if (view[i].y < -view[i].z * zy)
-            results[i] |= 8;
-        if (view[i].y > view[i].z * zy)
-            results[i] |= 4;
+        if (view[i].z < *min_depth)
+            *min_depth = view[i].z;
+        NUCAMERA_CLIP_CODE_EX(results[i], view[i], (flags & 2) == 0, zx, zy);
     }
     if ((results[0] & results[1] & results[2] & results[3] & results[4] & results[5] & results[6] & results[7]) != 0)
         return 0;
@@ -808,20 +819,16 @@ i32 __cdecl NuCameraClipTestExtentsGeneric(NUVEC *min, NUVEC *max, NUMTX *world_
         return 1;
     if ((flags & 1) != 0)
         return 2;
-    for (i = 0; i < 8; ++i) {
-        results[i] = 0;
-        if ((flags & 2) == 0 && view[i].z < global_camera.near_clip)
-            results[i] |= 0x20;
-        if (view[i].z > far_clip)
-            results[i] |= 0x10;
-        if (view[i].x < -view[i].z * VISIBILITY_ALTERNATE_WIDTH_PC)
-            results[i] |= 1;
-        if (view[i].x > view[i].z * VISIBILITY_ALTERNATE_WIDTH_PC)
-            results[i] |= 2;
-        if (view[i].y < -view[i].z * VisibilityAlternateHeightPc)
-            results[i] |= 8;
-        if (view[i].y > view[i].z * VisibilityAlternateHeightPc)
-            results[i] |= 4;
+    memset(results, 0, sizeof(results));
+    for (i = 0; i < 8; i += 4) {
+        NUCAMERA_CLIP_CODE_EX(results[i], view[i], (flags & 2) == 0, VISIBILITY_ALTERNATE_WIDTH_PC,
+                              VisibilityAlternateHeightPc);
+        NUCAMERA_CLIP_CODE_EX(results[i + 1], view[i + 1], (flags & 2) == 0, VISIBILITY_ALTERNATE_WIDTH_PC,
+                              VisibilityAlternateHeightPc);
+        NUCAMERA_CLIP_CODE_EX(results[i + 2], view[i + 2], (flags & 2) == 0, VISIBILITY_ALTERNATE_WIDTH_PC,
+                              VisibilityAlternateHeightPc);
+        NUCAMERA_CLIP_CODE_EX(results[i + 3], view[i + 3], (flags & 2) == 0, VISIBILITY_ALTERNATE_WIDTH_PC,
+                              VisibilityAlternateHeightPc);
     }
     if ((results[0] & results[1] & results[2] & results[3] & results[4] & results[5] & results[6] & results[7]) != 0)
         return 1;
@@ -857,10 +864,10 @@ void __cdecl NuCameraCalcClipMtx(CAMERA_CLIP_PACKET_PC *clip, NUCAMERA *camera, 
 void __cdecl NuCameraTransformView(NUVEC *view, NUVEC *world, i32 count, NUMTX *matrix) {
     NUMTX transform;
     NUVEC *end = world + count;
-    if (matrix == NULL)
-        transform = vmtx;
-    else
+    if (matrix != NULL)
         NuMtxMul(&transform, matrix, &vmtx);
+    else
+        transform = vmtx;
     while (world < end)
         NuVecMtxTransform(view++, world++, &transform);
 }
@@ -868,10 +875,10 @@ void __cdecl NuCameraTransformView(NUVEC *view, NUVEC *world, i32 count, NUMTX *
 void __cdecl NuCameraTransformScreenClip(NUVEC *screen, NUVEC *world, i32 count, NUMTX *matrix) {
     NUMTX transform;
     NUVEC *end = world + count;
-    if (matrix == NULL)
-        transform = vpc_vport_mtx;
-    else
+    if (matrix != NULL)
         NuMtxMulH(&transform, matrix, &vpc_vport_mtx);
+    else
+        transform = vpc_vport_mtx;
     while (world < end)
         NuVecMtxTransformH(screen++, world++, &transform);
 }
@@ -879,10 +886,10 @@ void __cdecl NuCameraTransformScreenClip(NUVEC *screen, NUVEC *world, i32 count,
 void __cdecl NuCameraTransformScissorClip(NUVEC *screen, NUVEC *world, i32 count, NUMTX *matrix) {
     NUMTX transform;
     NUVEC *end = world + count;
-    if (matrix == NULL)
-        transform = vpc_sci_mtx;
-    else
+    if (matrix != NULL)
         NuMtxMulH(&transform, matrix, &vpc_sci_mtx);
+    else
+        transform = vpc_sci_mtx;
     while (world < end)
         NuVecMtxTransformH(screen++, world++, &transform);
 }
@@ -890,10 +897,10 @@ void __cdecl NuCameraTransformScissorClip(NUVEC *screen, NUVEC *world, i32 count
 void __cdecl NuCameraTransformScreen(NUVEC *screen, NUVEC *world, i32 count, NUMTX *matrix) {
     NUMTX transform;
     NUVEC *end = world + count;
-    if (matrix == NULL)
-        transform = vpsmtx;
-    else
+    if (matrix != NULL)
         NuMtxMulH(&transform, matrix, &vpsmtx);
+    else
+        transform = vpsmtx;
     while (world < end)
         NuVecMtxTransformH(screen++, world++, &transform);
 }
@@ -901,42 +908,38 @@ void __cdecl NuCameraTransformScreen(NUVEC *screen, NUVEC *world, i32 count, NUM
 void NuCameraTransformScreenVU0(NUVEC4 *screen, NUVEC4 *world, i32 count, NUMTX *matrix) {
     NUMTX transform;
     NUVEC4 *end = world + count;
-    if (matrix == NULL)
-        transform = vpsmtx;
-    else
+    if (matrix != NULL)
         NuMtxMulVU0(&transform, matrix, &vpsmtx);
+    else
+        transform = vpsmtx;
     while (world < end)
         NuVec4MtxTransformHVU0(screen++, world++, &transform);
 }
 
 i32 __cdecl NuCameraSaveState(void) {
-    CAMERA_SAVED_STATE_PC *state;
-    if (CameraSavedStateCountPc >= 16)
-        return 0;
-    state = &CameraSavedStatesPc[CameraSavedStateCountPc];
-    ++CameraSavedStateCountPc;
-    state->camera = global_camera;
-    state->view = vmtx;
-    state->projection = pmtx;
-    state->screen = smtx;
-    state->view_projection = vpmtx;
-    state->view_projection_scissor = vpc_sci_mtx;
-    state->view_projection_viewport = vpc_vport_mtx;
-    state->viewport = pc_vport_mtx;
-    state->view_projection_screen = vpsmtx;
-    state->projection_screen = psmtx;
-    state->effects = NuCameraMode;
-    state->zx = zx;
-    state->zy = zy;
-    state->zxs = VISIBILITY_ALTERNATE_WIDTH_PC;
-    state->zys = VisibilityAlternateHeightPc;
-    state->planes.frustum = AxisClipFrustumPlanesPc;
-    state->planes.scissor = AxisClipScissorPlanesPc;
-    state->planes.near_far = AxisClipNearFarPlanesPc;
-    state->planes.near_plane = CameraNearClipPlanePc;
-    state->planes.abs_frustum = AxisClipAbsFrustumPlanesPc;
-    state->planes.abs_scissor = AxisClipAbsScissorPlanesPc;
-    return CameraSavedStateCountPc;
+    i32 index = -1;
+    if (CameraSavedStateCountPc < 16) {
+        CAMERA_SAVED_STATE_PC *state;
+        index = CameraSavedStateCountPc++;
+        state = &CameraSavedStatesPc[index];
+        state->zx = zx;
+        state->camera = global_camera;
+        state->zy = zy;
+        state->zxs = VISIBILITY_ALTERNATE_WIDTH_PC;
+        state->zys = VisibilityAlternateHeightPc;
+        state->view = vmtx;
+        state->projection = pmtx;
+        state->screen = smtx;
+        state->view_projection = vpmtx;
+        state->view_projection_scissor = vpc_sci_mtx;
+        state->view_projection_viewport = vpc_vport_mtx;
+        state->viewport = pc_vport_mtx;
+        state->view_projection_screen = vpsmtx;
+        state->projection_screen = psmtx;
+        state->effects = NuCameraMode;
+        state->planes = CameraClipPlanesPc;
+    }
+    return index + 1;
 }
 
 void __cdecl NuCameraClearStateBuffer(void) {

@@ -2864,15 +2864,20 @@ extern "C" i32 NewRayCastPlatForm(NUVEC *position, NUVEC *movement, f32 radius, 
     TerrainShadowGroupIndexPc = -1;
     if (CurrentTerrain == NULL)
         return 0;
-    TerI = NuScratchAlloc32(sizeof(TerrainQuery_s));
-    TerrainQuery_s *query = static_cast<TerrainQuery_s *>(TerI);
+    TerrainQuery_s *query = static_cast<TerrainQuery_s *>(NuScratchAlloc32(sizeof(TerrainQuery_s)));
     query->object_scale = 1.0f;
     query->object_scale_sq = 1.0f;
-    TerrOverRideScan = NULL;
     query->inverse_object_scale = 1.0f;
+    TerI = query;
     query->inverse_object_scale_sq = 1.0f;
+    TerrOverRideScan = NULL;
     query->collision_radius = radius;
-    query->inverse_collision_radius = radius == 0.0f ? 0.0f : 1.0f / radius;
+    if (radius == 0.0f) {
+        query->inverse_collision_radius = 0.0f;
+    } else {
+        f32 inverse_radius = 1.0f / radius;
+        query->inverse_collision_radius = inverse_radius;
+    }
     query->collision_radius_sq = radius * radius;
     query->start_position.x = query->position.x = position->x;
     query->start_position.y = query->position.y = position->y;

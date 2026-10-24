@@ -13316,8 +13316,36 @@ void __cdecl AIScriptMissingConditionDiagnostic();
 
     extern f32 partglobaltime, debris_thinning_level;
     extern i32 part_emits_used, forced_debris_thinning;
-    extern NUMTX AxisClipFrustumPlanesPc, AxisClipScissorPlanesPc, AxisClipNearFarPlanesPc;
-    extern NUMTX AxisClipAbsFrustumPlanesPc, AxisClipAbsScissorPlanesPc;
+    typedef struct CAMERA_CLIP_PLANES_PC {
+        NUMTX frustum;
+        NUMTX scissor;
+        NUMTX near_far;
+        NUVEC4 near_plane;
+        NUMTX abs_frustum;
+        NUMTX abs_scissor;
+    } CAMERA_CLIP_PLANES_PC;
+    STATIC_ASSERT(sizeof(CAMERA_CLIP_PLANES_PC) == 0x150);
+    STATIC_ASSERT(offsetof(CAMERA_CLIP_PLANES_PC, scissor) == 0x40);
+    STATIC_ASSERT(offsetof(CAMERA_CLIP_PLANES_PC, near_far) == 0x80);
+    STATIC_ASSERT(offsetof(CAMERA_CLIP_PLANES_PC, near_plane) == 0xc0);
+    STATIC_ASSERT(offsetof(CAMERA_CLIP_PLANES_PC, abs_frustum) == 0xd0);
+    STATIC_ASSERT(offsetof(CAMERA_CLIP_PLANES_PC, abs_scissor) == 0x110);
+    extern CAMERA_CLIP_PLANES_PC CameraClipPlanesPc;
+    void __cdecl VisibilityZeroMatrixPc(NUMTX *);
+// Native SaveState copies this complete 0x150-byte working view.
+// The original allocation extent remains unknown.
+// NOLINTNEXTLINE(readability-identifier-naming)
+#define AxisClipFrustumPlanesPc CameraClipPlanesPc.frustum
+// NOLINTNEXTLINE(readability-identifier-naming)
+#define AxisClipScissorPlanesPc CameraClipPlanesPc.scissor
+// NOLINTNEXTLINE(readability-identifier-naming)
+#define AxisClipNearFarPlanesPc CameraClipPlanesPc.near_far
+// NOLINTNEXTLINE(readability-identifier-naming)
+#define CameraNearClipPlanePc CameraClipPlanesPc.near_plane
+// NOLINTNEXTLINE(readability-identifier-naming)
+#define AxisClipAbsFrustumPlanesPc CameraClipPlanesPc.abs_frustum
+// NOLINTNEXTLINE(readability-identifier-naming)
+#define AxisClipAbsScissorPlanesPc CameraClipPlanesPc.abs_scissor
     i32 __cdecl NuCameraClipTestExtentsAxisAligned(NUVEC *, NUVEC *, f32);
     i32 __cdecl AddPARTEffect(i32, NUVEC *);
     void __cdecl PARTStartOffset(i32, f32);
@@ -17593,7 +17621,6 @@ extern "C" {
     i32 __cdecl NuRndrSetFxMtx(NUMTX *);
     void __cdecl SetCameraMatrices(void);
     void __cdecl NuRndrStateSetSpecularLightEx(const NUVEC *, const NUMTX *, const NUVEC *);
-    extern NUVEC4 CameraNearClipPlanePc;
 
 #ifdef __cplusplus
 }
@@ -17646,21 +17673,6 @@ extern "C" {
     STATIC_ASSERT(offsetof(CAMERA_CLIP_PACKET_PC, near_clip) == 0x88);
     STATIC_ASSERT(offsetof(CAMERA_CLIP_PACKET_PC, x_scale) == 0x8c);
     STATIC_ASSERT(offsetof(CAMERA_CLIP_PACKET_PC, y_scale) == 0x90);
-
-    typedef struct CAMERA_CLIP_PLANES_PC {
-        NUMTX frustum;
-        NUMTX scissor;
-        NUMTX near_far;
-        NUVEC4 near_plane;
-        NUMTX abs_frustum;
-        NUMTX abs_scissor;
-    } CAMERA_CLIP_PLANES_PC;
-    STATIC_ASSERT(sizeof(CAMERA_CLIP_PLANES_PC) == 0x150);
-    STATIC_ASSERT(offsetof(CAMERA_CLIP_PLANES_PC, scissor) == 0x40);
-    STATIC_ASSERT(offsetof(CAMERA_CLIP_PLANES_PC, near_far) == 0x80);
-    STATIC_ASSERT(offsetof(CAMERA_CLIP_PLANES_PC, near_plane) == 0xc0);
-    STATIC_ASSERT(offsetof(CAMERA_CLIP_PLANES_PC, abs_frustum) == 0xd0);
-    STATIC_ASSERT(offsetof(CAMERA_CLIP_PLANES_PC, abs_scissor) == 0x110);
 
     typedef struct CAMERA_SAVED_STATE_PC {
         NUCAMERA camera;

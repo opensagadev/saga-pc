@@ -5378,7 +5378,7 @@ address,symbol,size,ctype
 0x5b4210,_NuHalfToFloat,66,f32 __cdecl (i16 value)
 0x5b4260,_NuVec4ToNuHalfVec4,296,"void __cdecl (NUVEC4 *v, NUHALFVEC4 *out)"
 0x5b4390,_NuHalfVec4ToNuVec4,302,"void __cdecl (NUHALFVEC4 *v, NUVEC4 *out)"
-0x5b44c0,_VisibilityZeroMatrixPc,21,
+0x5b44c0,_VisibilityZeroMatrixPc,21,void __cdecl(NUMTX *)
 0x005b44e0,_NuMtxSetIdentity,21,void __cdecl (NUMTX *)
 0x005b4500,_NuMtxSetTranslation,68,"void __cdecl (NUMTX *, NUVEC *)"
 0x005b4550,_NuMtxSetTranslationNeg,74,"void __cdecl (NUMTX *, NUVEC *)"
@@ -7006,7 +7006,7 @@ address,symbol,size,ctype
 0x00650470,_SfxNameHashN,77,"u32 __cdecl (const char *, u32)"
 0x006504c0,_SetSfxBit_OnEx,47,void __cdecl (i32)
 0x006504f0,_SetSfxBit_OffEx,54,void __cdecl (i32)
-0x00650530,_SfxBitEx,57,i32 __cdecl (i32)
+0x00650530,_SfxBitEx,60,i32 __cdecl (i32)
 0x00650570,_SetSfxBit_On,70,void __cdecl (i32)
 0x00650850,_SfxBitsStore,24,void __cdecl (SoundTable *)
 0x00650870,_SfxBitsRestore,24,void __cdecl (SoundTable *)
@@ -16282,6 +16282,7 @@ address,symbol,size,ctype
 0x76d280,__real@bf00000000000000,8,const f64
 0x0076d288,__real@40159999a0000000,8,const f64
 0x0076d290,__real@41d6666660000000,8,const f64
+0x76d298,__real@477fff00,4,const f32
 0x76d29c,__real@501502f9,4,const f32
 0x76d2a0,??_C@_0BC@LMEPBPCA@Override?5PlayCont?$AA@,18,char []
 0x76d2b4,??_C@_0O@EDDDNIPL@Override?5Play?$AA@,14,char []
@@ -20417,6 +20418,8 @@ address,symbol,size,ctype
 0x7ffe20,_PodSebulbaFarThrowPc,4,f32
 0x7ffe24,_PodSebulbaThrowSpreadPc,4,f32
 0x7ffe28,_PodSebulbaThrowAheadPc,4,f32
+0x7ffe2c,_SebulbaThrowIntervalPc,,f32
+0x7ffe30,_SebulbaDistanceBiasPc,,f32
 0x7ffe44,_paint_name,24,char *[6]
 0x7ffe5c,_paint_panel_name,12,char *[3]
 0x7ffe68,_paint_target_colour,12,char *[3]
@@ -23221,6 +23224,7 @@ address,symbol,size,ctype
 0x882ab0,_MaulA_ai_message,4,struct gizaimessage_s *
 0x882ab4,_MaulA_hits_message,4,GIZAIMESSAGE *
 0x882ab8,?player_ix@?1??PodRaceSnipersUpdate@@9@9,,
+0x882abc,_SebulbaMineSpecialPc,,NUSPECIALHANDLE
 0x882ac8,_paintobst,24,GIZMO_PC *[6]
 0x882ae4,_ObiWan,4,GAMEOBJECT *
 0x882ae8,_LevForce,4,i32
@@ -24392,12 +24396,7 @@ address,symbol,size,ctype
 0x00963fb0,_fstack,4,VARIPTR
 0x963fb4,_RendererArenaDataPc,,u8 *
 0x963fb8,_NuPortalFrustumCountPc,,i32 *
-0x963fc0,_AxisClipFrustumPlanesPc,,NUMTX
-0x964000,_AxisClipScissorPlanesPc,,NUMTX
-0x964040,_AxisClipNearFarPlanesPc,,NUMTX
-0x964080,_CameraNearClipPlanePc,,NUVEC4
-0x964090,_AxisClipAbsFrustumPlanesPc,,NUMTX
-0x9640d0,_AxisClipAbsScissorPlanesPc,,NUMTX
+0x963fc0,_CameraClipPlanesPc,,CAMERA_CLIP_PLANES_PC
 0x00964110,_sceneParameters,,NURNDRLIBSCENE[32]
 0x966290,_VisibilityAlternateWidthPc,,f32
 0x00966398,_zx,4,f32

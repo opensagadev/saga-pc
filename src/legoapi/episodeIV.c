@@ -437,12 +437,12 @@ static void BlockadeRunnerDKillEjectedCreaturePc(PART_PC *part, i32 reason) {
     }
 }
 
+static NUVEC BlockadeRunnerDEjectVecPc[2] = {{13.0f, 1.6f, 7.93f}, {13.0f, 1.6f, 6.55f}};
+static NUVEC BlockadeRunnerDEjectMomPc = {-0.5f, 0.0f, 0.0f};
+
 static i32 BlockadeRunnerDDrawCreaturePc(PART_PC *part) {
     return 0;
 }
-
-static NUVEC BlockadeRunnerDEjectMomPc = {-0.5f, 0.0f, 0.0f};
-static NUVEC BlockadeRunnerDEjectVecPc[2] = {{13.0f, 1.6f, 7.93f}, {13.0f, 1.6f, 6.55f}};
 
 static void BlockadeRunnerDEjectCreaturePc(i32 eject_index) {
     i32 models[4];

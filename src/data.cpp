@@ -13745,21 +13745,10 @@ extern "C" {
 }
 
 extern "C" {
-#pragma bss_seg(".bss$AxisClipFrustumPlanesPc")
-    NUMTX AxisClipFrustumPlanesPc = {0};
+#pragma bss_seg(".bss$CameraClipPlanesPc")
+    CAMERA_CLIP_PLANES_PC CameraClipPlanesPc = {0};
 #pragma bss_seg()
-#pragma bss_seg(".bss$AxisClipScissorPlanesPc")
-    NUMTX AxisClipScissorPlanesPc = {0};
-#pragma bss_seg()
-#pragma bss_seg(".bss$AxisClipNearFarPlanesPc")
-    NUMTX AxisClipNearFarPlanesPc = {0};
-#pragma bss_seg()
-#pragma bss_seg(".bss$AxisClipAbsFrustumPlanesPc")
-    NUMTX AxisClipAbsFrustumPlanesPc = {0};
-#pragma bss_seg()
-#pragma bss_seg(".bss$AxisClipAbsScissorPlanesPc")
-    NUMTX AxisClipAbsScissorPlanesPc = {0};
-#pragma bss_seg()
+
 #pragma bss_seg(".bss$freedebchunksglass")
     DEBRIS_PARTICLE_CHUNK_PC **freedebchunksglass = 0;
 #pragma bss_seg()
@@ -19179,12 +19168,6 @@ extern "C" {
 #pragma data_seg()
 #pragma data_seg(".data$gizrandom_gizmotype_id")
     i32 gizrandom_gizmotype_id = -1;
-#pragma data_seg()
-}
-
-extern "C" {
-#pragma data_seg(".data$CameraNearClipPlanePc")
-    NUVEC4 CameraNearClipPlanePc = {0.0f, 0.0f, 0.0f, 0.0f};
 #pragma data_seg()
 }
 
@@ -35106,5 +35089,20 @@ extern "C" {
 #pragma data_seg()
 #pragma data_seg(".data$DrawGameObjectsVehicleFarClipPc")
     f32 DrawGameObjectsVehicleFarClipPc = 50.0f;
+#pragma data_seg()
+}
+
+extern "C" {
+#pragma bss_seg(".bss$SebulbaMineSpecialPc")
+    NUSPECIALHANDLE SebulbaMineSpecialPc = {0};
+#pragma bss_seg()
+}
+
+extern "C" {
+#pragma data_seg(".data$SebulbaThrowIntervalPc")
+    f32 SebulbaThrowIntervalPc = 1.0f;
+#pragma data_seg()
+#pragma data_seg(".data$SebulbaDistanceBiasPc")
+    f32 SebulbaDistanceBiasPc = 25.0f;
 #pragma data_seg()
 }

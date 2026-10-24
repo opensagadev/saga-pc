@@ -216,7 +216,7 @@ extern NUPLANE VisibilityAbsoluteDepthPlanePc;
 extern f32 VisibilityAlternateHeightPc;
 
 /* Native21 copies the complete64-byte zero template; no invented scale helper. */
-static void VisibilityZeroMatrixPc(NUMTX *matrix) {
+__declspec(noinline) void __cdecl VisibilityZeroMatrixPc(NUMTX *matrix) {
     *matrix = VisibilityZeroMatrixTemplatePc;
 }
 
