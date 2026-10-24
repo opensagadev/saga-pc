@@ -548,14 +548,14 @@ GIZACTIONDEF_PC *gizactiondefs = 0;
 static void GizFlowConfigGizmoTypePc(NUFPAR_PC *parser) {
 
     NuFParGetWord(parser);
-    if (parser->word_buffer != NULL)
-        load_gizmotype = GizmoGetTypeIDByName(load_gizflow->gizmo_sys, parser->word_buffer);
+    if (parser->word_buffer_ptr != NULL)
+        load_gizmotype = GizmoGetTypeIDByName(load_gizflow->gizmo_sys, parser->word_buffer_ptr);
 }
 static void GizFlowConfigGizmoNamePc(NUFPAR_PC *parser) {
 
     NuFParGetWord(parser);
-    if (parser->word_buffer != NULL)
-        NuStrNCpy(load_gizmoname, parser->word_buffer, 32);
+    if (parser->word_buffer_ptr != NULL)
+        NuStrNCpy(load_gizmoname, parser->word_buffer_ptr, 32);
 }
 static void GizFlowConfigStartInvisPc(NUFPAR_PC *parser) {
 
@@ -988,8 +988,8 @@ void RegisterGizActions(GIZACTIONDEF_PC *definitions) {
 static void GizFlowConfigNamePc(NUFPAR_PC *parser) {
 
     NuFParGetWord(parser);
-    if (parser->word_buffer != NULL)
-        NuStrNCpy(load_name, parser->word_buffer, 32);
+    if (parser->word_buffer_ptr != NULL)
+        NuStrNCpy(load_name, parser->word_buffer_ptr, 32);
 }
 static void GizFlowConfigNumGizmosPc(NUFPAR_PC *parser) {
 
