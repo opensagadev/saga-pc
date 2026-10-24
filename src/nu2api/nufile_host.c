@@ -209,3 +209,59 @@ void __cdecl NuFileClose(NUFILE file) {
         info->buf->file_info = NULL;
     memset(info, 0, sizeof(FILEINFO));
 }
+
+typedef struct AI_EDITOR_FILE_INFO_PC {
+    u32 flags;
+    u32 size;
+    i8 created_second;
+    i8 created_minute;
+    i8 created_hour;
+    i8 created_day;
+    i8 created_month;
+    u8 unknown_0d;
+    i16 created_year;
+    i8 second;
+    i8 minute;
+    i8 hour;
+    i8 day;
+    i8 month;
+    u8 unknown_15;
+    i16 year;
+    u8 unknown_18;
+    u8 unknown_19[3];
+} AI_EDITOR_FILE_INFO_PC;
+STATIC_ASSERT(sizeof(AI_EDITOR_FILE_INFO_PC) == 0x1c);
+STATIC_ASSERT(offsetof(AI_EDITOR_FILE_INFO_PC, second) == 0x10);
+STATIC_ASSERT(offsetof(AI_EDITOR_FILE_INFO_PC, year) == 0x16);
+STATIC_ASSERT(offsetof(AI_EDITOR_FILE_INFO_PC, unknown_18) == 0x18);
+
+i32 __cdecl NuFileGetInfo(char *path, AI_EDITOR_FILE_INFO_PC *info) {
+    WIN32_FILE_ATTRIBUTE_DATA attributes;
+    SYSTEMTIME time;
+    u32 flags;
+
+    GetFileAttributesExA(path, GetFileExInfoStandard, &attributes);
+    flags = (attributes.dwFileAttributes & 0x4000) | 0x400;
+    flags >>= 9;
+    flags |= attributes.dwFileAttributes & 0x10;
+    flags >>= 1;
+    flags |= ~(attributes.dwFileAttributes << 1) & 2;
+    info->flags = flags;
+    info->unknown_18 = 0;
+    info->size = attributes.nFileSizeLow;
+    FileTimeToSystemTime(&attributes.ftCreationTime, &time);
+    info->created_year = (i16)time.wYear;
+    info->created_month = (i8)time.wMonth;
+    info->created_hour = (i8)time.wHour;
+    info->created_day = (i8)time.wDay;
+    info->created_minute = (i8)time.wMinute;
+    info->created_second = (i8)time.wSecond;
+    FileTimeToSystemTime(&attributes.ftLastWriteTime, &time);
+    info->year = (i16)time.wYear;
+    info->month = (i8)time.wMonth;
+    info->day = (i8)time.wDay;
+    info->hour = (i8)time.wHour;
+    info->minute = (i8)time.wMinute;
+    info->second = (i8)time.wSecond;
+    return 1;
+}

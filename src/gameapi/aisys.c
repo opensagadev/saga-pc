@@ -13017,3 +13017,149 @@ void __cdecl creatureEditorSaveData(AIPATHSYS_PC *system) {
         }
     }
 }
+
+typedef struct AI_EDITOR_AREA_SAVE_RECORD_PC {
+    NULISTLNK link;
+    char name[16];
+    NUVEC position;
+    NUVEC size;
+    u16 rotation;
+    u8 unknown_32;
+    u8 flags;
+} AI_EDITOR_AREA_SAVE_RECORD_PC;
+STATIC_ASSERT(sizeof(AI_EDITOR_AREA_SAVE_RECORD_PC) == 0x34);
+STATIC_ASSERT(offsetof(AI_EDITOR_AREA_SAVE_RECORD_PC, position) == 0x18);
+STATIC_ASSERT(offsetof(AI_EDITOR_AREA_SAVE_RECORD_PC, rotation) == 0x30);
+STATIC_ASSERT(offsetof(AI_EDITOR_AREA_SAVE_RECORD_PC, flags) == 0x33);
+typedef struct AI_EDITOR_AREA_SAVE_OWNER_PC {
+    u8 unknown_00[0x383c0];
+    NULISTHDR areas;
+} AI_EDITOR_AREA_SAVE_OWNER_PC;
+STATIC_ASSERT(offsetof(AI_EDITOR_AREA_SAVE_OWNER_PC, areas) == 0x383c0);
+
+void __cdecl areaEditorSaveData(void) {
+    AI_EDITOR_AREA_SAVE_RECORD_PC *area;
+    i32 count = 0;
+    for (area =
+             (AI_EDITOR_AREA_SAVE_RECORD_PC *)NuLinkedListGetHead(&((AI_EDITOR_AREA_SAVE_OWNER_PC *)aieditor)->areas);
+         area != NULL; area = (AI_EDITOR_AREA_SAVE_RECORD_PC *)NuLinkedListGetNext(
+                           &((AI_EDITOR_AREA_SAVE_OWNER_PC *)aieditor)->areas, &area->link)) {
+        ++count;
+    }
+    EdFileWriteInt(count);
+    for (area =
+             (AI_EDITOR_AREA_SAVE_RECORD_PC *)NuLinkedListGetHead(&((AI_EDITOR_AREA_SAVE_OWNER_PC *)aieditor)->areas);
+         area != NULL; area = (AI_EDITOR_AREA_SAVE_RECORD_PC *)NuLinkedListGetNext(
+                           &((AI_EDITOR_AREA_SAVE_OWNER_PC *)aieditor)->areas, &area->link)) {
+        EdFileWrite(area->name, 16);
+        EdFileWriteFloat(area->position.x);
+        EdFileWriteFloat(area->position.y);
+        EdFileWriteFloat(area->position.z);
+        EdFileWriteFloat(area->size.x);
+        EdFileWriteFloat(area->size.y);
+        EdFileWriteFloat(area->size.z);
+        EdFileWriteShort(area->rotation);
+        if (aidata_version > 19)
+            EdFileWriteChar(area->flags);
+        else
+            EdFileWriteChar(0);
+        EdFileWriteChar(0);
+    }
+}
+
+typedef struct AI_EDITOR_FILE_INFO_PC {
+    u32 flags;
+    u32 size;
+    i8 created_second;
+    i8 created_minute;
+    i8 created_hour;
+    i8 created_day;
+    i8 created_month;
+    u8 unknown_0d;
+    i16 created_year;
+    i8 second;
+    i8 minute;
+    i8 hour;
+    i8 day;
+    i8 month;
+    u8 unknown_15;
+    i16 year;
+    u8 unknown_18;
+    u8 unknown_19[3];
+} AI_EDITOR_FILE_INFO_PC;
+STATIC_ASSERT(sizeof(AI_EDITOR_FILE_INFO_PC) == 0x1c);
+STATIC_ASSERT(offsetof(AI_EDITOR_FILE_INFO_PC, second) == 0x10);
+STATIC_ASSERT(offsetof(AI_EDITOR_FILE_INFO_PC, year) == 0x16);
+STATIC_ASSERT(offsetof(AI_EDITOR_FILE_INFO_PC, unknown_18) == 0x18);
+
+typedef struct AI_EDITOR_SAVE_OWNER_PC {
+    u8 unknown_00[0x4382c];
+    char *first_directory;
+    char *file_stem;
+    char *second_directory;
+    u8 scratch[0x80000];
+} AI_EDITOR_SAVE_OWNER_PC;
+STATIC_ASSERT(offsetof(AI_EDITOR_SAVE_OWNER_PC, first_directory) == 0x4382c);
+STATIC_ASSERT(offsetof(AI_EDITOR_SAVE_OWNER_PC, file_stem) == 0x43830);
+STATIC_ASSERT(offsetof(AI_EDITOR_SAVE_OWNER_PC, second_directory) == 0x43834);
+STATIC_ASSERT(offsetof(AI_EDITOR_SAVE_OWNER_PC, scratch) == 0x43838);
+STATIC_ASSERT(sizeof(AI_EDITOR_SAVE_OWNER_PC) == 0xc3838);
+extern void *AiEditorPathScratchCursorPc;
+extern void *AiEditorPathScratchEndPc;
+extern void(__cdecl *GameAISaveFn)(AIPATHSYS_PC *);
+extern const char AiEditorDatedBackupFormatPc[];
+AIPATHSYS_PC *__cdecl pathEditorCreateData(VARIPTR *, VARIPTR *, void **, void **);
+i32 __cdecl NuFileGetInfo(char *, AI_EDITOR_FILE_INFO_PC *);
+i32 __cdecl NuFileCopy(char *, char *);
+void __cdecl creatureEditorSaveData(AIPATHSYS_PC *);
+
+i32 __cdecl aieditor_Save(void) {
+    VARIPTR cursor;
+    VARIPTR end;
+    AIPATHSYS_PC *paths;
+    AI_EDITOR_FILE_INFO_PC info;
+    char filename[128];
+    char backup[128];
+    char *basename;
+    char *separator;
+
+    cursor.char_ptr = (char *)((AI_EDITOR_SAVE_OWNER_PC *)aieditor)->scratch;
+    end.char_ptr = cursor.char_ptr + sizeof(((AI_EDITOR_SAVE_OWNER_PC *)0)->scratch);
+    memset(cursor.char_ptr, 0, sizeof(((AI_EDITOR_SAVE_OWNER_PC *)0)->scratch));
+    paths = pathEditorCreateData(&cursor, &end, &AiEditorPathScratchCursorPc, &AiEditorPathScratchEndPc);
+    if (paths == NULL)
+        return 1;
+    if (((AI_EDITOR_SAVE_OWNER_PC *)aieditor)->file_stem == NULL)
+        return 1;
+    sprintf(filename, "%sLevels\\%s\\%s\\%s.ai2", AiLevelPathName,
+            ((AI_EDITOR_SAVE_OWNER_PC *)aieditor)->first_directory,
+            ((AI_EDITOR_SAVE_OWNER_PC *)aieditor)->second_directory, ((AI_EDITOR_SAVE_OWNER_PC *)aieditor)->file_stem);
+    if (NuFileExists(filename)) {
+        if (NuFileGetInfo(filename, &info)) {
+            basename = filename;
+            separator = NuStrIStr(basename, "\\");
+            while (separator != NULL) {
+                basename = separator + 1;
+                separator = NuStrIStr(basename, "\\");
+            }
+            sprintf(backup, AiEditorDatedBackupFormatPc, basename, info.year, info.month, info.day, info.hour,
+                    info.minute, info.second);
+            NuFileCopy(backup, filename);
+        }
+        sprintf(backup, "%s.bak", filename);
+        NuFileCopy(backup, filename);
+    }
+    EdFileSetMedia(1);
+    if (EdFileOpen(filename, 1) == 0)
+        return 0;
+    EdFileWriteInt(aidata_version);
+    pathEditorSaveData(paths);
+    areaEditorSaveData();
+    locatorEditorSaveData(paths);
+    creatureEditorSaveData(paths);
+    antinodeEditorSaveData();
+    if (GameAISaveFn != NULL)
+        GameAISaveFn(paths);
+    EdFileClose();
+    return 1;
+}

@@ -35111,3 +35111,10 @@ extern "C" {
 extern "C" {
     __declspec(allocate(".bss$DRAWBGLOAD")) i32 DRAWBGLOAD = 0;
 }
+
+extern "C" {
+    void *AiEditorPathScratchCursorPc = NULL;
+    void *AiEditorPathScratchEndPc = NULL;
+    void(__cdecl *GameAISaveFn)(AIPATHSYS_PC *) = NULL;
+    extern const char AiEditorDatedBackupFormatPc[32] = "ai_backups\\%s.%d_%d_%d_%d_%d_%d";
+}
