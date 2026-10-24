@@ -66,28 +66,6 @@ i64 __cdecl NuFileOpenSize(NUFILE file) {
     return file_info[file - 1].file_len;
 }
 
-i64 __cdecl NuDatFileSeek(NUFILE file, i64 offset, i32 whence) {
-    PC_NUDATFILEINFO *info = &pc_dat_file_infos[file - 0x800];
-    NUDATOPENFILEINFO *open_file = &info->header->open_files[info->open_file_index];
-    i64 target_position;
-
-    switch (whence) {
-        case 1:
-            target_position = info->position + offset;
-            break;
-        case 2:
-            target_position = info->start + info->file_length - offset;
-            break;
-        default:
-            target_position = info->start + offset;
-            break;
-    }
-
-    info->position = NuFileSeek(open_file->dat_file, target_position, 0);
-    open_file->position = info->position;
-    return info->position;
-}
-
 i64 __cdecl NuFileSize(char *filepath) {
     i32 saved_buffering = nufile_buffering_enabled;
     i64 position = -1;

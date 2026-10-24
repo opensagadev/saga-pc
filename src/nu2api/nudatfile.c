@@ -263,28 +263,6 @@ i32 __cdecl NuMemFileRead(NUFILE file, void *destination, i32 size) {
     return size;
 }
 
-i64 __cdecl NuMemFileSeek(NUFILE file, i64 offset, i32 origin) {
-    PC_NUMEMFILE *memory;
-
-    if (file >= 0x800) {
-        return NuDatFileSeek(file, offset, origin);
-    }
-
-    memory = &pc_memfiles[file - 0x400];
-    switch (origin) {
-        case 1:
-            memory->position += (i32)offset;
-            break;
-        case 2:
-            memory->position = memory->end - (i32)offset;
-            break;
-        default:
-            memory->position = memory->buffer + (i32)offset;
-            break;
-    }
-    return memory->position - memory->buffer;
-}
-
 void __cdecl NuMemFileClose(NUFILE file) {
     if (file >= 0x800) {
         PC_NUDATFILEINFO *info = &pc_dat_file_infos[file - 0x800];

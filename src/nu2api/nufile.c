@@ -1246,6 +1246,79 @@ i32 __cdecl NuFileLoadBufferVP(char *filepath, VARIPTR *buffer, VARIPTR *buffer_
     return loaded;
 }
 
+i64 __cdecl NuDatFileSeek(NUFILE file, i64 offset, i32 whence) {
+    PC_NUDATFILEINFO *info = &pc_dat_file_infos[file - 0x800];
+    NUDATOPENFILEINFO *open_file = &info->header->open_files[info->open_file_index];
+    i64 target_position;
+
+    switch (whence) {
+        case 1:
+            target_position = info->position + offset;
+            break;
+        case 2:
+            target_position = info->start + info->file_length - offset;
+            break;
+        default:
+            target_position = info->start + offset;
+            break;
+    }
+
+    info->position = NuFileSeek(open_file->dat_file, target_position, 0);
+    open_file->position = info->position;
+    return info->position;
+}
+
+i64 __cdecl NuMemFileSeek(NUFILE file, i64 offset, i32 origin) {
+    PC_NUMEMFILE *memory;
+
+    if (file >= 0x800) {
+        return NuDatFileSeek(file, offset, origin);
+    }
+
+    memory = &pc_memfiles[file - 0x400];
+    switch (origin) {
+        case 1:
+            memory->position += (i32)offset;
+            break;
+        case 2:
+            memory->position = memory->end - (i32)offset;
+            break;
+        default:
+            memory->position = memory->buffer + (i32)offset;
+            break;
+    }
+    return memory->position - memory->buffer;
+}
+
+i64 __cdecl NuFileSeek(NUFILE file, i64 offset, i32 origin) {
+    FILEINFO *info;
+
+    if (file >= 0x1000) {
+        return NuMcSeek(file - 0x1000, (i32)offset, origin, 0);
+    }
+    if (file >= 0x400) {
+        return NuMemFileSeek(file, offset, origin);
+    }
+
+    file--;
+    info = &file_info[file];
+    if (info->use_buf == 0)
+        return NuPSFileLSeek(file, offset, origin);
+
+    switch (origin) {
+        case 1:
+            info->read_pos += offset;
+            break;
+        case 2:
+            info->read_pos = info->file_len - offset;
+            break;
+        default:
+            info->read_pos = offset;
+            break;
+    }
+    return info->read_pos;
+}
+
 NUDATHDR *__cdecl NuDatOpenEx(const char *filepath, VARIPTR *arena, i32 *size_out, i16 mode) {
     i32 saved_buffering = nufile_buffering_enabled;
     NUFILE file = NuFileOpenDF(filepath, mode, NULL, 0);
@@ -1270,22 +1343,16 @@ NUDATHDR *__cdecl NuDatOpenEx(const char *filepath, VARIPTR *arena, i32 *size_ou
         }
     }
 
-    if (datsys_offset != 0) {
-        do {
-            metadata_pos = NuFileSeek(file, datsys_offset, 0);
-            if (metadata_pos < 0)
-                NuFileRetry();
-        } while (metadata_pos < 0);
-    }
+    if (datsys_offset != 0)
+        NuFileSeek(file, datsys_offset, 0);
     do {
         read_size = NuFileRead(file, locator, sizeof(locator));
         if (read_size < 0) {
             NuFileRetry();
-            NuFileSeek(file, datsys_offset, 0);
+            while (NuFileSeek(file, datsys_offset, 0) < 0)
+                NuFileRetry();
         }
     } while (read_size < 0);
-    if (read_size != sizeof(locator))
-        goto close_file;
     if (mode == 3) {
         while (NuFileStatus(file) != 0) {
         }
@@ -1309,11 +1376,9 @@ NUDATHDR *__cdecl NuDatOpenEx(const char *filepath, VARIPTR *arena, i32 *size_ou
     default_device->format_name_fn(default_device, formatted_name, (char *)filepath, sizeof(formatted_name));
     name_len = NuStrLen(formatted_name);
     name_storage = (name_len + 16) & ~15;
-    if (metadata_len < 16 || metadata_len > 0x7fffffff - 0xc0 - name_storage)
-        goto close_file;
     allocation_size = sizeof(NUDATHDR) + name_storage + metadata_len;
 
-    if (arena == NULL || arena->void_ptr == NULL) {
+    if (arena == NULL) {
         NuFileError();
         STUBBED_NAMED("NuDatOpenEx: permanent arena not initialized");
         goto close_file;
@@ -1334,8 +1399,6 @@ NUDATHDR *__cdecl NuDatOpenEx(const char *filepath, VARIPTR *arena, i32 *size_ou
             NuFileSeek(file, metadata_pos, 0);
         }
     } while (read_size < 0);
-    if (read_size != metadata_len)
-        goto close_file;
     if (mode == 3) {
         while (NuFileStatus(file) != 0) {
         }
@@ -1343,27 +1406,19 @@ NUDATHDR *__cdecl NuDatOpenEx(const char *filepath, VARIPTR *arena, i32 *size_ou
 
     header->version = ((i32 *)metadata)[0];
     header->file_count = ((i32 *)metadata)[1];
-    if (header->file_count < 0 || header->file_count > (metadata_len - 16) / (i32)sizeof(NUDATFINFO))
-        goto close_file;
     header->file_info = (NUDATFINFO *)(metadata + 8);
     cursor = (u8 *)(header->file_info + header->file_count);
     header->tree_node_count = *(i32 *)cursor;
     cursor += sizeof(i32);
-    if (header->tree_node_count < 0 ||
-        header->tree_node_count > (metadata + metadata_len - cursor - 4) / (i32)sizeof(NUDFNODE))
-        goto close_file;
     header->file_tree = (NUDFNODE *)cursor;
     cursor += header->tree_node_count * sizeof(NUDFNODE);
     header->leaf_names_len = *(i32 *)cursor;
     cursor += sizeof(i32);
-    if (header->leaf_names_len < 0 || header->leaf_names_len > metadata + metadata_len - cursor)
-        goto close_file;
     header->leaf_names = (char *)cursor;
     for (index = 0; index < header->tree_node_count; ++index) {
         header->file_tree[index].name = header->leaf_names + (u32)header->file_tree[index].name;
     }
-    if (header->tree_node_count != 0)
-        header->file_tree[0].name = NULL;
+    header->file_tree[0].name = NULL;
     cursor += header->leaf_names_len;
 
     header->hash_idxs = NULL;
@@ -1371,16 +1426,12 @@ NUDATHDR *__cdecl NuDatOpenEx(const char *filepath, VARIPTR *arena, i32 *size_ou
     header->hashes_len = 0;
     header->hashes = NULL;
     if (header->version < -1) {
-        if (metadata + metadata_len - cursor < header->file_count * (i32)sizeof(u32) + 8)
-            goto close_file;
         header->hash_idxs = (u32 *)cursor;
         cursor += header->file_count * sizeof(u32);
         header->hash_count = *(i32 *)cursor;
         cursor += sizeof(i32);
         header->hashes_len = *(i32 *)cursor;
         cursor += sizeof(i32);
-        if (header->hashes_len < 0 || header->hashes_len > metadata + metadata_len - cursor)
-            goto close_file;
         header->hashes = (char *)cursor;
         hashes_start = (u8 *)header->file_tree;
         PCByteCopy_candidate(hashes_start, header->hash_idxs, header->file_count * sizeof(u32));

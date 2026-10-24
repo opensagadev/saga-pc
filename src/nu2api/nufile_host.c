@@ -137,35 +137,6 @@ NUFILE __cdecl NuFileOpenDF(const char *filepath, i32 mode, NUDATHDR *header, i3
     return index + 1;
 }
 
-i64 __cdecl NuFileSeek(NUFILE file, i64 offset, i32 origin) {
-    FILEINFO *info;
-
-    if (file >= 0x1000) {
-        return NuMcSeek(file - 0x1000, (i32)offset, origin, 0);
-    }
-    if (file >= 0x400) {
-        return NuMemFileSeek(file, offset, origin);
-    }
-
-    file--;
-    info = &file_info[file];
-    if (info->use_buf == 0)
-        return NuPSFileLSeek(file, offset, origin);
-
-    switch (origin) {
-        case 1:
-            info->read_pos += offset;
-            break;
-        case 2:
-            info->read_pos = info->file_len - offset;
-            break;
-        default:
-            info->read_pos = offset;
-            break;
-    }
-    return info->read_pos;
-}
-
 i32 __cdecl NuFileRead(NUFILE file, void *destination, i32 size) {
     FILEINFO *info;
     i32 bytes_read;
