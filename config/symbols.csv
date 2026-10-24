@@ -2552,6 +2552,7 @@ address,symbol,size,ctype
 0x4f2370,_NuStrLenW,29,
 0x4f24e0,_NuStrICmpW,133,
 0x004f26e0,_NuStrLwrW,76,"void __cdecl (u16 *, const u16 *)"
+0x004f2730,_NuVSPrintf,5,"i32 __cdecl(char *, const char *, va_list)"
 0x4f2740,_NuSPrintf,43,"i32 __cdecl (char *, const char *, ...)"
 0x004f2770,_NuIsAlNum,119,i32 __cdecl (char)
 0x4f2860,_NuIToA,121,"char *__cdecl(i32,char*,i32)"

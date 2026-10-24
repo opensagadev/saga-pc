@@ -1174,6 +1174,10 @@ i32 __cdecl NuStringFilterBadWords(u8 *dest, u8 *source, u8 *replacement) {
 
 #undef NU_WIDE_LENGTH
 
+i32 __cdecl NuVSPrintf(char *dest, const char *format, va_list args) {
+    return vsprintf(dest, format, args);
+}
+
 i32 __cdecl NuSPrintf(char *dest, const char *format, ...) {
     va_list args;
     i32 length;
