@@ -13690,6 +13690,7 @@ address,symbol,size,ctype
 0x0075c078,__real@3fe8a3d700000000,8,const f64
 0x0075c080,__real@3f451eb8,4,const f32
 0x75c084,??_C@_0BF@PPFHOPKB@X?3?$CF?42f?5Y?3?$CF?42f?5Z?3?$CF?42f?$AA@,21,char[21]
+0x0075c0a0,__real@3fac28f5c0000000,8,const f64
 0x0075c0a8,_NuTimeBarFontScale,4,const f32
 0x75c0a8,__real@3f59999a,,f32
 0x75c0ac,__real@bf59999a,4,f32

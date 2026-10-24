@@ -4845,8 +4845,42 @@ extern "C" {
                        (STATSPOSY - STATSPOS2YPc) * NuTrigTable[((i32)((f64)statstime * 16384.0) >> 1) & 0x7fff] +
                            STATSPOS2YPc,
                        1.0f, 0.6f, 0.6f, 0.6f, 0, 255, 191, 0);
+            } else if (BonusArea == 0 && Mission_Active(NULL) != NULL) {
+                f32 mission_y =
+                    (STATSPOSY - STATSPOS2YPc) * NuTrigTable[((i32)((f64)statstime * 16384.0) >> 1) & 0x7fff] +
+                    STATSPOS2YPc;
+                f32 remaining = (f32)MissionSys->missions[(i8)MissionSys->active_mission->index].time -
+                                MissionSys->timer.time_elapsed;
+                if (remaining < 0.0f)
+                    remaining = 0.0f;
+                Text_MakeTime(remaining, 0, 1, 1, coordinate_text);
+                Text3D(coordinate_text, 0.0f, mission_y, 1.0f, 0.6f, 0.6f, 0.6f, 0, 255, 191, 0);
+                if (paused == 0) {
+                    GAMEOBJECT *target = Mission_FindTarget(MissionSys, NULL);
+                    if (target != NULL && player != NULL) {
+                        f32 pulse =
+                            (f32)((f64)NuTrigTable[(u16)((f64)(NuFmod(GameTimer.time_elapsed_mod_seconds, 0.5f) *
+                                                               2.0f) *
+                                                         65536.0) >>
+                                                   1] *
+                                      (f64)0.2f +
+                                  (f64)0.8f);
+                        f32 distance = NuVecDistSqr(&player->collision_position, &target->collision_position, NULL);
+                        if (player2 != NULL) {
+                            f32 second = NuVecDistSqr(&player2->collision_position, &target->collision_position, NULL);
+                            if (distance > second)
+                                distance = second;
+                        }
+                        distance = NuFsqrt(distance);
+                        if (distance > 10.0f)
+                            distance = 10.0f;
+                        f32 alpha = (f32)((1.0 - (f64)distance / 10.0) * (f64)pulse);
+                        DrawCharIcon(MissionSys->missions[(i8)MissionSys->active_mission->index].find_character, 0.0f,
+                                     (f32)((f64)0.055f - (f64)mission_y), 0.0f, 0.25f, 167, alpha, alpha, 1, NULL);
+                    }
+                }
             } else {
-                STUBBED_NAMED("DrawPanel: remaining native bonus/mission HUD branches at 0x004bb3d6..0x004bb8ff");
+                STUBBED_NAMED("DrawPanel: remaining native bonus HUD branches at 0x004bb3d6..0x004bb590");
             }
         }
         STUBBED_NAMED("DrawPanel: frame-rate diagnostics at 0x004bb319");
