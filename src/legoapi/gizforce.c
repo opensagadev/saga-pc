@@ -317,8 +317,7 @@ i32 __cdecl GizForce_StoodOnForce(GIZFORCE_PC *force, GAMEOBJECT *object) {
 }
 u16 __cdecl GizForces_AngleToForce(NUVEC *position, GIZFORCE_PC *force) {
     f32 dz = force->position.z - position->z;
-    f32 dx = force->position.x - position->x;
-    return NuAtan2D(dx, dz);
+    return NuAtan2D(force->position.x - position->x, dz);
 }
 i32 __cdecl GizForce_Complete(GIZFORCE_PC *force) {
     if ((force->config_flags & 2) || (force->force_range > 0.0f && !(force->runtime_flags & 0x2000)))
@@ -712,7 +711,7 @@ typedef struct trigger_force_object_pc_s {
     GIZFORCE_PC *force;
 } TRIGGER_FORCE_OBJECT_PC;
 STATIC_ASSERT(offsetof(TRIGGER_FORCE_OBJECT_PC, force) == 0x10cc);
-i32 __cdecl GizForce_GameObjUsingForce(GAMEOBJECT *object, GIZFORCE_PC *force) {
+__declspec(noinline) i32 __cdecl GizForce_GameObjUsingForce(GAMEOBJECT *object, GIZFORCE_PC *force) {
     return force != NULL && object != NULL && object->character_context == 8 &&
            ((TRIGGER_FORCE_OBJECT_PC *)object)->force == force;
 }
@@ -1047,7 +1046,7 @@ void __cdecl GizForces_DrawPc(void *world_pointer, void *system_pointer, f32 unu
         return;
     force = (GIZFORCE_PC *)system->forces;
     for (index = 0; index < system->count; ++index, ++force) {
-        if (!(force->runtime_flags & 2) || (i8)force->runtime_flags >= 0 ||
+        if (!(force->runtime_flags & 2) || !(force->runtime_flags & 0x80) ||
             (force->room_id >= 0 && world->rooms_visible_ptr[force->room_id] == 0))
             continue;
         ResetShadowMapRendering();
@@ -1122,9 +1121,8 @@ static __declspec(noinline) void ForceGroupPopPc(GIZFORCE_PC *force) {
         --force->group->member_count;
         if (force->group->member_count != 0) {
             f64 old_height = force->group->combined_height;
-            f32 height = ForceAnimatedHeightPc(force->group->forces[force->group->member_count - 1]);
-            volatile f32 rounded_height = old_height - height;
-            force->group->combined_height = rounded_height;
+            force->group->combined_height =
+                (f32)(old_height - ForceAnimatedHeightPc(force->group->forces[force->group->member_count - 1]));
         }
         force->runtime_flags &= ~0x20u;
         GameAnimSet_SetOffset(force->anim_set, &v000);
@@ -1460,6 +1458,14 @@ i32 __cdecl GizmoForce_GetOutput(GIZMO_PC *gizmo, i32 output_index, i32 force_re
             return 0;
     }
 }
+typedef struct force_runtime_bits_pc_s {
+    u32 active : 1;
+    u32 visible : 1;
+    u32 other : 30;
+} FORCE_RUNTIME_BITS_PC;
+STATIC_ASSERT(sizeof(FORCE_RUNTIME_BITS_PC) == 4);
+STATIC_ASSERT(offsetof(GIZFORCE_PC, runtime_flags) == 0xa0);
+
 void __cdecl GizmoForce_Activate(GIZMO_PC *gizmo, i32 active) {
     GIZFORCE_PC *force;
     if (gizmo == NULL)
@@ -1467,7 +1473,7 @@ void __cdecl GizmoForce_Activate(GIZMO_PC *gizmo, i32 active) {
     force = (GIZFORCE_PC *)gizmo->object;
     if (active != 0 && !(force->runtime_flags & 1))
         GameAnimSet_JumpToStart(force->anim_set);
-    force->runtime_flags = (force->runtime_flags & ~1u) | (active != 0 ? 1u : 0u);
+    ((FORCE_RUNTIME_BITS_PC *)&force->runtime_flags)->active = active != 0;
     if (active != 0) {
         force->field_48 = 0.0f;
         force->field_50 = 0.0f;
@@ -1476,8 +1482,8 @@ void __cdecl GizmoForce_Activate(GIZMO_PC *gizmo, i32 active) {
             force->runtime_flags &= ~0x200u;
         force->runtime_flags &= 0xffff87ffu;
         GameAnimSet_EvaluateState(force->anim_set);
-        force->radius = 1.0f;
         force->position = force->file_position;
+        force->radius = 1.0f;
         GameAnimSet_GetCentreAndRadius(force->anim_set, &force->position, &force->radius, 2, 1, 1);
     }
 }
@@ -1489,7 +1495,7 @@ void __cdecl GizmoForce_SetVisibility(GIZMO_PC *gizmo, i32 visible) {
     if (force == NULL)
         return;
     GameAnimSet_SetVisibility(force->anim_set, visible);
-    force->runtime_flags = (force->runtime_flags & ~2u) | (visible != 0 ? 2u : 0u);
+    ((FORCE_RUNTIME_BITS_PC *)&force->runtime_flags)->visible = visible != 0;
 }
 
 i32 __cdecl GizmoForce_ActivateRev(GIZMO_PC *gizmo, i32 reverse, i32 mode) {
@@ -1909,12 +1915,16 @@ void *__cdecl Condition_ForceAtStartInitPc(AISYS_PC *system, char *name, AISCRIP
 
 f32 __cdecl Condition_ForceAtStartPc(AISYS_PC *system, AISCRIPTPROCESS_PC *process, AIPACKET_PC *packet, char *name,
                                      void *argument) {
-    return argument != NULL && GizmoGetOutput(WORLD->gizmo_sys, argument, 1, 1) == 0 ? 1.0f : 0.0f;
+    if (argument != NULL && GizmoGetOutput(WORLD->gizmo_sys, argument, 1, 1) == 0)
+        return 1.0f;
+    return 0.0f;
 }
 
 f32 __cdecl Condition_ForceAtEndPc(AISYS_PC *system, AISCRIPTPROCESS_PC *process, AIPACKET_PC *packet, char *name,
                                    void *argument) {
-    return argument != NULL && GizmoGetOutput(WORLD->gizmo_sys, argument, 0, 1) != 0 ? 1.0f : 0.0f;
+    if (argument != NULL && GizmoGetOutput(WORLD->gizmo_sys, argument, 0, 1) != 0)
+        return 1.0f;
+    return 0.0f;
 }
 
 void *__cdecl Condition_PlayerUsingForceInitPc(AISYS_PC *system, char *name, AISCRIPT_PC *script) {
@@ -1924,12 +1934,16 @@ void *__cdecl Condition_PlayerUsingForceInitPc(AISYS_PC *system, char *name, AIS
 
 f32 __cdecl Condition_UsingForcePc(AISYS_PC *system, AISCRIPTPROCESS_PC *process, AIPACKET_PC *packet, char *name,
                                    void *argument) {
-    return GizForce_GameObjUsingForce(packet->owner->objptr, (GIZFORCE_PC *)argument) != 0 ? 1.0f : 0.0f;
+    if (GizForce_GameObjUsingForce(packet->owner->objptr, (GIZFORCE_PC *)argument) != 0)
+        return 1.0f;
+    return 0.0f;
 }
 
 f32 __cdecl Condition_PlayerUsingForcePc(AISYS_PC *system, AISCRIPTPROCESS_PC *process, AIPACKET_PC *packet, char *name,
                                          void *argument) {
-    return GizForce_GameObjUsingForce(player, (GIZFORCE_PC *)argument) != 0 ? 1.0f : 0.0f;
+    if (GizForce_GameObjUsingForce(player, (GIZFORCE_PC *)argument) != 0)
+        return 1.0f;
+    return 0.0f;
 }
 
 f32 __cdecl Condition_ForceBeingUsedPc(AISYS_PC *system, AISCRIPTPROCESS_PC *process, AIPACKET_PC *packet, char *name,
@@ -1965,16 +1979,16 @@ PART_PC *__cdecl GizForce_Throw(GAMEOBJECT *object, GIZFORCE_PC *force, f32 spee
     params = Default_ADDPART;
     params.matrix = matrix;
     params.velocity = &velocity;
-    params.owner = object;
-    params.field_14 = 0.15f;
     params.field_18 = 0.15f;
+    params.field_14 = 0.15f;
     params.gravity = gravity;
     params.special = special;
     params.flags = 0xc39b;
+    params.owner = object;
+    params.hostility_group = object->hostility_group;
     params.collision_fn = PartCollide_3D;
     params.kill_fn = PartKill_ForceThrow;
     params.time_step = FRAMETIME;
-    params.hostility_group = object->hostility_group;
     part = AddPart(&params);
     NewRumble(object->pad->bound_pad, 0.5f, 0);
     PlaySfx((char *)ForcePushSoundNamePc, &object->collision_position);
