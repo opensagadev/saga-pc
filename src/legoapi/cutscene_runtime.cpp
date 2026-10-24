@@ -1997,8 +1997,9 @@ extern "C" {
                     if (CutScene_StoppedFn != NULL)
                         CutScene_StoppedFn(reinterpret_cast<CUTINFO *>(cut));
                     if (CutInstEndCount < 4) {
-                        CutInstEnd[CutInstEndCount] = cut->instance;
-                        reinterpret_cast<CUT_CONTROLLER_INSTANCE_PC *>(cut->instance)->flags_88 |= 2;
+                        INSTNUGCUTSCENE *ended_instance = cut->instance;
+                        CutInstEnd[CutInstEndCount] = ended_instance;
+                        reinterpret_cast<CUT_CONTROLLER_INSTANCE_PC *>(ended_instance)->flags_88 |= 2;
                         ++CutInstEndCount;
                     }
                 }
@@ -2061,8 +2062,9 @@ extern "C" {
         }
         CUTNOFOG = 0;
         if (CutInstEndCount < 4) {
-            CutInstEnd[CutInstEndCount] = stop_cut->instance;
-            reinterpret_cast<CUT_CONTROLLER_INSTANCE_PC *>(stop_cut->instance)->flags_88 |= 2;
+            INSTNUGCUTSCENE *ended_instance = stop_cut->instance;
+            CutInstEnd[CutInstEndCount] = ended_instance;
+            reinterpret_cast<CUT_CONTROLLER_INSTANCE_PC *>(ended_instance)->flags_88 |= 2;
             CutInstEndStop = CutInstEndCount;
             ++CutInstEndCount;
         }
