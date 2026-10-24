@@ -36,7 +36,17 @@ extern i32 VisibilityUsingOcclusionPc;
 extern i32 VisibilityCurrentViewBoxPc;
 /* Unsized reference only: no inferred allocation or emitted backing. */
 
-/* Genuine target5d8fb0 body remains held; this declaration supplies no source. */
+typedef union visibility_tree_flag_word_pc_u {
+    u32 word;
+    struct {
+        u32 : 4;
+        u32 instance_tree : 1;
+        u32 : 27;
+    } bits;
+} VISIBILITY_TREE_FLAG_WORD_PC;
+STATIC_ASSERT(sizeof(VISIBILITY_TREE_FLAG_WORD_PC) == sizeof(u32));
+STATIC_ASSERT(offsetof(VISIBILITY_TREE_FLAG_WORD_PC, word) == 0);
+
 void __cdecl NuVisiInstTree(VISIBILITY_RESULT_READER_PC *, NUGSCN *);
 
 void __cdecl NuCameraLock(i32 lock) {
@@ -238,7 +248,7 @@ static __declspec(noinline) void VisibilityAbsoluteFourPc(NUVEC4 *destination, N
     VISIBILITY_ABSOLUTE_COMPONENT_PC(destination->w, source->w);
 }
 
-static void VisibilityTransformFourPc(NUMTX *matrix, NUVEC *point, NUVEC4 *out) {
+static void VisibilityTransformFourPc(NUVEC4 *out, NUVEC *point, NUMTX *matrix) {
     out->x = matrix->m10 * point->y + point->x * matrix->m00 + matrix->m20 * point->z + matrix->m30;
     out->y = matrix->m01 * point->x + matrix->m11 * point->y + matrix->m21 * point->z + matrix->m31;
     out->z = matrix->m02 * point->x + matrix->m12 * point->y + matrix->m22 * point->z + matrix->m32;
@@ -332,7 +342,7 @@ static void VisibilityTreePreparePc(void) {
  * local component untouched before the four-column clipping comparisons.
  * No zero initialization or substitute four-component provider is invented. */
 i32 VisibilityTreeClipNodePc(NUVEC *center, NUVEC *extent, f32 far_distance, i32 instance) {
-    NUVEC4 projected;
+    __declspec(align(16)) NUVEC4 projected;
     VISIBILITY_EXTENT_SCRATCH_PC projected_extent;
     f32 radius, distance, far_side, near_side;
     radius = extent->y * VisibilityAbsoluteDepthPlanePc.b + extent->x * VisibilityAbsoluteDepthPlanePc.a +
@@ -342,24 +352,24 @@ i32 VisibilityTreeClipNodePc(NUVEC *center, NUVEC *extent, f32 far_distance, i32
     distance += VisibilityDepthPlanePc.d;
     far_side = distance - far_distance;
     near_side = distance - global_camera.near_clip;
-    if (radius < far_side || -radius > near_side)
+    if (far_side > radius || near_side < -radius)
         return 0;
-    VisibilityTransformFourPc(&VisibilityPrimaryWorldMatrixPc, center, &projected);
+    VisibilityTransformFourPc(&projected, center, &VisibilityPrimaryWorldMatrixPc);
     NuVecMtxTransform(&projected_extent.xyz, extent, &VisibilityPrimaryAbsoluteMatrixPc);
-    if (projected_extent.xyz.x < projected.x || projected_extent.xyz.y < projected.y ||
-        projected_extent.xyz.z < projected.z || projected_extent.unknown_w < projected.w)
+    if (projected.x > projected_extent.xyz.x || projected.y > projected_extent.xyz.y ||
+        projected.z > projected_extent.xyz.z || projected.w > projected_extent.unknown_w)
         return 0;
-    if (-projected_extent.xyz.x < projected.x || -projected_extent.xyz.y < projected.y ||
-        -projected_extent.xyz.z < projected.z || -projected_extent.unknown_w < projected.w) {
+    if (projected.x > -projected_extent.xyz.x || projected.y > -projected_extent.xyz.y ||
+        projected.z > -projected_extent.xyz.z || projected.w > -projected_extent.unknown_w) {
         if (instance == 0)
             return 2;
-        VisibilityTransformFourPc(&VisibilityAlternateWorldMatrixPc, center, &projected);
+        VisibilityTransformFourPc(&projected, center, &VisibilityAlternateWorldMatrixPc);
         NuVecMtxTransform(&projected_extent.xyz, extent, &VisibilityAlternateAbsoluteMatrixPc);
-        if (projected_extent.xyz.x < projected.x || projected_extent.xyz.y < projected.y ||
-            projected_extent.xyz.z < projected.z || projected_extent.unknown_w < projected.w)
+        if (projected.x > projected_extent.xyz.x || projected.y > projected_extent.xyz.y ||
+            projected.z > projected_extent.xyz.z || projected.w > projected_extent.unknown_w)
             return 0;
-        if (-projected_extent.xyz.x < projected.x || -projected_extent.xyz.y < projected.y ||
-            -projected_extent.xyz.z < projected.z || -projected_extent.unknown_w < projected.w)
+        if (projected.x > -projected_extent.xyz.x || projected.y > -projected_extent.xyz.y ||
+            projected.z > -projected_extent.xyz.z || projected.w > -projected_extent.unknown_w)
             return 2;
         return 1;
     }
@@ -372,39 +382,48 @@ i32 VisibilityTreeClipNodePc(NUVEC *center, NUVEC *extent, f32 far_distance, i32
 
 static void VisibilityTreeWalkPc(i32 root_index, VISIBILITY_TREE_READER_PC *tree) {
     VISIBILITY_TREE_NODE_PC *work[96];
-    VISIBILITY_TREE_NODE_PC **cursor = work;
-    f32 far_distance = tree->root_far_distance[root_index];
-    *cursor++ = &tree->nodes[tree->root_indices[root_index]];
+    VISIBILITY_TREE_NODE_PC **cursor = work + 1;
+    f32 far_distance;
+    work[0] = &tree->nodes[tree->root_indices[root_index]];
+    far_distance = tree->root_far_distance[root_index];
     if (far_distance == 0.0f)
         far_distance = global_camera.far_clip;
     do {
         VISIBILITY_TREE_NODE_PC *node = *--cursor;
         VISIBILITY_TREE_BOUNDS_PC *bounds = &tree->node_bounds[node->bounds_index];
         i32 clip = VisibilityTreeClipNodePc(&bounds->center, &bounds->extent, far_distance, 0);
+        if (clip == 0)
+            continue;
         if (clip == 1) {
             u16 *id = tree->instance_ids + node->instance_first;
             u16 *end = id + node->subtree_instance_count;
             while (id != end) {
-                u32 index = *id++;
+                u16 index = *id++;
                 ((u8 *)VisibilityCurrentResultPc->context)[index >> 2] |= (u8)(1 << ((index & 3) * 2));
             }
-        } else if (clip != 0) {
-            VISIBILITY_TREE_NODE_PC *child = tree->nodes + node->child_first;
-            VISIBILITY_TREE_NODE_PC *child_end = child + node->child_count;
+        } else {
+            VISIBILITY_TREE_NODE_PC *child;
+            VISIBILITY_TREE_NODE_PC *child_end;
             u16 *id;
             u16 *end;
             VISIBILITY_TREE_BOUNDS_PC *instance_bounds;
-            while (child != child_end)
-                *cursor++ = child++;
-            id = tree->instance_ids + node->instance_first;
-            end = id + node->instance_count;
-            instance_bounds = tree->instance_bounds + node->instance_first;
-            while (id != end) {
-                u32 index = *id++;
-                i32 instance_clip =
-                    VisibilityTreeClipNodePc(&instance_bounds->center, &instance_bounds->extent, far_distance, 1);
-                ((u8 *)VisibilityCurrentResultPc->context)[index >> 2] |= (u8)(instance_clip << ((index & 3) * 2));
-                ++instance_bounds;
+            if (node->child_count > 0) {
+                child = tree->nodes + node->child_first;
+                child_end = child + node->child_count;
+                while (child != child_end)
+                    *cursor++ = child++;
+            }
+            if (node->instance_count > 0) {
+                id = tree->instance_ids + node->instance_first;
+                end = id + node->instance_count;
+                instance_bounds = tree->instance_bounds + node->instance_first;
+                while (id != end) {
+                    u16 index = *id++;
+                    i32 instance_clip =
+                        VisibilityTreeClipNodePc(&instance_bounds->center, &instance_bounds->extent, far_distance, 1);
+                    ((u8 *)VisibilityCurrentResultPc->context)[index >> 2] |= (u8)(instance_clip << ((index & 3) * 2));
+                    ++instance_bounds;
+                }
             }
         }
     } while (cursor != work);
@@ -415,7 +434,7 @@ void __cdecl NuVisiInstTree(VISIBILITY_RESULT_READER_PC *result, NUGSCN *scene) 
     i32 root;
     VISIBILITY_TREE_READER_PC *tree;
     (void)scene;
-    result->flags = (result->flags & ~0x10u) | (enabled ? 0x10u : 0);
+    ((VISIBILITY_TREE_FLAG_WORD_PC *)&result->flags)->bits.instance_tree = enabled;
     if ((result->flags & 0x10u) == 0)
         return;
     VisibilityCurrentResultPc = result;
@@ -424,5 +443,5 @@ void __cdecl NuVisiInstTree(VISIBILITY_RESULT_READER_PC *result, NUGSCN *scene) 
     VisibilityTreePreparePc();
     tree = (VISIBILITY_TREE_READER_PC *)result->instance_tree;
     for (root = (i32)tree->root_count - 1; root >= 0; --root)
-        VisibilityTreeWalkPc(root, tree);
+        VisibilityTreeWalkPc(root, (VISIBILITY_TREE_READER_PC *)result->instance_tree);
 }
