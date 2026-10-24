@@ -5015,7 +5015,7 @@ extern "C" {
         for (player = 0; player < 2; ++player) {
             GAMEOBJECT *object;
             f32 base_alpha, alpha, icon_x, name_x;
-            i32 alignment, frame_model, visible;
+            i32 alignment, frame_model, visible, icon_alpha;
             TextInputSetLastDevicePc(player);
             object = (GAMEOBJECT *)Player[player];
             if (object == NULL)
@@ -5025,16 +5025,20 @@ extern "C" {
             alignment = player == 0 ? 2 : 8;
             frame_model = player == 0 ? 166 : 165;
             alpha = ((object->flags_1fc & 0x80) != 0 ? 1.0f : MissionDropInAlphaPc) * base_alpha;
+            icon_alpha = (i32)((f64)alpha * 128.0);
             DrawCharIconPanelPc = player;
-            visible = object->hud_icon_timer <= 0.0f ||
-                      (object->hud_icon_timer < 2.0f && (f64)NuFmod(object->hud_icon_timer, 0.4f) < (f64)0.2f);
             if (WORLD->current_level == LevelFixupSlotPc0087b268 && object->takeover_source != NULL &&
-                object->takeover_source->id == id_YODA)
-                DrawCharIcon(object->id, icon_x, status_y, 0.0f, MissionPlayerIconSizePc, frame_model, alpha, alpha,
-                             visible, NULL);
-            else
+                object->takeover_source->id == static_cast<u16>(id_YODA)) {
+                visible = object->hud_icon_timer <= 0.0f ||
+                          (object->hud_icon_timer < 2.0f && (f64)NuFmod(object->hud_icon_timer, 0.4f) < (f64)0.2f);
+                DrawCharIcon(static_cast<i16>(object->id), icon_x, status_y, 0.0f, MissionPlayerIconSizePc, frame_model,
+                             alpha, alpha, visible, NULL);
+            } else {
+                visible = object->hud_icon_timer <= 0.0f ||
+                          (object->hud_icon_timer < 2.0f && (f64)NuFmod(object->hud_icon_timer, 0.4f) < (f64)0.2f);
                 DrawCharIcon(object->takeover_source != NULL ? object->takeover_source->id : object->id, icon_x,
                              status_y, 0.0f, MissionPlayerIconSizePc, frame_model, alpha, alpha, visible, NULL);
+            }
             name_x = player == 0 ? -(ICONX + HudNameOffsetXPc) : ICONX + HudNameOffsetXPc;
             if ((object->flags_1fc & 0x80) != 0 && object->character_data->name_id != -1 &&
                 (paused != 0 || (object->hud_icon_timer > 0.0f && object->hud_icon_timer < 2.0f &&
@@ -5103,7 +5107,7 @@ extern "C" {
                 y = status_y + PANEL_COINY;
                 scale = packet->scale * HudScoreScalePc;
                 Text3DEx(text, score_x, y + HudCoinAdjustYPc, 1.0f, scale, scale, scale, alignment, 255, 191, 0,
-                         (u8)(i32)((f64)alpha * 128.0));
+                         (u8)icon_alpha);
                 if ((arcade_flags & 2) == 0) {
                     packet = (PLAYER_COIN_PACKET_PC *)object->coin_packet;
                     model = packet->last_coin;
