@@ -724,10 +724,11 @@ static i32 Collide2Objects(APIOBJECT_PC *first_input, APIOBJECT_PC *second_input
         if (collision_result == 2 && VehicleArea == 0) {
             first_data = first_object->character_data->game_character;
             second_data = second_object->character_data->game_character;
-            if ((first_data->flags_090 & 0x1000) && (f64)first->velocity_magnitude > (f64)first_data->run_speed * .5)
+            if ((first_data->flags_090 & 0x1000) &&
+                (f64)first->horizontal_velocity_magnitude > (f64)first_data->run_speed * .5)
                 StartFlatten(first_object, second_object);
             else if ((second_data->flags_090 & 0x1000) &&
-                     (f64)second->velocity_magnitude > (f64)second_data->run_speed * .5)
+                     (f64)second->horizontal_velocity_magnitude > (f64)second_data->run_speed * .5)
                 StartFlatten(second_object, first_object);
             else if (second_vertical_velocity < 0 && (first_data->flags_090 & 0x40) &&
                      first_object->level_object_index == -1)
