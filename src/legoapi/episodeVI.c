@@ -246,12 +246,154 @@ typedef struct LEGOCITY_PICKUPSYS_PC {
 } LEGOCITY_PICKUPSYS_PC;
 
 /* PC 0x0088a58c..0x0088a58f and 0x0088a6ec/0x0088a6ed: bonus level vehicle ride flags. */
-static u8 prevOnFireTruck;
-static u8 prevOnLifeBoat;
-static u8 prevOnMoonCar;
-static u8 prevOnTractor;
-static u8 prevOnTaunTaun;
-static u8 prevOnTownCar;
+static u8 prevOnFireTruck = 0;
+static u8 prevOnLifeBoat = 0;
+static u8 prevOnMoonCar = 0;
+static u8 prevOnTractor = 0;
+static u8 prevOnTaunTaun = 0;
+static u8 prevOnTownCar = 0;
+
+extern i16 CharacterFixupIdPc007f1a7c;
+extern i16 CharacterFixupIdPc007f1a88;
+
+void LegoCity_Update(WORLDINFO *world) {
+    LEGOCITY_PICKUPSYS_PC *pickup_system;
+    LEGOCITY_PICKUP_PC *pickup;
+    GAMEOBJECT *object;
+    i32 index;
+    u8 onTractor = 0;
+    u8 onTaunTaun = 0;
+    u8 onMoonCar = 0;
+    u8 onTownCar = 0;
+    u8 changedTractor = 0;
+    u8 changedTaunTaun = 0;
+    u8 changedMoonCar = 0;
+    u8 changedTownCar = 0;
+    if (world == NULL)
+        return;
+    pickup_system = (LEGOCITY_PICKUPSYS_PC *)world->pickup_runtime_sys;
+    if (pickup_system == NULL)
+        return;
+    for (index = 0; index < 8; ++index) {
+        object = (GAMEOBJECT *)Player[index];
+        if (!(object != NULL && (object->flags_1fc_word & 0x1000) != 0 && object->dead == 0 && object->rider != NULL &&
+              object->rider->character_context == 0x3b)) {
+            continue;
+        }
+        if (object->id == (u16)id_TRACTOR) {
+            onTractor = 0xff;
+            changedTractor = ~prevOnTractor;
+        } else if (object->id == (u16)id_TAUNTAUN) {
+            onTaunTaun = 0xff;
+            changedTaunTaun = ~prevOnTaunTaun;
+        } else if (object->id == (u16)id_MOONCAR) {
+            onMoonCar = 0xff;
+            changedMoonCar = ~prevOnMoonCar;
+        } else if (object->id == (u16)CharacterFixupIdPc007f1a7c) {
+            onTownCar = 0xff;
+            changedTownCar = ~prevOnTownCar;
+        }
+    }
+    if (onTractor == 0)
+        changedTractor = prevOnTractor;
+    if (onTaunTaun == 0)
+        changedTaunTaun = prevOnTaunTaun;
+    if (onMoonCar == 0)
+        changedMoonCar = prevOnMoonCar;
+    if (onTownCar == 0)
+        changedTownCar = prevOnTownCar;
+    prevOnTractor = onTractor;
+    prevOnTaunTaun = onTaunTaun;
+    prevOnMoonCar = onMoonCar;
+    prevOnTownCar = onTownCar;
+    if ((changedTractor | changedTaunTaun | changedMoonCar | changedTownCar) == 0) {
+        return;
+    }
+    pickup = pickup_system->pickups;
+    for (index = 0; pickup != NULL && index < ((LEGOCITY_PICKUPSYS_PC *)world->pickup_runtime_sys)->count;
+         ++index, ++pickup) {
+        if ((pickup->flags & 8) == 0) {
+            switch (pickup->type_id) {
+                case 3:
+                    pickup->collected = onTractor;
+                    break;
+                case 4:
+                    pickup->collected = onTaunTaun;
+                    break;
+                case 5:
+                    pickup->collected = onMoonCar;
+                    break;
+                case 6:
+                    pickup->collected = onTownCar;
+                    break;
+            }
+        }
+    }
+}
+
+void NewTown_Update(WORLDINFO *world) {
+    LEGOCITY_PICKUPSYS_PC *pickup_system;
+    LEGOCITY_PICKUP_PC *pickup;
+    GAMEOBJECT *object;
+    i32 index;
+    u8 onTaunTaun = 0;
+    u8 onFireTruck = 0;
+    u8 onLifeBoat = 0;
+    u8 changedTaunTaun = 0;
+    u8 changedFireTruck = 0;
+    u8 changedLifeBoat = 0;
+    if (world == NULL)
+        return;
+    pickup_system = (LEGOCITY_PICKUPSYS_PC *)world->pickup_runtime_sys;
+    if (pickup_system == NULL)
+        return;
+    for (index = 0; index < 8; ++index) {
+        object = (GAMEOBJECT *)Player[index];
+        if (!(object != NULL && (object->flags_1fc_word & 0x1000) != 0 && object->dead == 0 && object->rider != NULL &&
+              object->rider->character_context == 0x3b)) {
+            continue;
+        }
+        if (object->id == (u16)id_TAUNTAUN) {
+            onTaunTaun = 0xff;
+            changedTaunTaun = ~prevOnTaunTaun;
+        } else if (object->id == (u16)id_FIRETRUCK) {
+            onFireTruck = 0xff;
+            changedFireTruck = ~prevOnFireTruck;
+        } else if (object->id == (u16)CharacterFixupIdPc007f1a88) {
+            onLifeBoat = 0xff;
+            changedLifeBoat = ~prevOnLifeBoat;
+        }
+    }
+    if (onTaunTaun == 0)
+        changedTaunTaun = prevOnTaunTaun;
+    if (onFireTruck == 0)
+        changedFireTruck = prevOnFireTruck;
+    if (onLifeBoat == 0)
+        changedLifeBoat = prevOnLifeBoat;
+    prevOnTaunTaun = onTaunTaun;
+    prevOnFireTruck = onFireTruck;
+    prevOnLifeBoat = onLifeBoat;
+    if ((changedTaunTaun | changedFireTruck | changedLifeBoat) == 0) {
+        return;
+    }
+    pickup = pickup_system->pickups;
+    for (index = 0; pickup != NULL && index < ((LEGOCITY_PICKUPSYS_PC *)world->pickup_runtime_sys)->count;
+         ++index, ++pickup) {
+        if ((pickup->flags & 8) == 0) {
+            switch (pickup->type_id) {
+                case 2:
+                    pickup->collected = onTaunTaun;
+                    break;
+                case 3:
+                    pickup->collected = onFireTruck;
+                    break;
+                case 4:
+                    pickup->collected = onLifeBoat;
+                    break;
+            }
+        }
+    }
+}
 
 void __cdecl LegoCity_Reset(WORLDINFO *world) {
     LEGOCITY_PICKUP_PC *pickup;
