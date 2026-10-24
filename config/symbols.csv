@@ -6506,6 +6506,7 @@ address,symbol,size,ctype
 0x6193e0,_eduiMenuHighlight,79,
 0x619430,_eduiItemSetText,139,
 0x6194c0,_eduicbInteractSel,81,
+0x00619570,_EduiDrawDisabledItemPc,298,"void(eduiitem_s *, i32, i32, i32, i32)"
 0x6196a0,_eduicbRenderSel,341,
 0x619a40,_eduicbRenderCheck,518,
 0x619c50,_eduiItemTextPickSetFmt,135,
@@ -6535,6 +6536,7 @@ address,symbol,size,ctype
 0x61eb60,_eduicbItemExpanderClose,88,
 0x0061ebc0,_eduicbMenuOpenAllexpanders,71,void __cdecl(eduimenu_s *)
 0x61ec10,_eduicbMenuCloseAllexpanders,40,
+0x0061ef20,_EduiRenderItemPc,168,"i32 __cdecl(eduiitem_s *, eduimenu_s *, i32, i32, i32, i32)"
 0x61f070,_EduiDeepestChildPc,20,
 0x61f180,_cbSel,14,
 0x61f190,_cbGradChange,1,
@@ -21367,6 +21369,8 @@ address,symbol,size,ctype
 0x80f524,_ed_main_menu_y,4,i32
 0x80f528,_ed_main_menu_w,4,i32
 0x80f534,_edmain_default_camera_speed,4,f32
+0x0080f544,_EduiItemOutlineColourPc,,u32
+0x0080f548,_EduiMarkedItemOutlineColourPc,,u32
 0x80f550,_edui_cursor_x,4,f32
 0x80f558,_edui_font_scale_x,4,f32
 0x80f55c,_edui_font_scale_y,4,f32
@@ -24847,6 +24851,7 @@ address,symbol,size,ctype
 0x2912154,_submenu0,,
 0x02912158,_eduiInteracts,,edui_interact_s [64]
 0x2912b58,_edui_font,4,void *
+0x02912b60,_EduiRenderWidthPc,,i32
 0x2912e70,_ed_remap_mtx,4,struct numtx_s *
 0x2912e80,_ed_list,4,struct ed_module_s *
 0x2912e84,_ed_curr,4,struct ed_module_s *
@@ -24859,6 +24864,7 @@ address,symbol,size,ctype
 0x2912ea8,_edmain_cursor_enabled,4,i32
 0x2912eac,_eduiInteractLocked,4,struct edui_interact_s *
 0x02912eb0,_ui_bgmtl,,i32
+0x02912eb4,_EduiSelectionMaterialPc,,i32
 0x2912ecc,_active_menu,4,struct eduimenu_s *
 0x2912ed0,_processing_menu,4,struct eduimenu_s *
 0x2912ed4,_default_active_menu,4,struct eduimenu_s *

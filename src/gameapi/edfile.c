@@ -1502,3 +1502,61 @@ void __cdecl eduicbMenuOpenAllexpanders(eduimenu_s *menu) {
         }
     }
 }
+
+i32 EduiRenderWidthPc = 0;
+i32 EduiSelectionMaterialPc = 0;
+u32 EduiItemOutlineColourPc = 0x80ffffff;
+u32 EduiMarkedItemOutlineColourPc = 0x0000ff00;
+
+static void EduiDrawDisabledItemPc(eduiitem_s *item, i32 x, i32 y, i32 width, i32 height);
+
+i32 __cdecl EduiRenderItemPc(eduiitem_s *item, eduimenu_s *menu, i32 x, i32 y, i32 width, i32 selected) {
+    i32(__cdecl * render)(eduimenu_s *, eduiitem_s *, i32, i32, i32, i32) = item->render;
+    i32 height;
+    EduiRenderWidthPc = width;
+    height = render(menu, item, x, y, width, selected);
+    if (selected != 0) {
+        i32 marked = (item->flags & 4) != 0;
+        u32 colour = EduiMarkedItemOutlineColourPc;
+        if (!marked)
+            colour = EduiItemOutlineColourPc;
+        if (!edui_donotdraw) {
+            NuRndrLineRect2di(x << 4, (y << 3) + 8, EduiRenderWidthPc << 4, (height << 3) - 16, colour,
+                              (NUMTL *)uimtls[EduiSelectionMaterialPc]);
+        }
+    }
+    EduiDrawDisabledItemPc(item, x, y, width, height);
+    return height;
+}
+
+static void EduiDrawDisabledItemPc(eduiitem_s *item, i32 x, i32 y, i32 width, i32 height) {
+    if (item->disabled && !edui_donotdraw) {
+        i32 left = x << 4;
+        i32 top = y << 3;
+        i32 pixel_width = width << 4;
+        i32 bottom = top + (height << 3);
+        i32 quarter = left + pixel_width / 4;
+        i32 half;
+        i32 three_quarters;
+        u32 colour = item->colours[0];
+        NUMTL *material = (NUMTL *)uimtls[ui_bgmtl];
+        NuRndrLine2di(left, top, quarter, bottom, colour, material);
+        if (!edui_donotdraw) {
+            material = (NUMTL *)uimtls[ui_bgmtl];
+            colour = item->colours[0];
+            half = left + pixel_width / 2;
+            NuRndrLine2di(quarter, top, half, bottom, colour, material);
+            if (!edui_donotdraw) {
+                material = (NUMTL *)uimtls[ui_bgmtl];
+                colour = item->colours[0];
+                three_quarters = left + (pixel_width * 3) / 4;
+                NuRndrLine2di(half, top, three_quarters, bottom, colour, material);
+                if (!edui_donotdraw) {
+                    material = (NUMTL *)uimtls[ui_bgmtl];
+                    colour = item->colours[0];
+                    NuRndrLine2di(three_quarters, top, left + pixel_width, bottom, colour, material);
+                }
+            }
+        }
+    }
+}
