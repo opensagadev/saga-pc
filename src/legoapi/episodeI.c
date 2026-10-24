@@ -1586,7 +1586,7 @@ static i32 PodRaceUpdatePodPc(RACEPOD_RESOURCE_PC *pod, WORLDINFO *world) {
         direction.z = pod->previous_position.z - pod->matrix.m32;
         length_sq = direction.x * direction.x + direction.y * direction.y + direction.z * direction.z;
         dot = direction.y * pod->matrix.m21 + direction.x * pod->matrix.m20 + direction.z * pod->matrix.m22;
-        if (pod->start < 1.0f) {
+        if (!(pod->start >= 1.0f)) {
             while (length_sq < 1.0f || dot < 0.0f) {
                 pod->start = pod->start + PodRaceSplineIncrementPc;
                 if (pod->start > 1.0f) {
@@ -1647,18 +1647,19 @@ static i32 PodRaceUpdatePodPc(RACEPOD_RESOURCE_PC *pod, WORLDINFO *world) {
                 origin.y = (f32)(object->position.y + 1.0);
                 origin.z = object->position.z;
                 if (player != NULL) {
+                    GAMEOBJECT *heading_player = player;
                     distance_sq = NuVecDistSqr(&player->collision_position, &object->collision_position, &difference);
                     if (distance_sq > 4.0 * PodSebulbaThrowAheadPc * PodSebulbaThrowAheadPc) {
                         target.x = (f32)(PodSebulbaThrowSpreadPc -
                                          (PodSebulbaThrowSpreadPc + PodSebulbaThrowSpreadPc) * NuRandFloat());
                         target.y = 0.0f;
                         target.z = PodSebulbaThrowAheadPc;
-                        NuVecRotateY(&target, &target, player->sock_heading);
+                        NuVecRotateY(&target, &target, heading_player->sock_heading);
                         NuVecAdd(&target, &target, &player->collision_position);
                         target_velocity.x = 0.0f;
                         target_velocity.y = 0.0f;
                         target_velocity.z = CurrentSpeed;
-                        NuVecRotateY(&target_velocity, &target_velocity, player->sock_heading);
+                        NuVecRotateY(&target_velocity, &target_velocity, heading_player->sock_heading);
                         MakeThrowVector(&velocity, &origin, &target, &target_velocity, PodSebulbaThrowSpeedPc,
                                         PodSebulbaThrowGravityPc);
                         if (distance_sq > PodSebulbaFarThrowPc * PodSebulbaFarThrowPc) {
@@ -1687,9 +1688,12 @@ static i32 PodRaceUpdatePodPc(RACEPOD_RESOURCE_PC *pod, WORLDINFO *world) {
                     part.time_step = FRAMETIME;
                     part.field_a4 = 5.0f;
                     AddPart(&part);
-                    pod->object->special_move_timer_pc =
-                        (PodSebulbaThrowJitterPc + PodSebulbaThrowJitterPc) * NuRandFloat() +
-                        (PodSebulbaThrowTimePc - PodSebulbaThrowJitterPc);
+                    {
+                        const f64 random = NuRandFloat();
+                        pod->object->special_move_timer_pc =
+                            (PodSebulbaThrowJitterPc + PodSebulbaThrowJitterPc) * random +
+                            (PodSebulbaThrowTimePc - PodSebulbaThrowJitterPc);
+                    }
                 }
             }
         }

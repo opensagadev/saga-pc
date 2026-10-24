@@ -1236,7 +1236,8 @@ extern "C" {
                 // need to be transformed back.
                 if ((query->hit_type & TERRAIN_HIT_TYPE_SECOND_NORMAL) == 0) {
                     query->movement_normal.x *= query->inverse_collision_radius;
-                    query->movement_normal.y *= query->inverse_collision_radius;
+                    const f64 inverse_radius = query->inverse_collision_radius;
+                    query->movement_normal.y = inverse_radius * query->movement_normal.y;
                     query->movement_normal.z *= query->inverse_collision_radius;
                 }
             }
@@ -1253,7 +1254,7 @@ extern "C" {
                         NuFsqrt(query->movement_normal.x * query->movement_normal.x +
                                 query->movement_normal.y * query->movement_normal.y * query->inverse_object_scale_sq +
                                 query->movement_normal.z * query->movement_normal.z);
-                    const f32 inverse_normal_length = normal_length != 0.0f ? 1.0f / normal_length : 0.0f;
+                    const f32 inverse_normal_length = normal_length != 0.0f ? (f32)(1.0 / normal_length) : 0.0f;
                     query = (TerrainQuery_s *)TerI;
                     query->impact_normal.x = query->movement_normal.x * inverse_normal_length;
                     query->impact_normal.y =
