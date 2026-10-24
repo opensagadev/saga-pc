@@ -1933,7 +1933,6 @@ void __cdecl DebrisDraw(i32 unused, i32 pass) {
         NUMTX matrix;
         NUVEC position;
         f32 render_time;
-        i32 mode;
         if (chunk->particle_chunk == NULL)
             continue;
         effect = chunk->effect;
@@ -1979,14 +1978,19 @@ void __cdecl DebrisDraw(i32 unused, i32 pass) {
             if (!visible)
                 continue;
             DebrisMtxCopyPrivate(&matrix, &key->effect_orientation);
-            position = key->position;
+            position.x = key->position.x;
+            position.y = key->position.y;
+            position.z = key->position.z;
         } else {
             if (effect->sound_range > 0.0f && effect->use_explicit_clip_box == 0 &&
                 CameraEmitterDistance(&chunk->position) > effect->sound_range)
                 continue;
             matrix = chunk->effect_orientation;
-            position = chunk->position;
+            position.x = chunk->position.x;
+            position.y = chunk->position.y;
+            position.z = chunk->position.z;
         }
+        drawn = 1;
         NuMtxTranslate(&matrix, &position);
         if (pass == 4) {
             NuMtxMulVU0(&matrix, &matrix, NuCameraGetMtx());
@@ -2003,17 +2007,23 @@ void __cdecl DebrisDraw(i32 unused, i32 pass) {
         else
             NuRndrSetParticleRotation(NULL);
         NuMtxPreScaleX(&matrix, debris_render_scale);
-        if (effect->particle_type == 7)
-            mode = 4;
-        else if (effect->use_explicit_clip_box != 0) {
+        if (effect->particle_type == 7) {
+            NuRndrParticleGroup(chunk->particle_chunk, chunk->effect->native_data,
+                                DebMat[(i8)chunk->effect->particle_type], render_time, &matrix, 4,
+                                effect->particle_parameter_a, effect->particle_parameter_b, effect->clip_extent,
+                                effect->field_044);
+        } else if (effect->use_explicit_clip_box != 0) {
             NuRndrSetDebBox(&effect->particle_box);
-            mode = 6;
-        } else
-            mode = 0;
-        NuRndrParticleGroup(chunk->particle_chunk, chunk->effect->native_data, DebMat[(i8)chunk->effect->particle_type],
-                            render_time, &matrix, mode, effect->particle_parameter_a, effect->particle_parameter_b,
-                            effect->clip_extent, effect->field_044);
-        drawn = 1;
+            NuRndrParticleGroup(chunk->particle_chunk, chunk->effect->native_data,
+                                DebMat[(i8)chunk->effect->particle_type], render_time, &matrix, 6,
+                                effect->particle_parameter_a, effect->particle_parameter_b, effect->clip_extent,
+                                effect->field_044);
+        } else {
+            NuRndrParticleGroup(chunk->particle_chunk, chunk->effect->native_data,
+                                DebMat[(i8)chunk->effect->particle_type], render_time, &matrix, 0,
+                                effect->particle_parameter_a, effect->particle_parameter_b, effect->clip_extent,
+                                effect->field_044);
+        }
     }
     if (drawn != 0)
         g_renderingDebris = g_renderingDebris == 0;
