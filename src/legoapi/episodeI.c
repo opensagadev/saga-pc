@@ -2194,3 +2194,30 @@ void __cdecl PodSprintA_Panel(WORLDINFO *world) {
                               PodSprintLapIconScalePc, 0, 0, 0, &icon->special, 0, podlapalpha);
     }
 }
+
+i32 __cdecl Action_MushroomCollapse(AISYS_PC *system, AISCRIPTPROCESS_PC *processor, AIPACKET_PC *packet, char **params,
+                                    i32 count, i32 first_time, f32 elapsed) {
+    if (first_time != 0 && mushroom_collapse == 0) {
+        i32 index;
+        char *value;
+        for (index = 0; index < count; ++index) {
+            value = NuStrIStr(params[index], "trigger_crash=");
+            if (value != NULL)
+                mushroom0_along = AIParamToFloat((AISCRIPTPROCESS_PC *)packet, value + 14);
+            else if ((value = NuStrIStr(params[index], "trigger_collapse=")) != NULL)
+                mushroom2_along = AIParamToFloat((AISCRIPTPROCESS_PC *)packet, value + 17);
+            else if ((value = NuStrIStr(params[index], "max_time_available=")) != NULL)
+                mushroom_max_time_available = AIParamToFloat((AISCRIPTPROCESS_PC *)packet, value + 19);
+            else if ((value = NuStrIStr(params[index], "time_available=")) != NULL)
+                mushroom_time_available = AIParamToFloat((AISCRIPTPROCESS_PC *)packet, value + 15);
+            else if ((value = NuStrIStr(params[index], "time_increment=")) != NULL)
+                mushroom_time_increment = AIParamToFloat((AISCRIPTPROCESS_PC *)packet, value + 15);
+            else if ((value = NuStrIStr(params[index], "nattempts_per_increment=")) != NULL)
+                mushroom_nattempts_per_increment = (i32)AIParamToFloat((AISCRIPTPROCESS_PC *)packet, value + 24);
+            if (mushroom_max_time_available < mushroom_time_available)
+                mushroom_max_time_available = mushroom_time_available;
+        }
+        mushroom_collapse = 1;
+    }
+    return 1;
+}
