@@ -906,7 +906,7 @@ void NewScanRot(NUVEC *position, i32 terrain_mask) {
         cursor = group_header + 1;
         limit = cursor + 508;
         shape_count = 0;
-        entry = cache->scan_words;
+        entry = TERRAIN_ROT_SET->index_levels[hit_index].scan_words;
         while (entry->header.shape_count > 0) {
             const i16 count = entry->header.shape_count;
             const i32 group_index = entry->header.terrain_group;
@@ -960,7 +960,7 @@ void NewScanRot(NUVEC *position, i32 terrain_mask) {
             if (!(max_x >= cell->min_x && cell->max_x >= min_x && max_z >= cell->min_z && cell->max_z >= min_z))
                 continue;
             group_indices = TERRAIN_ROT_SET->group_indices + cell->first_group;
-            for (cell_group = 0; cell_group < cell->group_count; ++cell_group) {
+            for (cell_group = 0; cell_group < TERRAIN_ROT_SET->cells[cell_index].group_count; ++cell_group) {
                 TERRAIN_GROUP_PC *group = &groups[group_indices[cell_group]];
                 f32 local_min_x, local_max_x;
                 f32 local_min_z, local_max_z;

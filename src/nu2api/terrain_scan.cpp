@@ -786,25 +786,25 @@ extern "C" void ScanTerrain(i32 scan_type, i32 terrain_mask, i32 scan_flags) {
                         transformed->material[1] = shape->material[1];
                         transformed->flags = shape->flags;
                         transformed->normal_flags = shape->normal_flags;
+                        query = TERRAIN_QUERY_PC;
                         platinrange = 1;
                         transformed->vertices[0].x = vertices[0].x;
                         transformed->vertices[0].z = vertices[0].z;
                         transformed->vertices[0].y =
-                            (vertices[0].y + group.origin.y) * TERRAIN_QUERY_PC->inverse_object_scale - group.origin.y;
+                            (vertices[0].y + group.origin.y) * query->inverse_object_scale - group.origin.y;
                         transformed->vertices[1].x = vertices[1].x;
                         transformed->vertices[1].z = vertices[1].z;
                         transformed->vertices[1].y =
-                            (vertices[1].y + group.origin.y) * TERRAIN_QUERY_PC->inverse_object_scale - group.origin.y;
+                            (vertices[1].y + group.origin.y) * query->inverse_object_scale - group.origin.y;
                         transformed->vertices[2].x = vertices[2].x;
                         transformed->vertices[2].z = vertices[2].z;
                         transformed->vertices[2].y =
-                            (vertices[2].y + group.origin.y) * TERRAIN_QUERY_PC->inverse_object_scale - group.origin.y;
+                            (vertices[2].y + group.origin.y) * query->inverse_object_scale - group.origin.y;
                         if (shape->normals[1].y < 65535.0f) {
                             transformed->vertices[3].x = vertices[3].x;
                             transformed->vertices[3].z = vertices[3].z;
                             transformed->vertices[3].y =
-                                (vertices[3].y + group.origin.y) * TERRAIN_QUERY_PC->inverse_object_scale -
-                                group.origin.y;
+                                (vertices[3].y + group.origin.y) * query->inverse_object_scale - group.origin.y;
                             NUVEC a, b;
                             a.x = transformed->vertices[1].x - transformed->vertices[3].x;
                             a.y = transformed->vertices[1].y - transformed->vertices[3].y;
@@ -817,6 +817,7 @@ extern "C" void ScanTerrain(i32 scan_type, i32 terrain_mask, i32 scan_flags) {
                                 1.0f, NuFsqrt(transformed->normals[1].x * transformed->normals[1].x +
                                               transformed->normals[1].y * transformed->normals[1].y +
                                               transformed->normals[1].z * transformed->normals[1].z));
+                            transformed = &TerrainScaledShapeCursorPc[scaled_shape_count];
                             transformed->normals[1].x *= inverse;
                             transformed->normals[1].y *= inverse;
                             transformed->normals[1].z *= inverse;
@@ -836,6 +837,7 @@ extern "C" void ScanTerrain(i32 scan_type, i32 terrain_mask, i32 scan_flags) {
                                                        transformed->normals[0].y * transformed->normals[0].y +
                                                        transformed->normals[0].z * transformed->normals[0].z);
                             const f32 inverse = length == 0.0f ? 0.0f : 1.0f / length;
+                            transformed = &TerrainScaledShapeCursorPc[scaled_shape_count];
                             transformed->normals[0].x *= inverse;
                             transformed->normals[0].y *= inverse;
                             transformed->normals[0].z *= inverse;
