@@ -143,9 +143,9 @@ extern "C" void __cdecl UpdatePushBlocks(void *world_ptr, void *, f32) {
             if ((p->packed_state_flags & 0x200u) != 0) {
                 if (p->snap_timer <= snap_time) {
                     f32 fraction = p->snap_timer / snap_time;
+                    NUVEC *position = p->position;
                     i32 angle = static_cast<i32>(16384.0 + (static_cast<f64>(fraction) * 16384.0 + 49152.0));
                     fraction = NuTrigTable[(angle >> 1) & 0x7fff];
-                    NUVEC *position = p->position;
                     position->x =
                         p->snap_origin.x +
                         (p->snap_positions[(p->packed_state_flags >> 15) & 7].x - p->snap_origin.x) * fraction;
