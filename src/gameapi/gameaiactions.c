@@ -1777,3 +1777,47 @@ i32 __cdecl Action_AddScriptProcessor(AISYS_PC *system, AISCRIPTPROCESS_PC *proc
     }
     return 1;
 }
+
+extern const char ActionSnapXName[2];
+extern const char ActionSnapZName[2];
+
+i32 __cdecl Action_AddPartPc(AISYS_PC *system, AISCRIPTPROCESS_PC *processor, AIPACKET_PC *packet, char **params,
+                             i32 count, i32 first_time, f32 elapsed) {
+    if (first_time != 0) {
+        NUSPECIALHANDLE special = {0};
+        NUVEC position;
+        i32 index;
+        char *value;
+        for (index = 0; index < count; ++index) {
+            value = NuStrIStr(params[index], (char *)AITransferLiteral75782c);
+            if (value != NULL)
+                NuSpecialFind(WORLD->current_gscn, &special, value + 5, 1);
+            else if ((value = NuStrIStr(params[index], (char *)ActionSnapXName)) != NULL)
+                position.x = AIParamToFloat(processor, value + 2);
+            else if ((value = NuStrIStr(params[index], "y")) != NULL)
+                position.y = AIParamToFloat(processor, value + 2);
+            else if ((value = NuStrIStr(params[index], (char *)ActionSnapZName)) != NULL)
+                position.z = AIParamToFloat(processor, value + 2);
+        }
+        if (NuSpecialExistsFn(&special)) {
+            NUVEC velocity;
+            NUMTX matrix;
+            ADDPART_PC part;
+            MakeThrowVector(&velocity, &position, &player->collision_position, &player->velocity, GameDeflectPartSpeed,
+                            GameDeflectPartGravity);
+            NuMtxSetTranslation(&matrix, &position);
+            part = Default_ADDPART;
+            part.field_14 = part.field_18 = 0.1f;
+            part.gravity = GameDeflectPartGravity;
+            part.time_step = FRAMETIME;
+            part.matrix = &matrix;
+            part.velocity = &velocity;
+            part.special = &special;
+            part.flags = 0x29b;
+            part.collision_fn = PartCollide_3D;
+            AddPart(&part);
+            NewRumble(player->pad->bound_pad, 0.5f, 0);
+        }
+    }
+    return 1;
+}
