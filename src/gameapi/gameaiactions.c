@@ -2003,3 +2003,40 @@ i32 __cdecl Action_UseTriggerSet(AISYS_PC *system, AISCRIPTPROCESS_PC *processor
     }
     return 0;
 }
+
+extern i32 __cdecl GizmoGetTypeIDByName(void *, char *);
+STATIC_ASSERT(offsetof(TECHNO_s, flags) == 0x3c);
+
+i32 __cdecl Action_SetTechnoCompletePc(AISYS_PC *system, AISCRIPTPROCESS_PC *processor, AIPACKET_PC *packet,
+                                       char **params, i32 count, i32 first_time, f32 elapsed) {
+    GAMEOBJECT *object = packet != NULL && packet->owner != NULL ? packet->owner->objptr : NULL;
+    TECHNO_PC *techno = NULL;
+    i32 complete = 1;
+    i32 index;
+    char *value;
+    if (first_time) {
+        for (index = 0; index < count; ++index) {
+            value = NuStrIStr(params[index], "techno");
+            if (value != NULL) {
+                char *name = value + NuStrLen("techno") + 1;
+                i32 type = GizmoGetTypeIDByName(WORLD->gizmo_sys, (char *)PCContextName_Techno);
+                GIZMO_PC *gizmo = (GIZMO_PC *)GizmoFindByName(WORLD->gizmo_sys, type, name);
+                if (gizmo != NULL && gizmo->object != NULL)
+                    techno = (TECHNO_PC *)gizmo->object;
+            } else if (NuStrICmp(params[index], (char *)AIActionFalseName) == 0) {
+                complete = 0;
+            } else if ((value = NuStrIStr(params[index], "controlling")) != NULL) {
+                char *name = value + NuStrLen("controlling") + 1;
+                GAMEOBJECT_LOOKUP_CALLBACK_PC lookup = GetNamedGameObjectCallback;
+                void *ai_system = WORLD->ai_sys;
+                APIOBJECT_PC *named = lookup != NULL ? lookup(ai_system, name) : NULL;
+                object = named != NULL ? named->owner : NULL;
+            }
+        }
+        if (object != NULL)
+            techno = Technos_FindControllingTechno(object);
+        if (techno != NULL)
+            ((TECHNO_s *)techno)->complete = complete;
+    }
+    return 1;
+}

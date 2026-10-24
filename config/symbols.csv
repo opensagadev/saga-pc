@@ -12358,7 +12358,9 @@ address,symbol,size,ctype
 0x007584a8,_AIExpressionMaxName,4,const char [4]
 0x007584ac,_AIActionNumName,4,const char[4]
 0x007584b0,_AIActionDistName,5,const char[5]
+0x007584b8,??_C@_0M@OEAPBPMD@controlling?$AA@,12,const char[12]
 0x7584c4,_PCContextName_Techno,7,const char [7]
+0x007584cc,??_C@_06KCKBAJGD@techno?$AA@,7,const char[7]
 0x7584d4,??_C@_09CGFKCPPE@newlevel?$DN?$AA@,10,char []
 0x007584d4,_NewLevelPrefix,,
 0x007584e0,_GizActionLevelPrefixPc,7,const char[7]
