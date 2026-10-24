@@ -184,3 +184,41 @@ i32 __cdecl eduicbRenderSliderInt(eduimenu_s *unused_menu, eduiitem_s *item, i32
     }
     return height * 2;
 }
+
+i32 __cdecl eduicbRenderFilePick(eduimenu_s *unused_menu, eduiitem_s *item, i32 x, i32 y, i32 width,
+                                 i32 unused_selected) {
+    edui_file_pick_s *picker = (edui_file_pick_s *)item;
+    i32 height = (i32)(NuQFntHeight((VUFNT *)edui_font) * 1.25) >> 3;
+    f64 font_height = NuQFntHeight((VUFNT *)edui_font) * 0.125;
+    i32 baseline = (i32)(font_height + NuQFntBaseline((VUFNT *)edui_font));
+    if (picker->reserved_54 != 0) {
+        i32 centre;
+        if (edui_donotdraw == 0) {
+            NuRndrRect2di(x << 4, y << 3, width << 4, height << 4, item->colours[2 + item->highlighted],
+                          (NUMTL *)uimtls[ui_bgmtl]);
+            if (edui_donotdraw == 0) {
+                NuQFntSet((VUFNT *)edui_font);
+                if (edui_donotdraw == 0)
+                    NuQFntSetColour((VUFNT *)edui_font, item->colours[item->highlighted]);
+            }
+        }
+        centre = (x * 2 + width) << 3;
+        EduiPrintAlignedTextPc(edui_font, centre, (y << 3) + baseline, 64, item->text);
+        EduiPrintAlignedTextPc(edui_font, centre, ((y + height) << 3) + baseline, 64, picker->format, picker->name);
+        return height * 2;
+    } else {
+        char formatted[256];
+        if (edui_donotdraw == 0)
+            NuRndrRect2di(x << 4, y << 3, width << 4, height << 3, item->colours[2 + item->highlighted],
+                          (NUMTL *)uimtls[ui_bgmtl]);
+        NuSPrintf(formatted, picker->format, picker->name);
+        if (edui_donotdraw == 0) {
+            NuQFntSet((VUFNT *)edui_font);
+            if (edui_donotdraw == 0)
+                NuQFntSetColour((VUFNT *)edui_font, item->colours[item->highlighted]);
+        }
+        EduiPrintAlignedTextPc(edui_font, (x * 2 + width) << 3, (y << 3) + baseline, 64, "%s %s", item->text,
+                               formatted);
+        return height;
+    }
+}
