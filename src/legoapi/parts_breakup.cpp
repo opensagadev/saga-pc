@@ -85,9 +85,10 @@ extern "C" {
     void __cdecl AddPartDebris(PARTDEBRISSYS *, i32, NUVEC *);
     void KillParts(GAMEOBJECT *object, i32 animation, i32 excluded_layer, i32 mode, float vertical_scale,
                    i32 use_vehicle_velocity, u16 *angle_override) {
-        CHARACTERDATA_PC *character = object->character_data;
-        PLAYERCHARACTERCONFIG_PC *game_character = character->game_character;
-        if ((character->model_flags & 0x02000000) != 0 || (game_character->flags_090 & 0x8000) != 0)
+        i32 part_index = 0;
+        i32 retry = 0;
+        if ((object->character_data->model_flags & 0x02000000) != 0 ||
+            (object->character_data->game_character->flags_090 & 0x8000) != 0)
             return;
         if (static_cast<i16>(object->id) == id_BOBAFETT && WORLD->current_level == SARLACCPITA_LDATA && FreePlay == 0 &&
             static_cast<u8>(object->field_280) == 0xff)
@@ -95,40 +96,41 @@ extern "C" {
 
         GameAudio_PlaySfx(0x4f, &object->collision_position, 0, 0);
 
-        if ((character->model_flags & 0x04000000) != 0 && static_cast<i16>(object->id) != id_MINIDROIDEKA) {
+        if ((object->character_data->model_flags & 0x04000000) != 0 &&
+            static_cast<i16>(object->id) != id_MINIDROIDEKA) {
             KILLPARTS_MINIKIT_PIECES_PC *pieces =
                 reinterpret_cast<KILLPARTS_MINIKIT_PIECES_PC **>(Char_MiniKit)[static_cast<i16>(object->id)];
-            if (pieces == NULL || pieces->piece_count == 0)
+            if (pieces == NULL)
                 return;
             for (i32 i = 0; i < pieces->piece_count; ++i) {
-                KILLPARTS_MINIKIT_PIECE_PC *piece = &pieces->pieces[i];
-                if (!NuSpecialExistsFn(&piece->special))
+                if (!NuSpecialExistsFn(&pieces->pieces[i].special))
                     continue;
-                NUMTX matrix;
-                NuMtxMul(&matrix, &piece->matrix, &object->transform);
+                NUMTX matrix = pieces->pieces[i].matrix;
+                NuMtxMul(&matrix, &matrix, &object->transform);
                 NUVEC momentum;
                 SetKillPartMom(&momentum);
                 NuVecScale(&momentum, &momentum, 3.0f);
-                momentum.x += object->velocity.x * 0.75f;
                 momentum.y += 5.0f;
+                ADDPART_PC params = Default_ADDPART;
+                momentum.x += object->velocity.x * 0.75f;
                 momentum.y += object->velocity.y * 0.75f;
                 momentum.z += object->velocity.z * 0.75f;
-                ADDPART_PC params = Default_ADDPART;
                 params.matrix = &matrix;
                 params.velocity = &momentum;
-                params.field_14 = params.field_18 = 0.2f;
+                params.field_14 = 0.2f;
+                params.field_18 = 0.2f;
                 params.gravity = -10.0f;
-                params.special = &piece->special;
-                params.flags = mode == 0 ? 0x480 : 0x90;
-                params.impact_fn = PartImpact_Brick;
-                params.stop_fn = PartStop_Flickerer;
-                params.draw_fn = PartDraw_Flickerer;
-                params.time_step = FRAMETIME;
+                params.special = &pieces->pieces[i].special;
                 params.lighting_data = Cheats_CheckFlags(1)
                                            ? reinterpret_cast<PART_LIGHTING_DATA_PC *>(&KillPartsZeroLightingPc)
                                            : reinterpret_cast<PART_LIGHTING_DATA_PC *>(
                                                  &reinterpret_cast<KILLPARTS_OBJECT_LIGHT_PC *>(object)->lighting);
+                params.time_step = FRAMETIME;
+                params.flags = mode == 0 ? 0x480 : 0x90;
                 params.field_c4 = 1;
+                params.stop_fn = PartStop_Flickerer;
+                params.draw_fn = PartDraw_Flickerer;
+                params.impact_fn = PartImpact_Brick;
                 PART_PC *part = AddPart(&params);
                 if (part != NULL)
                     part->time_remaining = static_cast<f64>(qrand()) * PlayerRandomScalePc * 2.0f + 7.0f;
@@ -142,15 +144,15 @@ extern "C" {
             static_cast<u16>(static_cast<i32>(static_cast<f64>(qrand()) * PlayerRandomScalePc * 16384.0f - 8192.0f));
 
         i32 random_variant;
-        i32 retry = 0;
         do {
             random_variant = qrand() / 21846;
         } while (random_variant == KillPartsPreviousVariantPc && retry++ < 8);
+        CHARACTERDATA_PC *layer_character = object->character_data;
         KillPartsPreviousVariantPc = random_variant;
 
-        u32 layers = (game_character->flags_094_bytes[2] & 4) != 0
+        u32 layers = (layer_character->game_character->flags_094 & 0x40000) != 0
                          ? object->layer_mask
-                         : AdjustLayerBits(game_character->layer_mask_dead, object);
+                         : AdjustLayerBits(layer_character->game_character->layer_mask_dead, object);
         if (animation != -1)
             layers = 1u << animation;
         else if (excluded_layer != -1)
@@ -158,43 +160,44 @@ extern "C" {
 
         NUMTX joint_matrices[256];
         i16 render_indices[32];
-        CHARACTER_MODEL_LAYERS_PC *model = object->character_model;
-        EvalModelAnim(model, &object->anim_packet, &object->transform, joint_matrices, NULL, NULL, NULL, layers);
-        const i32 render_count = game_character->make_layer_list(model, render_indices, layers);
-        i32 part_index = 0;
+        EvalModelAnim(object->character_model, &object->anim_packet, &object->transform, joint_matrices, NULL, NULL,
+                      NULL, layers);
+        const i32 render_count =
+            object->character_data->game_character->make_layer_list(object->character_model, render_indices, layers);
         for (i32 render_index = 0; render_index < render_count; ++render_index) {
-            const i32 layer = render_indices[render_index];
+            const i16 layer = render_indices[render_index];
             if (layer == -1 || (animation != -1 && layer != animation) ||
                 (excluded_layer != -1 && layer == excluded_layer))
                 continue;
             KILLPARTS_RENDER_PC *render =
-                reinterpret_cast<KILLPARTS_RENDER_PC *>(&model->hierarchy->render_parts[layer]);
+                reinterpret_cast<KILLPARTS_RENDER_PC *>(&object->character_model->hierarchy->render_parts[layer]);
             if (render->rigid_specials == NULL)
                 continue;
-            for (i32 joint = 0; joint < model->hierarchy->joint_count; ++joint, ++part_index) {
-                NUSPECIALHANDLE *special = static_cast<NUSPECIALHANDLE *>(render->rigid_specials[joint]);
-                if (special == NULL)
+            for (i32 joint = 0; joint < object->character_model->hierarchy->joint_count; ++joint, ++part_index) {
+                if (render->rigid_specials[joint] == NULL)
                     continue;
                 NUMTX matrix;
                 NUVEC momentum;
                 ADDPART_PC params;
-                if (VehicleArea != 0 && (character->model_flags & 0x2000) != 0 && game_character->field_028 > 0.0f) {
+                if (VehicleArea != 0 && (object->character_data->model_flags & 0x2000) != 0 &&
+                    object->character_data->game_character->field_028 > 0.0f) {
                     NuMtxMul(&matrix, &joint_matrices[joint], &object->transform);
                     SetKillPartMom(&momentum);
                     NuVecScale(&momentum, &momentum, 4.0f);
-                    momentum.x += object->velocity.x * 0.75f;
                     momentum.y += 6.0f;
+                    params = Default_ADDPART;
+                    momentum.x += object->velocity.x * 0.75f;
                     momentum.y += object->velocity.y * 0.75f;
                     momentum.z += object->velocity.z * 0.75f;
-                    params = Default_ADDPART;
-                    params.field_14 = params.field_18 = 0.4f;
+                    params.field_14 = 0.4f;
+                    params.field_18 = 0.4f;
                     params.gravity = -10.0f;
                 } else {
                     SetKillPartMom(&momentum);
                     momentum.y += vertical_scale;
                     if (animation != -1)
                         momentum.y += 1.0f;
-                    if ((character->model_flags & 0x2000) != 0) {
+                    if ((object->character_data->model_flags & 0x2000) != 0) {
                         momentum.x += object->velocity.x * 0.75f;
                         momentum.y += object->velocity.y * 0.75f;
                         momentum.z += object->velocity.z * 0.75f;
@@ -208,12 +211,13 @@ extern "C" {
                     }
                     NuMtxMul(&matrix, &joint_matrices[joint], &object->transform);
                     params = Default_ADDPART;
-                    params.field_14 = params.field_18 = 0.1f;
+                    params.field_14 = 0.1f;
+                    params.field_18 = 0.1f;
                     params.gravity = -5.0f;
                 }
                 params.matrix = &matrix;
                 params.velocity = &momentum;
-                params.special = special;
+                params.special = static_cast<NUSPECIALHANDLE *>(render->rigid_specials[joint]);
                 params.lighting_data = Cheats_CheckFlags(1)
                                            ? reinterpret_cast<PART_LIGHTING_DATA_PC *>(&KillPartsZeroLightingPc)
                                            : reinterpret_cast<PART_LIGHTING_DATA_PC *>(
@@ -239,41 +243,42 @@ extern "C" {
             }
         }
 
-        if ((character->flags & 1) != 0 && VehicleArea != 0 && (character->model_flags & 0x2000) != 0 &&
-            game_character->field_028 > 0.0f) {
+        if ((object->character_data->flags & 1) != 0 && VehicleArea != 0 &&
+            (object->character_data->model_flags & 0x2000) != 0 &&
+            object->character_data->game_character->field_028 > 0.0f) {
             NUSPECIALHANDLE *special = CharScene_FindHSpecial(WORLD, static_cast<i16>(object->id));
             if (special != NULL) {
                 NUMTX matrix = object->transform;
                 NUVEC momentum;
                 SetKillPartMom(&momentum);
                 NuVecScale(&momentum, &momentum, 4.0f);
-                momentum.x += object->velocity.x * 0.75f;
                 momentum.y += 6.0f;
+                ADDPART_PC params = Default_ADDPART;
+                momentum.x += object->velocity.x * 0.75f;
                 momentum.y += object->velocity.y * 0.75f;
                 momentum.z += object->velocity.z * 0.75f;
-                ADDPART_PC params = Default_ADDPART;
                 params.matrix = &matrix;
                 params.velocity = &momentum;
                 params.field_14 = 0.8f;
                 params.field_18 = 0.4f;
                 params.gravity = -10.0f;
                 params.special = special;
-                params.flags = mode == 0 ? 0x480 : 0x90;
-                params.impact_fn = PartImpact_Brick;
-                params.stop_fn = PartStop_Flickerer;
-                params.draw_fn = PartDraw_Flickerer;
-                params.time_step = FRAMETIME;
                 params.lighting_data = Cheats_CheckFlags(1)
                                            ? reinterpret_cast<PART_LIGHTING_DATA_PC *>(&KillPartsZeroLightingPc)
                                            : reinterpret_cast<PART_LIGHTING_DATA_PC *>(
                                                  &reinterpret_cast<KILLPARTS_OBJECT_LIGHT_PC *>(object)->lighting);
+                params.time_step = FRAMETIME;
+                params.flags = mode == 0 ? 0x480 : 0x90;
                 params.field_c4 = 1;
+                params.stop_fn = PartStop_Flickerer;
+                params.draw_fn = PartDraw_Flickerer;
+                params.impact_fn = PartImpact_Brick;
                 PART_PC *part = AddPart(&params);
                 if (part != NULL)
                     part->time_remaining = static_cast<f64>(qrand()) * PlayerRandomScalePc * 2.0f + 3.0f;
             }
         }
-        if (game_character->weapon_action == 0)
+        if (object->character_data->game_character->weapon_action == 0)
             Customiser_AddPartAccessories(CharacterCustomiser, object, animation, mode, vertical_scale);
     }
 
