@@ -829,7 +829,7 @@ static void GizFlowConfigCollapsePc(NUFPAR_PC *parser) {
     NuFParPushCom(parser, cfgtab_collapse_pc);
     while (NuFParGetLine(parser)) {
         NuFParGetWord(parser);
-        if (NuStrICmp(parser->word_buffer, "}") == 0)
+        if (NuStrICmp(parser->word_buffer_ptr, "}") == 0)
             break;
         NuFParInterpretWord(parser);
     }
@@ -868,7 +868,7 @@ static void GizFlowConfigConditionTypePc(NUFPAR_PC *parser) {
     index = 0;
     type = gizflow_condition_types_pc;
     while (load_conditiontype == -1) {
-        if (NuStrICmp(type->name, parser->word_buffer) == 0) {
+        if (NuStrICmp(type->name, parser->word_buffer_ptr) == 0) {
             load_conditiontype = index;
             if (type->load != NULL)
                 type->load(parser);
