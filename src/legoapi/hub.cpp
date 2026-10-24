@@ -3202,7 +3202,7 @@ static void HubDrawFreePlaySelectPc(void) {
             DrawCharIcon(list[i].model_id, (x - source_x) * eased + source_x, (y - source_y) * eased + source_y, 0.0f,
                          (target_size - source_size) * eased + source_size, frame, draw_alpha, draw_alpha, 1, NULL);
         } else {
-            const f32 offset = 1.0f - NuTrigTable[((i32)(progress * 16384.0 + 16384.0) >> 1) & 0x7fff];
+            const f64 offset = 1.0 - (f64)NuTrigTable[((i32)(progress * 16384.0 + 16384.0) >> 1) & 0x7fff];
             DrawCharIcon(list[i].model_id, offset + offset + x, y, 0.0f, target_size,
                          i == 0   ? 166
                          : i == 1 ? 165
