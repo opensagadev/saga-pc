@@ -431,9 +431,9 @@ void __cdecl ResetGizFlow(GIZFLOW_PC *system, GIZFLOWPROGRESS_PC *progress) {
     i32 i;
     if (system == NULL)
         return;
+    box = system->flowboxes;
     system->frame = 0;
     ResetGizFlowPointers(system);
-    box = system->flowboxes;
     for (i = 0; i < system->flowbox_count; ++i, ++box) {
         u16 flags = FLOWBOX_FLAGS(box);
         box->last_process_frame = 0;
@@ -482,8 +482,12 @@ void __cdecl ResetGizFlow(GIZFLOW_PC *system, GIZFLOWPROGRESS_PC *progress) {
         if (flowbox_callbacks[box->type].reset != NULL && (FLOWBOX_FLAGS(box) & 0x1000) == 0)
             flowbox_callbacks[box->type].reset(system, box);
         if (box->type == 0 && (((FLOWBOX_FLAGS(box) & 0x4000) == 0 && FreePlay == 0) ||
-                               ((FLOWBOX_FLAGS(box) & 0x2000) == 0 && FreePlay != 0) ||
-                               ((box->state_flags_low & 1) == 0 && (box->state_flags_low & 4) != 0))) {
+                               ((FLOWBOX_FLAGS(box) & 0x2000) == 0 && FreePlay != 0))) {
+            FLOWBOXGIZMODATA_PC *data = (FLOWBOXGIZMODATA_PC *)box->data;
+            i32 j;
+            for (j = 0; j < data->gizmo_count; ++j)
+                GizmoSetVisibility(system->gizmo_sys, data->gizmos[j]->gizmo, 0, 1);
+        } else if ((box->state_flags_low & 1) == 0 && (box->state_flags_low & 4) != 0 && box->type == 0) {
             FLOWBOXGIZMODATA_PC *data = (FLOWBOXGIZMODATA_PC *)box->data;
             i32 j;
             for (j = 0; j < data->gizmo_count; ++j)
