@@ -284,8 +284,9 @@ extern "C" {
             system->state = 1;
             system->active_mission = &system->missions[MissionMenuSelectionPc];
             ResetTimer(&system->timer, 0.0f);
-            STUBBED_NAMED("0x00497ab1: MenuUpdateMissions Cheats_TurnOff(0) native56e2e0");
+            Cheats_TurnOff(0);
             GameAudio_PlaySfx(0x30, NULL, 0, 0);
+            system = (MISSION_SYSTEM_READER_PC *)MissionSys;
             NextArea_FreePlay = 0;
             FreePlay = 0;
             NewLData = &LDataList[system->active_mission->level];
