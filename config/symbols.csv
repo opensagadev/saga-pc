@@ -6530,6 +6530,7 @@ address,symbol,size,ctype
 0x61f260,_cbInteractMenuScrollUp,33,
 0x61f290,_cbInteractMenuScrollTo,115,
 0x61f310,_cbInteractMenuCancelChild,35,
+0x0061f3d0,_EduiClearInteractionsPc,47,
 0x61f9b0,_eduiSetFontScale,21,
 0x61fa90,_eduicbProcessColourSlider,721,
 0x61fd70,_eduicbRenderColourSlider,606,
@@ -24795,10 +24796,12 @@ address,symbol,size,ctype
 0x2900ca8,_FS_FileList,65536,char[65536]
 0x2910cb4,_submenu1,4,struct eduimenu_s *
 0x2910cbc,_edfile_lock,8,i32[2]
+0x02910cc4,_numInteracts,,i32
 0x29110d8,_edfile_buffer,4096,char[4096]
 0x2912138,_textrow,16,char *[4]
 0x291214c,_testmenu0,4,struct eduimenu_s *
 0x2912154,_submenu0,,
+0x02912158,_eduiInteracts,,edui_interact_s [64]
 0x2912b58,_edui_font,4,void *
 0x2912e70,_ed_remap_mtx,4,struct numtx_s *
 0x2912e80,_ed_list,4,struct ed_module_s *

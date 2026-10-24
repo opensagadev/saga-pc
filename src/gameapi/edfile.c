@@ -1000,6 +1000,37 @@ i32 __cdecl eduicbInteractSel(edui_interact_s *interact) {
     return 0;
 }
 
+i32 numInteracts = 0;
+edui_interact_s eduiInteracts[64] = {0};
+
+STATIC_ASSERT(offsetof(edui_interact_s, item) == 0x14);
+
+static void EduiClearInteractionsPc(eduimenu_s *menu, eduiitem_s *item);
+
+void __cdecl eduicbItemDestroy(eduimenu_s *menu, eduiitem_s *item) {
+    EduiClearInteractionsPc(menu, item);
+    if (item->text != NULL) {
+        NuFree(item->text, EduiSourcePathPc, 0x29e);
+        item->text = NULL;
+    }
+    NuFree(item, EduiSourcePathPc, 0x2a2);
+    menu->field_0c = menu->first;
+}
+
+static void EduiClearInteractionsPc(eduimenu_s *menu, eduiitem_s *item) {
+    edui_interact_s *interact = eduiInteracts;
+    i32 remaining = numInteracts;
+    if (remaining > 0) {
+        do {
+            if (interact->menu == menu && interact->item == item) {
+                interact->menu = NULL;
+                interact->item = NULL;
+            }
+            ++interact;
+        } while (--remaining != 0);
+    }
+}
+
 eduiitem_s *__cdecl eduiItemSelCreate(u32 data, void *colours, i32 selected, i32 group, void *callback, char *text) {
     edui_sel_s *item = (edui_sel_s *)NuAlloc(sizeof(edui_sel_s), EduiSourcePathPc, 0x53b);
     if (item) {
