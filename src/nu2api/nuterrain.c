@@ -928,6 +928,7 @@ void NewScanRot(NUVEC *position, i32 terrain_mask) {
         }
     } else {
         i32 cell_index;
+        TERRAIN_SHADOW_QUERY_VIEW_PC *query;
 
         cache = &TERRAIN_ROT_SET->index_levels[oldest_index];
         if (cache->cache_age < 2) {
@@ -988,15 +989,16 @@ void NewScanRot(NUVEC *position, i32 terrain_mask) {
                 TERRAIN_ROT_FINISH_GROUP(group_indices[cell_group]);
             }
         }
-        if (cache->cache_age < 2) {
+        query = (TERRAIN_SHADOW_QUERY_VIEW_PC *)TerI;
+        if (TERRAIN_ROT_SET->index_levels[oldest_index].cache_age < 2) {
             TERRAIN_SCAN_WORD_PC *entry;
 
-            cache->cache_age = 8;
-            cache->center_x = position->x;
-            cache->center_z = position->z;
+            TERRAIN_ROT_SET->index_levels[oldest_index].cache_age = 8;
+            TERRAIN_ROT_SET->index_levels[oldest_index].center_x = position->x;
+            TERRAIN_ROT_SET->index_levels[oldest_index].center_z = position->z;
             group_header->header.shape_count = 0;
             group_header->header.terrain_group = 0;
-            group_header = ((TERRAIN_SHADOW_QUERY_VIEW_PC *)TerI)->scan_words;
+            group_header = query->scan_words;
             cursor = group_header + 1;
             limit = cursor + 508;
             shape_count = 0;
@@ -1004,7 +1006,7 @@ void NewScanRot(NUVEC *position, i32 terrain_mask) {
             max_z = saved_position.z + 0.10000000149011612;
             min_x = saved_position.x - 0.10000000149011612;
             min_z = saved_position.z - 0.10000000149011612;
-            entry = cache->scan_words;
+            entry = TERRAIN_ROT_SET->index_levels[oldest_index].scan_words;
             while (entry->header.shape_count > 0) {
                 const i16 count = entry->header.shape_count;
                 const i32 group_index = entry->header.terrain_group;
