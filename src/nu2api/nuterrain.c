@@ -3424,10 +3424,9 @@ u8 *TerrainSkinRebuildIndexPc(i32 pool_slots) {
         terrain->cells[i].group_count = 0;
     terrain->used_cell_count = 0;
     for (cell_index = 0; cell_index < 49; ++cell_index) {
-        TERRAIN_CELL_PC *cell = &terrain->cells[terrain->used_cell_count];
         f32 cell_min_x = 200000000.0f, cell_min_z = 200000000.0f;
         f32 cell_max_x = -200000000.0f, cell_max_z = -200000000.0f;
-        cell->first_group = (i16)terrain->group_index_count;
+        terrain->cells[terrain->used_cell_count].first_group = (i16)terrain->group_index_count;
         for (i = 0; i < terrain->group_count; ++i) {
             if (selectors[i] == cell_index && terrain->groups[i].chunk_type == 0) {
                 if (min_x[i] < cell_min_x)
@@ -3438,15 +3437,15 @@ u8 *TerrainSkinRebuildIndexPc(i32 pool_slots) {
                     cell_max_x = max_x[i];
                 if (max_z[i] > cell_max_z)
                     cell_max_z = max_z[i];
-                ++cell->group_count;
+                ++terrain->cells[terrain->used_cell_count].group_count;
                 terrain->group_indices[terrain->group_index_count++] = (i16)i;
             }
         }
-        if (cell->group_count != 0) {
-            cell->min_x = cell_min_x;
-            cell->min_z = cell_min_z;
-            cell->max_x = cell_max_x;
-            cell->max_z = cell_max_z;
+        if (terrain->cells[terrain->used_cell_count].group_count != 0) {
+            terrain->cells[terrain->used_cell_count].min_x = cell_min_x;
+            terrain->cells[terrain->used_cell_count].min_z = cell_min_z;
+            terrain->cells[terrain->used_cell_count].max_x = cell_max_x;
+            terrain->cells[terrain->used_cell_count].max_z = cell_max_z;
             ++terrain->used_cell_count;
         }
     }

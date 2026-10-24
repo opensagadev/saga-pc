@@ -967,6 +967,7 @@ extern "C" void ScanWallSplineTerrain(i32 scan_type, i32 terrain_mask, i32 scan_
     min_x -= TerrainScanMargin02Pc;
     min_z -= TerrainScanMargin02Pc;
     WallSplCount = 0;
+    i32 wall_count = 0;
     max_x += TerrainScanMargin02Pc;
     max_z += TerrainScanMargin02Pc;
     for (TERRAIN_SPATIAL_NODE *node = TERRAIN_SET_CURRENT_PC->spatial_nodes; node != NULL;
@@ -978,45 +979,48 @@ extern "C" void ScanWallSplineTerrain(i32 scan_type, i32 terrain_mask, i32 scan_
             continue;
         }
         const u32 material = node->field_02 & 0xff;
-        for (i32 first = 0; first < node->point_count; first += 16) {
-            i32 end;
-            if (node->points[first].y != 2147483648.0f) {
-                if (node->points[first + 1].y >= min_x && node->points[first].y <= max_x &&
-                    node->points[first + 3].y >= min_z && node->points[first + 2].y <= max_z) {
-                    end = first + 16;
-                    if (end > node->point_count) {
-                        end = node->point_count;
+        if (node->point_count != 0) {
+            for (i32 first = 0; first < node->point_count; first += 16) {
+                i32 end;
+                if (node->points[first].y != 2147483648.0f) {
+                    if (node->points[first + 1].y >= min_x && node->points[first].y <= max_x &&
+                        node->points[first + 3].y >= min_z && node->points[first + 2].y <= max_z) {
+                        end = first + 16;
+                        if (end > node->point_count) {
+                            end = node->point_count;
+                        }
+                    } else {
+                        end = 0;
                     }
                 } else {
-                    end = 0;
+                    end = node->point_count;
                 }
-            } else {
-                end = node->point_count;
-            }
-            for (i32 i = first; i < end; ++i) {
-                NUVEC *a = &node->points[i];
-                NUVEC *b = &node->points[i + 1];
-                if ((a->x >= min_x && b->x <= max_x) || (b->x >= min_x && a->x <= max_x)) {
-                    if ((a->z >= min_z && b->z <= max_z) || (b->z >= min_z && a->z <= max_z)) {
-                        if (WallSplCount < 64) {
-                            TERRAIN_WALL_POINT *entry = &static_cast<TERRAIN_WALL_POINT *>(WallSplList)[WallSplCount];
-                            entry->position = *a;
-                            entry->material[0] = material;
-                            entry->material[1] = mask;
-                            entry->material[2] = 0;
-                            entry->material[3] = 0;
-                            ++WallSplCount;
-                            entry = &static_cast<TERRAIN_WALL_POINT *>(WallSplList)[WallSplCount];
-                            entry->position = *b;
-                            entry->material[0] = material;
-                            entry->material[1] = mask;
-                            entry->material[2] = 0;
-                            entry->material[3] = 0;
-                            ++WallSplCount;
+                for (i32 i = first; i < end; ++i) {
+                    NUVEC *a = &node->points[i];
+                    NUVEC *b = &node->points[i + 1];
+                    if ((a->x >= min_x && b->x <= max_x) || (b->x >= min_x && a->x <= max_x)) {
+                        if ((a->z >= min_z && b->z <= max_z) || (b->z >= min_z && a->z <= max_z)) {
+                            if (wall_count < 64) {
+                                TERRAIN_WALL_POINT *entry = &static_cast<TERRAIN_WALL_POINT *>(WallSplList)[wall_count];
+                                entry->position = *a;
+                                entry->material[0] = material;
+                                entry->material[1] = mask;
+                                entry->material[2] = 0;
+                                entry->material[3] = 0;
+                                ++wall_count;
+                                ++entry;
+                                entry->position = *b;
+                                entry->material[0] = material;
+                                entry->material[1] = mask;
+                                entry->material[2] = 0;
+                                entry->material[3] = 0;
+                                ++wall_count;
+                            }
                         }
                     }
                 }
             }
+            WallSplCount = wall_count;
         }
     }
     TerrOverRideScan = NULL;
