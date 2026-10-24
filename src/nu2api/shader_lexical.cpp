@@ -182,15 +182,14 @@ bool ShaderLexicalReaderPc::Next(ShaderCompilerBufferAllocatorPc *input, i32 *cu
 }
 
 ShaderConditionNodePc *ShaderConditionNodePc::AppendOperand(ShaderConditionNodePc *operand) {
-    if (left == NULL) {
-        left = operand;
-        return operand;
-    }
-    if (right == NULL) {
+    if (left != NULL) {
+        if (right != NULL)
+            return NULL;
         right = operand;
         return operand;
     }
-    return NULL;
+    left = operand;
+    return operand;
 }
 
 static i32 ShaderConditionPrecedencePc(const char *token) {
