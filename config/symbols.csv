@@ -6525,7 +6525,7 @@ address,symbol,size,ctype
 0x0061e6b0,_NuKeyToAscii,50,"i32 __cdecl (u32, i32)"
 0x61eb60,_eduicbItemExpanderClose,88,
 0x61ec10,_eduicbMenuCloseAllexpanders,40,
-0x61f070,_eduiGetUsingMenuFocus,20,
+0x61f070,_EduiDeepestChildPc,20,
 0x61f180,_cbSel,14,
 0x61f190,_cbGradChange,1,
 0x61f1a0,_cbInteractMenuTitle,135,
@@ -24822,6 +24822,7 @@ address,symbol,size,ctype
 0x2912ed8,_edui_donotdraw,4,i32
 0x2912ee4,_edui_cursor_buttons,4,u32
 0x2912ee8,_edui_cursor_buttons_db,4,u32
+0x02912f50,_EduiUsingMenuFocusPc,,i32
 0x2912f54,_selection_value,4,i32
 0x2912f58,_PadFlyMode,4,i32
 0x2912f5c,_edfile_media,4,i32

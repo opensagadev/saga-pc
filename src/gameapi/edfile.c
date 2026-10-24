@@ -537,22 +537,6 @@ void eduicbCancelMessageMenu(eduimenu_s *unused0, eduimenu_s *unused1) {
     edui_messagemenu = NULL;
 }
 
-void eduiSetActiveMenu(eduimenu_s *menu) {
-    if (eduiGetUsingMenuFocus()) {
-        if (menu) {
-            while (menu->child)
-                menu = menu->child;
-            active_menu = menu;
-        } else {
-            menu = default_active_menu;
-            if (menu)
-                while (menu->child)
-                    menu = menu->child;
-            active_menu = menu;
-        }
-    }
-}
-
 __declspec(noinline) void cbInteractMenuKeySelect(eduimenu_s *menu) {
     u32 modifiers;
     char text[2];
@@ -768,19 +752,6 @@ void eduiCreate3LineMessageMenu(eduimenu_s *parent, char *first, char *second, c
         edui_messagemenu->x = parent->x + 10;
         edui_messagemenu->y = parent->y + 40;
     }
-}
-
-i32 eduiCheckForPadMenuCancel(eduimenu_s *menu, FRAME_PAD_PC *pad) {
-    struct eduimenu_s *parent;
-    if (!pad || !(pad->digital_buttons_pressed & 0x10))
-        return 0;
-
-    parent = menu->parent;
-    if (!eduiGetUsingMenuFocus() && parent)
-        eduiMenuDetach(menu);
-    if (menu->callback)
-        menu->callback(menu, parent);
-    return 1;
 }
 
 i32 eduiMenuProcessInput(eduimenu_s *menu, f32 delta_time, FRAME_PAD_PC *pad, i32 item_result) {
