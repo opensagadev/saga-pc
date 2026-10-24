@@ -15,18 +15,6 @@ extern char *NuBlankString;
         }                                                                                                              \
     } while (0)
 
-#define NU_IS_FLUFF(character, result)                                                                                 \
-    do {                                                                                                               \
-        i32 nu_fluff_i;                                                                                                \
-        (result) = 0;                                                                                                  \
-        for (nu_fluff_i = 0; bad_fluff[nu_fluff_i] != 0; ++nu_fluff_i) {                                               \
-            if (bad_fluff[nu_fluff_i] == (character)) {                                                                \
-                (result) = 1;                                                                                          \
-                break;                                                                                                 \
-            }                                                                                                          \
-        }                                                                                                              \
-    } while (0)
-
 #define NU_UTF16_UPPER(character)                                                                                      \
     (((character) >= 0x0061 && (character) <= 0x007a) || ((character) >= 0x00e0 && (character) <= 0x00ff)              \
          ? (u16)((character) - 0x20)                                                                                   \
@@ -563,17 +551,17 @@ i32 NuSPrintfW(NUWCHAR *dest, NUWCHAR *format, ...) {
 }
 
 u8 *__cdecl NuUnicodeCharFromUTF8(u16 *dst, u8 *src) {
-    u16 c0 = *src++;
-
-    if (c0 <= 0x7f) {
-        *dst = c0;
-    } else if ((c0 & 0xe0) == 0xc0) {
-        u16 c1 = *src++;
-        *dst = ((c0 & 0x1f) << 6) | (c1 & 0x3f);
-    } else if ((c0 & 0xf0) == 0xe0) {
-        u16 c1 = *src++;
-        u16 c2 = *src++;
-        *dst = (c0 << 12) | ((c1 & 0x3f) << 6) | (c2 & 0x3f);
+    u16 character[3];
+    character[0] = *src++;
+    if (character[0] < 0x80) {
+        *dst = character[0];
+    } else if ((character[0] & 0xe0) == 0xc0) {
+        character[1] = *src++;
+        *dst = ((character[0] & 0x1f) << 6) | (character[1] & 0x3f);
+    } else if ((character[0] & 0xf0) == 0xe0) {
+        character[1] = *src++;
+        character[2] = *src++;
+        *dst = (character[0] << 12) | ((character[1] & 0x3f) << 6) | (character[2] & 0x3f);
     }
     return src;
 }
@@ -1071,6 +1059,16 @@ static i32 NuStringCharEquivalentPc(u16 a, u16 b) {
     return 0;
 }
 
+static i32 NuStringIsFluffPc(u16 character) {
+    i32 i = 0;
+    while (bad_fluff[i] != 0) {
+        if (bad_fluff[i] == character)
+            return 1;
+        ++i;
+    }
+    return 0;
+}
+
 u16 *__cdecl NuStringBadSubString(const u16 *text, const u16 *word, i32 *length, i32 whole_word) {
     const u16 *cursor;
     const u16 *match;
@@ -1092,7 +1090,7 @@ u16 *__cdecl NuStringBadSubString(const u16 *text, const u16 *word, i32 *length,
                 }
                 ++cursor;
                 while (*cursor != 0) {
-                    NU_IS_FLUFF(*cursor, is_fluff);
+                    is_fluff = NuStringIsFluffPc(*cursor);
                     if (!is_fluff && *cursor != *match) {
                         break;
                     }
@@ -1101,17 +1099,34 @@ u16 *__cdecl NuStringBadSubString(const u16 *text, const u16 *word, i32 *length,
                 ++match;
             }
             if (*match == 0) {
-                NU_IS_FLUFF(cursor[1], is_fluff);
-                if (!whole_word || cursor[1] == 0 || is_fluff) {
+                if (!whole_word || cursor[1] == 0) {
+                    is_fluff = 1;
+                } else {
+                    is_fluff = NuStringIsFluffPc(cursor[1]);
+                }
+                if (is_fluff) {
                     *length = (i32)(cursor - text);
                     return (u16 *)text;
                 }
             }
         }
-        NU_IS_FLUFF(*text, boundary);
+        boundary = NuStringIsFluffPc(*text);
         ++text;
     }
     return NULL;
+}
+
+i32 NuStrCpyW(u16 *dst, const u16 *src) {
+    i32 count = 0;
+    if (src == NULL) {
+        *dst = 0;
+    } else {
+        do {
+            *dst++ = *src;
+            ++count;
+        } while (*src++ != 0);
+    }
+    return count;
 }
 
 i32 __cdecl NuStringFilterBadWordsW(u16 *dest, u16 *source, u16 *replacement) {
@@ -1124,11 +1139,7 @@ i32 __cdecl NuStringFilterBadWordsW(u16 *dest, u16 *source, u16 *replacement) {
     u16 lower[256];
 
     if (source != dest) {
-        const u16 *src = source;
-        u16 *dst = dest;
-        do {
-            *dst++ = *src;
-        } while (*src++ != 0);
+        NuStrCpyW(dest, source);
     }
     NuStrLwrW(lower, dest);
     while (BadWords[i] != NULL) {
@@ -1141,11 +1152,7 @@ i32 __cdecl NuStringFilterBadWordsW(u16 *dest, u16 *source, u16 *replacement) {
         }
         match = NuStringBadSubString(lower, word, &length, whole_word);
         if (match != NULL) {
-            const u16 *src = replacement;
-            u16 *dst = dest;
-            do {
-                *dst++ = *src;
-            } while (*src++ != 0);
+            NuStrCpyW(dest, replacement);
             changed = 1;
         }
         ++i;
@@ -1166,7 +1173,6 @@ i32 __cdecl NuStringFilterBadWords(u8 *dest, u8 *source, u8 *replacement) {
 }
 
 #undef NU_WIDE_LENGTH
-#undef NU_IS_FLUFF
 
 i32 __cdecl NuSPrintf(char *dest, const char *format, ...) {
     va_list args;

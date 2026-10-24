@@ -2545,6 +2545,7 @@ address,symbol,size,ctype
 0x4f20a0,_NuStrStr,77,"char *__cdecl (char *, const char *)"
 0x004f20f0,_NuStrCmp,60,"i32 __cdecl (const char *, const char *)"
 0x004f2130,_NuStrNCmp,103,"i32 __cdecl (const char *, const char *, i32)"
+0x004f2280,_NuStrCpyW,48,"i32 __cdecl(u16 *, const u16 *)"
 0x4f2370,_NuStrLenW,29,
 0x4f24e0,_NuStrICmpW,133,
 0x004f26e0,_NuStrLwrW,76,"void __cdecl (u16 *, const u16 *)"
@@ -2566,6 +2567,7 @@ address,symbol,size,ctype
 0x004f3100,_NuStringTableUnload,35,void __cdecl (void)
 0x004f3130,_NuStringTableGetById,68,u16 *__cdecl (i32)
 0x004f3460,_NuStringCharEquivalentPc,90,
+0x004f34c0,_NuStringIsFluffPc,46,
 0x004f34f0,_NuStringBadSubString,342,"u16 *__cdecl (const u16 *, const u16 *, i32 *, i32)"
 0x004f3650,_NuStringFilterBadWordsW,212,"i32 __cdecl (u16 *, u16 *, u16 *)"
 0x004f3730,_NuStringFilterBadWords,130,"i32 __cdecl (u8 *, u8 *, u8 *)"
