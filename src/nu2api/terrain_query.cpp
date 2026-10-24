@@ -1203,7 +1203,7 @@ extern "C" {
     } while (0)
 #define TERRAIN_STH_FILTER_SHAPES()                                                                                    \
     do {                                                                                                               \
-        for (i32 remaining = count; remaining > 0; --remaining, ++shapes) {                                            \
+        for (i32 remaining = handle[0]; remaining > 0; --remaining, ++shapes) {                                        \
             TERRAIN_SHAPE *shape = shapes->shape;                                                                      \
             if (TERRAIN_STH_SHAPE_OVERLAP(shape) && cursor < limit && TERRAIN_STH_MATERIAL_OK(shape)) {                \
                 (cursor++)->shape = shape;                                                                             \
@@ -1283,7 +1283,6 @@ extern "C" {
             }
         }
         while (handle[0] > 0) {
-            const i32 count = handle[0];
             const i32 group_index = handle[1];
             TERRAIN_SCAN_WORD_PC *shapes = reinterpret_cast<TERRAIN_SCAN_WORD_PC *>(handle) + 1;
             TERRAIN_GROUP_PC *group = &TERRAIN_STH_SET->groups[group_index];
@@ -1324,14 +1323,14 @@ extern "C" {
                               min_z - group->origin.z);
                 }
                 if (group->scene_index == TerrPlatDis) {
-                    shapes += count;
+                    shapes += handle[0];
                 } else if ((platform->flags & TERRAIN_PLATFORM_FLAG_ROTATING) == 0) {
                     if (TERRAIN_STH_GROUP_OVERLAP(local_min_x, local_min_y, local_min_z, local_max_x, local_max_y,
                                                   local_max_z, group)) {
                         TERRAIN_STH_FILTER_SHAPES();
                         TERRAIN_STH_FINISH_GROUP(group_index);
                     } else {
-                        shapes += count;
+                        shapes += handle[0];
                     }
                 } else {
                     const f64 dy =
@@ -1340,7 +1339,7 @@ extern "C" {
                     const f64 dz = (min_z + max_z) * NuQFntHalfScale - group->origin.z;
                     const f32 distance_sq = dx * dx + dy * dy + dz * dz;
                     if (distance_sq < (group->radius + scan_radius) * (group->radius + scan_radius)) {
-                        for (i32 remaining = count; remaining > 0; --remaining, ++shapes) {
+                        for (i32 remaining = handle[0]; remaining > 0; --remaining, ++shapes) {
                             TERRAIN_SHAPE *shape = shapes->shape;
                             if (cursor < limit && TERRAIN_STH_MATERIAL_OK(shape) &&
                                 TERRAIN_STH_VERTICES_OVERLAP(shape)) {
@@ -1350,7 +1349,7 @@ extern "C" {
                         }
                         TERRAIN_STH_FINISH_GROUP(group_index);
                     } else {
-                        shapes += count;
+                        shapes += handle[0];
                     }
                 }
             } else if (TERRAIN_STH_GROUP_OVERLAP(min_x, min_y, min_z, max_x, max_y, max_z, group)) {
@@ -1363,7 +1362,7 @@ extern "C" {
                 TERRAIN_STH_FILTER_SHAPES();
                 TERRAIN_STH_FINISH_GROUP(group_index);
             } else {
-                shapes += count;
+                shapes += handle[0];
             }
             handle = reinterpret_cast<i16 *>(shapes);
         }
