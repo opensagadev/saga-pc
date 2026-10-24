@@ -221,7 +221,7 @@ extern f32 GameCamShakeDirSeekPc;
 extern f32 GameCamShakeOffsetSeekPc;
 extern i32 PlayPlanesUseRenderMtxPc;
 
-void __cdecl GameCam_ResetLookRot(GAMECAMERA *camera) {
+__declspec(noinline) void __cdecl GameCam_ResetLookRot(GAMECAMERA *camera) {
     if (camera == NULL)
         camera = GameCam;
     camera->field_214 = 0.0f;
@@ -1069,8 +1069,7 @@ static void PlayersCamLookPos(NUVEC *target, NUVEC *reference) {
 void MoveGameCamera(GAMECAMERA *camera) {
     i32 menu_id;
     i32 previous_mode;
-    i8 previous_candidate_count;
-    i8 previous_sock;
+    SOCKPOSITION_PC previous_sock_position;
     struct level_data_pc_s *seek_level;
     NUVEC position;
     NUVEC offset;
@@ -1114,7 +1113,7 @@ void MoveGameCamera(GAMECAMERA *camera) {
     NuCameraProjectionFarClipBias = WORLD->current_level->display.farclip_hack;
     menu_id = GetMenuID();
     if (MainRenderTime < 1.0f) {
-        camera->render_mtx = numtx_identity;
+        camera->render_mtx = NuMtxSetIdentityTemplate;
         camera->mtx = camera->render_mtx;
         pNuCam->mtx = camera->render_mtx;
         NuCameraSet(pNuCam);
@@ -1147,8 +1146,7 @@ void MoveGameCamera(GAMECAMERA *camera) {
     previous_mode = camera->mode;
     camera->mode = -1;
     camera->previous_mode = previous_mode;
-    previous_candidate_count = camera->sock_position.candidate_count;
-    previous_sock = camera->sock_position.sock_index;
+    previous_sock_position = camera->sock_position;
     if (ViewCam.gamepad != NULL)
         camera->mode = 5;
     if (newgamecam) {
@@ -1194,8 +1192,7 @@ void MoveGameCamera(GAMECAMERA *camera) {
                     GameCam_Reset(camera);
                     previous_mode = camera->mode;
                     camera->previous_mode = previous_mode;
-                    previous_sock = camera->sock_position.sock_index;
-                    previous_candidate_count = camera->sock_position.candidate_count;
+                    previous_sock_position = camera->sock_position;
                     CutBorderScale = 0.0f;
                 }
                 goto choose_gameplay_camera;
@@ -1874,16 +1871,17 @@ mode_selected:
         position.y += 0.05f * NU_SIN_LUT(((u16)(((i32)(NuFmod(GameTimer.time_elapsed, 5.792f) / 5.792f * 65536.0f)))));
         position.z += 0.05f * NU_SIN_LUT(((u16)(((i32)(NuFmod(GameTimer.time_elapsed, 7.183f) / 7.183f * 65536.0f)))));
     }
-    // Entry locals: position, target, previous_sock, previous_candidate_count,
+    // Entry locals: position, target and the previous sock position,
     // blend_duration=.5f, position_seek, angle_seek, pitch_override/yaw_override=-1,
     // roll_override=0, roll_hint_valid=0, roll_hint=0, roll_seek_override=0,
     // stop_blend_rate=.1f. Caller has already copied old mode to previous_mode.
     if (camera->mode == previous_mode) {
-        if (previous_sock == -1 || camera->sock_position.sock_index == -1) {
-            if (previous_sock != camera->sock_position.sock_index && WORLD->current_level != DOGFIGHTA_LDATA)
+        if (previous_sock_position.sock_index == -1 || camera->sock_position.sock_index == -1) {
+            if (previous_sock_position.sock_index != camera->sock_position.sock_index &&
+                WORLD->current_level != DOGFIGHTA_LDATA)
                 GameCam_Blend(camera, 1.0f, 0.0f, 1);
-        } else if (camera->sock_position.candidate_count != previous_candidate_count ||
-                   camera->sock_position.sock_index != previous_sock) {
+        } else if (camera->sock_position.candidate_count != previous_sock_position.candidate_count ||
+                   camera->sock_position.sock_index != previous_sock_position.sock_index) {
             GameCam_Blend(camera, blend_duration, 0.0f, 1);
         }
     }

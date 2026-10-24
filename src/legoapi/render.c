@@ -394,12 +394,15 @@ i32 __cdecl RenderPostASinPc(f32);
 #define ALPHA_GRID_VERTEX(vx, vy)                                                                                      \
     do {                                                                                                               \
         i32 colour;                                                                                                    \
+        u32 converted;                                                                                                 \
         direction.x = (vx);                                                                                            \
         direction.y = -(vy) * camera.aspect;                                                                           \
         direction.z = adjacent;                                                                                        \
-        NuVecNorm(&direction, &direction);                                                                             \
-        NuVecMtxTransform(&direction, &direction, &camera.mtx);                                                        \
-        NuVecNorm(&direction, &direction);                                                                             \
+        NuVecNorm((NUVEC *)&direction, (NUVEC *)&direction);                                                           \
+        direction.w = 1.0f;                                                                                            \
+        NuVecMtxTransform((NUVEC *)&direction, (NUVEC *)&direction, &camera.mtx);                                      \
+        NuVecNorm((NUVEC *)&direction, (NUVEC *)&direction);                                                           \
+        direction.w = 1.0f;                                                                                            \
         brightness = direction.y * 0.5f + 0.5f;                                                                        \
         if (brightness <= near_angle)                                                                                  \
             brightness = near_scale * parameters->intensity;                                                           \
@@ -408,32 +411,36 @@ i32 __cdecl RenderPostASinPc(f32);
         else                                                                                                           \
             brightness = ((brightness - near_angle) * scale_delta / angle_delta + near_scale) * parameters->intensity; \
         if (parameters->directional) {                                                                                 \
-            f32 angle =                                                                                                \
-                (i16)(0x4000 - RenderPostASinPc(NuVecDot(&parameters->direction, &direction))) * 0.0054931640625f;     \
+            f32 angle = (i16)(0x4000 - RenderPostASinPc(NuVecDot(&parameters->direction, (NUVEC *)&direction))) *      \
+                        0.0054931640625f;                                                                              \
             if (angle < parameters->direction_near_angle) {                                                            \
                 brightness += 128.0f * parameters->direction_far_scale;                                                \
             } else if (!(angle > parameters->direction_far_angle)) {                                                   \
-                f32 blend = RenderPostPowPc((angle - parameters->direction_near_angle) /                               \
-                                                (parameters->direction_far_angle - parameters->direction_near_angle),  \
-                                            parameters->direction_bias);                                               \
                 brightness +=                                                                                          \
-                    128.0f * ((1.0f - blend) * (parameters->direction_far_scale - parameters->direction_near_scale) +  \
-                              parameters->direction_near_scale);                                                       \
+                    128.0f *                                                                                           \
+                    ((1.0f - RenderPostPowPc((angle - parameters->direction_near_angle) /                              \
+                                                 (parameters->direction_far_angle - parameters->direction_near_angle), \
+                                             parameters->direction_bias)) *                                            \
+                         (parameters->direction_far_scale - parameters->direction_near_scale) +                        \
+                     parameters->direction_near_scale);                                                                \
             }                                                                                                          \
         }                                                                                                              \
         colour = RGBA_TO_NUCOLOUR32((MIN(255.0f, (MAX(0.0f, brightness)))), (MIN(255.0f, (MAX(0.0f, brightness)))),    \
                                     (MIN(255.0f, (MAX(0.0f, brightness)))), 128);                                      \
-        if (!NuPrimNeedsOverbrightening)                                                                               \
-            ((RENDER_POST_PRIM_VERTEX_PC *)NuPrimStreamBufferPointer->void_ptr)->colour =                              \
-                ((colour >> 1) & 0x7f7f7f) | (colour & 0xff000000);                                                    \
-        else                                                                                                           \
-            ((RENDER_POST_PRIM_VERTEX_PC *)NuPrimStreamBufferPointer->void_ptr)->colour = colour;                      \
+        if (NuPrimNeedsOverbrightening != 0) {                                                                         \
+            converted =                                                                                                \
+                ((colour >> 16) & 0xff) + ((colour & 0xff) << 16) + (colour & 0xff000000u) + (colour & 0xff00);        \
+        } else {                                                                                                       \
+            converted =                                                                                                \
+                ((colour >> 1) & 0x7f00) + ((colour & 0xfe) << 15) + ((colour >> 17) & 0x7f) + (colour & 0xff000000u); \
+        }                                                                                                              \
+        ((RENDER_POST_PRIM_VERTEX_PC *)NuPrimStreamBufferPointer->void_ptr)->colour = converted;                       \
         NuPrim2DAddXYZ((vx), (vy), 0.0f);                                                                              \
     } while (0)
 
 void DrawAlphaGrid(i32 rows, i32 cols, RENDER_POST_BLOOM_READER_PC *parameters) {
-    f32 inv_row = 1.0f / (rows - 1);
     f32 inv_col = 1.0f / (cols - 1);
+    f32 inv_row = 1.0f / (rows - 1);
     f32 x0 = 0.0f * inv_row * 2.0f - 1.0f;
     f32 y_start = 2.0f * (0.0f * inv_col) - 1.0f;
     f32 x1 = inv_row * 2.0f - 1.0f;
@@ -445,7 +452,7 @@ void DrawAlphaGrid(i32 rows, i32 cols, RENDER_POST_BLOOM_READER_PC *parameters) 
     f32 near_angle = parameters->near_angle / 180.0f;
     f32 far_angle = parameters->far_angle / 180.0f;
     f32 angle_delta = far_angle - near_angle;
-    NUVEC direction;
+    __declspec(align(16)) NUVEC4 direction;
     f32 scale_delta = far_scale - near_scale;
     NUCAMERA camera;
     f32 brightness;
@@ -453,7 +460,7 @@ void DrawAlphaGrid(i32 rows, i32 cols, RENDER_POST_BLOOM_READER_PC *parameters) 
     static f32 saved_fov = 0;
     static f32 adjacent = 0;
     static i32 row = 0, col = 0;
-    NuCameraGet(&camera);
+    camera = global_camera;
     if (first) {
         f32 half_fov = 0.5f * camera.fov;
         saved_fov = camera.fov;

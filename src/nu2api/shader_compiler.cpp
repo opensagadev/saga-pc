@@ -18,9 +18,22 @@ void ShaderCompilerBasePc::Configure(PC_SHADER_MATERIAL_FILTER_VIEW *filter, Sha
     const char *combine[5] = {"DISABLE", "COMBINE_OVER", "COMBINE_ADD", "COMBINE_SUBTRACT", "COMBINE_MULTIPLY"};
     const char *numbers[17] = {"0", "1",  "2",  "3",  "4",  "5",  "6",  "7", "8",
                                "9", "10", "11", "12", "13", "14", "15", "16"};
-    const char *version = profile == 4 ? "30" : profile == 3 ? "21" : profile == 2 ? "20" : profile == 1 ? "11" : "0";
-    definitions->AddDefinition("VERTEX_SHADER_VERSION", version, 0);
-    definitions->AddDefinition("PIXEL_SHADER_VERSION", version, 0);
+    if (profile == 4) {
+        definitions->AddDefinition("VERTEX_SHADER_VERSION", "30", 0);
+        definitions->AddDefinition("PIXEL_SHADER_VERSION", "30", 0);
+    } else if (profile == 3) {
+        definitions->AddDefinition("VERTEX_SHADER_VERSION", "21", 0);
+        definitions->AddDefinition("PIXEL_SHADER_VERSION", "21", 0);
+    } else if (profile == 2) {
+        definitions->AddDefinition("VERTEX_SHADER_VERSION", "20", 0);
+        definitions->AddDefinition("PIXEL_SHADER_VERSION", "20", 0);
+    } else if (profile == 1) {
+        definitions->AddDefinition("VERTEX_SHADER_VERSION", "11", 0);
+        definitions->AddDefinition("PIXEL_SHADER_VERSION", "11", 0);
+    } else {
+        definitions->AddDefinition("VERTEX_SHADER_VERSION", "0", 0);
+        definitions->AddDefinition("PIXEL_SHADER_VERSION", "0", 0);
+    }
     definitions->AddDefinition("BUILD_EFFECT", NULL, 0);
     bool nvidia_profile = profile == 4 && 0x10de == PCDeviceBackend.identifier.vendor;
     if (filter->variant == 0 && (filter->descriptor->layer_flags & 0x4000)) {
