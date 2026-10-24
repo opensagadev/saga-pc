@@ -215,12 +215,12 @@ void __cdecl APICharacterModelReset(CHARACTER_MODEL_LAYERS_PC *model) {
 
 CHARACTER_MODEL_LAYERS_PC *__cdecl APICharacterLoaded(i32 character_id) {
     i16 model_id;
-    if (character_id == -1)
-        return NULL;
-    model_id = apicharsys->playermodelids[character_id];
-    if (model_id == -1)
-        return NULL;
-    return &apicharsys->models[model_id];
+    if (character_id != -1) {
+        model_id = apicharsys->playermodelids[character_id];
+        if (model_id != -1)
+            return &apicharsys->models[model_id];
+    }
+    return NULL;
 }
 
 f32 __cdecl AnimListFrame(CHARACTER_MODEL_LAYERS_PC *model, i32 animation, i32 frame) {
@@ -308,24 +308,25 @@ void __cdecl APICharacterSysInit(VARIPTR *cursor, VARIPTR end, i32 character_cou
 void *__cdecl LoadAnimFromPAK(char *path, i32 area_animation, void *data, i32 size) {
     API_ANIMATION_CACHE_PC *entry = apicharsys->animations;
     i32 i;
-    for (i = 0; i < apicharsys->loaded_animation_count; ++i, ++entry) {
+    for (i = 0; i < apicharsys->loaded_animation_count; ++entry, ++i) {
         if (NuStrICmp(path, entry->path) == 0)
             return entry->animation;
     }
-    if (i >= apicharsys->animation_capacity) {
-        ++apicharsys->animation_load_attempts;
-        return NULL;
+    if (i < apicharsys->animation_capacity) {
+        NuStrCpy(entry->path, path);
+        entry->animation = NuAnimData2LoadBuffFromPAK(data, size);
+        if (entry->animation != NULL) {
+            if (area_animation != 0)
+                ++apicharsys->area_animation_count;
+            ++apicharsys->loaded_animation_count;
+            ++apicharsys->animation_load_attempts;
+        }
+        return entry->animation;
     }
-    NuStrCpy(entry->path, path);
-    entry->animation = NuAnimData2LoadBuffFromPAK(data, size);
-    if (entry->animation != NULL) {
-        if (area_animation != 0)
-            ++apicharsys->area_animation_count;
-        ++apicharsys->loaded_animation_count;
-        ++apicharsys->animation_load_attempts;
-    }
-    return entry->animation;
+    ++apicharsys->animation_load_attempts;
+    return NULL;
 }
+
 void *__cdecl LoadAnim(char *path, i32 area_animation, VARIPTR *cursor, VARIPTR end) {
     API_ANIMATION_CACHE_PC *entry = apicharsys->animations;
     i32 i;
@@ -333,19 +334,19 @@ void *__cdecl LoadAnim(char *path, i32 area_animation, VARIPTR *cursor, VARIPTR 
         if (NuStrICmp(path, entry->path) == 0)
             return entry->animation;
     }
-    if (i >= apicharsys->animation_capacity) {
-        ++apicharsys->animation_load_attempts;
-        return NULL;
+    if (i < apicharsys->animation_capacity) {
+        NuStrCpy(entry->path, path);
+        entry->animation = NuAnimData2LoadBuff(entry->path, cursor, &end);
+        if (entry->animation != NULL) {
+            if (area_animation != 0)
+                ++apicharsys->area_animation_count;
+            ++apicharsys->loaded_animation_count;
+            ++apicharsys->animation_load_attempts;
+        }
+        return entry->animation;
     }
-    NuStrCpy(entry->path, path);
-    entry->animation = NuAnimData2LoadBuff(entry->path, cursor, &end);
-    if (entry->animation != NULL) {
-        if (area_animation != 0)
-            ++apicharsys->area_animation_count;
-        ++apicharsys->loaded_animation_count;
-        ++apicharsys->animation_load_attempts;
-    }
-    return entry->animation;
+    ++apicharsys->animation_load_attempts;
+    return NULL;
 }
 
 void __cdecl APIObjectDestroyAll(APIOBJECTSYS_PC *system) {
@@ -1339,12 +1340,12 @@ void APITransparentCharDraw(NUHGOBJ_EVAL_PC *hierarchy, NUMTX *world, i32 render
     i32 six;
     i32 zero;
     PC_HG_RENDER_VIEW *object;
-    u8 old;
+    i32 old;
 
-    if (notransparentchardraw == 1 || APITrans_Mtl[0] == NULL)
-        return;
     six = 0;
     zero = 0;
+    if (notransparentchardraw == 1 || APITrans_Mtl[0] == NULL)
+        return;
     if (render_count > 1)
         for (i = 0; i < render_count; ++i) {
             if (indices[i] == 6) {
@@ -1933,7 +1934,15 @@ typedef struct api_collision_view_pc_s {
     f32 bounds_radius, bounds_half_height;
     u8 unknown_01e4[4];
     u64 collision_identity_mask, collision_contact_mask;
-    u32 motion_flags, flags_low;
+    u32 motion_flags;
+    union {
+        u32 flags_low;
+        struct {
+            u32 flags_1fc_bit_0 : 1;
+            u32 flags_1fc_bit_1 : 1;
+            u32 flags_1fc_bits_2_31 : 30;
+        };
+    };
     NUVEC movement_direction;
     u8 unknown_020c[0x81];
     u8 object_id;
@@ -1965,14 +1974,14 @@ static f32 MAXFORCEAPART = 0.666f;
 static void GameObjectForceApart2D(API_COLLISION_VIEW_PC *first, API_COLLISION_VIEW_PC *second) {
     const u16 angle = (u16)((f64)NuRandFloat() * 65536.0);
 
-    if ((first->flags_low & 2) != 0 && (second->flags_low & 2) == 0) {
+    if (first->flags_1fc_bit_1 != 0 && second->flags_1fc_bit_1 == 0) {
         second->velocity.x = NuTrigTable[(u16)(angle >> 1)] * 4.0f;
         second->velocity.z = NuTrigTable[((angle + 0x4000) >> 1) & 0x7fff] * 4.0f;
         second->movement_direction.x = second->velocity.x;
         second->movement_direction.z = second->velocity.z;
         first->movement_direction.x = first->velocity.x;
         first->movement_direction.z = first->velocity.z;
-    } else if ((first->flags_low & 2) == 0 && (second->flags_low & 2) != 0) {
+    } else if (first->flags_1fc_bit_1 == 0 && second->flags_1fc_bit_1 != 0) {
         first->velocity.x = NuTrigTable[(u16)(angle >> 1)] * 4.0f;
         first->velocity.z = NuTrigTable[((angle + 0x4000) >> 1) & 0x7fff] * 4.0f;
         first->movement_direction.x = first->velocity.x;
@@ -2721,16 +2730,10 @@ STATIC_ASSERT(offsetof(APIOBJECTSYS_PC, hostility_masks) == 8);
 STATIC_ASSERT(offsetof(GAMEOBJECT, hostility_group) == 0x28d);
 STATIC_ASSERT(offsetof(GAMEOBJECT, flags_1fc) == 0x1fc);
 void __cdecl APIObjectRemoveFromLOSTable(APIOBJECTSYS_PC *system, GAMEOBJECT *source, GAMEOBJECT *target) {
-    u8 index;
     if (source != NULL) {
-        u64 mask = ~((u64)1 << target->hostility_group);
-        index = source->hostility_group;
-        system->hostility_masks[index][0] &= (u32)mask;
-        system->hostility_masks[index][1] &= (u32)(mask >> 32);
+        LOS_SYSTEM(system)->line_of_sight[source->hostility_group] &= ~((u64)1 << target->hostility_group);
     } else {
-        index = target->hostility_group;
-        system->hostility_masks[index][0] = 0;
-        system->hostility_masks[index][1] = 0;
+        LOS_SYSTEM(system)->line_of_sight[target->hostility_group] = 0;
     }
 }
 void __cdecl APIObjectDestroy(APIOBJECTSYS_PC *system, GAMEOBJECT *object) {
