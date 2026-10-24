@@ -587,7 +587,9 @@ extern "C" i32 __cdecl Grapples_Load(void *world_pointer, void *unused) {
     WORLDINFO *world = (WORLDINFO *)world_pointer;
     i32 version, index;
     u16 rotation;
-    u8 value, length;
+    u8 value;
+    i32 length;
+    NUSPECIALHANDLE *special;
     f32 field;
     char name[256];
     (void)unused;
@@ -598,15 +600,22 @@ extern "C" i32 __cdecl Grapples_Load(void *world_pointer, void *unused) {
     for (index = 0; index < world->grapple_count; ++index) {
         EdFileRead(((GRAPPLE_LOAD_EXTRA_PC *)world->grapples)[index].name, 16);
         EdFileReadNuVec(&((GRAPPLE_LOAD_EXTRA_PC *)world->grapples)[index].file_position);
-        if (version < 2)
+        if (version >= 2) {
+            rotation = EdFileReadUnsignedShort();
+            world->grapples[index].y_rotation = rotation;
+        } else {
             EdFileReadUnsignedShort();
-        rotation = EdFileReadUnsignedShort();
-        world->grapples[index].y_rotation = rotation;
-        field = version >= 3 ? EdFileReadFloat() : 1.0f;
-        world->grapples[index].field_4c = field;
+            rotation = EdFileReadUnsignedShort();
+            world->grapples[index].y_rotation = rotation;
+        }
+        if (version >= 3)
+            world->grapples[index].field_4c = EdFileReadFloat();
+        else
+            world->grapples[index].field_4c = 1.0f;
         if (version >= 4) {
             value = (u8)EdFileReadChar();
-            world->grapples[index].flags = (u8)((world->grapples[index].flags & ~4u) | (value != 0 ? 4 : 0));
+            world->grapples[index].flags =
+                (u8)(world->grapples[index].flags ^ (((value != 0) << 2) ^ world->grapples[index].flags) & 4);
             field = EdFileReadFloat();
             world->grapples[index].rope_length = field;
         } else {
@@ -621,13 +630,15 @@ extern "C" i32 __cdecl Grapples_Load(void *world_pointer, void *unused) {
         }
         if (version >= 6) {
             value = (u8)EdFileReadChar();
-            world->grapples[index].flags = (u8)((world->grapples[index].flags & ~8u) | (value != 0 ? 8 : 0));
+            world->grapples[index].flags =
+                (u8)(world->grapples[index].flags ^ (((value != 0) << 3) ^ world->grapples[index].flags) & 8);
         } else {
             world->grapples[index].flags &= ~8u;
         }
-        ((GRAPPLE_LOAD_EXTRA_PC *)world->grapples)[index].special.scene = NULL;
-        ((GRAPPLE_LOAD_EXTRA_PC *)world->grapples)[index].special.special = NULL;
-        ((GRAPPLE_LOAD_EXTRA_PC *)world->grapples)[index].special.display_special = NULL;
+        special = &((GRAPPLE_LOAD_EXTRA_PC *)world->grapples)[index].special;
+        special->scene = NULL;
+        special->special = NULL;
+        special->display_special = NULL;
         if (version >= 7) {
             length = EdFileReadUnsignedChar();
             if (length > 0) {
@@ -730,23 +741,27 @@ extern "C" void __cdecl Grapples_Reset(void *world_pointer, void *unused, void *
         return;
     if (world->grapples != NULL && world->grapple_count > 0) {
         flags = &((GRAPPLE_MOTION_PC *)world->grapples)->flags;
-        for (index = 0; index < world->grapple_count; ++index, flags += 0xf8) {
+        index = 0;
+        do {
             grapple = &((GRAPPLE_MOTION_PC *)world->grapples)[index];
             Grapple_ResetSinglePc(grapple);
             if (progress != NULL && index < 32) {
                 i32 word = index / 32;
-                u32 bit = 1u << (index % 32);
-                *flags = (u8)((*flags & ~2u) | ((progress[word + 1] & bit) != 0 ? 2 : 0));
-                *flags = (u8)((*flags & ~1u) | ((progress[word] & bit) != 0 ? 1 : 0));
+                u32 bit = 1u << (index & 31);
+                *flags ^= (u8)((((progress[word + 1] & bit) != 0) << 1) ^ *flags) & 2;
+                *flags ^= (u8)(((progress[word] & bit) != 0) ^ *flags) & 1;
             }
-        }
+            ++index;
+            flags += 0xf8;
+        } while (index < world->grapple_count);
     }
     for (index = 0; index < 4; ++index) {
         dynamic = &((GRAPPLE_MOTION_PC *)DynamicGrapplePc)[index];
         sprintf(dynamic->name, "dynamic%i", index + 1);
-        dynamic->flags = (u8)((dynamic->flags & ~2u) | 1u);
+        u8 dynamic_flags = (u8)((dynamic->flags & ~2u) | 1u);
         dynamic->y_rotation = 0;
         dynamic->attached_object = NULL;
+        dynamic->flags = dynamic_flags;
         dynamic->has_terrain_platform = 1;
     }
 }
