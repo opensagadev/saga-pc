@@ -297,25 +297,45 @@ i32 __cdecl ProcessActionFlowBox(GIZFLOW_PC *system, FLOWBOX_PC *box, u8 frame) 
     return 1;
 }
 
+typedef struct GIZFLOW_BOX_LOADER_PREFIX_PC {
+    u8 unknown_000[4];
+    u8 assist_id;
+    u8 unknown_005[5];
+    u16 state_flags;
+} GIZFLOW_BOX_LOADER_PREFIX_PC;
+STATIC_ASSERT(offsetof(GIZFLOW_BOX_LOADER_PREFIX_PC, assist_id) == 4);
+STATIC_ASSERT(sizeof(((GIZFLOW_BOX_LOADER_PREFIX_PC *)0)->assist_id) == 1);
+STATIC_ASSERT(offsetof(GIZFLOW_BOX_LOADER_PREFIX_PC, state_flags) == 0xa);
+STATIC_ASSERT(sizeof(((GIZFLOW_BOX_LOADER_PREFIX_PC *)0)->state_flags) == 2);
+static __declspec(noinline) void FlowBoxActivationFeedback(GIZFLOW_PC *system, FLOWBOX_PC *box) {
+    FLOWBOXGIZMODATA_PC *data;
+    i32 i;
+    if (box->parent_count != 0) {
+        for (i = 0; i < box->parent_count; ++i) {
+            FLOWBOX_PC *parent = box->parents[i];
+            if (!flowbox_callbacks[parent->type].check_output(system, parent, box->output_indices[0]))
+                goto parent_failed;
+        }
+    }
+    data = (FLOWBOXGIZMODATA_PC *)box->data;
+    for (i = 0; i < data->gizmo_count; ++i)
+        GizmoActivateReverse(system->gizmo_sys, data->gizmos[i]->gizmo, 0,
+                             (((GIZFLOW_BOX_LOADER_PREFIX_PC *)box)->state_flags >> 7) & 1, 1);
+    return;
+
+parent_failed:
+    data = (FLOWBOXGIZMODATA_PC *)box->data;
+    for (i = 0; i < data->gizmo_count; ++i)
+        GizmoActivateReverse(system->gizmo_sys, data->gizmos[i]->gizmo, 1,
+                             (((GIZFLOW_BOX_LOADER_PREFIX_PC *)box)->state_flags >> 7) & 1, 1);
+}
+
 void __cdecl ProcessFlowBox(GIZFLOW_PC *system, FLOWBOX_PC *box, u8 frame) {
     FLOWBOXGIZMODATA_PC *data;
     i32 i;
-    i32 parent_checks_passed;
 
-    if ((box->state_flags_high & 1) != 0) {
-        parent_checks_passed = 1;
-        for (i = 0; i < box->parent_count; ++i) {
-            FLOWBOX_PC *parent = box->parents[i];
-            if (!flowbox_callbacks[parent->type].check_output(system, parent, box->output_indices[i])) {
-                parent_checks_passed = 0;
-                break;
-            }
-        }
-        data = (FLOWBOXGIZMODATA_PC *)box->data;
-        for (i = 0; i < data->gizmo_count; ++i)
-            GizmoActivateReverse(system->gizmo_sys, data->gizmos[i]->gizmo, parent_checks_passed ? 0 : 1,
-                                 (box->state_flags_low >> 7) & 1, 1);
-    }
+    if ((box->state_flags_high & 1) != 0)
+        FlowBoxActivationFeedback(system, box);
     if ((box->state_flags_low & 1) == 0 || !flowbox_callbacks[box->type].process(system, box, frame))
         return;
 
@@ -427,6 +447,25 @@ void __cdecl ResetGizFlowPointers(GIZFLOW_PC *system) {
 }
 
 void __cdecl ResetGizFlow(GIZFLOW_PC *system, GIZFLOWPROGRESS_PC *progress) {
+    typedef union FlowResetFlagsPc {
+        u16 value;
+        struct {
+            u16 active : 1;
+            u16 completed : 1;
+            u16 unknown_02 : 3;
+            u16 latched : 1;
+            u16 unknown_06 : 4;
+            u16 output_state : 1;
+            u16 unknown_0b : 5;
+        } bits;
+    } FlowResetFlagsPc;
+    typedef struct FlowResetBoxPc {
+        u8 unknown_00[0xa];
+        FlowResetFlagsPc flags;
+    } FlowResetBoxPc;
+    STATIC_ASSERT(sizeof(FlowResetFlagsPc) == 2);
+    STATIC_ASSERT(offsetof(FlowResetBoxPc, flags) == 0xa);
+    STATIC_ASSERT(sizeof(FlowResetBoxPc) == 0xc);
     FLOWBOX_PC *box;
     i32 i;
     if (system == NULL)
@@ -435,18 +474,17 @@ void __cdecl ResetGizFlow(GIZFLOW_PC *system, GIZFLOWPROGRESS_PC *progress) {
     system->frame = 0;
     ResetGizFlowPointers(system);
     for (i = 0; i < system->flowbox_count; ++i, ++box) {
-        u16 flags = FLOWBOX_FLAGS(box);
+        FlowResetBoxPc *state = (FlowResetBoxPc *)box;
+        state->flags.value &= (u16)~0x20;
         box->last_process_frame = 0;
-        flags &= (u16)~0x20;
 
         if (progress != NULL && progress->valid != 0) {
             i32 word = i >> 5;
             u32 bit = 1u << (i & 31);
-            flags = (u16)((flags & (u16)~1) | ((progress->active[word] & bit) != 0));
-            flags = (u16)((flags & (u16)~2) | (((progress->completed[word] & bit) != 0) << 1));
-            flags |= (u16)(((progress->latched[word] & bit) != 0) << 5);
-            flags = (u16)((flags & (u16)~0x400) | (((progress->output_state[word] & bit) != 0) << 10));
-            FLOWBOX_SET_FLAGS(box, flags);
+            state->flags.bits.active = (progress->active[word] & bit) != 0;
+            state->flags.bits.completed = (progress->completed[word] & bit) != 0;
+            state->flags.bits.latched = (progress->latched[word] & bit) != 0;
+            state->flags.bits.output_state = (progress->output_state[word] & bit) != 0;
             if (box->type == 1 && ((FLOWBOXCONDITION_PC *)box->data)->operation == 4) {
                 ++gizflow_loop_checksum;
                 {
@@ -458,8 +496,7 @@ void __cdecl ResetGizFlow(GIZFLOW_PC *system, GIZFLOWPROGRESS_PC *progress) {
             continue;
         }
 
-        flags &= (u16) ~(2 | 0x100);
-        FLOWBOX_SET_FLAGS(box, flags);
+        state->flags.value &= (u16) ~(2 | 0x100);
         if (box->type == 1 && ((FLOWBOXCONDITION_PC *)box->data)->operation == 4) {
             ++gizflow_loop_checksum;
             {
@@ -467,22 +504,19 @@ void __cdecl ResetGizFlow(GIZFLOW_PC *system, GIZFLOWPROGRESS_PC *progress) {
                 COUNT_LOOPING_INPUTS(box, gizflow_loop_checksum, loop_count);
                 box->loop_parent_count = (u8)loop_count;
             }
-            flags = (u16)(FLOWBOX_FLAGS(box) | 0x400);
+            state->flags.value |= 0x400;
             if (box->parent_count == box->loop_parent_count)
-                flags |= 0x801;
+                state->flags.value |= 0x801;
             else
-                flags &= (u16)~1;
-            FLOWBOX_SET_FLAGS(box, flags);
+                state->flags.value &= (u16)~1;
         } else {
-            flags = FLOWBOX_FLAGS(box);
-            flags = (u16)((flags & (u16)~1) | (box->parent_count == 0));
-            FLOWBOX_SET_FLAGS(box, flags);
+            state->flags.bits.active = box->parent_count == 0;
         }
 
-        if (flowbox_callbacks[box->type].reset != NULL && (FLOWBOX_FLAGS(box) & 0x1000) == 0)
+        if (flowbox_callbacks[box->type].reset != NULL && (state->flags.value & 0x1000) == 0)
             flowbox_callbacks[box->type].reset(system, box);
-        if (box->type == 0 && (((FLOWBOX_FLAGS(box) & 0x4000) == 0 && FreePlay == 0) ||
-                               ((FLOWBOX_FLAGS(box) & 0x2000) == 0 && FreePlay != 0))) {
+        if (box->type == 0 && (((state->flags.value & 0x4000) == 0 && FreePlay == 0) ||
+                               ((state->flags.value & 0x2000) == 0 && FreePlay != 0))) {
             FLOWBOXGIZMODATA_PC *data = (FLOWBOXGIZMODATA_PC *)box->data;
             i32 j;
             for (j = 0; j < data->gizmo_count; ++j)
@@ -499,16 +533,6 @@ void __cdecl ResetGizFlow(GIZFLOW_PC *system, GIZFLOWPROGRESS_PC *progress) {
 void *__cdecl GizmoBufferAlloc(VARIPTR *, VARIPTR *, i32);
 i32 __cdecl GizmoGetTypeIDByName(void *, char *);
 
-typedef struct GIZFLOW_BOX_LOADER_PREFIX_PC {
-    u8 unknown_000[4];
-    u8 assist_id;
-    u8 unknown_005[5];
-    u16 state_flags;
-} GIZFLOW_BOX_LOADER_PREFIX_PC;
-STATIC_ASSERT(offsetof(GIZFLOW_BOX_LOADER_PREFIX_PC, assist_id) == 4);
-STATIC_ASSERT(sizeof(((GIZFLOW_BOX_LOADER_PREFIX_PC *)0)->assist_id) == 1);
-STATIC_ASSERT(offsetof(GIZFLOW_BOX_LOADER_PREFIX_PC, state_flags) == 0xa);
-STATIC_ASSERT(sizeof(((GIZFLOW_BOX_LOADER_PREFIX_PC *)0)->state_flags) == 2);
 static VARIPTR *load_buff = 0;
 static VARIPTR *load_endbuff = 0;
 static FLOWBOX_PC *load_flowbox = 0;
