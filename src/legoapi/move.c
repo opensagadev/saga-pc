@@ -7320,11 +7320,11 @@ void __cdecl JumpCode(GAMEOBJECT *object, i32 jump_pressed, i32 jump_held, u32 a
     if ((object->flags_e24 & 0x1000) != 0) {
         return;
     }
+    force_flip = -1;
     world = WorldInfo_CurrentlyActive();
 
     flip_kind = 0;
     player_flag = (object->flags_1fc_word >> 7) & 1;
-    force_flip = 0;
     if (player_flag != 0 || (object->portal_flags & 0x100) != 0) {
         if (JumpBackFlipActionPc != -1 && object->character_model->model_data_b[JumpBackFlipActionPc] != NULL)
             flip_kind = 1;
@@ -7587,7 +7587,8 @@ void __cdecl JumpCode(GAMEOBJECT *object, i32 jump_pressed, i32 jump_held, u32 a
                 i32 difference = RotDiff(object->movement_facing_angle, object->current_input_angle);
                 if (difference < 0)
                     difference = -difference;
-                force_flip = object->action_movement_state == 1 ? difference > 0x6aaa : difference < 0x1555;
+                if (object->action_movement_state == 1 ? difference > 0x6aaa : difference < 0x1555)
+                    force_flip = 1;
             }
             {
                 if (object->action_movement_state == 3) {
@@ -7788,7 +7789,7 @@ void __cdecl JumpCode(GAMEOBJECT *object, i32 jump_pressed, i32 jump_held, u32 a
                 if (aux->jump_reentry_timer <= 0.0f)
                     object->jump_sequence = 0;
                 if (flip_kind == 0 ||
-                    (!(object->delayed_turn_timer > 0.0f) && !force_flip && (object->portal_flags & 0x100) == 0)) {
+                    (!(object->delayed_turn_timer > 0.0f) && force_flip != 1 && (object->portal_flags & 0x100) == 0)) {
                     object->action_movement_state = (animation_set & 4) != 0 ? 5 : 0;
                     if (UsingExtraActionsFn != NULL && UsingExtraActionsFn(object) && LEGOACT_EXTRA_JUMP != -1 &&
                         object->character_model->model_data_b[LEGOACT_EXTRA_JUMP] != NULL)
