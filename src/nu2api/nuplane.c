@@ -8,10 +8,16 @@ void NuPlnEqn(NUPLANE *out, NUVEC *pnt0, NUVEC *pnt1, NUVEC *pnt2) {
 
     pln = &out->normal;
 
-    NuVecSub(&v1_minus_0, pnt1, pnt0);
-    NuVecSub(&v2_minus_0, pnt2, pnt0);
+    v1_minus_0.x = pnt1->x - pnt0->x;
+    v1_minus_0.y = pnt1->y - pnt0->y;
+    v1_minus_0.z = pnt1->z - pnt0->z;
+    v2_minus_0.x = pnt2->x - pnt0->x;
+    v2_minus_0.y = pnt2->y - pnt0->y;
+    v2_minus_0.z = pnt2->z - pnt0->z;
 
-    NuVecCross(&normal, &v1_minus_0, &v2_minus_0);
+    normal.x = v1_minus_0.y * v2_minus_0.z - v1_minus_0.z * v2_minus_0.y;
+    normal.y = v1_minus_0.z * v2_minus_0.x - v1_minus_0.x * v2_minus_0.z;
+    normal.z = v1_minus_0.x * v2_minus_0.y - v1_minus_0.y * v2_minus_0.x;
 
     NuVecNorm(pln, &normal);
 
