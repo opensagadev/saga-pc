@@ -92,11 +92,13 @@ void __cdecl NuQFntSetColourRS(void *stream, VUFNT *font, u32 colour) {
 
 u16 UnicodeToIndexFast(VUCHARIDX *map, i32 count, u16 unicode) {
     i32 middle = count / 2;
-    i32 low = 0;
-    i32 high = count - 1;
+    i32 low;
+    i32 high;
     if (unicode > map[count - 1].unicode) {
         return 0xffff;
     }
+    low = 0;
+    high = count - 1;
     while (map[middle].unicode != unicode) {
         if (high == low + 1) {
             if (map[high].unicode == unicode) {
@@ -146,17 +148,15 @@ void NuQFntEncodeUnicodeString(VUFNT *font, u16 *text) {
 }
 
 void NuQFntUTF8toQCode(VUFNT *font, char *text, u16 *encoded) {
-    u8 *cursor;
     if (font == NULL) {
         font = system_qfont;
     }
     if (font == NULL) {
         return;
     }
-    cursor = (u8 *)text;
-    while (*cursor != '\0') {
+    while (*text != '\0') {
         u16 character;
-        cursor = NuUnicodeCharFromUTF8(&character, cursor);
+        text = (char *)NuUnicodeCharFromUTF8(&character, (u8 *)text);
         *encoded = NuQFntEncodeUnicodeChar(font, character);
         if (*encoded == 0xffff) {
             *encoded = NuQFntEncodeUnicodeChar(font, '?');
@@ -192,7 +192,7 @@ STATIC_ASSERT(sizeof(QFONT_PRIM_VERTEX_PC) == 0x18);
 STATIC_ASSERT(offsetof(QFONT_PRIM_VERTEX_PC, colour) == 0xc);
 STATIC_ASSERT(offsetof(QFONT_PRIM_VERTEX_PC, u) == 0x10);
 STATIC_ASSERT(offsetof(QFONT_PRIM_VERTEX_PC, v) == 0x14);
-static void NuRndrPrimSetColourPrivate(i32 colour) {
+static __declspec(noinline) void NuRndrPrimSetColourPrivate(i32 colour) {
     u32 converted;
     if (NuPrimNeedsOverbrightening != 0)
         converted = ((colour & 0xff) << 16) + ((colour >> 16) & 0xff) + (colour & 0xff00) + (colour & 0xff000000);
@@ -220,8 +220,8 @@ void __cdecl NuQFntPrintCharW(VUFNT *font, u16 *text, u32 flags) {
     f32 x = render_data->x;
     f32 y = render_data->y;
     f32 z = render_data->z;
-    f32 inverse_texture_width = 1.0f;
-    f32 inverse_texture_height = 1.0f;
+    f32 inverse_texture_width;
+    f32 inverse_texture_height;
     f32 height;
     f32 space_width;
     u32 colour;
@@ -234,6 +234,9 @@ void __cdecl NuQFntPrintCharW(VUFNT *font, u16 *text, u32 flags) {
         NUTEXDIM_PC *texture_dimensions = NuTextureDimensions[font->material->texture_id - 1];
         inverse_texture_width = 1.0f / (f32)texture_dimensions->width;
         inverse_texture_height = 1.0f / (f32)texture_dimensions->height;
+    } else {
+        inverse_texture_width = 1.0f;
+        inverse_texture_height = 1.0f;
     }
 
     height = font->height * *font->y_scale;
@@ -242,12 +245,12 @@ void __cdecl NuQFntPrintCharW(VUFNT *font, u16 *text, u32 flags) {
     } else {
         space_width = nuqfnt_space_width * *font->x_scale;
     }
-    is_3d = (flags & 4) != 0;
 
     ++NuPrimCSPos;
     NuPrimSetCoordinateSystem(0);
+    is_3d = flags & 4;
     if (is_3d) {
-        NuPrim3DBegin(12, 7, font->material, &render_data->matrix);
+        NuPrim3DBegin(12, 7, font->material, &font->platform_data->matrix);
     } else {
         NuPrim2DBegin(16, 7, font->material);
     }
@@ -662,14 +665,16 @@ VUFNT *__cdecl NuQFntReadBuffer(VARIPTR *font, VARIPTR *buffer, VARIPTR end) {
     FONT_PTR_BLOCK_PC *block;
     VUFNT *result;
     NUTEXDIM_PC *texture;
+    void *texture_data;
     i32 texture_id;
     if (font->void_ptr == NULL)
         return NULL;
     block = (FONT_PTR_BLOCK_PC *)NuPtrBlockFix(font->void_ptr);
     result = block->font;
+    texture_data = block->texture;
     texture = (NUTEXDIM_PC *)buffer->void_ptr;
     buffer->addr += sizeof(*texture);
-    texture->image_data = block->texture;
+    texture->image_data = texture_data;
     texture->image_size = 0x200000;
     texture_id = NuTexCreateNative(texture);
     NuQFntReadPS(result, texture_id, 4, 0, buffer, end);
@@ -696,8 +701,8 @@ VUFNT *__cdecl NuQFntRead(char *path, VARIPTR *buffer, VARIPTR end) {
     char fixed_path[1204];
     VARIPTR aligned;
     NuStrFixExtPlatform(fixed_path, path, "fnt", 1024, "pc");
-    aligned.addr = (buffer->addr + 31) & ~31U;
-    buffer->addr = aligned.addr;
+    buffer->addr = (buffer->addr + 31) & ~31U;
+    aligned.addr = buffer->addr;
     if (NuFileLoadBufferVP(fixed_path, buffer, &end) == 0)
         return NULL;
     return NuQFntReadBuffer(&aligned, buffer, end);
