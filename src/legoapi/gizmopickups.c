@@ -1324,3 +1324,28 @@ i32 __cdecl GizmoPickup_NumberOfTypePc(WORLDINFO *world, i32 type, u8 filter) {
     }
     return count;
 }
+
+GIZMOPICKUP_PC *__cdecl GizmoPickup_FindByName(WORLDINFO *world, char *name) {
+    GIZMOPICKUP_PC *pickup;
+    i32 index;
+    if (world != NULL && name != NULL) {
+        pickup = ((GIZMOPICKUPRUNTIMESYS_s *)world->pickup_runtime_sys)->pickups;
+        if (pickup != NULL) {
+            for (index = 0; index < ((GIZMOPICKUPRUNTIMESYS_s *)world->pickup_runtime_sys)->pickup_count;
+                 ++index, ++pickup) {
+                if (NuStrICmp(pickup->name, name) == 0)
+                    return pickup;
+            }
+        }
+    }
+    return NULL;
+}
+
+void __cdecl GizmoPickup_TurnOnPickup(GIZMOPICKUP_PC *pickup) {
+    if (pickup != NULL)
+        pickup->flags |= 0x86;
+}
+
+i32 __cdecl GizmoPickup_BeenTurnedOn(GIZMOPICKUP_PC *pickup) {
+    return pickup != NULL ? pickup->flags >> 7 : 0;
+}

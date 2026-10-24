@@ -4159,6 +4159,9 @@ address,symbol,size,ctype
 0x56fe90,_GizmoPickup_GetPos,15,NUVEC * __cdecl(GIZMO_PC *)
 0x56fea0,_GizmoPickups_Load,309,
 0x570030,_GizmoPickup_NumberOfTypePc,82,"i32 __cdecl (WORLDINFO *,i32,u8)"
+0x570090,_GizmoPickup_FindByName,84,"GIZMOPICKUP_PC *__cdecl(WORLDINFO *, char *)"
+0x5700f0,_GizmoPickup_TurnOnPickup,13,void __cdecl(GIZMOPICKUP_PC *)
+0x570100,_GizmoPickup_BeenTurnedOn,19,i32 __cdecl(GIZMOPICKUP_PC *)
 0x570120,_GizmoPickups_PostLoad,1,"void __cdecl(void *, void *)"
 0x570130,_GizmoPickup_InBox,323,
 0x570280,_GizmoPickups_CollideListPc,814,
