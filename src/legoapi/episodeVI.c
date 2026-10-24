@@ -22,6 +22,40 @@ void __cdecl EmperorFightA_Panel(WORLDINFO *world) {
         DrawBossHitPoints(LevGameObject[0]);
 }
 
+/* Native Emperor floor packet and private controls. */
+typedef struct emperor_update_packet_pc_s {
+    i32 state;
+    u8 enabled, zap, player_floor_mask, reserved;
+} EMPEROR_UPDATE_PACKET_PC;
+STATIC_ASSERT(sizeof(EMPEROR_UPDATE_PACKET_PC) == 8);
+STATIC_ASSERT(offsetof(EMPEROR_UPDATE_PACKET_PC, player_floor_mask) == 6);
+void __cdecl EmperorFightA_UpdateFloorObstaclesPc(void) {
+    EMPEROR_UPDATE_PACKET_PC *packet = (EMPEROR_UPDATE_PACKET_PC *)emperorfighta_netpacket;
+    switch (packet->state) {
+        case 1:
+            GizObstacle_PlayForwards(LevGizObst[1]);
+            GizObstacle_PlayForwards(LevGizObst[2]);
+            GizObstacle_PlayForwards(LevGizObst[3]);
+            break;
+        case 2:
+            GizObstacle_PlayForwards(LevGizObst[1]);
+            GizObstacle_PlayBackwards(LevGizObst[2]);
+            GizObstacle_PlayBackwards(LevGizObst[3]);
+            break;
+        case 3:
+            GizObstacle_PlayForwards(LevGizObst[1]);
+            GizObstacle_PlayBackwards(LevGizObst[2]);
+            GizObstacle_PlayForwards(LevGizObst[3]);
+            break;
+        case 0:
+        case 4:
+            GizObstacle_PlayBackwards(LevGizObst[1]);
+            GizObstacle_PlayBackwards(LevGizObst[2]);
+            GizObstacle_PlayBackwards(LevGizObst[3]);
+            break;
+    }
+}
+
 void __cdecl JabbasPalaceA_Init(WORLDINFO *world) {
     NuSpecialFind(world->current_gscn, &LevHSpecial[0], "grill_02", 1);
 }

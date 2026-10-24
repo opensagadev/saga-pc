@@ -2443,6 +2443,7 @@ address,symbol,size,ctype
 0x4ea8e0,_DeathStar2BattleFire_GetSlowDownMul,90,f32 __cdecl (GAMEOBJECT *)
 0x004ea940,_EmperorFightA_Init,564,void __cdecl (WORLDINFO *)
 0x4eab80,_EmperorFightA_Reset,765,void __cdecl(WORLDINFO *)
+0x4eae80,_EmperorFightA_UpdateFloorObstaclesPc,176,void __cdecl(void)
 0x4eaf30,_EmperorFightA_Update,3112,void __cdecl(WORLDINFO *)
 0x004ebb60,_EmperorFightA_Panel,51,void __cdecl(WORLDINFO *)
 0x004ebba0,_JabbasPalaceA_Init,32,void __cdecl(WORLDINFO *)
