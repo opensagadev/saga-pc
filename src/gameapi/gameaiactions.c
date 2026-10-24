@@ -1972,3 +1972,34 @@ i32 __cdecl Action_LaunchGuidedMissile(AISYS_PC *system, AISCRIPTPROCESS_PC *pro
     }
     return 1;
 }
+
+extern i32 __cdecl Action_HelpWithTriggers(AISYS_PC *, AISCRIPTPROCESS_PC *, AIPACKET_PC *, char **, i32, i32, f32);
+
+i32 __cdecl Action_UseTriggerSet(AISYS_PC *system, AISCRIPTPROCESS_PC *processor, AIPACKET_PC *packet, char **params,
+                                 i32 count, i32 first_time, f32 elapsed) {
+    GAMEOBJECT *object;
+    AITRIGGERSET_s *set;
+    i32 index;
+    char *value;
+    if (packet == NULL || packet->owner == NULL || packet->owner->objptr == NULL || system == NULL ||
+        system->player_1 == NULL)
+        return 1;
+    object = packet->owner->objptr;
+    if (first_time && WORLD->ai_trigger_set != NULL) {
+        for (index = 0; index < count; ++index) {
+            value = NuStrIStr(params[index], (char *)AIGameSetName);
+            if (value != NULL) {
+                i32 set_number = (i32)AIParamToFloat(processor, value + 4);
+                if ((u32)set_number - 1u <= 31u)
+                    processor->action_data_3 = &((AITRIGGERSETSYS_s *)WORLD->ai_trigger_set)->sets[set_number - 1];
+            }
+        }
+    }
+    set = (AITRIGGERSET_s *)processor->action_data_3;
+    if (set != NULL) {
+        object->active_trigger_set = (AITRIGGERSET_PARTIAL_PC *)set;
+        set->flags_word |= 2;
+        Action_HelpWithTriggers(system, processor, packet, params, count, first_time, elapsed);
+    }
+    return 0;
+}
