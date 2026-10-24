@@ -6645,6 +6645,8 @@ extern i16 DefaultMotionSkeletonIdPc, DefaultMotionIndySnakeIdPc;
 extern f32 DefaultMotionSpiderFarSpeedPc, DefaultMotionSpiderNearSpeedPc, DefaultMotionSpiderRangePc;
 extern i32 DefaultMotionLedgeTerrainEnabledPc;
 
+void __cdecl SuitBlowupCodePc(WORLDINFO *, GAMEOBJECT *);
+
 void __cdecl Move_CHARACTER(GAMEOBJECT *object) {
     u32 action_pressed = object->pad->buttons_pressed & GAMEPAD_ACTION;
     u32 action_held = object->pad->buttons_held & GAMEPAD_ACTION;
@@ -6742,7 +6744,7 @@ after_gravity:
         if (object->suit != NULL && (object->suit->flags & 4) != 0)
             Detonator_MoveCode(object);
         if (object->suit != NULL && (object->suit->flags & 8) != 0)
-            STUBBED_NAMED(0x004c88c0); /* Native4b4f25: WORLD,object; actual void action. */
+            SuitBlowupCodePc(WORLD, object);
         if ((object->character_data->model_flags & 8) == 0)
             Transform_MoveCode(WORLD, object);
     }
@@ -10103,7 +10105,7 @@ void __cdecl Move_WEIRDO(GAMEOBJECT *object) {
         if (object->suit != NULL && (((MOVEMENT_SUIT_PC *)object->suit)->store_flag & 4) != 0)
             Detonator_MoveCode(object);
         if (object->suit != NULL && (((MOVEMENT_SUIT_PC *)object->suit)->store_flag & 8) != 0)
-            STUBBED_NAMED(0x004c88c0); /* Native4b5b9a: WORLD,object; suit action. */
+            SuitBlowupCodePc(WORLD, object);
         if ((object->character_data->model_flags & 8) == 0)
             Transform_MoveCode(WORLD, object);
     }
@@ -10454,5 +10456,65 @@ void __cdecl FindForcePushTarget(GAMEOBJECT *object, i32 activate, i32 target_fi
         }
         PlaySfx("JForcePush", &object->collision_position);
         PlayGruntSfx(best);
+    }
+}
+
+void __cdecl SuitBlowupCodePc(WORLDINFO *world, GAMEOBJECT *object) {
+    GIZMOBLOWUP_PC *candidates[256];
+    GIZMOBLOWUP_PC *blowup;
+    NUVEC minimum, maximum;
+    i32 count;
+    i32 index;
+    f32 remaining;
+    if (object->character_context == 0x54) {
+        if (object->character_model->model_data_b[object->field_7aa] != NULL &&
+            AnimPlaying(&object->anim_packet, object->field_7aa, 1, 0) == NULL)
+            return;
+        object->context_timer += FRAMETIME;
+        if ((f64)object->context_duration < (f64)0.2f && (object->pad->buttons_held & GAMEPAD_SPECIAL) != 0)
+            object->context_duration = 0.2f;
+        remaining = object->context_duration - FRAMETIME;
+        object->context_duration = remaining;
+        if (remaining <= 0.0f) {
+            object->character_context = -1;
+            return;
+        }
+        if (!(object->context_timer >= 0.5f))
+            return;
+        blowup = world->gizmo_blowups;
+        if (blowup == NULL)
+            return;
+        minimum.x = object->collision_position.x - 3.0;
+        minimum.y = object->collision_position.y - 3.0;
+        minimum.z = object->collision_position.z - 3.0;
+        maximum.x = object->collision_position.x + 3.0;
+        maximum.y = object->collision_position.y + 3.0;
+        maximum.z = object->collision_position.z + 3.0;
+        count = 0;
+        for (index = 0; index < world->gizmo_blowup_count; ++index, ++blowup) {
+            const u32 status = blowup->status_flags;
+            u32 draw;
+            if ((status & 1) != 0 || (status & 0x800000) == 0 || (status & 0x4000) == 0)
+                continue;
+            draw = blowup->draw_flags;
+            if ((draw & 0x40) == 0 || ((draw & 0x20) != 0 && ShadowMode == 0))
+                continue;
+            if (blowup->mid_position.x < minimum.x || blowup->mid_position.x > maximum.x ||
+                blowup->mid_position.z < minimum.z || blowup->mid_position.z > maximum.z ||
+                blowup->mid_position.y < minimum.y || blowup->mid_position.y > maximum.y)
+                continue;
+            if (!(NuVecDistSqr(&blowup->mid_position, &object->collision_position, NULL) > 9.0f) && count < 256)
+                candidates[count++] = blowup;
+        }
+        if (count > 0 && ParticlesPerSecond(5.0f, FRAMETIME) > 0) {
+            GizmoBlowupBlowup(candidates[qrand() / (65535 / count + 1)], 1, 6, 1, NULL, 1);
+        }
+    } else {
+        if (object->field_281 != 0 && ObjLandReady(object) != 0 && (object->pad->buttons_held & GAMEPAD_SPECIAL) != 0) {
+            object->character_context = 0x54;
+            object->context_timer = 0.0f;
+            object->field_7aa = 0x9c;
+            object->context_duration = 0.3f;
+        }
     }
 }

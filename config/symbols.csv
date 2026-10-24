@@ -1941,6 +1941,7 @@ address,symbol,size,ctype
 0x4c83f0,_Signals_StoreProgress,197,"void __cdecl(WORLDINFO *, void *, SIGNALPROGRESS_s *)"
 0x004c84c0,_Signals_RegisterGizmo,283,ADDGIZMOTYPE_PC *__cdecl(i32)
 0x004c85e0,_Signal_MoveCode,697,"void __cdecl(WORLDINFO *, GAMEOBJECT *)"
+0x004c88c0,_SuitBlowupCodePc,749,"void __cdecl (WORLDINFO *, GAMEOBJECT *)"
 0x4c8bd0,_SpeederBlowupHack,98,"i32 __cdecl (GIZMOBLOWUP_PC *, i32)"
 0x4c8c40,_SpeederChaseA_Init,323,void __cdecl (WORLDINFO *)
 0x4c8d90,_SpeederChaseA_Reset,168,void __cdecl (WORLDINFO *)
