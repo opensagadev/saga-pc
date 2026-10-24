@@ -2134,7 +2134,7 @@ extern "C" {
         }
         TerI = old_query;
         flags[0] = 0;
-        if (new_query->start_position.y < 2000000.0) {
+        if (!(new_query->start_position.y >= 2000000.0)) {
             const f32 delta = new_query->start_position.y - new_query->position.y;
             if (!(delta < -0.008f)) {
                 if (0.01f > delta) {
