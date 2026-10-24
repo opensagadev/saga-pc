@@ -649,7 +649,7 @@ static void GizFlowConfigGizmoPc(NUFPAR_PC *parser) {
     NuFParPushCom(parser, cfgtab_gizmo_pc);
     while (NuFParGetLine(parser)) {
         NuFParGetWord(parser);
-        if (NuStrICmp(parser->word_buffer, "}") == 0)
+        if (NuStrICmp(parser->word_buffer_ptr, "}") == 0)
             break;
         NuFParInterpretWord(parser);
     }
@@ -885,7 +885,7 @@ static void GizFlowConfigConditionPc(NUFPAR_PC *parser) {
     NuFParPushCom(parser, cfgtab_condition_pc);
     while (NuFParGetLine(parser)) {
         NuFParGetWord(parser);
-        if (NuStrICmp(parser->word_buffer, "}") == 0)
+        if (NuStrICmp(parser->word_buffer_ptr, "}") == 0)
             break;
         NuFParInterpretWord(parser);
     }
@@ -1025,7 +1025,7 @@ static void GizFlowConfigFlowBoxPc(NUFPAR_PC *parser) {
     NuFParPushCom(parser, cfgtab_flowbox_pc);
     while (NuFParGetLine(parser)) {
         NuFParGetWord(parser);
-        if (NuStrICmp(parser->word_buffer, "}") == 0)
+        if (NuStrICmp(parser->word_buffer_ptr, "}") == 0)
             break;
         NuFParInterpretWord(parser);
     }
