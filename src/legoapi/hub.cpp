@@ -4257,26 +4257,29 @@ extern "C" void Hub_DrawPanel(WORLDINFO *) {
             }
         } else if (HubAreaPc == 8) {
             i32 gold_count = 0, gold_total = 0;
-            for (i32 i = 0; i < AREACOUNT; ++i) {
-                AREA_DATA_PC *area = &ADataList[i];
-                AREA_SAVE_PICKUP_PC *save = &Game.area_save[i];
-                if (area == HUB_ADATA || (area->flags & 0x22) != 0 || area->episode_index != -1 ||
-                    (area->flags & 0x2010) != 0)
-                    continue;
-                if ((area->flags & 0x100) != 0) {
-                    if (EpisodeGoldBrickForSuperBonusPc == 0)
+            i32 count = AREACOUNT;
+            AREA_DATA_PC *area = ADataList;
+            AREA_SAVE_PICKUP_PC *save = Game.area_save;
+            if (count > 0) {
+                for (; count != 0; --count, ++area, ++save) {
+                    if (area == HUB_ADATA || (area->flags & 0x22) != 0 || area->episode_index != -1 ||
+                        (area->flags & 0x2010) != 0)
                         continue;
-                } else if ((area->flags & 4) != 0) {
+                    if ((area->flags & 0x100) != 0) {
+                        if (EpisodeGoldBrickForSuperBonusPc == 0)
+                            continue;
+                    } else if ((area->flags & 4) != 0) {
+                        ++gold_total;
+                        if (!(save->challenge_trial_time < area->challenge_trial_time))
+                            continue;
+                        ++gold_count;
+                        continue;
+                    } else if ((area->flags & 0x800) != 0)
+                        continue;
                     ++gold_total;
-                    if (!(area->challenge_trial_time > save->challenge_trial_time))
-                        continue;
-                    ++gold_count;
-                    continue;
-                } else if ((area->flags & 0x800) != 0)
-                    continue;
-                ++gold_total;
-                if (save->area_complete != 0)
-                    ++gold_count;
+                    if (save->area_complete != 0)
+                        ++gold_count;
+                }
             }
             f32 x = 0.0f;
             if (Game.lost_temple_area_complete != 0) {
