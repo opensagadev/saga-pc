@@ -7066,6 +7066,13 @@ void __cdecl Move_SUPERBATTLEDROID(GAMEOBJECT *object) {
     GizmoBlowupCheckProximity(WORLD, object);
 }
 
+static void WalkerDelayedKillPc(GAMEOBJECT *object) {
+    if (object->character_context == 0x3d && object->context_timer > object->context_duration + 0.5) {
+        KillParts(object, -1, -1, 0, 0.0f, 0, NULL);
+        KillGameObject(object, 2, 0);
+    }
+}
+
 void __cdecl Move_WALKER(GAMEOBJECT *object) {
     MOTION_SHOOT_PHASE_READER_PC *state = (MOTION_SHOOT_PHASE_READER_PC *)object;
     GAMEPAD_PC *pad = object->pad;
@@ -7077,7 +7084,7 @@ void __cdecl Move_WALKER(GAMEOBJECT *object) {
         return;
     ApplyGravity(object, NULL, 0.0f, 0.0f, NULL);
     HeadMovement(object);
-    STUBBED_NAMED(0x0049c030); /* Native 4b6341: private native walker action with implicit ESI object. */
+    WalkerDelayedKillPc(object);
     TakeHitCode(object);
     SlideCode(object);
     DeactivatedCode(object);
