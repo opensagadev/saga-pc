@@ -229,6 +229,7 @@ i32 __cdecl ObjHitObj(GAMEOBJECT *attacker, GAMEOBJECT *target, i32 damage, u16 
     result = 0;
     reaction_trigger = 0;
     random = qrand();
+    hit = damage;
     random_unit = (f32)((f64)random * 1.5259021893143654e-05);
     objhitobj_nohurtsfx = 0;
     objhitobj_noimpactsfx = 0;
@@ -258,7 +259,6 @@ i32 __cdecl ObjHitObj(GAMEOBJECT *attacker, GAMEOBJECT *target, i32 damage, u16 
         attacker = NULL;
     if (target->field_280 != 0xff)
         ObstacleCamHoldUntilPlayersMove = 0;
-    hit = damage;
     if (target->character_context == 81 || target->character_context == 76) {
         hit = 0;
         damage = 0;
