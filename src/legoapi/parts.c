@@ -2226,7 +2226,6 @@ void __cdecl AddTorpedoAsPart(NUVEC *position, NUVEC *velocity, f32 scale, f32 l
     params.flags = 0x256;
     if (params.gravity == 0.0f) {
         params.field_a4 = 5.0f;
-        params.move_fn = PartMove_VehiclePickup;
     } else {
         params.stop_fn = PartStop_Flickerer;
     }
@@ -2234,6 +2233,8 @@ void __cdecl AddTorpedoAsPart(NUVEC *position, NUVEC *velocity, f32 scale, f32 l
     params.update_fn = NULL;
     params.draw_fn = PartDraw_Torp;
     params.field_88 = lifetime;
+    if (params.gravity == 0.0f)
+        params.move_fn = PartMove_VehiclePickup;
     params.time_step = FRAMETIME;
     params.field_c0 = scale;
     part = AddPart(&params);
