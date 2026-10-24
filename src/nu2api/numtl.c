@@ -124,10 +124,11 @@ void __cdecl NuShaderMtlDescInit(PC_MATERIAL_CREATE_SHADER *desc) {
     desc->vertex_format |= 0x101;
 }
 
-static NUMTL *__cdecl NuMtlCreatePoolPC(u32 render_plane, i32 count, i32 is_3d) {
+static NUMTL *__cdecl NuMtlCreatePoolPC(i32 count, u32 render_plane, i32 is_3d) {
     NUMTL *next = NULL;
     PC_MATERIAL_CREATE_VIEW *mtl;
     i32 i;
+    render_plane &= 0xff;
     for (i = 0; i < count; ++i) {
         PC_MATERIAL_CREATE_VIEW *pool;
         i32 j;
@@ -142,10 +143,13 @@ static NUMTL *__cdecl NuMtlCreatePoolPC(u32 render_plane, i32 count, i32 is_3d) 
         if (mtl == NULL)
             AnimationDiagnosticNoOpPc();
         memset(mtl, 0, sizeof(*mtl));
-        mtl->diffuse.x = mtl->diffuse.y = mtl->diffuse.z = mtl->opacity = 1.0f;
+        mtl->diffuse.x = 1.0f;
+        mtl->diffuse.y = 1.0f;
+        mtl->diffuse.z = 1.0f;
+        mtl->opacity = 1.0f;
         mtl->attributes = (mtl->attributes & 0xbf9e2fd0) | 0x3f962010;
         mtl->attributes_high |= 0x10;
-        mtl->flags = (mtl->flags & 0xf00f) | ((render_plane & 0xff) << 4) | 5;
+        mtl->flags = (mtl->flags & 0xf00f) | (render_plane << 4) | 5;
         if (is_3d != 0) {
             PCThreadCriticalSectionEnter_candidate(nudlist_field_fc4);
             if (PCDisplayMaterialAddCount == 600) {
@@ -166,16 +170,16 @@ static NUMTL *__cdecl NuMtlCreatePoolPC(u32 render_plane, i32 count, i32 is_3d) 
 }
 
 NUMTL *__cdecl NuMtlCreate(i32 count) {
-    return NuMtlCreatePoolPC(numtl_renderplane, count, 0);
+    return NuMtlCreatePoolPC(count, numtl_renderplane, 0);
 }
 NUMTL *__cdecl NuMtlCreateEx(i32 count, u32 plane) {
-    return NuMtlCreatePoolPC(plane, count, 0);
+    return NuMtlCreatePoolPC(count, plane, 0);
 }
 NUMTL *__cdecl NuMtlCreate3D(i32 count) {
-    return NuMtlCreatePoolPC(numtl_renderplane, count, 1);
+    return NuMtlCreatePoolPC(count, numtl_renderplane, 1);
 }
 NUMTL *__cdecl NuMtlCreateEx3D(i32 count, u32 plane) {
-    return NuMtlCreatePoolPC(plane, count, 1);
+    return NuMtlCreatePoolPC(count, plane, 1);
 }
 
 extern i32 NuMtlAnimateMaskPc;
@@ -185,7 +189,10 @@ void NuMtlAnimateSetSpeedScale(f32 scale) {
 }
 
 i32 NuMtlSetCurrentRenderPlane(i32 render_plane) {
-    i32 previous_render_plane = numtl_renderplane;
+    i32 previous_render_plane;
+    if (render_plane >= 24 || render_plane < 0)
+        AnimationDiagnosticNoOpPc();
+    previous_render_plane = numtl_renderplane;
     numtl_renderplane = render_plane;
     return previous_render_plane;
 }
@@ -212,7 +219,7 @@ void __cdecl NuMtlRegisterForOverride(NUMTL *original, u32 *descriptors, i32 cou
             PC_MATERIAL_VARIANT_RECORD *entry = ((PC_MATERIAL_VARIANT_RECORD *)(NuLstAlloc(g_overrideList)));
             PC_MATERIAL_CREATE_VIEW *destination;
             u32 retained_28, retained_2c;
-            entry->material = NuMtlCreatePoolPC(numtl_renderplane, 1, 1);
+            entry->material = NuMtlCreatePoolPC(1, numtl_renderplane, 1);
             entry->original = original;
             entry->vertex_descriptor = descriptors[i];
             destination = ((PC_MATERIAL_CREATE_VIEW *)(entry->material));
@@ -298,7 +305,7 @@ void __cdecl NuRndrInitGeneric(void) {
     numtl_renderplane = 22;
     if (RendererZClearMaterialPc == NULL) {
         PC_MATERIAL_CREATE_VIEW *material;
-        RendererZClearMaterialPc = NuMtlCreatePoolPC(numtl_renderplane, 1, 0);
+        RendererZClearMaterialPc = NuMtlCreatePoolPC(1, numtl_renderplane, 0);
         material = (PC_MATERIAL_CREATE_VIEW *)RendererZClearMaterialPc;
         material->attributes = (material->attributes & 0xff9fbff2u) | 0x00108002;
         NuMtlUpdatePS(RendererZClearMaterialPc);
@@ -306,7 +313,7 @@ void __cdecl NuRndrInitGeneric(void) {
     }
     if (RendererAlphaMaskMaterialPc == NULL) {
         PC_MATERIAL_CREATE_VIEW *material;
-        RendererAlphaMaskMaterialPc = NuMtlCreatePoolPC(numtl_renderplane, 1, 0);
+        RendererAlphaMaskMaterialPc = NuMtlCreatePoolPC(1, numtl_renderplane, 0);
         material = (PC_MATERIAL_CREATE_VIEW *)RendererAlphaMaskMaterialPc;
         material->attributes_high &= ~3u;
         material->attributes = (material->attributes & 0x806fbff2u) | 0x00608002;
@@ -329,8 +336,8 @@ void __cdecl NuMtlInitEx(VARIPTR *buffer, i32 material_count) {
     PCMaterialPoolPc = (NUMTL *)((buffer->addr + 15u) & ~15u);
     buffer->addr = (u32)PCMaterialPoolPc + material_count * sizeof(PC_MATERIAL_CREATE_VIEW);
     memset(PCMaterialPoolPc, 0, material_count * sizeof(PC_MATERIAL_CREATE_VIEW));
-    numtl_defaultmtl3d = NuMtlCreatePoolPC(numtl_renderplane, 1, 1);
-    numtl_defaultmtl2d = NuMtlCreatePoolPC(numtl_renderplane, 1, 0);
+    numtl_defaultmtl3d = NuMtlCreatePoolPC(1, numtl_renderplane, 1);
+    numtl_defaultmtl2d = NuMtlCreatePoolPC(1, numtl_renderplane, 0);
     memset(&desc2d, 0, sizeof(desc2d));
     desc2d.default_scale = 1.0f;
     desc2d.vertex_format |= 0x40101;
@@ -357,4 +364,78 @@ void __cdecl NuMtlInitEx(VARIPTR *buffer, i32 material_count) {
 
 void __cdecl NuMtlInitOverride(i32 count, VARIPTR *buffer, VARIPTR *end) {
     g_overrideList = NuLstCreateBuff(count, sizeof(PC_MATERIAL_VARIANT_RECORD), buffer, *end, 0x10);
+}
+
+typedef struct FONT_LOAD_READER_PC {
+    u8 unknown00[6];
+    u16 flags;
+    i32 size;
+    i32 glyph_count, unicode_count;
+    f32 height, baseline, space_width;
+    i32 mode;
+    f32 ic_gap;
+    void *legacy_font;
+    f32 *x_scale, *y_scale;
+    VUFNTCHAR *glyphs;
+    VUCHARIDX *unicode_map;
+    void *header;
+    NUMTL *material;
+    u32 *colour;
+    NUQFNT_RENDER_DATA_PC *platform_data;
+} FONT_LOAD_READER_PC;
+STATIC_ASSERT(sizeof(FONT_LOAD_READER_PC) == 0x4c);
+STATIC_ASSERT(offsetof(FONT_LOAD_READER_PC, flags) == 6);
+STATIC_ASSERT(offsetof(FONT_LOAD_READER_PC, size) == 8);
+STATIC_ASSERT(offsetof(FONT_LOAD_READER_PC, glyphs) == 0x34);
+STATIC_ASSERT(offsetof(FONT_LOAD_READER_PC, unicode_map) == 0x38);
+STATIC_ASSERT(offsetof(FONT_LOAD_READER_PC, header) == 0x3c);
+STATIC_ASSERT(offsetof(FONT_LOAD_READER_PC, material) == 0x40);
+STATIC_ASSERT(offsetof(FONT_LOAD_READER_PC, colour) == 0x44);
+STATIC_ASSERT(offsetof(FONT_LOAD_READER_PC, platform_data) == 0x48);
+typedef struct FONT_RENDER_STORAGE_PC {
+    NUQFNT_RENDER_DATA_PC draw;
+    f32 x_scale, y_scale;
+} FONT_RENDER_STORAGE_PC;
+STATIC_ASSERT(sizeof(FONT_RENDER_STORAGE_PC) == 0x58);
+STATIC_ASSERT(offsetof(FONT_RENDER_STORAGE_PC, x_scale) == 0x50);
+STATIC_ASSERT(offsetof(FONT_RENDER_STORAGE_PC, y_scale) == 0x54);
+
+i32 __cdecl NuQFntReadPS(VUFNT *font, i32 texture_id, i32 flags, i32 plane, VARIPTR *buffer, VARIPTR end) {
+    PC_MATERIAL_CREATE_SHADER description;
+    FONT_LOAD_READER_PC *reader = (FONT_LOAD_READER_PC *)font;
+    FONT_RENDER_STORAGE_PC *platform;
+    font->material = NuMtlCreate(1);
+    ((PC_MATERIAL_CREATE_VIEW *)font->material)->diffuse.x = 1.0f;
+    ((PC_MATERIAL_CREATE_VIEW *)font->material)->diffuse.y = 1.0f;
+    ((PC_MATERIAL_CREATE_VIEW *)font->material)->diffuse.z = 1.0f;
+    ((PC_MATERIAL_CREATE_VIEW *)font->material)->attributes =
+        (((PC_MATERIAL_CREATE_VIEW *)font->material)->attributes & ~0x1000U) | 0x2000U;
+    ((PC_MATERIAL_CREATE_VIEW *)font->material)->attributes |= 0xc000U;
+    ((PC_MATERIAL_CREATE_VIEW *)font->material)->opacity = 1.0f;
+    ((PC_MATERIAL_CREATE_VIEW *)font->material)->attributes =
+        (((PC_MATERIAL_CREATE_VIEW *)font->material)->attributes & ~14U) | 1U;
+    ((PC_MATERIAL_CREATE_VIEW *)font->material)->attributes |= 0x40000U;
+    ((PC_MATERIAL_CREATE_VIEW *)font->material)->texture_id = (i16)texture_id;
+    ((PC_MATERIAL_CREATE_VIEW *)font->material)->attributes =
+        (((PC_MATERIAL_CREATE_VIEW *)font->material)->attributes & ~0x200U) | 0x100U;
+    ((PC_MATERIAL_CREATE_VIEW *)font->material)->attributes =
+        (((PC_MATERIAL_CREATE_VIEW *)font->material)->attributes & ~0x800U) | 0x400U;
+    memset(&description, 0, sizeof(description));
+    description.default_scale = 1.0f;
+    description.material_flags |= 0x1000;
+    description.flags = 0x1000;
+    description.diffuse_map_id = texture_id;
+    description.packed_diffuse_colour = 0xffffffff;
+    description.vertex_format = (description.vertex_format & ~0x3000U) | 0x40901U;
+    NuMtlSetShaderDescPS(font->material, (const struct PC_MATERIAL_SHADER_DESC_VIEW *)&description);
+    NuMtlUpdate(font->material);
+    platform = (FONT_RENDER_STORAGE_PC *)((buffer->addr + 15) & ~15U);
+    reader->platform_data = &platform->draw;
+    buffer->addr = ((buffer->addr + 15) & ~15U) + sizeof(*platform);
+    platform = (FONT_RENDER_STORAGE_PC *)reader->platform_data;
+    reader->x_scale = &platform->x_scale;
+    reader->y_scale = &platform->y_scale;
+    reader->colour = &platform->draw.colour;
+    reader->header = NULL;
+    return 0;
 }

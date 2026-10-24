@@ -626,41 +626,6 @@ void __cdecl NuQFntDestroy(VUFNT *font) {
     }
 }
 
-i32 __cdecl NuQFntReadPS(VUFNT *font, i32 texture_id, i32 flags, i32 plane, VARIPTR *buffer, VARIPTR end) {
-    PC_MATERIAL_CREATE_VIEW *material;
-    PC_MATERIAL_CREATE_SHADER description;
-    FONT_LOAD_READER_PC *reader = (FONT_LOAD_READER_PC *)font;
-    FONT_RENDER_STORAGE_PC *platform;
-    font->material = NuMtlCreate(1);
-    material = (PC_MATERIAL_CREATE_VIEW *)font->material;
-    material->diffuse.x = material->diffuse.y = material->diffuse.z = 1.0f;
-    material->attributes = (material->attributes & ~0x1000U) | 0x2000U;
-    material->attributes |= 0xc000U;
-    material->opacity = 1.0f;
-    material->attributes = (material->attributes & ~14U) | 1U;
-    material->attributes |= 0x40000U;
-    material->texture_id = (i16)texture_id;
-    material->attributes = (material->attributes & ~0x200U) | 0x100U;
-    material->attributes = (material->attributes & ~0x800U) | 0x400U;
-    memset(&description, 0, sizeof(description));
-    description.default_scale = 1.0f;
-    description.material_flags |= 0x1000;
-    description.flags = 0x1000;
-    description.diffuse_map_id = texture_id;
-    description.packed_diffuse_colour = 0xffffffff;
-    description.vertex_format = (description.vertex_format & ~0x3000U) | 0x40901U;
-    NuMtlSetShaderDescPS(font->material, (const struct PC_MATERIAL_SHADER_DESC_VIEW *)&description);
-    NuMtlUpdate(font->material);
-    platform = (FONT_RENDER_STORAGE_PC *)((buffer->addr + 15) & ~15U);
-    reader->platform_data = &platform->draw;
-    buffer->addr = ((buffer->addr + 15) & ~15U) + sizeof(*platform);
-    reader->x_scale = &platform->x_scale;
-    reader->colour = &platform->draw.colour;
-    reader->y_scale = &platform->y_scale;
-    reader->header = NULL;
-    return 0;
-}
-
 VUFNT *__cdecl NuQFntReadBuffer(VARIPTR *font, VARIPTR *buffer, VARIPTR end) {
     FONT_PTR_BLOCK_PC *block;
     VUFNT *result;
@@ -733,13 +698,16 @@ VUFNT *__cdecl NuQFntDuplicate(VUFNT *font, i32 flags, i32 plane, VARIPTR *buffe
     original = (PC_MATERIAL_CREATE_VIEW *)font->material;
     material->attributes = original->attributes;
     material->attributes_high = original->attributes_high;
-    material->texture_id = original->texture_id;
-    material->sort_priority = original->sort_priority;
-    material->attributes = (material->attributes & ~0x10000U) | 0x20000U;
+    ((PC_MATERIAL_CREATE_VIEW *)duplicate->material)->texture_id =
+        ((PC_MATERIAL_CREATE_VIEW *)font->material)->texture_id;
+    ((PC_MATERIAL_CREATE_VIEW *)duplicate->material)->sort_priority =
+        ((PC_MATERIAL_CREATE_VIEW *)font->material)->sort_priority;
+    ((PC_MATERIAL_CREATE_VIEW *)duplicate->material)->attributes =
+        (((PC_MATERIAL_CREATE_VIEW *)duplicate->material)->attributes & ~0x10000U) | 0x20000U;
     if (flags & 8)
-        material->attributes_high &= ~0x800000U;
+        ((PC_MATERIAL_CREATE_VIEW *)duplicate->material)->attributes_high &= ~0x800000U;
     if (flags & 0x40)
-        material->attributes &= ~0xc000U;
+        ((PC_MATERIAL_CREATE_VIEW *)duplicate->material)->attributes &= ~0xc000U;
     NuMtlUpdate(duplicate->material);
     if (previous_plane >= 24)
         AnimationDiagnosticNoOpPc();
@@ -753,7 +721,6 @@ VUFNT *__cdecl NuQFntLoadPtr(char *path, char *texture_path, i32 flags, i32 plan
     char filename[1024];
     FONT_LOAD_READER_PC *reader;
     FONT_RENDER_STORAGE_PC *platform;
-    PC_MATERIAL_CREATE_VIEW *material;
     i32 size, texture_id;
     if (font != NULL)
         return font;
@@ -770,6 +737,7 @@ VUFNT *__cdecl NuQFntLoadPtr(char *path, char *texture_path, i32 flags, i32 plan
         platform = (FONT_RENDER_STORAGE_PC *)buffer->void_ptr;
         reader->platform_data = &platform->draw;
         buffer->addr += sizeof(*platform);
+        platform = (FONT_RENDER_STORAGE_PC *)reader->platform_data;
         reader->colour = &platform->draw.colour;
         reader->x_scale = &platform->x_scale;
         reader->y_scale = &platform->y_scale;
@@ -778,14 +746,17 @@ VUFNT *__cdecl NuQFntLoadPtr(char *path, char *texture_path, i32 flags, i32 plan
         if (texture_id != 0) {
             font->material = NuMtlCreate(1);
             if (font->material != NULL) {
-                material = (PC_MATERIAL_CREATE_VIEW *)font->material;
-                material->diffuse.x = material->diffuse.y = material->diffuse.z = 1.0f;
-                material->attributes = (material->attributes & ~0x1000U) | 0x2000U;
-                material->attributes |= 0xc000U;
-                material->opacity = 1.0f;
-                material->attributes = (material->attributes & ~14U) | 1U;
-                material->attributes |= 0x40000U;
-                material->texture_id = (i16)texture_id;
+                ((PC_MATERIAL_CREATE_VIEW *)font->material)->diffuse.x = 1.0f;
+                ((PC_MATERIAL_CREATE_VIEW *)font->material)->diffuse.y = 1.0f;
+                ((PC_MATERIAL_CREATE_VIEW *)font->material)->diffuse.z = 1.0f;
+                ((PC_MATERIAL_CREATE_VIEW *)font->material)->attributes =
+                    (((PC_MATERIAL_CREATE_VIEW *)font->material)->attributes & ~0x1000U) | 0x2000U;
+                ((PC_MATERIAL_CREATE_VIEW *)font->material)->attributes |= 0xc000U;
+                ((PC_MATERIAL_CREATE_VIEW *)font->material)->opacity = 1.0f;
+                ((PC_MATERIAL_CREATE_VIEW *)font->material)->attributes =
+                    (((PC_MATERIAL_CREATE_VIEW *)font->material)->attributes & ~14U) | 1U;
+                ((PC_MATERIAL_CREATE_VIEW *)font->material)->attributes |= 0x40000U;
+                ((PC_MATERIAL_CREATE_VIEW *)font->material)->texture_id = (i16)texture_id;
                 NuMtlUpdate(font->material);
                 return font;
             }
