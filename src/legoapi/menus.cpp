@@ -319,7 +319,8 @@ extern "C" {
     extern i16 MissionMenuInstructionTextPc;
     extern f32 MissionIconBaseSizePc, MissionIconSelectedSizePc, MissionIconYPc;
     extern f32 MissionNameYPc, MissionNameScalePc;
-    extern f32 MissionBestBrickXPc, MissionBestTimeXPc, MissionBestTimeYPc, MissionBestTimeScalePc;
+    f32 MissionBestBrickXPc = -0.15f;
+    extern f32 MissionBestTimeXPc, MissionBestTimeYPc, MissionBestTimeScalePc;
     extern f32 MissionDropInAlphaPc, MissionPlayerIconSizePc, MissionEpisodeTitleYPc;
 }
 
@@ -341,8 +342,8 @@ extern "C" void __cdecl MenuDrawMissions(MENU *menu) {
     if (Game.mission_save.completed[MissionMenuSelectionPc] != 0) {
         opacity = alpha * MissionsAlphaPc;
         if (opacity > 0.0f) {
-            /* Native497188: Hub_DrawImportantBrick(211, x, episode_y+.1, opacity,-1,-1). */
-            STUBBED_NAMED("MenuDrawMissions: Hub_DrawImportantBrick at 497188");
+            Hub_DrawImportantBrick(211, MissionBestBrickXPc, (f32)((f64)HubEpisodeTitleYPc + (f64)0.1f), opacity, -1,
+                                   -1);
             Text_MakeTime(Game.mission_save.best_times[MissionMenuSelectionPc], 0, 1, 1, time);
             NuSPrintf(text, "~0(~2%s~0)", time);
             Text3DEx(text, MissionBestTimeXPc, MissionBestTimeYPc, 1.0f, MissionBestTimeScalePc, MissionBestTimeScalePc,

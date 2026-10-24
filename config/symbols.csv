@@ -20112,6 +20112,7 @@ address,symbol,size,ctype
 0x7faff4,_MissionIconYPc,,f32
 0x7faff8,_MissionNameYPc,,f32
 0x7faffc,_MissionNameScalePc,,f32
+0x007fb000,_MissionBestBrickXPc,,f32
 0x7fb004,_MissionBestTimeXPc,,f32
 0x7fb008,_MissionBestTimeYPc,,f32
 0x7fb00c,_MissionBestTimeScalePc,,f32
