@@ -3241,11 +3241,15 @@ address,symbol,size,ctype
 0x524190,_pathEditorDrawPaths,273,
 0x524320,_pathEditor_UpdateNodesOnPlatforms,142,
 0x5243b0,_TestPointPathCheck,516,
+0x524cb0,?pathEditorCalcRouteIterator@@YAXPAUAIPATH_PC@@PAMPAEHHMH@Z,306,
+0x524df0,?pathEditorCalculateDistanceTable@@YAPAPAMPAUAIPATH_PC@@HPATvariptr_u@@1@Z,306,
+0x524f30,?pathEditorPopulateRouteMatrix@@YAXPAUAIPATH_PC@@HPAPAMPAPAE@Z,325,
 0x525080,_pathEditorSaveData,1558,
 0x525760,_pathEditor_cbRenamePathMenu,208,
 0x525900,_pathEditor_cbRenameNodeMenu,209,
 0x5263f0,_routeEditor_cbRenameRouteMenu,209,
 0x526560,_routeEditor_cbRouteUsers,327,
+0x526800,?pathEditorCreateSpecialRouteData@@YAXPAUAIPATH_PC@@PAUAI_PATH_BUILD_PATH_PC@@PATvariptr_u@@2@Z,2382,
 0x527460,_aieditor_AddMessage,135,
 0x527620,_antinodeEditor_AntinodeMoved,185,
 0x527740,_antinodeEditor_UpdateAntiNodesOnPlatforms,176,
@@ -23722,6 +23726,8 @@ address,symbol,size,ctype
 0x00923920,_MidSpecialMoveFn,4,AI_MID_SPECIAL_MOVE_PC
 0x00923924,_GetNamedGameObjectCallback,4,GAMEOBJECT_LOOKUP_CALLBACK_PC
 0x00923928,_GetOriginPositionFn,4,AI_ORIGIN_POSITION_PC
+0x9242c0,_iterator_count,,i32
+0x9242c4,_distance_tables,,f32 ***
 0x009242e4,_sockpar_buffer_ptr,4,VARIPTR *
 0x9242f0,_temp_sockmidpos,12,NUVEC
 0x009242fc,_sockpar_buffer_end,4,VARIPTR *
