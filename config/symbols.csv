@@ -10657,6 +10657,7 @@ address,symbol,size,ctype
 0x753370,_TextInputKeyNameTextPc753370,,char[2]
 0x753374,??_C@_01OHGJGJJP@?$FL?$AA@,,const char []
 0x753374,_TextInputKeyNameTextPc753374,,char[2]
+0x753378,__real@bfe4ccccc0000000,8,const f64
 0x753380,__real@40d3bb8000000000,8,const f64
 0x753388,__real@40c4440000000000,8,const f64
 0x753390,__real@40c82d8000000000,8,const f64
@@ -19818,9 +19819,14 @@ address,symbol,size,ctype
 0x7f37d8,_CustomiseHeadOffsetPc,4,f32
 007f37e0,_PermanentCustomiserActionsPc,,i16[5]
 0x007f37ec,_CustomiseLetter,39,char[39]
+0x7f381c,_CustomiseNameLetterScalePc,,f32
 0x7f3820,_CustomiserGameSettingsPrivatePc,,CUSTOMISER_GAME_SETTING_PC[7]
-0x007f3874,__real@3d570a3d,4,const f32
-0x007f3878,__real@3d75c28f,4,const f32
+0x007f3874,_CustomiseNameGapPc,4,f32
+0x007f3878,_CustomiseNameSideGapPc,4,f32
+0x7f387c,_CustomiseNameArrowScalePc,,f32
+0x7f3880,_CustomiseNameArrowOffsetPc,,f32
+0x7f3884,_CustomiseNameBracketOffsetXPc,,f32
+0x7f3888,_CustomiseNameBracketOffsetYPc,,f32
 0x7f38f4,_DetonatorHitScaleArmedPc,4,f32
 0x7f38f8,_DetonatorHitScaleIdlePc,4,f32
 0x7f38fc,_BatarangDetonatorHitDelayPc,4,f32

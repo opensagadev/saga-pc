@@ -1531,6 +1531,14 @@ i32 __cdecl Customise_GetToggleString(i32 index) {
     }
     return TextIdPc880780;
 }
+static f32 CustomiseNameLetterScalePc = 0.5f;
+static f32 CustomiseNameGapPc = 0.05249999836087227f;
+static f32 CustomiseNameSideGapPc = 0.05999999865889549f;
+static f32 CustomiseNameArrowScalePc = 0.6000000238418579f;
+static f32 CustomiseNameArrowOffsetPc = 0.10000000149011612f;
+static f32 CustomiseNameBracketOffsetXPc = 0.009999999776482582f;
+static f32 CustomiseNameBracketOffsetYPc = 0.007499999832361937f;
+
 static void CustomiserDrawNameEditorPc(CUSTOMISER_LAYERS_PC *input) {
     CUSTOMISER_CONFIG_PC *customiser = (CUSTOMISER_CONFIG_PC *)input;
     i32 side, active_count, index;
@@ -1548,7 +1556,7 @@ static void CustomiserDrawNameEditorPc(CUSTOMISER_LAYERS_PC *input) {
         i32 icon;
         if (CustomiseMode[side] == 1) {
             char letter[2];
-            f32 gap = 0.05249999836087227f;
+            f32 gap = CustomiseNameGapPc;
             i32 length, column;
             letter[1] = 0;
             if (Game.options_save.widescreen != 0)
@@ -1559,17 +1567,19 @@ static void CustomiserDrawNameEditorPc(CUSTOMISER_LAYERS_PC *input) {
             }
             x = (f32)(CustomiseScreenPosPc[side].x - gap * 7.0);
             if (active_count == 2)
-                x += side == 0 ? -0.05999999865889549f : 0.05999999865889549f;
+                x += side == 0 ? -CustomiseNameSideGapPc : CustomiseNameSideGapPc;
             for (column = 0; column < 15; ++column) {
                 f32 scale = 1.0f;
                 i32 letter_red = red, letter_green = green, letter_blue = blue;
                 if (column == CustomiseNameXPc[side]) {
                     const i32 colour = menu_flash == 0 ? 255 : 191;
                     letter[0] = CustomiseLetter[CustomiseNameYPc[side]];
-                    Text3D((char *)InitAsciiUpPc, x, (f32)(0.10000000149011612f - 0.6499999761581421), 1.0f,
-                           0.6000000238418579f, 0.6000000238418579f, 0.6000000238418579f, 0, colour, colour, colour);
-                    Text3D((char *)TagAsciiDownPc, x, (f32)(-0.6499999761581421 - 0.10000000149011612f), 1.0f,
-                           0.6000000238418579f, 0.6000000238418579f, 0.6000000238418579f, 0, colour, colour, colour);
+                    Text3D((char *)InitAsciiUpPc, x, (f32)(CustomiseNameArrowOffsetPc - (f64)0.6499999761581421f), 1.0f,
+                           CustomiseNameArrowScalePc, CustomiseNameArrowScalePc, CustomiseNameArrowScalePc, 0, colour,
+                           colour, colour);
+                    Text3D((char *)TagAsciiDownPc, x, (f32)(-(f64)0.6499999761581421f - CustomiseNameArrowOffsetPc),
+                           1.0f, CustomiseNameArrowScalePc, CustomiseNameArrowScalePc, CustomiseNameArrowScalePc, 0,
+                           colour, colour, colour);
                     scale = CustomiseNameLetterBlipScalePc[side];
                     letter_red = letter_blue = 255;
                     letter_green = menu_flash == 0 ? 255 : 0;
@@ -1578,14 +1588,16 @@ static void CustomiserDrawNameEditorPc(CUSTOMISER_LAYERS_PC *input) {
                     if (column > CustomiseNameXPc[side] && column >= length && letter[0] == ' ')
                         letter[0] = '.';
                 }
-                Text3D(letter, x, -0.6499999761581421f, 1.0f, scale * 0.5f, (f32)(scale * 0.5), 0.5f, 0, letter_red,
-                       letter_green, letter_blue);
+                Text3D(letter, x, -0.6499999761581421f, 1.0f, scale * CustomiseNameLetterScalePc, (f32)(scale * 0.5),
+                       0.5f, 0, letter_red, letter_green, letter_blue);
                 if (column == 0)
-                    Text3D("[", (x - gap) + 0.009999999776482582f, (f32)(0.007499999832361937f - 0.6499999761581421),
-                           1.0f, 0.5f, 0.6000000238418579f, 0.5f, 0, red, green, blue);
+                    Text3D("[", (x - gap) + CustomiseNameBracketOffsetXPc,
+                           (f32)(CustomiseNameBracketOffsetYPc - (f64)0.6499999761581421f), 1.0f, 0.5f,
+                           0.6000000238418579f, 0.5f, 0, red, green, blue);
                 else if (column == 14)
-                    Text3D("]", (x + gap) - 0.009999999776482582f, (f32)(0.007499999832361937f - 0.6499999761581421),
-                           1.0f, 0.5f, 0.6000000238418579f, 0.5f, 0, red, green, blue);
+                    Text3D("]", (x + gap) - CustomiseNameBracketOffsetXPc,
+                           (f32)(CustomiseNameBracketOffsetYPc - (f64)0.6499999761581421f), 1.0f, 0.5f,
+                           0.6000000238418579f, 0.5f, 0, red, green, blue);
                 x += gap;
             }
         } else {
