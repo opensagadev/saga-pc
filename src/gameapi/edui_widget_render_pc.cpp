@@ -100,3 +100,87 @@ i32 __cdecl eduicbRenderCheck(eduimenu_s *unused_menu, eduiitem_s *item, i32 x, 
     }
     return height;
 }
+
+i32 __cdecl eduicbRenderSlider(eduimenu_s *unused_menu, eduiitem_s *item, i32 x, i32 y, i32 width,
+                               i32 unused_selected) {
+    edui_slider_s *slider = (edui_slider_s *)item;
+    i32 height = (i32)(NuQFntHeight((VUFNT *)edui_font) * 1.25) >> 3;
+    f64 font_height = NuQFntHeight((VUFNT *)edui_font) * 0.125;
+    i32 baseline = (i32)(font_height + NuQFntBaseline((VUFNT *)edui_font));
+    i32 skip_draw = edui_donotdraw;
+    char format[512];
+    item->x = x;
+    item->y = y;
+    if (skip_draw == 0) {
+        NuRndrRect2di(x << 4, y << 3, width << 4, height << 4, item->colours[2 + item->highlighted],
+                      (NUMTL *)uimtls[ui_bgmtl]);
+        if (edui_donotdraw == 0) {
+            NuQFntSet((VUFNT *)edui_font);
+            if (edui_donotdraw == 0)
+                NuQFntSetColour((VUFNT *)edui_font, item->colours[item->highlighted]);
+        }
+    }
+    NuStrCpy(format, item->text);
+    NuStrCat(format, slider->format);
+    EduiPrintAlignedTextPc(edui_font, (x * 2 + width) << 3, (y << 3) + baseline, 64, format, slider->value);
+    if (slider->normalized_value >= 0.0f && slider->normalized_value <= 1.0f) {
+        if (edui_donotdraw == 0) {
+            i32 top = (y + height) << 3;
+            i32 bottom = (y + height * 2 - 1) << 3;
+            f32 span = (f32)(width - 2);
+            i32 marker = (i32)(slider->normalized_value * span + (x + 1)) << 4;
+            NuRndrLine2di(marker, top, marker, bottom, item->colours[item->highlighted], (NUMTL *)uimtls[0]);
+            if (edui_donotdraw == 0) {
+                marker = (i32)(slider->normalized_value * span + x) << 4;
+                NuRndrLine2di(marker, top, marker, bottom, item->colours[item->highlighted], (NUMTL *)uimtls[0]);
+                if (edui_donotdraw == 0) {
+                    marker = (i32)(slider->normalized_value * span + (x - 1)) << 4;
+                    NuRndrLine2di(marker, top, marker, bottom, item->colours[item->highlighted], (NUMTL *)uimtls[0]);
+                }
+            }
+        }
+    }
+    return height * 2;
+}
+
+i32 __cdecl eduicbRenderSliderInt(eduimenu_s *unused_menu, eduiitem_s *item, i32 x, i32 y, i32 width,
+                                  i32 unused_selected) {
+    edui_slider_s *slider = (edui_slider_s *)item;
+    i32 height = (i32)(NuQFntHeight((VUFNT *)edui_font) * 1.25) >> 3;
+    f64 font_height = NuQFntHeight((VUFNT *)edui_font) * 0.125;
+    i32 baseline = (i32)(font_height + NuQFntBaseline((VUFNT *)edui_font));
+    i32 skip_draw = edui_donotdraw;
+    char format[512];
+    item->x = x;
+    item->y = y;
+    if (skip_draw == 0) {
+        NuRndrRect2di(x << 4, y << 3, width << 4, height << 4, item->colours[2 + item->highlighted],
+                      (NUMTL *)uimtls[0]);
+        if (edui_donotdraw == 0) {
+            NuQFntSet((VUFNT *)edui_font);
+            if (edui_donotdraw == 0)
+                NuQFntSetColour((VUFNT *)edui_font, item->colours[item->highlighted]);
+        }
+    }
+    NuStrCpy(format, item->text);
+    NuStrCat(format, slider->format);
+    EduiPrintAlignedTextPc(edui_font, (x * 2 + width) << 3, (y << 3) + baseline, 64, format, (i32)slider->value);
+    {
+        if (edui_donotdraw == 0) {
+            i32 top = (y + height) << 3;
+            i32 bottom = (y + height * 2 - 1) << 3;
+            f32 span = (f32)(width);
+            i32 marker = (i32)(span * slider->normalized_value + (x + 1)) << 4;
+            NuRndrLine2di(marker, top, marker, bottom, item->colours[item->highlighted], (NUMTL *)uimtls[0]);
+            if (edui_donotdraw == 0) {
+                marker = (i32)(span * slider->normalized_value + x) << 4;
+                NuRndrLine2di(marker, top, marker, bottom, item->colours[item->highlighted], (NUMTL *)uimtls[0]);
+                if (edui_donotdraw == 0) {
+                    marker = (i32)(span * slider->normalized_value + (x - 1)) << 4;
+                    NuRndrLine2di(marker, top, marker, bottom, item->colours[item->highlighted], (NUMTL *)uimtls[0]);
+                }
+            }
+        }
+    }
+    return height * 2;
+}
