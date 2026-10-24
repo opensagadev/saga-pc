@@ -1020,7 +1020,7 @@ extern "C" {
                     continue;
                 }
                 i16 *group_indices = TERRAIN_NS_SET->group_indices + cell->first_group;
-                for (i32 cell_group = 0; cell_group < cell->group_count; ++cell_group) {
+                for (i32 cell_group = 0; cell_group < TERRAIN_NS_SET->cells[cell_index].group_count; ++cell_group) {
                     TERRAIN_GROUP_PC *group = &TERRAIN_NS_SET->groups[group_indices[cell_group]];
                     if (!TERRAIN_NS_GROUP_OVERLAP(min_x, min_z, max_x, max_z, group) || group->chunk_type == -1) {
                         continue;
@@ -1843,19 +1843,21 @@ extern "C" i32 NewRayCastScaleYMask(NUVEC *position, NUVEC *movement, f32 radius
     if (CurrentTerrain == NULL)
         return 0;
     TerrainQuery_s *query = static_cast<TerrainQuery_s *>(NuScratchAlloc32(sizeof(TerrainQuery_s)));
-    TerI = query;
     query->object_scale = scale_y;
+    TerI = query;
     query->object_scale_sq = scale_y * scale_y;
     TerrOverRideScan = NULL;
-    f32 inverse_scale = 1.0f;
+    f32 inverse_scale;
     if (scale_y != 0.0f)
         inverse_scale = 1.0f / scale_y;
+    else
+        inverse_scale = 0.0f;
     query->inverse_object_scale = inverse_scale;
     query->inverse_object_scale_sq = inverse_scale * inverse_scale;
     query->collision_radius = radius;
     f32 inverse_radius;
     if (radius == 0.0f)
-        inverse_radius = 1.0f;
+        inverse_radius = 0.0f;
     else
         inverse_radius = 1.0f / radius;
     query->inverse_collision_radius = inverse_radius;
