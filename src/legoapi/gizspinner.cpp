@@ -201,38 +201,33 @@ extern "C" i32 GizSpinner_Spin(GIZSPINNER_s *spinner, i32 context) {
 }
 
 extern "C" PUSH_SPINNER_PC *__cdecl GizSpinner_Find(WORLDINFO *world, NUVEC *position, i32 alternate) {
+    f32 nearest_distance = 1.5625f;
     PUSH_SPINNER_PC *nearest = NULL;
     if (((PUSH_SPINNER_LEVEL_PC *)world->current_level)->count != 0) {
-        f32 nearest_distance = 1.5625f;
-        if (alternate == 0) {
-            i32 index = 0;
-            do {
-                PUSH_SPINNER_PC *spinner = &((PUSH_SPINNER_WORLD_PC *)world)->spinners[index];
-                if ((spinner->flags & 0x27) == 1 && (spinner->state_flags & 8) == 0) {
-                    NUVEC spinner_position = spinner->position;
-                    f32 distance = NuVecDistSqr(position, &spinner_position, NULL);
-                    if (distance < nearest_distance) {
-                        nearest_distance = distance;
-                        nearest = spinner;
-                    }
+        i32 index = 0;
+        do {
+            PUSH_SPINNER_PC *spinner = &((PUSH_SPINNER_WORLD_PC *)world)->spinners[index];
+            if ((spinner->flags & 1) == 0 || (spinner->flags & 0x26) != 0) {
+                goto next_spinner;
+            }
+            if (alternate != 0) {
+                if ((spinner->state_flags & 8) == 0) {
+                    goto next_spinner;
                 }
-                ++index;
-            } while (((PUSH_SPINNER_LEVEL_PC *)world->current_level)->count > index);
-        } else {
-            i32 index = 0;
-            do {
-                PUSH_SPINNER_PC *spinner = &((PUSH_SPINNER_WORLD_PC *)world)->spinners[index];
-                if ((spinner->flags & 0x27) == 1 && (spinner->state_flags & 8) != 0) {
-                    NUVEC spinner_position = spinner->position;
-                    f32 distance = NuVecDistSqr(position, &spinner_position, NULL);
-                    if (distance < nearest_distance) {
-                        nearest_distance = distance;
-                        nearest = spinner;
-                    }
+            } else if ((spinner->state_flags & 8) != 0) {
+                goto next_spinner;
+            }
+            {
+                NUVEC spinner_position = spinner->position;
+                f32 distance = NuVecDistSqr(position, &spinner_position, NULL);
+                if (distance < nearest_distance) {
+                    nearest_distance = distance;
+                    nearest = spinner;
                 }
-                ++index;
-            } while (((PUSH_SPINNER_LEVEL_PC *)world->current_level)->count > index);
-        }
+            }
+        next_spinner:
+            ++index;
+        } while (((PUSH_SPINNER_LEVEL_PC *)world->current_level)->count > index);
     }
     return nearest;
 }
