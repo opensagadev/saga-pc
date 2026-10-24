@@ -1359,22 +1359,21 @@ DEBRISPARTICLE_PC *GenDebIndexSpheroid(DEBRISKEY_PC *key, DEBRIS_INFO_PC *effect
     DEBRISPARTICLE_PC *particle;
     NUVEC vector;
     i32 angle_y;
-    f32 random;
+    f64 random;
     f32 sine;
     i16 angle_z;
     NUMTX scale;
     i16 trail_index;
     DEBRISPARTICLE_PC *trail_particle;
+    if (key->particle_cursor >= key->particle_count)
+        key->particle_cursor = 0;
     particle_index = key->particle_cursor;
-    if (particle_index < key->particle_count) {
-        ++key->particle_cursor;
-    } else {
-        particle_index = 0;
-        key->particle_cursor = 1;
-    }
 
-    particle = &key->particle_chunks[particle_index / (effect->particle_type == 7 ? 12 : 32)]
-                    ->particles[particle_index % (effect->particle_type == 7 ? 12 : 32)];
+    if (effect->particle_type == 7)
+        particle = &key->particle_chunks[particle_index / 12]->particles[particle_index % 12];
+    else
+        particle = &key->particle_chunks[particle_index / 32]->particles[particle_index % 32];
+    ++key->particle_cursor;
     particle->start_time = time;
     key->emission_epoch = time;
     particle->inverse_lifetime = 64.0f / effect->particle_lifetime;
@@ -1395,7 +1394,9 @@ DEBRISPARTICLE_PC *GenDebIndexSpheroid(DEBRISKEY_PC *key, DEBRIS_INFO_PC *effect
     scale.m22 = effect->emitter_random_extent.z;
     NuVecMtxTransformVU0(&vector, &vector, &scale);
     NuVecMtxTransformVU0(&vector, &vector, &key->emitter_orientation);
-    particle->position = vector;
+    particle->position.x = vector.x;
+    particle->position.y = vector.y;
+    particle->position.z = vector.z;
     random = NuRandFloatSeeded(&debrisseed);
     vector.x = (random + random) * effect->momentum_random_x - effect->momentum_random_x;
     random = NuRandFloatSeeded(&debrisseed);
@@ -1403,23 +1404,28 @@ DEBRISPARTICLE_PC *GenDebIndexSpheroid(DEBRISKEY_PC *key, DEBRIS_INFO_PC *effect
     random = NuRandFloatSeeded(&debrisseed);
     vector.z = (random + random) * effect->rotor_speed_y - effect->rotor_speed_y;
     NuVecMtxTransformVU0(&vector, &vector, &key->emitter_orientation);
-    particle->momentum = vector;
+    particle->momentum.x = vector.x;
+    particle->momentum.y = vector.y;
+    particle->momentum.z = vector.z;
     if (key->momentum_adjuster != NULL) {
         key->momentum_adjuster(key, effect, particle);
     }
-    NuVecAdd(&particle->position, &particle->position, &key->emission_position);
-    NuVecAdd(&particle->momentum, &particle->momentum, &key->momentum);
+    particle->position.x = key->emission_position.x + particle->position.x;
+    particle->position.y = key->emission_position.y + particle->position.y;
+    particle->position.z = key->emission_position.z + particle->position.z;
+    particle->momentum.x = key->momentum.x + particle->momentum.x;
+    particle->momentum.y = key->momentum.y + particle->momentum.y;
+    particle->momentum.z = key->momentum.z + particle->momentum.z;
 
     for (trail = 0; trail < (i8)(effect->trail_count); ++trail) {
+        if (key->particle_cursor >= key->particle_count)
+            key->particle_cursor = 0;
         trail_index = key->particle_cursor;
-        if (trail_index < key->particle_count) {
-            ++key->particle_cursor;
-        } else {
-            trail_index = 0;
-            key->particle_cursor = 1;
-        }
-        trail_particle = &key->particle_chunks[trail_index / (effect->particle_type == 7 ? 12 : 32)]
-                              ->particles[trail_index % (effect->particle_type == 7 ? 12 : 32)];
+        if (effect->particle_type == 7)
+            trail_particle = &key->particle_chunks[trail_index / 12]->particles[trail_index % 12];
+        else
+            trail_particle = &key->particle_chunks[trail_index / 32]->particles[trail_index % 32];
+        ++key->particle_cursor;
         *trail_particle = *particle;
         trail_particle->start_time += (f32)(trail + 1) * effect->trail_time;
     }

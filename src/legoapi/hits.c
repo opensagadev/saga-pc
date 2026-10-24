@@ -578,11 +578,10 @@ ordinary_death:
                     if (NuSpecialFind(WORLD->current_gscn, &special, name, 1))
                         NuSpecialSetVisibility(&special, 0);
                 }
-                NewCutScene(NULL, WORLD->cutscene_sys,
-                            attacker && attacker->id == (u16)id_OBIWANKENOBIEP3 && target->id == (u16)id_ANAKINJEDI
-                                ? (char *)("ep3_darthvader_outro2")
-                                : (char *)("ep3_darthvader_outro1"),
-                            1);
+                if (attacker && attacker->id == (u16)id_OBIWANKENOBIEP3 && target->id == (u16)id_ANAKINJEDI)
+                    NewCutScene(NULL, WORLD->cutscene_sys, (char *)"ep3_darthvader_outro2", 1);
+                else
+                    NewCutScene(NULL, WORLD->cutscene_sys, (char *)"ep3_darthvader_outro1", 1);
             }
             return 0;
         }
