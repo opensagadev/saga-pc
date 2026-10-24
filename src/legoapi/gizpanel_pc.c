@@ -80,12 +80,39 @@ STATIC_ASSERT(sizeof(PANEL_SYSTEM_PC) == 8);
 STATIC_ASSERT(offsetof(PANEL_SYSTEM_PC, panels) == 4);
 
 i32 __cdecl GizPanel_Load(void *world_pointer, void *unused) {
+    typedef union PanelLoadFlagsPc {
+        u8 value;
+        struct {
+            u8 unknown_0 : 5;
+            u8 flag_5 : 1;
+            u8 flag_6 : 1;
+            u8 flag_7 : 1;
+        } bits;
+    } PanelLoadFlagsPc;
+    typedef union PanelLoadDrawFlagsPc {
+        u8 value;
+        struct {
+            u8 flag_0 : 1;
+            u8 flag_1 : 1;
+            u8 flag_2 : 1;
+            u8 unknown_3 : 5;
+        } bits;
+    } PanelLoadDrawFlagsPc;
+    typedef struct PanelLoadStatePc {
+        u8 unknown_00[0x62];
+        PanelLoadFlagsPc flags;
+        PanelLoadDrawFlagsPc draw_flags;
+    } PanelLoadStatePc;
+    STATIC_ASSERT(sizeof(PanelLoadFlagsPc) == 1);
+    STATIC_ASSERT(sizeof(PanelLoadDrawFlagsPc) == 1);
+    STATIC_ASSERT(offsetof(PanelLoadStatePc, flags) == 0x62);
+    STATIC_ASSERT(offsetof(PanelLoadStatePc, draw_flags) == 0x63);
+    STATIC_ASSERT(sizeof(PanelLoadStatePc) == 0x64);
     WORLDINFO *world = (WORLDINFO *)world_pointer;
     PANEL_SYSTEM_PC *system;
     i32 version, index, length;
     u8 value;
     u16 rotation;
-    f32 scale;
     (void)unused;
     if (world == NULL || world->giz_panel_sys == NULL)
         return 0;
@@ -104,12 +131,11 @@ i32 __cdecl GizPanel_Load(void *world_pointer, void *unused) {
         system->panels[index].model_variant = value;
         if (version >= 3) {
             value = (u8)EdFileReadChar();
-            system->panels[index].flags = (u8)((system->panels[index].flags & ~0x20u) | ((value & 1u) << 5));
+            ((PanelLoadStatePc *)&system->panels[index])->flags.bits.flag_5 = value & 1;
         }
         if (version >= 4) {
             EdFileReadNuVec(&system->panels[index].target_offset);
-            scale = EdFileReadFloat();
-            system->panels[index].target_scale = scale;
+            system->panels[index].target_scale = EdFileReadFloat();
         } else {
             system->panels[index].target_offset.y = 0.0f;
             system->panels[index].target_offset.x = 0.0f;
@@ -118,23 +144,23 @@ i32 __cdecl GizPanel_Load(void *world_pointer, void *unused) {
         }
         if (version >= 5) {
             value = (u8)EdFileReadChar();
-            system->panels[index].flags = (u8)((system->panels[index].flags & ~0x40u) | ((value & 1u) << 6));
+            ((PanelLoadStatePc *)&system->panels[index])->flags.bits.flag_6 = value & 1;
         }
         if (version >= 6) {
             value = (u8)EdFileReadChar();
-            system->panels[index].flags = (u8)((system->panels[index].flags & ~0x80u) | ((value & 1u) << 7));
+            ((PanelLoadStatePc *)&system->panels[index])->flags.bits.flag_7 = value & 1;
             value = (u8)EdFileReadChar();
-            system->panels[index].draw_flags = (u8)((system->panels[index].draw_flags & ~1u) | (value & 1u));
+            ((PanelLoadStatePc *)&system->panels[index])->draw_flags.bits.flag_0 = value & 1;
         }
         if (version >= 7) {
             value = (u8)EdFileReadChar();
-            system->panels[index].draw_flags = (u8)((system->panels[index].draw_flags & ~2u) | ((value & 1u) << 1));
+            ((PanelLoadStatePc *)&system->panels[index])->draw_flags.bits.flag_1 = value & 1;
         }
         if (version >= 8) {
             value = (u8)EdFileReadChar();
-            system->panels[index].draw_flags = (u8)((system->panels[index].draw_flags & ~4u) | (value != 0 ? 4 : 0));
+            ((PanelLoadStatePc *)&system->panels[index])->draw_flags.bits.flag_2 = value != 0;
         } else {
-            system->panels[index].draw_flags &= ~4u;
+            ((PanelLoadStatePc *)&system->panels[index])->draw_flags.bits.flag_2 = 0;
         }
     }
     return 1;
@@ -765,10 +791,13 @@ void __cdecl GizPanel_MoveCode(WORLDINFO *world, GAMEOBJECT *object, i32 use) {
             Hint_SetComplete(0x25f);
             LswForceUsedHintFlagsPc |= 4;
         }
-        object->context_timer = AnimDuration((i16)object->id, object->field_7aa, 0.0f, 0.0f, 1);
-        object->field_db0 = 0.0f;
-        if (object->context_timer <= 0.0f)
-            object->context_timer = 2.0f;
+        {
+            f32 duration = AnimDuration((i16)object->id, object->field_7aa, 0.0f, 0.0f, 1);
+            object->context_timer = duration;
+            if (duration <= 0.0f)
+                object->context_timer = 2.0f;
+            object->field_db0 = 0.0f;
+        }
     } else if (use != 0 && (object->flags_1fc & 0x80) != 0 && (object->character_data->model_flags & 0x20) != 0 &&
                object->field_db0 <= 0.0f) {
         GizPanel_PlaySfx("TC14_VLN", &object->collision_position, 1 << object->field_280);
