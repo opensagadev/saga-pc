@@ -278,24 +278,25 @@ void __cdecl EdFileReadNuVec(NUVEC *out) {
 
 i32 EdFileBackup(char *source, char *destination) {
     i64 remaining = NuFileSize(source);
-    if (remaining > 0) {
+    if (remaining <= 0)
+        return 0;
+    {
         NUFILE output = NuFileOpen(destination, NUFILE_WRITE);
         NUFILE input = NuFileOpen(source, NUFILE_READ);
-        if (output > 0 && input > 0) {
+        if (input > 0 && output > 0) {
             while (remaining > 0) {
-                i32 size = MIN(((i32)(remaining)), 0x1000);
-                NuFileRead(input, edfile_buffer, size);
-                NuFileWrite(output, edfile_buffer, size);
+                NuFileRead(input, edfile_buffer, MIN((i32)remaining, 0x1000));
+                NuFileWrite(output, edfile_buffer, MIN((i32)remaining, 0x1000));
                 remaining -= 0x1000;
             }
             NuFileClose(input);
             NuFileClose(output);
             return 1;
         }
-        if (output > 0)
-            NuFileClose(output);
         if (input > 0)
             NuFileClose(input);
+        if (output > 0)
+            NuFileClose(output);
     }
     return 0;
 }
