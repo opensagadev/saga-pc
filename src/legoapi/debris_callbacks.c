@@ -52,12 +52,12 @@ i32 __cdecl SolveQuadratic(f32 a, f32 b, f32 c, f32 *first, f32 *second) {
         return 0;
     }
     if (four_ac == b_squared) {
-        *first = *second = -b / (a + a);
+        *first = *second = -b / (a * 2.0f);
         return 1;
     }
     root = NuFsqrt(b_squared - four_ac);
-    *first = (-b - root) / (a + a);
-    *second = (root - b) / (a + a);
+    *first = (-b - root) / (a * 2.0f);
+    *second = (root - b) / (a * 2.0f);
     return 1;
 }
 
@@ -88,11 +88,10 @@ void __cdecl GenDebMomAdjFromAshRock(DEBRISKEY_PC *key, DEBRIS_INFO_PC *effect, 
 }
 
 void __cdecl GenDebMomAdjFromPosRevTree(DEBRISKEY_PC *key, DEBRIS_INFO_PC *effect, DEBRISPARTICLE_PC *particle) {
-    f32 lifetime;
     particle->momentum.x += particle->position.x * -(f64)0.6f;
     particle->momentum.z += particle->position.z * -(f64)0.6f;
     particle->position.y -=
         NuFsqrt(particle->position.x * particle->position.x + particle->position.z * particle->position.z) * (f64)0.4f;
-    lifetime = effect->particle_lifetime;
-    particle->inverse_lifetime = 64.0 / ((f32)rand() * lifetime / 1503238528.0 + lifetime);
+    particle->inverse_lifetime =
+        64.0 / ((f32)rand() * effect->particle_lifetime / 1503238528.0 + effect->particle_lifetime);
 }

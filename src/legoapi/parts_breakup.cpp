@@ -290,7 +290,8 @@ extern "C" {
                     speed = 1.0f;
                 const i32 angle = static_cast<i32>((1.0 - speed) * 16384.0 + 16384.0);
                 const f32 volume = NuTrigTable[(angle >> 1) & 0x7fff];
-                PlaySfxByIdAndSetVolume(GetSfxId(KillPartsLegoSingleTextPc), &part->position, volume);
+                const i32 sound_id = GetSfxId(KillPartsLegoSingleTextPc);
+                PlaySfxByIdAndSetVolume(sound_id, &part->position, volume);
                 KillPartsBrickImpactWaitPc = 0.1f;
             }
         }
@@ -316,14 +317,17 @@ extern "C" {
             return;
         KILLPARTS_CUSTOMISER_PC *accessories = reinterpret_cast<KILLPARTS_CUSTOMISER_PC *>(customiser);
         const i32 side = static_cast<i16>(object->id) != accessories->character_ids[0];
-        const i16 *pieces = accessories->save[side].pieces;
-        for (i32 category = 0; category < 9; ++category) {
+        KILLPARTS_ACCESSORY_PC *resource = KillPartsAccessoriesPc[side];
+        for (i32 category = 0; category < 9; ++category, ++resource) {
             if (category == 2)
                 continue;
-            if (category == 0 && ((accessories->helmet_pieces[static_cast<u16>(pieces[1])].layer_flags & 1) != 0 ||
-                                  (accessories->head_pieces[static_cast<u16>(pieces[0])].layer_flags & 0x20) != 0))
+            if (category == 0 &&
+                ((accessories->helmet_pieces[static_cast<u16>(accessories->save[side].pieces[1])].layer_flags & 1) !=
+                     0 ||
+                 (accessories->head_pieces[static_cast<u16>(accessories->save[side].pieces[0])].layer_flags & 0x20) !=
+                     0))
                 continue;
-            NUSPECIALHANDLE *special = &KillPartsAccessoriesPc[side][category].special;
+            NUSPECIALHANDLE *special = &resource->special;
             if (!NuSpecialExistsFn(special))
                 continue;
             NUVEC momentum;
@@ -332,26 +336,30 @@ extern "C" {
             if (animation != -1)
                 momentum.y += 1.0f;
             ADDPART_PC params = Default_ADDPART;
+            params.field_14 = 0.1f;
+            params.field_18 = 0.1f;
+            params.gravity = -5.0f;
             params.matrix = &object->locator_matrices[joint];
             params.velocity = &momentum;
-            params.field_14 = params.field_18 = 0.1f;
-            params.gravity = -5.0f;
             params.special = special;
-            params.flags = mode == 0 ? 0x480 : 0x90;
-            params.impact_fn = PartImpact_Brick;
-            params.stop_fn = PartStop_Flickerer;
-            params.draw_fn = PartDraw_Flickerer;
-            params.time_step = FRAMETIME;
             params.lighting_data = Cheats_CheckFlags(1)
                                        ? reinterpret_cast<PART_LIGHTING_DATA_PC *>(&KillPartsZeroLightingPc)
                                        : &reinterpret_cast<KILLPARTS_OBJECT_LIGHT_PC *>(object)->lighting;
+            params.time_step = FRAMETIME;
+            params.flags = mode == 0 ? 0x480 : 0x90;
+            params.stop_fn = PartStop_Flickerer;
+            params.draw_fn = PartDraw_Flickerer;
+            params.impact_fn = PartImpact_Brick;
             AddPart(&params);
         }
     }
 
     void __cdecl KillParts_TIEFIGHTER(ADDPART_PC *params, i32 part_index, i32 variant, GAMEOBJECT *object, i32 mode,
                                       u16 xrot, u16 yrot, NUVEC *velocity) {
-        params->flags = variant == 0 ? 0x400 : 0x10;
+        if (variant != 0)
+            params->flags = 0x10;
+        else
+            params->flags = 0x400;
         if (static_cast<f64>(object->horizontal_velocity_magnitude) /
                 object->character_data->game_character->run_speed <=
             0.25) {
@@ -364,41 +372,47 @@ extern "C" {
             AddPart(params);
             return;
         }
-        if (mode == 0) {
-            params->kill_fn = TiePart_KillExplode;
-            params->flags = 0x111;
-            params->field_a4 = FRAMETIME;
-            params->velocity = &v000;
-            AddPart(params);
-            return;
-        }
-        if (mode == 1) {
-            NUVEC spin_velocity = {object->velocity.x * 0.75f, object->velocity.x * 0.75f, object->velocity.z * 0.75f};
-            if (part_index == 5) {
-                NuVecRotateX(&spin_velocity, &spin_velocity, -static_cast<i32>(xrot));
-                NuVecRotateY(&spin_velocity, &spin_velocity, -static_cast<i32>(yrot));
-                params->move_fn = TiePart_Move;
-            } else {
-                NuVecRotateX(&spin_velocity, &spin_velocity, xrot);
-                NuVecRotateY(&spin_velocity, &spin_velocity, yrot);
-                params->move_fn = TieSpinZPart_Move;
+        switch (mode) {
+            default: {
+                params->field_20 = 0.5f;
+                params->flags = 0x91;
+                params->kill_fn = TiePart_Kill;
+                params->draw_fn = PartDraw_Flickerer;
+                params->impact_fn = TiePart_Impact;
+                params->velocity = velocity;
+                AddPart(params);
+                break;
             }
-            params->flags = 0x111;
-            params->field_a4 = 2.0f;
-            params->velocity = &spin_velocity;
-            params->kill_fn = TiePart_Kill;
-            params->impact_fn = TiePart_Impact;
-            PlaySfx(KillPartsTieSpinsTextPc, &object->collision_position);
-            AddPart(params);
-            return;
+            case 1: {
+                params->flags = 0x111;
+                NUVEC spin_velocity = {object->velocity.x * 0.75f, object->velocity.x * 0.75f,
+                                       object->velocity.z * 0.75f};
+                if (part_index == 5) {
+                    NuVecRotateX(&spin_velocity, &spin_velocity, -static_cast<i32>(yrot));
+                    NuVecRotateY(&spin_velocity, &spin_velocity, -static_cast<i32>(xrot));
+                    params->move_fn = TiePart_Move;
+                } else {
+                    NuVecRotateX(&spin_velocity, &spin_velocity, yrot);
+                    NuVecRotateY(&spin_velocity, &spin_velocity, xrot);
+                    params->move_fn = TieSpinZPart_Move;
+                }
+                params->field_a4 = 2.0f;
+                params->kill_fn = TiePart_Kill;
+                params->impact_fn = TiePart_Impact;
+                params->velocity = &spin_velocity;
+                PlaySfx(KillPartsTieSpinsTextPc, &object->collision_position);
+                AddPart(params);
+                break;
+            }
+            case 0: {
+                params->flags = 0x111;
+                params->kill_fn = TiePart_KillExplode;
+                params->field_a4 = FRAMETIME;
+                params->velocity = &v000;
+                AddPart(params);
+                break;
+            }
         }
-        params->field_20 = 0.5f;
-        params->kill_fn = TiePart_Kill;
-        params->flags = 0x91;
-        params->draw_fn = PartDraw_Flickerer;
-        params->impact_fn = TiePart_Impact;
-        params->velocity = velocity;
-        AddPart(params);
     }
     void __cdecl KillParts_ATAT(ADDPART_PC *params, i32, i32 variant, GAMEOBJECT *) {
         params->flags = variant == 0 ? 0x500 : 0x110;
@@ -413,8 +427,8 @@ extern "C" {
             part->time_remaining = 10.0f;
     }
     void __cdecl KillParts_SpeederBike(ADDPART_PC *params, i32, i32, GAMEOBJECT *object) {
-        NUVEC velocity = {object->velocity.x * 1.5f, 0.0f, object->velocity.z * 1.5f};
         params->flags = 0x400;
+        NUVEC velocity = {object->velocity.x * 1.5f, 0.0f, object->velocity.z * 1.5f};
         params->kill_fn = SpeederPart_Kill;
         params->update_fn = SpeederPart_Update;
         params->draw_fn = SpeederPart_Draw;
@@ -422,31 +436,37 @@ extern "C" {
         PART_PC *part = AddPart(params);
         if (part == NULL)
             return;
-        part->time_remaining = part->initial_time = 1.5f;
+        part->time_remaining = 1.5f;
+        part->initial_time = 1.5f;
         KILLPARTS_PART_PC *bike_part = reinterpret_cast<KILLPARTS_PART_PC *>(part);
         i32 index;
         for (index = 0; index < 4; ++index) {
             if (KillPartsBikesPc[index].active == 0)
                 break;
         }
-        bike_part->speeder_index = index == 4 ? -1.0f : static_cast<f32>(index);
+        if (index == 4)
+            index = -1;
+        bike_part->speeder_index = static_cast<f32>(index);
         if (bike_part->speeder_index == -1.0f || object->movement_spline_position.spline == NULL) {
             KillPart(part, 0);
             return;
         }
         f32 distance = NuVecMag(&part->velocity) * FRAMETIME;
-        KILLPARTS_BIKE_PC *bike = &KillPartsBikesPc[static_cast<i32>(bike_part->speeder_index)];
-        bike->spline_position = object->movement_spline_position;
-        bike->active = 1;
-        bike->rider = object->rider;
-        if (bike->rider != NULL) {
-            bike->rider->velocity = velocity;
-            bike->rider->velocity.y += 1.5f;
-            bike->rider_position = object->position;
+        KillPartsBikesPc[static_cast<i32>(bike_part->speeder_index)].active = 1;
+        KillPartsBikesPc[static_cast<i32>(bike_part->speeder_index)].spline_position = object->movement_spline_position;
+        if (object->rider != NULL) {
+            KillPartsBikesPc[static_cast<i32>(bike_part->speeder_index)].rider = object->rider;
+            KillPartsBikesPc[static_cast<i32>(bike_part->speeder_index)].rider->velocity = velocity;
+            KillPartsBikesPc[static_cast<i32>(bike_part->speeder_index)].rider->velocity.y += 1.5f;
+            KillPartsBikesPc[static_cast<i32>(bike_part->speeder_index)].rider_position = object->position;
+        } else {
+            KillPartsBikesPc[static_cast<i32>(bike_part->speeder_index)].rider = NULL;
         }
         NUVEC position;
         u16 yaw, pitch;
-        PointAlongSpline(bike->spline_position.spline, bike->spline_position.along, &position, &yaw, &pitch, 1);
+        PointAlongSpline(KillPartsBikesPc[static_cast<i32>(bike_part->speeder_index)].spline_position.spline,
+                         KillPartsBikesPc[static_cast<i32>(bike_part->speeder_index)].spline_position.along, &position,
+                         &yaw, &pitch, 1);
         yaw -= 0x8000;
         if (distance < 0.0f) {
             yaw += 0x8000;
@@ -475,7 +495,9 @@ extern "C" {
         position.y = part->position.y + part->velocity.y * time;
         position.z = part->position.z + part->velocity.z * time;
         NuMtxRotateZ(&part->transform, part->rotation_z);
-        part->position = position;
+        part->position.x = position.x;
+        part->position.y = position.y;
+        part->position.z = position.z;
         AddVariableShotDebrisEffectTimed1(WORLD->game_debris_sys->entries[100].effect, &position, 10, FRAMETIME, 0, 0,
                                           NULL);
     }
@@ -507,37 +529,43 @@ extern "C" {
                                               static_cast<i32>(part->scale_time * 20.0f), FRAMETIME, 0, 0, NULL);
         } else if (part->scale_time < 2.0f) {
             if (choice < 10.0f) {
-                i16 y_rotation = qrand();
-                i16 z_rotation = qrand();
                 AddVariableShotDebrisEffectTimed1(WORLD->game_debris_sys->entries[120].effect, &part->position,
-                                                  static_cast<i32>(part->scale_time * 3.0f), FRAMETIME, z_rotation,
-                                                  y_rotation, NULL);
+                                                  static_cast<i32>(part->scale_time * 3.0f), FRAMETIME, qrand(),
+                                                  qrand(), NULL);
             } else if (choice > 90.0f) {
-                i16 y_rotation = qrand();
-                i16 z_rotation = qrand();
                 AddVariableShotDebrisEffectTimed1(WORLD->game_debris_sys->entries[120].effect, &part->position,
-                                                  static_cast<i32>(part->scale_time * 15.0f), FRAMETIME, z_rotation,
-                                                  y_rotation, NULL);
+                                                  static_cast<i32>(part->scale_time * 15.0f), FRAMETIME, qrand(),
+                                                  qrand(), NULL);
             }
         } else if (part->scale_time < 5.0f) {
-            if (choice < 10.0f || choice > 70.0f) {
-                i32 count = choice < 10.0f ? 15 : 30;
-                i16 y_rotation = qrand();
-                i16 z_rotation = qrand();
-                AddVariableShotDebrisEffectTimed1(WORLD->game_debris_sys->entries[120].effect, &part->position, count,
-                                                  FRAMETIME, z_rotation, y_rotation, NULL);
+            if (choice < 10.0f) {
+                AddVariableShotDebrisEffectTimed1(WORLD->game_debris_sys->entries[120].effect, &part->position, 15,
+                                                  FRAMETIME, qrand(), qrand(), NULL);
+            } else if (choice > 70.0f) {
+                AddVariableShotDebrisEffectTimed1(WORLD->game_debris_sys->entries[120].effect, &part->position, 30,
+                                                  FRAMETIME, qrand(), qrand(), NULL);
             }
-            i32 count = choice < 30.0f ? 1 : choice < 70.0f ? 3 : 20;
-            i16 y_rotation = qrand();
-            i16 z_rotation = qrand();
-            AddVariableShotDebrisEffectTimed1(WORLD->game_debris_sys->entries[119].effect, &part->position, count,
-                                              FRAMETIME, z_rotation, y_rotation, NULL);
+            if (choice < 30.0f) {
+                AddVariableShotDebrisEffectTimed1(WORLD->game_debris_sys->entries[119].effect, &part->position, 1,
+                                                  FRAMETIME, qrand(), qrand(), NULL);
+            } else if (choice < 70.0f) {
+                AddVariableShotDebrisEffectTimed1(WORLD->game_debris_sys->entries[119].effect, &part->position, 3,
+                                                  FRAMETIME, qrand(), qrand(), NULL);
+            } else {
+                AddVariableShotDebrisEffectTimed1(WORLD->game_debris_sys->entries[119].effect, &part->position, 20,
+                                                  FRAMETIME, qrand(), qrand(), NULL);
+            }
         } else if (part->scale_time < 10.0f) {
-            i32 count = choice < 30.0f ? 1 : choice < 70.0f ? 3 : 20;
-            i16 y_rotation = qrand();
-            i16 z_rotation = qrand();
-            AddVariableShotDebrisEffectTimed1(WORLD->game_debris_sys->entries[119].effect, &part->position, count,
-                                              FRAMETIME, z_rotation, y_rotation, NULL);
+            if (choice < 30.0f) {
+                AddVariableShotDebrisEffectTimed1(WORLD->game_debris_sys->entries[119].effect, &part->position, 1,
+                                                  FRAMETIME, qrand(), qrand(), NULL);
+            } else if (choice < 70.0f) {
+                AddVariableShotDebrisEffectTimed1(WORLD->game_debris_sys->entries[119].effect, &part->position, 3,
+                                                  FRAMETIME, qrand(), qrand(), NULL);
+            } else {
+                AddVariableShotDebrisEffectTimed1(WORLD->game_debris_sys->entries[119].effect, &part->position, 20,
+                                                  FRAMETIME, qrand(), qrand(), NULL);
+            }
         }
     }
 
@@ -550,8 +578,9 @@ extern "C" {
         if (reinterpret_cast<KILLPARTS_PART_PC *>(part)->speeder_index != -1.0f) {
             GAMEOBJECT *rider =
                 KillPartsBikesPc[static_cast<i32>(reinterpret_cast<KILLPARTS_PART_PC *>(part)->speeder_index)].rider;
-            if (rider != NULL && (rider->flags_1fc_word & 0x1001) == 0x1001) {
-                rider->flags_ef0 &= ~0x400000;
+            if (rider != NULL && (rider->flags_1fc_word & 1) != 0 && (rider->flags_1fc_word & 0x1000) != 0) {
+                KillPartsBikesPc[static_cast<i32>(reinterpret_cast<KILLPARTS_PART_PC *>(part)->speeder_index)]
+                    .rider->flags_ef0 &= ~0x400000;
                 KillParts(KillPartsBikesPc[static_cast<i32>(reinterpret_cast<KILLPARTS_PART_PC *>(part)->speeder_index)]
                               .rider,
                           -1, -1, 1, 0.0f, 0, NULL);
