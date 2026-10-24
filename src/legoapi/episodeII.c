@@ -481,14 +481,13 @@ void __cdecl JediB_Reset(WORLDINFO *world) {
 static __declspec(noinline) void JediBStartPhasePc(WORLDINFO *world) {
     JEDIB_PHASE_PC *phase_lists[3] = {jedi_b_phase1, jedi_b_phase2, jedi_b_phase3};
     JEDIB_PHASE_PC *entry;
-    JEDIB_CREATURE_PC *record;
     AILOCATOR_PC *locator;
     GAMEOBJECT *spawned;
     char name[16];
     i32 i, chosen, index, id;
     if (netclient != 0)
         return;
-    if (jedi_b.phase > 2 && jedi_b.timer < 3.0f) {
+    if (jedi_b.phase + 1 >= 4 && jedi_b.timer < 3.0f) {
         jedi_b.timer += FRAMETIME;
         return;
     }
@@ -526,28 +525,33 @@ static __declspec(noinline) void JediBStartPhasePc(WORLDINFO *world) {
                 jedi_b.baddies[i].flags &= ~0x18u;
             for (chosen = 0; chosen < 6; chosen++) {
                 index = NuRand(NULL) % jedi_b.baddie_count;
-                if (jedi_b.phase == 4)
-                    id = id_BATTLEDROIDSECURITY;
-                else if (jedi_b.phase == 5)
-                    id = chosen < 3 ? id_BATTLEDROIDSECURITY : id_SUPERBATTLEDROID;
-                else
-                    id = chosen < 3 ? id_DROIDEKA : id_SUPERBATTLEDROID;
+                switch (jedi_b.phase) {
+                    case 4:
+                        id = id_BATTLEDROIDSECURITY;
+                        break;
+                    case 5:
+                        id = chosen < 3 ? id_BATTLEDROIDSECURITY : id_SUPERBATTLEDROID;
+                        break;
+                    default:
+                        id = chosen < 3 ? id_DROIDEKA : id_SUPERBATTLEDROID;
+                        break;
+                }
                 for (;;) {
-                    record = &jedi_b.baddies[index];
-                    if ((record->flags & 8) == 0 && (record->flags & 2) != 0 && record->id != id)
+                    if ((jedi_b.baddies[index].flags & 8) == 0 && (jedi_b.baddies[index].flags & 2) != 0 &&
+                        jedi_b.baddies[index].id != id)
                         break;
                     index++;
                     if (index >= jedi_b.baddie_count)
                         index = 0;
                 }
-                if (record->object != NULL) {
-                    RemoveGameObject(record->object, 1);
-                    record->flags &= ~1u;
-                    record->object = NULL;
+                if (jedi_b.baddies[index].object != NULL) {
+                    RemoveGameObject(jedi_b.baddies[index].object, 1);
+                    jedi_b.baddies[index].flags &= ~1u;
+                    jedi_b.baddies[index].object = NULL;
                 }
-                record->id = id;
+                jedi_b.baddies[index].id = id;
                 jedi_b.wave_ids[chosen] = (i16)id;
-                record->flags |= 8;
+                jedi_b.baddies[index].flags |= 8;
             }
             jedi_b.wave_timer = 0.0f;
             break;
