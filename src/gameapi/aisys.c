@@ -12845,3 +12845,175 @@ f32 __cdecl Condition_OpponentToLocatorYPc(AISYS_PC *system, AISCRIPTPROCESS_PC 
     }
     return FLT_MAX;
 }
+
+typedef struct AI_EDITOR_CREATURE_PATH_SAVE_PC {
+    u8 unknown_00[0x38];
+    i8 draw_index;
+} AI_EDITOR_CREATURE_PATH_SAVE_PC;
+STATIC_ASSERT(offsetof(AI_EDITOR_CREATURE_PATH_SAVE_PC, draw_index) == 0x38);
+
+typedef struct AI_EDITOR_CREATURE_SAVE_PC {
+    NULISTLNK link;
+    char name[16];
+    char script_name[16];
+    NUVEC position;
+    u16 angle;
+    u16 unknown_36;
+    EDAIPATHCHECK_s check;
+    u32 valid_positions;
+    i16 character_type;
+    u8 set;
+    u8 group_count;
+    u8 across_count;
+    u8 unknown_5d[3];
+    f32 x_spacing;
+    f32 z_spacing;
+    u32 flags;
+    void *activation_area;
+    f32 script_params[4];
+    void *trigger_area;
+    void *locator;
+    void *respawn_locator;
+    u8 difficulty;
+    u8 min_respawns;
+    u8 max_respawns;
+    u8 activation;
+    f32 min_respawn_time;
+    f32 max_respawn_time;
+    f32 stagger_start;
+    f32 view_distance;
+    f32 hear_distance;
+    f32 max_view_height;
+    f32 min_view_height;
+} AI_EDITOR_CREATURE_SAVE_PC;
+STATIC_ASSERT(sizeof(AI_EDITOR_CREATURE_SAVE_PC) == 0xac);
+STATIC_ASSERT(offsetof(AI_EDITOR_CREATURE_SAVE_PC, check.path) == 0x3c);
+STATIC_ASSERT(offsetof(AI_EDITOR_CREATURE_SAVE_PC, character_type) == 0x58);
+STATIC_ASSERT(offsetof(AI_EDITOR_CREATURE_SAVE_PC, script_params) == 0x70);
+STATIC_ASSERT(offsetof(AI_EDITOR_CREATURE_SAVE_PC, view_distance) == 0x9c);
+STATIC_ASSERT(offsetof(AI_EDITOR_CREATURE_SAVE_PC, min_view_height) == 0xa8);
+extern char *(__cdecl *GlobalCharacterNameFn)(i32);
+
+void __cdecl creatureEditorSaveData(AIPATHSYS_PC *system) {
+    AI_EDITOR_CREATURE_SAVE_PC *creature;
+    i32 count = 0;
+    if (GlobalCharacterNameFn == NULL) {
+        EdFileWriteInt(0);
+        return;
+    }
+    for (creature = (AI_EDITOR_CREATURE_SAVE_PC *)NuLinkedListGetHead((NULISTHDR *)((u8 *)aieditor + 0x371a4));
+         creature != NULL; creature = (AI_EDITOR_CREATURE_SAVE_PC *)NuLinkedListGetNext(
+                               (NULISTHDR *)((u8 *)aieditor + 0x371a4), &creature->link)) {
+        if (creature->check.path != NULL && GlobalCharacterNameFn(creature->character_type) != NULL)
+            count++;
+    }
+    EdFileWriteInt(count);
+    for (creature = (AI_EDITOR_CREATURE_SAVE_PC *)NuLinkedListGetHead((NULISTHDR *)((u8 *)aieditor + 0x371a4));
+         creature != NULL; creature = (AI_EDITOR_CREATURE_SAVE_PC *)NuLinkedListGetNext(
+                               (NULISTHDR *)((u8 *)aieditor + 0x371a4), &creature->link)) {
+        char *character_name = GlobalCharacterNameFn(creature->character_type);
+        AIPATH_PC *path;
+        i32 index, connection_index = 0, direction = 0;
+        f64 saved;
+        if (creature->check.path == NULL || character_name == NULL)
+            continue;
+        EdFileWrite(creature->name, 16);
+        EdFileWrite(creature->script_name, 16);
+        EdFileWrite(character_name, aidata_version > 13 ? 32 : 16);
+        EdFileWriteFloat(creature->position.x);
+        EdFileWriteFloat(creature->position.y);
+        EdFileWriteFloat(creature->position.z);
+        EdFileWriteShort(creature->angle);
+        if (aidata_version > 15)
+            EdFileWriteChar(creature->set);
+        EdFileWriteChar(creature->group_count);
+        EdFileWriteChar(creature->across_count);
+        EdFileWriteInt(creature->valid_positions);
+        EdFileWriteFloat(creature->x_spacing);
+        EdFileWriteFloat(creature->z_spacing);
+        EdFileWriteInt(creature->flags);
+        EdFileWriteChar((u8)((AI_EDITOR_CREATURE_PATH_SAVE_PC *)creature->check.path)->draw_index);
+        path = system->paths[((AI_EDITOR_CREATURE_PATH_SAVE_PC *)creature->check.path)->draw_index];
+        for (index = 0; index < path->connection_count; index++) {
+            AIPATHCNX_PC *connection = &path->connections[index];
+            i32 first_index = creature->check.first->index;
+            if (connection->node_indices[0] == first_index &&
+                (u16)connection->node_indices[1] == (u16)creature->check.second->index) {
+                i32 angle = creature->check.angle;
+                i32 absolute = angle < 0 ? (i32)(0u - (u32)angle) : angle;
+                connection_index = index;
+                direction = absolute >= 0x4000;
+                break;
+            }
+            if (connection->node_indices[0] == creature->check.second->index &&
+                connection->node_indices[1] == first_index) {
+                i32 angle = creature->check.angle;
+                i32 absolute = angle < 0 ? (i32)(0u - (u32)angle) : angle;
+                connection_index = index;
+                direction = absolute < 0x4000;
+                break;
+            }
+        }
+        EdFileWriteChar(direction);
+        EdFileWriteShort(connection_index);
+        EdFileWriteFloat(creature->script_params[0]);
+        EdFileWriteFloat(creature->script_params[1]);
+        EdFileWriteFloat(creature->script_params[2]);
+        EdFileWriteFloat(creature->script_params[3]);
+        if (creature->trigger_area != NULL) {
+            EdFileWriteInt(1);
+            EdFileWrite((u8 *)creature->trigger_area + 8, 16);
+        } else {
+            EdFileWriteInt(0);
+        }
+        if (creature->locator != NULL) {
+            EdFileWriteInt(1);
+            EdFileWrite((u8 *)creature->locator + 8, 16);
+        } else {
+            EdFileWriteInt(0);
+        }
+        if (aidata_version > 16) {
+            if (creature->respawn_locator != NULL) {
+                EdFileWriteInt(1);
+                EdFileWrite((u8 *)creature->respawn_locator + 8, 16);
+            } else {
+                EdFileWriteInt(0);
+            }
+        }
+        if (aidata_version > 7) {
+            EdFileWriteChar(creature->difficulty);
+            EdFileWriteChar(creature->min_respawns);
+            EdFileWriteChar(creature->max_respawns);
+            EdFileWriteChar(creature->activation);
+            EdFileWriteFloat(creature->min_respawn_time);
+            EdFileWriteFloat(creature->max_respawn_time);
+            if (aidata_version > 9)
+                EdFileWriteFloat(creature->stagger_start);
+            if (creature->activation == 1)
+                EdFileWrite((u8 *)creature->activation_area + 8, 16);
+        }
+        if (aidata_version > 10) {
+            if (GetViewRangeFn != NULL &&
+                (saved = creature->view_distance, GetViewRangeFn(creature->character_type) == saved))
+                EdFileWriteFloat(0.0f);
+            else
+                EdFileWriteFloat(creature->view_distance);
+            if (GetHearDistanceFn != NULL &&
+                (saved = creature->hear_distance, GetHearDistanceFn(creature->character_type) == saved))
+                EdFileWriteFloat(0.0f);
+            else
+                EdFileWriteFloat(creature->hear_distance);
+            if (GetMaxViewHeightFn != NULL &&
+                (saved = creature->max_view_height, GetMaxViewHeightFn(creature->character_type) == saved))
+                EdFileWriteFloat(0.0f);
+            else
+                EdFileWriteFloat(creature->max_view_height);
+            if (GetMinViewHeightFn != NULL &&
+                (saved = creature->min_view_height, GetMinViewHeightFn(creature->character_type) == saved))
+                EdFileWriteFloat(0.0f);
+            else
+                EdFileWriteFloat(creature->min_view_height);
+            EdFileWriteInt(0);
+        }
+    }
+}
