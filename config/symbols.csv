@@ -16049,6 +16049,7 @@ address,symbol,size,ctype
 0x76adc0,__real@3e2aaaab,4,const f32
 0x76ae48,__real@c024000000000000,8,const f64
 0x76ae78,__real@3ff0ccccc0000000,8,const f64
+0x0076ae88,__real@407c000000000000,8,const f64
 0x76ae90,__real@43600000,4,f32
 0x76aea0,__real@c030000000000000,8,const f64
 0x76af08,__real@43700000,4,const f32

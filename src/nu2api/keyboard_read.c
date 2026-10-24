@@ -131,18 +131,23 @@ void cbSel(eduimenu_s *unused0, eduiitem_s *item) {
 void cbGradChange(void) {
 }
 
+f32 __cdecl NuMouseReadX(void);
+f32 __cdecl NuMouseReadY(void);
+
 i32 cbInteractMenuTitle(edui_interact_s *interact) {
     static f32 offsetx = 0;
     static f32 offsety = 0;
     i32 result = (edui_cursor_buttons & EDUI_CURSOR_PRIMARY) != 0;
     eduimenu_s *menu = interact->menu;
     if (!(menu->flags & 1)) {
+        f32 mouse_x = (f32)(NuMouseReadX() * 640.0);
+        f32 mouse_y = (f32)(NuMouseReadY() * 448.0);
         if (!eduiInteractLocked) {
-            offsetx = 0.0f - menu->x;
-            offsety = 0.0f - menu->y;
+            offsetx = mouse_x - menu->x;
+            offsety = mouse_y - menu->y;
         }
-        menu->x = ((i32)(0.0f - offsetx));
-        menu->y = ((i32)(0.0f - offsety));
+        menu->x = (i32)(mouse_x - offsetx);
+        menu->y = (i32)(mouse_y - offsety);
     }
     return result;
 }
