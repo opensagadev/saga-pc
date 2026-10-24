@@ -91,35 +91,42 @@ i32 __cdecl EdFileOpen(char *filepath, i32 mode) {
     return 0;
 }
 
-__declspec(noinline) void __cdecl EdFileFlushBuffer(void) {
-    if (edfile_handle != -1 && edfile_buffer_pointer != 0 && edfile_media == 1) {
-        NuFileWrite(edfile_handle, edfile_buffer, edfile_buffer_pointer);
-        edfile_buffer_pointer = 0;
+void __cdecl EdFileFlushBuffer(void) {
+    if (edfile_handle != -1 && edfile_buffer_pointer != 0) {
+        switch (edfile_media) {
+            case 0:
+                break;
+            case 1:
+                NuFileWrite(edfile_handle, edfile_buffer, edfile_buffer_pointer);
+                edfile_buffer_pointer = 0;
+                break;
+        }
     }
 }
 
 i32 __cdecl EdFileClose(void) {
     edfile_pakfile = NULL;
-    if (edfile_handle == -1) {
+    if (edfile_handle == -1)
         return 0;
-    }
-    if (edfile_write_flag != 0) {
+    if (edfile_write_flag != 0)
         EdFileFlushBuffer();
+    switch (edfile_media) {
+        case 0:
+            return 0;
+        case 1:
+            NuFileClose(edfile_handle);
+            edfile_handle = -1;
+            edfile_media = 0;
+            return 1;
     }
-    if (edfile_media != 1) {
-        return 0;
-    }
-    NuFileClose(edfile_handle);
-    edfile_handle = -1;
-    edfile_media = 0;
-    return 1;
+    return 0;
 }
 
 void EdFileWrite(void *data, i32 len) {
     i32 to_write;
 
     while (len > 0) {
-        to_write = MIN(0x1000 - edfile_buffer_pointer, len);
+        to_write = MIN(len, 0x1000 - edfile_buffer_pointer);
 
         memcpy(edfile_buffer + edfile_buffer_pointer, data, to_write);
 
