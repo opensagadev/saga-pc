@@ -1554,3 +1554,51 @@ void __cdecl NuLightSpeedBlur(i32 reuse_camera, f32 scale) {
     parameters->frame_time = frame_time;
     parameters->scale = scale;
 }
+
+void __cdecl NuRndrLineStrip2di(i32 *positions, f32 *uvs, i32 count, i32 colour, NUMTL *material) {
+    i32 i;
+    ++NuPrimCSPos;
+    NuPrimSetCoordinateSystem(0);
+    NuPrim2DBegin(14, 7, material);
+    if (count > 0) {
+        i = 0;
+        do {
+            NuRndrPrimSetColourPrivate(colour);
+            if (uvs != NULL) {
+                f32 v = uvs[i * 2 + 1];
+                LOCATOR_PRIM_VERTEX_PC *vertex = (LOCATOR_PRIM_VERTEX_PC *)NuPrimStreamBufferPointer->void_ptr;
+                vertex->u = uvs[i * 2];
+                vertex->v = v;
+            }
+            NuPrim2DAddXYZ((f32)((f64)positions[i * 2] * 0.0625), (f32)((f64)positions[i * 2 + 1] * 0.0625), 0.0f);
+            ++i;
+        } while (--count != 0);
+    }
+    NuPrim2DEnd();
+    --NuPrimCSPos;
+    NuPrimSetCoordinateSystem(NuPrimCoordSystemStack[NuPrimCSPos]);
+}
+
+void __cdecl NuRndrTriStrip2di(i32 *positions, f32 *uvs, i32 count, i32 colour, NUMTL *material) {
+    i32 i;
+    ++NuPrimCSPos;
+    NuPrimSetCoordinateSystem(0);
+    NuPrim2DBegin(13, 7, material);
+    if (count > 0) {
+        i = 0;
+        do {
+            NuRndrPrimSetColourPrivate(colour);
+            if (uvs != NULL) {
+                f32 v = uvs[i * 2 + 1];
+                LOCATOR_PRIM_VERTEX_PC *vertex = (LOCATOR_PRIM_VERTEX_PC *)NuPrimStreamBufferPointer->void_ptr;
+                vertex->u = uvs[i * 2];
+                vertex->v = v;
+            }
+            NuPrim2DAddXYZ((f32)((f64)positions[i * 2] * 0.0625), (f32)((f64)positions[i * 2 + 1] * 0.0625), 0.0f);
+            ++i;
+        } while (--count != 0);
+    }
+    NuPrim2DEnd();
+    --NuPrimCSPos;
+    NuPrimSetCoordinateSystem(NuPrimCoordSystemStack[NuPrimCSPos]);
+}

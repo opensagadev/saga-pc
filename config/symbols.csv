@@ -5938,6 +5938,8 @@ address,symbol,size,ctype
 0x5dbd70,_NuRndrGradRect2di,340,"void __cdecl(i32,i32,i32,i32,u32 *,NUMTL *)"
 0x5dbed0,_NuRndrLine3d,222,"i32 __cdecl(NURND_VERTEX3D_PC *,NUMTL *,NUMTX *)"
 0x005dc050,_NuRndrLine3dDbg,144,"void __cdecl(f32,f32,f32,f32,f32,f32,i32)"
+0x005dc200,_NuRndrLineStrip2di,225,"void __cdecl(i32 *, f32 *, i32, i32, NUMTL *)"
+0x005dc2f0,_NuRndrTriStrip2di,225,"void __cdecl(i32 *, f32 *, i32, i32, NUMTL *)"
 0x5dc3f0,_NuRndrGradRectUV2di,366,"void __cdecl(i32,i32,i32,i32,f32,f32,f32,f32,u32 *,void *)"
 0x5dd230,_NuRndrAxisArrowsMtx,903,"void __cdecl(NUMTX *, f32, NUMTL *)"
 0x5dda30,_NuRndrStrip3d,160,"i32 __cdecl(NURND_VERTEX3D_PC *,NUMTL *,NUMTX *,i32)"
