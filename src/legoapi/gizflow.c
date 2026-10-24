@@ -194,19 +194,35 @@ i32 __cdecl ProcessConditionFlowBox(GIZFLOW_PC *flow, FLOWBOX_PC *box, u8 frame)
 }
 
 i32 __cdecl CheckOutputConditionFlowBox(GIZFLOW_PC *system, FLOWBOX_PC *box, u8 output) {
-    u16 flags = FLOWBOX_FLAGS(box);
-    u16 saved;
-    i32 result;
-
-    if ((flags & 0x200) == 0)
-        return (flags & 2) != 0;
-    saved = flags & 0x400;
-    FLOWBOX_SET_FLAGS(box, flags | 0x400);
-    result = flowbox_callbacks[box->type].process(system, box, 0) != 0;
-    flags = FLOWBOX_FLAGS(box);
-    FLOWBOX_SET_FLAGS(box, (u16)((flags & ~0x400) | saved));
+    typedef union FlowCheckFlagsPc {
+        u16 value;
+        struct {
+            u16 unknown_00 : 10;
+            u16 output_state : 1;
+            u16 unknown_0b : 5;
+        } bits;
+    } FlowCheckFlagsPc;
+    typedef struct FlowCheckBoxPc {
+        u8 unknown_00[0xa];
+        FlowCheckFlagsPc flags;
+    } FlowCheckBoxPc;
+    STATIC_ASSERT(sizeof(FlowCheckFlagsPc) == 2);
+    STATIC_ASSERT(offsetof(FlowCheckBoxPc, flags) == 0xa);
+    STATIC_ASSERT(sizeof(FlowCheckBoxPc) == 0xc);
+    FlowCheckBoxPc *state = (FlowCheckBoxPc *)box;
+    u32 flags = state->flags.value;
     (void)output;
-    return result;
+    if ((flags & 0x200) != 0) {
+        u32 saved = state->flags.bits.output_state;
+        i32 result;
+        state->flags.value = flags | 0x400;
+        result = flowbox_callbacks[box->type].process(system, box, 0);
+        state->flags.bits.output_state = saved;
+        if (result != 0)
+            return 1;
+        return 0;
+    }
+    return (flags >> 1) & 1;
 }
 
 void __cdecl CheckIfParentsFinished(GIZFLOW_PC *system, FLOWBOX_PC *box) {
@@ -423,17 +439,19 @@ void __cdecl ResetGizFlowPointers(GIZFLOW_PC *system) {
             continue;
         data = (FLOWBOXGIZMODATA_PC *)box->data;
         for (j = 0; j < data->gizmo_count; ++j) {
-            FLOWBOXGIZMOREF_PC *ref = data->gizmos[j];
-            if (ref->gizmo != NULL) {
-                GIZMO_PC *gizmo = (GIZMO_PC *)ref->gizmo;
-                ref->gizmo = GizmoFindByName(system->gizmo_sys, gizmo->type_id, ref->name);
+            if (data->gizmos[j]->gizmo != NULL) {
+                GIZMO_PC *gizmo = (GIZMO_PC *)data->gizmos[j]->gizmo;
+                void *found = GizmoFindByName(system->gizmo_sys, gizmo->type_id, data->gizmos[j]->name);
+                data->gizmos[j]->gizmo = found;
             } else {
-                ref->gizmo = GizmoFindByName(system->gizmo_sys, -1, ref->name);
-                if (ref->gizmo != NULL && (box->state_flags_low & 1) == 0) {
+                void *found = GizmoFindByName(system->gizmo_sys, -1, data->gizmos[j]->name);
+                data->gizmos[j]->gizmo = found;
+                if (data->gizmos[j]->gizmo != NULL && (box->state_flags_low & 1) == 0) {
                     if (flowbox_callbacks[box->type].reset != NULL)
                         flowbox_callbacks[box->type].reset(system, box);
-                    if ((box->state_flags_low & 5) == 4)
-                        GizmoSetVisibility(system->gizmo_sys, ref->gizmo, 0, 1);
+                    if ((((GIZFLOW_BOX_LOADER_PREFIX_PC *)box)->state_flags & 1) == 0 &&
+                        (((GIZFLOW_BOX_LOADER_PREFIX_PC *)box)->state_flags & 4) != 0 && box->type == 0)
+                        GizmoSetVisibility(system->gizmo_sys, data->gizmos[j]->gizmo, 0, 1);
                 }
             }
         }
