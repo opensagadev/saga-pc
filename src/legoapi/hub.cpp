@@ -4033,11 +4033,6 @@ extern "C" void __cdecl Hub_UpdateFreePlaySelect(void) {
             }
             break;
         }
-        case 2:
-            freeplaytime += FRAMETIME;
-            if (freeplayduration <= freeplaytime)
-                WipeBackToHub();
-            break;
         case 3:
             freeplaytime += FRAMETIME;
             if (freeplayduration <= freeplaytime) {
@@ -4065,6 +4060,11 @@ extern "C" void __cdecl Hub_UpdateFreePlaySelect(void) {
                     Arcade_Points[0] = Arcade_Points[1] = 0;
                 }
             }
+            break;
+        case 2:
+            freeplaytime += FRAMETIME;
+            if (freeplayduration <= freeplaytime)
+                WipeBackToHub();
             break;
     }
     for (i32 player = 0; player < 2; ++player) {
