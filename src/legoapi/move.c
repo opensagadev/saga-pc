@@ -6450,7 +6450,7 @@ void __cdecl Move_VEHICLE(GAMEOBJECT *object) {
                     goto gravity_done;
                 }
             }
-            hover = object->character_context != 0x17 ? character->field_028 : 0.0f;
+            hover = object->character_context != 0x17 ? object->character_data->game_character->field_028 : 0.0f;
             ApplyGravity(object, NULL, hover, 8.0f, NULL);
         }
     }
