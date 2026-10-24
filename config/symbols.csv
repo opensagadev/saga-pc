@@ -5476,7 +5476,6 @@ address,symbol,size,ctype
 0x005b96f0,_NuPtInPolyYZ,252,"i32 __cdecl (NUVEC *pnt, NUVEC *t0, NUVEC *t1, NUVEC *t2)"
 0x005b97f0,_NuPtInPolyZY,252,"i32 __cdecl (NUVEC *pnt, NUVEC *t0, NUVEC *t1, NUVEC *t2)"
 0x005b98f0,_NuPlnPlnIntersect,763,"i32 __cdecl (NUPLANE *first, NUPLANE *second, NUVEC *point, NUVEC *direction)"
-0x005b9bf0,_NuPlnDist2,138,"f32 __cdecl (NUPLANE *plane, NUVEC *a, NUVEC *b)"
 0x5b9bf0,_NuPointRelToBoundingBox,138,"i32 __cdecl (NUVEC *, NUVEC *, NUVEC *)"
 0x5b9c80,_NuClipXPlane,73,"void __cdecl (NUVEC *, NUVEC *, NUVEC *, f32 *)"
 0x5b9cd0,_NuClipYPlane,75,"void __cdecl (NUVEC *, NUVEC *, NUVEC *, f32 *)"

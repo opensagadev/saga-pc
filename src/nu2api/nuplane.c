@@ -141,16 +141,6 @@ i32 NuPtInPolyZY(NUVEC *pnt, NUVEC *t0, NUVEC *t1, NUVEC *t2) {
     return 0;
 }
 
-f32 NuPlnDist2(NUPLANE *plane, NUVEC *a, NUVEC *b) {
-    f32 da = NuVecDot(a, &plane->normal) + plane->d;
-    f32 db = NuVecDot(b, &plane->normal) + plane->d;
-    if (da < 0.0f && db < 0.0f)
-        return da > db ? da : db;
-    if (da > 0.0f && db > 0.0f)
-        return da < db ? da : db;
-    return 0.0f;
-}
-
 i32 NuPlnPlnIntersect(NUPLANE *first, NUPLANE *second, NUVEC *point, NUVEC *direction) {
     f32 cross_y = first->c * second->a - first->a * second->c;
     f32 cross_z = first->a * second->b - first->b * second->a;
