@@ -3438,6 +3438,200 @@ static void HubUpdateBonusModePc(void) {
         BlipD[1] -= FRAMETIME;
     i32 player_left[2] = {0, 0}, player_right[2] = {0, 0};
     switch (bonusmodemode) {
+        case 0: {
+            i32 confirm = 0, cancel = 0, up = 0, down = 0, left = 0, right = 0;
+            for (i32 player = 0; player < 2; ++player) {
+                if (confirm || cancel)
+                    break;
+                if (MissionMenuPacketPc.active_player[player] != 0) {
+                    const u32 pressed = GamePadStorage[player].menu_buttons_pressed;
+                    const u32 directions = GamePadStorage[player].menu_directions;
+                    if ((pressed & GAMEPAD_MENUSELECT) != 0)
+                        confirm = 1;
+                    else if ((pressed & GAMEPAD_MENUCANCEL) != 0)
+                        cancel = 1;
+                    else if (((pressed | directions) & GAMEPAD_DUP) != 0)
+                        up = player_up[player] = 1;
+                    else if (((pressed | directions) & GAMEPAD_DDOWN) != 0)
+                        down = player_down[player] = 1;
+                    else if (((pressed | directions) & GAMEPAD_DLEFT) != 0)
+                        left = player_left[player] = 1;
+                    else if (((pressed | directions) & GAMEPAD_DRIGHT) != 0)
+                        right = player_right[player] = 1;
+                }
+            }
+            if (bonusmodearcade != 0) {
+                /* Native PC suppresses only player1's up blip at row0. */
+                if (hub_bonusmode == 0)
+                    player_up[1] = 0;
+                else if (hub_bonusmode >= 4)
+                    player_down[0] = player_down[1] = 0;
+                if (player_up[0])
+                    BlipU[0] = 0.1f;
+                if (player_down[0])
+                    BlipD[0] = 0.1f;
+                if (player_left[0])
+                    BlipL[0] = 0.1f;
+                if (player_right[0])
+                    BlipR[0] = 0.1f;
+                if (player_up[1])
+                    BlipU[1] = 0.1f;
+                if (player_down[1])
+                    BlipD[1] = 0.1f;
+                if (player_left[1])
+                    BlipL[1] = 0.1f;
+                if (player_right[1])
+                    BlipR[1] = 0.1f;
+                if (confirm) {
+                    if (hub_bonusmode == 3) {
+                        if (ArcadeItem.entries[3].index != 1)
+                            return;
+                        if (Arcade_Score[0] == 0 && Arcade_Score[1] == 0)
+                            GameAudio_PlaySfx(0x32, NULL, 0, 0);
+                        else {
+                            Arcade_AwardPoint(0, 1, 0);
+                            Arcade_AwardPoint(1, 1, 0);
+                            Arcade_Score[0] = Arcade_Score[1] = 0;
+                            ArcadeItem.entries[3].index = 0;
+                        }
+                    } else if (hub_bonusmode == 4) {
+                        AREA_DATA_PC *area = *ArcadeLevelPc[(i8)ArcadeItem.level];
+                        if (area == NULL || Game.area_save[area->index].complete == 0)
+                            GameAudio_PlaySfx(0x32, NULL, 0, 0);
+                        else {
+                            GameAudio_PlaySfx(0x30, NULL, 0, 0);
+                            HubDoorNewLevelPc = area->levels[0];
+                            hub_freeplaysource = 1;
+                            HubInitFreePlaySelectPc(area->index, -1, -1);
+                            NewMenu(17, -1, -1);
+                        }
+                    }
+                } else if (cancel) {
+                    GameAudio_PlaySfx(0x31, NULL, 0, 0);
+                    bonusmodetime = 0;
+                    bonusmodeduration = 0.6f;
+                    bonusmodemode = 4;
+                } else if (up) {
+                    if (hub_bonusmode > 0) {
+                        GameAudio_PlaySfx(0x2f, NULL, 0, 0);
+                        --hub_bonusmode;
+                    }
+                } else if (down) {
+                    if (hub_bonusmode < 4) {
+                        GameAudio_PlaySfx(0x2f, NULL, 0, 0);
+                        ++hub_bonusmode;
+                    }
+                } else {
+                    ARCADE_MENU_ENTRY_PC *item = &ArcadeItem.entries[hub_bonusmode];
+                    const i32 count = item->count;
+                    if (count > 1) {
+                        if (hub_bonusmode == 3 && Arcade_Score[0] == 0 && Arcade_Score[1] == 0)
+                            return;
+                        if (left) {
+                            GameAudio_PlaySfx(0x2f, NULL, 0, 0);
+                            if (--item->index < 0)
+                                item->index = (i8)(count - 1);
+                        } else if (right) {
+                            GameAudio_PlaySfx(0x2f, NULL, 0, 0);
+                            if (++item->index >= count)
+                                item->index = 0;
+                        }
+                    }
+                }
+                if (hub_bonusmode != 3)
+                    ArcadeItem.entries[3].index = 0;
+                return;
+            }
+            if (confirm) {
+                GameAudio_PlaySfx(0x30, NULL, 0, 0);
+                SuperStoryEpisode = hub_bonusepisode;
+                switch (hub_bonusmode) {
+                    case 0:
+                        if (hub_bonusepisode != -1) {
+                            HubDoorNewLevelPc = ADataList[EDataList[hub_bonusepisode].area_ids[0]].levels[0];
+                            bonusmodemode = 1;
+                            bonusmodetime = 0;
+                            bonusmodeduration = 0.6f;
+                        } else {
+                            hub_freeplaysource = 1;
+                            HubInitFreePlaySelectPc((i8)LDataList[HubDoorNewLevelPc].area_index, -1, -1);
+                            NewMenu(17, -1, -1);
+                        }
+                        return;
+                    case 1:
+                        if (hub_bonusepisode != -1) {
+                            const i32 area = Episode_FindAreaFromFlags(&EDataList[hub_bonusepisode], 5, 4);
+                            if (area != -1) {
+                                HubDoorNewLevelPc = ADataList[area].levels[0];
+                                hub_freeplaysource = 1;
+                                HubInitFreePlaySelectPc((i8)LDataList[HubDoorNewLevelPc].area_index, -1, -1);
+                                NewMenu(17, -1, -1);
+                            }
+                        }
+                        return;
+                    case 2: {
+                        if (hub_bonusepisode == -1) {
+                            GameAudio_PlaySfx(0x32, NULL, 0, 0);
+                            return;
+                        }
+                        i32 first, second;
+                        const i32 count =
+                            Collection_GetIDList(&MiniKitCollection, 0x4000000, 0x4000000, NULL, &first, &second, 0);
+                        if (count < 1) {
+                            GameAudio_PlaySfx(0x32, NULL, 0, 0);
+                            return;
+                        }
+                        const i32 area = Episode_FindAreaFromFlags(&EDataList[SuperStoryEpisode], 5, 5);
+                        if (area == -1) {
+                            GameAudio_PlaySfx(0x32, NULL, 0, 0);
+                            return;
+                        }
+                        if (count > 1) {
+                            HubDoorNewLevelPc = ADataList[area].levels[0];
+                            hub_freeplaysource = 1;
+                            HubInitFreePlaySelectPc((i8)LDataList[HubDoorNewLevelPc].area_index, first, second);
+                            NewMenu(17, -1, -1);
+                        } else if (first != -1) {
+                            HubDoorNewLevelPc = ADataList[area].levels[0];
+                            bonusmodemode = 2;
+                            MissionMenuPacketPc.player_model[1] = (i16)first;
+                            MissionMenuPacketPc.player_model[0] = (i16)first;
+                            bonusmodetime = 0;
+                            bonusmodeduration = 0.6f;
+                        } else
+                            GameAudio_PlaySfx(0x32, NULL, 0, 0);
+                        return;
+                    }
+                    default:
+                        return;
+                }
+            }
+            if (cancel) {
+                GameAudio_PlaySfx(0x31, NULL, 0, 0);
+                bonusmodemode = 4;
+                bonusmodetime = 0;
+                bonusmodeduration = 0.6f;
+                return;
+            }
+            if (hub_bonusepisode == -1)
+                return;
+            if (up) {
+                if (hub_bonusmode <= 0)
+                    return;
+                GameAudio_PlaySfx(0x2f, NULL, 0, 0);
+                --hub_bonusmode;
+            } else if (down) {
+                if (hub_bonusmode >= 1) {
+                    if (hub_bonusmode != 1)
+                        return;
+                    if (Collection_GetIDList(&MiniKitCollection, 0x4000000, 0x4000000, NULL, NULL, NULL, 0) == 0)
+                        return;
+                }
+                GameAudio_PlaySfx(0x2f, NULL, 0, 0);
+                ++hub_bonusmode;
+            }
+            return;
+        }
         case 1:
             bonusmodetime += FRAMETIME;
             if (!(bonusmodeduration <= bonusmodetime))
@@ -3468,201 +3662,8 @@ static void HubUpdateBonusModePc(void) {
             if (bonusmodeduration <= bonusmodetime)
                 WipeBackToHub();
             return;
-        case 0:
-            break;
         default:
             return;
-    }
-    i32 confirm = 0, cancel = 0, up = 0, down = 0, left = 0, right = 0;
-    for (i32 player = 0; player < 2; ++player) {
-        if (confirm || cancel)
-            break;
-        if (MissionMenuPacketPc.active_player[player] != 0) {
-            const u32 pressed = GamePadStorage[player].menu_buttons_pressed;
-            const u32 directions = GamePadStorage[player].menu_directions;
-            if ((pressed & GAMEPAD_MENUSELECT) != 0)
-                confirm = 1;
-            else if ((pressed & GAMEPAD_MENUCANCEL) != 0)
-                cancel = 1;
-            else if (((pressed | directions) & GAMEPAD_DUP) != 0)
-                up = player_up[player] = 1;
-            else if (((pressed | directions) & GAMEPAD_DDOWN) != 0)
-                down = player_down[player] = 1;
-            else if (((pressed | directions) & GAMEPAD_DLEFT) != 0)
-                left = player_left[player] = 1;
-            else if (((pressed | directions) & GAMEPAD_DRIGHT) != 0)
-                right = player_right[player] = 1;
-        }
-    }
-    if (bonusmodearcade != 0) {
-        /* Native PC suppresses only player1's up blip at row0. */
-        if (hub_bonusmode == 0)
-            player_up[1] = 0;
-        else if (hub_bonusmode >= 4)
-            player_down[0] = player_down[1] = 0;
-        if (player_up[0])
-            BlipU[0] = 0.1f;
-        if (player_down[0])
-            BlipD[0] = 0.1f;
-        if (player_left[0])
-            BlipL[0] = 0.1f;
-        if (player_right[0])
-            BlipR[0] = 0.1f;
-        if (player_up[1])
-            BlipU[1] = 0.1f;
-        if (player_down[1])
-            BlipD[1] = 0.1f;
-        if (player_left[1])
-            BlipL[1] = 0.1f;
-        if (player_right[1])
-            BlipR[1] = 0.1f;
-        if (confirm) {
-            if (hub_bonusmode == 3) {
-                if (ArcadeItem.entries[3].index != 1)
-                    return;
-                if (Arcade_Score[0] == 0 && Arcade_Score[1] == 0)
-                    GameAudio_PlaySfx(0x32, NULL, 0, 0);
-                else {
-                    Arcade_AwardPoint(0, 1, 0);
-                    Arcade_AwardPoint(1, 1, 0);
-                    Arcade_Score[0] = Arcade_Score[1] = 0;
-                    ArcadeItem.entries[3].index = 0;
-                }
-            } else if (hub_bonusmode == 4) {
-                AREA_DATA_PC *area = *ArcadeLevelPc[(i8)ArcadeItem.level];
-                if (area == NULL || Game.area_save[area->index].complete == 0)
-                    GameAudio_PlaySfx(0x32, NULL, 0, 0);
-                else {
-                    GameAudio_PlaySfx(0x30, NULL, 0, 0);
-                    HubDoorNewLevelPc = area->levels[0];
-                    hub_freeplaysource = 1;
-                    HubInitFreePlaySelectPc(area->index, -1, -1);
-                    NewMenu(17, -1, -1);
-                }
-            }
-        } else if (cancel) {
-            GameAudio_PlaySfx(0x31, NULL, 0, 0);
-            bonusmodetime = 0;
-            bonusmodeduration = 0.6f;
-            bonusmodemode = 4;
-        } else if (up) {
-            if (hub_bonusmode > 0) {
-                GameAudio_PlaySfx(0x2f, NULL, 0, 0);
-                --hub_bonusmode;
-            }
-        } else if (down) {
-            if (hub_bonusmode < 4) {
-                GameAudio_PlaySfx(0x2f, NULL, 0, 0);
-                ++hub_bonusmode;
-            }
-        } else {
-            ARCADE_MENU_ENTRY_PC *item = &ArcadeItem.entries[hub_bonusmode];
-            const i32 count = item->count;
-            if (count > 1) {
-                if (hub_bonusmode == 3 && Arcade_Score[0] == 0 && Arcade_Score[1] == 0)
-                    return;
-                if (left) {
-                    GameAudio_PlaySfx(0x2f, NULL, 0, 0);
-                    if (--item->index < 0)
-                        item->index = (i8)(count - 1);
-                } else if (right) {
-                    GameAudio_PlaySfx(0x2f, NULL, 0, 0);
-                    if (++item->index >= count)
-                        item->index = 0;
-                }
-            }
-        }
-        if (hub_bonusmode != 3)
-            ArcadeItem.entries[3].index = 0;
-        return;
-    }
-    if (confirm) {
-        GameAudio_PlaySfx(0x30, NULL, 0, 0);
-        SuperStoryEpisode = hub_bonusepisode;
-        switch (hub_bonusmode) {
-            case 0:
-                if (hub_bonusepisode != -1) {
-                    HubDoorNewLevelPc = ADataList[EDataList[hub_bonusepisode].area_ids[0]].levels[0];
-                    bonusmodemode = 1;
-                    bonusmodetime = 0;
-                    bonusmodeduration = 0.6f;
-                } else {
-                    hub_freeplaysource = 1;
-                    HubInitFreePlaySelectPc((i8)LDataList[HubDoorNewLevelPc].area_index, -1, -1);
-                    NewMenu(17, -1, -1);
-                }
-                return;
-            case 1:
-                if (hub_bonusepisode != -1) {
-                    const i32 area = Episode_FindAreaFromFlags(&EDataList[hub_bonusepisode], 5, 4);
-                    if (area != -1) {
-                        HubDoorNewLevelPc = ADataList[area].levels[0];
-                        hub_freeplaysource = 1;
-                        HubInitFreePlaySelectPc((i8)LDataList[HubDoorNewLevelPc].area_index, -1, -1);
-                        NewMenu(17, -1, -1);
-                    }
-                }
-                return;
-            case 2: {
-                if (hub_bonusepisode == -1) {
-                    GameAudio_PlaySfx(0x32, NULL, 0, 0);
-                    return;
-                }
-                i32 first, second;
-                const i32 count =
-                    Collection_GetIDList(&MiniKitCollection, 0x4000000, 0x4000000, NULL, &first, &second, 0);
-                if (count < 1) {
-                    GameAudio_PlaySfx(0x32, NULL, 0, 0);
-                    return;
-                }
-                const i32 area = Episode_FindAreaFromFlags(&EDataList[SuperStoryEpisode], 5, 5);
-                if (area == -1) {
-                    GameAudio_PlaySfx(0x32, NULL, 0, 0);
-                    return;
-                }
-                if (count > 1) {
-                    HubDoorNewLevelPc = ADataList[area].levels[0];
-                    hub_freeplaysource = 1;
-                    HubInitFreePlaySelectPc((i8)LDataList[HubDoorNewLevelPc].area_index, first, second);
-                    NewMenu(17, -1, -1);
-                } else if (first != -1) {
-                    HubDoorNewLevelPc = ADataList[area].levels[0];
-                    bonusmodemode = 2;
-                    MissionMenuPacketPc.player_model[1] = (i16)first;
-                    MissionMenuPacketPc.player_model[0] = (i16)first;
-                    bonusmodetime = 0;
-                    bonusmodeduration = 0.6f;
-                } else
-                    GameAudio_PlaySfx(0x32, NULL, 0, 0);
-                return;
-            }
-            default:
-                return;
-        }
-    }
-    if (cancel) {
-        GameAudio_PlaySfx(0x31, NULL, 0, 0);
-        bonusmodemode = 4;
-        bonusmodetime = 0;
-        bonusmodeduration = 0.6f;
-        return;
-    }
-    if (hub_bonusepisode == -1)
-        return;
-    if (up) {
-        if (hub_bonusmode <= 0)
-            return;
-        GameAudio_PlaySfx(0x2f, NULL, 0, 0);
-        --hub_bonusmode;
-    } else if (down) {
-        if (hub_bonusmode >= 1) {
-            if (hub_bonusmode != 1)
-                return;
-            if (Collection_GetIDList(&MiniKitCollection, 0x4000000, 0x4000000, NULL, NULL, NULL, 0) == 0)
-                return;
-        }
-        GameAudio_PlaySfx(0x2f, NULL, 0, 0);
-        ++hub_bonusmode;
     }
 }
 
