@@ -23,11 +23,15 @@ void __cdecl InitParts(i32 count, VARIPTR *buffer, VARIPTR end) {
     memset(part_emits, 0, sizeof(part_emits));
     for (i = 0; i < 40; ++i)
         part_emits[i].effect_id = -1;
+    for (i = 0; i < 32; ++i)
+        part_scene_pageid[i] = -1;
     part_emits_used = 0;
-    memset(part_page_used, 0, sizeof(part_page_used));
-    memset(part_page_on, 0, sizeof(part_page_on));
-    memset(part_scene, 0, sizeof(part_scene));
-    memset(part_scene_pageid, -1, sizeof(part_scene_pageid));
+    for (i = 0; i < 8; ++i) {
+        part_page_used[i] = 0;
+        part_page_on[i] = 0;
+    }
+    for (i = 0; i < 32; ++i)
+        part_scene[i] = NULL;
     part_platimpactcnt = 0;
 }
 
@@ -3613,15 +3617,29 @@ void __cdecl edpartLoadSingleType(PARTTYPE_LOOKUP_PC *record, i32 version, i32 p
         if (type->effect_ids[i] != 9999 && type->effect_ids[i] != -1)
             ++type->variant_count;
     }
-    type->variant_mode = version > 5 ? EdFileReadChar() : 0;
-    type->particle_scale = version > 15 ? EdFileReadFloat() : 1.0f;
-    type->effect_scale = version > 15 ? EdFileReadFloat() : 1.0f;
+    if (version > 5)
+        type->variant_mode = EdFileReadChar();
+    else
+        type->variant_mode = 0;
+    if (version > 15) {
+        type->particle_scale = EdFileReadFloat();
+        type->effect_scale = EdFileReadFloat();
+    } else {
+        type->particle_scale = 1.0f;
+        type->effect_scale = 1.0f;
+    }
     type->lifetime = EdFileReadFloat();
-    type->lifetime_random = version > 13 ? EdFileReadFloat() : 0.0f;
+    if (version > 13)
+        type->lifetime_random = EdFileReadFloat();
+    else
+        type->lifetime_random = 0.0f;
     type->speed = EdFileReadFloat();
     type->gravity = EdFileReadFloat();
     type->emission_rate = EdFileReadFloat();
-    type->bounce = version > 7 ? EdFileReadFloat() : 0.75f;
+    if (version > 7)
+        type->bounce = EdFileReadFloat();
+    else
+        type->bounce = 0.75f;
     type->position_random.x = EdFileReadFloat();
     type->position_random.y = EdFileReadFloat();
     type->position_random.z = EdFileReadFloat();
@@ -3633,37 +3651,50 @@ void __cdecl edpartLoadSingleType(PARTTYPE_LOOKUP_PC *record, i32 version, i32 p
     type->emission_pause = EdFileReadFloat();
     type->emission_pause_random = EdFileReadFloat();
     if (version > 12) {
-        for (i = 0; i < 3; ++i)
-            type->rotation[i] = EdFileReadInt();
-        for (i = 0; i < 3; ++i)
-            type->rotation_random[i] = EdFileReadInt();
+        type->rotation[0] = EdFileReadInt();
+        type->rotation[1] = EdFileReadInt();
+        type->rotation[2] = EdFileReadInt();
+        type->rotation_random[0] = EdFileReadInt();
+        type->rotation_random[1] = EdFileReadInt();
+        type->rotation_random[2] = EdFileReadInt();
     } else {
-        for (i = 0; i < 3; ++i)
-            type->rotation[i] = EdFileReadShort();
-        for (i = 0; i < 3; ++i)
-            type->rotation_random[i] = EdFileReadShort();
+        type->rotation[0] = EdFileReadShort();
+        type->rotation[1] = EdFileReadShort();
+        type->rotation[2] = EdFileReadShort();
+        type->rotation_random[0] = EdFileReadShort();
+        type->rotation_random[1] = EdFileReadShort();
+        type->rotation_random[2] = EdFileReadShort();
     }
     type->flags = EdFileReadUnsignedInt();
     if (type->effect_ids[0] == 9999)
         type->flags |= 0x10;
-    if (version > 4) {
+    if (version > 8) {
         EdFileRead(name, 16);
         type->trail_effects[0] =
             (PartLoadParticlePagePc != -1 ? LookupDebrisEffectPageOnly(name, (i8)PartLoadParticlePagePc)
                                           : LookupDebrisEffect(name));
-        if (version > 8) {
-            EdFileRead(name, 16);
-            type->trail_effects[1] =
-                (PartLoadParticlePagePc != -1 ? LookupDebrisEffectPageOnly(name, (i8)PartLoadParticlePagePc)
-                                              : LookupDebrisEffect(name));
-        } else
-            type->trail_effects[1] = -1;
+        EdFileRead(name, 16);
+        type->trail_effects[1] =
+            (PartLoadParticlePagePc != -1 ? LookupDebrisEffectPageOnly(name, (i8)PartLoadParticlePagePc)
+                                          : LookupDebrisEffect(name));
         EdFileRead(name, 16);
         type->attached_effect =
             (PartLoadParticlePagePc != -1 ? LookupDebrisEffectPageOnly(name, (i8)PartLoadParticlePagePc)
                                           : LookupDebrisEffect(name));
         type->trail_rates[0] = EdFileReadFloat();
-        type->trail_rates[1] = version > 8 ? EdFileReadFloat() : 60.0f;
+        type->trail_rates[1] = EdFileReadFloat();
+    } else if (version > 4) {
+        EdFileRead(name, 16);
+        type->trail_effects[0] =
+            (PartLoadParticlePagePc != -1 ? LookupDebrisEffectPageOnly(name, (i8)PartLoadParticlePagePc)
+                                          : LookupDebrisEffect(name));
+        type->trail_effects[1] = -1;
+        EdFileRead(name, 16);
+        type->attached_effect =
+            (PartLoadParticlePagePc != -1 ? LookupDebrisEffectPageOnly(name, (i8)PartLoadParticlePagePc)
+                                          : LookupDebrisEffect(name));
+        type->trail_rates[0] = EdFileReadFloat();
+        type->trail_rates[1] = 60.0f;
     } else {
         type->trail_effects[0] = -1;
         type->trail_effects[1] = -1;
@@ -3711,15 +3742,24 @@ void __cdecl edpartLoadSingleType(PARTTYPE_LOOKUP_PC *record, i32 version, i32 p
         for (i = 0; i < 4; ++i)
             type->sound_modes[i] = EdFileReadChar();
     } else {
-        for (i = 0; i < 4; ++i)
+        for (i = 0; i < 4; ++i) {
             type->sounds[i] = -1;
-        for (i = 0; i < 4; ++i)
             type->sound_modes[i] = 0;
+        }
     }
-    type->maximum_distance = version > 9 ? EdFileReadFloat() : 25.0f;
-    type->field_160 = version > 14 ? EdFileReadFloat() : 1.0f;
-    type->field_164 = version > 14 ? EdFileReadFloat() : 1.0f;
-    type->field_168 = version > 14 ? EdFileReadFloat() : 1.0f;
+    if (version > 9)
+        type->maximum_distance = EdFileReadFloat();
+    else
+        type->maximum_distance = 25.0f;
+    if (version > 14) {
+        type->field_160 = EdFileReadFloat();
+        type->field_164 = EdFileReadFloat();
+        type->field_168 = EdFileReadFloat();
+    } else {
+        type->field_160 = 1.0f;
+        type->field_164 = 1.0f;
+        type->field_168 = 1.0f;
+    }
     type->scale = 1.0f;
     type->field_174 = 0;
 }
