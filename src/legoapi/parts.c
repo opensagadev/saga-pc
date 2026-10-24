@@ -2011,14 +2011,7 @@ void __cdecl DebrisDraw(i32 unused, i32 pass) {
 }
 
 void __cdecl MakePartVector(NUVEC *velocity, NUVEC *direction, f32 scale) {
-    if (direction == NULL) {
-        f64 random = (f64)qrand() * (f64)(f32)(1.0f / 65535.0f);
-        velocity->x = (f32)(random + random - 1.0);
-        velocity->y = AreaPickupGravity == 0.0f ? 0.0f : (f32)((f64)qrand() * (f64)(f32)(1.0f / 65535.0f) + 1.0);
-        random = (f64)qrand() * (f64)(f32)(1.0f / 65535.0f);
-        velocity->z = (f32)(random + random - 1.0);
-        NuVecScale(velocity, velocity, AreaPickupScale);
-    } else {
+    if (direction != NULL) {
         i32 divisor;
         u16 z_random, x_random;
         FindAnglesZX(direction, NULL, NULL);
@@ -2029,6 +2022,13 @@ void __cdecl MakePartVector(NUVEC *velocity, NUVEC *direction, f32 scale) {
         NuVecRotateZ(velocity, velocity, (u16)(z_random + temp_xrot));
         NuVecRotateX(velocity, velocity, (u16)(x_random + temp_zrot));
         NuVecScale(velocity, velocity, scale);
+    } else {
+        f64 random = (f64)qrand() * (f64)(f32)(1.0f / 65535.0f);
+        velocity->x = (f32)(random + random - 1.0);
+        velocity->y = AreaPickupGravity == 0.0f ? 0.0f : (f32)((f64)qrand() * (f64)(f32)(1.0f / 65535.0f) + 1.0);
+        random = (f64)qrand() * (f64)(f32)(1.0f / 65535.0f);
+        velocity->z = (f32)(random + random - 1.0);
+        NuVecScale(velocity, velocity, AreaPickupScale);
     }
 }
 

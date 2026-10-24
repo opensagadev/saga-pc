@@ -212,7 +212,7 @@ extern i32 CombatHitReactionIntervalPc;
 i32 __cdecl ObjHitObj(GAMEOBJECT *attacker, GAMEOBJECT *target, i32 damage, u16 flags, i32 probe, i32 ignored) {
     i32 reaction_trigger;
 
-    i32 no_hurt, no_impact, no_rumble, throw_up, random, hit, instant, result, health, coins, hearts;
+    i32 no_hurt, no_impact, no_rumble, throw_up, random, hit, result, health, coins, hearts;
     i16 *parts_angle;
     BOLT *bolt;
     u16 computed_angle;
@@ -259,23 +259,20 @@ i32 __cdecl ObjHitObj(GAMEOBJECT *attacker, GAMEOBJECT *target, i32 damage, u16 
     if (target->field_280 != 0xff)
         ObstacleCamHoldUntilPlayersMove = 0;
     hit = damage;
-    instant = damage == -1;
     if (target->character_context == 81 || target->character_context == 76) {
         hit = 0;
-        instant = 0;
+        damage = 0;
     }
     if (attacker && ((attacker->flags_1fc_word & 0x80)))
         AlertSurroundingCreatures(attacker, &target->collision_position);
-    if (hit > 0 || instant)
+    if (hit > 0 || hit == -1)
         target->portal_flags |= 1;
-    if (!(0x100 & flags)) {
-        damage = 0;
-    } else {
+    if (flags & 0x100) {
         if ((CInfo[target->character_context].flags & 0x4000000) ||
             (target->character_context != -1 && (target->character_context == LEGOCONTEXT_LAND_SLAM ||
                                                  target->character_context == LEGOCONTEXT_LAND_LUNGE))) {
             i32 rotation_difference = abs(RotDiff(attacker->movement_facing_angle, target->movement_facing_angle));
-            if (rotation_difference >= 16385 &&
+            if (rotation_difference > 16384 &&
                 !(LEGOCONTEXT_COMBO != -1 && attacker->character_context == LEGOCONTEXT_COMBO &&
                   attacker->combo_branch == 6)) {
                 if ((target->flags_1fc_word & 0x80))
@@ -289,11 +286,13 @@ i32 __cdecl ObjHitObj(GAMEOBJECT *attacker, GAMEOBJECT *target, i32 damage, u16 
                 return 0;
             }
         }
+    } else {
+        damage = 0;
     }
     if (target->origin_scale_override >= 1.0f) {
         if ((flags & 0x100) &&
-            (instant || (LEGOCONTEXT_COMBO != -1 && attacker->character_context == LEGOCONTEXT_COMBO &&
-                         attacker->combo_branch == 6)))
+            (damage == -1 || (LEGOCONTEXT_COMBO != -1 && attacker->character_context == LEGOCONTEXT_COMBO &&
+                              attacker->combo_branch == 6)))
             damage = target->shield_hitpoints;
         ObjHitShield(attacker, target, damage, bolt);
         return 0;
@@ -782,7 +781,8 @@ void __cdecl CollideGameObjects(WORLDINFO *world) {
     NUVEC collision_minimums[64], collision_maximums[64], direction;
     PLAYERCHARACTERCONFIG_PC *data;
     COLLISION_EXCLUSION_VIEW_PC *exclusion;
-    u32 bit, flags;
+    u64 bit;
+    u32 flags;
     i32 object_count = HIGHGAMEOBJECT, index, player_index, collision_count = 0;
     i8 context;
     if (world->area_index != -1 && (world->area->flags & 0x80))
@@ -791,7 +791,7 @@ void __cdecl CollideGameObjects(WORLDINFO *world) {
         flags = object->flags_1fc_word;
         if (!(flags & 1))
             continue;
-        bit = object->hostility_group < 32 ? (u32)1 << object->hostility_group : 0;
+        bit = (u64)1 << object->hostility_group;
         if (object->field_280 != 0xff)
             player_slot_mask |= bit;
         data = object->character_data->game_character;
@@ -808,8 +808,8 @@ void __cdecl CollideGameObjects(WORLDINFO *world) {
             narrow_speeder_mask |= bit;
     }
     for (index = 0, object = objects; index < HIGHGAMEOBJECT; ++index, ++object) {
-        if ((object->flags_1fc_word & 0x1001) != 0x1001 || object->dead != 0 || object->model_draw_result == 0 ||
-            object->use_model_origin < 2)
+        if ((object->flags_1fc_word & 1) == 0 || (object->flags_1fc_word & 0x1000) == 0 || object->dead != 0 ||
+            object->model_draw_result == 0 || object->use_model_origin < 2)
             continue;
         context = object->character_context;
         if ((CInfo[context].flags & 0x8000) || context == 0x3b || context == 0x3c || context == 0xf || context == 0x39)
@@ -828,6 +828,7 @@ void __cdecl CollideGameObjects(WORLDINFO *world) {
         ++collision_count;
         exclusion = (COLLISION_EXCLUSION_VIEW_PC *)object;
         exclusion->exclusion_mask = 0;
+        data = object->character_data->game_character;
         if (data->flags_090 & 0x1000)
             exclusion->exclusion_mask = flattened_mask;
         if (object->level_object_index != -1) {
@@ -849,8 +850,7 @@ void __cdecl CollideGameObjects(WORLDINFO *world) {
                 object->movement_direction_z = direction.z;
             }
         }
-        if (object->character_context == 0 && object->airborne_collision_target != NULL &&
-            object->airborne_collision_target->hostility_group < 64)
+        if (object->character_context == 0 && object->airborne_collision_target != NULL)
             exclusion->exclusion_mask |= (u64)1 << object->airborne_collision_target->hostility_group;
         if (WORLD->current_level == SPEEDERCHASEA_LDATA && disable_narrow_socks == 0 &&
             object->id == (u16)id_SPEEDERBIKE && object->field_280 != 0xff)
