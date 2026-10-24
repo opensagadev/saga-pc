@@ -1616,6 +1616,7 @@ address,symbol,size,ctype
 0x0049c080,_TakeHitCode,866,void __cdecl(GAMEOBJECT *)
 0x49c3f0,_DeactivatedMindTrickFilterPc,232,"static i32(GAMEOBJECT*,GAMEOBJECT*)"
 0x49c4e0,_ReleaseEat,87,void __cdecl(GAMEOBJECT *)
+0x0049c540,_GrabVictim,196,"void __cdecl (GAMEOBJECT *, GAMEOBJECT *)"
 0x49c610,_GrabCode,811,
 0x49c940,_BeastCrushCodePc,197,
 0x0049ca10,_EatVictim,108,

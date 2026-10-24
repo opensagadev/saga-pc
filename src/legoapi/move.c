@@ -10527,3 +10527,33 @@ void __cdecl SuitBlowupCodePc(WORLDINFO *world, GAMEOBJECT *object) {
         }
     }
 }
+
+typedef struct grab_throw_target_view_pc_s {
+    u8 unknown_000[0xd10];
+    GAMEOBJECT *force_throw_target;
+} GRAB_THROW_TARGET_VIEW_PC;
+STATIC_ASSERT(offsetof(GRAB_THROW_TARGET_VIEW_PC, force_throw_target) == 0xd10);
+STATIC_ASSERT(offsetof(GAMEOBJECT, unknown_d0c) + 4 == 0xd10);
+STATIC_ASSERT(sizeof(((GAMEOBJECT *)0)->unknown_d0c) == 8);
+
+void __cdecl GrabVictim(GAMEOBJECT *object, GAMEOBJECT *victim) {
+    f32 zero;
+    if (object->character_context != -1)
+        return;
+    object->character_context = 0x38;
+    if ((i16)victim->id == id_GAMORREANGUARD && victim->field_280 == 0xff)
+        object->field_7aa = 0x1f;
+    else
+        object->field_7aa = 0x64;
+    zero = 0.0f;
+    if (((MOVEMENT_MODEL_PC *)object->character_model)->model_data_b[object->field_7aa] != NULL)
+        object->context_duration = AnimDuration((i32)(i16)object->id, (i32)object->field_7aa, zero, zero, 1);
+    else
+        object->context_duration = 2.0f;
+    object->flags_e24 &= ~1u;
+    object->context_timer = zero;
+    object->context_variant_flags &= ~0x40u;
+    object->force_target = victim;
+    object->blowup_target = NULL;
+    ((GRAB_THROW_TARGET_VIEW_PC *)object)->force_throw_target = NULL;
+}

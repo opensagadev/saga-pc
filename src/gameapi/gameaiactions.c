@@ -2040,3 +2040,29 @@ i32 __cdecl Action_SetTechnoCompletePc(AISYS_PC *system, AISCRIPTPROCESS_PC *pro
     }
     return 1;
 }
+
+i32 __cdecl Action_GrabVictim(AISYS_PC *system, AISCRIPTPROCESS_PC *processor, AIPACKET_PC *packet, char **params,
+                              i32 count, i32 first_time, f32 elapsed) {
+    GAMEOBJECT *object;
+    GAMEOBJECT *victim = NULL;
+    i32 index;
+    char *value;
+    APIOBJECT_PC *named;
+    if (packet == NULL || packet->owner == NULL || packet->owner->objptr == NULL)
+        return 1;
+    object = packet->owner->objptr;
+    if (first_time == 0)
+        return 1;
+    if (object->ai_packet.opponent != NULL)
+        victim = ((APIOBJECT_PC *)object->ai_packet.opponent)->owner;
+    for (index = 0; index < count; ++index) {
+        value = NuStrIStr(params[index], (char *)AITransferLiteral757a20);
+        if (value != NULL) {
+            named = GetNamedGameObjectCallback != NULL ? GetNamedGameObjectCallback(system, value + 7) : NULL;
+            victim = named != NULL ? named->owner : NULL;
+        }
+    }
+    if (victim != NULL)
+        GrabVictim(object, victim);
+    return 1;
+}
