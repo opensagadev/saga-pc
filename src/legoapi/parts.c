@@ -162,17 +162,16 @@ __declspec(noinline) void __cdecl NewPartOrderedRotation(PART_PC *part) {
 PART_PC *__cdecl AddPart(ADDPART_PC *parameters) {
     NUVEC forward = {0.0f, 0.0f, -1.0f};
     PART_PC *part;
-    i32 scanned = 0;
+    i32 scanned;
     i32 index;
+    u8 hostility_group;
 
-    if (parameters->special != NULL) {
-        if (NuSpecialExistsFn(parameters->special) == 0) {
-            return NULL;
-        }
-    } else if (parameters->part_id != -1 && parameters->part_id != 9999) {
+    if (parameters->special == NULL && parameters->part_id != -1 && parameters->part_id != 9999)
         return NULL;
-    }
+    if (parameters->special != NULL && NuSpecialExistsFn(parameters->special) == 0)
+        return NULL;
     part = &Part[part_slot_cursor];
+    scanned = 0;
     while ((part->active & 1) != 0 && (part->flags & 0x200) != 0 && scanned < MAXPARTS) {
         if (++part_slot_cursor == MAXPARTS) {
             part_slot_cursor = 0;
@@ -190,8 +189,9 @@ PART_PC *__cdecl AddPart(ADDPART_PC *parameters) {
         KillPart(part, 0);
     }
     if (parameters->matrix != NULL) {
-        NUMTX matrix = *parameters->matrix;
+        NUMTX matrix;
         part->transform = *parameters->matrix;
+        matrix = *parameters->matrix;
         NuVecMtxRotate(&forward, &forward, &matrix);
         part->rotation_y = (u16)NuAtan2D(forward.x, forward.z);
         NuVecRotateY(&forward, &forward, -(i32)part->rotation_y);
@@ -278,31 +278,34 @@ PART_PC *__cdecl AddPart(ADDPART_PC *parameters) {
         NewPartOrderedRotation(part);
     }
     if (parameters->effect_id_58 != -1) {
-        i32 effect = parameters->effect_id_58;
+        i32 effect;
         part->inline_debris_handle = -1;
         part->debris_handle = &part->inline_debris_handle;
         if (parameters->effect_scale != 1.0f)
-            effect = CreateScaledEffect(effect, parameters->effect_scale);
+            effect = CreateScaledEffect(parameters->effect_id_58, parameters->effect_scale);
+        else
+            effect = parameters->effect_id_58;
         AddDebrisEffect(part->debris_handle, effect, part->position.x, part->position.y, part->position.z);
         DebrisPopulateInstance(*part->debris_handle, 0.0f);
     } else {
         part->debris_handle = parameters->debris_handle;
     }
     part->effect_id_1e0 = parameters->effect_id_60;
-    part->effect_id_1e4 = parameters->effect_id_64;
     part->field_1e8 = parameters->field_68;
+    part->effect_id_1e4 = parameters->effect_id_64;
     part->field_1ec = parameters->field_6c;
     part->effect_id_1f0 = parameters->effect_id_70;
     part->effect_id_1f8 = parameters->effect_id_74;
     part->effect_id_1f4 = parameters->effect_id_78;
     part->effect_scale = parameters->effect_scale;
     part->previous_transform = part->transform;
+    part->field_210 = 0;
     part->field_208 = 1;
     part->force_flags = 0;
     part->field_21c = 0;
+    hostility_group = (u8)parameters->hostility_group;
     part->active |= 0x1800;
-    part->field_210 = 0;
-    part->hostility_group = (u8)parameters->hostility_group;
+    part->hostility_group = hostility_group;
     part->field_204 = 1;
     if ((part->flags & 0x2000) != 0 && parameters->lighting_handle != NULL && PartRTL != NULL) {
         i32 light_id;
