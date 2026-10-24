@@ -1439,7 +1439,34 @@ f32 NewCast(NUVEC *position, f32 height_above, f32 roof_range) {
                                              -normal_y;
                             plane_y =
                                 (((terrain->groups[group_index].origin.y + surface->vertices[3].y))) + plane_quotient;
-                            goto record_plane;
+                            if (surface->material[1] == 0) {
+                                if (plane_y <= position->y && ordinary_floor_y < plane_y && winding == 1) {
+                                    ordinary_floor_normal = surface->normals[1];
+                                    ordinary_floor = surface;
+                                    ordinary_floor_y = plane_y;
+                                    TerrainShadowGroupIndexPc = group_index;
+                                } else if (position->y < plane_y && ordinary_above_y >= plane_y &&
+                                           (plane_y != ordinary_above_y || normal_y < ordinary_above_normal.y)) {
+                                    ordinary_above_normal = surface->normals[1];
+                                    ordinary_above = surface;
+                                    ordinary_above_y = plane_y;
+                                    ordinary_above_group = group_index;
+                                }
+                            } else {
+                                if (plane_y <= position->y && plane_y > extended_floor_y && winding == 1) {
+                                    extended_floor_normal = surface->normals[1];
+                                    extended_floor = surface;
+                                    extended_floor_y = plane_y;
+                                    TerrainShadowFloorIndexPc = group_index;
+                                } else if (position->y < plane_y && plane_y <= extended_above_y &&
+                                           (plane_y != extended_above_y || normal_y < extended_above_normal.y)) {
+                                    extended_above_normal = surface->normals[1];
+                                    extended_above = surface;
+                                    extended_above_y = plane_y;
+                                    extended_above_group = group_index;
+                                }
+                            }
+                            continue;
                         }
                     } else if (CAST_LINE(1, 0) != 0 && CAST_LINE(0, 2) != 0) {
                         winding = 1;
@@ -1448,40 +1475,31 @@ f32 NewCast(NUVEC *position, f32 height_above, f32 roof_range) {
                         normal_x = surface->normals[0].x;
                         normal_y = surface->normals[0].y;
                         plane_quotient =
-                            ((x - surface->vertices[0].x) * normal_x + (z - surface->vertices[0].z) * normal_z) /
+                            ((z - surface->vertices[0].z) * normal_z + (x - surface->vertices[0].x) * normal_x) /
                             -normal_y;
                         plane_y = (terrain->groups[group_index].origin.y + surface->vertices[0].y) + plane_quotient;
-                    record_plane:
                         if (surface->material[1] == 0) {
                             if (plane_y <= position->y && ordinary_floor_y < plane_y && winding == 1) {
-                                ordinary_floor_normal.x = normal_x;
-                                ordinary_floor_normal.y = normal_y;
-                                ordinary_floor_normal.z = normal_z;
+                                ordinary_floor_normal = surface->normals[0];
                                 ordinary_floor = surface;
                                 ordinary_floor_y = plane_y;
                                 TerrainShadowGroupIndexPc = group_index;
                             } else if (position->y < plane_y && ordinary_above_y >= plane_y &&
                                        (plane_y != ordinary_above_y || normal_y < ordinary_above_normal.y)) {
-                                ordinary_above_normal.x = normal_x;
-                                ordinary_above_normal.y = normal_y;
-                                ordinary_above_normal.z = normal_z;
+                                ordinary_above_normal = surface->normals[0];
                                 ordinary_above = surface;
                                 ordinary_above_y = plane_y;
                                 ordinary_above_group = group_index;
                             }
                         } else {
                             if (plane_y <= position->y && plane_y > extended_floor_y && winding == 1) {
-                                extended_floor_normal.x = normal_x;
-                                extended_floor_normal.y = normal_y;
-                                extended_floor_normal.z = normal_z;
+                                extended_floor_normal = surface->normals[0];
                                 extended_floor = surface;
                                 extended_floor_y = plane_y;
                                 TerrainShadowFloorIndexPc = group_index;
                             } else if (position->y < plane_y && plane_y <= extended_above_y &&
                                        (plane_y != extended_above_y || normal_y < extended_above_normal.y)) {
-                                extended_above_normal.x = normal_x;
-                                extended_above_normal.y = normal_y;
-                                extended_above_normal.z = normal_z;
+                                extended_above_normal = surface->normals[0];
                                 extended_above = surface;
                                 extended_above_y = plane_y;
                                 extended_above_group = group_index;
