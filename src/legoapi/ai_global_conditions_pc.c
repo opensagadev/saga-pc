@@ -210,13 +210,15 @@ void *__cdecl Condition_BeenHitInitPc(AISYS_PC *system, char *name, AISCRIPT_PC 
 f32 __cdecl Condition_BeenHitPc(AISYS_PC *system, AISCRIPTPROCESS_PC *process, AIPACKET_PC *packet, char *name,
                                 void *argument) {
     GAMEOBJECT *object = (GAMEOBJECT *)argument;
-    if (object == NULL) {
-        if (packet == NULL || packet->owner == NULL || packet->owner->objptr == NULL)
-            return 0.0f;
+    if (object == NULL && packet != NULL && packet->owner != NULL)
         object = packet->owner->objptr;
+    if (object != NULL) {
+        if (object->vehicle_hit_timer > 0.0f || (object->portal_flags & 1) != 0)
+            return 1.0f;
     }
-    return object->vehicle_hit_timer > 0.0f || (object->portal_flags & 1) != 0 ? 1.0f : 0.0f;
+    return 0.0f;
 }
+
 f32 __cdecl Condition_IndyPc(AISYS_PC *system, AISCRIPTPROCESS_PC *process, AIPACKET_PC *packet, char *name,
                              void *argument) {
     return (f32)StartupGameFlag0;
@@ -385,17 +387,16 @@ f32 __cdecl Condition_HitPointsPc(AISYS_PC *system, AISCRIPTPROCESS_PC *process,
 f32 __cdecl Condition_BlockingPc(AISYS_PC *system, AISCRIPTPROCESS_PC *process, AIPACKET_PC *packet, char *name,
                                  void *argument) {
     GAMEOBJECT *object;
-    u32 flags;
-    (void)system;
-    (void)process;
-    (void)name;
-    (void)argument;
-    if (packet == NULL || packet->owner == NULL || packet->owner->objptr == NULL)
-        return 0.0f;
-    object = packet->owner->objptr;
-    flags = CInfo[(i8)object->character_context].flags;
-    if ((flags & 0x04000000u) != 0 || ((flags & 0x08000000u) != 0 && (object->context_variant_flags & 0x20000u) != 0))
-        return 1.0f;
+    u64 flags;
+    if (packet != NULL && packet->owner != NULL) {
+        object = packet->owner->objptr;
+        if (object != NULL) {
+            flags = U64_PAIR(&CInfo[(i8)object->character_context].flags);
+            if ((flags & 0x04000000u) != 0 ||
+                ((flags & 0x08000000u) != 0 && (object->context_variant_flags & 0x20000u) != 0))
+                return 1.0f;
+        }
+    }
     return 0.0f;
 }
 
