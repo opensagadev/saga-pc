@@ -3128,22 +3128,23 @@ static void HubDrawFreePlaySelectPc(void) {
                               MissionMenuPacketPc.active_player[1], select[1], 1.0f, -1, back[1], -1, status[1]);
         return;
     }
-    if (freeplaymode == 2) {
-        list[0].model_id = MissionMenuPacketPc.player_model[0];
-        list[1].model_id = MissionMenuPacketPc.player_model[1];
-        i32 count = 2;
-        for (i32 i = 0; i < fpcount; ++i)
-            list[count++] = fplist[i];
-        list[count].model_id = -1;
-        f32 alpha = 0.0f;
-        if (!(freeplaytime >= freeplayduration - .10000000149011612))
-            alpha = (f32)(1.0 - freeplaytime / (freeplayduration - .10000000149011612));
-        Collection_DrawPc(collection, 0.0f, COLLECTION_Y_HUB, collection->scale, list, alpha, 1);
-        HubDrawIconCursorsPc(collection, 1, 1.0f, alpha);
+    if (freeplaymode != 3 && freeplaymode != 4) {
+        if (freeplaymode == 2) {
+            list[0].model_id = MissionMenuPacketPc.player_model[0];
+            list[1].model_id = MissionMenuPacketPc.player_model[1];
+            i32 count = 2;
+            for (i32 i = 0; i < fpcount; ++i)
+                list[count++] = fplist[i];
+            list[count].model_id = -1;
+            f32 alpha = 0.0f;
+            if (!(freeplaytime >= freeplayduration - .10000000149011612))
+                alpha = (f32)(1.0 - freeplaytime / (freeplayduration - .10000000149011612));
+            Collection_DrawPc(collection, 0.0f, COLLECTION_Y_HUB, collection->scale, list, alpha, 1);
+            HubDrawIconCursorsPc(collection, 1, 1.0f, alpha);
+            return;
+        }
         return;
     }
-    if (freeplaymode != 3 && freeplaymode != 4)
-        return;
     list[0].model_id = MissionMenuPacketPc.player_model[0];
     list[1].model_id = MissionMenuPacketPc.player_model[1];
     list[2].model_id = -1;
