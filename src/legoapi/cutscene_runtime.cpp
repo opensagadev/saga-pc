@@ -2075,15 +2075,24 @@ extern "C" {
         SetLevelLights(world->rtl_set, 1.0f);
         CUT_LOAD_RECORD_PC *cut = reinterpret_cast<CUT_LOAD_RECORD_PC *>(CutStopInfo);
         if (cut != NULL) {
-            CutBlobShadowAlpha = cut->blob_shadow_alpha;
-            CutBlobShadowFadeNear = static_cast<f32>(cut->blob_shadow_fade_near);
-            CutBlobShadowFadeFar = static_cast<f32>(cut->blob_shadow_fade_far);
-            CutReflectRange = static_cast<f32>(cut->reflection_range);
+            const i32 fade_near = cut->blob_shadow_fade_near;
+            const u8 alpha = cut->blob_shadow_alpha;
+            const i32 reflection = cut->reflection_range;
+            CutBlobShadowAlpha = alpha;
+            const i32 fade_far = cut->blob_shadow_fade_far;
+            CutBlobShadowFadeNear = static_cast<f32>(fade_near);
+            CutBlobShadowFadeFar = static_cast<f32>(fade_far);
+            CutReflectRange = static_cast<f32>(reflection);
         } else {
-            CutBlobShadowAlpha = world->current_level->blob_shadow_alpha;
-            CutBlobShadowFadeNear = static_cast<f32>(world->current_level->blob_shadow_fade_near);
-            CutBlobShadowFadeFar = static_cast<f32>(world->current_level->blob_shadow_fade_far);
-            CutReflectRange = static_cast<f32>(world->current_level->reflection_range);
+            LEVELDATA_PC *level = world->current_level;
+            const i32 fade_near = level->blob_shadow_fade_near;
+            const u8 alpha = level->blob_shadow_alpha;
+            const i32 reflection = level->reflection_range;
+            CutBlobShadowAlpha = alpha;
+            const i32 fade_far = level->blob_shadow_fade_far;
+            CutBlobShadowFadeNear = static_cast<f32>(fade_near);
+            CutBlobShadowFadeFar = static_cast<f32>(fade_far);
+            CutReflectRange = static_cast<f32>(reflection);
         }
         CutReflectRange2 = CutReflectRange * CutReflectRange;
         NuGCutSceneSysRender(Paused);
