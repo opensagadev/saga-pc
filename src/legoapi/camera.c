@@ -490,25 +490,28 @@ void GameCameraMakeMiniCut3(u32 flags, float distance, i32 pitch, i32 yaw, i32 r
                             NUVEC *position, float start_time, float blend_in_time, float end_time,
                             float blend_out_time, float blend_time, float hold_time, float max_time, i32 borders,
                             NUGSPLINE *spline, i8 mode, i8 easing) {
+    NUVEC command_origin;
     i32 have_remaining_hold;
     f32 remaining_hold;
     f32 elapsed;
     f32 remaining_duration;
     ((CAMERA_CUT_FIELDS_PC *)GameCam)->blend_time = 0.0f;
     if (flags & 0x200) {
+        NUVEC reset_origin;
         memset(&MiniCam, 0, sizeof(MiniCam));
-        Minicam_AddCommand(1, blend_in_time, 0, NULL, v000);
+        reset_origin = v000;
+        Minicam_AddCommand(1, blend_in_time, 0, NULL, reset_origin);
         MiniCam.duration = max_time;
         if ((flags & 0x80) && focus != NULL) {
             MiniCam.focus = (NUVEC *)focus;
-            MiniCam.focus_offset = v000;
+            MiniCam.focus_offset = reset_origin;
             MiniCam.target = *(NUVEC *)focus;
             MiniCam.position = *position;
             GameCameraMakeMiniCut2(&MiniCam.position, &MiniCam.target, target_guid, start_time, 1000000000.0f,
                                    blend_in_time, 0.0f, 1, 1, MiniCam.borders);
         } else {
-            MiniCam.target = v000;
-            MiniCam.focus_offset = v000;
+            MiniCam.target = reset_origin;
+            MiniCam.focus_offset = reset_origin;
             MiniCam.focus = &MiniCam.target;
             MiniCam.position = *position;
             GameCameraMakeMiniCut2(&MiniCam.position, NULL, target_guid, start_time, 1000000000.0f, blend_in_time, 0.0f,
@@ -520,43 +523,44 @@ void GameCameraMakeMiniCut3(u32 flags, float distance, i32 pitch, i32 yaw, i32 r
         blend_time = 0.0f;
         flags |= 0x800;
     }
+    command_origin = v000;
     if (flags & 0x80)
-        Minicam_AddCommand(8, 0.0f, 0, focus, v000);
+        Minicam_AddCommand(8, 0.0f, 0, focus, command_origin);
     if (flags & 0x100)
         Minicam_AddCommand(16, 0.0f, 0, NULL, *position);
     else if (flags & 0x2000)
-        Minicam_AddCommand(17, 0.0f, 0, spline, v000);
+        Minicam_AddCommand(17, 0.0f, 0, spline, command_origin);
     else if (flags & 1)
-        Minicam_AddCommand(9, distance, 0, NULL, v000);
+        Minicam_AddCommand(9, distance, 0, NULL, command_origin);
     if (flags & 0x10)
-        Minicam_AddCommand(13, 0.0f, pitch, NULL, v000);
+        Minicam_AddCommand(13, 0.0f, pitch, NULL, command_origin);
     else if (flags & 2)
-        Minicam_AddCommand(10, 0.0f, pitch, NULL, v000);
+        Minicam_AddCommand(10, 0.0f, pitch, NULL, command_origin);
     if (flags & 0x20)
-        Minicam_AddCommand(14, 0.0f, yaw, NULL, v000);
+        Minicam_AddCommand(14, 0.0f, yaw, NULL, command_origin);
     else if (flags & 4)
-        Minicam_AddCommand(11, 0.0f, yaw, NULL, v000);
+        Minicam_AddCommand(11, 0.0f, yaw, NULL, command_origin);
     if (flags & 0x40)
-        Minicam_AddCommand(15, 0.0f, roll, NULL, v000);
+        Minicam_AddCommand(15, 0.0f, roll, NULL, command_origin);
     if (flags & 8)
-        Minicam_AddCommand(12, 0.0f, roll, NULL, v000);
+        Minicam_AddCommand(12, 0.0f, roll, NULL, command_origin);
     if (mode != -1)
-        Minicam_AddCommand(6, 0.0f, mode, NULL, v000);
+        Minicam_AddCommand(6, 0.0f, mode, NULL, command_origin);
     if (easing != -1)
-        Minicam_AddCommand(7, 0.0f, easing, NULL, v000);
+        Minicam_AddCommand(7, 0.0f, easing, NULL, command_origin);
 
     if ((flags & 5) == 5 && blend_in_time > 0.0f && blend_time == 0.0f)
         blend_time = 0.01f;
     if ((flags & 0x1800) == 0x1800) {
         have_remaining_hold = hold_time > blend_time;
         remaining_hold = have_remaining_hold ? hold_time - blend_time : 0.0f;
-        Minicam_AddCommand(4, blend_time, 0, NULL, v000);
+        Minicam_AddCommand(4, blend_time, 0, NULL, command_origin);
         if (have_remaining_hold)
-            Minicam_AddCommand(5, remaining_hold, 0, NULL, v000);
+            Minicam_AddCommand(5, remaining_hold, 0, NULL, command_origin);
     } else if (flags & 0x800) {
-        Minicam_AddCommand(4, blend_time, 0, NULL, v000);
+        Minicam_AddCommand(4, blend_time, 0, NULL, command_origin);
     } else if (flags & 0x1000) {
-        Minicam_AddCommand(5, hold_time, 0, NULL, v000);
+        Minicam_AddCommand(5, hold_time, 0, NULL, command_origin);
     }
     if (flags & 0x400) {
         elapsed = 0.0f;
@@ -569,7 +573,7 @@ void GameCameraMakeMiniCut3(u32 flags, float distance, i32 pitch, i32 yaw, i32 r
         remaining_duration = end_time - elapsed;
         if (remaining_duration < 0.0f)
             remaining_duration = 0.0f;
-        Minicam_AddCommand(3, remaining_duration, 0, NULL, v000);
+        Minicam_AddCommand(3, remaining_duration, 0, NULL, command_origin);
         ObstacleCamBlendOutTime = blend_out_time;
     }
     if (borders != 0)
@@ -650,17 +654,13 @@ void __cdecl KeepOnScreen(GAMEOBJECT *object) {
     }
     if (!(object->flags_1fc & 0x80) && !controlled)
         return;
-    if (object->dead != 0 || !(object->flags_ef0 & 0x40000))
+    if (object->dead != 0 || object->character_context == 0x2b)
         return;
-    switch (object->character_context) {
-        case 0x2b:
-        case 0x0f:
-        case 0x47:
-        case 0x1f:
-        case 0x46:
-        case 0x51:
-            return;
-    }
+    if (!(object->flags_ef0 & 0x40000))
+        return;
+    if (object->character_context == 0x0f || object->character_context == 0x47 || object->character_context == 0x1f ||
+        object->character_context == 0x46 || object->character_context == 0x51)
+        return;
     if (MiniCutCam != 0 || GetMenuID() != -1)
         return;
     if (WORLD->current_level == BONUS_GUNSHIPA_LDATA && GameCam->mode == 0x0b) {
@@ -683,18 +683,17 @@ void __cdecl KeepOnScreen(GAMEOBJECT *object) {
         movement.z += PlayPlanePc[0].normal.z * push_distance;
         constrained = 1;
     }
-    plane = NULL;
     if (OnOrInsidePlane(&object->collision_position, &PlayPlanePc[2].point, &PlayPlanePc[2].normal, NULL,
                         -object->bounds_radius, NULL)) {
-        plane = &PlayPlanePc[2];
+        Surface_Deflect(&PlayPlanePc[2].normal, &object->velocity, &movement, 0);
+        movement.x += PlayPlanePc[2].normal.x * push_distance;
+        movement.z += PlayPlanePc[2].normal.z * push_distance;
+        constrained = 1;
     } else if (OnOrInsidePlane(&object->collision_position, &PlayPlanePc[1].point, &PlayPlanePc[1].normal, NULL,
                                -object->bounds_radius, NULL)) {
-        plane = &PlayPlanePc[1];
-    }
-    if (plane != NULL) {
-        Surface_Deflect(&plane->normal, &object->velocity, &movement, 0);
-        movement.x += plane->normal.x * push_distance;
-        movement.z += plane->normal.z * push_distance;
+        Surface_Deflect(&PlayPlanePc[1].normal, &object->velocity, &movement, 0);
+        movement.x += PlayPlanePc[1].normal.x * push_distance;
+        movement.z += PlayPlanePc[1].normal.z * push_distance;
         constrained = 1;
     }
     if ((VehicleArea != 0 && (WORLD->area == NULL || WORLD->area != PODSPRINT_ADATA)) || KEEPONSCREEN_SIDESONLY == 0 ||
@@ -721,6 +720,8 @@ void __cdecl KeepOnScreen(GAMEOBJECT *object) {
         object->movement_direction_z = movement.z;
         object->field_da8 = previous_keep_time + FRAMETIME;
         SpecialMove_Cancel(object);
+    } else {
+        object->field_da8 = 0.0f;
     }
 }
 
