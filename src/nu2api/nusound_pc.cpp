@@ -861,3 +861,6 @@ extern "C" void __cdecl NuSound3StopSFX(void) {
 extern "C" void __cdecl NuSound3SetSFXPitch(i32 pitch) {
     (void)pitch;
 }
+
+extern "C" void __cdecl NuSound3CancelCheckStereo(void) {
+}

@@ -460,7 +460,10 @@ void MatrixTextStringEncode(void *font, unsigned char *source, u16 *destination)
     *destination = 0;
 }
 
-void FixUpButtonsInFont(VUFNT *game_font, VUFNT *button_font) {
+void FixUpButtonsInFont(VUFNT *game_font_arg, VUFNT *button_font_arg) {
+    VUFNT *game_font = game_font_arg;
+    VUFNT *button_font = button_font_arg;
+
     if (game_font == NULL) {
         game_font = QFont2D;
     }
@@ -861,6 +864,8 @@ void __cdecl Text3DEx(char *text, f32 x, f32 y, f32 z, f32 x_scale, f32 y_scale,
                 width = scaled_width / x_scale;
             }
         }
+    } else {
+        button_scale = x_scale;
     }
     if ((alignment & 4) != 0)
         y = (f32)((f64)y - half_height);

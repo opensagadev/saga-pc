@@ -38,7 +38,7 @@ void __cdecl PlaySfxAndSetVolume(char *name, NUVEC *position, f32 volume) {
     }
 }
 
-void __cdecl PlaySfxById(i32 sfx_id, NUVEC *position) {
+__declspec(noinline) void __cdecl PlaySfxById(i32 sfx_id, NUVEC *position) {
     PlaySfxByIdEx(sfx_id, position, 1.0f, 1.0f);
 }
 
@@ -83,40 +83,30 @@ void __cdecl AddLevSfx(WORLDINFO *world, NUVEC *position, char *name, i32 sfx_id
 }
 
 void __cdecl UpdateLevelSfx(WORLDINFO *world, i32 paused) {
+    i32(__cdecl * check_reverb)(void);
     SfxBitsRestore(&CurrentSFXTAB);
-
-    if (paused != 0) {
-        NuSound3SetReverb(0);
-        return;
-    }
-    if (GameAudio->check_reverb_fn != NULL && GameAudio->check_reverb_fn() != 0) {
+    if (paused == 0 && (check_reverb = GameAudio->check_reverb_fn) != NULL && check_reverb() != 0)
         NuSound3SetReverb(1);
-    } else {
+    else
         NuSound3SetReverb(0);
-    }
-
-    if (CUTSTOPGAME == 0 && world->current_level->sfx_ambient != -1) {
-        GameAudio_PlaySfxById(world->current_level->sfx_ambient, NULL, 0, 0);
-    }
+    if (paused == 0 && CUTSTOPGAME == 0 && world->current_level->sfx_ambient != -1)
+        PlaySfxById(world->current_level->sfx_ambient, NULL);
 }
 
 i32 __cdecl GroupBuffer_MakeGroup(i32 sample_id) {
-    i32 group_id = NuSound3GroupCount;
-    i32 sample_index;
 
-    if (group_id == 0x80 || NuSound3GroupSampleCount == 0x200) {
+    if (NuSound3GroupCount == 0x80)
         return -1;
-    }
+    if (NuSound3GroupSampleCount == 0x200)
+        return -1;
 
-    sample_index = NuSound3GroupSampleCount;
-    NuSound3Groups[group_id].first_sample = (i16)sample_index;
-    NuSound3Groups[group_id].sample_count = 1;
-    NuSound3Groups[group_id].cursor = 0;
-    SfxInfo[sample_id].group = (i16)group_id;
-    NuSound3GroupSampleIds[sample_index] = (i16)sample_id;
-    NuSound3GroupSampleCount = sample_index + 1;
-    NuSound3GroupCount = group_id + 1;
-    return group_id;
+    NuSound3Groups[NuSound3GroupCount].first_sample = (i16)NuSound3GroupSampleCount;
+    NuSound3Groups[NuSound3GroupCount].sample_count = 1;
+    NuSound3Groups[NuSound3GroupCount].cursor = 0;
+    SfxInfo[sample_id].group = (i16)NuSound3GroupCount;
+    NuSound3GroupSampleIds[NuSound3GroupSampleCount] = (i16)sample_id;
+    NuSound3GroupSampleCount++;
+    return NuSound3GroupCount++;
 }
 
 i32 __cdecl GroupBuffer_GetSample(i32 group_id, i32 sequential) {
@@ -134,15 +124,16 @@ i32 __cdecl GroupBuffer_GetSample(i32 group_id, i32 sequential) {
         return NuSound3GroupSampleIds[first_sample + cursor];
     }
 
+    nusound_seed = NuRandIntSeeded(&nusound_seed);
     if (sample_count == 0) {
         sample_count = 1;
     }
-    return NuSound3GroupSampleIds[first_sample + ((NuRandIntSeeded(&nusound_seed) >> 16) % sample_count)];
+    return NuSound3GroupSampleIds[first_sample + ((nusound_seed >> 16) % sample_count)];
 }
 
 void __cdecl AudioGroup_Parse(NUFPAR_PC *parser) {
-    i32 group_id = -1;
     i32 first = 1;
+    i32 group_id = -1;
 
     while (NuFParGetWord(parser) != 0) {
         i32 sample_id = GetSfxId(parser->word_buffer_ptr);
@@ -322,7 +313,7 @@ restore_fade:
 }
 
 void __cdecl SfxSetFileTable(SFX_FILE_INFO_PC *records) {
-    i32 index = 0;
+    i32 index;
 
     SfxFileTable = records;
     SfxFileCount = 0;
@@ -330,6 +321,7 @@ void __cdecl SfxSetFileTable(SFX_FILE_INFO_PC *records) {
         return;
     }
 
+    index = 0;
     while (records[index].filename != NULL) {
         NuStrLen(records[index].filename);
         index++;
@@ -405,37 +397,37 @@ u32 __cdecl SfxNameHashN(const char *name, u32 max_length) {
 i32 __cdecl GetSfxId(char *name) {
     i32 index;
 
-    if (name == NULL || SfxHashHeads == NULL) {
+    if (name == NULL)
         return -1;
-    }
+    if (SfxHashHeads == NULL)
+        return -1;
 
     index = SfxHashHeads[SfxNameHash(name) & 0xff];
     while (index != -1) {
-        SFX_RECORD_PC *record = &SfxInfo[index];
-        if (NuStrNICmp(name, record->name, 0x20) == 0) {
+        if (NuStrNICmp(name, SfxInfo[index].name, 0x20) == 0) {
             return index;
         }
-        index = record->next;
+        index = SfxInfo[index].next;
     }
     return -1;
 }
 
 void __cdecl SetSfxBit_OnEx(i32 sfx_id) {
-    u32 index = (u32)sfx_id;
-
-    if (index > 0x63f) {
-        return;
+    i32 word;
+    if ((u32)sfx_id <= 0x63f) {
+        word = sfx_id / 16;
+        if (word < 100)
+            SfxBits[word] |= (u16)(1u << (sfx_id & 0xf));
     }
-    SfxBits[index >> 4] |= (u16)(1u << (index & 0xf));
 }
 
 void __cdecl SetSfxBit_OffEx(i32 sfx_id) {
-    u32 index = (u32)sfx_id;
-
-    if (index > 0x63f) {
-        return;
+    i32 word;
+    if ((u32)sfx_id <= 0x63f) {
+        word = sfx_id / 16;
+        if (word < 100)
+            SfxBits[word] &= (u16)(0xffff - (1u << (sfx_id & 0xf)));
     }
-    SfxBits[index >> 4] &= (u16) ~(1u << (index & 0xf));
 }
 
 i32 __cdecl SfxBitEx(i32 sfx_id) {
@@ -478,7 +470,7 @@ void __cdecl SfxBitsStore(SoundTable *sound_table) {
     PCByteCopy_candidate(sound_table, SfxBits, 0xc8);
 }
 
-void __cdecl SfxBitsRestore(SoundTable *sound_table) {
+__declspec(noinline) void __cdecl SfxBitsRestore(SoundTable *sound_table) {
     PCByteCopy_candidate(SfxBits, sound_table, 0xc8);
 }
 
@@ -495,6 +487,7 @@ void __cdecl SoundStopMusic(void) {
         Music.primary_stream = 0;
         Music.transition_frames = 0;
         Music.pause_requested = 0;
+        Music.resume_frames = 0;
         Music.field_0012 = 0;
         Music.field_0013 = 0;
         Music.update_delay = 0;
@@ -519,7 +512,7 @@ void __cdecl ResetLevSfx(WORLDINFO *world) {
 }
 
 void __cdecl ClearLinkedCutSceneMusic(void *context) {
-    if (context == NULL || Music.track_data == context) {
+    if (context == NULL || context == Music.track_data) {
         Music.track_data = NULL;
     }
 }
@@ -592,7 +585,7 @@ void __cdecl NuSound3SetDat(NUDATHDR *header) {
     NuSoundDat = header;
 }
 
-i32 __cdecl NuSound3SetReverb(i32 enable) {
+__declspec(noinline) i32 __cdecl NuSound3SetReverb(i32 enable) {
     i32 previous = NuSound3Reverb;
     NuSound3Reverb = enable != 0;
     return previous;
@@ -616,9 +609,7 @@ f32 __cdecl PCSoundVolumeLookup(i32 index) {
 
 HRESULT __cdecl PCSoundSetRawVolume(IDirectSoundBuffer *buffer, i32 volume) {
     volume += SoundVoiceVolumeOffset;
-    if (volume > 0) {
-        volume = 0;
-    }
+    volume = volume > 0 ? 0 : volume;
     if (volume < -10000) {
         volume = -10000;
     }
@@ -629,9 +620,7 @@ HRESULT __cdecl PCSoundSetRawVolume(IDirectSoundBuffer *buffer, i32 volume) {
 HRESULT __cdecl PCSoundSetLinearVolume(IDirectSoundBuffer *buffer, f32 volume) {
     i32 raw_volume = (i32)volume + SoundVoiceVolumeOffset;
 
-    if (raw_volume > 0) {
-        raw_volume = 0;
-    }
+    raw_volume = raw_volume > 0 ? 0 : raw_volume;
     if (raw_volume < -10000) {
         raw_volume = -10000;
     }
@@ -687,9 +676,6 @@ i32 __cdecl GetSfxIdN(char *name, i32 length) {
 extern i32 NuSound3LoadingSfxPc;
 i32 __cdecl NuSound3LoadingSfx(void) {
     return NuSound3LoadingSfxPc != 0;
-}
-
-void NuSound3CancelCheckStereo(void) {
 }
 
 STATIC_ASSERT(offsetof(GAMEAUDIO_PC, sfx_ids) == 0x158);
@@ -844,31 +830,30 @@ static void __cdecl fnAudioAudio(NUFPAR_PC *parser) {
 static NUFPCOMJMP audioComPc[] = {
     {"Audio", fnAudioAudio}, {"Sample", fnAudioSample}, {"Group", AudioGroup_Parse}, {NULL, NULL}};
 void __cdecl InitSoundInfo(i32 index) {
-    SFX_RECORD_PC *info = &SfxInfo[index];
-    info->sample_id_flags |= 0x7fff;
-    info->name = SfxNameSlotsPc[NumSfxInst];
-    info->pitch = 0x5622;
-    info->priority = 0;
-    info->pan = 0.0f;
-    info->sample_id_flags &= ~0x400000u;
-    info->volume = 0x3fff;
-    info->pitch_rnd = 0.0f;
-    info->volume_rnd = 0.0f;
-    info->group = -1;
-    info->sample_id_flags &= ~0x8000u;
-    info->sample_id_flags &= ~0x10000u;
-    info->sample_id_flags &= ~0x20000u;
-    info->sample_id_flags &= ~0x40000u;
-    info->sample_id_flags &= ~0x100000u;
-    info->falloff_near = 0.0f;
-    info->falloff_far = 0.0f;
-    info->buzz_timer = 0.0f;
-    info->rumble_strength = 0;
-    info->rumble_sustain = 0.0f;
-    info->rumble_release = 0.0f;
-    info->category = 0;
-    info->sample_id_flags &= ~0x200000u;
-    SfxRevertInfoPc[index] = *info;
+    SfxInfo[index].sample_id_flags |= 0x7fff;
+    SfxInfo[index].name = SfxNameSlotsPc[NumSfxInst];
+    SfxInfo[index].pitch = 0x5622;
+    SfxInfo[index].priority = 0;
+    SfxInfo[index].pan = 0.0f;
+    SfxInfo[index].sample_id_flags &= ~0x400000u;
+    SfxInfo[index].volume = 0x3fff;
+    SfxInfo[index].pitch_rnd = 0.0f;
+    SfxInfo[index].volume_rnd = 0.0f;
+    SfxInfo[index].group = -1;
+    SfxInfo[index].sample_id_flags &= ~0x8000u;
+    SfxInfo[index].sample_id_flags &= ~0x10000u;
+    SfxInfo[index].sample_id_flags &= ~0x20000u;
+    SfxInfo[index].sample_id_flags &= ~0x40000u;
+    SfxInfo[index].sample_id_flags &= ~0x100000u;
+    SfxInfo[index].falloff_near = 0.0f;
+    SfxInfo[index].falloff_far = 0.0f;
+    SfxInfo[index].buzz_timer = 0.0f;
+    SfxInfo[index].rumble_strength = 0;
+    SfxInfo[index].rumble_sustain = 0.0f;
+    SfxInfo[index].rumble_release = 0.0f;
+    SfxInfo[index].category = 0;
+    SfxInfo[index].sample_id_flags &= ~0x200000u;
+    SfxRevertInfoPc[index] = SfxInfo[index];
 }
 void __cdecl LoadSfx(const char *file, VARIPTR *cursor, VARIPTR end) {
     NUFPAR_PC *parser = NuFParCreate((char *)file);
