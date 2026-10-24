@@ -4742,6 +4742,7 @@ extern "C" {
     void __cdecl Arcade_DrawPanel(i32 paused);
 
     void __cdecl CutScene_DrawSubtitles(void);
+    extern i32 DRAWBGLOAD;
 
     void __cdecl DrawPanel(void) {
         i32 menu = GetMenuID();
@@ -4760,8 +4761,29 @@ extern "C" {
         if (NuMainSkipCutBordersPc != 0 && paused == 0 && (WORLD->current_level->flags & 2) != 0) {
             return;
         }
-        if (waiting_for_level != -1) {
-            STUBBED_NAMED("DrawPanel: background-load diagnostics at 0x004baf0b");
+        const i32 loading_level = waiting_for_level;
+        if (loading_level != -1) {
+            if (DRAWBGLOAD != 0 && bgGetProcActive() != NULL) {
+                char *loading_name = LDataList[loading_level].name;
+                i32 red, green;
+                if (abort_load != 0) {
+                    sprintf(bonus_score, "Aborting ''%s''", loading_name);
+                    red = 255;
+                    green = 0;
+                } else {
+                    sprintf(bonus_score, "Loading ''%s''", loading_name);
+                    red = 0;
+                    green = 255;
+                }
+                const f32 y =
+                    (f32)((f64)NuTrigTable[(u16)(NuFmod(WaitingForLevelTime, 0.430f) / (f64)0.430f * 65536.0) >> 1] *
+                              (f64)0.035f -
+                          (f64)STATSPOSY);
+                const f32 x =
+                    (f32)((f64)NuTrigTable[(u16)(NuFmod(WaitingForLevelTime, 0.479f) / (f64)0.479f * 65536.0) >> 1] *
+                          (f64)0.035f);
+                Text3D(bonus_score, x, y, 1.0f, 0.3f, 0.3f, 0.3f, 0, red, green, 0);
+            }
             if (gone_through_door_to_new_level != 0) {
                 if (menu == -1 && editor_active == 0)
                     DrawMenu(paused);

@@ -13705,6 +13705,12 @@ address,symbol,size,ctype
 0x0075c0a8,_NuTimeBarFontScale,4,const f32
 0x75c0a8,__real@3f59999a,,f32
 0x75c0ac,__real@bf59999a,4,f32
+0x75c0b8,__real@3fdea7efa0000000,8,const f64
+0x75c0c0,__real@3ef53f7d,4,const f32
+0x75c0c8,__real@3fdb851ec0000000,8,const f64
+0x75c0d0,__real@3edc28f6,4,const f32
+0x75c0d4,??_C@_0P@CHEGCMCN@Loading?5?8?8?$CFs?8?8?$AA@,15,const char[15]
+0x75c0e4,??_C@_0BA@PMFLACPH@Aborting?5?8?8?$CFs?8?8?$AA@,16,const char[16]
 0x0075c0f8,__real@3fbe147ae0000000,,const f64
 0x75c100,__real@3f60624de0000000,,const f64
 0x75c108,??_C@_06EHCOJFFN@ai_zam?$AA@,7,char []
@@ -22243,6 +22249,7 @@ address,symbol,size,ctype
 0x0087b504,_openlevels,4,i32
 0x87b524,_NOAICREATURES,,i32
 0x87b52c,_NOTERRAINSTOP,,i32
+0x87b530,_DRAWBGLOAD,,i32
 0x87b538,_NuMainSkipCutBordersPc,,i32
 0x0087b53c,_LOADEROFF,4,i32
 0x0087b544,_frameout,4,i32

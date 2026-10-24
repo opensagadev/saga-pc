@@ -35106,3 +35106,8 @@ extern "C" {
     f32 SebulbaDistanceBiasPc = 25.0f;
 #pragma data_seg()
 }
+
+#pragma section(".bss$DRAWBGLOAD", read, write)
+extern "C" {
+    __declspec(allocate(".bss$DRAWBGLOAD")) i32 DRAWBGLOAD = 0;
+}
