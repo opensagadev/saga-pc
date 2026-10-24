@@ -4771,6 +4771,8 @@ extern "C" {
     extern f32 HudBossIconYPc;
     extern f32 HudBossIconScalePc;
 
+    void __cdecl Arcade_DrawPanel(i32 paused);
+
     void __cdecl DrawPanel(void) {
         i32 menu = GetMenuID();
         i32 paused;
@@ -4836,6 +4838,8 @@ extern "C" {
             else if (SuperStory != 0) {
                 if ((WORLD->current_level->flags & 0x2000) != 0)
                     DrawCoinTotalPc(1, hide_super_story_target);
+            } else if (BonusArea != 0 && Arcade != 0) {
+                Arcade_DrawPanel(Paused != 0 || NetPaused != 0);
             } else if (BonusArea == 0 && ChallengeMode != 0) {
                 f32 remaining = (f32)ADataList[WORLD->area_index].challenge_trial_time - ChallengeTimer.time_elapsed;
                 if (remaining < 0.0f)

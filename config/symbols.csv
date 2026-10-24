@@ -1250,6 +1250,7 @@ address,symbol,size,ctype
 0x00475890,?HubDrawArcadeStatsPc@@YAXM@Z,556,
 0x475ac0,_Arcade_ResetPanel,9,
 0x475ad0,_Arcade_UpdatePanel,133,
+0x00475b60,_Arcade_DrawPanel,249,"void __cdecl(i32)"
 0x475c60,_Arcade_AwardPoint,833,"void __cdecl (i32, i32, i32)"
 0x475fb0,_Arcade_PlayerKilled,84,"void __cdecl (i32, i32)"
 0x00476010,_Arcade_AIKilled,258,void __cdecl (i32)
@@ -12783,6 +12784,8 @@ address,symbol,size,ctype
 0x7596fc,??_C@_02GFKOMOKH@?5?$CI?$AA@,3,const char[3]
 0x759700,??_C@_02LMMGGCAJ@?3?5?$AA@,,
 0x00759700,_Menu_ColonSeparator,3,const char[3]
+0x00759704,__real@bf0ccccd,4,const f32
+0x00759708,__real@3ffb333340000000,8,const f64
 0x759710,__real@3f0e147b,4,const f32
 0x759714,__real@bf19999a,4,const f32
 0x759718,??_C@_0BA@NECHOIAM@env_padLight_on?$AA@,16,const char[16]

@@ -191,3 +191,18 @@ void __cdecl Arcade_Kill(i32 player_index, i32 killed_player) {
             Arcade_AIKilled(player_index);
     }
 }
+
+void __cdecl Arcade_DrawPanel(i32 paused) {
+    f32 alpha, scale, size;
+    if (Arcade == 0 || paused != 0 || Arcade_BothPlayersActive() != 0)
+        return;
+    alpha =
+        (f32)((f64)NuTrigTable[((i32)((f64)(NuFmod(GameTimer.time_elapsed_mod_seconds, 0.5f) * 2.0f) * 65536.0) >> 1) &
+                               0x7fff] *
+                  (f64)0.2f +
+              (f64)0.8f);
+    scale = Arcade_NeedTwoPlayers_Scale;
+    size = (f32)((f64)scale * (f64)0.6f);
+    SmartTextEx(TTab[TextIdPc8807c0], 0.0f, -0.55f, 1.0f, size, size, size, 0, 255, 0, 0, (f32)((f64)scale * (f64)1.7f),
+                1, NULL, 0, (i32)((f64)alpha * 128.0));
+}
