@@ -11074,6 +11074,26 @@ STATIC_ASSERT(offsetof(AIPATH_PC, route_matrix) == 0x84);
 STATIC_ASSERT(offsetof(AIPATH_PC, bounds_min) == 0x90);
 STATIC_ASSERT(offsetof(AIPATH_PC, bounds_max) == 0x9c);
 
+// Native inlined AISysBufferAlloc blocks retain the failure diagnostic and
+// publication after the allocation memset. Size arithmetic remains unsigned32.
+#define PATH_LOAD_ALLOCATE(type, destination, input_cursor, input_end, input_size)                                     \
+    do {                                                                                                               \
+        u32 allocation_size = (input_size);                                                                            \
+        VARIPTR *allocation_cursor = (input_cursor);                                                                   \
+        VARIPTR *allocation_end = (input_end);                                                                         \
+        void *allocation_result = NULL;                                                                                \
+        if (allocation_cursor == NULL || allocation_end == NULL ||                                                     \
+            allocation_cursor->addr + allocation_size >= allocation_end->addr) {                                       \
+            AIScriptMissingStateDiagnostic();                                                                          \
+        } else {                                                                                                       \
+            u32 allocation_address = (allocation_cursor->addr + 15) & ~15u;                                            \
+            allocation_cursor->addr = allocation_address + allocation_size;                                            \
+            allocation_result = (void *)allocation_address;                                                            \
+            memset(allocation_result, 0, allocation_size);                                                             \
+        }                                                                                                              \
+        destination = (type)allocation_result;                                                                         \
+    } while (0)
+
 static AIPATHSYS_PC *AISysLoadPathsPc(VARIPTR *cursor, i32 version, NUGSCN *scene, VARIPTR *end) {
     i32 count = EdFileReadInt();
     AI_PATH_SYSTEM_LOAD_PC *system;
@@ -11086,22 +11106,23 @@ static AIPATHSYS_PC *AISysLoadPathsPc(VARIPTR *cursor, i32 version, NUGSCN *scen
     char special_name[256];
     if (count == 0)
         return NULL;
-    system = (AI_PATH_SYSTEM_LOAD_PC *)AISysBufferAlloc(cursor, end, sizeof(*system));
+    PATH_LOAD_ALLOCATE(AI_PATH_SYSTEM_LOAD_PC *, system, cursor, end, sizeof(*system));
     if (system == NULL)
         return NULL;
     system->path_count = (u8)count;
     system->paths = (AIPATH_PC **)AISysBufferAlloc(cursor, end, system->path_count * sizeof(AIPATH_PC *));
     for (path_index = 0; path_index < system->path_count; ++path_index) {
-        AIPATH_PC *path = (AIPATH_PC *)AISysBufferAlloc(cursor, end, sizeof(AIPATH_PC));
-        system->paths[path_index] = path;
+        AIPATH_PC *path;
+        PATH_LOAD_ALLOCATE(AIPATH_PC *, system->paths[path_index], cursor, end, sizeof(AIPATH_PC));
+        path = system->paths[path_index];
         EdFileRead(path->name, 16);
         path->node_count = (u8)EdFileReadChar();
         path->flags = (u8)EdFileReadChar();
         path->index = (u8)path_index;
         path->connection_count = (u16)(version == 1 ? (i16)(i8)EdFileReadChar() : EdFileReadShort());
         if (path->connection_count != 0) {
-            path->connections =
-                (AIPATHCNX_PC *)AISysBufferAlloc(cursor, end, path->connection_count * sizeof(AIPATHCNX_PC));
+            PATH_LOAD_ALLOCATE(AIPATHCNX_PC *, path->connections, cursor, end,
+                               path->connection_count * sizeof(AIPATHCNX_PC));
             for (index = 0; index < path->connection_count; ++index) {
                 AIPATHCNX_PC *connection = &path->connections[index];
                 connection->node_indices[0] = (u8)EdFileReadChar();
@@ -11129,12 +11150,12 @@ static AIPATHSYS_PC *AISysLoadPathsPc(VARIPTR *cursor, i32 version, NUGSCN *scen
         if (version == 1)
             EdFileReadChar();
         if (path->node_count != 0) {
-            path->nodes = (AIPATHNODE_PC *)AISysBufferAlloc(cursor, end, path->node_count * sizeof(AIPATHNODE_PC));
+            PATH_LOAD_ALLOCATE(AIPATHNODE_PC *, path->nodes, cursor, end, path->node_count * sizeof(AIPATHNODE_PC));
             for (index = 0; index < path->node_count; ++index) {
                 AIPATHNODE_PC *node = &path->nodes[index];
                 length = EdFileReadInt();
                 if (length != 0) {
-                    node->name = (char *)AISysBufferAlloc(cursor, end, length + 1);
+                    PATH_LOAD_ALLOCATE(char *, node->name, cursor, end, length + 1);
                     EdFileRead(node->name, length);
                 }
                 node->position.x = EdFileReadFloat();
@@ -11171,8 +11192,8 @@ static AIPATHSYS_PC *AISysLoadPathsPc(VARIPTR *cursor, i32 version, NUGSCN *scen
                     node->special_position.z = EdFileReadFloat();
                 }
                 if (path->connections != NULL && node->connection_count != 0) {
-                    node->connections =
-                        (AIPATHCNX_PC **)AISysBufferAlloc(cursor, end, node->connection_count * sizeof(AIPATHCNX_PC *));
+                    PATH_LOAD_ALLOCATE(AIPATHCNX_PC **, node->connections, cursor, end,
+                                       node->connection_count * sizeof(AIPATHCNX_PC *));
                     for (row = 0; row < node->connection_count; ++row)
                         node->connections[row] = &path->connections[(i16)EdFileReadShort()];
                     if ((node->connection_count & 1) != 0)
@@ -11187,39 +11208,39 @@ static AIPATHSYS_PC *AISysLoadPathsPc(VARIPTR *cursor, i32 version, NUGSCN *scen
             }
             AIPathCalcExtents(path);
         }
-        path->route_matrix = (u8 **)AISysBufferAlloc(cursor, end, path->node_count * sizeof(u8 *));
+        PATH_LOAD_ALLOCATE(u8 **, path->route_matrix, cursor, end, path->node_count * sizeof(u8 *));
         for (index = 0; index < path->node_count; ++index) {
-            path->route_matrix[index] = (u8 *)AISysBufferAlloc(cursor, end, path->node_count);
+            PATH_LOAD_ALLOCATE(u8 *, path->route_matrix[index], cursor, end, path->node_count);
             EdFileRead(path->route_matrix[index], path->node_count);
         }
         if (version >= 5) {
             path->route_count = (u8)EdFileReadChar();
             if (path->route_count != 0) {
-                path->routes =
-                    (AIPATHROUTE_PC *)AISysBufferAlloc(cursor, end, path->route_count * sizeof(AIPATHROUTE_PC));
+                PATH_LOAD_ALLOCATE(AIPATHROUTE_PC *, path->routes, cursor, end,
+                                   path->route_count * sizeof(AIPATHROUTE_PC));
                 for (route_index = 0; route_index < path->route_count; ++route_index) {
                     AIPATHROUTE_PC *route = &path->routes[route_index];
                     length = (i8)EdFileReadChar();
                     if (length != 0) {
-                        route->name = (char *)AISysBufferAlloc(cursor, end, length);
+                        PATH_LOAD_ALLOCATE(char *, route->name, cursor, end, length);
                         EdFileRead(route->name, length);
                         route->route_count = (u8)EdFileReadChar();
                         route->exit_node_count = (u8)EdFileReadChar();
                         EdFileReadChar();
                         EdFileReadChar();
                         if (path->node_count != 0 && route->route_count != 0) {
-                            route->node_routes = (u8 *)AISysBufferAlloc(cursor, end, path->node_count);
+                            PATH_LOAD_ALLOCATE(u8 *, route->node_routes, cursor, end, path->node_count);
                             EdFileRead(route->node_routes, path->node_count);
-                            route->node_directions = (u8 *)AISysBufferAlloc(cursor, end, route->route_count);
+                            PATH_LOAD_ALLOCATE(u8 *, route->node_directions, cursor, end, route->route_count);
                             EdFileRead(route->node_directions, route->route_count);
-                            route->route_nodes =
-                                (u8 **)AISysBufferAlloc(cursor, end, route->route_count * sizeof(u8 *));
+                            PATH_LOAD_ALLOCATE(u8 **, route->route_nodes, cursor, end,
+                                               route->route_count * sizeof(u8 *));
                             for (row = 0; row < route->route_count; ++row) {
-                                route->route_nodes[row] = (u8 *)AISysBufferAlloc(cursor, end, route->route_count);
+                                PATH_LOAD_ALLOCATE(u8 *, route->route_nodes[row], cursor, end, route->route_count);
                                 EdFileRead(route->route_nodes[row], route->route_count);
                             }
                             if (route->exit_node_count != 0) {
-                                route->exit_nodes = (u8 *)AISysBufferAlloc(cursor, end, route->exit_node_count);
+                                PATH_LOAD_ALLOCATE(u8 *, route->exit_nodes, cursor, end, route->exit_node_count);
                                 EdFileRead(route->exit_nodes, route->exit_node_count);
                             }
                         }
@@ -11249,11 +11270,13 @@ static AIPATHSYS_PC *AISysLoadPathsPc(VARIPTR *cursor, i32 version, NUGSCN *scen
         if (version >= 19) {
             path->special_route_count = (u8)EdFileReadChar();
             if (path->special_route_count != 0) {
-                path->special_routes = (AIPATHNODELINK_PC *)AISysBufferAlloc(
-                    cursor, end, path->special_route_count * sizeof(AIPATHNODELINK_PC));
-                for (index = 0; index < path->special_route_count; ++index) {
-                    path->special_routes[index].node_index = EdFileReadUnsignedChar();
-                    path->special_routes[index].special_route_index = EdFileReadShort();
+                AIPATHNODELINK_PC *link;
+                PATH_LOAD_ALLOCATE(AIPATHNODELINK_PC *, path->special_routes, cursor, end,
+                                   path->special_route_count * sizeof(AIPATHNODELINK_PC));
+                link = path->special_routes;
+                for (index = 0; index < path->special_route_count; ++index, ++link) {
+                    link->node_index = EdFileReadUnsignedChar();
+                    link->special_route_index = EdFileReadShort();
                 }
             }
         }
@@ -11261,13 +11284,15 @@ static AIPATHSYS_PC *AISysLoadPathsPc(VARIPTR *cursor, i32 version, NUGSCN *scen
     if (version >= 19) {
         system->special_route_count = (u16)EdFileReadShort();
         if (system->special_route_count != 0) {
+            AIPATHSPECIALROUTE_PC *route;
             system->special_routes = (AIPATHSPECIALROUTE_PC *)AISysBufferAlloc(
                 cursor, end, system->special_route_count * sizeof(AIPATHSPECIALROUTE_PC));
-            for (index = 0; index < system->special_route_count; ++index) {
-                AIPATHSPECIALROUTE_PC *route = &system->special_routes[index];
+            route = system->special_routes;
+            for (index = 0; index < system->special_route_count; ++index, ++route) {
                 route->path_count = (u8)EdFileReadChar();
                 if (route->path_count != 0) {
-                    route->paths = (AIPATH_PC **)AISysBufferAlloc(cursor, end, route->path_count * sizeof(AIPATH_PC *));
+                    PATH_LOAD_ALLOCATE(AIPATH_PC **, route->paths, cursor, end,
+                                       route->path_count * sizeof(AIPATH_PC *));
                     for (row = 0; row < route->path_count; ++row)
                         route->paths[row] = system->paths[(i8)EdFileReadChar()];
                 }
@@ -11276,6 +11301,8 @@ static AIPATHSYS_PC *AISysLoadPathsPc(VARIPTR *cursor, i32 version, NUGSCN *scen
     }
     return (AIPATHSYS_PC *)system;
 }
+
+#undef PATH_LOAD_ALLOCATE
 
 static AISYS_PC *AISysLoadPrivatePc(NUGSCN *scene, char *directory, void *pak, VARIPTR *buffer, VARIPTR *buffer_end,
                                     i32 storage_size, char *name, char *parameter, char *load_directory) {
