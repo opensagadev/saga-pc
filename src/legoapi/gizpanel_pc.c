@@ -258,12 +258,15 @@ extern const char PanelDeactivateSfxPc[10], PanelActivateSfxPc[10];
 
 static NUVEC *PanelGetTrackingPositionPc(PANEL_MOVEMENT_PC *panel, NUVEC *position) {
     *position = panel->position;
-    if (panel->model_variant == 3) {
-        position->y = (f32)((f64)position->y + PanelVariantThreeTargetY);
-        position->z = (f32)((f64)position->z - PanelVariantThreeTargetZ);
-    } else if (panel->model_variant == 2) {
-        position->y = (f32)((f64)position->y + PanelVariantTwoTargetY);
-        position->z = (f32)((f64)position->z - PanelVariantTwoTargetZ);
+    switch (panel->model_variant) {
+        case 3:
+            position->y = (f32)((f64)position->y + PanelVariantThreeTargetY);
+            position->z = (f32)((f64)position->z - PanelVariantThreeTargetZ);
+            break;
+        case 2:
+            position->y = (f32)((f64)position->y + PanelVariantTwoTargetY);
+            position->z = (f32)((f64)position->z - PanelVariantTwoTargetZ);
+            break;
     }
     return position;
 }
