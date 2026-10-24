@@ -4778,7 +4778,7 @@ extern "C" {
         i32 paused;
         i32 player_index;
         NUVEC coordinate_positions[8];
-        char coordinate_text[128];
+        char coordinate_text[128], bonus_score[128];
         SetQFont2D();
         if (CUTSTOPGAME == 0) {
             TransformGameMessages(&GameCam->position, &GameCam->shaken_right, &GameCam->dir);
@@ -4840,6 +4840,24 @@ extern "C" {
                     DrawCoinTotalPc(1, hide_super_story_target);
             } else if (BonusArea != 0 && Arcade != 0) {
                 Arcade_DrawPanel(Paused != 0 || NetPaused != 0);
+            } else if (BonusArea != 0) {
+                if ((WORLD->area->flags & 0x100) != 0) {
+                    DrawCoinTotalPc(2, hide_super_story_target);
+                    if ((f64)DrawCoinTotalYPc != 2000000.0) {
+                        Text_MakeScore(BonusCoinTarget, bonus_score);
+                        NuStrCpy(coordinate_text, const_cast<char *>("("));
+                        NuStrCat(coordinate_text, bonus_score);
+                        NuStrCat(coordinate_text, const_cast<char *>(")"));
+                        Text3DEx(coordinate_text, 0.0f, DrawCoinTotalYPc + CoinTotalTargetOffsetYPc, 1.0f, 0.35f, 0.35f,
+                                 0.35f, 0, 255, 255, 255, 48);
+                    }
+                }
+                if (FadeSys.fade == 0.0f && (WORLD->current_level->flags & 2) != 0) {
+                    DrawSuperStoryTimePc(
+                        -((STATSPOSY - STATSPOS2YPc) * NuTrigTable[((i32)((f64)statstime * 16384.0) >> 1) & 0x7fff] +
+                          STATSPOS2YPc),
+                        BonusTimer.time_elapsed, Game.area_save[WORLD->area_index].challenge_trial_time, 0, 1);
+                }
             } else if (BonusArea == 0 && ChallengeMode != 0) {
                 f32 remaining = (f32)ADataList[WORLD->area_index].challenge_trial_time - ChallengeTimer.time_elapsed;
                 if (remaining < 0.0f)
@@ -4883,8 +4901,6 @@ extern "C" {
                                      (f32)((f64)0.055f - (f64)mission_y), 0.0f, 0.25f, 167, alpha, alpha, 1, NULL);
                     }
                 }
-            } else {
-                STUBBED_NAMED("DrawPanel: remaining native bonus HUD branches at 0x004bb3d6..0x004bb590");
             }
         }
         STUBBED_NAMED("DrawPanel: frame-rate diagnostics at 0x004bb319");
