@@ -2247,7 +2247,7 @@ void __cdecl SuperStoryScore_LSW_Draw(STATUS_STAGE_s *stage, STATUSPACKET_s *pac
         return;
     if (stage->field_0x14 > 0) {
         volatile f32 alpha, blend;
-        volatile i32 opacity;
+        i32 opacity;
         char *title;
         i32 red, green;
         if (stage->field_0x18 < 0.5f) {
@@ -2289,7 +2289,7 @@ void __cdecl SuperStoryScore_LSW_Draw(STATUS_STAGE_s *stage, STATUSPACKET_s *pac
         coin_progress = 1.0f;
     {
         volatile f32 coin_scale = CoinTotalScale;
-        volatile i32 angle = (i32)((f64)coin_progress * 16384.0);
+        i32 angle = (i32)((f64)coin_progress * 16384.0);
         volatile f32 coin_y =
             ((f64)STATSPOSY - (f64)STATSPOS2YPc) * (f64)NuTrigTable[(angle >> 1) & 0x7fff] + (f64)STATSPOS2YPc;
         CoinTotal_Draw((i32)*packet->score, coin_y, coin_scale, 1, 1.0f, 255, 191, 0);
