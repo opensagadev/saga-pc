@@ -461,7 +461,7 @@ f32 __cdecl Condition_OpponentBelowPc(AISYS_PC *system, AISCRIPTPROCESS_PC *proc
     (void)name;
     (void)argument;
     if (packet != NULL && packet->opponent != NULL &&
-        (f64)packet->owner->position.y - (f64)0.1f > (f64)packet->opponent->position.y)
+        (f64)packet->opponent->position.y < (f64)packet->owner->position.y - (f64)0.1f)
         return 1.0f;
     return 0.0f;
 }
