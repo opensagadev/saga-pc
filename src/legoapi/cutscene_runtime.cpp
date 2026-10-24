@@ -1,5 +1,6 @@
 #include "saga.h"
 extern "C" void __cdecl GameFog_Reset(void);
+extern "C" void __cdecl Panel_Clear(void);
 extern "C" void __cdecl PauseGameCut(void);
 
 CUTINFO *__cdecl CutScene_Find(CUTSYS_PC *system, char *name) {
@@ -1750,7 +1751,7 @@ extern "C" {
         }
         if ((cut->flags & 1) == 0)
             return 1;
-        STUBBED_NAMED(0x004ba190); /* Native Panel_Clear(). */
+        Panel_Clear();
         CutFramePc = 0;
         for (i32 i = 0; i < world->cutscene_sys->count; ++i) {
             CUT_LOAD_RECORD_PC *other = reinterpret_cast<CUT_LOAD_RECORD_PC *>(world->cutscene_sys->records[i]);
@@ -1774,7 +1775,7 @@ extern "C" {
         CutBorderScale = 1.0f;
         ACTIVECUTCOUNT = 1;
         cut_waiting_for_new_level = 0;
-        STUBBED_NAMED(0x00564ca0); /* Native GameFog_Reset(). */
+        GameFog_Reset();
         CutSceneResetTextureAnimationsPrivatePc(cut);
         return 1;
     }
@@ -1840,7 +1841,7 @@ extern "C" {
             if (i == CutInstEndStop) {
                 CUTSTOPGAME = 0;
                 CutStopInfo = NULL;
-                STUBBED_NAMED(0x0054a2f0); /* Native GameCam_Reset(GameCam). */
+                GameCam_Reset(GameCam);
                 PCFrameSetLoadingYieldEnabled(0);
             }
         }
