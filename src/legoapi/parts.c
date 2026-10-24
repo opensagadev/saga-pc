@@ -1040,7 +1040,7 @@ void __cdecl DebrisEmitterPos(i32 handle, f32 x, f32 y, f32 z) {
     }
 }
 
-void __cdecl DebrisEmitterMomentum(i32 handle, f32 x, f32 y, f32 z) {
+__declspec(noinline) void __cdecl DebrisEmitterMomentum(i32 handle, f32 x, f32 y, f32 z) {
     if (handle != -1) {
         debkeydata[handle].emitter_momentum.x = x;
         debkeydata[handle].emitter_momentum.y = y;
@@ -1048,7 +1048,7 @@ void __cdecl DebrisEmitterMomentum(i32 handle, f32 x, f32 y, f32 z) {
     }
 }
 
-void __cdecl DebrisParticleMomentum(i32 handle, f32 x, f32 y, f32 z) {
+__declspec(noinline) void __cdecl DebrisParticleMomentum(i32 handle, f32 x, f32 y, f32 z) {
     if (handle != -1) {
         debkeydata[handle].momentum.x = x;
         debkeydata[handle].momentum.y = y;
@@ -1315,32 +1315,38 @@ void AddFiniteShotDebrisEffect2(i32 *handle, i32 effect, NUVEC *position, NUVEC 
         return;
     debkeydata[*handle].finite_count = count;
     now = debtab[effect]->time_group == 4 ? panelglobaltime : globaltime;
-    debkeydata[*handle].finite = 1;
     debkeydata[*handle].emission_disabled = 0;
     offset = debkeydata[*handle].emission_time - now;
     debkeydata[*handle].emission_time -= offset;
     debkeydata[*handle].emission_end_time -= offset;
     debkeydata[*handle].emission_epoch = debkeydata[*handle].last_update_time;
+    debkeydata[*handle].finite = 1;
     debkeydata[*handle].cutoff_distance =
         (debris_cutoff_camera_vec != NULL ? NuVecDist(position, (NUVEC *)debris_cutoff_camera_vec, NULL) : 0.0f);
     if (debkeydata[*handle].process_collision_sound != 0) {
-        range = debtab[effect]->sound_range_override;
-        if (range == 0.0f)
-            range = debtab[effect]->sound_range;
-        if (range == 0.0f)
-            range = debtab[effect]->clip_extent;
+        DEBRIS_INFO_PC **effects = debtab;
         volume = 0.0f;
+        if (effects[effect]->sound_range_override == 0.0f) {
+            if (effects[effect]->sound_range == 0.0f)
+                range = effects[effect]->clip_extent;
+            else
+                range = effects[effect]->sound_range;
+        } else {
+            range = effects[effect]->sound_range_override;
+        }
         if (debkeydata[*handle].cutoff_distance < range) {
             for (sound = 0; sound < 4; ++sound) {
-                if (debtab[effect]->sound_data[sound * 3] != -1)
-                    SetSfxBit_On(debtab[effect]->sound_data[sound * 3]);
+                if (effects[effect]->sound_data[sound * 3] != -1)
+                    SetSfxBit_On(effects[effect]->sound_data[sound * 3]);
             }
             volume = (range - debkeydata[*handle].cutoff_distance) / range;
         }
         if (debkeydata[*handle].cutoff_distance < range) {
             for (sound = 0; sound < 4; ++sound) {
-                if (debtab[effect]->sound_data[sound * 3] != -1 && debtab[effect]->sound_data[sound * 3 + 1] == 1)
-                    PlaySfxByIdEx(debtab[effect]->sound_data[sound * 3], position, volume, 1.0f);
+                if (effects[effect]->sound_data[sound * 3] != -1 && effects[effect]->sound_data[sound * 3 + 1] == 1) {
+                    PlaySfxByIdEx(effects[effect]->sound_data[sound * 3], position, volume, 1.0f);
+                    effects = debtab;
+                }
             }
         }
     }
