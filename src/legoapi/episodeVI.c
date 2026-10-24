@@ -1,6 +1,37 @@
 #include "saga.h"
 #include <stdio.h>
 
+typedef struct SARLACC_DISCO_PC {
+    AIAREA_PC *area;
+    NUSPECIALHANDLE off[16], flash[16], select[16], on[16], finish[16];
+    GIZOBSTACLE *off_obstacle, *on_obstacle;
+    u8 panel_state[16];
+    i8 count, phase, first_panel, second_panel;
+    f32 timer, initial_height, height;
+    u8 reserved_3ec[4];
+    GIZAIMESSAGE *help_message, *complete_message, *state_message;
+    NUVEC *last_selected_position;
+} SARLACC_DISCO_PC;
+STATIC_ASSERT(sizeof(SARLACC_DISCO_PC) == 0x400);
+STATIC_ASSERT(offsetof(SARLACC_DISCO_PC, off) == 4);
+STATIC_ASSERT(offsetof(SARLACC_DISCO_PC, flash) == 0xc4);
+STATIC_ASSERT(offsetof(SARLACC_DISCO_PC, select) == 0x184);
+STATIC_ASSERT(offsetof(SARLACC_DISCO_PC, on) == 0x244);
+STATIC_ASSERT(offsetof(SARLACC_DISCO_PC, finish) == 0x304);
+STATIC_ASSERT(offsetof(SARLACC_DISCO_PC, panel_state) == 0x3cc);
+STATIC_ASSERT(offsetof(SARLACC_DISCO_PC, count) == 0x3dc);
+STATIC_ASSERT(offsetof(SARLACC_DISCO_PC, timer) == 0x3e0);
+STATIC_ASSERT(offsetof(SARLACC_DISCO_PC, initial_height) == 0x3e4);
+STATIC_ASSERT(offsetof(SARLACC_DISCO_PC, height) == 0x3e8);
+STATIC_ASSERT(offsetof(SARLACC_DISCO_PC, help_message) == 0x3f0);
+STATIC_ASSERT(offsetof(SARLACC_DISCO_PC, complete_message) == 0x3f4);
+STATIC_ASSERT(offsetof(SARLACC_DISCO_PC, state_message) == 0x3f8);
+static SARLACC_DISCO_PC sarlaccdisco = {0};
+NUSPECIALHANDLE SarlaccLevSpecialPc[7] = {0};
+void *SarlaccLevelBuilditsPc[2] = {0};
+GIZMO_PC *SarlaccObstMirrorBallPc = NULL;
+GIZMO_PC *SarlaccForceMirrorBallPc = NULL;
+
 f32 DeathStarZapSizeWidthPc = 1.0f;
 f32 DeathStarZapSizeLengthPc = 1.0f;
 f32 DeathStarZapWidthBiasPc = 0.01f;
@@ -151,6 +182,101 @@ void __cdecl JabbasPalaceE_Panel(WORLDINFO *world) {
         else
             DrawBossHitPoints(NULL);
     }
+}
+
+void __cdecl SarlaccPitB_Init(WORLDINFO *world) {
+    char name[32];
+    i8 *index;
+    NUVEC *position;
+    (void)world;
+    memset(&sarlaccdisco, 0, sizeof(sarlaccdisco));
+    sarlaccb_netpacket = (SARLACC_BATTLE_MUSIC_VIEW_PC *)SetLevelHack(20);
+    index = &sarlaccdisco.count;
+    *index = 0;
+    for (;;) {
+        if (*index < 9)
+            sprintf(name, "dot_off_0%d", *index + 1);
+        else
+            sprintf(name, "dot_off_%d", *index + 1);
+        NuSpecialFind(WORLD->current_gscn, &sarlaccdisco.off[*index], name, 1);
+        if (*index < 9)
+            sprintf(name, "dot_flash_0%d", *index + 1);
+        else
+            sprintf(name, "dot_flash_%d", *index + 1);
+        NuSpecialFind(WORLD->current_gscn, &sarlaccdisco.flash[*index], name, 1);
+        if (*index < 9)
+            sprintf(name, "dot_select_0%d", *index + 1);
+        else
+            sprintf(name, "dot_select_%d", *index + 1);
+        NuSpecialFind(WORLD->current_gscn, &sarlaccdisco.select[*index], name, 1);
+        if (*index < 9)
+            sprintf(name, "dot_on_0%d", *index + 1);
+        else
+            sprintf(name, "dot_on_%d", *index + 1);
+        NuSpecialFind(WORLD->current_gscn, &sarlaccdisco.on[*index], name, 1);
+        if (*index < 9)
+            sprintf(name, "dot_finish_0%d", *index + 1);
+        else
+            sprintf(name, "dot_finish_%d", *index + 1);
+        NuSpecialFind(WORLD->current_gscn, &sarlaccdisco.finish[*index], name, 1);
+        if (!NuSpecialExistsFn(&sarlaccdisco.off[*index]) || !NuSpecialExistsFn(&sarlaccdisco.flash[*index]) ||
+            !NuSpecialExistsFn(&sarlaccdisco.select[*index]) || !NuSpecialExistsFn(&sarlaccdisco.on[*index]) ||
+            !NuSpecialExistsFn(&sarlaccdisco.finish[*index]))
+            break;
+        if (*index == 0) {
+            position = NuSpecialGetPos(&sarlaccdisco.off[0]);
+            if (position != NULL) {
+                sarlaccdisco.initial_height = position->y;
+                sarlaccdisco.height = position->y;
+            }
+        }
+        ++*index;
+        if (*index >= 16)
+            break;
+    }
+    sarlaccdisco.area = AISysFindArea(WORLD->ai_sys, "DISCO");
+    NuSpecialFind(WORLD->current_gscn, &LevHSpecial[0], "force_engine_lump", 1);
+    NuSpecialFind(WORLD->current_gscn, &LevHSpecial[1], "disco_base", 1);
+}
+
+void __cdecl SarlaccPitB_Reset(WORLDINFO *world) {
+    i32 index;
+    sarlaccdisco.timer = 0.0f;
+    memset(sarlaccdisco.panel_state, 0, sizeof(sarlaccdisco.panel_state));
+    sarlaccdisco.phase = 0;
+    sarlaccdisco.first_panel = -1;
+    sarlaccdisco.second_panel = -1;
+    for (index = 0; index < sarlaccdisco.count; ++index) {
+        NuSpecialSetVisibility(&sarlaccdisco.off[index], 1);
+        NuSpecialSetVisibility(&sarlaccdisco.flash[index], 0);
+        NuSpecialSetVisibility(&sarlaccdisco.on[index], 0);
+        NuSpecialSetVisibility(&sarlaccdisco.finish[index], 0);
+    }
+    sarlaccdisco.help_message = SetGizAIMessage(gizaimessagesys, "HelpWithDisco", 0.0f, NULL);
+    sarlaccdisco.complete_message = SetGizAIMessage(gizaimessagesys, "DiscoComplete", 0.0f, NULL);
+    sarlaccdisco.state_message = SetGizAIMessage(gizaimessagesys, "DiscoState", 0.0f, NULL);
+    sarlaccdisco.off_obstacle = GizObstacle_FindByName(world->giz_obstacle_sys, "disco_off");
+    sarlaccdisco.on_obstacle = GizObstacle_FindByName(world->giz_obstacle_sys, "disco_on");
+    NuSpecialFind(world->current_gscn, &SarlaccLevSpecialPc[0], "floor_disco", 1);
+    NuSpecialFind(world->current_gscn, &SarlaccLevSpecialPc[1], "light1_a", 1);
+    NuSpecialFind(world->current_gscn, &SarlaccLevSpecialPc[2], "disco_ball1", 1);
+    NuSpecialFind(world->current_gscn, &SarlaccLevSpecialPc[3], "disco_ball2", 1);
+    NuSpecialFind(world->current_gscn, &SarlaccLevSpecialPc[4], "shutter_1", 1);
+    NuSpecialFind(world->current_gscn, &SarlaccLevSpecialPc[5], "jabba_door1", 1);
+    NuSpecialFind(world->current_gscn, &SarlaccLevSpecialPc[6], "jabba_door2", 1);
+    SarlaccForceMirrorBallPc = GizmoFindByName(world->gizmo_sys, force_gizmotype_id, "force5");
+    SarlaccObstMirrorBallPc = GizmoFindByName(world->gizmo_sys, obstacle_gizmotype_id, "obstacle5");
+    SarlaccLevelBuilditsPc[0] = GizBuildIt_Find(world, "buildit6");
+    SarlaccLevelBuilditsPc[1] = GizBuildIt_Find(world, "buildit4");
+    LevelLocator = AIPathFindLocator(world->ai_sys, "DiscoHelp");
+    if (NuSpecialExistsFn(&SarlaccLevSpecialPc[3]))
+        NuSpecialSetVisibility(&SarlaccLevSpecialPc[3], 0);
+    if (NuSpecialExistsFn(&SarlaccLevSpecialPc[0]))
+        NuSpecialSetVisibility(&SarlaccLevSpecialPc[0], 0);
+    if (NuSpecialExistsFn(&SarlaccLevSpecialPc[1]))
+        NuSpecialSetVisibility(&SarlaccLevSpecialPc[1], 0);
+    if (GizForce_Complete((GIZFORCE_PC *)SarlaccForceMirrorBallPc->object))
+        GizObstacle_Stop((GIZOBSTACLE *)SarlaccObstMirrorBallPc->object);
 }
 
 void __cdecl SarlaccPitC_Init(WORLDINFO *world) {

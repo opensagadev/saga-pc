@@ -2461,7 +2461,7 @@ address,symbol,size,ctype
 0x4ec390,_SarlaccPitA_Draw,144,
 0x4ec420,_SarlaccPitB_SpecialUpdate,901,
 0x4ec7b0,_SarlaccPitDiscoActive,39,i32 __cdecl(WORLDINFO *)
-0x4ec7e0,_SarlaccPitB_Init,540,
+0x4ec7e0,_SarlaccPitB_Init,867,
 0x4ecb50,_SarlaccPitB_Reset,702,
 0x4ece70,_SarlaccPitB_Update,2128,
 0x004ed6c0,_SarlaccPitC_Init,23,void __cdecl(WORLDINFO *)
@@ -14498,6 +14498,22 @@ address,symbol,size,ctype
 0x75e718,??_C@_09HKHGLEHE@AI_rancor?$AA@,10,char []
 0x75e724,??_C@_0O@FBPNPHPG@float_skiff_2?$AA@,14,char []
 0x75e734,??_C@_09KODIKCNI@Boba_Dead?$AA@,10,char []
+0x75e778,??_C@_0L@GALOKHNF@disco_base?$AA@,,const char[11]
+0x75e784,??_C@_0BC@BGLJJEAC@force_engine_lump?$AA@,,const char[18]
+0x75e798,??_C@_09BAEOCFCD@DiscoHelp?$AA@,,const char[10]
+0x75e7a4,??_C@_08CMIFEBOP@buildit4?$AA@,,const char[9]
+0x75e7b0,??_C@_08BOLDCDGN@buildit6?$AA@,,const char[9]
+0x75e7bc,??_C@_0M@OIAJBCNP@jabba_door2?$AA@,,const char[12]
+0x75e7c8,??_C@_0M@MDCEEBBM@jabba_door1?$AA@,,const char[12]
+0x75e7d4,??_C@_09LLMNFAKA@shutter_1?$AA@,,const char[10]
+0x75e7e0,??_C@_0M@BMACLAML@disco_ball2?$AA@,,const char[12]
+0x75e7ec,??_C@_0M@DHCPODAI@disco_ball1?$AA@,,const char[12]
+0x75e7f8,??_C@_08JJHADHIN@light1_a?$AA@,,const char[9]
+0x75e804,??_C@_0M@FHGMLPKP@floor_disco?$AA@,,const char[12]
+0x75e810,??_C@_08LEMEACHH@disco_on?$AA@,,const char[9]
+0x75e81c,??_C@_09PDGBLNAE@disco_off?$AA@,,const char[10]
+0x75e828,??_C@_0L@HLAPJMNO@DiscoState?$AA@,,const char[11]
+0x75e834,??_C@_0O@HGNMBCML@HelpWithDisco?$AA@,,const char[14]
 0x75e860,_EpisodeVI_panel2,7,const char[7]
 0x75e868,_EpisodeVI_shot_a_format,10,const char[10]
 0x75e874,_EpisodeVI_shot_format,9,const char[9]
@@ -23419,6 +23435,7 @@ address,symbol,size,ctype
 0x88a570,_Vader_obj,4,GAMEOBJECT *
 0x88a574,_Vader_ai_message,4,GIZAIMESSAGE *
 0x88a578,_HothBattleC_BombGenerator,4,struct GIZBOMBGEN_s *
+0x88a580,_SarlaccLevelBuilditsPc,,void *[2]
 0x88a588,_runningTotalPos,4,f32
 0x88a58c,_prevOnFireTruck,1,u8
 0x88a58d,_prevOnLifeBoat,1,u8
@@ -23430,12 +23447,16 @@ address,symbol,size,ctype
 0x88a5b8,_SarlaccTargetShieldPc,,i32[2]
 0x88a5c0,_routemask_efloor_off,,u64
 0x88a648,_sarlaccb_netpacket,,SARLACC_BATTLE_MUSIC_VIEW_PC *
+0x88a64c,_SarlaccObstMirrorBallPc,,GIZMO_PC *
 0x88a650,_routemask_efloor_on,,u64
 0x88a658,_SarlaccBlowUpTargetsPc,,GIZMOBLOWUP_PC *[4]
 0x0088a668,_slowDownTimer,8,f32 [2]
 0x88a670,_fireBackPos,32,SPLINEPOS
+0x88a690,_SarlaccForceMirrorBallPc,,GIZMO_PC *
+0x88a698,_SarlaccLevSpecialPc,,NUSPECIALHANDLE[7]
 0x88a6ec,_prevOnTaunTaun,1,u8
 0x88a6ed,_prevOnTownCar,1,u8
+0x88a6f0,_sarlaccdisco,,SARLACC_DISCO_PC
 0x88aaf0,_SarlaccBlowUpTargetCountPc,,i32
 0x88aaf4,_DeathStarZapLaserTypePc,,i32
 0x88aafc,_hspecial_efloor,,NUSPECIALHANDLE *
