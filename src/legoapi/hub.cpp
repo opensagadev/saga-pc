@@ -4765,6 +4765,8 @@ extern "C" {
 
     void __cdecl Arcade_DrawPanel(i32 paused);
 
+    void __cdecl CutScene_DrawSubtitles(void);
+
     void __cdecl DrawPanel(void) {
         i32 menu = GetMenuID();
         i32 paused;
@@ -4897,7 +4899,7 @@ extern "C" {
         }
         STUBBED_NAMED("DrawPanel: frame-rate diagnostics at 0x004bb319");
         if (CUTSTOPGAME != 0) {
-            STUBBED_NAMED("DrawPanel: DrawSubtitles at 0x0057e2c0");
+            CutScene_DrawSubtitles();
             goto draw_menu;
         }
         if (WORLD->current_level->callbacks[6] == NULL && (WORLD->current_level->flags & 2) == 0) {

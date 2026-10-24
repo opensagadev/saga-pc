@@ -4426,6 +4426,7 @@ address,symbol,size,ctype
 0x57d270,_CutScene_RigidPostRender,299,
 0x0057d3a0,_CutScene_DrawCharacter,3767,
 0x57e260,_CutScenes_InitSystem,85,void __cdecl(CUT_DRAW_SETTINGS_PC *)
+0x0057e2c0,_CutScene_DrawSubtitles,355,void __cdecl(void)
 0x57e430,_CutScenePlayer_Configure,684,"void __cdecl (char *, VARIPTR *, VARIPTR *, i16 *, i16 *, i16 *, i16 *, i16 *)"
 0x57e6e0,_CutScenePlayer_Reset,17,void __cdecl (void)
 0x57e700,_CutScenePlayer_Available,6,struct CUT_PLAYER_ACTIVE_PC * __cdecl (void)

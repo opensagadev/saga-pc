@@ -2126,3 +2126,31 @@ extern "C" void CutScenes_BGLoadManager() {
 extern "C" {
     i32 CutSceneMusicStartFramePc = -1;
 }
+
+extern "C" void __cdecl CutScene_DrawSubtitles(void) {
+    CUT_LOAD_RECORD_PC *cut = reinterpret_cast<CUT_LOAD_RECORD_PC *>(CutStopInfo);
+    if (cut == NULL)
+        return;
+    CUT_LOAD_SUBTITLE_PC *subtitle = cut->subtitle_data;
+    if (subtitle == NULL)
+        return;
+    for (i32 i = 0; i < cut->subtitle_count; ++i, ++subtitle) {
+        if (cut->unknown_58 >= subtitle->start_frame && subtitle->end_frame >= cut->unknown_58) {
+            f32 alpha = 1.0f;
+            if (subtitle->fade_time > 0.0f) {
+                f32 fade_end = subtitle->start_frame + subtitle->fade_time;
+                if (fade_end > cut->unknown_58) {
+                    alpha = (cut->unknown_58 - subtitle->start_frame) / (fade_end - subtitle->start_frame);
+                } else {
+                    f32 fade_start = subtitle->end_frame - subtitle->fade_time;
+                    if (cut->unknown_58 > fade_start)
+                        alpha = 1.0f - (cut->unknown_58 - fade_start) / (subtitle->end_frame - fade_start);
+                }
+            }
+            SmartTextEx(TTab[subtitle->text_id], subtitle->x, subtitle->y, 1.0f, subtitle->x_scale, subtitle->y_scale,
+                        1.0f, subtitle->alignment, subtitle->red, subtitle->green, subtitle->blue, subtitle->max_width,
+                        1, NULL, 0, (i32)((f32)subtitle->alpha * alpha));
+            cut = reinterpret_cast<CUT_LOAD_RECORD_PC *>(CutStopInfo);
+        }
+    }
+}
