@@ -916,8 +916,7 @@ address,symbol,size,ctype
 0x455b60,_Action_SetAO_AttackersPerRow,116,"i32 __cdecl (AISYS_PC *, AISCRIPTPROCESS_PC *, AIPACKET_PC *, char **, i32, i32, f32)"
 0x455be0,_Action_SetAO_RowDist,109,"i32 __cdecl (AISYS_PC *, AISCRIPTPROCESS_PC *, AIPACKET_PC *, char **, i32, i32, f32)"
 0x455c50,_Action_SetAO_InitRowDist,109,"i32 __cdecl (AISYS_PC *, AISCRIPTPROCESS_PC *, AIPACKET_PC *, char **, i32, i32, f32)"
-0x455cc0,_Action_SetTechnoCompletePc,94,
-0x455d20,_Action_SetTechnoComplete,270,
+0x455cc0,_Action_SetTechnoCompletePc,366,
 0x455e30,_Action_LetGoOfBalloonPc,35,
 0x455e60,_Action_DrawBossHitPointsPc,35,
 0x00455e90,_Action_CompleteLevel,280,
