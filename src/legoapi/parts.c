@@ -1830,9 +1830,9 @@ void __cdecl AddVariableShotDebrisEffectTimed5(i32 effect_index, NUVEC *position
             }
         }
     }
-    DebrisReleaseControlStackLock();
     key->previous_particle_count = key->particle_count;
     key->previous_allocated_chunk_count = key->allocated_chunk_count;
+    debris_control_stack_lock = 0;
 }
 
 void __cdecl AddVariableShotDebrisEffectMtx3(i32 effect, NUVEC *position, NUVEC *momentum, i32 count,
