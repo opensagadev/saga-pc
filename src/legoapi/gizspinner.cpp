@@ -341,7 +341,8 @@ static __declspec(noinline) void SpinnerSeekOutputPc(GIZSPINNER_s *spinner, i32 
     GAMEANIMOBJ *object = spinner->primary_anim_obj;
     volatile f32 rounded_rate = object->instance_animation->fparam1;
     f32 rate = rounded_rate;
-    i32 direction = (spinner->state_flags & 6) == 2 || (spinner->state_flags & 6) == 4 ? 1 : -1;
+    u32 flags = spinner->state_flags;
+    i32 direction = ((flags & 2) != 0 && (flags & 4) == 0) || ((flags & 2) == 0 && (flags & 4) != 0) ? 1 : -1;
     volatile f32 rounded_length = (f64)object->end_frame - object->start_frame + 1.0;
     f32 length = rounded_length;
     volatile f32 rounded_target =
