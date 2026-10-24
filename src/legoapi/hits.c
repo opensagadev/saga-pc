@@ -1,3 +1,4 @@
+#include <stdlib.h>
 #include "saga.h"
 
 i32 __cdecl CannotKill(GAMEOBJECT *object) {
@@ -209,7 +210,7 @@ typedef struct combat_attack_counter_pc_s {
 STATIC_ASSERT(offsetof(COMBAT_ATTACK_COUNTER_PC, attack_count) == 0x1083);
 extern i32 CombatHitReactionIntervalPc;
 i32 __cdecl ObjHitObj(GAMEOBJECT *attacker, GAMEOBJECT *target, i32 damage, u16 flags, i32 probe, i32 ignored) {
-    i32 reaction_trigger = 0;
+    i32 reaction_trigger;
 
     i32 no_hurt, no_impact, no_rumble, throw_up, random, hit, instant, result, health, coins, hearts;
     i16 *parts_angle;
@@ -217,13 +218,16 @@ i32 __cdecl ObjHitObj(GAMEOBJECT *attacker, GAMEOBJECT *target, i32 damage, u16 
     u16 computed_angle;
     f32 random_unit;
 
-    if (target == NULL || (target->flags_1fc_word & 0x1001) != 0x1001 || target->dead != 0 || target->field_1010 > 0.0f)
+    if (target == NULL || (target->flags_1fc_word & 1) == 0 || (target->flags_1fc_word & 0x1000) == 0 ||
+        target->dead != 0 || target->field_1010 > 0.0f)
         return 0;
     no_hurt = objhitobj_nohurtsfx;
     no_impact = objhitobj_noimpactsfx;
     no_rumble = objhitobj_noattackerrumble;
     throw_up = objhitobj_throwkillpartsup;
     parts_angle = objhitobj_killparts_yrot;
+    result = 0;
+    reaction_trigger = 0;
     random = qrand();
     random_unit = (f32)((f64)random * 1.5259021893143654e-05);
     objhitobj_nohurtsfx = 0;
@@ -243,9 +247,9 @@ i32 __cdecl ObjHitObj(GAMEOBJECT *attacker, GAMEOBJECT *target, i32 damage, u16 
         return 0;
     if (!(damage == -1 && (flags & 0x200))) {
         if (target->character_context == 0 &&
-            (target->action_movement_state == 3 || target->action_movement_state == 4))
+            (target->action_movement_state == 4 || target->action_movement_state == 3))
             return 0;
-        if (target->character_context == 13 || target->character_context == 14)
+        if (target->character_context == 14 || target->character_context == 13)
             return 0;
     }
     if (CInfo[target->character_context].parameter & 4)
@@ -256,7 +260,7 @@ i32 __cdecl ObjHitObj(GAMEOBJECT *attacker, GAMEOBJECT *target, i32 damage, u16 
         ObstacleCamHoldUntilPlayersMove = 0;
     hit = damage;
     instant = damage == -1;
-    if (76 == target->character_context || target->character_context == 81) {
+    if (target->character_context == 81 || target->character_context == 76) {
         hit = 0;
         instant = 0;
     }
@@ -270,9 +274,7 @@ i32 __cdecl ObjHitObj(GAMEOBJECT *attacker, GAMEOBJECT *target, i32 damage, u16 
         if ((CInfo[target->character_context].flags & 0x4000000) ||
             (target->character_context != -1 && (target->character_context == LEGOCONTEXT_LAND_SLAM ||
                                                  target->character_context == LEGOCONTEXT_LAND_LUNGE))) {
-            i32 rotation_difference = RotDiff(attacker->movement_facing_angle, target->movement_facing_angle);
-            if (-1 >= rotation_difference)
-                rotation_difference = -rotation_difference;
+            i32 rotation_difference = abs(RotDiff(attacker->movement_facing_angle, target->movement_facing_angle));
             if (rotation_difference >= 16385 &&
                 !(LEGOCONTEXT_COMBO != -1 && attacker->character_context == LEGOCONTEXT_COMBO &&
                   attacker->combo_branch == 6)) {
@@ -415,21 +417,17 @@ impact:
                 GameAudio_PlaySfx(74, &target->collision_position, 0, 0);
         }
     }
-    result = 0;
     if (target->spawn_protection_timer > 0.0f || (target->flags_ef0 & 0x00400000)) {
-        result = 0;
         if (target->flags_ef0 & 0x00001000)
             PlayerTakeHit(target, attacker);
         goto finish;
     }
     if (target->character_context == 21 && (target->portal_flags & 0x08000000)) {
         target->spawn_protection_timer = 2.5f;
-        result = 0;
         goto finish;
     }
     if ((target->character_data->model_flags & 0x10) && !target->current_hp && (flags & 0x40) && random_unit > 0.75f) {
         DeactivatePlayer(target, 5.0f, NULL);
-        result = 0;
         goto finish;
     }
     if (hit != -1 && !(target->vehicle_hit_timer <= 0.0f) && (!attacker || !(attacker->flags_1fc_word & 0x80)))
@@ -445,7 +443,6 @@ impact:
             if (target->id == (u16)id_ROYALGUARD || target->id == (u16)id_WOOKIEE)
                 SetFlicker(target, 0.4f);
             PlayerTakeHit(target, attacker);
-            result = 0;
             if ((target->flags_1fc_word & 0x80))
                 TakeHitRumble(target, 0.666f);
             goto hurt;
@@ -470,7 +467,6 @@ impact:
         DeactivatePlayer(target, 1000000000.0f, NULL);
         target->current_hp = target->field_107e;
         SetFlicker(target, 0.4f);
-        result = 0;
         goto hurt;
     }
     if (target->character_data->model_flags & 0x40000000)
@@ -484,7 +480,6 @@ impact:
     if (target->character_context == 93) {
         PopBalloon(target);
         target->current_hp = 1;
-        result = 0;
         goto hurt;
     }
     if (!StartupGameFlag1) {
@@ -665,7 +660,6 @@ refill:
         SetFlicker(target, 0.4f);
     Player_ClearContext(target, 1);
     target->current_hp = target->field_107e;
-    result = 0;
     goto hurt;
 }
 
