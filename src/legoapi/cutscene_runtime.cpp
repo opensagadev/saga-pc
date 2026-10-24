@@ -1298,8 +1298,10 @@ extern "C" {
                             for (i32 i = 0; i < 16; ++i) {
                                 if ((game_data->shadow_locators & (1 << i)) != 0 &&
                                     model->points_of_interest[i] != NULL) {
-                                    NUVEC shadow_position = locator_positions[i];
-                                    f32 locator_ground = GameShadow(NULL, &shadow_position, 5.0f, -1);
+                                    NUVEC shadow_position;
+                                    shadow_position.x = locator_positions[i].x;
+                                    f32 locator_ground = GameShadow(NULL, &locator_positions[i], 5.0f, -1);
+                                    shadow_position.z = locator_positions[i].z;
                                     if (locator_ground != 2000000.0f && 0.0f < ShadNorm.y) {
                                         shadow_position.y = locator_ground + 0.005f;
                                         u16 x_rotation;
