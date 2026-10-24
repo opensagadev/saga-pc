@@ -111,11 +111,14 @@ void ShaderCompilerDictionaryPc::BindOutputBuffer(ShaderCompilerBufferAllocatorP
 }
 
 bool ShaderCompilerDictionaryPc::EvaluateCondition(ShaderConditionNodePc *node, i32 *result) {
-    while (strcmp(node->token, "defined") != 0 && strcmp(node->token, "\x80") == 0)
+    for (;;) {
+        if (strcmp(node->token, "defined") == 0) {
+            *result = FindDefinition(node->left->left->token) != NULL;
+            return true;
+        }
+        if (strcmp(node->token, "\x80") != 0)
+            break;
         node = node->left;
-    if (strcmp(node->token, "defined") == 0) {
-        *result = FindDefinition(node->left->left->token) != NULL;
-        return true;
     }
     const char *token = node->token;
     if (strcmp(token, "!") == 0) {
@@ -141,22 +144,40 @@ bool ShaderCompilerDictionaryPc::EvaluateCondition(ShaderConditionNodePc *node, 
         *result = right;
         return true;
     }
-    if (strcmp(token, "==") == 0 || strcmp(token, "<=") == 0 || strcmp(token, ">=") == 0 || strcmp(token, "<") == 0 ||
-        strcmp(token, ">") == 0 || strcmp(token, "!=") == 0) {
+    if (strcmp(token, "==") == 0) {
         if (!EvaluateCondition(node->left, &left) || !EvaluateCondition(node->right, &right))
             return false;
-        if (strcmp(token, "==") == 0)
-            *result = left == right;
-        else if (strcmp(token, "<=") == 0)
-            *result = left <= right;
-        else if (strcmp(token, ">=") == 0)
-            *result = left >= right;
-        else if (strcmp(token, "<") == 0)
-            *result = left < right;
-        else if (strcmp(token, ">") == 0)
-            *result = left > right;
-        else
-            *result = left != right;
+        *result = left == right;
+        return true;
+    }
+    if (strcmp(token, "<=") == 0) {
+        if (!EvaluateCondition(node->left, &left) || !EvaluateCondition(node->right, &right))
+            return false;
+        *result = left <= right;
+        return true;
+    }
+    if (strcmp(token, ">=") == 0) {
+        if (!EvaluateCondition(node->left, &left) || !EvaluateCondition(node->right, &right))
+            return false;
+        *result = left >= right;
+        return true;
+    }
+    if (strcmp(token, "<") == 0) {
+        if (!EvaluateCondition(node->left, &left) || !EvaluateCondition(node->right, &right))
+            return false;
+        *result = left < right;
+        return true;
+    }
+    if (strcmp(token, ">") == 0) {
+        if (!EvaluateCondition(node->left, &left) || !EvaluateCondition(node->right, &right))
+            return false;
+        *result = left > right;
+        return true;
+    }
+    if (strcmp(token, "!=") == 0) {
+        if (!EvaluateCondition(node->left, &left) || !EvaluateCondition(node->right, &right))
+            return false;
+        *result = left != right;
         return true;
     }
     ShaderMacroDefinitionPc *definition = FindDefinition(token);
@@ -170,7 +191,8 @@ bool ShaderCompilerDictionaryPc::EvaluateCondition(ShaderConditionNodePc *node, 
         }
         value = definition->value;
     } else {
-        value = node->token;
+        // The native path reloads this input after the definition lookup.
+        value = reinterpret_cast<const volatile ShaderConditionNodePc *>(node)->token;
     }
     if (value == NULL || !IsNumericToken(value))
         return false;
