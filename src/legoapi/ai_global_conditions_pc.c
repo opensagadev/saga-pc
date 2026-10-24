@@ -31,7 +31,9 @@ void *__cdecl Condition_AreaCompleteInitPc(AISYS_PC *system, char *name, AISCRIP
 f32 __cdecl Condition_AreaCompletePc(AISYS_PC *system, AISCRIPTPROCESS_PC *process, AIPACKET_PC *packet, char *name,
                                      void *argument) {
     AREA_DATA_PC *area = (AREA_DATA_PC *)argument;
-    return area != NULL && Game.area_save[area->index].area_complete == 1 ? 1.0f : 0.0f;
+    if (area != NULL && Game.area_save[area->index].area_complete == 1)
+        return 1.0f;
+    return 0.0f;
 }
 
 f32 __cdecl Condition_FreeplayPc(AISYS_PC *system, AISCRIPTPROCESS_PC *process, AIPACKET_PC *packet, char *name,
@@ -66,17 +68,23 @@ f32 __cdecl Condition_OffScreenTimerPc(AISYS_PC *system, AISCRIPTPROCESS_PC *pro
     GAMEOBJECT *object = (GAMEOBJECT *)argument;
     if (object == NULL)
         object = packet != NULL && packet->owner != NULL ? packet->owner->objptr : NULL;
-    return object != NULL ? object->field_f10 : 0.0f;
+    if (object != NULL)
+        return object->field_f10;
+    return 0.0f;
 }
 
 f32 __cdecl Condition_CannotReachDestinationPc(AISYS_PC *system, AISCRIPTPROCESS_PC *process, AIPACKET_PC *packet,
                                                char *name, void *argument) {
-    return packet != NULL && (packet->flags & 0x400000) != 0 ? 1.0f : 0.0f;
+    if (packet != NULL && (packet->flags & 0x400000) != 0)
+        return 1.0f;
+    return 0.0f;
 }
 
 f32 __cdecl Condition_PathBlockedPc(AISYS_PC *system, AISCRIPTPROCESS_PC *process, AIPACKET_PC *packet, char *name,
                                     void *argument) {
-    return packet != NULL && (packet->flags & 0x400000) != 0 ? 1.0f : 0.0f;
+    if (packet != NULL && (packet->flags & 0x400000) != 0)
+        return 1.0f;
+    return 0.0f;
 }
 
 void *__cdecl Condition_ForceCompleteInitPc(AISYS_PC *system, char *name, AISCRIPT_PC *script) {
@@ -86,12 +94,16 @@ void *__cdecl Condition_ForceCompleteInitPc(AISYS_PC *system, char *name, AISCRI
 
 f32 __cdecl Condition_ForceCompletePc(AISYS_PC *system, AISCRIPTPROCESS_PC *process, AIPACKET_PC *packet, char *name,
                                       void *argument) {
-    return argument != NULL && GizForce_Complete((GIZFORCE_PC *)argument) != 0 ? 1.0f : 0.0f;
+    if (argument != NULL && GizForce_Complete((GIZFORCE_PC *)argument) != 0)
+        return 1.0f;
+    return 0.0f;
 }
 
 f32 __cdecl Condition_MissionModePc(AISYS_PC *system, AISCRIPTPROCESS_PC *process, AIPACKET_PC *packet, char *name,
                                     void *argument) {
-    return Mission_Active(NULL) != NULL ? 1.0f : 0.0f;
+    if (Mission_Active(NULL) != NULL)
+        return 1.0f;
+    return 0.0f;
 }
 
 typedef struct condition_trigger_process_reader_pc_s {
@@ -148,8 +160,9 @@ void *__cdecl Condition_EitherPlayerIsInitPc(AISYS_PC *system, char *name, AISCR
 
 f32 __cdecl Condition_EitherPlayerIsPc(AISYS_PC *system, AISCRIPTPROCESS_PC *process, AIPACKET_PC *packet, char *name,
                                        void *argument) {
-    return system != NULL && argument != NULL && (system->player_1 == argument || system->player_2 == argument) ? 1.0f
-                                                                                                                : 0.0f;
+    if (system != NULL && argument != NULL && (system->player_1 == argument || system->player_2 == argument))
+        return 1.0f;
+    return 0.0f;
 }
 
 void *__cdecl Condition_MessageInitPc(AISYS_PC *system, char *name, AISCRIPT_PC *script) {
@@ -161,7 +174,9 @@ void *__cdecl Condition_MessageInitPc(AISYS_PC *system, char *name, AISCRIPT_PC 
 f32 __cdecl Condition_MessagePc(AISYS_PC *system, AISCRIPTPROCESS_PC *process, AIPACKET_PC *packet, char *name,
                                 void *argument) {
     GIZAIMESSAGE *message = (GIZAIMESSAGE *)argument;
-    return message != NULL ? message->value : 0.0f;
+    if (message != NULL)
+        return message->value;
+    return 0.0f;
 }
 
 void *__cdecl Condition_IAmAInitPc(AISYS_PC *system, char *name, AISCRIPT_PC *script) {
@@ -250,10 +265,10 @@ f32 __cdecl Condition_ShouldAttackOpponentPc(AISYS_PC *system, AISCRIPTPROCESS_P
 }
 f32 __cdecl Condition_InSwampPc(AISYS_PC *system, AISCRIPTPROCESS_PC *process, AIPACKET_PC *packet, char *name,
                                 void *argument) {
-    return packet != NULL && packet->owner != NULL && packet->owner->objptr != NULL &&
-                   packet->owner->objptr->field_283 == 9
-               ? 1.0f
-               : 0.0f;
+    if (packet != NULL && packet->owner != NULL && packet->owner->objptr != NULL &&
+        packet->owner->objptr->field_283 == 9)
+        return 1.0f;
+    return 0.0f;
 }
 void *__cdecl Condition_CurrentLocatorIsInitPc(AISYS_PC *system, char *name, AISCRIPT_PC *script) {
     return name != NULL ? AIPathFindLocator(system, name) : NULL;
@@ -272,7 +287,9 @@ f32 __cdecl Condition_PartyUnderCoverPc(AISYS_PC *system, AISCRIPTPROCESS_PC *pr
     (void)packet;
     (void)name;
     (void)argument;
-    return party_under_cover != 0 ? 1.0f : 0.0f;
+    if (party_under_cover != 0)
+        return 1.0f;
+    return 0.0f;
 }
 
 f32 __cdecl Condition_OriginRangePc(AISYS_PC *system, AISCRIPTPROCESS_PC *process, AIPACKET_PC *packet, char *name,
@@ -357,11 +374,12 @@ f32 __cdecl Condition_HitPointsPc(AISYS_PC *system, AISCRIPTPROCESS_PC *process,
     (void)process;
     (void)name;
     if (object == NULL) {
-        if (packet == NULL || packet->owner == NULL || packet->owner->objptr == NULL)
-            return 0.0f;
-        object = packet->owner->objptr;
+        if (packet != NULL && packet->owner != NULL)
+            object = packet->owner->objptr;
     }
-    return (f32)(i32)(i8)object->current_hp;
+    if (object != NULL)
+        return (f32)(i32)(i8)object->current_hp;
+    return 0.0f;
 }
 
 f32 __cdecl Condition_BlockingPc(AISYS_PC *system, AISCRIPTPROCESS_PC *process, AIPACKET_PC *packet, char *name,
@@ -420,7 +438,9 @@ f32 __cdecl Condition_LastAttackerIsActivePlayerPc(AISYS_PC *system, AISCRIPTPRO
         return 0.0f;
     object = packet->owner->objptr;
     attacker = object->last_attacker;
-    return attacker != NULL && (attacker->flags_1fc & 0x80) != 0 ? 1.0f : 0.0f;
+    if (attacker != NULL && (attacker->flags_1fc & 0x80) != 0)
+        return 1.0f;
+    return 0.0f;
 }
 
 f32 __cdecl Condition_NearestOpponentRangePc(AISYS_PC *system, AISCRIPTPROCESS_PC *process, AIPACKET_PC *packet,
@@ -452,10 +472,10 @@ f32 __cdecl Condition_OpponentOnPathPc(AISYS_PC *system, AISCRIPTPROCESS_PC *pro
     (void)process;
     (void)name;
     (void)argument;
-    return packet != NULL && packet->opponent != NULL &&
-                   ((((APIOBJECT_PC *)packet->opponent)->ai->path_info.flags & 1) != 0)
-               ? 1.0f
-               : 0.0f;
+    if (packet != NULL && packet->opponent != NULL &&
+        ((((APIOBJECT_PC *)packet->opponent)->ai->path_info.flags & 1) != 0))
+        return 1.0f;
+    return 0.0f;
 }
 
 f32 __cdecl Condition_OpponentIsAThreatPc(AISYS_PC *system, AISCRIPTPROCESS_PC *process, AIPACKET_PC *packet,
@@ -464,20 +484,28 @@ f32 __cdecl Condition_OpponentIsAThreatPc(AISYS_PC *system, AISCRIPTPROCESS_PC *
     (void)process;
     (void)name;
     (void)argument;
-    return packet != NULL && packet->opponent != NULL && (packet->flags & 0x800u) != 0 ? 1.0f : 0.0f;
+    if (packet != NULL && packet->opponent != NULL && (packet->flags & 0x800u) != 0)
+        return 1.0f;
+    return 0.0f;
 }
 
 f32 __cdecl Condition_GotGunPc(AISYS_PC *system, AISCRIPTPROCESS_PC *process, AIPACKET_PC *packet, char *name,
                                void *argument) {
-    if (packet != NULL && packet->owner != NULL)
-        return (packet->owner->objptr->portal_flags & 4) != 0 ? 1.0f : 0.0f;
+    if (packet != NULL && packet->owner != NULL) {
+        if ((packet->owner->objptr->portal_flags & 4) != 0)
+            return 1.0f;
+        return 0.0f;
+    }
     return 0.0f;
 }
 
 f32 __cdecl Condition_PrefersBrawlingPc(AISYS_PC *system, AISCRIPTPROCESS_PC *process, AIPACKET_PC *packet, char *name,
                                         void *argument) {
-    if (packet != NULL && packet->owner != NULL)
-        return (packet->owner->character_data->model_flags & 0x80000000u) != 0 ? 1.0f : 0.0f;
+    if (packet != NULL && packet->owner != NULL) {
+        if ((packet->owner->character_data->model_flags & 0x80000000u) != 0)
+            return 1.0f;
+        return 0.0f;
+    }
     return 0.0f;
 }
 
@@ -494,8 +522,11 @@ f32 __cdecl Condition_OnGroundPc(AISYS_PC *system, AISCRIPTPROCESS_PC *process, 
 
 f32 __cdecl Condition_BeenAlertedPc(AISYS_PC *system, AISCRIPTPROCESS_PC *process, AIPACKET_PC *packet, char *name,
                                     void *argument) {
-    if (packet != NULL && packet->owner != NULL)
-        return packet->owner->objptr->field_ec0 != 0 ? 1.0f : 0.0f;
+    if (packet != NULL && packet->owner != NULL) {
+        if (packet->owner->objptr->field_ec0 != 0)
+            return 1.0f;
+        return 0.0f;
+    }
     return 0.0f;
 }
 
@@ -516,7 +547,11 @@ f32 __cdecl Condition_AnimationFinishedPc(AISYS_PC *system, AISCRIPTPROCESS_PC *
         animation = WORLD->current_gscn->instance_animation_data[instance->animation_index];
         if (animation != NULL) {
             time = (f64)instance->ltime;
-            return (f64)NuAnimEndFrameOld(animation) <= time ? 1.0f : 0.0f;
+            {
+                if ((f64)NuAnimEndFrameOld(animation) <= time)
+                    return 1.0f;
+                return 0.0f;
+            }
         }
     }
     return 0.0f;
@@ -586,8 +621,9 @@ f32 __cdecl Condition_PlayerOnObjectPc(AISYS_PC *system, AISCRIPTPROCESS_PC *pro
                                        void *argument) {
     i32 platform = (i32)argument;
     if (player != NULL && platform != -1 && (player->field_281 != 0 || player->field_282 != 0) &&
-        platform == player->supporting_platform_id) {
-        NUMTX *transform = ((AI_ON_OBJECT_TERRAIN_PC *)CurrentTerrain)->platforms[platform].scene_object;
+        player->supporting_platform_id == platform) {
+        NUMTX *transform =
+            ((AI_ON_OBJECT_TERRAIN_PC *)CurrentTerrain)->platforms[player->supporting_platform_id].scene_object;
         if (player->position.y >= transform->m31)
             return 1.0f;
     }
@@ -600,13 +636,15 @@ f32 __cdecl Condition_EitherPlayerOnObjectPc(AISYS_PC *system, AISCRIPTPROCESS_P
 
     if (player != NULL && platform != -1 && (player->field_281 != 0 || player->field_282 != 0) &&
         player->supporting_platform_id == platform) {
-        NUMTX *transform = ((AI_ON_OBJECT_TERRAIN_PC *)CurrentTerrain)->platforms[platform].scene_object;
+        NUMTX *transform =
+            ((AI_ON_OBJECT_TERRAIN_PC *)CurrentTerrain)->platforms[player->supporting_platform_id].scene_object;
         if (player->position.y >= transform->m31)
             return 1.0f;
     }
     if (player2 != NULL && platform != -1 && (player2->field_281 != 0 || player2->field_282 != 0) &&
         player2->supporting_platform_id == platform) {
-        NUMTX *transform = ((AI_ON_OBJECT_TERRAIN_PC *)CurrentTerrain)->platforms[platform].scene_object;
+        NUMTX *transform =
+            ((AI_ON_OBJECT_TERRAIN_PC *)CurrentTerrain)->platforms[player2->supporting_platform_id].scene_object;
         if (player2->position.y >= transform->m31)
             return 1.0f;
     }
@@ -619,8 +657,9 @@ f32 __cdecl Condition_OnObjectPc(AISYS_PC *system, AISCRIPTPROCESS_PC *process, 
         GAMEOBJECT *object = packet->owner->objptr;
         i32 platform = (i32)argument;
         if (object != NULL && platform != -1 && (object->field_281 != 0 || object->field_282 != 0) &&
-            platform == object->supporting_platform_id) {
-            NUMTX *transform = ((AI_ON_OBJECT_TERRAIN_PC *)CurrentTerrain)->platforms[platform].scene_object;
+            object->supporting_platform_id == platform) {
+            NUMTX *transform =
+                ((AI_ON_OBJECT_TERRAIN_PC *)CurrentTerrain)->platforms[object->supporting_platform_id].scene_object;
             if (object->position.y >= transform->m31)
                 return 1.0f;
         }
@@ -907,7 +946,9 @@ f32 __cdecl Condition_BaddyInTriggerAreaPc(AISYS_PC *system, AISCRIPTPROCESS_PC 
     AIAREA_PC *area = (AIAREA_PC *)argument;
     if (area == NULL)
         area = (AIAREA_PC *)process->unknown_a0;
-    return area != NULL && (area->runtime_flags & 4) != 0 ? 1.0f : 0.0f;
+    if (area != NULL && (area->runtime_flags & 4) != 0)
+        return 1.0f;
+    return 0.0f;
 }
 
 STATIC_ASSERT(offsetof(GIZOBSTACLE, runtime_flags) == 0x9c);
