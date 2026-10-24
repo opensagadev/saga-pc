@@ -1291,3 +1291,36 @@ void __cdecl GizmoPickups_SetOnOff(void) {
         GizmoPickupType[index].field_0f = off == 0;
     }
 }
+
+/* Read-only PC prefix. WORLD50b8 points to pickups0/count8, unlike the
+   legacy PICKUP_RUNTIME_SYS_PC overlay used by other incomplete routines. */
+typedef struct HudPickupRuntimePc {
+    GIZMOPICKUP_PC *pickups;
+    void *temporary_pickups;
+    i32 count;
+} HudPickupRuntimePc;
+STATIC_ASSERT(offsetof(HudPickupRuntimePc, pickups) == 0);
+STATIC_ASSERT(offsetof(HudPickupRuntimePc, count) == 8);
+STATIC_ASSERT(offsetof(GIZMOPICKUP_PC, filter_byte) == 0x14);
+/* Complete native00570030..00570082. */
+i32 __cdecl GizmoPickup_NumberOfTypePc(WORLDINFO *world, i32 type, u8 filter) {
+    HudPickupRuntimePc *system = (HudPickupRuntimePc *)world->pickup_runtime_sys;
+    GIZMOPICKUP_PC *pickup = system->pickups;
+    i32 count = 0;
+    i32 i;
+    if (filter == 0 && type == -1)
+        return 0;
+    i = system->count;
+    if (i > 0) {
+        do {
+            if (filter != 0) {
+                if (pickup->filter_byte == filter)
+                    ++count;
+            } else if (pickup->type_index == type) {
+                ++count;
+            }
+            ++pickup;
+        } while (--i != 0);
+    }
+    return count;
+}
