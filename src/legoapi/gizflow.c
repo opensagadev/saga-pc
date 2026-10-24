@@ -732,11 +732,39 @@ static void GizFlowConfigGizmoPc(NUFPAR_PC *parser) {
             GizFlowMissingNamePc(load_gizmoname, load_gizmotype);
     }
     ++data->gizmo_count;
-    load_flowbox->state_flags_low = (load_flowbox->state_flags_low & ~0xdc) | ((load_g_flags & 1) << 2) |
-                                    ((load_g_flags & 2) << 2) | ((load_g_flags & 8) << 1) | ((load_g_flags & 4) << 4) |
-                                    (load_g_flags & 0x80);
-    load_flowbox->state_flags_high = (load_flowbox->state_flags_high & ~0x70) | (load_g_flags & 0x10) |
-                                     (((load_g_flags >> 5) ^ 1) & 1) << 6 | (((load_g_flags >> 6) ^ 1) & 1) << 5;
+    {
+        typedef union FlowGizmoFlagsPc {
+            u16 value;
+            struct {
+                u16 unknown_00 : 2;
+                u16 start_invisible : 1;
+                u16 end_invisible : 1;
+                u16 end_deactivated : 1;
+                u16 unknown_05 : 1;
+                u16 reverse : 1;
+                u16 reverse_invisible : 1;
+                u16 unknown_08 : 4;
+                u16 output_only : 1;
+                u16 freeplay_enabled : 1;
+                u16 story_enabled : 1;
+                u16 unknown_0f : 1;
+            } bits;
+        } FlowGizmoFlagsPc;
+        STATIC_ASSERT(sizeof(FlowGizmoFlagsPc) == 2);
+        u32 flags = (i16)load_g_flags;
+        GIZFLOW_BOX_LOADER_PREFIX_PC *state = (GIZFLOW_BOX_LOADER_PREFIX_PC *)load_flowbox;
+        FlowGizmoFlagsPc packed;
+        packed.value = state->state_flags;
+        packed.bits.start_invisible = flags & 1;
+        packed.bits.end_invisible = (flags >> 1) & 1;
+        packed.bits.end_deactivated = (flags >> 3) & 1;
+        packed.bits.reverse = (flags >> 2) & 1;
+        packed.bits.reverse_invisible = (flags >> 7) & 1;
+        packed.bits.output_only = (flags >> 4) & 1;
+        packed.bits.freeplay_enabled = ((flags >> 6) ^ 1) & 1;
+        packed.bits.story_enabled = ((flags >> 5) ^ 1) & 1;
+        state->state_flags = packed.value;
+    }
 }
 
 typedef struct GIZFLOW_REMAP_PC GIZFLOW_REMAP_PC;
@@ -1144,8 +1172,8 @@ void *LoadGizFlow(void *world, void *system, char *path, VARIPTR *buffer, VARIPT
                     flow->gizmo_sys = system;
                     flow->flowboxes =
                         (FLOWBOX_PC *)(GizmoBufferAlloc(load_buff, load_endbuff, load_nflowboxes * sizeof(FLOWBOX_PC)));
-                    load_flowbox = flow->flowboxes;
                     load_gizflow = flow;
+                    load_flowbox = flow->flowboxes;
                     NuFParPushCom(parser, cfgtab_git_pc);
                     while (NuFParGetLine(parser)) {
                         NuFParGetWord(parser);
@@ -1153,17 +1181,17 @@ void *LoadGizFlow(void *world, void *system, char *path, VARIPTR *buffer, VARIPT
                     }
                 }
                 NuFreeFPar(parser);
+                if (load_nflowboxes != 0)
+                    GizFlowLoadDiagnosticPc(path);
             }
         }
-        if (load_nflowboxes != 0)
-            GizFlowLoadDiagnosticPc(path);
         NuFileClose(file);
-        if (flow != NULL)
-            flow->pointers_need_reset = 1;
     }
     load_buff = NULL;
     load_endbuff = NULL;
     load_gizflow = NULL;
     load_flowbox = NULL;
+    if (flow != NULL)
+        flow->pointers_need_reset = 1;
     return flow;
 }
