@@ -141,9 +141,11 @@ extern "C" {
         const u16 random_rotation_b =
             static_cast<u16>(static_cast<i32>(static_cast<f64>(qrand()) * PlayerRandomScalePc * 16384.0f - 8192.0f));
 
-        i32 random_variant = qrand() / 21846;
-        for (i32 retry = 0; retry <= 8 && random_variant == KillPartsPreviousVariantPc; ++retry)
+        i32 random_variant;
+        i32 retry = 0;
+        do {
             random_variant = qrand() / 21846;
+        } while (random_variant == KillPartsPreviousVariantPc && retry++ < 8);
         KillPartsPreviousVariantPc = random_variant;
 
         u32 layers = (game_character->flags_094_bytes[2] & 4) != 0
@@ -640,17 +642,24 @@ extern "C" {
                      .spline_position.position,
                 5, FRAMETIME, pitch, yaw, NULL);
         } else {
-            previous_position = part->position;
-            f32 tilt = fabs(static_cast<f64>(NU_SIN_LUT(static_cast<i32>(time * 32768.0f + 16384.0f))));
-            i32 turn = static_cast<i32>(2730.0f - (1.0f - tilt) * 5461.0f);
-            i32 spin = static_cast<i32>((NU_SIN_LUT(static_cast<i32>(time * 16384.0f + 32768.0f + 16384.0f)) + 1.0f) *
-                                        196608.0f);
+            previous_position.x = part->position.x;
+            previous_position.y = part->position.y;
+            previous_position.z = part->position.z;
+            union {
+                f32 value;
+                u32 bits;
+            } tilt;
+            tilt.value = NU_SIN_LUT(static_cast<i32>(time * 32768.0f + 16384.0f));
+            tilt.bits &= 0x7fffffff;
+            u16 spin = static_cast<u16>(static_cast<i32>(
+                (NU_SIN_LUT(static_cast<i32>(time * 16384.0f + 32768.0f + 16384.0f)) + 1.0f) * 196608.0f));
             part->rotation_x = SeekRot(part->rotation_x, 0xd556, 10.0f);
             part->rotation_y =
                 SeekRot(part->rotation_y, reinterpret_cast<GAMEOBJECT *>(Player[0])->field_0x276 + 0x4000, 10.0f);
             part->rotation_z = SeekRot(part->rotation_z, spin, 10.0f);
             GameShadow(NULL, &previous_position, 3.0f, 0);
             velocity = v001;
+            u16 turn = static_cast<u16>(static_cast<i32>(2730.0f - (1.0f - tilt.value) * 5461.0f));
             NuVecRotateY(&velocity, &velocity, turn);
             NuVecScale(&velocity, &velocity,
                        reinterpret_cast<GAMEOBJECT *>(Player[0])->horizontal_velocity_magnitude / FRAMETIME);
@@ -669,7 +678,7 @@ extern "C" {
                                               part->rotation_z, part->rotation_x, NULL);
         }
         if (bike->rider != NULL) {
-            if ((bike->rider->flags_1fc_word & 0x1001) == 0x1001) {
+            if ((bike->rider->flags_1fc_word & 1) != 0 && (bike->rider->flags_1fc_word & 0x1000) != 0) {
                 bike->rider->flags_ef0 |= 0x400000;
                 bike->rider->flags_1fc_word |= 0x20;
                 bike->rider->flags_ef4 |= 0x20;
