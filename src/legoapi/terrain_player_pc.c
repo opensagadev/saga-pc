@@ -945,7 +945,10 @@ i32 __cdecl TerrainBlockOnBlock(WORLDINFO *opaque_world, PUSH_BLOCK_PC *block, N
     i32 i;
     if (points == NULL || heights == NULL)
         return 0;
-    heights[0] = heights[1] = heights[2] = heights[3] = -10000.0f;
+    heights[0] = -10000.0f;
+    heights[1] = -10000.0f;
+    heights[2] = -10000.0f;
+    heights[3] = -10000.0f;
     for (i = 0; i < world->count; ++i) {
         PUSH_SUPPORT_BLOCK_VIEW_PC *other = &world->blocks[i];
         f32 xmin, xmax, zmin, zmax, height;
