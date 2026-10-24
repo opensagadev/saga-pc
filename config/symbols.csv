@@ -6528,7 +6528,8 @@ address,symbol,size,ctype
 0x61ad60,_eduiItemColourPickSetRGB,69,
 0x61adb0,_eduicbProcessColourPick,686,
 0x61b260,_eduicbInteractColourPick,515,
-0x61b470,_eduicbRenderColourPick,2230,
+0x61b470,_eduicbRenderColourPick,1696,
+0x0061bb10,_eduicbRenderGreyPick,534,"i32 __cdecl(eduimenu_s *, eduiitem_s *, i32, i32, i32, i32)"
 0x61c1a0,_eduicbRenderTexturePick,827,
 0x61cd60,_eduicbRenderGraph,2730,
 0x61d810,_eduiItemSliderSetValEx,61,
