@@ -1369,6 +1369,7 @@ address,symbol,size,ctype
 0x00483af0,_newCharactersCollected,283,i32 __cdecl(STATUSPACKET_s *)
 0x00483c10,_StatusPacketReset,96,void __cdecl(STATUSPACKET_s *)
 0x00483c70,_InitStatusScreen,5018,void __cdecl(WORLDINFO *)
+0x00485030,_Status_DrawPlayerIconsPc,168,"void __cdecl(STATUSPACKET_s *, f32, f32)"
 0x004850e0,_StatusIconsOnOff,58,f32 __cdecl(f32)
 0x00485120,_UpdateNewMiniKits,135,"i32 __cdecl(STATUSPACKET_s *, STATUS_STAGE_s *)"
 0x4851b0,_DrawStatusMiniKit,1520,"void __cdecl(f32, f32, f32, f32, f32, i32, STATUSPACKET_s *, f32)"

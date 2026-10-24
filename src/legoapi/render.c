@@ -1419,6 +1419,26 @@ STATIC_ASSERT(offsetof(STATUSPACKET_s, player1_model) == offsetof(STATUSPACKET_s
 STATIC_ASSERT(offsetof(STATUSPACKET_s, area_id) ==
               offsetof(STATUSPACKET_s, player0_model) + sizeof(StatusPlayerModelPairPc));
 
+void __cdecl Status_DrawPlayerIconsPc(STATUSPACKET_s *packet, f32 y, f32 alpha) {
+    StatusPlayerModelPairPc *models = (StatusPlayerModelPairPc *)&packet->player0_model;
+    i32 player;
+    for (player = 0; player < 2; ++player) {
+        f32 x, weight, icon_alpha;
+        i32 frame;
+        if (player == 0) {
+            x = -ICONX;
+            frame = 0xa5;
+        } else {
+            x = ICONX;
+            frame = 0xa6;
+        }
+        weight = packet->player_active[player] != 0 ? 1.0f : 0.25f;
+        icon_alpha = weight * alpha;
+        DrawCharIcon((i16)models->model[player], x, y, 0.0f, MissionPlayerIconSizePc, frame, icon_alpha, icon_alpha, 1,
+                     NULL);
+    }
+}
+
 #define STATUS_APPEND_STAGE_INLINE_PC(packet_arg, type_arg, gold_arg)                                                  \
     do {                                                                                                               \
         (packet_arg)->stage_types[(packet_arg)->stage_count] = (i8)(type_arg);                                         \
