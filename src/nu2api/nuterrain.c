@@ -1269,9 +1269,9 @@ void NewScanRot(NUVEC *position, i32 terrain_mask) {
 }
 
 f32 NewCast(NUVEC *position, f32 height_above, f32 roof_range) {
-    i16 group_index;
+    i32 group_index;
 
-    TERRAIN_SET_PC *terrain;
+    TERRAIN_GROUP_PC *groups;
     i32 remaining;
     TERRAIN_SHADOW_QUERY_VIEW_PC *query;
     volatile f32 plane_quotient;
@@ -1292,7 +1292,6 @@ f32 NewCast(NUVEC *position, f32 height_above, f32 roof_range) {
     NUVEC extended_above_normal;
     i16 shape_count;
 
-    terrain = (TERRAIN_SET_PC *)CurrentTerrain;
     query = (TERRAIN_SHADOW_QUERY_VIEW_PC *)TerI;
 
     scan = query->scan_words;
@@ -1313,6 +1312,8 @@ f32 NewCast(NUVEC *position, f32 height_above, f32 roof_range) {
      * no entry definition. Release is qualified to first accepted above-plane
      * height strictly below +2000000; exact-sentinel first ties remain held. */
     shape_count = scan->header.shape_count;
+    if (shape_count > 0)
+        groups = ((TERRAIN_SET_PC *)CurrentTerrain)->groups;
     for (;;) {
         f32 z;
 
@@ -1398,8 +1399,8 @@ f32 NewCast(NUVEC *position, f32 height_above, f32 roof_range) {
             return 0.0f;
         }
         group_index = scan->header.terrain_group;
-        x = position->x - terrain->groups[group_index].origin.x;
-        z = position->z - terrain->groups[group_index].origin.z;
+        x = position->x - groups[group_index].origin.x;
+        z = position->z - groups[group_index].origin.z;
         surfaces = scan + 1;
         entry = surfaces;
         for (remaining = shape_count; 0 != remaining; --remaining, ++entry) {
@@ -1409,15 +1410,15 @@ f32 NewCast(NUVEC *position, f32 height_above, f32 roof_range) {
             f32 normal_z;
             f32 plane_y;
             i32 winding;
+            f32 edge_x, edge_z;
 
             surface = entry->shape;
             normal_y = surface->normals[0].y;
 
 #define CAST_LINE(a, b)                                                                                                \
-    (((x - surface->vertices[a].x) * (surface->vertices[b].z - surface->vertices[a].z) +                               \
-      (z - surface->vertices[a].z) * (surface->vertices[a].x - surface->vertices[b].x)) < 0.0f                         \
-         ? 0                                                                                                           \
-         : 1)
+    (edge_x = surface->vertices[a].x, edge_z = surface->vertices[a].z,                                                 \
+     ((x - edge_x) * (surface->vertices[b].z - edge_z) + (z - edge_z) * (edge_x - surface->vertices[b].x)) < 0.0f ? 0  \
+                                                                                                                  : 1)
             if (!(surface->normals[1].y > BoltTargetRandomDenominator)) {
                 if (!(normal_y > 0.0f)) {
                     if (normal_y < 0.0f) {
@@ -1444,8 +1445,7 @@ f32 NewCast(NUVEC *position, f32 height_above, f32 roof_range) {
                             plane_quotient = (((z - surface->vertices[3].z) * normal_z) +
                                               ((x - surface->vertices[3].x) * normal_x)) /
                                              -normal_y;
-                            plane_y =
-                                (((terrain->groups[group_index].origin.y + surface->vertices[3].y))) + plane_quotient;
+                            plane_y = (((groups[group_index].origin.y + surface->vertices[3].y))) + plane_quotient;
                             if (surface->material[1] == 0) {
                                 if (plane_y <= position->y && ordinary_floor_y < plane_y && winding == 1) {
                                     ordinary_floor_normal = surface->normals[1];
@@ -1484,7 +1484,7 @@ f32 NewCast(NUVEC *position, f32 height_above, f32 roof_range) {
                         plane_quotient =
                             ((z - surface->vertices[0].z) * normal_z + (x - surface->vertices[0].x) * normal_x) /
                             -normal_y;
-                        plane_y = (terrain->groups[group_index].origin.y + surface->vertices[0].y) + plane_quotient;
+                        plane_y = (groups[group_index].origin.y + surface->vertices[0].y) + plane_quotient;
                         if (surface->material[1] == 0) {
                             if (plane_y <= position->y && ordinary_floor_y < plane_y && winding == 1) {
                                 ordinary_floor_normal = surface->normals[0];
