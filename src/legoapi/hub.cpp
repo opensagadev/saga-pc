@@ -2106,12 +2106,14 @@ extern "C" void __cdecl Hub_Update(WORLDINFO *world) {
         i32 selected = -1;
         for (i32 i = 0; HubAreaInfoPc[i].area_name != NULL && selected == -1; ++i) {
             GIZMO_PC *gizmo = (GIZMO_PC *)HubAreaInfoPc[i].bonus_gizmo;
-            GAMEOBJECT *player = (GAMEOBJECT *)Player[0];
-            if (gizmo != NULL && GizmoGetOutput(world->gizmo_sys, gizmo, 0, 0) == 0 && player != NULL &&
-                (player->flags_1fc & 0x80) != 0 && player->character_context != 0x2d) {
-                GIZBUILDIT_PC *buildit = (GIZBUILDIT_PC *)gizmo->object;
-                if ((buildit->availability_flags & 4) != 0 || (nearest != NULL && nearest == buildit))
-                    selected = i;
+            if (gizmo != NULL && GizmoGetOutput(world->gizmo_sys, gizmo, 0, 0) == 0) {
+                GAMEOBJECT *player = (GAMEOBJECT *)Player[0];
+                if (player != NULL && (player->flags_1fc & 0x80) != 0 && player->character_context != 0x2d) {
+                    gizmo = (GIZMO_PC *)HubAreaInfoPc[i].bonus_gizmo;
+                    GIZBUILDIT_PC *buildit = (GIZBUILDIT_PC *)gizmo->object;
+                    if ((buildit->availability_flags & 4) != 0 || (nearest != NULL && nearest == buildit))
+                        selected = i;
+                }
             }
         }
         if (LevGizmo[0] != NULL) {
