@@ -174,20 +174,20 @@ void __cdecl GunShip_DragBombSeekBlowUp(GAMEOBJECT *object) {
         if (LevGizmo[index] == NULL || LevGizmo[index]->object == NULL)
             continue;
         blowup = (GIZMOBLOWUP_PC *)LevGizmo[index]->object;
-        if ((blowup->status_flags & 0x800001) != 0x800000)
+        if ((blowup->status_flags & 0x800000) == 0 || (blowup->status_flags & 1) != 0)
             continue;
         distance = NuVecDistSqr(&blowup->mid_position, &object->collision_position, &offset);
-        if (nearest_distance > distance) {
+        if (distance < nearest_distance) {
             nearest_distance = distance;
-            nearest_offset = offset;
             nearest = blowup;
+            nearest_offset = offset;
         }
     }
     if (nearest == NULL)
         return;
     NuVecNorm(&direction, &nearest_offset);
-    distance = NuFsqrt(nearest_distance);
-    factor = 1.0f - distance / gunshipb_seekrange;
+    nearest_distance = NuFsqrt(nearest_distance);
+    factor = 1.0f - nearest_distance / gunshipb_seekrange;
     direction.x *= gunshipb_seekmom * factor;
     direction.z *= gunshipb_seekmom * factor;
     object->velocity.x = SeekValF(object->velocity.x, direction.x, gunshipb_seekmomseek);
@@ -483,6 +483,7 @@ static __declspec(noinline) void JediBStartPhasePc(WORLDINFO *world) {
     JEDIB_PHASE_PC *entry;
     JEDIB_CREATURE_PC *record;
     AILOCATOR_PC *locator;
+    GAMEOBJECT *spawned;
     char name[16];
     i32 i, chosen, index, id;
     if (netclient != 0)
@@ -504,18 +505,16 @@ static __declspec(noinline) void JediBStartPhasePc(WORLDINFO *world) {
                 locator = AIPathFindLocator(world->ai_sys, name);
                 if (locator == NULL)
                     continue;
-                record = &jedi_b.goodies[jedi_b.goody_count];
-                record->locator = *locator;
-                record->object =
-                    AddDynamicCreature(*entry->id, &locator->position, locator->rotation, (char *)entry->script,
-                                       &locator->path_info, NULL, 1, NULL, NULL, 0, 0);
+                jedi_b.goodies[jedi_b.goody_count].locator = *locator;
+                spawned = AddDynamicCreature(*entry->id, &locator->position, locator->rotation, (char *)entry->script,
+                                             &locator->path_info, NULL, 1, NULL, NULL, 0, 0);
+                jedi_b.goodies[jedi_b.goody_count].object = spawned;
                 if (jedi_b.goodies[jedi_b.goody_count].object == NULL)
                     continue;
-                record = &jedi_b.goodies[jedi_b.goody_count];
-                record->id = *entry->id;
-                record->object->ai_packet.locator = locator;
-                record->object->portal_flags |= 0x1000000;
-                record->object->tag_object_callback = JediBKilledCallbackPc;
+                jedi_b.goodies[jedi_b.goody_count].id = *entry->id;
+                jedi_b.goodies[jedi_b.goody_count].object->ai_packet.locator = locator;
+                jedi_b.goodies[jedi_b.goody_count].object->portal_flags |= 0x1000000;
+                jedi_b.goodies[jedi_b.goody_count].object->tag_object_callback = JediBKilledCallbackPc;
                 jedi_b.goody_count++;
             }
             break;
