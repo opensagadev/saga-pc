@@ -1034,11 +1034,11 @@ void __cdecl MovePlayer_VEHICLEDIRECTIONAL(GAMEOBJECT *object) {
     u16 normal_yaw;
     u16 tangent;
     i32 outside;
-    i32 inside;
+    i32 inside = 0;
     f32 edge_x;
     f32 edge_z;
     f32 seek_rate;
-    i32 special_lean;
+    i32 special_lean = 0;
     f32 water_mul;
     f32 half;
     f32 decel;
@@ -1247,7 +1247,6 @@ void __cdecl MovePlayer_VEHICLEDIRECTIONAL(GAMEOBJECT *object) {
                         : object->character_data->game_character->velocity_seek_rate;
         if ((object->character_data->game_character->flags_090 & 0x40) != 0 && object->takeover_source == NULL)
             seek_rate = 5.0f;
-        special_lean = 0;
         if (object->movement_direction_x != 0.0f || object->movement_direction_z != 0.0f) {
             object->flags_e20 |= 0x10000000;
             object->target_velocity.x = object->movement_direction_x;
