@@ -9,7 +9,6 @@ void __cdecl DrawStatusText(char *text, u16 angle, f32 x, f32 y, f32 scale, u32 
     NUVEC origin = {0.0f, 0.0f, 800.0f};
     NUVEC position = {x * DrawStatusScaleXPc, y * DrawStatusScaleYPc, 0.0f};
     u16 encoded[512];
-    f32 height, width;
     NuQFntSetJustifiedTolerances(1.2f, 1.2f);
     NuMtxSetIdentity(&RenderStatusMatrixPrivate);
     NuMtxSetRotationX(&RenderStatusMatrixPrivate, 0);
@@ -25,17 +24,24 @@ void __cdecl DrawStatusText(char *text, u16 angle, f32 x, f32 y, f32 scale, u32 
     NuQFntSetColour(QFont3DZ, colour);
     NuQFntSetScale(QFont3DZ, scale, scale);
     Text3DStringEncode(text, encoded);
-    if (alignment == 2) {
-        height = NuQFntHeight(QFont3DZ);
-        NuQFntMove(QFont3DZ, 0.0f, (f32)(-height * 0.5), 0.0f);
-    } else if (alignment == 8) {
-        height = NuQFntHeight(QFont3DZ);
-        width = NuQFntPrintLenW(QFont3DZ, encoded);
-        NuQFntMove(QFont3DZ, -width, (f32)(-height * 0.5), 0.0f);
-    } else {
-        height = NuQFntHeight(QFont3DZ);
-        width = NuQFntPrintLenW(QFont3DZ, encoded);
-        NuQFntMove(QFont3DZ, (f32)(-width * 0.5), (f32)(-height * 0.5), 0.0f);
+    switch (alignment) {
+        case 2: {
+            f32 move_y = (f32)(-NuQFntHeight(QFont3DZ) * 0.5);
+            NuQFntMove(QFont3DZ, 0.0f, move_y, 0.0f);
+            break;
+        }
+        case 8: {
+            f32 move_y = (f32)(-NuQFntHeight(QFont3DZ) * 0.5);
+            f32 move_x = -NuQFntPrintLenW(QFont3DZ, encoded);
+            NuQFntMove(QFont3DZ, move_x, move_y, 0.0f);
+            break;
+        }
+        default: {
+            f32 move_y = (f32)(-NuQFntHeight(QFont3DZ) * 0.5);
+            f32 move_x = (f32)(-NuQFntPrintLenW(QFont3DZ, encoded) * 0.5);
+            NuQFntMove(QFont3DZ, move_x, move_y, 0.0f);
+            break;
+        }
     }
     NuQFntPrintW(QFont3DZ, encoded);
     NuQFntPopPrintMode();
@@ -1016,6 +1022,7 @@ void __cdecl Coins_LSW_Skip(STATUS_STAGE_s *stage, STATUSPACKET_s *packet) {
 }
 
 void __cdecl Coins_LSW_Update(STATUS_STAGE_s *stage, STATUSPACKET_s *packet, f32 elapsed) {
+    i32 finished = 0;
     switch (stage->field_0x14) {
         case 0:
             stage->field_0x18 = 0.0f;
@@ -1024,14 +1031,15 @@ void __cdecl Coins_LSW_Update(STATUS_STAGE_s *stage, STATUSPACKET_s *packet, f32
             StatusDrawPlayerIconsPc = 1;
             break;
         case 1: {
-            volatile f32 accumulated = elapsed + stage->field_0x18;
+            volatile f32 rounded_elapsed = elapsed + stage->field_0x18;
+            f32 accumulated = rounded_elapsed;
             stage->field_0x18 = accumulated;
-            if (stage->field_0x18 >= stage->field_0x1c)
+            if (accumulated >= stage->field_0x1c)
                 stage->field_0x14 = 2;
             break;
         }
         case 2: {
-            i32 player, finished = 0;
+            i32 player;
             for (player = 0; player < 2; ++player) {
                 u32 remaining = packet->coins_remaining[player];
                 if (remaining != 0) {
@@ -1063,9 +1071,10 @@ void __cdecl Coins_LSW_Update(STATUS_STAGE_s *stage, STATUSPACKET_s *packet, f32
             break;
         }
         case 3: {
-            volatile f32 accumulated = elapsed + stage->field_0x18;
+            volatile f32 rounded_elapsed = elapsed + stage->field_0x18;
+            f32 accumulated = rounded_elapsed;
             stage->field_0x18 = accumulated;
-            if (stage->field_0x18 >= stage->field_0x1c)
+            if (accumulated >= stage->field_0x1c)
                 NextStatusStage(packet);
             break;
         }
@@ -2206,47 +2215,51 @@ void __cdecl BonusWin_LSW_Skip(STATUS_STAGE_s *stage, STATUSPACKET_s *packet) {
 }
 
 void __cdecl BonusWin_LSW_Update(STATUS_STAGE_s *stage, STATUSPACKET_s *packet, f32 elapsed) {
-    if (stage->field_0x14 == 0) {
-        stage->field_0x14 = 1;
-        stage->field_0x18 = 0.0f;
-        stage->field_0x1c = 4.0f;
-        StatusDrawPlayerIconsPc = 1;
-    } else if (stage->field_0x14 == 1) {
-        volatile f32 previous = stage->field_0x18;
-        volatile f32 accumulated = stage->field_0x18;
-        accumulated += elapsed;
-        stage->field_0x18 = accumulated;
-        if (accumulated >= stage->field_0x1c) {
-            NextStatusStage(packet);
-        } else if (previous < 2.0f && accumulated >= 2.0f) {
-            ADD_GAME_MESSAGE_PC message = AddGameMsg_Default;
-            char text[256];
-            NUVEC position;
-            i32 player;
-            PlaySfx("TrueJedi_100pc", NULL);
-            NewStatusRumbleBuzz(-1, 0.6f, 0.0f, 0);
-            player = (packet->flags_word >> 5) & 1;
-            BonusScore[player] = (i32)((u32)BonusScore[player] + 1u);
-            sprintf(text, "%i", BonusScore[(packet->flags_word >> 5) & 1]);
-            if ((packet->field_0xb0 & 0x20) == 0) {
-                position.x = -0.015f;
-                message.unknown_4f = 8;
-            } else {
-                position.x = 0.015f;
-                message.unknown_4f = 2;
+    switch (stage->field_0x14) {
+        case 0: {
+            stage->field_0x14 = 1;
+            stage->field_0x18 = 0.0f;
+            stage->field_0x1c = 4.0f;
+            StatusDrawPlayerIconsPc = 1;
+            break;
+        }
+        case 1: {
+            volatile f32 previous = stage->field_0x18;
+            volatile f32 rounded_elapsed = stage->field_0x18 + elapsed;
+            f32 accumulated = rounded_elapsed;
+            stage->field_0x18 = accumulated;
+            if (stage->field_0x1c <= accumulated) {
+                NextStatusStage(packet);
+            } else if (previous < 2.0f && accumulated >= 2.0f) {
+                ADD_GAME_MESSAGE_PC message = AddGameMsg_Default;
+                char text[256];
+                NUVEC position;
+                i32 player;
+                PlaySfx("TrueJedi_100pc", NULL);
+                NewStatusRumbleBuzz(-1, 0.6f, 0.0f, 0);
+                player = (packet->flags_word >> 5) & 1;
+                BonusScore[player] = (i32)((u32)BonusScore[player] + 1u);
+                sprintf(text, "%i", BonusScore[(packet->flags_word >> 5) & 1]);
+                if ((packet->field_0xb0 & 0x20) == 0) {
+                    position.x = -0.015f;
+                    message.unknown_4f = 8;
+                } else {
+                    position.x = 0.015f;
+                    message.unknown_4f = 2;
+                }
+                position.y = STATSPOSY;
+                position.z = 1.0f;
+                message.text = text;
+                message.position = &position;
+                message.target_position = &position;
+                message.scale = 0.7f;
+                message.target_scale = 2.1f;
+                message.flags = 0x4028;
+                message.duration = 1.0f;
+                AddGameMsg(&message);
+            } else if ((f64)NuFmod(previous, 0.2f) < (f64)0.1f && (f64)NuFmod(stage->field_0x18, 0.2f) >= (f64)0.1f) {
+                PlaySfx((char *)GameAudioName00758838Pc, NULL);
             }
-            position.y = STATSPOSY;
-            position.z = 1.0f;
-            message.text = text;
-            message.position = &position;
-            message.target_position = &position;
-            message.scale = 0.7f;
-            message.target_scale = 2.1f;
-            message.flags = 0x4028;
-            message.duration = 1.0f;
-            AddGameMsg(&message);
-        } else if ((f64)NuFmod(previous, 0.2f) < (f64)0.1f && (f64)NuFmod(stage->field_0x18, 0.2f) >= (f64)0.1f) {
-            PlaySfx((char *)GameAudioName00758838Pc, NULL);
         }
     }
 }
