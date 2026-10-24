@@ -391,7 +391,15 @@ i32 __cdecl RenderPostASinPc(f32);
 #endif
 #define RGBA_TO_NUCOLOUR32(r, g, b, a)                                                                                 \
     ((u32)(u8)(r) | ((u32)(u8)(g) << 8) | ((u32)(u8)(b) << 16) | ((u32)(u8)(a) << 24))
-#define ALPHA_GRID_VERTEX(vx, vy)                                                                                      \
+#define ALPHA_GRID_INLINE_COLOUR                                                                                       \
+    colour = RGBA_TO_NUCOLOUR32((MIN(255.0f, (MAX(0.0f, brightness)))), (MIN(255.0f, (MAX(0.0f, brightness)))),        \
+                                (MIN(255.0f, (MAX(0.0f, brightness)))), 128)
+#define ALPHA_GRID_CLAMP_COLOUR                                                                                        \
+    do {                                                                                                               \
+        const u32 component = RenderPostClampBytePc(0, 255, brightness);                                               \
+        colour = RGBA_TO_NUCOLOUR32(component, component, component, 128);                                             \
+    } while (0)
+#define ALPHA_GRID_VERTEX(vx, vy, colour_source)                                                                       \
     do {                                                                                                               \
         i32 colour;                                                                                                    \
         u32 converted;                                                                                                 \
@@ -425,8 +433,7 @@ i32 __cdecl RenderPostASinPc(f32);
                      parameters->direction_near_scale);                                                                \
             }                                                                                                          \
         }                                                                                                              \
-        colour = RGBA_TO_NUCOLOUR32((MIN(255.0f, (MAX(0.0f, brightness)))), (MIN(255.0f, (MAX(0.0f, brightness)))),    \
-                                    (MIN(255.0f, (MAX(0.0f, brightness)))), 128);                                      \
+        colour_source;                                                                                                 \
         if (NuPrimNeedsOverbrightening != 0) {                                                                         \
             converted =                                                                                                \
                 ((colour >> 16) & 0xff) + ((colour & 0xff) << 16) + (colour & 0xff000000u) + (colour & 0xff00);        \
@@ -485,15 +492,15 @@ void DrawAlphaGrid(i32 rows, i32 cols, RENDER_POST_BLOOM_READER_PC *parameters) 
         y0 = y_start;
         y1 = y_next;
         for (col = 0; col < cols; ++col) {
-            ALPHA_GRID_VERTEX(x0, y0);
-            ALPHA_GRID_VERTEX(x1, y0);
+            ALPHA_GRID_VERTEX(x0, y0, ALPHA_GRID_INLINE_COLOUR);
+            ALPHA_GRID_VERTEX(x1, y0, ALPHA_GRID_INLINE_COLOUR);
             if ((cols - 1) != col) {
-                ALPHA_GRID_VERTEX(x0, y0);
-                ALPHA_GRID_VERTEX(x0, y1);
-                ALPHA_GRID_VERTEX(x1, y0);
-                ALPHA_GRID_VERTEX(x1, y1);
-                ALPHA_GRID_VERTEX(x1, y0);
-                ALPHA_GRID_VERTEX(x0, y1);
+                ALPHA_GRID_VERTEX(x0, y0, ALPHA_GRID_CLAMP_COLOUR);
+                ALPHA_GRID_VERTEX(x0, y1, ALPHA_GRID_CLAMP_COLOUR);
+                ALPHA_GRID_VERTEX(x1, y0, ALPHA_GRID_CLAMP_COLOUR);
+                ALPHA_GRID_VERTEX(x1, y1, ALPHA_GRID_CLAMP_COLOUR);
+                ALPHA_GRID_VERTEX(x1, y0, ALPHA_GRID_CLAMP_COLOUR);
+                ALPHA_GRID_VERTEX(x0, y1, ALPHA_GRID_CLAMP_COLOUR);
             }
             y0 += step_y;
             y1 += step_y;
@@ -506,6 +513,8 @@ void DrawAlphaGrid(i32 rows, i32 cols, RENDER_POST_BLOOM_READER_PC *parameters) 
     NuPrimSetCoordinateSystem(NuPrimCoordSystemStack[NuPrimCSPos]);
 }
 #undef ALPHA_GRID_VERTEX
+#undef ALPHA_GRID_INLINE_COLOUR
+#undef ALPHA_GRID_CLAMP_COLOUR
 
 static f32 RenderBackdropTargetTopRPc = 0.0f;
 static f32 RenderBackdropTargetTopGPc = 0.0f;

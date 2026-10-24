@@ -1737,16 +1737,6 @@ mode_selected:
             break;
         }
 
-        // Mode 6, original0x111163..0x1111aa. WORLD is in esi at dispatch.
-        // Shares the three sine offsets and common setup with customiser mode7;
-        // it does NOT join the unmodified title-camera case3.
-        case 6: {
-            NUVEC *points = WORLD->camera_splines[24]->pts;
-            memcpy(&position, &points[0], sizeof(position));
-            memcpy(&target, &points[1], sizeof(target));
-            goto customiser_camera_sway; // original0x111012
-        }
-
         case 7: {
             position = WORLD->camera_splines[15]->pts[0];
             target = WORLD->camera_splines[15]->pts[1];
@@ -1763,13 +1753,13 @@ mode_selected:
                 NuVecAdd(&position, &position, &offset);
                 target.y -= 0.075f;
             }
-        customiser_camera_sway:
             position.x +=
                 NU_SIN_LUT(((u16)((i32)(NuFmod(GameTimer.time_elapsed, 9.321f) / 9.321f * 65536.0f)))) * 0.05f;
             position.y +=
                 NU_SIN_LUT(((u16)((i32)(NuFmod(GameTimer.time_elapsed, 5.792f) / 5.792f * 65536.0f)))) * 0.025f;
             position.z +=
                 NU_SIN_LUT(((u16)((i32)(NuFmod(GameTimer.time_elapsed, 7.183f) / 7.183f * 65536.0f)))) * 0.025f;
+        customiser_camera_setup:
             roll_hint_valid = 0;
             roll_hint = 0;
             roll_seek_override = 0.0f;
@@ -1801,6 +1791,19 @@ mode_selected:
             roll_override = 0;
             stop_blend_rate = 0.1f;
             break;
+        case 6: {
+            NUVEC *points = WORLD->camera_splines[24]->pts;
+            memcpy(&position, &points[0], sizeof(position));
+            memcpy(&target, &points[1], sizeof(target));
+            position.x +=
+                NU_SIN_LUT(((u16)((i32)(NuFmod(GameTimer.time_elapsed, 9.321f) / 9.321f * 65536.0f)))) * 0.05f;
+            position.y +=
+                NU_SIN_LUT(((u16)((i32)(NuFmod(GameTimer.time_elapsed, 5.792f) / 5.792f * 65536.0f)))) * 0.025f;
+            position.z +=
+                NU_SIN_LUT(((u16)((i32)(NuFmod(GameTimer.time_elapsed, 7.183f) / 7.183f * 65536.0f)))) * 0.025f;
+            goto customiser_camera_setup;
+        }
+
         case 11: {
             u16 yaw;
             NUVEC ahead;
