@@ -3010,19 +3010,31 @@ static void HubDrawFreePlaySelectPc(void) {
             if (!(freeplaytime >= freeplayduration - .10000000149011612))
                 fade = (f32)(1.0 - freeplaytime / (freeplayduration - .10000000149011612));
         }
-        for (i32 player = 0; player < 2; ++player) {
-            i32 model = FreePlayModelList[player].model_id;
-            f32 opacity = (MissionMenuPacketPc.active_player[player] != 0 ? 1.0f : MissionDropInAlphaPc) * fade;
-            if (freeplay_time[player] > 0.0f) {
-                f32 progress = freeplay_time[player] / HubFreePlaySelectionWaitPc;
-                if (freeplay_selected[player] == 0)
+        {
+            i32 model = FreePlayModelList[0].model_id;
+            f32 opacity = (MissionMenuPacketPc.active_player[0] != 0 ? 1.0f : MissionDropInAlphaPc) * fade;
+            if (freeplay_time[0] > 0.0f) {
+                f32 progress = freeplay_time[0] / HubFreePlaySelectionWaitPc;
+                if (freeplay_selected[0] == 0)
                     progress = 1.0f - progress;
                 opacity *= progress;
-            } else if (freeplay_selected[player] != 0)
-                model = MissionMenuPacketPc.player_model[player];
+            } else if (freeplay_selected[0] != 0)
+                model = MissionMenuPacketPc.player_model[0];
             if (opacity > 0.0f)
-                DrawCharIcon(model, player == 0 ? -ICONX : ICONX, STATSPOSY, 0.0f, MissionPlayerIconSizePc,
-                             player == 0 ? 166 : 165, opacity, opacity, 1, NULL);
+                DrawCharIcon(model, -ICONX, STATSPOSY, 0.0f, MissionPlayerIconSizePc, 166, opacity, opacity, 1, NULL);
+        }
+        {
+            i32 model = FreePlayModelList[1].model_id;
+            f32 opacity = (MissionMenuPacketPc.active_player[1] != 0 ? 1.0f : MissionDropInAlphaPc) * fade;
+            if (freeplay_time[1] > 0.0f) {
+                f32 progress = freeplay_time[1] / HubFreePlaySelectionWaitPc;
+                if (freeplay_selected[1] == 0)
+                    progress = 1.0f - progress;
+                opacity *= progress;
+            } else if (freeplay_selected[1] != 0)
+                model = MissionMenuPacketPc.player_model[1];
+            if (opacity > 0.0f)
+                DrawCharIcon(model, ICONX, STATSPOSY, 0.0f, MissionPlayerIconSizePc, 165, opacity, opacity, 1, NULL);
         }
         if (freeplaymode == 1) {
             for (i32 player = 0; player < 2; ++player) {
