@@ -80,6 +80,64 @@ void __cdecl JabbasPalaceD_Reset(WORLDINFO *world) {
     TerSurface[9].flags = 0x2040;
 }
 
+void __cdecl KillBossNewLevel(i32 id, i32 unused_4, f32 delay, i32 level_index);
+STATIC_ASSERT(offsetof(GAMEOBJECT, hostility_group) == 0x28d);
+STATIC_ASSERT(offsetof(GAMEOBJECT, ai_opponent_exclusion_mask) == 0xeb8);
+#define RANCOR_PLAYER_IN_AREA_PC(player, world, n)                                                                     \
+    (U64_PAIR((player)->ai_area_mask) &                                                                                \
+     (i64)(i32)(1u << (((i32)((u32)LevArea[n] - (u32)(world)->ai_sys->areas) >> 6) & 31)))
+
+void __cdecl JabbasPalaceE_Update(WORLDINFO *world) {
+    i32 i;
+    GAMEOBJECT *player;
+    GIZMOBLOWUP_PC *blowup;
+    u8 *flags = (u8 *)LevFlag;
+    if (!netclient) {
+        if (FreePlay)
+            KillBossCompleteLevel(id_RANCOR, 0, 0.3f);
+        else
+            KillBossNewLevel(id_RANCOR, 0, 0.3f, LevelFixupSlotPc0087b2b0->index);
+    }
+    if (LevGameObject[0] != NULL) {
+        LevGameObject[0]->ai_opponent_exclusion_mask[0] = 0;
+        LevGameObject[0]->ai_opponent_exclusion_mask[1] = 0;
+        if (aicreature_sets_alive[0] != 0) {
+            for (i = 0; i < 8; ++i) {
+                player = (GAMEOBJECT *)Player[i];
+                if (player != NULL)
+                    U64_PAIR(LevGameObject[0]->ai_opponent_exclusion_mask) |= (u64)1 << player->hostility_group;
+            }
+        } else {
+            for (i = 0; i < 8; ++i) {
+                player = (GAMEOBJECT *)Player[i];
+                if (player != NULL && ((LevArea[0] != NULL && RANCOR_PLAYER_IN_AREA_PC(player, world, 0)) ||
+                                       (LevArea[1] != NULL && RANCOR_PLAYER_IN_AREA_PC(player, world, 1)) ||
+                                       (LevArea[2] != NULL && RANCOR_PLAYER_IN_AREA_PC(player, world, 2))))
+                    U64_PAIR(LevGameObject[0]->ai_opponent_exclusion_mask) |= (u64)1 << player->hostility_group;
+            }
+        }
+    }
+    blowup = LevGizmo[0] != NULL ? (GIZMOBLOWUP_PC *)LevGizmo[0]->object : NULL;
+    if (blowup != NULL && (blowup->status_flags & 1) != 0) {
+        if (!flags[6]) {
+            PlaySfx("exp_minecart", &blowup->position);
+            flags[6] = 1;
+        }
+    } else {
+        flags[6] = 0;
+    }
+    blowup = LevGizmo[1] != NULL ? (GIZMOBLOWUP_PC *)LevGizmo[1]->object : NULL;
+    if (blowup != NULL && (blowup->status_flags & 1) != 0) {
+        if (!flags[7]) {
+            PlaySfx("exp_minecart", &blowup->position);
+            flags[7] = 1;
+        }
+    } else {
+        flags[7] = 0;
+    }
+}
+#undef RANCOR_PLAYER_IN_AREA_PC
+
 void __cdecl JabbasPalaceE_Panel(WORLDINFO *world) {
     if (netclient == 0) {
         if (LevGameObject[0] != NULL && LevAIMessage[0] != NULL && LevAIMessage[0]->value == 1.0f)
