@@ -1468,6 +1468,52 @@ void __cdecl NuRndrRectUV2di(i32 x, i32 y, i32 width, i32 height, f32 u0, f32 v0
     NuPrimSetCoordinateSystem(NuPrimCoordSystemStack[NuPrimCSPos]);
 }
 
+void __cdecl NuRndrLineRect2di(i32 x, i32 y, i32 width, i32 height, i32 colour, NUMTL *material) {
+    struct {
+        f32 x;
+        f32 y;
+        f32 width;
+        f32 height;
+    } rectangle = {(f32)((f64)x * 0.0625), (f32)((f64)y * 0.0625), (f32)((f64)width * 0.0625),
+                   (f32)((f64)height * 0.0625)};
+    f32 ex;
+    f32 ey;
+    LOCATOR_PRIM_VERTEX_PC *vertex;
+    ++NuPrimCSPos;
+    NuPrimSetCoordinateSystem(0);
+    NuPrim2DBegin(15, 7, material);
+    NuRndrPrimSetColourPrivate(colour);
+    vertex = (LOCATOR_PRIM_VERTEX_PC *)NuPrimStreamBufferPointer->void_ptr;
+    vertex->u = 0.0f;
+    vertex->v = 0.0f;
+    NuPrim2DAddXYZ(rectangle.x, rectangle.y, 0.0f);
+    NuRndrPrimSetColourPrivate(colour);
+    vertex = (LOCATOR_PRIM_VERTEX_PC *)NuPrimStreamBufferPointer->void_ptr;
+    vertex->u = 1.0f;
+    vertex->v = 0.0f;
+    ex = rectangle.x + rectangle.width;
+    NuPrim2DAddXYZ(ex, rectangle.y, 0.0f);
+    NuRndrPrimSetColourPrivate(colour);
+    vertex = (LOCATOR_PRIM_VERTEX_PC *)NuPrimStreamBufferPointer->void_ptr;
+    vertex->u = 1.0f;
+    vertex->v = 1.0f;
+    ey = rectangle.y + rectangle.height;
+    NuPrim2DAddXYZ(ex, ey, 0.0f);
+    NuRndrPrimSetColourPrivate(colour);
+    vertex = (LOCATOR_PRIM_VERTEX_PC *)NuPrimStreamBufferPointer->void_ptr;
+    vertex->u = 0.0f;
+    vertex->v = 1.0f;
+    NuPrim2DAddXYZ(rectangle.x, ey, 0.0f);
+    NuRndrPrimSetColourPrivate(colour);
+    vertex = (LOCATOR_PRIM_VERTEX_PC *)NuPrimStreamBufferPointer->void_ptr;
+    vertex->u = 0.0f;
+    vertex->v = 0.0f;
+    NuPrim2DAddXYZ(rectangle.x, rectangle.y, 0.0f);
+    NuPrim2DEnd();
+    --NuPrimCSPos;
+    NuPrimSetCoordinateSystem(NuPrimCoordSystemStack[NuPrimCSPos]);
+}
+
 void __cdecl NuRndrFx(i32 paused, void *context) {
     (void)context;
     NuLgtLaserDraw(paused);
