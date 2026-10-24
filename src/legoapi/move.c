@@ -1823,7 +1823,7 @@ i32 __cdecl MovePlayer_CIRCLE(GAMEOBJECT *object) {
     WORLDINFO *world = WorldInfo_CurrentlyActive();
     GAMEPAD_PC *pad = object->pad;
     GAMEOBJECT *vehicle;
-    u16 heading;
+    u16 heading, facing;
     f32 seek_rate, maximum, fraction, half_speed;
     i32 flicker;
     i32 lean;
@@ -1837,8 +1837,10 @@ i32 __cdecl MovePlayer_CIRCLE(GAMEOBJECT *object) {
     object->current_input_angle = heading + pad->input_angle;
     object->flags_e20 |= 0x200000;
     object->movement_facing_angle = heading;
-    object->field_0x276 = object->facing_angle = SeekRot(object->facing_angle, heading, 8.0f);
-    lean = (i32)(((CircleLeanDegrees << 16) / 360) * pad->input_direction_z);
+    facing = SeekRot(object->facing_angle, heading, 8.0f);
+    lean = CircleLeanDegrees << 16;
+    object->field_0x276 = object->facing_angle = facing;
+    lean = (i32)((lean / 360) * pad->input_direction_z);
     object->movement_lean_angle = SeekRot(object->movement_lean_angle, lean, 8.0f);
     seek_rate = object->character_data->game_character->velocity_seek_rate;
     if (object->character_context == 0x23 || object->character_context == 0x24) {
@@ -10216,7 +10218,7 @@ void __cdecl FindForcePushTarget(GAMEOBJECT *object, i32 activate, i32 target_fi
     i32 candidate_second;
     i32 candidate_direct;
     f32 distance;
-    u16 forced;
+    i32 forced;
 
     if (object->character_context == 0x1b || (object->flags_e20 & 0x20000) != 0 ||
         (object->field_280 != 0xff && MiniCutCam != 0) || (object->flags_e20 & 0x1000000) != 0) {
