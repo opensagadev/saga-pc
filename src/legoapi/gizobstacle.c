@@ -14,11 +14,18 @@ STATIC_ASSERT(offsetof(BOMBGEN_ACTIVATION_READER_PC, anim_set) == 0x1c);
 STATIC_ASSERT(offsetof(BOMBGEN_ACTIVATION_READER_PC, flags) == 0x2a);
 STATIC_ASSERT(sizeof(BOMBGEN_ACTIVATION_READER_PC) == 0x2c);
 
+typedef struct bombgen_activation_flags_pc_s {
+    u16 active : 1;
+    u16 visible : 1;
+    u16 unknown : 14;
+} BOMBGEN_ACTIVATION_FLAGS_PC;
+STATIC_ASSERT(sizeof(BOMBGEN_ACTIVATION_FLAGS_PC) == 2);
+
 void __cdecl GizmoBombGen_Activate(GIZMO_PC *gizmo, i32 active) {
     BOMBGEN_ACTIVATION_READER_PC *generator;
     if (gizmo != NULL) {
         generator = (BOMBGEN_ACTIVATION_READER_PC *)gizmo->object;
-        generator->flags ^= (u16)((active != 0) ^ generator->flags) & 1;
+        ((BOMBGEN_ACTIVATION_FLAGS_PC *)&generator->flags)->active = active != 0;
     }
 }
 
@@ -27,7 +34,7 @@ void __cdecl GizmoBombGen_SetVisibility(GIZMO_PC *gizmo, i32 visible) {
     if (gizmo != NULL && gizmo->object != NULL) {
         generator = (BOMBGEN_ACTIVATION_READER_PC *)gizmo->object;
         GameAnimSet_SetVisibility(generator->anim_set, visible);
-        generator->flags ^= (u16)(((visible != 0) << 1) ^ generator->flags) & 2;
+        ((BOMBGEN_ACTIVATION_FLAGS_PC *)&generator->flags)->visible = visible != 0;
     }
 }
 
@@ -150,7 +157,7 @@ STATIC_ASSERT(offsetof(WORLDINFO, progress_flag_5174) == 0x5170);
 
 static void GizActions_ActivateBelt(GIZFLOW_PC *unused0, FLOWBOX_PC *unused1, char **params, int count) {
     i32 index;
-    i32 active = 1;
+    i8 active = 1;
     for (index = 0; index < count; ++index) {
         if (NuStrICmp(params[index], "FALSE") == 0) {
             active = 0;
@@ -252,15 +259,15 @@ void __cdecl DeactivateCharacter(char *);
 void __cdecl GizBuildIt_KillParts(GIZBUILDIT_s *);
 
 void __cdecl GizActions_ActivateCharPc(GIZFLOW_PC *flow, FLOWBOX_PC *unused, char **params, i32 count) {
-    WORLDINFO *world = WorldInfo_CurrentlyActive();
     char *name = NULL;
     i32 active = 1;
     ACTIVATE_CHAR_BUILDIT_VIEW_PC *buildit = NULL;
-    i32 index;
+    i32 index = 0;
+    WORLDINFO *world = WorldInfo_CurrentlyActive();
     GAMEOBJECT *player;
     AICREATURE_PC *creature;
     (void)unused;
-    for (index = 0; index < count; ++index) {
+    for (; index < count; ++index) {
         char *value = NuStrIStr(params[index], "name=");
         if (value != NULL)
             name = value + 5;
@@ -275,9 +282,13 @@ void __cdecl GizActions_ActivateCharPc(GIZFLOW_PC *flow, FLOWBOX_PC *unused, cha
         }
     }
     if (active != 0 && name != NULL) {
-        if (ActivateCharacter(name, buildit != NULL ? &buildit->position : NULL,
-                              buildit != NULL ? buildit->angle : 0) == NULL &&
-            buildit != NULL)
+        NUVEC *position = NULL;
+        i32 angle = 0;
+        if (buildit != NULL) {
+            position = &buildit->position;
+            angle = buildit->angle;
+        }
+        if (ActivateCharacter(name, position, angle) == NULL && buildit != NULL)
             GizBuildIt_KillParts((GIZBUILDIT_s *)buildit);
     } else if (active == 0 && name != NULL) {
         player = (GAMEOBJECT *)Player[0];
@@ -336,6 +347,14 @@ typedef struct gizobstacle_progress_pc_s {
 } GIZOBSTACLE_PROGRESS_PC;
 STATIC_ASSERT(sizeof(GIZOBSTACLE_PROGRESS_PC) == 0x70);
 
+typedef struct obstacle_progress_flags_pc_s {
+    u32 active : 1;
+    u32 visible : 1;
+    u32 unknown : 30;
+} OBSTACLE_PROGRESS_FLAGS_PC;
+STATIC_ASSERT(sizeof(OBSTACLE_PROGRESS_FLAGS_PC) == 4);
+STATIC_ASSERT(offsetof(GIZOBSTACLE, progress_flags) == 0x94);
+
 void __cdecl GizmoObstacle_Activate(GIZMO_PC *ptr, i32 activate) {
     GIZMO_PC *gizmo = (GIZMO_PC *)ptr;
     GIZOBSTACLE *obstacle;
@@ -345,7 +364,7 @@ void __cdecl GizmoObstacle_Activate(GIZMO_PC *ptr, i32 activate) {
     if (activate && !(obstacle->progress_flags & 1))
         GameAnimSet_JumpToStart(obstacle->anim_set);
     obstacle->proximity_output = 0;
-    obstacle->progress_flags = (obstacle->progress_flags & ~1u) | (activate != 0);
+    ((OBSTACLE_PROGRESS_FLAGS_PC *)&obstacle->progress_flags)->active = activate != 0;
     if (activate) {
         obstacle->runtime_flags &= ~0x80u;
         obstacle->progress_flags &= ~0x100u;
@@ -358,7 +377,7 @@ void __cdecl GizmoObstacle_SetVisibility(GIZMO_PC *ptr, i32 visibility) {
     if (!obstacle)
         return;
     GameAnimSet_SetVisibility(obstacle->anim_set, visibility);
-    obstacle->progress_flags = (obstacle->progress_flags & ~2u) | ((visibility != 0) << 1);
+    ((OBSTACLE_PROGRESS_FLAGS_PC *)&obstacle->progress_flags)->visible = visibility != 0;
 }
 NUVEC *__cdecl GizmoObstacle_GetPos(GIZMO_PC *gizmo) {
     GIZOBSTACLE *obstacle = gizmo ? (GIZOBSTACLE *)gizmo->object : NULL;
@@ -375,7 +394,7 @@ i32 __cdecl GizmoObstacle_GetOutput(GIZMO_PC *gizmo, i32 output, i32 ignore_acti
     GIZOBSTACLE *obstacle = (GIZOBSTACLE *)gizmo->object;
     if (!obstacle)
         return 0;
-    if ((obstacle->progress_flags & 3) != 3 && !ignore_activation)
+    if (((obstacle->progress_flags & 2) == 0 || (obstacle->progress_flags & 1) == 0) && !ignore_activation)
         return 0;
     switch (output) {
         case 0:
@@ -423,43 +442,46 @@ void *__cdecl GizObstacles_AllocateProgressData(VARIPTR *buffer, VARIPTR *end) {
 }
 void __cdecl GizObstacles_ClearProgress(void *world, void *ptr) {
     GIZOBSTACLE_PROGRESS_PC *progress = (GIZOBSTACLE_PROGRESS_PC *)ptr;
-    i32 i;
     (void)world;
     if (!progress)
         return;
-    for (i = 0; i < 4; ++i) {
-        progress->enabled[i] = progress->visible[i] = 0xffffffff;
-        progress->pickups_spawned[i] = progress->ai_active[i] = progress->blocked[i] = 0;
-        progress->trigger_latched[i] = progress->destroyed[i] = 0;
-    }
+    memset(progress->enabled, -1, sizeof(progress->enabled));
+    memset(progress->visible, -1, sizeof(progress->visible));
+    memset(progress->pickups_spawned, 0, sizeof(progress->pickups_spawned));
+    memset(progress->ai_active, 0, sizeof(progress->ai_active));
+    memset(progress->blocked, 0, sizeof(progress->blocked));
+    memset(progress->trigger_latched, 0, sizeof(progress->trigger_latched));
+    memset(progress->destroyed, 0, sizeof(progress->destroyed));
 }
 
 GIZOBSTACLE *GizObstacle_FindByName(GIZOBSTACLESYS_s *system, char *name) {
+    GIZOBSTACLE *obstacle = NULL;
     i32 index;
-    if (system == NULL || name == NULL) {
-        return NULL;
-    }
-
-    for (index = 0; index < system->count; ++index) {
-        GIZOBSTACLE *obstacle = &system->obstacles[index];
-        if (NuStrICmp(obstacle->name, name) == 0) {
-            return obstacle;
+    if (system != NULL && name != NULL) {
+        obstacle = system->obstacles;
+        for (index = 0; index < system->count; ++index, ++obstacle) {
+            if (NuStrICmp(obstacle->name, name) == 0)
+                return obstacle;
         }
     }
-
-    return NULL;
+    return obstacle;
 }
 void __cdecl GizObstacles_StoreProgress(void *world, void *ptr, void *progress_ptr) {
     GIZOBSTACLE_SYSTEM_PC *system = (GIZOBSTACLE_SYSTEM_PC *)ptr;
     GIZOBSTACLE_PROGRESS_PC *progress = (GIZOBSTACLE_PROGRESS_PC *)progress_ptr;
     i32 i;
+    GIZOBSTACLE *obstacle;
     GizObstacles_ClearProgress(world, progress);
     if (!progress)
         return;
-    for (i = 0; i < system->count && i < 128; ++i) {
-        GIZOBSTACLE *obstacle = &system->obstacles[i];
-        i32 word = i >> 5;
-        u32 bit = 1u << (i & 31);
+    obstacle = system->obstacles;
+    for (i = 0; i < system->count; ++i, ++obstacle) {
+        i32 word;
+        u32 bit;
+        if (i >= 128)
+            break;
+        word = i / 32;
+        bit = 1u << (i & 31);
         if (!(obstacle->progress_flags & 2))
             progress->visible[word] &= ~bit;
         if (!(obstacle->progress_flags & 1))
@@ -479,11 +501,12 @@ void __cdecl GizObstacles_StoreProgress(void *world, void *ptr, void *progress_p
 void __cdecl GizObstacles_AddLevelSfx(void *world, void *ptr, i32 *ids, i32 *count, i32 maximum) {
     GIZOBSTACLE_SYSTEM_PC *system = (GIZOBSTACLE_SYSTEM_PC *)ptr;
     i32 i;
+    GIZOBSTACLE *obstacle;
     (void)world;
     if (!system)
         return;
-    for (i = 0; i < system->count; ++i) {
-        GIZOBSTACLE *obstacle = &system->obstacles[i];
+    obstacle = system->obstacles;
+    for (i = 0; i < system->count; ++i, ++obstacle) {
         if (obstacle->start_sfx_id != -1)
             AddLevelSfxFromId(obstacle->start_sfx_id, ids, count, maximum);
         if (obstacle->stop_sfx_id != -1)
@@ -492,13 +515,19 @@ void __cdecl GizObstacles_AddLevelSfx(void *world, void *ptr, i32 *ids, i32 *cou
 }
 
 static void __cdecl Gizobstacle_ReadAnimSetData(GAMEANIMOBJ *object, u8 version) {
-    u16 fallback_data = 0;
+    union {
+        u32 storage;
+        u16 value;
+    } fallback_data;
     u16 *data;
+    STATIC_ASSERT(sizeof(fallback_data) == 4);
     if (!object)
         return;
     data = (u16 *)object->object_data;
-    if (!data)
-        data = &fallback_data;
+    if (!data) {
+        fallback_data.storage = 0;
+        data = &fallback_data.value;
+    }
     if (version > 7)
         *data = (u16)EdFileReadShort();
     else if (object->flags & 2)
@@ -695,11 +724,17 @@ static i32 __cdecl GizObstacle_PosWithinBox(GIZOBSTACLE *obstacle, NUVEC *positi
         return 1;
     NuVecSub(&local, position, &obstacle->secondary_position);
     NuVecRotateY(&local, &local, -(u16)obstacle->trigger_box_yaw);
-    if (local.x > obstacle->trigger_box_half_extents.x || local.x < -obstacle->trigger_box_half_extents.x)
+    if (local.x > obstacle->trigger_box_half_extents.x)
         return 0;
-    if (local.y > obstacle->trigger_box_half_extents.y || local.y < 0.0f)
+    if (local.x < -obstacle->trigger_box_half_extents.x)
         return 0;
-    if (local.z > obstacle->trigger_box_half_extents.z || local.z < -obstacle->trigger_box_half_extents.z)
+    if (local.y > obstacle->trigger_box_half_extents.y)
+        return 0;
+    if (local.y < 0.0f)
+        return 0;
+    if (local.z > obstacle->trigger_box_half_extents.z)
+        return 0;
+    if (local.z < -obstacle->trigger_box_half_extents.z)
         return 0;
     return 1;
 }
@@ -1306,7 +1341,8 @@ typedef struct bomb_generator_system_runtime_pc_s {
     BOMB_GENERATOR_RUNTIME_PC *items;
     u16 count, capacity;
     void *pool;
-    u16 flags, unknown_0e;
+    i16 flags;
+    u16 unknown_0e;
     void *progress;
 } BOMB_GENERATOR_SYSTEM_RUNTIME_PC;
 typedef struct bomb_generator_progress_pc_s {
@@ -1318,7 +1354,8 @@ STATIC_ASSERT(offsetof(BOMB_GENERATOR_RUNTIME_PC, generated_bomb) == 0x24);
 STATIC_ASSERT(offsetof(BOMB_GENERATOR_RUNTIME_PC, flags) == 0x2a);
 STATIC_ASSERT(sizeof(BOMB_GENERATOR_SYSTEM_RUNTIME_PC) == 0x14);
 STATIC_ASSERT(offsetof(BOMB_GENERATOR_SYSTEM_RUNTIME_PC, count) == 4);
-STATIC_ASSERT(offsetof(BOMB_GENERATOR_SYSTEM_RUNTIME_PC, flags) == 0xc);
+STATIC_ASSERT(offsetof(BOMB_GENERATOR_SYSTEM_RUNTIME_PC, flags) == 0xc &&
+              sizeof(((BOMB_GENERATOR_SYSTEM_RUNTIME_PC *)0)->flags) == 2);
 STATIC_ASSERT(offsetof(BOMB_GENERATOR_SYSTEM_RUNTIME_PC, progress) == 0x10);
 STATIC_ASSERT(sizeof(BOMB_GENERATOR_PROGRESS_PC) == 0x18);
 STATIC_ASSERT(offsetof(BOMB_GENERATOR_PROGRESS_PC, visible) == 0xc);
