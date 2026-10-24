@@ -549,70 +549,72 @@ static void __cdecl Push_ClearProgress(void *, void *progress_ptr) {
 static i32 __cdecl edpush_Load(void *world_ptr, void *) {
     static i32 version = -1;
     PUSH_RUNTIME_WORLD_VIEW_PC *world = static_cast<PUSH_RUNTIME_WORLD_VIEW_PC *>(world_ptr);
-    if (world->count != 0)
-        return 0;
-    version = EdFileReadInt();
-    world->count = EdFileReadInt();
-    i32 valid_count = 0;
-    char special_name[256];
-    for (i32 file_index = 0; file_index < world->count; ++file_index) {
-        PUSH_RUNTIME_BLOCK_VIEW_PC *block = &world->blocks[valid_count];
-        memset(special_name, 0, sizeof(special_name));
-        EdFileRead(special_name, static_cast<i8>(EdFileReadChar()));
-        i32 missing = 0;
-        if (Gizmo_FindNuSpecial(world->current_gscn, &block->special, special_name, 1, world->gizmo_sys,
-                                const_cast<char *>("PushBlock"), block->name) == 0) {
-            missing = 1;
-        } else {
-            NuStrCpy(block->name, NuSpecialGetName(&block->special));
-        }
-        block->snap_distance = EdFileReadFloat();
-        block->packed_state_flags &= ~0x04000000u;
-        if (EdFileReadChar() != 0)
-            block->packed_state_flags |= 0x04000000u;
-        block->packed_state_flags &= ~0x08000000u;
-        if (EdFileReadChar() != 0)
-            block->packed_state_flags |= 0x08000000u;
-        block->packed_state_flags &= ~0x00100000u;
-        if (EdFileReadChar() != 0)
-            block->packed_state_flags |= 0x00100000u;
-        block->packed_state_flags &= ~0x00200000u;
-        if (EdFileReadChar() != 0)
-            block->packed_state_flags |= 0x00200000u;
-        if (version >= 4) {
-            block->packed_state_flags &= ~0x20000000u;
-            if (EdFileReadChar() != 0)
-                block->packed_state_flags |= 0x20000000u;
-            block->packed_state_flags &= ~0x40000000u;
-            if (EdFileReadChar() != 0)
-                block->packed_state_flags |= 0x40000000u;
-        }
-        if (version >= 5) {
-            block->packed_state_flags &= ~0x00400000u;
-            if (EdFileReadChar() != 0)
-                block->packed_state_flags |= 0x00400000u;
-            block->packed_state_flags &= ~0x00800000u;
-            if (EdFileReadChar() != 0)
-                block->packed_state_flags |= 0x00800000u;
-        }
-        block->end_position_count = 0;
-        if (version >= 3) {
-            const u8 count = static_cast<u8>(EdFileReadChar());
-            block->end_position_count = count;
-            for (i32 index = 0; index < count; ++index) {
-                memset(special_name, 0, sizeof(special_name));
-                EdFileRead(special_name, static_cast<i8>(EdFileReadChar()));
-                special_name[16] = '\0';
-                if (Gizmo_FindNuSpecial(world->current_gscn, &block->end_position_specials[index], special_name, 1,
-                                        world->gizmo_sys, const_cast<char *>("PushBlockLinkObject"), block->name) == 0)
-                    --block->end_position_count;
+    if (world->count == 0) {
+        version = EdFileReadInt();
+        world->count = EdFileReadInt();
+        i32 valid_count = 0;
+        char special_name[256];
+        for (i32 file_index = 0; file_index < world->count; ++file_index) {
+            PUSH_RUNTIME_BLOCK_VIEW_PC *block = &world->blocks[valid_count];
+            i32 missing = 0;
+            memset(special_name, 0, sizeof(special_name));
+            EdFileRead(special_name, static_cast<i8>(EdFileReadChar()));
+            if (Gizmo_FindNuSpecial(world->current_gscn, &block->special, special_name, 1, world->gizmo_sys,
+                                    const_cast<char *>("PushBlock"), block->name) == 0) {
+                missing = 1;
+            } else {
+                NuStrCpy(block->name, NuSpecialGetName(&block->special));
             }
+            block->snap_distance = EdFileReadFloat();
+            block->packed_state_flags &= ~0x04000000u;
+            if (EdFileReadChar() != 0)
+                block->packed_state_flags |= 0x04000000u;
+            block->packed_state_flags &= ~0x08000000u;
+            if (EdFileReadChar() != 0)
+                block->packed_state_flags |= 0x08000000u;
+            block->packed_state_flags &= ~0x00100000u;
+            if (EdFileReadChar() != 0)
+                block->packed_state_flags |= 0x00100000u;
+            block->packed_state_flags &= ~0x00200000u;
+            if (EdFileReadChar() != 0)
+                block->packed_state_flags |= 0x00200000u;
+            if (version >= 4) {
+                block->packed_state_flags &= ~0x20000000u;
+                if (EdFileReadChar() != 0)
+                    block->packed_state_flags |= 0x20000000u;
+                block->packed_state_flags &= ~0x40000000u;
+                if (EdFileReadChar() != 0)
+                    block->packed_state_flags |= 0x40000000u;
+            }
+            if (version >= 5) {
+                block->packed_state_flags &= ~0x00400000u;
+                if (EdFileReadChar() != 0)
+                    block->packed_state_flags |= 0x00400000u;
+                block->packed_state_flags &= ~0x00800000u;
+                if (EdFileReadChar() != 0)
+                    block->packed_state_flags |= 0x00800000u;
+            }
+            block->end_position_count = 0;
+            if (version >= 3) {
+                const u8 count = static_cast<u8>(EdFileReadChar());
+                block->end_position_count = count;
+                for (i32 index = 0; index < count; ++index) {
+                    memset(special_name, 0, sizeof(special_name));
+                    EdFileRead(special_name, static_cast<i8>(EdFileReadChar()));
+                    special_name[16] = '\0';
+                    if (Gizmo_FindNuSpecial(world->current_gscn, &block->end_position_specials[index], special_name, 1,
+                                            world->gizmo_sys, const_cast<char *>("PushBlockLinkObject"),
+                                            block->name) == 0)
+                        --block->end_position_count;
+                }
+            }
+            if (missing == 0)
+                ++valid_count;
         }
-        if (missing == 0)
-            ++valid_count;
+        world->count = valid_count;
+        return 1;
     }
-    world->count = valid_count;
-    return 1;
+    return 0;
 }
 
 extern "C" void __cdecl ResetPushProgress(WORLDINFO *, void *);
