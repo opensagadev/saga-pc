@@ -799,6 +799,7 @@ address,symbol,size,ctype
 0x0044b950,_Action_AddPartDebris,495,"i32 __cdecl (AISYS_PC *, AISCRIPTPROCESS_PC *, AIPACKET_PC *, char **, i32, i32, f32)"
 0x44bb40,_GuidedMissile_Move,717,
 0x44be10,_GuidedMissile_Kill,130,
+0x44bea0,_GuidedMissile_Deflect,37,void __cdecl(PART_PC *)
 0x0044bed0,_Action_LaunchGuidedMissile,759,"i32 __cdecl (AISYS_PC *, AISCRIPTPROCESS_PC *, AIPACKET_PC *, char **, i32, i32, f32)"
 0x44c1d0,_Action_SetHoverPhase,201,"i32 __cdecl (AISYS_PC *, AISCRIPTPROCESS_PC *, AIPACKET_PC *, char **, i32, i32, f32)"
 0x0044c2a0,_Action_UseCurrentSpeed,336,
@@ -19957,6 +19958,10 @@ address,symbol,size,ctype
 0x007f6828,_engagefiretime,4,f32
 0x007f682c,_aitol,4,f32
 0x007f6830,_direction_scale,4,f32
+0x7f6834,_guided_speed,,f32
+0x7f6838,_guided_life,,f32
+0x7f683c,_guided_start_time,,f32
+0x7f6840,_guided_rotate_speed,,i32
 0x7f6844,_test_missile_scale,4,f32
 0x7f6858,_lego_aiconditiondefs,2052,AICONDITIONDEF_PC[171]
 0x7f7060,_lego_aiactiondefs,2496,AIACTIONDEF_PC[208]

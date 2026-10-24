@@ -1841,3 +1841,125 @@ i32 __cdecl Action_TurnOnPickupPc(AISYS_PC *system, AISCRIPTPROCESS_PC *processo
     }
     return 1;
 }
+
+f32 guided_speed = 30.0f;
+f32 guided_life = 8.0f;
+f32 guided_start_time = 0.5f;
+i32 guided_rotate_speed = 240000;
+
+void GuidedMissile_Deflect(PART_PC *part) {
+    part->flags &= ~0x4000;
+    part->flags |= 0x80;
+    NewPartRotation(part);
+}
+
+void GuidedMissile_Move(PART_PC *part, f32 time) {
+    NUVEC position;
+    NUVEC scale;
+    GAMEOBJECT *recipient = part->recipient;
+    if (part->scale_time > guided_life) {
+        part->field_124[3] = (i32)SeekValF((f32)part->field_124[3], 0.0f, 2.0f);
+    } else if (recipient != NULL && part->scale_time > guided_start_time) {
+        NUVEC direction;
+        i32 yaw, pitch;
+        NuVecSub(&direction, &recipient->collision_position, &part->position);
+        yaw = NuAtan2D(direction.x, direction.z);
+        NuVecRotateY(&direction, &direction, -yaw);
+        direction.y = recipient->collision_position.y + 0.5 - part->position.y;
+        pitch = -NuAtan2D(direction.y, direction.z);
+        part->rotation_x = SeekRot(part->rotation_x, (u16)pitch, 1.0f);
+        part->rotation_y = SeekRot(part->rotation_y, (u16)yaw, 3.0f);
+        part->field_124[3] = guided_rotate_speed;
+    } else {
+        part->field_124[3] = guided_rotate_speed;
+    }
+    part->rotation_z += (i32)((f64)part->field_124[3] * FRAMETIME);
+    part->velocity.x = 0.0f;
+    part->velocity.y = 0.0f;
+    part->velocity.z = guided_speed;
+    NuVecRotateX(&part->velocity, &part->velocity, part->rotation_x);
+    NuVecRotateY(&part->velocity, &part->velocity, part->rotation_y);
+    {
+        position.x = part->position.x + part->velocity.x * time;
+        {
+            f64 vertical_velocity = part->velocity.y;
+            vertical_velocity *= time;
+            position.y = vertical_velocity + part->position.y + part->gravity * time;
+        }
+        position.z = part->position.z + part->velocity.z * time;
+        NuMtxSetRotationX(&part->transform, NuAngAdd(part->rotation_x, 0x4000));
+        NuMtxRotateY(&part->transform, part->rotation_y);
+        NuMtxPreRotateY(&part->transform, part->rotation_z);
+        NuMtxTranslate(&part->transform, &position);
+        if (part->scale_time < 0.2f) {
+            scale.x = scale.y = scale.z = part->scale_time / 0.2f;
+            NuMtxPreScale(&part->transform, &scale);
+        }
+        if ((part->active & 0x80) != 0) {
+            i32 count = ParticlesPerFrame(1.0f, FRAMETIME);
+            NUVEC momentum;
+            momentum.x = -part->velocity.x;
+            momentum.y = -part->velocity.y;
+            momentum.z = -part->velocity.z;
+            AddGameDebrisMom(WORLD->game_debris_sys, 0xb, &position, count, &momentum);
+        }
+    }
+}
+
+i32 __cdecl Action_LaunchGuidedMissile(AISYS_PC *system, AISCRIPTPROCESS_PC *processor, AIPACKET_PC *packet,
+                                       char **params, i32 count, i32 first_time, f32 elapsed) {
+    NUVEC offset = {0.0f, 0.0f, 0.0f};
+    if (first_time != 0) {
+        NUSPECIALHANDLE source = {0};
+        i32 index;
+        char *value;
+        for (index = 0; index < count; ++index) {
+            value = NuStrIStr(params[index], "from=");
+            if (value != NULL)
+                NuSpecialFind(WORLD->current_gscn, &source, value + 5, 1);
+            else if ((value = NuStrIStr(params[index], (char *)AITransferLiteral757c64)) != NULL)
+                offset.x = AIParamToFloat(processor, value + 3);
+            else if ((value = NuStrIStr(params[index], (char *)AITransferLiteral757c60)) != NULL)
+                offset.y = AIParamToFloat(processor, value + 3);
+            else if ((value = NuStrIStr(params[index], (char *)AITransferLiteral757c5c)) != NULL)
+                offset.z = AIParamToFloat(processor, value + 3);
+        }
+        if (NuSpecialExistsFn(&source)) {
+            NUMTX matrix = *NuSpecialGetDrawMtx(&source);
+            NUVEC scale;
+            NUVEC direction;
+            NUVEC returned_scale;
+            NUVEC centre;
+            ADDPART_PC part;
+            scale = *NuMtxGetScale(&returned_scale, &matrix);
+            scale.x = 1.0f / scale.x;
+            scale.y = 1.0f / scale.y;
+            scale.z = 1.0f / scale.z;
+            NuMtxPreScale(&matrix, &scale);
+            if (offset.x != 0.0f || offset.y != 0.0f || offset.z != 0.0f)
+                NuMtxTranslate(&matrix, &offset);
+            direction.y = direction.x = 0.0f;
+            direction.z = 1.0f;
+            NuVecMtxRotate(&direction, &direction, &matrix);
+            part = Default_ADDPART;
+            part.matrix = &matrix;
+            part.velocity = &direction;
+            NuSpecialGetRadius(&WORLD->level_objects[232].special, &centre, &part.field_14);
+            part.part_id = 232;
+            part.field_14 *= test_missile_scale;
+            part.field_18 = part.field_14;
+            part.special = &WORLD->level_objects[232].special;
+            part.time_step = FRAMETIME;
+            part.gravity = 0.0f;
+            part.flags = 0x831b;
+            part.kill_fn = GuidedMissile_Kill;
+            part.field_c0 = test_missile_scale;
+            part.move_fn = GuidedMissile_Move;
+            part.deflect_fn = GuidedMissile_Deflect;
+            part.collision_fn = PartCollide_3D;
+            part.recipient = player;
+            AddPart(&part);
+        }
+    }
+    return 1;
+}
