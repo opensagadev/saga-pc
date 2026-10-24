@@ -521,7 +521,7 @@ static void __cdecl Push_SetVisibility(GIZMO_PC *gizmo, i32 visible) {
 }
 
 typedef struct PUSH_RUNTIME_PROGRESS_VIEW_PC {
-    u32 visible_mask, state_mask, position_mask;
+    u32 visible_mask[1], state_mask[1], position_mask[1];
     NUVEC positions[16];
     NUVEC end_positions[2][16];
 } PUSH_RUNTIME_PROGRESS_VIEW_PC;
@@ -539,9 +539,9 @@ static void *__cdecl Push_AllocateProgressData(VARIPTR *buffer, VARIPTR *end) {
 static void __cdecl Push_ClearProgress(void *, void *progress_ptr) {
     PUSH_RUNTIME_PROGRESS_VIEW_PC *progress = static_cast<PUSH_RUNTIME_PROGRESS_VIEW_PC *>(progress_ptr);
     if (progress != NULL) {
-        progress->state_mask = 0;
-        progress->visible_mask = ~0u;
-        progress->position_mask = 0;
+        progress->state_mask[0] = 0;
+        progress->visible_mask[0] = ~0u;
+        progress->position_mask[0] = 0;
         NuMemSet128(progress->positions, 0, 0);
     }
 }
@@ -662,25 +662,24 @@ static void __cdecl Push_StoreProgress(void *world_ptr, void *, void *progress_p
     if (progress == NULL)
         return;
     // This initialization is the native inline ClearProgress operation, including its zero length.
-    progress->state_mask = 0;
-    progress->visible_mask = ~0u;
-    progress->position_mask = 0;
+    progress->state_mask[0] = 0;
+    progress->visible_mask[0] = ~0u;
+    progress->position_mask[0] = 0;
     NuMemSet128(progress->positions, 0, 0);
     PUSH_RUNTIME_WORLD_VIEW_PC *world = static_cast<PUSH_RUNTIME_WORLD_VIEW_PC *>(world_ptr);
-    if (world == NULL || world->blocks == NULL || world->count <= 0)
+    if (world == NULL || world->blocks == NULL)
         return;
     PUSH_RUNTIME_BLOCK_VIEW_PC *block = world->blocks;
     for (i32 index = 0; index < world->count && index < 16; ++index, ++block) {
+        const i32 word = index / 32;
         const u32 mask = 1u << (index & 31);
         if ((block->packed_state_flags & 0x40000u) == 0)
-            progress->visible_mask &= ~mask;
+            progress->visible_mask[word] &= ~mask;
         if ((block->packed_state_flags & 0x02000000u) != 0)
-            progress->state_mask |= mask;
+            progress->state_mask[word] |= mask;
         if (NuSpecialExistsFn(&block->special) != 0) {
             NUMTX *matrix = NuSpecialGetInstanceMtx(&block->special);
-            progress->positions[index].x = matrix->m30;
-            progress->positions[index].y = matrix->m31;
-            progress->positions[index].z = matrix->m32;
+            progress->positions[index] = matrix->translation;
         } else {
             progress->positions[index] = v000;
         }
@@ -689,15 +688,13 @@ static void __cdecl Push_StoreProgress(void *world_ptr, void *, void *progress_p
             if (special != NULL) {
                 if (NuSpecialExistsFn(special) != 0) {
                     NUMTX *matrix = NuSpecialGetInstanceMtx(special);
-                    progress->end_positions[end][index].x = matrix->m30;
-                    progress->end_positions[end][index].y = matrix->m31;
-                    progress->end_positions[end][index].z = matrix->m32;
+                    progress->end_positions[end][index] = matrix->translation;
                 } else {
                     progress->end_positions[end][index] = v000;
                 }
             }
         }
-        progress->position_mask |= mask;
+        progress->position_mask[word] |= mask;
     }
 }
 
