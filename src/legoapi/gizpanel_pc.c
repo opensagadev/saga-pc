@@ -312,14 +312,14 @@ void __cdecl GizPanel_Update(void *world_pointer, void *unused, f32 delta_time) 
             f32 nearest_distance = 1000000000.0f;
             f32 maximum_distance;
             i32 player_index;
+            nearest_player = NULL;
             maximum_distance =
                 (panel->flags & 0x10) != 0 ? PanelTrackLeaveDistanceSquared : PanelTrackEnterDistanceSquared;
-            nearest_player = NULL;
             for (player_index = 0; player_index < 8; ++player_index) {
                 GAMEOBJECT *player = Player[player_index];
                 if (player != NULL && (player->flags_1fc_word & 0x1000) != 0 && player->dead == 0) {
                     NUVEC position, direction;
-                    volatile f32 distance;
+                    f32 distance;
                     PanelGetTrackingPositionPc(panel, &position);
                     distance = NuVecDistSqr(&position, &player->collision_position, &direction);
                     if (nearest_distance > distance && maximum_distance > distance) {
