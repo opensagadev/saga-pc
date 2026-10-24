@@ -6917,6 +6917,7 @@ address,symbol,size,ctype
 0x647b20,_edpartChangeBounce,23,
 0x647b40,_edpartCancelGravMenu,25,
 0x647b60,_edpartGravMenu,316,
+0x647ca0,_edpartSaveEffects,1485,"i32 __cdecl(char *, u8)"
 0x648270,_edpartFileSaveEffects,802,
 0x6485a0,_edpartFileSaveEffectsGeneral,410,
 0x648740,_edpartFileSaveEffectsLevel,410,
