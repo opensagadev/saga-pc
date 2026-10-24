@@ -10733,15 +10733,15 @@ void __cdecl AISysCreatureInteraction2D(AISYS_PC *system, i32 object_count, APIO
                                         f32 delta_time) {
     i32 index, first_index, second_index, first_fixed, second_fixed;
     APIOBJECT_PC *first, *second;
-    AIPACKET_PC *first_packet, *second_packet, *source_packet, *target_packet;
+    AIPACKET_PC *first_packet, *second_packet;
     NUVEC difference;
-    f32 timer, radius, distance, squared_distance, overlap, scale, first_timer, second_timer;
+    f32 radius, distance, squared_distance, overlap, scale;
     u16 first_priority, second_priority;
     for (index = 0; index < object_count; ++index) {
-        timer = INTERACTION_PACKET(objects[index]->ai)->antinode_timer - delta_time;
-        INTERACTION_PACKET(objects[index]->ai)->antinode_timer = timer;
-        if (timer < 0.0f)
-            INTERACTION_PACKET(objects[index]->ai)->antinode_timer = 0.0f;
+        APIOBJECT_PC *timer_object = objects[index];
+        INTERACTION_PACKET(timer_object->ai)->antinode_timer -= delta_time;
+        if (INTERACTION_PACKET(timer_object->ai)->antinode_timer < 0.0f)
+            INTERACTION_PACKET(timer_object->ai)->antinode_timer = 0.0f;
     }
     for (first_index = 0; first_index < object_count - 1; ++first_index) {
         first = objects[first_index];
@@ -10749,7 +10749,7 @@ void __cdecl AISysCreatureInteraction2D(AISYS_PC *system, i32 object_count, APIO
             second = objects[second_index];
             first_packet = first->ai;
             second_packet = second->ai;
-            radius = first_packet->mover_height + second_packet->mover_height;
+            radius = second_packet->mover_height + first_packet->mover_height;
             difference.x = first_packet->movement_position.x - second_packet->movement_position.x;
             if (difference.x > radius || difference.x < -radius)
                 continue;
@@ -10806,34 +10806,38 @@ void __cdecl AISysCreatureInteraction2D(AISYS_PC *system, i32 object_count, APIO
                     INTERACTION_OBJECT(first)->resolved_priority = INTERACTION_OBJECT(second)->priority;
                 }
             } else {
+                AIScriptMissingStateDiagnostic();
                 scale = AIPathSafeDivide(overlap, distance);
                 NuVecScale(&difference, &difference, scale);
                 NuVecSub(&second->ai->movement_position, &second->ai->movement_position, &difference);
-                INTERACTION_OBJECT(first)->resolved_priority = INTERACTION_OBJECT(second)->priority;
             }
             first_packet = first->ai;
-            second_packet = second->ai;
-            first_timer = INTERACTION_PACKET(first_packet)->antinode_timer;
-            second_timer = INTERACTION_PACKET(second_packet)->antinode_timer;
-            source_packet = target_packet = NULL;
-            if (first_timer > antinode_time && second_timer > antinode_time) {
-                if (first_timer > second_timer) {
-                    source_packet = first_packet;
-                    target_packet = second_packet;
+            if (INTERACTION_PACKET(first_packet)->antinode_timer > antinode_time &&
+                INTERACTION_PACKET(second_packet = second->ai)->antinode_timer > antinode_time) {
+                if (INTERACTION_PACKET(first_packet)->antinode_timer >
+                    INTERACTION_PACKET(second_packet)->antinode_timer) {
+                    INTERACTION_PACKET(second_packet)->antinode_timer =
+                        INTERACTION_PACKET(first_packet)->antinode_timer;
+                    first_packet = first->ai;
+                    second_packet = second->ai;
+                    second_packet->flags ^= (first_packet->flags ^ second_packet->flags) & 0x8000;
                 } else {
-                    source_packet = second_packet;
-                    target_packet = first_packet;
+                    INTERACTION_PACKET(first_packet)->antinode_timer =
+                        INTERACTION_PACKET(second_packet)->antinode_timer;
+                    first_packet = first->ai;
+                    second_packet = second->ai;
+                    first_packet->flags ^= (second_packet->flags ^ first_packet->flags) & 0x8000;
                 }
-            } else if (second_timer > antinode_time) {
-                source_packet = second_packet;
-                target_packet = first_packet;
-            } else if (first_timer > 0.0f) {
-                source_packet = first_packet;
-                target_packet = second_packet;
-            }
-            if (source_packet != NULL) {
-                INTERACTION_PACKET(target_packet)->antinode_timer = INTERACTION_PACKET(source_packet)->antinode_timer;
-                target_packet->flags ^= (source_packet->flags ^ target_packet->flags) & 0x8000;
+            } else if (INTERACTION_PACKET(second_packet = second->ai)->antinode_timer > antinode_time) {
+                INTERACTION_PACKET(first_packet)->antinode_timer = INTERACTION_PACKET(second_packet)->antinode_timer;
+                first_packet = first->ai;
+                second_packet = second->ai;
+                first_packet->flags ^= (second_packet->flags ^ first_packet->flags) & 0x8000;
+            } else if (INTERACTION_PACKET(first_packet)->antinode_timer > 0.0f) {
+                INTERACTION_PACKET(second_packet)->antinode_timer = INTERACTION_PACKET(first_packet)->antinode_timer;
+                first_packet = first->ai;
+                second_packet = second->ai;
+                second_packet->flags ^= (first_packet->flags ^ second_packet->flags) & 0x8000;
             }
             if ((first->motion_flags ^ second->motion_flags) & 1) {
                 first->ai->flags |= 0x4000;
