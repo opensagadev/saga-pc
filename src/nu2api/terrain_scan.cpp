@@ -361,7 +361,6 @@ STATIC_ASSERT(offsetof(TerrainQuery_s, scan_group_index) == 0x8a);
 STATIC_ASSERT(offsetof(TerrainQuery_s, scan_list) == 0x8c);
 STATIC_ASSERT(offsetof(TerrainQuery_s, scan_list_storage) == 0x148);
 typedef struct TerrainScanBounds TerrainScanBounds;
-typedef struct TerrainScanWriter TerrainScanWriter;
 struct TerrainScanBounds {
     f32 min_x;
     f32 min_y;
@@ -369,13 +368,6 @@ struct TerrainScanBounds {
     f32 max_x;
     f32 max_y;
     f32 max_z;
-};
-struct TerrainScanWriter {
-    u8 *group_header;
-    TERRAIN_SHAPE **cursor;
-    u8 *limit;
-    i32 group_shape_count;
-    i32 scaled_shape_count;
 };
 #define TERRAIN_QUERY_PC (static_cast<TerrainQuery_s *>(TerI))
 #define TERRAIN_SET_CURRENT_PC (static_cast<TERRAIN_SET_PC *>(CurrentTerrain))
@@ -389,23 +381,22 @@ struct TerrainScanWriter {
         cross.z = (a_arg).x * (b_arg).y - (a_arg).y * (b_arg).x;                                                       \
         (result_arg) = cross;                                                                                          \
     } while (0)
-#define TERRAIN_FINISH_SCAN_GROUP_PC(writer_arg, group_index_arg)                                                      \
+#define TERRAIN_FINISH_SCAN_GROUP_PC(group_index_arg)                                                                  \
     do {                                                                                                               \
-        if ((writer_arg)->group_shape_count != 0) {                                                                    \
-            i16 *header = reinterpret_cast<i16 *>((writer_arg)->group_header);                                         \
-            header[0] = static_cast<i16>((writer_arg)->group_shape_count);                                             \
+        if (group_shape_count != 0) {                                                                                  \
+            i16 *header = reinterpret_cast<i16 *>(group_header);                                                       \
+            header[0] = static_cast<i16>(group_shape_count);                                                           \
             header[1] = static_cast<i16>(group_index_arg);                                                             \
-            (writer_arg)->group_header = reinterpret_cast<u8 *>((writer_arg)->cursor);                                 \
-            (writer_arg)->cursor =                                                                                     \
-                reinterpret_cast<TERRAIN_SHAPE **>((writer_arg)->group_header + sizeof(TERRAIN_SHAPE *));              \
-            (writer_arg)->group_shape_count = 0;                                                                       \
+            group_header = reinterpret_cast<u8 *>(cursor);                                                             \
+            cursor = reinterpret_cast<TERRAIN_SHAPE **>(group_header + sizeof(TERRAIN_SHAPE *));                       \
+            group_shape_count = 0;                                                                                     \
         }                                                                                                              \
     } while (0)
-#define TERRAIN_SCALE_SCAN_SHAPE(candidate_arg, group_arg, writer_arg)                                                 \
+#define TERRAIN_SCALE_SCAN_SHAPE(candidate_arg, group_arg)                                                             \
     do {                                                                                                               \
-        if (TERRAIN_QUERY_PC->object_scale != 1.0f) {                                                                  \
+        if (query->object_scale != 1.0f) {                                                                             \
             TERRAIN_SHAPE *source = (candidate_arg);                                                                   \
-            TERRAIN_SHAPE *scaled = &TerrainScaledShapeCursorPc[(writer_arg)->scaled_shape_count];                     \
+            TERRAIN_SHAPE *scaled = &TerrainScaledShapeCursorPc[scaled_shape_count];                                   \
             scaled->material[0] = source->material[0];                                                                 \
             scaled->material[1] = source->material[1];                                                                 \
             scaled->flags = source->flags;                                                                             \
@@ -413,42 +404,42 @@ struct TerrainScanWriter {
             scaled->vertices[0].x = source->vertices[0].x;                                                             \
             scaled->vertices[0].z = source->vertices[0].z;                                                             \
             scaled->vertices[0].y =                                                                                    \
-                (source->vertices[0].y + (group_arg).origin.y) * TERRAIN_QUERY_PC->inverse_object_scale -              \
-                (group_arg).origin.y;                                                                                  \
+                (source->vertices[0].y + (group_arg).origin.y) * query->inverse_object_scale - (group_arg).origin.y;   \
             scaled->vertices[1].x = source->vertices[1].x;                                                             \
             scaled->vertices[1].z = source->vertices[1].z;                                                             \
             scaled->vertices[1].y =                                                                                    \
-                (source->vertices[1].y + (group_arg).origin.y) * TERRAIN_QUERY_PC->inverse_object_scale -              \
-                (group_arg).origin.y;                                                                                  \
+                (source->vertices[1].y + (group_arg).origin.y) * query->inverse_object_scale - (group_arg).origin.y;   \
             scaled->vertices[2].x = source->vertices[2].x;                                                             \
             scaled->vertices[2].z = source->vertices[2].z;                                                             \
             scaled->vertices[2].y =                                                                                    \
-                (source->vertices[2].y + (group_arg).origin.y) * TERRAIN_QUERY_PC->inverse_object_scale -              \
-                (group_arg).origin.y;                                                                                  \
+                (source->vertices[2].y + (group_arg).origin.y) * query->inverse_object_scale - (group_arg).origin.y;   \
             if (source->normals[1].y < 65535.0f) {                                                                     \
                 scaled->vertices[3].x = source->vertices[3].x;                                                         \
                 scaled->vertices[3].z = source->vertices[3].z;                                                         \
-                scaled->vertices[3].y =                                                                                \
-                    (source->vertices[3].y + (group_arg).origin.y) * TERRAIN_QUERY_PC->inverse_object_scale -          \
-                    (group_arg).origin.y;                                                                              \
+                scaled->vertices[3].y = (source->vertices[3].y + (group_arg).origin.y) * query->inverse_object_scale - \
+                                        (group_arg).origin.y;                                                          \
                 const f32 inverse_length = TerrainDivideNonzeroPC(                                                     \
                     1.0f, NuFsqrt(source->normals[1].x * source->normals[1].x +                                        \
-                                  source->normals[1].y * source->normals[1].y * TERRAIN_QUERY_PC->object_scale_sq +    \
+                                  source->normals[1].y * source->normals[1].y * query->object_scale_sq +               \
                                   source->normals[1].z * source->normals[1].z));                                       \
+                query = TERRAIN_QUERY_PC;                                                                              \
+                scaled = &TerrainScaledShapeCursorPc[scaled_shape_count];                                              \
                 scaled->normals[1].x = source->normals[1].x * inverse_length;                                          \
-                scaled->normals[1].y = TERRAIN_QUERY_PC->object_scale * source->normals[1].y * inverse_length;         \
+                scaled->normals[1].y = query->object_scale * source->normals[1].y * inverse_length;                    \
                 scaled->normals[1].z = source->normals[1].z * inverse_length;                                          \
             } else {                                                                                                   \
                 scaled->normals[1].y = 65536.0f;                                                                       \
             }                                                                                                          \
             const f32 inverse_length = TerrainDivideNonzeroPC(                                                         \
                 1.0f, NuFsqrt(source->normals[0].x * source->normals[0].x +                                            \
-                              source->normals[0].y * source->normals[0].y * TERRAIN_QUERY_PC->object_scale_sq +        \
+                              source->normals[0].y * source->normals[0].y * query->object_scale_sq +                   \
                               source->normals[0].z * source->normals[0].z));                                           \
+            query = TERRAIN_QUERY_PC;                                                                                  \
+            scaled = &TerrainScaledShapeCursorPc[scaled_shape_count];                                                  \
             scaled->normals[0].x = source->normals[0].x * inverse_length;                                              \
-            scaled->normals[0].y = TERRAIN_QUERY_PC->object_scale * source->normals[0].y * inverse_length;             \
+            scaled->normals[0].y = query->object_scale * source->normals[0].y * inverse_length;                        \
             scaled->normals[0].z = source->normals[0].z * inverse_length;                                              \
-            ++(writer_arg)->scaled_shape_count;                                                                        \
+            ++scaled_shape_count;                                                                                      \
             (candidate_arg) = scaled;                                                                                  \
         }                                                                                                              \
     } while (0)
@@ -511,12 +502,16 @@ extern "C" void ScanTerrain(i32 scan_type, i32 terrain_mask, i32 scan_flags) {
     platinrange = 0;
     TERRAIN_QUERY_PC->scan_group_index = -1;
 
-    TerrainScanWriter writer;
-    writer.group_header = TERRAIN_QUERY_PC->scan_list_storage;
-    writer.cursor = reinterpret_cast<TERRAIN_SHAPE **>(writer.group_header + sizeof(TERRAIN_SHAPE *));
-    writer.limit = TERRAIN_QUERY_PC->scan_list_storage + sizeof(TERRAIN_QUERY_PC->scan_list_storage) - 12;
-    writer.group_shape_count = 0;
-    writer.scaled_shape_count = 0;
+    u8 *group_header;
+    TERRAIN_SHAPE **cursor;
+    u8 *limit;
+    i32 group_shape_count;
+    i32 scaled_shape_count;
+    group_header = TERRAIN_QUERY_PC->scan_list_storage;
+    cursor = reinterpret_cast<TERRAIN_SHAPE **>(group_header + sizeof(TERRAIN_SHAPE *));
+    limit = TERRAIN_QUERY_PC->scan_list_storage + sizeof(TERRAIN_QUERY_PC->scan_list_storage) - 12;
+    group_shape_count = 0;
+    scaled_shape_count = 0;
 
     TERRAIN_GROUP *terrain_groups = TERRAIN_SET_CURRENT_PC->groups;
     f32 min_x, min_y, min_z, max_x, max_y, max_z, scan_radius;
@@ -552,6 +547,7 @@ extern "C" void ScanTerrain(i32 scan_type, i32 terrain_mask, i32 scan_flags) {
 
             if (group.scene_index < 0) {
                 TerrainSkinAllocate(&group);
+                query = TERRAIN_QUERY_PC;
             }
 
             TERRAIN_SHAPE_BATCH *batch = reinterpret_cast<TERRAIN_SHAPE_BATCH *>(group.data);
@@ -565,7 +561,7 @@ extern "C" void ScanTerrain(i32 scan_type, i32 terrain_mask, i32 scan_flags) {
                         if (!(group_max_x >= candidate->min_x && candidate->max_x > group_min_x &&
                               group_max_z >= candidate->min_z && candidate->max_z > group_min_z &&
                               group_max_y >= candidate->min_y && candidate->max_y > group_min_y) ||
-                            reinterpret_cast<u8 *>(writer.cursor) >= writer.limit) {
+                            reinterpret_cast<u8 *>(cursor) >= limit) {
                             continue;
                         }
                         if (candidate->material[1] != 0 && (candidate->material[1] & terrain_mask) == 0) {
@@ -576,14 +572,14 @@ extern "C" void ScanTerrain(i32 scan_type, i32 terrain_mask, i32 scan_flags) {
                         }
 
                         TERRAIN_SHAPE *shape = candidate;
-                        TERRAIN_SCALE_SCAN_SHAPE(shape, group, &writer);
-                        *writer.cursor++ = shape;
-                        ++writer.group_shape_count;
+                        TERRAIN_SCALE_SCAN_SHAPE(shape, group);
+                        *cursor++ = shape;
+                        ++group_shape_count;
                     }
                 }
                 batch = reinterpret_cast<TERRAIN_SHAPE_BATCH *>(shapes + shape_count);
             }
-            TERRAIN_FINISH_SCAN_GROUP_PC(&writer, group_index);
+            TERRAIN_FINISH_SCAN_GROUP_PC(group_index);
         }
     }
 
@@ -615,7 +611,7 @@ extern "C" void ScanTerrain(i32 scan_type, i32 terrain_mask, i32 scan_flags) {
                         if (!(local_max_x >= candidate->min_x && candidate->max_x > local_min_x &&
                               local_max_z >= candidate->min_z && candidate->max_z > local_min_z &&
                               local_max_y >= candidate->min_y && candidate->max_y > local_min_y) ||
-                            reinterpret_cast<u8 *>(writer.cursor) >= writer.limit) {
+                            reinterpret_cast<u8 *>(cursor) >= limit) {
                             continue;
                         }
                         if (candidate->material[1] != 0 && (candidate->material[1] & terrain_mask) == 0) {
@@ -626,17 +622,17 @@ extern "C" void ScanTerrain(i32 scan_type, i32 terrain_mask, i32 scan_flags) {
                         }
 
                         TERRAIN_SHAPE *shape = candidate;
-                        TERRAIN_SCALE_SCAN_SHAPE(shape, group, &writer);
-                        *writer.cursor++ = shape;
-                        ++writer.group_shape_count;
+                        TERRAIN_SCALE_SCAN_SHAPE(shape, group);
+                        *cursor++ = shape;
+                        ++group_shape_count;
                     }
                 }
                 batch = reinterpret_cast<TERRAIN_SHAPE_BATCH *>(shapes + shape_count);
             }
-            TERRAIN_FINISH_SCAN_GROUP_PC(&writer, group_index);
+            TERRAIN_FINISH_SCAN_GROUP_PC(group_index);
         }
     }
-    TERRAIN_QUERY_PC->scan_list = writer.group_header;
+    TERRAIN_QUERY_PC->scan_list = group_header;
     min_x -= NuTimeBarTop;
     max_x += NuTimeBarTop;
     min_y -= NuTimeBarTop;
@@ -732,7 +728,7 @@ extern "C" void ScanTerrain(i32 scan_type, i32 terrain_mask, i32 scan_flags) {
                     const i32 shape_count = batch->shape_count;
                     TERRAIN_SHAPE *shape = shapes;
                     for (i32 remaining = shape_count; remaining > 0; --remaining, ++shape) {
-                        if (reinterpret_cast<u8 *>(writer.cursor) >= writer.limit) {
+                        if (reinterpret_cast<u8 *>(cursor) >= limit) {
                             continue;
                         }
                         if (shape->material[1] != 0 && (shape->material[1] & terrain_mask) == 0) {
@@ -767,21 +763,25 @@ extern "C" void ScanTerrain(i32 scan_type, i32 terrain_mask, i32 scan_flags) {
                         }
                         if (!(vertices[0].x > local_min_x || vertices[1].x > local_min_x ||
                               vertices[2].x > local_min_x || vertices[3].x > local_min_x)) {
+                            query = TERRAIN_QUERY_PC;
                             continue;
                         }
                         if (!(vertices[0].x < local_max_x || vertices[1].x < local_max_x ||
                               vertices[2].x < local_max_x || vertices[3].x < local_max_x)) {
+                            query = TERRAIN_QUERY_PC;
                             continue;
                         }
                         if (!(vertices[0].z > local_min_z || vertices[1].z > local_min_z ||
                               vertices[2].z > local_min_z || vertices[3].z > local_min_z)) {
+                            query = TERRAIN_QUERY_PC;
                             continue;
                         }
                         if (!(vertices[0].z < local_max_z || vertices[1].z < local_max_z ||
                               vertices[2].z < local_max_z || vertices[3].z < local_max_z)) {
+                            query = TERRAIN_QUERY_PC;
                             continue;
                         }
-                        TERRAIN_SHAPE *transformed = &TerrainScaledShapeCursorPc[writer.scaled_shape_count];
+                        TERRAIN_SHAPE *transformed = &TerrainScaledShapeCursorPc[scaled_shape_count];
                         transformed->material[0] = shape->material[0];
                         transformed->material[1] = shape->material[1];
                         transformed->flags = shape->flags;
@@ -840,9 +840,10 @@ extern "C" void ScanTerrain(i32 scan_type, i32 terrain_mask, i32 scan_flags) {
                             transformed->normals[0].y *= inverse;
                             transformed->normals[0].z *= inverse;
                         }
-                        *writer.cursor++ = transformed;
-                        ++writer.group_shape_count;
-                        ++writer.scaled_shape_count;
+                        *cursor++ = transformed;
+                        ++group_shape_count;
+                        ++scaled_shape_count;
+                        query = TERRAIN_QUERY_PC;
                     }
                     batch = reinterpret_cast<TERRAIN_SHAPE_BATCH *>(shapes + shape_count);
                 }
@@ -864,7 +865,7 @@ extern "C" void ScanTerrain(i32 scan_type, i32 terrain_mask, i32 scan_flags) {
                             if (!(local_max_x >= candidate->min_x && candidate->max_x > local_min_x &&
                                   local_max_z >= candidate->min_z && candidate->max_z > local_min_z &&
                                   local_max_y >= candidate->min_y && candidate->max_y > local_min_y) ||
-                                reinterpret_cast<u8 *>(writer.cursor) >= writer.limit) {
+                                reinterpret_cast<u8 *>(cursor) >= limit) {
                                 continue;
                             }
                             if (candidate->material[1] != 0 && (candidate->material[1] & terrain_mask) == 0) {
@@ -876,19 +877,19 @@ extern "C" void ScanTerrain(i32 scan_type, i32 terrain_mask, i32 scan_flags) {
 
                             platinrange = 1;
                             TERRAIN_SHAPE *shape = candidate;
-                            TERRAIN_SCALE_SCAN_SHAPE(shape, group, &writer);
-                            *writer.cursor++ = shape;
-                            ++writer.group_shape_count;
+                            TERRAIN_SCALE_SCAN_SHAPE(shape, group);
+                            *cursor++ = shape;
+                            ++group_shape_count;
                         }
                     }
                     batch = reinterpret_cast<TERRAIN_SHAPE_BATCH *>(shapes + shape_count);
                 }
             }
-            TERRAIN_FINISH_SCAN_GROUP_PC(&writer, platform_group_index);
+            TERRAIN_FINISH_SCAN_GROUP_PC(platform_group_index);
         }
     }
 
-    i16 *terminator = reinterpret_cast<i16 *>(writer.group_header);
+    i16 *terminator = reinterpret_cast<i16 *>(group_header);
     terminator[0] = 0;
     terminator[1] = 0;
     WallSplCount = 0;
