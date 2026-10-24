@@ -955,14 +955,16 @@ extern "C" {
             TERRAIN_FLOAT_BITS_PC absolute_0;
             absolute_0.value = (query->position.x - a.x);
             absolute_0.bits &= 0x7fffffff;
+            if (!(absolute_0.value < 64.0f))
+                continue;
             TERRAIN_FLOAT_BITS_PC absolute_1;
             absolute_1.value = (query->position.z - a.z);
             absolute_1.bits &= 0x7fffffff;
-
-            if (absolute_0.value >= 64.0f || absolute_1.value >= 64.0f)
+            if (!(absolute_1.value < 64.0f))
                 continue;
             NUVEC normal = {b.z - a.z, 0.0f, a.x - b.x};
             NuVecNorm(&normal, &normal);
+            query = (TerrainQuery_s *)TerI;
             const f32 radius = query->collision_radius;
             const f32 px = query->position.x;
             const f32 pz = query->position.z;
@@ -1033,10 +1035,11 @@ extern "C" {
                             continue;
                         penetrating = true;
                     } else {
-                        const f32 length = NuFsqrt(movement_sq);
-                        if (length != 0.0f && distance != 0.0f)
-                            time = MAX(distance / length, 0.0f);
-                        if (time >= query->hit_time)
+                        time = TerrainDivideNonzeroPC(distance, NuFsqrt(movement_sq));
+                        if (time < 0.0f)
+                            time = 0.0f;
+                        query = (TerrainQuery_s *)TerI;
+                        if (!(time < query->hit_time))
                             continue;
                         normal.x = direction.x * distance + px - a.x;
                         normal.z = distance * direction.z + pz - a.z;
