@@ -10432,15 +10432,17 @@ void __cdecl FindForcePushTarget(GAMEOBJECT *object, i32 activate, i32 target_fi
             }
         }
 
-        if ((object->field_e21 & 4) == 0) {
+        if ((object->flags_e20 & 0x400) == 0) {
             FaceOpponent(object, NULL);
-            if ((object->field_e21 & 2) == 0) {
+            if ((object->flags_e20 & 0x200) == 0) {
+                u32 activation_flags;
                 Player_ClearContext(best, 1);
                 Player_ResetContexts(best->ai_player_packet_pc);
-                if ((object->field_e21 & 1) != 0) {
+                activation_flags = object->flags_e20;
+                if ((activation_flags & 0x100) != 0) {
                     best->field_7aa = 0x54;
                     best->action_movement_state = 2;
-                } else if ((object->field_e20 & 0x80) != 0) {
+                } else if ((activation_flags & 0x80) != 0) {
                     PlaySfx("ForceChokeCrunch", &best->collision_position);
                     best->field_7aa = 0x53;
                     best->action_movement_state = 3;
