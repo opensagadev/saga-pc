@@ -62,3 +62,41 @@ i32 __cdecl eduicbRenderSel(eduimenu_s *unused_menu, eduiitem_s *item, i32 x, i3
     }
     return height;
 }
+
+extern "C" void __cdecl NuRndrLineStrip2di(i32 *positions, f32 *uvs, i32 count, i32 colour, NUMTL *material);
+extern "C" void __cdecl NuRndrTriStrip2di(i32 *positions, f32 *uvs, i32 count, i32 colour, NUMTL *material);
+
+i32 __cdecl eduicbRenderCheck(eduimenu_s *unused_menu, eduiitem_s *item, i32 x, i32 y, i32 width, i32 unused_selected) {
+    i32 height = (i32)(NuQFntHeight((VUFNT *)edui_font) * 1.25) >> 3;
+    f64 font_height = NuQFntHeight((VUFNT *)edui_font) * 0.125;
+    i32 baseline = (i32)(font_height + NuQFntBaseline((VUFNT *)edui_font));
+    i32 skip_draw = edui_donotdraw;
+    item->x = x;
+    item->y = y;
+    if (skip_draw == 0) {
+        NuRndrRect2di(x << 4, y << 3, width << 4, height << 3, item->colours[2], (NUMTL *)uimtls[ui_bgmtl]);
+        if (edui_donotdraw == 0) {
+            NuQFntSet((VUFNT *)edui_font);
+            if (edui_donotdraw == 0)
+                NuQFntSetColour((VUFNT *)edui_font, item->colours[item->highlighted]);
+        }
+    }
+    EduiPrintAlignedTextPc(edui_font, x << 4, (y << 3) + baseline, 16, item->text);
+    i32 top = (y << 3) + 16;
+    i32 left = ((x - height + width) << 4) - 16;
+    i32 right = left + ((height - 3) << 4);
+    i32 bottom = top + ((height - 3) << 3);
+    i32 middle_y = (top + bottom) >> 1;
+    i32 quarter_x = (left + ((left + right) >> 1)) >> 1;
+    i32 lower_y = (bottom + middle_y) >> 1;
+    if (item->highlighted) {
+        i32 points[8] = {left, middle_y, quarter_x, lower_y, quarter_x, bottom, right, top};
+        if (edui_donotdraw == 0)
+            NuRndrTriStrip2di(points, NULL, 4, item->colours[0], (NUMTL *)uimtls[0]);
+    } else {
+        i32 points[10] = {left, middle_y, quarter_x, lower_y, right, top, quarter_x, bottom, left, middle_y};
+        if (edui_donotdraw == 0)
+            NuRndrLineStrip2di(points, NULL, 5, item->colours[0], (NUMTL *)uimtls[0]);
+    }
+    return height;
+}
