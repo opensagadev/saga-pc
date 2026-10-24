@@ -965,26 +965,24 @@ extern "C" {
             NUVEC normal = {b.z - a.z, 0.0f, a.x - b.x};
             NuVecNorm(&normal, &normal);
             query = (TerrainQuery_s *)TerI;
-            const f32 radius = query->collision_radius;
-            const f32 px = query->position.x;
-            const f32 pz = query->position.z;
-            const f32 mx = query->movement.x;
-            const f32 mz = query->movement.z;
-            const f32 end_distance = ((mx + px) - a.x) * normal.x + ((mz + pz) - a.z) * normal.z - radius;
-            const f32 start_distance = (px - a.x) * normal.x + (pz - a.z) * normal.z - radius;
-            if ((end_distance < 0.0f || start_distance < 0.0f) && start_distance > -radius) {
+            const f32 end_distance = ((query->movement.x + query->position.x) - a.x) * normal.x +
+                                     ((query->movement.z + query->position.z) - a.z) * normal.z -
+                                     query->collision_radius;
+            const f32 start_distance =
+                (query->position.x - a.x) * normal.x + (query->position.z - a.z) * normal.z - query->collision_radius;
+            if ((end_distance < 0.0f || start_distance < 0.0f) && start_distance > -query->collision_radius) {
                 f32 time, x, z;
-                if (start_distance < 0.0f) {
-                    time = start_distance;
-                    x = (px - normal.x * start_distance) - normal.x * radius;
-                    z = (pz - normal.z * start_distance) - normal.z * radius;
-                } else {
-                    time = start_distance / (start_distance - end_distance);
-                    x = (mx * time + px) - normal.x * radius;
-                    z = (mz * time + pz) - normal.z * radius;
-                }
                 const f32 dx = b.x - a.x;
                 const f32 dz = b.z - a.z;
+                if (start_distance < 0.0f) {
+                    time = start_distance;
+                    x = (query->position.x - normal.x * start_distance) - normal.x * query->collision_radius;
+                    z = (query->position.z - normal.z * start_distance) - normal.z * query->collision_radius;
+                } else {
+                    time = start_distance / (start_distance - end_distance);
+                    x = (query->movement.x * time + query->position.x) - normal.x * query->collision_radius;
+                    z = (query->movement.z * time + query->position.z) - normal.z * query->collision_radius;
+                }
                 if ((x - a.x) * dx + dz * (z - a.z) >= -0.00005f && -dx * (x - b.x) - (z - b.z) * dz >= -0.00005f &&
                     time < query->hit_time) {
                     query->shape_adjusted = 4;
@@ -999,23 +997,28 @@ extern "C" {
                     hit = 1.0f;
                 }
             }
-            const f32 dx = a.x - px;
-            const f32 dz = a.z - pz;
-            const f32 reach = radius + 0.005f + query->horizontal_movement_length;
-            const f32 distance_sq = dx * dx + dz * dz;
+            const f32 dx = a.x - query->position.x;
             TERRAIN_FLOAT_BITS_PC absolute_2;
-            absolute_2.value = (dx);
+            absolute_2.value = dx;
             absolute_2.bits &= 0x7fffffff;
-            TERRAIN_FLOAT_BITS_PC absolute_3;
-            absolute_3.value = (dz);
-            absolute_3.bits &= 0x7fffffff;
-
-            if (absolute_2.value >= 64.0f || absolute_3.value >= 64.0f || distance_sq >= reach * reach)
+            if (!(absolute_2.value < 64.0f))
                 continue;
-            NUVEC direction = {mx, 0.0f, mz};
+            const f32 dz = a.z - query->position.z;
+            TERRAIN_FLOAT_BITS_PC absolute_3;
+            absolute_3.value = dz;
+            absolute_3.bits &= 0x7fffffff;
+            if (!(absolute_3.value < 64.0f))
+                continue;
+            f64 reach = query->collision_radius;
+            reach += (f64)(f32)0.005f;
+            reach += query->horizontal_movement_length;
+            const f32 distance_sq = dx * dx + dz * dz;
+            if (!(distance_sq < (f32)(reach * reach)))
+                continue;
+            NUVEC direction = {query->movement.x, 0.0f, query->movement.z};
             NuVecNorm(&direction, &direction);
             const f32 along = direction.x * dx + direction.z * dz;
-            const f32 padded_radius = radius + 0.0005f;
+            const f32 padded_radius = query->collision_radius + 0.0005f;
             bool penetrating = false;
             f32 time = 0.0f;
             if (along < 0.0f) {
@@ -1023,13 +1026,15 @@ extern "C" {
                     continue;
                 penetrating = true;
             } else {
-                const f32 side_x = a.x - (direction.x * along + px);
-                const f32 side_z = a.z - (direction.z * along + pz);
+                const f32 side_x = a.x - (direction.x * along + query->position.x);
+                const f32 side_z = a.z - (direction.z * along + query->position.z);
                 const f32 side_x_sq = side_x * side_x;
                 const f32 side_z_sq = side_z * side_z;
                 if (side_x_sq + side_z_sq <= padded_radius * padded_radius) {
-                    const f32 distance = along - NuFsqrt((radius * radius - side_x_sq) - side_z_sq);
-                    const f32 movement_sq = mx * mx + mz * mz;
+                    const f32 distance =
+                        along - NuFsqrt((query->collision_radius * query->collision_radius - side_x_sq) - side_z_sq);
+                    const f32 movement_sq =
+                        query->movement.x * query->movement.x + query->movement.z * query->movement.z;
                     if (distance < -0.0005f || movement_sq < distance * distance) {
                         if (distance_sq > padded_radius * padded_radius)
                             continue;
@@ -1041,8 +1046,8 @@ extern "C" {
                         query = (TerrainQuery_s *)TerI;
                         if (!(time < query->hit_time))
                             continue;
-                        normal.x = direction.x * distance + px - a.x;
-                        normal.z = distance * direction.z + pz - a.z;
+                        normal.x = direction.x * distance + query->position.x - a.x;
+                        normal.z = distance * direction.z + query->position.z - a.z;
                         NuVecNorm(&normal, &normal);
                     }
                 } else {
@@ -1052,10 +1057,10 @@ extern "C" {
                 }
             }
             if (penetrating) {
-                normal.x = px - a.x;
-                normal.z = pz - a.z;
+                normal.x = query->position.x - a.x;
+                normal.z = query->position.z - a.z;
                 NuVecNorm(&normal, &normal);
-                time = (NuFsqrt(distance_sq) - radius) - 0.0005f;
+                time = (NuFsqrt(distance_sq) - query->collision_radius) - 0.0005f;
             }
             query->hit_type = penetrating ? 0x11 : 1;
             query->hit_time = time;
