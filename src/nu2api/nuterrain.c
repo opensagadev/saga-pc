@@ -717,44 +717,49 @@ void TerrainSkinAllocate(TERRAIN_GROUP_PC *group) {
     i32 candidate;
     i32 oldest;
     i16 previous_skin;
+    i32 original_scene_index = group->scene_index;
+    TERRAIN_SKIN_USE_RECORD_PC *records;
+    TERRAIN_SKIN_INFO_VIEW_PC *infos;
 
-    if (-1 - group->scene_index >= TerrainSkinInfoCountPc)
+    if (-1 - original_scene_index >= TerrainSkinInfoCountPc)
         return;
 
     ++TerrainSkinUseEpochPc;
     if (group->data != NULL) {
-        TerrainSkinUseRecordsPc[TerrainSkinInfosPc[-1 - group->scene_index].pool_slot].last_use =
+        TerrainSkinUseRecordsPc[TerrainSkinInfosPc[-1 - original_scene_index].pool_slot].last_use =
             (i32)TerrainSkinUseEpochPc;
         return;
     }
 
+    records = TerrainSkinUseRecordsPc;
     selected = 0;
-    if (TerrainSkinUseRecordsPc[0].skin_index != -1) {
-        oldest = TerrainSkinUseRecordsPc[0].last_use;
+    if (records[0].skin_index != -1) {
+        oldest = records[0].last_use;
         for (candidate = selected + 1; candidate < TerrainSkinPoolSlotCountPc; ++candidate) {
-            if (TerrainSkinUseRecordsPc[candidate].skin_index == -1) {
+            if (records[candidate].skin_index == -1) {
                 selected = candidate;
                 break;
             }
-            if (TerrainSkinUseRecordsPc[candidate].last_use < oldest) {
-                oldest = TerrainSkinUseRecordsPc[candidate].last_use;
+            if (records[candidate].last_use < oldest) {
+                oldest = records[candidate].last_use;
                 selected = candidate;
             }
         }
     }
 
-    previous_skin = TerrainSkinUseRecordsPc[selected].skin_index;
+    previous_skin = records[selected].skin_index;
+    infos = TerrainSkinInfosPc;
     if (previous_skin >= 0) {
-        ((TERRAIN_SET_PC *)CurrentTerrain)->groups[TerrainSkinInfosPc[previous_skin].group_index].data = NULL;
+        ((TERRAIN_SET_PC *)CurrentTerrain)->groups[infos[previous_skin].group_index].data = NULL;
         for (candidate = 0; candidate < 16; ++candidate)
             ((TERRAIN_SET_PC *)CurrentTerrain)->index_levels[candidate].cache_age = 0;
     }
 
-    group->data = TerrainSkinInfosPc[-1 - group->scene_index].original_shape;
-    TerrainSkinInfosPc[-1 - group->scene_index].pool_slot = (i16)selected;
-    TerrainSkinUseRecordsPc[selected].skin_index = -1 - group->scene_index;
+    group->data = infos[-1 - group->scene_index].original_shape;
+    infos[-1 - group->scene_index].pool_slot = (i16)selected;
+    records[selected].skin_index = -1 - group->scene_index;
     SkinPlatform(group, (TERRAIN_SKIN_STREAM_VIEW_PC *)(TerrainSkinPoolBasePc + TerrainSkinPoolSlotBytesPc * selected),
-                 &TerrainSkinInfosPc[-(group->scene_index + 1)]);
+                 &infos[-(group->scene_index + 1)]);
     TerrainSkinUseRecordsPc[selected].last_use = (i32)TerrainSkinUseEpochPc;
 }
 
