@@ -605,8 +605,8 @@ static NUFPCOMJMP GizForceSFX_ConfigKeywords[] = {{"forcename", GizForceSFX_forc
 void __cdecl GizForceSFX_Configure(WORLDINFO *world_ptr, char *config) {
     WORLD_FORCE_SFX_PC *world = (WORLD_FORCE_SFX_PC *)world_ptr;
     NUFPAR_PC *parser;
-    i32 inside = 0;
-    if (GizForceSFX_load_version > 15 || world == NULL || world->force_system == NULL ||
+    i32 inside;
+    if (GizForceSFX_load_version >= 16 || world == NULL || world->force_system == NULL ||
         world->force_system->count == 0)
         return;
     GizForceSFX_force = NULL;
@@ -615,6 +615,7 @@ void __cdecl GizForceSFX_Configure(WORLDINFO *world_ptr, char *config) {
     if (parser == NULL)
         return;
     NuFParPushCom(parser, GizForceSFX_ConfigKeywords);
+    inside = 0;
     while (NuFParGetLine(parser) != 0) {
         while (NuFParGetWord(parser) != 0) {
             if (inside) {
@@ -845,7 +846,10 @@ i32 __cdecl GizForces_Load(void *world_pointer, void *system_pointer) {
         force->end_frame = EdFileReadFloat();
         if (version >= 6)
             force->effect_scale = EdFileReadFloat();
-        force->horizontal_range = version >= 7 ? EdFileReadFloat() : 1.0f;
+        if (version >= 7)
+            force->horizontal_range = EdFileReadFloat();
+        else
+            force->horizontal_range = 1.0f;
         if (version >= 3)
             force->vertical_range = EdFileReadFloat();
         force->blowup_type = -1;
@@ -938,8 +942,8 @@ static __declspec(noinline) void ForceResetSinglePc(WORLDINFO *world, GIZFORCE_P
     }
     force->room_id = world->current_gscn != NULL ? NuPortalWhichRoom(world->current_gscn, &force->file_position) : -1;
     GameAnimSet_SetOffset(force->anim_set, &v000);
-    force->radius = 1.0f;
     force->position = force->file_position;
+    force->radius = 1.0f;
     GameAnimSet_GetCentreAndRadius(force->anim_set, &force->position, &force->radius, 2, 1, 1);
     GameAnimSet_EvaluateState(force->anim_set);
 }
@@ -1008,9 +1012,8 @@ void __cdecl GizForces_Reset(void *world_ptr, void *data_ptr, void *progress_ptr
                 if ((force->runtime_flags & 0x20) == 0) {
                     if (force->group != NULL && force->group->member_count < 8) {
                         if (force->group->member_count != 0) {
-                            FORCE_RESET_GROUP_PC *group = force->group;
-                            f32 height = ForceAnimatedHeightPc(group->forces[group->member_count - 1]);
-                            group->combined_height += height;
+                            GIZFORCE_PC *previous = force->group->forces[force->group->member_count - 1];
+                            force->group->combined_height += ForceAnimatedHeightPc(previous);
                         }
                         force->group->forces[force->group->member_count] = force;
                         ++force->group->member_count;
@@ -1023,8 +1026,8 @@ void __cdecl GizForces_Reset(void *world_ptr, void *data_ptr, void *progress_ptr
                     offset.y = GameAnimSet_GetCompletionRatio(force->anim_set) * force->group->combined_height;
                     offset.z = 0.0f;
                     GameAnimSet_SetOffset(force->anim_set, &offset);
-                    force->radius = 1.0f;
                     force->position = force->file_position;
+                    force->radius = 1.0f;
                     GameAnimSet_GetCentreAndRadius(force->anim_set, &force->position, &force->radius, 2, 1, 1);
                 }
             }
@@ -1086,8 +1089,8 @@ STATIC_ASSERT(offsetof(GIZFORCE_PC, runtime_flags) == 0xa0);
 STATIC_ASSERT(offsetof(GAMEOBJECT, powerup_time) == 0xdec);
 
 static __declspec(noinline) i32 ForceUpdateCentrePc(GIZFORCE_PC *force, i32 frame_selection) {
-    force->radius = 1.0f;
     force->position = force->file_position;
+    force->radius = 1.0f;
     return GameAnimSet_GetCentreAndRadius(force->anim_set, &force->position, &force->radius, frame_selection, 1, 1);
 }
 
@@ -1103,9 +1106,8 @@ static __declspec(noinline) f32 ForceUpdateSpeedPc(GIZFORCE_PC *force, GAMEOBJEC
 static __declspec(noinline) void ForceGroupPushPc(GIZFORCE_PC *force) {
     if ((force->runtime_flags & 0x20) == 0 && force->group != NULL && force->group->member_count < 8) {
         if (force->group->member_count != 0) {
-            FORCE_RESET_GROUP_PC *group = force->group;
-            f32 height = ForceAnimatedHeightPc(group->forces[group->member_count - 1]);
-            group->combined_height += height;
+            GIZFORCE_PC *previous = force->group->forces[force->group->member_count - 1];
+            force->group->combined_height += ForceAnimatedHeightPc(previous);
         }
         force->group->forces[force->group->member_count] = force;
         ++force->group->member_count;
@@ -1562,7 +1564,7 @@ f32 __cdecl Condition_OnForcePlatformPc(AISYS_PC *system, AISCRIPTPROCESS_PC *pr
     if (platform_id == -1)
         return 0.0f;
     terrain = (AI_FORCE_PLATFORM_TERRAIN_PC *)CurrentTerrain;
-    if (!((f64)terrain->platforms[platform_id].scene_matrix->m31 <= (f64)object->position.y))
+    if (!((f64)object->position.y >= (f64)terrain->platforms[platform_id].scene_matrix->m31))
         return 0.0f;
     animation = force->anim_set->objects;
     while (animation != NULL) {
@@ -1582,14 +1584,14 @@ f32 __cdecl Condition_PlayerOnForcePlatformPc(AISYS_PC *system, AISCRIPTPROCESS_
     GAMEANIMOBJ *animation;
     if (force == NULL)
         return 0.0f;
-    object = (GAMEOBJECT *)Player[0];
+    object = player;
     if (object == NULL || (object->field_281 == 0 && object->field_282 == 0))
         return 0.0f;
     platform_id = object->supporting_platform_id;
     if (platform_id == -1)
         return 0.0f;
     terrain = (AI_FORCE_PLATFORM_TERRAIN_PC *)CurrentTerrain;
-    if (!((f64)terrain->platforms[platform_id].scene_matrix->m31 <= (f64)object->position.y))
+    if (!((f64)object->position.y >= (f64)terrain->platforms[platform_id].scene_matrix->m31))
         return 0.0f;
     animation = force->anim_set->objects;
     while (animation != NULL) {
@@ -1606,37 +1608,42 @@ f32 __cdecl Condition_EitherPlayerOnForcePlatformPc(AISYS_PC *system, AISCRIPTPR
     GAMEOBJECT *first;
     GAMEOBJECT *second;
     AI_FORCE_PLATFORM_TERRAIN_PC *terrain;
-    i32 eligible = 0;
+    i32 eligible;
     i16 platform_id;
     GAMEANIMOBJ *animation;
-    if (force == NULL)
-        return 0.0f;
-    first = (GAMEOBJECT *)Player[0];
-    if (first == NULL)
-        return 0.0f;
-    terrain = (AI_FORCE_PLATFORM_TERRAIN_PC *)CurrentTerrain;
-    if (first->field_281 != 0 || first->field_282 != 0) {
-        platform_id = first->supporting_platform_id;
-        if (platform_id != -1 && (f64)terrain->platforms[platform_id].scene_matrix->m31 <= (f64)first->position.y)
-            eligible = 1;
-    }
-    second = (GAMEOBJECT *)Player[1];
-    if (second != NULL && (second->field_281 != 0 || second->field_282 != 0)) {
-        platform_id = second->supporting_platform_id;
-        if (platform_id != -1 && (f64)terrain->platforms[platform_id].scene_matrix->m31 <= (f64)second->position.y)
-            eligible |= 2;
-    }
-    if (eligible == 0)
-        return 0.0f;
-    animation = force->anim_set->objects;
-    while (animation != NULL) {
-        if ((eligible & 1) != 0 &&
-            first->supporting_platform_id == ((AI_FORCE_PLATFORM_OBJECT_DATA_PC *)animation->object_data)->platform_id)
-            return 1.0f;
-        if ((eligible & 2) != 0 &&
-            second->supporting_platform_id == ((AI_FORCE_PLATFORM_OBJECT_DATA_PC *)animation->object_data)->platform_id)
-            return 1.0f;
-        animation = animation->next;
+    if (force != NULL) {
+        first = player;
+        if (first != NULL) {
+            terrain = (AI_FORCE_PLATFORM_TERRAIN_PC *)CurrentTerrain;
+            eligible = 0;
+            if (first->field_281 != 0 || first->field_282 != 0) {
+                platform_id = first->supporting_platform_id;
+                if (platform_id != -1 &&
+                    (f64)first->position.y >= (f64)terrain->platforms[platform_id].scene_matrix->m31)
+                    eligible = 1;
+            }
+            second = player2;
+            if (second != NULL && (second->field_281 != 0 || second->field_282 != 0)) {
+                platform_id = second->supporting_platform_id;
+                if (platform_id != -1 &&
+                    (f64)second->position.y >= (f64)terrain->platforms[platform_id].scene_matrix->m31)
+                    eligible |= 2;
+            }
+            if (eligible != 0) {
+                animation = force->anim_set->objects;
+                while (animation != NULL) {
+                    if ((eligible & 1) != 0 &&
+                        first->supporting_platform_id ==
+                            ((AI_FORCE_PLATFORM_OBJECT_DATA_PC *)animation->object_data)->platform_id)
+                        return 1.0f;
+                    if ((eligible & 2) != 0 &&
+                        second->supporting_platform_id ==
+                            ((AI_FORCE_PLATFORM_OBJECT_DATA_PC *)animation->object_data)->platform_id)
+                        return 1.0f;
+                    animation = animation->next;
+                }
+            }
+        }
     }
     return 0.0f;
 }
@@ -1949,7 +1956,9 @@ f32 __cdecl Condition_PlayerUsingForcePc(AISYS_PC *system, AISCRIPTPROCESS_PC *p
 f32 __cdecl Condition_ForceBeingUsedPc(AISYS_PC *system, AISCRIPTPROCESS_PC *process, AIPACKET_PC *packet, char *name,
                                        void *argument) {
     GIZFORCE_PC *force = (GIZFORCE_PC *)argument;
-    return force != NULL && ((force->runtime_flags & 0x200000) != 0 || force->reset_word != 0) ? 1.0f : 0.0f;
+    if (force != NULL && ((force->runtime_flags & 0x200000) != 0 || force->reset_word != 0))
+        return 1.0f;
+    return 0.0f;
 }
 
 typedef struct force_throw_target_view_pc_s {
