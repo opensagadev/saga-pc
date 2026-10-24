@@ -329,13 +329,15 @@ void __cdecl DebReAlloc2(DEBRISKEY_PC *key) {
 void __cdecl DebReAlloc(DEBRISKEY_PC *key, i32 particle_count) {
     DEBRIS_INFO_PC *effect = debtab[key->effect_index];
     key->previous_particle_count = (i16)particle_count;
-    key->previous_allocated_chunk_count =
-        (i16)(effect->particle_type == 7 ? (particle_count + 11) / 12 : (particle_count + 31) / 32);
+    if (effect->particle_type == 7)
+        key->previous_allocated_chunk_count = (i16)((particle_count + 11) / 12);
+    else
+        key->previous_allocated_chunk_count = (i16)((particle_count + 31) / 32);
     if (key->previous_allocated_chunk_count > 32) {
         key->previous_allocated_chunk_count = 32;
         key->previous_particle_count = effect->particle_type == 7 ? 0x180 : 0x400;
     }
-    if (key->allocated_chunk_count == key->previous_allocated_chunk_count) {
+    if (key->previous_allocated_chunk_count == key->allocated_chunk_count) {
         key->particle_count = key->previous_particle_count;
     } else if (key->previous_allocated_chunk_count != 0 && key->allocated_chunk_count == 0) {
         DebReAlloc2(key);
@@ -426,7 +428,10 @@ void __cdecl DebFreeOrphansInstantly(DEBRIS_INFO_PC *effect) {
                 freechunkcontrols[freechunkcontrolsptr]->expiry_time = globaltime;
                 panel_time = 0;
             }
-            AddChunkControlToStack(freechunkcontrols[freechunkcontrolsptr], &debris_chunk_control_stack[panel_time]);
+            {
+                DEBRIS_CHUNK_CONTROL_PC *control = freechunkcontrols[freechunkcontrolsptr];
+                AddChunkControlToStack(control, &debris_chunk_control_stack[panel_time]);
+            }
             ++freechunkcontrolsptr;
             RemoveChunkFromRenderStack(&ParticleChunkToRender[i], &ParticleChunkRenderStack[(i8)effect->time_group]);
             ParticleChunkToRender[i].particle_chunk = NULL;
@@ -770,9 +775,9 @@ void __cdecl DebrisProcessControlChunks(i32 panel_time) {
     } while (0)
 
 f32 __cdecl CameraEmitterDistance(NUVEC *position) {
-    if (debris_cutoff_camera_vec != NULL)
-        return NuVecDist(position, (NUVEC *)debris_cutoff_camera_vec, NULL);
-    return 0.0f;
+    if (debris_cutoff_camera_vec == NULL)
+        return 0.0f;
+    return NuVecDist(position, (NUVEC *)debris_cutoff_camera_vec, NULL);
 }
 
 void __cdecl DebrisProcessAllocation(void) {
@@ -1557,17 +1562,18 @@ extern i32 edpp_nearest;
 extern NUVEC edpp_cam_pos;
 void __cdecl edppDetermineNearest(f32);
 void __cdecl SortDebrisRenderStack(void) {
-    i32 stack_index;
+    i32 stack_index, start;
     DEBRIS_RENDER_CHUNK_PC *chunk;
     if (--debris_sort_delay > 0)
         return;
     debris_sort_delay = 6;
     stack_index = debris_sort_this_stack;
+    start = stack_index;
     if (ParticleChunkRenderStack[stack_index] == NULL) {
         do {
             if (++stack_index >= 5)
                 stack_index = 0;
-            if (stack_index == debris_sort_this_stack)
+            if (stack_index == start)
                 break;
         } while (ParticleChunkRenderStack[stack_index] == NULL);
         debris_sort_this_stack = stack_index;
@@ -1576,42 +1582,48 @@ void __cdecl SortDebrisRenderStack(void) {
     while (chunk != NULL) {
         DEBRIS_RENDER_CHUNK_PC *next = chunk->next;
         if (next == NULL)
-            break;
+            return;
         if (chunk->render_priority < next->render_priority ||
             (chunk->render_priority == next->render_priority &&
              chunk->effect->particle_type > next->effect->particle_type)) {
-            RemoveChunkFromRenderStack(next, &ParticleChunkRenderStack[stack_index]);
-            AddChunkToRenderStack(next, &ParticleChunkRenderStack[stack_index]);
-            return;
+            break;
         }
-        chunk = next;
+        chunk = chunk->next;
+    }
+    if (chunk != NULL) {
+        chunk = chunk->next;
+        if (chunk != NULL) {
+            RemoveChunkFromRenderStack(chunk, &ParticleChunkRenderStack[stack_index]);
+            AddChunkToRenderStack(chunk, &ParticleChunkRenderStack[stack_index]);
+        }
     }
 }
 void __cdecl UpdateDebrisRenderStackPriority(void) {
-    i32 stack_index;
+    i32 stack_index, start;
     DEBRIS_RENDER_CHUNK_PC *chunk;
     if (--debris_update_delay > 0)
         return;
     debris_update_delay = 6;
     stack_index = debris_update_this_stack;
-    while (ParticleChunkRenderStack[stack_index] == NULL) {
-        if (++stack_index >= 5)
-            stack_index = 0;
-        if (stack_index == debris_update_this_stack) {
-            debris_update_this_stack = stack_index;
-            if (ParticleChunkRenderStack[stack_index] == NULL)
-                return;
-            break;
-        }
+    start = stack_index;
+    if (ParticleChunkRenderStack[stack_index] == NULL) {
+        do {
+            if (++stack_index >= 5)
+                stack_index = 0;
+            if (stack_index == start)
+                break;
+        } while (ParticleChunkRenderStack[stack_index] == NULL);
+        debris_update_this_stack = stack_index;
+        if (ParticleChunkRenderStack[stack_index] == NULL)
+            return;
     }
-    debris_update_this_stack = stack_index;
     for (chunk = ParticleChunkRenderStack[debris_sort_this_stack]; chunk != NULL; chunk = chunk->next) {
         DEBRISKEY_PC *key = chunk->key;
         if (key != NULL) {
             if (key->timed_flags != 0) {
                 f32 priority = (u16)key->render_priority + key->cutoff_distance * 25.0;
                 if (priority > 65535.0)
-                    priority = -1.0f;
+                    priority = 65535.0f;
                 chunk->render_priority = (u16)(i32)priority;
             } else
                 chunk->render_priority = key->render_priority;
@@ -1620,18 +1632,28 @@ void __cdecl UpdateDebrisRenderStackPriority(void) {
 }
 void __cdecl DebrisCleanUpDmaDebTypeTables(void) {
     if (++DebrisDmaCleanupDelayPc > 5) {
-        DEBRIS_INFO_PC *effect = debtab[DebrisDmaCleanupIndexPc];
-        DebrisDmaCleanupDelayPc = 0;
-        if (effect != NULL && effect->native_data != NULL) {
-            f32 now = effect->time_group == 4 ? panelglobaltime : globaltime;
-            if (now > effect->last_render_time + 5.0) {
-                DmaDebTypes[--freeDmaDebType] = effect->native_data;
-                debtab[DebrisDmaCleanupIndexPc]->native_data = NULL;
-                if (debtab[DebrisDmaCleanupIndexPc]->scale != 1.0f)
-                    edppDeleteEffect(DebrisDmaCleanupIndexPc);
+        i32 index = DebrisDmaCleanupIndexPc;
+        DEBRIS_INFO_PC **table = debtab;
+        if (table[index] != NULL) {
+            DEBRIS_INFO_PC *effect;
+            DebrisDmaCleanupDelayPc = 0;
+            effect = table[index];
+            if (effect->native_data != NULL) {
+                f32 now = effect->time_group == 4 ? panelglobaltime : globaltime;
+                if (now > effect->last_render_time + 5.0) {
+                    DmaDebTypes[--freeDmaDebType] = table[index]->native_data;
+                    debtab[index]->native_data = NULL;
+                    if (debtab[index]->scale != 1.0f) {
+                        edppDeleteEffect(index);
+                        index = DebrisDmaCleanupIndexPc;
+                    }
+                }
             }
+        } else {
+            DebrisDmaCleanupDelayPc = 0;
         }
-        if (++DebrisDmaCleanupIndexPc >= debinf_count)
+        DebrisDmaCleanupIndexPc = ++index;
+        if (index >= debinf_count)
             DebrisDmaCleanupIndexPc = 1;
     }
 }

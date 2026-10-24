@@ -32,11 +32,11 @@ APIDEBRISSYS_PC *__cdecl InitGameDebris(VARIPTR *, VARIPTR, i32, i32, char **, i
 void __cdecl Particles_Load(WORLDINFO *world, char **names, i32 count, i32 named_count) {
     char path[256];
     VARIPTR end;
-    end.void_ptr = &world->buffer_end;
     world->page_pp = -1;
     sprintf(path, "%s.ptl", world->config_file);
     if (NuFileExists(path))
         world->page_pp = edppLoadPage(path, 1, world->current_gscn);
+    end.void_ptr = &world->buffer_end;
     world->game_debris_sys = InitGameDebris(&world->giz_buffer, end, count, named_count, names, (i8)world->page_pp);
 }
 
