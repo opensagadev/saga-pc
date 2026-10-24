@@ -1728,7 +1728,7 @@ void *TerrainInitEx(i32 level_num, void *buf, void *buf_end, i32 options, char *
     f32 radius_squared;
     TERRAIN_SHAPE_BATCH *batch;
     TERRAIN_SHAPE *shape;
-    TERRAIN_FLOAT_BITS_PC x, y, z;
+    TERRAIN_FLOAT_BITS_PC normal_bits;
     u8 legacy_material;
     const NUVEC *vector;
     f64 world_y;
@@ -1882,14 +1882,18 @@ void *TerrainInitEx(i32 level_num, void *buf, void *buf_end, i32 options, char *
             for (shape_index = 0; shape_index < batch->shape_count; ++shape_index, ++shape) {
                 for (n = 0; n < 2; ++n) {
 
-                    x.value = shape->normals[n].x;
-                    y.value = shape->normals[n].y;
-                    z.value = shape->normals[n].z;
-                    if (x.bits == 0xffc00000 || y.bits == 0xffc00000 || z.bits == 0xffc00000) {
-                        shape->normals[n].x = 0;
-                        shape->normals[n].y = 1;
-                        shape->normals[n].z = 0;
+                    memcpy(&normal_bits.bits, &shape->normals[n].x, sizeof(normal_bits.bits));
+                    if (normal_bits.bits != 0xffc00000) {
+                        memcpy(&normal_bits.bits, &shape->normals[n].y, sizeof(normal_bits.bits));
+                        if (normal_bits.bits != 0xffc00000) {
+                            memcpy(&normal_bits.bits, &shape->normals[n].z, sizeof(normal_bits.bits));
+                            if (normal_bits.bits != 0xffc00000)
+                                continue;
+                        }
                     }
+                    shape->normals[n].x = 0;
+                    shape->normals[n].y = 1;
+                    shape->normals[n].z = 0;
                 }
 
                 if (shape->material[1] > 0xef) {
@@ -1937,7 +1941,9 @@ void *TerrainInitEx(i32 level_num, void *buf, void *buf_end, i32 options, char *
                     if (((f64)(terrain->minimum_height)) > world_y) {
                         terrain->minimum_height = ((i32)(world_y));
                     }
-
+                }
+                for (vector_index = 0; vector_index < 4; ++vector_index) {
+                    vector = &(shape->vertices[vector_index]);
                     length_squared = vector->x * vector->x + vector->y * vector->y + vector->z * vector->z;
                     if (length_squared > radius_squared) {
                         radius_squared = length_squared;
