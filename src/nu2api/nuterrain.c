@@ -1384,15 +1384,15 @@ f32 NewCast(NUVEC *position, f32 height_above, f32 roof_range) {
                     GetSurfaceInfoSurfaceNormalPc = ordinary_floor_normal;
                     position->y = ordinary_floor_y;
                 } else {
-                    TerrainSurfaceClassPc = 3;
                     position->y = LevelConfigFarDistance;
+                    TerrainSurfaceClassPc = 3;
                     GetSurfaceInfoSurfaceNormalPc.y = 1.0f;
                     ShadPoly = NULL;
                 }
             } else {
+                ShadPoly = ordinary_above;
                 position->y = ordinary_above_y;
                 TerrainSurfaceClassPc = 1;
-                ShadPoly = ordinary_above;
                 GetSurfaceInfoSurfaceNormalPc = ordinary_above_normal;
                 TerrainShadowGroupIndexPc = ordinary_above_group;
             }
