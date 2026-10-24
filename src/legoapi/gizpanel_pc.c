@@ -183,11 +183,26 @@ void __cdecl GizPanel_Reset(void *context) {
 }
 
 void __cdecl GizPanel_Activate(void *input, i32 active) {
+    typedef union PanelActiveFlagsPc {
+        u8 value;
+        struct {
+            u8 unknown_0 : 3;
+            u8 active : 1;
+            u8 unknown_4 : 4;
+        } bits;
+    } PanelActiveFlagsPc;
+    typedef struct PanelActiveStatePc {
+        u8 unknown_00[0x62];
+        PanelActiveFlagsPc flags;
+    } PanelActiveStatePc;
+    STATIC_ASSERT(sizeof(PanelActiveFlagsPc) == 1);
+    STATIC_ASSERT(offsetof(PanelActiveStatePc, flags) == 0x62);
+    STATIC_ASSERT(sizeof(PanelActiveStatePc) == 0x63);
     GIZMO_PC *gizmo = (GIZMO_PC *)input;
     PANEL_MOVEMENT_PC *panel;
     if (gizmo != NULL && gizmo->object != NULL) {
         panel = (PANEL_MOVEMENT_PC *)gizmo->object;
-        panel->flags ^= (u8)(((active != 0) << 3) ^ panel->flags) & 8;
+        ((PanelActiveStatePc *)panel)->flags.bits.active = active != 0;
         if (active != 0)
             GizPanel_Reset(panel);
     }
@@ -623,9 +638,7 @@ void __cdecl GizPanel_PlaySfx(char *name, NUVEC *position, i32 player_bits) {
     sfx_id = (i16)GetSfxId(name);
     if (sfx_id == -1)
         return;
-    if (player_bits == 0) {
-        PlaySfxById(sfx_id, position);
-    } else {
+    if (player_bits != 0) {
         if ((player_bits & 1) != 0) {
             nusound_special_positions[1] = *position;
             PlaySfxById(sfx_id, &nusound_special_positions[1]);
@@ -636,6 +649,8 @@ void __cdecl GizPanel_PlaySfx(char *name, NUVEC *position, i32 player_bits) {
             PlaySfxById(sfx_id, &nusound_special_positions[2]);
             nusound_special_positions[2] = nusound_special_positions[0];
         }
+    } else {
+        PlaySfxById(sfx_id, position);
     }
 }
 
