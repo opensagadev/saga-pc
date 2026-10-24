@@ -1280,7 +1280,7 @@ extern "C" {
         bool shadow_sampled = false;
         if ((character->flags & 0x10) != 0 && CutBlobShadowAlpha != 0 && (character_data->model_flags & 0x10000) == 0 &&
             PcWindowOptions.shadowmethod == 1 && PcWindowOptions.shadowsenabled != 0) {
-            u8 shadow_alpha = CutBlobShadowAlpha;
+            i32 shadow_alpha = CutBlobShadowAlpha;
             if (game_data->blob_shadow_alpha != 0xff) {
                 shadow_alpha = game_data->blob_shadow_alpha;
             }
@@ -1294,6 +1294,7 @@ extern "C" {
                         f32 alpha = BlobShadowFade(reinterpret_cast<NUVEC *>(&world_matrix.m30), CutBlobShadowFadeNear,
                                                    CutBlobShadowFadeFar, 1.0f);
                         if (alpha > 0.0f) {
+                            alpha *= static_cast<f32>(shadow_alpha);
                             for (i32 i = 0; i < 16; ++i) {
                                 if ((game_data->shadow_locators & (1 << i)) != 0 &&
                                     model->points_of_interest[i] != NULL) {
@@ -1304,10 +1305,9 @@ extern "C" {
                                         u16 x_rotation;
                                         u16 z_rotation;
                                         FindAnglesZX(&ShadNorm, &x_rotation, &z_rotation);
-                                        NuRndrAddShadow(
-                                            &shadow_position, shadow_radius,
-                                            static_cast<i32>(alpha * static_cast<f32>(shadow_alpha) * ShadNorm.y),
-                                            x_rotation, 0, z_rotation);
+                                        NuRndrAddShadow(&shadow_position, shadow_radius,
+                                                        static_cast<i32>(alpha * ShadNorm.y), x_rotation, 0,
+                                                        z_rotation);
                                     }
                                 }
                             }
