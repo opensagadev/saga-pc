@@ -6491,7 +6491,7 @@ address,symbol,size,ctype
 0x617e30,_edmainExtCamera,19,
 0x617e70,_edmainGetCursorEnabled,6,
 0x617f80,_edmainQueryLocVec,6,NUVEC *__cdecl(void)
-0x618310,_eduiFntPrintEx,197,
+0x618310,?EduiPrintAlignedTextPc@@YAXPAXHHHPADZZ,197,"void(void *, i32, i32, i32, char *, ...)"
 0x618c30,_eduiInitMaterials,418,
 0x618e10,_eduiMenuAddItem,54,
 0x618e50,_eduiMenuAddItemFirst,51,"void __cdecl (struct eduimenu_s *menu, struct eduiitem_s *item)"
@@ -16044,6 +16044,7 @@ address,symbol,size,ctype
 0x76ad3c,??_C@_0L@PNLLBLCL@1234567890?$AA@HMDOKFMK@,11,char []
 0x76ad48,__real@43b40000,4,const f32
 0x76ad60,_EduiSourcePathPc,52,const char[52]
+0x0076ad98,__real@3fc4000000000000,8,const f64
 0x76ada0,??_C@_05DNIIFBMG@?$CFs?5?$CFs?$AA@,6,char[6]
 0x76adc0,__real@3e2aaaab,4,const f32
 0x76ae48,__real@c024000000000000,8,const f64
@@ -24829,6 +24830,7 @@ address,symbol,size,ctype
 0x2912ea0,_ed_fnt,4,void *
 0x2912ea8,_edmain_cursor_enabled,4,i32
 0x2912eac,_eduiInteractLocked,4,struct edui_interact_s *
+0x02912eb0,_ui_bgmtl,,i32
 0x2912ecc,_active_menu,4,struct eduimenu_s *
 0x2912ed0,_processing_menu,4,struct eduimenu_s *
 0x2912ed4,_default_active_menu,4,struct eduimenu_s *
