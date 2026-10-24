@@ -1174,7 +1174,7 @@ void __cdecl DebrisEmitterOrientation(i32 handle, i16 z, i16 y, i16 x) {
     debkeydata[handle].orientation_dirty = 0.0f;
 }
 
-void DebrisReflectionOrientation(i32 handle, i16 x, i16 y, f32 plane, f32 scale) {
+__declspec(noinline) void DebrisReflectionOrientation(i32 handle, i16 x, i16 y, f32 plane, f32 scale) {
     if (handle != -1) {
         debkeydata[handle].reflection_x = x;
         debkeydata[handle].reflection_y = y;
@@ -1225,28 +1225,33 @@ void AddDebrisEffect(i32 *handle, i32 effect_index, f32 x, f32 y, f32 z) {
     }
 
     now = effect->time_group == 4 ? panelglobaltime : globaltime;
-    debkeydata[key_index].finite = 0;
     debkeydata[key_index].effect_index = (i16)(effect_index);
+    debkeydata[key_index].finite = 0;
     DebrisStartOffset(key_index, effect->emission_start_offset);
     debkeydata[key_index].generator = gensorttab[(i8)(effect->generator_type)];
     debkeydata[key_index].momentum_adjuster = gencodetab[(i8)(effect->momentum_adjustment_type)];
     debkeydata[key_index].finite_count = 0;
-    debkeydata[key_index].sphere_next_time = 0.0f;
     debkeydata[key_index].emitter_rotation_x = 0;
     debkeydata[key_index].emitter_rotation_y = 0;
     debkeydata[key_index].sphere_index = 0;
-    for (i = 0; i < effect->process_spheres; ++i) {
+    debkeydata[key_index].sphere_next_time = 0.0f;
+    for (i = 0; i < debtab[effect_index]->process_spheres; ++i) {
         debkeydata[key_index].process_spheres[i].time = -1.0f;
     }
-    memset(&debkeydata[key_index].emission_position, 0, sizeof(debkeydata[key_index].emission_position));
-    memset(&debkeydata[key_index].momentum, 0, sizeof(debkeydata[key_index].momentum));
-    memset(&debkeydata[key_index].emitter_momentum, 0, sizeof(debkeydata[key_index].emitter_momentum));
-    debkeydata[key_index].orientation_dirty = 0.0f;
-    debkeydata[key_index].cutoff_distance = 999999.0f;
+    debkeydata[key_index].emission_position.x = 0.0f;
+    debkeydata[key_index].emission_position.y = 0.0f;
+    debkeydata[key_index].emission_position.z = 0.0f;
+    debkeydata[key_index].momentum.x = 0.0f;
+    debkeydata[key_index].momentum.y = 0.0f;
+    debkeydata[key_index].momentum.z = 0.0f;
+    debkeydata[key_index].emitter_momentum.x = 0.0f;
+    debkeydata[key_index].emitter_momentum.y = 0.0f;
+    debkeydata[key_index].emitter_momentum.z = 0.0f;
     debkeydata[key_index].field_2f2 = -1;
-    debkeydata[key_index].emission_disabled = 0;
     debkeydata[key_index].orientation_flags = 7;
     debkeydata[key_index].gscene = NULL;
+    debkeydata[key_index].orientation_dirty = 0.0f;
+    debkeydata[key_index].cutoff_distance = 999999.0f;
     debkeydata[key_index].process_collision_sound = 0;
     debkeydata[key_index].last_update_time = now;
     debkeydata[key_index].field_2f9 = 1;
@@ -1254,6 +1259,7 @@ void AddDebrisEffect(i32 *handle, i32 effect_index, f32 x, f32 y, f32 z) {
     debkeydata[key_index].field_2fa = 0;
     debkeydata[key_index].emission_epoch =
         debkeydata[key_index].emission_end_time < now ? debkeydata[key_index].emission_end_time : now;
+    debkeydata[key_index].emission_disabled = 0;
 
     switch (effect->particle_type) {
         case 3:
