@@ -533,7 +533,16 @@ i32 __cdecl Action_EngageOpponent(AISYS_PC *sys, AISCRIPTPROCESS_PC *processor, 
             } else if (NuStrIStr(params[index], (char *)AICombatNoFireInMiniCutName) != NULL) {
                 processor->action_data_1 |= 4;
             } else if (NuStrIStr(params[index], (char *)AICombatCircleName) != NULL) {
-                packet->flags ^= 0x200u;
+                typedef union AI_ENGAGE_CIRCLE_FLAGS_PC {
+                    u32 raw;
+                    struct {
+                        u32 reserved_before : 9;
+                        u32 circle_clockwise : 1;
+                        u32 reserved_after : 22;
+                    } bits;
+                } AI_ENGAGE_CIRCLE_FLAGS_PC;
+                AI_ENGAGE_CIRCLE_FLAGS_PC *flags = (AI_ENGAGE_CIRCLE_FLAGS_PC *)&packet->flags;
+                flags->bits.circle_clockwise = !flags->bits.circle_clockwise;
                 processor->action_data_1 |= 8;
             } else if ((value = NuStrIStr(params[index], (char *)AIGameFireIntervalName)) != NULL) {
                 processor->action_data_5 = AIParamToFloat(processor, value + 13);
