@@ -11302,8 +11302,6 @@ static AIPATHSYS_PC *AISysLoadPathsPc(VARIPTR *cursor, i32 version, NUGSCN *scen
     return (AIPATHSYS_PC *)system;
 }
 
-#undef PATH_LOAD_ALLOCATE
-
 static AISYS_PC *AISysLoadPrivatePc(NUGSCN *scene, char *directory, void *pak, VARIPTR *buffer, VARIPTR *buffer_end,
                                     i32 storage_size, char *name, char *parameter, char *load_directory) {
     char ai2_path[256];
@@ -11318,7 +11316,7 @@ static AISYS_PC *AISysLoadPrivatePc(NUGSCN *scene, char *directory, void *pak, V
     i32 index;
     i32 search;
     sprintf(ai2_path, "%sLevels\\%s\\%s\\%s.ai2", AiLevelPathName, load_directory, parameter, name);
-    system = (AI_SYSTEM_LOAD_PC *)AISysBufferAlloc(buffer, buffer_end, sizeof(AI_SYSTEM_LOAD_PC));
+    PATH_LOAD_ALLOCATE(AI_SYSTEM_LOAD_PC *, system, buffer, buffer_end, sizeof(AI_SYSTEM_LOAD_PC));
     if (system == NULL)
         return NULL;
     memset(system, 0, sizeof(*system));
@@ -11402,8 +11400,8 @@ static AISYS_PC *AISysLoadPrivatePc(NUGSCN *scene, char *directory, void *pak, V
                                                                           set->locator_count * sizeof(AILOCATORSET_PC));
                             for (search = 0; search < set->locator_count; ++search)
                                 set->locator_entries[search] = (u8)EdFileReadChar();
-                            set->assigned = (u8 *)AISysBufferAlloc(&system->storage_cursor, &system->storage_end,
-                                                                   set->locator_count);
+                            PATH_LOAD_ALLOCATE(u8 *, set->assigned, &system->storage_cursor, &system->storage_end,
+                                               set->locator_count);
                             memset(set->assigned, 0, set->locator_count);
                         }
                     }
@@ -11520,9 +11518,8 @@ static AISYS_PC *AISysLoadPrivatePc(NUGSCN *scene, char *directory, void *pak, V
             if (version > 12) {
                 system->antinode_count = EdFileReadInt();
                 if (system->antinode_count != 0) {
-                    system->antinodes =
-                        (AI_ANTINODE_LOAD_PC *)AISysBufferAlloc(&system->storage_cursor, &system->storage_end,
-                                                                system->antinode_count * sizeof(AI_ANTINODE_LOAD_PC));
+                    PATH_LOAD_ALLOCATE(AI_ANTINODE_LOAD_PC *, system->antinodes, &system->storage_cursor,
+                                       &system->storage_end, system->antinode_count * sizeof(AI_ANTINODE_LOAD_PC));
                     for (index = 0; index < system->antinode_count; ++index) {
                         AI_ANTINODE_LOAD_PC *antinode = &system->antinodes[index];
                         i32 length;
@@ -11572,6 +11569,8 @@ static AISYS_PC *AISysLoadPrivatePc(NUGSCN *scene, char *directory, void *pak, V
     AISysSetLevelPath((AISYS_PC *)system, NULL);
     return (AISYS_PC *)system;
 }
+
+#undef PATH_LOAD_ALLOCATE
 
 AISYS_PC *__cdecl AISysLoadEx(VARIPTR *buffer, VARIPTR *buffer_end, i32 storage_size, NUGSCN *scene, char *directory,
                               char *name, char *parameter, char *load_directory) {
