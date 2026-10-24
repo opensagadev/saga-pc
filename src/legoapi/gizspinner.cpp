@@ -442,11 +442,18 @@ static __declspec(noinline) void SpinnerResetEntryPc(GIZSPINNER_s *spinner, Spin
 }
 
 extern "C" void __cdecl GizSpinner_Update(GIZSPINNER_s *spinner) {
-    u32 initial_flags = spinner->state_flags;
-    i32 stopped = (initial_flags & 0x20) != 0;
-    spinner->state_flags = initial_flags & ~0x310u;
-    if (stopped)
+    u32 flags = spinner->state_flags;
+    i32 initial_no_judder = flags & 0x10;
+    flags &= ~0x10u;
+    i32 initial_positive_offset = flags & 0x100;
+    i32 initial_negative_offset = flags & 0x200;
+    flags &= ~0x300u;
+    i32 stopped = 0;
+    spinner->state_flags = flags;
+    if ((flags & 0x20) != 0) {
         GameAnimSet_Stop(spinner->anim_set);
+        stopped = 1;
+    }
     volatile f32 minimum_x = (f64)spinner->position.x - spinner->field_0x09c;
     volatile f32 maximum_x = (f64)spinner->field_0x09c + spinner->position.x;
     volatile f32 minimum_z = (f64)spinner->position.z - spinner->field_0x09c;
@@ -454,8 +461,9 @@ extern "C" void __cdecl GizSpinner_Update(GIZSPINNER_s *spinner) {
     if ((spinner->state_flags & 0x0c) == 0) {
         GAMEOBJECT *object = Obj;
         for (i32 index = 0; index < HIGHGAMEOBJECT; ++index, ++object) {
-            if ((object->flags_1fc_word & 0x1001) != 0x1001 || object->dead != 0 || (object->flags_e20 & 0x20) != 0 ||
-                (CInfo[object->character_context].flags & 0x40008000) != 0 || object->collision_max.x < minimum_x ||
+            if ((object->flags_1fc_word & 1) == 0 || (object->flags_1fc_word & 0x1000) == 0 || object->dead != 0 ||
+                (object->flags_e20 & 0x20) != 0 || (CInfo[object->character_context].flags & 0x40000000) != 0 ||
+                (CInfo[object->character_context].flags & 0x8000) != 0 || object->collision_max.x < minimum_x ||
                 object->collision_min.x > maximum_x || object->collision_max.z < minimum_z ||
                 object->collision_min.z > maximum_z)
                 continue;
@@ -481,7 +489,12 @@ extern "C" void __cdecl GizSpinner_Update(GIZSPINNER_s *spinner) {
                 else if (object->character_data->game_character->run_speed > speed)
                     speed = object->character_data->game_character->run_speed;
             }
-            u16 tangent = radial + (RotDiff(radial, movement) < 0 ? 0xcaab : 0x3555);
+            u16 tangent = radial;
+            if (RotDiff(radial, movement) < 0) {
+                tangent += 0xcaab;
+            } else {
+                tangent += 0x3555;
+            }
             object->velocity.x = (f64)NuTrigTable[tangent >> 1] * speed;
             object->velocity.z = (f64)speed * NuTrigTable[((tangent + 0x4000) >> 1) & 0x7fff];
         }
@@ -553,13 +566,13 @@ extern "C" void __cdecl GizSpinner_Update(GIZSPINNER_s *spinner) {
     animation_updated:
         NUMTX matrix;
         SpinnerMatrixSetRotationYPc(&matrix, spinner->rotation);
-        if ((initial_flags & 0x100) != 0)
+        if (initial_positive_offset != 0)
             SpinnerMatrixRotateYPc(&matrix, 0x222);
-        else if ((initial_flags & 0x200) != 0)
+        else if (initial_negative_offset != 0)
             SpinnerMatrixRotateYPc(&matrix, -0x222);
         NuMtxTranslate(&matrix, &spinner->position);
         spinner->state = GameAnimSet_IsAnimationReset(spinner->anim_set) != 0 ? 0 : (spinner->anim_set->state == 2) + 1;
-        if ((initial_flags & 0x10) == 0 && previous_state == 1 && spinner->state != 1) {
+        if (initial_no_judder == 0 && previous_state == 1 && spinner->state != 1) {
             NewRumbleAllPlayers(0.0f, 0.1f, 0, 0.0f);
             GameCam_Judder(GameCam, -0.2f, 0, NULL);
             GameAudio_PlaySfx(0x39, &spinner->position, 0, 0);
