@@ -106,9 +106,9 @@ extern "C" void Collection_DrawPc(COLLECTION_BUILD_PC *collection, f32 x, f32 y,
 extern "C" char *GameObj_GetNamePc(i32 model, GAMEOBJECT *object, char *buffer) {
     if (object != NULL) {
         if (object->rider != NULL && object->rider->character_data->name_id != -1)
-            model = object->rider->id;
+            model = static_cast<i16>(object->rider->id);
         else
-            model = object->id;
+            model = static_cast<i16>(object->id);
     } else if (model == -1)
         return TTab[tUNKNOWN];
     if (buffer != NULL) {
