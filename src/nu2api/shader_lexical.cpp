@@ -81,42 +81,104 @@ i32 ShaderLexicalSlicePc::AsInteger(i32 skipped_prefix) {
     return (i32)result;
 }
 bool ShaderLexicalReaderPc::Next(ShaderCompilerBufferAllocatorPc *input, i32 *cursor, ShaderLexicalSlicePc *slice) {
-    const char *source = reinterpret_cast<const char *>(input->data);
-    while (*cursor < input->length && ShaderLexicalClassesPc[(u8)source[*cursor]] == 8)
+    const char *p = reinterpret_cast<const char *>(input->data) + *cursor;
+    while (*cursor < input->length && ShaderLexicalClassesPc[(u8)*p] == 8) {
         ++*cursor;
+        ++p;
+    }
     if (*cursor >= input->length)
         return false;
-    i32 first = *cursor;
-    slice->begin = source + first;
+    slice->begin = p;
     slice->length = 0;
-    u8 token = (u8)source[first];
-    if ((ShaderLexicalClassesPc[token] & 1) != 0) {
+    i32 first = *cursor;
+    if ((ShaderLexicalClassesPc[(u8) reinterpret_cast<const char *>(input->data)[first]] & 1) != 0) {
         do {
             ++*cursor;
-        } while (*cursor < input->length && (ShaderLexicalClassesPc[(u8)source[*cursor]] & 3) != 0);
-    } else if ((ShaderLexicalClassesPc[token] & 2) != 0) {
-        do {
-            ++*cursor;
-        } while (*cursor < input->length && (ShaderLexicalClassesPc[(u8)source[*cursor]] & 2) != 0);
-    } else if (token == '(' || token == ')' || token == ',' || token == '*' || token == '[' || token == ']') {
-        ++*cursor;
-    } else if (token == '&' || token == '|') {
-        ++*cursor;
-        if (*cursor < input->length && (u8)source[*cursor] == token)
-            ++*cursor;
-    } else if (token == '<' || token == '>' || token == '=' || token == '!') {
-        ++*cursor;
-        if (*cursor < input->length && source[*cursor] == '=')
-            ++*cursor;
-    } else if (token == '"') {
-        do {
-            ++*cursor;
-        } while (*cursor < input->length && source[*cursor] != '"');
-    } else {
-        return false;
+            ++p;
+        } while (*cursor < input->length && (ShaderLexicalClassesPc[(u8)*p] & 3) != 0);
+        slice->length = *cursor - first;
+        return true;
     }
-    slice->length = *cursor - first;
-    return true;
+    u8 token = (u8)*p;
+    if ((ShaderLexicalClassesPc[token] & 2) != 0) {
+        do {
+            ++*cursor;
+            ++p;
+        } while (*cursor < input->length && (ShaderLexicalClassesPc[(u8)*p] & 2) != 0);
+        slice->length = *cursor - first;
+        return true;
+    }
+    if (token == '(') {
+        *cursor = first + 1;
+        slice->length = 1;
+        return true;
+    }
+    if (token == ')') {
+        *cursor = first + 1;
+        slice->length = 1;
+        return true;
+    }
+    if (token == '&') {
+        *cursor = first + 1;
+        if (*cursor < input->length && (u8)p[1] == token)
+            ++*cursor;
+        slice->length = *cursor - first;
+        return true;
+    }
+    if (token == '|') {
+        *cursor = first + 1;
+        if (*cursor < input->length && (u8)p[1] == token)
+            ++*cursor;
+        slice->length = *cursor - first;
+        return true;
+    }
+    if (token == '<') {
+        *cursor = first + 1;
+        if (*cursor < input->length && (u8)p[1] == '=')
+            ++*cursor;
+        slice->length = *cursor - first;
+        return true;
+    }
+    if (token == '>') {
+        *cursor = first + 1;
+        if (*cursor < input->length && (u8)p[1] == '=')
+            ++*cursor;
+        slice->length = *cursor - first;
+        return true;
+    }
+    if (token == '=') {
+        *cursor = first + 1;
+        if (*cursor < input->length && (u8)p[1] == '=')
+            ++*cursor;
+        slice->length = *cursor - first;
+        return true;
+    }
+    if (token == ',') {
+        *cursor = first + 1;
+        slice->length = 1;
+        return true;
+    }
+    if (token == '!') {
+        *cursor = first + 1;
+        if (*cursor < input->length && (u8)p[1] == '=')
+            ++*cursor;
+        slice->length = *cursor - first;
+        return true;
+    }
+    if (token == '"') {
+        do {
+            ++*cursor;
+            ++p;
+        } while (*cursor < input->length && *p != '"');
+        slice->length = *cursor - first;
+        return true;
+    }
+    if (token == '*' || token == '[' || token == ']') {
+        *cursor = first + 1;
+        slice->length = 1;
+        return true;
+    }
+    return false;
 }
 
 ShaderConditionNodePc *ShaderConditionNodePc::AppendOperand(ShaderConditionNodePc *operand) {
