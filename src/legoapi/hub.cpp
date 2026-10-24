@@ -4836,8 +4836,17 @@ extern "C" {
             else if (SuperStory != 0) {
                 if ((WORLD->current_level->flags & 0x2000) != 0)
                     DrawCoinTotalPc(1, hide_super_story_target);
+            } else if (BonusArea == 0 && ChallengeMode != 0) {
+                f32 remaining = (f32)ADataList[WORLD->area_index].challenge_trial_time - ChallengeTimer.time_elapsed;
+                if (remaining < 0.0f)
+                    remaining = 0.0f;
+                Text_MakeTime(remaining, 0, 1, 1, coordinate_text);
+                Text3D(coordinate_text, 0.0f,
+                       (STATSPOSY - STATSPOS2YPc) * NuTrigTable[((i32)((f64)statstime * 16384.0) >> 1) & 0x7fff] +
+                           STATSPOS2YPc,
+                       1.0f, 0.6f, 0.6f, 0.6f, 0, 255, 191, 0);
             } else {
-                STUBBED_NAMED("DrawPanel: native bonus/challenge/mission HUD branches at 0x004bb3d6..0x004bb8ff");
+                STUBBED_NAMED("DrawPanel: remaining native bonus/mission HUD branches at 0x004bb3d6..0x004bb8ff");
             }
         }
         STUBBED_NAMED("DrawPanel: frame-rate diagnostics at 0x004bb319");
