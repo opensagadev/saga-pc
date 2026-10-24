@@ -120,7 +120,7 @@ void __cdecl Arcade_AwardPoint(i32 player_index, i32 reset_score, i32 unused) {
 void __cdecl Arcade_CoinCollected(i32 player_index, u32 *score, u32 previous_score) {
     GAMEOBJECT *object;
     ARCADE_COIN_PACKET_PC *packet;
-    if ((u32)player_index > 1 || (Arcade_Mode[(i8)ArcadeItem.mode].flags & 4) == 0)
+    if ((player_index != 0 && player_index != 1) || (Arcade_Mode[(i8)ArcadeItem.mode].flags & 4) == 0)
         return;
     if (Arcade_BothPlayersActive()) {
         object = (GAMEOBJECT *)Player[player_index];
@@ -146,7 +146,7 @@ void __cdecl Arcade_CoinCollected(i32 player_index, u32 *score, u32 previous_sco
 }
 
 void __cdecl Arcade_PlayerKilled(i32 player_index, i32 extra) {
-    if ((u32)player_index > 1 || (Arcade_Mode[ArcadeItem.mode].flags & 1) == 0)
+    if ((player_index != 0 && player_index != 1) || (Arcade_Mode[ArcadeItem.mode].flags & 1) == 0)
         return;
     if (Arcade_BothPlayersActive()) {
         ++AreaGlobals_PC.arcade_player_kills[player_index];
@@ -159,7 +159,7 @@ void __cdecl Arcade_PlayerKilled(i32 player_index, i32 extra) {
 extern const char ArcadeAiKilledSoundNamePc[];
 void __cdecl Arcade_AIKilled(i32 player_index) {
     GAMEOBJECT *object;
-    if ((u32)player_index > 1 || (Arcade_Mode[(i8)ArcadeItem.mode].flags & 2) == 0)
+    if ((player_index != 0 && player_index != 1) || (Arcade_Mode[(i8)ArcadeItem.mode].flags & 2) == 0)
         return;
     if (Arcade_BothPlayersActive()) {
         ++AreaGlobals_PC.arcade_ai_kills[player_index];
@@ -184,8 +184,8 @@ void __cdecl Arcade_AIKilled(i32 player_index) {
     }
 }
 void __cdecl Arcade_Kill(i32 player_index, i32 killed_player) {
-    if (Arcade != 0 && (u32)player_index <= 1) {
-        if ((u32)killed_player <= 1)
+    if (Arcade != 0 && (player_index == 0 || player_index == 1)) {
+        if ((killed_player == 0 || killed_player == 1))
             Arcade_PlayerKilled(player_index, 0);
         else if (killed_player == -1)
             Arcade_AIKilled(player_index);
