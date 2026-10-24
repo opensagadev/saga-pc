@@ -369,14 +369,42 @@ extern "C" void __cdecl MenuDrawMissions(MENU *menu) {
         system = (MISSION_SYSTEM_READER_PC *)MissionSys;
     }
     size = MissionMenuPacketPc.active_player[0] ? 1.0f : MissionDropInAlphaPc;
-    DrawCharIcon(MissionMenuPacketPc.player_model[0], -ICONX, STATSPOSY, MissionPlayerIconSizePc,
-                 MissionPlayerIconSizePc, 166, size, size, 1, NULL);
+    DrawCharIcon(MissionMenuPacketPc.player_model[0], -ICONX, STATSPOSY, 0.0f, MissionPlayerIconSizePc, 166, size, size,
+                 1, NULL);
     size = MissionMenuPacketPc.active_player[1] ? 1.0f : MissionDropInAlphaPc;
     DrawCharIcon(MissionMenuPacketPc.player_model[1], ICONX, STATSPOSY, 0.0f, MissionPlayerIconSizePc, 165, size, size,
                  1, NULL);
-    /* Native49751b: actual two-player prompt arguments derived from packet selected BYTEs.
-       Genuine void provider is not yet implemented; no fake prompt/font success. */
-    STUBBED_NAMED("MenuDrawMissions: DrawPlayerIconPrompts at 49751b");
+    i32 select0, back0, status0, select1, back1, status1;
+    if (MissionMenuPacketPc.active_player[0] != 0 && MissionMenuPacketPc.active_player[1] != 0) {
+        const i16 select = TextIdPc880888;
+        const i16 back = TextIdPc880844;
+        const i16 status = TextIdPc880eac;
+        const i16 unselect = TextIdPc880890;
+        if (MissionMenuPacketPc.selected[0] != 0) {
+            select0 = -1;
+            back0 = unselect;
+            status0 = TextIdPc880eb0;
+        } else {
+            select0 = select;
+            back0 = back;
+            status0 = status;
+        }
+        if (MissionMenuPacketPc.selected[1] != 0) {
+            select1 = -1;
+            back1 = unselect;
+            status1 = TextIdPc880eb0;
+        } else {
+            select1 = select;
+            back1 = back;
+            status1 = status;
+        }
+    } else {
+        select0 = select1 = TextIdPc880888;
+        back0 = back1 = TextIdPc880844;
+        status0 = status1 = TextIdPc880eac;
+    }
+    DrawPlayerIconPrompts(MissionMenuPacketPc.active_player[0], select0, 1.0f, -1, back0, -1, status0,
+                          MissionMenuPacketPc.active_player[1], select1, 1.0f, -1, back1, -1, status1);
 }
 
 extern "C" {
