@@ -13687,6 +13687,8 @@ address,symbol,size,ctype
 0x0075c068,__real@4084000000000000,8,const f64
 0x0075c070,__real@43e00000,4,const f32
 0x0075c074,__real@44200000,4,const f32
+0x0075c078,__real@3fe8a3d700000000,8,const f64
+0x0075c080,__real@3f451eb8,4,const f32
 0x75c084,??_C@_0BF@PPFHOPKB@X?3?$CF?42f?5Y?3?$CF?42f?5Z?3?$CF?42f?$AA@,21,char[21]
 0x0075c0a8,_NuTimeBarFontScale,4,const f32
 0x75c0a8,__real@3f59999a,,f32
@@ -20252,6 +20254,7 @@ address,symbol,size,ctype
 0x7fc328,_REDBRICKPOSY,,f32
 0x7fc32c,_REDBRICKPOS2X,,f32
 0x7fc330,_REDBRICKPOS2Y,,f32
+0x007fc334,_HudAutoSaveScalePc,,f32
 0x007fc338,_HubPromptOffColourPc,12,i32[3]
 0x007fc344,_HubPromptOnColourPc,12,i32[3]
 0x007fc350,_HubPromptXPc,4,f32

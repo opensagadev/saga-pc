@@ -4753,6 +4753,9 @@ extern "C" {
 
 extern "C" {
     i32 __cdecl NuKeyboardBasePortPc(void);
+#pragma data_seg(".data$HudAutoSaveScalePc")
+    f32 HudAutoSaveScalePc = 0.07500000298023224f;
+#pragma data_seg()
     extern i32 NuMainSkipCutBordersPc, AutoSaveIconPendingPc;
     extern f32 CoinTotalScoreSizePc;
     extern f32 CoinTotalCoinOffsetPc;
@@ -4870,7 +4873,16 @@ extern "C" {
         }
     finish:
         if (AutoSaveIconPendingPc != 0 && WORLD->level_objects[0].active != 0) {
-            STUBBED_NAMED("DrawPanel: autosave model at 0x004bba99");
+            DrawPanel3DObject(
+                (f32)((f64)NuTrigTable[(u16)(NuFmod(GlobalTimer.time_elapsed, 1.1f) / (f64)1.1f * 65536.0) >> 1] *
+                      (f64)0.01f),
+                (f32)((f64)NuTrigTable
+                              [(((u16)(NuFmod(GlobalTimer.time_elapsed, 0.77f) / (f64)0.77f * 65536.0) + 0x4000) >> 1) &
+                               0x7fff] *
+                          (f64)0.01f -
+                      (f64)0.05f),
+                1.0f, HudAutoSaveScalePc, HudAutoSaveScalePc, HudAutoSaveScalePc, 0, 0, 0,
+                &WORLD->level_objects[0].special, 0, 1.0f);
         }
         AutoSaveIconPendingPc = 0;
         if (GameCam != NULL) {
