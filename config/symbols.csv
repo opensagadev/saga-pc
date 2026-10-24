@@ -6533,6 +6533,7 @@ address,symbol,size,ctype
 0x61dfd0,_eduicbRenderSliderInt,609,
 0x0061e6b0,_NuKeyToAscii,50,"i32 __cdecl (u32, i32)"
 0x61eb60,_eduicbItemExpanderClose,88,
+0x0061ebc0,_eduicbMenuOpenAllexpanders,71,void __cdecl(eduimenu_s *)
 0x61ec10,_eduicbMenuCloseAllexpanders,40,
 0x61f070,_EduiDeepestChildPc,20,
 0x61f180,_cbSel,14,
@@ -6602,7 +6603,7 @@ address,symbol,size,ctype
 0x624180,_eduicbItemDestroy,77,
 0x6241d0,_eduiMenuDestroyItems,68,
 0x624220,_eduiMenuDestroy,133,
-0x6242b0,_eduiMenuFitWidth,704,
+0x6242b0,_eduiMenuFitWidth,721,
 0x624590,_eduicbProcessSel,89,
 0x6245f0,_eduicbItemTextPickDestroy,116,
 0x624840,_eduicbRenderTextPick,1374,
@@ -12410,6 +12411,7 @@ address,symbol,size,ctype
 0x758708,??_C@_0P@KMHAGGAM@TrueJedi_100pc?$AA@,15,const char[15]
 0x758718,??_C@_0N@KOFOPOOP@TrueJedi_NOT?$AA@,13,const char[13]
 0x758728,??_C@_0BC@HLBJPJHH@Status_GoldBarDec?$AA@,18,const char[18]
+0x00758740,__real@8000000000000000,8,const f64
 0x758748,_StatusTrueHeroPercentFormatPc,5,const char[5]
 0x758750,_StatusTrueHeroFullPercentTextPc,5,const char[5]
 0x00758758,__real@4050000000000000,8,const f64

@@ -1414,3 +1414,91 @@ void __cdecl eduiInitMaterials(void) {
     ((NUMTL *)uimtls[3])->attribs.alpha_mode = 1;
     NuMtlUpdate(((NUMTL *)uimtls[3]));
 }
+
+void __cdecl eduiMenuFitWidth(eduimenu_s *menu, i32 padding) {
+    eduiitem_s *first = menu->first;
+    eduiitem_s *item;
+    i32 width = 0;
+    i32 property_label_width = 0;
+    i32 property_value_width = 0;
+    i32 item_text_width = 0;
+    i32 property_width;
+    eduicbMenuOpenAllexpanders(menu);
+    NuQFntPushCoordinateSystem(1);
+    NuQFntSetScale((VUFNT *)edui_font, edui_font_scale_x, edui_font_scale_y);
+    item_text_width = menu->title != NULL ? (i32)NuQFntPrintLenU((VUFNT *)edui_font, menu->title) >> 4 : 0;
+    if (item_text_width > width)
+        width = item_text_width;
+    for (item = first; item != NULL; item = item->next) {
+        switch (item->type) {
+            case 1:
+                item_text_width = ((i32)(NuQFntHeight((VUFNT *)edui_font) * 1.25) >> 3) * 10;
+                break;
+            case 2:
+            case 3:
+                if (item->text != NULL) {
+                    i32 icon_width = (i32)(NuQFntHeight((VUFNT *)edui_font) * 1.25) >> 3;
+                    i32 text_width = (i32)NuQFntPrintLenU((VUFNT *)edui_font, item->text) >> 4;
+                    item_text_width = icon_width + text_width;
+                }
+                break;
+            case 17: {
+                edui_prop_s *property = (edui_prop_s *)item;
+                i32 label_width = item->text != NULL ? (i32)NuQFntPrintLenU((VUFNT *)edui_font, item->text) >> 4 : 30;
+                i32 value_width;
+                if (label_width > property_label_width)
+                    property_label_width = label_width;
+                value_width = property->property_text != NULL
+                                  ? (i32)NuQFntPrintLenU((VUFNT *)edui_font, property->property_text) >> 4
+                                  : 30;
+                if (value_width > property_value_width)
+                    property_value_width = value_width;
+                item_text_width = value_width;
+                break;
+            }
+            case 6: {
+                edui_slider_s *slider = (edui_slider_s *)item;
+                char format[512];
+                char text[512];
+                NuStrCpy(format, item->text);
+                NuStrCat(format, slider->format);
+                NuSPrintf(text, format, -0.0);
+                item_text_width = (i32)NuQFntPrintLenU((VUFNT *)edui_font, text) >> 4;
+                break;
+            }
+            default:
+                if (item->text != NULL)
+                    item_text_width = (i32)NuQFntPrintLenU((VUFNT *)edui_font, item->text) >> 4;
+                break;
+        }
+        if (item_text_width > width)
+            width = item_text_width;
+    }
+    property_width = property_label_width + property_value_width + ((i32)NuQFntHeight((VUFNT *)edui_font) >> 3);
+    if (property_width > width)
+        width = property_width;
+    for (item = menu->first; item != NULL; item = item->next) {
+        if (item->type == 17)
+            ((edui_prop_s *)item)->label_width = (f32)(property_label_width + 1);
+    }
+    menu->width = width + padding;
+    NuQFntPopCoordinateSystem();
+    eduicbMenuCloseAllexpanders(menu);
+}
+
+void __cdecl eduicbMenuOpenAllexpanders(eduimenu_s *menu) {
+    eduiitem_s *item;
+    for (item = menu->first; item != NULL; item = item->next) {
+        if (item->type == 19) {
+            EDUI_EXPANDER_PC *expander = (EDUI_EXPANDER_PC *)item;
+            if (expander->first_child != NULL && !expander->open) {
+                expander->last_child->next = expander->base.next;
+                if (expander->base.next != NULL)
+                    expander->base.next->previous = expander->last_child;
+                expander->base.next = expander->first_child;
+                expander->first_child->previous = &expander->base;
+                expander->open = 1;
+            }
+        }
+    }
+}
