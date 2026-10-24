@@ -1066,6 +1066,20 @@ static void PlayersCamLookPos(NUVEC *target, NUVEC *reference) {
         NuVecScale(target, target, 1.0f / (f32)count);
 }
 
+#define GAME_CAMERA_ABSOLUTE_PC(destination, source)                                                                   \
+    do {                                                                                                               \
+        union {                                                                                                        \
+            f32 value;                                                                                                 \
+            u32 bits;                                                                                                  \
+        } storage;                                                                                                     \
+        u32 bits;                                                                                                      \
+        storage.value = (source);                                                                                      \
+        bits = storage.bits;                                                                                           \
+        bits &= 0x7fffffff;                                                                                            \
+        storage.bits = bits;                                                                                           \
+        (destination) = storage.value;                                                                                 \
+    } while (0)
+
 void MoveGameCamera(GAMECAMERA *camera) {
     i32 menu_id;
     i32 previous_mode;
@@ -1260,13 +1274,29 @@ mode_selected:
     target = v000;
     selected_pad = camera->mode == 5 ? ViewCam.gamepad : (GAMEPAD_PC *)&GamePadStorage[0];
     left_y = ((f32)(((i32)(selected_pad->bound_pad->analog_left_y)))) - 127.5f;
-    left_y = fabsf(left_y) < 34.0f ? 0.0f : left_y / 127.5f;
+    {
+        f32 magnitude;
+        GAME_CAMERA_ABSOLUTE_PC(magnitude, left_y);
+        left_y = magnitude < 34.0f ? 0.0f : left_y / 127.5f;
+    }
     left_x = ((f32)(((i32)(selected_pad->bound_pad->analog_left_x)))) - 127.5f;
-    left_x = fabsf(left_x) < 34.0f ? 0.0f : left_x / 127.5f;
+    {
+        f32 magnitude;
+        GAME_CAMERA_ABSOLUTE_PC(magnitude, left_x);
+        left_x = magnitude < 34.0f ? 0.0f : left_x / 127.5f;
+    }
     right_y = ((f32)(((i32)(selected_pad->bound_pad->analog_right_y)))) - 127.5f;
-    right_y = fabsf(right_y) < 34.0f ? 0.0f : right_y / 127.5f;
+    {
+        f32 magnitude;
+        GAME_CAMERA_ABSOLUTE_PC(magnitude, right_y);
+        right_y = magnitude < 34.0f ? 0.0f : right_y / 127.5f;
+    }
     right_x = ((f32)(((i32)(selected_pad->bound_pad->analog_right_x)))) - 127.5f;
-    right_x = fabsf(right_x) < 34.0f ? 0.0f : right_x / 127.5f;
+    {
+        f32 magnitude;
+        GAME_CAMERA_ABSOLUTE_PC(magnitude, right_x);
+        right_x = magnitude < 34.0f ? 0.0f : right_x / 127.5f;
+    }
     pitch_override = -1, yaw_override = -1, roll_override = 0;
     roll_hint = 0;
     roll_hint_valid = 0;
@@ -1706,7 +1736,9 @@ mode_selected:
         // `selected_pad` is the GAMEPAD_s at the original esp+0x108.
         // left_x/left_y correspond to xmm7/xmm6; right_y/right_x to esp+0xfc/+0x104.
         case 5: {
-            f32 speed = fabsf(ViewCam.distance) * testmovef * FRAMETIME;
+            f32 speed, distance;
+            GAME_CAMERA_ABSOLUTE_PC(distance, ViewCam.distance);
+            speed = distance * testmovef * FRAMETIME;
             if (ViewCam.gamepad != NULL) {
                 offset.x = (left_x * 127.5f) * speed;
                 offset.y = ((f32)(((u32)(ViewCam.gamepad->bound_pad->analog_l1)))) * speed -
@@ -2133,3 +2165,5 @@ void __cdecl SetCameraMatrices(void) {
     NuRndrSetSpecularLightPS(NULL, NULL);
     SetCameraEffectMatrixPc();
 }
+
+#undef GAME_CAMERA_ABSOLUTE_PC
