@@ -4364,9 +4364,17 @@ extern "C" {
         i32 i;
         if (filter == 0 && type == -1)
             return 0;
-        for (i = system->count; i > 0; --i, ++pickup) {
-            if (filter != 0 ? pickup->filter_byte == filter : pickup->type_index == type)
-                ++count;
+        i = system->count;
+        if (i > 0) {
+            do {
+                if (filter != 0) {
+                    if (pickup->filter_byte == filter)
+                        ++count;
+                } else if (pickup->type_index == type) {
+                    ++count;
+                }
+                ++pickup;
+            } while (--i != 0);
         }
         return count;
     }
