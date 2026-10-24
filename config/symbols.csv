@@ -6537,7 +6537,8 @@ address,symbol,size,ctype
 0x61f180,_cbSel,14,
 0x61f190,_cbGradChange,1,
 0x61f1a0,_cbInteractMenuTitle,135,
-0x61f260,_cbInteractMenuScrollUp,33,
+0x0061f230,_cbInteractMenuScrollUp,33,i32 __cdecl(edui_interact_s *)
+0x61f260,_cbInteractMenuScrollDown,33,i32 __cdecl(edui_interact_s *)
 0x61f290,_cbInteractMenuScrollTo,115,
 0x61f310,_cbInteractMenuCancelChild,35,
 0x0061f3d0,_EduiClearInteractionsPc,47,
