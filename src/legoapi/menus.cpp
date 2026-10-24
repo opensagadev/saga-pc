@@ -395,3 +395,11 @@ extern "C" {
             ResumeGame_ExtraCodeFn();
     }
 }
+
+/* 50b310/71. Existing menu globals and types, no new owner data. */
+extern "C" i32 __cdecl MenuInMemoryCard(void) {
+    if (GameMenuLevel == -1 || MenuValidated == 0)
+        return 0;
+    const i32 id = MenuInfo[GameMenu[GameMenuLevel].menu].id;
+    return id >= 1000 && id < 1031;
+}
