@@ -3427,8 +3427,9 @@ u8 *TerrainSkinRebuildIndexPc(i32 pool_slots) {
         f32 cell_min_x = 200000000.0f, cell_min_z = 200000000.0f;
         f32 cell_max_x = -200000000.0f, cell_max_z = -200000000.0f;
         terrain->cells[terrain->used_cell_count].first_group = (i16)terrain->group_index_count;
-        for (i = 0; i < terrain->group_count; ++i) {
-            if (selectors[i] == cell_index && terrain->groups[i].chunk_type == 0) {
+        group = terrain->groups;
+        for (i = 0; i < terrain->group_count; ++i, ++group) {
+            if (selectors[i] == cell_index && group->chunk_type == 0) {
                 if (min_x[i] < cell_min_x)
                     cell_min_x = min_x[i];
                 if (min_z[i] < cell_min_z)
