@@ -4195,7 +4195,6 @@ extern "C" void Hub_DrawPanel(WORLDINFO *) {
             i32 red_total = 0, red_count = 0, free_total = 0, free_count = 0;
             i32 story_total = 0, story_count = 0, buildup_total = 0, buildup_count = 0;
             i32 char_total = 0, char_count = 0, mini_total = 0, mini_count = 0;
-            i32 both_true_jedi_bricks;
             i32 i = 0;
             for (; i < EPISODECOUNT; ++i) {
                 Episode_CountOpenAreas(i, -1, (COLLECTION_AREA_SAVE_PC *)Game.area_save);
@@ -4205,8 +4204,7 @@ extern "C" void Hub_DrawPanel(WORLDINFO *) {
                 char_total += EpCharKitTotal;
                 buildup_count += EpBuildUpCount;
                 buildup_total += EpBuildUpTotal;
-                both_true_jedi_bricks = HubBothTrueJediGoldBricksPc;
-                if (both_true_jedi_bricks) {
+                if (HubBothTrueJediGoldBricksPc) {
                     story_total += EpStoryBuildUpTotal;
                     story_count += EpStoryBuildUpCount;
                     free_count += EpFreePlayBuildUpCount;
@@ -4215,10 +4213,8 @@ extern "C" void Hub_DrawPanel(WORLDINFO *) {
                 red_count += EpRedBrickCount;
                 red_total += EpRedBrickTotal;
             }
-            if (i == 0)
-                both_true_jedi_bricks = HubBothTrueJediGoldBricksPc;
             stats_xscale = 0.8f;
-            if (both_true_jedi_bricks) {
+            if (HubBothTrueJediGoldBricksPc) {
                 DrawBuildUpBar(HubAreaPanelXPc[1], HubEpisodeSubtitleYPc + PANEL_MINIKITY - PANEL_MINIKITCOUNTY, 100,
                                100, NuTrigTable[((i32)(16384.0 * HubAreaTimePc) >> 1) & 0x7fff], 1.0f, 1.0f, 0);
                 sprintf(text, "%i/%i", story_count, story_total);
