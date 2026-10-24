@@ -1597,7 +1597,6 @@ void __cdecl AddVariableShotDebrisEffectTimed5(i32 effect_index, NUVEC *position
     i32 j;
     i32 particle;
     i32 particle_count;
-    i32 particles_per_chunk;
     i32 maximum_particles;
     i32 particle_key_slot;
     i32 new_key_index;
@@ -1606,12 +1605,7 @@ void __cdecl AddVariableShotDebrisEffectTimed5(i32 effect_index, NUVEC *position
     i32 required_chunks;
     i32 allocated_chunks;
     i32 new_chunk_count;
-    i32 *free_chunk_count;
-    i32 available_chunk_count;
-    DEBRIS_PARTICLE_CHUNK_PC **free_chunks;
-    DEBRIS_PARTICLE_CHUNK_PC *chunk;
     i32 total_chunk_count;
-    DEBRIS_RENDER_CHUNK_PC *render_chunk;
     DEBRISPARTICLE_PC *generated;
     i32 chunk_index;
     DEBRIS_CHUNK_CONTROL_PC *control;
@@ -1626,7 +1620,9 @@ void __cdecl AddVariableShotDebrisEffectTimed5(i32 effect_index, NUVEC *position
         return;
     if (4 != effect->time_group) {
         NUVEC extent;
-        clipped_position = *position;
+        clipped_position.x = position->x;
+        clipped_position.y = position->y;
+        clipped_position.z = position->z;
         extent.x = 1.0f;
         extent.y = 1.0f;
         extent.z = 1.0f;
@@ -1658,7 +1654,6 @@ void __cdecl AddVariableShotDebrisEffectTimed5(i32 effect_index, NUVEC *position
     if (emission_count == 0)
         return;
     particle_count = emission_count * ((i32)effect->trail_count + 1);
-    particles_per_chunk = effect->particle_type == 7 ? 12 : 32;
     maximum_particles = effect->particle_type == 7 ? 0x180 : 0x400;
     particle_key_slot = -1;
     key = NULL;
@@ -1691,45 +1686,72 @@ void __cdecl AddVariableShotDebrisEffectTimed5(i32 effect_index, NUVEC *position
     if (key == NULL)
         return;
     required_particles = key->particle_count + particle_count;
-    allocated_chunks = key->allocated_chunk_count;
-    if (allocated_chunks * particles_per_chunk < required_particles) {
-        if (allocated_chunks <= -1) {
-            key->allocated_chunk_count = 0;
-            allocated_chunks = 0;
-        }
-        required_chunks = (required_particles + particles_per_chunk - 1) / particles_per_chunk;
-        new_chunk_count = required_chunks - allocated_chunks;
-        free_chunks = effect->particle_type == 7 ? freedebchunksglass : freedebchunks;
-        free_chunk_count = effect->particle_type == 7 ? &freedebchkptrg : &freedebchkptr;
-        available_chunk_count = effect->particle_type == 7 ? debrischunksglass : debrischunks;
-        if (available_chunk_count <= *free_chunk_count + new_chunk_count || required_chunks > 32)
-            return;
-        for (i = 0; i < new_chunk_count; ++i) {
-            chunk = free_chunks[(*free_chunk_count)++];
-            key->particle_chunks[key->allocated_chunk_count] = chunk;
-            for (particle = 0; particle < particles_per_chunk; ++particle) {
-                chunk->particles[particle].start_time = 0.0f;
-                chunk->particles[particle].inverse_lifetime = 32768.0f;
+    if (effect->particle_type == 7) {
+        allocated_chunks = key->allocated_chunk_count;
+        if (allocated_chunks * 12 < required_particles) {
+            if (allocated_chunks <= -1) {
+                key->allocated_chunk_count = 0;
             }
-            ++key->allocated_chunk_count;
-        }
-        key->allocated_chunk_count = (i16)required_chunks;
-        LinkDmaParticalSets(key->particle_chunks, required_chunks);
-        if (required_chunks == new_chunk_count) {
-            total_chunk_count = debrischunks + debrischunksglass;
-            render_chunk = NULL;
-            for (j = 0; j < total_chunk_count; ++j) {
-                if (NULL == ParticleChunkToRender[j].particle_chunk) {
-                    render_chunk = &ParticleChunkToRender[j];
-                    break;
+            required_chunks = (required_particles + 12 - 1) / 12;
+            new_chunk_count = required_chunks - key->allocated_chunk_count;
+            if (debrischunksglass <= freedebchkptrg + new_chunk_count || required_chunks > 32)
+                return;
+            for (i = 0; i < new_chunk_count; ++i) {
+                key->particle_chunks[key->allocated_chunk_count] = freedebchunksglass[freedebchkptrg++];
+                for (particle = 0; particle < 12; ++particle) {
+                    key->particle_chunks[key->allocated_chunk_count]->particles[particle].start_time = 0.0f;
+                    key->particle_chunks[key->allocated_chunk_count]->particles[particle].inverse_lifetime = 32768.0f;
+                }
+                ++key->allocated_chunk_count;
+            }
+            key->allocated_chunk_count = (i16)required_chunks;
+            LinkDmaParticalSets(key->particle_chunks, required_chunks);
+            if (required_chunks == new_chunk_count) {
+                total_chunk_count = debrischunks + debrischunksglass;
+                for (j = 0; j < total_chunk_count; ++j) {
+                    if (NULL == ParticleChunkToRender[j].particle_chunk) {
+                        ParticleChunkToRender[j].particle_chunk = key->particle_chunks[0];
+                        ParticleChunkToRender[j].effect = effect;
+                        ParticleChunkToRender[j].key = key;
+                        ParticleChunkToRender[j].render_priority = render_priority;
+                        AddChunkToRenderStack(&ParticleChunkToRender[j], &ParticleChunkRenderStack[effect->time_group]);
+                        break;
+                    }
                 }
             }
-            if (render_chunk != NULL) {
-                render_chunk->particle_chunk = key->particle_chunks[0];
-                render_chunk->effect = effect;
-                render_chunk->key = key;
-                render_chunk->render_priority = render_priority;
-                AddChunkToRenderStack(render_chunk, &ParticleChunkRenderStack[effect->time_group]);
+        }
+    } else {
+        allocated_chunks = key->allocated_chunk_count;
+        if (allocated_chunks * 32 < required_particles) {
+            if (allocated_chunks <= -1) {
+                key->allocated_chunk_count = 0;
+            }
+            required_chunks = (required_particles + 32 - 1) / 32;
+            new_chunk_count = required_chunks - key->allocated_chunk_count;
+            if (debrischunks <= freedebchkptr + new_chunk_count || required_chunks > 32)
+                return;
+            for (i = 0; i < new_chunk_count; ++i) {
+                key->particle_chunks[key->allocated_chunk_count] = freedebchunks[freedebchkptr++];
+                for (particle = 0; particle < 32; ++particle) {
+                    key->particle_chunks[key->allocated_chunk_count]->particles[particle].start_time = 0.0f;
+                    key->particle_chunks[key->allocated_chunk_count]->particles[particle].inverse_lifetime = 32768.0f;
+                }
+                ++key->allocated_chunk_count;
+            }
+            key->allocated_chunk_count = (i16)required_chunks;
+            LinkDmaParticalSets(key->particle_chunks, required_chunks);
+            if (required_chunks == new_chunk_count) {
+                total_chunk_count = debrischunks + debrischunksglass;
+                for (j = 0; j < total_chunk_count; ++j) {
+                    if (NULL == ParticleChunkToRender[j].particle_chunk) {
+                        ParticleChunkToRender[j].particle_chunk = key->particle_chunks[0];
+                        ParticleChunkToRender[j].effect = effect;
+                        ParticleChunkToRender[j].key = key;
+                        ParticleChunkToRender[j].render_priority = render_priority;
+                        AddChunkToRenderStack(&ParticleChunkToRender[j], &ParticleChunkRenderStack[effect->time_group]);
+                        break;
+                    }
+                }
             }
         }
     }
@@ -1738,14 +1760,19 @@ void __cdecl AddVariableShotDebrisEffectTimed5(i32 effect_index, NUVEC *position
         key->momentum.x = 0.0f;
         key->momentum.y = 0.0f;
         key->momentum.z = 0.0f;
-    } else
-        key->momentum = *momentum;
+    } else {
+        key->momentum.x = momentum->x;
+        key->momentum.y = momentum->y;
+        key->momentum.z = momentum->z;
+    }
     DebrisEmitterOrientationMtx(effect->particle_keys[particle_key_slot], emitter_orientation);
     key->emission_epoch = emission_epoch;
     for (i = 1; i < 100 && emission_time <= end_time; ++i) {
-        if (position_delta == NULL)
-            key->emission_position = *position;
-        else
+        if (position_delta == NULL) {
+            key->emission_position.x = position->x;
+            key->emission_position.y = position->y;
+            key->emission_position.z = position->z;
+        } else
             NuVecAddScale(&key->emission_position, position, position_delta, emission_time - end_time);
         key->emission_time = emission_time;
         generated = key->generator(key, effect, emission_time);
@@ -3507,7 +3534,7 @@ i32 __cdecl edpartLookupObjectInScene(char *name, NUGSCN *scene) {
 void __cdecl edpartLoadSingleType(PARTTYPE_LOOKUP_PC *record, i32 version, i32 page) {
     PART_RUNTIME_TYPE_PC *type = (PART_RUNTIME_TYPE_PC *)record;
     char name[16];
-    i32 i, scene, scene_page, variants;
+    i32 i, scene;
     char mode;
     EdFileRead(type->name, 16);
     if (version > 5) {
@@ -3518,24 +3545,56 @@ void __cdecl edpartLoadSingleType(PARTTYPE_LOOKUP_PC *record, i32 version, i32 p
         for (i = 1; i < 8; ++i)
             type->effect_pages[i] = -1;
     }
-    variants = version > 5 ? 8 : 1;
-    for (i = 0; i < variants; ++i) {
-        EdFileRead(type->object_names[i], 16);
-        type->effect_ids[i] = -1;
-        if (type->effect_pages[i] == 0 || type->effect_pages[i] == 1) {
-            scene_page = type->effect_pages[i] == 0 ? page : 0;
-            for (scene = 0; scene < 32; ++scene) {
-                if (part_scene_pageid[scene] == scene_page) {
-                    type->effect_ids[i] = edpartLookupObjectInScene(type->object_names[i], part_scene[scene]);
+    if (version > 5) {
+        for (i = 0; i < 8; ++i) {
+            EdFileRead(type->object_names[i], 16);
+            type->effect_ids[i] = -1;
+            if (type->effect_pages[i] == 0) {
+                for (scene = 0; scene < 32; ++scene) {
+                    if (part_scene_pageid[scene] == page)
+                        type->effect_ids[i] = edpartLookupObjectInScene(type->object_names[i], part_scene[scene]);
+                    if (type->effect_ids[i] != -1) {
+                        type->scene_indices[i] = scene;
+                        break;
+                    }
                 }
-                if (type->effect_ids[i] != -1) {
-                    type->scene_indices[i] = scene;
+            } else if (type->effect_pages[i] == 1) {
+                for (scene = 0; scene < 32; ++scene) {
+                    if (part_scene_pageid[scene] == 0)
+                        type->effect_ids[i] = edpartLookupObjectInScene(type->object_names[i], part_scene[scene]);
+                    if (type->effect_ids[i] != -1) {
+                        type->scene_indices[i] = scene;
+                        break;
+                    }
+                }
+            }
+            if (type->effect_ids[i] == -1 && type->object_names[i][0] != 0)
+                type->effect_ids[i] = 9998;
+        }
+    } else {
+        EdFileRead(type->object_names[0], 16);
+        type->effect_ids[0] = -1;
+        if (type->effect_pages[0] == 0) {
+            for (scene = 0; scene < 32; ++scene) {
+                if (part_scene_pageid[scene] == page)
+                    type->effect_ids[0] = edpartLookupObjectInScene(type->object_names[0], part_scene[scene]);
+                if (type->effect_ids[0] != -1) {
+                    type->scene_indices[0] = scene;
+                    break;
+                }
+            }
+        } else if (type->effect_pages[0] == 1) {
+            for (scene = 0; scene < 32; ++scene) {
+                if (part_scene_pageid[scene] == 0)
+                    type->effect_ids[0] = edpartLookupObjectInScene(type->object_names[0], part_scene[scene]);
+                if (type->effect_ids[0] != -1) {
+                    type->scene_indices[0] = scene;
                     break;
                 }
             }
         }
-        if (type->effect_ids[i] == -1 && type->object_names[i][0] != 0)
-            type->effect_ids[i] = 9998;
+        if (type->effect_ids[0] == -1 && type->object_names[0][0] != 0)
+            type->effect_ids[0] = 9998;
     }
     type->variant_count = 0;
     for (i = 0; i < 8; ++i) {
