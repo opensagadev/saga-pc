@@ -887,63 +887,68 @@ void __cdecl Text3DEx(char *text, f32 x, f32 y, f32 z, f32 x_scale, f32 y_scale,
 
     count = 0;
     button_font = 0;
-    for (i = 0; count <= 508 && decoded[i] != 0;) {
-        if (decoded[i] == '~') {
-            ++i;
+    i = 0;
+    if (decoded[0] != 0) {
+        do {
             if (decoded[i] == '~') {
-                if (apitext_half_rgb != 0)
-                    colour = ((u32)alpha_byte << 24) | ((u32)(blue >> 1) << 16) | ((u32)(green >> 1) << 8) | (red >> 1);
-                else
-                    colour = ((u32)alpha_byte << 24) | ((u32)blue << 16) | ((u32)green << 8) | red;
-            } else {
-                preset = decoded[i] - '0';
-                if (red == 0 && green == 0 && blue == 0)
-                    colour = (u32)alpha_byte << 24;
-                else if (apitext_half_rgb != 0)
-                    colour = ((u32)alpha_byte << 24) | ((u32)text_preset_b[preset] << 16) |
-                             ((u32)text_preset_g[preset] << 8) | text_preset_r[preset];
-                else
-                    colour = (u8)(2 * text_preset_r[preset]) | ((u32)((2 * text_preset_b[preset]) & 255) << 16) |
-                             ((u32)((2 * text_preset_g[preset]) & 255) << 8) | ((u32)alpha_byte << 24);
-            }
-            ++i;
-            if (count > 0 && colour != current_rgba) {
-                fragment[count] = 0;
-                if (button_font != 0)
-                    x += TextPrintSubstring(fragment, x, y, z, button_scale, button_scale, current_rgba, button_font);
-                else
+                ++i;
+                if (decoded[i] == '~') {
+                    if (apitext_half_rgb != 0)
+                        colour =
+                            ((u32)alpha_byte << 24) | ((u32)(blue >> 1) << 16) | ((u32)(green >> 1) << 8) | (red >> 1);
+                    else
+                        colour = ((u32)alpha_byte << 24) | ((u32)blue << 16) | ((u32)green << 8) | red;
+                } else {
+                    preset = decoded[i] - '0';
+                    if (red == 0 && green == 0 && blue == 0)
+                        colour = (u32)alpha_byte << 24;
+                    else if (apitext_half_rgb != 0)
+                        colour = ((u32)alpha_byte << 24) | ((u32)text_preset_b[preset] << 16) |
+                                 ((u32)text_preset_g[preset] << 8) | text_preset_r[preset];
+                    else
+                        colour = (u8)(2 * text_preset_r[preset]) | ((u32)((2 * text_preset_b[preset]) & 255) << 16) |
+                                 ((u32)((2 * text_preset_g[preset]) & 255) << 8) | ((u32)alpha_byte << 24);
+                }
+                ++i;
+                if (count > 0 && colour != current_rgba) {
+                    fragment[count] = 0;
+                    if (button_font != 0)
+                        x += TextPrintSubstring(fragment, x, y, z, button_scale, button_scale, current_rgba,
+                                                button_font);
+                    else
+                        x += TextPrintSubstring(fragment, x, y, z, x_scale, y_scale, current_rgba, button_font);
+                    count = 0;
+                }
+                current_rgba = colour;
+            } else if (decoded[i] == 0xd4 && decoded[i + 1] >= 0xb1 && decoded[i + 1] <= 0xbf) {
+                if (count > 0 && button_font == 0) {
+                    fragment[count] = 0;
                     x += TextPrintSubstring(fragment, x, y, z, x_scale, y_scale, current_rgba, button_font);
-                count = 0;
-            }
-            current_rgba = colour;
-        } else if (decoded[i] == 0xd4 && decoded[i + 1] >= 0xb1 && decoded[i + 1] <= 0xbf) {
-            if (count > 0 && button_font == 0) {
-                fragment[count] = 0;
-                x += TextPrintSubstring(fragment, x, y, z, x_scale, y_scale, current_rgba, button_font);
-                count = 0;
-            }
-            fragment[count++] = decoded[i++];
-            button_font = 1;
-            while (decoded[i] >= 0x80 && decoded[i] <= 0xbf)
+                    count = 0;
+                }
                 fragment[count++] = decoded[i++];
-        } else {
-            if (count > 0 && button_font != 0) {
-                fragment[count] = 0;
-                x += TextPrintSubstring(fragment, x, y, z, button_scale, button_scale, current_rgba, button_font);
-                count = 0;
-            }
-            fragment[count++] = decoded[i++];
-            button_font = 0;
-            while (decoded[i] >= 0x80 && decoded[i] <= 0xbf)
+                button_font = 1;
+                while (decoded[i] >= 0x80 && decoded[i] <= 0xbf)
+                    fragment[count++] = decoded[i++];
+            } else {
+                if (count > 0 && button_font != 0) {
+                    fragment[count] = 0;
+                    x += TextPrintSubstring(fragment, x, y, z, button_scale, button_scale, current_rgba, button_font);
+                    count = 0;
+                }
                 fragment[count++] = decoded[i++];
+                button_font = 0;
+                while (decoded[i] >= 0x80 && decoded[i] <= 0xbf)
+                    fragment[count++] = decoded[i++];
+            }
+        } while (count <= 508 && decoded[i] != 0);
+        if (count > 0) {
+            fragment[count] = 0;
+            if (button_font != 0)
+                TextPrintSubstring(fragment, x, y, z, button_scale, button_scale, current_rgba, button_font);
+            else
+                TextPrintSubstring(fragment, x, y, z, x_scale, y_scale, current_rgba, button_font);
         }
-    }
-    if (count > 0) {
-        fragment[count] = 0;
-        if (button_font != 0)
-            TextPrintSubstring(fragment, x, y, z, button_scale, button_scale, current_rgba, button_font);
-        else
-            TextPrintSubstring(fragment, x, y, z, x_scale, y_scale, current_rgba, button_font);
     }
     NuQFntPopPrintMode();
 }
