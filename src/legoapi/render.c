@@ -1183,50 +1183,68 @@ void __cdecl UpdateStatusScreen(WORLDINFO *world) {
     const f32 elapsed = FRAMETIME;
     volatile f32 seek_step = (f64)elapsed * 3.0;
     i32 player;
+    i32 select = 0;
+    i32 up = 0;
+    i32 down = 0;
     (void)world;
     CoinTotalScale = SeekLinearF(CoinTotalScale, 1.0f, seek_step);
     StatusGoldBrickPhasePc = -1;
     StatusGoldBrickStagePc = -1;
-    if (GAMEDEMO != 0) {
-        if (GAMEDEMO == 2) {
+    switch (GAMEDEMO) {
+        case 0:
+            break;
+        case 1:
+            if (FadeSys.fade != 0.0f || NewLData != NULL)
+                return;
+            {
+                for (player = 0; player < 2; ++player) {
+                    u32 pressed, directions;
+                    if (select != 0 || up != 0 || down != 0)
+                        break;
+                    if (StatusPacket.player_active[player] == 0)
+                        continue;
+                    pressed = GamePadStorage[player].menu_buttons_pressed;
+                    if ((pressed & GAMEPAD_MENUSELECT) != 0)
+                        select = 1;
+                    else {
+                        directions = GamePadStorage[player].menu_directions;
+                        if ((directions & GAMEPAD_DUP) != 0 || (pressed & GAMEPAD_DUP) != 0)
+                            up = 1;
+                        else if ((directions & GAMEPAD_DDOWN) != 0 || (pressed & GAMEPAD_DDOWN) != 0)
+                            down = 1;
+                    }
+                }
+                if (select != 0) {
+                    GameAudio_PlaySfx(0x30, NULL, 0, 0);
+                    switch (StatusDemoOptionPc) {
+                        case 0:
+                            GAMEDEMO = 2;
+                            NewLData = HUB_LDATA;
+                            new_level_from_menu = 1;
+                            break;
+                        case 1:
+                            SendMessageA(PCInputInstance_candidate, WM_CLOSE, 0, 0);
+                            break;
+                    }
+                } else if (up != 0) {
+                    if (StatusDemoOptionPc > 0) {
+                        --StatusDemoOptionPc;
+                        GameAudio_PlaySfx(0x2f, NULL, 0, 0);
+                    }
+                } else if (down != 0) {
+                    if (StatusDemoOptionPc < 1) {
+                        ++StatusDemoOptionPc;
+                        GameAudio_PlaySfx(0x2f, NULL, 0, 0);
+                    }
+                }
+            }
+            return;
+        case 2:
             if (GameTimer.time_elapsed >= 8.0f)
                 SendMessageA(PCInputInstance_candidate, WM_CLOSE, 0, 0);
             return;
-        }
-        if (GAMEDEMO != 1 || FadeSys.fade != 0.0f || NewLData != NULL)
+        default:
             return;
-        for (player = 0; player < 2; ++player) {
-            u32 pressed, directions;
-            if (StatusPacket.player_active[player] == 0)
-                continue;
-            pressed = GamePadStorage[player].menu_buttons_pressed;
-            if ((pressed & GAMEPAD_MENUSELECT) != 0) {
-                GameAudio_PlaySfx(0x30, NULL, 0, 0);
-                if (StatusDemoOptionPc == 0) {
-                    GAMEDEMO = 2;
-                    NewLData = HUB_LDATA;
-                    new_level_from_menu = 1;
-                } else if (StatusDemoOptionPc == 1)
-                    SendMessageA(PCInputInstance_candidate, WM_CLOSE, 0, 0);
-                return;
-            }
-            directions = GamePadStorage[player].menu_directions;
-            if (((pressed | directions) & GAMEPAD_DUP) != 0) {
-                if (StatusDemoOptionPc > 0) {
-                    --StatusDemoOptionPc;
-                    GameAudio_PlaySfx(0x2f, NULL, 0, 0);
-                }
-                return;
-            }
-            if (((pressed | directions) & GAMEPAD_DDOWN) != 0) {
-                if (StatusDemoOptionPc < 1) {
-                    ++StatusDemoOptionPc;
-                    GameAudio_PlaySfx(0x2f, NULL, 0, 0);
-                }
-                return;
-            }
-        }
-        return;
     }
     if (StatusPacket.status_flags == 0)
         return;
