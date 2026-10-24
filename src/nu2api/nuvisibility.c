@@ -56,44 +56,39 @@ static i32 VisibilityFloorPc(f32 value) {
 
 void __cdecl NuVisiOcclusion(VISIBILITY_RESULT_READER_PC *result) {
     VISIBILITY_OCCLUSION_GRID_PC *grid = (VISIBILITY_OCCLUSION_GRID_PC *)result->occlusion_data;
-    f32 x = global_camera.mtx.m30;
-    f32 z;
     f32 grid_x, grid_z;
     i32 column, row, cell_index;
-    u8 *volatile *cell_slot;
     u8 *cell, *output, *end, *input;
-    if (x < grid->min_x || x > grid->max_x)
+    if (global_camera.mtx.m30 < grid->min_x || global_camera.mtx.m30 > grid->max_x)
         return;
-    z = global_camera.mtx.m32;
-    if (z < grid->min_z || z > grid->max_z)
+    if (global_camera.mtx.m32 < grid->min_z || global_camera.mtx.m32 > grid->max_z)
         return;
-    grid_z = (z - grid->min_z) * grid->scale_z;
+    grid_z = (global_camera.mtx.m32 - grid->min_z) * grid->scale_z;
     row = VisibilityFloorPc(grid_z);
-    grid_x = (x - grid->min_x) * grid->scale_x;
+    grid_x = (global_camera.mtx.m30 - grid->min_x) * grid->scale_x;
     column = VisibilityFloorPc(grid_x);
     cell_index = row * grid->width + column;
-    cell_slot = grid->cells + cell_index;
-    cell = *cell_slot;
+    cell = grid->cells[cell_index];
     result->instance_tree_bits = cell;
     VisibilityUsingOcclusionPc = cell != NULL;
-    if (grid->mode != 1 || cell == NULL)
+    if (grid->mode != 1 || result->instance_tree_bits == NULL)
         return;
     output = VISIBILITY_OCCLUSION_OUTPUT_PC;
     result->instance_tree_bits = output;
     if (cell_index == VisibilityCurrentViewBoxPc)
         return;
     VisibilityCurrentViewBoxPc = cell_index;
+    input = grid->cells[cell_index];
     end = output + grid->output_size;
-    input = *cell_slot;
     while (output < end) {
         u8 command = *input++;
-        u32 length = command >> 2;
+        u8 length = command >> 2;
         u8 kind = command & 3;
-        if (kind > 1) {
+        if (kind <= 1) {
+            memset(output, (u8)-kind, length);
+        } else {
             PCByteCopy_candidate(output, input, length);
             input += length;
-        } else {
-            memset(output, (u8)-kind, length);
         }
         output += length;
     }
@@ -134,9 +129,10 @@ VISIBILITY_RESULT_READER_PC *__cdecl NuVisiEvaluate(NUGSCN *scene, void *context
     result = &view->result;
     result->context = NULL;
     result->instance_tree_bits = NULL;
-    result->instance_count = result->source_scene != NULL
-                                 ? ((VISIBILITY_SCENE_READER_PC *)result->source_scene)->instance_count
-                                 : view->instance_count;
+    if (result->source_scene != NULL)
+        result->instance_count = ((VISIBILITY_SCENE_READER_PC *)result->source_scene)->instance_count;
+    else
+        result->instance_count = view->instance_count;
     result->flags &= ~0x15u;
     VisibilityLoadedOcclusionPc = 1;
     if (VisibilityOcclusionEnabledPc != 0 && result->occlusion_data != NULL)
@@ -220,11 +216,26 @@ __declspec(noinline) void __cdecl VisibilityZeroMatrixPc(NUMTX *matrix) {
     *matrix = VisibilityZeroMatrixTemplatePc;
 }
 
-static void VisibilityAbsoluteFourPc(NUVEC4 *destination, NUVEC4 *source) {
-    destination->x = (f32)fabs(source->x);
-    destination->y = (f32)fabs(source->y);
-    destination->z = (f32)fabs(source->z);
-    destination->w = (f32)fabs(source->w);
+/* Preserve the native f32 load/store before clearing the sign, including NaNs. */
+#define VISIBILITY_ABSOLUTE_COMPONENT_PC(destination, source)                                                          \
+    do {                                                                                                               \
+        union {                                                                                                        \
+            f32 value;                                                                                                 \
+            u32 bits;                                                                                                  \
+        } storage;                                                                                                     \
+        u32 bits;                                                                                                      \
+        storage.value = (source);                                                                                      \
+        bits = storage.bits;                                                                                           \
+        bits &= 0x7fffffff;                                                                                            \
+        storage.bits = bits;                                                                                           \
+        (destination) = storage.value;                                                                                 \
+    } while (0)
+
+static __declspec(noinline) void VisibilityAbsoluteFourPc(NUVEC4 *destination, NUVEC4 *source) {
+    VISIBILITY_ABSOLUTE_COMPONENT_PC(destination->x, source->x);
+    VISIBILITY_ABSOLUTE_COMPONENT_PC(destination->y, source->y);
+    VISIBILITY_ABSOLUTE_COMPONENT_PC(destination->z, source->z);
+    VISIBILITY_ABSOLUTE_COMPONENT_PC(destination->w, source->w);
 }
 
 static void VisibilityTransformFourPc(NUMTX *matrix, NUVEC *point, NUVEC4 *out) {
@@ -236,57 +247,63 @@ static void VisibilityTransformFourPc(NUMTX *matrix, NUVEC *point, NUVEC4 *out) 
 
 static void VisibilityTreeInitialisePc(void) {
     f32 near_distance = global_camera.near_clip;
-    f32 near_squared, horizontal, vertical, squared, inverse_horizontal, inverse_vertical;
+    f32 near_squared;
     VisibilityTreeInitialisedPc = 1;
     near_squared = near_distance * near_distance;
-    horizontal = zx * near_distance;
-    vertical = near_distance * zy;
-    squared = horizontal * horizontal + near_squared;
-    inverse_horizontal = 1.0f / NuFsqrt(squared);
-    squared = vertical * vertical + near_squared;
-    inverse_vertical = 1.0f / NuFsqrt(squared);
-    VisibilityZeroMatrixPc(&VisibilityPrimaryPlaneMatrixPc);
-    VisibilityPrimaryPlaneMatrixPc.m00 = -near_distance * inverse_horizontal;
-    VisibilityPrimaryPlaneMatrixPc.m02 = -horizontal * inverse_horizontal;
-    VisibilityPrimaryPlaneMatrixPc.m01 = -VisibilityPrimaryPlaneMatrixPc.m00;
-    VisibilityPrimaryPlaneMatrixPc.m03 = VisibilityPrimaryPlaneMatrixPc.m02;
-    VisibilityPrimaryPlaneMatrixPc.m20 = near_distance * inverse_vertical;
-    VisibilityPrimaryPlaneMatrixPc.m22 = -vertical * inverse_vertical;
-    VisibilityPrimaryPlaneMatrixPc.m21 = -VisibilityPrimaryPlaneMatrixPc.m20;
-    VisibilityPrimaryPlaneMatrixPc.m23 = VisibilityPrimaryPlaneMatrixPc.m22;
-    horizontal = VISIBILITY_ALTERNATE_WIDTH_PC * near_distance;
-    vertical = near_distance * VisibilityAlternateHeightPc;
-    squared = horizontal * horizontal + near_squared;
-    inverse_horizontal = 1.0f / NuFsqrt(squared);
-    squared = vertical * vertical + near_squared;
-    inverse_vertical = 1.0f / NuFsqrt(squared);
-    VisibilityZeroMatrixPc(&VisibilityAlternatePlaneMatrixPc);
-    VisibilityAlternatePlaneMatrixPc.m00 = -near_distance * inverse_horizontal;
-    VisibilityAlternatePlaneMatrixPc.m02 = -horizontal * inverse_horizontal;
-    VisibilityAlternatePlaneMatrixPc.m01 = -VisibilityAlternatePlaneMatrixPc.m00;
-    VisibilityAlternatePlaneMatrixPc.m03 = VisibilityAlternatePlaneMatrixPc.m02;
-    VisibilityAlternatePlaneMatrixPc.m20 = near_distance * inverse_vertical;
-    VisibilityAlternatePlaneMatrixPc.m22 = -vertical * inverse_vertical;
-    VisibilityAlternatePlaneMatrixPc.m21 = -VisibilityAlternatePlaneMatrixPc.m20;
-    VisibilityAlternatePlaneMatrixPc.m23 = VisibilityAlternatePlaneMatrixPc.m22;
+    {
+        f32 horizontal, vertical, squared, inverse_horizontal, inverse_vertical;
+        horizontal = zx * near_distance;
+        vertical = near_distance * zy;
+        squared = horizontal * horizontal + near_squared;
+        inverse_horizontal = 1.0f / NuFsqrt(squared);
+        squared = vertical * vertical + near_squared;
+        inverse_vertical = 1.0f / NuFsqrt(squared);
+        VisibilityZeroMatrixPc(&VisibilityPrimaryPlaneMatrixPc);
+        VisibilityPrimaryPlaneMatrixPc.m00 = -near_distance * inverse_horizontal;
+        VisibilityPrimaryPlaneMatrixPc.m20 = -horizontal * inverse_horizontal;
+        VisibilityPrimaryPlaneMatrixPc.m01 = -VisibilityPrimaryPlaneMatrixPc.m00;
+        VisibilityPrimaryPlaneMatrixPc.m21 = VisibilityPrimaryPlaneMatrixPc.m20;
+        VisibilityPrimaryPlaneMatrixPc.m12 = near_distance * inverse_vertical;
+        VisibilityPrimaryPlaneMatrixPc.m22 = -vertical * inverse_vertical;
+        VisibilityPrimaryPlaneMatrixPc.m13 = -VisibilityPrimaryPlaneMatrixPc.m12;
+        VisibilityPrimaryPlaneMatrixPc.m23 = VisibilityPrimaryPlaneMatrixPc.m22;
+    }
+    {
+        f32 horizontal, vertical, squared, inverse_horizontal, inverse_vertical;
+        horizontal = VISIBILITY_ALTERNATE_WIDTH_PC * near_distance;
+        vertical = near_distance * VisibilityAlternateHeightPc;
+        squared = horizontal * horizontal + near_squared;
+        inverse_horizontal = 1.0f / NuFsqrt(squared);
+        squared = vertical * vertical + near_squared;
+        inverse_vertical = 1.0f / NuFsqrt(squared);
+        VisibilityZeroMatrixPc(&VisibilityAlternatePlaneMatrixPc);
+        VisibilityAlternatePlaneMatrixPc.m00 = -near_distance * inverse_horizontal;
+        VisibilityAlternatePlaneMatrixPc.m20 = -horizontal * inverse_horizontal;
+        VisibilityAlternatePlaneMatrixPc.m01 = -VisibilityAlternatePlaneMatrixPc.m00;
+        VisibilityAlternatePlaneMatrixPc.m21 = VisibilityAlternatePlaneMatrixPc.m20;
+        VisibilityAlternatePlaneMatrixPc.m12 = near_distance * inverse_vertical;
+        VisibilityAlternatePlaneMatrixPc.m22 = -vertical * inverse_vertical;
+        VisibilityAlternatePlaneMatrixPc.m13 = -VisibilityAlternatePlaneMatrixPc.m12;
+        VisibilityAlternatePlaneMatrixPc.m23 = VisibilityAlternatePlaneMatrixPc.m22;
+    }
 }
 
 static void VisibilityTreePreparePc(void) {
     f32 distance;
     NuMtxMulH(&VisibilityPrimaryWorldMatrixPc, &vmtx, &VisibilityPrimaryPlaneMatrixPc);
     NuMtxMulH(&VisibilityAlternateWorldMatrixPc, &vmtx, &VisibilityAlternatePlaneMatrixPc);
-    VisibilityDepthPlanePc.a = global_camera.mtx.m20;
-    VisibilityDepthPlanePc.b = global_camera.mtx.m21;
-    VisibilityDepthPlanePc.c = global_camera.mtx.m22;
+    memcpy(&VisibilityDepthPlanePc, &global_camera.mtx.m20, sizeof(NUVEC));
     distance = global_camera.mtx.m21 * global_camera.mtx.m31 + global_camera.mtx.m20 * global_camera.mtx.m30 +
                global_camera.mtx.m22 * global_camera.mtx.m32;
     VisibilityDepthPlanePc.d = -distance;
-    VisibilityAbsoluteDepthPlanePc.a = (f32)fabs(VisibilityDepthPlanePc.a);
-    VisibilityAbsoluteDepthPlanePc.b = (f32)fabs(VisibilityDepthPlanePc.b);
-    VisibilityAbsoluteDepthPlanePc.c = (f32)fabs(VisibilityDepthPlanePc.c);
+    VISIBILITY_ABSOLUTE_COMPONENT_PC(VisibilityAbsoluteDepthPlanePc.a, VisibilityDepthPlanePc.a);
+    VISIBILITY_ABSOLUTE_COMPONENT_PC(VisibilityAbsoluteDepthPlanePc.b, VisibilityDepthPlanePc.b);
+    VISIBILITY_ABSOLUTE_COMPONENT_PC(VisibilityAbsoluteDepthPlanePc.c, VisibilityDepthPlanePc.c);
     VisibilityAbsoluteDepthPlanePc.d = 0.0f;
-    VisibilityAbsoluteFourPc((NUVEC4 *)&VisibilityPrimaryAbsoluteMatrixPc.m00,
-                             (NUVEC4 *)&VisibilityPrimaryWorldMatrixPc.m00);
+    VISIBILITY_ABSOLUTE_COMPONENT_PC(VisibilityPrimaryAbsoluteMatrixPc.m00, VisibilityPrimaryWorldMatrixPc.m00);
+    VISIBILITY_ABSOLUTE_COMPONENT_PC(VisibilityPrimaryAbsoluteMatrixPc.m01, VisibilityPrimaryWorldMatrixPc.m01);
+    VISIBILITY_ABSOLUTE_COMPONENT_PC(VisibilityPrimaryAbsoluteMatrixPc.m02, VisibilityPrimaryWorldMatrixPc.m02);
+    VISIBILITY_ABSOLUTE_COMPONENT_PC(VisibilityPrimaryAbsoluteMatrixPc.m03, VisibilityPrimaryWorldMatrixPc.m03);
     VisibilityAbsoluteFourPc((NUVEC4 *)&VisibilityPrimaryAbsoluteMatrixPc.m10,
                              (NUVEC4 *)&VisibilityPrimaryWorldMatrixPc.m10);
     VisibilityAbsoluteFourPc((NUVEC4 *)&VisibilityPrimaryAbsoluteMatrixPc.m20,
@@ -295,8 +312,10 @@ static void VisibilityTreePreparePc(void) {
     VisibilityPrimaryAbsoluteMatrixPc.m31 = 0.0f;
     VisibilityPrimaryAbsoluteMatrixPc.m32 = 0.0f;
     VisibilityPrimaryAbsoluteMatrixPc.m33 = 0.0f;
-    VisibilityAbsoluteFourPc((NUVEC4 *)&VisibilityAlternateAbsoluteMatrixPc.m00,
-                             (NUVEC4 *)&VisibilityAlternateWorldMatrixPc.m00);
+    VISIBILITY_ABSOLUTE_COMPONENT_PC(VisibilityAlternateAbsoluteMatrixPc.m00, VisibilityAlternateWorldMatrixPc.m00);
+    VISIBILITY_ABSOLUTE_COMPONENT_PC(VisibilityAlternateAbsoluteMatrixPc.m01, VisibilityAlternateWorldMatrixPc.m01);
+    VISIBILITY_ABSOLUTE_COMPONENT_PC(VisibilityAlternateAbsoluteMatrixPc.m02, VisibilityAlternateWorldMatrixPc.m02);
+    VISIBILITY_ABSOLUTE_COMPONENT_PC(VisibilityAlternateAbsoluteMatrixPc.m03, VisibilityAlternateWorldMatrixPc.m03);
     VisibilityAbsoluteFourPc((NUVEC4 *)&VisibilityAlternateAbsoluteMatrixPc.m10,
                              (NUVEC4 *)&VisibilityAlternateWorldMatrixPc.m10);
     VisibilityAbsoluteFourPc((NUVEC4 *)&VisibilityAlternateAbsoluteMatrixPc.m20,
@@ -307,10 +326,12 @@ static void VisibilityTreePreparePc(void) {
     VisibilityAlternateAbsoluteMatrixPc.m33 = 0.0f;
 }
 
+#undef VISIBILITY_ABSOLUTE_COMPONENT_PC
+
 /* Held original defect: native three-component extent writer leaves the fourth
  * local component untouched before the four-column clipping comparisons.
  * No zero initialization or substitute four-component provider is invented. */
-static i32 VisibilityTreeClipNodePc(NUVEC *center, NUVEC *extent, f32 far_distance, i32 instance) {
+i32 VisibilityTreeClipNodePc(NUVEC *center, NUVEC *extent, f32 far_distance, i32 instance) {
     NUVEC4 projected;
     VISIBILITY_EXTENT_SCRATCH_PC projected_extent;
     f32 radius, distance, far_side, near_side;
