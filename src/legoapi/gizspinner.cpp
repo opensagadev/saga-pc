@@ -61,54 +61,67 @@ extern "C" i32 __cdecl GizSpinner_Push(PUSH_SPINNER_PC *spinner, i32 context) {
 
     {
         i32 at_start = GameAnimSet_IsAnimationReset(spinner->anim_set);
-        bool at_end = spinner->anim_set->state == 2;
+        i32 at_end = spinner->anim_set->state == 2;
         u32 flags = spinner->state_flags;
         i32 clear_context = 0;
+        u32 end_flag = flags & 0x400;
 
-        if (context != 0x1e) {
-            if ((flags & 4) != 0) {
-                if (!at_end || spinner->anim_set->object_count == 0) {
-                    goto rotate;
-                }
-                goto stop_at_endpoint;
-            }
-            if (at_start != 0) {
-                if (spinner->anim_set->object_count == 0) {
-                    goto rotate;
-                }
-                goto stop_at_endpoint;
-            }
-            if ((flags & 0x400) == 0 || !at_end) {
-                goto rotate;
-            }
-            clear_context = 1;
-            goto stop_at_endpoint;
-        } else {
+        if (context == 0x1e) {
             if ((flags & 4) != 0) {
                 if (at_start != 0) {
-                    if (spinner->anim_set->object_count == 0) {
-                        goto rotate;
+                    if (spinner->anim_set->object_count != 0) {
+                        goto stop_forward;
                     }
-                    goto stop_at_endpoint;
+                } else if (at_end && end_flag != 0) {
+                    clear_context = 1;
+                    goto stop_forward;
                 }
-                if ((flags & 0x400) == 0 || !at_end) {
-                    goto rotate;
-                }
-                clear_context = 1;
-                goto stop_at_endpoint;
+            } else if (at_end && spinner->anim_set->object_count != 0) {
+                goto stop_forward;
             }
-            if (!at_end || spinner->anim_set->object_count == 0) {
-                goto rotate;
+            if ((flags & 2) != 0) {
+                spinner->rotation += rotation_step;
+            } else {
+                spinner->rotation -= rotation_step;
             }
-            goto stop_at_endpoint;
-        }
+            goto rotated;
 
-    stop_at_endpoint:
-        flags &= ~0x40u;
-        if (context == 0x1e) {
-            flags |= (flags & 2) != 0 ? 0x100u : 0x200u;
+        stop_forward:
+            flags &= ~0x40u;
+            spinner->state_flags = flags;
+            if ((flags & 2) != 0) {
+                flags |= 0x100u;
+            } else {
+                flags |= 0x200u;
+            }
         } else {
-            flags |= (flags & 2) != 0 ? 0x200u : 0x100u;
+            if ((flags & 4) != 0) {
+                if (at_end && spinner->anim_set->object_count != 0) {
+                    goto stop_reverse;
+                }
+            } else if (at_start != 0) {
+                if (spinner->anim_set->object_count != 0) {
+                    goto stop_reverse;
+                }
+            } else if (at_end && end_flag != 0) {
+                clear_context = 1;
+                goto stop_reverse;
+            }
+            if ((flags & 2) != 0) {
+                spinner->rotation -= rotation_step;
+            } else {
+                spinner->rotation += rotation_step;
+            }
+            goto rotated;
+
+        stop_reverse:
+            flags &= ~0x40u;
+            spinner->state_flags = flags;
+            if ((flags & 2) != 0) {
+                flags |= 0x200u;
+            } else {
+                flags |= 0x100u;
+            }
         }
         spinner->state_flags = flags;
         if (clear_context != 0) {
@@ -116,18 +129,7 @@ extern "C" i32 __cdecl GizSpinner_Push(PUSH_SPINNER_PC *spinner, i32 context) {
         }
         goto finalize;
 
-    rotate:
-        if (context == 0x1e) {
-            if ((flags & 2) != 0) {
-                spinner->rotation += rotation_step;
-            } else {
-                spinner->rotation -= rotation_step;
-            }
-        } else if ((flags & 2) != 0) {
-            spinner->rotation -= rotation_step;
-        } else {
-            spinner->rotation += rotation_step;
-        }
+    rotated:
         spinner->state_flags = flags | 0x40;
         result = 1;
     }
