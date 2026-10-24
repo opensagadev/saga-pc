@@ -3066,7 +3066,7 @@ static void HubDrawFreePlaySelectPc(void) {
                 if (model != -1 && progress > 0.0f) {
                     char name[16];
                     SmartTextEx(GameObj_GetNamePc(model, NULL, name), base_x, HubFreePlayNameYPc, 1.0f, .45f, .45f,
-                                .45f, 1, 255, 191, 0, 1.25f, 2, NULL, 0, (i32)(progress * 128.0 * opacity));
+                                .45f, 1, 255, 191, 0, 0.75f, 2, NULL, 0, (i32)(progress * 128.0 * opacity));
                 }
             }
         }
