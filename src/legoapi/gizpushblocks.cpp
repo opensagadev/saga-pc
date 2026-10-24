@@ -325,13 +325,34 @@ extern "C" void __cdecl UpdatePushBlocks(void *world_ptr, void *, f32) {
         PlatOnOff(p->platform_id, 0);
         bool platforms_off = p->supporting_block != NULL || p->previous_supporting_block != NULL;
         f32 heights[4];
-        for (i32 j = 0; j < 4; ++j) {
-            if (platforms_off)
-                NewTerrPlatformsOff();
-            heights[j] = GameShadow(NULL, &corners[j], 0.1f, -1);
-            p->terrain_info[j] = static_cast<i8>(ShadowInfo());
-            p->extra_terrain_info.bytes[j] = static_cast<i8>(EShadowInfo());
+        if (!platforms_off) {
+            heights[0] = GameShadow(NULL, &corners[0], 0.1f, -1);
+            p->terrain_info[0] = static_cast<i8>(ShadowInfo());
+            p->extra_terrain_info.bytes[0] = static_cast<i8>(EShadowInfo());
+            heights[1] = GameShadow(NULL, &corners[1], 0.1f, -1);
+            p->terrain_info[1] = static_cast<i8>(ShadowInfo());
+            p->extra_terrain_info.bytes[1] = static_cast<i8>(EShadowInfo());
+            heights[2] = GameShadow(NULL, &corners[2], 0.1f, -1);
+            p->terrain_info[2] = static_cast<i8>(ShadowInfo());
+            p->extra_terrain_info.bytes[2] = static_cast<i8>(EShadowInfo());
+        } else {
+            NewTerrPlatformsOff();
+            heights[0] = GameShadow(NULL, &corners[0], 0.1f, -1);
+            p->terrain_info[0] = static_cast<i8>(ShadowInfo());
+            p->extra_terrain_info.bytes[0] = static_cast<i8>(EShadowInfo());
+            NewTerrPlatformsOff();
+            heights[1] = GameShadow(NULL, &corners[1], 0.1f, -1);
+            p->terrain_info[1] = static_cast<i8>(ShadowInfo());
+            p->extra_terrain_info.bytes[1] = static_cast<i8>(EShadowInfo());
+            NewTerrPlatformsOff();
+            heights[2] = GameShadow(NULL, &corners[2], 0.1f, -1);
+            p->terrain_info[2] = static_cast<i8>(ShadowInfo());
+            p->extra_terrain_info.bytes[2] = static_cast<i8>(EShadowInfo());
+            NewTerrPlatformsOff();
         }
+        heights[3] = GameShadow(NULL, &corners[3], 0.1f, -1);
+        p->terrain_info[3] = static_cast<i8>(ShadowInfo());
+        p->extra_terrain_info.bytes[3] = static_cast<i8>(EShadowInfo());
         PlatOnOff(p->platform_id, 1);
         BlockInBlock(reinterpret_cast<WORLDINFO *>(world), reinterpret_cast<PUSH_BLOCK_PC *>(p), index,
                      &p->supporting_block);
