@@ -912,6 +912,8 @@ static void GizFlowConfigActionPc(NUFPAR_PC *parser) {
     VARIPTR *buffer;
     i32 length;
     char *parameter;
+    char *parameter_text;
+    char *action_name;
 
     if (load_flowbox == NULL)
         return;
@@ -920,15 +922,20 @@ static void GizFlowConfigActionPc(NUFPAR_PC *parser) {
 
     while (NuFParGetLine(parser)) {
         NuFParGetWord(parser);
-        if (NuStrICmp(parser->word_buffer, "}") == 0)
+        if (NuStrICmp(parser->word_buffer_ptr, "}") == 0)
             break;
         definition = gizactiondefs;
+        action_name = parser->word_buffer_ptr;
         if (definition == NULL)
             continue;
-        while (definition->name != NULL && NuStrICmp(parser->word_buffer, definition->name) != 0)
+        while (definition->name != NULL) {
+            if (NuStrICmp(action_name, definition->name) == 0)
+                goto action_found;
             ++definition;
-        if (definition->name == NULL)
-            continue;
+        }
+        continue;
+
+    action_found:
         action = (FLOWBOXACTION_PC *)(GizmoBufferAlloc(load_buff, load_endbuff, sizeof(FLOWBOXACTION_PC)));
         if (action == NULL)
             continue;
@@ -943,28 +950,29 @@ static void GizFlowConfigActionPc(NUFPAR_PC *parser) {
         action->definition = definition;
         count = 0;
         while (NuFParGetWord(parser)) {
-            while (NuStrCmp(parser->word_buffer, "\\") == 0) {
+            if (NuStrCmp(parser->word_buffer_ptr, "\\") == 0) {
                 NuFParGetLine(parser);
-                if (!NuFParGetWord(parser))
-                    goto parameters_done;
+            } else {
+                NuStrCpy(parameters[count++], parser->word_buffer_ptr);
             }
-            NuStrCpy(parameters[count++], parser->word_buffer);
         }
-    parameters_done:
         if (count != 0) {
             action->parameters = (char **)(GizmoBufferAlloc(load_buff, load_endbuff, count * sizeof(char *)));
             if (action->parameters != NULL) {
                 action->parameter_count = count;
-                for (i = 0; i < count; ++i) {
-                    destination = &action->parameters[i];
+                parameter_text = parameters[0];
+                for (i = 0; i < count; ++i, parameter_text += sizeof(parameters[0])) {
                     end = load_endbuff;
                     buffer = load_buff;
-                    length = NuStrLen(parameters[i]);
                     parameter = NULL;
-                    if (length != 0) {
-                        parameter = (char *)(GizmoBufferAlloc(buffer, end, length + 1));
-                        NuStrCpy(parameter, parameters[i]);
+                    if (parameter_text != NULL) {
+                        length = NuStrLen(parameter_text);
+                        if (length != 0) {
+                            parameter = (char *)(GizmoBufferAlloc(buffer, end, length + 1));
+                            NuStrCpy(parameter, parameter_text);
+                        }
                     }
+                    destination = &action->parameters[i];
                     *destination = parameter;
                 }
             }
