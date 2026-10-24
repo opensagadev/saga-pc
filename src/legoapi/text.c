@@ -787,7 +787,8 @@ void __cdecl Text3DEx(char *text, f32 x, f32 y, f32 z, f32 x_scale, f32 y_scale,
     i32 button_count, normal_count, count, button_font, preset, i;
     u32 colour;
 
-    text3d_width = text3d_height = 0.0f;
+    text3d_width = 0.0f;
+    text3d_height = 0.0f;
     if (TEXT3D_FONT() == NULL || text == NULL || text[0] == '\0' || MenuStopDraw != 0)
         return;
     x_scale = TextScaleX_candidate * x_scale;
