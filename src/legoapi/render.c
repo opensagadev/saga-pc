@@ -48,6 +48,73 @@ void __cdecl DrawStatusText(char *text, u16 angle, f32 x, f32 y, f32 scale, u32 
     NuQFntSetCoordinateSystem(3);
 }
 
+void __cdecl DrawStatusTextFraction(i32 current, i32 total, f32 x, f32 y, u16 angle, f32 scale, u32 colour,
+                                    f32 animation, f32 animation_duration) {
+    char text[16];
+    u16 encoded[64];
+    NUMTX matrix;
+    NUVEC origin = {0.0f, 0.0f, 800.0f};
+    NUVEC position = {(f32)((f64)x * 400.0), (f32)((f64)y * 250.0), 0.0f};
+    f32 full_width, height;
+    NuQFntSetJustifiedTolerances(1.2f, 1.2f);
+    NuMtxSetIdentity(&matrix);
+    NuMtxSetRotationX(&matrix, 0);
+    NuMtxRotateY(&matrix, 0);
+    NuMtxRotateZ(&matrix, angle);
+    NuMtxTranslate(&matrix, &origin);
+    NuMtxTranslate(&matrix, &position);
+    NuMtxMul(&matrix, &matrix, NuCameraGetMtx());
+    NuQFntSet(QFont3DZ);
+    NuQFntSetMtx(QFont3DZ, &matrix);
+    NuQFntPushPrintMode(4);
+    NuQFntSetCoordinateSystem(4);
+    NuQFntSetColour(QFont3DZ, colour);
+    NuQFntSetScale(QFont3DZ, scale, scale);
+    sprintf(text, "%i/%i", current, total);
+    Text3DStringEncode(text, encoded);
+    full_width = NuQFntPrintLenW(QFont3DZ, encoded);
+    height = NuQFntHeight(QFont3DZ);
+    NuQFntMove(QFont3DZ, (f32)(-full_width * 0.5), (f32)(-height * 0.5), 0.0f);
+    if (animation > 0.0f) {
+        i32 wave_angle = (i32)(((f64)animation / (f64)animation_duration) * 32768.0 + 16384.0);
+        f64 blend = 1.0 - ((f64)NuTrigTable[(wave_angle >> 1) & 0x7fff] + 1.0) * 0.5;
+        f64 wave = 1.0 - blend;
+        f64 half_wave = wave * 0.5;
+        f32 large_scale = (f32)(((f64)scale + 0.5) - half_wave);
+        f32 small_scale = (f32)(((f64)scale - 0.5) + half_wave);
+        f64 full_width_snapshot, half_full_width, current_center;
+        f32 suffix_x, current_width, large_x, small_x;
+        sprintf(text, "/%i", total);
+        Text3DStringEncode(text, encoded);
+        full_width_snapshot = (f64)full_width;
+        half_full_width = full_width_snapshot * 0.5;
+        suffix_x = (f32)((full_width_snapshot - (f64)NuQFntPrintLenW(QFont3DZ, encoded)) - half_full_width);
+        NuQFntMove(QFont3DZ, suffix_x, (f32)(-NuQFntHeight(QFont3DZ) * 0.5), 0.0f);
+        NuQFntPrintW(QFont3DZ, encoded);
+        sprintf(text, "%i", current);
+        Text3DStringEncode(text, encoded);
+        current_width = NuQFntPrintLenW(QFont3DZ, encoded);
+        NuQFntSetScale(QFont3DZ, large_scale, large_scale);
+        current_center = (f64)current_width * 0.5 - half_full_width;
+        large_x = (f32)(current_center - NuQFntPrintLenW(QFont3DZ, encoded) * 0.5);
+        NuQFntMove(QFont3DZ, large_x, (f32)(-NuQFntHeight(QFont3DZ) * 0.5), 0.0f);
+        NuQFntPrintW(QFont3DZ, encoded);
+        NuQFntSetScale(QFont3DZ, small_scale, small_scale);
+        small_x = (f32)(current_center - NuQFntPrintLenW(QFont3DZ, encoded) * 0.5);
+        NuQFntMove(QFont3DZ, small_x, (f32)(-NuQFntHeight(QFont3DZ) * 0.5), 0.0f);
+        NuQFntPrintW(QFont3DZ, encoded);
+    } else {
+        sprintf(text, "%i", current);
+        Text3DStringEncode(text, encoded);
+        NuQFntPrintW(QFont3DZ, encoded);
+        sprintf(text, "/%i", total);
+        Text3DStringEncode(text, encoded);
+        NuQFntPrintW(QFont3DZ, encoded);
+    }
+    NuQFntPopPrintMode();
+    NuQFntSetCoordinateSystem(3);
+}
+
 STATUS_STAGE_s *FindStatusStage(i32 type) {
     i32 index;
     for (index = 0; StatusStages[index].type != -1; ++index) {
