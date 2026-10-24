@@ -3042,7 +3042,7 @@ extern i32 numspherecolldata, numtoruscolldata;
 extern NUVEC debris_collide_pt;
 typedef struct debris_material_flags_pc_s {
     u32 alpha_mode : 4, filter_mode : 2, unknown_0_64_128 : 2, unknown_1_1_2 : 2, unknown_1_4_8 : 2, cull_mode : 2,
-        z_mode : 2, unknown_2_1_2 : 2, unknown_2_4 : 1, unknown_19 : 1, alpha_test : 2, unknown_22_31 : 10;
+        z_mode : 2, unknown_2_1_2 : 2, unknown_2_4 : 1, unknown_19 : 1, alpha_test : 3, unknown_23_31 : 9;
 } DEBRIS_MATERIAL_FLAGS_PC;
 typedef struct debris_material_secondary_pc_s {
     u32 alpha_fail : 2, disable_depth_write : 1, unknown_03_31 : 29;
@@ -3102,11 +3102,11 @@ NUMTL *__cdecl CreateCopyMat(NUMTL *source, i32 enable_uv_mode, i32 alpha_mode, 
     material->diffuse.x = 1.0f;
     material->diffuse.y = 1.0f;
     material->diffuse.z = 1.0f;
+    material->opacity = DebrisGlassMaterialOpacity;
     material->attribs.cull_mode = 2;
     material->attribs.z_mode = (u32)depth_mode & 3;
     material->attribs.filter_mode = (u32)filter_mode & 3;
     material->attribs.alpha_mode = (u32)alpha_mode & 15;
-    material->opacity = DebrisGlassMaterialOpacity;
     if (enable_uv_mode != 0)
         material->secondary.disable_depth_write = 1;
     material->attribs.unknown_1_1_2 = 1;
@@ -3119,10 +3119,9 @@ NUMTL *__cdecl CreateCopyMat(NUMTL *source, i32 enable_uv_mode, i32 alpha_mode, 
 }
 void __cdecl DebrisSetup2(VARIPTR *buffer, VARIPTR buffer_end, VARIPTR *trash_buffer, VARIPTR trash_end,
                           char *texture_name, i32 chunk_count, i32 glass_chunk_count, i32 key_count, i32 effect_count) {
-    i32 total_chunks, i;
+    i32 i;
     i16 texture_id;
-    DEBRIS_MATERIAL_PC *glass;
-    DEBRIS_INFO_PC **entry;
+    f32 opacity;
     if (debris_trash_space == 0) {
         debrischunks = chunk_count;
         debrischunksglass = glass_chunk_count;
@@ -3132,18 +3131,17 @@ void __cdecl DebrisSetup2(VARIPTR *buffer, VARIPTR buffer_end, VARIPTR *trash_bu
     debinf_count = effect_count;
     DebrisArenaInitializedPc = 1;
     NuApiSetEndFrameCallbackPc(DebrisProcessTimeSlip);
-    total_chunks = debrischunks + debrischunksglass;
     buffer->addr = (buffer->addr + 15) & ~15u;
     debris_chunk_controls = (DEBRIS_CHUNK_CONTROL_PC *)buffer->addr;
-    buffer->addr += total_chunks * 2 * sizeof(DEBRIS_CHUNK_CONTROL_PC);
+    buffer->addr += (debrischunks + debrischunksglass) * 2 * sizeof(DEBRIS_CHUNK_CONTROL_PC);
     freechunkcontrols = (DEBRIS_CHUNK_CONTROL_PC **)buffer->addr;
-    buffer->addr += total_chunks * 2 * sizeof(DEBRIS_CHUNK_CONTROL_PC *);
+    buffer->addr += (debrischunks + debrischunksglass) * 2 * sizeof(DEBRIS_CHUNK_CONTROL_PC *);
     freedebchunks = (DEBRIS_PARTICLE_CHUNK_PC **)buffer->addr;
     buffer->addr += debrischunks * sizeof(DEBRIS_PARTICLE_CHUNK_PC *);
     freedebchunksglass = (DEBRIS_PARTICLE_CHUNK_PC **)buffer->addr;
     buffer->addr += debrischunksglass * sizeof(DEBRIS_PARTICLE_CHUNK_PC *);
     ParticleChunkToRender = (DEBRIS_RENDER_CHUNK_PC *)buffer->addr;
-    buffer->addr += total_chunks * sizeof(DEBRIS_RENDER_CHUNK_PC);
+    buffer->addr += (debrischunks + debrischunksglass) * sizeof(DEBRIS_RENDER_CHUNK_PC);
     buffer->addr = (buffer->addr + 15) & ~15u;
     debkeydata = (DEBRISKEY_PC *)buffer->addr;
     buffer->addr += maxdebkeys * sizeof(DEBRISKEY_PC);
@@ -3188,44 +3186,58 @@ void __cdecl DebrisSetup2(VARIPTR *buffer, VARIPTR buffer_end, VARIPTR *trash_bu
     DebMat[4] = CreateCopyMat(DebMat[0], 0, 1, 1, 1);
     DebMat[5] = CreateCopyMat(DebMat[0], 0, 2, 1, 1);
     DebMat[6] = CreateCopyMat(DebMat[0], 0, 0, 0, 1);
-    for (i = 0; i <= 6; ++i) {
-        ((DEBRIS_MATERIAL_PC *)DebMat[i])->vertex_flags |= 0x100000;
-        DebMat[i]->texture_id = texture_id;
-    }
+    ((DEBRIS_MATERIAL_PC *)DebMat[0])->vertex_flags |= 0x100000;
+    ((DEBRIS_MATERIAL_PC *)DebMat[1])->vertex_flags |= 0x100000;
+    ((DEBRIS_MATERIAL_PC *)DebMat[2])->vertex_flags |= 0x100000;
+    ((DEBRIS_MATERIAL_PC *)DebMat[3])->vertex_flags |= 0x100000;
+    ((DEBRIS_MATERIAL_PC *)DebMat[4])->vertex_flags |= 0x100000;
+    ((DEBRIS_MATERIAL_PC *)DebMat[5])->vertex_flags |= 0x100000;
+    ((DEBRIS_MATERIAL_PC *)DebMat[6])->vertex_flags |= 0x100000;
+    DebMat[6]->texture_id = texture_id;
+    DebMat[5]->texture_id = texture_id;
+    DebMat[4]->texture_id = texture_id;
+    DebMat[3]->texture_id = texture_id;
+    DebMat[2]->texture_id = texture_id;
+    DebMat[1]->texture_id = texture_id;
+    DebMat[0]->texture_id = texture_id;
     DebMat[7] = NuMtlCreateEx3D(1, 2);
-    glass = (DEBRIS_MATERIAL_PC *)DebMat[7];
-    glass->diffuse.x = glass->diffuse.y = glass->diffuse.z = 1.0f;
-    glass->opacity = DebrisGlassMaterialOpacity;
-    glass->attribs.cull_mode = 2;
-    glass->attribs.z_mode = 1;
-    glass->attribs.filter_mode = 0;
-    glass->attribs.unknown_2_1_2 = 2;
-    glass->attribs.unknown_2_4 = 1;
-    glass->attribs.unknown_1_1_2 = 1;
-    glass->attribs.unknown_1_4_8 = 1;
-    glass->attribs.alpha_mode = 1;
-    glass->secondary.alpha_fail = 1;
-    glass->texture_id = 1;
-    glass->sort_priority = 128;
-    glass->vertex_flags |= 0x100000;
-    glass->glass_parameter = 0.25f;
-    glass->particle_type_tag = -105;
+    ((DEBRIS_MATERIAL_PC *)DebMat[7])->diffuse.x = 1.0f;
+    ((DEBRIS_MATERIAL_PC *)DebMat[7])->diffuse.y = 1.0f;
+    ((DEBRIS_MATERIAL_PC *)DebMat[7])->diffuse.z = 1.0f;
+    opacity = DebrisGlassMaterialOpacity;
+    ((DEBRIS_MATERIAL_PC *)DebMat[7])->attribs.cull_mode = 2;
+    ((DEBRIS_MATERIAL_PC *)DebMat[7])->attribs.z_mode = 1;
+    ((DEBRIS_MATERIAL_PC *)DebMat[7])->attribs.filter_mode = 0;
+    ((DEBRIS_MATERIAL_PC *)DebMat[7])->attribs.unknown_2_1_2 = 2;
+    ((DEBRIS_MATERIAL_PC *)DebMat[7])->attribs.unknown_2_4 = 1;
+    ((DEBRIS_MATERIAL_PC *)DebMat[7])->attribs.unknown_1_1_2 = 1;
+    ((DEBRIS_MATERIAL_PC *)DebMat[7])->attribs.unknown_1_4_8 = 1;
+    ((DEBRIS_MATERIAL_PC *)DebMat[7])->opacity = opacity;
+    ((DEBRIS_MATERIAL_PC *)DebMat[7])->attribs.alpha_mode = 1;
+    ((DEBRIS_MATERIAL_PC *)DebMat[7])->secondary.alpha_fail = 1;
+    ((DEBRIS_MATERIAL_PC *)DebMat[7])->texture_id = 1;
+    ((DEBRIS_MATERIAL_PC *)DebMat[7])->sort_priority = 128;
+    ((DEBRIS_MATERIAL_PC *)DebMat[7])->vertex_flags |= 0x100000;
+    ((DEBRIS_MATERIAL_PC *)DebMat[7])->glass_parameter = 0.25f;
+    ((DEBRIS_MATERIAL_PC *)DebMat[7])->particle_type_tag = -105;
     NuMtlUpdate(DebMat[7]);
     DebMat[8] = CreateCopyMat(DebMat[0], 0, 6, 0, 1);
-    for (entry = debtab; *entry != NULL; ++entry) {
-        DEBRIS_INFO_PC *effect = *entry;
-        DEBRIS_ANIMATION_EFFECT_PC *animation = (DEBRIS_ANIMATION_EFFECT_PC *)effect;
-        if (animation->frame_divisor == 0)
-            animation->frame_divisor = 1;
-        animation->animation_rate.rate = (f32)((animation->texture_frames * 60) / animation->frame_divisor);
-        animation->animation_rate.packed_rate =
-            (animation->animation_rate.packed_rate & 0xfffff800) +
-            (((u16)animation->texture_frames * (animation->texture_rows - 1)) & 0x3ff);
-        effect->alpha_keys[0].value /= effect->particle_lifetime;
-        effect->texture_u0 += 524288.0;
-        effect->texture_u1 += 524288.0;
-        effect->texture_v0 += 524288.0;
-        effect->texture_v1 += 524288.0;
+    for (i = 0; debtab[i] != NULL; ++i) {
+        if (((DEBRIS_ANIMATION_EFFECT_PC *)debtab[i])->frame_divisor == 0)
+            ((DEBRIS_ANIMATION_EFFECT_PC *)debtab[i])->frame_divisor = 1;
+        ((DEBRIS_ANIMATION_EFFECT_PC *)debtab[i])->animation_rate.rate =
+            (f32)((((DEBRIS_ANIMATION_EFFECT_PC *)debtab[i])->texture_frames * 60) /
+                  ((DEBRIS_ANIMATION_EFFECT_PC *)debtab[i])->frame_divisor);
+        ((DEBRIS_ANIMATION_EFFECT_PC *)debtab[i])->animation_rate.packed_rate =
+            (((DEBRIS_ANIMATION_EFFECT_PC *)debtab[i])->animation_rate.packed_rate & 0xfffff800) +
+            (((u16)((DEBRIS_ANIMATION_EFFECT_PC *)debtab[i])->texture_frames *
+              (((DEBRIS_ANIMATION_EFFECT_PC *)debtab[i])->texture_rows - 1)) &
+             0x3ff);
+        debtab[i]->alpha_keys[0].value /= debtab[i]->particle_lifetime;
+        debtab[i]->texture_u0 += 524288.0;
+        debtab[i]->texture_u1 += 524288.0;
+        debtab[i]->texture_v0 += 524288.0;
+        debtab[i]->texture_v1 += 524288.0;
     }
     for (i = 0; i < debinf_count; ++i)
         effecttypes[i].native_data = NULL;
@@ -3239,16 +3251,30 @@ void __cdecl DebrisSetup2(VARIPTR *buffer, VARIPTR buffer_end, VARIPTR *trash_bu
     for (i = 0; i < maxdebkeys; ++i)
         freedebkeys[i] = (i16)i;
     for (i = 0; i < maxdebkeys; ++i) {
-        DEBRISKEY_PC *key = &debkeydata[i];
-        key->finite = 0;
-        key->particle_cursor = 0;
-        key->emitter_rotation_x = 0;
-        key->emitter_rotation_y = 0;
-        key->finite_count = 0;
-        key->effect_index = 0;
-        key->allocation_index = -1;
+        debkeydata[i].finite = 0;
+        debkeydata[i].particle_cursor = 0;
+        debkeydata[i].emitter_rotation_x = 0;
+        debkeydata[i].emitter_rotation_y = 0;
+        debkeydata[i].finite_count = 0;
+        debkeydata[i].effect_index = 0;
+        debkeydata[i].allocation_index = -1;
     }
-    xzfacingmtx = ANI3_EVAL_IDENTITY_MATRIX;
+    xzfacingmtx.m00 = ANI3_EVAL_IDENTITY_MATRIX.m00;
+    xzfacingmtx.m01 = ANI3_EVAL_IDENTITY_MATRIX.m01;
+    xzfacingmtx.m02 = ANI3_EVAL_IDENTITY_MATRIX.m02;
+    xzfacingmtx.m03 = ANI3_EVAL_IDENTITY_MATRIX.m03;
+    xzfacingmtx.m10 = ANI3_EVAL_IDENTITY_MATRIX.m10;
+    xzfacingmtx.m11 = ANI3_EVAL_IDENTITY_MATRIX.m11;
+    xzfacingmtx.m12 = ANI3_EVAL_IDENTITY_MATRIX.m12;
+    xzfacingmtx.m13 = ANI3_EVAL_IDENTITY_MATRIX.m13;
+    xzfacingmtx.m20 = ANI3_EVAL_IDENTITY_MATRIX.m20;
+    xzfacingmtx.m21 = ANI3_EVAL_IDENTITY_MATRIX.m21;
+    xzfacingmtx.m22 = ANI3_EVAL_IDENTITY_MATRIX.m22;
+    xzfacingmtx.m23 = ANI3_EVAL_IDENTITY_MATRIX.m23;
+    xzfacingmtx.m30 = ANI3_EVAL_IDENTITY_MATRIX.m30;
+    xzfacingmtx.m31 = ANI3_EVAL_IDENTITY_MATRIX.m31;
+    xzfacingmtx.m32 = ANI3_EVAL_IDENTITY_MATRIX.m32;
+    xzfacingmtx.m33 = ANI3_EVAL_IDENTITY_MATRIX.m33;
     DebrisMtxRotateXPrivate(&xzfacingmtx, -0x4000);
 }
 
