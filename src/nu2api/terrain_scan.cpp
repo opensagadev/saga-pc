@@ -444,8 +444,8 @@ struct TerrainScanBounds {
         }                                                                                                              \
     } while (0)
 
-#define TERRAIN_SCAN_BOUNDS_PC(query_arg)                                                                              \
-    if ((query_arg)->scan_result != 1) {                                                                               \
+#define TERRAIN_SCAN_BOUNDS_PC(query_arg, scan_result_arg)                                                             \
+    if ((scan_result_arg) != 1) {                                                                                      \
         f32 length_sq = (query_arg)->movement.x * (query_arg)->movement.x +                                            \
                         (query_arg)->movement.y * (query_arg)->movement.y +                                            \
                         (query_arg)->movement.z * (query_arg)->movement.z;                                             \
@@ -517,7 +517,7 @@ extern "C" void ScanTerrain(i32 scan_type, i32 terrain_mask, i32 scan_flags) {
     f32 min_x, min_y, min_z, max_x, max_y, max_z, scan_radius;
 
     TerrainQuery_s *query = TERRAIN_QUERY_PC;
-    TERRAIN_SCAN_BOUNDS_PC(query);
+    TERRAIN_SCAN_BOUNDS_PC(query, query->scan_result);
     if (1.0f < query->object_scale) {
         scan_radius += (query->object_scale - 1.0) * query->collision_radius;
     }
@@ -956,14 +956,15 @@ extern "C" void ScanTerrain(i32 scan_type, i32 terrain_mask, i32 scan_flags) {
     TerrOverRideScan = NULL;
 }
 extern "C" void ScanWallSplineTerrain(i32 scan_type, i32 terrain_mask, i32 scan_flags) {
+    TerrainQuery_s *query = TERRAIN_QUERY_PC;
     WallSplinesOnly = 0;
     TerrainScaledShapeCursorPc = ((TERRAIN_SHAPE *)(ScaleTerrainT1));
-    TerrainQuery_s *query = TERRAIN_QUERY_PC;
+    const u8 scan_result = query->scan_result;
     i16 *terminator = reinterpret_cast<i16 *>(query->scan_list_storage);
     platinrange = 0;
     query->scan_group_index = -1;
     f32 min_x, min_y, min_z, max_x, max_y, max_z, scan_radius;
-    TERRAIN_SCAN_BOUNDS_PC(query);
+    TERRAIN_SCAN_BOUNDS_PC(query, scan_result);
     terminator[0] = 0;
     terminator[1] = 0;
     min_x -= TerrainScanMargin02Pc;
