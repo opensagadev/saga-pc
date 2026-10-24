@@ -78,9 +78,8 @@ i32 __cdecl GizSpinner_Load(void *world_pointer, void *unused) {
     nuhspecial_s special;
     SPINNER_DURATION_BITS_PC duration;
     i32 version, index, name_length, output_points, object_count, object_index, point;
-    i32 special_missing, spinner_type;
+    i32 special_missing, spinner_type, spinner_flags;
     u32 spinner_state_flags;
-    u8 spinner_flags;
     char special_name[32];
     f32 longest_duration = 0.0f;
     f32 animation_speed, initial_animation_point, spinner_field_98;
@@ -121,18 +120,17 @@ i32 __cdecl GizSpinner_Load(void *world_pointer, void *unused) {
         }
         world->spinners[index].special = special;
         output_points = (i8)EdFileReadChar();
-        if (version >= 2)
+        if (version >= 2) {
             spinner_type = (i8)EdFileReadChar();
-        if (version >= 3) {
-            spinner_state_flags = (u32)EdFileReadInt() & ~0x360u;
-            {
-                f32 field = EdFileReadFloat();
-                world->spinners[index].field_0x2d8 = field;
+            if (version >= 3) {
+                spinner_state_flags = (u32)EdFileReadInt() & ~0x360u;
+                world->spinners[index].field_0x2d8 = EdFileReadFloat();
+                if (version >= 4) {
+                    animation_speed = EdFileReadFloat();
+                    if (version >= 6)
+                        spinner_flags = (i8)EdFileReadChar();
+                }
             }
-            if (version >= 4)
-                animation_speed = EdFileReadFloat();
-            if (version >= 6)
-                spinner_flags = (u8)EdFileReadChar();
         }
         GameAnimSet_RemoveAllObjects(world->spinners[index].anim_set);
         if (version >= 5) {
