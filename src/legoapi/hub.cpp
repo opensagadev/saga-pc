@@ -4740,6 +4740,7 @@ extern "C" {
 }
 
 extern "C" {
+    i32 __cdecl NuKeyboardBasePortPc(void);
     extern i32 NuMainSkipCutBordersPc, AutoSaveIconPendingPc;
     extern f32 CoinTotalScoreSizePc;
     extern f32 CoinTotalCoinOffsetPc;
@@ -4779,7 +4780,14 @@ extern "C" {
                 goto finish;
             }
         }
-        STUBBED_NAMED("DrawPanel: controller remapping at 0x004bb08d");
+        {
+            GAMEPAD_RUNTIME_INPUT_PC *pads = (GAMEPAD_RUNTIME_INPUT_PC *)GamePadStorage;
+            if (pads[0].input_ready == 0 || (pads[0].bound_pad->flags & 4) == 0)
+                NuPadMapPlayerToPort(0, NuKeyboardBasePortPc() + 1);
+            if (Player[1] != NULL && (((GAMEOBJECT *)Player[1])->flags_1fc & 0x80) != 0 &&
+                (pads[1].input_ready == 0 || (pads[1].bound_pad->flags & 4) == 0))
+                NuPadMapPlayerToPort(1, NuKeyboardBasePortPc() + 3);
+        }
         if (WORLD->current_level == STATUS_LDATA || (WORLD->current_level->flags & 0x400) != 0) {
             if (WORLD->current_level->callbacks[6] != NULL)
                 ((void(__cdecl *)(WORLDINFO *))WORLD->current_level->callbacks[6])(WORLD);
