@@ -1095,50 +1095,54 @@ void __cdecl GoldBrick_LSW_Update(STATUS_STAGE_s *stage, STATUSPACKET_s *packet,
     i32 last = (i32)Game.gold_bricks - (i32)packet->previous_gold_bricks - 1;
     char text[256];
     NUVEC position;
-    if (stage->field_0x14 == 0) {
-        stage->field_0x18 = 0.0f;
-        stage->field_0x14 = 1;
-        stage->field_0x1c = (((f64)last * 2.5 + 2.0) + 3.0) + 1.0 + 1.0;
-    } else if (stage->field_0x14 == 1) {
-        const f32 previous = stage->field_0x18;
-        volatile f32 accumulated = stage->field_0x18 + elapsed;
-        i32 index;
-        stage->field_0x18 = accumulated;
-        if (stage->field_0x18 >= stage->field_0x1c) {
-            NextStatusStage(packet);
-            return;
+    switch (stage->field_0x14) {
+        case 0: {
+            stage->field_0x18 = 0.0f;
+            stage->field_0x14 = 1;
+            stage->field_0x1c = (((f64)last * 2.5 + 2.0) + 3.0) + 1.0 + 1.0;
+            break;
         }
-        for (index = 0; index <= last; ++index) {
-            volatile f32 award_time = (f64)index * 2.5 + 2.0;
-            if (previous < award_time && stage->field_0x18 >= award_time) {
-                i32 total;
-                i16 message_id;
-                char *message;
-                PlaySfx("TrueJedi_100pc", NULL);
-                NewStatusRumbleBuzz(-1, 0.6f, 0.0f, 0);
-                total = (i32)packet->previous_gold_bricks + index + 1;
-                sprintf(text, "%i/%i", total, GOLDBRICKPOINTS);
-                AddFancyMessage(text, 0.0f, 0.3f, 0.75f, 1.25f, 1, 1);
-                message_id = ((i16 *)packet->field_0x12c)[index];
-                position.x = 0.0f;
-                position.y = 0.0375f;
-                position.z = 1.0f;
-                if (message_id == TextIdPc880f9c) {
-                    NuStrCpy(text, TTab[message_id]);
-                    if (HubBothTrueJediGoldBricksPc != 0) {
-                        NuStrCat(text, CutPlayerTextSeparatorPc);
-                        NuStrCat(text, TTab[(packet->field_0xb0 & 0x40) != 0 ? TextIdPc8808a8 : TextIdPc8808a4]);
+        case 1: {
+            const f32 previous = stage->field_0x18;
+            volatile f32 accumulated = stage->field_0x18 + elapsed;
+            i32 index;
+            stage->field_0x18 = accumulated;
+            if (stage->field_0x18 >= stage->field_0x1c) {
+                NextStatusStage(packet);
+                return;
+            }
+            for (index = 0; index <= last; ++index) {
+                volatile f32 award_time = (f64)index * 2.5 + 2.0;
+                if (previous < award_time && stage->field_0x18 >= award_time) {
+                    i32 total;
+                    i16 message_id;
+                    char *message;
+                    PlaySfx("TrueJedi_100pc", NULL);
+                    NewStatusRumbleBuzz(-1, 0.6f, 0.0f, 0);
+                    total = (i32)packet->previous_gold_bricks + index + 1;
+                    sprintf(text, "%i/%i", total, GOLDBRICKPOINTS);
+                    AddFancyMessage(text, 0.0f, 0.3f, 0.75f, 1.25f, 1, 1);
+                    message_id = ((i16 *)packet->field_0x12c)[index];
+                    position.x = 0.0f;
+                    position.y = 0.0375f;
+                    position.z = 1.0f;
+                    if (message_id == TextIdPc880f9c) {
+                        NuStrCpy(text, TTab[message_id]);
+                        if (HubBothTrueJediGoldBricksPc != 0) {
+                            NuStrCat(text, CutPlayerTextSeparatorPc);
+                            NuStrCat(text, TTab[(packet->field_0xb0 & 0x40) != 0 ? TextIdPc8808a8 : TextIdPc8808a4]);
+                        }
+                        message = text;
+                    } else
+                        message = TTab[message_id];
+                    AddGameMessage(message, &position, 0.7f, &position, 0.7f, 255, 0, 127, 0x4020, 2.0f);
+                    if (total > 60) {
+                        IncreaseScore(packet->score, 100000, 0);
+                        CoinTotalScale = 1.5f;
+                        PlaySfx("Shop_BuyCheat", NULL);
+                        Text_MakeScore(100000, text);
+                        AddFancyMessage(text, 0.0f, -STATSPOSY, 0.5f, 1.25f, 0, 0);
                     }
-                    message = text;
-                } else
-                    message = TTab[message_id];
-                AddGameMessage(message, &position, 0.7f, &position, 0.7f, 255, 0, 127, 0x4020, 2.0f);
-                if (total > 60) {
-                    IncreaseScore(packet->score, 100000, 0);
-                    CoinTotalScale = 1.5f;
-                    PlaySfx("Shop_BuyCheat", NULL);
-                    Text_MakeScore(100000, text);
-                    AddFancyMessage(text, 0.0f, -STATSPOSY, 0.5f, 1.25f, 0, 0);
                 }
             }
         }

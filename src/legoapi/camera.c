@@ -16,22 +16,24 @@ i32 __cdecl GoingForwardsAlongNarrowSock(GAMEOBJECT *object) {
 
 void ChrisAnakinCUpdate() {
     anakin_door_s *door = AnakinC;
-    anakin_door_s *end = door + 12;
-    for (; door != end; ++door) {
+    i32 remaining = 12;
+    for (; remaining != 0; --remaining, ++door) {
         f32 offset;
         if (door->active == 0)
             continue;
 
-        offset = door->offset - door->speed * FRAMETIME;
-        if (offset <= door->minimum_offset)
-            door->offset = door->minimum_offset;
-        else
-            door->offset = offset;
+        {
+            f32 minimum = door->minimum_offset;
+            door->offset -= door->speed * FRAMETIME;
+            if (door->offset <= minimum)
+                door->offset = minimum;
+        }
+        offset = door->offset;
 
         // The retail transform temporaries require a 16-byte-aligned stack.
         {
-            __declspec(align(16)) NUVEC translation = {
-                door->direction.x * door->offset, door->direction.y * door->offset, door->direction.z * door->offset};
+            __declspec(align(16)) NUVEC translation = {door->direction.x * offset, door->direction.y * offset,
+                                                       door->direction.z * offset};
             __declspec(align(16)) NUVEC position;
             NuVecMtxTransform(&position, &translation, &door->original_matrix);
             memcpy(&door->matrix.m30, &position, sizeof(position));
