@@ -73,20 +73,13 @@ def write_fixtures(directory):
     image[768:] = packed_metadata
     (directory / "MODE2.DAT").write_bytes(image)
 
-    # The reconstruction explicitly rejects these; retail lacks these checks.
-    malformed = (
-        ("SHORT.DAT", None, struct.pack("<i", 768)),
-        ("META8.DAT", 8, struct.pack("<ii", -3, 0)),
-        ("META11.DAT", 11, struct.pack("<ii", -3, 0) + bytes(3)),
-        ("CUTMETA.DAT", 112, metadata[:64]),
-        ("BADCOUNT.DAT", 16, struct.pack("<iiii", -3, 1, 0, 0)),
-        ("BADTREE.DAT", 16, struct.pack("<iiii", -3, 0, 1, 0)),
-        ("NOHASH.DAT", 16, struct.pack("<iiii", -3, 0, 0, 0)),
-    )
-    for name, declared, body in malformed:
-        image = body if declared is None else struct.pack("<ii", 768, declared) + bytes(760) + body
+    # Retail accepts positive short reads and parses beyond the declared length.
+    # The short declaration is tested with a caller-seeded metadata image inside
+    # its real arena, avoiding arbitrary malformed-pointer reads.
+    for name, declared in (("SHORTMETA.DAT", 113), ("META8.DAT", 8)):
+        image = bytearray((directory / "TINY.DAT").read_bytes())
+        struct.pack_into("<i", image, 4, declared)
         (directory / name).write_bytes(image)
-    return [name for name, _, _ in malformed]
 
 
 def write_file_constants(directory):
@@ -173,11 +166,11 @@ class DatParserTests(unittest.TestCase):
         self.assertEqual(result.returncode, 0, result.stdout + result.stderr)
         return result.stdout
 
-    def test_source_parser_compacts_valid_archives_and_rejects_truncated_metadata(self):
+    def test_source_parser_compacts_archives_and_preserves_native_unchecked_reads(self):
         (ROOT / "build").mkdir(exist_ok=True)
         with tempfile.TemporaryDirectory(prefix="dat-test-", dir=ROOT / "build") as temp:
             directory = Path(temp)
-            malformed = write_fixtures(directory)
+            write_fixtures(directory)
             objects = []
             sources = [ROOT / f"src/nu2api/{name}.c" for name in
                        ("nufile", "nufile_pc", "nufile_host", "nufile_device", "nupsfile", "nustring",
@@ -203,8 +196,8 @@ class DatParserTests(unittest.TestCase):
                         for buffered in (0, 1) for name, _, _ in VALID_CASES]
             expected.append("PASS TINY.DAT buffered=0 size_out=0")
             expected += [f"PASS mode-2 block stream buffered={buffered}" for buffered in (0, 1)]
-            expected += [f"PASS rejected {name} buffered={buffered}"
-                         for buffered in (0, 1) for name in malformed]
+            expected += [f"PASS {name} buffered={buffered} size_out=1"
+                         for buffered in (0, 1) for name in ("SHORTMETA.DAT", "META8.DAT")]
             expected.append("PASS memory-file read seek close")
             expected += [f"PASS file-pak version={version}" for version in range(3)]
             expected.append("PASS synthetic version -3 DAT parser smoke")
