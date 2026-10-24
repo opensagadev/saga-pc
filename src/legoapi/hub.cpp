@@ -1698,6 +1698,7 @@ static void HubUpdateBonusBuildItsPc(WORLDINFO *world) {
         if (gizmo == NULL)
             continue;
         if (GizmoGetOutput(world->gizmo_sys, gizmo, 0, 0) == 0) {
+            gizmo = (GIZMO_PC *)HubAreaInfoPc[i].bonus_gizmo;
             GIZBUILDIT_PC *buildit = (GIZBUILDIT_PC *)gizmo->object;
             if (buildit->anim_object_count <= gold_bricks) {
                 if ((buildit->availability_flags & 1) == 0)
