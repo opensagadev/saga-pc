@@ -4763,7 +4763,8 @@ extern "C" {
         if (waiting_for_level != -1) {
             STUBBED_NAMED("DrawPanel: background-load diagnostics at 0x004baf0b");
             if (gone_through_door_to_new_level != 0) {
-                STUBBED_NAMED("DrawPanel: removed-controller menu gate at 0x004bba59");
+                if (menu == -1 && editor_active == 0)
+                    DrawMenu(paused);
                 goto finish;
             }
         }
