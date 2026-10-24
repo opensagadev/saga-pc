@@ -47,8 +47,9 @@ i32 __cdecl ParticlesPerSecond(f32 rate, f32 frame_time) {
     i32 scaled_count = (i32)((f64)particles_per_frame * 65536.0 * ((f64)frame_time * 60.0));
     i32 count = 0;
     if (scaled_count >= 0x10000) {
-        count = scaled_count >> 16;
-        scaled_count -= count * 0x10000;
+        i32 whole = (u32)scaled_count >> 16;
+        scaled_count -= whole * 0x10000;
+        count = whole;
     }
     if ((NuRandInt() >> 16) < (u32)scaled_count) {
         ++count;
@@ -71,11 +72,13 @@ f32 *__cdecl AnimPlaying(ANIMPACKET_PC *packet, i32 animation, i32 target, i32 s
 }
 
 i32 __cdecl ParticlesPerFrame(f32 rate, f32 frame_time) {
-    i32 scaled = (i32)((f64)rate * 65536.0 * ((f64)frame_time * 60.0));
+    f64 rate_scaled = (f64)rate * 65536.0;
+    i32 scaled = (i32)(rate_scaled * ((f64)frame_time * 60.0));
     i32 count = 0;
     if (scaled >= 65536) {
-        count = (u32)scaled >> 16;
-        scaled -= count * 65536;
+        i32 whole = (u32)scaled >> 16;
+        scaled -= whole * 65536;
+        count = whole;
     }
     if ((NuRandInt() >> 16) < (u32)scaled)
         ++count;
@@ -94,8 +97,9 @@ f32 __cdecl AnimDuration(i32 character_id, i32 animation, f32 start_frame, f32 e
     CHARACTER_MODEL_LAYERS_PC *model;
     CHARACTER_ANIMATION_LOCATOR_PC *animation_info;
     f32 duration;
-    if (character_id < 0 || character_id >= apicharsys->character_count || animation < 0 ||
-        animation >= apicharsys->model_id_capacity)
+    if (character_id < 0 || character_id >= apicharsys->character_count)
+        return 0.0f;
+    if (animation < 0 || animation >= apicharsys->model_id_capacity)
         return 0.0f;
     model_id = apicharsys->playermodelids[character_id];
     if (model_id == -1)
@@ -257,9 +261,8 @@ void __cdecl APICharacterSysInit(VARIPTR *cursor, VARIPTR end, i32 character_cou
     (void)end;
     if (apicharsys != NULL)
         PCCharacterSystemExistingNoOp();
-    cursor->addr = (cursor->addr + 15) & ~15u;
-    apicharsys = (APICHARSYS *)cursor->void_ptr;
-    cursor->addr += sizeof(*apicharsys);
+    apicharsys = (APICHARSYS *)((cursor->addr + 15) & ~15u);
+    cursor->addr = ((cursor->addr + 15) & ~15u) + sizeof(*apicharsys);
     memset(apicharsys, 0, sizeof(*apicharsys));
     apicharsys->character_count = character_count;
     apicharsys->model_capacity = model_capacity;
@@ -858,12 +861,17 @@ void RootFnEx(NUMTX *matrix, void *data, NUVEC *sampled_root, NUVEC *unused_targ
 
     if (object->anim_packet.requested_animation != -1) {
         CHARACTERANIM_CONFIG_PC *animation;
+        NUVEC root_translation;
 
         animation = ((CHARACTERANIM_CONFIG_PC *)(object->character_model
                                                      ->animation_configs[object->anim_packet.requested_animation]));
-        matrix->translation.x = translation->x + animation->root_translation.x;
-        matrix->translation.z = translation->z + animation->root_translation.z;
+        root_translation.x = animation->root_translation.x;
+        root_translation.z = animation->root_translation.z;
+        matrix->translation.x = translation->x + root_translation.x;
+        matrix->translation.z = translation->z + root_translation.z;
         if (include_y) {
+            animation = ((CHARACTERANIM_CONFIG_PC *)(object->character_model
+                                                         ->animation_configs[object->anim_packet.requested_animation]));
             matrix->translation.y = translation->y + animation->root_translation.y;
         }
     } else {
@@ -2694,7 +2702,11 @@ STATIC_ASSERT(sizeof(CHARACTER_MODEL_LAYERS_PC) == 0x54);
 STATIC_ASSERT(offsetof(CHARACTER_MODEL_LAYERS_PC, hierarchy) == 4);
 
 void __cdecl APIDumpCharacterModels(i32 mode) {
-    i32 model_index = mode == 0 ? apicharsys->permanent_model_count : 0;
+    i32 model_index;
+    if (mode != 0)
+        model_index = 0;
+    else
+        model_index = apicharsys->permanent_model_count;
     while (model_index < apicharsys->loaded_model_count) {
         if (apicharsys->models[model_index].hierarchy != NULL) {
             NuHGobjDestroy(apicharsys->models[model_index].hierarchy);
