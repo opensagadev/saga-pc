@@ -332,10 +332,14 @@ i32 __cdecl ProcessGizmoFlowBox(GIZFLOW_PC *system, FLOWBOX_PC *box, u8 frame) {
 
 i32 __cdecl ProcessActionFlowBox(GIZFLOW_PC *system, FLOWBOX_PC *box, u8 frame) {
     i32 i;
-    for (i = 0; i < box->parent_count; ++i) {
-        FLOWBOX_PC *parent = box->parents[i];
-        if (!flowbox_callbacks[parent->type].check_output(system, parent, box->output_indices[i]))
-            return 0;
+    if (box->parent_count != 0) {
+        FLOWBOX_PC **parents = box->parents;
+        u8 *outputs = box->output_indices;
+        for (i = 0; i < box->parent_count; ++i, ++parents, ++outputs) {
+            FLOWBOX_PC *parent = *parents;
+            if (!flowbox_callbacks[parent->type].check_output(system, parent, *outputs))
+                return 0;
+        }
     }
     PerformActionFlowBox(system, box);
     (void)frame;
@@ -803,10 +807,12 @@ static void GizFlowConfigParentPc(NUFPAR_PC *parser) {
             NuFParGetInt(parser);
             GizFlowConfigRemapParentPc(parent);
         } else {
+            i32 output;
+            load_parents[load_nparents] = parent;
+            output = NuFParGetInt(parser);
             index = load_nparents;
-            load_parents[index] = parent;
-            load_parent_output_ix[index] = NuFParGetInt(parser);
-            ++load_nparents;
+            load_parent_output_ix[index] = output;
+            load_nparents = index + 1;
         }
     }
 }
