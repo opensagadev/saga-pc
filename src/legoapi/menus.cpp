@@ -1,5 +1,7 @@
 #include "saga.h"
 
+#include <string.h>
+
 typedef struct MENU_INPUT_PAD_PC {
     FRAME_PAD_PC *bound_pad;
     u32 held, pressed, alternate_held, alternate_pressed;
@@ -13,7 +15,12 @@ STATIC_ASSERT(offsetof(MENU_INPUT_PAD_PC, alternate_pressed) == 0x10);
 STATIC_ASSERT(offsetof(GAMEOBJECT, pad) == 0xca4);
 STATIC_ASSERT(offsetof(LEVELDATA_PC, flags) == 0x64);
 STATIC_ASSERT(offsetof(GAMESAVE, options_save) + offsetof(OPTIONSSAVE, widescreen) == 0xf);
+#pragma section(".bss$MenuButtonHistoryPc", read, write)
 extern "C" {
+    __declspec(allocate(".bss$MenuButtonHistoryPc")) u32 MenuButtonHistoryPc[15] = {0};
+    void __cdecl MenuUpdateButtonHistoryPc(void);
+    i32 __cdecl NuKeyboard_db(i32);
+
     void __cdecl MenuRegisterSoundFX(i32 move, i32 select, i32 back, i32 no_entry) {
         MENUSFX_MENUMOVE = move;
         MENUSFX_MENUSELECT = select;
@@ -35,9 +42,8 @@ extern "C" {
         i32 first_active, second_active, previous_item, previous_column, result;
         i16 previous_menu;
         u8 widescreen;
-        u32 held = 0, pressed = 0, alternate_held = 0, alternate_pressed = 0;
         if (check_buttons != 0 && WORLD != NULL) {
-            STUBBED_NAMED("0x00495332: original button-history/cheat update at0x00493de0");
+            MenuUpdateButtonHistoryPc();
         }
         menu_active = GetMenuID() != -1;
         if (WORLD != NULL && (WORLD->current_level->flags & 0x400) != 0)
@@ -116,6 +122,7 @@ extern "C" {
             Game.options_save.widescreen = widescreen;
         }
         if (!(((FADEINFO_PC *)&FadeSys)->fade > 0.0f) && NewMode == 0 && NewLData == NULL && editor_active == 0) {
+            u32 held = 0, pressed = 0, alternate_held = 0, alternate_pressed = 0;
             if (menu_id != 1 || !(GameTimer.time_elapsed < 4.0f)) {
                 if (both_pads != 0) {
                     MENU_INPUT_PAD_PC *first = (MENU_INPUT_PAD_PC *)&GamePadStorage[0];
@@ -146,6 +153,23 @@ extern "C" {
         }
         if (previous_menu != -1 && NewLData != NULL && gone_through_door_to_new_level == 0)
             reset_area = 1;
+    }
+    void __cdecl MenuUpdateButtonHistoryPc(void) {
+        const i32 menu_id = GetMenuID();
+        if (Paused != 0 || menu_id != -1) {
+            memset(MenuButtonHistoryPc, 0, sizeof(MenuButtonHistoryPc));
+        } else {
+            NuKeyboard_db(0x3f);
+            NuKeyboard_db(0x40);
+            NuKeyboard_db(0x41);
+            NuKeyboard_db(0x42);
+            const u32 buttons = GamePadStorage[0].menu_buttons_pressed;
+            if (buttons != 0) {
+                for (i32 index = 14; index > 0; --index)
+                    MenuButtonHistoryPc[index] = MenuButtonHistoryPc[index - 1];
+                MenuButtonHistoryPc[0] = buttons;
+            }
+        }
     }
 }
 

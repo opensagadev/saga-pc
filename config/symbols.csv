@@ -1535,6 +1535,7 @@ address,symbol,size,ctype
 0x493d60,_MenuExitSelectControlsPc,1,
 0x493d70,_MenuEnterSelectControlsPc,30,
 0x493d90,_MenuUpdateSelectControlsPc,75,
+0x493de0,_MenuUpdateButtonHistoryPc,122,void __cdecl(void)
 0x493e60,_DrawGameState,794,
 0x494180,?DrawSaveSlotsImplPc@@YAXPAUmenu_s@@M@Z,203,
 0x494250,_DrawSaveSlots,23,
@@ -22297,6 +22298,7 @@ address,symbol,size,ctype
 0x87b6e4,_MissionMenuPacketPc,,MISSION_MENU_PACKET_PC
 0x87b6f0,_downrepeatcount,2,u8[2]
 0x87b6f4,_newgamealpha,,f32
+0x87b6f8,_MenuButtonHistoryPc,,u32[15]
 0x87b734,_ShowPlayerCoordinatePc,4,i32
 0x87b738,_MenuKeyboardPendingPc,,i32
 0x0087b73c,_new_level_from_menu,4,i32
