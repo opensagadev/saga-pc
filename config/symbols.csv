@@ -2437,6 +2437,7 @@ address,symbol,size,ctype
 0x4e9ef0,_HothBattleE_Update,28,
 0x004e9f30,_DeathStar2BattleA_AlwaysUpdate,28,void __cdecl(WORLDINFO *)
 0x004e9f50,_DeathStar2BattleD_Init,242,void __cdecl(WORLDINFO *)
+0x4ea050,_DeathStar2BattleD_InZapRange,191,GIZMOBLOWUP_PC *__cdecl(GAMEOBJECT *)
 0x4ea110,_DeathStar2BattleD_Update,910,
 0x4ea4a0,_DeathStar2BattleFire_Draw,893,
 0x4ea820,_DeathStar2BattleFire_SetSlowDownMul,102,
@@ -20535,6 +20536,10 @@ address,symbol,size,ctype
 0x800224,_melee_wavePhase,1,i8
 0x800290,_maxrotspd,12,i32[3]
 0x80029c,?pos@?1??CloudCityTrapA_Update@@9@9,,
+0x8002b4,_DeathStarZapSizeWidthPc,,f32
+0x8002b8,_DeathStarZapSizeLengthPc,,f32
+0x8002bc,_DeathStarZapWidthBiasPc,,f32
+0x8002c0,_DeathStarZapEndWidthPc,,f32
 0x8002c4,_fire_clip_dist,4,i32
 0x800358,_EndorBattleAPartTimePc,4,f32
 0x80035c,_EndorBattleAPartTimerPc,4,f32
@@ -23428,6 +23433,7 @@ address,symbol,size,ctype
 0x88a6ec,_prevOnTaunTaun,1,u8
 0x88a6ed,_prevOnTownCar,1,u8
 0x88aaf0,_SarlaccBlowUpTargetCountPc,,i32
+0x88aaf4,_DeathStarZapLaserTypePc,,i32
 0x88aafc,_hspecial_efloor,,NUSPECIALHANDLE *
 0x88ab04,_eFloor_timer,,f32
 0x88ab0c,_SarlaccTakenOverPc,,i32

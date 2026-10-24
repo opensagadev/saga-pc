@@ -1,6 +1,12 @@
 #include "saga.h"
 #include <stdio.h>
 
+f32 DeathStarZapSizeWidthPc = 1.0f;
+f32 DeathStarZapSizeLengthPc = 1.0f;
+f32 DeathStarZapWidthBiasPc = 0.01f;
+f32 DeathStarZapEndWidthPc = 1.5f;
+i32 DeathStarZapLaserTypePc = 0;
+
 /* Original episodeVI.cpp private owner, PC 0x0088a668, two player timers. */
 static f32 slowDownTimer[2] = {0};
 
@@ -485,4 +491,95 @@ void __cdecl DeathStar2BattleD_Init(WORLDINFO *world) {
     }
     LevGizmo[7] = GizmoFindByName(world->gizmo_sys, blowup_gizmotype_id, "shield_inner1");
     ((u8 *)LevFlag)[5] = 0;
+}
+
+GIZMOBLOWUP_PC *__cdecl DeathStar2BattleD_InZapRange(GAMEOBJECT *object) {
+    GIZMOBLOWUP_PC *nearest = NULL;
+    f32 nearest_distance;
+    i32 i;
+    if (object == NULL || !(object->flags_1fc_word & 0x80) || object->dead)
+        return NULL;
+    nearest_distance = 225.0f;
+    for (i = 1; i < 7; ++i) {
+        GIZMO_PC *gizmo = LevGizmo[i];
+        GIZMOBLOWUP_PC *blowup;
+        f32 distance;
+        if (gizmo == NULL || gizmo->object == NULL)
+            continue;
+        blowup = (GIZMOBLOWUP_PC *)gizmo->object;
+        if ((blowup->status_flags & 0x800000) && !(blowup->status_flags & 1) && LevGizObst[i] != NULL &&
+            LevGizObst[i]->anim_set->state != 0) {
+            distance = NuVecDistSqr(&object->collision_position, &blowup->mid_position, NULL);
+            if (distance < nearest_distance) {
+                nearest_distance = distance;
+                nearest = blowup;
+            }
+        }
+    }
+    return nearest;
+}
+
+void __cdecl DeathStar2BattleD_Update(WORLDINFO *world) {
+    GIZMO_PC *shield_gizmo;
+    GIZMOBLOWUP_PC *shield, *blowup;
+    GAMEOBJECT *player;
+    NUVEC shield_position, position, direction, colour, delta;
+    NUVEC *mid;
+    f32 radius, length;
+    i32 angle, i;
+    u8 *flags = (u8 *)LevFlag;
+    (void)world;
+    if (flags[0] != 0 && qrand() < 0x800)
+        NewRumbleAllPlayers((f32)((f64)qrand() * (f64)0.000015259021893143654f), 0.0f, 0, 0);
+    shield_gizmo = LevGizmo[7];
+    if (shield_gizmo != NULL) {
+        shield = (GIZMOBLOWUP_PC *)shield_gizmo->object;
+        if (shield != NULL && (shield->status_flags & 1)) {
+            if ((i32)AreaTimer.time_elapsed % 3 == 0 && (i32)AreaTimer.last_time_elapsed % 3 != 0 &&
+                NuFloatRand((NURAND *)&GAMERAND) < 0.5f) {
+                angle = qrand();
+                shield_position = shield->mid_position;
+                direction.x = NuTrigTable[((angle + 0x4000) >> 1) & 0x7fff];
+                direction.y = 0.0f;
+                direction.z = NuTrigTable[(angle >> 1) & 0x7fff];
+                AddPickups(0, 0, 1, 0, &shield_position, &direction, 3.0f, -1,
+                           (f32)((f64)NuFloatRand((NURAND *)&GAMERAND) * 15.0 + 10.0), 2000000.0f, NULL, 1, 0);
+            }
+            return;
+        }
+    }
+    for (i = 0; i < 8; ++i) {
+        player = (GAMEOBJECT *)Player[i];
+        if (player == NULL || player->dynamic_light_id == -1)
+            continue;
+        blowup = DeathStar2BattleD_InZapRange(player);
+        if (blowup == NULL)
+            continue;
+        rtlDynamicEnable(((GAMEOBJECT *)Player[i])->dynamic_light_id, 1);
+        mid = &blowup->mid_position;
+        radius = (f64)NuVecDist(mid, &((GAMEOBJECT *)Player[i])->collision_position, &delta) * 0.5;
+        rtlDynamicSetRadii(((GAMEOBJECT *)Player[i])->dynamic_light_id, radius, (f32)((f64)radius + 5.0));
+        qrand();
+        colour.x = 0.0f;
+        if (qrand() < 0x8000)
+            colour.y = 2.0f;
+        else
+            colour.y = 0.25f;
+        colour.z = colour.y;
+        rtlDynamicSetColours(((GAMEOBJECT *)Player[i])->dynamic_light_id, &colour, NULL);
+        player = (GAMEOBJECT *)Player[i];
+        position.x = player->collision_position.x + (f64)delta.x * 0.5;
+        position.y = player->collision_position.y + (f64)delta.y * 0.5;
+        position.z = player->collision_position.z + (f64)delta.z * 0.5;
+        rtlDynamicSetPos(player->dynamic_light_id, &position);
+        length = NuVecDist(&((GAMEOBJECT *)Player[i])->collision_position, mid, &delta);
+        NuLgtLaser(DeathStarZapLaserTypePc, DeathStarZapSizeWidthPc, DeathStarZapSizeLengthPc, DeathStarZapWidthBiasPc,
+                   mid, &delta, 0xff808040, DeathStarZapEndWidthPc, length);
+        NewRumble(((GAMEOBJECT *)Player[i])->pad->bound_pad,
+                  (f32)((f64)qrand() * (f64)0.000015259021893143654f * (f64)0.3f), 0);
+        if (qrand() < 0x1000)
+            NewBuzzFrames(((GAMEOBJECT *)Player[i])->pad->bound_pad, 1, 0);
+        PlaySfx("ForceLightningLp", &((GAMEOBJECT *)Player[i])->collision_position);
+        DisorientateCode((GAMEOBJECT *)Player[i], mid, 225.0f);
+    }
 }
