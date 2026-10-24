@@ -1228,12 +1228,13 @@ extern "C" {
         }
         query = TERRAIN_STH_QUERY;
         group_header = reinterpret_cast<TERRAIN_SHADOW_QUERY_VIEW_PC *>(query)->scan_words;
+        const u8 scan_result = query->scan_result;
         cursor = group_header + 1;
         limit = cursor + 508;
         platinrange = 0;
         query->scan_group_index = -1;
         shape_count = 0;
-        switch (query->scan_result) {
+        switch (scan_result) {
             default: {
                 const f32 movement_sq = query->movement.x * query->movement.x + query->movement.y * query->movement.y +
                                         query->movement.z * query->movement.z;
