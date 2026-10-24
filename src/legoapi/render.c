@@ -1938,47 +1938,51 @@ void __cdecl SuperStoryTime_LSW_Skip(STATUS_STAGE_s *stage, STATUSPACKET_s *pack
 }
 
 void __cdecl SuperStoryTime_LSW_Update(STATUS_STAGE_s *stage, STATUSPACKET_s *packet, f32 elapsed) {
-    if (stage->field_0x14 == 0) {
-        stage->field_0x18 = 0.0f;
-        stage->field_0x14 = 1;
-        stage->field_0x1c = 5.0f;
-        packet->original_score = *packet->score;
-    } else if (stage->field_0x14 == 1) {
-        volatile f32 previous = stage->field_0x18;
-        volatile f32 accumulated = stage->field_0x18;
-        accumulated += elapsed;
-        stage->field_0x18 = accumulated;
-        if (accumulated >= stage->field_0x1c) {
-            *packet->score = packet->time_reward_score;
-            NextStatusStage(packet);
-        } else if (previous < 0.5f && accumulated >= 0.5f) {
-            if (packet->new_best_time == 0.0f)
-                GameAudio_PlaySfx(0x32, NULL, 0, 0);
-            else
-                PlaySfx("StatusAward", NULL);
-            NewStatusRumbleBuzz(-1, 0.6f, 0.0f, 0);
+    switch (stage->field_0x14) {
+        case 0: {
+            stage->field_0x18 = 0.0f;
+            stage->field_0x14 = 1;
+            stage->field_0x1c = 5.0f;
+            packet->original_score = *packet->score;
+            break;
         }
-        if (packet->new_best_time != 0.0f) {
-            if (previous < 4.0f && stage->field_0x18 >= 4.0f) {
-                CoinTotalScale = 1.5f;
-                NewStatusRumbleBuzz(-1, 0.0f, 0.1f, 0);
-                PlaySfx("Shop_BuyCheat", NULL);
-            }
-            if (stage->field_0x18 >= 4.5f)
+        case 1: {
+            volatile f32 previous = stage->field_0x18;
+            volatile f32 rounded_elapsed = stage->field_0x18 + elapsed;
+            f32 accumulated = rounded_elapsed;
+            stage->field_0x18 = accumulated;
+            if (stage->field_0x1c <= accumulated) {
                 *packet->score = packet->time_reward_score;
-            else if (stage->field_0x18 >= 0.5f && stage->field_0x18 < 4.0f) {
-                u32 original = packet->original_score;
-                volatile f32 progress = ((f64)stage->field_0x18 - 0.5) / 3.5;
-                volatile i32 angle = (i32)((f64)progress * 16384.0);
-                u32 difference = packet->time_reward_score - original;
-                volatile i32 amount = (i32)((f64)difference * (f64)NuTrigTable[(angle >> 1) & 0x7fff]);
-                *packet->score = original;
-                IncreaseScore(packet->score, (u64)(i64)amount, 0);
-                {
-                    volatile i32 current_bucket = (i32)((f64)stage->field_0x18 / (f64)0.2f);
-                    volatile i32 previous_bucket = (i32)((f64)previous / (f64)0.2f);
-                    if (current_bucket != previous_bucket)
-                        PlaySfx("PickupCoin", NULL);
+                NextStatusStage(packet);
+            } else if (0.5f > previous && 0.5f <= accumulated) {
+                if (packet->new_best_time == 0.0f)
+                    GameAudio_PlaySfx(0x32, NULL, 0, 0);
+                else
+                    PlaySfx("StatusAward", NULL);
+                NewStatusRumbleBuzz(-1, 0.6f, 0.0f, 0);
+            }
+            if (packet->new_best_time != 0.0f) {
+                if (previous < 4.0f && stage->field_0x18 >= 4.0f) {
+                    CoinTotalScale = 1.5f;
+                    NewStatusRumbleBuzz(-1, 0.0f, 0.1f, 0);
+                    PlaySfx("Shop_BuyCheat", NULL);
+                }
+                if (stage->field_0x18 >= 4.5f)
+                    *packet->score = packet->time_reward_score;
+                else if (stage->field_0x18 >= 0.5f && stage->field_0x18 < 4.0f) {
+                    u32 original = packet->original_score;
+                    volatile f32 progress = ((f64)stage->field_0x18 - 0.5) / 3.5;
+                    i32 angle = (i32)((f64)progress * 16384.0);
+                    u32 difference = packet->time_reward_score - original;
+                    i32 amount = (i32)((f64)difference * (f64)NuTrigTable[(angle >> 1) & 0x7fff]);
+                    *packet->score = original;
+                    IncreaseScore(packet->score, (u64)(i64)amount, 0);
+                    {
+                        i32 current_bucket = (i32)((f64)stage->field_0x18 / (f64)0.2f);
+                        i32 previous_bucket = (i32)((f64)previous / (f64)0.2f);
+                        if (current_bucket != previous_bucket)
+                            PlaySfx("PickupCoin", NULL);
+                    }
                 }
             }
         }
@@ -2052,48 +2056,52 @@ void __cdecl SuperStoryScore_LSW_Skip(STATUS_STAGE_s *stage, STATUSPACKET_s *pac
 }
 
 void __cdecl SuperStoryScore_LSW_Update(STATUS_STAGE_s *stage, STATUSPACKET_s *packet, f32 elapsed) {
-    if (stage->field_0x14 == 0) {
-        stage->field_0x18 = 0.0f;
-        stage->field_0x14 = 1;
-        stage->field_0x1c = 5.0f;
-        packet->original_score = *packet->score;
-    } else if (stage->field_0x14 == 1) {
-        volatile f32 previous = stage->field_0x18;
-        volatile f32 accumulated = stage->field_0x18;
-        accumulated += elapsed;
-        stage->field_0x18 = accumulated;
-        if (accumulated >= stage->field_0x1c) {
-            *packet->score = packet->final_reward_score;
-            NextStatusStage(packet);
-        } else if (previous < 0.5f && accumulated >= 0.5f) {
-            if (packet->new_best_score != 0)
-                PlaySfx("StatusAward", NULL);
-            else
-                GameAudio_PlaySfx(0x32, NULL, 0, 0);
-            NewStatusRumbleBuzz(-1, 0.6f, 0.0f, 0);
+    switch (stage->field_0x14) {
+        case 0: {
+            stage->field_0x18 = 0.0f;
+            stage->field_0x14 = 1;
+            stage->field_0x1c = 5.0f;
+            packet->original_score = *packet->score;
+            break;
         }
-        if (packet->final_reward_score != packet->original_score) {
-            if (previous < 4.0f && stage->field_0x18 >= 4.0f) {
-                CoinTotalScale = 1.5f;
-                NewStatusRumbleBuzz(-1, 0.0f, 0.1f, 0);
-                PlaySfx("Shop_BuyCheat", NULL);
-            }
-            if (stage->field_0x18 >= 4.0f)
+        case 1: {
+            volatile f32 previous = stage->field_0x18;
+            volatile f32 rounded_elapsed = stage->field_0x18 + elapsed;
+            f32 accumulated = rounded_elapsed;
+            stage->field_0x18 = accumulated;
+            if (stage->field_0x1c <= accumulated) {
                 *packet->score = packet->final_reward_score;
-            else if (stage->field_0x18 >= 0.5f && stage->field_0x18 < 4.0f) {
-                u32 original = packet->original_score;
-                volatile f32 progress = ((f64)stage->field_0x18 - 0.5) / 3.5;
-                volatile i32 angle = (i32)((f64)progress * 16384.0 + 16384.0);
-                u32 difference = packet->final_reward_score - original;
-                volatile f32 blend = 1.0 - (f64)NuTrigTable[(angle >> 1) & 0x7fff];
-                volatile i32 amount = (i32)((f64)difference * (f64)blend);
-                *packet->score = original;
-                IncreaseScore(packet->score, (u64)(i64)amount, 0);
-                {
-                    volatile i32 current_bucket = (i32)((f64)stage->field_0x18 / (f64)0.2f);
-                    volatile i32 previous_bucket = (i32)((f64)previous / (f64)0.2f);
-                    if (current_bucket != previous_bucket)
-                        PlaySfx("PickupCoin", NULL);
+                NextStatusStage(packet);
+            } else if (0.5f > previous && 0.5f <= accumulated) {
+                if (packet->new_best_score != 0)
+                    PlaySfx("StatusAward", NULL);
+                else
+                    GameAudio_PlaySfx(0x32, NULL, 0, 0);
+                NewStatusRumbleBuzz(-1, 0.6f, 0.0f, 0);
+            }
+            if (packet->final_reward_score != packet->original_score) {
+                if (previous < 4.0f && stage->field_0x18 >= 4.0f) {
+                    CoinTotalScale = 1.5f;
+                    NewStatusRumbleBuzz(-1, 0.0f, 0.1f, 0);
+                    PlaySfx("Shop_BuyCheat", NULL);
+                }
+                if (stage->field_0x18 >= 4.0f)
+                    *packet->score = packet->final_reward_score;
+                else if (stage->field_0x18 >= 0.5f && stage->field_0x18 < 4.0f) {
+                    u32 original = packet->original_score;
+                    volatile f32 progress = ((f64)stage->field_0x18 - 0.5) / 3.5;
+                    i32 angle = (i32)((f64)progress * 16384.0 + 16384.0);
+                    u32 difference = packet->final_reward_score - original;
+                    volatile f32 blend = 1.0 - (f64)NuTrigTable[(angle >> 1) & 0x7fff];
+                    i32 amount = (i32)((f64)difference * (f64)blend);
+                    *packet->score = original;
+                    IncreaseScore(packet->score, (u64)(i64)amount, 0);
+                    {
+                        i32 current_bucket = (i32)((f64)stage->field_0x18 / (f64)0.2f);
+                        i32 previous_bucket = (i32)((f64)previous / (f64)0.2f);
+                        if (current_bucket != previous_bucket)
+                            PlaySfx("PickupCoin", NULL);
+                    }
                 }
             }
         }
