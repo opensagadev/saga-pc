@@ -996,6 +996,15 @@ void __cdecl eduicbItemDestroy(eduimenu_s *menu, eduiitem_s *item) {
     menu->field_0c = menu->first;
 }
 
+void __cdecl eduicbItemSliderDestroy(eduimenu_s *menu, eduiitem_s *item) {
+    edui_slider_s *slider = (edui_slider_s *)item;
+    if (slider->format != NULL) {
+        NuFree(slider->format, EduiSourcePathPc, 0xfbc);
+        slider->format = NULL;
+    }
+    eduicbItemDestroy(menu, item);
+}
+
 static void EduiClearInteractionsPc(eduimenu_s *menu, eduiitem_s *item) {
     edui_interact_s *interact = eduiInteracts;
     i32 remaining = numInteracts;
