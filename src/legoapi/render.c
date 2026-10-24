@@ -103,7 +103,7 @@ i32 AddGoldBrickMessage(STATUSPACKET_s *packet, i16 brick) {
     return 1;
 }
 
-void AddStatusStage(STATUSPACKET_s *packet, i32 type, i32 gold_brick_enabled) {
+__declspec(noinline) void AddStatusStage(STATUSPACKET_s *packet, i32 type, i32 gold_brick_enabled) {
     packet->stage_types[packet->stage_count] = (i8)(type);
     packet->gold_brick_enabled[packet->stage_count] = (u8)(gold_brick_enabled);
     ++packet->stage_count;
@@ -1310,11 +1310,27 @@ i32 __cdecl newCharactersCollected(STATUSPACKET_s *packet) {
     return count;
 }
 
+typedef struct StatusPlayerModelPairPc {
+    u16 model[2];
+} StatusPlayerModelPairPc;
+STATIC_ASSERT(sizeof(StatusPlayerModelPairPc) == 4);
+STATIC_ASSERT(offsetof(STATUSPACKET_s, player1_model) == offsetof(STATUSPACKET_s, player0_model) + sizeof(u16));
+STATIC_ASSERT(offsetof(STATUSPACKET_s, area_id) ==
+              offsetof(STATUSPACKET_s, player0_model) + sizeof(StatusPlayerModelPairPc));
+
+#define STATUS_APPEND_STAGE_INLINE_PC(packet_arg, type_arg, gold_arg)                                                  \
+    do {                                                                                                               \
+        (packet_arg)->stage_types[(packet_arg)->stage_count] = (i8)(type_arg);                                         \
+        (packet_arg)->gold_brick_enabled[(packet_arg)->stage_count] = (u8)(gold_arg);                                  \
+        ++(packet_arg)->stage_count;                                                                                   \
+    } while (0)
+
 void __cdecl InitStatusScreen(WORLDINFO *world) {
     STATUSPACKET_s *p = &StatusPacket;
-    i32 i, area, episode = -1;
+    i32 i, area, episode;
     if (p->lsw_packet == NULL)
         return;
+    episode = -1;
     for (i = 0; StatusStages[i].type != -1; ++i)
         StatusStage_Reset(&StatusStages[i]);
     StatusPacketReset(p);
@@ -1327,21 +1343,21 @@ void __cdecl InitStatusScreen(WORLDINFO *world) {
     CoinTotalScale = 1.0f;
     goldbrickmsgcount = 0;
     if (netclient == 0) {
+        StatusPlayerModelPairPc *models = (StatusPlayerModelPairPc *)&p->player0_model;
         for (i = 0; i < 2; ++i) {
             GAMEOBJECT *object = Player[i];
             if (object != NULL) {
-                if (i == 0)
-                    p->player0_model = (u16)object->id;
-                else
-                    p->player1_model = (u16)object->id;
+                models->model[i] = (u16)object->id;
                 p->player_active[i] = (u8)((object->flags_1fc_word >> 7) & 1);
-                p->coins_remaining[i] =
-                    object->coin_packet == NULL ? 0 : ((PLAYER_COIN_PACKET_PC *)object->coin_packet)->coins;
-                ++p->status_flags;
-            } else if (i == 0)
-                p->player0_model = 0xffff;
-            else
-                p->player1_model = 0xffff;
+                if (object->coin_packet != NULL) {
+                    p->coins_remaining[i] = ((PLAYER_COIN_PACKET_PC *)object->coin_packet)->coins;
+                    ++p->status_flags;
+                } else {
+                    p->coins_remaining[i] = 0;
+                    ++p->status_flags;
+                }
+            } else
+                models->model[i] = 0xffff;
         }
     }
     if (p->status_flags != 2) {
@@ -1429,16 +1445,16 @@ void __cdecl InitStatusScreen(WORLDINFO *world) {
             }
             p->final_reward_score = p->time_reward_score;
             IncreaseScore(&p->final_reward_score, (u64)p->superstory_score, 0);
-            AddStatusStage(p, 14, gold);
-            AddStatusStage(p, 15, 0);
-            AddStatusStage(p, 16, 0);
+            STATUS_APPEND_STAGE_INLINE_PC(p, 14, gold);
+            STATUS_APPEND_STAGE_INLINE_PC(p, 15, 0);
+            STATUS_APPEND_STAGE_INLINE_PC(p, 16, 0);
             if (Game.gold_bricks > p->previous_gold_bricks)
                 AddStatusStage(p, 19, 0);
             if (netclient == 0 && (p->new_best_time != 0.0f || p->new_best_score != 0 || p->superstory_score != 0))
                 AddStatusStage(p, 11, 0);
             hub_from_superstory = (i8)p->area->episode_index;
         }
-        AddStatusStage(p, 10, 0);
+        STATUS_APPEND_STAGE_INLINE_PC(p, 10, 0);
         p->stage_types[p->stage_count] = -1;
         p->current_gold_brick = -1;
         p->next_stage = FindStatusStage(p->stage_types[0]);
@@ -1520,11 +1536,11 @@ void __cdecl InitStatusScreen(WORLDINFO *world) {
         AddStatusStage(p, 26, gold);
         if (Game.gold_bricks > p->previous_gold_bricks)
             AddStatusStage(p, 19, 0);
-        AddStatusStage(p, 9, 0);
-        AddStatusStage(p, 10, 0);
+        STATUS_APPEND_STAGE_INLINE_PC(p, 9, 0);
+        STATUS_APPEND_STAGE_INLINE_PC(p, 10, 0);
         if (netclient == 0)
             AddStatusStage(p, 11, 0);
-        AddStatusStage(p, 12, 0);
+        STATUS_APPEND_STAGE_INLINE_PC(p, 12, 0);
         p->stage_types[p->stage_count] = -1;
         p->current_gold_brick = -1;
         p->next_stage = FindStatusStage(p->stage_types[0]);
@@ -1710,10 +1726,10 @@ void __cdecl InitStatusScreen(WORLDINFO *world) {
         AddStatusStage(p, 19, 0);
     if ((p->flags_word & 0x800) == 0)
         AddStatusStage(p, 9, 0);
-    AddStatusStage(p, 10, 0);
+    STATUS_APPEND_STAGE_INLINE_PC(p, 10, 0);
     if (netclient == 0)
         AddStatusStage(p, 11, 0);
-    AddStatusStage(p, 12, 0);
+    STATUS_APPEND_STAGE_INLINE_PC(p, 12, 0);
     p->stage_types[p->stage_count] = -1;
     p->current_gold_brick = -1;
     p->next_stage = FindStatusStage(p->stage_types[0]);
@@ -1721,6 +1737,7 @@ void __cdecl InitStatusScreen(WORLDINFO *world) {
     StatusCollectedSuitBitsPc = Game.initial_store_pack_flags;
     Game.initial_store_pack_flags = areaSuitBits;
 }
+#undef STATUS_APPEND_STAGE_INLINE_PC
 
 void __cdecl BonusComplete_LSW_Skip(STATUS_STAGE_s *stage, STATUSPACKET_s *packet) {
     (void)stage;
