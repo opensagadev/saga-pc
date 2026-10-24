@@ -4748,7 +4748,7 @@ extern "C" {
         i32 paused;
         i32 player_index;
         NUVEC coordinate_positions[8];
-        char coordinate_text[128], bonus_score[128];
+        char coordinate_text[512], bonus_score[128];
         SetQFont2D();
         if (CUTSTOPGAME == 0) {
             TransformGameMessages(&GameCam->position, &GameCam->shaken_right, &GameCam->dir);
