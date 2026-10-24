@@ -1821,3 +1821,23 @@ i32 __cdecl Action_AddPartPc(AISYS_PC *system, AISCRIPTPROCESS_PC *processor, AI
     }
     return 1;
 }
+
+GIZMOPICKUP_PC *__cdecl GizmoPickup_FindByName(WORLDINFO *, char *);
+void __cdecl GizmoPickup_TurnOnPickup(GIZMOPICKUP_PC *);
+
+i32 __cdecl Action_TurnOnPickupPc(AISYS_PC *system, AISCRIPTPROCESS_PC *processor, AIPACKET_PC *packet, char **params,
+                                  i32 count, i32 first_time, f32 elapsed) {
+    GIZMOPICKUP_PC *pickup = NULL;
+    if (first_time != 0) {
+        i32 index;
+        char *value;
+        for (index = 0; index < count; ++index) {
+            value = NuStrIStr(params[index], (char *)AIScriptActionNameArgPrefix);
+            if (value != NULL)
+                pickup = GizmoPickup_FindByName(WORLD, value + NuStrLen(AIScriptActionNameArgPrefix));
+        }
+        if (pickup != NULL)
+            GizmoPickup_TurnOnPickup(pickup);
+    }
+    return 1;
+}
