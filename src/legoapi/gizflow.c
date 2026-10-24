@@ -331,6 +331,7 @@ parent_failed:
 }
 
 void __cdecl ProcessFlowBox(GIZFLOW_PC *system, FLOWBOX_PC *box, u8 frame) {
+    GIZFLOW_BOX_LOADER_PREFIX_PC *state = (GIZFLOW_BOX_LOADER_PREFIX_PC *)box;
     FLOWBOXGIZMODATA_PC *data;
     i32 i;
 
@@ -339,18 +340,14 @@ void __cdecl ProcessFlowBox(GIZFLOW_PC *system, FLOWBOX_PC *box, u8 frame) {
     if ((box->state_flags_low & 1) == 0 || !flowbox_callbacks[box->type].process(system, box, frame))
         return;
 
-    {
-        u16 flags = FLOWBOX_FLAGS(box);
-        if ((flags & 0xc00) == 0xc00)
-            flags &= (u16)~0x400;
-        flags = (u16)((flags & (u16)~1) | 0x802);
-        FLOWBOX_SET_FLAGS(box, flags);
-    }
+    if ((state->state_flags & 0x400) != 0 && (state->state_flags & 0x800) != 0)
+        state->state_flags &= (u16)~0x400;
+    state->state_flags = (u16)((state->state_flags & (u16)~1) | 0x802);
 
     if (box->type == 0) {
         if ((box->state_flags_low & 0x18) != 0) {
             if (box->child_count != 0) {
-                box->state_flags_low |= 0x20;
+                state->state_flags |= 0x20;
             } else {
                 data = (FLOWBOXGIZMODATA_PC *)box->data;
                 if ((box->state_flags_low & 8) != 0) {
@@ -360,19 +357,17 @@ void __cdecl ProcessFlowBox(GIZFLOW_PC *system, FLOWBOX_PC *box, u8 frame) {
                     for (i = 0; i < data->gizmo_count; ++i)
                         GizmoActivate(system->gizmo_sys, data->gizmos[i]->gizmo, 0, 1);
                 }
-                box->state_flags_low &= (u8)~0x20;
+                state->state_flags &= (u16)~0x20;
             }
         }
         if ((box->state_flags_low & 0xc0) != 0) {
-            box->state_flags_low |= 0x20;
-            box->state_flags_high |= 1;
+            state->state_flags |= 0x120;
             for (i = 0; i < box->parent_count; ++i) {
-                FLOWBOX_PC *parent = box->parents[i];
-                if (parent->type == 1)
-                    parent->state_flags_high |= 2;
-                if (parent->type == 0 && (parent->state_flags_low & 0x40) != 0) {
-                    parent->state_flags_high |= 1;
-                    parent->state_flags_low |= 0x20;
+                if (box->parents[i]->type == 1)
+                    ((GIZFLOW_BOX_LOADER_PREFIX_PC *)box->parents[i])->state_flags |= 0x200;
+                if (box->parents[i]->type == 0 && (box->parents[i]->state_flags_low & 0x40) != 0) {
+                    ((GIZFLOW_BOX_LOADER_PREFIX_PC *)box->parents[i])->state_flags |= 0x100;
+                    ((GIZFLOW_BOX_LOADER_PREFIX_PC *)box->parents[i])->state_flags |= 0x20;
                 }
             }
         }
@@ -380,11 +375,10 @@ void __cdecl ProcessFlowBox(GIZFLOW_PC *system, FLOWBOX_PC *box, u8 frame) {
     if (box->type != 0)
         CheckIfParentsFinished(system, box);
     for (i = 0; i < box->child_count; ++i) {
-        FLOWBOX_PC *child = box->children[i];
-        child->state_flags_low |= 1;
-        if (child->last_process_frame != frame || box->type == 1) {
-            child->last_process_frame = frame;
-            ProcessFlowBox(system, child, frame);
+        ((GIZFLOW_BOX_LOADER_PREFIX_PC *)box->children[i])->state_flags |= 1;
+        if (box->children[i]->last_process_frame != frame || box->type == 1) {
+            box->children[i]->last_process_frame = frame;
+            ProcessFlowBox(system, box->children[i], frame);
         }
     }
 }
