@@ -194,6 +194,22 @@ void __cdecl GizPanel_Activate(void *input, i32 active) {
 }
 
 void __cdecl GizPanels_Reset(void *world_pointer, void *unused, void *progress_pointer) {
+    typedef union PanelProgressFlagsPc {
+        u8 value;
+        struct {
+            u8 unknown_0 : 2;
+            u8 progress_2 : 1;
+            u8 progress_3 : 1;
+            u8 unknown_4 : 4;
+        } bits;
+    } PanelProgressFlagsPc;
+    typedef struct PanelProgressStatePc {
+        u8 unknown_00[0x62];
+        PanelProgressFlagsPc flags;
+    } PanelProgressStatePc;
+    STATIC_ASSERT(sizeof(PanelProgressFlagsPc) == 1);
+    STATIC_ASSERT(offsetof(PanelProgressStatePc, flags) == 0x62);
+    STATIC_ASSERT(sizeof(PanelProgressStatePc) == 0x63);
     WORLDINFO *world = (WORLDINFO *)world_pointer;
     PANEL_SYSTEM_PC *system;
     PANEL_MOVEMENT_PC *panel;
@@ -209,12 +225,13 @@ void __cdecl GizPanels_Reset(void *world_pointer, void *unused, void *progress_p
         panel = &system->panels[index];
         GizPanel_Reset(panel);
         if (progress != NULL && index < 32) {
+            PanelProgressStatePc *state = (PanelProgressStatePc *)panel;
             i32 word = index / 32;
             u32 bit = 1u << (index % 32);
             if (progress[word] & bit)
                 panel->flags |= 2;
-            panel->flags = (u8)((panel->flags & ~4u) | ((progress[word + 2] & bit) != 0 ? 4 : 0));
-            panel->flags = (u8)((panel->flags & ~8u) | ((progress[word + 1] & bit) != 0 ? 8 : 0));
+            state->flags.bits.progress_2 = (progress[word + 2] & bit) != 0;
+            state->flags.bits.progress_3 = (progress[word + 1] & bit) != 0;
         }
     }
 }
@@ -358,10 +375,6 @@ void __cdecl GizPanel_Draw(void *world_pointer, void *unused, f32 unused_time) {
             EnableShadowMapRendering(0);
         else
             ResetShadowMapRendering();
-        models.base = models.animated = models.transition = models.state_on = models.state_off = models.arm =
-            models.target = -1;
-        models.arm_y = 0.0f;
-        models.arm_z = 0.0f;
         switch (panel->model_variant) {
             case 0:
                 models.base = (panel->draw_flags & 1) | 0x106;
@@ -369,7 +382,10 @@ void __cdecl GizPanel_Draw(void *world_pointer, void *unused, f32 unused_time) {
                 models.transition = 0x10a;
                 models.state_on = 0x10b;
                 models.state_off = 0x10c;
+                models.arm = -1;
                 models.target = 0x55;
+                models.arm_y = 0.0f;
+                models.arm_z = 0.0f;
                 break;
             case 1:
                 models.base = (panel->draw_flags & 1) != 0 ? 0x107 : 0x100;
@@ -377,7 +393,10 @@ void __cdecl GizPanel_Draw(void *world_pointer, void *unused, f32 unused_time) {
                 models.transition = 0x103;
                 models.state_on = 0x104;
                 models.state_off = 0x105;
+                models.arm = -1;
                 models.target = 0x55;
+                models.arm_y = 0.0f;
+                models.arm_z = 0.0f;
                 break;
             case 2:
                 models.base = 0x10d;
@@ -400,6 +419,12 @@ void __cdecl GizPanel_Draw(void *world_pointer, void *unused, f32 unused_time) {
                 models.target = 0x11a;
                 models.arm_y = 0.34f;
                 models.arm_z = -0.17f;
+                break;
+            default:
+                models.base = models.animated = models.transition = models.state_on = models.state_off = models.arm =
+                    models.target = -1;
+                models.arm_y = 0.0f;
+                models.arm_z = 0.0f;
                 break;
         }
         NuMtxSetRotationY(&base_matrix, panel->y_rotation);
