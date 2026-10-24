@@ -750,9 +750,10 @@ const u8 HintRGB[5][3] = {{255, 0, 0}, {0, 255, 0}, {0, 127, 255}, {127, 0, 255}
 
 void __cdecl DrawHint_LSW(HINT_PC *hint, i32 max_lines) {
     f32 alpha, text_x, text_y, icon_x, pulse, base, wave_x;
-    i32 alignment, lines, colour_index, channel;
+    i32 alignment, lines, colour_index;
     u16 pulse_angle, rotation;
-    u8 colours[3], text_alpha;
+    i32 red, green, blue;
+    u8 text_alpha;
     char *text;
     char expanded[1024];
     LEVEL_OBJECT_RUNTIME_PC *icon;
@@ -778,18 +779,20 @@ void __cdecl DrawHint_LSW(HINT_PC *hint, i32 max_lines) {
         colour_index = hint->colour_index;
         if (colour_index == -1)
             colour_index = hintsys.state;
-        for (channel = 0; channel < 3; ++channel) {
-            base = (f32)HintRGB[colour_index][channel];
-            colours[channel] = (u8)(i32)((((f64)base + 255.0) * 0.5 - (f64)base) * (f64)pulse + (f64)base);
-        }
+        base = (f32)HintRGB[colour_index][0];
+        red = (i32)((((f64)base + 255.0) * 0.5 - (f64)base) * (f64)pulse + (f64)base);
+        base = (f32)HintRGB[colour_index][1];
+        green = (i32)((((f64)base + 255.0) * 0.5 - (f64)base) * (f64)pulse + (f64)base);
+        base = (f32)HintRGB[colour_index][2];
+        blue = (i32)((((f64)base + 255.0) * 0.5 - (f64)base) * (f64)pulse + (f64)base);
         lines = max_lines == -1 ? 3 : max_lines;
         text_alpha = (u8)(i32)((f64)alpha * 128.0);
         if (alignment == 0) {
-            SmartTextEx(expanded, text_x, text_y, 1.0f, 0.5f, 0.5f, 0.5f, 0, colours[0], colours[1], colours[2], 1.4f,
-                        lines, NULL, 0, text_alpha);
+            SmartTextEx(expanded, text_x, text_y, 1.0f, 0.5f, 0.5f, 0.5f, 0, red, green, blue, 1.4f, lines, NULL, 0,
+                        text_alpha);
             icon_x = (f32)(-(f64)SmartTextLongestWidthPc * 0.5 - (f64)0.075f);
         } else {
-            SmartTextEx(expanded, text_x, text_y, 1.0f, 0.5f, 0.5f, 0.5f, alignment, colours[0], colours[1], colours[2],
+            SmartTextEx(expanded, text_x, text_y, 1.0f, 0.5f, 0.5f, 0.5f, alignment, red, green, blue,
                         (f32)(2.0 - (1.0 + (f64)text_x) - (f64)0.15f), lines, NULL, 0, text_alpha);
         }
     }
