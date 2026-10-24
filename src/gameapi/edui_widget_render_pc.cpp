@@ -222,3 +222,11 @@ i32 __cdecl eduicbRenderFilePick(eduimenu_s *unused_menu, eduiitem_s *item, i32 
         return height;
     }
 }
+
+void __cdecl eduiItemColourPickSetHSV(edui_colour_pick_s *item, f32 hue, f32 saturation, f32 value) {
+    item->hue = hue;
+    item->saturation = saturation;
+    item->value = value;
+    item->cursor_x = (f32)((f64)hue / 360.0);
+    item->cursor_y = value;
+}

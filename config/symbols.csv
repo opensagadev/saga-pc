@@ -6520,7 +6520,8 @@ address,symbol,size,ctype
 0x61a810,_eduiGradStageAddRGB,91,
 0x61a8c0,_eduiGradPickRead,329,
 0x61aa10,_eduicbItemGradPickDestroy,107,
-0x61aa80,_eduicbRenderGradPick,728,
+0x61aa80,_eduicbRenderGradPick,688,
+0x0061ad30,_eduiItemColourPickSetHSV,40,"void __cdecl(edui_colour_pick_s *, f32, f32, f32)"
 0x61ad60,_eduiItemColourPickSetRGB,69,
 0x61adb0,_eduicbProcessColourPick,686,
 0x61b260,_eduicbInteractColourPick,515,
