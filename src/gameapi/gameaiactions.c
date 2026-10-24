@@ -1,5 +1,7 @@
 #include "saga.h"
 
+static const char GizActionLevelPrefixPc[7] = "level=";
+
 void __cdecl FollowAPIObject(APIOBJECT_PC *, APIOBJECT_PC *, i32, f32);
 
 i32 __cdecl Action_FollowCharacter(AISYS_PC *system, AISCRIPTPROCESS_PC *processor, AIPACKET_PC *packet, char **params,
@@ -2064,5 +2066,65 @@ i32 __cdecl Action_GrabVictim(AISYS_PC *system, AISCRIPTPROCESS_PC *processor, A
     }
     if (victim != NULL)
         GrabVictim(object, victim);
+    return 1;
+}
+
+i32 __cdecl Action_IgnoreLastSafePathPosPc(AISYS_PC *system, AISCRIPTPROCESS_PC *processor, AIPACKET_PC *packet,
+                                           char **params, i32 count, i32 first_time, f32 elapsed) {
+    GAMEOBJECT *object = NULL;
+    APIOBJECT_PC *named;
+    i32 ignore = 1;
+    i32 index;
+    char *value;
+    if (first_time == 0)
+        return 1;
+    if (packet != NULL && packet->owner != NULL)
+        object = packet->owner->objptr;
+    for (index = 0; index < count; ++index) {
+        if (NuStrICmp(params[index], AIActionFalseName) == 0) {
+            ignore = 0;
+        } else {
+            value = NuStrIStr(params[index], (char *)AIGameCharacterName);
+            if (value != NULL) {
+                if (GetNamedGameObjectCallback != NULL) {
+                    named = GetNamedGameObjectCallback(system, value + 10);
+                    object = named != NULL ? named->owner : NULL;
+                } else {
+                    object = NULL;
+                }
+            }
+        }
+    }
+    if (object != NULL) {
+        if (object->character_context == 0x3c || object->rider != NULL)
+            Player_ClearContext(object, 1);
+        object->flags_ef4 = (object->flags_ef4 & ~0x01000000u) | ((u32)ignore << 24);
+    }
+    return 1;
+}
+
+i32 __cdecl Action_GoToNewLevelPc(AISYS_PC *system, AISCRIPTPROCESS_PC *processor, AIPACKET_PC *packet, char **params,
+                                  i32 count, i32 first_time, f32 elapsed) {
+    LEVELDATA_PC *level = NULL;
+    char *cutscene_name = NULL;
+    char *value;
+    i32 index;
+    if (first_time != 0) {
+        for (index = 0; index < count; ++index) {
+            value = NuStrIStr(params[index], (char *)GizActionLevelPrefixPc);
+            if (value != NULL) {
+                value += NuStrLen(GizActionLevelPrefixPc);
+                level = Level_FindByName(value, NULL);
+            } else {
+                value = NuStrIStr(params[index], (char *)CompleteLevelCutscenePrefix);
+                if (value != NULL)
+                    cutscene_name = value + NuStrLen(CompleteLevelCutscenePrefix);
+            }
+        }
+    }
+    if (FreePlay == 0 && cutscene_name != NULL && NewCutScene(NULL, WORLD->cutscene_sys, cutscene_name, 0) != NULL)
+        return 1;
+    if (level != NULL)
+        GoToNewLevel(level->index);
     return 1;
 }
