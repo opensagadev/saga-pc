@@ -1075,7 +1075,7 @@ void __cdecl Coins_LSW_Update(STATUS_STAGE_s *stage, STATUSPACKET_s *packet, f32
 i32 StatusGoldBrickStagePc = 0;
 i32 StatusGoldBrickPhasePc = 0;
 
-void __cdecl SetDrawGoldBrick(STATUSPACKET_s *packet, i32 unused) {
+__declspec(noinline) void __cdecl SetDrawGoldBrick(STATUSPACKET_s *packet, i32 unused) {
     i32 index = packet->current_gold_brick;
     (void)unused;
     if (packet->gold_brick_enabled[index] != 0) {
@@ -1766,26 +1766,33 @@ void __cdecl BonusComplete_LSW_Skip(STATUS_STAGE_s *stage, STATUSPACKET_s *packe
 }
 
 void __cdecl BonusComplete_LSW_Update(STATUS_STAGE_s *stage, STATUSPACKET_s *packet, f32 elapsed) {
-    if (stage->field_0x14 == 0) {
-        stage->field_0x18 = 0.0f;
-        stage->field_0x14 = 1;
-        {
-            volatile f32 duration = packet->newly_completed != 0 ? 4.0f : 0.5f;
-            stage->field_0x1c = duration;
+    switch (stage->field_0x14) {
+        case 0: {
+            stage->field_0x18 = 0.0f;
+            stage->field_0x14 = 1;
+            if (packet->newly_completed != 0) {
+                volatile f32 duration = 4.0f;
+                stage->field_0x1c = duration;
+            } else {
+                volatile f32 duration = 0.5f;
+                stage->field_0x1c = duration;
+            }
+            StatusDrawPlayerIconsPc = 1;
+            break;
         }
-        StatusDrawPlayerIconsPc = 1;
-    } else if (stage->field_0x14 == 1) {
-        SetDrawGoldBrick(packet, packet->current_gold_brick);
-        {
-            volatile f32 previous = stage->field_0x18;
-            volatile f32 accumulated = stage->field_0x18;
-            accumulated += elapsed;
-            stage->field_0x18 = accumulated;
-            if (accumulated >= stage->field_0x1c)
-                NextStatusStage(packet);
-            else if (packet->newly_completed != 0 && previous < 0.5f && accumulated >= 0.5f) {
-                PlaySfx("StatusAward", NULL);
-                NewStatusRumbleBuzz(-1, 0.6f, 0.0f, 0);
+        case 1: {
+            SetDrawGoldBrick(packet, packet->current_gold_brick);
+            {
+                volatile f32 previous = stage->field_0x18;
+                volatile f32 rounded_elapsed = stage->field_0x18 + elapsed;
+                f32 accumulated = rounded_elapsed;
+                stage->field_0x18 = accumulated;
+                if (stage->field_0x1c <= accumulated)
+                    NextStatusStage(packet);
+                else if (packet->newly_completed != 0 && 0.5f > previous && 0.5f <= accumulated) {
+                    PlaySfx("StatusAward", NULL);
+                    NewStatusRumbleBuzz(-1, 0.6f, 0.0f, 0);
+                }
             }
         }
     }
@@ -1797,25 +1804,29 @@ void __cdecl BonusTime_LSW_Skip(STATUS_STAGE_s *stage, STATUSPACKET_s *packet) {
 }
 
 void __cdecl BonusTime_LSW_Update(STATUS_STAGE_s *stage, STATUSPACKET_s *packet, f32 elapsed) {
-    if (stage->field_0x14 == 0) {
-        stage->field_0x14 = 1;
-        stage->field_0x18 = 0.0f;
-        stage->field_0x1c = 4.0f;
-    } else if (stage->field_0x14 == 1) {
-        SetDrawGoldBrick(packet, packet->current_gold_brick);
-        {
-            volatile f32 previous = stage->field_0x18;
-            volatile f32 accumulated = stage->field_0x18;
-            accumulated += elapsed;
-            stage->field_0x18 = accumulated;
-            if (accumulated >= stage->field_0x1c)
-                NextStatusStage(packet);
-            else if (previous < 0.5f && accumulated >= 0.5f) {
-                if (packet->new_best_time == 0.0f)
-                    GameAudio_PlaySfx(0x32, NULL, 0, 0);
-                else
-                    PlaySfx("StatusAward", NULL);
-                NewStatusRumbleBuzz(-1, 0.6f, 0.0f, 0);
+    switch (stage->field_0x14) {
+        case 0: {
+            stage->field_0x14 = 1;
+            stage->field_0x18 = 0.0f;
+            stage->field_0x1c = 4.0f;
+            break;
+        }
+        case 1: {
+            SetDrawGoldBrick(packet, packet->current_gold_brick);
+            {
+                volatile f32 previous = stage->field_0x18;
+                volatile f32 rounded_elapsed = stage->field_0x18 + elapsed;
+                f32 accumulated = rounded_elapsed;
+                stage->field_0x18 = accumulated;
+                if (stage->field_0x1c <= accumulated)
+                    NextStatusStage(packet);
+                else if (0.5f > previous && 0.5f <= accumulated) {
+                    if (packet->new_best_time == 0.0f)
+                        GameAudio_PlaySfx(0x32, NULL, 0, 0);
+                    else
+                        PlaySfx("StatusAward", NULL);
+                    NewStatusRumbleBuzz(-1, 0.6f, 0.0f, 0);
+                }
             }
         }
     }
