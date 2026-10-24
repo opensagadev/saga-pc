@@ -8445,6 +8445,8 @@ address,symbol,size,ctype
 0x6ddd50,_PcRegisterSaveFolderPc,49,"void __cdecl (const char *, const char *, const char *, i32)"
 0x6ddd90,_PcRegisterSaveMetadataPc,25,void __cdecl(const void *)
 0x006dddb0,_NuHwSetParameter33Pc,10,void __cdecl(void *)
+0x006ddea0,_NuMouseReadX,7,f32 __cdecl(void)
+0x006ddeb0,_NuMouseReadY,7,f32 __cdecl(void)
 0x006ddec0,_PcCreateCursorMaterialPc,217,void __cdecl(void)
 0x006de050,_PcFrameDelayMessagePc,3,const char *__cdecl(void)
 0x6de060,_PcShutdown,122,void __cdecl(void)
