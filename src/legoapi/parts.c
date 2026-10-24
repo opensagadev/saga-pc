@@ -2727,28 +2727,33 @@ void __cdecl GizmoPickup_CollectCoin(WORLDINFO *world, NUVEC *position, i32 type
     model_id = GizmoPickupType[type_index].first_model_id + model_variant;
     if (model_id == -1 || world->level_objects[model_id].active == 0)
         return;
+    score = GizmoPickupType[type_index].score;
     message = AddGameMsg_Default;
     message.icon = (i16)model_id;
     message.special = &world->level_objects[message.icon];
     message.player_index = (i8)player_index;
-    score = GizmoPickupType[type_index].score;
+    message.score = score;
     if (object != NULL && object->coin_packet != NULL) {
         if (DoubleScore & (1 << player_index)) {
-            if (StartupGameFlag1)
+            if (StartupGameFlag1) {
                 score += score;
-            else {
+                message.score = score;
+            } else {
                 packet = (COINPACKET_PICKUP_PC *)object->coin_packet;
                 multiplier = packet->multiplier;
                 score *= multiplier;
+                message.score = score;
                 if (packet->multiplier < 10)
                     ++packet->multiplier;
                 ((COINPACKET_PICKUP_PC *)object->coin_packet)->timer = 0.5f;
+                score = message.score;
             }
         }
-        if (object->powerup_time > 0.0f)
+        if (object->powerup_time > 0.0f) {
             score += score;
+            message.score = score;
+        }
     }
-    message.score = score;
     if (main_total)
         message.update_fn = GameMsg_DrawAdjustNewPos_CoinToTotal;
     message.scale = AreaPickupScale * PANEL_COINSCALE_START;
