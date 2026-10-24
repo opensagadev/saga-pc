@@ -1171,16 +1171,7 @@ extern "C" {
 
         NUMTX joint_matrices[256];
         DWA_WEIGHT_BLOCK_PC **dwa = NULL;
-        if (!blending) {
-            if (animation_a == NULL) {
-                NuHGobjEval(model->hierarchy, 0, NULL, joint_matrices);
-            } else {
-                NuHGobjEvalAnim2(model->hierarchy, animation_a, instance->animation_frame_a, 0, NULL, joint_matrices);
-            }
-            if (dwa_animation_a != NULL) {
-                dwa = NuHGobjEvalDwa2(render_count, render_indices, dwa_animation_a, instance->animation_frame_a);
-            }
-        } else {
+        if (blending) {
             ANI3_HEADER_PC *animation_b;
             NUANIMDATA2_PC *dwa_animation_b;
             if (instance->animation_b == 0) {
@@ -1220,6 +1211,15 @@ extern "C" {
                         instance->animation_frame_b = instance->animation_frame_b - end_frame + 1.0f;
                     }
                 }
+            }
+        } else {
+            if (animation_a != NULL) {
+                NuHGobjEvalAnim2(model->hierarchy, animation_a, instance->animation_frame_a, 0, NULL, joint_matrices);
+            } else {
+                NuHGobjEval(model->hierarchy, 0, NULL, joint_matrices);
+            }
+            if (dwa_animation_a != NULL) {
+                dwa = NuHGobjEvalDwa2(render_count, render_indices, dwa_animation_a, instance->animation_frame_a);
             }
         }
 
@@ -1285,34 +1285,7 @@ extern "C" {
             }
             if (shadow_alpha != 0) {
                 f32 shadow_radius = game_data->field_08c;
-                if (game_data->shadow_locators == 0) {
-                    if (!(shadow_radius < 99.0f)) {
-                        shadow_radius = character_data->model_scale * character_data->collision_radius * 2.0f;
-                    }
-                    if (shadow_radius > 0.0f) {
-                        ground_height = GameShadow(NULL, reinterpret_cast<NUVEC *>(&world_matrix.m30), 5.0f, -1);
-                        if (ground_height != 2000000.0f) {
-                            platform = NewShadowOnPlatform();
-                            surface = ShadowInfo();
-                            if (ShadNorm.y > 0.0f) {
-                                NUVEC shadow_position = *reinterpret_cast<NUVEC *>(&world_matrix.m30);
-                                shadow_position.y = ground_height + 0.005f;
-                                f32 alpha = BlobShadowFade(&shadow_position, CutBlobShadowFadeNear,
-                                                           CutBlobShadowFadeFar, ShadNorm.y);
-                                if (alpha > 0.0f) {
-                                    u16 x_rotation;
-                                    u16 z_rotation;
-                                    FindAnglesZX(&ShadNorm, &x_rotation, &z_rotation);
-                                    NuRndrAddShadow(
-                                        &shadow_position, shadow_radius,
-                                        static_cast<i32>(static_cast<f32>(shadow_alpha) * alpha * ShadNorm.y),
-                                        x_rotation, 0, z_rotation);
-                                }
-                            }
-                        }
-                        shadow_sampled = true;
-                    }
-                } else {
+                if (game_data->shadow_locators != 0) {
                     if (!(shadow_radius < 99.0f)) {
                         shadow_radius = character_data->collision_radius * character_data->model_scale;
                     }
@@ -1342,6 +1315,33 @@ extern "C" {
                     ground_height = 2000000.0f;
                     platform = -1;
                     shadow_sampled = false;
+                } else {
+                    if (!(shadow_radius < 99.0f)) {
+                        shadow_radius = character_data->model_scale * character_data->collision_radius * 2.0f;
+                    }
+                    if (shadow_radius > 0.0f) {
+                        ground_height = GameShadow(NULL, reinterpret_cast<NUVEC *>(&world_matrix.m30), 5.0f, -1);
+                        if (ground_height != 2000000.0f) {
+                            platform = NewShadowOnPlatform();
+                            surface = ShadowInfo();
+                            if (ShadNorm.y > 0.0f) {
+                                NUVEC shadow_position = *reinterpret_cast<NUVEC *>(&world_matrix.m30);
+                                shadow_position.y = ground_height + 0.005f;
+                                f32 alpha = BlobShadowFade(&shadow_position, CutBlobShadowFadeNear,
+                                                           CutBlobShadowFadeFar, ShadNorm.y);
+                                if (alpha > 0.0f) {
+                                    u16 x_rotation;
+                                    u16 z_rotation;
+                                    FindAnglesZX(&ShadNorm, &x_rotation, &z_rotation);
+                                    NuRndrAddShadow(
+                                        &shadow_position, shadow_radius,
+                                        static_cast<i32>(static_cast<f32>(shadow_alpha) * alpha * ShadNorm.y),
+                                        x_rotation, 0, z_rotation);
+                                }
+                            }
+                        }
+                        shadow_sampled = true;
+                    }
                 }
             }
         }
