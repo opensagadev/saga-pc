@@ -519,3 +519,45 @@ f32 __cdecl Condition_SpawnCountPc(AISYS_PC *system, AISCRIPTPROCESS_PC *process
         return (f32)packet->respawn_count;
     return 0.0f;
 }
+
+STATIC_ASSERT(offsetof(GAMEOBJECT, field_ef0) == 0xef0);
+f32 __cdecl Condition_PlayerDeflectingPartPc(AISYS_PC *system, AISCRIPTPROCESS_PC *process, AIPACKET_PC *packet,
+                                             char *name, void *argument) {
+    if (player != NULL && player->force_part != NULL)
+        return 1.0f;
+    return 0.0f;
+}
+f32 __cdecl Condition_Player2ActivePc(AISYS_PC *system, AISCRIPTPROCESS_PC *process, AIPACKET_PC *packet, char *name,
+                                      void *argument) {
+    if (player2 != NULL)
+        return 1.0f;
+    return 0.0f;
+}
+f32 __cdecl Condition_BoltsDontGetDeflectedBackPc(AISYS_PC *system, AISCRIPTPROCESS_PC *process, AIPACKET_PC *packet,
+                                                  char *name, void *argument) {
+    if (packet != NULL && packet->owner != NULL && (packet->owner->objptr->field_ef0 & 8) != 0)
+        return 1.0f;
+    return 0.0f;
+}
+f32 __cdecl Condition_BigJumpCompletePc(AISYS_PC *system, AISCRIPTPROCESS_PC *process, AIPACKET_PC *packet, char *name,
+                                        void *argument) {
+    if (packet != NULL && packet->owner != NULL && packet->owner->objptr->character_context == 0x1f)
+        return 0.0f;
+    return 1.0f;
+}
+f32 __cdecl Condition_BeingTowedPc(AISYS_PC *system, AISCRIPTPROCESS_PC *process, AIPACKET_PC *packet, char *name,
+                                   void *argument) {
+    if (packet != NULL && (packet->owner->objptr->flags_ef4 & 0x200) != 0)
+        return 1.0f;
+    return 0.0f;
+}
+f32 __cdecl Condition_CanHearRadioPc(AISYS_PC *system, AISCRIPTPROCESS_PC *process, AIPACKET_PC *packet, char *name,
+                                     void *argument) {
+    if (radios_playing != 0)
+        return 1.0f;
+    return 0.0f;
+}
+f32 __cdecl Condition_RaceLapPc(AISYS_PC *system, AISCRIPTPROCESS_PC *process, AIPACKET_PC *packet, char *name,
+                                void *argument) {
+    return (f32)Lap;
+}
