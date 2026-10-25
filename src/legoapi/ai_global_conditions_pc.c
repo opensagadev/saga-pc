@@ -1199,3 +1199,17 @@ f32 __cdecl Condition_OpponentIsAPc(AISYS_PC *system, AISCRIPTPROCESS_PC *proces
         return 1.0f;
     return 0.0f;
 }
+
+f32 __cdecl Condition_Player1IsPc(AISYS_PC *system, AISCRIPTPROCESS_PC *process, AIPACKET_PC *packet, char *name,
+                                  void *argument) {
+    if (system != NULL && argument != NULL && system->player_1 == argument)
+        return 1.0f;
+    return 0.0f;
+}
+
+f32 __cdecl Condition_Player2IsPc(AISYS_PC *system, AISCRIPTPROCESS_PC *process, AIPACKET_PC *packet, char *name,
+                                  void *argument) {
+    if (system != NULL && argument != NULL && system->player_2 == argument)
+        return 1.0f;
+    return 0.0f;
+}

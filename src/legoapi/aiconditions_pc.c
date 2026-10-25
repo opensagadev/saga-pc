@@ -149,10 +149,10 @@ STATIC_ASSERT(offsetof(AILOCATOR_PC, position) == 0x10);
 
 f32 __cdecl Condition_IAmAPc(AISYS_PC *system, AISCRIPTPROCESS_PC *process, AIPACKET_PC *packet, char *name,
                              void *argument) {
-    return packet != NULL && packet->owner != NULL && packet->owner->objptr != NULL &&
-                   (i32)(i16)packet->owner->objptr->id == (i32)argument
-               ? 1.0f
-               : 0.0f;
+    if (packet != NULL && packet->owner != NULL && packet->owner->objptr != NULL &&
+        (i32)(i16)packet->owner->objptr->id == (i32)argument)
+        return 1.0f;
+    return 0.0f;
 }
 
 f32 __cdecl Condition_GotTriggerAreaPc(AISYS_PC *system, AISCRIPTPROCESS_PC *process, AIPACKET_PC *packet, char *name,
