@@ -13823,3 +13823,154 @@ void __cdecl areaEditorDrawAreas(void) {
     AiRndrCullDistance = previous_distance;
 }
 #undef AREA_DRAW_OWNER_PC
+
+STATIC_ASSERT(offsetof(AIEDITOR_RENDER_STATE, mode_selection_36930) == 0x371b0);
+STATIC_ASSERT(offsetof(AIEDITOR_RENDER_STATE, locators) == 0x3cbd8);
+STATIC_ASSERT(offsetof(AI_EDITOR_CREATURE_SAVE_PC, locator) == 0x84);
+STATIC_ASSERT(offsetof(AI_EDITOR_CREATURE_SAVE_PC, respawn_locator) == 0x88);
+STATIC_ASSERT(offsetof(AI_EDITOR_CREATURE_SAVE_PC, min_respawns) == 0x8d);
+STATIC_ASSERT(offsetof(AI_EDITOR_CREATURE_SAVE_PC, max_respawns) == 0x8e);
+STATIC_ASSERT(offsetof(AI_EDITOR_CREATURE_SAVE_PC, min_respawn_time) == 0x90);
+STATIC_ASSERT(offsetof(AI_EDITOR_CREATURE_SAVE_PC, max_respawn_time) == 0x94);
+STATIC_ASSERT(offsetof(edui_slider_s, value) == 0x54);
+STATIC_ASSERT(offsetof(eduiitem_s, data) == 0xc);
+STATIC_ASSERT(offsetof(eduimenu_s, selected) == 8);
+#define RESPAWN_CREATURE_PC ((AI_EDITOR_CREATURE_SAVE_PC *)aieditor->mode_selection_36930)
+
+typedef struct AI_EDITOR_RESPAWN_COUNTS_PC {
+    u8 unknown_00[0x8d];
+    i8 min_respawns;
+    i8 max_respawns;
+} AI_EDITOR_RESPAWN_COUNTS_PC;
+STATIC_ASSERT(offsetof(AI_EDITOR_RESPAWN_COUNTS_PC, min_respawns) == 0x8d);
+STATIC_ASSERT(offsetof(AI_EDITOR_RESPAWN_COUNTS_PC, max_respawns) == 0x8e);
+#define RESPAWN_COUNTS_PC ((AI_EDITOR_RESPAWN_COUNTS_PC *)aieditor->mode_selection_36930)
+
+static void __cdecl AiEditorRespawnCancelMenuPc(eduimenu_s *menu, eduimenu_s *child) {
+    (void)child;
+    eduiMenuDestroy(menu);
+}
+
+static void __cdecl AiEditorRespawnMinCountPc(eduimenu_s *menu, eduiitem_s *item, u32 event) {
+    (void)menu;
+    (void)event;
+    if (RESPAWN_CREATURE_PC != NULL) {
+        RESPAWN_COUNTS_PC->min_respawns = (i32)((edui_slider_s *)item)->value;
+        if (RESPAWN_COUNTS_PC->min_respawns > RESPAWN_COUNTS_PC->max_respawns) {
+            RESPAWN_COUNTS_PC->min_respawns = RESPAWN_COUNTS_PC->max_respawns;
+            eduiItemSliderSetVal((edui_slider_s *)item, (f32)RESPAWN_COUNTS_PC->min_respawns);
+        }
+    }
+}
+
+static void __cdecl AiEditorRespawnMaxCountPc(eduimenu_s *menu, eduiitem_s *item, u32 event) {
+    (void)menu;
+    (void)event;
+    if (RESPAWN_CREATURE_PC != NULL) {
+        RESPAWN_COUNTS_PC->max_respawns = (i32)((edui_slider_s *)item)->value;
+        if (RESPAWN_COUNTS_PC->max_respawns < RESPAWN_COUNTS_PC->min_respawns) {
+            RESPAWN_COUNTS_PC->max_respawns = RESPAWN_COUNTS_PC->min_respawns;
+            eduiItemSliderSetVal((edui_slider_s *)item, (f32)RESPAWN_COUNTS_PC->max_respawns);
+        }
+    }
+}
+
+static void __cdecl AiEditorRespawnMinTimePc(eduimenu_s *menu, eduiitem_s *item, u32 event) {
+    (void)menu;
+    (void)event;
+    if (RESPAWN_CREATURE_PC != NULL) {
+        RESPAWN_CREATURE_PC->min_respawn_time = ((edui_slider_s *)item)->value;
+        if (RESPAWN_CREATURE_PC->min_respawn_time > RESPAWN_CREATURE_PC->max_respawn_time) {
+            RESPAWN_CREATURE_PC->min_respawn_time = RESPAWN_CREATURE_PC->max_respawn_time;
+            eduiItemSliderSetVal((edui_slider_s *)item, RESPAWN_CREATURE_PC->min_respawn_time);
+        }
+    }
+}
+
+static void __cdecl AiEditorRespawnMaxTimePc(eduimenu_s *menu, eduiitem_s *item, u32 event) {
+    (void)menu;
+    (void)event;
+    if (RESPAWN_CREATURE_PC != NULL) {
+        RESPAWN_CREATURE_PC->max_respawn_time = ((edui_slider_s *)item)->value;
+        if (RESPAWN_CREATURE_PC->max_respawn_time < RESPAWN_CREATURE_PC->min_respawn_time) {
+            RESPAWN_CREATURE_PC->max_respawn_time = RESPAWN_CREATURE_PC->min_respawn_time;
+            eduiItemSliderSetVal((edui_slider_s *)item, RESPAWN_CREATURE_PC->max_respawn_time);
+        }
+    }
+}
+
+static void __cdecl AiEditorSetRespawnLocatorPc(eduimenu_s *menu, eduiitem_s *item, u32 event) {
+    i32 index = 0;
+    EDLOCATOR_s *locator;
+    (void)menu;
+    (void)event;
+    if (item == NULL || RESPAWN_CREATURE_PC == NULL)
+        return;
+    if (item->data == -1) {
+        /* Native clears the base locator, not the respawn locator. */
+        RESPAWN_CREATURE_PC->locator = NULL;
+        return;
+    }
+    for (locator = (EDLOCATOR_s *)NuLinkedListGetHead(&aieditor->locators); locator != NULL;
+         locator = (EDLOCATOR_s *)NuLinkedListGetNext(&aieditor->locators, &locator->link), ++index) {
+        if (index == item->data) {
+            RESPAWN_CREATURE_PC->respawn_locator = locator;
+            return;
+        }
+    }
+}
+
+static void __cdecl AiEditorSelectRespawnLocatorPc(eduimenu_s *parent, eduiitem_s *item, u32 event) {
+    eduimenu_s *menu = eduiMenuCreate(220, 70, 240, 250, ed_fnt, AiEditorRespawnCancelMenuPc, "Select Locator");
+    EDLOCATOR_s *locator;
+    i32 index = 0;
+    (void)item;
+    (void)event;
+    if (menu == NULL)
+        return;
+    eduiMenuAddItem(menu, eduiItemCheckCreate((size_t)-1, &AiEditorSaveMessageColoursPc,
+                                              RESPAWN_CREATURE_PC->respawn_locator == NULL, 1,
+                                              AiEditorSetRespawnLocatorPc, "NONE"));
+    for (locator = (EDLOCATOR_s *)NuLinkedListGetHead(&aieditor->locators); locator != NULL;
+         locator = (EDLOCATOR_s *)NuLinkedListGetNext(&aieditor->locators, &locator->link), ++index) {
+        i32 selected = RESPAWN_CREATURE_PC->respawn_locator == locator;
+        eduiMenuAddItem(menu, eduiItemCheckCreate(index, &AiEditorSaveMessageColoursPc, selected, 1,
+                                                  AiEditorSetRespawnLocatorPc, locator->name));
+        if (selected)
+            menu->selected = edui_last_item;
+        eduiMenuAttach(parent, menu);
+    }
+}
+
+void __cdecl creatureEditor_cbRespawnMenu(eduimenu_s *parent, eduiitem_s *item, u32 event) {
+    eduimenu_s *menu;
+    char label[32];
+    (void)item;
+    (void)event;
+    if (RESPAWN_CREATURE_PC == NULL)
+        return;
+    menu = eduiMenuCreate(220, 70, 240, 250, ed_fnt, AiEditorRespawnCancelMenuPc, "Respawn Values");
+    if (menu == NULL)
+        return;
+    if (NuLinkedListGetHead(&aieditor->locators) != NULL) {
+        if (RESPAWN_CREATURE_PC->respawn_locator != NULL) {
+            EDLOCATOR_s *locator = (EDLOCATOR_s *)RESPAWN_CREATURE_PC->respawn_locator;
+            sprintf(label, "Respawn Locator \"%s\"", locator->name);
+        } else {
+            sprintf(label, "Respawn Locator NONE");
+        }
+        eduiMenuAddItem(
+            menu, eduiItemSelCreate(1, &AiEditorSaveMessageColoursPc, 0, 0, AiEditorSelectRespawnLocatorPc, label));
+    }
+    eduiMenuAddItem(menu, eduiItemSliderCreateInt(1, &AiEditorSaveMessageColoursPc, 0, AiEditorRespawnMinCountPc, -1,
+                                                  33, (i8)RESPAWN_CREATURE_PC->min_respawns, "Min Num Respawns"));
+    eduiMenuAddItem(menu, eduiItemSliderCreateInt(1, &AiEditorSaveMessageColoursPc, 0, AiEditorRespawnMaxCountPc, -1,
+                                                  33, (i8)RESPAWN_CREATURE_PC->max_respawns, "Max Num Respawns"));
+    eduiMenuAddItem(menu, eduiItemSliderCreate(1, &AiEditorSaveMessageColoursPc, 0, AiEditorRespawnMinTimePc, 0.0f,
+                                               60.0f, RESPAWN_CREATURE_PC->min_respawn_time, "Min Respawn Time"));
+    eduiMenuAddItem(menu, eduiItemSliderCreate(1, &AiEditorSaveMessageColoursPc, 0, AiEditorRespawnMaxTimePc, 0.0f,
+                                               60.0f, RESPAWN_CREATURE_PC->max_respawn_time, "Max Respawn Time"));
+    eduiMenuAttach(parent, menu);
+}
+#undef RESPAWN_COUNTS_PC
+#undef RESPAWN_CREATURE_PC

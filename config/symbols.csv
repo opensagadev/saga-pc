@@ -3267,7 +3267,14 @@ address,symbol,size,ctype
 0x528210,_antinodeEditorSaveData,567,
 0x5285f0,_creatureEditorSaveData,1273,
 0x528af0,_creatureEditor_IsSelectable,53,
+0x528d00,_AiEditorRespawnCancelMenuPc,12,
 0x528e00,_creatureEditor_cbActivationMenu,464,
+0x528fd0,_AiEditorRespawnMinCountPc,122,
+0x529050,_AiEditorRespawnMaxCountPc,122,
+0x5290d0,_AiEditorRespawnMinTimePc,116,
+0x529150,_AiEditorRespawnMaxTimePc,116,
+0x529240,_AiEditorSetRespawnLocatorPc,122,
+0x5292c0,_AiEditorSelectRespawnLocatorPc,261,
 0x5293d0,_creatureEditor_cbRespawnMenu,502,
 0x529730,_creatureEditor_cbVisionMenu,397,
 0x529a00,_creatureEditor_cbSelectType,195,
@@ -14957,6 +14964,14 @@ address,symbol,size,ctype
 0x760088,??_C@_05CEDINIPN@?$CF5?42f?$AA@,6,char []
 0x760090,??_C@_04OKGDLNCL@NONE?$AA@,5,char []
 0x760098,__real@38d1b717,,
+0x760188,??_C@_0P@LMEKNENH@Select?5Locator?$AA@,,char []
+0x760198,??_C@_0BB@EAEOLLPK@Max?5Respawn?5Time?$AA@,,char []
+0x7601ac,??_C@_0BB@FFMFGPAI@Min?5Respawn?5Time?$AA@,,char []
+0x7601c0,??_C@_0BB@MDADADMO@Max?5Num?5Respawns?$AA@,,char []
+0x7601d4,??_C@_0BB@NGIINHDM@Min?5Num?5Respawns?$AA@,,char []
+0x7601e8,??_C@_0BF@MGDCBAMD@Respawn?5Locator?5NONE?$AA@,,char []
+0x760200,??_C@_0BF@MIGEBGEL@Respawn?5Locator?5?$CC?$CFs?$CC?$AA@,,char []
+0x760218,??_C@_0P@EKBNPFG@Respawn?5Values?$AA@,,char []
 0x007603f8,??_C@_07DKPOBDJL@OnMacro?$AA@,8,const char[8]
 0x760400,??_C@_02FDNJECIE@?$CB?$DN?$AA@,,
 0x760404,??_C@_02EEKDKGMJ@?$DO?$DN?$AA@,,
