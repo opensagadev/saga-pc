@@ -1553,3 +1553,77 @@ void __cdecl MatrixText(VUFNT *font, unsigned char *text, f32 x, f32 y, f32 z, f
     NuQFntPopCoordinateSystem();
     NuQFntPopPrintMode();
 }
+
+extern void __cdecl GameDrawMenuEntry(MENU *menu, char *text);
+extern f32 MenuTextScalePc;
+
+void __cdecl MenuDrawViewTextStrings(MENU *menu) {
+    char text[2048];
+    i32 i;
+    menu->item_scale = 2.0f;
+    menu->centre_offset = MENUDY * 2.0f;
+    menu->draw_x = -0.75f;
+    menu->draw_y = (f32) - (i32)menu->selected_row * menu->centre_offset;
+    for (i = 0; i < Text_MaxStrings_Overall; ++i) {
+        f32 y;
+        i32 red, green, blue;
+        dme_sx = 0.6f;
+        dme_align = 0;
+        dme_sy = menu->item_scale;
+        GameDrawMenuEntry(menu, " ");
+        y = menu->draw_y - menu->centre_offset;
+        if (MenuStopDraw != 0)
+            continue;
+        if (!(y >= -1.25f && y < 1.25f))
+            continue;
+        if ((Text_StringBits[i / 32] & (1U << (i & 31))) != 0) {
+            if (menu->selected_item == i) {
+                if (menu_flash != 0) {
+                    red = MENUFLASH0R;
+                    green = MENUFLASH0G;
+                    blue = MENUFLASH0B;
+                } else {
+                    red = MENUFLASH1R;
+                    green = MENUFLASH1G;
+                    blue = MENUFLASH1B;
+                }
+                if (menu_pulsate > 0.0f) {
+                    red = (i32)(MENUFLASH0R * (f64)menu_pulsate + MENUFLASH1R * (1.0 - menu_pulsate));
+                    green = (i32)(MENUFLASH0G * (f64)menu_pulsate + MENUFLASH1G * (1.0 - menu_pulsate));
+                    blue = (i32)(MENUFLASH0B * (f64)menu_pulsate + MENUFLASH1B * (1.0 - menu_pulsate));
+                }
+            } else {
+                red = MENUENTRYR;
+                green = MENUENTRYG;
+                blue = MENUENTRYB;
+            }
+        } else {
+            red = 255;
+            if (menu->selected_item == i) {
+                if (menu_flash != 0) {
+                    green = 255;
+                    blue = 255;
+                } else {
+                    green = 191;
+                    blue = 0;
+                }
+            } else {
+                green = 0;
+                blue = 0;
+            }
+        }
+        dme_r = (u8)red;
+        dme_g = (u8)green;
+        dme_b = (u8)blue;
+        dme_rgb = 1;
+        sprintf(text, "%i", i);
+        SmartTextEx(text, -0.76f, y, 1.0f, MenuTextScalePc, MenuTextScalePc, MenuTextScalePc, 8, red, green, blue,
+                    0.09000003f, 1, NULL, 0, MenuA);
+        if (TTab[i] != NULL) {
+            dme_rgb = 1;
+            Text_ExpandAllButtonStrings(TTab[i], text);
+            SmartTextEx(text, -0.74f, y, 1.0f, MenuTextScalePc, MenuTextScalePc, MenuTextScalePc, 2, red, green, blue,
+                        1.59f, 2, NULL, 0, MenuA);
+        }
+    }
+}
