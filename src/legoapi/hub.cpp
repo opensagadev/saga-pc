@@ -5172,3 +5172,61 @@ extern "C" {
         TextInputSetLastDevicePc(old_input_device);
     }
 }
+
+extern "C" void __cdecl Hub_UpdateKit(void) {
+    i32 right = 0, left = 0, cancel = 0;
+    if (HubMiniKitViewerMoveWaitPc <= 0.0f) {
+        for (i32 player = 0; player < 2; ++player) {
+            if (MissionMenuPacketPc.active_player[player] != 0) {
+                const u32 held = GamePadStorage[player].menu_buttons_held;
+                if ((held & GAMEPAD_TOGGLELEFT) == 0) {
+                    if ((held & GAMEPAD_TOGGLERIGHT) != 0)
+                        ++right;
+                } else if ((held & GAMEPAD_TOGGLERIGHT) == 0)
+                    ++left;
+                if ((GamePadStorage[player].menu_buttons_pressed & GAMEPAD_MENUCANCEL) != 0)
+                    cancel = 1;
+            }
+        }
+    }
+    const i32 previous = HubMiniKitViewerAreaPc;
+    if (left != 0 && right == 0) {
+        HubMiniKitViewerMovePc = -1.0f;
+        i32 index = previous;
+        i32 attempts = 0;
+        do {
+            index = (i32)((u32)index - 1u);
+            if (index < 0)
+                index = AREACOUNT;
+            if (++attempts >= AREACOUNT)
+                break;
+        } while ((ADataList[index].flags & 0x10) == 0);
+        HubMiniKitViewerAreaPc = index;
+    } else if (right != 0 && left == 0) {
+        HubMiniKitViewerMovePc = 1.0f;
+        i32 index = previous;
+        i32 attempts = 0;
+        do {
+            index = (i32)((u32)index + 1u);
+            if (index >= AREACOUNT)
+                index = 0;
+            if (++attempts >= AREACOUNT)
+                break;
+        } while ((ADataList[index].flags & 0x10) == 0);
+        HubMiniKitViewerAreaPc = index;
+    }
+    if (HubMiniKitViewerAreaPc != previous) {
+        HubMiniKitViewerAlphaPc = 0.0f;
+        HubMiniKitViewerMoveWaitPc = 1.0f;
+        PlaySfx((char *)ForcePushSoundNamePc, &HubMiniKitViewerPositionPc);
+    }
+    if (cancel != 0) {
+        GameAudio_PlaySfx(0x31, NULL, 0, 0);
+        MenuReset();
+        HubMiniKitPanelTimePc = 0.0f;
+        HubMiniKitAreaPc = -1;
+        HubMiniKitOpenTimePc = 0.0f;
+        LevLock[4] = 1;
+        LevTime[4] = 0.6f;
+    }
+}
