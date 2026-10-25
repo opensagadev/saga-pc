@@ -754,3 +754,30 @@ f32 __cdecl Condition_FlowBoxCompletePc(AISYS_PC *system, AISCRIPTPROCESS_PC *pr
         return (box->state_flags_low & 2) != 0 ? 1.0 : 0.0;
     return 0.0f;
 }
+
+STATIC_ASSERT(offsetof(AIAREA_PC, runtime_flags) == 0x2a);
+STATIC_ASSERT(offsetof(AISCRIPTPROCESS_PC, unknown_a0) == 0xa0);
+STATIC_ASSERT(offsetof(AISYS_PC, player_1) == 0x138c);
+STATIC_ASSERT(offsetof(APIOBJECT_PC, ai) == 4);
+STATIC_ASSERT(offsetof(AIPACKET_PC, path_info) + offsetof(AIPATHINFO_PC, flags) == 0x166);
+void *__cdecl Condition_GoodyInTriggerAreaInitPc(AISYS_PC *system, char *name, AISCRIPT_PC *script) {
+    if (name != NULL)
+        return AISysFindArea(system, name);
+    return NULL;
+}
+f32 __cdecl Condition_GoodyInTriggerAreaPc(AISYS_PC *system, AISCRIPTPROCESS_PC *process, AIPACKET_PC *packet,
+                                           char *name, void *argument) {
+    AIAREA_PC *area = (AIAREA_PC *)argument;
+    if (area == NULL)
+        area = (AIAREA_PC *)process->unknown_a0;
+    if (area != NULL && (area->runtime_flags & 2) != 0)
+        return 1.0f;
+    return 0.0f;
+}
+f32 __cdecl Condition_PlayerOnPathPc(AISYS_PC *system, AISCRIPTPROCESS_PC *process, AIPACKET_PC *packet, char *name,
+                                     void *argument) {
+    APIOBJECT_PC *player = system->player_1;
+    if (player != NULL && (player->ai->path_info.flags & 1) != 0)
+        return 1.0f;
+    return 0.0f;
+}
