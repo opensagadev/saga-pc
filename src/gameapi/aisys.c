@@ -729,11 +729,12 @@ static i32 TestPointPathCheck(NUVEC *point, EDAIPATHNODE_s *first, EDAIPATHNODE_
 
 void antinodeEditor_UpdateAntiNodesOnPlatforms(void) {
     struct EDANTINODE_s *node;
-    NULISTHDR *list = ((NULISTHDR *)(((u8 *)(aieditor)) + 0x42e94));
+    NULISTHDR *list = &((AI_EDITOR_SAVE_LISTS_PC *)aieditor)->antinodes;
     NUVEC rotated;
     NUVEC forward = {0.0f, 0.0f, 1.0f};
     for (node = ((EDANTINODE_s *)(NuLinkedListGetHead(list))); node != NULL;
-         node = ((EDANTINODE_s *)(NuLinkedListGetNext(((NULISTHDR *)(((u8 *)(aieditor)) + 0x42e94)), &node->link)))) {
+         node =
+             ((EDANTINODE_s *)(NuLinkedListGetNext(&((AI_EDITOR_SAVE_LISTS_PC *)aieditor)->antinodes, &node->link)))) {
         struct numtx_s *matrix;
         if (!NuSpecialExistsFn(&node->special))
             continue;
