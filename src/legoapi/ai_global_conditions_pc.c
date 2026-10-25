@@ -1359,3 +1359,21 @@ f32 __cdecl Condition_OnPathPc(AISYS_PC *system, AISCRIPTPROCESS_PC *process, AI
         return 1.0f;
     return 0.0f;
 }
+
+void *__cdecl Condition_IAmInitPc(AISYS_PC *system, char *name, AISCRIPT_PC *script) {
+    if (name != NULL && GetNamedGameObjectCallback != NULL)
+        return GetNamedGameObjectCallback(system, name);
+    return NULL;
+}
+
+f32 __cdecl Condition_IAmPc(AISYS_PC *system, AISCRIPTPROCESS_PC *process, AIPACKET_PC *packet, char *name,
+                            void *argument) {
+    if (packet != NULL && packet->owner != NULL) {
+        if (packet->owner == argument)
+            return 1.0f;
+        if (packet->owner->character_data != NULL && packet->owner->character_data->name != NULL &&
+            NuStrICmp(packet->owner->character_data->name, name) == 0)
+            return 1.0f;
+    }
+    return 0.0f;
+}
