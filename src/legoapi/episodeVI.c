@@ -920,3 +920,221 @@ void __cdecl DeathStar2BattleD_Update(WORLDINFO *world) {
         DisorientateCode((GAMEOBJECT *)Player[i], mid, 225.0f);
     }
 }
+
+f32 SarlaccDiscoHeightPc = 1.27f;
+f32 SarlaccDiscoSeekPc = 2.0f;
+f32 SarlaccDiscoTimePc = 40.0f;
+f32 SarlaccDiscoTimeoutPc = 2.5f;
+f32 SarlaccDiscoRadiusPc = 0.2f;
+#pragma section(".sarlrw", read, write)
+__declspec(allocate(".sarlrw")) static NUVEC sarlacc_lump_position = {0};
+__declspec(allocate(".sarlrw")) static f32 sarlacc_engine_timer = 0.0f;
+
+static i32 SarlaccDiscoPickPanel(i32 state, i32 exclude) {
+    i32 candidates[16];
+    i32 count = 0;
+    i32 index;
+    i32 panel_count = sarlaccdisco.count;
+    for (index = 0; index < panel_count; ++index)
+        if (index != exclude && (i8)sarlaccdisco.panel_state[index] == state)
+            candidates[count++] = index;
+    return count != 0 ? candidates[NuRand(NULL) % count] : -1;
+}
+
+void __cdecl SarlaccPitB_Update(WORLDINFO *world) {
+    i32 index;
+    if (netclient == 0) {
+        GIZMO_PC *panel;
+        i32 ready = 0;
+        SARLACC_PACKET->sound_mask = 0;
+        SetGizAIMessage(gizaimessagesys, "HelpWithDisco", 0.0f, sarlaccdisco.help_message);
+        SetGizAIMessage(gizaimessagesys, "DiscoComplete", 0.0f, sarlaccdisco.complete_message);
+        SetGizAIMessage(gizaimessagesys, "DiscoState", (f32)sarlaccdisco.phase, sarlaccdisco.state_message);
+        panel = (GIZMO_PC *)GizmoFindByName(world->gizmo_sys, gizspecial_gizmotype_id, "qaz_panel2");
+        GizmoGetOutput(world->gizmo_sys, panel, 0, 0);
+        if (GizBuildIt_AtEnd(SarlaccLevelBuilditsPc[0]) && GizBuildIt_AtEnd(SarlaccLevelBuilditsPc[1]) &&
+            ((struct GIZSPECIAL_s *)panel->object)->anim_set->state == 2) {
+            if (sarlaccdisco.complete_message->value == 0.0f)
+                SetGizAIMessage(gizaimessagesys, "discoflooropen", 1.0f, NULL);
+            ready = 1;
+        }
+        switch (sarlaccdisco.phase) {
+            case 0:
+                SARLACC_PACKET->disco_active = 0;
+                if (NuSpecialExistsFn(&SarlaccLevSpecialPc[0]) && ready) {
+                    GAMEOBJECT *object = player;
+                    i32 occupied = 0;
+                    if (object != NULL) {
+                        i32 mask = (i32)(1u << ((sarlaccdisco.area - world->ai_sys->areas) & 31));
+                        occupied =
+                            (object->ai_area_mask[0] & (u32)mask) | (object->ai_area_mask[1] & (u32)(mask >> 31));
+                    }
+                    if (!occupied) {
+                        object = player2;
+                        if (object != NULL) {
+                            i32 mask = (i32)(1u << ((sarlaccdisco.area - world->ai_sys->areas) & 31));
+                            occupied =
+                                (object->ai_area_mask[0] & (u32)mask) | (object->ai_area_mask[1] & (u32)(mask >> 31));
+                        }
+                    }
+                    if (occupied) {
+                        sarlaccdisco.timer = 0.0f;
+                        sarlaccdisco.phase = 1;
+                        sarlaccdisco.first_panel = (i8)SarlaccDiscoPickPanel(0, -1);
+                        sarlaccdisco.second_panel = (i8)SarlaccDiscoPickPanel(0, sarlaccdisco.first_panel);
+                        if (sarlaccdisco.first_panel != -1 && sarlaccdisco.second_panel != -1) {
+                            sarlaccdisco.panel_state[sarlaccdisco.first_panel] = 1;
+                            sarlaccdisco.panel_state[sarlaccdisco.second_panel] = 1;
+                        }
+                    }
+                }
+                break;
+            case 1: {
+                i32 controlled_panel = -1;
+                i32 occupied[2];
+                i32 pass;
+                SARLACC_PACKET->disco_active = 0;
+                if (!ready) {
+                    SarlaccPitB_Reset(world);
+                    break;
+                }
+                for (pass = 0; pass < 2; ++pass) {
+                    i8 *selected = &sarlaccdisco.first_panel + pass;
+                    i32 previous = (i8)sarlaccdisco.panel_state[*selected];
+                    NUVEC *position;
+                    sarlaccdisco.panel_state[*selected] = 1;
+                    occupied[pass] = 0;
+                    position = NuSpecialGetPos(&sarlaccdisco.flash[*selected]);
+                    for (index = 0; index < 8; ++index) {
+                        GAMEOBJECT *object = (GAMEOBJECT *)Player[index];
+                        if (object != NULL && (object->flags_1fc_word & 0x1001) == 0x1001 && object->field_281 != 0) {
+                            f32 dx = position->x - object->position.x;
+                            f32 dz = position->z - object->position.z;
+                            f32 distance = dx * dx + dz * dz;
+                            if (distance < SarlaccDiscoRadiusPc * SarlaccDiscoRadiusPc) {
+                                occupied[pass] = 1;
+                                sarlaccdisco.panel_state[*selected] = 2;
+                                if (object == player)
+                                    controlled_panel = *selected;
+                                break;
+                            }
+                        }
+                    }
+                    if (previous != (i8)sarlaccdisco.panel_state[*selected] &&
+                        sarlaccdisco.panel_state[*selected] == 2) {
+                        sarlaccdisco.last_selected_position =
+                            &NuSpecialGetDrawMtx(&sarlaccdisco.on[*selected])->translation;
+                        SARLACC_PACKET->sound_mask |= 1 << *selected;
+                    }
+                }
+                if (occupied[0] && occupied[1]) {
+                    sarlaccdisco.timer = 0.0f;
+                    sarlaccdisco.panel_state[sarlaccdisco.first_panel] = 3;
+                    sarlaccdisco.panel_state[sarlaccdisco.second_panel] = 3;
+                    sarlaccdisco.first_panel = (i8)SarlaccDiscoPickPanel(0, -1);
+                    sarlaccdisco.second_panel = (i8)SarlaccDiscoPickPanel(0, sarlaccdisco.first_panel);
+                    if (sarlaccdisco.first_panel == -1 || sarlaccdisco.second_panel == -1) {
+                        sarlaccdisco.phase = 2;
+                        for (index = 0; index < sarlaccdisco.count; ++index)
+                            sarlaccdisco.panel_state[index] = 4;
+                    } else {
+                        sarlaccdisco.panel_state[sarlaccdisco.first_panel] = 1;
+                        sarlaccdisco.panel_state[sarlaccdisco.second_panel] = 1;
+                    }
+                } else {
+                    sarlaccdisco.timer += FRAMETIME;
+                    if (sarlaccdisco.timer > SarlaccDiscoTimeoutPc) {
+                        sarlaccdisco.timer = 0.0f;
+                        for (index = 0; index < 2; ++index) {
+                            i32 selected = SarlaccDiscoPickPanel(3, -1);
+                            if (selected != -1)
+                                sarlaccdisco.panel_state[selected] = 0;
+                        }
+                    }
+                    if (player2 == NULL && LevelLocator != NULL) {
+                        GAMEOBJECT *partner = (GAMEOBJECT *)Player[0];
+                        if (partner == player)
+                            partner = (GAMEOBJECT *)Player[1];
+                        if (partner != NULL) {
+                            NUVEC *help_position = NULL;
+                            if (controlled_panel == sarlaccdisco.first_panel)
+                                help_position = NuSpecialGetPos(&sarlaccdisco.flash[sarlaccdisco.second_panel]);
+                            else if (controlled_panel == sarlaccdisco.second_panel)
+                                help_position = NuSpecialGetPos(&sarlaccdisco.flash[sarlaccdisco.first_panel]);
+                            if (help_position != NULL) {
+                                SetGizAIMessage(gizaimessagesys, "HelpWithDisco", 1.0f, sarlaccdisco.help_message);
+                                ((AILOCATOR_PC *)LevelLocator)->position.x = help_position->x;
+                                ((AILOCATOR_PC *)LevelLocator)->position.z = help_position->z;
+                            }
+                        }
+                    }
+                }
+                break;
+            }
+            case 2:
+                SARLACC_PACKET->disco_active = 1;
+                sarlaccdisco.timer += FRAMETIME;
+                if (sarlaccdisco.timer > SarlaccDiscoTimePc || !ready) {
+                    SARLACC_PACKET->disco_active = 0;
+                    SarlaccPitB_Reset(world);
+                    return;
+                }
+                break;
+        }
+        if (sarlaccdisco.phase != 0) {
+            f32 amount =
+                (SarlaccDiscoHeightPc - sarlaccdisco.height) / (SarlaccDiscoHeightPc - sarlaccdisco.initial_height);
+            f32 rate;
+            f32 seek;
+            amount = amount < 0.0f ? 0.0f : amount > 1.0f ? 1.0f : amount;
+            rate = (f32)(1.0 - ((f64)NuTrigTable[((i32)((f64)amount * 32768.0 + 16384.0) >> 1) & 0x7fff] + 1.0) * 0.5);
+            seek = rate * SarlaccDiscoSeekPc;
+            sarlaccdisco.height = SeekValF(sarlaccdisco.height, SarlaccDiscoHeightPc, seek);
+        }
+        SARLACC_PACKET->off_mask = 0;
+        SARLACC_PACKET->flash_mask = 0;
+        SARLACC_PACKET->select_mask = 0;
+        SARLACC_PACKET->on_mask = 0;
+        SARLACC_PACKET->finish_mask = 0;
+        for (index = 0; index < sarlaccdisco.count; ++index) {
+            switch ((i8)sarlaccdisco.panel_state[index]) {
+                case 0:
+                    SARLACC_PACKET->off_mask |= 1 << index;
+                    break;
+                case 1:
+                    SARLACC_PACKET->flash_mask |= 1 << index;
+                    break;
+                case 2:
+                    SARLACC_PACKET->select_mask |= 1 << index;
+                    break;
+                case 3:
+                    SARLACC_PACKET->on_mask |= 1 << index;
+                    break;
+                case 4:
+                    SARLACC_PACKET->finish_mask |= 1 << index;
+                    break;
+            }
+        }
+    }
+    if (((u8 *)LevFlag)[0] == 0 && NuSpecialGetVisibilityFn(&LevHSpecial[0])) {
+        NUVEC *position = NuSpecialGetDrawPos(&LevHSpecial[0]);
+        sarlacc_engine_timer = 0.05f;
+        sarlacc_lump_position = *position;
+        ((u8 *)LevFlag)[0] = 1;
+    }
+    if (((u8 *)LevFlag)[0] != 0) {
+        f32 z;
+        sarlacc_engine_timer -= FRAMETIME;
+        if (sarlacc_engine_timer <= 0.0f)
+            sarlacc_engine_timer = 0.1f;
+        z = (f32)((1.0 -
+                   ((f64)NuTrigTable[((i32)((f64)sarlacc_engine_timer * 10.0 * 32768.0 + 16384.0) >> 1) & 0x7fff] +
+                    1.0) *
+                       0.5) *
+                      (f64)0.01f -
+                  (f64)0.005f + (f64)sarlacc_lump_position.z);
+        NuSpecialGetDrawPos(&LevHSpecial[0])->z = z;
+        PlaySfx("env_curtain_lp", NuSpecialGetDrawPos(&LevHSpecial[0]));
+    }
+    SarlaccPitB_SpecialUpdate(world);
+}

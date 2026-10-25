@@ -2465,6 +2465,7 @@ address,symbol,size,ctype
 0x4ec7b0,_SarlaccPitDiscoActive,39,i32 __cdecl(WORLDINFO *)
 0x4ec7e0,_SarlaccPitB_Init,867,
 0x4ecb50,_SarlaccPitB_Reset,702,
+0x4ece10,_SarlaccDiscoPickPanel,83,
 0x4ece70,_SarlaccPitB_Update,2128,
 0x004ed6c0,_SarlaccPitC_Init,23,void __cdecl(WORLDINFO *)
 0x4ed6e0,_SarlaccPitC_Reset,555,void __cdecl(WORLDINFO *)
@@ -14580,6 +14581,8 @@ address,symbol,size,ctype
 0x75e81c,??_C@_09PDGBLNAE@disco_off?$AA@,,const char[10]
 0x75e828,??_C@_0L@HLAPJMNO@DiscoState?$AA@,,const char[11]
 0x75e834,??_C@_0O@HGNMBCML@HelpWithDisco?$AA@,,const char[14]
+0x75e844,??_C@_0P@MIHFELAJ@discoflooropen?$AA@,,const char[15]
+0x75e854,??_C@_0L@NFPNKALD@qaz_panel2?$AA@,,const char[11]
 0x75e860,_EpisodeVI_panel2,7,const char[7]
 0x75e868,_EpisodeVI_shot_a_format,10,const char[10]
 0x75e874,_EpisodeVI_shot_format,9,const char[9]
@@ -20693,7 +20696,12 @@ address,symbol,size,ctype
 0x8002bc,_DeathStarZapWidthBiasPc,,f32
 0x8002c0,_DeathStarZapEndWidthPc,,f32
 0x8002c4,_fire_clip_dist,4,i32
+0x8002d8,_SarlaccDiscoHeightPc,,f32
+0x8002dc,_SarlaccDiscoSeekPc,,f32
+0x8002e0,_SarlaccDiscoTimePc,,f32
 0x8002e4,_SarlaccDiscoBaseOffsetPc,,f32
+0x800350,_SarlaccDiscoTimeoutPc,,f32
+0x800354,_SarlaccDiscoRadiusPc,,f32
 0x800358,_EndorBattleAPartTimePc,4,f32
 0x80035c,_EndorBattleAPartTimerPc,4,f32
 0x00800440,_RopeCurveSubdivisionsPc,4,i32
@@ -23604,6 +23612,8 @@ address,symbol,size,ctype
 0x88ab10,_SarlaccPowerPc,,i32
 0x88ab14,_SarlaccRechargingPc,,i32
 0x88ab18,_SarlaccRechargeTimerPc,,f32
+0x88ab1c,_sarlacc_lump_position,,NUVEC
+0x88ab28,_sarlacc_engine_timer,,f32
 0x88ab2c,_FairgroundSplitPartyLocatorPc,4,AILOCATOR_PC *
 0x0088ab38,_NuAllocRecordHead,4,NUALLOC_RECORD *
 0x0088ab3c,_NuAllocTrackedBytes,4,u32
