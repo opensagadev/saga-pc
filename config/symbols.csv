@@ -6546,6 +6546,7 @@ address,symbol,size,ctype
 0x61dd30,_eduicbRenderSlider,661,
 0x61dfd0,_eduicbRenderSliderInt,609,
 0x0061e240,_eduicbRenderNumber,366,"i32 __cdecl(eduimenu_s *,eduiitem_s *,i32,i32,i32,i32)"
+0x0061e3b0,_eduicbRenderTextSelector,371,"i32 __cdecl(eduimenu_s *,eduiitem_s *,i32,i32,i32,i32)"
 0x0061e6b0,_NuKeyToAscii,50,"i32 __cdecl (u32, i32)"
 0x61eb60,_eduicbItemExpanderClose,88,
 0x0061ebc0,_eduicbMenuOpenAllexpanders,71,void __cdecl(eduimenu_s *)
@@ -16106,6 +16107,7 @@ address,symbol,size,ctype
 0x76adc0,__real@3e2aaaab,4,const f32
 0x76ae48,__real@c024000000000000,8,const f64
 0x76ae78,__real@3ff0ccccc0000000,8,const f64
+0x0076ae80,??_C@_04EIOKKJMF@?3?5?$CFs?$AA@,,"const char[] minimum5B view; Native allocation extent unknown"
 0x0076ae88,__real@407c000000000000,8,const f64
 0x76ae90,__real@43600000,4,f32
 0x76aea0,__real@c030000000000000,8,const f64
