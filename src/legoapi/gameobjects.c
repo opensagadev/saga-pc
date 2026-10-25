@@ -1267,11 +1267,27 @@ STATIC_ASSERT(offsetof(CHARACTER_MODEL_LAYERS_PC, points_of_interest) + 2 * size
 
 void __cdecl GameObjectStuffAfterAnimation(void) {
     GAMEOBJECT *object = Obj;
-    i32 i;
-    for (i = 0; i < HIGHGAMEOBJECT; ++i, ++object) {
+    union POST_ANIMATION_EFFECT_SCRATCH_PC {
+        NUVEC points[4];
+        struct {
+            NUVEC prefix_points[2];
+            NUVEC velocity;
+            i32 object_index;
+        } motion;
+        struct {
+            f32 reserved[10];
+            NUVEC position;
+        } shared;
+    } scratch;
+    STATIC_ASSERT(sizeof(scratch) == 52);
+    STATIC_ASSERT(offsetof(union POST_ANIMATION_EFFECT_SCRATCH_PC, motion.velocity) == 24);
+    STATIC_ASSERT(offsetof(union POST_ANIMATION_EFFECT_SCRATCH_PC, motion.object_index) == 36);
+    STATIC_ASSERT(offsetof(union POST_ANIMATION_EFFECT_SCRATCH_PC, shared.position) == 40);
+    NUVEC *points = scratch.points;
+    for (scratch.motion.object_index = 0; scratch.motion.object_index < HIGHGAMEOBJECT;
+         ++scratch.motion.object_index, ++object) {
         i32 drawn;
         NUMTX matrix;
-        NUVEC velocity;
         ADDPART_PC part;
         if ((object->flags_1fc_word & 1) == 0 || (object->flags_1fc_word & 0x1000) == 0 || object->dead != 0 ||
             object->origin_joint_ready == 0)
@@ -1297,13 +1313,13 @@ void __cdecl GameObjectStuffAfterAnimation(void) {
                         matrix.m31 = object->collision_position.y;
                         matrix.m32 = object->collision_position.z;
                     }
-                    velocity.x = 0.0f;
-                    velocity.y = (f32)((f64)qrand() * (f64)(1.0f / 65535.0f) * 2.0);
-                    velocity.z = (f32)(-((f64)qrand() * (f64)(1.0f / 65535.0f) * 2.0 + 3.0));
-                    NuVecMtxRotate(&velocity, &velocity, &matrix);
+                    scratch.motion.velocity.x = 0.0f;
+                    scratch.motion.velocity.y = (f32)((f64)qrand() * (f64)(1.0f / 65535.0f) * 2.0);
+                    scratch.motion.velocity.z = (f32)(-((f64)qrand() * (f64)(1.0f / 65535.0f) * 2.0 + 3.0));
+                    NuVecMtxRotate(&scratch.motion.velocity, &scratch.motion.velocity, &matrix);
                     {
                         part = Default_ADDPART;
-                        part.velocity = &velocity;
+                        part.velocity = &scratch.motion.velocity;
                         part.matrix = &matrix;
                         part.part_id = 90;
                         part.flags = 0x10;
@@ -1340,7 +1356,6 @@ void __cdecl GameObjectStuffAfterAnimation(void) {
                 ((CHARACTER_MODEL_LAYERS_PC *)object->character_model)->animations[object->field_7aa];
             if (animation != NULL && animation->locator != -1 &&
                 ((object->context_variant_flags & 0x40) == 0 || object->debris_joint != -1)) {
-                NUVEC points[2];
                 i32 joint = animation->locator;
                 f64 original_y;
                 memcpy(&points[0], &object->locator_matrices[joint].m30, sizeof(points[0]));
@@ -1369,10 +1384,10 @@ void __cdecl GameObjectStuffAfterAnimation(void) {
                 matrix.m31 = object->collision_position.y;
                 matrix.m32 = object->collision_position.z;
             }
-            velocity.x = 0.0f;
-            velocity.y = 0.0f;
-            velocity.z = -1.0f;
-            NuVecMtxRotate(&velocity, &velocity, &matrix);
+            scratch.motion.velocity.x = 0.0f;
+            scratch.motion.velocity.y = 0.0f;
+            scratch.motion.velocity.z = -1.0f;
+            NuVecMtxRotate(&scratch.motion.velocity, &scratch.motion.velocity, &matrix);
             {
                 i32 player = (object->flags_1fc_word & 0x80) != 0;
                 NUVEC direction;
@@ -1380,7 +1395,7 @@ void __cdecl GameObjectStuffAfterAnimation(void) {
                 PART_PC *created;
                 part = Default_ADDPART;
                 part.matrix = &matrix;
-                part.velocity = &velocity;
+                part.velocity = &scratch.motion.velocity;
                 part.field_14 = 0.1f;
                 part.field_18 = 0.1f;
                 part.part_id = 232;
@@ -1415,20 +1430,6 @@ void __cdecl GameObjectStuffAfterAnimation(void) {
                        object->id == (u16)id_R2Q5 ? 0xff202080u : 0xff808040u, testlaser_endw, distance);
         }
         if (drawn && (object->character_data->model_flags & 8) != 0 && object->weapon_scale == 1.0f) {
-            union SABRE_EFFECT_SCRATCH_PC {
-                NUVEC points[4];
-                struct {
-                    f32 reserved[10];
-                    NUVEC position;
-                } shared;
-            } scratch;
-            STATIC_ASSERT(offsetof(union SABRE_EFFECT_SCRATCH_PC, shared.position) == 40);
-            STATIC_ASSERT(offsetof(union SABRE_EFFECT_SCRATCH_PC, points) + 3 * sizeof(NUVEC) + offsetof(NUVEC, y) ==
-                          40);
-            STATIC_ASSERT(offsetof(union SABRE_EFFECT_SCRATCH_PC, points) + 3 * sizeof(NUVEC) + offsetof(NUVEC, z) ==
-                          44);
-            NUVEC *points = scratch.points;
-
             i32 blade;
             for (blade = 0; blade < 4; ++blade) {
                 i32 joints[2];
