@@ -217,3 +217,58 @@ f32 __cdecl Condition_GizmoVisibilityPc(AISYS_PC *system, AISCRIPTPROCESS_PC *pr
         return 0.0f;
     return (f32)GizmoGetVisibility(WORLD->gizmo_sys, argument);
 }
+
+f32 __cdecl Condition_IAmAGoodyPc(AISYS_PC *system, AISCRIPTPROCESS_PC *process, AIPACKET_PC *packet, char *name,
+                                  void *argument) {
+    if (packet != NULL && packet->owner != NULL && (packet->owner->flags_1f8 & 5) == 0)
+        return 1.0f;
+    return 0.0f;
+}
+
+f32 __cdecl Condition_IAmABaddyPc(AISYS_PC *system, AISCRIPTPROCESS_PC *process, AIPACKET_PC *packet, char *name,
+                                  void *argument) {
+    if (packet != NULL && packet->owner != NULL && (packet->owner->flags_1f8 & 0x10001) != 0)
+        return 1.0f;
+    return 0.0f;
+}
+
+f32 __cdecl Condition_IAmANeutralPc(AISYS_PC *system, AISCRIPTPROCESS_PC *process, AIPACKET_PC *packet, char *name,
+                                    void *argument) {
+    if (packet != NULL && packet->owner != NULL && (packet->owner->flags_1f8 & 4) != 0)
+        return 1.0f;
+    return 0.0f;
+}
+
+f32 __cdecl Condition_IAmAGoodyBaddyPc(AISYS_PC *system, AISCRIPTPROCESS_PC *process, AIPACKET_PC *packet, char *name,
+                                       void *argument) {
+    if (packet != NULL && packet->owner != NULL && (packet->owner->flags_1f8 & 0x10000) != 0)
+        return 1.0f;
+    return 0.0f;
+}
+
+f32 __cdecl Condition_PartyContainsDroidsPc(AISYS_PC *system, AISCRIPTPROCESS_PC *process, AIPACKET_PC *packet,
+                                            char *name, void *argument) {
+    i32 index;
+    for (index = 0; index < 8; ++index) {
+        GAMEOBJECT *object = (GAMEOBJECT *)Player[index];
+        if (object != NULL && (object->flags_1fc_word & 1) != 0 && (object->flags_1fc_word & 0x1000) != 0 &&
+            (object->flags_ef3 & 1) == 0 && (object->character_data->model_flags & 0x10) != 0)
+            return 1.0f;
+    }
+    return 0.0f;
+}
+
+f32 __cdecl Condition_IAmPlayer2Pc(AISYS_PC *system, AISCRIPTPROCESS_PC *process, AIPACKET_PC *packet, char *name,
+                                   void *argument) {
+    if (packet != NULL && packet->owner != NULL) {
+        GAMEOBJECT *current = player;
+        GAMEOBJECT *first = (GAMEOBJECT *)Player[0];
+        if (current == first) {
+            if (packet->owner->objptr == (GAMEOBJECT *)Player[1])
+                return 1.0f;
+        } else if (current == (GAMEOBJECT *)Player[1] && packet->owner->objptr == first) {
+            return 1.0f;
+        }
+    }
+    return 0.0f;
+}
