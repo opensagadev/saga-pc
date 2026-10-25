@@ -454,3 +454,35 @@ static void eduiHSVToRGB(f32 hue, f32 saturation, f32 value, f32 &red, f32 &gree
         }
     }
 }
+
+extern "C" i32 __cdecl eduicbRenderNumber(eduimenu_s *unused_menu, eduiitem_s *item, i32 x, i32 y, i32 width,
+                                          i32 unused_selected) {
+    edui_slider_s *number = (edui_slider_s *)item;
+    i32 height = (i32)(NuQFntHeight((VUFNT *)edui_font) * 1.25) >> 3;
+    f64 scaled_height = NuQFntHeight((VUFNT *)edui_font) * 0.125;
+    i32 baseline = (i32)(scaled_height + NuQFntBaseline((VUFNT *)edui_font));
+    item->x = x;
+    item->y = y;
+    if (edui_donotdraw == 0) {
+        NuRndrRect2di(x << 4, y << 3, width << 4, height << 3, item->colours[2 + item->highlighted],
+                      (NUMTL *)uimtls[ui_bgmtl]);
+        if (edui_donotdraw == 0) {
+            NuQFntSet((VUFNT *)edui_font);
+            if (edui_donotdraw == 0)
+                NuQFntSetColour((VUFNT *)edui_font, item->colours[item->highlighted]);
+        }
+    }
+    char format[512];
+    NuStrCpy(format, item->text);
+    NuStrCat(format, number->format);
+    EduiPrintAlignedTextPc(edui_font, x << 4, (y << 3) + baseline, 16, format, number->value);
+    return height;
+}
+
+extern "C" eduiitem_s *__cdecl eduiItemNumberCreate(u32 data, void *colours, i32 group, void *callback, f32 minimum,
+                                                    f32 range, f32 value, char *text) {
+    eduiitem_s *item = eduiItemSliderCreate(data, colours, group, callback, minimum, range, value, text);
+    if (item != NULL)
+        item->render = eduicbRenderNumber;
+    return item;
+}

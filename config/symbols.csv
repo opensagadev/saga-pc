@@ -6545,6 +6545,7 @@ address,symbol,size,ctype
 0x61d990,_eduicbProcessSlider,915,
 0x61dd30,_eduicbRenderSlider,661,
 0x61dfd0,_eduicbRenderSliderInt,609,
+0x0061e240,_eduicbRenderNumber,366,"i32 __cdecl(eduimenu_s *,eduiitem_s *,i32,i32,i32,i32)"
 0x0061e6b0,_NuKeyToAscii,50,"i32 __cdecl (u32, i32)"
 0x61eb60,_eduicbItemExpanderClose,88,
 0x0061ebc0,_eduicbMenuOpenAllexpanders,71,void __cdecl(eduimenu_s *)
@@ -6628,6 +6629,7 @@ address,symbol,size,ctype
 0x6250e0,_eduicbItemSliderDestroy,110,
 0x625150,_eduiItemSliderCreate,233,
 0x625240,_eduiItemSliderCreateInt,96,
+0x006252a0,_eduiItemNumberCreate,71,"eduiitem_s * __cdecl(u32,void *,i32,void *,f32,f32,f32,char *)"
 0x626b30,_eduicbCancelMessageMenu,25,
 0x626b50,_eduiMenuRender,1602,
 0x6271a0,_eduiSetActiveMenu,68,
