@@ -486,3 +486,36 @@ f32 __cdecl Condition_AIOverrideControlPc(AISYS_PC *system, AISCRIPTPROCESS_PC *
         return 1.0f;
     return 0.0f;
 }
+
+STATIC_ASSERT(offsetof(GAMEOBJECT, model_draw_result) == 0x288);
+STATIC_ASSERT(offsetof(GAMEOBJECT, field_ef2) == 0xef2);
+STATIC_ASSERT(offsetof(AIPACKET_PC, respawn_count) == 0x1fc);
+void *__cdecl Condition_IsOnScreenInitPc(AISYS_PC *system, char *name, AISCRIPT_PC *script) {
+    if (name != NULL && GetNamedGameObjectCallback != NULL)
+        return GetNamedGameObjectCallback(system, name);
+    return NULL;
+}
+f32 __cdecl Condition_IsOnScreenPc(AISYS_PC *system, AISCRIPTPROCESS_PC *process, AIPACKET_PC *packet, char *name,
+                                   void *argument) {
+    GAMEOBJECT *object = (GAMEOBJECT *)argument;
+    if (object == NULL) {
+        if (packet == NULL || packet->owner == NULL)
+            return 0.0f;
+        object = packet->owner;
+    }
+    if (object->model_draw_result != 0)
+        return 1.0f;
+    return 0.0f;
+}
+f32 __cdecl Condition_HeadTurnRestrictedPc(AISYS_PC *system, AISCRIPTPROCESS_PC *process, AIPACKET_PC *packet,
+                                           char *name, void *argument) {
+    if (packet != NULL && packet->owner != NULL && packet->owner->objptr != NULL)
+        return (f32)(packet->owner->objptr->field_ef2 & 1);
+    return 0.0f;
+}
+f32 __cdecl Condition_SpawnCountPc(AISYS_PC *system, AISCRIPTPROCESS_PC *process, AIPACKET_PC *packet, char *name,
+                                   void *argument) {
+    if (packet != NULL)
+        return (f32)packet->respawn_count;
+    return 0.0f;
+}
