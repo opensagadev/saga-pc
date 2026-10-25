@@ -1393,3 +1393,23 @@ f32 __cdecl Condition_CharacterExistsPc(AISYS_PC *system, AISCRIPTPROCESS_PC *pr
         return 1.0f;
     return 0.0f;
 }
+
+void *__cdecl Condition_CutSceneExistsInitPc(AISYS_PC *system, char *name, AISCRIPT_PC *script) {
+    return CutScene_Find(WORLD->cutscene_sys, name);
+}
+
+f32 __cdecl Condition_CutSceneExistsPc(AISYS_PC *system, AISCRIPTPROCESS_PC *process, AIPACKET_PC *packet, char *name,
+                                       void *argument) {
+    if (argument != NULL)
+        return 1.0f;
+    return 0.0f;
+}
+
+void *__cdecl Condition_CutScenePlayingInitPc(AISYS_PC *system, char *name, AISCRIPT_PC *script) {
+    return CutScene_Find(WORLD->cutscene_sys, name);
+}
+
+f32 __cdecl Condition_CutScenePlayingPc(AISYS_PC *system, AISCRIPTPROCESS_PC *process, AIPACKET_PC *packet, char *name,
+                                        void *argument) {
+    return 0.0f;
+}
