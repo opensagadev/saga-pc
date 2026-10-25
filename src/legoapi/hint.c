@@ -511,3 +511,29 @@ i32 __cdecl GizTurrets_UpdateHint(HINT_PC *hint) {
     }
     return 0;
 }
+
+i32 __cdecl Hint_isAvailable(i32 hint_id) {
+    HINT_PC *active_hint = hintsys.active_hint;
+    HINT_PC *hint;
+    if (active_hint != NULL && active_hint->id == hint_id)
+        return 0;
+    if (hint_id < 0 || TTab[hint_id] == NULL)
+        return 0;
+    hint = Hint_FindHint(hint_id);
+    if (hint == NULL || hint->completed != 0)
+        return 0;
+    if (hint->cooldown > 0.0f)
+        return 0;
+    return 1;
+}
+i32 __cdecl Hint_isCompleteByIdPc(i32 hint_id) {
+    HINT_PC *hint = hintsys.hints;
+    if (hint == NULL)
+        return 0;
+    while (hint->id != -1) {
+        if (hint->id == hint_id)
+            return hint->completed;
+        ++hint;
+    }
+    return 0;
+}

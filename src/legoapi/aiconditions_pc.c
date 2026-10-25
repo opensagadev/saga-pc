@@ -781,3 +781,23 @@ f32 __cdecl Condition_PlayerOnPathPc(AISYS_PC *system, AISCRIPTPROCESS_PC *proce
         return 1.0f;
     return 0.0f;
 }
+
+i32 __cdecl Hint_isAvailable(i32 hint_id);
+i32 __cdecl Hint_isCompleteByIdPc(i32 hint_id);
+void *__cdecl Condition_HintAvailableInitPc(AISYS_PC *system, char *name, AISCRIPT_PC *script) {
+    if (name != NULL)
+        return (void *)NuAToI(name);
+    return NULL;
+}
+f32 __cdecl Condition_HintAvailablePc(AISYS_PC *system, AISCRIPTPROCESS_PC *process, AIPACKET_PC *packet, char *name,
+                                      void *argument) {
+    if (argument != NULL && Hint_isAvailable((i32)argument) != 0)
+        return 1.0f;
+    return 0.0f;
+}
+f32 __cdecl Condition_HintCompletePc(AISYS_PC *system, AISCRIPTPROCESS_PC *process, AIPACKET_PC *packet, char *name,
+                                     void *argument) {
+    if (argument != NULL && Hint_isCompleteByIdPc((i32)argument) != 0)
+        return 1.0f;
+    return 0.0f;
+}

@@ -4351,6 +4351,7 @@ address,symbol,size,ctype
 0x576460,_Hint_CurrentId,17,i32 __cdecl (void)
 0x576480,_Hint_FindHint,45,HINT_PC * __cdecl (i32)
 0x5764b0,_Hint_isAvailable,77,
+0x576500,_Hint_isCompleteByIdPc,51,i32 __cdecl(i32)
 0x576540,_Hint_isComplete,9,i32 __cdecl(HINT_PC *)
 0x576570,_RegisterWithHintSys,64,"void __cdecl(void (__cdecl *)(HINT_PC *,i32),HINT_PC *,u32 *,i32)"
 0x5765b0,_Hint_CancelCurrent,62,void __cdecl(void)
