@@ -737,3 +737,20 @@ f32 __cdecl Condition_TurretAlivePc(AISYS_PC *system, AISCRIPTPROCESS_PC *proces
     }
     return 0.0f;
 }
+
+STATIC_ASSERT(sizeof(FLOWBOX_PC) == 0x20);
+STATIC_ASSERT(offsetof(FLOWBOX_PC, state_flags_low) == 0xa);
+STATIC_ASSERT(offsetof(FLOWBOX_PC, name) == 0x1c);
+STATIC_ASSERT(offsetof(WORLDINFO, giz_flow) == 0x2acc);
+void *__cdecl Condition_FlowBoxCompleteInitPc(AISYS_PC *system, char *name, AISCRIPT_PC *script) {
+    if (name != NULL)
+        return FlowBoxFindByName(WORLD->giz_flow, name);
+    return NULL;
+}
+f32 __cdecl Condition_FlowBoxCompletePc(AISYS_PC *system, AISCRIPTPROCESS_PC *process, AIPACKET_PC *packet, char *name,
+                                        void *argument) {
+    FLOWBOX_PC *box = (FLOWBOX_PC *)argument;
+    if (box != NULL)
+        return (box->state_flags_low & 2) != 0 ? 1.0 : 0.0;
+    return 0.0f;
+}
