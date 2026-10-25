@@ -15282,3 +15282,72 @@ eduimenu_s *__cdecl antinodeEditor_MainMenu(void) {
     return menu;
 }
 #undef ANTINODE_MENU_PC
+
+typedef struct AI_EDITOR_ANTINODE_POOL_PC {
+    EDANTINODE_s entries[128];
+    NULISTHDR free_nodes;
+    NULISTHDR live_nodes;
+    EDANTINODE_s *selected;
+    EDANTINODE_s *nearest;
+} AI_EDITOR_ANTINODE_POOL_PC;
+STATIC_ASSERT(sizeof(EDANTINODE_s) == 76);
+STATIC_ASSERT(offsetof(EDANTINODE_s, link) == 0);
+STATIC_ASSERT(offsetof(AI_EDITOR_ANTINODE_POOL_PC, free_nodes) == 0x2600);
+STATIC_ASSERT(offsetof(AI_EDITOR_ANTINODE_POOL_PC, live_nodes) == 0x2608);
+STATIC_ASSERT(offsetof(AI_EDITOR_ANTINODE_POOL_PC, selected) == 0x2610);
+STATIC_ASSERT(offsetof(AI_EDITOR_ANTINODE_POOL_PC, nearest) == 0x2614);
+STATIC_ASSERT(sizeof(AI_EDITOR_ANTINODE_POOL_PC) == 0x2618);
+STATIC_ASSERT(0x4120c + offsetof(AI_EDITOR_ANTINODE_POOL_PC, selected) ==
+              offsetof(AIEDITOR_RENDER_STATE, mode_selection_42e9c));
+STATIC_ASSERT(0x4120c + offsetof(AI_EDITOR_ANTINODE_POOL_PC, nearest) ==
+              offsetof(AIEDITOR_RENDER_STATE, unknown_42ea0));
+STATIC_ASSERT(offsetof(AIEDITOR_RENDER_STATE, main_menu) == 4);
+STATIC_ASSERT(offsetof(AIEDITOR_RENDER_STATE, unknown_4088c) == 0x4120c);
+#define ANTINODE_DELETE_STATE_PC ((AI_EDITOR_ANTINODE_POOL_PC *)aieditor->unknown_4088c)
+
+static void AiEditorFreeAntinodePc(EDANTINODE_s *node) {
+    if (node == NULL)
+        return;
+    NuLinkedListRemove(&ANTINODE_DELETE_STATE_PC->live_nodes, &node->link);
+    memset(node, 0, sizeof(*node));
+    NuLinkedListAppend(&ANTINODE_DELETE_STATE_PC->free_nodes, &node->link);
+}
+
+static void __cdecl AiEditorDeleteAntinodeAnswerPc(eduimenu_s *menu, eduiitem_s *item, u32 event) {
+    (void)menu;
+    (void)event;
+    if (item != NULL && item->data != 0 && ANTINODE_DELETE_STATE_PC->selected != NULL &&
+        ANTINODE_DELETE_STATE_PC->selected == ANTINODE_DELETE_STATE_PC->nearest) {
+        AiEditorFreeAntinodePc(ANTINODE_DELETE_STATE_PC->selected);
+        ANTINODE_DELETE_STATE_PC->selected = NULL;
+    }
+    if (aieditor->main_menu != NULL) {
+        eduiMenuDestroy(aieditor->main_menu);
+        aieditor->main_menu = NULL;
+    }
+}
+
+static void __cdecl AiEditorDeleteAntinodeCancelPc(eduimenu_s *menu, eduimenu_s *child) {
+    (void)menu;
+    (void)child;
+    if (aieditor->main_menu != NULL) {
+        eduiMenuDestroy(aieditor->main_menu);
+        aieditor->main_menu = NULL;
+    }
+}
+
+eduimenu_s *__cdecl antinodeEditor_DeleteAntinodeMenu(void) {
+    eduimenu_s *menu;
+    if (ANTINODE_DELETE_STATE_PC->selected == NULL ||
+        ANTINODE_DELETE_STATE_PC->selected != ANTINODE_DELETE_STATE_PC->nearest)
+        return NULL;
+    menu = eduiMenuCreate(200, 70, 240, 270, ed_fnt, AiEditorDeleteAntinodeCancelPc, "Delete Antinode??");
+    if (menu != NULL) {
+        eduiMenuAddItem(menu, eduiItemSelCreate(0, &AiEditorSaveMessageColoursPc, 0, 0, AiEditorDeleteAntinodeAnswerPc,
+                                                (char *)MenuPcString75f2c0));
+        eduiMenuAddItem(menu, eduiItemSelCreate(1, &AiEditorSaveMessageColoursPc, 0, 0, AiEditorDeleteAntinodeAnswerPc,
+                                                (char *)MenuPcString75f2c4));
+    }
+    return menu;
+}
+#undef ANTINODE_DELETE_STATE_PC
