@@ -420,6 +420,11 @@ STATIC_ASSERT(offsetof(AI_EDITOR_SAVE_LISTS_PC, locator_sets) == 0x41200);
 STATIC_ASSERT(offsetof(AI_EDITOR_SAVE_LISTS_PC, antinodes) == 0x43814);
 
 void locatorEditorSaveData(AIPATHSYS_PC *path_system) {
+    typedef struct AI_EDITOR_LOCATOR_PATH_SAVE_PC {
+        u8 unknown_00[0x38];
+        i8 draw_index;
+    } AI_EDITOR_LOCATOR_PATH_SAVE_PC;
+    STATIC_ASSERT(offsetof(AI_EDITOR_LOCATOR_PATH_SAVE_PC, draw_index) == 0x38);
     i32 locator_count = 0;
     EDLOCATOR_s *locator = (EDLOCATOR_s *)NuLinkedListGetHead(&((AI_EDITOR_SAVE_LISTS_PC *)aieditor)->locators);
     while (locator != NULL) {
@@ -442,10 +447,10 @@ void locatorEditorSaveData(AIPATHSYS_PC *path_system) {
             EdFileWriteFloat(locator->position.y);
             EdFileWriteFloat(locator->position.z);
             EdFileWriteShort(locator->direction);
-            EdFileWriteChar(locator->path->draw_index);
+            EdFileWriteChar(((AI_EDITOR_LOCATOR_PATH_SAVE_PC *)locator->path)->draw_index);
             connection_index = 0;
             connection_direction = 0;
-            path = path_system->paths[locator->path->draw_index];
+            path = path_system->paths[((AI_EDITOR_LOCATOR_PATH_SAVE_PC *)locator->path)->draw_index];
             for (index = 0; index < path->connection_count; ++index) {
                 AIPATHCNX_PC *connection = &path->connections[index];
                 i32 first = locator->first_node->index;
