@@ -2192,3 +2192,146 @@ void __cdecl RestoreLastSocksTurnoff(SOCKSYS_PC *system) {
             system->socks[index].flags &= ~0x100;
     }
 }
+
+typedef struct SOCK_CAMERA_RESULT_PC {
+    SOCKPOSITION_PC socket;
+    NUVEC position;
+    NUVEC target;
+    f32 blend;
+    f32 position_seek;
+    f32 angle_seek;
+    f32 shake;
+    f32 separation;
+} SOCK_CAMERA_RESULT_PC;
+STATIC_ASSERT(sizeof(SOCK_CAMERA_RESULT_PC) == 0x64);
+STATIC_ASSERT(offsetof(SOCK_CAMERA_RESULT_PC, position) == 0x38);
+STATIC_ASSERT(offsetof(SOCK_CAMERA_RESULT_PC, target) == 0x44);
+STATIC_ASSERT(offsetof(SOCK_CAMERA_RESULT_PC, blend) == 0x50);
+STATIC_ASSERT(offsetof(SOCK_CAMERA_RESULT_PC, position_seek) == 0x54);
+STATIC_ASSERT(offsetof(SOCK_CAMERA_RESULT_PC, angle_seek) == 0x58);
+STATIC_ASSERT(offsetof(SOCK_CAMERA_RESULT_PC, shake) == 0x5c);
+STATIC_ASSERT(offsetof(SOCK_CAMERA_RESULT_PC, separation) == 0x60);
+
+i32 LastSingleSockWeWereInPc = -1;
+
+f32 __cdecl CalculateDistanceToNearestSide(NUVEC *position, SOCKPOSITION_PC *resolved, i32 unused, SOCKSYS_PC *system) {
+    SOCK_PC *sock;
+    f32 distance = 0.0f;
+    NUVEC *a0, *a1, *other0, *other1;
+    f32 distance_a, distance_other;
+    NUVEC a, other, flat;
+    flat = *position;
+    flat.y = 0.0f;
+    sock = &system->socks[resolved->sock_index];
+    a0 = &sock->a->pts[resolved->next_segment - 1];
+    a1 = &sock->a->pts[resolved->next_segment];
+    a.x = (a1->x - a0->x) * resolved->ratio + a0->x;
+    a.y = 0.0f;
+    a.z = (a1->z - a0->z) * resolved->ratio + a0->z;
+    if (sock->flags & 1) {
+        other0 = &sock->b->pts[resolved->next_segment - 1];
+        other1 = &sock->b->pts[resolved->next_segment];
+    } else {
+        other0 = &sock->d->pts[resolved->next_segment - 1];
+        other1 = &sock->d->pts[resolved->next_segment];
+    }
+    other.x = (other1->x - other0->x) * resolved->ratio + other0->x;
+    other.y = 0.0f;
+    other.z = (other1->z - other0->z) * resolved->ratio + other0->z;
+    distance_a = NuVecDistSqr(&flat, &a, NULL);
+    distance_other = NuVecDistSqr(&flat, &other, NULL);
+    distance = distance_a < distance_other ? distance_a : distance_other;
+    if (distance > 0.0f)
+        distance = NuFsqrt(distance);
+    else
+        distance = 0.0f;
+    return distance;
+}
+
+f32 __cdecl CalculateDistanceToSpecificSideOrEnd(i32 side, NUVEC *position, SOCKPOSITION_PC *resolved, i32 unused,
+                                                 SOCKSYS_PC *system) {
+    switch (side) {
+        case 0:
+            return CalculateDistanceToNearestSide(position, resolved, unused, system);
+        case 1:
+            return CalculateDistanceToNearestEnd(position, resolved, unused, system);
+        default:
+            return 0.0f;
+    }
+}
+
+i32 __cdecl SockSysCameraWithOverlapBlend(SOCKSYS_PC *sock_sys, NUVEC *fallback_camera_position, i32 socket_changed,
+                                          NUVEC *player_camera_positions, NUVEC *player_positions, i32 player_count,
+                                          SOCKPOSITION_PC *camera_socket_position, NUVEC *camera_position,
+                                          NUVEC *camera_target, f32 *overlap_blend, f32 *position_seek, f32 *angle_seek,
+                                          f32 *camera_shake, f32 *separation_scale) {
+    f32 blend;
+    SOCK_CAMERA_RESULT_PC *from, *to;
+    i32 i, j;
+    ComplexSockPosition(sock_sys, player_camera_positions, camera_socket_position->sock_index,
+                        camera_socket_position->segment, camera_socket_position);
+    if (TempSPosCount > 1) {
+        i32 first_index = TempSPosList[0].sock_index;
+        i32 second_index = TempSPosList[1].sock_index;
+        SOCK_PC *first_sock = &sock_sys->socks[first_index];
+        SOCK_PC *second_sock = &sock_sys->socks[second_index];
+        i32 reverse;
+        f32 distances[2];
+        SOCK_CAMERA_RESULT_PC first, second;
+        first.socket = second.socket = *camera_socket_position;
+        for (i = 0; i < (i32)first_sock->blend_count; ++i) {
+            if (first_sock->blend_entries[i].value == TempSPosList[1].sock_index)
+                distances[0] = CalculateDistanceToSpecificSideOrEnd((u8)first_sock->blend_entries[i].edge,
+                                                                    player_camera_positions, TempSPosList, 0, sock_sys);
+        }
+        for (j = 0; j < (i32)second_sock->blend_count; ++j) {
+            if (second_sock->blend_entries[j].value == TempSPosList[0].sock_index)
+                distances[1] = CalculateDistanceToSpecificSideOrEnd(
+                    (u8)second_sock->blend_entries[j].edge, player_camera_positions, &TempSPosList[1], 0, sock_sys);
+        }
+        if (i != 0 && j != 0) {
+            TurnOffAllSocksExcept(sock_sys, first_index);
+            SockSysCamera(sock_sys, fallback_camera_position, socket_changed, player_camera_positions, player_positions,
+                          player_count, &first.socket, &first.position, &first.target, &first.blend,
+                          &first.position_seek, &first.angle_seek, &first.shake, &first.separation);
+            RestoreLastSocksTurnoff(sock_sys);
+            TurnOffAllSocksExcept(sock_sys, second_index);
+            SockSysCamera(sock_sys, fallback_camera_position, socket_changed, player_camera_positions, player_positions,
+                          player_count, &second.socket, &second.position, &second.target, &second.blend,
+                          &second.position_seek, &second.angle_seek, &second.shake, &second.separation);
+            RestoreLastSocksTurnoff(sock_sys);
+            reverse = LastSingleSockWeWereInPc != first_index;
+            blend = distances[reverse] / (distances[1] + distances[0]);
+            if (blend < 0.5f)
+                blend = (blend * blend) * 2.0f;
+            else {
+                blend = 1.0f - blend;
+                blend = 1.0f - (blend * blend) * 2.0f;
+            }
+            if (reverse == 0) {
+                from = &second;
+                to = &first;
+            } else {
+                from = &first;
+                to = &second;
+            }
+            camera_position->x = (to->position.x - from->position.x) * blend + from->position.x;
+            camera_position->y = (to->position.y - from->position.y) * blend + from->position.y;
+            camera_position->z = (to->position.z - from->position.z) * blend + from->position.z;
+            camera_target->x = (to->target.x - from->target.x) * blend + from->target.x;
+            camera_target->y = (to->target.y - from->target.y) * blend + from->target.y;
+            camera_target->z = (to->target.z - from->target.z) * blend + from->target.z;
+            *overlap_blend = (to->blend - from->blend) * blend + from->blend;
+            *position_seek = (to->position_seek - from->position_seek) * blend + from->position_seek;
+            *angle_seek = (to->angle_seek - from->angle_seek) * blend + from->angle_seek;
+            *camera_shake = (to->shake - from->shake) * blend + from->shake;
+            if (separation_scale)
+                *separation_scale = (to->separation - from->separation) * blend + from->separation;
+            return 1;
+        }
+    }
+    LastSingleSockWeWereInPc = TempSPosCount > 0 ? TempSPosList[0].sock_index : -1;
+    return SockSysCamera(sock_sys, fallback_camera_position, socket_changed, player_camera_positions, player_positions,
+                         player_count, camera_socket_position, camera_position, camera_target, overlap_blend,
+                         position_seek, angle_seek, camera_shake, separation_scale);
+}

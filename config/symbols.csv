@@ -3456,7 +3456,9 @@ address,symbol,size,ctype
 0x540380,_SockTerrainCamInActive,16,"void __cdecl (NUFPAR_PC *, void *)"
 0x5404f0,_SockSys_Configure,254,"void __cdecl (SOCKSYS_PC *, char *, i32, VARIPTR *, VARIPTR *, NUGSCN *)"
 0x5405f0,_PerspectMidPoint,122,"void __cdecl(NUVEC*,NUVEC*,NUVEC*,NUVEC*)"
+0x540670,_CalculateDistanceToNearestSide,351,"f32 __cdecl(NUVEC *, SOCKPOSITION_PC *, i32, SOCKSYS_PC *)"
 0x5407d0,_CalculateDistanceToNearestEnd,743,
+0x540ac0,_CalculateDistanceToSpecificSideOrEnd,75,"f32 __cdecl(i32, NUVEC *, SOCKPOSITION_PC *, i32, SOCKSYS_PC *)"
 0x540b10,_TurnOffAllSocksExcept,297,"void __cdecl(SOCKSYS_PC *, i32)"
 0x540c40,_RestoreLastSocksTurnoff,220,void __cdecl(SOCKSYS_PC *)
 0x00540d20,_SockRotationMatrix,1804,"void __cdecl (SOCKSYS_PC *, SOCKPOSITION_PC *, NUMTX *, i32, i32)"
@@ -3465,6 +3467,7 @@ address,symbol,size,ctype
 0x5414f0,_SockSys_GenerateData,1742,"void __cdecl (SOCKSYS_PC *, VARIPTR *, VARIPTR)"
 0x541bc0,_ComplexSockPosition,663,"void __cdecl (SOCKSYS_PC *, NUVEC *, i32, i32, SOCKPOSITION_PC *)"
 0x541e60,_SockSysCamera,4858,
+0x543160,_SockSysCameraWithOverlapBlend,1167,
 0x543670,_createslotfolder,112,void __cdecl(i32)
 0x5436e0,_fullslotname,224,char * __cdecl (i32)
 0x543880,_saveload_getinfo,135,i32 __cdecl (void)
@@ -20790,6 +20793,7 @@ address,symbol,size,ctype
 0x801e30,_tSockTRACKIN,4,const char *
 0x801e34,_tSockLIMIT,4,const char *
 0x801e38,_complexsockposition_forcesock,4,i32
+0x801e3c,_LastSingleSockWeWereInPc,,i32
 0x00801e40,_SockSys_ConfigKeywords,456,NUFPCOMJMPCTX[57]
 0x802008,_saveload_cardtype,,i32
 0x80200c,_saveload_freespace,,i32
