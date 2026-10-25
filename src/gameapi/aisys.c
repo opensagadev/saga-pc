@@ -14110,3 +14110,148 @@ void __cdecl creatureEditor_cbVisionMenu(eduimenu_s *parent, eduiitem_s *item, u
 }
 
 #undef VISION_CREATURE_PC
+
+STATIC_ASSERT(offsetof(AI_EDITOR_CREATURE_SAVE_PC, name) == 8);
+STATIC_ASSERT(offsetof(AI_EDITOR_CREATURE_SAVE_PC, trigger_area) == 0x80);
+STATIC_ASSERT(offsetof(EDLOCATOR_s, name) == 8);
+STATIC_ASSERT(offsetof(EDLOCATOR_s, path) == 0x2c);
+STATIC_ASSERT(offsetof(edui_textpicker_s, value) == 0x4c);
+STATIC_ASSERT(offsetof(edui_textpicker_s, max_length) == 0x15a);
+STATIC_ASSERT(offsetof(eduimenu_s, x) == 0x14);
+STATIC_ASSERT(offsetof(eduimenu_s, y) == 0x18);
+#define CREATURE_MENU_PC ((AI_EDITOR_CREATURE_SAVE_PC *)aieditor->mode_selection_36930)
+#define CREATURE_MENU_LISTS_PC ((AI_EDITOR_REBUILD_STATE_PC *)aieditor)
+
+static void __cdecl AiEditorSetTriggerAreaPc(eduimenu_s *menu, eduiitem_s *item, u32 event) {
+    AI_EDITOR_AREA_SAVE_RECORD_PC *area;
+    i32 index = 0;
+    (void)menu;
+    (void)event;
+    if (item == NULL || CREATURE_MENU_PC == NULL)
+        return;
+    if (item->data == -1) {
+        CREATURE_MENU_PC->trigger_area = NULL;
+        return;
+    }
+    for (area = (AI_EDITOR_AREA_SAVE_RECORD_PC *)NuLinkedListGetHead(&CREATURE_MENU_LISTS_PC->areas); area != NULL;
+         area = (AI_EDITOR_AREA_SAVE_RECORD_PC *)NuLinkedListGetNext(&CREATURE_MENU_LISTS_PC->areas, &area->link),
+        ++index) {
+        if (index == item->data) {
+            CREATURE_MENU_PC->trigger_area = area;
+            return;
+        }
+    }
+}
+
+void __cdecl creatureEditor_cbSelectTriggerArea(eduimenu_s *parent, eduiitem_s *item, u32 event) {
+    eduimenu_s *menu = eduiMenuCreate(220, 70, 240, 250, ed_fnt, AiEditorRespawnCancelMenuPc, "Select Trigger Area");
+    AI_EDITOR_AREA_SAVE_RECORD_PC *area;
+    i32 index = 0;
+    i32 selected;
+    (void)item;
+    (void)event;
+    if (menu == NULL)
+        return;
+    selected = CREATURE_MENU_PC->trigger_area == NULL;
+    eduiMenuAddItem(menu, eduiItemCheckCreate((size_t)-1, &AiEditorSaveMessageColoursPc, selected, 1,
+                                              AiEditorSetTriggerAreaPc, "NONE"));
+    if (selected)
+        menu->selected = edui_last_item;
+    eduiMenuAttach(parent, menu);
+    for (area = (AI_EDITOR_AREA_SAVE_RECORD_PC *)NuLinkedListGetHead(&CREATURE_MENU_LISTS_PC->areas); area != NULL;
+         area = (AI_EDITOR_AREA_SAVE_RECORD_PC *)NuLinkedListGetNext(&CREATURE_MENU_LISTS_PC->areas, &area->link),
+        ++index) {
+        selected = CREATURE_MENU_PC->trigger_area == area;
+        eduiMenuAddItem(menu, eduiItemCheckCreate(index, &AiEditorSaveMessageColoursPc, selected, 1,
+                                                  AiEditorSetTriggerAreaPc, area->name));
+        if (selected)
+            menu->selected = edui_last_item;
+        eduiMenuAttach(parent, menu);
+    }
+}
+
+static void __cdecl AiEditorSetLocatorPc(eduimenu_s *menu, eduiitem_s *item, u32 event) {
+    EDLOCATOR_s *locator;
+    i32 index = 0;
+    (void)menu;
+    (void)event;
+    if (item == NULL || CREATURE_MENU_PC == NULL)
+        return;
+    if (item->data == -1) {
+        CREATURE_MENU_PC->locator = NULL;
+        return;
+    }
+    for (locator = (EDLOCATOR_s *)NuLinkedListGetHead(&CREATURE_MENU_LISTS_PC->locators); locator != NULL;
+         locator = (EDLOCATOR_s *)NuLinkedListGetNext(&CREATURE_MENU_LISTS_PC->locators, &locator->link)) {
+        if ((void *)CREATURE_MENU_PC->check.path == (void *)locator->path) {
+            if (index == item->data) {
+                CREATURE_MENU_PC->locator = locator;
+                return;
+            }
+            ++index;
+        }
+    }
+}
+
+void __cdecl AiEditorSelectLocatorMenuPc(eduimenu_s *parent, eduiitem_s *item, u32 event) {
+    eduimenu_s *menu = eduiMenuCreate(220, 70, 240, 250, ed_fnt, AiEditorRespawnCancelMenuPc, "Select Locator");
+    EDLOCATOR_s *locator;
+    i32 index = 0;
+    (void)item;
+    (void)event;
+    if (menu == NULL)
+        return;
+    eduiMenuAddItem(menu, eduiItemCheckCreate((size_t)-1, &AiEditorSaveMessageColoursPc,
+                                              CREATURE_MENU_PC->locator == NULL, 1, AiEditorSetLocatorPc, "NONE"));
+    for (locator = (EDLOCATOR_s *)NuLinkedListGetHead(&CREATURE_MENU_LISTS_PC->locators); locator != NULL;
+         locator = (EDLOCATOR_s *)NuLinkedListGetNext(&CREATURE_MENU_LISTS_PC->locators, &locator->link)) {
+        if ((void *)CREATURE_MENU_PC->check.path == (void *)locator->path) {
+            i32 selected = CREATURE_MENU_PC->locator == locator;
+            eduiMenuAddItem(menu, eduiItemCheckCreate(index, &AiEditorSaveMessageColoursPc, selected, 1,
+                                                      AiEditorSetLocatorPc, locator->name));
+            if (selected)
+                menu->selected = edui_last_item;
+            eduiMenuAttach(parent, menu);
+            ++index;
+        }
+    }
+}
+
+static void __cdecl AiEditorRenameCreaturePc(eduimenu_s *menu, eduiitem_s *item, u32 event) {
+    AI_EDITOR_CREATURE_SAVE_PC *creature;
+    (void)menu;
+    (void)event;
+    if (CREATURE_MENU_PC != NULL) {
+        char *name = ((edui_textpicker_s *)item)->value;
+        if (strlen(name) != 0) {
+            for (creature = (AI_EDITOR_CREATURE_SAVE_PC *)NuLinkedListGetHead(&CREATURE_MENU_LISTS_PC->creatures);
+                 creature != NULL; creature = (AI_EDITOR_CREATURE_SAVE_PC *)NuLinkedListGetNext(
+                                       &CREATURE_MENU_LISTS_PC->creatures, &creature->link)) {
+                if (NuStrICmp(creature->name, name) == 0)
+                    return;
+            }
+            strcpy(CREATURE_MENU_PC->name, name);
+        }
+    }
+}
+
+void __cdecl creatureEditor_cbRenameCreatureMenu(eduimenu_s *parent, eduiitem_s *item, u32 event) {
+    eduimenu_s *menu;
+    (void)item;
+    (void)event;
+    if (CREATURE_MENU_PC == NULL)
+        return;
+    menu = eduiMenuCreate(240, 90, 240, 250, ed_fnt, AiEditorRespawnCancelMenuPc, "Rename Creature");
+    if (menu == NULL)
+        return;
+    eduiMenuAddItem(
+        menu, eduiItemTextPickCreate(0, &AiEditorSaveMessageColoursPc, AiEditorRenameCreaturePc, "Creature Name"));
+    strcpy(((edui_textpicker_s *)edui_last_item)->value, CREATURE_MENU_PC->name);
+    ((edui_textpicker_s *)edui_last_item)->max_length = 15;
+    eduiMenuAttach(parent, menu);
+    menu->x = parent->x + 10;
+    menu->y = parent->y + 40;
+}
+
+#undef CREATURE_MENU_PC
+#undef CREATURE_MENU_LISTS_PC

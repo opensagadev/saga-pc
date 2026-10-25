@@ -3285,7 +3285,11 @@ address,symbol,size,ctype
 0x529700,_AiEditorMinViewHeightPc,36,
 0x529730,_creatureEditor_cbVisionMenu,397,
 0x529a00,_creatureEditor_cbSelectType,195,
+0x529d70,_AiEditorSetTriggerAreaPc,122,
 0x529df0,_creatureEditor_cbSelectTriggerArea,290,
+0x529f20,_AiEditorSetLocatorPc,130,
+0x529fb0,_AiEditorSelectLocatorMenuPc,271,
+0x52a0c0,_AiEditorRenameCreaturePc,146,
 0x52a160,_creatureEditor_cbRenameCreatureMenu,192,
 0x52a630,_creatureEditor_CalculatePos,224,
 0x52a760,_creatureEditor_RenderAllCreatures,389,
@@ -14994,6 +14998,9 @@ address,symbol,size,ctype
 0x760264,__real@42460000,,const f32
 0x760268,??_C@_0O@HMAHNBLB@View?5Distance?$AA@,,char []
 0x760278,??_C@_06ENMEEKDM@Vision?$AA@,,char []
+0x760290,??_C@_0BE@KBOCPIMK@Select?5Trigger?5Area?$AA@,,char []
+0x7602a4,??_C@_0O@KBICCNAD@Creature?5Name?$AA@,,char []
+0x7602b4,??_C@_0BA@GNAEAMBE@Rename?5Creature?$AA@,,char []
 0x007603f8,??_C@_07DKPOBDJL@OnMacro?$AA@,8,const char[8]
 0x760400,??_C@_02FDNJECIE@?$CB?$DN?$AA@,,
 0x760404,??_C@_02EEKDKGMJ@?$DO?$DN?$AA@,,
