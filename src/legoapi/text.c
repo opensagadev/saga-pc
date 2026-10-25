@@ -1627,3 +1627,27 @@ void __cdecl MenuDrawViewTextStrings(MENU *menu) {
         }
     }
 }
+
+STATIC_ASSERT(offsetof(GAMEOBJECT, pad) == 0xca4);
+STATIC_ASSERT(offsetof(GAMEPAD_PC, buttons_held) == 4);
+
+void __cdecl MenuUpdateViewTextStrings(MENU *menu) {
+    if (menu->cancel_pressed != 0) {
+        BackupMenu();
+        return;
+    }
+    if ((Player[0] == NULL || (((GAMEOBJECT *)Player[0])->pad->buttons_held & GAMEPAD_MENUSELECT) == 0) &&
+        (Player[1] == NULL || (((GAMEOBJECT *)Player[1])->pad->buttons_held & GAMEPAD_MENUSELECT) == 0))
+        return;
+    if (menu->up_held != 0) {
+        menu->selected_row -= 5;
+        if (menu->selected_row < menu->first_row)
+            menu->selected_row = menu->last_row;
+        menu->selected_item = menu->selected_row - menu->first_row;
+    } else if (menu->down_held != 0) {
+        menu->selected_row += 5;
+        if (menu->selected_row > menu->last_row)
+            menu->selected_row = menu->first_row;
+        menu->selected_item = menu->selected_row - menu->first_row;
+    }
+}
