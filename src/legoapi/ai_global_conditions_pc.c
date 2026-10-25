@@ -1275,3 +1275,46 @@ f32 __cdecl Condition_YawToOpponentPc(AISYS_PC *system, AISCRIPTPROCESS_PC *proc
     }
     return -180.0f;
 }
+
+void *__cdecl Condition_InLevelNodeInitPc(AISYS_PC *system, char *name, AISCRIPT_PC *script) {
+    if (system != NULL && system->path_sys != NULL && system->path_sys->path_count != 0)
+        return AIPathFindNode(system, system->path_sys->active_path, name);
+    return NULL;
+}
+
+void *__cdecl Condition_PlayerInLevelNodeInitPc(AISYS_PC *system, char *name, AISCRIPT_PC *script) {
+    if (system != NULL && system->path_sys != NULL && system->path_sys->path_count != 0)
+        return AIPathFindNode(system, system->path_sys->active_path, name);
+    return NULL;
+}
+
+f32 __cdecl Condition_InLevelNodePc(AISYS_PC *system, AISCRIPTPROCESS_PC *process, AIPACKET_PC *packet, char *name,
+                                    void *argument) {
+    if (packet != NULL && argument != NULL && system != NULL) {
+        if (packet->inside_path_node == (AIPATHNODE_PC *)argument - system->path_sys->active_path->nodes)
+            return 1.0f;
+    }
+    return 0.0f;
+}
+
+f32 __cdecl Condition_PlayerInLevelNodePc(AISYS_PC *system, AISCRIPTPROCESS_PC *process, AIPACKET_PC *packet,
+                                          char *name, void *argument) {
+    if (system != NULL && system->player_1 != NULL && argument != NULL) {
+        if (system->player_1->ai->inside_path_node == (AIPATHNODE_PC *)argument - system->path_sys->active_path->nodes)
+            return 1.0f;
+    }
+    return 0.0f;
+}
+
+f32 __cdecl Condition_EitherPlayerInLevelNodePc(AISYS_PC *system, AISCRIPTPROCESS_PC *process, AIPACKET_PC *packet,
+                                                char *name, void *argument) {
+    if (system != NULL && argument != NULL) {
+        if (system->player_1 != NULL &&
+            system->player_1->ai->inside_path_node == (AIPATHNODE_PC *)argument - system->path_sys->active_path->nodes)
+            return 1.0f;
+        if (system->player_2 != NULL &&
+            system->player_2->ai->inside_path_node == (AIPATHNODE_PC *)argument - system->path_sys->active_path->nodes)
+            return 1.0f;
+    }
+    return 0.0f;
+}
