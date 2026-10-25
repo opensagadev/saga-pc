@@ -561,3 +561,17 @@ f32 __cdecl Condition_RaceLapPc(AISYS_PC *system, AISCRIPTPROCESS_PC *process, A
                                 void *argument) {
     return (f32)Lap;
 }
+
+GIZMOPICKUP_PC *__cdecl GizmoPickup_FindByName(WORLDINFO *, char *);
+i32 __cdecl GizmoPickup_BeenTurnedOn(GIZMOPICKUP_PC *);
+void *__cdecl Condition_PickupBeenTurnedOnInitPc(AISYS_PC *system, char *name, AISCRIPT_PC *script) {
+    if (name != NULL)
+        return GizmoPickup_FindByName(WORLD, name);
+    return NULL;
+}
+f32 __cdecl Condition_PickupBeenTurnedOnPc(AISYS_PC *system, AISCRIPTPROCESS_PC *process, AIPACKET_PC *packet,
+                                           char *name, void *argument) {
+    if (argument != NULL)
+        return (f32)GizmoPickup_BeenTurnedOn((GIZMOPICKUP_PC *)argument);
+    return 0.0f;
+}
