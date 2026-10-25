@@ -1648,3 +1648,127 @@ void __cdecl FS_SortStrings(char *start, char *end, i32 mode) {
         }
     }
 }
+
+char *FS_CurrentPos = FS_FileList;
+char *FS_CurrentCursorPos = FS_FileList;
+i32 FS_CursorLine = 0;
+
+void __cdecl FS_MoveCursorUp(i32 steps) {
+    if (steps > 0) {
+        i32 top_number = FS_CurrentPosFileNum;
+        char *cursor = FS_CurrentCursorPos;
+        char *top = FS_CurrentPos;
+        do {
+            i32 top_length = 0;
+            i32 cursor_length = 0;
+            if (top != FS_FileList) {
+                char *previous = top - 2;
+                i32 length = 0;
+                if (*previous == '\0') {
+                    top_length = 1;
+                } else {
+                    for (;;) {
+                        if (previous == FS_FileList) {
+                            top_length = length + 2;
+                            break;
+                        }
+                        --previous;
+                        ++length;
+                        if (*previous == '\0') {
+                            top_length = length + 1;
+                            break;
+                        }
+                    }
+                }
+            }
+            if (cursor != FS_FileList) {
+                char *previous = cursor - 2;
+                i32 length = 0;
+                if (*previous == '\0') {
+                    cursor_length = 1;
+                } else {
+                    for (;;) {
+                        if (previous == FS_FileList) {
+                            cursor_length = length + 2;
+                            break;
+                        }
+                        --previous;
+                        ++length;
+                        if (*previous == '\0') {
+                            cursor_length = length + 1;
+                            break;
+                        }
+                    }
+                }
+            }
+            if (cursor == top) {
+                top -= top_length;
+                FS_CurrentPos = top;
+                if (top_number != 0) {
+                    --top_number;
+                    FS_CurrentPosFileNum = top_number;
+                }
+            } else {
+                --FS_CursorLine;
+            }
+            cursor -= cursor_length;
+            --steps;
+            FS_CurrentCursorPos = cursor;
+        } while (steps > 0);
+    }
+}
+
+void __cdecl FS_SetCursorToLastFileName(void) {
+    char *entry = FS_FileList;
+    i32 index;
+    if (FS_LastFileName[0] == '\0')
+        return;
+    for (index = 0; index < FS_NumFiles; ++index) {
+        if (NuStrICmp(entry + 7, FS_LastFileName) == 0) {
+            FS_CurrentCursorPos = entry;
+            FS_CurrentPosFileNum = index;
+            FS_CurrentPos = entry;
+            FS_CursorLine = 0;
+            if (index > 0) {
+                i32 file_count = FS_NumFiles;
+                i32 end_index = (i32)((u32)index + 14);
+                while (end_index > file_count) {
+                    char *previous;
+                    i32 previous_length;
+                    i32 length = 0;
+                    if (entry == FS_FileList)
+                        break;
+                    previous = entry - 2;
+                    if (*previous == '\0') {
+                        previous_length = 1;
+                    } else {
+                        for (;;) {
+                            if (previous == FS_FileList) {
+                                previous_length = length + 2;
+                                break;
+                            }
+                            --previous;
+                            ++length;
+                            if (*previous == '\0') {
+                                previous_length = length + 1;
+                                break;
+                            }
+                        }
+                    }
+                    if (previous_length == 0)
+                        break;
+                    --FS_CurrentPosFileNum;
+                    ++FS_CursorLine;
+                    entry -= previous_length;
+                    --index;
+                    --end_index;
+                    FS_CurrentPos = entry;
+                    if (index <= 0)
+                        break;
+                }
+            }
+            return;
+        }
+        entry += NuStrLen(entry) + 1;
+    }
+}
