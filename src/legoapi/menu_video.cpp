@@ -283,9 +283,15 @@ extern "C" void __cdecl MenuDrawEffectsPc(MENU *menu) {
     char text[256];
     const char *value;
     if (PcWindowOptions.usehires) {
-        if (!MenuPcStringsInitialized)
-            MenuPcStringsInit();
-        value = MenuPcStrings[PCDeviceBackend.requested_multisample == 6 ? 31 : 16];
+        if (PCDeviceBackend.requested_multisample == 6) {
+            if (!MenuPcStringsInitialized)
+                MenuPcStringsInit();
+            value = MenuPcStrings[31];
+        } else {
+            if (!MenuPcStringsInitialized)
+                MenuPcStringsInit();
+            value = MenuPcStrings[16];
+        }
         if (!MenuPcStringsInitialized)
             MenuPcStringsInit();
         NuSPrintf(text, ExtrasNameFormatPc, MenuPcStrings[30], value);
