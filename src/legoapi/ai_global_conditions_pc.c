@@ -1177,3 +1177,25 @@ f32 __cdecl Condition_TakeOverTargetInTriggerAreaPc(AISYS_PC *system, AISCRIPTPR
     }
     return 0.0f;
 }
+
+void *__cdecl Condition_OpponentIsAInitPc(AISYS_PC *system, char *name, AISCRIPT_PC *script) {
+    i32 index;
+    if (name != NULL && system != NULL) {
+        for (index = 0; index < CHARCOUNT; ++index) {
+            if (NuStrICmp(CDataList[index].name, name) == 0)
+                return (void *)index;
+        }
+    }
+    return (void *)-1;
+}
+
+STATIC_ASSERT(offsetof(AIPACKET_PC, opponent) == 0xe4);
+STATIC_ASSERT(offsetof(GAMEOBJECT, objptr) == 0);
+
+f32 __cdecl Condition_OpponentIsAPc(AISYS_PC *system, AISCRIPTPROCESS_PC *process, AIPACKET_PC *packet, char *name,
+                                    void *argument) {
+    if (packet != NULL && packet->opponent != NULL && packet->opponent->objptr != NULL &&
+        (i16)packet->opponent->objptr->id == (i32)argument)
+        return 1.0f;
+    return 0.0f;
+}
