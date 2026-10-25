@@ -1341,7 +1341,7 @@ f32 __cdecl Condition_Player2InTriggerAreaPc(AISYS_PC *system, AISCRIPTPROCESS_P
             if (area != NULL && area->system != NULL) {
                 i32 index = (i32)(area - area->system->areas);
                 i64 mask = (i32)(1u << index);
-                u64 membership = ((u64)object->ai_area_mask[1] << 32) | object->ai_area_mask[0];
+                u64 membership = ((CONDITION_TRIGGER_PLAYER_READER_PC *)object)->membership;
                 if ((membership & mask) != 0)
                     return 1.0f;
             }
