@@ -1889,3 +1889,14 @@ extern "C" void __cdecl NuDisplayListBurstRndrSpecial(nuhspecial_s *handle, u32 
         }
     }
 }
+
+extern "C" i32 __cdecl DisplayListDebugPS(NUDISPLAYLISTITEM *item, char *text) {
+    (void)item;
+    (void)text;
+    return 0;
+}
+
+extern "C" void __cdecl DisplayListPrintItemPS(NUDISPLAYLISTITEM *item, i32 file_handle) {
+    (void)item;
+    (void)file_handle;
+}

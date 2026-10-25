@@ -6061,7 +6061,7 @@ address,symbol,size,ctype
 0x5e0390,_DisplayListProcessSkinPC,246,"void __cdecl(NUDISPLAYLIST_PC *,NUDISPLAYLISTITEM *,NUDISPLAYLISTITEM **,NUMTX *,void **,NUMTX *,void *,i32)"
 0x5e0490,_DisplayListProcessFaceonPC,151,"void __cdecl(NUDISPLAYLIST_PC *,NUDISPLAYLISTITEM *,NUDISPLAYLISTITEM **,NUMTX *,f32)"
 0x5e0530,_DisplayListProcessSpecialItemPC,168,"void __cdecl(PC_SPECIAL_RENDER_MATERIAL *,NUDISPLAYLIST_PC *,NUDISPLAYLISTITEM *,i32,NUDISPLAYLISTITEM **,NUMTX *,void **,NUMTX *,void *,f32,i32)"
-0x5e05e0,_DisplayListPrintItem,908,
+0x5e05e0,_DisplayListPrintItem,957,
 0x5e0bd0,_UpdateMaterialClipBitsPC,299,void __cdecl(NUDISPLAY_LIST_PC *)
 0x5e0d00,_DisplayProcessMaterialRenderStatesPC,586,void __cdecl(void)
 0x5e0f90,_NuDisplayListExecute,92,"void __cdecl(NUDISPLAYLISTITEM *,void (__cdecl **)(void *))"
@@ -6430,6 +6430,7 @@ address,symbol,size,ctype
 0x00602930,_NuRndrConfigureLeafPc,1,"void __cdecl(f32, f32, i32)"
 0x603350,_NuDisplayListInit,127,"void __cdecl(VARIPTR *, i32)"
 0x006033d0,_NuDisplayListDrawItemsPc,20,void __cdecl(NUDISPLAYLISTITEM*)
+0x603430,_DisplayListDebugPS,3,"i32 __cdecl(NUDISPLAYLISTITEM *,char *)"
 0x603440,_NuDisplayListAddClut,16,"void __cdecl(NUDISPLAYLISTITEM *,i32)"
 0x603450,_NuDisplayListAddTexture,16,"void __cdecl(NUDISPLAYLISTITEM *,i32)"
 0x603460,_NuDisplayListAddMaterialState,19,"void __cdecl(NUDISPLAYLISTITEM *,NUMTL *)"
@@ -6441,6 +6442,7 @@ address,symbol,size,ctype
 0x603580,_DisplayListCreateGeomTransformPS,142,"void *__cdecl(VARIPTR *,NUMTX *,NUMTL *,void *,void *)"
 0x603610,_DisplayListCreateFaceonTransformPS,231,"void *__cdecl(VARIPTR *,NUMTX *,NUMTL *,void *)"
 0x603710,_DisplayListCreateSkinTransformPS,472,"void *__cdecl(VARIPTR *,NUMTX *,void *,void *,void **,void *)"
+0x603910,_DisplayListPrintItemPS,1,"void __cdecl(NUDISPLAYLISTITEM *,i32)"
 0x603920,_DisplayListSwapBuffersPS,1,void __cdecl(void)
 0x603960,_DisplayGenerateTransformsNoOpPc,1,void __cdecl(NUDISPLAY_LIST_PC*)
 0x603970,_NuDisplayListPrepareFaceonPS,5,"void *__cdecl(VARIPTR *,void *,NUMTX *)"
@@ -16149,6 +16151,41 @@ address,symbol,size,ctype
 0x00765068,_NuTimeBarScanlinesPerFrame,8,const f64
 0x00765078,??_C@_0BH@DIPKHAJO@?$DMbody?5bgcolor?$DN?$CDC0C0C0?$DO?$AA@,,const char[23]
 0x765090,??_C@_09PPHBOECN@dlist?4htm?$AA@,,char[10]
+0x76509c,??_C@_0BJ@HMJHKMIC@?$DMfont?5color?5?$DN?5?$CC?$CD000000?$CC?$DO?$AA@,,const char[25]
+0x7650b8,??_C@_06NHEDEGO@?$DM?1br?$DO?6?$AA@,,const char[7]
+0x7650c0,??_C@_04EBCEJFCI@?$CI?$CFx?$CJ?$AA@,,const char[5]
+0x7650c8,??_C@_0BF@HLPEBHPK@ERROR?3?5Unknown?5item?4?$AA@,,const char[21]
+0x7650e0,??_C@_0BC@EGCEBIMI@LIGHTMAP?5ITEM?5?5?5?5?$AA@,,const char[18]
+0x7650f4,??_C@_0BF@KEHGJDMO@INST_SURF_GEOM?5ITEM?5?$AA@,,const char[21]
+0x76510c,??_C@_0BC@LEKMEBN@END?5ITEM?5?5?5?5?5?5?5?5?5?$AA@,,const char[18]
+0x765120,??_C@_0BC@HIGILOEK@GEOM?5CLIPPED?5?5?5?5?5?$AA@,,const char[18]
+0x765134,??_C@_0BC@HMKLILLJ@FX?5SPEED?5BLUR?5?5?5?5?$AA@,,const char[18]
+0x765148,??_C@_0BC@IMIEAEDE@FX?5SCREEN?5FILTER?5?$AA@,,const char[18]
+0x76515c,??_C@_0BC@ENAPDDII@FX?5SUN?5FLARE?5?5?5?5?5?$AA@,,const char[18]
+0x765170,??_C@_0BC@HALNICDE@FX?5SCREEN?5COPY?5?5?5?$AA@,,const char[18]
+0x765184,??_C@_0BC@NGHNLAH@DEBUG?5GEOMCALL?5?5?5?$AA@,,const char[18]
+0x765198,??_C@_0BC@MEGFGMJE@CAMERA?5?5?5?5?5?5?5?5?5?5?5?$AA@,,const char[18]
+0x7651ac,??_C@_0BC@PACOBHGF@LIGHTS?5?5?5?5?5?5?5?5?5?5?5?$AA@,,const char[18]
+0x7651c0,??_C@_0BC@EKEPCDHD@DYNAMIC?5GEOMETRY?5?$AA@,,const char[18]
+0x7651d4,??_C@_0BC@PNEFFHKM@NEXT?5?5?5?5?5?5?5?5?5?5?5?5?5?$AA@,,const char[18]
+0x7651e8,??_C@_0BC@MIFEOIGO@TRANSFORM_REF?5?5?5?5?$AA@,,const char[18]
+0x7651fc,??_C@_0BC@KOPLIKLF@DLIST?5?5?5?5?5?5?5?5?5?5?5?5?$AA@,,const char[18]
+0x765210,??_C@_0BC@GGBCFOMD@CLUT?5?5?5?5?5?5?5?5?5?5?5?5?5?$AA@,,const char[18]
+0x765224,??_C@_0BC@EEPKMBCK@MTL_CLIP?5?5?5?5?5?5?5?5?5?$AA@,,const char[18]
+0x765238,??_C@_0BC@BLJMJEJC@TERMINATE?5?5?5?5?5?5?5?5?$AA@,,const char[18]
+0x76524c,??_C@_0BC@LLDNJOM@FACEON_TRANSFORM?5?$AA@,,const char[18]
+0x765260,??_C@_0BC@COKHOEEL@MTXLOAD?5?5?5?5?5?5?5?5?5?5?$AA@,,const char[18]
+0x765274,??_C@_0BC@PGCFGCNK@FACEON?5?5?5?5?5?5?5?5?5?5?5?$AA@,,const char[18]
+0x765288,??_C@_0BC@HJFLHCEE@LINEBUFFER?5?5?5?5?5?5?5?$AA@,,const char[18]
+0x76529c,??_C@_0BC@FDDNEKIB@LINECALL2D?5?5?5?5?5?5?5?$AA@,,const char[18]
+0x7652b0,??_C@_0BC@FKBDAMKI@GEOMCALL2D?5?5?5?5?5?5?5?$AA@,,const char[18]
+0x7652c4,??_C@_0BC@HIMHINNF@GEOMCALL?5?5?5?5?5?5?5?5?5?$AA@,,const char[18]
+0x7652d8,??_C@_0BC@JNAFCHNM@TXTRLOAD?5?5?5?5?5?5?5?5?5?$AA@,,const char[18]
+0x7652ec,??_C@_0BC@DJACBFCG@MTL?5?5?5?5?5?5?5?5?5?5?5?5?5?5?$AA@,,const char[18]
+0x765300,??_C@_0BC@BCMGCMPD@DUMMY?5?5?5?5?5?5?5?5?5?5?5?5?$AA@,,const char[18]
+0x765314,??_C@_04DIMAIMCG@?$CFd?3?5?$AA@,,const char[5]
+0x76531c,??_C@_0BJ@HJOEEKPJ@?$DMfont?5color?5?$DN?5?$CC?$CD0000a0?$CC?$DO?$AA@,,const char[25]
+0x765338,??_C@_0BJ@PJDFEOIB@?$DMfont?5color?5?$DN?5?$CC?$CD00a000?$CC?$DO?$AA@,,const char[25]
 0x7653f8,??_7NuMainFilterGen@@6B@,40,native exactVT binding; unimplemented extent unclaimed
 0x765424,??_7NuMotionAccumFilter@@6B@,40,native exactVT binding; unimplemented extent unclaimed
 0x765450,??_7NuSpeedBlurFilter@@6B@,40,native exactVT binding; unimplemented extent unclaimed
