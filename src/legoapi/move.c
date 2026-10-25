@@ -10664,3 +10664,34 @@ void __cdecl MovePlayer_NETWORK(GAMEOBJECT *object) {
     GameObjectOrigin(object);
     AddSurfaceRipples(object);
 }
+
+void __cdecl ApplyGravity_Network(GAMEOBJECT *object) {
+    CHARACTERDATA_PC *character = object->character_data;
+    PLAYERCHARACTERCONFIG_PC *data;
+    f32 height;
+    if (character->model_flags == 0x2000) {
+        data = character->game_character;
+        if ((data->flags_094 & 0x20) == 0) {
+            if (data->weapon_action == 0x15)
+                ApplyGravity(object, NULL, FindGunshipHoverHeight(object), 8.0f, NULL);
+            else {
+                if (data->field_028 > 0.0f) {
+                    height = GetVehicleHoverHeight(object, NULL);
+                    if (height != 0.0f || getvehiclehoverheight_hothbattlehack != 0) {
+                        ApplyGravity(object, NULL, height, 10.0f, NULL);
+                        return;
+                    }
+                }
+                height = object->character_context == 0x17 ? 0.0f : object->character_data->game_character->field_028;
+                ApplyGravity(object, NULL, height, 8.0f, NULL);
+            }
+        }
+    } else if (object->field_281 != 0 || object->jump_variant_timer >= character->game_character->jump_hold_duration ||
+               object->jump_animation_state == 0x1a) {
+        data = character->game_character;
+        if (data->weapon_action == 2 && object->jump_variant_state == 1)
+            ApplyGravity(object, NULL, data->field_028, 8.0f, NULL);
+        else
+            ApplyGravity(object, NULL, 0.0f, 8.0f, NULL);
+    }
+}
