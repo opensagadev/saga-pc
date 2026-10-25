@@ -272,3 +272,46 @@ f32 __cdecl Condition_IAmPlayer2Pc(AISYS_PC *system, AISCRIPTPROCESS_PC *process
     }
     return 0.0f;
 }
+
+f32 __cdecl Condition_PlayerTakenOverPc(AISYS_PC *system, AISCRIPTPROCESS_PC *process, AIPACKET_PC *packet, char *name,
+                                        void *argument) {
+    if (player != NULL && player->takeover_source != NULL && player->character_context != 0x3b)
+        return 1.0f;
+    return 0.0f;
+}
+
+f32 __cdecl Condition_EitherPlayerTakenOverPc(AISYS_PC *system, AISCRIPTPROCESS_PC *process, AIPACKET_PC *packet,
+                                              char *name, void *argument) {
+    GAMEOBJECT *object = player;
+    if (object != NULL && object->takeover_source != NULL && object->character_context != 0x3b)
+        return 1.0f;
+    object = player2;
+    if (object != NULL && object->takeover_source != NULL && object->character_context != 0x3b)
+        return 1.0f;
+    return 0.0f;
+}
+
+void *__cdecl Condition_BeenTakenOverInitPc(AISYS_PC *system, char *name, AISCRIPT_PC *script) {
+    if (name != NULL && system != NULL && GetNamedGameObjectCallback != NULL) {
+        APIOBJECT_PC *object = GetNamedGameObjectCallback(system, name);
+        if (object != NULL)
+            return object->owner;
+    }
+    return NULL;
+}
+
+f32 __cdecl Condition_BeenTakenOverPc(AISYS_PC *system, AISCRIPTPROCESS_PC *process, AIPACKET_PC *packet, char *name,
+                                      void *argument) {
+    GAMEOBJECT *object = (GAMEOBJECT *)argument;
+    if (object == NULL) {
+        GAMEOBJECT *owner = packet->owner;
+        if (owner == NULL)
+            return 0.0f;
+        object = owner->objptr;
+        if (object == NULL)
+            return 0.0f;
+    }
+    if (object->takeover_source != NULL && object->character_context == 0x3b)
+        return 1.0f;
+    return 0.0f;
+}
