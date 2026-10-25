@@ -3244,9 +3244,13 @@ address,symbol,size,ctype
 0x521230,_AiEditorRenameAreaCancelPc,12,
 0x521240,_DrawAreaBox,1366,
 0x521800,_areaEditorDrawAreas,274,
+0x521a30,_AiEditorCreateLocatorSetPc,84,
+0x521a90,_AiEditorDestroyLocatorSetPc,57,
 0x521cb0,_locatorEditorSaveData,794,
 0x522290,_AiEditorRenameLocatorPc,146,
 0x522330,_AiEditorRenameLocatorCancelPc,12,
+0x522340,_AiEditorRenameLocatorSetPc,178,
+0x522450,_locatorEditor_cbCancelSelectLocatorSet,12,
 0x522500,_DrawLocator,430,
 0x5226b0,_locatorEditorDrawLocators,428,
 0x523640,_pathEditorDrawNode,137,
@@ -3269,6 +3273,7 @@ address,symbol,size,ctype
 0x5263f0,_routeEditor_cbRenameRouteMenu,209,
 0x526560,_routeEditor_cbRouteUsers,327,
 0x526800,?pathEditorCreateSpecialRouteData@@YAXPAUAIPATH_PC@@PAUAI_PATH_BUILD_PATH_PC@@PATvariptr_u@@2@Z,2382,
+0x527150,_AiEditorClearMainMenuPc,37,
 0x527360,_AiEditorMessageCloseMenuPc,37,
 0x527390,_AiEditorSaveCloseSelectionPc,37,
 0x527460,_aieditor_AddMessage,135,
@@ -3356,7 +3361,12 @@ address,symbol,size,ctype
 0x530960,_areaEditor_cbRenameAreaMenu,192,
 0x530b30,_areaEditor_Render,672,
 0x530f60,_locatorEditor_cbRenameLocatorMenu,192,
+0x531100,_locatorEditor_cbCreateLocatorSet,236,
+0x5311f0,_locatorEditor_cbDeleteLocatorSet,257,
 0x531300,_locatorEditor_cbEmptyLocatorSet,276,
+0x531420,_AiEditorRenameLocatorSetCancelPc,37,
+0x531450,_locatorEditor_cbRenameLocatorSetMenu,192,
+0x531800,_locatorEditor_cbSetLocatorSet,280,
 0x531920,_locatorEditor_cbSelectLocatorSet,197,
 0x5319f0,_locatorEditor_Render,512,
 0x531ef0,_locatorEditor_Enter,745,
@@ -15040,6 +15050,11 @@ address,symbol,size,ctype
 0x7604c0,??_C@_0M@PCEMPPIA@Rename?5Area?$AA@,,char []
 0x7605d4,??_C@_0N@JOGKKIAG@Locator?5Name?$AA@,,char []
 0x7605e4,??_C@_0P@PMPBEANL@Rename?5Locator?$AA@,,char []
+0x7605f4,??_C@_08LOOAOMLJ@NewSet?$CFd?$AA@,,char []
+0x760600,??_C@_0BM@FEFFOKP@Delete?5current?5locator?5set?$DP?$AA@,,char []
+0x76061c,??_C@_0BL@KIKFKBJO@Empty?5current?5locator?5set?$DP?$AA@,,char []
+0x760638,??_C@_0BD@CFFFOHOC@Rename?5Locator?5Set?$AA@,,char []
+0x760664,??_C@_0BD@OEHEHOJF@Select?5Locator?5Set?$AA@,,char []
 0x760894,??_C@_04OEDFLLKD@?$CC?$CFs?$CC?$AA@,5,char []
 0x00760b70,_AIPathCurrentPositionName,17,const char[17]
 0x00760b84,_AIPathCurrentDistanceName,12,const char[12]

@@ -14485,3 +14485,227 @@ void __cdecl routeEditor_cbRenameRouteMenu(eduimenu_s *parent, eduiitem_s *item,
 #undef RENAME_LOCATOR_LIST_PC
 #undef RENAME_PATH_PC
 #undef RENAME_PATH_LIST_PC
+
+STATIC_ASSERT(offsetof(AIEDITOR_RENDER_STATE, main_menu) == 4);
+STATIC_ASSERT(offsetof(AIEDITOR_RENDER_STATE, free_locator_sets) == 0x411f8);
+STATIC_ASSERT(offsetof(AIEDITOR_RENDER_STATE, locator_sets) == 0x41200);
+STATIC_ASSERT(offsetof(AIEDITOR_RENDER_STATE, current_locator_set) == 0x41208);
+STATIC_ASSERT(offsetof(AIEDITOR_RENDER_STATE, locator_set_pool) == 0x3cbe8);
+STATIC_ASSERT(offsetof(EDLOCATORSET_s, name) == 8);
+STATIC_ASSERT(offsetof(EDLOCATORSET_s, locators) == 0x18);
+STATIC_ASSERT(sizeof(EDLOCATORSET_s) == 0x118);
+STATIC_ASSERT(offsetof(EDLOCATOR_s, position) == 0x18);
+STATIC_ASSERT(offsetof(EDLOCATOR_s, path) == 0x2c);
+extern const char MenuPcString75f2c0[3];
+extern const char MenuPcString75f2c4[4];
+
+static void AiEditorClearMainMenuPc(void) {
+    if (aieditor->main_menu != NULL) {
+        eduiMenuDestroy(aieditor->main_menu);
+        aieditor->main_menu = NULL;
+    }
+}
+
+static EDLOCATORSET_s *AiEditorCreateLocatorSetPc(void) {
+    EDLOCATORSET_s *set = (EDLOCATORSET_s *)NuLinkedListGetHead(&aieditor->free_locator_sets);
+    if (set != NULL) {
+        NuLinkedListRemove(&aieditor->free_locator_sets, &set->link);
+        memset(set, 0, sizeof(*set));
+        NuLinkedListAppend(&aieditor->locator_sets, &set->link);
+    }
+    return set;
+}
+
+static void AiEditorDestroyLocatorSetPc(EDLOCATORSET_s *set) {
+    if (set != NULL) {
+        NuLinkedListRemove(&aieditor->locator_sets, &set->link);
+        memset(set, 0, sizeof(*set));
+        NuLinkedListAppend(&aieditor->free_locator_sets, &set->link);
+    }
+}
+
+void __cdecl locatorEditor_cbCreateLocatorSet(eduimenu_s *menu, eduiitem_s *item, u32 event) {
+    EDLOCATORSET_s *set = AiEditorCreateLocatorSetPc();
+    EDLOCATORSET_s *other;
+    char name[16];
+    i32 index = 0;
+    (void)menu;
+    (void)item;
+    (void)event;
+    if (set == NULL)
+        return;
+    do {
+        sprintf(name, "NewSet%d", ++index);
+        other = (EDLOCATORSET_s *)NuLinkedListGetHead(&aieditor->locator_sets);
+        while (other != NULL) {
+            if (NuStrICmp(name, other->name) == 0)
+                break;
+            other = (EDLOCATORSET_s *)NuLinkedListGetNext(&aieditor->locator_sets, &other->link);
+        }
+    } while (other != NULL);
+    strcpy(set->name, name);
+    aieditor->current_locator_set = set;
+    aieditor->current_locator = NULL;
+    AiEditorClearMainMenuPc();
+}
+
+void __cdecl locatorEditor_cbDeleteLocatorSet(eduimenu_s *parent, eduiitem_s *item, u32 event) {
+    eduimenu_s *menu;
+    (void)event;
+    if (item == NULL)
+        return;
+    switch (item->data) {
+        case 0:
+            menu = eduiMenuCreate(240, 90, 240, 250, ed_fnt, NULL, "Delete current locator set?");
+            if (menu != NULL) {
+                eduiMenuAddItem(menu, eduiItemSelCreate(2, &AiEditorSaveMessageColoursPc, 0, 0,
+                                                        locatorEditor_cbDeleteLocatorSet, (char *)MenuPcString75f2c0));
+                eduiMenuAddItem(menu, eduiItemSelCreate(1, &AiEditorSaveMessageColoursPc, 0, 0,
+                                                        locatorEditor_cbDeleteLocatorSet, (char *)MenuPcString75f2c4));
+                eduiMenuAttach(parent, menu);
+            }
+            break;
+        case 1:
+            if (aieditor->current_locator_set != NULL) {
+                AiEditorDestroyLocatorSetPc(aieditor->current_locator_set);
+                aieditor->current_locator_set = NULL;
+                AiEditorClearMainMenuPc();
+            }
+            break;
+        case 2:
+            AiEditorClearMainMenuPc();
+            break;
+    }
+}
+
+void __cdecl locatorEditor_cbEmptyLocatorSet(eduimenu_s *parent, eduiitem_s *item, u32 event) {
+    eduimenu_s *menu;
+    i32 index;
+    (void)event;
+    if (item == NULL)
+        return;
+    switch (item->data) {
+        case 0:
+            menu = eduiMenuCreate(240, 90, 240, 250, ed_fnt, NULL, "Empty current locator set?");
+            if (menu != NULL) {
+                eduiMenuAddItem(menu, eduiItemSelCreate(2, &AiEditorSaveMessageColoursPc, 0, 0,
+                                                        locatorEditor_cbEmptyLocatorSet, (char *)MenuPcString75f2c0));
+                eduiMenuAddItem(menu, eduiItemSelCreate(1, &AiEditorSaveMessageColoursPc, 0, 0,
+                                                        locatorEditor_cbEmptyLocatorSet, (char *)MenuPcString75f2c4));
+                eduiMenuAttach(parent, menu);
+            }
+            break;
+        case 1:
+            if (aieditor->current_locator_set != NULL) {
+                for (index = 0; index < 64; ++index)
+                    aieditor->current_locator_set->locators[index] = NULL;
+            }
+            AiEditorClearMainMenuPc();
+            break;
+        case 2:
+            AiEditorClearMainMenuPc();
+            break;
+    }
+}
+
+static void __cdecl AiEditorRenameLocatorSetPc(eduimenu_s *menu, eduiitem_s *item, u32 event) {
+    EDLOCATORSET_s *other;
+    char *name;
+    (void)menu;
+    (void)event;
+    if (aieditor->current_locator_set == NULL)
+        return;
+    name = ((edui_textpicker_s *)item)->value;
+    if (strlen(name) == 0 || NuStrICmp("NONE", name) == 0)
+        return;
+    for (other = (EDLOCATORSET_s *)NuLinkedListGetHead(&aieditor->locator_sets); other != NULL;
+         other = (EDLOCATORSET_s *)NuLinkedListGetNext(&aieditor->locator_sets, &other->link)) {
+        if (NuStrICmp(other->name, name) == 0)
+            return;
+    }
+    strcpy(aieditor->current_locator_set->name, name);
+}
+
+static void __cdecl AiEditorRenameLocatorSetCancelPc(eduimenu_s *menu, eduimenu_s *child) {
+    (void)menu;
+    (void)child;
+    AiEditorClearMainMenuPc();
+}
+
+void __cdecl locatorEditor_cbRenameLocatorSetMenu(eduimenu_s *parent, eduiitem_s *item, u32 event) {
+    eduimenu_s *menu;
+    (void)item;
+    (void)event;
+    if (aieditor->current_locator_set == NULL)
+        return;
+    menu = eduiMenuCreate(240, 90, 240, 250, ed_fnt, AiEditorRenameLocatorSetCancelPc, "Rename Locator Set");
+    if (menu == NULL)
+        return;
+    eduiMenuAddItem(menu, eduiItemTextPickCreate(0, &AiEditorSaveMessageColoursPc, AiEditorRenameLocatorSetPc,
+                                                 (char *)GizObstacleActionNamePC));
+    strcpy(((edui_textpicker_s *)edui_last_item)->value, aieditor->current_locator_set->name);
+    ((edui_textpicker_s *)edui_last_item)->max_length = 15;
+    eduiMenuAttach(parent, menu);
+    menu->x = parent->x + 10;
+    menu->y = parent->y + 40;
+}
+
+void __cdecl locatorEditor_cbSetLocatorSet(eduimenu_s *menu, eduiitem_s *item, u32 event) {
+    EDLOCATORSET_s *set;
+    i32 index;
+    (void)menu;
+    (void)event;
+    if (item != NULL) {
+        if (item->data != 0) {
+            set = (EDLOCATORSET_s *)NuLinkedListGetHead(&aieditor->locator_sets);
+            for (index = 1; set != NULL; ++index) {
+                if (index == item->data)
+                    break;
+                set = (EDLOCATORSET_s *)NuLinkedListGetNext(&aieditor->locator_sets, &set->link);
+            }
+            if (set != NULL && set != aieditor->current_locator_set) {
+                aieditor->current_locator_set = set;
+                if (aieditor->current_locator_set != NULL) {
+                    aieditor->current_locator = aieditor->current_locator_set->locators[0];
+                    if (aieditor->current_locator != NULL) {
+                        aieditor->current_path = aieditor->current_locator->path;
+                        if (aieditor->current_locator != NULL)
+                            edcamSetPos(&aieditor->current_locator->position);
+                    }
+                } else {
+                    aieditor->current_locator = NULL;
+                }
+            }
+        } else {
+            aieditor->current_locator_set = NULL;
+        }
+    }
+    AiEditorClearMainMenuPc();
+}
+
+void __cdecl locatorEditor_cbCancelSelectLocatorSet(eduimenu_s *menu, eduimenu_s *child) {
+    (void)child;
+    eduiMenuDestroy(menu);
+}
+
+void __cdecl locatorEditor_cbSelectLocatorSet(eduimenu_s *parent, eduiitem_s *item, u32 event) {
+    eduimenu_s *menu;
+    EDLOCATORSET_s *set;
+    i32 index;
+    (void)item;
+    (void)event;
+    menu = eduiMenuCreate(220, 70, 240, 250, ed_fnt, locatorEditor_cbCancelSelectLocatorSet, "Select Locator Set");
+    if (menu == NULL)
+        return;
+    eduiMenuAddItem(menu,
+                    eduiItemSelCreate(0, &AiEditorSaveMessageColoursPc, 0, 0, locatorEditor_cbSetLocatorSet, "NONE"));
+    index = 1;
+    set = (EDLOCATORSET_s *)NuLinkedListGetHead(&aieditor->locator_sets);
+    while (set != NULL) {
+        eduiMenuAddItem(menu, eduiItemSelCreate(index, &AiEditorSaveMessageColoursPc, 0, 0,
+                                                locatorEditor_cbSetLocatorSet, set->name));
+        ++index;
+        set = (EDLOCATORSET_s *)NuLinkedListGetNext(&aieditor->locator_sets, &set->link);
+    }
+    eduiMenuAttach(parent, menu);
+}
