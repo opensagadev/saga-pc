@@ -338,9 +338,10 @@ void __cdecl GameObjectRotation(GAMEOBJECT *object, i32 mode) {
         } else if ((object->character_data->model_flags & 0x100) != 0 &&
                    0.0f == object->character_data->game_character->field_028 &&
                    (object->character_data->game_character->flags_090 & 0x100) != 0 &&
-                   GameObjectNearFloorNoFloorHeight != object->floor_height &&
-                   object->bounds_half_height > object->collision_min.y - object->floor_height) {
-            alignment = 1;
+                   GameObjectNearFloorNoFloorHeight != object->floor_height) {
+            f32 vertical_gap = object->collision_min.y - object->floor_height;
+            if (vertical_gap < object->bounds_half_height)
+                alignment = 1;
         }
 
         if (object->id == GameObjectRotationAtstId && VehicleArea == 0) {
