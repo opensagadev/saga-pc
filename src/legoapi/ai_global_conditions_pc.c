@@ -1512,3 +1512,16 @@ f32 __cdecl Condition_OnDynamicGrapplePc(AISYS_PC *system, AISCRIPTPROCESS_PC *p
     }
     return 0.0f;
 }
+
+SOCK_PC *__cdecl FindSock(SOCKSYS_PC *system, char *name);
+
+void *__cdecl Condition_PlayerInSockInitPc(AISYS_PC *system, char *name, AISCRIPT_PC *script) {
+    return FindSock(WORLD->sock_sys, name);
+}
+
+f32 __cdecl Condition_PlayerInSockPc(AISYS_PC *system, AISCRIPTPROCESS_PC *process, AIPACKET_PC *packet, char *name,
+                                     void *argument) {
+    if (argument != NULL && WORLD->sock_sys != NULL && argument == &WORLD->sock_sys->socks[(i8)player->sock_index])
+        return 1.0f;
+    return 0.0f;
+}
