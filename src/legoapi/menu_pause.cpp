@@ -171,7 +171,7 @@ extern "C" void __cdecl DropOut(i32 player, i32 resume, i32 silent, i32) {
     if (!silent) {
         if (!object->rider)
             NuPadSetStatus((GAMEPAD_INIT_RECORD *)object->pad - GamePadStorage, 0);
-        GameAudio_PlaySfx(0x20, &object->position, 0, 0);
+        GameAudio_PlaySfx(0x20, &object->collision_position, 0, 0);
     }
     ReleaseTakeOver(object, 1);
     i16 secondary = object->secondary_lean_angle;
@@ -199,7 +199,7 @@ extern "C" void __cdecl DropOut(i32 player, i32 resume, i32 silent, i32) {
     GAMEOBJECT *other = (GAMEOBJECT *)Player[player == 0];
     if (other) {
         NUVEC direction;
-        NuVecSub(&direction, &other->position, &GameCam->position);
+        NuVecSub(&direction, &other->collision_position, &GameCam->position);
         if (NewRayCastScaleYMask(&GameCam->position, &direction, 0.0f, 1.0f, 0, 0x1f))
             GameCam_Reset(GameCam);
     }
