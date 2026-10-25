@@ -829,3 +829,14 @@ f32 __cdecl Condition_LocatorOnScreenPc(AISYS_PC *system, AISCRIPTPROCESS_PC *pr
         return 1.0f;
     return 0.0f;
 }
+
+void *__cdecl Condition_SpecialAtStartInitPc(AISYS_PC *system, char *name, AISCRIPT_PC *script) {
+    return GizmoFindByName(WORLD->gizmo_sys, gizspecial_gizmotype_id, name);
+}
+
+f32 __cdecl Condition_ObstacleAtStartPc(AISYS_PC *system, AISCRIPTPROCESS_PC *process, AIPACKET_PC *packet, char *name,
+                                        void *argument) {
+    if (argument != NULL && GizmoGetOutput(WORLD->gizmo_sys, argument, 1, 1) == 0)
+        return 1.0f;
+    return 0.0f;
+}
