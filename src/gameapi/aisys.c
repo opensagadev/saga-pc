@@ -14709,3 +14709,138 @@ void __cdecl locatorEditor_cbSelectLocatorSet(eduimenu_s *parent, eduiitem_s *it
     }
     eduiMenuAttach(parent, menu);
 }
+
+STATIC_ASSERT(offsetof(AIEDITOR_RENDER_STATE, pending_locator_name) == 0x411e8);
+STATIC_ASSERT(sizeof(((AIEDITOR_RENDER_STATE *)0)->pending_locator_name) == 16);
+
+static i32 AiEditorRemoveLocatorFromSetPc(EDLOCATORSET_s *set, EDLOCATOR_s *locator) {
+    i32 index;
+    if (set == NULL || locator == NULL)
+        return 0;
+    for (index = 0; index < 64; ++index) {
+        if (set->locators[index] == NULL)
+            return 0;
+        if (set->locators[index] == locator)
+            break;
+    }
+    if (index == 64)
+        return 0;
+    for (; index < 64; ++index) {
+        if (index + 1 < 64)
+            set->locators[index] = set->locators[index + 1];
+        else
+            set->locators[index] = NULL;
+    }
+    return 1;
+}
+
+static i32 AiEditorAddLocatorToSetPc(EDLOCATORSET_s *set, EDLOCATOR_s *locator, EDLOCATOR_s *before) {
+    i32 index;
+    i32 move;
+    if (set == NULL || locator == NULL || set->locators[63] != NULL)
+        return 0;
+    if (set->locators[0] != NULL && set->locators[0]->path != locator->path)
+        return 0;
+    for (index = 0; index < 64; ++index) {
+        if (set->locators[index] == NULL)
+            break;
+        if (set->locators[index] == locator) {
+            AiEditorRemoveLocatorFromSetPc(set, locator);
+            break;
+        }
+    }
+    if (before != NULL) {
+        for (index = 0; index < 64; ++index) {
+            if (set->locators[index] == before) {
+                for (move = 62; move >= index; --move)
+                    set->locators[move + 1] = set->locators[move];
+                set->locators[index + 1] = locator;
+                return 1;
+            }
+        }
+    }
+    for (index = 0; index < 64; ++index) {
+        if (set->locators[index] == NULL) {
+            set->locators[index] = locator;
+            if (index + 1 < 64)
+                set->locators[index + 1] = NULL;
+            return 1;
+        }
+    }
+    return 0;
+}
+
+void __cdecl locatorEditor_cbAddLocatorsByNameYesNo(eduimenu_s *menu, eduiitem_s *item, u32 event) {
+    EDLOCATOR_s *locator;
+    i32 index;
+    (void)menu;
+    (void)event;
+    if (item != NULL && item->data != 0 && NuStrLen(aieditor->pending_locator_name) != 0 &&
+        aieditor->current_locator_set != NULL) {
+        locator = (EDLOCATOR_s *)NuLinkedListGetHead(&aieditor->locators);
+        while (locator != NULL) {
+            if (NuStrNICmp(aieditor->pending_locator_name, locator->name, -1) == 0) {
+                for (index = 0; index < 64; ++index) {
+                    if (aieditor->current_locator_set->locators[index] == NULL) {
+                        AiEditorAddLocatorToSetPc(aieditor->current_locator_set, locator, NULL);
+                        break;
+                    }
+                    if (NuStrICmp(aieditor->current_locator_set->locators[index]->name, locator->name) > 0) {
+                        i32 length = NuStrLen(aieditor->current_locator_set->locators[index]->name);
+                        if (length >= NuStrLen(locator->name)) {
+                            AiEditorAddLocatorToSetPc(aieditor->current_locator_set, locator,
+                                                      aieditor->current_locator_set->locators[index]);
+                            AiEditorAddLocatorToSetPc(aieditor->current_locator_set,
+                                                      aieditor->current_locator_set->locators[index], locator);
+                            break;
+                        }
+                    }
+                }
+            }
+            locator = (EDLOCATOR_s *)NuLinkedListGetNext(&aieditor->locators, &locator->link);
+        }
+        aieditor->current_locator = aieditor->current_locator_set->locators[0];
+        if (aieditor->current_locator != NULL) {
+            aieditor->current_path = aieditor->current_locator->path;
+            if (aieditor->current_locator != NULL)
+                edcamSetPos(&aieditor->current_locator->position);
+        }
+    }
+    memset(aieditor->pending_locator_name, 0, sizeof(aieditor->pending_locator_name));
+    AiEditorClearMainMenuPc();
+}
+
+static void __cdecl AiEditorSetPendingLocatorNamePc(eduimenu_s *menu, eduiitem_s *item, u32 event) {
+    AIEDITOR_RENDER_STATE *state = aieditor;
+    (void)menu;
+    (void)event;
+    if (state->current_locator_set != NULL) {
+        char *name = ((edui_textpicker_s *)item)->value;
+        if (strlen(name) != 0)
+            NuStrNCpy(state->pending_locator_name, name, 16);
+    }
+}
+
+void __cdecl locatorEditor_cbAddLocatorsByName(eduimenu_s *parent, eduiitem_s *item, u32 event) {
+    eduimenu_s *menu;
+    AIEDITOR_RENDER_STATE *state;
+    (void)item;
+    (void)event;
+    if (aieditor->current_locator_set == NULL)
+        return;
+    menu = eduiMenuCreate(240, 90, 240, 250, ed_fnt, AiEditorRenameLocatorSetCancelPc, "Add Locators By Name");
+    if (menu == NULL)
+        return;
+    eduiMenuAddItem(menu, eduiItemTextPickCreate(0, &AiEditorSaveMessageColoursPc, AiEditorSetPendingLocatorNamePc,
+                                                 (char *)GizObstacleActionNamePC));
+    state = aieditor;
+    if (state->current_locator != NULL)
+        strcpy(state->pending_locator_name, state->current_locator->name);
+    else
+        strcpy(state->pending_locator_name, state->current_locator_set->name);
+    NuStrCpy(((edui_textpicker_s *)edui_last_item)->value, aieditor->pending_locator_name);
+    ((edui_textpicker_s *)edui_last_item)->max_length = 15;
+    eduiMenuAttach(parent, menu);
+    menu->x = parent->x + 10;
+    menu->y = parent->y + 40;
+}
