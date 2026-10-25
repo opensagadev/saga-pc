@@ -1413,3 +1413,23 @@ f32 __cdecl Condition_CutScenePlayingPc(AISYS_PC *system, AISCRIPTPROCESS_PC *pr
                                         void *argument) {
     return 0.0f;
 }
+
+void *__cdecl Condition_ScriptParamInitPc(AISYS_PC *system, char *name, AISCRIPT_PC *script) {
+    i32 index;
+    if (name != NULL) {
+        for (index = 0; index < 4; ++index) {
+            if (NuStrICmp(script->params[index].name, name) == 0)
+                return (void *)index;
+        }
+        return (void *)NuAToI(name);
+    }
+    return (void *)-1;
+}
+
+f32 __cdecl Condition_ScriptParamPc(AISYS_PC *system, AISCRIPTPROCESS_PC *process, AIPACKET_PC *packet, char *name,
+                                    void *argument) {
+    i32 index = (i32)argument;
+    if (index >= 0)
+        return process->params[index];
+    return 0.0f;
+}
