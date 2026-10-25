@@ -407,18 +407,30 @@ void DrawAreaBox(NUVEC *position, NUVEC *size, i32 rotation, i32 colour) {
 #undef DRAW_AREA_BOX_EDGE
 }
 
+typedef struct AI_EDITOR_SAVE_LISTS_PC {
+    u8 unknown_00[0x3cbd8];
+    NULISTHDR locators;
+    u8 unknown_3cbe0[0x41200 - 0x3cbe0];
+    NULISTHDR locator_sets;
+    u8 unknown_41208[0x43814 - 0x41208];
+    NULISTHDR antinodes;
+} AI_EDITOR_SAVE_LISTS_PC;
+STATIC_ASSERT(offsetof(AI_EDITOR_SAVE_LISTS_PC, locators) == 0x3cbd8);
+STATIC_ASSERT(offsetof(AI_EDITOR_SAVE_LISTS_PC, locator_sets) == 0x41200);
+STATIC_ASSERT(offsetof(AI_EDITOR_SAVE_LISTS_PC, antinodes) == 0x43814);
+
 void locatorEditorSaveData(AIPATHSYS_PC *path_system) {
     i32 locator_count = 0;
-    EDLOCATOR_s *locator = (EDLOCATOR_s *)NuLinkedListGetHead(&aieditor->locators);
+    EDLOCATOR_s *locator = (EDLOCATOR_s *)NuLinkedListGetHead(&((AI_EDITOR_SAVE_LISTS_PC *)aieditor)->locators);
     while (locator != NULL) {
         locator->runtime_index = 0xff;
         if (locator->path != NULL) {
             locator->runtime_index = locator_count++;
         }
-        locator = (EDLOCATOR_s *)NuLinkedListGetNext(&aieditor->locators, &locator->link);
+        locator = (EDLOCATOR_s *)NuLinkedListGetNext(&((AI_EDITOR_SAVE_LISTS_PC *)aieditor)->locators, &locator->link);
     }
     EdFileWriteInt(locator_count);
-    locator = (EDLOCATOR_s *)NuLinkedListGetHead(&aieditor->locators);
+    locator = (EDLOCATOR_s *)NuLinkedListGetHead(&((AI_EDITOR_SAVE_LISTS_PC *)aieditor)->locators);
     while (locator != NULL) {
         if (locator->path != NULL) {
             i32 connection_index;
@@ -473,17 +485,19 @@ void locatorEditorSaveData(AIPATHSYS_PC *path_system) {
                 EdFileWriteInt(locator->path_angle);
             }
         }
-        locator = (EDLOCATOR_s *)NuLinkedListGetNext(&aieditor->locators, &locator->link);
+        locator = (EDLOCATOR_s *)NuLinkedListGetNext(&((AI_EDITOR_SAVE_LISTS_PC *)aieditor)->locators, &locator->link);
     }
     if (aidata_version > 17) {
         i32 set_count = 0;
-        EDLOCATORSET_s *set = (EDLOCATORSET_s *)NuLinkedListGetHead(&aieditor->locator_sets);
+        EDLOCATORSET_s *set =
+            (EDLOCATORSET_s *)NuLinkedListGetHead(&((AI_EDITOR_SAVE_LISTS_PC *)aieditor)->locator_sets);
         while (set != NULL) {
             ++set_count;
-            set = (EDLOCATORSET_s *)NuLinkedListGetNext(&aieditor->locator_sets, &set->link);
+            set =
+                (EDLOCATORSET_s *)NuLinkedListGetNext(&((AI_EDITOR_SAVE_LISTS_PC *)aieditor)->locator_sets, &set->link);
         }
         EdFileWriteInt(set_count);
-        set = (EDLOCATORSET_s *)NuLinkedListGetHead(&aieditor->locator_sets);
+        set = (EDLOCATORSET_s *)NuLinkedListGetHead(&((AI_EDITOR_SAVE_LISTS_PC *)aieditor)->locator_sets);
         while (set != NULL) {
             i32 member_count = 0;
             i32 index = 0;
@@ -518,7 +532,8 @@ void locatorEditorSaveData(AIPATHSYS_PC *path_system) {
                     }
                 }
             }
-            set = (EDLOCATORSET_s *)NuLinkedListGetNext(&aieditor->locator_sets, &set->link);
+            set =
+                (EDLOCATORSET_s *)NuLinkedListGetNext(&((AI_EDITOR_SAVE_LISTS_PC *)aieditor)->locator_sets, &set->link);
         }
     }
 }
@@ -732,7 +747,7 @@ void antinodeEditorSaveData(void) {
     struct EDANTINODE_s *node;
     if (aidata_version <= 12)
         return;
-    list = ((NULISTHDR *)(((u8 *)(aieditor)) + 0x42e94));
+    list = &((AI_EDITOR_SAVE_LISTS_PC *)aieditor)->antinodes;
     head = ((EDANTINODE_s *)(NuLinkedListGetHead(list)));
     if (head == NULL) {
         EdFileWriteInt(0);
@@ -740,11 +755,13 @@ void antinodeEditorSaveData(void) {
     }
     count = 0;
     for (node = head; node != NULL;
-         node = ((EDANTINODE_s *)(NuLinkedListGetNext(((NULISTHDR *)(((u8 *)(aieditor)) + 0x42e94)), &node->link))))
+         node = ((EDANTINODE_s *)(NuLinkedListGetNext(&((AI_EDITOR_SAVE_LISTS_PC *)aieditor)->antinodes, &node->link))))
         ++count;
     EdFileWriteInt(count);
-    for (node = ((EDANTINODE_s *)(NuLinkedListGetHead(((NULISTHDR *)(((u8 *)(aieditor)) + 0x42e94))))); node != NULL;
-         node = ((EDANTINODE_s *)(NuLinkedListGetNext(((NULISTHDR *)(((u8 *)(aieditor)) + 0x42e94)), &node->link)))) {
+    for (node = ((EDANTINODE_s *)(NuLinkedListGetHead(&((AI_EDITOR_SAVE_LISTS_PC *)aieditor)->antinodes)));
+         node != NULL;
+         node =
+             ((EDANTINODE_s *)(NuLinkedListGetNext(&((AI_EDITOR_SAVE_LISTS_PC *)aieditor)->antinodes, &node->link)))) {
         char *name;
         if (node->type == 2)
             node->radius = NuFsqrt(node->base_radius * node->base_radius + node->base_height * node->base_height);
