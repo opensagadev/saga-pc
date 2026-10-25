@@ -567,3 +567,34 @@ extern "C" eduiitem_s *__cdecl eduiItemSeparatorCreate(u32 data, const void *col
     }
     return NULL;
 }
+
+extern "C" void __cdecl eduiGradStageDelete(edui_gradient_pick_s *item, edui_gradient_node_s *stage) {
+    if (stage->previous != NULL)
+        stage->previous->next = stage->next;
+    else
+        item->first_stage = stage->next;
+    if (stage->next != NULL)
+        stage->next->previous = stage->previous;
+    if (stage->next != NULL)
+        item->selected_stage = stage->next;
+    else
+        item->selected_stage = stage->previous;
+    NuFree(stage, EduiSourcePathPc, 0xa70);
+}
+
+extern "C" void __cdecl eduicbItemGradPickDestroy(eduimenu_s *unused_menu, eduiitem_s *item) {
+    edui_gradient_pick_s *gradient = (edui_gradient_pick_s *)item;
+    while (gradient->first_stage != NULL)
+        eduiGradStageDelete(gradient, gradient->first_stage);
+    NuFree(gradient, EduiSourcePathPc, 0xa9b);
+}
+
+extern "C" void __cdecl cbgpcfgDel(eduimenu_s *menu, eduiitem_s *item, u32 value) {
+    edui_gradient_pick_s *picker = (edui_gradient_pick_s *)item->data_ptr;
+    if (picker->remove != NULL)
+        picker->remove(menu, item, value);
+    if (picker->selected_stage != NULL)
+        eduiGradStageDelete(picker, picker->selected_stage);
+    eduiMenuDetach(menu);
+    eduiMenuDestroy(menu);
+}
