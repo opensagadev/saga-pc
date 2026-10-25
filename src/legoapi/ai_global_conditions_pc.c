@@ -1151,3 +1151,29 @@ f32 __cdecl Condition_EitherPlayerUsingPanelPc(AISYS_PC *system, AISCRIPTPROCESS
         return 1.0f;
     return 0.0f;
 }
+
+void *__cdecl Condition_TakeOverTargetInTriggerAreaInitPc(AISYS_PC *system, char *name, AISCRIPT_PC *script) {
+    return name != NULL ? AISysFindArea(system, name) : NULL;
+}
+
+f32 __cdecl Condition_TakeOverTargetInTriggerAreaPc(AISYS_PC *system, AISCRIPTPROCESS_PC *process, AIPACKET_PC *packet,
+                                                    char *name, void *argument) {
+    if (packet != NULL && packet->owner != NULL) {
+        AIAREA_PC *area = (AIAREA_PC *)argument;
+        GAMEOBJECT *target = NULL;
+        i32 index;
+        u64 mask;
+        if (area == NULL)
+            area = ((CONDITION_TRIGGER_PROCESS_READER_PC *)process)->trigger_area;
+        index = (i32)((u32)area - (u32)WORLD->ai_sys->areas) >> 6;
+        if (packet->owner->objptr != NULL)
+            target = packet->owner->objptr->takeover_target;
+        if (system->player_1 != NULL && target != NULL) {
+            /* The retail compiler helper consumes CL, including its out-of-range zero cases. */
+            mask = (u64)1 << index;
+            if ((((CONDITION_TRIGGER_PLAYER_READER_PC *)target)->membership & mask) != 0)
+                return 1.0f;
+        }
+    }
+    return 0.0f;
+}
