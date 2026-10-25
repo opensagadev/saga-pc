@@ -10567,3 +10567,100 @@ void __cdecl StartLaunch(GAMEOBJECT *object) {
     object->field_7b3 = 0;
     object->ai_update_position = object->launch_origin = object->position;
 }
+
+i32 NetworkTurnScalePc = 3;
+
+void __cdecl MovePlayer_NETWORK(GAMEOBJECT *object) {
+    f32 turn_override = 0.0f;
+    f32 turn_rate = 8.0f;
+    i32 direct_turn;
+    i32 glow_model;
+    if ((object->character_data->model_flags & 0x2000) != 0)
+        object->in_narrow_socket = (u8)ObjInNarrowSock(object, WORLD->sock_sys, WORLD->level_idx);
+    if ((object->flags_1fc & 0x80) != 0 && object->character_context == 0x1b && (object->flags_e20 & 0x200) == 0) {
+        if (object->field_7b3 != 1)
+            FaceOpponent(object, NULL);
+        turn_override = 0.333f;
+    }
+    direct_turn = object->character_context == 0x33 ? 1 : ((object->flags_ef0 & 0x400) != 0);
+    if (SuperCarry_Carrying(object))
+        turn_rate = object->context_hover_target_y * 8.0f;
+    else if (object->character_context != 0x1c && object->character_context != 0x33) {
+        if (turn_override != 0.0f)
+            turn_rate = turn_override * 8.0f;
+        else {
+            turn_rate = object->character_data->game_character->turn_rate * 8.0f;
+            if (object->id == (u16)id_ATAT && WORLD->current_level == SPEEDERCHASEA_LDATA)
+                turn_rate += turn_rate;
+        }
+    }
+    if ((object->flags_ef0 & 0x8000) != 0 && (CInfo[object->character_context].flags & 1) == 0)
+        object->movement_facing_angle += 0x8000;
+    if ((object->flags_ef0 & 0x400) != 0) {
+        object->facing_angle = object->movement_facing_angle;
+        object->field_0x276 = object->movement_facing_angle;
+    } else if (direct_turn == 0 &&
+               (turn_override != 0.0f || (CInfo[object->character_context].parameter & 2) != 0 ||
+                (object->character_data->game_character->flags_090 & 0x100) != 0 || SuperCarry_Carrying(object))) {
+        if (object->character_context == 0x4b && (object->character_data->game_character->flags_090 & 0x100) == 0)
+            turn_rate *= 0.333f;
+        object->facing_angle = TurnRot(object->facing_angle, object->movement_facing_angle,
+                                       (i32)(((f64)NetworkTurnScalePc * turn_rate) * 16384.0), NULL);
+        object->field_0x276 = SeekRot(object->field_0x276, object->facing_angle, 10.0f);
+        object->movement_facing_angle = object->facing_angle;
+    } else {
+        object->facing_angle = SeekRot(object->facing_angle, object->movement_facing_angle, turn_rate);
+        object->field_0x276 = object->facing_angle;
+    }
+    if (object->torpedo != NULL && (object->flags_1fc_word & 0x1000) != 0 && object->dead == 0 &&
+        (object->flags_e20 & 0x20) == 0)
+        Torpedo_UpdateJobbies(object);
+    SpecialMove_VictimCode(object);
+    if (SuperWeirdo(object) && (object->character_data->model_flags & 8) == 0)
+        glow_model = 0xdf;
+    else {
+        glow_model = object->blade_index == -1 ? 0xdf : BladeTab[object->blade_index].glow_model;
+        if (glow_model == -1)
+            glow_model = 0xdf;
+    }
+    Tag_Check(object);
+    ForcePushCode(object, 0);
+    object->transform_target_scale = 1.0f;
+    ForceGlowCode(object, glow_model);
+    if ((object->flags_e20 & 0x20) == 0)
+        TorpedoCode(object, 0, 0.0f);
+    PeriscodeCode(object);
+    MovePlayer_TWIST(object);
+    if (PODRACE_ADATA != NULL && WORLD->area == PODRACE_ADATA) {
+        Move_POD(object);
+        KeepOnScreen(object);
+    }
+    if (object->id == (u16)id_SNAKE) {
+        if (object->snake_body == NULL)
+            CreateSnakeBody(object, 0xb);
+        if (object->snake_body != NULL)
+            UpdateSnakeBody(object);
+    }
+    object->previous_floor_height = object->floor_height;
+    object->flags_ef0 &= ~0x4000u;
+    object->start_position = object->position;
+    object->initial_position = object->collision_position;
+    object->field_282 = object->field_281;
+    object->previous_movement_angle = object->field_0x276;
+    Teleport_NetMoveCode(object);
+    if (object->field_280 != 0xff)
+        TractorBeamCode(object);
+    {
+        u32 flags = object->flags_1fc_word;
+        object->previous_velocity.x = object->velocity.x;
+        object->previous_velocity.y = object->velocity.y;
+        object->previous_velocity.z = object->velocity.z;
+        object->flags_ef0 &= ~0x400u;
+        object->flags_1fc_word = (flags & ~4u) | 0x10000u;
+        object->target_velocity = object->velocity;
+        object->field_106e = -1;
+    }
+    APIObjectVelocities(object);
+    GameObjectOrigin(object);
+    AddSurfaceRipples(object);
+}
