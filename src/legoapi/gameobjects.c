@@ -1341,12 +1341,12 @@ void __cdecl GameObjectStuffAfterAnimation(void) {
                 ((object->context_variant_flags & 0x40) == 0 || object->debris_joint != -1)) {
                 NUVEC points[2];
                 i32 joint = animation->locator;
-                points[0].x = object->locator_matrices[joint].m30;
-                points[0].y = object->locator_matrices[joint].m31;
-                points[0].z = object->locator_matrices[joint].m32;
-                points[1] = points[0];
-                points[0].y = (f32)((f64)points[0].y + (f64)0.075f);
-                points[1].y = (f32)((f64)points[1].y - (f64)0.075f);
+                f64 original_y;
+                memcpy(&points[0], &object->locator_matrices[joint].m30, sizeof(points[0]));
+                memcpy(&points[1], &points[0], sizeof(points[1]));
+                original_y = points[0].y;
+                points[0].y = (f32)(original_y + (f64)0.075f);
+                points[1].y = (f32)(original_y - (f64)0.075f);
                 AddStreakPoints(points, 0.25f, 0xffffffffu, &object->sabre_streaks[0][0], 0, object);
             }
         }
@@ -1434,12 +1434,8 @@ void __cdecl GameObjectStuffAfterAnimation(void) {
                 if (GetBladeJoints(object, blade, joints, NULL) != 0) {
                     i32 effect;
                     i32 count;
-                    points[0].x = object->locator_matrices[joints[0]].m30;
-                    points[0].y = object->locator_matrices[joints[0]].m31;
-                    points[0].z = object->locator_matrices[joints[0]].m32;
-                    points[1].x = object->locator_matrices[joints[1]].m30;
-                    points[1].y = object->locator_matrices[joints[1]].m31;
-                    points[1].z = object->locator_matrices[joints[1]].m32;
+                    memcpy(&points[0], &object->locator_matrices[joints[0]].m30, sizeof(points[0]));
+                    memcpy(&points[1], &object->locator_matrices[joints[1]].m30, sizeof(points[1]));
                     if (object->blade_states[blade] != -1 && object->character_context == 5 &&
                         (object->context_variant_flags & 0x1c) == 0 &&
                         (object->combo_branch == 2 || object->combo_branch == 6)) {
