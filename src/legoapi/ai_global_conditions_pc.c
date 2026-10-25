@@ -1213,3 +1213,50 @@ f32 __cdecl Condition_Player2IsPc(AISYS_PC *system, AISCRIPTPROCESS_PC *process,
         return 1.0f;
     return 0.0f;
 }
+
+f32 __cdecl Condition_NearestPlayerXZRangePc(AISYS_PC *system, AISCRIPTPROCESS_PC *process, AIPACKET_PC *packet,
+                                             char *name, void *argument) {
+    NUVEC difference;
+    f32 distance = FLT_MAX;
+    if (packet != NULL && packet->owner != NULL && system != NULL) {
+        if (system->player_1 != NULL)
+            distance = NuVecXZDistSqr(&system->player_1->position, &packet->owner->position, &difference);
+        if (system->player_2 != NULL) {
+            f32 second = NuVecXZDistSqr(&system->player_2->position, &packet->owner->position, &difference);
+            distance = second < distance ? second : distance;
+        }
+        if ((f64)distance != (f64)FLT_MAX)
+            distance = NuFsqrt(distance);
+    }
+    return distance;
+}
+
+STATIC_ASSERT(offsetof(GAMEOBJECT, collision_position) == 0x80);
+STATIC_ASSERT(offsetof(GAMECAMERA, dir) == 0x110);
+STATIC_ASSERT(offsetof(GAMECAMERA, position) == 0x11c);
+STATIC_ASSERT(offsetof(GAMEOBJECT, supporting_platform_id) == 0x27e);
+
+f32 __cdecl Condition_BehindCameraPc(AISYS_PC *system, AISCRIPTPROCESS_PC *process, AIPACKET_PC *packet, char *name,
+                                     void *argument) {
+    if (packet != NULL && packet->owner != NULL) {
+        GAMEOBJECT *object = packet->owner->objptr;
+        if (object != NULL) {
+            NUVEC difference;
+            NuVecSub(&difference, &object->collision_position, &GameCam->position);
+            if (GameCam->dir.x * difference.x + GameCam->dir.y * difference.y + GameCam->dir.z * difference.z < 0.0)
+                return 1.0f;
+        }
+    }
+    return 0.0f;
+}
+
+f32 __cdecl Condition_OnSameObjectAsPlayerPc(AISYS_PC *system, AISCRIPTPROCESS_PC *process, AIPACKET_PC *packet,
+                                             char *name, void *argument) {
+    if (packet != NULL && packet->owner != NULL && player != NULL) {
+        GAMEOBJECT *object = packet->owner->objptr;
+        if ((object->field_281 != 0 || object->field_282 != 0) && (player->field_281 != 0 || player->field_282 != 0) &&
+            object->supporting_platform_id != -1 && object->supporting_platform_id == player->supporting_platform_id)
+            return 1.0f;
+    }
+    return 0.0f;
+}
