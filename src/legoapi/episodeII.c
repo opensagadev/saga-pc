@@ -1245,7 +1245,9 @@ typedef struct gizforce_reader_pc_s {
 } GIZFORCE_READER_PC;
 
 typedef struct kaminoe_turret_reader_pc_s {
-    u8 opaque_00_e4[0xe4];
+    u8 opaque_00_1c[0x1c];
+    GAMEANIMOBJ *primary_anim_obj;
+    u8 opaque_20_e4[0xc4];
     NUVEC *target_position;
     u8 opaque_e8_12c[0x44];
     u8 field_12c;
@@ -1255,6 +1257,7 @@ typedef struct kaminoe_turret_reader_pc_s {
     u16 flags_13a;
     u8 opaque_13c_140[0x4];
 } KAMINOE_TURRET_READER_PC;
+STATIC_ASSERT(offsetof(KAMINOE_TURRET_READER_PC, primary_anim_obj) == 0x1c);
 STATIC_ASSERT(offsetof(KAMINOE_TURRET_READER_PC, field_12e) == 0x12e);
 STATIC_ASSERT(offsetof(KAMINOE_TURRET_READER_PC, flags_13a) == 0x13a);
 STATIC_ASSERT(sizeof(KAMINOE_TURRET_READER_PC) == 0x140);
@@ -1738,7 +1741,7 @@ void __cdecl KaminoE_UpdatePc(WORLDINFO *world) {
     if (kamino_e.jango_fight->value == 0.0f && FreePlay == 0 && kamino_e.intro_cutscene != NULL &&
         instNuGCutSceneIsFinished((INSTNUGCUTSCENE *)((CUTINFO_READER_PC *)kamino_e.intro_cutscene)->instance) != 0)
         kamino_e.jango_fight->value = 1.0f;
-    STUBBED_NAMED("KaminoE_Update");
+    KaminoE_Update(world);
     connection =
         AIPAthFindPathCnx(world->ai_sys, world->ai_sys->path_sys->active_path, "Bridge1_a", "Bridge1_b", &direction);
     fight_area = AISysFindArea(WORLD->ai_sys, "Fight");
@@ -1777,4 +1780,239 @@ void __cdecl KaminoE_Draw(WORLDINFO *world) {
     }
     NuSpecialSetDrawMtx(&kamino_e.slave1, NuSpecialGetDrawMtx(&kamino_e.slave1));
     NuSpecialSetVisibility(&kamino_e.slave1, 1);
+}
+
+NUVEC KaminoShipCentrePc = {56.5f, -2.890000104904175f, 8.0f};
+f32 KaminoShipRadiusPc = 6.5f;
+i32 KaminoShipOrbitPitchPc = -3640;
+i32 KaminoShipOrbitYawPc = 0x4000;
+NUVEC KaminoShipGunOffsetPc[2] = {{0.2f, -1.1f, 0.9f}, {-0.2f, -1.1f, 0.9f}};
+f32 KaminoShipFireIntervalPc = 0.15f;
+f32 KaminoShipSeekRatePc = 1.0f;
+f32 KaminoShipAimScalePc = 30.0f;
+f32 KaminoShipAimLiftPc = 0.5f;
+i32 KaminoShipTargetPitchPc = 0xb60;
+i32 KaminoShipTargetYawPc = -0x4000;
+f32 KaminoShipYawRatePc = 4.0f;
+f32 KaminoShipPitchRatePc = 4.0f;
+f32 KaminoShipLiftTimePc = 4.0f;
+i32 KaminoShipStartPitchPc = -0x4000;
+f32 KaminoShipStartHeightPc = -2.8f;
+f32 KaminoShipZAmplitudePc = 0.2f;
+f32 KaminoShipZPeriodPc = 4.0f;
+f32 KaminoShipYAmplitudePc = 0.2f;
+f32 KaminoShipYPeriodPc = 3.0f;
+typedef struct KAMINO_SHIP_ZERO_ANGLES_PC {
+    u16 pitch;
+    i32 yaw;
+} KAMINO_SHIP_ZERO_ANGLES_PC;
+STATIC_ASSERT(offsetof(KAMINO_SHIP_ZERO_ANGLES_PC, pitch) == 0);
+STATIC_ASSERT(offsetof(KAMINO_SHIP_ZERO_ANGLES_PC, yaw) == 4);
+STATIC_ASSERT(sizeof(KAMINO_SHIP_ZERO_ANGLES_PC) == 8);
+KAMINO_SHIP_ZERO_ANGLES_PC KaminoShipZeroAnglesPc = {0};
+extern i32 BoltNoSfxPc;
+
+void __cdecl KaminoE_Update(WORLDINFO *world) {
+    f32 best_distance = 1000000000.0f;
+    NUMTX *matrix;
+    NUVEC desired;
+    f64 degrees;
+    f32 phase;
+    f32 wave;
+    i32 angle;
+    if (kamino_e.active_turret != NULL && (kamino_e.active_turret->flags_13a & 0x10) != 0)
+        kamino_e.active_turret = NULL;
+    matrix = NuSpecialGetDrawMtx(&kamino_e.slave1);
+    desired.x = 0.0f;
+    desired.y = 0.0f;
+    desired.z = KaminoShipRadiusPc;
+    NuVecRotateX(&desired, &desired, kamino_e.orbit_pitch);
+    NuVecRotateY(&desired, &desired, kamino_e.orbit_yaw);
+    NuVecAdd(&desired, &desired, &KaminoShipCentrePc);
+    kamino_e.elapsed_time += FRAMETIME;
+    degrees = (f64)kamino_e.elapsed_time * 360.0;
+    phase = degrees / KaminoShipYPeriodPc;
+    angle = (i32)((f64)phase * 182.04444885253906);
+    wave = (f32)(((f64)NuTrigTable[(angle >> 1) & 0x7fff] + 1.0) * 0.5);
+    desired.y = wave * KaminoShipYAmplitudePc + desired.y;
+    phase = degrees / KaminoShipZPeriodPc;
+    angle = (i32)((f64)phase * 182.04444885253906);
+    wave = (f32)(((f64)NuTrigTable[(angle >> 1) & 0x7fff] + 1.0) * 0.5);
+    desired.z = wave * KaminoShipZAmplitudePc + desired.z;
+    if (kamino_e.minicut_started != NULL && kamino_e.minicut_started->value > 0.0f)
+        NuSpecialSetVisibility(&kamino_e.slave1, 1);
+    if (kamino_e.departing != 0)
+        PlaySfx("Slave1_EngineLp", &kamino_e.position);
+    switch ((i8)kamino_e.departing) {
+        case 0:
+            if (kamino_e.jango_fight->value > 0.0f) {
+                kamino_e.departure_timer = 0.0f;
+                kamino_e.departing = 1;
+                GizObstacle_FindByName(world->giz_obstacle_sys, "slave1_debris");
+            }
+            kamino_e.position = KaminoShipCentrePc;
+            kamino_e.position.y = KaminoShipStartHeightPc;
+            kamino_e.pitch = KaminoShipStartPitchPc;
+            kamino_e.yaw = KaminoShipZeroAnglesPc.yaw;
+            kamino_e.orbit_pitch = KaminoShipOrbitPitchPc;
+            kamino_e.orbit_yaw = KaminoShipOrbitYawPc;
+            break;
+        case 1: {
+            f32 ratio;
+            kamino_e.departure_timer += FRAMETIME;
+            if (kamino_e.departure_timer < KaminoShipLiftTimePc) {
+                phase = kamino_e.departure_timer / KaminoShipLiftTimePc;
+                phase = (f32)((f64)phase * 180.0 - 90.0);
+                angle = (i32)((f64)phase * 182.04444885253906);
+                ratio = (f32)(((f64)NuTrigTable[(angle >> 1) & 0x7fff] + 1.0) * 0.5);
+            } else {
+                kamino_e.departing = 2;
+                ratio = 1.0f;
+                kamino_e.departure_timer = 0.0f;
+            }
+            kamino_e.position.y = ratio * desired.y + (1.0f - ratio) * KaminoShipStartHeightPc;
+            break;
+        }
+        case 2:
+            kamino_e.departure_timer += FRAMETIME;
+            if (kamino_e.departure_timer < KaminoShipPitchRatePc)
+                kamino_e.pitch = SeekRot((u16)kamino_e.pitch, KaminoShipZeroAnglesPc.pitch, kamino_e.departure_timer);
+            else {
+                u16 next = SeekRot((u16)kamino_e.pitch, KaminoShipZeroAnglesPc.pitch, KaminoShipPitchRatePc);
+                kamino_e.departure_timer = 0.0f;
+                kamino_e.pitch = next;
+                kamino_e.departing = 3;
+            }
+            break;
+        case 3: {
+            u16 next;
+            kamino_e.departure_timer += FRAMETIME;
+            if (kamino_e.departure_timer < KaminoShipYawRatePc)
+                next = SeekRot((u16)kamino_e.yaw, (u16)KaminoShipTargetYawPc, kamino_e.departure_timer);
+            else {
+                next = SeekRot((u16)kamino_e.yaw, (u16)KaminoShipTargetYawPc, KaminoShipYawRatePc);
+                kamino_e.departure_timer = 0.0f;
+                kamino_e.departing = 4;
+            }
+            kamino_e.yaw = next;
+            kamino_e.pitch = SeekRot((u16)kamino_e.pitch, KaminoShipZeroAnglesPc.pitch, KaminoShipPitchRatePc);
+            break;
+        }
+        case 4: {
+            f32 ratio;
+            u16 next;
+            kamino_e.departure_timer += FRAMETIME;
+            if (kamino_e.departure_timer < KaminoShipLiftTimePc) {
+                phase = kamino_e.departure_timer / KaminoShipLiftTimePc;
+                phase = (f32)((f64)phase * 180.0 - 90.0);
+                angle = (i32)((f64)phase * 182.04444885253906);
+                ratio = (f32)(((f64)NuTrigTable[(angle >> 1) & 0x7fff] + 1.0) * 0.5);
+            } else {
+                kamino_e.departing = 5;
+                ratio = 1.0f;
+                kamino_e.departure_timer = 0.0f;
+            }
+            kamino_e.position.x = desired.x * ratio + KaminoShipCentrePc.x * (1.0f - ratio);
+            kamino_e.position.z = desired.z * ratio + KaminoShipCentrePc.z * (1.0f - ratio);
+            next = SeekRot((u16)kamino_e.pitch, (u16)KaminoShipTargetPitchPc, KaminoShipPitchRatePc);
+            kamino_e.pitch = next;
+            kamino_e.yaw = SeekRot((u16)kamino_e.yaw, (u16)KaminoShipTargetYawPc, KaminoShipYawRatePc);
+            break;
+        }
+        case 5: {
+            NUVEC aim;
+            NUVEC delta;
+            i32 have_target = 0;
+            i32 target_pitch;
+            i32 target_yaw;
+            if (kamino_e.active_turret != NULL) {
+                aim = *NuSpecialGetDrawPos(&kamino_e.active_turret->primary_anim_obj->special);
+                aim.y = KaminoShipAimLiftPc + aim.y;
+                have_target = 1;
+            } else if (kamino_e.can_fire->value == 1.0f) {
+                GAMEOBJECT *nearest = NULL;
+                i32 i;
+                for (i = 0; i < 8; ++i) {
+                    GAMEOBJECT *object = Player[i];
+                    u32 flags;
+                    f32 distance;
+                    if (object == NULL)
+                        continue;
+                    flags = object->flags_1fc_word;
+                    if ((flags & 1) == 0 || (flags & 0x1000) == 0 ||
+                        (object->character_data->model_flags & 0x80000) != 0)
+                        continue;
+                    distance = NuVecDistSqr(&object->collision_position, (NUVEC *)&matrix->m30, &delta);
+                    if (distance < best_distance) {
+                        nearest = Player[i];
+                        best_distance = distance;
+                    }
+                }
+                if (nearest != NULL) {
+                    aim.x = nearest->collision_position.x;
+                    aim.y = (f32)((f64)nearest->floor_height + (f64)0.1f);
+                    aim.z = nearest->collision_position.z;
+                    have_target = 1;
+                }
+            }
+            kamino_e.orbit_pitch = KaminoShipOrbitPitchPc;
+            if (have_target != 0) {
+                NUVEC offset;
+                f32 z = aim.z - KaminoShipCentrePc.z;
+                f32 horizontal;
+                if (z > 2.5f)
+                    z = 2.5f;
+                else if (z < -2.5f)
+                    z = -2.5f;
+                phase = (f32)((f64)z / 2.5);
+                phase = phase * KaminoShipAimScalePc;
+                kamino_e.orbit_yaw = KaminoShipOrbitYawPc - (i32)(phase * -182.04444885253906f);
+                offset.x = 0.0f;
+                offset.y = -KaminoShipGunOffsetPc[0].y;
+                offset.z = -KaminoShipGunOffsetPc[0].z;
+                NuVecMtxRotate(&offset, &offset, matrix);
+                NuVecAdd(&offset, &offset, &aim);
+                NuVecSub(&delta, &offset, &kamino_e.position);
+                target_yaw = (i32)((f64)NuAtan2(delta.x, delta.z) * 10430.3779296875);
+                horizontal = NuFsqrt(delta.z * delta.z + delta.x * delta.x);
+                target_pitch = (i32)((f64)NuAtan2(-delta.y, horizontal) * 10430.3779296875);
+                kamino_e.departure_timer += FRAMETIME;
+                if (kamino_e.departure_timer > KaminoShipFireIntervalPc) {
+                    NUMTX bolt_matrix;
+                    NUVEC origin;
+                    f32 distance;
+                    i32 i;
+                    kamino_e.departure_timer = 0.0f;
+                    for (i = 0; i < 2; ++i) {
+                        BOLT_PC *bolt;
+                        i32 adjustment;
+                        bolt_matrix = *matrix;
+                        NuVecMtxTransform(&origin, &KaminoShipGunOffsetPc[kamino_e.fire_index], matrix);
+                        if (i == 0)
+                            distance = NuVecDist(&origin, &aim, NULL);
+                        adjustment = (i32)((f64)NuAtan2(-KaminoShipGunOffsetPc[kamino_e.fire_index].x, distance) *
+                                           10430.3779296875);
+                        NuMtxPreRotateY(&bolt_matrix, adjustment);
+                        BoltNoSfxPc = 1;
+                        bolt = Bolt_Add(NULL, &origin, &bolt_matrix, 0x27, 0x800);
+                        if (bolt != NULL)
+                            bolt->flags |= 0x10;
+                        kamino_e.fire_index = !kamino_e.fire_index;
+                    }
+                    PlaySfx("Kam_Slave1BlasterFire", &origin);
+                }
+            } else {
+                kamino_e.orbit_yaw = KaminoShipOrbitYawPc;
+                target_yaw = KaminoShipTargetYawPc;
+                target_pitch = KaminoShipTargetPitchPc;
+            }
+            SeekVec(&kamino_e.position, &kamino_e.position, &desired, KaminoShipSeekRatePc);
+            kamino_e.pitch = SeekRot((u16)kamino_e.pitch, (u16)target_pitch, KaminoShipSeekRatePc);
+            kamino_e.yaw = SeekRot((u16)kamino_e.yaw, (u16)target_yaw, KaminoShipSeekRatePc);
+            break;
+        }
+    }
+    NuMtxSetTranslation(matrix, &kamino_e.position);
+    NuMtxPreRotateY(matrix, kamino_e.yaw);
+    NuMtxPreRotateX(matrix, kamino_e.pitch);
 }
