@@ -14044,3 +14044,69 @@ void __cdecl creatureEditor_cbActivationMenu(eduimenu_s *parent, eduiitem_s *ite
 
 #undef ACTIVATION_CREATURE_PC
 #undef ACTIVATION_AREAS_PC
+
+STATIC_ASSERT(offsetof(AI_EDITOR_CREATURE_SAVE_PC, view_distance) == 0x9c);
+STATIC_ASSERT(offsetof(AI_EDITOR_CREATURE_SAVE_PC, hear_distance) == 0xa0);
+STATIC_ASSERT(offsetof(AI_EDITOR_CREATURE_SAVE_PC, max_view_height) == 0xa4);
+STATIC_ASSERT(offsetof(AI_EDITOR_CREATURE_SAVE_PC, min_view_height) == 0xa8);
+#define VISION_CREATURE_PC ((AI_EDITOR_CREATURE_SAVE_PC *)aieditor->mode_selection_36930)
+
+static void __cdecl AiEditorViewDistancePc(eduimenu_s *menu, eduiitem_s *item, u32 event) {
+    (void)menu;
+    (void)event;
+    if (VISION_CREATURE_PC != NULL) {
+        VISION_CREATURE_PC->view_distance = ((edui_slider_s *)item)->value;
+        if (VISION_CREATURE_PC->view_distance < VISION_CREATURE_PC->hear_distance) {
+            VISION_CREATURE_PC->view_distance = VISION_CREATURE_PC->hear_distance;
+            eduiItemSliderSetVal((edui_slider_s *)item, VISION_CREATURE_PC->view_distance);
+        }
+    }
+}
+
+static void __cdecl AiEditorHearDistancePc(eduimenu_s *menu, eduiitem_s *item, u32 event) {
+    (void)menu;
+    (void)event;
+    if (VISION_CREATURE_PC != NULL) {
+        VISION_CREATURE_PC->hear_distance = ((edui_slider_s *)item)->value;
+        if (VISION_CREATURE_PC->hear_distance > VISION_CREATURE_PC->view_distance) {
+            VISION_CREATURE_PC->hear_distance = VISION_CREATURE_PC->view_distance;
+            eduiItemSliderSetVal((edui_slider_s *)item, VISION_CREATURE_PC->hear_distance);
+        }
+    }
+}
+
+static void __cdecl AiEditorMaxViewHeightPc(eduimenu_s *menu, eduiitem_s *item, u32 event) {
+    (void)menu;
+    (void)event;
+    if (VISION_CREATURE_PC != NULL)
+        VISION_CREATURE_PC->max_view_height = ((edui_slider_s *)item)->value;
+}
+
+static void __cdecl AiEditorMinViewHeightPc(eduimenu_s *menu, eduiitem_s *item, u32 event) {
+    (void)menu;
+    (void)event;
+    if (VISION_CREATURE_PC != NULL)
+        VISION_CREATURE_PC->min_view_height = -((edui_slider_s *)item)->value;
+}
+
+void __cdecl creatureEditor_cbVisionMenu(eduimenu_s *parent, eduiitem_s *item, u32 event) {
+    eduimenu_s *menu;
+    (void)item;
+    (void)event;
+    if (VISION_CREATURE_PC == NULL)
+        return;
+    menu = eduiMenuCreate(220, 70, 240, 250, ed_fnt, AiEditorRespawnCancelMenuPc, "Vision");
+    if (menu == NULL)
+        return;
+    eduiMenuAddItem(menu, eduiItemSliderCreate(1, &AiEditorSaveMessageColoursPc, 0, AiEditorViewDistancePc, 0.5f, 49.5f,
+                                               VISION_CREATURE_PC->view_distance, "View Distance"));
+    eduiMenuAddItem(menu, eduiItemSliderCreate(1, &AiEditorSaveMessageColoursPc, 0, AiEditorHearDistancePc, 0.5f, 49.5f,
+                                               VISION_CREATURE_PC->hear_distance, "Hearing Distance"));
+    eduiMenuAddItem(menu, eduiItemSliderCreate(1, &AiEditorSaveMessageColoursPc, 0, AiEditorMaxViewHeightPc, 0.1f,
+                                               99.9f, VISION_CREATURE_PC->max_view_height, "Max View Height"));
+    eduiMenuAddItem(menu, eduiItemSliderCreate(1, &AiEditorSaveMessageColoursPc, 0, AiEditorMinViewHeightPc, 0.1f,
+                                               99.9f, -VISION_CREATURE_PC->min_view_height, "Min View Height -"));
+    eduiMenuAttach(parent, menu);
+}
+
+#undef VISION_CREATURE_PC
