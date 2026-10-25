@@ -1569,3 +1569,21 @@ static void EduiDrawDisabledItemPc(eduiitem_s *item, i32 x, i32 y, i32 width, i3
         }
     }
 }
+
+void __cdecl eduicbItemTextPickDestroy(eduimenu_s *menu, eduiitem_s *item) {
+    edui_textpicker_s *picker = (edui_textpicker_s *)item;
+    if (picker->format != NULL) {
+        NuFree(picker->format, EduiSourcePathPc, 0x623);
+        picker->format = NULL;
+    }
+    eduicbItemDestroy(menu, item);
+}
+
+void __cdecl eduicbItemFilePickDestroy(eduimenu_s *menu, eduiitem_s *item) {
+    edui_file_pick_s *picker = (edui_file_pick_s *)item;
+    if (picker->format != NULL) {
+        NuFree(picker->format, EduiSourcePathPc, 0x946);
+        picker->format = NULL;
+    }
+    eduicbItemDestroy(menu, item);
+}
