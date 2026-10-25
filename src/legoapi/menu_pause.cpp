@@ -314,11 +314,11 @@ extern "C" void __cdecl MenuDrawPauseExit(MENU *menu) {
         if (warning && menu->selected_item == menu->first_row) {
             u16 angle = (u16)(i32)(NuFmod(GlobalTimer.time_elapsed_mod_seconds, 0.5f) * 2.0f * 65536.0);
             f32 blend = (f32)(NuTrigTable[angle >> 1] * 0.5 + 0.5);
-            u8 red = (u8)(i32)(AlternateHudColourBytesPc[2] +
-                               (AlternateHudColourBytesPc[5] - AlternateHudColourBytesPc[2]) * blend);
-            u8 blue = (u8)(i32)(AlternateHudColourBytesPc[3] +
-                                (AlternateHudColourBytesPc[6] - AlternateHudColourBytesPc[3]) * blend);
-            u8 green = (u8)(i32)(AlternateHudRgbPc[1] + (AlternateHudRgbPc[2] - AlternateHudRgbPc[1]) * blend);
+            i32 red = (i32)(AlternateHudColourBytesPc[2] +
+                            (AlternateHudColourBytesPc[5] - AlternateHudColourBytesPc[2]) * blend);
+            i32 blue = (i32)(AlternateHudColourBytesPc[3] +
+                             (AlternateHudColourBytesPc[6] - AlternateHudColourBytesPc[3]) * blend);
+            i32 green = (i32)(AlternateHudRgbPc[1] + (AlternateHudRgbPc[2] - AlternateHudRgbPc[1]) * blend);
             i32 alpha_base = (i32)(AlternateHudColourBytesPc[4] +
                                    (AlternateHudColourBytesPc[7] - AlternateHudColourBytesPc[4]) * blend);
             i32 alpha = (i32)(alpha_base * (MenuA * 0.0078125));
