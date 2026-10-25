@@ -2119,3 +2119,53 @@ i32 __cdecl SockSysCamera(SOCKSYS_PC *sock_sys, NUVEC *fallback_camera_position,
 }
 
 #undef SOCK_CAMERA_CLAMP_Y
+
+f32 __cdecl NuVecMagVU0(NUVEC *);
+
+f32 __cdecl CalculateDistanceToNearestEnd(NUVEC *position, SOCKPOSITION_PC *resolved, i32 unused, SOCKSYS_PC *system) {
+    NUVEC flat = *position;
+    SOCK_PC *sock = &system->socks[resolved->sock_index];
+    NUVEC *first_a, *first_b, *last_a, *last_b;
+    f32 start_distance, along, ratio, end_distance, end_along;
+    union {
+        f32 value;
+        u32 bits;
+    } magnitude, end_magnitude;
+    NUVEC a, b, c, d, edge0, projected0, edge1, projected1, scaled0, scaled1, temporary, end_temporary;
+    flat.y = 0.0f;
+    first_a = sock->a->pts;
+    first_b = (sock->flags & 1) ? sock->b->pts : sock->d->pts;
+    a = *first_a;
+    b = *first_b;
+    a.y = b.y = 0.0f;
+    last_a = &sock->a->pts[sock->a->length - 1];
+    last_b = (sock->flags & 1) ? &sock->b->pts[sock->b->length - 1] : &sock->d->pts[sock->d->length - 1];
+    c = *last_a;
+    d = *last_b;
+    c.y = d.y = 0.0f;
+    start_distance = SockDistanceToLineXZ(position, first_a, first_b);
+    NuVecSub(&temporary, &flat, &a);
+    magnitude.value = NuVecMagVU0(&temporary);
+    magnitude.bits &= 0x7fffffffu;
+    along = NuFsqrt(magnitude.value * magnitude.value - start_distance * start_distance);
+    NuVecSub(&edge0, &b, &a);
+    edge0.y = 0.0f;
+    ratio = along / NuVecMagVU0(&edge0);
+    scaled0.x = edge0.x * ratio;
+    scaled0.y = edge0.y * ratio;
+    scaled0.z = edge0.z * ratio;
+    NuVecAdd(&projected0, &a, &scaled0);
+    end_distance = SockDistanceToLineXZ(position, last_a, last_b);
+    NuVecSub(&end_temporary, &flat, &c);
+    end_magnitude.value = NuVecMagVU0(&end_temporary);
+    end_magnitude.bits &= 0x7fffffffu;
+    end_along = NuFsqrt(end_magnitude.value * end_magnitude.value - end_distance * end_distance);
+    NuVecSub(&edge1, &d, &c);
+    edge1.y = 0.0f;
+    ratio = end_along / NuVecMagVU0(&edge1);
+    scaled1.x = edge1.x * ratio;
+    scaled1.y = edge1.y * ratio;
+    scaled1.z = edge1.z * ratio;
+    NuVecAdd(&projected1, &c, &scaled1);
+    return start_distance < end_distance ? start_distance : end_distance;
+}
