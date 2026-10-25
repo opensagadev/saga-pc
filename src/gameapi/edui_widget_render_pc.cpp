@@ -598,3 +598,66 @@ extern "C" void __cdecl cbgpcfgDel(eduimenu_s *menu, eduiitem_s *item, u32 value
     eduiMenuDetach(menu);
     eduiMenuDestroy(menu);
 }
+
+struct EDUI_COLOUR_CLIPBOARD_PC {
+    f32 hue;
+    f32 saturation;
+    f32 value;
+    f32 gray;
+};
+STATIC_ASSERT(sizeof(EDUI_COLOUR_CLIPBOARD_PC) == 16);
+STATIC_ASSERT(offsetof(EDUI_COLOUR_CLIPBOARD_PC, saturation) == 4);
+STATIC_ASSERT(offsetof(EDUI_COLOUR_CLIPBOARD_PC, value) == 8);
+STATIC_ASSERT(offsetof(EDUI_COLOUR_CLIPBOARD_PC, gray) == 12);
+extern "C" {
+    EDUI_COLOUR_CLIPBOARD_PC EduiColourClipboardPc = {0.0f, 0.0f, 0.0f, 0.0f};
+}
+
+extern "C" void __cdecl cbgpcfgCopy(eduimenu_s *menu, eduiitem_s *item, u32 value) {
+    edui_gradient_pick_s *picker = (edui_gradient_pick_s *)item->data_ptr;
+    edui_gradient_node_s *stage = picker->selected_stage;
+    if (stage != NULL) {
+        i32 type = item->type;
+        if (type == 7) {
+            EduiColourClipboardPc.hue = stage->hue;
+            EduiColourClipboardPc.saturation = stage->saturation;
+            EduiColourClipboardPc.value = stage->value;
+        }
+        if (type == 8)
+            EduiColourClipboardPc.gray = stage->value;
+        if (picker->copy != NULL)
+            picker->copy(menu, item, value);
+    }
+    eduiMenuDetach(menu);
+    eduiMenuDestroy(menu);
+}
+
+extern "C" void __cdecl cbgpcfgPaste(eduimenu_s *menu, eduiitem_s *item, u32 value) {
+    edui_gradient_pick_s *picker = (edui_gradient_pick_s *)item->data_ptr;
+    edui_gradient_node_s *stage = picker->selected_stage;
+    if (stage != NULL) {
+        if (item->type == 7)
+            eduiGradStageSetHSV(stage, EduiColourClipboardPc.hue, EduiColourClipboardPc.saturation,
+                                EduiColourClipboardPc.value);
+        if (item->type == 8)
+            eduiGradStageSetHSV(picker->selected_stage, 0.0f, 0.0f, EduiColourClipboardPc.gray);
+        if (picker->paste != NULL)
+            picker->paste(menu, item, value);
+    }
+    eduiMenuDetach(menu);
+    eduiMenuDestroy(menu);
+}
+
+extern "C" void __cdecl cbgpcfgCPPress(eduimenu_s *menu, eduiitem_s *item, u32 value) {
+    edui_gradient_pick_s *picker = (edui_gradient_pick_s *)item->data_ptr;
+    if (picker->selected_stage != NULL) {
+        if (item->type == 10 || item->type == 11) {
+            edui_colour_pick_s *colour = (edui_colour_pick_s *)item;
+            eduiGradStageSetHSV(picker->selected_stage, colour->hue, colour->saturation, colour->value);
+        }
+        if (picker->press != NULL)
+            picker->press(menu, item, value);
+    }
+    eduiMenuDetach(menu);
+    eduiMenuDestroy(menu);
+}

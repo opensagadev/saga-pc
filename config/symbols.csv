@@ -24942,6 +24942,7 @@ address,symbol,size,ctype
 0x2912eac,_eduiInteractLocked,4,struct edui_interact_s *
 0x02912eb0,_ui_bgmtl,,i32
 0x02912eb4,_EduiSelectionMaterialPc,,i32
+0x02912eb8,_EduiColourClipboardPc,,"EDUI_COLOUR_CLIPBOARD_PC minimum 16-byte view; Native allocation extent unknown"
 0x2912ecc,_active_menu,4,struct eduimenu_s *
 0x2912ed0,_processing_menu,4,struct eduimenu_s *
 0x2912ed4,_default_active_menu,4,struct eduimenu_s *
