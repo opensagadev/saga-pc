@@ -8,12 +8,6 @@ extern "C" {
     extern i16 TextIdPc88074c, TextIdPc880708, TextIdPc880764;
     extern const char ExtrasNameFormatPc[], ExtrasLockedNumberFormatPc[];
 
-    u32 __cdecl Cheat_CheckFlags(i32 index, u32 flags) {
-        if (index < 0 || index >= CheatSystemPtr->count)
-            return 0;
-        return CheatSystemPtr->cheats[index].flags & flags;
-    }
-
     void __cdecl MenuDrawSelectLanguage(MENU *menu) {
         for (i32 i = 0; i < LANGUAGECOUNT; ++i)
             GameDrawMenuEntry(menu, Text_LanguageList[i].localized_name);

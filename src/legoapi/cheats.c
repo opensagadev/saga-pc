@@ -122,3 +122,9 @@ void __cdecl Cheats_Reset(void) {
     Cheat_PowerUpTime = 0.0f;
     Cheats_SetFlags();
 }
+
+u32 __cdecl Cheat_CheckFlags(i32 index, u32 flags) {
+    if (index < 0 || index >= CheatSystemPtr->count)
+        return 0;
+    return CheatSystemPtr->cheats[index].flags & flags;
+}
