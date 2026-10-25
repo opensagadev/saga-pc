@@ -684,3 +684,26 @@ f32 __cdecl Condition_FinishedSplinePc(AISYS_PC *system, AISCRIPTPROCESS_PC *pro
     }
     return -1.0f;
 }
+
+STATIC_ASSERT(offsetof(AIPACKET_PC, reset_mode) == 0x13e);
+STATIC_ASSERT(offsetof(AISCRIPTPROCESS_PC, creature_set) == 0xb0);
+STATIC_ASSERT(offsetof(AISCRIPTPROCESS_PC, locator_set) == 0xa8);
+f32 __cdecl Condition_ActivePc(AISYS_PC *system, AISCRIPTPROCESS_PC *process, AIPACKET_PC *packet, char *name,
+                               void *argument) {
+    if (packet != NULL && packet->reset_mode == 2)
+        return 1.0f;
+    return 0.0f;
+}
+f32 __cdecl Condition_MySetPc(AISYS_PC *system, AISCRIPTPROCESS_PC *process, AIPACKET_PC *packet, char *name,
+                              void *argument) {
+    return (f32)process->creature_set;
+}
+f32 __cdecl Condition_GotLocatorSetPc(AISYS_PC *system, AISCRIPTPROCESS_PC *process, AIPACKET_PC *packet, char *name,
+                                      void *argument) {
+    if (process->locator_set != NULL)
+        return 1.0f;
+    return 0.0f;
+}
+void *__cdecl Condition_IsVisibleInitPc(AISYS_PC *system, char *name, AISCRIPT_PC *script) {
+    return name;
+}
