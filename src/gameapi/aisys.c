@@ -15095,3 +15095,70 @@ eduimenu_s *__cdecl locatorEditor_MainMenu(void) {
                                          2, AiEditorDisplayBit4Pc, "Snap Height"));
     return menu;
 }
+
+STATIC_ASSERT(sizeof(EDLOCATOR_s) == 0x48);
+STATIC_ASSERT(sizeof(EDLOCATORSET_s) == 0x118);
+STATIC_ASSERT(offsetof(AIEDITOR_RENDER_STATE, creatures) == 0x371a4);
+STATIC_ASSERT(offsetof(AIEDITOR_RENDER_STATE, free_locators) == 0x3cbd0);
+STATIC_ASSERT(offsetof(AIEDITOR_RENDER_STATE, locators) == 0x3cbd8);
+STATIC_ASSERT(offsetof(AIEDITOR_RENDER_STATE, current_locator) == 0x3cbe0);
+STATIC_ASSERT(offsetof(AIEDITOR_RENDER_STATE, nearest_locator) == 0x3cbe4);
+STATIC_ASSERT(offsetof(AIEDITOR_RENDER_STATE, locator_sets) == 0x41200);
+STATIC_ASSERT(offsetof(AI_EDITOR_CREATURE_SAVE_PC, locator) == 0x84);
+STATIC_ASSERT(offsetof(AI_EDITOR_CREATURE_SAVE_PC, respawn_locator) == 0x88);
+
+static void AiEditorDestroyLocatorPc(EDLOCATOR_s *locator) {
+    EDLOCATORSET_s *set;
+    if (locator == NULL)
+        return;
+    for (set = (EDLOCATORSET_s *)NuLinkedListGetHead(&aieditor->locator_sets); set != NULL;
+         set = (EDLOCATORSET_s *)NuLinkedListGetNext(&aieditor->locator_sets, &set->link)) {
+        AiEditorRemoveLocatorFromSetPc(set, locator);
+    }
+    NuLinkedListRemove(&aieditor->locators, &locator->link);
+    memset(locator, 0, sizeof(*locator));
+    NuLinkedListAppend(&aieditor->free_locators, &locator->link);
+}
+
+static void __cdecl AiEditorDeleteLocatorSelectionPc(eduimenu_s *menu, eduiitem_s *item, u32 event) {
+    AI_EDITOR_CREATURE_SAVE_PC *creature;
+    (void)menu;
+    (void)event;
+    if (item != NULL && item->data != 0 && aieditor->current_locator != NULL &&
+        aieditor->current_locator == aieditor->nearest_locator) {
+        for (creature = (AI_EDITOR_CREATURE_SAVE_PC *)NuLinkedListGetHead(&aieditor->creatures); creature != NULL;
+             creature = (AI_EDITOR_CREATURE_SAVE_PC *)NuLinkedListGetNext(&aieditor->creatures, &creature->link)) {
+            if (creature->locator == aieditor->current_locator)
+                creature->locator = NULL;
+        }
+        AiEditorDestroyLocatorPc(aieditor->current_locator);
+        aieditor->current_locator = NULL;
+    }
+    if (aieditor->main_menu != NULL) {
+        eduiMenuDestroy(aieditor->main_menu);
+        aieditor->main_menu = NULL;
+    }
+}
+
+static void __cdecl AiEditorDeleteLocatorCancelPc(eduimenu_s *menu, eduimenu_s *child) {
+    (void)menu;
+    (void)child;
+    if (aieditor->main_menu != NULL) {
+        eduiMenuDestroy(aieditor->main_menu);
+        aieditor->main_menu = NULL;
+    }
+}
+
+eduimenu_s *__cdecl locatorEditor_DeleteLocatorMenu(void) {
+    eduimenu_s *menu;
+    if (aieditor->current_locator == NULL || aieditor->current_locator != aieditor->nearest_locator)
+        return NULL;
+    menu = eduiMenuCreate(200, 70, 240, 270, ed_fnt, AiEditorDeleteLocatorCancelPc, "Delete locator??");
+    if (menu != NULL) {
+        eduiMenuAddItem(menu, eduiItemSelCreate(0, &AiEditorSaveMessageColoursPc, 0, 0,
+                                                AiEditorDeleteLocatorSelectionPc, (char *)MenuPcString75f2c0));
+        eduiMenuAddItem(menu, eduiItemSelCreate(1, &AiEditorSaveMessageColoursPc, 0, 0,
+                                                AiEditorDeleteLocatorSelectionPc, (char *)MenuPcString75f2c4));
+    }
+    return menu;
+}

@@ -3376,7 +3376,10 @@ address,symbol,size,ctype
 0x530530,_aieditor_Proc,1060,
 0x530960,_areaEditor_cbRenameAreaMenu,192,
 0x530b30,_areaEditor_Render,672,
+0x530dd0,_AiEditorDestroyLocatorPc,118,
 0x530f60,_locatorEditor_cbRenameLocatorMenu,192,
+0x531020,_AiEditorDeleteLocatorSelectionPc,176,
+0x5310d0,_AiEditorDeleteLocatorCancelPc,37,
 0x531100,_locatorEditor_cbCreateLocatorSet,236,
 0x5311f0,_locatorEditor_cbDeleteLocatorSet,257,
 0x531300,_locatorEditor_cbEmptyLocatorSet,276,
@@ -3418,6 +3421,7 @@ address,symbol,size,ctype
 0x537900,_AISYSRebuildFromEditorData,3327,
 0x538600,_aieditor_Save,539,
 0x538820,_aieditor_Leave,216,
+0x5389a0,_locatorEditor_DeleteLocatorMenu,153,
 0x538d60,_aieditor_cbSave,235,
 0x539050,_antinodeEditor_Process,2218,
 0x53ac10,_locatorEditor_MainMenu,614,
@@ -15098,6 +15102,7 @@ address,symbol,size,ctype
 0x00760c20,_AICharacterInitialiseName,11,const char [11]
 0x760c2c,??_C@_06FCGCPEED@?$CFs?4bak?$AA@,7,const char[7]
 0x760c34,_AiEditorDatedBackupFormatPc,32,const char[32]
+0x760c64,??_C@_0BB@BOHJJGDJ@Delete?5locator?$DP?$DP?$AA@,,char []
 0x760cd0,??_C@_0EA@NJPLHKLK@Make?5sure?5there?5is?5a?5folder?5call@,64,const char[64]
 0x760d10,??_C@_0P@EMGNAMLC@AI?5Save?5FAILED?$AA@,15,const char[15]
 0x760d50,??_C@_0M@OKAEJLIE@Snap?5Height?$AA@,,char []
