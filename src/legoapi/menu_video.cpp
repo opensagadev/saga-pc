@@ -253,9 +253,16 @@ extern "C" void __cdecl MenuDrawVideoPc(MENU *menu) {
             break;
     }
     DrawMenuEntryEx(menu, text, (u8)MenuA);
-    if (!MenuPcStringsInitialized)
-        MenuPcStringsInit();
-    const char *value = MenuPcStrings[MenuVideoOptionsPc.hires_enabled ? 15 : 16];
+    const char *value;
+    if (MenuVideoOptionsPc.hires_enabled) {
+        if (!MenuPcStringsInitialized)
+            MenuPcStringsInit();
+        value = MenuPcStrings[15];
+    } else {
+        if (!MenuPcStringsInitialized)
+            MenuPcStringsInit();
+        value = MenuPcStrings[16];
+    }
     if (!MenuPcStringsInitialized)
         MenuPcStringsInit();
     NuSPrintf(text, ExtrasNameFormatPc, MenuPcStrings[23], value);
