@@ -1377,3 +1377,19 @@ f32 __cdecl Condition_IAmPc(AISYS_PC *system, AISCRIPTPROCESS_PC *process, AIPAC
     }
     return 0.0f;
 }
+
+void *__cdecl Condition_CharacterExistsInitPc(AISYS_PC *system, char *name, AISCRIPT_PC *script) {
+    if (name != NULL && system != NULL && GetNamedGameObjectCallback != NULL) {
+        APIOBJECT_PC *object = GetNamedGameObjectCallback(system, name);
+        if (object != NULL)
+            return object->owner;
+    }
+    return NULL;
+}
+
+f32 __cdecl Condition_CharacterExistsPc(AISYS_PC *system, AISCRIPTPROCESS_PC *process, AIPACKET_PC *packet, char *name,
+                                        void *argument) {
+    if (argument != NULL)
+        return 1.0f;
+    return 0.0f;
+}
