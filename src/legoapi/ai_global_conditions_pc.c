@@ -999,3 +999,76 @@ f32 __cdecl Condition_CutSceneStartedPc(AISYS_PC *system, AISCRIPTPROCESS_PC *pr
         return 1.0f;
     return 0.0f;
 }
+
+f32 __cdecl Condition_EmptyTakeOverPc(AISYS_PC *system, AISCRIPTPROCESS_PC *process, AIPACKET_PC *packet, char *name,
+                                      void *argument) {
+    i32 character = -1;
+    i32 index;
+    i32 object_count;
+    GAMEOBJECT *object;
+    if (name != NULL && system != NULL) {
+        for (index = 0; index < CHARCOUNT && character == -1; ++index) {
+            if (NuStrICmp(CDataList[index].name, name) == 0)
+                character = index;
+        }
+        object_count = HIGHGAMEOBJECT;
+        if (object_count > 0) {
+            object = Obj;
+            index = 0;
+            do {
+                if ((object->flags_1fc_word & 1) != 0 && (object->flags_1fc_word & 0x1000) != 0 &&
+                    (object->flags_1f8 & 0x400) != 0 && (i16)object->id == character) {
+                    if (object->takeover_target == NULL || object->takeover_source == NULL ||
+                        object->takeover_source->character_context != 0x3b)
+                        return 1.0f;
+                }
+                ++index;
+                ++object;
+            } while (index < object_count);
+        }
+    }
+    return 0.0f;
+}
+
+typedef struct condition_trigger_player_reader_pc_s {
+    u8 unknown_00[0x2b0];
+    u64 membership;
+} CONDITION_TRIGGER_PLAYER_READER_PC;
+STATIC_ASSERT(offsetof(CONDITION_TRIGGER_PLAYER_READER_PC, membership) == 0x2b0);
+
+f32 __cdecl Condition_EitherPlayerInMyTriggerAreaPc(AISYS_PC *system, AISCRIPTPROCESS_PC *process, AIPACKET_PC *packet,
+                                                    char *name, void *argument) {
+    AIAREA_PC *area;
+    GAMEOBJECT *object;
+    i32 index;
+    i64 mask;
+    if (system != NULL) {
+        area = ((CONDITION_TRIGGER_PROCESS_READER_PC *)process)->trigger_area;
+        if (area != NULL) {
+            if (system->player_1 != NULL && area->system != NULL) {
+                object = (GAMEOBJECT *)system->player_1;
+                index = (i32)((u32)area - (u32)area->system->areas) >> 6;
+                /* Retail wraps the 32-bit shift and sign-extends bit 31. */
+                mask = (i32)(1u << ((u32)index & 31));
+                if ((((CONDITION_TRIGGER_PLAYER_READER_PC *)object)->membership & mask) != 0)
+                    return 1.0f;
+            }
+            if (system->player_2 != NULL && area->system != NULL) {
+                object = (GAMEOBJECT *)system->player_2;
+                index = (i32)((u32)area - (u32)area->system->areas) >> 6;
+                mask = (i32)(1u << ((u32)index & 31));
+                if ((((CONDITION_TRIGGER_PLAYER_READER_PC *)object)->membership & mask) != 0)
+                    return 1.0f;
+            }
+        }
+    }
+    return 0.0f;
+}
+
+STATIC_ASSERT(offsetof(GAMEOBJECT, flags_1fc_word) == 0x1fc);
+STATIC_ASSERT(offsetof(GAMEOBJECT, flags_1f8) == 0x1f8);
+STATIC_ASSERT(offsetof(GAMEOBJECT, id) == 0x1064);
+STATIC_ASSERT(offsetof(GAMEOBJECT, takeover_target) == 0xea4);
+STATIC_ASSERT(offsetof(GAMEOBJECT, takeover_source) == 0xcd0);
+STATIC_ASSERT(offsetof(GAMEOBJECT, character_context) == 0x7b5);
+STATIC_ASSERT(sizeof(GAMEOBJECT) == 0x10d8);
