@@ -13741,3 +13741,40 @@ eduimenu_s *__cdecl aieditor_AddMessage(char *title, char *message) {
     }
     return outer;
 }
+
+typedef struct AI_EDITOR_SPECIAL_PLATFORM_PC {
+    u8 unknown_00[0x4a];
+    i16 instance_index;
+    u8 unknown_4c[0x20];
+} AI_EDITOR_SPECIAL_PLATFORM_PC;
+typedef struct AI_EDITOR_SPECIAL_TERRAIN_PC {
+    u8 unknown_00[0x68];
+    AI_EDITOR_SPECIAL_PLATFORM_PC *platforms;
+} AI_EDITOR_SPECIAL_TERRAIN_PC;
+STATIC_ASSERT(sizeof(AI_EDITOR_SPECIAL_PLATFORM_PC) == 0x6c);
+STATIC_ASSERT(offsetof(AI_EDITOR_SPECIAL_PLATFORM_PC, instance_index) == 0x4a);
+STATIC_ASSERT(offsetof(AI_EDITOR_SPECIAL_TERRAIN_PC, platforms) == 0x68);
+
+i32 __cdecl NuSpecialFindByPlatformID(NUGSCN *scene, struct nuhspecial_s *result, i32 platform_id) {
+    i32 count;
+    i32 instance_index;
+    i32 index;
+    NUSPECIALHANDLE candidate;
+    result->scene = NULL;
+    result->special = NULL;
+    result->display_special = NULL;
+    if (scene == NULL || CurrentTerrain == NULL || platform_id == -1)
+        return 0;
+    count = NuGScnNumSpecials(scene);
+    instance_index = ((AI_EDITOR_SPECIAL_TERRAIN_PC *)CurrentTerrain)->platforms[platform_id].instance_index;
+    for (index = 0; index < count; ++index) {
+        NuGScnGetSpecial(&candidate, scene, index);
+        if (NuSpecialGetInstanceix(&candidate) == instance_index) {
+            result->scene = (NUGSCN *)candidate.scene;
+            result->special = candidate.special;
+            result->display_special = (struct nudisplay_special_pc_s *)candidate.display_special;
+            return 1;
+        }
+    }
+    return 0;
+}
