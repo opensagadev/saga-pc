@@ -31,8 +31,8 @@ static i32 MenuUpdateTitleFadePc(MENU *menu) {
             }
         }
     } else if (newgamewait > 0.0f) {
-        newgamewait -= FRAMETIME;
         music_volume = 0.0f;
+        newgamewait -= FRAMETIME;
         if (newgamewait <= 0.0f) {
             if (!NOSOUND) {
                 music_man.StopAll(0);
