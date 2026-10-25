@@ -5649,7 +5649,7 @@ address,symbol,size,ctype
 0x5c1f70,_NuRndrPrimSetColourPrivate,108,
 0x5c2220,??1NuPostFilterGen@@UAE@XZ,7,native exactVT binding; unimplemented extent unclaimed
 0x5c2230,?initTextureResources@NuPostFilterGen@@UAEXHH@Z,3,native exactVT binding; unimplemented extent unclaimed
-0x5c2240,?destroyTextureResources@NuPostFilterGen@@UAEXXZ,,native exactVT binding; unimplemented extent unclaimed
+0x5c2240,?destroyTextureResources@NuPostFilterGen@@UAEXXZ,1,Native VT cleanup complete CFG bound; working partial where applicable
 0x5c2250,?render@NuPostFilterGen@@UAEXXZ,,native exactVT binding; unimplemented extent unclaimed
 0x5c2260,??_ENuPostFilterGen@@UAEPAXI@Z,,COFF weak alias of ??_GNuPostFilterGen@@UAEPAXI@Z; no independent body
 0x5c2260,??_GNuPostFilterGen@@UAEPAXI@Z,31,native scalar-deleting dtor exactVTidentity
@@ -5663,7 +5663,7 @@ address,symbol,size,ctype
 0x5c2830,??_ENuPostFilter@@UAEPAXI@Z,,COFF weak alias of ??_GNuPostFilter@@UAEPAXI@Z; no independent body
 0x5c2830,??_GNuPostFilter@@UAEPAXI@Z,31,native scalar-deleting dtor exactVTidentity
 0x5c2850,?initTextureResources@NuMainFilterGen@@UAEXHH@Z,,native exactVT binding; unimplemented extent unclaimed
-0x5c2900,?destroyTextureResources@NuMainFilterGen@@UAEXXZ,,native exactVT binding; unimplemented extent unclaimed
+0x5c2900,?destroyTextureResources@NuMainFilterGen@@UAEXXZ,26,Native VT cleanup complete CFG bound; working partial where applicable
 0x5c2920,?reset@NuMainFilterGen@@UAEXXZ,25,
 0x5c2e40,??0NuMotionFilterGen@@QAE@XZ,39,native ctor fullvptr/field proof
 0x5c3150,??0NuMotionFilter@@QAE@XZ,39,native ctor fullvptr/field proof
@@ -5688,21 +5688,21 @@ address,symbol,size,ctype
 0x5c4d40,?initResources@NuPostFilterGen@@UAEXXZ,13,native exactVT binding; unimplemented extent unclaimed
 0x5c4d50,?destroyResources@NuPostFilterGen@@UAEXXZ,24,native exactVT binding; unimplemented extent unclaimed
 0x5c4d70,?initResources@NuCopyFilter@@UAEXXZ,47,native exactVT binding; unimplemented extent unclaimed
-0x5c4da0,?destroyResources@NuCopyFilter@@UAEXXZ,,native exactVT binding; unimplemented extent unclaimed
+0x5c4da0,?destroyResources@NuCopyFilter@@UAEXXZ,33,Native VT cleanup complete CFG bound; working partial where applicable
 0x5c4dd0,?render@NuCopyFilter@@UAEXPAUPC_FRAMEBUFFER_PC@@@Z,,native exactVT binding; unimplemented extent unclaimed
 0x5c4e20,?reset@NuCopyFilter@@UAEXXZ,,native exactVT binding; unimplemented extent unclaimed
 0x5c4e30,??0NuMotionAccumFilterGen@@QAE@XZ,30,native ctor fullvptr/field proof
 0x5c4e50,??_ENuMotionAccumFilterGen@@UAEPAXI@Z,,COFF weak alias of ??_GNuMotionAccumFilterGen@@UAEPAXI@Z; no independent body
 0x5c4e50,??_GNuMotionAccumFilterGen@@UAEPAXI@Z,31,native scalar-deleting dtor exactVTidentity
 0x5c4e70,?initResources@NuMotionAccumFilterGen@@UAEXXZ,38,native exactVT binding; unimplemented extent unclaimed
-0x5c4ea0,?destroyResources@NuMotionAccumFilterGen@@UAEXXZ,,native exactVT binding; unimplemented extent unclaimed
+0x5c4ea0,?destroyResources@NuMotionAccumFilterGen@@UAEXXZ,40,Native VT cleanup complete CFG bound; working partial where applicable
 0x5c4ed0,?initTextureResources@NuMotionAccumFilterGen@@UAEXHH@Z,34,native exactVT binding; unimplemented extent unclaimed
-0x5c4f00,?destroyTextureResources@NuMotionAccumFilterGen@@UAEXXZ,,native exactVT binding; unimplemented extent unclaimed
+0x5c4f00,?destroyTextureResources@NuMotionAccumFilterGen@@UAEXXZ,11,Native VT cleanup complete CFG bound; working partial where applicable
 0x5c4f80,??0NuSpeedBlurFilterGen@@QAE@XZ,17,native ctor fullvptr/field proof
 0x5c4fa0,??_ENuSpeedBlurFilterGen@@UAEPAXI@Z,,COFF weak alias of ??_GNuSpeedBlurFilterGen@@UAEPAXI@Z; no independent body
 0x5c4fa0,??_GNuSpeedBlurFilterGen@@UAEPAXI@Z,31,native scalar-deleting dtor exactVTidentity
 0x5c4fc0,?initTextureResources@NuSpeedBlurFilterGen@@UAEXHH@Z,,native exactVT binding; unimplemented extent unclaimed
-0x5c5010,?destroyTextureResources@NuSpeedBlurFilterGen@@UAEXXZ,,native exactVT binding; unimplemented extent unclaimed
+0x5c5010,?destroyTextureResources@NuSpeedBlurFilterGen@@UAEXXZ,11,Native VT cleanup complete CFG bound; working partial where applicable
 0x5c5020,?computeSpeedBlur@NuSpeedBlurFilterGen@@QAEXPAUNUVEC4@@@Z,379,void __thiscall(NUVEC4*)
 0x5c51a0,_NuSpeedBlurSetMotionFactors,31,
 0x5c51c0,?Register@PC_POST_DATA_PORT_MANAGER@@QAEHPBDPAX@Z,142,
@@ -5729,9 +5729,9 @@ address,symbol,size,ctype
 0x5c8ef0,??_ENuDeferredFilterGen@@UAEPAXI@Z,,COFF weak alias of ??_GNuDeferredFilterGen@@UAEPAXI@Z; no independent body
 0x5c8ef0,??_GNuDeferredFilterGen@@UAEPAXI@Z,31,native scalar-deleting dtor exactVTidentity
 0x5c8f10,?initResources@NuDeferredFilterGen@@UAEXXZ,88,native exactVT binding; unimplemented extent unclaimed
-0x5c8f70,?destroyResources@NuDeferredFilterGen@@UAEXXZ,,native exactVT binding; unimplemented extent unclaimed
+0x5c8f70,?destroyResources@NuDeferredFilterGen@@UAEXXZ,66,Native VT cleanup complete CFG bound; working partial where applicable
 0x5c8fc0,?initTextureResources@NuDeferredFilterGen@@UAEXHH@Z,206,native exactVT binding; unimplemented extent unclaimed
-0x5c9090,?destroyTextureResources@NuDeferredFilterGen@@UAEXXZ,,native exactVT binding; unimplemented extent unclaimed
+0x5c9090,?destroyTextureResources@NuDeferredFilterGen@@UAEXXZ,142,Native VT cleanup complete CFG bound; working partial where applicable
 0x005c9130,_NuPause,11,void __cdecl (i32)
 0x005c9140,_buildBitCountTable,118,void __cdecl (void)
 0x5c91c0,_NuAnimCurveCalcVal2,364,"f32 __cdecl (NUANIM_LEGACY_CURVE_PC *, NUANIM_TIME2_PC *)"
@@ -6091,7 +6091,7 @@ address,symbol,size,ctype
 0x5e5d00,??_ENuMainFilterGen@@UAEPAXI@Z,,COFF weak alias of ??_GNuMainFilterGen@@UAEPAXI@Z; no independent body
 0x5e5d00,??_GNuMainFilterGen@@UAEPAXI@Z,31,native scalar-deleting dtor exactVTidentity
 0x5e5d20,?initResources@NuMainFilterGen@@UAEXXZ,42,native exactVT binding; unimplemented extent unclaimed
-0x5e5d50,?destroyResources@NuMainFilterGen@@UAEXXZ,,native exactVT binding; unimplemented extent unclaimed
+0x5e5d50,?destroyResources@NuMainFilterGen@@UAEXXZ,40,Native VT cleanup complete CFG bound; working partial where applicable
 0x5e5d80,?render@NuMainFilterGen@@UAEXXZ,,native exactVT binding; unimplemented extent unclaimed
 0x5e6400,??_ENuMotionFilterGen@@UAEPAXI@Z,,COFF weak alias of ??_GNuMotionFilterGen@@UAEPAXI@Z; no independent body
 0x5e6400,??_GNuMotionFilterGen@@UAEPAXI@Z,31,native scalar-deleting dtor exactVTidentity
@@ -6469,9 +6469,9 @@ address,symbol,size,ctype
 0x605e60,_NuRndrBufferDescriptorsInitPc,133,"void __cdecl NuRndrBufferDescriptorsInitPc(VARIPTR *, VARIPTR)"
 0x605ef0,_PCGraphicsCreatePostEffectTextures,244,"void __cdecl(u32,u32)"
 0x605ff0,_PostBlur7x7LowPc,2397,"void __cdecl(GRAPHICS_RENDER_TEXTURE_PC*,i32,GRAPHICS_RENDER_TEXTURE_PC*,i32,i32,i32,bool,f32,POST_SHADER_PROGRAM_PC*)"
-0x606950,?destroyResources@NuMainFilter@@UAEXXZ,,native exactVT binding; unimplemented extent unclaimed
+0x606950,?destroyResources@NuMainFilter@@UAEXXZ,25,Native VT cleanup complete CFG bound; working partial where applicable
 0x606970,?initTextureResources@NuMainFilter@@UAEXHH@Z,24,native exactVT binding; unimplemented extent unclaimed
-0x606990,?destroyTextureResources@NuMainFilter@@UAEXXZ,,native exactVT binding; unimplemented extent unclaimed
+0x606990,?destroyTextureResources@NuMainFilter@@UAEXXZ,11,Native VT cleanup complete CFG bound; working partial where applicable
 0x6069a0,??0PC_EFFECT_SURFACE_PC@@QAE@XZ,120,
 0x606a20,??1PC_EFFECT_SURFACE_PC@@QAE@XZ,25,
 0x606a40,?render@NuSpeedBlurFilter@@UAEXXZ,723,native exactVT binding; unimplemented extent unclaimed

@@ -531,3 +531,70 @@ void NuPostFilterGen::destroyResources() {
 PC_FRAMEBUFFER_PC *NuPostFilterGen::getInputFbo() {
     return input_fbo;
 }
+
+STATIC_ASSERT(offsetof(NuMainFilterGen, blur_texture) == 0x54);
+STATIC_ASSERT(offsetof(NuMainFilterGen, blur_fbo) == 0x58);
+STATIC_ASSERT(offsetof(NuMainFilterGen, downsample_texture) == 0x5c);
+STATIC_ASSERT(offsetof(NuMotionAccumFilterGen, accumulation_fbo) == 0x10);
+STATIC_ASSERT(offsetof(NuMotionAccumFilterGen, accumulation_texture) == 0x14);
+STATIC_ASSERT(offsetof(NuSpeedBlurFilterGen, texture) == 0x18);
+STATIC_ASSERT(offsetof(NuCopyFilter, copy_fbo) == 0xc);
+STATIC_ASSERT(offsetof(NuDeferredFilterGen, textures) == 0x28);
+
+void NuPostFilterGen::destroyTextureResources() {
+}
+void NuMainFilterGen::destroyTextureResources() {
+    PCGraphicsDestroyRenderTexture(blur_texture);
+    PCGraphicsDestroyRenderTexture(downsample_texture);
+}
+void NuCopyFilter::destroyResources() {
+    PCGraphicsDestroyFramebuffer(copy_fbo);
+    NuPostFilterGen::destroyResources();
+}
+void NuMotionAccumFilterGen::destroyResources() {
+    PCGraphicsDestroyFramebuffer(accumulation_fbo);
+    accumulation_fbo = NULL;
+    NuPostFilterGen::destroyResources();
+}
+void NuMotionAccumFilterGen::destroyTextureResources() {
+    PCGraphicsDestroyRenderTexture(accumulation_texture);
+}
+void NuSpeedBlurFilterGen::destroyTextureResources() {
+    PCGraphicsDestroyRenderTexture(texture);
+}
+void NuDeferredFilterGen::destroyResources() {
+    for (i32 i = 0; i < 6; ++i)
+        PCGraphicsDestroyFramebuffer(shadow_fbos[i]);
+    PCGraphicsDestroyFramebuffer(light_fbo);
+    NuPostFilterGen::destroyResources();
+}
+void NuDeferredFilterGen::destroyTextureResources() {
+    for (i32 i = 0; i < 2; ++i) {
+        PCGraphicsAttachFramebuffer(shadow_fbos[i], 0, NULL, 0);
+        PCGraphicsAttachFramebuffer(shadow_fbos[i], 4, NULL, 0);
+    }
+    PCGraphicsAttachFramebuffer(light_fbo, 0, NULL, 0);
+    PCGraphicsDestroyRenderTexture(textures[2]);
+    PCGraphicsDestroyRenderTexture(textures[3]);
+    textures[2] = NULL;
+    textures[3] = NULL;
+    textures[0] = NULL;
+    PCGraphicsDestroyRenderTexture(textures[1]);
+    textures[1] = NULL;
+    for (i32 i = 4; i < 6; ++i) {
+        PCGraphicsDestroyRenderTexture(textures[i]);
+        textures[i] = NULL;
+    }
+}
+void NuMainFilterGen::destroyResources() {
+    PCGraphicsDestroyFramebuffer(blur_fbo);
+    blur_fbo = NULL;
+    NuPostFilterGen::destroyResources();
+}
+void NuMainFilter::destroyResources() {
+    NuMainFilterGen::destroyResources();
+    PCGraphicsDestroyFramebuffer(platform_fbo);
+}
+void NuMainFilter::destroyTextureResources() {
+    texture_surface.Reset();
+}
