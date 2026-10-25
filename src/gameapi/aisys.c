@@ -13778,3 +13778,13 @@ i32 __cdecl NuSpecialFindByPlatformID(NUGSCN *scene, struct nuhspecial_s *result
     }
     return 0;
 }
+
+void __cdecl pathEditorDrawNode(NUVEC *position, f32 radius, f32 lower_height, f32 upper_height, u32 colour,
+                                i32 material, i32 segments, i32 solid) {
+    NUVEC centre = {position->x, position->y + aiEditor_DrawYOffset, position->z};
+    if (solid != 0) {
+        LocaledbitsDrawSolidCircleXY(&centre, radius, lower_height, upper_height, colour, material, segments);
+    } else {
+        LocaledbitsDrawCircleXY(&centre, radius, colour, material, segments);
+    }
+}

@@ -3245,6 +3245,7 @@ address,symbol,size,ctype
 0x521cb0,_locatorEditorSaveData,794,
 0x522500,_DrawLocator,430,
 0x5226b0,_locatorEditorDrawLocators,428,
+0x523640,_pathEditorDrawNode,137,
 0x5236d0,_pathEditorDrawConnectionInfo,1387,
 0x524190,_pathEditorDrawPaths,273,
 0x524320,_pathEditor_UpdateNodesOnPlatforms,142,
