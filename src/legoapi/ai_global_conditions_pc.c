@@ -118,13 +118,18 @@ STATIC_ASSERT(offsetof(AISYS_PC, player_1) == 0x138c);
 STATIC_ASSERT(offsetof(AISYS_PC, player_2) == 0x1390);
 STATIC_ASSERT(offsetof(GAMEOBJECT, ai_area_mask) == 0x2b0);
 
+typedef struct condition_trigger_player_reader_pc_s {
+    u8 unknown_00[0x2b0];
+    u64 membership;
+} CONDITION_TRIGGER_PLAYER_READER_PC;
+STATIC_ASSERT(offsetof(CONDITION_TRIGGER_PLAYER_READER_PC, membership) == 0x2b0);
+
 f32 __cdecl Condition_EitherPlayerInTriggerAreaPc(AISYS_PC *system, AISCRIPTPROCESS_PC *process, AIPACKET_PC *packet,
                                                   char *name, void *argument) {
     AIAREA_PC *area;
     GAMEOBJECT *object;
     i32 index;
     i64 mask;
-    u64 membership;
     if (system != NULL) {
         area = (AIAREA_PC *)argument;
         if (area == NULL)
@@ -135,16 +140,14 @@ f32 __cdecl Condition_EitherPlayerInTriggerAreaPc(AISYS_PC *system, AISCRIPTPROC
                 index = (i32)(area - area->system->areas);
                 /* Retail sign-extends a 32-bit shift into the 64-bit mask. */
                 mask = (i32)(1u << index);
-                membership = ((u64)object->ai_area_mask[1] << 32) | object->ai_area_mask[0];
-                if ((membership & mask) != 0)
+                if ((((CONDITION_TRIGGER_PLAYER_READER_PC *)object)->membership & mask) != 0)
                     return 1.0f;
             }
             if (system->player_2 != NULL && area->system != NULL) {
                 object = (GAMEOBJECT *)system->player_2;
                 index = (i32)(area - area->system->areas);
                 mask = (i32)(1u << index);
-                membership = ((u64)object->ai_area_mask[1] << 32) | object->ai_area_mask[0];
-                if ((membership & mask) != 0)
+                if ((((CONDITION_TRIGGER_PLAYER_READER_PC *)object)->membership & mask) != 0)
                     return 1.0f;
             }
         }
@@ -1029,12 +1032,6 @@ f32 __cdecl Condition_EmptyTakeOverPc(AISYS_PC *system, AISCRIPTPROCESS_PC *proc
     }
     return 0.0f;
 }
-
-typedef struct condition_trigger_player_reader_pc_s {
-    u8 unknown_00[0x2b0];
-    u64 membership;
-} CONDITION_TRIGGER_PLAYER_READER_PC;
-STATIC_ASSERT(offsetof(CONDITION_TRIGGER_PLAYER_READER_PC, membership) == 0x2b0);
 
 f32 __cdecl Condition_EitherPlayerInMyTriggerAreaPc(AISYS_PC *system, AISCRIPTPROCESS_PC *process, AIPACKET_PC *packet,
                                                     char *name, void *argument) {
