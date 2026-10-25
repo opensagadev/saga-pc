@@ -3450,6 +3450,8 @@ address,symbol,size,ctype
 0x5404f0,_SockSys_Configure,254,"void __cdecl (SOCKSYS_PC *, char *, i32, VARIPTR *, VARIPTR *, NUGSCN *)"
 0x5405f0,_PerspectMidPoint,122,"void __cdecl(NUVEC*,NUVEC*,NUVEC*,NUVEC*)"
 0x5407d0,_CalculateDistanceToNearestEnd,743,
+0x540b10,_TurnOffAllSocksExcept,297,"void __cdecl(SOCKSYS_PC *, i32)"
+0x540c40,_RestoreLastSocksTurnoff,220,void __cdecl(SOCKSYS_PC *)
 0x00540d20,_SockRotationMatrix,1804,"void __cdecl (SOCKSYS_PC *, SOCKPOSITION_PC *, NUMTX *, i32, i32)"
 0x541430,_SockOn,44,
 0x541460,_SockOff,44,
@@ -23820,6 +23822,7 @@ address,symbol,size,ctype
 0x9242c0,_iterator_count,,i32
 0x9242c4,_distance_tables,,f32 ***
 0x009242e4,_sockpar_buffer_ptr,4,VARIPTR *
+0x9242e8,_SocksOnPreviousStatusPc,,u32[2]
 0x9242f0,_temp_sockmidpos,12,NUVEC
 0x009242fc,_sockpar_buffer_end,4,VARIPTR *
 0x924300,_temp_sockcampos,12,NUVEC
