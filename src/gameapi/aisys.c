@@ -14844,3 +14844,77 @@ void __cdecl locatorEditor_cbAddLocatorsByName(eduimenu_s *parent, eduiitem_s *i
     menu->x = parent->x + 10;
     menu->y = parent->y + 40;
 }
+
+STATIC_ASSERT(offsetof(AIEDITOR_RENDER_STATE, current_path) == 0x4868);
+STATIC_ASSERT(offsetof(EDAIPATH_s, current_route) == 0x28);
+STATIC_ASSERT(offsetof(EDAIPATH_s, routes) == 0x40);
+STATIC_ASSERT(sizeof(EDAIPATHROUTE_s) == 0x20);
+STATIC_ASSERT(offsetof(EDAIPATHROUTE_s, user_mask) == 0x10);
+STATIC_ASSERT(offsetof(eduiitem_s, data) == 0x0c);
+STATIC_ASSERT(offsetof(eduiitem_s, flags) == 0x11);
+
+static void __cdecl AiEditorRouteUsersCancelPc(eduimenu_s *menu, eduimenu_s *child) {
+    (void)child;
+    eduiMenuDestroy(menu);
+}
+
+static void __cdecl AiEditorSetRouteUsersPc(eduimenu_s *menu, eduiitem_s *item, u32 event) {
+    AIEDITOR_RENDER_STATE *state;
+    EDAIPATHROUTE_s *route;
+    u64 mask;
+    (void)menu;
+    (void)event;
+    if (item == NULL)
+        return;
+    state = aieditor;
+    if (state->current_path == NULL)
+        return;
+    route = state->current_path->current_route;
+    if (route == NULL || (u32)item->data >= 64)
+        return;
+    mask = (u64)1 << item->data;
+    if ((route->user_mask & mask) != 0) {
+        state->current_path->current_route->user_mask &= ~mask;
+        item->flags &= ~1;
+    } else {
+        state->current_path->current_route->user_mask |= mask;
+        item->flags |= 1;
+    }
+}
+
+void __cdecl routeEditor_cbRouteUsers(eduimenu_s *parent, eduiitem_s *item, u32 event) {
+    eduimenu_s *menu;
+    char *name;
+    i32 index;
+    (void)item;
+    (void)event;
+    if (SpecialRouteCharacterNameFn == NULL)
+        return;
+    if (aieditor->current_path == NULL || aieditor->current_path->current_route == NULL)
+        return;
+    menu = eduiMenuCreate(220, 70, 240, 250, ed_fnt, AiEditorRouteUsersCancelPc, "Select route users");
+    if (menu == NULL)
+        return;
+    index = 0;
+    name = SpecialRouteCharacterNameFn((u8)index);
+    while (name != NULL) {
+        EDAIPATH_s *path;
+        u64 mask;
+        i32 selected;
+        if (index >= 64)
+            return;
+        path = aieditor->current_path;
+        mask = (u64)1 << index;
+        selected = (path->current_route->user_mask & mask) != 0;
+        eduiMenuAddItem(menu, eduiItemCheckCreate(index, &AiEditorSaveMessageColoursPc, selected, index + 1,
+                                                  AiEditorSetRouteUsersPc, name));
+        eduiMenuAttach(parent, menu);
+        ++index;
+        name = SpecialRouteCharacterNameFn((u8)index);
+    }
+    if (index < 64) {
+        i32 selected = (aieditor->current_path->current_route->user_mask & ((u64)1 << 63)) != 0;
+        eduiMenuAddItem(menu, eduiItemCheckCreate(63, &AiEditorSaveMessageColoursPc, selected, 64,
+                                                  AiEditorSetRouteUsersPc, (char *)GameAIEveryonePc));
+    }
+}

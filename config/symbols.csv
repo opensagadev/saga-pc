@@ -3275,6 +3275,8 @@ address,symbol,size,ctype
 0x526350,_AiEditorRenameRoutePc,134,
 0x5263e0,_AiEditorRenameRouteCancelPc,12,
 0x5263f0,_routeEditor_cbRenameRouteMenu,209,
+0x5264d0,_AiEditorRouteUsersCancelPc,12,
+0x5264e0,_AiEditorSetRouteUsersPc,114,
 0x526560,_routeEditor_cbRouteUsers,327,
 0x526800,?pathEditorCreateSpecialRouteData@@YAXPAUAIPATH_PC@@PAUAI_PATH_BUILD_PATH_PC@@PATvariptr_u@@2@Z,2382,
 0x527150,_AiEditorClearMainMenuPc,37,
@@ -15017,6 +15019,7 @@ address,symbol,size,ctype
 0x7600c0,??_C@_0M@LHMBEICA@Rename?5Node?$AA@,,char []
 0x7600d8,??_C@_0L@OEJGLLFA@Route?5Name?$AA@,,char []
 0x7600e4,??_C@_0N@KCAGEFDP@Rename?5Route?$AA@,,char []
+0x7600f4,??_C@_0BD@DGAHFINH@Select?5route?5users?$AA@,,char []
 0x760140,??_C@_09GIOMJGNE@AREA?5?$CC?$CFs?$CC?$AA@,,char []
 0x76014c,??_C@_09MCFNLF@AUTOMATIC?$AA@,,char []
 0x760158,??_C@_0BG@JDFBDODJ@Activation?5Difficulty?$AA@,,char []
