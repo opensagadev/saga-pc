@@ -453,3 +453,36 @@ f32 __cdecl Condition_EitherPlayerPushingSpinnerPc(AISYS_PC *system, AISCRIPTPRO
     }
     return 0.0f;
 }
+
+STATIC_ASSERT(offsetof(GAMEOBJECT, jump_variant_state) == 0xe32);
+STATIC_ASSERT(offsetof(GAMEOBJECT, animation_speed_multiplier) == 0x1034);
+STATIC_ASSERT(offsetof(AIPACKET_PC, path_info) + offsetof(AIPATHINFO_PC, flags) == 0x166);
+f32 __cdecl Condition_HoverPhasePc(AISYS_PC *system, AISCRIPTPROCESS_PC *process, AIPACKET_PC *packet, char *name,
+                                   void *argument) {
+    if (packet != NULL && packet->owner != NULL)
+        return (f32)packet->owner->objptr->jump_variant_state;
+    return 0.0f;
+}
+f32 __cdecl Condition_AnimSpeedMulPc(AISYS_PC *system, AISCRIPTPROCESS_PC *process, AIPACKET_PC *packet, char *name,
+                                     void *argument) {
+    if (packet != NULL && packet->owner != NULL && packet->owner->objptr != NULL)
+        return packet->owner->objptr->animation_speed_multiplier;
+    return 1.0f;
+}
+void *__cdecl Condition_AIOverrideControlInitPc(AISYS_PC *system, char *name, AISCRIPT_PC *script) {
+    if (name != NULL && GetNamedGameObjectCallback != NULL)
+        return GetNamedGameObjectCallback(system, name);
+    return NULL;
+}
+f32 __cdecl Condition_AIOverrideControlPc(AISYS_PC *system, AISCRIPTPROCESS_PC *process, AIPACKET_PC *packet,
+                                          char *name, void *argument) {
+    GAMEOBJECT *object = (GAMEOBJECT *)argument;
+    if (object == NULL) {
+        if (packet == NULL || packet->owner == NULL)
+            return 0.0f;
+        object = packet->owner;
+    }
+    if ((object->flags_1fc_word & 0x100) != 0)
+        return 1.0f;
+    return 0.0f;
+}
