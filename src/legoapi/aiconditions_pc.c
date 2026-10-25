@@ -586,3 +586,30 @@ f32 __cdecl Condition_IsSetAlivePc(AISYS_PC *system, AISCRIPTPROCESS_PC *process
         return 1.0f;
     return 0.0f;
 }
+
+extern i32 gizbuildit_gizmotype_id;
+extern i32 blowup_gizmotype_id;
+STATIC_ASSERT(offsetof(GIZBUILDIT_PC, build_state) == 0x6d);
+void *__cdecl Condition_BuildItCompleteInitPc(AISYS_PC *system, char *name, AISCRIPT_PC *script) {
+    return GizmoFindByName(WORLD->gizmo_sys, gizbuildit_gizmotype_id, name);
+}
+f32 __cdecl Condition_BuildItCompletePc(AISYS_PC *system, AISCRIPTPROCESS_PC *process, AIPACKET_PC *packet, char *name,
+                                        void *argument) {
+    GIZMO_PC *gizmo = (GIZMO_PC *)argument;
+    GIZBUILDIT_PC *buildit;
+    if (gizmo != NULL) {
+        buildit = (GIZBUILDIT_PC *)gizmo->object;
+        if (buildit != NULL && buildit->build_state == 2)
+            return 1.0f;
+    }
+    return 0.0f;
+}
+void *__cdecl Condition_BlowupBlownupInitPc(AISYS_PC *system, char *name, AISCRIPT_PC *script) {
+    return GizmoFindByName(WORLD->gizmo_sys, blowup_gizmotype_id, name);
+}
+f32 __cdecl Condition_BlowupBlownupPc(AISYS_PC *system, AISCRIPTPROCESS_PC *process, AIPACKET_PC *packet, char *name,
+                                      void *argument) {
+    if (argument != NULL && GizmoGetOutput(WORLD->gizmo_sys, argument, 0, 1) != 0)
+        return 1.0f;
+    return 0.0f;
+}
