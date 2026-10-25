@@ -707,3 +707,33 @@ f32 __cdecl Condition_GotLocatorSetPc(AISYS_PC *system, AISCRIPTPROCESS_PC *proc
 void *__cdecl Condition_IsVisibleInitPc(AISYS_PC *system, char *name, AISCRIPT_PC *script) {
     return name;
 }
+
+typedef struct AI_CONDITION_TURRET_PC {
+    u8 unknown_000[0x13a];
+    u16 flags;
+} AI_CONDITION_TURRET_PC;
+STATIC_ASSERT(offsetof(AI_CONDITION_TURRET_PC, flags) == 0x13a);
+STATIC_ASSERT(sizeof(AI_CONDITION_TURRET_PC) == 0x13c);
+extern i32 turret_gizmotype_id;
+void *__cdecl Condition_TurretAliveInitPc(AISYS_PC *system, char *name, AISCRIPT_PC *script) {
+    GIZMO_PC *gizmo;
+    void *turret;
+    gizmo = GizmoFindByName(WORLD->gizmo_sys, turret_gizmotype_id, name);
+    if (gizmo != NULL) {
+        turret = gizmo->object;
+        if (turret != NULL)
+            return turret;
+    }
+    return NULL;
+}
+f32 __cdecl Condition_TurretAlivePc(AISYS_PC *system, AISCRIPTPROCESS_PC *process, AIPACKET_PC *packet, char *name,
+                                    void *argument) {
+    AI_CONDITION_TURRET_PC *turret = (AI_CONDITION_TURRET_PC *)argument;
+    u16 flags;
+    if (turret != NULL) {
+        memcpy(&flags, &turret->flags, sizeof(flags));
+        if ((flags & 0x30) == 0)
+            return 1.0f;
+    }
+    return 0.0f;
+}
