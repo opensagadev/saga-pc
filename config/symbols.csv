@@ -6549,6 +6549,8 @@ address,symbol,size,ctype
 0x0061e240,_eduicbRenderNumber,366,"i32 __cdecl(eduimenu_s *,eduiitem_s *,i32,i32,i32,i32)"
 0x0061e3b0,_eduicbRenderTextSelector,371,"i32 __cdecl(eduimenu_s *,eduiitem_s *,i32,i32,i32,i32)"
 0x0061e6b0,_NuKeyToAscii,50,"i32 __cdecl (u32, i32)"
+0x0061ea40,_eduicbProcessSeparator,3,"i32 __cdecl(eduimenu_s *,eduiitem_s *,f32,FRAME_PAD_PC *)"
+0x0061ea50,_eduicbRenderSeparator,201,"i32 __cdecl(eduimenu_s *,eduiitem_s *,i32,i32,i32,i32)"
 0x61eb60,_eduicbItemExpanderClose,88,
 0x0061ebc0,_eduicbMenuOpenAllexpanders,71,void __cdecl(eduimenu_s *)
 0x61ec10,_eduicbMenuCloseAllexpanders,40,
@@ -6632,6 +6634,7 @@ address,symbol,size,ctype
 0x625150,_eduiItemSliderCreate,233,
 0x625240,_eduiItemSliderCreateInt,96,
 0x006252a0,_eduiItemNumberCreate,71,"eduiitem_s * __cdecl(u32,void *,i32,void *,f32,f32,f32,char *)"
+0x00626290,_eduiItemSeparatorCreate,132,"eduiitem_s * __cdecl(u32,const void *)"
 0x626b30,_eduicbCancelMessageMenu,25,
 0x626b50,_eduiMenuRender,1602,
 0x6271a0,_eduiSetActiveMenu,68,

@@ -518,3 +518,52 @@ extern "C" i32 __cdecl eduicbRenderTextSelector(eduimenu_s *unused_menu, eduiite
                            selector->options[(i32)selector->slider.value]);
     return height;
 }
+
+extern "C" const char EduiSourcePathPc[52];
+
+struct EduiSeparatorViewPc {
+    eduiitem_s base;
+    i32(__cdecl *interact)(edui_interact_s *);
+};
+STATIC_ASSERT(sizeof(EduiSeparatorViewPc) == 76);
+STATIC_ASSERT(offsetof(EduiSeparatorViewPc, interact) == 0x48);
+
+extern "C" i32 __cdecl eduicbProcessSeparator(eduimenu_s *unused_menu, eduiitem_s *unused_item, f32 unused_delta_time,
+                                              FRAME_PAD_PC *unused_pad) {
+    return 0;
+}
+
+extern "C" i32 __cdecl eduicbRenderSeparator(eduimenu_s *unused_menu, eduiitem_s *item, i32 x, i32 y, i32 width,
+                                             i32 unused_selected) {
+    NuQFntHeight((VUFNT *)edui_font);
+    NuQFntBaseline((VUFNT *)edui_font);
+    i32 skip_draw = edui_donotdraw;
+    item->x = x;
+    item->y = y;
+    if (skip_draw == 0) {
+        NuRndrRect2di(x << 4, y << 3, width << 4, 64, item->colours[2 + item->highlighted], (NUMTL *)uimtls[ui_bgmtl]);
+        if (edui_donotdraw == 0)
+            NuRndrLine2di((x + 4) << 4, (y << 3) + 32, ((x + width) << 4) - 64, (y << 3) + 32, (i32)0xff000000,
+                          (NUMTL *)uimtls[ui_bgmtl]);
+    }
+    return 8;
+}
+
+extern "C" eduiitem_s *__cdecl eduiItemSeparatorCreate(u32 data, const void *colours) {
+    EduiSeparatorViewPc *item = (EduiSeparatorViewPc *)NuAlloc(sizeof(EduiSeparatorViewPc), EduiSourcePathPc, 0x1362);
+    if (item != NULL) {
+        memset(item, 0, sizeof(*item));
+        item->base.data = data;
+        item->base.type = 18;
+        memcpy(item->base.colours, colours, sizeof(item->base.colours));
+        item->base.highlighted = 0;
+        item->base.text_alignment = 0x40;
+        item->base.selection_group = 0;
+        item->base.process = eduicbProcessSeparator;
+        item->base.render = eduicbRenderSeparator;
+        item->base.destroy = eduicbItemDestroy;
+        item->interact = NULL;
+        return &item->base;
+    }
+    return NULL;
+}
