@@ -35118,3 +35118,9 @@ extern "C" {
     void(__cdecl *GameAISaveFn)(AIPATHSYS_PC *) = NULL;
     extern const char AiEditorDatedBackupFormatPc[32] = "ai_backups\\%s.%d_%d_%d_%d_%d_%d";
 }
+
+#pragma section(".bss$GameAISYSRebuildFromEditorDataFn", read, write)
+extern "C" {
+    __declspec(allocate(".bss$GameAISYSRebuildFromEditorDataFn")) void(__cdecl *GameAISYSRebuildFromEditorDataFn)(
+        AISYS_PC *, VARIPTR *, VARIPTR *) = NULL;
+}

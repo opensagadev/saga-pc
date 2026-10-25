@@ -23790,6 +23790,7 @@ address,symbol,size,ctype
 0x009238f8,_AISysSpecialNodeCallback,4,AISYS_SPECIAL_NODE_CALLBACK_PC
 0x009238fc,_APIOBJECTFromObjIDFn,4,APIOBJECT_FROM_ID_PC
 0x923904,_aieditor,4,struct AIEDITOR_RENDER_STATE *
+0x923908,_GameAISYSRebuildFromEditorDataFn,,"void (__cdecl *)(AISYS_PC *, VARIPTR *, VARIPTR *)"
 0x92390c,_GameAISaveFn,,void (__cdecl *)(struct AIPATHSYS_PC *)
 0x0092391c,_PreparingForSpecialMoveFn,4,AI_PREPARING_SPECIAL_MOVE_PC
 0x00923920,_MidSpecialMoveFn,4,AI_MID_SPECIAL_MOVE_PC
