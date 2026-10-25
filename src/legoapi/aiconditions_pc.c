@@ -801,3 +801,31 @@ f32 __cdecl Condition_HintCompletePc(AISYS_PC *system, AISCRIPTPROCESS_PC *proce
         return 1.0f;
     return 0.0f;
 }
+
+f32 __cdecl Condition_LocatorRangeYPc(AISYS_PC *system, AISCRIPTPROCESS_PC *process, AIPACKET_PC *packet, char *name,
+                                      void *argument) {
+    AILOCATOR_PC *locator = (AILOCATOR_PC *)argument;
+    if (packet != NULL && packet->owner != NULL) {
+        if (locator == NULL)
+            locator = process->locator;
+        if (locator != NULL) {
+            f64 difference = (f64)packet->owner->position.y - (f64)locator->position.y;
+            return (f32)difference;
+        }
+    }
+    return 0.0f;
+}
+
+void *__cdecl Condition_LocatorOnScreenInitPc(AISYS_PC *system, char *name, AISCRIPT_PC *script) {
+    return AIPathFindLocator(system, name);
+}
+
+f32 __cdecl Condition_LocatorOnScreenPc(AISYS_PC *system, AISCRIPTPROCESS_PC *process, AIPACKET_PC *packet, char *name,
+                                        void *argument) {
+    AILOCATOR_PC *locator = (AILOCATOR_PC *)argument;
+    if (locator == NULL)
+        locator = process->locator;
+    if (locator != NULL && NuCameraClipTestSphere(&locator->position, 0.0f, &NuMtxSetIdentityTemplate) == 0)
+        return 1.0f;
+    return 0.0f;
+}
