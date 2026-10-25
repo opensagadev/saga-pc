@@ -110,3 +110,20 @@ PC_NUFADEGROUP *__cdecl NuFadeObjCreateMtx(NUSPECIALHANDLE *source, NUMTX *matri
     group->active = 0;
     return NULL;
 }
+
+void __cdecl NuFadeObjAngleTerrain(NUMTX *matrix) {
+    NUVEC position;
+    NUVEC angles;
+    matrix->m31 = NewShadow(&matrix->translation, 0.0f, 5.0f, 0);
+    angles.x = (f32)NuAtan2D(ShadNorm.z, ShadNorm.y);
+    angles.z = (f32)-NuAtan2D(ShadNorm.x, NuFsqrt(ShadNorm.y * ShadNorm.y + ShadNorm.z * ShadNorm.z));
+    position.x = matrix->m30;
+    position.y = matrix->m31;
+    position.z = matrix->m32;
+    matrix->m30 = matrix->m31 = matrix->m32 = 0.0f;
+    NuMtxRotateZ(matrix, (NUANG)angles.z);
+    NuMtxRotateX(matrix, (NUANG)angles.x);
+    matrix->m30 = position.x;
+    matrix->m31 = position.y;
+    matrix->m32 = position.z;
+}
