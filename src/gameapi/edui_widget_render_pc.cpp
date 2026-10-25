@@ -393,3 +393,64 @@ static void EduiDrawGradientSpanPc(i32 x, i32 y, i32 width, i32 height, u32 firs
         NuRndrGradRect2di(left, y << 3, right - left, height << 3, colours, (NUMTL *)uimtls[ui_bgmtl]);
     }
 }
+
+static void eduiHSVToRGB(f32 hue, f32 saturation, f32 value, f32 &red, f32 &green, f32 &blue);
+
+extern "C" void __cdecl eduiGradStageSetHSV(edui_gradient_node_s *stage, f32 hue, f32 saturation, f32 value) {
+    f32 red, green, blue;
+    eduiHSVToRGB(hue, saturation, value, red, green, blue);
+    red = (f32)(red * 255.0);
+    green = (f32)(green * 255.0);
+    blue = (f32)(blue * 255.0);
+    stage->colour = (u32)red | ((u32)green << 8) | ((u32)blue << 16) | 0x80000000u;
+    stage->hue = hue;
+    stage->saturation = saturation;
+    stage->value = value;
+}
+
+static void eduiHSVToRGB(f32 hue, f32 saturation, f32 value, f32 &red, f32 &green, f32 &blue) {
+    if (saturation == 0.0f) {
+        blue = green = red = value;
+    } else {
+        if (hue == 360.0f)
+            hue = 0.0f;
+        hue /= 60.0;
+        i32 sector = static_cast<i32>(NuFloor(hue));
+        f32 fraction = hue - sector;
+        f32 low = (1.0f - saturation) * value;
+        f32 falling = (1.0f - saturation * fraction) * value;
+        f32 rising = (1.0f - (1.0f - fraction) * saturation) * value;
+        switch (sector) {
+            case 0:
+                red = value;
+                green = rising;
+                blue = low;
+                break;
+            case 1:
+                red = falling;
+                green = value;
+                blue = low;
+                break;
+            case 2:
+                red = low;
+                green = value;
+                blue = rising;
+                break;
+            case 3:
+                red = low;
+                green = falling;
+                blue = value;
+                break;
+            case 4:
+                red = rising;
+                green = low;
+                blue = value;
+                break;
+            case 5:
+                red = value;
+                green = low;
+                blue = falling;
+                break;
+        }
+    }
+}

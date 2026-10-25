@@ -6504,6 +6504,7 @@ address,symbol,size,ctype
 0x617e30,_edmainExtCamera,19,
 0x617e70,_edmainGetCursorEnabled,6,
 0x617f80,_edmainQueryLocVec,6,NUVEC *__cdecl(void)
+0x00618180,?eduiHSVToRGB@@YAXMMMAAM00@Z,328,"private HSV conversion; three f32 inputs and three RGB output references; no original linkage claim"
 0x618310,?EduiPrintAlignedTextPc@@YAXPAXHHHPADZZ,197,"void(void *, i32, i32, i32, char *, ...)"
 0x00618920,?EduiDrawGradientSpanPc@@YAXHHHHIIMM@Z,148,"ordinary private C++ colour-span renderer; native colours ECX/EAX and six stack words"
 0x618c30,_eduiInitMaterials,418,
