@@ -3255,6 +3255,7 @@ address,symbol,size,ctype
 0x5263f0,_routeEditor_cbRenameRouteMenu,209,
 0x526560,_routeEditor_cbRouteUsers,327,
 0x526800,?pathEditorCreateSpecialRouteData@@YAXPAUAIPATH_PC@@PAUAI_PATH_BUILD_PATH_PC@@PATvariptr_u@@2@Z,2382,
+0x527390,_AiEditorSaveCloseSelectionPc,37,
 0x527460,_aieditor_AddMessage,135,
 0x527620,_antinodeEditor_AntinodeMoved,185,
 0x527740,_antinodeEditor_UpdateAntiNodesOnPlatforms,176,
@@ -14967,6 +14968,8 @@ address,symbol,size,ctype
 0x00760c20,_AICharacterInitialiseName,11,const char [11]
 0x760c2c,??_C@_06FCGCPEED@?$CFs?4bak?$AA@,7,const char[7]
 0x760c34,_AiEditorDatedBackupFormatPc,32,const char[32]
+0x760cd0,??_C@_0EA@NJPLHKLK@Make?5sure?5there?5is?5a?5folder?5call@,64,const char[64]
+0x760d10,??_C@_0P@EMGNAMLC@AI?5Save?5FAILED?$AA@,15,const char[15]
 0x760dc8,??_C@_07KHIHFBFN@Options?$AA@,8,char []
 0x760dd0,__real@3fefae1480000000,8,const f64
 0x7610bc,??_C@_0BD@HPIJGHPH@TerrainCamInActive?$AA@,19,const char[]
@@ -20724,6 +20727,7 @@ address,symbol,size,ctype
 0x00801c8c,_AIMovementInstructionPositiveThreshold,4,f32
 0x00801c90,_AIMovementInstructionNegativeThreshold,4,f32
 0x00801c94,_new_retreat,4,i32
+0x801cb4,_AiEditorSaveMessageColoursPc,,struct eduiiattr_s
 0x801cc4,_aiEditor_LocatorWidth,4,f32
 0x801d54,_AIPathDefaultChecks,4,i32
 0x00801dd0,??_R0?AVNetListenerInterface@@@8,35,

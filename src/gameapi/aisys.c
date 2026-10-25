@@ -13163,3 +13163,40 @@ i32 __cdecl aieditor_Save(void) {
     EdFileClose();
     return 1;
 }
+
+static eduiiattr_s AiEditorSaveMessageColoursPc = {0x80000000, 0x80ff0000, 0x80808080, 0x80404040};
+STATIC_ASSERT(sizeof(AiEditorSaveMessageColoursPc) == 16);
+STATIC_ASSERT(offsetof(edui_sel_s, selected) == 0x4c);
+STATIC_ASSERT(offsetof(edui_sel_s, held) == 0x50);
+
+static void __cdecl AiEditorSaveCloseSelectionPc(eduimenu_s *menu, eduiitem_s *item, u32 value) {
+    (void)menu;
+    (void)item;
+    (void)value;
+    if (aieditor->main_menu != NULL) {
+        eduiMenuDestroy(aieditor->main_menu);
+        aieditor->main_menu = NULL;
+    }
+}
+
+void __cdecl aieditor_cbSave(eduimenu_s *parent, eduiitem_s *item, u32 value) {
+    eduimenu_s *menu;
+    char message[128];
+    (void)item;
+    (void)value;
+    if (aieditor_Save() != 0) {
+        if (aieditor->main_menu != NULL) {
+            eduiMenuDestroy(aieditor->main_menu);
+            aieditor->main_menu = NULL;
+        }
+    } else {
+        menu = eduiMenuCreate(0x78, 0x5a, 0x1b8, 0xfa, ed_fnt, NULL, "AI Save FAILED");
+        if (menu != NULL) {
+            sprintf(message, "Make sure there is a folder called \"%s\" in your level directory",
+                    ((AI_EDITOR_SAVE_OWNER_PC *)aieditor)->second_directory);
+            eduiMenuAddItem(
+                menu, eduiItemSelCreate(1, &AiEditorSaveMessageColoursPc, 0, 0, AiEditorSaveCloseSelectionPc, message));
+            eduiMenuAttach(parent, menu);
+        }
+    }
+}
