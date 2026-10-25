@@ -14502,6 +14502,11 @@ address,symbol,size,ctype
 0x75e718,??_C@_09HKHGLEHE@AI_rancor?$AA@,10,char []
 0x75e724,??_C@_0O@FBPNPHPG@float_skiff_2?$AA@,14,char []
 0x75e734,??_C@_09KODIKCNI@Boba_Dead?$AA@,10,char []
+0x75e740,??_C@_05OFIJLNDE@decks?$AA@,,const char[6]
+0x75e748,??_C@_08JHGNECCO@Speaker1?$AA@,,const char[9]
+0x75e754,??_C@_09BKBMGHDP@Speaker11?$AA@,,const char[10]
+0x75e760,??_C@_08LMEABBON@Speaker2?$AA@,,const char[9]
+0x75e76c,??_C@_09BIFKNJGG@Speaker21?$AA@,,const char[10]
 0x75e778,??_C@_0L@GALOKHNF@disco_base?$AA@,,const char[11]
 0x75e784,??_C@_0BC@BGLJJEAC@force_engine_lump?$AA@,,const char[18]
 0x75e798,??_C@_09BAEOCFCD@DiscoHelp?$AA@,,const char[10]
@@ -20568,6 +20573,7 @@ address,symbol,size,ctype
 0x8002bc,_DeathStarZapWidthBiasPc,,f32
 0x8002c0,_DeathStarZapEndWidthPc,,f32
 0x8002c4,_fire_clip_dist,4,i32
+0x8002e4,_SarlaccDiscoBaseOffsetPc,,f32
 0x800358,_EndorBattleAPartTimePc,4,f32
 0x80035c,_EndorBattleAPartTimerPc,4,f32
 0x00800440,_RopeCurveSubdivisionsPc,4,i32

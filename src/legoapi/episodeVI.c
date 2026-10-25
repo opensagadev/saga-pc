@@ -26,6 +26,24 @@ STATIC_ASSERT(offsetof(SARLACC_DISCO_PC, height) == 0x3e8);
 STATIC_ASSERT(offsetof(SARLACC_DISCO_PC, help_message) == 0x3f0);
 STATIC_ASSERT(offsetof(SARLACC_DISCO_PC, complete_message) == 0x3f4);
 STATIC_ASSERT(offsetof(SARLACC_DISCO_PC, state_message) == 0x3f8);
+typedef struct SARLACC_PACKET_VIEW_PC {
+    f32 height;
+    i16 off_mask, flash_mask, select_mask, on_mask, finish_mask, sound_mask;
+    u8 disco_active, reserved_11;
+    i16 completion_sound_played;
+} SARLACC_PACKET_VIEW_PC;
+STATIC_ASSERT(sizeof(SARLACC_PACKET_VIEW_PC) == 20);
+STATIC_ASSERT(offsetof(SARLACC_PACKET_VIEW_PC, off_mask) == 4);
+STATIC_ASSERT(offsetof(SARLACC_PACKET_VIEW_PC, flash_mask) == 6);
+STATIC_ASSERT(offsetof(SARLACC_PACKET_VIEW_PC, select_mask) == 8);
+STATIC_ASSERT(offsetof(SARLACC_PACKET_VIEW_PC, on_mask) == 0xa);
+STATIC_ASSERT(offsetof(SARLACC_PACKET_VIEW_PC, finish_mask) == 0xc);
+STATIC_ASSERT(offsetof(SARLACC_PACKET_VIEW_PC, sound_mask) == 0xe);
+STATIC_ASSERT(offsetof(SARLACC_PACKET_VIEW_PC, disco_active) == 0x10);
+STATIC_ASSERT(offsetof(SARLACC_PACKET_VIEW_PC, completion_sound_played) == 0x12);
+#define SARLACC_PACKET ((SARLACC_PACKET_VIEW_PC *)sarlaccb_netpacket)
+f32 SarlaccDiscoBaseOffsetPc = -0.12f;
+
 static SARLACC_DISCO_PC sarlaccdisco = {0};
 NUSPECIALHANDLE SarlaccLevSpecialPc[7] = {0};
 void *SarlaccLevelBuilditsPc[2] = {0};
@@ -181,6 +199,87 @@ void __cdecl JabbasPalaceE_Panel(WORLDINFO *world) {
             DrawBossHitPoints(LevGameObject[0]);
         else
             DrawBossHitPoints(NULL);
+    }
+}
+
+void __cdecl SarlaccPitB_SpecialUpdate(WORLDINFO *world) {
+    i32 index;
+    u32 bit;
+    NUSPECIALHANDLE *shown;
+    NUVEC *position;
+    NUINSTANIM_TIME_VIEW *animation;
+    (void)world;
+    for (index = 0; index < sarlaccdisco.count; ++index) {
+        NuSpecialSetVisibility(&sarlaccdisco.off[index], 0);
+        NuSpecialSetVisibility(&sarlaccdisco.flash[index], 0);
+        NuSpecialSetVisibility(&sarlaccdisco.select[index], 0);
+        NuSpecialSetVisibility(&sarlaccdisco.on[index], 0);
+        NuSpecialSetVisibility(&sarlaccdisco.finish[index], 0);
+        if (netclient)
+            sarlaccdisco.height = SeekValF(sarlaccdisco.height, SARLACC_PACKET->height, 8.0f);
+        else
+            SARLACC_PACKET->height = sarlaccdisco.height;
+        bit = 1u << index;
+        shown = NULL;
+        if (SARLACC_PACKET->off_mask & bit)
+            shown = &sarlaccdisco.off[index];
+        else if (SARLACC_PACKET->flash_mask & bit)
+            shown = &sarlaccdisco.flash[index];
+        else if (SARLACC_PACKET->select_mask & bit)
+            shown = &sarlaccdisco.select[index];
+        else if (SARLACC_PACKET->on_mask & bit)
+            shown = &sarlaccdisco.on[index];
+        else if (SARLACC_PACKET->finish_mask & bit)
+            shown = &sarlaccdisco.finish[index];
+        if (shown != NULL) {
+            NuSpecialSetVisibility(shown, 1);
+            position = NuSpecialGetDrawPos(shown);
+            if (position != NULL) {
+                position->y = sarlaccdisco.height;
+                NuSpecialSetDrawPos(shown, position);
+            }
+        }
+        position = NuSpecialGetDrawPos(&LevHSpecial[1]);
+        if (position != NULL) {
+            position->y = SarlaccDiscoBaseOffsetPc + sarlaccdisco.height;
+            NuSpecialSetDrawPos(&LevHSpecial[1], position);
+        }
+        if (SARLACC_PACKET->sound_mask & bit)
+            PlaySfx("Kam_DiscoFloorPanelOn", &NuSpecialGetDrawMtx(&sarlaccdisco.on[index])->translation);
+    }
+    if (SARLACC_PACKET->disco_active != 0) {
+        SetGizAIMessage(gizaimessagesys, "DiscoComplete", 1.0f, sarlaccdisco.complete_message);
+        PlayRadio("Speaker2", "Speaker21", 1);
+        PlayRadio("Speaker1", "Speaker11", 1);
+        PlayRadio("decks", "decks", 1);
+        if (SarlaccObstMirrorBallPc != NULL)
+            GizObstacle_PlayForwards((GIZOBSTACLE *)SarlaccObstMirrorBallPc->object);
+        if (NuSpecialExistsFn(&SarlaccLevSpecialPc[0]))
+            NuSpecialSetVisibility(&SarlaccLevSpecialPc[0], 1);
+        if (NuSpecialExistsFn(&SarlaccLevSpecialPc[1]))
+            NuSpecialSetVisibility(&SarlaccLevSpecialPc[1], 1);
+        if (NuSpecialExistsFn(&SarlaccLevSpecialPc[4])) {
+            animation = (NUINSTANIM_TIME_VIEW *)NuSpecialGetInstAnim(&SarlaccLevSpecialPc[4]);
+            if (animation != NULL)
+                animation->flags |= 1;
+        }
+        if (NuSpecialExistsFn(&SarlaccLevSpecialPc[5]) && NuSpecialExistsFn(&SarlaccLevSpecialPc[6])) {
+            animation = (NUINSTANIM_TIME_VIEW *)NuSpecialGetInstAnim(&SarlaccLevSpecialPc[5]);
+            if (animation != NULL)
+                animation->flags |= 1;
+            animation = (NUINSTANIM_TIME_VIEW *)NuSpecialGetInstAnim(&SarlaccLevSpecialPc[6]);
+            if (animation != NULL)
+                animation->flags |= 1;
+        }
+        if (SARLACC_PACKET->completion_sound_played == 0) {
+            PlaySfx("Kam_DiscoFloorPanelDone", NuSpecialGetDrawPos(&sarlaccdisco.off[0]));
+            SARLACC_PACKET->completion_sound_played = 1;
+        }
+    } else {
+        PlayRadio("Speaker2", "Speaker21", 0);
+        PlayRadio("Speaker1", "Speaker11", 0);
+        PlayRadio("decks", "decks", 0);
+        SARLACC_PACKET->completion_sound_played = 0;
     }
 }
 
