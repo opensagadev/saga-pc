@@ -43,7 +43,8 @@ static i32 MenuUpdateTitleFadePc(MENU *menu) {
                        (f32)Game.options_save.music_volume / 10.0f);
             FinishLoop(2);
             ResetTimer(&GameTimer, 0.0f);
-            menu->menu_time = menu->time_04 = 0.0f;
+            menu->menu_time = 0.0f;
+            menu->time_04 = 0.0f;
             newgamealpha = 0.0f;
             newgamefade = 1;
             newgamewait = 0.5f;
