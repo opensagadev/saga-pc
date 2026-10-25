@@ -35170,3 +35170,8 @@ extern "C" {
     __declspec(allocate(".data$AiEditorModeWorkingPc")) AI_EDITOR_MODE_BANK_PC AiEditorModeBankPc = {};
     __declspec(allocate(".data$AiEditorModeWorkingPc")) void(__cdecl *AiEditorMovePlayersCallbackPc)(NUVEC *) = NULL;
 }
+
+#pragma section(".data$AiEditorAntinodeModeWorkingPc", read, write)
+extern "C" {
+    __declspec(allocate(".data$AiEditorAntinodeModeWorkingPc")) i32 AiEditorAntinodeModeIdPc = -1;
+}

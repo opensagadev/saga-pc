@@ -3284,6 +3284,7 @@ address,symbol,size,ctype
 0x526800,?pathEditorCreateSpecialRouteData@@YAXPAUAIPATH_PC@@PAUAI_PATH_BUILD_PATH_PC@@PATvariptr_u@@2@Z,2382,
 0x527150,_AiEditorClearMainMenuPc,37,
 0x5271a0,_AiEditorDisplayBit4Pc,29,
+0x5271e0,_AiEditorDisplayBit8Pc,30,
 0x527200,_AiEditorDisplayBit6Pc,29,
 0x527260,_AiEditorModeCancelPc,12,
 0x527270,_AiEditorModeSelectPc,63,
@@ -3294,7 +3295,11 @@ address,symbol,size,ctype
 0x527420,_AiEditorMovePlayersPc,60,
 0x527460,_aieditor_AddMessage,135,
 0x527620,_antinodeEditor_AntinodeMoved,185,
+0x5276e0,_AiEditorAntinodeGameFlagsPc,83,
 0x527740,_antinodeEditor_UpdateAntiNodesOnPlatforms,176,
+0x5277f0,_AiEditorAntinodeTypeCancelPc,12,
+0x527800,_AiEditorAntinodeTypeSetterPc,123,
+0x527880,_AiEditorAntinodeTypeMenuPc,210,
 0x528210,_antinodeEditorSaveData,567,
 0x5285f0,_creatureEditorSaveData,1273,
 0x528af0,_creatureEditor_IsSelectable,53,
@@ -3423,6 +3428,7 @@ address,symbol,size,ctype
 0x538820,_aieditor_Leave,216,
 0x5389a0,_locatorEditor_DeleteLocatorMenu,153,
 0x538d60,_aieditor_cbSave,235,
+0x538e50,_antinodeEditor_MainMenu,509,
 0x539050,_antinodeEditor_Process,2218,
 0x53ac10,_locatorEditor_MainMenu,614,
 0x53ae80,_locatorEditor_Process,2061,
@@ -14878,6 +14884,8 @@ address,symbol,size,ctype
 0x75f888,_MenuEffects4xFormatPc,7,const char[7]
 0x75f890,_MenuEffects2xFormatPc,7,const char[7]
 0x75f898,_MenuVideoCountdownFormatPc,9,const char[9]
+0x75f8a4,??_C@_09OLDPCBLI@Rectangle?$AA@,,char []
+0x75f8b0,??_C@_07HJKAPJOE@Ellipse?$AA@,,char []
 0x75f8b8,_AIRegistryTextPc0075f8b8,18,const char[18]
 0x75f8cc,_AIRegistryTextPc0075f8cc,14,const char[14]
 0x75f8dc,_AIRegistryTextPc0075f8dc,17,const char[17]
@@ -15036,6 +15044,7 @@ address,symbol,size,ctype
 0x7600e4,??_C@_0N@KCAGEFDP@Rename?5Route?$AA@,,char []
 0x7600f4,??_C@_0BD@DGAHFINH@Select?5route?5users?$AA@,,char []
 0x760108,??_C@_0BD@EEFDJAPK@Select?5Editor?5Mode?$AA@,,char []
+0x76011c,??_C@_0P@ILLMDKJC@Select?5AI?5Type?$AA@,,char []
 0x760140,??_C@_09GIOMJGNE@AREA?5?$CC?$CFs?$CC?$AA@,,char []
 0x76014c,??_C@_09MCFNLF@AUTOMATIC?$AA@,,char []
 0x760158,??_C@_0BG@JDFBDODJ@Activation?5Difficulty?$AA@,,char []
@@ -15105,8 +15114,12 @@ address,symbol,size,ctype
 0x760c64,??_C@_0BB@BOHJJGDJ@Delete?5locator?$DP?$DP?$AA@,,char []
 0x760cd0,??_C@_0EA@NJPLHKLK@Make?5sure?5there?5is?5a?5folder?5call@,64,const char[64]
 0x760d10,??_C@_0P@EMGNAMLC@AI?5Save?5FAILED?$AA@,15,const char[15]
+0x760d20,??_C@_0BJ@GAKJAFLA@Disbale?5direction?5memory?$AA@,,char []
+0x760d3c,??_C@_0BE@JHBIKI@Never?5On?5A?5Platform?$AA@,,char []
 0x760d50,??_C@_0M@OKAEJLIE@Snap?5Height?$AA@,,char []
 0x760d5c,??_C@_0P@IIJPPJCK@Stop?5Platforms?$AA@,,char []
+0x760d6c,??_C@_0BH@KKJNGFEI@Solid?5Antinode?5Display?$AA@,,char []
+0x760d84,??_C@_0BF@CACJDIJN@Select?5Antinode?5Type?$AA@,,char []
 0x760d9c,??_C@_0M@EAIMDLNA@Move?5Player?$AA@,,char []
 0x760da8,??_C@_0N@JLOPNNPD@Go?5To?5Player?$AA@,,char []
 0x760db8,??_C@_0N@GGGLBEOI@Save?5AI?5Data?$AA@,,char []
@@ -20904,9 +20917,11 @@ address,symbol,size,ctype
 0x00801c90,_AIMovementInstructionNegativeThreshold,4,f32
 0x00801c94,_new_retreat,4,i32
 0x801c9c,_AiEditorRouteModeIdPc,,i32
+0x801cac,_AiEditorAntinodeModeIdPc,,i32
 0x801cb4,_AiEditorSaveMessageColoursPc,,struct eduiiattr_s
 0x801cc4,_aiEditor_LocatorWidth,4,f32
 0x801cc8,_aiEditor_DrawYOffset,,f32
+0x801cd0,_AiEditorAntinodeTypeNamesPc,,const char *[3]
 0x801d54,_AIPathDefaultChecks,4,i32
 0x00801dd0,??_R0?AVNetListenerInterface@@@8,35,
 0x00801df4,??_R0?AVAINet@@@8,20,

@@ -15162,3 +15162,123 @@ eduimenu_s *__cdecl locatorEditor_DeleteLocatorMenu(void) {
     }
     return menu;
 }
+
+extern i32 AiEditorAntinodeModeIdPc;
+static const char *AiEditorAntinodeTypeNamesPc[3] = {"Circle", "Ellipse", "Rectangle"};
+STATIC_ASSERT(sizeof(AiEditorAntinodeTypeNamesPc) == 12);
+STATIC_ASSERT(sizeof(EDANTINODE_s) == 76);
+STATIC_ASSERT(offsetof(EDANTINODE_s, radius) == 0x14);
+STATIC_ASSERT(offsetof(EDANTINODE_s, special.scene) == 0x20);
+STATIC_ASSERT(offsetof(EDANTINODE_s, special.special) == 0x24);
+STATIC_ASSERT(offsetof(EDANTINODE_s, special.display_special) == 0x28);
+STATIC_ASSERT(offsetof(EDANTINODE_s, base_radius) == 0x40);
+STATIC_ASSERT(offsetof(EDANTINODE_s, base_height) == 0x44);
+STATIC_ASSERT(offsetof(EDANTINODE_s, game_flags) == 0x48);
+STATIC_ASSERT(offsetof(EDANTINODE_s, type) == 0x49);
+STATIC_ASSERT(offsetof(AIEDITOR_RENDER_STATE, mode_selection_42e9c) == 0x4381c);
+#define ANTINODE_MENU_PC ((EDANTINODE_s *)aieditor->mode_selection_42e9c)
+
+static void __cdecl AiEditorDisplayBit8Pc(eduimenu_s *menu, eduiitem_s *item, u32 event) {
+    (void)menu;
+    (void)event;
+    AiEditorDisplayOptionsPc = (AiEditorDisplayOptionsPc & ~256u) | (((u32)item->flags & 1) << 8);
+}
+
+static void __cdecl AiEditorAntinodeGameFlagsPc(eduimenu_s *menu, eduiitem_s *item, u32 event) {
+    EDANTINODE_s *selected;
+    (void)menu;
+    (void)event;
+    if (ANTINODE_MENU_PC != NULL) {
+        if ((ANTINODE_MENU_PC->game_flags & (u8)item->data) != 0)
+            ANTINODE_MENU_PC->game_flags &= ~(u8)item->data;
+        else
+            ANTINODE_MENU_PC->game_flags |= (u8)item->data;
+        selected = ANTINODE_MENU_PC;
+        if ((selected->game_flags & 0x80) != 0) {
+            selected->special.scene = NULL;
+            selected->special.special = NULL;
+            selected->special.display_special = NULL;
+        }
+    }
+}
+
+static void __cdecl AiEditorAntinodeTypeCancelPc(eduimenu_s *menu, eduimenu_s *child) {
+    (void)child;
+    eduiMenuDestroy(menu);
+}
+
+static void __cdecl AiEditorAntinodeTypeSetterPc(eduimenu_s *menu, eduiitem_s *item, u32 event) {
+    EDANTINODE_s *antinode = ANTINODE_MENU_PC;
+    i32 previous_type = antinode->type;
+    (void)menu;
+    (void)event;
+    if (antinode != NULL && item != NULL)
+        antinode->type = (u8)item->data;
+    if (ANTINODE_MENU_PC->type == 0) {
+        if (previous_type != 0) {
+            if (ANTINODE_MENU_PC->base_radius > ANTINODE_MENU_PC->base_height)
+                ANTINODE_MENU_PC->radius = ANTINODE_MENU_PC->base_radius;
+            else
+                ANTINODE_MENU_PC->radius = ANTINODE_MENU_PC->base_height;
+        }
+    } else if (previous_type == 0) {
+        ANTINODE_MENU_PC->base_height = ANTINODE_MENU_PC->radius;
+        ANTINODE_MENU_PC->base_radius = ANTINODE_MENU_PC->base_height;
+    }
+}
+
+static void __cdecl AiEditorAntinodeTypeMenuPc(eduimenu_s *parent, eduiitem_s *item, u32 event) {
+    eduimenu_s *menu;
+    i32 index;
+    (void)item;
+    (void)event;
+    if (ANTINODE_MENU_PC == NULL || LevelCharacterGlobalIDFn == NULL || GlobalCharacterNameFn == NULL)
+        return;
+    menu = eduiMenuCreate(220, 70, 240, 250, ed_fnt, AiEditorAntinodeTypeCancelPc, "Select AI Type");
+    if (menu == NULL)
+        return;
+    for (index = 0; index < 3; ++index) {
+        i32 selected = ANTINODE_MENU_PC->type == index;
+        eduiMenuAddItem(menu,
+                        eduiItemCheckCreate(index, &AiEditorSaveMessageColoursPc, selected, 1,
+                                            AiEditorAntinodeTypeSetterPc, (char *)AiEditorAntinodeTypeNamesPc[index]));
+        if (selected)
+            menu->selected = edui_last_item;
+        eduiMenuAttach(parent, menu);
+    }
+}
+
+eduimenu_s *__cdecl antinodeEditor_MainMenu(void) {
+    eduimenu_s *menu = eduiMenuCreate(200, 70, 240, 270, ed_fnt, AiEditorMessageCloseMenuPc, "Options");
+    if (menu == NULL)
+        return NULL;
+    eduiMenuAddItem(menu, eduiItemSelCreate(AiEditorAntinodeModeIdPc, &AiEditorSaveMessageColoursPc, 0, 0,
+                                            AiEditorModeMenuPc, "Select Editor Mode"));
+    eduiMenuAddItem(menu, eduiItemSelCreate(1, &AiEditorSaveMessageColoursPc, 0, 0, aieditor_cbSave, "Save AI Data"));
+    eduiMenuAddItem(
+        menu, eduiItemSelCreate(1, &AiEditorSaveMessageColoursPc, 0, 0, AiEditorCameraToPlayerPc, "Go To Player"));
+    eduiMenuAddItem(menu,
+                    eduiItemSelCreate(1, &AiEditorSaveMessageColoursPc, 0, 0, AiEditorMovePlayersPc, "Move Player"));
+    if (ANTINODE_MENU_PC != NULL)
+        eduiMenuAddItem(menu, eduiItemSelCreate(1, &AiEditorSaveMessageColoursPc, 0, 0, AiEditorAntinodeTypeMenuPc,
+                                                "Select Antinode Type"));
+    eduiMenuAddItem(menu,
+                    eduiItemToggleCreate(1, &AiEditorSaveMessageColoursPc, (i32)(AiEditorDisplayOptionsPc << 23) >> 31,
+                                         1, AiEditorDisplayBit8Pc, "Solid Antinode Display"));
+    eduiMenuAddItem(menu,
+                    eduiItemToggleCreate(1, &AiEditorSaveMessageColoursPc, (i32)(AiEditorDisplayOptionsPc << 25) >> 31,
+                                         2, AiEditorDisplayBit6Pc, "Stop Platforms"));
+    eduiMenuAddItem(menu,
+                    eduiItemToggleCreate(1, &AiEditorSaveMessageColoursPc, (i32)(AiEditorDisplayOptionsPc << 27) >> 31,
+                                         3, AiEditorDisplayBit4Pc, "Snap Height"));
+    if (ANTINODE_MENU_PC != NULL) {
+        eduiMenuAddItem(menu,
+                        eduiItemToggleCreate(0x80, &AiEditorSaveMessageColoursPc, ANTINODE_MENU_PC->game_flags >> 7, 4,
+                                             AiEditorAntinodeGameFlagsPc, "Never On A Platform"));
+        eduiMenuAddItem(menu,
+                        eduiItemToggleCreate(2, &AiEditorSaveMessageColoursPc, (ANTINODE_MENU_PC->game_flags >> 1) & 1,
+                                             5, AiEditorAntinodeGameFlagsPc, "Disbale direction memory"));
+    }
+    return menu;
+}
+#undef ANTINODE_MENU_PC
