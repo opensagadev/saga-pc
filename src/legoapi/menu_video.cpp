@@ -324,28 +324,44 @@ extern "C" void __cdecl MenuDrawEffectsPc(MENU *menu) {
         }
         DrawMenuEntryEx(menu, text, (u8)((MenuCanChangeMultisamplePc() ? 255 : 64) * MenuAlpha));
     }
-    if (!MenuPcStringsInitialized)
-        MenuPcStringsInit();
-    value = MenuPcStrings[((PCDeviceBackend.requested_multisample == 0 || PcWindowOptions.shadowmethod == 1) &&
-                           MenuVideoOptionsPc.shadows_enabled)
-                              ? 15
-                              : 16];
+    if ((PCDeviceBackend.requested_multisample == 0 || PcWindowOptions.shadowmethod == 1) &&
+        MenuVideoOptionsPc.shadows_enabled) {
+        if (!MenuPcStringsInitialized)
+            MenuPcStringsInit();
+        value = MenuPcStrings[15];
+    } else {
+        if (!MenuPcStringsInitialized)
+            MenuPcStringsInit();
+        value = MenuPcStrings[16];
+    }
     if (!MenuPcStringsInitialized)
         MenuPcStringsInit();
     NuSPrintf(text, ExtrasNameFormatPc, MenuPcStrings[32], value);
     DrawMenuEntryEx(
         menu, text,
         (u8)((PCDeviceBackend.requested_multisample == 0 || PcWindowOptions.shadowmethod == 1 ? 255 : 64) * MenuAlpha));
-    if (!MenuPcStringsInitialized)
-        MenuPcStringsInit();
-    value = MenuPcStrings[MenuVideoOptionsPc.bloom_enabled ? 15 : 16];
+    if (MenuVideoOptionsPc.bloom_enabled) {
+        if (!MenuPcStringsInitialized)
+            MenuPcStringsInit();
+        value = MenuPcStrings[15];
+    } else {
+        if (!MenuPcStringsInitialized)
+            MenuPcStringsInit();
+        value = MenuPcStrings[16];
+    }
     if (!MenuPcStringsInitialized)
         MenuPcStringsInit();
     NuSPrintf(text, ExtrasNameFormatPc, MenuPcStrings[33], value);
     DrawMenuEntryEx(menu, text, 255);
-    if (!MenuPcStringsInitialized)
-        MenuPcStringsInit();
-    value = MenuPcStrings[MenuVideoOptionsPc.speed_blur_enabled ? 15 : 16];
+    if (MenuVideoOptionsPc.speed_blur_enabled) {
+        if (!MenuPcStringsInitialized)
+            MenuPcStringsInit();
+        value = MenuPcStrings[15];
+    } else {
+        if (!MenuPcStringsInitialized)
+            MenuPcStringsInit();
+        value = MenuPcStrings[16];
+    }
     if (!MenuPcStringsInitialized)
         MenuPcStringsInit();
     NuSPrintf(text, ExtrasNameFormatPc, MenuPcStrings[35], value);
