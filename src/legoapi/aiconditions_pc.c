@@ -655,3 +655,32 @@ f32 __cdecl Condition_NumBaddiesThatCanSeePlayersPc(AISYS_PC *system, AISCRIPTPR
                                                     char *name, void *argument) {
     return (f32)nbaddies_can_see_players;
 }
+
+STATIC_ASSERT(offsetof(GAMEOBJECT, sock_position) + offsetof(SOCKPOSITION_PC, distance) == 0x69c);
+STATIC_ASSERT(offsetof(GAMEOBJECT, movement_spline_position) + offsetof(SPLINEPOS, finished) == 0xe6b);
+f32 __cdecl Condition_PlayerDistanceAlongSockPc(AISYS_PC *system, AISCRIPTPROCESS_PC *process, AIPACKET_PC *packet,
+                                                char *name, void *argument) {
+    if (player != NULL)
+        return player->sock_position.distance;
+    return 0.0f;
+}
+f32 __cdecl Condition_FurthestPlayerDistanceAlongSockPc(AISYS_PC *system, AISCRIPTPROCESS_PC *process,
+                                                        AIPACKET_PC *packet, char *name, void *argument) {
+    if (player != NULL) {
+        if (player2 != NULL && player2->sock_position.distance > player->sock_position.distance)
+            return player2->sock_position.distance;
+        return player->sock_position.distance;
+    }
+    return 0.0f;
+}
+f32 __cdecl Condition_FinishedSplinePc(AISYS_PC *system, AISCRIPTPROCESS_PC *process, AIPACKET_PC *packet, char *name,
+                                       void *argument) {
+    GAMEOBJECT *object;
+    if (packet != NULL && packet->owner != NULL && packet->owner->objptr != NULL) {
+        object = packet->owner->objptr;
+        if (object->movement_spline_position.spline != NULL && object->movement_spline_position.finished == 0)
+            return 0.0f;
+        return 1.0f;
+    }
+    return -1.0f;
+}
