@@ -173,9 +173,11 @@ extern "C" void __cdecl MenuUpdateEffectsPc(MENU *menu) {
                     index = 4;
                 else if (index >= 5)
                     index = 0;
-                while (!PCDeviceBackend.SupportsMultisamplePc(index)) {
-                    if (++index >= 5)
-                        index = 0;
+                if (!PCDeviceBackend.SupportsMultisamplePc(index)) {
+                    do {
+                        if (++index >= 5)
+                            index = 0;
+                    } while (!PCDeviceBackend.SupportsMultisamplePc(index));
                 }
                 PCDeviceBackend.requested_multisample = index;
             }
