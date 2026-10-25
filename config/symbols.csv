@@ -4952,12 +4952,12 @@ address,symbol,size,ctype
 0x59bd40,_PushCode,3127,"void __cdecl(GAMEOBJECT *, i32)"
 0x59c980,_WallShuffle_SetTargetMom,376,"i32 __cdecl(GAMEOBJECT *, u16)"
 0x59cb00,_ReleasePush,98,void __cdecl(GAMEOBJECT*)
-0x59cb90,_CreditsFindTypePc,66,
-0x59cbe0,_CreditsReadColourPc,173,
-0x59ccd0,_CreditsInitCreditPc,113,
+0x59cb90,?CreditsFindTypePc@@YAPAUcredit_type_pc_s@@PAD@Z,66,
+0x59cbe0,?CreditsReadColourPc@@YAXPAUnufpar_pc_s@@PAEH@Z,173,
+0x59ccd0,?CreditsInitCreditPc@@YAXPAUcredit_record_pc_s@@PADMMMEEEEEPATvariptr_u@@2@Z,113,
 0x59cd50,_Credits_Load,1196,"void __cdecl(WORLDINFO *, VARIPTR *, VARIPTR *)"
 0x59d200,_Credits_Init,51,void __cdecl(WORLDINFO *)
-0x59d240,_CreditsDrawListPc,524,
+0x59d240,?CreditsDrawListPc@@YAXPAUcredit_record_pc_s@@M@Z,524,
 0x59d450,_Credits_DrawPanel,23,void __cdecl(WORLDINFO *)
 0x59d470,_Credits_UpdateMenu,661,
 0x59d710,_Credits_GetInfo,49,"void __cdecl(f32 *, i32 *, f32 *)"

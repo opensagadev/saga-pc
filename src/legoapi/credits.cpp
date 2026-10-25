@@ -249,3 +249,68 @@ static void CreditsDrawListPc(CREDIT_RECORD_PC *credit, f32 time) {
 void __cdecl Credits_DrawPanel(WORLDINFO *world) {
     CreditsDrawListPc(CreditList, CreditsTime);
 }
+
+void __cdecl legoSetMusicVolume(f32);
+extern "C" void __cdecl MusicClearAll(void);
+extern "C" void __cdecl SoundKillAll(void);
+
+extern "C" void __cdecl Credits_UpdateMenu(MENU *menu) {
+    f32 volume = Game_OptionsSave != NULL ? GameSetMusicVolume(Game_OptionsSave) : 1.0f;
+    f32 previous_time = CreditsTime;
+    if (CreditsFlag != 0) {
+        f32 progress;
+        legoSetMusicVolume(0.0f);
+        CreditsTime += FRAMETIME;
+        if (CreditsFlag != 1) {
+            if (CreditsFlag != 2) {
+                if (CreditsTime >= 1.1f) {
+                    FADETYPE fade_type = {FADE_TYPE_STILL};
+                    NewLData = HUB_LDATA;
+                    FadeSys.SetFade(fade_type, 0);
+                }
+                progress = 1.0f - CreditsTime;
+                if (progress < 0.0f)
+                    progress = 0.0f;
+            } else {
+                if (CreditsTime >= 3.0f) {
+                    CreditsFlag = 3;
+                    CreditsTime = 0.0f;
+                }
+                progress = 1.0f;
+            }
+        } else {
+            if (previous_time < (f64)0.1f && CreditsTime >= (f64)0.1f) {
+                music_man.StopAll(0);
+                MusicClearAll();
+                SoundKillAll();
+            }
+            if (CreditsTime >= 1.0f) {
+                CreditsFlag = 2;
+                GameAudio_PlaySfx(0x2b, NULL, 0, 0);
+                progress = 1.0f;
+            } else {
+                progress = CreditsTime;
+            }
+        }
+        CreditsAlpha = NuTrigTable[((i32)((f64)progress * 16384.0) >> 1) & 0x7fff];
+    } else {
+        if (FadeSys.fade == 0.0f)
+            CreditsTime += FRAMETIME;
+        if (CreditsFinishedTime > 0.0f) {
+            CreditsFinishedTime += FRAMETIME;
+            if (CreditsFinishedTime >= 1.1f) {
+                CreditsFlag = 1;
+                CreditsAlpha = 0.0f;
+                CreditsTime = 0.0f;
+            }
+            if (CreditsAlpha > 0.0f) {
+                CreditsAlpha -= FRAMETIME;
+                if (CreditsAlpha < 0.0f)
+                    CreditsAlpha = 0.0f;
+            }
+        } else if ((menu->buttons_pressed & GAMEPAD_SKIP) != 0 || CreditsTime >= CreditsDurationPc) {
+            CreditsFinishedTime = 0.001f;
+        }
+        legoSetMusicVolume((f32)((f64)CreditsAlpha * volume));
+    }
+}
