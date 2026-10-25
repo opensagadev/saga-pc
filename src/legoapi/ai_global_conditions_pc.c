@@ -1452,3 +1452,19 @@ f32 __cdecl Condition_CharacterRangePc(AISYS_PC *system, AISCRIPTPROCESS_PC *pro
     }
     return 1000000000.0f;
 }
+
+void *__cdecl Condition_NodeRangeInitPc(AISYS_PC *system, char *name, AISCRIPT_PC *script) {
+    if (system != NULL && system->path_sys != NULL && system->path_sys->path_count != 0)
+        return AIPathFindNode(system, system->path_sys->active_path, name);
+    return NULL;
+}
+
+f32 __cdecl Condition_NodeRangePc(AISYS_PC *system, AISCRIPTPROCESS_PC *process, AIPACKET_PC *packet, char *name,
+                                  void *argument) {
+    AIPATHNODE_PC *node = (AIPATHNODE_PC *)argument;
+    if (packet != NULL && packet->owner != NULL && node != NULL) {
+        NUVEC difference;
+        return NuVecDist(&node->position, &packet->owner->position, &difference);
+    }
+    return FLT_MAX;
+}
