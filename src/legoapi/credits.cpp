@@ -102,7 +102,7 @@ void __cdecl Credits_Load(WORLDINFO *world, VARIPTR *buffer, VARIPTR *end) {
     CREDIT_RECORD_PC *previous = NULL;
     NUFPAR_PC *parser;
     CREDIT_TYPE_PC *type;
-    f32 y = 0.0f;
+    f32 y;
     i32 index;
     i32 component;
     CreditsSizePc = 0.0f;
@@ -115,14 +115,15 @@ void __cdecl Credits_Load(WORLDINFO *world, VARIPTR *buffer, VARIPTR *end) {
     NuStrCpy(filename, "stuff\\text\\");
     NuStrCat(filename, "english");
     NuStrCat(filename, "_credits.txt");
-    CreditList = (CREDIT_RECORD_PC *)GameBufferAlloc(buffer, end, 24000);
+    credit = (CREDIT_RECORD_PC *)GameBufferAlloc(buffer, end, 24000);
+    CreditList = credit;
     CreditCountPc = 0;
-    if (CreditList == NULL)
+    if (credit == NULL)
         return;
     parser = NuFParCreate(filename);
     if (parser == NULL)
         return;
-    credit = CreditList;
+    y = 0.0f;
     while (NuFParGetLine(parser)) {
         if (NuFParGetWord(parser)) {
             if (NuStrICmp(parser->word_buffer_ptr, "duration") == 0) {
