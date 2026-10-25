@@ -315,3 +315,86 @@ f32 __cdecl Condition_BeenTakenOverPc(AISYS_PC *system, AISCRIPTPROCESS_PC *proc
         return 1.0f;
     return 0.0f;
 }
+
+STATIC_ASSERT(offsetof(GAMEOBJECT, collision_contact_mask) == 0x1f0);
+STATIC_ASSERT(offsetof(GAMEOBJECT, field_280) == 0x280);
+STATIC_ASSERT(offsetof(GAMEOBJECT, character_context) == 0x7b5);
+STATIC_ASSERT(offsetof(GAMEOBJECT, flags_e24) == 0xe24);
+STATIC_ASSERT(offsetof(AIPACKET_PC, creature_index) == 0x138);
+
+void *__cdecl Condition_XPosInitPc(AISYS_PC *system, char *name, AISCRIPT_PC *script) {
+    if (name != NULL && system != NULL && GetNamedGameObjectCallback != NULL) {
+        APIOBJECT_PC *object = GetNamedGameObjectCallback(system, name);
+        if (object != NULL)
+            return object->owner;
+    }
+    return NULL;
+}
+
+f32 __cdecl Condition_XPosPc(AISYS_PC *system, AISCRIPTPROCESS_PC *process, AIPACKET_PC *packet, char *name,
+                             void *argument) {
+    GAMEOBJECT *object = (GAMEOBJECT *)argument;
+    if (object == NULL) {
+        if (packet == NULL || packet->owner == NULL)
+            return 0.0f;
+        object = packet->owner->objptr;
+        if (object == NULL)
+            return 0.0f;
+    }
+    return object->collision_position.x;
+}
+
+f32 __cdecl Condition_YPosPc(AISYS_PC *system, AISCRIPTPROCESS_PC *process, AIPACKET_PC *packet, char *name,
+                             void *argument) {
+    GAMEOBJECT *object = (GAMEOBJECT *)argument;
+    if (object == NULL) {
+        if (packet == NULL || packet->owner == NULL)
+            return 0.0f;
+        object = packet->owner->objptr;
+        if (object == NULL)
+            return 0.0f;
+    }
+    return object->collision_position.y;
+}
+
+f32 __cdecl Condition_ZPosPc(AISYS_PC *system, AISCRIPTPROCESS_PC *process, AIPACKET_PC *packet, char *name,
+                             void *argument) {
+    GAMEOBJECT *object = (GAMEOBJECT *)argument;
+    if (object == NULL) {
+        if (packet == NULL || packet->owner == NULL)
+            return 0.0f;
+        object = packet->owner->objptr;
+        if (object == NULL)
+            return 0.0f;
+    }
+    return object->collision_position.z;
+}
+
+f32 __cdecl Condition_CollidingPc(AISYS_PC *system, AISCRIPTPROCESS_PC *process, AIPACKET_PC *packet, char *name,
+                                  void *argument) {
+    if (packet != NULL && packet->owner != NULL &&
+        (packet->owner->collision_contact_mask[0] | packet->owner->collision_contact_mask[1]) != 0)
+        return 1.0f;
+    return 0.0f;
+}
+
+f32 __cdecl Condition_ContextPc(AISYS_PC *system, AISCRIPTPROCESS_PC *process, AIPACKET_PC *packet, char *name,
+                                void *argument) {
+    if (packet != NULL && packet->owner != NULL && packet->owner->objptr != NULL)
+        return (f32)(i32)packet->owner->objptr->character_context;
+    return -1.0f;
+}
+
+f32 __cdecl Condition_GotVictimPc(AISYS_PC *system, AISCRIPTPROCESS_PC *process, AIPACKET_PC *packet, char *name,
+                                  void *argument) {
+    if (packet != NULL && packet->owner != NULL && (packet->owner->flags_e24 & 1) != 0)
+        return 1.0f;
+    return 0.0f;
+}
+
+f32 __cdecl Condition_BeenSpawnedPc(AISYS_PC *system, AISCRIPTPROCESS_PC *process, AIPACKET_PC *packet, char *name,
+                                    void *argument) {
+    if (packet != NULL && packet->owner != NULL && packet->owner->field_280 == 0xff && packet->creature_index == 0xff)
+        return 1.0f;
+    return 0.0f;
+}
