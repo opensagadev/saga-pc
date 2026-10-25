@@ -35142,3 +35142,31 @@ extern "C" {
     __declspec(allocate(".data$AIPathConnectionViewsPc")) i32 AIPathConnectionTypeCountPc = 0;
     __declspec(allocate(".data$AIPathConnectionViewsPc")) AI_PATH_CONNECTION_TYPE_PC AIPathConnectionTypesPc[32] = {};
 }
+
+typedef struct AI_EDITOR_MODE_ENTRY_PC {
+    char name[32];
+    void(__cdecl *enter)(void);
+    eduimenu_s *(__cdecl *process)(FRAME_PAD_PC *);
+    void(__cdecl *draw)(i32, i32, f32, f32);
+    void(__cdecl *leave)(void);
+} AI_EDITOR_MODE_ENTRY_PC;
+typedef struct AI_EDITOR_MODE_BANK_PC {
+    AI_EDITOR_MODE_ENTRY_PC entries[8];
+    i16 count;
+    i16 current;
+} AI_EDITOR_MODE_BANK_PC;
+STATIC_ASSERT(sizeof(AI_EDITOR_MODE_ENTRY_PC) == 48);
+STATIC_ASSERT(offsetof(AI_EDITOR_MODE_ENTRY_PC, enter) == 32);
+STATIC_ASSERT(offsetof(AI_EDITOR_MODE_ENTRY_PC, process) == 36);
+STATIC_ASSERT(offsetof(AI_EDITOR_MODE_ENTRY_PC, draw) == 40);
+STATIC_ASSERT(offsetof(AI_EDITOR_MODE_ENTRY_PC, leave) == 44);
+STATIC_ASSERT(offsetof(AI_EDITOR_MODE_BANK_PC, count) == 384);
+STATIC_ASSERT(offsetof(AI_EDITOR_MODE_BANK_PC, current) == 386);
+STATIC_ASSERT(sizeof(AI_EDITOR_MODE_BANK_PC) == 388);
+#pragma section(".data$AiEditorModeWorkingPc", read, write)
+extern "C" {
+    __declspec(allocate(".data$AiEditorModeWorkingPc")) i32 AiEditorRouteModeIdPc = -1;
+    __declspec(allocate(".data$AiEditorModeWorkingPc")) u32 AiEditorDisplayOptionsPc = 0;
+    __declspec(allocate(".data$AiEditorModeWorkingPc")) AI_EDITOR_MODE_BANK_PC AiEditorModeBankPc = {};
+    __declspec(allocate(".data$AiEditorModeWorkingPc")) void(__cdecl *AiEditorMovePlayersCallbackPc)(NUVEC *) = NULL;
+}

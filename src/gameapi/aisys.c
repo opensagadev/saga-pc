@@ -14918,3 +14918,180 @@ void __cdecl routeEditor_cbRouteUsers(eduimenu_s *parent, eduiitem_s *item, u32 
                                                   AiEditorSetRouteUsersPc, (char *)GameAIEveryonePc));
     }
 }
+
+typedef struct AI_EDITOR_MODE_ENTRY_PC {
+    char name[32];
+    void(__cdecl *enter)(void);
+    eduimenu_s *(__cdecl *process)(FRAME_PAD_PC *);
+    void(__cdecl *draw)(i32, i32, f32, f32);
+    void(__cdecl *leave)(void);
+} AI_EDITOR_MODE_ENTRY_PC;
+typedef struct AI_EDITOR_MODE_BANK_PC {
+    AI_EDITOR_MODE_ENTRY_PC entries[8];
+    i16 count;
+    i16 current;
+} AI_EDITOR_MODE_BANK_PC;
+STATIC_ASSERT(sizeof(AI_EDITOR_MODE_ENTRY_PC) == 48);
+STATIC_ASSERT(offsetof(AI_EDITOR_MODE_ENTRY_PC, enter) == 32);
+STATIC_ASSERT(offsetof(AI_EDITOR_MODE_ENTRY_PC, process) == 36);
+STATIC_ASSERT(offsetof(AI_EDITOR_MODE_ENTRY_PC, draw) == 40);
+STATIC_ASSERT(offsetof(AI_EDITOR_MODE_ENTRY_PC, leave) == 44);
+STATIC_ASSERT(offsetof(AI_EDITOR_MODE_BANK_PC, count) == 384);
+STATIC_ASSERT(offsetof(AI_EDITOR_MODE_BANK_PC, current) == 386);
+STATIC_ASSERT(sizeof(AI_EDITOR_MODE_BANK_PC) == 388);
+extern i32 AiEditorRouteModeIdPc;
+extern u32 AiEditorDisplayOptionsPc;
+extern AI_EDITOR_MODE_BANK_PC AiEditorModeBankPc;
+extern void(__cdecl *AiEditorMovePlayersCallbackPc)(NUVEC *);
+STATIC_ASSERT(offsetof(AISYS_PC, scripts) == 0x1c);
+STATIC_ASSERT(offsetof(AISCRIPT_PC, name) == 8);
+STATIC_ASSERT(offsetof(AIEDITOR_RENDER_STATE, current_path) == 0x4868);
+STATIC_ASSERT(offsetof(EDAIPATH_s, current_node) == 0x20);
+STATIC_ASSERT(offsetof(AIEDITOR_RENDER_STATE, mode_selection_36930) == 0x371b0);
+STATIC_ASSERT(offsetof(AI_EDITOR_AREA_DRAW_OWNER_PC, selected) == 0x383c8);
+STATIC_ASSERT(offsetof(AIEDITOR_RENDER_STATE, current_locator) == 0x3cbe0);
+STATIC_ASSERT(offsetof(AIEDITOR_RENDER_STATE, mode_selection_42e9c) == 0x4381c);
+STATIC_ASSERT(offsetof(AIEDITOR_RENDER_STATE, camera_position) == 0x28);
+STATIC_ASSERT(offsetof(AISYS_PC, player_1) == 0x138c);
+STATIC_ASSERT(offsetof(APIOBJECT_PC, position) == 0x5c);
+
+char *__cdecl AIScriptNameFromIx(AISYS_PC *system, i32 index) {
+    i32 current = 0;
+    AISCRIPT_PC *script;
+    if (system != NULL) {
+        script = (AISCRIPT_PC *)NuLinkedListGetHead(&system->scripts);
+        while (script != NULL) {
+            if (current == index)
+                return script->name;
+            script = (AISCRIPT_PC *)NuLinkedListGetNext(&system->scripts, &script->link);
+            ++current;
+        }
+    }
+    script = (AISCRIPT_PC *)NuLinkedListGetHead(&global_aiscripts);
+    while (script != NULL) {
+        AISCRIPT_PC *local = NULL;
+        if (system != NULL) {
+            local = (AISCRIPT_PC *)NuLinkedListGetHead(&system->scripts);
+            while (local != NULL) {
+                if (NuStrICmp(script->name, local->name) == 0)
+                    break;
+                local = (AISCRIPT_PC *)NuLinkedListGetNext(&system->scripts, &local->link);
+            }
+        }
+        if (local == NULL) {
+            if (current == index)
+                return script->name;
+            ++current;
+        }
+        script = (AISCRIPT_PC *)NuLinkedListGetNext(&global_aiscripts, &script->link);
+    }
+    return NULL;
+}
+
+void __cdecl AiEditorChangeModePc(i32 mode) {
+    i16 previous = AiEditorModeBankPc.current;
+    AiEditorModeBankPc.current = (i16)mode;
+    if (aieditor != NULL && previous != (i16)mode) {
+        if (aieditor->current_path != NULL)
+            aieditor->current_path->current_node = NULL;
+        aieditor->mode_selection_36930 = NULL;
+        ((AI_EDITOR_AREA_DRAW_OWNER_PC *)aieditor)->selected = NULL;
+        aieditor->current_locator = NULL;
+        aieditor->mode_selection_42e9c = NULL;
+    }
+}
+
+static void __cdecl AiEditorDisplayBit4Pc(eduimenu_s *menu, eduiitem_s *item, u32 event) {
+    (void)menu;
+    (void)event;
+    AiEditorDisplayOptionsPc = (AiEditorDisplayOptionsPc & ~16u) | (((u32)item->flags & 1) << 4);
+}
+static void __cdecl AiEditorDisplayBit6Pc(eduimenu_s *menu, eduiitem_s *item, u32 event) {
+    (void)menu;
+    (void)event;
+    AiEditorDisplayOptionsPc = (AiEditorDisplayOptionsPc & ~64u) | (((u32)item->flags & 1) << 6);
+}
+static void __cdecl AiEditorModeCancelPc(eduimenu_s *menu, eduimenu_s *child) {
+    (void)child;
+    eduiMenuDestroy(menu);
+}
+static void __cdecl AiEditorModeSelectPc(eduimenu_s *menu, eduiitem_s *item, u32 event) {
+    (void)menu;
+    (void)event;
+    if ((u32)item->data < (u32)(i32)AiEditorModeBankPc.count) {
+        AiEditorChangeModePc(item->data);
+        AiEditorClearMainMenuPc();
+    }
+}
+static void __cdecl AiEditorModeMenuPc(eduimenu_s *parent, eduiitem_s *item, u32 event) {
+    eduimenu_s *menu;
+    i32 index;
+    (void)item;
+    (void)event;
+    menu = eduiMenuCreate(220, 70, 240, 250, ed_fnt, AiEditorModeCancelPc, "Select Editor Mode");
+    if (menu == NULL)
+        return;
+    for (index = 0; index < AiEditorModeBankPc.count; ++index) {
+        i32 selected = index == AiEditorModeBankPc.current;
+        eduiMenuAddItem(menu, eduiItemCheckCreate(index, &AiEditorSaveMessageColoursPc, selected, 1,
+                                                  AiEditorModeSelectPc, AiEditorModeBankPc.entries[index].name));
+        if (selected)
+            menu->selected = edui_last_item;
+        eduiMenuAttach(parent, menu);
+    }
+}
+static void __cdecl AiEditorCameraToPlayerPc(eduimenu_s *menu, eduiitem_s *item, u32 event) {
+    (void)menu;
+    (void)item;
+    (void)event;
+    if (aieditor->ai_system != NULL && aieditor->ai_system->player_1 != NULL)
+        edcamSetPos(&aieditor->ai_system->player_1->position);
+    AiEditorClearMainMenuPc();
+}
+static void __cdecl AiEditorMovePlayersPc(eduimenu_s *menu, eduiitem_s *item, u32 event) {
+    (void)menu;
+    (void)item;
+    (void)event;
+    if (AiEditorMovePlayersCallbackPc != NULL)
+        AiEditorMovePlayersCallbackPc(&aieditor->camera_position);
+    AiEditorClearMainMenuPc();
+}
+
+eduimenu_s *__cdecl locatorEditor_MainMenu(void) {
+    eduimenu_s *menu = eduiMenuCreate(200, 70, 240, 270, ed_fnt, AiEditorMessageCloseMenuPc, "Options");
+    if (menu == NULL)
+        return NULL;
+    eduiMenuAddItem(menu, eduiItemSelCreate(AiEditorRouteModeIdPc, &AiEditorSaveMessageColoursPc, 0, 0,
+                                            AiEditorModeMenuPc, "Select Editor Mode"));
+    eduiMenuAddItem(menu, eduiItemSelCreate(1, &AiEditorSaveMessageColoursPc, 0, 0, aieditor_cbSave, "Save AI Data"));
+    eduiMenuAddItem(
+        menu, eduiItemSelCreate(1, &AiEditorSaveMessageColoursPc, 0, 0, AiEditorCameraToPlayerPc, "Go To Player"));
+    eduiMenuAddItem(menu,
+                    eduiItemSelCreate(1, &AiEditorSaveMessageColoursPc, 0, 0, AiEditorMovePlayersPc, "Move Player"));
+    if (aieditor->current_locator != NULL && AIScriptNameFromIx(aieditor->ai_system, 0) != NULL)
+        eduiMenuAddItem(menu, eduiItemSelCreate(1, &AiEditorSaveMessageColoursPc, 0, 0,
+                                                locatorEditor_cbRenameLocatorMenu, "Rename Locator"));
+    eduiMenuAddItem(menu, eduiItemSelCreate(1, &AiEditorSaveMessageColoursPc, 0, 0, locatorEditor_cbCreateLocatorSet,
+                                            "Create Locator Set"));
+    if (NuLinkedListGetHead(&aieditor->locator_sets) != NULL) {
+        eduiMenuAddItem(menu, eduiItemSelCreate(1, &AiEditorSaveMessageColoursPc, 0, 0,
+                                                locatorEditor_cbSelectLocatorSet, "Select Locator Set"));
+        if (aieditor->current_locator_set != NULL) {
+            eduiMenuAddItem(menu, eduiItemSelCreate(0, &AiEditorSaveMessageColoursPc, 0, 0,
+                                                    locatorEditor_cbDeleteLocatorSet, "Delete Locator Set"));
+            eduiMenuAddItem(menu, eduiItemSelCreate(1, &AiEditorSaveMessageColoursPc, 0, 0,
+                                                    locatorEditor_cbRenameLocatorSetMenu, "Rename Locator Set"));
+            eduiMenuAddItem(menu, eduiItemSelCreate(1, &AiEditorSaveMessageColoursPc, 0, 0,
+                                                    locatorEditor_cbAddLocatorsByName, "Add Locators To Set By Name"));
+            eduiMenuAddItem(menu, eduiItemSelCreate(0, &AiEditorSaveMessageColoursPc, 0, 0,
+                                                    locatorEditor_cbEmptyLocatorSet, "Empty Locator Set"));
+        }
+    }
+    eduiMenuAddItem(menu,
+                    eduiItemToggleCreate(1, &AiEditorSaveMessageColoursPc, (i32)(AiEditorDisplayOptionsPc << 25) >> 31,
+                                         3, AiEditorDisplayBit6Pc, "Stop Platforms"));
+    eduiMenuAddItem(menu,
+                    eduiItemToggleCreate(1, &AiEditorSaveMessageColoursPc, (i32)(AiEditorDisplayOptionsPc << 27) >> 31,
+                                         2, AiEditorDisplayBit4Pc, "Snap Height"));
+    return menu;
+}

@@ -3053,6 +3053,7 @@ address,symbol,size,ctype
 0x00512fc0,_AIStateFind,78,"AISTATE_PC *__cdecl (const char *, AISCRIPT_PC *)"
 0x00513010,_AIScriptFind,229,"AISCRIPT_PC *__cdecl (AISYS_PC *, const char *, i32, i32, i32)"
 0x513100,_AIScriptCopyStringPc,93,
+0x513160,_AIScriptNameFromIx,199,
 0x00513230,_AiParseExpressionNameLoopup,103,
 0x005132a0,_AiParseExpression,78,
 0x005132f0,_ConditionsParseFinalise,254,
@@ -3239,6 +3240,7 @@ address,symbol,size,ctype
 0x520450,_InitFn_MidSpecialMove,10,
 0x520460,_InitFn_GetNamedAPIObject,10,
 0x520470,_InitFn_GetAICreatureOrigin,10,
+0x5204e0,_AiEditorChangeModePc,102,
 0x520600,_NuSpecialFindByPlatformID,163,
 0x520ee0,_areaEditorSaveData,256,
 0x521160,_AiEditorRenameAreaPc,146,
@@ -3280,8 +3282,15 @@ address,symbol,size,ctype
 0x526560,_routeEditor_cbRouteUsers,327,
 0x526800,?pathEditorCreateSpecialRouteData@@YAXPAUAIPATH_PC@@PAUAI_PATH_BUILD_PATH_PC@@PATvariptr_u@@2@Z,2382,
 0x527150,_AiEditorClearMainMenuPc,37,
+0x5271a0,_AiEditorDisplayBit4Pc,29,
+0x527200,_AiEditorDisplayBit6Pc,29,
+0x527260,_AiEditorModeCancelPc,12,
+0x527270,_AiEditorModeSelectPc,63,
+0x5272b0,_AiEditorModeMenuPc,161,
 0x527360,_AiEditorMessageCloseMenuPc,37,
 0x527390,_AiEditorSaveCloseSelectionPc,37,
+0x5273c0,_AiEditorCameraToPlayerPc,72,
+0x527420,_AiEditorMovePlayersPc,60,
 0x527460,_aieditor_AddMessage,135,
 0x527620,_antinodeEditor_AntinodeMoved,185,
 0x527740,_antinodeEditor_UpdateAntiNodesOnPlatforms,176,
@@ -3410,6 +3419,7 @@ address,symbol,size,ctype
 0x538820,_aieditor_Leave,216,
 0x538d60,_aieditor_cbSave,235,
 0x539050,_antinodeEditor_Process,2218,
+0x53ac10,_locatorEditor_MainMenu,614,
 0x53ae80,_locatorEditor_Process,2061,
 0x53d3d0,?Write16@NETMESSAGE_PC@@QAEXPBF@Z,59,void __thiscall NETMESSAGE_PC::Write16(const i16 *)
 0x53d5d0,??0NETMESSAGE_PC@@QAE@I@Z,66,NETMESSAGE_PC::NETMESSAGE_PC(u32)
@@ -15020,6 +15030,7 @@ address,symbol,size,ctype
 0x7600d8,??_C@_0L@OEJGLLFA@Route?5Name?$AA@,,char []
 0x7600e4,??_C@_0N@KCAGEFDP@Rename?5Route?$AA@,,char []
 0x7600f4,??_C@_0BD@DGAHFINH@Select?5route?5users?$AA@,,char []
+0x760108,??_C@_0BD@EEFDJAPK@Select?5Editor?5Mode?$AA@,,char []
 0x760140,??_C@_09GIOMJGNE@AREA?5?$CC?$CFs?$CC?$AA@,,char []
 0x76014c,??_C@_09MCFNLF@AUTOMATIC?$AA@,,char []
 0x760158,??_C@_0BG@JDFBDODJ@Activation?5Difficulty?$AA@,,char []
@@ -15088,8 +15099,17 @@ address,symbol,size,ctype
 0x760c34,_AiEditorDatedBackupFormatPc,32,const char[32]
 0x760cd0,??_C@_0EA@NJPLHKLK@Make?5sure?5there?5is?5a?5folder?5call@,64,const char[64]
 0x760d10,??_C@_0P@EMGNAMLC@AI?5Save?5FAILED?$AA@,15,const char[15]
+0x760d50,??_C@_0M@OKAEJLIE@Snap?5Height?$AA@,,char []
+0x760d5c,??_C@_0P@IIJPPJCK@Stop?5Platforms?$AA@,,char []
+0x760d9c,??_C@_0M@EAIMDLNA@Move?5Player?$AA@,,char []
+0x760da8,??_C@_0N@JLOPNNPD@Go?5To?5Player?$AA@,,char []
+0x760db8,??_C@_0N@GGGLBEOI@Save?5AI?5Data?$AA@,,char []
 0x760dc8,??_C@_07KHIHFBFN@Options?$AA@,8,char []
 0x760dd0,__real@3fefae1480000000,8,const f64
+0x760e68,??_C@_0BC@IKHMFJMJ@Empty?5Locator?5Set?$AA@,,char []
+0x760e7c,??_C@_0BM@MABHGHEJ@Add?5Locators?5To?5Set?5By?5Name?$AA@,,char []
+0x760e98,??_C@_0BD@JJNGIDJL@Delete?5Locator?5Set?$AA@,,char []
+0x760eac,??_C@_0BD@KJOCJGPG@Create?5Locator?5Set?$AA@,,char []
 0x7610bc,??_C@_0BD@HPIJGHPH@TerrainCamInActive?$AA@,19,const char[]
 0x7610d0,??_C@_0N@MPOMBABH@ManCam_MAX_Y?$AA@,13,const char[]
 0x7610e0,??_C@_0N@NGPHCBFG@ManCam_MAX_X?$AA@,13,const char[]
@@ -20876,6 +20896,7 @@ address,symbol,size,ctype
 0x00801c8c,_AIMovementInstructionPositiveThreshold,4,f32
 0x00801c90,_AIMovementInstructionNegativeThreshold,4,f32
 0x00801c94,_new_retreat,4,i32
+0x801c9c,_AiEditorRouteModeIdPc,,i32
 0x801cb4,_AiEditorSaveMessageColoursPc,,struct eduiiattr_s
 0x801cc4,_aiEditor_LocatorWidth,4,f32
 0x801cc8,_aiEditor_DrawYOffset,,f32
@@ -23879,8 +23900,10 @@ address,symbol,size,ctype
 0x921efc,_MenuSaveResultShownPc,4,i32
 0x921f00,_MenuLoadResultShownPc,4,i32
 0x00921f08,_global_aiscripts,8,NULISTHDR
+0x921f70,_AiEditorDisplayOptionsPc,,u32
 0x921f84,_AiEditorPathScratchCursorPc,,void *
 0x921f88,_AiEditorPathScratchEndPc,,void *
+0x921f8c,_AiEditorModeBankPc,,AI_EDITOR_MODE_BANK_PC
 0x922110,_AIScriptConstantRecordsPc,,AISCRIPT_CONST_RECORD_PC[8]
 0x922230,_AiRndrCullDistance,4,f32
 0x00922234,_aiscript_load_buffer,4,VARIPTR *
@@ -23945,6 +23968,7 @@ address,symbol,size,ctype
 0x923938,_AIPathConnectionTypesPc,,
 0x9242c0,_iterator_count,,i32
 0x9242c4,_distance_tables,,f32 ***
+0x9242d4,_AiEditorMovePlayersCallbackPc,,
 0x009242e4,_sockpar_buffer_ptr,4,VARIPTR *
 0x9242e8,_SocksOnPreviousStatusPc,,u32[2]
 0x9242f0,_temp_sockmidpos,12,NUVEC
