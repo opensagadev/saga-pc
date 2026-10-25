@@ -1072,3 +1072,35 @@ STATIC_ASSERT(offsetof(GAMEOBJECT, takeover_target) == 0xea4);
 STATIC_ASSERT(offsetof(GAMEOBJECT, takeover_source) == 0xcd0);
 STATIC_ASSERT(offsetof(GAMEOBJECT, character_context) == 0x7b5);
 STATIC_ASSERT(sizeof(GAMEOBJECT) == 0x10d8);
+
+void *__cdecl Condition_CharacterTypeExistsInitPc(AISYS_PC *system, char *name, AISCRIPT_PC *script) {
+    i32 index;
+    if (name != NULL && system != NULL) {
+        for (index = 0; index < CHARCOUNT; ++index) {
+            if (NuStrICmp(CDataList[index].name, name) == 0)
+                return (void *)index;
+        }
+    }
+    return (void *)-1;
+}
+
+f32 __cdecl Condition_CharacterTypeExistsPc(AISYS_PC *system, AISCRIPTPROCESS_PC *process, AIPACKET_PC *packet,
+                                            char *name, void *argument) {
+    i32 count;
+    i32 index;
+    GAMEOBJECT *object;
+    if (argument == NULL)
+        return 0.0f;
+    count = HIGHGAMEOBJECT;
+    index = 0;
+    if (count > 0) {
+        object = Obj;
+        do {
+            if ((i16)object->id == (i32)argument)
+                return 1.0f;
+            ++index;
+            ++object;
+        } while (index < count);
+    }
+    return 0.0f;
+}
