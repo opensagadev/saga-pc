@@ -237,8 +237,10 @@ void __cdecl GameObjectRotation(GAMEOBJECT *object, i32 mode) {
                 object->suspension[index].height = object->lower_position.y;
                 object->suspension[index].velocity = drop / FRAMETIME;
             } else {
+                f64 gravity_delta;
                 object->suspension[index].height = drop + object->suspension[index].height;
-                object->suspension[index].velocity = (f32)(FRAMETIME * -5.0 + object->suspension[index].velocity);
+                gravity_delta = (f64)FRAMETIME * -5.0;
+                object->suspension[index].velocity = (f32)(gravity_delta + object->suspension[index].velocity);
                 object->suspension[index].height += object->suspension[index].velocity * FRAMETIME;
                 if (object->suspension[index].height < height) {
                     object->suspension[index].height = height;

@@ -11511,6 +11511,7 @@ address,symbol,size,ctype
 0x755b00,??_C@_0L@DPAJPPBB@CRATE_PART?$AA@,11,const char[11]
 0x755b0c,??_C@_09OIFHBGMD@CRATE_POP?$AA@,10,const char[10]
 0x00755b18,__real@4004000000000000,8,const f64
+0x755b20,__real@c014000000000000,,const f64
 0x755b28,_PlayerBeenDeactivatedPc,16,const char[16]
 0x755b38,_KillPartsAtatExplodeTextPc,9,char[9]
 0x00755b48,__real@402e000000000000,8,f64
