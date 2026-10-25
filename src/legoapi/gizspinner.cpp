@@ -954,3 +954,19 @@ extern "C" {
         return 0;
     }
 }
+
+STATIC_ASSERT(offsetof(GIZSPINNER_s, special) == 0x50);
+STATIC_ASSERT(offsetof(GIZSPINNER_s, flags) == 0xac);
+STATIC_ASSERT(sizeof(GIZSPINNER_s) == 0x304);
+extern "C" GIZSPINNER_s *__cdecl GizSpinner_FindBySpecialName(void *world_ptr, char *name) {
+    WORLDINFO *world = (WORLDINFO *)world_ptr;
+    if (world != NULL && name != NULL) {
+        for (i32 index = 0; index < world->current_level->max_spinners; ++index) {
+            GIZSPINNER_s *spinner = &world->spinners[index];
+            if (spinner != NULL && (spinner->flags & 1) != 0 &&
+                NuStrCmp(NuSpecialGetName((NUSPECIALHANDLE *)&spinner->special), name) == 0)
+                return spinner;
+        }
+    }
+    return NULL;
+}

@@ -3768,6 +3768,7 @@ address,symbol,size,ctype
 0x553aa0,_GizSpinner_Load,1953,
 0x554250,_GizSpinner_ReserveBufferSpace,252,
 0x554350,_GizSpinners_InitTerrain,579,
+0x5545a0,_GizSpinner_FindBySpecialName,131,"GIZSPINNER_s * __cdecl(void *, char *)"
 0x554630,_GizSpinner_Draw,520,
 0x554840,_GizSpinner_PanelDraw,1,"void __cdecl(void *, void *, f32)"
 0x554850,_GizSpinner_GetMaxGizmos,18,i32 __cdecl(void *)

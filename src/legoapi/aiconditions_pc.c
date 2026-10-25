@@ -438,3 +438,18 @@ f32 __cdecl Condition_ForcePushingPc(AISYS_PC *system, AISCRIPTPROCESS_PC *proce
         return 1.0f;
     return 0.0f;
 }
+
+struct GIZSPINNER_s *__cdecl GizSpinner_FindBySpecialName(void *world_ptr, char *name);
+void *__cdecl Condition_EitherPlayerPushingSpinnerInitPc(AISYS_PC *system, char *name, AISCRIPT_PC *script) {
+    return GizSpinner_FindBySpecialName(WORLD, name);
+}
+f32 __cdecl Condition_EitherPlayerPushingSpinnerPc(AISYS_PC *system, AISCRIPTPROCESS_PC *process, AIPACKET_PC *packet,
+                                                   char *name, void *argument) {
+    if (argument != NULL) {
+        if (player != NULL && player->character_context == 0x28 && player->grapple == argument)
+            return 1.0f;
+        if (player2 != NULL && player2->character_context == 0x28 && player2->grapple == argument)
+            return 1.0f;
+    }
+    return 0.0f;
+}
