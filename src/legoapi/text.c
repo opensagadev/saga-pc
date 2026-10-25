@@ -1509,3 +1509,47 @@ void __cdecl Text_LoadFont(char *path, VARIPTR *buffer, VARIPTR *end) {
     Text_AppFont = LoadGameFont(path, path, buffer, end, 1);
     LoadButtonFont("stuff\\text\\Buttons", NULL, buffer, end, 0);
 }
+
+f32 MatrixTextScalePc = 0.004f;
+
+void __cdecl MatrixText(VUFNT *font, unsigned char *text, f32 x, f32 y, f32 z, f32 x_scale, f32 y_scale, u32 alignment,
+                        u32 colour, NUMTX *matrix, i32 camera_relative) {
+    u16 encoded[512];
+    f32 width, height;
+    NUMTX draw_matrix;
+    if (text == NULL || text[0] == '\0' || MenuStopDraw != 0)
+        return;
+    if (font == NULL)
+        font = QFont3DZ;
+    if (font == NULL)
+        return;
+    NuQFntPushPrintMode(4);
+    NuQFntPushCoordinateSystem(4);
+    NuQFntSet(font);
+    MatrixTextStringEncode(font, text, encoded);
+    NuQFntSetScale(font, x_scale * MatrixTextScalePc, y_scale * MatrixTextScalePc);
+    width = NuQFntPrintLenW(font, encoded);
+    height = NuQFntHeight(font);
+    y -= height * 0.5;
+    if ((alignment & 4) != 0)
+        y -= height * 0.5;
+    else if ((alignment & 1) != 0)
+        y += height * 0.5;
+    if ((alignment & 2) == 0) {
+        if ((alignment & 8) != 0)
+            x -= width;
+        else
+            x -= width * 0.5;
+    }
+    if (camera_relative != 0)
+        NuMtxMul(&draw_matrix, matrix, NuCameraGetMtx());
+    else
+        draw_matrix = *matrix;
+    NuQFntSetMtx(font, &draw_matrix);
+    NuQFntSetColour(font, colour);
+    NuQFntSetICGap(font, 2.0f);
+    NuQFntMove(font, x, y, z);
+    NuQFntPrintW(font, encoded);
+    NuQFntPopCoordinateSystem();
+    NuQFntPopPrintMode();
+}

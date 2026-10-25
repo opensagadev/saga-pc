@@ -20709,6 +20709,7 @@ address,symbol,size,ctype
 0x008015b4,_QFONTSCALEX,4,f32
 0x8015b8,_QFONTSCALEY,,f32
 0x8015bc,_SmartTextDefaultWidthPc,,f32
+0x8015c0,_MatrixTextScalePc,,f32
 0x8015c4,_text_preset_r,,u8[10]
 0x8015d0,_text_preset_g,,u8[10]
 0x8015dc,_text_preset_b,,u8[10]
