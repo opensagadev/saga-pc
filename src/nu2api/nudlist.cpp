@@ -1360,18 +1360,79 @@ typedef struct display_scene_name_pc_s {
 STATIC_ASSERT(offsetof(DISPLAY_SCENE_NAME_PC, name) == 0);
 extern "C" void __cdecl NuDisplayListCreateDynMtlList_candidate(VARIPTR *buffer, VARIPTR end) {
     i32 i;
-    NUDISPLAYLISTITEM *material_item;
+    const char *name;
+    u32 block, geometry;
+    u32 m0, m1, m2, m3, m4, m5;
+    u32 g0, g1, g2, g3, g4, g5, step;
+    NUDISPLAYLISTITEM *first;
     NuDisplayListCreate(&PCDynamicDisplayScene, buffer, end, PCMaterialBlockItemCount * 600, 600, 0, 0, 600, 0, 0);
+    name = PCDynamicDisplaySceneNamePointer;
+    geometry = (u32)PCMaterialGeometryItemIndex;
     PCDynamicDisplayScene.sort_count = 0;
-    ((DISPLAY_SCENE_NAME_PC *)&PCDynamicDisplayScene)->name = PCDynamicDisplaySceneNamePointer;
-    material_item = (NUDISPLAYLISTITEM *)PCDynamicDisplayScene.items;
-    for (i = 0; i < 600; ++i) {
-        NUDISPLAYLIST *list = PCDynamicDisplayScene.material_lists[i];
-        list->mtl_item = material_item;
-        list->dynamic_geometry = material_item + PCMaterialGeometryItemIndex;
-        list->scene = &PCDynamicDisplayScene;
-        list->material_id = i;
-        material_item += PCMaterialBlockItemCount;
+    ((DISPLAY_SCENE_NAME_PC *)&PCDynamicDisplayScene)->name = name;
+    block = (u32)PCMaterialBlockItemCount;
+    m0 = 0;
+    m1 = block * 16;
+    m2 = block * 32;
+    m3 = block * 48;
+    m4 = block * 64;
+    m5 = block * 80;
+    g0 = geometry * 16;
+    g2 = (geometry + block * 2) * 16;
+    g3 = (geometry + block * 3) * 16;
+    g4 = (geometry + block * 4) * 16;
+    g5 = (geometry + block * 5) * 16;
+    step = block * 96;
+    g1 = ((u32)PCMaterialGeometryItemIndex + block) * 16;
+    for (i = 0; i < 600; i += 6) {
+        PCDynamicDisplayScene.material_lists[i]->mtl_item =
+            (NUDISPLAYLISTITEM *)((u8 *)PCDynamicDisplayScene.items + m0);
+        PCDynamicDisplayScene.material_lists[i]->dynamic_geometry =
+            (NUDISPLAYLISTITEM *)((u8 *)PCDynamicDisplayScene.items + g0);
+        PCDynamicDisplayScene.material_lists[i]->scene = &PCDynamicDisplayScene;
+        PCDynamicDisplayScene.material_lists[i]->material_id = i;
+        PCDynamicDisplayScene.material_lists[i + 1]->mtl_item =
+            (NUDISPLAYLISTITEM *)((u8 *)PCDynamicDisplayScene.items + m1);
+        PCDynamicDisplayScene.material_lists[i + 1]->dynamic_geometry =
+            (NUDISPLAYLISTITEM *)((u8 *)PCDynamicDisplayScene.items + g1);
+        PCDynamicDisplayScene.material_lists[i + 1]->scene = &PCDynamicDisplayScene;
+        PCDynamicDisplayScene.material_lists[i + 1]->material_id = i + 1;
+        PCDynamicDisplayScene.material_lists[i + 2]->mtl_item =
+            (NUDISPLAYLISTITEM *)((u8 *)PCDynamicDisplayScene.items + m2);
+        PCDynamicDisplayScene.material_lists[i + 2]->dynamic_geometry =
+            (NUDISPLAYLISTITEM *)((u8 *)PCDynamicDisplayScene.items + g2);
+        PCDynamicDisplayScene.material_lists[i + 2]->scene = &PCDynamicDisplayScene;
+        PCDynamicDisplayScene.material_lists[i + 2]->material_id = i + 2;
+        PCDynamicDisplayScene.material_lists[i + 3]->mtl_item =
+            (NUDISPLAYLISTITEM *)((u8 *)PCDynamicDisplayScene.items + m3);
+        PCDynamicDisplayScene.material_lists[i + 3]->dynamic_geometry =
+            (NUDISPLAYLISTITEM *)((u8 *)PCDynamicDisplayScene.items + g3);
+        PCDynamicDisplayScene.material_lists[i + 3]->scene = &PCDynamicDisplayScene;
+        PCDynamicDisplayScene.material_lists[i + 3]->material_id = i + 3;
+        PCDynamicDisplayScene.material_lists[i + 4]->mtl_item =
+            (NUDISPLAYLISTITEM *)((u8 *)PCDynamicDisplayScene.items + m4);
+        PCDynamicDisplayScene.material_lists[i + 4]->dynamic_geometry =
+            (NUDISPLAYLISTITEM *)((u8 *)PCDynamicDisplayScene.items + g4);
+        PCDynamicDisplayScene.material_lists[i + 4]->scene = &PCDynamicDisplayScene;
+        PCDynamicDisplayScene.material_lists[i + 4]->material_id = i + 4;
+        PCDynamicDisplayScene.material_lists[i + 5]->mtl_item =
+            (NUDISPLAYLISTITEM *)((u8 *)PCDynamicDisplayScene.items + m5);
+        PCDynamicDisplayScene.material_lists[i + 5]->dynamic_geometry =
+            (NUDISPLAYLISTITEM *)((u8 *)PCDynamicDisplayScene.items + g5);
+        PCDynamicDisplayScene.material_lists[i + 5]->scene = &PCDynamicDisplayScene;
+        PCDynamicDisplayScene.material_lists[i + 5]->material_id = i + 5;
+        m0 += step;
+        m1 += step;
+        m2 += step;
+        m3 += step;
+        m4 += step;
+        m5 += step;
+        g0 += step;
+        g1 += step;
+        g2 += step;
+        g3 += step;
+        g4 += step;
+        g5 += step;
     }
     buffer->addr = (buffer->addr + 15) & ~15u;
     PCDisplayMaterialAddCount = 0;
@@ -1386,17 +1447,16 @@ extern "C" void __cdecl NuDisplayListCreateDynMtlList_candidate(VARIPTR *buffer,
     buffer->addr += 600;
     memset(PCDisplayMaterialReferenceCounts, 0, 600);
     memset(PCDisplayMaterialStreamUsed, 0, 600);
-    buffer->addr = (buffer->addr + 15) & ~15u;
-    PCDisplayMaterialStreamStart = *buffer;
-    buffer->addr += 0x12c00;
+    PCDisplayMaterialStreamStart.addr = (buffer->addr + 15) & ~15u;
+    buffer->addr = ((buffer->addr + 15) & ~15u) + 0x12c00;
     PCDisplayMaterialStreamEnd = *buffer;
-    PCDisplayList2dPc.first->type = 0x8d;
-    PCDisplayList2dPc.first->id = 1;
-    PCDisplayList2dPc.first->next = NULL;
+    first = PCDisplayList2dPc.first;
+    first->type = 0x8d;
+    first->next = NULL;
+    first->id = 1;
     PCDisplayList2dPc.mtl_last = PCDisplayList2dPc.first;
-    buffer->addr = (buffer->addr + 3) & ~3u;
-    PCDisplayList2dPc.state = (NURNDRLIBSTATE *)buffer->void_ptr;
-    buffer->addr += sizeof(NURNDRLIBSTATE);
+    PCDisplayList2dPc.state = (NURNDRLIBSTATE *)((buffer->addr + 3) & ~3u);
+    buffer->addr = ((buffer->addr + 3) & ~3u) + sizeof(NURNDRLIBSTATE);
     NuDisplayListResetStateCache((NURNDRLIBSTATE *)PCDisplayList2dPc.state);
     PCDynamicDisplayScene.render_flags |= 0x10;
     PCDisplayList2dPc.mtl_last = PCDisplayList2dPc.first;
