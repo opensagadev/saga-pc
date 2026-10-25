@@ -1169,3 +1169,30 @@ void __cdecl MenuDrawShop(MENU *menu) {
         DrawShopPrompts();
     }
 }
+
+extern i32 AreaGlobalsChallengeCountPc;
+
+void __cdecl MenuDrawEndChallenge(MENU *menu) {
+    (void)menu;
+    if (MenuStopDraw == 0) {
+        if (ChallengeMode == 2) {
+            if (NuFmod(GameTimer.time_elapsed, 0.3f) < (f64)0.2f) {
+                char text[64];
+                f32 remaining = (f32)ADataList[WORLD->area_index].challenge_trial_time - ChallengeTimer.time_elapsed;
+                if (remaining < 0.0f)
+                    remaining = 0.0f;
+                Text_MakeTime(remaining, 0, 1, 1, text);
+                Text3D(text, 0.0f, STATSPOSY, 1.0f, 0.6f, 0.6f, 0.6f, 0, 255, 191, 0);
+            }
+        } else {
+            i32 red = 255;
+            i32 green = 63;
+            if (menu_flash != 0) {
+                red = 191;
+                green = 31;
+            }
+            SmartTextPc(TTab[TextIdPc8806f4], 0.0f, STATSPOSY, 1.0f, 1.0f, 1.0f, 1.0f, 0, red, green, 0, 1.7f, 1);
+        }
+        DrawMiniKitCount(minikittime, MiniKitScale, AreaGlobalsChallengeCountPc, 10);
+    }
+}
