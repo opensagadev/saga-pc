@@ -24973,7 +24973,7 @@ struct AIEDITOR_RENDER_STATE {
     NULISTHDR creatures;
     u8 unknown_3692c[4];
     struct EditorNamedEntry *mode_selection_36930;
-    u8 unknown_36934[4372];
+    u8 unknown_36934[4628];
     void *mode_selection_37a48;
     u8 unknown_37a4c[4];
     struct EDLOCATOR_s locator_pool[256];
@@ -25008,7 +25008,7 @@ struct AIEDITOR_RENDER_STATE {
     u32 pad_buttons;
     u32 pad_pressed;
 };
-STATIC_ASSERT(sizeof(struct AIEDITOR_RENDER_STATE) == 800832);
+STATIC_ASSERT(sizeof(struct AIEDITOR_RENDER_STATE) == 801088);
 
 struct EDAIPATHWALL_s {
     NULISTLNK link;
