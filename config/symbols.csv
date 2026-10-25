@@ -20747,6 +20747,7 @@ address,symbol,size,ctype
 0x00801c94,_new_retreat,4,i32
 0x801cb4,_AiEditorSaveMessageColoursPc,,struct eduiiattr_s
 0x801cc4,_aiEditor_LocatorWidth,4,f32
+0x801cc8,_aiEditor_DrawYOffset,,f32
 0x801d54,_AIPathDefaultChecks,4,i32
 0x00801dd0,??_R0?AVNetListenerInterface@@@8,35,
 0x00801df4,??_R0?AVAINet@@@8,20,
@@ -23805,6 +23806,8 @@ address,symbol,size,ctype
 0x00923920,_MidSpecialMoveFn,4,AI_MID_SPECIAL_MOVE_PC
 0x00923924,_GetNamedGameObjectCallback,4,GAMEOBJECT_LOOKUP_CALLBACK_PC
 0x00923928,_GetOriginPositionFn,4,AI_ORIGIN_POSITION_PC
+0x923934,_AIPathConnectionTypeCountPc,,i32
+0x923938,_AIPathConnectionTypesPc,,
 0x9242c0,_iterator_count,,i32
 0x9242c4,_distance_tables,,f32 ***
 0x009242e4,_sockpar_buffer_ptr,4,VARIPTR *

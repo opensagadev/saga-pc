@@ -13619,3 +13619,102 @@ void __cdecl AISYSRebuildFromEditorData(void) {
 #undef REBUILD_ALLOCATE
 #undef REBUILD_STORAGE
 #undef REBUILD_EDITOR
+
+/* The Native record has a four-byte mask, a five-word drawing callback,
+ * a bounded 64-byte name and a final four-byte options word. */
+typedef struct AI_PATH_CONNECTION_TYPE_PC {
+    u32 connection_flag;
+    void(__cdecl *draw)(NUVEC *, f32, NUVEC *, u32, i32);
+    char name[64];
+    u32 flags;
+} AI_PATH_CONNECTION_TYPE_PC;
+STATIC_ASSERT(sizeof(AI_PATH_CONNECTION_TYPE_PC) == 0x4c);
+STATIC_ASSERT(offsetof(AI_PATH_CONNECTION_TYPE_PC, draw) == 4);
+STATIC_ASSERT(offsetof(AI_PATH_CONNECTION_TYPE_PC, name) == 8);
+STATIC_ASSERT(offsetof(AI_PATH_CONNECTION_TYPE_PC, flags) == 0x48);
+extern i32 AIPathConnectionTypeCountPc;
+extern AI_PATH_CONNECTION_TYPE_PC AIPathConnectionTypesPc[32];
+
+void __cdecl pathEditorDrawConnectionInfo(NUVEC *position, f32 radius, NUVEC *other, u32 flags, i32 colour) {
+    i32 i;
+    NUVEC start, end, direction;
+    f32 length;
+    NURND_VERTEX3D_PC vertices[2];
+    if (flags == 0) {
+        return;
+    }
+    start.x = position->x;
+    start.y = position->y + aiEditor_DrawYOffset;
+    start.z = position->z;
+    end.x = other->x;
+    end.y = other->y + aiEditor_DrawYOffset;
+    end.z = other->z;
+    for (i = 0; i < AIPathConnectionTypeCountPc; ++i) {
+        AI_PATH_CONNECTION_TYPE_PC *type = &AIPathConnectionTypesPc[i];
+        if (type->draw != NULL && (type->connection_flag & flags) != 0) {
+            type->draw(&start, radius, &end, flags, colour);
+            return;
+        }
+    }
+    length = NuVecXZDist(&end, &start, &direction);
+    if (length > 0.0f) {
+        direction.x /= length;
+        direction.z /= length;
+    }
+    vertices[0].position = start;
+    vertices[1].position = end;
+    vertices[0].colour = colour;
+    vertices[1].colour = colour;
+    AiRndrLine3d(vertices, NULL, NULL);
+    NuVecScale(&vertices[0].position, &direction, radius * 0.5);
+    vertices[0].position.y = 0.0f;
+    NuVecAdd(&vertices[0].position, &vertices[0].position, &start);
+    vertices[1].position = start;
+    vertices[1].position.x += radius * direction.z * 0.5;
+    vertices[1].position.z -= radius * direction.x * 0.5;
+    AiRndrLine3d(vertices, NULL, NULL);
+    vertices[1].position = start;
+    vertices[1].position.x -= radius * direction.z * 0.5;
+    vertices[1].position.z += radius * direction.x * 0.5;
+    AiRndrLine3d(vertices, NULL, NULL);
+    if (flags & 0x40000000) {
+        NuVecScale(&vertices[0].position, &direction, radius * 0.5);
+        vertices[0].position.y = 0.0f;
+        NuVecAdd(&vertices[0].position, &vertices[0].position, &start);
+        vertices[1].position = vertices[0].position;
+        vertices[0].position.x += radius * direction.z * 0.5;
+        vertices[0].position.z -= radius * direction.x * 0.5;
+        vertices[1].position.x -= radius * direction.z * 0.5;
+        vertices[1].position.z += radius * direction.x * 0.5;
+        AiRndrLine3d(vertices, NULL, NULL);
+    } else if (flags & 0x80000000) {
+        NUVEC centre = vertices[0].position;
+        vertices[0].colour = colour / 2;
+        vertices[1].colour = colour / 2;
+        vertices[1].position = centre;
+        vertices[1].position.x += radius * direction.z * 0.25;
+        vertices[1].position.z -= radius * direction.x * 0.25;
+        AiRndrLine3d(vertices, NULL, NULL);
+        vertices[1].position = centre;
+        vertices[1].position.x -= radius * direction.z * 0.25;
+        vertices[1].position.z += radius * direction.x * 0.25;
+        AiRndrLine3d(vertices, NULL, NULL);
+    } else if (flags & 0x20000000) {
+        NUVEC centre = vertices[0].position;
+        NuVecScale(&vertices[0].position, &direction, radius);
+        vertices[0].position.y = 0.0f;
+        NuVecAdd(&vertices[0].position, &vertices[0].position, position);
+        vertices[1].position = centre;
+        vertices[1].position.x += radius * direction.z * (f64)0.15f;
+        vertices[1].position.z -= radius * direction.x * (f64)0.15f;
+        AiRndrLine3d(vertices, NULL, NULL);
+        vertices[1].position = centre;
+        vertices[1].position.x -= radius * direction.z * 0.25;
+        vertices[1].position.z += radius * direction.x * 0.25;
+        AiRndrLine3d(vertices, NULL, NULL);
+        vertices[1].position = centre;
+        vertices[1].position.x -= radius * direction.z * (f64)0.35f;
+        vertices[1].position.z += radius * direction.x * (f64)0.35f;
+        AiRndrLine3d(vertices, NULL, NULL);
+    }
+}

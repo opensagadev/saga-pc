@@ -35124,3 +35124,21 @@ extern "C" {
     __declspec(allocate(".bss$GameAISYSRebuildFromEditorDataFn")) void(__cdecl *GameAISYSRebuildFromEditorDataFn)(
         AISYS_PC *, VARIPTR *, VARIPTR *) = NULL;
 }
+
+typedef struct AI_PATH_CONNECTION_TYPE_PC {
+    u32 connection_flag;
+    void(__cdecl *draw)(NUVEC *, f32, NUVEC *, u32, i32);
+    char name[64];
+    u32 flags;
+} AI_PATH_CONNECTION_TYPE_PC;
+STATIC_ASSERT(sizeof(AI_PATH_CONNECTION_TYPE_PC) == 0x4c);
+STATIC_ASSERT(offsetof(AI_PATH_CONNECTION_TYPE_PC, draw) == 4);
+STATIC_ASSERT(offsetof(AI_PATH_CONNECTION_TYPE_PC, name) == 8);
+STATIC_ASSERT(offsetof(AI_PATH_CONNECTION_TYPE_PC, flags) == 0x48);
+
+#pragma section(".data$AIPathConnectionViewsPc", read, write)
+extern "C" {
+    __declspec(allocate(".data$AIPathConnectionViewsPc")) f32 aiEditor_DrawYOffset = 0.25f;
+    __declspec(allocate(".data$AIPathConnectionViewsPc")) i32 AIPathConnectionTypeCountPc = 0;
+    __declspec(allocate(".data$AIPathConnectionViewsPc")) AI_PATH_CONNECTION_TYPE_PC AIPathConnectionTypesPc[32] = {};
+}
