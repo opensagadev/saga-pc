@@ -3258,6 +3258,7 @@ address,symbol,size,ctype
 0x5263f0,_routeEditor_cbRenameRouteMenu,209,
 0x526560,_routeEditor_cbRouteUsers,327,
 0x526800,?pathEditorCreateSpecialRouteData@@YAXPAUAIPATH_PC@@PAUAI_PATH_BUILD_PATH_PC@@PATvariptr_u@@2@Z,2382,
+0x527360,_AiEditorMessageCloseMenuPc,37,
 0x527390,_AiEditorSaveCloseSelectionPc,37,
 0x527460,_aieditor_AddMessage,135,
 0x527620,_antinodeEditor_AntinodeMoved,185,

@@ -13718,3 +13718,26 @@ void __cdecl pathEditorDrawConnectionInfo(NUVEC *position, f32 radius, NUVEC *ot
         AiRndrLine3d(vertices, NULL, NULL);
     }
 }
+
+static void __cdecl AiEditorMessageCloseMenuPc(eduimenu_s *menu, eduimenu_s *child) {
+    (void)menu;
+    (void)child;
+    if (aieditor->main_menu != NULL) {
+        eduiMenuDestroy(aieditor->main_menu);
+        aieditor->main_menu = NULL;
+    }
+}
+
+eduimenu_s *__cdecl aieditor_AddMessage(char *title, char *message) {
+    eduimenu_s *outer = eduiMenuCreate(0xc8, 0x46, 0xf0, 0x10e, ed_fnt, AiEditorMessageCloseMenuPc, title);
+    if (outer != NULL) {
+        eduimenu_s *inner = eduiMenuCreate(0x78, 0x5a, 0x1b8, 0xfa, ed_fnt, NULL, title);
+        if (inner != NULL) {
+            eduiitem_s *item =
+                eduiItemSelCreate(1, &AiEditorSaveMessageColoursPc, 0, 0, AiEditorSaveCloseSelectionPc, message);
+            eduiMenuAddItem(inner, item);
+            eduiMenuAttach(outer, inner);
+        }
+    }
+    return outer;
+}
