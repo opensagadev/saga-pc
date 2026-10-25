@@ -1260,3 +1260,18 @@ f32 __cdecl Condition_OnSameObjectAsPlayerPc(AISYS_PC *system, AISCRIPTPROCESS_P
     }
     return 0.0f;
 }
+
+STATIC_ASSERT(offsetof(GAMEOBJECT, field_0x276) == 0x27a);
+
+f32 __cdecl Condition_YawToOpponentPc(AISYS_PC *system, AISCRIPTPROCESS_PC *process, AIPACKET_PC *packet, char *name,
+                                      void *argument) {
+    if (packet != NULL && packet->opponent != NULL) {
+        NUVEC difference;
+        difference.x = packet->opponent->position.x - packet->owner->position.x;
+        difference.z = packet->opponent->position.z - packet->owner->position.z;
+        /* Retail leaves difference.y unwritten before this in-place rotation. */
+        NuVecRotateY(&difference, &difference, -packet->owner->field_0x276);
+        return (f32)((f64)NuAtan2D(difference.x, difference.z) * (360.0 / 65536.0));
+    }
+    return -180.0f;
+}
