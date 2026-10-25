@@ -1525,3 +1525,16 @@ f32 __cdecl Condition_PlayerInSockPc(AISYS_PC *system, AISCRIPTPROCESS_PC *proce
         return 1.0f;
     return 0.0f;
 }
+
+void *__cdecl Condition_RespawnLocatorIsInitPc(AISYS_PC *system, char *name, AISCRIPT_PC *script) {
+    if (name != NULL)
+        return AIPathFindLocator(system, name);
+    return NULL;
+}
+
+f32 __cdecl Condition_RespawnLocatorIsPc(AISYS_PC *system, AISCRIPTPROCESS_PC *process, AIPACKET_PC *packet, char *name,
+                                         void *argument) {
+    if (argument != NULL && packet != NULL && packet->respawn_locator == argument)
+        return 1.0f;
+    return 0.0f;
+}
